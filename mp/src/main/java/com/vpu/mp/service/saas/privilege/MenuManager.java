@@ -1,13 +1,49 @@
 package com.vpu.mp.service.saas.privilege;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+
+import com.vpu.mp.db.main.tables.records.B2cSystemRoleRecord;
+import com.vpu.mp.service.foundation.Util;
 
 @Component
 public class MenuManager {
-	
+
+	@Autowired
+	protected Role role;
+
+	public List<Menu> getRoleMenuList(Integer roleId) {
+		List<Menu> menu = this.getTopMenuList();
+        if (roleId == 0) return menu;
+        B2cSystemRoleRecord roleRecord = role.getRole(roleId);
+        if (roleRecord != null) {
+        	String[] privileges = Util.parseJSON(roleRecord.getPrivilegeList(),String[].class);
+        	
+            if (privileges == null) return null;
+            for(Menu item:menu)  {
+            	if(Arrays.asList(privileges).contains(item.enName)) {
+            		item.check = true;
+            	}
+            	
+            	if(item.subMenu != null) {
+            		for(Menu item2:item.subMenu)  {
+            			if(Arrays.asList(privileges).contains(item2.enName)) {
+                    		item2.check = true;
+                    		item.check = true; //  只要二级有选中就显示一级标题
+                    		item.linkUrl = item2.linkUrl; // ??
+                    	}
+            		}
+            	}
+            }
+            return menu;
+        }
+        return null;
+	}
+
 	public List<Menu> getTopMenuList() {
 		List<Menu> list = new ArrayList<Menu>();
 		list.add(new Menu("概览", "first_web_manage", "/system/shop/shop_view", "/image/system/first_1.png", "", false,
@@ -129,7 +165,5 @@ public class MenuManager {
 				"/image/system/get_user_h.png", false, null));
 		return list;
 	}
-
-	
 
 }

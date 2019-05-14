@@ -58,6 +58,7 @@ public class SystemAuth {
 			map.put("sub_account_id", account.getAccountId());
 			map.put("user", account);
 			map.put("role_id", account.getRoleId());
+			session("sys_login_user",map);
 		} else {
 			userId = user.getSystemUserId().intValue();
 			HashMap<String, Object> map = new HashMap<String, Object>();
@@ -68,6 +69,7 @@ public class SystemAuth {
 			map.put("sub_account_id", 0);
 			map.put("user", user);
 			map.put("role_id", 0);
+			session("sys_login_user",map);
 		}
 		saas.sysUser.updateLoginIp(Util.getCleintIp(request), userId);
 		return true;

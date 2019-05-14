@@ -1,16 +1,15 @@
 package com.vpu.mp.service.foundation;
 
 import java.io.IOException;
-import java.io.UnsupportedEncodingException;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
-import java.security.MessageDigest;
-import java.security.NoSuchAlgorithmException;
-import java.util.Base64;
 
 import javax.servlet.http.HttpServletRequest;
 
+import org.springframework.util.DigestUtils;
+
 import com.fasterxml.jackson.core.JsonParseException;
+import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
@@ -32,6 +31,8 @@ public class Util {
 
 	static public <T> T parseJSON(String json, Class<T> valueType) {
 		ObjectMapper mapper = new ObjectMapper();
+		// 如果json中有新增的字段并且是实体类类中不存在的，不报错
+		mapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
 		try {
 			return mapper.readValue(json, valueType);
 		} catch (JsonParseException e) {
@@ -45,17 +46,7 @@ public class Util {
 	}
 
 	static public String md5(String string) {
-		MessageDigest md5;
-		try {
-			md5 = MessageDigest.getInstance("MD5");
-			Base64.Encoder base64Encoder = Base64.getEncoder();
-			return base64Encoder.encodeToString(md5.digest(string.getBytes("utf-8")));
-		} catch (NoSuchAlgorithmException e) {
-			e.printStackTrace();
-		} catch (UnsupportedEncodingException e) {
-			e.printStackTrace();
-		}
-		return "";
+		return DigestUtils.md5DigestAsHex(string.getBytes());
 	}
 
 	static public String getCleintIp(HttpServletRequest request) {

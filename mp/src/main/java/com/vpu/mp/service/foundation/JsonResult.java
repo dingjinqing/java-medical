@@ -32,22 +32,16 @@ public class JsonResult {
 		this.setContent(content);
 	}
 	
-	public JsonResult success(Object content) {
-		this.setError(0);
-		this.setContent(content);
-		return this;
+	static public JsonResult success(Object content) {
+		return new JsonResult(0,null,content);
 	}
 	
-	public JsonResult fail(Object message) {
-		this.setError(1);
-		this.setMessage(message);
-		return this;
+	static  public JsonResult fail(Object message) {
+		return new JsonResult(1,message,null);
 	}
 	
-	public JsonResult fail(Object message,int error) {
-		this.setError(error);
-		this.setMessage(message);
-		return this;
+	static public JsonResult fail(Object message,int error) {
+		return new JsonResult(error,message,null);
 	}
 		
 

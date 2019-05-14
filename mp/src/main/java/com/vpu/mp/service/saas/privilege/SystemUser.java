@@ -16,7 +16,8 @@ public class SystemUser extends BaseComponent {
 		B2cSystemUserRecord user = dm.db().selectFrom(tableUser).where(tableUser.USER_NAME.eq(username))
 				.or(tableUser.MOBILE.eq(username)).fetchOne();
 		if (user != null) {
-			if (user.getPassword() == Util.md5(password)) {
+			String md5Pass = Util.md5(password);
+			if (user.getPassword().equals(md5Pass)) {
 				return user;
 			}
 		}

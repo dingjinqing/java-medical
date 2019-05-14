@@ -1,12 +1,21 @@
 package com.vpu.mp.controller.system;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.ui.ModelMap;
 import org.springframework.web.servlet.ModelAndView;
 
 import com.vpu.mp.controller.BaseController;
+import com.vpu.mp.service.auth.SystemAuth;
+import com.vpu.mp.service.saas.Saas;
 
 public class SystemBaseController extends BaseController {
 
+	@Autowired
+	protected Saas saas;
+	
+	@Autowired
+	protected SystemAuth sysAuth;
+	
 	/**
 	    *     显示信息页面
 	 * @param message

@@ -46,7 +46,8 @@ public class BaseController {
 	}
 
 	protected boolean isPost() {
-		return request.getMethod() == "POST";
+		String method =  request.getMethod();
+		return method.equals("POST");
 	}
 
 }

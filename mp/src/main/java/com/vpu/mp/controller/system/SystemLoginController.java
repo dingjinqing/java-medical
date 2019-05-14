@@ -1,23 +1,14 @@
 package com.vpu.mp.controller.system;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
 
-import com.vpu.mp.service.auth.SystemAuth;
 import com.vpu.mp.service.foundation.JsonResult;
-import com.vpu.mp.service.saas.Saas;
 
 @Controller
 public class SystemLoginController extends SystemBaseController {
-
-	@Autowired
-	protected SystemAuth sysAuth;
-
-	@Autowired
-	protected Saas saas;
 
 	@RequestMapping(value = "/system/login")
 	public ModelAndView login() {
@@ -41,9 +32,9 @@ public class SystemLoginController extends SystemBaseController {
 	@ResponseBody
 	public JsonResult attempt() {
 		if (sysAuth.attempt(request.getParameter("username"), request.getParameter("password"))) {
-			return JsonResult.instance().success("ok");
+			return JsonResult.success("ok");
 		} else {
-			return JsonResult.instance().fail("用户名或密码不正确，请重新输入",-1);
+			return JsonResult.fail("用户名或密码不正确，请重新输入",-1);
 		}
 	}
 }
