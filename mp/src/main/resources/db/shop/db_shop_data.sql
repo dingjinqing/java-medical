@@ -1,0 +1,69 @@
+#支付方式
+truncate table `b2c_payment`;
+insert into `b2c_payment` (`id`, pay_name, pay_code, pay_fee, pay_desc, enabled, is_cod, is_online_pay)
+values ('1', '微信支付', 'wxpay', '0', '基于微信账号的支付', '1', '0', '1'),
+  ('2', '积分支付', 'score', '0', '积分支付', '1', '1', '0'),
+  ('3', '余额支付', 'balance', '0', '使用帐户余额支付。只有会员才能使用，通过设置信用额度，可以透支。', '1', '0', '1'),
+  ('4', '货到付款', 'cod', '0', '开通城市：×××\n货到付款区域：×××', '0', '1', '0'),
+  ('5', '储值卡支付', 'membercard', '0', '储值卡支付', '0', '1', '0'),
+  ('6', '支付宝支付', 'ali_mini_pay', '0', '基于支付宝账号的支付', '0', '0', '1');
+
+
+
+## 快递数据
+truncate table `b2c_shipping`;
+insert into `b2c_shipping` values ('14', 'chengshi100', '城市100', '城市100', '0', '0', '1', '', '0', '0');
+insert into `b2c_shipping`
+values ('2', 'yto', '圆通速递',
+        '上海圆通物流（速递）有限公司经过多年的网络快速发展，在中国速递行业中一直处于领先地位。为了能更好的发展国际快件市场，加快与国际市场的接轨，强化圆通的整体实力，圆通已在东南亚、欧美、中东、北美洲、非洲等许多城市运作国际快件业务',
+        '0', '1', '1', '', '0', '0');
+insert into `b2c_shipping` values ('13', 'post_express', '邮政小包/E邮宝', '小包', '0', '0', '1', '', '0', '0');
+insert into `b2c_shipping` values ('12', 'quanfeng_express', '全峰快递', '全峰', '0', '0', '1', '', '0', '0');
+insert into `b2c_shipping`
+values ('1', 'sto_express', '申通快递', '江、浙、沪地区首重为15元/KG，其他地区18元/KG， 续重均为5-6元/KG， 云南地区为8元', '0', '0', '1', '', '0', '0');
+insert into `b2c_shipping` values ('11', 'debang_express', '德邦物流', '德邦', '0', '0', '1', '', '0', '0');
+insert into `b2c_shipping` values ('23', 'fpd', '运费到付', '所购商品到达即付运费', '0', '0', '1', '', '0', '0');
+insert into `b2c_shipping` values ('3', 'yunda', '韵达快运', '韵达快递', '0', '0', '1', '', '0', '0');
+insert into `b2c_shipping` values ('4', 'zto_express', '中通快递', '中通快递', '0', '0', '1', '', '0', '0');
+insert into `b2c_shipping` values ('5', 'EMS', 'EMS邮政特快专递', 'EMS邮政特快专递', '0', '0', '1', '', '0', '0');
+insert into `b2c_shipping` values ('6', 'sf_express', '顺丰速运', '顺丰', '0', '0', '1', '', '0', '0');
+insert into `b2c_shipping` values ('7', 'best_express', '百世汇通', '汇通', '0', '0', '1', '', '0', '0');
+insert into `b2c_shipping` values ('8', 'ttk_epxress', '天天快递', '天天', '0', '0', '1', '', '0', '0');
+insert into `b2c_shipping` values ('9', 'zjs_express', '宅急送', '宅急送', '0', '0', '1', '', '0', '0');
+insert into `b2c_shipping` values ('10', 'china_post', '邮政包裹/平邮', '邮政包裹/平邮', '0', '0', '1', '', '0', '0');
+insert into `b2c_shipping` values ('15', 'yufeng_express', '如风达', '凡客如风达', '0', '0', '1', '', '0', '0');
+insert into `b2c_shipping` values ('16', 'guotong_express', '国通快递', '国通快递', '0', '0', '1', '', '0', '0');
+insert into `b2c_shipping` values ('17', 'jindong_express', '京东快递', '京东快递', '0', '0', '1', '', '0', '0');
+insert into `b2c_shipping` values ('18', 'longbang_express', '龙邦快递', '龙邦', '0', '0', '1', '', '0', '0');
+insert into `b2c_shipping` values ('19', 'nengdao_express', '能达速递', '能达', '0', '0', '1', '', '0', '0');
+insert into `b2c_shipping` values ('20', 'qianfeng_express', '全峰快递', '全峰', '0', '0', '1', '', '0', '0');
+insert into `b2c_shipping` values ('21', 'suer_express', '速尔快递', '速尔', '0', '0', '1', '', '0', '0');
+insert into `b2c_shipping` values ('22', 'uc_express', '优速快递', '优速', '0', '0', '1', '', '0', '0');
+insert into `b2c_shipping` values ('24', 'other_express', '其它快递', '其它', '0', '0', '1', '', '0', '0');
+
+#底部导航
+INSERT INTO `b2c_shop_cfg` VALUES (1,0,'bottom','[{"text":"门店","normal":"/image/admin/icon_mp/icon_no_1.png","hover":"/image/admin/icon_mp/icon_yes_1.png","page":"pages/storelist/storelist"},{"text":"首页","normal":"/image/admin/icon_mp/icon_no_2.png","hover":"/image/admin/icon_mp/icon_yes_2.png","page":"pages/index/index"},{"text":"购物车","normal":"/image/admin/icon_mp/icon_no_3.png","hover":"/image/admin/icon_mp/icon_yes_3.png","page":"pages/cart/cart"},{"text":"我的","normal":"/image/admin/icon_mp/icon_no_4.png","hover":"/image/admin/icon_mp/icon_yes_4.png","page":"pages/usercenter/usercenter"}]');
+
+INSERT INTO `b2c_shop_cfg`(k,v) VALUES ('express',1);
+INSERT INTO `b2c_shop_cfg`(k,v) VALUES ('fetch',0);
+INSERT INTO `b2c_shop_cfg`(k,v) VALUES ('drawback_type',1);
+INSERT INTO `b2c_shop_cfg`(k,v) VALUES ('drawback_days',3);
+INSERT INTO `b2c_shop_cfg`(k,v) VALUES ('order_timeout_days',7);
+INSERT INTO `b2c_shop_cfg`(k,v) VALUES ('page','0,1');
+INSERT INTO `b2c_shop_cfg`(k,v) VALUES ('ship_is_free',0);
+INSERT INTO `b2c_shop_cfg`(k,v) VALUES ('ship_fee',0);
+INSERT INTO `b2c_shop_cfg`(k,v) VALUES ('start_ship_order_gmv',0);
+INSERT INTO `b2c_shop_cfg`(k,v) VALUES ('score_limit',1);
+INSERT INTO `b2c_shop_cfg`(k,v) VALUES ('score_protect',null);
+INSERT INTO `b2c_shop_cfg`(k,v) VALUES ('score_day',1);
+INSERT INTO `b2c_shop_cfg`(k,v) VALUES ('score_month',1);
+INSERT INTO `b2c_shop_cfg`(k,v) VALUES ('score_year',1);
+INSERT INTO `b2c_shop_cfg`(k,v) VALUES ('score_type',0);
+INSERT INTO `b2c_shop_cfg`(k,v) VALUES ('score_login',0);
+INSERT INTO `b2c_shop_cfg`(k,v) VALUES ('invoice',1);
+INSERT INTO `b2c_shop_cfg`(k,v) VALUES ('cancel_time',30);
+INSERT INTO `b2c_shop_cfg`(k,v) VALUES ('service_comment',1);
+INSERT INTO `b2c_shop_cfg`(k,v) VALUES ('bind_mobile',1);
+INSERT INTO `b2c_shop_cfg`(k,v) VALUES ('comment',1);
+INSERT INTO `b2c_shop_cfg`(k,v) VALUES ('store_buy',1);
+INSERT INTO `b2c_shop_cfg`(k,v) VALUES ('sales_number',1);

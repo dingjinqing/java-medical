@@ -1,0 +1,79 @@
+div,span{
+    font-size: 14px;
+}
+#set-goods{
+    padding: 20px;
+}
+.goods_search{
+    padding-top: 0;
+}
+.goods_spec{
+    margin-bottom: 10px;
+    font-size: 14px;
+    height: 30px;
+}
+.goods_fl{
+    float: left;
+}
+.goods_fl select{
+    height: 30px;
+    width: 140px;
+    padding-left: 8px;
+    -webkit-border-radius: 3px;
+    -moz-border-radius: 3px;
+    border-radius: 3px;
+}
+.goods_fr{
+    float: right;
+    line-height: 30px;
+}
+.goods_fr input{
+    height: 30px;
+    width: 66px;
+    text-align: center;
+    -webkit-border-radius: 3px;
+    -moz-border-radius: 3px;
+    border-radius: 3px;
+    padding: 0px;
+    margin: 0;
+}
+#form1 input[name="goods_name"],#form1 input[name="goods_sn"]{
+    width: 140px;
+    padding-left: 8px;
+    border-radius: 3px;
+    margin: 0 8px 0 0;
+}
+#form1 span{
+    display: inline-block;
+    line-height: 30px;
+}
+.choose{
+    float: right;
+    border-radius: 3px;
+    cursor: pointer;
+}
+.reset_search{
+    height: 30px;
+    width: 100px;
+    border: 1px solid #ccc;
+    background: #f5f5f5;
+    color: #666;
+    margin-left: 8px;
+}
+input[type='checkbox']{
+    top: 0;
+}
+#all_check{
+    top: 2px;
+    marign-right: 5px;
+}
+.info_goods{
+    text-align: left;
+    padding-left: 48px;
+}
+.goods_name{
+    width: 340px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}

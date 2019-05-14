@@ -1,0 +1,86 @@
+img {
+    vertical-align: middle;
+}
+ol,ul,dl,li{
+    list-style: none;
+}
+ul{
+    padding-left: 0;
+}
+body {
+    line-height: 24px;
+    font: 14px Helvetica Neue,Helvetica,PingFang SC,\5FAE\8F6F\96C5\9ED1,Tahoma,Arial,sans-serif;
+}
+body{
+    margin: 0;
+    padding:0;
+}
+#set_sort_category{
+    padding: 0 12px;
+}
+#set_sort_category li{
+    padding: 10px;
+}
+#set_sort_category li:nth-of-type(even){
+    background: #f3f3f3;
+}
+#set_sort_category input[type='checkbox']{
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    appearance: none;
+    width: 12px;
+    height: 12px;
+    background: url("/image/admin/square_no.png") no-repeat;
+    position: relative;
+    top: 1px;
+    margin-right: 3px;
+    vertical-align: middle;
+}
+#set_sort_category input[type='checkbox']:checked{
+    background: url("/image/admin/square_yes.png") no-repeat;
+}
+input[type='text']:focus {
+    border: 1px solid #5a8bff !important;
+    box-shadow: 0 0 5px rgba(90,139,255, 1) !important;
+    -webkit-box-shadow: 0 0 5px rgba(90,139,255, 1) !important;
+    -moz-box-shadow: 0 0 5px rgba(90,139,255, 1) !important;
+}
+.second_sort_cate{
+    margin-left: 35px;
+    display: none;
+    color: #666;
+}
+.second_sort_cate div{
+    float: left;
+    margin-left: 20px;
+}
+#set_sort_category  label{
+    vertical-align: middle;
+}
+.no_category{
+    display: flex;
+    justify-content:center;
+    align-items:center;
+    width: 100%;
+    height: 100%;
+}
+.no_category p{
+    text-align: center;
+    color:#999;
+    margin: 14px 0;
+}
+.clearfix:after {
+    content: ".";
+    display: block;
+    clear: both;
+    visibility: hidden;
+    height: 0;
+    font-size:0;
+}
+.clearfix{
+    zoom: 1;
+}
+.second_sort_cate div span {
+    line-height: 25px;
+    display: inline-block;
+}

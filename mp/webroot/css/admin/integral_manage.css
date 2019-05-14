@@ -1,0 +1,273 @@
+a:hover{
+    text-decoration: none !important;
+}
+a:focus{
+    text-decoration: none !important;
+}
+.main_container{
+    padding:10px;
+}
+/*积分兑换列表*/
+.list_nav{
+    width: 100%;
+    height: 50px;
+    background-color: #fff;
+    margin: 0 auto;
+    font-size: 14px;
+    box-sizing: border-box;
+}
+.list_nav ul{
+    width: 97%;
+    height: 50px;
+    margin-left: 23px;
+    padding-left: 0;
+    line-height: 52px;
+    border-bottom: 1px solid #eee;
+    list-style: none;
+}
+.list_nav ul>li{
+    float: left;
+    margin-right: 15px;
+    padding-right: 15px;
+}
+.list_nav ul>li a{
+    color: #333;
+    text-decoration: none;
+}
+.list_nav ul .actives a{
+    background: #fff !important;
+    box-shadow: 0 2px 0 #5A8BFF;
+    padding-bottom: 13px;
+    box-sizing: border-box;
+}
+.btn_add{
+    padding: 20px 0;
+    background: #fff;
+    padding-left: 23px;
+}
+.btn_add a{
+    padding: 10px;
+    background-color: #5a8bff;
+    border: 1px solid #5A8BFF;
+    color: #fff;
+    font-size: 14px;
+}
+.convert_table{
+    padding: 8px 23px;
+    padding-top: 0;
+    background: #FFFFFF;
+    min-height: 380px !important;
+}
+.convert_table table thead tr{
+    background: #F5F5F5;
+}
+.convert_table table td{
+    border:1px solid #eee;
+    text-align: center;
+}
+.convert_table table td a{
+    color: #5a8bff;
+    display: block;
+}
+/*用户列表*/
+.search_items{
+    background: #fff;
+    margin-top: 10px;
+    list-style: none;
+    padding-left: 30px;
+}
+.search_items li{
+    padding:10px 0;
+}
+.search_items li div{
+    float: left;
+    margin-right: 30px;
+}
+.search_items li div span{
+    height: 30px;
+    display: inline-block;
+    text-align: right;
+    margin-right: 10px;
+    line-height: 30px;
+}
+.search_items li div input{
+    height: 30px;
+    line-height: 30px;
+    padding-left: 12px;
+    border: 1px solid #eee;
+    width: 150px;
+}
+.search_items li button{
+    width: 85px;
+    height: 30px;
+    margin-left: 30px;
+    background-color: #5a8bff;
+    border: 1px solid #5A8BFF;
+    color: #fff;
+    border-radius:2px;
+    font-size: 14px;
+}
+.search_items li button:hover{
+    background-color: #447af9 !important;
+    border-color: #447af9 !important;
+    text-decoration: none;
+}
+.search_items li button:focus{
+    background-color: #447af9 !important;
+    border-color: #447af9 !important;
+    text-decoration: none;
+}
+.search_items li .btn_excels{
+    border: 1px solid #ccc;
+    background: #f5f5f5;
+    color: #666;
+}
+.search_items li .btn_excels:hover{
+    background-color: #fff !important;
+    border-color: #447af9 !important;
+    color: #447af9;
+    text-decoration: none;
+}
+.search_items li .btn_excels:focus{
+     background-color: #fff !important;
+     border-color: #447af9 !important;
+     color: #447af9;
+     text-decoration: none;
+ }
+.goods_info .goods_img{
+    width: 50px;
+    height: 50px;
+    text-align: center;
+    line-height: 50px;
+    border: 1px solid #ccc;
+    font-size: 0;
+    float: left;
+}
+.goods_info .goods_img img{
+    width: 100%;
+    height:100%;
+}
+.goods_info  .goods_names{
+    height: 50px;
+    width: 120px;
+    position: relative;
+    margin-left: 12px;
+    font-size: 12px;
+    text-align: left;
+    float: left;
+}
+.goods_info  .goods_names .g_names{
+    width: 120px;
+    display: -webkit-box;
+    -ms-text-overflow: ellipsis;
+    text-overflow: ellipsis;
+    overflow: hidden;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 2;
+    margin: 0;
+}
+.goods_info  .goods_names .g_spec{
+    color: #666;
+    position: absolute;
+    bottom: 0;
+    width: 100%;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+/*添加积分商品页面*/
+.config_box{
+    padding:8px 23px;
+    background: #FFFFFF;
+    min-height: 500px !important;
+    padding-top: 20px;
+}
+.config_box .detail_li{
+    height: 50px;
+    line-height: 50px;
+}
+.config_box .detail_li .item_title{
+    float: left;
+    width: 190px;
+    text-align: right;
+    height: 50px;
+    line-height: 50px;
+    margin-right: 30px;
+}
+.config_box .item_title span{
+    color: red;
+    margin-right: 10px;
+}
+.config_box .detail_li input[type='text']{
+    height: 30px;
+    line-height: 30px;
+    width: 200px;
+    border: 1px solid #eee;
+    padding-left: 12px;
+    margin-right: 10px;
+}
+#sel-goods-btn {
+    width: 120px;
+    height: 30px;
+    background-color: #fff;
+    opacity: 1;
+    color: #5a8bff;
+    border: 1px solid #ddd;
+    cursor: pointer;
+    /*float: left;*/
+}
+.switch_tips{
+    font-size: 12px;
+    color: #999
+}
+.right_item{
+    float: left;
+    height: 50px;
+    line-height: 50px;
+    display: flex;
+    align-items: center;
+}
+
+.config_box .detail_li table thead tr{
+    background: #f5f5f5;
+}
+.config_box .detail_li table thead tr td{
+    height: 35px;
+}
+.config_box .detail_li table td{
+    border:1px solid #eee;
+    text-align: center;
+    padding:0;
+}
+.pin_group_footer{
+    border-top: 1px solid #f2f2f2;
+    background: #f8f8fa;
+    padding: 10px 0;
+    text-align: center;
+    position: fixed;
+    bottom: 0;
+    width: 87.5%;
+}
+.pin_group_footer button {
+    background-color: #5a8bff;
+    border-color: #5a8bff;
+    width: 70px;
+    height: 30px;
+    color: #fff;
+    display: inline-block;
+    line-height: 30px;
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+

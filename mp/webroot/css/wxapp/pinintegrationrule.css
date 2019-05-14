@@ -1,0 +1,13 @@
+body,html,p{
+    margin: 0;
+    padding: 0;
+}
+.all{
+color: #888;
+font-size: .27rem;
+padding: 0 .27rem;
+padding-top: .27rem;
+}
+.all p{
+line-height: .53rem;
+} 

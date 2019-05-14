@@ -1,0 +1,296 @@
+*{
+    margin: 0;
+    padding: 0;
+}
+body{
+    background: #e6e9f0;
+}
+.clearfix:after{
+    display: block;
+    content: '';
+    clear: both;
+}
+.fl{
+    float: left;
+}
+.fr{
+    float: right;
+}
+img{
+    vertical-align: middle;
+}
+div,p,ul,li,span,a,table,td,tr,input{
+    -webkit-box-sizing: border-box;
+    -moz-box-sizing: border-box;
+    box-sizing: border-box;
+}
+a,a:active,a:hover,a:focus{
+    text-decoration: none;
+    color: #333;
+}
+ul{
+    margin: 0;
+}
+ul li{
+    list-style: none;
+}
+input::-webkit-input-placeholder{
+    color: #ccc;
+}
+input[type='text']:focus {
+    border: 1px solid #5a8bff !important;
+    box-shadow: 0 0 5px rgba(90,139,255, 1) !important;
+    -webkit-box-shadow: 0 0 5px rgba(90,139,255, 1) !important;
+    -moz-box-shadow: 0 0 5px rgba(90,139,255, 1) !important;
+}
+.order-container{
+    padding:10px;
+}
+.order_serarch_info{
+    background: #fff;
+    padding:15px 25px;
+}
+.check_info_li{
+    padding:8px 0;
+}
+.check_info_li .fl{
+    width: 290px;
+}
+.check_info_li .fl span {
+    display: inline-block;
+    width: 85px;
+    line-height: 30px;
+    text-align: right;
+    margin-right: 25px;
+    color: #333;
+}
+.check_info_li .fl input {
+    width: 175px;
+    height: 30px;
+    padding-left: 12px;
+    border: 1px solid #ccc;
+}
+.check_info_li .time_choose{
+    width: 530px;
+}
+.check_info_li .time_choose input:first-of-type{
+    margin-right: 20px;
+}
+.check_info_li .time_choose input:last-of-type{
+    margin-left: 20px;
+}
+.check_info_li .fl select {
+    width: 175px;
+    border: 1px solid #ccc;
+    height: 30px;
+    padding-left: 12px;
+}
+.check_info_li .btn_search{
+    width: 85px;
+    height: 30px;
+    border: 1px solid #5a8bff;
+    background: #5a8bff;
+    color: #fff;
+    margin-left: 15px;
+}
+.check_info_li .btn_excel {
+    width: 85px;
+    height: 30px;
+    border: 1px solid #ccc;
+    background: #f5f5f5;
+    color: #666;
+    margin-left: 15px;
+}
+.check_info_li .btn_search:hover, .btn-verify:hover{
+    background-color: #447af9 !important;
+    border-color: #447af9 !important;
+    text-decoration: none
+}
+.check_info_li .btn_search:focus,.btn-verify:focus{
+    background-color: #447af9 !important;
+    border-color: #447af9 !important;
+    text-decoration: none
+}
+.check_info_li .btn_excel:hover{
+    background-color: #fff !important;
+    border-color: #447af9 !important;
+    color: #447af9;
+    text-decoration: none
+}
+.check_info_li .btn_excel:focus{
+    background-color: #fff !important;
+    border-color: #447af9 !important;
+    color: #447af9;
+    text-decoration: none
+}
+.money_amount{
+    background: #fff;
+    margin: 10px auto;
+    padding:15px 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    color: #333;
+}
+.money_amount img{
+    margin:0 5px;
+}
+.money_amount span{
+    color: #f66;
+    font-size: 14px;
+    margin:0 5px;
+}
+.check_list{
+    background: #fff;
+    padding:0 25px 20px;
+}
+.check_list .cl_banner{
+    border-bottom: 1px solid #eee;
+    margin-bottom: 15px;
+}
+.check_list .cl_banner li{
+    float: left;
+    height: 50px;
+    line-height: 50px;
+    padding: 0 15px;
+}
+.check_list .cl_banner .nav_active{
+    border-bottom: 2px solid #5a8bff;
+}
+.checklist_table thead tr{
+    background: #F5F5F5;
+}
+.checklist_table thead tr td{
+    text-align: center;
+}
+.checklist_table thead .jiange{
+    background: #fff;
+}
+.check-tb-head{
+    background-color:#F5F5F5;
+}
+.check-tb-head td{
+    text-align: left;
+}
+.check-tb-head  span{
+    display: inline-block;
+    color: #666;
+}
+
+.check-tb-head  .span1{
+    margin-left: 20px;
+}
+.check-tb-head  .span2{
+    margin-left: 50px;
+}
+.check-tb-head .fr{
+    float: right;
+}
+.check-tb-head .btn-star-flag{
+    display: inline-block;
+    vertical-align: bottom;
+    width: 25px;
+    height: 19px;
+    background-image: url(/image/admin/comstar_1.png);
+    background-position: 0 0;
+    background-repeat: no-repeat;
+    cursor: pointer;
+}
+.check-tb-head .empty-flag{
+    background-position: -25px 0;
+}
+.check-tb-head a{
+    color: #5a8bff;
+    display: inline-block;
+    margin-left: 25px;
+}
+
+.check_tb_body td{
+    border:1px solid #eee;
+    color: #666;
+    padding:15px 25px;
+    text-align: center;
+}
+
+#set-text{
+    display: none;
+    padding: 10px 10px 0;
+}
+#set-text textarea {
+    width: 100%;
+    height: 100px;
+    resize: none;
+    border: 1px solid #ccc;
+}
+
+
+
+
+/*订单详情页*/
+.checkinfo_container{
+    padding:10px;
+}
+.checkorder_info{
+    padding: 0 25px;
+    background: #fff;
+    font-size: 14px;
+}
+.checkorder_info_top{
+    line-height: 44px;
+    height: 44px;
+}
+.checkorder_info_detail .fl{
+    float: left;
+    border: 1px solid #cfd6ff;
+    margin-right: 30px;
+    padding-left: 35px;
+    width: 510px;
+    font-size: 12px;
+    color: #666;
+    height:272px;
+}
+.title_content{
+    font-weight: bold;
+    color: #333;
+    font-size: 14px;
+    line-height: 50px;
+}
+.order_flex{
+    display: flex;
+    height:44px;
+}
+.order_flex div{
+    flex:1;
+}
+.order_notice{
+    font-size: 14px;
+    color: #333;
+    line-height: 50px
+}
+.order_notice img{
+    margin-right: 5px;
+}
+.pay_detail{
+    margin-top: 10px;
+    background: #fff;
+    font-size: 14px;
+    padding-bottom: 20px;
+}
+.pd_titile{
+    padding:10px 0;
+    background: #f9f9f9;
+    padding-left: 25px;
+}
+.pd_detail_list{
+    background: #fff;
+    font-size: 14px;
+    padding-left: 25px;
+}
+.pd_detail_list div{
+    padding:10px 0 0 0;
+}
+.pd_detail_list div span:first-of-type{
+    width: 70px;
+    text-align: right;
+    display: inline-block;
+}

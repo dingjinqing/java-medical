@@ -1,0 +1,258 @@
+* {
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    background: #e6e9f0;
+}
+
+.clearfix:after {
+    display: block;
+    content: '';
+    clear: both;
+}
+
+.clearfix {
+    zoom: 1;
+}
+
+.fl {
+    float: left;
+}
+
+.fr {
+    float: right;
+}
+
+img {
+    vertical-align: middle;
+}
+
+div, p, ul, li, span, a, table, td, tr, input, img {
+    -webkit-box-sizing: border-box;
+    -moz-box-sizing: border-box;
+    box-sizing: border-box;
+}
+
+a, a:active, a:hover, a:focus {
+    text-decoration: none;
+    color: #333;
+}
+
+ul li {
+    list-style: none;
+}
+.main-container{
+    padding:10px;
+    padding-bottom: 80px !important;
+}
+
+input[type='text']{
+    padding-left: 12px;
+    height:30px;
+    line-height: 30px;
+    border:1px solid #ccc;
+    width: 175px;
+}
+.main-container{
+    padding: 10px;
+}
+.all_content{
+    background: #fff;
+    padding:10px;
+}
+.instead_title{
+    padding: 10px 15px;
+    background: #f5f5f5;
+    display: flex;
+    margin-bottom: 15px;
+}
+.it_left{
+    flex:1.5;
+    font-size: 13px;
+    color: #333;
+}
+.it_left div{
+    margin-bottom: 5px;
+}
+.it_left div:last-of-type{
+    margin-bottom: 0;
+}
+.it_left .bold_one{
+    font-size: 16px;
+    color: #333;
+    font-weight: bold;
+    margin-bottom: 10px;
+}
+.it_right {
+    flex:0.5;
+    display: flex;
+    justify-content: flex-end;
+}
+.it_switch{
+    width: 40px;
+    height: 20px;
+    background: url(../../image/admin/off_1.png) left top no-repeat;
+    background-size: 100% 100%;
+    position: relative;
+    color: #333;
+    font-size: 14px;
+    margin-right: 15px;
+}
+.it_switch input[type="checkbox"] {
+    opacity: 0;
+}
+.it_switch .draggable{
+    width: 20px;
+    height: 20px;
+    position: absolute;
+    top: 0px;
+    right: 20px;
+    cursor: pointer;
+}
+.all_config_item .single_check{
+    background: #f5f5f5;
+    padding:10px 15px;
+    margin-bottom: 15px;
+}
+.all_config_item .single_check input[type='checkbox']{
+    top:1px;
+    margin-right: 5px;
+}
+.single_set{
+    margin-bottom: 15px;
+    padding:0 15px;
+}
+.single_set .single_tit{
+    width: 120px;
+    float: left;
+    height:30px;
+    line-height: 30px;
+}
+.single_set input[type='text']{
+    width: 250px;
+}
+.a_example{
+    float: left;
+    color: #5a8bff;
+    height:30px;
+    line-height: 30px;
+}
+.each_set table td{
+    text-align: center;
+}
+.each_set table thead tr{
+    border:1px solid #eee;
+}
+.each_set table thead tr td{
+    background: #f5f5f5;
+}
+.each_set table tbody tr td{
+    border:1px solid #eee;
+    padding: 15px;
+}
+.each_set table tbody tr td input[type='text']{
+    border-color: #eee;
+    width: 200px;
+}
+
+.btn_save{
+    background: #F8F8F8;
+    border-top: 1px solid #f2f2f2;;
+    padding: 10px 0;
+    text-align: center;
+}
+
+.btn_save a{
+    width: 80px;
+    background: #5a8bff;
+    color: #fff;
+    display: block;
+    margin: 0 auto;
+    padding: 6px 0;
+    border:1px solid #5a8bff;
+}
+.btn_save a:focus{
+    background: #447af9;
+    color: #fff;
+    border:1px solid #447af9;
+}
+.btn_save a:hover{
+    background: #447af9;
+    color: #fff;
+    border:1px solid #447af9;
+}
+.a_example{
+    position: relative;
+}
+.ins_example{
+    position: absolute;
+    top:-160px;
+    left:70px;
+    z-index: 99;
+    display: none;
+}
+.view_more{
+    width: 15px;
+    margin-left: 10px;
+    margin-top: -2px;
+}
+.show_more{
+    position: relative;
+}
+.more_content{
+    width: 450px;
+    height:135px;
+    text-align: left;
+    padding: 15px;
+    position: absolute;
+    left: -50px;
+    top: -135px;
+    z-index: 2;
+    border: 1px solid #fff;
+    word-wrap: break-word;
+    word-break: break-all;
+    box-shadow: 0 0 20px rgba(150, 150, 150, 0.5);
+    border-radius: 5px;
+    background-color: #fff;
+    line-height: 30px;
+     display: none;
+    font-size: 12px;
+}
+.little_square{
+    position: absolute;
+    left: 50%;
+    bottom: -15px;
+    transform: translateY(-50%) rotate(315deg);
+    width: 0;
+    height: 0;
+    border-width: 7px;
+    border-style: dashed;
+    border-color: #fff;
+    box-shadow: -2px 2px 3px rgba(150, 150, 150, 0.5);
+    z-index: 1;
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

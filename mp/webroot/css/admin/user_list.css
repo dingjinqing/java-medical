@@ -1,0 +1,437 @@
+*{
+    margin: 0;
+    padding: 0;
+}
+body{
+    background: #e6e9f0;
+}
+.clearfix:after{
+    display: block;
+    content: '';
+    clear: both;
+}
+.fl{
+    float: left;
+}
+.fr{
+    float: right;
+}
+img{
+    vertical-align: middle;
+}
+div,p,ul,li,span,a,table,td,tr,input{
+    -webkit-box-sizing: border-box;
+    -moz-box-sizing: border-box;
+    box-sizing: border-box;
+}
+a,a:active,a:hover,a:focus{
+    text-decoration: none;
+    color: #333;
+}
+ul{
+    margin: 0;
+}
+ul li{
+    list-style: none;
+}
+input:-webkit-input-placeholder{
+    color: #ccc;
+}
+.title{
+    width: 100%;
+    height: 55px;
+    line-height: 55px;
+    padding-left: 25px;
+    font-size: 16px;
+    color: #333;
+    background: #fff;
+}
+.order-container{
+    padding: 10px;
+}
+.order-info{
+    background: #fff;
+    padding: 15px 25px;
+}
+.order-info input{
+    width: 150px;
+    height: 30px;
+    padding-left: 12px;
+    border: 1px solid #ccc;
+}
+.order-info-li{
+    padding: 8px 0;
+}
+.order-info-li .fl{
+    width: 280px;
+}
+.order-info-li .fl span{
+    display: inline-block;
+    width: 80px;
+    line-height: 30px;
+    text-align: right;
+    margin-right: 25px;
+    color: #333;
+    vertical-align: top;
+}
+.order_label{
+    position: relative;
+}
+.order_label ul{
+    position: absolute;
+    right: 0px;
+    width: 155px;
+    background: #fff;
+    -webkit-box-shadow: 0px 0px 5px rgba(0, 0, 0, 0.2);
+    -moz-box-shadow: 0px 0px 5px rgba(0, 0, 0, 0.2);
+    box-shadow: 0px 0px 5px rgba(0, 0, 0, 0.2);
+    max-height: 342px;
+    overflow-y: scroll;
+    display: none;
+    z-index: 200;
+}
+.order_label ul li{
+    border-top: 1px solid #eee;
+    padding: 10px 0 10px 10px;
+    font-size: 13px;
+    color: #888;
+    cursor: pointer;
+}
+.order_label ul li:hover{
+    background: #5A8BFF;
+    color: #fff;
+}
+.order_label ul li.label_no:hover,.order_label ul li:first-child:hover{
+    background: #fff;
+    color: #888;
+}
+.order_label ul li input{
+    width: 100%;
+    border: none;
+    height: inherit;
+    background: url(/image/admin/search.png) no-repeat left center;
+    padding-left: 20px;
+    -webkit-background-size: 13px;
+    background-size: 13px;
+}
+.order_label ul li.li_none{
+    background: #fff;
+    color: #5A8BFF;
+    cursor: default;
+}
+.order-info-li .order_label .order_label_span{
+    width: 190px;
+    text-align: left;
+    border: 1px solid #ccc;
+    line-height: inherit;
+    padding-top: 3px;
+    min-height: 30px;
+    margin-right: 0;
+}
+.order-info-li .order_label .order_label_span .tag_span{
+    width: auto;
+    height: auto;
+    line-height: initial;
+    padding: 2px 12px;
+    color: #666;
+    border: 1px solid #eee;
+    background: #f4f4f4;
+    font-size: 12px;
+    position: relative;
+    margin: 0 0 3px 5px;
+}
+.tag_span .delete-tag{
+    position: absolute;
+    right: -9px;
+    top: -6px;
+    cursor: pointer;
+    z-index:9;
+}
+.order-info select{
+    width: 150px;
+    border: 1px solid #ccc;
+    height: 30px;
+    padding-left: 12px;;
+}
+.btn-choose{
+    border: 1px solid #5a8bff;
+    background: #5a8bff;
+    color: #fff;
+    width: 85px;
+    height: 30px;
+    margin-left: 15px;
+}
+.order-info-li:nth-of-type(2) input{
+    width: 130px;
+}
+.member_list_main{
+    padding: 10px;
+    background: #fff;
+}
+.member_list_main table{
+    border: 1px solid #eaeaec;
+    font-size: 13px;
+}
+.member_list_main thead tr{
+    background: #eef1f6;
+}
+.member_list_main thead td{
+    color: #333;
+    text-align: center;
+}
+.member_list_main tbody td{
+    border: 1px solid #eaeaec;
+    text-align: center;
+    color: #666;
+    position: relative;
+}
+.ipt-money,.ipt-integral,.ipt-exchang{
+    width: 80px;
+    height: 30px;
+    border: 1px solid #fff;
+    outline: none;
+    text-align: center;
+    background: #fff;
+}
+.ipt-border{
+    border: 1px solid #c7d5f8;
+}
+/*.btn_opera{*/
+    /*display: inline-block;*/
+    /*color: #5A8BFF;*/
+    /*margin: 0 10px 10px 0;*/
+/*}*/
+.btn_stop{
+    margin-right: 0;
+}
+.btn_label,.btn_detail{
+    margin-bottom: 0;
+}
+.btn_label{
+    margin-right: 21px;
+    background: #fff;
+    -webkit-box-shadow: none;
+    -moz-box-shadow: none;
+    box-shadow: none;
+}
+.member_list_main .ipt_checkbox,#ipt_all{
+    margin: 0px 8px 0 0;
+    position: relative;
+    top: 2px;
+    /*opacity: 0;*/
+}
+.member_list_footer{
+    background: #fff;
+    padding: 0 10px;
+    /*height: 50px;*/
+    height: 100px;
+    /*line-height: 50px;*/
+    line-height: 40px;
+}
+/*.member_list_footer .btn_opera{*/
+    /*margin: 0 0 0 35px;*/
+/*}*/
+.checkbox_prev{
+    position: absolute;
+    margin-top: 3px;
+
+}
+.member_list_footer .checkbox_prev,.member_list_main .checkbox_prev{
+    top: 1px;
+    display: none;
+}
+#set-label{
+    display: none;
+    padding: 10px 30px 0;
+    position: relative;
+}
+#set-label>div{
+    padding: 5px 10px 0;
+    border: 1px solid #ccc;
+    min-height: 30px;
+}
+#set-label>div>span{
+    display: inline-block;
+    padding: 3px 12px;
+    color: #666;
+    border: 1px solid #eee;
+    background: #f4f4f4;
+    margin-right: 10px;
+    margin-bottom: 5px;
+    font-size: 12px;
+    position: relative;
+}
+#set-label>div>span>img{
+    position: absolute;
+    right: -9px;
+    top: -6px;
+    cursor: pointer;
+}
+#set-label ul{
+    -webkit-box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.3);
+    -moz-box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.3);
+    box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.3);
+    background: #fff;
+    position: absolute;
+    display: none;
+    max-height:228px;
+    overflow-y: scroll;
+}
+#set-label ul li{
+    border-top: 1px solid #eee;
+    width: 150px;
+    padding: 10px 0 10px 10px;
+    font-size: 13px;
+    color: #888;
+    cursor: pointer;
+}
+#set-label ul li:first-child{
+    border: none;
+    cursor: inherit;
+}
+#set-label ul li:hover{
+    background: #5A8BFF;
+    color: #fff;
+}
+#set-label ul li.li_select{
+    background: #fff;
+    color: #5A8BFF;
+    cursor: default;
+}
+#set-label ul li:first-child:hover{
+     background: #fff;
+     color: #888;
+}
+
+#set-label ul li:first-child input{
+    border: none;
+    width: 100%;
+    background: url("/image/admin/search.png") no-repeat left center;
+    padding-left: 20px;
+    -webkit-background-size: 13px;
+    background-size: 13px;
+}
+body .layui-layer-page .layui-layer-content{
+    overflow: inherit;
+}
+.exchange-num{
+    padding: 10px 20px;
+    border-bottom: 1px solid #eee;
+    display: none;
+}
+.exchange-num div{
+    line-height: 30px;
+}
+.exchange-num input{
+    width: 100px;
+    height: 30px;
+    padding-left: 12px;
+    margin: 0 10px;
+    background-color: #fff;
+    border: 1px solid #ccc;
+}
+.exchange-num .exchange_old input{
+    border: 0;
+}
+.exchange-num .exchange_old{
+    margin-bottom: 10px;
+}
+.exchange-num div:last-child span:last-child{
+    color: #f66;
+}
+.btn_money,.btn_integral{
+    cursor: pointer;
+}
+.card_info a{
+    color: #5A8BFF;
+    display: block;
+}
+.card_info a:first-child{
+    margin-bottom: 8px;
+}
+#set-card{
+    display: none;
+    padding: 10px 10px 0;
+    width: 455px;
+    margin:0 auto;
+    color: #333;
+    font-size: 14px;
+    height: 275px;
+    overflow-y: scroll;
+}
+#set-card p{
+    color: #999999;
+    font-size: 12px;
+    margin-bottom: 10px;
+}
+#set-card .fl{
+    width:90px;
+    text-align: right;
+    line-height: 30px;
+}
+.set_card_ul{
+    float: left;
+    margin-left: 10px;
+    width: 300px;
+    margin-bottom: 10px;
+}
+.set_card_ul li{
+    margin-bottom: 5px;
+    width: 100%;
+    background: #f5f5f5;
+    padding: 5px 10px;
+}
+.set_card_ul li img{
+    float: right;
+    margin-top: 3px;
+    cursor: pointer;
+}
+.set_card_ul li:last-child{
+    background: #fff;
+    margin: 0;
+}
+.btn_add_card{
+    border:none;
+    background: #fff;
+    color: #5A8BFF;
+}
+.set_card_ul select{
+    display: none;
+    border: 1px solid #ccc;
+    padding: 1px 5px;
+}
+.card_fl{
+    float: left;
+}
+.card_fl span{
+    display: none;
+}
+.card_fl span:first-child{
+    display: inline-block;
+}
+.card_clone2{
+    display: none;
+}
+.tb_paging{
+    float: right;
+}
+.tb_paging td{
+    padding: 0;
+}
+.tb_paging input{
+    height: 30px;
+    border: 1px solid #dedede;
+    text-align: center;
+    margin: 0 8px;
+}
+.tb_paging tr td a {
+    display: inline-block;
+    border: 1px solid #dedede;
+    padding: 0px 8px;
+    height: 30px;
+    line-height: 30px;
+    margin-left: 5px;
+}
+.tb_paging tr td a:first-child {
+    margin-left: 15px;
+}

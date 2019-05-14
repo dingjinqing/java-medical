@@ -1,0 +1,105 @@
+.since-info{
+    padding: 0 25px;
+    background: #fff;
+    font-size: 14px;
+}
+.since-info-top span{
+    display: inline-block;
+    margin-right: 60px;
+    line-height: 44px;
+    height: 44px;
+}
+.since-info-path ul{
+    text-align: center;
+    height: 44px;
+    line-height: 44px;
+    display: flex;
+    color: #666666;
+    font-size: 14px;
+    background: #f8f8f8;
+    margin-bottom: 15px;
+    width: 1000px;
+}
+.since-info-path ul li{
+    float: left;
+    flex: 1;
+}
+.since-info-li1{
+    color: #FFFFFF;
+    background: #5a8bff url(../../image/admin/next-blue.png) no-repeat 100%;
+}
+.since-info-li3{
+    /*color: #FFFFFF;*/
+    /*background: #f8f8f8 url(../../image/admin/next-blue.png) no-repeat 100% , #f8f8f8 url(../../image/admin/next-white.png) no-repeat 0%;*/
+    background-image: url(../../image/admin/next-gray.png),url(../../image/admin/next-white.png);
+    background-position: right center , left center;
+    background-repeat: no-repeat;
+}
+.since-info-li2{
+    color: #FFFFFF;
+    /*background: #f8f8f8 url(../../image/admin/next-blue.png) no-repeat 100%;*/
+    background-color: #5a8bff;
+    background-image: url(../../image/admin/next-blue.png),url(../../image/admin/next-white-blue.png);
+    background-position: right center , left center;
+    background-repeat: no-repeat;
+}
+.since-info-li4{
+    /*color: #FFFFFF;*/
+    background: #f8f8f8 url(../../image/admin/next-white.png) no-repeat;
+}
+.since-info-li5{
+    color: #FFFFFF;
+    background: #5a8bff url(../../image/admin/next-white-blue.png) no-repeat left;
+}
+.since-info-detail .fl{
+    border: 1px solid #cfd6ff;
+    margin-right: 30px;
+    padding-left: 35px;
+    width: 530px;
+    font-size: 12px;
+    color: #666;
+}
+.since-info-detail .since-order{
+    font-weight: bold;
+    color: #333;
+    font-size: 14px;
+    line-height: 50px;
+}
+.since-info-detail .order-flex{
+    display: flex;
+    /*height: 44px;*/
+}
+.order-flex div{
+    flex: 1;
+}
+.order-remark{
+    font-size: 14px;
+    color: #333;
+    line-height: 50px;
+}
+.order-remark img{
+    margin-right: 5px;
+}
+.order-list-table{
+    background: #fff;
+    padding: 15px 25px;
+    margin-top: 10px;
+}
+.since-cancel{
+
+}
+.since-cancel tr:first-child{
+    background: #f5f5f5;
+}
+.since-cancel td{
+    text-align: center;
+    border: 1px solid #eee;
+    color: #666;
+}
+.since-cancel tr:first-child td{
+    border: none;
+    color: #333;
+}
+.since-cancel a{
+    color: #5a8bff;
+}

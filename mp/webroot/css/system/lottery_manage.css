@@ -1,0 +1,795 @@
+*{
+    margin: 0;
+    padding:0;
+}
+.main-container{
+    padding: 10px;
+    /*padding-bottom: 60px;*/
+}
+input[type='text']:focus {
+    border: 1px solid #5a8bff !important;
+    box-shadow: 0 0 5px rgba(90,139,255, 1) !important;
+    -webkit-box-shadow: 0 0 5px rgba(90,139,255, 1) !important;
+    -moz-box-shadow: 0 0 5px rgba(90,139,255, 1) !important;
+}
+
+.clearfix:after{
+    content: '';
+    display: block;
+    clear: both;
+}
+.list_nav{
+    width: 100%;
+    height: 50px;
+    background-color: #fff;
+    margin: 0 auto;
+    font-size: 14px;
+    box-sizing: border-box;
+}
+.nav_lists{
+    width: 97%;
+    height: 50px;
+    margin-left: 23px;
+    padding-left: 0;
+    line-height: 52px;
+    border-bottom: 1px solid #eee;
+    list-style: none;
+}
+.nav_lists li{
+    float: left;
+    margin-right: 15px;
+    padding-right: 15px;
+}
+.nav_lists li a{
+    color: #333;
+    text-decoration: none;
+}
+.nav_lists .actives a{
+    background: #fff !important;
+    box-shadow: 0 2px 0 #5A8BFF;
+    padding-bottom: 13px;
+    box-sizing: border-box;
+}
+/*活动列表页*/
+.add_lottery{
+    padding:20px 0;
+    background-color: #fff;
+}
+.add_lottery a{
+    padding: 10px;
+    background-color: #5a8bff;
+    border: 1px solid #5A8BFF;
+    color: #fff;
+    font-size: 14px;
+    margin-left: 23px;
+}
+.add_lottery a:hover{
+    background-color: #447af9 !important;
+    border-color: #447af9 !important;
+    text-decoration: none;
+}
+.add_lottery a:focus{
+    background-color: #447af9 !important;
+    border-color: #447af9 !important;
+    text-decoration: none;
+}
+.lottery_table{
+    padding: 8px 23px;
+    padding-top: 0;
+    background: #FFFFFF;
+    min-height: 380px !important;
+}
+.lottery_table table{
+    width: 100%;
+    margin: 0 auto;
+    text-align: center;
+}
+.lottery_table table thead tr td{
+    background: #f5f5f5;
+    font-weight: normal;
+    padding:10px 0;
+}
+.lottery_table table tbody tr td{
+    border: 1px solid #EFEDEE;
+}
+
+.lottery_table table a{
+    color: #5a8bff;
+    display: block;
+    margin-bottom: 5px;
+}
+.lottery_table table a:hover{
+    text-decoration: none;
+}
+/*活动明细页*/
+.search_inputs{
+    background: #fff;
+    margin-top: 10px;
+    list-style: none;
+    padding: 10px 0;
+    padding-left: 30px;
+    padding-top: 15px;
+}
+.search_inputs li{
+    padding: 5px 0;
+}
+.search_inputs li div{
+    float: left;
+    margin-right: 15px;
+}
+.search_inputs li div input[type='text']{
+    height: 30px;
+    line-height: 30px;
+    padding-left: 12px;
+    border: 1px solid #ccc;
+    width: 150px;
+}
+.search_inputs li div select{
+    height: 30px;
+    line-height: 30px;
+    padding-left: 12px;
+    border: 1px solid #ccc;
+    width: 150px;
+}
+
+.search_inputs li div span{
+    height: 30px;
+    display: inline-block;
+    text-align: right;
+    margin-right: 10px;
+    line-height: 30px;
+}
+.btn_searchs{
+    border: 1px solid #5a8bff;
+    background: #5a8bff;
+    color: #fff;
+    width: 85px;
+    height: 30px;
+    margin-left: 15px;
+    display: inline-block;
+    text-align: center;
+    line-height: 30px;
+}
+.btn_searchs:hover{
+    background-color: #447af9 !important;
+    border-color: #447af9 !important;
+    text-decoration: none;
+    color: #fff;
+}
+.btn_searchs:focus{
+    background-color: #447af9 !important;
+    border-color: #447af9 !important;
+    text-decoration: none;
+    color: #fff;
+}
+
+/*活动配置页面*/
+.add_lottery{
+    background: #fff;
+}
+.add_lottery_content{
+    width: 1000px;
+    margin: 10px auto;
+}
+.lo_left{
+    float: left;
+    width: 332px;
+    height: 717px;
+    border: 1px solid #ccc;
+    background: #eee;
+    overflow-x: hidden;
+}
+.lo_right{
+    float: right;
+    width: 630px;
+}
+.lf_title{
+    height: 55px;
+    background: url(/image/admin/shop_beautify/phone_tops.png) no-repeat;
+    color: white;
+    text-align: center;
+    background-size: 100%;
+}
+.lf_title div{
+    padding-top: 25px;
+    font-size: 15px;
+}
+.activity_info{
+    border: 1px solid #e5e5e5;
+    background: #f8f8f8;
+    padding: 0 12px 22px;
+    -webkit-border-radius: 3px;
+    -moz-border-radius: 3px;
+    border-radius: 3px;
+    margin-bottom: 10px;
+}
+.activity_info_title{
+    line-height: 40px;
+    border-bottom: 1px solid #e5e5e5;
+}
+.ai_li{
+    padding-top: 10px;
+}
+.ai_li>span{
+    width: 120px;
+    float: left;
+    height:30px;
+    line-height: 30px;
+    text-align: right;
+    margin-right: 10px;
+}
+.ai_li span{
+    height:30px;
+    line-height: 30px;
+    display: inline-block;
+}
+.ai_li span em{
+    color: red;
+}
+.ai_li input[type='text']{
+    height:30px;
+    line-height: 30px;
+    border:1px solid #ccc;
+    padding-left: 12px;
+}
+.choose_times{
+    float: left;
+}
+.choose_times>div:first-of-type{
+    margin-bottom: 10px;
+}
+.activity_tips{
+    width: 300px;
+    height:100px;
+    border:1px solid #ccc;
+    padding-left: 12px;
+    padding-top: 12px;
+}
+.activity_rule{
+    border: 1px solid #e5e5e5;
+    background: #f8f8f8;
+    padding: 0 12px 22px;
+    -webkit-border-radius: 3px;
+    -moz-border-radius: 3px;
+    border-radius: 3px;
+    margin-bottom: 10px;
+}
+.activity_rule .ar_li{
+    padding-top: 10px;
+}
+.award_coupon{
+    height:30px;
+    line-height:30px;
+    width: 120px;
+    padding-left:12px;
+    border:1px solid #ccc;
+}
+.ar_li>span{
+    width: 120px;
+    float: left;
+    height:30px;
+    line-height: 30px;
+    text-align: right;
+    margin-right: 10px;
+}
+.ar_li span{
+    height:30px;
+    line-height: 30px;
+    display: inline-block;
+}
+.ar_li span em{
+    color: red;
+}
+.ar_li input[type='text']{
+    height:30px;
+    line-height: 30px;
+    border:1px solid #ccc;
+    padding-left: 12px;
+}
+.inline_tips{
+    display: inline-block;
+    color: #999;
+    height:30px;
+    line-height: 30px;
+    margin-left: 10px;
+}
+.normal_tips{
+    color: #999;
+    margin:10px 0;
+    display: none;
+}
+
+.share_lottery{
+    float: left;
+}
+.comme_wid{
+    width: 125px;
+    margin: 0 5px;
+}
+.pay_lottery{
+    float: left;
+}
+
+.up_imahe{
+    width: 340px;
+    border:1px solid #ccc;
+    background: #fff;
+    padding: 10px 12px;
+    float: left;
+}
+.up_icons{
+    padding-bottom: 10px;
+    border-bottom: 1px solid #ccc;
+    margin-bottom: 10px;
+}
+.icon_imgs{
+    width: 70px;
+    height:70px;
+    border:1px solid #ccc;
+    float: left;
+}
+.up_right{
+    height:70px;
+    float: right;
+    width: 230px;
+    position: relative;
+}
+
+.up_right a{
+    border:1px solid #ccc;
+    background: #f5f5f5;
+    color: #333;
+    margin:0;
+    height: 30px;
+    line-height: 30px;
+    padding:0 10px;
+    display: inline-block;
+}
+.up_right a:first-of-type{
+    margin-right: 10px;
+}
+.up_right a:hover{
+    border:1px solid #5a8bff !important;
+    background: #ffffff !important;
+    color: #5a8bff !important;
+}
+.up_right a:focus{
+    border:1px solid #5a8bff !important;
+    background: #ffffff !important;
+    color: #5a8bff !important;
+}
+.btn_up_img{
+    position: absolute;
+    top:5px;
+}
+.size_rule{
+    position: absolute;
+    bottom:5px;
+    color: #999;
+}
+.lottery_setting{
+    border: 1px solid #e5e5e5;
+    background: #f8f8f8;
+    padding: 0 12px 22px;
+    -webkit-border-radius: 3px;
+    -moz-border-radius: 3px;
+    border-radius: 3px;
+}
+.lc_li{
+    padding-top: 10px;
+}
+.rule_tips{
+    color: #999;
+}
+.grade_setting{
+    width: 100%;
+    border:1px solid #ccc;
+    background: #fff;
+}
+.grade_nav{
+    list-style:none;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 10px;
+}
+.grade_nav li{
+    flex:1;
+    background: #f5f5f5;
+    border:1px solid #ccc;
+    border-top: 0;
+    border-right: 0;
+    padding:10px 0;
+    text-align: center;
+}
+.grade_nav .checked_tab{
+    background: #fff;
+    border-color: #fff;
+}
+.grade_detail{
+    padding:0 20px;
+}
+.grade_detail input[type='text']{
+    height: 30px;
+    line-height:30px;
+    border:1px solid #ccc;
+    padding-left:12px;
+    width: 120px;
+}
+.gd_li{
+    margin-bottom: 10px;
+}
+.gd_li>span{
+    float: left;
+    width: 80px;
+    text-align: right;
+    display: inline-block;
+    height:30px;
+    line-height:30px;
+}
+.coupon_set{
+    float: left;
+    width: 470px;
+}
+.coupon_set li span{
+    float: left;
+    width: 80px;
+    text-align: left;
+    display: inline-block;
+    height:30px;
+    line-height:30px;
+}
+.coupon_set li span em{
+    color: red;
+}
+.tip_grade{
+    color: #999;
+    float: left;
+}
+.coupon_set .btn_fresh{
+    color: #5a8bff;
+    border: none;
+    border-right: 1px solid #5a8bff;
+    padding:0 5px;
+    background: none;
+    padding-left: 10px;
+}
+.coupon_set a{
+    color: #5a8bff;
+    border: none;
+    padding:0 5px;
+    background: none;
+    margin-left: 0;
+}
+.coupon_set a:hover{
+    background: none !important;
+    color: #5a8bff;
+}
+.coupon_set a:focus{
+    background: none !important;
+    color: #5a8bff;
+}
+.gd_li input[type='radio']{
+    margin:0 5px;
+}
+.num_tips{
+    float: left;
+    width: 375px;
+    margin-top: 10px;
+}
+.type_radio{
+    float: left;
+    height:30px;
+    line-height:30px;
+}
+.choose_icon{
+    color: #5a8bff;
+    margin-right: 8px;
+}
+.choose_gr_icon{
+    color: #5a8bff;
+    margin-right: 8px;
+}
+.each_times{
+    display: none;
+}
+.money_times{
+    display: none;
+}
+.grade_area{
+    width: 100%;
+    border:1px solid #ccc;
+    background: #fff;
+    padding: 10px 20px;
+}
+.icon_gr_imgs{
+    width: 70px;
+    height:70px;
+    border:1px solid #ccc;
+    float: left;
+    margin-right: 20px;
+}
+.up_gr_right{
+    float: left;
+    position: relative;
+    width: 400px;
+    height: 70px;
+}
+.up_gr_icons{
+    padding-bottom: 10px;
+    border-bottom: 1px solid #ccc;
+}
+.btn_up_img a{
+    border: 1px solid #ccc;
+    background: #f5f5f5;
+    color: #333;
+    margin: 0;
+    height: 30px;
+    line-height: 30px;
+    padding: 0 10px;
+    display: inline-block;
+}
+.btn_up_img a:hover{
+    border: 1px solid #5a8bff !important;
+    background: #ffffff !important;
+    color: #5a8bff !important;
+}
+.btn_up_img a:focus{
+    border: 1px solid #5a8bff !important;
+    background: #ffffff !important;
+    color: #5a8bff !important;
+}
+.icon_gr_detail{
+    margin-top: 10px;
+    height:30px;
+    line-height:30px;
+}
+.icon_gr_detail input{
+    height: 30px;
+    line-height: 30px;
+    padding-left: 12px;
+    border: 1px solid #ccc;
+    width: 150px;
+}
+.coupon_footer{
+    border-top: 1px solid #f2f2f2;
+    background: #f8f8fa;
+    padding: 10px;
+    text-align: center;
+    position: fixed;
+    z-index: 2;
+    bottom: 0;
+}
+.coupon_footer a {
+    width: 70px;
+    height: 30px;
+    line-height:30px;
+    display: block;
+    border: none;
+    background: #5A8BFF;
+    color: #fff;
+    margin-left: 40%;
+}
+.coupon_footer a:hover{
+    text-decoration: none;
+}
+.coupon_footer a:focus{
+    text-decoration: none;
+}
+.score_set{
+    margin-bottom: 10px;
+    display: none;
+}
+.yue_set{
+    margin-bottom: 10px;
+    display: none;
+}
+.coupon_set{
+    margin-bottom: 5px;
+}
+.own_set{
+    margin-bottom: 10px;
+    display: none;
+}
+
+.icon_container{
+    padding:20px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding-bottom: 5px;
+    flex-direction: column;
+}
+.icon_container ul{
+    list-style: none;
+    width: 100%;
+}
+.icon_container ul li{
+    float: left;
+    margin-right: 35px;
+    width: 50px;
+    height:95px;
+    text-align: center;
+    margin-top: 15px;
+}
+.icon_container ul li:last-of-type{
+    margin-right: 0;
+}
+.icon_container ul li img{
+    display: block;
+    width: 50px;
+    height:50px;
+    border:1px solid #ccc;
+    padding:10px 0;
+    margin-bottom: 5px;
+}
+.icon_container ul li input[type='radio']{
+    display: block;
+    margin-left: 17px;
+}
+/*左侧的显示*/
+.lotteryde{
+    background:#fff5ba;
+    width: 330px;
+    overflow-y: auto;
+}
+.lo_top{
+    height: 490px;
+    width: 330px;
+    background: url("/image/admin/icon_lottery/lo_bg3.jpg") no-repeat;
+    background-size: 330px 405px;
+    overflow-x: hidden;
+}
+.lo_area{
+    width: 290px;
+    background:#fc6b58;
+    border-radius:10px;
+    margin:0 auto;
+    padding:12px 0;
+    position:relative;
+    margin-top: 130px;
+
+}
+/*.lo_area .lo_conin1{*/
+    /*position: absolute;*/
+    /*top:;*/
+/*}*/
+.lo_bg{
+    width:270px ;
+    background:#ed503b;
+    border-radius:8px;
+    margin:0 auto;
+    overflow:hidden;
+    height:290px;
+}
+.lo_bg ul{
+    padding: 5px;
+}
+.lo_bg ul li{
+    float: left;
+    width: 80px;
+    margin-right: 10px;
+    height:80px;
+    background:#fbe5e2;
+    border-radius: 7px;
+    margin-bottom: 15px;
+    box-shadow: 0 10px #ff9c80;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+}
+.lo_bg ul li img{
+    width: 40px;
+    height:40px;
+    margin-bottom: 10px;
+}
+.lo_bg ul li div{
+    color: #333;
+}
+.lo_bg ul li:nth-of-type(3){
+    margin-right: 0;
+}
+.lo_bg ul li:nth-of-type(6){
+    margin-right: 0;
+}
+.lo_bg ul li:nth-of-type(9){
+    margin-right: 0;
+    margin-bottom: 0;
+}
+.lo_bg ul li:nth-of-type(7){
+    margin-bottom: 0;
+}
+.lo_bg ul li:nth-of-type(8){
+    margin-bottom: 0;
+}
+.btn_lott{
+    width: 290px;
+    height:40px;
+    position:relative;
+    box-shadow:0 5px 5px #fdc247;
+    margin:10px auto;
+    border-radius:20px;
+}
+.btn_lott2{
+    position:absolute;
+    top:0;
+    left:0;
+    width: 290px;
+    height:40px;
+    background:linear-gradient(top,#feb83c,#fccc52);
+    background:-webkit-linear-gradient(top,#feb83c,#fccc52);
+    background:-moz-linear-gradient(top,#feb83c,#fccc52);
+    color:#fff;
+    text-align:center;
+    line-height:40px;
+    border-radius:20px;
+    font-size:14px;
+}
+
+.lo_rule{
+    width: 290px;
+    background:#feec99;
+    color:#e89a0f;
+    border-radius:10px;
+    padding:15px 17px;
+    margin:10px auto;
+    margin-top: 20px;
+}
+.lo_rule_tile{
+    text-align: center;
+    margin-bottom: 10px;
+}
+.rule_content div{
+    margin-bottom: 10px;
+}
+
+.lo_linbo{
+    width: 270px;
+    height:30px;
+    padding:0 10px;
+    border-radius:10px;
+    display:flex;
+    justify-content:flex-start;
+    align-items:center;
+    background:#ff9c80;
+    color:#fff;
+    margin:0 auto;
+    margin-top:10px
+}
+
+.lo_linbo img{
+    width: 15px;
+    margin-right: 10px;
+}
+.lo_linbo span{
+    color: #ffe61e;
+}
+.choose_goods{
+    margin-left: 0px;
+    width: 120px;
+    height: 30px;
+    line-height: 30px;
+    text-align: center;
+    color: #5A8BFF;
+    border: 1px solid #ccc;
+    background: #fff;
+    cursor: pointer;
+    float: left;
+}
+.choose_goods img{
+    margin: -3px 5px 0 0;
+}
+.gift_set{
+    margin-bottom:10px;
+}
+.goods_modal{
+    border:none;
+    margin-top: 10px;
+    margin-bottom: 0;
+    margin-left: 80px;
+}
+.goods_modal th{
+    padding:10px 0;
+    border: 1px solid #eee;
+}

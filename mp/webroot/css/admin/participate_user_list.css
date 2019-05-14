@@ -1,0 +1,76 @@
+.order_serarch_info{
+    background: #fff;
+    padding: 15px 25px;
+}
+.check_info_li{
+    padding: 8px 0;
+}
+.check_info_li .fl{
+    width: 290px;
+}
+.fl{
+    float: left;
+}
+.check_info_li .fl span{
+    display: inline-block;
+    width: 85px;
+    line-height: 30px;
+    text-align: right;
+    margin-right: 10px;
+    color: #333;
+}
+.order_search_info{
+	background: #fff;
+	padding: 10px;
+}
+.check_info_li .fl input{
+    width: 175px;
+    height: 30px;
+    padding-left: 12px;
+    border: 1px solid #ccc;
+}
+.check_info_li .time_choose{
+    width: 480px;
+}
+.check_info_li .time_choose .user_nunber{
+    width: 100px;
+}
+.time_choose_number.time_choose.fl {
+	width: 322px;
+}
+.check_info_li .btn-search {
+    width: 85px;
+    height: 30px;
+    border: 1px solid #5a8bff;
+    background: #5a8bff;
+    color: #fff;
+}
+.reset-searach{
+    width: 85px;
+    height: 30px;
+    border: 1px solid #ccc;
+    background: #f5f5f5;
+    color: #666;
+    margin-left: 15px;
+}
+.return-pin-group-box {
+    padding: 8px 10px;
+    background: #FFFFFF;
+    min-height: 500px !important;
+}
+.tb-decorate-list {
+    width: 100%;
+    margin: 0 auto;
+    border: 1px solid #EFEDEE;
+}
+.tb-decorate-list>thead>tr>th {
+    background: #eef1f6;
+    font-weight: normal;
+    height: 38px;
+    border: 0;
+}
+.tb-decorate-list>tbody>tr>td {
+    height: 50px;
+    text-align: center;
+    border: 1px solid #EFEDEE;
+}

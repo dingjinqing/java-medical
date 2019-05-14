@@ -1,0 +1,47 @@
+.table > thead > tr > th {
+  border: none;
+}
+.main-table th {
+  background: #eef1f6 !important;
+  color: #333;
+  font: 13px Helvetica Neue, Helvetica, PingFang SC, \5fae\8f6f\96c5\9ed1,
+    Tahoma, Arial, sans-serif;
+}
+.main-table table:last-child {
+  background: #fff;
+  padding: 0 10px;
+  height: 50px;
+  line-height: 50px;
+}
+.main-table table:last-child td {
+  padding: 0 10px !important;
+}
+.main-table table:last-child td:last-child a {
+  display: inline-block;
+  border: 1px solid #dedede;
+  padding: 0px 8px;
+  height: 30px;
+  line-height: 30px;
+  margin-left: 5px;
+  vertical-align: middle;
+}
+.main-table table:last-child td:last-child a:hover {
+  background: #fff !important;
+  color: #5a8bff;
+  border: 1px solid #5a8bff;
+  text-decoration: none;
+}
+.main-table table:last-child td:last-child a:focus {
+  background: #5a8bff !important;
+  color: #fff;
+  border: 1px solid #5a8bff;
+  text-decoration: none;
+}
+
+.main-table table:last-child td:last-child input {
+  height: 30px;
+  border: 1px solid #dedede;
+  text-align: center;
+  margin: 0 8px;
+  vertical-align: middle !important;
+}

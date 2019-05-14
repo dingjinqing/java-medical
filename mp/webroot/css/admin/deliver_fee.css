@@ -1,0 +1,133 @@
+* {
+    padding: 0;
+    margin: 0;
+}
+
+#data_list tr td {
+    text-align: center;
+}
+
+.img-thumbnail {
+    width: 50px;
+    height: 50px;
+}
+
+.data_tr {
+    background-color: lavenderblush;
+}
+
+.city-item {
+    float: left;
+    position: relative;
+    line-height: 24px;
+    padding: 0 5px;
+    height: 24px;
+}
+
+.city-item .expand {
+    cursor: pointer;
+}
+
+.sel-num {
+    color: red;
+}
+
+.district-list {
+    display: none;
+    max-width: 400px;
+    max-height: 300px;
+    overflow: auto;
+    background: #ffe;
+}
+
+.city-dist {
+    cursor: pointer;
+}
+
+.dist-num {
+    color: red;
+}
+/***********修改*******************/
+.panel {
+    width: 100%;
+    margin: 0 auto;
+}
+
+/*table>tr.moban-name {*/
+    /*border: 0 !important;*/
+/*}*/
+.table>tbody>tr>td {
+    border-top: 0 !important;
+}
+
+#except-area {
+    width: 455px;
+    height: 50px;
+    background-color: #FFF7EC;
+
+    border: 1px solid #FFD6A6;
+
+    color: #333;
+    line-height: 36px;
+    font-size: 14px;
+}
+
+#limit-deliver-area {
+    margin-right: 10px;
+
+    width: 15px;
+    height: 15px;
+    background-color: #fff;
+    border: 1px solid #CBCDCC;
+}
+
+#other-area {
+    width: 865px;
+    height: 51px;
+    background-color: #fff;
+
+    border-left: 0 !important;
+    line-height: 30px;
+    font-size: 14px;
+}
+
+#deliver_template_tbl>tr>th, #deliver_template_tbl>tr>td  {
+    height: 50px;
+}
+
+#deliver_template_tbl>tbody>tr>th.add-th {
+    background-color: #F9F8F6 !important;
+}
+
+#deliver_template_tbl>tbody>tr>td.add-td {
+    height: 51px;
+    line-height: 30px;
+
+    border-left: 0 !important;
+
+    background-color: #ffffff !important;
+}
+
+#deliver_template_tbl>tbody>tr>th.add-th,
+#deliver_template_tbl>tbody>tr>td.add-td,
+#deliver_template_tbl>tbody>tr.tr-area>td {
+    border: 1px solid #F1F1F1;
+}
+
+.add-deliver-area {
+    color: #686868;
+    padding-left: 15px;
+}
+
+.tab_body {
+    padding: 8px 8px 8px 0;
+}
+
+.btn-primary:hover {
+     background-color: #5A8CFF;
+     border-color: #5A8CFF;
+}
+
+.tr-fee-0-area {
+    border: 1px solid #E0DEDB !important;
+}

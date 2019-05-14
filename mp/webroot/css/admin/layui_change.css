@@ -1,0 +1,15 @@
+.layui-btn{
+    line-height: inherit;
+    height: 0;
+}
+body .layui-layer-btn .layui-layer-btn0{
+    background: #5a8bff;
+    border-color: #5a8bff;
+}
+body .layui-layer-title{
+    border: none;
+    background: #f3f3f3;
+}
+body .layui-layer-dialog .layui-layer-content{
+    padding: 10px;
+}

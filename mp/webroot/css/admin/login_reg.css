@@ -1,0 +1,129 @@
+*{
+    margin: 0;
+    padding: 0;
+}
+.container{
+    width: 800px;
+    margin: 0 auto;
+}
+.header{
+    margin: 40px 0;
+    padding: 0 0 20px 0;
+    border-bottom: 1px solid #eee;
+}
+.logo_img{
+    float: left;
+}
+.head_title{
+    float: left;
+    padding-left: 10px;
+    border-left: 1px solid #eee;
+    margin-top: 9px;
+}
+.main{
+    margin: 40px auto;
+}
+.clearfix:after{
+    display: block;
+    content: '';
+    clear: both;
+}
+.main_form{
+    width: 350px;
+    margin: 0 auto;
+}
+.control_group{
+    border-bottom: 1px solid #eee;
+    padding-top: 20px;
+    height: 35px;
+}
+.control_group label{
+    width: 100px;
+    text-align: left;
+    color: #333;
+    font-size: 14px;
+    font-weight: bold;
+    float: left;
+    padding-top: 2px;
+}
+.group_1{
+    float: left;
+    width: 250px;
+}
+.err_msg{
+    font-size: 12px;
+    line-height: 20px;
+    padding-left: 100px;
+    color: #f66;
+}
+input{
+    border: none;
+    outline: none;
+}
+input::-webkit-input-placeholder{
+    color: #ccc;
+}
+.btn_msg{
+    border: none;
+    background: none;
+    color: #3388FF;
+    cursor: pointer;
+}
+.btn_reg{
+    height: 45px;
+    background-color: #3388FF;
+    border: 1px solid #2277FF;
+    border-radius: 2px;
+    font-size: 16px;
+    margin-top: 30px;
+    color: #fff;
+    width: 100%;
+}
+.to_login{
+    float: right;
+    font-size: 14px;
+    color: #3388FF;
+    display: block;
+    padding: 10px 0;
+    text-decoration: none;
+}
+.footer{
+    text-align: center;
+    border-top: 1px solid #eee;
+    padding-top: 10px;
+    color: #999;
+}
+.footer a{
+    color: #999;
+    text-decoration: none;
+}
+.control_group_active{
+    border-bottom: 2px solid #3388FF;
+}
+/*登录*/
+.cgc_la{
+    margin-top: 10px;
+    font-size: 12px;
+}
+.cgc_la label{
+    float: left;
+    color: #999;
+}
+.cgc_la a{
+    float: right;
+    color: #999;
+    text-decoration: none;
+}
+.three_login{
+    position: relative;
+    top: 2px;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    appearance: none;
+    width: 12px;
+    height: 12px;
+    background: url(/image/admin/square_no.png) no-repeat;
+}
+.three_login:checked{
+    background: url(/image/admin/square_yes.png) no-repeat;
+}

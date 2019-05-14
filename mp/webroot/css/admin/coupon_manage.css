@@ -1,0 +1,482 @@
+* {
+    padding: 0;
+    margin: 0;
+}
+/*******coupon_manage_nav*****/
+.nav-role {
+    width: 100%;
+    height: 50px;
+    background-color: #fff;
+
+    margin: 0 auto;
+
+    font-size: 14px;
+
+    box-sizing: border-box;
+}
+
+.nav-child-tabs>li.active>a {
+    background: #fff !important;
+
+    box-shadow: 0 2px 0 #5A8BFF;
+
+    padding-bottom: 13px;
+    box-sizing: border-box;
+}
+
+.nav-child-tabs {
+    width: 97%;
+    height: 50px;
+
+    margin: 0 auto;
+    padding-left: 0;
+    line-height: 52px;
+
+    border-bottom: 1px solid #eee;
+
+    list-style: none;
+}
+
+ul.nav-child-tabs>li {
+    float: left;
+    padding: 0 10px;
+}
+
+ul.nav-child-tabs>li>a, ul.nav-child-tabs>li.active>a {
+    color: #333;
+    text-decoration: none;
+}
+
+.add-child-ul {
+    height:  60px;
+    background-color: #fff;
+
+    line-height: 50px;
+    position: relative;
+    bottom: 0;
+}
+
+.add-child-btn {
+    padding: 10px 10px;
+    background-color: #5a8bff;
+    border: 1px solid #5A8BFF;
+    color: #fff;
+    font-size: 14px;
+    line-height: 17px;
+    position: absolute;
+    top:12px;
+    left: 22px;
+}
+
+.add-child-btn:hover, .add-child-btn:focus {
+    background-color: #5A8BFF;
+
+    border: 1px solid #5A8BFF;
+
+    color: #ffffff;
+}
+
+.tb-decorate-list>thead>tr>th {
+    height: 35px;
+    background: #F5F5F5;
+
+    border: 0;
+}
+
+.tb-decorate-list {
+    width: 100%;
+
+    /*margin-left: 9px;*/
+    margin: 0 auto;
+    border: 1px solid #EFEDEE;
+}
+
+.tb-decorate-list>tbody>tr>td {
+    height: 80px;
+    text-align: center;
+    border: 1px solid #EFEDEE;
+}
+
+.tb-decorate-list>tbody>tr>td>a,
+.tb-decorate-list>tbody>tr>td.tb-decorate-a {
+    color: #5A8BFF;
+}
+/***************coupon_get_list**************/
+.return-goods-box {
+    margin-top: 10px;
+}
+
+.shop-template-container input {
+    width: 150px;
+    height: 30px;
+
+    border: 1px solid #ccc;
+
+    margin-left: 0.5%;
+}
+
+.user-name {
+    margin-left: 5%;
+}
+
+.coupon-search {
+    width: 6%;
+    height: 30px;
+    background-color: #5a8bff;
+
+    margin-left: 2%;
+
+    color: #fff;
+
+    border: 1px solid #5a8bff;
+}
+
+.coupon-sel {
+    width: 100px;
+    height: 30px;
+}
+
+.coupon_type{
+    background: #fff;
+    padding:10px 0 0;
+}
+.coupon_type ul{
+    list-style:none;
+    background: #f5f5f5;
+    width: 97%;
+    margin:0 auto;
+    border:1px solid #f3f3f3;
+}
+.coupon_type ul:after{
+    content: '';
+    display: block;
+    clear: both;
+}
+.coupon_type ul li{
+    float: left;
+    width: 100px;
+    height: 40px;
+    line-height: 40px;
+    text-align: center;
+    cursor: pointer;
+}
+.coupon_type ul li a{
+    display: block;
+    width: 100%;
+    height:100%;
+}
+.coupon_type ul .actives{
+    background: #fff;
+}
+.give_coupon{
+    padding:10px 0;
+}
+.btn_to_give{
+    margin-bottom: 10px;
+    background: #fff;
+    padding:10px 0;
+    margin-top: -10px;
+}
+.btn_to_give a{
+    margin-left: 1.5%;
+    background-color: #5A8BFF;
+    border: 1px solid #5A8BFF;
+    color: #ffffff;
+    width: 6%;
+    padding: 5px 0px;
+    text-align: center;
+    display: block;
+}
+.give_coupon_table{
+    padding: 8px 12px;
+    background: #FFFFFF;
+    min-height: 500px !important;
+}
+.btn_to_give a, .btn_to_give a:active, .btn_to_give a:hover, .btn_to_give a:focus{
+    color: #fff;
+}
+
+/*发放优惠券页面*/
+.grant_detail{
+    padding: 20px 2%;
+    background: #fff;
+    width: 100%;
+}
+.grant_form{
+    width: 40%;
+    background: #f8f8f8;
+    border:1px solid #e5e5e5;
+    border-radius:3px;
+    padding:10px 1%;
+}
+.detail_title{
+    padding-bottom: 10px;
+    border-bottom: 1px solid #e5e5e5;
+    color: #333;
+}
+.form_content{
+    padding:10px 0;
+}
+.form_content>div>div:first-of-type span{
+    color: red;
+}
+.form_content input{
+    height: 30px;
+    line-height: 30px;
+    padding-left: 12px;
+    border:1px solid #C9C9C9;
+}
+.form_content>div{
+    margin:10px 0;
+}
+.form_content>div:after{
+    content: "";
+    display: block;
+    clear: both;
+}
+.form_content .activities_name div{
+    float: left;
+    width: 25%;
+    text-align: right;
+    height: 30px;
+    line-height: 30px;
+    margin-right: 10px;
+}
+.form_content .activities_name input{
+    float: left;
+    width: 170px;
+}
+.form_content .actice_crowd>div{
+    float: left;
+}
+.form_content .actice_crowd .ac_left{
+    width: 25%;
+    text-align: right;
+    height: 30px;
+    line-height: 30px;
+    margin-right: 10px;
+}
+.form_content .choose_coupon div{
+    width: 25%;
+    text-align: right;
+    height: 30px;
+    line-height: 30px;
+    float: left;
+    margin-right: 10px;
+}
+.form_content .choose_coupon select{
+    height: 30px;
+    width: 100px;
+    line-height: 30px;
+    padding-left: 12px;
+    float: left;
+    border: 1px solid #C9C9C9
+}
+
+.form_content .ac_right{
+    width: 70%;
+}
+.form_content .ac_right p:first-of-type{
+    height: 30px;
+    line-height: 30px;
+    color: #c9c9c9;
+}
+.form_content .ac_right input[type='number']{
+    margin-bottom: 10px;
+    width: 70px;
+}
+
+.get_cards_number select{
+    height: 30px;
+    width: 100px;
+    line-height: 30px;
+    padding-left: 12px;
+    border: 1px solid #C9C9C9
+}
+.get_cards_number>div{
+    margin-bottom: 10px;
+}
+
+.have_lavbelling_number select{
+    height: 30px;
+    width: 100px;
+    line-height: 30px;
+    padding-left: 12px;
+    border: 1px solid #C9C9C9
+}
+.have_lavbelling_number>div{
+    margin-bottom: 10px;
+}
+.btn_add_members a{
+    padding:5px 0;
+    width: 80px;
+    background: #5a8bff;
+    color: #fff;
+    display: block;
+    text-align: center;
+}
+.btn_add_members a:focus, .btn_add_members a:hover{
+    text-decoration: none;
+}
+.btn_grant{
+    background: #F8F8F8;
+    border-top: 1px solid #f2f2f2;
+    width: 100%;
+    padding:10px 0;
+    text-align: center;
+}
+.btn_grant a{
+    width: 80px;
+    background: #5a8bff;
+    color: #fff;
+    display: block;
+    margin:0 auto;
+    padding:6px 0;
+}
+.btn_grant a:focus, .btn_grant a:hover{
+    text-decoration: none;
+}
+
+table th {
+    font-weight: normal;
+}
+.tb-decorate-list>tbody>tr>td:first-of-type {
+    text-align: left;
+}
+
+.btn-save:focus{
+    background-color: #447af9 !important;
+    border-color: #447af9 !important;
+}
+.btn-save:hover{
+    background-color: #447af9 !important;
+    border-color: #447af9 !important;
+}
+input[type='text']:focus {
+    border: 1px solid #5a8bff;
+    box-shadow: 0 0 5px rgba(90,139,255, 1) !important;
+    -webkit-box-shadow: 0 0 5px rgba(90,139,255, 1) !important;
+    -moz-box-shadow: 0 0 5px rgba(90,139,255, 1) !important;
+}
+.content5 .erp-auth-li, .content6 .erp-auth-li  {
+    border-bottom: 1px solid #eee;
+    height: 50px;
+    line-height: 50px;
+}
+.content5 .erp-auth-li span:first-child, .content6 .erp-auth-li span:first-child {
+    display: inline-block;
+    width: 20%;
+}
+.auth-tab {
+    width: 100%;
+    height: 50px;
+    display: inline-block;
+    border-bottom: 1px solid #ccc;
+}
+.auth-tab li {
+    float: left;
+    margin-right: 123px;
+    line-height: 50px;
+    cursor: pointer;
+}
+.auth-tab li.head-active {
+    border-bottom: 2px solid #5a8bff;
+}
+.content5 ul {
+    display: none;
+}
+.business_address input {
+    width: 228px;
+    height: 32px;
+}
+#form2 .btn-save{
+    margin:0 auto;
+    display: block;
+}
+#form2 .btn-save:hover {
+    background-color: #447af9 !important;
+    border-color: #447af9 !important;
+    text-decoration: none;
+    color: #fff !important;
+}
+#form2 .btn-save:focus {
+    background-color: #447af9 !important;
+    border-color: #447af9 !important;
+    text-decoration: none;
+    color: #fff !important;
+}
+.fix_footer{
+    margin-left: -20px;
+}		.mr_10{
+             margin-right:10px;
+         }
+.pay-text{
+    margin-left:15px;
+}
+.content4 .con4-hide{
+    margin-right:15px;
+}
+.text-prompt{
+    width:100%;
+    margin-left:0;
+}
+input[type="text"]{
+    padding-left:12px;
+}
+.order_must_set{
+    display: inline-block;
+    margin: 0 15px 0 15px;
+    color: #333;
+    font-size: 14px;
+    width: 130px;
+}
+.btn-save{
+    color: #fff !important;
+}
+.btn_cart{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 380px;
+}
+.btn_cart input{
+    border: none;
+    margin-top: 20px;
+    margin-right: 8px;
+    height: 15px;
+    width: 15px;
+}
+.btn_cart label{
+    width: 85px;
+    height:55px;
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+}
+.icon_font_size{
+    font-size: 32px !important;
+}
+.right_buy{
+    width: 70px;
+    height: 30px;
+    text-align: center;
+    line-height: 30px;
+    background: rebeccapurple;
+    color: white;
+    font-size: 12px;
+    border-radius: 15px;
+}
+.cart_buy{
+    width: 55px;
+    height: 30px;
+    text-align: center;
+    line-height: 30px;
+    border: 1px solid rebeccapurple;
+    color: rebeccapurple;
+    font-size: 12px;
+    border-radius: 15px;
+    background: white;
+}
+.btn_cart input[type='radio']{
+    top: -10px !important;
+}

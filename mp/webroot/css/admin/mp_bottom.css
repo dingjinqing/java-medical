@@ -1,0 +1,226 @@
+.mp_bottom{
+    padding: 60px 0 20px;
+    background: #fff;
+}
+.fl_title{
+    color: #fff;
+    text-align: center;
+    line-height: 72px;
+}
+.content_left{
+    position: relative;
+}
+.nav_show{
+    background: #fff;
+    border: 1px dashed #5A8BFF;
+    padding: 10px 0;
+    position: absolute;
+    bottom: 0;
+    width: 100%;
+    display: flex;
+}
+.nav_show li{
+    flex: 1;
+    text-align: center;
+    font-size: 12px;
+    cursor: pointer;
+}
+.nav_show li img{
+    width: 20px;
+    margin-bottom: 3px;
+}
+.nav_show li.nav_show_active{
+    color: #f66;
+}
+.nav_red{
+    display: none;
+}
+.nav_show_active .nav_red{
+    display: inline-block;
+}
+.nav_show_active .nav_gray{
+    display: none;
+}
+.mp_use p{
+    margin: 10px 0;
+}
+.mp_use label{
+    width: 115px;
+}
+.mp_use input[type='checkbox']{
+    position: relative;
+    top: 2px;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    appearance: none;
+    width: 12px;
+    height: 12px;
+    background: url(/image/admin/square_no.png) no-repeat;
+}
+.mp_use input[type='checkbox']:checked{
+    background: url(/image/admin/square_yes.png) no-repeat;
+}
+.coupon_rule .coupon_info_title{
+    border: none;
+}
+.mp_nav{
+    width: 100%;
+    border: 1px solid #e5e5e5;
+    padding: 15px 10px;
+    background: #fff;
+    margin-bottom: 15px;
+}
+.mp_nav_list span{
+    display: inline-block;
+    line-height: 30px;
+    width: 115px;
+    text-align: right;
+    vertical-align: top;
+}
+.mp_nav_list input,.mp_nav_list select{
+    width: 155px;
+    height: 30px;
+    border: 1px solid #ccc;
+    padding-left: 12px;
+}
+.mp_nav_list select{
+    width: 265px;
+}
+.mp_nav_icon{
+    margin: 15px 0 30px;
+}
+.mp_nav_icon div{
+    display: inline-block;
+    width: 70px;
+    height: 70px;
+    border: 1px solid #e6e6e6;
+    text-align: center;
+    line-height: 70px;
+    position: relative;
+    margin-left: 20px;
+}
+.mp_nav_icon div:last-child{
+    margin-left: 45px;
+}
+.mp_nav_icon div img{
+    position: absolute;
+    left: 0;
+    right: 0;
+    top: 0;
+    bottom: 0;
+    margin: auto;
+    width:40px;
+}
+.mp_change{
+    color: #5a8bff;
+    position: relative;
+    left: 5px;
+}
+.mp_change:hover,.mp_change:focus{
+    text-decoration: none;
+    color: #5a8bff;
+}
+.nav_icon a{
+    display: inline-block;
+    position: absolute;
+    bottom: 0px;
+    left:0;
+    width: 100%;
+    height: 20px;
+    line-height: 20px;
+    font-size: 12px;
+    color: #fff;
+    background: rgba(0,0,0,0.5);
+}
+.add_nav{
+    width: 70px;
+    height: 30px;
+    border: none;
+    background: #5A8BFF;
+    color: #fff;
+}
+.mp_nav_more{
+    position: relative;
+}
+.mp_nav_more .delete-nav{
+    position: absolute;
+    right: -6px;
+    top: -7px;
+    cursor: pointer;
+}
+.mp_footer{
+    padding: 10px;
+    background: #f8f8fa;
+    border-top: 1px solid #f2f2f2;
+    text-align: center;
+}
+.mp_footer button{
+    width: 70px;
+    height: 30px;
+}
+.mp_save{
+    border: 1px solid #5A8BFF;
+    background: #5A8BFF;
+    color: #fff;
+    margin-right:15px;
+}
+.mp_back{
+    border: 1px solid #dbdbdd;
+    background: #f5f5f5;
+    color: #666;
+}
+.nav_icon p{
+    position: absolute;
+    width: 100%;
+    height: 30px;
+    line-height: 30px;
+    font-size: 12px;
+    top: 98%;
+}
+/*选择弹框*/
+#change-icon{
+    display: none;
+    padding: 20px 20px 10px;
+}
+#change-icon ul li{
+    float: left;
+    width: 145px;
+    height: 42px;
+    line-height: 42px;
+    text-align: center;
+    margin-right: 38px;
+    color: #666;
+    margin-bottom: 10px;
+    cursor: pointer;
+}
+#change-icon ul li span{
+    display: inline-block;
+    margin-right: 10px;
+    width: 42px;
+    text-align: left;
+}
+#change-icon ul li img{
+    /*width: 20px;*/
+    max-width: 23px;
+    position: relative;
+    top: -2px;
+    margin-left: 5px;
+}
+.mp_list_active{
+    background: #f3f3f3;
+}
+.btn_link{
+    margin-left: 12px;
+    margin-bottom: 0;
+    font-weight: 400;
+    text-align: center;
+    background-image: none;
+    border: 1px solid #ccc;
+    white-space: nowrap;
+    font-size: 13px;
+    border-radius: 2px;
+    width: 78px;
+    height: 30px;
+    color: #333;
+    background-color: #fff;
+}

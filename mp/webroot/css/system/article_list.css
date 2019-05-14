@@ -1,0 +1,36 @@
+.article-main-table th{
+	font-size: 13px;
+    font-weight: normal;
+    color: #333 !important;
+    background: #F5F5F5 !important;
+}
+.article-bottom-table td{
+	background: #fff;
+	border-top: none !important;
+}
+.article-bottom-table{
+	border-top: 1px solid #f4f9fc;
+}
+.table>thead>tr>th{
+	border-bottom: none;
+}
+#first_tr th{
+	color: red;
+}
+.article_list_height{
+	height: 30px;
+}
+.tb_paging tr td a {
+    display: inline-block;
+    border: 1px solid #dedede;
+    padding: 0px 8px;
+    height: 30px;
+    line-height: 30px;
+    margin-left: 5px;
+}
+.tb_paging td a:focus {
+    background: #5a8bff !important;
+    color: #fff;
+    border: 1px solid #5a8bff;
+    text-decoration: none;
+}
