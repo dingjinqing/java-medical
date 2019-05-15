@@ -36,8 +36,8 @@
     </div>
     <div class="breadcrumb header-crumb">
         <li>${global_title}</li>
-        <li <#if sub_title! !="">class="active" </#if>>${title}</li>
-        <#if sub_title! !="">
+        <li <#if sub_title! !="" >class="active" </#if>>${title}</li>
+        <#if sub_title! !="" >
             <li class="active">${sub_title}</li>
         </#if>
     </div>
@@ -45,12 +45,12 @@
 
 <#noparse>
 <script>
-    ${(".help_detail").find("li").hover(function () {
+    $(".help_detail").find("li").hover(function () {
         $(this).addClass("color-white");
     }, function () {
         $(this).removeClass("color-white");
     });
-    ${(".help_container").hover(function () {
+    $(".help_container").hover(function () {
         $(this).find(".help_center").addClass("bg-blue");
         $(this).find(".help_detail").show();
     }, function () {

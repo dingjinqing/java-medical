@@ -5,12 +5,10 @@ import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.servlet.ModelAndView;
 
-
 @Controller
-public class SystemIndexController extends SystemBaseController {
-
-	@RequestMapping(value = "/system/index")
-	public ModelAndView index() {
+public class ShopAccountController extends SystemBaseController {
+	@RequestMapping(value = "/system/shop/account/list")
+	public ModelAndView getShopAccountList() {
 		ModelMap model = new ModelMap();
 		model.addAttribute("start_main_url", "/system/welcome");
 		model.addAttribute("user", this.sysAuth.user());
@@ -19,22 +17,4 @@ public class SystemIndexController extends SystemBaseController {
 		model.addAttribute("role_id", this.sysAuth.roleId());
 		return view("system/index", model);
 	}
-	
-	@RequestMapping(value = "/system/welcome")
-	public ModelAndView welcome() {
-		return view("system/welcome");
-	}
-	
-	@RequestMapping(value = "/system/passwordSet")
-	public ModelAndView passwordSet() {
-		return view("system/passwordSet");
-	}
-	
-//	@RequestMapping(value = "/system/passwordSet")
-//	@ResponseBody
-//	public JsonResult updatePassword() {
-//		return view("system/passwordSet");
-//	}
-
-
 }

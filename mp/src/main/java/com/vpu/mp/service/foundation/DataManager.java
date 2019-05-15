@@ -14,9 +14,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.env.Environment;
 import org.springframework.core.io.ClassPathResource;
-import org.springframework.jdbc.datasource.TransactionAwareDataSourceProxy;
 import org.springframework.stereotype.Component;
-import org.springframework.transaction.annotation.EnableTransactionManagement;
 import org.springframework.util.FileCopyUtils;
 
 import com.vpu.mp.db.main.tables.B2cShop;
@@ -27,7 +25,6 @@ import java.nio.charset.StandardCharsets;
 import java.util.HashMap;
 
 @Component
-@EnableTransactionManagement
 public class DataManager {
 
 	@Value("${db.host}")
@@ -239,7 +236,7 @@ public class DataManager {
 
 	protected DefaultConfiguration configuration(BasicDataSource dataSource) {
 		DefaultConfiguration jooqConfiguration = new DefaultConfiguration();
-		jooqConfiguration.set(new DataSourceConnectionProvider(new TransactionAwareDataSourceProxy(dataSource)));
+		jooqConfiguration.set(new DataSourceConnectionProvider(dataSource));
 		jooqConfiguration.set(new DefaultExecuteListenerProvider(new ExceptionTranslator()));
 		SQLDialect dialect = SQLDialect.valueOf(this.dialect);
 		jooqConfiguration.set(dialect);

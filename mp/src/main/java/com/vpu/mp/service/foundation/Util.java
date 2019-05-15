@@ -3,7 +3,7 @@ package com.vpu.mp.service.foundation;
 import java.io.IOException;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
-
+import java.sql.Timestamp;
 import javax.servlet.http.HttpServletRequest;
 
 import org.springframework.util.DigestUtils;
@@ -83,5 +83,9 @@ public class Util {
 			ipAddress = "";
 		}
 		return ipAddress;
+	}
+	
+	public static Timestamp convertToTimestamp(String dateTime) {
+		return Timestamp.valueOf(dateTime);
 	}
 }

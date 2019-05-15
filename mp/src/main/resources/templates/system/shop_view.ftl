@@ -1,4 +1,5 @@
-@include("system.header")
+<#include "/system/header.ftl">
+
 <link rel="stylesheet" href="/css/admin/overview.css?v=1.0.2" type="text/css" />
 <style type="text/css">
     .title_share{
@@ -201,7 +202,7 @@
                             <td>日</td>
                             </#if>
                         </tr>
-                        <#list users as item)>
+                        <#list users as item>
                             <#if (request['type'] == 1 || request['type'] == '')>
                                 <#if (item?index%7==0) >
                                     <tr style="text-align:center;">
@@ -239,7 +240,7 @@
                                 <td>六</td>
                                 <td>日</td>
                         </tr>
-                        <#list (orders as item)>
+                        <#list orders as item >
                                 <#if (item?index%7==0) >
                                     <tr style="text-align:center;">
                                         </#if>
@@ -277,13 +278,13 @@
                                 <td>六</td>
                                 <td>日</td>
                         </tr>
-                        <#list($order_money as $key => $item)
-                                <#if($loop->index%7==0)
+                        <#list order_money as item >
+                                <#if (item?index%7==0) >
                                     <tr style="text-align:center;">
                                         </#if>
-                                        <td style="font-size:16px;">$item}
+                                        <td style="font-size:16px;">${item}
                                             <br/><span style="font-size: 12px;color:  gray;">$key}</span></td>
-                                        <#if($loop->index%7==6)
+                                        <#if (item?index%7==6) >
                                     </tr>
                                 </#if>
 
@@ -298,7 +299,10 @@
 </div>
 <script language="JavaScript" src="/js/echarts.min.js"></script>
 <script>
-var orders = ${orders2};
+var orders = ${orders2_json};
+var users =${users2_json};
+var order_money = ${order_money2_json};
+var money = ${order_money3_json};
 </script>
 <#noparse>
 <script type="text/javascript">
@@ -315,7 +319,6 @@ var orders = ${orders2};
     var dom = document.getElementById("container");
     var myChart = echarts.init(dom);
     var app = {};
-    var users = @json($users2);
     var data = [];
     var data2 = [];
     var i = 0;
@@ -454,8 +457,7 @@ var orders = ${orders2};
     //订单金额图表
     var dom = document.getElementById("container_order_money");
     var moneyChart = echarts.init(dom);
-    var order_money = @json($order_money2);
-    var money = @json($order_money3);
+    
     var data = [];
     var data2 = money;
     var wx_money = [];

@@ -12,6 +12,6 @@ public class Role extends BaseComponent {
 	protected B2cSystemRole tableRole = B2cSystemRole.B2C_SYSTEM_ROLE;
 
 	public B2cSystemRoleRecord getRole(Integer roleId) {
-		return dm.db().selectFrom(tableRole).where(tableRole.ROLE_ID.eq(roleId)).fetchOne();
+		return db().selectFrom(tableRole).where(tableRole.ROLE_ID.eq(roleId)).fetchOne();
 	}
 }

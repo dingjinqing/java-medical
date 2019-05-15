@@ -8,6 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.env.Environment;
 import org.springframework.ui.ModelMap;
 import org.springframework.web.servlet.ModelAndView;
+import org.springframework.web.servlet.view.RedirectView;
 
 public class BaseController {
 
@@ -36,6 +37,11 @@ public class BaseController {
 	}
 
 	protected ModelAndView getDefaultModelAndView(String path) {
+		if(path.startsWith("redirect:")) {
+			path = path.substring(9);
+			return new ModelAndView(new RedirectView(path));  
+		}
+		
 		ModelAndView mv = new ModelAndView(path);
 		ModelMap model = new ModelMap();
 		model.addAttribute("global_title", "微铺宝小程序商家后台");
@@ -49,5 +55,7 @@ public class BaseController {
 		String method =  request.getMethod();
 		return method.equals("POST");
 	}
+	
+    
 
 }

@@ -72,17 +72,15 @@
 <header id="header" style="color: white;">
     <div id="logo-group">
             <span id="logo">
-                <img src="${logo.img_path!'/image/system/b2c_logo.png'}"/>
+                <img src="/image/system/b2c_logo.png" />
             </span>
     </div>
 
-    <span class="sign" hidden value="{$sign}"></span>
-
     <div class="clearfix" style="margin-left:130px;">
         <#list menu_list as menu>
-            <#if (menu.check || role_id==0)>
+            <#if (menu.check?? || role_id==0)>
                 <div class="pull-left first" bid="${menu?index+1}"  link="${menu.link!"#"}">
-                    <img src=" ${menu.img_url}">
+                    <img src=" ${menu.imageUrl}">
 
                     <div>  ${menu.name}</div>
             </div>
@@ -111,24 +109,24 @@
 <div style="height:100%; min-height:375px;">
     <div class="left-menu">
         <#list menu_list as item1>
-            <div class="left-menu-content" cid=" ${item1?index+1 }">
-                <#list item1['sub'] as item>
+            <div class="left-menu-content" cid="${item1?index}">
+                <#list item1['subMenu'] as item>
                     <#if ( item['check'] || role_id == 0)>
                         <dl class="item-menu"
                             style="display: ${item['display']!"inherit" }">
-                            <a href="javascript:void(0);" link="${item['link']!"#"}"
-                               <#if item['link']??> target=" ${item['target'] !"main" }" </#if>
+                            <a href="javascript:void(0);" link="${item['linkUrl']!"#"}"
+                               <#if item['linkUrl']??> target=" ${item['target'] !"main" }" </#if>
                                zid="0">
-                                <img src=" ${item['img_url']!}" class="on" cid="0">
-                                <img src=" ${item['img_url_h']!}" cid="1" fid="0">
+                                <img src=" ${item['imageUrl']!}" class="on" cid="0">
+                                <img src=" ${item['imageHUrl']!}" cid="1" fid="0">
                                 <span class="menu-item-parent"> ${item['name']!"no name" }</span>
                             </a>
-                            <#if item['sub']??>
+                            <#if item['subMenu']??>
                                 <div class="sub-menu" style="display:none">
-                                    <#list  item['sub']  as sub_item>
+                                    <#list  item['subMenu']  as sub_item>
                                         <#if sub_item['check'] || role_id == 0 >
                                             <dl hidden style="display:block;">
-                                                <a href="javascript:void(0);" link=" ${sub_item['link']!}"
+                                                <a href="javascript:void(0);" link=" ${sub_item['linkUrl']!}"
                                                    target=" ${sub_item['target']!"main" }"> ${sub_item['name'] }</a>
                                             </dl>
                                         </#if>

@@ -1,33 +1,33 @@
-@include("system.header")
+<#include "/system/header.ftl">
 
 <div class="box panel panel-body">
     <table align="center" width="">
         <tr>
-            <th rowspan="2"><img src="http://{{$image_domain}}/image/system/info.png" width="50" height="50" border="0"/></th>
-            <td><h3 style="font-weight:bolder;margin:0px;padding:0px;">{{ $message['msg_detail'] }}</h3></td>
+            <th rowspan="2"><img src="http://${image_domain}/image/system/info.png" width="50" height="50" border="0"/></th>
+            <td><h3 style="font-weight:bolder;margin:0px;padding:0px;">${message}</h3></td>
         </tr>
         <tr>
             <td id="navi_hint">
-                <span id="hint_sec">30</span>{{ trans("system/message.jump_link_tips") }}
+                <span id="hint_sec">30</span>{{ trans("system/message.jump_link_tips") }
             </td>
         </tr>
         <tr>
             <td></td>
             <td>
                 <ul style="margin:0px;padding:14px;border-top:1px solid #e4e4e4;">
-                    @if(isset($message['links']) && !empty($message['links']))
-                        @foreach((array)$message['links'] as $link)
+                    <#if links?? >
+                        <#list links as link >
                             <li style="list-style-type:lower-latin;">
-                                <a href="{{ $link['href'] }}"
-                                   @if($link['target'])target="{{ $link['target'] }}"@endif>{{ $link['text']  }}</a>
+                                <a href="{{ $link['href'] }"
+                                   <#if link['target']?? >target="${link['target']}"</#if>>${link['text']}</a>
                             </li>
-                        @endforeach
-                    @else
+                        </#list>
+                    <#else>
                         <li style="list-style-type:lower-latin;">
                             <a href="javascript:history.go(-1)"
-                               onclick="javascript:history.go(-1);">{{ trans("system/message.return_last_page") }}</a>
+                               onclick="javascript:history.go(-1);">返回</a>
                         </li>
-                    @endif
+                    </#if>
                 </ul>
 
             </td>
@@ -35,6 +35,8 @@
     </table>
 </div>
 
+
+<#noparse>
 <script language="JavaScript">
 
     var sec_count = 30;
@@ -62,6 +64,6 @@
         }
     }
 </script>
+</#noparse>
 
-
-@include("system.footer")
+<#include "/system/footer.ftl">
