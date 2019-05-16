@@ -8,9 +8,10 @@ public class Page {
 	public int nextPage;
 	public int lastPage;
 	public int pageRows;
+	public String pageInfo;
 
 	public static Page getPage(int totalRows, int currentPage, int pageRows) {
-		int lastPage = (int) Math.floor(totalRows / pageRows);
+		int lastPage = (int) Math.ceil(totalRows / pageRows);
 		lastPage = lastPage > 0 ? lastPage : 1;
 		currentPage = currentPage > lastPage ? lastPage : (currentPage <= 0 ? 1 : currentPage);
 		int firstPage = 1;
@@ -28,6 +29,7 @@ public class Page {
 		this.nextPage = nextPage;
 		this.lastPage = lastPage;
 		this.pageRows = pageRows;
+		this.pageInfo = "当前页面"+currentPage+"/"+lastPage+"，总记录"+totalRows+"条";
 	}
 
 	public int getTotalRows() {
@@ -84,6 +86,14 @@ public class Page {
 
 	public void setPageRows(int pageRows) {
 		this.pageRows = pageRows;
+	}
+
+	public String getPageInfo() {
+		return pageInfo;
+	}
+
+	public void setPageInfo(String pageInfo) {
+		this.pageInfo = pageInfo;
 	}
 
 }

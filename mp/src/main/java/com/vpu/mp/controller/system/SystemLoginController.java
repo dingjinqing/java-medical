@@ -19,6 +19,7 @@ public class SystemLoginController extends SystemBaseController {
 				return showMessage("登录失败");
 			}
 		}
+		saas.shop(100).goods.test();
 		return view("system/login");
 	}
 
@@ -27,14 +28,14 @@ public class SystemLoginController extends SystemBaseController {
 		sysAuth.logout();
 		return redirect("system/login");
 	}
-	
+
 	@RequestMapping(value = "/system/login/attempt")
 	@ResponseBody
 	public JsonResult attempt() {
 		if (sysAuth.attempt(request.getParameter("username"), request.getParameter("password"))) {
 			return JsonResult.success("ok");
 		} else {
-			return JsonResult.fail("用户名或密码不正确，请重新输入",-1);
+			return JsonResult.fail("用户名或密码不正确，请重新输入", -1);
 		}
 	}
 }

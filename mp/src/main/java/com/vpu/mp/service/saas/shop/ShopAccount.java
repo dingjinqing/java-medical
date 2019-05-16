@@ -1,7 +1,6 @@
 package com.vpu.mp.service.saas.shop;
 
 import java.sql.Timestamp;
-import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
@@ -11,18 +10,14 @@ import org.jooq.Result;
 import org.jooq.SelectWhereStep;
 import org.jooq.impl.DSL;
 import org.jooq.tools.Convert;
-import org.springframework.stereotype.Component;
-
 import com.vpu.mp.db.main.tables.B2cMpAuthShop;
 import com.vpu.mp.db.main.tables.B2cShop;
 import com.vpu.mp.db.main.tables.B2cShopAccount;
 import com.vpu.mp.db.main.tables.records.B2cShopAccountRecord;
-import com.vpu.mp.db.main.tables.records.B2cSystemChildAccountRecord;
 import com.vpu.mp.service.foundation.BaseComponent;
 import com.vpu.mp.service.foundation.Page;
 import com.vpu.mp.service.foundation.Util;
 
-@Component
 public class ShopAccount extends BaseComponent {
 
 	protected B2cShopAccount tableShopAccount = B2cShopAccount.B2C_SHOP_ACCOUNT;

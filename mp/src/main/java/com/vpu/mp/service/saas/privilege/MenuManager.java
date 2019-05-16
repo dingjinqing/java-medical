@@ -3,14 +3,11 @@ package com.vpu.mp.service.saas.privilege;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
-
 import com.vpu.mp.db.main.tables.records.B2cSystemRoleRecord;
 import com.vpu.mp.service.foundation.Util;
 
-@Component
+
 public class MenuManager {
 
 	@Autowired

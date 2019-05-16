@@ -1,13 +1,18 @@
 package com.vpu.mp.service.foundation;
 
 import java.io.IOException;
+import java.lang.reflect.Constructor;
+import java.lang.reflect.Field;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
 import java.sql.Timestamp;
+import java.util.Properties;
+
 import javax.servlet.http.HttpServletRequest;
 
+import org.springframework.core.io.ClassPathResource;
+import org.springframework.core.io.support.PropertiesLoaderUtils;
 import org.springframework.util.DigestUtils;
-
 import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.JsonMappingException;
@@ -84,8 +89,71 @@ public class Util {
 		}
 		return ipAddress;
 	}
-	
+
 	public static Timestamp convertToTimestamp(String dateTime) {
 		return Timestamp.valueOf(dateTime);
 	}
+
+	public static void initComponents(Object o) {
+		Integer shopId = (Integer) getObjectProperty(o, "shopId");
+		System.out.println("getProperty shopId = " + shopId);
+		if (shopId == null)
+			shopId = 0;
+
+		Field[] fields = o.getClass().getDeclaredFields();
+		for (Field field : fields) {
+			boolean ret = BaseComponent.class.isAssignableFrom(field.getType());
+			if (ret) {
+				System.out.println("initComponents class: " + o.getClass() + ", field: " + field.getType().toString());
+				field.setAccessible(true);
+
+				try {
+					String className = field.getType().getName();
+					Class<?> cls = Class.forName(className);
+					Constructor<?> constructor = cls.getConstructor();
+					Object fieldInstance = constructor.newInstance();
+					field.set(o, fieldInstance);
+					BaseComponent com = (BaseComponent) field.get(o);
+					com.setShopId(shopId);
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
+
+			}
+
+		}
+	}
+
+	/**
+	 * 获取对象的属性值
+	 * 
+	 * @param o
+	 * @param name
+	 * @return
+	 */
+	public static Object getObjectProperty(Object o, String name) {
+		Class<?> cls = o.getClass();
+		while (cls != null && !cls.getName().toLowerCase().equals("java.lang.object")) {
+			try {
+				Field field = cls.getDeclaredField(name);
+				field.setAccessible(true);
+				return field.get(o);
+			} catch (IllegalArgumentException | IllegalAccessException | NoSuchFieldException | SecurityException e) {
+				cls = cls.getSuperclass();
+			}
+		}
+		return null;
+	}
+
+	public static String getProperty(String path,String key) {
+		try {
+			ClassPathResource resource = new ClassPathResource(path);
+			Properties properties = PropertiesLoaderUtils.loadProperties(resource);
+			return properties.getProperty(key);
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		return null;
+	}
+
 }

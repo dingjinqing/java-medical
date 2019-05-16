@@ -4,20 +4,15 @@ import org.jooq.Record;
 import org.jooq.Result;
 import org.jooq.Table;
 import org.jooq.impl.DefaultDSLContext;
-import org.springframework.beans.factory.annotation.Autowired;
 
 public class BaseComponent {
 
-	@Autowired
-	protected DataManager dm;
+	protected DataManager dm = DataManager.instance();
 
 	protected Integer shopId = 0;
 
 	public BaseComponent() {
-	}
-
-	public BaseComponent(Integer shopId) {
-		this.shopId = shopId;
+		Util.initComponents(this);
 	}
 
 	public Integer getShopId() {

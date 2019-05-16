@@ -2,17 +2,12 @@ package com.vpu.mp.service.saas.privilege;
 
 import org.jooq.Record;
 import org.jooq.Result;
-import org.springframework.context.annotation.Scope;
-import org.springframework.stereotype.Component;
-
 import com.vpu.mp.db.main.tables.B2cSystemChildAccount;
 import com.vpu.mp.db.main.tables.B2cSystemRole;
 import com.vpu.mp.db.main.tables.records.B2cSystemChildAccountRecord;
 import com.vpu.mp.service.foundation.BaseComponent;
 import com.vpu.mp.service.foundation.Util;
 
-@Component
-@Scope("prototype") // 多例
 public class ChildAccount extends BaseComponent {
 	protected B2cSystemChildAccount tableAccount = B2cSystemChildAccount.B2C_SYSTEM_CHILD_ACCOUNT;
 	protected B2cSystemRole tableRole = B2cSystemRole.B2C_SYSTEM_ROLE;

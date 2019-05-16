@@ -10,13 +10,10 @@ import org.jooq.impl.DataSourceConnectionProvider;
 import org.jooq.impl.DefaultConfiguration;
 import org.jooq.impl.DefaultDSLContext;
 import org.jooq.impl.DefaultExecuteListenerProvider;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.core.env.Environment;
 import org.springframework.core.io.ClassPathResource;
-import org.springframework.stereotype.Component;
 import org.springframework.util.FileCopyUtils;
 
+import com.vpu.mp.SpringConfig;
 import com.vpu.mp.db.main.tables.B2cShop;
 import com.vpu.mp.db.main.tables.records.B2cShopRecord;
 
@@ -24,34 +21,16 @@ import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.util.HashMap;
 
-@Component
 public class DataManager {
 
-	@Value("${db.host}")
 	protected String host;
-
-	@Value("${db.database}")
 	protected String database;
-
-	@Value("${db.username}")
 	protected String username;
-
-	@Value("${db.password}")
 	protected String password;
-
-	@Value("${db.prefix}")
 	protected String dbPrefix;
-
-	@Value("${db.shop.host}")
 	protected String shopHost;
-
-	@Value("${db.shop.username}")
 	protected String shopUsername;
-
-	@Value("${db.shop.password}")
 	protected String shopPassword;
-
-	@Value("${db.shop.prefix}")
 	protected String shopDbPrefix;
 
 	protected String driver = "com.mysql.jdbc.Driver";
@@ -61,8 +40,25 @@ public class DataManager {
 
 	private HashMap<Integer, DefaultDSLContext> shopDbList = new HashMap<Integer, DefaultDSLContext>();
 
-	@Autowired
-	Environment environment;
+	private static DataManager dm = null;
+
+	protected DataManager() {
+		host = SpringConfig.getProperty("db.host");
+		database = SpringConfig.getProperty("db.database");
+		username = SpringConfig.getProperty("db.username");
+		password = SpringConfig.getProperty("db.password");
+		dbPrefix = SpringConfig.getProperty("db.prefix");
+		shopHost = SpringConfig.getProperty("db.shop.host");
+		shopUsername = SpringConfig.getProperty("db.shop.username");
+		shopPassword = SpringConfig.getProperty("db.shop.password");
+		shopDbPrefix = SpringConfig.getProperty("db.shop.prefix");
+	}
+
+	public static DataManager instance() {
+		if (dm == null)
+			dm = new DataManager();
+		return dm;
+	}
 
 	public DefaultDSLContext db() {
 		if (db == null) {
@@ -165,10 +161,10 @@ public class DataManager {
 		boolean startMultiLineComments = false;
 		int p1 = -1;
 		int p2 = -1;
-		
+
 		sqlBuffer.append("SET NAMES utf8mb4;").append("\n");
 		sqlBuffer.append("Set sql_mode='ONLY_FULL_GROUP_BY';").append("\n");
-		
+
 		for (String line : lines) {
 
 			line = line.trim();

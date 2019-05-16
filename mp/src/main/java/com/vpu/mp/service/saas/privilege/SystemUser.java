@@ -1,14 +1,11 @@
 package com.vpu.mp.service.saas.privilege;
 
 import org.jooq.types.UInteger;
-import org.springframework.stereotype.Component;
-
 import com.vpu.mp.db.main.tables.B2cSystemUser;
 import com.vpu.mp.db.main.tables.records.B2cSystemUserRecord;
 import com.vpu.mp.service.foundation.BaseComponent;
 import com.vpu.mp.service.foundation.Util;
 
-@Component
 public class SystemUser extends BaseComponent {
 	public B2cSystemUser tableUser = B2cSystemUser.B2C_SYSTEM_USER;
 
