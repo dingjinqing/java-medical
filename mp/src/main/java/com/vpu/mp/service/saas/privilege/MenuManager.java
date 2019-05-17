@@ -7,7 +7,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import com.vpu.mp.db.main.tables.records.B2cSystemRoleRecord;
 import com.vpu.mp.service.foundation.Util;
 
-
+/**
+ * 
+ * @author 新国
+ *
+ */
 public class MenuManager {
 
 	@Autowired
@@ -15,12 +19,16 @@ public class MenuManager {
 
 	public List<Menu> getRoleMenuList(Integer roleId) {
 		List<Menu> menu = this.getTopMenuList();
-        if (roleId == 0) return menu;
+        if (roleId == 0) {
+        	return menu;
+        }
         B2cSystemRoleRecord roleRecord = role.getRole(roleId);
         if (roleRecord != null) {
         	String[] privileges = Util.parseJSON(roleRecord.getPrivilegeList(),String[].class);
         	
-            if (privileges == null) return null;
+            if (privileges == null) {
+            	return null;
+            }
             for(Menu item:menu)  {
             	if(Arrays.asList(privileges).contains(item.enName)) {
             		item.check = true;
@@ -30,8 +38,8 @@ public class MenuManager {
             		for(Menu item2:item.subMenu)  {
             			if(Arrays.asList(privileges).contains(item2.enName)) {
                     		item2.check = true;
-                    		item.check = true; //  只要二级有选中就显示一级标题
-                    		item.linkUrl = item2.linkUrl; // ??
+                    		item.check = true; 
+                    		item.linkUrl = item2.linkUrl;  
                     	}
             		}
             	}

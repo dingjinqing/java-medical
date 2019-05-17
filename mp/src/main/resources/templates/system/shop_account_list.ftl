@@ -53,7 +53,7 @@
     </li>
     <li <#if (nav_type==2)> class="active"</#if>><a href="#" data-toggle="tab" url="/system/shop/account/add">商家账号添加</a>
     </li>
-    <#if ($nav_type==3)>
+    <#if (nav_type==3)>
         <li class="active"><a href="#" data-toggle="tab" url="#">商家账号编辑</a></li>
     </#if>
 </ul>
@@ -72,20 +72,19 @@
 
 <form action="/system/shop/account/list" name="form1" id="form1" method="post">
     <input type="hidden" name="act" id="act" value="">
-    <input type="hidden" name="page" value="">
     <input type="hidden" name="sys_id" id="sys_id" value="">
     <input type="hidden" name="sum_sys_id" id="sum_sys_id" value="">
     <div class="box panel ">
         <div class="panel-body">
             <select name="state">
                 <option value="0" selected>选择审核状态</option>
-                <option value="1" <#if (request['state']==1)> selected </#if>>申请中</option>
-                <option value="2" <#if (request['state']==2)> selected </#if>>审核通过</option>
-                <option value="3" <#if (request['state']==3)> selected </#if>>审核不通过</option>
-                <option value="4" <#if (request['state']==4)> selected </#if>>已禁用</option>
+                <option value="1" <#if (inputMap['state']! =="1")> selected </#if>>申请中</option>
+                <option value="2" <#if (inputMap['state']! =="2")> selected </#if>>审核通过</option>
+                <option value="3" <#if (inputMap['state']! =="3")> selected </#if>>审核不通过</option>
+                <option value="4" <#if (inputMap['state']! =="4")> selected </#if>>已禁用</option>
             </select>
-            <input type="text" name="keywords" placeholder="请输入用户名、昵称" value="${request['keywords']}">
-            <input type="text" name="company" placeholder="请输入公司名称" value="${request['company']}">
+            <input type="text" name="keywords" placeholder="请输入用户名、昵称" value="${inputMap['keywords']!}">
+            <input type="text" name="company" placeholder="请输入公司名称" value="${inputMap['company']!}">
             <input type="submit" class="search" name="search" value="搜索">
         </div>
     </div>
@@ -110,9 +109,9 @@
                 </thead>
                 <#list data_list as item >
                     <tr style="text-align:center;">
-                        <td class="user-name">$item.user_name}</td>
-                        <td>$item.account_name}</td>
-                        <td>$item.company}</td>
+                        <td class="user-name">${item.user_name}</td>
+                        <td>${item.account_name}</td>
+                        <td>${item.company}</td>
                         <td><#if (item.state == 2)>申请通过<#elseif (item.state == 3)>审核不通过<#elseif item.state == 4>已禁用<#else>申请中</#if></td>
                         <td><#if (item.shop_grade == 4)>旗舰店<#elseif (item.shop_grade == 3)>精品店<#elseif (item.shop_grade == 2)>专营店<#else>普通店</#if></td>
                         <td class="shop_number">
@@ -121,11 +120,11 @@
                                 <img src="http://${image_domain}/image/admin/add_some.png" title="添加店铺" alt="添加店铺">
                             </a>&nbsp;
                         </td>
-                        <td>$item.add_time}</td>
-                        <td>$item.buy_time}</td>
-                        <td>$item.end_time}</td>
-                        <td align="right">$item.renew_money}</td>
-                        <td><#if (item.mobile == '')>未设置<#elseif (item.mobile != "")>${item.mobile}</#if></td>
+                        <td>${item.add_time}</td>
+                        <td>${item.buy_time!}</td>
+                        <td>${item.end_time!}</td>
+                        <td align="right">${item.renew_money}</td>
+                        <td><#if (item.mobile! == '')>未设置<#else>${item.mobile}</#if></td>
                         <td>
                             <a href="/system/shop/account/edit?sys_id=${item.sys_id}">编辑</a>
                         </td>
@@ -139,17 +138,17 @@
                     <td align="right">
                         <table width="100%" border="0" class="tb_paging">
                             <tr>
-                                <td align="right">${data_list.page_info}
+                                <td align="right">${page.pageInfo}
                                     <a href="#"
                                        onClick="return gopage(1);">第一页</a>
                                     <a href="#"
-                                       onClick="return gopage(${data_list.prePage});">上一页</a>
+                                       onClick="return gopage(${page.prePage});">上一页</a>
                                     <a href="#"
-                                       onClick="return gopage( ${data_list.nextPage});">下一页</a>
+                                       onClick="return gopage( ${page.nextPage});">下一页</a>
                                     <a href="#"
-                                       onClick="return gopage(${data_list.lastPage});">最后一页</a>
+                                       onClick="return gopage(${page.lastPage});">最后一页</a>
                                     <input id="page" name="page" type="text"
-                                           value="${data_list.currentPage}" size="5"
+                                           value="${page.currentPage}" size="5"
                                            onKeyDown="if (event.keyCode==13 || event.which==13) gopage(this.value);">页
                                 </td>
                             </tr>
@@ -162,6 +161,10 @@
 
 </form>
 
+<script>
+var page_home = ${page.currentPage};
+var page_all = ${page.lastPage};
+</script>
 <#noparse>
 <script>
     function gopage(page) {

@@ -1,10 +1,20 @@
 package com.vpu.mp.service.foundation;
 
+import java.util.Map;
+
+import org.jooq.Field;
 import org.jooq.Record;
 import org.jooq.Result;
-import org.jooq.Table;
+import org.jooq.SelectLimitStep;
+import org.jooq.TableField;
 import org.jooq.impl.DefaultDSLContext;
+import org.jooq.impl.TableImpl;
 
+/**
+ * 
+ * @author 新国
+ *
+ */
 public class BaseComponent {
 
 	protected DataManager dm = DataManager.instance();
@@ -35,28 +45,51 @@ public class BaseComponent {
 		return dm.db(shopId);
 	}
 
-	public Result<Record> getPageList(Table<Record> table, int totalRows, Page page) {
-		return db().selectFrom(table).limit((page.currentPage - 1) * page.pageRows, page.pageRows).fetch();
+	public PageResult getPageResult(SelectLimitStep<Record> select, Integer currentPage, Integer pageRows) {
+		Integer totalRows = db().fetchCount(select);
+		PageResult pageResult = new PageResult();
+		pageResult.page = Page.getPage(totalRows, currentPage, pageRows);
+		Result<Record> result = select
+				.limit((pageResult.page.currentPage - 1) * pageResult.page.pageRows, pageResult.page.pageRows).fetch();
+		pageResult.dataList = result.intoMaps();
+		return pageResult;
 	}
 
-	public Page getPage(Table<Record> table, int currentPage, int pageRows) {
-		int totalRows = db().fetchCount(table);
-		return Page.getPage(totalRows, currentPage, pageRows);
+	public PageResult getPageResult(SelectLimitStep<Record> select, Integer currentPage) {
+		return getPageResult(select, currentPage, 20);
+	}
+
+	public PageResult getPageResult(SelectLimitStep<Record> select) {
+		return getPageResult(select, 1, 20);
+	}
+
+	public String likeValue(String val) {
+		return "%" + val.replaceAll("%", "%%") + "%";
+	}
+
+	public String prefixLikeValue(String val) {
+		return val.replaceAll("%", "%%") + "%";
+	}
+
+	public String suffixLikeValue(String val) {
+		return "%" + val.replaceAll("%", "%%");
 	}
 	
-	public String likeValue(String val)
-    {
-        return "%" + val.replaceAll("%", "%%") + "%";
-    }
+   public boolean valid(Map<String, String> options, String key, String skiptValue) {
+		if (options.containsKey(key)) {
+			if (options.get(key) != null && options.get(key).equals(skiptValue)) {
+				return true;
+			}
+		}
+		return false;
+	}
 
-    public String prefixLikeValue(String val)
-    {
-    	return val.replaceAll("%", "%%") + "%";
-    }
-
-
-    public String suffixLikeValue(String val)
-    {
-    	return "%" + val.replaceAll("%", "%%");
-    }
+	public boolean valid(Map<String, String> options, String key) {
+		if (options.containsKey(key)) {
+			if (options.get(key) != null && options.get(key).trim().equals("")) {
+				return true;
+			}
+		}
+		return false;
+	}
 }

@@ -28,8 +28,8 @@
 </#noparse>
 <form enctype="multipart/form-data" action="${act_url}" name="form1" id="form1" method="post"
       onsubmit="return on_submit();">
-    <input type="hidden" name="act" id="act" value="${act}">
-    <input type="hidden" name="sys_id" id="sys_id" value="${shop_account.sys_id}">
+    <input type="hidden" name="act" id="act" value="">
+    <input type="hidden" name="sys_id" id="sys_id" value="${shop_account.sys_id!}">
     <div class="box panel">
         <div class="panel-body">
             <table class="tab_body show table">
@@ -38,7 +38,7 @@
                         用户名
                     </td>
                     <td>
-                        <input type="text" name="user_name" value="${shop_account.user_name}">
+                        <input type="text" name="user_name" value="${shop_account.user_name!}">
                     </td>
                 </tr>
                 <tr>
@@ -47,7 +47,7 @@
                     </td>
                     <td>
                         <input type="password" name="password" value="">
-                        <#if (shop_account.sys_id)>
+                        <#if (shop_account.sys_id! != "")>
                             <span class="text-warning">密码为空，则不修改原密码</span>
                         </#if>
                     </td>
@@ -57,7 +57,7 @@
                         昵称
                     </td>
                     <td>
-                        <input type="text" name="account_name" value="${shop_account.account_name}">
+                        <input type="text" name="account_name" value="${shop_account.account_name!}">
                     </td>
                 </tr>
                 <tr>
@@ -66,10 +66,10 @@
                     </td>
                     <td>
                         <select name="state">
-                            <option value="1" <#if (shop_account.state==1)> selected </#if>>申请中</option>
-                            <option value="2" <#if (shop_account.state==2)> selected </#if>>审核通过</option>
-                            <option value="3" <#if (shop_account.state==3)> selected </#if>>审核不通过</option>
-                            <option value="4" <#if (shop_account.state==4)> selected </#if>>已禁用</option>
+                            <option value="1" <#if (shop_account.state! =="1")> selected </#if>>申请中</option>
+                            <option value="2" <#if (shop_account.state! =="2")> selected </#if>>审核通过</option>
+                            <option value="3" <#if (shop_account.state! =="3")> selected </#if>>审核不通过</option>
+                            <option value="4" <#if (shop_account.state! =="4")> selected </#if>>已禁用</option>
                         </select>
                     </td>
                 </tr>
@@ -79,10 +79,10 @@
                     </td>
                     <td>
                         <select name="shop_grade">
-                            <option value="1" <#if (shop_account.shop_grade==1)> selected </#if>>普通店</option>
-                            <option value="2" <#if (shop_account.shop_grade==2)> selected </#if>>专营店</option>
-                            <option value="3" <#if (shop_account.shop_grade==3)> selected </#if>>精品店</option>
-                            <option value="4" <#if (shop_account.shop_grade==4)> selected </#if>>旗舰店</option>
+                            <option value="1" <#if (shop_account.shop_grade! =="1")> selected </#if>>普通店</option>
+                            <option value="2" <#if (shop_account.shop_grade! =="2")> selected </#if>>专营店</option>
+                            <option value="3" <#if (shop_account.shop_grade! =="3")> selected </#if>>精品店</option>
+                            <option value="4" <#if (shop_account.shop_grade! =="4")> selected </#if>>旗舰店</option>
                         </select>
                     </td>
                 </tr>
@@ -107,7 +107,7 @@
                         首次续费时间
                     </td>
                     <td>
-                        <input type="text" name="buy_time" value="${shop_account.buy_time}" onClick="picker();" autocomplete="off">
+                        <input type="text" name="buy_time" value="${shop_account.buy_time!}" onClick="picker();" autocomplete="off">
                     </td>
                 </tr>
                 <tr>
@@ -115,7 +115,7 @@
                         到期时间
                     </td>
                     <td>
-                        <input type="text" name="end_time" value="${shop_account.end_time}" onClick="picker();" autocomplete="off">
+                        <input type="text" name="end_time" value="${shop_account.end_time!}" onClick="picker();" autocomplete="off">
                     </td>
                 </tr>
                 <tr>
@@ -123,7 +123,7 @@
                         手机号
                     </td>
                     <td>
-                        <input type="text" name="mobile" value="${shop_account.mobile}">
+                        <input type="text" name="mobile" value="${shop_account.mobile!}">
                     </td>
                 </tr>
                 <tr>
@@ -131,7 +131,7 @@
                         公司名称
                     </td>
                     <td>
-                        <input type="text" name="company" value="${shop_account.company}" size="50">
+                        <input type="text" name="company" value="${shop_account.company!}" size="50">
                     </td>
                 </tr>
                 <tr>
@@ -139,7 +139,7 @@
                         销售员
                     </td>
                     <td>
-                        <input type="text" name="salesperson" value="${shop_account.salesperson}">
+                        <input type="text" name="salesperson" value="${shop_account.salesperson!}">
                     </td>
                 </tr>
                 <tr>
@@ -147,17 +147,17 @@
                     <td>
                         <select name="province_code" id="province_code">
                             <#list province as item>
-                                <option value="${item.province_id}" <#if (shop_account.province_code==item.province_id)> selected </#if>>${item.name}</option>
+                                <option value="${item.province_id}" <#if ("${shop_account.province_code!}" == "${item.province_id}")> selected </#if>>${item.name}</option>
                             </#list>
                         </select>
                         <select name="city_code" id="city_code">
                             <#list city as item>
-                                <option value="${item.city_id}" <#if (shop_account.city_code==item.city_id)> selected </#if>>${item.name}</option>
+                                <option value="${item.city_id}" <#if ("${shop_account.city_code!}" == "${item.city_id}")> selected </#if>>${item.name}</option>
                             </#list>
                         </select>
                         <select name="district_code" id="district_code">
                             <#list district as item>
-                                <option value="${item.district_id}" <#if (shop_account.district_code==item.district_id)> selected </#if>>$item.name}</option>
+                                <option value="${item.district_id}" <#if ("${shop_account.district_code!}" == "${item.district_id}")> selected </#if>>${item.name}</option>
                             </#list>
                         </select>
                     </td>
@@ -167,7 +167,7 @@
                         详细地址
                     </td>
                     <td>
-                        <input type="text" name="address" value="${shop_account.address}">
+                        <input type="text" name="address" value="${shop_account.address!}">
                     </td>
                 </tr>
                 <tr>
@@ -175,7 +175,7 @@
                         初始销量
                     </td>
                     <td>
-                        <input type="checkbox" class="switch" id="checkbox1" name="base_sale" <#if (shop_account.base_sale)> checked </#if> >
+                        <input type="checkbox" class="switch" id="checkbox1" name="base_sale" <#if (shop_account.base_sale!0 > 0)> checked </#if> >
                         <label for="checkbox1" class="switch"></label>
                         <span style="color: rgb(0, 0, 0);">已关闭</span>
                     </td>

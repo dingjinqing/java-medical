@@ -1,5 +1,9 @@
 package com.vpu.mp.service.foundation;
-
+/**
+ * 
+ * @author 新国
+ *
+ */
 public class JsonResult {
 
 	/**

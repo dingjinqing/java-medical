@@ -18,9 +18,14 @@ import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
+/**
+ * 
+ * @author 新国
+ *
+ */
 public class Util {
 
-	static String toJSON(Object o) {
+	public static String toJSON(Object o) {
 		ObjectMapper mapper = new ObjectMapper();
 		try {
 			return mapper.writeValueAsString(o);
@@ -56,17 +61,21 @@ public class Util {
 
 	static public String getCleintIp(HttpServletRequest request) {
 		String ipAddress = null;
+		String unkown = "unknown"; 
+		String localhost = "127.0.0.1";
+		String comma = ",";
+		Integer maxIpLength = 15;
 		try {
 			ipAddress = request.getHeader("x-forwarded-for");
-			if (ipAddress == null || ipAddress.length() == 0 || "unknown".equalsIgnoreCase(ipAddress)) {
+			if (ipAddress == null || ipAddress.length() == 0 || unkown.equalsIgnoreCase(ipAddress)) {
 				ipAddress = request.getHeader("Proxy-Client-IP");
 			}
-			if (ipAddress == null || ipAddress.length() == 0 || "unknown".equalsIgnoreCase(ipAddress)) {
+			if (ipAddress == null || ipAddress.length() == 0 || unkown.equalsIgnoreCase(ipAddress)) {
 				ipAddress = request.getHeader("WL-Proxy-Client-IP");
 			}
-			if (ipAddress == null || ipAddress.length() == 0 || "unknown".equalsIgnoreCase(ipAddress)) {
+			if (ipAddress == null || ipAddress.length() == 0 || unkown.equalsIgnoreCase(ipAddress)) {
 				ipAddress = request.getRemoteAddr();
-				if (ipAddress.equals("127.0.0.1")) {
+				if (localhost.equals(ipAddress)) {
 					// 根据网卡取本机配置的IP
 					InetAddress inet = null;
 					try {
@@ -78,10 +87,9 @@ public class Util {
 				}
 			}
 			// 对于通过多个代理的情况，第一个IP为客户端真实IP,多个IP按照','分割
-			if (ipAddress != null && ipAddress.length() > 15) { // "***.***.***.***".length()
-																// = 15
-				if (ipAddress.indexOf(",") > 0) {
-					ipAddress = ipAddress.substring(0, ipAddress.indexOf(","));
+			if (ipAddress != null && ipAddress.length() > maxIpLength) {  
+				if (ipAddress.indexOf(comma) > 0) {
+					ipAddress = ipAddress.substring(0, ipAddress.indexOf(comma));
 				}
 			}
 		} catch (Exception e) {
@@ -97,8 +105,10 @@ public class Util {
 	public static void initComponents(Object o) {
 		Integer shopId = (Integer) getObjectProperty(o, "shopId");
 		System.out.println("getProperty shopId = " + shopId);
-		if (shopId == null)
+		if (shopId == null) {
 			shopId = 0;
+		}
+			
 
 		Field[] fields = o.getClass().getDeclaredFields();
 		for (Field field : fields) {
@@ -133,7 +143,7 @@ public class Util {
 	 */
 	public static Object getObjectProperty(Object o, String name) {
 		Class<?> cls = o.getClass();
-		while (cls != null && !cls.getName().toLowerCase().equals("java.lang.object")) {
+		while (cls != null && !cls.getName().equals(Object.class.getName())) {
 			try {
 				Field field = cls.getDeclaredField(name);
 				field.setAccessible(true);

@@ -1,7 +1,11 @@
 package com.vpu.mp.service.saas.privilege;
 
 import java.util.List;
-
+/**
+ * 
+ * @author 新国
+ *
+ */
 public class Menu {
 	public String name;
 	public String enName;

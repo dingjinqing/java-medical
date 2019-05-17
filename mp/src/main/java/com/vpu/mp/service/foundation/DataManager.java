@@ -21,6 +21,11 @@ import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.util.HashMap;
 
+/**
+ * 
+ * @author 新国
+ *
+ */
 public class DataManager {
 
 	protected String host;
@@ -41,7 +46,14 @@ public class DataManager {
 	private HashMap<Integer, DefaultDSLContext> shopDbList = new HashMap<Integer, DefaultDSLContext>();
 
 	private static DataManager dm = null;
-
+	
+	public static DataManager instance() {
+		if (dm == null) {
+			dm = new DataManager();
+		}
+		return dm;
+	}
+	
 	protected DataManager() {
 		host = SpringConfig.getProperty("db.host");
 		database = SpringConfig.getProperty("db.database");
@@ -54,11 +66,7 @@ public class DataManager {
 		shopDbPrefix = SpringConfig.getProperty("db.shop.prefix");
 	}
 
-	public static DataManager instance() {
-		if (dm == null)
-			dm = new DataManager();
-		return dm;
-	}
+	
 
 	public DefaultDSLContext db() {
 		if (db == null) {
@@ -71,13 +79,17 @@ public class DataManager {
 	}
 
 	public DefaultDSLContext db(Integer shopId) {
-		if (shopDbList.containsKey(shopId))
+		if (shopDbList.containsKey(shopId)) {
 			return shopDbList.get(shopId);
+		}
+
 		B2cShopRecord shop = db().selectFrom(B2cShop.B2C_SHOP).where(B2cShop.B2C_SHOP.SHOP_ID.eq(shopId)).fetchOne();
 		if (shop != null) {
 			DbConfig dbConfig = Util.parseJSON(shop.getDbConfig(), DbConfig.class);
-			if (dbConfig == null)
+			if (dbConfig == null) {
 				return null;
+			}
+
 			String url = getJdbcUrl(dbConfig.host, dbConfig.database);
 			BasicDataSource ds = dataSource(url, dbConfig.username, dbConfig.password, driver);
 			DefaultDSLContext dsl = new DefaultDSLContext(configuration(ds));
@@ -109,9 +121,11 @@ public class DataManager {
 
 		boolean ret = execScript(dbConfig.host, dbConfig.database, dbConfig.username, dbConfig.password,
 				"db/shop/db_shop.sql");
-		if (ret)
+		if (ret) {
 			ret = execScript(dbConfig.host, dbConfig.database, dbConfig.username, dbConfig.password,
 					"db/shop/db_shop_data.sql");
+		}
+
 		return ret;
 	}
 
@@ -169,8 +183,10 @@ public class DataManager {
 
 			line = line.trim();
 
-			if (!startMultiLineComments && (line.startsWith("//") || line.startsWith("#") || line.startsWith("--"))) {
-				continue;
+			if (!startMultiLineComments) {
+				if (line.startsWith("//") || line.startsWith("#") || line.startsWith("--")) {
+					continue;
+				}
 			}
 
 			if (startMultiLineComments) {
@@ -200,8 +216,9 @@ public class DataManager {
 					break;
 				}
 			}
-			if (startMultiLineComments)
+			if (startMultiLineComments) {
 				continue;
+			}
 
 		}
 		return sqlBuffer.toString();

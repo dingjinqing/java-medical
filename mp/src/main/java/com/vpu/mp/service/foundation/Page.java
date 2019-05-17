@@ -1,26 +1,34 @@
 package com.vpu.mp.service.foundation;
-
+/**
+ * 
+ * @author 新国
+ *
+ */
 public class Page {
-	public int totalRows;
-	public int currentPage;
-	public int firstPage;
-	public int prePage;
-	public int nextPage;
-	public int lastPage;
-	public int pageRows;
+	public Integer totalRows;
+	public Integer currentPage;
+	public Integer firstPage;
+	public Integer prePage;
+	public Integer nextPage;
+	public Integer lastPage;
+	public Integer pageRows;
+	public Integer pageCount;
 	public String pageInfo;
+	
 
-	public static Page getPage(int totalRows, int currentPage, int pageRows) {
-		int lastPage = (int) Math.ceil(totalRows / pageRows);
-		lastPage = lastPage > 0 ? lastPage : 1;
+	public static Page getPage(Integer totalRows, Integer currentPage, Integer pageRows) {
+		currentPage = currentPage == null ? 1 : currentPage;
+		Integer pageCount = (Integer)(int)Math.ceil(totalRows / pageRows);
+		Integer lastPage = pageCount > 0 ? pageCount : 1;
 		currentPage = currentPage > lastPage ? lastPage : (currentPage <= 0 ? 1 : currentPage);
-		int firstPage = 1;
-		int prePage = currentPage > 1 ? currentPage - 1 : 1;
-		int nextPage = currentPage >= lastPage ? lastPage : currentPage + 1;
-		return new Page(totalRows, currentPage, firstPage, prePage, nextPage, lastPage, pageRows);
+		Integer firstPage = 1;
+		Integer prePage = currentPage > 1 ? currentPage - 1 : 1;
+		Integer nextPage = currentPage >= lastPage ? lastPage : currentPage + 1;
+		return new Page(totalRows, currentPage, firstPage, prePage, nextPage, lastPage, pageRows,pageCount);
 	}
 
-	public Page(int totalRows, int currentPage, int firstPage, int prePage, int nextPage, int lastPage, int pageRows) {
+	public Page(Integer totalRows, Integer currentPage, Integer firstPage, Integer prePage, Integer nextPage,
+			Integer lastPage, Integer pageRows, Integer pageCount) {
 		super();
 		this.totalRows = totalRows;
 		this.currentPage = currentPage;
@@ -29,62 +37,63 @@ public class Page {
 		this.nextPage = nextPage;
 		this.lastPage = lastPage;
 		this.pageRows = pageRows;
+		this.pageCount = pageCount;
 		this.pageInfo = "当前页面"+currentPage+"/"+lastPage+"，总记录"+totalRows+"条";
 	}
 
-	public int getTotalRows() {
+	public Integer getTotalRows() {
 		return totalRows;
 	}
 
-	public void setTotalRows(int totalRows) {
+	public void setTotalRows(Integer totalRows) {
 		this.totalRows = totalRows;
 	}
 
-	public int getCurrentPage() {
+	public Integer getCurrentPage() {
 		return currentPage;
 	}
 
-	public void setCurrentPage(int currentPage) {
+	public void setCurrentPage(Integer currentPage) {
 		this.currentPage = currentPage;
 	}
 
-	public int getFirstPage() {
+	public Integer getFirstPage() {
 		return firstPage;
 	}
 
-	public void setFirstPage(int firstPage) {
+	public void setFirstPage(Integer firstPage) {
 		this.firstPage = firstPage;
 	}
 
-	public int getPrePage() {
+	public Integer getPrePage() {
 		return prePage;
 	}
 
-	public void setPrePage(int prePage) {
+	public void setPrePage(Integer prePage) {
 		this.prePage = prePage;
 	}
 
-	public int getNextPage() {
+	public Integer getNextPage() {
 		return nextPage;
 	}
 
-	public void setNextPage(int nextPage) {
+	public void setNextPage(Integer nextPage) {
 		this.nextPage = nextPage;
 	}
 
-	public int getLastPage() {
+	public Integer getLastPage() {
 		return lastPage;
 	}
 
-	public void setLastPage(int lastPage) {
+	public void setLastPage(Integer lastPage) {
 		this.lastPage = lastPage;
 	}
 
-	public int getPageRows() {
+	public Integer getPageRows() {
 		return pageRows;
 	}
 
-	public void setPageRows(int pageRows) {
+	public void setPageRows(Integer pageRows) {
 		this.pageRows = pageRows;
 	}
 
@@ -94,6 +103,14 @@ public class Page {
 
 	public void setPageInfo(String pageInfo) {
 		this.pageInfo = pageInfo;
+	}
+
+	public Integer getPageCount() {
+		return pageCount;
+	}
+
+	public void setPageCount(Integer pageCount) {
+		this.pageCount = pageCount;
 	}
 
 }

@@ -2,7 +2,11 @@ package com.vpu.mp.service.shop;
 
 import com.vpu.mp.service.foundation.Util;
 import com.vpu.mp.service.shop.goods.Goods;
-
+/**
+ * 
+ * @author 新国
+ *
+ */
 public class Shop {
 
 	public Goods goods;

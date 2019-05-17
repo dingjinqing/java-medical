@@ -3,81 +3,96 @@ package com.vpu.mp.service.saas.shop;
 import java.sql.Timestamp;
 import java.util.Date;
 import java.util.List;
-import java.util.Map;
 
+import org.jooq.Record;
 import org.jooq.Record1;
-import org.jooq.Result;
 import org.jooq.SelectWhereStep;
 import org.jooq.impl.DSL;
-import org.jooq.tools.Convert;
+import org.jooq.tools.StringUtils;
+
 import com.vpu.mp.db.main.tables.B2cMpAuthShop;
 import com.vpu.mp.db.main.tables.B2cShop;
 import com.vpu.mp.db.main.tables.B2cShopAccount;
 import com.vpu.mp.db.main.tables.records.B2cShopAccountRecord;
 import com.vpu.mp.service.foundation.BaseComponent;
-import com.vpu.mp.service.foundation.Page;
+import com.vpu.mp.service.foundation.PageResult;
 import com.vpu.mp.service.foundation.Util;
 
+/**
+ * 
+ * @author 新国
+ *
+ */
 public class ShopAccount extends BaseComponent {
 
 	protected B2cShopAccount tableShopAccount = B2cShopAccount.B2C_SHOP_ACCOUNT;
 	protected B2cMpAuthShop tableMpAuthShop = B2cMpAuthShop.B2C_MP_AUTH_SHOP;
 	protected B2cShop tableShop = B2cShop.B2C_SHOP;
 
-	public Result<B2cShopAccountRecord> getPageList(Map<String, String> options, int totalRows, Page page) {
-		SelectWhereStep<B2cShopAccountRecord> select = db().selectFrom(tableShopAccount);
-		select = this.buildOptions(select, options);
-		return select.orderBy(tableShopAccount.SYS_ID.desc())
-				.limit((page.currentPage - 1) * page.pageRows, page.pageRows).fetch();
+	final public static class ShopAccountListQueryParam {
+		public Byte state;
+		public Integer page;
+		public String keywords;
+		public String company;
+
+		public Byte getState() {
+			return state;
+		}
+
+		public void setState(Byte state) {
+			this.state = state;
+		}
+
+		public String getKeywords() {
+			return keywords;
+		}
+
+		public void setKeywords(String keywords) {
+			this.keywords = keywords;
+		}
+
+		public String getCompany() {
+			return company;
+		}
+
+		public void setCompany(String company) {
+			this.company = company;
+		}
+
+		public Integer getpage() {
+			return page;
+		}
+
+		public void setpage(Integer page) {
+			this.page = page;
+		}
+
+	};
+
+	public PageResult getPageList(ShopAccountListQueryParam param) {
+		SelectWhereStep<Record> select = db().select().from(tableShopAccount);
+		select = this.buildOptions(select, param);
+		select.orderBy(tableShopAccount.SYS_ID.desc());
+		return this.getPageResult(select, param.page);
 	}
 
-	public SelectWhereStep<B2cShopAccountRecord> buildOptions(SelectWhereStep<B2cShopAccountRecord> select,
-			Map<String, String> options) {
-		if (options.containsKey("keywords")) {
-			String keywords = likeValue(options.get("keywords"));
-			select.where(tableShopAccount.USER_NAME.like(keywords).or(tableShopAccount.ACCOUNT_NAME.like(keywords)));
+	public SelectWhereStep<Record> buildOptions(SelectWhereStep<Record> select, ShopAccountListQueryParam param) {
+		if (param == null) {
+			return select;
 		}
-		if (options.containsKey("state")) {
-			Byte state = Convert.convert(options.containsKey("state"), Byte.class);
-			select.where(tableShopAccount.STATE.eq(state));
+		if (!StringUtils.isEmpty(param.keywords)) {
+			select.where(tableShopAccount.USER_NAME.like(param.keywords)
+					.or(tableShopAccount.ACCOUNT_NAME.like(param.keywords)));
 		}
-
-		if (options.containsKey("business_state")) {
-			Byte business_state = Convert.convert(options.containsKey("business_state"), Byte.class);
-			if (business_state != -1)
-				select.where(tableShopAccount.BUSINESS_STATE.eq(business_state));
+		if (param.state != null && param.state != 0) {
+			select.where(tableShopAccount.STATE.eq(param.state));
 		}
 
-		if (options.containsKey("company")) {
-			String company = this.likeValue(options.get("company"));
-			select.where(tableShopAccount.COMPANY.like(company));
+		if (!StringUtils.isEmpty(param.company)) {
+			select.where(tableShopAccount.COMPANY.like(param.company));
 		}
 
-		if (options.containsKey("principal_name")) {
-			String principal_name = this.likeValue(options.get("principal_name"));
-			List<Integer> shopIds = db().selectFrom(tableMpAuthShop)
-					.where(tableMpAuthShop.PRINCIPAL_NAME.like(principal_name))
-					.fetch(tableMpAuthShop.SHOP_ID, Integer.class);
-			List<Integer> sysIds = db().selectFrom(tableShop).where(tableShop.SHOP_ID.in(shopIds))
-					.fetch(tableShop.SYS_ID, Integer.class);
-			select.where(tableShopAccount.SYS_ID.in(sysIds));
-		}
-
-		if (options.containsKey("user_name")) {
-			String user_name = this.likeValue(options.get("user_name"));
-			select.where(tableShopAccount.USER_NAME.like(user_name));
-		}
 		return select;
-	}
-
-	public Page getPage(int currentPage, int pageRows) {
-		int totalRows = db().fetchCount(tableShopAccount);
-		return Page.getPage(totalRows, currentPage, pageRows);
-	}
-
-	public Page getPage(int currentPage) {
-		int totalRows = db().fetchCount(tableShopAccount);
-		return Page.getPage(totalRows, currentPage, 20);
 	}
 
 	public B2cShopAccountRecord verify(String username, String password) {

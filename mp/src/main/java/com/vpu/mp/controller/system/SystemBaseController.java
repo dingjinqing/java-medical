@@ -7,11 +7,14 @@ import org.springframework.web.servlet.ModelAndView;
 import com.vpu.mp.controller.BaseController;
 import com.vpu.mp.service.auth.SystemAuth;
 import com.vpu.mp.service.saas.Saas;
-
+/**
+ * 
+ * @author 新国
+ *
+ */
 public class SystemBaseController extends BaseController {
 
-	@Autowired
-	protected Saas saas;
+	protected Saas saas = Saas.instance();
 	
 	@Autowired
 	protected SystemAuth sysAuth;

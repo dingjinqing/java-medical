@@ -2,7 +2,11 @@ package com.vpu.mp.service.foundation;
 
 import org.jooq.ExecuteContext;
 import org.jooq.impl.DefaultExecuteListener;
-
+/**
+ * 
+ * @author 新国
+ *
+ */
 public class ExceptionTranslator extends DefaultExecuteListener {
 	/**
 	 * 

@@ -1,11 +1,19 @@
 package com.vpu.mp.controller.system;
 
+import java.util.Map;
+
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.servlet.ModelAndView;
 
+import com.vpu.mp.service.foundation.Util;
 
+/**
+ * 
+ * @author 新国
+ *
+ */
 @Controller
 public class SystemIndexController extends SystemBaseController {
 
@@ -22,6 +30,15 @@ public class SystemIndexController extends SystemBaseController {
 	
 	@RequestMapping(value = "/system/welcome")
 	public ModelAndView welcome() {
+		
+		Map<String, String[]> rst = this.input();
+		System.out.println(Util.toJSON(rst));
+		
+		
+		String name1 = this.input("name1[]");
+		System.out.println(name1);
+		
+		
 		return view("system/welcome");
 	}
 	

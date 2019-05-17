@@ -12,7 +12,11 @@ import org.springframework.web.servlet.ModelAndView;
 
 import com.vpu.mp.controller.BaseController;
 import com.vpu.mp.service.foundation.JsonResult;
-
+/**
+ * 
+ * @author 新国
+ *
+ */
 @Controller
 public class LoginController extends BaseController {
 
@@ -21,7 +25,7 @@ public class LoginController extends BaseController {
 	
 	@RequestMapping(value = "/admin/login")
 	public ModelAndView login(HttpServletRequest request) {
-		if (request.getMethod() == "POST") {
+		if (isPost()) {
 
 		}
 		return view("admin/login");

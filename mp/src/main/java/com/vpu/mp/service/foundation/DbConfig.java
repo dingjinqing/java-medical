@@ -1,5 +1,9 @@
 package com.vpu.mp.service.foundation;
-
+/**
+ * 
+ * @author 新国
+ *
+ */
 public class DbConfig {
 	public String driver;
 	public String host;
@@ -7,7 +11,6 @@ public class DbConfig {
 	public String database;
 	public String username;
 	public String password;
-	public String unix_socket;
 	public String charset;
 	public String collation;
 	public String prefix;

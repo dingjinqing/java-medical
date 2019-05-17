@@ -12,15 +12,18 @@ import com.vpu.mp.db.main.tables.records.B2cSystemChildAccountRecord;
 import com.vpu.mp.db.main.tables.records.B2cSystemUserRecord;
 import com.vpu.mp.service.foundation.Util;
 import com.vpu.mp.service.saas.Saas;
-
+/**
+ * 
+ * @author 新国
+ *
+ */
 @Component
 public class SystemAuth {
 
 	@Autowired
 	HttpServletRequest request;
 
-	@Autowired
-	Saas saas;
+	Saas saas = Saas.instance();
 
 	public boolean isLogin() {
 		HashMap<String, Object> user = user();
@@ -47,10 +50,12 @@ public class SystemAuth {
 		B2cSystemUserRecord user = saas.sysUser.verify(username, password);
 		if (user == null) {
 			B2cSystemChildAccountRecord account = saas.childAccount.verify(username, password);
-			if (account == null)
+			if (account == null) {
 				return false;
+			}
+				
 			userId = account.getSystemUserId();
-			HashMap<String, Object> map = new HashMap<String, Object>();
+			HashMap<String, Object> map = new HashMap<String, Object>(0);
 			map.put("system_user_id", account.getSystemUserId());
 			map.put("user_name", account.getAccountName());
 			map.put("mobile", account.getMobile());
@@ -61,7 +66,7 @@ public class SystemAuth {
 			session("sys_login_user",map);
 		} else {
 			userId = user.getSystemUserId().intValue();
-			HashMap<String, Object> map = new HashMap<String, Object>();
+			HashMap<String, Object> map = new HashMap<String, Object>(0);
 			map.put("system_user_id", user.getSystemUserId());
 			map.put("user_name", user.getUserName());
 			map.put("mobile", user.getMobile());

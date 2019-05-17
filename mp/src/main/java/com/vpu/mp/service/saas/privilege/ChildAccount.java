@@ -7,7 +7,11 @@ import com.vpu.mp.db.main.tables.B2cSystemRole;
 import com.vpu.mp.db.main.tables.records.B2cSystemChildAccountRecord;
 import com.vpu.mp.service.foundation.BaseComponent;
 import com.vpu.mp.service.foundation.Util;
-
+/**
+ * 
+ * @author 新国
+ *
+ */
 public class ChildAccount extends BaseComponent {
 	protected B2cSystemChildAccount tableAccount = B2cSystemChildAccount.B2C_SYSTEM_CHILD_ACCOUNT;
 	protected B2cSystemRole tableRole = B2cSystemRole.B2C_SYSTEM_ROLE;

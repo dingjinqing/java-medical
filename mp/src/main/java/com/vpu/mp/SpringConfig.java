@@ -6,7 +6,11 @@ import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
 import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Component;
-
+/**
+ * 
+ * @author 新国
+ *
+ */
 @Component
 public class SpringConfig implements ApplicationContextAware{
 
