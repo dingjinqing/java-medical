@@ -18,6 +18,9 @@
 			your own code style. Supported generators: - org.jooq.codegen.JavaGenerator 
 			- org.jooq.codegen.ScalaGenerator Defaults to org.jooq.codegen.JavaGenerator -->
 		<name>org.jooq.codegen.JavaGenerator</name>
+		<strategy>
+			<name>vpu.com.jooq.tool.AsInDatabaseStrategy</name>
+		</strategy>
 
 		<database>
 			<!-- The database type. The format here is: org.jooq.meta.[database].[database]Database -->
@@ -45,7 +48,8 @@
 
 			<!-- The destination directory of your generated classes. Using Maven 
 				directory layout here -->
-			<directory>D:/svn/java/mp/src/main/java</directory>
+			<!-- <directory>D:/svn/java/mp/src/main/java</directory> -->
+			<directory>/Users/lixinguo/eclipse-workspace/jooq.tool/</directory>
 		</target>
 		<generate>
 			<pojos>false</pojos>

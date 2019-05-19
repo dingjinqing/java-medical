@@ -4,7 +4,6 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.jooq.Result;
-import org.jooq.tools.StringUtils;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -12,7 +11,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
 
-import com.vpu.mp.db.main.tables.records.B2cDictCityRecord;
+import com.vpu.mp.db.main.tables.records.DictCityRecord;
 import com.vpu.mp.service.foundation.JsonResult;
 import com.vpu.mp.service.foundation.PageResult;
 import com.vpu.mp.service.saas.shop.ShopAccount.ShopAccountListQueryParam;
@@ -100,7 +99,7 @@ public class ShopAccountController extends SystemBaseController {
 			@RequestParam(value = "city_id", required = false, defaultValue = "0") Integer cityId) {
 		if (provinceId != 0) {
 			Map<String, Object> data = new HashMap<String, Object>(2);
-			Result<B2cDictCityRecord> r = saas.region.city.getCityList(provinceId);
+			Result<DictCityRecord> r = saas.region.city.getCityList(provinceId);
 			cityId = r.size() > 0 ? r.get(0).getCityId() : 0;
 			data.put("city", r.intoMaps());
 			data.put("district", saas.region.district.getDistrictList(cityId).intoMaps());

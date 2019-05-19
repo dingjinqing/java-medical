@@ -61,7 +61,7 @@ public class Util {
 
 	static public String getCleintIp(HttpServletRequest request) {
 		String ipAddress = null;
-		String unkown = "unknown"; 
+		String unkown = "unknown";
 		String localhost = "127.0.0.1";
 		String comma = ",";
 		Integer maxIpLength = 15;
@@ -87,7 +87,7 @@ public class Util {
 				}
 			}
 			// 对于通过多个代理的情况，第一个IP为客户端真实IP,多个IP按照','分割
-			if (ipAddress != null && ipAddress.length() > maxIpLength) {  
+			if (ipAddress != null && ipAddress.length() > maxIpLength) {
 				if (ipAddress.indexOf(comma) > 0) {
 					ipAddress = ipAddress.substring(0, ipAddress.indexOf(comma));
 				}
@@ -104,17 +104,16 @@ public class Util {
 
 	public static void initComponents(Object o) {
 		Integer shopId = (Integer) getObjectProperty(o, "shopId");
-		System.out.println("getProperty shopId = " + shopId);
 		if (shopId == null) {
 			shopId = 0;
 		}
-			
 
 		Field[] fields = o.getClass().getDeclaredFields();
 		for (Field field : fields) {
 			boolean ret = BaseComponent.class.isAssignableFrom(field.getType());
 			if (ret) {
-				System.out.println("initComponents class: " + o.getClass() + ", field: " + field.getType().toString());
+				System.out.println("initComponents " + o.getClass().getSimpleName() + "=>"
+						+ field.getType().getSimpleName() + "(" + shopId + ")");
 				field.setAccessible(true);
 
 				try {
@@ -155,7 +154,7 @@ public class Util {
 		return null;
 	}
 
-	public static String getProperty(String path,String key) {
+	public static String getProperty(String path, String key) {
 		try {
 			ClassPathResource resource = new ClassPathResource(path);
 			Properties properties = PropertiesLoaderUtils.loadProperties(resource);

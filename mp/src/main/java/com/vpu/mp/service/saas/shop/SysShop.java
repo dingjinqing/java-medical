@@ -1,7 +1,5 @@
 package com.vpu.mp.service.saas.shop;
 
-import java.util.Map;
-
 import org.apache.commons.lang3.ArrayUtils;
 import org.jooq.Field;
 import org.jooq.Record;
@@ -10,9 +8,9 @@ import org.jooq.Result;
 import org.jooq.SelectWhereStep;
 import org.jooq.impl.DSL;
 
-import com.vpu.mp.db.main.tables.B2cMpAuthShop;
-import com.vpu.mp.db.main.tables.B2cShop;
-import com.vpu.mp.db.main.tables.B2cShopAccount;
+import static com.vpu.mp.db.main.tables.MpAuthShop.MP_AUTH_SHOP;
+import static com.vpu.mp.db.main.tables.Shop.SHOP;
+import static com.vpu.mp.db.main.tables.ShopAccount.SHOP_ACCOUNT;
 import com.vpu.mp.service.foundation.BaseComponent;
 import com.vpu.mp.service.foundation.Page;
 import com.vpu.mp.service.foundation.PageResult;
@@ -24,29 +22,19 @@ import com.vpu.mp.service.foundation.PageResult;
 public class SysShop extends BaseComponent {
 	
 	public ShopAccount accout;
-	
 	public ShopRenew renew;
 	
-	protected B2cShop tableShop = B2cShop.B2C_SHOP;
-	protected B2cShopAccount tableShopAccount = B2cShopAccount.B2C_SHOP_ACCOUNT;
-	protected B2cMpAuthShop tableMpAuthShop = B2cMpAuthShop.B2C_MP_AUTH_SHOP;
-
 	public PageResult getShopPageList() {
-		SelectWhereStep<Record> select = db().select().from(tableShop);
+		SelectWhereStep<Record> select = db().select().from(SHOP);
 		return this.getPageResult(select);
 	}
 	
-	public Result<Record> getPageList(Map<String, String> options, int totalRows, Page page) {
-		B2cShop a = tableShop.as("a");
-		B2cShopAccount b = tableShopAccount.as("b");
-		B2cMpAuthShop c = tableMpAuthShop.as("c");
-		Field<?>[] fs = { c.APP_ID, c.IS_AUTH_OK, c.NICK_NAME, c.PRINCIPAL_NAME };
-		Field<?>[] fields = ArrayUtils.addAll(a.fields(), fs);
+	public Result<Record> getPageList(int totalRows, Page page) {
+		Field<?>[] fs = { MP_AUTH_SHOP.APP_ID, MP_AUTH_SHOP.IS_AUTH_OK, MP_AUTH_SHOP.NICK_NAME, MP_AUTH_SHOP.PRINCIPAL_NAME };
+		Field<?>[] fields = ArrayUtils.addAll(SHOP.fields(), fs);
 		
-			
-		
-		return db().select(fields).from(a).join(b).on(a.SYS_ID.eq(b.SYS_ID)).join(c)
-				.on(a.SHOP_ID.eq(DSL.sign(c.SHOP_ID))).orderBy(a.CREATED.desc())
+		return db().select(fields).from(SHOP).join(SHOP_ACCOUNT).on(SHOP.SYS_ID.eq(SHOP_ACCOUNT.SYS_ID)).join(MP_AUTH_SHOP)
+				.on(SHOP.SHOP_ID.eq(DSL.cast(MP_AUTH_SHOP.SHOP_ID,Integer.class))).orderBy(SHOP.CREATED.desc())
 				.limit((page.currentPage - 1) * page.pageRows, page.pageRows).fetch();
 	}
 

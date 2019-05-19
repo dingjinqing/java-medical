@@ -4,245 +4,253 @@
 package com.vpu.mp.db.shop;
 
 
-import com.vpu.mp.db.shop.tables.B2cAdminLoginRecord;
-import com.vpu.mp.db.shop.tables.B2cArticle;
-import com.vpu.mp.db.shop.tables.B2cArticleCategory;
-import com.vpu.mp.db.shop.tables.B2cAttribute;
-import com.vpu.mp.db.shop.tables.B2cAttributeName;
-import com.vpu.mp.db.shop.tables.B2cAttributeValues;
-import com.vpu.mp.db.shop.tables.B2cAttributeValuesIndex;
-import com.vpu.mp.db.shop.tables.B2cBargain;
-import com.vpu.mp.db.shop.tables.B2cBargainRecord;
-import com.vpu.mp.db.shop.tables.B2cBargainUserList;
-import com.vpu.mp.db.shop.tables.B2cBatchPrice;
-import com.vpu.mp.db.shop.tables.B2cBatchPriceDefine;
-import com.vpu.mp.db.shop.tables.B2cBatchProfit;
-import com.vpu.mp.db.shop.tables.B2cBrandClassify;
-import com.vpu.mp.db.shop.tables.B2cCardBatch;
-import com.vpu.mp.db.shop.tables.B2cCardConsumer;
-import com.vpu.mp.db.shop.tables.B2cCardExamine;
-import com.vpu.mp.db.shop.tables.B2cCardOrder;
-import com.vpu.mp.db.shop.tables.B2cCardReceiveCode;
-import com.vpu.mp.db.shop.tables.B2cCardUpgrade;
-import com.vpu.mp.db.shop.tables.B2cCart;
-import com.vpu.mp.db.shop.tables.B2cCategory;
-import com.vpu.mp.db.shop.tables.B2cChannel;
-import com.vpu.mp.db.shop.tables.B2cChannelRecord;
-import com.vpu.mp.db.shop.tables.B2cChannelStatistical;
-import com.vpu.mp.db.shop.tables.B2cChargeMoney;
-import com.vpu.mp.db.shop.tables.B2cCode;
-import com.vpu.mp.db.shop.tables.B2cCommentGoods;
-import com.vpu.mp.db.shop.tables.B2cCommentGoodsAnswer;
-import com.vpu.mp.db.shop.tables.B2cCommentService;
-import com.vpu.mp.db.shop.tables.B2cCommentTag;
-import com.vpu.mp.db.shop.tables.B2cCouponActivity;
-import com.vpu.mp.db.shop.tables.B2cCouponActivityRecord;
-import com.vpu.mp.db.shop.tables.B2cCouponPayrewardRecord;
-import com.vpu.mp.db.shop.tables.B2cCustomerAvailCoupons;
-import com.vpu.mp.db.shop.tables.B2cCustomerPageTemplate;
-import com.vpu.mp.db.shop.tables.B2cDecorateLink;
-import com.vpu.mp.db.shop.tables.B2cDeliverFeeTemplate;
-import com.vpu.mp.db.shop.tables.B2cDeliveryType;
-import com.vpu.mp.db.shop.tables.B2cDistributionOrder;
-import com.vpu.mp.db.shop.tables.B2cDistributionStrategy;
-import com.vpu.mp.db.shop.tables.B2cDistributionTag;
-import com.vpu.mp.db.shop.tables.B2cDistributionWithdraw;
-import com.vpu.mp.db.shop.tables.B2cDistributorApply;
-import com.vpu.mp.db.shop.tables.B2cDistributorGroup;
-import com.vpu.mp.db.shop.tables.B2cDistributorLevel;
-import com.vpu.mp.db.shop.tables.B2cDistributorLevelRecord;
-import com.vpu.mp.db.shop.tables.B2cFanliGoodsStatistics;
-import com.vpu.mp.db.shop.tables.B2cFootprintRecord;
-import com.vpu.mp.db.shop.tables.B2cFormPage;
-import com.vpu.mp.db.shop.tables.B2cFormSubmitDetails;
-import com.vpu.mp.db.shop.tables.B2cFormSubmitList;
-import com.vpu.mp.db.shop.tables.B2cFriendPromoteActivity;
-import com.vpu.mp.db.shop.tables.B2cFriendPromoteDetail;
-import com.vpu.mp.db.shop.tables.B2cFriendPromoteLaunch;
-import com.vpu.mp.db.shop.tables.B2cFriendPromoteTimes;
-import com.vpu.mp.db.shop.tables.B2cGift;
-import com.vpu.mp.db.shop.tables.B2cGiftProduct;
-import com.vpu.mp.db.shop.tables.B2cGiveVoucher;
-import com.vpu.mp.db.shop.tables.B2cGoods;
-import com.vpu.mp.db.shop.tables.B2cGoodsBak;
-import com.vpu.mp.db.shop.tables.B2cGoodsBrand;
-import com.vpu.mp.db.shop.tables.B2cGoodsCardCouple;
-import com.vpu.mp.db.shop.tables.B2cGoodsCollocation;
-import com.vpu.mp.db.shop.tables.B2cGoodsDeliverTemplateLink;
-import com.vpu.mp.db.shop.tables.B2cGoodsImg;
-import com.vpu.mp.db.shop.tables.B2cGoodsImport;
-import com.vpu.mp.db.shop.tables.B2cGoodsImportDetail;
-import com.vpu.mp.db.shop.tables.B2cGoodsLabel;
-import com.vpu.mp.db.shop.tables.B2cGoodsLabelCouple;
-import com.vpu.mp.db.shop.tables.B2cGoodsOpaiSpec;
-import com.vpu.mp.db.shop.tables.B2cGoodsRebatePrice;
-import com.vpu.mp.db.shop.tables.B2cGoodsSpecProduct;
-import com.vpu.mp.db.shop.tables.B2cGoodsSpecProductBak;
-import com.vpu.mp.db.shop.tables.B2cGoodsSummary;
-import com.vpu.mp.db.shop.tables.B2cGoodsUserSummary;
-import com.vpu.mp.db.shop.tables.B2cGradePrd;
-import com.vpu.mp.db.shop.tables.B2cGroup;
-import com.vpu.mp.db.shop.tables.B2cGroupDraw;
-import com.vpu.mp.db.shop.tables.B2cGroupDrawInvite;
-import com.vpu.mp.db.shop.tables.B2cImportGoods;
-import com.vpu.mp.db.shop.tables.B2cIncomeOutcomeDetail;
-import com.vpu.mp.db.shop.tables.B2cIndexFootRecord;
-import com.vpu.mp.db.shop.tables.B2cIntegralMallDefine;
-import com.vpu.mp.db.shop.tables.B2cIntegralMallProduct;
-import com.vpu.mp.db.shop.tables.B2cIntegralMallRecord;
-import com.vpu.mp.db.shop.tables.B2cInvoice;
-import com.vpu.mp.db.shop.tables.B2cInvoiceNew;
-import com.vpu.mp.db.shop.tables.B2cJoinDrawList;
-import com.vpu.mp.db.shop.tables.B2cJoinGroupList;
-import com.vpu.mp.db.shop.tables.B2cLottery;
-import com.vpu.mp.db.shop.tables.B2cLotteryRecord;
-import com.vpu.mp.db.shop.tables.B2cLotteryShare;
-import com.vpu.mp.db.shop.tables.B2cMemberCard;
-import com.vpu.mp.db.shop.tables.B2cMessageTemplate;
-import com.vpu.mp.db.shop.tables.B2cMpDailyRetain;
-import com.vpu.mp.db.shop.tables.B2cMpDailyVisit;
-import com.vpu.mp.db.shop.tables.B2cMpDistributionVisit;
-import com.vpu.mp.db.shop.tables.B2cMpJump;
-import com.vpu.mp.db.shop.tables.B2cMpJumpUsable;
-import com.vpu.mp.db.shop.tables.B2cMpMonthlyRetain;
-import com.vpu.mp.db.shop.tables.B2cMpMonthlyVisit;
-import com.vpu.mp.db.shop.tables.B2cMpSceneRecord;
-import com.vpu.mp.db.shop.tables.B2cMpSummaryTrend;
-import com.vpu.mp.db.shop.tables.B2cMpTemplateFormId;
-import com.vpu.mp.db.shop.tables.B2cMpUser;
-import com.vpu.mp.db.shop.tables.B2cMpUserPortrait;
-import com.vpu.mp.db.shop.tables.B2cMpVisitPage;
-import com.vpu.mp.db.shop.tables.B2cMpWeeklyRetain;
-import com.vpu.mp.db.shop.tables.B2cMpWeeklyVisit;
-import com.vpu.mp.db.shop.tables.B2cMrkingActivityRecord;
-import com.vpu.mp.db.shop.tables.B2cMrkingStrategy;
-import com.vpu.mp.db.shop.tables.B2cMrkingStrategyCondition;
-import com.vpu.mp.db.shop.tables.B2cMrkingVoucher;
-import com.vpu.mp.db.shop.tables.B2cOrderAction;
-import com.vpu.mp.db.shop.tables.B2cOrderGoods;
-import com.vpu.mp.db.shop.tables.B2cOrderGoodsRebate;
-import com.vpu.mp.db.shop.tables.B2cOrderInfo;
-import com.vpu.mp.db.shop.tables.B2cOrderMust;
-import com.vpu.mp.db.shop.tables.B2cOrderRefundRecord;
-import com.vpu.mp.db.shop.tables.B2cOrderVerifier;
-import com.vpu.mp.db.shop.tables.B2cPackageGoodsCart;
-import com.vpu.mp.db.shop.tables.B2cPackageSale;
-import com.vpu.mp.db.shop.tables.B2cPageClassification;
-import com.vpu.mp.db.shop.tables.B2cPartOrderGoodsShip;
-import com.vpu.mp.db.shop.tables.B2cPayment;
-import com.vpu.mp.db.shop.tables.B2cPaymentRecord;
-import com.vpu.mp.db.shop.tables.B2cPictorial;
-import com.vpu.mp.db.shop.tables.B2cPinGroupDefine;
-import com.vpu.mp.db.shop.tables.B2cPinGroupList;
-import com.vpu.mp.db.shop.tables.B2cPinGroupProductDefine;
-import com.vpu.mp.db.shop.tables.B2cPinIntegrationDefine;
-import com.vpu.mp.db.shop.tables.B2cPinIntegrationList;
-import com.vpu.mp.db.shop.tables.B2cPresale;
-import com.vpu.mp.db.shop.tables.B2cPresaleProduct;
-import com.vpu.mp.db.shop.tables.B2cProductBrand;
-import com.vpu.mp.db.shop.tables.B2cPurchasePriceDefine;
-import com.vpu.mp.db.shop.tables.B2cPurchasePriceRule;
-import com.vpu.mp.db.shop.tables.B2cRebatePriceRecord;
-import com.vpu.mp.db.shop.tables.B2cRecentlyBrowsed;
-import com.vpu.mp.db.shop.tables.B2cRecommendGoods;
-import com.vpu.mp.db.shop.tables.B2cRecordAdminAction;
-import com.vpu.mp.db.shop.tables.B2cReducePrice;
-import com.vpu.mp.db.shop.tables.B2cReducePriceGoods;
-import com.vpu.mp.db.shop.tables.B2cReducePriceProduct;
-import com.vpu.mp.db.shop.tables.B2cRefundAmountRecord;
-import com.vpu.mp.db.shop.tables.B2cRefundCardRecord;
-import com.vpu.mp.db.shop.tables.B2cRequestRecord;
-import com.vpu.mp.db.shop.tables.B2cReturnOrder;
-import com.vpu.mp.db.shop.tables.B2cReturnOrderGoods;
-import com.vpu.mp.db.shop.tables.B2cReturnStatusChange;
-import com.vpu.mp.db.shop.tables.B2cSearchHistory;
-import com.vpu.mp.db.shop.tables.B2cSecKillDefine;
-import com.vpu.mp.db.shop.tables.B2cSecKillList;
-import com.vpu.mp.db.shop.tables.B2cSecKillProductDefine;
-import com.vpu.mp.db.shop.tables.B2cServiceCategory;
-import com.vpu.mp.db.shop.tables.B2cServiceMessageRecord;
-import com.vpu.mp.db.shop.tables.B2cServiceOrder;
-import com.vpu.mp.db.shop.tables.B2cServiceRequest;
-import com.vpu.mp.db.shop.tables.B2cServiceSchedule;
-import com.vpu.mp.db.shop.tables.B2cServiceTechnician;
-import com.vpu.mp.db.shop.tables.B2cServiceTechnicianGroup;
-import com.vpu.mp.db.shop.tables.B2cServiceTechnicianSchedule;
-import com.vpu.mp.db.shop.tables.B2cShareRecord;
-import com.vpu.mp.db.shop.tables.B2cShareSplit;
-import com.vpu.mp.db.shop.tables.B2cShipping;
-import com.vpu.mp.db.shop.tables.B2cShop;
-import com.vpu.mp.db.shop.tables.B2cShopCfg;
-import com.vpu.mp.db.shop.tables.B2cShopChildAccount;
-import com.vpu.mp.db.shop.tables.B2cShopRole;
-import com.vpu.mp.db.shop.tables.B2cShopScoreCfg;
-import com.vpu.mp.db.shop.tables.B2cSms;
-import com.vpu.mp.db.shop.tables.B2cSmsSendRecord;
-import com.vpu.mp.db.shop.tables.B2cSort;
-import com.vpu.mp.db.shop.tables.B2cSpec;
-import com.vpu.mp.db.shop.tables.B2cSpecVals;
-import com.vpu.mp.db.shop.tables.B2cStatisticsSummary;
-import com.vpu.mp.db.shop.tables.B2cStore;
-import com.vpu.mp.db.shop.tables.B2cStoreGoods;
-import com.vpu.mp.db.shop.tables.B2cStoreGroup;
-import com.vpu.mp.db.shop.tables.B2cStoreOrder;
-import com.vpu.mp.db.shop.tables.B2cStoreService;
-import com.vpu.mp.db.shop.tables.B2cSubOrderInfo;
-import com.vpu.mp.db.shop.tables.B2cTag;
-import com.vpu.mp.db.shop.tables.B2cTemplateConfig;
-import com.vpu.mp.db.shop.tables.B2cTrades;
-import com.vpu.mp.db.shop.tables.B2cTradesRecord;
-import com.vpu.mp.db.shop.tables.B2cTradesRecordSummary;
-import com.vpu.mp.db.shop.tables.B2cUploadedImage;
-import com.vpu.mp.db.shop.tables.B2cUploadedImageCategory;
-import com.vpu.mp.db.shop.tables.B2cUploadedVideo;
-import com.vpu.mp.db.shop.tables.B2cUploadedVideoCategory;
-import com.vpu.mp.db.shop.tables.B2cUser;
-import com.vpu.mp.db.shop.tables.B2cUserAccount;
-import com.vpu.mp.db.shop.tables.B2cUserAddress;
-import com.vpu.mp.db.shop.tables.B2cUserCard;
-import com.vpu.mp.db.shop.tables.B2cUserCartRecord;
-import com.vpu.mp.db.shop.tables.B2cUserCollection;
-import com.vpu.mp.db.shop.tables.B2cUserDetail;
-import com.vpu.mp.db.shop.tables.B2cUserExplain;
-import com.vpu.mp.db.shop.tables.B2cUserFanliStatistics;
-import com.vpu.mp.db.shop.tables.B2cUserGoodsRecord;
-import com.vpu.mp.db.shop.tables.B2cUserGrade;
-import com.vpu.mp.db.shop.tables.B2cUserGrowth;
-import com.vpu.mp.db.shop.tables.B2cUserGrowthSet;
-import com.vpu.mp.db.shop.tables.B2cUserImport;
-import com.vpu.mp.db.shop.tables.B2cUserImportDetail;
-import com.vpu.mp.db.shop.tables.B2cUserLoginRecord;
-import com.vpu.mp.db.shop.tables.B2cUserMsg;
-import com.vpu.mp.db.shop.tables.B2cUserRebatePrice;
-import com.vpu.mp.db.shop.tables.B2cUserScore;
-import com.vpu.mp.db.shop.tables.B2cUserScoreSet;
-import com.vpu.mp.db.shop.tables.B2cUserSummaryTrend;
-import com.vpu.mp.db.shop.tables.B2cUserTag;
-import com.vpu.mp.db.shop.tables.B2cUserTotalFanli;
-import com.vpu.mp.db.shop.tables.B2cUserUpgrade;
-import com.vpu.mp.db.shop.tables.B2cWxShoppingRecommend;
-import com.vpu.mp.db.shop.tables.B2cWxpKeywordsStat;
-import com.vpu.mp.db.shop.tables.B2cWxpList;
-import com.vpu.mp.db.shop.tables.B2cWxpMassSendMsg;
-import com.vpu.mp.db.shop.tables.B2cWxpMaterial;
-import com.vpu.mp.db.shop.tables.B2cWxpMenuCfg;
-import com.vpu.mp.db.shop.tables.B2cWxpMenuStat;
-import com.vpu.mp.db.shop.tables.B2cWxpMessage;
-import com.vpu.mp.db.shop.tables.B2cWxpMsgStat;
-import com.vpu.mp.db.shop.tables.B2cWxpQrCode;
-import com.vpu.mp.db.shop.tables.B2cWxpResponseCfg;
-import com.vpu.mp.db.shop.tables.B2cWxpSubStat;
-import com.vpu.mp.db.shop.tables.B2cWxpUnlimitCode;
-import com.vpu.mp.db.shop.tables.B2cWxpUnlimitScene;
-import com.vpu.mp.db.shop.tables.B2cWxpUser;
-import com.vpu.mp.db.shop.tables.B2cWxpUserGroup;
-import com.vpu.mp.db.shop.tables.B2cXcxCustomerPage;
+import com.vpu.mp.db.shop.tables.AdminLoginRecord;
+import com.vpu.mp.db.shop.tables.Article;
+import com.vpu.mp.db.shop.tables.ArticleCategory;
+import com.vpu.mp.db.shop.tables.AssessActivity;
+import com.vpu.mp.db.shop.tables.AssessRecord;
+import com.vpu.mp.db.shop.tables.AssessResult;
+import com.vpu.mp.db.shop.tables.AssessTopic;
+import com.vpu.mp.db.shop.tables.Attribute;
+import com.vpu.mp.db.shop.tables.AttributeName;
+import com.vpu.mp.db.shop.tables.AttributeValues;
+import com.vpu.mp.db.shop.tables.AttributeValuesIndex;
+import com.vpu.mp.db.shop.tables.Bargain;
+import com.vpu.mp.db.shop.tables.BargainRecord;
+import com.vpu.mp.db.shop.tables.BargainUserList;
+import com.vpu.mp.db.shop.tables.BatchPrice;
+import com.vpu.mp.db.shop.tables.BatchPriceDefine;
+import com.vpu.mp.db.shop.tables.BatchProfit;
+import com.vpu.mp.db.shop.tables.BrandClassify;
+import com.vpu.mp.db.shop.tables.CardBatch;
+import com.vpu.mp.db.shop.tables.CardConsumer;
+import com.vpu.mp.db.shop.tables.CardExamine;
+import com.vpu.mp.db.shop.tables.CardOrder;
+import com.vpu.mp.db.shop.tables.CardReceiveCode;
+import com.vpu.mp.db.shop.tables.CardUpgrade;
+import com.vpu.mp.db.shop.tables.Cart;
+import com.vpu.mp.db.shop.tables.Category;
+import com.vpu.mp.db.shop.tables.Channel;
+import com.vpu.mp.db.shop.tables.ChannelRecord;
+import com.vpu.mp.db.shop.tables.ChannelStatistical;
+import com.vpu.mp.db.shop.tables.ChargeMoney;
+import com.vpu.mp.db.shop.tables.Code;
+import com.vpu.mp.db.shop.tables.CommentGoods;
+import com.vpu.mp.db.shop.tables.CommentGoodsAnswer;
+import com.vpu.mp.db.shop.tables.CommentService;
+import com.vpu.mp.db.shop.tables.CommentTag;
+import com.vpu.mp.db.shop.tables.CouponActivity;
+import com.vpu.mp.db.shop.tables.CouponActivityRecord;
+import com.vpu.mp.db.shop.tables.CouponPayrewardRecord;
+import com.vpu.mp.db.shop.tables.CustomerAvailCoupons;
+import com.vpu.mp.db.shop.tables.CustomerPageTemplate;
+import com.vpu.mp.db.shop.tables.DecorateLink;
+import com.vpu.mp.db.shop.tables.DeliverFeeTemplate;
+import com.vpu.mp.db.shop.tables.DeliveryType;
+import com.vpu.mp.db.shop.tables.DistributionOrder;
+import com.vpu.mp.db.shop.tables.DistributionStrategy;
+import com.vpu.mp.db.shop.tables.DistributionTag;
+import com.vpu.mp.db.shop.tables.DistributionWithdraw;
+import com.vpu.mp.db.shop.tables.DistributorApply;
+import com.vpu.mp.db.shop.tables.DistributorGroup;
+import com.vpu.mp.db.shop.tables.DistributorLevel;
+import com.vpu.mp.db.shop.tables.DistributorLevelRecord;
+import com.vpu.mp.db.shop.tables.FanliGoodsStatistics;
+import com.vpu.mp.db.shop.tables.FootprintRecord;
+import com.vpu.mp.db.shop.tables.FormPage;
+import com.vpu.mp.db.shop.tables.FormSubmitDetails;
+import com.vpu.mp.db.shop.tables.FormSubmitList;
+import com.vpu.mp.db.shop.tables.FreeShipping;
+import com.vpu.mp.db.shop.tables.FreeShippingRule;
+import com.vpu.mp.db.shop.tables.FriendPromoteActivity;
+import com.vpu.mp.db.shop.tables.FriendPromoteDetail;
+import com.vpu.mp.db.shop.tables.FriendPromoteLaunch;
+import com.vpu.mp.db.shop.tables.FriendPromoteTimes;
+import com.vpu.mp.db.shop.tables.Gift;
+import com.vpu.mp.db.shop.tables.GiftProduct;
+import com.vpu.mp.db.shop.tables.GiveVoucher;
+import com.vpu.mp.db.shop.tables.Goods;
+import com.vpu.mp.db.shop.tables.GoodsBak;
+import com.vpu.mp.db.shop.tables.GoodsBrand;
+import com.vpu.mp.db.shop.tables.GoodsCardCouple;
+import com.vpu.mp.db.shop.tables.GoodsCollocation;
+import com.vpu.mp.db.shop.tables.GoodsDeliverTemplateLink;
+import com.vpu.mp.db.shop.tables.GoodsImg;
+import com.vpu.mp.db.shop.tables.GoodsImport;
+import com.vpu.mp.db.shop.tables.GoodsImportDetail;
+import com.vpu.mp.db.shop.tables.GoodsLabel;
+import com.vpu.mp.db.shop.tables.GoodsLabelCouple;
+import com.vpu.mp.db.shop.tables.GoodsOpaiSpec;
+import com.vpu.mp.db.shop.tables.GoodsRebatePrice;
+import com.vpu.mp.db.shop.tables.GoodsSpecProduct;
+import com.vpu.mp.db.shop.tables.GoodsSpecProductBak;
+import com.vpu.mp.db.shop.tables.GoodsSummary;
+import com.vpu.mp.db.shop.tables.GoodsUserSummary;
+import com.vpu.mp.db.shop.tables.GradePrd;
+import com.vpu.mp.db.shop.tables.Group;
+import com.vpu.mp.db.shop.tables.GroupDraw;
+import com.vpu.mp.db.shop.tables.GroupDrawInvite;
+import com.vpu.mp.db.shop.tables.ImportGoods;
+import com.vpu.mp.db.shop.tables.IncomeOutcomeDetail;
+import com.vpu.mp.db.shop.tables.IndexFootRecord;
+import com.vpu.mp.db.shop.tables.IntegralMallDefine;
+import com.vpu.mp.db.shop.tables.IntegralMallProduct;
+import com.vpu.mp.db.shop.tables.IntegralMallRecord;
+import com.vpu.mp.db.shop.tables.Invoice;
+import com.vpu.mp.db.shop.tables.InvoiceNew;
+import com.vpu.mp.db.shop.tables.JoinDrawList;
+import com.vpu.mp.db.shop.tables.JoinGroupList;
+import com.vpu.mp.db.shop.tables.Lottery;
+import com.vpu.mp.db.shop.tables.LotteryRecord;
+import com.vpu.mp.db.shop.tables.LotteryShare;
+import com.vpu.mp.db.shop.tables.MemberCard;
+import com.vpu.mp.db.shop.tables.MessageTemplate;
+import com.vpu.mp.db.shop.tables.MpDailyRetain;
+import com.vpu.mp.db.shop.tables.MpDailyVisit;
+import com.vpu.mp.db.shop.tables.MpDistributionVisit;
+import com.vpu.mp.db.shop.tables.MpJump;
+import com.vpu.mp.db.shop.tables.MpJumpUsable;
+import com.vpu.mp.db.shop.tables.MpMonthlyRetain;
+import com.vpu.mp.db.shop.tables.MpMonthlyVisit;
+import com.vpu.mp.db.shop.tables.MpSceneRecord;
+import com.vpu.mp.db.shop.tables.MpSummaryTrend;
+import com.vpu.mp.db.shop.tables.MpTemplateFormId;
+import com.vpu.mp.db.shop.tables.MpUser;
+import com.vpu.mp.db.shop.tables.MpUserPortrait;
+import com.vpu.mp.db.shop.tables.MpVisitPage;
+import com.vpu.mp.db.shop.tables.MpWeeklyRetain;
+import com.vpu.mp.db.shop.tables.MpWeeklyVisit;
+import com.vpu.mp.db.shop.tables.MrkingActivityRecord;
+import com.vpu.mp.db.shop.tables.MrkingStrategy;
+import com.vpu.mp.db.shop.tables.MrkingStrategyCondition;
+import com.vpu.mp.db.shop.tables.MrkingVoucher;
+import com.vpu.mp.db.shop.tables.OrderAction;
+import com.vpu.mp.db.shop.tables.OrderGoods;
+import com.vpu.mp.db.shop.tables.OrderGoodsRebate;
+import com.vpu.mp.db.shop.tables.OrderInfo;
+import com.vpu.mp.db.shop.tables.OrderMust;
+import com.vpu.mp.db.shop.tables.OrderRefundRecord;
+import com.vpu.mp.db.shop.tables.OrderVerifier;
+import com.vpu.mp.db.shop.tables.PackageGoodsCart;
+import com.vpu.mp.db.shop.tables.PackageSale;
+import com.vpu.mp.db.shop.tables.PageClassification;
+import com.vpu.mp.db.shop.tables.PartOrderGoodsShip;
+import com.vpu.mp.db.shop.tables.Payment;
+import com.vpu.mp.db.shop.tables.PaymentRecord;
+import com.vpu.mp.db.shop.tables.Pictorial;
+import com.vpu.mp.db.shop.tables.PinGroupDefine;
+import com.vpu.mp.db.shop.tables.PinGroupList;
+import com.vpu.mp.db.shop.tables.PinGroupProductDefine;
+import com.vpu.mp.db.shop.tables.PinIntegrationDefine;
+import com.vpu.mp.db.shop.tables.PinIntegrationList;
+import com.vpu.mp.db.shop.tables.Pledge;
+import com.vpu.mp.db.shop.tables.Presale;
+import com.vpu.mp.db.shop.tables.PresaleProduct;
+import com.vpu.mp.db.shop.tables.ProductBrand;
+import com.vpu.mp.db.shop.tables.PurchasePriceDefine;
+import com.vpu.mp.db.shop.tables.PurchasePriceRule;
+import com.vpu.mp.db.shop.tables.RebatePriceRecord;
+import com.vpu.mp.db.shop.tables.RecentlyBrowsed;
+import com.vpu.mp.db.shop.tables.RecommendGoods;
+import com.vpu.mp.db.shop.tables.RecordAdminAction;
+import com.vpu.mp.db.shop.tables.ReducePrice;
+import com.vpu.mp.db.shop.tables.ReducePriceGoods;
+import com.vpu.mp.db.shop.tables.ReducePriceProduct;
+import com.vpu.mp.db.shop.tables.RefundAmountRecord;
+import com.vpu.mp.db.shop.tables.RefundCardRecord;
+import com.vpu.mp.db.shop.tables.RequestRecord;
+import com.vpu.mp.db.shop.tables.ReturnOrder;
+import com.vpu.mp.db.shop.tables.ReturnOrderGoods;
+import com.vpu.mp.db.shop.tables.ReturnStatusChange;
+import com.vpu.mp.db.shop.tables.SearchHistory;
+import com.vpu.mp.db.shop.tables.SecKillDefine;
+import com.vpu.mp.db.shop.tables.SecKillList;
+import com.vpu.mp.db.shop.tables.SecKillProductDefine;
+import com.vpu.mp.db.shop.tables.ServiceCategory;
+import com.vpu.mp.db.shop.tables.ServiceMessageRecord;
+import com.vpu.mp.db.shop.tables.ServiceOrder;
+import com.vpu.mp.db.shop.tables.ServiceRequest;
+import com.vpu.mp.db.shop.tables.ServiceSchedule;
+import com.vpu.mp.db.shop.tables.ServiceTechnician;
+import com.vpu.mp.db.shop.tables.ServiceTechnicianGroup;
+import com.vpu.mp.db.shop.tables.ServiceTechnicianSchedule;
+import com.vpu.mp.db.shop.tables.ShareRecord;
+import com.vpu.mp.db.shop.tables.ShareSplit;
+import com.vpu.mp.db.shop.tables.ShipGoodsCart;
+import com.vpu.mp.db.shop.tables.Shipping;
+import com.vpu.mp.db.shop.tables.Shop;
+import com.vpu.mp.db.shop.tables.ShopCfg;
+import com.vpu.mp.db.shop.tables.ShopChildAccount;
+import com.vpu.mp.db.shop.tables.ShopRole;
+import com.vpu.mp.db.shop.tables.ShopScoreCfg;
+import com.vpu.mp.db.shop.tables.Sms;
+import com.vpu.mp.db.shop.tables.SmsSendRecord;
+import com.vpu.mp.db.shop.tables.Sort;
+import com.vpu.mp.db.shop.tables.Spec;
+import com.vpu.mp.db.shop.tables.SpecVals;
+import com.vpu.mp.db.shop.tables.StatisticsSummary;
+import com.vpu.mp.db.shop.tables.Store;
+import com.vpu.mp.db.shop.tables.StoreGoods;
+import com.vpu.mp.db.shop.tables.StoreGroup;
+import com.vpu.mp.db.shop.tables.StoreOrder;
+import com.vpu.mp.db.shop.tables.StoreService;
+import com.vpu.mp.db.shop.tables.SubOrderInfo;
+import com.vpu.mp.db.shop.tables.Tag;
+import com.vpu.mp.db.shop.tables.TemplateConfig;
+import com.vpu.mp.db.shop.tables.Trades;
+import com.vpu.mp.db.shop.tables.TradesRecord;
+import com.vpu.mp.db.shop.tables.TradesRecordSummary;
+import com.vpu.mp.db.shop.tables.UploadedImage;
+import com.vpu.mp.db.shop.tables.UploadedImageCategory;
+import com.vpu.mp.db.shop.tables.UploadedVideo;
+import com.vpu.mp.db.shop.tables.UploadedVideoCategory;
+import com.vpu.mp.db.shop.tables.User;
+import com.vpu.mp.db.shop.tables.UserAccount;
+import com.vpu.mp.db.shop.tables.UserAddress;
+import com.vpu.mp.db.shop.tables.UserCard;
+import com.vpu.mp.db.shop.tables.UserCartRecord;
+import com.vpu.mp.db.shop.tables.UserCollection;
+import com.vpu.mp.db.shop.tables.UserDetail;
+import com.vpu.mp.db.shop.tables.UserExplain;
+import com.vpu.mp.db.shop.tables.UserFanliStatistics;
+import com.vpu.mp.db.shop.tables.UserGoodsRecord;
+import com.vpu.mp.db.shop.tables.UserGrade;
+import com.vpu.mp.db.shop.tables.UserGrowth;
+import com.vpu.mp.db.shop.tables.UserGrowthSet;
+import com.vpu.mp.db.shop.tables.UserImport;
+import com.vpu.mp.db.shop.tables.UserImportDetail;
+import com.vpu.mp.db.shop.tables.UserLoginRecord;
+import com.vpu.mp.db.shop.tables.UserMsg;
+import com.vpu.mp.db.shop.tables.UserRebatePrice;
+import com.vpu.mp.db.shop.tables.UserScore;
+import com.vpu.mp.db.shop.tables.UserScoreSet;
+import com.vpu.mp.db.shop.tables.UserSummaryTrend;
+import com.vpu.mp.db.shop.tables.UserTag;
+import com.vpu.mp.db.shop.tables.UserTotalFanli;
+import com.vpu.mp.db.shop.tables.UserUpgrade;
+import com.vpu.mp.db.shop.tables.WxShoppingRecommend;
+import com.vpu.mp.db.shop.tables.WxpKeywordsStat;
+import com.vpu.mp.db.shop.tables.WxpList;
+import com.vpu.mp.db.shop.tables.WxpMassSendMsg;
+import com.vpu.mp.db.shop.tables.WxpMaterial;
+import com.vpu.mp.db.shop.tables.WxpMenuCfg;
+import com.vpu.mp.db.shop.tables.WxpMenuStat;
+import com.vpu.mp.db.shop.tables.WxpMessage;
+import com.vpu.mp.db.shop.tables.WxpMsgStat;
+import com.vpu.mp.db.shop.tables.WxpQrCode;
+import com.vpu.mp.db.shop.tables.WxpResponseCfg;
+import com.vpu.mp.db.shop.tables.WxpSubStat;
+import com.vpu.mp.db.shop.tables.WxpUnlimitCode;
+import com.vpu.mp.db.shop.tables.WxpUnlimitScene;
+import com.vpu.mp.db.shop.tables.WxpUser;
+import com.vpu.mp.db.shop.tables.WxpUserGroup;
+import com.vpu.mp.db.shop.tables.XcxCustomerPage;
 
 import javax.annotation.Generated;
 
 
 /**
- * Convenience access to all tables in mini_shop_471752
+ * Convenience access to all tables in mini_shop_1
  */
 @Generated(
     value = {
@@ -255,1167 +263,1207 @@ import javax.annotation.Generated;
 public class Tables {
 
     /**
-     * The table <code>mini_shop_471752.b2c_admin_login_record</code>.
+     * The table <code>mini_shop_1.b2c_admin_login_record</code>.
      */
-    public static final B2cAdminLoginRecord B2C_ADMIN_LOGIN_RECORD = com.vpu.mp.db.shop.tables.B2cAdminLoginRecord.B2C_ADMIN_LOGIN_RECORD;
+    public static final AdminLoginRecord ADMIN_LOGIN_RECORD = com.vpu.mp.db.shop.tables.AdminLoginRecord.ADMIN_LOGIN_RECORD;
 
     /**
-     * The table <code>mini_shop_471752.b2c_article</code>.
+     * The table <code>mini_shop_1.b2c_article</code>.
      */
-    public static final B2cArticle B2C_ARTICLE = com.vpu.mp.db.shop.tables.B2cArticle.B2C_ARTICLE;
+    public static final Article ARTICLE = com.vpu.mp.db.shop.tables.Article.ARTICLE;
 
     /**
-     * The table <code>mini_shop_471752.b2c_article_category</code>.
+     * The table <code>mini_shop_1.b2c_article_category</code>.
      */
-    public static final B2cArticleCategory B2C_ARTICLE_CATEGORY = com.vpu.mp.db.shop.tables.B2cArticleCategory.B2C_ARTICLE_CATEGORY;
+    public static final ArticleCategory ARTICLE_CATEGORY = com.vpu.mp.db.shop.tables.ArticleCategory.ARTICLE_CATEGORY;
 
     /**
-     * The table <code>mini_shop_471752.b2c_attribute</code>.
+     * The table <code>mini_shop_1.b2c_assess_activity</code>.
      */
-    public static final B2cAttribute B2C_ATTRIBUTE = com.vpu.mp.db.shop.tables.B2cAttribute.B2C_ATTRIBUTE;
+    public static final AssessActivity ASSESS_ACTIVITY = com.vpu.mp.db.shop.tables.AssessActivity.ASSESS_ACTIVITY;
 
     /**
-     * The table <code>mini_shop_471752.b2c_attribute_name</code>.
+     * The table <code>mini_shop_1.b2c_assess_record</code>.
      */
-    public static final B2cAttributeName B2C_ATTRIBUTE_NAME = com.vpu.mp.db.shop.tables.B2cAttributeName.B2C_ATTRIBUTE_NAME;
+    public static final AssessRecord ASSESS_RECORD = com.vpu.mp.db.shop.tables.AssessRecord.ASSESS_RECORD;
 
     /**
-     * The table <code>mini_shop_471752.b2c_attribute_values</code>.
+     * The table <code>mini_shop_1.b2c_assess_result</code>.
      */
-    public static final B2cAttributeValues B2C_ATTRIBUTE_VALUES = com.vpu.mp.db.shop.tables.B2cAttributeValues.B2C_ATTRIBUTE_VALUES;
+    public static final AssessResult ASSESS_RESULT = com.vpu.mp.db.shop.tables.AssessResult.ASSESS_RESULT;
 
     /**
-     * The table <code>mini_shop_471752.b2c_attribute_values_index</code>.
+     * The table <code>mini_shop_1.b2c_assess_topic</code>.
      */
-    public static final B2cAttributeValuesIndex B2C_ATTRIBUTE_VALUES_INDEX = com.vpu.mp.db.shop.tables.B2cAttributeValuesIndex.B2C_ATTRIBUTE_VALUES_INDEX;
+    public static final AssessTopic ASSESS_TOPIC = com.vpu.mp.db.shop.tables.AssessTopic.ASSESS_TOPIC;
 
     /**
-     * The table <code>mini_shop_471752.b2c_bargain</code>.
+     * The table <code>mini_shop_1.b2c_attribute</code>.
      */
-    public static final B2cBargain B2C_BARGAIN = com.vpu.mp.db.shop.tables.B2cBargain.B2C_BARGAIN;
+    public static final Attribute ATTRIBUTE = com.vpu.mp.db.shop.tables.Attribute.ATTRIBUTE;
 
     /**
-     * The table <code>mini_shop_471752.b2c_bargain_record</code>.
+     * The table <code>mini_shop_1.b2c_attribute_name</code>.
      */
-    public static final B2cBargainRecord B2C_BARGAIN_RECORD = com.vpu.mp.db.shop.tables.B2cBargainRecord.B2C_BARGAIN_RECORD;
+    public static final AttributeName ATTRIBUTE_NAME = com.vpu.mp.db.shop.tables.AttributeName.ATTRIBUTE_NAME;
 
     /**
-     * The table <code>mini_shop_471752.b2c_bargain_user_list</code>.
+     * The table <code>mini_shop_1.b2c_attribute_values</code>.
      */
-    public static final B2cBargainUserList B2C_BARGAIN_USER_LIST = com.vpu.mp.db.shop.tables.B2cBargainUserList.B2C_BARGAIN_USER_LIST;
+    public static final AttributeValues ATTRIBUTE_VALUES = com.vpu.mp.db.shop.tables.AttributeValues.ATTRIBUTE_VALUES;
 
     /**
-     * The table <code>mini_shop_471752.b2c_batch_price</code>.
+     * The table <code>mini_shop_1.b2c_attribute_values_index</code>.
      */
-    public static final B2cBatchPrice B2C_BATCH_PRICE = com.vpu.mp.db.shop.tables.B2cBatchPrice.B2C_BATCH_PRICE;
+    public static final AttributeValuesIndex ATTRIBUTE_VALUES_INDEX = com.vpu.mp.db.shop.tables.AttributeValuesIndex.ATTRIBUTE_VALUES_INDEX;
 
     /**
-     * The table <code>mini_shop_471752.b2c_batch_price_define</code>.
+     * The table <code>mini_shop_1.b2c_bargain</code>.
      */
-    public static final B2cBatchPriceDefine B2C_BATCH_PRICE_DEFINE = com.vpu.mp.db.shop.tables.B2cBatchPriceDefine.B2C_BATCH_PRICE_DEFINE;
+    public static final Bargain BARGAIN = com.vpu.mp.db.shop.tables.Bargain.BARGAIN;
 
     /**
-     * The table <code>mini_shop_471752.b2c_batch_profit</code>.
+     * The table <code>mini_shop_1.b2c_bargain_record</code>.
      */
-    public static final B2cBatchProfit B2C_BATCH_PROFIT = com.vpu.mp.db.shop.tables.B2cBatchProfit.B2C_BATCH_PROFIT;
+    public static final BargainRecord BARGAIN_RECORD = com.vpu.mp.db.shop.tables.BargainRecord.BARGAIN_RECORD;
 
     /**
-     * The table <code>mini_shop_471752.b2c_brand_classify</code>.
+     * The table <code>mini_shop_1.b2c_bargain_user_list</code>.
      */
-    public static final B2cBrandClassify B2C_BRAND_CLASSIFY = com.vpu.mp.db.shop.tables.B2cBrandClassify.B2C_BRAND_CLASSIFY;
+    public static final BargainUserList BARGAIN_USER_LIST = com.vpu.mp.db.shop.tables.BargainUserList.BARGAIN_USER_LIST;
 
     /**
-     * The table <code>mini_shop_471752.b2c_card_batch</code>.
+     * The table <code>mini_shop_1.b2c_batch_price</code>.
      */
-    public static final B2cCardBatch B2C_CARD_BATCH = com.vpu.mp.db.shop.tables.B2cCardBatch.B2C_CARD_BATCH;
+    public static final BatchPrice BATCH_PRICE = com.vpu.mp.db.shop.tables.BatchPrice.BATCH_PRICE;
 
     /**
-     * The table <code>mini_shop_471752.b2c_card_consumer</code>.
+     * The table <code>mini_shop_1.b2c_batch_price_define</code>.
      */
-    public static final B2cCardConsumer B2C_CARD_CONSUMER = com.vpu.mp.db.shop.tables.B2cCardConsumer.B2C_CARD_CONSUMER;
+    public static final BatchPriceDefine BATCH_PRICE_DEFINE = com.vpu.mp.db.shop.tables.BatchPriceDefine.BATCH_PRICE_DEFINE;
 
     /**
-     * The table <code>mini_shop_471752.b2c_card_examine</code>.
+     * The table <code>mini_shop_1.b2c_batch_profit</code>.
      */
-    public static final B2cCardExamine B2C_CARD_EXAMINE = com.vpu.mp.db.shop.tables.B2cCardExamine.B2C_CARD_EXAMINE;
+    public static final BatchProfit BATCH_PROFIT = com.vpu.mp.db.shop.tables.BatchProfit.BATCH_PROFIT;
 
     /**
-     * The table <code>mini_shop_471752.b2c_card_order</code>.
+     * The table <code>mini_shop_1.b2c_brand_classify</code>.
      */
-    public static final B2cCardOrder B2C_CARD_ORDER = com.vpu.mp.db.shop.tables.B2cCardOrder.B2C_CARD_ORDER;
+    public static final BrandClassify BRAND_CLASSIFY = com.vpu.mp.db.shop.tables.BrandClassify.BRAND_CLASSIFY;
 
     /**
-     * The table <code>mini_shop_471752.b2c_card_receive_code</code>.
+     * The table <code>mini_shop_1.b2c_card_batch</code>.
      */
-    public static final B2cCardReceiveCode B2C_CARD_RECEIVE_CODE = com.vpu.mp.db.shop.tables.B2cCardReceiveCode.B2C_CARD_RECEIVE_CODE;
+    public static final CardBatch CARD_BATCH = com.vpu.mp.db.shop.tables.CardBatch.CARD_BATCH;
 
     /**
-     * The table <code>mini_shop_471752.b2c_card_upgrade</code>.
+     * The table <code>mini_shop_1.b2c_card_consumer</code>.
      */
-    public static final B2cCardUpgrade B2C_CARD_UPGRADE = com.vpu.mp.db.shop.tables.B2cCardUpgrade.B2C_CARD_UPGRADE;
+    public static final CardConsumer CARD_CONSUMER = com.vpu.mp.db.shop.tables.CardConsumer.CARD_CONSUMER;
 
     /**
-     * The table <code>mini_shop_471752.b2c_cart</code>.
+     * The table <code>mini_shop_1.b2c_card_examine</code>.
      */
-    public static final B2cCart B2C_CART = com.vpu.mp.db.shop.tables.B2cCart.B2C_CART;
+    public static final CardExamine CARD_EXAMINE = com.vpu.mp.db.shop.tables.CardExamine.CARD_EXAMINE;
 
     /**
-     * The table <code>mini_shop_471752.b2c_category</code>.
+     * The table <code>mini_shop_1.b2c_card_order</code>.
      */
-    public static final B2cCategory B2C_CATEGORY = com.vpu.mp.db.shop.tables.B2cCategory.B2C_CATEGORY;
+    public static final CardOrder CARD_ORDER = com.vpu.mp.db.shop.tables.CardOrder.CARD_ORDER;
 
     /**
-     * The table <code>mini_shop_471752.b2c_channel</code>.
+     * The table <code>mini_shop_1.b2c_card_receive_code</code>.
      */
-    public static final B2cChannel B2C_CHANNEL = com.vpu.mp.db.shop.tables.B2cChannel.B2C_CHANNEL;
+    public static final CardReceiveCode CARD_RECEIVE_CODE = com.vpu.mp.db.shop.tables.CardReceiveCode.CARD_RECEIVE_CODE;
 
     /**
-     * The table <code>mini_shop_471752.b2c_channel_record</code>.
+     * The table <code>mini_shop_1.b2c_card_upgrade</code>.
      */
-    public static final B2cChannelRecord B2C_CHANNEL_RECORD = com.vpu.mp.db.shop.tables.B2cChannelRecord.B2C_CHANNEL_RECORD;
+    public static final CardUpgrade CARD_UPGRADE = com.vpu.mp.db.shop.tables.CardUpgrade.CARD_UPGRADE;
 
     /**
-     * The table <code>mini_shop_471752.b2c_channel_statistical</code>.
+     * The table <code>mini_shop_1.b2c_cart</code>.
      */
-    public static final B2cChannelStatistical B2C_CHANNEL_STATISTICAL = com.vpu.mp.db.shop.tables.B2cChannelStatistical.B2C_CHANNEL_STATISTICAL;
+    public static final Cart CART = com.vpu.mp.db.shop.tables.Cart.CART;
 
     /**
-     * The table <code>mini_shop_471752.b2c_charge_money</code>.
+     * The table <code>mini_shop_1.b2c_category</code>.
      */
-    public static final B2cChargeMoney B2C_CHARGE_MONEY = com.vpu.mp.db.shop.tables.B2cChargeMoney.B2C_CHARGE_MONEY;
+    public static final Category CATEGORY = com.vpu.mp.db.shop.tables.Category.CATEGORY;
 
     /**
-     * The table <code>mini_shop_471752.b2c_code</code>.
+     * The table <code>mini_shop_1.b2c_channel</code>.
      */
-    public static final B2cCode B2C_CODE = com.vpu.mp.db.shop.tables.B2cCode.B2C_CODE;
+    public static final Channel CHANNEL = com.vpu.mp.db.shop.tables.Channel.CHANNEL;
 
     /**
-     * The table <code>mini_shop_471752.b2c_comment_goods</code>.
+     * The table <code>mini_shop_1.b2c_channel_record</code>.
      */
-    public static final B2cCommentGoods B2C_COMMENT_GOODS = com.vpu.mp.db.shop.tables.B2cCommentGoods.B2C_COMMENT_GOODS;
+    public static final ChannelRecord CHANNEL_RECORD = com.vpu.mp.db.shop.tables.ChannelRecord.CHANNEL_RECORD;
 
     /**
-     * The table <code>mini_shop_471752.b2c_comment_goods_answer</code>.
+     * The table <code>mini_shop_1.b2c_channel_statistical</code>.
      */
-    public static final B2cCommentGoodsAnswer B2C_COMMENT_GOODS_ANSWER = com.vpu.mp.db.shop.tables.B2cCommentGoodsAnswer.B2C_COMMENT_GOODS_ANSWER;
+    public static final ChannelStatistical CHANNEL_STATISTICAL = com.vpu.mp.db.shop.tables.ChannelStatistical.CHANNEL_STATISTICAL;
 
     /**
-     * The table <code>mini_shop_471752.b2c_comment_service</code>.
+     * The table <code>mini_shop_1.b2c_charge_money</code>.
      */
-    public static final B2cCommentService B2C_COMMENT_SERVICE = com.vpu.mp.db.shop.tables.B2cCommentService.B2C_COMMENT_SERVICE;
+    public static final ChargeMoney CHARGE_MONEY = com.vpu.mp.db.shop.tables.ChargeMoney.CHARGE_MONEY;
 
     /**
-     * The table <code>mini_shop_471752.b2c_comment_tag</code>.
+     * The table <code>mini_shop_1.b2c_code</code>.
      */
-    public static final B2cCommentTag B2C_COMMENT_TAG = com.vpu.mp.db.shop.tables.B2cCommentTag.B2C_COMMENT_TAG;
+    public static final Code CODE = com.vpu.mp.db.shop.tables.Code.CODE;
 
     /**
-     * The table <code>mini_shop_471752.b2c_coupon_activity</code>.
+     * The table <code>mini_shop_1.b2c_comment_goods</code>.
      */
-    public static final B2cCouponActivity B2C_COUPON_ACTIVITY = com.vpu.mp.db.shop.tables.B2cCouponActivity.B2C_COUPON_ACTIVITY;
+    public static final CommentGoods COMMENT_GOODS = com.vpu.mp.db.shop.tables.CommentGoods.COMMENT_GOODS;
 
     /**
-     * The table <code>mini_shop_471752.b2c_coupon_activity_record</code>.
+     * The table <code>mini_shop_1.b2c_comment_goods_answer</code>.
      */
-    public static final B2cCouponActivityRecord B2C_COUPON_ACTIVITY_RECORD = com.vpu.mp.db.shop.tables.B2cCouponActivityRecord.B2C_COUPON_ACTIVITY_RECORD;
+    public static final CommentGoodsAnswer COMMENT_GOODS_ANSWER = com.vpu.mp.db.shop.tables.CommentGoodsAnswer.COMMENT_GOODS_ANSWER;
 
     /**
-     * The table <code>mini_shop_471752.b2c_coupon_payreward_record</code>.
+     * The table <code>mini_shop_1.b2c_comment_service</code>.
      */
-    public static final B2cCouponPayrewardRecord B2C_COUPON_PAYREWARD_RECORD = com.vpu.mp.db.shop.tables.B2cCouponPayrewardRecord.B2C_COUPON_PAYREWARD_RECORD;
+    public static final CommentService COMMENT_SERVICE = com.vpu.mp.db.shop.tables.CommentService.COMMENT_SERVICE;
 
     /**
-     * The table <code>mini_shop_471752.b2c_customer_avail_coupons</code>.
+     * The table <code>mini_shop_1.b2c_comment_tag</code>.
      */
-    public static final B2cCustomerAvailCoupons B2C_CUSTOMER_AVAIL_COUPONS = com.vpu.mp.db.shop.tables.B2cCustomerAvailCoupons.B2C_CUSTOMER_AVAIL_COUPONS;
+    public static final CommentTag COMMENT_TAG = com.vpu.mp.db.shop.tables.CommentTag.COMMENT_TAG;
 
     /**
-     * The table <code>mini_shop_471752.b2c_customer_page_template</code>.
+     * The table <code>mini_shop_1.b2c_coupon_activity</code>.
      */
-    public static final B2cCustomerPageTemplate B2C_CUSTOMER_PAGE_TEMPLATE = com.vpu.mp.db.shop.tables.B2cCustomerPageTemplate.B2C_CUSTOMER_PAGE_TEMPLATE;
+    public static final CouponActivity COUPON_ACTIVITY = com.vpu.mp.db.shop.tables.CouponActivity.COUPON_ACTIVITY;
 
     /**
-     * The table <code>mini_shop_471752.b2c_decorate_link</code>.
+     * The table <code>mini_shop_1.b2c_coupon_activity_record</code>.
      */
-    public static final B2cDecorateLink B2C_DECORATE_LINK = com.vpu.mp.db.shop.tables.B2cDecorateLink.B2C_DECORATE_LINK;
+    public static final CouponActivityRecord COUPON_ACTIVITY_RECORD = com.vpu.mp.db.shop.tables.CouponActivityRecord.COUPON_ACTIVITY_RECORD;
 
     /**
-     * The table <code>mini_shop_471752.b2c_delivery_type</code>.
+     * The table <code>mini_shop_1.b2c_coupon_payreward_record</code>.
      */
-    public static final B2cDeliveryType B2C_DELIVERY_TYPE = com.vpu.mp.db.shop.tables.B2cDeliveryType.B2C_DELIVERY_TYPE;
+    public static final CouponPayrewardRecord COUPON_PAYREWARD_RECORD = com.vpu.mp.db.shop.tables.CouponPayrewardRecord.COUPON_PAYREWARD_RECORD;
 
     /**
-     * The table <code>mini_shop_471752.b2c_deliver_fee_template</code>.
+     * The table <code>mini_shop_1.b2c_customer_avail_coupons</code>.
      */
-    public static final B2cDeliverFeeTemplate B2C_DELIVER_FEE_TEMPLATE = com.vpu.mp.db.shop.tables.B2cDeliverFeeTemplate.B2C_DELIVER_FEE_TEMPLATE;
+    public static final CustomerAvailCoupons CUSTOMER_AVAIL_COUPONS = com.vpu.mp.db.shop.tables.CustomerAvailCoupons.CUSTOMER_AVAIL_COUPONS;
 
     /**
-     * The table <code>mini_shop_471752.b2c_distribution_order</code>.
+     * The table <code>mini_shop_1.b2c_customer_page_template</code>.
      */
-    public static final B2cDistributionOrder B2C_DISTRIBUTION_ORDER = com.vpu.mp.db.shop.tables.B2cDistributionOrder.B2C_DISTRIBUTION_ORDER;
+    public static final CustomerPageTemplate CUSTOMER_PAGE_TEMPLATE = com.vpu.mp.db.shop.tables.CustomerPageTemplate.CUSTOMER_PAGE_TEMPLATE;
 
     /**
-     * The table <code>mini_shop_471752.b2c_distribution_strategy</code>.
+     * The table <code>mini_shop_1.b2c_decorate_link</code>.
      */
-    public static final B2cDistributionStrategy B2C_DISTRIBUTION_STRATEGY = com.vpu.mp.db.shop.tables.B2cDistributionStrategy.B2C_DISTRIBUTION_STRATEGY;
+    public static final DecorateLink DECORATE_LINK = com.vpu.mp.db.shop.tables.DecorateLink.DECORATE_LINK;
 
     /**
-     * The table <code>mini_shop_471752.b2c_distribution_tag</code>.
+     * The table <code>mini_shop_1.b2c_deliver_fee_template</code>.
      */
-    public static final B2cDistributionTag B2C_DISTRIBUTION_TAG = com.vpu.mp.db.shop.tables.B2cDistributionTag.B2C_DISTRIBUTION_TAG;
+    public static final DeliverFeeTemplate DELIVER_FEE_TEMPLATE = com.vpu.mp.db.shop.tables.DeliverFeeTemplate.DELIVER_FEE_TEMPLATE;
 
     /**
-     * The table <code>mini_shop_471752.b2c_distribution_withdraw</code>.
+     * The table <code>mini_shop_1.b2c_delivery_type</code>.
      */
-    public static final B2cDistributionWithdraw B2C_DISTRIBUTION_WITHDRAW = com.vpu.mp.db.shop.tables.B2cDistributionWithdraw.B2C_DISTRIBUTION_WITHDRAW;
+    public static final DeliveryType DELIVERY_TYPE = com.vpu.mp.db.shop.tables.DeliveryType.DELIVERY_TYPE;
 
     /**
-     * The table <code>mini_shop_471752.b2c_distributor_apply</code>.
+     * The table <code>mini_shop_1.b2c_distribution_order</code>.
      */
-    public static final B2cDistributorApply B2C_DISTRIBUTOR_APPLY = com.vpu.mp.db.shop.tables.B2cDistributorApply.B2C_DISTRIBUTOR_APPLY;
+    public static final DistributionOrder DISTRIBUTION_ORDER = com.vpu.mp.db.shop.tables.DistributionOrder.DISTRIBUTION_ORDER;
 
     /**
-     * The table <code>mini_shop_471752.b2c_distributor_group</code>.
+     * The table <code>mini_shop_1.b2c_distribution_strategy</code>.
      */
-    public static final B2cDistributorGroup B2C_DISTRIBUTOR_GROUP = com.vpu.mp.db.shop.tables.B2cDistributorGroup.B2C_DISTRIBUTOR_GROUP;
+    public static final DistributionStrategy DISTRIBUTION_STRATEGY = com.vpu.mp.db.shop.tables.DistributionStrategy.DISTRIBUTION_STRATEGY;
 
     /**
-     * The table <code>mini_shop_471752.b2c_distributor_level</code>.
+     * The table <code>mini_shop_1.b2c_distribution_tag</code>.
      */
-    public static final B2cDistributorLevel B2C_DISTRIBUTOR_LEVEL = com.vpu.mp.db.shop.tables.B2cDistributorLevel.B2C_DISTRIBUTOR_LEVEL;
+    public static final DistributionTag DISTRIBUTION_TAG = com.vpu.mp.db.shop.tables.DistributionTag.DISTRIBUTION_TAG;
 
     /**
-     * The table <code>mini_shop_471752.b2c_distributor_level_record</code>.
+     * The table <code>mini_shop_1.b2c_distribution_withdraw</code>.
      */
-    public static final B2cDistributorLevelRecord B2C_DISTRIBUTOR_LEVEL_RECORD = com.vpu.mp.db.shop.tables.B2cDistributorLevelRecord.B2C_DISTRIBUTOR_LEVEL_RECORD;
+    public static final DistributionWithdraw DISTRIBUTION_WITHDRAW = com.vpu.mp.db.shop.tables.DistributionWithdraw.DISTRIBUTION_WITHDRAW;
 
     /**
-     * The table <code>mini_shop_471752.b2c_fanli_goods_statistics</code>.
+     * The table <code>mini_shop_1.b2c_distributor_apply</code>.
      */
-    public static final B2cFanliGoodsStatistics B2C_FANLI_GOODS_STATISTICS = com.vpu.mp.db.shop.tables.B2cFanliGoodsStatistics.B2C_FANLI_GOODS_STATISTICS;
+    public static final DistributorApply DISTRIBUTOR_APPLY = com.vpu.mp.db.shop.tables.DistributorApply.DISTRIBUTOR_APPLY;
 
     /**
-     * The table <code>mini_shop_471752.b2c_footprint_record</code>.
+     * The table <code>mini_shop_1.b2c_distributor_group</code>.
      */
-    public static final B2cFootprintRecord B2C_FOOTPRINT_RECORD = com.vpu.mp.db.shop.tables.B2cFootprintRecord.B2C_FOOTPRINT_RECORD;
+    public static final DistributorGroup DISTRIBUTOR_GROUP = com.vpu.mp.db.shop.tables.DistributorGroup.DISTRIBUTOR_GROUP;
 
     /**
-     * The table <code>mini_shop_471752.b2c_form_page</code>.
+     * The table <code>mini_shop_1.b2c_distributor_level</code>.
      */
-    public static final B2cFormPage B2C_FORM_PAGE = com.vpu.mp.db.shop.tables.B2cFormPage.B2C_FORM_PAGE;
+    public static final DistributorLevel DISTRIBUTOR_LEVEL = com.vpu.mp.db.shop.tables.DistributorLevel.DISTRIBUTOR_LEVEL;
 
     /**
-     * The table <code>mini_shop_471752.b2c_form_submit_details</code>.
+     * The table <code>mini_shop_1.b2c_distributor_level_record</code>.
      */
-    public static final B2cFormSubmitDetails B2C_FORM_SUBMIT_DETAILS = com.vpu.mp.db.shop.tables.B2cFormSubmitDetails.B2C_FORM_SUBMIT_DETAILS;
+    public static final DistributorLevelRecord DISTRIBUTOR_LEVEL_RECORD = com.vpu.mp.db.shop.tables.DistributorLevelRecord.DISTRIBUTOR_LEVEL_RECORD;
 
     /**
-     * The table <code>mini_shop_471752.b2c_form_submit_list</code>.
+     * The table <code>mini_shop_1.b2c_fanli_goods_statistics</code>.
      */
-    public static final B2cFormSubmitList B2C_FORM_SUBMIT_LIST = com.vpu.mp.db.shop.tables.B2cFormSubmitList.B2C_FORM_SUBMIT_LIST;
+    public static final FanliGoodsStatistics FANLI_GOODS_STATISTICS = com.vpu.mp.db.shop.tables.FanliGoodsStatistics.FANLI_GOODS_STATISTICS;
 
     /**
-     * The table <code>mini_shop_471752.b2c_friend_promote_activity</code>.
+     * The table <code>mini_shop_1.b2c_footprint_record</code>.
      */
-    public static final B2cFriendPromoteActivity B2C_FRIEND_PROMOTE_ACTIVITY = com.vpu.mp.db.shop.tables.B2cFriendPromoteActivity.B2C_FRIEND_PROMOTE_ACTIVITY;
+    public static final FootprintRecord FOOTPRINT_RECORD = com.vpu.mp.db.shop.tables.FootprintRecord.FOOTPRINT_RECORD;
 
     /**
-     * The table <code>mini_shop_471752.b2c_friend_promote_detail</code>.
+     * The table <code>mini_shop_1.b2c_form_page</code>.
      */
-    public static final B2cFriendPromoteDetail B2C_FRIEND_PROMOTE_DETAIL = com.vpu.mp.db.shop.tables.B2cFriendPromoteDetail.B2C_FRIEND_PROMOTE_DETAIL;
+    public static final FormPage FORM_PAGE = com.vpu.mp.db.shop.tables.FormPage.FORM_PAGE;
 
     /**
-     * The table <code>mini_shop_471752.b2c_friend_promote_launch</code>.
+     * The table <code>mini_shop_1.b2c_form_submit_details</code>.
      */
-    public static final B2cFriendPromoteLaunch B2C_FRIEND_PROMOTE_LAUNCH = com.vpu.mp.db.shop.tables.B2cFriendPromoteLaunch.B2C_FRIEND_PROMOTE_LAUNCH;
+    public static final FormSubmitDetails FORM_SUBMIT_DETAILS = com.vpu.mp.db.shop.tables.FormSubmitDetails.FORM_SUBMIT_DETAILS;
 
     /**
-     * The table <code>mini_shop_471752.b2c_friend_promote_times</code>.
+     * The table <code>mini_shop_1.b2c_form_submit_list</code>.
      */
-    public static final B2cFriendPromoteTimes B2C_FRIEND_PROMOTE_TIMES = com.vpu.mp.db.shop.tables.B2cFriendPromoteTimes.B2C_FRIEND_PROMOTE_TIMES;
+    public static final FormSubmitList FORM_SUBMIT_LIST = com.vpu.mp.db.shop.tables.FormSubmitList.FORM_SUBMIT_LIST;
 
     /**
-     * The table <code>mini_shop_471752.b2c_gift</code>.
+     * The table <code>mini_shop_1.b2c_free_shipping</code>.
      */
-    public static final B2cGift B2C_GIFT = com.vpu.mp.db.shop.tables.B2cGift.B2C_GIFT;
+    public static final FreeShipping FREE_SHIPPING = com.vpu.mp.db.shop.tables.FreeShipping.FREE_SHIPPING;
 
     /**
-     * The table <code>mini_shop_471752.b2c_gift_product</code>.
+     * The table <code>mini_shop_1.b2c_free_shipping_rule</code>.
      */
-    public static final B2cGiftProduct B2C_GIFT_PRODUCT = com.vpu.mp.db.shop.tables.B2cGiftProduct.B2C_GIFT_PRODUCT;
+    public static final FreeShippingRule FREE_SHIPPING_RULE = com.vpu.mp.db.shop.tables.FreeShippingRule.FREE_SHIPPING_RULE;
 
     /**
-     * The table <code>mini_shop_471752.b2c_give_voucher</code>.
+     * The table <code>mini_shop_1.b2c_friend_promote_activity</code>.
      */
-    public static final B2cGiveVoucher B2C_GIVE_VOUCHER = com.vpu.mp.db.shop.tables.B2cGiveVoucher.B2C_GIVE_VOUCHER;
+    public static final FriendPromoteActivity FRIEND_PROMOTE_ACTIVITY = com.vpu.mp.db.shop.tables.FriendPromoteActivity.FRIEND_PROMOTE_ACTIVITY;
 
     /**
-     * The table <code>mini_shop_471752.b2c_goods</code>.
+     * The table <code>mini_shop_1.b2c_friend_promote_detail</code>.
      */
-    public static final B2cGoods B2C_GOODS = com.vpu.mp.db.shop.tables.B2cGoods.B2C_GOODS;
+    public static final FriendPromoteDetail FRIEND_PROMOTE_DETAIL = com.vpu.mp.db.shop.tables.FriendPromoteDetail.FRIEND_PROMOTE_DETAIL;
 
     /**
-     * The table <code>mini_shop_471752.b2c_goods_bak</code>.
+     * The table <code>mini_shop_1.b2c_friend_promote_launch</code>.
      */
-    public static final B2cGoodsBak B2C_GOODS_BAK = com.vpu.mp.db.shop.tables.B2cGoodsBak.B2C_GOODS_BAK;
+    public static final FriendPromoteLaunch FRIEND_PROMOTE_LAUNCH = com.vpu.mp.db.shop.tables.FriendPromoteLaunch.FRIEND_PROMOTE_LAUNCH;
 
     /**
-     * The table <code>mini_shop_471752.b2c_goods_brand</code>.
+     * The table <code>mini_shop_1.b2c_friend_promote_times</code>.
      */
-    public static final B2cGoodsBrand B2C_GOODS_BRAND = com.vpu.mp.db.shop.tables.B2cGoodsBrand.B2C_GOODS_BRAND;
+    public static final FriendPromoteTimes FRIEND_PROMOTE_TIMES = com.vpu.mp.db.shop.tables.FriendPromoteTimes.FRIEND_PROMOTE_TIMES;
 
     /**
-     * The table <code>mini_shop_471752.b2c_goods_card_couple</code>.
+     * The table <code>mini_shop_1.b2c_gift</code>.
      */
-    public static final B2cGoodsCardCouple B2C_GOODS_CARD_COUPLE = com.vpu.mp.db.shop.tables.B2cGoodsCardCouple.B2C_GOODS_CARD_COUPLE;
+    public static final Gift GIFT = com.vpu.mp.db.shop.tables.Gift.GIFT;
 
     /**
-     * The table <code>mini_shop_471752.b2c_goods_collocation</code>.
+     * The table <code>mini_shop_1.b2c_gift_product</code>.
      */
-    public static final B2cGoodsCollocation B2C_GOODS_COLLOCATION = com.vpu.mp.db.shop.tables.B2cGoodsCollocation.B2C_GOODS_COLLOCATION;
+    public static final GiftProduct GIFT_PRODUCT = com.vpu.mp.db.shop.tables.GiftProduct.GIFT_PRODUCT;
 
     /**
-     * The table <code>mini_shop_471752.b2c_goods_deliver_template_link</code>.
+     * The table <code>mini_shop_1.b2c_give_voucher</code>.
      */
-    public static final B2cGoodsDeliverTemplateLink B2C_GOODS_DELIVER_TEMPLATE_LINK = com.vpu.mp.db.shop.tables.B2cGoodsDeliverTemplateLink.B2C_GOODS_DELIVER_TEMPLATE_LINK;
+    public static final GiveVoucher GIVE_VOUCHER = com.vpu.mp.db.shop.tables.GiveVoucher.GIVE_VOUCHER;
 
     /**
-     * The table <code>mini_shop_471752.b2c_goods_img</code>.
+     * The table <code>mini_shop_1.b2c_goods</code>.
      */
-    public static final B2cGoodsImg B2C_GOODS_IMG = com.vpu.mp.db.shop.tables.B2cGoodsImg.B2C_GOODS_IMG;
+    public static final Goods GOODS = com.vpu.mp.db.shop.tables.Goods.GOODS;
 
     /**
-     * The table <code>mini_shop_471752.b2c_goods_import</code>.
+     * The table <code>mini_shop_1.b2c_goods_bak</code>.
      */
-    public static final B2cGoodsImport B2C_GOODS_IMPORT = com.vpu.mp.db.shop.tables.B2cGoodsImport.B2C_GOODS_IMPORT;
+    public static final GoodsBak GOODS_BAK = com.vpu.mp.db.shop.tables.GoodsBak.GOODS_BAK;
 
     /**
-     * The table <code>mini_shop_471752.b2c_goods_import_detail</code>.
+     * The table <code>mini_shop_1.b2c_goods_brand</code>.
      */
-    public static final B2cGoodsImportDetail B2C_GOODS_IMPORT_DETAIL = com.vpu.mp.db.shop.tables.B2cGoodsImportDetail.B2C_GOODS_IMPORT_DETAIL;
+    public static final GoodsBrand GOODS_BRAND = com.vpu.mp.db.shop.tables.GoodsBrand.GOODS_BRAND;
 
     /**
-     * The table <code>mini_shop_471752.b2c_goods_label</code>.
+     * The table <code>mini_shop_1.b2c_goods_card_couple</code>.
      */
-    public static final B2cGoodsLabel B2C_GOODS_LABEL = com.vpu.mp.db.shop.tables.B2cGoodsLabel.B2C_GOODS_LABEL;
+    public static final GoodsCardCouple GOODS_CARD_COUPLE = com.vpu.mp.db.shop.tables.GoodsCardCouple.GOODS_CARD_COUPLE;
 
     /**
-     * The table <code>mini_shop_471752.b2c_goods_label_couple</code>.
+     * The table <code>mini_shop_1.b2c_goods_collocation</code>.
      */
-    public static final B2cGoodsLabelCouple B2C_GOODS_LABEL_COUPLE = com.vpu.mp.db.shop.tables.B2cGoodsLabelCouple.B2C_GOODS_LABEL_COUPLE;
+    public static final GoodsCollocation GOODS_COLLOCATION = com.vpu.mp.db.shop.tables.GoodsCollocation.GOODS_COLLOCATION;
 
     /**
-     * The table <code>mini_shop_471752.b2c_goods_opai_spec</code>.
+     * The table <code>mini_shop_1.b2c_goods_deliver_template_link</code>.
      */
-    public static final B2cGoodsOpaiSpec B2C_GOODS_OPAI_SPEC = com.vpu.mp.db.shop.tables.B2cGoodsOpaiSpec.B2C_GOODS_OPAI_SPEC;
+    public static final GoodsDeliverTemplateLink GOODS_DELIVER_TEMPLATE_LINK = com.vpu.mp.db.shop.tables.GoodsDeliverTemplateLink.GOODS_DELIVER_TEMPLATE_LINK;
 
     /**
-     * The table <code>mini_shop_471752.b2c_goods_rebate_price</code>.
+     * The table <code>mini_shop_1.b2c_goods_img</code>.
      */
-    public static final B2cGoodsRebatePrice B2C_GOODS_REBATE_PRICE = com.vpu.mp.db.shop.tables.B2cGoodsRebatePrice.B2C_GOODS_REBATE_PRICE;
+    public static final GoodsImg GOODS_IMG = com.vpu.mp.db.shop.tables.GoodsImg.GOODS_IMG;
 
     /**
-     * The table <code>mini_shop_471752.b2c_goods_spec_product</code>.
+     * The table <code>mini_shop_1.b2c_goods_import</code>.
      */
-    public static final B2cGoodsSpecProduct B2C_GOODS_SPEC_PRODUCT = com.vpu.mp.db.shop.tables.B2cGoodsSpecProduct.B2C_GOODS_SPEC_PRODUCT;
+    public static final GoodsImport GOODS_IMPORT = com.vpu.mp.db.shop.tables.GoodsImport.GOODS_IMPORT;
 
     /**
-     * The table <code>mini_shop_471752.b2c_goods_spec_product_bak</code>.
+     * The table <code>mini_shop_1.b2c_goods_import_detail</code>.
      */
-    public static final B2cGoodsSpecProductBak B2C_GOODS_SPEC_PRODUCT_BAK = com.vpu.mp.db.shop.tables.B2cGoodsSpecProductBak.B2C_GOODS_SPEC_PRODUCT_BAK;
+    public static final GoodsImportDetail GOODS_IMPORT_DETAIL = com.vpu.mp.db.shop.tables.GoodsImportDetail.GOODS_IMPORT_DETAIL;
 
     /**
-     * The table <code>mini_shop_471752.b2c_goods_summary</code>.
+     * The table <code>mini_shop_1.b2c_goods_label</code>.
      */
-    public static final B2cGoodsSummary B2C_GOODS_SUMMARY = com.vpu.mp.db.shop.tables.B2cGoodsSummary.B2C_GOODS_SUMMARY;
+    public static final GoodsLabel GOODS_LABEL = com.vpu.mp.db.shop.tables.GoodsLabel.GOODS_LABEL;
 
     /**
-     * The table <code>mini_shop_471752.b2c_goods_user_summary</code>.
+     * The table <code>mini_shop_1.b2c_goods_label_couple</code>.
      */
-    public static final B2cGoodsUserSummary B2C_GOODS_USER_SUMMARY = com.vpu.mp.db.shop.tables.B2cGoodsUserSummary.B2C_GOODS_USER_SUMMARY;
+    public static final GoodsLabelCouple GOODS_LABEL_COUPLE = com.vpu.mp.db.shop.tables.GoodsLabelCouple.GOODS_LABEL_COUPLE;
 
     /**
-     * The table <code>mini_shop_471752.b2c_grade_prd</code>.
+     * The table <code>mini_shop_1.b2c_goods_opai_spec</code>.
      */
-    public static final B2cGradePrd B2C_GRADE_PRD = com.vpu.mp.db.shop.tables.B2cGradePrd.B2C_GRADE_PRD;
+    public static final GoodsOpaiSpec GOODS_OPAI_SPEC = com.vpu.mp.db.shop.tables.GoodsOpaiSpec.GOODS_OPAI_SPEC;
 
     /**
-     * The table <code>mini_shop_471752.b2c_group</code>.
+     * The table <code>mini_shop_1.b2c_goods_rebate_price</code>.
      */
-    public static final B2cGroup B2C_GROUP = com.vpu.mp.db.shop.tables.B2cGroup.B2C_GROUP;
+    public static final GoodsRebatePrice GOODS_REBATE_PRICE = com.vpu.mp.db.shop.tables.GoodsRebatePrice.GOODS_REBATE_PRICE;
 
     /**
-     * The table <code>mini_shop_471752.b2c_group_draw</code>.
+     * The table <code>mini_shop_1.b2c_goods_spec_product</code>.
      */
-    public static final B2cGroupDraw B2C_GROUP_DRAW = com.vpu.mp.db.shop.tables.B2cGroupDraw.B2C_GROUP_DRAW;
+    public static final GoodsSpecProduct GOODS_SPEC_PRODUCT = com.vpu.mp.db.shop.tables.GoodsSpecProduct.GOODS_SPEC_PRODUCT;
 
     /**
-     * The table <code>mini_shop_471752.b2c_group_draw_invite</code>.
+     * The table <code>mini_shop_1.b2c_goods_spec_product_bak</code>.
      */
-    public static final B2cGroupDrawInvite B2C_GROUP_DRAW_INVITE = com.vpu.mp.db.shop.tables.B2cGroupDrawInvite.B2C_GROUP_DRAW_INVITE;
+    public static final GoodsSpecProductBak GOODS_SPEC_PRODUCT_BAK = com.vpu.mp.db.shop.tables.GoodsSpecProductBak.GOODS_SPEC_PRODUCT_BAK;
 
     /**
-     * The table <code>mini_shop_471752.b2c_import_goods</code>.
+     * The table <code>mini_shop_1.b2c_goods_summary</code>.
      */
-    public static final B2cImportGoods B2C_IMPORT_GOODS = com.vpu.mp.db.shop.tables.B2cImportGoods.B2C_IMPORT_GOODS;
+    public static final GoodsSummary GOODS_SUMMARY = com.vpu.mp.db.shop.tables.GoodsSummary.GOODS_SUMMARY;
 
     /**
-     * The table <code>mini_shop_471752.b2c_income_outcome_detail</code>.
+     * The table <code>mini_shop_1.b2c_goods_user_summary</code>.
      */
-    public static final B2cIncomeOutcomeDetail B2C_INCOME_OUTCOME_DETAIL = com.vpu.mp.db.shop.tables.B2cIncomeOutcomeDetail.B2C_INCOME_OUTCOME_DETAIL;
+    public static final GoodsUserSummary GOODS_USER_SUMMARY = com.vpu.mp.db.shop.tables.GoodsUserSummary.GOODS_USER_SUMMARY;
 
     /**
-     * The table <code>mini_shop_471752.b2c_index_foot_record</code>.
+     * The table <code>mini_shop_1.b2c_grade_prd</code>.
      */
-    public static final B2cIndexFootRecord B2C_INDEX_FOOT_RECORD = com.vpu.mp.db.shop.tables.B2cIndexFootRecord.B2C_INDEX_FOOT_RECORD;
+    public static final GradePrd GRADE_PRD = com.vpu.mp.db.shop.tables.GradePrd.GRADE_PRD;
 
     /**
-     * The table <code>mini_shop_471752.b2c_integral_mall_define</code>.
+     * The table <code>mini_shop_1.b2c_group</code>.
      */
-    public static final B2cIntegralMallDefine B2C_INTEGRAL_MALL_DEFINE = com.vpu.mp.db.shop.tables.B2cIntegralMallDefine.B2C_INTEGRAL_MALL_DEFINE;
+    public static final Group GROUP = com.vpu.mp.db.shop.tables.Group.GROUP;
 
     /**
-     * The table <code>mini_shop_471752.b2c_integral_mall_product</code>.
+     * The table <code>mini_shop_1.b2c_group_draw</code>.
      */
-    public static final B2cIntegralMallProduct B2C_INTEGRAL_MALL_PRODUCT = com.vpu.mp.db.shop.tables.B2cIntegralMallProduct.B2C_INTEGRAL_MALL_PRODUCT;
+    public static final GroupDraw GROUP_DRAW = com.vpu.mp.db.shop.tables.GroupDraw.GROUP_DRAW;
 
     /**
-     * The table <code>mini_shop_471752.b2c_integral_mall_record</code>.
+     * The table <code>mini_shop_1.b2c_group_draw_invite</code>.
      */
-    public static final B2cIntegralMallRecord B2C_INTEGRAL_MALL_RECORD = com.vpu.mp.db.shop.tables.B2cIntegralMallRecord.B2C_INTEGRAL_MALL_RECORD;
+    public static final GroupDrawInvite GROUP_DRAW_INVITE = com.vpu.mp.db.shop.tables.GroupDrawInvite.GROUP_DRAW_INVITE;
 
     /**
-     * The table <code>mini_shop_471752.b2c_invoice</code>.
+     * The table <code>mini_shop_1.b2c_import_goods</code>.
      */
-    public static final B2cInvoice B2C_INVOICE = com.vpu.mp.db.shop.tables.B2cInvoice.B2C_INVOICE;
+    public static final ImportGoods IMPORT_GOODS = com.vpu.mp.db.shop.tables.ImportGoods.IMPORT_GOODS;
 
     /**
-     * The table <code>mini_shop_471752.b2c_invoice_new</code>.
+     * The table <code>mini_shop_1.b2c_income_outcome_detail</code>.
      */
-    public static final B2cInvoiceNew B2C_INVOICE_NEW = com.vpu.mp.db.shop.tables.B2cInvoiceNew.B2C_INVOICE_NEW;
+    public static final IncomeOutcomeDetail INCOME_OUTCOME_DETAIL = com.vpu.mp.db.shop.tables.IncomeOutcomeDetail.INCOME_OUTCOME_DETAIL;
 
     /**
-     * The table <code>mini_shop_471752.b2c_join_draw_list</code>.
+     * The table <code>mini_shop_1.b2c_index_foot_record</code>.
      */
-    public static final B2cJoinDrawList B2C_JOIN_DRAW_LIST = com.vpu.mp.db.shop.tables.B2cJoinDrawList.B2C_JOIN_DRAW_LIST;
+    public static final IndexFootRecord INDEX_FOOT_RECORD = com.vpu.mp.db.shop.tables.IndexFootRecord.INDEX_FOOT_RECORD;
 
     /**
-     * The table <code>mini_shop_471752.b2c_join_group_list</code>.
+     * The table <code>mini_shop_1.b2c_integral_mall_define</code>.
      */
-    public static final B2cJoinGroupList B2C_JOIN_GROUP_LIST = com.vpu.mp.db.shop.tables.B2cJoinGroupList.B2C_JOIN_GROUP_LIST;
+    public static final IntegralMallDefine INTEGRAL_MALL_DEFINE = com.vpu.mp.db.shop.tables.IntegralMallDefine.INTEGRAL_MALL_DEFINE;
 
     /**
-     * The table <code>mini_shop_471752.b2c_lottery</code>.
+     * The table <code>mini_shop_1.b2c_integral_mall_product</code>.
      */
-    public static final B2cLottery B2C_LOTTERY = com.vpu.mp.db.shop.tables.B2cLottery.B2C_LOTTERY;
+    public static final IntegralMallProduct INTEGRAL_MALL_PRODUCT = com.vpu.mp.db.shop.tables.IntegralMallProduct.INTEGRAL_MALL_PRODUCT;
 
     /**
-     * The table <code>mini_shop_471752.b2c_lottery_record</code>.
+     * The table <code>mini_shop_1.b2c_integral_mall_record</code>.
      */
-    public static final B2cLotteryRecord B2C_LOTTERY_RECORD = com.vpu.mp.db.shop.tables.B2cLotteryRecord.B2C_LOTTERY_RECORD;
+    public static final IntegralMallRecord INTEGRAL_MALL_RECORD = com.vpu.mp.db.shop.tables.IntegralMallRecord.INTEGRAL_MALL_RECORD;
 
     /**
-     * The table <code>mini_shop_471752.b2c_lottery_share</code>.
+     * The table <code>mini_shop_1.b2c_invoice</code>.
      */
-    public static final B2cLotteryShare B2C_LOTTERY_SHARE = com.vpu.mp.db.shop.tables.B2cLotteryShare.B2C_LOTTERY_SHARE;
+    public static final Invoice INVOICE = com.vpu.mp.db.shop.tables.Invoice.INVOICE;
 
     /**
-     * The table <code>mini_shop_471752.b2c_member_card</code>.
+     * The table <code>mini_shop_1.b2c_invoice_new</code>.
      */
-    public static final B2cMemberCard B2C_MEMBER_CARD = com.vpu.mp.db.shop.tables.B2cMemberCard.B2C_MEMBER_CARD;
+    public static final InvoiceNew INVOICE_NEW = com.vpu.mp.db.shop.tables.InvoiceNew.INVOICE_NEW;
 
     /**
-     * The table <code>mini_shop_471752.b2c_message_template</code>.
+     * The table <code>mini_shop_1.b2c_join_draw_list</code>.
      */
-    public static final B2cMessageTemplate B2C_MESSAGE_TEMPLATE = com.vpu.mp.db.shop.tables.B2cMessageTemplate.B2C_MESSAGE_TEMPLATE;
+    public static final JoinDrawList JOIN_DRAW_LIST = com.vpu.mp.db.shop.tables.JoinDrawList.JOIN_DRAW_LIST;
 
     /**
-     * The table <code>mini_shop_471752.b2c_mp_daily_retain</code>.
+     * The table <code>mini_shop_1.b2c_join_group_list</code>.
      */
-    public static final B2cMpDailyRetain B2C_MP_DAILY_RETAIN = com.vpu.mp.db.shop.tables.B2cMpDailyRetain.B2C_MP_DAILY_RETAIN;
+    public static final JoinGroupList JOIN_GROUP_LIST = com.vpu.mp.db.shop.tables.JoinGroupList.JOIN_GROUP_LIST;
 
     /**
-     * The table <code>mini_shop_471752.b2c_mp_daily_visit</code>.
+     * The table <code>mini_shop_1.b2c_lottery</code>.
      */
-    public static final B2cMpDailyVisit B2C_MP_DAILY_VISIT = com.vpu.mp.db.shop.tables.B2cMpDailyVisit.B2C_MP_DAILY_VISIT;
+    public static final Lottery LOTTERY = com.vpu.mp.db.shop.tables.Lottery.LOTTERY;
 
     /**
-     * The table <code>mini_shop_471752.b2c_mp_distribution_visit</code>.
+     * The table <code>mini_shop_1.b2c_lottery_record</code>.
      */
-    public static final B2cMpDistributionVisit B2C_MP_DISTRIBUTION_VISIT = com.vpu.mp.db.shop.tables.B2cMpDistributionVisit.B2C_MP_DISTRIBUTION_VISIT;
+    public static final LotteryRecord LOTTERY_RECORD = com.vpu.mp.db.shop.tables.LotteryRecord.LOTTERY_RECORD;
 
     /**
-     * The table <code>mini_shop_471752.b2c_mp_jump</code>.
+     * The table <code>mini_shop_1.b2c_lottery_share</code>.
      */
-    public static final B2cMpJump B2C_MP_JUMP = com.vpu.mp.db.shop.tables.B2cMpJump.B2C_MP_JUMP;
+    public static final LotteryShare LOTTERY_SHARE = com.vpu.mp.db.shop.tables.LotteryShare.LOTTERY_SHARE;
 
     /**
-     * The table <code>mini_shop_471752.b2c_mp_jump_usable</code>.
+     * The table <code>mini_shop_1.b2c_member_card</code>.
      */
-    public static final B2cMpJumpUsable B2C_MP_JUMP_USABLE = com.vpu.mp.db.shop.tables.B2cMpJumpUsable.B2C_MP_JUMP_USABLE;
+    public static final MemberCard MEMBER_CARD = com.vpu.mp.db.shop.tables.MemberCard.MEMBER_CARD;
 
     /**
-     * The table <code>mini_shop_471752.b2c_mp_monthly_retain</code>.
+     * The table <code>mini_shop_1.b2c_message_template</code>.
      */
-    public static final B2cMpMonthlyRetain B2C_MP_MONTHLY_RETAIN = com.vpu.mp.db.shop.tables.B2cMpMonthlyRetain.B2C_MP_MONTHLY_RETAIN;
+    public static final MessageTemplate MESSAGE_TEMPLATE = com.vpu.mp.db.shop.tables.MessageTemplate.MESSAGE_TEMPLATE;
 
     /**
-     * The table <code>mini_shop_471752.b2c_mp_monthly_visit</code>.
+     * The table <code>mini_shop_1.b2c_mp_daily_retain</code>.
      */
-    public static final B2cMpMonthlyVisit B2C_MP_MONTHLY_VISIT = com.vpu.mp.db.shop.tables.B2cMpMonthlyVisit.B2C_MP_MONTHLY_VISIT;
+    public static final MpDailyRetain MP_DAILY_RETAIN = com.vpu.mp.db.shop.tables.MpDailyRetain.MP_DAILY_RETAIN;
 
     /**
-     * The table <code>mini_shop_471752.b2c_mp_scene_record</code>.
+     * The table <code>mini_shop_1.b2c_mp_daily_visit</code>.
      */
-    public static final B2cMpSceneRecord B2C_MP_SCENE_RECORD = com.vpu.mp.db.shop.tables.B2cMpSceneRecord.B2C_MP_SCENE_RECORD;
+    public static final MpDailyVisit MP_DAILY_VISIT = com.vpu.mp.db.shop.tables.MpDailyVisit.MP_DAILY_VISIT;
 
     /**
-     * The table <code>mini_shop_471752.b2c_mp_summary_trend</code>.
+     * The table <code>mini_shop_1.b2c_mp_distribution_visit</code>.
      */
-    public static final B2cMpSummaryTrend B2C_MP_SUMMARY_TREND = com.vpu.mp.db.shop.tables.B2cMpSummaryTrend.B2C_MP_SUMMARY_TREND;
+    public static final MpDistributionVisit MP_DISTRIBUTION_VISIT = com.vpu.mp.db.shop.tables.MpDistributionVisit.MP_DISTRIBUTION_VISIT;
 
     /**
-     * The table <code>mini_shop_471752.b2c_mp_template_form_id</code>.
+     * The table <code>mini_shop_1.b2c_mp_jump</code>.
      */
-    public static final B2cMpTemplateFormId B2C_MP_TEMPLATE_FORM_ID = com.vpu.mp.db.shop.tables.B2cMpTemplateFormId.B2C_MP_TEMPLATE_FORM_ID;
+    public static final MpJump MP_JUMP = com.vpu.mp.db.shop.tables.MpJump.MP_JUMP;
 
     /**
-     * The table <code>mini_shop_471752.b2c_mp_user</code>.
+     * The table <code>mini_shop_1.b2c_mp_jump_usable</code>.
      */
-    public static final B2cMpUser B2C_MP_USER = com.vpu.mp.db.shop.tables.B2cMpUser.B2C_MP_USER;
+    public static final MpJumpUsable MP_JUMP_USABLE = com.vpu.mp.db.shop.tables.MpJumpUsable.MP_JUMP_USABLE;
 
     /**
-     * The table <code>mini_shop_471752.b2c_mp_user_portrait</code>.
+     * The table <code>mini_shop_1.b2c_mp_monthly_retain</code>.
      */
-    public static final B2cMpUserPortrait B2C_MP_USER_PORTRAIT = com.vpu.mp.db.shop.tables.B2cMpUserPortrait.B2C_MP_USER_PORTRAIT;
+    public static final MpMonthlyRetain MP_MONTHLY_RETAIN = com.vpu.mp.db.shop.tables.MpMonthlyRetain.MP_MONTHLY_RETAIN;
 
     /**
-     * The table <code>mini_shop_471752.b2c_mp_visit_page</code>.
+     * The table <code>mini_shop_1.b2c_mp_monthly_visit</code>.
      */
-    public static final B2cMpVisitPage B2C_MP_VISIT_PAGE = com.vpu.mp.db.shop.tables.B2cMpVisitPage.B2C_MP_VISIT_PAGE;
+    public static final MpMonthlyVisit MP_MONTHLY_VISIT = com.vpu.mp.db.shop.tables.MpMonthlyVisit.MP_MONTHLY_VISIT;
 
     /**
-     * The table <code>mini_shop_471752.b2c_mp_weekly_retain</code>.
+     * The table <code>mini_shop_1.b2c_mp_scene_record</code>.
      */
-    public static final B2cMpWeeklyRetain B2C_MP_WEEKLY_RETAIN = com.vpu.mp.db.shop.tables.B2cMpWeeklyRetain.B2C_MP_WEEKLY_RETAIN;
+    public static final MpSceneRecord MP_SCENE_RECORD = com.vpu.mp.db.shop.tables.MpSceneRecord.MP_SCENE_RECORD;
 
     /**
-     * The table <code>mini_shop_471752.b2c_mp_weekly_visit</code>.
+     * The table <code>mini_shop_1.b2c_mp_summary_trend</code>.
      */
-    public static final B2cMpWeeklyVisit B2C_MP_WEEKLY_VISIT = com.vpu.mp.db.shop.tables.B2cMpWeeklyVisit.B2C_MP_WEEKLY_VISIT;
+    public static final MpSummaryTrend MP_SUMMARY_TREND = com.vpu.mp.db.shop.tables.MpSummaryTrend.MP_SUMMARY_TREND;
 
     /**
-     * The table <code>mini_shop_471752.b2c_mrking_activity_record</code>.
+     * The table <code>mini_shop_1.b2c_mp_template_form_id</code>.
      */
-    public static final B2cMrkingActivityRecord B2C_MRKING_ACTIVITY_RECORD = com.vpu.mp.db.shop.tables.B2cMrkingActivityRecord.B2C_MRKING_ACTIVITY_RECORD;
+    public static final MpTemplateFormId MP_TEMPLATE_FORM_ID = com.vpu.mp.db.shop.tables.MpTemplateFormId.MP_TEMPLATE_FORM_ID;
 
     /**
-     * The table <code>mini_shop_471752.b2c_mrking_strategy</code>.
+     * The table <code>mini_shop_1.b2c_mp_user</code>.
      */
-    public static final B2cMrkingStrategy B2C_MRKING_STRATEGY = com.vpu.mp.db.shop.tables.B2cMrkingStrategy.B2C_MRKING_STRATEGY;
+    public static final MpUser MP_USER = com.vpu.mp.db.shop.tables.MpUser.MP_USER;
 
     /**
-     * The table <code>mini_shop_471752.b2c_mrking_strategy_condition</code>.
+     * The table <code>mini_shop_1.b2c_mp_user_portrait</code>.
      */
-    public static final B2cMrkingStrategyCondition B2C_MRKING_STRATEGY_CONDITION = com.vpu.mp.db.shop.tables.B2cMrkingStrategyCondition.B2C_MRKING_STRATEGY_CONDITION;
+    public static final MpUserPortrait MP_USER_PORTRAIT = com.vpu.mp.db.shop.tables.MpUserPortrait.MP_USER_PORTRAIT;
 
     /**
-     * The table <code>mini_shop_471752.b2c_mrking_voucher</code>.
+     * The table <code>mini_shop_1.b2c_mp_visit_page</code>.
      */
-    public static final B2cMrkingVoucher B2C_MRKING_VOUCHER = com.vpu.mp.db.shop.tables.B2cMrkingVoucher.B2C_MRKING_VOUCHER;
+    public static final MpVisitPage MP_VISIT_PAGE = com.vpu.mp.db.shop.tables.MpVisitPage.MP_VISIT_PAGE;
 
     /**
-     * The table <code>mini_shop_471752.b2c_order_action</code>.
+     * The table <code>mini_shop_1.b2c_mp_weekly_retain</code>.
      */
-    public static final B2cOrderAction B2C_ORDER_ACTION = com.vpu.mp.db.shop.tables.B2cOrderAction.B2C_ORDER_ACTION;
+    public static final MpWeeklyRetain MP_WEEKLY_RETAIN = com.vpu.mp.db.shop.tables.MpWeeklyRetain.MP_WEEKLY_RETAIN;
 
     /**
-     * The table <code>mini_shop_471752.b2c_order_goods</code>.
+     * The table <code>mini_shop_1.b2c_mp_weekly_visit</code>.
      */
-    public static final B2cOrderGoods B2C_ORDER_GOODS = com.vpu.mp.db.shop.tables.B2cOrderGoods.B2C_ORDER_GOODS;
+    public static final MpWeeklyVisit MP_WEEKLY_VISIT = com.vpu.mp.db.shop.tables.MpWeeklyVisit.MP_WEEKLY_VISIT;
 
     /**
-     * The table <code>mini_shop_471752.b2c_order_goods_rebate</code>.
+     * The table <code>mini_shop_1.b2c_mrking_activity_record</code>.
      */
-    public static final B2cOrderGoodsRebate B2C_ORDER_GOODS_REBATE = com.vpu.mp.db.shop.tables.B2cOrderGoodsRebate.B2C_ORDER_GOODS_REBATE;
+    public static final MrkingActivityRecord MRKING_ACTIVITY_RECORD = com.vpu.mp.db.shop.tables.MrkingActivityRecord.MRKING_ACTIVITY_RECORD;
 
     /**
-     * The table <code>mini_shop_471752.b2c_order_info</code>.
+     * The table <code>mini_shop_1.b2c_mrking_strategy</code>.
      */
-    public static final B2cOrderInfo B2C_ORDER_INFO = com.vpu.mp.db.shop.tables.B2cOrderInfo.B2C_ORDER_INFO;
+    public static final MrkingStrategy MRKING_STRATEGY = com.vpu.mp.db.shop.tables.MrkingStrategy.MRKING_STRATEGY;
 
     /**
-     * The table <code>mini_shop_471752.b2c_order_must</code>.
+     * The table <code>mini_shop_1.b2c_mrking_strategy_condition</code>.
      */
-    public static final B2cOrderMust B2C_ORDER_MUST = com.vpu.mp.db.shop.tables.B2cOrderMust.B2C_ORDER_MUST;
+    public static final MrkingStrategyCondition MRKING_STRATEGY_CONDITION = com.vpu.mp.db.shop.tables.MrkingStrategyCondition.MRKING_STRATEGY_CONDITION;
 
     /**
-     * The table <code>mini_shop_471752.b2c_order_refund_record</code>.
+     * The table <code>mini_shop_1.b2c_mrking_voucher</code>.
      */
-    public static final B2cOrderRefundRecord B2C_ORDER_REFUND_RECORD = com.vpu.mp.db.shop.tables.B2cOrderRefundRecord.B2C_ORDER_REFUND_RECORD;
+    public static final MrkingVoucher MRKING_VOUCHER = com.vpu.mp.db.shop.tables.MrkingVoucher.MRKING_VOUCHER;
 
     /**
-     * The table <code>mini_shop_471752.b2c_order_verifier</code>.
+     * The table <code>mini_shop_1.b2c_order_action</code>.
      */
-    public static final B2cOrderVerifier B2C_ORDER_VERIFIER = com.vpu.mp.db.shop.tables.B2cOrderVerifier.B2C_ORDER_VERIFIER;
+    public static final OrderAction ORDER_ACTION = com.vpu.mp.db.shop.tables.OrderAction.ORDER_ACTION;
 
     /**
-     * The table <code>mini_shop_471752.b2c_package_goods_cart</code>.
+     * The table <code>mini_shop_1.b2c_order_goods</code>.
      */
-    public static final B2cPackageGoodsCart B2C_PACKAGE_GOODS_CART = com.vpu.mp.db.shop.tables.B2cPackageGoodsCart.B2C_PACKAGE_GOODS_CART;
+    public static final OrderGoods ORDER_GOODS = com.vpu.mp.db.shop.tables.OrderGoods.ORDER_GOODS;
 
     /**
-     * The table <code>mini_shop_471752.b2c_package_sale</code>.
+     * The table <code>mini_shop_1.b2c_order_goods_rebate</code>.
      */
-    public static final B2cPackageSale B2C_PACKAGE_SALE = com.vpu.mp.db.shop.tables.B2cPackageSale.B2C_PACKAGE_SALE;
+    public static final OrderGoodsRebate ORDER_GOODS_REBATE = com.vpu.mp.db.shop.tables.OrderGoodsRebate.ORDER_GOODS_REBATE;
 
     /**
-     * The table <code>mini_shop_471752.b2c_page_classification</code>.
+     * The table <code>mini_shop_1.b2c_order_info</code>.
      */
-    public static final B2cPageClassification B2C_PAGE_CLASSIFICATION = com.vpu.mp.db.shop.tables.B2cPageClassification.B2C_PAGE_CLASSIFICATION;
+    public static final OrderInfo ORDER_INFO = com.vpu.mp.db.shop.tables.OrderInfo.ORDER_INFO;
 
     /**
-     * The table <code>mini_shop_471752.b2c_part_order_goods_ship</code>.
+     * The table <code>mini_shop_1.b2c_order_must</code>.
      */
-    public static final B2cPartOrderGoodsShip B2C_PART_ORDER_GOODS_SHIP = com.vpu.mp.db.shop.tables.B2cPartOrderGoodsShip.B2C_PART_ORDER_GOODS_SHIP;
+    public static final OrderMust ORDER_MUST = com.vpu.mp.db.shop.tables.OrderMust.ORDER_MUST;
 
     /**
-     * The table <code>mini_shop_471752.b2c_payment</code>.
+     * The table <code>mini_shop_1.b2c_order_refund_record</code>.
      */
-    public static final B2cPayment B2C_PAYMENT = com.vpu.mp.db.shop.tables.B2cPayment.B2C_PAYMENT;
+    public static final OrderRefundRecord ORDER_REFUND_RECORD = com.vpu.mp.db.shop.tables.OrderRefundRecord.ORDER_REFUND_RECORD;
 
     /**
-     * The table <code>mini_shop_471752.b2c_payment_record</code>.
+     * The table <code>mini_shop_1.b2c_order_verifier</code>.
      */
-    public static final B2cPaymentRecord B2C_PAYMENT_RECORD = com.vpu.mp.db.shop.tables.B2cPaymentRecord.B2C_PAYMENT_RECORD;
+    public static final OrderVerifier ORDER_VERIFIER = com.vpu.mp.db.shop.tables.OrderVerifier.ORDER_VERIFIER;
 
     /**
-     * The table <code>mini_shop_471752.b2c_pictorial</code>.
+     * The table <code>mini_shop_1.b2c_package_goods_cart</code>.
      */
-    public static final B2cPictorial B2C_PICTORIAL = com.vpu.mp.db.shop.tables.B2cPictorial.B2C_PICTORIAL;
+    public static final PackageGoodsCart PACKAGE_GOODS_CART = com.vpu.mp.db.shop.tables.PackageGoodsCart.PACKAGE_GOODS_CART;
 
     /**
-     * The table <code>mini_shop_471752.b2c_pin_group_define</code>.
+     * The table <code>mini_shop_1.b2c_package_sale</code>.
      */
-    public static final B2cPinGroupDefine B2C_PIN_GROUP_DEFINE = com.vpu.mp.db.shop.tables.B2cPinGroupDefine.B2C_PIN_GROUP_DEFINE;
+    public static final PackageSale PACKAGE_SALE = com.vpu.mp.db.shop.tables.PackageSale.PACKAGE_SALE;
 
     /**
-     * The table <code>mini_shop_471752.b2c_pin_group_list</code>.
+     * The table <code>mini_shop_1.b2c_page_classification</code>.
      */
-    public static final B2cPinGroupList B2C_PIN_GROUP_LIST = com.vpu.mp.db.shop.tables.B2cPinGroupList.B2C_PIN_GROUP_LIST;
+    public static final PageClassification PAGE_CLASSIFICATION = com.vpu.mp.db.shop.tables.PageClassification.PAGE_CLASSIFICATION;
 
     /**
-     * The table <code>mini_shop_471752.b2c_pin_group_product_define</code>.
+     * The table <code>mini_shop_1.b2c_part_order_goods_ship</code>.
      */
-    public static final B2cPinGroupProductDefine B2C_PIN_GROUP_PRODUCT_DEFINE = com.vpu.mp.db.shop.tables.B2cPinGroupProductDefine.B2C_PIN_GROUP_PRODUCT_DEFINE;
+    public static final PartOrderGoodsShip PART_ORDER_GOODS_SHIP = com.vpu.mp.db.shop.tables.PartOrderGoodsShip.PART_ORDER_GOODS_SHIP;
 
     /**
-     * The table <code>mini_shop_471752.b2c_pin_integration_define</code>.
+     * The table <code>mini_shop_1.b2c_payment</code>.
      */
-    public static final B2cPinIntegrationDefine B2C_PIN_INTEGRATION_DEFINE = com.vpu.mp.db.shop.tables.B2cPinIntegrationDefine.B2C_PIN_INTEGRATION_DEFINE;
+    public static final Payment PAYMENT = com.vpu.mp.db.shop.tables.Payment.PAYMENT;
 
     /**
-     * The table <code>mini_shop_471752.b2c_pin_integration_list</code>.
+     * The table <code>mini_shop_1.b2c_payment_record</code>.
      */
-    public static final B2cPinIntegrationList B2C_PIN_INTEGRATION_LIST = com.vpu.mp.db.shop.tables.B2cPinIntegrationList.B2C_PIN_INTEGRATION_LIST;
+    public static final PaymentRecord PAYMENT_RECORD = com.vpu.mp.db.shop.tables.PaymentRecord.PAYMENT_RECORD;
 
     /**
-     * The table <code>mini_shop_471752.b2c_presale</code>.
+     * The table <code>mini_shop_1.b2c_pictorial</code>.
      */
-    public static final B2cPresale B2C_PRESALE = com.vpu.mp.db.shop.tables.B2cPresale.B2C_PRESALE;
+    public static final Pictorial PICTORIAL = com.vpu.mp.db.shop.tables.Pictorial.PICTORIAL;
 
     /**
-     * The table <code>mini_shop_471752.b2c_presale_product</code>.
+     * The table <code>mini_shop_1.b2c_pin_group_define</code>.
      */
-    public static final B2cPresaleProduct B2C_PRESALE_PRODUCT = com.vpu.mp.db.shop.tables.B2cPresaleProduct.B2C_PRESALE_PRODUCT;
+    public static final PinGroupDefine PIN_GROUP_DEFINE = com.vpu.mp.db.shop.tables.PinGroupDefine.PIN_GROUP_DEFINE;
 
     /**
-     * The table <code>mini_shop_471752.b2c_product_brand</code>.
+     * The table <code>mini_shop_1.b2c_pin_group_list</code>.
      */
-    public static final B2cProductBrand B2C_PRODUCT_BRAND = com.vpu.mp.db.shop.tables.B2cProductBrand.B2C_PRODUCT_BRAND;
+    public static final PinGroupList PIN_GROUP_LIST = com.vpu.mp.db.shop.tables.PinGroupList.PIN_GROUP_LIST;
 
     /**
-     * The table <code>mini_shop_471752.b2c_purchase_price_define</code>.
+     * The table <code>mini_shop_1.b2c_pin_group_product_define</code>.
      */
-    public static final B2cPurchasePriceDefine B2C_PURCHASE_PRICE_DEFINE = com.vpu.mp.db.shop.tables.B2cPurchasePriceDefine.B2C_PURCHASE_PRICE_DEFINE;
+    public static final PinGroupProductDefine PIN_GROUP_PRODUCT_DEFINE = com.vpu.mp.db.shop.tables.PinGroupProductDefine.PIN_GROUP_PRODUCT_DEFINE;
 
     /**
-     * The table <code>mini_shop_471752.b2c_purchase_price_rule</code>.
+     * The table <code>mini_shop_1.b2c_pin_integration_define</code>.
      */
-    public static final B2cPurchasePriceRule B2C_PURCHASE_PRICE_RULE = com.vpu.mp.db.shop.tables.B2cPurchasePriceRule.B2C_PURCHASE_PRICE_RULE;
+    public static final PinIntegrationDefine PIN_INTEGRATION_DEFINE = com.vpu.mp.db.shop.tables.PinIntegrationDefine.PIN_INTEGRATION_DEFINE;
 
     /**
-     * The table <code>mini_shop_471752.b2c_rebate_price_record</code>.
+     * The table <code>mini_shop_1.b2c_pin_integration_list</code>.
      */
-    public static final B2cRebatePriceRecord B2C_REBATE_PRICE_RECORD = com.vpu.mp.db.shop.tables.B2cRebatePriceRecord.B2C_REBATE_PRICE_RECORD;
+    public static final PinIntegrationList PIN_INTEGRATION_LIST = com.vpu.mp.db.shop.tables.PinIntegrationList.PIN_INTEGRATION_LIST;
 
     /**
-     * The table <code>mini_shop_471752.b2c_recently_browsed</code>.
+     * The table <code>mini_shop_1.b2c_pledge</code>.
      */
-    public static final B2cRecentlyBrowsed B2C_RECENTLY_BROWSED = com.vpu.mp.db.shop.tables.B2cRecentlyBrowsed.B2C_RECENTLY_BROWSED;
+    public static final Pledge PLEDGE = com.vpu.mp.db.shop.tables.Pledge.PLEDGE;
 
     /**
-     * The table <code>mini_shop_471752.b2c_recommend_goods</code>.
+     * The table <code>mini_shop_1.b2c_presale</code>.
      */
-    public static final B2cRecommendGoods B2C_RECOMMEND_GOODS = com.vpu.mp.db.shop.tables.B2cRecommendGoods.B2C_RECOMMEND_GOODS;
+    public static final Presale PRESALE = com.vpu.mp.db.shop.tables.Presale.PRESALE;
 
     /**
-     * The table <code>mini_shop_471752.b2c_record_admin_action</code>.
+     * The table <code>mini_shop_1.b2c_presale_product</code>.
      */
-    public static final B2cRecordAdminAction B2C_RECORD_ADMIN_ACTION = com.vpu.mp.db.shop.tables.B2cRecordAdminAction.B2C_RECORD_ADMIN_ACTION;
+    public static final PresaleProduct PRESALE_PRODUCT = com.vpu.mp.db.shop.tables.PresaleProduct.PRESALE_PRODUCT;
 
     /**
-     * The table <code>mini_shop_471752.b2c_reduce_price</code>.
+     * The table <code>mini_shop_1.b2c_product_brand</code>.
      */
-    public static final B2cReducePrice B2C_REDUCE_PRICE = com.vpu.mp.db.shop.tables.B2cReducePrice.B2C_REDUCE_PRICE;
+    public static final ProductBrand PRODUCT_BRAND = com.vpu.mp.db.shop.tables.ProductBrand.PRODUCT_BRAND;
 
     /**
-     * The table <code>mini_shop_471752.b2c_reduce_price_goods</code>.
+     * The table <code>mini_shop_1.b2c_purchase_price_define</code>.
      */
-    public static final B2cReducePriceGoods B2C_REDUCE_PRICE_GOODS = com.vpu.mp.db.shop.tables.B2cReducePriceGoods.B2C_REDUCE_PRICE_GOODS;
+    public static final PurchasePriceDefine PURCHASE_PRICE_DEFINE = com.vpu.mp.db.shop.tables.PurchasePriceDefine.PURCHASE_PRICE_DEFINE;
 
     /**
-     * The table <code>mini_shop_471752.b2c_reduce_price_product</code>.
+     * The table <code>mini_shop_1.b2c_purchase_price_rule</code>.
      */
-    public static final B2cReducePriceProduct B2C_REDUCE_PRICE_PRODUCT = com.vpu.mp.db.shop.tables.B2cReducePriceProduct.B2C_REDUCE_PRICE_PRODUCT;
+    public static final PurchasePriceRule PURCHASE_PRICE_RULE = com.vpu.mp.db.shop.tables.PurchasePriceRule.PURCHASE_PRICE_RULE;
 
     /**
-     * The table <code>mini_shop_471752.b2c_refund_amount_record</code>.
+     * The table <code>mini_shop_1.b2c_rebate_price_record</code>.
      */
-    public static final B2cRefundAmountRecord B2C_REFUND_AMOUNT_RECORD = com.vpu.mp.db.shop.tables.B2cRefundAmountRecord.B2C_REFUND_AMOUNT_RECORD;
+    public static final RebatePriceRecord REBATE_PRICE_RECORD = com.vpu.mp.db.shop.tables.RebatePriceRecord.REBATE_PRICE_RECORD;
 
     /**
-     * The table <code>mini_shop_471752.b2c_refund_card_record</code>.
+     * The table <code>mini_shop_1.b2c_recently_browsed</code>.
      */
-    public static final B2cRefundCardRecord B2C_REFUND_CARD_RECORD = com.vpu.mp.db.shop.tables.B2cRefundCardRecord.B2C_REFUND_CARD_RECORD;
+    public static final RecentlyBrowsed RECENTLY_BROWSED = com.vpu.mp.db.shop.tables.RecentlyBrowsed.RECENTLY_BROWSED;
 
     /**
-     * The table <code>mini_shop_471752.b2c_request_record</code>.
+     * The table <code>mini_shop_1.b2c_recommend_goods</code>.
      */
-    public static final B2cRequestRecord B2C_REQUEST_RECORD = com.vpu.mp.db.shop.tables.B2cRequestRecord.B2C_REQUEST_RECORD;
+    public static final RecommendGoods RECOMMEND_GOODS = com.vpu.mp.db.shop.tables.RecommendGoods.RECOMMEND_GOODS;
 
     /**
-     * The table <code>mini_shop_471752.b2c_return_order</code>.
+     * The table <code>mini_shop_1.b2c_record_admin_action</code>.
      */
-    public static final B2cReturnOrder B2C_RETURN_ORDER = com.vpu.mp.db.shop.tables.B2cReturnOrder.B2C_RETURN_ORDER;
+    public static final RecordAdminAction RECORD_ADMIN_ACTION = com.vpu.mp.db.shop.tables.RecordAdminAction.RECORD_ADMIN_ACTION;
 
     /**
-     * The table <code>mini_shop_471752.b2c_return_order_goods</code>.
+     * The table <code>mini_shop_1.b2c_reduce_price</code>.
      */
-    public static final B2cReturnOrderGoods B2C_RETURN_ORDER_GOODS = com.vpu.mp.db.shop.tables.B2cReturnOrderGoods.B2C_RETURN_ORDER_GOODS;
+    public static final ReducePrice REDUCE_PRICE = com.vpu.mp.db.shop.tables.ReducePrice.REDUCE_PRICE;
 
     /**
-     * The table <code>mini_shop_471752.b2c_return_status_change</code>.
+     * The table <code>mini_shop_1.b2c_reduce_price_goods</code>.
      */
-    public static final B2cReturnStatusChange B2C_RETURN_STATUS_CHANGE = com.vpu.mp.db.shop.tables.B2cReturnStatusChange.B2C_RETURN_STATUS_CHANGE;
+    public static final ReducePriceGoods REDUCE_PRICE_GOODS = com.vpu.mp.db.shop.tables.ReducePriceGoods.REDUCE_PRICE_GOODS;
 
     /**
-     * The table <code>mini_shop_471752.b2c_search_history</code>.
+     * The table <code>mini_shop_1.b2c_reduce_price_product</code>.
      */
-    public static final B2cSearchHistory B2C_SEARCH_HISTORY = com.vpu.mp.db.shop.tables.B2cSearchHistory.B2C_SEARCH_HISTORY;
+    public static final ReducePriceProduct REDUCE_PRICE_PRODUCT = com.vpu.mp.db.shop.tables.ReducePriceProduct.REDUCE_PRICE_PRODUCT;
 
     /**
-     * The table <code>mini_shop_471752.b2c_sec_kill_define</code>.
+     * The table <code>mini_shop_1.b2c_refund_amount_record</code>.
      */
-    public static final B2cSecKillDefine B2C_SEC_KILL_DEFINE = com.vpu.mp.db.shop.tables.B2cSecKillDefine.B2C_SEC_KILL_DEFINE;
+    public static final RefundAmountRecord REFUND_AMOUNT_RECORD = com.vpu.mp.db.shop.tables.RefundAmountRecord.REFUND_AMOUNT_RECORD;
 
     /**
-     * The table <code>mini_shop_471752.b2c_sec_kill_list</code>.
+     * The table <code>mini_shop_1.b2c_refund_card_record</code>.
      */
-    public static final B2cSecKillList B2C_SEC_KILL_LIST = com.vpu.mp.db.shop.tables.B2cSecKillList.B2C_SEC_KILL_LIST;
+    public static final RefundCardRecord REFUND_CARD_RECORD = com.vpu.mp.db.shop.tables.RefundCardRecord.REFUND_CARD_RECORD;
 
     /**
-     * The table <code>mini_shop_471752.b2c_sec_kill_product_define</code>.
+     * The table <code>mini_shop_1.b2c_request_record</code>.
      */
-    public static final B2cSecKillProductDefine B2C_SEC_KILL_PRODUCT_DEFINE = com.vpu.mp.db.shop.tables.B2cSecKillProductDefine.B2C_SEC_KILL_PRODUCT_DEFINE;
+    public static final RequestRecord REQUEST_RECORD = com.vpu.mp.db.shop.tables.RequestRecord.REQUEST_RECORD;
 
     /**
-     * The table <code>mini_shop_471752.b2c_service_category</code>.
+     * The table <code>mini_shop_1.b2c_return_order</code>.
      */
-    public static final B2cServiceCategory B2C_SERVICE_CATEGORY = com.vpu.mp.db.shop.tables.B2cServiceCategory.B2C_SERVICE_CATEGORY;
+    public static final ReturnOrder RETURN_ORDER = com.vpu.mp.db.shop.tables.ReturnOrder.RETURN_ORDER;
 
     /**
-     * The table <code>mini_shop_471752.b2c_service_message_record</code>.
+     * The table <code>mini_shop_1.b2c_return_order_goods</code>.
      */
-    public static final B2cServiceMessageRecord B2C_SERVICE_MESSAGE_RECORD = com.vpu.mp.db.shop.tables.B2cServiceMessageRecord.B2C_SERVICE_MESSAGE_RECORD;
+    public static final ReturnOrderGoods RETURN_ORDER_GOODS = com.vpu.mp.db.shop.tables.ReturnOrderGoods.RETURN_ORDER_GOODS;
 
     /**
-     * The table <code>mini_shop_471752.b2c_service_order</code>.
+     * The table <code>mini_shop_1.b2c_return_status_change</code>.
      */
-    public static final B2cServiceOrder B2C_SERVICE_ORDER = com.vpu.mp.db.shop.tables.B2cServiceOrder.B2C_SERVICE_ORDER;
+    public static final ReturnStatusChange RETURN_STATUS_CHANGE = com.vpu.mp.db.shop.tables.ReturnStatusChange.RETURN_STATUS_CHANGE;
 
     /**
-     * The table <code>mini_shop_471752.b2c_service_request</code>.
+     * The table <code>mini_shop_1.b2c_search_history</code>.
      */
-    public static final B2cServiceRequest B2C_SERVICE_REQUEST = com.vpu.mp.db.shop.tables.B2cServiceRequest.B2C_SERVICE_REQUEST;
+    public static final SearchHistory SEARCH_HISTORY = com.vpu.mp.db.shop.tables.SearchHistory.SEARCH_HISTORY;
 
     /**
-     * The table <code>mini_shop_471752.b2c_service_schedule</code>.
+     * The table <code>mini_shop_1.b2c_sec_kill_define</code>.
      */
-    public static final B2cServiceSchedule B2C_SERVICE_SCHEDULE = com.vpu.mp.db.shop.tables.B2cServiceSchedule.B2C_SERVICE_SCHEDULE;
+    public static final SecKillDefine SEC_KILL_DEFINE = com.vpu.mp.db.shop.tables.SecKillDefine.SEC_KILL_DEFINE;
 
     /**
-     * The table <code>mini_shop_471752.b2c_service_technician</code>.
+     * The table <code>mini_shop_1.b2c_sec_kill_list</code>.
      */
-    public static final B2cServiceTechnician B2C_SERVICE_TECHNICIAN = com.vpu.mp.db.shop.tables.B2cServiceTechnician.B2C_SERVICE_TECHNICIAN;
+    public static final SecKillList SEC_KILL_LIST = com.vpu.mp.db.shop.tables.SecKillList.SEC_KILL_LIST;
 
     /**
-     * The table <code>mini_shop_471752.b2c_service_technician_group</code>.
+     * The table <code>mini_shop_1.b2c_sec_kill_product_define</code>.
      */
-    public static final B2cServiceTechnicianGroup B2C_SERVICE_TECHNICIAN_GROUP = com.vpu.mp.db.shop.tables.B2cServiceTechnicianGroup.B2C_SERVICE_TECHNICIAN_GROUP;
+    public static final SecKillProductDefine SEC_KILL_PRODUCT_DEFINE = com.vpu.mp.db.shop.tables.SecKillProductDefine.SEC_KILL_PRODUCT_DEFINE;
 
     /**
-     * The table <code>mini_shop_471752.b2c_service_technician_schedule</code>.
+     * The table <code>mini_shop_1.b2c_service_category</code>.
      */
-    public static final B2cServiceTechnicianSchedule B2C_SERVICE_TECHNICIAN_SCHEDULE = com.vpu.mp.db.shop.tables.B2cServiceTechnicianSchedule.B2C_SERVICE_TECHNICIAN_SCHEDULE;
+    public static final ServiceCategory SERVICE_CATEGORY = com.vpu.mp.db.shop.tables.ServiceCategory.SERVICE_CATEGORY;
 
     /**
-     * The table <code>mini_shop_471752.b2c_share_record</code>.
+     * The table <code>mini_shop_1.b2c_service_message_record</code>.
      */
-    public static final B2cShareRecord B2C_SHARE_RECORD = com.vpu.mp.db.shop.tables.B2cShareRecord.B2C_SHARE_RECORD;
+    public static final ServiceMessageRecord SERVICE_MESSAGE_RECORD = com.vpu.mp.db.shop.tables.ServiceMessageRecord.SERVICE_MESSAGE_RECORD;
 
     /**
-     * The table <code>mini_shop_471752.b2c_share_split</code>.
+     * The table <code>mini_shop_1.b2c_service_order</code>.
      */
-    public static final B2cShareSplit B2C_SHARE_SPLIT = com.vpu.mp.db.shop.tables.B2cShareSplit.B2C_SHARE_SPLIT;
+    public static final ServiceOrder SERVICE_ORDER = com.vpu.mp.db.shop.tables.ServiceOrder.SERVICE_ORDER;
 
     /**
-     * The table <code>mini_shop_471752.b2c_shipping</code>.
+     * The table <code>mini_shop_1.b2c_service_request</code>.
      */
-    public static final B2cShipping B2C_SHIPPING = com.vpu.mp.db.shop.tables.B2cShipping.B2C_SHIPPING;
+    public static final ServiceRequest SERVICE_REQUEST = com.vpu.mp.db.shop.tables.ServiceRequest.SERVICE_REQUEST;
 
     /**
-     * The table <code>mini_shop_471752.b2c_shop</code>.
+     * The table <code>mini_shop_1.b2c_service_schedule</code>.
      */
-    public static final B2cShop B2C_SHOP = com.vpu.mp.db.shop.tables.B2cShop.B2C_SHOP;
+    public static final ServiceSchedule SERVICE_SCHEDULE = com.vpu.mp.db.shop.tables.ServiceSchedule.SERVICE_SCHEDULE;
 
     /**
-     * The table <code>mini_shop_471752.b2c_shop_cfg</code>.
+     * The table <code>mini_shop_1.b2c_service_technician</code>.
      */
-    public static final B2cShopCfg B2C_SHOP_CFG = com.vpu.mp.db.shop.tables.B2cShopCfg.B2C_SHOP_CFG;
+    public static final ServiceTechnician SERVICE_TECHNICIAN = com.vpu.mp.db.shop.tables.ServiceTechnician.SERVICE_TECHNICIAN;
 
     /**
-     * The table <code>mini_shop_471752.b2c_shop_child_account</code>.
+     * The table <code>mini_shop_1.b2c_service_technician_group</code>.
      */
-    public static final B2cShopChildAccount B2C_SHOP_CHILD_ACCOUNT = com.vpu.mp.db.shop.tables.B2cShopChildAccount.B2C_SHOP_CHILD_ACCOUNT;
+    public static final ServiceTechnicianGroup SERVICE_TECHNICIAN_GROUP = com.vpu.mp.db.shop.tables.ServiceTechnicianGroup.SERVICE_TECHNICIAN_GROUP;
 
     /**
-     * The table <code>mini_shop_471752.b2c_shop_role</code>.
+     * The table <code>mini_shop_1.b2c_service_technician_schedule</code>.
      */
-    public static final B2cShopRole B2C_SHOP_ROLE = com.vpu.mp.db.shop.tables.B2cShopRole.B2C_SHOP_ROLE;
+    public static final ServiceTechnicianSchedule SERVICE_TECHNICIAN_SCHEDULE = com.vpu.mp.db.shop.tables.ServiceTechnicianSchedule.SERVICE_TECHNICIAN_SCHEDULE;
 
     /**
-     * The table <code>mini_shop_471752.b2c_shop_score_cfg</code>.
+     * The table <code>mini_shop_1.b2c_share_record</code>.
      */
-    public static final B2cShopScoreCfg B2C_SHOP_SCORE_CFG = com.vpu.mp.db.shop.tables.B2cShopScoreCfg.B2C_SHOP_SCORE_CFG;
+    public static final ShareRecord SHARE_RECORD = com.vpu.mp.db.shop.tables.ShareRecord.SHARE_RECORD;
 
     /**
-     * The table <code>mini_shop_471752.b2c_sms</code>.
+     * The table <code>mini_shop_1.b2c_share_split</code>.
      */
-    public static final B2cSms B2C_SMS = com.vpu.mp.db.shop.tables.B2cSms.B2C_SMS;
+    public static final ShareSplit SHARE_SPLIT = com.vpu.mp.db.shop.tables.ShareSplit.SHARE_SPLIT;
 
     /**
-     * The table <code>mini_shop_471752.b2c_sms_send_record</code>.
+     * The table <code>mini_shop_1.b2c_ship_goods_cart</code>.
      */
-    public static final B2cSmsSendRecord B2C_SMS_SEND_RECORD = com.vpu.mp.db.shop.tables.B2cSmsSendRecord.B2C_SMS_SEND_RECORD;
+    public static final ShipGoodsCart SHIP_GOODS_CART = com.vpu.mp.db.shop.tables.ShipGoodsCart.SHIP_GOODS_CART;
 
     /**
-     * The table <code>mini_shop_471752.b2c_sort</code>.
+     * The table <code>mini_shop_1.b2c_shipping</code>.
      */
-    public static final B2cSort B2C_SORT = com.vpu.mp.db.shop.tables.B2cSort.B2C_SORT;
+    public static final Shipping SHIPPING = com.vpu.mp.db.shop.tables.Shipping.SHIPPING;
 
     /**
-     * The table <code>mini_shop_471752.b2c_spec</code>.
+     * The table <code>mini_shop_1.b2c_shop</code>.
      */
-    public static final B2cSpec B2C_SPEC = com.vpu.mp.db.shop.tables.B2cSpec.B2C_SPEC;
+    public static final Shop SHOP = com.vpu.mp.db.shop.tables.Shop.SHOP;
 
     /**
-     * The table <code>mini_shop_471752.b2c_spec_vals</code>.
+     * The table <code>mini_shop_1.b2c_shop_cfg</code>.
      */
-    public static final B2cSpecVals B2C_SPEC_VALS = com.vpu.mp.db.shop.tables.B2cSpecVals.B2C_SPEC_VALS;
+    public static final ShopCfg SHOP_CFG = com.vpu.mp.db.shop.tables.ShopCfg.SHOP_CFG;
 
     /**
-     * The table <code>mini_shop_471752.b2c_statistics_summary</code>.
+     * The table <code>mini_shop_1.b2c_shop_child_account</code>.
      */
-    public static final B2cStatisticsSummary B2C_STATISTICS_SUMMARY = com.vpu.mp.db.shop.tables.B2cStatisticsSummary.B2C_STATISTICS_SUMMARY;
+    public static final ShopChildAccount SHOP_CHILD_ACCOUNT = com.vpu.mp.db.shop.tables.ShopChildAccount.SHOP_CHILD_ACCOUNT;
 
     /**
-     * The table <code>mini_shop_471752.b2c_store</code>.
+     * The table <code>mini_shop_1.b2c_shop_role</code>.
      */
-    public static final B2cStore B2C_STORE = com.vpu.mp.db.shop.tables.B2cStore.B2C_STORE;
+    public static final ShopRole SHOP_ROLE = com.vpu.mp.db.shop.tables.ShopRole.SHOP_ROLE;
 
     /**
-     * The table <code>mini_shop_471752.b2c_store_goods</code>.
+     * The table <code>mini_shop_1.b2c_shop_score_cfg</code>.
      */
-    public static final B2cStoreGoods B2C_STORE_GOODS = com.vpu.mp.db.shop.tables.B2cStoreGoods.B2C_STORE_GOODS;
+    public static final ShopScoreCfg SHOP_SCORE_CFG = com.vpu.mp.db.shop.tables.ShopScoreCfg.SHOP_SCORE_CFG;
 
     /**
-     * The table <code>mini_shop_471752.b2c_store_group</code>.
+     * The table <code>mini_shop_1.b2c_sms</code>.
      */
-    public static final B2cStoreGroup B2C_STORE_GROUP = com.vpu.mp.db.shop.tables.B2cStoreGroup.B2C_STORE_GROUP;
+    public static final Sms SMS = com.vpu.mp.db.shop.tables.Sms.SMS;
 
     /**
-     * The table <code>mini_shop_471752.b2c_store_order</code>.
+     * The table <code>mini_shop_1.b2c_sms_send_record</code>.
      */
-    public static final B2cStoreOrder B2C_STORE_ORDER = com.vpu.mp.db.shop.tables.B2cStoreOrder.B2C_STORE_ORDER;
+    public static final SmsSendRecord SMS_SEND_RECORD = com.vpu.mp.db.shop.tables.SmsSendRecord.SMS_SEND_RECORD;
 
     /**
-     * The table <code>mini_shop_471752.b2c_store_service</code>.
+     * The table <code>mini_shop_1.b2c_sort</code>.
      */
-    public static final B2cStoreService B2C_STORE_SERVICE = com.vpu.mp.db.shop.tables.B2cStoreService.B2C_STORE_SERVICE;
+    public static final Sort SORT = com.vpu.mp.db.shop.tables.Sort.SORT;
 
     /**
-     * The table <code>mini_shop_471752.b2c_sub_order_info</code>.
+     * The table <code>mini_shop_1.b2c_spec</code>.
      */
-    public static final B2cSubOrderInfo B2C_SUB_ORDER_INFO = com.vpu.mp.db.shop.tables.B2cSubOrderInfo.B2C_SUB_ORDER_INFO;
+    public static final Spec SPEC = com.vpu.mp.db.shop.tables.Spec.SPEC;
 
     /**
-     * The table <code>mini_shop_471752.b2c_tag</code>.
+     * The table <code>mini_shop_1.b2c_spec_vals</code>.
      */
-    public static final B2cTag B2C_TAG = com.vpu.mp.db.shop.tables.B2cTag.B2C_TAG;
+    public static final SpecVals SPEC_VALS = com.vpu.mp.db.shop.tables.SpecVals.SPEC_VALS;
 
     /**
-     * The table <code>mini_shop_471752.b2c_template_config</code>.
+     * The table <code>mini_shop_1.b2c_statistics_summary</code>.
      */
-    public static final B2cTemplateConfig B2C_TEMPLATE_CONFIG = com.vpu.mp.db.shop.tables.B2cTemplateConfig.B2C_TEMPLATE_CONFIG;
+    public static final StatisticsSummary STATISTICS_SUMMARY = com.vpu.mp.db.shop.tables.StatisticsSummary.STATISTICS_SUMMARY;
 
     /**
-     * The table <code>mini_shop_471752.b2c_trades</code>.
+     * The table <code>mini_shop_1.b2c_store</code>.
      */
-    public static final B2cTrades B2C_TRADES = com.vpu.mp.db.shop.tables.B2cTrades.B2C_TRADES;
+    public static final Store STORE = com.vpu.mp.db.shop.tables.Store.STORE;
 
     /**
-     * The table <code>mini_shop_471752.b2c_trades_record</code>.
+     * The table <code>mini_shop_1.b2c_store_goods</code>.
      */
-    public static final B2cTradesRecord B2C_TRADES_RECORD = com.vpu.mp.db.shop.tables.B2cTradesRecord.B2C_TRADES_RECORD;
+    public static final StoreGoods STORE_GOODS = com.vpu.mp.db.shop.tables.StoreGoods.STORE_GOODS;
 
     /**
-     * The table <code>mini_shop_471752.b2c_trades_record_summary</code>.
+     * The table <code>mini_shop_1.b2c_store_group</code>.
      */
-    public static final B2cTradesRecordSummary B2C_TRADES_RECORD_SUMMARY = com.vpu.mp.db.shop.tables.B2cTradesRecordSummary.B2C_TRADES_RECORD_SUMMARY;
+    public static final StoreGroup STORE_GROUP = com.vpu.mp.db.shop.tables.StoreGroup.STORE_GROUP;
 
     /**
-     * The table <code>mini_shop_471752.b2c_uploaded_image</code>.
+     * The table <code>mini_shop_1.b2c_store_order</code>.
      */
-    public static final B2cUploadedImage B2C_UPLOADED_IMAGE = com.vpu.mp.db.shop.tables.B2cUploadedImage.B2C_UPLOADED_IMAGE;
+    public static final StoreOrder STORE_ORDER = com.vpu.mp.db.shop.tables.StoreOrder.STORE_ORDER;
 
     /**
-     * The table <code>mini_shop_471752.b2c_uploaded_image_category</code>.
+     * The table <code>mini_shop_1.b2c_store_service</code>.
      */
-    public static final B2cUploadedImageCategory B2C_UPLOADED_IMAGE_CATEGORY = com.vpu.mp.db.shop.tables.B2cUploadedImageCategory.B2C_UPLOADED_IMAGE_CATEGORY;
+    public static final StoreService STORE_SERVICE = com.vpu.mp.db.shop.tables.StoreService.STORE_SERVICE;
 
     /**
-     * The table <code>mini_shop_471752.b2c_uploaded_video</code>.
+     * The table <code>mini_shop_1.b2c_sub_order_info</code>.
      */
-    public static final B2cUploadedVideo B2C_UPLOADED_VIDEO = com.vpu.mp.db.shop.tables.B2cUploadedVideo.B2C_UPLOADED_VIDEO;
+    public static final SubOrderInfo SUB_ORDER_INFO = com.vpu.mp.db.shop.tables.SubOrderInfo.SUB_ORDER_INFO;
 
     /**
-     * The table <code>mini_shop_471752.b2c_uploaded_video_category</code>.
+     * The table <code>mini_shop_1.b2c_tag</code>.
      */
-    public static final B2cUploadedVideoCategory B2C_UPLOADED_VIDEO_CATEGORY = com.vpu.mp.db.shop.tables.B2cUploadedVideoCategory.B2C_UPLOADED_VIDEO_CATEGORY;
+    public static final Tag TAG = com.vpu.mp.db.shop.tables.Tag.TAG;
 
     /**
-     * The table <code>mini_shop_471752.b2c_user</code>.
+     * The table <code>mini_shop_1.b2c_template_config</code>.
      */
-    public static final B2cUser B2C_USER = com.vpu.mp.db.shop.tables.B2cUser.B2C_USER;
+    public static final TemplateConfig TEMPLATE_CONFIG = com.vpu.mp.db.shop.tables.TemplateConfig.TEMPLATE_CONFIG;
 
     /**
-     * The table <code>mini_shop_471752.b2c_user_account</code>.
+     * The table <code>mini_shop_1.b2c_trades</code>.
      */
-    public static final B2cUserAccount B2C_USER_ACCOUNT = com.vpu.mp.db.shop.tables.B2cUserAccount.B2C_USER_ACCOUNT;
+    public static final Trades TRADES = com.vpu.mp.db.shop.tables.Trades.TRADES;
 
     /**
-     * The table <code>mini_shop_471752.b2c_user_address</code>.
+     * The table <code>mini_shop_1.b2c_trades_record</code>.
      */
-    public static final B2cUserAddress B2C_USER_ADDRESS = com.vpu.mp.db.shop.tables.B2cUserAddress.B2C_USER_ADDRESS;
+    public static final TradesRecord TRADES_RECORD = com.vpu.mp.db.shop.tables.TradesRecord.TRADES_RECORD;
 
     /**
-     * The table <code>mini_shop_471752.b2c_user_card</code>.
+     * The table <code>mini_shop_1.b2c_trades_record_summary</code>.
      */
-    public static final B2cUserCard B2C_USER_CARD = com.vpu.mp.db.shop.tables.B2cUserCard.B2C_USER_CARD;
+    public static final TradesRecordSummary TRADES_RECORD_SUMMARY = com.vpu.mp.db.shop.tables.TradesRecordSummary.TRADES_RECORD_SUMMARY;
 
     /**
-     * The table <code>mini_shop_471752.b2c_user_cart_record</code>.
+     * The table <code>mini_shop_1.b2c_uploaded_image</code>.
      */
-    public static final B2cUserCartRecord B2C_USER_CART_RECORD = com.vpu.mp.db.shop.tables.B2cUserCartRecord.B2C_USER_CART_RECORD;
+    public static final UploadedImage UPLOADED_IMAGE = com.vpu.mp.db.shop.tables.UploadedImage.UPLOADED_IMAGE;
 
     /**
-     * The table <code>mini_shop_471752.b2c_user_collection</code>.
+     * The table <code>mini_shop_1.b2c_uploaded_image_category</code>.
      */
-    public static final B2cUserCollection B2C_USER_COLLECTION = com.vpu.mp.db.shop.tables.B2cUserCollection.B2C_USER_COLLECTION;
+    public static final UploadedImageCategory UPLOADED_IMAGE_CATEGORY = com.vpu.mp.db.shop.tables.UploadedImageCategory.UPLOADED_IMAGE_CATEGORY;
 
     /**
-     * The table <code>mini_shop_471752.b2c_user_detail</code>.
+     * The table <code>mini_shop_1.b2c_uploaded_video</code>.
      */
-    public static final B2cUserDetail B2C_USER_DETAIL = com.vpu.mp.db.shop.tables.B2cUserDetail.B2C_USER_DETAIL;
+    public static final UploadedVideo UPLOADED_VIDEO = com.vpu.mp.db.shop.tables.UploadedVideo.UPLOADED_VIDEO;
 
     /**
-     * The table <code>mini_shop_471752.b2c_user_explain</code>.
+     * The table <code>mini_shop_1.b2c_uploaded_video_category</code>.
      */
-    public static final B2cUserExplain B2C_USER_EXPLAIN = com.vpu.mp.db.shop.tables.B2cUserExplain.B2C_USER_EXPLAIN;
+    public static final UploadedVideoCategory UPLOADED_VIDEO_CATEGORY = com.vpu.mp.db.shop.tables.UploadedVideoCategory.UPLOADED_VIDEO_CATEGORY;
 
     /**
-     * The table <code>mini_shop_471752.b2c_user_fanli_statistics</code>.
+     * The table <code>mini_shop_1.b2c_user</code>.
      */
-    public static final B2cUserFanliStatistics B2C_USER_FANLI_STATISTICS = com.vpu.mp.db.shop.tables.B2cUserFanliStatistics.B2C_USER_FANLI_STATISTICS;
+    public static final User USER = com.vpu.mp.db.shop.tables.User.USER;
 
     /**
-     * The table <code>mini_shop_471752.b2c_user_goods_record</code>.
+     * The table <code>mini_shop_1.b2c_user_account</code>.
      */
-    public static final B2cUserGoodsRecord B2C_USER_GOODS_RECORD = com.vpu.mp.db.shop.tables.B2cUserGoodsRecord.B2C_USER_GOODS_RECORD;
+    public static final UserAccount USER_ACCOUNT = com.vpu.mp.db.shop.tables.UserAccount.USER_ACCOUNT;
 
     /**
-     * The table <code>mini_shop_471752.b2c_user_grade</code>.
+     * The table <code>mini_shop_1.b2c_user_address</code>.
      */
-    public static final B2cUserGrade B2C_USER_GRADE = com.vpu.mp.db.shop.tables.B2cUserGrade.B2C_USER_GRADE;
+    public static final UserAddress USER_ADDRESS = com.vpu.mp.db.shop.tables.UserAddress.USER_ADDRESS;
 
     /**
-     * The table <code>mini_shop_471752.b2c_user_growth</code>.
+     * The table <code>mini_shop_1.b2c_user_card</code>.
      */
-    public static final B2cUserGrowth B2C_USER_GROWTH = com.vpu.mp.db.shop.tables.B2cUserGrowth.B2C_USER_GROWTH;
+    public static final UserCard USER_CARD = com.vpu.mp.db.shop.tables.UserCard.USER_CARD;
 
     /**
-     * The table <code>mini_shop_471752.b2c_user_growth_set</code>.
+     * The table <code>mini_shop_1.b2c_user_cart_record</code>.
      */
-    public static final B2cUserGrowthSet B2C_USER_GROWTH_SET = com.vpu.mp.db.shop.tables.B2cUserGrowthSet.B2C_USER_GROWTH_SET;
+    public static final UserCartRecord USER_CART_RECORD = com.vpu.mp.db.shop.tables.UserCartRecord.USER_CART_RECORD;
 
     /**
-     * The table <code>mini_shop_471752.b2c_user_import</code>.
+     * The table <code>mini_shop_1.b2c_user_collection</code>.
      */
-    public static final B2cUserImport B2C_USER_IMPORT = com.vpu.mp.db.shop.tables.B2cUserImport.B2C_USER_IMPORT;
+    public static final UserCollection USER_COLLECTION = com.vpu.mp.db.shop.tables.UserCollection.USER_COLLECTION;
 
     /**
-     * The table <code>mini_shop_471752.b2c_user_import_detail</code>.
+     * The table <code>mini_shop_1.b2c_user_detail</code>.
      */
-    public static final B2cUserImportDetail B2C_USER_IMPORT_DETAIL = com.vpu.mp.db.shop.tables.B2cUserImportDetail.B2C_USER_IMPORT_DETAIL;
+    public static final UserDetail USER_DETAIL = com.vpu.mp.db.shop.tables.UserDetail.USER_DETAIL;
 
     /**
-     * The table <code>mini_shop_471752.b2c_user_login_record</code>.
+     * The table <code>mini_shop_1.b2c_user_explain</code>.
      */
-    public static final B2cUserLoginRecord B2C_USER_LOGIN_RECORD = com.vpu.mp.db.shop.tables.B2cUserLoginRecord.B2C_USER_LOGIN_RECORD;
+    public static final UserExplain USER_EXPLAIN = com.vpu.mp.db.shop.tables.UserExplain.USER_EXPLAIN;
 
     /**
-     * The table <code>mini_shop_471752.b2c_user_msg</code>.
+     * The table <code>mini_shop_1.b2c_user_fanli_statistics</code>.
      */
-    public static final B2cUserMsg B2C_USER_MSG = com.vpu.mp.db.shop.tables.B2cUserMsg.B2C_USER_MSG;
+    public static final UserFanliStatistics USER_FANLI_STATISTICS = com.vpu.mp.db.shop.tables.UserFanliStatistics.USER_FANLI_STATISTICS;
 
     /**
-     * The table <code>mini_shop_471752.b2c_user_rebate_price</code>.
+     * The table <code>mini_shop_1.b2c_user_goods_record</code>.
      */
-    public static final B2cUserRebatePrice B2C_USER_REBATE_PRICE = com.vpu.mp.db.shop.tables.B2cUserRebatePrice.B2C_USER_REBATE_PRICE;
+    public static final UserGoodsRecord USER_GOODS_RECORD = com.vpu.mp.db.shop.tables.UserGoodsRecord.USER_GOODS_RECORD;
 
     /**
-     * The table <code>mini_shop_471752.b2c_user_score</code>.
+     * The table <code>mini_shop_1.b2c_user_grade</code>.
      */
-    public static final B2cUserScore B2C_USER_SCORE = com.vpu.mp.db.shop.tables.B2cUserScore.B2C_USER_SCORE;
+    public static final UserGrade USER_GRADE = com.vpu.mp.db.shop.tables.UserGrade.USER_GRADE;
 
     /**
-     * The table <code>mini_shop_471752.b2c_user_score_set</code>.
+     * The table <code>mini_shop_1.b2c_user_growth</code>.
      */
-    public static final B2cUserScoreSet B2C_USER_SCORE_SET = com.vpu.mp.db.shop.tables.B2cUserScoreSet.B2C_USER_SCORE_SET;
+    public static final UserGrowth USER_GROWTH = com.vpu.mp.db.shop.tables.UserGrowth.USER_GROWTH;
 
     /**
-     * The table <code>mini_shop_471752.b2c_user_summary_trend</code>.
+     * The table <code>mini_shop_1.b2c_user_growth_set</code>.
      */
-    public static final B2cUserSummaryTrend B2C_USER_SUMMARY_TREND = com.vpu.mp.db.shop.tables.B2cUserSummaryTrend.B2C_USER_SUMMARY_TREND;
+    public static final UserGrowthSet USER_GROWTH_SET = com.vpu.mp.db.shop.tables.UserGrowthSet.USER_GROWTH_SET;
 
     /**
-     * The table <code>mini_shop_471752.b2c_user_tag</code>.
+     * The table <code>mini_shop_1.b2c_user_import</code>.
      */
-    public static final B2cUserTag B2C_USER_TAG = com.vpu.mp.db.shop.tables.B2cUserTag.B2C_USER_TAG;
+    public static final UserImport USER_IMPORT = com.vpu.mp.db.shop.tables.UserImport.USER_IMPORT;
 
     /**
-     * The table <code>mini_shop_471752.b2c_user_total_fanli</code>.
+     * The table <code>mini_shop_1.b2c_user_import_detail</code>.
      */
-    public static final B2cUserTotalFanli B2C_USER_TOTAL_FANLI = com.vpu.mp.db.shop.tables.B2cUserTotalFanli.B2C_USER_TOTAL_FANLI;
+    public static final UserImportDetail USER_IMPORT_DETAIL = com.vpu.mp.db.shop.tables.UserImportDetail.USER_IMPORT_DETAIL;
 
     /**
-     * The table <code>mini_shop_471752.b2c_user_upgrade</code>.
+     * The table <code>mini_shop_1.b2c_user_login_record</code>.
      */
-    public static final B2cUserUpgrade B2C_USER_UPGRADE = com.vpu.mp.db.shop.tables.B2cUserUpgrade.B2C_USER_UPGRADE;
+    public static final UserLoginRecord USER_LOGIN_RECORD = com.vpu.mp.db.shop.tables.UserLoginRecord.USER_LOGIN_RECORD;
 
     /**
-     * The table <code>mini_shop_471752.b2c_wxp_keywords_stat</code>.
+     * The table <code>mini_shop_1.b2c_user_msg</code>.
      */
-    public static final B2cWxpKeywordsStat B2C_WXP_KEYWORDS_STAT = com.vpu.mp.db.shop.tables.B2cWxpKeywordsStat.B2C_WXP_KEYWORDS_STAT;
+    public static final UserMsg USER_MSG = com.vpu.mp.db.shop.tables.UserMsg.USER_MSG;
 
     /**
-     * The table <code>mini_shop_471752.b2c_wxp_list</code>.
+     * The table <code>mini_shop_1.b2c_user_rebate_price</code>.
      */
-    public static final B2cWxpList B2C_WXP_LIST = com.vpu.mp.db.shop.tables.B2cWxpList.B2C_WXP_LIST;
+    public static final UserRebatePrice USER_REBATE_PRICE = com.vpu.mp.db.shop.tables.UserRebatePrice.USER_REBATE_PRICE;
 
     /**
-     * The table <code>mini_shop_471752.b2c_wxp_mass_send_msg</code>.
+     * The table <code>mini_shop_1.b2c_user_score</code>.
      */
-    public static final B2cWxpMassSendMsg B2C_WXP_MASS_SEND_MSG = com.vpu.mp.db.shop.tables.B2cWxpMassSendMsg.B2C_WXP_MASS_SEND_MSG;
+    public static final UserScore USER_SCORE = com.vpu.mp.db.shop.tables.UserScore.USER_SCORE;
 
     /**
-     * The table <code>mini_shop_471752.b2c_wxp_material</code>.
+     * The table <code>mini_shop_1.b2c_user_score_set</code>.
      */
-    public static final B2cWxpMaterial B2C_WXP_MATERIAL = com.vpu.mp.db.shop.tables.B2cWxpMaterial.B2C_WXP_MATERIAL;
+    public static final UserScoreSet USER_SCORE_SET = com.vpu.mp.db.shop.tables.UserScoreSet.USER_SCORE_SET;
 
     /**
-     * The table <code>mini_shop_471752.b2c_wxp_menu_cfg</code>.
+     * The table <code>mini_shop_1.b2c_user_summary_trend</code>.
      */
-    public static final B2cWxpMenuCfg B2C_WXP_MENU_CFG = com.vpu.mp.db.shop.tables.B2cWxpMenuCfg.B2C_WXP_MENU_CFG;
+    public static final UserSummaryTrend USER_SUMMARY_TREND = com.vpu.mp.db.shop.tables.UserSummaryTrend.USER_SUMMARY_TREND;
 
     /**
-     * The table <code>mini_shop_471752.b2c_wxp_menu_stat</code>.
+     * The table <code>mini_shop_1.b2c_user_tag</code>.
      */
-    public static final B2cWxpMenuStat B2C_WXP_MENU_STAT = com.vpu.mp.db.shop.tables.B2cWxpMenuStat.B2C_WXP_MENU_STAT;
+    public static final UserTag USER_TAG = com.vpu.mp.db.shop.tables.UserTag.USER_TAG;
 
     /**
-     * The table <code>mini_shop_471752.b2c_wxp_message</code>.
+     * The table <code>mini_shop_1.b2c_user_total_fanli</code>.
      */
-    public static final B2cWxpMessage B2C_WXP_MESSAGE = com.vpu.mp.db.shop.tables.B2cWxpMessage.B2C_WXP_MESSAGE;
+    public static final UserTotalFanli USER_TOTAL_FANLI = com.vpu.mp.db.shop.tables.UserTotalFanli.USER_TOTAL_FANLI;
 
     /**
-     * The table <code>mini_shop_471752.b2c_wxp_msg_stat</code>.
+     * The table <code>mini_shop_1.b2c_user_upgrade</code>.
      */
-    public static final B2cWxpMsgStat B2C_WXP_MSG_STAT = com.vpu.mp.db.shop.tables.B2cWxpMsgStat.B2C_WXP_MSG_STAT;
+    public static final UserUpgrade USER_UPGRADE = com.vpu.mp.db.shop.tables.UserUpgrade.USER_UPGRADE;
 
     /**
-     * The table <code>mini_shop_471752.b2c_wxp_qr_code</code>.
+     * The table <code>mini_shop_1.b2c_wx_shopping_recommend</code>.
      */
-    public static final B2cWxpQrCode B2C_WXP_QR_CODE = com.vpu.mp.db.shop.tables.B2cWxpQrCode.B2C_WXP_QR_CODE;
+    public static final WxShoppingRecommend WX_SHOPPING_RECOMMEND = com.vpu.mp.db.shop.tables.WxShoppingRecommend.WX_SHOPPING_RECOMMEND;
 
     /**
-     * The table <code>mini_shop_471752.b2c_wxp_response_cfg</code>.
+     * The table <code>mini_shop_1.b2c_wxp_keywords_stat</code>.
      */
-    public static final B2cWxpResponseCfg B2C_WXP_RESPONSE_CFG = com.vpu.mp.db.shop.tables.B2cWxpResponseCfg.B2C_WXP_RESPONSE_CFG;
+    public static final WxpKeywordsStat WXP_KEYWORDS_STAT = com.vpu.mp.db.shop.tables.WxpKeywordsStat.WXP_KEYWORDS_STAT;
 
     /**
-     * The table <code>mini_shop_471752.b2c_wxp_sub_stat</code>.
+     * The table <code>mini_shop_1.b2c_wxp_list</code>.
      */
-    public static final B2cWxpSubStat B2C_WXP_SUB_STAT = com.vpu.mp.db.shop.tables.B2cWxpSubStat.B2C_WXP_SUB_STAT;
+    public static final WxpList WXP_LIST = com.vpu.mp.db.shop.tables.WxpList.WXP_LIST;
 
     /**
-     * The table <code>mini_shop_471752.b2c_wxp_unlimit_code</code>.
+     * The table <code>mini_shop_1.b2c_wxp_mass_send_msg</code>.
      */
-    public static final B2cWxpUnlimitCode B2C_WXP_UNLIMIT_CODE = com.vpu.mp.db.shop.tables.B2cWxpUnlimitCode.B2C_WXP_UNLIMIT_CODE;
+    public static final WxpMassSendMsg WXP_MASS_SEND_MSG = com.vpu.mp.db.shop.tables.WxpMassSendMsg.WXP_MASS_SEND_MSG;
 
     /**
-     * The table <code>mini_shop_471752.b2c_wxp_unlimit_scene</code>.
+     * The table <code>mini_shop_1.b2c_wxp_material</code>.
      */
-    public static final B2cWxpUnlimitScene B2C_WXP_UNLIMIT_SCENE = com.vpu.mp.db.shop.tables.B2cWxpUnlimitScene.B2C_WXP_UNLIMIT_SCENE;
+    public static final WxpMaterial WXP_MATERIAL = com.vpu.mp.db.shop.tables.WxpMaterial.WXP_MATERIAL;
 
     /**
-     * The table <code>mini_shop_471752.b2c_wxp_user</code>.
+     * The table <code>mini_shop_1.b2c_wxp_menu_cfg</code>.
      */
-    public static final B2cWxpUser B2C_WXP_USER = com.vpu.mp.db.shop.tables.B2cWxpUser.B2C_WXP_USER;
+    public static final WxpMenuCfg WXP_MENU_CFG = com.vpu.mp.db.shop.tables.WxpMenuCfg.WXP_MENU_CFG;
 
     /**
-     * The table <code>mini_shop_471752.b2c_wxp_user_group</code>.
+     * The table <code>mini_shop_1.b2c_wxp_menu_stat</code>.
      */
-    public static final B2cWxpUserGroup B2C_WXP_USER_GROUP = com.vpu.mp.db.shop.tables.B2cWxpUserGroup.B2C_WXP_USER_GROUP;
+    public static final WxpMenuStat WXP_MENU_STAT = com.vpu.mp.db.shop.tables.WxpMenuStat.WXP_MENU_STAT;
 
     /**
-     * The table <code>mini_shop_471752.b2c_wx_shopping_recommend</code>.
+     * The table <code>mini_shop_1.b2c_wxp_message</code>.
      */
-    public static final B2cWxShoppingRecommend B2C_WX_SHOPPING_RECOMMEND = com.vpu.mp.db.shop.tables.B2cWxShoppingRecommend.B2C_WX_SHOPPING_RECOMMEND;
+    public static final WxpMessage WXP_MESSAGE = com.vpu.mp.db.shop.tables.WxpMessage.WXP_MESSAGE;
 
     /**
-     * The table <code>mini_shop_471752.b2c_xcx_customer_page</code>.
+     * The table <code>mini_shop_1.b2c_wxp_msg_stat</code>.
      */
-    public static final B2cXcxCustomerPage B2C_XCX_CUSTOMER_PAGE = com.vpu.mp.db.shop.tables.B2cXcxCustomerPage.B2C_XCX_CUSTOMER_PAGE;
+    public static final WxpMsgStat WXP_MSG_STAT = com.vpu.mp.db.shop.tables.WxpMsgStat.WXP_MSG_STAT;
+
+    /**
+     * The table <code>mini_shop_1.b2c_wxp_qr_code</code>.
+     */
+    public static final WxpQrCode WXP_QR_CODE = com.vpu.mp.db.shop.tables.WxpQrCode.WXP_QR_CODE;
+
+    /**
+     * The table <code>mini_shop_1.b2c_wxp_response_cfg</code>.
+     */
+    public static final WxpResponseCfg WXP_RESPONSE_CFG = com.vpu.mp.db.shop.tables.WxpResponseCfg.WXP_RESPONSE_CFG;
+
+    /**
+     * The table <code>mini_shop_1.b2c_wxp_sub_stat</code>.
+     */
+    public static final WxpSubStat WXP_SUB_STAT = com.vpu.mp.db.shop.tables.WxpSubStat.WXP_SUB_STAT;
+
+    /**
+     * The table <code>mini_shop_1.b2c_wxp_unlimit_code</code>.
+     */
+    public static final WxpUnlimitCode WXP_UNLIMIT_CODE = com.vpu.mp.db.shop.tables.WxpUnlimitCode.WXP_UNLIMIT_CODE;
+
+    /**
+     * The table <code>mini_shop_1.b2c_wxp_unlimit_scene</code>.
+     */
+    public static final WxpUnlimitScene WXP_UNLIMIT_SCENE = com.vpu.mp.db.shop.tables.WxpUnlimitScene.WXP_UNLIMIT_SCENE;
+
+    /**
+     * The table <code>mini_shop_1.b2c_wxp_user</code>.
+     */
+    public static final WxpUser WXP_USER = com.vpu.mp.db.shop.tables.WxpUser.WXP_USER;
+
+    /**
+     * The table <code>mini_shop_1.b2c_wxp_user_group</code>.
+     */
+    public static final WxpUserGroup WXP_USER_GROUP = com.vpu.mp.db.shop.tables.WxpUserGroup.WXP_USER_GROUP;
+
+    /**
+     * The table <code>mini_shop_1.b2c_xcx_customer_page</code>.
+     */
+    public static final XcxCustomerPage XCX_CUSTOMER_PAGE = com.vpu.mp.db.shop.tables.XcxCustomerPage.XCX_CUSTOMER_PAGE;
 }

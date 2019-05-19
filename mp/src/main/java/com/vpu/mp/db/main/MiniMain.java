@@ -4,88 +4,87 @@
 package com.vpu.mp.db.main;
 
 
-import com.vpu.mp.db.main.tables.B2cActivityStatistics;
-import com.vpu.mp.db.main.tables.B2cAliMiniAgent;
-import com.vpu.mp.db.main.tables.B2cAliMiniAppVersion;
-import com.vpu.mp.db.main.tables.B2cAliMiniAuthShop;
-import com.vpu.mp.db.main.tables.B2cAliMyOrder;
-import com.vpu.mp.db.main.tables.B2cAliUserToken;
-import com.vpu.mp.db.main.tables.B2cApp;
-import com.vpu.mp.db.main.tables.B2cAppAuth;
-import com.vpu.mp.db.main.tables.B2cArticle;
-import com.vpu.mp.db.main.tables.B2cArticleCategory;
-import com.vpu.mp.db.main.tables.B2cArticleRecord;
-import com.vpu.mp.db.main.tables.B2cBackProcess;
-import com.vpu.mp.db.main.tables.B2cCache;
-import com.vpu.mp.db.main.tables.B2cCategory;
-import com.vpu.mp.db.main.tables.B2cChargeRenew;
-import com.vpu.mp.db.main.tables.B2cDbOptionRecord;
-import com.vpu.mp.db.main.tables.B2cDecorationTemplate;
-import com.vpu.mp.db.main.tables.B2cDictCity;
-import com.vpu.mp.db.main.tables.B2cDictCountry;
-import com.vpu.mp.db.main.tables.B2cDictDistrict;
-import com.vpu.mp.db.main.tables.B2cDictProvince;
-import com.vpu.mp.db.main.tables.B2cFailedJobs;
-import com.vpu.mp.db.main.tables.B2cGoods;
-import com.vpu.mp.db.main.tables.B2cGoodsBrand;
-import com.vpu.mp.db.main.tables.B2cGoodsImg;
-import com.vpu.mp.db.main.tables.B2cGoodsSpecProduct;
-import com.vpu.mp.db.main.tables.B2cGraspGoods;
-import com.vpu.mp.db.main.tables.B2cJobs;
-import com.vpu.mp.db.main.tables.B2cLogManage;
-import com.vpu.mp.db.main.tables.B2cMigrations;
-import com.vpu.mp.db.main.tables.B2cMpAuthShop;
-import com.vpu.mp.db.main.tables.B2cMpDailyRetain;
-import com.vpu.mp.db.main.tables.B2cMpDailyVisit;
-import com.vpu.mp.db.main.tables.B2cMpDeployHistory;
-import com.vpu.mp.db.main.tables.B2cMpDistributionVisit;
-import com.vpu.mp.db.main.tables.B2cMpJumpVersion;
-import com.vpu.mp.db.main.tables.B2cMpMonthlyRetain;
-import com.vpu.mp.db.main.tables.B2cMpMonthlyVisit;
-import com.vpu.mp.db.main.tables.B2cMpOfficialAccount;
-import com.vpu.mp.db.main.tables.B2cMpOfficialAccountUser;
-import com.vpu.mp.db.main.tables.B2cMpOperateLog;
-import com.vpu.mp.db.main.tables.B2cMpSummaryTrend;
-import com.vpu.mp.db.main.tables.B2cMpSummaryTrendShop;
-import com.vpu.mp.db.main.tables.B2cMpUserPortrait;
-import com.vpu.mp.db.main.tables.B2cMpVersion;
-import com.vpu.mp.db.main.tables.B2cMpVisitPage;
-import com.vpu.mp.db.main.tables.B2cMpWeeklyRetain;
-import com.vpu.mp.db.main.tables.B2cMpWeeklyVisit;
-import com.vpu.mp.db.main.tables.B2cOrderGoods;
-import com.vpu.mp.db.main.tables.B2cOrderInfo;
-import com.vpu.mp.db.main.tables.B2cQfImg;
-import com.vpu.mp.db.main.tables.B2cShop;
-import com.vpu.mp.db.main.tables.B2cShopAccount;
-import com.vpu.mp.db.main.tables.B2cShopActivity;
-import com.vpu.mp.db.main.tables.B2cShopChildAccount;
-import com.vpu.mp.db.main.tables.B2cShopChildRole;
-import com.vpu.mp.db.main.tables.B2cShopFreeExperience;
-import com.vpu.mp.db.main.tables.B2cShopGrade;
-import com.vpu.mp.db.main.tables.B2cShopGradeLog;
-import com.vpu.mp.db.main.tables.B2cShopOperation;
-import com.vpu.mp.db.main.tables.B2cShopQuestionFeedback;
-import com.vpu.mp.db.main.tables.B2cShopRenew;
-import com.vpu.mp.db.main.tables.B2cShopRole;
-import com.vpu.mp.db.main.tables.B2cShopUploadedImage;
-import com.vpu.mp.db.main.tables.B2cShopUploadedImageCategory;
-import com.vpu.mp.db.main.tables.B2cShopVersion;
-import com.vpu.mp.db.main.tables.B2cSms;
-import com.vpu.mp.db.main.tables.B2cSort;
-import com.vpu.mp.db.main.tables.B2cSpec;
-import com.vpu.mp.db.main.tables.B2cSpecVals;
-import com.vpu.mp.db.main.tables.B2cStatisticsShop;
-import com.vpu.mp.db.main.tables.B2cSystemCfg;
-import com.vpu.mp.db.main.tables.B2cSystemChildAccount;
-import com.vpu.mp.db.main.tables.B2cSystemRole;
-import com.vpu.mp.db.main.tables.B2cSystemUser;
-import com.vpu.mp.db.main.tables.B2cUploadUyunRecord;
-import com.vpu.mp.db.main.tables.B2cUploadedImage;
-import com.vpu.mp.db.main.tables.B2cUploadedImageCategory;
-import com.vpu.mp.db.main.tables.B2cUser;
-import com.vpu.mp.db.main.tables.B2cUserDetail;
-import com.vpu.mp.db.main.tables.B2cUserLoginRecord;
-import com.vpu.mp.db.main.tables.B2cUserSummaryTrend;
+import com.vpu.mp.db.main.tables.ActivityStatistics;
+import com.vpu.mp.db.main.tables.AliMiniAgent;
+import com.vpu.mp.db.main.tables.AliMiniAppVersion;
+import com.vpu.mp.db.main.tables.AliMiniAuthShop;
+import com.vpu.mp.db.main.tables.AliMyOrder;
+import com.vpu.mp.db.main.tables.AliUserToken;
+import com.vpu.mp.db.main.tables.App;
+import com.vpu.mp.db.main.tables.AppAuth;
+import com.vpu.mp.db.main.tables.Article;
+import com.vpu.mp.db.main.tables.ArticleCategory;
+import com.vpu.mp.db.main.tables.ArticleRecord;
+import com.vpu.mp.db.main.tables.BackProcess;
+import com.vpu.mp.db.main.tables.Cache;
+import com.vpu.mp.db.main.tables.Category;
+import com.vpu.mp.db.main.tables.ChargeRenew;
+import com.vpu.mp.db.main.tables.DbOptionRecord;
+import com.vpu.mp.db.main.tables.DecorationTemplate;
+import com.vpu.mp.db.main.tables.DictCity;
+import com.vpu.mp.db.main.tables.DictCountry;
+import com.vpu.mp.db.main.tables.DictDistrict;
+import com.vpu.mp.db.main.tables.DictProvince;
+import com.vpu.mp.db.main.tables.FailedJobs;
+import com.vpu.mp.db.main.tables.Goods;
+import com.vpu.mp.db.main.tables.GoodsBrand;
+import com.vpu.mp.db.main.tables.GoodsImg;
+import com.vpu.mp.db.main.tables.GoodsSpecProduct;
+import com.vpu.mp.db.main.tables.GraspGoods;
+import com.vpu.mp.db.main.tables.Jobs;
+import com.vpu.mp.db.main.tables.LogManage;
+import com.vpu.mp.db.main.tables.MpAuthShop;
+import com.vpu.mp.db.main.tables.MpDailyRetain;
+import com.vpu.mp.db.main.tables.MpDailyVisit;
+import com.vpu.mp.db.main.tables.MpDeployHistory;
+import com.vpu.mp.db.main.tables.MpDistributionVisit;
+import com.vpu.mp.db.main.tables.MpJumpVersion;
+import com.vpu.mp.db.main.tables.MpMonthlyRetain;
+import com.vpu.mp.db.main.tables.MpMonthlyVisit;
+import com.vpu.mp.db.main.tables.MpOfficialAccount;
+import com.vpu.mp.db.main.tables.MpOfficialAccountUser;
+import com.vpu.mp.db.main.tables.MpOperateLog;
+import com.vpu.mp.db.main.tables.MpSummaryTrend;
+import com.vpu.mp.db.main.tables.MpSummaryTrendShop;
+import com.vpu.mp.db.main.tables.MpUserPortrait;
+import com.vpu.mp.db.main.tables.MpVersion;
+import com.vpu.mp.db.main.tables.MpVisitPage;
+import com.vpu.mp.db.main.tables.MpWeeklyRetain;
+import com.vpu.mp.db.main.tables.MpWeeklyVisit;
+import com.vpu.mp.db.main.tables.OrderGoods;
+import com.vpu.mp.db.main.tables.OrderInfo;
+import com.vpu.mp.db.main.tables.QfImg;
+import com.vpu.mp.db.main.tables.Shop;
+import com.vpu.mp.db.main.tables.ShopAccount;
+import com.vpu.mp.db.main.tables.ShopActivity;
+import com.vpu.mp.db.main.tables.ShopChildAccount;
+import com.vpu.mp.db.main.tables.ShopChildRole;
+import com.vpu.mp.db.main.tables.ShopFreeExperience;
+import com.vpu.mp.db.main.tables.ShopGrade;
+import com.vpu.mp.db.main.tables.ShopGradeLog;
+import com.vpu.mp.db.main.tables.ShopOperation;
+import com.vpu.mp.db.main.tables.ShopQuestionFeedback;
+import com.vpu.mp.db.main.tables.ShopRenew;
+import com.vpu.mp.db.main.tables.ShopRole;
+import com.vpu.mp.db.main.tables.ShopUploadedImage;
+import com.vpu.mp.db.main.tables.ShopUploadedImageCategory;
+import com.vpu.mp.db.main.tables.ShopVersion;
+import com.vpu.mp.db.main.tables.Sms;
+import com.vpu.mp.db.main.tables.Sort;
+import com.vpu.mp.db.main.tables.Spec;
+import com.vpu.mp.db.main.tables.SpecVals;
+import com.vpu.mp.db.main.tables.StatisticsShop;
+import com.vpu.mp.db.main.tables.SystemCfg;
+import com.vpu.mp.db.main.tables.SystemChildAccount;
+import com.vpu.mp.db.main.tables.SystemRole;
+import com.vpu.mp.db.main.tables.SystemUser;
+import com.vpu.mp.db.main.tables.UploadUyunRecord;
+import com.vpu.mp.db.main.tables.UploadedImage;
+import com.vpu.mp.db.main.tables.UploadedImageCategory;
+import com.vpu.mp.db.main.tables.User;
+import com.vpu.mp.db.main.tables.UserDetail;
+import com.vpu.mp.db.main.tables.UserLoginRecord;
+import com.vpu.mp.db.main.tables.UserSummaryTrend;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -111,7 +110,7 @@ import org.jooq.impl.SchemaImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class MiniMain extends SchemaImpl {
 
-    private static final long serialVersionUID = -493275268;
+    private static final long serialVersionUID = 634761002;
 
     /**
      * The reference instance of <code>mini_main</code>
@@ -121,412 +120,407 @@ public class MiniMain extends SchemaImpl {
     /**
      * The table <code>mini_main.b2c_activity_statistics</code>.
      */
-    public final B2cActivityStatistics B2C_ACTIVITY_STATISTICS = com.vpu.mp.db.main.tables.B2cActivityStatistics.B2C_ACTIVITY_STATISTICS;
+    public final ActivityStatistics ACTIVITY_STATISTICS = com.vpu.mp.db.main.tables.ActivityStatistics.ACTIVITY_STATISTICS;
 
     /**
      * The table <code>mini_main.b2c_ali_mini_agent</code>.
      */
-    public final B2cAliMiniAgent B2C_ALI_MINI_AGENT = com.vpu.mp.db.main.tables.B2cAliMiniAgent.B2C_ALI_MINI_AGENT;
+    public final AliMiniAgent ALI_MINI_AGENT = com.vpu.mp.db.main.tables.AliMiniAgent.ALI_MINI_AGENT;
 
     /**
      * The table <code>mini_main.b2c_ali_mini_app_version</code>.
      */
-    public final B2cAliMiniAppVersion B2C_ALI_MINI_APP_VERSION = com.vpu.mp.db.main.tables.B2cAliMiniAppVersion.B2C_ALI_MINI_APP_VERSION;
+    public final AliMiniAppVersion ALI_MINI_APP_VERSION = com.vpu.mp.db.main.tables.AliMiniAppVersion.ALI_MINI_APP_VERSION;
 
     /**
      * The table <code>mini_main.b2c_ali_mini_auth_shop</code>.
      */
-    public final B2cAliMiniAuthShop B2C_ALI_MINI_AUTH_SHOP = com.vpu.mp.db.main.tables.B2cAliMiniAuthShop.B2C_ALI_MINI_AUTH_SHOP;
+    public final AliMiniAuthShop ALI_MINI_AUTH_SHOP = com.vpu.mp.db.main.tables.AliMiniAuthShop.ALI_MINI_AUTH_SHOP;
 
     /**
      * The table <code>mini_main.b2c_ali_my_order</code>.
      */
-    public final B2cAliMyOrder B2C_ALI_MY_ORDER = com.vpu.mp.db.main.tables.B2cAliMyOrder.B2C_ALI_MY_ORDER;
+    public final AliMyOrder ALI_MY_ORDER = com.vpu.mp.db.main.tables.AliMyOrder.ALI_MY_ORDER;
 
     /**
      * The table <code>mini_main.b2c_ali_user_token</code>.
      */
-    public final B2cAliUserToken B2C_ALI_USER_TOKEN = com.vpu.mp.db.main.tables.B2cAliUserToken.B2C_ALI_USER_TOKEN;
+    public final AliUserToken ALI_USER_TOKEN = com.vpu.mp.db.main.tables.AliUserToken.ALI_USER_TOKEN;
 
     /**
      * The table <code>mini_main.b2c_app</code>.
      */
-    public final B2cApp B2C_APP = com.vpu.mp.db.main.tables.B2cApp.B2C_APP;
+    public final App APP = com.vpu.mp.db.main.tables.App.APP;
 
     /**
      * The table <code>mini_main.b2c_app_auth</code>.
      */
-    public final B2cAppAuth B2C_APP_AUTH = com.vpu.mp.db.main.tables.B2cAppAuth.B2C_APP_AUTH;
+    public final AppAuth APP_AUTH = com.vpu.mp.db.main.tables.AppAuth.APP_AUTH;
 
     /**
      * The table <code>mini_main.b2c_article</code>.
      */
-    public final B2cArticle B2C_ARTICLE = com.vpu.mp.db.main.tables.B2cArticle.B2C_ARTICLE;
+    public final Article ARTICLE = com.vpu.mp.db.main.tables.Article.ARTICLE;
 
     /**
      * The table <code>mini_main.b2c_article_category</code>.
      */
-    public final B2cArticleCategory B2C_ARTICLE_CATEGORY = com.vpu.mp.db.main.tables.B2cArticleCategory.B2C_ARTICLE_CATEGORY;
+    public final ArticleCategory ARTICLE_CATEGORY = com.vpu.mp.db.main.tables.ArticleCategory.ARTICLE_CATEGORY;
 
     /**
      * The table <code>mini_main.b2c_article_record</code>.
      */
-    public final B2cArticleRecord B2C_ARTICLE_RECORD = com.vpu.mp.db.main.tables.B2cArticleRecord.B2C_ARTICLE_RECORD;
+    public final ArticleRecord ARTICLE_RECORD = com.vpu.mp.db.main.tables.ArticleRecord.ARTICLE_RECORD;
 
     /**
      * The table <code>mini_main.b2c_back_process</code>.
      */
-    public final B2cBackProcess B2C_BACK_PROCESS = com.vpu.mp.db.main.tables.B2cBackProcess.B2C_BACK_PROCESS;
+    public final BackProcess BACK_PROCESS = com.vpu.mp.db.main.tables.BackProcess.BACK_PROCESS;
 
     /**
      * The table <code>mini_main.b2c_cache</code>.
      */
-    public final B2cCache B2C_CACHE = com.vpu.mp.db.main.tables.B2cCache.B2C_CACHE;
+    public final Cache CACHE = com.vpu.mp.db.main.tables.Cache.CACHE;
 
     /**
      * The table <code>mini_main.b2c_category</code>.
      */
-    public final B2cCategory B2C_CATEGORY = com.vpu.mp.db.main.tables.B2cCategory.B2C_CATEGORY;
+    public final Category CATEGORY = com.vpu.mp.db.main.tables.Category.CATEGORY;
 
     /**
      * The table <code>mini_main.b2c_charge_renew</code>.
      */
-    public final B2cChargeRenew B2C_CHARGE_RENEW = com.vpu.mp.db.main.tables.B2cChargeRenew.B2C_CHARGE_RENEW;
+    public final ChargeRenew CHARGE_RENEW = com.vpu.mp.db.main.tables.ChargeRenew.CHARGE_RENEW;
 
     /**
      * The table <code>mini_main.b2c_db_option_record</code>.
      */
-    public final B2cDbOptionRecord B2C_DB_OPTION_RECORD = com.vpu.mp.db.main.tables.B2cDbOptionRecord.B2C_DB_OPTION_RECORD;
+    public final DbOptionRecord DB_OPTION_RECORD = com.vpu.mp.db.main.tables.DbOptionRecord.DB_OPTION_RECORD;
 
     /**
      * The table <code>mini_main.b2c_decoration_template</code>.
      */
-    public final B2cDecorationTemplate B2C_DECORATION_TEMPLATE = com.vpu.mp.db.main.tables.B2cDecorationTemplate.B2C_DECORATION_TEMPLATE;
+    public final DecorationTemplate DECORATION_TEMPLATE = com.vpu.mp.db.main.tables.DecorationTemplate.DECORATION_TEMPLATE;
 
     /**
      * The table <code>mini_main.b2c_dict_city</code>.
      */
-    public final B2cDictCity B2C_DICT_CITY = com.vpu.mp.db.main.tables.B2cDictCity.B2C_DICT_CITY;
+    public final DictCity DICT_CITY = com.vpu.mp.db.main.tables.DictCity.DICT_CITY;
 
     /**
      * The table <code>mini_main.b2c_dict_country</code>.
      */
-    public final B2cDictCountry B2C_DICT_COUNTRY = com.vpu.mp.db.main.tables.B2cDictCountry.B2C_DICT_COUNTRY;
+    public final DictCountry DICT_COUNTRY = com.vpu.mp.db.main.tables.DictCountry.DICT_COUNTRY;
 
     /**
      * The table <code>mini_main.b2c_dict_district</code>.
      */
-    public final B2cDictDistrict B2C_DICT_DISTRICT = com.vpu.mp.db.main.tables.B2cDictDistrict.B2C_DICT_DISTRICT;
+    public final DictDistrict DICT_DISTRICT = com.vpu.mp.db.main.tables.DictDistrict.DICT_DISTRICT;
 
     /**
      * 省份字典
      */
-    public final B2cDictProvince B2C_DICT_PROVINCE = com.vpu.mp.db.main.tables.B2cDictProvince.B2C_DICT_PROVINCE;
+    public final DictProvince DICT_PROVINCE = com.vpu.mp.db.main.tables.DictProvince.DICT_PROVINCE;
 
     /**
      * The table <code>mini_main.b2c_failed_jobs</code>.
      */
-    public final B2cFailedJobs B2C_FAILED_JOBS = com.vpu.mp.db.main.tables.B2cFailedJobs.B2C_FAILED_JOBS;
+    public final FailedJobs FAILED_JOBS = com.vpu.mp.db.main.tables.FailedJobs.FAILED_JOBS;
 
     /**
      * The table <code>mini_main.b2c_goods</code>.
      */
-    public final B2cGoods B2C_GOODS = com.vpu.mp.db.main.tables.B2cGoods.B2C_GOODS;
+    public final Goods GOODS = com.vpu.mp.db.main.tables.Goods.GOODS;
 
     /**
      * The table <code>mini_main.b2c_goods_brand</code>.
      */
-    public final B2cGoodsBrand B2C_GOODS_BRAND = com.vpu.mp.db.main.tables.B2cGoodsBrand.B2C_GOODS_BRAND;
+    public final GoodsBrand GOODS_BRAND = com.vpu.mp.db.main.tables.GoodsBrand.GOODS_BRAND;
 
     /**
      * The table <code>mini_main.b2c_goods_img</code>.
      */
-    public final B2cGoodsImg B2C_GOODS_IMG = com.vpu.mp.db.main.tables.B2cGoodsImg.B2C_GOODS_IMG;
+    public final GoodsImg GOODS_IMG = com.vpu.mp.db.main.tables.GoodsImg.GOODS_IMG;
 
     /**
      * The table <code>mini_main.b2c_goods_spec_product</code>.
      */
-    public final B2cGoodsSpecProduct B2C_GOODS_SPEC_PRODUCT = com.vpu.mp.db.main.tables.B2cGoodsSpecProduct.B2C_GOODS_SPEC_PRODUCT;
+    public final GoodsSpecProduct GOODS_SPEC_PRODUCT = com.vpu.mp.db.main.tables.GoodsSpecProduct.GOODS_SPEC_PRODUCT;
 
     /**
      * The table <code>mini_main.b2c_grasp_goods</code>.
      */
-    public final B2cGraspGoods B2C_GRASP_GOODS = com.vpu.mp.db.main.tables.B2cGraspGoods.B2C_GRASP_GOODS;
+    public final GraspGoods GRASP_GOODS = com.vpu.mp.db.main.tables.GraspGoods.GRASP_GOODS;
 
     /**
      * The table <code>mini_main.b2c_jobs</code>.
      */
-    public final B2cJobs B2C_JOBS = com.vpu.mp.db.main.tables.B2cJobs.B2C_JOBS;
+    public final Jobs JOBS = com.vpu.mp.db.main.tables.Jobs.JOBS;
 
     /**
      * The table <code>mini_main.b2c_log_manage</code>.
      */
-    public final B2cLogManage B2C_LOG_MANAGE = com.vpu.mp.db.main.tables.B2cLogManage.B2C_LOG_MANAGE;
-
-    /**
-     * The table <code>mini_main.b2c_migrations</code>.
-     */
-    public final B2cMigrations B2C_MIGRATIONS = com.vpu.mp.db.main.tables.B2cMigrations.B2C_MIGRATIONS;
+    public final LogManage LOG_MANAGE = com.vpu.mp.db.main.tables.LogManage.LOG_MANAGE;
 
     /**
      * The table <code>mini_main.b2c_mp_auth_shop</code>.
      */
-    public final B2cMpAuthShop B2C_MP_AUTH_SHOP = com.vpu.mp.db.main.tables.B2cMpAuthShop.B2C_MP_AUTH_SHOP;
+    public final MpAuthShop MP_AUTH_SHOP = com.vpu.mp.db.main.tables.MpAuthShop.MP_AUTH_SHOP;
 
     /**
      * The table <code>mini_main.b2c_mp_daily_retain</code>.
      */
-    public final B2cMpDailyRetain B2C_MP_DAILY_RETAIN = com.vpu.mp.db.main.tables.B2cMpDailyRetain.B2C_MP_DAILY_RETAIN;
+    public final MpDailyRetain MP_DAILY_RETAIN = com.vpu.mp.db.main.tables.MpDailyRetain.MP_DAILY_RETAIN;
 
     /**
      * The table <code>mini_main.b2c_mp_daily_visit</code>.
      */
-    public final B2cMpDailyVisit B2C_MP_DAILY_VISIT = com.vpu.mp.db.main.tables.B2cMpDailyVisit.B2C_MP_DAILY_VISIT;
+    public final MpDailyVisit MP_DAILY_VISIT = com.vpu.mp.db.main.tables.MpDailyVisit.MP_DAILY_VISIT;
 
     /**
      * The table <code>mini_main.b2c_mp_deploy_history</code>.
      */
-    public final B2cMpDeployHistory B2C_MP_DEPLOY_HISTORY = com.vpu.mp.db.main.tables.B2cMpDeployHistory.B2C_MP_DEPLOY_HISTORY;
+    public final MpDeployHistory MP_DEPLOY_HISTORY = com.vpu.mp.db.main.tables.MpDeployHistory.MP_DEPLOY_HISTORY;
 
     /**
      * The table <code>mini_main.b2c_mp_distribution_visit</code>.
      */
-    public final B2cMpDistributionVisit B2C_MP_DISTRIBUTION_VISIT = com.vpu.mp.db.main.tables.B2cMpDistributionVisit.B2C_MP_DISTRIBUTION_VISIT;
+    public final MpDistributionVisit MP_DISTRIBUTION_VISIT = com.vpu.mp.db.main.tables.MpDistributionVisit.MP_DISTRIBUTION_VISIT;
 
     /**
      * The table <code>mini_main.b2c_mp_jump_version</code>.
      */
-    public final B2cMpJumpVersion B2C_MP_JUMP_VERSION = com.vpu.mp.db.main.tables.B2cMpJumpVersion.B2C_MP_JUMP_VERSION;
+    public final MpJumpVersion MP_JUMP_VERSION = com.vpu.mp.db.main.tables.MpJumpVersion.MP_JUMP_VERSION;
 
     /**
      * The table <code>mini_main.b2c_mp_monthly_retain</code>.
      */
-    public final B2cMpMonthlyRetain B2C_MP_MONTHLY_RETAIN = com.vpu.mp.db.main.tables.B2cMpMonthlyRetain.B2C_MP_MONTHLY_RETAIN;
+    public final MpMonthlyRetain MP_MONTHLY_RETAIN = com.vpu.mp.db.main.tables.MpMonthlyRetain.MP_MONTHLY_RETAIN;
 
     /**
      * The table <code>mini_main.b2c_mp_monthly_visit</code>.
      */
-    public final B2cMpMonthlyVisit B2C_MP_MONTHLY_VISIT = com.vpu.mp.db.main.tables.B2cMpMonthlyVisit.B2C_MP_MONTHLY_VISIT;
+    public final MpMonthlyVisit MP_MONTHLY_VISIT = com.vpu.mp.db.main.tables.MpMonthlyVisit.MP_MONTHLY_VISIT;
 
     /**
      * The table <code>mini_main.b2c_mp_official_account</code>.
      */
-    public final B2cMpOfficialAccount B2C_MP_OFFICIAL_ACCOUNT = com.vpu.mp.db.main.tables.B2cMpOfficialAccount.B2C_MP_OFFICIAL_ACCOUNT;
+    public final MpOfficialAccount MP_OFFICIAL_ACCOUNT = com.vpu.mp.db.main.tables.MpOfficialAccount.MP_OFFICIAL_ACCOUNT;
 
     /**
      * The table <code>mini_main.b2c_mp_official_account_user</code>.
      */
-    public final B2cMpOfficialAccountUser B2C_MP_OFFICIAL_ACCOUNT_USER = com.vpu.mp.db.main.tables.B2cMpOfficialAccountUser.B2C_MP_OFFICIAL_ACCOUNT_USER;
+    public final MpOfficialAccountUser MP_OFFICIAL_ACCOUNT_USER = com.vpu.mp.db.main.tables.MpOfficialAccountUser.MP_OFFICIAL_ACCOUNT_USER;
 
     /**
      * The table <code>mini_main.b2c_mp_operate_log</code>.
      */
-    public final B2cMpOperateLog B2C_MP_OPERATE_LOG = com.vpu.mp.db.main.tables.B2cMpOperateLog.B2C_MP_OPERATE_LOG;
+    public final MpOperateLog MP_OPERATE_LOG = com.vpu.mp.db.main.tables.MpOperateLog.MP_OPERATE_LOG;
 
     /**
      * The table <code>mini_main.b2c_mp_summary_trend</code>.
      */
-    public final B2cMpSummaryTrend B2C_MP_SUMMARY_TREND = com.vpu.mp.db.main.tables.B2cMpSummaryTrend.B2C_MP_SUMMARY_TREND;
+    public final MpSummaryTrend MP_SUMMARY_TREND = com.vpu.mp.db.main.tables.MpSummaryTrend.MP_SUMMARY_TREND;
 
     /**
      * The table <code>mini_main.b2c_mp_summary_trend_shop</code>.
      */
-    public final B2cMpSummaryTrendShop B2C_MP_SUMMARY_TREND_SHOP = com.vpu.mp.db.main.tables.B2cMpSummaryTrendShop.B2C_MP_SUMMARY_TREND_SHOP;
+    public final MpSummaryTrendShop MP_SUMMARY_TREND_SHOP = com.vpu.mp.db.main.tables.MpSummaryTrendShop.MP_SUMMARY_TREND_SHOP;
 
     /**
      * The table <code>mini_main.b2c_mp_user_portrait</code>.
      */
-    public final B2cMpUserPortrait B2C_MP_USER_PORTRAIT = com.vpu.mp.db.main.tables.B2cMpUserPortrait.B2C_MP_USER_PORTRAIT;
+    public final MpUserPortrait MP_USER_PORTRAIT = com.vpu.mp.db.main.tables.MpUserPortrait.MP_USER_PORTRAIT;
 
     /**
      * The table <code>mini_main.b2c_mp_version</code>.
      */
-    public final B2cMpVersion B2C_MP_VERSION = com.vpu.mp.db.main.tables.B2cMpVersion.B2C_MP_VERSION;
+    public final MpVersion MP_VERSION = com.vpu.mp.db.main.tables.MpVersion.MP_VERSION;
 
     /**
      * The table <code>mini_main.b2c_mp_visit_page</code>.
      */
-    public final B2cMpVisitPage B2C_MP_VISIT_PAGE = com.vpu.mp.db.main.tables.B2cMpVisitPage.B2C_MP_VISIT_PAGE;
+    public final MpVisitPage MP_VISIT_PAGE = com.vpu.mp.db.main.tables.MpVisitPage.MP_VISIT_PAGE;
 
     /**
      * The table <code>mini_main.b2c_mp_weekly_retain</code>.
      */
-    public final B2cMpWeeklyRetain B2C_MP_WEEKLY_RETAIN = com.vpu.mp.db.main.tables.B2cMpWeeklyRetain.B2C_MP_WEEKLY_RETAIN;
+    public final MpWeeklyRetain MP_WEEKLY_RETAIN = com.vpu.mp.db.main.tables.MpWeeklyRetain.MP_WEEKLY_RETAIN;
 
     /**
      * The table <code>mini_main.b2c_mp_weekly_visit</code>.
      */
-    public final B2cMpWeeklyVisit B2C_MP_WEEKLY_VISIT = com.vpu.mp.db.main.tables.B2cMpWeeklyVisit.B2C_MP_WEEKLY_VISIT;
+    public final MpWeeklyVisit MP_WEEKLY_VISIT = com.vpu.mp.db.main.tables.MpWeeklyVisit.MP_WEEKLY_VISIT;
 
     /**
      * The table <code>mini_main.b2c_order_goods</code>.
      */
-    public final B2cOrderGoods B2C_ORDER_GOODS = com.vpu.mp.db.main.tables.B2cOrderGoods.B2C_ORDER_GOODS;
+    public final OrderGoods ORDER_GOODS = com.vpu.mp.db.main.tables.OrderGoods.ORDER_GOODS;
 
     /**
      * The table <code>mini_main.b2c_order_info</code>.
      */
-    public final B2cOrderInfo B2C_ORDER_INFO = com.vpu.mp.db.main.tables.B2cOrderInfo.B2C_ORDER_INFO;
+    public final OrderInfo ORDER_INFO = com.vpu.mp.db.main.tables.OrderInfo.ORDER_INFO;
 
     /**
      * The table <code>mini_main.b2c_qf_img</code>.
      */
-    public final B2cQfImg B2C_QF_IMG = com.vpu.mp.db.main.tables.B2cQfImg.B2C_QF_IMG;
+    public final QfImg QF_IMG = com.vpu.mp.db.main.tables.QfImg.QF_IMG;
 
     /**
      * The table <code>mini_main.b2c_shop</code>.
      */
-    public final B2cShop B2C_SHOP = com.vpu.mp.db.main.tables.B2cShop.B2C_SHOP;
+    public final Shop SHOP = com.vpu.mp.db.main.tables.Shop.SHOP;
 
     /**
      * The table <code>mini_main.b2c_shop_account</code>.
      */
-    public final B2cShopAccount B2C_SHOP_ACCOUNT = com.vpu.mp.db.main.tables.B2cShopAccount.B2C_SHOP_ACCOUNT;
+    public final ShopAccount SHOP_ACCOUNT = com.vpu.mp.db.main.tables.ShopAccount.SHOP_ACCOUNT;
 
     /**
      * The table <code>mini_main.b2c_shop_activity</code>.
      */
-    public final B2cShopActivity B2C_SHOP_ACTIVITY = com.vpu.mp.db.main.tables.B2cShopActivity.B2C_SHOP_ACTIVITY;
+    public final ShopActivity SHOP_ACTIVITY = com.vpu.mp.db.main.tables.ShopActivity.SHOP_ACTIVITY;
 
     /**
      * The table <code>mini_main.b2c_shop_child_account</code>.
      */
-    public final B2cShopChildAccount B2C_SHOP_CHILD_ACCOUNT = com.vpu.mp.db.main.tables.B2cShopChildAccount.B2C_SHOP_CHILD_ACCOUNT;
+    public final ShopChildAccount SHOP_CHILD_ACCOUNT = com.vpu.mp.db.main.tables.ShopChildAccount.SHOP_CHILD_ACCOUNT;
 
     /**
      * The table <code>mini_main.b2c_shop_child_role</code>.
      */
-    public final B2cShopChildRole B2C_SHOP_CHILD_ROLE = com.vpu.mp.db.main.tables.B2cShopChildRole.B2C_SHOP_CHILD_ROLE;
+    public final ShopChildRole SHOP_CHILD_ROLE = com.vpu.mp.db.main.tables.ShopChildRole.SHOP_CHILD_ROLE;
 
     /**
      * The table <code>mini_main.b2c_shop_free_experience</code>.
      */
-    public final B2cShopFreeExperience B2C_SHOP_FREE_EXPERIENCE = com.vpu.mp.db.main.tables.B2cShopFreeExperience.B2C_SHOP_FREE_EXPERIENCE;
+    public final ShopFreeExperience SHOP_FREE_EXPERIENCE = com.vpu.mp.db.main.tables.ShopFreeExperience.SHOP_FREE_EXPERIENCE;
 
     /**
      * The table <code>mini_main.b2c_shop_grade</code>.
      */
-    public final B2cShopGrade B2C_SHOP_GRADE = com.vpu.mp.db.main.tables.B2cShopGrade.B2C_SHOP_GRADE;
+    public final ShopGrade SHOP_GRADE = com.vpu.mp.db.main.tables.ShopGrade.SHOP_GRADE;
 
     /**
      * The table <code>mini_main.b2c_shop_grade_log</code>.
      */
-    public final B2cShopGradeLog B2C_SHOP_GRADE_LOG = com.vpu.mp.db.main.tables.B2cShopGradeLog.B2C_SHOP_GRADE_LOG;
+    public final ShopGradeLog SHOP_GRADE_LOG = com.vpu.mp.db.main.tables.ShopGradeLog.SHOP_GRADE_LOG;
 
     /**
      * The table <code>mini_main.b2c_shop_operation</code>.
      */
-    public final B2cShopOperation B2C_SHOP_OPERATION = com.vpu.mp.db.main.tables.B2cShopOperation.B2C_SHOP_OPERATION;
+    public final ShopOperation SHOP_OPERATION = com.vpu.mp.db.main.tables.ShopOperation.SHOP_OPERATION;
 
     /**
      * The table <code>mini_main.b2c_shop_question_feedback</code>.
      */
-    public final B2cShopQuestionFeedback B2C_SHOP_QUESTION_FEEDBACK = com.vpu.mp.db.main.tables.B2cShopQuestionFeedback.B2C_SHOP_QUESTION_FEEDBACK;
+    public final ShopQuestionFeedback SHOP_QUESTION_FEEDBACK = com.vpu.mp.db.main.tables.ShopQuestionFeedback.SHOP_QUESTION_FEEDBACK;
 
     /**
      * The table <code>mini_main.b2c_shop_renew</code>.
      */
-    public final B2cShopRenew B2C_SHOP_RENEW = com.vpu.mp.db.main.tables.B2cShopRenew.B2C_SHOP_RENEW;
+    public final ShopRenew SHOP_RENEW = com.vpu.mp.db.main.tables.ShopRenew.SHOP_RENEW;
 
     /**
      * The table <code>mini_main.b2c_shop_role</code>.
      */
-    public final B2cShopRole B2C_SHOP_ROLE = com.vpu.mp.db.main.tables.B2cShopRole.B2C_SHOP_ROLE;
+    public final ShopRole SHOP_ROLE = com.vpu.mp.db.main.tables.ShopRole.SHOP_ROLE;
 
     /**
      * The table <code>mini_main.b2c_shop_uploaded_image</code>.
      */
-    public final B2cShopUploadedImage B2C_SHOP_UPLOADED_IMAGE = com.vpu.mp.db.main.tables.B2cShopUploadedImage.B2C_SHOP_UPLOADED_IMAGE;
+    public final ShopUploadedImage SHOP_UPLOADED_IMAGE = com.vpu.mp.db.main.tables.ShopUploadedImage.SHOP_UPLOADED_IMAGE;
 
     /**
      * The table <code>mini_main.b2c_shop_uploaded_image_category</code>.
      */
-    public final B2cShopUploadedImageCategory B2C_SHOP_UPLOADED_IMAGE_CATEGORY = com.vpu.mp.db.main.tables.B2cShopUploadedImageCategory.B2C_SHOP_UPLOADED_IMAGE_CATEGORY;
+    public final ShopUploadedImageCategory SHOP_UPLOADED_IMAGE_CATEGORY = com.vpu.mp.db.main.tables.ShopUploadedImageCategory.SHOP_UPLOADED_IMAGE_CATEGORY;
 
     /**
      * The table <code>mini_main.b2c_shop_version</code>.
      */
-    public final B2cShopVersion B2C_SHOP_VERSION = com.vpu.mp.db.main.tables.B2cShopVersion.B2C_SHOP_VERSION;
+    public final ShopVersion SHOP_VERSION = com.vpu.mp.db.main.tables.ShopVersion.SHOP_VERSION;
 
     /**
      * The table <code>mini_main.b2c_sms</code>.
      */
-    public final B2cSms B2C_SMS = com.vpu.mp.db.main.tables.B2cSms.B2C_SMS;
+    public final Sms SMS = com.vpu.mp.db.main.tables.Sms.SMS;
 
     /**
      * The table <code>mini_main.b2c_sort</code>.
      */
-    public final B2cSort B2C_SORT = com.vpu.mp.db.main.tables.B2cSort.B2C_SORT;
+    public final Sort SORT = com.vpu.mp.db.main.tables.Sort.SORT;
 
     /**
      * The table <code>mini_main.b2c_spec</code>.
      */
-    public final B2cSpec B2C_SPEC = com.vpu.mp.db.main.tables.B2cSpec.B2C_SPEC;
+    public final Spec SPEC = com.vpu.mp.db.main.tables.Spec.SPEC;
 
     /**
      * The table <code>mini_main.b2c_spec_vals</code>.
      */
-    public final B2cSpecVals B2C_SPEC_VALS = com.vpu.mp.db.main.tables.B2cSpecVals.B2C_SPEC_VALS;
+    public final SpecVals SPEC_VALS = com.vpu.mp.db.main.tables.SpecVals.SPEC_VALS;
 
     /**
      * The table <code>mini_main.b2c_statistics_shop</code>.
      */
-    public final B2cStatisticsShop B2C_STATISTICS_SHOP = com.vpu.mp.db.main.tables.B2cStatisticsShop.B2C_STATISTICS_SHOP;
+    public final StatisticsShop STATISTICS_SHOP = com.vpu.mp.db.main.tables.StatisticsShop.STATISTICS_SHOP;
 
     /**
      * The table <code>mini_main.b2c_system_cfg</code>.
      */
-    public final B2cSystemCfg B2C_SYSTEM_CFG = com.vpu.mp.db.main.tables.B2cSystemCfg.B2C_SYSTEM_CFG;
+    public final SystemCfg SYSTEM_CFG = com.vpu.mp.db.main.tables.SystemCfg.SYSTEM_CFG;
 
     /**
      * The table <code>mini_main.b2c_system_child_account</code>.
      */
-    public final B2cSystemChildAccount B2C_SYSTEM_CHILD_ACCOUNT = com.vpu.mp.db.main.tables.B2cSystemChildAccount.B2C_SYSTEM_CHILD_ACCOUNT;
+    public final SystemChildAccount SYSTEM_CHILD_ACCOUNT = com.vpu.mp.db.main.tables.SystemChildAccount.SYSTEM_CHILD_ACCOUNT;
 
     /**
      * The table <code>mini_main.b2c_system_role</code>.
      */
-    public final B2cSystemRole B2C_SYSTEM_ROLE = com.vpu.mp.db.main.tables.B2cSystemRole.B2C_SYSTEM_ROLE;
+    public final SystemRole SYSTEM_ROLE = com.vpu.mp.db.main.tables.SystemRole.SYSTEM_ROLE;
 
     /**
      * The table <code>mini_main.b2c_system_user</code>.
      */
-    public final B2cSystemUser B2C_SYSTEM_USER = com.vpu.mp.db.main.tables.B2cSystemUser.B2C_SYSTEM_USER;
-
-    /**
-     * The table <code>mini_main.b2c_uploaded_image</code>.
-     */
-    public final B2cUploadedImage B2C_UPLOADED_IMAGE = com.vpu.mp.db.main.tables.B2cUploadedImage.B2C_UPLOADED_IMAGE;
-
-    /**
-     * The table <code>mini_main.b2c_uploaded_image_category</code>.
-     */
-    public final B2cUploadedImageCategory B2C_UPLOADED_IMAGE_CATEGORY = com.vpu.mp.db.main.tables.B2cUploadedImageCategory.B2C_UPLOADED_IMAGE_CATEGORY;
+    public final SystemUser SYSTEM_USER = com.vpu.mp.db.main.tables.SystemUser.SYSTEM_USER;
 
     /**
      * The table <code>mini_main.b2c_upload_uyun_record</code>.
      */
-    public final B2cUploadUyunRecord B2C_UPLOAD_UYUN_RECORD = com.vpu.mp.db.main.tables.B2cUploadUyunRecord.B2C_UPLOAD_UYUN_RECORD;
+    public final UploadUyunRecord UPLOAD_UYUN_RECORD = com.vpu.mp.db.main.tables.UploadUyunRecord.UPLOAD_UYUN_RECORD;
+
+    /**
+     * The table <code>mini_main.b2c_uploaded_image</code>.
+     */
+    public final UploadedImage UPLOADED_IMAGE = com.vpu.mp.db.main.tables.UploadedImage.UPLOADED_IMAGE;
+
+    /**
+     * The table <code>mini_main.b2c_uploaded_image_category</code>.
+     */
+    public final UploadedImageCategory UPLOADED_IMAGE_CATEGORY = com.vpu.mp.db.main.tables.UploadedImageCategory.UPLOADED_IMAGE_CATEGORY;
 
     /**
      * The table <code>mini_main.b2c_user</code>.
      */
-    public final B2cUser B2C_USER = com.vpu.mp.db.main.tables.B2cUser.B2C_USER;
+    public final User USER = com.vpu.mp.db.main.tables.User.USER;
 
     /**
      * The table <code>mini_main.b2c_user_detail</code>.
      */
-    public final B2cUserDetail B2C_USER_DETAIL = com.vpu.mp.db.main.tables.B2cUserDetail.B2C_USER_DETAIL;
+    public final UserDetail USER_DETAIL = com.vpu.mp.db.main.tables.UserDetail.USER_DETAIL;
 
     /**
      * The table <code>mini_main.b2c_user_login_record</code>.
      */
-    public final B2cUserLoginRecord B2C_USER_LOGIN_RECORD = com.vpu.mp.db.main.tables.B2cUserLoginRecord.B2C_USER_LOGIN_RECORD;
+    public final UserLoginRecord USER_LOGIN_RECORD = com.vpu.mp.db.main.tables.UserLoginRecord.USER_LOGIN_RECORD;
 
     /**
      * The table <code>mini_main.b2c_user_summary_trend</code>.
      */
-    public final B2cUserSummaryTrend B2C_USER_SUMMARY_TREND = com.vpu.mp.db.main.tables.B2cUserSummaryTrend.B2C_USER_SUMMARY_TREND;
+    public final UserSummaryTrend USER_SUMMARY_TREND = com.vpu.mp.db.main.tables.UserSummaryTrend.USER_SUMMARY_TREND;
 
     /**
      * No further instances allowed
@@ -553,87 +547,86 @@ public class MiniMain extends SchemaImpl {
 
     private final List<Table<?>> getTables0() {
         return Arrays.<Table<?>>asList(
-            B2cActivityStatistics.B2C_ACTIVITY_STATISTICS,
-            B2cAliMiniAgent.B2C_ALI_MINI_AGENT,
-            B2cAliMiniAppVersion.B2C_ALI_MINI_APP_VERSION,
-            B2cAliMiniAuthShop.B2C_ALI_MINI_AUTH_SHOP,
-            B2cAliMyOrder.B2C_ALI_MY_ORDER,
-            B2cAliUserToken.B2C_ALI_USER_TOKEN,
-            B2cApp.B2C_APP,
-            B2cAppAuth.B2C_APP_AUTH,
-            B2cArticle.B2C_ARTICLE,
-            B2cArticleCategory.B2C_ARTICLE_CATEGORY,
-            B2cArticleRecord.B2C_ARTICLE_RECORD,
-            B2cBackProcess.B2C_BACK_PROCESS,
-            B2cCache.B2C_CACHE,
-            B2cCategory.B2C_CATEGORY,
-            B2cChargeRenew.B2C_CHARGE_RENEW,
-            B2cDbOptionRecord.B2C_DB_OPTION_RECORD,
-            B2cDecorationTemplate.B2C_DECORATION_TEMPLATE,
-            B2cDictCity.B2C_DICT_CITY,
-            B2cDictCountry.B2C_DICT_COUNTRY,
-            B2cDictDistrict.B2C_DICT_DISTRICT,
-            B2cDictProvince.B2C_DICT_PROVINCE,
-            B2cFailedJobs.B2C_FAILED_JOBS,
-            B2cGoods.B2C_GOODS,
-            B2cGoodsBrand.B2C_GOODS_BRAND,
-            B2cGoodsImg.B2C_GOODS_IMG,
-            B2cGoodsSpecProduct.B2C_GOODS_SPEC_PRODUCT,
-            B2cGraspGoods.B2C_GRASP_GOODS,
-            B2cJobs.B2C_JOBS,
-            B2cLogManage.B2C_LOG_MANAGE,
-            B2cMigrations.B2C_MIGRATIONS,
-            B2cMpAuthShop.B2C_MP_AUTH_SHOP,
-            B2cMpDailyRetain.B2C_MP_DAILY_RETAIN,
-            B2cMpDailyVisit.B2C_MP_DAILY_VISIT,
-            B2cMpDeployHistory.B2C_MP_DEPLOY_HISTORY,
-            B2cMpDistributionVisit.B2C_MP_DISTRIBUTION_VISIT,
-            B2cMpJumpVersion.B2C_MP_JUMP_VERSION,
-            B2cMpMonthlyRetain.B2C_MP_MONTHLY_RETAIN,
-            B2cMpMonthlyVisit.B2C_MP_MONTHLY_VISIT,
-            B2cMpOfficialAccount.B2C_MP_OFFICIAL_ACCOUNT,
-            B2cMpOfficialAccountUser.B2C_MP_OFFICIAL_ACCOUNT_USER,
-            B2cMpOperateLog.B2C_MP_OPERATE_LOG,
-            B2cMpSummaryTrend.B2C_MP_SUMMARY_TREND,
-            B2cMpSummaryTrendShop.B2C_MP_SUMMARY_TREND_SHOP,
-            B2cMpUserPortrait.B2C_MP_USER_PORTRAIT,
-            B2cMpVersion.B2C_MP_VERSION,
-            B2cMpVisitPage.B2C_MP_VISIT_PAGE,
-            B2cMpWeeklyRetain.B2C_MP_WEEKLY_RETAIN,
-            B2cMpWeeklyVisit.B2C_MP_WEEKLY_VISIT,
-            B2cOrderGoods.B2C_ORDER_GOODS,
-            B2cOrderInfo.B2C_ORDER_INFO,
-            B2cQfImg.B2C_QF_IMG,
-            B2cShop.B2C_SHOP,
-            B2cShopAccount.B2C_SHOP_ACCOUNT,
-            B2cShopActivity.B2C_SHOP_ACTIVITY,
-            B2cShopChildAccount.B2C_SHOP_CHILD_ACCOUNT,
-            B2cShopChildRole.B2C_SHOP_CHILD_ROLE,
-            B2cShopFreeExperience.B2C_SHOP_FREE_EXPERIENCE,
-            B2cShopGrade.B2C_SHOP_GRADE,
-            B2cShopGradeLog.B2C_SHOP_GRADE_LOG,
-            B2cShopOperation.B2C_SHOP_OPERATION,
-            B2cShopQuestionFeedback.B2C_SHOP_QUESTION_FEEDBACK,
-            B2cShopRenew.B2C_SHOP_RENEW,
-            B2cShopRole.B2C_SHOP_ROLE,
-            B2cShopUploadedImage.B2C_SHOP_UPLOADED_IMAGE,
-            B2cShopUploadedImageCategory.B2C_SHOP_UPLOADED_IMAGE_CATEGORY,
-            B2cShopVersion.B2C_SHOP_VERSION,
-            B2cSms.B2C_SMS,
-            B2cSort.B2C_SORT,
-            B2cSpec.B2C_SPEC,
-            B2cSpecVals.B2C_SPEC_VALS,
-            B2cStatisticsShop.B2C_STATISTICS_SHOP,
-            B2cSystemCfg.B2C_SYSTEM_CFG,
-            B2cSystemChildAccount.B2C_SYSTEM_CHILD_ACCOUNT,
-            B2cSystemRole.B2C_SYSTEM_ROLE,
-            B2cSystemUser.B2C_SYSTEM_USER,
-            B2cUploadedImage.B2C_UPLOADED_IMAGE,
-            B2cUploadedImageCategory.B2C_UPLOADED_IMAGE_CATEGORY,
-            B2cUploadUyunRecord.B2C_UPLOAD_UYUN_RECORD,
-            B2cUser.B2C_USER,
-            B2cUserDetail.B2C_USER_DETAIL,
-            B2cUserLoginRecord.B2C_USER_LOGIN_RECORD,
-            B2cUserSummaryTrend.B2C_USER_SUMMARY_TREND);
+            ActivityStatistics.ACTIVITY_STATISTICS,
+            AliMiniAgent.ALI_MINI_AGENT,
+            AliMiniAppVersion.ALI_MINI_APP_VERSION,
+            AliMiniAuthShop.ALI_MINI_AUTH_SHOP,
+            AliMyOrder.ALI_MY_ORDER,
+            AliUserToken.ALI_USER_TOKEN,
+            App.APP,
+            AppAuth.APP_AUTH,
+            Article.ARTICLE,
+            ArticleCategory.ARTICLE_CATEGORY,
+            ArticleRecord.ARTICLE_RECORD,
+            BackProcess.BACK_PROCESS,
+            Cache.CACHE,
+            Category.CATEGORY,
+            ChargeRenew.CHARGE_RENEW,
+            DbOptionRecord.DB_OPTION_RECORD,
+            DecorationTemplate.DECORATION_TEMPLATE,
+            DictCity.DICT_CITY,
+            DictCountry.DICT_COUNTRY,
+            DictDistrict.DICT_DISTRICT,
+            DictProvince.DICT_PROVINCE,
+            FailedJobs.FAILED_JOBS,
+            Goods.GOODS,
+            GoodsBrand.GOODS_BRAND,
+            GoodsImg.GOODS_IMG,
+            GoodsSpecProduct.GOODS_SPEC_PRODUCT,
+            GraspGoods.GRASP_GOODS,
+            Jobs.JOBS,
+            LogManage.LOG_MANAGE,
+            MpAuthShop.MP_AUTH_SHOP,
+            MpDailyRetain.MP_DAILY_RETAIN,
+            MpDailyVisit.MP_DAILY_VISIT,
+            MpDeployHistory.MP_DEPLOY_HISTORY,
+            MpDistributionVisit.MP_DISTRIBUTION_VISIT,
+            MpJumpVersion.MP_JUMP_VERSION,
+            MpMonthlyRetain.MP_MONTHLY_RETAIN,
+            MpMonthlyVisit.MP_MONTHLY_VISIT,
+            MpOfficialAccount.MP_OFFICIAL_ACCOUNT,
+            MpOfficialAccountUser.MP_OFFICIAL_ACCOUNT_USER,
+            MpOperateLog.MP_OPERATE_LOG,
+            MpSummaryTrend.MP_SUMMARY_TREND,
+            MpSummaryTrendShop.MP_SUMMARY_TREND_SHOP,
+            MpUserPortrait.MP_USER_PORTRAIT,
+            MpVersion.MP_VERSION,
+            MpVisitPage.MP_VISIT_PAGE,
+            MpWeeklyRetain.MP_WEEKLY_RETAIN,
+            MpWeeklyVisit.MP_WEEKLY_VISIT,
+            OrderGoods.ORDER_GOODS,
+            OrderInfo.ORDER_INFO,
+            QfImg.QF_IMG,
+            Shop.SHOP,
+            ShopAccount.SHOP_ACCOUNT,
+            ShopActivity.SHOP_ACTIVITY,
+            ShopChildAccount.SHOP_CHILD_ACCOUNT,
+            ShopChildRole.SHOP_CHILD_ROLE,
+            ShopFreeExperience.SHOP_FREE_EXPERIENCE,
+            ShopGrade.SHOP_GRADE,
+            ShopGradeLog.SHOP_GRADE_LOG,
+            ShopOperation.SHOP_OPERATION,
+            ShopQuestionFeedback.SHOP_QUESTION_FEEDBACK,
+            ShopRenew.SHOP_RENEW,
+            ShopRole.SHOP_ROLE,
+            ShopUploadedImage.SHOP_UPLOADED_IMAGE,
+            ShopUploadedImageCategory.SHOP_UPLOADED_IMAGE_CATEGORY,
+            ShopVersion.SHOP_VERSION,
+            Sms.SMS,
+            Sort.SORT,
+            Spec.SPEC,
+            SpecVals.SPEC_VALS,
+            StatisticsShop.STATISTICS_SHOP,
+            SystemCfg.SYSTEM_CFG,
+            SystemChildAccount.SYSTEM_CHILD_ACCOUNT,
+            SystemRole.SYSTEM_ROLE,
+            SystemUser.SYSTEM_USER,
+            UploadUyunRecord.UPLOAD_UYUN_RECORD,
+            UploadedImage.UPLOADED_IMAGE,
+            UploadedImageCategory.UPLOADED_IMAGE_CATEGORY,
+            User.USER,
+            UserDetail.USER_DETAIL,
+            UserLoginRecord.USER_LOGIN_RECORD,
+            UserSummaryTrend.USER_SUMMARY_TREND);
     }
 }

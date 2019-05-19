@@ -14,8 +14,8 @@ import org.springframework.core.io.ClassPathResource;
 import org.springframework.util.FileCopyUtils;
 
 import com.vpu.mp.SpringConfig;
-import com.vpu.mp.db.main.tables.B2cShop;
-import com.vpu.mp.db.main.tables.records.B2cShopRecord;
+import static com.vpu.mp.db.main.tables.Shop.SHOP;
+import com.vpu.mp.db.main.tables.records.ShopRecord;
 
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
@@ -83,7 +83,7 @@ public class DataManager {
 			return shopDbList.get(shopId);
 		}
 
-		B2cShopRecord shop = db().selectFrom(B2cShop.B2C_SHOP).where(B2cShop.B2C_SHOP.SHOP_ID.eq(shopId)).fetchOne();
+		ShopRecord shop = db().selectFrom(SHOP).where(SHOP.SHOP_ID.eq(shopId)).fetchOne();
 		if (shop != null) {
 			DbConfig dbConfig = Util.parseJSON(shop.getDbConfig(), DbConfig.class);
 			if (dbConfig == null) {

@@ -8,8 +8,8 @@ import javax.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import com.vpu.mp.db.main.tables.records.B2cSystemChildAccountRecord;
-import com.vpu.mp.db.main.tables.records.B2cSystemUserRecord;
+import com.vpu.mp.db.main.tables.records.SystemChildAccountRecord;
+import com.vpu.mp.db.main.tables.records.SystemUserRecord;
 import com.vpu.mp.service.foundation.Util;
 import com.vpu.mp.service.saas.Saas;
 /**
@@ -47,9 +47,9 @@ public class SystemAuth {
 
 	public boolean login(String username, String password) {
 		Integer userId = 0;
-		B2cSystemUserRecord user = saas.sysUser.verify(username, password);
+		SystemUserRecord user = saas.sysUser.verify(username, password);
 		if (user == null) {
-			B2cSystemChildAccountRecord account = saas.childAccount.verify(username, password);
+			SystemChildAccountRecord account = saas.childAccount.verify(username, password);
 			if (account == null) {
 				return false;
 			}
@@ -85,7 +85,7 @@ public class SystemAuth {
 	}
 
 	public boolean attempt(String username, String password) {
-		B2cSystemUserRecord user = saas.sysUser.verify(username, password);
+		SystemUserRecord user = saas.sysUser.verify(username, password);
 		return user != null;
 	}
 

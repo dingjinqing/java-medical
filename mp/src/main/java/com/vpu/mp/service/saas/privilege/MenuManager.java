@@ -3,8 +3,9 @@ package com.vpu.mp.service.saas.privilege;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import org.springframework.beans.factory.annotation.Autowired;
-import com.vpu.mp.db.main.tables.records.B2cSystemRoleRecord;
+
+import com.vpu.mp.db.main.tables.records.SystemRoleRecord;
+import com.vpu.mp.service.foundation.BaseComponent;
 import com.vpu.mp.service.foundation.Util;
 
 /**
@@ -12,9 +13,8 @@ import com.vpu.mp.service.foundation.Util;
  * @author 新国
  *
  */
-public class MenuManager {
+public class MenuManager extends BaseComponent {
 
-	@Autowired
 	protected Role role;
 
 	public List<Menu> getRoleMenuList(Integer roleId) {
@@ -22,7 +22,7 @@ public class MenuManager {
         if (roleId == 0) {
         	return menu;
         }
-        B2cSystemRoleRecord roleRecord = role.getRole(roleId);
+        SystemRoleRecord roleRecord = role.getRole(roleId);
         if (roleRecord != null) {
         	String[] privileges = Util.parseJSON(roleRecord.getPrivilegeList(),String[].class);
         	
