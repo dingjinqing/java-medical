@@ -1,0 +1,172 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+	<parent>
+		<groupId>org.springframework.boot</groupId>
+		<artifactId>spring-boot-starter-parent</artifactId>
+		<version>2.1.5.RELEASE</version>
+		<relativePath /> <!-- lookup parent from repository -->
+	</parent>
+	<groupId>vpu.com</groupId>
+	<artifactId>gen</artifactId>
+	<version>0.0.1-SNAPSHOT</version>
+	<name>gen</name>
+	<description>code gen </description>
+
+	<properties>
+		<project.source.encoding>utf-8</project.source.encoding>
+		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+		<argLine>-Dfile.encoding=UTF-8</argLine>
+	</properties>
+
+	<dependencies>
+	<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-web</artifactId>
+		</dependency>
+
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-test</artifactId>
+			<scope>test</scope>
+		</dependency>
+
+	
+
+		<dependency>
+			<groupId>mysql</groupId>
+			<artifactId>mysql-connector-java</artifactId>
+		</dependency>
+
+		<dependency>
+			<groupId>org.apache.commons</groupId>
+			<artifactId>commons-lang3</artifactId>
+		</dependency>
+
+		<dependency>
+			<groupId>org.jooq</groupId>
+			<artifactId>jooq</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.jooq</groupId>
+			<artifactId>jooq-meta</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.jooq</groupId>
+			<artifactId>jooq-codegen</artifactId>
+		</dependency>
+
+		<dependency>
+			<groupId>org.apache.commons</groupId>
+			<artifactId>commons-dbcp2</artifactId>
+		</dependency>
+
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-tomcat</artifactId>
+			<scope>provided</scope>
+		</dependency>
+
+
+		<dependency>
+			<groupId>org.apache.ant</groupId>
+			<artifactId>ant</artifactId>
+			<version>1.8.4</version>
+		</dependency>
+	
+	
+
+		<dependency>
+			<groupId>javax.validation</groupId>
+			<artifactId>validation-api</artifactId>
+		</dependency>
+		
+	
+
+	</dependencies>
+
+	<build>
+		<plugins>
+			<plugin>
+				<groupId>org.springframework.boot</groupId>
+				<artifactId>spring-boot-maven-plugin</artifactId>
+			</plugin>
+
+			<plugin>
+				<groupId>org.jooq</groupId>
+				<artifactId>jooq-codegen-maven</artifactId>
+				<executions>
+					<execution>
+						<id>generate-mysql</id>
+						<phase>generate-sources</phase>
+						<goals>
+							<goal>generate</goal>
+						</goals>
+					</execution>
+
+				</executions>
+
+				<configuration>
+
+
+					<jdbc>
+						<user>root</user>
+						<password>123456</password>
+						<url>jdbc:mysql://localhost:3306/?serverTimezone=UTC&amp;useUnicode=true&amp;characterEncoding=utf8&amp;useSSL=false
+						</url>
+						<driver>com.mysql.cj.jdbc.Driver</driver>
+
+					</jdbc>
+
+					<generator>
+						<!-- The default code generator. You can override this one, to generate 
+							your own code style. Supported generators: - org.jooq.codegen.JavaGenerator 
+							- org.jooq.codegen.ScalaGenerator Defaults to org.jooq.codegen.JavaGenerator -->
+						<name>org.jooq.codegen.JavaGenerator</name>
+						<strategy>
+							<name>vpu.com.MyStrategy</name>
+						</strategy>
+
+						<database>
+							<!-- The database type. The format here is: org.jooq.meta.[database].[database]Database -->
+							<name>org.jooq.meta.mysql.MySQLDatabase</name>
+
+							<!-- The database schema (or in the absence of schema support, in 
+								your RDBMS this can be the owner, user, database name) to be generated -->
+							<inputSchema>mini_shop_1</inputSchema>
+
+							<!-- All elements that are generated from your schema (A Java regular 
+								expression. Use the pipe to separate several expressions) Watch out for case-sensitivity. 
+								Depending on your database, this might be important! -->
+							<includes>.*</includes>
+
+							<!-- All elements that are excluded from your schema (A Java regular 
+								expression. Use the pipe to separate several expressions). Excludes match 
+								before includes, i.e. excludes have a higher priority -->
+							<excludes></excludes>
+						</database>
+
+						<target>
+							<!-- The destination package of your generated classes (within the 
+								destination directory) -->
+							<packageName>com.vpu.mp.db.shop</packageName>
+
+							<!-- The destination directory of your generated classes. Using Maven 
+								directory layout here -->
+							<!-- <directory>D:/svn/java/mp/src/main/java</directory> -->
+							<directory>src/main/java/
+							</directory>
+						</target>
+						<generate>
+							<pojos>false</pojos>
+							<daos>false</daos>
+						</generate>
+					</generator>
+				</configuration>
+			</plugin>
+		</plugins>
+	</build>
+
+</project>
