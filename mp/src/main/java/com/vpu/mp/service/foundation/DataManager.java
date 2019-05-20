@@ -13,7 +13,6 @@ import org.jooq.impl.DefaultExecuteListenerProvider;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.util.FileCopyUtils;
 
-import com.vpu.mp.SpringConfig;
 import static com.vpu.mp.db.main.tables.Shop.SHOP;
 import com.vpu.mp.db.main.tables.records.ShopRecord;
 
@@ -55,15 +54,15 @@ public class DataManager {
 	}
 	
 	protected DataManager() {
-		host = SpringConfig.getProperty("db.host");
-		database = SpringConfig.getProperty("db.database");
-		username = SpringConfig.getProperty("db.username");
-		password = SpringConfig.getProperty("db.password");
-		dbPrefix = SpringConfig.getProperty("db.prefix");
-		shopHost = SpringConfig.getProperty("db.shop.host");
-		shopUsername = SpringConfig.getProperty("db.shop.username");
-		shopPassword = SpringConfig.getProperty("db.shop.password");
-		shopDbPrefix = SpringConfig.getProperty("db.shop.prefix");
+		host = Util.getProperty("db.host");
+		database = Util.getProperty("db.database");
+		username = Util.getProperty("db.username");
+		password = Util.getProperty("db.password");
+		dbPrefix = Util.getProperty("db.prefix");
+		shopHost = Util.getProperty("db.shop.host");
+		shopUsername = Util.getProperty("db.shop.username");
+		shopPassword = Util.getProperty("db.shop.password");
+		shopDbPrefix = Util.getProperty("db.shop.prefix");
 	}
 
 	

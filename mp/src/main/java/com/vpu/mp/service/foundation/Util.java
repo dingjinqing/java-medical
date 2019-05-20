@@ -17,6 +17,7 @@ import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.vpu.mp.MpRunListener;
 
 /**
  * 
@@ -163,6 +164,10 @@ public class Util {
 			e.printStackTrace();
 		}
 		return null;
+	}
+	
+	public static String getProperty(String key) {
+		return MpRunListener.getProperty(key);
 	}
 
 }
