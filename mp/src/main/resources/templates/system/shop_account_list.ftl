@@ -218,6 +218,15 @@ var page_all = ${page.lastPage};
         })
         $(this).parent().find('.show_principal').eq(0).removeClass('hide');
     })
+    
+    $('[name="test"]').click(function(){
+    var data = {
+    test_no:"2324343"
+    };
+    util.ajax_json('/system/test',function(d){
+            
+        },data)
+    });
 </script>
 <script src="/js/admin/page.js?v=1.0.0" type="text/javascript"></script>
 </#noparse>

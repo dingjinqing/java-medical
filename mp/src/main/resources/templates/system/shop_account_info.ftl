@@ -175,7 +175,7 @@
                         初始销量
                     </td>
                     <td>
-                        <input type="checkbox" class="switch" id="checkbox1" name="base_sale" <#if (shop_account.base_sale!0 > 0)> checked </#if> >
+                        <input type="checkbox" class="switch" id="checkbox1" value="1" name="base_sale" <#if (shop_account.base_sale!0 > 0)> checked </#if> >
                         <label for="checkbox1" class="switch"></label>
                         <span style="color: rgb(0, 0, 0);">已关闭</span>
                     </td>
