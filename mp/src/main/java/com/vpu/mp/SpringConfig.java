@@ -1,9 +1,6 @@
 package com.vpu.mp;
 
-import org.springframework.beans.BeansException;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.ApplicationContext;
-import org.springframework.context.ApplicationContextAware;
+import org.springframework.context.EnvironmentAware;
 import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Component;
 /**
@@ -12,30 +9,22 @@ import org.springframework.stereotype.Component;
  *
  */
 @Component
-public class SpringConfig implements ApplicationContextAware{
+public class SpringConfig implements EnvironmentAware{
 
-	@Autowired
-	protected Environment enviornment;
-	
-	
-	private static ApplicationContext context = null;
-	
 	private static Environment env = null;
 	
 	
 	@Override
-    public void setApplicationContext(ApplicationContext applicationContext)
-            throws BeansException {
-        context = applicationContext;
-        env = enviornment;
+    public void setEnvironment(Environment environment) {
+		System.out.println("SpringConfig setEnvironment");
+		env = environment;
     }
- 
-    public synchronized static Object getBean(String beanName) {
-        return context.getBean(beanName);
-    }
-    
-    
+     
     public synchronized static String getProperty(String key) {
+    	if(env == null) {
+    		System.out.println("SpringConfig env is null");
+    		return null;
+    	}
         return env.getProperty(key);
     }
 

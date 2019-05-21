@@ -6,6 +6,11 @@ import static com.vpu.mp.db.main.tables.DictProvince.DICT_PROVINCE;
 import com.vpu.mp.db.main.tables.records.DictProvinceRecord;
 import com.vpu.mp.service.foundation.BaseComponent;
 
+/**
+ * 
+ * @author 新国
+ *
+ */
 public class Province extends BaseComponent {
 
 	public Result<DictProvinceRecord> getAll() {

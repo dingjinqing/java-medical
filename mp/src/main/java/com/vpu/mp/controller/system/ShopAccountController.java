@@ -6,15 +6,20 @@ import java.util.Map;
 import org.jooq.Result;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
 
+import com.vpu.mp.db.main.tables.pojos.ShopAccount;
 import com.vpu.mp.db.main.tables.records.DictCityRecord;
 import com.vpu.mp.service.foundation.JsonResult;
 import com.vpu.mp.service.foundation.PageResult;
 import com.vpu.mp.service.saas.shop.ShopAccount.ShopAccountListQueryParam;
+import com.vpu.mp.support.LineConvertHump;
 
 /**
  * 
@@ -25,7 +30,7 @@ import com.vpu.mp.service.saas.shop.ShopAccount.ShopAccountListQueryParam;
 public class ShopAccountController extends SystemBaseController {
 
 	@RequestMapping(value = "/system/shop/account/list")
-	public ModelAndView getShopAccountList(ShopAccountListQueryParam param) {
+	public ModelAndView getShopAccountList(@LineConvertHump ShopAccountListQueryParam param) {
 		PageResult result = saas.sysShop.accout.getPageList(param);
 
 		for (Map<String, Object> row : result.dataList) {
@@ -45,8 +50,8 @@ public class ShopAccountController extends SystemBaseController {
 		return view("system/shop_account_list", model);
 	}
 
-	@RequestMapping(value = "/system/shop/account/add")
-	public ModelAndView addShopAccount() {
+	@GetMapping(value = "/system/shop/account/add")
+	public ModelAndView showAddShopAccount() {
 		Object shopAccountDto = new Object();
 		ModelMap model = new ModelMap();
 		model.addAttribute("title", "添加商家账号");
@@ -57,8 +62,17 @@ public class ShopAccountController extends SystemBaseController {
 		model.addAttribute("act_url", "/system/shop/account/add");
 		model.addAttribute("nav_type", 2);
 		return view("system/shop_account_info", model);
+	}
+	
+	@PostMapping(value = "/system/shop/account/add")
+	public ModelAndView addShopAccount(@LineConvertHump ShopAccount  account) {
+		
+		 System.out.println(account);
+		
+		 saas.sysShop.accout.addAccountInfo(account);
+		 
+		 return redirect("/system/shop/account/list");
 
-//        if (isPost()) {
 //            $data = $this.all($this.getShopAccountUpdateFields(), ["business_state"]);
 //            $data["base_sale"] = $this.post("base_sale") == "on" ? 1:0;
 //            $pass = $data["password"];
@@ -110,4 +124,5 @@ public class ShopAccountController extends SystemBaseController {
 		}
 		return JsonResult.fail("fail");
 	}
+				
 }

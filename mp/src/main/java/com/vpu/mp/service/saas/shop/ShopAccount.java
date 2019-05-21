@@ -3,6 +3,7 @@ package com.vpu.mp.service.saas.shop;
 import java.sql.Timestamp;
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
 
 import org.jooq.Record;
 import org.jooq.Record1;
@@ -33,6 +34,15 @@ public class ShopAccount extends BaseComponent {
 		public Integer page;
 		public String keywords;
 		public String company;
+		public String testNo;
+
+		public String getTestNo() {
+			return testNo;
+		}
+
+		public void setTestNo(String testNo) {
+			this.testNo = testNo;
+		}
 
 		public Byte getState() {
 			return state;
@@ -146,7 +156,13 @@ public class ShopAccount extends BaseComponent {
 
 	public ShopAccountRecord getAccountInfoForID(String nameOrMobile) {
 		return db().selectFrom(SHOP_ACCOUNT)
-				.where(SHOP_ACCOUNT.USER_NAME.eq(nameOrMobile).or(SHOP_ACCOUNT.MOBILE.eq(nameOrMobile))).fetchOne();
+				.where(SHOP_ACCOUNT.USER_NAME.eq(nameOrMobile).or(SHOP_ACCOUNT.MOBILE.eq(nameOrMobile)))
+				.fetchOne();
+	}
+	
+	public int addAccountInfo(com.vpu.mp.db.main.tables.pojos.ShopAccount account) {
+		ShopAccountRecord record = db().newRecord(SHOP_ACCOUNT,account);
+		return record.store();
 	}
 
 }

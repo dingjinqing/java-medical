@@ -17,6 +17,5 @@ public class MpApplication {
 		SpringApplication app = new SpringApplication(MpApplication.class);
 		app.addListeners(new MpRunListener());
 		app.run(args);
-//		SpringApplication.run(MpApplication.class, args);
 	}
 }
