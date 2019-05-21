@@ -7,13 +7,13 @@ import org.jooq.Result;
 
 import org.jooq.SelectWhereStep;
 import org.jooq.impl.DSL;
+import org.jooq.tools.StringUtils;
 
-import static com.vpu.mp.db.main.tables.MpAuthShop.MP_AUTH_SHOP;
 import static com.vpu.mp.db.main.tables.Shop.SHOP;
-import static com.vpu.mp.db.main.tables.ShopAccount.SHOP_ACCOUNT;
 import com.vpu.mp.service.foundation.BaseComponent;
 import com.vpu.mp.service.foundation.Page;
 import com.vpu.mp.service.foundation.PageResult;
+import com.vpu.mp.service.saas.shop.ShopAccount.ShopAccountListQueryParam;
 /**
  * 
  * @author 新国
@@ -24,18 +24,30 @@ public class SysShop extends BaseComponent {
 	public ShopAccount accout;
 	public ShopRenew renew;
 	
-	public PageResult getShopPageList() {
+	public PageResult getPageList(ShopAccountListQueryParam param) {
 		SelectWhereStep<Record> select = db().select().from(SHOP);
-		return this.getPageResult(select);
+		select = this.buildOptions(select, param);
+		select.orderBy(SHOP.CREATED.desc());
+		return this.getPageResult(select, param.page);
 	}
-	
-	public Result<Record> getPageList(int totalRows, Page page) {
-		Field<?>[] fs = { MP_AUTH_SHOP.APP_ID, MP_AUTH_SHOP.IS_AUTH_OK, MP_AUTH_SHOP.NICK_NAME, MP_AUTH_SHOP.PRINCIPAL_NAME };
-		Field<?>[] fields = ArrayUtils.addAll(SHOP.fields(), fs);
-		
-		return db().select(fields).from(SHOP).join(SHOP_ACCOUNT).on(SHOP.SYS_ID.eq(SHOP_ACCOUNT.SYS_ID)).join(MP_AUTH_SHOP)
-				.on(SHOP.SHOP_ID.eq(DSL.cast(MP_AUTH_SHOP.SHOP_ID,Integer.class))).orderBy(SHOP.CREATED.desc())
-				.limit((page.currentPage - 1) * page.pageRows, page.pageRows).fetch();
+
+	public SelectWhereStep<Record> buildOptions(SelectWhereStep<Record> select, ShopAccountListQueryParam param) {
+		if (param == null) {
+			return select;
+		}
+		if (!StringUtils.isEmpty(param.keywords)) {
+			select.where(
+					SHOP.USER_NAME.like(param.keywords).or(SHOP.ACCOUNT_NAME.like(param.keywords)));
+		}
+		if (param.state != null && param.state != 0) {
+			select.where(SHOP.STATE.eq(param.state));
+		}
+
+		if (!StringUtils.isEmpty(param.company)) {
+			select.where(SHOP.COMPANY.like(param.company));
+		}
+
+		return select;
 	}
 
 }

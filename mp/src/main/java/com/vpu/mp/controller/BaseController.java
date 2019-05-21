@@ -10,8 +10,9 @@ import org.springframework.core.env.Environment;
 import org.springframework.ui.ModelMap;
 import org.springframework.util.StringUtils;
 import org.springframework.web.servlet.ModelAndView;
-import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import org.springframework.web.servlet.view.RedirectView;
+
+import com.vpu.mp.service.saas.Saas;
 
 /**
  * 
@@ -22,6 +23,8 @@ public class BaseController {
 
 	final static String REDIRECT_PREFIX = "redirect:";
 
+	protected Saas saas = Saas.instance();
+	
 	@Autowired
 	protected HttpServletRequest request;
 

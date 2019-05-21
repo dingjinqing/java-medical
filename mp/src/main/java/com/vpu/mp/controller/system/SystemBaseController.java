@@ -14,7 +14,7 @@ import com.vpu.mp.service.saas.Saas;
  */
 public class SystemBaseController extends BaseController {
 
-	protected Saas saas = Saas.instance();
+	
 	
 	@Autowired
 	protected SystemAuth sysAuth;
