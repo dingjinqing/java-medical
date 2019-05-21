@@ -10,6 +10,7 @@ import org.springframework.core.env.Environment;
 import org.springframework.ui.ModelMap;
 import org.springframework.util.StringUtils;
 import org.springframework.web.servlet.ModelAndView;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import org.springframework.web.servlet.view.RedirectView;
 
 /**
@@ -20,7 +21,7 @@ import org.springframework.web.servlet.view.RedirectView;
 public class BaseController {
 
 	final static String REDIRECT_PREFIX = "redirect:";
-	
+
 	@Autowired
 	protected HttpServletRequest request;
 
@@ -32,11 +33,29 @@ public class BaseController {
 	}
 
 	protected ModelAndView redirect(String path) {
-		return view(REDIRECT_PREFIX + path);
+		return view(getRedirectPath(path));
 	}
 
 	protected ModelAndView redirect(String path, Map<String, ?> model) {
-		return view(REDIRECT_PREFIX + path, model);
+		return view(getRedirectPath(path), model);
+	}
+
+	protected boolean isRedirectPath(String path) {
+		return path.startsWith(REDIRECT_PREFIX);
+	}
+
+	protected String getRealPath(String path) {
+		if (isRedirectPath(path)) {
+			return path.substring(9);
+		}
+		return path;
+	}
+
+	protected String getRedirectPath(String path) {
+		if (isRedirectPath(path)) {
+			return path;
+		}
+		return REDIRECT_PREFIX + path;
 	}
 
 	protected ModelAndView view(String path, Map<String, ?> model) {
@@ -46,8 +65,8 @@ public class BaseController {
 	}
 
 	protected ModelAndView getDefaultModelAndView(String path) {
-		if (path.startsWith(REDIRECT_PREFIX)) {
-			path = path.substring(9);
+		if (this.isRedirectPath(path)) {
+			path = this.getRealPath(path);
 			return new ModelAndView(new RedirectView(path));
 		}
 

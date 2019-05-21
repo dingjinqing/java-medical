@@ -126,7 +126,7 @@
                         <td align="right">${item.renew_money}</td>
                         <td><#if (item.mobile! == '')>未设置<#else>${item.mobile}</#if></td>
                         <td>
-                            <a href="/system/shop/account/edit?sys_id=${item.sys_id}">编辑</a>
+                            <a href="/system/shop/account/edit/${item.sys_id}">编辑</a>
                         </td>
                     </tr>
                 </#list>

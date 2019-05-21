@@ -4,11 +4,11 @@
     <table align="center" width="">
         <tr>
             <th rowspan="2"><img src="http://${image_domain}/image/system/info.png" width="50" height="50" border="0"/></th>
-            <td><h3 style="font-weight:bolder;margin:0px;padding:0px;">${message}</h3></td>
+            <td><h3 style="font-weight:bolder;margin:0px;padding:0px;">${message!}</h3></td>
         </tr>
         <tr>
             <td id="navi_hint">
-                <span id="hint_sec">30</span>{{ trans("system/message.jump_link_tips") }
+                <span id="hint_sec">30</span>秒后，自动返回上一页
             </td>
         </tr>
         <tr>

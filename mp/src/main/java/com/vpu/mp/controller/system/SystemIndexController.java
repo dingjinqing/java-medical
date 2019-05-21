@@ -4,7 +4,9 @@ import java.util.Map;
 
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
 
 import com.vpu.mp.service.foundation.Util;
@@ -30,17 +32,16 @@ public class SystemIndexController extends SystemBaseController {
 	
 	@RequestMapping(value = "/system/welcome")
 	public ModelAndView welcome() {
-		
-		Map<String, String[]> rst = this.input();
-		System.out.println(Util.toJSON(rst));
-		
-		
-		String name1 = this.input("name1[]");
-		System.out.println(name1);
-		
-		
 		return view("system/welcome");
 	}
+	
+	@RequestMapping(value = "/system/message")
+	public ModelAndView message(@RequestParam(value = "message",required=true)  String message) {
+		ModelMap model = new ModelMap();
+		model.addAttribute("message", message);
+		return view("system/show_msg",model);
+	}
+	
 	
 	@RequestMapping(value = "/system/passwordSet")
 	public ModelAndView passwordSet() {

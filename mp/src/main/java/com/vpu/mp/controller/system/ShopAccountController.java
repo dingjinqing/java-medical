@@ -4,9 +4,11 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.jooq.Result;
+import org.jooq.tools.StringUtils;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -16,8 +18,10 @@ import org.springframework.web.servlet.ModelAndView;
 
 import com.vpu.mp.db.main.tables.pojos.ShopAccount;
 import com.vpu.mp.db.main.tables.records.DictCityRecord;
+import com.vpu.mp.db.main.tables.records.ShopAccountRecord;
 import com.vpu.mp.service.foundation.JsonResult;
 import com.vpu.mp.service.foundation.PageResult;
+import com.vpu.mp.service.foundation.Util;
 import com.vpu.mp.service.saas.shop.ShopAccount.ShopAccountListQueryParam;
 import com.vpu.mp.support.LineConvertHump;
 
@@ -63,47 +67,41 @@ public class ShopAccountController extends SystemBaseController {
 		model.addAttribute("nav_type", 2);
 		return view("system/shop_account_info", model);
 	}
-	
-	@PostMapping(value = "/system/shop/account/add")
-	public ModelAndView addShopAccount(@LineConvertHump ShopAccount  account) {
-		
-		 System.out.println(account);
-		
-		 saas.sysShop.accout.addAccountInfo(account);
-		 
-		 return redirect("/system/shop/account/list");
 
-//            $data = $this.all($this.getShopAccountUpdateFields(), ["business_state"]);
-//            $data["base_sale"] = $this.post("base_sale") == "on" ? 1:0;
-//            $pass = $data["password"];
-//            $data["password"] = md5($data["password"]);
-////            $account_id = saas().shop.operation.addRow($data);
-//            $account_id = $this.getShopAccountService().addRow($data);
-//            $data["password_word"] = $pass;
-//            $desc = $this.diffEdit($data,array());
-//            $data1 = [
-//                "shop_id"=>$account_id,
-//                "created" => date("Y-m-d H:i:s",time()),
-//                "desc" => $desc,
-//                "ip"=> $_SERVER["REMOTE_ADDR"],
-//                "operator_id"=>$this.auth.user()["system_user_id"],
-//                "operator"=>$this.auth.user()["user_name"],
-//                "type"=>1
-//            ];
-//            saas().shop.operation.addRow($data1);
-////            $this.getShopAccountService().addRow($data);
-//            return redirect("/system/shop/account/list");
-//        }
-//        $data = [
-//            "title" => "添加商家账号",
-//            "shop_account" => new \stdClass(),
-//            "nav_type" => 2,
-//            "province" => saas().region.province.getAll(),
-//            "city" => saas().region.city.getCityList(110000),
-//            "district" => saas().region.district.getDistrictList(110100),
-//            "act_url" => "/system/shop/account/add"
-//        ];
-//        return view("system.shop_account_info", $data);
+	@PostMapping(value = "/system/shop/account/add")
+	public ModelAndView addShopAccount(@LineConvertHump ShopAccount account) {
+		account.setPassword(Util.md5(account.getPassword()));
+		saas.sysShop.accout.addAccountInfo(account);
+		return redirect("/system/shop/account/list");
+
+	}
+
+	@GetMapping(value = "/system/shop/account/edit/{sys_id}")
+	public ModelAndView showEditShopAccount(@PathVariable("sys_id") Integer sysId) {
+		ShopAccountRecord record = saas.sysShop.accout.getAccountInfoForID(sysId);
+		if (record == null) {
+			return this.showMessage("商家账号不存在");
+		}
+		ModelMap model = new ModelMap();
+		model.addAttribute("title", "编辑商家账号");
+		model.addAttribute("shop_account", record.intoMap());
+		model.addAttribute("province", saas.region.province.getAll().intoMaps());
+		model.addAttribute("city", saas.region.city.getCityList(110000).intoMaps());
+		model.addAttribute("district", saas.region.district.getDistrictList(110100).intoMaps());
+		model.addAttribute("act_url", "/system/shop/account/edit/" + sysId);
+		model.addAttribute("nav_type", 3);
+		return view("system/shop_account_info", model);
+	}
+
+	@PostMapping(value = "/system/shop/account/edit/{sys_id}")
+	public ModelAndView updateShopAccount(@LineConvertHump ShopAccount account, @PathVariable("sys_id") Integer sysId) {
+		if (!StringUtils.isEmpty(account.getPassword())) {
+			account.setPassword(Util.md5(account.getPassword()));
+		} else {
+			account.setPassword(null);
+		}
+		saas.sysShop.accout.updateAccountInfo(account);
+		return this.showMessage("更新商家账号成功");
 	}
 
 	@RequestMapping(value = "/system/user/address")
@@ -124,5 +122,5 @@ public class ShopAccountController extends SystemBaseController {
 		}
 		return JsonResult.fail("fail");
 	}
-				
+
 }

@@ -160,9 +160,14 @@ public class ShopAccount extends BaseComponent {
 				.fetchOne();
 	}
 	
-	public int addAccountInfo(com.vpu.mp.db.main.tables.pojos.ShopAccount account) {
+	public ShopAccountRecord addAccountInfo(com.vpu.mp.db.main.tables.pojos.ShopAccount account) {
 		ShopAccountRecord record = db().newRecord(SHOP_ACCOUNT,account);
-		return record.store();
+		db().executeInsert(record);
+		return record;
 	}
-
+	public ShopAccountRecord updateAccountInfo(com.vpu.mp.db.main.tables.pojos.ShopAccount account) {
+		ShopAccountRecord record = db().newRecord(SHOP_ACCOUNT,account);
+		db().executeUpdate(record);
+		return record;
+	}
 }

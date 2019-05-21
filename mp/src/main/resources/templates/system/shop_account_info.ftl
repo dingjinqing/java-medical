@@ -47,7 +47,7 @@
                     </td>
                     <td>
                         <input type="password" name="password" value="">
-                        <#if (shop_account.sys_id! != "")>
+                        <#if ("${shop_account.sys_id!}" != "")>
                             <span class="text-warning">密码为空，则不修改原密码</span>
                         </#if>
                     </td>
@@ -66,10 +66,10 @@
                     </td>
                     <td>
                         <select name="state">
-                            <option value="1" <#if (shop_account.state! =="1")> selected </#if>>申请中</option>
-                            <option value="2" <#if (shop_account.state! =="2")> selected </#if>>审核通过</option>
-                            <option value="3" <#if (shop_account.state! =="3")> selected </#if>>审核不通过</option>
-                            <option value="4" <#if (shop_account.state! =="4")> selected </#if>>已禁用</option>
+                            <option value="1" <#if ("${shop_account.state!}" =="1")> selected </#if>>申请中</option>
+                            <option value="2" <#if ("${shop_account.state!}" =="2")> selected </#if>>审核通过</option>
+                            <option value="3" <#if ("${shop_account.state!}" =="3")> selected </#if>>审核不通过</option>
+                            <option value="4" <#if ("${shop_account.state!}" =="4")> selected </#if>>已禁用</option>
                         </select>
                     </td>
                 </tr>
@@ -79,10 +79,10 @@
                     </td>
                     <td>
                         <select name="shop_grade">
-                            <option value="1" <#if (shop_account.shop_grade! =="1")> selected </#if>>普通店</option>
-                            <option value="2" <#if (shop_account.shop_grade! =="2")> selected </#if>>专营店</option>
-                            <option value="3" <#if (shop_account.shop_grade! =="3")> selected </#if>>精品店</option>
-                            <option value="4" <#if (shop_account.shop_grade! =="4")> selected </#if>>旗舰店</option>
+                            <option value="1" <#if ("${shop_account.shop_grade!}" =="1")> selected </#if>>普通店</option>
+                            <option value="2" <#if ("${shop_account.shop_grade!}" =="2")> selected </#if>>专营店</option>
+                            <option value="3" <#if ("${shop_account.shop_grade!}" =="3")> selected </#if>>精品店</option>
+                            <option value="4" <#if ("${shop_account.shop_grade!}" =="4")> selected </#if>>旗舰店</option>
                         </select>
                     </td>
                 </tr>
