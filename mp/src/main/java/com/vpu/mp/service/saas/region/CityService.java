@@ -4,14 +4,14 @@ import org.jooq.Result;
 
 import static com.vpu.mp.db.main.tables.DictCity.DICT_CITY;
 import com.vpu.mp.db.main.tables.records.DictCityRecord;
-import com.vpu.mp.service.foundation.BaseComponent;
+import com.vpu.mp.service.foundation.BaseService;
 
 /**
  * 
  * @author 新国
  *
  */
-public class CCity extends BaseComponent {
+public class CityService extends BaseService {
 
 	/**
 	 * 得到省的城市列表

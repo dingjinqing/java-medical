@@ -9,14 +9,14 @@ import static com.vpu.mp.db.main.tables.ShopRenew.SHOP_RENEW;
 
 import java.sql.Date;
 
-import com.vpu.mp.service.foundation.BaseComponent;
+import com.vpu.mp.service.foundation.BaseService;
 
 /**
  * 
  * @author 新国
  *
  */
-public class CShopRenew extends BaseComponent {
+public class ShopRenewService extends BaseService {
 
 
 	public void insertRenewDate() {

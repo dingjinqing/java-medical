@@ -9,7 +9,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
 
-import com.vpu.mp.service.foundation.Util;
 
 /**
  * 
@@ -36,7 +35,7 @@ public class SystemIndexController extends SystemBaseController {
 	}
 	
 	@RequestMapping(value = "/system/message")
-	public ModelAndView message(@RequestParam(value = "message",required=true)  String message) {
+	public ModelAndView message(@RequestParam("message") String message) {
 		ModelMap model = new ModelMap();
 		model.addAttribute("message", message);
 		return view("system/show_msg",model);

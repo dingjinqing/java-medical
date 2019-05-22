@@ -7,7 +7,7 @@ import org.jooq.Record;
 import org.jooq.Result;
 
 import com.vpu.mp.db.main.tables.records.SystemChildAccountRecord;
-import com.vpu.mp.service.foundation.BaseComponent;
+import com.vpu.mp.service.foundation.BaseService;
 import com.vpu.mp.service.foundation.Util;
 
 /**
@@ -15,7 +15,7 @@ import com.vpu.mp.service.foundation.Util;
  * @author 新国
  *
  */
-public class CChildAccount extends BaseComponent {
+public class ChildAccountService extends BaseService {
 
 	public SystemChildAccountRecord verify(String username, String password) {
 		SystemChildAccountRecord user = db().selectFrom(SYSTEM_CHILD_ACCOUNT)

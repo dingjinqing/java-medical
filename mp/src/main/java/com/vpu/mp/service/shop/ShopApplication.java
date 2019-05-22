@@ -1,19 +1,19 @@
 package com.vpu.mp.service.shop;
 
 import com.vpu.mp.service.foundation.Util;
-import com.vpu.mp.service.shop.goods.CGoods;
+import com.vpu.mp.service.shop.goods.GoodsService;
 /**
  * 
  * @author 新国
  *
  */
-public class Shop {
+public class ShopApplication {
 
-	public CGoods goods;
+	public GoodsService goods;
 
 	protected Integer shopId = 0;
 
-	public Shop(Integer shopId) {
+	public ShopApplication(Integer shopId) {
 		this.shopId = shopId;
 		Util.initComponents(this);
 	}

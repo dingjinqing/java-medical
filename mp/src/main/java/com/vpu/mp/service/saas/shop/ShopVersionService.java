@@ -1,21 +1,16 @@
 package com.vpu.mp.service.saas.shop;
 
-import static com.vpu.mp.db.main.tables.MpAuthShop.MP_AUTH_SHOP;
 import static com.vpu.mp.db.main.tables.ShopVersion.SHOP_VERSION;
 
 import java.util.HashMap;
-import java.util.LinkedHashMap;
 import java.util.Map;
-
-import static com.vpu.mp.db.main.tables.ShopAccount.SHOP_ACCOUNT;
-
 import org.jooq.Record;
 import org.jooq.Result;
 import org.jooq.SelectWhereStep;
 import org.jooq.tools.StringUtils;
 
 import com.vpu.mp.db.main.tables.records.ShopVersionRecord;
-import com.vpu.mp.service.foundation.BaseComponent;
+import com.vpu.mp.service.foundation.BaseService;
 import com.vpu.mp.service.foundation.PageResult;
 
 /**
@@ -23,7 +18,7 @@ import com.vpu.mp.service.foundation.PageResult;
  * @author 新国
  *
  */
-public class CVersion extends BaseComponent {
+public class ShopVersionService extends BaseService {
 
 	final public class VersionListQueryParam {
 		public Integer page;

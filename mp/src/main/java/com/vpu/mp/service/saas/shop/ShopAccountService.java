@@ -15,7 +15,7 @@ import static com.vpu.mp.db.main.tables.Shop.SHOP;
 import static com.vpu.mp.db.main.tables.ShopAccount.SHOP_ACCOUNT;
 
 import com.vpu.mp.db.main.tables.records.ShopAccountRecord;
-import com.vpu.mp.service.foundation.BaseComponent;
+import com.vpu.mp.service.foundation.BaseService;
 import com.vpu.mp.service.foundation.PageResult;
 import com.vpu.mp.service.foundation.Util;
 
@@ -24,7 +24,7 @@ import com.vpu.mp.service.foundation.Util;
  * @author 新国
  *
  */
-public class CShopAccount extends BaseComponent {
+public class ShopAccountService extends BaseService {
 
 	final public static class ShopAccountListQueryParam {
 		public Byte state;

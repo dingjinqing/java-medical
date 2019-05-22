@@ -7,12 +7,16 @@ import javax.servlet.http.HttpServletRequest;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.env.Environment;
+import org.springframework.http.HttpStatus;
 import org.springframework.ui.ModelMap;
 import org.springframework.util.StringUtils;
 import org.springframework.web.servlet.ModelAndView;
+import org.springframework.web.servlet.View;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+import org.springframework.web.servlet.mvc.support.RedirectAttributesModelMap;
 import org.springframework.web.servlet.view.RedirectView;
 
-import com.vpu.mp.service.saas.Saas;
+import com.vpu.mp.service.saas.SaasApplication;
 
 /**
  * 
@@ -23,8 +27,8 @@ public class BaseController {
 
 	final static String REDIRECT_PREFIX = "redirect:";
 
-	protected Saas saas = Saas.instance();
-	
+	protected SaasApplication saas = SaasApplication.instance();
+
 	@Autowired
 	protected HttpServletRequest request;
 
@@ -35,12 +39,31 @@ public class BaseController {
 		return getDefaultModelAndView(path);
 	}
 
+	protected ModelAndView view(String path, Map<String, ?> model) {
+		if (this.isRedirectPath(path)) {
+			return new ModelAndView(path,model);
+		}
+		ModelAndView mv = getDefaultModelAndView(path);
+		mv.addAllObjects(model);
+		return mv;
+	}
+
 	protected ModelAndView redirect(String path) {
 		return view(getRedirectPath(path));
 	}
 
 	protected ModelAndView redirect(String path, Map<String, ?> model) {
 		return view(getRedirectPath(path), model);
+	}
+
+	protected ModelAndView getDefaultModelAndView(String path) {
+		ModelAndView mv = new ModelAndView(path);
+		ModelMap model = new ModelMap();
+		model.addAttribute("global_title", "微铺宝小程序商家后台");
+		model.addAttribute("main_domain", env.getProperty("domain.main"));
+		model.addAttribute("image_domain", env.getProperty("domain.image"));
+		mv.addAllObjects(model);
+		return mv;
 	}
 
 	protected boolean isRedirectPath(String path) {
@@ -59,27 +82,6 @@ public class BaseController {
 			return path;
 		}
 		return REDIRECT_PREFIX + path;
-	}
-
-	protected ModelAndView view(String path, Map<String, ?> model) {
-		ModelAndView mv = getDefaultModelAndView(path);
-		mv.addAllObjects(model);
-		return mv;
-	}
-
-	protected ModelAndView getDefaultModelAndView(String path) {
-		if (this.isRedirectPath(path)) {
-			path = this.getRealPath(path);
-			return new ModelAndView(new RedirectView(path));
-		}
-
-		ModelAndView mv = new ModelAndView(path);
-		ModelMap model = new ModelMap();
-		model.addAttribute("global_title", "微铺宝小程序商家后台");
-		model.addAttribute("main_domain", env.getProperty("domain.main"));
-		model.addAttribute("image_domain", env.getProperty("domain.image"));
-		mv.addAllObjects(model);
-		return mv;
 	}
 
 	protected boolean isPost() {

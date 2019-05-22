@@ -36,6 +36,10 @@ public class JsonResult {
 		this.setContent(content);
 	}
 	
+	static public JsonResult success() {
+		return new JsonResult(0,null,null);
+	}
+	
 	static public JsonResult success(Object content) {
 		return new JsonResult(0,null,content);
 	}

@@ -15,13 +15,13 @@ import org.jooq.impl.TableImpl;
  * @author 新国
  *
  */
-public class BaseComponent {
+public class BaseService {
 
 	protected DataManager dm = DataManager.instance();
 
 	protected Integer shopId = 0;
 
-	public BaseComponent() {
+	public BaseService() {
 		Util.initComponents(this);
 	}
 

@@ -7,14 +7,14 @@ import static com.vpu.mp.db.main.tables.DictCity.DICT_CITY;
 import static com.vpu.mp.db.main.tables.DictDistrict.DICT_DISTRICT;
 import static com.vpu.mp.db.main.tables.DictProvince.DICT_PROVINCE;
 import com.vpu.mp.db.main.tables.records.DictDistrictRecord;
-import com.vpu.mp.service.foundation.BaseComponent;
+import com.vpu.mp.service.foundation.BaseService;
 
 /**
  * 
  * @author 新国
  *
  */
-public class CDistrict extends BaseComponent {
+public class DistrictService extends BaseService {
 	
 
 	/**

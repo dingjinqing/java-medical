@@ -21,7 +21,7 @@ import com.vpu.mp.db.main.tables.records.ShopAccountRecord;
 import com.vpu.mp.service.foundation.JsonResult;
 import com.vpu.mp.service.foundation.PageResult;
 import com.vpu.mp.service.foundation.Util;
-import com.vpu.mp.service.saas.shop.CShopAccount.ShopAccountListQueryParam;
+import com.vpu.mp.service.saas.shop.ShopAccountService.ShopAccountListQueryParam;
 import com.vpu.mp.support.LineConvertHump;
 
 /**

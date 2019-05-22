@@ -4,14 +4,14 @@ import org.jooq.Result;
 
 import static com.vpu.mp.db.main.tables.DictProvince.DICT_PROVINCE;
 import com.vpu.mp.db.main.tables.records.DictProvinceRecord;
-import com.vpu.mp.service.foundation.BaseComponent;
+import com.vpu.mp.service.foundation.BaseService;
 
 /**
  * 
  * @author 新国
  *
  */
-public class CProvince extends BaseComponent {
+public class ProvinceService extends BaseService {
 
 	public Result<DictProvinceRecord> getAll() {
 		return db().fetch(DICT_PROVINCE);

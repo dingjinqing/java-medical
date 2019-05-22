@@ -124,7 +124,6 @@ public class DataManager {
 			ret = execScript(dbConfig.host, dbConfig.database, dbConfig.username, dbConfig.password,
 					"db/shop/db_shop_data.sql");
 		}
-
 		return ret;
 	}
 

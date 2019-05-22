@@ -1,5 +1,7 @@
 package com.vpu.mp.service.foundation;
 
+import static com.vpu.mp.db.main.tables.Shop.SHOP;
+
 import java.io.IOException;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
@@ -7,6 +9,7 @@ import java.net.InetAddress;
 import java.net.UnknownHostException;
 import java.sql.Timestamp;
 import java.util.Properties;
+import java.util.Random;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -113,7 +116,7 @@ public class Util {
 
 		Field[] fields = o.getClass().getDeclaredFields();
 		for (Field field : fields) {
-			boolean ret = BaseComponent.class.isAssignableFrom(field.getType());
+			boolean ret = BaseService.class.isAssignableFrom(field.getType());
 			if (ret) {
 				System.out.println("initComponents " + o.getClass().getSimpleName() + "=>"
 						+ field.getType().getSimpleName() + "(" + shopId + ")");
@@ -125,7 +128,7 @@ public class Util {
 					Constructor<?> constructor = cls.getConstructor();
 					Object fieldInstance = constructor.newInstance();
 					field.set(o, fieldInstance);
-					BaseComponent com = (BaseComponent) field.get(o);
+					BaseService com = (BaseService) field.get(o);
 					com.setShopId(shopId);
 				} catch (Exception e) {
 					e.printStackTrace();
@@ -167,18 +170,22 @@ public class Util {
 		}
 		return null;
 	}
-	
+
 	public static String getProperty(String key) {
 		return MpRunListener.getProperty(key);
 	}
-	
-	public static final <T> T convert(Object from, Class<? extends T> toClass,T defaultValue) {
+
+	public static final <T> T convert(Object from, Class<? extends T> toClass, T defaultValue) {
 		try {
-			T t =  Convert.convert(from, toClass);
+			T t = Convert.convert(from, toClass);
 			return t == null ? defaultValue : t;
-		}catch(DataTypeException e) {
+		} catch (DataTypeException e) {
 			return defaultValue;
 		}
-    }
+	}
 
+	public static Integer RandomInt(Integer min, Integer max) {
+		Random rnd = new Random();
+		return min + rnd.nextInt(max - min);
+	}
 }

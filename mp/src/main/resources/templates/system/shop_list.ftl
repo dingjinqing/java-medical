@@ -173,14 +173,13 @@
                         <td class="shop_names"><#if (item.nick_name??)>${item.nick_name}<br/><font color="#d2d2d2">(${item.principal_name})</font> </#if></td>
                         <td>${item.mobile}</td>
                         <td>${item.created}</td>
-                        <td class="expire_time" expire_time="${item.expire_time}"><#if ("${item.expire_time!}" != "")>${item.expire_time}</#if>
+                        <td class="expire_time" expire_time="${item.expire_time!}"><#if ("${item.expire_time!}" != "")>${item.expire_time}</#if>
                             <#if ("${item.expire_time!}" == "")>暂未续费</#if>
                             <br><#if "${item.use!}" == "1">(使用中)<#elseif ("${item.use!}" == "2")>(已过期)</#if></td>
-{{--                        <td><#if item.is_enabled == 1>是<#else>否</#if></td>--}
-                        <td><a href="#" class="is_enabled" shop_id="${item.shop_id}" style="color: #86a7cb;"><#if item.is_enabled == 1>已禁止<#else>未禁止</#if></a></td>
+                        <td><a href="#" class="is_enabled" shop_id="${item.shop_id}" style="color: #86a7cb;"><#if ("${item.is_enabled!}" == "1")>已禁止<#else>未禁止</#if></a></td>
                         <td>
                         <#if item.app_id??>
-                        <#if item.is_auth_ok == 1>已授权<#else>已取消授权</#if>
+                        <#if item.is_auth_ok!0 == 1>已授权<#else>已取消授权</#if>
                         <#else>
                         未绑定授权
                         </#if></td>
@@ -192,7 +191,7 @@
                         </td>
                         <td>
                             <#if (item.shop_flag??)>${shop_flag_list[item.shop_flag]}<#else>店+</#if></td>
-                        <td><a href="#" class="hid_bottom" shop_id="${item.shop_id}" style="color: #86a7cb;"> <#if item.hid_bottom == 1>隐藏<#else>显示</#if></a></td>
+                        <td><a href="#" class="hid_bottom" shop_id="${item.shop_id}" style="color: #86a7cb;"> <#if "${item.hid_bottom!}" == "1">隐藏<#else>显示</#if></a></td>
                         <td>
                             <#if ( item.app_id??)>
                                 <a href="/system/mp/info?app_id=${item.app_id}">查看小程序授权信息</a>&nbsp;<br/>

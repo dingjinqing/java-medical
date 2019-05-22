@@ -3,14 +3,14 @@ package com.vpu.mp.service.saas.privilege;
 import org.jooq.types.UInteger;
 import static com.vpu.mp.db.main.tables.SystemUser.SYSTEM_USER;
 import com.vpu.mp.db.main.tables.records.SystemUserRecord;
-import com.vpu.mp.service.foundation.BaseComponent;
+import com.vpu.mp.service.foundation.BaseService;
 import com.vpu.mp.service.foundation.Util;
 /**
  * 
  * @author 新国
  *
  */
-public class CSystemUser extends BaseComponent {
+public class SystemUserService extends BaseService {
 
 	public SystemUserRecord verify(String username, String password) {
 		SystemUserRecord user = dm.db().selectFrom(SYSTEM_USER).where(SYSTEM_USER.USER_NAME.eq(username))

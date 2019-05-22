@@ -11,7 +11,7 @@ import org.springframework.stereotype.Component;
 import com.vpu.mp.db.main.tables.records.SystemChildAccountRecord;
 import com.vpu.mp.db.main.tables.records.SystemUserRecord;
 import com.vpu.mp.service.foundation.Util;
-import com.vpu.mp.service.saas.Saas;
+import com.vpu.mp.service.saas.SaasApplication;
 /**
  * 
  * @author 新国
@@ -23,7 +23,7 @@ public class SystemAuth {
 	@Autowired
 	HttpServletRequest request;
 
-	Saas saas = Saas.instance();
+	SaasApplication saas = SaasApplication.instance();
 
 	public boolean isLogin() {
 		HashMap<String, Object> user = user();
