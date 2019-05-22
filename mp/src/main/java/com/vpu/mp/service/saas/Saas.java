@@ -3,12 +3,12 @@ package com.vpu.mp.service.saas;
 import java.util.HashMap;
 
 import com.vpu.mp.service.foundation.Util;
-import com.vpu.mp.service.saas.privilege.ChildAccount;
-import com.vpu.mp.service.saas.privilege.MenuManager;
-import com.vpu.mp.service.saas.privilege.Role;
-import com.vpu.mp.service.saas.privilege.SystemUser;
-import com.vpu.mp.service.saas.region.Region;
-import com.vpu.mp.service.saas.shop.SysShop;
+import com.vpu.mp.service.saas.privilege.CChildAccount;
+import com.vpu.mp.service.saas.privilege.CMenuManager;
+import com.vpu.mp.service.saas.privilege.CRole;
+import com.vpu.mp.service.saas.privilege.CSystemUser;
+import com.vpu.mp.service.saas.region.CRegion;
+import com.vpu.mp.service.saas.shop.CSysShop;
 import com.vpu.mp.service.shop.Shop;
 
 
@@ -19,12 +19,12 @@ import com.vpu.mp.service.shop.Shop;
  */
 public class Saas {
 
-	public SystemUser sysUser;
-	public ChildAccount childAccount;
-	public Role role;
-	public MenuManager menu;
-	public SysShop sysShop;
-	public Region region;
+	public CSystemUser sysUser;
+	public CChildAccount childAccount;
+	public CRole role;
+	public CMenuManager menu;
+	public CSysShop sysShop;
+	public CRegion region;
 
 	private static Saas saas = null;
 

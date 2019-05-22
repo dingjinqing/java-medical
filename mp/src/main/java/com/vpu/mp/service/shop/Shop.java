@@ -1,7 +1,7 @@
 package com.vpu.mp.service.shop;
 
 import com.vpu.mp.service.foundation.Util;
-import com.vpu.mp.service.shop.goods.Goods;
+import com.vpu.mp.service.shop.goods.CGoods;
 /**
  * 
  * @author 新国
@@ -9,7 +9,7 @@ import com.vpu.mp.service.shop.goods.Goods;
  */
 public class Shop {
 
-	public Goods goods;
+	public CGoods goods;
 
 	protected Integer shopId = 0;
 

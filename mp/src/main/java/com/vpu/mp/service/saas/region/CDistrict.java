@@ -14,7 +14,7 @@ import com.vpu.mp.service.foundation.BaseComponent;
  * @author 新国
  *
  */
-public class District extends BaseComponent {
+public class CDistrict extends BaseComponent {
 	
 
 	/**

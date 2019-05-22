@@ -10,6 +10,8 @@ import java.util.Properties;
 
 import javax.servlet.http.HttpServletRequest;
 
+import org.jooq.exception.DataTypeException;
+import org.jooq.tools.Convert;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.core.io.support.PropertiesLoaderUtils;
 import org.springframework.util.DigestUtils;
@@ -169,5 +171,14 @@ public class Util {
 	public static String getProperty(String key) {
 		return MpRunListener.getProperty(key);
 	}
+	
+	public static final <T> T convert(Object from, Class<? extends T> toClass,T defaultValue) {
+		try {
+			T t =  Convert.convert(from, toClass);
+			return t == null ? defaultValue : t;
+		}catch(DataTypeException e) {
+			return defaultValue;
+		}
+    }
 
 }

@@ -10,7 +10,6 @@ import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
@@ -22,7 +21,7 @@ import com.vpu.mp.db.main.tables.records.ShopAccountRecord;
 import com.vpu.mp.service.foundation.JsonResult;
 import com.vpu.mp.service.foundation.PageResult;
 import com.vpu.mp.service.foundation.Util;
-import com.vpu.mp.service.saas.shop.ShopAccount.ShopAccountListQueryParam;
+import com.vpu.mp.service.saas.shop.CShopAccount.ShopAccountListQueryParam;
 import com.vpu.mp.support.LineConvertHump;
 
 /**

@@ -10,7 +10,7 @@ import com.vpu.mp.service.foundation.Util;
  * @author 新国
  *
  */
-public class SystemUser extends BaseComponent {
+public class CSystemUser extends BaseComponent {
 
 	public SystemUserRecord verify(String username, String password) {
 		SystemUserRecord user = dm.db().selectFrom(SYSTEM_USER).where(SYSTEM_USER.USER_NAME.eq(username))

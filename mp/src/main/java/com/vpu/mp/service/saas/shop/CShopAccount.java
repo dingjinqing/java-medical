@@ -3,7 +3,6 @@ package com.vpu.mp.service.saas.shop;
 import java.sql.Timestamp;
 import java.util.Date;
 import java.util.List;
-import java.util.Map;
 
 import org.jooq.Record;
 import org.jooq.Record1;
@@ -15,9 +14,7 @@ import static com.vpu.mp.db.main.tables.MpAuthShop.MP_AUTH_SHOP;
 import static com.vpu.mp.db.main.tables.Shop.SHOP;
 import static com.vpu.mp.db.main.tables.ShopAccount.SHOP_ACCOUNT;
 
-import com.vpu.mp.db.main.tables.MpAuthShop;
 import com.vpu.mp.db.main.tables.records.ShopAccountRecord;
-import com.vpu.mp.db.shop.tables.Shop;
 import com.vpu.mp.service.foundation.BaseComponent;
 import com.vpu.mp.service.foundation.PageResult;
 import com.vpu.mp.service.foundation.Util;
@@ -27,22 +24,15 @@ import com.vpu.mp.service.foundation.Util;
  * @author 新国
  *
  */
-public class ShopAccount extends BaseComponent {
+public class CShopAccount extends BaseComponent {
 
 	final public static class ShopAccountListQueryParam {
 		public Byte state;
 		public Integer page;
 		public String keywords;
 		public String company;
-		public String testNo;
-
-		public String getTestNo() {
-			return testNo;
-		}
-
-		public void setTestNo(String testNo) {
-			this.testNo = testNo;
-		}
+		
+		
 
 		public Byte getState() {
 			return state;
@@ -105,12 +95,16 @@ public class ShopAccount extends BaseComponent {
 	}
 
 	public ShopAccountRecord verify(String username, String password) {
-		return db().selectFrom(SHOP_ACCOUNT).where(SHOP_ACCOUNT.USER_NAME.eq(username))
-				.and(SHOP_ACCOUNT.PASSWORD.eq(Util.md5(password))).fetchOne();
+		return db().selectFrom(SHOP_ACCOUNT)
+				.where(SHOP_ACCOUNT.USER_NAME.eq(username))
+				.and(SHOP_ACCOUNT.PASSWORD.eq(Util.md5(password)))
+				.fetchOne();
 	}
 
 	public ShopAccountRecord getAccountInfo(String username) {
-		return db().selectFrom(SHOP_ACCOUNT).where(SHOP_ACCOUNT.USER_NAME.eq(username)).fetchOne();
+		return db().selectFrom(SHOP_ACCOUNT)
+				.where(SHOP_ACCOUNT.USER_NAME.eq(username))
+				.fetchOne();
 	}
 
 	public Integer getShopAccountNumber(String startTime, String endTime) {
@@ -146,12 +140,16 @@ public class ShopAccount extends BaseComponent {
 	}
 
 	public List<String> getPrincipalName(Integer sysId) {
-		return db().select().from(SHOP_ACCOUNT).join(SHOP).on(SHOP_ACCOUNT.SYS_ID.eq(SHOP.SYS_ID)).join(MP_AUTH_SHOP)
-				.on(SHOP.SHOP_ID.eq(DSL.sign(MP_AUTH_SHOP.SHOP_ID))).fetch(MP_AUTH_SHOP.PRINCIPAL_NAME);
+		return db().select().from(SHOP_ACCOUNT)
+				.join(SHOP).on(SHOP_ACCOUNT.SYS_ID.eq(SHOP.SYS_ID))
+				.join(MP_AUTH_SHOP).on(SHOP.SHOP_ID.eq(DSL.cast(MP_AUTH_SHOP.SHOP_ID, Integer.class)))
+				.fetch(MP_AUTH_SHOP.PRINCIPAL_NAME);
 	}
 
 	public ShopAccountRecord getAccountInfoForID(Integer sysId) {
-		return db().selectFrom(SHOP_ACCOUNT).where(SHOP_ACCOUNT.SYS_ID.eq(sysId)).fetchOne();
+		return db().selectFrom(SHOP_ACCOUNT)
+				.where(SHOP_ACCOUNT.SYS_ID.eq(sysId))
+				.fetchOne();
 	}
 
 	public ShopAccountRecord getAccountInfoForID(String nameOrMobile) {
@@ -159,14 +157,15 @@ public class ShopAccount extends BaseComponent {
 				.where(SHOP_ACCOUNT.USER_NAME.eq(nameOrMobile).or(SHOP_ACCOUNT.MOBILE.eq(nameOrMobile)))
 				.fetchOne();
 	}
-	
+
 	public ShopAccountRecord addAccountInfo(com.vpu.mp.db.main.tables.pojos.ShopAccount account) {
-		ShopAccountRecord record = db().newRecord(SHOP_ACCOUNT,account);
+		ShopAccountRecord record = db().newRecord(SHOP_ACCOUNT, account);
 		db().executeInsert(record);
 		return record;
 	}
+
 	public ShopAccountRecord updateAccountInfo(com.vpu.mp.db.main.tables.pojos.ShopAccount account) {
-		ShopAccountRecord record = db().newRecord(SHOP_ACCOUNT,account);
+		ShopAccountRecord record = db().newRecord(SHOP_ACCOUNT, account);
 		db().executeUpdate(record);
 		return record;
 	}

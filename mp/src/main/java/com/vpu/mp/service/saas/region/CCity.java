@@ -11,7 +11,7 @@ import com.vpu.mp.service.foundation.BaseComponent;
  * @author 新国
  *
  */
-public class City extends BaseComponent {
+public class CCity extends BaseComponent {
 
 	/**
 	 * 得到省的城市列表

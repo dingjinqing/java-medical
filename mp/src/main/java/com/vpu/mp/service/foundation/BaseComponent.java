@@ -64,18 +64,23 @@ public class BaseComponent {
 	}
 
 	public String likeValue(String val) {
-		return "%" + val.replaceAll("%", "%%") + "%";
+		return "%" + likeReplace(val) + "%";
+	}
+
+	protected String likeReplace(String val) {
+		val = val.replaceAll("%", "\\%");
+		return val.replaceAll("_", "\\_");
 	}
 
 	public String prefixLikeValue(String val) {
-		return val.replaceAll("%", "%%") + "%";
+		return likeReplace(val) + "%";
 	}
 
 	public String suffixLikeValue(String val) {
-		return "%" + val.replaceAll("%", "%%");
+		return "%" + likeReplace(val);
 	}
-	
-   public boolean valid(Map<String, String> options, String key, String skiptValue) {
+
+	public boolean valid(Map<String, String> options, String key, String skiptValue) {
 		if (options.containsKey(key)) {
 			if (options.get(key) != null && options.get(key).equals(skiptValue)) {
 				return true;

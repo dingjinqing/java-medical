@@ -9,7 +9,7 @@ import com.vpu.mp.service.foundation.BaseComponent;
  * @author 新国
  *
  */
-public class Role extends BaseComponent {
+public class CRole extends BaseComponent {
 
 
 	public SystemRoleRecord getRole(Integer roleId) {

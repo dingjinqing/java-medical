@@ -98,7 +98,6 @@
 
 <form action="/system/shop/list" name="form1" id="form1" method="post">
     <input type="hidden" name="act" id="act" value="">
-    <input type="hidden" name="page" value="">
     <input type="hidden" name="shop_id" id="shop_id" value="">
     <input type="hidden" name="re_sys_id" id="re_sys_id" value="">
     <input type="hidden" id="re_money" name="re_money" value="">
@@ -240,7 +239,7 @@
 
 
 </form>
-{{--续费的弹窗--}
+
 <div class="mask"></div>
 <div class="renew">
     <div class="re_title">店铺续费窗口</div>

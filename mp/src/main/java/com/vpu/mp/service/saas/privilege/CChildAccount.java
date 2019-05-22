@@ -15,7 +15,7 @@ import com.vpu.mp.service.foundation.Util;
  * @author 新国
  *
  */
-public class ChildAccount extends BaseComponent {
+public class CChildAccount extends BaseComponent {
 
 	public SystemChildAccountRecord verify(String username, String password) {
 		SystemChildAccountRecord user = db().selectFrom(SYSTEM_CHILD_ACCOUNT)

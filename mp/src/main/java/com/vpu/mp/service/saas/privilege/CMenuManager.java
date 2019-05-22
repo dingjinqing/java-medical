@@ -13,9 +13,9 @@ import com.vpu.mp.service.foundation.Util;
  * @author 新国
  *
  */
-public class MenuManager extends BaseComponent {
+public class CMenuManager extends BaseComponent {
 
-	protected Role role;
+	protected CRole role;
 
 	public List<Menu> getRoleMenuList(Integer roleId) {
 		List<Menu> menu = this.getTopMenuList();

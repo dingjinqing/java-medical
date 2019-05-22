@@ -11,7 +11,7 @@ import com.vpu.mp.service.foundation.BaseComponent;
  * @author 新国
  *
  */
-public class Province extends BaseComponent {
+public class CProvince extends BaseComponent {
 
 	public Result<DictProvinceRecord> getAll() {
 		return db().fetch(DICT_PROVINCE);
