@@ -184,7 +184,7 @@ public class Util {
 		}
 	}
 
-	public static Integer RandomInt(Integer min, Integer max) {
+	public static Integer randomInteger(Integer min, Integer max) {
 		Random rnd = new Random();
 		return min + rnd.nextInt(max - min);
 	}

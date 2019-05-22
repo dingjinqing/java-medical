@@ -12,7 +12,11 @@
     <link href="/css/smartadmin/smartadmin-skins.min.css" media="screen" rel="stylesheet" type="text/css">
     <link href="/css/system/base.css?v=0.1.1" rel="stylesheet" type="text/css"/>
     <link href="/css/system/common.css?v=0.1.1" rel="stylesheet" type="text/css"/>
+     <link rel="stylesheet" href="/css/admin/layui/css/layui.css" type="text/css"/>
+    <link rel="stylesheet" href="/css/admin/layui_change.css?v=1.0.0" type="text/css"/>
     <link rel="stylesheet" type="text/css" href="/css/admin/login.css"/>
+     <script src="/js/layui/layui.js" type="text/javascript"></script>
+    <script src="/js/layer/layer.js" type="text/javascript"></script>
 </head>
 
 <body style="background: #f1f7fc;">

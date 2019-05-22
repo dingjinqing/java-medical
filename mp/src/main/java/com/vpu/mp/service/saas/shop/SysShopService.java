@@ -241,7 +241,7 @@ public class SysShopService extends BaseService {
 	public Integer getCanUseShopId() {
 		int maxNumber = 1000;
 		for (int i = 0; i < maxNumber; i++) {
-			Integer shopId = Util.RandomInt(100000, 1000000);
+			Integer shopId = Util.randomInteger(100000, 1000000);
 			if (db().fetchCount(SHOP, SHOP.SHOP_ID.eq(shopId)) == 0) {
 				return shopId;
 			}

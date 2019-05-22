@@ -28,7 +28,7 @@ public class SystemAuth {
 	public boolean isLogin() {
 		HashMap<String, Object> user = user();
 		if (user != null) {
-			return (Integer) user.get("system_user_id") > 0;
+			return Util.convert(user.get("system_user_id") , Integer.class,0)  > 0;
 		}
 		return false;
 	}
@@ -105,7 +105,7 @@ public class SystemAuth {
 
     public Integer roleId()
     {
-        return (Integer)user().get("role_id");
+        return  Util.convert(user().get("role_id") , Integer.class,0);
     }
 
 }

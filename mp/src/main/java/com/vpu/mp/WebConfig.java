@@ -40,7 +40,7 @@ public class WebConfig implements WebMvcConfigurer {
 	public void addInterceptors(InterceptorRegistry registry) {
 		registry.addInterceptor(sysAuthInterceptor)
 				.addPathPatterns("/system/**")
-				.excludePathPatterns("/system/login", "/system/logout","/system/message");
+				.excludePathPatterns("/system/login", "/system/logout","/system/message","/system/login/attempt");
 		registry.addInterceptor(adminAuthInterceptor)
 				.addPathPatterns("/admin/**")
 				.excludePathPatterns("/admin/login", "/admin/loginout");
