@@ -1,0 +1,684 @@
+[
+    {
+        "name": "概况",
+        "en_name": "first_web_manage",
+        "link": "/admin/survey/overview",
+        "sub": [
+            {
+                "en_name": "shop_view",
+                "name": "商城概览",
+                "link": "/admin/survey/overview",
+                "img_url": "/image/admin/icon_left/shop_look.png",
+                "sun": "sub_0",
+                "img_url_h": "/image/admin/icon_left/shop_look_h.png"
+            },
+            {
+                "en_name": "analysis_basic",
+                "name": "概况统计",
+                "link": "/admin/survey/analysis/basic",
+                "img_url": "/image/admin/icon_left/analysis_basic.png",
+                "sun": "sub_0",
+                "img_url_h": "/image/admin/icon_left/analysis_basic_h.png"
+            },
+            {
+                "en_name": "situation",
+                "name": "实时概况",
+                "link": "/admin/survey/situation/view",
+                "img_url": "/image/admin/icon_left/situation.png",
+                "sun": "sub_0",
+                "img_url_h": "/image/admin/icon_left/situation_h.png"
+            },
+            {
+                "en_name": "analysis_portrait",
+                "name": "用户画像",
+                "link": "/admin/survey/portrait/user",
+                "img_url": "/image/admin/icon_left/new_analysis_portrait.png",
+                "sun": "sub_0",
+                "img_url_h": "/image/admin/icon_left/new_analtsis_portrait_h.png"
+            },
+            {
+                "en_name": "analysis_visit",
+                "name": "访问分析",
+                "link": "/admin/survey/second/view",
+                "img_url": "/image/admin/icon_left/analysis_visit.png",
+                "sun": "sub_0",
+                "img_url_h": "/image/admin/icon_left/analysis_visit_h.png"
+            },
+            {
+                "en_name": "analysis_visit_source",
+                "name": "来源分析",
+                "link": "/admin/survey/visit/source",
+                "img_url": "/image/admin/icon_left/laiyuan.png",
+                "sun": "sub_0",
+                "img_url_h": "/image/admin/icon_left/laiyuan_h.png"
+            },
+            {
+                "en_name": "user_summary",
+                "name": "用户统计",
+                "link": "/admin/survey/user/summary",
+                "img_url": "/image/admin/icon_left/new_yonghu.png",
+                "sun": "sub_0",
+                "img_url_h": "/image/admin/icon_left/new_yonghu_h.png"
+            },
+            {
+                "en_name": "goods_summary",
+                "name": "商品统计",
+                "link": "/admin/survey/goods/summary",
+                "img_url": "/image/admin/icon_left/goods_new_ana.png",
+                "sun": "sub_0",
+                "img_url_h": "/image/admin/icon_left/goods_new_ana_h.png"
+            },
+            {
+                "en_name": "trades_summary",
+                "name": "交易统计",
+                "link": "/admin/survey/trades/summary",
+                "img_url": "/image/admin/icon_left/jiaoyi.png",
+                "sun": "sub_0",
+                "img_url_h": "/image/admin/icon_left/jiaoyi_h.png"
+            },
+            {
+                "en_name": "asset_summary",
+                "name": "资产管理",
+                "link": "/admin/survey/asset/manage",
+                "img_url": "/image/admin/icon_left/asset_manage.png",
+                "sun": "sub_0",
+                "img_url_h": "/image/admin/icon_left/asset_manage_h.png"
+            },
+            {
+                "en_name": "search_summary",
+                "name": "搜索统计",
+                "link": "/admin/survey/search/summary",
+                "img_url": "/image/admin/icon_left/search_config.png",
+                "sun": "sub_0",
+                "img_url_h": "/image/admin/icon_left/search_config_h.png"
+            }
+        ],
+        "check": 1
+    },
+    {
+        "name": "小程序管理",
+        "en_name": "first_web_decoration",
+        "link": "/admin/manage/decorate/list",
+        "sub": [
+            {
+                "en_name": "picture_setting",
+                "name": "页面装修",
+                "link": "/admin/manage/decorate/list",
+                "img_url": "/image/admin/icon_left/page_decoration.png",
+                "img_url_h": "/image/admin/icon_left/page_decoration_h.png"
+            },
+            {
+                "en_name": "page_classification",
+                "name": "页面分类",
+                "link": "/admin/manage/classification/list",
+                "img_url": "/image/admin/icon_left/picture_setting.png",
+                "img_url_h": "/image/admin/icon_left/picture_setting_h.png"
+            },
+            {
+                "en_name": "image_manager",
+                "name": "底部导航配置",
+                "link": "/admin/manage/bottom/cfg",
+                "img_url": "/image/admin/icon_left/picture_space.png",
+                "img_url_h": "/image/admin/icon_left/picture_space_h.png",
+                "role_rules": [
+                    "/admin/image_manager/*"
+                ]
+            },
+            {
+                "en_name": "image_list",
+                "name": "图片空间",
+                "link": "/admin/manage/image/list",
+                "img_url": "/image/admin/icon_left/image_list.png",
+                "img_url_h": "/image/admin/icon_left/image_list_h.png"
+            },
+            {
+                "en_name": "mp_jump_list",
+                "name": "小程序跳转",
+                "link": "/admin/manage/jump/list",
+                "img_url": "/image/admin/icon_left/mobile_deco.png",
+                "img_url_h": "/image/admin/icon_left/mobile_deco_h.png"
+            },
+            {
+                "en_name": "shop_style",
+                "name": "店铺风格",
+                "link": "/admin/manage/decorate/style",
+                "img_url": "/image/admin/icon_left/shop_style.png",
+                "img_url_h": "/image/admin/icon_left/shop_style_h.png"
+            },
+            {
+                "en_name": "mobile_deco",
+                "name": "小程序授权",
+                "link": "/wechat/mini/info?type=1",
+                "img_url": "/image/admin/icon_left/wechat_shou.png",
+                "img_url_h": "/image/admin/icon_left/wechat_shou_h.png"
+            }
+        ],
+        "check": 1
+    },
+    {
+        "name": "商品管理",
+        "en_name": "goods_manage",
+        "link": "/admin/goods/manage/list",
+        "sub": [
+            {
+                "en_name": "sale_on",
+                "name": "全部商品",
+                "link": "/admin/goods/manage/list",
+                "img_url": "/image/admin/icon_left/product_in.png",
+                "img_url_h": "/image/admin/icon_left/product_in_h.png"
+            },
+            {
+                "en_name": "goods_add",
+                "name": "添加商品",
+                "link": "/admin/goods/manage/add",
+                "img_url": "/image/admin/icon_left/picture_add.png",
+                "sun": "sub_goods",
+                "img_url_h": "/image/admin/icon_left/picture_add_h.png"
+            },
+            {
+                "en_name": "deliver",
+                "name": "运费模板",
+                "link": "/admin/goods/deliver/template/list",
+                "img_url": "/image/admin/icon_left/deliver_tmpl.png",
+                "img_url_h": "/image/admin/icon_left/deliver_tmpl_h.png"
+            },
+            {
+                "en_name": "sort",
+                "name": "商家分类管理",
+                "link": "/admin/goods/sort/list",
+                "img_url": "/image/admin/icon_left/img_sort.png",
+                "sun": "sub_1",
+                "img_url_h": "/image/admin/icon_left/img_sort_h.png"
+            },
+            {
+                "en_name": "brand",
+                "name": "品牌管理",
+                "link": "/admin/goods/brand/list",
+                "img_url": "/image/admin/icon_left/brand_icon.png",
+                "img_url_h": "/image/admin/icon_left/brand_icon_h.png"
+            },
+            {
+                "en_name": "comment",
+                "name": "评价管理",
+                "link": "/admin/goods/comment/list",
+                "img_url": "/image/admin/icon_left/comment_man.png",
+                "img_url_h": "/image/admin/icon_left/comment_man_h.png"
+            },
+            {
+                "en_name": "recommend",
+                "name": "商品推荐",
+                "link": "/admin/goods/recommend/list",
+                "img_url": "/image/admin/icon_left/recommend_icon.png",
+                "img_url_h": "/image/admin/icon_left/recommend_icon_h.png"
+            },
+            {
+                "en_name": "label",
+                "name": "商品标签",
+                "link": "/admin/goods/label/list",
+                "img_url": "/image/admin/icon_left/goods_label1.png",
+                "img_url_h": "/image/admin/icon_left/goods_label1_h.png"
+            },
+            {
+                "en_name": "grasp_goods",
+                "name": "第三方商品",
+                "link": "/admin/goods/manage/grasp/list",
+                "img_url": "/image/admin/icon_left/grasp.png",
+                "img_url_h": "/image/admin/icon_left/grasp_h.png"
+            },
+            {
+                "en_name": "goods_import",
+                "name": "商品导入",
+                "link": "/admin/goods/import/list",
+                "img_url": "/image/admin/icon_left/user_import.png",
+                "img_url_h": "/image/admin/icon_left/user_import_h.png"
+            }
+        ],
+        "check": 1
+    },
+    {
+        "name": "订单管理",
+        "en_name": "first_trade_manage",
+        "link": "/admin/orders/manage/list",
+        "sub": [
+            {
+                "en_name": "order",
+                "name": "全部订单",
+                "link": "/admin/orders/manage/list",
+                "img_url": "/image/admin/icon_left/all_order.png",
+                "img_url_h": "/image/admin/icon_left/all_order_h.png"
+            },
+            {
+                "en_name": "order_wait",
+                "name": "待发货订单",
+                "link": "/admin/orders/manage/list?order_status=3&deliver_type=0",
+                "img_url": "/image/admin/icon_left/wait_order.png",
+                "img_url_h": "/image/admin/icon_left/wait_order_h.png"
+            },
+            {
+                "en_name": "order_return",
+                "name": "退货退款订单",
+                "link": "/admin/orders/manage/return/list",
+                "img_url": "/image/admin/icon_left/return_order.png",
+                "img_url_h": "/image/admin/icon_left/return_order_h.png"
+            },
+            {
+                "en_name": "shop_setting",
+                "name": "自提订单",
+                "link": "/admin/orders/manage/list?deliver_type=1",
+                "img_url": "/image/admin/icon_left/self_order.png",
+                "img_url_h": "/image/admin/icon_left/self_order_h.png"
+            },
+            {
+                "en_name": "pin_group_fail",
+                "name": "拼团退款失败单",
+                "link": "/admin/orders/manage/list?pin_group_fail=1",
+                "img_url": "/image/admin/icon_left/pin_group_fail.png",
+                "img_url_h": "/image/admin/icon_left/pin_group_fail_h.png"
+            },
+            {
+                "en_name": "check_order",
+                "name": "买单订单",
+                "link": "/admin/orders/check/list",
+                "img_url": "/image/admin/icon_left/checkout.png",
+                "img_url_h": "/image/admin/icon_left/checkout_h.png"
+            },
+            {
+                "en_name": "card_order",
+                "name": "会员卡订单",
+                "link": "/admin/orders/card/list",
+                "img_url": "/image/admin/icon_left/user_code.png",
+                "img_url_h": "/image/admin/icon_left/user_code_h.png"
+            }
+        ],
+        "check": 1
+    },
+    {
+        "name": "营销管理",
+        "en_name": "first_market_manage",
+        "link": "/admin/market/view",
+        "sub": [
+            {
+                "en_name": "推荐",
+                "link": "",
+                "name": "",
+                "sun": "sub_4",
+                "sunn": "recomment",
+                "show_tj": "/image/admin/new_market/tj.png"
+            },
+            {
+                "en_name": "kanjia",
+                "link": "/admin/market/bargain/list?nav=1",
+                "name": "砍价",
+                "img_url": "/image/admin/icon_left/bargain.png",
+                "sun": "sub_4",
+                "img_url_h": "/image/admin/icon_left/bargain_h.png"
+            },
+            {
+                "en_name": "pin_group",
+                "link": "/admin/market/pingroup/list?nav=1",
+                "name": "多人拼团",
+                "img_url": "/image/admin/icon_left/icon_group.png",
+                "sun": "sub_4",
+                "img_url_h": "/image/admin/icon_left/icon_group_h.png"
+            },
+            {
+                "en_name": "distribution_info",
+                "link": "/admin/market/distribution/config",
+                "name": "分销",
+                "img_url": "/image/admin/icon_left/img_distribution.png",
+                "sun": "sub_4",
+                "img_url_h": "/image/admin/icon_left/img_distribution_h.png"
+            },
+            {
+                "en_name": "group_draw",
+                "link": "/admin/market/groupdraw/list?top_index=4&nav=1",
+                "name": "拼团抽奖",
+                "img_url": "/image/admin/icon_left/groupdraw.png",
+                "sun": "sub_4",
+                "img_url_h": "/image/admin/icon_left/groupdraw_h.png"
+            },
+            {
+                "en_name": "pin_integration",
+                "link": "/admin/market/integration/list",
+                "name": "瓜分积分",
+                "img_url": "/image/admin/icon_left/pinintegration.png",
+                "sun": "sub_4",
+                "img_url_h": "/image/admin/icon_left/pinintegration_h.png"
+            },
+            {
+                "en_name": "friend_promote",
+                "link": "/admin/market/promote/list",
+                "name": "好友助力",
+                "img_url": "/image/admin/icon_left/friend_promote.png",
+                "sun": "sub_4",
+                "img_url_h": "/image/admin/icon_left/friend_promote_h.png"
+            },
+            {
+                "en_name": "lottery_activity",
+                "link": "/admin/market/lottery/list",
+                "name": "幸运大抽奖",
+                "img_url": "/image/admin/icon_left/icon_lottery.png",
+                "sun": "sub_4",
+                "img_url_h": "/image/admin/icon_left/icon_lottery_h.png"
+            },
+            {
+                "en_name": "market_gifted",
+                "name": "活动有礼",
+                "link": "/admin/market/activityreward/list?nav=1",
+                "img_url": "/image/admin/icon_left/icon_gifted.png",
+                "sun": "sub_4",
+                "img_url_h": "/image/admin/icon_left/icon_gifted_h.png"
+            },
+            {
+                "en_name": "payreward",
+                "link": "/admin/market/payreward/list?nav=1",
+                "name": "支付有礼",
+                "img_url": "/image/admin/icon_left/icon_payreward.png",
+                "sun": "sub_4",
+                "img_url_h": "/image/admin/icon_left/icon_payreward_h.png"
+            },
+            {
+                "en_name": "sec_kill",
+                "link": "/admin/market/seckill/list?nav=1",
+                "name": "秒杀",
+                "img_url": "/image/admin/icon_left/icon_group.png",
+                "sun": "sub_4",
+                "hid": 1,
+                "img_url_h": "/image/admin/icon_left/icon_group_h.png"
+            },
+            {
+                "en_name": "market_act",
+                "name": "优惠券管理",
+                "link": "/admin/market/coupon/manage?nav=1",
+                "img_url": "/image/admin/icon_left/market_act.png",
+                "sun": "sub_4",
+                "hid": 1,
+                "img_url_h": "/image/admin/icon_left/market_act_h.png"
+            },
+            {
+                "en_name": "market_act_give",
+                "name": "定向发劵",
+                "link": "/admin/market/grant/list?top_index=4",
+                "img_url": "/image/admin/icon_left/market_act.png",
+                "sun": "sub_4",
+                "hid": 1,
+                "img_url_h": "/image/admin/icon_left/market_act_h.png"
+            },
+            {
+                "en_name": "full_cut",
+                "link": "/admin/market/fullcut?nav=1",
+                "name": "满折满减",
+                "img_url": "/image/admin/icon_left/withdraw_mem.png",
+                "sun": "sub_4",
+                "hid": 1,
+                "img_url_h": "/image/admin/icon_left/withdraw_mem_h.png"
+            },
+            {
+                "en_name": "integral_convert",
+                "link": "/admin/market/integral/convert/list?nav=1",
+                "name": "积分兑换",
+                "img_url": "/image/admin/icon_left/icon_integral.png",
+                "sun": "sub_4",
+                "hid": 1,
+                "img_url_h": "/image/admin/icon_left/icon_integral_h.png"
+            },
+            {
+                "en_name": "form_decoration",
+                "link": "/admin/market/form/list",
+                "name": "表单统计",
+                "img_url": "/image/admin/icon_left/form_decoration.png",
+                "sun": "sub_4",
+                "hid": 1,
+                "img_url_h": "/image/admin/icon_left/form_decoration_h.png"
+            },
+            {
+                "en_name": "business_template_message",
+                "link": "/admin/market/message/template/list",
+                "name": "消息推送",
+                "img_url": "/image/admin/icon_left/icon_message.png",
+                "sun": "sub_4",
+                "hid": 1,
+                "img_url_h": "/image/admin/icon_left/icon_message_h.png"
+            },
+            {
+                "en_name": "purchase_price",
+                "link": "/admin/market/purchase/list",
+                "name": "加价购",
+                "img_url": "/image/admin/icon_left/icon_lottery.png",
+                "sun": "sub_4",
+                "hid": 1,
+                "img_url_h": "/image/admin/icon_left/icon_lottery_h.png"
+            },
+            {
+                "en_name": "reduce_price",
+                "link": "/admin/market/reduce/list",
+                "name": "限时降价",
+                "img_url": "/image/admin/icon_left/icon_lottery.png",
+                "sun": "sub_4",
+                "hid": 1,
+                "img_url_h": "/image/admin/icon_left/icon_lottery_h.png"
+            },
+            {
+                "en_name": "package_price",
+                "link": "/admin/market/package/list",
+                "name": "打包一口价",
+                "img_url": "/image/admin/icon_left/icon_lottery.png",
+                "sun": "sub_4",
+                "hid": 1,
+                "img_url_h": "/image/admin/icon_left/icon_lottery_h.png"
+            },
+            {
+                "en_name": "pre_sale",
+                "link": "/admin/market/presale/list",
+                "name": "定金膨胀",
+                "img_url": "/image/admin/icon_left/icon_lottery.png",
+                "sun": "sub_4",
+                "hid": 1,
+                "img_url_h": "/image/admin/icon_left/icon_lottery_h.png"
+            },
+            {
+                "en_name": "instead_pay",
+                "link": "/admin/market/insteadpay/config",
+                "name": "好友代付",
+                "img_url": "/image/admin/icon_left/icon_lottery.png",
+                "sun": "sub_4",
+                "hid": 1,
+                "img_url_h": "/image/admin/icon_left/icon_lottery_h.png"
+            },
+            {
+                "en_name": "gift",
+                "link": "/admin/market/gift/list",
+                "name": "赠品列表",
+                "sun": "sub_4",
+                "hid": 1
+            },
+            {
+                "en_name": "channel",
+                "link": "/admin/market/channel/list",
+                "name": "渠道页面分析",
+                "img_url": "/image/admin/icon_left/icon_lottery.png",
+                "sun": "sub_4",
+                "hid": 1,
+                "img_url_h": "/image/admin/icon_left/icon_lottery_h.png"
+            },
+            {
+                "en_name": "free_ship",
+                "link": "/admin/market/ship/list?nav=1",
+                "name": "满包邮",
+                "img_url": "/image/admin/icon_left/icon_lottery.png",
+                "sun": "sub_4",
+                "hid": 1,
+                "img_url_h": "/image/admin/icon_left/icon_lottery_h.png"
+            },
+            {
+                "en_name": "assess",
+                "link": "/admin/market/assess/list?top_index=4",
+                "name": "测评",
+                "img_url": "/image/admin/icon_left/icon_lottery.png",
+                "sun": "sub_4",
+                "hid": 1,
+                "img_url_h": "/image/admin/icon_left/icon_lottery_h.png"
+            }
+        ],
+        "check": 1
+    },
+    {
+        "name": "会员管理",
+        "en_name": "user_manger",
+        "link": "/admin/user/manage/list",
+        "sub": [
+            {
+                "en_name": "user_list",
+                "name": "会员列表",
+                "link": "/admin/user/manage/list",
+                "img_url": "/image/admin/icon_left/card.png",
+                "img_url_h": "/image/admin/icon_left/card_h.png"
+            },
+            {
+                "en_name": "user_import",
+                "name": "会员导入",
+                "link": "/admin/user/import/list",
+                "img_url": "/image/admin/icon_left/user_import.png",
+                "img_url_h": "/image/admin/icon_left/user_import_h.png"
+            },
+            {
+                "en_name": "user_card",
+                "name": "会员卡",
+                "link": "/admin/user/member/list",
+                "img_url": "/image/admin/icon_left/user_code.png",
+                "img_url_h": "/image/admin/icon_left/user_code_h.png"
+            },
+            {
+                "en_name": "user_tag",
+                "name": "标签管理",
+                "link": "/admin/tag/list",
+                "img_url": "/image/admin/icon_left/label_man.png",
+                "sun": "sub_3",
+                "img_url_h": "/image/admin/icon_left/label_man_h.png"
+            },
+            {
+                "en_name": "score",
+                "name": "积分管理",
+                "link": "/admin/user/score/cfg",
+                "img_url": "/image/admin/icon_left/essay_admin.png",
+                "img_url_h": "/image/admin/icon_left/essay_admin_h.png"
+            }
+        ],
+        "check": 1
+    },
+    {
+        "name": "门店管理",
+        "en_name": "store_manage",
+        "link": "/admin/store/manage/list",
+        "sub": [
+            {
+                "en_name": "store_list",
+                "name": "门店列表",
+                "link": "/admin/store/manage/list",
+                "img_url": "/image/admin/icon_left/store_list.png",
+                "img_url_h": "/image/admin/icon_left/store_list_h.png"
+            },
+            {
+                "en_name": "add_store",
+                "name": "新增门店",
+                "link": "/admin/store/manage/create",
+                "img_url": "/image/admin/icon_left/store_add.png",
+                "sun": "sub_store",
+                "img_url_h": "/image/admin/icon_left/store_add_h.png"
+            },
+            {
+                "en_name": "group_manage",
+                "name": "分组管理",
+                "link": "/admin/store/group/list",
+                "img_url": "/image/admin/icon_left/store_group.png",
+                "img_url_h": "/image/admin/icon_left/store_group_h.png"
+            },
+            {
+                "en_name": "store_service_config",
+                "name": "门店服务配置",
+                "link": "/admin/store/config",
+                "img_url": "/image/admin/icon_left/service_config.png",
+                "img_url_h": "/image/admin/icon_left/service_config_h.png"
+            },
+            {
+                "en_name": "store_verify",
+                "name": "管理员核销",
+                "link": "/admin/store/verification/list",
+                "top_index": 6,
+                "hid": 1
+            }
+        ],
+        "check": 1
+    },
+    {
+        "name": "基础配置",
+        "en_name": "base_manger",
+        "link": "/admin/config/shop",
+        "sub": [
+            {
+                "en_name": "config_list",
+                "name": "店铺信息配置",
+                "link": "/admin/config/shop",
+                "img_url": "/image/admin/icon_left/config_list.png",
+                "img_url_h": "/image/admin/icon_left/config_list_h.png"
+            },
+            {
+                "en_name": "child_config",
+                "name": "店铺子账号管理",
+                "link": "/admin/config/role/list",
+                "img_url": "/image/admin/icon_left/child_config.png",
+                "img_url_h": "/image/admin/icon_left/child_config_h.png"
+            },
+            {
+                "en_name": "pay",
+                "name": "交易配置",
+                "link": "/admin/config/trade",
+                "img_url": "/image/admin/icon_left/pay_config.png",
+                "img_url_h": "/image/admin/icon_left/pay_config_h.png"
+            },
+            {
+                "en_name": "user_center_config",
+                "name": "个人中心配置",
+                "link": "/admin/config/usercenter",
+                "img_url": "/image/admin/icon_left/user_config.png",
+                "img_url_h": "/image/admin/icon_left/user_config_h.png"
+            },
+            {
+                "en_name": "message_config",
+                "name": "模板消息配置",
+                "link": "/admin/config/message/template/basic",
+                "img_url": "/image/admin/icon_left/message_config.png",
+                "img_url_h": "/image/admin/icon_left/message_config_h.png"
+            },
+            {
+                "en_name": "third_auth",
+                "name": "第三方对接配置",
+                "link": "/admin/config/third",
+                "img_url": "/image/admin/icon_left/third_party_config.png",
+                "img_url_h": "/image/admin/icon_left/third_party_config_h.png"
+            },
+            {
+                "en_name": "search_config",
+                "name": "搜索配置",
+                "link": "/admin/config/search/config",
+                "img_url": "/image/admin/icon_left/search_config.png",
+                "img_url_h": "/image/admin/icon_left/search_config_h.png"
+            },
+            {
+                "en_name": "action_record",
+                "name": "操作记录",
+                "link": "/admin/config/record/action",
+                "img_url": "/image/admin/icon_left/action_record.png",
+                "img_url_h": "/image/admin/icon_left/action_record_h.png"
+            },
+            {
+                "en_name": "action_record",
+                "name": "服务承诺",
+                "link": "/admin/config/pledge/list",
+                "img_url": "/image/admin/icon_left/pledge_config.png",
+                "img_url_h": "/image/admin/icon_left/pledge_config_h.png"
+            }
+        ],
+        "check": 1
+    }
+]

@@ -5,7 +5,6 @@ import javax.servlet.http.HttpServletRequest;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
 
 /**
  * 
@@ -13,15 +12,10 @@ import org.springframework.web.bind.annotation.RequestMethod;
  *
  */
 @Controller
-public class IndexController {
+public class AdminIndexController {
 
-
-	@RequestMapping(value = "/", method = RequestMethod.GET)
+	@RequestMapping(value = "/admin/index")
 	public String index(Model model, HttpServletRequest request) {
-		String path = request.getServletContext().getRealPath("");
-		System.out.println("path" + path);
-		model.addAttribute("name", "哈哈哈");
-		return "admin/index";
+		return "admin/welcome";
 	}
-
 }

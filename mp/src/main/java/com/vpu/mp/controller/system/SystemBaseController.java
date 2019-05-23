@@ -40,4 +40,10 @@ public class SystemBaseController extends BaseController {
 		model.addAttribute("links", links);
         return redirect("/system/message",model);
     }
+    
+    protected ModelMap globalModelMap() {
+    	ModelMap model = new ModelMap();
+		model.addAttribute("global_title", "微铺宝小程序Saas后台");
+		return model;
+	}
 }

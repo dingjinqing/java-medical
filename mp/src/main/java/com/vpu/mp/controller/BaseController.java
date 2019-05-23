@@ -7,15 +7,9 @@ import javax.servlet.http.HttpServletRequest;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.env.Environment;
-import org.springframework.http.HttpStatus;
 import org.springframework.ui.ModelMap;
 import org.springframework.util.StringUtils;
 import org.springframework.web.servlet.ModelAndView;
-import org.springframework.web.servlet.View;
-import org.springframework.web.servlet.mvc.support.RedirectAttributes;
-import org.springframework.web.servlet.mvc.support.RedirectAttributesModelMap;
-import org.springframework.web.servlet.view.RedirectView;
-
 import com.vpu.mp.service.saas.SaasApplication;
 
 /**
@@ -36,12 +30,19 @@ public class BaseController {
 	protected Environment env;
 
 	protected ModelAndView view(String path) {
+		if (this.isRedirectPath(path)) {
+			return new ModelAndView(path);
+		}
 		return getDefaultModelAndView(path);
+	}
+
+	protected ModelMap globalModelMap() {
+		return null;
 	}
 
 	protected ModelAndView view(String path, Map<String, ?> model) {
 		if (this.isRedirectPath(path)) {
-			return new ModelAndView(path,model);
+			return new ModelAndView(path, model);
 		}
 		ModelAndView mv = getDefaultModelAndView(path);
 		mv.addAllObjects(model);
@@ -59,10 +60,14 @@ public class BaseController {
 	protected ModelAndView getDefaultModelAndView(String path) {
 		ModelAndView mv = new ModelAndView(path);
 		ModelMap model = new ModelMap();
-		model.addAttribute("global_title", "微铺宝小程序商家后台");
 		model.addAttribute("main_domain", env.getProperty("domain.main"));
 		model.addAttribute("image_domain", env.getProperty("domain.image"));
 		mv.addAllObjects(model);
+		
+		ModelMap globalModel  = globalModelMap();
+		if(globalModel != null) {
+			mv.addAllObjects(globalModel);
+		}		
 		return mv;
 	}
 

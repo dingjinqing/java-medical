@@ -2,13 +2,9 @@ package com.vpu.mp.service.foundation;
 
 import java.util.Map;
 
-import org.jooq.Field;
-import org.jooq.Record;
 import org.jooq.Result;
 import org.jooq.SelectLimitStep;
-import org.jooq.TableField;
 import org.jooq.impl.DefaultDSLContext;
-import org.jooq.impl.TableImpl;
 
 /**
  * 
@@ -45,21 +41,21 @@ public class BaseService {
 		return dm.db(shopId);
 	}
 
-	public PageResult getPageResult(SelectLimitStep<Record> select, Integer currentPage, Integer pageRows) {
+	public PageResult getPageResult(SelectLimitStep<?> select, Integer currentPage, Integer pageRows) {
 		Integer totalRows = db().fetchCount(select);
 		PageResult pageResult = new PageResult();
 		pageResult.page = Page.getPage(totalRows, currentPage, pageRows);
-		Result<Record> result = select
+		Result<?> result = select
 				.limit((pageResult.page.currentPage - 1) * pageResult.page.pageRows, pageResult.page.pageRows).fetch();
 		pageResult.dataList = result.intoMaps();
 		return pageResult;
 	}
 
-	public PageResult getPageResult(SelectLimitStep<Record> select, Integer currentPage) {
+	public PageResult getPageResult(SelectLimitStep<?> select, Integer currentPage) {
 		return getPageResult(select, currentPage, 20);
 	}
 
-	public PageResult getPageResult(SelectLimitStep<Record> select) {
+	public PageResult getPageResult(SelectLimitStep<?> select) {
 		return getPageResult(select, 1, 20);
 	}
 

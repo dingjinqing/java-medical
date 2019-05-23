@@ -30,15 +30,15 @@ import com.vpu.mp.support.LineConvertHump;
  *
  */
 @Controller
-public class ShopAccountController extends SystemBaseController {
+public class SystemShopAccountController extends SystemBaseController {
 
 	@RequestMapping(value = "/system/shop/account/list")
 	public ModelAndView getShopAccountList(@LineConvertHump ShopAccountListQueryParam param) {
-		PageResult result = saas.sysShop.accout.getPageList(param);
+		PageResult result = saas.shop.accout.getPageList(param);
 
 		for (Map<String, Object> row : result.dataList) {
-			row.put("shop_number", saas.sysShop.renew.getShopNumber((Integer) row.get("sys_id")));
-			row.put("renew_money", saas.sysShop.renew.getRenewTotal((Integer) row.get("sys_id")));
+			row.put("shop_number", saas.shop.renew.getShopNumber((Integer) row.get("sys_id")));
+			row.put("renew_money", saas.shop.renew.getRenewTotal((Integer) row.get("sys_id")));
 			if (row.get("end_time") != null) {
 				row.put("end_time", row.get("end_time").toString().substring(0, 10));
 			}
@@ -70,14 +70,14 @@ public class ShopAccountController extends SystemBaseController {
 	@PostMapping(value = "/system/shop/account/add")
 	public ModelAndView addShopAccount(@LineConvertHump ShopAccount account) {
 		account.setPassword(Util.md5(account.getPassword()));
-		saas.sysShop.accout.addAccountInfo(account);
+		saas.shop.accout.addAccountInfo(account);
 		return redirect("/system/shop/account/list");
 
 	}
 
 	@GetMapping(value = "/system/shop/account/edit/{sys_id}")
 	public ModelAndView showEditShopAccount(@PathVariable("sys_id") Integer sysId) {
-		ShopAccountRecord record = saas.sysShop.accout.getAccountInfoForID(sysId);
+		ShopAccountRecord record = saas.shop.accout.getAccountInfoForID(sysId);
 		if (record == null) {
 			return this.showMessage("商家账号不存在");
 		}
@@ -99,7 +99,7 @@ public class ShopAccountController extends SystemBaseController {
 		} else {
 			account.setPassword(null);
 		}
-		saas.sysShop.accout.updateAccountInfo(account);
+		saas.shop.accout.updateAccountInfo(account);
 		return this.showMessage("更新商家账号成功");
 	}
 

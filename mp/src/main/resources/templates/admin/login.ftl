@@ -1,7 +1,7 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Frameset//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-frameset.dtd">
 <html id="extr-page" style="background: rgb(241, 247, 252);">
 <head>
-    <title>${global_title}</title>
+    <title>${global_title!}</title>
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
     <meta http-equiv="X-UA-Compatible" content="IE=10"/>
     <meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"
@@ -26,11 +26,11 @@
 <body>
 <div class="container">
     <div class="head_logo">
-        <img src="http://${image_domain}/image/admin/shop_logoswe.png" alt="微铺宝logo" width="200px"/>
+        <img src="http://${image_domain!}/image/admin/shop_logoswe.png" alt="微铺宝logo" width="200px"/>
     </div>
     <div class="main clearfix">
         <div class="main-left">
-            <img src="http://${image_domain}/image/admin/login_new_new.png" alt="" />
+            <img src="http://${image_domain!}/image/admin/login_new_new.png" alt="" />
         </div>
         <div class="main-right">
             <div class="main-right-title">
@@ -41,8 +41,9 @@
                 <div class="content-zhu content-account" data-type="0">
                     <div class="mesg-error"></div>
                     <form name="loginForm" method="post" id="loginForm" class="smart-form client-form">
+                        <input type="hidden" value="0" name="is_sub_login" />
                         <div class="account-user"><input type="text" name="username" placeholder="主账号用户名" /></div>
-                        <div class="account-pawd"><input type="password" name="password" placeholder="请输入用户名或者"></div>
+                        <div class="account-pawd"><input type="password" name="password" placeholder="密码"></div>
                         <div class="account-login clearfix">
                             <input type="button" class="one-login to-login btn-login" value="登录">
                         </div>
@@ -53,8 +54,8 @@
                     <form  name="loginForm" method="post" id="loginFormSub" class="smart-form client-form">
                         <input type="hidden" value="1" name="is_sub_login" />
                         <div class="account-name"><input type="text" name="username" placeholder="主账号用户名" /></div>
-                        <div class="account-user"><input type="text" name="sub_username" placeholder="子账号用户名 / 手机号" /></div>
-                        <div class="account-pawd"><input type="password"  name="password"placeholder="请输入用户名或者" /></div>
+                        <div class="account-user"><input type="text" name="sub_username" placeholder="子账号用户名/手机号" /></div>
+                        <div class="account-pawd"><input type="password"  name="password"placeholder="密码" /></div>
                         <div class="account-login clearfix">
                             <input type="button" class="child-login to-login btn-login" value="登录">
                         </div>

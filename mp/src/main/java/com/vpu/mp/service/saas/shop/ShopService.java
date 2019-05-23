@@ -1,10 +1,7 @@
 package com.vpu.mp.service.saas.shop;
 
-import org.apache.commons.lang3.ArrayUtils;
-import org.jooq.Field;
 import org.jooq.Record;
-import org.jooq.Result;
-
+import org.jooq.Record1;
 import org.jooq.SelectWhereStep;
 import org.jooq.impl.DSL;
 import org.jooq.tools.StringUtils;
@@ -13,10 +10,9 @@ import static com.vpu.mp.db.main.tables.MpAuthShop.MP_AUTH_SHOP;
 import static com.vpu.mp.db.main.tables.Shop.SHOP;
 import static com.vpu.mp.db.main.tables.ShopAccount.SHOP_ACCOUNT;
 import static com.vpu.mp.db.main.tables.ShopRenew.SHOP_RENEW;
+import static com.vpu.mp.db.main.tables.ShopChildRole.SHOP_CHILD_ROLE;
 
 import java.util.Map;
-import java.util.Random;
-
 import com.vpu.mp.db.main.tables.pojos.Shop;
 import com.vpu.mp.db.main.tables.records.ShopAccountRecord;
 import com.vpu.mp.db.main.tables.records.ShopRecord;
@@ -30,11 +26,12 @@ import com.vpu.mp.service.foundation.Util;
  * @author 新国
  *
  */
-public class SysShopService extends BaseService {
+public class ShopService extends BaseService {
 
 	public ShopAccountService accout;
 	public ShopRenewService renew;
 	public ShopVersionService version;
+	public ShopChildAccountService subAccount;
 
 	final public static class ShopListQueryParam {
 		public Integer page;
@@ -229,6 +226,7 @@ public class SysShopService extends BaseService {
 	public ShopRecord addShop(Shop shop) {
 		shop.setShopId(getCanUseShopId());
 		shop.setIsEnabled(shop.getIsEnabled() == null ? 0 : shop.getIsEnabled());
+		shop.setIsEnabled(shop.getHidBottom() == null ? 0 : shop.getHidBottom());
 		DbConfig dbConfig = dm.getInstallShopDbConfig(shop.getShopId());
 		shop.setDbConfig(Util.toJSON(dbConfig));
 		dm.installShopDb(dbConfig);
@@ -268,5 +266,26 @@ public class SysShopService extends BaseService {
 
 	public ShopRecord getShopByMobile(String mobile) {
 		return db().selectFrom(SHOP).where(SHOP.MOBILE.eq(mobile)).fetchOne();
+	}
+
+	public Integer getShopAccessRoleId(Integer sysId, Integer shopId, Integer subAccountId) {
+		if (subAccountId == 0) {
+			ShopRecord shop = this.getShopById(shopId);
+			if (shop != null && shop.getSysId() == sysId) {
+				return 0;
+			}
+			return -1;
+		}
+		Record1<Integer> role = db().select(SHOP_CHILD_ROLE.ROLE_ID)
+				.from(SHOP)
+				.leftJoin(SHOP_CHILD_ROLE).on(SHOP.SHOP_ID.eq(SHOP_CHILD_ROLE.SHOP_ID))
+				.where(SHOP.SHOP_ID.eq(shopId))
+				.and(SHOP.SYS_ID.eq(sysId))
+				.and(SHOP_CHILD_ROLE.ACCOUNT_ID.eq(subAccountId))
+				.fetchOne();
+		if (role != null) {
+			return role.value1();
+		}
+		return -1;
 	}
 }

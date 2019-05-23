@@ -3,16 +3,19 @@ package com.vpu.mp.service.foundation;
 import static com.vpu.mp.db.main.tables.Shop.SHOP;
 
 import java.io.IOException;
+import java.io.InputStream;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
+import java.nio.charset.StandardCharsets;
 import java.sql.Timestamp;
 import java.util.Properties;
 import java.util.Random;
 
 import javax.servlet.http.HttpServletRequest;
 
+import org.apache.commons.io.IOUtils;
 import org.jooq.exception.DataTypeException;
 import org.jooq.tools.Convert;
 import org.springframework.core.io.ClassPathResource;
@@ -170,7 +173,17 @@ public class Util {
 		}
 		return null;
 	}
-
+	
+	public static String loadResource(String path) {
+		try {
+			ClassPathResource resource = new ClassPathResource("admin.menu.json");
+			return  IOUtils.toString(resource.getInputStream(), StandardCharsets.UTF_8);
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		return null;
+	}
+	
 	public static String getProperty(String key) {
 		return MpRunListener.getProperty(key);
 	}
@@ -182,6 +195,10 @@ public class Util {
 		} catch (DataTypeException e) {
 			return defaultValue;
 		}
+	}
+	
+	public static final Integer getInteger(Object from) {
+		return convert(from,Integer.class,0);
 	}
 
 	public static Integer randomInteger(Integer min, Integer max) {
