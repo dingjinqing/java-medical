@@ -21,6 +21,7 @@ public class AdminLoginController extends AdminBaseController {
 
 	@GetMapping(value = "/admin/login")
 	public ModelAndView login() {
+		saas.getShopApp(1).menu.getMenu();
 		return view("admin/login");
 	}
 

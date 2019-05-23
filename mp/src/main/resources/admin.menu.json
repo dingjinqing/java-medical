@@ -1,12 +1,12 @@
 [
     {
-        "name": "¸Å¿ö",
+        "name": "æ¦‚å†µ",
         "en_name": "first_web_manage",
         "link": "/admin/survey/overview",
         "sub": [
             {
                 "en_name": "shop_view",
-                "name": "ÉÌ³Ç¸ÅÀÀ",
+                "name": "å•†åŸæ¦‚è§ˆ",
                 "link": "/admin/survey/overview",
                 "img_url": "/image/admin/icon_left/shop_look.png",
                 "sun": "sub_0",
@@ -14,7 +14,7 @@
             },
             {
                 "en_name": "analysis_basic",
-                "name": "¸Å¿öÍ³¼Æ",
+                "name": "æ¦‚å†µç»Ÿè®¡",
                 "link": "/admin/survey/analysis/basic",
                 "img_url": "/image/admin/icon_left/analysis_basic.png",
                 "sun": "sub_0",
@@ -22,7 +22,7 @@
             },
             {
                 "en_name": "situation",
-                "name": "ÊµÊ±¸Å¿ö",
+                "name": "å®æ—¶æ¦‚å†µ",
                 "link": "/admin/survey/situation/view",
                 "img_url": "/image/admin/icon_left/situation.png",
                 "sun": "sub_0",
@@ -30,7 +30,7 @@
             },
             {
                 "en_name": "analysis_portrait",
-                "name": "ÓÃ»§»­Ïñ",
+                "name": "ç”¨æˆ·ç”»åƒ",
                 "link": "/admin/survey/portrait/user",
                 "img_url": "/image/admin/icon_left/new_analysis_portrait.png",
                 "sun": "sub_0",
@@ -38,7 +38,7 @@
             },
             {
                 "en_name": "analysis_visit",
-                "name": "·ÃÎÊ·ÖÎö",
+                "name": "è®¿é—®åˆ†æ",
                 "link": "/admin/survey/second/view",
                 "img_url": "/image/admin/icon_left/analysis_visit.png",
                 "sun": "sub_0",
@@ -46,7 +46,7 @@
             },
             {
                 "en_name": "analysis_visit_source",
-                "name": "À´Ô´·ÖÎö",
+                "name": "æ¥æºåˆ†æ",
                 "link": "/admin/survey/visit/source",
                 "img_url": "/image/admin/icon_left/laiyuan.png",
                 "sun": "sub_0",
@@ -54,7 +54,7 @@
             },
             {
                 "en_name": "user_summary",
-                "name": "ÓÃ»§Í³¼Æ",
+                "name": "ç”¨æˆ·ç»Ÿè®¡",
                 "link": "/admin/survey/user/summary",
                 "img_url": "/image/admin/icon_left/new_yonghu.png",
                 "sun": "sub_0",
@@ -62,7 +62,7 @@
             },
             {
                 "en_name": "goods_summary",
-                "name": "ÉÌÆ·Í³¼Æ",
+                "name": "å•†å“ç»Ÿè®¡",
                 "link": "/admin/survey/goods/summary",
                 "img_url": "/image/admin/icon_left/goods_new_ana.png",
                 "sun": "sub_0",
@@ -70,7 +70,7 @@
             },
             {
                 "en_name": "trades_summary",
-                "name": "½»Ò×Í³¼Æ",
+                "name": "äº¤æ˜“ç»Ÿè®¡",
                 "link": "/admin/survey/trades/summary",
                 "img_url": "/image/admin/icon_left/jiaoyi.png",
                 "sun": "sub_0",
@@ -78,7 +78,7 @@
             },
             {
                 "en_name": "asset_summary",
-                "name": "×Ê²ú¹ÜÀí",
+                "name": "èµ„äº§ç®¡ç†",
                 "link": "/admin/survey/asset/manage",
                 "img_url": "/image/admin/icon_left/asset_manage.png",
                 "sun": "sub_0",
@@ -86,7 +86,7 @@
             },
             {
                 "en_name": "search_summary",
-                "name": "ËÑË÷Í³¼Æ",
+                "name": "æœç´¢ç»Ÿè®¡",
                 "link": "/admin/survey/search/summary",
                 "img_url": "/image/admin/icon_left/search_config.png",
                 "sun": "sub_0",
@@ -96,27 +96,27 @@
         "check": 1
     },
     {
-        "name": "Ğ¡³ÌĞò¹ÜÀí",
+        "name": "å°ç¨‹åºç®¡ç†",
         "en_name": "first_web_decoration",
         "link": "/admin/manage/decorate/list",
         "sub": [
             {
                 "en_name": "picture_setting",
-                "name": "Ò³Ãæ×°ĞŞ",
+                "name": "é¡µé¢è£…ä¿®",
                 "link": "/admin/manage/decorate/list",
                 "img_url": "/image/admin/icon_left/page_decoration.png",
                 "img_url_h": "/image/admin/icon_left/page_decoration_h.png"
             },
             {
                 "en_name": "page_classification",
-                "name": "Ò³Ãæ·ÖÀà",
+                "name": "é¡µé¢åˆ†ç±»",
                 "link": "/admin/manage/classification/list",
                 "img_url": "/image/admin/icon_left/picture_setting.png",
                 "img_url_h": "/image/admin/icon_left/picture_setting_h.png"
             },
             {
                 "en_name": "image_manager",
-                "name": "µ×²¿µ¼º½ÅäÖÃ",
+                "name": "åº•éƒ¨å¯¼èˆªé…ç½®",
                 "link": "/admin/manage/bottom/cfg",
                 "img_url": "/image/admin/icon_left/picture_space.png",
                 "img_url_h": "/image/admin/icon_left/picture_space_h.png",
@@ -126,28 +126,28 @@
             },
             {
                 "en_name": "image_list",
-                "name": "Í¼Æ¬¿Õ¼ä",
+                "name": "å›¾ç‰‡ç©ºé—´",
                 "link": "/admin/manage/image/list",
                 "img_url": "/image/admin/icon_left/image_list.png",
                 "img_url_h": "/image/admin/icon_left/image_list_h.png"
             },
             {
                 "en_name": "mp_jump_list",
-                "name": "Ğ¡³ÌĞòÌø×ª",
+                "name": "å°ç¨‹åºè·³è½¬",
                 "link": "/admin/manage/jump/list",
                 "img_url": "/image/admin/icon_left/mobile_deco.png",
                 "img_url_h": "/image/admin/icon_left/mobile_deco_h.png"
             },
             {
                 "en_name": "shop_style",
-                "name": "µêÆÌ·ç¸ñ",
+                "name": "åº—é“ºé£æ ¼",
                 "link": "/admin/manage/decorate/style",
                 "img_url": "/image/admin/icon_left/shop_style.png",
                 "img_url_h": "/image/admin/icon_left/shop_style_h.png"
             },
             {
                 "en_name": "mobile_deco",
-                "name": "Ğ¡³ÌĞòÊÚÈ¨",
+                "name": "å°ç¨‹åºæˆæƒ",
                 "link": "/wechat/mini/info?type=1",
                 "img_url": "/image/admin/icon_left/wechat_shou.png",
                 "img_url_h": "/image/admin/icon_left/wechat_shou_h.png"
@@ -156,20 +156,20 @@
         "check": 1
     },
     {
-        "name": "ÉÌÆ·¹ÜÀí",
+        "name": "å•†å“ç®¡ç†",
         "en_name": "goods_manage",
         "link": "/admin/goods/manage/list",
         "sub": [
             {
                 "en_name": "sale_on",
-                "name": "È«²¿ÉÌÆ·",
+                "name": "å…¨éƒ¨å•†å“",
                 "link": "/admin/goods/manage/list",
                 "img_url": "/image/admin/icon_left/product_in.png",
                 "img_url_h": "/image/admin/icon_left/product_in_h.png"
             },
             {
                 "en_name": "goods_add",
-                "name": "Ìí¼ÓÉÌÆ·",
+                "name": "æ·»åŠ å•†å“",
                 "link": "/admin/goods/manage/add",
                 "img_url": "/image/admin/icon_left/picture_add.png",
                 "sun": "sub_goods",
@@ -177,14 +177,14 @@
             },
             {
                 "en_name": "deliver",
-                "name": "ÔË·ÑÄ£°å",
+                "name": "è¿è´¹æ¨¡æ¿",
                 "link": "/admin/goods/deliver/template/list",
                 "img_url": "/image/admin/icon_left/deliver_tmpl.png",
                 "img_url_h": "/image/admin/icon_left/deliver_tmpl_h.png"
             },
             {
                 "en_name": "sort",
-                "name": "ÉÌ¼Ò·ÖÀà¹ÜÀí",
+                "name": "å•†å®¶åˆ†ç±»ç®¡ç†",
                 "link": "/admin/goods/sort/list",
                 "img_url": "/image/admin/icon_left/img_sort.png",
                 "sun": "sub_1",
@@ -192,42 +192,42 @@
             },
             {
                 "en_name": "brand",
-                "name": "Æ·ÅÆ¹ÜÀí",
+                "name": "å“ç‰Œç®¡ç†",
                 "link": "/admin/goods/brand/list",
                 "img_url": "/image/admin/icon_left/brand_icon.png",
                 "img_url_h": "/image/admin/icon_left/brand_icon_h.png"
             },
             {
                 "en_name": "comment",
-                "name": "ÆÀ¼Û¹ÜÀí",
+                "name": "è¯„ä»·ç®¡ç†",
                 "link": "/admin/goods/comment/list",
                 "img_url": "/image/admin/icon_left/comment_man.png",
                 "img_url_h": "/image/admin/icon_left/comment_man_h.png"
             },
             {
                 "en_name": "recommend",
-                "name": "ÉÌÆ·ÍÆ¼ö",
+                "name": "å•†å“æ¨è",
                 "link": "/admin/goods/recommend/list",
                 "img_url": "/image/admin/icon_left/recommend_icon.png",
                 "img_url_h": "/image/admin/icon_left/recommend_icon_h.png"
             },
             {
                 "en_name": "label",
-                "name": "ÉÌÆ·±êÇ©",
+                "name": "å•†å“æ ‡ç­¾",
                 "link": "/admin/goods/label/list",
                 "img_url": "/image/admin/icon_left/goods_label1.png",
                 "img_url_h": "/image/admin/icon_left/goods_label1_h.png"
             },
             {
                 "en_name": "grasp_goods",
-                "name": "µÚÈı·½ÉÌÆ·",
+                "name": "ç¬¬ä¸‰æ–¹å•†å“",
                 "link": "/admin/goods/manage/grasp/list",
                 "img_url": "/image/admin/icon_left/grasp.png",
                 "img_url_h": "/image/admin/icon_left/grasp_h.png"
             },
             {
                 "en_name": "goods_import",
-                "name": "ÉÌÆ·µ¼Èë",
+                "name": "å•†å“å¯¼å…¥",
                 "link": "/admin/goods/import/list",
                 "img_url": "/image/admin/icon_left/user_import.png",
                 "img_url_h": "/image/admin/icon_left/user_import_h.png"
@@ -236,55 +236,55 @@
         "check": 1
     },
     {
-        "name": "¶©µ¥¹ÜÀí",
+        "name": "è®¢å•ç®¡ç†",
         "en_name": "first_trade_manage",
         "link": "/admin/orders/manage/list",
         "sub": [
             {
                 "en_name": "order",
-                "name": "È«²¿¶©µ¥",
+                "name": "å…¨éƒ¨è®¢å•",
                 "link": "/admin/orders/manage/list",
                 "img_url": "/image/admin/icon_left/all_order.png",
                 "img_url_h": "/image/admin/icon_left/all_order_h.png"
             },
             {
                 "en_name": "order_wait",
-                "name": "´ı·¢»õ¶©µ¥",
+                "name": "å¾…å‘è´§è®¢å•",
                 "link": "/admin/orders/manage/list?order_status=3&deliver_type=0",
                 "img_url": "/image/admin/icon_left/wait_order.png",
                 "img_url_h": "/image/admin/icon_left/wait_order_h.png"
             },
             {
                 "en_name": "order_return",
-                "name": "ÍË»õÍË¿î¶©µ¥",
+                "name": "é€€è´§é€€æ¬¾è®¢å•",
                 "link": "/admin/orders/manage/return/list",
                 "img_url": "/image/admin/icon_left/return_order.png",
                 "img_url_h": "/image/admin/icon_left/return_order_h.png"
             },
             {
                 "en_name": "shop_setting",
-                "name": "×ÔÌá¶©µ¥",
+                "name": "è‡ªæè®¢å•",
                 "link": "/admin/orders/manage/list?deliver_type=1",
                 "img_url": "/image/admin/icon_left/self_order.png",
                 "img_url_h": "/image/admin/icon_left/self_order_h.png"
             },
             {
                 "en_name": "pin_group_fail",
-                "name": "Æ´ÍÅÍË¿îÊ§°Üµ¥",
+                "name": "æ‹¼å›¢é€€æ¬¾å¤±è´¥å•",
                 "link": "/admin/orders/manage/list?pin_group_fail=1",
                 "img_url": "/image/admin/icon_left/pin_group_fail.png",
                 "img_url_h": "/image/admin/icon_left/pin_group_fail_h.png"
             },
             {
                 "en_name": "check_order",
-                "name": "Âòµ¥¶©µ¥",
+                "name": "ä¹°å•è®¢å•",
                 "link": "/admin/orders/check/list",
                 "img_url": "/image/admin/icon_left/checkout.png",
                 "img_url_h": "/image/admin/icon_left/checkout_h.png"
             },
             {
                 "en_name": "card_order",
-                "name": "»áÔ±¿¨¶©µ¥",
+                "name": "ä¼šå‘˜å¡è®¢å•",
                 "link": "/admin/orders/card/list",
                 "img_url": "/image/admin/icon_left/user_code.png",
                 "img_url_h": "/image/admin/icon_left/user_code_h.png"
@@ -293,12 +293,12 @@
         "check": 1
     },
     {
-        "name": "ÓªÏú¹ÜÀí",
+        "name": "è¥é”€ç®¡ç†",
         "en_name": "first_market_manage",
         "link": "/admin/market/view",
         "sub": [
             {
-                "en_name": "ÍÆ¼ö",
+                "en_name": "æ¨è",
                 "link": "",
                 "name": "",
                 "sun": "sub_4",
@@ -308,7 +308,7 @@
             {
                 "en_name": "kanjia",
                 "link": "/admin/market/bargain/list?nav=1",
-                "name": "¿³¼Û",
+                "name": "ç ä»·",
                 "img_url": "/image/admin/icon_left/bargain.png",
                 "sun": "sub_4",
                 "img_url_h": "/image/admin/icon_left/bargain_h.png"
@@ -316,7 +316,7 @@
             {
                 "en_name": "pin_group",
                 "link": "/admin/market/pingroup/list?nav=1",
-                "name": "¶àÈËÆ´ÍÅ",
+                "name": "å¤šäººæ‹¼å›¢",
                 "img_url": "/image/admin/icon_left/icon_group.png",
                 "sun": "sub_4",
                 "img_url_h": "/image/admin/icon_left/icon_group_h.png"
@@ -324,7 +324,7 @@
             {
                 "en_name": "distribution_info",
                 "link": "/admin/market/distribution/config",
-                "name": "·ÖÏú",
+                "name": "åˆ†é”€",
                 "img_url": "/image/admin/icon_left/img_distribution.png",
                 "sun": "sub_4",
                 "img_url_h": "/image/admin/icon_left/img_distribution_h.png"
@@ -332,7 +332,7 @@
             {
                 "en_name": "group_draw",
                 "link": "/admin/market/groupdraw/list?top_index=4&nav=1",
-                "name": "Æ´ÍÅ³é½±",
+                "name": "æ‹¼å›¢æŠ½å¥–",
                 "img_url": "/image/admin/icon_left/groupdraw.png",
                 "sun": "sub_4",
                 "img_url_h": "/image/admin/icon_left/groupdraw_h.png"
@@ -340,7 +340,7 @@
             {
                 "en_name": "pin_integration",
                 "link": "/admin/market/integration/list",
-                "name": "¹Ï·Ö»ı·Ö",
+                "name": "ç“œåˆ†ç§¯åˆ†",
                 "img_url": "/image/admin/icon_left/pinintegration.png",
                 "sun": "sub_4",
                 "img_url_h": "/image/admin/icon_left/pinintegration_h.png"
@@ -348,7 +348,7 @@
             {
                 "en_name": "friend_promote",
                 "link": "/admin/market/promote/list",
-                "name": "ºÃÓÑÖúÁ¦",
+                "name": "å¥½å‹åŠ©åŠ›",
                 "img_url": "/image/admin/icon_left/friend_promote.png",
                 "sun": "sub_4",
                 "img_url_h": "/image/admin/icon_left/friend_promote_h.png"
@@ -356,14 +356,14 @@
             {
                 "en_name": "lottery_activity",
                 "link": "/admin/market/lottery/list",
-                "name": "ĞÒÔË´ó³é½±",
+                "name": "å¹¸è¿å¤§æŠ½å¥–",
                 "img_url": "/image/admin/icon_left/icon_lottery.png",
                 "sun": "sub_4",
                 "img_url_h": "/image/admin/icon_left/icon_lottery_h.png"
             },
             {
                 "en_name": "market_gifted",
-                "name": "»î¶¯ÓĞÀñ",
+                "name": "æ´»åŠ¨æœ‰ç¤¼",
                 "link": "/admin/market/activityreward/list?nav=1",
                 "img_url": "/image/admin/icon_left/icon_gifted.png",
                 "sun": "sub_4",
@@ -372,7 +372,7 @@
             {
                 "en_name": "payreward",
                 "link": "/admin/market/payreward/list?nav=1",
-                "name": "Ö§¸¶ÓĞÀñ",
+                "name": "æ”¯ä»˜æœ‰ç¤¼",
                 "img_url": "/image/admin/icon_left/icon_payreward.png",
                 "sun": "sub_4",
                 "img_url_h": "/image/admin/icon_left/icon_payreward_h.png"
@@ -380,7 +380,7 @@
             {
                 "en_name": "sec_kill",
                 "link": "/admin/market/seckill/list?nav=1",
-                "name": "ÃëÉ±",
+                "name": "ç§’æ€",
                 "img_url": "/image/admin/icon_left/icon_group.png",
                 "sun": "sub_4",
                 "hid": 1,
@@ -388,7 +388,7 @@
             },
             {
                 "en_name": "market_act",
-                "name": "ÓÅ»İÈ¯¹ÜÀí",
+                "name": "ä¼˜æƒ åˆ¸ç®¡ç†",
                 "link": "/admin/market/coupon/manage?nav=1",
                 "img_url": "/image/admin/icon_left/market_act.png",
                 "sun": "sub_4",
@@ -397,7 +397,7 @@
             },
             {
                 "en_name": "market_act_give",
-                "name": "¶¨Ïò·¢„»",
+                "name": "å®šå‘å‘åŠµ",
                 "link": "/admin/market/grant/list?top_index=4",
                 "img_url": "/image/admin/icon_left/market_act.png",
                 "sun": "sub_4",
@@ -407,7 +407,7 @@
             {
                 "en_name": "full_cut",
                 "link": "/admin/market/fullcut?nav=1",
-                "name": "ÂúÕÛÂú¼õ",
+                "name": "æ»¡æŠ˜æ»¡å‡",
                 "img_url": "/image/admin/icon_left/withdraw_mem.png",
                 "sun": "sub_4",
                 "hid": 1,
@@ -416,7 +416,7 @@
             {
                 "en_name": "integral_convert",
                 "link": "/admin/market/integral/convert/list?nav=1",
-                "name": "»ı·Ö¶Ò»»",
+                "name": "ç§¯åˆ†å…‘æ¢",
                 "img_url": "/image/admin/icon_left/icon_integral.png",
                 "sun": "sub_4",
                 "hid": 1,
@@ -425,7 +425,7 @@
             {
                 "en_name": "form_decoration",
                 "link": "/admin/market/form/list",
-                "name": "±íµ¥Í³¼Æ",
+                "name": "è¡¨å•ç»Ÿè®¡",
                 "img_url": "/image/admin/icon_left/form_decoration.png",
                 "sun": "sub_4",
                 "hid": 1,
@@ -434,7 +434,7 @@
             {
                 "en_name": "business_template_message",
                 "link": "/admin/market/message/template/list",
-                "name": "ÏûÏ¢ÍÆËÍ",
+                "name": "æ¶ˆæ¯æ¨é€",
                 "img_url": "/image/admin/icon_left/icon_message.png",
                 "sun": "sub_4",
                 "hid": 1,
@@ -443,7 +443,7 @@
             {
                 "en_name": "purchase_price",
                 "link": "/admin/market/purchase/list",
-                "name": "¼Ó¼Û¹º",
+                "name": "åŠ ä»·è´­",
                 "img_url": "/image/admin/icon_left/icon_lottery.png",
                 "sun": "sub_4",
                 "hid": 1,
@@ -452,7 +452,7 @@
             {
                 "en_name": "reduce_price",
                 "link": "/admin/market/reduce/list",
-                "name": "ÏŞÊ±½µ¼Û",
+                "name": "é™æ—¶é™ä»·",
                 "img_url": "/image/admin/icon_left/icon_lottery.png",
                 "sun": "sub_4",
                 "hid": 1,
@@ -461,7 +461,7 @@
             {
                 "en_name": "package_price",
                 "link": "/admin/market/package/list",
-                "name": "´ò°üÒ»¿Ú¼Û",
+                "name": "æ‰“åŒ…ä¸€å£ä»·",
                 "img_url": "/image/admin/icon_left/icon_lottery.png",
                 "sun": "sub_4",
                 "hid": 1,
@@ -470,7 +470,7 @@
             {
                 "en_name": "pre_sale",
                 "link": "/admin/market/presale/list",
-                "name": "¶¨½ğÅòÕÍ",
+                "name": "å®šé‡‘è†¨èƒ€",
                 "img_url": "/image/admin/icon_left/icon_lottery.png",
                 "sun": "sub_4",
                 "hid": 1,
@@ -479,7 +479,7 @@
             {
                 "en_name": "instead_pay",
                 "link": "/admin/market/insteadpay/config",
-                "name": "ºÃÓÑ´ú¸¶",
+                "name": "å¥½å‹ä»£ä»˜",
                 "img_url": "/image/admin/icon_left/icon_lottery.png",
                 "sun": "sub_4",
                 "hid": 1,
@@ -488,14 +488,14 @@
             {
                 "en_name": "gift",
                 "link": "/admin/market/gift/list",
-                "name": "ÔùÆ·ÁĞ±í",
+                "name": "èµ å“åˆ—è¡¨",
                 "sun": "sub_4",
                 "hid": 1
             },
             {
                 "en_name": "channel",
                 "link": "/admin/market/channel/list",
-                "name": "ÇşµÀÒ³Ãæ·ÖÎö",
+                "name": "æ¸ é“é¡µé¢åˆ†æ",
                 "img_url": "/image/admin/icon_left/icon_lottery.png",
                 "sun": "sub_4",
                 "hid": 1,
@@ -504,7 +504,7 @@
             {
                 "en_name": "free_ship",
                 "link": "/admin/market/ship/list?nav=1",
-                "name": "Âú°üÓÊ",
+                "name": "æ»¡åŒ…é‚®",
                 "img_url": "/image/admin/icon_left/icon_lottery.png",
                 "sun": "sub_4",
                 "hid": 1,
@@ -513,7 +513,7 @@
             {
                 "en_name": "assess",
                 "link": "/admin/market/assess/list?top_index=4",
-                "name": "²âÆÀ",
+                "name": "æµ‹è¯„",
                 "img_url": "/image/admin/icon_left/icon_lottery.png",
                 "sun": "sub_4",
                 "hid": 1,
@@ -523,34 +523,34 @@
         "check": 1
     },
     {
-        "name": "»áÔ±¹ÜÀí",
+        "name": "ä¼šå‘˜ç®¡ç†",
         "en_name": "user_manger",
         "link": "/admin/user/manage/list",
         "sub": [
             {
                 "en_name": "user_list",
-                "name": "»áÔ±ÁĞ±í",
+                "name": "ä¼šå‘˜åˆ—è¡¨",
                 "link": "/admin/user/manage/list",
                 "img_url": "/image/admin/icon_left/card.png",
                 "img_url_h": "/image/admin/icon_left/card_h.png"
             },
             {
                 "en_name": "user_import",
-                "name": "»áÔ±µ¼Èë",
+                "name": "ä¼šå‘˜å¯¼å…¥",
                 "link": "/admin/user/import/list",
                 "img_url": "/image/admin/icon_left/user_import.png",
                 "img_url_h": "/image/admin/icon_left/user_import_h.png"
             },
             {
                 "en_name": "user_card",
-                "name": "»áÔ±¿¨",
+                "name": "ä¼šå‘˜å¡",
                 "link": "/admin/user/member/list",
                 "img_url": "/image/admin/icon_left/user_code.png",
                 "img_url_h": "/image/admin/icon_left/user_code_h.png"
             },
             {
                 "en_name": "user_tag",
-                "name": "±êÇ©¹ÜÀí",
+                "name": "æ ‡ç­¾ç®¡ç†",
                 "link": "/admin/tag/list",
                 "img_url": "/image/admin/icon_left/label_man.png",
                 "sun": "sub_3",
@@ -558,7 +558,7 @@
             },
             {
                 "en_name": "score",
-                "name": "»ı·Ö¹ÜÀí",
+                "name": "ç§¯åˆ†ç®¡ç†",
                 "link": "/admin/user/score/cfg",
                 "img_url": "/image/admin/icon_left/essay_admin.png",
                 "img_url_h": "/image/admin/icon_left/essay_admin_h.png"
@@ -567,20 +567,20 @@
         "check": 1
     },
     {
-        "name": "ÃÅµê¹ÜÀí",
+        "name": "é—¨åº—ç®¡ç†",
         "en_name": "store_manage",
         "link": "/admin/store/manage/list",
         "sub": [
             {
                 "en_name": "store_list",
-                "name": "ÃÅµêÁĞ±í",
+                "name": "é—¨åº—åˆ—è¡¨",
                 "link": "/admin/store/manage/list",
                 "img_url": "/image/admin/icon_left/store_list.png",
                 "img_url_h": "/image/admin/icon_left/store_list_h.png"
             },
             {
                 "en_name": "add_store",
-                "name": "ĞÂÔöÃÅµê",
+                "name": "æ–°å¢é—¨åº—",
                 "link": "/admin/store/manage/create",
                 "img_url": "/image/admin/icon_left/store_add.png",
                 "sun": "sub_store",
@@ -588,21 +588,21 @@
             },
             {
                 "en_name": "group_manage",
-                "name": "·Ö×é¹ÜÀí",
+                "name": "åˆ†ç»„ç®¡ç†",
                 "link": "/admin/store/group/list",
                 "img_url": "/image/admin/icon_left/store_group.png",
                 "img_url_h": "/image/admin/icon_left/store_group_h.png"
             },
             {
                 "en_name": "store_service_config",
-                "name": "ÃÅµê·şÎñÅäÖÃ",
+                "name": "é—¨åº—æœåŠ¡é…ç½®",
                 "link": "/admin/store/config",
                 "img_url": "/image/admin/icon_left/service_config.png",
                 "img_url_h": "/image/admin/icon_left/service_config_h.png"
             },
             {
                 "en_name": "store_verify",
-                "name": "¹ÜÀíÔ±ºËÏú",
+                "name": "ç®¡ç†å‘˜æ ¸é”€",
                 "link": "/admin/store/verification/list",
                 "top_index": 6,
                 "hid": 1
@@ -611,69 +611,69 @@
         "check": 1
     },
     {
-        "name": "»ù´¡ÅäÖÃ",
+        "name": "åŸºç¡€é…ç½®",
         "en_name": "base_manger",
         "link": "/admin/config/shop",
         "sub": [
             {
                 "en_name": "config_list",
-                "name": "µêÆÌĞÅÏ¢ÅäÖÃ",
+                "name": "åº—é“ºä¿¡æ¯é…ç½®",
                 "link": "/admin/config/shop",
                 "img_url": "/image/admin/icon_left/config_list.png",
                 "img_url_h": "/image/admin/icon_left/config_list_h.png"
             },
             {
                 "en_name": "child_config",
-                "name": "µêÆÌ×ÓÕËºÅ¹ÜÀí",
+                "name": "åº—é“ºå­è´¦å·ç®¡ç†",
                 "link": "/admin/config/role/list",
                 "img_url": "/image/admin/icon_left/child_config.png",
                 "img_url_h": "/image/admin/icon_left/child_config_h.png"
             },
             {
                 "en_name": "pay",
-                "name": "½»Ò×ÅäÖÃ",
+                "name": "äº¤æ˜“é…ç½®",
                 "link": "/admin/config/trade",
                 "img_url": "/image/admin/icon_left/pay_config.png",
                 "img_url_h": "/image/admin/icon_left/pay_config_h.png"
             },
             {
                 "en_name": "user_center_config",
-                "name": "¸öÈËÖĞĞÄÅäÖÃ",
+                "name": "ä¸ªäººä¸­å¿ƒé…ç½®",
                 "link": "/admin/config/usercenter",
                 "img_url": "/image/admin/icon_left/user_config.png",
                 "img_url_h": "/image/admin/icon_left/user_config_h.png"
             },
             {
                 "en_name": "message_config",
-                "name": "Ä£°åÏûÏ¢ÅäÖÃ",
+                "name": "æ¨¡æ¿æ¶ˆæ¯é…ç½®",
                 "link": "/admin/config/message/template/basic",
                 "img_url": "/image/admin/icon_left/message_config.png",
                 "img_url_h": "/image/admin/icon_left/message_config_h.png"
             },
             {
                 "en_name": "third_auth",
-                "name": "µÚÈı·½¶Ô½ÓÅäÖÃ",
+                "name": "ç¬¬ä¸‰æ–¹å¯¹æ¥é…ç½®",
                 "link": "/admin/config/third",
                 "img_url": "/image/admin/icon_left/third_party_config.png",
                 "img_url_h": "/image/admin/icon_left/third_party_config_h.png"
             },
             {
                 "en_name": "search_config",
-                "name": "ËÑË÷ÅäÖÃ",
+                "name": "æœç´¢é…ç½®",
                 "link": "/admin/config/search/config",
                 "img_url": "/image/admin/icon_left/search_config.png",
                 "img_url_h": "/image/admin/icon_left/search_config_h.png"
             },
             {
                 "en_name": "action_record",
-                "name": "²Ù×÷¼ÇÂ¼",
+                "name": "æ“ä½œè®°å½•",
                 "link": "/admin/config/record/action",
                 "img_url": "/image/admin/icon_left/action_record.png",
                 "img_url_h": "/image/admin/icon_left/action_record_h.png"
             },
             {
                 "en_name": "action_record",
-                "name": "·şÎñ³ĞÅµ",
+                "name": "æœåŠ¡æ‰¿è¯º",
                 "link": "/admin/config/pledge/list",
                 "img_url": "/image/admin/icon_left/pledge_config.png",
                 "img_url_h": "/image/admin/icon_left/pledge_config_h.png"

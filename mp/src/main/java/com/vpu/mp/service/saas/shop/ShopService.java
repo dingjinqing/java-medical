@@ -32,6 +32,7 @@ public class ShopService extends BaseService {
 	public ShopRenewService renew;
 	public ShopVersionService version;
 	public ShopChildAccountService subAccount;
+	public ShopRoleService role;
 
 	final public static class ShopListQueryParam {
 		public Integer page;

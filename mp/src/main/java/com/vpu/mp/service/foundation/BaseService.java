@@ -6,6 +6,8 @@ import org.jooq.Result;
 import org.jooq.SelectLimitStep;
 import org.jooq.impl.DefaultDSLContext;
 
+import com.vpu.mp.service.saas.SaasApplication;
+
 /**
  * 
  * @author 新国
@@ -19,6 +21,10 @@ public class BaseService {
 
 	public BaseService() {
 		Util.initComponents(this);
+	}
+	
+	public SaasApplication saas() {
+		return SaasApplication.instance();
 	}
 
 	public Integer getShopId() {

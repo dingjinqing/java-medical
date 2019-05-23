@@ -1,16 +1,16 @@
 package com.vpu.mp.controller.admin;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
 import org.springframework.web.servlet.ModelAndView;
 
-import com.mysql.cj.x.protobuf.MysqlxDatatypes.Array;
 import com.vpu.mp.controller.BaseController;
 import com.vpu.mp.db.main.tables.records.ShopRecord;
 import com.vpu.mp.service.auth.AdminAuth;
 
 public class AdminBaseController extends BaseController {
-
+	
 	@Autowired
 	protected AdminAuth adminAuth;
 

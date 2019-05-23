@@ -6,6 +6,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 
 import com.vpu.mp.db.main.tables.records.ShopAccountRecord;
 import com.vpu.mp.db.main.tables.records.ShopChildAccountRecord;
@@ -18,6 +19,7 @@ import com.vpu.mp.service.saas.SaasApplication;
  * @author 新国
  *
  */
+@Component
 public class AdminAuth {
 
 	final public static class ShopLoginParam {
