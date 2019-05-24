@@ -43,7 +43,8 @@ public class WebConfig implements WebMvcConfigurer {
 				.excludePathPatterns("/system/login", "/system/logout","/system/message","/system/login/attempt");
 		registry.addInterceptor(adminAuthInterceptor)
 				.addPathPatterns("/admin/**")
-				.excludePathPatterns("/admin/login", "/admin/loginout");
+				.addPathPatterns("/wechat/**")
+				.excludePathPatterns("/admin/login", "/admin/logout");
 	}
 
 }

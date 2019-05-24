@@ -53,4 +53,4 @@
 </script>
 </#noparse>
 
-<#include "/system/menu.ftl">
+<#include "/admin/menu.ftl">

@@ -41,6 +41,7 @@ public class SystemBaseController extends BaseController {
         return redirect("/system/message",model);
     }
     
+    @Override
     protected ModelMap globalModelMap() {
     	ModelMap model = new ModelMap();
 		model.addAttribute("global_title", "微铺宝小程序Saas后台");

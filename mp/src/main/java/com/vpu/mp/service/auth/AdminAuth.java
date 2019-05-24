@@ -189,7 +189,7 @@ public class AdminAuth {
 
 	@SuppressWarnings("unchecked")
 	public HashMap<String, Object> user() {
-		return (HashMap<String, Object>) session("sys_login_user");
+		return (HashMap<String, Object>) session("shop_login_user");
 	}
 
 	public boolean isChildLogin() {

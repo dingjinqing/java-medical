@@ -46,21 +46,18 @@
     <header id="header" style="color: white;">
         <div id="logo-group">
             <span id="logo">
-                <img src="${logo.img_path!"http://$image_domain/image/admin/official/bottom_logo.png"}"
+                <img src="${logo.img_path!"http://${image_domain}/image/admin/official/bottom_logo.png"}"
                      style="height:49px;margin-top:13px"/>
             </span>
         </div>
 
-        <span class="sign" hidden value="${sign!}"></span>
-
         <div class="clearfix">
-            <#list first_menu  as item>
-                <a href="${item['link']!}" style="color: white">
-                    <div class="pull-left first" bid="${item?index+1}" link="${item['link']!"#"}">
+            <#list menuList  as item>
+                <a href="${item['linkUrl']!}" style="color: white">
+                    <div class="pull-left first" link="${item['linkUrl']!"#"}">
                         <div>${item['name']!}</div>
                     </div>
                 </a>
-                <span style="display:none;">${item?index+2}</span>
             </#list>
         </div>
         <!-- pulled right: nav area -->
@@ -104,30 +101,29 @@
 <div class="absolute-left-menu">
     <div class="left-menu-back">
         <div class="left-menu">
-            <#list menu_list as item1>
-                <div class="left-menu-content <#if (item1?index != top_index)> hide </#if>" cid="${item1?index +1!}">
-                    <#list  item1['sub'] as  item>
-                        <#if item['check'] || user_role_id == 0>
-                            <#if item['hid'] !=1 && !(item['name'] == '第三方商品' && !is_grasp_shop)
-                             && !(item['en_name'] == 'goods_import' && isShowGoodsImport == 0)
-                             && !(item['en_name'] == 'action_record' && login_user['is_sub_account']=="1")>
-                                <dl class="item-menu" sid="${item?index+1}" style="display:${item['display']!"inherit"}">
-                                    <a href="${item['link']!}" link="${item['link']!}" zid="0" sub="${item['sun']!}">
-                                        <#if  (item['sunn'] == 'recomment' && item['sun'] == "sub_4")>
-                                            <img src="${item['show_tj']!}" class="on show_tj" cid="0" >
-                                            <img src="${item['show_tj']!}" cid="1" fid="0" class="show_tj" >
+                <div class="left-menu-content">
+                    <#list  leftMenuList as  item>
+                        <#if item['check']  ||  user_role_id == 0>
+                            <#if !item['hide'] && !(item['name'] == '第三方商品' && !is_grasp_shop)
+                             && !(item['enName'] == 'goods_import' && isShowGoodsImport == 0)
+                             && !(item['enName'] == 'action_record' && login_user['is_sub_account']=="1")>
+                                <dl class="item-menu" sid="${item?index}" style="display:${item['display']!"inherit"}">
+                                    <a href="${item['linkUrl']!}" link="${item['linkUrl']!}" zid="0" sub="${item['linkUrl']!}">
+                                        <#if  (item['recommendPic'] != "")>
+                                            <img src="${item['recommendPic']!}" class="on show_tj" cid="0" >
+                                            <img src="${item['recommendPic']!}" cid="1" fid="0" class="show_tj" >
                                         <#else>
-                                        <img src="${item['img_url']!}" class="on" cid="0">
-                                        <img src="${item['img_url_h']!}" cid="1" fid="0">
+                                        <img src="${item['imageUrl']!}" class="on" cid="0">
+                                        <img src="${item['imageHoverUrl']!}" cid="1" fid="0">
                                         </#if>
                                         <span class="menu-item-parent">${item['name']!"no name"}</span>
                                     </a>
-                                    <#if  (item['sub']??)>
+                                    <#if  (item['subMenu']??)>
                                         <div class="sub-menu" style="display:none">
-                                            <#list item['sub']  as sub_item>
+                                            <#list item['subMenu']  as sub_item>
                                                 <#if  (sub_item['check'] || user_role_id == 0 )>
                                                     <dl hidden style="display:block;">
-                                                        <a href="${sub_item['link']!}">${sub_item['name']!}</a>
+                                                        <a href="${sub_item['linkUrl']!}">${sub_item['name']!}</a>
                                                     </dl>
                                                 </#if>
                                             </#list>
@@ -140,8 +136,6 @@
 
 
                 </div>
-                <span style="display:none;">${item1?index+1}</span>
-            </#list>
 
             <div style="margin-top:30px;">
                 <div class="global_contact" id="global_contact">
@@ -194,7 +188,7 @@
 </div>
 
 <script>
-  var default_localurl='${top_index!}';
+  var default_localurl='${top_index!0}';
   var sub_index = parseInt("${sub_index!0}');
   var top_index = parseInt("${top_index!0}');
 </script>
@@ -203,7 +197,7 @@
 <script type="text/javascript">
     var localurl=parseInt(window.location.href.split('top_index=')[1]);
     if(!localurl){
-        var localurl=default_localurl';
+        var localurl=default_localurl;
     }
     //本地url
     $(".first").each(function(){

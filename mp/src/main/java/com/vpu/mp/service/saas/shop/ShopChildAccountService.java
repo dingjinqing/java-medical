@@ -25,6 +25,11 @@ import com.vpu.mp.service.foundation.BaseService;
 import com.vpu.mp.service.foundation.PageResult;
 import com.vpu.mp.service.foundation.Util;
 
+/**
+ * 
+ * @author 新国
+ *
+ */
 public class ShopChildAccountService extends BaseService {
 	
 	public ShopChildAccountRecord verify(Integer sysId, String username, String password) {

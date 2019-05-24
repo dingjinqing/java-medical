@@ -27,7 +27,7 @@ public class AdminLoginController extends AdminBaseController {
 	@PostMapping(value = "/admin/login")
 	public ModelAndView login(@LineConvertHump  ShopLoginParam param) {
 		if (adminAuth.login(param)) {
-			return view("redirect:/admin/index");
+			return view("redirect:/admin/welcome");
 		} else {
 			return showMessage("登录失败");
 		}

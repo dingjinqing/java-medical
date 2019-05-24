@@ -5,6 +5,7 @@ import javax.servlet.http.HttpServletRequest;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.servlet.ModelAndView;
 
 /**
  * 
@@ -12,10 +13,14 @@ import org.springframework.web.bind.annotation.RequestMapping;
  *
  */
 @Controller
-public class AdminIndexController {
+public class AdminIndexController extends AdminBaseController {
 
 	@RequestMapping(value = "/admin/index")
-	public String index(Model model, HttpServletRequest request) {
-		return "admin/welcome";
+	public ModelAndView index(Model model, HttpServletRequest request) {
+		return view("admin/welcome");
+	}
+	@RequestMapping(value = "/admin/account/shop/select")
+	public ModelAndView selectShop(Model model, HttpServletRequest request) {
+		return view("admin/welcome");
 	}
 }
