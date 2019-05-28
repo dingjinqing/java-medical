@@ -224,8 +224,8 @@ public class ShopVersionService extends BaseService {
 		if( index != -1 && Arrays.asList(subObjects[index]).indexOf(modName)  != -1) {
 			content = 1;			
 		}
-		Map<String,Object> result = new HashMap<String,Object>();
-		Map<String,Object> message = new HashMap<String,Object>();
+		Map<String,Object> result = new HashMap<String,Object>(0);
+		Map<String,Object> message = new HashMap<String,Object>(0);
 		result.put("content", content);
 		result.put("version_name", getVersionByLevel(shop.getShopType()).getVersionName());
 		result.put("version_id", shop.getShopType());

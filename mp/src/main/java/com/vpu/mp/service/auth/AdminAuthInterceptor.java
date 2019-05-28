@@ -155,7 +155,8 @@ public class AdminAuthInterceptor extends HandlerInterceptorAdapter {
 	}
 
 	public boolean match(String regexp, String path) {
-		if (regexp.charAt(regexp.length() - 1) == '*') {
+		char asterisk = '*';
+		if (regexp.charAt(regexp.length() - 1) == asterisk) {
 			regexp = regexp.substring(0, regexp.length() - 1);
 			return path.startsWith(regexp);
 		} else {

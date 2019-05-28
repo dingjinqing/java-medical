@@ -25,6 +25,11 @@ import com.vpu.mp.service.foundation.PageResult;
 import com.vpu.mp.service.foundation.Util;
 import com.vpu.mp.service.saas.shop.ShopAccountService.ShopAccountListQueryParam;
 
+/**
+ * 
+ * @author 新国
+ *
+ */
 public class ArticleService extends BaseService {
 
 	final public static class ArticleListQueryParam {

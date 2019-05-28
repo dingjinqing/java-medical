@@ -71,7 +71,7 @@ public class Util {
 		return null;
 	}
 	public static String[] mergeArray(String[] array1,String[] array2) {
-		Map<String,Integer> map = new HashMap<String,Integer>();
+		Map<String,Integer> map = new HashMap<String,Integer>(0);
 		for(String str : array1) {
 			map.put(str, 1);
 		}
