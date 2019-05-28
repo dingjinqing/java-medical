@@ -2,18 +2,25 @@ package com.vpu.mp.service.saas.shop;
 
 import org.jooq.Record;
 import org.jooq.Record1;
+import org.jooq.Record9;
+import org.jooq.Result;
 import org.jooq.SelectWhereStep;
 import org.jooq.impl.DSL;
 import org.jooq.tools.StringUtils;
+import org.jooq.types.UInteger;
 
 import static com.vpu.mp.db.main.tables.MpAuthShop.MP_AUTH_SHOP;
 import static com.vpu.mp.db.main.tables.Shop.SHOP;
 import static com.vpu.mp.db.main.tables.ShopAccount.SHOP_ACCOUNT;
 import static com.vpu.mp.db.main.tables.ShopRenew.SHOP_RENEW;
 import static com.vpu.mp.db.main.tables.ShopChildRole.SHOP_CHILD_ROLE;
+import static com.vpu.mp.db.main.tables.ArticleRecord.ARTICLE_RECORD;
 
+import java.sql.Timestamp;
+import java.util.List;
 import java.util.Map;
 import com.vpu.mp.db.main.tables.pojos.Shop;
+import com.vpu.mp.db.main.tables.records.ArticleRecordRecord;
 import com.vpu.mp.db.main.tables.records.ShopAccountRecord;
 import com.vpu.mp.db.main.tables.records.ShopRecord;
 import com.vpu.mp.service.foundation.BaseService;
@@ -156,7 +163,7 @@ public class ShopService extends BaseService {
 			Integer sysId = Util.convert(record.get("sys_id"), Integer.class, 0);
 			ShopAccountRecord accountInfo = this.accout.getAccountInfoForID(sysId);
 			record.put("renew_money", this.renew.getShopRenewTotal(shopId));
-			record.put("expire_time", this.renew.getShopRenewExpireTimel(shopId));
+			record.put("expire_time", this.renew.getShopRenewExpireTime(shopId));
 			record.put("account_info", accountInfo == null ? null : accountInfo.intoMap());
 		}
 		return result;
@@ -290,4 +297,40 @@ public class ShopService extends BaseService {
 		}
 		return -1;
 	}
+
+	
+	
+
+	/**
+	 * 得到角色权限对应店铺列表
+	 * `state` '0 入驻申请，1审核通过，2审核不通过',审核不通过不能登录到店铺后台
+	 * `business_state` '营业状态 0未营业 1营业',未营业不能下单，加入购物车，下单接口提示
+	 *  expire_time 过期可以登录到后台，店铺是未营业状态
+	 *  
+	 * @param sysId
+	 * @param subAccountId
+	 * @return
+	 */
+	public Result<Record9<Integer,Integer,String,String,Timestamp,Byte,Byte,Byte,String>> getRoleShopList(Integer sysId, Integer subAccountId) {
+		SelectWhereStep<Record9<Integer, Integer, String, String, Timestamp, Byte, Byte, Byte, String>> select = db()
+				.selectDistinct(
+						SHOP.SHOP_ID,
+						SHOP.SYS_ID,
+						SHOP.SHOP_NAME,
+						SHOP.SHOP_AVATAR,
+						SHOP.CREATED,
+						SHOP.STATE,
+						SHOP.BUSINESS_STATE,
+						SHOP.IS_ENABLED,
+						SHOP.SHOP_TYPE)
+				.from(SHOP)
+				.leftJoin(SHOP_CHILD_ROLE).on(SHOP.SHOP_ID.eq(SHOP_CHILD_ROLE.SHOP_ID));
+		select.where(SHOP.SYS_ID.eq(sysId));
+		if (subAccountId > 0) {
+			select.where(SHOP_CHILD_ROLE.ACCOUNT_ID.eq(subAccountId));
+		}
+		return select.orderBy(SHOP.CREATED.desc())
+				.fetch();
+	}
+
 }

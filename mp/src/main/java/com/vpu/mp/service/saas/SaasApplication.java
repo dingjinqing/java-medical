@@ -3,6 +3,7 @@ package com.vpu.mp.service.saas;
 import java.util.HashMap;
 
 import com.vpu.mp.service.foundation.Util;
+import com.vpu.mp.service.saas.article.ArticleService;
 import com.vpu.mp.service.saas.privilege.ChildAccountService;
 import com.vpu.mp.service.saas.privilege.MenuService;
 import com.vpu.mp.service.saas.privilege.RoleService;
@@ -25,6 +26,7 @@ public class SaasApplication {
 	public MenuService menu;
 	public ShopService shop;
 	public RegionService region;
+	public ArticleService article;
 
 	private static SaasApplication saas = null;
 

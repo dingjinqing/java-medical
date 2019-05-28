@@ -10,12 +10,17 @@ import java.net.InetAddress;
 import java.net.UnknownHostException;
 import java.nio.charset.StandardCharsets;
 import java.sql.Timestamp;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.Properties;
 import java.util.Random;
 
 import javax.servlet.http.HttpServletRequest;
 
 import org.apache.commons.io.IOUtils;
+import org.apache.commons.lang3.ArrayUtils;
 import org.jooq.exception.DataTypeException;
 import org.jooq.tools.Convert;
 import org.springframework.core.io.ClassPathResource;
@@ -48,7 +53,7 @@ public class Util {
 		return null;
 	}
 
-	static public <T> T parseJSON(String json, Class<T> valueType) {
+	public static <T> T parseJSON(String json, Class<T> valueType) {
 		ObjectMapper mapper = new ObjectMapper();
 		// 如果json中有新增的字段并且是实体类类中不存在的，不报错
 		mapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
@@ -60,15 +65,37 @@ public class Util {
 			e.printStackTrace();
 		} catch (IOException e) {
 			e.printStackTrace();
+		}catch (Exception e) {
+			e.printStackTrace();
 		}
 		return null;
 	}
-
-	static public String md5(String string) {
+	public static String[] mergeArray(String[] array1,String[] array2) {
+		Map<String,Integer> map = new HashMap<String,Integer>();
+		for(String str : array1) {
+			map.put(str, 1);
+		}
+		for(String str : array2) {
+			if(!map.containsKey(str)) {
+				map.put(str, 1);
+			}
+		}
+		return (String[])map.keySet().toArray(new String[map.size()]);
+	}
+	
+	public static <T> void  mergeList(List<T> list1,List<T> list2) {
+		for(T t : list2) {
+			if(!list1.contains(t)) {
+				list1.add(t);
+			}
+		}
+	}
+	
+	public static String md5(String string) {
 		return DigestUtils.md5DigestAsHex(string.getBytes());
 	}
 
-	static public String getCleintIp(HttpServletRequest request) {
+	public static String getCleintIp(HttpServletRequest request) {
 		String ipAddress = null;
 		String unkown = "unknown";
 		String localhost = "127.0.0.1";
@@ -176,7 +203,7 @@ public class Util {
 	
 	public static String loadResource(String path) {
 		try {
-			ClassPathResource resource = new ClassPathResource("admin.menu.json");
+			ClassPathResource resource = new ClassPathResource(path);
 			return  IOUtils.toString(resource.getInputStream(), StandardCharsets.UTF_8);
 		} catch (IOException e) {
 			e.printStackTrace();

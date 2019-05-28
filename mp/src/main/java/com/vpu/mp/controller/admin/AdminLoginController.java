@@ -21,13 +21,14 @@ public class AdminLoginController extends AdminBaseController {
 
 	@GetMapping(value = "/admin/login")
 	public ModelAndView login() {
+		saas.shop.version.getVersionConfig();
 		return view("admin/login");
 	}
 
 	@PostMapping(value = "/admin/login")
 	public ModelAndView login(@LineConvertHump  ShopLoginParam param) {
 		if (adminAuth.login(param)) {
-			return view("redirect:/admin/welcome");
+			return view("redirect:/admin/account/shop/select");
 		} else {
 			return showMessage("登录失败");
 		}

@@ -1,6 +1,7 @@
 package com.vpu.mp.service.auth;
 
 import java.util.HashMap;
+import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
@@ -190,6 +191,11 @@ public class AdminAuth {
 	@SuppressWarnings("unchecked")
 	public HashMap<String, Object> user() {
 		return (HashMap<String, Object>) session("shop_login_user");
+	}
+	
+	@SuppressWarnings("unchecked")
+	public Map<String, Object> userInfo() {
+		return isLogin() ? (Map<String, Object>)user().get("user") : null;
 	}
 
 	public boolean isChildLogin() {

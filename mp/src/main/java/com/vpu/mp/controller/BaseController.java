@@ -30,6 +30,8 @@ public class BaseController {
 
 	@Autowired
 	protected Environment env;
+	
+	protected String flashSessionKey = "__FLASH_SESSION_KEY";
 
 	protected ModelAndView view(String path) {
 		if (this.isRedirectPath(path)) {
@@ -44,6 +46,7 @@ public class BaseController {
 
 	protected ModelAndView view(String path, Map<String, ?> model) {
 		if (this.isRedirectPath(path)) {
+			request.getSession().setAttribute(flashSessionKey, model);
 			return new ModelAndView(path, model);
 		}
 		ModelAndView mv = getDefaultModelAndView(path);
@@ -59,12 +62,19 @@ public class BaseController {
 		return view(getRedirectPath(path), model);
 	}
 
+	@SuppressWarnings("unchecked")
 	protected ModelAndView getDefaultModelAndView(String path) {
 		ModelAndView mv = new ModelAndView(path);
 		ModelMap model = new ModelMap();
 		model.addAttribute("main_domain", env.getProperty("domain.main"));
 		model.addAttribute("image_domain", env.getProperty("domain.image"));
 		mv.addAllObjects(model);
+		
+		Object  flashModal = request.getSession().getAttribute(flashSessionKey);
+		if(flashModal != null) {
+			mv.addAllObjects((Map<String, ?>)flashModal);
+			request.getSession().removeAttribute(flashSessionKey);
+		}
 		
 		ModelMap globalModel  = globalModelMap();
 		if(globalModel != null) {

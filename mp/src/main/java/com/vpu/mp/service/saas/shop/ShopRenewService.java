@@ -57,7 +57,7 @@ public class ShopRenewService extends BaseService {
 		return total;
 	}
 	
-	public Date getShopRenewExpireTimel(Integer shopId) {
+	public Date getShopRenewExpireTime(Integer shopId) {
 		Result<Record> result = getShopRenewList(shopId);
 		if(result.size() > 0) {
 			return result.get(0).get(SHOP_RENEW.EXPIRE_TIME);
