@@ -19,4 +19,9 @@ public class AdminIndexController extends AdminBaseController {
 	public ModelAndView index(Model model, HttpServletRequest request) {
 		return view("admin/welcome");
 	}
+	
+	@RequestMapping(value = "/admin/message")
+	public ModelAndView message() {
+		return view("system/show_msg");
+	}
 }

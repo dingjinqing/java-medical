@@ -35,10 +35,8 @@ public class SystemIndexController extends SystemBaseController {
 	}
 	
 	@RequestMapping(value = "/system/message")
-	public ModelAndView message(@RequestParam("message") String message) {
-		ModelMap model = new ModelMap();
-		model.addAttribute("message", message);
-		return view("system/show_msg",model);
+	public ModelAndView message() {
+		return view("system/show_msg");
 	}
 	
 	

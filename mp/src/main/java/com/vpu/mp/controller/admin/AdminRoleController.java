@@ -29,7 +29,7 @@ public class AdminRoleController extends AdminBaseController {
 
 	@RequestMapping(value = "/admin/account/shop/select")
 	public ModelAndView shopSelect() {
-
+		
 		// 当前账号下的店铺列表处理
 		List<Map<String, Object>> shopList = saas.shop.getRoleShopList(adminAuth.sysId(), adminAuth.subAccountId())
 				.intoMaps();

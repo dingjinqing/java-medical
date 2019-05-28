@@ -71,6 +71,7 @@ public class AdminAuthInterceptor extends HandlerInterceptorAdapter {
 			"/admin/public/service/auth/detail",
 			"/admin/public/image/account/*",
 			"/admin/authority/*",
+			"/admin/message"
 	};
 
 	/**
@@ -112,7 +113,7 @@ public class AdminAuthInterceptor extends HandlerInterceptorAdapter {
 		} else {
 			if (!adminAuth.isShopLogin()) {
 				// 账号登录，判断店铺登录例外URL
-				if (match(shopLoginExcept, path)) {
+				if (match(accountLoginExcept, path) || match(shopLoginExcept, path)) {
 					return true;
 				}
 				errorResponse(request, response, URL_SELECT_SHOP, MSG_SELECT_SHOP, AJAX_CODE_SELECT_SHOP);

@@ -47,7 +47,7 @@ public class BaseController {
 	protected ModelAndView view(String path, Map<String, ?> model) {
 		if (this.isRedirectPath(path)) {
 			request.getSession().setAttribute(flashSessionKey, model);
-			return new ModelAndView(path, model);
+			return new ModelAndView(path);
 		}
 		ModelAndView mv = getDefaultModelAndView(path);
 		mv.addAllObjects(model);
