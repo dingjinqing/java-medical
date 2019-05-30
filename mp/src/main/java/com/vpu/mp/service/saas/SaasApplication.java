@@ -43,7 +43,7 @@ public class SaasApplication {
 
 	protected HashMap<Integer, ShopApplication> shopList = new HashMap<Integer, ShopApplication>();
 
-	public ShopApplication getShopApp(Integer shopId) {
+	public synchronized ShopApplication  getShopApp(Integer shopId) {
 		if (!shopList.containsKey(shopId)) {
 			shopList.put(shopId, new ShopApplication(shopId));
 		}
