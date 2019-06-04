@@ -134,6 +134,25 @@ public class AdminAuth {
 	public ShopLoginSession user() {
 		return (ShopLoginSession) session("shop_login_user");
 	}
+	
+	public Map<String,Object> userInfo(){
+		Map<String,Object> map = new HashMap<String,Object>();
+		if(!isLogin()) {
+			return map;
+		}
+		map.put("sys_id", sysId());
+		map.put("user_name",isChildLogin() ? user().subAccount.getAccountName() :user().mainAccount.getUserName());
+		map.put("account_name",isChildLogin() ? user().subAccount.getAccountName() :user().mainAccount.getAccountName());
+		map.put("mobile",isChildLogin() ? user().subAccount.getMobile() :user().mainAccount.getMobile());
+		map.put("sub_account_id", subAccountId());
+		map.put("is_sub_account", isChildLogin());
+		map.put("role_id", roleId());
+		map.put("shop", this.isShopLogin() ?  user().shop.intoMap() : null);
+		map.put("user", isChildLogin() ? user().subAccount.intoMap() : user().mainAccount.intoMap() );
+		map.put("shop_id", shopId());
+		map.put("shop_avatar", this.isShopLogin() ?  user().shop.getShopAvatar() : null);
+		return map;
+	}
 
 	public boolean isChildLogin() {
 		return isLogin() && user().subAccount != null;
