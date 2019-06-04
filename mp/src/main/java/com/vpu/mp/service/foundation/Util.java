@@ -159,8 +159,8 @@ public class Util {
 					Constructor<?> constructor = cls.getConstructor();
 					Object fieldInstance = constructor.newInstance();
 					field.set(o, fieldInstance);
-					BaseService com = (BaseService) field.get(o);
-					com.setShopId(shopId);
+					BaseService service = (BaseService) field.get(o);
+					service.initComponents(shopId);
 				} catch (Exception e) {
 					e.printStackTrace();
 				}

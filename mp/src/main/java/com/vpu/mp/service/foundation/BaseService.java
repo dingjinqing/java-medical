@@ -20,6 +20,10 @@ public class BaseService {
 	protected Integer shopId = 0;
 
 	public BaseService() {
+	
+	}
+	public void initComponents(Integer shopId) {
+		this.shopId = shopId;
 		Util.initComponents(this);
 	}
 	
