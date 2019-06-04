@@ -145,7 +145,7 @@ public class AdminAuth {
 		map.put("account_name",isChildLogin() ? user().subAccount.getAccountName() :user().mainAccount.getAccountName());
 		map.put("mobile",isChildLogin() ? user().subAccount.getMobile() :user().mainAccount.getMobile());
 		map.put("sub_account_id", subAccountId());
-		map.put("is_sub_account", isChildLogin());
+		map.put("is_sub_account", isChildLogin() ? 1: 0);
 		map.put("role_id", roleId());
 		map.put("shop", this.isShopLogin() ?  user().shop.intoMap() : null);
 		map.put("user", isChildLogin() ? user().subAccount.intoMap() : user().mainAccount.intoMap() );

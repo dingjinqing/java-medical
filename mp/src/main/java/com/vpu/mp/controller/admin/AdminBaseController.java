@@ -54,7 +54,7 @@ public class AdminBaseController extends BaseController {
 			Integer topIndex = Util.convert(request.getParameter("top_index"), Integer.class, null);
 			Integer subIndex = Util.convert(request.getParameter("sub_index"), Integer.class, null);
 			MenuIndex menuIndex = MenuUtil.getMenuIndex(menuList, request.getRequestURI(),topIndex,subIndex);
-			model.addAttribute("login_user", adminAuth.user());
+			model.addAttribute("login_user", adminAuth.userInfo());
 			model.addAttribute("user_role_id", adminAuth.roleId());
 			model.addAttribute("top_index", menuIndex.getTopIndex());
 			model.addAttribute("sub_index", menuIndex.getSubIndex());
@@ -69,7 +69,7 @@ public class AdminBaseController extends BaseController {
 	}
 
 	protected Integer isGraspShop() {
-		if(adminAuth.shopId() == 0) {
+		if(!adminAuth.isShopLogin()) {
 			return 0;
 		}
 		ShopRecord shop = saas.shop.getShopById(adminAuth.shopId());
@@ -89,8 +89,11 @@ public class AdminBaseController extends BaseController {
 
 
 	protected Byte getShopFlag() {
+		if(!adminAuth.isShopLogin()) {
+			return 0;
+		}
 		ShopRecord shop = saas.shop.getShopById(adminAuth.shopId());
-		return shop == null ? 0 : shop.getShopFlag();
+		return (byte) (shop == null ? 0 : Util.getInteger(shop.getShopFlag()));
 	}
 	
 	/**
@@ -98,6 +101,7 @@ public class AdminBaseController extends BaseController {
 	 * @return
 	 */
 	protected ShopApplication shop() {
+		assert(adminAuth.shopId() > 0);
 		return saas.getShopApp(adminAuth.shopId());
 	}
 	
