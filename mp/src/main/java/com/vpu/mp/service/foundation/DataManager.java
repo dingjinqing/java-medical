@@ -5,6 +5,7 @@ import org.apache.tools.ant.BuildException;
 import org.apache.tools.ant.Project;
 import org.apache.tools.ant.taskdefs.SQLExec;
 import org.jooq.SQLDialect;
+import org.jooq.conf.Settings;
 import org.jooq.exception.DataAccessException;
 import org.jooq.impl.DataSourceConnectionProvider;
 import org.jooq.impl.DefaultConfiguration;
@@ -71,6 +72,7 @@ public class DataManager {
 		if (db == null) {
 			BasicDataSource ds = dataSource(getJdbcUrl(host, database), username, password, driver);
 			db = new DefaultDSLContext(configuration(ds));
+			db.setSchema(this.database);
 			db.execute("SET NAMES utf8mb4");
 			db.execute("Set sql_mode='ONLY_FULL_GROUP_BY'");
 		}
@@ -90,9 +92,10 @@ public class DataManager {
 			}
 
 			String url = getJdbcUrl(dbConfig.host, dbConfig.database);
-			BasicDataSource ds = dataSource(url, dbConfig.username, dbConfig.password, driver);
+			BasicDataSource ds = dataSource(url, dbConfig.username, dbConfig.password, driver);			
 			DefaultDSLContext dsl = new DefaultDSLContext(configuration(ds));
 			shopDbList.put(shopId, dsl);
+			dsl.setSchema(dbConfig.database);
 			dsl.execute("SET NAMES utf8mb4");
 			dsl.execute("Set sql_mode='ONLY_FULL_GROUP_BY'");
 			return dsl;
@@ -251,6 +254,10 @@ public class DataManager {
 		jooqConfiguration.set(new DefaultExecuteListenerProvider(new ExceptionTranslator()));
 		SQLDialect dialect = SQLDialect.valueOf(this.dialect);
 		jooqConfiguration.set(dialect);
+		
+		Settings settings = new Settings();
+		settings.withRenderCatalog(false).withRenderSchema(false);
+		jooqConfiguration.setSettings(settings);
 		return jooqConfiguration;
 	}
 

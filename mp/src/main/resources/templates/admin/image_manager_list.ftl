@@ -100,10 +100,10 @@
         <input type="hidden" name="act" id="act" value="">
         <input type="hidden" name="set_cat_id" id="set_cat_id" value="">
         <input type="hidden" name="crop_img_id" id="crop_img_id" value="">
-        <input type="hidden" name="no_full" id="no_full" value="${no_full!}">
-        <input type="hidden" name="need_img_width" id="need_img_width" value="${need_img_width!0}">
-        <input type="hidden" name="need_img_height" id="need_img_height" value="${need_img_height!0}">
-        <input type="hidden" name="on_img_cb" id="on_img_cb" value="${on_img_cb!}">
+        <input type="hidden" name="no_full" id="no_full" value="${input_map['no_full']!}">
+        <input type="hidden" name="need_img_width" id="need_img_width" value="${input_map['need_img_width']!0}">
+        <input type="hidden" name="need_img_height" id="need_img_height" value="${input_map['need_img_height']!0}">
+        <input type="hidden" name="on_img_cb" id="on_img_cb" value="${input_map['on_img_cb']!}">
 
         <input type="hidden" name="op_cat_id" id="op_cat_id" value="">
         <input type="hidden" name="op_cat_name" id="op_cat_name" value="">
@@ -115,7 +115,7 @@
                     <td colspan="2" style="padding: 0;">
                         <div class="box btn_chppse_bendi clearfix">
                             <input type="button" class="bt_success" name="up_image_btn" id="up_image_btn"
-                                   title="{{ trans("admin/image.uploadImageTip")!}"
+                                   title="上传图片支持jpeg、jpg、png、bmp格式，为保障前端加载顺利，单张图片大小不能超过5M"
                                    value="上传图片">
                             <#if  (version??)>
                                 <div class="system_info" style="display: inline-block;float: none;margin-top: 0px;">
@@ -135,14 +135,14 @@
                             </#if>
                             <div class="text-warning" style="width: 94%;margin: 0px 0 0 10px;">
                                 <img src="http://${image_domain!}/image/admin/notice_img.png" alt="">
-                                {{ trans("admin/image.uploadImageTip")!}
+                                上传图片支持jpeg、jpg、png、bmp格式，为保障前端加载顺利，单张图片大小不能超过5M
                             </div>
                         </div>
                         <div class="system_info_content" style="top: 203px;left: 280px;">
                             <div class="system_info_content_top">
                                 <#if (version['all']??)>
                                     <#list version['all'] as ver>
-                                        <#if ($ver['num']<0)>
+                                        <#if (ver['num'] < 0)>
                                             <#if (ver?index!=0)>，</#if>${ver['version_name']!}<span class="system_v1">不限制</span>
                                             内存空间
                                         <#else>
@@ -163,41 +163,40 @@
                         <div class="box img-tree-container">
                             <div class="ztree img-cat-tree" id="img-cat-tree" style="height: 360px">
                             </div>
-                            <input name="img_cat_id" type="hidden" value="${img_cat_id!0}" id="img_cat_id">
+                            <input name="img_cat_id" type="hidden" value="${input_map['img_cat_id']!0}" id="img_cat_id">
                         </div>
                     </td>
                     <td style="vertical-align:top!important;padding:0 20px 10px 0">
                         <div class="box yigehezi">
 
                             <div class="hide">
-                                <span>{{ trans("admin/image.upload_date")!}</span>
-                                <input name="start_rq" type="text" value="${start_rq!}" onclick="return picker();"
+                                <span>上传时间</span>
+                                <input name="start_rq" type="text" value="${input_map['start_rq']!}" onclick="return picker();"
                                        size=10>
-                                <input name="end_rq" type="text" value="${end_rq!}" onclick="return picker();"
+                                <input name="end_rq" type="text" value="${input_map['end_rq']!}" onclick="return picker();"
                                        size=10>
-                                <span>{{ trans("admin/image.img_wh")!}</span>&nbsp;
-                                <input name="img_width" type="text" value="${img_width!}" size=5>
-                                <input name="img_height" type="text" value="${img_height!}" size=5>
+                                <span>图片宽高</span>&nbsp;
+                                <input name="img_width" type="text" value="${input_map['img_width']!}" size=5>
+                                <input name="img_height" type="text" value="${input_map['img_height']!}" size=5>
                             </div>
                             <select name="upload_sort_id" id="upload_sort_id">
-                                <#list upload_sort_list?keys as key>
-                                	<#assign item = upload_sort_list[key]>
-                                    <option value="${key!}"  <#if  (upload_sort_id == key)> selected="selected" </#if> >${item!}</option>
+                                <#list upload_sort_list as item>
+                                    <option value="${item?index}"  <#if  (upload_sort_id!0 == item?index)> selected="selected" </#if> >${item!}</option>
                                 </#list>
                             </select>
 
-                            <input name="keywords" type="text" value="${keywords!}" placeholder="图片名称" size=12>
-                            <input name="show_type" id="show_type" type="hidden" value="${show_type!}">
+                            <input name="keywords" type="text" value="${input_map['keywords']!}" placeholder="图片名称" size=12>
+                            <input name="show_type" id="show_type" type="hidden" value="${input_map['show_type']!}">
                             <input type='submit' name="search" class="btn_sech"
                                    value="搜索">
 
-                            <#if  (need_img_width > 0 || need_img_height > 0)>
+                            <#if ("${input_map['search_need']!}" !="") ||  ("${input_map['need_img_height']!}" != "") >
                                 <label style="font-size: 12px"
-                                       title="所需图片必须满足： <#if  (need_img_width > 0)>宽度=${need_img_width!}px </#if> <#if  (need_img_height > 0)>高度=${need_img_height!}px </#if>">
+                                       title="所需图片必须满足： <#if  ("${input_map['need_img_width']!}" != "")>宽度=${input_map['need_img_width']!}px </#if> <#if  ("${input_map['need_img_height']!}" != "")  >高度=${input_map['need_img_height']!}px </#if>">
                                     <input type='checkbox' id="search_need" name="search_need"
-                                           <#if  (search_need)> checked </#if> value="1">
-                                    <#if  ($need_img_width > 0)>${need_img_width!}px </#if>
-                                    x <#if  ($need_img_height > 0)>   ${need_img_height!}px </#if>
+                                           <#if  ("${input_map['search_need']!}" !="")> checked </#if> value="1">
+                                    <#if   ("${input_map['need_img_width']!}" != "")>${need_img_width!}px </#if>
+                                    x <#if  ("${input_map['need_img_height']!}" != "")>${need_img_height!}px </#if>
                                 </label>
                             </#if>
 
@@ -207,7 +206,7 @@
                         </div>
 
                         <div class="box img-list">
-                            <#if  (data_list.size()== 0)>
+                            <#if  (data_list?size== 0)>
                                 <div class="text-warning padding-top-10" style="text-align: center;width: 100%;height: 150px;margin-top: 60px">
                                     <img src="http://${image_domain!}/image/admin/image_no_data.png" alt="" style="margin-top: 20px">
                                     <p style="color:#999;font-size: 14px;text-align: center;margin-top: 15px">当前文件夹未找到符合要求的图片</p>
@@ -268,7 +267,7 @@
                             </ul>
                         </div>
 
-                        <#if  (data_list.size() > 0)>
+                        <#if  (data_list?size > 0)>
                         <div class="box" style="margin-top: 15px">
                             <table width="100%" border="0" class="tb_paging" style="float:none;">
                                 <tr>
@@ -314,15 +313,15 @@
 
 <div id="rMenu">
     <ul>
-        <li id="m_add">{{ trans("admin/image.create_dir")!}</li>
-        <li id="m_del">{{ trans("admin/image.del_dir")!}</li>
-        <li id="m_rename">{{ trans("admin/image.rename_dir")!}</li>
+        <li id="m_add">创建目录</li>
+        <li id="m_del">删除目录</li>
+        <li id="m_rename">重命名</li>
     </ul>
 </div>
 
 <div class="hide">
     <select name="upload_img_cat_id" id="upload_img_cat_id">
-        <option value="0">{{ trans("admin/image.my_image")!}</option>
+        <option value="0">我的图片</option>
         <#list img_cat_list as item>
             <option value="${item.img_cat_id!}">
                  <#list 0..item.level as i>
@@ -335,7 +334,7 @@
 </div>
 
 <script>
-var img_cat_arr =${img_cat_arr?json_string};
+var img_cat_arr =${img_cat_arr};
 var has_version = <#if version??>true<#else>false</#if>;
 </script>
 

@@ -13,6 +13,7 @@ import com.vpu.mp.service.foundation.MenuUtil;
 import com.vpu.mp.service.foundation.MenuUtil.Menu;
 import com.vpu.mp.service.foundation.MenuUtil.MenuIndex;
 import com.vpu.mp.service.foundation.Util;
+import com.vpu.mp.service.shop.ShopApplication;
 
 /**
  * 
@@ -90,5 +91,21 @@ public class AdminBaseController extends BaseController {
 	protected Byte getShopFlag() {
 		ShopRecord shop = saas.shop.getShopById(adminAuth.shopId());
 		return shop == null ? 0 : shop.getShopFlag();
+	}
+	
+	/**
+	 * 得到当前登录店铺
+	 * @return
+	 */
+	protected ShopApplication shop() {
+		return saas.getShopApp(adminAuth.shopId());
+	}
+	
+	/**
+	 * 得到登录店铺ID
+	 * @return
+	 */
+	protected Integer shopId() {
+		return adminAuth.shopId();
 	}
 }

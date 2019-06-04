@@ -27,7 +27,7 @@
     <script src="/js/layui/layui.js?v=1.0.7" type="text/javascript"></script>
     <script language="JavaScript" src="/js/artDialog/jquery.artDialog.js?skin=opera"></script>
     <script language="JavaScript" src="/js/artDialog/plugins/iframeTools.source.js?v=1.0.8"></script>
-    <script language="JavaScript" src="/js/admin/lang/{{ config("app.locale")!}/util.js?v=1.0.10"></script>
+    <script language="JavaScript" src="/js/admin/lang/zh-CN/util.js?v=1.0.10"></script>
     <script language="JavaScript" src="/js/admin/util.js?v=1.1.10"></script>
     <script language="JavaScript" src="/js/admin/table.js?v=1.0.6"></script>
 

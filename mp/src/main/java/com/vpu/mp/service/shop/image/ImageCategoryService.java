@@ -1,17 +1,21 @@
 package com.vpu.mp.service.shop.image;
 
 import com.vpu.mp.service.foundation.BaseService;
-import static com.vpu.mp.db.shop.tables.UploadedImage.UPLOADED_IMAGE;
+import com.vpu.mp.service.shop.image.ImageCategoryService.ZTreeCategory;
+
+import lombok.Data;
+
 import static com.vpu.mp.db.shop.tables.UploadedImageCategory.UPLOADED_IMAGE_CATEGORY;
 
 import java.util.ArrayList;
-import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
-import java.util.Stack;
+import java.util.Map;
 
 import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.jooq.Result;
+import org.jooq.SelectWhereStep;
 import org.jooq.impl.DSL;
 import org.jooq.types.UInteger;
 
@@ -106,6 +110,12 @@ public class ImageCategoryService extends BaseService {
 		return db().fetch(UPLOADED_IMAGE_CATEGORY);
 	}
 
+	/**
+	 * 移动分类
+	 * @param catId
+	 * @param newParentId
+	 * @return
+	 */
 	public int moveCategory(Integer catId, Integer newParentId) {
 		UploadedImageCategoryRecord record = this.getCategoryById(catId);
 		if (record == null) {
@@ -126,21 +136,6 @@ public class ImageCategoryService extends BaseService {
 				.execute();
 	}
 
-//	public function moveCategory($id, $newParentId)
-//    {
-//        $category = $this->getRow($id);
-//        if (!$category) return 0;
-//        $parentCategory = $newParentId ? $this->getRow($newParentId) : null;
-//        $levelDiff = $parentCategory ? $parentCategory->level + 1 - $category->level : 0 - $category->level;
-//        $oldCatIdsPrefix = $category->cat_ids;
-//        $newCatIdsPrefix = $parentCategory ? $parentCategory->cat_ids . "," . $category->img_cat_id : $category->img_cat_id;
-//        $this->getTableBuilder()->where("img_cat_id", $id)->update(["img_cat_parent_id" => $newParentId]);
-//        return $this->db->update(
-//            "update " . tbl($this->tableName) . " set cat_ids=concat(?,substring(cat_ids,?)),level = level+? where cat_ids like ?",
-//            [$newCatIdsPrefix, strlen($oldCatIdsPrefix) + 1, $levelDiff, $oldCatIdsPrefix . "%"]
-//        );
-//    }
-
 	public UInteger[] getUpCatIds(Integer catId) {
 		List<UInteger> catIds = new ArrayList<UInteger>();
 		if (catId > 0) {
@@ -154,9 +149,9 @@ public class ImageCategoryService extends BaseService {
 				catIds.add(cat.getImgCatId());
 				parentCatId = cat.getImgCatParentId();
 			}
-			Object[] ids = catIds.toArray();
+			UInteger[] ids = catIds.toArray(new UInteger[0]);
 			ArrayUtils.reverse(ids);
-			return (UInteger[]) ids;
+			return ids;
 		}
 		return catIds.toArray(new UInteger[0]);
 	}
@@ -178,18 +173,124 @@ public class ImageCategoryService extends BaseService {
 	 * @param catId
 	 * @return
 	 */
-	public UploadedImageCategoryRecord getParentCategory(Integer catId) {
-		return db().selectFrom(UPLOADED_IMAGE_CATEGORY).where(UPLOADED_IMAGE_CATEGORY.IMG_CAT_PARENT_ID.eq(catId))
+	public UploadedImageCategoryRecord getParentCategory(Integer parentCatId) {
+		return db()
+				.selectFrom(UPLOADED_IMAGE_CATEGORY)
+				.where(UPLOADED_IMAGE_CATEGORY.IMG_CAT_PARENT_ID.eq(parentCatId))
 				.fetchOne();
 	}
 
-//	public function addRow(array $data)
-//    {
-//        $catId = parent::addRow($data);
-//        $catIds = $this->getUpCatIds($catId);
-//        $data = [];
-//        $data['cat_ids'] = implode(",", $catIds);
-//        $data['level'] = count($catIds) - 1;
-//        return $this->updateRow($catId, $data);
-//    }
+	/**
+	 * 判断是否有子分类
+	 * 
+	 * @param parentCatId
+	 * @return
+	 */
+	public boolean hasChildCategory(Integer parentCatId) {
+		return db().fetchCount(UPLOADED_IMAGE_CATEGORY, UPLOADED_IMAGE_CATEGORY.IMG_CAT_PARENT_ID.eq(parentCatId)) > 0;
+	}
+	
+	final public static class CategoryMap {
+		public Map<Integer, UploadedImageCategoryRecord> map = new HashMap<Integer, UploadedImageCategoryRecord>();
+		public Map<Integer, List<UploadedImageCategoryRecord>> parent = new HashMap<Integer, List<UploadedImageCategoryRecord>>();
+	}
+
+	/**
+	 * 得到指定等级的分类树
+	 * @param maxLevel
+	 * @return
+	 */
+	public Result<UploadedImageCategoryRecord> getCategoryTree(Byte maxLevel) {
+		Result<UploadedImageCategoryRecord> result = db().fetch(UPLOADED_IMAGE_CATEGORY, DSL.falseCondition());
+		CategoryMap catMap = this.getCategoryMap(maxLevel);
+		getChildCategoryTree(catMap.parent.get(0), catMap, result);
+		return result;
+	}
+
+	/**
+	 * 递归获取分类树
+	 * @param list
+	 * @param catMap
+	 * @param result
+	 */
+	protected void getChildCategoryTree(List<UploadedImageCategoryRecord> list, CategoryMap catMap,
+			Result<UploadedImageCategoryRecord> result) {
+		if (list == null) {
+			return;
+		}
+		for (UploadedImageCategoryRecord record : list) {
+			result.add(record);
+			List<UploadedImageCategoryRecord> childCats = catMap.parent.get(record.getImgCatId().intValue());
+			getChildCategoryTree(childCats, catMap, result);
+		}
+	}
+
+	/**
+	 * 得到最大等级
+	 * @return
+	 */
+	public Integer getCategoryMaxLevel() {
+		return (Integer) db().select(DSL.max(UPLOADED_IMAGE_CATEGORY.LEVEL)).from(UPLOADED_IMAGE_CATEGORY).fetchOne(0);
+	}
+
+	
+	/**
+	 * 得到分类Map
+	 * @param maxLevel
+	 * @return
+	 */
+	protected CategoryMap getCategoryMap(Byte maxLevel) {
+		CategoryMap result = new CategoryMap();
+		SelectWhereStep<UploadedImageCategoryRecord> select = db().selectFrom(UPLOADED_IMAGE_CATEGORY);
+		if (maxLevel != -1) {
+			select.where(UPLOADED_IMAGE_CATEGORY.LEVEL.le(maxLevel));
+		}
+		select.orderBy(UPLOADED_IMAGE_CATEGORY.IMG_CAT_PARENT_ID.asc(),
+				UPLOADED_IMAGE_CATEGORY.SORT.desc(),
+				UPLOADED_IMAGE_CATEGORY.IMG_CAT_ID.asc());
+		Result<UploadedImageCategoryRecord> records = select.fetch();
+		for (UploadedImageCategoryRecord record : records) {
+			result.map.put(record.getImgCatId().intValue(), record);
+			List<UploadedImageCategoryRecord> list = result.parent.get(record.getImgCatParentId());
+			if (list == null) {
+				list = new ArrayList<UploadedImageCategoryRecord>();
+				result.parent.put(record.getImgCatParentId(), list);
+			}
+			list.add(record);
+		}
+		return result;
+	}
+ 
+	@Data
+	final public static class ZTreeCategory {
+		public Integer id = 0;
+		public String name = "";
+		public Boolean open = true;
+		public Integer pId = 0;
+	}
+
+	/**
+	 * 得到ZTree图片目录列表
+	 * 
+	 * @param openId
+	 * @return
+	 */
+	public List<ZTreeCategory> getImageCategoryForZTree(Integer openId) {
+		List<ZTreeCategory> result = new ArrayList<ZTreeCategory>();
+		ZTreeCategory root = new ZTreeCategory();
+		root.name = "我的图片";
+		result.add(root);
+		Result<UploadedImageCategoryRecord> records = this.getAll();
+		for (UploadedImageCategoryRecord record : records) {
+			ZTreeCategory cat = new ZTreeCategory();
+			cat.id = record.getImgCatId().intValue();
+			cat.name = record.getImgCatName();
+			cat.pId = record.getImgCatParentId();
+			cat.open = cat.pId == 0 || openId != null && openId == cat.id;
+//			result.add(cat);
+		}
+		return result;
+	}
+
+
 }

@@ -2,6 +2,7 @@ package com.vpu.mp.service.shop;
 
 import com.vpu.mp.service.foundation.Util;
 import com.vpu.mp.service.shop.goods.GoodsService;
+import com.vpu.mp.service.shop.image.ImageService;
 /**
  * 
  * @author 新国
@@ -10,6 +11,7 @@ import com.vpu.mp.service.shop.goods.GoodsService;
 public class ShopApplication {
 
 	public GoodsService goods;
+	public ImageService image;
 
 	protected Integer shopId = 0;
 

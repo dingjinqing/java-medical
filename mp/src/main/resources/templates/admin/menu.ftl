@@ -189,8 +189,8 @@
 
 <script>
   var default_localurl='${top_index!0}';
-  var sub_index = parseInt("${sub_index!0}');
-  var top_index = parseInt("${top_index!0}');
+  var sub_index = parseInt("${sub_index!0}");
+  var top_index = parseInt("${top_index!0}");
 </script>
 <#noparse>
 

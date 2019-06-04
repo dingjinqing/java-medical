@@ -15,6 +15,8 @@ import com.vpu.mp.db.main.tables.records.ShopRecord;
 import com.vpu.mp.service.foundation.Util;
 import com.vpu.mp.service.saas.SaasApplication;
 
+import lombok.Data;
+
 /**
  * 
  * @author 新国
@@ -23,43 +25,20 @@ import com.vpu.mp.service.saas.SaasApplication;
 @Component
 public class AdminAuth {
 
-	final public static class ShopLoginParam {
+	@Data
+	public static class ShopLoginParam {
 		public String username;
 		public String subUsername;
 		public String password;
 		public Integer isSubLogin;
+	};
 
-		public Integer getIsSubLogin() {
-			return isSubLogin;
-		}
-
-		public void setIsSubLogin(Integer isSubLogin) {
-			this.isSubLogin = isSubLogin;
-		}
-
-		public String getUsername() {
-			return username;
-		}
-
-		public void setUsername(String username) {
-			this.username = username;
-		}
-
-		public String getSubUsername() {
-			return subUsername;
-		}
-
-		public void setSubUsername(String subUsername) {
-			this.subUsername = subUsername;
-		}
-
-		public String getPassword() {
-			return password;
-		}
-
-		public void setPassword(String password) {
-			this.password = password;
-		}
+	@Data
+	public static class ShopLoginSession {
+		public ShopRecord shop;
+		public ShopAccountRecord mainAccount;
+		public ShopChildAccountRecord subAccount;
+		public Integer roleId = 0;
 	};
 
 	@Autowired
@@ -68,19 +47,11 @@ public class AdminAuth {
 	SaasApplication saas = SaasApplication.instance();
 
 	public boolean isLogin() {
-		HashMap<String, Object> user = user();
-		if (user != null) {
-			return Util.getInteger(user.get("sys_id")) > 0;
-		}
-		return false;
+		return user() != null;
 	}
 
 	public boolean isShopLogin() {
-		HashMap<String, Object> user = user();
-		if (user != null) {
-			return Util.convert(user.get("shop_id"), Integer.class, 0) > 0;
-		}
-		return false;
+		return isLogin() && user().shop != null;
 	}
 
 	public void logout() {
@@ -110,58 +81,29 @@ public class AdminAuth {
 		if (param.isSubLogin != null && param.isSubLogin == 1) {
 			ShopChildAccountRecord subAccount = saas.shop.subAccount.verify(user.getSysId(), param.subUsername,
 					param.password);
-			setLoginSession(false, subAccount, null);
+			setLoginSession(null, subAccount, null,0);
 		} else {
 			ShopAccountRecord mainAccount = saas.shop.accout.verify(param.username, param.password);
-			setLoginSession(true, mainAccount, null);
+			setLoginSession(mainAccount, null, null,0);
 		}
 
 		return true;
 	}
 
-	protected void setLoginSession(boolean isMainAccount, Object user, ShopRecord shop) {
-		HashMap<String, Object> map = new HashMap<String, Object>(10);
-		if (isMainAccount) {
-			ShopAccountRecord mainAccount = (ShopAccountRecord) user;
-			map.put("sys_id", mainAccount.getSysId());
-			map.put("user_name", mainAccount.getUserName());
-			map.put("account_name", mainAccount.getAccountName());
-			map.put("mobile", mainAccount.getMobile());
-			map.put("sub_account_id", 0);
-			map.put("is_sub_account", 0);
-			map.put("shop", shop == null ? null : shop.intoMap());
-			map.put("user", mainAccount.intoMap());
-			map.put("shop_id", shop == null ? 0 : shop.getShopId());
-			map.put("shop_avatar", shop == null ? "" : shop.getShopAvatar());
-			map.put("role_id", 0);
-			session("shop_login_user", map);
-		} else {
-			ShopChildAccountRecord subAccount = (ShopChildAccountRecord) user;
-			map.put("sys_id", subAccount.getSysId());
-			map.put("user_name", subAccount.getAccountName());
-			map.put("account_name", subAccount.getAccountName());
-			map.put("mobile", subAccount.getMobile());
-			map.put("sub_account_id", subAccount.getAccountId());
-			map.put("is_sub_account", 1);
-			map.put("shop", shop == null ? null : shop.intoMap());
-			map.put("user", subAccount.intoMap());
-			map.put("shop_id", shop == null ? 0 : shop.getShopId());
-			map.put("shop_avatar", shop == null ? "" : shop.getShopAvatar());
-			Integer roleId = -1;
-			if (shop != null) {
-				roleId = saas.shop.getShopAccessRoleId(subAccount.getSysId(), shop.getShopId(),
-						subAccount.getAccountId());
-			}
-			map.put("role_id", roleId);
-			session("shop_login_user", map);
-		}
+	protected void setLoginSession(ShopAccountRecord mainAccount, ShopChildAccountRecord subAccount, ShopRecord shop,Integer roleId) {
+		ShopLoginSession user = new ShopLoginSession();
+		user.setMainAccount(mainAccount);
+		user.setShop(shop);
+		user.setSubAccount(subAccount);
+		user.setRoleId(roleId);
+		session("shop_login_user", user);
 	}
 
 	public boolean switchShopLogin(Integer shopId) {
 		if (!isLogin()) {
 			return false;
 		}
-		if (shopId() == shopId) {
+		if (this.isShopLogin() && user().getShop().getShopId() == shopId) {
 			return true;
 		}
 		ShopRecord shop = saas.shop.getShopById(shopId);
@@ -178,44 +120,39 @@ public class AdminAuth {
 				return false;
 			}
 		}
-		if (subAccountId() == 0) {
+
+		if (!isChildLogin()) {
 			ShopAccountRecord mainAccount = saas.shop.accout.getAccountInfoForID(sysId());
-			setLoginSession(true, mainAccount, shop);
+			setLoginSession( mainAccount, null,shop,roleId);
 		} else {
 			ShopChildAccountRecord subAccount = saas.shop.subAccount.getSubAccountInfo(sysId(), subAccountId());
-			setLoginSession(false, subAccount, shop);
+			setLoginSession(null, subAccount, shop,roleId);
 		}
 		return true;
 	}
 
-	@SuppressWarnings("unchecked")
-	public HashMap<String, Object> user() {
-		return (HashMap<String, Object>) session("shop_login_user");
-	}
-	
-	@SuppressWarnings("unchecked")
-	public Map<String, Object> userInfo() {
-		return isLogin() ? (Map<String, Object>)user().get("user") : null;
+	public ShopLoginSession user() {
+		return (ShopLoginSession) session("shop_login_user");
 	}
 
 	public boolean isChildLogin() {
-		return isLogin() && Util.getInteger(user().get("is_sub_account")) == 1;
+		return isLogin() && user().subAccount != null;
 	}
 
 	public Integer roleId() {
-		return isLogin() ? Util.getInteger(user().get("role_id")) : -1;
+		return isLogin() ? user().roleId : -1;
 	}
 
 	public Integer sysId() {
-		return isLogin() ? Util.getInteger(user().get("sys_id")) : 0;
+		return isLogin() ? (isChildLogin() ? user().subAccount.getSysId() : user().mainAccount.getSysId()) : -1;
 	}
 
 	public Integer shopId() {
-		return isLogin() ? Util.getInteger(user().get("shop_id")) : 0;
+		return isShopLogin() ? user().shop.getShopId() : -1;
 	}
 
 	public Integer subAccountId() {
-		return isChildLogin() ? Util.getInteger(user().get("sub_account_id")) : 0;
+		return isChildLogin() ? user().subAccount.getAccountId() : -1;
 	}
 
 	public HttpSession session() {

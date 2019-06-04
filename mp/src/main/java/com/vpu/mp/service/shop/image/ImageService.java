@@ -1,11 +1,13 @@
 package com.vpu.mp.service.shop.image;
 
+import com.vpu.mp.db.shop.tables.pojos.UploadedImageCategory;
 import com.vpu.mp.db.shop.tables.records.UploadedImageRecord;
 import com.vpu.mp.service.foundation.BaseService;
 import com.vpu.mp.service.foundation.PageResult;
 import com.vpu.mp.service.foundation.Util;
 
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import static com.vpu.mp.db.shop.tables.UploadedImage.UPLOADED_IMAGE;
 import static com.vpu.mp.db.shop.tables.UploadedImageCategory.UPLOADED_IMAGE_CATEGORY;
@@ -16,6 +18,7 @@ import java.io.FileInputStream;
 import java.net.URL;
 import java.net.URLConnection;
 import java.sql.Timestamp;
+import java.time.LocalDateTime;
 import java.util.Calendar;
 import java.util.Iterator;
 import java.util.List;
@@ -40,8 +43,10 @@ import org.jooq.types.UInteger;;
  */
 public class ImageService extends BaseService {
 
+	public ImageCategoryService category;
+
 	@Data
-	final public static class UploadPath {
+	public static class UploadPath {
 		public String relativeFilePath;
 		public String relativeDirectory;
 		public String fullPath;
@@ -68,7 +73,8 @@ public class ImageService extends BaseService {
 	}
 
 	@Data
-	final public static class ImageListQueryParam {
+	@NoArgsConstructor
+	public static class ImageListQueryParam {
 		public Integer page;
 		public Integer imgCatId;
 		public Timestamp startRq;
@@ -80,7 +86,61 @@ public class ImageService extends BaseService {
 		public Integer needImgWidth;
 		public Integer needImgHeight;
 		public Integer uploadSortId;
+		public String act;
+		public String showType;
+		public Integer[] cbxImg;
+		public Integer[] cbxImg2;
+		public Integer setCatId;
+		public String opCatName;
+		public Integer opCatId;
+		public Integer opCatPid;
 	};
+
+	public String processPostRequest(ImageListQueryParam param) {
+		if(param.act == null) {
+			return "";
+		}
+		
+		if ("set_cat_id".equals(param.act)) {
+			db().update(UPLOADED_IMAGE)
+					.set(UPLOADED_IMAGE.UPLOAD_TIME, Timestamp.valueOf(LocalDateTime.now()))
+					.where(UPLOADED_IMAGE.IMG_CAT_ID.eq(param.setCatId))
+					.execute();
+			return "分类设置成功";
+		}
+		
+		if ("del".equals(param.act)) {
+			Integer[] imageIds = "list".equals(param.showType) ? param.cbxImg : param.cbxImg2;
+			db().delete(UPLOADED_IMAGE)
+					.where(UPLOADED_IMAGE.IMG_CAT_ID.in(imageIds))
+					.execute();
+			return "删除成功";
+		}
+		
+		if ("op_cat_rename".equals(param.act)) {
+			db().update(UPLOADED_IMAGE_CATEGORY)
+					.set(UPLOADED_IMAGE_CATEGORY.IMG_CAT_NAME, param.opCatName)
+					.where(UPLOADED_IMAGE.IMG_CAT_ID.eq(param.opCatId))
+					.execute();
+			return "修改名称成功";
+		}
+	
+		if ("op_cat_del".equals(param.act)) {
+			this.category.removeCategory(param.opCatId);
+			return "删除分类成功";
+		}
+		
+		if ("op_cat_add".equals(param.act)) {
+			UploadedImageCategory cat = new UploadedImageCategory();
+			cat.setImgCatName(param.opCatName);
+			cat.setImgCatParentId(param.opCatPid);
+			cat.setShopId(this.shopId);
+			this.category.addCategory(cat);
+			return "添加分类成功";
+		}
+		
+		return "";
+	}
 
 	public PageResult getPageList(ImageListQueryParam param) {
 		SelectWhereStep<Record> select = db()
@@ -238,6 +298,7 @@ public class ImageService extends BaseService {
 
 	/**
 	 * 添加外链图片到数据库
+	 * 
 	 * @param imageUrl
 	 * @return
 	 */
@@ -263,6 +324,7 @@ public class ImageService extends BaseService {
 
 	/**
 	 * 图片URL
+	 * 
 	 * @param relativePath
 	 * @return
 	 */
@@ -272,6 +334,7 @@ public class ImageService extends BaseService {
 
 	/**
 	 * 本地全路径
+	 * 
 	 * @param relativePath
 	 * @return
 	 */
@@ -281,6 +344,7 @@ public class ImageService extends BaseService {
 
 	/**
 	 * 得到相对路径
+	 * 
 	 * @param type
 	 * @return
 	 */
@@ -313,6 +377,7 @@ public class ImageService extends BaseService {
 
 	/**
 	 * 强制创建目录，支持多目录
+	 * 
 	 * @param fullPath
 	 * @return
 	 */
@@ -326,6 +391,7 @@ public class ImageService extends BaseService {
 
 	/**
 	 * 随机文件名
+	 * 
 	 * @return
 	 */
 	public String randomFilename() {
@@ -334,6 +400,7 @@ public class ImageService extends BaseService {
 
 	/**
 	 * 得到图片扩展名
+	 * 
 	 * @param pathOrUrl
 	 * @return
 	 */
