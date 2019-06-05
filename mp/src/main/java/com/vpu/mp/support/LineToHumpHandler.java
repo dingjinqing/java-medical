@@ -74,23 +74,27 @@ public class LineToHumpHandler extends HandlerMethodArgumentResolverComposite {
 				for (Map.Entry<String, String[]> map : parameterMap.entrySet()) {
 					String paramName = map.getKey();
 					String[] paramValue = map.getValue();
-					Field[] declaredFields = obj.getClass().getDeclaredFields(); 
+					String underLineParamName = underLineToCamel(paramName);
+					Field[] declaredFields = obj.getClass().getDeclaredFields();
 					for (Field declaredField : declaredFields) {
 						// 如果pojo里有带下划线则直接设置
-						if (declaredField.getName().contains("_") && paramName.equals(declaredField.getName())) {
-							wrapper.setPropertyValue(paramName, paramValue);
+						String fieldName = declaredField.getName();
+						String fieldArrName = fieldName + "[]";
+						if (fieldName.contains("_")
+								&& (fieldName.equals(paramName) || fieldArrName.equals(paramName))) {
+							wrapper.setPropertyValue(fieldName, paramValue);
 							break;
 						}
-						String underLineParamName = underLineToCamel(paramName);
-						if (declaredField.getName().equals(underLineParamName)) {
+
+						if (fieldName.equals(underLineParamName) || fieldArrName.equals(underLineParamName)) {
 							if (declaredField.getType().getName().equals("java.sql.Timestamp")) {
-								if(paramValue.length == 0 || StringUtils.isEmpty(paramValue[0])){
-									wrapper.setPropertyValue(underLineParamName,null);
-								}else {
-									wrapper.setPropertyValue(underLineParamName, Timestamp.valueOf(paramValue[0]));	
+								if (paramValue.length == 0 || StringUtils.isEmpty(paramValue[0])) {
+									wrapper.setPropertyValue(fieldName, null);
+								} else {
+									wrapper.setPropertyValue(fieldName, Timestamp.valueOf(paramValue[0]));
 								}
 							} else {
-								wrapper.setPropertyValue(underLineParamName, paramValue);
+								wrapper.setPropertyValue(fieldName, paramValue);
 							}
 							break;
 						}

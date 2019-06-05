@@ -10,6 +10,7 @@ import java.net.InetAddress;
 import java.net.UnknownHostException;
 import java.nio.charset.StandardCharsets;
 import java.sql.Timestamp;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
@@ -24,6 +25,7 @@ import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.ArrayUtils;
 import org.jooq.exception.DataTypeException;
 import org.jooq.tools.Convert;
+import org.jooq.types.UInteger;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.core.io.support.PropertiesLoaderUtils;
 import org.springframework.util.DigestUtils;
@@ -234,5 +236,36 @@ public class Util {
 		return min + rnd.nextInt(max - min);
 	}
 	
+	public static final List<Integer> convertToIntegers(List<UInteger> nums) {
+		 List<Integer> result = new ArrayList<Integer>();
+		 for(UInteger n : nums) {
+			 result.add(n.intValue());
+		 }
+		 return result;
+	}
+	
+	public static final List<UInteger> convertToUIntegers(List<Integer> nums) {
+		 List<UInteger> result = new ArrayList<UInteger>();
+		 for(Integer n : nums) {
+			 result.add(UInteger.valueOf(n));
+		 }
+		 return result;
+	}
+	
+	public static final Integer[] convertToIntegers(UInteger[]  nums) {
+		Integer[] result  = new Integer[nums.length];
+		 for(int i=0;i<nums.length;i++) {
+			 result[i] = nums[i].intValue();
+		 }
+		 return result;
+	}
+	
+	public static final UInteger[] convertToUIntegers(Integer[]  nums) {
+		UInteger[] result  = new UInteger[nums.length];
+		 for(int i=0;i<nums.length;i++) {
+			 result[i] = UInteger.valueOf(nums[i]);
+		 }
+		 return result;
+	}
 
 }

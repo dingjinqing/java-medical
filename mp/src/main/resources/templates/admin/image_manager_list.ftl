@@ -181,7 +181,7 @@
                             </div>
                             <select name="upload_sort_id" id="upload_sort_id">
                                 <#list upload_sort_list as item>
-                                    <option value="${item?index}"  <#if  (upload_sort_id!0 == item?index)> selected="selected" </#if> >${item!}</option>
+                                    <option value="${item?index}"  <#if input_map.upload_sort_id?? &&  (input_map.upload_sort_id?number == item?index)> selected="selected" </#if> >${item!}</option>
                                 </#list>
                             </select>
 
@@ -190,13 +190,14 @@
                             <input type='submit' name="search" class="btn_sech"
                                    value="搜索">
 
-                            <#if ("${input_map['search_need']!}" !="") ||  ("${input_map['need_img_height']!}" != "") >
+                            <#if ("${input_map['search_need']!}" !="") ||  input_map['need_img_height']?? && (input_map['need_img_height']?number > 0) >
                                 <label style="font-size: 12px"
-                                       title="所需图片必须满足： <#if  ("${input_map['need_img_width']!}" != "")>宽度=${input_map['need_img_width']!}px </#if> <#if  ("${input_map['need_img_height']!}" != "")  >高度=${input_map['need_img_height']!}px </#if>">
+                                       title="所需图片必须满足： <#if   (input_map['need_img_width']?? && input_map['need_img_width']?number > 0)>宽度=${input_map['need_img_width']!}px </#if> <#if  (input_map['need_img_height']?? && input_map['need_img_height']?number > 0) >高度=${input_map['need_img_height']!}px </#if>">
                                     <input type='checkbox' id="search_need" name="search_need"
                                            <#if  ("${input_map['search_need']!}" !="")> checked </#if> value="1">
-                                    <#if   ("${input_map['need_img_width']!}" != "")>${need_img_width!}px </#if>
-                                    x <#if  ("${input_map['need_img_height']!}" != "")>${need_img_height!}px </#if>
+                                           <#if   (input_map['need_img_width']?? && input_map['need_img_width']?number > 0)>${input_map['need_img_width']!} </#if> 
+                                           <#if  (input_map['need_img_height']?? && input_map['need_img_height']?number > 0) >x${input_map['need_img_height']!} </#if>
+
                                 </label>
                             </#if>
 
@@ -230,7 +231,7 @@
                                                    img_width="${item.img_width!}"
                                                    img_height="${item.img_height!}"
                                                    img_path="${item.img_path!}"
-                                                   <#if  (crop_img_id == item.img_id)>checked </#if>
+                                                   <#if  ("${input_map['crop_img_id']!0}" == "${item.img_id}")>checked </#if>
                                             >
                                             <span title="${item.img_name!}">${item.img_name!}</span>
                                         </div>

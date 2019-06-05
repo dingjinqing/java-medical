@@ -149,7 +149,7 @@ public class ImageCategoryService extends BaseService {
 			}
 			Integer parentCatId = cat.getImgCatParentId();
 			while (parentCatId > 0) {
-				cat = this.getParentCategory(parentCatId);
+				cat = this.getCategoryById(parentCatId);
 				catIds.add(cat.getImgCatId());
 				parentCatId = cat.getImgCatParentId();
 			}
@@ -171,18 +171,6 @@ public class ImageCategoryService extends BaseService {
 				.where(UPLOADED_IMAGE_CATEGORY.IMG_CAT_ID.eq(UInteger.valueOf(catId))).fetchOne();
 	}
 
-	/**
-	 * 得到父节点分类
-	 * 
-	 * @param catId
-	 * @return
-	 */
-	public UploadedImageCategoryRecord getParentCategory(Integer parentCatId) {
-		return db()
-				.selectFrom(UPLOADED_IMAGE_CATEGORY)
-				.where(UPLOADED_IMAGE_CATEGORY.IMG_CAT_PARENT_ID.eq(parentCatId))
-				.fetchOne();
-	}
 
 	/**
 	 * 判断是否有子分类
@@ -219,7 +207,7 @@ public class ImageCategoryService extends BaseService {
 	 */
 	protected void getChildCategoryTree(List<UploadedImageCategoryRecord> list, CategoryMap catMap,
 			Result<UploadedImageCategoryRecord> result) {
-		if (list == null) {
+		if (list == null || list.size() == 0) {
 			return;
 		}
 		for (UploadedImageCategoryRecord record : list) {
