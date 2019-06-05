@@ -1,5 +1,6 @@
 package com.vpu.mp.service.auth;
 
+import java.io.Serializable;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -34,7 +35,8 @@ public class AdminAuth {
 	};
 
 	@Data
-	public static class ShopLoginSession {
+	public static class ShopLoginSession implements Serializable {
+		private static final long serialVersionUID = 1L;
 		public ShopRecord shop;
 		public ShopAccountRecord mainAccount;
 		public ShopChildAccountRecord subAccount;

@@ -7,6 +7,8 @@ import lombok.Data;
 
 import static com.vpu.mp.db.shop.tables.UploadedImageCategory.UPLOADED_IMAGE_CATEGORY;
 
+import java.sql.Timestamp;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -36,6 +38,7 @@ public class ImageCategoryService extends BaseService {
 	 */
 	public UploadedImageCategoryRecord addCategory(UploadedImageCategory cat) {
 		UploadedImageCategoryRecord record = db().newRecord(UPLOADED_IMAGE_CATEGORY, cat);
+		record.setCreateTime(Timestamp.valueOf(LocalDateTime.now()));
 		record.insert();
 		UInteger[] catIds = getUpCatIds(record.getImgCatId().intValue());
 		record.setCatIds(StringUtils.join(catIds));

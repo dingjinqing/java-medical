@@ -10,7 +10,6 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import net.coobird.thumbnailator.Thumbnails;
-import net.coobird.thumbnailator.geometry.Position;
 
 import static com.vpu.mp.db.shop.tables.UploadedImage.UPLOADED_IMAGE;
 import static com.vpu.mp.db.shop.tables.UploadedImageCategory.UPLOADED_IMAGE_CATEGORY;
@@ -297,6 +296,7 @@ public class ImageService extends BaseService {
 			image.setImgHeight(imageInfo.getHeight());
 			image.setImgCatId(catId == null ? 0 : catId);
 			image.setShopId(this.getShopId());
+			image.setUploadTime(Timestamp.valueOf(LocalDateTime.now()));
 			image.insert();
 			return image;
 		}
