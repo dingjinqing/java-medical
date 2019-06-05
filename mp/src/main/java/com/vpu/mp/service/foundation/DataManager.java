@@ -38,7 +38,7 @@ public class DataManager {
 	protected String shopPassword;
 	protected String shopDbPrefix;
 
-	protected String driver = "com.mysql.jdbc.Driver";
+	protected String driver = "com.mysql.cj.jdbc.Driver";
 	protected String dialect = "MYSQL";
 
 	private DefaultDSLContext db = null;
@@ -251,7 +251,7 @@ public class DataManager {
 	protected DefaultConfiguration configuration(BasicDataSource dataSource) {
 		DefaultConfiguration jooqConfiguration = new DefaultConfiguration();
 		jooqConfiguration.set(new DataSourceConnectionProvider(dataSource));
-		jooqConfiguration.set(new DefaultExecuteListenerProvider(new ExceptionTranslator()));
+		jooqConfiguration.set(new DefaultExecuteListenerProvider(new SqlExcuteListener()));
 		SQLDialect dialect = SQLDialect.valueOf(this.dialect);
 		jooqConfiguration.set(dialect);
 		

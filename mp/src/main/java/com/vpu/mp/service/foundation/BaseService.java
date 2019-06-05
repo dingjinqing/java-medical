@@ -5,6 +5,8 @@ import java.util.Map;
 import org.jooq.Result;
 import org.jooq.SelectLimitStep;
 import org.jooq.impl.DefaultDSLContext;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.vpu.mp.service.saas.SaasApplication;
 
@@ -102,5 +104,9 @@ public class BaseService {
 			}
 		}
 		return false;
+	}
+	
+	protected Logger logger() {
+		return LoggerFactory.getLogger(this.getClass());
 	}
 }

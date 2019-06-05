@@ -97,40 +97,45 @@ public class ImageService extends BaseService {
 	};
 
 	public String processPostRequest(ImageListQueryParam param) {
-		if(param.act == null) {
+		if (param.act == null) {
 			return "";
 		}
-		
-		if ("set_cat_id".equals(param.act)) {
+		String actSetCatId = "set_cat_id";
+		String actDel = "del";
+		String actRenameCatName = "op_cat_rename";
+		String actDelCat = "op_cat_del";
+		String actAddCat = "op_cat_add";
+
+		if (actSetCatId.equals(param.act)) {
 			db().update(UPLOADED_IMAGE)
 					.set(UPLOADED_IMAGE.UPLOAD_TIME, Timestamp.valueOf(LocalDateTime.now()))
 					.where(UPLOADED_IMAGE.IMG_CAT_ID.eq(param.setCatId))
 					.execute();
 			return "分类设置成功";
 		}
-		
-		if ("del".equals(param.act)) {
+
+		if (actDel.equals(param.act)) {
 			Integer[] imageIds = "list".equals(param.showType) ? param.cbxImg : param.cbxImg2;
 			db().delete(UPLOADED_IMAGE)
 					.where(UPLOADED_IMAGE.IMG_CAT_ID.in(imageIds))
 					.execute();
 			return "删除成功";
 		}
-		
-		if ("op_cat_rename".equals(param.act)) {
+
+		if (actRenameCatName.equals(param.act)) {
 			db().update(UPLOADED_IMAGE_CATEGORY)
 					.set(UPLOADED_IMAGE_CATEGORY.IMG_CAT_NAME, param.opCatName)
 					.where(UPLOADED_IMAGE.IMG_CAT_ID.eq(param.opCatId))
 					.execute();
 			return "修改名称成功";
 		}
-	
-		if ("op_cat_del".equals(param.act)) {
+
+		if (actDelCat.equals(param.act)) {
 			this.category.removeCategory(param.opCatId);
 			return "删除分类成功";
 		}
-		
-		if ("op_cat_add".equals(param.act)) {
+
+		if (actAddCat.equals(param.act)) {
 			UploadedImageCategory cat = new UploadedImageCategory();
 			cat.setImgCatName(param.opCatName);
 			cat.setImgCatParentId(param.opCatPid);
@@ -138,7 +143,7 @@ public class ImageService extends BaseService {
 			this.category.addCategory(cat);
 			return "添加分类成功";
 		}
-		
+
 		return "";
 	}
 

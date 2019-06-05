@@ -2,6 +2,8 @@ package com.vpu.mp.controller.admin;
 
 import java.util.List;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.ui.ModelMap;
 import org.springframework.web.servlet.ModelAndView;
@@ -110,6 +112,15 @@ public class AdminBaseController extends BaseController {
 	 * @return
 	 */
 	protected Integer shopId() {
+		assert(adminAuth.shopId() > 0);
 		return adminAuth.shopId();
+	}
+	
+	/**
+	 * 日志
+	 * @return
+	 */
+	protected Logger logger() {
+		return LoggerFactory.getLogger(this.getClass());
 	}
 }

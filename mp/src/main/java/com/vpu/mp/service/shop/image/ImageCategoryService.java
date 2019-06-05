@@ -1,7 +1,7 @@
 package com.vpu.mp.service.shop.image;
 
 import com.vpu.mp.service.foundation.BaseService;
-import com.vpu.mp.service.shop.image.ImageCategoryService.ZTreeCategory;
+import com.vpu.mp.service.shop.image.ImageCategoryService.CategoryTreeItem;
 
 import lombok.Data;
 
@@ -21,7 +21,11 @@ import org.jooq.types.UInteger;
 
 import com.vpu.mp.db.shop.tables.pojos.UploadedImageCategory;
 import com.vpu.mp.db.shop.tables.records.UploadedImageCategoryRecord;
-
+/**
+ * 
+ * @author 新国
+ *
+ */
 public class ImageCategoryService extends BaseService {
 
 	/**
@@ -262,7 +266,7 @@ public class ImageCategoryService extends BaseService {
 	}
  
 	@Data
-	final public static class ZTreeCategory {
+	public static class CategoryTreeItem {
 		public Integer id = 0;
 		public String name = "";
 		public Boolean open = true;
@@ -275,19 +279,19 @@ public class ImageCategoryService extends BaseService {
 	 * @param openId
 	 * @return
 	 */
-	public List<ZTreeCategory> getImageCategoryForZTree(Integer openId) {
-		List<ZTreeCategory> result = new ArrayList<ZTreeCategory>();
-		ZTreeCategory root = new ZTreeCategory();
+	public List<CategoryTreeItem> getImageCategoryForZTree(Integer openId) {
+		List<CategoryTreeItem> result = new ArrayList<CategoryTreeItem>();
+		CategoryTreeItem root = new CategoryTreeItem();
 		root.name = "我的图片";
 		result.add(root);
 		Result<UploadedImageCategoryRecord> records = this.getAll();
 		for (UploadedImageCategoryRecord record : records) {
-			ZTreeCategory cat = new ZTreeCategory();
+			CategoryTreeItem cat = new CategoryTreeItem();
 			cat.id = record.getImgCatId().intValue();
 			cat.name = record.getImgCatName();
 			cat.pId = record.getImgCatParentId();
-			cat.open = cat.pId == 0 || openId != null && openId == cat.id;
-//			result.add(cat);
+			cat.open = cat.pId == 0 || openId != null && openId.equals(cat.id);
+			result.add(cat);
 		}
 		return result;
 	}

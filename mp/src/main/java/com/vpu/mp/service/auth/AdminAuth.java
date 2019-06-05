@@ -136,7 +136,7 @@ public class AdminAuth {
 	}
 	
 	public Map<String,Object> userInfo(){
-		Map<String,Object> map = new HashMap<String,Object>();
+		Map<String,Object> map = new HashMap<String,Object>(11);
 		if(!isLogin()) {
 			return map;
 		}

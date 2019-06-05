@@ -248,7 +248,7 @@ public class ShopVersionService extends BaseService {
 
 		ShopVersionRecord version = this.getVersionByLevel(shop.getShopType());
 
-		Map<String, Object> shopMap = new HashMap<String, Object>();
+		Map<String, Object> shopMap = new HashMap<String, Object>(10);
 		shopMap.put("version_name", version.getVersionName());
 		shopMap.put("num", getConfigNumber(config, modName));
 
@@ -258,7 +258,7 @@ public class ShopVersionService extends BaseService {
 			map.put("num", getConfigNumber(cfg, modName));
 		}
 
-		Map<String, Object> result = new HashMap<String, Object>(0);
+		Map<String, Object> result = new HashMap<String, Object>(2);
 		result.put("self", shopMap);
 		result.put("all", allVersions);
 		
