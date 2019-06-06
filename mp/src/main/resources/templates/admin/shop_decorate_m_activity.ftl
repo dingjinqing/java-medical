@@ -162,14 +162,11 @@
                 </td>
             </tr>
         </table>
-        {{--<div style="margin-top:15px;">--!}
-            {{--<input class="btn btn-primary queren" type='button' id="ok" name="ok" value="确定">--!}
-        {{--</div>--!}
+       
     </div>
 </div>
 
 
-{{--客服模块--!}
 <div class="row_item m_service" style="background-color: transparent">
     <div class="service_module">
         <img src="http://${image_domain!}/image/admin/shop_deco/customer1.png" />
@@ -178,8 +175,6 @@
         <span>客服</span>
     </div>
     <div class="item_operation">
-        {{--<img class="up_img" src="http://${image_domain!}/image/admin/new_shop_beautify/add_up_use.png">--!}
-        {{--<img class="down_img" src="http://${image_domain!}/image/admin/new_shop_beautify/add_down.png">--!}
         <img class="del_img" src="http://${image_domain!}/image/admin/new_shop_beautify/add_close.png">
     </div>
     <div class="item_no_data">没有数据</div>
@@ -230,9 +225,7 @@
                 </li>
             </ul>
         </div>
-        {{--<div style="margin-top:15px;">--!}
-            {{--<input class="btn btn-primary queren" type='button' id="ok" name="ok" value="确定" style="margin-left: 72px;" />--!}
-        {{--</div>--!}
+        
     </div>
 </div>
 
@@ -249,8 +242,8 @@
                 <td style="width:80px;padding-right: 0">显示地址：</td>
                 <td style="padding-left: 0">
                     <select name="province" onchange="m_map.changeProvice(this)">
-                        <#list ($province as $item)
-                            <option value="${item->province_id!}">${item->name!}</option>
+                        <#list province as item>
+                            <option value="${item.province_id!}">${item.name!}</option>
                         </#list>
                     </select>
                     <select name="city" onchange="m_map.changeCity(this)">
@@ -289,7 +282,7 @@
 </div>
 
 
-{{--地图模块--!}
+<!-- 地图模块 -->
 <div class="row_item m_map">
     <div class="map_module">
         <div style="border-bottom: 2px dashed #7987aa; margin: 0 10px;" class="clearfix">
@@ -310,14 +303,14 @@
     <div class="item_no_data">没有数据</div>
 </div>
 
-{{-- 视频装修 --!}
+<!--视频装修 -->
 <div class="row_item m_video">
     <div class="no_use" style="display: none;">
         <img src="http://${image_domain!}/image/admin/no_drag_use.png" />该模块仅高级版和旗舰版可用
         <img class="del_img" src="http://${image_domain!}/image/admin/icon_delete.png" style="float: right;margin: 10px 10px 0 0;cursor:pointer;" />
     </div>
     <div class="video_module">
-        <video src="" controls="controls" width="100%" height="200px" {{--style="object-fit: fill;"--!}></video>
+        <video src="" controls="controls" width="100%" height="200px" <!-- style="object-fit: fill;"-->></video>
     </div>
     <div class="item_module_title">
         <span>视频</span>
@@ -381,20 +374,12 @@
                     </div>
                 </td>
             </tr>
-        </table>{{--
-        <div class="text-warning">
-            <img src="/image/admin/notice_img.png" alt="">
-            为保障无线端各种网络环境下正常播放，只支持上传大小不超过10M，时长不超过3分钟的视频
-        </div>--!}
+        </table> 
 
-        {{--<a href="" style="display: none;" class="btn_playa" target="_blank">播放</a>--!}
-        {{--<div style="margin-top:15px;">--!}
-            {{--<input class="btn btn-primary queren" type='button' id="ok" name="ok" value="确定">--!}
-        {{--</div>--!}
+       
     </div>
 </div>
 
-{{--积分兑换模块--!}
 
 <div class="row_item m_integral">
     <div class="no_use" style="display: none;">
@@ -402,7 +387,7 @@
         <img class="del_img" src="http://${image_domain!}/image/admin/icon_delete.png" style="float: right;margin: 10px 10px 0 0;cursor:pointer;" />
     </div>
     <div class="integral_default">
-        {{--双列的样式--!}
+        <!-- 双列的样式-->
         <ul class="integral_default_ul clearfix">
             <li class="double_act">
                 <div class="integral_default_img">
@@ -439,7 +424,7 @@
                 </div>
             </li>
         </ul>
-        {{--单列的样式--!}
+        <!-- 单列的样式-->
         <ul class="integral_ul_clone hide">
             <li class="single_acts clearfix">
                 <div class="integral_default_img">
@@ -529,8 +514,8 @@
                     <th width="30%">商品名称</th>
                     <th width="10%">库存</th>
                     <th width="30%">现金+积分</th>
-                    {{--<th>开始时间</th>
-                    <th>結束时间</th>--!}
+                    <!-- <th>开始时间</th>
+                    <th>結束时间</th>-->
                     <th width="19%">状态</th>
                     <th width="20%">操作</th>
                 </tr>
@@ -554,8 +539,8 @@
                     </td>
                     <td width="10%"></td>
                     <td width="30%"></td>
-                    {{--<td></td>
-                    <td></td>--!}
+                    <!-- <td></td>
+                    <td></td>-->
                     <td width="19%">正常</td>
                     <td width="20%">
                         <span class="integral_select_del">删除</span>
@@ -563,9 +548,9 @@
                 </tr>
             </table>
         </div>
-        {{--<div style="margin-top:15px;">--!}
-            {{--<input class="btn btn-primary queren" type='button' id="ok" name="ok" value="确定">--!}
-        {{--</div>--!}
+        <!-- <div style="margin-top:15px;">-->
+            <!-- <input class="btn btn-primary queren" type='button' id="ok" name="ok" value="确定">-->
+        <!-- </div>-->
     </div>
 </div>
 
@@ -649,14 +634,7 @@
 
 <div class="data_item d_m_official_accounts edit_official_accounts_module">
     <div class="official_accounts_edit_module" style="position:relative;">
-        <!-- <h2>公众号模块</h2>
-        <table cellspacing='1' cellpadding='3'>
-            <tr>
-                <td style="width:100px;">联系微信号</td>
-                <td><input type="text" name="title" id="title" maxlength=20 size="34">
-                    <span style="color:red;">最多20个字</span></td>
-            </tr>
-        </table> -->
+       
         <div style="padding-bottom:10px;border-bottom:1px solid #eee;">引导用户关注公众号功能说明</div>
         <div style="padding:15px 0;">用户通过扫码打开小程序时，可快捷关注公众号</div>
         <p style="font-size: 12px;color: #999;line-height: 25px;">1、在使用此功能前，请前往微信公众平台-小程序后台，在“设置”——“接口设置”——“公众号关注组件中“设置要展示的公众号”</p>
@@ -699,7 +677,6 @@
 </div>
 
 
-{{--店铺公告模块--!}
 <div class="row_item m_shop_announce">
     <div class="shop_announce">
         <img src="http://${image_domain!}/image/admin/m_shop_announce.png" alt="">
@@ -747,4 +724,4 @@
             </div>
         </div>
     </div>
-</div>1
+</div>

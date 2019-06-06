@@ -66,7 +66,7 @@
         </div>
     </div>
 
-    {{--<div style="margin-top: 15px;">--!}
-        {{--<input class="btn btn-primary queren group_btn" type="button" id="ok" name="ok" value="确定">--!}
-    {{--</div>--!}
+    <!-- <div style="margin-top: 15px;"> -->
+        <!-- <input class="btn btn-primary queren group_btn" type="button" id="ok" name="ok" value="确定"> -->
+    <!-- </div> -->
 </div>

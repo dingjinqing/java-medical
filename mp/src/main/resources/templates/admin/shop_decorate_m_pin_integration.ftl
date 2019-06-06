@@ -39,26 +39,26 @@
 <div class="data_item d_m_pin_integration edit_pin_integration_modules">
     <div class="pin_integration_edit_module clearfix" style="position:relative;">
         <h2>组团瓜分积分模块</h2>
-        {{--<table>--!}
-            {{--<tr>--!}
-                {{--<td style="vertical-align: top !important;padding: 0px 0px;width: 55px"><span style=" margin-top: 4px;margin-left: 5px;display: inline-block;">标题：</span></td>--!}
-                {{--<td style="padding: 0px 0px">--!}
-                    {{--<label for="origin"><input type="radio" id="origin" name="pin_title" checked value="1">默认标题：XX(瓜分总积分数量)积分等你拿,购物可抵现金！</label>--!}
-                    {{--<label for="auto"><input type="radio" id="auto" name="pin_title" value="0">自定义：--!}
-                        {{--<input type="text" class="autoo" maxlength="14" style="padding-left: 5px">--!}
-                        {{--<span style="color: #999;font-size: 12px;">限制14字,为空不显示</span>--!}
-                    {{--</label>--!}
+        <!-- <table> -->
+            <!-- <tr> -->
+                <!-- <td style="vertical-align: top !important;padding: 0px 0px;width: 55px"><span style=" margin-top: 4px;margin-left: 5px;display: inline-block;">标题：</span></td> -->
+                <!-- <td style="padding: 0px 0px"> -->
+                    <!-- <label for="origin"><input type="radio" id="origin" name="pin_title" checked value="1">默认标题：XX(瓜分总积分数量)积分等你拿,购物可抵现金！</label> -->
+                    <!-- <label for="auto"><input type="radio" id="auto" name="pin_title" value="0">自定义： -->
+                        <!-- <input type="text" class="autoo" maxlength="14" style="padding-left: 5px"> -->
+                        <!-- <span style="color: #999;font-size: 12px;">限制14字,为空不显示</span> -->
+                    <!-- </label> -->
 
-                {{--</td>--!}
-            {{--</tr>--!}
-            {{--<tr>--!}
-                {{--<td style="vertical-align: top !important;padding: 0px 0px;width: 73px"><span style=" margin-top: 12px;margin-left: 3px;display: inline-block;">隐藏内容：</span></td>--!}
-                {{--<td style="padding: 12px 2px;">--!}
-                    {{--<label for="active_y"><input type="checkbox" id="active_y" name="pin-act"  value="1"> 活动内容</label>--!}
-                    {{--<label for="time_y"><input type="checkbox" id="time_y" name="pin-act" style="margin-left: 15px" value="1">有效期</label>--!}
-                {{--</td>--!}
-            {{--</tr>--!}
-        {{--</table>--!}
+                <!-- </td> -->
+            <!-- </tr> -->
+            <!-- <tr> -->
+                <!-- <td style="vertical-align: top !important;padding: 0px 0px;width: 73px"><span style=" margin-top: 12px;margin-left: 3px;display: inline-block;">隐藏内容：</span></td> -->
+                <!-- <td style="padding: 12px 2px;"> -->
+                    <!-- <label for="active_y"><input type="checkbox" id="active_y" name="pin-act"  value="1"> 活动内容</label> -->
+                    <!-- <label for="time_y"><input type="checkbox" id="time_y" name="pin-act" style="margin-left: 15px" value="1">有效期</label> -->
+                <!-- </td> -->
+            <!-- </tr> -->
+        <!-- </table> -->
         <div class="fl group_select clearfix">
             <span style="float: left;" class="gf_title">标题：</span>
             <div class="set_names" style="float: left">
@@ -106,7 +106,7 @@
             </select>
         </div>
     </div>
-    {{--<div style="margin-top:20px;">--!}
-        {{--<input class="btn btn-primary queren" type='button' id="ok" name="ok" value="确定">--!}
-    {{--</div>--!}
+    <!-- <div style="margin-top:20px;"> -->
+        <!-- <input class="btn btn-primary queren" type='button' id="ok" name="ok" value="确定"> -->
+    <!-- </div> -->
 </div>

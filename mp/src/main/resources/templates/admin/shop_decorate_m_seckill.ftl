@@ -48,11 +48,11 @@
                         <span class="seckill_price new_class">￥<span class="sec_price" style="font-size: 18px;">0</span></span>
                         <span class="seckill_gray" id="seckill_gray">￥<span>0</span></span>
                     </div>
-                    {{--<div class="seckill_info_name">111</div>--!}
-                    {{--<div class="clearfix seckill_info_bottom">--!}
-                        {{--<span class="seckill_num">仅剩10件</span>--!}
-                        {{--<span class="seckill_free_btn">免费拿</span>--!}
-                    {{--</div>--!}
+                    <!-- <div class="seckill_info_name">111</div> -->
+                    <!-- <div class="clearfix seckill_info_bottom"> -->
+                        <!-- <span class="seckill_num">仅剩10件</span> -->
+                        <!-- <span class="seckill_free_btn">免费拿</span> -->
+                    <!-- </div> -->
                 </div>
             </li>
             <li class="single_act clearfix">
@@ -147,9 +147,9 @@
             </div>
         </div>
     </div>
-    {{--<div style="margin-top:15px;">--!}
-        {{--<input class="btn btn-primary queren " type="button" id="ok" name="ok" value="确定" style="margin-left: 110px;">--!}
-    {{--</div>--!}
+    <!-- <div style="margin-top:15px;"> -->
+        <!-- <input class="btn btn-primary queren " type="button" id="ok" name="ok" value="确定" style="margin-left: 110px;"> -->
+    <!-- </div> -->
     <div class="seckill_table_clone hide">
         <table>
             <tr class="seckill_select_tr">

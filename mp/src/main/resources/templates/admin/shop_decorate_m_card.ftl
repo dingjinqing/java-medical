@@ -8,7 +8,7 @@
             <div class="card_type">普通卡</div>
             <div class="card_content clearfix">
                 <div class="card_shop_icon">
-                    <img <#if (empty($shop->shop_avatar)) src="http://${image_domain!}/image/admin/shop_def_y.png" <#else> src="${shop->shop_avatar!}" </#if> alt="">
+                    <img <#if shop.shop_avatar??> src="http://${image_domain!}/image/admin/shop_def_y.png" <#else> src="${shop.shop_avatar!}" </#if> alt="">
                 </div>
                 <div class="card_content_right">
                     <div>会员卡</div>
@@ -57,7 +57,7 @@
     <div class="hidden_card_input">
         <input type="checkbox" name="hidden_card">用户领取后隐藏会员卡
     </div>
-    {{--<div style="margin-top:15px;">--!}
-        {{--<input class="btn btn-primary queren " type="button" id="ok" name="ok" value="确定" style="margin-left: 80px;">--!}
-    {{--</div>--!}
+    <!-- <div style="margin-top:15px;">-->
+        <!-- <input class="btn btn-primary queren " type="button" id="ok" name="ok" value="确定" style="margin-left: 80px;">-->
+    <!-- </div>-->
 </div>

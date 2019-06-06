@@ -69,8 +69,8 @@
                 <td>
                     <select name="category">
                         <option value="0">全部分类</option>
-                        <#list  ($cat_list as $item)
-                            <option value="${item->cat_id!}">${item->cat_name!}</option>
+                        <#list  cat_list as item>
+                            <option value="${item.cat_id!}">${item.cat_name!}</option>
                         </#list>
                     </select>
                 </td>

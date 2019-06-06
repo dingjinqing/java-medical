@@ -298,20 +298,16 @@ public class ShopService extends BaseService {
 		return -1;
 	}
 
-	
-	
-
 	/**
-	 * 得到角色权限对应店铺列表
-	 * `state` '0 入驻申请，1审核通过，2审核不通过',审核不通过不能登录到店铺后台
-	 * `business_state` '营业状态 0未营业 1营业',未营业不能下单，加入购物车，下单接口提示
-	 *  expire_time 过期可以登录到后台，店铺是未营业状态
-	 *  
+	 * 得到角色权限对应店铺列表 `state` '0 入驻申请，1审核通过，2审核不通过',审核不通过不能登录到店铺后台 `business_state`
+	 * '营业状态 0未营业 1营业',未营业不能下单，加入购物车，下单接口提示 expire_time 过期可以登录到后台，店铺是未营业状态
+	 * 
 	 * @param sysId
 	 * @param subAccountId
 	 * @return
 	 */
-	public Result<Record9<Integer,Integer,String,String,Timestamp,Byte,Byte,Byte,String>> getRoleShopList(Integer sysId, Integer subAccountId) {
+	public Result<Record9<Integer, Integer, String, String, Timestamp, Byte, Byte, Byte, String>> getRoleShopList(
+			Integer sysId, Integer subAccountId) {
 		SelectWhereStep<Record9<Integer, Integer, String, String, Timestamp, Byte, Byte, Byte, String>> select = db()
 				.selectDistinct(
 						SHOP.SHOP_ID,
@@ -331,6 +327,21 @@ public class ShopService extends BaseService {
 		}
 		return select.orderBy(SHOP.CREATED.desc())
 				.fetch();
+	}
+
+	public String[] getShopStyle(Integer shopId) {
+		String[] defaultStyle = { "#ff6666", "#fee6e6" };
+		ShopRecord record = this.getShopById(shopId);
+		if (record != null) {
+			String shopStyle = record.getShopStyle();
+			if (shopStyle != null) {
+				String[] arr = shopStyle.split(";");
+				if (arr.length > 1) {
+					return arr[1].split(",");
+				}
+			}
+		}
+		return defaultStyle;
 	}
 
 }

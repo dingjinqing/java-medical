@@ -1,7 +1,7 @@
 
 <div class="row_item m_magic_cube">
     <div class="magic_cube_module">
-        {{--没图片时候的样式，添加图片时隐藏--!}
+        <!-- 没图片时候的样式，添加图片时隐藏 -->
         <div class="no_img_style">
             点击编辑魔方
         </div>
@@ -117,13 +117,13 @@
                     选定布局区域，在下方添加图片
                 </div>
             </li>
-            {{--<li class="clearfix">--!}
-                {{--<span style="vertical-align:middle!important;">图片间隙：</span>--!}
-                {{--<div>--!}
-                    {{--<input type="range" name="points" min="0" max="20" value="0" onchange="$(this).next().val($(this).val())">--!}
-                    {{--<input name="image_space" type="text" value="0">--!}
-                {{--</div>--!}
-            {{--</li>--!}
+            <!-- <li class="clearfix"> -->
+                <!-- <span style="vertical-align:middle!important;">图片间隙：</span> -->
+                <!-- <div> -->
+                    <!-- <input type="range" name="points" min="0" max="20" value="0" onchange="$(this).next().val($(this).val())"> -->
+                    <!-- <input name="image_space" type="text" value="0"> -->
+                <!-- </div> -->
+            <!-- </li> -->
             <li class=" clearfix" style="margin-bottom: 0">
                 <table style="margin-bottom: 0" class="table table-striped cube_block_edit" cellspacing='1' cellpadding='3' hidden>
                     <tr>
@@ -135,7 +135,7 @@
 
                             <div class="deco_add_img">
                                 <a class="op-img" href="javascript:void(0)" style="background: url('/image/admin/shop_beautify/add_decorete.png') no-repeat;background-position: center center;background-size: 65% 65%;width: 100%;height: 100%;display: block;color: #f8f8f8;"></a>
-                                {{--<img src="http://${image_domain!}/image/admin/shop_beautify/add_decorete.png" alt="">--!}
+                                <!-- <img src="http://${image_domain!}/image/admin/shop_beautify/add_decorete.png" alt=""> -->
                             </div><br>
                             <span class="img-tip" style="position: absolute;top: 46px;left: 26%;"></span>
                         </td>

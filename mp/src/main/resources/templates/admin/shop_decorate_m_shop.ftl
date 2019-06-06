@@ -2,13 +2,13 @@
 <div class="row_item m_shop" not_allow_del>
 <div class="shop_module" style="position:relative;">
     <div class="shop_bg"><img src="http://${image_domain!}/image/admin/shop_beautify/beau3.png"/></div>
-    <div class="shop_name">${shop->shop_name!}</div>
+    <div class="shop_name">${shop.shop_name!}</div>
     <div class="shop_desc">为您的店铺发些公告吧~</div>
     <div class="shop_logo">
-        <#if (!$shop->shop_avatar)
+        <#if (!shop.shop_avatar??)>
             <img src="http://${image_domain!}/image/admin/shop_beautify/shop_deco_icon.png"/>
         <#else>
-            <img src="${shop->shop_avatar!}"/>\
+            <img src="${shop.shop_avatar!}"/>\
         </#if>
     </div>
 </div>
@@ -34,7 +34,7 @@
         <table class="auto_recommend" cellspacing='1' cellpadding='3'>
             <tr>
                 <td style="width:110px;">店铺名称：</td>
-                <td><input type="text" name="shop_name" value="${shop->shop_name!}" id="shop_name" maxlength=20 size="34">
+                <td><input type="text" name="shop_name" value="${shop.shop_name!}" id="shop_name" maxlength=20 size="34">
                     <span style="color:#9a9a9a">最多20个字</span></td>
             </tr>
             <tr>
@@ -70,9 +70,9 @@
             </tr>
         </table>
     </div>
-    {{--<div style="margin-top:15px;">--!}
-        {{--<input class="btn btn-primary queren " type='button' id="ok" name="ok" value="确定">--!}
-    {{--</div>--!}
+    <!-- <div style="margin-top:15px;"> -->
+        <!-- <input class="btn btn-primary queren " type='button' id="ok" name="ok" value="确定"> -->
+    <!-- </div> -->
 </div>
 
 

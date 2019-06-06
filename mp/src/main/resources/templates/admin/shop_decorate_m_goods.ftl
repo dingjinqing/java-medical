@@ -420,7 +420,7 @@
                         <img src="" alt="">
                         <a class="del-has-image del-cube-block" href="javascript:void(0)"></a>
                     </div>
-                    {{--<img class="image" style="max-width:100px; max-height:100px;">--!}
+                    <!-- <img class="image" style="max-width:100px; max-height:100px;"> -->
 
                 </td>
             </tr>
@@ -557,18 +557,7 @@
                     <span class="select_area_show">已选择分类：1个分类</span>
                 </td>
             </tr>
-            {{--<tr>--!}
-            {{--<td>分类：</td>--!}
-            {{--<td>--!}
-            {{--<select name="category" style="width:45%;">--!}
-            {{--<option value="0">全部分类</option>--!}
-            {{--<#list ($cat_list as $item)--!}
-            {{--<option value="${item['cat_id']!}"--!}
-            {{--<#if ($cat_id == $item['cat_id'])selected="selected"</#if>>${item['cat_name']!}</option>--!}
-            {{--</#list>--!}
-            {{--</select>--!}
-            {{--</td>--!}
-            {{--</tr>--!}
+            
         </table>
 
         <table class="custom_goods" cellspacing='1' cellpadding='3' style="width: 100%">
@@ -606,9 +595,9 @@
         </table>
 
     </div>
-    {{--<div style="margin-top:15px;">--!}
-    {{--<input class="btn btn-primary queren" type='button' id="ok" name="ok" value="确定">--!}
-    {{--</div>--!}
+    <!-- <div style="margin-top:15px;"> -->
+    <!-- <input class="btn btn-primary queren" type='button' id="ok" name="ok" value="确定"> -->
+    <!-- </div> -->
 </div>
 <script>
     var drag_width = $('#drag_area').width();

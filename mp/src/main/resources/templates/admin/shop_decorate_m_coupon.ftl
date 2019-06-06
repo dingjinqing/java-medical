@@ -106,9 +106,9 @@
             </div>
         </div>
     </div>
-    {{--<div style="margin-top:15px;">--!}
-        {{--<input class="btn btn-primary queren " type="button" id="ok" name="ok" value="确定" style="margin-left: 80px;">--!}
-    {{--</div>--!}
+    <!-- <div style="margin-top:15px;">-->
+        <!-- <input class="btn btn-primary queren " type="button" id="ok" name="ok" value="确定" style="margin-left: 80px;">-->
+    <!-- </div>-->
     <div class="coupon_list_clone hide">
         <div class="coupon_list coupon_border">
             <img src="http://${image_domain!}/image/admin/sign_del.png" class="coupon_del" />

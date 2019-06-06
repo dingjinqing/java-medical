@@ -5,6 +5,8 @@ import com.vpu.mp.db.shop.tables.pojos.XcxCustomerPage;
 import com.vpu.mp.db.shop.tables.records.XcxCustomerPageRecord;
 import com.vpu.mp.service.foundation.BaseService;
 import com.vpu.mp.service.foundation.PageResult;
+import com.vpu.mp.service.foundation.Util;
+import com.vpu.mp.service.saas.shop.ShopVersionService.VersionConfig;
 import com.vpu.mp.service.shop.image.ImageService.ImageListQueryParam;
 
 import lombok.Data;
@@ -14,7 +16,11 @@ import static com.vpu.mp.db.shop.tables.UploadedImageCategory.UPLOADED_IMAGE_CAT
 import static com.vpu.mp.db.shop.tables.XcxCustomerPage.XCX_CUSTOMER_PAGE;
 import static com.vpu.mp.db.main.tables.DecorationTemplate.DECORATION_TEMPLATE;
 
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.jooq.Record;
 import org.jooq.Result;
@@ -32,17 +38,17 @@ public class MpDecorationService extends BaseService {
 		 * 需要删除页面ID
 		 */
 		public Integer del;
-		
+
 		/**
 		 * 需要设置为首页的ID
 		 */
 		public Integer index;
-		
+
 		/**
 		 * 页面ID
 		 */
 		public Integer pageId;
-		
+
 		public Integer catId;
 		public Integer page;
 		public String keywords;
@@ -51,6 +57,7 @@ public class MpDecorationService extends BaseService {
 
 	/**
 	 * 装修页面列表
+	 * 
 	 * @param param
 	 * @return
 	 */
@@ -66,6 +73,7 @@ public class MpDecorationService extends BaseService {
 
 	/**
 	 * 查询条件
+	 * 
 	 * @param select
 	 * @param param
 	 * @return
@@ -91,6 +99,7 @@ public class MpDecorationService extends BaseService {
 
 	/**
 	 * 添加默认装修页
+	 * 
 	 * @return
 	 */
 	public int addDefaultPage() {
@@ -103,6 +112,7 @@ public class MpDecorationService extends BaseService {
 
 	/**
 	 * 添加页面
+	 * 
 	 * @param page
 	 * @return
 	 */
@@ -111,14 +121,14 @@ public class MpDecorationService extends BaseService {
 		record.insert();
 		return record;
 	}
-	
-	public int setPageCatId(Integer pageId,Integer catId) {
+
+	public int setPageCatId(Integer pageId, Integer catId) {
 		return db().update(XCX_CUSTOMER_PAGE)
-				.set(XCX_CUSTOMER_PAGE.CAT_ID,catId)
+				.set(XCX_CUSTOMER_PAGE.CAT_ID, catId)
 				.where(XCX_CUSTOMER_PAGE.PAGE_ID.eq(UInteger.valueOf(pageId)))
 				.execute();
 	}
-	
+
 	public int removeRow(Integer pageId) {
 		return db().deleteFrom(XCX_CUSTOMER_PAGE)
 				.where(XCX_CUSTOMER_PAGE.PAGE_ID.eq(UInteger.valueOf(pageId)))
@@ -127,6 +137,7 @@ public class MpDecorationService extends BaseService {
 
 	/**
 	 * 获取装修页面
+	 * 
 	 * @param pageId
 	 * @return
 	 */
@@ -135,7 +146,52 @@ public class MpDecorationService extends BaseService {
 	}
 
 	/**
+	 * 过滤页面内容
+	 * 
+	 * @param pageContent
+	 * @return
+	 */
+	@SuppressWarnings("unchecked")
+	public Map<String, Map<String, Object>> filterPageContent(String pageContent) {
+		if (pageContent == null) {
+			return null;
+		}
+		Map<String, Map<String, Object>> result = Util.parseJSON(pageContent, Map.class);
+		for (Map.Entry<String, Map<String, Object>> entry : result.entrySet()) {
+			Map<String, Object> v = entry.getValue();
+			filterActivityModules(v);
+			filterImageModules(v);
+		}
+		return result;
+	}
+
+	protected void filterActivityModules(Map<String, Object> v) {
+
+	}
+
+	protected void filterImageModules(Map<String, Object> v) {
+
+	}
+
+	/**
+	 * 得到店铺版本模块
+	 * @return
+	 */
+	public Map<String, Integer> getVersionModules() {
+		VersionConfig config = saas().shop.version.mergeVersion(this.shopId);
+		List<String> sub2 = config.mainConfig.sub2;
+		Map<String, Integer> moduleMap = new HashMap<String, Integer>();
+		String[] modules = { "m_member_card", "m_voucher", "m_bargain", "m_video",
+				"m_integral_goods", "m_seckill_goods", "m_group_draw", "m_pin_integration" };
+		for (String module : modules) {
+			moduleMap.put(module, sub2.contains(module) ? 1 : 0);
+		}
+		return moduleMap;
+	}
+
+	/**
 	 * 获取装修页面数量
+	 * 
 	 * @return
 	 */
 	public int getPageCount() {
@@ -145,6 +201,7 @@ public class MpDecorationService extends BaseService {
 
 	/**
 	 * 取得全部装修页面
+	 * 
 	 * @param param
 	 * @return
 	 */
@@ -160,6 +217,7 @@ public class MpDecorationService extends BaseService {
 
 	/**
 	 * 设置首页
+	 * 
 	 * @param pageId
 	 */
 	public void setIndex(Integer pageId) {
@@ -172,9 +230,10 @@ public class MpDecorationService extends BaseService {
 				.where(XCX_CUSTOMER_PAGE.PAGE_ID.eq(UInteger.valueOf(pageId)))
 				.execute();
 	}
-	
+
 	/**
 	 * 获取首页
+	 * 
 	 * @return
 	 */
 	public XcxCustomerPageRecord getIndex() {
@@ -183,19 +242,22 @@ public class MpDecorationService extends BaseService {
 
 	/**
 	 * 克隆系统模板
+	 * 
 	 * @param templateId
 	 * @return
 	 */
 	public XcxCustomerPageRecord cloneTemplate(Integer templateId) {
-		DecorationTemplateRecord record = mainDb().fetchAny(DECORATION_TEMPLATE,DECORATION_TEMPLATE.PAGE_ID.eq(UInteger.valueOf(templateId)));
+		DecorationTemplateRecord record = mainDb().fetchAny(DECORATION_TEMPLATE,
+				DECORATION_TEMPLATE.PAGE_ID.eq(UInteger.valueOf(templateId)));
 		XcxCustomerPageRecord page = db().newRecord(XCX_CUSTOMER_PAGE);
 		page.setPageContent(record.getPageContent());
 		page.insert();
 		return page;
 	}
-	
+
 	/**
 	 * 复制已有页面
+	 * 
 	 * @param copyId
 	 * @return
 	 */
@@ -207,15 +269,15 @@ public class MpDecorationService extends BaseService {
 		page.insert();
 		return page;
 	}
-	
+
 	/**
 	 * 获取分类下页面个数
+	 * 
 	 * @param catId
 	 * @return
 	 */
 	public int getPageCount(Integer catId) {
 		return db().fetchCount(XCX_CUSTOMER_PAGE, XCX_CUSTOMER_PAGE.CAT_ID.eq(catId));
 	}
-	
-	
+
 }

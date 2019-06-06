@@ -311,31 +311,31 @@
         <h2 class="group_h2">商品分组菜单：<span>最多可选择10个分组</span></h2>
     </div>
     <div class="group_content">
-        {{--<div class="cat_group">--!}
-        {{--<div class="group_name">--!}
-        {{--平台分类：<span>平台分类1</span>--!}
-        {{--<span class="choose_cat">修改</span>--!}
-        {{--</div>--!}
-        {{--<div class="cus_group_name">--!}
-        {{--自定义分组名称：<input type="text">--!}
-        {{--</div>--!}
-        {{--<div class="group_goods_num">--!}
-        {{--展示商品数量:--!}
-        {{--<input type="radio" name="group_goods">全部<span class="group_goods1">10件</span>--!}
-        {{--<input type="radio" name="group_goods">指定商品 <span class="group_goods2">10件</span>--!}
-        {{--</div>--!}
-        {{--<div class="group_item_operation">--!}
-        {{--<img class="up_img" src="http://${image_domain!}/image/admin/new_shop_beautify/add_up_use.png">--!}
-        {{--<img class="down_img" src="http://${image_domain!}/image/admin/new_shop_beautify/add_down.png">--!}
-        {{--<img class="del_img" src="http://${image_domain!}/image/admin/new_shop_beautify/add_close.png">--!}
-        {{--</div>--!}
-        {{--</div>--!}
+        <!-- <div class="cat_group">-->
+        <!-- <div class="group_name">-->
+        <!-- 平台分类：<span>平台分类1</span>-->
+        <!-- <span class="choose_cat">修改</span>-->
+        <!-- </div>-->
+        <!-- <div class="cus_group_name">-->
+        <!-- 自定义分组名称：<input type="text">-->
+        <!-- </div>-->
+        <!-- <div class="group_goods_num">-->
+        <!-- 展示商品数量:-->
+        <!-- <input type="radio" name="group_goods">全部<span class="group_goods1">10件</span>-->
+        <!-- <input type="radio" name="group_goods">指定商品 <span class="group_goods2">10件</span>-->
+        <!-- </div>-->
+        <!-- <div class="group_item_operation">-->
+        <!-- <img class="up_img" src="http://${image_domain!}/image/admin/new_shop_beautify/add_up_use.png">-->
+        <!-- <img class="down_img" src="http://${image_domain!}/image/admin/new_shop_beautify/add_down.png">-->
+        <!-- <img class="del_img" src="http://${image_domain!}/image/admin/new_shop_beautify/add_close.png">-->
+        <!-- </div>-->
+        <!-- </div>-->
     </div>
     <div class="add_sort_cat">
         <span class="add_sort choose_sort" xiugai="0" style="width: 30%; border-right:1px dashed #D3D3D3; ">+添加商家分类</span>
         <span class="add_goods_label choose_goods_label" xiugai="0" style="width: 30%; border-right:1px dashed #D3D3D3; ">+添加商品标签</span>
         <span class="add_brand choose_brand" xiugai="0" style="width: 30%;  ">+添加商品品牌</span>
-        {{--<span class="add_cat">+添加平台分类</span>--!}
+        <!-- <span class="add_cat">+添加平台分类</span>-->
     </div>
     <div class="group_operat ">
         <div class="group_position_style clearfix">
@@ -396,12 +396,12 @@
         </div>
     </div>
     <div class="group_module_content" style="margin-top: 0px !important;">
-        {{--<div class="img_margin clearfix">--!}
-        {{--<span>商品间距：</span>--!}
-        {{--<input type="range" name="points" min="0" max="30" value="0" oninput="$(this).next().text($(this).val())">--!}
-        {{--<span style="width: 30px;text-align: right">0</span>--!}
-        {{--<span >像素</span>--!}
-        {{--</div>--!}
+        <!-- <div class="img_margin clearfix">-->
+        <!-- <span>商品间距：</span>-->
+        <!-- <input type="range" name="points" min="0" max="30" value="0" oninput="$(this).next().text($(this).val())">-->
+        <!-- <span style="width: 30px;text-align: right">0</span>-->
+        <!-- <span >像素</span>-->
+        <!-- </div>-->
         <div class="group_module_style">
             <div>模块样式</div>
             <div class="group_uni ">

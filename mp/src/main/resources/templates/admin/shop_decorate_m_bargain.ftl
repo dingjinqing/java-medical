@@ -137,9 +137,9 @@
             </div>
         </div>
     </div>
-    {{--<div style="margin-top:15px;">--!}
-        {{--<input class="btn btn-primary queren " type="button" id="ok" name="ok" value="确定" style="margin-left: 110px;">--!}
-    {{--</div>--!}
+    <!-- <div style="margin-top:15px;">-->
+        <!-- <input class="btn btn-primary queren " type="button" id="ok" name="ok" value="确定" style="margin-left: 110px;">-->
+    <!-- </div>-->
     <div class="bargain_table_clone hide">
         <table>
             <tr class="bargain_select_tr">

@@ -33,9 +33,9 @@
         </div>
         <div class="operation-area">
             <div class="text-info margin-bottom-5 hot-number">热区数量:<span class="hot-number-span">0个</span></div>
-            {{--<input type="button" class="btn-common set-bg-image" value="设置背景图片">--!}
+            <!-- <input type="button" class="btn-common set-bg-image" value="设置背景图片"> -->
             <input type="button" class="btn-common set-hot-area" value="设置热区">
-            {{--<input class="btn btn-primary queren btn-save-image-ok" type='button' id="ok" name="ok" value="确定" style="margin-left: 10px !important;">--!}
+            <!-- <input class="btn btn-primary queren btn-save-image-ok" type='button' id="ok" name="ok" value="确定" style="margin-left: 10px !important;"> -->
         </div>
 
         <div class="hide">

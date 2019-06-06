@@ -133,9 +133,9 @@
             </tr>
 		</table>
     </div>
-    {{--<div style="margin-top:15px;">--!}
-        {{--<input class="btn btn-primary queren" type='button' id="ok" name="ok" value="确定">--!}
-    {{--</div>--!}
+    <!-- <div style="margin-top:15px;"> -->
+        <!-- <input class="btn btn-primary queren" type='button' id="ok" name="ok" value="确定"> -->
+    <!-- </div> -->
 </div>
 
 <div class="row_item m_text">
@@ -204,9 +204,9 @@
         </table>
 
     </div>
-    {{--<div style="margin-top:15px;">--!}
-        {{--<input class="btn btn-primary queren" type='button' id="ok" name="ok" value="确定">--!}
-    {{--</div>--!}
+    <!-- <div style="margin-top:15px;"> -->
+        <!-- <input class="btn btn-primary queren" type='button' id="ok" name="ok" value="确定"> -->
+    <!-- </div> -->
 </div>
 
 
@@ -221,11 +221,11 @@
                         <div class="photo-block">
                             <img class="goods-photo image" src="" style="max-width:100%;width: auto;max-height:100% !important;height: auto;margin: 0;">
                         </div>
-                        {{--<div class="info clearfix  info-price">--!}
-                            {{--<p class="goods-title bs_name">此处显示商品名称</p>--!}
-                            {{--<p class="goods-price"><em class="bs_price">￥379.00</em></p>--!}
-							{{--<p class="market_price"><em class="mk_price"></em></p>--!}
-                        {{--</div>--!}
+                        <!-- <div class="info clearfix  info-price"> -->
+                            <!-- <p class="goods-title bs_name">此处显示商品名称</p> -->
+                            <!-- <p class="goods-price"><em class="bs_price">￥379.00</em></p> -->
+							<!-- <p class="market_price"><em class="mk_price"></em></p> -->
+                        <!-- </div> -->
                     </a>
 					<div class="choice_layer_new hide">添加文字</div>
                 </li>
@@ -315,9 +315,9 @@
 			</tr>
         </table>
 
-        {{--<div style="margin-top:15px;">--!}
-            {{--<input class="btn btn-primary queren" type='button' id="ok" name="ok" value="确定">--!}
-        {{--</div>--!}
+        <!-- <div style="margin-top:15px;"> -->
+            <!-- <input class="btn btn-primary queren" type='button' id="ok" name="ok" value="确定"> -->
+        <!-- </div> -->
     </div>
 </div>
 
@@ -334,11 +334,11 @@
                         <div class="photo-block image_view">
                             <img class="goods-photo" src="">
                         </div>
-                        {{--<div class="info clearfix">--!}
-                            {{--<p class="goods-title bs_head">此处显示商品名称</p>--!}
-                            {{--<p class="goods-price"><em class="bs_prix">￥5.50</em></p>--!}
-							{{--<p class="market_price"><em class="mk_price"></em></p>--!}
-                        {{--</div>--!}
+                        <!-- <div class="info clearfix"> -->
+                            <!-- <p class="goods-title bs_head">此处显示商品名称</p> -->
+                            <!-- <p class="goods-price"><em class="bs_prix">￥5.50</em></p> -->
+							<!-- <p class="market_price"><em class="mk_price"></em></p> -->
+                        <!-- </div> -->
                     </a>
                 </li>
 
@@ -347,11 +347,11 @@
                         <div class="photo-block image_view">
                             <img class="goods-photo" src="">
                         </div>
-                        {{--<div class="info clearfix">--!}
-                            {{--<p class="goods-title bs_head">此处显示商品名称</p>--!}
-                            {{--<p class="goods-price"><em class="bs_prix">￥60.00</em></p>--!}
-							{{--<p class="market_price"><em class="mk_price"></em></p>--!}
-                        {{--</div>--!}
+                        <!-- <div class="info clearfix"> -->
+                            <!-- <p class="goods-title bs_head">此处显示商品名称</p> -->
+                            <!-- <p class="goods-price"><em class="bs_prix">￥60.00</em></p> -->
+							<!-- <p class="market_price"><em class="mk_price"></em></p> -->
+                        <!-- </div> -->
                     </a>
                 </li>
             </ul>
@@ -439,27 +439,27 @@
 					<input type="hidden" value="" class="mk_price_val2">
                 </td>
             </tr>
-			{{--<tr class="hide_name hide">--!}
-				{{--<td>隐藏商品名称：</td>--!}
-				{{--<td>--!}
-                    {{--<label id="hide_goods_name">--!}
-                    	{{--<input type="checkbox" value="1" >隐藏商品名称--!}
-                    {{--</label>--!}
-				{{--</td>--!}
-			{{--</tr>--!}
-			{{--<tr class="hide_price hide">--!}
-			{{--<td>隐藏商品价格：</td>--!}
-			{{--<td>--!}
-                {{--<label id="hide_goods_price">--!}
-                	{{--<input type="checkbox" value="1">隐藏商品价格--!}
-                {{--</label>--!}
-			{{--</td>--!}
-			{{--</tr>--!}
+			<!-- <tr class="hide_name hide"> -->
+				<!-- <td>隐藏商品名称：</td> -->
+				<!-- <td> -->
+                    <!-- <label id="hide_goods_name"> -->
+                    	<!-- <input type="checkbox" value="1" >隐藏商品名称 -->
+                    <!-- </label> -->
+				<!-- </td> -->
+			<!-- </tr> -->
+			<!-- <tr class="hide_price hide"> -->
+			<!-- <td>隐藏商品价格：</td> -->
+			<!-- <td> -->
+                <!-- <label id="hide_goods_price"> -->
+                	<!-- <input type="checkbox" value="1">隐藏商品价格 -->
+                <!-- </label> -->
+			<!-- </td> -->
+			<!-- </tr> -->
         </table>
 
-        {{--<div style="margin-top:15px;">--!}
-            {{--<input class="btn btn-primary queren" type='button' id="ok" name="ok" value="确定">--!}
-        {{--</div>--!}
+        <!-- <div style="margin-top:15px;"> -->
+            <!-- <input class="btn btn-primary queren" type='button' id="ok" name="ok" value="确定"> -->
+        <!-- </div> -->
     </div>
 </div>
 
@@ -576,9 +576,9 @@
         </table>
         <p style="margin-top: 15px"><input type="button" value="添加列表" class="add_row_item"></p>
     </div>
-    {{--<div style="margin-top:15px;">--!}
-        {{--<input class="btn btn-primary queren" type='button' id="ok" name="ok" value="确定">--!}
-    {{--</div>--!}
+    <!-- <div style="margin-top:15px;"> -->
+        <!-- <input class="btn btn-primary queren" type='button' id="ok" name="ok" value="确定"> -->
+    <!-- </div> -->
 </div>
 
 
@@ -683,9 +683,9 @@
         </table>
         <p><input type="button" value="+添加列表" class="add_row_item" style="margin-left: 2.5%"></p>
     </div>
-    {{--<div style="margin-top:15px;">--!}
-        {{--<input class="btn btn-primary queren" type='button' id="ok" name="ok" value="确定">--!}
-    {{--</div>--!}
+    <!-- <div style="margin-top:15px;"> -->
+        <!-- <input class="btn btn-primary queren" type='button' id="ok" name="ok" value="确定"> -->
+    <!-- </div> -->
 </div>
 
 
@@ -713,9 +713,9 @@
         </p>
     </div>
 
-    {{--<div style="margin-top:15px;">--!}
-        {{--<input class="btn btn-primary queren" type='button' id="ok" name="ok" value="确定">--!}
-    {{--</div>--!}
+    <!-- <div style="margin-top:15px;"> -->
+        <!-- <input class="btn btn-primary queren" type='button' id="ok" name="ok" value="确定"> -->
+    <!-- </div> -->
 </div>
 
 
@@ -726,29 +726,29 @@
                 <div class="control-group">
                     <div class="custom-richtext" style="">
                         富文本
-                        {{--<p>点此编辑『富文本』内容 ——&gt;</p>--!}
-                        {{--<p>你可以对文字进行<strong>加粗</strong>、<em>斜体</em>、<span style="text-decoration: underline;">下划线</span>、<span style="text-decoration: line-through;">删除线</span>、文字<span style="color: rgb(0, 176, 240);">颜色</span>、<span style="background-color: rgb(255, 192, 0); color: rgb(255, 255, 255);">背景色</span>、以及字号<span style="font-size: 20px;">大</span><span style="font-size: 14px;">小</span>等简单排版操作。</p>--!}
-                        {{--<p>还可以在这里加入表格了</p>--!}
-                        {{--<table>--!}
-                            {{--<tbody>--!}
-                            {{--<tr>--!}
-                                {{--<td width="93" valign="top" style="word-break: break-all;">中奖客户</td>--!}
-                                {{--<td width="93" valign="top" style="word-break: break-all;">发放奖品</td>--!}
-                                {{--<td width="93" valign="top" style="word-break: break-all;">备注</td>--!}
-                            {{--</tr>--!}
-                            {{--<tr>--!}
-                                {{--<td width="93" valign="top" style="word-break: break-all;">猪猪</td>--!}
-                                {{--<td width="93" valign="top" style="word-break: break-all;">内测码</td>--!}
-                                {{--<td width="93" valign="top" style="word-break: break-all;"><em><span style="color: rgb(255, 0, 0);">已经发放</span></em></td>--!}
-                            {{--</tr>--!}
-                            {{--<tr>--!}
-                                {{--<td width="93" valign="top" style="word-break: break-all;">大麦</td>--!}
-                                {{--<td width="93" valign="top" style="word-break: break-all;">积分</td>--!}
-                                {{--<td width="93" valign="top" style="word-break: break-all;"><a href="javascript: void(0);" target="_blank">领取地址</a></td>--!}
-                            {{--</tr>--!}
-                            {{--</tbody>--!}
-                        {{--</table>--!}
-                        {{--<p style="text-align: left;"><span style="text-align: left;">也可在这里插入图片、并对图片加上超级链接，方便用户点击。</span></p>--!}
+                        <!-- <p>点此编辑『富文本』内容 ——&gt;</p> -->
+                        <!-- <p>你可以对文字进行<strong>加粗</strong>、<em>斜体</em>、<span style="text-decoration: underline;">下划线</span>、<span style="text-decoration: line-through;">删除线</span>、文字<span style="color: rgb(0, 176, 240);">颜色</span>、<span style="background-color: rgb(255, 192, 0); color: rgb(255, 255, 255);">背景色</span>、以及字号<span style="font-size: 20px;">大</span><span style="font-size: 14px;">小</span>等简单排版操作。</p> -->
+                        <!-- <p>还可以在这里加入表格了</p> -->
+                        <!-- <table> -->
+                            <!-- <tbody> -->
+                            <!-- <tr> -->
+                                <!-- <td width="93" valign="top" style="word-break: break-all;">中奖客户</td> -->
+                                <!-- <td width="93" valign="top" style="word-break: break-all;">发放奖品</td> -->
+                                <!-- <td width="93" valign="top" style="word-break: break-all;">备注</td> -->
+                            <!-- </tr> -->
+                            <!-- <tr> -->
+                                <!-- <td width="93" valign="top" style="word-break: break-all;">猪猪</td> -->
+                                <!-- <td width="93" valign="top" style="word-break: break-all;">内测码</td> -->
+                                <!-- <td width="93" valign="top" style="word-break: break-all;"><em><span style="color: rgb(255, 0, 0);">已经发放</span></em></td> -->
+                            <!-- </tr> -->
+                            <!-- <tr> -->
+                                <!-- <td width="93" valign="top" style="word-break: break-all;">大麦</td> -->
+                                <!-- <td width="93" valign="top" style="word-break: break-all;">积分</td> -->
+                                <!-- <td width="93" valign="top" style="word-break: break-all;"><a href="javascript: void(0);" target="_blank">领取地址</a></td> -->
+                            <!-- </tr> -->
+                            <!-- </tbody> -->
+                        <!-- </table> -->
+                        <!-- <p style="text-align: left;"><span style="text-align: left;">也可在这里插入图片、并对图片加上超级链接，方便用户点击。</span></p> -->
                     </div>
                 </div>
 
@@ -844,9 +844,9 @@
             </tr>
         </table>
     </div>
-    {{--<div style="margin-top:15px;">--!}
-        {{--<input class="btn btn-primary queren " type='button' id="ok" name="ok" value="确定">--!}
-    {{--</div>--!}
+    <!-- <div style="margin-top:15px;"> -->
+        <!-- <input class="btn btn-primary queren " type='button' id="ok" name="ok" value="确定"> -->
+    <!-- </div> -->
 </div>
 
 
@@ -1060,9 +1060,9 @@
 </div>
 
 
-{{--新的图片广告模块--!}
+<!-- 新的图片广告模块 -->
 <div class="row_item m_image_adver">
-    {{--没上传的样式--!}
+    <!-- 没上传的样式 -->
     <div class="adver_image_module_small">
         <div class="single_img">
             <p>点击编辑图片广告</p>
@@ -1070,13 +1070,13 @@
             <img src="" alt="" style="min-width: 100%" class="image">
         </div>
     </div>
-    {{--单列图（合并了之前的广告图，只建议尺寸，不强制）--!}
+    <!-- 单列图（合并了之前的广告图，只建议尺寸，不强制） -->
     <div class="new_image_type once_image_area hide">
         <li class="each_once once_image_area_model" style="display: none;">
             <img src="" alt="" style="max-width: 100%;min-width: 100%;"><a class="title"></a>
         </li>
     </div>
-    {{--双列图--!}
+    <!-- 双列图 -->
     <ul class="new_image_type twice_img clearfix hide">
         <li class="each_two twice_img_model" style="display: none;">
             <div style="position: relative;">
@@ -1084,17 +1084,17 @@
             </div>
         </li>
     </ul>
-    {{--横向滑动大--!}
+    <!-- 横向滑动大 -->
     <div class="new_image_type slide_big clearfix hide">
         <div class="each_big slide_big_model" style="display: none;">
             <img src="" alt=""><a class="title"></a>
         </div>
     </div>
-    {{--hengxaing滑动小--!}
+    <!-- hengxaing滑动小 -->
     <div class="new_image_type slide_small clearfix hide">
         <div class="each_small slide_small_model" style="display: none;"><img src="" alt=""><a class="title"></a></div>
     </div>
-    {{--横向滑动导航--!}
+    <!-- 横向滑动导航 -->
     <div class="slide_nav_title clearfix" style="display: none"></div>
     <div class="new_image_type slide_nav clearfix hide">
         <div class="each_nav slide_nav_model" style="display: none;"><img src="" alt=""><a class="title"></a></div>
@@ -1174,9 +1174,9 @@
             <div class="advise_size">建议宽度<text class="advise_size_int">750</text>px</div>
         </div>
     </div>
-    {{--<div style="margin-top:15px;">--!}
-        {{--<input class="btn btn-primary queren " type='button' id="ok" name="ok" value="确定">--!}
-    {{--</div>--!}
+    <!-- <div style="margin-top:15px;"> -->
+        <!-- <input class="btn btn-primary queren " type='button' id="ok" name="ok" value="确定"> -->
+    <!-- </div> -->
     <div class="img_area_model" hidden>
         <div class="each_img_li clearfix">
             <div class="img_weizhi add_image" >
@@ -1305,9 +1305,9 @@
             </div>
         </div>
     </div>
-    {{--<div style="margin-top:15px;">--!}
-    {{--<input class="btn btn-primary queren" type='button' id="ok" name="ok" value="确定">--!}
-    {{--</div>--!}
+    <!-- <div style="margin-top:15px;"> -->
+    <!-- <input class="btn btn-primary queren" type='button' id="ok" name="ok" value="确定"> -->
+    <!-- </div> -->
 </div>
 <div class="text_image_view_big_left">
     <img src="http://${image_domain!}/image/admin/shop_beautify/decorate_model.png" alt="" class="big_left t_i_img">
