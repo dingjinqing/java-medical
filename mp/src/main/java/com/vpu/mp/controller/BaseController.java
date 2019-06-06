@@ -11,6 +11,10 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
 import org.springframework.util.StringUtils;
 import org.springframework.web.servlet.ModelAndView;
+import org.springframework.web.servlet.view.json.MappingJackson2JsonView;
+
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.vpu.mp.service.foundation.JsonResult;
 import com.vpu.mp.service.saas.SaasApplication;
 
 /**
@@ -43,7 +47,22 @@ public class BaseController {
 	protected ModelMap globalModelMap() {
 		return null;
 	}
-
+	
+	protected ModelAndView json(JsonResult result) {
+		ModelMap model = new ModelMap();
+		model.addAttribute("error", result.getError());
+		model.addAttribute("message", result.getMessage());
+		model.addAttribute("content", result.getContent());
+		return this.json(model);
+	}
+	
+	protected ModelAndView json( Map<String, ?> model) {
+		ModelAndView mv = new  ModelAndView(new MappingJackson2JsonView());
+		mv.addAllObjects(model);
+		return mv;
+	}
+	
+	
 	protected ModelAndView view(String path, Map<String, ?> model) {
 		if (this.isRedirectPath(path)) {
 			request.getSession().setAttribute(flashSessionKey, model);
@@ -103,6 +122,11 @@ public class BaseController {
 
 	protected boolean isPost() {
 		return "POST".equals(request.getMethod());
+	}
+	
+	protected boolean isAjax() {
+		return (!StringUtils.isEmpty(request.getHeader("x-requested-with"))
+				&& request.getHeader("x-requested-with").equals("XMLHttpRequest"));
 	}
 
 	protected String post(String key) {

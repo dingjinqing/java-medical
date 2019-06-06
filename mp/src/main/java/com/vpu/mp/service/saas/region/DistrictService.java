@@ -15,7 +15,6 @@ import com.vpu.mp.service.foundation.BaseService;
  *
  */
 public class DistrictService extends BaseService {
-	
 
 	/**
 	 * 得到城市的区县列表
@@ -28,7 +27,7 @@ public class DistrictService extends BaseService {
 	}
 
 	public DictDistrictRecord getDistrictName(Integer districtId) {
-		return db().selectFrom(DICT_DISTRICT).where(DICT_DISTRICT.DISTRICT_ID.eq(districtId)).fetchOne();
+		return db().selectFrom(DICT_DISTRICT).where(DICT_DISTRICT.DISTRICT_ID.eq(districtId)).fetchAny();
 	}
 
 	public Record getAreaName(Integer districtId) {
@@ -36,14 +35,17 @@ public class DistrictService extends BaseService {
 				.select(DICT_PROVINCE.PROVINCE_ID, DICT_PROVINCE.NAME.as("province_name"), DICT_CITY.CITY_ID,
 						DICT_CITY.NAME.as("city_name"), DICT_DISTRICT.DISTRICT_ID,
 						DICT_DISTRICT.NAME.as("district_name"))
-				.from(DICT_DISTRICT).join(DICT_CITY).on(DICT_DISTRICT.CITY_ID.eq(DICT_CITY.CITY_ID)).join(DICT_PROVINCE)
-				.on(DICT_PROVINCE.PROVINCE_ID.eq(DICT_CITY.PROVINCE_ID)).where(DICT_DISTRICT.DISTRICT_ID.eq(districtId))
-				.fetchOne();
+				.from(DICT_DISTRICT)
+				.join(DICT_CITY).on(DICT_DISTRICT.CITY_ID.eq(DICT_CITY.CITY_ID))
+				.join(DICT_PROVINCE).on(DICT_PROVINCE.PROVINCE_ID.eq(DICT_CITY.PROVINCE_ID))
+				.where(DICT_DISTRICT.DISTRICT_ID.eq(districtId))
+				.fetchAny();
 	}
 
 	public DictDistrictRecord getDistrictName(String districtName, Integer cityId) {
 		return db().selectFrom(DICT_DISTRICT)
-				.where(DICT_DISTRICT.CITY_ID.eq(cityId).and(DICT_DISTRICT.NAME.eq(districtName))).fetchOne();
+				.where(DICT_DISTRICT.CITY_ID.eq(cityId).and(DICT_DISTRICT.NAME.eq(districtName)))
+				.fetchAny();
 	}
 
 	/**
@@ -59,21 +61,28 @@ public class DistrictService extends BaseService {
 				.select(DICT_PROVINCE.PROVINCE_ID, DICT_PROVINCE.NAME.as("province_name"), DICT_CITY.CITY_ID,
 						DICT_CITY.NAME.as("city_name"), DICT_DISTRICT.DISTRICT_ID,
 						DICT_DISTRICT.NAME.as("district_name"))
-				.from(DICT_DISTRICT).join(DICT_CITY).on(DICT_DISTRICT.CITY_ID.eq(DICT_CITY.CITY_ID)).join(DICT_PROVINCE)
-				.on(DICT_PROVINCE.PROVINCE_ID.eq(DICT_CITY.PROVINCE_ID)).where(DICT_DISTRICT.NAME.eq(districtName))
-				.and(DICT_CITY.NAME.eq(cityName)).and(DICT_PROVINCE.NAME.eq(provinceName)).fetchOne();
+				.from(DICT_DISTRICT)
+				.join(DICT_CITY).on(DICT_DISTRICT.CITY_ID.eq(DICT_CITY.CITY_ID))
+				.join(DICT_PROVINCE).on(DICT_PROVINCE.PROVINCE_ID.eq(DICT_CITY.PROVINCE_ID))
+				.where(DICT_DISTRICT.NAME.eq(districtName))
+				.and(DICT_CITY.NAME.eq(cityName))
+				.and(DICT_PROVINCE.NAME.eq(provinceName))
+				.fetchAny();
 	}
 
 	/**
 	 * 添加新区
+	 * 
 	 * @param cityId
 	 * @param districtName
 	 * @return
 	 */
 	public int addNewDistrict(Integer cityId, String districtName) {
-		DictDistrictRecord record = db().selectFrom(DICT_DISTRICT).where(DICT_DISTRICT.CITY_ID.eq(cityId))
-				.orderBy(DICT_DISTRICT.DISTRICT_ID.desc()).fetchOne();
-		
+		DictDistrictRecord record = db().selectFrom(DICT_DISTRICT)
+				.where(DICT_DISTRICT.CITY_ID.eq(cityId))
+				.orderBy(DICT_DISTRICT.DISTRICT_ID.desc())
+				.fetchAny();
+
 		Integer districtId = record.getDistrictId() + 1;
 		while (this.getDistrictName(districtId) != null) {
 			districtId += 1;

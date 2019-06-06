@@ -5,41 +5,26 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+
 /**
  * @description 菜单工具类，只支持2级菜单
  * @author 新国
  *
  */
 public class MenuUtil {
-	final public static class MenuIndex {
+	@Data
+	@AllArgsConstructor
+	public static class MenuIndex {
 		public Integer topIndex;
 		public Integer subIndex;
-
-		public MenuIndex(Integer topIndex, Integer subIndex) {
-			super();
-			this.topIndex = topIndex;
-			this.subIndex = subIndex;
-		}
-
-		public Integer getTopIndex() {
-			return topIndex;
-		}
-
-		public void setTopIndex(Integer topIndex) {
-			this.topIndex = topIndex;
-		}
-
-		public Integer getSubIndex() {
-			return subIndex;
-		}
-
-		public void setSubIndex(Integer subIndex) {
-			this.subIndex = subIndex;
-		}
-
 	}
 
-	final public static class Menu {
+	@Data
+	@NoArgsConstructor
+	public static class Menu {
 		public String name;
 		public String enName;
 		public String linkUrl;
@@ -54,118 +39,6 @@ public class MenuUtil {
 		public Integer topIndex;
 		public String[] privilgeNames;
 		public List<Menu> subMenu;
-
-		public boolean isSubMenuHasRole() {
-			return subMenuHasRole;
-		}
-
-		public void setSubMenuHasRole(boolean subMenuHasRole) {
-			this.subMenuHasRole = subMenuHasRole;
-		}
-
-		public boolean isDisableSetRoleFirstLink() {
-			return disableSetRoleFirstLink;
-		}
-
-		public void setDisableSetRoleFirstLink(boolean disableSetRoleFirstLink) {
-			this.disableSetRoleFirstLink = disableSetRoleFirstLink;
-		}
-
-		public String[] getPrivilgeNames() {
-			return privilgeNames;
-		}
-
-		public void setPrivilgeNames(String[] privilgeNames) {
-			this.privilgeNames = privilgeNames;
-		}
-
-		public Integer getTopIndex() {
-			return topIndex;
-		}
-
-		public void setTopIndex(Integer topIndex) {
-			this.topIndex = topIndex;
-		}
-
-		public String getSubGroupName() {
-			return subGroupName;
-		}
-
-		public void setSubGroupName(String subGroupName) {
-			this.subGroupName = subGroupName;
-		}
-
-		public boolean isHide() {
-			return hide;
-		}
-
-		public void setHide(boolean hide) {
-			this.hide = hide;
-		}
-
-		public String getRecommendPic() {
-			return recommendPic;
-		}
-
-		public void setRecommendPic(String recommendPic) {
-			this.recommendPic = recommendPic;
-		}
-
-		public String getName() {
-			return name;
-		}
-
-		public void setName(String name) {
-			this.name = name;
-		}
-
-		public String getEnName() {
-			return enName;
-		}
-
-		public void setEnName(String enName) {
-			this.enName = enName;
-		}
-
-		public String getLinkUrl() {
-			return linkUrl;
-		}
-
-		public void setLinkUrl(String linkUrl) {
-			this.linkUrl = linkUrl;
-		}
-
-		public String getImageUrl() {
-			return imageUrl;
-		}
-
-		public void setImageUrl(String imageUrl) {
-			this.imageUrl = imageUrl;
-		}
-
-		public String getImageHoverUrl() {
-			return imageHoverUrl;
-		}
-
-		public void setImageHoverUrl(String imageHoverUrl) {
-			this.imageHoverUrl = imageHoverUrl;
-		}
-
-		public boolean isCheck() {
-			return check;
-		}
-
-		public void setCheck(boolean check) {
-			this.check = check;
-		}
-
-		public List<Menu> getSubMenu() {
-			return subMenu;
-		}
-
-		public void setSubMenu(List<Menu> subMenu) {
-			this.subMenu = subMenu;
-		}
 	};
 
 	/**

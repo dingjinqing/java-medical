@@ -24,7 +24,7 @@ public class ShopRenewService extends BaseService {
 	}
 	public Integer getShopNumber(Integer sysId) {
 		return (Integer) db().select(DSL.count(SHOP_RENEW.SYS_ID)).from(SHOP_RENEW)
-				.where(SHOP_RENEW.SYS_ID.eq(sysId)).fetchOne().get(0);
+				.where(SHOP_RENEW.SYS_ID.eq(sysId)).fetchAny(0);
 	}
 
 	public Result<Record> getRenewList(Integer sysId) {

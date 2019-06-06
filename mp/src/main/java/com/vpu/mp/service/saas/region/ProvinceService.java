@@ -18,11 +18,11 @@ public class ProvinceService extends BaseService {
 	}
 	 	
 	public DictProvinceRecord getProvinceName(Integer provinceId) {
-		return db().selectFrom(DICT_PROVINCE).where(DICT_PROVINCE.PROVINCE_ID.eq(provinceId)).fetchOne();
+		return db().selectFrom(DICT_PROVINCE).where(DICT_PROVINCE.PROVINCE_ID.eq(provinceId)).fetchAny();
 	}
 
 	public DictProvinceRecord getProvinceName(String provinceName) {
-		return db().selectFrom(DICT_PROVINCE).where(DICT_PROVINCE.NAME.like(this.likeValue(provinceName))).fetchOne();
+		return db().selectFrom(DICT_PROVINCE).where(DICT_PROVINCE.NAME.like(this.likeValue(provinceName))).fetchAny();
 	}
 
 	public  int updateProvinceName(String provinceName)

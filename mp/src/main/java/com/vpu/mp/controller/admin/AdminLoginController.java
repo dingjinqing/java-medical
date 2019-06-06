@@ -21,7 +21,6 @@ public class AdminLoginController extends AdminBaseController {
 
 	@GetMapping(value = "/admin/login")
 	public ModelAndView login() {
-		saas.shop.version.getVersionConfig();
 		return view("admin/login");
 	}
 

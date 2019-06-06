@@ -127,7 +127,7 @@ public class ShopVersionService extends BaseService {
 	}
 
 	public ShopVersionRecord getVersionByLevel(String level) {
-		return db().selectFrom(SHOP_VERSION).where(SHOP_VERSION.LEVEL.eq(level)).fetchOne();
+		return db().selectFrom(SHOP_VERSION).where(SHOP_VERSION.LEVEL.eq(level)).fetchAny();
 	}
 
 	/**
@@ -141,8 +141,8 @@ public class ShopVersionService extends BaseService {
 		if (shop == null || StringUtils.isEmpty(shop.getShopType())) {
 			return null;
 		}
-
-		VersionConfig versionConfig = Util.parseJSON(shop.getVersionConfig(), VersionConfig.class);
+		String json = shop.getVersionConfig();
+		VersionConfig versionConfig = StringUtils.isBlank(json) ? null : Util.parseJSON(json, VersionConfig.class);
 		if (versionConfig == null) {
 			versionConfig = new VersionConfig();
 		}
@@ -151,7 +151,9 @@ public class ShopVersionService extends BaseService {
 		if (versionRecord == null) {
 			return null;
 		}
-		VersionConfig levelVersionConfig = Util.parseJSON(versionRecord.getContent(), VersionConfig.class);
+
+		json = versionRecord.getContent();
+		VersionConfig levelVersionConfig = StringUtils.isBlank(json) ? null : Util.parseJSON(json, VersionConfig.class);
 		if (levelVersionConfig == null) {
 			return null;
 		}
@@ -173,13 +175,6 @@ public class ShopVersionService extends BaseService {
 		num1.videoNum = (num1.videoNum == -1 || num2.videoNum == -1) ? -1 : num2.videoNum + num2.videoNumPlus;
 
 		return versionConfig;
-	}
-
-	public void getVersionConfig() {
-		String json = Util.loadResource("test.json");
-		VersionConfig config = new VersionConfig();
-		config = Util.parseJSON(json, VersionConfig.class);
-		System.out.println(config);
 	}
 
 	/**
@@ -261,12 +256,13 @@ public class ShopVersionService extends BaseService {
 		Map<String, Object> result = new HashMap<String, Object>(2);
 		result.put("self", shopMap);
 		result.put("all", allVersions);
-		
+
 		return result;
 	}
 
 	/**
 	 * 根据等级获取版本配置
+	 * 
 	 * @param level
 	 * @return
 	 */
@@ -277,6 +273,7 @@ public class ShopVersionService extends BaseService {
 
 	/**
 	 * 得到版本配置获取对应模块的数量
+	 * 
 	 * @param config
 	 * @param modName
 	 * @return

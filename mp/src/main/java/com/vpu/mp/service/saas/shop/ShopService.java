@@ -270,11 +270,11 @@ public class ShopService extends BaseService {
 	}
 
 	public ShopRecord getShopById(Integer shopId) {
-		return db().selectFrom(SHOP).where(SHOP.SHOP_ID.eq(shopId)).fetchOne();
+		return db().selectFrom(SHOP).where(SHOP.SHOP_ID.eq(shopId)).fetchAny();
 	}
 
 	public ShopRecord getShopByMobile(String mobile) {
-		return db().selectFrom(SHOP).where(SHOP.MOBILE.eq(mobile)).fetchOne();
+		return db().selectFrom(SHOP).where(SHOP.MOBILE.eq(mobile)).fetchAny();
 	}
 
 	public Integer getShopAccessRoleId(Integer sysId, Integer shopId, Integer subAccountId) {
@@ -291,7 +291,7 @@ public class ShopService extends BaseService {
 				.where(SHOP.SHOP_ID.eq(shopId))
 				.and(SHOP.SYS_ID.eq(sysId))
 				.and(SHOP_CHILD_ROLE.ACCOUNT_ID.eq(subAccountId))
-				.fetchOne();
+				.fetchAny();
 		if (role != null) {
 			return role.value1();
 		}

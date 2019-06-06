@@ -84,7 +84,7 @@ public class DataManager {
 			return shopDbList.get(shopId);
 		}
 
-		ShopRecord shop = db().selectFrom(SHOP).where(SHOP.SHOP_ID.eq(shopId)).fetchOne();
+		ShopRecord shop = db().selectFrom(SHOP).where(SHOP.SHOP_ID.eq(shopId)).fetchAny();
 		if (shop != null) {
 			DbConfig dbConfig = Util.parseJSON(shop.getDbConfig(), DbConfig.class);
 			if (dbConfig == null) {

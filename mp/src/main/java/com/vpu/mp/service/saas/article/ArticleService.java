@@ -181,7 +181,7 @@ public class ArticleService extends BaseService {
 		return db().selectFrom(ARTICLE_RECORD)
 				.where(ARTICLE_RECORD.SYS_ID.eq(sysId))
 				.orderBy(ARTICLE_RECORD.ARTICLE_ID.desc())
-				.fetchOne();
+				.fetchAny();
 	}
 
 	public List<UInteger> getArticleIdRows(Integer sysId) {
@@ -206,7 +206,7 @@ public class ArticleService extends BaseService {
 				.and(ARTICLE.STATUS.eq(publishStatus))
 				.and(ARTICLE.ARTICLE_ID.gt(articleId))
 				.orderBy(ARTICLE.CREATE_TIME.desc())
-				.fetchOne();
+				.fetchAny();
 	}
 
 }

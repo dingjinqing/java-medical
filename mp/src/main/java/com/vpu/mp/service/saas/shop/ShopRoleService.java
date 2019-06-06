@@ -14,7 +14,7 @@ import com.vpu.mp.service.foundation.Util;
 public class ShopRoleService extends BaseService {
 	
 	public ShopRoleRecord getRoleById(Integer roleId) {
-		return db().selectFrom(SHOP_ROLE).where(SHOP_ROLE.ROLE_ID.eq(roleId)).fetchOne();
+		return db().selectFrom(SHOP_ROLE).where(SHOP_ROLE.ROLE_ID.eq(roleId)).fetchAny();
 	}
 	
 	protected String[] getPrivilegeList(Integer roleId) {

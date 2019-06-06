@@ -24,18 +24,20 @@ public class CityService extends BaseService {
 	}
 
 	public DictCityRecord getCityName(Integer cityId) {
-		return db().selectFrom(DICT_CITY).where(DICT_CITY.CITY_ID.eq(cityId)).fetchOne();
+		return db().selectFrom(DICT_CITY).where(DICT_CITY.CITY_ID.eq(cityId)).fetchSingle();
 	}
 
 	public DictCityRecord getCityId(String cityName, Integer provinceId) {
 		return db().selectFrom(DICT_CITY)
 				.where(DICT_CITY.NAME.like(this.likeValue(cityName)).and(DICT_CITY.PROVINCE_ID.eq(provinceId)))
-				.fetchOne();
+				.fetchAny();
 	}
 
 	public int addNewCity(Integer provinceId, String cityName) {
-		DictCityRecord record = db().selectFrom(DICT_CITY).where(DICT_CITY.PROVINCE_ID.eq(provinceId))
-				.orderBy(DICT_CITY.CITY_ID.desc()).fetchOne();
+		DictCityRecord record = db().selectFrom(DICT_CITY)
+				.where(DICT_CITY.PROVINCE_ID.eq(provinceId))
+				.orderBy(DICT_CITY.CITY_ID.desc())
+				.fetchAny();
 		Integer cityId = record.getCityId() + 100;
 		while (getCityName(cityId) != null) {
 			cityId += 100;

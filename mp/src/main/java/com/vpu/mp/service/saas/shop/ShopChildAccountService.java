@@ -37,21 +37,21 @@ public class ShopChildAccountService extends BaseService {
 				.where(SHOP_CHILD_ACCOUNT.SYS_ID.eq(sysId))
 				.and(SHOP_CHILD_ACCOUNT.ACCOUNT_NAME.eq(username))
 				.and(SHOP_CHILD_ACCOUNT.ACCOUNT_PWD.eq(Util.md5(password)))
-				.fetchOne();
+				.fetchAny();
 	}
 
 	public ShopChildAccountRecord getUserFromAccountName(Integer sysId, String username) {
 		return db().selectFrom(SHOP_CHILD_ACCOUNT)
 				.where(SHOP_CHILD_ACCOUNT.SYS_ID.eq(sysId))
 				.and(SHOP_CHILD_ACCOUNT.ACCOUNT_NAME.eq(username))
-				.fetchOne();
+				.fetchAny();
 	}
 
 	public ShopChildAccountRecord getUserFromMobile(Integer sysId, String mobile) {
 		return db().selectFrom(SHOP_CHILD_ACCOUNT)
 				.where(SHOP_CHILD_ACCOUNT.SYS_ID.eq(sysId))
 				.and(SHOP_CHILD_ACCOUNT.MOBILE.eq(mobile))
-				.fetchOne();
+				.fetchAny();
 	}
 
 	final public static class ShopChildAccountListQueryParam {
@@ -147,7 +147,7 @@ public class ShopChildAccountService extends BaseService {
 				.selectFrom(SHOP_CHILD_ACCOUNT)
 				.where(SHOP_CHILD_ACCOUNT.SYS_ID.eq(sysId))
 				.and(SHOP_CHILD_ACCOUNT.ACCOUNT_ID.eq(subAccountId))
-				.fetchOne();
+				.fetchAny();
 	}
 
 	public Result<ShopChildAccountRecord> getSubAccountUser(String nameOrMobile) {

@@ -98,13 +98,13 @@ public class ShopAccountService extends BaseService {
 		return db().selectFrom(SHOP_ACCOUNT)
 				.where(SHOP_ACCOUNT.USER_NAME.eq(username))
 				.and(SHOP_ACCOUNT.PASSWORD.eq(Util.md5(password)))
-				.fetchOne();
+				.fetchAny();
 	}
 
 	public ShopAccountRecord getAccountInfo(String username) {
 		return db().selectFrom(SHOP_ACCOUNT)
 				.where(SHOP_ACCOUNT.USER_NAME.eq(username))
-				.fetchOne();
+				.fetchAny();
 	}
 
 	public Integer getShopAccountNumber(String startTime, String endTime) {
@@ -117,7 +117,7 @@ public class ShopAccountService extends BaseService {
 			Timestamp ts = Util.convertToTimestamp(endTime);
 			select.where(SHOP_ACCOUNT.ADD_TIME.le(ts));
 		}
-		return (Integer) select.fetchOne().get(0);
+		return (Integer) select.limit(1).fetchSingle(0);
 	}
 
 	/**
@@ -136,7 +136,7 @@ public class ShopAccountService extends BaseService {
 
 		Timestamp endTimestamp = new Timestamp((new Date()).getTime() - 30 * 3600 * 24);
 		select.where(SHOP_ACCOUNT.END_TIME.le(endTimestamp));
-		return (Integer) select.fetchOne().get(0);
+		return Util.getInteger(select.fetchAny(0));
 	}
 
 	public List<String> getPrincipalName(Integer sysId) {
@@ -149,13 +149,13 @@ public class ShopAccountService extends BaseService {
 	public ShopAccountRecord getAccountInfoForID(Integer sysId) {
 		return db().selectFrom(SHOP_ACCOUNT)
 				.where(SHOP_ACCOUNT.SYS_ID.eq(sysId))
-				.fetchOne();
+				.fetchAny();
 	}
 
 	public ShopAccountRecord getAccountInfoForID(String nameOrMobile) {
 		return db().selectFrom(SHOP_ACCOUNT)
 				.where(SHOP_ACCOUNT.USER_NAME.eq(nameOrMobile).or(SHOP_ACCOUNT.MOBILE.eq(nameOrMobile)))
-				.fetchOne();
+				.fetchAny();
 	}
 
 	public ShopAccountRecord addAccountInfo(com.vpu.mp.db.main.tables.pojos.ShopAccount account) {

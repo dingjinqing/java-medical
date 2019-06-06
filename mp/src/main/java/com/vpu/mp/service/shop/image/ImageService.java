@@ -167,7 +167,7 @@ public class ImageService extends BaseService {
 		select.orderBy(UPLOADED_IMAGE.IMG_ID.desc());
 		return this.getPageResult(select, param.page);
 	}
-
+	
 	protected List<Integer> convertIntegerArray(List<UInteger> array) {
 		List<Integer> result = new ArrayList<Integer>();
 		for (UInteger i : array) {
@@ -253,8 +253,8 @@ public class ImageService extends BaseService {
 	 * @return
 	 */
 	public UploadedImageRecord getImageFromOriginName(String imagePathOrUrl) {
-		return db().selectFrom(UPLOADED_IMAGE).where(UPLOADED_IMAGE.IMG_ORIG_FNAME.eq(imagePathOrUrl)).limit(1)
-				.fetchOne();
+		return db().selectFrom(UPLOADED_IMAGE).where(UPLOADED_IMAGE.IMG_ORIG_FNAME.eq(imagePathOrUrl))
+				.fetchAny();
 	}
 
 	/**
@@ -264,7 +264,7 @@ public class ImageService extends BaseService {
 	 * @return
 	 */
 	public UploadedImageRecord getImageFromImagePath(String imagePath) {
-		return db().selectFrom(UPLOADED_IMAGE).where(UPLOADED_IMAGE.IMG_PATH.eq(imagePath)).limit(1).fetchOne();
+		return db().selectFrom(UPLOADED_IMAGE).where(UPLOADED_IMAGE.IMG_PATH.eq(imagePath)).fetchAny();
 	}
 
 	/**
@@ -309,7 +309,7 @@ public class ImageService extends BaseService {
 	 * @return
 	 */
 	public UploadedImageRecord getImageById(Integer imageId) {
-		return db().fetchOne(UPLOADED_IMAGE, UPLOADED_IMAGE.IMG_ID.eq(UInteger.valueOf(imageId)));
+		return db().fetchAny(UPLOADED_IMAGE, UPLOADED_IMAGE.IMG_ID.eq(UInteger.valueOf(imageId)));
 	}
 
 	/**
@@ -324,7 +324,7 @@ public class ImageService extends BaseService {
 				.and(UPLOADED_IMAGE.IMG_WIDTH.gt(0))
 				.and(UPLOADED_IMAGE.IMG_HEIGHT.gt(0))
 				.and(UPLOADED_IMAGE.DEL_FLAG.eq(noDel))
-				.fetchOne(0);
+				.fetchAny(0);
 		return Util.getInteger(imageSize);
 	}
 

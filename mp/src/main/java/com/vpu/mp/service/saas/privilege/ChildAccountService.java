@@ -20,7 +20,7 @@ public class ChildAccountService extends BaseService {
 	public SystemChildAccountRecord verify(String username, String password) {
 		SystemChildAccountRecord user = db().selectFrom(SYSTEM_CHILD_ACCOUNT)
 				.where(SYSTEM_CHILD_ACCOUNT.ACCOUNT_NAME.eq(username)).or(SYSTEM_CHILD_ACCOUNT.MOBILE.eq(username))
-				.fetchOne();
+				.fetchAny();
 		if (user != null) {
 			if (user.getAccountPwd() == Util.md5(password)) {
 				return user;
@@ -34,13 +34,13 @@ public class ChildAccountService extends BaseService {
 	public SystemChildAccountRecord getUserFromAccountName(String username) {
 		return db().selectFrom(SYSTEM_CHILD_ACCOUNT)
 				.where(SYSTEM_CHILD_ACCOUNT.ACCOUNT_NAME.eq(username))
-				.fetchOne();
+				.fetchAny();
 	}
 
 	public SystemChildAccountRecord getUserFromMobile(String mobile) {
 		return db().selectFrom(SYSTEM_CHILD_ACCOUNT)
 				.where(SYSTEM_CHILD_ACCOUNT.MOBILE.eq(mobile))
-				.fetchOne();
+				.fetchAny();
 	}
 
 	public Result<Record> getPageList(Integer pageNo, Integer pageRows) {

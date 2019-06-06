@@ -1,6 +1,7 @@
 package com.vpu.mp.service.shop.image;
 
 import com.vpu.mp.service.foundation.BaseService;
+import com.vpu.mp.service.foundation.Util;
 import com.vpu.mp.service.shop.image.ImageCategoryService.CategoryTreeItem;
 
 import lombok.Data;
@@ -171,7 +172,7 @@ public class ImageCategoryService extends BaseService {
 	 */
 	public UploadedImageCategoryRecord getCategoryById(Integer catId) {
 		return db().selectFrom(UPLOADED_IMAGE_CATEGORY)
-				.where(UPLOADED_IMAGE_CATEGORY.IMG_CAT_ID.eq(UInteger.valueOf(catId))).fetchOne();
+				.where(UPLOADED_IMAGE_CATEGORY.IMG_CAT_ID.eq(UInteger.valueOf(catId))).fetchAny();
 	}
 
 
@@ -225,7 +226,8 @@ public class ImageCategoryService extends BaseService {
 	 * @return
 	 */
 	public Integer getCategoryMaxLevel() {
-		return (Integer) db().select(DSL.max(UPLOADED_IMAGE_CATEGORY.LEVEL)).from(UPLOADED_IMAGE_CATEGORY).fetchOne(0);
+		Object result = db().select(DSL.max(UPLOADED_IMAGE_CATEGORY.LEVEL)).from(UPLOADED_IMAGE_CATEGORY).fetchAny(0);
+		return Util.getInteger(result);
 	}
 
 	
