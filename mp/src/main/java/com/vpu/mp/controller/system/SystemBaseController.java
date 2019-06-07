@@ -44,6 +44,7 @@ public class SystemBaseController extends BaseController {
     @Override
     protected ModelMap globalModelMap() {
     	ModelMap model = new ModelMap();
+    	model.addAttribute("input_map", this.inputMap());
 		model.addAttribute("global_title", "微铺宝小程序Saas后台");
 		return model;
 	}

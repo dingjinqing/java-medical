@@ -35,7 +35,6 @@ public class SystemShopController extends SystemBaseController {
 		model.addAttribute("title", "店铺列表");
 		model.addAttribute("data_list", result.dataList);
 		model.addAttribute("page", result.page);
-		model.addAttribute("inputMap", this.inputMap());
 		model.addAttribute("account",
 				param.sysId == null ? new Object() : saas.shop.accout.getAccountInfoForID(param.sysId).intoMap());
 		model.addAttribute("version_array", saas.shop.version.getVersionMap());

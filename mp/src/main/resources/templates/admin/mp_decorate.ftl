@@ -59,7 +59,7 @@
 <input type="hidden" id="page_id" name="page_id" value="${page.page_id!}">
 <input type="hidden" id="page_type" name="page_type" value="${page.page_type!}">
 <input type="hidden" id="page_tpl_type" name="page_tpl_type" value="${page.page_tpl_type!}">
-<input type="hidden" id="page_content" name="page_content" value="${page.page_content!}">
+<input type="hidden" id="page_content" name="page_content" value="${page.page_content!?html}">
 
 <div class="page_title">
     <span>小程序管理 / </span>
@@ -451,7 +451,7 @@
     <input type="button" id="save_content" name="save_content" class="btn btn-primary" value="保存并发布">&nbsp;
     <input type="button" id="save_draft_content" name="save_draft_content" class="btn btn-primary" value="保存为草稿">&nbsp;
     <input type="button" id="save_preview_content" name="save_preview_content" class="btn btn-primary" value="预览效果">&nbsp;
-    <#if  (page.page_id!0 > 0)>
+    <#if  page?? && (page.page_id??) && (page.page_id?number > 0) >
         <a id="recovery_content" class="btn btn-recovery" href="javascript:void(0)">回退到当前已发布版本</a>
         <span>注：点击“回退到当前已发布版本”，页面草稿将置为线上已发布的页面</span>
     </#if>
@@ -480,10 +480,10 @@
 
     <#include "/admin/shop_decorate_m_hot_area.ftl">
 
-    <#if  page.page_tpl_type?? && (page.page_tpl_type?string == '2')>
+    <#if  page.page_tpl_type?? && (page.page_tpl_type?string! == '2')>
         <#include "/admin/shop_decorate_m_girl.ftl">
 
-    <#elseif page.page_tpl_type?? && ($page.page_tpl_type?string == "4")>
+    <#elseif page.page_tpl_type?? && (page.page_tpl_type  == 4)>
         <#include "/admin/shop_decorate_m_west_street.ftl">
     </#if>
 

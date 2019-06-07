@@ -62,6 +62,7 @@ public class AdminBaseController extends BaseController {
 			model.addAttribute("sub_index", menuIndex.getSubIndex());
 			model.addAttribute("shop_flag", getShopFlag());
 			model.addAttribute("is_grasp_shop", isGraspShop());
+			model.addAttribute("input_map", this.inputMap());
 			model.addAttribute("menuList", menuList);
 			model.addAttribute("leftMenuList", menuList.get(menuIndex.getTopIndex()).getSubMenu());
 			model.addAttribute("isShowGoodsImport", isShowGoodsImport());

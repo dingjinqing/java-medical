@@ -78,13 +78,13 @@
         <div class="panel-body">
             <select name="state">
                 <option value="0" selected>选择审核状态</option>
-                <option value="1" <#if (inputMap['state']! =="1")> selected </#if>>申请中</option>
-                <option value="2" <#if (inputMap['state']! =="2")> selected </#if>>审核通过</option>
-                <option value="3" <#if (inputMap['state']! =="3")> selected </#if>>审核不通过</option>
-                <option value="4" <#if (inputMap['state']! =="4")> selected </#if>>已禁用</option>
+                <option value="1" <#if (input_map['state']! =="1")> selected </#if>>申请中</option>
+                <option value="2" <#if (input_map['state']! =="2")> selected </#if>>审核通过</option>
+                <option value="3" <#if (input_map['state']! =="3")> selected </#if>>审核不通过</option>
+                <option value="4" <#if (input_map['state']! =="4")> selected </#if>>已禁用</option>
             </select>
-            <input type="text" name="keywords" placeholder="请输入用户名、昵称" value="${inputMap['keywords']!}">
-            <input type="text" name="company" placeholder="请输入公司名称" value="${inputMap['company']!}">
+            <input type="text" name="keywords" placeholder="请输入用户名、昵称" value="${input_map['keywords']!}">
+            <input type="text" name="company" placeholder="请输入公司名称" value="${input_map['company']!}">
             <input type="submit" class="search" name="search" value="搜索">
         </div>
     </div>

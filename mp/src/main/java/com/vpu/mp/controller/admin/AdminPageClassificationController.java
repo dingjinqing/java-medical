@@ -43,7 +43,6 @@ public class AdminPageClassificationController extends AdminBaseController {
 		model.addAttribute("title", "页面分类");
 		model.addAttribute("data_list", page.dataList);
 		model.addAttribute("page", page.page);
-		model.addAttribute("input_map", this.inputMap());
 		return view("admin/page_classification_list", model);
 	}
 

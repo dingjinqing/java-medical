@@ -48,7 +48,6 @@ public class SystemShopAccountController extends SystemBaseController {
 		model.addAttribute("title", "商家账号列表");
 		model.addAttribute("data_list", result.dataList);
 		model.addAttribute("page", result.page);
-		model.addAttribute("inputMap", this.inputMap());
 		model.addAttribute("nav_type", 0);
 		return view("system/shop_account_list", model);
 	}

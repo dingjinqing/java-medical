@@ -32,7 +32,7 @@
     <script language="JavaScript" src="/js/admin/table.js?v=1.0.6"></script>
 
 </head>
-<body class="<#if no_full??>"no-full"<#else>""</#if>">
+<body class="<#if input_map.no_full??>no-full</#if>">
 
 
 <div id="j_ajax_loading"></div>

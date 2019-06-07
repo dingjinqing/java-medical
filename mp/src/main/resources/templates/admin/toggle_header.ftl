@@ -19,7 +19,7 @@
     <script language="JavaScript" src="/js/artDialog/jquery.artDialog.js?skin=opera"></script>
     <script language="JavaScript" src="/js/artDialog/plugins/iframeTools.source.js"></script>
     <script language="JavaScript" src="/js/layui/layui.js?v=1.0.1"></script>
-    <script language="JavaScript" src="/js/admin/lang/{{ config("app.locale")!}/util.js"></script>
+    <script language="JavaScript" src="/js/admin/lang/zh-CN/util.js"></script>
     <script language="JavaScript" src="/js/admin/util.js?v=1.0.1"></script>
     <script language="JavaScript" src="/js/admin/table.js?v=1.0.1"></script>
 </head>

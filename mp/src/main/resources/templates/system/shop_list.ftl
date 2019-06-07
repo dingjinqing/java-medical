@@ -107,24 +107,24 @@
     <input type="hidden" id="re_shop_name" name="re_shop_name" value="">
     <div class="box panel ">
         <div class="panel-body">
-            <input type="text" name="account_key" value="${inputMap['account_key']!}" size="6" placeholder="账号ID、公司" style="width: 220px">
+            <input type="text" name="account_key" value="${input_map['account_key']!}" size="6" placeholder="账号ID、公司" style="width: 220px">
             <span class="text-info" style="margin-right: 20px">${account.user_name!}</span>
-            <input type="text" style="width: 250px" name="keywords" placeholder="店铺ID、店铺名称、手机号、小程序名称" value="${inputMap['keywords']!}">
+            <input type="text" style="width: 250px" name="keywords" placeholder="店铺ID、店铺名称、手机号、小程序名称" value="${input_map['keywords']!}">
             <select name="is_use" id="" class="form-control">
                 <option value="-1" selected>选择店铺状态</option>
-                <option value="1" <#if ("${inputMap['is_use']!}" == "1")> selected </#if>>使用中</option>
-                <option value="2" <#if ("${inputMap['is_use']!}" == "2")> selected </#if>>已过期</option>
+                <option value="1" <#if ("${input_map['is_use']!}" == "1")> selected </#if>>使用中</option>
+                <option value="2" <#if ("${input_map['is_use']!}" == "2")> selected </#if>>已过期</option>
             </select>
             <select name="shop_type" id="" class="form-control">
                 <option value="-1" selected>选择店铺类型</option>
                 <#list version_list as item>
-                    <option value="${item.level}" <#if ("${inputMap['shop_type']!}" == "${item.level}")> selected </#if>>${item.version_name}</option>
+                    <option value="${item.level}" <#if ("${input_map['shop_type']!}" == "${item.level}")> selected </#if>>${item.version_name}</option>
                 </#list>
             </select>
             <select name="shop_flag" id="" class="form-control">
                 <option value="" selected>选择店铺标识</option>
                 <#list shop_flag_list as flag >
-                <option value="${flag?index}" <#if ("${inputMap['shop_flag']!}" == "flag?index" && "${inputMap['shop_flag']!}" !="")> selected </#if>>${flag}</option>
+                <option value="${flag?index}" <#if ("${input_map['shop_flag']!}" == "flag?index" && "${input_map['shop_flag']!}" !="")> selected </#if>>${flag}</option>
                 </#list>
             </select>
 
@@ -132,13 +132,13 @@
         <div class="panel-body">
             <select name="is_enabled" id="" class="form-control" style="margin-left: 0px">
                 <option value="" selected>选择禁用状态</option>
-                <option value="1" <#if ("${inputMap['is_enabled']!}" == "1")> selected </#if>>已禁用</option>
-                <option value="0" <#if ("${inputMap['is_enabled']!}" == "0" && "${inputMap['is_enabled']!}" !="")> selected </#if>>未禁用</option>
+                <option value="1" <#if ("${input_map['is_enabled']!}" == "1")> selected </#if>>已禁用</option>
+                <option value="0" <#if ("${input_map['is_enabled']!}" == "0" && "${input_map['is_enabled']!}" !="")> selected </#if>>未禁用</option>
             </select>
             <select name="hid_bottom" id="" class="form-control" >
                 <option value="" selected>底部导航</option>
-                <option value="1" <#if ("${inputMap['hid_bottom']!}" == "1")> selected </#if>>隐藏</option>
-                <option value="0" <#if ("${inputMap['hid_bottom']!}"== "0" && "${inputMap['hid_bottom']!}" != "" )> selected </#if>>显示</option>
+                <option value="1" <#if ("${input_map['hid_bottom']!}" == "1")> selected </#if>>隐藏</option>
+                <option value="0" <#if ("${input_map['hid_bottom']!}"== "0" && "${input_map['hid_bottom']!}" != "" )> selected </#if>>显示</option>
             </select>
             <div class="search" >搜索</div>
         </div>

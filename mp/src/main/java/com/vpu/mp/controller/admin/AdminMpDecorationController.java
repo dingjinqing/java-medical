@@ -5,6 +5,7 @@ import java.util.Map;
 
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
@@ -15,12 +16,12 @@ import com.vpu.mp.service.foundation.JsonResult;
 import com.vpu.mp.service.foundation.PageResult;
 import com.vpu.mp.service.foundation.Util;
 import com.vpu.mp.service.shop.decoration.MpDecorationService.PageListQueryParam;
+import com.vpu.mp.service.shop.decoration.MpDecorationService.PageStoreParam;
 import com.vpu.mp.support.LineConvertHump;
 
 @Controller
 public class AdminMpDecorationController extends AdminBaseController {
 
-	@SuppressWarnings("unchecked")
 	@RequestMapping(value = "/admin/manage/decorate/page")
 	public ModelAndView decorationFirstPage(@RequestParam(value = "id", required = false) Integer pageId,
 			@RequestParam(value = "template_id", required = false) Integer templateId,
@@ -55,7 +56,6 @@ public class AdminMpDecorationController extends AdminBaseController {
 		return view("admin/mp_decorate", model);
 	}
 
-	@SuppressWarnings("unchecked")
 	@RequestMapping(value = "/admin/manage/decorate/list")
 	public ModelAndView getList(@LineConvertHump PageListQueryParam param) {
 		if (param.del != null) {
@@ -78,7 +78,6 @@ public class AdminMpDecorationController extends AdminBaseController {
 		model.addAttribute("data_list", page.dataList);
 		model.addAttribute("page", page.page);
 		model.addAttribute("version", version);
-		model.addAttribute("input_map", this.inputMap());
 		model.addAttribute("cat_list", shop().pageClassification.getClassificationMap());
 		return view("admin/shop_decorate_list", model);
 	}
@@ -93,6 +92,26 @@ public class AdminMpDecorationController extends AdminBaseController {
 		ModelMap model = new ModelMap();
 		model.addAttribute("template", saas.shop.decoration.getAll().intoMaps());
 		return view("admin/page_template", model);
+	}
+	
+	/**
+	 * 更新或添加页面
+	 * @param page
+	 * @return
+	 */
+	@RequestMapping(value = "/admin/manage/decorate/update")
+	public ModelAndView update(@LineConvertHump PageStoreParam page) {
+		XcxCustomerPageRecord record = shop().mpDecoration.storePage(page);
+		if(page.pageState == (byte)2) {
+			// 获取二维码
+//			String code = "TODO";
+//			if(true) {
+//				return json(new JsonResult(2,"error",null));
+//			}else {
+//				return json(new JsonResult(2,null,code));
+//			}
+		}
+		return jsonSuccess(record.getPageId().intValue());
 	}
 
 }

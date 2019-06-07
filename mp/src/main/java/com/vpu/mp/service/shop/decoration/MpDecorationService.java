@@ -16,6 +16,8 @@ import static com.vpu.mp.db.shop.tables.UploadedImageCategory.UPLOADED_IMAGE_CAT
 import static com.vpu.mp.db.shop.tables.XcxCustomerPage.XCX_CUSTOMER_PAGE;
 import static com.vpu.mp.db.main.tables.DecorationTemplate.DECORATION_TEMPLATE;
 
+import java.io.Serializable;
+import java.sql.Timestamp;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
@@ -144,9 +146,10 @@ public class MpDecorationService extends BaseService {
 	public XcxCustomerPageRecord getPageById(Integer pageId) {
 		return db().fetchAny(XCX_CUSTOMER_PAGE, XCX_CUSTOMER_PAGE.PAGE_ID.eq(UInteger.valueOf(pageId)));
 	}
-	
+
 	/**
 	 * 得到一个空页面
+	 * 
 	 * @return
 	 */
 	public XcxCustomerPageRecord getEmptyPage() {
@@ -185,6 +188,7 @@ public class MpDecorationService extends BaseService {
 
 	/**
 	 * 得到店铺版本模块
+	 * 
 	 * @return
 	 */
 	public Map<String, Integer> getVersionModules() {
@@ -288,6 +292,64 @@ public class MpDecorationService extends BaseService {
 	 */
 	public int getPageCount(Integer catId) {
 		return db().fetchCount(XCX_CUSTOMER_PAGE, XCX_CUSTOMER_PAGE.CAT_ID.eq(catId));
+	}
+
+	@Data
+	public static class PageStoreParam {
+		public Integer pageId;
+		public String pageName;
+		public String pageContent;
+		public Byte pageState;
+		public Integer catId;
+	}
+
+	/**
+	 * 保存页面，包含添加和更新
+	 * 
+	 * @param page
+	 * @return
+	 */
+	public XcxCustomerPageRecord storePage(PageStoreParam page) {
+		page.setPageContent(processMapModule(page.getPageContent()));
+		recordPageChange(page);
+		XcxCustomerPageRecord record = db().newRecord(XCX_CUSTOMER_PAGE);
+
+		record.setPageContent(page.getPageContent());
+		record.setPageName(page.getPageName());
+		record.setCatId(page.getCatId() == null ? 0 : page.getCatId());
+
+		if (page.pageState == (byte) 1) {
+			record.setPagePublishContent(page.getPageContent());
+		}
+		if (page.pageId != null) {
+			XcxCustomerPageRecord oldRecord = this.getPageById(page.pageId);
+			record.setPageId(UInteger.valueOf(page.getPageId()));
+			if (page.pageState == (byte) 3) {
+				record.setPageContent(oldRecord.getPagePublishContent());
+			}
+			record.update();
+			return record;
+		}
+		
+		record.insert();
+		return record;
+	}
+
+	/**
+	 * 处理Map模块
+	 * @param pageContent
+	 * @return
+	 */
+	protected String processMapModule(String pageContent) {
+		return pageContent;
+	}
+
+	/**
+	 * 记录页面变化部分
+	 * @param page
+	 */
+	protected void recordPageChange(PageStoreParam page) {
+
 	}
 
 }

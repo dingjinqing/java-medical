@@ -93,6 +93,10 @@ public class ImageService extends BaseService {
 		public Integer needImgWidth;
 		public Integer needImgHeight;
 		public Integer uploadSortId;
+		public Integer uploadImgCatId;
+		public Integer noFull;
+		public String onImgCb;
+		public Integer cropImgId;
 		public String act;
 		public String showType;
 		public Integer[] cbxImg;
