@@ -1,5 +1,6 @@
 package com.vpu.mp.controller.admin;
 
+import java.util.ArrayList;
 import java.util.Map;
 
 import org.springframework.stereotype.Controller;
@@ -18,48 +19,57 @@ import com.vpu.mp.support.LineConvertHump;
 
 @Controller
 public class AdminMpDecorationController extends AdminBaseController {
-	
+
 	@SuppressWarnings("unchecked")
 	@RequestMapping(value = "/admin/manage/decorate/page")
-	public ModelAndView decorationFirstPage(@RequestParam("id") Integer pageId) {
-		
-		XcxCustomerPageRecord page = shop().mpDecoration.getPageById(pageId);
+	public ModelAndView decorationFirstPage(@RequestParam(value = "id", required = false) Integer pageId,
+			@RequestParam(value = "template_id", required = false) Integer templateId,
+			@RequestParam(value = "copy_id", required = false) Integer copyId) {
+		XcxCustomerPageRecord page = null;
+		if(pageId != null) {
+			page = shop().mpDecoration.getPageById(pageId);
+		}else if(templateId != null) {
+			page = shop().mpDecoration.cloneTemplate(templateId);
+		}else if(copyId != null) {
+			page = shop().mpDecoration.copyDecoration(copyId);
+		}else {
+			page = shop().mpDecoration.getEmptyPage();
+		}
 		String content = Util.toJSON(shop().mpDecoration.filterPageContent(page.getPageContent()));
 		page.setPageContent(content);
-		
-		Map<String, Object> versionNumberMap = saas.shop.version.versionNumShow("decorate_num", this.shopId());
-		Map<String, Object> self = (Map<String, Object>) versionNumberMap.get("self");
-		self.put("use", String.format("%d", shop().mpDecoration.getPageCount()));
+
+		Map<String, Object> version = shop().version.getDecorateNumConfig();
 
 		ShopRecord shop = saas.shop.getShopById(shopId());
-		
+
 		ModelMap model = new ModelMap();
 		model.addAttribute("title", "自定义页面装修");
 		model.addAttribute("page", page.intoMap());
 		model.addAttribute("shop", shop.intoMap());
+		model.addAttribute("cat_list", new ArrayList<Object>());
 		model.addAttribute("province", saas.region.province.getAll().intoMaps());
-		model.addAttribute("version", self);
+		model.addAttribute("version", version.get("self"));
+		model.addAttribute("shop_style", Util.toJSON(saas.shop.getShopStyle(this.shopId())));
 		model.addAttribute("version_mod", shop().mpDecoration.getVersionModules());
 		model.addAttribute("page_cat_list", shop().pageClassification.getClassificationMap());
 		return view("admin/mp_decorate", model);
 	}
-	
+
 	@SuppressWarnings("unchecked")
 	@RequestMapping(value = "/admin/manage/decorate/list")
 	public ModelAndView getList(@LineConvertHump PageListQueryParam param) {
-		if(param.del != null) {
+		if (param.del != null) {
 			shop().mpDecoration.removeRow(param.del);
 		}
-		if(param.index != null) {
+		if (param.index != null) {
 			shop().mpDecoration.setIndex(param.index);
 		}
-		if(this.isAjax() && param.pageId !=null && param.catId !=null) {
+		if (this.isAjax() && param.pageId != null && param.catId != null) {
 			shop().mpDecoration.setPageCatId(param.pageId, param.catId);
 			return this.json(JsonResult.success());
 		}
-		
-		
-		Map<String, Object> version =  shop().version.getDecorateNumConfig();
+
+		Map<String, Object> version = shop().version.getDecorateNumConfig();
 
 		PageResult page = this.shop().mpDecoration.getPageList(param);
 
@@ -72,4 +82,17 @@ public class AdminMpDecorationController extends AdminBaseController {
 		model.addAttribute("cat_list", shop().pageClassification.getClassificationMap());
 		return view("admin/shop_decorate_list", model);
 	}
+
+	/**
+	 * 选择模板
+	 * 
+	 * @return
+	 */
+	@RequestMapping(value = "/admin/frame/decorate/choose")
+	public ModelAndView chooseTemplate() {
+		ModelMap model = new ModelMap();
+		model.addAttribute("template", saas.shop.decoration.getAll().intoMaps());
+		return view("admin/page_template", model);
+	}
+
 }

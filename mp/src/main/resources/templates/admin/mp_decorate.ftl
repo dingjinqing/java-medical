@@ -197,10 +197,10 @@
             <div class="panel panel-default collapse2">
                 <div id="collapse2" class="panel-collapse in" style="height: auto;">
                     <div class="panel-body drag-module-list">
-                        <li <#if ($version_mod["m_member_card"] == 0)> class="drag_isabled ModuleList every_case"
+                        <li <#if (version_mod["m_member_card"] == 0)> class="drag_isabled ModuleList every_case"
                             <#else> class="drag ModuleList every_case" </#if> data-limit="1" module_name="m_card"
                             title="会员卡模块">
-                            <#if ($version_mod["m_member_card"] == 0)>
+                            <#if (version_mod["m_member_card"] == 0)>
                                 <img src="http://${image_domain!}/image/admin/new_shop_beautify/deco_card_disabled.png"/>
                                 <img src="http://${image_domain!}/image/admin/system_icon.png" class="drag_info"/>
                                 <img src="http://${image_domain!}/image/admin/system_shadow.png"
@@ -216,10 +216,10 @@
                             </#if>
                             <div>会员卡</div>
                         </li>
-                        <li <#if ($version_mod["m_voucher"] == 0)> class="drag_isabled ModuleList every_case"
+                        <li <#if (version_mod["m_voucher"] == 0)> class="drag_isabled ModuleList every_case"
                             <#else> class="drag ModuleList every_case" </#if> data-limit="1" module_name="m_coupon"
                             title="优惠券模块">
-                            <#if ($version_mod["m_voucher"] == 0)>
+                            <#if (version_mod["m_voucher"] == 0)>
                                 <img src="http://${image_domain!}/image/admin/new_shop_beautify/deco_voucher_disabled.png"/>
                                 <img src="http://${image_domain!}/image/admin/system_icon.png" class="drag_info"/>
                                 <img src="http://${image_domain!}/image/admin/system_shadow.png"
@@ -235,10 +235,10 @@
                             </#if>
                             <div>优惠券</div>
                         </li>
-                        <li <#if ($version_mod["m_bargain"] == 0)> class="drag_isabled ModuleList every_case"
+                        <li <#if (version_mod["m_bargain"] == 0)> class="drag_isabled ModuleList every_case"
                             <#else> class="drag ModuleList every_case" </#if> data-limit="1" module_name="m_bargain"
                             title="砍价模块">
-                            <#if ($version_mod["m_bargain"] == 0)>
+                            <#if (version_mod["m_bargain"] == 0)>
                                 <img src="http://${image_domain!}/image/admin/new_shop_beautify/bargain_disabled.png"/>
                                 <img src="http://${image_domain!}/image/admin/system_icon.png" class="drag_info"/>
                                 <img src="http://${image_domain!}/image/admin/system_shadow.png"
@@ -254,10 +254,10 @@
                             </#if>
                             <div>砍价</div>
                         </li>
-                        <li <#if ($version_mod["m_integral_goods"] == 0)> class="drag_isabled ModuleList every_case"
+                        <li <#if (version_mod["m_integral_goods"] == 0)> class="drag_isabled ModuleList every_case"
                             <#else> class="drag ModuleList every_case" </#if> data-limit="-1" module_name="m_integral"
                             title="">
-                            <#if ($version_mod["m_integral_goods"] == 0)>
+                            <#if (version_mod["m_integral_goods"] == 0)>
                                 <img src="http://${image_domain!}/image/admin/new_shop_beautify/icon_integral_deco_disabled.png"/>
                                 <img src="http://${image_domain!}/image/admin/system_icon.png" class="drag_info"/>
                                 <img src="http://${image_domain!}/image/admin/system_shadow.png"
@@ -273,8 +273,8 @@
                             </#if>
                             <div>积分兑换</div>
                         </li>
-                        <li <#if ($version_mod["m_seckill_goods"] == 0)> class="drag_isabled ModuleList every_case" <#else> class="drag ModuleList every_case" </#if> data-limit="1" module_name="m_seckill" title="秒杀">
-                            <#if ($version_mod["m_seckill_goods"] == 0)>
+                        <li <#if (version_mod["m_seckill_goods"] == 0)> class="drag_isabled ModuleList every_case" <#else> class="drag ModuleList every_case" </#if> data-limit="1" module_name="m_seckill" title="秒杀">
+                            <#if (version_mod["m_seckill_goods"] == 0)>
                                 <img src="http://${image_domain!}/image/admin/new_shop_beautify/icon_secKill_disabled.png" />
                                 <img src="http://${image_domain!}/image/admin/system_icon.png" class="drag_info" />
                                 <img src="http://${image_domain!}/image/admin/system_shadow.png" class="system_shadow2" />
@@ -289,8 +289,8 @@
                             </#if>
                             <div>秒杀</div>
                         </li>
-                        <li <#if ($version_mod["m_group_draw"] == 0)> class="drag_isabled ModuleList every_case" <#else> class="drag ModuleList every_case" </#if> data-limit="1" module_name="m_group_draw" title="拼团抽奖">
-                            <#if ($version_mod["m_group_draw"] == 0)>
+                        <li <#if (version_mod["m_group_draw"] == 0)> class="drag_isabled ModuleList every_case" <#else> class="drag ModuleList every_case" </#if> data-limit="1" module_name="m_group_draw" title="拼团抽奖">
+                            <#if (version_mod["m_group_draw"] == 0)>
                                 <img src="http://${image_domain!}/image/admin/new_shop_beautify/fight_group_disabled.png" />
                                 <img src="http://${image_domain!}/image/admin/system_icon.png" class="drag_info" />
                                 <img src="http://${image_domain!}/image/admin/system_shadow.png" class="system_shadow2" />
@@ -305,8 +305,8 @@
                             </#if>
                             <div>拼团抽奖</div>
                         </li>
-                        <li <#if ($version_mod["m_pin_integration"] == 0)> class="drag_isabled ModuleList every_case " <#else> class="drag ModuleList every_case" </#if> data-limit="1" module_name="m_pin_integration" title="瓜分积分">
-                            <#if ($version_mod["m_pin_integration"] == 0)>
+                        <li <#if (version_mod["m_pin_integration"] == 0)> class="drag_isabled ModuleList every_case " <#else> class="drag ModuleList every_case" </#if> data-limit="1" module_name="m_pin_integration" title="瓜分积分">
+                            <#if (version_mod["m_pin_integration"] == 0)>
                                 <img src="http://${image_domain!}/image/admin/new_shop_beautify/pin_integration_disabled.png" />
                                 <img src="http://${image_domain!}/image/admin/system_icon.png"   class="drag_info" />
                                 <img src="http://${image_domain!}/image/admin/system_shadow.png"   class="system_shadow2" />
@@ -325,9 +325,7 @@
                 </div>
             </div>
         </div>
-        {{--<div class="box panel panel-body">--!}
-        {{--<a href="${page_url!}" id="page_url" target="_blank" style="display: none;">${page_url!}</a>--!}
-        {{--</div>--!}
+        
     </div>
 
     <div class="col-sm-3" style="width:385px; margin:0px 2px 2px 10px; padding:0;">
@@ -346,7 +344,7 @@
         </div>
     </div>
 
-    {{--收起样式--!}
+    <!-- 收起样式 -->
     <div class="hide_style col-sm-5">
         <div>页面设置</div>
         <div class="change_show" style="text-align: right;color: #5a8bff;">
@@ -357,17 +355,17 @@
 
     <div id="module_edit" class="col-sm-5"
          style="max-width:725px; margin:0px 2px 2px 10px; padding-left:10px;width: 43%">
-        {{--<h1>模块编辑</h1>--!}
-        {{--<div style="border-bottom:1px dotted #d4d4d4; margin-top:5px; margin-bottom:5px;"></div>--!}
+        <!-- <h1>模块编辑</h1> -->
+        <!-- <div style="border-bottom:1px dotted #d4d4d4; margin-top:5px; margin-bottom:5px;"></div> -->
         <div class="module_body_container panel panel-body">
             <div class="module_body"></div>
             <div class="u_editor">
                 <textarea id="editor" style="width:100%;height:400px;"></textarea>
             </div>
         </div>
-        {{--<div style="margin-top:15px;">--!}
-        {{--<input class="btn btn-primary" type='button' id="ok" name="ok" value="确定">--!}
-        {{--</div>--!}
+        <!-- <div style="margin-top:15px;"> -->
+        <!-- <input class="btn btn-primary" type='button' id="ok" name="ok" value="确定"> -->
+        <!-- </div> -->
     </div>
 
 
@@ -519,7 +517,7 @@
 </script>
 <#noparse>
 <script charset="utf-8" src="http://map.qq.com/api/js?v=2.exp&key=GO6BZ-EUL6P-ZLPDD-VYOYE-CCZBH-UFBOU"></script>
-<script language="JavaScript" src="/js/admin/lang/zh_CN/image_common.js"></script>
+<script language="JavaScript" src="/js/admin/lang/zh-CN/image_common.js"></script>
 <script type="text/javascript" src="/js/admin/jImageManager.js?v=1.0.0"></script>
 <script language="JavaScript" src="/js/admin/jVideoManager.js"></script>
 <script charset="utf-8" src="/js/kindeditor/kindeditor-all.js"></script>

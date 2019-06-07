@@ -41,6 +41,7 @@ public class ShopService extends BaseService {
 	public ShopChildAccountService subAccount;
 	public ShopRoleService role;
 	public ShopMenuService menu;
+	public MpDecorationService decoration;
 
 	final public static class ShopListQueryParam {
 		public Integer page;

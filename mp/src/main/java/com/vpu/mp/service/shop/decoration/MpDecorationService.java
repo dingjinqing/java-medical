@@ -144,6 +144,16 @@ public class MpDecorationService extends BaseService {
 	public XcxCustomerPageRecord getPageById(Integer pageId) {
 		return db().fetchAny(XCX_CUSTOMER_PAGE, XCX_CUSTOMER_PAGE.PAGE_ID.eq(UInteger.valueOf(pageId)));
 	}
+	
+	/**
+	 * 得到一个空页面
+	 * @return
+	 */
+	public XcxCustomerPageRecord getEmptyPage() {
+		XcxCustomerPageRecord record = db().newRecord(XCX_CUSTOMER_PAGE);
+		record.setPageContent("{}");
+		return record;
+	}
 
 	/**
 	 * 过滤页面内容
