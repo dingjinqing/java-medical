@@ -1,10 +1,13 @@
 package com.vpu.mp.service.shop;
 
+import com.vpu.mp.service.foundation.ServiceFactory;
 import com.vpu.mp.service.foundation.Util;
+import com.vpu.mp.service.saas.SaasApplication;
 import com.vpu.mp.service.shop.decoration.MpDecorationService;
 import com.vpu.mp.service.shop.decoration.PageClassificationService;
 import com.vpu.mp.service.shop.goods.GoodsService;
 import com.vpu.mp.service.shop.image.ImageService;
+import com.vpu.mp.service.shop.version.VersionService;
 
 /**
  * 
@@ -17,12 +20,13 @@ public class ShopApplication {
 	public ImageService image;
 	public MpDecorationService mpDecoration;
 	public PageClassificationService pageClassification;
+	public VersionService version;
 
 	protected Integer shopId = 0;
 
 	public ShopApplication(Integer shopId) {
 		this.shopId = shopId;
-		Util.initComponents(this);
+		ServiceFactory.initServices(this);
 	}
 
 	public Integer getShopId() {
@@ -32,4 +36,5 @@ public class ShopApplication {
 	public void setShopId(Integer shopId) {
 		this.shopId = shopId;
 	}
+	
 }

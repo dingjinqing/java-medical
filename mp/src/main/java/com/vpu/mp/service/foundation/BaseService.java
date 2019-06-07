@@ -24,11 +24,22 @@ public class BaseService {
 	public BaseService() {
 	
 	}
-	public void initComponents(Integer shopId) {
+	
+	/**
+	 * 初始化对象内继承于BaseService类的变量
+	 * 
+	 * @param shopId
+	 */
+	public void initServices(Integer shopId) {
 		this.shopId = shopId;
-		Util.initComponents(this);
+		ServiceFactory.initServices(this);
 	}
 	
+	/**
+	 * saas应用
+	 * 
+	 * @return
+	 */
 	public SaasApplication saas() {
 		return SaasApplication.instance();
 	}

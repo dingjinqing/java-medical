@@ -8,7 +8,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.apache.commons.lang3.ArrayUtils;
 import org.jooq.Record;
 import org.jooq.Result;
 import org.jooq.SelectWhereStep;
@@ -16,7 +15,6 @@ import org.jooq.impl.DSL;
 import org.jooq.tools.StringUtils;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.fasterxml.jackson.annotation.JsonProperty.Access;
 import com.vpu.mp.db.main.tables.records.ShopRecord;
 import com.vpu.mp.db.main.tables.records.ShopVersionRecord;
 import com.vpu.mp.service.foundation.BaseService;

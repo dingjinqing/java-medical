@@ -23,6 +23,7 @@ import com.vpu.mp.db.main.tables.records.ArticleRecordRecord;
 import com.vpu.mp.service.foundation.BaseService;
 import com.vpu.mp.service.foundation.PageResult;
 import com.vpu.mp.service.foundation.Util;
+import com.vpu.mp.service.saas.region.CityService;
 import com.vpu.mp.service.saas.shop.ShopAccountService.ShopAccountListQueryParam;
 
 /**
@@ -31,6 +32,8 @@ import com.vpu.mp.service.saas.shop.ShopAccountService.ShopAccountListQueryParam
  *
  */
 public class ArticleService extends BaseService {
+	
+	public CityService city;
 
 	final public static class ArticleListQueryParam {
 		public Integer categoryId;

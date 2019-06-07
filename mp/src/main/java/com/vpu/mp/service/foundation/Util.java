@@ -141,37 +141,6 @@ public class Util {
 		return Timestamp.valueOf(dateTime);
 	}
 
-	public static void initComponents(Object o) {
-		Integer shopId = (Integer) getObjectProperty(o, "shopId");
-		if (shopId == null) {
-			shopId = 0;
-		}
-
-		Field[] fields = o.getClass().getDeclaredFields();
-		for (Field field : fields) {
-			boolean ret = BaseService.class.isAssignableFrom(field.getType());
-			if (ret) {
-				System.out.println("initComponents " + o.getClass().getSimpleName() + "=>"
-						+ field.getType().getSimpleName() + "(" + shopId + ")");
-				field.setAccessible(true);
-
-				try {
-					String className = field.getType().getName();
-					Class<?> cls = Class.forName(className);
-					Constructor<?> constructor = cls.getConstructor();
-					Object fieldInstance = constructor.newInstance();
-					field.set(o, fieldInstance);
-					BaseService service = (BaseService) field.get(o);
-					service.initComponents(shopId);
-				} catch (Exception e) {
-					e.printStackTrace();
-				}
-
-			}
-
-		}
-	}
-
 	/**
 	 * 获取对象的属性值
 	 * 

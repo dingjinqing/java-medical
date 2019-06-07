@@ -58,9 +58,8 @@ public class AdminMpDecorationController extends AdminBaseController {
 			return this.json(JsonResult.success());
 		}
 		
-		Map<String, Object> versionNumberMap = saas.shop.version.versionNumShow("decorate_num", this.shopId());
-		Map<String, Object> self = (Map<String, Object>) versionNumberMap.get("self");
-		self.put("use", String.format("%d", shop().mpDecoration.getPageCount()));
+		
+		Map<String, Object> version =  shop().version.getDecorateNumConfig();
 
 		PageResult page = this.shop().mpDecoration.getPageList(param);
 
@@ -68,7 +67,7 @@ public class AdminMpDecorationController extends AdminBaseController {
 		model.addAttribute("title", "页面装修列表");
 		model.addAttribute("data_list", page.dataList);
 		model.addAttribute("page", page.page);
-		model.addAttribute("version", versionNumberMap);
+		model.addAttribute("version", version);
 		model.addAttribute("input_map", this.inputMap());
 		model.addAttribute("cat_list", shop().pageClassification.getClassificationMap());
 		return view("admin/shop_decorate_list", model);

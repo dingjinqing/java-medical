@@ -45,12 +45,7 @@ public class AdminImageController extends AdminBaseController {
 	@SuppressWarnings("unchecked")
 	@RequestMapping(value = "/admin/manage/image/list")
 	public ModelAndView getList(@LineConvertHump ImageListQueryParam param) {
-
-		float size = this.shop().image.getAllSize() / 1024 / 1024;
-		Map<String, Object> versionNumberMap = saas.shop.version.versionNumShow("picture_num", this.shopId());
-		Map<String, Object> self = (Map<String, Object>) versionNumberMap.get("self");
-		self.put("use", String.format("%.2f", size));
-
+		Map<String, Object> version =  shop().version.getPictureNumConfig();
 		String message = this.shop().image.processPostRequest(param);
 		PageResult page = this.shop().image.getPageList(param);
 
@@ -63,7 +58,7 @@ public class AdminImageController extends AdminBaseController {
 		model.addAttribute("upload_sort_list", this.shop().image.getUploadSortList());
 		model.addAttribute("img_cat_list", this.shop().image.category.getCategoryTree((byte) -1).intoMaps());
 		model.addAttribute("input_map", inputMap());
-		model.addAttribute("version", versionNumberMap);
+		model.addAttribute("version", version);
 		model.addAttribute("message", message);
 		return view("admin/image_manager_list", model);
 	}

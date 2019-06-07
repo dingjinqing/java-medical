@@ -34,7 +34,7 @@ public class BaseController {
 
 	@Autowired
 	protected Environment env;
-	
+
 	protected String flashSessionKey = "__FLASH_SESSION_KEY";
 
 	protected ModelAndView view(String path) {
@@ -47,7 +47,23 @@ public class BaseController {
 	protected ModelMap globalModelMap() {
 		return null;
 	}
-	
+
+	public ModelAndView jsonSuccess() {
+		return json(JsonResult.success());
+	}
+
+	public ModelAndView jsonSuccess(Object content) {
+		return json(JsonResult.success(content));
+	}
+
+	public ModelAndView jsonFail(Object message) {
+		return json(JsonResult.fail(message));
+	}
+
+	public ModelAndView jsonFail(Object message, int error) {
+		return json(JsonResult.fail(message, error));
+	}
+
 	protected ModelAndView json(JsonResult result) {
 		ModelMap model = new ModelMap();
 		model.addAttribute("error", result.getError());
@@ -55,14 +71,13 @@ public class BaseController {
 		model.addAttribute("content", result.getContent());
 		return this.json(model);
 	}
-	
-	protected ModelAndView json( Map<String, ?> model) {
-		ModelAndView mv = new  ModelAndView(new MappingJackson2JsonView());
+
+	protected ModelAndView json(Map<String, ?> model) {
+		ModelAndView mv = new ModelAndView(new MappingJackson2JsonView());
 		mv.addAllObjects(model);
 		return mv;
 	}
-	
-	
+
 	protected ModelAndView view(String path, Map<String, ?> model) {
 		if (this.isRedirectPath(path)) {
 			request.getSession().setAttribute(flashSessionKey, model);
@@ -88,17 +103,17 @@ public class BaseController {
 		model.addAttribute("main_domain", env.getProperty("domain.main"));
 		model.addAttribute("image_domain", env.getProperty("domain.image"));
 		mv.addAllObjects(model);
-		
-		Object  flashModal = request.getSession().getAttribute(flashSessionKey);
-		if(flashModal != null) {
-			mv.addAllObjects((Map<String, ?>)flashModal);
+
+		Object flashModal = request.getSession().getAttribute(flashSessionKey);
+		if (flashModal != null) {
+			mv.addAllObjects((Map<String, ?>) flashModal);
 			request.getSession().removeAttribute(flashSessionKey);
 		}
-		
-		ModelMap globalModel  = globalModelMap();
-		if(globalModel != null) {
+
+		ModelMap globalModel = globalModelMap();
+		if (globalModel != null) {
 			mv.addAllObjects(globalModel);
-		}		
+		}
 		return mv;
 	}
 
@@ -123,7 +138,7 @@ public class BaseController {
 	protected boolean isPost() {
 		return "POST".equals(request.getMethod());
 	}
-	
+
 	protected boolean isAjax() {
 		return (!StringUtils.isEmpty(request.getHeader("x-requested-with"))
 				&& request.getHeader("x-requested-with").equals("XMLHttpRequest"));
