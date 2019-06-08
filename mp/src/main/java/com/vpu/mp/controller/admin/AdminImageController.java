@@ -4,6 +4,7 @@ import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -27,7 +28,6 @@ import com.vpu.mp.service.shop.image.ImageService.ImageListQueryParam;
 import com.vpu.mp.service.shop.image.ImageService.UploadPath;
 import com.vpu.mp.support.LineConvertHump;
 
-
 /**
  * 
  * @author 新国
@@ -38,7 +38,7 @@ public class AdminImageController extends AdminBaseController {
 
 	@RequestMapping(value = "/admin/manage/image/list")
 	public ModelAndView getList(@LineConvertHump ImageListQueryParam param) {
-		Map<String, Object> version =  shop().version.getPictureNumConfig();
+		Map<String, Object> version = shop().version.getPictureNumConfig();
 		String message = this.shop().image.processPostRequest(param);
 		PageResult page = this.shop().image.getPageList(param);
 
@@ -52,7 +52,7 @@ public class AdminImageController extends AdminBaseController {
 		model.addAttribute("img_cat_list", this.shop().image.category.getCategoryTree((byte) -1).intoMaps());
 		model.addAttribute("version", version);
 		model.addAttribute("message", message);
-		
+
 		return view("admin/image_manager_list", model);
 	}
 
@@ -62,30 +62,28 @@ public class AdminImageController extends AdminBaseController {
 	@ResponseBody
 	public JsonResult upload() {
 		String name = this.input("elname");
-		String names = name + "[]";
-		Collection<Part> parts;
+		List<Part> uploadParts = null;
 		try {
-			parts = this.request.getParts();
+			uploadParts = Util.getFilePart(request, name);
 		} catch (IOException | ServletException e1) {
 			e1.printStackTrace();
 			return JsonResult.fail("上传失败");
 		}
 		List<Integer> imageIds = new ArrayList<Integer>();
 		String lastError = "";
-		for (Part part : parts) {
-			if (part.getName().equals(name) || part.getName().equals(names)) {
-				try {
-					String message = this.uploadOneFile(part);
-					if (message.startsWith(prefixImgId)) {
-						imageIds.add(Util.getInteger(message.substring(prefixImgId.length(), message.length())));
-					} else {
-						lastError = message;
-					}
-				} catch (Exception e) {
-					e.printStackTrace();
-					return JsonResult.fail("无效图片");
+		for (Part part : uploadParts) {
+			try {
+				String message = this.uploadOneFile(part);
+				if (message.startsWith(prefixImgId)) {
+					imageIds.add(Util.getInteger(message.substring(prefixImgId.length(), message.length())));
+				} else {
+					lastError = message;
 				}
+			} catch (Exception e) {
+				e.printStackTrace();
+				return JsonResult.fail("无效图片");
 			}
+
 		}
 		if (imageIds.size() > 0) {
 			return JsonResult.success(imageIds);
@@ -96,6 +94,7 @@ public class AdminImageController extends AdminBaseController {
 
 	/**
 	 * 上传一个图片
+	 * 
 	 * @param part
 	 * @return
 	 * @throws Exception
@@ -128,9 +127,10 @@ public class AdminImageController extends AdminBaseController {
 
 		return "IMG_ID:" + record.getImgId();
 	}
-	
+
 	/**
 	 * 剪裁图片
+	 * 
 	 * @param param
 	 * @return
 	 */
@@ -140,9 +140,10 @@ public class AdminImageController extends AdminBaseController {
 		try {
 			UploadPath uploadPath = shop().image.makeCrop(param);
 			UploadedImageRecord record = shop().image.getImageById(param.remoteImgId);
-			UploadedImageRecord cropImage = shop().image.addImageToDb(uploadPath.relativeFilePath, record.getImgName(), record.getImgOrigFname(), param.imgCatId);
+			UploadedImageRecord cropImage = shop().image.addImageToDb(uploadPath.relativeFilePath, record.getImgName(),
+					record.getImgOrigFname(), param.imgCatId);
 			// 兼容前端输出数组形式
-			List<Map<String,Object>> list= new ArrayList<Map<String,Object>>();
+			List<Map<String, Object>> list = new ArrayList<Map<String, Object>>();
 			list.add(cropImage.intoMap());
 			return JsonResult.success(list);
 		} catch (Exception e) {
@@ -150,27 +151,29 @@ public class AdminImageController extends AdminBaseController {
 			return JsonResult.fail("裁剪失败");
 		}
 	}
-	
+
 	/**
 	 * 多图片选择框
+	 * 
 	 * @return
 	 */
 	@RequestMapping(value = "/admin/frame/image/dialog/select")
 	public ModelAndView selectImageDialog() {
 		String accountManagePath = "admin/account/manage";
 		ModelMap model = new ModelMap();
-		model.addAttribute("account", this.request.getHeader("Referer").indexOf(accountManagePath)!= -1);
+		model.addAttribute("account", this.request.getHeader("Referer").indexOf(accountManagePath) != -1);
 		return view("admin/select_img_dlg", model);
 	}
-	
+
 	/**
 	 * 图片列表对话框
+	 * 
 	 * @param param
 	 * @return
 	 */
 	@RequestMapping(value = "/admin/frame/image/dialog")
 	public ModelAndView imageListDialog(@LineConvertHump ImageListQueryParam param) {
-		Map<String, Object> version =  shop().version.getPictureNumConfig();
+		Map<String, Object> version = shop().version.getPictureNumConfig();
 		String message = this.shop().image.processPostRequest(param);
 		PageResult page = this.shop().image.getPageList(param);
 
@@ -187,5 +190,46 @@ public class AdminImageController extends AdminBaseController {
 		model.addAttribute("action", "/admin/frame/image/dialog");
 		return view("admin/image_manager_dlg", model);
 	}
-	
+
+	@RequestMapping(value = "/admin/image/keditor/upload")
+	public ModelAndView kEditorUpload() {
+		List<Part> uploadParts = null;
+		try {
+			uploadParts = Util.getFilePart(request, "imgFile");
+		} catch (IOException | ServletException e1) {
+			e1.printStackTrace();
+			return this.KEditorResponse("上传失败", null);
+		}
+		if (uploadParts.size() == 0) {
+			return this.KEditorResponse("未找到上传文件", null);
+		}
+		String message;
+		try {
+			message = this.uploadOneFile(uploadParts.get(0));
+			if (message.startsWith(prefixImgId)) {
+				Integer imageId = Util.getInteger(message.substring(prefixImgId.length(), message.length()));
+				UploadedImageRecord record = shop().image.getImageById(imageId);
+				return this.KEditorResponse(null,record.getImgUrl());
+			} else {
+				return this.KEditorResponse(message, null);
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+			return this.KEditorResponse("上传失败", null);
+		}
+
+	}
+
+	protected ModelAndView KEditorResponse(String message, String url) {
+		Map<String, Object> result = new HashMap<String, Object>();
+		if (message != null) {
+			result.put("error", 1);
+			result.put("message", message);
+		} else {
+			result.put("error", 0);
+			result.put("url", url);
+		}
+		return json(result);
+	}
+
 }
