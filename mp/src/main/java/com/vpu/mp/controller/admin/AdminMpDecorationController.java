@@ -5,7 +5,6 @@ import java.util.Map;
 
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
-import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
@@ -19,6 +18,11 @@ import com.vpu.mp.service.shop.decoration.MpDecorationService.PageListQueryParam
 import com.vpu.mp.service.shop.decoration.MpDecorationService.PageStoreParam;
 import com.vpu.mp.support.LineConvertHump;
 
+/**
+ * 
+ * @author lixinguo
+ *
+ */
 @Controller
 public class AdminMpDecorationController extends AdminBaseController {
 
@@ -27,13 +31,13 @@ public class AdminMpDecorationController extends AdminBaseController {
 			@RequestParam(value = "template_id", required = false) Integer templateId,
 			@RequestParam(value = "copy_id", required = false) Integer copyId) {
 		XcxCustomerPageRecord page = null;
-		if(pageId != null) {
+		if (pageId != null) {
 			page = shop().mpDecoration.getPageById(pageId);
-		}else if(templateId != null) {
+		} else if (templateId != null) {
 			page = shop().mpDecoration.cloneTemplate(templateId);
-		}else if(copyId != null) {
+		} else if (copyId != null) {
 			page = shop().mpDecoration.copyDecoration(copyId);
-		}else {
+		} else {
 			page = shop().mpDecoration.getEmptyPage();
 		}
 		String content = Util.toJSON(shop().mpDecoration.filterPageContent(page.getPageContent()));
@@ -93,16 +97,18 @@ public class AdminMpDecorationController extends AdminBaseController {
 		model.addAttribute("template", saas.shop.decoration.getAll().intoMaps());
 		return view("admin/page_template", model);
 	}
-	
+
 	/**
 	 * 更新或添加页面
+	 * 
 	 * @param page
 	 * @return
 	 */
 	@RequestMapping(value = "/admin/manage/decorate/update")
 	public ModelAndView update(@LineConvertHump PageStoreParam page) {
 		XcxCustomerPageRecord record = shop().mpDecoration.storePage(page);
-		if(page.pageState == (byte)2) {
+		Byte getQrState = 2;
+		if (page.pageState == getQrState) {
 			// 获取二维码
 //			String code = "TODO";
 //			if(true) {

@@ -11,6 +11,11 @@ import com.vpu.mp.db.main.tables.records.DecorationTemplateRecord;
 import com.vpu.mp.service.foundation.BaseService;
 import com.vpu.mp.service.foundation.PageResult;
 
+/**
+ * 
+ * @author lixinguo
+ *
+ */
 public class MpDecorationService extends BaseService {
 
 	public static class MpDecorationListQueryParam {
@@ -40,8 +45,8 @@ public class MpDecorationService extends BaseService {
 
 		return select;
 	}
-	
+
 	public Result<DecorationTemplateRecord> getAll() {
-		return db().fetch(DECORATION_TEMPLATE,DECORATION_TEMPLATE.PAGE_ENABLED.eq((byte)1));
+		return db().fetch(DECORATION_TEMPLATE, DECORATION_TEMPLATE.PAGE_ENABLED.eq((byte) 1));
 	}
 }

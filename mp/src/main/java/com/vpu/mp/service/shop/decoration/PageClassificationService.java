@@ -1,7 +1,6 @@
 package com.vpu.mp.service.shop.decoration;
 
 import static com.vpu.mp.db.shop.tables.PageClassification.PAGE_CLASSIFICATION;
-import static com.vpu.mp.db.shop.tables.XcxCustomerPage.XCX_CUSTOMER_PAGE;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -15,10 +14,14 @@ import org.jooq.types.UInteger;
 import com.vpu.mp.db.shop.tables.records.PageClassificationRecord;
 import com.vpu.mp.service.foundation.BaseService;
 import com.vpu.mp.service.foundation.PageResult;
-import com.vpu.mp.service.shop.decoration.MpDecorationService.PageListQueryParam;
 
 import lombok.Data;
 
+/**
+ * 
+ * @author lixinguo
+ *
+ */
 public class PageClassificationService extends BaseService {
 
 	@Data
@@ -69,7 +72,7 @@ public class PageClassificationService extends BaseService {
 	 * @return
 	 */
 	public Map<String, String> getClassificationMap() {
-		Map<String, String> result = new HashMap<String, String>();
+		Map<String, String> result = new HashMap<String, String>(20);
 		for (PageClassificationRecord r : getAll()) {
 			result.put(r.getId().toString(), r.getName());
 		}
@@ -94,7 +97,7 @@ public class PageClassificationService extends BaseService {
 	public PageClassificationRecord getRow(Integer id) {
 		return db().fetchAny(PAGE_CLASSIFICATION, PAGE_CLASSIFICATION.ID.eq(UInteger.valueOf(id)));
 	}
-	
+
 	public PageClassificationRecord getRowByName(String name) {
 		return db().fetchAny(PAGE_CLASSIFICATION, PAGE_CLASSIFICATION.NAME.eq(name));
 	}
@@ -121,7 +124,7 @@ public class PageClassificationService extends BaseService {
 				.where(PAGE_CLASSIFICATION.ID.eq(UInteger.valueOf(id)))
 				.execute();
 	}
-	
+
 	public int addRow(String name) {
 		return db().insertInto(PAGE_CLASSIFICATION)
 				.set(PAGE_CLASSIFICATION.NAME, name)

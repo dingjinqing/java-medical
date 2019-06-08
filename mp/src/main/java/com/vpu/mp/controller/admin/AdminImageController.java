@@ -3,7 +3,6 @@ package com.vpu.mp.controller.admin;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -100,7 +99,8 @@ public class AdminImageController extends AdminBaseController {
 	 * @throws Exception
 	 */
 	protected String uploadOneFile(Part part) throws Exception {
-		if (part.getSize() > 5 * 1024 * 1024) {
+		Integer maxSize = 5 * 1024 * 1024;
+		if (part.getSize() > maxSize) {
 			return "上传图片大于5M";
 		}
 		if (!shop().image.validImageType(part.getContentType())) {
@@ -191,6 +191,11 @@ public class AdminImageController extends AdminBaseController {
 		return view("admin/image_manager_dlg", model);
 	}
 
+	/**
+	 * kEditor 上传图片
+	 * 
+	 * @return
+	 */
 	@RequestMapping(value = "/admin/image/keditor/upload")
 	public ModelAndView kEditorUpload() {
 		List<Part> uploadParts = null;
@@ -198,10 +203,10 @@ public class AdminImageController extends AdminBaseController {
 			uploadParts = Util.getFilePart(request, "imgFile");
 		} catch (IOException | ServletException e1) {
 			e1.printStackTrace();
-			return this.KEditorResponse("上传失败", null);
+			return this.editorResponse("上传失败", null);
 		}
 		if (uploadParts.size() == 0) {
-			return this.KEditorResponse("未找到上传文件", null);
+			return this.editorResponse("未找到上传文件", null);
 		}
 		String message;
 		try {
@@ -209,19 +214,19 @@ public class AdminImageController extends AdminBaseController {
 			if (message.startsWith(prefixImgId)) {
 				Integer imageId = Util.getInteger(message.substring(prefixImgId.length(), message.length()));
 				UploadedImageRecord record = shop().image.getImageById(imageId);
-				return this.KEditorResponse(null,record.getImgUrl());
+				return this.editorResponse(null, record.getImgUrl());
 			} else {
-				return this.KEditorResponse(message, null);
+				return this.editorResponse(message, null);
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
-			return this.KEditorResponse("上传失败", null);
+			return this.editorResponse("上传失败", null);
 		}
 
 	}
 
-	protected ModelAndView KEditorResponse(String message, String url) {
-		Map<String, Object> result = new HashMap<String, Object>();
+	protected ModelAndView editorResponse(String message, String url) {
+		Map<String, Object> result = new HashMap<String, Object>(2);
 		if (message != null) {
 			result.put("error", 1);
 			result.put("message", message);

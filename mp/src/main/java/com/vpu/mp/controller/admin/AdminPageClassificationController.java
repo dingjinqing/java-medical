@@ -15,6 +15,11 @@ import com.vpu.mp.service.foundation.Util;
 import com.vpu.mp.service.shop.decoration.PageClassificationService.PageCategoryListQueryParam;
 import com.vpu.mp.support.LineConvertHump;
 
+/**
+ * 
+ * @author lixinguo
+ *
+ */
 @Controller
 public class AdminPageClassificationController extends AdminBaseController {
 
@@ -48,12 +53,13 @@ public class AdminPageClassificationController extends AdminBaseController {
 
 	@PostMapping(value = "/admin/manage/classification/judge")
 	public ModelAndView judge(@LineConvertHump PageCategoryListQueryParam param) {
-		if(param.act != null && param.act.equals("name") ) {
+		String actName = "name";
+		if (param.act != null && param.act.equals(actName)) {
 			PageClassificationRecord record = shop().pageClassification.getRowByName(param.name);
-			if(record == null) {
-					return json(JsonResult.success());
-			}else {
-				if(param.id != null &&  record.getId().intValue() == param.id) {
+			if (record == null) {
+				return json(JsonResult.success());
+			} else {
+				if (param.id != null && record.getId().intValue() == param.id) {
 					return json(JsonResult.success());
 				}
 			}

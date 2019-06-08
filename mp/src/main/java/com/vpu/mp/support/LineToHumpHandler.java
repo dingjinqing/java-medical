@@ -80,14 +80,17 @@ public class LineToHumpHandler extends HandlerMethodArgumentResolverComposite {
 						// 如果pojo里有带下划线则直接设置
 						String fieldName = declaredField.getName();
 						String fieldArrName = fieldName + "[]";
-						if (fieldName.contains("_")
-								&& (fieldName.equals(paramName) || fieldArrName.equals(paramName))) {
-							wrapper.setPropertyValue(fieldName, paramValue);
-							break;
+						String underLine = "_";
+						if (fieldName.contains(underLine)) {
+							if (fieldName.equals(paramName) || fieldArrName.equals(paramName)) {
+								wrapper.setPropertyValue(fieldName, paramValue);
+								break;
+							}
 						}
 
 						if (fieldName.equals(underLineParamName) || fieldArrName.equals(underLineParamName)) {
-							if (declaredField.getType().getName().equals("java.sql.Timestamp")) {
+							String timestampClassName = "java.sql.Timestamp";
+							if (declaredField.getType().getName().equals(timestampClassName)) {
 								if (paramValue.length == 0 || StringUtils.isEmpty(paramValue[0])) {
 									wrapper.setPropertyValue(fieldName, null);
 								} else {

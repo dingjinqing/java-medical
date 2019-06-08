@@ -1,5 +1,18 @@
 package com.vpu.mp.service.shop.decoration;
 
+import static com.vpu.mp.db.main.tables.DecorationTemplate.DECORATION_TEMPLATE;
+import static com.vpu.mp.db.shop.tables.XcxCustomerPage.XCX_CUSTOMER_PAGE;
+
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import org.jooq.Record;
+import org.jooq.Result;
+import org.jooq.SelectWhereStep;
+import org.jooq.tools.StringUtils;
+import org.jooq.types.UInteger;
+
 import com.vpu.mp.db.main.tables.records.DecorationTemplateRecord;
 import com.vpu.mp.db.shop.tables.pojos.XcxCustomerPage;
 import com.vpu.mp.db.shop.tables.records.XcxCustomerPageRecord;
@@ -7,31 +20,14 @@ import com.vpu.mp.service.foundation.BaseService;
 import com.vpu.mp.service.foundation.PageResult;
 import com.vpu.mp.service.foundation.Util;
 import com.vpu.mp.service.saas.shop.ShopVersionService.VersionConfig;
-import com.vpu.mp.service.shop.image.ImageService.ImageListQueryParam;
 
 import lombok.Data;
 
-import static com.vpu.mp.db.shop.tables.UploadedImage.UPLOADED_IMAGE;
-import static com.vpu.mp.db.shop.tables.UploadedImageCategory.UPLOADED_IMAGE_CATEGORY;
-import static com.vpu.mp.db.shop.tables.XcxCustomerPage.XCX_CUSTOMER_PAGE;
-import static com.vpu.mp.db.main.tables.DecorationTemplate.DECORATION_TEMPLATE;
-
-import java.io.Serializable;
-import java.sql.Timestamp;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
-
-import org.jooq.Record;
-import org.jooq.Result;
-import org.jooq.SelectWhereStep;
-import org.jooq.SortField;
-import org.jooq.impl.DSL;
-import org.jooq.tools.StringUtils;
-import org.jooq.types.UInteger;
-
+/**
+ * 
+ * @author lixinguo
+ *
+ */
 public class MpDecorationService extends BaseService {
 
 	@Data
@@ -194,7 +190,7 @@ public class MpDecorationService extends BaseService {
 	public Map<String, Integer> getVersionModules() {
 		VersionConfig config = saas().shop.version.mergeVersion(this.shopId);
 		List<String> sub2 = config.mainConfig.sub2;
-		Map<String, Integer> moduleMap = new HashMap<String, Integer>();
+		Map<String, Integer> moduleMap = new HashMap<String, Integer>(8);
 		String[] modules = { "m_member_card", "m_voucher", "m_bargain", "m_video",
 				"m_integral_goods", "m_seckill_goods", "m_group_draw", "m_pin_integration" };
 		for (String module : modules) {
@@ -318,25 +314,28 @@ public class MpDecorationService extends BaseService {
 		record.setPageName(page.getPageName());
 		record.setCatId(page.getCatId() == null ? 0 : page.getCatId());
 
-		if (page.pageState == (byte) 1) {
+		Byte toPublishState = 1;
+		if (page.pageState.equals(toPublishState)) {
 			record.setPagePublishContent(page.getPageContent());
 		}
 		if (page.pageId != null) {
 			XcxCustomerPageRecord oldRecord = this.getPageById(page.pageId);
 			record.setPageId(UInteger.valueOf(page.getPageId()));
-			if (page.pageState == (byte) 3) {
+			Byte toDraftState = 3;
+			if (page.pageState.equals(toDraftState)) {
 				record.setPageContent(oldRecord.getPagePublishContent());
 			}
 			record.update();
 			return record;
 		}
-		
+
 		record.insert();
 		return record;
 	}
 
 	/**
 	 * 处理Map模块
+	 * 
 	 * @param pageContent
 	 * @return
 	 */
@@ -346,6 +345,7 @@ public class MpDecorationService extends BaseService {
 
 	/**
 	 * 记录页面变化部分
+	 * 
 	 * @param page
 	 */
 	protected void recordPageChange(PageStoreParam page) {
