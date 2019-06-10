@@ -26,6 +26,7 @@ import javax.servlet.http.Part;
 import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.ArrayUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.jooq.exception.DataTypeException;
 import org.jooq.tools.Convert;
 import org.jooq.types.UInteger;
@@ -252,6 +253,24 @@ public class Util {
 			}
 		}
 		return result;
+	}
+	
+	public static String mainUrl(String path) {
+		return mainUrl(path,null);
+	}
+
+	public static String mainUrl(String path, String schema) {
+		return (StringUtils.isBlank(schema) ? "http://" : schema + "://") + Util.getProperty("domain.main")
+				+ (path.startsWith("/") ? "" : "/") + path;
+	}
+
+	public static String imageUrl(String path, String schema) {
+		return (StringUtils.isBlank(schema) ? "http://" : schema + "://") + Util.getProperty("domain.image")
+				+ (path.startsWith("/") ? "" : "/") + path;
+	}
+	
+	public static String imageUrl(String path) {
+		return imageUrl(path,null);
 	}
 
 }

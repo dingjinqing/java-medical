@@ -15,6 +15,7 @@ import org.springframework.web.servlet.view.json.MappingJackson2JsonView;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.vpu.mp.service.foundation.JsonResult;
+import com.vpu.mp.service.foundation.Util;
 import com.vpu.mp.service.saas.SaasApplication;
 
 /**
@@ -168,5 +169,14 @@ public class BaseController {
 
 	protected Map<String, String> inputMap() {
 		return inputMap(",");
+	}
+	
+	public String mainUrl(String path) {
+		return Util.imageUrl(path,request.getScheme());
+	}
+
+	
+	public String imageUrl(String path) {
+		return Util.imageUrl(path,request.getScheme());
 	}
 }

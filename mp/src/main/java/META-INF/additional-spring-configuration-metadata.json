@@ -63,5 +63,30 @@
     "name": "web.static-root-path",
     "type": "java.lang.String",
     "description": "A description for 'script.path'"
+  },
+  {
+    "name": "wx.open.app_id",
+    "type": "java.lang.String",
+    "description": "A description for 'script.path'"
+  },
+  {
+    "name": "wx.open.app_secret",
+    "type": "java.lang.String",
+    "description": "A description for 'script.path'"
+  },
+  {
+    "name": "wx.open.token",
+    "type": "java.lang.String",
+    "description": "A description for 'script.path'"
+  },
+  {
+    "name": "wx.open.aes_key",
+    "type": "java.lang.String",
+    "description": "A description for 'script.path'"
+  },
+  {
+    "name": "web.storage-path",
+    "type": "java.lang.String",
+    "description": "A description for 'script.path'"
   }
 ]}

@@ -1,4 +1,4 @@
-package com.vpu.mp;
+package com.vpu.mp.config;
 
 import org.springframework.context.annotation.Configuration;
 import org.springframework.session.data.redis.config.annotation.web.http.EnableRedisHttpSession;

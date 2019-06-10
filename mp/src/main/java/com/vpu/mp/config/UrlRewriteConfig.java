@@ -1,4 +1,4 @@
-package com.vpu.mp;
+package com.vpu.mp.config;
 
 import java.io.IOException;
 

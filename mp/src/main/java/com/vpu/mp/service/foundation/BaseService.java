@@ -9,6 +9,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.vpu.mp.service.saas.SaasApplication;
+import com.vpu.mp.service.wechat.OpenPlatform;
 
 /**
  * 
@@ -42,6 +43,14 @@ public class BaseService {
 	 */
 	public SaasApplication saas() {
 		return SaasApplication.instance();
+	}
+	
+	/**
+	 * 开放平台实例
+	 * @return
+	 */
+	public OpenPlatform open() {
+		return OpenPlatform.instance();
 	}
 
 	public Integer getShopId() {
