@@ -1,23 +1,57 @@
 package com.vpu.mp.service.saas.shop;
 
-import com.vpu.mp.service.foundation.BaseService;
-import com.vpu.mp.service.foundation.Util;
-
-import me.chanjar.weixin.open.api.WxOpenMaService;
-
 import static com.vpu.mp.db.main.tables.MpAuthShop.MP_AUTH_SHOP;
 
-import java.io.File;
+import java.sql.Timestamp;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 import org.jooq.types.UInteger;
 
 import com.vpu.mp.db.main.tables.records.MpAuthShopRecord;
+import com.vpu.mp.service.foundation.BaseService;
+import com.vpu.mp.service.foundation.Util;
+
+import me.chanjar.weixin.common.error.WxErrorException;
+import me.chanjar.weixin.open.api.WxOpenMaService;
+import me.chanjar.weixin.open.bean.auth.WxOpenAuthorizationInfo;
+import me.chanjar.weixin.open.bean.auth.WxOpenAuthorizerInfo;
+import me.chanjar.weixin.open.bean.result.WxOpenAuthorizerInfoResult;
 
 public class MpAuthShopService extends BaseService {
+
+	public MpAuthShopRecord addMpAuthAccountInfo(String appId, Integer shopId) throws WxErrorException {
+
+		WxOpenAuthorizerInfoResult authInfo = open().getWxOpenComponentService().getAuthorizerInfo(appId);
+		logger().debug("authInfo:", authInfo);
+		MpAuthShopRecord record = db().newRecord(MP_AUTH_SHOP);
+		WxOpenAuthorizationInfo authorizationInfo = authInfo.getAuthorizationInfo();
+		WxOpenAuthorizerInfo authorizerInfo = authInfo.getAuthorizerInfo();
+		record.setAppId(authorizationInfo.getAuthorizerAppid());
+		record.setShopId(UInteger.valueOf(shopId));
+		record.setNickName(authorizerInfo.getNickName());
+		record.setAlias(authorizerInfo.getAlias());
+		record.setVerifyTypeInfo(authorizerInfo.getVerifyTypeInfo().toString());
+		record.setHeadImg(authorizerInfo.getHeadImg());
+		record.setFuncInfo(Util.toJSON(authorizationInfo.getFuncInfo()));
+		record.setOpenCard(authorizerInfo.getBusinessInfo().get("open_card").byteValue());
+		record.setOpenPay(authorizerInfo.getBusinessInfo().get("open_pay").byteValue());
+		record.setIsAuthOk((byte) 1);
+		record.setAuthorizationInfo(Util.toJSON(authorizationInfo));
+		record.setAuthorizerInfo(Util.toJSON(authorizerInfo));
+		record.setLastUploadTime(Timestamp.valueOf(LocalDateTime.now()));
+		record.setPrincipalName(authorizerInfo.getPrincipalName());
+		if (this.getAuthShopByAppId(appId) == null) {
+			record.insert();
+			// TODO: log operation
+		} else {
+			record.update();
+			// TODO: log operation
+		}
+		return record;
+	}
 
 	/**
 	 * 获取小程序服务
@@ -104,6 +138,7 @@ public class MpAuthShopService extends BaseService {
 
 	/**
 	 * 小程序所需权限
+	 * 
 	 * @return
 	 */
 	public Map<Integer, String> getNeededMpAuthMap() {
@@ -116,9 +151,9 @@ public class MpAuthShopService extends BaseService {
 		result.put(31, "小程序认证权限");
 		return result;
 	}
-	
+
 	public void convertMpFuncInfo() {
-		
+
 	}
 
 //	public function convertMpFuncInfo(array $funcInfo)

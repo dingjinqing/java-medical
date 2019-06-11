@@ -1,5 +1,14 @@
 package com.vpu.mp.service.saas.shop;
 
+import static com.vpu.mp.db.main.tables.MpAuthShop.MP_AUTH_SHOP;
+import static com.vpu.mp.db.main.tables.Shop.SHOP;
+import static com.vpu.mp.db.main.tables.ShopAccount.SHOP_ACCOUNT;
+import static com.vpu.mp.db.main.tables.ShopChildRole.SHOP_CHILD_ROLE;
+import static com.vpu.mp.db.main.tables.ShopRenew.SHOP_RENEW;
+
+import java.sql.Timestamp;
+import java.util.Map;
+
 import org.jooq.Record;
 import org.jooq.Record1;
 import org.jooq.Record9;
@@ -7,20 +16,8 @@ import org.jooq.Result;
 import org.jooq.SelectWhereStep;
 import org.jooq.impl.DSL;
 import org.jooq.tools.StringUtils;
-import org.jooq.types.UInteger;
 
-import static com.vpu.mp.db.main.tables.MpAuthShop.MP_AUTH_SHOP;
-import static com.vpu.mp.db.main.tables.Shop.SHOP;
-import static com.vpu.mp.db.main.tables.ShopAccount.SHOP_ACCOUNT;
-import static com.vpu.mp.db.main.tables.ShopRenew.SHOP_RENEW;
-import static com.vpu.mp.db.main.tables.ShopChildRole.SHOP_CHILD_ROLE;
-import static com.vpu.mp.db.main.tables.ArticleRecord.ARTICLE_RECORD;
-
-import java.sql.Timestamp;
-import java.util.List;
-import java.util.Map;
 import com.vpu.mp.db.main.tables.pojos.Shop;
-import com.vpu.mp.db.main.tables.records.ArticleRecordRecord;
 import com.vpu.mp.db.main.tables.records.ShopAccountRecord;
 import com.vpu.mp.db.main.tables.records.ShopRecord;
 import com.vpu.mp.service.foundation.BaseService;
@@ -42,6 +39,7 @@ public class ShopService extends BaseService {
 	public ShopRoleService role;
 	public ShopMenuService menu;
 	public MpDecorationService decoration;
+	public MpAuthShopService mp;
 
 	final public static class ShopListQueryParam {
 		public Integer page;

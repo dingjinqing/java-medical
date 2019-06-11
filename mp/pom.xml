@@ -17,6 +17,7 @@
 	<packaging>jar</packaging>
 
 	<properties>
+		<weixin-java-open.version>3.4.0</weixin-java-open.version>
 		<project.source.encoding>utf-8</project.source.encoding>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<argLine>-Dfile.encoding=UTF-8</argLine>
@@ -119,6 +120,18 @@
 			<groupId>org.springframework.session</groupId>
 			<artifactId>spring-session-data-redis</artifactId>
 		</dependency>
+		
+		 <dependency>
+            <groupId>com.github.binarywang</groupId>
+            <artifactId>weixin-java-open</artifactId>
+            <version>${weixin-java-open.version}</version>
+        </dependency>
+        
+		<dependency>
+            <groupId>redis.clients</groupId>
+            <artifactId>jedis</artifactId>
+            <version>2.9.0</version>
+        </dependency>
 	</dependencies>
 
 	<build>

@@ -6,13 +6,12 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
 
+import com.vpu.mp.db.main.tables.records.MpAuthShopRecord;
 import com.vpu.mp.service.wechat.OpenPlatform;
 
 import me.chanjar.weixin.common.error.WxErrorException;
-import me.chanjar.weixin.open.bean.result.WxOpenAuthorizerInfoResult;
 import me.chanjar.weixin.open.bean.result.WxOpenQueryAuthResult;
 
 @Controller
@@ -37,8 +36,12 @@ public class AdminWechatController extends AdminBaseController {
 		String url = this.mainUrl("/wechat/authorization/callback?shop_id=" + this.shopId());
 		try {
 			String authType = "2";
-			String bizAppid = null;
-			url = open.getWxOpenComponentService().getPreAuthUrl(url,authType,bizAppid);
+			String bizAppId = null;
+			MpAuthShopRecord mp = saas.shop.mp.getAuthShopByShopId(shopId());
+			if (mp != null) {
+				bizAppId = mp.getAppId();
+			}
+			url = open.getWxOpenComponentService().getPreAuthUrl(url, authType, bizAppId);
 		} catch (WxErrorException e) {
 			e.printStackTrace();
 			throw new RuntimeException(e);
@@ -57,7 +60,7 @@ public class AdminWechatController extends AdminBaseController {
 		try {
 			String authType = "1";
 			String bizAppid = null;
-			url = open.getWxOpenComponentService().getPreAuthUrl(url,authType,bizAppid);
+			url = open.getWxOpenComponentService().getPreAuthUrl(url, authType, bizAppid);
 		} catch (WxErrorException e) {
 			e.printStackTrace();
 			throw new RuntimeException(e);
@@ -71,25 +74,30 @@ public class AdminWechatController extends AdminBaseController {
 	 * @return
 	 */
 	@RequestMapping(value = " /wechat/authorization/callback")
-	@ResponseBody
-	public WxOpenQueryAuthResult authorizationCallback(@RequestParam("auth_code") String authorizationCode,
+	public ModelAndView authorizationCallback(@RequestParam("auth_code") String authorizationCode,
 			@RequestParam(name = "sys_id", required = false) Integer sysId,
 			@RequestParam(name = "shop_id", required = false) Integer shopId) {
 		try {
 			WxOpenQueryAuthResult queryAuthResult = open.getWxOpenComponentService().getQueryAuth(authorizationCode);
 			String appId = queryAuthResult.getAuthorizationInfo().getAuthorizerAppid();
-			WxOpenAuthorizerInfoResult  authorizerInfo = open.getWxOpenComponentService().getAuthorizerInfo(appId);
-			if(sysId != null) {
+			if (sysId != null) {
 				// 服务号授权 TODO:
 			}
-			if(shopId != null) {
+			if (shopId != null) {
 				// 小程序授权
-				
+				MpAuthShopRecord mp = saas.shop.mp.getAuthShopByShopId(shopId);
+				if (mp != null && !mp.getAppId().equals(appId)) {
+					return this.showMessage("小程序上次授权与本次授权AppId不一致，请联系客服！");
+				}
+				mp = saas.shop.mp.getAuthShopByAppId(appId);
+				if (mp != null && mp.getShopId().intValue() != shopId) {
+					return this.showMessage("小程序已授权绑定其他账号，请联系客服！");
+				}
+				saas.shop.mp.addMpAuthAccountInfo(appId, shopId);
 			}
-			
-			
+
 			logger().info("getQueryAuth", queryAuthResult);
-			return queryAuthResult;
+			return redirect("/wechat/mini/info");
 		} catch (WxErrorException e) {
 			logger().error("gotoPreAuthUrl", e);
 			throw new RuntimeException(e);
