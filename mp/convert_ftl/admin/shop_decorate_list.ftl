@@ -103,8 +103,8 @@
 </style>
 <div style="min-width: 1090px;">
     <div class="title">
-        <span>小程序管理 / </span>
-        <span style="color: #666;">自定义页面装修</span>
+        <span>{{ trans("admin/shop_decorate.wx_manage")!} / </span>
+        <span style="color: #666;">{{ trans("admin/shop_decorate.page_decorate")!}</span>
     </div>
     <div class="main-container" style="padding: 0px;">
         <form name="formData" action="/admin/manage/decorate/list"  id="form1" method="post" >
@@ -113,25 +113,27 @@
                     <a href="#" class="add-child-btn" style="border-radius: 2px;margin-left: 20px;">新建微页面</a>
                     <div class="system_info" style="display: inline-block;float: none;">
                         <p class="system_info_prompt">
-                            <#if (version['self']['num']<0)>
+                            <#if ($version['self']['num']<0)
                                 当前版本为${version['self']['version_name']!}， <span>不限制</span>微页面个数
                             <#else>
-                                当前版本为${version['self']['version_name']!}，还可创建 <span><#if version['self']['num']-version['self']['use'] >0 >${version['self']['num']-version['self']['use']}<#else>0</#if></span>页微页面
+                                当前版本为${version['self']['version_name']!}，还可创建 <span>${version['self']['num']-$version['self']['use'] >0 ? $version['self']['num']-$version['self']['use'] : 0!}</span>页微页面
                             </#if>
+                            {{--当前版本为高级版，还可创建 <span>5</span>页微页面--!}
                             <img src="http://${image_domain!}/image/admin/system_icon.png" />
                         </p>
                         <img src="http://${image_domain!}/image/admin/system_shadow.png" class="system_shadow" />
                         <div class="system_info_content">
                             <div class="system_info_content_top">
-                                <#if (version['all']??)>
-                                    <#list version['all'] as ver>
-                                        <#if (ver['num']>0)>
-                                            <#if (ver?index!=0)> ，</#if>${ver['version_name']!}最多创建<span class="system_v1">${ver['num']!}</span>页微页面
+                                <#if ($version['all'])
+                                    <#list ($version['all'] as $k=>$ver)
+                                        <#if ($ver['num']>0)
+                                            <#if ($k!=0)，</#if>${ver['version_name']!}最多创建<span class="system_v1">${ver['num']!}</span>页微页面
                                         <#else>
-                                            <#if (ver?index!=0)> ，</#if>${ver['version_name']!}<span class="system_v1">不限制</span>微页面个数
+                                            <#if ($k!=0)，</#if>${ver['version_name']!}<span class="system_v1">不限制</span>微页面个数
                                         </#if>
                                     </#list>
                                 </#if>
+                                {{--基础版最多创建<span class="system_v1">5</span>页微页面，高级版最多创建<span class="system_v2">20</span>页微页面，旗舰版不限制--!}
                             </div>
                             <div class="system_info_content_bottom">
                                 <a href="/admin/version/notice?mod_name=装修页面数量" target="_blank">了解更多</a>
@@ -143,16 +145,15 @@
                      <span style="display: inline-block;">
                         <span style="padding-left: 30px">页面名称</span>
                         <span class="search-bl">
-                            <input type="text" name="keywords" value="${input_map['keywords']!}" placeholder="请输入页面名称" class="primary">
+                            <input type="text" name="keywords" value="${request['keywords']!}" placeholder="请输入页面名称" class="primary">
                             <img src="http://mpimg.zx.cn/image/admin/search.png" alt="" id="search">
                         </span>
                          <span style="padding-left: 30px">页面分类</span>
                         <span class="search-bl" style="border: none">
                             <select name="cat_id" id="" class="cat_select">
                                 <option value="0" selected>请选择页面分类</option>
-                                <#list cat_list?keys as id>
-                                	<#assign cat = cat_list[id]>
-                                    <option value="${id!}" <#if (input_map['cat_id']?? && input_map['cat_id'] == id)> selected </#if>>${cat!}</option>
+                                <#list ($cat_list as $id=>$cat)
+                                    <option value="${id!}" <#if ($request['cat_id'] && $request['cat_id'] == $id) selected </#if>>${cat!}</option>
                                 </#list>
                             </select>
                         </span>
@@ -163,6 +164,7 @@
 
             <div class="return-goods-box" style="padding: 0px 20px;">
 
+                {{ csrf_field()!}
                 <input type="hidden" name="del">
                 <input type="hidden" name="index">
                 <div class="goods-box-edit">
@@ -171,71 +173,63 @@
                             <thead>
                             <tr>
                                 <th></th>
-                                <th width="28%">页面名称</th>
-                                <th width="20%">创建时间</th>
-                                <th width="15%">是否首页</th>
-                                <th width="15%">页面分类</th>
-                                <th width="20%">操作</th>
+                                <th width="28%">{{ trans("admin/shop_decorate.shop_decorate_list.page_name")!}</th>
+                                <th width="20%">{{ trans("admin/shop_decorate.shop_decorate_list.create_time")!}</th>
+                                <th width="15%">{{ trans("admin/shop_decorate.shop_decorate_list.is_index")!}</th>
+                                <th width="15%">{{ trans("admin/shop_decorate.page_classification")!}</th>
+                                <th width="20%">{{ trans("admin/shop_decorate.shop_decorate_list.operation")!}</th>
                             </tr>
                             </thead>
                             <tbody>
-                            <#list data_list as item>
+                            <#list ($data_list as $item)
                                 <tr>
                                     <td>
                                         <img src="http://mpimg.zx.cn/image/admin/square_no.png" alt="" class="checkbox_prev">
-                                        <input type="checkbox" name="checkbox" class="ipt_checkbox" page_id="${item.page_id!}">
+                                        <input type="checkbox" name="checkbox" class="ipt_checkbox" page_id="${item->page_id!}">
                                     </td>
                                     <td>
-                                        <span>${item.page_name!}</span>
+                                        <span>${item->page_name!}</span>
                                     </td>
-                                    <td>${item.create_time!}</td>
-                                    <td><#if (item.page_type == 1)>是<#else><a href="javascript:void(0)" class="index" page_id="${item.page_id!}">设为首页</a></#if></td>
-                                    <td>${cat_list[item.cat_id!0?string]!} <a href="javascript:void(0)" class="btn_cat" page_id="${item.page_id!}">设置</a></td>
+                                    <td>${item->create_time!}</td>
+                                    <td><#if ($item->page_type)是<#elseif>(!$item->page_type)<a href="javascript:void(0)" class="index" page_id="${item->page_id!}">{{ trans("admin/shop_decorate.shop_decorate_list.set_index")!}</a></#if></td>
+                                    <td>${cat_list[$item->cat_id]!} <a href="javascript:void(0)" class="btn_cat" page_id="${item->page_id!}">设置</a></td>
                                     <td class="tb-decorate-a">
-                                        <a href="/admin/manage/decorate/page?id=${item.page_id!}" target="_blank" link="/admin/manage/decorate/page?id=${item.page_id!}" class="goods_edition show_tip" data-title="装修页面数量" data-name="decorate_num" edit="1" data-tips="编辑"><img src="/image/admin/decorate_editor.png" alt=""></a>
-                                        <#if (item.page_type == 0)><a href="javascript:void(0)" class="del show_tip" data-tips="删除" page_id="${item.page_id!}"><img src="/image/admin/decorate_delete.png" alt=""></a></#if>
-                                        <a href="/admin/manage/decorate/page?copy_id=${item.page_id!}" data-tips="复制" class="show_tip"><img src="/image/admin/decorate_copy.png" alt=""></a>
-                                        <a href="##" class="hover_share show_tip notWidth"   identity_id="${item.page_id!}" type="7" data-tips="分享"><img src="/image/admin/decorate_share.png" alt=""></a>
+                                        <a href="/admin/manage/decorate/page?id=${item->page_id!}" target="_blank" link="/admin/manage/decorate/page?id=${item->page_id!}" class="goods_edition show_tip" data-title="装修页面数量" data-name="decorate_num" edit="1" data-tips="编辑"><img src="/image/admin/decorate_editor.png" alt=""></a>
+                                        <#if (!$item->page_type)<a href="javascript:void(0)" class="del show_tip" data-tips="删除" page_id="${item->page_id!}"><img src="/image/admin/decorate_delete.png" alt=""></a></#if>
+                                        <a href="/admin/manage/decorate/page?copy_id=${item->page_id!}" data-tips="复制" class="show_tip"><img src="/image/admin/decorate_copy.png" alt=""></a>
+                                        <a href="##" class="hover_share show_tip notWidth"   identity_id="${item->page_id!}" type="7" data-tips="分享"><img src="/image/admin/decorate_share.png" alt=""></a>
                                     </td>
                                 </tr>
                                </#list>
                             </tbody>
                         </table>
                     </div>
-                    <#if (data_list?size > 0)>
+                    <#if ($data_list->count != 0)
                         <div class="member_list_footer">
-                   
-                    
-                            <table width="100%" border="0" class="tb_paging" style="float:none; width:100%!important;">
+                    <span>
+                        <span style="position: relative; margin-left: 12px;">
+                            <img src="http://${image_domain!}/image/admin/square_no.png" alt="" class="checkbox_prev" />
+                            <input type="checkbox" id="ipt_all" />
+                            <label for="ipt_all">{{ trans("admin/user_list.check_all")!}</label>
+                        </span>
+                        <a href="##" name="batch_delete" class="btn_opera btn_cat" style="color: #5a8bff;">批量设置分类</a>
+{{--                        <a href="##" name="batch_tag" class="btn_opera batch_tag">{{ trans("admin/user_list.add_label")!}</a>--!}
+                    </span>
+                            <table width="100%" border="0" class="tb_paging">
                                 <tr>
-                                    <td align="left" style="width: 300px;padding: 0">
-                                     <span>
-				                        <span style="position: relative; margin-left: 0px;">
-				                            <img src="http://${image_domain!}/image/admin/square_no.png" alt="" class="checkbox_prev" />
-				                            <input type="checkbox" id="ipt_all" />
-				                            <label for="ipt_all">全选</label>
-				                        </span>
-				                        <a href="##" name="batch_delete" class="btn_opera btn_cat" style="color: #5a8bff;">批量设置分类</a>
-				                    </span>
-                                    </td>
-                                    <td align="right" style="padding-right: 50px">
-	                                    <table width="100%" border="0" class="tb_paging" style="width:100%!important;">
-				                            <tr>
-				                                <td align="right">${page.pageInfo}
-				                                    <a href="#"
-				                                       onClick="return gopage(1);">第一页</a>
-				                                    <a href="#"
-				                                       onClick="return gopage(${page.prePage});">上一页</a>
-				                                    <a href="#"
-				                                       onClick="return gopage( ${page.nextPage});">下一页</a>
-				                                    <a href="#"
-				                                       onClick="return gopage(${page.lastPage});">最后一页</a>
-				                                    <input id="page" name="page" type="text"
-				                                           value="${page.currentPage}" size="5"
-				                                           onKeyDown="if (event.keyCode==13 || event.which==13) gopage(this.value);">页
-				                                </td>
-				                            </tr>
-				                        </table>
+                                    <td style="text-align:right;">{{ trans("admin/common.page.page_info",['perPage'=>$data_list->perPage(),'currentPage'=>$data_list->currentPage(),'count'=>$data_list->count,'total'=>$data_list->total(),])!}
+                                        <a href="#" style="background: rgb(250, 250, 250);" onClick="return gopage(1);">{{ trans("admin/common.page.first_page")!}</a>
+                                        <a href="#" style="background: rgb(250, 250, 250);"
+                                           onClick="return gopage(${data_list->currentPage() -1!});">{{ trans("admin/common.page.pre_page")!}</a>
+                                        <a href="#" style="background: rgb(250, 250, 250);"
+                                           onClick="return gopage(${data_list->currentPage() + 1!});">{{ trans("admin/common.page.next_page")!}</a>
+                                        <a href="#" style="background: rgb(250, 250, 250);"
+                                           onClick="return gopage(${data_list->lastPage()!});">{{ trans("admin/common.page.last_page")!}</a>
+                                        <input id="page" name="page" type="text" value="${data_list->currentPage()!}"
+                                               size="5"
+                                               onKeyDown="if (event.keyCode==13 || event.which==13) gopage(this.value);"   onkeyup="value=value.replace(/[^\d.]/g,'')" autocomplete="off"
+                                        >{{ trans("admin/common.page.page")!}
+                                        <a href="#" style="width:46px;height: 30px;background: rgb(250, 250, 250);text-align: center" onClick="gopage($('#page').val())" >{{ trans("admin/common.page.jump_page")!}</a>
                                     </td>
                                 </tr>
                             </table>
@@ -259,17 +253,18 @@
 <div id="cat_select" style="display: none;padding: 20px 0px;padding-left: 36px;   border-bottom: 1px solid rgb(238, 238, 238)">
     <select name="cat_id" id="" class="cat_select">
         <option value=""  selected>请选择页面分类</option>
-         <#list cat_list?keys as id>
-        	<#assign cat = cat_list[id]>
-            <option value="${id!}" <#if (input_map['cat_id']?? && input_map['cat_id']?number == id)> selected </#if>>${cat!}</option>
+        <#list ($cat_list as $id=>$cat)
+            <option value="${id!}" <#if ($request['cat_id'] && $request['cat_id'] == $id) selected </#if>>${cat!}</option>
         </#list>
     </select>
 </div>
-<#include "/admin/share_common.ftl">
-
-<#noparse>
+<#include ('admin.share_common')
 <script type="text/javascript">
     function gopage(page) {
+        var last_page = '${data_list->lastPage()!}';
+        if(parseInt(page) > parseInt(last_page)){
+            page = last_page;
+        }
         $("#page").val(page);
         $("#form1").submit();
     }
@@ -410,5 +405,4 @@
             $(this).parent().find('.tips').remove();
         });
 </script>
-</#noparse>
 <#include "/admin/footer.ftl">
