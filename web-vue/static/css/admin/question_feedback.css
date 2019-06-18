@@ -1,0 +1,222 @@
+body {
+    padding: 0px;
+}
+.question_container{
+    width: 100%;
+    height: auto;
+    min-height: 700px;
+}
+.question_content{
+    width: 1000px;
+    height: auto;
+    min-height: 600px;
+    background-color: white;
+    margin: 85px auto 10px auto;
+    position: relative;
+    top: 20px;
+}
+.question_content_container{
+    width: 850px;
+    height: auto;
+    min-height: 600px;
+    background-color: white;
+    margin: 0 auto;
+}
+.question_header{
+    width: 100%;
+    height: 50px;
+    background-color: white;
+    border-bottom: 1px solid #ddd;
+    text-align: center;
+    line-height: 50px;
+    color: #333;
+    font-size: 16px;
+}
+.question_body{
+    width: 100%;
+    height: auto;
+    min-height: 550px;
+    background-color: white;
+}
+.question_message{
+    width: 100%;
+    height: auto;
+    min-height: 40px;
+    background-color: white;
+    margin-bottom: 12px;
+    position: relative;
+}
+.question_message:nth-child(1){
+    margin-top: 20px;
+}
+.question_message:nth-child(3){
+    margin-top: 20px;
+}
+.question_message:nth-child(4){
+    margin-top: 20px;
+}
+.qm>span{
+    color: red;
+}
+.qm{
+    text-align: right;
+    width: 80px;
+    height: 40px;
+    background-color: white;
+    line-height: 40px;
+    font-size: 14px;
+    color: #333;
+    float: left;
+}
+.question_label{
+    width: 500px;
+    height: 40px;
+    background-color: white;
+    float: left;
+    margin-left: 15px;
+}
+.ql_style{
+    width: 110px;
+    height: 40px;
+    border:1px solid #ddd;
+    border-radius: 2px;
+    background-color: white;
+    float: left;
+    margin-right: 8px;
+    text-align: center;
+    line-height: 40px;
+    position: relative;
+    cursor: pointer;
+}
+.ql_style>span{
+    font-size: 14px;
+    color: #333;
+}
+.ql_style:hover{
+    border: 1px solid #5A8BFF;
+}
+.ql_style_img{
+    position: absolute;
+    right: 0px;
+    bottom: 0px;
+    display: none;
+}
+.qm_text{
+    width: 700px;
+    height: 250px;
+    float: left;
+    background-color: white;
+    border:1px solid #ddd;
+    margin-left: 15px;
+    margin-top: 12px;
+    position: relative;
+}
+.qm_text>span{
+    font-size: 14px;
+    color: #999;
+    display: inline-block;
+    right: 10px;
+    position: absolute;
+    bottom: 5px;
+}
+/*.change_number{*/
+    /*font-size: 14px;*/
+    /*color: #999;*/
+/*}*/
+.goods-item-img{
+    margin-left: 95px;
+}
+.goods-item-img>li{
+    margin-top: 24px;
+    border:1px solid #ddd;
+}
+
+.qm_phone{
+    float: left;
+    margin-left: 15px;
+    width: 700px;
+    height: 40px;
+}
+.qm_phone>input{
+    width: 200px;
+    height: 40px;
+    border:1px solid #ddd;
+}
+.qm_phone_text{
+    padding-left: 95px;
+    font-size: 14px;
+    color: #999;
+    display: block;
+    float: left;
+    margin-top: 10px;
+}
+input[type="submit"]{
+    width: 100px;
+    height: 40px;
+    background-color: #5A8BFF;
+    margin-left: 95px;
+    border:1px solid #5A8BFF;
+    color: #ffffff;
+    font-size: 14px;
+    border-radius: 2px;
+    margin-bottom: 15px;
+}
+input[type="submit"]:hover{
+    background-color: #447af9;
+    color: #ffffff;
+    font-size: 14px;
+    border:1px solid #447af9;
+
+}
+
+textarea{
+    resize: none;
+    width: 670px;
+    height: 220px;
+    margin-left: 15px;
+    margin-top: 10px;
+    border:none;
+}
+input::-moz-placeholder{
+    color: #999;
+    font-size: 14px;
+
+}
+input:-moz-placeholder{
+    color: #999;
+    font-size: 14px;
+
+}
+input::-webkit-input-placeholder{
+    color: #999;
+    font-size: 14px;
+
+}
+input:-ms-input-placeholder{
+    color: #999;
+    font-size: 14px;
+    padding-top: 20px;
+    padding-left: 20px;
+}
+
+
+textarea::-moz-placeholder{
+    color: #999;
+    font-size: 14px;
+}
+textarea:-moz-placeholder{
+    color: #999;
+    font-size: 14px;
+}
+textarea::-webkit-input-placeholder{
+    color: #999;
+    font-size: 14px;
+}
+textarea:-ms-input-placeholder{
+    color: #999;
+    font-size: 14px;
+    padding-top: 20px;
+    padding-left: 20px;
+}
+
+

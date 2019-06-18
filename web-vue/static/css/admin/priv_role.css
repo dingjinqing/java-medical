@@ -1,0 +1,233 @@
+* {
+    padding: 0;
+    margin: 0;
+}
+
+.title {
+    width: 100%;
+    height: 55px;
+    line-height: 55px;
+    padding-left: 25px;
+    font-size: 16px;
+    color: #333;
+    background: #fff;
+}
+
+/***child-nav****/
+.nav-role {
+    width: 100%;
+    height: 50px;
+    background-color: #fff;
+
+    margin: 0 auto;
+    margin-top: 10px;
+
+    font-size: 14px;
+
+    box-sizing: border-box;
+}
+
+.nav-child-tabs>li.active>a {
+    background: #fff !important;
+
+    box-shadow: 0 2px 0 #5A8BFF;
+
+    padding-bottom: 14px;
+    box-sizing: border-box;
+}
+
+.nav-child-tabs {
+    width: 97%;
+    height: 50px;
+
+    margin: 0 auto;
+    padding-left: 0;
+    line-height: 52px;
+
+    border-bottom: 1px solid #eee;
+
+    list-style: none;
+}
+
+ul.nav-child-tabs>li {
+    float: left;
+    margin-right: 15px;
+    padding-right: 15px;
+}
+
+ul.nav-child-tabs>li>a, ul.nav-child-tabs>li.active>a {
+    color: #333;
+    text-decoration: none;
+}
+/*********body******/
+
+.biggest-box {
+    width: 99%;
+    margin: 0 auto;
+    /*background-color: #fff;*/
+    border: 0;
+}
+
+#add-role {
+    margin-left: 8px;
+    background-color: #5a8bff;
+}
+#add-role:focus{
+    background-color: #447af9 !important;
+    border-color: #447af9 !important;
+}
+#add-role:hover{
+    background-color: #447af9 !important;
+    border-color: #447af9 !important;
+}
+.panel-body-btn {
+    margin-top: 0;
+}
+
+.main-table {
+    min-height: 500px;
+    background-color: #fff;
+}
+
+#list_tbl {
+    width: 70%;
+    margin-left: 20px;
+}
+
+#list_tbl thead tr#first_tr th {
+    height: 40px;
+    background-color: #F9F8F6 !important;
+
+    border: 1px solid #f0f0f0;
+
+    color: #333;
+}
+
+#list_tbl tr td {
+    height: 55px;
+
+    text-align: center;
+    border: 1px solid #f0f0f0;
+}
+
+.fixedheadwrap>table {
+    display: none;
+}
+
+.main-table>table#list_tbl {
+    margin-top: 10px !important;
+}
+
+#list_tbl tr td a, #list_tbl tr td a:hover {
+    color: #5A8BFF;
+    text-decoration: none;
+}
+
+.add-account-sel {
+    width:180px;
+    height: 30px;
+
+    padding-left: 15px;
+    margin-left: 15px;
+}
+
+.add-child-a {
+    margin-left: 10px;
+    color: #5A8BFF;
+}
+
+.add-child-a:hover {
+    color: #5A8BFF;
+}
+
+.save-btn {
+    width: 90px;
+    height: 30px;
+    background: #5a8bff !important;
+    color: #fff;
+    margin-left: 15px;
+}
+.save-btn:focus{
+    background-color: #447af9 !important;
+    border-color: #447af9 !important;
+}
+.save-btn:hover{
+    background-color: #447af9 !important;
+    border-color: #447af9 !important;
+}
+.panel-body>table>tbody>tr>td {
+    padding-top: 10px;
+    padding-left: 8px;
+}
+
+.table-bordered>tbody>tr>td>ul>li {
+    width: 33%;
+}
+
+table th {
+    font-weight: normal;
+    font-size: 14px;
+}
+input[type='checkbox'] {
+    position: relative;
+    top: 2px;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    appearance: none;
+    width: 12px;
+    height: 12px;
+    background: url(/image/admin/square_no.png) no-repeat;
+}
+input[type='checkbox']:checked {
+    background: url(/image/admin/square_yes.png) no-repeat;
+}
+.aui_title{
+    text-align: center;
+    -webkit-box-shadow: none;
+    -moz-box-shadow: none;
+    box-shadow: none;
+    border: none;
+    background: #f3f3f3;
+}
+.aui_buttons button:first-child{
+    background: #5A8BFF;
+    border-color: #5A8BFF;
+}
+.aui_close{
+    top: 3px;
+    text-indent: 10px;
+    font-size: 26px;
+    background: none;
+}
+#role_template{
+    width: 741px !important;
+    height: 531px !important;
+    overflow-y: scroll !important;
+}
+.role_switch{
+    border-bottom: 1px solid #ddd;
+}
+.role_switch li{
+    float: left;
+    line-height: 40px;
+    border-bottom: 2px solid transparent;
+}
+.role_switch li+li{
+    margin-left: 20px;
+}
+.role_switch li.active{
+    border-bottom: 2px solid #5a8bff;
+}
+.tb_title{
+    margin-bottom: 8px;
+}
+.login_pass{
+    border-radius: 3px;
+    border: 1px solid #bbb;
+    padding-left: 5px;
+}
+.role_pass{
+    border-radius: 3px;
+    border: 1px solid #bbb;
+    padding-left: 5px;
+}

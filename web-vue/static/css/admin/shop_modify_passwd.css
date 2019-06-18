@@ -1,0 +1,174 @@
+body{
+    background: #fff;
+}
+div,p,ul,li,span,a,table,td,tr,input{
+    -webkit-box-sizing: border-box;
+    -moz-box-sizing: border-box;
+    box-sizing: border-box;
+}
+a,a:active,a:hover,a:focus{
+    text-decoration: none;
+    color: #333;
+}
+.title{
+    width: 100%;
+    height: 55px;
+    line-height: 55px;
+    padding-left: 25px;
+    font-size: 16px;
+    color: #333;
+    background: #fff;
+}
+.shop-config .ipt_border{
+    border: 1px solid #ccc;
+    height: 30px;
+    padding-left: 12px;
+}
+.order-container{
+    border: 1px solid #ccc;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    height: 500px;
+}
+.shop_container{
+    width: 850px;
+    margin: 0 auto;
+}
+.shop-config{
+
+}
+.shop-config li{
+    min-height: 45px;
+    font-size: 13px;
+    color: #666;
+    float: none;
+}
+
+
+.shop-config li .fl:nth-of-type(1){
+    width: 110px;
+    line-height: 30px;
+    margin-left: 16px;
+}
+.shop-config li .fl:nth-of-type(2){
+    width: auto;
+    line-height: 30px;
+}
+
+.shop-config li .logo-img{
+    width: 90px;
+    height: 80px;
+    border: 1px solid #ccc;
+    position: relative;
+}
+.logo-img img{
+    max-width: 100%;
+    max-height: 100%;
+    padding: 4px;
+}
+.logo-img span{
+    display: inline-block;
+    position: absolute;
+    bottom: 0;
+    color: #fff;
+    background: rgba(0,0,0,0.5);
+    width: 100%;
+    height: 20px;
+    line-height: 20px;
+    text-align: center;
+    font-size: 12px;
+}
+.shop-config li .btn-save,.btn-save-pass{
+    width: 85px;
+    background: #5a8bff;
+    border: 1px solid #5a8bff;
+    color: #fff;
+    margin: 20px 0 0 0;
+}
+
+.ret-list-btn,.re-back {
+    background-color: #f0f0f0;
+    color: #665 !important;
+    border: 1px solid #ccc;
+    margin-left: 10px !important;
+    display: inline-block;
+    padding: 0px 10px;
+}
+
+.account-title {
+    height: 50px;
+    line-height: 50px;
+}
+
+.account-title span {
+    font-size: 16px;
+}
+#form2{
+    display: none;
+}
+.mdy-input {
+    width: 150px;
+    height: 30px;
+    padding-left: 12px;
+    border: 1px solid #ccc;
+    background: #fff;
+}
+.fl input[name='user_name'],.fl input[name='mobile']{
+    border: none;
+}
+.fl a {
+    margin-left: 10px;
+    color: #5A8BFF;
+}
+#set-pass ul li{
+    float: none;
+    line-height: 30px;
+    padding: 10px 0 0 10px;
+}
+#set-pass ul li .fl:first-child{
+    width: 200px;
+    text-align: right;
+    margin-right: 10px;
+}
+#set-number{
+    display: none;
+}
+#set-number ul{
+    padding: 20px 30px;
+    border-bottom: 1px solid #eee;
+}
+#set-number ul li{
+    float: none;
+    margin-bottom: 10px;
+}
+#set-number ul span{
+    display: inline-block;
+    width: 72px;
+    line-height: 30px;
+}
+#set-number ul input{
+    border: 1px solid #ccc;
+    background: #fff;
+    height: 30px;
+    width: 170px;
+    margin-right: 10px;
+    padding-left: 12px;
+}
+#set-number ul input[name='old_number']{
+    border: none;
+}
+#set-number ul button{
+    border: 1px solid #ccc;
+    background: #f5f5f5;
+    color: #333;
+    height: 30px;
+    width: 110px;
+}
+
+
+
+
+
+
+

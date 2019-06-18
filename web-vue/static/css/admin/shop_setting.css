@@ -1,0 +1,316 @@
+
+body{
+    background: #e6e9f0;
+}
+td {
+    padding: 8px 10px;
+}
+.clearfix:after{
+    display: block;
+    content: '';
+    clear: both;
+}
+.fl{
+    float: left;
+}
+.fr{
+    float: right;
+}
+img{
+    vertical-align: middle;
+}
+div,p,ul,li,span,a,table,td,tr,input{
+    -webkit-box-sizing: border-box;
+    -moz-box-sizing: border-box;
+    box-sizing: border-box;
+}
+a,a:active,a:hover,a:focus{
+    text-decoration: none;
+    color: #333;
+}
+ul{
+    margin: 0;
+}
+ul li{
+    list-style: none;
+}
+.title{
+    width: 100%;
+    height: 55px;
+    line-height: 55px;
+    padding-left: 25px;
+    font-size: 16px;
+    color: #333;
+    background: #fff;
+}
+.order-container{
+    padding: 10px;
+}
+.setting-head{
+    padding: 0 20px;
+    background: #fff;
+    min-height: 500px;
+}
+.setting-head-ul{
+    border-bottom: 1px solid #eee;
+}
+.setting-head-ul li{
+    float: left;
+    height: 50px;
+    line-height: 50px;  color: #333;
+    font-size: 14px;
+    margin-right: 50px;
+}
+.setting-head-ul li.head-active{
+    border-bottom: 2px solid #5a8bff;
+}
+.content1,.content3,.content4{
+    padding-top: 20px;
+}
+.content1,.content2,.content3,.content4, .content5, .content6{
+    display: none;
+}
+.content1-pay{
+    border: 1px solid #ededed;
+    padding: 0 30px;
+    -webkit-box-shadow: 0 5px 5px #f3f3f3;
+    -moz-box-shadow:  0 5px 5px #f3f3f3;
+    box-shadow:  0 5px 5px #f3f3f3;
+    width: 840px;
+    margin-bottom: 15px;
+}
+.con1-pay-list{
+    border-bottom: 1px solid #eee;
+    height: 50px;
+    line-height: 50px;
+}
+.con1-pay-list:last-child{
+    border: none;
+}
+.pay_fl{
+    width: 40px;
+    height: 20px;
+    background: url(../../image/admin/off_1.png) left top no-repeat;
+    background-size: 100% 100%;
+    position: relative;
+    top: 15px;
+    color: #333;
+    font-size: 14px;
+    margin-right: 15px;
+}
+.draggable{
+    width: 20px;
+    height: 20px;
+    position: absolute;
+    top: 0px;
+    right: 20px;
+    cursor: pointer;
+}
+.pay_fl label{
+    width: 40px;
+    height: 20px;
+}
+.pay_fl input[type="checkbox"]{
+    opacity: 0;
+}
+.pay-text{
+    display: inline-block;
+    margin-left: 45px;
+    color: #999999;
+    font-size: 12px;
+}
+.con1-pay-list .fr{
+    margin-right: 45px;
+    color: #5a8bff;
+    background: #fff;
+}
+.btn-save{
+    width: 90px;
+    height: 30px;
+    border: 1px solid #5a8bff;
+    background: #5a8bff;
+    color: #fff;
+    line-height: 28px;
+}
+.con2-head{
+    height: 60px;
+    line-height: 60px;
+}
+.con2-head .fl{
+    margin-right: 35px;
+}
+.con2-head .fl label{
+    font-weight:normal;
+    color: #666;
+    margin-right: 45px;
+    position: relative;
+    cursor: pointer;
+}
+.con2-head .fl label input{
+    opacity: 0;
+    position: relative;
+    cursor: pointer;
+}
+.re-radio{
+    position: absolute;
+    top: 23px;
+}
+.text-prompt{
+    width: 103.1%;
+    height: 40px;
+    line-height: 40px;
+    padding-left: 16px;
+    background: #eef1f6;
+    font-size: 13px;
+    margin-left: -20px;
+}
+.blue_border{
+    border-left: 2px solid #5a8bff;
+    height: 14px;
+    width: 8px;
+    display: inline-block;
+    margin-bottom: -1px;
+}
+.text-set{
+    height: 60px;
+    line-height: 60px;
+    color: #666;
+    padding-left: 8px;
+    font-size: 13px;
+}
+.text-set input{
+    border: 1px solid #ccc;
+    height: 30px;
+    width: 65px;
+    margin: 0 5px;
+}
+.radio_input{
+    width: 300px;
+    height: 50px;
+    line-height: 50px;
+}
+.text-set .radio_input input{
+    border: none;
+    margin-top: 20px;
+    margin-right:8px ;
+    height: 15px;
+    width: 15px;
+}
+#form2 .btn-save{
+    margin-left: 8px;
+}
+#set-wx-pay{
+    display: none;
+    width: 680px;
+    padding: 0 20px;
+}
+#set-wx-pay tr td:first-child{
+    width: 125px;
+}
+#set-wx-pay input[type='text']{
+    width: 240px;
+    height: 25px;
+    border: 1px solid #ccc;
+    padding-left: 10px;
+}
+#set-wx-pay tr:nth-of-type(even){
+    background: #f3f3f3;
+}
+.wx-file{
+    position: relative;
+}
+#set-wx-pay input[type='file']{
+    display: inline-block;
+    width: 80px;
+    height: 25px;
+    opacity:0;
+    position: relative;
+}
+.upload-file{
+    display: inline-block;
+    width: 72px;
+    height: 25px;
+    position: absolute;
+    text-align: center;
+    line-height: 23px;
+    border: 1px solid #5a8bff;
+    color: #5a8bff;
+    font-size: 12px;
+    background: #fff;
+}
+.content3 .con1-pay-list .fr{
+    padding: 0px;
+    margin: 0;
+}
+.content4 span{
+    font-size: 12px;
+    color: #999;
+}
+.content4 .con4-hide{
+    display: inline-block;
+    margin: 0 40px 0 0px;
+    color: #333;
+    font-size: 14px;
+}
+.content4 .pay_fl{
+    margin-top: 6px;
+}
+#set-shop{
+    padding: 10px 20px;
+}
+#set-shop table{
+    font-size: 14px;
+}
+#set-shop .pay_fl{
+    top: 0;
+    margin-right: 0;
+}
+#set-shop th{
+    font-weight: normal;
+    color: #333;
+    padding: 8px 10px;
+}
+#set-shop table{
+    border: 1px solid #eff1f5;
+}
+#set-shop table tr:first-child{
+    background: #f3f3f3;
+}
+#set-shop td{
+    color: #666;
+    text-align: center;
+    border: 1px solid #eff1f5;
+}
+#layerDemosince{
+    /*width: 800px;*/
+}
+
+.main_container input[type='text'] {
+    height: 30px;
+    line-height: 30px;
+    padding-left: 20px;
+    border: 1px solid #eee;
+    width: 400px;
+}
+#re_address .re_address span{
+    width: 70px;
+    text-align: right;
+    color: #0C0C0C;
+}
+.re_address input{
+    width: 245px;
+    height: 35px;
+}
+
+
+
+
+
+
+
+
+
+
+
+
+

@@ -1,0 +1,45 @@
+.share_module {
+    line-height: 30px;
+}
+.module_share_image {
+    position: relative;
+    margin-left: 60px;
+}
+.module_share_image .add_image{
+    width: 70px;
+    height: 70px;
+    background: url(/image/admin/btn_add.png) no-repeat;
+    box-shadow: 0 0 0 #fff;
+    padding-top: 40px;
+    padding-left: 8px;
+    color: #9a9a9a;
+    border: none;
+    margin-right: 10px;
+    float: left;
+}
+.choose_img {
+    float: left;
+    display: none;
+    border: 1px solid #eee;
+    position: relative;
+}
+.choose_img span {
+    text-align: center;
+    width: 100%;
+    line-height: 18px;
+    position: absolute;
+    left: 0;
+    bottom: 0;
+    background-color: rgba(0,0,0,0.5);
+    color: #fff;
+    font-size: 12px;
+    display: none;
+    cursor: pointer;
+}
+.choose_img img {
+    width: 76px;
+    height: 76px;
+}
+.share_module .show_eg {
+    margin-left: 40px;
+}

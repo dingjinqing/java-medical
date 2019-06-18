@@ -1,0 +1,19 @@
+/* pages/signrule/signrule.wxss */
+.main-container{
+    padding: .2rem;
+}
+.main-container p{
+margin-bottom: .2rem;
+}
+.title{
+color: #000;
+font-size: .27rem;
+}
+.content{
+color: #888;
+font-size: .27rem;
+padding-left: .27rem;
+}
+.common-footer .footer-text {
+background: #fff
+}

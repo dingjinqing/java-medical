@@ -1,0 +1,58 @@
+body,html,p{
+    margin: 0;padding: 0;
+}
+body,html{
+    background-color: #f5f5f5;
+}
+.help_top_title,
+.help_bottom_title{
+    line-height: .8rem;
+    font-size: .267rem;
+    color: #333;
+    padding: 0 .4rem;
+}
+.help_top_container{
+    background-color: #fff;
+    padding: .2rem .4rem;
+}
+.help_top_list{
+    color: #666;
+    line-height: .45rem;
+    font-size: .267rem;
+}
+.help_bottom_container{
+    background-color: #fff;
+}
+.bottom_list_title{
+    font-size: .267rem;
+    color: #333;
+    padding: 0 .4rem;
+    line-height: .867rem;
+    vertical-align: middle;
+}
+.bottom_list_title p{
+    vertical-align: middle;
+}
+.bottom_list_content{
+    padding: 0 .4rem 0 .72rem;
+    font-size: .267rem;
+    color: #666;
+    line-height: .467rem;
+    display: none;
+}
+.bottom_list_title img{
+    width: .333rem;
+    height: .16rem;
+}
+.dot{
+    display: inline-block;
+    width: .133rem;
+    height: .133rem;
+    border-radius: 50%;
+    background-color: #000;
+    vertical-align: middle;
+    margin: 0 .06rem;
+}
+.bottom_list_title img:nth-child(2){
+    display: none;
+}

@@ -1,0 +1,50 @@
+.main_container{
+    margin:10px;
+    background-color: #fff;
+    padding: 15px;
+}
+.search li{
+    float: left;
+    margin-right: 50px;
+}
+.search ul{
+    margin-bottom: 15px;
+}
+input[type="text"],select{
+    width: 140px;
+    height: 30px;
+    border: 1px solid #ddd;
+}
+.search li a{
+    display: inline-block;
+    line-height: 30px;
+    text-decoration: none;
+}
+.search li span,.search li select,.search li a,.search li input[type="text"]{
+    vertical-align: middle;
+}
+.info_table table{
+    text-align: center;
+}
+.info_table table thead{
+    border: 1px solid #eee;
+    background-color: #eee;
+    line-height: 40px;
+}
+.info_table table thead th{
+    font-weight: 400;
+}
+.info_table table tbody td{
+    border: 1px solid #eee;
+    line-height: 35px;
+}
+.echarts_content{
+    width: 100%;
+    height: 400px;
+}
+.jump_page table tbody td{
+    border: none;
+}
+.no_data_style{
+    margin-top: 15px;
+}

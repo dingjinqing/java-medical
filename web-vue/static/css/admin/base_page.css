@@ -1,0 +1,33 @@
+.layui-laypage .layui-laypage-curr .layui-laypage-em{
+    background: #5a8bff !important;
+    color: #fff;
+    border: 1px solid #5a8bff;
+    text-decoration: none;
+    padding: 0;
+}
+.layui-laypage a, .layui-laypage span{
+    border: 1px solid #dedede;
+    margin: 0 0px 5px 5px;
+    background: rgb(250,250,250);
+}
+.layui-laypage a:hover{
+    background: #fff !important;
+    color: #5a8bff;
+    border: 1px solid #5a8bff;
+    text-decoration: none;
+}
+.layui-laypage button{
+    background: rgb(250,250,250);
+}
+.layui-laypage button:hover{
+    background: #fff !important;
+    color: #5a8bff;
+    border: 1px solid #5a8bff;
+    text-decoration: none;
+}
+.layui-laypage button:focus{
+    background: #5a8bff !important;
+    color: #fff;
+    border: 1px solid #5a8bff;
+    text-decoration: none;
+}

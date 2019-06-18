@@ -1,0 +1,103 @@
+
+.select-page{
+    padding: 15px 20px;
+}
+
+.select-input-area{
+    margin-bottom: 10px;
+    font-size: 14px;
+    height: 30px;
+}
+.select-input-row{
+    float: left;
+}
+.select-input-row select, .select-input-row input{
+    height: 30px;
+    width: 150px;
+    padding-left: 8px;
+    -webkit-border-radius: 3px;
+    -moz-border-radius: 3px;
+    border-radius: 3px;
+}
+.btn_search {
+    width: 70px;
+    height: 30px;
+    border: none;
+    margin-left: 38px;
+    background: #5A8BFF;
+    color: #fff;
+    border-radius: 3px;
+}
+
+.select-content {
+    width: 100%;
+}
+.select-content table{
+    width: 100%;
+    text-align: center;
+    border-spacing:0 0;
+}
+.select-content thead td{
+    background: #faf9f8;
+    color: #333;
+    font-size: 14px;
+}
+.select-content tbody td{
+    /*background: #faf9f8;*/
+    font-size: 14px;
+    color: #333;
+}
+.select-table-tbody .has-select-row{
+    background-color: #eee;
+}
+body{
+    background: #fff;
+}
+.all_check{
+    display: inline-block;
+    width: 50px;
+}
+.tb_paging{
+    width: 100% !important;
+    float: none !important;
+}
+.tb_paging td{
+    display: inline-block !important;
+    text-align: left !important;
+}
+.tb_paging td a{
+  font-size: 12px !important;
+    text-decoration: none !important;
+}
+.select-input-row input[type="text"]{
+    border:1px solid #ccc !important;
+}
+.select-input-row select{
+    border:1px solid #ccc;
+}
+.select-content table {
+    border: 1px solid #eaeaec;
+    font-size: 13px;
+    border-collapse: collapse;
+}
+.select-content table thead tr {
+    background: #f5f5f5;
+}
+.select-content table thead th {
+    color: #333;
+    font-size: 13px;
+    font-weight: normal;
+    padding: 10px 0;
+}
+.select-content table tbody td {
+    border: 1px solid #eaeaec;
+    text-align: center;
+    color: #666;
+    padding: 10px 5px;
+}
+.select-content table tbody td a{
+    color: #5a8bff;
+}
+.jump_page table tbody td{
+    border:none;
+}

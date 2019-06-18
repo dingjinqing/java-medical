@@ -1,0 +1,239 @@
+.order-info{
+    background: #fff;
+    width: 100%;
+}
+.order-info form{
+    width: 820px;
+    margin: 0 auto;
+    padding: 28px 0;
+}
+.prompt{
+    width: 100%;
+    height: 40px;
+    line-height: 40px;
+    border: 1px solid #F2E1C8;
+    background: #FFF7EC;
+    color: #666;
+    margin-bottom: 12px;
+    padding-left: 12px;
+}
+.prompt img{
+    margin: -3px 5px 0 0;
+}
+.config_left{
+    float: left;
+    width: 325px;
+    min-height: 600px;
+    border: 1px solid #ccc;
+    background: #f5f5f5;
+    /*overflow-y: scroll;*/
+}
+.left_title{
+    height: 55px;
+    background: url(/image/admin/shop_beautify/phone_tops.png) no-repeat;
+}
+.left_info_head{
+    position: relative;
+}
+.top_bg{
+    width: 100%;
+}
+.center_set{
+    position: absolute;
+    top: 15px;
+    right: 10px;
+    width: 21px;
+    z-index: 2
+}
+.center_head{
+    position: absolute;
+    width: 65px;
+    display: block;
+    top: 35px;
+    left: 10px;
+    z-index: 9;
+    border-radius:50%;
+}
+.center_name{
+    width: 100px;
+    position: absolute;
+    top: 40px;
+    left: 90px;
+    z-index: 9;
+    color:white;
+    font-size: 14px;
+}
+.center_sign{
+    background: rgba(0,0,0,0.1);
+    color: #fff;
+    padding: 4px 10px;
+    border-radius: 15px;
+    position: absolute;
+    top: 70px;
+    left: 90px;
+    z-index: 9;
+    font-size: 12px;
+}
+.center_sign img{
+    width: 12px;
+    margin-right: 3px
+}
+.center_nav{
+    padding: 0 10px;
+    position: relative;
+    top: -15px;
+}
+.center_flex{
+    display: flex;
+    background: #fff;
+    -webkit-border-radius: 10px;
+    -moz-border-radius: 10px;
+    border-radius: 10px;
+    padding: 10px 0;
+}
+.center_flex>div{
+    flex: 1;
+    text-align: center;
+}
+.center_flex2{
+    display: none;
+}
+.center_flex2>div:first-child{
+    border-right: 1px solid #eee;
+}
+.nav_none{
+    display: none;
+}
+.center_list_all{
+    background: #fff;
+    padding-left: 12px;
+    margin-bottom: 10px;
+}
+.center_list{
+    width: 100%;
+    line-height: 40px;
+    border-bottom: 1px solid #eee;
+    background: url("/image/wxapp/backward_right.png") no-repeat 98%;
+    background-size: 8px;
+}
+.center_list_all .center_list:last-child{
+    border: none;
+}
+.center_list_all .center_list{
+    border-bottom: 1px solid #eee;
+}
+.center_list_all .center_list span{
+    float: right;
+    color: #999;
+    font-size: 12px;
+    margin-right: 20px;
+}
+.center_order_con{
+    padding-right: 12px;
+    display: flex;
+}
+.center_order_con>div{
+    flex: 1;
+    text-align: center;
+    padding: 10px 0;
+    font-size: 12px;
+}
+.center_order_con>div img{
+    width: 30px;
+}
+.center_appoint_con{
+    padding: 10px 0;
+}
+.appoint_img{
+    float: left;
+    width: 42px;
+    height: 42px;
+    border: 1px solid #ccc;
+}
+.appoint_img img{
+    width: 100%;
+}
+.appiont_info{
+    float: left;
+    margin-left: 8px;
+    font-size: 12px;
+    padding-top: 3px;
+}
+.appoint_time{
+    color: #999;
+    margin-top: 5px;
+}
+.config_right{
+    float: right;
+    width: 480px;
+}
+.config_right_info{
+    width: 100%;
+    border: 1px solid #efefef;
+    margin-bottom: 10px;
+}
+.center_flex>div p{
+    height: 19px;
+    line-height: 19px;
+}
+.info_title{
+    padding: 0 12px;
+    line-height: 40px;
+    color: #000;
+    background: #f8f8f8;
+}
+.info_title .info_con_block,.info_con_none{
+    float: right;
+    color: #5A8BFF;
+    cursor: pointer;
+}
+.info_con_none{
+    display: none;
+}
+.info_content{
+    border-top: 1px solid #efefef;
+    padding: 10px;
+}
+.list_name{
+    float: left;
+    width: 85px;
+}
+.store_pay_fl{
+    width: 40px;
+    height: 20px;
+    background: url(../../image/admin/on_1.png) left top no-repeat;
+    background-size: 100% 100%;
+    position: relative;
+    /*top: 15px;*/
+    color: #333;
+    font-size: 14px;
+    float: left;
+    margin-right: 20px;
+}
+.store_pay_fl label{
+    width: 40px;
+    height: 20px;
+}
+.draggable{
+    width: 20px;
+    height: 20px;
+    position: absolute;
+    top: 0px;
+    right: 0px;
+    cursor: pointer;
+}
+.list_promt{
+    float: left;
+    width: 365px;
+}
+.list_promt p{
+    color: #999;
+    font-size: 12px;
+    margin-top: 8px;
+}
+.info_content_list{
+    margin-bottom: 10px;
+}
+.info_content .info_content_list:last-child{
+    margin: 0;
+}

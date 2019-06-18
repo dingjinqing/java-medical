@@ -1,0 +1,156 @@
+* {
+    padding: 0;
+    margin: 0;
+}
+
+#main-table th {
+    background: #FAF9F7 !important;
+    height: 45px;
+    line-height: 32px;
+    color: #333;
+    border: 1px solid #f0f0f0;
+}
+
+.main-table td {
+    border-top-width: 0 !important;
+    padding-right: 29px !important;
+}
+
+#list_tbl>tbody>tr>td {
+    padding: 10px 0 10px 0 !important;
+
+    border-left: 1px solid #f0f0f0 !important;
+    border-bottom: 1px solid #f0f0f0;
+}
+
+#list_tbl>tbody>tr>td:last-child {
+    border-right: 1px solid #f0f0f0;
+}
+
+#list_tbl>tbody>tr>th {
+    height: 50px;
+    border-top: 1px solid #f0f0f0;
+}
+
+.add-child-btn {
+    height: 30px;
+    line-height: 33px;
+    margin-bottom: 20px;
+}
+
+.add-child-btn:hover {
+    background-color: #5A8BFF;
+    color: #ffffff;
+}
+
+/*弹框*/
+#set-template-add {
+    display: none;
+
+    width: 100%;
+}
+
+#set-template-add>table {
+    width: 90%;
+    margin: 10px auto;
+}
+
+#set-template-add>table td {
+    height: 40px;
+    /*padding: 8px 8px;*/
+}
+
+#set-template-add>table td>input {
+    width: 248px;
+    height: 30px;
+
+    font-size: 14px;
+    outline: none;
+}
+
+.table>tbody>tr>td {
+    padding: 0  !important;
+}
+
+.auto-add-td {
+    height: 40px;
+}
+
+.add-child-ul {
+    height: 50px;
+    background-color: #fff;
+    line-height: 50px;
+}
+
+.add-child-btn {
+    width: 100px;
+    height: 30px;
+    background-color: #5a8bff;
+    color: #fff;
+    font-size: 14px;
+    margin-left: 50px;
+    margin-top: 20px;
+}
+
+table#list_tbl {
+    width: 94%;
+    margin-left: 49px;
+}
+
+.add-account-form{
+    min-height: 480px;
+    background: #fff;
+}
+.main-table {
+    width: 100%;
+    background-color: #fff;
+    border: none;
+    -webkit-box-shadow: none;
+    -moz-box-shadow: none;
+    box-shadow: none;
+}
+
+.account_tb a{
+    color: #5A8BFF;
+}
+.aui_title{
+    text-align: center;
+    -webkit-box-shadow: none;
+    -moz-box-shadow: none;
+    box-shadow: none;
+    border: none;
+    background: #f3f3f3;
+}
+.aui_buttons button:first-child{
+    background: #5A8BFF;
+    border-color: #5A8BFF;
+}
+.aui_close{
+    top: 3px;
+    text-indent: 10px;
+    font-size: 26px;
+    background: none;
+}
+#edit_account td{
+    padding: 5px;
+}
+#edit_account input{
+    height: 30px;
+    border: 1px solid #ccc;
+    padding-left: 12px;
+}
+.aui_content{
+    padding: 10px 25px!important;
+    border-bottom: 1px solid #eee;
+}
+.aui_buttons{
+    padding: 10px 15px;
+}
+.aui_buttons button{
+    width: 60px;
+    height: 28px;
+}
+
+table th {
+    font-weight: normal;
+}

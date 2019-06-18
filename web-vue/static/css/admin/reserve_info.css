@@ -1,0 +1,818 @@
+*{
+    margin: 0;
+    padding: 0;
+}
+body{
+    background: #e6e9f0;
+}
+.clearfix:after{
+    display: block;
+    content: '';
+    clear: both;
+}
+.fl{
+    float: left;
+}
+.fr{
+    float: right;
+}
+img{
+    vertical-align: middle;
+}
+input::-webkit-input-placeholder{
+    color: #999;
+}
+div,p,ul,li,span,a,table,td,tr,input{
+    -webkit-box-sizing: border-box;
+    -moz-box-sizing: border-box;
+    box-sizing: border-box;
+}
+a,a:hover{
+    text-decoration: none;
+    color: #333;
+    cursor: pointer;
+}
+.title{
+    width: 100%;
+    height: 55px;
+    line-height: 55px;
+    padding-left: 25px;
+    font-size: 16px;
+    color: #333;
+    background: #fff;
+}
+.goods-box{
+    padding: 20px 25px;
+    background: #FFFFFF;
+}
+.goods-box-top{
+    text-align: center;
+    height: 44px;
+    line-height: 44px;
+    display: flex;
+    color: #666666;
+    font-size: 16px;
+    background: #f8f8f8;
+    margin-bottom: 15px;
+    min-width: 1024px;
+}
+.box-top-info{
+    flex: 1;
+    cursor: pointer;
+}
+.goods-box-edit{
+    /*font-size: 14px;*/
+}
+.box-top-detail{
+    background: #f8f8f8 url(../../image/admin/next-white.png) no-repeat;
+}
+.box-top-active{
+    color: #FFFFFF;
+    background: #5a8bff url(../../image/admin/next-blue.png) no-repeat 100%;
+}
+
+.box-top-detail2 {
+    color: #fff;
+    background: #5a8bff url(../../image/admin/next-white-blue.png) no-repeat;
+    border-top-right-radius: 4px;
+    border-bottom-right-radius: 4px;
+}
+
+.box-top-first2 {
+    color: #353535;
+    background: #f8f8f8 url(../../image/admin/next-gray.png) no-repeat 100%;
+    border-top-left-radius: 4px;
+    border-bottom-left-radius: 4px;
+}
+
+.basic-table td:first-child span{
+    color: red;
+    width: 8px;
+    display: inline-block;
+    position: relative;
+    top: 3px;
+}
+.basic-table .tips{
+    color: #999;
+}
+.basic-table td:first-child{
+    width: 180px;
+    padding: 13px 0;
+    color: #666;
+    text-align: right;
+}
+.basic-table input,.basic-table select{
+    height: 30px;
+    border: 1px solid #ccc;
+    padding-left: 20px;
+    width: 160px;
+}
+.basic-table input[type='text']{
+    width: 250px;
+}
+.basic-table .money_radio {
+    background: url(/image/admin/check_no.png) no-repeat;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    appearance: none;
+    width: 15px;
+    height: 15px;
+    border: none;
+    position: relative;
+    top: 3px;
+}
+.basic-table .money_radio:checked{
+    width: 15px;
+    height: 15px;
+    background: url(/image/admin/check_yes.png) no-repeat;
+}
+.add-spec{
+    background: #fff;
+    color: #333;
+    border: 1px solid #ccc;
+    width: 120px;
+    height: 30px;
+}
+.show-spec,.spec-price{
+    border: 1px solid #ccc;
+    padding: 10px;
+    color: #333;
+    min-width: 745px;
+}
+.basic-table .show-spec td:first-child{
+    padding: 10px;
+    width: 90px;
+}
+.basic-table .show-spec input{
+    width: 100px;
+    margin-right: 15px;
+}
+.show-spec span{
+    color: #5a8bff;
+}
+.show-spec tr:nth-child(odd){
+    background: #f8f8f8;
+}
+.spec-price input[name='prd_sprice']{
+    width: 105px;
+}
+.spec-price input[name='prd_number']{
+    width: 80px;
+}
+.spec-price input[name='prd_sn']{
+    width: 145px;
+}
+.spec-price tr:first-child{
+    background: #f8f8f8;
+}
+.spec-price tr:first-child td,.spec-price tr:last-child td{
+    border: none;
+}
+.spec-price td{
+    text-align: center;
+    border: 1px solid #f6f6f6;
+}
+.spec-price td:first-child{
+    width: 140px;
+}
+.spec-img{
+    width: 36px;
+    height: 36px;
+    line-height: 36px;
+    border: 1px solid #ccc;
+    position: relative;
+    background: #f7f7f7;
+    text-align: center;
+    font-size: 0;
+    margin: 0 auto;
+}
+.img-delete{
+    position: absolute;
+    right: -10px;
+    top: -7px;
+    cursor: pointer;
+}
+.batche-set{
+    text-align: left!important;
+}
+.batche-set a,.goods_deliver a{
+    display: inline-block;
+    color: #5a8bff;
+    margin-left: 8px;
+}
+ul li{
+    list-style: none;
+    position: relative;
+}
+
+.shelves li label{
+    font-weight: normal;
+    cursor: pointer;
+}
+.shelves li input[type='radio']{
+     background: url(/image/admin/check_no.png) no-repeat;
+     -webkit-appearance: none;
+     -moz-appearance: none;
+     appearance: none;
+     width: 15px;
+     height: 15px;
+     border: none;
+     position: relative;
+     top: 3px;
+     cursor: pointer;
+ }
+.shelves li input[type='radio']:checked{
+    background: url(/image/admin/check_yes.png) no-repeat;
+    width: 15px;
+    height: 15px;
+}
+.check_box{
+    position: absolute;
+    font-size: 0;
+    top: 8px;
+    left: -1px;
+}
+.choose-time{
+    border: 1px solid #ccc;
+    color: #999;
+    height: 30px;
+    margin-left: 45px !important;
+    padding: 5px 40px 5px 12px;
+    background: #fff url(../../image/admin/icon_time.png) no-repeat 92%;
+}
+.add_spec_value{
+    cursor: pointer;
+}
+.goods-item-img li{
+    float: left;
+    margin-right: 15px;
+    background: #f7f7f7;
+    border: 1px solid #ccc;
+    width: 80px;
+    height: 80px;
+    text-align: center;
+    line-height: 80px;
+    font-size: 0;
+}
+.goods-item-img li img{
+    max-width: 100%;
+    max-height: 100%;
+}
+.goods-suggest{
+    color: #999;
+    margin-bottom: 5px;
+}
+.goods-save{
+    padding: 10px;
+    background: #f8f8fa;
+    border-top: 1px solid #f2f2f2;
+    text-align: center;
+}
+.goods-save a{
+    display: inline-block;
+    height: 30px;
+    width: 105px;
+    line-height: 30px;
+    color: #fff;
+    background: #5a8bff;
+    border: 1px solid #5a8bff;
+    margin: 0 10px;
+}
+.goods-save .btn-next,.goods-save .btn-prev{
+    color: #333;
+    background: #fff;
+    border: 1px solid #ccc;
+}
+.btn-prev{
+    display: none;
+}
+.goods-edit-detail{
+    display: none;
+}
+.goods-edit-detail{
+    width: 1100px;
+    padding: 25px 0 35px;
+    text-align: center;
+    margin: 0 auto;
+}
+.detail-show{
+    width: 325px;
+    border: 1px solid #dad8d9;
+}
+.detail-show-top{
+    line-height: 55px;
+    background: #dad8d9;
+}
+.detail-show-box{
+    height: 455px;
+    background: #eee;
+    padding: 10px 10px 15px;
+}
+.show-box-white{
+    border: 1px dashed #ccc;
+    width: 100%;
+    height: 100%;
+    background: #fff;
+    text-align: left;
+}
+.show-box-white img{
+    max-width: 100%;
+}
+.detail-edit{
+    width: 684px;
+    border: 1px solid #e5e5e5;
+    background: #f8f8f8;
+    padding: 22px 15px;
+    -webkit-border-radius: 5px;
+    -moz-border-radius: 5px;
+    border-radius: 5px;
+    margin-left: 30px;
+}
+.detail-edit-box{
+    border: 1px solid #d5d5d5;
+    background: #fff;
+    height: 466px;
+    width: 100%;
+    -webkit-border-radius: 5px;
+    -moz-border-radius: 5px;
+    border-radius: 5px;
+}
+.spec_span{
+    position: relative;
+    display: inline-block;
+}
+.spec_span img{
+    right: 8px;
+}
+.deliver-template-info{
+    padding: 10px;
+    margin-top: 10px;
+    background: #f5f5f5;
+}
+.btn_get{
+    margin-top: 15px;
+    float: left;
+    margin-left: 355px;
+}
+.basic-table .last_spec .batche-set span{
+    display: inline-block;
+    color: #666;
+    margin-left: 8px;
+    width: auto;
+    position: static;
+}
+.shelves:after{
+    content:"";
+    display: block;
+    clear: both;
+}
+.shelves li{
+    float: left;
+    margin-right: 25px;
+}
+.basic-table .service_radio {
+    background: url(/image/admin/check_no.png) no-repeat;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    appearance: none;
+    width: 15px;
+    height: 15px;
+    border: none;
+    position: relative;
+    top: 3px;
+}
+.basic-table .service_radio:checked{
+    width: 15px;
+    height: 15px;
+    background: url(/image/admin/check_yes.png) no-repeat;
+}
+.services_types ul li label{
+    margin-right: 10px;
+}
+.services_types ul li span{
+    color: #999;
+}
+.reverseable_date:after{
+    content:"";
+    display: block;
+    clear: both;
+}
+.reverseable_date div input[type='text']{
+    width: 100px;
+}
+.reverseable_date input[type='radio']{
+    background: url(/image/admin/check_no.png) no-repeat;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    appearance: none;
+    width: 15px;
+    height: 15px;
+    border: none;
+    position: relative;
+    top: 3px;
+}
+.reverseable_date input[type='radio']:checked{
+    width: 15px;
+    height: 15px;
+    background: url(/image/admin/check_yes.png) no-repeat;
+}
+
+.reverseable_date .choose_date input[type='text']{
+    width: 170px;
+}
+
+.reverseable_date .choose_date input:last-of-type{
+    margin-left: 5px;
+}
+.tips_able{
+    color: #999;
+    height:30px;
+    line-height: 30px;
+    margin-bottom: 5px;
+}
+.time_period select{
+    width: 120px;
+    margin-bottom: 10px;
+}
+.time_period label input[type='text']{
+    width: 120px;
+}
+.time_period div:last-of-type{
+    color: #999;
+}
+.basic-table .choose_period input[type='text']{
+    width: 80px;
+}
+
+/*预约列表页面*/
+.reserve-container{
+    padding:10px;
+}
+.reserve-info{
+    background: #fff;
+    padding:15px 25px;
+    margin-bottom: 10px;
+}
+.search_info_li .re_li{
+    float: left;
+    width: 340px;
+    margin-bottom: 10px;
+}
+.search_info_li .re_li input{
+    width: 175px;
+    height: 30px;
+    padding-left: 12px;
+    border: 1px solid #ccc;
+}
+.search_info_li .search_input{
+    margin-left: 120px;
+    height:30px;
+    line-height: 30px;
+    padding-left: 12px;
+    margin-right: 30px;
+    border:1px solid #ccc;
+    width: 300px;
+    background: url("/image/admin/search.png") no-repeat;
+    background-position: 95% center;
+}
+.search_info_li .re_li span{
+    display: inline-block;
+    width: 90px;
+    line-height: 30px;
+    text-align: right;
+    margin-right: 25px;
+    color: #333;
+    vertical-align: top;
+}
+.search_info_li .reverse_time input[type='text']{
+    width: 175px;
+    height: 30px;
+    padding-left: 12px;
+    border: 1px solid #ccc;
+}
+
+.btn_searchinfo{
+    border: 1px solid #5a8bff;
+    background: #5a8bff;
+    color: #fff;
+    width: 85px;
+    height: 30px;
+}
+.btn_add_activity{
+    border: 1px solid #5a8bff;
+    background: #5a8bff;
+    color: #fff;
+    width: 105px;
+    height: 30px;
+    margin-left: 15px;
+    display: inline-block;
+    text-align: center;
+    line-height: 30px;
+    cursor: pointer;
+    position: relative;
+    top:2px;
+}
+.search_info_li select{
+    width: 175px;
+    border: 1px solid #ccc;
+    height: 30px;
+    padding-left: 12px;
+}
+.reserve-list{
+    padding: 0 25px 20px;
+    background: #fff;
+}
+.reserve-list-nav{
+    border-bottom: 1px solid #eee;
+    margin-bottom: 15px;
+}
+.reserve-list-nav li{
+    float: left;
+    height: 50px;
+    line-height: 50px;
+    padding: 0 15px;
+}
+.reserve-list-nav .nav-active{
+    border-bottom: 2px solid #5a8bff;
+}
+.reserve-list-table thead tr{
+    background: #F5F5F5;
+}
+.reserve-list-table td{
+    text-align: center;
+}
+.reserve-list-table thead .jiange {
+    background: white;
+}
+
+.reserve-list-table tbody {
+    margin-bottom: 15px;
+    border: 1px solid #eee;
+}
+.reserve_tb_head {
+    background: #f5f5f5;
+}
+
+.reserve_tb_head td {
+    text-align: left;
+}
+
+.reserve_tb_head span {
+    display: inline-block;
+    color: #666;
+}
+
+.reserve_tb_head span a {
+    color: #5a8bff;
+    display: inline-block;
+    margin-left: 25px;
+}
+
+.span1 {
+    margin-left: 20px;
+}
+
+.span2 {
+    margin-left: 50px;
+}
+.reserve_tb_body td {
+    padding: 15px 25px;
+    border: 1px solid #eaeaec;
+    text-align: center;
+    color: #666;
+    word-break: break-all;
+}
+.reserve_tb_body td a{
+    color: #5a8bff;
+    display: inline-block;
+    margin-left: 15px;
+}
+
+/*添加服务弹框*/
+#add_activity{
+    padding:10px;
+    background: #fff;
+}
+#add_activity>div{
+    margin-bottom: 10px;
+}
+#add_activity>div label{
+    height:30px;
+    display: inline-block;
+    line-height: 30px;
+    text-align: right;
+    width: 150px;
+    color: #333;
+    font-size: 14px;
+}
+#add_activity>div label span{
+    width: 8px;
+    color: red;
+    position: relative;
+    top:3px;
+}
+#add_activity>div input[type='text']{
+    width: 175px;
+    height: 30px;
+    padding-left: 12px;
+    border: 1px solid #ccc;
+}
+#add_activity>div select{
+    width: 175px;
+    height: 30px;
+    padding-left: 9px;
+    border: 1px solid #ccc;
+    color: #999;
+}
+
+.reserve_arrive_time input[type='text']{
+    background: url(/image/admin/icon_time.png) no-repeat;
+    background-position: 95% center;
+}
+#add_activity .reserve_detail label{
+    float: left;
+}
+#add_activity .reserve_detail .rd_table{
+    float: left;
+    margin-left: 5px;
+    width: 400px;
+}
+#add_activity .act_remark label{
+    float: left;
+}
+#add_activity .act_remark textarea{
+    float: left;
+    margin-left: 5px;
+    width: 400px;
+    border:1px solid #eee;
+    height:100px;
+    padding:10px 12px;
+    max-width:400px;
+    max-height: 200px;
+}
+.rd_table table{
+    border:1px solid #eee;
+}
+.rd_table table td{
+    border:1px solid #eee;
+    font-size: 14px;
+}
+.rd_table table thead td{
+    padding:10px 5%;
+}
+.rd_table table td .choosed_service{
+    padding:10px 5%;
+}
+.rd_table table td .click_choose_tech{
+    padding:10px 5%;
+}
+
+.rd_table table thead tr {
+    background: #F5F5F5;
+}
+.rd_table table thead tr td{
+    text-align: center;
+}
+.rd_table table tbody tr td:first-of-type{
+    background: url("/image/admin/btn_down.png") no-repeat;
+    background-position: 95% center;
+    position: relative;
+}
+.rd_table table tbody tr td:nth-of-type(2){
+    background: url("/image/admin/btn_down.png") no-repeat;
+    background-position: 90% center;
+    position: relative;
+}
+.rd_table table tbody tr td:first-of-type .put_down_hide{
+    background: #fff;
+    width: 246px;
+    position: absolute;
+    top:101%;
+    left:0;
+    padding:10px 0 0;
+    box-shadow: -1px 1px 1px 1px #ccc;
+    display: none;
+}
+.rd_table table tbody tr td:nth-of-type(2) .down_technician{
+    background: #fff;
+    width: 98px;
+    position: absolute;
+    top:101%;
+    left:0;
+    padding:10px 0;
+    box-shadow: -1px 1px 1px 1px #ccc;
+    display: none;
+}
+.rd_table table tbody tr td input[type='radio']{
+    background: url(/image/admin/check_no.png) no-repeat;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    appearance: none;
+    width: 15px;
+    height: 15px;
+    border: none;
+    margin-right: 5px;
+    position: relative;
+    top: 3px;
+}
+.rd_table table tbody tr td input[type='radio']:checked{
+    width: 15px;
+    height: 15px;
+    background: url(/image/admin/check_yes.png) no-repeat;
+}
+.put_down_hide ul{
+    margin-bottom: 10px;
+}
+.put_down_hide ul li{
+    margin-bottom: 9px;
+}
+.put_down_hide>ul>li:last-of-type{
+    margin-left: 20px;
+}
+.put_down_hide>ul{
+    padding:0 10px;
+    border-bottom: 1px solid #ccc;
+}
+.put_down_hide>ul:last-of-type{
+    border-bottom: none;
+}
+.down_technician{
+    margin-bottom: 10px;
+}
+.down_technician ul li{
+    margin-bottom: 9px;
+}
+.down_technician>ul{
+    padding:0 10px;
+}
+textarea::placeholder{
+    font-size: 13px;
+    color: #999;
+}
+.top-banner{
+    border-bottom: 1px solid #eee;
+    background: #fff;
+}
+.top-banner a{
+    display: inline-block;
+    height: 40px;
+    line-height: 30px;
+    width: 80px;
+    text-align: center;
+}
+.top-banner .actiove{
+    border-bottom: 2px solid #5E88FC;
+}
+
+.wait_re{
+    position: relative;
+    display: inline-block;
+}
+.wait_num{
+    position: relative;
+    top: -7px;
+    right: 0;
+    -webkit-border-radius: 10px;
+    -moz-border-radius: 10px;
+    border-radius: 10px;
+    background: #ff9d0e;
+    color: #fff;
+    line-height: 1;
+    font-size: 11px;
+    text-align: center;
+    padding: 2px 5px;
+}
+.btn_add_members a{
+    padding:5px 0;
+    height:28px;
+    font-size:13px;
+    font-weight:400;
+    width: 80px;
+    background: #5a8bff;
+    color: #fff;
+    display: block;
+    text-align: center;
+}
+.btn_add_members a:focus, .btn_add_members a:hover{
+    text-decoration: none;
+}
+.choose_service_type div:first-of-type{
+    margin-bottom: 10px;
+}
+.choose_service_type input[type='radio']{
+    background: url(/image/admin/check_no.png) no-repeat;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    appearance: none;
+    width: 15px;
+    height: 15px;
+    border: none;
+    margin-right: 5px;
+    position: relative;
+    top: 3px;
+}
+.choose_service_type input[type='radio']:checked{
+    width: 15px;
+    height: 15px;
+    background: url(/image/admin/check_yes.png) no-repeat;
+}
