@@ -1,33 +1,47 @@
-import axios from 'axios'
+// import axios from 'axios'
 import env from '@/config/env'
+import $ from 'jquery'
+let layer = window.layer
 
-// create an axios instance
-const service = axios.create({
-  baseURL: 'http://' + env.apiDomain, // url = base url + request url
-  // withCredentials: true, // send cookies when cross-domain requests
-  timeout: 5000 // request timeout
-})
-
-function api (path, cb, params, failcb) {
+function api (path, cb, params, failcb, showLoading) {
+  var url = 'http://' + env.apiDomain + path
   params = params || {}
-  // service.interceptors.response.use(function (req, res, next) {
-  //   res.header('Access-Control-Allow-Origin', '*')
-  //   res.setHeader('Access-Control-Allow-Methods', 'GET, POST, OPTIONS, PUT, PATCH, DELETE')
-  //   res.header('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept')
-  //   next()
-  // })
-  service.post(path, params).then(function (res) {
-    if (res.data.error === -9999) {
-      window.layer.msg('你无权访问，请检查登录是否过期或者权限受限')
-      return
-    }
-    if (cb) {
-      cb(res.data)
-    }
-  }).catch(function (e) {
-    window.layer.msg('网络请求出错，错误信息：' + e.message)
-    if (failcb) {
-      failcb(e.message)
+  var layerIndex = null
+  if (showLoading) {
+    layerIndex = layer.load(1)
+  }
+  $.ajax({
+    type: 'post',
+    url: url,
+    data: params,
+    dataType: 'json',
+    success: function (data) {
+      if (layerIndex) {
+        layer.close(layerIndex)
+      }
+      try {
+        if (data.error === -9999) {
+          layer.msg('你无权访问，请检查登录是否过期或者权限受限')
+          return false
+        }
+        cb(data)
+      } catch (e) {
+        if (e && e.message) {
+          layer.msg(e.message)
+        } else {
+          layer.msg('访问失败！')
+        }
+
+        if (failcb) {
+          failcb()
+        }
+      }
+    },
+    error: function (XmlHttpRequest, textStatus, errorThrown) {
+      if (layerIndex) {
+        layer.close(layerIndex)
+      }
+      layer.msg('网络错误！')
     }
   })
 }

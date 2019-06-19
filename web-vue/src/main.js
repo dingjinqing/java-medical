@@ -3,9 +3,7 @@
 import Vue from 'vue'
 import App from './App'
 import router from './router'
-import layer from 'vue-layer'
 
-Vue.prototype.$layer = layer(Vue)
 Vue.config.productionTip = false
 
 /* eslint-disable no-new */
