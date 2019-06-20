@@ -1,0 +1,1 @@
+mvnw install -Dschema="mini_main" -DpackageName="main"
