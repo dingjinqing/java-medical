@@ -9,7 +9,6 @@ import org.jooq.Record;
 import org.jooq.Result;
 import org.jooq.SelectWhereStep;
 import org.jooq.tools.StringUtils;
-import org.jooq.types.UInteger;
 
 import com.vpu.mp.db.shop.tables.records.PageClassificationRecord;
 import com.vpu.mp.service.foundation.BaseService;
@@ -95,7 +94,7 @@ public class PageClassificationService extends BaseService {
 	 * @return
 	 */
 	public PageClassificationRecord getRow(Integer id) {
-		return db().fetchAny(PAGE_CLASSIFICATION, PAGE_CLASSIFICATION.ID.eq(UInteger.valueOf(id)));
+		return db().fetchAny(PAGE_CLASSIFICATION, PAGE_CLASSIFICATION.ID.eq((id)));
 	}
 
 	public PageClassificationRecord getRowByName(String name) {
@@ -111,17 +110,17 @@ public class PageClassificationService extends BaseService {
 	 */
 	public PageClassificationRecord getNoIdRow(Integer notId, String name) {
 		return db().fetchAny(PAGE_CLASSIFICATION,
-				PAGE_CLASSIFICATION.NAME.eq(name).and(PAGE_CLASSIFICATION.ID.ne(UInteger.valueOf(notId))));
+				PAGE_CLASSIFICATION.NAME.eq(name).and(PAGE_CLASSIFICATION.ID.ne((notId))));
 	}
 
 	public int removeRow(Integer id) {
-		return db().delete(PAGE_CLASSIFICATION).where(PAGE_CLASSIFICATION.ID.eq(UInteger.valueOf(id))).execute();
+		return db().delete(PAGE_CLASSIFICATION).where(PAGE_CLASSIFICATION.ID.eq((id))).execute();
 	}
 
 	public int setName(Integer id, String name) {
 		return db().update(PAGE_CLASSIFICATION)
 				.set(PAGE_CLASSIFICATION.NAME, name)
-				.where(PAGE_CLASSIFICATION.ID.eq(UInteger.valueOf(id)))
+				.where(PAGE_CLASSIFICATION.ID.eq((id)))
 				.execute();
 	}
 

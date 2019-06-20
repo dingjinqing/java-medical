@@ -23,7 +23,7 @@ import javax.annotation.Generated;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class ShopChildAccount implements Serializable {
 
-    private static final long serialVersionUID = -1121594101;
+    private static final long serialVersionUID = -1663956208;
 
     private Integer   accountId;
     private Integer   sysId;
@@ -32,6 +32,8 @@ public class ShopChildAccount implements Serializable {
     private Timestamp createTime;
     private String    mobile;
     private String    backlog;
+    private String    officialOpenId;
+    private Byte      isBind;
 
     public ShopChildAccount() {}
 
@@ -43,6 +45,8 @@ public class ShopChildAccount implements Serializable {
         this.createTime = value.createTime;
         this.mobile = value.mobile;
         this.backlog = value.backlog;
+        this.officialOpenId = value.officialOpenId;
+        this.isBind = value.isBind;
     }
 
     public ShopChildAccount(
@@ -52,7 +56,9 @@ public class ShopChildAccount implements Serializable {
         String    accountPwd,
         Timestamp createTime,
         String    mobile,
-        String    backlog
+        String    backlog,
+        String    officialOpenId,
+        Byte      isBind
     ) {
         this.accountId = accountId;
         this.sysId = sysId;
@@ -61,6 +67,8 @@ public class ShopChildAccount implements Serializable {
         this.createTime = createTime;
         this.mobile = mobile;
         this.backlog = backlog;
+        this.officialOpenId = officialOpenId;
+        this.isBind = isBind;
     }
 
     public Integer getAccountId() {
@@ -119,6 +127,22 @@ public class ShopChildAccount implements Serializable {
         this.backlog = backlog;
     }
 
+    public String getOfficialOpenId() {
+        return this.officialOpenId;
+    }
+
+    public void setOfficialOpenId(String officialOpenId) {
+        this.officialOpenId = officialOpenId;
+    }
+
+    public Byte getIsBind() {
+        return this.isBind;
+    }
+
+    public void setIsBind(Byte isBind) {
+        this.isBind = isBind;
+    }
+
     @Override
     public String toString() {
         StringBuilder sb = new StringBuilder("ShopChildAccount (");
@@ -130,6 +154,8 @@ public class ShopChildAccount implements Serializable {
         sb.append(", ").append(createTime);
         sb.append(", ").append(mobile);
         sb.append(", ").append(backlog);
+        sb.append(", ").append(officialOpenId);
+        sb.append(", ").append(isBind);
 
         sb.append(")");
         return sb.toString();

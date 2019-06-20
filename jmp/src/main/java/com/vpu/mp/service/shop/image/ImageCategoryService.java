@@ -2,7 +2,6 @@ package com.vpu.mp.service.shop.image;
 
 import com.vpu.mp.service.foundation.BaseService;
 import com.vpu.mp.service.foundation.Util;
-import com.vpu.mp.service.shop.image.ImageCategoryService.CategoryTreeItem;
 
 import lombok.Data;
 
@@ -20,7 +19,6 @@ import org.apache.commons.lang3.StringUtils;
 import org.jooq.Result;
 import org.jooq.SelectWhereStep;
 import org.jooq.impl.DSL;
-import org.jooq.types.UInteger;
 
 import com.vpu.mp.db.shop.tables.pojos.UploadedImageCategory;
 import com.vpu.mp.db.shop.tables.records.UploadedImageCategoryRecord;
@@ -41,7 +39,7 @@ public class ImageCategoryService extends BaseService {
 		UploadedImageCategoryRecord record = db().newRecord(UPLOADED_IMAGE_CATEGORY, cat);
 		record.setCreateTime(Timestamp.valueOf(LocalDateTime.now()));
 		record.insert();
-		UInteger[] catIds = getUpCatIds(record.getImgCatId().intValue());
+		Integer[] catIds = getUpCatIds(record.getImgCatId().intValue());
 		record.setCatIds(StringUtils.join(catIds));
 		record.setLevel((byte) catIds.length);
 		record.update();
@@ -58,10 +56,10 @@ public class ImageCategoryService extends BaseService {
 		if (catId == 0) {
 			return 0;
 		}
-		List<UInteger> ids = this.getChildCategoryIds(catId, true, true);
+		List<Integer> ids = this.getChildCategoryIds(catId, true, true);
 		return db()
 				.delete(UPLOADED_IMAGE_CATEGORY)
-				.where(UPLOADED_IMAGE_CATEGORY.IMG_CAT_ID.in(ids.toArray(new UInteger[0])))
+				.where(UPLOADED_IMAGE_CATEGORY.IMG_CAT_ID.in(ids.toArray(new Integer[0])))
 				.execute();
 	}
 
@@ -73,7 +71,7 @@ public class ImageCategoryService extends BaseService {
 	 * @param includeDecent
 	 * @return
 	 */
-	public List<UInteger> getChildCategoryIds(Integer parentId, boolean includeParentId, boolean includeDecent) {
+	public List<Integer> getChildCategoryIds(Integer parentId, boolean includeParentId, boolean includeDecent) {
 		Result<UploadedImageCategoryRecord> records = getChildCategory(parentId, includeParentId, includeDecent);
 		return records.getValues(UPLOADED_IMAGE_CATEGORY.IMG_CAT_ID);
 	}
@@ -144,12 +142,12 @@ public class ImageCategoryService extends BaseService {
 				.execute();
 	}
 
-	public UInteger[] getUpCatIds(Integer catId) {
-		List<UInteger> catIds = new ArrayList<UInteger>();
+	public Integer[] getUpCatIds(Integer catId) {
+		List<Integer> catIds = new ArrayList<Integer>();
 		if (catId > 0) {
 			UploadedImageCategoryRecord cat = this.getCategoryById(catId);
 			if (cat == null) {
-				return catIds.toArray(new UInteger[0]);
+				return catIds.toArray(new Integer[0]);
 			}
 			Integer parentCatId = cat.getImgCatParentId();
 			while (parentCatId > 0) {
@@ -157,11 +155,11 @@ public class ImageCategoryService extends BaseService {
 				catIds.add(cat.getImgCatId());
 				parentCatId = cat.getImgCatParentId();
 			}
-			UInteger[] ids = catIds.toArray(new UInteger[0]);
+			Integer[] ids = catIds.toArray(new Integer[0]);
 			ArrayUtils.reverse(ids);
 			return ids;
 		}
-		return catIds.toArray(new UInteger[0]);
+		return catIds.toArray(new Integer[0]);
 	}
 
 	/**
@@ -172,7 +170,7 @@ public class ImageCategoryService extends BaseService {
 	 */
 	public UploadedImageCategoryRecord getCategoryById(Integer catId) {
 		return db().selectFrom(UPLOADED_IMAGE_CATEGORY)
-				.where(UPLOADED_IMAGE_CATEGORY.IMG_CAT_ID.eq(UInteger.valueOf(catId))).fetchAny();
+				.where(UPLOADED_IMAGE_CATEGORY.IMG_CAT_ID.eq(catId)).fetchAny();
 	}
 
 

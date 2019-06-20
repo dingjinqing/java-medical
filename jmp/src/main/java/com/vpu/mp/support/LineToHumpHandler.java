@@ -50,7 +50,6 @@ public class LineToHumpHandler extends HandlerMethodArgumentResolverComposite {
 		return sb.toString();
 	}
 
-	@SuppressWarnings("deprecation")
 	@Override
 	public Object resolveArgument(
 			MethodParameter methodParameter,

@@ -23,40 +23,56 @@ import javax.annotation.Generated;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class UploadUyunRecord implements Serializable {
 
-    private static final long serialVersionUID = -1577864197;
+    private static final long serialVersionUID = -1342099445;
 
     private Long      recordId;
+    private Integer   shopId;
+    private Integer   fileSize;
     private String    fileUrl;
     private String    updateTimestamp;
     private Timestamp updateDate;
     private Byte      uploadStatus;
     private Timestamp uploadTime;
+    private String    failReason;
+    private Timestamp failDate;
 
     public UploadUyunRecord() {}
 
     public UploadUyunRecord(UploadUyunRecord value) {
         this.recordId = value.recordId;
+        this.shopId = value.shopId;
+        this.fileSize = value.fileSize;
         this.fileUrl = value.fileUrl;
         this.updateTimestamp = value.updateTimestamp;
         this.updateDate = value.updateDate;
         this.uploadStatus = value.uploadStatus;
         this.uploadTime = value.uploadTime;
+        this.failReason = value.failReason;
+        this.failDate = value.failDate;
     }
 
     public UploadUyunRecord(
         Long      recordId,
+        Integer   shopId,
+        Integer   fileSize,
         String    fileUrl,
         String    updateTimestamp,
         Timestamp updateDate,
         Byte      uploadStatus,
-        Timestamp uploadTime
+        Timestamp uploadTime,
+        String    failReason,
+        Timestamp failDate
     ) {
         this.recordId = recordId;
+        this.shopId = shopId;
+        this.fileSize = fileSize;
         this.fileUrl = fileUrl;
         this.updateTimestamp = updateTimestamp;
         this.updateDate = updateDate;
         this.uploadStatus = uploadStatus;
         this.uploadTime = uploadTime;
+        this.failReason = failReason;
+        this.failDate = failDate;
     }
 
     public Long getRecordId() {
@@ -65,6 +81,22 @@ public class UploadUyunRecord implements Serializable {
 
     public void setRecordId(Long recordId) {
         this.recordId = recordId;
+    }
+
+    public Integer getShopId() {
+        return this.shopId;
+    }
+
+    public void setShopId(Integer shopId) {
+        this.shopId = shopId;
+    }
+
+    public Integer getFileSize() {
+        return this.fileSize;
+    }
+
+    public void setFileSize(Integer fileSize) {
+        this.fileSize = fileSize;
     }
 
     public String getFileUrl() {
@@ -107,16 +139,36 @@ public class UploadUyunRecord implements Serializable {
         this.uploadTime = uploadTime;
     }
 
+    public String getFailReason() {
+        return this.failReason;
+    }
+
+    public void setFailReason(String failReason) {
+        this.failReason = failReason;
+    }
+
+    public Timestamp getFailDate() {
+        return this.failDate;
+    }
+
+    public void setFailDate(Timestamp failDate) {
+        this.failDate = failDate;
+    }
+
     @Override
     public String toString() {
         StringBuilder sb = new StringBuilder("UploadUyunRecord (");
 
         sb.append(recordId);
+        sb.append(", ").append(shopId);
+        sb.append(", ").append(fileSize);
         sb.append(", ").append(fileUrl);
         sb.append(", ").append(updateTimestamp);
         sb.append(", ").append(updateDate);
         sb.append(", ").append(uploadStatus);
         sb.append(", ").append(uploadTime);
+        sb.append(", ").append(failReason);
+        sb.append(", ").append(failDate);
 
         sb.append(")");
         return sb.toString();

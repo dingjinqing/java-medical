@@ -13,7 +13,6 @@ import org.springframework.stereotype.Component;
 import com.vpu.mp.db.main.tables.records.ShopAccountRecord;
 import com.vpu.mp.db.main.tables.records.ShopChildAccountRecord;
 import com.vpu.mp.db.main.tables.records.ShopRecord;
-import com.vpu.mp.service.foundation.Util;
 import com.vpu.mp.service.saas.SaasApplication;
 
 import lombok.Data;

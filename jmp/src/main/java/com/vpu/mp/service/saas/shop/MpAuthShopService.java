@@ -8,8 +8,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.jooq.types.UInteger;
-
 import com.vpu.mp.db.main.tables.records.MpAuthShopRecord;
 import com.vpu.mp.service.foundation.BaseService;
 import com.vpu.mp.service.foundation.Util;
@@ -30,7 +28,7 @@ public class MpAuthShopService extends BaseService {
 		WxOpenAuthorizationInfo authorizationInfo = authInfo.getAuthorizationInfo();
 		WxOpenAuthorizerInfo authorizerInfo = authInfo.getAuthorizerInfo();
 		record.setAppId(authorizationInfo.getAuthorizerAppid());
-		record.setShopId(UInteger.valueOf(shopId));
+		record.setShopId((shopId));
 		record.setNickName(authorizerInfo.getNickName());
 		record.setAlias(authorizerInfo.getAlias());
 		record.setVerifyTypeInfo(authorizerInfo.getVerifyTypeInfo().toString());
@@ -98,7 +96,7 @@ public class MpAuthShopService extends BaseService {
 	 * @return
 	 */
 	public MpAuthShopRecord getAuthShopByShopId(Integer shopId) {
-		return db().fetchAny(MP_AUTH_SHOP, MP_AUTH_SHOP.SHOP_ID.eq(UInteger.valueOf(shopId)));
+		return db().fetchAny(MP_AUTH_SHOP, MP_AUTH_SHOP.SHOP_ID.eq((shopId)));
 	}
 
 	/**

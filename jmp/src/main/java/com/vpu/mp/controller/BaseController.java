@@ -7,13 +7,11 @@ import javax.servlet.http.HttpServletRequest;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.env.Environment;
-import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
 import org.springframework.util.StringUtils;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.view.json.MappingJackson2JsonView;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.vpu.mp.service.foundation.JsonResult;
 import com.vpu.mp.service.foundation.Util;
 import com.vpu.mp.service.saas.SaasApplication;

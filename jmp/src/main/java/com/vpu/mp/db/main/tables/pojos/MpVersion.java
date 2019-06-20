@@ -23,7 +23,7 @@ import javax.annotation.Generated;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class MpVersion implements Serializable {
 
-    private static final long serialVersionUID = -1933831354;
+    private static final long serialVersionUID = 2147428552;
 
     private Integer   templateId;
     private String    userVersion;
@@ -34,6 +34,7 @@ public class MpVersion implements Serializable {
     private String    sourceMiniprogramAppid;
     private String    sourceMiniprogram;
     private String    developer;
+    private Byte      packageVersion;
 
     public MpVersion() {}
 
@@ -47,6 +48,7 @@ public class MpVersion implements Serializable {
         this.sourceMiniprogramAppid = value.sourceMiniprogramAppid;
         this.sourceMiniprogram = value.sourceMiniprogram;
         this.developer = value.developer;
+        this.packageVersion = value.packageVersion;
     }
 
     public MpVersion(
@@ -58,7 +60,8 @@ public class MpVersion implements Serializable {
         Byte      currentInUse,
         String    sourceMiniprogramAppid,
         String    sourceMiniprogram,
-        String    developer
+        String    developer,
+        Byte      packageVersion
     ) {
         this.templateId = templateId;
         this.userVersion = userVersion;
@@ -69,6 +72,7 @@ public class MpVersion implements Serializable {
         this.sourceMiniprogramAppid = sourceMiniprogramAppid;
         this.sourceMiniprogram = sourceMiniprogram;
         this.developer = developer;
+        this.packageVersion = packageVersion;
     }
 
     public Integer getTemplateId() {
@@ -143,6 +147,14 @@ public class MpVersion implements Serializable {
         this.developer = developer;
     }
 
+    public Byte getPackageVersion() {
+        return this.packageVersion;
+    }
+
+    public void setPackageVersion(Byte packageVersion) {
+        this.packageVersion = packageVersion;
+    }
+
     @Override
     public String toString() {
         StringBuilder sb = new StringBuilder("MpVersion (");
@@ -156,6 +168,7 @@ public class MpVersion implements Serializable {
         sb.append(", ").append(sourceMiniprogramAppid);
         sb.append(", ").append(sourceMiniprogram);
         sb.append(", ").append(developer);
+        sb.append(", ").append(packageVersion);
 
         sb.append(")");
         return sb.toString();

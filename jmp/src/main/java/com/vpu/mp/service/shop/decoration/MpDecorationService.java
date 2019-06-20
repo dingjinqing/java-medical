@@ -11,7 +11,6 @@ import org.jooq.Record;
 import org.jooq.Result;
 import org.jooq.SelectWhereStep;
 import org.jooq.tools.StringUtils;
-import org.jooq.types.UInteger;
 
 import com.vpu.mp.db.main.tables.records.DecorationTemplateRecord;
 import com.vpu.mp.db.shop.tables.pojos.XcxCustomerPage;
@@ -123,13 +122,13 @@ public class MpDecorationService extends BaseService {
 	public int setPageCatId(Integer pageId, Integer catId) {
 		return db().update(XCX_CUSTOMER_PAGE)
 				.set(XCX_CUSTOMER_PAGE.CAT_ID, catId)
-				.where(XCX_CUSTOMER_PAGE.PAGE_ID.eq(UInteger.valueOf(pageId)))
+				.where(XCX_CUSTOMER_PAGE.PAGE_ID.eq((pageId)))
 				.execute();
 	}
 
 	public int removeRow(Integer pageId) {
 		return db().deleteFrom(XCX_CUSTOMER_PAGE)
-				.where(XCX_CUSTOMER_PAGE.PAGE_ID.eq(UInteger.valueOf(pageId)))
+				.where(XCX_CUSTOMER_PAGE.PAGE_ID.eq((pageId)))
 				.execute();
 	}
 
@@ -140,7 +139,7 @@ public class MpDecorationService extends BaseService {
 	 * @return
 	 */
 	public XcxCustomerPageRecord getPageById(Integer pageId) {
-		return db().fetchAny(XCX_CUSTOMER_PAGE, XCX_CUSTOMER_PAGE.PAGE_ID.eq(UInteger.valueOf(pageId)));
+		return db().fetchAny(XCX_CUSTOMER_PAGE, XCX_CUSTOMER_PAGE.PAGE_ID.eq((pageId)));
 	}
 
 	/**
@@ -237,7 +236,7 @@ public class MpDecorationService extends BaseService {
 				.execute();
 		db().update(XCX_CUSTOMER_PAGE)
 				.set(XCX_CUSTOMER_PAGE.PAGE_TYPE, (byte) 0)
-				.where(XCX_CUSTOMER_PAGE.PAGE_ID.eq(UInteger.valueOf(pageId)))
+				.where(XCX_CUSTOMER_PAGE.PAGE_ID.eq((pageId)))
 				.execute();
 	}
 
@@ -258,7 +257,7 @@ public class MpDecorationService extends BaseService {
 	 */
 	public XcxCustomerPageRecord cloneTemplate(Integer templateId) {
 		DecorationTemplateRecord record = mainDb().fetchAny(DECORATION_TEMPLATE,
-				DECORATION_TEMPLATE.PAGE_ID.eq(UInteger.valueOf(templateId)));
+				DECORATION_TEMPLATE.PAGE_ID.eq((templateId)));
 		XcxCustomerPageRecord page = db().newRecord(XCX_CUSTOMER_PAGE);
 		page.setPageContent(record.getPageContent());
 		page.insert();
@@ -320,7 +319,7 @@ public class MpDecorationService extends BaseService {
 		}
 		if (page.pageId != null) {
 			XcxCustomerPageRecord oldRecord = this.getPageById(page.pageId);
-			record.setPageId(UInteger.valueOf(page.getPageId()));
+			record.setPageId((page.getPageId()));
 			Byte toDraftState = 3;
 			if (page.pageState.equals(toDraftState)) {
 				record.setPageContent(oldRecord.getPagePublishContent());

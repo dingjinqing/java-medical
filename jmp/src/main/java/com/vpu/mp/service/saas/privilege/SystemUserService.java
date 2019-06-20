@@ -1,6 +1,5 @@
 package com.vpu.mp.service.saas.privilege;
 
-import org.jooq.types.UInteger;
 import static com.vpu.mp.db.main.tables.SystemUser.SYSTEM_USER;
 import com.vpu.mp.db.main.tables.records.SystemUserRecord;
 import com.vpu.mp.service.foundation.BaseService;
@@ -28,7 +27,7 @@ public class SystemUserService extends BaseService {
 		return null;
 	}
 
-	public boolean checkNewPass(String oldPassword, UInteger userId) {
+	public boolean checkNewPass(String oldPassword, Integer userId) {
 		SystemUserRecord user = dm.db().selectFrom(SYSTEM_USER)
 				.where(SYSTEM_USER.SYSTEM_USER_ID.eq(userId))
 				.and(SYSTEM_USER.PASSWORD.eq(Util.md5(oldPassword)))
@@ -36,13 +35,13 @@ public class SystemUserService extends BaseService {
 		return user != null;
 	}
 
-	public int updateNewPass(String newPassword, UInteger userId) {
+	public int updateNewPass(String newPassword, Integer userId) {
 		return dm.db().update(SYSTEM_USER).set(SYSTEM_USER.PASSWORD, Util.md5(newPassword))
 				.where(SYSTEM_USER.SYSTEM_USER_ID.eq(userId)).execute();
 	}
 
 	public int updateLoginIp(String lastLoginIp, Integer userId) {
 		return dm.db().update(SYSTEM_USER).set(SYSTEM_USER.LAST_LOGIN_IP, lastLoginIp)
-				.where(SYSTEM_USER.SYSTEM_USER_ID.eq(UInteger.valueOf(userId))).execute();
+				.where(SYSTEM_USER.SYSTEM_USER_ID.eq(Integer.valueOf(userId))).execute();
 	}
 }

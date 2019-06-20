@@ -3,8 +3,6 @@ package com.vpu.mp.service.saas.article;
 import static com.vpu.mp.db.main.tables.Article.ARTICLE;
 import static com.vpu.mp.db.main.tables.ArticleCategory.ARTICLE_CATEGORY;
 import static com.vpu.mp.db.main.tables.ArticleRecord.ARTICLE_RECORD;
-import static com.vpu.mp.db.main.tables.MpAuthShop.MP_AUTH_SHOP;
-import static com.vpu.mp.db.main.tables.Shop.SHOP;
 
 import java.util.List;
 import java.util.Map;
@@ -14,17 +12,13 @@ import org.jooq.Result;
 import org.jooq.SelectWhereStep;
 import org.jooq.impl.DSL;
 import org.jooq.tools.StringUtils;
-import org.jooq.types.UInteger;
 
-import com.vpu.mp.db.main.tables.Article;
-import com.vpu.mp.db.main.tables.records.ArticleCategoryRecord;
 import com.vpu.mp.db.main.tables.records.ArticleRecord;
 import com.vpu.mp.db.main.tables.records.ArticleRecordRecord;
 import com.vpu.mp.service.foundation.BaseService;
 import com.vpu.mp.service.foundation.PageResult;
 import com.vpu.mp.service.foundation.Util;
 import com.vpu.mp.service.saas.region.CityService;
-import com.vpu.mp.service.saas.shop.ShopAccountService.ShopAccountListQueryParam;
 
 /**
  * 
@@ -187,7 +181,7 @@ public class ArticleService extends BaseService {
 				.fetchAny();
 	}
 
-	public List<UInteger> getArticleIdRows(Integer sysId) {
+	public List<Integer> getArticleIdRows(Integer sysId) {
 		return db().selectFrom(ARTICLE_RECORD)
 				.where(ARTICLE_RECORD.SYS_ID.eq(sysId))
 				.fetch(ARTICLE_RECORD.ARTICLE_ID);

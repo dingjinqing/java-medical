@@ -33,7 +33,6 @@ import javax.imageio.ImageIO;
 import javax.imageio.ImageReader;
 import javax.imageio.spi.ImageReaderSpi;
 
-import org.apache.commons.dbcp2.Utils;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang3.RandomStringUtils;
 import org.jooq.Record;
@@ -41,7 +40,6 @@ import org.jooq.SelectWhereStep;
 import org.jooq.SortField;
 import org.jooq.impl.DSL;
 import org.jooq.tools.StringUtils;
-import org.jooq.types.UInteger;;
 
 /**
  * 
@@ -63,7 +61,7 @@ public class ImageService extends BaseService {
 		public String extension;
 	};
 
-	public int removeRow(UInteger imageId) {
+	public int removeRow(Integer imageId) {
 		Byte delFlag = 1;
 		return db().update(UPLOADED_IMAGE)
 				.set(UPLOADED_IMAGE.DEL_FLAG, delFlag)
@@ -71,7 +69,7 @@ public class ImageService extends BaseService {
 				.execute();
 	}
 
-	public int removeRow(List<UInteger> imageIds) {
+	public int removeRow(List<Integer> imageIds) {
 		Byte delFlag = 1;
 		return db().update(UPLOADED_IMAGE)
 				.set(UPLOADED_IMAGE.DEL_FLAG, delFlag)
@@ -122,7 +120,7 @@ public class ImageService extends BaseService {
 			db().update(UPLOADED_IMAGE)
 					.set(UPLOADED_IMAGE.UPLOAD_TIME, Timestamp.valueOf(LocalDateTime.now()))
 					.set(UPLOADED_IMAGE.IMG_CAT_ID, param.setCatId)
-					.where(UPLOADED_IMAGE.IMG_ID.in(Util.convertToUIntegers((imageIds))))
+					.where(UPLOADED_IMAGE.IMG_ID.in((imageIds)))
 					.execute();
 			return "分类设置成功";
 		}
@@ -130,7 +128,7 @@ public class ImageService extends BaseService {
 		if (actDel.equals(param.act)) {
 			Integer[] imageIds = "list".equals(param.showType) ? param.cbxImg : param.cbxImg2;
 			db().delete(UPLOADED_IMAGE)
-					.where(UPLOADED_IMAGE.IMG_ID.in(Util.convertToUIntegers((imageIds))))
+					.where(UPLOADED_IMAGE.IMG_ID.in(imageIds))
 					.execute();
 			return "删除成功";
 		}
@@ -172,9 +170,9 @@ public class ImageService extends BaseService {
 		return this.getPageResult(select, param.page);
 	}
 	
-	protected List<Integer> convertIntegerArray(List<UInteger> array) {
+	protected List<Integer> convertIntegerArray(List<Integer> array) {
 		List<Integer> result = new ArrayList<Integer>();
-		for (UInteger i : array) {
+		for (Integer i : array) {
 			result.add(i.intValue());
 		}
 		return result;
@@ -293,7 +291,7 @@ public class ImageService extends BaseService {
 			image.setImgPath(relativePath);
 			image.setImgType(this.getImageExension(fullPath));
 			image.setImgOrigFname(originFileName == null ? file.getName() : originFileName);
-			image.setImgSize(UInteger.valueOf(file.length()));
+			image.setImgSize((int) (file.length()));
 			image.setImgUrl(this.imageUrl(relativePath));
 			image.setImgWidth(imageInfo.getWidth());
 			image.setImgHeight(imageInfo.getHeight());
@@ -312,7 +310,7 @@ public class ImageService extends BaseService {
 	 * @return
 	 */
 	public UploadedImageRecord getImageById(Integer imageId) {
-		return db().fetchAny(UPLOADED_IMAGE, UPLOADED_IMAGE.IMG_ID.eq(UInteger.valueOf(imageId)));
+		return db().fetchAny(UPLOADED_IMAGE, UPLOADED_IMAGE.IMG_ID.eq((imageId)));
 	}
 
 	/**

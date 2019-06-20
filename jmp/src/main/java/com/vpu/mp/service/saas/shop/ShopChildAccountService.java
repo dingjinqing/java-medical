@@ -1,6 +1,5 @@
 package com.vpu.mp.service.saas.shop;
 
-import static com.vpu.mp.db.main.tables.ShopAccount.SHOP_ACCOUNT;
 import static com.vpu.mp.db.main.tables.ShopChildAccount.SHOP_CHILD_ACCOUNT;
 import static com.vpu.mp.db.main.tables.ShopRole.SHOP_ROLE;
 import static com.vpu.mp.db.main.tables.ShopChildRole.SHOP_CHILD_ROLE;
@@ -9,17 +8,12 @@ import static com.vpu.mp.db.main.tables.Shop.SHOP;
 import java.util.Map;
 
 import org.jooq.Record;
-import org.jooq.Record2;
-import org.jooq.Record5;
 import org.jooq.Record6;
 import org.jooq.Result;
-import org.jooq.Select;
 import org.jooq.SelectLimitStep;
-import org.jooq.SelectSeekStep1;
 import org.jooq.SelectWhereStep;
 
 import com.vpu.mp.db.main.tables.pojos.ShopChildAccount;
-import com.vpu.mp.db.main.tables.records.ShopAccountRecord;
 import com.vpu.mp.db.main.tables.records.ShopChildAccountRecord;
 import com.vpu.mp.service.foundation.BaseService;
 import com.vpu.mp.service.foundation.PageResult;

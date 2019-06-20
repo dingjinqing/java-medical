@@ -23,7 +23,7 @@ import javax.annotation.Generated;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class ShopAccount implements Serializable {
 
-    private static final long serialVersionUID = 2076012877;
+    private static final long serialVersionUID = -891965268;
 
     private Integer   sysId;
     private String    userName;
@@ -48,6 +48,9 @@ public class ShopAccount implements Serializable {
     private String    address;
     private Byte      baseSale;
     private String    backlog;
+    private Byte      addCommentSwitch;
+    private String    officialOpenId;
+    private Byte      isBind;
 
     public ShopAccount() {}
 
@@ -75,6 +78,9 @@ public class ShopAccount implements Serializable {
         this.address = value.address;
         this.baseSale = value.baseSale;
         this.backlog = value.backlog;
+        this.addCommentSwitch = value.addCommentSwitch;
+        this.officialOpenId = value.officialOpenId;
+        this.isBind = value.isBind;
     }
 
     public ShopAccount(
@@ -100,7 +106,10 @@ public class ShopAccount implements Serializable {
         String    districtCode,
         String    address,
         Byte      baseSale,
-        String    backlog
+        String    backlog,
+        Byte      addCommentSwitch,
+        String    officialOpenId,
+        Byte      isBind
     ) {
         this.sysId = sysId;
         this.userName = userName;
@@ -125,6 +134,9 @@ public class ShopAccount implements Serializable {
         this.address = address;
         this.baseSale = baseSale;
         this.backlog = backlog;
+        this.addCommentSwitch = addCommentSwitch;
+        this.officialOpenId = officialOpenId;
+        this.isBind = isBind;
     }
 
     public Integer getSysId() {
@@ -311,6 +323,30 @@ public class ShopAccount implements Serializable {
         this.backlog = backlog;
     }
 
+    public Byte getAddCommentSwitch() {
+        return this.addCommentSwitch;
+    }
+
+    public void setAddCommentSwitch(Byte addCommentSwitch) {
+        this.addCommentSwitch = addCommentSwitch;
+    }
+
+    public String getOfficialOpenId() {
+        return this.officialOpenId;
+    }
+
+    public void setOfficialOpenId(String officialOpenId) {
+        this.officialOpenId = officialOpenId;
+    }
+
+    public Byte getIsBind() {
+        return this.isBind;
+    }
+
+    public void setIsBind(Byte isBind) {
+        this.isBind = isBind;
+    }
+
     @Override
     public String toString() {
         StringBuilder sb = new StringBuilder("ShopAccount (");
@@ -338,6 +374,9 @@ public class ShopAccount implements Serializable {
         sb.append(", ").append(address);
         sb.append(", ").append(baseSale);
         sb.append(", ").append(backlog);
+        sb.append(", ").append(addCommentSwitch);
+        sb.append(", ").append(officialOpenId);
+        sb.append(", ").append(isBind);
 
         sb.append(")");
         return sb.toString();
