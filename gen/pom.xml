@@ -6,7 +6,7 @@
 	<parent>
 		<groupId>org.springframework.boot</groupId>
 		<artifactId>spring-boot-starter-parent</artifactId>
-		<version>2.1.5.RELEASE</version>
+		<version>2.1.4.RELEASE</version>
 		<relativePath /> <!-- lookup parent from repository -->
 	</parent>
 	<groupId>vpu.com</groupId>
@@ -135,7 +135,7 @@
 
 							<!-- The database schema (or in the absence of schema support, in 
 								your RDBMS this can be the owner, user, database name) to be generated -->
-							<inputSchema>mini_shop_1</inputSchema>
+							<inputSchema>${schema}</inputSchema>
 
 							<!-- All elements that are generated from your schema (A Java regular 
 								expression. Use the pipe to separate several expressions) Watch out for case-sensitivity. 
@@ -151,7 +151,7 @@
 						<target>
 							<!-- The destination package of your generated classes (within the 
 								destination directory) -->
-							<packageName>com.vpu.mp.db.shop</packageName>
+							<packageName>com.vpu.mp.db.${packageName}</packageName>
 
 							<!-- The destination directory of your generated classes. Using Maven 
 								directory layout here -->
@@ -160,8 +160,8 @@
 							</directory>
 						</target>
 						<generate>
-							<pojos>false</pojos>
-							<daos>false</daos>
+							<pojos>true</pojos>
+							<daos>true</daos>
 						</generate>
 					</generator>
 				</configuration>

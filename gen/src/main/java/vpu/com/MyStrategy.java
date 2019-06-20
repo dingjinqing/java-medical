@@ -2,11 +2,9 @@ package vpu.com;
 
 import org.jooq.codegen.DefaultGeneratorStrategy;
 import org.jooq.meta.Definition;
-import org.jooq.tools.StringUtils;
 
 public class MyStrategy extends DefaultGeneratorStrategy {
 
-	private String tablePrefix = "b2c_";
 
 	/**
 	 * Override this to specifiy what identifiers in Java should look like. This

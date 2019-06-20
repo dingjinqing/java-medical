@@ -13,8 +13,8 @@ import org.jooq.impl.DefaultExecuteListenerProvider;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.util.FileCopyUtils;
 
-import static com.vpu.mp.db.main.tables.Shop.SHOP;
-import com.vpu.mp.db.main.tables.records.ShopRecord;
+//import static com.vpu.mp.db.main.tables.Shop.SHOP;
+//import com.vpu.mp.db.main.tables.records.ShopRecord;
 
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
@@ -81,22 +81,22 @@ public class DataManager {
 		if (shopDbList.containsKey(shopId)) {
 			return shopDbList.get(shopId);
 		}
-
-		ShopRecord shop = db().selectFrom(SHOP).where(SHOP.SHOP_ID.eq(shopId)).fetchOne();
-		if (shop != null) {
-			DbConfig dbConfig = Util.parseJSON(shop.getDbConfig(), DbConfig.class);
-			if (dbConfig == null) {
-				return null;
-			}
-
-			String url = getJdbcUrl(dbConfig.host, dbConfig.database);
-			BasicDataSource ds = dataSource(url, dbConfig.username, dbConfig.password, driver);
-			DefaultDSLContext dsl = new DefaultDSLContext(configuration(ds));
-			shopDbList.put(shopId, dsl);
-			dsl.execute("SET NAMES utf8mb4");
-			dsl.execute("Set sql_mode='ONLY_FULL_GROUP_BY'");
-			return dsl;
-		}
+//
+//		ShopRecord shop = db().selectFrom(SHOP).where(SHOP.SHOP_ID.eq(shopId)).fetchOne();
+//		if (shop != null) {
+//			DbConfig dbConfig = Util.parseJSON(shop.getDbConfig(), DbConfig.class);
+//			if (dbConfig == null) {
+//				return null;
+//			}
+//
+//			String url = getJdbcUrl(dbConfig.host, dbConfig.database);
+//			BasicDataSource ds = dataSource(url, dbConfig.username, dbConfig.password, driver);
+//			DefaultDSLContext dsl = new DefaultDSLContext(configuration(ds));
+//			shopDbList.put(shopId, dsl);
+//			dsl.execute("SET NAMES utf8mb4");
+//			dsl.execute("Set sql_mode='ONLY_FULL_GROUP_BY'");
+//			return dsl;
+//		}
 		return null;
 	}
 
