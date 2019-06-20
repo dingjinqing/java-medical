@@ -1,6 +1,6 @@
 // import axios from 'axios'
 import env from '@/config/env'
-import $ from 'jquery'
+let $ = window.jQuery
 let layer = window.layer
 
 function api (path, cb, params, failcb, showLoading) {
