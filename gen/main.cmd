@@ -1,1 +1,1 @@
-mvnw install -Dschema="mini_main" -DpackageName="main"
+mvnw install -Dschema="mini_main" -DpackageName="main" -DskipTests

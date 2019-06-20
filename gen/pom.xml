@@ -156,12 +156,12 @@
 							<!-- The destination directory of your generated classes. Using Maven 
 								directory layout here -->
 							<!-- <directory>D:/svn/java/mp/src/main/java</directory> -->
-							<directory>src/main/java/
+							<directory>target/
 							</directory>
 						</target>
 						<generate>
 							<pojos>true</pojos>
-							<daos>true</daos>
+							<daos>false</daos>
 						</generate>
 					</generator>
 				</configuration>
