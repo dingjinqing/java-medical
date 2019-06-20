@@ -204,7 +204,6 @@ public class ImageService extends BaseService {
 		if (param.imgWidth != null && param.imgWidth > 0) {
 			select.where(UPLOADED_IMAGE.IMG_WIDTH.eq(param.imgWidth));
 		}
-
 		if (param.imgHeight != null && param.imgHeight > 0) {
 			select.where(UPLOADED_IMAGE.IMG_HEIGHT.eq(param.imgHeight));
 		}

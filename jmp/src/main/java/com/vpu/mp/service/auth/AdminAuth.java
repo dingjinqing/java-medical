@@ -31,7 +31,7 @@ public class AdminAuth {
 		public String username;
 		public String subUsername;
 		public String password;
-		public Integer isSubLogin;
+		public Boolean isSubLogin;
 	};
 
 	@Data
@@ -65,7 +65,7 @@ public class AdminAuth {
 		if (user == null) {
 			return false;
 		}
-		if (param.isSubLogin != null && param.isSubLogin == 1) {
+		if (param.isSubLogin != null && param.isSubLogin) {
 			ShopChildAccountRecord subAccount = saas.shop.subAccount.verify(user.getSysId(), param.subUsername,
 					param.password);
 			return subAccount != null;
@@ -80,7 +80,7 @@ public class AdminAuth {
 		if (user == null) {
 			return false;
 		}
-		if (param.isSubLogin != null && param.isSubLogin == 1) {
+		if (param.isSubLogin != null && param.isSubLogin) {
 			ShopChildAccountRecord subAccount = saas.shop.subAccount.verify(user.getSysId(), param.subUsername,
 					param.password);
 			setLoginSession(null, subAccount, null,0);
