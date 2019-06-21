@@ -22,7 +22,7 @@ public class ChildAccountService extends BaseService {
 				.where(SYSTEM_CHILD_ACCOUNT.ACCOUNT_NAME.eq(username)).or(SYSTEM_CHILD_ACCOUNT.MOBILE.eq(username))
 				.fetchAny();
 		if (user != null) {
-			if (user.getAccountPwd() == Util.md5(password)) {
+			if (user.getAccountPwd().equals(Util.md5(password))) {
 				return user;
 			}
 		}
