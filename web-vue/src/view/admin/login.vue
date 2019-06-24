@@ -1,11 +1,11 @@
 <template>
   <div class="container">
     <div class="head_logo">
-      <img v-bind:src="'http://'+imageDomain + '/static/image/admin/shop_logoswe.png'" alt="微铺宝logo" width="200px"/>
+      <img v-bind:src="/static/image/admin/shop_logoswe.png'" alt="微铺宝logo" width="200px"/>
     </div>
     <div class="main clearfix">
       <div class="main-left">
-        <img v-bind:src="'http://'+imageDomain + '/static/image/admin/login_new_new.png'" alt=""/>
+        <img v-bind:src="/static/image/admin/login_new_new.png'" alt=""/>
       </div>
       <div class="main-right">
         <div class="main-right-title">
