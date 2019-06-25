@@ -5,7 +5,7 @@ package com.vpu.mp.db.main.tables.pojos;
 
 
 import java.io.Serializable;
-import java.sql.Date;
+import java.sql.Timestamp;
 
 import javax.annotation.Generated;
 
@@ -23,17 +23,17 @@ import javax.annotation.Generated;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class ShopRenew implements Serializable {
 
-    private static final long serialVersionUID = -583487721;
+    private static final long serialVersionUID = -152379691;
 
-    private Integer id;
-    private Integer shopId;
-    private Integer sysId;
-    private String  mobile;
-    private String  renewMoney;
-    private Date    renewDate;
-    private Date    expireTime;
-    private Integer operator;
-    private String  renewDesc;
+    private Integer   id;
+    private Integer   shopId;
+    private Integer   sysId;
+    private String    mobile;
+    private Double    renewMoney;
+    private Timestamp renewDate;
+    private Timestamp expireTime;
+    private Integer   operator;
+    private String    renewDesc;
 
     public ShopRenew() {}
 
@@ -50,15 +50,15 @@ public class ShopRenew implements Serializable {
     }
 
     public ShopRenew(
-        Integer id,
-        Integer shopId,
-        Integer sysId,
-        String  mobile,
-        String  renewMoney,
-        Date    renewDate,
-        Date    expireTime,
-        Integer operator,
-        String  renewDesc
+        Integer   id,
+        Integer   shopId,
+        Integer   sysId,
+        String    mobile,
+        Double    renewMoney,
+        Timestamp renewDate,
+        Timestamp expireTime,
+        Integer   operator,
+        String    renewDesc
     ) {
         this.id = id;
         this.shopId = shopId;
@@ -103,27 +103,27 @@ public class ShopRenew implements Serializable {
         this.mobile = mobile;
     }
 
-    public String getRenewMoney() {
+    public Double getRenewMoney() {
         return this.renewMoney;
     }
 
-    public void setRenewMoney(String renewMoney) {
+    public void setRenewMoney(Double renewMoney) {
         this.renewMoney = renewMoney;
     }
 
-    public Date getRenewDate() {
+    public Timestamp getRenewDate() {
         return this.renewDate;
     }
 
-    public void setRenewDate(Date renewDate) {
+    public void setRenewDate(Timestamp renewDate) {
         this.renewDate = renewDate;
     }
 
-    public Date getExpireTime() {
+    public Timestamp getExpireTime() {
         return this.expireTime;
     }
 
-    public void setExpireTime(Date expireTime) {
+    public void setExpireTime(Timestamp expireTime) {
         this.expireTime = expireTime;
     }
 

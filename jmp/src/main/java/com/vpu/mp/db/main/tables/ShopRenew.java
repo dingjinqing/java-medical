@@ -9,7 +9,7 @@ import com.vpu.mp.db.main.Keys;
 import com.vpu.mp.db.main.MiniMain;
 import com.vpu.mp.db.main.tables.records.ShopRenewRecord;
 
-import java.sql.Date;
+import java.sql.Timestamp;
 import java.util.Arrays;
 import java.util.List;
 
@@ -42,7 +42,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class ShopRenew extends TableImpl<ShopRenewRecord> {
 
-    private static final long serialVersionUID = 1138230028;
+    private static final long serialVersionUID = 1522479809;
 
     /**
      * The reference instance of <code>mini_main.b2c_shop_renew</code>
@@ -80,17 +80,17 @@ public class ShopRenew extends TableImpl<ShopRenewRecord> {
     /**
      * The column <code>mini_main.b2c_shop_renew.renew_money</code>. 店铺续费金额
      */
-    public final TableField<ShopRenewRecord, String> RENEW_MONEY = createField("renew_money", org.jooq.impl.SQLDataType.VARCHAR(50).defaultValue(org.jooq.impl.DSL.inline("", org.jooq.impl.SQLDataType.VARCHAR)), this, "店铺续费金额");
+    public final TableField<ShopRenewRecord, Double> RENEW_MONEY = createField("renew_money", org.jooq.impl.SQLDataType.DOUBLE.defaultValue(org.jooq.impl.DSL.inline("0.00", org.jooq.impl.SQLDataType.DOUBLE)), this, "店铺续费金额");
 
     /**
      * The column <code>mini_main.b2c_shop_renew.renew_date</code>. 店铺续费日期
      */
-    public final TableField<ShopRenewRecord, Date> RENEW_DATE = createField("renew_date", org.jooq.impl.SQLDataType.DATE, this, "店铺续费日期");
+    public final TableField<ShopRenewRecord, Timestamp> RENEW_DATE = createField("renew_date", org.jooq.impl.SQLDataType.TIMESTAMP.nullable(false).defaultValue(org.jooq.impl.DSL.field("CURRENT_TIMESTAMP", org.jooq.impl.SQLDataType.TIMESTAMP)), this, "店铺续费日期");
 
     /**
      * The column <code>mini_main.b2c_shop_renew.expire_time</code>. 到期时间
      */
-    public final TableField<ShopRenewRecord, Date> EXPIRE_TIME = createField("expire_time", org.jooq.impl.SQLDataType.DATE, this, "到期时间");
+    public final TableField<ShopRenewRecord, Timestamp> EXPIRE_TIME = createField("expire_time", org.jooq.impl.SQLDataType.TIMESTAMP.nullable(false).defaultValue(org.jooq.impl.DSL.inline("0000-00-00 00:00:00", org.jooq.impl.SQLDataType.TIMESTAMP)), this, "到期时间");
 
     /**
      * The column <code>mini_main.b2c_shop_renew.operator</code>. 操作员ID,主账号是0，子账号ID

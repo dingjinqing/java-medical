@@ -43,7 +43,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class Shop extends TableImpl<ShopRecord> {
 
-    private static final long serialVersionUID = -2010674818;
+    private static final long serialVersionUID = 866847116;
 
     /**
      * The reference instance of <code>mini_main.b2c_shop</code>
@@ -194,74 +194,9 @@ public class Shop extends TableImpl<ShopRecord> {
     public final TableField<ShopRecord, BigDecimal> MANAGE_FEE = createField("manage_fee", org.jooq.impl.SQLDataType.DECIMAL(10, 2).nullable(false).defaultValue(org.jooq.impl.DSL.inline("0.00", org.jooq.impl.SQLDataType.DECIMAL)), this, "平台管理费");
 
     /**
-     * The column <code>mini_main.b2c_shop.shop_license</code>. 营业执照
-     */
-    public final TableField<ShopRecord, String> SHOP_LICENSE = createField("shop_license", org.jooq.impl.SQLDataType.VARCHAR(191), this, "营业执照");
-
-    /**
-     * The column <code>mini_main.b2c_shop.shop_tax_credential</code>. 税务登记证
-     */
-    public final TableField<ShopRecord, String> SHOP_TAX_CREDENTIAL = createField("shop_tax_credential", org.jooq.impl.SQLDataType.VARCHAR(191), this, "税务登记证");
-
-    /**
-     * The column <code>mini_main.b2c_shop.organization_code_certificate</code>. 组织机构代码证
-     */
-    public final TableField<ShopRecord, String> ORGANIZATION_CODE_CERTIFICATE = createField("organization_code_certificate", org.jooq.impl.SQLDataType.VARCHAR(191), this, "组织机构代码证");
-
-    /**
-     * The column <code>mini_main.b2c_shop.permit_for_opening_bank_account</code>. 银行开户许可证
-     */
-    public final TableField<ShopRecord, String> PERMIT_FOR_OPENING_BANK_ACCOUNT = createField("permit_for_opening_bank_account", org.jooq.impl.SQLDataType.VARCHAR(191), this, "银行开户许可证");
-
-    /**
-     * The column <code>mini_main.b2c_shop.financial_registration</code>. 财政登记证
-     */
-    public final TableField<ShopRecord, String> FINANCIAL_REGISTRATION = createField("financial_registration", org.jooq.impl.SQLDataType.VARCHAR(191), this, "财政登记证");
-
-    /**
-     * The column <code>mini_main.b2c_shop.shop_bank_name</code>. 开户行姓名
-     */
-    public final TableField<ShopRecord, String> SHOP_BANK_NAME = createField("shop_bank_name", org.jooq.impl.SQLDataType.VARCHAR(191).defaultValue(org.jooq.impl.DSL.inline("", org.jooq.impl.SQLDataType.VARCHAR)), this, "开户行姓名");
-
-    /**
-     * The column <code>mini_main.b2c_shop.shop_bank</code>. 开户行
-     */
-    public final TableField<ShopRecord, String> SHOP_BANK = createField("shop_bank", org.jooq.impl.SQLDataType.VARCHAR(191).defaultValue(org.jooq.impl.DSL.inline("", org.jooq.impl.SQLDataType.VARCHAR)), this, "开户行");
-
-    /**
-     * The column <code>mini_main.b2c_shop.shop_bank_branch</code>. 开户行分行
-     */
-    public final TableField<ShopRecord, String> SHOP_BANK_BRANCH = createField("shop_bank_branch", org.jooq.impl.SQLDataType.VARCHAR(191).defaultValue(org.jooq.impl.DSL.inline("", org.jooq.impl.SQLDataType.VARCHAR)), this, "开户行分行");
-
-    /**
-     * The column <code>mini_main.b2c_shop.shop_bank_no</code>. 开户行卡号
-     */
-    public final TableField<ShopRecord, String> SHOP_BANK_NO = createField("shop_bank_no", org.jooq.impl.SQLDataType.VARCHAR(191).defaultValue(org.jooq.impl.DSL.inline("", org.jooq.impl.SQLDataType.VARCHAR)), this, "开户行卡号");
-
-    /**
      * The column <code>mini_main.b2c_shop.surplus</code>. 余额
      */
     public final TableField<ShopRecord, BigDecimal> SURPLUS = createField("surplus", org.jooq.impl.SQLDataType.DECIMAL(10, 2).nullable(false).defaultValue(org.jooq.impl.DSL.inline("0.00", org.jooq.impl.SQLDataType.DECIMAL)), this, "余额");
-
-    /**
-     * The column <code>mini_main.b2c_shop.reject_reason</code>. 驳回理由
-     */
-    public final TableField<ShopRecord, String> REJECT_REASON = createField("reject_reason", org.jooq.impl.SQLDataType.VARCHAR(191), this, "驳回理由");
-
-    /**
-     * The column <code>mini_main.b2c_shop.shop_stat_code</code>. 第三方统计代码
-     */
-    public final TableField<ShopRecord, String> SHOP_STAT_CODE = createField("shop_stat_code", org.jooq.impl.SQLDataType.VARCHAR(191).defaultValue(org.jooq.impl.DSL.inline("", org.jooq.impl.SQLDataType.VARCHAR)), this, "第三方统计代码");
-
-    /**
-     * The column <code>mini_main.b2c_shop.shop_icp</code>. IP信息
-     */
-    public final TableField<ShopRecord, String> SHOP_ICP = createField("shop_icp", org.jooq.impl.SQLDataType.VARCHAR(191).defaultValue(org.jooq.impl.DSL.inline("", org.jooq.impl.SQLDataType.VARCHAR)), this, "IP信息");
-
-    /**
-     * The column <code>mini_main.b2c_shop.shop_copyright</code>. 版权信息
-     */
-    public final TableField<ShopRecord, String> SHOP_COPYRIGHT = createField("shop_copyright", org.jooq.impl.SQLDataType.VARCHAR(191).defaultValue(org.jooq.impl.DSL.inline("", org.jooq.impl.SQLDataType.VARCHAR)), this, "版权信息");
 
     /**
      * The column <code>mini_main.b2c_shop.db_config</code>. db config,json format

@@ -24,7 +24,7 @@ import javax.annotation.Generated;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class Shop implements Serializable {
 
-    private static final long serialVersionUID = -1804297215;
+    private static final long serialVersionUID = 1657321501;
 
     private Integer    shopId;
     private Integer    sysId;
@@ -53,20 +53,7 @@ public class Shop implements Serializable {
     private Byte       state;
     private Byte       businessState;
     private BigDecimal manageFee;
-    private String     shopLicense;
-    private String     shopTaxCredential;
-    private String     organizationCodeCertificate;
-    private String     permitForOpeningBankAccount;
-    private String     financialRegistration;
-    private String     shopBankName;
-    private String     shopBank;
-    private String     shopBankBranch;
-    private String     shopBankNo;
     private BigDecimal surplus;
-    private String     rejectReason;
-    private String     shopStatCode;
-    private String     shopIcp;
-    private String     shopCopyright;
     private String     dbConfig;
     private String     shopType;
     private String     versionConfig;
@@ -113,20 +100,7 @@ public class Shop implements Serializable {
         this.state = value.state;
         this.businessState = value.businessState;
         this.manageFee = value.manageFee;
-        this.shopLicense = value.shopLicense;
-        this.shopTaxCredential = value.shopTaxCredential;
-        this.organizationCodeCertificate = value.organizationCodeCertificate;
-        this.permitForOpeningBankAccount = value.permitForOpeningBankAccount;
-        this.financialRegistration = value.financialRegistration;
-        this.shopBankName = value.shopBankName;
-        this.shopBank = value.shopBank;
-        this.shopBankBranch = value.shopBankBranch;
-        this.shopBankNo = value.shopBankNo;
         this.surplus = value.surplus;
-        this.rejectReason = value.rejectReason;
-        this.shopStatCode = value.shopStatCode;
-        this.shopIcp = value.shopIcp;
-        this.shopCopyright = value.shopCopyright;
         this.dbConfig = value.dbConfig;
         this.shopType = value.shopType;
         this.versionConfig = value.versionConfig;
@@ -172,20 +146,7 @@ public class Shop implements Serializable {
         Byte       state,
         Byte       businessState,
         BigDecimal manageFee,
-        String     shopLicense,
-        String     shopTaxCredential,
-        String     organizationCodeCertificate,
-        String     permitForOpeningBankAccount,
-        String     financialRegistration,
-        String     shopBankName,
-        String     shopBank,
-        String     shopBankBranch,
-        String     shopBankNo,
         BigDecimal surplus,
-        String     rejectReason,
-        String     shopStatCode,
-        String     shopIcp,
-        String     shopCopyright,
         String     dbConfig,
         String     shopType,
         String     versionConfig,
@@ -229,20 +190,7 @@ public class Shop implements Serializable {
         this.state = state;
         this.businessState = businessState;
         this.manageFee = manageFee;
-        this.shopLicense = shopLicense;
-        this.shopTaxCredential = shopTaxCredential;
-        this.organizationCodeCertificate = organizationCodeCertificate;
-        this.permitForOpeningBankAccount = permitForOpeningBankAccount;
-        this.financialRegistration = financialRegistration;
-        this.shopBankName = shopBankName;
-        this.shopBank = shopBank;
-        this.shopBankBranch = shopBankBranch;
-        this.shopBankNo = shopBankNo;
         this.surplus = surplus;
-        this.rejectReason = rejectReason;
-        this.shopStatCode = shopStatCode;
-        this.shopIcp = shopIcp;
-        this.shopCopyright = shopCopyright;
         this.dbConfig = dbConfig;
         this.shopType = shopType;
         this.versionConfig = versionConfig;
@@ -476,116 +424,12 @@ public class Shop implements Serializable {
         this.manageFee = manageFee;
     }
 
-    public String getShopLicense() {
-        return this.shopLicense;
-    }
-
-    public void setShopLicense(String shopLicense) {
-        this.shopLicense = shopLicense;
-    }
-
-    public String getShopTaxCredential() {
-        return this.shopTaxCredential;
-    }
-
-    public void setShopTaxCredential(String shopTaxCredential) {
-        this.shopTaxCredential = shopTaxCredential;
-    }
-
-    public String getOrganizationCodeCertificate() {
-        return this.organizationCodeCertificate;
-    }
-
-    public void setOrganizationCodeCertificate(String organizationCodeCertificate) {
-        this.organizationCodeCertificate = organizationCodeCertificate;
-    }
-
-    public String getPermitForOpeningBankAccount() {
-        return this.permitForOpeningBankAccount;
-    }
-
-    public void setPermitForOpeningBankAccount(String permitForOpeningBankAccount) {
-        this.permitForOpeningBankAccount = permitForOpeningBankAccount;
-    }
-
-    public String getFinancialRegistration() {
-        return this.financialRegistration;
-    }
-
-    public void setFinancialRegistration(String financialRegistration) {
-        this.financialRegistration = financialRegistration;
-    }
-
-    public String getShopBankName() {
-        return this.shopBankName;
-    }
-
-    public void setShopBankName(String shopBankName) {
-        this.shopBankName = shopBankName;
-    }
-
-    public String getShopBank() {
-        return this.shopBank;
-    }
-
-    public void setShopBank(String shopBank) {
-        this.shopBank = shopBank;
-    }
-
-    public String getShopBankBranch() {
-        return this.shopBankBranch;
-    }
-
-    public void setShopBankBranch(String shopBankBranch) {
-        this.shopBankBranch = shopBankBranch;
-    }
-
-    public String getShopBankNo() {
-        return this.shopBankNo;
-    }
-
-    public void setShopBankNo(String shopBankNo) {
-        this.shopBankNo = shopBankNo;
-    }
-
     public BigDecimal getSurplus() {
         return this.surplus;
     }
 
     public void setSurplus(BigDecimal surplus) {
         this.surplus = surplus;
-    }
-
-    public String getRejectReason() {
-        return this.rejectReason;
-    }
-
-    public void setRejectReason(String rejectReason) {
-        this.rejectReason = rejectReason;
-    }
-
-    public String getShopStatCode() {
-        return this.shopStatCode;
-    }
-
-    public void setShopStatCode(String shopStatCode) {
-        this.shopStatCode = shopStatCode;
-    }
-
-    public String getShopIcp() {
-        return this.shopIcp;
-    }
-
-    public void setShopIcp(String shopIcp) {
-        this.shopIcp = shopIcp;
-    }
-
-    public String getShopCopyright() {
-        return this.shopCopyright;
-    }
-
-    public void setShopCopyright(String shopCopyright) {
-        this.shopCopyright = shopCopyright;
     }
 
     public String getDbConfig() {
@@ -739,20 +583,7 @@ public class Shop implements Serializable {
         sb.append(", ").append(state);
         sb.append(", ").append(businessState);
         sb.append(", ").append(manageFee);
-        sb.append(", ").append(shopLicense);
-        sb.append(", ").append(shopTaxCredential);
-        sb.append(", ").append(organizationCodeCertificate);
-        sb.append(", ").append(permitForOpeningBankAccount);
-        sb.append(", ").append(financialRegistration);
-        sb.append(", ").append(shopBankName);
-        sb.append(", ").append(shopBank);
-        sb.append(", ").append(shopBankBranch);
-        sb.append(", ").append(shopBankNo);
         sb.append(", ").append(surplus);
-        sb.append(", ").append(rejectReason);
-        sb.append(", ").append(shopStatCode);
-        sb.append(", ").append(shopIcp);
-        sb.append(", ").append(shopCopyright);
         sb.append(", ").append(dbConfig);
         sb.append(", ").append(shopType);
         sb.append(", ").append(versionConfig);

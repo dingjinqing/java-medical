@@ -28,7 +28,7 @@ import org.jooq.impl.UpdatableRecordImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class ShopRecord extends UpdatableRecordImpl<ShopRecord> {
 
-    private static final long serialVersionUID = 51379747;
+    private static final long serialVersionUID = 2045254011;
 
     /**
      * Setter for <code>mini_main.b2c_shop.shop_id</code>. 店铺ID
@@ -409,409 +409,227 @@ public class ShopRecord extends UpdatableRecordImpl<ShopRecord> {
     }
 
     /**
-     * Setter for <code>mini_main.b2c_shop.shop_license</code>. 营业执照
-     */
-    public void setShopLicense(String value) {
-        set(27, value);
-    }
-
-    /**
-     * Getter for <code>mini_main.b2c_shop.shop_license</code>. 营业执照
-     */
-    public String getShopLicense() {
-        return (String) get(27);
-    }
-
-    /**
-     * Setter for <code>mini_main.b2c_shop.shop_tax_credential</code>. 税务登记证
-     */
-    public void setShopTaxCredential(String value) {
-        set(28, value);
-    }
-
-    /**
-     * Getter for <code>mini_main.b2c_shop.shop_tax_credential</code>. 税务登记证
-     */
-    public String getShopTaxCredential() {
-        return (String) get(28);
-    }
-
-    /**
-     * Setter for <code>mini_main.b2c_shop.organization_code_certificate</code>. 组织机构代码证
-     */
-    public void setOrganizationCodeCertificate(String value) {
-        set(29, value);
-    }
-
-    /**
-     * Getter for <code>mini_main.b2c_shop.organization_code_certificate</code>. 组织机构代码证
-     */
-    public String getOrganizationCodeCertificate() {
-        return (String) get(29);
-    }
-
-    /**
-     * Setter for <code>mini_main.b2c_shop.permit_for_opening_bank_account</code>. 银行开户许可证
-     */
-    public void setPermitForOpeningBankAccount(String value) {
-        set(30, value);
-    }
-
-    /**
-     * Getter for <code>mini_main.b2c_shop.permit_for_opening_bank_account</code>. 银行开户许可证
-     */
-    public String getPermitForOpeningBankAccount() {
-        return (String) get(30);
-    }
-
-    /**
-     * Setter for <code>mini_main.b2c_shop.financial_registration</code>. 财政登记证
-     */
-    public void setFinancialRegistration(String value) {
-        set(31, value);
-    }
-
-    /**
-     * Getter for <code>mini_main.b2c_shop.financial_registration</code>. 财政登记证
-     */
-    public String getFinancialRegistration() {
-        return (String) get(31);
-    }
-
-    /**
-     * Setter for <code>mini_main.b2c_shop.shop_bank_name</code>. 开户行姓名
-     */
-    public void setShopBankName(String value) {
-        set(32, value);
-    }
-
-    /**
-     * Getter for <code>mini_main.b2c_shop.shop_bank_name</code>. 开户行姓名
-     */
-    public String getShopBankName() {
-        return (String) get(32);
-    }
-
-    /**
-     * Setter for <code>mini_main.b2c_shop.shop_bank</code>. 开户行
-     */
-    public void setShopBank(String value) {
-        set(33, value);
-    }
-
-    /**
-     * Getter for <code>mini_main.b2c_shop.shop_bank</code>. 开户行
-     */
-    public String getShopBank() {
-        return (String) get(33);
-    }
-
-    /**
-     * Setter for <code>mini_main.b2c_shop.shop_bank_branch</code>. 开户行分行
-     */
-    public void setShopBankBranch(String value) {
-        set(34, value);
-    }
-
-    /**
-     * Getter for <code>mini_main.b2c_shop.shop_bank_branch</code>. 开户行分行
-     */
-    public String getShopBankBranch() {
-        return (String) get(34);
-    }
-
-    /**
-     * Setter for <code>mini_main.b2c_shop.shop_bank_no</code>. 开户行卡号
-     */
-    public void setShopBankNo(String value) {
-        set(35, value);
-    }
-
-    /**
-     * Getter for <code>mini_main.b2c_shop.shop_bank_no</code>. 开户行卡号
-     */
-    public String getShopBankNo() {
-        return (String) get(35);
-    }
-
-    /**
      * Setter for <code>mini_main.b2c_shop.surplus</code>. 余额
      */
     public void setSurplus(BigDecimal value) {
-        set(36, value);
+        set(27, value);
     }
 
     /**
      * Getter for <code>mini_main.b2c_shop.surplus</code>. 余额
      */
     public BigDecimal getSurplus() {
-        return (BigDecimal) get(36);
-    }
-
-    /**
-     * Setter for <code>mini_main.b2c_shop.reject_reason</code>. 驳回理由
-     */
-    public void setRejectReason(String value) {
-        set(37, value);
-    }
-
-    /**
-     * Getter for <code>mini_main.b2c_shop.reject_reason</code>. 驳回理由
-     */
-    public String getRejectReason() {
-        return (String) get(37);
-    }
-
-    /**
-     * Setter for <code>mini_main.b2c_shop.shop_stat_code</code>. 第三方统计代码
-     */
-    public void setShopStatCode(String value) {
-        set(38, value);
-    }
-
-    /**
-     * Getter for <code>mini_main.b2c_shop.shop_stat_code</code>. 第三方统计代码
-     */
-    public String getShopStatCode() {
-        return (String) get(38);
-    }
-
-    /**
-     * Setter for <code>mini_main.b2c_shop.shop_icp</code>. IP信息
-     */
-    public void setShopIcp(String value) {
-        set(39, value);
-    }
-
-    /**
-     * Getter for <code>mini_main.b2c_shop.shop_icp</code>. IP信息
-     */
-    public String getShopIcp() {
-        return (String) get(39);
-    }
-
-    /**
-     * Setter for <code>mini_main.b2c_shop.shop_copyright</code>. 版权信息
-     */
-    public void setShopCopyright(String value) {
-        set(40, value);
-    }
-
-    /**
-     * Getter for <code>mini_main.b2c_shop.shop_copyright</code>. 版权信息
-     */
-    public String getShopCopyright() {
-        return (String) get(40);
+        return (BigDecimal) get(27);
     }
 
     /**
      * Setter for <code>mini_main.b2c_shop.db_config</code>. db config,json format
      */
     public void setDbConfig(String value) {
-        set(41, value);
+        set(28, value);
     }
 
     /**
      * Getter for <code>mini_main.b2c_shop.db_config</code>. db config,json format
      */
     public String getDbConfig() {
-        return (String) get(41);
+        return (String) get(28);
     }
 
     /**
      * Setter for <code>mini_main.b2c_shop.shop_type</code>. 店铺类型
      */
     public void setShopType(String value) {
-        set(42, value);
+        set(29, value);
     }
 
     /**
      * Getter for <code>mini_main.b2c_shop.shop_type</code>. 店铺类型
      */
     public String getShopType() {
-        return (String) get(42);
+        return (String) get(29);
     }
 
     /**
      * Setter for <code>mini_main.b2c_shop.version_config</code>. 店铺功能
      */
     public void setVersionConfig(String value) {
-        set(43, value);
+        set(30, value);
     }
 
     /**
      * Getter for <code>mini_main.b2c_shop.version_config</code>. 店铺功能
      */
     public String getVersionConfig() {
-        return (String) get(43);
+        return (String) get(30);
     }
 
     /**
      * Setter for <code>mini_main.b2c_shop.shop_flag</code>. 店铺标志：0店家，1欧派，2嗨购
      */
     public void setShopFlag(Byte value) {
-        set(44, value);
+        set(31, value);
     }
 
     /**
      * Getter for <code>mini_main.b2c_shop.shop_flag</code>. 店铺标志：0店家，1欧派，2嗨购
      */
     public Byte getShopFlag() {
-        return (Byte) get(44);
+        return (Byte) get(31);
     }
 
     /**
      * Setter for <code>mini_main.b2c_shop.member_key</code>. 欧派店铺标识
      */
     public void setMemberKey(String value) {
-        set(45, value);
+        set(32, value);
     }
 
     /**
      * Getter for <code>mini_main.b2c_shop.member_key</code>. 欧派店铺标识
      */
     public String getMemberKey() {
-        return (String) get(45);
+        return (String) get(32);
     }
 
     /**
      * Setter for <code>mini_main.b2c_shop.tenancy_name</code>. 欧派创思大屏租户名称
      */
     public void setTenancyName(String value) {
-        set(46, value);
+        set(33, value);
     }
 
     /**
      * Getter for <code>mini_main.b2c_shop.tenancy_name</code>. 欧派创思大屏租户名称
      */
     public String getTenancyName() {
-        return (String) get(46);
+        return (String) get(33);
     }
 
     /**
      * Setter for <code>mini_main.b2c_shop.user_name</code>. 欧派创思大屏用户名
      */
     public void setUserName(String value) {
-        set(47, value);
+        set(34, value);
     }
 
     /**
      * Getter for <code>mini_main.b2c_shop.user_name</code>. 欧派创思大屏用户名
      */
     public String getUserName() {
-        return (String) get(47);
+        return (String) get(34);
     }
 
     /**
      * Setter for <code>mini_main.b2c_shop.password</code>. 欧派创思大屏密码
      */
     public void setPassword(String value) {
-        set(48, value);
+        set(35, value);
     }
 
     /**
      * Getter for <code>mini_main.b2c_shop.password</code>. 欧派创思大屏密码
      */
     public String getPassword() {
-        return (String) get(48);
+        return (String) get(35);
     }
 
     /**
      * Setter for <code>mini_main.b2c_shop.sms_account</code>. 短信账号
      */
     public void setSmsAccount(String value) {
-        set(49, value);
+        set(36, value);
     }
 
     /**
      * Getter for <code>mini_main.b2c_shop.sms_account</code>. 短信账号
      */
     public String getSmsAccount() {
-        return (String) get(49);
+        return (String) get(36);
     }
 
     /**
      * Setter for <code>mini_main.b2c_shop.kuajinggou</code>. 跨境购
      */
     public void setKuajinggou(Byte value) {
-        set(50, value);
+        set(37, value);
     }
 
     /**
      * Getter for <code>mini_main.b2c_shop.kuajinggou</code>. 跨境购
      */
     public Byte getKuajinggou() {
-        return (Byte) get(50);
+        return (Byte) get(37);
     }
 
     /**
      * Setter for <code>mini_main.b2c_shop.order_real_name</code>. 下单实名制
      */
     public void setOrderRealName(Byte value) {
-        set(51, value);
+        set(38, value);
     }
 
     /**
      * Getter for <code>mini_main.b2c_shop.order_real_name</code>. 下单实名制
      */
     public Byte getOrderRealName() {
-        return (Byte) get(51);
+        return (Byte) get(38);
     }
 
     /**
      * Setter for <code>mini_main.b2c_shop.hid_bottom</code>. 是否隐藏底部 1是 
      */
     public void setHidBottom(Byte value) {
-        set(52, value);
+        set(39, value);
     }
 
     /**
      * Getter for <code>mini_main.b2c_shop.hid_bottom</code>. 是否隐藏底部 1是 
      */
     public Byte getHidBottom() {
-        return (Byte) get(52);
+        return (Byte) get(39);
     }
 
     /**
      * Setter for <code>mini_main.b2c_shop.shop_style</code>. 店铺风格
      */
     public void setShopStyle(String value) {
-        set(53, value);
+        set(40, value);
     }
 
     /**
      * Getter for <code>mini_main.b2c_shop.shop_style</code>. 店铺风格
      */
     public String getShopStyle() {
-        return (String) get(53);
+        return (String) get(40);
     }
 
     /**
      * Setter for <code>mini_main.b2c_shop.logo</code>. 小程序logo
      */
     public void setLogo(String value) {
-        set(54, value);
+        set(41, value);
     }
 
     /**
      * Getter for <code>mini_main.b2c_shop.logo</code>. 小程序logo
      */
     public String getLogo() {
-        return (String) get(54);
+        return (String) get(41);
     }
 
     /**
      * Setter for <code>mini_main.b2c_shop.share_config</code>. 分享配置
      */
     public void setShareConfig(String value) {
-        set(55, value);
+        set(42, value);
     }
 
     /**
      * Getter for <code>mini_main.b2c_shop.share_config</code>. 分享配置
      */
     public String getShareConfig() {
-        return (String) get(55);
+        return (String) get(42);
     }
 
     // -------------------------------------------------------------------------
@@ -840,7 +658,7 @@ public class ShopRecord extends UpdatableRecordImpl<ShopRecord> {
     /**
      * Create a detached, initialised ShopRecord
      */
-    public ShopRecord(Integer shopId, Integer sysId, String mobile, String receiveMobile, String shopName, String shopAvatar, String shopBgPath, String shopPhone, String shopNotice, String shopWx, String shopEmail, Timestamp created, Byte isEnabled, Integer provinceCode, String provinceName, Integer cityCode, String cityName, Integer districtCode, String districtName, String address, String completeAddress, Integer shopSellType, String shopQq, String lastLoginIp, Byte state, Byte businessState, BigDecimal manageFee, String shopLicense, String shopTaxCredential, String organizationCodeCertificate, String permitForOpeningBankAccount, String financialRegistration, String shopBankName, String shopBank, String shopBankBranch, String shopBankNo, BigDecimal surplus, String rejectReason, String shopStatCode, String shopIcp, String shopCopyright, String dbConfig, String shopType, String versionConfig, Byte shopFlag, String memberKey, String tenancyName, String userName, String password, String smsAccount, Byte kuajinggou, Byte orderRealName, Byte hidBottom, String shopStyle, String logo, String shareConfig) {
+    public ShopRecord(Integer shopId, Integer sysId, String mobile, String receiveMobile, String shopName, String shopAvatar, String shopBgPath, String shopPhone, String shopNotice, String shopWx, String shopEmail, Timestamp created, Byte isEnabled, Integer provinceCode, String provinceName, Integer cityCode, String cityName, Integer districtCode, String districtName, String address, String completeAddress, Integer shopSellType, String shopQq, String lastLoginIp, Byte state, Byte businessState, BigDecimal manageFee, BigDecimal surplus, String dbConfig, String shopType, String versionConfig, Byte shopFlag, String memberKey, String tenancyName, String userName, String password, String smsAccount, Byte kuajinggou, Byte orderRealName, Byte hidBottom, String shopStyle, String logo, String shareConfig) {
         super(Shop.SHOP);
 
         set(0, shopId);
@@ -870,34 +688,21 @@ public class ShopRecord extends UpdatableRecordImpl<ShopRecord> {
         set(24, state);
         set(25, businessState);
         set(26, manageFee);
-        set(27, shopLicense);
-        set(28, shopTaxCredential);
-        set(29, organizationCodeCertificate);
-        set(30, permitForOpeningBankAccount);
-        set(31, financialRegistration);
-        set(32, shopBankName);
-        set(33, shopBank);
-        set(34, shopBankBranch);
-        set(35, shopBankNo);
-        set(36, surplus);
-        set(37, rejectReason);
-        set(38, shopStatCode);
-        set(39, shopIcp);
-        set(40, shopCopyright);
-        set(41, dbConfig);
-        set(42, shopType);
-        set(43, versionConfig);
-        set(44, shopFlag);
-        set(45, memberKey);
-        set(46, tenancyName);
-        set(47, userName);
-        set(48, password);
-        set(49, smsAccount);
-        set(50, kuajinggou);
-        set(51, orderRealName);
-        set(52, hidBottom);
-        set(53, shopStyle);
-        set(54, logo);
-        set(55, shareConfig);
+        set(27, surplus);
+        set(28, dbConfig);
+        set(29, shopType);
+        set(30, versionConfig);
+        set(31, shopFlag);
+        set(32, memberKey);
+        set(33, tenancyName);
+        set(34, userName);
+        set(35, password);
+        set(36, smsAccount);
+        set(37, kuajinggou);
+        set(38, orderRealName);
+        set(39, hidBottom);
+        set(40, shopStyle);
+        set(41, logo);
+        set(42, shareConfig);
     }
 }
