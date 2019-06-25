@@ -1,1 +1,1 @@
-mvnw install -Dschema="mini_shop_471752" -DpackageName="shop" -DskipTests
+mvnw install -Dschema="mini_shop_471752" -DpackageName="shop" -DskipTests  -Dincludes=.*
