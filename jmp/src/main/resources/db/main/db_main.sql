@@ -6,7 +6,7 @@ use b2c_shop;
 -- ddd
 --
 ##商家账户系统
-drop table if exists `b2c_shop_account`;
+#drop table if exists `b2c_shop_account`;
 create table `b2c_shop_account` (
   `sys_id`             int(11)               not null auto_increment comment '店铺ID',
   `user_name`          varchar(64)           not null default '-- dd ##' comment '用户名',
@@ -37,25 +37,8 @@ create table `b2c_shop_account` (
   primary key (`sys_id`)
 );
 
-/*
-alter table b2c_shop_account add column `mobile` varchar(32)  default '' comment '店铺账户的手机号';
-alter table b2c_shop_account add column `account_name`       varchar(32)  default '' COMMENT '账户昵称';
-alter table b2c_shop_account add column `shop_avatar`        varchar(255) default '/image/admin/head_icon.png' COMMENT '账户头像';
-alter table `b2c_shop_account` add column `company` varchar(255) default '' NULL COMMENT '公司名称';
-alter table `b2c_shop_account` add column `province_code` varchar(10) default '' NULL COMMENT '省';
-alter table `b2c_shop_account` add column `city_code` varchar(10) default '' NULL COMMENT '市';
-alter table `b2c_shop_account` add column `district_code` varchar(10) default '' NULL COMMENT '区';
-alter table `b2c_shop_account` add column `address` varchar(200) default '' NULL COMMENT '详细地址';
-alter table `b2c_shop_account` add column `base_sale` tinyint(1) default '0' comment '初始销量配置开关：0关闭，1开启';
-
-alter table `b2c_shop_account` add column `backlog` text null comment '待办事项列表';
-
-*/
-
-
-
 ##店铺角色表
-drop table if exists `b2c_shop_role`;
+#drop table if exists `b2c_shop_role`;
 create table `b2c_shop_role` (
   `role_id`        int(11)     not null  auto_increment,
   `sys_id`         int(11)     not null  default 0 comment '主账户ID',
@@ -69,13 +52,9 @@ create table `b2c_shop_role` (
   key (`shop_id`),
   key (`sys_id`)
 );
-/**
-alter table `b2c_shop_role` add column `privilege_pass` text comment '权限密码，json数组存储';
-alter table `b2c_shop_role` add column `role_pass` varchar(50) comment '权限密码';
- */
 
 ##商家子帐号
-drop table if exists `b2c_shop_child_account`;
+#drop table if exists `b2c_shop_child_account`;
 create table `b2c_shop_child_account` (
   `account_id`       int(11)               not null  auto_increment,
   `sys_id`           int(11)               not null  default 0 comment '主账户ID',
@@ -90,12 +69,9 @@ create table `b2c_shop_child_account` (
   unique key (`sys_id`, `account_name`),
   key (`sys_id`)
 );
-/**
-alter table `b2c_shop_child_account` add column `backlog` text null comment '待办事项列表';
- */
 
 ##商家子帐号与店铺权限关联表
-drop table if exists `b2c_shop_child_role`;
+#drop table if exists `b2c_shop_child_role`;
 create table `b2c_shop_child_role` (
   `rec_id`     int(11) not null  auto_increment,
   `sys_id`     int(11) not null  default 0 comment '主账户ID',
@@ -108,7 +84,7 @@ create table `b2c_shop_child_role` (
 );
 
 ##店铺
-drop table if exists `b2c_shop`;
+#drop table if exists `b2c_shop`;
 create table `b2c_shop` (
   `shop_id`                         int(11)                       not null  auto_increment comment '店铺ID',
   `sys_id`                          int(11)                       not null,
@@ -137,23 +113,10 @@ create table `b2c_shop` (
   `state`                           tinyint(1)                              default 0 comment '0 入驻申请，1审核通过，2审核不通过',
   `business_state`                  tinyint(1)                              default 0 comment '营业状态 0未营业 1营业',
   `manage_fee`                      decimal(10, 2) default '0.00' not null comment '平台管理费',
-  `shop_license`                    varchar(191) comment '营业执照',
-  `shop_tax_credential`             varchar(191) comment '税务登记证',
-  `organization_code_certificate`   varchar(191)                            default null comment '组织机构代码证',
-  `permit_for_opening_bank_account` varchar(191)                            default null comment '银行开户许可证',
-  `financial_registration`          varchar(191)                            default null comment '财政登记证',
-  `shop_bank_name`                  varchar(191)                            default '' comment '开户行姓名',
-  `shop_bank`                       varchar(191)                            default '' comment '开户行',
-  `shop_bank_branch`                varchar(191)                            default '' comment '开户行分行',
-  `shop_bank_no`                    varchar(191)                            default '' comment '开户行卡号',
   `surplus`                         decimal(10, 2)                not null  default 0.0 comment '余额',
-  `reject_reason`                   varchar(191)                            default null comment '驳回理由',
-  `shop_stat_code`                  varchar(191)                            default '' comment '第三方统计代码',
-  `shop_icp`                        varchar(191)                            default '' comment 'IP信息',
-  `shop_copyright`                  varchar(191)                            default '' comment '版权信息',
   `db_config`                       text                                    default '' comment 'db config,json format',
   `shop_type`                       varchar(20)                   not null  default 'v3' comment '店铺类型',
-  `version_config`                  text comment '店铺功能',
+  `version_config`                  text 												comment '店铺功能',
   `shop_flag`                       tinyint(2) default 0          null comment '店铺标志：0店家，1欧派，2嗨购',
   `member_key`                      varchar(64)                             default null comment '欧派店铺标识',
   `tenancy_name`                    varchar(64)                             default null comment '欧派创思大屏租户名称',
@@ -169,18 +132,9 @@ create table `b2c_shop` (
   primary key (`shop_id`),
   key `mobile` (`mobile`)
 );
-/*
-alter table `mini_main`.`b2c_shop` change `shop_qq` `shop_qq` varchar(20) CHARACTER SET utf8mb4  default '' NULL  COMMENT '店铺客服QQ';
- ALTER TABLE `mini_main`.`b2c_shop` add column `shop_type` tinyint(1) not null default '0' COMMENT '店铺类型 0通用 1试用';
- ALTER TABLE `mini_main`.`b2c_shop` add column `version_config` text  COMMENT '店铺功能';
-ALTER TABLE `b2c_shop` CHANGE COLUMN `shop_type` `shop_type` VARCHAR(20) NOT NULL DEFAULT 'v3' COMMENT '店铺类型' COLLATE 'utf8_general_ci' AFTER `db_config`;
-ALTER TABLE `b2c_shop` ADD COLUMN `shop_flag` TINYINT(2) DEFAULT 0  NULL   COMMENT '店铺标志：0店家，1欧派';
-ALTER TABLE `b2c_shop` ADD COLUMN `member_key` varchar(64) DEFAULT NULL COMMENT '欧派店铺标识';
-ALTER TABLE `b2c_shop` ADD COLUMN `hid_bottom` TINYINT(1) DEFAULT 0  NULL   COMMENT '是否隐藏底部 1是 ';
-ALTER TABLE `b2c_shop` ADD COLUMN `shop_style` varchar(50) DEFAULT 0  NULL   COMMENT '店铺风格 ';
- */
+
 ##key value缓存表
-drop table if exists `b2c_cache`;
+#drop table if exists `b2c_cache`;
 create table `b2c_cache` (
   `id`      int(11) not null auto_increment,
   `k`       varchar(100)     default '',
@@ -191,7 +145,7 @@ create table `b2c_cache` (
 );
 
 ##店铺等级
-drop table if exists `b2c_shop_grade`;
+#drop table if exists `b2c_shop_grade`;
 create table `b2c_shop_grade` (
   `id`           int(11)                       not null auto_increment,
   `shop_grade`   varchar(64)                   not null comment '店铺等级',
@@ -205,7 +159,7 @@ create table `b2c_shop_grade` (
 );
 
 ##店铺平台管理费修改记录
-drop table if exists `b2c_shop_grade_log`;
+#drop table if exists `b2c_shop_grade_log`;
 create table `b2c_shop_grade_log` (
   `id`           int(11)        not null auto_increment,
   `shop_id`      int(11)        not null,
@@ -220,7 +174,7 @@ create table `b2c_shop_grade_log` (
 );
 
 ##平台账号
-drop table if exists `b2c_system_user`;
+#drop table if exists `b2c_system_user`;
 create table `b2c_system_user` (
   `system_user_id` int         not null auto_increment,
   `user_name`      varchar(60) not null default '',
@@ -234,7 +188,7 @@ create table `b2c_system_user` (
 );
 
 ##平台角色表
-drop table if exists `b2c_system_role`;
+#drop table if exists `b2c_system_role`;
 create table `b2c_system_role` (
   `role_id`        int(11)     not null  auto_increment,
   `system_user_id` int(11)     not null  default 0 comment '平台账号ID',
@@ -246,7 +200,7 @@ create table `b2c_system_role` (
 );
 
 ##平台子帐号
-drop table if exists `b2c_system_child_account`;
+#drop table if exists `b2c_system_child_account`;
 create table `b2c_system_child_account` (
   `account_id`     int(11)      not null  auto_increment,
   `system_user_id` int(11)      not null  default 0 comment '店铺ID',
@@ -261,11 +215,8 @@ create table `b2c_system_child_account` (
 );
 
 
-/**
- * uploaded_image 上传图片表
- *
- **/
-drop table if exists `b2c_uploaded_image`;
+##uploaded_image 上传图片表
+#drop table if exists `b2c_uploaded_image`;
 create table `b2c_uploaded_image` (
   `img_id`         int(10)      not null auto_increment,
   `img_type`       varchar(60)  not null default '',
@@ -286,12 +237,9 @@ create table `b2c_uploaded_image` (
   key (`shop_id`),
   key (img_orig_fname)
 );
-/**
-alter table `b2c_uploaded_image` add column `sys_id` int(11) NULL COMMENT '账户ID';
-ALTER TABLE b2c_uploaded_image change `img_cat_id` `img_cat_id` int(10) default 0 comment '图片分类';
- */
+
 ## 上传图片分类
-drop table if exists `b2c_uploaded_image_category`;
+#drop table if exists `b2c_uploaded_image_category`;
 create table `b2c_uploaded_image_category` (
   `img_cat_id`        int(10)      not null auto_increment,
   `shop_id`           int(11)      not null default 0 comment '店铺ID',
@@ -306,7 +254,7 @@ create table `b2c_uploaded_image_category` (
 );
 
 ##帮助中心-文章
-drop table if exists `b2c_article`;
+#drop table if exists `b2c_article`;
 create table `b2c_article` (
   `article_id`      int(11) not null                           auto_increment,
   `category_id`     int(11) not null                           default 1 comment '文章分类',
@@ -329,10 +277,8 @@ create table `b2c_article` (
   key (`is_recommend`),
   key (`is_top`)
 );
-/**
-alter table `b2c_article` add column `head_pic` varchar(191) collate utf8mb4_unicode_ci  default null comment '头图';*/
-
-drop table if exists `b2c_article_category`;
+##文章分类表
+#drop table if exists `b2c_article_category`;
 create table `b2c_article_category` (
   `category_id`    int(11)      not null auto_increment,
   `category_name`  varchar(191) not null default '',
@@ -341,7 +287,7 @@ create table `b2c_article_category` (
 );
 
 ## 小程序授权信息
-drop table if exists `b2c_mp_auth_shop`;
+#drop table if exists `b2c_mp_auth_shop`;
 create table `b2c_mp_auth_shop` (
   `app_id`                varchar(191) not null comment '授权小程序appId',
   `shop_id`               int          not null,
@@ -395,35 +341,8 @@ create table `b2c_mp_auth_shop` (
   key (`link_official_app_id`)
 );
 
-
-/*
-create index idx_mp_auth_shop_bind_template_id on b2c_mp_auth_shop (bind_template_id);
-create index idx_mp_auth_shop_bind_audit_state on b2c_mp_auth_shop (audit_state);
-create index idx_mp_auth_shop_bind_is_auth_ok on b2c_mp_auth_shop (is_auth_ok);
-create index idx_mp_auth_shop_principal_name on b2c_mp_auth_shop (principal_name);
-create index idx_mp_auth_shop_lo_app_id on b2c_mp_auth_shop (link_official_app_id);
-*/
-
-
-/*
-alter table b2c_mp_auth_shop add column `test_qr_path`           varchar(191)  comment '小程序体验二维码图片路径';
-alter table b2c_mp_auth_shop add column `category`              text comment '小程序可选类目,json存储';
-alter table b2c_mp_auth_shop add column `page_cfg`              text comment '小程序页面配置,json存储';
-alter table b2c_mp_auth_shop modify column `func_info`             text default '' comment '权限集';
-alter table b2c_mp_auth_shop change autdit_id `audit_id`              int(11)           default 0 comment '最新的审核ID';
-alter table b2c_mp_auth_shop change autdit_state `audit_state`           tinyint(1)        default 0 comment '审核状态，0未提交，1审核中，2审核成功 3审核失败';
-alter table b2c_mp_auth_shop change autdit_fail_reason `audit_fail_reason`    varchar(191)      default '' comment '未通过审核原因';
-alter table b2c_mp_auth_shop add column  varchar(191) not null default '' comment '开放平台帐号appid;
-alter table b2c_mp_auth_shop add column`principal_name`        varchar(191) not null comment '小程序的主体名称',
-create index idx_mp_auth_shop_lo_app_id on b2c_mp_auth_shop (link_official_app_id);
-alter table b2c_mp_auth_shop add column  `union_pay_app_id`      varchar(191) not null default '' comment '通联支付子商户appId';
-alter table b2c_mp_auth_shop add column  `union_pay_cus_id`      varchar(191) not null default '' comment '通联支付子商户商户号';
-alter table b2c_mp_auth_shop add column  `union_pay_app_key`     varchar(191) not null default '' comment '通联支付子商户密钥';
-*/
-
-
 ## 公众号列表
-drop table if exists `b2c_mp_official_account`;
+#drop table if exists `b2c_mp_official_account`;
 create table `b2c_mp_official_account` (
   `app_id`                varchar(191) not null comment '授权公众号appId',
   `nick_name`             varchar(191)          default '' comment '小程序昵称',
@@ -455,7 +374,7 @@ create table `b2c_mp_official_account` (
 );
 
 ## 微信公众号用户表
-drop table if exists `b2c_mp_official_account_user`;
+#drop table if exists `b2c_mp_official_account_user`;
 create table `b2c_mp_official_account_user` (
   `rec_id`         int          not null auto_increment,
   `openid`         varchar(128) not null comment '用户的标识，对当前公众号唯一',
@@ -490,7 +409,7 @@ create table `b2c_mp_official_account_user` (
  k='bank_wd_frequency_per_day' v=10000
  k='wxpay_ds_pay_fee_rate' v=0.006
 */
-drop table if exists `b2c_system_cfg`;
+#drop table if exists `b2c_system_cfg`;
 create table `b2c_system_cfg` (
   `rec_id` smallint(5) not null auto_increment,
   `sys_id` int(11)     not null,
@@ -501,7 +420,7 @@ create table `b2c_system_cfg` (
 );
 
 ##用户
-drop table if exists `b2c_user`;
+#drop table if exists `b2c_user`;
 create table `b2c_user` (
   `id`                 bigint(20)           not null  auto_increment,
   `shop_id`            int(8)               not null  default '0',
@@ -542,7 +461,7 @@ create table `b2c_user` (
   key `wx_openid` (`wx_openid`)
 );
 ##用户详情
-drop table if exists `b2c_user_detail`;
+#drop table if exists `b2c_user_detail`;
 create table `b2c_user_detail` (
   `id`              int(11)     not null auto_increment,
   `user_id`         int(8)      not null,
@@ -573,7 +492,7 @@ create table `b2c_user_detail` (
 );
 
 ## 移动端只支持分类一级
-drop table if exists `b2c_category`;
+#drop table if exists `b2c_category`;
 create table `b2c_category` (
   `cat_id`      smallint(5)  not null auto_increment,
   `cat_name`    varchar(90)           default '' comment '分类名称',
@@ -588,12 +507,9 @@ create table `b2c_category` (
   primary key (`cat_id`),
   key `parent_id` (`parent_id`)
 );
-/*
-alter table b2c_category add column `first` smallint(2)  not null default '0' comment '优先级';
-*/
 
 ##店铺续费表
-drop table if exists `b2c_shop_renew`;
+#drop table if exists `b2c_shop_renew`;
 create table `b2c_shop_renew` (
   `id`          int(11)                 not null  auto_increment,
   `shop_id`     int(11)                 not null comment '店铺ID',
@@ -606,11 +522,9 @@ create table `b2c_shop_renew` (
   `renew_desc`  varchar(255) default '' null comment '说明',
   primary key (`id`)
 );
-/*
-alter table `b2c_shop_renew` add column `renew_desc` varchar(255) default '' NULL COMMENT '说明' ;
- */
+
 ## 小程序模板版本信息
-drop table if exists `b2c_mp_version`;
+#drop table if exists `b2c_mp_version`;
 create table `b2c_mp_version` (
   `template_id`              int(11)               not null comment '小程序模板Id',
   `user_version`             varchar(191)          not null             default '' comment '小程序模板版本号',
@@ -626,7 +540,7 @@ create table `b2c_mp_version` (
 );
 
 ## 小程序部署历史
-drop table if exists `b2c_mp_deploy_history`;
+#drop table if exists `b2c_mp_deploy_history`;
 create table `b2c_mp_deploy_history` (
   `deploy_id`         int(11)      not null            auto_increment comment '自增ID',
   `bind_template_id`  int(11)      not null comment '小程序模板Id',
@@ -652,7 +566,7 @@ create table `b2c_mp_deploy_history` (
 );
 
 ## 小程序操作日志
-drop table if exists `b2c_mp_operate_log`;
+#drop table if exists `b2c_mp_operate_log`;
 create table `b2c_mp_operate_log` (
   `operate_id`   int(11)      not null  auto_increment comment '自增ID',
   `app_id`       varchar(191) not null  default '' comment '小程序app_id',
@@ -667,7 +581,7 @@ create table `b2c_mp_operate_log` (
 );
 
 ## 后台进程执行信息表
-drop table if exists `b2c_back_process`;
+#drop table if exists `b2c_back_process`;
 create table `b2c_back_process` (
   `rec_id`        int          not null  auto_increment,
   `shop_id`       int(11)      not null  default 0 comment '店铺ID',
@@ -691,7 +605,7 @@ create table `b2c_back_process` (
   key `shop_class` (`shop_id`, `class_name`)
 );
 ## 发送短信记录表
-drop table if exists `b2c_sms`;
+#drop table if exists `b2c_sms`;
 create table `b2c_sms` (
   `id`       int(11)     not null auto_increment,
   `mobile`   varchar(32) not null default '',
@@ -706,7 +620,7 @@ create table `b2c_sms` (
 );
 
 ## 店铺主账号图片记录表
-drop table if exists `b2c_shop_uploaded_image`;
+#drop table if exists `b2c_shop_uploaded_image`;
 create table `b2c_shop_uploaded_image` (
   `img_id`         int(10)                                 not null auto_increment,
   `img_type`       varchar(60) collate utf8mb4_unicode_ci  not null default '',
@@ -727,11 +641,9 @@ create table `b2c_shop_uploaded_image` (
   key `shop_id` (`shop_id`),
   key `img_orig_fname` (`img_orig_fname`)
 );
-/*
-ALTER TABLE b2c_shop_uploaded_image change `img_cat_id` `img_cat_id` int(10) default 0 comment '图片分类';
- */
+
 ## 店铺主账号图片分类
-drop table if exists `b2c_shop_uploaded_image_category`;
+#drop table if exists `b2c_shop_uploaded_image_category`;
 create table `b2c_shop_uploaded_image_category` (
   `img_cat_id`        int(10)                                 not null auto_increment,
   `shop_id`           int(11)                                 not null default '0' comment '店铺ID',
@@ -745,6 +657,7 @@ create table `b2c_shop_uploaded_image_category` (
   primary key (`img_cat_id`),
   key `shop_id` (`shop_id`)
 );
+
 ##装修模板表
 #drop table if exists `b2c_decoration_template`;
 create table `b2c_decoration_template` (
@@ -756,6 +669,7 @@ create table `b2c_decoration_template` (
   `page_img`     varchar(1000) null     default '' comment '装修页面封图',
   primary key (`page_id`)
 );
+
 ## 应用表
 #drop table if exists `b2c_app`;
 create table `b2c_app` (
@@ -766,6 +680,7 @@ create table `b2c_app` (
   unique index `app_id` (`app_id`) using btree,
   unique index `app_name` (`app_name`) using btree
 );
+
 ## 应用授权表
 #drop table if exists `b2c_app_auth`;
 create table `b2c_app_auth` (
@@ -788,7 +703,7 @@ create table `b2c_app_auth` (
 );
 
 ##访问趋势
-drop table if exists `b2c_mp_daily_visit`;
+#drop table if exists `b2c_mp_daily_visit`;
 create table `b2c_mp_daily_visit` (
   `ref_date`                 char(8)   not null comment '时间： 如： "20180313"',
   `session_cnt`              int(11)   not null default '0' comment '打开次数',
@@ -812,7 +727,7 @@ create table `b2c_mp_daily_visit` (
 );
 
 ##分享统计
-drop table if exists `b2c_mp_summary_trend`;
+#drop table if exists `b2c_mp_summary_trend`;
 create table `b2c_mp_summary_trend` (
   `ref_date`           char(8)   not null comment '日期',
   `visit_total`        int(11)   not null default '0' comment '总访问量',
@@ -823,8 +738,9 @@ create table `b2c_mp_summary_trend` (
   `share_pv_middle`    int(11)   not null default '0' comment '转发次数 中位数',
   `share_uv_middle`    int(11)   not null default '0' comment '转发人数 中位数'
 );
+
 ##按店铺统计访问量
-drop table if exists `b2c_mp_summary_trend_shop`;
+#drop table if exists `b2c_mp_summary_trend_shop`;
 create table `b2c_mp_summary_trend_shop` (
   `ref_date`          char(8) collate utf8mb4_unicode_ci not null comment '日期 如： "20180313"',
   `shop_id`           int(11)                            not null comment '店铺ID',
@@ -841,8 +757,9 @@ create table `b2c_mp_summary_trend_shop` (
   `add_time`          timestamp                          null     default CURRENT_TIMESTAMP comment '添加时间',
   key `ref_date` (`ref_date`)
 );
+
 ##订单
-drop table if exists `b2c_order_info`;
+#drop table if exists `b2c_order_info`;
 create table `b2c_order_info` (
   `id`                   bigint(20)                    not null  auto_increment,
   `order_id`             mediumint(8)                  not null comment '订单ID',
@@ -979,9 +896,6 @@ create table `b2c_order_info` (
   key `shipping_id` (`shipping_id`),
   key `shop_id` (`shop_id`)
 );
-/**
-ALTER TABLE `b2c_order_info` ADD COLUMN `exchang` TINYINT(2) DEFAULT 0  NULL   COMMENT '1 兑换 0否';
- */
 
 ## 文章阅读记录
 #drop table if exists `b2c_article_record`;
@@ -1079,9 +993,6 @@ create table `b2c_shop_operation` (
   `type`        tinyint(1)  not null  default 0 comment '记录类型 0 店铺 1 账号',
   primary key (`id`)
 );
-/**
-alter table `b2c_shop_operation` add column `type` tinyint(1) not null default 0 comment '记录类型 0 店铺 1 账号';
- */
 
 ##店铺分版本
 #drop table if exists `b2c_shop_version`;
@@ -1097,11 +1008,6 @@ create table `b2c_shop_version` (
   primary key (`id`),
   unique key (`level`)
 );
-/**
-alter table `b2c_shop_version` add column `level` VARCHAR(50) not null comment '版本级别';
-alter table b2c_shop_version add constraint level unique (level);
- */
-
 
 ##  订单商品表  b2c_order_goods
 #drop table if exists `b2c_order_goods`;
@@ -1208,7 +1114,6 @@ create table `b2c_shop_question_feedback` (
   primary key (`question_feedback_id`),
   key `is_look` (`is_look`)
 );
-/*alter table b2c_shop_question_feedback change sys_id shop_id int(11) NOT NULL COMMENT '反馈店铺ID'*/
 
 ##admin用户问题反馈记录图片
 #drop table if exists `b2c_qf_img`;
@@ -1238,8 +1143,6 @@ create table `b2c_shop_free_experience` (
   `user_id`     int(11)                                           default null comment '用户ID',
   primary key (`fe_id`)
 );
-/*alter table b2c_shop_free_experience add COLUMN `desc` text collate utf8mb4_unicode_ci comment '备注';*/
-
 
 ##活动记录
 #drop table if exists `b2c_activity_statistics`;
@@ -1280,6 +1183,7 @@ create table `b2c_shop_activity` (
   `num`           int(11)    not null comment '进行中的活动',
   primary key (`id`)
 );
+
 ##访问分布
 #drop table if exists `b2c_mp_distribution_visit`;
 create table `b2c_mp_distribution_visit` (
@@ -1288,6 +1192,7 @@ create table `b2c_mp_distribution_visit` (
   `add_time` timestamp not null default CURRENT_TIMESTAMP comment '添加时间',
   key `ref_date` (`ref_date`) using btree
 );
+
 ##访问页面
 #drop table if exists `b2c_mp_visit_page`;
 create table `b2c_mp_visit_page` (
@@ -1305,6 +1210,7 @@ create table `b2c_mp_visit_page` (
   key `page_path` (`page_path`) using btree,
   key `page_visit_pv` (`page_visit_pv`) using btree
 );
+
 ##日留存
 #drop table if exists `b2c_mp_daily_retain`;
 create table `b2c_mp_daily_retain` (
@@ -1314,6 +1220,7 @@ create table `b2c_mp_daily_retain` (
   `add_time`     timestamp not null default CURRENT_TIMESTAMP comment '添加时间',
   key `ref_date` (`ref_date`) using btree
 );
+
 ##周留存
 #drop table if exists `b2c_mp_weekly_retain`;
 create table `b2c_mp_weekly_retain` (
@@ -1322,6 +1229,7 @@ create table `b2c_mp_weekly_retain` (
   `visit_uv`     text comment '活跃用户留存',
   `add_time`     timestamp not null default CURRENT_TIMESTAMP comment '添加时间'
 );
+
 ##月留存
 #drop table if exists `b2c_mp_monthly_retain`;
 create table `b2c_mp_monthly_retain` (
@@ -1330,6 +1238,7 @@ create table `b2c_mp_monthly_retain` (
   `visit_uv`     text comment '活跃用户留存',
   `add_time`     timestamp not null default CURRENT_TIMESTAMP comment '添加时间'
 );
+
 ##周趋势
 #drop table if exists `b2c_mp_weekly_visit`;
 create table `b2c_mp_weekly_visit` (
@@ -1343,6 +1252,7 @@ create table `b2c_mp_weekly_visit` (
   `visit_depth`       float     not null default '0' comment '平均访问深度 (浮点型)',
   `add_time`          timestamp not null default CURRENT_TIMESTAMP comment '添加时间'
 );
+
 ##月趋势
 #drop table if exists `b2c_mp_monthly_visit`;
 create table `b2c_mp_monthly_visit` (
@@ -1358,7 +1268,7 @@ create table `b2c_mp_monthly_visit` (
 );
 
 ## 阿里小程序模板订购信息
-drop table if exists `b2c_ali_my_order`;
+#drop table if exists `b2c_ali_my_order`;
 create table `b2c_ali_my_order` (
   `rec_id`             int            not null auto_increment,
   `commodity_order_id` varchar(191)            default '' comment '订单编号',
@@ -1380,7 +1290,7 @@ create table `b2c_ali_my_order` (
 );
 
 ## 阿里小程序授权信息
-drop table if exists `b2c_ali_mini_agent`;
+#drop table if exists `b2c_ali_mini_agent`;
 create table `b2c_ali_mini_agent` (
   `rec_id`               int          not null auto_increment,
   `shop_id`              int          not null comment '店铺Id',
@@ -1415,7 +1325,7 @@ create table `b2c_ali_mini_agent` (
 );
 
 ## 阿里授权信息
-drop table if exists `b2c_ali_mini_auth_shop`;
+#drop table if exists `b2c_ali_mini_auth_shop`;
 create table `b2c_ali_mini_auth_shop` (
   `auth_app_id`           varchar(191) comment '授权商户的appid	',
   `user_id`               varchar(191) comment '授权商户的user_id	',
@@ -1446,10 +1356,8 @@ create table `b2c_ali_mini_auth_shop` (
   unique key (`shop_id`)
 );
 
-/**
-小程序版本列表
- */
-drop table if exists `b2c_ali_mini_app_version`;
+##小程序版本列表
+#drop table if exists `b2c_ali_mini_app_version`;
 create table `b2c_ali_mini_app_version` (
   `rec_id`           int not null auto_increment,
   `app_version`      varchar(191) comment '小程序版本号',
@@ -1472,7 +1380,7 @@ create table `b2c_ali_user_token` (
   unique key (`app_id`, `user_id`)
 );
 
-# 小程序跳转链接，申请发布新版本列表
+## 小程序跳转链接，申请发布新版本列表
 #DROP TABLE IF EXISTS `b2c_mp_jump_version`;
 create table `b2c_mp_jump_version` (
   `id`          int(11)                                not null auto_increment,
@@ -1793,10 +1701,3 @@ create table `b2c_third_party_services` (
   index `account_type` (`account_action`, `account_id`, `service_action`),
   index `account_id` (`account_id`)
 );
-
-/**
-alter table `b2c_upload_uyun_record` add column `shop_id` int(11) not null comment '店铺ID';
-alter table `b2c_upload_uyun_record` add column `file_size` int(64) not null comment '文件大小';
-alter table `b2c_upload_uyun_record` add column `fail_reason` varchar(64) not null comment '失败原因';
-alter table `b2c_upload_uyun_record` add column `fail_date` timestamp not null comment '失败时间';
- */

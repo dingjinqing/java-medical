@@ -1,87 +1,5 @@
 set foreign_key_checks = false;
 
--- -- 店铺
--- drop table if exists `b2c_shop`;
-create table `b2c_shop` (
-  `shop_id`                         int(11)                       not null  auto_increment comment '店铺ID',
-  `sys_id`                          int(11)                       not null,
-  `mobile`                          varchar(32)                   not null  default '',
-  `receive_mobile`                  varchar(32)                             default '' comment ' 接收通知手机号码',
-  `shop_name`                       varchar(50)                             default '' comment '店铺名称',
-  `shop_avatar`                     varchar(191)                            default '/image/admin/shop_default.png' comment '店铺头像',
-  `shop_bg_path`                    varchar(191)                            default 'upload/images/default/0picstor.jpg' comment '店铺背景图片',
-  `shop_phone`                      varchar(50)                             default '' comment '店铺客服电话',
-  `shop_notice`                     varchar(191)                            default '' comment '店铺公告',
-  `shop_wx`                         varchar(191)                            default '' comment '店铺客服微信',
-  `shop_email`                      varchar(191)                            default '',
-  `created`                         timestamp                     not null  default now() comment '创建时间',
-  `is_enabled`                      tinyint(1)                              default '0' comment '0:正常，1：禁用',
-  `province_code`                   mediumint(10)         not null  default '0' comment '所在省',
-  `province_name`                   varchar(50)                   not null  default '',
-  `city_code`                       mediumint(10)         not null  default '0' comment '所在城市',
-  `city_name`                       varchar(120)                  not null  default '',
-  `district_code`                   mediumint(10)         not null  default '0' comment '所在区县',
-  `district_name`                   varchar(120)                  not null  default '',
-  `address`                         varchar(191)                  not null  default '' comment '所在地址',
-  `complete_address`                varchar(512)                  not null  default '' comment '所在完整地址',
-  `shop_sell_type`                  int               not null  default 254 comment '经营品类,254：其他',
-  `shop_qq`                         varchar(20)                             default '' comment '店铺客服QQ',
-  `last_login_ip`                   varchar(40)                             default '' comment '上次登录IP',
-  `state`                           tinyint(1)                              default 0 comment '0 入驻申请，1审核通过，2审核不通过',
-  `business_state`                  tinyint(1)                              default 0 comment '营业状态 0未营业 1营业',
-  `manage_fee`                      decimal(10, 2) default '0.00' not null comment '平台管理费',
-  `shop_license`                    varchar(191) comment '营业执照',
-  `shop_tax_credential`             varchar(191) comment '税务登记证',
-  `organization_code_certificate`   varchar(191)                            default null comment '组织机构代码证',
-  `permit_for_opening_bank_account` varchar(191)                            default null comment '银行开户许可证',
-  `financial_registration`          varchar(191)                            default null comment '财政登记证',
-  `shop_bank_name`                  varchar(191)                            default '' comment '开户行姓名',
-  `shop_bank`                       varchar(191)                            default '' comment '开户行',
-  `shop_bank_branch`                varchar(191)                            default '' comment '开户行分行',
-  `shop_bank_no`                    varchar(191)                            default '' comment '开户行卡号',
-  `surplus`                         decimal(10, 2)                not null  default 0.0 comment '余额',
-  `reject_reason`                   varchar(191)                            default null comment '驳回理由',
-  `shop_stat_code`                  varchar(191)                            default '' comment '第三方统计代码',
-  `shop_icp`                        varchar(191)                            default '' comment 'IP信息',
-  `shop_copyright`                  varchar(191)                            default '' comment '版权信息',
-  `db_config`                       varchar(191)                            default '' comment 'db config,json format',
-  `share_config` TEXT NULL   COMMENT '分享设置',
-  primary key (`shop_id`),
-  unique key (`mobile`)
-);
-
--- -- 帮助中心-文章
--- drop table if exists `b2c_article`;
-create table `b2c_article` (
-  `article_id`      int(11) not null auto_increment,
-  `category_id`     int(11) not null default 1 comment '文章分类',
-  `title`           varchar(256)     default null,
-  `author`          varchar(50)      default null,
-  `keyword`         varchar(256)     default null comment '标签',
-  `desc`            varchar(1024)    default null comment '文章描述',
-  `content`         text,
-  `is_recommend`    tinyint(1)       default '0' comment '1:推荐',
-  `is_top`          tinyint(1)       default '0' comment '1:置顶',
-  `status`          tinyint(1)       default '0' comment '0未发布,1已发布',
-  `pub_time`        timestamp        default now() comment '发布时间',
-  `update_time`     timestamp        default now() comment '更新时间',
-  `create_time`     datetime         default now(),
-  `last_visit_time` datetime         default null,
-  `pv`              int(11)          default null,
-  `show_footer`     tinyint(1)       default '0' comment '0:不在footer显示，1：显示',
-  primary key (`article_id`),
-  key (`is_recommend`),
-  key (`is_top`)
-);
-
--- drop table if exists `b2c_article_category`;
-create table `b2c_article_category` (
-  `category_id`    int(11)      not null auto_increment,
-  `category_name`  varchar(191) not null default '',
-  `use_footer_nav` tinyint(1)            default '0' comment '是否用于底部导航',
-  primary key (`category_id`)
-);
-
 -- -- 用户
 -- drop table if exists `b2c_user`;
 create table `b2c_user` (
@@ -130,7 +48,6 @@ create table `b2c_user` (
 );
 
 -- -- 用户地址
-
 -- drop table if exists `b2c_user_address`;
 create table `b2c_user_address` (
   `address_id`       mediumint(8)  not null auto_increment,
@@ -233,104 +150,6 @@ create table `b2c_user_score_set` (
   primary key (`id`)
 );
 
--- -- 用户等级设置
--- drop table if exists `b2c_user_grade`;
-create table `b2c_user_grade` (
-  `id`          int(11)     not null auto_increment,
-  `shop_id`     int(11)     not null default 0 comment '店铺ID',
-  `grade`       varchar(10) not null comment '会员等级：reg:注册,bronze:铜,silver:银,gold:金,diamond:钻石',
-  `grade_name`  varchar(20) not null comment '等级名称',
-  `min_val`     int(11)     not null default '0' comment '最小成长值',
-  `max_val`     int(11)     not null default '0' comment '最大成长史',
-  `reduce`      int(11)     not null default '0' comment '一年后扣除的成长值',
-  `in_time`     datetime             default null,
-  `up_time`     datetime             default null,
-  `settle_time` datetime             default null comment '结算时间',
-  `divide`      decimal(10, 2)       default '0.00' comment '分成',
-  `discount`    decimal(10, 2)       default '0.00' comment '折扣',
-  primary key (`id`)
-);
-
--- -- 用户成长值设置
--- drop table if exists `b2c_user_growth_set`;
-create table `b2c_user_growth_set` (
-  `id`          int(11)      not null auto_increment,
-  `shop_id`     int(11)      not null default 0 comment '店铺ID',
-  `growth_name` varchar(20)  not null comment 'login,buy,comment,shai,month',
-  `score`       int(11)      not null default '0',
-  `score_flag`  tinyint(1)   not null default '1' comment '0:不送积分，1：送积分',
-  `min_val`     int(11)      not null default '0',
-  `max_val`     int(11)      not null default '0',
-  `flag`        tinyint(1)   not null default '0' comment '购物送成长值方式，0:订单金额,1:实际支付金额',
-  `desc`        varchar(191) not null default '',
-  `in_time`     datetime              default null,
-  `up_time`     datetime              default null,
-  `share_flag`  tinyint(1)   not null default '0' comment '0:分享一次赠送,1:每天分享赠送',
-  primary key (`id`),
-  key (`shop_id`)
-);
-
--- -- 用户成长值表
--- drop table if exists `b2c_user_growth`;
-create table `b2c_user_growth` (
-  `id`          int(11)      not null auto_increment,
-  `user_id`     int(11)      not null,
-  `shop_id`     int(11)      not null default 0 comment '店铺ID',
-  `score`       int(11)      not null,
-  `status`      tinyint(1)   not null default '0' comment '0:未过期，1:已过期',
-  `goods_id`    int(11)      not null default '0',
-  `order_sn`    varchar(20)  not null default '',
-  `desc`        varchar(191) not null comment '登录，购物，评价，晒单',
-  `in_time`     datetime              default null,
-  `expire_time` datetime              default null,
-  `growth_flag` tinyint(2)   not null default '0' comment '0:评价商品送给成长值,1:分享商品赠送成长值',
-  `deal_remark` varchar(100) comment '备注',
-  primary key (`id`),
-  key (`shop_id`)
-);
--- -- 店铺积分，成长值开关设置表
--- drop table if exists `b2c_shop_score_cfg`;
-create table `b2c_shop_score_cfg` (
-  `id`      int(11) not null auto_increment,
-  `growth`  int(11) not null default '0' comment '0:关闭，1:开启',
-  `score`   int(11) not null default '0' comment '0:关闭，1:开启',
-  `comment` int(11)          default '0' comment 'comment:0:关闭评论，1：不用审批，2：先发后审，3：先审后发',
-  `in_time` datetime         default null,
-  `up_time` datetime         default null,
-  `sign`    int(11) not null default '0' comment '0:关闭，1:开启',
-  `sys_id`  int(10) not null default '0' comment '商家ID',
-  primary key (`id`)
-);
-
--- -- 用户升级记录
--- drop table if exists `b2c_user_upgrade`;
-create table `b2c_user_upgrade` (
-  `id`         int(11)     not null auto_increment,
-  `user_id`    int(11)     not null,
-  `shop_id`    int         not null default 0 comment '店铺ID',
-  `grade_id`   int(11)     not null,
-  `grade`      varchar(20) not null,
-  `grade_name` varchar(20) not null,
-  `in_time`    datetime             default null,
-  primary key (`id`)
-);
--- -- 消息中心
--- drop table if exists `b2c_user_msg`;
-create table `b2c_user_msg` (
-  `id`       int(11)      not null auto_increment,
-  `user_id`  int(11)      not null,
-  `shop_id`  int(11)      not null default 0 comment '店铺ID',
-  `msg_type` varchar(20)  not null comment 'login,comment,order_finish,discount,upgrade,return_order,deliver_goods,article',
-  `msg_desc` varchar(191) not null,
-  `msg_date` date         not null,
-  `msg_id`   varchar(20)           default null comment '评论时是商品id，订单是订单id',
-  `status`   tinyint(1)   not null default '0' comment '0:未读，1:已读',
-  `url`      varchar(191)          default null,
-  `in_time`  datetime              default null,
-  primary key (`id`),
-  key (`shop_id`)
-);
-
 -- --  运费模板表
 -- drop table if exists `b2c_deliver_fee_template`;
 create table `b2c_deliver_fee_template` (
@@ -345,31 +164,6 @@ create table `b2c_deliver_fee_template` (
   key (`shop_id`)
 );
 
--- --  商品运费模关联表
--- drop table if exists `b2c_goods_deliver_template_link`;
-create table `b2c_goods_deliver_template_link` (
-  `rec_id`              int(11)  not null auto_increment,
-  `goods_id`            int(11)  not null default 0,
-  `deliver_template_id` int(11)  not null default 0,
-  `created`             timestamp                 default now(),
-  primary key (`rec_id`),
-  key (`goods_id`)
-);
--- --  移动端只支持分类一级
--- drop table if exists `b2c_category`;
-create table `b2c_category` (
-  `cat_id`      smallint(5)  not null auto_increment,
-  `cat_name`    varchar(90)                   default '',
-  `keywords`    varchar(191)                  default '',
-  `cat_desc`    varchar(191)                  default '',
-  `parent_id`   smallint(5)  not null default '0',
-  `level`       smallint(5)          not null default 0,
-  `has_child`   tinyint(1)           not null default 0,
-  `create_time` timestamp                     default now(),
-  `cat_img`     varchar(191)         not null default '' comment '分类图标',
-  primary key (`cat_id`),
-  key `parent_id` (`parent_id`)
-);
 -- -- --  商品表 `b2c_goods`
 -- drop table if exists `b2c_goods`;
 create table `b2c_goods` (
@@ -511,291 +305,7 @@ create table `b2c_cart` (
   primary key (`rec_id`)
 );
 
-/**
- 微信公众号列表
- */
-
--- drop table if exists `b2c_wxp_list`;
-create table `b2c_wxp_list` (
-  `micro_id`                  int(11)  not null auto_increment,
-  `shop_id`                   int(11)          not null default '0' comment '店铺ID',
-  `wxp_name`                  varchar(191)     not null default '' comment '微信公众平台名称',
-  `wxp_en_name`               varchar(191)     not null default '' comment '微信公众平台微信号码',
-  `token`                     varchar(40)      not null default '' comment '微信公众平台的token',
-  `appid`                     varchar(191)     not null default '' comment '用于高级功能的appid',
-  `appsecret`                 varchar(191)     not null default '' comment '用于高级功能的appsecret',
-  `partnerid`                 varchar(191)     not null default '' comment '用于微信支付的partnerid',
-  `partnerkey`                varchar(191)     not null default '' comment '用于微信支付的partnerkey',
-  `paysignkey`                varchar(191)     not null default '' comment '用于微信支付的paysignkey',
-  `wxp_type`                  tinyint(1)       not null default '0' comment '0 订阅号, 1微信认证订阅号 2 服务号, 3微信认证服务号',
-  `link_shop`                 tinyint(1)       not null default '0' comment '是否关联店铺 0,否，1是',
-  `micro_id_used`             tinyint(1)       not null default '0' comment '添加新公众号会先添加一条空记录，micro_id_used为0，当设置好公众号时，变为1',
-  `del_flag`                  tinyint(1)       not null default '0' comment '是否删除',
-  `access_token`              varchar(513)              default '' comment 'access_token是公众号的全局唯一票据',
-  `expires_timestamp`         int(11) comment 'access_token过期时间戳',
-  `auto_customer_svc`         tinyint(1)                default 0 comment '是否自动转接客服，0 or 1',
-  `wx_pay_ver`                tinyint(1)                default 2 comment '微信支付版本号，2为2.x，3为3.x版本',
-  `wx_v3_mhcid`               varchar(20)               default '' comment '微信支付v3支付商户号',
-  `wx_v3_key`                 varchar(50)               default '' comment '微信支付v3商户支付密钥',
-  `wx_v3_apiclient_cert_path` varchar(191)              default '' comment '微信支付v3商户证书路径',
-  `wx_v3_apiclient_key_path`  varchar(191)              default '' comment '微信支付v3商户证书密钥路径',
-  `create_time`               timestamp                 default now(),
-  `update_time`               timestamp        null     default null,
-  primary key (`micro_id`),
-  key (`appid`),
-  key (`appsecret`),
-  key (`micro_id_used`)
-) auto_increment = 100000;
-
-/**
-    微信公众账号回复配置
-**/
--- drop table if exists `b2c_wxp_response_cfg`;
-create table `b2c_wxp_response_cfg` (
-  `rec_id`      int(8)  not null auto_increment,
-  `shop_id`     int(11)         not null default '0' comment '店铺ID',
-  `type`        tinyint(1)      not null default '0' comment '0 关注时回复，1关键词回复，2默认回复,3菜单回复',
-  `menu_key`    varchar(128)             default '' comment '当type=3有效，菜单key，与菜单表中的key对应',
-  `key_words`   varchar(40)              default '' comment '当type=1时有效，触发关键词',
-  `match_type`  tinyint(1)               default '0' comment '当type=1时有效，匹配类型，0精确，1模糊',
-  `res_type`    tinyint(1)               default '0' comment '回复类型：0文本 1 单图文 2 多图文 3音乐，4 link',
-  `res_content` text comment '回复内容',
-  `res_rec_id`  int(8)                   default 0 comment '素材wxp_material的rec_id',
-  `create_time` timestamp                default now(),
-  `update_time` timestamp       null     default null,
-  `micro_id`    int(8)          not null comment '所属微信公众号ID,关联b2c_wxp_list的micro_id',
-  primary key (`rec_id`),
-  key (`micro_id`)
-);
-
-
-/**
-    微信公众账号菜单配置：限制2级菜单，第一级最多3个，二级菜单最多5个
-**/
--- drop table if exists `b2c_wxp_menu_cfg`;
-create table `b2c_wxp_menu_cfg` (
-  `menu_id`        int(8)  not null auto_increment,
-  `shop_id`        int(11)         not null default '0' comment '店铺ID',
-  `menu_name`      varchar(100)    not null,
-  `menu_key`       varchar(100)    not null,
-  `menu_parent_id` int(8)          not null default 0,
-  `create_time`    timestamp                default now(),
-  `micro_id`       int(8)          not null comment '所属微信公众号ID,关联b2c_wxp_list的micro_id',
-  primary key (`menu_id`),
-  key (`micro_id`)
-);
-
-
-/**
-    微信公众账号素材表
-**/
--- drop table if exists `b2c_wxp_material`;
-create table `b2c_wxp_material` (
-  `rec_id`           int(8)  not null auto_increment,
-  `shop_id`          int(11)         not null default '0' comment '店铺ID',
-  `material_type`    tinyint(1)               default 0 comment '1单图文，2多图文，2音乐',
-  `material_content` text comment '为json内容',
-  `create_time`      timestamp                default now(),
-  `micro_id`         int(8)          not null comment '所属微信公众号ID,关联b2c_wxp_list的micro_id',
-  primary key (`rec_id`),
-  key (`micro_id`)
-);
-
-
-/**
-    微信公众账号用户表
-**/
--- drop table if exists `b2c_wxp_user`;
-create table `b2c_wxp_user` (
-  `user_id`          int(8)  not null auto_increment,
-  `shop_id`          int(11)         not null default '0' comment '店铺ID',
-  `openid`           varchar(128)    not null comment '用户的标识，对当前公众号唯一',
-  `subscribe`        tinyint(1)               default 0 comment '是否订阅，为0代表此用户没有关注该公众号，拉取不到其余信息。',
-  `nickname`         varchar(64)              default '',
-  `sex`              tinyint(1)      not null default 0 comment '用户的性别，值为1时是男性，值为2时是女性，值为0时是未知',
-  `language`         varchar(20) comment '用户的语言，简体中文为zh_CN',
-  `city`             varchar(50) comment '用户所在城市',
-  `province`         varchar(50) comment '用户所在省份',
-  `country`          varchar(50) comment '用户所在国家',
-  `headimgurl`       varchar(191) comment '用户头像，最后一个数值代表正方形头像大小（有0、46、64、96、132数值可选，0代表640*640正方形头像），用户没有头像时该项为空',
-  `subscribe_time`   timestamp       null     default null comment '用户关注时间，如果用户曾多次关注，则取最后关注时间',
-  `unionid`          varchar(191) comment '只有在用户将公众号绑定到微信开放平台帐号后，才会出现该字段',
-  `group_id`         int                      default 0 comment '分组ID,0为默认分组',
-  `user_memo`        varchar(500)             default '' comment '备注',
-  `last_msg_time`    timestamp                default now() comment '最后互动时间戳',
-  `micro_id`         int(8)          not null comment '所属微信公众号ID,关联b2c_wxp_list的micro_id',
-  `update_flag`      tinyint(1)      not null default 1 comment '批量更新标志，为1不更新为取消关注',
-  `latitude`         double                   default 0 comment '地理位置纬度',
-  `longitude`        double                   default 0 comment '地理位置经度',
-  `precision`        double                   default 0 comment '地理位置精度',
-  `last_up_loc_time` timestamp       null     default null comment '最后记录位置时间',
-  primary key (`user_id`),
-  key (`micro_id`),
-  unique key (`openid`, `micro_id`),
-  key (`group_id`)
-);
-
-/**
-    微信公众账号用户分组表
-**/
--- drop table if exists `b2c_wxp_user_group`;
-create table `b2c_wxp_user_group` (
-  `group_id`   int(8)  not null auto_increment,
-  `shop_id`    int(11)         not null default '0' comment '店铺ID',
-  `group_name` varchar(128)    not null comment '用分组名称',
-  `micro_id`   int(8)          not null comment '所属微信公众号ID,关联b2c_wxp_list的micro_id',
-  primary key (`group_id`),
-  key (`micro_id`)
-);
-
-
-/**
-    微信公众账号用户消息表
-**/
--- drop table if exists `b2c_wxp_message`;
-create table `b2c_wxp_message` (
-  `rec_id`            int(8)  not null auto_increment,
-  `shop_id`           int(11)         not null default '0' comment '店铺ID',
-  `type`              tinyint(1)               default 0 comment '消息收发类型 0：接收，1自动回复 2 客服回复',
-  `customer_user`     varchar(128),
-  `msgtype`           varchar(50) comment 'type=0时，取值text,image,voice,video,location,link,subscribe,unsubscribe,SCAN,LOCATION,CLICK,VIEW',
-  `content`           text comment '原始发送或接收的内容，type=0 1时，是xmldata，2时是json数据',
-  `menu_name`         varchar(191)             default '' comment '菜单名称,type=0 && msgtype=CLICK,VIEW有效',
-  `res_cfg_type`      tinyint(1)               default '0' comment '0 关注时回复，1关键词回复，2默认回复,3菜单回复',
-  `res_key_words`     varchar(191)             default '' comment '关键词,关键词回复有效',
-  `res_content`       text comment '回复时的回复内容',
-  `res_rec_id`        int(8)                   default 0 comment '素材wxp_material的rec_id',
-  `res_parent_rec_id` int(8)                   default 0 comment '对某个用户某条消息进行回复，这个是消息对的rec_id',
-  `is_responsed`      tinyint(1)               default 0 comment '对type=0有意义，当有客服消息回复了，代表已回复',
-  `star_flag`         tinyint(1)               default 0 comment '是否星标收藏',
-  `micro_id`          int(8)          not null comment '所属微信公众号ID,关联b2c_wxp_list的micro_id',
-  `create_time`       timestamp                default now(),
-  primary key (`rec_id`),
-  key (`type`),
-  key (`micro_id`),
-  key (`star_flag`)
-);
-
-
-/**
-    微信公众账号群发
-**/
--- drop table if exists `b2c_wxp_mass_send_msg`;
-create table `b2c_wxp_mass_send_msg` (
-  `rec_id`      int(8)  not null auto_increment,
-  `shop_id`     int(11)         not null default '0' comment '店铺ID',
-  `group_id`    int                      default -1 comment '群发组，-1全部 0未分组，>0其他分组',
-  `sex`         tinyint(1)               default 0 comment '性别：0全部 1 男，2女',
-  `touser`      text comment '群发对象，用,号隔开的openid',
-  `content`     text comment '群发数据',
-  `is_ok`       tinyint(1)               default 0 comment '是否发送成功',
-  `micro_id`    int(8)          not null comment '所属微信公众号ID,关联b2c_wxp_list的micro_id',
-  `create_time` timestamp                default now(),
-  primary key (`rec_id`),
-  key (`micro_id`)
-);
-
-
-/**
-    微信公众账号用户订阅统计
-**/
--- drop table if exists `b2c_wxp_sub_stat`;
-create table `b2c_wxp_sub_stat` (
-  `rec_id`      int(8)  not null auto_increment,
-  `shop_id`     int(11)         not null default '0' comment '店铺ID',
-  `rq`          date,
-  `sub_num`     int,
-  `unsub_num`   int,
-  `sum_sub_num` int,
-  `micro_id`    int(8)          not null comment '所属微信公众号ID,关联b2c_wxp_list的micro_id',
-  primary key (`rec_id`),
-  key (`micro_id`)
-);
-
-
-/**
-    微信公众账号用户消息统计
-**/
--- drop table if exists `b2c_wxp_msg_stat`;
-create table `b2c_wxp_msg_stat` (
-  `rec_id`   int(8)  not null auto_increment,
-  `shop_id`  int(11)         not null default '0' comment '店铺ID',
-  `rq`       date,
-  `user_num` int,
-  `msg_num`  int,
-  `micro_id` int(8)          not null comment '所属微信公众号ID,关联b2c_wxp_list的micro_id',
-  primary key (`rec_id`),
-  key (`micro_id`)
-);
-
-
-/**
-    微信公众账号用户关键词统计
-**/
--- drop table if exists `b2c_wxp_keywords_stat`;
-create table `b2c_wxp_keywords_stat` (
-  `rec_id`    int(8)  not null auto_increment,
-  `shop_id`   int(11)         not null default '0' comment '店铺ID',
-  `rq`        date,
-  `key_words` varchar(191),
-  `user_num`  int,
-  `msg_num`   int,
-  `micro_id`  int(8)          not null comment '所属微信公众号ID,关联b2c_wxp_list的micro_id',
-  primary key (`rec_id`),
-  key (`micro_id`)
-);
-
-
-/**
-    微信公众账号用户自定义菜单统计
-**/
--- drop table if exists `b2c_wxp_menu_stat`;
-create table `b2c_wxp_menu_stat` (
-  `rec_id`    int(8)  not null auto_increment,
-  `shop_id`   int(11)         not null default '0' comment '店铺ID',
-  `rq`        date,
-  `menu_name` varchar(191),
-  `user_num`  int,
-  `msg_num`   int,
-  `micro_id`  int(8)          not null comment '所属微信公众号ID,关联b2c_wxp_list的micro_id',
-  primary key (`rec_id`),
-  key (`micro_id`)
-);
-
-
-/**
-  小程序用户表,wx.getUserInfo获取
-**/
--- drop table if exists `b2c_mp_user`;
-create table `b2c_mp_user` (
-  `mp_user_id`       int(8)  not null auto_increment,
-  `app_id`           varchar(128)    not null comment '小程序appId',
-  `openid`           varchar(128)    not null comment '用户的标识，对当前公众号唯一',
-  `nickname`         varchar(64)              default '',
-  `gender`           tinyint(1)      not null default 0 comment '用户的性别，值为1时是男性，值为2时是女性，值为0时是未知',
-  `language`         varchar(20) comment '用户的语言，简体中文为zh_CN',
-  `city`             varchar(50) comment '用户所在城市',
-  `province`         varchar(50) comment '用户所在省份',
-  `country`          varchar(50) comment '用户所在国家',
-  `avatarUrl`        varchar(191) comment '用户头像，最后一个数值代表正方形头像大小（有0、46、64、96、132数值可选，0代表640*640正方形头像），用户没有头像时该项为空。若用户更换头像，原有头像URL将失效。',
-  `unionid`          varchar(191) comment '只有在用户绑定到微信开放平台帐号后，才会出现该字段',
-  `user_memo`        varchar(500)             default '' comment '备注',
-  `latitude`         double                   default 0 comment '地理位置纬度',
-  `longitude`        double                   default 0 comment '地理位置经度',
-  `precision`        double                   default 0 comment '地理位置精度',
-  `last_up_loc_time` timestamp       null     default null comment '最后记录位置时间',
-  `create_time`      timestamp       not null default now() comment '创建时间',
-  `user_id`          int             not null default 0 comment '关联用户ID',
-  primary key (`mp_user_id`),
-  unique key (`app_id`, `openid`),
-  key (`user_id`)
-);
-
-
-/**
- * b2c_uploaded_image 上传图片表
- *
- **/
+-- -- --  b2c_uploaded_image 上传图片表
 -- drop table if exists `b2c_uploaded_image`;
 create table `b2c_uploaded_image` (
   `img_id`         int(10)  not null auto_increment,
@@ -856,21 +366,6 @@ create table `b2c_uploaded_video` (
   key (`video_orig_fname`)
 );
 
--- --  小视频分类
--- drop table if exists `b2c_uploaded_video_category`;
-create table `b2c_uploaded_video_category` (
-  `video_cat_id`        int(10)  not null auto_increment,
-  `shop_id`             int(11)          not null default 0 comment '店铺ID',
-  `video_cat_name`      varchar(60)      not null default '',
-  `video_cat_parent_id` int(10)          not null default 0,
-  `create_time`         timestamp                 default now(),
-  `cat_ids`             varchar(191)     not null default '0' comment '层级ID串,逗号分隔',
-  `level`               tinyint                   default 0 comment '层级，0开始',
-  `sort`                int(11)                   default 1 comment '排序优先级',
-  primary key (`video_cat_id`),
-  key (`shop_id`)
-);
-
 -- --  微信小程序自定义页面表
 -- drop table if exists `b2c_xcx_customer_page`;
 create table `b2c_xcx_customer_page` (
@@ -886,41 +381,6 @@ create table `b2c_xcx_customer_page` (
   `create_time`          timestamp                 default now(),
   `cat_id`               int(10)          null     default 0 comment '页面分类id',
   primary key (`page_id`)
-);
-/*
- */
-
--- --  自定义页面模板
--- drop table if exists `b2c_customer_page_template`;
-create table `b2c_customer_page_template` (
-  `page_id`       int(10)  not null auto_increment,
-  `shop_id`       int(11)          not null default 0 comment '店铺ID',
-  `page_name`     varchar(60)      not null default '',
-  `page_type`     tinyint(1)       not null default 0 comment '是否为首页1为首页，0非首页',
-  `page_enabled`  tinyint(1)       not null default 1 comment '是否可用',
-  `page_tpl_type` tinyint(1)       not null default 0 comment '模板类型:0自定义模板，1默认模板，2美女模板，3自定义首页',
-  `page_content`  longtext comment '页面内容，json格式存储',
-  `create_time`   timestamp                 default now(),
-  primary key (`page_id`)
-);
-
--- -- 微信二维码
--- drop table if exists `b2c_wxp_qr_code`;
-create table `b2c_wxp_qr_code` (
-  `scene_id`    int(11)       not null auto_increment comment '二维码追踪ID',
-  `shop_id`     int(11)       not null default 0 comment '店铺ID',
-  `qr_type`     tinyint(1)    not null default 0 comment '二维码类型 0：临时二维码，1永久二维码',
-  `expire_time` int(11)       not null default 0 comment '过期时间，永久二维码无效',
-  `ticket`      varchar(191)  not null default '' comment '获取的二维码ticket',
-  `qr_url`      varchar(191)  not null default '' comment '二维码图片URL',
-  `qr_path`     varchar(191)  not null default '' comment '二维码图片本地路径',
-  `res_name`    varchar(100)  not null default '' comment '二维码标识名称',
-  `res_type`    tinyint(1)    not null default 0 comment '回复类型：0文本 1 单图文 2 多图文 3音乐，4 link',
-  `res_content` varchar(1024) not null default 0 comment '回复内容',
-  `create_time` timestamp     not null default now() comment '记录时间',
-  `micro_id`    int(11)                default 0,
-  primary key (`scene_id`),
-  key (`expire_time`)
 );
 
 -- -- 订单表
@@ -1158,32 +618,6 @@ create table `b2c_customer_avail_coupons` (
   key `user_id` (`user_id`)
 );
 
-
--- -- 优惠记录
--- drop table if exists `b2c_mrking_activity_record`;
-create table `b2c_mrking_activity_record` (
-  `id`                 int(12)       not null auto_increment,
-  `shop_id`            int(11)               not null default 0 comment '店铺ID',
-  `coupon_id`          mediumint(8)  not null default '0',
-  `act_type`           mediumint(5)  not null default '0' comment 'user_id不为空时1:经销营等级打折,为空时1:首次下单优惠，2减价，3打折',
-  `act_id`             mediumint(8)  not null default '0',
-  `user_id`            mediumint(8)  not null default '0',
-  `user_cid`           varchar(40)           not null default '',
-  `user_openid`        varchar(128)          not null default '',
-  `order_sn`           varchar(20)           not null default '',
-  `type`               tinyint(2)    not null default '0' comment '1为减价，2为打折',
-  `amount`             decimal(10, 2)        not null default '0.00' comment '打折或减价量',
-  `act_desc`           varchar(128)          not null default '',
-  `limit_order_amount` mediumint(8)  not null default '0',
-  `created`            timestamp             not null default now(),
-  primary key (`id`),
-  key `act_type` (`act_type`),
-  key `user_id` (`user_id`),
-  key `user_cid` (`user_cid`),
-  key `user_openid` (`user_openid`),
-  key `order_sn` (`order_sn`),
-  key (`shop_id`)
-);
 -- -- 优惠券列表
 -- drop table if exists `b2c_mrking_voucher`;
 create table `b2c_mrking_voucher` (
@@ -1244,9 +678,7 @@ create table `b2c_mrking_voucher` (
   key (`shop_id`)
 );
 
-
 -- -- 快递配置表 `b2c_shipping`
-
 -- drop table if exists `b2c_shipping`;
 create table `b2c_shipping` (
   `shipping_id`    tinyint(3)  not null auto_increment,
@@ -1263,16 +695,6 @@ create table `b2c_shipping` (
   key `shipping_code` (`shipping_code`, `enabled`)
 );
 
--- --   配送类型表 `b2c_delivery_type`
--- drop table if exists `b2c_delivery_type`;
-create table `b2c_delivery_type` (
-  `id`            tinyint(3)  not null auto_increment,
-  `shipping_type` varchar(30)         not null default '',
-  `delivery_name` varchar(120)        not null default '',
-  `enabled`       tinyint(1)  not null default '0',
-  primary key (`id`),
-  unique key (`shipping_type`)
-);
 -- -- 用户余额
 -- drop table if exists `b2c_user_account`;
 create table `b2c_user_account` (
@@ -1376,162 +798,6 @@ create table `b2c_income_outcome_detail` (
   key (`shop_id`)
 );
 
--- --  店铺数据统计
--- drop table if exists `b2c_statistics_summary`;
-create table `b2c_statistics_summary` (
-  `id`                            mediumint(10)  not null auto_increment,
-  `shop_id`                       int(11)                not null default 0 comment '店铺ID',
-  `statis_date`                   timestamp              null     default null comment '统计数据时间',
-  `browse_pv`                     mediumint(8)   not null default 0,
-  `browse_uv`                     mediumint(8)   not null default 0,
-  `total_order`                   mediumint(8)   not null default 0,
-  `total_goods`                   mediumint(8)   not null default 0,
-  `total_amount`                  decimal(12, 2)         not null default 0.00,
-  `conversion_rate`               decimal(5, 2)          not null default 0.00,
-  `per_cus_transaction`           decimal(7, 2)          not null default 0.00,
-  `new_order_num`                 mediumint(8)   not null default 0,
-  `new_cod_order_num`             mediumint(8)   not null default 0,
-  `new_waitpay_order_num`         mediumint(8)   not null default 0,
-  `new_cancel_order_num`          mediumint(8)   not null default 0,
-  `new_close_order_num`           mediumint(8)   not null default 0,
-  `new_returnning_order_num`      mediumint(8)   not null default 0,
-  `new_return_finish_order_num`   mediumint(8)   not null default 0,
-  `total_paid_order_num`          mediumint(8)   not null default 0,
-  `total_dlv_order_num`           mediumint(8)   not null default 0,
-  `total_cancelled_order_num`     mediumint(8)   not null default 0,
-  `total_closed_order_num`        mediumint(8)   not null default 0,
-  `total_finished_order_num`      mediumint(8)   not null default 0,
-  `total_returning_order_num`     mediumint(8)   not null default 0,
-  `total_return_finish_order_num` mediumint(8)   not null default 0,
-  `total_goods_num`               smallint(6)    not null default 0,
-  `on_sale_goods_num`             smallint(6)    not null default 0,
-  `new_add_goods`                 smallint(6)    not null default 0,
-  `created`                       timestamp              not null default now() comment '创建时间',
-  primary key (`id`),
-  unique key `statis_date_unique` (`statis_date`),
-  key `created` (`created`),
-  key (`shop_id`)
-);
--- -- 管理后台登录记录表
--- drop table if exists `b2c_admin_login_record`;
-create table `b2c_admin_login_record` (
-  `id`          int(20)     not null auto_increment,
-  `shop_id`     int(11)             not null default 0 comment '店铺ID',
-  `user_name`   varchar(32)         not null default '' comment '登录用户名',
-  `login_type`  smallint(3)         not null default 0 comment '登录类型：0普通登录，1改密码',
-  `login_time`  timestamp           null     default null comment '操作时间',
-  `unlock_time` timestamp           null     default null comment '解锁时间',
-  `user_ip`     varchar(64)         not null default '' comment 'ip地址',
-  `user_agent`  varchar(256)        not null default '' comment '浏览器ua',
-  `retry_count` smallint(3)         not null default 0 comment '重试次数',
-  `is_tmp_lock` tinyint(1)  not null default 0 comment '是否暂时锁定',
-  primary key (`id`),
-  key (`user_name`),
-  key (`user_ip`),
-  key (`shop_id`)
-);
-
--- -- 店铺角色表
-
--- drop table if exists `b2c_shop_role`;
-create table `b2c_shop_role` (
-  `role_id`             int(11)     not null  auto_increment,
-  `shop_id`             int(11)     not null  default 0 comment '店铺ID',
-  `role_name`           varchar(50) not null  default '' comment '角色名称',
-  `privilege_list`      text        not null  default '' comment '权限列表，json数组存储',
-  `official_proxy_role` tinyint(1)            default 1 comment '是否为官方代理子帐号角色，是则不可删除',
-  `create_time`         timestamp             default now(),
-  primary key (`role_id`),
-  key (`shop_id`)
-);
-
--- -- 店铺子帐号
-
--- drop table if exists `b2c_shop_child_account`;
-create table `b2c_shop_child_account` (
-  `account_id`   int(11)      not null  auto_increment,
-  `shop_id`      int(11)      not null  default 0 comment '店铺ID',
-  `account_name` varchar(191) not null  default '' comment '子账号用户名',
-  `account_pwd`  varchar(40)  not null  default '' comment '子账号密码',
-  `role_id`      int(11)      not null  default 0 comment '角色ID',
-  `create_time`  timestamp              default now(),
-  `mobile`       varchar(32)  not null  default '0' comment '手机号',
-  primary key (`account_id`),
-  unique key (`account_name`),
-  key (`shop_id`)
-);
-
--- -- 商品品牌
--- drop table if exists `b2c_product_brand`;
-create table `b2c_product_brand` (
-  `id`         int(11)     not null auto_increment,
-  `brand_name` varchar(32) not null comment '品牌名称',
-  `e_name`     varchar(32) not null comment '品牌英文名称',
-  `logo`       varchar(191)         default null comment '品牌Logo',
-  `first`      tinyint(1)  not null default '0' comment '优先级',
-  `in_time`    datetime    not null,
-  `up_time`    datetime             default null,
-  `is_del`     tinyint(1)  not null default '0' comment '0为未删除 1为删除',
-  `desc`       text                 default null comment '品牌介绍',
-  primary key (`id`)
-);
-
--- 属性组表
--- drop table if exists `b2c_attribute`;
-create table `b2c_attribute` (
-  `attr_id`        int(11)     not null auto_increment,
-  `name`           varchar(30) not null,
-  `attribute_info` text comment 'json存储',
-  `create_time`    timestamp            default now(),
-  `is_del`         tinyint(1)  not null default 0,
-  primary key (`attr_id`)
-);
-
--- --  属性名称表
--- drop table if exists `b2c_attribute_name`;
-create table `b2c_attribute_name` (
-  `attr_name_id` int(11)      not null auto_increment,
-  `attr_type`    tinyint(1)   not null default 0 comment '0下拉选择，1文本输入',
-  `for_search`   tinyint(1)   not null default 0 comment '1用于搜索',
-  `attr_name`    varchar(191) not null comment '属性名',
-  `attr_id`      int(11)      not null default 0,
-  `is_del`       tinyint(1)   not null default 0,
-  primary key (`attr_name_id`),
-  key (`attr_id`)
-);
-
--- --  属性值表
--- drop table if exists `b2c_attribute_values`;
-create table `b2c_attribute_values` (
-  `attr_val_id`  int(11)      not null auto_increment,
-  `attr_value`   varchar(191) not null comment '属性值',
-  `attr_id`      int(11)      not null default 0,
-  `attr_name_id` int(11)      not null default 0,
-  `is_del`       tinyint(1)   not null default 0,
-  primary key (`attr_val_id`),
-  key (`attr_id`),
-  key (`attr_name_id`)
-);
-
--- --  商品属性值，筛选检索用
--- drop table if exists `b2c_attribute_values_index`;
-create table `b2c_attribute_values_index` (
-  `id`           int(11)      not null auto_increment,
-  `goods_id`     int(11)      not null default 0,
-  `attr_id`      int(11)      not null default 0,
-  `attr_name_id` int(11)      not null default 0,
-  `attr_type`    tinyint(1)   not null default 0,
-  `attr_val_id`  int(11)      not null default 0,
-  `attr_name`    varchar(191) not null comment '属性名',
-  `attr_value`   varchar(191) not null comment '属性值',
-  `create_time`  timestamp             default now(),
-  primary key (`id`),
-  key (`goods_id`),
-  key (`attr_id`),
-  key (`attr_name_id`),
-  key (`attr_val_id`)
-);
-
 -- -- 用户收藏
 -- drop table if exists `b2c_user_collection`;
 create table `b2c_user_collection` (
@@ -1545,36 +811,6 @@ create table `b2c_user_collection` (
   `shop_id`    int(11)      not null  default 0 comment '店铺ID',
   primary key (`id`),
   key (`shop_id`)
-);
-
--- -- 套餐
--- drop table if exists `b2c_goods_collocation`;
-create table `b2c_goods_collocation` (
-  `id`        int(11)                       not null  auto_increment,
-  `shop_id`   int(11)                       not null  default 0 comment '店铺ID',
-  `goods_id`  int(11)                       not null,
-  `parent_id` int(11)                       not null comment '自增ID',
-  `prd_id`    int(11)                       not null comment '从商品规格ID',
-  `positon`   tinyint(1)                    not null  default '1' comment '位置 1为主商品 2为从商品',
-  `type`      tinyint(1)                    not null  default '1' comment '类型 1为搭配立减 2为套餐',
-  `discount`  decimal(10, 2) default '0.00' not null comment '优惠',
-  `in_time`   datetime                      null      default null,
-  `up_time`   datetime                      null      default null,
-  `flag`      tinyint(1)                    not null  default '1' comment '1有效 2无效',
-  primary key (`id`)
-);
-
--- -- 最近浏览
--- drop table if exists `b2c_recently_browsed`;
-create table `b2c_recently_browsed` (
-  `id`            int(11)  not null  auto_increment,
-  `shop_id`       int(11)  not null  default 0 comment '店铺ID',
-  `user_id`       int(11)  not null comment '用户ID',
-  `user_cid`      varchar(64)        default null,
-  `goods_id`      int(11)  not null comment '商品ID',
-  `browse_number` int(11)  not null  default '1' comment '浏览次数',
-  `up_time`       datetime null      default null,
-  primary key (`id`)
 );
 
 -- -- 退回订单表
@@ -1616,9 +852,8 @@ create table `b2c_return_order` (
   key `order_sn` (`order_sn`)
 );
 
-/**
-  退款日志记录，优先级卡余额、用户余额、积分抵扣、支付额
- */
+
+-- -- --  退款日志记录，优先级卡余额、用户余额、积分抵扣、支付额
 -- drop table if exists `b2c_refund_amount_record`;
 create table `b2c_refund_amount_record` (
   `rec_id`       int(11)         not null      auto_increment,
@@ -1634,7 +869,6 @@ create table `b2c_refund_amount_record` (
 );
 
 -- -- 部分商品发货表
-
 -- drop table if exists `b2c_part_order_goods_ship`;
 create table `b2c_part_order_goods_ship` (
   `rec_id`         int(11)        not null  auto_increment,
@@ -1734,37 +968,6 @@ create table `b2c_user_explain` (
   primary key (`id`),
   unique key `type` (`type`)
 );
--- -- 发票
--- drop table if exists `b2c_invoice_new`;
-create table `b2c_invoice_new` (
-  `id`                  int(11)                not null  auto_increment,
-  `shop_id`             int(11)                not null  default 0 comment '店铺ID',
-  `user_id`             int(11)                not null,
-  `state`               tinyint(1)                       default 0 comment '发票类型 0普通发票 2增值税发票',
-  `invoice_title`       char(255)              not null comment '发票抬头',
-  `invoice_content`     int(255)               not null comment '发票内容: 明细1,办公用品2,电脑配件3,耗材4',
-  `unit_name`           varchar(60)            not null  default '',
-  `identification_code` varchar(120)           not null  default '' comment '纳税人识别码',
-  `registered_address`  varchar(191)           not null  default '' comment '所在地址',
-  `registered_phone`    varchar(32)            not null  default '',
-  `bank`                varchar(191)                     default '' comment '开户行',
-  `bank_no`             varchar(191)                     default '' comment '开户行卡号',
-  `invoice_name`        varchar(60)            not null  default '',
-  `invoice_mobile`      varchar(32)            not null  default '',
-  `email`               varchar(100)                     default null comment '邮箱',
-  `province_code`       mediumint(10)  not null  default '0' comment '所在省',
-  `province_name`       varchar(50)            not null  default '',
-  `city_code`           mediumint(10)  null      default '0' comment '所在城市',
-  `city_name`           varchar(120)           not null  default '',
-  `district_code`       mediumint(10)  null      default '0' comment '所在区县',
-  `district_name`       varchar(120)           not null  default '',
-  `address`             varchar(191)           not null  default '' comment '所在地址',
-  `proof`               varchar(100)                     default null comment '一般纳税人证明',
-  `in_time`             datetime               not null,
-  `up_time`             datetime               null      default null comment '最后使用时间',
-  `pos_id`              int(11)                not null  default '0' comment 'pos同步的id',
-  primary key (`id`)
-);
 
 -- --  配置信息表 店铺或平台的配置
 -- drop table if exists `b2c_shop_cfg`;
@@ -1811,18 +1014,6 @@ create table `b2c_comment_goods_answer` (
   key `comment_id` (`comment_id`)
 );
 
--- 评价标签表
--- drop table if exists `b2c_comment_tag`;
-create table `b2c_comment_tag` (
-  `id`       int(11)     not null auto_increment,
-  `commtag`  varchar(20) not null default '',
-  `user_id`  int(11)     not null,
-  `goods_id` int(11)     not null default '0',
-  `order_sn` varchar(20) not null default '',
-  `in_time`  timestamp   not null default CURRENT_TIMESTAMP on update CURRENT_TIMESTAMP,
-  `flag`     tinyint(1)  not null default '0' comment '0:未审批,1:审批通过,2:审批未通过',
-  primary key (`id`)
-);
 -- 会员标签
 -- drop table if exists `b2c_tag`;
 create table `b2c_tag` (
@@ -1909,8 +1100,6 @@ create table `b2c_member_card` (
   `exchang_count`      int(11)                                 default null comment '允许兑换次数',
   primary key (`id`)
 );
-/**  */
-
 
 -- -- 门店分组
 -- drop table if exists `b2c_group`;
@@ -1920,16 +1109,6 @@ create table `b2c_group` (
   `in_time`    timestamp   null     default CURRENT_TIMESTAMP,
   primary key (`group_id`),
   unique key `group_name` (`group_name`)
-);
-
--- -- 门店所属分组
--- drop table if exists `b2c_store_group`;
-create table `b2c_store_group` (
-  `store_id` int(11)   not null,
-  `group_id` int(11)   not null,
-  `add_time` timestamp null default CURRENT_TIMESTAMP,
-  primary key (`store_id`, `group_id`),
-  unique key `store_group` (`store_id`, `group_id`)
 );
 
 -- -- 门店商品管理
@@ -1948,20 +1127,6 @@ create table `b2c_store_goods` (
   primary key (`store_id`, `goods_id`, `prd_id`, `is_on_sale`)
 );
 
--- --  发送短信记录表
--- drop table if exists `b2c_sms`;
-create table `b2c_sms` (
-  `id`       int(11)             not null auto_increment,
-  `mobile`   varchar(32)         not null default '',
-  `sms_code` varchar(10)         not null,
-  `add_time` timestamp           null     default CURRENT_TIMESTAMP,
-  `ip`       varchar(20)                  default '',
-  `status`   tinyint(1)  not null default '1' comment '0:发送失败 1：发送成功',
-  `type`     varchar(10)                  default null comment '',
-  `content`  text                not null comment '发送短信内容',
-  primary key (`id`),
-  key `mobile` (`mobile`)
-);
 -- --  门店信息表
 -- drop table if exists `b2c_store`;
 create table `b2c_store` (
@@ -2057,9 +1222,7 @@ create table `b2c_store_service` (
   primary key (`id`)
 );
 
-/**
-退款记录表
-*/
+-- -- --  退款记录表
 -- drop table if exists `b2c_order_refund_record`;
 create table `b2c_order_refund_record` (
   `id`               mediumint(12)  not null auto_increment,
@@ -2092,6 +1255,7 @@ create table `b2c_order_refund_record` (
   key (`refund_time`),
   key (`ret_id`)
 ) auto_increment = 1000001;
+
 -- -- 服务订单表
 -- drop table if exists `b2c_service_order`;
 create table `b2c_service_order` (
@@ -2133,8 +1297,6 @@ create table `b2c_service_order` (
   primary key (`order_id`)
 );
 
-
-
 -- -- 二维码存储表
 -- drop table if exists `b2c_code`;
 create table `b2c_code` (
@@ -2148,8 +1310,6 @@ create table `b2c_code` (
   `channel` varchar(20) DEFAULT '0' COMMENT '渠道分享码',
   primary key (`code_id`)
 );
-/**
- */
 
 -- -- 小程序访问日趋势
 -- drop table if exists `b2c_mp_daily_visit`;
@@ -2165,6 +1325,7 @@ create table `b2c_mp_daily_visit` (
   `add_time`          timestamp not null default CURRENT_TIMESTAMP comment '添加时间',
   key `ref_date` (`ref_date`) using btree
 );
+
 -- -- 小程序概况趋势
 -- drop table if exists `b2c_mp_summary_trend`;
 create table `b2c_mp_summary_trend` (
@@ -2175,6 +1336,7 @@ create table `b2c_mp_summary_trend` (
   `add_time`    timestamp null     default CURRENT_TIMESTAMP comment '添加时间',
   key `ref_date` (`ref_date`) using btree
 );
+
 -- -- 周趋势
 -- drop table if exists `b2c_mp_weekly_visit`;
 create table `b2c_mp_weekly_visit` (
@@ -2188,6 +1350,7 @@ create table `b2c_mp_weekly_visit` (
   `visit_depth`       float     not null default '0' comment '平均访问深度 (浮点型)',
   `add_time`          timestamp not null default CURRENT_TIMESTAMP comment '添加时间'
 );
+
 -- -- 月趋势
 -- drop table if exists `b2c_mp_monthly_visit`;
 create table `b2c_mp_monthly_visit` (
@@ -2201,6 +1364,7 @@ create table `b2c_mp_monthly_visit` (
   `visit_depth`       float     not null default '0' comment '平均访问深度 (浮点型)',
   `add_time`          timestamp not null default CURRENT_TIMESTAMP comment '添加时间'
 );
+
 -- -- 访问分布
 -- drop table if exists `b2c_mp_distribution_visit`;
 create table `b2c_mp_distribution_visit` (
@@ -2209,6 +1373,7 @@ create table `b2c_mp_distribution_visit` (
   `add_time` timestamp not null default CURRENT_TIMESTAMP comment '添加时间',
   key `ref_date` (`ref_date`) using btree
 );
+
 -- -- 日留存
 -- drop table if exists `b2c_mp_daily_retain`;
 create table `b2c_mp_daily_retain` (
@@ -2218,6 +1383,7 @@ create table `b2c_mp_daily_retain` (
   `add_time`     timestamp not null default CURRENT_TIMESTAMP comment '添加时间',
   key `ref_date` (`ref_date`) using btree
 );
+
 -- -- 周留存
 -- drop table if exists `b2c_mp_weekly_retain`;
 create table `b2c_mp_weekly_retain` (
@@ -2226,6 +1392,7 @@ create table `b2c_mp_weekly_retain` (
   `visit_uv`     text comment '活跃用户留存',
   `add_time`     timestamp not null default CURRENT_TIMESTAMP comment '添加时间'
 );
+
 -- -- 月留存
 -- drop table if exists `b2c_mp_monthly_retain`;
 create table `b2c_mp_monthly_retain` (
@@ -2234,6 +1401,7 @@ create table `b2c_mp_monthly_retain` (
   `visit_uv`     text comment '活跃用户留存',
   `add_time`     timestamp not null default CURRENT_TIMESTAMP comment '添加时间'
 );
+
 -- -- 访问页面
 -- drop table if exists `b2c_mp_visit_page`;
 create table `b2c_mp_visit_page` (
@@ -2273,6 +1441,7 @@ create table `b2c_user_login_record` (
   key `add_time` (`add_time`) using btree,
   key `district_add_time` (`add_time`, `district_code`) using btree
 );
+
 -- -- 发票表
 -- drop table if exists `b2c_invoice`;
 create table `b2c_invoice` (
@@ -2288,6 +1457,7 @@ create table `b2c_invoice` (
   `add_time`       timestamp    null      default null on update CURRENT_TIMESTAMP,
   primary key (`id`)
 );
+
 -- -- 服务技师表
 -- drop table if exists `b2c_service_technician`;
 create table `b2c_service_technician` (
@@ -2307,7 +1477,6 @@ create table `b2c_service_technician` (
   primary key (`id`)
 );
 
-
 -- -- 服务技师分组表
 -- drop table if exists `b2c_service_technician_group`;
 create table `b2c_service_technician_group` (
@@ -2318,6 +1487,7 @@ create table `b2c_service_technician_group` (
   `del_flag`   smallint(1)          not null default '0' comment '0使用，1删除',
   primary key (`group_id`)
 );
+
 -- 页面装修 > 网页/小程序跳转表
 -- drop table if exists `b2c_decorate_link`;
 create table `b2c_decorate_link` (
@@ -2335,6 +1505,7 @@ create table `b2c_decorate_link` (
   primary key (`id`),
   index `shop_decorate_link` (`shop_id`, `link_action`, `del_flag`)
 );
+
 -- -- 服务技师班次表
 -- drop table if exists `b2c_service_schedule`;
 create table `b2c_service_schedule` (
@@ -2348,6 +1519,7 @@ create table `b2c_service_schedule` (
   `update_time`   timestamp           null     default '0000-00-00 00:00:00' comment '更改时间',
   primary key (`schedule_id`)
 );
+
 -- -- 服务技师排班表
 -- drop table if exists `b2c_service_technician_schedule`;
 create table `b2c_service_technician_schedule` (
@@ -2398,6 +1570,7 @@ create table `b2c_comment_service` (
   primary key (`id`),
   index `shop_id` (`shop_id`)
 );
+
 -- -- 门店买单订单表
 -- drop table if exists `b2c_store_order`;
 create table `b2c_store_order` (
@@ -2430,7 +1603,6 @@ create table `b2c_store_order` (
   primary key (`order_id`)
 );
 
-
 -- -- 模板消息form_id表
 -- drop table if exists `b2c_mp_template_form_id`;
 create table `b2c_mp_template_form_id` (
@@ -2453,6 +1625,7 @@ create table `b2c_mp_template_form_id` (
   key (`user_id`),
   key (`open_id`)
 );
+
 -- --  拼团活动定义表
 -- drop table if exists `b2c_pin_group_define`;
 create table `b2c_pin_group_define` (
@@ -2481,7 +1654,7 @@ create table `b2c_pin_group_define` (
 );
 
 -- --  拼团活动产品规格定义表
-drop table if exists `b2c_pin_group_product_define`;
+-- drop table if exists `b2c_pin_group_product_define`;
 create table `b2c_pin_group_product_define` (
   `id`              int(11)        not null auto_increment,
   `pin_activity_id` int(11)        not null comment '拼团定义ID',
@@ -2493,9 +1666,8 @@ create table `b2c_pin_group_product_define` (
   primary key (`id`)
 );
 
-
 -- --  拼团活动参团明细表
-drop table if exists `b2c_pin_group_list`;
+-- drop table if exists `b2c_pin_group_list`;
 create table `b2c_pin_group_list` (
   `id`              int(11)     not null auto_increment,
   `pin_activity_id` int(11)     not null comment '拼团活动定义ID',
@@ -2534,7 +1706,6 @@ create table `b2c_charge_money` (
   primary key (`id`)
 );
 
-
 -- -- 用户会员卡消费记录表
 -- drop table if exists `b2c_card_consumer`;
 create table `b2c_card_consumer` (
@@ -2552,9 +1723,6 @@ create table `b2c_card_consumer` (
   `order_sn` varchar(20) null default '' comment '订单号',
   primary key (`id`)
 );
-
-
-
 
 -- --  表单页面
 -- drop table if exists `b2c_form_page`;
@@ -2590,7 +1758,6 @@ create table `b2c_form_submit_list` (
   key (`user_id`)
 );
 
-
 -- --  表单提交详情
 -- drop table if exists `b2c_form_submit_details`;
 create table `b2c_form_submit_details` (
@@ -2622,6 +1789,7 @@ create table `b2c_mp_user_portrait` (
   key `type` (`type`) using btree,
   key `ref_date` (`ref_date`) using btree
 );
+
 -- --  消息模板配置表
 -- drop table if exists `b2c_template_config`;
 create table `b2c_template_config` (
@@ -2653,6 +1821,7 @@ create table `b2c_message_template` (
   `content` text       not null,
   primary key (`id`)
 );
+
 -- -- 每个分销员统计信息
 -- drop table if exists `b2c_user_total_fanli`;
 create table `b2c_user_total_fanli` (
@@ -2666,6 +1835,7 @@ create table `b2c_user_total_fanli` (
   `update_time`     timestamp,
   primary key (`user_id`)
 );
+
 -- -- 每个子分销员数据汇总
 -- drop table if exists `b2c_user_fanli_statistics`;
 create table `b2c_user_fanli_statistics` (
@@ -2735,6 +1905,7 @@ create table `b2c_bargain` (
   primary key (`id`),
   key `goods_id` (`goods_id`)
 );
+
 -- --  砍价发起表
 -- drop table if exists `b2c_bargain_record`;
 create table `b2c_bargain_record` (
@@ -2770,7 +1941,6 @@ create table `b2c_bargain_user_list` (
   key `bargain_user` (`record_id`, `user_id`)
 );
 
-
 -- --  海报表
 -- drop table if exists `b2c_pictorial`;
 create table `b2c_pictorial` (
@@ -2786,6 +1956,7 @@ create table `b2c_pictorial` (
   `del_time`    int(11)                          null     default '0',
   primary key (`id`)
 );
+
 --  优惠券活动表
 -- DROP TABLE IF EXISTS `b2c_coupon_activity`;
 create table `b2c_coupon_activity` (
@@ -2805,6 +1976,7 @@ create table `b2c_coupon_activity` (
   `del_time`          int(11)               not null default '0',
   primary key (`id`)
 );
+
 --  活动送券记录表
 -- DROP TABLE IF EXISTS `b2c_coupon_activity_record`;
 create table `b2c_coupon_activity_record` (
@@ -2907,6 +2079,7 @@ create table `b2c_grade_prd` (
   primary key (`id`),
   key `prd_id` (`prd_id`)
 );
+
 -- --  模板发送记录
 -- DROP TABLE IF EXISTS `b2c_service_message_record`;
 create table `b2c_service_message_record` (
@@ -2928,6 +2101,7 @@ create table `b2c_service_message_record` (
   `add_time`          datetime              null,
   index `user_request` (`user_id`, `request_action`, `template_platform`)
 );
+
 -- --  接口请求记录
 -- DROP TABLE IF EXISTS `b2c_service_request`;
 create table `b2c_service_request` (
@@ -3026,7 +2200,6 @@ create table `b2c_footprint_record` (
   primary key (`id`)
 );
 
-
 -- -- 返利策略
 -- DROP TABLE IF EXISTS `b2c_distribution_strategy`;
 create table `b2c_distribution_strategy` (
@@ -3094,8 +2267,8 @@ create table `b2c_purchase_price_define` (
   `del_time`            int(11)                                          default '0',
   primary key (`id`)
 );
-drop table if exists `b2c_purchase_price_rule`;
-
+-- -- 加价购
+-- drop table if exists `b2c_purchase_price_rule`;
 create table `b2c_purchase_price_rule` (
   `id`                int(11) not null auto_increment,
   `purchase_price_id` int(11) not null comment '加价购活动ID',
@@ -3130,7 +2303,6 @@ create table `b2c_sec_kill_define` (
   `share_config` TEXT NULL   COMMENT '分享配置',
   primary key (`sk_id`)
 );
-
 
 --  参与秒杀活动记录
 -- DROP TABLE IF EXISTS `b2c_sec_kill_list`;
@@ -3206,6 +2378,7 @@ create table `b2c_user_cart_record` (
   key `goods_add_time` (`goods_id`, `add_time`) using btree,
   key `user_add_time` (`user_id`, `add_time`) using btree
 );
+
 -- 商品概览
 -- drop table if exists `b2c_goods_user_summary`;
 create table `b2c_goods_user_summary` (
@@ -3291,6 +2464,7 @@ create table `b2c_distribution_tag` (
   `add_time`         datetime                               default null comment '添加时间',
   key `date_type` (`ref_date`, `type`) using btree
 );
+
 -- 交易订单地区分布
 -- drop table if exists `b2c_distribution_order`;
 create table `b2c_distribution_order` (
@@ -3310,6 +2484,7 @@ create table `b2c_distribution_order` (
   key `ref_date` (`ref_date`) using btree,
   key `pay_order_money` (`pay_order_money`) using btree
 );
+
 -- 交易统计 每小时统计数据
 -- drop table if exists `b2c_trades`;
 create table `b2c_trades` (
@@ -3358,6 +2533,7 @@ create table `b2c_goods_spec_product_bak` (
   `prd_number`       int(11)                 not null default '1' comment '当前规格组合产品库存',
   primary key (`id`)
 );
+
 -- 小程序初始化场景值
 -- drop table if exists `b2c_mp_scene_record`;
 create table `b2c_mp_scene_record` (
@@ -3451,6 +2627,7 @@ create table `b2c_reduce_price_goods` (
   primary key (`id`),
   UNIQUE KEY `reduce_goods` (`reduce_price_id`, `goods_id`)
 );
+
 --  限时减价活动商品规格
 -- DROP TABLE IF EXISTS `b2c_reduce_price_product`;
 create table `b2c_reduce_price_product` (
@@ -3549,6 +2726,7 @@ create table `b2c_group_draw` (
   `reward_coupon_id` VARCHAR(200) NULL   COMMENT '拼团失败发放优惠券',
   primary key (`id`)
 );
+
 --  拼团抽奖邀请表
 -- DROP TABLE IF EXISTS `b2c_group_draw_invite`;
 create table `b2c_group_draw_invite` (
@@ -3565,6 +2743,7 @@ create table `b2c_group_draw_invite` (
   `add_time`       datetime                                         default null,
   primary key (`id`)
 );
+
 --  拼团抽奖码记录
 -- DROP TABLE IF EXISTS `b2c_join_draw_list`;
 create table `b2c_join_draw_list` (
@@ -3578,6 +2757,7 @@ create table `b2c_join_draw_list` (
   `add_time`      datetime   not null comment '添加时间',
   primary key (`id`)
 );
+
 --  参团列表
 -- DROP TABLE IF EXISTS `b2c_join_group_list`;
 create table `b2c_join_group_list` (
@@ -3598,6 +2778,7 @@ create table `b2c_join_group_list` (
   `invite_user_num` int default 0  null comment '邀请用户数',
   primary key (`id`)
 );
+
 --  瓜分积分活动配置
 -- DROP TABLE IF EXISTS `b2c_pin_integration_define`;
 create table `b2c_pin_integration_define` (
@@ -3623,6 +2804,7 @@ create table `b2c_pin_integration_define` (
   `advertise`     varchar(100) collate utf8mb4_unicode_ci not null comment '活动宣传语',
   primary key (`id`)
 );
+
 --  参团列表
 -- DROP TABLE IF EXISTS `b2c_pin_integration_list`;
 create table `b2c_pin_integration_list` (
@@ -3642,6 +2824,7 @@ create table `b2c_pin_integration_list` (
   `can_integration`  int(11)                                not null default '0' comment '该团可瓜分积分池',
   primary key (`id`)
 );
+
 --  小程序链接列表
 -- DROP TABLE IF EXISTS `b2c_mp_jump`;
 create table `b2c_mp_jump` (
@@ -3654,6 +2837,7 @@ create table `b2c_mp_jump` (
   `update_time` timestamp                               null     default null,
   primary key (`id`)
 );
+
 -- 小程序可用appid记录
 -- DROP TABLE IF EXISTS `b2c_mp_jump_usable`;
 create table `b2c_mp_jump_usable` (
@@ -3665,6 +2849,7 @@ create table `b2c_mp_jump_usable` (
   `update_time` timestamp                              null     default null,
   primary key (`id`)
 );
+
 -- 资产变动记录
 -- DROP TABLE IF EXISTS `b2c_trades_record`;
 create table `b2c_trades_record` (
@@ -3679,8 +2864,6 @@ create table `b2c_trades_record` (
   `trade_sn`      varchar(20) collate utf8mb4_unicode_ci not null default '' comment '交易单号',
   primary key (`id`)
 );
-/*
-*/
 
 -- 资产变动记录统计
 -- DROP TABLE IF EXISTS `b2c_trades_record_summary`;
@@ -3697,8 +2880,7 @@ create table `b2c_trades_record_summary` (
   `ref_date`           date                  not null comment '2018-09-04',
   primary key (`id`)
 );
-/*
-*/
+
 -- 分销提现记录
 -- DROP TABLE IF EXISTS `b2c_distribution_withdraw`;
 create table `b2c_distribution_withdraw` (
@@ -3728,8 +2910,6 @@ create table `b2c_distribution_withdraw` (
   unique key `order_sn` (`order_sn`)
 ) engine = InnoDB default charset = utf8mb4 collate = utf8mb4_unicode_ci;
 
-/*
- */
 -- -- 商品品牌
 -- drop table if exists `b2c_goods_brand`;
 create table `b2c_goods_brand` (
@@ -3744,6 +2924,7 @@ create table `b2c_goods_brand` (
   `desc`        text                 default null comment '品牌介绍',
   primary key (`id`)
 );
+
 -- -- 退货退款/退款状态记录
 -- DROP TABLE IF EXISTS `b2c_return_status_change`;
 create table `b2c_return_status_change` (
@@ -3772,8 +2953,6 @@ create table `b2c_wxp_unlimit_code` (
   primary key (`code_id`),
   key `scene_id` (`scene_id`, `code_page`)
 );
-/*
- */
 
 -- unlimit小程序码scene值保存表
 -- DROP TABLE IF EXISTS `b2c_wxp_unlimit_scene`;
@@ -3867,8 +3046,6 @@ create table `b2c_card_order` (
   `return_time`       timestamp                    null comment '退款时间',
   primary key (`order_id`)
 );
-/**  */
-
 
 -- -- 会员卡激活审核表
 -- drop table if exists `b2c_card_examine`;
@@ -3996,7 +3173,7 @@ create table `b2c_coupon_payreward_record` (
   `order_sn`          varchar(20) not null default '' comment '订单编号',
   primary key (`id`)
 );
-/**  */
+
 -- --  短信发送记录
 -- drop table if exists `b2c_sms_send_record`;
 create table `b2c_sms_send_record` (
@@ -4012,6 +3189,7 @@ create table `b2c_sms_send_record` (
   `add_time`      datetime,
   primary key (`id`)
 );
+
 -- --  代付表
 -- drop table if exists `b2c_sub_order_info`;
 create table `b2c_sub_order_info` (
@@ -4039,6 +3217,7 @@ create table `b2c_sub_order_info` (
   index `order_status` (`order_status`),
   primary key (`id`)
 );
+
 -- --  用户导入主表
 -- drop table if exists `b2c_user_import`;
 create table `b2c_user_import` (
@@ -4098,24 +3277,6 @@ create table `b2c_order_must` (
   primary key (`id`)
 );
 
--- --  用户导入主表
--- drop table if exists `b2c_import_goods`;
-create table `b2c_import_goods` (
-  `id`           int not null auto_increment,
-  `imp_batch_no` varchar(255) comment '导入批次号',
-  `site_type`    varchar(255) comment '导入网站类型:taobao,tmall',
-  `imp_url`      varchar(255) comment '导入URL',
-  `item_id`      varchar(255) comment '源商品ID',
-  `goods_id`     int          default 0 comment '导入后商品ID',
-  `goods_name`   varchar(255) comment '商品名称',
-  `imp_time`     timestamp    default now(),
-  key (imp_batch_no),
-  key (item_id),
-  key (goods_id),
-  key (imp_time),
-  primary key (`id`)
-);
-
 -- --  会员卡批次表
 -- drop table if exists b2c_card_batch;
 CREATE TABLE `b2c_card_batch`(
@@ -4160,7 +3321,6 @@ CREATE TABLE `b2c_card_receive_code`(
   INDEX `batch_id` (`batch_id`)
 );
 
-
 -- --  分销员分组表
 -- drop table if exists b2c_distributor_group;
 CREATE TABLE `b2c_distributor_group` (
@@ -4192,6 +3352,7 @@ CREATE TABLE `b2c_gift`(
   PRIMARY KEY (`id`),
   INDEX `level` (`level`)
 );
+
 -- --  赠品规格商品
 -- drop table if exists b2c_gift_product;
 CREATE TABLE `b2c_gift_product`(
@@ -4249,6 +3410,7 @@ create table `b2c_channel` (
   `add_time`             datetime             null     default null,
   primary key (`id`)
 );
+
 -- -- 渠道统计
 -- drop table if exists `b2c_channel_record`;
 create table `b2c_channel_record` (
@@ -4275,6 +3437,7 @@ CREATE TABLE `b2c_order_verifier` (
   PRIMARY KEY (`id`),
   KEY `store_id` (`store_id`,`user_id`)
 );
+
 -- --  好物推荐
 -- drop table if exists `b2c_wx_shopping_recommend`;
 CREATE TABLE `b2c_wx_shopping_recommend` (
@@ -4288,6 +3451,7 @@ CREATE TABLE `b2c_wx_shopping_recommend` (
   KEY `user_id` (`user_id`),
   KEY `goods_id` (`goods_id`)
 );
+
 -- --  自定义足迹
 -- DROP TABLE IF EXISTS `b2c_index_foot_record`;
 create table `b2c_index_foot_record` (
@@ -4299,7 +3463,7 @@ create table `b2c_index_foot_record` (
   `type` TINYINT(2) DEFAULT 0  NULL   COMMENT '0 老用户 1新用户',
   primary key (`id`)
 );
-
+-- --渠道表
 -- drop table if exists `b2c_channel_statistical`;
 create table `b2c_channel_statistical` (
   `id`                            mediumint(10)  not null auto_increment,
@@ -4350,8 +3514,6 @@ CREATE TABLE `b2c_user_rebate_price` (
   `update_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',
   PRIMARY KEY (`id`)
 );
-/*
- */
 
 -- --  搜索热词表
 -- drop table if exists `b2c_search_history`;
@@ -4366,23 +3528,7 @@ CREATE TABLE `b2c_search_history`(
   INDEX `user_id` (`user_id`),
   INDEX `hot_words` (`hot_words`)
 );
--- --  请求外部记录表
--- drop table if exists `b2c_request_record`;
-CREATE TABLE `b2c_request_record`(
-  `id` BIGINT NOT NULL AUTO_INCREMENT,
-  `service_action` TINYINT DEFAULT 0 COMMENT '服务类型 1 POS 2 CRM',
-  `service_interface` VARCHAR(50) NOT NULL COMMENT '服务接口',
-  `request_content` TEXT NOT NULL COMMENT '请求内容',
-  `response_code` VARCHAR(10) COMMENT '响应码',
-  `response_msg` VARCHAR(100) COMMENT '响应码对照',
-  `response_content` TEXT COMMENT '响应内容',
-  `request_time` DATETIME COMMENT '请求时间',
-  `response_time` DATETIME COMMENT '响应时间',
-  `error_is_deal` TINYINT(1) DEFAULT 0  NULL   COMMENT '错误是否已处理',
-  PRIMARY KEY (`id`),
-  INDEX `service_action` (`service_action`),
-  INDEX `service_interface` (`service_interface`)
-);
+
 -- --  请求外部记录表
 -- drop table if exists `b2c_rebate_price_record`;
 CREATE TABLE `b2c_rebate_price_record` (
@@ -4394,8 +3540,7 @@ CREATE TABLE `b2c_rebate_price_record` (
   PRIMARY KEY (`id`),
   UNIQUE KEY `user_id` (`user_id`,`data_sign`)
 );
-/*
- */
+
  -- --  店铺自定义品牌分类
 -- drop table if exists `b2c_brand_classify`;
 create table `b2c_brand_classify` (
@@ -4407,27 +3552,8 @@ create table `b2c_brand_classify` (
   `is_delete`           tinyint(1)             null     default '0',
    primary key (`classify_id`)
 );
-/*
-*/
 
- -- --  批量改价活动
--- drop table if exists `b2c_batch_price_define`;
-CREATE TABLE `b2c_batch_price_define` (
-  `id` int(11) NOT NULL AUTO_INCREMENT COMMENT '批量改价活动ID',
-  `name` varchar(100) COLLATE utf8mb4_unicode_ci NOT NULL COMMENT '活动名称',
-  `start_time` datetime NOT NULL COMMENT '开始时间',
-  `end_time` datetime NOT NULL COMMENT '结束时间',
-  `file_name` varchar(200) COLLATE utf8mb4_unicode_ci NOT NULL COMMENT '文件名称',
-  `del_flag` tinyint(1) DEFAULT '0',
-  `status` tinyint(1) DEFAULT '1' COMMENT '状态： 1：启用  0： 禁用',
-  `add_time` datetime NOT NULL,
-  `update_time` datetime NOT NULL,
-  `del_time` int(11) DEFAULT '0',
-  `is_start_end` tinyint(1) NOT NULL DEFAULT '0' COMMENT '0:未开始，1：已开始，2：已结束（商品价格修改）',
-  PRIMARY KEY (`id`)
-);
-
- -- --  批量改价规格价格对
+ -- --  批量改价规格价格对,寺库专用
 -- drop table if exists `b2c_batch_price`;
 CREATE TABLE `b2c_batch_price` (
    `id` int(9)  NOT NULL AUTO_INCREMENT,
@@ -4436,7 +3562,8 @@ CREATE TABLE `b2c_batch_price` (
    `act_id` int(9) DEFAULT '1' COMMENT '导入批次',
    PRIMARY KEY (`id`)
 );
- -- --  品牌分类毛利对
+
+ -- --  品牌分类毛利对 寺库专用
 -- drop table if exists `b2c_batch_profit`;
 CREATE TABLE `b2c_batch_profit` (
   `id` int(9)  NOT NULL AUTO_INCREMENT,
