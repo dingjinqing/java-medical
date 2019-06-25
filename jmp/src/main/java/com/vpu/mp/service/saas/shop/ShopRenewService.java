@@ -7,7 +7,7 @@ import org.jooq.tools.Convert;
 
 import static com.vpu.mp.db.main.tables.ShopRenew.SHOP_RENEW;
 
-import java.sql.Date;
+import java.sql.Timestamp;
 
 import com.vpu.mp.service.foundation.BaseService;
 
@@ -18,50 +18,41 @@ import com.vpu.mp.service.foundation.BaseService;
  */
 public class ShopRenewService extends BaseService {
 
-
 	public void insertRenewDate() {
-		
+
 	}
+
 	public Integer getShopNumber(Integer sysId) {
-		return (Integer) db().select(DSL.count(SHOP_RENEW.SYS_ID)).from(SHOP_RENEW)
-				.where(SHOP_RENEW.SYS_ID.eq(sysId)).fetchAny(0);
+		return (Integer) db().select(DSL.count(SHOP_RENEW.SYS_ID)).from(SHOP_RENEW).where(SHOP_RENEW.SYS_ID.eq(sysId))
+				.fetchAny(0);
 	}
 
 	public Result<Record> getRenewList(Integer sysId) {
-		return db().select().from(SHOP_RENEW).where(SHOP_RENEW.SYS_ID.eq(sysId))
-				.orderBy(SHOP_RENEW.EXPIRE_TIME.desc()).fetch();
+		return db().select().from(SHOP_RENEW).where(SHOP_RENEW.SYS_ID.eq(sysId)).orderBy(SHOP_RENEW.EXPIRE_TIME.desc())
+				.fetch();
 	}
-	
+
 	public Result<Record> getShopRenewList(Integer shopId) {
 		return db().select().from(SHOP_RENEW).where(SHOP_RENEW.SHOP_ID.eq(shopId))
 				.orderBy(SHOP_RENEW.EXPIRE_TIME.desc()).fetch();
 	}
 
 	public double getRenewTotal(Integer sysId) {
-		Result<Record> result = getRenewList(sysId);
-		double total = 0.0;
-		for (Record r : result) {
-			double v = (double) Convert.convert(r.get(SHOP_RENEW.RENEW_MONEY), Number.class);
-			total += v;
-		}
-		return total;
+		Object total = db().select(DSL.sum(SHOP_RENEW.RENEW_MONEY)).from(SHOP_RENEW).where(SHOP_RENEW.SYS_ID.eq(sysId))
+				.fetchAny(0);
+
+		return total == null ? 0 : Convert.convert(total, Double.class).doubleValue();
 	}
-	
+
 	public double getShopRenewTotal(Integer shopId) {
-		Result<Record> result = getShopRenewList(shopId);
-		double total = 0.0;
-		for (Record r : result) {
-			double v = (double) Convert.convert(r.get(SHOP_RENEW.RENEW_MONEY), Number.class);
-			total += v;
-		}
-		return total;
+		Object total = db().select(DSL.sum(SHOP_RENEW.RENEW_MONEY)).from(SHOP_RENEW)
+				.where(SHOP_RENEW.SHOP_ID.eq(shopId)).fetchAny(0);
+
+		return total == null ? 0 : Convert.convert(total, Double.class).doubleValue();
 	}
-	
-	public Date getShopRenewExpireTime(Integer shopId) {
-		Result<Record> result = getShopRenewList(shopId);
-		if(result.size() > 0) {
-			return result.get(0).get(SHOP_RENEW.EXPIRE_TIME);
-		}
-		return null;
+
+	public Timestamp getShopRenewExpireTime(Integer shopId) {
+		return  db().select().from(SHOP_RENEW).where(SHOP_RENEW.SHOP_ID.eq(shopId))
+				.orderBy(SHOP_RENEW.EXPIRE_TIME.desc()).fetchAny(SHOP_RENEW.EXPIRE_TIME);
 	}
 }

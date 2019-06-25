@@ -1,7 +1,7 @@
 package com.vpu.mp.controller.admin;
 
-import java.sql.Date;
-import java.util.Calendar;
+import java.sql.Timestamp;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Map;
 
@@ -33,15 +33,11 @@ public class AdminRoleController extends AdminBaseController {
 			return redirect("/admin/login");
 		}
 		for (Map<String, Object> shop : shopList) {
-			Date expireTime = saas.shop.renew.getShopRenewExpireTime(Util.getInteger(shop.get("shop_id")));
+			Timestamp expireTime = saas.shop.renew.getShopRenewExpireTime(Util.getInteger(shop.get("shop_id")));
 			int expireStatus = 1;
 			if (expireTime != null) {
-				Calendar cal = Calendar.getInstance();
-				cal.setTime(expireTime);
-				cal.set(Calendar.HOUR, 0);
-				cal.set(Calendar.MINUTE, 0);
-				cal.set(Calendar.SECOND, 0);
-				if (cal.getTimeInMillis() > Calendar.getInstance().getTimeInMillis()) {
+				Timestamp currentTime = Timestamp.valueOf(LocalDateTime.now());
+				if(expireTime.after(currentTime)) {
 					expireStatus = 0;
 				}
 			}

@@ -192,7 +192,7 @@ public class ShopService extends BaseService {
 			select.where(SHOP.SHOP_ID.in(db().selectDistinct(SHOP_RENEW.SHOP_ID)
 					.from(SHOP_RENEW)
 					.where(SHOP_RENEW.SHOP_ID.eq(SHOP.SHOP_ID)
-							.and(SHOP_RENEW.EXPIRE_TIME.ge(DSL.currentDate())))));
+							.and(SHOP_RENEW.EXPIRE_TIME.ge(DSL.currentTimestamp())))));
 		}
 
 		if (param.isUse != null && param.isUse.equals(shopExpiredStatus)) {
@@ -200,7 +200,7 @@ public class ShopService extends BaseService {
 			select.where(SHOP.SHOP_ID.in(db().selectDistinct(SHOP_RENEW.SHOP_ID)
 					.from(SHOP_RENEW)
 					.where(SHOP_RENEW.SHOP_ID.eq(SHOP.SHOP_ID))
-					.and(SHOP_RENEW.EXPIRE_TIME.lt(DSL.currentDate())
+					.and(SHOP_RENEW.EXPIRE_TIME.lt(DSL.currentTimestamp())
 							.or(SHOP_RENEW.EXPIRE_TIME.isNull()))));
 		}
 

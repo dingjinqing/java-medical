@@ -18,6 +18,11 @@ import me.chanjar.weixin.open.bean.auth.WxOpenAuthorizationInfo;
 import me.chanjar.weixin.open.bean.auth.WxOpenAuthorizerInfo;
 import me.chanjar.weixin.open.bean.result.WxOpenAuthorizerInfoResult;
 
+/**
+ * 
+ * @author 新国
+ *
+ */
 public class MpAuthShopService extends BaseService {
 
 	public MpAuthShopRecord addMpAuthAccountInfo(String appId, Integer shopId) throws WxErrorException {
@@ -140,7 +145,7 @@ public class MpAuthShopService extends BaseService {
 	 * @return
 	 */
 	public Map<Integer, String> getNeededMpAuthMap() {
-		Map<Integer, String> result = new HashMap<Integer, String>();
+		Map<Integer, String> result = new HashMap<Integer, String>(6);
 		result.put(17, "帐号管理权限（小程序）");
 		result.put(18, "开发管理与数据分析权限（小程序）");
 		result.put(19, "客服消息管理权限（小程序）");
