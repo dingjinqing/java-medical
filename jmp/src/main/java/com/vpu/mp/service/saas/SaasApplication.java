@@ -4,6 +4,7 @@ import java.util.HashMap;
 
 import com.vpu.mp.service.foundation.ServiceFactory;
 import com.vpu.mp.service.saas.article.ArticleService;
+import com.vpu.mp.service.saas.official.OfficialService;
 import com.vpu.mp.service.saas.privilege.ChildAccountService;
 import com.vpu.mp.service.saas.privilege.MenuService;
 import com.vpu.mp.service.saas.privilege.RoleService;
@@ -28,6 +29,8 @@ public class SaasApplication {
 	public ShopService shop;
 	public RegionService region;
 	public ArticleService article;
+	public OfficialService official;
+	
 	protected CityService city;
 
 	private static SaasApplication saas = null;
