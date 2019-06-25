@@ -6,9 +6,13 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
 
+import com.vpu.mp.db.main.tables.pojos.Shop;
 import com.vpu.mp.db.main.tables.records.MpAuthShopRecord;
+import com.vpu.mp.db.main.tables.records.ShopRecord;
+import com.vpu.mp.service.foundation.Util;
 import com.vpu.mp.service.wechat.OpenPlatform;
 
 import me.chanjar.weixin.common.error.WxErrorException;
@@ -19,11 +23,22 @@ public class AdminWechatController extends AdminBaseController {
 
 	protected OpenPlatform open = OpenPlatform.instance();
 
-	@RequestMapping(value = "/wechat/no/authorization")
-	public ModelAndView noAuthorization() {
-		ModelMap model = new ModelMap();
-		model.addAttribute("title", "小程序管理");
-		return view("admin/wx_auth", model);
+	@RequestMapping(value = "/wechat/proxy/test/create/shoo")
+	@ResponseBody
+	public String noAuthorization() {
+		Shop shop = new Shop();
+		shop.setMobile("13683043470");
+		shop.setUserName("shop001");
+		ShopRecord result = saas.shop.addShop(shop);
+		String json = Util.toJSON(result.intoMap());
+		return "<a href='/wechat/proxy/start/auth?shop_id='" + result.getShopId() + ">测试授权</a>\n" + "create shop json: "
+				+ json;
+	}
+
+	@RequestMapping(value = "/wechat/proxy/test/auth")
+	@ResponseBody
+	public String testAuth() {
+		return "<a href='/wechat/proxy/start/auth'>测试授权</a>";
 	}
 
 	/**
@@ -31,9 +46,9 @@ public class AdminWechatController extends AdminBaseController {
 	 * 
 	 * @return
 	 */
-	@RequestMapping(value = " /wechat/start/authorization")
-	public ModelAndView startAuthorization() {
-		String url = this.mainUrl("/wechat/authorization/callback?shop_id=" + this.shopId());
+	@RequestMapping(value = "/wechat/proxy/start/auth")
+	public ModelAndView startAuthorization(@RequestParam(name = "shop_id", required = true) Integer shopId) {
+		String url = this.mainUrl("/wechat/proxy/authorization/callback?shop_id=" + shopId);
 		try {
 			String authType = "2";
 			String bizAppId = null;
@@ -54,9 +69,9 @@ public class AdminWechatController extends AdminBaseController {
 	 * 
 	 * @return
 	 */
-	@RequestMapping(value = " /wechat/official/account/authorization")
+	@RequestMapping(value = " /wechat/proxy/official/account/authorization")
 	public ModelAndView startOfficialAccountAuthorization() {
-		String url = this.mainUrl("/wechat/authorization/callback?sys_id=" + this.adminAuth.sysId());
+		String url = this.mainUrl("/wechat/proxy/authorization/callback?sys_id=" + this.adminAuth.sysId());
 		try {
 			String authType = "1";
 			String bizAppid = null;
@@ -73,7 +88,7 @@ public class AdminWechatController extends AdminBaseController {
 	 * 
 	 * @return
 	 */
-	@RequestMapping(value = " /wechat/authorization/callback")
+	@RequestMapping(value = " /wechat/proxy/authorization/callback")
 	public ModelAndView authorizationCallback(@RequestParam("auth_code") String authorizationCode,
 			@RequestParam(name = "sys_id", required = false) Integer sysId,
 			@RequestParam(name = "shop_id", required = false) Integer shopId) {
@@ -115,10 +130,10 @@ public class AdminWechatController extends AdminBaseController {
 	 * @param msgSignature
 	 * @return
 	 */
-	@RequestMapping("/wechat/component/event/callback")
+	@RequestMapping("/wechat/proxy/component/event/callback")
 	public Object componentEventCb(@RequestBody(required = false) String requestBody,
-			@RequestParam("timestamp") String timestamp,
-			@RequestParam("nonce") String nonce, @RequestParam("signature") String signature,
+			@RequestParam("timestamp") String timestamp, @RequestParam("nonce") String nonce,
+			@RequestParam("signature") String signature,
 			@RequestParam(name = "encrypt_type", required = false) String encType,
 			@RequestParam(name = "msg_signature", required = false) String msgSignature) {
 		return open.componetCallback(requestBody, timestamp, nonce, signature, encType, msgSignature);
@@ -137,14 +152,11 @@ public class AdminWechatController extends AdminBaseController {
 	 * @param msgSignature
 	 * @return
 	 */
-	@RequestMapping("/wechat/app/event/{appId}/callback")
+	@RequestMapping("/wechat/proxy/app/event/{appId}/callback")
 	public Object appEventCallback(@RequestBody(required = false) String requestBody,
-			@PathVariable("appId") String appId,
-			@RequestParam("signature") String signature,
-			@RequestParam("timestamp") String timestamp,
-			@RequestParam("nonce") String nonce,
-			@RequestParam("openid") String openid,
-			@RequestParam("encrypt_type") String encType,
+			@PathVariable("appId") String appId, @RequestParam("signature") String signature,
+			@RequestParam("timestamp") String timestamp, @RequestParam("nonce") String nonce,
+			@RequestParam("openid") String openid, @RequestParam("encrypt_type") String encType,
 			@RequestParam("msg_signature") String msgSignature) {
 		return open.appEvent(requestBody, appId, signature, timestamp, nonce, openid, encType, msgSignature);
 	}
