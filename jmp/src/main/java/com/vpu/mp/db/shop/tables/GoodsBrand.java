@@ -42,7 +42,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class GoodsBrand extends TableImpl<GoodsBrandRecord> {
 
-    private static final long serialVersionUID = -1507829990;
+    private static final long serialVersionUID = -1362787363;
 
     /**
      * The reference instance of <code>mini_shop_471752.b2c_goods_brand</code>
@@ -101,6 +101,16 @@ public class GoodsBrand extends TableImpl<GoodsBrandRecord> {
      * The column <code>mini_shop_471752.b2c_goods_brand.desc</code>. 品牌介绍
      */
     public final TableField<GoodsBrandRecord, String> DESC = createField("desc", org.jooq.impl.SQLDataType.CLOB, this, "品牌介绍");
+
+    /**
+     * The column <code>mini_shop_471752.b2c_goods_brand.is_recommend</code>. 是否为推荐品牌
+     */
+    public final TableField<GoodsBrandRecord, Byte> IS_RECOMMEND = createField("is_recommend", org.jooq.impl.SQLDataType.TINYINT.defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.TINYINT)), this, "是否为推荐品牌");
+
+    /**
+     * The column <code>mini_shop_471752.b2c_goods_brand.classify_id</code>. 品牌所属分类
+     */
+    public final TableField<GoodsBrandRecord, Integer> CLASSIFY_ID = createField("classify_id", org.jooq.impl.SQLDataType.INTEGER.defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.INTEGER)), this, "品牌所属分类");
 
     /**
      * Create a <code>mini_shop_471752.b2c_goods_brand</code> table reference

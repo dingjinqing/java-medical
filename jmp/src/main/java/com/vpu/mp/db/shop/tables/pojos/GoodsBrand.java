@@ -23,7 +23,7 @@ import javax.annotation.Generated;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class GoodsBrand implements Serializable {
 
-    private static final long serialVersionUID = 1875453262;
+    private static final long serialVersionUID = 150707347;
 
     private Integer   id;
     private String    brandName;
@@ -34,6 +34,8 @@ public class GoodsBrand implements Serializable {
     private Timestamp updateTime;
     private Byte      isDelete;
     private String    desc;
+    private Byte      isRecommend;
+    private Integer   classifyId;
 
     public GoodsBrand() {}
 
@@ -47,6 +49,8 @@ public class GoodsBrand implements Serializable {
         this.updateTime = value.updateTime;
         this.isDelete = value.isDelete;
         this.desc = value.desc;
+        this.isRecommend = value.isRecommend;
+        this.classifyId = value.classifyId;
     }
 
     public GoodsBrand(
@@ -58,7 +62,9 @@ public class GoodsBrand implements Serializable {
         Timestamp addTime,
         Timestamp updateTime,
         Byte      isDelete,
-        String    desc
+        String    desc,
+        Byte      isRecommend,
+        Integer   classifyId
     ) {
         this.id = id;
         this.brandName = brandName;
@@ -69,6 +75,8 @@ public class GoodsBrand implements Serializable {
         this.updateTime = updateTime;
         this.isDelete = isDelete;
         this.desc = desc;
+        this.isRecommend = isRecommend;
+        this.classifyId = classifyId;
     }
 
     public Integer getId() {
@@ -143,6 +151,22 @@ public class GoodsBrand implements Serializable {
         this.desc = desc;
     }
 
+    public Byte getIsRecommend() {
+        return this.isRecommend;
+    }
+
+    public void setIsRecommend(Byte isRecommend) {
+        this.isRecommend = isRecommend;
+    }
+
+    public Integer getClassifyId() {
+        return this.classifyId;
+    }
+
+    public void setClassifyId(Integer classifyId) {
+        this.classifyId = classifyId;
+    }
+
     @Override
     public String toString() {
         StringBuilder sb = new StringBuilder("GoodsBrand (");
@@ -156,6 +180,8 @@ public class GoodsBrand implements Serializable {
         sb.append(", ").append(updateTime);
         sb.append(", ").append(isDelete);
         sb.append(", ").append(desc);
+        sb.append(", ").append(isRecommend);
+        sb.append(", ").append(classifyId);
 
         sb.append(")");
         return sb.toString();
