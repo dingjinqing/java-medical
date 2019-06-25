@@ -3,13 +3,18 @@ package com.vpu.mp.controller.official;
 import javax.servlet.http.HttpServletRequest;
 
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
 
 import com.vpu.mp.controller.BaseController;
+import com.vpu.mp.db.main.tables.pojos.ShopFreeExperience;
 import com.vpu.mp.db.main.tables.records.ShopFreeExperienceRecord;
 import com.vpu.mp.service.foundation.JsonResult;
 import com.vpu.mp.service.saas.SaasApplication;
 
+@RestController
+@RequestMapping("/index")
 public class OfficialController extends BaseController{
 
 	
@@ -33,17 +38,17 @@ public class OfficialController extends BaseController{
 			return JsonResult.fail("该手机号已申请，请勿重复提交");
 		}else {
 			
-			ShopFreeExperienceRecord shopFreeExperienceRecord = new ShopFreeExperienceRecord();
+			ShopFreeExperience shopFreeExperience = new ShopFreeExperience();
 			
 			// get device type
 			String source = detectDevice(request);
 			
-			shopFreeExperienceRecord.setMobile(mobile);
-			shopFreeExperienceRecord.setContact(contact);
-			shopFreeExperienceRecord.setSource(source);
+			shopFreeExperience.setMobile(mobile);
+			shopFreeExperience.setContact(contact);
+			shopFreeExperience.setSource(source);
 			
 			// store in database
-			this.saas.official.insertUserInfo(shopFreeExperienceRecord);
+			this.saas.official.insertUserInfo(shopFreeExperience);
 			
 			return JsonResult.success("提交申请成功,请等待业务员联系");
 		}

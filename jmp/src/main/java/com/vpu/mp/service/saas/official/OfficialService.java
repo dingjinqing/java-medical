@@ -2,7 +2,7 @@ package com.vpu.mp.service.saas.official;
 
 import static com.vpu.mp.db.main.tables.ShopFreeExperience.SHOP_FREE_EXPERIENCE;
 
-import com.vpu.mp.db.main.tables.records.ShopFreeExperienceRecord;
+import com.vpu.mp.db.main.tables.pojos.ShopFreeExperience;
 import com.vpu.mp.service.foundation.BaseService;
 
 /**
@@ -18,14 +18,7 @@ public class OfficialService extends BaseService{
 	 * @return boolean
 	 */
 	public boolean verifyIsExist(String mobile) {
-		return db().fetchCount(SHOP_FREE_EXPERIENCE, SHOP_FREE_EXPERIENCE.MOBILE.eq(mobile))>0;
-		
-		/*
-		 * ShopFreeExperienceRecord record = this.db() .selectFrom(SHOP_FREE_EXPERIENCE)
-		 * .where(SHOP_FREE_EXPERIENCE.MOBILE.eq(mobile)) .fetchAny();
-		 * 
-		 * return !(record==null);
-		 */
+		return db().fetchCount(SHOP_FREE_EXPERIENCE, SHOP_FREE_EXPERIENCE.MOBILE.eq(mobile))>0;		 
 	}
 	
 	/**
@@ -33,8 +26,8 @@ public class OfficialService extends BaseService{
 	 * @param usernamedbzz
 	 * @param mobile
 	 */
-	public int insertUserInfo(ShopFreeExperienceRecord shopFreeExperienceRecord) {
-		ShopFreeExperienceRecord shop = shopFreeExperienceRecord;
+	public int insertUserInfo(ShopFreeExperience shopFreeExperience) {
+		ShopFreeExperience shop = shopFreeExperience;
 		int i = this.db()
 			.insertInto(SHOP_FREE_EXPERIENCE,SHOP_FREE_EXPERIENCE.CONTACT, SHOP_FREE_EXPERIENCE.MOBILE,SHOP_FREE_EXPERIENCE.SOURCE)
 			.values(shop.getContact(), shop.getMobile(),shop.getSource())
