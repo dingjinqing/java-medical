@@ -18,22 +18,24 @@ public class OfficialService extends BaseService{
 	 * @return boolean
 	 */
 	public boolean verifyIsExist(String mobile) {
-		ShopFreeExperienceRecord record = this.dm.db()
-		.selectFrom(SHOP_FREE_EXPERIENCE)
-		.where(SHOP_FREE_EXPERIENCE.MOBILE.eq(mobile))
-		.fetchAny();
+		return db().fetchCount(SHOP_FREE_EXPERIENCE, SHOP_FREE_EXPERIENCE.MOBILE.eq(mobile))>0;
 		
-		return !(record==null);
+		/*
+		 * ShopFreeExperienceRecord record = this.db() .selectFrom(SHOP_FREE_EXPERIENCE)
+		 * .where(SHOP_FREE_EXPERIENCE.MOBILE.eq(mobile)) .fetchAny();
+		 * 
+		 * return !(record==null);
+		 */
 	}
 	
 	/**
 	 * 将用户信息持久化
-	 * @param username
+	 * @param usernamedbzz
 	 * @param mobile
 	 */
 	public int insertUserInfo(ShopFreeExperienceRecord shopFreeExperienceRecord) {
 		ShopFreeExperienceRecord shop = shopFreeExperienceRecord;
-		int i = this.dm.db()
+		int i = this.db()
 			.insertInto(SHOP_FREE_EXPERIENCE,SHOP_FREE_EXPERIENCE.CONTACT, SHOP_FREE_EXPERIENCE.MOBILE,SHOP_FREE_EXPERIENCE.SOURCE)
 			.values(shop.getContact(), shop.getMobile(),shop.getSource())
 			.execute();
