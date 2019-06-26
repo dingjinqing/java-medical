@@ -9,7 +9,6 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.vpu.mp.controller.BaseController;
 import com.vpu.mp.db.main.tables.pojos.ShopFreeExperience;
-import com.vpu.mp.db.main.tables.records.ShopFreeExperienceRecord;
 import com.vpu.mp.service.foundation.JsonResult;
 import com.vpu.mp.service.saas.SaasApplication;
 
