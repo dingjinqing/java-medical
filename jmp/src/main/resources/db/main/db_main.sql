@@ -281,7 +281,9 @@ create table `b2c_article` (
 create table `b2c_article_category` (
   `category_id`    int(11)      not null auto_increment,
   `category_name`  varchar(191) not null default '',
-  `use_footer_nav` tinyint(1)            default '0' comment '是否用于底部导航',
+  `del_state` tinyint(1) NOT NULL DEFAULT 0 COMMENT '0未删除,1删除',
+  `add_time` timestamp NULL DEFAULT current_timestamp() COMMENT '添加时间',
+  `update_time` timestamp NULL DEFAULT current_timestamp() ON UPDATE current_timestamp() COMMENT '更新时间',
   primary key (`category_id`)
 );
 

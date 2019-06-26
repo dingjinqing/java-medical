@@ -5,8 +5,10 @@ insert into `b2c_system_user` (`user_name`, `password`) values ('system', md5('a
 
 
 truncate table `b2c_article_category`;
-insert into `b2c_article_category` (`category_id`, `category_name`, `use_footer_nav`)
-values ('1', '新手指南',  '1'), ('2', '支付方式', '1'), ('3', '服务保障', '1');
+insert into `b2c_article_category` (`category_id`, `category_name`, `del_state`, `add_time`, `update_time`)
+values ('1', '新手指南', '0', current_timestamp(), current_timestamp()), 
+('2', '支付方式', '0', current_timestamp(), current_timestamp()), 
+('3', '服务保障', '0', current_timestamp(), current_timestamp());
 
 ## 帮助文章
 truncate table `b2c_article`;
