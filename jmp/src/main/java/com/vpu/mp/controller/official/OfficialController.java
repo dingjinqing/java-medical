@@ -12,6 +12,10 @@ import com.vpu.mp.db.main.tables.pojos.ShopFreeExperience;
 import com.vpu.mp.service.foundation.JsonResult;
 import com.vpu.mp.service.saas.SaasApplication;
 
+/**
+ * @author 黄壮壮
+ * 2019-06-26 10:25
+ */
 @RestController
 @RequestMapping("/index")
 public class OfficialController extends BaseController{
@@ -19,7 +23,6 @@ public class OfficialController extends BaseController{
 	
 	/**
 	   *  处理提交申请使用的客户信息
-	 * @author 黄壮壮
 	 * @param username
 	 * @param mobile
 	 * @url /index/check/free/experience
