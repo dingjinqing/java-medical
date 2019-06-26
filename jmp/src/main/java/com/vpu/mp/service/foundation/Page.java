@@ -10,7 +10,7 @@ public class Page {
 	 *  添加分页列表默认当前页码和默认显示行数
 	 *  @author 李晓冰
 	 */
-	public static final int DEFAULT_CURRENT_PAGE=0;
+	public static final int DEFAULT_CURRENT_PAGE=1;
 	public static final int DEFAULT_PAGE_ROWS=20;
 	
 	public Integer totalRows;
@@ -26,7 +26,7 @@ public class Page {
 
 	public static Page getPage(Integer totalRows, Integer currentPage, Integer pageRows) {
 		currentPage = currentPage == null ? 1 : currentPage;
-		Integer pageCount = (Integer)(int)Math.ceil(totalRows / pageRows);
+		Integer pageCount = (Integer)(int)Math.ceil(Double.valueOf(totalRows) / Double.valueOf(pageRows));
 		Integer lastPage = pageCount > 0 ? pageCount : 1;
 		currentPage = currentPage > lastPage ? lastPage : (currentPage <= 0 ? 1 : currentPage);
 		Integer firstPage = 1;
