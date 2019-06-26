@@ -5,6 +5,14 @@ package com.vpu.mp.service.foundation;
  *
  */
 public class Page {
+	
+	/**
+	 *  添加分页列表默认当前页码和默认显示行数
+	 *  @author 李晓冰
+	 */
+	public static final int DEFAULT_CURRENT_PAGE=0;
+	public static final int DEFAULT_PAGE_ROWS=20;
+	
 	public Integer totalRows;
 	public Integer currentPage;
 	public Integer firstPage;
@@ -113,4 +121,18 @@ public class Page {
 		this.pageCount = pageCount;
 	}
 
+    @Override
+    public String toString() {
+        return "Page{" +
+                "totalRows=" + totalRows +
+                ", currentPage=" + currentPage +
+                ", firstPage=" + firstPage +
+                ", prePage=" + prePage +
+                ", nextPage=" + nextPage +
+                ", lastPage=" + lastPage +
+                ", pageRows=" + pageRows +
+                ", pageCount=" + pageCount +
+                ", pageInfo='" + pageInfo + '\'' +
+                '}';
+    }
 }

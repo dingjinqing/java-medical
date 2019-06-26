@@ -27,4 +27,11 @@ public class PageResult {
 		this.dataList = dataList;
 	}
 
+    @Override
+    public String toString() {
+        return "PageResult{" +
+                "page=" + page +
+                ", dataList=" + dataList +
+                '}';
+    }
 }
