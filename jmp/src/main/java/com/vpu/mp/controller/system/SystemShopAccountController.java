@@ -113,12 +113,12 @@ public class SystemShopAccountController extends SystemBaseController {
 			cityId = r.size() > 0 ? r.get(0).getCityId() : 0;
 			data.put("city", r.intoMaps());
 			data.put("district", saas.region.district.getDistrictList(cityId).intoMaps());
-			return JsonResult.success(data);
+			return success(data);
 		}
 		if (cityId != 0) {
-			return JsonResult.success(saas.region.district.getDistrictList(cityId).intoMaps());
+			return success(saas.region.district.getDistrictList(cityId).intoMaps());
 		}
-		return JsonResult.fail("fail");
+		return fail();
 	}
 
 }

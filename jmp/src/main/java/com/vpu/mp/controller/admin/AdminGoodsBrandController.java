@@ -1,11 +1,11 @@
 package com.vpu.mp.controller.admin;
 
 import com.vpu.mp.db.shop.tables.pojos.GoodsBrand;
-import com.vpu.mp.service.shop.ShopApplication;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
 import com.vpu.mp.service.foundation.JsonResult;
+import com.vpu.mp.service.foundation.JsonResultCode;
 import com.vpu.mp.service.foundation.PageResult;
 import com.vpu.mp.service.shop.goods.GoodsBrandService.GoodsBrandPageListParam;
 import com.vpu.mp.support.LineConvertHump;
@@ -30,11 +30,7 @@ public class AdminGoodsBrandController extends AdminBaseController {
 
         PageResult pageResult = shop().goods.goodsBrand.getPageList(param);
 
-        JsonResult jsonResult = JsonResult.success();
-
-        jsonResult.setContent(pageResult);
-
-        return jsonResult;
+        return  success(pageResult);
     }
     
     /**
@@ -45,16 +41,20 @@ public class AdminGoodsBrandController extends AdminBaseController {
     @PostMapping("/admin/goods/goodsBrand")
     @ResponseBody
     public JsonResult insert(GoodsBrand goodsBrand) {
-        int result = shop().goods.goodsBrand.insert(goodsBrand);
-        JsonResult jsonResult;
-
-        if (result == 1) {
-            jsonResult = JsonResult.success();
-        } else {
-            jsonResult = JsonResult.fail(JsonResult.INSERT_ERROR);
-        }
-
-        return jsonResult;
+    	shop().goods.goodsBrand.insert(goodsBrand);
+    	return success();
+    	
+//    	
+//        int result = shop().goods.goodsBrand.insert(goodsBrand);
+//        JsonResult jsonResult;
+//
+//        if (result == 1) {
+//            jsonResult = JsonResult.success();
+//        } else {
+//            jsonResult = JsonResult.fail(JsonResult.INSERT_ERROR);
+//        }
+//
+//        return success;
     }
     
     /**
@@ -65,21 +65,26 @@ public class AdminGoodsBrandController extends AdminBaseController {
     @DeleteMapping("/admin/goods/goodsBrand")
     @ResponseBody
     public JsonResult delete(Integer goodsBrandId){
-
-        if(goodsBrandId==null){
-            return JsonResult.fail(JsonResult.DELETE_ERROR);
-        }
-
-        int result = shop().goods.goodsBrand.delete(goodsBrandId);
-        JsonResult jsonResult;
-
-        if (result == 1) {
-            jsonResult = JsonResult.success();
-        } else {
-            jsonResult = JsonResult.fail(JsonResult.DELETE_ERROR);
-        }
-
-        return jsonResult;
+    	  if(goodsBrandId==null){
+              return fail(JsonResultCode.CODE_PARAM_ERROR);
+          }
+          shop().goods.goodsBrand.delete(goodsBrandId);
+          return success();          
+          
+//        if(goodsBrandId==null){
+//            return JsonResult.fail(JsonResult.DELETE_ERROR);
+//        }
+//
+//        int result = shop().goods.goodsBrand.delete(goodsBrandId);
+//        JsonResult jsonResult;
+//
+//        if (result == 1) {
+//            jsonResult = JsonResult.success();
+//        } else {
+//            jsonResult = JsonResult.fail(JsonResult.DELETE_ERROR);
+//        }
+//
+//        return jsonResult;
     }
     
     /**
@@ -91,19 +96,26 @@ public class AdminGoodsBrandController extends AdminBaseController {
     @ResponseBody
     public JsonResult update(GoodsBrand goodsBrand){
         if(goodsBrand.getId()==null){
-            return JsonResult.fail(JsonResult.UPDATE_ERROR);
+        	return fail(JsonResultCode.CODE_PARAM_ERROR);
         }
 
-        int result = shop().goods.goodsBrand.update(goodsBrand);
-        JsonResult jsonResult;
-
-        if (result == 1) {
-            jsonResult = JsonResult.success();
-        } else {
-            jsonResult = JsonResult.fail(JsonResult.UPDATE_ERROR);
-        }
-
-        return jsonResult;
+        shop().goods.goodsBrand.update(goodsBrand);
+        return success();
+        
+//        if(goodsBrand.getId()==null){
+//            return JsonResult.fail(JsonResult.UPDATE_ERROR);
+//        }
+//
+//        int result = shop().goods.goodsBrand.update(goodsBrand);
+//        JsonResult jsonResult;
+//
+//        if (result == 1) {
+//            jsonResult = JsonResult.success();
+//        } else {
+//            jsonResult = JsonResult.fail(JsonResult.UPDATE_ERROR);
+//        }
+//
+//        return jsonResult;
     }
 
 }

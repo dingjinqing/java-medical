@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
 
 import com.vpu.mp.service.foundation.JsonResult;
+import com.vpu.mp.service.foundation.JsonResultCode;
 
 
 /**
@@ -35,9 +36,9 @@ public class SystemLoginController extends SystemBaseController {
 	}
 
 	@RequestMapping(value = "/system/logout")
-	public ModelAndView logout() {
+	public String logout() {
 		sysAuth.logout();
-		return redirect("system/login");
+		return "redirect:/system/login";
 	}
 
 	@RequestMapping(value = "/system/login/attempt")
@@ -45,9 +46,9 @@ public class SystemLoginController extends SystemBaseController {
 	public JsonResult attempt(@RequestParam(value = "username") String userName,
 			@RequestParam(value = "password") String password) {
 		if (sysAuth.attempt(userName, password)) {
-			return JsonResult.success("ok");
+			return success();
 		} else {
-			return JsonResult.fail("用户名或密码不正确，请重新输入", -1);
+			return fail(JsonResultCode.CODE_ACCOUNT_OR_PWD_ERROR);
 		}
 	}
 }

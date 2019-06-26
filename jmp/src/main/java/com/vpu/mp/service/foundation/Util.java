@@ -1,6 +1,5 @@
 package com.vpu.mp.service.foundation;
 
-
 import java.io.IOException;
 import java.lang.reflect.Field;
 import java.net.InetAddress;
@@ -11,6 +10,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 import java.util.Properties;
 import java.util.Random;
@@ -24,6 +24,9 @@ import org.apache.commons.lang3.StringUtils;
 import org.jooq.exception.DataTypeException;
 import org.jooq.tools.Convert;
 import org.jooq.types.UInteger;
+import org.springframework.context.i18n.LocaleContextHolder;
+import org.springframework.context.support.MessageSourceAccessor;
+import org.springframework.context.support.ReloadableResourceBundleMessageSource;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.core.io.support.PropertiesLoaderUtils;
 import org.springframework.util.DigestUtils;
@@ -248,9 +251,9 @@ public class Util {
 		}
 		return result;
 	}
-	
+
 	public static String mainUrl(String path) {
-		return mainUrl(path,null);
+		return mainUrl(path, null);
 	}
 
 	public static String mainUrl(String path, String schema) {
@@ -262,9 +265,38 @@ public class Util {
 		return (StringUtils.isBlank(schema) ? "http://" : schema + "://") + Util.getProperty("domain.image")
 				+ (path.startsWith("/") ? "" : "/") + path;
 	}
-	
+
 	public static String imageUrl(String path) {
-		return imageUrl(path,null);
+		return imageUrl(path, null);
+	}
+
+	/**
+	 * 转换语言
+	 * 
+	 * @param language
+	 * @param message
+	 * @param defaultMessage
+	 * @return
+	 */
+	public static String translateMessage(String language, String message, String defaultMessage) {
+		language = StringUtils.isBlank(language) ? "zh_CN" : language;
+		ReloadableResourceBundleMessageSource source = new ReloadableResourceBundleMessageSource();
+		source.setBasename("static/i18n/messages");
+		source.setDefaultEncoding("UTF-8");
+		MessageSourceAccessor accessor = new MessageSourceAccessor(source);
+		String[] languages = language.split("_");
+		Locale locale = new Locale(languages[0], languages[1]);
+		return accessor.getMessage(message, defaultMessage, locale);
+	}
+
+	/**
+	 * 转换语言
+	 * @param language
+	 * @param message
+	 * @return
+	 */
+	public static String translateMessage(String language, String message) {
+		return translateMessage( language, message, message);
 	}
 
 }

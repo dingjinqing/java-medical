@@ -20,6 +20,7 @@ import org.springframework.web.servlet.ModelAndView;
 
 import com.vpu.mp.db.shop.tables.records.UploadedImageRecord;
 import com.vpu.mp.service.foundation.JsonResult;
+import com.vpu.mp.service.foundation.JsonResultCode;
 import com.vpu.mp.service.foundation.PageResult;
 import com.vpu.mp.service.foundation.Util;
 import com.vpu.mp.service.shop.image.ImageService.CropImageParam;
@@ -66,28 +67,25 @@ public class AdminImageController extends AdminBaseController {
 			uploadParts = Util.getFilePart(request, name);
 		} catch (IOException | ServletException e1) {
 			e1.printStackTrace();
-			return JsonResult.fail("上传失败");
+			return fail(JsonResultCode.CODE_IMGAE_UPLOAD_FAILED);
 		}
 		List<Integer> imageIds = new ArrayList<Integer>();
-		String lastError = "";
 		for (Part part : uploadParts) {
 			try {
 				String message = this.uploadOneFile(part);
 				if (message.startsWith(prefixImgId)) {
 					imageIds.add(Util.getInteger(message.substring(prefixImgId.length(), message.length())));
-				} else {
-					lastError = message;
-				}
+				} 
 			} catch (Exception e) {
 				e.printStackTrace();
-				return JsonResult.fail("无效图片");
+				return fail(JsonResultCode.CODE_IMGAE_INVALID);
 			}
 
 		}
 		if (imageIds.size() > 0) {
-			return JsonResult.success(imageIds);
+			return success(imageIds);
 		} else {
-			return JsonResult.fail(lastError);
+			return fail();
 		}
 	}
 
@@ -145,10 +143,10 @@ public class AdminImageController extends AdminBaseController {
 			// 兼容前端输出数组形式
 			List<Map<String, Object>> list = new ArrayList<Map<String, Object>>();
 			list.add(cropImage.intoMap());
-			return JsonResult.success(list);
+			return success(list);
 		} catch (Exception e) {
 			e.printStackTrace();
-			return JsonResult.fail("裁剪失败");
+			return fail(JsonResultCode.CODE_IMGAE_CROP_FAILED);
 		}
 	}
 

@@ -2922,6 +2922,8 @@ create table `b2c_goods_brand` (
   `update_time` datetime             default null,
   `is_delete`   tinyint(1)  not null default '0' comment '0为未删除 1为删除',
   `desc`        text                 default null comment '品牌介绍',
+  `is_recommend` tinyint(1) default 0 null comment '是否为推荐品牌',
+  `classify_id`  int(11) default 0    null comment '品牌所属分类',
   primary key (`id`)
 );
 

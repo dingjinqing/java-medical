@@ -13,6 +13,7 @@ import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.view.json.MappingJackson2JsonView;
 
 import com.vpu.mp.service.foundation.JsonResult;
+import com.vpu.mp.service.foundation.JsonResultCode;
 import com.vpu.mp.service.foundation.Util;
 import com.vpu.mp.service.saas.SaasApplication;
 
@@ -24,8 +25,6 @@ import com.vpu.mp.service.saas.SaasApplication;
 
 public class BaseController {
 
-	final static String REDIRECT_PREFIX = "redirect:";
-
 	protected SaasApplication saas = SaasApplication.instance();
 
 	@Autowired
@@ -34,104 +33,87 @@ public class BaseController {
 	@Autowired
 	protected Environment env;
 
-	protected String flashSessionKey = "__FLASH_SESSION_KEY";
-
-	protected ModelAndView view(String path) {
-		if (this.isRedirectPath(path)) {
-			return new ModelAndView(path);
-		}
-		return getDefaultModelAndView(path);
-	}
-
-	protected ModelMap globalModelMap() {
-		return null;
-	}
-
-	public ModelAndView jsonSuccess() {
-		return json(JsonResult.success());
-	}
-
-	public ModelAndView jsonSuccess(Object content) {
-		return json(JsonResult.success(content));
-	}
-
-	public ModelAndView jsonFail(Object message) {
-		return json(JsonResult.fail(message));
-	}
-
-	public ModelAndView jsonFail(Object message, int error) {
-		return json(JsonResult.fail(message, error));
-	}
-
-	protected ModelAndView json(JsonResult result) {
+	/**
+	 * 
+	 * @param module
+	 * @param resultCode
+	 * @param content
+	 * @return
+	 */
+	public ModelAndView json(JsonResultCode resultCode, Object content) {
+		String language = request.getParameter("lang");
+		JsonResult r = JsonResult.result(language, resultCode, content);
 		ModelMap model = new ModelMap();
-		model.addAttribute("error", result.getError());
-		model.addAttribute("message", result.getMessage());
-		model.addAttribute("content", result.getContent());
+		model.addAttribute("error", r.getError());
+		model.addAttribute("message", r.getMessage());
+		model.addAttribute("content", r.getContent());
+		model.addAttribute("lanuage", r.getLanguage());
 		return this.json(model);
 	}
 
+	public ModelAndView jsonSuccess() {
+		return json(JsonResultCode.CODE_SUCCESS, null);
+	}
+
+	public ModelAndView jsonSuccess(Object content) {
+		return json(JsonResultCode.CODE_SUCCESS, content);
+	}
+
+	public ModelAndView jsonFail(JsonResultCode resultCode) {
+		return json(resultCode,null);
+	}
+	
+	public ModelAndView jsonFail() {
+		return json(JsonResultCode.CODE_FAIL,null);
+	}
+	
+	public JsonResult result(JsonResultCode resultCode, Object content) {
+		String language = request.getParameter("lang");
+		return JsonResult.result(language, resultCode, content);
+	}
+	
+	public JsonResult success() {
+		return result(JsonResultCode.CODE_SUCCESS, null);
+	}
+
+	public JsonResult success(Object content) {
+		return result(JsonResultCode.CODE_SUCCESS, content);
+	}
+
+	public JsonResult fail(JsonResultCode resultCode) {
+		return result(resultCode,null);
+	}
+	
+	public JsonResult fail() {
+		return result(JsonResultCode.CODE_FAIL,null);
+	}
+	
 	protected ModelAndView json(Map<String, ?> model) {
 		ModelAndView mv = new ModelAndView(new MappingJackson2JsonView());
 		mv.addAllObjects(model);
 		return mv;
 	}
-
-	protected ModelAndView view(String path, Map<String, ?> model) {
-		if (this.isRedirectPath(path)) {
-			request.getSession().setAttribute(flashSessionKey, model);
-			return new ModelAndView(path);
-		}
-		ModelAndView mv = getDefaultModelAndView(path);
-		mv.addAllObjects(model);
-		return mv;
+	
+	@Deprecated
+	public ModelAndView view(String path,Object o) {
+		assert(false);
+		return null;
 	}
-
+	
+	@Deprecated
+	public ModelAndView view(String path) {
+		assert(false);
+		return null;
+	}
+	
+	@Deprecated
+	public ModelAndView showMessage(Object msg) {
+		return null;
+	}
+	
+	@Deprecated
 	protected ModelAndView redirect(String path) {
-		return view(getRedirectPath(path));
-	}
-
-	protected ModelAndView redirect(String path, Map<String, ?> model) {
-		return view(getRedirectPath(path), model);
-	}
-
-	@SuppressWarnings("unchecked")
-	protected ModelAndView getDefaultModelAndView(String path) {
-		ModelAndView mv = new ModelAndView(path);
-		ModelMap model = new ModelMap();
-		model.addAttribute("main_domain", env.getProperty("domain.main"));
-		model.addAttribute("image_domain", env.getProperty("domain.image"));
-		mv.addAllObjects(model);
-
-		Object flashModal = request.getSession().getAttribute(flashSessionKey);
-		if (flashModal != null) {
-			mv.addAllObjects((Map<String, ?>) flashModal);
-			request.getSession().removeAttribute(flashSessionKey);
-		}
-
-		ModelMap globalModel = globalModelMap();
-		if (globalModel != null) {
-			mv.addAllObjects(globalModel);
-		}
-		return mv;
-	}
-
-	protected boolean isRedirectPath(String path) {
-		return path.startsWith(REDIRECT_PREFIX);
-	}
-
-	protected String getRealPath(String path) {
-		if (isRedirectPath(path)) {
-			return path.substring(9);
-		}
-		return path;
-	}
-
-	protected String getRedirectPath(String path) {
-		if (isRedirectPath(path)) {
-			return path;
-		}
-		return REDIRECT_PREFIX + path;
+		return new ModelAndView("redirect:/"+path);
 	}
 
 	protected boolean isPost() {
@@ -168,13 +150,12 @@ public class BaseController {
 	protected Map<String, String> inputMap() {
 		return inputMap(",");
 	}
-	
+
 	public String mainUrl(String path) {
-		return Util.imageUrl(path,request.getScheme());
+		return Util.imageUrl(path, request.getScheme());
 	}
 
-	
 	public String imageUrl(String path) {
-		return Util.imageUrl(path,request.getScheme());
+		return Util.imageUrl(path, request.getScheme());
 	}
 }

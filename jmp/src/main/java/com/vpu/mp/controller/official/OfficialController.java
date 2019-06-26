@@ -5,12 +5,11 @@ import javax.servlet.http.HttpServletRequest;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.vpu.mp.controller.BaseController;
 import com.vpu.mp.db.main.tables.pojos.ShopFreeExperience;
 import com.vpu.mp.service.foundation.JsonResult;
-import com.vpu.mp.service.saas.SaasApplication;
 
 /**
  * @author 黄壮壮
@@ -18,7 +17,7 @@ import com.vpu.mp.service.saas.SaasApplication;
  */
 @RestController
 @RequestMapping("/index")
-public class OfficialController extends BaseController{
+public class OfficialController extends OfficialBaseController{
 
 	
 	/**
@@ -29,15 +28,16 @@ public class OfficialController extends BaseController{
 	 * @return JsonResult
 	 */
 	@PostMapping("/check/free/experience")
+	@ResponseBody
 	public JsonResult freeExperienceCheck(
 			HttpServletRequest request,
 			@RequestParam(value="contact") String contact,
 			@RequestParam(value="mobile") String mobile) {
 		
-		boolean result = this.saas.official.verifyIsExist(mobile);
+		boolean result = saas.official.verifyIsExist(mobile);
 		
 		if(result) {
-			return JsonResult.fail("该手机号已申请，请勿重复提交");
+			return fail();
 		}else {
 			
 			ShopFreeExperience shopFreeExperience = new ShopFreeExperience();
@@ -52,7 +52,7 @@ public class OfficialController extends BaseController{
 			// store in database
 			this.saas.official.insertUserInfo(shopFreeExperience);
 			
-			return JsonResult.success("提交申请成功,请等待业务员联系");
+			return success();
 		}
 	}
 	
@@ -68,7 +68,7 @@ public class OfficialController extends BaseController{
 		
 		int i = userAgent.indexOf("Mobile");
 		if(i != -1) {
-			return "小程序";
+			return "小程序";  // ?? 应该返回json！！
 		}else {
 			return "PC";
 		}

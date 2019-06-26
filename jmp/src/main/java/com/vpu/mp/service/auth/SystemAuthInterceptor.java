@@ -11,6 +11,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.servlet.handler.HandlerInterceptorAdapter;
 
 import com.vpu.mp.service.foundation.JsonResult;
+import com.vpu.mp.service.foundation.JsonResultCode;
 import com.vpu.mp.service.foundation.Util;
 
 /**
@@ -33,7 +34,7 @@ public class SystemAuthInterceptor extends HandlerInterceptorAdapter {
 			if (isAjaxRequest) {
 				response.setContentType("application/json;charset=UTF-8");
 				PrintWriter writer = response.getWriter();
-				writer.write(Util.toJSON(JsonResult.fail("登录过期，请登录", -9999)));
+				writer.write(Util.toJSON(JsonResult.fail(request.getParameter("lang"), JsonResultCode.CODE_LOGIN_EXPIRED)));
 				writer.close();
 				response.flushBuffer();
 			} else {

@@ -28,7 +28,7 @@ public class AdminVersionController extends AdminBaseController {
 
 		Map<String, Object> version = shop().version.getVersionDetail(param);
 		if (version == null) {
-			return this.jsonFail("", -2);
+			return this.jsonFail();
 		}
 		return this.jsonSuccess(version);
 	}

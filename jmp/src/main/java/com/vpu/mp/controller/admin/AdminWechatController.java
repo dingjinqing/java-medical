@@ -1,13 +1,11 @@
 package com.vpu.mp.controller.admin;
 
 import org.springframework.stereotype.Controller;
-import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
-import org.springframework.web.servlet.ModelAndView;
 
 import com.vpu.mp.db.main.tables.pojos.Shop;
 import com.vpu.mp.db.main.tables.records.MpAuthShopRecord;
@@ -47,7 +45,7 @@ public class AdminWechatController extends AdminBaseController {
 	 * @return
 	 */
 	@RequestMapping(value = "/wechat/proxy/start/auth")
-	public ModelAndView startAuthorization(@RequestParam(name = "shop_id", required = true) Integer shopId) {
+	public String startAuthorization(@RequestParam(name = "shop_id", required = true) Integer shopId) {
 		String url = this.mainUrl("/wechat/proxy/authorization/callback?shop_id=" + shopId);
 		try {
 			String authType = "2";
@@ -61,7 +59,7 @@ public class AdminWechatController extends AdminBaseController {
 			e.printStackTrace();
 			throw new RuntimeException(e);
 		}
-		return redirect(url);
+		return "redirect:"+url;
 	}
 
 	/**
@@ -70,7 +68,7 @@ public class AdminWechatController extends AdminBaseController {
 	 * @return
 	 */
 	@RequestMapping(value = " /wechat/proxy/official/account/authorization")
-	public ModelAndView startOfficialAccountAuthorization() {
+	public String startOfficialAccountAuthorization() {
 		String url = this.mainUrl("/wechat/proxy/authorization/callback?sys_id=" + this.adminAuth.sysId());
 		try {
 			String authType = "1";
@@ -80,7 +78,7 @@ public class AdminWechatController extends AdminBaseController {
 			e.printStackTrace();
 			throw new RuntimeException(e);
 		}
-		return redirect(url);
+		return "redirect:"+(url);
 	}
 
 	/**
@@ -89,7 +87,7 @@ public class AdminWechatController extends AdminBaseController {
 	 * @return
 	 */
 	@RequestMapping(value = " /wechat/proxy/authorization/callback")
-	public ModelAndView authorizationCallback(@RequestParam("auth_code") String authorizationCode,
+	public String authorizationCallback(@RequestParam("auth_code") String authorizationCode,
 			@RequestParam(name = "sys_id", required = false) Integer sysId,
 			@RequestParam(name = "shop_id", required = false) Integer shopId) {
 		try {
@@ -102,17 +100,17 @@ public class AdminWechatController extends AdminBaseController {
 				// 小程序授权
 				MpAuthShopRecord mp = saas.shop.mp.getAuthShopByShopId(shopId);
 				if (mp != null && !mp.getAppId().equals(appId)) {
-					return this.showMessage("小程序上次授权与本次授权AppId不一致，请联系客服！");
+					return ("小程序上次授权与本次授权AppId不一致，请联系客服！");
 				}
 				mp = saas.shop.mp.getAuthShopByAppId(appId);
 				if (mp != null && mp.getShopId().intValue() != shopId) {
-					return this.showMessage("小程序已授权绑定其他账号，请联系客服！");
+					return ("小程序已授权绑定其他账号，请联系客服！");
 				}
 				saas.shop.mp.addMpAuthAccountInfo(appId, shopId);
 			}
 
 			logger().info("getQueryAuth", queryAuthResult);
-			return redirect("/wechat/mini/info");
+			return "redirect:"+("/wechat/mini/info");
 		} catch (WxErrorException e) {
 			logger().error("gotoPreAuthUrl", e);
 			throw new RuntimeException(e);

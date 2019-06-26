@@ -9,7 +9,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.servlet.ModelAndView;
 
 import com.vpu.mp.db.shop.tables.records.PageClassificationRecord;
-import com.vpu.mp.service.foundation.JsonResult;
 import com.vpu.mp.service.foundation.PageResult;
 import com.vpu.mp.service.foundation.Util;
 import com.vpu.mp.service.shop.decoration.PageClassificationService.PageCategoryListQueryParam;
@@ -32,7 +31,7 @@ public class AdminPageClassificationController extends AdminBaseController {
 			if (param.id == null && param.name != null) {
 				shop().pageClassification.addRow(param.name);
 			}
-			return json(JsonResult.success());
+			return jsonSuccess();
 		}
 
 		if (param.del != null) {
@@ -57,13 +56,13 @@ public class AdminPageClassificationController extends AdminBaseController {
 		if (param.act != null && param.act.equals(actName)) {
 			PageClassificationRecord record = shop().pageClassification.getRowByName(param.name);
 			if (record == null) {
-				return json(JsonResult.success());
+				return jsonSuccess();
 			} else {
 				if (param.id != null && record.getId().intValue() == param.id) {
-					return json(JsonResult.success());
+					return jsonSuccess();
 				}
 			}
 		}
-		return json(JsonResult.fail("failed"));
+		return jsonFail();
 	}
 }

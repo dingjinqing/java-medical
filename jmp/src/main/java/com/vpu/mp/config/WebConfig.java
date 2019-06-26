@@ -24,35 +24,32 @@ public class WebConfig implements WebMvcConfigurer {
 
 	@Autowired
 	protected Environment env;
-	
+
 	@Autowired
 	protected SystemAuthInterceptor sysAuthInterceptor;
-	
+
 	@Autowired
 	protected AdminAuthInterceptor adminAuthInterceptor;
 
 	@Override
 	public void addArgumentResolvers(List<HandlerMethodArgumentResolver> argumentResolvers) {
 		argumentResolvers.add(new LineToHumpHandler());
-		
+
 	}
 
 	@Override
 	public void addInterceptors(InterceptorRegistry registry) {
-		registry.addInterceptor(sysAuthInterceptor)
-				.addPathPatterns("/system/**")
-				.excludePathPatterns("/system/login", "/system/logout","/system/message","/system/login/attempt");
-		registry.addInterceptor(adminAuthInterceptor)
-				.addPathPatterns("/admin/**")
-				.addPathPatterns("/wechat/**")
+
+		registry.addInterceptor(sysAuthInterceptor).addPathPatterns("/system/**").excludePathPatterns("/system/login",
+				"/system/logout", "/system/message", "/system/login/attempt");
+		registry.addInterceptor(adminAuthInterceptor).addPathPatterns("/admin/**").addPathPatterns("/wechat/**")
 				.excludePathPatterns("/admin/login", "/admin/logout");
 	}
-	
+
 	@Override
 	public void addCorsMappings(CorsRegistry registry) {
-		registry.addMapping("/**").allowedOrigins("*")
-		.allowedMethods("GET", "HEAD", "POST","PUT", "DELETE", "OPTIONS")
-		.allowCredentials(true).maxAge(3600);
+		registry.addMapping("/**").allowedOrigins("*").allowedMethods("GET", "HEAD", "POST", "PUT", "DELETE", "OPTIONS")
+				.allowCredentials(true).maxAge(3600);
 	}
 
 }

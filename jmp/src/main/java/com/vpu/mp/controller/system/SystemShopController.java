@@ -13,6 +13,7 @@ import com.vpu.mp.db.main.tables.pojos.Shop;
 import com.vpu.mp.db.main.tables.records.ShopAccountRecord;
 import com.vpu.mp.db.main.tables.records.ShopRecord;
 import com.vpu.mp.service.foundation.JsonResult;
+import com.vpu.mp.service.foundation.JsonResultCode;
 import com.vpu.mp.service.foundation.PageResult;
 import com.vpu.mp.service.saas.shop.ShopService.ShopListQueryParam;
 import com.vpu.mp.support.LineConvertHump;
@@ -93,8 +94,8 @@ public class SystemShopController extends SystemBaseController {
 	@ResponseBody
 	public JsonResult checkMobile(@RequestParam String mobile) {
 		if (saas.shop.hasMobile(mobile)) {
-			return JsonResult.fail("手机号已注册");
+			return fail(JsonResultCode.CODE_MODILE_HAS_REGISTERED);
 		}
-		return JsonResult.success("手机号可以注册");
+		return success();
 	}
 }

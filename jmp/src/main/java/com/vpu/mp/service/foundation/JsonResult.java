@@ -1,92 +1,67 @@
 package com.vpu.mp.service.foundation;
+
+import org.apache.commons.lang3.StringUtils;
+
+import lombok.Data;
+
 /**
  * 
  * @author 新国
  *
  */
+@Data
 public class JsonResult {
 
 	/**
-	 *  错误码：非0为错误
+	 * 错误码：非0为错误
 	 */
 	private int error = 0;
-	
+
 	/**
 	 * 返回内容
 	 */
 	private Object content;
-	
+
 	/**
 	 * 错误消息
 	 */
 	private Object message;
 
-    /**
-     * @author 李晓冰
-     * 统一放置错误消息，供后期国际化操作
-     */
-	public static final String INSERT_ERROR="数据插入失败!";
-	public static final String UPDATE_ERROR="数据修改失败!";
-	public static final String DELETE_ERROR="数据删除失败!";
-	
-	
-	public JsonResult() {
-		
+	/**
+	 * 语言：zh_CN en_US
+	 */
+	private String language;
+
+	private JsonResult(String language, JsonResultCode resultCode, Object content) {
+		this.language = language = StringUtils.isBlank(language) ? "zh_CN" : language;
+		this.error = resultCode.getCode();
+		this.content = content;
+		this.message = Util.translateMessage(language,resultCode.getMessage());
 	}
-	
-	public static JsonResult instance() {
-		return new JsonResult();
+
+	public static JsonResult success(String module, String language) {
+		return result(language, JsonResultCode.CODE_SUCCESS, null);
 	}
-	
-	public JsonResult(int error,Object message,Object content) {
-		this.setError(error);
-		this.setMessage(message);
-		this.setContent(content);
+
+	public static JsonResult success(String language, Object content) {
+		return result(language, JsonResultCode.CODE_SUCCESS, content);
 	}
-	
-	static public JsonResult success() {
-		return new JsonResult(0,null,null);
+
+	public static JsonResult fail(String language, JsonResultCode resultCode) {
+		return result(language, JsonResultCode.CODE_SUCCESS, null);
 	}
-	
-	static public JsonResult success(Object content) {
-		return new JsonResult(0,null,content);
+
+	public static JsonResult fail(String language, JsonResultCode resultCode, Object content) {
+		assert (resultCode.getCode() != JsonResultCode.CODE_SUCCESS.getCode());
+		return result(language, JsonResultCode.CODE_SUCCESS, content);
 	}
-	
-	static  public JsonResult fail(Object message) {
-		return new JsonResult(1,message,null);
+
+	public static JsonResult result(String language, JsonResultCode resultCode, Object content) {
+		return new JsonResult(language, resultCode, content);
 	}
-	
-	static public JsonResult fail(Object message,int error) {
-		return new JsonResult(error,message,null);
-	}
-		
 
 	@Override
 	public String toString() {
 		return Util.toJSON(this);
-	}
-
-	public Object getContent() {
-		return content;
-	}
-
-	public void setContent(Object content) {
-		this.content = content;
-	}
-
-	public int getError() {
-		return error;
-	}
-
-	public void setError(int error) {
-		this.error = error;
-	}
-
-	public Object getMessage() {
-		return message;
-	}
-
-	public void setMessage(Object message) {
-		this.message = message;
 	}
 }

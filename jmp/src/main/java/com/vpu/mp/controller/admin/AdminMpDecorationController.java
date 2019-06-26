@@ -11,7 +11,6 @@ import org.springframework.web.servlet.ModelAndView;
 
 import com.vpu.mp.db.main.tables.records.ShopRecord;
 import com.vpu.mp.db.shop.tables.records.XcxCustomerPageRecord;
-import com.vpu.mp.service.foundation.JsonResult;
 import com.vpu.mp.service.foundation.PageResult;
 import com.vpu.mp.service.foundation.Util;
 import com.vpu.mp.service.shop.decoration.MpDecorationService.PageListQueryParam;
@@ -70,7 +69,7 @@ public class AdminMpDecorationController extends AdminBaseController {
 		}
 		if (this.isAjax() && param.pageId != null && param.catId != null) {
 			shop().mpDecoration.setPageCatId(param.pageId, param.catId);
-			return this.json(JsonResult.success());
+			return this.jsonSuccess();
 		}
 
 		Map<String, Object> version = shop().version.getDecorateNumConfig();

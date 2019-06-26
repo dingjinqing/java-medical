@@ -11,6 +11,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.servlet.handler.HandlerInterceptorAdapter;
 
 import com.vpu.mp.service.foundation.JsonResult;
+import com.vpu.mp.service.foundation.JsonResultCode;
 import com.vpu.mp.service.foundation.Util;
 import com.vpu.mp.service.saas.SaasApplication;
 
@@ -22,22 +23,8 @@ import com.vpu.mp.service.saas.SaasApplication;
 @Component
 public class AdminAuthInterceptor extends HandlerInterceptorAdapter {
 
-	private static final int AJAX_CODE_NO_AUTH = -9997;
-
-	private static final String MSG_NO_AUTH = "无权访问此URL";
-
 	private static final String URL_NO_AUTH = "/admin/authority/not?type=subaccount";
-
-	private static final int AJAX_CODE_SELECT_SHOP = -9998;
-
-	private static final String MSG_SELECT_SHOP = "店铺未登录，请先选择店铺";
-
 	private static final String URL_SELECT_SHOP = "/admin/account/shop/select";
-
-	private static final int AJAX_CODE_LOGIN_EXPIRED = -9999;
-
-	private static final String MSG_LOGIN_EXPIRED = "登录过期，请重新登录";
-
 	private static final String URL_LOGIN = "/admin/login";
 
 	@Autowired
@@ -53,15 +40,7 @@ public class AdminAuthInterceptor extends HandlerInterceptorAdapter {
 			"/admin/login/*",
 			"/admin/logout",
 			"/region/*",
-			"/wechat/mini/*",
-			"/wechat/no/authorization",
-			"/wechat/start/authorization",
-			"/wechat/official/account/authorization",
-			"/wechat/authorization/callback",
-			"/wechat/component/event/callback",
-			"/wechat/app/event/*",
-			"/wechat/oauth/start/",
-			"/wechat/payment/*",
+			"/wechat/proxy/*",
 			"/admin/notice/*",
 			"/admin/subPasswordModify",
 			"/admin/password",
@@ -101,13 +80,13 @@ public class AdminAuthInterceptor extends HandlerInterceptorAdapter {
 	public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler)
 			throws Exception {
 		String path = request.getRequestURI();
-
+		String language = request.getParameter("lang");
 		if (!adminAuth.isLogin()) {
 			// 账号未登录，判断例外URL
 			if (match(accountLoginExcept, path)) {
 				return true;
 			}
-			errorResponse(request, response, URL_LOGIN, MSG_LOGIN_EXPIRED, AJAX_CODE_LOGIN_EXPIRED);
+			errorResponse(request, response, URL_LOGIN, JsonResult.fail(language, JsonResultCode.CODE_LOGIN_EXPIRED));
 			return false;
 		} else {
 			if (!adminAuth.isShopLogin()) {
@@ -115,12 +94,12 @@ public class AdminAuthInterceptor extends HandlerInterceptorAdapter {
 				if (match(accountLoginExcept, path) || match(shopLoginExcept, path)) {
 					return true;
 				}
-				errorResponse(request, response, URL_SELECT_SHOP, MSG_SELECT_SHOP, AJAX_CODE_SELECT_SHOP);
+				errorResponse(request, response, URL_SELECT_SHOP, JsonResult.fail(language, JsonResultCode.CODE_ROLE__NO_SELECT_SHOP));
 				return false;
 			} else {
 				// 账号和店铺都登录，判断路径权限
 				if (!saas.shop.menu.isRoleAccess(adminAuth.roleId(), path)) {
-					errorResponse(request, response, URL_NO_AUTH, MSG_NO_AUTH, AJAX_CODE_NO_AUTH);
+					errorResponse(request, response, URL_NO_AUTH, JsonResult.fail(language, JsonResultCode.CODE_ROLE__NO_AUTH));
 					return false;
 				}
 			}
@@ -129,14 +108,14 @@ public class AdminAuthInterceptor extends HandlerInterceptorAdapter {
 	}
 
 	protected void errorResponse(HttpServletRequest request, HttpServletResponse response, String path,
-			String ajaxMessage, Integer ajaxCode)
+			JsonResult result)
 			throws Exception {
 		boolean isAjaxRequest = (!StringUtils.isBlank(request.getHeader("x-requested-with"))
 				&& request.getHeader("x-requested-with").equals("XMLHttpRequest"));
 		if (isAjaxRequest) {
 			response.setContentType("application/json;charset=UTF-8");
 			PrintWriter writer = response.getWriter();
-			writer.write(Util.toJSON(JsonResult.fail(ajaxMessage, ajaxCode)));
+			writer.write(Util.toJSON(result));
 			writer.close();
 			response.flushBuffer();
 		} else {

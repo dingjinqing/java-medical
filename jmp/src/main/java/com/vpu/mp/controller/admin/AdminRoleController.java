@@ -30,7 +30,7 @@ public class AdminRoleController extends AdminBaseController {
 		List<Map<String, Object>> shopList = saas.shop.getRoleShopList(adminAuth.sysId(), adminAuth.subAccountId())
 				.intoMaps();
 		if (shopList.size() == 0) {
-			return redirect("/admin/login");
+			return view("/admin/login");
 		}
 		for (Map<String, Object> shop : shopList) {
 			Timestamp expireTime = saas.shop.renew.getShopRenewExpireTime(Util.getInteger(shop.get("shop_id")));
@@ -66,7 +66,7 @@ public class AdminRoleController extends AdminBaseController {
 		if(config == null) {
 			ModelMap model = new ModelMap();
 			model.addAttribute("message", "该店铺暂无版本信息，部分功能将无法使用，请联系管理员！");
-			return redirect("/admin/account/shop/select",model);
+			return view("/admin/account/shop/select",model);
 		}
 		if(!adminAuth.switchShopLogin(shopId)) {
 			return this.showMessage("切换店铺失败，你不具有此店铺权限！");
@@ -74,6 +74,6 @@ public class AdminRoleController extends AdminBaseController {
 		// TODO: 需添加登录记录
 
 		// 跳转到首页
-		return redirect("/admin/index");
+		return view("/admin/index");
 	}
 }

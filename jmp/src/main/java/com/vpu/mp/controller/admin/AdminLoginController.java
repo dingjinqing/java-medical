@@ -2,9 +2,12 @@ package com.vpu.mp.controller.admin;
 
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
 
 import com.vpu.mp.service.auth.AdminAuth.ShopLoginParam;
+import com.vpu.mp.service.foundation.JsonResult;
+import com.vpu.mp.service.foundation.JsonResultCode;
 import com.vpu.mp.support.LineConvertHump;
 /**
  * 
@@ -15,11 +18,12 @@ import com.vpu.mp.support.LineConvertHump;
 public class AdminLoginController extends AdminBaseController {
 	
 	@RequestMapping(value = "/admin/login")
-	public ModelAndView login(@LineConvertHump  ShopLoginParam param) {
+	@ResponseBody
+	public JsonResult login(@LineConvertHump  ShopLoginParam param) {
 		if (adminAuth.login(param)) {
-			return this.jsonSuccess();
+			return success();
 		} else {
-			return this.jsonFail("用户名或密码不正确，请重新输入");
+			return fail(JsonResultCode.CODE_ACCOUNT_OR_PWD_ERROR);
 		}
 	}
 
