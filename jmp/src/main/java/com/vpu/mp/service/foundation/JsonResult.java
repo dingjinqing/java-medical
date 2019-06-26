@@ -20,6 +20,14 @@ public class JsonResult {
 	 * 错误消息
 	 */
 	private Object message;
+
+    /**
+     * @author 李晓冰
+     * 统一放置错误消息，供后期国际化操作
+     */
+	public static final String INSERT_ERROR="数据插入失败!";
+	public static final String UPDATE_ERROR="数据修改失败!";
+	public static final String DELETE_ERROR="数据删除失败!";
 	
 	
 	public JsonResult() {
