@@ -34,7 +34,7 @@ public class OfficialController extends OfficialBaseController{
 			@RequestParam(value="contact") String contact,
 			@RequestParam(value="mobile") String mobile) {
 		
-		boolean result = saas.official.verifyIsExist(mobile);
+		boolean result = saas.official.freeExperienceService.verifyIsExist(mobile);
 		
 		if(result) {
 			return fail();
@@ -50,7 +50,7 @@ public class OfficialController extends OfficialBaseController{
 			shopFreeExperience.setSource(source);
 			
 			// store in database
-			this.saas.official.insertUserInfo(shopFreeExperience);
+			this.saas.official.freeExperienceService.insertUserInfo(shopFreeExperience);
 			
 			return success();
 		}
@@ -62,14 +62,15 @@ public class OfficialController extends OfficialBaseController{
 	 * @param request
 	 * @return boolean
 	 */
-	public String detectDevice(HttpServletRequest request) {
+	private String detectDevice(HttpServletRequest request) {
 		String userAgent = request.getHeader("User-Agent");
 		System.out.println(userAgent);
 		
 		int i = userAgent.indexOf("Mobile");
-		// ?? 应该返回json！！
+		// ?? 应该返回json！！  
+		// 不用返回json,这个方法不用暴露接口,是一个辅助方法，在freeExperienceCheck方法中调用
 		if(i != -1) {
-			return "小程序";  
+			return "小程序"; 
 		}else {
 			return "PC";
 		}
