@@ -82,7 +82,7 @@ public class GoodsBrandService extends BaseService {
 		SelectConditionStep<?> scs = select
 				.where(field("is_delete").eq(GoodsBrandPageListParam.IS_DELETE_DEFAULT_VALUE));
 
-		if (StringUtils.isBlank(param.getBrandName())) {
+		if (!StringUtils.isBlank(param.getBrandName())) {
 			scs = scs.and(GOODS_BRAND.BRAND_NAME.like(this.likeValue(param.getBrandName())));
 		}
 
