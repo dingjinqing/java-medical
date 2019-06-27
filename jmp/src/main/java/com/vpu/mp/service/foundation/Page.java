@@ -21,7 +21,6 @@ public class Page {
 	public Integer lastPage;
 	public Integer pageRows;
 	public Integer pageCount;
-	public String pageInfo;
 	
 
 	public static Page getPage(Integer totalRows, Integer currentPage, Integer pageRows) {
@@ -46,7 +45,6 @@ public class Page {
 		this.lastPage = lastPage;
 		this.pageRows = pageRows;
 		this.pageCount = pageCount;
-		this.pageInfo = "当前页面"+currentPage+"/"+lastPage+"，总记录"+totalRows+"条";
 	}
 
 	public Integer getTotalRows() {
@@ -105,14 +103,6 @@ public class Page {
 		this.pageRows = pageRows;
 	}
 
-	public String getPageInfo() {
-		return pageInfo;
-	}
-
-	public void setPageInfo(String pageInfo) {
-		this.pageInfo = pageInfo;
-	}
-
 	public Integer getPageCount() {
 		return pageCount;
 	}
@@ -121,18 +111,12 @@ public class Page {
 		this.pageCount = pageCount;
 	}
 
-    @Override
-    public String toString() {
-        return "Page{" +
-                "totalRows=" + totalRows +
-                ", currentPage=" + currentPage +
-                ", firstPage=" + firstPage +
-                ", prePage=" + prePage +
-                ", nextPage=" + nextPage +
-                ", lastPage=" + lastPage +
-                ", pageRows=" + pageRows +
-                ", pageCount=" + pageCount +
-                ", pageInfo='" + pageInfo + '\'' +
-                '}';
-    }
+	@Override
+	public String toString() {
+		return "Page [totalRows=" + totalRows + ", currentPage=" + currentPage + ", firstPage=" + firstPage
+				+ ", prePage=" + prePage + ", nextPage=" + nextPage + ", lastPage=" + lastPage + ", pageRows="
+				+ pageRows + ", pageCount=" + pageCount + "]";
+	}
+
+    
 }
