@@ -20,12 +20,12 @@
             class="title-head "
             :class="{'title-active': !isSubLogin}"
             @click="switchTab(false)"
-          >登录</div>
+          >{{$t('login_page.login_main')}}</div>
           <div
             class="title-head "
             :class="{'title-active': isSubLogin}"
             @click="switchTab(true)"
-          >子账号登录</div>
+          >{{$t('login_page.login_f')}}</div>
         </div>
         <div class="main-right-content ">
           <div
@@ -34,32 +34,26 @@
             v-show="!isSubLogin"
           >
             <div class="mesg-error"></div>
-            <form
-              name="loginForm"
-              method="post"
-              id="loginForm"
-              class="smart-form client-form"
-              @submit.prevent="onSubmit"
-            >
+            <div class="smart-form">
               <div class="account-user"><input
                   type="text"
-                  v-model="mainForm.username"
-                  placeholder="主账号用户名"
+                  v-model="mainData.username"
+                  :placeholder="langData.main_name"
                 /></div>
               <div class="account-pawd"><input
                   type="password"
-                  v-model="mainForm.password"
-                  placeholder="密码"
+                  v-model="mainData.password"
+                  :placeholder="langData.password"
                 ></div>
               <div class="account-login clearfix">
                 <input
                   type="button"
                   class="one-login to-login btn-login"
-                  @click="onSubmit"
-                  value="登录"
+                  @click="onSubmit(1)"
+                  :value="langData.login"
                 >
               </div>
-            </form>
+            </div>
           </div>
           <div
             class="content-zi content-account"
@@ -67,96 +61,103 @@
             v-show="isSubLogin"
           >
             <div class="mesg-error"></div>
-            <form
-              name="loginForm"
-              method="post"
-              id="loginFormSub"
-              class="smart-form client-form"
-              @submit.prevent="onSubmit"
-            >
+            <div class="smart-form">
               <div class="account-name"><input
                   type="text"
                   name="username"
-                  v-model="subForm.username"
-                  placeholder="主账号用户名"
+                  v-model="subData.username"
+                  :placeholder="langData.main_name"
                 /></div>
               <div class="account-user"><input
                   type="text"
                   name="sub_username"
-                  v-model="subForm.subUsername"
-                  placeholder="子账号用户名/手机号"
+                  v-model="subData.subUsername"
+                  :placeholder="langData.nameandnum"
                 /></div>
               <div class="account-pawd"><input
                   type="password"
                   name="password"
-                  v-model="subForm.password"
-                  placeholder="密码"
+                  v-model="subData.password"
+                  :placeholder="langData.password"
                 /></div>
               <div class="account-login clearfix">
                 <input
                   type="button"
                   class="child-login to-login btn-login"
-                  @click="onSubmit"
-                  value="登录"
+                  @click="onSubmit(2)"
+                  :value="langData.login"
                 >
               </div>
-            </form>
+            </div>
           </div>
         </div>
       </div>
     </div>
   </div>
 </template>
-
 <script>
-import env from '@/config/env'
-import api from '@/util/api'
-
+import qs from 'qs'
+import { loginRequest } from '@/api/index/login.js'
 export default {
-  name: 'adminLogin',
   data () {
     return {
-      imageDomain: env.imageDomain,
-      mainForm: {
+      mainData: {
         username: '',
         password: '',
         isSubLogin: false
       },
-      subForm: {
+      subData: {
         username: '',
         password: '',
         subUsername: '',
         isSubLogin: true
       },
-      isSubLogin: false
+      isSubLogin: false,
+      langData: '',
+      langData_cn:
+      { main_name: '主账号用户名',
+        password: '密码',
+        login: '登录',
+        nameandnum: '子账号用户名/手机号' },
+      langData_en:
+      { main_name: 'Main Account User Name',
+        password: 'Password',
+        login: 'Sign in',
+        nameandnum: 'Subaccount username/cell phone number' }
+
     }
   },
   mounted () {
-    console.log('login mounted')
+    this.langDefault()
   },
   methods: {
+    // 初始化语言
+    langDefault () {
+      if (localStorage.getItem('WEPUBAO_LANGUAGE') === 'en') {
+        this.$i18n.locale = 'en'
+        this.langData = this.langData_en
+      } else {
+        this.langData = this.langData_cn
+        this.$i18n.locale = 'cn'
+      }
+    },
+    onSubmit (index) {
+      console.log(index)
+      console.log(qs.parse(this.mainData))
+      console.log(qs.parse(this.subData))
+      if (index === 1) {
+        loginRequest(qs.parse(this.mainData))
+      }
+    },
+    // tap切换
     switchTab (subLogin) {
       this.isSubLogin = subLogin
-    },
-    onSubmit () {
-      var param = this.isSubLogin ? this.subForm : this.mainForm
-      api('/admin/login', function (d) {
-        if (d && d.error === 0) {
-          window.layer.msg('登录成功')
-        } else if (d && d.error !== 0) {
-          window.layer.msg(d.message)
-        }
-      }, param)
-      console.log('isSubLogin', this.isSubLogin)
     }
   }
 }
 </script>
 
-<style lang="less">
-@import "../../style/mixin";
-@import "../../style/admin/base";
-@import "../../style/admin/common";
+<style>
 .fr a {
   color: #5a8bff;
 }
@@ -175,6 +176,7 @@ export default {
 .container {
   width: 810px;
   padding: 5% 0;
+  margin: 0 auto !important;
 }
 
 .clearfix:after {
@@ -201,10 +203,6 @@ export default {
   background: -moz-linear-gradient(top, #4564e9, #55b0fd);
   background: linear-gradient(top, #4564e9, #55b0fd);
   line-height: 480px;
-}
-
-.main-left > img {
-  margin-top: 46px;
 }
 
 .main-right {
@@ -258,6 +256,7 @@ export default {
   color: #fff;
   border: 1px solid #5a8bff;
   cursor: pointer;
+  padding-left: none !important;
 }
 
 .account-login span {
@@ -290,5 +289,8 @@ input::-webkit-input-placeholder {
 
 .fr {
   float: right;
+}
+.smart-form input {
+  font-size: 16px !important;
 }
 </style>
