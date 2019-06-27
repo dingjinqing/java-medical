@@ -29,7 +29,7 @@ public class SystemFreeExperienceController extends SystemBaseController{
 	 */
 	@RequestMapping("/system/free/experience")
 	@ResponseBody
-	public JsonResult getFreeExperienceList(@RequestBody FreeExperiencePageListParam param) {
+	public JsonResult getFreeExperienceList(@LineConvertHump @RequestBody FreeExperiencePageListParam param) {
 		PageResult pageResult = this.saas.official.freeExperienceService.getPageList(param);
 		
 		return this.success(pageResult);
