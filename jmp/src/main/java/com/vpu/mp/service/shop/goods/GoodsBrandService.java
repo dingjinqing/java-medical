@@ -14,10 +14,11 @@ import com.vpu.mp.service.foundation.BaseService;
 import com.vpu.mp.service.foundation.PageResult;
 
 import lombok.Data;
+import org.jooq.tools.StringUtils;
 
 /**
  * 商品品牌
- * 
+ *
  * @author 李晓冰
  * @date 2019年6月25日
  */
@@ -25,7 +26,7 @@ public class GoodsBrandService extends BaseService {
 
 	/**
 	 *	 映射分页查询条件实体类
-	 * 
+	 *
 	 * @author 李晓冰
 	 * @date 2019年6月25日
 	 */
@@ -53,7 +54,7 @@ public class GoodsBrandService extends BaseService {
 
 	/**
 	 * 	分页获取品牌信息
-	 * 
+	 *
 	 * @param param
 	 * @return
 	 */
@@ -72,7 +73,7 @@ public class GoodsBrandService extends BaseService {
 
 	/**
 	 * 	根据过滤条件构造对应的sql语句
-	 * 
+	 *
 	 * @param select
 	 * @param param
 	 * @return
@@ -81,7 +82,7 @@ public class GoodsBrandService extends BaseService {
 		SelectConditionStep<?> scs = select
 				.where(field("is_delete").eq(GoodsBrandPageListParam.IS_DELETE_DEFAULT_VALUE));
 
-		if (param.brandName != null) {
+		if (StringUtils.isBlank(param.getBrandName())) {
 			scs = scs.and(GOODS_BRAND.BRAND_NAME.like(this.likeValue(param.getBrandName())));
 		}
 
@@ -106,7 +107,7 @@ public class GoodsBrandService extends BaseService {
 
 	/**
 	 * 	添加品牌
-	 * 
+	 *
 	 * @param goodsBrand
 	 * @return 数据库受影响行数
 	 */
@@ -123,7 +124,7 @@ public class GoodsBrandService extends BaseService {
 
 	/**
 	 * 	假删除指定品牌
-	 * 
+	 *
 	 * @param goodsBrandId
 	 * @return 数据库受影响行数
 	 */
@@ -134,7 +135,7 @@ public class GoodsBrandService extends BaseService {
 
 	/**
 	 * 	更新指定商品
-	 * 
+	 *
 	 * @param goodsBrand
 	 * @return
 	 */
