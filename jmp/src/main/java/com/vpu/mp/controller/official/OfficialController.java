@@ -67,8 +67,9 @@ public class OfficialController extends OfficialBaseController{
 		System.out.println(userAgent);
 		
 		int i = userAgent.indexOf("Mobile");
+		// ?? 应该返回json！！
 		if(i != -1) {
-			return "小程序";  // ?? 应该返回json！！
+			return "小程序";  
 		}else {
 			return "PC";
 		}

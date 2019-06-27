@@ -12,7 +12,12 @@ import java.util.Base64;
 
 import java.security.cert.Certificate;
 
-public class PemToPKCS12 {
+/**
+ * 
+ * @author 新国
+ *
+ */
+public class PemToPkcs12 {
 
 	/**
 	 * X.509 pem format to pkcs12 format

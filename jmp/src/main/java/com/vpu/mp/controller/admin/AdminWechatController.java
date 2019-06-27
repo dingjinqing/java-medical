@@ -16,6 +16,11 @@ import com.vpu.mp.service.wechat.OpenPlatform;
 import me.chanjar.weixin.common.error.WxErrorException;
 import me.chanjar.weixin.open.bean.result.WxOpenQueryAuthResult;
 
+/**
+ * 
+ * @author 新国
+ *
+ */
 @Controller
 public class AdminWechatController extends AdminBaseController {
 

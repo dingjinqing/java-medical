@@ -9,6 +9,11 @@ import me.chanjar.weixin.mp.api.WxMpService;
 import me.chanjar.weixin.mp.bean.message.WxMpXmlMessage;
 import me.chanjar.weixin.mp.bean.message.WxMpXmlOutMessage;
 
+/**
+ * 
+ * @author 新国
+ *
+ */
 public class UnauthorizedHandler extends BaseHandler implements WxMpMessageHandler {
 
 	@Override

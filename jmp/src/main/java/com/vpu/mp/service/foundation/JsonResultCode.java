@@ -3,6 +3,11 @@ package com.vpu.mp.service.foundation;
 import lombok.Getter;
 import lombok.ToString;
 
+/**
+ * 
+ * @author 新国
+ *
+ */
 @Getter
 @ToString
 public enum JsonResultCode {

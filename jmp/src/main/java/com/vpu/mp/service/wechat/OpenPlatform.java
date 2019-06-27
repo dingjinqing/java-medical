@@ -19,7 +19,14 @@ import me.chanjar.weixin.open.bean.message.WxOpenXmlMessage;
 import redis.clients.jedis.JedisPool;
 import redis.clients.jedis.JedisPoolConfig;
 
+/**
+ * 
+ * @author 新国
+ *
+ */
 public class OpenPlatform extends WxOpenServiceImpl {
+	final String AES = "aes";
+	
 	private Logger logger = LoggerFactory.getLogger(getClass());
 	private static JedisPool pool;
 	private static OpenPlatform openPlatform;
@@ -61,7 +68,7 @@ public class OpenPlatform extends WxOpenServiceImpl {
 	                        + " timestamp=[{}], nonce=[{}], requestBody=[\n{}\n] ",
 	                signature, encType, msgSignature, timestamp, nonce, requestBody);
 
-	        if (!StringUtils.equalsIgnoreCase("aes", encType)
+	        if (!StringUtils.equalsIgnoreCase(AES, encType)
 	                || !this.getWxOpenComponentService().checkSignature(timestamp, nonce, signature)) {
 	            throw new IllegalArgumentException("非法请求，可能属于伪造的请求！");
 	        }
@@ -102,7 +109,7 @@ public class OpenPlatform extends WxOpenServiceImpl {
 				"\n接收微信请求：[appId=[{}], openid=[{}], signature=[{}], encType=[{}], msgSignature=[{}],"
 						+ " timestamp=[{}], nonce=[{}], requestBody=[\n{}\n] ",
 				appId, openid, signature, encType, msgSignature, timestamp, nonce, requestBody);
-		if (!StringUtils.equalsIgnoreCase("aes", encType)
+		if (!StringUtils.equalsIgnoreCase(AES, encType)
 				|| !this.getWxOpenComponentService().checkSignature(timestamp, nonce, signature)) {
 			throw new IllegalArgumentException("非法请求，可能属于伪造的请求！");
 		}
@@ -132,25 +139,32 @@ public class OpenPlatform extends WxOpenServiceImpl {
 	 */
 	protected String globalTest(String appId, WxMpXmlMessage message) {
 		String out = "";
+		String mstTypeEvent = "event";
+		String mstTypeText = "text";
+		String testMsgTypeContent = "TESTCOMPONENT_MSG_TYPE_TEXT";
+		String testMsgTypeContentCallback = "TESTCOMPONENT_MSG_TYPE_TEXT_callback";
+		String queryAuthCodePrefix =  "QUERY_AUTH_CODE:";
+		String fromApiSuffix  = "_from_api";
+		String fromCallbackSuffix  = "from_callback";
 		if (isGlobalTestAppId(appId)) {
 			try {
-				if (StringUtils.equals(message.getMsgType(), "text")) {
-					if (StringUtils.equals(message.getContent(), "TESTCOMPONENT_MSG_TYPE_TEXT")) {
+				if (StringUtils.equals(message.getMsgType(),mstTypeText)) {
+					if (StringUtils.equals(message.getContent(), testMsgTypeContent)) {
 						out = WxOpenXmlMessage.wxMpOutXmlMessageToEncryptedXml(
-								WxMpXmlOutMessage.TEXT().content("TESTCOMPONENT_MSG_TYPE_TEXT_callback")
+								WxMpXmlOutMessage.TEXT().content(testMsgTypeContentCallback)
 										.fromUser(message.getToUser())
 										.toUser(message.getFromUser())
 										.build(),
 								this.getWxOpenConfigStorage());
-					} else if (StringUtils.startsWith(message.getContent(), "QUERY_AUTH_CODE:")) {
-						String msg = message.getContent().replace("QUERY_AUTH_CODE:", "") + "_from_api";
+					} else if (StringUtils.startsWith(message.getContent(),queryAuthCodePrefix)) {
+						String msg = message.getContent().replace(queryAuthCodePrefix, "") + fromApiSuffix;
 						WxMpKefuMessage kefuMessage = WxMpKefuMessage.TEXT().content(msg).toUser(message.getFromUser())
 								.build();
 						this.getWxOpenComponentService().getWxMpServiceByAppid(appId).getKefuService()
 								.sendKefuMessage(kefuMessage);
 					}
-				} else if (StringUtils.equals(message.getMsgType(), "event")) {
-					WxMpKefuMessage kefuMessage = WxMpKefuMessage.TEXT().content(message.getEvent() + "from_callback")
+				} else if (StringUtils.equals(message.getMsgType(), mstTypeEvent)) {
+					WxMpKefuMessage kefuMessage = WxMpKefuMessage.TEXT().content(message.getEvent() + fromCallbackSuffix)
 							.toUser(message.getFromUser()).build();
 					this.getWxOpenComponentService().getWxMpServiceByAppid(appId).getKefuService()
 							.sendKefuMessage(kefuMessage);
