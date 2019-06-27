@@ -58,6 +58,7 @@ public class OfficialController extends OfficialBaseController{
 	
 	
 	/**
+	 * TODO 有待优化处理 
 	 * 检测用户的登录设备
 	 * @param request
 	 * @return boolean
@@ -67,10 +68,8 @@ public class OfficialController extends OfficialBaseController{
 		System.out.println(userAgent);
 		
 		int i = userAgent.indexOf("Mobile");
-		// ?? 应该返回json！！  
-		// 不用返回json,这个方法不用暴露接口,是一个辅助方法，在freeExperienceCheck方法中调用
 		if(i != -1) {
-			return "小程序"; 
+			return "Mobile"; 
 		}else {
 			return "PC";
 		}
