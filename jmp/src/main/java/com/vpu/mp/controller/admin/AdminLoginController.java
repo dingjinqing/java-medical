@@ -22,10 +22,6 @@ public class AdminLoginController extends AdminBaseController {
 	@RequestMapping(value = "/admin/login")
 	@ResponseBody
 	public JsonResult login(HttpServletRequest request,@LineConvertHump  ShopLoginParam param) {
-		System.out.println("login");
-		System.out.println(this.request.getHeaderNames().toString());
-		System.out.println(request.getHeaderNames().toString());
-		System.out.println(this.request.equals(request));
 		if (adminAuth.login(param)) {
 			return success();
 		} else {

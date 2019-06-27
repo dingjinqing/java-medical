@@ -32,7 +32,6 @@ public class OpenPlatform extends WxOpenServiceImpl {
 	private static OpenPlatform openPlatform;
 	private WxOpenMessageRouter wxOpenMessageRouter;
 
-	@PostConstruct
 	public void init() {
 		WxOpenInRedisConfigStorage inRedisConfigStorage = new WxOpenInRedisConfigStorage(getJedisPool());
 		inRedisConfigStorage.setComponentAppId(Util.getProperty("wx.open.app_id"));
@@ -222,6 +221,7 @@ public class OpenPlatform extends WxOpenServiceImpl {
 			synchronized (OpenPlatform.class) {
 				if (openPlatform == null) {
 					openPlatform = new OpenPlatform();
+					openPlatform.init();
 				}
 			}
 		}

@@ -29,19 +29,13 @@ public class AdminWechatController extends AdminBaseController {
 	@RequestMapping(value = "/wechat/proxy/test/create/shoo")
 	@ResponseBody
 	public String noAuthorization() {
-		Shop shop = new Shop();
-		shop.setMobile("13683043470");
-		shop.setUserName("shop001");
-		ShopRecord result = saas.shop.addShop(shop);
-		String json = Util.toJSON(result.intoMap());
-		return "<a href='/wechat/proxy/start/auth?shop_id='" + result.getShopId() + ">测试授权</a>\n" + "create shop json: "
-				+ json;
+		return "hell";
 	}
 
 	@RequestMapping(value = "/wechat/proxy/test/auth")
 	@ResponseBody
 	public String testAuth() {
-		return "<a href='/wechat/proxy/start/auth'>测试授权</a>";
+		return "<a href='/wechat/proxy/official/account/authorization'>测试公众号授权</a>";
 	}
 
 	/**
@@ -72,9 +66,9 @@ public class AdminWechatController extends AdminBaseController {
 	 * 
 	 * @return
 	 */
-	@RequestMapping(value = " /wechat/proxy/official/account/authorization")
+	@RequestMapping(value = "/wechat/proxy/official/account/authorization")
 	public String startOfficialAccountAuthorization() {
-		String url = this.mainUrl("/wechat/proxy/authorization/callback?sys_id=" + this.adminAuth.sysId());
+		String url = this.mainUrl("/wechat/proxy/authorization/callback?sys_id=1"); //this.adminAuth.sysId());
 		try {
 			String authType = "1";
 			String bizAppid = null;
@@ -91,7 +85,7 @@ public class AdminWechatController extends AdminBaseController {
 	 * 
 	 * @return
 	 */
-	@RequestMapping(value = " /wechat/proxy/authorization/callback")
+	@RequestMapping(value = "/wechat/proxy/authorization/callback")
 	public String authorizationCallback(@RequestParam("auth_code") String authorizationCode,
 			@RequestParam(name = "sys_id", required = false) Integer sysId,
 			@RequestParam(name = "shop_id", required = false) Integer shopId) {
@@ -134,6 +128,7 @@ public class AdminWechatController extends AdminBaseController {
 	 * @return
 	 */
 	@RequestMapping("/wechat/proxy/component/event/callback")
+	@ResponseBody
 	public Object componentEventCb(@RequestBody(required = false) String requestBody,
 			@RequestParam("timestamp") String timestamp, @RequestParam("nonce") String nonce,
 			@RequestParam("signature") String signature,
@@ -156,6 +151,7 @@ public class AdminWechatController extends AdminBaseController {
 	 * @return
 	 */
 	@RequestMapping("/wechat/proxy/app/event/{appId}/callback")
+	@ResponseBody
 	public Object appEventCallback(@RequestBody(required = false) String requestBody,
 			@PathVariable("appId") String appId, @RequestParam("signature") String signature,
 			@RequestParam("timestamp") String timestamp, @RequestParam("nonce") String nonce,
