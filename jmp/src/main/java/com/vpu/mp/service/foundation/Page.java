@@ -22,6 +22,10 @@ public class Page {
 	public Integer pageRows;
 	public Integer pageCount;
 	
+	/**
+	 * @author 黄壮壮
+	 */
+	public Page() {}
 
 	public static Page getPage(Integer totalRows, Integer currentPage, Integer pageRows) {
 		currentPage = currentPage == null ? 1 : currentPage;
