@@ -1,17 +1,23 @@
 package com.vpu.mp.controller.admin;
 
 import java.sql.Timestamp;
-import java.time.LocalDateTime;
+import java.util.Calendar;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
+
+import javax.servlet.http.HttpServletRequest;
 
 import org.jooq.Record;
 import org.springframework.stereotype.Controller;
-import org.springframework.ui.ModelMap;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.servlet.ModelAndView;
+import org.springframework.web.bind.annotation.ResponseBody;
 
+import com.vpu.mp.service.foundation.JsonResult;
+import com.vpu.mp.service.foundation.JsonResultCode;
 import com.vpu.mp.service.foundation.Util;
 import com.vpu.mp.service.saas.shop.ShopVersionService.VersionConfig;
 
@@ -23,21 +29,38 @@ import com.vpu.mp.service.saas.shop.ShopVersionService.VersionConfig;
 @Controller
 public class AdminRoleController extends AdminBaseController {
 
-	@RequestMapping(value = "/admin/account/shop/select")
-	public ModelAndView shopSelect() {
-		
+	@ResponseBody
+	@PostMapping(value = "/admin/account/shop/select")
+	public JsonResult shopSelect(@RequestParam("subUsername") String subUsername,
+			@RequestParam("isSubLogin") Boolean isSubLogin, @RequestParam("user_name") String userName,
+			HttpServletRequest httpRequest) {
+		String lange = request.getParameter("lang");
+		String token = request.getHeader("token");
+		String subSysId = null;
+		// 从redis获取信息
+		Map<Object, Object> map1 = adminAuth.getTokenInfo(token);
+		String sysId = map1.get("sys_id").toString();
+		String accountId = map1.get("account_id").toString();
+		if (isSubLogin) {
+			// 子账户
+			subSysId = sysId;
+		}
 		// 当前账号下的店铺列表处理
-		List<Map<String, Object>> shopList = saas.shop.getRoleShopList(adminAuth.sysId(), adminAuth.subAccountId())
-				.intoMaps();
+		List<Map<String, Object>> shopList = saas.shop.getRoleShopList(adminAuth.sysIdNew(isSubLogin, sysId, subSysId),
+				adminAuth.subAccountIdNew(isSubLogin, accountId)).intoMaps();
 		if (shopList.size() == 0) {
-			return view("/admin/login");
+			return JsonResult.fail(lange, JsonResultCode.CODE_NO_SHOP);
 		}
 		for (Map<String, Object> shop : shopList) {
 			Timestamp expireTime = saas.shop.renew.getShopRenewExpireTime(Util.getInteger(shop.get("shop_id")));
 			int expireStatus = 1;
 			if (expireTime != null) {
-				Timestamp currentTime = Timestamp.valueOf(LocalDateTime.now());
-				if(expireTime.after(currentTime)) {
+				Calendar cal = Calendar.getInstance();
+				cal.setTime(expireTime);
+				cal.set(Calendar.HOUR, 0);
+				cal.set(Calendar.MINUTE, 0);
+				cal.set(Calendar.SECOND, 0);
+				if (cal.getTimeInMillis() > Calendar.getInstance().getTimeInMillis()) {
 					expireStatus = 0;
 				}
 			}
@@ -49,31 +72,31 @@ public class AdminRoleController extends AdminBaseController {
 		Record article = saas.article.noReadArticle(adminAuth.sysId());
 
 		System.out.println(shopList);
-		ModelMap model = new ModelMap();
-		model.addAttribute("title", "选择店铺");
-		model.addAttribute("data_list", shopList);
-		model.addAttribute("user", adminAuth.userInfo());
-		model.addAttribute("is_article", article != null ? 1 : 0);
-		model.addAttribute("article", article == null ? new Object() : article.intoMap());
-		model.addAttribute("version_array", saas.shop.version.getVersionMap());
-		return view("admin/toggle_shop", model);
+		Map<String, Object> map = new HashMap(4);
+		// map.put("title", "选择店铺");
+		map.put("data_list", shopList);
+		// map.put("user", adminAuth.userInfo(httpRequest.getHeader("token")));
+		map.put("is_article", article != null ? 1 : 0);
+		map.put("article", article == null ? null : article.intoMap());
+		map.put("version_array", saas.shop.version.getVersionMap());
+		return JsonResult.success(lange, map);
 	}
-	
-	@RequestMapping(value = "/admin/account/shop/switch")
-	public ModelAndView switchShop(@RequestParam("shop_id") Integer shopId) {
 
+	@ResponseBody
+	@RequestMapping(value = "/admin/account/shop/switch")
+	public JsonResult switchShop(@RequestParam("shop_id") Integer shopId) {
+		String lange = request.getParameter("lang");
 		VersionConfig config = saas.shop.version.mergeVersion(shopId);
-		if(config == null) {
-			ModelMap model = new ModelMap();
-			model.addAttribute("message", "该店铺暂无版本信息，部分功能将无法使用，请联系管理员！");
-			return view("/admin/account/shop/select",model);
+		String token = request.getHeader("token");
+		if (config == null) {
+			return JsonResult.fail(lange, JsonResultCode.CODE_SHOP_NO_VERSION_INFO);
 		}
-		if(!adminAuth.switchShopLogin(shopId)) {
-			return this.showMessage("切换店铺失败，你不具有此店铺权限！");
+		if (!adminAuth.switchShopLoginByToken(shopId,token)) {
+			return JsonResult.fail(lange, JsonResultCode.CODE_FAIL);
 		}
 		// TODO: 需添加登录记录
 
 		// 跳转到首页
-		return view("/admin/index");
+		return JsonResult.success(lange, JsonResultCode.CODE_FAIL);
 	}
 }
