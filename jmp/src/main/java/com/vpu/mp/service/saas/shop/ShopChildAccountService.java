@@ -151,5 +151,10 @@ public class ShopChildAccountService extends BaseService {
 				.or(SHOP_CHILD_ACCOUNT.MOBILE.eq(nameOrMobile))
 				.fetch();
 	}
+	public ShopChildAccountRecord checkByIdAndNameOnChild(Integer sysId, String accountname, Integer accountId) {
+		return db().selectFrom(SHOP_CHILD_ACCOUNT).where(SHOP_CHILD_ACCOUNT.SYS_ID.eq(sysId))
+				.and(SHOP_CHILD_ACCOUNT.ACCOUNT_NAME.eq(accountname)).and(SHOP_CHILD_ACCOUNT.ACCOUNT_ID.eq(accountId))
+				.fetchAny();
+	}
 
 }
