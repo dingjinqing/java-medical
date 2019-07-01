@@ -7,6 +7,7 @@ import static com.vpu.mp.db.main.tables.ShopChildRole.SHOP_CHILD_ROLE;
 import static com.vpu.mp.db.main.tables.ShopRenew.SHOP_RENEW;
 
 import java.sql.Timestamp;
+import java.util.HashMap;
 import java.util.Map;
 
 import org.jooq.Record;
@@ -156,7 +157,7 @@ public class ShopService extends BaseService {
 				.leftJoin(MP_AUTH_SHOP).on(SHOP.SHOP_ID.eq(DSL.cast(MP_AUTH_SHOP.SHOP_ID, Integer.class)));
 		select = this.buildOptions(select, param);
 		select.orderBy(SHOP.CREATED.desc());
-		PageResult result = this.getPageResult(select, param.page);
+		PageResult<HashMap> result = this.getPageResult(select, param.page);
 		for (Map<String, Object> record : result.dataList) {
 			Integer shopId = Util.convert(record.get("shop_id"), Integer.class, 0);
 			Integer sysId = Util.convert(record.get("sys_id"), Integer.class, 0);

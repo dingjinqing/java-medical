@@ -5,6 +5,7 @@ import static com.vpu.mp.db.main.tables.ShopRole.SHOP_ROLE;
 import static com.vpu.mp.db.main.tables.ShopChildRole.SHOP_CHILD_ROLE;
 import static com.vpu.mp.db.main.tables.Shop.SHOP;
 
+import java.util.HashMap;
 import java.util.Map;
 
 import org.jooq.Record;
@@ -110,7 +111,7 @@ public class ShopChildAccountService extends BaseService {
 	 * @return
 	 */
 	public PageResult getAccountUserList(ShopChildAccountListQueryParam param) {
-		PageResult result = this.getPageList(param);
+		PageResult<HashMap> result = this.getPageList(param);
 		for (Map<String, Object> r : result.dataList) {
 			Integer sysId = Util.convert(r.get("sys_id"), Integer.class, 0);
 			Integer accountId = Util.convert(r.get("account_id"), Integer.class, 0);

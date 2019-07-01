@@ -1,5 +1,6 @@
 package com.vpu.mp.controller.admin;
 
+import java.util.HashMap;
 import java.util.Map;
 
 import org.springframework.stereotype.Controller;
@@ -38,7 +39,7 @@ public class AdminPageClassificationController extends AdminBaseController {
 			shop().pageClassification.removeRow(param.del);
 		}
 
-		PageResult page = this.shop().pageClassification.getPageList(param);
+		PageResult<HashMap> page = this.shop().pageClassification.getPageList(param);
 		for (Map<String, Object> r : page.dataList) {
 			r.put("count", shop().mpDecoration.getPageCount(Util.getInteger(r.get("id"))));
 		}

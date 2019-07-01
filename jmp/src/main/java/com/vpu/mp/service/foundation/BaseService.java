@@ -60,9 +60,28 @@ public class BaseService  extends ServiceContainer{
 	public PageResult getPageResult(SelectLimitStep<?> select, Integer currentPage) {
 		return getPageResult(select, currentPage, 20);
 	}
+	
 
 	public PageResult getPageResult(SelectLimitStep<?> select) {
 		return getPageResult(select, 1, 20);
+	}
+	
+	public<T> PageResult<T> getPageResult(SelectLimitStep<?> select, Integer currentPage, Integer pageRows,Class<T> clazz) {
+		Integer totalRows = db().fetchCount(select);
+		PageResult<T> pageResult = new PageResult<>();
+		pageResult.page = Page.getPage(totalRows, currentPage, pageRows);
+		Result<?> result = select
+				.limit((pageResult.page.currentPage - 1) * pageResult.page.pageRows, pageResult.page.pageRows).fetch();
+		pageResult.dataList = result.into(clazz);
+		return pageResult;
+	}
+	
+	public<T> PageResult<T> getPageResult(SelectLimitStep<?> select, Integer currentPage,Class<T> clazz) {
+		return getPageResult(select, currentPage, 20,clazz);
+	}
+	
+	public<T> PageResult<T> getPageResult(SelectLimitStep<?> select,Class<T> clazz) {
+		return getPageResult(select, 1, 20,clazz);
 	}
 
 	public String likeValue(String val) {

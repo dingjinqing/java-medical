@@ -41,7 +41,7 @@ public class SystemShopAccountController extends SystemBaseController {
 	@ResponseBody
 	@PostMapping("/system/shop/account/list")
 	public JsonResult getShopAccountList(@LineConvertHump ShopAccountListQueryParam param) {
-		PageResult result = saas.shop.accout.getPageList(param);
+		PageResult<HashMap> result = saas.shop.accout.getPageList(param);
 
 		for (Map<String, Object> row : result.dataList) {
 			row.put("shop_number", saas.shop.renew.getShopNumber((Integer) row.get("sys_id")));

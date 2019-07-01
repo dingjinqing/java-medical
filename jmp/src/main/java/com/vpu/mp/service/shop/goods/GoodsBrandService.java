@@ -58,7 +58,7 @@ public class GoodsBrandService extends BaseService {
 	 * @param param
 	 * @return
 	 */
-	public PageResult getPageList(GoodsBrandPageListParam param) {
+	public PageResult<GoodsBrand> getPageList(GoodsBrandPageListParam param) {
 		SelectWhereStep<Record5<Integer, String, String, Byte, Timestamp>> selectFrom = db().select(GOODS_BRAND.ID,
 				GOODS_BRAND.BRAND_NAME, GOODS_BRAND.LOGO, GOODS_BRAND.FIRST, GOODS_BRAND.ADD_TIME).from(GOODS_BRAND);
 
@@ -66,7 +66,7 @@ public class GoodsBrandService extends BaseService {
 
 		select.orderBy(GOODS_BRAND.FIRST.desc(), GOODS_BRAND.ADD_TIME.desc());
 
-		PageResult pageResult = this.getPageResult(select, param.getCurrentPage(), param.getPageRows());
+		PageResult<GoodsBrand> pageResult = this.getPageResult(select, param.getCurrentPage(), param.getPageRows(),GoodsBrand.class);
 
 		return pageResult;
 	}

@@ -7,9 +7,9 @@ import java.util.Map;
  * @author 新国
  *
  */
-public class PageResult {
+public class PageResult<T> {
 	public Page page;
-	public List<Map<String, Object>> dataList;
+	public List<T> dataList;
 
 	public Page getPage() {
 		return page;
@@ -19,13 +19,13 @@ public class PageResult {
 		this.page = page;
 	}
 
-	public List<Map<String, Object>> getDataList() {
-		return dataList;
-	}
+    public List<T> getDataList() {
+        return dataList;
+    }
 
-	public void setDataList(List<Map<String, Object>> dataList) {
-		this.dataList = dataList;
-	}
+    public void setDataList(List<T> dataList) {
+        this.dataList = dataList;
+    }
 
     @Override
     public String toString() {
