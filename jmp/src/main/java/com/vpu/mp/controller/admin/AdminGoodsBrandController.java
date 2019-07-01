@@ -8,7 +8,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
 /**
- * 商品品牌控制器
+ * 	商品品牌控制器
  *
  * @author 李晓冰
  * @date 2019年6月25日
@@ -17,7 +17,7 @@ import org.springframework.web.bind.annotation.*;
 public class AdminGoodsBrandController extends AdminBaseController {
 
     /**
-     * 商品品牌分页查询
+     *	 商品品牌分页查询
      *
      * @param param
      * @return
@@ -32,7 +32,7 @@ public class AdminGoodsBrandController extends AdminBaseController {
     }
 
     /**
-     * 新增
+     * 	新增
      *
      * @param goodsBrand
      * @return
@@ -47,7 +47,7 @@ public class AdminGoodsBrandController extends AdminBaseController {
     }
 
     /**
-     * 删除
+     * 	删除
      *
      * @param goodsBrand
      * @return
@@ -62,7 +62,7 @@ public class AdminGoodsBrandController extends AdminBaseController {
     }
 
     /**
-     * 修改
+     * 	修改
      *
      * @param goodsBrand
      * @return

@@ -32,7 +32,7 @@ public class GoodsSortService extends BaseService {
     }
 
     /**
-     * 根据父分类和分类类型查询
+     *	 根据父分类和分类类型查询
      *
      * @param param
      * @return
@@ -69,7 +69,7 @@ public class GoodsSortService extends BaseService {
     }
 
     /**
-     * 普通商家分类新增
+     * 	普通商家分类新增
      *
      * @param sort
      * @return 受影响行数
@@ -95,7 +95,7 @@ public class GoodsSortService extends BaseService {
     }
 
     /**
-     * 商家分类名称是否存在
+     * 	商家分类名称是否存在
      *
      * @param sort
      * @return
@@ -113,7 +113,7 @@ public class GoodsSortService extends BaseService {
     }
 
     /**
-     * 删除商家分类
+     * 	删除商家分类
      *
      * @param sortId
      * @return 受影响行数
@@ -145,7 +145,7 @@ public class GoodsSortService extends BaseService {
     }
 
     /**
-     * 商家分类修改
+     * 	商家分类修改
      *
      * @param sort
      * @return 受影响行数

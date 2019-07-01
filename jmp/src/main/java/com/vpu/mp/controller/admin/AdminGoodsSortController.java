@@ -16,6 +16,11 @@ import java.util.List;
 @Controller
 public class AdminGoodsSortController extends AdminBaseController {
 
+	/**
+	 * 	商品分类查询，未分页
+	 * @param param
+	 * @return
+	 */
     @GetMapping("/admin/goods/goodsSorts")
     @ResponseBody
     public JsonResult getList(GoodsSortListParam param) {
@@ -25,6 +30,11 @@ public class AdminGoodsSortController extends AdminBaseController {
         return success(list);
     }
 
+    /**
+     * 	新增
+     * @param sort
+     * @return
+     */
     @PostMapping("/admin/goods/goodsSort")
     @ResponseBody
     public JsonResult insert(@RequestBody Sort sort) {
@@ -34,6 +44,11 @@ public class AdminGoodsSortController extends AdminBaseController {
         return success();
     }
 
+    /**
+     * 	删除
+     * @param sortId
+     * @return
+     */
     @DeleteMapping("/admin/goods/goodsSort")
     @ResponseBody
     public JsonResult delete(Integer sortId) {
@@ -43,6 +58,11 @@ public class AdminGoodsSortController extends AdminBaseController {
         return success();
     }
 
+    /**
+     * 	修改
+     * @param sort
+     * @return
+     */
     @PutMapping("/admin/goods/goodsSort")
     @ResponseBody
     public JsonResult update(@RequestBody Sort sort) {
