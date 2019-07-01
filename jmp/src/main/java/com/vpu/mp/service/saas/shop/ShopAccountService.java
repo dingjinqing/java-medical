@@ -100,6 +100,13 @@ public class ShopAccountService extends BaseService {
 				.and(SHOP_ACCOUNT.PASSWORD.eq(Util.md5(password)))
 				.fetchAny();
 	}
+	
+	public ShopAccountRecord checkByIdAndNameOnMain(String username, Integer sysid) {
+		return db().selectFrom(SHOP_ACCOUNT)
+				.where(SHOP_ACCOUNT.USER_NAME.eq(username))
+				.and(SHOP_ACCOUNT.SYS_ID.eq(sysid))
+				.fetchAny();
+	}
 
 	public ShopAccountRecord getAccountInfo(String username) {
 		return db().selectFrom(SHOP_ACCOUNT)
