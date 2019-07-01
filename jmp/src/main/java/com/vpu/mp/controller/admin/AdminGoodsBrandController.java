@@ -41,7 +41,7 @@ public class AdminGoodsBrandController extends AdminBaseController {
      */
     @PostMapping("/admin/goods/goodsBrand")
     @ResponseBody
-    public JsonResult insert(GoodsBrand goodsBrand) {
+    public JsonResult insert(@RequestBody GoodsBrand goodsBrand) {
     	
     	shop().goods.goodsBrand.insert(goodsBrand);
     	
@@ -50,18 +50,18 @@ public class AdminGoodsBrandController extends AdminBaseController {
     
     /**
      * 	删除
-     * @param goodsBrandId
+     * @param goodsBrand
      * @return
      */
     @DeleteMapping("/admin/goods/goodsBrand")
     @ResponseBody
-    public JsonResult delete(Integer goodsBrandId){
+    public JsonResult delete(@RequestBody GoodsBrand goodsBrand){
     	
-    	  if(goodsBrandId==null){
+    	  if(goodsBrand.getId()==null){
               return fail(JsonResultCode.CODE_PARAM_ERROR);
           }
     	  
-          shop().goods.goodsBrand.delete(goodsBrandId);
+          shop().goods.goodsBrand.delete(goodsBrand);
           
           return success();          
     }
