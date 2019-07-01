@@ -26,6 +26,17 @@ public class SystemUserService extends BaseService {
 		}
 		return null;
 	}
+	
+	public SystemUserRecord checkByIdAndNameOnMain(String username, Integer systemUserId) {
+		SystemUserRecord user = dm.db()
+				.selectFrom(SYSTEM_USER)
+				.where(SYSTEM_USER.USER_NAME.eq(username)).and(SYSTEM_USER.SYSTEM_USER_ID.eq(systemUserId))
+				.fetchAny();
+		if (user != null) {
+			return user;
+		}
+		return null;
+	}	
 
 	public boolean checkNewPass(String oldPassword, Integer userId) {
 		SystemUserRecord user = dm.db().selectFrom(SYSTEM_USER)
