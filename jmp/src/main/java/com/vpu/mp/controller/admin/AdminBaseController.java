@@ -9,6 +9,7 @@ import com.vpu.mp.db.main.tables.records.ShopRecord;
 import com.vpu.mp.service.auth.AdminAuth;
 import com.vpu.mp.service.foundation.Util;
 import com.vpu.mp.service.shop.ShopApplication;
+import com.vpu.mp.service.shop.decoration.MpDecorationService;
 
 /**
  * 
@@ -19,6 +20,7 @@ public class AdminBaseController extends BaseController {
 	
 	@Autowired
 	protected AdminAuth adminAuth;
+	
 
 	protected Integer isGraspShop() {
 		if(!adminAuth.isShopLogin()) {

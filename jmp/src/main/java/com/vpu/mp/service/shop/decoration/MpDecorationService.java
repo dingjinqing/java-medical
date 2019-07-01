@@ -229,16 +229,21 @@ public class MpDecorationService extends BaseService {
 	 * 
 	 * @param pageId
 	 */
-	public void setIndex(Integer pageId) {
-		db().update(XCX_CUSTOMER_PAGE)
+	public boolean setIndex(Integer pageId) {
+		int a = db().update(XCX_CUSTOMER_PAGE)
 				.set(XCX_CUSTOMER_PAGE.PAGE_TYPE, (byte) 0)
 				.where(XCX_CUSTOMER_PAGE.PAGE_TYPE.eq((byte) 1))
 				.execute();
-		db().update(XCX_CUSTOMER_PAGE)
-				.set(XCX_CUSTOMER_PAGE.PAGE_TYPE, (byte) 0)
+		int b = db().update(XCX_CUSTOMER_PAGE)
+				.set(XCX_CUSTOMER_PAGE.PAGE_TYPE, (byte) 1)
 				.where(XCX_CUSTOMER_PAGE.PAGE_ID.eq((pageId)))
 				.execute();
+		if(a>0 && b>0) {
+			return true;
+		}
+		return false;
 	}
+	
 
 	/**
 	 * 获取首页
