@@ -34,13 +34,13 @@ public class GoodsSortService extends BaseService {
     /**
      * 根据父分类和分类类型查询
      *
-     * @param parm
+     * @param param
      * @return
      */
-    public List<Sort> getList(GoodsSortListParam parm) {
+    public List<Sort> getList(GoodsSortListParam param) {
         SelectWhereStep<Record> selectFrom = db().select().from(SORT);
 
-        SelectConditionStep<?> select = this.buildOptions(selectFrom, parm);
+        SelectConditionStep<?> select = this.buildOptions(selectFrom, param);
 
         select.orderBy(SORT.FIRST.desc(), SORT.CREATE_TIME.desc());
 
