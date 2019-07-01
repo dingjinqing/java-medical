@@ -3,6 +3,7 @@ package com.vpu.mp.controller.official;
 import javax.servlet.http.HttpServletRequest;
 
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
@@ -30,23 +31,21 @@ public class OfficialController extends OfficialBaseController{
 	@PostMapping("/check/free/experience")
 	@ResponseBody
 	public JsonResult freeExperienceCheck(
-			HttpServletRequest request,
-			@RequestParam(value="contact") String contact,
-			@RequestParam(value="mobile") String mobile) {
+			@RequestBody ShopFreeExperience shopFreeExperience) {
 		
-		boolean result = saas.official.freeExperienceService.verifyIsExist(mobile);
+		boolean result = saas.official.freeExperienceService.verifyIsExist(shopFreeExperience.getMobile());
 		
 		if(result) {
 			return fail();
 		}else {
 			
-			ShopFreeExperience shopFreeExperience = new ShopFreeExperience();
 			
 			// get device type
-			String source = detectDevice(request);
+			String source = detectDevice(this.request);
 			
-			shopFreeExperience.setMobile(mobile);
-			shopFreeExperience.setContact(contact);
+			/*
+			 * shopFreeExperience.setMobile(mobile); shopFreeExperience.setContact(contact);
+			 */
 			shopFreeExperience.setSource(source);
 			
 			// store in database
