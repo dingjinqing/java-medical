@@ -28,20 +28,37 @@ public class SystemAuthInterceptor extends HandlerInterceptorAdapter {
 	@Override
 	public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler)
 			throws Exception {
-		if (!sysAuth.isLogin()) {
-			boolean isAjaxRequest = (!StringUtils.isBlank(request.getHeader("x-requested-with"))
-					&& request.getHeader("x-requested-with").equals("XMLHttpRequest"));
-			if (isAjaxRequest) {
-				response.setContentType("application/json;charset=UTF-8");
+		String token = request.getHeader("token");
+		if (token == null || token.equals("")) {
+			PrintWriter writer = response.getWriter();
+			response.setContentType("application/json;charset=UTF-8");
+			response.setCharacterEncoding("UTF-8");
+			writer.write(Util.toJSON(JsonResult.fail("No login", JsonResultCode.CODE_FAIL)));
+			writer.close();
+			response.flushBuffer();
+			return false;
+		} else {
+			if (!sysAuth.isLoginByToken(token)) {
+				// token不成功
+				// ajax的验证，要是发送的是ajax，以后可以打开
+				/*
+				 * boolean isAjaxRequest =
+				 * (!StringUtils.isBlank(request.getHeader("x-requested-with")) &&
+				 * request.getHeader("x-requested-with").equals("XMLHttpRequest"));
+				 * 
+				 */
 				PrintWriter writer = response.getWriter();
-				writer.write(Util.toJSON(JsonResult.fail(request.getParameter("lang"), JsonResultCode.CODE_LOGIN_EXPIRED)));
+				response.setContentType("application/json;charset=UTF-8");
+				response.setCharacterEncoding("UTF-8");
+				writer.write(Util.toJSON(JsonResult.fail("Login Time Out", JsonResultCode.CODE_FAIL)));
 				writer.close();
 				response.flushBuffer();
-			} else {
-				response.sendRedirect("/system/login");
+				return false;
 			}
-			return false;
+			//验证成功重置token时间
+			sysAuth.updateToken(token);
+			return true;
 		}
-		return true;
+
 	}
 }
