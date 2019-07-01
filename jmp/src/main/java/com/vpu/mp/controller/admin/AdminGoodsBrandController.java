@@ -1,6 +1,7 @@
 package com.vpu.mp.controller.admin;
 
 import com.vpu.mp.db.shop.tables.pojos.GoodsBrand;
+import com.vpu.mp.service.shop.ShopApplication;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
@@ -26,7 +27,7 @@ public class AdminGoodsBrandController extends AdminBaseController {
 	 */
     @GetMapping("/admin/goods/goodsBrands")
     @ResponseBody
-    public JsonResult getPageList(@LineConvertHump GoodsBrandPageListParam param) {
+    public JsonResult getPageList(GoodsBrandPageListParam param) {
 
         PageResult pageResult = shop().goods.goodsBrand.getPageList(param);
 
