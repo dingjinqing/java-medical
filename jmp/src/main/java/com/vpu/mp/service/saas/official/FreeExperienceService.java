@@ -4,12 +4,16 @@ import org.apache.commons.dbcp2.Utils;
 import org.apache.commons.lang3.StringUtils;
 import org.jooq.Record;
 import org.jooq.SelectWhereStep;
+import org.jooq.UpdateSetFirstStep;
+import org.jooq.UpdateSetMoreStep;
 
 import com.vpu.mp.db.main.tables.pojos.ShopFreeExperience;
+import com.vpu.mp.db.main.tables.records.ShopFreeExperienceRecord;
 import com.vpu.mp.service.foundation.BaseService;
 import com.vpu.mp.service.foundation.Page;
 import com.vpu.mp.service.foundation.PageResult;
 import com.vpu.mp.service.foundation.Util;
+import com.vpu.mp.service.pojo.saas.offical.FreeExperienceInfo;
 import com.vpu.mp.service.saas.official.FreeExperienceService.FreeExperiencePageListParam;
 
 import lombok.Data;
@@ -53,7 +57,7 @@ public class FreeExperienceService extends BaseService{
 		//升序
 		select.orderBy(SHOP_FREE_EXPERIENCE.FE_ID.asc());
 		
-		if(param.page.pageRows != null && param.page.pageRows>0) {
+		if(param.page != null && param.page.pageRows != null && param.page.pageRows>0) {
 			return this.getPageResult(select,param.page.currentPage,param.page.pageRows);
 		}else {
 			return this.getPageResult(select, param.page.currentPage);
@@ -126,4 +130,35 @@ public class FreeExperienceService extends BaseService{
 		return i;
 	}
 	
+	
+	/**
+	 * 更新用户产品信息
+	 * @param info
+	 * @return int 0 表示更新失败，>0表示更新的记录数
+	 */
+	public int updateFreeExperience(FreeExperienceInfo info) {
+		System.out.println("inside updateFreeExperience method ");
+		UpdateSetFirstStep<ShopFreeExperienceRecord> update =  this.db().update(SHOP_FREE_EXPERIENCE);
+		UpdateSetMoreStep<ShopFreeExperienceRecord> step=null;
+	
+		switch(info.getKey()) {
+			case "desc":
+				System.out.println("desc");
+				step = update.set(SHOP_FREE_EXPERIENCE.DESC, info.getDesc());
+				
+				break;
+			case "provinceId":
+				System.out.println("proviceId");
+				step = update.set(SHOP_FREE_EXPERIENCE.PROVINCE_ID, info.getProvinceId());
+				break;
+			default:
+				System.out.println("default switch");
+				step =  null;
+		}
+		if(step != null) {
+			return step.where(SHOP_FREE_EXPERIENCE.FE_ID.eq(info.getFeId())).execute();
+		}
+		else
+			return 0;
+	}
 }
