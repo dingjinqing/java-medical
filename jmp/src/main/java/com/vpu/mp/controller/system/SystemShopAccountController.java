@@ -31,9 +31,16 @@ import com.vpu.mp.support.LineConvertHump;
  */
 @Controller
 public class SystemShopAccountController extends SystemBaseController {
-
-	@RequestMapping(value = "/system/shop/account/list")
-	public ModelAndView getShopAccountList(@LineConvertHump ShopAccountListQueryParam param) {
+	
+	/**
+	 * 查询店铺列表
+	 * @param param
+	 * @return
+	 */
+	
+	@ResponseBody
+	@PostMapping("/system/shop/account/list")
+	public JsonResult getShopAccountList(@LineConvertHump ShopAccountListQueryParam param) {
 		PageResult result = saas.shop.accout.getPageList(param);
 
 		for (Map<String, Object> row : result.dataList) {
@@ -43,13 +50,12 @@ public class SystemShopAccountController extends SystemBaseController {
 				row.put("end_time", row.get("end_time").toString().substring(0, 10));
 			}
 		}
-
-		ModelMap model = new ModelMap();
-		model.addAttribute("title", "商家账号列表");
-		model.addAttribute("data_list", result.dataList);
-		model.addAttribute("page", result.page);
-		model.addAttribute("nav_type", 0);
-		return view("system/shop_account_list", model);
+		Map<String,Object> map=new HashMap(3);
+		//map.put("title", "商家账号列表");
+		map.put("data_list", result.dataList);
+		map.put("page", result.page);
+		map.put("nav_type", 0);
+		return JsonResult.success(null, map);
 	}
 
 	@GetMapping(value = "/system/shop/account/add")
@@ -113,12 +119,12 @@ public class SystemShopAccountController extends SystemBaseController {
 			cityId = r.size() > 0 ? r.get(0).getCityId() : 0;
 			data.put("city", r.intoMaps());
 			data.put("district", saas.region.district.getDistrictList(cityId).intoMaps());
-			return success(data);
+			return JsonResult.success(null, data);
 		}
 		if (cityId != 0) {
-			return success(saas.region.district.getDistrictList(cityId).intoMaps());
+			return JsonResult.success(null, saas.region.district.getDistrictList(cityId).intoMaps());
 		}
-		return fail();
+		return JsonResult.fail("fail", null);
 	}
 
 }
