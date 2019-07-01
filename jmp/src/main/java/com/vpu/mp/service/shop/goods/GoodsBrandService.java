@@ -125,11 +125,11 @@ public class GoodsBrandService extends BaseService {
 	/**
 	 * 	假删除指定品牌
 	 *
-	 * @param goodsBrand
+	 * @param brandId
 	 * @return 数据库受影响行数
 	 */
-	public int delete(GoodsBrand goodsBrand) {
-		return db().update(GOODS_BRAND).set(GOODS_BRAND.IS_DELETE, (byte) 1).where(GOODS_BRAND.ID.eq(goodsBrand.getId()))
+	public int delete(Integer brandId) {
+		return db().update(GOODS_BRAND).set(GOODS_BRAND.IS_DELETE, (byte) 1).where(GOODS_BRAND.ID.eq(brandId))
 				.execute();
 	}
 

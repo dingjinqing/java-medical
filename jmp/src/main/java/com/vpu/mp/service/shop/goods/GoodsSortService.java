@@ -115,18 +115,23 @@ public class GoodsSortService extends BaseService {
     /**
      * 删除商家分类
      *
-     * @param sort
+     * @param sortId
      * @return 受影响行数
      */
-    public void delete(Sort sort) {
+    public void delete(Integer sortId) {
 
         db().transaction(configuration -> {
             DSLContext db = DSL.using(configuration);
 
-            db.delete(SORT).where(SORT.SORT_ID.eq(sort.getSortId())).execute();
+            Sort sort = db.selectFrom(SORT).where(SORT.SORT_ID.eq(sortId)).fetchOneInto(Sort.class);
+
+            if (sort==null)
+                return;
+
+            db.delete(SORT).where(SORT.SORT_ID.eq(sortId)).execute();
 
             if (sort.getHasChild() != 0) {//有子分类
-                db.delete(SORT).where(SORT.PARENT_ID.eq(sort.getSortId())).execute();
+                db.delete(SORT).where(SORT.PARENT_ID.eq(sortId)).execute();
             }
 
             if (sort.getParentId() != 0) {//是子分类，查看是否需要修改父分类hasChild属性

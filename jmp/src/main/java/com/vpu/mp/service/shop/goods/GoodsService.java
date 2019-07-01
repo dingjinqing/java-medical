@@ -8,6 +8,7 @@ import com.vpu.mp.service.foundation.BaseService;
  */
 public class GoodsService extends BaseService {
 	public GoodsBrandService goodsBrand;
+	public GoodsSortService goodsSort;
 	public void test() {
 		System.out.println("test current shop id:" + this.getShopId());
 	}
