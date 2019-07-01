@@ -42,7 +42,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class Sort extends TableImpl<SortRecord> {
 
-    private static final long serialVersionUID = 1452974950;
+    private static final long serialVersionUID = 1287337996;
 
     /**
      * The reference instance of <code>mini_shop_471752.b2c_sort</code>
@@ -70,7 +70,7 @@ public class Sort extends TableImpl<SortRecord> {
     /**
      * The column <code>mini_shop_471752.b2c_sort.parent_id</code>.
      */
-    public final TableField<SortRecord, Short> PARENT_ID = createField("parent_id", org.jooq.impl.SQLDataType.SMALLINT.nullable(false).defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.SMALLINT)), this, "");
+    public final TableField<SortRecord, Integer> PARENT_ID = createField("parent_id", org.jooq.impl.SQLDataType.INTEGER.nullable(false), this, "");
 
     /**
      * The column <code>mini_shop_471752.b2c_sort.level</code>.
@@ -86,6 +86,11 @@ public class Sort extends TableImpl<SortRecord> {
      * The column <code>mini_shop_471752.b2c_sort.create_time</code>.
      */
     public final TableField<SortRecord, Timestamp> CREATE_TIME = createField("create_time", org.jooq.impl.SQLDataType.TIMESTAMP.nullable(false).defaultValue(org.jooq.impl.DSL.field("CURRENT_TIMESTAMP", org.jooq.impl.SQLDataType.TIMESTAMP)), this, "");
+
+    /**
+     * The column <code>mini_shop_471752.b2c_sort.update_time</code>. 记录修改时间
+     */
+    public final TableField<SortRecord, Timestamp> UPDATE_TIME = createField("update_time", org.jooq.impl.SQLDataType.TIMESTAMP.nullable(false).defaultValue(org.jooq.impl.DSL.field("CURRENT_TIMESTAMP", org.jooq.impl.SQLDataType.TIMESTAMP)), this, "记录修改时间");
 
     /**
      * The column <code>mini_shop_471752.b2c_sort.sort_img</code>. 一级分类是头图 其他为分类图标
@@ -111,11 +116,6 @@ public class Sort extends TableImpl<SortRecord> {
      * The column <code>mini_shop_471752.b2c_sort.sort_desc</code>.
      */
     public final TableField<SortRecord, String> SORT_DESC = createField("sort_desc", org.jooq.impl.SQLDataType.VARCHAR(191).defaultValue(org.jooq.impl.DSL.inline("", org.jooq.impl.SQLDataType.VARCHAR)), this, "");
-
-    /**
-     * The column <code>mini_shop_471752.b2c_sort.keywords</code>.
-     */
-    public final TableField<SortRecord, String> KEYWORDS = createField("keywords", org.jooq.impl.SQLDataType.VARCHAR(191).defaultValue(org.jooq.impl.DSL.inline("", org.jooq.impl.SQLDataType.VARCHAR)), this, "");
 
     /**
      * Create a <code>mini_shop_471752.b2c_sort</code> table reference
