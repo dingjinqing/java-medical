@@ -27,7 +27,18 @@ public class ChildAccountService extends BaseService {
 			}
 		}
 
-		db().selectFrom(SYSTEM_CHILD_ACCOUNT).limit(0, 20).fetch();
+		// db().selectFrom(SYSTEM_CHILD_ACCOUNT).limit(0, 20).fetch();
+		return null;
+	}
+
+	public SystemChildAccountRecord checkByIdAndNameOnChild(Integer accountId, String username, Integer sysId) {
+		SystemChildAccountRecord user = db().selectFrom(SYSTEM_CHILD_ACCOUNT)
+				.where(SYSTEM_CHILD_ACCOUNT.ACCOUNT_NAME.eq(username))
+				.and(SYSTEM_CHILD_ACCOUNT.ACCOUNT_ID.eq(accountId)).and(SYSTEM_CHILD_ACCOUNT.SYSTEM_USER_ID.eq(sysId))
+				.fetchAny();
+		if (user != null) {
+			return user;
+		}
 		return null;
 	}
 
