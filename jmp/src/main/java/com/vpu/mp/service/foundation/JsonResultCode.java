@@ -36,6 +36,11 @@ public enum JsonResultCode {
 	
 	
 	// 添加其他
+	
+	CODE_LOGOUT_SUCCESS(10011,"api.code.logout.success"),
+	CODE_LOGOUT_FAILED(10012,"api.code.logout.failed"),
+	CODE_NO_SHOP(10013,"api.code.shop.not.have"),
+	CODE_SHOP_NO_VERSION_INFO(10014,"api.code.shop.no.version.info")
 	;
 
 
