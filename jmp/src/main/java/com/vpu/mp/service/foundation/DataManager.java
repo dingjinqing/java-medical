@@ -16,6 +16,7 @@ import org.springframework.util.FileCopyUtils;
 
 import static com.vpu.mp.db.main.tables.Shop.SHOP;
 import com.vpu.mp.db.main.tables.records.ShopRecord;
+import com.vpu.mp.service.saas.SaasApplication;
 
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
@@ -45,15 +46,19 @@ public class DataManager {
 
 	private HashMap<Integer, DefaultDSLContext> shopDbList = new HashMap<Integer, DefaultDSLContext>();
 
-	private static DataManager dm = null;
-	
-	public static DataManager instance() {
-		if (dm == null) {
-			dm = new DataManager();
+	private static ThreadLocal<DataManager> dmThreadLocal = new ThreadLocal<DataManager>() {
+		protected DataManager initialValue() {
+			return new DataManager();
 		}
-		return dm;
+	};
+
+	/**
+	 * 线程内单例
+	 */
+	public static DataManager instance() {
+		return dmThreadLocal.get();
 	}
-	
+
 	protected DataManager() {
 		host = Util.getProperty("db.host");
 		database = Util.getProperty("db.database");
@@ -65,8 +70,6 @@ public class DataManager {
 		shopPassword = Util.getProperty("db.shop.password");
 		shopDbPrefix = Util.getProperty("db.shop.prefix");
 	}
-
-	
 
 	public DefaultDSLContext db() {
 		if (db == null) {
@@ -92,7 +95,7 @@ public class DataManager {
 			}
 
 			String url = getJdbcUrl(dbConfig.host, dbConfig.database);
-			BasicDataSource ds = dataSource(url, dbConfig.username, dbConfig.password, driver);			
+			BasicDataSource ds = dataSource(url, dbConfig.username, dbConfig.password, driver);
 			DefaultDSLContext dsl = new DefaultDSLContext(configuration(ds));
 			shopDbList.put(shopId, dsl);
 			dsl.setSchema(dbConfig.database);
@@ -254,7 +257,7 @@ public class DataManager {
 		jooqConfiguration.set(new DefaultExecuteListenerProvider(new SqlExcuteListener()));
 		SQLDialect dialect = SQLDialect.valueOf(this.dialect);
 		jooqConfiguration.set(dialect);
-		
+
 		Settings settings = new Settings();
 		settings.withRenderCatalog(false).withRenderSchema(false);
 		jooqConfiguration.setSettings(settings);

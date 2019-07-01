@@ -5,8 +5,6 @@ import java.util.Map;
 import org.jooq.Result;
 import org.jooq.SelectLimitStep;
 import org.jooq.impl.DefaultDSLContext;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import com.vpu.mp.service.saas.SaasApplication;
 import com.vpu.mp.service.wechat.OpenPlatform;
@@ -16,26 +14,10 @@ import com.vpu.mp.service.wechat.OpenPlatform;
  * @author 新国
  *
  */
-public class BaseService {
+public class BaseService  extends ServiceContainer{
 
 	protected DataManager dm = DataManager.instance();
 
-	protected Integer shopId = 0;
-
-	public BaseService() {
-	
-	}
-	
-	/**
-	 * 初始化对象内继承于BaseService类的变量
-	 * 
-	 * @param shopId
-	 */
-	public void initServices(Integer shopId) {
-		this.shopId = shopId;
-		ServiceFactory.initServices(this);
-	}
-	
 	/**
 	 * saas应用
 	 * 
@@ -51,14 +33,6 @@ public class BaseService {
 	 */
 	public OpenPlatform open() {
 		return OpenPlatform.instance();
-	}
-
-	public Integer getShopId() {
-		return shopId;
-	}
-
-	public void setShopId(Integer shopId) {
-		this.shopId = shopId;
 	}
 
 	public DefaultDSLContext db() {
@@ -126,7 +100,5 @@ public class BaseService {
 		return false;
 	}
 	
-	protected Logger logger() {
-		return LoggerFactory.getLogger(this.getClass());
-	}
+
 }

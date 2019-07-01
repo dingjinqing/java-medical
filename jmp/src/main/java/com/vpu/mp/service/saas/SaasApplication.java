@@ -2,7 +2,7 @@ package com.vpu.mp.service.saas;
 
 import java.util.HashMap;
 
-import com.vpu.mp.service.foundation.ServiceFactory;
+import com.vpu.mp.service.foundation.ServiceContainer;
 import com.vpu.mp.service.saas.article.ArticleService;
 import com.vpu.mp.service.saas.official.OfficialService;
 import com.vpu.mp.service.saas.privilege.ChildAccountService;
@@ -20,7 +20,7 @@ import com.vpu.mp.service.shop.ShopApplication;
  * @author 新国
  *
  */
-public class SaasApplication {
+public class SaasApplication extends ServiceContainer {
 
 	public SystemUserService sysUser;
 	public ChildAccountService childAccount;
@@ -33,25 +33,32 @@ public class SaasApplication {
 	
 	protected CityService city;
 
-	private static SaasApplication saas = null;
+	/**
+	 * 线程共享变量，每个线程只有一个SaasApplication
+	 */
+	private static ThreadLocal<SaasApplication> saasThreadLocal = new  ThreadLocal<SaasApplication>() {
+		protected SaasApplication initialValue() {
+			SaasApplication app =  new  SaasApplication();
+			app.initServices();
+			return app;
+		}
+	};
 
 	public static SaasApplication instance() {
-		if (saas == null) {
-			saas = new SaasApplication();
-		}
-		return saas;
+		return saasThreadLocal.get();
 	}
 
 	protected SaasApplication() {
-		ServiceFactory.initServices(this);
 	}
 
 	protected HashMap<Integer, ShopApplication> shopList = new HashMap<Integer, ShopApplication>();
 
-	public synchronized ShopApplication  getShopApp(Integer shopId) {
+	public ShopApplication  getShopApp(Integer shopId) {
 		
 		if (!shopList.containsKey(shopId)) {
-			shopList.put(shopId, new ShopApplication(shopId));
+			ShopApplication app  = new ShopApplication(shopId);
+			app.initServices();
+			shopList.put(shopId, app);
 		}
 		return shopList.get(shopId);
 	}
