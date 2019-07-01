@@ -16,7 +16,6 @@ import org.springframework.util.FileCopyUtils;
 
 import static com.vpu.mp.db.main.tables.Shop.SHOP;
 import com.vpu.mp.db.main.tables.records.ShopRecord;
-import com.vpu.mp.service.saas.SaasApplication;
 
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;

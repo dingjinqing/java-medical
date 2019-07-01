@@ -47,6 +47,11 @@ public class ChildAccountService extends BaseService {
 				.where(SYSTEM_CHILD_ACCOUNT.ACCOUNT_NAME.eq(username))
 				.fetchAny();
 	}
+	public SystemChildAccountRecord getUserFromAccountId(Integer accountId) {
+		return db().selectFrom(SYSTEM_CHILD_ACCOUNT)
+				.where(SYSTEM_CHILD_ACCOUNT.ACCOUNT_ID.eq(accountId))
+				.fetchAny();
+	}
 
 	public SystemChildAccountRecord getUserFromMobile(String mobile) {
 		return db().selectFrom(SYSTEM_CHILD_ACCOUNT)

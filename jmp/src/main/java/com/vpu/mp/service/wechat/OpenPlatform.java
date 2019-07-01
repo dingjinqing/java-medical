@@ -1,11 +1,10 @@
 package com.vpu.mp.service.wechat;
 
-import javax.annotation.PostConstruct;
-
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.vpu.mp.service.foundation.JedisManager;
 import com.vpu.mp.service.foundation.Util;
 
 import me.chanjar.weixin.common.error.WxErrorException;
@@ -16,8 +15,7 @@ import me.chanjar.weixin.open.api.impl.WxOpenInRedisConfigStorage;
 import me.chanjar.weixin.open.api.impl.WxOpenMessageRouter;
 import me.chanjar.weixin.open.api.impl.WxOpenServiceImpl;
 import me.chanjar.weixin.open.bean.message.WxOpenXmlMessage;
-import redis.clients.jedis.JedisPool;
-import redis.clients.jedis.JedisPoolConfig;
+
 
 /**
  * 
@@ -26,14 +24,29 @@ import redis.clients.jedis.JedisPoolConfig;
  */
 public class OpenPlatform extends WxOpenServiceImpl {
 	final String AES = "aes";
-	
 	private Logger logger = LoggerFactory.getLogger(getClass());
-	private static JedisPool pool;
-	private static OpenPlatform openPlatform;
 	private WxOpenMessageRouter wxOpenMessageRouter;
+	
+	private static ThreadLocal<OpenPlatform> openThreadLocal = new ThreadLocal<OpenPlatform>() {
+		protected OpenPlatform initialValue() {
+			OpenPlatform open = new OpenPlatform();
+			open.init();
+			return open;
+		}
+	};
 
+	/**
+	 * 线程内单例
+	 */
+	public static OpenPlatform instance() {
+		return openThreadLocal.get();
+	}
+
+	/**
+	 * 初始化
+	 */
 	public void init() {
-		WxOpenInRedisConfigStorage inRedisConfigStorage = new WxOpenInRedisConfigStorage(getJedisPool());
+		WxOpenInRedisConfigStorage inRedisConfigStorage = new WxOpenInRedisConfigStorage(JedisManager.instance().getJedisPool());
 		inRedisConfigStorage.setComponentAppId(Util.getProperty("wx.open.app_id"));
 		inRedisConfigStorage.setComponentAppSecret(Util.getProperty("wx.open.app_secret"));
 		inRedisConfigStorage.setComponentToken(Util.getProperty("wx.open.token"));
@@ -183,48 +196,5 @@ public class OpenPlatform extends WxOpenServiceImpl {
 	 */
 	protected boolean isGlobalTestAppId(String appId) {
 		return (StringUtils.equalsAnyIgnoreCase(appId, "wxd101a85aa106f53e", "wx570bc396a51b8ff8"));
-	}
-
-	/**
-	 * Singleton redis pool
-	 * 
-	 * @return
-	 */
-	private JedisPool getJedisPool() {
-		if (pool == null) {
-			synchronized (OpenPlatform.class) {
-				if (pool == null) {
-					JedisPoolConfig poolConfig = new JedisPoolConfig();
-					String host = Util.getProperty("spring.redis.host");
-					int port = Util.getInteger(Util.getProperty("spring.redis.port")).intValue();
-					int timeout = Util.getInteger(Util.getProperty("spring.redis.timeout")).intValue();
-					String password = Util.getProperty("spring.redis.password");
-					int maxIdle = Util.getInteger(Util.getProperty("spring.redis.lettuce.pool.max-idle")).intValue();
-					int maxWaitMillis = Util.getInteger(Util.getProperty("spring.redis.lettuce.pool.max-wait"))
-							.intValue();
-					poolConfig.setMaxIdle(maxIdle);
-					poolConfig.setMaxWaitMillis(maxWaitMillis);
-					pool = new JedisPool(poolConfig, host, port, timeout, password);
-				}
-			}
-		}
-		return pool;
-	}
-
-	/**
-	 * 微信开放平台单例
-	 * 
-	 * @return
-	 */
-	public static OpenPlatform instance() {
-		if (openPlatform == null) {
-			synchronized (OpenPlatform.class) {
-				if (openPlatform == null) {
-					openPlatform = new OpenPlatform();
-					openPlatform.init();
-				}
-			}
-		}
-		return openPlatform;
 	}
 }

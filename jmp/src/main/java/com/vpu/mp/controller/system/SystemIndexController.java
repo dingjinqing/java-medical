@@ -18,11 +18,11 @@ public class SystemIndexController extends SystemBaseController {
 	@RequestMapping(value = "/system/index")
 	public ModelAndView index() {
 		ModelMap model = new ModelMap();
-		model.addAttribute("start_main_url", "/system/welcome");
-		model.addAttribute("user", this.sysAuth.user());
-		model.addAttribute("menu_list", saas.menu.getRoleMenuList(this.sysAuth.roleId()));
-		model.addAttribute("first_menu", saas.menu.getTopMenuList());
-		model.addAttribute("role_id", this.sysAuth.roleId());
+//		model.addAttribute("start_main_url", "/system/welcome");
+//		model.addAttribute("user", this.sysAuth.user());
+//		model.addAttribute("menu_list", saas.menu.getRoleMenuList(this.sysAuth.roleId()));
+//		model.addAttribute("first_menu", saas.menu.getTopMenuList());
+//		model.addAttribute("role_id", this.sysAuth.roleId());
 		return view("system/index", model);
 	}
 	

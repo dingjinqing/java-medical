@@ -13,6 +13,7 @@ import org.springframework.web.servlet.handler.HandlerInterceptorAdapter;
 import com.vpu.mp.service.foundation.JsonResult;
 import com.vpu.mp.service.foundation.JsonResultCode;
 import com.vpu.mp.service.foundation.Util;
+import com.vpu.mp.service.pojo.shop.auth.AdminTokenAuthInfo;
 import com.vpu.mp.service.saas.SaasApplication;
 
 /****
@@ -55,23 +56,20 @@ public class AdminAuthInterceptor extends HandlerInterceptorAdapter {
 			throws Exception {
 		String path = request.getRequestURI();
 		String language = request.getParameter("lang");
-		String token = request.getHeader("token");
-		if (token == null || token.equals("")) {
-			// 暂未登陆，请登陆
-			errorResponse(request, response, URL_LOGIN, JsonResult.fail(language, JsonResultCode.CODE_LOGIN_EXPIRED));
-			return false;
+
+		// 如果为账户登录例外URL，直接通过
+		if (match(this.accountLoginExcept, path)) {
+			return true;
 		}
-		if (!adminAuth.isLoginByToken(token)) {
-			// 账号未登录，判断例外URL
-			if (match(accountLoginExcept, path)) {
-				return true;
-			}
+		
+		AdminTokenAuthInfo user = adminAuth.user();
+		if (user == null) {
 			errorResponse(request, response, URL_LOGIN, JsonResult.fail(language, JsonResultCode.CODE_LOGIN_EXPIRED));
 			return false;
 		} else {
-			if (!adminAuth.isShopLoginByToken(token)) {
+			if (!user.isShopLogin()) {
 				// 账号登录，判断店铺登录例外URL
-				if (match(accountLoginExcept, path) || match(shopLoginExcept, path)) {
+				if (match(shopLoginExcept, path)) {
 					return true;
 				}
 				errorResponse(request, response, URL_SELECT_SHOP,
@@ -79,15 +77,14 @@ public class AdminAuthInterceptor extends HandlerInterceptorAdapter {
 				return false;
 			} else {
 				// 账号和店铺都登录，判断路径权限
-				if (!saas.shop.menu.isRoleAccess(adminAuth.roleId(), path)) {
+				Integer roleId = saas.shop.getShopAccessRoleId(user.getSysId(), user.getLoginShopId(), user.getSubAccountId());
+				if (!saas.shop.menu.isRoleAccess(roleId, path)) {
 					errorResponse(request, response, URL_NO_AUTH,
 							JsonResult.fail(language, JsonResultCode.CODE_ROLE__NO_AUTH));
 					return false;
 				}
 			}
 		}
-		// 验证成功重置token时间
-		adminAuth.updateToken(token);
 		return true;
 	}
 

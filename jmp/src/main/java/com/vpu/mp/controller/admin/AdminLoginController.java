@@ -1,17 +1,15 @@
 package com.vpu.mp.controller.admin;
 
-import java.util.Map;
-
-import javax.servlet.http.HttpServletRequest;
-
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
-
-import com.vpu.mp.service.auth.AdminAuth.ShopLoginParam;
 import com.vpu.mp.service.foundation.JsonResult;
 import com.vpu.mp.service.foundation.JsonResultCode;
+import com.vpu.mp.service.pojo.shop.auth.AdminTokenAuthInfo;
+import com.vpu.mp.service.pojo.shop.auth.ShopLoginParam;
 import com.vpu.mp.support.LineConvertHump;
+
 /**
  * 
  * @author 新国
@@ -21,33 +19,28 @@ import com.vpu.mp.support.LineConvertHump;
 public class AdminLoginController extends AdminBaseController {
 	@ResponseBody
 	@RequestMapping(value = "/admin/login")
-	public JsonResult login(@LineConvertHump  ShopLoginParam param) {
-		String lange=request.getParameter("lang");
-		Map<String,Object> map=adminAuth.login(param);
-		if (map.size()!=0) {
-			return JsonResult.success(null, map);
+	public JsonResult login(@LineConvertHump ShopLoginParam param) {
+		AdminTokenAuthInfo info = adminAuth.login(param);
+		if (info != null) {
+			return this.success(info);
 		} else {
-			return JsonResult.fail(lange, JsonResultCode.CODE_FAIL);
+			return this.fail(JsonResultCode.CODE_ACCOUNT_OR_PWD_ERROR);
 		}
 	}
 
-	
 	@ResponseBody
 	@RequestMapping(value = "/admin/logout")
-	public JsonResult logout(HttpServletRequest httpRequest) {
-		
-		String token=httpRequest.getHeader("token");
-		String lange=request.getParameter("lang");
-		if(token!=null) {
-			if(!adminAuth.isLoginByToken(token)) {
-				adminAuth.logout(token);			
-				return JsonResult.success(lange, JsonResultCode.CODE_LOGOUT_SUCCESS);				
-			}else {
-				return JsonResult.fail(lange,JsonResultCode.CODE_LOGOUT_FAILED);
+	public JsonResult logout(@RequestParam(value = "token", required = true) String token) {
+		if (token != null) {
+			if (adminAuth.isValidToken(token)) {
+				adminAuth.logout();
+				return success(JsonResultCode.CODE_LOGOUT_SUCCESS);
+			} else {
+				return fail(JsonResultCode.CODE_LOGOUT_FAILED);
 			}
-		}else {
-			return JsonResult.fail(lange,JsonResultCode.CODE_LOGOUT_FAILED);
+		} else {
+			return fail(JsonResultCode.CODE_LOGOUT_FAILED);
 		}
 	}
-	
+
 }
