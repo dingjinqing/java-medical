@@ -48,12 +48,12 @@ public class JsonResult {
 	}
 
 	public static JsonResult fail(String language, JsonResultCode resultCode) {
-		return result(language, JsonResultCode.CODE_SUCCESS, null);
+		return result(language, resultCode, null);
 	}
 
 	public static JsonResult fail(String language, JsonResultCode resultCode, Object content) {
 		assert (resultCode.getCode() != JsonResultCode.CODE_SUCCESS.getCode());
-		return result(language, JsonResultCode.CODE_SUCCESS, content);
+		return result(language, resultCode, content);
 	}
 
 	public static JsonResult result(String language, JsonResultCode resultCode, Object content) {
