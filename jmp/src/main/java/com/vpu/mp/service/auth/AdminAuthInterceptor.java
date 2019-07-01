@@ -1,11 +1,11 @@
 package com.vpu.mp.service.auth;
 
 import java.io.PrintWriter;
+import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.jooq.tools.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.web.servlet.handler.HandlerInterceptorAdapter;
@@ -35,53 +35,33 @@ public class AdminAuthInterceptor extends HandlerInterceptorAdapter {
 	/**
 	 * 账号登录例外URL
 	 */
-	protected String[] accountLoginExcept = {
-			"/admin/login",
-			"/admin/login/*",
-			"/admin/logout",
-			"/region/*",
-			"/wechat/proxy/*",
-			"/admin/notice/*",
-			"/admin/subPasswordModify",
-			"/admin/password",
-			"/admin/official/*",
-			"/admin/public/service/auth/list",
-			"/admin/public/service/auth/detail",
-			"/admin/public/image/account/*",
-			"/admin/authority/*",
-			"/admin/message"
-	};
+	protected String[] accountLoginExcept = { "/admin/login", "/admin/login/*", "/admin/logout", "/region/*",
+			"/wechat/proxy/*", "/admin/notice/*", "/admin/subPasswordModify", "/admin/password", "/admin/official/*",
+			"/admin/public/service/auth/list", "/admin/public/service/auth/detail", "/admin/public/image/account/*",
+			"/admin/authority/*", "/admin/message" };
 
 	/**
 	 * 账号登录后，店铺未登录例外URL
 	 */
-	protected String[] shopLoginExcept = {
-			"/admin/account/user/list",
-			"/admin/account/user/query",
-			"/admin/account/user/edit",
-			"/admin/account/shop/select",
-			"/admin/account/shop/switch",
-			"/admin/account/shop/switch",
-			"/admin/passwordModify",
-			"/admin/subPasswordModify",
-			"/admin/service/auth/list",
-			"/wechat/official/account/authorization",
-			"/admin/service/auth/detail",
-			"/admin/public/image/account/*",
-			"/admin/frame/image/dialog/select",
-			"/admin/authority/not",
-			"/admin/frame/*",
-			"/admin/ajax/*",
-			"/admin/account/*",
-			"/admin/public/*"
-	};
+	protected String[] shopLoginExcept = { "/admin/account/user/list", "/admin/account/user/query",
+			"/admin/account/user/edit", "/admin/account/shop/select", "/admin/account/shop/switch",
+			"/admin/account/shop/switch", "/admin/passwordModify", "/admin/subPasswordModify",
+			"/admin/service/auth/list", "/wechat/official/account/authorization", "/admin/service/auth/detail",
+			"/admin/public/image/account/*", "/admin/frame/image/dialog/select", "/admin/authority/not",
+			"/admin/frame/*", "/admin/ajax/*", "/admin/account/*", "/admin/public/*" };
 
 	@Override
 	public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler)
 			throws Exception {
 		String path = request.getRequestURI();
 		String language = request.getParameter("lang");
-		if (!adminAuth.isLogin()) {
+		String token = request.getHeader("token");
+		if (token == null || token.equals("")) {
+			// 暂未登陆，请登陆
+			errorResponse(request, response, URL_LOGIN, JsonResult.fail(language, JsonResultCode.CODE_LOGIN_EXPIRED));
+			return false;
+		}
+		if (!adminAuth.isLoginByToken(token)) {
 			// 账号未登录，判断例外URL
 			if (match(accountLoginExcept, path)) {
 				return true;
@@ -89,38 +69,35 @@ public class AdminAuthInterceptor extends HandlerInterceptorAdapter {
 			errorResponse(request, response, URL_LOGIN, JsonResult.fail(language, JsonResultCode.CODE_LOGIN_EXPIRED));
 			return false;
 		} else {
-			if (!adminAuth.isShopLogin()) {
+			if (!adminAuth.isShopLoginByToken(token)) {
 				// 账号登录，判断店铺登录例外URL
 				if (match(accountLoginExcept, path) || match(shopLoginExcept, path)) {
 					return true;
 				}
-				errorResponse(request, response, URL_SELECT_SHOP, JsonResult.fail(language, JsonResultCode.CODE_ROLE__NO_SELECT_SHOP));
+				errorResponse(request, response, URL_SELECT_SHOP,
+						JsonResult.fail(language, JsonResultCode.CODE_ROLE__NO_SELECT_SHOP));
 				return false;
 			} else {
 				// 账号和店铺都登录，判断路径权限
 				if (!saas.shop.menu.isRoleAccess(adminAuth.roleId(), path)) {
-					errorResponse(request, response, URL_NO_AUTH, JsonResult.fail(language, JsonResultCode.CODE_ROLE__NO_AUTH));
+					errorResponse(request, response, URL_NO_AUTH,
+							JsonResult.fail(language, JsonResultCode.CODE_ROLE__NO_AUTH));
 					return false;
 				}
 			}
 		}
+		// 验证成功重置token时间
+		adminAuth.updateToken(token);
 		return true;
 	}
 
 	protected void errorResponse(HttpServletRequest request, HttpServletResponse response, String path,
-			JsonResult result)
-			throws Exception {
-		boolean isAjaxRequest = (!StringUtils.isBlank(request.getHeader("x-requested-with"))
-				&& request.getHeader("x-requested-with").equals("XMLHttpRequest"));
-		if (isAjaxRequest) {
-			response.setContentType("application/json;charset=UTF-8");
-			PrintWriter writer = response.getWriter();
-			writer.write(Util.toJSON(result));
-			writer.close();
-			response.flushBuffer();
-		} else {
-			response.sendRedirect(path);
-		}
+			JsonResult result) throws Exception {
+		response.setContentType("application/json;charset=UTF-8");
+		PrintWriter writer = response.getWriter();
+		writer.write(Util.toJSON(result));
+		writer.close();
+		response.flushBuffer();
 	}
 
 	public boolean match(String[] regexps, String path) {
