@@ -10,12 +10,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.web.servlet.handler.HandlerInterceptorAdapter;
 
-import com.vpu.mp.db.main.tables.records.SystemChildAccountRecord;
 import com.vpu.mp.service.foundation.JsonResult;
 import com.vpu.mp.service.foundation.JsonResultCode;
 import com.vpu.mp.service.foundation.Util;
 import com.vpu.mp.service.pojo.saas.auth.SystemTokenAuthInfo;
-import com.vpu.mp.service.pojo.shop.auth.AdminTokenAuthInfo;
 import com.vpu.mp.service.saas.SaasApplication;
 
 /****
@@ -52,7 +50,7 @@ public class SystemAuthInterceptor extends HandlerInterceptorAdapter {
 
 		SystemTokenAuthInfo user = systemAuth.user();
 		if (user == null) {
-			errorResponse(request, response, URL_LOGIN, (new JsonResult()).fail(language, JsonResultCode.CODE_LOGIN_EXPIRED));
+			errorResponse(request, response, URL_LOGIN, (new JsonResult()).fail(language, JsonResultCode.CODE_ACCOUNT_LOGIN_EXPIRED));
 			return false;
 		} else {
 			// 账号和店铺都登录，判断路径权限

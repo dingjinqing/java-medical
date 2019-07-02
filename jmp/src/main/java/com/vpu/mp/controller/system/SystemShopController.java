@@ -20,7 +20,7 @@ public class SystemShopController extends SystemBaseController {
 	@ResponseBody
 	public JsonResult checkMobile(@RequestParam String mobile) {
 		if (saas.shop.hasMobile(mobile)) {
-			return fail(JsonResultCode.CODE_MODILE_HAS_REGISTERED);
+			return fail(JsonResultCode.CODE_ACCOUNT_MODILE_REGISTERED);
 		}
 		return success();
 	}

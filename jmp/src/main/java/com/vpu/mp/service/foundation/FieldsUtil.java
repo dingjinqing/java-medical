@@ -4,7 +4,6 @@ import java.beans.PropertyDescriptor;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 
-import com.vpu.mp.db.main.tables.records.ShopAccountRecord;
 
 /**
  * 将object1类中的非null值赋值到object2,可以自己赋值自己，或者类赋值到相应的Record类，两个类里字段相同

@@ -7,10 +7,7 @@ import javax.servlet.http.HttpServletRequest;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.env.Environment;
-import org.springframework.ui.ModelMap;
 import org.springframework.util.StringUtils;
-import org.springframework.web.servlet.ModelAndView;
-import org.springframework.web.servlet.view.json.MappingJackson2JsonView;
 
 import com.vpu.mp.service.foundation.JsonResult;
 import com.vpu.mp.service.foundation.JsonResultCode;
@@ -33,12 +30,17 @@ public class BaseController {
 	@Autowired
 	protected Environment env;
 
-	
+	/**
+	 * Json输出
+	 * @param resultCode
+	 * @param content
+	 * @return
+	 */
 	public JsonResult result(JsonResultCode resultCode, Object content) {
-		String language = request.getHeader("X-Lang");
+		String language = getLang();
 		return (new JsonResult()).result(language, resultCode, content);
 	}
-	
+
 	public JsonResult success() {
 		return result(JsonResultCode.CODE_SUCCESS, null);
 	}
@@ -48,20 +50,15 @@ public class BaseController {
 	}
 
 	public JsonResult fail(JsonResultCode resultCode) {
-		return result(resultCode,null);
-	}
-	
-	public JsonResult fail() {
-		return result(JsonResultCode.CODE_FAIL,null);
-	}
-	
-	protected boolean isPost() {
-		return "POST".equals(request.getMethod());
+		return result(resultCode, null);
 	}
 
-	protected boolean isAjax() {
-		return (!StringUtils.isEmpty(request.getHeader("x-requested-with"))
-				&& request.getHeader("x-requested-with").equals("XMLHttpRequest"));
+	public JsonResult fail() {
+		return result(JsonResultCode.CODE_FAIL, null);
+	}
+
+	protected boolean isPost() {
+		return "POST".equals(request.getMethod());
 	}
 
 	protected String post(String key) {
@@ -76,6 +73,29 @@ public class BaseController {
 		return request.getParameterMap();
 	}
 
+	protected String getLang() {
+		return request.getHeader("V-Lang");
+	}
+
+	/**
+	 * 响应错误信息
+	 * @param apiMessageKey 错误信息key，对应JsonResultCode的message
+	 * @return
+	 */
+	public JsonResult fail(String apiMessageKey) {
+		for (JsonResultCode code : JsonResultCode.values()) {
+			if (code.getMessage().equals(apiMessageKey)) {
+				return result(code, null);
+			}
+		}
+		throw new RuntimeException(apiMessageKey + " not defined in JsonResultCode.");
+	}
+
+	/**
+	 * 输入参数Map
+	 * @param delim
+	 * @return
+	 */
 	protected Map<String, String> inputMap(String delim) {
 		Map<String, String> result = new HashMap<String, String>(0);
 		Map<String, String[]> maps = this.input();
@@ -86,14 +106,28 @@ public class BaseController {
 		return result;
 	}
 
+	/**
+	 * 输入参数Map
+	 * @return
+	 */
 	protected Map<String, String> inputMap() {
 		return inputMap(",");
 	}
 
+	/**
+	 * 主站路径URL
+	 * @param path
+	 * @return
+	 */
 	public String mainUrl(String path) {
 		return Util.imageUrl(path, request.getScheme());
 	}
 
+	/**
+	 * 图片路径URL
+	 * @param path
+	 * @return
+	 */
 	public String imageUrl(String path) {
 		return Util.imageUrl(path, request.getScheme());
 	}

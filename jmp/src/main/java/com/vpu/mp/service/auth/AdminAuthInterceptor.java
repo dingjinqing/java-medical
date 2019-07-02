@@ -66,7 +66,7 @@ public class AdminAuthInterceptor extends HandlerInterceptorAdapter {
 		
 		AdminTokenAuthInfo user = adminAuth.user();
 		if (user == null) {
-			errorResponse(request, response, URL_LOGIN,  (new JsonResult()).fail(language, JsonResultCode.CODE_LOGIN_EXPIRED));
+			errorResponse(request, response, URL_LOGIN,  (new JsonResult()).fail(language, JsonResultCode.CODE_ACCOUNT_LOGIN_EXPIRED));
 			return false;
 		} else {
 			if (!user.isShopLogin()) {
@@ -75,14 +75,14 @@ public class AdminAuthInterceptor extends HandlerInterceptorAdapter {
 					return true;
 				}
 				errorResponse(request, response, URL_SELECT_SHOP,
-						(new JsonResult()).fail(language, JsonResultCode.CODE_ROLE__NO_SELECT_SHOP));
+						(new JsonResult()).fail(language, JsonResultCode.CODE_ACCOUNT_ROLE__SHOP_SELECT));
 				return false;
 			} else {
 				// 账号和店铺都登录，判断路径权限
 				Integer roleId = saas.shop.getShopAccessRoleId(user.getSysId(), user.getLoginShopId(), user.getSubAccountId());
 				if (!saas.shop.menu.isRoleAccess(roleId, path)) {
 					errorResponse(request, response, URL_NO_AUTH,
-							(new JsonResult()).fail(language, JsonResultCode.CODE_ROLE__NO_AUTH));
+							(new JsonResult()).fail(language, JsonResultCode.CODE_ACCOUNT_ROLE__AUTH_INSUFFICIENT));
 					return false;
 				}
 			}

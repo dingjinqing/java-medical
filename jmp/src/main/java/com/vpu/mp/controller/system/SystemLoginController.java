@@ -7,9 +7,11 @@ import javax.servlet.http.HttpServletRequest;
 
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.RestController;
 
 import com.vpu.mp.service.foundation.JsonResult;
 import com.vpu.mp.service.foundation.JsonResultCode;
@@ -22,7 +24,7 @@ import com.vpu.mp.support.LineConvertHump;
  * @author 新国
  *
  */
-@Controller
+@RestController
 public class SystemLoginController extends SystemBaseController {
 
 	/**
@@ -32,30 +34,20 @@ public class SystemLoginController extends SystemBaseController {
 	 * @param password
 	 * @return
 	 */
-	@ResponseBody
 	@PostMapping(value = "/system/login")
-	public JsonResult login(@LineConvertHump SystemLoginParam param) {
+	public JsonResult login(@RequestBody SystemLoginParam param) {
 		SystemTokenAuthInfo result = sysAuth.login(param);
 		if (result != null) {
 			return success(result);
 		} else {
-			return fail( JsonResultCode.CODE_ACCOUNT_OR_PWD_ERROR);
+			return fail(JsonResultCode.CODE_ACCOUNT_OR_PASSWORD_INCRRECT);
 		}
 	}
 
-	@ResponseBody
 	@RequestMapping(value = "/system/logout")
-	public JsonResult logout(@RequestParam(value = "token", required = true) String token) {
-		if (token != null) {
-			if (!sysAuth.isValidToken(token)) {
-				sysAuth.logout();
-				return success(JsonResultCode.CODE_LOGOUT_SUCCESS);
-			} else {
-				return fail(JsonResultCode.CODE_LOGOUT_FAILED);
-			}
-		} else {
-			return fail(JsonResultCode.CODE_LOGOUT_FAILED);
-		}
+	public JsonResult logout() {
+		sysAuth.logout();
+		return success(JsonResultCode.CODE_SUCCESS);
 	}
 
 }

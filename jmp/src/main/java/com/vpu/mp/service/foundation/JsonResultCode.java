@@ -11,39 +11,44 @@ import lombok.ToString;
 @Getter
 @ToString
 public enum JsonResultCode {
+	/**
+	 * 0：成功 负数：系统错误
+	 * 
+	 * 其他返回码：6位数字，前两位为分类，后四位为该分类下的错误码 ;
+	 * 
+	 * @serialField 10开头：账号相关，登录、登出、角色等
+	 * @serialField 11开头：图片
+	 * @serialField 12开头：订单
+	 * @serialField 13开头：商品
+	 * @serialField 14开头：营销
+	 * @serialField 15开头：用户
+	 */
 
 	// 公共码
-	CODE_SUCCESS(0, "api.code.success"),
-	CODE_FAIL(-1, "api.code.fail"),
-	CODE_PARAM_ERROR(-3, "api.code.param_error"),
-	
-	// 账号
-	CODE_ACCOUNT_OR_PWD_ERROR(10001, "api.code.account_or_pwd_error"),
-	
-	
-	// 图片
-	CODE_IMGAE_UPLOAD_FAILED(10002, "api.code.image_upload_failed"),
-	CODE_IMGAE_INVALID(10003, "api.code.image_invalid"),
-	CODE_IMGAE_CROP_FAILED(10004, "api.code.image_crop_failed"),
-	
-	// 用户
-	CODE_MODILE_HAS_APPLIED(10006, "api.code.mobile_has_applied"),
-	CODE_MODILE_HAS_REGISTERED(10007, "api.code.mobile_has_registered"),
-	
-	CODE_LOGIN_EXPIRED(10008, "api.code.login_expired"),
-	CODE_ROLE__NO_AUTH(10009, "api.code.role_no_auth"),
-	CODE_ROLE__NO_SELECT_SHOP(10010, "api.code.role_no_select_shop"),
-	
-	
-	// 添加其他
-	
-	CODE_LOGOUT_SUCCESS(10011,"api.code.logout.success"),
-	CODE_LOGOUT_FAILED(10012,"api.code.logout.failed"),
-	CODE_NO_SHOP(10013,"api.code.shop.not.have"),
-	CODE_SHOP_NO_VERSION_INFO(10014,"api.code.shop.no.version.info"),
-	CODE_ACCOUNT_SAME(10015,"api.code.account.same")
-	;
+	CODE_SUCCESS(0, JsonResultMessage.MSG_SUCCESS),
+	CODE_FAIL(-1, JsonResultMessage.MSG_FAIL),
+	CODE_PARAM_ERROR(-3, JsonResultMessage.MSG_PARAM_ERROR),
 
+	// 账号
+	CODE_ACCOUNT_OR_PASSWORD_INCRRECT(100001, JsonResultMessage.MSG_ACCOUNT_OR_PASSWORD_INCRRECT),
+	CODE_ACCOUNT_MODILE_APPLIED(100002, JsonResultMessage.MSG_ACCOUNT_MODILE_APPLIED),
+	CODE_ACCOUNT_MODILE_REGISTERED(100003, JsonResultMessage.MSG_ACCOUNT_MODILE_REGISTERED),
+	CODE_ACCOUNT_LOGIN_EXPIRED(100004, JsonResultMessage.MSG_ACCOUNT_LOGIN_EXPIRED),
+	CODE_ACCOUNT_ROLE__AUTH_INSUFFICIENT(100005, JsonResultMessage.MSG_ACCOUNT_ROLE__AUTH_INSUFFICIENT),
+	CODE_ACCOUNT_ROLE__SHOP_SELECT(100006, JsonResultMessage.MSG_ACCOUNT_ROLE__SHOP_SELECT),
+	CODE_ACCOUNT_NAME_NOT_NULL(100007, JsonResultMessage.MSG_ACCOUNT_NAME_NOT_NULL),
+	CODE_ACCOUNT_ISSUBLOGIN_NOT_NULL(100007, JsonResultMessage.MSG_ACCOUNT_ISSUBLOGIN_NOT_NULL),
+
+	// 图片
+	CODE_IMGAE_UPLOAD_FAILED(110001, JsonResultMessage.MSG_IMGAE_UPLOAD_FAILED),
+	CODE_IMGAE_FILE_INVALID(110002, JsonResultMessage.MSG_IMGAE_FILE_INVALID),
+	CODE_IMGAE_CROP_FAILED(110003, JsonResultMessage.MSG_IMGAE_CROP_FAILED),
+
+	// 订单
+
+	// 商品
+
+	;
 
 	/**
 	 * 得到返回码

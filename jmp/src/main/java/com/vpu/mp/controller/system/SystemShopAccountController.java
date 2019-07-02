@@ -28,7 +28,8 @@ public class SystemShopAccountController extends SystemBaseController {
 		if (saas.shop.accout.addShopAccountService(account)) {
 			return success(JsonResultCode.CODE_SUCCESS);
 		} else {
-			return fail(JsonResultCode.CODE_ACCOUNT_SAME);
+			// TODO:需给出具体原因！！
+			return fail(JsonResultCode.CODE_FAIL);
 		}
 	}
 }

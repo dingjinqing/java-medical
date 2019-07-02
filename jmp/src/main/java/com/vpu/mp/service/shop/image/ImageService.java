@@ -1,7 +1,6 @@
 package com.vpu.mp.service.shop.image;
 
 import com.UpYun;
-import com.upyun.UpException;
 import com.vpu.mp.db.shop.tables.pojos.UploadedImageCategory;
 import com.vpu.mp.db.shop.tables.records.UploadedImageRecord;
 import com.vpu.mp.service.foundation.BaseService;
