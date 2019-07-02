@@ -20,6 +20,7 @@ import Information from '@/components/index/mainComponents/information'
 export default {
   components: { Swiper, Application, Advantage, Industry, Entrance, Case, Information }
 }
+
 </script>
 <style scoped>
 .main_container {

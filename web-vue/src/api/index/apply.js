@@ -3,11 +3,12 @@ import service from '@/util/request.js'
 //  申请试用  -接口
 
 // 列表
-export function applyrequest () {
+export function applyrequest (riid) {
   console.log(window.location)
   return service({
-    url: '/apply/json/tg/juSkip.json?callback=skipFn0&menuType=index&banner=true',
-    method: 'get'
+    url: '/index/check/free/experience',
+    method: 'post',
+    data: riid
   })
 }
 

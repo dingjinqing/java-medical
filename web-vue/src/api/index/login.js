@@ -5,7 +5,7 @@ import request from '@/util/request'
 // 列表
 export function loginRequest (riid) {
   return request({
-    url: '',
+    url: '/admin/login',
     method: 'post',
     data: riid
   })

@@ -187,7 +187,7 @@ export default {
           clickable: true,
           renderBullet: function (index, className) {
             let obj = {}
-            if (localStorage.getItem('WEPUBAO_LANGUAGE') === 'en') {
+            if (localStorage.getItem('WEPUBAO_LANGUAGE') === 'en_US') {
               obj.activitis = 'Marketing activities'
               obj.management = 'Membership management'
               obj.store = 'Store management'
@@ -222,7 +222,7 @@ export default {
   },
   methods: {
     langDefault () {
-      if (localStorage.getItem('WEPUBAO_LANGUAGE') === 'en') {
+      if (localStorage.getItem('WEPUBAO_LANGUAGE') === 'en_US') {
         this.$i18n.locale = 'en'
       } else {
         this.$i18n.locale = 'cn'

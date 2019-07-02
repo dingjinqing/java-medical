@@ -96,7 +96,6 @@
   </div>
 </template>
 <script>
-import qs from 'qs'
 import { loginRequest } from '@/api/index/login.js'
 export default {
   data () {
@@ -133,7 +132,7 @@ export default {
   methods: {
     // 初始化语言
     langDefault () {
-      if (localStorage.getItem('WEPUBAO_LANGUAGE') === 'en') {
+      if (localStorage.getItem('WEPUBAO_LANGUAGE') === 'en_US') {
         this.$i18n.locale = 'en'
         this.langData = this.langData_en
       } else {
@@ -141,12 +140,77 @@ export default {
         this.$i18n.locale = 'cn'
       }
     },
+    // 表单校验
+    JudgementForm (index) {
+      if (index === 1) {
+        if (!this.mainData.username) {
+          this.$message({
+            showClose: true,
+            message: '请填写您的主账号用户名',
+            type: 'warning'
+          })
+          return
+        }
+        if (!this.mainData.password) {
+          this.$message({
+            showClose: true,
+            message: '请填写您的密码',
+            type: 'warning'
+          })
+        }
+      } else {
+        if (!this.subData.username) {
+          this.$message({
+            showClose: true,
+            message: '请填写您的主账号用户名',
+            type: 'warning'
+          })
+          return
+        }
+        if (!this.subData.password) {
+          this.$message({
+            showClose: true,
+            message: '请填写您的子账号用户名或手机号',
+            type: 'warning'
+          })
+          return
+        }
+        if (!this.subData.subUsername) {
+          this.$message({
+            showClose: true,
+            message: '请填写您的密码',
+            type: 'warning'
+          })
+        }
+      }
+    },
     onSubmit (index) {
       console.log(index)
-      console.log(qs.parse(this.mainData))
-      console.log(qs.parse(this.subData))
+      localStorage.setItem('contentType', 'application/json;charset=UTF-8')
       if (index === 1) {
-        loginRequest(qs.parse(this.mainData))
+        loginRequest(this.mainData).then((res) => {
+          console.log(res)
+          if (res.error) {
+            this.$message({
+              showClose: true,
+              message: res.message,
+              type: 'error'
+            })
+          }
+        })
+      } else {
+        loginRequest(this.subData).then((res) => {
+          console.log(res)
+          if (res.error !== 0) {
+            this.$message({
+              showClose: true,
+              message: res.message,
+              type: 'error'
+            })
+          } else {
+
+          }
+        })
       }
     },
     // tap切换

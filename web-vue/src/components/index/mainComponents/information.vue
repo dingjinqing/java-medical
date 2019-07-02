@@ -38,6 +38,7 @@
   </div>
 </template>
 <script>
+// import { articleRequest } from '@/api/index/news.js'
 export default {
   data () {
     return {
@@ -93,6 +94,7 @@ export default {
   mounted () {
     let that = this
     this.langDefault()
+    this.articleRequest()
     this.$http.$on('lang_change', function (data) {
       if (data === 0) {
         that.Recommend_class = 'Recommend_class'
@@ -104,13 +106,29 @@ export default {
   methods: {
     // 初始化语言
     langDefault () {
-      if (localStorage.getItem('WEPUBAO_LANGUAGE') === 'en') {
+      if (localStorage.getItem('WEPUBAO_LANGUAGE') === 'en_US') {
         this.$i18n.locale = 'en'
         this.Recommend_class = 'Recommend_class'
       } else {
         this.$i18n.locale = 'cn'
         this.Recommend_class = ''
       }
+    },
+    // 首页文章列表
+    articleRequest () {
+      // let obj = {
+      //   'categoryId': '4',
+      //   'status': '1',
+      //   'keywords': '',
+      //   'sortName': 'article_id,asc',
+      //   'page': {
+      //     'currentPage': '1',
+      //     'pageRows': '10'
+      //   }
+      // }
+      // articleRequest().then((res) => {
+
+      // })
     },
     // 图片划入事件
     enter (index) {

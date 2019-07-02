@@ -1,5 +1,5 @@
 import axios from 'axios'
-import qs from 'qs'
+// import qs from 'qs'
 import { Message } from 'element-ui'
 
 // 环境的切换
@@ -15,7 +15,6 @@ console.log(process.env.NODE_ENV, baseURL)
 // 创建axios实例
 const service = axios.create({
   baseURL: baseURL, // api的base_url
-  // baseURL: 'http://192.168.200.63', // api的base_url
   timeout: 50000 // 请求超时时间
 })
 
@@ -23,10 +22,13 @@ const service = axios.create({
 service.interceptors.request.use(
   config => {
     if (config.method === 'post') {
-      config.headers['Content-Type'] = 'application/x-www-form-urlencoded;charset=UTF-8'
-      // config.headers['V-Token'] = ' bearer ' // 让每个请求携带自定义token 请根据实际情况自行修改
-      // config.headers['V-Lang'] = ' bearer '
-      config.data = qs.stringify(config.data)
+      console.log(localStorage.getItem('contentType'))
+      config.headers['Content-Type'] = localStorage.getItem('contentType')
+      if (localStorage.getItem('V-Token')) {
+        config.headers['V-Token'] = localStorage.getItem('V-Token')
+      }
+      config.headers['V-Lang'] = localStorage.getItem('WEPUBAO_LANGUAGE')
+      // config.data = qs.stringify(config.data)
     }
 
     return config
@@ -43,41 +45,39 @@ service.interceptors.request.use(
 service.interceptors.response.use(
   response => {
     const res = response
-
     if (res) {
-      switch (res.data.status) {
+      switch (res.status) {
         // 成功
         case 200:
           return res.data
-
-        // default:
-        //   Message.error({
-        //     message: res.data.message,
-        //     showClose: true
-        //   })
+        default:
+          Message.error({
+            message: res.data.message,
+            showClose: true
+          })
       }
     }
     return res
   },
   error => {
-    // if (error && error.response) {
-    //     switch (error.response.status) {
-    //         case 401:
-    //             error.message = '抱歉，您没有访问此操作的权限！'
-    //             break
-    //         case 404:
-    //             error.message = '抱歉，您请求的资源不存在！'
-    //             break
-    //         default:
-    //             error.message = `服务正在处理，请稍后。`
-    //     }
-    // } else {
-    //     error.message = '服务正在处理，请稍后。'
-    // }
-    // Message.error({
-    //     message: error.message,
-    //     showClose: true
-    // })
+    if (error && error.response) {
+      switch (error.response.status) {
+        case 401:
+          error.message = '抱歉，您没有访问此操作的权限！'
+          break
+        case 404:
+          error.message = '抱歉，您请求的资源不存在！'
+          break
+        default:
+          error.message = `服务正在处理，请稍后。`
+      }
+    } else {
+      error.message = '服务正在处理，请稍后。'
+    }
+    Message.error({
+      message: error.message,
+      showClose: true
+    })
     return Promise.reject(error)
   }
 )

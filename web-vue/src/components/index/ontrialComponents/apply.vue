@@ -68,7 +68,7 @@ export default {
   methods: {
     // 初始化语言
     langDefault () {
-      if (localStorage.getItem('WEPUBAO_LANGUAGE') === 'en') {
+      if (localStorage.getItem('WEPUBAO_LANGUAGE') === 'en_US') {
         this.$i18n.locale = 'en'
         this.placeholder_name = 'Please fill in your name'
         this.placeholder_tel = 'Please fill in your cell phone number'
@@ -77,14 +77,38 @@ export default {
       }
     },
     handlesubmit () {
+      localStorage.setItem('contentType', 'application/json;charset=UTF-8')
       console.log(this.username, this.phonenum)
       console.log(applyrequest)
-      // let obj = {
-      //   contact: this.username,
-      //   mobile: this.phonenum
-      // }
-      applyrequest().then((res) => {
+      let obj = {
+        contact: this.username,
+        mobile: this.phonenum
+      }
+      if (!this.username) {
+        this.$message({
+          showClose: true,
+          message: '请填写您的姓名',
+          type: 'warning'
+        })
+        return
+      }
+      if (!this.phonenum) {
+        this.$message({
+          showClose: true,
+          message: '请填写您的手机号',
+          type: 'warning'
+        })
+        return
+      }
+      applyrequest(obj).then((res) => {
         console.log(res)
+        if (res.error === 0) {
+          this.$message({
+            showClose: true,
+            message: '提交申请成功，请等待业务员联系',
+            type: 'success'
+          })
+        }
       })
     }
   }

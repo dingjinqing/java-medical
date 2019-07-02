@@ -254,7 +254,7 @@ export default {
           this.langData_show = this.langData_en
           this.loginData_show = this.loginData_en
           this.mar_class = 'mar_class'
-          localStorage.setItem('WEPUBAO_LANGUAGE', 'en')
+          localStorage.setItem('WEPUBAO_LANGUAGE', 'en_US')
           break
         case 1:
           this.$i18n.locale = this.langData_cn[index].lang
@@ -262,7 +262,7 @@ export default {
           this.langData_show = this.langData_cn
           this.loginData_show = this.loginData_cn
           this.mar_class = ''
-          localStorage.setItem('WEPUBAO_LANGUAGE', 'cn')
+          localStorage.setItem('WEPUBAO_LANGUAGE', 'zh_CN')
           break
       }
       this.$http.$emit('lang_change', index)

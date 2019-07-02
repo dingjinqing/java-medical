@@ -55,7 +55,7 @@ export default {
     // 初始化语言
     langDefault () {
       console.log(localStorage.getItem('WEPUBAO_LANGUAGE'))
-      if (localStorage.getItem('WEPUBAO_LANGUAGE') === 'en') {
+      if (localStorage.getItem('WEPUBAO_LANGUAGE') === 'en_US') {
         this.contactData = this.contactData_en
         return
       }

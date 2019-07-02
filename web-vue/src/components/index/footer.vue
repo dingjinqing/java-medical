@@ -89,7 +89,7 @@ export default {
   methods: {
     // 初始化语言
     langDefault () {
-      if (localStorage.getItem('WEPUBAO_LANGUAGE') === 'en') {
+      if (localStorage.getItem('WEPUBAO_LANGUAGE') === 'en_US') {
         this.$i18n.locale = 'en'
       } else {
         this.$i18n.locale = 'cn'
