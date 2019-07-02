@@ -25,16 +25,16 @@ export default {
   data () {
     return {
       imgUrlData: [
-        { imgUrl: 'http://miniimg.cn/image/admin/official/cover1.png?v=1' },
-        { imgUrl: 'http://miniimg.cn/image/admin/official/cover2.png?v=1' },
-        { imgUrl: 'http://miniimg.cn/image/admin/official/cover3.png?v=1' },
-        { imgUrl: 'http://miniimg.cn/image/admin/official/cover4.png?v=1' },
-        { imgUrl: 'http://miniimg.cn/image/admin/official/cover5.png?v=1' },
-        { imgUrl: 'http://miniimg.cn/image/admin/official/cover6.png?v=1' },
-        { imgUrl: 'http://miniimg.cn/image/admin/official/cover7.png?v=1' },
-        { imgUrl: 'http://miniimg.cn/image/admin/official/cover8.png?v=1' },
-        { imgUrl: 'http://miniimg.cn/image/admin/official/cover9.png?v=1' },
-        { imgUrl: 'http://miniimg.cn/image/admin/official/cover10.png?v=1' }
+        { imgUrl: 'http://mpimg2.weipubao.cn/image/admin/official/cover1.png?v=1' },
+        { imgUrl: 'http://mpimg2.weipubao.cn/image/admin/official/cover2.png?v=1' },
+        { imgUrl: 'http://mpimg2.weipubao.cn/image/admin/official/cover3.png?v=1' },
+        { imgUrl: 'http://mpimg2.weipubao.cn/image/admin/official/cover4.png?v=1' },
+        { imgUrl: 'http://mpimg2.weipubao.cn/image/admin/official/cover5.png?v=1' },
+        { imgUrl: 'http://mpimg2.weipubao.cn/image/admin/official/cover6.png?v=1' },
+        { imgUrl: 'http://mpimg2.weipubao.cn/image/admin/official/cover7.png?v=1' },
+        { imgUrl: 'http://mpimg2.weipubao.cn/image/admin/official/cover8.png?v=1' },
+        { imgUrl: 'http://mpimg2.weipubao.cn/image/admin/official/cover9.png?v=1' },
+        { imgUrl: 'http://mpimg2.weipubao.cn/image/admin/official/cover10.png?v=1' }
       ]
     }
   },
@@ -53,12 +53,12 @@ export default {
     // 图片划入事件
     enter (index) {
       var ind = index + 1
-      this.imgUrlData[index].imgUrl = 'http://miniimg.cn/image/admin/official/cover_hover' + ind + '.png?v=1'
+      this.imgUrlData[index].imgUrl = 'http://mpimg2.weipubao.cn//image/admin/official/cover_hover' + ind + '.png?v=1'
     },
     // 图片划出事件
     leave (index) {
       var ind = index + 1
-      this.imgUrlData[index].imgUrl = 'http://miniimg.cn/image/admin/official/cover' + ind + '.png?v=1'
+      this.imgUrlData[index].imgUrl = 'http://mpimg2.weipubao.cn//image/admin/official/cover' + ind + '.png?v=1'
     }
   }
 }

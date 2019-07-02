@@ -9,7 +9,7 @@
     <ul class="light_four">
       <li class=" ">
         <img
-          src="http://miniimg.cn/image/admin/official/marketing1.png"
+          src="http://mpimg2.weipubao.cn/image/admin/official/marketing1.png"
           class=""
         >
         <div>{{$t('message.index_application_title_2')}}</div>
@@ -17,7 +17,7 @@
       </li>
       <li class=" ">
         <img
-          src="http://miniimg.cn/image/admin/official/marketing2.png"
+          src="http://mpimg2.weipubao.cn/image/admin/official/marketing2.png"
           class=""
         >
         <div>{{$t('message.index_application_title_3')}}</div>
@@ -25,7 +25,7 @@
       </li>
       <li class=" ">
         <img
-          src="http://miniimg.cn/image/admin/official/marketing3.png"
+          src="http://mpimg2.weipubao.cn/image/admin/official/marketing3.png"
           class=""
         >
         <div>{{$t('message.index_application_title_4')}}</div>
@@ -33,7 +33,7 @@
       </li>
       <li class=" ">
         <img
-          src="http://miniimg.cn/image/admin/official/marketing4.png"
+          src="http://mpimg2.weipubao.cn/image/admin/official/marketing4.png"
           class=""
         >
         <div>{{$t('message.index_application_title_5')}}</div>

@@ -12,7 +12,7 @@ module.exports = {
     assetsPublicPath: '/',
     proxyTable: {
       '/api': {
-        target: 'https://skip.ju.taobao.com',
+        target: 'http://123.207.160.110:8086',
         changeOrigin: true,
         pathRewrite: { '^/api': '' }
       }

@@ -14,7 +14,7 @@
           <swiper-slide>
             <div class="advan_li_left">
               <img
-                src="http://miniimg.cn/image/admin/official/advan_1.png?v=1"
+                src="http://mpimg2.weipubao.cn/image/admin/official/advan_1.png?v=1"
                 alt=""
               >
             </div>
@@ -46,7 +46,7 @@
           <swiper-slide>
             <div class="advan_li_left">
               <img
-                src="http://miniimg.cn/image/admin/official/advan_2.png?v=1"
+                src="http://mpimg2.weipubao.cn/image/admin/official/advan_2.png?v=1"
                 alt=""
               >
             </div>
@@ -71,7 +71,7 @@
           <swiper-slide>
             <div class="advan_li_left">
               <img
-                src="http://miniimg.cn/image/admin/official/advan_3.png?v=1"
+                src="http://mpimg2.weipubao.cn/image/admin/official/advan_3.png?v=1"
                 alt=""
               >
             </div>
@@ -96,7 +96,7 @@
           <swiper-slide>
             <div class="advan_li_left">
               <img
-                src="http://miniimg.cn/image/admin/official/advan_4.png?v=1"
+                src="http://mpimg2.weipubao.cn/image/admin/official/advan_4.png?v=1"
                 alt=""
               >
             </div>
@@ -121,7 +121,7 @@
           <swiper-slide>
             <div class="advan_li_left">
               <img
-                src="http://miniimg.cn/image/admin/official/advan_5.png?v=1"
+                src="http://mpimg2.weipubao.cn/image/admin/official/advan_5.png?v=1"
                 alt=""
               >
             </div>
@@ -146,7 +146,7 @@
           <swiper-slide>
             <div class="advan_li_left">
               <img
-                src="http://miniimg.cn/image/admin/official/advan_6.png?v=1"
+                src="http://mpimg2.weipubao.cn/image/admin/official/advan_6.png?v=1"
                 alt=""
               >
             </div>

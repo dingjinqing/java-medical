@@ -21,8 +21,8 @@
           :key='item_index'
         >
           <span>{{item_list.date}}</span>
-          <span>{{item_list.content}}</span>
-          <span style="float: right;">{{item_list.Recommend}}</span>
+          <span :class="Recommend_class">{{item_list.content}}</span>
+          <span style="float: right;">{{$t('Recommend')}}</span>
         </div>
       </li>
     </ul>
@@ -42,72 +42,74 @@ export default {
   data () {
     return {
       newData: [
-        { imgUrl: 'http://miniimg.cn/image/admin/official/news1.png',
+        { imgUrl: 'http://mpimg2.weipubao.cn/image/admin/official/news1.png',
           active_class: 'zoomout',
           new_list: [{
             date: '06/21',
-            content: '1店+小程序助力“眉州东坡”，7天拉新会员近2万，上线当天交易额高达17万！',
-            Recommend: '推荐'
+            content: '1店+小程序助力“眉州东坡”，7天拉新会员近2万，上线当天交易额高达17万！'
           },
           {
             date: '06/21',
-            content: '2店+小程序助力“眉州东坡”，7天拉新会员近2万，上线当天交易额高达17万！',
-            Recommend: '推荐'
+            content: '2店+小程序助力“眉州东坡”，7天拉新会员近2万，上线当天交易额高达17万！'
           },
           {
             date: '06/21',
-            content: '3店+小程序助力“眉州东坡”，7天拉新会员近2万，上线当天交易额高达17万！',
-            Recommend: '推荐'
+            content: '3店+小程序助力“眉州东坡”，7天拉新会员近2万，上线当天交易额高达17万！'
           }] },
-        { imgUrl: 'http://miniimg.cn/image/admin/official/news2.png',
+        { imgUrl: 'http://mpimg2.weipubao.cn/image/admin/official/news2.png',
           active_class: 'zoomout',
           new_list: [{
             date: '06/21',
-            content: '4店+小程序助力“眉州东坡”，7天拉新会员近2万，上线当天交易额高达17万！',
-            Recommend: '推荐'
+            content: '4店+小程序助力“眉州东坡”，7天拉新会员近2万，上线当天交易额高达17万！'
           },
           {
             date: '06/21',
-            content: '5店+小程序助力“眉州东坡”，7天拉新会员近2万，上线当天交易额高达17万！',
-            Recommend: '推荐'
+            content: '5店+小程序助力“眉州东坡”，7天拉新会员近2万，上线当天交易额高达17万！'
           }, {
             date: '06/21',
-            content: '6店+小程序助力“眉州东坡”，7天拉新会员近2万，上线当天交易额高达17万！',
-            Recommend: '推荐'
+            content: '6店+小程序助力“眉州东坡”，7天拉新会员近2万，上线当天交易额高达17万！'
           }]
         },
-        { imgUrl: 'http://miniimg.cn/image/admin/official/news3.png',
+        { imgUrl: 'http://mpimg2.weipubao.cn/image/admin/official/news3.png',
           active_class: 'zoomout',
           new_list: [{
             date: '06/21',
-            content: '7店+小程序助力“眉州东坡”，7天拉新会员近2万，上线当天交易额高达17万！',
-            Recommend: '推荐'
+            content: '7店+小程序助力“眉州东坡”，7天拉新会员近2万，上线当天交易额高达17万！'
           },
           {
             date: '06/21',
-            content: '8店+小程序助力“眉州东坡”，7天拉新会员近2万，上线当天交易额高达17万！',
-            Recommend: '推荐'
+            content: '8店+小程序助力“眉州东坡”，7天拉新会员近2万，上线当天交易额高达17万！'
           }, {
             date: '06/21',
-            content: '9店+小程序助力“眉州东坡”，7天拉新会员近2万，上线当天交易额高达17万！',
-            Recommend: '推荐'
+            content: '9店+小程序助力“眉州东坡”，7天拉新会员近2万，上线当天交易额高达17万！'
           }
           ]
         }
       ],
+      Recommend_class: '',
       more_active: ''
     }
   },
   mounted () {
+    let that = this
     this.langDefault()
+    this.$http.$on('lang_change', function (data) {
+      if (data === 0) {
+        that.Recommend_class = 'Recommend_class'
+      } else if (data === 1) {
+        that.Recommend_class = ''
+      }
+    })
   },
   methods: {
     // 初始化语言
     langDefault () {
       if (localStorage.getItem('WEPUBAO_LANGUAGE') === 'en') {
         this.$i18n.locale = 'en'
+        this.Recommend_class = 'Recommend_class'
       } else {
         this.$i18n.locale = 'cn'
+        this.Recommend_class = ''
       }
     },
     // 图片划入事件
@@ -225,6 +227,7 @@ export default {
   margin-bottom: 8px !important;
   line-height: 18px;
   height: auto !important;
+  cursor: pointer;
 }
 .new_li span {
   float: left;
@@ -238,6 +241,9 @@ export default {
   white-space: nowrap;
   text-overflow: ellipsis;
 }
+.Recommend_class {
+  width: 197px !important;
+}
 .new_li span:nth-of-type(3) {
   display: inline-block;
   color: #f66;
@@ -247,5 +253,8 @@ export default {
   padding: 0px 5px;
   margin-right: 2px;
 }
-/* 5a8bff */
+.new_li span:nth-of-type(3):hover {
+  color: #fff;
+  background-color: #f66;
+}
 </style>

@@ -24,7 +24,8 @@ service.interceptors.request.use(
   config => {
     if (config.method === 'post') {
       config.headers['Content-Type'] = 'application/x-www-form-urlencoded;charset=UTF-8'
-      // config.headers['Token'] = ' bearer ' // 让每个请求携带自定义token 请根据实际情况自行修改
+      // config.headers['V-Token'] = ' bearer ' // 让每个请求携带自定义token 请根据实际情况自行修改
+      // config.headers['V-Lang'] = ' bearer '
       config.data = qs.stringify(config.data)
     }
 

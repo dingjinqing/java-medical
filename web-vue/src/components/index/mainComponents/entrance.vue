@@ -7,12 +7,12 @@
       </div>
       <div class="flow_img">
         <img
-          src="http://miniimg.cn/image/admin/official/flow_enter1.png"
+          src="http://mpimg2.weipubao.cn/image/admin/official/flow_enter1.png"
           class="flow_enter1 animated"
           :class="imgActive"
         >
         <img
-          src="http://miniimg.cn/image/admin/official/flow_enter4.png"
+          src="http://mpimg2.weipubao.cn/image/admin/official/flow_enter4.png"
           class="flow_enter2"
         >
       </div>

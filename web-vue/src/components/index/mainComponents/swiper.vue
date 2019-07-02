@@ -21,8 +21,8 @@ export default {
   data () {
     return {
       imgUrl: [
-        { src: 'http://miniimg.cn/image/admin/official/banner1.jpg?v=1.1' },
-        { src: 'http://miniimg.cn/image/admin/official/banner3.jpg?v=1.1' }
+        { src: 'http://mpimg2.weipubao.cn/image/admin/official/banner1.jpg?v=1.1' },
+        { src: 'http://mpimg2.weipubao.cn/image/admin/official/banner3.jpg?v=1.1' }
       ]
     }
   }

@@ -1,7 +1,7 @@
 <template>
   <div class="header">
     <div class="logo">
-      <img src="http://miniimg.cn/image/admin/official/head_logo.png">
+      <img src="http://mpimg2.weipubao.cn/image/admin/official/head_logo.png">
     </div>
     <div
       class="nav2"
@@ -158,6 +158,12 @@ export default {
         case 'indexHomeOntrial':
           that.activeIndex = 5
           break
+        case 'indexNews':
+          that.activeIndex = 2
+          break
+        case 'aboutUs':
+          that.activeIndex = 4
+          break
       }
     },
     // 初始化语言
@@ -183,21 +189,20 @@ export default {
           break
         case 2:
           this.activeIndex = 2
-          // this.$router.push({
-          //     name:'Home'
-          // })
+          this.$router.push({
+            name: 'indexNews'
+          })
           break
         case 3:
           this.activeIndex = 3
-          // this.$router.push({
-          //     name:'Home'
-          // })
+          window.location.href = 'http://bbs.weipubao.cn/'
+          // http://bbs.weipubao.cn/
           break
         case 4:
           this.activeIndex = 4
-          // this.$router.push({
-          //     name:'Home'
-          // })
+          this.$router.push({
+            name: 'aboutUs'
+          })
           break
         case 5:
           this.activeIndex = 5

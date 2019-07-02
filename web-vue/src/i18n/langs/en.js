@@ -103,6 +103,46 @@ const en = {
   login_page: {
     login_main: 'Sign in',
     login_f: 'Subaccount login'
+  },
+  Recommend: 'Recommend',
+  aboutUs: {
+    title: 'Company Profile',
+    tiliang: 'Service Store Volume',
+    zengzhang: 'Customer growth rate for five consecutive years',
+    kehu: 'Crown and above customers',
+    xufei: 'Customer renewal rate',
+    renzheng: 'International certification',
+    p_1: 'Beijing Handheld Pioneer Network Technology Co., Ltd., a retail cloud service provider, based on cloud computing SaaS service mode, helps retail enterprises to upgrade their digital and intelligent management, and achieves the road of large-scale development.',
+    p_2: "In 2012, Wangdian Tong was founded in Beijing. After that, it set up branches in 25 provinces and municipalities, including Tianjin, Shanghai, Guangzhou, Hangzhou and Yiwu, with nearly 1,000 employees. Its service scope radiates to the whole country and extends overseas. With technological innovation, product innovation, service innovation and market innovation, Wangdian Tong has achieved more than 100% annual customer growth; 100,000 + customers cover the top 500 companies in the world, such as COFCO, Johnson & Johnson, 3M, Budweiser, Zhou Heiya, MG elephant, water code, listed companies, well-known brands, TOP merchants, etc. The total volume of transactions in 2017 is nearly trillion. The advantages of large-scale customers and head customers give Wangdian Tong a higher and more complete industry perspective, market sensitivity and strong execution. Wangdian Tong's founding team is from the technical management of Internet listed companies.The product and R& D team account for more than 35%.The core members are 985 graduate students from Tsinghua University, Peking University and Beiyu University.Wangdian Tong has won awards in ACM, Mathematical Modeling and other heavyweight competitions, and has tens of millions of user operating experience.Over the years, Wangdian Tong has built internal and external resource pools such as 'Internet, e-commerce, management' and 'technology flow' industry.",
+    p_3: "Strong technical foundation has enabled Wangdian Tong to pass CMMI3 international certification, ISO27001 information security certification, national high-tech enterprise certification, double soft certification and other certification, and won many honors: China's top 50 e-commerce service providers, China's top 10 SaaS service providers in the field of industrial innovation, e-commerce Olympics. Scarlett Golden Mac Award for Best Technical Service, China International E-Commerce Expo Award for Best E-Commerce Service Enterprise, Alibaba CCO AG Best Enabling Partner Award, Taobao Gold Medal Takeout Partner, Jingdong 'Beijing Excellence' Award, Suning Easy-to-buy 'Gold Medal Easy Partner' and so on, have been with Tianmao, Taobao, Jingdong and other 80 + mainstream. E-commerce, takeaway and other platforms have established strategic cooperative relations.",
+    p_4: 'In the future, Wangdian Tong will continue to adhere to the development concept of people-oriented, customer-oriented, continuous innovation and win-win industrial development, and build the "ERP+" integrated retail enterprise service ecosystem.'
+  },
+  development: {
+    title: 'development history',
+    p_1_1: "In 2017, Wangdian Tong's flagship edition was launched, creating the SaaS era in the field of retail information services",
+    p_1_2: 'In 2017, the small program SaaS platform was officially launched, and its services covered many industries.',
+    p_1_3: 'In 2017, more than 800 employees and 25 branches were set up to serve the whole country and overseas.',
+    p_1_4: 'In 2017, customers grew by more than 100% for five consecutive years. The total number of Shuang11 orders was 289 million, and the total volume of transactions was 40.2 billion, achieving five consecutive increases.',
+    p_2_1: 'Over 100,000 online and offline stores in October 2016',
+    p_2_2: 'In November 2016, the total transaction volume of Shuang11 customers was 23.77 billion yuan and the order volume was 168 million yuan.',
+    p_2_3: '2016 E Fast Band, Wangdian Tong WMS, POS store management system on-line, service coverage of large, medium and small businesses',
+    p_2_4: 'In 2016, Taobao was awarded the title of Gold Medal Taopai Partner in Taobao Service Market',
+    p_3_1: 'In 2015, China Food and Agriculture Corporation, Johnson & Johnson, I miss you very much, Lai Yifen, Jun Lebao, Xiao Yiyi, October Mami, RIO Ruiao, Tongrentang, Jianqian and other top 500, listed companies, well-known brands and other heavyweight customers have reached cooperation.',
+    p_3_2: 'In November 2015, the total transaction volume of Shuang11 customers exceeded 10 billion yuan, with a maximum order volume of 970,000 orders per customer.',
+    p_3_3: 'In 2015, 15 branches were set up to serve all over the country.',
+    p_4_1: 'In 2014, Wangdian Tong ERP Enterprise Edition, Micro Mall, B2B2C Mall and other products were launched, and began to lay out the service areas of e-commerce enterprises.',
+    p_4_2: 'In 2014, Wangdian Tong and Zhou Hei Duck reached strategic cooperation to create a full-channel solution for orders.',
+    p_4_3: 'In 2014, he was awarded the title of "Top 100 Enterprises of E-Commerce in China" by China Electronic Commerce Association.',
+    p_5_1: 'In July 2013, the first hardware crown merchant in the whole network - Doudouyun signed Wangdian Tong',
+    p_5_2: 'In 2013, Wangdian won many awards, such as Best E-commerce ERP Emerging Service Provider, Tomorrow Star of E-commerce Service, etc.',
+    p_5_3: 'In 2013, more than 100 members of the enterprise set up branches in Shanghai, Guangzhou and Hangzhou.',
+    p_6_1: 'SaaS Products Wangdian Tong ERP Professional Edition launched in November 2012',
+    p_6_2: 'Beijing Handheld Pioneer Network Technology Co., Ltd. was formally established in Beijing in 2012.'
+  },
+  environment: 'Office environment',
+  contact: {
+    title: 'Contact us',
+    adress: 'Fifth Floor of Yitai Building, 54 Xizhimen North Street, Haidian District, Beijing'
   }
 }
 
