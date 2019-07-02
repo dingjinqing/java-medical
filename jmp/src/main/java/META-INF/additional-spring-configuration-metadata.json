@@ -88,5 +88,31 @@
     "name": "web.storage-path",
     "type": "java.lang.String",
     "description": "A description for 'script.path'"
+  },
+  {
+    "name": "auth.secret",
+    "type": "java.lang.String",
+    "description": "A description for 'script.path'"
+  },
+  {
+    "name": "auth.timeout",
+    "type": "java.lang.Integer",
+    "description": "A description for 'script.path'"
+  },
+   {
+    "name": "uyun.image.sv",
+    "type": "java.lang.String",
+    "description": "A description for 'script.path'"
+  },
+   {
+    "name": "uyun.image.op.name",
+    "type": "java.lang.String",
+    "description": "A description for 'script.path'"
+  },
+   {
+    "name": "uyun.image.op.pwd",
+    "type": "java.lang.String",
+    "description": "A description for 'script.path'"
   }
+  
 ]}

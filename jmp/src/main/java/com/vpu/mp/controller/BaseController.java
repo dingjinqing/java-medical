@@ -33,43 +33,10 @@ public class BaseController {
 	@Autowired
 	protected Environment env;
 
-	/**
-	 * 
-	 * @param module
-	 * @param resultCode
-	 * @param content
-	 * @return
-	 */
-	public ModelAndView json(JsonResultCode resultCode, Object content) {
-		String language = request.getParameter("lang");
-		JsonResult r = JsonResult.result(language, resultCode, content);
-		ModelMap model = new ModelMap();
-		model.addAttribute("error", r.getError());
-		model.addAttribute("message", r.getMessage());
-		model.addAttribute("content", r.getContent());
-		model.addAttribute("lanuage", r.getLanguage());
-		return this.json(model);
-	}
-
-	public ModelAndView jsonSuccess() {
-		return json(JsonResultCode.CODE_SUCCESS, null);
-	}
-
-	public ModelAndView jsonSuccess(Object content) {
-		return json(JsonResultCode.CODE_SUCCESS, content);
-	}
-
-	public ModelAndView jsonFail(JsonResultCode resultCode) {
-		return json(resultCode,null);
-	}
-	
-	public ModelAndView jsonFail() {
-		return json(JsonResultCode.CODE_FAIL,null);
-	}
 	
 	public JsonResult result(JsonResultCode resultCode, Object content) {
-		String language = request.getParameter("lang");
-		return JsonResult.result(language, resultCode, content);
+		String language = request.getHeader("X-Lang");
+		return (new JsonResult()).result(language, resultCode, content);
 	}
 	
 	public JsonResult success() {
@@ -88,34 +55,6 @@ public class BaseController {
 		return result(JsonResultCode.CODE_FAIL,null);
 	}
 	
-	protected ModelAndView json(Map<String, ?> model) {
-		ModelAndView mv = new ModelAndView(new MappingJackson2JsonView());
-		mv.addAllObjects(model);
-		return mv;
-	}
-	
-	@Deprecated
-	public ModelAndView view(String path,Object o) {
-		assert(false);
-		return null;
-	}
-	
-	@Deprecated
-	public ModelAndView view(String path) {
-		assert(false);
-		return null;
-	}
-	
-	@Deprecated
-	public ModelAndView showMessage(Object msg) {
-		return null;
-	}
-	
-	@Deprecated
-	protected ModelAndView redirect(String path) {
-		return new ModelAndView("redirect:/"+path);
-	}
-
 	protected boolean isPost() {
 		return "POST".equals(request.getMethod());
 	}

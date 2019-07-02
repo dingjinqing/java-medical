@@ -52,7 +52,7 @@ public class SystemAuthInterceptor extends HandlerInterceptorAdapter {
 
 		SystemTokenAuthInfo user = systemAuth.user();
 		if (user == null) {
-			errorResponse(request, response, URL_LOGIN, JsonResult.fail(language, JsonResultCode.CODE_LOGIN_EXPIRED));
+			errorResponse(request, response, URL_LOGIN, (new JsonResult()).fail(language, JsonResultCode.CODE_LOGIN_EXPIRED));
 			return false;
 		} else {
 			// 账号和店铺都登录，判断路径权限

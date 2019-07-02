@@ -31,33 +31,39 @@ public class JsonResult {
 	 * 语言：zh_CN en_US
 	 */
 	private String language;
+	
+	public JsonResult() {
+		 result(null, JsonResultCode.CODE_SUCCESS, null);
+	}
 
-	private JsonResult(String language, JsonResultCode resultCode, Object content) {
+
+	public JsonResult(String language, JsonResultCode resultCode, Object content) {
+		result(language, resultCode, content);
+	}
+
+	public JsonResult result(String language, JsonResultCode resultCode, Object content) {
 		this.language = language = StringUtils.isBlank(language) ? "zh_CN" : language;
 		this.error = resultCode.getCode();
 		this.content = content;
-		this.message = Util.translateMessage(language,resultCode.getMessage());
+		this.message = Util.translateMessage(language, resultCode.getMessage());
+		return this;
 	}
 
-	public static JsonResult success(String module, String language) {
+	public JsonResult success(String module, String language) {
 		return result(language, JsonResultCode.CODE_SUCCESS, null);
 	}
 
-	public static JsonResult success(String language, Object content) {
+	public JsonResult success(String language, Object content) {
 		return result(language, JsonResultCode.CODE_SUCCESS, content);
 	}
 
-	public static JsonResult fail(String language, JsonResultCode resultCode) {
+	public JsonResult fail(String language, JsonResultCode resultCode) {
 		return result(language, resultCode, null);
 	}
 
-	public static JsonResult fail(String language, JsonResultCode resultCode, Object content) {
+	public JsonResult fail(String language, JsonResultCode resultCode, Object content) {
 		assert (resultCode.getCode() != JsonResultCode.CODE_SUCCESS.getCode());
 		return result(language, resultCode, content);
-	}
-
-	public static JsonResult result(String language, JsonResultCode resultCode, Object content) {
-		return new JsonResult(language, resultCode, content);
 	}
 
 	@Override

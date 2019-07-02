@@ -15,6 +15,6 @@ public class SystemTokenAuthInfo {
 	public String userName = "";
 	public Integer subAccountId = 0;
 	public String subUserName = "";
-	public boolean isSubLogin = false;
+	public boolean subLogin = false;
 	public String token = "";
 }

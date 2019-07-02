@@ -22,11 +22,11 @@ public class SystemShopAccountController extends SystemBaseController {
 	 */
 	@PostMapping(value = "/system/shop/account/add")
 	public JsonResult addShopAccount(@LineConvertHump ShopAccount account) {
-		String lange = request.getParameter("lang");
-		if (sysAuth.addShopAccountService(account)) {
-			return JsonResult.success(lange, JsonResultCode.CODE_SUCCESS);
-		} else {
-			return JsonResult.fail(lange, JsonResultCode.CODE_ACCOUNT_SAME);
-		}
+		return success(JsonResultCode.CODE_SUCCESS);
+//		if (sysAuth.addShopAccountService(account)) {
+//			return success(JsonResultCode.CODE_SUCCESS);
+//		} else {
+//			return fail(JsonResultCode.CODE_ACCOUNT_SAME);
+//		}
 	}
 }

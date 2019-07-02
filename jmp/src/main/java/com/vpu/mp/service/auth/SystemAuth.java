@@ -34,7 +34,7 @@ public class SystemAuth{
 	protected JedisManager jedis = JedisManager.instance();
 	protected Logger log = LoggerFactory.getLogger(SystemAuth.class);
 
-	final String TOKEN = "token";
+	final String TOKEN = "V-Token";
 	final String AUTH_SECRET = "auth.secret";
 	final String AUTH_TIMEOUT = "auth.timeout";
 	final String TOKEN_PREFIX = "SYS@";
@@ -43,7 +43,7 @@ public class SystemAuth{
 	 * 登出
 	 */
 	public boolean logout() {
-		String token = request.getParameter(TOKEN);
+		String token =  getToken();
 		if (isValidToken(token)) {
 			if (jedis.get(token) != null) {
 				jedis.delete(token);
@@ -51,6 +51,10 @@ public class SystemAuth{
 			}
 		}
 		return false;
+	}
+	
+	protected String getToken() {
+		return request.getHeader(TOKEN);
 	}
 
 	/**
@@ -112,7 +116,7 @@ public class SystemAuth{
 	 * @return
 	 */
 	public SystemTokenAuthInfo user() {
-		String token = request.getParameter(TOKEN);
+		String token =  getToken();
 		if (this.isValidToken(token)) {
 			String json = jedis.get(token);
 			if (!StringUtils.isBlank(json)) {
@@ -122,24 +126,4 @@ public class SystemAuth{
 		return null;
 	}
 	
-	/**
-	 * 商家账户添加
-	 * @param account
-	 * @return
-	 */
-	public boolean addShopAccountService(ShopAccount account) {
-		if (account.getUserName() == null || account.getPassword() == null) {
-			return false;
-		}
-		ShopAccountRecord shop = saas.shop.accout.getAccountInfoForID(account.getUserName());
-		if (shop != null) {
-			return false;
-		}
-		account.setPassword(Util.md5(account.getPassword()));
-		ShopAccountRecord shop2=new ShopAccountRecord();
-		FieldsUtil.assignNotNull(account, shop2);
-		saas.shop.accout.addAccountInfo(shop2);
-		return true;
-
-	}
 }

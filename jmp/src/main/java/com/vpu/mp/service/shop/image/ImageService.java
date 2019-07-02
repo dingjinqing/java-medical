@@ -1,5 +1,7 @@
 package com.vpu.mp.service.shop.image;
 
+import com.UpYun;
+import com.upyun.UpException;
 import com.vpu.mp.db.shop.tables.pojos.UploadedImageCategory;
 import com.vpu.mp.db.shop.tables.records.UploadedImageRecord;
 import com.vpu.mp.service.foundation.BaseService;
@@ -50,6 +52,8 @@ public class ImageService extends BaseService {
 
 	public ImageCategoryService category;
 
+	protected UpYun upYun = null;
+
 	@Data
 	public static class UploadPath {
 		public String relativeFilePath;
@@ -61,20 +65,29 @@ public class ImageService extends BaseService {
 		public String extension;
 	};
 
+	/**
+	 * 得到又拍云客户端
+	 * 
+	 * @return
+	 */
+	public UpYun getUpYunClient() {
+		if (upYun == null) {
+			upYun = new UpYun(Util.getProperty("uyun.image.sv"), Util.getProperty("uyun.image.op.name"),
+					Util.getProperty("uyun.image.op.pwd"));
+		}
+		return upYun;
+	}
+
 	public int removeRow(Integer imageId) {
 		Byte delFlag = 1;
-		return db().update(UPLOADED_IMAGE)
-				.set(UPLOADED_IMAGE.DEL_FLAG, delFlag)
-				.where(UPLOADED_IMAGE.IMG_ID.eq(imageId))
-				.execute();
+		return db().update(UPLOADED_IMAGE).set(UPLOADED_IMAGE.DEL_FLAG, delFlag)
+				.where(UPLOADED_IMAGE.IMG_ID.eq(imageId)).execute();
 	}
 
 	public int removeRow(List<Integer> imageIds) {
 		Byte delFlag = 1;
-		return db().update(UPLOADED_IMAGE)
-				.set(UPLOADED_IMAGE.DEL_FLAG, delFlag)
-				.where(UPLOADED_IMAGE.IMG_ID.in(imageIds))
-				.execute();
+		return db().update(UPLOADED_IMAGE).set(UPLOADED_IMAGE.DEL_FLAG, delFlag)
+				.where(UPLOADED_IMAGE.IMG_ID.in(imageIds)).execute();
 	}
 
 	@Data
@@ -117,27 +130,21 @@ public class ImageService extends BaseService {
 
 		if (actSetCatId.equals(param.act)) {
 			Integer[] imageIds = "list".equals(param.showType) ? param.cbxImg : param.cbxImg2;
-			db().update(UPLOADED_IMAGE)
-					.set(UPLOADED_IMAGE.UPLOAD_TIME, Timestamp.valueOf(LocalDateTime.now()))
-					.set(UPLOADED_IMAGE.IMG_CAT_ID, param.setCatId)
-					.where(UPLOADED_IMAGE.IMG_ID.in((imageIds)))
+			db().update(UPLOADED_IMAGE).set(UPLOADED_IMAGE.UPLOAD_TIME, Timestamp.valueOf(LocalDateTime.now()))
+					.set(UPLOADED_IMAGE.IMG_CAT_ID, param.setCatId).where(UPLOADED_IMAGE.IMG_ID.in((imageIds)))
 					.execute();
 			return "分类设置成功";
 		}
 
 		if (actDel.equals(param.act)) {
 			Integer[] imageIds = "list".equals(param.showType) ? param.cbxImg : param.cbxImg2;
-			db().delete(UPLOADED_IMAGE)
-					.where(UPLOADED_IMAGE.IMG_ID.in(imageIds))
-					.execute();
+			db().delete(UPLOADED_IMAGE).where(UPLOADED_IMAGE.IMG_ID.in(imageIds)).execute();
 			return "删除成功";
 		}
 
 		if (actRenameCatName.equals(param.act)) {
-			db().update(UPLOADED_IMAGE_CATEGORY)
-					.set(UPLOADED_IMAGE_CATEGORY.IMG_CAT_NAME, param.opCatName)
-					.where(UPLOADED_IMAGE.IMG_CAT_ID.eq(param.opCatId))
-					.execute();
+			db().update(UPLOADED_IMAGE_CATEGORY).set(UPLOADED_IMAGE_CATEGORY.IMG_CAT_NAME, param.opCatName)
+					.where(UPLOADED_IMAGE.IMG_CAT_ID.eq(param.opCatId)).execute();
 			return "修改名称成功";
 		}
 
@@ -159,17 +166,14 @@ public class ImageService extends BaseService {
 	}
 
 	public PageResult getPageList(ImageListQueryParam param) {
-		SelectWhereStep<Record> select = db()
-				.select(UPLOADED_IMAGE.asterisk(),
-						UPLOADED_IMAGE_CATEGORY.IMG_CAT_NAME)
-				.from(UPLOADED_IMAGE)
-				.leftJoin(UPLOADED_IMAGE_CATEGORY)
+		SelectWhereStep<Record> select = db().select(UPLOADED_IMAGE.asterisk(), UPLOADED_IMAGE_CATEGORY.IMG_CAT_NAME)
+				.from(UPLOADED_IMAGE).leftJoin(UPLOADED_IMAGE_CATEGORY)
 				.on(UPLOADED_IMAGE.IMG_CAT_ID.eq(DSL.cast(UPLOADED_IMAGE_CATEGORY.IMG_CAT_ID, Integer.class)));
 		select = this.buildOptions(select, param);
 		select.orderBy(UPLOADED_IMAGE.IMG_ID.desc());
 		return this.getPageResult(select, param.page);
 	}
-	
+
 	protected List<Integer> convertIntegerArray(List<Integer> array) {
 		List<Integer> result = new ArrayList<Integer>();
 		for (Integer i : array) {
@@ -183,8 +187,7 @@ public class ImageService extends BaseService {
 			return select;
 		}
 		Byte noDel = 0;
-		select.where(UPLOADED_IMAGE.DEL_FLAG.eq(noDel))
-				.and(UPLOADED_IMAGE.IMG_WIDTH.gt(0))
+		select.where(UPLOADED_IMAGE.DEL_FLAG.eq(noDel)).and(UPLOADED_IMAGE.IMG_WIDTH.gt(0))
 				.and(UPLOADED_IMAGE.IMG_HEIGHT.gt(0));
 
 		if (param.imgCatId != null && param.imgCatId > 0) {
@@ -218,14 +221,9 @@ public class ImageService extends BaseService {
 				select.where(UPLOADED_IMAGE.IMG_HEIGHT.eq(param.needImgHeight));
 			}
 		}
-		SortField<?>[] sortFields = {
-				UPLOADED_IMAGE.UPLOAD_TIME.desc(),
-				UPLOADED_IMAGE.UPLOAD_TIME.asc(),
-				UPLOADED_IMAGE.IMG_SIZE.desc(),
-				UPLOADED_IMAGE.IMG_SIZE.asc(),
-				UPLOADED_IMAGE.IMG_NAME.desc(),
-				UPLOADED_IMAGE.IMG_NAME.asc()
-		};
+		SortField<?>[] sortFields = { UPLOADED_IMAGE.UPLOAD_TIME.desc(), UPLOADED_IMAGE.UPLOAD_TIME.asc(),
+				UPLOADED_IMAGE.IMG_SIZE.desc(), UPLOADED_IMAGE.IMG_SIZE.asc(), UPLOADED_IMAGE.IMG_NAME.desc(),
+				UPLOADED_IMAGE.IMG_NAME.asc() };
 		if (param.uploadSortId != null && param.uploadSortId >= 0 && param.uploadSortId < sortFields.length) {
 			select.orderBy(sortFields[param.uploadSortId]);
 		} else {
@@ -236,14 +234,7 @@ public class ImageService extends BaseService {
 	}
 
 	public String[] getUploadSortList() {
-		String[] sortList = {
-				"按上传时间从晚到早",
-				"按上传时间从早到晚",
-				"按图片从大到小",
-				"按图片从小到大",
-				"按图片名降序",
-				"按图片名升序",
-		};
+		String[] sortList = { "按上传时间从晚到早", "按上传时间从早到晚", "按图片从大到小", "按图片从小到大", "按图片名降序", "按图片名升序", };
 		return sortList;
 	}
 
@@ -254,8 +245,7 @@ public class ImageService extends BaseService {
 	 * @return
 	 */
 	public UploadedImageRecord getImageFromOriginName(String imagePathOrUrl) {
-		return db().selectFrom(UPLOADED_IMAGE).where(UPLOADED_IMAGE.IMG_ORIG_FNAME.eq(imagePathOrUrl))
-				.fetchAny();
+		return db().selectFrom(UPLOADED_IMAGE).where(UPLOADED_IMAGE.IMG_ORIG_FNAME.eq(imagePathOrUrl)).fetchAny();
 	}
 
 	/**
@@ -303,9 +293,10 @@ public class ImageService extends BaseService {
 		}
 		return null;
 	}
-	
+
 	/**
 	 * 得到图片信息
+	 * 
 	 * @param imageId
 	 * @return
 	 */
@@ -321,11 +312,8 @@ public class ImageService extends BaseService {
 	public Integer getAllSize() {
 		Byte noDel = 0;
 		Object imageSize = db().select(DSL.sum(UPLOADED_IMAGE.IMG_SIZE)).from(UPLOADED_IMAGE)
-				.where(UPLOADED_IMAGE.SHOP_ID.eq(this.getShopId()))
-				.and(UPLOADED_IMAGE.IMG_WIDTH.gt(0))
-				.and(UPLOADED_IMAGE.IMG_HEIGHT.gt(0))
-				.and(UPLOADED_IMAGE.DEL_FLAG.eq(noDel))
-				.fetchAny(0);
+				.where(UPLOADED_IMAGE.SHOP_ID.eq(this.getShopId())).and(UPLOADED_IMAGE.IMG_WIDTH.gt(0))
+				.and(UPLOADED_IMAGE.IMG_HEIGHT.gt(0)).and(UPLOADED_IMAGE.DEL_FLAG.eq(noDel)).fetchAny(0);
 		return Util.getInteger(imageSize);
 	}
 
@@ -342,6 +330,7 @@ public class ImageService extends BaseService {
 			UploadPath uploadPath = this.getWritableUploadPath("image", filename, extension);
 			try {
 				FileUtils.copyURLToFile(new URL(imageUrl), new File(uploadPath.fullPath), 30, 30);
+				deleteFile(uploadPath.getFullPath());
 			} catch (Exception e) {
 				e.printStackTrace();
 				return null;
@@ -353,6 +342,15 @@ public class ImageService extends BaseService {
 			return record;
 		}
 		return null;
+	}
+
+	/**
+	 * 删除文件
+	 * 
+	 * @param path
+	 */
+	protected boolean deleteFile(String path) {
+		return FileUtils.deleteQuietly(new File(path));
 	}
 
 	/**
@@ -383,8 +381,8 @@ public class ImageService extends BaseService {
 	 */
 	public String getRelativePathDirectory(String type) {
 		Calendar cal = Calendar.getInstance();
-		return String.format("upload/%d/%s/%04d%02d%02d/", this.shopId, type,
-				cal.get(Calendar.YEAR), cal.get(Calendar.MONTH), cal.get(Calendar.DATE));
+		return String.format("upload/%d/%s/%04d%02d%02d/", this.shopId, type, cal.get(Calendar.YEAR),
+				cal.get(Calendar.MONTH), cal.get(Calendar.DATE));
 	}
 
 	/**
@@ -420,6 +418,18 @@ public class ImageService extends BaseService {
 			return dir.mkdirs();
 		}
 		return true;
+	}
+
+	/**
+	 * 上传到又拍云
+	 * @param upYunPath 又拍云路径
+	 * @param localFile 本地文件
+	 * @return
+	 * @throws IOException
+	 * @throws Exception
+	 */
+	public boolean uploadToUpYun(String upYunPath, File localFile) throws IOException, Exception {
+		return this.getUpYunClient().writeFile(upYunPath, localFile);
 	}
 
 	/**
@@ -542,9 +552,7 @@ public class ImageService extends BaseService {
 		}
 
 		UploadPath uploadPath = getWritableUploadPath("image", randomFilename(), extension);
-		Thumbnails.of(fullPath)
-				.sourceRegion(param.x, param.y, param.w, param.h)
-				.size(param.cropWidth, param.cropHeight)
+		Thumbnails.of(fullPath).sourceRegion(param.x, param.y, param.w, param.h).size(param.cropWidth, param.cropHeight)
 				.toFile(uploadPath.fullPath);
 		return uploadPath;
 	}

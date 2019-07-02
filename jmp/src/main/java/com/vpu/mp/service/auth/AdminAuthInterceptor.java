@@ -32,6 +32,8 @@ public class AdminAuthInterceptor extends HandlerInterceptorAdapter {
 	protected AdminAuth adminAuth;
 
 	protected SaasApplication saas = SaasApplication.instance();
+	
+	final String LANG = "V-Lang";
 
 	/**
 	 * 账号登录例外URL
@@ -55,7 +57,7 @@ public class AdminAuthInterceptor extends HandlerInterceptorAdapter {
 	public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler)
 			throws Exception {
 		String path = request.getRequestURI();
-		String language = request.getParameter("lang");
+		String language = request.getHeader(LANG);
 
 		// 如果为账户登录例外URL，直接通过
 		if (match(this.accountLoginExcept, path)) {
@@ -64,7 +66,7 @@ public class AdminAuthInterceptor extends HandlerInterceptorAdapter {
 		
 		AdminTokenAuthInfo user = adminAuth.user();
 		if (user == null) {
-			errorResponse(request, response, URL_LOGIN, JsonResult.fail(language, JsonResultCode.CODE_LOGIN_EXPIRED));
+			errorResponse(request, response, URL_LOGIN,  (new JsonResult()).fail(language, JsonResultCode.CODE_LOGIN_EXPIRED));
 			return false;
 		} else {
 			if (!user.isShopLogin()) {
@@ -73,14 +75,14 @@ public class AdminAuthInterceptor extends HandlerInterceptorAdapter {
 					return true;
 				}
 				errorResponse(request, response, URL_SELECT_SHOP,
-						JsonResult.fail(language, JsonResultCode.CODE_ROLE__NO_SELECT_SHOP));
+						(new JsonResult()).fail(language, JsonResultCode.CODE_ROLE__NO_SELECT_SHOP));
 				return false;
 			} else {
 				// 账号和店铺都登录，判断路径权限
 				Integer roleId = saas.shop.getShopAccessRoleId(user.getSysId(), user.getLoginShopId(), user.getSubAccountId());
 				if (!saas.shop.menu.isRoleAccess(roleId, path)) {
 					errorResponse(request, response, URL_NO_AUTH,
-							JsonResult.fail(language, JsonResultCode.CODE_ROLE__NO_AUTH));
+							(new JsonResult()).fail(language, JsonResultCode.CODE_ROLE__NO_AUTH));
 					return false;
 				}
 			}

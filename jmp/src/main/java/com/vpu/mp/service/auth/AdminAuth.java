@@ -31,7 +31,7 @@ public class AdminAuth{
 	protected JedisManager jedis = JedisManager.instance();
 	protected Logger log = LoggerFactory.getLogger(AdminAuth.class);
 
-	final String TOKEN = "token";
+	final String TOKEN = "V-Token";
 	final String AUTH_SECRET = "auth.secret";
 	final String AUTH_TIMEOUT = "auth.timeout";
 	final String TOKEN_PREFIX = "ADM@";
@@ -40,7 +40,7 @@ public class AdminAuth{
 	 * 登出
 	 */
 	public boolean logout() {
-		String token = request.getParameter(TOKEN);
+		String token = getToken();
 		if (isValidToken(token)) {
 			if (jedis.get(token) != null) {
 				jedis.delete(token);
@@ -48,6 +48,10 @@ public class AdminAuth{
 			}
 		}
 		return false;
+	}
+	
+	protected String getToken() {
+		return request.getHeader(TOKEN);
 	}
 	
 	/**
@@ -151,7 +155,7 @@ public class AdminAuth{
 	 * @return
 	 */
 	public AdminTokenAuthInfo user() {
-		String token = request.getParameter(TOKEN);
+		String token = getToken();
 		if (!StringUtils.isBlank(token)) {
 			String json = jedis.get(token);
 			if (!StringUtils.isBlank(json)) {

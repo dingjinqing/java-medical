@@ -15,8 +15,8 @@ public class AdminTokenAuthInfo {
 	public String userName = "";
 	public Integer subAccountId = 0;
 	public String subUserName = "";
-	public boolean isSubLogin = false;
+	public boolean subLogin = false;
 	public Integer loginShopId = 0;
-	public boolean isShopLogin = false;
+	public boolean shopLogin = false;
 	public String token = "";
 }
