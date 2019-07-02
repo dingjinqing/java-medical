@@ -1,15 +1,19 @@
 package com.vpu.mp.service.auth;
 
 import javax.servlet.http.HttpServletRequest;
+
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import com.vpu.mp.db.main.tables.pojos.ShopAccount;
+import com.vpu.mp.db.main.tables.records.ShopAccountRecord;
 import com.vpu.mp.db.main.tables.records.SystemChildAccountRecord;
 import com.vpu.mp.db.main.tables.records.SystemUserRecord;
 import com.vpu.mp.service.foundation.JedisManager;
+import com.vpu.mp.service.foundation.MyReflectUtil;
 import com.vpu.mp.service.foundation.Util;
 import com.vpu.mp.service.pojo.saas.auth.SystemLoginParam;
 import com.vpu.mp.service.pojo.saas.auth.SystemTokenAuthInfo;
@@ -116,5 +120,26 @@ public class SystemAuth{
 			}
 		}
 		return null;
+	}
+	
+	/**
+	 * 商家账户添加
+	 * @param account
+	 * @return
+	 */
+	public boolean addShopAccountService(ShopAccount account) {
+		if (account.getUserName() == null || account.getPassword() == null) {
+			return false;
+		}
+		ShopAccountRecord shop = saas.shop.accout.getAccountInfoForID(account.getUserName());
+		if (shop != null) {
+			return false;
+		}
+		account.setPassword(Util.md5(account.getPassword()));
+		ShopAccountRecord shop2=new ShopAccountRecord();
+		shop2=(ShopAccountRecord) MyReflectUtil.removeNull(account, shop2);
+		saas.shop.accout.addAccountInfo(shop2);
+		return true;
+
 	}
 }
