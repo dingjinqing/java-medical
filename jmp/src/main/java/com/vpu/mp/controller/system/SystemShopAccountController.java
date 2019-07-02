@@ -19,6 +19,7 @@ import com.vpu.mp.db.main.tables.pojos.ShopAccount;
 import com.vpu.mp.db.main.tables.records.DictCityRecord;
 import com.vpu.mp.db.main.tables.records.ShopAccountRecord;
 import com.vpu.mp.service.foundation.JsonResult;
+import com.vpu.mp.service.foundation.JsonResultCode;
 import com.vpu.mp.service.foundation.PageResult;
 import com.vpu.mp.service.foundation.Util;
 import com.vpu.mp.service.saas.shop.ShopAccountService.ShopAccountListQueryParam;
@@ -31,18 +32,17 @@ import com.vpu.mp.support.LineConvertHump;
  */
 @Controller
 public class SystemShopAccountController extends SystemBaseController {
-	
 	/**
 	 * 查询店铺列表
+	 * 
 	 * @param param
 	 * @return
 	 */
-	
 	@ResponseBody
 	@PostMapping("/system/shop/account/list")
 	public JsonResult getShopAccountList(@LineConvertHump ShopAccountListQueryParam param) {
 		PageResult<HashMap> result = saas.shop.accout.getPageList(param);
-
+		String lange = request.getParameter("lang");
 		for (Map<String, Object> row : result.dataList) {
 			row.put("shop_number", saas.shop.renew.getShopNumber((Integer) row.get("sys_id")));
 			row.put("renew_money", saas.shop.renew.getRenewTotal((Integer) row.get("sys_id")));
@@ -50,34 +50,23 @@ public class SystemShopAccountController extends SystemBaseController {
 				row.put("end_time", row.get("end_time").toString().substring(0, 10));
 			}
 		}
-		Map<String,Object> map=new HashMap(3);
-		//map.put("title", "商家账号列表");
+		Map<String, Object> map = new HashMap(3);
+		// map.put("title", "商家账号列表");
 		map.put("data_list", result.dataList);
 		map.put("page", result.page);
 		map.put("nav_type", 0);
-		return JsonResult.success(null, map);
+		return JsonResult.success(lange, map);
 	}
 
-	@GetMapping(value = "/system/shop/account/add")
-	public ModelAndView showAddShopAccount() {
-		Object shopAccountDto = new Object();
-		ModelMap model = new ModelMap();
-		model.addAttribute("title", "添加商家账号");
-		model.addAttribute("shop_account", shopAccountDto);
-		model.addAttribute("province", saas.region.province.getAll().intoMaps());
-		model.addAttribute("city", saas.region.city.getCityList(110000).intoMaps());
-		model.addAttribute("district", saas.region.district.getDistrictList(110100).intoMaps());
-		model.addAttribute("act_url", "/system/shop/account/add");
-		model.addAttribute("nav_type", 2);
-		return view("system/shop_account_info", model);
-	}
-
+	@ResponseBody
 	@PostMapping(value = "/system/shop/account/add")
-	public ModelAndView addShopAccount(@LineConvertHump ShopAccount account) {
-		account.setPassword(Util.md5(account.getPassword()));
-		saas.shop.accout.addAccountInfo(account);
-		return redirect("/system/shop/account/list");
-
+	public JsonResult addShopAccount(@LineConvertHump ShopAccount account) {
+		String lange = request.getParameter("lang");
+		if (sysAuth.addShopAccountService(account)) {
+			return JsonResult.success(lange, JsonResultCode.CODE_SUCCESS);
+		} else {
+			return JsonResult.fail(lange, JsonResultCode.CODE_ACCOUNT_SAME);
+		}
 	}
 
 	@GetMapping(value = "/system/shop/account/edit/{sys_id}")
