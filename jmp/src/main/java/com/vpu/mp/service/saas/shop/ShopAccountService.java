@@ -170,6 +170,11 @@ public class ShopAccountService extends BaseService {
 		db().executeInsert(record);
 		return record;
 	}
+	
+	public ShopAccountRecord addAccountInfo(ShopAccountRecord addAccountInfo) {
+		db().executeInsert(addAccountInfo);
+		return addAccountInfo;
+	}
 
 	public ShopAccountRecord updateAccountInfo(com.vpu.mp.db.main.tables.pojos.ShopAccount account) {
 		ShopAccountRecord record = db().newRecord(SHOP_ACCOUNT, account);
