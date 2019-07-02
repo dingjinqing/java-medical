@@ -9,7 +9,7 @@
     >
       <div class="f_div">
         <img
-          src=" http://miniimg.cn/image/admin/head_icon.png "
+          src="http://mpimg2.weipubao.cn/image/admin/head_icon.png "
           width="30px"
           height="30px"
           style="border: 1px solid #ddd;"

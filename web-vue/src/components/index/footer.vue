@@ -2,7 +2,7 @@
   <div class="footer">
     <ul class="footer_ul clearfix">
       <li>
-        <img src="http://miniimg.cn/image/admin/official/wdt_logo.png">
+        <img src="http://mpimg2.weipubao.cn/image/admin/official/wdt_logo.png">
         <p>{{$t('footer.title')}}</p>
       </li>
       <li>
@@ -15,7 +15,7 @@
       </li>
       <li>
         <img
-          src="http://miniimg.cn/image/admin/official/weixin.jpg"
+          src="http://mpimg2.weipubao.cn/image/admin/official/weixin.jpg"
           width="100px"
         >
         <p>{{$t('footer.content')}}</p>
