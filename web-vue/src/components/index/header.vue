@@ -464,6 +464,6 @@ ul li {
   cursor: pointer;
 }
 .mar_class {
-  margin-right: 20px !important;
+  margin-right: 12px !important;
 }
 </style>
