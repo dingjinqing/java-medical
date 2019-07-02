@@ -87,23 +87,23 @@
     <div class="nav">
       <ul>
         <li
-          :class="activeIndex == 1?'active':''"
+          :class="[activeIndex == 1?'active':'',mar_class]"
           @click="handlenav(1)"
         ><a>{{$t('message.index_nav_main')}}</a></li>
         <li
-          :class="activeIndex == 2?'active':''"
+          :class="[activeIndex == 2?'active':'',mar_class]"
           @click="handlenav(2)"
         ><a>{{$t('message.index_nav_new')}}</a></li>
         <li
-          :class="activeIndex == 3?'active':''"
+          :class="[activeIndex == 3?'active':'',mar_class]"
           @click="handlenav(3)"
         ><a>{{$t('message.index_nav_forum')}}</a></li>
         <li
-          :class="activeIndex == 4?'active':''"
+          :class="[activeIndex == 4?'active':'',mar_class]"
           @click="handlenav(4)"
         ><a>{{$t('message.index_nav_link')}}</a></li>
         <li
-          :class="activeIndex == 5?'active':''"
+          :class="[activeIndex == 5?'active':'',mar_class]"
           @click="handlenav(5)"
         ><a>{{$t('message.index_nav_apply')}}</a></li>
       </ul>
@@ -114,6 +114,7 @@
 export default {
   data () {
     return {
+      mar_class: '',
       activeIndex: 1,
       lang_with: 'width:43px',
       loginData_show: [],
@@ -173,10 +174,12 @@ export default {
         this.lang_with = 'width:63px'
         this.langData_show = this.langData_en
         this.loginData_show = this.loginData_en
+        this.mar_class = 'mar_class'
         return
       }
       this.langData_show = this.langData_cn
       this.loginData_show = this.loginData_cn
+      this.mar_class = ''
     },
     // 导航栏子元素点击
     handlenav (index) {
@@ -250,6 +253,7 @@ export default {
           this.lang_with = 'width:63px'
           this.langData_show = this.langData_en
           this.loginData_show = this.loginData_en
+          this.mar_class = 'mar_class'
           localStorage.setItem('WEPUBAO_LANGUAGE', 'en')
           break
         case 1:
@@ -257,6 +261,7 @@ export default {
           this.lang_with = 'width:43px'
           this.langData_show = this.langData_cn
           this.loginData_show = this.loginData_cn
+          this.mar_class = ''
           localStorage.setItem('WEPUBAO_LANGUAGE', 'cn')
           break
       }
@@ -457,5 +462,8 @@ ul li {
   color: #447af9;
   border-color: #447af9;
   cursor: pointer;
+}
+.mar_class {
+  margin-right: 20px !important;
 }
 </style>
