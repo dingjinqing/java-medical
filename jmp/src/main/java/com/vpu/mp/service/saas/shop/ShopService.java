@@ -343,5 +343,18 @@ public class ShopService extends BaseService {
 		}
 		return defaultStyle;
 	}
+	
+	public Shop getShopBaseInfoById(Integer shopId) {
+		return db().select(SHOP.SHOP_AVATAR,SHOP.SHOP_NAME,SHOP.BUSINESS_STATE,SHOP.CREATED,SHOP.BUSINESS_STATE).from(SHOP).where(SHOP.SHOP_ID.eq(shopId)).fetchOne().into(Shop.class);
+	}
+	
+	public Integer updateShopBaseInfo(Shop shop) {
+		return db().update(SHOP)
+				.set(SHOP.SHOP_NAME, shop.getShopName())
+				.set(SHOP.SHOP_AVATAR, shop.getShopAvatar())
+                .set(SHOP.BUSINESS_STATE, shop.getBusinessState())
+                .where(SHOP.SHOP_ID.eq(shop.getShopId()))
+				.execute();
+	}
 
 }
