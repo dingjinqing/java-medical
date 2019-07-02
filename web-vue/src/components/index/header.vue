@@ -66,7 +66,7 @@
       >
         <span>{{$t('message.lang')}}</span>
         <img
-          src="http://miniimg.cn/image/admin/official/blue_down.png"
+          src="http://mpimg2.weipubao.cn/image/admin/official/blue_down.png"
           class="head_down"
         >
         <div class="head_list_lang">
