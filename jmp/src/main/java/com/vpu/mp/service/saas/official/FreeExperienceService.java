@@ -158,7 +158,8 @@ public class FreeExperienceService extends BaseService{
 		if(step != null) {
 			return step.where(SHOP_FREE_EXPERIENCE.FE_ID.eq(info.getFeId())).execute();
 		}
-		else
+		else {
 			return 0;
+		}
 	}
 }

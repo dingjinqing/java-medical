@@ -37,6 +37,7 @@ public class SaasApplication extends ServiceContainer {
 	 * 线程共享变量，每个线程只有一个SaasApplication
 	 */
 	private static ThreadLocal<SaasApplication> saasThreadLocal = new  ThreadLocal<SaasApplication>() {
+		@Override
 		protected SaasApplication initialValue() {
 			SaasApplication app =  new  SaasApplication();
 			app.initServices();

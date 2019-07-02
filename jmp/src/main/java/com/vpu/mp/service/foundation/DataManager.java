@@ -46,6 +46,7 @@ public class DataManager {
 	private HashMap<Integer, DefaultDSLContext> shopDbList = new HashMap<Integer, DefaultDSLContext>();
 
 	private static ThreadLocal<DataManager> dmThreadLocal = new ThreadLocal<DataManager>() {
+		@Override
 		protected DataManager initialValue() {
 			return new DataManager();
 		}

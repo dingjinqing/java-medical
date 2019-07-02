@@ -65,7 +65,7 @@ public class AdminWechatController extends AdminBaseController {
 	 */
 	@RequestMapping(value = "/wechat/proxy/official/account/authorization")
 	public String startOfficialAccountAuthorization() {
-		String url = this.mainUrl("/wechat/proxy/authorization/callback?sys_id=1"); //this.adminAuth.sysId());
+		String url = this.mainUrl("/wechat/proxy/authorization/callback?sys_id="+this.adminAuth.user().getSysId());
 		try {
 			String authType = "1";
 			String bizAppid = null;

@@ -8,13 +8,19 @@ import java.util.Map;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+/**
+ * 
+ * @author 新国
+ *
+ */
 public class ServiceContainer {
 	/**
 	 * 单线程下，分店铺服务（继承于BaseService）属性实例共享
 	 */
 	private static ThreadLocal<Map<String, Object>> servicesThreadLocal = new ThreadLocal<Map<String, Object>>() {
+		@Override
 		protected Map<String, Object> initialValue() {
-			return new HashMap<String, Object>();
+			return new HashMap<String, Object>(0);
 		}
 	};
 	

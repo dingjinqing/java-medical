@@ -28,6 +28,7 @@ public class OpenPlatform extends WxOpenServiceImpl {
 	private WxOpenMessageRouter wxOpenMessageRouter;
 	
 	private static ThreadLocal<OpenPlatform> openThreadLocal = new ThreadLocal<OpenPlatform>() {
+		@Override
 		protected OpenPlatform initialValue() {
 			OpenPlatform open = new OpenPlatform();
 			open.init();

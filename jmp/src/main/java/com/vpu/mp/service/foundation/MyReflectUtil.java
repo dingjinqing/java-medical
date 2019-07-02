@@ -26,7 +26,8 @@ public class MyReflectUtil {
 		for (Field field : fields) {
 			field.setAccessible(true);
 			try {
-				if (!field.getName().equals("serialVersionUID")) {
+				String uid = "serialVersionUID";
+				if (!field.getName().equals(uid)) {
 					PropertyDescriptor pd = new PropertyDescriptor(field.getName(), clazz);
 					// 获得读方法
 					Method rM = pd.getReadMethod();

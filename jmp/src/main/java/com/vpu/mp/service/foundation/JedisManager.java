@@ -4,9 +4,15 @@ import redis.clients.jedis.Jedis;
 import redis.clients.jedis.JedisPool;
 import redis.clients.jedis.JedisPoolConfig;
 
+/**
+ * 
+ * @author 新国
+ *
+ */
 public class JedisManager {
 
 	private static ThreadLocal<JedisManager> jedisThreadLocal = new ThreadLocal<JedisManager>() {
+		@Override
 		protected JedisManager initialValue() {
 			return new JedisManager();
 		}
