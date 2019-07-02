@@ -13,7 +13,7 @@ import com.vpu.mp.db.main.tables.records.ShopAccountRecord;
 import com.vpu.mp.db.main.tables.records.SystemChildAccountRecord;
 import com.vpu.mp.db.main.tables.records.SystemUserRecord;
 import com.vpu.mp.service.foundation.JedisManager;
-import com.vpu.mp.service.foundation.MyReflectUtil;
+import com.vpu.mp.service.foundation.FieldsUtil;
 import com.vpu.mp.service.foundation.Util;
 import com.vpu.mp.service.pojo.saas.auth.SystemLoginParam;
 import com.vpu.mp.service.pojo.saas.auth.SystemTokenAuthInfo;
@@ -115,7 +115,7 @@ public class SystemAuth{
 		String token = request.getParameter(TOKEN);
 		if (this.isValidToken(token)) {
 			String json = jedis.get(token);
-			if (StringUtils.isBlank(json)) {
+			if (!StringUtils.isBlank(json)) {
 				return Util.parseJSON(json, SystemTokenAuthInfo.class);
 			}
 		}
@@ -137,7 +137,7 @@ public class SystemAuth{
 		}
 		account.setPassword(Util.md5(account.getPassword()));
 		ShopAccountRecord shop2=new ShopAccountRecord();
-		shop2=(ShopAccountRecord) MyReflectUtil.removeNull(account, shop2);
+		FieldsUtil.assignNotNull(account, shop2);
 		saas.shop.accout.addAccountInfo(shop2);
 		return true;
 
