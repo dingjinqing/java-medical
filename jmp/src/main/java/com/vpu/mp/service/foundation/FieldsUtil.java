@@ -7,19 +7,20 @@ import java.lang.reflect.Method;
 import com.vpu.mp.db.main.tables.records.ShopAccountRecord;
 
 /**
- * 将object1类中的非null值赋值到object2 可以自己赋值自己，或者类赋值到相应的Record类，方便后续插入
+ * 将object1类中的非null值赋值到object2,可以自己赋值自己，或者类赋值到相应的Record类，两个类里字段相同
+ * ，有get/set方法就行。方便后续插入
  * 
  * @author zhaojianqiang
  *
  */
-public class MyReflectUtil {
+public class FieldsUtil {
 	/**
 	 * 
 	 * @param object1
 	 * @param object2
 	 * @return
 	 */
-	public static Object removeNull(Object object1, Object object2) {
+	public static Object assignNotNull(Object object1, Object object2) {
 		Class<?> clazz = object1.getClass();
 		Field[] fields = clazz.getDeclaredFields();
 		Class<?> clazz2 = object2.getClass();
