@@ -154,7 +154,7 @@ public class AdminAuth{
 		String token = request.getParameter(TOKEN);
 		if (!StringUtils.isBlank(token)) {
 			String json = jedis.get(token);
-			if (StringUtils.isBlank(json)) {
+			if (!StringUtils.isBlank(json)) {
 				return Util.parseJSON(json, AdminTokenAuthInfo.class);
 			}
 		}
