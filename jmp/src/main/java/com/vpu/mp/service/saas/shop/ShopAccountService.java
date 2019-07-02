@@ -1,5 +1,9 @@
 package com.vpu.mp.service.saas.shop;
 
+import static com.vpu.mp.db.main.tables.MpAuthShop.MP_AUTH_SHOP;
+import static com.vpu.mp.db.main.tables.Shop.SHOP;
+import static com.vpu.mp.db.main.tables.ShopAccount.SHOP_ACCOUNT;
+
 import java.sql.Timestamp;
 import java.util.Date;
 import java.util.List;
@@ -10,12 +14,10 @@ import org.jooq.SelectWhereStep;
 import org.jooq.impl.DSL;
 import org.jooq.tools.StringUtils;
 
-import static com.vpu.mp.db.main.tables.MpAuthShop.MP_AUTH_SHOP;
-import static com.vpu.mp.db.main.tables.Shop.SHOP;
-import static com.vpu.mp.db.main.tables.ShopAccount.SHOP_ACCOUNT;
-
+import com.vpu.mp.db.main.tables.pojos.ShopAccount;
 import com.vpu.mp.db.main.tables.records.ShopAccountRecord;
 import com.vpu.mp.service.foundation.BaseService;
+import com.vpu.mp.service.foundation.FieldsUtil;
 import com.vpu.mp.service.foundation.PageResult;
 import com.vpu.mp.service.foundation.Util;
 
@@ -180,5 +182,26 @@ public class ShopAccountService extends BaseService {
 		ShopAccountRecord record = db().newRecord(SHOP_ACCOUNT, account);
 		db().executeUpdate(record);
 		return record;
+	}
+	
+	/**
+	 * 商家账户添加
+	 * @param account
+	 * @return
+	 */
+	public boolean addShopAccountService(ShopAccount account) {
+		if (account.getUserName() == null || account.getPassword() == null) {
+			return false;
+		}
+		ShopAccountRecord shop = this.getAccountInfoForID(account.getUserName());
+		if (shop != null) {
+			return false;
+		}
+		account.setPassword(Util.md5(account.getPassword()));
+		ShopAccountRecord shop2=new ShopAccountRecord();
+		FieldsUtil.assignNotNull(account, shop2);
+		this.addAccountInfo(shop2);
+		return true;
+
 	}
 }
