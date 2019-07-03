@@ -47,6 +47,9 @@ public enum JsonResultCode {
 
 	// 订单
 
+    // 商品
+    GOODS_BRAND_NAME_EXIST(130011, JsonResultMessage.GOODS_BRAND_NAME_EXIST),
+    GOODS_SORT_NAME_EXIST(130021,JsonResultMessage.GOODS_SORT_NAME_EXIST),
 	// 商品
 	
 	//文章_分类

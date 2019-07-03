@@ -1,29 +1,37 @@
 package com.vpu.mp.controller.admin;
 
-import com.vpu.mp.db.shop.tables.pojos.Sort;
-import com.vpu.mp.service.foundation.JsonResult;
-import com.vpu.mp.service.shop.ShopApplication;
-import com.vpu.mp.service.shop.goods.GoodsSortService.GoodsSortListParam;
-import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.*;
-
 import java.util.List;
+
+import com.vpu.mp.service.foundation.JsonResultCode;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RestController;
+
+import com.vpu.mp.service.foundation.JsonResult;
+import com.vpu.mp.service.pojo.shop.goods.sort.GoodsSortListParam;
+import com.vpu.mp.service.pojo.shop.goods.sort.Sort;
+import com.vpu.mp.service.shop.ShopApplication;
 
 /**
  * @author 李晓冰
  * @date 2019年07月01日
  */
-@Controller
+@RestController
 public class AdminGoodsSortController extends AdminBaseController {
 
-	/**
-	 * 	商品分类查询，未分页
-	 * @param param
-	 * @return
-	 */
-    @GetMapping("/admin/goods/goodsSorts")
-    @ResponseBody
-    public JsonResult getList(GoodsSortListParam param) {
+    @Override
+    protected ShopApplication shop() {
+        return saas.getShopApp(471752);
+    }
+
+    /**
+     * 商品分类查询，未分页
+     *
+     * @param param
+     * @return
+     */
+    @PostMapping("/api/admin/goods/sort/list")
+    public JsonResult getList(@RequestBody GoodsSortListParam param) {
 
         List<Sort> list = shop().goods.goodsSort.getList(param);
 
@@ -31,13 +39,18 @@ public class AdminGoodsSortController extends AdminBaseController {
     }
 
     /**
-     * 	新增
+     * 新增
+     *
      * @param sort
      * @return
      */
-    @PostMapping("/admin/goods/goodsSort")
-    @ResponseBody
+    @PostMapping("/api/admin/goods/sort/add")
     public JsonResult insert(@RequestBody Sort sort) {
+
+        boolean isExist = shop().goods.goodsSort.isSortNameExist(sort);
+        if (isExist) {
+            return fail(JsonResultCode.GOODS_SORT_NAME_EXIST);
+        }
 
         shop().goods.goodsSort.insert(sort);
 
@@ -45,27 +58,32 @@ public class AdminGoodsSortController extends AdminBaseController {
     }
 
     /**
-     * 	删除
-     * @param sortId
+     * 删除
+     *
+     * @param sort
      * @return
      */
-    @DeleteMapping("/admin/goods/goodsSort")
-    @ResponseBody
-    public JsonResult delete(Integer sortId) {
+    @PostMapping("/api/admin/goods/sort/delete")
+    public JsonResult delete(@RequestBody Sort sort) {
 
-        shop().goods.goodsSort.delete(sortId);
+        shop().goods.goodsSort.delete(sort);
 
         return success();
     }
 
     /**
-     * 	修改
+     * 修改
+     *
      * @param sort
      * @return
      */
-    @PutMapping("/admin/goods/goodsSort")
-    @ResponseBody
+    @PostMapping("/api/admin/goods/sort/update")
     public JsonResult update(@RequestBody Sort sort) {
+
+        boolean isExist = shop().goods.goodsSort.isOtherSortNameExist(sort);
+        if (isExist) {
+            return fail(JsonResultCode.GOODS_SORT_NAME_EXIST);
+        }
 
         shop().goods.goodsSort.update(sort);
 

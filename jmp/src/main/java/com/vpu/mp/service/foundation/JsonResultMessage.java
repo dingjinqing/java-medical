@@ -24,4 +24,8 @@ public class JsonResultMessage {
 	final public static String MSG_IMGAE_UPLOAD_FAILED = "image.upload.failed";
 	final public static String MSG_IMGAE_FILE_INVALID = "image.file.invalid";
 	final public static String MSG_IMGAE_CROP_FAILED = "image.crop.failed";
+
+	//商品
+    final public static String GOODS_BRAND_NAME_EXIST="goods.brand.name.exist";
+    final public static String GOODS_SORT_NAME_EXIST="goods.sort.name.exist";
 }

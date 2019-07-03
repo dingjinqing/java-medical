@@ -1,35 +1,26 @@
 package com.vpu.mp.service.shop.goods;
 
-import com.vpu.mp.db.shop.tables.pojos.Sort;
+import static com.vpu.mp.db.shop.tables.Sort.SORT;
 
-import static com.vpu.mp.db.shop.tables.Sort.*;
+import java.util.List;
 
-import com.vpu.mp.service.foundation.BaseService;
-import lombok.Data;
-import org.jooq.*;
+import org.jooq.DSLContext;
+import org.jooq.Record;
+import org.jooq.Record1;
+import org.jooq.SelectConditionStep;
+import org.jooq.SelectWhereStep;
 import org.jooq.impl.DSL;
 import org.jooq.tools.StringUtils;
 
-import java.sql.Timestamp;
-import java.util.List;
+import com.vpu.mp.service.pojo.shop.goods.sort.GoodsSortListParam;
+import com.vpu.mp.service.pojo.shop.goods.sort.Sort;
+import com.vpu.mp.service.foundation.BaseService;
 
 /**
  * @author 李晓冰
  * @date 2019年06月27日
  */
 public class GoodsSortService extends BaseService {
-
-    @Data
-    public static class GoodsSortListParam {
-        public static final byte TYPE_DEFAULT_VALUE = 0;//商家分类类型默认值 0普通分类，1推荐分类
-        public static final int PARENT_ID_DEFAULT_VALUE = 0;//分类父id默认值 0一级分类，否则为二级分类
-
-        public byte type = TYPE_DEFAULT_VALUE;
-        public int parentId = PARENT_ID_DEFAULT_VALUE;
-        public String sortName;
-        public Timestamp startCreateTime;
-        public Timestamp endCreateTime;
-    }
 
     /**
      *	 根据父分类和分类类型查询
@@ -53,16 +44,16 @@ public class GoodsSortService extends BaseService {
         SelectConditionStep<?> scs = select.where(SORT.PARENT_ID.eq(param.getParentId()))
                 .and(SORT.TYPE.eq(param.getType()));
 
-        if (!StringUtils.isBlank(param.sortName)) {
+        if (!StringUtils.isBlank(param.getSortName())) {
             scs = scs.and(SORT.SORT_NAME.like(this.likeValue(param.getSortName())));
         }
 
-        if (param.startCreateTime != null) {
-            scs = scs.and(SORT.CREATE_TIME.ge(param.startCreateTime));
+        if (param.getStartCreateTime() != null) {
+            scs = scs.and(SORT.CREATE_TIME.ge(param.getStartCreateTime()));
         }
 
-        if (param.endCreateTime != null) {
-            scs = scs.and(SORT.CREATE_TIME.le(param.endCreateTime));
+        if (param.getEndCreateTime() != null) {
+            scs = scs.and(SORT.CREATE_TIME.le(param.getEndCreateTime()));
         }
 
         return scs;
@@ -95,13 +86,33 @@ public class GoodsSortService extends BaseService {
     }
 
     /**
-     * 	商家分类名称是否存在
+     * 	商家分类名称是否存在，用来新增检查
      *
      * @param sort
      * @return
      */
     public boolean isSortNameExist(Sort sort) {
-        Record1<Integer> countRecord = db().selectCount().from(SORT).where(SORT.SORT_NAME.eq(sort.getSortName()))
+        Record1<Integer> countRecord = db().selectCount().from(SORT)
+        		.where(SORT.SORT_NAME.eq(sort.getSortName()))
+                .fetchOne();
+
+        Integer count = countRecord.getValue(0, Integer.class);
+        if (count > 0) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+    
+    /**
+     * 	商家分类名称是否存在，修改使用
+     *
+     * @param sort
+     * @return
+     */
+    public boolean isOtherSortNameExist(Sort sort) {
+        Record1<Integer> countRecord = db().selectCount().from(SORT)
+        		.where(SORT.SORT_NAME.eq(sort.getSortName())).and(SORT.SORT_ID.ne(sort.getSortId()))
                 .fetchOne();
 
         Integer count = countRecord.getValue(0, Integer.class);
@@ -115,19 +126,20 @@ public class GoodsSortService extends BaseService {
     /**
      * 	删除商家分类
      *
-     * @param sortId
+     * @param sort
      * @return 受影响行数
      */
-    public void delete(Integer sortId) {
+    public void delete(Sort sort) {
+    	
+    	Integer sortId=sort.getSortId();
 
         db().transaction(configuration -> {
             DSLContext db = DSL.using(configuration);
 
-            Sort sort = db.selectFrom(SORT).where(SORT.SORT_ID.eq(sortId)).fetchOneInto(Sort.class);
+            Sort s = db.selectFrom(SORT).where(SORT.SORT_ID.eq(sortId)).fetchOneInto(Sort.class);
 
-            if (sort==null) {
+            if (s==null)
                 return;
-            }
 
             db.delete(SORT).where(SORT.SORT_ID.eq(sortId)).execute();
 
