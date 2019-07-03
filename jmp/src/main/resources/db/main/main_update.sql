@@ -11,3 +11,7 @@ MODIFY COLUMN `create_time`  timestamp NULL DEFAULT current_timestamp() COMMENT 
 MODIFY COLUMN `update_time`  timestamp NULL DEFAULT current_timestamp() ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',
 MODIFY COLUMN `pub_time`  timestamp NULL DEFAULT NULL COMMENT '发布时间';
 
+
+
+--表中店铺续费金额字段变为decimal
+alter table b2c_shop_renew modify column renew_money decimal(12,2);
