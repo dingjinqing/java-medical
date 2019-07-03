@@ -7,6 +7,7 @@ import org.jooq.tools.Convert;
 
 import static com.vpu.mp.db.main.tables.ShopRenew.SHOP_RENEW;
 
+import java.math.BigDecimal;
 import java.sql.Timestamp;
 
 import com.vpu.mp.service.foundation.BaseService;
@@ -37,11 +38,11 @@ public class ShopRenewService extends BaseService {
 				.orderBy(SHOP_RENEW.EXPIRE_TIME.desc()).fetch();
 	}
 
-	public double getRenewTotal(Integer sysId) {
+	public BigDecimal getRenewTotal(Integer sysId) {
 		Object total = db().select(DSL.sum(SHOP_RENEW.RENEW_MONEY)).from(SHOP_RENEW).where(SHOP_RENEW.SYS_ID.eq(sysId))
 				.fetchAny(0);
 
-		return total == null ? 0 : Convert.convert(total, Double.class).doubleValue();
+		return total == null ? new BigDecimal("0") : Convert.convert(total, BigDecimal.class);
 	}
 
 	public double getShopRenewTotal(Integer shopId) {
