@@ -156,7 +156,7 @@
 							<!-- The destination directory of your generated classes. Using Maven 
 								directory layout here -->
 							<!-- <directory>D:/svn/java/mp/src/main/java</directory> -->
-							<directory>target/
+							<directory>table/
 							</directory>
 						</target>
 						<generate>
