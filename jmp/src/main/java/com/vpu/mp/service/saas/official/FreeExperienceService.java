@@ -7,13 +7,13 @@ import org.jooq.SelectWhereStep;
 import org.jooq.UpdateSetFirstStep;
 import org.jooq.UpdateSetMoreStep;
 
+import com.vpu.mp.service.pojo.saas.offical.FreeExperienceInfo;
+import com.vpu.mp.service.pojo.saas.offical.ShopFreeExperience;
 import com.vpu.mp.db.main.tables.records.ShopFreeExperienceRecord;
 import com.vpu.mp.service.foundation.BaseService;
 import com.vpu.mp.service.foundation.Page;
 import com.vpu.mp.service.foundation.PageResult;
 import com.vpu.mp.service.foundation.Util;
-import com.vpu.mp.service.pojo.saas.offical.FreeExperienceInfo;
-import com.vpu.mp.service.pojo.saas.shop.ShopFreeExperiencePojo;
 import com.vpu.mp.service.saas.official.FreeExperienceService.FreeExperiencePageListParam;
 
 import lombok.Data;
@@ -121,8 +121,8 @@ public class FreeExperienceService extends BaseService{
 	 * @param usernamedbzz
 	 * @param mobile
 	 */
-	public int insertUserInfo(ShopFreeExperiencePojo shopFreeExperience) {
-		ShopFreeExperiencePojo shop = shopFreeExperience;
+	public int insertUserInfo(ShopFreeExperience shopFreeExperience) {
+		ShopFreeExperience shop = shopFreeExperience;
 		int i = this.db()
 			.insertInto(SHOP_FREE_EXPERIENCE,SHOP_FREE_EXPERIENCE.CONTACT, SHOP_FREE_EXPERIENCE.MOBILE,SHOP_FREE_EXPERIENCE.SOURCE)
 			.values(shop.getContact(), shop.getMobile(),shop.getSource())
