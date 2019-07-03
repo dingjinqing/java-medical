@@ -23,7 +23,7 @@ import com.vpu.mp.service.saas.SaasApplication;
 @Component
 public class SystemAuthInterceptor extends HandlerInterceptorAdapter {
 
-	private static final String URL_LOGIN = "/system/login";
+	private static final String URL_LOGIN = "/api/system/login";
 
 	@Autowired
 	protected SystemAuth systemAuth;
@@ -33,7 +33,7 @@ public class SystemAuthInterceptor extends HandlerInterceptorAdapter {
 	/**
 	 * 账号登录例外URL
 	 */
-	protected String[] accountLoginExcept = { "/system/login" };
+	protected String[] accountLoginExcept = { "/api/system/login" };
 
 	@Override
 	public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler)
@@ -51,6 +51,8 @@ public class SystemAuthInterceptor extends HandlerInterceptorAdapter {
 			errorResponse(request, response, URL_LOGIN, (new JsonResult()).fail(language, JsonResultCode.CODE_ACCOUNT_LOGIN_EXPIRED));
 			return false;
 		} else {
+			//重置token时间
+			systemAuth.reTokenTtl();
 			// 账号和店铺都登录，判断路径权限
 			if(user.isSubLogin()) {
 				// TODO: 加入子账号权限设置

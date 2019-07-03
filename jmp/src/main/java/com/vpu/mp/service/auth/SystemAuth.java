@@ -123,4 +123,13 @@ public class SystemAuth{
 		return null;
 	}
 	
+	/**
+	 * 重置token的存活时间
+	 * @param token
+	 */
+	public void reTokenTtl() {
+		String token =  getToken();
+		Integer timeout = Util.getInteger(Util.getProperty(AUTH_TIMEOUT));
+		jedis.expire(token, timeout);
+	}
 }

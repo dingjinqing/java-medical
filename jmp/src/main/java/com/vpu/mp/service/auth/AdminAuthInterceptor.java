@@ -22,9 +22,9 @@ import com.vpu.mp.service.saas.SaasApplication;
 @Component
 public class AdminAuthInterceptor extends HandlerInterceptorAdapter {
 
-	private static final String URL_NO_AUTH = "/admin/authority/not?type=subaccount";
-	private static final String URL_SELECT_SHOP = "/admin/account/shop/select";
-	private static final String URL_LOGIN = "/admin/login";
+	private static final String URL_NO_AUTH = "/api/admin/authority/not?type=subaccount";
+	private static final String URL_SELECT_SHOP = "/api/admin/account/shop/select";
+	private static final String URL_LOGIN = "/api/admin/login";
 
 	@Autowired
 	protected AdminAuth adminAuth;
@@ -36,20 +36,20 @@ public class AdminAuthInterceptor extends HandlerInterceptorAdapter {
 	/**
 	 * 账号登录例外URL
 	 */
-	protected String[] accountLoginExcept = { "/admin/login", "/admin/login/*", "/admin/logout", "/region/*",
-			"/wechat/proxy/*", "/admin/notice/*", "/admin/subPasswordModify", "/admin/password", "/admin/official/*",
-			"/admin/public/service/auth/list", "/admin/public/service/auth/detail", "/admin/public/image/account/*",
-			"/admin/authority/*", "/admin/message" };
+	protected String[] accountLoginExcept = { "/api/admin/login", "/api/admin/login/*", "/api/admin/logout", "/region/*",
+			"/wechat/proxy/*", "/api/admin/notice/*", "/api/admin/subPasswordModify", "/api/admin/password", "/api/admin/official/*",
+			"/api/admin/public/service/auth/list", "/api/admin/public/service/auth/detail", "/api/admin/public/image/account/*",
+			"/api/admin/authority/*", "/api/admin/message" };
 
 	/**
 	 * 账号登录后，店铺未登录例外URL
 	 */
-	protected String[] shopLoginExcept = { "/admin/account/user/list", "/admin/account/user/query",
-			"/admin/account/user/edit", "/admin/account/shop/select", "/admin/account/shop/switch",
-			"/admin/account/shop/switch", "/admin/passwordModify", "/admin/subPasswordModify",
-			"/admin/service/auth/list", "/wechat/official/account/authorization", "/admin/service/auth/detail",
-			"/admin/public/image/account/*", "/admin/frame/image/dialog/select", "/admin/authority/not",
-			"/admin/frame/*", "/admin/ajax/*", "/admin/account/*", "/admin/public/*" };
+	protected String[] shopLoginExcept = { "/api/admin/account/user/list", "/api/admin/account/user/query",
+			"/api/admin/account/user/edit", "/api/admin/account/shop/select", "/api/admin/account/shop/switch",
+			"/api/admin/account/shop/switch", "/api/admin/passwordModify", "/api/admin/subPasswordModify",
+			"/api/admin/service/auth/list", "/wechat/official/account/authorization", "/api/admin/service/auth/detail",
+			"/api/admin/public/image/account/*", "/api/admin/frame/image/dialog/select", "/api/admin/authority/not",
+			"/api/admin/frame/*", "/api/admin/ajax/*", "/api/admin/account/*", "/api/admin/public/*" };
 
 	@Override
 	public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler)
@@ -67,6 +67,7 @@ public class AdminAuthInterceptor extends HandlerInterceptorAdapter {
 			errorResponse(request, response, URL_LOGIN,  (new JsonResult()).fail(language, JsonResultCode.CODE_ACCOUNT_LOGIN_EXPIRED));
 			return false;
 		} else {
+			adminAuth.reTokenTtl();
 			if (!user.isShopLogin()) {
 				// 账号登录，判断店铺登录例外URL
 				if (match(shopLoginExcept, path)) {
