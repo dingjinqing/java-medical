@@ -20,6 +20,7 @@ import com.vpu.mp.service.shop.ShopApplication;
 @RestController
 public class AdminGoodsBrandController extends AdminBaseController {
 
+ 
     /**
      *	 商品品牌分页查询
      *
@@ -76,7 +77,7 @@ public class AdminGoodsBrandController extends AdminBaseController {
     @PostMapping("/api/admin/goods/brand/update")
     public JsonResult update(@RequestBody GoodsBrand goodsBrand) {
 
-        boolean isExist=shop().goods.goodsBrand.isBrandNameExist(goodsBrand);
+        boolean isExist=shop().goods.goodsBrand.isOtherBrandNameExist(goodsBrand);
         if (isExist){
             return fail(JsonResultCode.GOODS_BRAND_NAME_EXIST);
         }
