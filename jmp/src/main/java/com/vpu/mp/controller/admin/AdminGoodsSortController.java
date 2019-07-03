@@ -19,11 +19,6 @@ import com.vpu.mp.service.shop.ShopApplication;
 @RestController
 public class AdminGoodsSortController extends AdminBaseController {
 
-    @Override
-    protected ShopApplication shop() {
-        return saas.getShopApp(471752);
-    }
-
     /**
      * 商品分类查询，未分页
      *
