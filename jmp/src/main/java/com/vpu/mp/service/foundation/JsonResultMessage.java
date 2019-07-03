@@ -21,6 +21,7 @@ public class JsonResultMessage {
 	final public static String MSG_ACCOUNT_ROLE__SHOP_SELECT = "account.role.shop.select";
 	final public static String MSG_ACCOUNT_NAME_NOT_NULL = "account.name.notNull";
 	final public static String MSG_ACCOUNT_ISSUBLOGIN_NOT_NULL = "account.isSubLogin.notNull";
+	final public static String MSG_ACCOUNT_SAME = "account.name.same";
 	
 	// 图片
 	
