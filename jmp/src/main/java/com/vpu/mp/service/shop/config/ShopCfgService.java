@@ -5,10 +5,13 @@ import static com.vpu.mp.db.shop.tables.ShopCfg.SHOP_CFG;
 import java.lang.reflect.Field;
 import java.util.List;
 
+import org.jooq.DSLContext;
+import org.jooq.impl.DSL;
+
 import com.vpu.mp.db.shop.tables.records.ShopCfgRecord;
 import com.vpu.mp.service.foundation.BaseService;
 import com.vpu.mp.service.foundation.Util;
-import com.vpu.mp.service.pojo.shop.config.ShopCfg;
+import com.vpu.mp.service.pojo.shop.config.ShopCommonCfgInfo;
 
 /**
  * @author 王兵兵
@@ -32,15 +35,27 @@ public class ShopCfgService extends BaseService{
 	
 	}
 	
-	public Integer updateShopCommonInfo(ShopCfg shopCfg) {
+	public Boolean updateShopCommonInfo(ShopCommonCfgInfo shopCfg) {
 		 Field[] field = shopCfg.getClass().getDeclaredFields(); 
-	        for(int j=0 ; j<field.length ; j++){
+		 try {
+			 db().transaction(configuration -> {
+				 DSLContext db = DSL.using(configuration);
+		        for(int j=0 ; j<field.length ; j++){
 	                String name = field[j].getName();
 	                if(!"".equals((String)Util.getObjectProperty(shopCfg, name))) {
-	                	db().update(SHOP_CFG).set(SHOP_CFG.V,(String)Util.getObjectProperty(shopCfg, name)).where(SHOP_CFG.K.eq(Util.humpToUnderline(name))).execute();
+	                	int res = db.update(SHOP_CFG).set(SHOP_CFG.V,(String)Util.getObjectProperty(shopCfg, name)).where(SHOP_CFG.K.eq(Util.humpToUnderline(name))).execute();
+	                	if(res <= 0) {
+	                		throw new RuntimeException((String)Util.getObjectProperty(shopCfg, name));
+	                	}
 	                }
-	        }
-		return 1;
+		        }
+			 });
+		 }
+		 catch(RuntimeException e) {
+			 logger().info(e.getMessage() + " update fail");
+			 return false;
+		 }
+		return true;
 	}
 	
 //	public HashMap<String,String> getGoodsPackage(Integer action){

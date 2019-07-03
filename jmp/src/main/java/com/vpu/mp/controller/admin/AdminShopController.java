@@ -1,10 +1,12 @@
 package com.vpu.mp.controller.admin;
 
+import java.lang.reflect.Field;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 
-import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.vpu.mp.db.main.tables.records.MpAuthShopRecord;
@@ -12,8 +14,11 @@ import com.vpu.mp.db.main.tables.records.ShopRecord;
 import com.vpu.mp.db.shop.tables.records.ShopCfgRecord;
 import com.vpu.mp.service.foundation.JsonResult;
 import com.vpu.mp.service.foundation.Util;
+import com.vpu.mp.service.pojo.shop.config.ShopBaseCfgInfo;
+import com.vpu.mp.service.pojo.shop.config.ShopCommonCfgInfo;
 import com.vpu.mp.service.pojo.saas.shop.ShopPojo;
-import com.vpu.mp.service.pojo.shop.config.ShopCfg;
+
+
 
 
 /**
@@ -24,20 +29,20 @@ import com.vpu.mp.service.pojo.shop.config.ShopCfg;
 @RestController
 public class AdminShopController extends AdminBaseController {
 
-	@RequestMapping(value = "/api/admin/config/shop/getCommonInfo")
-	public JsonResult getShopCommonInfo() throws NoSuchFieldException, SecurityException, IllegalArgumentException, IllegalAccessException {
+	@GetMapping(value = "/api/admin/config/shop/getCommonInfo")
+	public JsonResult getShopCommonInfo() throws NoSuchFieldException, SecurityException, IllegalArgumentException, IllegalAccessException  {
 		LinkedHashMap<String,Object> result = new LinkedHashMap<String,Object>();
 		
 		List<ShopCfgRecord> shopCfgRecordList =  shop().shopCfg.getAllShopCfg();
-		ShopCfg shopCfg = new ShopCfg();
+		ShopCommonCfgInfo shopCfg = new ShopCommonCfgInfo();
 		for(ShopCfgRecord shopCfgRecord : shopCfgRecordList) {
 			if(Util.getObjectProperty(shopCfg, Util.underlineToHump(shopCfgRecord.getK())) != null) {
-				java.lang.reflect.Field f = shopCfg.getClass().getDeclaredField(Util.underlineToHump(shopCfgRecord.getK()));
+				Field f = shopCfg.getClass().getDeclaredField(Util.underlineToHump(shopCfgRecord.getK()));
 				f.setAccessible(true);
 	            f.set(shopCfg, shopCfgRecord.getV());
 			}
 		}
-		result.put("shopCfg",shopCfg);
+		result.put("shopCommonCfg",shopCfg);
 		
 		ShopRecord shop = saas.shop.getShopById(this.shopId());
 		result.put("shareCfg",shop.getShareConfig());
@@ -81,19 +86,19 @@ public class AdminShopController extends AdminBaseController {
 		return this.success(result);
 	}
 	
-	@RequestMapping(value = "api/admin/config/shop/getBaseInfo")
+	@GetMapping(value = "api/admin/config/shop/getBaseInfo")
 	public JsonResult getShopBaseInfo() {
-		LinkedHashMap<String,Object> result = new LinkedHashMap<String,Object>();
+		ShopBaseCfgInfo shopBaseCfgInfo = new ShopBaseCfgInfo();
 		ShopPojo shop = saas.shop.getShopBaseInfoById(this.shopId());
-		result.put("expireTime",saas.shop.renew.getShopRenewExpireTime(this.shopId()));
-		result.put("shopName",shop.getShopName());
-		result.put("shopAvatar",shop.getShopAvatar());
-		result.put("created",shop.getCreated());
-		result.put("businessState",shop.getBusinessState());
-		return this.success(result);
+		shopBaseCfgInfo.setExpireTime(saas.shop.renew.getShopRenewExpireTime(this.shopId()));
+		shopBaseCfgInfo.setShopName(shop.getShopName());
+		shopBaseCfgInfo.setShopAvatar(shop.getShopAvatar());
+		shopBaseCfgInfo.setCreated(shop.getCreated());
+		shopBaseCfgInfo.setBusinessState(shop.getBusinessState());
+		return this.success(shopBaseCfgInfo);
 	}
 	
-	@RequestMapping(value = "api/admin/config/shop/updateBaseInfo")
+	@PostMapping(value = "api/admin/config/shop/updateBaseInfo")
 	public JsonResult updateShopBaseInfo(ShopPojo shop) {
 		shop.setShopId(this.shopId());
 		Integer res = saas.shop.updateShopBaseInfo(shop);
@@ -104,10 +109,9 @@ public class AdminShopController extends AdminBaseController {
 		}
 	}
 	
-	@RequestMapping(value = "api/admin/config/shop/updateCommonInfo")
-	public JsonResult updateShopCommonInfo(ShopCfg shopCfg) {
-		Integer res = shop().shopCfg.updateShopCommonInfo(shopCfg);
-		if(res > 0) {
+	@PostMapping(value = "api/admin/config/shop/updateCommonInfo")
+	public JsonResult updateShopCommonInfo(ShopCommonCfgInfo shopCfg) {
+		if(shop().shopCfg.updateShopCommonInfo(shopCfg)) {
 			return this.success();
 		}else {
 			return this.fail();
