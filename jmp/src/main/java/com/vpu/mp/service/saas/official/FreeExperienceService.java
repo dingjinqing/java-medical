@@ -118,7 +118,7 @@ public class FreeExperienceService extends BaseService{
 	 * @return int 0 表示更新失败，>0表示更新的记录数
 	 */
 	public int updateFreeExperience(FreeExperienceInfo info) {
-		System.out.println("inside updateFreeExperience method ");
+		
 		UpdateSetFirstStep<ShopFreeExperienceRecord> update =  this.db().update(SHOP_FREE_EXPERIENCE);
 		UpdateSetMoreStep<ShopFreeExperienceRecord> step=null;
 	
