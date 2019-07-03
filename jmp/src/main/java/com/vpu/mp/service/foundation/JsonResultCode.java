@@ -50,7 +50,6 @@ public enum JsonResultCode {
     // 商品
     GOODS_BRAND_NAME_EXIST(130011, JsonResultMessage.GOODS_BRAND_NAME_EXIST),
     GOODS_SORT_NAME_EXIST(130021,JsonResultMessage.GOODS_SORT_NAME_EXIST),
-	// 商品
 	
 	//文章_分类
 	CODE_ARTICLE_CATEGORY_IS_EXIST(16001, "api.code.article_category_is_exist"),
