@@ -14,6 +14,7 @@ public class JsonResultMessage {
 	final public static String MSG_ACCOUNT_OR_PASSWORD_INCRRECT = "account.accountOrPassword.incrrect";
 	final public static String MSG_ACCOUNT_MODILE_APPLIED = "account.mobile.applied";
 	final public static String MSG_ACCOUNT_MODILE_REGISTERED = "account.mobile.registered";
+	final public static String MSG_ACCOUNT_MODILE_NOT_NULL = "account.mobile.notNull";
 	final public static String MSG_ACCOUNT_LOGIN_EXPIRED = "account.login.expired";
 	final public static String MSG_ACCOUNT_ROLE__AUTH_INSUFFICIENT = "account.role.auth.insufficient";
 	final public static String MSG_ACCOUNT_ROLE__SHOP_SELECT = "account.role.shop.select";
