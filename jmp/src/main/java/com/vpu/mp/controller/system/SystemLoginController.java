@@ -16,6 +16,7 @@ import com.vpu.mp.service.pojo.saas.auth.SystemTokenAuthInfo;
  *
  */
 @RestController
+@RequestMapping("/api")
 public class SystemLoginController extends SystemBaseController {
 
 	/**
