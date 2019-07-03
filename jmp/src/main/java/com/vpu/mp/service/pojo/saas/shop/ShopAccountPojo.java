@@ -9,7 +9,11 @@ import java.sql.Timestamp;
 
 import lombok.Data;
 
-// TODO: 需根据情况删除无用字段
+/**
+ * TODO: 需根据情况删除无用字段
+ * @author 新国
+ *
+ */
 @Data
 public class ShopAccountPojo {
 //    private Integer   sysId;

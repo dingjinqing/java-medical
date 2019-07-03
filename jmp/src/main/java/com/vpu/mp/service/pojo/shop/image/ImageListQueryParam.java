@@ -5,6 +5,11 @@ import java.sql.Timestamp;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+/**
+ * 
+ * @author 新国
+ *
+ */
 @Data
 @NoArgsConstructor
 public class ImageListQueryParam {

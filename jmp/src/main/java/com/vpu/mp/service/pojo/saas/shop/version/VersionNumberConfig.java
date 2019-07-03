@@ -2,6 +2,11 @@ package com.vpu.mp.service.pojo.saas.shop.version;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 
+/**
+ * 
+ * @author 新国
+ *
+ */
 public class VersionNumberConfig {
 	@JsonProperty(value = "picture_num")
 	public Integer pictureNum = -1;

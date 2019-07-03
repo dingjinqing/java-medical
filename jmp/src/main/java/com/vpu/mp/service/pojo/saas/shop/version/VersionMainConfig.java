@@ -5,6 +5,11 @@ import java.util.List;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 
+/**
+ * 
+ * @author 新国
+ *
+ */
 public class VersionMainConfig {
 	@JsonProperty(value = "sub_0")
 	public List<String> sub0 = new ArrayList<String>();

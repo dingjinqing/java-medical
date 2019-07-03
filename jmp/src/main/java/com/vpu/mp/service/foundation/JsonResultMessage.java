@@ -11,6 +11,7 @@ public class JsonResultMessage {
 	final public static String MSG_PARAM_ERROR = "common.param.error";
 
 	// 账号
+		
 	final public static String MSG_ACCOUNT_OR_PASSWORD_INCRRECT = "account.accountOrPassword.incrrect";
 	final public static String MSG_ACCOUNT_MODILE_APPLIED = "account.mobile.applied";
 	final public static String MSG_ACCOUNT_MODILE_REGISTERED = "account.mobile.registered";
@@ -22,11 +23,13 @@ public class JsonResultMessage {
 	final public static String MSG_ACCOUNT_ISSUBLOGIN_NOT_NULL = "account.isSubLogin.notNull";
 	
 	// 图片
+	
 	final public static String MSG_IMGAE_UPLOAD_FAILED = "image.upload.failed";
 	final public static String MSG_IMGAE_FILE_INVALID = "image.file.invalid";
 	final public static String MSG_IMGAE_CROP_FAILED = "image.crop.failed";
 
-	//商品
+	// 商品
+	
     final public static String GOODS_BRAND_NAME_EXIST="goods.brand.name.exist";
     final public static String GOODS_SORT_NAME_EXIST="goods.sort.name.exist";
 }

@@ -34,9 +34,9 @@ public class OfficialController extends OfficialBaseController{
 		if(StringUtils.isEmpty(shopFreeExperience.getContact())) {
 			return this.fail(JsonResultMessage.MSG_ACCOUNT_NAME_NOT_NULL);
 		}
-		if(StringUtils.isEmpty(shopFreeExperience.getMobile()))
+		if(StringUtils.isEmpty(shopFreeExperience.getMobile())) {
 			return this.fail(JsonResultMessage.MSG_ACCOUNT_MODILE_NOT_NULL);
-		
+		}
 		
 		boolean result = saas.official.freeExperienceService.verifyIsExist(shopFreeExperience.getMobile());
 		

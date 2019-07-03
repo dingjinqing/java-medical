@@ -138,8 +138,9 @@ public class GoodsSortService extends BaseService {
 
             Sort s = db.selectFrom(SORT).where(SORT.SORT_ID.eq(sortId)).fetchOneInto(Sort.class);
 
-            if (s==null)
+            if (s==null) {
                 return;
+            }
 
             db.delete(SORT).where(SORT.SORT_ID.eq(sortId)).execute();
 
