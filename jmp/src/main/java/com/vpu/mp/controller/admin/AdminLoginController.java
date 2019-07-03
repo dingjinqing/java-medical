@@ -21,8 +21,8 @@ import com.vpu.mp.service.pojo.shop.auth.ShopLoginParam;
 public class AdminLoginController extends AdminBaseController {
 
 	@PostMapping(value = "/admin/login")
-	public JsonResult login(@RequestBody @Valid ShopLoginParam param,BindingResult result) {
-		if(result.hasErrors()) {
+	public JsonResult login(@RequestBody @Valid ShopLoginParam param, BindingResult result) {
+		if (result.hasErrors()) {
 			return this.fail(result.getFieldError().getDefaultMessage());
 		}
 		AdminTokenAuthInfo info = adminAuth.login(param);

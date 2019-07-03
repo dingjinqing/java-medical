@@ -24,7 +24,6 @@ import org.apache.commons.lang3.StringUtils;
 import org.jooq.exception.DataTypeException;
 import org.jooq.tools.Convert;
 import org.jooq.types.UInteger;
-import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.context.support.MessageSourceAccessor;
 import org.springframework.context.support.ReloadableResourceBundleMessageSource;
 import org.springframework.core.io.ClassPathResource;

@@ -46,25 +46,6 @@ public class BaseService  extends ServiceContainer{
 	public DefaultDSLContext shopDb(Integer shopId) {
 		return dm.db(shopId);
 	}
-
-	public PageResult getPageResult(SelectLimitStep<?> select, Integer currentPage, Integer pageRows) {
-		Integer totalRows = db().fetchCount(select);
-		PageResult pageResult = new PageResult();
-		pageResult.page = Page.getPage(totalRows, currentPage, pageRows);
-		Result<?> result = select
-				.limit((pageResult.page.currentPage - 1) * pageResult.page.pageRows, pageResult.page.pageRows).fetch();
-		pageResult.dataList = result.intoMaps();
-		return pageResult;
-	}
-
-	public PageResult getPageResult(SelectLimitStep<?> select, Integer currentPage) {
-		return getPageResult(select, currentPage, 20);
-	}
-	
-
-	public PageResult getPageResult(SelectLimitStep<?> select) {
-		return getPageResult(select, 1, 20);
-	}
 	
 	public<T> PageResult<T> getPageResult(SelectLimitStep<?> select, Integer currentPage, Integer pageRows,Class<T> clazz) {
 		Integer totalRows = db().fetchCount(select);

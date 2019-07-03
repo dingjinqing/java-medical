@@ -2,7 +2,6 @@ package com.vpu.mp.service.saas.shop;
 
 import static com.vpu.mp.db.main.tables.ShopVersion.SHOP_VERSION;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
@@ -14,12 +13,16 @@ import org.jooq.SelectWhereStep;
 import org.jooq.impl.DSL;
 import org.jooq.tools.StringUtils;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
 import com.vpu.mp.db.main.tables.records.ShopRecord;
 import com.vpu.mp.db.main.tables.records.ShopVersionRecord;
 import com.vpu.mp.service.foundation.BaseService;
 import com.vpu.mp.service.foundation.PageResult;
 import com.vpu.mp.service.foundation.Util;
+import com.vpu.mp.service.pojo.saas.shop.ShopVersionPojo;
+import com.vpu.mp.service.pojo.saas.shop.VersionListQueryParam;
+import com.vpu.mp.service.pojo.saas.shop.version.VersionConfig;
+import com.vpu.mp.service.pojo.saas.shop.version.VersionMainConfig;
+import com.vpu.mp.service.pojo.saas.shop.version.VersionNumberConfig;
 
 /**
  * 
@@ -28,85 +31,13 @@ import com.vpu.mp.service.foundation.Util;
  */
 public class ShopVersionService extends BaseService {
 
-	final public static class VersionMainConfig {
-		@JsonProperty(value = "sub_0")
-		public List<String> sub0 = new ArrayList<String>();
-
-		@JsonProperty(value = "sub_1")
-		public List<String> sub1 = new ArrayList<String>();
-
-		@JsonProperty(value = "sub_2")
-		public List<String> sub2 = new ArrayList<String>();
-
-		@JsonProperty(value = "sub_3")
-		public List<String> sub3 = new ArrayList<String>();
-
-		@JsonProperty(value = "sub_4")
-		public List<String> sub4 = new ArrayList<String>();
-
-		@JsonProperty(value = "sub_5")
-		public List<String> sub5 = new ArrayList<String>();
-	}
-
-	final public static class VersionNumberConfig {
-		@JsonProperty(value = "picture_num")
-		public Integer pictureNum = -1;
-
-		@JsonProperty(value = "video_num")
-		public Integer videoNum = -1;
-
-		@JsonProperty(value = "goods_num")
-		public Integer goodsNum = -1;
-
-		@JsonProperty(value = "store_num")
-		public Integer storeNum = -1;
-
-		@JsonProperty(value = "decorate_num")
-		public Integer decorateNum = -1;
-
-		@JsonProperty(value = "form_num")
-		public Integer formNum = -1;
-
-		@JsonProperty(value = "picture_num_plus")
-		public Integer pictureNumPlus = 0;
-
-		@JsonProperty(value = "video_num_plus")
-		public Integer videoNumPlus = 0;
-
-		@JsonProperty(value = "goods_num_plus")
-		public Integer goodsNumPlus = 0;
-
-		@JsonProperty(value = "store_num_plus")
-		public Integer storeNumPlus = 0;
-
-		@JsonProperty(value = "decorate_num_plus")
-		public Integer decorateNumPlus = 0;
-
-		@JsonProperty(value = "form_num_plus")
-		public Integer formNumPlus = 0;
-
-	}
-
-	final public static class VersionConfig {
-		@JsonProperty(value = "main_config")
-		public VersionMainConfig mainConfig = new VersionMainConfig();
-
-		@JsonProperty(value = "num_config")
-		public VersionNumberConfig numConfig = new VersionNumberConfig();
-	};
-
-	final public static class VersionListQueryParam {
-		public Integer page;
-		public String versionName;
-	};
-
-	public PageResult getPageList(VersionListQueryParam param) {
+	public PageResult<ShopVersionPojo> getPageList(VersionListQueryParam param) {
 		SelectWhereStep<Record> select = db().select().from(SHOP_VERSION);
 		if (!StringUtils.isEmpty(param.versionName)) {
 			select.where(SHOP_VERSION.VERSION_NAME.like(this.likeValue(param.versionName)));
 		}
 		select.orderBy(SHOP_VERSION.ID.desc());
-		return this.getPageResult(select, param.page);
+		return this.getPageResult(select, param.page,ShopVersionPojo.class);
 	}
 
 	public Result<ShopVersionRecord> getAllVersion() {

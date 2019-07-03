@@ -10,6 +10,8 @@ import org.jooq.tools.StringUtils;
 import com.vpu.mp.db.main.tables.records.DecorationTemplateRecord;
 import com.vpu.mp.service.foundation.BaseService;
 import com.vpu.mp.service.foundation.PageResult;
+import com.vpu.mp.service.pojo.saas.decorate.DecorationTemplatePojo;
+import com.vpu.mp.service.pojo.saas.shop.MpDecorationListQueryParam;
 
 /**
  * 
@@ -18,17 +20,11 @@ import com.vpu.mp.service.foundation.PageResult;
  */
 public class MpDecorationService extends BaseService {
 
-	public static class MpDecorationListQueryParam {
-		public Integer page;
-		public String pageName;
-		public Byte pageEnabled;
-	}
-
-	public PageResult getPageList(MpDecorationListQueryParam param) {
+	public PageResult<DecorationTemplatePojo> getPageList(MpDecorationListQueryParam param) {
 		SelectWhereStep<Record> select = db().select().from(DECORATION_TEMPLATE);
 		select = this.buildOptions(select, param);
 		select.orderBy(DECORATION_TEMPLATE.CREATE_TIME.desc());
-		return this.getPageResult(select, param.page);
+		return this.getPageResult(select, param.page,DecorationTemplatePojo.class);
 	}
 
 	public SelectWhereStep<Record> buildOptions(SelectWhereStep<Record> select, MpDecorationListQueryParam param) {

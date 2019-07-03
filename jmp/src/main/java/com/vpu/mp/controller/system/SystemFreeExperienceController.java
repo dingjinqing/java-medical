@@ -1,19 +1,14 @@
 package com.vpu.mp.controller.system;
 
-import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.vpu.mp.service.foundation.JsonResult;
-import com.vpu.mp.service.foundation.JsonResultCode;
 import com.vpu.mp.service.foundation.PageResult;
-import com.vpu.mp.service.saas.official.FreeExperienceService.FreeExperiencePageListParam;
-import com.vpu.mp.support.LineConvertHump;
 import com.vpu.mp.service.pojo.saas.offical.FreeExperienceInfo;
+import com.vpu.mp.service.pojo.saas.offical.FreeExperiencePageListParam;
+import com.vpu.mp.service.pojo.saas.offical.ShopFreeExperiencePojo;
 
 /**
  * 处理system中用户申请试用列表
@@ -21,7 +16,7 @@ import com.vpu.mp.service.pojo.saas.offical.FreeExperienceInfo;
  * 2019-06-26 17:27
  */
 
-@Controller
+@RestController
 public class SystemFreeExperienceController extends SystemBaseController{
 
 	/**
@@ -29,11 +24,9 @@ public class SystemFreeExperienceController extends SystemBaseController{
 	 * @param param
 	 * @return
 	 */
-	@RequestMapping("/system/free/experience")
-	@ResponseBody
+	@PostMapping("/system/free/experience")
 	public JsonResult getFreeExperienceList(@RequestBody FreeExperiencePageListParam param) {
-		PageResult pageResult = this.saas.official.freeExperienceService.getPageList(param);
-		
+		PageResult<ShopFreeExperiencePojo> pageResult = this.saas.official.freeExperienceService.getPageList(param);
 		return this.success(pageResult);
 	}
 	
@@ -44,9 +37,8 @@ public class SystemFreeExperienceController extends SystemBaseController{
 	 * @return
 	 */
 	@PostMapping("/system/free/set/info")
-	@ResponseBody
 	public JsonResult setFreeExperienceInfo(
-			@LineConvertHump @RequestBody FreeExperienceInfo freeExperienceInfo) {
+			 @RequestBody FreeExperienceInfo freeExperienceInfo) {
 
 		int result = this.saas.official.freeExperienceService.updateFreeExperience(freeExperienceInfo);
 	

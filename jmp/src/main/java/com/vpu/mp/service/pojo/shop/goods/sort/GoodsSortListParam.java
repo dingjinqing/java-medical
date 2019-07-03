@@ -2,8 +2,6 @@ package com.vpu.mp.service.pojo.shop.goods.sort;
 
 import java.sql.Timestamp;
 
-import org.springframework.format.annotation.DateTimeFormat;
-
 import lombok.Data;
 
 /**

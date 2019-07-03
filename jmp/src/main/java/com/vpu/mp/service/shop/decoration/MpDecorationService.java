@@ -17,8 +17,8 @@ import com.vpu.mp.db.shop.tables.records.XcxCustomerPageRecord;
 import com.vpu.mp.service.foundation.BaseService;
 import com.vpu.mp.service.foundation.PageResult;
 import com.vpu.mp.service.foundation.Util;
+import com.vpu.mp.service.pojo.saas.shop.version.VersionConfig;
 import com.vpu.mp.service.pojo.shop.decoration.XcxCustomerPagePojo;
-import com.vpu.mp.service.saas.shop.ShopVersionService.VersionConfig;
 
 import lombok.Data;
 
@@ -58,14 +58,14 @@ public class MpDecorationService extends BaseService {
 	 * @param param
 	 * @return
 	 */
-	public PageResult getPageList(PageListQueryParam param) {
+	public PageResult<XcxCustomerPagePojo> getPageList(PageListQueryParam param) {
 		if (getPageCount() == 0) {
 			this.addDefaultPage();
 		}
 		SelectWhereStep<Record> select = db().select().from(XCX_CUSTOMER_PAGE);
 		select = this.buildOptions(select, param);
 		select.orderBy(XCX_CUSTOMER_PAGE.PAGE_TYPE.desc(), XCX_CUSTOMER_PAGE.CREATE_TIME.desc());
-		return this.getPageResult(select, param.page);
+		return this.getPageResult(select, param.page,XcxCustomerPagePojo.class);
 	}
 
 	/**

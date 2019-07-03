@@ -6,8 +6,6 @@ import org.apache.commons.lang3.StringUtils;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.vpu.mp.service.pojo.saas.offical.ShopFreeExperience;
@@ -27,11 +25,9 @@ public class OfficialController extends OfficialBaseController{
 	   *  处理提交申请使用的客户信息
 	 * @param username
 	 * @param mobile
-	 * @url /index/check/free/experience
 	 * @return JsonResult
 	 */
 	@PostMapping("/experience/add")
-	@ResponseBody
 	public JsonResult freeExperienceCheck(
 			@RequestBody ShopFreeExperience shopFreeExperience) {
 		

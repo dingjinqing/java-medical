@@ -1,6 +1,5 @@
 package com.vpu.mp.service.saas.official;
 
-import org.apache.commons.dbcp2.Utils;
 import org.apache.commons.lang3.StringUtils;
 import org.jooq.Record;
 import org.jooq.SelectWhereStep;
@@ -8,19 +7,16 @@ import org.jooq.UpdateSetFirstStep;
 import org.jooq.UpdateSetMoreStep;
 
 import com.vpu.mp.service.pojo.saas.offical.FreeExperienceInfo;
+import com.vpu.mp.service.pojo.saas.offical.FreeExperiencePageListParam;
 import com.vpu.mp.service.pojo.saas.offical.ShopFreeExperience;
+import com.vpu.mp.service.pojo.saas.offical.ShopFreeExperiencePojo;
 import com.vpu.mp.db.main.tables.records.ShopFreeExperienceRecord;
 import com.vpu.mp.service.foundation.BaseService;
-import com.vpu.mp.service.foundation.Page;
 import com.vpu.mp.service.foundation.PageResult;
 import com.vpu.mp.service.foundation.Util;
-import com.vpu.mp.service.saas.official.FreeExperienceService.FreeExperiencePageListParam;
-
-import lombok.Data;
 
 import static com.vpu.mp.db.main.tables.ShopFreeExperience.SHOP_FREE_EXPERIENCE;
 
-import java.sql.Timestamp;
 /**
  * 
  * System中官方申请试用服务
@@ -28,29 +24,12 @@ import java.sql.Timestamp;
  * 2019-06-27 15:45
  */
 public class FreeExperienceService extends BaseService{
-	
-	/**
-	 * 
-	 * 接收客户端参数类
-	 */
-	@Data
-	final public static class FreeExperiencePageListParam{
-		public String company;
-		public String contact;
-		public String startTime;
-		public String endTime;
-		public Integer provinceId;
-		public Integer searchShopId;
-		public Page page;
-		public Byte isDeal;   // 已处理： 1 ； 未处理： 0
-	}
-	
 	/**
 	 * 分页查询
 	 * @param param
 	 * @return PageResult
 	 */
-	public PageResult getPageList(FreeExperiencePageListParam param) {
+	public PageResult<ShopFreeExperiencePojo> getPageList(FreeExperiencePageListParam param) {
 		SelectWhereStep<Record> select = db().select().from(SHOP_FREE_EXPERIENCE);
 		//多条件选择
 		select = this.buildOptions(select,param);
@@ -58,9 +37,9 @@ public class FreeExperienceService extends BaseService{
 		select.orderBy(SHOP_FREE_EXPERIENCE.FE_ID.asc());
 		
 		if(param.page != null && param.page.pageRows != null && param.page.pageRows>0) {
-			return this.getPageResult(select,param.page.currentPage,param.page.pageRows);
+			return this.getPageResult(select,param.page.currentPage,param.page.pageRows,ShopFreeExperiencePojo.class);
 		}else {
-			return this.getPageResult(select, param.page.currentPage);
+			return this.getPageResult(select, param.page.currentPage,ShopFreeExperiencePojo.class);
 		}
 	}
 	

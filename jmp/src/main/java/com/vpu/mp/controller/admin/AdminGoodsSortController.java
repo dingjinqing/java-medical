@@ -10,7 +10,6 @@ import org.springframework.web.bind.annotation.RestController;
 import com.vpu.mp.service.foundation.JsonResult;
 import com.vpu.mp.service.pojo.shop.goods.sort.GoodsSortListParam;
 import com.vpu.mp.service.pojo.shop.goods.sort.Sort;
-import com.vpu.mp.service.shop.ShopApplication;
 
 /**
  * @author 李晓冰

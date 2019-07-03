@@ -7,8 +7,7 @@ import org.jooq.SelectWhereStep;
 
 import com.vpu.mp.service.foundation.BaseService;
 import com.vpu.mp.service.foundation.PageResult;
-
-import lombok.Data;
+import com.vpu.mp.service.pojo.shop.order.OrderPageListQueryParam;
 
 /**
  * 
@@ -17,29 +16,17 @@ import lombok.Data;
  */
 public class OrderService extends BaseService{
 	
-	@Data
-	 public static class PageListQueryParam {
-		 
-		 public Integer page;
-		 
-		 public Integer orderId;
-		 public String goodsName;
-		 public String orderSn;
-		 public String orderType;
-		 public String consignee;
-		 public String mobile;
-	 };
 	 
 	 /**
-	  * 订单列表
+	  * 订单列表 TODO: 返回参数需要修改 不能为Object，暂时为了编译正常
 	  * @param param
 	  * @return
 	  */
-	 public PageResult getPageList(PageListQueryParam param) {
+	 public PageResult<Object> getPageList(OrderPageListQueryParam param) {
 		 SelectWhereStep<Record1<String>> select1 = db().select(ORDER_INFO.ORDER_SN).from(ORDER_INFO);
 		 SelectWhereStep<?> select = this.buildOptions(select1, param);
 		 select.orderBy(ORDER_INFO.ADD_TIME.desc());
-		 return this.getPageResult(select);
+		 return this.getPageResult(select,Object.class);
 	 }
 	 
 	 /**
@@ -48,7 +35,7 @@ public class OrderService extends BaseService{
 	  * @param param
 	  * @return
 	  */
-	 public SelectWhereStep<?> buildOptions(SelectWhereStep<?> select, PageListQueryParam param) {
+	 public SelectWhereStep<?> buildOptions(SelectWhereStep<?> select, OrderPageListQueryParam param) {
 		 if(param == null) {
 			 return select;
 		 }

@@ -19,6 +19,7 @@ import com.vpu.mp.service.foundation.BaseService;
 import com.vpu.mp.service.foundation.FieldsUtil;
 import com.vpu.mp.service.foundation.PageResult;
 import com.vpu.mp.service.foundation.Util;
+import com.vpu.mp.service.pojo.saas.shop.ShopAccountListQueryParam;
 import com.vpu.mp.service.pojo.saas.shop.ShopAccountPojo;
 
 /**
@@ -28,53 +29,11 @@ import com.vpu.mp.service.pojo.saas.shop.ShopAccountPojo;
  */
 public class ShopAccountService extends BaseService {
 
-	final public static class ShopAccountListQueryParam {
-		public Byte state;
-		public Integer page;
-		public String keywords;
-		public String company;
-		
-		
-
-		public Byte getState() {
-			return state;
-		}
-
-		public void setState(Byte state) {
-			this.state = state;
-		}
-
-		public String getKeywords() {
-			return keywords;
-		}
-
-		public void setKeywords(String keywords) {
-			this.keywords = keywords;
-		}
-
-		public String getCompany() {
-			return company;
-		}
-
-		public void setCompany(String company) {
-			this.company = company;
-		}
-
-		public Integer getpage() {
-			return page;
-		}
-
-		public void setpage(Integer page) {
-			this.page = page;
-		}
-
-	};
-
-	public PageResult getPageList(ShopAccountListQueryParam param) {
+		public PageResult<ShopAccountPojo> getPageList(ShopAccountListQueryParam param) {
 		SelectWhereStep<Record> select = db().select().from(SHOP_ACCOUNT);
 		select = this.buildOptions(select, param);
 		select.orderBy(SHOP_ACCOUNT.SYS_ID.desc());
-		return this.getPageResult(select, param.page);
+		return this.getPageResult(select, param.page,ShopAccountPojo.class);
 	}
 
 	public SelectWhereStep<Record> buildOptions(SelectWhereStep<Record> select, ShopAccountListQueryParam param) {

@@ -5,11 +5,12 @@ import com.vpu.mp.db.shop.tables.records.UploadedImageRecord;
 import com.vpu.mp.service.foundation.BaseService;
 import com.vpu.mp.service.foundation.PageResult;
 import com.vpu.mp.service.foundation.Util;
+import com.vpu.mp.service.pojo.shop.image.ImageListQueryParam;
+import com.vpu.mp.service.pojo.shop.image.UploadPath;
 import com.vpu.mp.service.pojo.shop.image.UploadedImageCategoryPojo;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
-import lombok.NoArgsConstructor;
 import net.coobird.thumbnailator.Thumbnails;
 
 import static com.vpu.mp.db.shop.tables.UploadedImage.UPLOADED_IMAGE;
@@ -53,17 +54,7 @@ public class ImageService extends BaseService {
 
 	protected UpYun upYun = null;
 
-	@Data
-	public static class UploadPath {
-		public String relativeFilePath;
-		public String relativeDirectory;
-		public String fullPath;
-		public String fullDirectory;
-		public String type;
-		public String filname;
-		public String extension;
-	};
-
+	
 	/**
 	 * 得到又拍云客户端
 	 * 
@@ -89,34 +80,7 @@ public class ImageService extends BaseService {
 				.where(UPLOADED_IMAGE.IMG_ID.in(imageIds)).execute();
 	}
 
-	@Data
-	@NoArgsConstructor
-	public static class ImageListQueryParam {
-		public Integer page;
-		public Integer imgCatId;
-		public Timestamp startRq;
-		public Timestamp endRq;
-		public Integer imgWidth;
-		public Integer imgHeight;
-		public String keywords;
-		public Integer searchNeed;
-		public Integer needImgWidth;
-		public Integer needImgHeight;
-		public Integer uploadSortId;
-		public Integer uploadImgCatId;
-		public Integer noFull;
-		public String onImgCb;
-		public Integer cropImgId;
-		public String act;
-		public String showType;
-		public Integer[] cbxImg;
-		public Integer[] cbxImg2;
-		public Integer setCatId;
-		public String opCatName;
-		public Integer opCatId;
-		public Integer opCatPid;
-	};
-
+	
 	public String processPostRequest(ImageListQueryParam param) {
 		if (param.act == null) {
 			return "";
@@ -164,13 +128,18 @@ public class ImageService extends BaseService {
 		return "";
 	}
 
-	public PageResult getPageList(ImageListQueryParam param) {
+	/**
+	 * TODO: 暂时为Object，以后改下
+	 * @param param
+	 * @return
+	 */
+	public PageResult<Object> getPageList(ImageListQueryParam param) {
 		SelectWhereStep<Record> select = db().select(UPLOADED_IMAGE.asterisk(), UPLOADED_IMAGE_CATEGORY.IMG_CAT_NAME)
 				.from(UPLOADED_IMAGE).leftJoin(UPLOADED_IMAGE_CATEGORY)
 				.on(UPLOADED_IMAGE.IMG_CAT_ID.eq(DSL.cast(UPLOADED_IMAGE_CATEGORY.IMG_CAT_ID, Integer.class)));
 		select = this.buildOptions(select, param);
 		select.orderBy(UPLOADED_IMAGE.IMG_ID.desc());
-		return this.getPageResult(select, param.page);
+		return this.getPageResult(select, param.page,Object.class);
 	}
 
 	protected List<Integer> convertIntegerArray(List<Integer> array) {

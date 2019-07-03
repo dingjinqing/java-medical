@@ -13,8 +13,9 @@ import org.jooq.tools.StringUtils;
 import com.vpu.mp.db.shop.tables.records.PageClassificationRecord;
 import com.vpu.mp.service.foundation.BaseService;
 import com.vpu.mp.service.foundation.PageResult;
+import com.vpu.mp.service.pojo.shop.decoration.PageCategoryListQueryParam;
+import com.vpu.mp.service.pojo.shop.decoration.PageClassificationPojo;
 
-import lombok.Data;
 
 /**
  * 
@@ -23,27 +24,17 @@ import lombok.Data;
  */
 public class PageClassificationService extends BaseService {
 
-	@Data
-	public static class PageCategoryListQueryParam {
-		public Integer id;
-		public Integer del;
-		public String name;
-		public Integer page;
-		public String keywords;
-		public String act;
-	};
-
 	/**
 	 * 装修页面列表
 	 * 
 	 * @param param
 	 * @return
 	 */
-	public PageResult getPageList(PageCategoryListQueryParam param) {
+	public PageResult<PageClassificationPojo> getPageList(PageCategoryListQueryParam param) {
 		SelectWhereStep<Record> select = db().select().from(PAGE_CLASSIFICATION);
 		select = this.buildOptions(select, param);
 		select.orderBy(PAGE_CLASSIFICATION.CREATE_TIME.desc());
-		return this.getPageResult(select, param.page);
+		return this.getPageResult(select, param.page,PageClassificationPojo.class);
 	}
 
 	/**

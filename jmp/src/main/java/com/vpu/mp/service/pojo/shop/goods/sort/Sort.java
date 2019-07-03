@@ -11,8 +11,6 @@ import java.sql.Timestamp;
 @Data
 public class Sort {
 
-    private static final long serialVersionUID = -1244214921;
-
     private Integer sortId;
     private String sortName;
     private Integer parentId;

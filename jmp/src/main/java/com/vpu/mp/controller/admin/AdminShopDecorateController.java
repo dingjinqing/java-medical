@@ -1,12 +1,14 @@
 package com.vpu.mp.controller.admin;
 
-import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.RestController;
 
 import com.vpu.mp.db.shop.tables.records.XcxCustomerPageRecord;
 import com.vpu.mp.service.foundation.JsonResult;
 import com.vpu.mp.service.foundation.PageResult;
+import com.vpu.mp.service.pojo.shop.decoration.XcxCustomerPagePojo;
 import com.vpu.mp.service.shop.decoration.MpDecorationService.PageListQueryParam;
 
 /**
@@ -15,7 +17,7 @@ import com.vpu.mp.service.shop.decoration.MpDecorationService.PageListQueryParam
  * @author 常乐
  * 2019年6月27日
  */
-@Controller
+@RestController
 public class AdminShopDecorateController extends AdminBaseController {
 	
 	/**
@@ -23,10 +25,9 @@ public class AdminShopDecorateController extends AdminBaseController {
 	 * @param param
 	 * @return
 	 */
-	@ResponseBody
-	@RequestMapping(value = "/admin/shopDecorate/pageList")
+	@PostMapping(value = "/admin/shopDecorate/pageList")
 	public JsonResult list(PageListQueryParam param) {		
-		PageResult list = shop().mpDecoration.getPageList(param );
+		PageResult<XcxCustomerPagePojo> list = shop().mpDecoration.getPageList(param );
 		return success(list);
 	}
 	

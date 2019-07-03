@@ -3,7 +3,7 @@ package com.vpu.mp.service.shop.version;
 import java.util.Map;
 
 import com.vpu.mp.service.foundation.BaseService;
-import com.vpu.mp.service.saas.shop.ShopVersionService.VersionConfig;
+import com.vpu.mp.service.pojo.saas.shop.version.VersionConfig;
 import com.vpu.mp.service.shop.decoration.MpDecorationService;
 import com.vpu.mp.service.shop.image.ImageService;
 

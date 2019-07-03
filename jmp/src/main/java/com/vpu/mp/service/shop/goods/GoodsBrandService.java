@@ -9,7 +9,6 @@ import org.jooq.tools.StringUtils;
 
 import java.sql.Timestamp;
 
-import static com.vpu.mp.db.shop.Tables.GOODS;
 import static com.vpu.mp.db.shop.Tables.GOODS_BRAND;
 import static org.jooq.impl.DSL.field;
 

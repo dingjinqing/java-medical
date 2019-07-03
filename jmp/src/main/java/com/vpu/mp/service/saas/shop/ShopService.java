@@ -7,9 +7,6 @@ import static com.vpu.mp.db.main.tables.ShopChildRole.SHOP_CHILD_ROLE;
 import static com.vpu.mp.db.main.tables.ShopRenew.SHOP_RENEW;
 
 import java.sql.Timestamp;
-import java.util.HashMap;
-import java.util.Map;
-
 import org.jooq.Record;
 import org.jooq.Record1;
 import org.jooq.Record9;
@@ -18,12 +15,12 @@ import org.jooq.SelectWhereStep;
 import org.jooq.impl.DSL;
 import org.jooq.tools.StringUtils;
 
-import com.vpu.mp.db.main.tables.records.ShopAccountRecord;
 import com.vpu.mp.db.main.tables.records.ShopRecord;
 import com.vpu.mp.service.foundation.BaseService;
 import com.vpu.mp.service.foundation.DbConfig;
 import com.vpu.mp.service.foundation.PageResult;
 import com.vpu.mp.service.foundation.Util;
+import com.vpu.mp.service.pojo.saas.shop.ShopListQueryParam;
 import com.vpu.mp.service.pojo.saas.shop.ShopPojo;
 
 /**
@@ -42,131 +39,29 @@ public class ShopService extends BaseService {
 	public MpDecorationService decoration;
 	public MpAuthShopService mp;
 
-	final public static class ShopListQueryParam {
-		public Integer page;
-		public String keywords;
-		public Integer sysId;
-		public Integer isUse;
-		public String shopType;
-		public String principalName;
-		public String accountKey;
-		public Byte shopFlag;
-		public Byte isEnabled;
-		public Byte hidBottom;
-		public String act;
 
-		public String getAct() {
-			return act;
-		}
-
-		public void setAct(String act) {
-			this.act = act;
-		}
-
-		public Integer getPage() {
-			return page;
-		}
-
-		public void setPage(Integer page) {
-			this.page = page;
-		}
-
-		public String getKeywords() {
-			return keywords;
-		}
-
-		public void setKeywords(String keywords) {
-			this.keywords = keywords;
-		}
-
-		public Integer getSysId() {
-			return sysId;
-		}
-
-		public void setSysId(Integer sysId) {
-			this.sysId = sysId;
-		}
-
-		public Integer getIsUse() {
-			return isUse;
-		}
-
-		public void setIsUse(Integer isUse) {
-			this.isUse = isUse;
-		}
-
-		public String getShopType() {
-			return shopType;
-		}
-
-		public void setShopType(String shopType) {
-			this.shopType = shopType;
-		}
-
-		public String getPrincipalName() {
-			return principalName;
-		}
-
-		public void setPrincipalName(String principalName) {
-			this.principalName = principalName;
-		}
-
-		public String getAccountKey() {
-			return accountKey;
-		}
-
-		public void setAccountKey(String accountKey) {
-			this.accountKey = accountKey;
-		}
-
-		public Byte getShopFlag() {
-			return shopFlag;
-		}
-
-		public void setShopFlag(Byte shopFlag) {
-			this.shopFlag = shopFlag;
-		}
-
-		public Byte getIsEnabled() {
-			return isEnabled;
-		}
-
-		public void setIsEnabled(Byte isEnabled) {
-			this.isEnabled = isEnabled;
-		}
-
-		public Byte getHidBottom() {
-			return hidBottom;
-		}
-
-		public void setHidBottom(Byte hidBottom) {
-			this.hidBottom = hidBottom;
-		}
-
-	};
-
-	public PageResult getPageList(ShopListQueryParam param) {
-		SelectWhereStep<Record> select = db()
-				.select(SHOP.asterisk(),
-						MP_AUTH_SHOP.APP_ID,
-						MP_AUTH_SHOP.IS_AUTH_OK,
-						MP_AUTH_SHOP.NICK_NAME,
-						MP_AUTH_SHOP.PRINCIPAL_NAME)
-				.from(SHOP)
-				.join(SHOP_ACCOUNT).on(SHOP.SYS_ID.eq(SHOP_ACCOUNT.SYS_ID))
-				.leftJoin(MP_AUTH_SHOP).on(SHOP.SHOP_ID.eq(DSL.cast(MP_AUTH_SHOP.SHOP_ID, Integer.class)));
-		select = this.buildOptions(select, param);
-		select.orderBy(SHOP.CREATED.desc());
-		PageResult<HashMap> result = this.getPageResult(select, param.page);
-		for (Map<String, Object> record : result.dataList) {
-			Integer shopId = Util.convert(record.get("shop_id"), Integer.class, 0);
-			Integer sysId = Util.convert(record.get("sys_id"), Integer.class, 0);
-			ShopAccountRecord accountInfo = this.accout.getAccountInfoForID(sysId);
-			record.put("renew_money", this.renew.getShopRenewTotal(shopId));
-			record.put("expire_time", this.renew.getShopRenewExpireTime(shopId));
-			record.put("account_info", accountInfo == null ? null : accountInfo.intoMap());
-		}
-		return result;
+	public PageResult<Object> getPageList(ShopListQueryParam param) {
+//		SelectWhereStep<Record> select = db()
+//				.select(SHOP.asterisk(),
+//						MP_AUTH_SHOP.APP_ID,
+//						MP_AUTH_SHOP.IS_AUTH_OK,
+//						MP_AUTH_SHOP.NICK_NAME,
+//						MP_AUTH_SHOP.PRINCIPAL_NAME)
+//				.from(SHOP)
+//				.join(SHOP_ACCOUNT).on(SHOP.SYS_ID.eq(SHOP_ACCOUNT.SYS_ID))
+//				.leftJoin(MP_AUTH_SHOP).on(SHOP.SHOP_ID.eq(DSL.cast(MP_AUTH_SHOP.SHOP_ID, Integer.class)));
+//		select = this.buildOptions(select, param);
+//		select.orderBy(SHOP.CREATED.desc());
+////		PageResult<HashMap> result = this.getPageResult(select, param.page);
+////		for (Map<String, Object> record : result.dataList) {
+////			Integer shopId = Util.convert(record.get("shop_id"), Integer.class, 0);
+////			Integer sysId = Util.convert(record.get("sys_id"), Integer.class, 0);
+////			ShopAccountRecord accountInfo = this.accout.getAccountInfoForID(sysId);
+////			record.put("renew_money", this.renew.getShopRenewTotal(shopId));
+////			record.put("expire_time", this.renew.getShopRenewExpireTime(shopId));
+////			record.put("account_info", accountInfo == null ? null : accountInfo.intoMap());
+////		}
+		return null;
 	}
 
 	public SelectWhereStep<Record> buildOptions(SelectWhereStep<Record> select, ShopListQueryParam param) {

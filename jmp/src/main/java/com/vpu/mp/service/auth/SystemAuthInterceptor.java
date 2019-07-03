@@ -1,7 +1,6 @@
 package com.vpu.mp.service.auth;
 
 import java.io.PrintWriter;
-import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -24,7 +23,6 @@ import com.vpu.mp.service.saas.SaasApplication;
 @Component
 public class SystemAuthInterceptor extends HandlerInterceptorAdapter {
 
-	private static final String URL_NO_AUTH = "/system/authority/not?type=subaccount";
 	private static final String URL_LOGIN = "/system/login";
 
 	@Autowired

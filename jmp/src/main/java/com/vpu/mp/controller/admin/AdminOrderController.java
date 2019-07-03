@@ -1,12 +1,11 @@
 package com.vpu.mp.controller.admin;
 
-import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RestController;
 
 import com.vpu.mp.service.foundation.JsonResult;
 import com.vpu.mp.service.foundation.PageResult;
-import com.vpu.mp.service.shop.order.OrderService.PageListQueryParam;
+import com.vpu.mp.service.pojo.shop.order.OrderPageListQueryParam;
 
 /**
  * 订单模块
@@ -14,13 +13,12 @@ import com.vpu.mp.service.shop.order.OrderService.PageListQueryParam;
  * @author 常乐
  * 2019年6月27日
  */
-@Controller
+@RestController
 public class AdminOrderController extends AdminBaseController{
 	
-	@ResponseBody
-	@RequestMapping(value = "/admin/order/orderList")
-	public JsonResult orderList(PageListQueryParam param) {
-		PageResult list = shop().order.getPageList(param);
+	@PostMapping(value = "/admin/order/orderList")
+	public JsonResult orderList(OrderPageListQueryParam param) {
+		PageResult<Object> list = shop().order.getPageList(param);
 		return success(list);
 	}
 }

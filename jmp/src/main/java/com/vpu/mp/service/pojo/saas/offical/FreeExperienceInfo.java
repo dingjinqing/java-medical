@@ -1,7 +1,5 @@
 package com.vpu.mp.service.pojo.saas.offical;
 
-import static com.vpu.mp.db.main.tables.ShopFreeExperience.SHOP_FREE_EXPERIENCE;
-
 import lombok.Data;
 
 /**
