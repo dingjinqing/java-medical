@@ -36,7 +36,7 @@ public class SystemFreeExperienceController extends SystemBaseController{
 	 * @param freeExperienceInfo
 	 * @return
 	 */
-	@PostMapping("/system/free/set/info")
+	@PostMapping("/api/system/experience/info/update")
 	public JsonResult setFreeExperienceInfo(
 			 @RequestBody FreeExperienceInfo freeExperienceInfo) {
 
