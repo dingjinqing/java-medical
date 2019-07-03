@@ -40,10 +40,11 @@ public class WebConfig implements WebMvcConfigurer {
 	@Override
 	public void addInterceptors(InterceptorRegistry registry) {
 
-		registry.addInterceptor(sysAuthInterceptor).addPathPatterns("/system/**").excludePathPatterns("/system/login",
-				"/system/logout", "/system/message", "/system/login/attempt");
-		registry.addInterceptor(adminAuthInterceptor).addPathPatterns("/admin/**").addPathPatterns("/wechat/**")
-				.excludePathPatterns("/admin/login", "/admin/logout","/admin/shopDecorate/**","/admin/order/orderList","/wechat/proxy/**");
+		registry.addInterceptor(sysAuthInterceptor).addPathPatterns("/api/system/**")
+				.excludePathPatterns("/api/system/login", "/api/system/logout", "/api/system/message");
+		registry.addInterceptor(adminAuthInterceptor).addPathPatterns("/api/admin/**").addPathPatterns("/api/wechat/**")
+				.excludePathPatterns("/api/admin/login", "/api/admin/logout", "/api/admin/shopDecorate/**",
+						"/api/admin/order/orderList", "/api/wechat/proxy/**");
 	}
 
 	@Override
