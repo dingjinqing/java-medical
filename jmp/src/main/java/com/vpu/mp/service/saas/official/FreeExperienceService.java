@@ -9,7 +9,7 @@ import org.jooq.UpdateSetMoreStep;
 import com.vpu.mp.service.pojo.saas.offical.FreeExperienceInfo;
 import com.vpu.mp.service.pojo.saas.offical.FreeExperiencePageListParam;
 import com.vpu.mp.service.pojo.saas.offical.ShopFreeExperience;
-import com.vpu.mp.service.pojo.saas.offical.ShopFreeExperiencePojo;
+import com.vpu.mp.service.pojo.saas.offical.ShopFreeExperienceOutPut;
 import com.vpu.mp.db.main.tables.records.ShopFreeExperienceRecord;
 import com.vpu.mp.service.foundation.BaseService;
 import com.vpu.mp.service.foundation.PageResult;
@@ -29,17 +29,19 @@ public class FreeExperienceService extends BaseService{
 	 * @param param
 	 * @return PageResult
 	 */
-	public PageResult<ShopFreeExperiencePojo> getPageList(FreeExperiencePageListParam param) {
+	public PageResult<ShopFreeExperienceOutPut> getPageList(FreeExperiencePageListParam param) {
+		
 		SelectWhereStep<Record> select = db().select().from(SHOP_FREE_EXPERIENCE);
+		
 		//多条件选择
 		select = this.buildOptions(select,param);
 		//升序
 		select.orderBy(SHOP_FREE_EXPERIENCE.FE_ID.asc());
 		
 		if(param.page != null && param.page.pageRows != null && param.page.pageRows>0) {
-			return this.getPageResult(select,param.page.currentPage,param.page.pageRows,ShopFreeExperiencePojo.class);
+			return this.getPageResult(select,param.page.currentPage,param.page.pageRows,ShopFreeExperienceOutPut.class);
 		}else {
-			return this.getPageResult(select, param.page.currentPage,ShopFreeExperiencePojo.class);
+			return this.getPageResult(select, param.page.currentPage,ShopFreeExperienceOutPut.class);
 		}
 	}
 	
