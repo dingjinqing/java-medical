@@ -81,5 +81,10 @@ public class JedisManager {
 		JedisPool pool = getJedisPool();
 		pool.close();
 	}
+	
+	public void expire(String key, int seconds) {
+		Jedis jedis = getJedis();
+		jedis.expire(key, seconds);
+	}
 
 }
