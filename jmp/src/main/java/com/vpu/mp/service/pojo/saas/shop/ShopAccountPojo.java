@@ -4,6 +4,7 @@
 package com.vpu.mp.service.pojo.saas.shop;
 
 
+import java.math.BigDecimal;
 import java.sql.Timestamp;
 
 
@@ -16,7 +17,7 @@ import lombok.Data;
  */
 @Data
 public class ShopAccountPojo {
-//    private Integer   sysId;
+    private Integer   sysId;
     private String    userName;
     private String    password;
     private Byte      state;
@@ -42,5 +43,8 @@ public class ShopAccountPojo {
     private Byte      addCommentSwitch;
     private String    officialOpenId;
     private Byte      isBind;
+    
+    private BigDecimal renewMoney;
+    private Integer shopNumber;
 
 }

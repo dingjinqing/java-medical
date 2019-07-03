@@ -1,5 +1,7 @@
 package com.vpu.mp.service.pojo.saas.shop;
 
+import com.vpu.mp.service.foundation.Page;
+
 import lombok.Data;
 
 /**
@@ -10,7 +12,7 @@ import lombok.Data;
 @Data
 public class ShopAccountListQueryParam {
 	public Byte state;
-	public Integer page;
+	public Page page;
 	public String keywords;
 	public String company;
 }
