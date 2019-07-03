@@ -3,6 +3,7 @@ package com.vpu.mp.service.saas;
 import java.util.HashMap;
 
 import com.vpu.mp.service.foundation.ServiceContainer;
+import com.vpu.mp.service.saas.article.ArticleCategoryService;
 import com.vpu.mp.service.saas.article.ArticleService;
 import com.vpu.mp.service.saas.official.OfficialService;
 import com.vpu.mp.service.saas.privilege.ChildAccountService;
@@ -29,6 +30,7 @@ public class SaasApplication extends ServiceContainer {
 	public ShopService shop;
 	public RegionService region;
 	public ArticleService article;
+	public ArticleCategoryService articleCategory;
 	public OfficialService official;
 	
 	protected CityService city;

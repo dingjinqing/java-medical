@@ -22,6 +22,7 @@ public enum JsonResultCode {
 	 * @serialField 13开头：商品
 	 * @serialField 14开头：营销
 	 * @serialField 15开头：用户
+	 * @serialField 16开头：文章_分类
 	 */
 
 	// 公共码
@@ -47,7 +48,14 @@ public enum JsonResultCode {
 	// 订单
 
 	// 商品
-
+	
+	//文章_分类
+	CODE_ARTICLE_CATEGORY_IS_EXIST(16001, "api.code.article_category_is_exist"),
+	CODE_ARTICLE_CATEGORY_CATEGORYNAME_ISNULL(16001, "api.code.article_category_categoryName_isNull"),
+	CODE_ARTICLE_CATEGORY_CATEGORYID_ISNULL(16003, "api.code.article_category_categoryId_iNull"),
+	CODE_ARTICLE_TITLE_ISNULL(16004, "api.code.article_title_isNull"),
+	CODE_ARTICLE_ARTICLEID_ISNULL(16005, "api.code.article_articleId_isNull"),
+	CODE_ARTICLE_CATEGORY_UPDATE_FAILED(16006,"api.code_article_category_update_failed")
 	;
 
 	/**

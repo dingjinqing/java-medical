@@ -42,7 +42,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class Article extends TableImpl<ArticleRecord> {
 
-    private static final long serialVersionUID = -1529496035;
+    private static final long serialVersionUID = -1674078340;
 
     /**
      * The reference instance of <code>mini_main.b2c_article</code>
@@ -70,27 +70,27 @@ public class Article extends TableImpl<ArticleRecord> {
     /**
      * The column <code>mini_main.b2c_article.title</code>.
      */
-    public final TableField<ArticleRecord, String> TITLE = createField("title", org.jooq.impl.SQLDataType.VARCHAR(256), this, "");
+    public final TableField<ArticleRecord, String> TITLE = createField("title", org.jooq.impl.SQLDataType.VARCHAR(256).defaultValue(org.jooq.impl.DSL.inline("NULL", org.jooq.impl.SQLDataType.VARCHAR)), this, "");
 
     /**
      * The column <code>mini_main.b2c_article.author</code>.
      */
-    public final TableField<ArticleRecord, String> AUTHOR = createField("author", org.jooq.impl.SQLDataType.VARCHAR(50), this, "");
+    public final TableField<ArticleRecord, String> AUTHOR = createField("author", org.jooq.impl.SQLDataType.VARCHAR(50).defaultValue(org.jooq.impl.DSL.inline("NULL", org.jooq.impl.SQLDataType.VARCHAR)), this, "");
 
     /**
      * The column <code>mini_main.b2c_article.keyword</code>. 标签
      */
-    public final TableField<ArticleRecord, String> KEYWORD = createField("keyword", org.jooq.impl.SQLDataType.VARCHAR(256), this, "标签");
+    public final TableField<ArticleRecord, String> KEYWORD = createField("keyword", org.jooq.impl.SQLDataType.VARCHAR(256).defaultValue(org.jooq.impl.DSL.inline("NULL", org.jooq.impl.SQLDataType.VARCHAR)), this, "标签");
 
     /**
      * The column <code>mini_main.b2c_article.desc</code>. 文章描述
      */
-    public final TableField<ArticleRecord, String> DESC = createField("desc", org.jooq.impl.SQLDataType.VARCHAR(1024), this, "文章描述");
+    public final TableField<ArticleRecord, String> DESC = createField("desc", org.jooq.impl.SQLDataType.VARCHAR(1024).defaultValue(org.jooq.impl.DSL.inline("NULL", org.jooq.impl.SQLDataType.VARCHAR)), this, "文章描述");
 
     /**
      * The column <code>mini_main.b2c_article.content</code>.
      */
-    public final TableField<ArticleRecord, String> CONTENT = createField("content", org.jooq.impl.SQLDataType.CLOB, this, "");
+    public final TableField<ArticleRecord, String> CONTENT = createField("content", org.jooq.impl.SQLDataType.CLOB.defaultValue(org.jooq.impl.DSL.inline("NULL", org.jooq.impl.SQLDataType.CLOB)), this, "");
 
     /**
      * The column <code>mini_main.b2c_article.is_recommend</code>. 1:推荐
@@ -110,37 +110,32 @@ public class Article extends TableImpl<ArticleRecord> {
     /**
      * The column <code>mini_main.b2c_article.pub_time</code>. 发布时间
      */
-    public final TableField<ArticleRecord, Timestamp> PUB_TIME = createField("pub_time", org.jooq.impl.SQLDataType.TIMESTAMP.nullable(false).defaultValue(org.jooq.impl.DSL.field("CURRENT_TIMESTAMP", org.jooq.impl.SQLDataType.TIMESTAMP)), this, "发布时间");
+    public final TableField<ArticleRecord, Timestamp> PUB_TIME = createField("pub_time", org.jooq.impl.SQLDataType.TIMESTAMP.defaultValue(org.jooq.impl.DSL.inline("NULL", org.jooq.impl.SQLDataType.TIMESTAMP)), this, "发布时间");
 
     /**
      * The column <code>mini_main.b2c_article.update_time</code>. 更新时间
      */
-    public final TableField<ArticleRecord, Timestamp> UPDATE_TIME = createField("update_time", org.jooq.impl.SQLDataType.TIMESTAMP.nullable(false).defaultValue(org.jooq.impl.DSL.field("CURRENT_TIMESTAMP", org.jooq.impl.SQLDataType.TIMESTAMP)), this, "更新时间");
+    public final TableField<ArticleRecord, Timestamp> UPDATE_TIME = createField("update_time", org.jooq.impl.SQLDataType.TIMESTAMP.defaultValue(org.jooq.impl.DSL.field("current_timestamp()", org.jooq.impl.SQLDataType.TIMESTAMP)), this, "更新时间");
 
     /**
-     * The column <code>mini_main.b2c_article.create_time</code>.
+     * The column <code>mini_main.b2c_article.create_time</code>. 创建时间
      */
-    public final TableField<ArticleRecord, Timestamp> CREATE_TIME = createField("create_time", org.jooq.impl.SQLDataType.TIMESTAMP.defaultValue(org.jooq.impl.DSL.field("CURRENT_TIMESTAMP", org.jooq.impl.SQLDataType.TIMESTAMP)), this, "");
+    public final TableField<ArticleRecord, Timestamp> CREATE_TIME = createField("create_time", org.jooq.impl.SQLDataType.TIMESTAMP.defaultValue(org.jooq.impl.DSL.field("current_timestamp()", org.jooq.impl.SQLDataType.TIMESTAMP)), this, "创建时间");
 
     /**
      * The column <code>mini_main.b2c_article.last_visit_time</code>.
      */
-    public final TableField<ArticleRecord, Timestamp> LAST_VISIT_TIME = createField("last_visit_time", org.jooq.impl.SQLDataType.TIMESTAMP, this, "");
+    public final TableField<ArticleRecord, Timestamp> LAST_VISIT_TIME = createField("last_visit_time", org.jooq.impl.SQLDataType.TIMESTAMP.defaultValue(org.jooq.impl.DSL.inline("NULL", org.jooq.impl.SQLDataType.TIMESTAMP)), this, "");
 
     /**
      * The column <code>mini_main.b2c_article.pv</code>.
      */
-    public final TableField<ArticleRecord, Integer> PV = createField("pv", org.jooq.impl.SQLDataType.INTEGER, this, "");
-
-    /**
-     * The column <code>mini_main.b2c_article.show_footer</code>. 0:不在footer显示，1：显示
-     */
-    public final TableField<ArticleRecord, Byte> SHOW_FOOTER = createField("show_footer", org.jooq.impl.SQLDataType.TINYINT.defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.TINYINT)), this, "0:不在footer显示，1：显示");
+    public final TableField<ArticleRecord, Integer> PV = createField("pv", org.jooq.impl.SQLDataType.INTEGER.defaultValue(org.jooq.impl.DSL.inline("NULL", org.jooq.impl.SQLDataType.INTEGER)), this, "");
 
     /**
      * The column <code>mini_main.b2c_article.head_pic</code>. 头图
      */
-    public final TableField<ArticleRecord, String> HEAD_PIC = createField("head_pic", org.jooq.impl.SQLDataType.VARCHAR(191), this, "头图");
+    public final TableField<ArticleRecord, String> HEAD_PIC = createField("head_pic", org.jooq.impl.SQLDataType.VARCHAR(191).defaultValue(org.jooq.impl.DSL.inline("NULL", org.jooq.impl.SQLDataType.VARCHAR)), this, "头图");
 
     /**
      * Create a <code>mini_main.b2c_article</code> table reference

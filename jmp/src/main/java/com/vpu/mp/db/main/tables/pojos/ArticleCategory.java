@@ -5,6 +5,7 @@ package com.vpu.mp.db.main.tables.pojos;
 
 
 import java.io.Serializable;
+import java.sql.Timestamp;
 
 import javax.annotation.Generated;
 
@@ -22,28 +23,36 @@ import javax.annotation.Generated;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class ArticleCategory implements Serializable {
 
-    private static final long serialVersionUID = -852673504;
+    private static final long serialVersionUID = 144397969;
 
-    private Integer categoryId;
-    private String  categoryName;
-    private Byte    useFooterNav;
+    private Integer   categoryId;
+    private String    categoryName;
+    private Byte      delState;
+    private Timestamp addTime;
+    private Timestamp updateTime;
 
     public ArticleCategory() {}
 
     public ArticleCategory(ArticleCategory value) {
         this.categoryId = value.categoryId;
         this.categoryName = value.categoryName;
-        this.useFooterNav = value.useFooterNav;
+        this.delState = value.delState;
+        this.addTime = value.addTime;
+        this.updateTime = value.updateTime;
     }
 
     public ArticleCategory(
-        Integer categoryId,
-        String  categoryName,
-        Byte    useFooterNav
+        Integer   categoryId,
+        String    categoryName,
+        Byte      delState,
+        Timestamp addTime,
+        Timestamp updateTime
     ) {
         this.categoryId = categoryId;
         this.categoryName = categoryName;
-        this.useFooterNav = useFooterNav;
+        this.delState = delState;
+        this.addTime = addTime;
+        this.updateTime = updateTime;
     }
 
     public Integer getCategoryId() {
@@ -62,12 +71,28 @@ public class ArticleCategory implements Serializable {
         this.categoryName = categoryName;
     }
 
-    public Byte getUseFooterNav() {
-        return this.useFooterNav;
+    public Byte getDelState() {
+        return this.delState;
     }
 
-    public void setUseFooterNav(Byte useFooterNav) {
-        this.useFooterNav = useFooterNav;
+    public void setDelState(Byte delState) {
+        this.delState = delState;
+    }
+
+    public Timestamp getAddTime() {
+        return this.addTime;
+    }
+
+    public void setAddTime(Timestamp addTime) {
+        this.addTime = addTime;
+    }
+
+    public Timestamp getUpdateTime() {
+        return this.updateTime;
+    }
+
+    public void setUpdateTime(Timestamp updateTime) {
+        this.updateTime = updateTime;
     }
 
     @Override
@@ -76,7 +101,9 @@ public class ArticleCategory implements Serializable {
 
         sb.append(categoryId);
         sb.append(", ").append(categoryName);
-        sb.append(", ").append(useFooterNav);
+        sb.append(", ").append(delState);
+        sb.append(", ").append(addTime);
+        sb.append(", ").append(updateTime);
 
         sb.append(")");
         return sb.toString();

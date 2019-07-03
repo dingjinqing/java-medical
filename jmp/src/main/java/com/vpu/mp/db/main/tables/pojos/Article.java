@@ -23,7 +23,7 @@ import javax.annotation.Generated;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class Article implements Serializable {
 
-    private static final long serialVersionUID = 271804569;
+    private static final long serialVersionUID = -2001410069;
 
     private Integer   articleId;
     private Integer   categoryId;
@@ -40,7 +40,6 @@ public class Article implements Serializable {
     private Timestamp createTime;
     private Timestamp lastVisitTime;
     private Integer   pv;
-    private Byte      showFooter;
     private String    headPic;
 
     public Article() {}
@@ -61,7 +60,6 @@ public class Article implements Serializable {
         this.createTime = value.createTime;
         this.lastVisitTime = value.lastVisitTime;
         this.pv = value.pv;
-        this.showFooter = value.showFooter;
         this.headPic = value.headPic;
     }
 
@@ -81,7 +79,6 @@ public class Article implements Serializable {
         Timestamp createTime,
         Timestamp lastVisitTime,
         Integer   pv,
-        Byte      showFooter,
         String    headPic
     ) {
         this.articleId = articleId;
@@ -99,7 +96,6 @@ public class Article implements Serializable {
         this.createTime = createTime;
         this.lastVisitTime = lastVisitTime;
         this.pv = pv;
-        this.showFooter = showFooter;
         this.headPic = headPic;
     }
 
@@ -223,14 +219,6 @@ public class Article implements Serializable {
         this.pv = pv;
     }
 
-    public Byte getShowFooter() {
-        return this.showFooter;
-    }
-
-    public void setShowFooter(Byte showFooter) {
-        this.showFooter = showFooter;
-    }
-
     public String getHeadPic() {
         return this.headPic;
     }
@@ -258,7 +246,6 @@ public class Article implements Serializable {
         sb.append(", ").append(createTime);
         sb.append(", ").append(lastVisitTime);
         sb.append(", ").append(pv);
-        sb.append(", ").append(showFooter);
         sb.append(", ").append(headPic);
 
         sb.append(")");
