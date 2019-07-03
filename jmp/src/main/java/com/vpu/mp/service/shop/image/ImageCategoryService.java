@@ -2,6 +2,7 @@ package com.vpu.mp.service.shop.image;
 
 import com.vpu.mp.service.foundation.BaseService;
 import com.vpu.mp.service.foundation.Util;
+import com.vpu.mp.service.pojo.shop.image.UploadedImageCategoryPojo;
 
 import lombok.Data;
 
@@ -20,7 +21,6 @@ import org.jooq.Result;
 import org.jooq.SelectWhereStep;
 import org.jooq.impl.DSL;
 
-import com.vpu.mp.db.shop.tables.pojos.UploadedImageCategory;
 import com.vpu.mp.db.shop.tables.records.UploadedImageCategoryRecord;
 /**
  * 
@@ -35,7 +35,7 @@ public class ImageCategoryService extends BaseService {
 	 * @param cat
 	 * @return
 	 */
-	public UploadedImageCategoryRecord addCategory(UploadedImageCategory cat) {
+	public UploadedImageCategoryRecord addCategory(UploadedImageCategoryPojo cat) {
 		UploadedImageCategoryRecord record = db().newRecord(UPLOADED_IMAGE_CATEGORY, cat);
 		record.setCreateTime(Timestamp.valueOf(LocalDateTime.now()));
 		record.insert();

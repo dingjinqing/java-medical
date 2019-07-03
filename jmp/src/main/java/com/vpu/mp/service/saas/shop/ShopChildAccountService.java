@@ -14,11 +14,11 @@ import org.jooq.Result;
 import org.jooq.SelectLimitStep;
 import org.jooq.SelectWhereStep;
 
-import com.vpu.mp.db.main.tables.pojos.ShopChildAccount;
 import com.vpu.mp.db.main.tables.records.ShopChildAccountRecord;
 import com.vpu.mp.service.foundation.BaseService;
 import com.vpu.mp.service.foundation.PageResult;
 import com.vpu.mp.service.foundation.Util;
+import com.vpu.mp.service.pojo.saas.shop.ShopChildAccountPojo;
 
 /**
  * 
@@ -84,7 +84,7 @@ public class ShopChildAccountService extends BaseService {
 				.execute();
 	}
 
-	public ShopChildAccountRecord updateAccount(ShopChildAccount childAccount) {
+	public ShopChildAccountRecord updateAccount(ShopChildAccountPojo childAccount) {
 		ShopChildAccountRecord record = db().newRecord(SHOP_CHILD_ACCOUNT, childAccount);
 		db().executeUpdate(record);
 		return record;

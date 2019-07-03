@@ -7,12 +7,12 @@ import java.util.List;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.vpu.mp.db.main.tables.pojos.Shop;
 import com.vpu.mp.db.main.tables.records.MpAuthShopRecord;
 import com.vpu.mp.db.main.tables.records.ShopRecord;
 import com.vpu.mp.db.shop.tables.records.ShopCfgRecord;
 import com.vpu.mp.service.foundation.JsonResult;
 import com.vpu.mp.service.foundation.Util;
+import com.vpu.mp.service.pojo.saas.shop.ShopPojo;
 import com.vpu.mp.service.pojo.shop.config.ShopCfg;
 
 
@@ -84,7 +84,7 @@ public class AdminShopController extends AdminBaseController {
 	@RequestMapping(value = "api/admin/config/shop/getBaseInfo")
 	public JsonResult getShopBaseInfo() {
 		LinkedHashMap<String,Object> result = new LinkedHashMap<String,Object>();
-		Shop shop = saas.shop.getShopBaseInfoById(this.shopId());
+		ShopPojo shop = saas.shop.getShopBaseInfoById(this.shopId());
 		result.put("expireTime",saas.shop.renew.getShopRenewExpireTime(this.shopId()));
 		result.put("shopName",shop.getShopName());
 		result.put("shopAvatar",shop.getShopAvatar());
@@ -94,7 +94,7 @@ public class AdminShopController extends AdminBaseController {
 	}
 	
 	@RequestMapping(value = "api/admin/config/shop/updateBaseInfo")
-	public JsonResult updateShopBaseInfo(Shop shop) {
+	public JsonResult updateShopBaseInfo(ShopPojo shop) {
 		shop.setShopId(this.shopId());
 		Integer res = saas.shop.updateShopBaseInfo(shop);
 		if(res > 0) {

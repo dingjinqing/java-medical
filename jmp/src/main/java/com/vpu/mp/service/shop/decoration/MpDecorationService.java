@@ -13,11 +13,11 @@ import org.jooq.SelectWhereStep;
 import org.jooq.tools.StringUtils;
 
 import com.vpu.mp.db.main.tables.records.DecorationTemplateRecord;
-import com.vpu.mp.db.shop.tables.pojos.XcxCustomerPage;
 import com.vpu.mp.db.shop.tables.records.XcxCustomerPageRecord;
 import com.vpu.mp.service.foundation.BaseService;
 import com.vpu.mp.service.foundation.PageResult;
 import com.vpu.mp.service.foundation.Util;
+import com.vpu.mp.service.pojo.shop.decoration.XcxCustomerPagePojo;
 import com.vpu.mp.service.saas.shop.ShopVersionService.VersionConfig;
 
 import lombok.Data;
@@ -113,7 +113,7 @@ public class MpDecorationService extends BaseService {
 	 * @param page
 	 * @return
 	 */
-	public XcxCustomerPageRecord addPage(XcxCustomerPage page) {
+	public XcxCustomerPageRecord addPage(XcxCustomerPagePojo page) {
 		XcxCustomerPageRecord record = db().newRecord(XCX_CUSTOMER_PAGE, page);
 		record.insert();
 		return record;

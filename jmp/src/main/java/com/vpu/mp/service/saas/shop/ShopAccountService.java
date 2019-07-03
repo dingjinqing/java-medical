@@ -14,12 +14,12 @@ import org.jooq.SelectWhereStep;
 import org.jooq.impl.DSL;
 import org.jooq.tools.StringUtils;
 
-import com.vpu.mp.db.main.tables.pojos.ShopAccount;
 import com.vpu.mp.db.main.tables.records.ShopAccountRecord;
 import com.vpu.mp.service.foundation.BaseService;
 import com.vpu.mp.service.foundation.FieldsUtil;
 import com.vpu.mp.service.foundation.PageResult;
 import com.vpu.mp.service.foundation.Util;
+import com.vpu.mp.service.pojo.saas.shop.ShopAccountPojo;
 
 /**
  * 
@@ -167,7 +167,7 @@ public class ShopAccountService extends BaseService {
 				.fetchAny();
 	}
 
-	public ShopAccountRecord addAccountInfo(com.vpu.mp.db.main.tables.pojos.ShopAccount account) {
+	public ShopAccountRecord addAccountInfo(ShopAccountPojo account) {
 		ShopAccountRecord record = db().newRecord(SHOP_ACCOUNT, account);
 		db().executeInsert(record);
 		return record;
@@ -178,7 +178,7 @@ public class ShopAccountService extends BaseService {
 		return addAccountInfo;
 	}
 
-	public ShopAccountRecord updateAccountInfo(com.vpu.mp.db.main.tables.pojos.ShopAccount account) {
+	public ShopAccountRecord updateAccountInfo(ShopAccountPojo account) {
 		ShopAccountRecord record = db().newRecord(SHOP_ACCOUNT, account);
 		db().executeUpdate(record);
 		return record;
@@ -189,7 +189,7 @@ public class ShopAccountService extends BaseService {
 	 * @param account
 	 * @return
 	 */
-	public boolean addShopAccountService(ShopAccount account) {
+	public boolean addShopAccountService(ShopAccountPojo account) {
 		if (account.getUserName() == null || account.getPassword() == null) {
 			return false;
 		}

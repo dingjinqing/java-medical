@@ -18,13 +18,13 @@ import org.jooq.SelectWhereStep;
 import org.jooq.impl.DSL;
 import org.jooq.tools.StringUtils;
 
-import com.vpu.mp.db.main.tables.pojos.Shop;
 import com.vpu.mp.db.main.tables.records.ShopAccountRecord;
 import com.vpu.mp.db.main.tables.records.ShopRecord;
 import com.vpu.mp.service.foundation.BaseService;
 import com.vpu.mp.service.foundation.DbConfig;
 import com.vpu.mp.service.foundation.PageResult;
 import com.vpu.mp.service.foundation.Util;
+import com.vpu.mp.service.pojo.saas.shop.ShopPojo;
 
 /**
  * 
@@ -232,7 +232,7 @@ public class ShopService extends BaseService {
 		return select;
 	}
 
-	public ShopRecord addShop(Shop shop) {
+	public ShopRecord addShop(ShopPojo shop) {
 		shop.setShopId(getCanUseShopId());
 		shop.setIsEnabled(shop.getIsEnabled() == null ? 0 : shop.getIsEnabled());
 		shop.setIsEnabled(shop.getHidBottom() == null ? 0 : shop.getHidBottom());
@@ -257,7 +257,7 @@ public class ShopService extends BaseService {
 		return maxShopId + 1;
 	}
 
-	public ShopRecord updateShop(Shop shop) {
+	public ShopRecord updateShop(ShopPojo shop) {
 		shop.setIsEnabled(shop.getIsEnabled() == null ? 0 : shop.getIsEnabled());
 		shop.setIsEnabled(shop.getHidBottom() == null ? 0 : shop.getHidBottom());
 		ShopRecord record = db().newRecord(SHOP, shop);
@@ -344,11 +344,11 @@ public class ShopService extends BaseService {
 		return defaultStyle;
 	}
 	
-	public Shop getShopBaseInfoById(Integer shopId) {
-		return db().select(SHOP.SHOP_AVATAR,SHOP.SHOP_NAME,SHOP.BUSINESS_STATE,SHOP.CREATED,SHOP.BUSINESS_STATE).from(SHOP).where(SHOP.SHOP_ID.eq(shopId)).fetchOne().into(Shop.class);
+	public ShopPojo getShopBaseInfoById(Integer shopId) {
+		return db().select(SHOP.SHOP_AVATAR,SHOP.SHOP_NAME,SHOP.BUSINESS_STATE,SHOP.CREATED,SHOP.BUSINESS_STATE).from(SHOP).where(SHOP.SHOP_ID.eq(shopId)).fetchOne().into(ShopPojo.class);
 	}
 	
-	public Integer updateShopBaseInfo(Shop shop) {
+	public Integer updateShopBaseInfo(ShopPojo shop) {
 		return db().update(SHOP)
 				.set(SHOP.SHOP_NAME, shop.getShopName())
 				.set(SHOP.SHOP_AVATAR, shop.getShopAvatar())

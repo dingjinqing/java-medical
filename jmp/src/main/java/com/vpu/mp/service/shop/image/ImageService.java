@@ -1,11 +1,11 @@
 package com.vpu.mp.service.shop.image;
 
 import com.UpYun;
-import com.vpu.mp.db.shop.tables.pojos.UploadedImageCategory;
 import com.vpu.mp.db.shop.tables.records.UploadedImageRecord;
 import com.vpu.mp.service.foundation.BaseService;
 import com.vpu.mp.service.foundation.PageResult;
 import com.vpu.mp.service.foundation.Util;
+import com.vpu.mp.service.pojo.shop.image.UploadedImageCategoryPojo;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -153,7 +153,7 @@ public class ImageService extends BaseService {
 		}
 
 		if (actAddCat.equals(param.act)) {
-			UploadedImageCategory cat = new UploadedImageCategory();
+			UploadedImageCategoryPojo cat = new UploadedImageCategoryPojo();
 			cat.setImgCatName(param.opCatName);
 			cat.setImgCatParentId(param.opCatPid);
 			cat.setShopId(this.shopId);

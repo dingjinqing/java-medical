@@ -9,8 +9,8 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.vpu.mp.db.main.tables.pojos.ShopFreeExperience;
 import com.vpu.mp.service.foundation.JsonResult;
+import com.vpu.mp.service.pojo.saas.shop.ShopFreeExperiencePojo;
 
 /**
  * @author 黄壮壮
@@ -31,7 +31,7 @@ public class OfficialController extends OfficialBaseController{
 	@PostMapping("/check/free/experience")
 	@ResponseBody
 	public JsonResult freeExperienceCheck(
-			@RequestBody ShopFreeExperience shopFreeExperience) {
+			@RequestBody ShopFreeExperiencePojo shopFreeExperience) {
 		
 		boolean result = saas.official.freeExperienceService.verifyIsExist(shopFreeExperience.getMobile());
 		

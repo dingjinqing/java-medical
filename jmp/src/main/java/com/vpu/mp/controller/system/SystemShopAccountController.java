@@ -2,13 +2,12 @@ package com.vpu.mp.controller.system;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.vpu.mp.db.main.tables.pojos.ShopAccount;
 import com.vpu.mp.service.foundation.JsonResult;
 import com.vpu.mp.service.foundation.JsonResultCode;
-import com.vpu.mp.service.saas.shop.ShopAccountService;
-import com.vpu.mp.support.LineConvertHump;
+import com.vpu.mp.service.pojo.saas.shop.ShopAccountPojo;
 
 /**
  * 
@@ -24,7 +23,7 @@ public class SystemShopAccountController extends SystemBaseController {
 	 * @return
 	 */
 	@PostMapping(value = "/system/shop/account/add")
-	public JsonResult addShopAccount(@LineConvertHump ShopAccount account) {
+	public JsonResult addShopAccount(@RequestBody ShopAccountPojo account) {
 		if (saas.shop.accout.addShopAccountService(account)) {
 			return success(JsonResultCode.CODE_SUCCESS);
 		} else {
