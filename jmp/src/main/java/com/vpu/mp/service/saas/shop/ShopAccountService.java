@@ -29,14 +29,17 @@ import com.vpu.mp.service.pojo.saas.shop.ShopAccountPojo;
  */
 public class ShopAccountService extends BaseService {
 
-		public PageResult<ShopAccountPojo> getPageList(ShopAccountListQueryParam param) {
-		SelectWhereStep<Record> select = db().select().from(SHOP_ACCOUNT);
+	public PageResult<ShopAccountPojo> getPageList(ShopAccountListQueryParam param) {
+		SelectWhereStep<? extends Record> select = db()
+				.select(SHOP_ACCOUNT.SYS_ID, SHOP_ACCOUNT.USER_NAME, SHOP_ACCOUNT.STATE, SHOP_ACCOUNT.BUSINESS_STATE,
+						SHOP_ACCOUNT.ADD_TIME, SHOP_ACCOUNT.BUY_TIME, SHOP_ACCOUNT.END_TIME, SHOP_ACCOUNT.MOBILE)
+				.from(SHOP_ACCOUNT);
 		select = this.buildOptions(select, param);
 		select.orderBy(SHOP_ACCOUNT.SYS_ID.desc());
-		return this.getPageResult(select, param.page,ShopAccountPojo.class);
+		return this.getPageResult(select, param.page.currentPage, param.page.pageRows, ShopAccountPojo.class);
 	}
 
-	public SelectWhereStep<Record> buildOptions(SelectWhereStep<Record> select, ShopAccountListQueryParam param) {
+	public SelectWhereStep<? extends Record> buildOptions(SelectWhereStep<? extends Record> select, ShopAccountListQueryParam param) {
 		if (param == null) {
 			return select;
 		}
