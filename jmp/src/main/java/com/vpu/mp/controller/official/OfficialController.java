@@ -2,6 +2,7 @@ package com.vpu.mp.controller.official;
 
 import javax.servlet.http.HttpServletRequest;
 
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -9,15 +10,16 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.vpu.mp.service.pojo.saas.offical.ShopFreeExperience;
+import com.vpu.mp.service.foundation.JsonResultMessage;
 import com.vpu.mp.service.foundation.JsonResult;
-import com.vpu.mp.service.pojo.saas.shop.ShopFreeExperiencePojo;
 
 /**
  * @author 黄壮壮
  * 2019-06-26 10:25
  */
 @RestController
-@RequestMapping("/index")
+@RequestMapping("/api/official")
 public class OfficialController extends OfficialBaseController{
 
 	
@@ -28,18 +30,23 @@ public class OfficialController extends OfficialBaseController{
 	 * @url /index/check/free/experience
 	 * @return JsonResult
 	 */
-	@PostMapping("/check/free/experience")
+	@PostMapping("/experience/add")
 	@ResponseBody
 	public JsonResult freeExperienceCheck(
-			@RequestBody ShopFreeExperiencePojo shopFreeExperience) {
+			@RequestBody ShopFreeExperience shopFreeExperience) {
+		
+		if(StringUtils.isEmpty(shopFreeExperience.getContact())) {
+			return this.fail(JsonResultMessage.MSG_ACCOUNT_NAME_NOT_NULL);
+		}
+		if(StringUtils.isEmpty(shopFreeExperience.getMobile()))
+			return this.fail(JsonResultMessage.MSG_ACCOUNT_MODILE_NOT_NULL);
+		
 		
 		boolean result = saas.official.freeExperienceService.verifyIsExist(shopFreeExperience.getMobile());
 		
 		if(result) {
-			return fail();
+			return this.fail(JsonResultMessage.MSG_ACCOUNT_MODILE_REGISTERED);
 		}else {
-			
-			
 			// get device type
 			String source = detectDevice(this.request);
 			
