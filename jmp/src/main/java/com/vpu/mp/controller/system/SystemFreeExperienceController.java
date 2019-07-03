@@ -8,7 +8,7 @@ import com.vpu.mp.service.foundation.JsonResult;
 import com.vpu.mp.service.foundation.PageResult;
 import com.vpu.mp.service.pojo.saas.offical.FreeExperienceInfo;
 import com.vpu.mp.service.pojo.saas.offical.FreeExperiencePageListParam;
-import com.vpu.mp.service.pojo.saas.offical.ShopFreeExperiencePojo;
+import com.vpu.mp.service.pojo.saas.offical.ShopFreeExperienceOutPut;
 
 /**
  * 处理system中用户申请试用列表
@@ -24,9 +24,9 @@ public class SystemFreeExperienceController extends SystemBaseController{
 	 * @param param
 	 * @return
 	 */
-	@PostMapping("/system/free/experience")
+	@PostMapping("/api/system/experience/list")
 	public JsonResult getFreeExperienceList(@RequestBody FreeExperiencePageListParam param) {
-		PageResult<ShopFreeExperiencePojo> pageResult = this.saas.official.freeExperienceService.getPageList(param);
+		PageResult<ShopFreeExperienceOutPut> pageResult = this.saas.official.freeExperienceService.getPageList(param);
 		return this.success(pageResult);
 	}
 	
