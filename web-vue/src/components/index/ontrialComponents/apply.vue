@@ -7,7 +7,7 @@
         <div class="input_icon">
           <input
             type="contact"
-            :placeholder="placeholder_name"
+            :placeholder="$t('apply.placeholder_name')"
             name="contact"
             v-model="username"
           >
@@ -16,7 +16,7 @@
         <div class="input_icon">
           <input
             type="mobile"
-            :placeholder="placeholder_tel"
+            :placeholder="$t('apply.placeholder_tel')"
             name="mobile"
             onkeyup="value=value.replace(/[^\d\-]/g,'')"
             v-model="phonenum"
@@ -30,7 +30,7 @@
       </div>
       <div class="apply_right">
         <img
-          src="http://mpimg2.weipubao.cn/image/admin/index_circle.png"
+          :src="himageUrlData"
           alt=""
         >
         <h3>{{$t('apply.content')}}</h3>
@@ -46,37 +46,59 @@ export default {
     return {
       username: '',
       phonenum: '',
-      placeholder_name: '请填写您的姓名',
-      placeholder_tel: '请填写手机号'
+      flag: true,
+      imageUrlData: this.$imageHost + 'image/admin/index_circle.png'
+
     }
   },
   mounted () {
     this.$http.$emit('to_rej')
-    let that = this
     this.langDefault()
-    that.$http.$on('lang_change', function (data) {
-      console.log(data)
-      if (data === 0) {
-        that.placeholder_name = 'Please fill in your name'
-        that.placeholder_tel = 'Please fill in your cell phone number'
-        return
-      }
-      that.placeholder_name = '请填写您的姓名'
-      that.placeholder_tel = '请填写手机号'
-    })
   },
   methods: {
-    // 初始化语言
-    langDefault () {
+    // 表单校验
+    JudgementForm (index) {
       if (localStorage.getItem('WEPUBAO_LANGUAGE') === 'en_US') {
-        this.$i18n.locale = 'en'
-        this.placeholder_name = 'Please fill in your name'
-        this.placeholder_tel = 'Please fill in your cell phone number'
-      } else {
-        this.$i18n.locale = 'cn'
+        if (!this.username) {
+          this.$message({
+            showClose: true,
+            message: 'Please enter your username or mobile phone number',
+            type: 'warning'
+          })
+          this.flag = false
+          return
+        }
+        if (!this.password) {
+          this.$message({
+            showClose: true,
+            message: 'Please input a password',
+            type: 'warning'
+          })
+          this.flag = false
+        }
+        return
+      }
+      if (!this.username) {
+        this.$message({
+          showClose: true,
+          message: '请输入用户名或者手机号',
+          type: 'warning'
+        })
+        this.flag = false
+        return
+      }
+      if (!this.password) {
+        this.$message({
+          showClose: true,
+          message: '请输入密码',
+          type: 'warning'
+        })
+        this.flag = false
       }
     },
+    // 提交表单
     handlesubmit () {
+      if (this.flag === false) return
       localStorage.setItem('contentType', 'application/json;charset=UTF-8')
       console.log(this.username, this.phonenum)
       console.log(applyrequest)

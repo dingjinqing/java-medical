@@ -7,12 +7,12 @@
       </div>
       <div class="flow_img">
         <img
-          src="http://mpimg2.weipubao.cn/image/admin/official/flow_enter1.png"
+          :src="imageUrlData[0].image_1"
           class="flow_enter1 animated"
           :class="imgActive"
         >
         <img
-          src="http://mpimg2.weipubao.cn/image/admin/official/flow_enter4.png"
+          :src="imageUrlData[1].image_2"
           class="flow_enter2"
         >
       </div>
@@ -24,7 +24,12 @@ export default {
   data () {
     return {
       imgActive: '',
-      flag: 'false'
+      flag: 'false',
+      imageUrlData: [
+        { image_1: this.$imageHost + '/image/admin/official/flow_enter1.png' },
+        { image_2: this.$imageHost + '/image/admin/official/flow_enter4.png' }
+
+      ]
     }
   },
   mounted () {

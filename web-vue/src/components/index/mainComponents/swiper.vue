@@ -10,7 +10,7 @@
       >
         <h3 style="cursor: pointer;"><img
             :src="item.src"
-            alt=""
+            @click="to_apply()"
           ></h3>
       </el-carousel-item>
     </el-carousel>
@@ -21,9 +21,20 @@ export default {
   data () {
     return {
       imgUrl: [
-        { src: 'http://mpimg2.weipubao.cn/image/admin/official/banner1.jpg?v=1.1' },
-        { src: 'http://mpimg2.weipubao.cn/image/admin/official/banner3.jpg?v=1.1' }
+        { src: this.$imageHost + '/image/admin/official/banner1.jpg?v=1.1' },
+        { src: this.$imageHost + '/image/admin/official/banner3.jpg?v=1.1' }
       ]
+    }
+  },
+  mounted () {
+    console.log(this.$imageHost)
+  },
+  methods: {
+    // 跳转到申请试用页面
+    to_apply () {
+      this.$router.push({
+        name: 'indexHomeOntrial'
+      })
     }
   }
 }

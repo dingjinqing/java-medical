@@ -20,71 +20,42 @@
           v-for="(item_list,item_index) in item.new_list"
           :key='item_index'
         >
-          <span>{{item_list.date}}</span>
-          <span :class="Recommend_class">{{item_list.content}}</span>
-          <span style="float: right;">{{$t('Recommend')}}</span>
+          <span>{{item_list.updateTime}}</span>
+          <span :class="Recommend_class">{{item_list.desc}}</span>
+          <span
+            v-if="item_list.isRecommend==1?true:''"
+            style="float: right;"
+          >{{$t('Recommend')}}</span>
         </div>
       </li>
     </ul>
     <div class="news_div">
       <a
-        href="/index/article/list"
-        target="_blank"
         @mouseenter="more_enter()"
         @mouseleave="more_leave()"
+        @click="to_news()"
         :class="more_active"
+        style="cursor:pointer"
       >{{$t('information.more')}}</a>
     </div>
   </div>
 </template>
 <script>
-// import { articleRequest } from '@/api/index/news.js'
+import { articleRequest } from '@/api/index/news.js'
 export default {
   data () {
     return {
       newData: [
-        { imgUrl: 'http://mpimg2.weipubao.cn/image/admin/official/news1.png',
+        { imgUrl: this.$imageHost + '/image/admin/official/news1.png',
           active_class: 'zoomout',
-          new_list: [{
-            date: '06/21',
-            content: '1店+小程序助力“眉州东坡”，7天拉新会员近2万，上线当天交易额高达17万！'
-          },
-          {
-            date: '06/21',
-            content: '2店+小程序助力“眉州东坡”，7天拉新会员近2万，上线当天交易额高达17万！'
-          },
-          {
-            date: '06/21',
-            content: '3店+小程序助力“眉州东坡”，7天拉新会员近2万，上线当天交易额高达17万！'
-          }] },
-        { imgUrl: 'http://mpimg2.weipubao.cn/image/admin/official/news2.png',
+          new_list: [] },
+        { imgUrl: this.$imageHost + '/image/admin/official/news2.png',
           active_class: 'zoomout',
-          new_list: [{
-            date: '06/21',
-            content: '4店+小程序助力“眉州东坡”，7天拉新会员近2万，上线当天交易额高达17万！'
-          },
-          {
-            date: '06/21',
-            content: '5店+小程序助力“眉州东坡”，7天拉新会员近2万，上线当天交易额高达17万！'
-          }, {
-            date: '06/21',
-            content: '6店+小程序助力“眉州东坡”，7天拉新会员近2万，上线当天交易额高达17万！'
-          }]
+          new_list: []
         },
-        { imgUrl: 'http://mpimg2.weipubao.cn/image/admin/official/news3.png',
+        { imgUrl: this.$imageHost + '/image/admin/official/news3.png',
           active_class: 'zoomout',
-          new_list: [{
-            date: '06/21',
-            content: '7店+小程序助力“眉州东坡”，7天拉新会员近2万，上线当天交易额高达17万！'
-          },
-          {
-            date: '06/21',
-            content: '8店+小程序助力“眉州东坡”，7天拉新会员近2万，上线当天交易额高达17万！'
-          }, {
-            date: '06/21',
-            content: '9店+小程序助力“眉州东坡”，7天拉新会员近2万，上线当天交易额高达17万！'
-          }
-          ]
+          new_list: []
         }
       ],
       Recommend_class: '',
@@ -104,31 +75,66 @@ export default {
     })
   },
   methods: {
-    // 初始化语言
-    langDefault () {
-      if (localStorage.getItem('WEPUBAO_LANGUAGE') === 'en_US') {
-        this.$i18n.locale = 'en'
-        this.Recommend_class = 'Recommend_class'
-      } else {
-        this.$i18n.locale = 'cn'
-        this.Recommend_class = ''
-      }
+    // 跳转到新闻页面
+    to_news () {
+      this.$router.push({
+        name: 'indexNews'
+      })
     },
     // 首页文章列表
     articleRequest () {
-      // let obj = {
-      //   'categoryId': '4',
-      //   'status': '1',
-      //   'keywords': '',
-      //   'sortName': 'article_id,asc',
-      //   'page': {
-      //     'currentPage': '1',
-      //     'pageRows': '10'
-      //   }
-      // }
-      // articleRequest().then((res) => {
-
-      // })
+      let obj = {
+        'categoryId': '4',
+        'status': '1',
+        'keywords': '',
+        'sortName': 'is_recommend,desc;update_time,asc',
+        'page': {
+          'currentPage': '1',
+          'pageRows': '9'
+        }
+      }
+      articleRequest(obj).then((res) => {
+        // res.content.dataList
+        this.handleDataList(res.content.dataList)
+      })
+    },
+    // 处理首页新闻列表数据
+    handleDataList (res) {
+      var obj1 = []
+      let obj2 = []
+      let obj3 = []
+      for (let i = 0; i < res.length; i++) {
+        if (i < 3) {
+          obj1.push(res[i])
+        } else if (i >= 3 && i < 6) {
+          obj2.push(res[i])
+        } else if (i >= 6) {
+          obj3.push(res[i])
+        }
+      }
+      console.log(obj1, obj2, obj3)
+      for (let i = 0; i < obj1.length; i++) {
+        let string = ''
+        console.log(obj1[i].updateTime.split(' ')[0].split('-'))
+        string = obj1[i].updateTime.split(' ')[0].split('-')[1] + '/' + obj1[i].updateTime.split(' ')[0].split('-')[2]
+        console.log(string)
+        obj1[i].updateTime = string
+      }
+      for (let i = 0; i < obj2.length; i++) {
+        let string = ''
+        console.log(obj2[i].updateTime.split(' ')[0].split('-'))
+        string = obj2[i].updateTime.split(' ')[0].split('-')[1] + '/' + obj2[i].updateTime.split(' ')[0].split('-')[2]
+        obj2[i].updateTime = string
+      }
+      for (let i = 0; i < obj3.length; i++) {
+        let string = ''
+        console.log(obj3[i].updateTime.split(' ')[0].split('-'))
+        string = obj3[i].updateTime.split(' ')[0].split('-')[1] + '/' + obj3[i].updateTime.split(' ')[0].split('-')[2]
+        obj3[i].updateTime = string
+      }
+      this.newData[0].new_list = obj1
+      this.newData[1].new_list = obj2
+      this.newData[2].new_list = obj3
     },
     // 图片划入事件
     enter (index) {

@@ -15,15 +15,7 @@ export default {
     this.langDefault()
   },
   methods: {
-    // 初始化语言
-    langDefault () {
-      console.log(localStorage.getItem('WEPUBAO_LANGUAGE'))
-      if (localStorage.getItem('WEPUBAO_LANGUAGE') === 'en_US') {
-        this.$i18n.locale = 'en'
-        return
-      }
-      this.$i18n.locale = 'cn'
-    }
+
   }
 }
 </script>

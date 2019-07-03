@@ -5,6 +5,7 @@
         class="article_list"
         v-for="(item,index) in article_list_show"
         :key="index"
+        @click="to_detail(item.articleId)"
       >
         <div class="article_container">
           <div class="article_left">
@@ -13,7 +14,7 @@
           <div class="article_right">
             <div class="acticle_title">{{item.title}}</div>
             <div class="acticle_content">{{item.content}}</div>
-            <div class="acticle_time">{{item.date}}</div>
+            <div class="acticle_time">{{item.updateTime}}</div>
           </div>
         </div>
       </div>
@@ -22,7 +23,8 @@
         <el-pagination
           background
           layout="prev, pager, next"
-          :total="1000"
+          :page-size="pagesize"
+          :total="totalNum"
           :current-page.sync="currentPage"
           @current-change='currentChange'
           @prev-click="prevClick"
@@ -35,55 +37,79 @@
   </div>
 </template>
 <script>
+import { articleRequest } from '@/api/index/news.js'
 export default {
   data () {
     return {
       article_list_show: [],
-      article_list: [
-        { imgUrl: 'http://mpimg2.weipubao.cn/upload/0/image/20190625/crop_P3W3q3eWsgLpjbLl.jpeg', title: '1店+小程序助力“眉州东坡”，7天拉新会员近2万，上线当天交易额高达17万！', content: '眉州东坡牵手北京掌上先机网络科技有限公司，涉足微信小程序线上业务。经过多次沟通、售后协助服务，跟进上线前期基础部署、解决后台功能使用问题。公司23周年店庆当天，小程序线上商城正式上线。', date: '19/06/21' },
-        { imgUrl: 'http://mpimg2.weipubao.cn/upload/0/image/20190515/crop_iTnTovfZJu6RUJyP.jpeg', title: '2微信好物圈新增入口，好物圈组内测上线，公众号支持修改20个字符！', content: '5月11日夜间，微信又重磅推出很多好消息，为微信电商带去流量红利。目前在微信【搜一搜】入口下，新增加【好物圈】入口。继小程序搜索入口的第二大入口诞生。好物圈还新增了【新建圈组】，能让收藏的商品推荐至对应圈组，也可以邀请好友进入该圈组，实现好物共享。【大家买过】实现好友买家秀展示，形成朋友圈商品流。', date: '19/05/15' },
-        { imgUrl: 'http://mpimg2.weipubao.cn/upload/0/image/20190515/crop_iTnTovfZJu6RUJyP.jpeg', title: '3微信好物圈新增入口，好物圈组内测上线，公众号支持修改20个字符！', content: '5月11日夜间，微信又重磅推出很多好消息，为微信电商带去流量红利。目前在微信【搜一搜】入口下，新增加【好物圈】入口。继小程序搜索入口的第二大入口诞生。好物圈还新增了【新建圈组】，能让收藏的商品推荐至对应圈组，也可以邀请好友进入该圈组，实现好物共享。【大家买过】实现好友买家秀展示，形成朋友圈商品流。', date: '19/05/15' },
-        { imgUrl: 'http://mpimg2.weipubao.cn/upload/0/image/20190515/crop_iTnTovfZJu6RUJyP.jpeg', title: '4微信好物圈新增入口，好物圈组内测上线，公众号支持修改20个字符！', content: '5月11日夜间，微信又重磅推出很多好消息，为微信电商带去流量红利。目前在微信【搜一搜】入口下，新增加【好物圈】入口。继小程序搜索入口的第二大入口诞生。好物圈还新增了【新建圈组】，能让收藏的商品推荐至对应圈组，也可以邀请好友进入该圈组，实现好物共享。【大家买过】实现好友买家秀展示，形成朋友圈商品流。', date: '19/05/15' },
-        { imgUrl: 'http://mpimg2.weipubao.cn/upload/0/image/20190515/crop_iTnTovfZJu6RUJyP.jpeg', title: '5微信好物圈新增入口，好物圈组内测上线，公众号支持修改20个字符！', content: '5月11日夜间，微信又重磅推出很多好消息，为微信电商带去流量红利。目前在微信【搜一搜】入口下，新增加【好物圈】入口。继小程序搜索入口的第二大入口诞生。好物圈还新增了【新建圈组】，能让收藏的商品推荐至对应圈组，也可以邀请好友进入该圈组，实现好物共享。【大家买过】实现好友买家秀展示，形成朋友圈商品流。', date: '19/05/15' },
-        { imgUrl: 'http://mpimg2.weipubao.cn/upload/0/image/20190515/crop_iTnTovfZJu6RUJyP.jpeg', title: '6微信好物圈新增入口，好物圈组内测上线，公众号支持修改20个字符！', content: '5月11日夜间，微信又重磅推出很多好消息，为微信电商带去流量红利。目前在微信【搜一搜】入口下，新增加【好物圈】入口。继小程序搜索入口的第二大入口诞生。好物圈还新增了【新建圈组】，能让收藏的商品推荐至对应圈组，也可以邀请好友进入该圈组，实现好物共享。【大家买过】实现好友买家秀展示，形成朋友圈商品流。', date: '19/05/15' },
-        { imgUrl: 'http://mpimg2.weipubao.cn/upload/0/image/20190625/crop_P3W3q3eWsgLpjbLl.jpeg', title: '7店+小程序助力“眉州东坡”，7天拉新会员近2万，上线当天交易额高达17万！', content: '眉州东坡牵手北京掌上先机网络科技有限公司，涉足微信小程序线上业务。经过多次沟通、售后协助服务，跟进上线前期基础部署、解决后台功能使用问题。公司23周年店庆当天，小程序线上商城正式上线。', date: '19/06/21' },
-        { imgUrl: 'http://mpimg2.weipubao.cn/upload/0/image/20190515/crop_iTnTovfZJu6RUJyP.jpeg', title: '8微信好物圈新增入口，好物圈组内测上线，公众号支持修改20个字符！', content: '5月11日夜间，微信又重磅推出很多好消息，为微信电商带去流量红利。目前在微信【搜一搜】入口下，新增加【好物圈】入口。继小程序搜索入口的第二大入口诞生。好物圈还新增了【新建圈组】，能让收藏的商品推荐至对应圈组，也可以邀请好友进入该圈组，实现好物共享。【大家买过】实现好友买家秀展示，形成朋友圈商品流。', date: '19/05/15' },
-        { imgUrl: 'http://mpimg2.weipubao.cn/upload/0/image/20190515/crop_iTnTovfZJu6RUJyP.jpeg', title: '9微信好物圈新增入口，好物圈组内测上线，公众号支持修改20个字符！', content: '5月11日夜间，微信又重磅推出很多好消息，为微信电商带去流量红利。目前在微信【搜一搜】入口下，新增加【好物圈】入口。继小程序搜索入口的第二大入口诞生。好物圈还新增了【新建圈组】，能让收藏的商品推荐至对应圈组，也可以邀请好友进入该圈组，实现好物共享。【大家买过】实现好友买家秀展示，形成朋友圈商品流。', date: '19/05/15' },
-        { imgUrl: 'http://mpimg2.weipubao.cn/upload/0/image/20190515/crop_iTnTovfZJu6RUJyP.jpeg', title: '10微信好物圈新增入口，好物圈组内测上线，公众号支持修改20个字符！', content: '5月11日夜间，微信又重磅推出很多好消息，为微信电商带去流量红利。目前在微信【搜一搜】入口下，新增加【好物圈】入口。继小程序搜索入口的第二大入口诞生。好物圈还新增了【新建圈组】，能让收藏的商品推荐至对应圈组，也可以邀请好友进入该圈组，实现好物共享。【大家买过】实现好友买家秀展示，形成朋友圈商品流。', date: '19/05/15' }
-
-      ],
-      query_data: [
-        { imgUrl: 'http://mpimg2.weipubao.cn/upload/0/image/20190515/crop_iTnTovfZJu6RUJyP.jpeg', title: '11微信好物圈新增入口，好物圈组内测上线，公众号支持修改20个字符！', content: '5月11日夜间，微信又重磅推出很多好消息，为微信电商带去流量红利。目前在微信【搜一搜】入口下，新增加【好物圈】入口。继小程序搜索入口的第二大入口诞生。好物圈还新增了【新建圈组】，能让收藏的商品推荐至对应圈组，也可以邀请好友进入该圈组，实现好物共享。【大家买过】实现好友买家秀展示，形成朋友圈商品流。', date: '19/05/15' },
-        { imgUrl: 'http://mpimg2.weipubao.cn/upload/0/image/20190515/crop_iTnTovfZJu6RUJyP.jpeg', title: '12微信好物圈新增入口，好物圈组内测上线，公众号支持修改20个字符！', content: '5月11日夜间，微信又重磅推出很多好消息，为微信电商带去流量红利。目前在微信【搜一搜】入口下，新增加【好物圈】入口。继小程序搜索入口的第二大入口诞生。好物圈还新增了【新建圈组】，能让收藏的商品推荐至对应圈组，也可以邀请好友进入该圈组，实现好物共享。【大家买过】实现好友买家秀展示，形成朋友圈商品流。', date: '19/05/15' },
-        { imgUrl: 'http://mpimg2.weipubao.cn/upload/0/image/20190625/crop_P3W3q3eWsgLpjbLl.jpeg', title: '13店+小程序助力“眉州东坡”，7天拉新会员近2万，上线当天交易额高达17万！', content: '眉州东坡牵手北京掌上先机网络科技有限公司，涉足微信小程序线上业务。经过多次沟通、售后协助服务，跟进上线前期基础部署、解决后台功能使用问题。公司23周年店庆当天，小程序线上商城正式上线。', date: '19/06/21' },
-        { imgUrl: 'http://mpimg2.weipubao.cn/upload/0/image/20190515/crop_iTnTovfZJu6RUJyP.jpeg', title: '14微信好物圈新增入口，好物圈组内测上线，公众号支持修改20个字符！', content: '5月11日夜间，微信又重磅推出很多好消息，为微信电商带去流量红利。目前在微信【搜一搜】入口下，新增加【好物圈】入口。继小程序搜索入口的第二大入口诞生。好物圈还新增了【新建圈组】，能让收藏的商品推荐至对应圈组，也可以邀请好友进入该圈组，实现好物共享。【大家买过】实现好友买家秀展示，形成朋友圈商品流。', date: '19/05/15' },
-        { imgUrl: 'http://mpimg2.weipubao.cn/upload/0/image/20190515/crop_iTnTovfZJu6RUJyP.jpeg', title: '15微信好物圈新增入口，好物圈组内测上线，公众号支持修改20个字符！', content: '5月11日夜间，微信又重磅推出很多好消息，为微信电商带去流量红利。目前在微信【搜一搜】入口下，新增加【好物圈】入口。继小程序搜索入口的第二大入口诞生。好物圈还新增了【新建圈组】，能让收藏的商品推荐至对应圈组，也可以邀请好友进入该圈组，实现好物共享。【大家买过】实现好友买家秀展示，形成朋友圈商品流。', date: '19/05/15' },
-        { imgUrl: 'http://mpimg2.weipubao.cn/upload/0/image/20190515/crop_iTnTovfZJu6RUJyP.jpeg', title: '16微信好物圈新增入口，好物圈组内测上线，公众号支持修改20个字符！', content: '5月11日夜间，微信又重磅推出很多好消息，为微信电商带去流量红利。目前在微信【搜一搜】入口下，新增加【好物圈】入口。继小程序搜索入口的第二大入口诞生。好物圈还新增了【新建圈组】，能让收藏的商品推荐至对应圈组，也可以邀请好友进入该圈组，实现好物共享。【大家买过】实现好友买家秀展示，形成朋友圈商品流。', date: '19/05/15' },
-        { imgUrl: 'http://mpimg2.weipubao.cn/upload/0/image/20190515/crop_iTnTovfZJu6RUJyP.jpeg', title: '17微信好物圈新增入口，好物圈组内测上线，公众号支持修改20个字符！', content: '5月11日夜间，微信又重磅推出很多好消息，为微信电商带去流量红利。目前在微信【搜一搜】入口下，新增加【好物圈】入口。继小程序搜索入口的第二大入口诞生。好物圈还新增了【新建圈组】，能让收藏的商品推荐至对应圈组，也可以邀请好友进入该圈组，实现好物共享。【大家买过】实现好友买家秀展示，形成朋友圈商品流。', date: '19/05/15' },
-        { imgUrl: 'http://mpimg2.weipubao.cn/upload/0/image/20190515/crop_iTnTovfZJu6RUJyP.jpeg', title: '18微信好物圈新增入口，好物圈组内测上线，公众号支持修改20个字符！', content: '5月11日夜间，微信又重磅推出很多好消息，为微信电商带去流量红利。目前在微信【搜一搜】入口下，新增加【好物圈】入口。继小程序搜索入口的第二大入口诞生。好物圈还新增了【新建圈组】，能让收藏的商品推荐至对应圈组，也可以邀请好友进入该圈组，实现好物共享。【大家买过】实现好友买家秀展示，形成朋友圈商品流。', date: '19/05/15' }
-      ],
-      currentPage: 1
+      currentPage: 1,
+      totalNum: 10,
+      pagesize: 5
     }
   },
   mounted () {
-    this.getData()
+    this.getData(2)
+    document.documentElement.scrollTop = 0
   },
   methods: {
+    // 页码改变
     currentChange () {
-      this.getData()
+      this.getData(this.currentPage)
     },
-    getData () {
-      if (this.currentPage === 1) {
-        this.article_list_show = this.article_list
-      } else if (this.currentPage === 2) {
-        this.article_list_show = this.query_data
+    // 获取数据
+    getData (pageSize) {
+      let obj = {
+        'categoryId': '4',
+        'status': '1',
+        'keywords': '',
+        'sortName': 'is_recommend,desc;update_time,asc',
+        'page': {
+          'currentPage': pageSize,
+          'pageRows': '5'
+        }
       }
+      articleRequest(obj).then((res) => {
+        console.log(res.content.page.totalRows)
+        this.totalNum = res.content.page.totalRows
+        console.log(this.totalNum)
+        this.handleDataList(res.content.dataList)
+      })
     },
+    // 处理首页新闻列表数据
+    handleDataList (res) {
+      var obj = []
+
+      for (let i = 0; i < res.length; i++) {
+        obj.push(res[i])
+      }
+
+      for (let i = 0; i < obj.length; i++) {
+        let string = ''
+        string = obj[i].updateTime.split(' ')[0].split('-')[1] + '/' + obj[i].updateTime.split(' ')[0].split('-')[2]
+        console.log(string)
+        obj[i].updateTime = string
+      }
+
+      this.article_list_show = obj
+    },
+    // 上一页
     prevClick () {
       console.log(this.currentPage - 1)
+      this.getData(this.currentPage - 1)
     },
+    // 下一页
     nextClick () {
       console.log(this.currentPage + 1)
+      this.getData(this.currentPage + 1)
+    },
+    // 跳转到详情页
+    to_detail (articleId) {
+      this.$router.push({
+        name: 'newsDetail',
+        query: {
+          articleId: articleId
+        }
+      })
     }
   }
 }
@@ -102,6 +128,7 @@ export default {
 .article_list {
   padding: 40px 0;
   border-bottom: 1px solid #eee;
+  cursor: pointer;
 }
 .article_container {
   overflow: hidden;

@@ -10,19 +10,19 @@
               <h2>10000+</h2>
               {{$t('aboutUs.tiliang')}}
             </li>
-            <li style="background: url('http://mpimg2.weipubao.cn/image/admin/official/introduce/02.png') center center no-repeat;margin-left:104px">
+            <li :style="imageUrlData[0]">
               <h2>100%</h2>
               {{$t('aboutUs.zengzhang')}}
             </li>
-            <li style="background: url('http://mpimg2.weipubao.cn/image/admin/official/introduce/03.png') center center no-repeat;margin-left:104px">
+            <li :style="imageUrlData[1]">
               <h2>56.16%</h2>
               {{$t('aboutUs.kehu')}}
             </li>
-            <li style="background: url('http://mpimg2.weipubao.cn/image/admin/official/introduce/04.png') center center no-repeat;margin-left:104px">
+            <li :style="imageUrlData[2]">
               <h2>91.3%</h2>
               {{$t('aboutUs.xufei')}}
             </li>
-            <li style="background: url('http://mpimg2.weipubao.cn/image/admin/official/introduce/01.png') center center no-repeat;margin-left:104px">
+            <li :style="imageUrlData[3]">
               <h2>CMMI3</h2>
               {{$t('aboutUs.renzheng')}}
             </li>
@@ -44,27 +44,31 @@
 export default {
   data () {
     return {
+      imageUrlData: [
+        { imgUrl: 'background: url(' + this.$imageHost + '/image/admin/official/introduce/02.png' + ') center center no-repeat' },
+        { imgUrl: 'background: url(' + this.$imageHost + '/image/admin/official/introduce/03.png' + ') center center no-repeat' },
+        { imgUrl: 'background: url(' + this.$imageHost + '/image/admin/official/introduce/04.png' + ') center center no-repeat' },
+        { imgUrl: 'background: url(' + this.$imageHost + '/image/admin/official/introduce/01.png' + ') center center no-repeat' }
+      ]
     }
   },
   mounted () {
     this.langDefault()
   },
   methods: {
-    // 初始化语言
-    langDefault () {
-      console.log(localStorage.getItem('WEPUBAO_LANGUAGE'))
-      if (localStorage.getItem('WEPUBAO_LANGUAGE') === 'en_US') {
-        this.$i18n.locale = 'en'
-        return
-      }
-      this.$i18n.locale = 'cn'
-    }
+
   }
 }
 </script>
 <style scoped>
 h2 {
   font-size: 22px;
+}
+li {
+  margin-left: 104px;
+}
+li:nth-of-type(1) {
+  margin-left: 0;
 }
 .aboutus_container {
   background-color: #fff;

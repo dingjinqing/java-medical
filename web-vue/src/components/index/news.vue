@@ -1,12 +1,13 @@
 <template>
   <div>
-    <NewsIndex />
+    <keep-alive>
+      <router-view></router-view>
+    </keep-alive>
   </div>
 </template>
 <script>
-import NewsIndex from '@/components/index/news/newsindex'
 export default {
-  components: { NewsIndex }
+
 }
 </script>
 <style scoped>

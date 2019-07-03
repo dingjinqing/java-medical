@@ -6,6 +6,7 @@ Vue.use(Router)
 
 const login = r => require.ensure([], () => r(require('@/view/admin/login')), 'adminLogin')
 const indexlogin = r => require.ensure([], () => r(require('@/components/index/login')), 'indexLogin')
+const systemlogin = r => require.ensure([], () => r(require('@/components/system/login')), 'systemLogin')
 const baseRoutes = [
   {
     path: '/',
@@ -21,6 +22,11 @@ const baseRoutes = [
     path: '/admin/login',
     name: 'adminLogin',
     component: login
+  },
+  {
+    path: '/system/login',
+    name: 'systemLogin',
+    component: systemlogin
   }
 ]
 const routes = baseRoutes.concat(baseRoutes, indexRoutes)

@@ -31,12 +31,12 @@ export default {
     return {
       contactData: '',
       contactData_en: [
-        { show_hidden_class: 'show_hidden_class', caontact_class: '', phonenum: 'customer service telephone numbers:400-010-1039', title: 'customer service telephone numbers', ahref: '##', imgUrl: 'http://mpimg2.weipubao.cn/image/admin/official/tel.png' },
-        { show_hidden_class: '', caontact_class: '', phonenum: 'ConsultationQQ:3003715029', title: 'QQ Consultation', ahref: 'http://wpa.qq.com/msgrd?v=3&amp;uin=3003715029&amp;site=qq', imgUrl: 'http://mpimg2.weipubao.cn/image/admin/official/QQ.png' }
+        { show_hidden_class: 'show_hidden_class', caontact_class: '', phonenum: 'customer service telephone numbers:400-010-1039', title: 'customer service telephone numbers', ahref: '##', imgUrl: this.$imageHost + '/image/admin/official/tel.png' },
+        { show_hidden_class: '', caontact_class: '', phonenum: 'ConsultationQQ:3003715029', title: 'QQ Consultation', ahref: 'http://wpa.qq.com/msgrd?v=3&amp;uin=3003715029&amp;site=qq', imgUrl: this.$imageHost + '/image/admin/official/QQ.png' }
       ],
       contactData_cn: [
-        { caontact_class: '', phonenum: '客服电话:400-010-1039', title: '客服电话', ahref: '##', imgUrl: 'http://mpimg2.weipubao.cn/image/admin/official/tel.png' },
-        { caontact_class: '', phonenum: '咨询QQ:3003715029', title: 'QQ咨询', ahref: 'http://wpa.qq.com/msgrd?v=3&amp;uin=3003715029&amp;site=qq', imgUrl: 'http://mpimg2.weipubao.cn/image/admin/official/QQ.png' }
+        { caontact_class: '', phonenum: '客服电话:400-010-1039', title: '客服电话', ahref: '##', imgUrl: this.$imageHost + '/image/admin/official/tel.png' },
+        { caontact_class: '', phonenum: '咨询QQ:3003715029', title: 'QQ咨询', ahref: 'http://wpa.qq.com/msgrd?v=3&amp;uin=3003715029&amp;site=qq', imgUrl: this.$imageHost + '/image/admin/official/QQ.png' }
       ]
     }
   },
@@ -44,6 +44,7 @@ export default {
     let that = this
     this.langDefault()
     this.$http.$on('lang_change', function (data) {
+      console.log(123123123213)
       if (data === 0) {
         that.contactData = that.contactData_en
       } else if (data === 1) {
@@ -52,15 +53,7 @@ export default {
     })
   },
   methods: {
-    // 初始化语言
-    langDefault () {
-      console.log(localStorage.getItem('WEPUBAO_LANGUAGE'))
-      if (localStorage.getItem('WEPUBAO_LANGUAGE') === 'en_US') {
-        this.contactData = this.contactData_en
-        return
-      }
-      this.contactData = this.contactData_cn
-    },
+
     // 鼠标划入事件
     con_enter (index) {
       this.contactData[index].caontact_class = 'caontact_class'

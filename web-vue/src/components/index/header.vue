@@ -1,7 +1,7 @@
 <template>
   <div class="header">
     <div class="logo">
-      <img src="http://mpimg2.weipubao.cn/image/admin/official/head_logo.png">
+      <img :src="imageUrlData[0].image_1">
     </div>
     <div
       class="nav2"
@@ -9,14 +9,14 @@
     >
       <div class="f_div">
         <img
-          src="http://mpimg2.weipubao.cn/image/admin/head_icon.png "
+          :src="imageUrlData[1].image_2"
           width="30px"
           height="30px"
           style="border: 1px solid #ddd;"
         >
         <span>{{$t('message.index_nav_test')}}</span>
         <img
-          src="http://mpimg2.weipubao.cn/image/admin/official/blue_down.png"
+          :src="imageUrlData[2].image_3"
           class="head_down"
         >
         <div class="head_list">
@@ -66,7 +66,7 @@
       >
         <span>{{$t('message.lang')}}</span>
         <img
-          src="http://mpimg2.weipubao.cn/image/admin/official/blue_down.png"
+          :src="imageUrlData[3].image_4"
           class="head_down"
         >
         <div class="head_list_lang">
@@ -135,6 +135,12 @@ export default {
         { lang: 'en', login_active: '', show_lang: 'English' },
         { lang: 'cn', login_active: '', show_lang: 'Chinese' }
       ],
+      imageUrlData: [
+        { image_1: this.$imageHost + '/image/admin/official/head_logo.png' },
+        { image_2: this.$imageHost + '/image/admin/head_icon.png' },
+        { image_3: this.$imageHost + '/image/admin/official/blue_down.png' },
+        { image_4: this.$imageHost + '/image/admin/official/blue_down.png' }
+      ],
       lo_class: '',
       rej_class: ''
     }
@@ -148,10 +154,12 @@ export default {
     console.log(this.$router.history.current.name)
   },
   methods: {
+
     // 初始化顶部导航
     navshow () {
       let that = this
       let current = this.$router.history.current.name
+      console.log(this.$router)
       switch (current) {
         case 'indexHome':
           that.activeIndex = 1
@@ -159,28 +167,15 @@ export default {
         case 'indexHomeOntrial':
           that.activeIndex = 5
           break
-        case 'indexNews':
-          that.activeIndex = 2
-          break
         case 'aboutUs':
           that.activeIndex = 4
           break
+        case 'newsList':
+          that.activeIndex = 2
+          break
       }
     },
-    // 初始化语言
-    langDefault () {
-      if (localStorage.getItem('WEPUBAO_LANGUAGE') === 'en') {
-        this.$i18n.locale = this.langData_cn[0].lang
-        this.lang_with = 'width:63px'
-        this.langData_show = this.langData_en
-        this.loginData_show = this.loginData_en
-        this.mar_class = 'mar_class'
-        return
-      }
-      this.langData_show = this.langData_cn
-      this.loginData_show = this.loginData_cn
-      this.mar_class = ''
-    },
+
     // 导航栏子元素点击
     handlenav (index) {
       switch (index) {
@@ -193,7 +188,7 @@ export default {
         case 2:
           this.activeIndex = 2
           this.$router.push({
-            name: 'indexNews'
+            name: 'newsList'
           })
           break
         case 3:

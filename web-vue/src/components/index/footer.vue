@@ -2,7 +2,7 @@
   <div class="footer">
     <ul class="footer_ul clearfix">
       <li>
-        <img src="http://mpimg2.weipubao.cn/image/admin/official/wdt_logo.png">
+        <img :src="imageUrlData.img_1">
         <p>{{$t('footer.title')}}</p>
       </li>
       <li>
@@ -15,7 +15,7 @@
       </li>
       <li>
         <img
-          src="http://mpimg2.weipubao.cn/image/admin/official/weixin.jpg"
+          :src="imageUrlData.img_2"
           width="100px"
         >
         <p>{{$t('footer.content')}}</p>
@@ -80,21 +80,21 @@
 export default {
   data () {
     return {
-
+      imageUrlData: [
+        {
+          img_1: this.$imageHost + '/image/admin/official/wdt_logo.png'
+        },
+        {
+          img_2: this.$imageHost + '/image/admin/official/weixin.jpg'
+        }
+      ]
     }
   },
   mounted () {
     this.langDefault()
   },
   methods: {
-    // 初始化语言
-    langDefault () {
-      if (localStorage.getItem('WEPUBAO_LANGUAGE') === 'en_US') {
-        this.$i18n.locale = 'en'
-      } else {
-        this.$i18n.locale = 'cn'
-      }
-    }
+
   }
 }
 </script>

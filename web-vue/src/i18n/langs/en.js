@@ -70,6 +70,7 @@ const en = {
     'content': 'Insight into the new trends of the industry and grasp the new direction of the industry',
     'more': 'See more'
   },
+  // 底部footer组件内数据
   footer: {
     'title': 'Beijing Handheld Pioneer Network Technology Co., Ltd',
     'link': 'Contact us',
@@ -88,21 +89,28 @@ const en = {
     'footer_con_9': 'Copyright',
     'footer_con_10': 'Beijing ICP No. 14046261'
   },
+  // 申请试用页面数据
   apply: {
     title: 'Free trial application',
     name: 'name',
     submit: 'Submission',
     mobile: 'Tel',
     content: 'Provide enterprise scale, multi-system new retail solutions',
-    content_bottom: 'Multi-system seamless docking'
+    content_bottom: 'Multi-system seamless docking',
+    placeholder_name: 'Please fill in your name',
+    placeholder_tel: 'Please fill in your cell phone number'
   },
+  // 登录页面数据
   login_reg: {
     login: 'Sign in',
     rej: 'register'
   },
   login_page: {
     login_main: 'Sign in',
-    login_f: 'Subaccount login'
+    login_f: 'Subaccount login',
+    main_name: 'Main Account User Name',
+    password: 'Password',
+    z_phone: 'Subaccount username/cell phone number'
   },
   Recommend: 'Recommend',
   aboutUs: {
@@ -143,6 +151,17 @@ const en = {
   contact: {
     title: 'Contact us',
     adress: 'Fifth Floor of Yitai Building, 54 Xizhimen North Street, Haidian District, Beijing'
+  },
+  systemLogin: {
+    login: 'Sign in',
+    username: 'User Name/Mobile Number',
+    password: 'Password'
+  },
+  contact_right: {
+    service: 'Customer Service Telephone: 400-010-1039',
+    s_title: 'customer service telephone numbers',
+    QQ: 'Consultation QQ: 3003715029',
+    Q_title: 'QQ Consultation'
   }
 }
 

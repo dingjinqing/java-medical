@@ -9,7 +9,7 @@
     <ul class="light_four">
       <li class=" ">
         <img
-          src="http://mpimg2.weipubao.cn/image/admin/official/marketing1.png"
+          :src="imageUrlData[0].image_1"
           class=""
         >
         <div>{{$t('message.index_application_title_2')}}</div>
@@ -17,7 +17,7 @@
       </li>
       <li class=" ">
         <img
-          src="http://mpimg2.weipubao.cn/image/admin/official/marketing2.png"
+          :src="imageUrlData[1].image_2"
           class=""
         >
         <div>{{$t('message.index_application_title_3')}}</div>
@@ -25,7 +25,7 @@
       </li>
       <li class=" ">
         <img
-          src="http://mpimg2.weipubao.cn/image/admin/official/marketing3.png"
+          :src="imageUrlData[2].image_3"
           class=""
         >
         <div>{{$t('message.index_application_title_4')}}</div>
@@ -33,7 +33,7 @@
       </li>
       <li class=" ">
         <img
-          src="http://mpimg2.weipubao.cn/image/admin/official/marketing4.png"
+          :src="imageUrlData[3].image_4"
           class=""
         >
         <div>{{$t('message.index_application_title_5')}}</div>
@@ -46,21 +46,20 @@
 export default {
   data () {
     return {
+      imageUrlData: [
+        { image_1: this.$imageHost + '/image/admin/official/marketing1.png' },
+        { image_2: this.$imageHost + '/image/admin/official/marketing2.png' },
+        { image_3: this.$imageHost + '/image/admin/official/marketing3.png' },
+        { image_4: this.$imageHost + '/image/admin/official/marketing4.png' }
 
+      ]
     }
   },
   mounted () {
     this.langDefault()
   },
   methods: {
-    // 初始化语言
-    langDefault () {
-      if (localStorage.getItem('WEPUBAO_LANGUAGE') === 'en_US') {
-        this.$i18n.locale = 'en'
-      } else {
-        this.$i18n.locale = 'cn'
-      }
-    }
+
   }
 }
 </script>

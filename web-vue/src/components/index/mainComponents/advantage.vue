@@ -14,7 +14,7 @@
           <swiper-slide>
             <div class="advan_li_left">
               <img
-                src="http://mpimg2.weipubao.cn/image/admin/official/advan_1.png?v=1"
+                :src="imageUrlData[0].image_1"
                 alt=""
               >
             </div>
@@ -37,8 +37,8 @@
                 {{$t('message.index_advantage_content_5')}}
                 {{$t('message.index_advantage_content_6')}}
                 <a
-                  href="/index/free/experience"
-                  target="_blank"
+                  style="cursor:pointer"
+                  @click="to_apply()"
                 >{{$t('message.index_advantage_title_2')}}</a>
               </p>
             </div>
@@ -46,7 +46,7 @@
           <swiper-slide>
             <div class="advan_li_left">
               <img
-                src="http://mpimg2.weipubao.cn/image/admin/official/advan_2.png?v=1"
+                :src="imageUrlData[1].image_2"
                 alt=""
               >
             </div>
@@ -63,15 +63,15 @@
                 {{$t('message.index_advantage_2_content_3')}}
               </p>
               <a
-                href="/index/free/experience"
-                target="_blank"
+                style="cursor:pointer"
+                @click="to_apply()"
               >{{$t('message.index_advantage_2_title_2')}}</a>
             </div>
           </swiper-slide>
           <swiper-slide>
             <div class="advan_li_left">
               <img
-                src="http://mpimg2.weipubao.cn/image/admin/official/advan_3.png?v=1"
+                :src="imageUrlData[2].image_3"
                 alt=""
               >
             </div>
@@ -88,15 +88,15 @@
                 {{$t('message.index_advantage_3_content_3')}}
               </p>
               <a
-                href="/index/free/experience"
-                target="_blank"
+                style="cursor:pointer"
+                @click="to_apply()"
               >{{$t('message.index_advantage_3_title_2')}}</a>
             </div>
           </swiper-slide>
           <swiper-slide>
             <div class="advan_li_left">
               <img
-                src="http://mpimg2.weipubao.cn/image/admin/official/advan_4.png?v=1"
+                :src="imageUrlData[3].image_4"
                 alt=""
               >
             </div>
@@ -113,15 +113,15 @@
                 {{$t('message.index_advantage_4_content_3')}}
               </p>
               <a
-                href="/index/free/experience"
-                target="_blank"
+                style="cursor:pointer"
+                @click="to_apply()"
               >{{$t('message.index_advantage_4_title_2')}}</a>
             </div>
           </swiper-slide>
           <swiper-slide>
             <div class="advan_li_left">
               <img
-                src="http://mpimg2.weipubao.cn/image/admin/official/advan_5.png?v=1"
+                :src="imageUrlData[4].image_5"
                 alt=""
               >
             </div>
@@ -138,15 +138,15 @@
                 {{$t('message.index_advantage_5_content_3')}}
               </p>
               <a
-                href="/index/free/experience"
-                target="_blank"
+                style="cursor:pointer"
+                @click="to_apply()"
               >{{$t('message.index_advantage_5_title_2')}}</a>
             </div>
           </swiper-slide>
           <swiper-slide>
             <div class="advan_li_left">
               <img
-                src="http://mpimg2.weipubao.cn/image/admin/official/advan_6.png?v=1"
+                :src="imageUrlData[5].image_6"
                 alt=""
               >
             </div>
@@ -160,8 +160,8 @@
                 {{$t('message.index_advantage_6_content_2')}}
               </p>
               <a
-                href="/index/free/experience"
-                target="_blank"
+                style="cursor:pointer"
+                @click="to_apply()"
               >{{$t('message.index_advantage_6_title_2')}}</a>
             </div>
           </swiper-slide>
@@ -214,19 +214,27 @@ export default {
             return '<span class="' + className + '">' + text + '</span>'
           }
         }
-      }
+      },
+      imageUrlData: [
+        { image_1: this.$imageHost + '/image/admin/official/advan_1.png?v=1' },
+        { image_2: this.$imageHost + '/image/admin/official/advan_2.png?v=1' },
+        { image_3: this.$imageHost + '/image/admin/official/advan_3.png?v=1' },
+        { image_4: this.$imageHost + '/image/admin/official/advan_4.png?v=1' },
+        { image_5: this.$imageHost + '/image/admin/official/advan_5.png?v=1' },
+        { image_6: this.$imageHost + '/image/admin/official/advan_6.png?v=1' }
+      ]
     }
   },
   mounted () {
     this.langDefault()
   },
   methods: {
-    langDefault () {
-      if (localStorage.getItem('WEPUBAO_LANGUAGE') === 'en_US') {
-        this.$i18n.locale = 'en'
-      } else {
-        this.$i18n.locale = 'cn'
-      }
+
+    // 跳转到申请试用页面
+    to_apply () {
+      this.$router.push({
+        name: 'indexHomeOntrial'
+      })
     }
   }
 }

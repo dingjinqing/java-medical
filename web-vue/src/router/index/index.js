@@ -17,7 +17,19 @@ const routes = [
       {
         path: '/index/home/news',
         name: 'indexNews',
-        component: r => require.ensure([], () => r(require('@/components/index/news/newsindex')), 'indexNews')
+        component: r => require.ensure([], () => r(require('@/components/index/news')), 'indexNews'),
+        children: [
+          {
+            path: '/index/home/news/newslist',
+            name: 'newsList',
+            component: r => require.ensure([], () => r(require('@/components/index/news/newsindex')), 'newsList')
+          },
+          {
+            path: '/index/home/news/newsdetail',
+            name: 'newsDetail',
+            component: r => require.ensure([], () => r(require('@/components/index/news/newsDetail')), 'newsDetail')
+          }
+        ]
       },
       {
         path: '/index/home/aboutus',

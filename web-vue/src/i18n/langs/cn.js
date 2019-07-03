@@ -70,6 +70,7 @@ const cn = {
     'content': '洞察行业新动态，把握行业新方向',
     'more': '查看更多'
   },
+  // 底部footer组件内数据
   footer: {
     'title': '北京掌上先机网络科技有限公司',
     'link': '联系我们',
@@ -88,21 +89,28 @@ const cn = {
     'footer_con_9': '版权所有',
     'footer_con_10': '京ICP备14046261号'
   },
+  // 申请试用页面数据
   apply: {
     title: '免费申请试用',
     name: '姓名',
     submit: '提交',
     mobile: '电话',
     content: '提供企业规模化、多体系新零售解决方案',
-    content_bottom: '多系统无缝对接'
+    content_bottom: '多系统无缝对接',
+    placeholder_name: '请填写您的姓名',
+    placeholder_tel: '请填写手机号'
   },
+  // 登录页面数据
   login_reg: {
     login: '登录',
     rej: '注册'
   },
   login_page: {
     login_main: '登录',
-    login_f: '子账号登录'
+    login_f: '子账号登录',
+    main_name: '主账号用户名',
+    password: '密码',
+    z_phone: '子账号用户名/手机号'
   },
   Recommend: '推荐',
   aboutUs: {
@@ -143,6 +151,17 @@ const cn = {
   contact: {
     title: '联系我们',
     adress: '北京市海淀区西直门北大街54号伊泰大厦5层'
+  },
+  systemLogin: {
+    login: '登录',
+    username: '用户名 / 手机号',
+    password: '密码'
+  },
+  contact_right: {
+    service: '客服电话:400-010-1039',
+    s_title: '客服电话',
+    QQ: '咨询QQ:3003715029',
+    Q_title: 'QQ咨询'
   }
 }
 

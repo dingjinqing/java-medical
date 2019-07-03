@@ -41,18 +41,18 @@ export default {
     return {
       imgUrlData: '',
       imgUrlData_cn: [
-        { imgUrl: 'http://mpimg2.weipubao.cn/image/admin/official/industry1.png', title: '品牌小程序', content: '平台一体化 数据多维度分析 各行各业全面兼容', hiddenImg: 'http://miniimg.cn/image/admin/official/code1.png', hidden_class: '', class_active: '' },
-        { imgUrl: 'http://mpimg2.weipubao.cn/image/admin/official/industry2.png', title: '婚纱摄影', content: '样片展示 报价获取 优惠折扣 晒单评论 品牌推广', hiddenImg: 'http://miniimg.cn/image/admin/official/code2.png', hidden_class: '', class_active: '' },
-        { imgUrl: 'http://mpimg2.weipubao.cn/image/admin/official/industry3.png?v=1', title: '服装', content: '线上展示 砍价拼团 折扣优惠 会员管理 可视化装修', hiddenImg: 'http://miniimg.cn/image/admin/official/code3.png', hidden_class: '', class_active: '' },
-        { imgUrl: 'http://mpimg2.weipubao.cn/image/admin/official/industry4.png?v=1', title: '数码', content: '活动多样 商品展示 限时抢购 秒杀抽奖 在线交易', hiddenImg: 'http://miniimg.cn/image/admin/official/code4.png', hidden_class: '', class_active: '' },
-        { imgUrl: 'http://mpimg2.weipubao.cn/image/admin/official/industry5.png', title: '新美业', content: '在线预约 门店买单 技师管理 会员营销 活动推广', hiddenImg: 'http://miniimg.cn/image/admin/official/code5.png', hidden_class: '', class_active: '' }
+        { imgUrl: this.$imageHost + '/image/admin/official/industry1.png', title: '品牌小程序', content: '平台一体化 数据多维度分析 各行各业全面兼容', hiddenImg: this.$imageHost + '/image/admin/official/code1.png', hidden_class: '', class_active: '' },
+        { imgUrl: this.$imageHost + '/image/admin/official/industry2.png', title: '婚纱摄影', content: '样片展示 报价获取 优惠折扣 晒单评论 品牌推广', hiddenImg: this.$imageHost + '/image/admin/official/code2.png', hidden_class: '', class_active: '' },
+        { imgUrl: this.$imageHost + '/image/admin/official/industry3.png?v=1', title: '服装', content: '线上展示 砍价拼团 折扣优惠 会员管理 可视化装修', hiddenImg: this.$imageHost + '/image/admin/official/code3.png', hidden_class: '', class_active: '' },
+        { imgUrl: this.$imageHost + '/image/admin/official/industry4.png?v=1', title: '数码', content: '活动多样 商品展示 限时抢购 秒杀抽奖 在线交易', hiddenImg: this.$imageHost + '/image/admin/official/code4.png', hidden_class: '', class_active: '' },
+        { imgUrl: this.$imageHost + '/image/admin/official/industry5.png', title: '新美业', content: '在线预约 门店买单 技师管理 会员营销 活动推广', hiddenImg: this.$imageHost + '/image/admin/official/code5.png', hidden_class: '', class_active: '' }
       ],
       imgUrlData_en: [
-        { imgUrl: 'http://mpimg2.weipubao.cn/image/admin/official/industry1.png', title: 'Brand applet', content: 'Multi-Dimensional Analysis of Platform Integration Data Compatibility in All walks of life', hiddenImg: 'http://miniimg.cn/image/admin/official/code1.png', hidden_class: '', class_active: '' },
-        { imgUrl: 'http://mpimg2.weipubao.cn/image/admin/official/industry2.png', title: 'Wedding photography', content: 'Comment on Brand Promotion by Sample Display Quotation for Preferential Discount', hiddenImg: 'http://miniimg.cn/image/admin/official/code2.png', hidden_class: '', class_active: '' },
-        { imgUrl: 'http://mpimg2.weipubao.cn/image/admin/official/industry3.png?v=1', title: 'Clothing', content: 'On-line display of bargaining and group discount concessional membership management visual decoration', hiddenImg: 'http://miniimg.cn/image/admin/official/code3.png', hidden_class: '', class_active: '' },
-        { imgUrl: 'http://mpimg2.weipubao.cn/image/admin/official/industry4.png?v=1', title: 'Digital', content: 'Activities Various Commodities Show Time-Limited Buy Second Kill Draw Online Trading', hiddenImg: 'http://miniimg.cn/image/admin/official/code4.png', hidden_class: '', class_active: '' },
-        { imgUrl: 'http://mpimg2.weipubao.cn/image/admin/official/industry5.png', title: 'New Aesthetics', content: 'Online booking shop billing technicians manage member marketing activities promotion', hiddenImg: 'http://miniimg.cn/image/admin/official/code5.png', hidden_class: '', class_active: '' }
+        { imgUrl: this.$imageHost + '/image/admin/official/industry1.png', title: 'Brand applet', content: 'Multi-Dimensional Analysis of Platform Integration Data Compatibility in All walks of life', hiddenImg: this.$imageHost + '/image/admin/official/code1.png', hidden_class: '', class_active: '' },
+        { imgUrl: this.$imageHost + '/image/admin/official/industry2.png', title: 'Wedding photography', content: 'Comment on Brand Promotion by Sample Display Quotation for Preferential Discount', hiddenImg: this.$imageHost + '/image/admin/official/code2.png', hidden_class: '', class_active: '' },
+        { imgUrl: this.$imageHost + '/image/admin/official/industry3.png?v=1', title: 'Clothing', content: 'On-line display of bargaining and group discount concessional membership management visual decoration', hiddenImg: this.$imageHost + '/image/admin/official/code3.png', hidden_class: '', class_active: '' },
+        { imgUrl: this.$imageHost + '/image/admin/official/industry4.png?v=1', title: 'Digital', content: 'Activities Various Commodities Show Time-Limited Buy Second Kill Draw Online Trading', hiddenImg: this.$imageHost + '/image/admin/official/code4.png', hidden_class: '', class_active: '' },
+        { imgUrl: this.$imageHost + '/image/admin/official/industry5.png', title: 'New Aesthetics', content: 'Online booking shop billing technicians manage member marketing activities promotion', hiddenImg: this.$imageHost + '/image/admin/official/code5.png', hidden_class: '', class_active: '' }
       ]
     }
   },
@@ -68,15 +68,7 @@ export default {
     })
   },
   methods: {
-    // 初始化语言
-    langDefault () {
-      console.log(localStorage.getItem('WEPUBAO_LANGUAGE'))
-      if (localStorage.getItem('WEPUBAO_LANGUAGE') === 'en_US') {
-        this.imgUrlData = this.imgUrlData_en
-        return
-      }
-      this.imgUrlData = this.imgUrlData_cn
-    },
+
     // 图片划入事件
     enter (index) {
       this.imgUrlData[index].hidden_class = 'show_img'

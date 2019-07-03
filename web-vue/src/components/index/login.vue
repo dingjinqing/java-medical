@@ -35,24 +35,26 @@
           >
             <div class="mesg-error"></div>
             <div class="smart-form">
-              <div class="account-user"><input
+              <div class="account-user">
+                <el-input
                   type="text"
                   v-model="mainData.username"
-                  :placeholder="langData.main_name"
-                /></div>
-              <div class="account-pawd"><input
+                  :placeholder="$t('login_page.main_name')"
+                >
+                </el-input>
+              </div>
+              <div class="account-pawd">
+                <el-input
                   type="password"
                   v-model="mainData.password"
-                  :placeholder="langData.password"
-                ></div>
-              <div class="account-login clearfix">
-                <input
-                  type="button"
-                  class="one-login to-login btn-login"
-                  @click="onSubmit(1)"
-                  :value="langData.login"
-                >
+                  :placeholder="$t('login_page.password')"
+                ></el-input>
               </div>
+              <el-button
+                type="primary"
+                @click="onSubmit(1)"
+                class="btn"
+              >{{$t('login_page.login_main')}}</el-button>
             </div>
           </div>
           <div
@@ -62,32 +64,30 @@
           >
             <div class="mesg-error"></div>
             <div class="smart-form">
-              <div class="account-name"><input
-                  type="text"
-                  name="username"
+              <div class="account-name">
+                <el-input
                   v-model="subData.username"
-                  :placeholder="langData.main_name"
-                /></div>
-              <div class="account-user"><input
-                  type="text"
-                  name="sub_username"
-                  v-model="subData.subUsername"
-                  :placeholder="langData.nameandnum"
-                /></div>
-              <div class="account-pawd"><input
-                  type="password"
-                  name="password"
-                  v-model="subData.password"
-                  :placeholder="langData.password"
-                /></div>
-              <div class="account-login clearfix">
-                <input
-                  type="button"
-                  class="child-login to-login btn-login"
-                  @click="onSubmit(2)"
-                  :value="langData.login"
-                >
+                  :placeholder="$t('login_page.main_name')"
+                ></el-input>
               </div>
+              <div class="account-user">
+                <el-input
+                  v-model="subData.subUsername"
+                  :placeholder="$t('login_page.z_phone')"
+                ></el-input>
+              </div>
+              <div class="account-pawd">
+                <el-input
+                  v-model="subData.password"
+                  :placeholder="$t('login_page.password')"
+                ></el-input>
+              </div>
+              <el-button
+                type="primary"
+                class="btn"
+                @click="onSubmit(2)"
+                :value="$t('login_page.login_main')"
+              >{{$t('login_page.login_main')}}</el-button>
             </div>
           </div>
         </div>
@@ -112,17 +112,7 @@ export default {
         isSubLogin: true
       },
       isSubLogin: false,
-      langData: '',
-      langData_cn:
-      { main_name: '主账号用户名',
-        password: '密码',
-        login: '登录',
-        nameandnum: '子账号用户名/手机号' },
-      langData_en:
-      { main_name: 'Main Account User Name',
-        password: 'Password',
-        login: 'Sign in',
-        nameandnum: 'Subaccount username/cell phone number' }
+      flag: 'true'
 
     }
   },
@@ -130,25 +120,67 @@ export default {
     this.langDefault()
   },
   methods: {
-    // 初始化语言
-    langDefault () {
-      if (localStorage.getItem('WEPUBAO_LANGUAGE') === 'en_US') {
-        this.$i18n.locale = 'en'
-        this.langData = this.langData_en
-      } else {
-        this.langData = this.langData_cn
-        this.$i18n.locale = 'cn'
-      }
-    },
+
     // 表单校验
     JudgementForm (index) {
+      if (localStorage.getItem('WEPUBAO_LANGUAGE') === 'en_US') {
+        if (index === 1) {
+          if (!this.mainData.username) {
+            this.$message({
+              showClose: true,
+              message: 'Please fill in the username of your main account',
+              type: 'warning'
+            })
+            this.flag = false
+            return
+          }
+          if (!this.mainData.password) {
+            this.$message({
+              showClose: true,
+              message: 'Please fill in your password',
+              type: 'warning'
+            })
+            this.flag = false
+          }
+        } else {
+          if (!this.subData.username) {
+            this.$message({
+              showClose: true,
+              message: 'Please fill in the username of your main account',
+              type: 'warning'
+            })
+            this.flag = false
+            return
+          }
+          if (!this.subData.password) {
+            this.$message({
+              showClose: true,
+              message: 'Please fill in your sub-account username or mobile phone number',
+              type: 'warning'
+            })
+            this.flag = false
+            return
+          }
+          if (!this.subData.subUsername) {
+            this.$message({
+              showClose: true,
+              message: 'Please fill in your password',
+              type: 'warning'
+            })
+            this.flag = false
+          }
+        }
+        return
+      }
       if (index === 1) {
+        console.log(this.mainData.username)
         if (!this.mainData.username) {
           this.$message({
             showClose: true,
             message: '请填写您的主账号用户名',
             type: 'warning'
           })
+          this.flag = false
           return
         }
         if (!this.mainData.password) {
@@ -157,6 +189,7 @@ export default {
             message: '请填写您的密码',
             type: 'warning'
           })
+          this.flag = false
         }
       } else {
         if (!this.subData.username) {
@@ -165,6 +198,7 @@ export default {
             message: '请填写您的主账号用户名',
             type: 'warning'
           })
+          this.flag = false
           return
         }
         if (!this.subData.password) {
@@ -173,6 +207,7 @@ export default {
             message: '请填写您的子账号用户名或手机号',
             type: 'warning'
           })
+          this.flag = false
           return
         }
         if (!this.subData.subUsername) {
@@ -181,10 +216,14 @@ export default {
             message: '请填写您的密码',
             type: 'warning'
           })
+          this.flag = false
         }
       }
     },
     onSubmit (index) {
+      this.JudgementForm(index)
+      console.log(this.flag)
+      if (this.flag === false) return
       console.log(index)
       localStorage.setItem('contentType', 'application/json;charset=UTF-8')
       if (index === 1) {
@@ -322,7 +361,9 @@ export default {
   cursor: pointer;
   padding-left: none !important;
 }
-
+.btn {
+  width: 160px;
+}
 .account-login span {
   display: inline-block;
   line-height: 45px;

@@ -5,8 +5,15 @@ import request from '@/util/request'
 // 列表
 export function loginRequest (riid) {
   return request({
-    url: '/api/admin/login',
+    url: '/admin/login',
     method: 'post',
     data: riid
   })
 }
+
+// export function viewOne(id) {
+//     return request({
+//         url: `receivesys/note/open/${id}`,
+//         method: 'get'
+//     })
+// }
