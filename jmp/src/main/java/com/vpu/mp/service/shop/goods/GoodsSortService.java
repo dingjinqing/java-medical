@@ -143,14 +143,14 @@ public class GoodsSortService extends BaseService {
 
             db.delete(SORT).where(SORT.SORT_ID.eq(sortId)).execute();
 
-            if (sort.getHasChild() != 0) {//有子分类
+            if (s.getHasChild() != 0) {//有子分类
                 db.delete(SORT).where(SORT.PARENT_ID.eq(sortId)).execute();
             }
 
-            if (sort.getParentId() != 0) {//是子分类，查看是否需要修改父分类hasChild属性
-                Record1<Integer> countRecord = db().selectCount().from(SORT).where(SORT.PARENT_ID.eq(sort.getParentId())).fetchOne();
+            if (s.getParentId() != 0) {//是子分类，查看是否需要修改父分类hasChild属性
+                Record1<Integer> countRecord = db().selectCount().from(SORT).where(SORT.PARENT_ID.eq(s.getParentId())).fetchOne();
                 if (countRecord.getValue(0, Integer.class) == 0) {
-                    db.update(SORT).set(SORT.HAS_CHILD, (byte) 0).where(SORT.SORT_ID.eq(sort.getParentId().intValue())).execute();
+                    db.update(SORT).set(SORT.HAS_CHILD, (byte) 0).where(SORT.SORT_ID.eq(s.getParentId().intValue())).execute();
                 }
             }
 
