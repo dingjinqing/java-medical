@@ -130,9 +130,32 @@ public class GoodsBrandService extends BaseService {
 
     }
 
+    /**
+     *  判断商品名称是否存在，新增使用
+     * @param goodsBrand
+     * @return
+     */
     public boolean isBrandNameExist(GoodsBrand goodsBrand) {
         Record1<Integer> countRecord = db().selectCount().from(GOODS_BRAND)
                 .where(GOODS_BRAND.BRAND_NAME.eq(goodsBrand.getBrandName()))
+                .fetchOne();
+        Integer count = countRecord.getValue(0, Integer.class);
+        if (count > 0) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+    
+    /**
+     *  判断其他商品名称是否存在同名，修改使用
+     * @param goodsBrand
+     * @return
+     */
+    public boolean isOtherBrandNameExist(GoodsBrand goodsBrand) {
+        Record1<Integer> countRecord = db().selectCount().from(GOODS_BRAND)
+                .where(GOODS_BRAND.BRAND_NAME.eq(goodsBrand.getBrandName()))
+                .and(GOODS_BRAND.ID.ne(goodsBrand.getId()))
                 .fetchOne();
         Integer count = countRecord.getValue(0, Integer.class);
         if (count > 0) {
