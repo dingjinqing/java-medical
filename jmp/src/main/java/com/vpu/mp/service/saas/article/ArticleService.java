@@ -8,6 +8,7 @@ import java.sql.Timestamp;
 import java.util.List;
 
 import org.jooq.Record;
+import org.jooq.Record13;
 import org.jooq.SelectWhereStep;
 import org.jooq.tools.StringUtils;
 
@@ -15,10 +16,13 @@ import com.vpu.mp.db.main.tables.records.ArticleRecord;
 import com.vpu.mp.db.main.tables.records.ArticleRecordRecord;
 import com.vpu.mp.service.foundation.BaseService;
 import com.vpu.mp.service.foundation.FieldsUtil;
+import com.vpu.mp.service.foundation.JedisManager;
 import com.vpu.mp.service.foundation.PageResult;
+import com.vpu.mp.service.foundation.Util;
 import com.vpu.mp.service.pojo.saas.article.ArticleInPut;
 import com.vpu.mp.service.pojo.saas.article.ArticleListQueryParam;
 import com.vpu.mp.service.pojo.saas.article.ArticleOutPut;
+import com.vpu.mp.service.pojo.saas.auth.SystemTokenAuthInfo;
 import com.vpu.mp.service.saas.region.CityService;
 
 /**
@@ -29,7 +33,7 @@ import com.vpu.mp.service.saas.region.CityService;
 public class ArticleService extends BaseService {
 	
 	public CityService city;
-
+	protected JedisManager jedis = JedisManager.instance();
 	/**
 	 * 多条件查询文章
 	 * @param ArticleListQueryParam
@@ -110,8 +114,15 @@ public class ArticleService extends BaseService {
 				.fetchAny();
 	}
 	
-	public boolean insertArticle(ArticleInPut arArticle) {
+	public boolean insertArticle(ArticleInPut arArticle, String token) {
+		//防止传id
 		arArticle.setArticleId(null);
+		//从redis取tokenInfo
+		String json = jedis.get(token);
+		SystemTokenAuthInfo tokenAuthInfo = Util.parseJSON(json, SystemTokenAuthInfo.class);
+		Integer systemUserId = tokenAuthInfo.getSystemUserId();
+		arArticle.setAuthor(systemUserId==null?null:systemUserId.toString());
+		
 		ArticleRecord record = db().newRecord(ARTICLE);
 		FieldsUtil.assignNotNull(arArticle, record);
 		//更新发布状态
@@ -126,7 +137,7 @@ public class ArticleService extends BaseService {
 		int num = record.store();
 		return num > 0 ? true : false;
 	}
-	
+
 	public boolean deleteArticle(Integer articleId) {
 		int num = db().delete(ARTICLE).where(ARTICLE.ARTICLE_ID.eq(articleId)).execute();
 		return  num > 0 ? true : false;
@@ -149,12 +160,14 @@ public class ArticleService extends BaseService {
 	}
 	
 	public ArticleOutPut get(Integer articleId) {
-		ArticleOutPut outPut = db().select(ARTICLE.ARTICLE_ID,ARTICLE.CATEGORY_ID,ARTICLE.TITLE,ARTICLE.AUTHOR,ARTICLE.KEYWORD,ARTICLE.DESC,ARTICLE.CONTENT,ARTICLE.IS_RECOMMEND,ARTICLE.STATUS,ARTICLE.HEAD_PIC,ARTICLE_CATEGORY.CATEGORY_NAME,ARTICLE.UPDATE_TIME)
+		Record13<Integer, Integer, String, String, String, String, String, Byte, Byte, String, String, Timestamp, Integer> article = db().select(ARTICLE.ARTICLE_ID,ARTICLE.CATEGORY_ID,ARTICLE.TITLE,ARTICLE.AUTHOR,ARTICLE.KEYWORD,ARTICLE.DESC,ARTICLE.CONTENT,ARTICLE.IS_RECOMMEND,ARTICLE.STATUS,ARTICLE.HEAD_PIC,ARTICLE_CATEGORY.CATEGORY_NAME,ARTICLE.UPDATE_TIME,ARTICLE.PV)
 				.from(ARTICLE)
 				.leftJoin(ARTICLE_CATEGORY).on(ARTICLE.CATEGORY_ID.eq(ARTICLE_CATEGORY.CATEGORY_ID))
-				.where(ARTICLE.ARTICLE_ID.eq(articleId))
-				.fetchOne().into(ArticleOutPut.class);
-		return	outPut;
+				.where(ARTICLE.ARTICLE_ID.eq(articleId)).fetchOne();
+		Integer integer = article.get(ARTICLE.PV);
+		//更新访问量
+		db().update(ARTICLE).set(ARTICLE.PV, integer + 1);
+		return	article==null?null:article.into(ArticleOutPut.class);
 	}
 
 }

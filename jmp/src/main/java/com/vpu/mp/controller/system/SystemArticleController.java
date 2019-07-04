@@ -23,7 +23,7 @@ import com.vpu.mp.service.pojo.saas.article.category.ArticleCategoryOutPut;
  *
  */
 @RestController
-@RequestMapping("/system/article")
+@RequestMapping("/api/system/article")
 public class SystemArticleController extends BaseController{
 	@PostMapping("/list")
 	public JsonResult get(@RequestBody ArticleListQueryParam param) {
@@ -75,7 +75,8 @@ public class SystemArticleController extends BaseController{
 		if(StringUtils.isEmpty(article.getTitle())) {
 			return fail(JsonResultCode.CODE_ARTICLE_TITLE_ISNULL);
 		}
-		return saas.article.insertArticle(article)?success():fail();	
+		String token = request.getHeader("V-Token");
+		return saas.article.insertArticle(article,token)?success():fail();	
 	}
 	
 	@PostMapping("/update")

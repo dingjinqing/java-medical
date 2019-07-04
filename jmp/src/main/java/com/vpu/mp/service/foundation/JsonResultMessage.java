@@ -33,4 +33,11 @@ public class JsonResultMessage {
 	
     final public static String GOODS_BRAND_NAME_EXIST="goods.brand.name.exist";
     final public static String GOODS_SORT_NAME_EXIST="goods.sort.name.exist";
+    
+    final public static String	ARTICLE_CATEGORY_IS_EXIST =  "api.code.article_category_is_exist";
+	final public static String	ARTICLE_CATEGORY_CATEGORYNAME_ISNULL = "api.code.article_category_categoryName_isNull";
+	final public static String	ARTICLE_CATEGORY_CATEGORYID_ISNULL = "api.code.article_category_categoryId_isNull";
+	final public static String	ARTICLE_TITLE_ISNULL = "api.code.article_title_isNull";
+	final public static String	ARTICLE_ARTICLEID_ISNULL = "api.code.article_articleId_isNull";
+	final public static String	ARTICLE_CATEGORY_UPDATE_FAILED = "api.code_article_category_update_failed";
 }
