@@ -1145,7 +1145,7 @@ create table `b2c_member_card` (
 
 -- -- 门店分组
 -- drop table if exists `b2c_group`;
-create table `b2c_group` (
+create table `b2c_store_group` (
   `group_id`   int(11)     not null auto_increment,
   `group_name` varchar(20) not null,
   `create_time`		timestamp       default current_timestamp,
