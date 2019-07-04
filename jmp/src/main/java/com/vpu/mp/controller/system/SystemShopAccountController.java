@@ -35,6 +35,11 @@ public class SystemShopAccountController extends SystemBaseController {
 		}
 	}
 
+	/**
+	 * 商家账户列表查询
+	 * @param param
+	 * @return
+	 */
 	@PostMapping("/system/shop/account/list")
 	public JsonResult getShopAccountList(@RequestBody ShopAccountListQueryParam param) {
 		PageResult<ShopAccountPojo> result = saas.shop.accout.getPageList(param);
