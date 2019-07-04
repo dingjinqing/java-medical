@@ -7,6 +7,7 @@ import static com.vpu.mp.db.main.tables.ShopChildRole.SHOP_CHILD_ROLE;
 import static com.vpu.mp.db.main.tables.ShopRenew.SHOP_RENEW;
 
 import java.sql.Timestamp;
+
 import org.jooq.Record;
 import org.jooq.Record1;
 import org.jooq.Record9;
@@ -152,12 +153,11 @@ public class ShopService extends BaseService {
 		return maxShopId + 1;
 	}
 
-	public ShopRecord updateShop(ShopPojo shop) {
+	public Integer updateShop(ShopPojo shop) {
 		shop.setIsEnabled(shop.getIsEnabled() == null ? 0 : shop.getIsEnabled());
 		shop.setIsEnabled(shop.getHidBottom() == null ? 0 : shop.getHidBottom());
 		ShopRecord record = db().newRecord(SHOP, shop);
-		db().executeUpdate(record);
-		return record;
+		return db().executeUpdate(record);
 	}
 
 	public boolean hasMobile(String mobile) {
@@ -248,6 +248,13 @@ public class ShopService extends BaseService {
 				.set(SHOP.SHOP_NAME, shop.getShopName())
 				.set(SHOP.SHOP_AVATAR, shop.getShopAvatar())
                 .set(SHOP.BUSINESS_STATE, shop.getBusinessState())
+                .where(SHOP.SHOP_ID.eq(shop.getShopId()))
+				.execute();
+	}
+	
+	public Integer updateShareCfg(ShopPojo shop) {
+		return db().update(SHOP)
+				.set(SHOP.SHARE_CONFIG, shop.getShareConfig())
                 .where(SHOP.SHOP_ID.eq(shop.getShopId()))
 				.execute();
 	}

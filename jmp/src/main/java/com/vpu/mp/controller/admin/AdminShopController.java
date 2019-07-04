@@ -5,6 +5,8 @@ import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 
+import javax.validation.Valid;
+
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -16,9 +18,10 @@ import com.vpu.mp.db.shop.tables.records.ShopCfgRecord;
 import com.vpu.mp.service.foundation.JsonResult;
 import com.vpu.mp.service.foundation.JsonResultCode;
 import com.vpu.mp.service.foundation.Util;
+import com.vpu.mp.service.pojo.saas.shop.ShopPojo;
 import com.vpu.mp.service.pojo.shop.config.ShopBaseCfgInfo;
 import com.vpu.mp.service.pojo.shop.config.ShopCommonCfgInfo;
-import com.vpu.mp.service.pojo.saas.shop.ShopPojo;
+import com.vpu.mp.service.pojo.shop.config.ShopCommonCfgInfo;
 
 
 
@@ -33,35 +36,28 @@ public class AdminShopController extends AdminBaseController {
 
 	@GetMapping(value = "/api/admin/config/shop/getCommonInfo")
 	public JsonResult getShopCommonInfo() throws NoSuchFieldException, SecurityException, IllegalArgumentException, IllegalAccessException  {
-		LinkedHashMap<String,Object> result = new LinkedHashMap<String,Object>();
-		
 		List<ShopCfgRecord> shopCfgRecordList =  shop().shopCfg.getAllShopCfg();
-		ShopCommonCfgInfo shopCfg = new ShopCommonCfgInfo();
+		
+		ShopCommonCfgInfo shopCommonCfg = new ShopCommonCfgInfo();
 		for(ShopCfgRecord shopCfgRecord : shopCfgRecordList) {
-			if(Util.getObjectProperty(shopCfg, Util.underlineToHump(shopCfgRecord.getK())) != null) {
-				Field f = shopCfg.getClass().getDeclaredField(Util.underlineToHump(shopCfgRecord.getK()));
+			if(Util.getObjectProperty(shopCommonCfg, Util.underlineToHump(shopCfgRecord.getK())) != null) {
+				Field f = shopCommonCfg.getClass().getDeclaredField(Util.underlineToHump(shopCfgRecord.getK()));
 				f.setAccessible(true);
-	            f.set(shopCfg, shopCfgRecord.getV());
+	            f.set(shopCommonCfg, shopCfgRecord.getV());
 			}
 		}
-		result.put("shopCommonCfg",shopCfg);
-		
 		ShopRecord shop = saas.shop.getShopById(this.shopId());
-		result.put("shareCfg",shop.getShareConfig());
+		shopCommonCfg.setShareCfg(shop.getShareConfig());
 		if(shop.getSmsAccount() != null) {
 			//短信账号
 			//result.put("smsAccount",saas.shop.serviceRequest.smsPlatform.getBalance(shop.getSmsAccount());
-		}else {
-			result.put("shareCfg",null);
 		}
-		result.put("shopStyle",shop.getShopStyle());
+		shopCommonCfg.setShopStyle(shop.getShopStyle());
 		//下单需要填写必填信息的商品
 		//result.put("goodsPackage",shop().shopCfg.getGoodsPackage());
 		
 		MpAuthShopRecord mp = saas.shop.mp.getAuthShopByShopId(this.shopId());
 		if(null != mp) {
-			               
-			result.put("mp",(HashMap<String, ?>) mp.intoMap());
 			//二维码
 			//result.put("qrcode",(HashMap<String, ?>) shop().image.qrcode.getQrcodeInfo().intoMap());
 			//版本
@@ -85,7 +81,7 @@ public class AdminShopController extends AdminBaseController {
 			
 			
 		}
-		return this.success(result);
+		return this.success(shopCommonCfg);
 	}
 	
 	@GetMapping(value = "api/admin/config/shop/getBaseInfo")
@@ -101,7 +97,7 @@ public class AdminShopController extends AdminBaseController {
 	}
 	
 	@PostMapping(value = "api/admin/config/shop/updateBaseInfo")
-	public JsonResult updateShopBaseInfo(@RequestBody ShopPojo shop) {
+	public JsonResult updateShopBaseInfo(@RequestBody @Valid ShopPojo shop) {
 		shop.setShopId(this.shopId());
 		Integer res = saas.shop.updateShopBaseInfo(shop);
 		if(res > 0) {
@@ -112,7 +108,7 @@ public class AdminShopController extends AdminBaseController {
 	}
 	
 	@PostMapping(value = "api/admin/config/shop/updateCommonInfo")
-	public JsonResult updateShopCommonInfo(@RequestBody ShopCommonCfgInfo shopCfg) {
+	public JsonResult updateShopCommonInfo(@RequestBody @Valid ShopCommonCfgInfo shopCfg) {
 		if(shop().shopCfg.updateShopCommonInfo(shopCfg)) {
 			return this.success();
 		}else {

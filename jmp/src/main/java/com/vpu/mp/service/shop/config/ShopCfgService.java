@@ -10,7 +10,9 @@ import org.jooq.impl.DSL;
 
 import com.vpu.mp.db.shop.tables.records.ShopCfgRecord;
 import com.vpu.mp.service.foundation.BaseService;
+import com.vpu.mp.service.foundation.FieldsUtil;
 import com.vpu.mp.service.foundation.Util;
+import com.vpu.mp.service.pojo.saas.shop.ShopPojo;
 import com.vpu.mp.service.pojo.shop.config.ShopCommonCfgInfo;
 
 /**
@@ -42,14 +44,23 @@ public class ShopCfgService extends BaseService{
 				 DSLContext db = DSL.using(configuration);
 		        for(int j=0 ; j<field.length ; j++){
 	                String name = field[j].getName();
-	                if(!"".equals((String)Util.getObjectProperty(shopCfg, name))) {
+	                if(!"".equals((String)Util.getObjectProperty(shopCfg, name)) && !"shareCfg".equals(name)) {
 	                	int res = db.update(SHOP_CFG).set(SHOP_CFG.V,(String)Util.getObjectProperty(shopCfg, name)).where(SHOP_CFG.K.eq(Util.humpToUnderline(name))).execute();
 	                	if(res <= 0) {
-	                		throw new RuntimeException((String)Util.getObjectProperty(shopCfg, name));
+	                		throw new RuntimeException(name);
 	                	}
 	                }
 		        }
 			 });
+			 //shareCfg分享配置在主库的shop表，需要单独处理
+			 if(!"".equals(shopCfg.getShareCfg())) {
+				 ShopPojo shop = new ShopPojo();
+				 shop.setShopId(shopId);
+				 shop.setShareConfig(shopCfg.getShareCfg());
+				 if(saas().shop.updateShareCfg(shop) <= 0) {
+					 throw new RuntimeException("shareCfg");
+				 }
+			 }
 		 }
 		 catch(RuntimeException e) {
 			 logger().info(e.getMessage() + " update fail");

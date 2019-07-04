@@ -29,4 +29,6 @@ public class ShopCommonCfgInfo {
 	public String serviceName = "";
 	public String serviceChoose = "";
 	public String serviceTerms = "";
+	public String shareCfg = "";
+	public String shopStyle = "";
 }
