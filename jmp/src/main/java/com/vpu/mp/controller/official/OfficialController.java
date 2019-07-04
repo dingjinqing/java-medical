@@ -51,6 +51,10 @@ public class OfficialController extends OfficialBaseController{
 			 */
 			shopFreeExperience.setSource(source);
 			
+			if(shopFreeExperience.getProvinceId() == null) {
+				shopFreeExperience.setProvinceId(0);
+			}
+			
 			// store in database
 			this.saas.official.freeExperienceService.insertUserInfo(shopFreeExperience);
 			
