@@ -36,9 +36,9 @@ public class BaseController {
 	 * @param content
 	 * @return
 	 */
-	public JsonResult result(JsonResultCode resultCode, Object content) {
+	public JsonResult result(JsonResultCode resultCode, Object content,Object ...args) {
 		String language = getLang();
-		return (new JsonResult()).result(language, resultCode, content);
+		return (new JsonResult()).result(language, resultCode, content,args);
 	}
 
 	public JsonResult success() {
@@ -49,9 +49,10 @@ public class BaseController {
 		return result(JsonResultCode.CODE_SUCCESS, content);
 	}
 
-	public JsonResult fail(JsonResultCode resultCode) {
-		return result(resultCode, null);
+	public JsonResult fail(JsonResultCode resultCode,Object ...args) {
+		return result(resultCode, null,args);
 	}
+
 
 	public JsonResult fail() {
 		return result(JsonResultCode.CODE_FAIL, null);

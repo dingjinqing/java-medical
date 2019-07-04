@@ -26,8 +26,11 @@ public class JsonResultMessage {
 	// 图片
 	
 	final public static String MSG_IMGAE_UPLOAD_FAILED = "image.upload.failed";
-	final public static String MSG_IMGAE_FILE_INVALID = "image.file.invalid";
+	final public static String MSG_IMGAE_FORMAT_INVALID = "image.format.invalid";
 	final public static String MSG_IMGAE_CROP_FAILED = "image.crop.failed";
+	final public static String MSG_IMGAE_UPLOAD_GT_5M = "image.upload.gt5m";
+	final public static String MSG_IMGAE_UPLOAD_EQ_WIDTH = "image.upload.eqWidth";
+	final public static String MSG_IMGAE_UPLOAD_EQ_HEIGHT = "image.upload.eqHeight";
 
 	// 商品
 	

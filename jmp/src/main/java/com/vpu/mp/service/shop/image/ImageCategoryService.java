@@ -5,6 +5,7 @@ import com.vpu.mp.service.foundation.Util;
 import com.vpu.mp.service.pojo.shop.image.CategoryTreeItem;
 import com.vpu.mp.service.pojo.shop.image.UploadedImageCategoryPojo;
 
+import static com.vpu.mp.db.shop.tables.UploadedImage.UPLOADED_IMAGE;
 import static com.vpu.mp.db.shop.tables.UploadedImageCategory.UPLOADED_IMAGE_CATEGORY;
 
 import java.sql.Timestamp;
@@ -277,6 +278,19 @@ public class ImageCategoryService extends BaseService {
 			result.add(cat);
 		}
 		return result;
+	}
+	
+	/**
+	 * 设置分类名称
+	 * @param catId
+	 * @param catName
+	 * @return
+	 */
+	public int setCategoryName(Integer catId,String catName) {
+		return db().update(UPLOADED_IMAGE_CATEGORY)
+				.set(UPLOADED_IMAGE_CATEGORY.IMG_CAT_NAME, catName)
+				.where(UPLOADED_IMAGE.IMG_CAT_ID.eq(catId))
+				.execute();
 	}
 
 

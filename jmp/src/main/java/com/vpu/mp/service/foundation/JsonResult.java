@@ -37,15 +37,15 @@ public class JsonResult {
 	}
 
 
-	public JsonResult(String language, JsonResultCode resultCode, Object content) {
-		result(language, resultCode, content);
+	public JsonResult(String language, JsonResultCode resultCode, Object content,Object ...args) {
+		result(language, resultCode, content,args);
 	}
 
-	public JsonResult result(String language, JsonResultCode resultCode, Object content) {
+	public JsonResult result(String language, JsonResultCode resultCode, Object content,Object ...args) {
 		this.language = language = StringUtils.isBlank(language) ? "zh_CN" : language;
 		this.error = resultCode.getCode();
 		this.content = content;
-		this.message = Util.translateMessage(language, resultCode.getMessage());
+		this.message = String.format(Util.translateMessage(language, resultCode.getMessage()),args);
 		return this;
 	}
 
@@ -57,13 +57,13 @@ public class JsonResult {
 		return result(language, JsonResultCode.CODE_SUCCESS, content);
 	}
 
-	public JsonResult fail(String language, JsonResultCode resultCode) {
-		return result(language, resultCode, null);
+	public JsonResult fail(String language, JsonResultCode resultCode,Object ...args) {
+		return result(language, resultCode, null,args);
 	}
 
-	public JsonResult fail(String language, JsonResultCode resultCode, Object content) {
+	public JsonResult fail(String language, JsonResultCode resultCode, Object content,Object ...args) {
 		assert (resultCode.getCode() != JsonResultCode.CODE_SUCCESS.getCode());
-		return result(language, resultCode, content);
+		return result(language, resultCode, content,args);
 	}
 
 	@Override

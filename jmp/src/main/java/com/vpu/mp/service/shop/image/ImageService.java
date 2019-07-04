@@ -5,12 +5,12 @@ import com.vpu.mp.db.shop.tables.records.UploadedImageRecord;
 import com.vpu.mp.service.foundation.BaseService;
 import com.vpu.mp.service.foundation.PageResult;
 import com.vpu.mp.service.foundation.Util;
+import com.vpu.mp.service.pojo.shop.image.CropImageParam;
+import com.vpu.mp.service.pojo.shop.image.ImageDim;
 import com.vpu.mp.service.pojo.shop.image.ImageListQueryParam;
+import com.vpu.mp.service.pojo.shop.image.UploadImageCatNamePojo;
 import com.vpu.mp.service.pojo.shop.image.UploadPath;
-import com.vpu.mp.service.pojo.shop.image.UploadedImageCategoryPojo;
 
-import lombok.AllArgsConstructor;
-import lombok.Data;
 import net.coobird.thumbnailator.Thumbnails;
 
 import static com.vpu.mp.db.shop.tables.UploadedImage.UPLOADED_IMAGE;
@@ -54,7 +54,6 @@ public class ImageService extends BaseService {
 
 	protected UpYun upYun = null;
 
-	
 	/**
 	 * 得到又拍云客户端
 	 * 
@@ -68,80 +67,66 @@ public class ImageService extends BaseService {
 		return upYun;
 	}
 
+	/**
+	 * 删除单张图片
+	 * 
+	 * @param  imageId
+	 * @return
+	 */
 	public int removeRow(Integer imageId) {
 		Byte delFlag = 1;
-		return db().update(UPLOADED_IMAGE).set(UPLOADED_IMAGE.DEL_FLAG, delFlag)
-				.where(UPLOADED_IMAGE.IMG_ID.eq(imageId)).execute();
-	}
-
-	public int removeRow(List<Integer> imageIds) {
-		Byte delFlag = 1;
-		return db().update(UPLOADED_IMAGE).set(UPLOADED_IMAGE.DEL_FLAG, delFlag)
-				.where(UPLOADED_IMAGE.IMG_ID.in(imageIds)).execute();
-	}
-
-	
-	public String processPostRequest(ImageListQueryParam param) {
-		if (param.act == null) {
-			return "";
-		}
-		String actSetCatId = "set_cat_id";
-		String actDel = "del";
-		String actRenameCatName = "op_cat_rename";
-		String actDelCat = "op_cat_del";
-		String actAddCat = "op_cat_add";
-
-		if (actSetCatId.equals(param.act)) {
-			Integer[] imageIds = "list".equals(param.showType) ? param.cbxImg : param.cbxImg2;
-			db().update(UPLOADED_IMAGE).set(UPLOADED_IMAGE.UPLOAD_TIME, Timestamp.valueOf(LocalDateTime.now()))
-					.set(UPLOADED_IMAGE.IMG_CAT_ID, param.setCatId).where(UPLOADED_IMAGE.IMG_ID.in((imageIds)))
-					.execute();
-			return "分类设置成功";
-		}
-
-		if (actDel.equals(param.act)) {
-			Integer[] imageIds = "list".equals(param.showType) ? param.cbxImg : param.cbxImg2;
-			db().delete(UPLOADED_IMAGE).where(UPLOADED_IMAGE.IMG_ID.in(imageIds)).execute();
-			return "删除成功";
-		}
-
-		if (actRenameCatName.equals(param.act)) {
-			db().update(UPLOADED_IMAGE_CATEGORY).set(UPLOADED_IMAGE_CATEGORY.IMG_CAT_NAME, param.opCatName)
-					.where(UPLOADED_IMAGE.IMG_CAT_ID.eq(param.opCatId)).execute();
-			return "修改名称成功";
-		}
-
-		if (actDelCat.equals(param.act)) {
-			this.category.removeCategory(param.opCatId);
-			return "删除分类成功";
-		}
-
-		if (actAddCat.equals(param.act)) {
-			UploadedImageCategoryPojo cat = new UploadedImageCategoryPojo();
-			cat.setImgCatName(param.opCatName);
-			cat.setImgCatParentId(param.opCatPid);
-			cat.setShopId(this.shopId);
-			this.category.addCategory(cat);
-			return "添加分类成功";
-		}
-
-		return "";
+		return db().update(UPLOADED_IMAGE)
+				.set(UPLOADED_IMAGE.DEL_FLAG, delFlag)
+				.where(UPLOADED_IMAGE.IMG_ID.eq(imageId))
+				.execute();
 	}
 
 	/**
-	 * TODO: 暂时为Object，以后改下
-	 * @param param
+	 * 删除多张图片
+	 * 
+	 * @param  imageIds
 	 * @return
 	 */
-	public PageResult<Object> getPageList(ImageListQueryParam param) {
+	public int removeRows(List<Integer> imageIds) {
+		Byte delFlag = 1;
+		return db().update(UPLOADED_IMAGE)
+				.set(UPLOADED_IMAGE.DEL_FLAG, delFlag)
+				.where(UPLOADED_IMAGE.IMG_ID.in(imageIds))
+				.execute();
+	}
+
+	/**
+	 * 设置图片的分类
+	 * 
+	 * @param  imageIds
+	 * @param  catId
+	 * @return
+	 */
+	public int setCatId(Integer[] imageIds, Integer catId) {
+		return db().update(UPLOADED_IMAGE)
+				.set(UPLOADED_IMAGE.UPLOAD_TIME, Timestamp.valueOf(LocalDateTime.now()))
+				.set(UPLOADED_IMAGE.IMG_CAT_ID, catId)
+				.where(UPLOADED_IMAGE.IMG_ID.in((imageIds)))
+				.execute();
+	}
+
+	/**
+	 * 图片列表分页
+	 * 
+	 * @param  param
+	 * @return
+	 */
+	public PageResult<UploadImageCatNamePojo> getPageList(ImageListQueryParam param) {
 		SelectWhereStep<Record> select = db().select(UPLOADED_IMAGE.asterisk(), UPLOADED_IMAGE_CATEGORY.IMG_CAT_NAME)
-				.from(UPLOADED_IMAGE).leftJoin(UPLOADED_IMAGE_CATEGORY)
+				.from(UPLOADED_IMAGE)
+				.leftJoin(UPLOADED_IMAGE_CATEGORY)
 				.on(UPLOADED_IMAGE.IMG_CAT_ID.eq(DSL.cast(UPLOADED_IMAGE_CATEGORY.IMG_CAT_ID, Integer.class)));
 		select = this.buildOptions(select, param);
 		select.orderBy(UPLOADED_IMAGE.IMG_ID.desc());
-		return this.getPageResult(select, param.page,Object.class);
+		return this.getPageResult(select, param.page, UploadImageCatNamePojo.class);
 	}
 
+	
 	protected List<Integer> convertIntegerArray(List<Integer> array) {
 		List<Integer> result = new ArrayList<Integer>();
 		for (Integer i : array) {
@@ -155,7 +140,8 @@ public class ImageService extends BaseService {
 			return select;
 		}
 		Byte noDel = 0;
-		select.where(UPLOADED_IMAGE.DEL_FLAG.eq(noDel)).and(UPLOADED_IMAGE.IMG_WIDTH.gt(0))
+		select.where(UPLOADED_IMAGE.DEL_FLAG.eq(noDel))
+				.and(UPLOADED_IMAGE.IMG_WIDTH.gt(0))
 				.and(UPLOADED_IMAGE.IMG_HEIGHT.gt(0));
 
 		if (param.imgCatId != null && param.imgCatId > 0) {
@@ -201,15 +187,10 @@ public class ImageService extends BaseService {
 		return select;
 	}
 
-	public String[] getUploadSortList() {
-		String[] sortList = { "按上传时间从晚到早", "按上传时间从早到晚", "按图片从大到小", "按图片从小到大", "按图片名降序", "按图片名升序", };
-		return sortList;
-	}
-
 	/**
 	 * 通过原始URL得到图片信息
 	 * 
-	 * @param imageUrl
+	 * @param  imageUrl
 	 * @return
 	 */
 	public UploadedImageRecord getImageFromOriginName(String imagePathOrUrl) {
@@ -219,7 +200,7 @@ public class ImageService extends BaseService {
 	/**
 	 * 通过图片相对路径获取图片信息
 	 * 
-	 * @param imagePath
+	 * @param  imagePath
 	 * @return
 	 */
 	public UploadedImageRecord getImageFromImagePath(String imagePath) {
@@ -229,10 +210,10 @@ public class ImageService extends BaseService {
 	/**
 	 * 保存图片到数据库
 	 * 
-	 * @param relativePath
-	 * @param imageName
-	 * @param originFileName
-	 * @param catId
+	 * @param  relativePath
+	 * @param  imageName
+	 * @param  originFileName
+	 * @param  catId
 	 * @return
 	 */
 	public UploadedImageRecord addImageToDb(String relativePath, String imageName, String originFileName,
@@ -265,7 +246,7 @@ public class ImageService extends BaseService {
 	/**
 	 * 得到图片信息
 	 * 
-	 * @param imageId
+	 * @param  imageId
 	 * @return
 	 */
 	public UploadedImageRecord getImageById(Integer imageId) {
@@ -279,16 +260,20 @@ public class ImageService extends BaseService {
 	 */
 	public Integer getAllSize() {
 		Byte noDel = 0;
-		Object imageSize = db().select(DSL.sum(UPLOADED_IMAGE.IMG_SIZE)).from(UPLOADED_IMAGE)
-				.where(UPLOADED_IMAGE.SHOP_ID.eq(this.getShopId())).and(UPLOADED_IMAGE.IMG_WIDTH.gt(0))
-				.and(UPLOADED_IMAGE.IMG_HEIGHT.gt(0)).and(UPLOADED_IMAGE.DEL_FLAG.eq(noDel)).fetchAny(0);
+		Object imageSize = db().select(DSL.sum(UPLOADED_IMAGE.IMG_SIZE))
+				.from(UPLOADED_IMAGE)
+				.where(UPLOADED_IMAGE.SHOP_ID.eq(this.getShopId()))
+				.and(UPLOADED_IMAGE.IMG_WIDTH.gt(0))
+				.and(UPLOADED_IMAGE.IMG_HEIGHT.gt(0))
+				.and(UPLOADED_IMAGE.DEL_FLAG.eq(noDel))
+				.fetchAny(0);
 		return Util.getInteger(imageSize);
 	}
 
 	/**
 	 * 添加外链图片到数据库
 	 * 
-	 * @param imageUrl
+	 * @param  imageUrl
 	 * @return
 	 */
 	public UploadedImageRecord addLocalGoodsImage(String imageUrl) {
@@ -324,7 +309,7 @@ public class ImageService extends BaseService {
 	/**
 	 * 图片URL
 	 * 
-	 * @param relativePath
+	 * @param  relativePath
 	 * @return
 	 */
 	public String imageUrl(String relativePath) {
@@ -334,7 +319,7 @@ public class ImageService extends BaseService {
 	/**
 	 * 本地全路径
 	 * 
-	 * @param relativePath
+	 * @param  relativePath
 	 * @return
 	 */
 	public String fullPath(String relativePath) {
@@ -344,7 +329,7 @@ public class ImageService extends BaseService {
 	/**
 	 * 得到相对路径
 	 * 
-	 * @param type
+	 * @param  type
 	 * @return
 	 */
 	public String getRelativePathDirectory(String type) {
@@ -356,9 +341,9 @@ public class ImageService extends BaseService {
 	/**
 	 * 得到可写上传路径
 	 * 
-	 * @param type
-	 * @param filename
-	 * @param extension
+	 * @param  type
+	 * @param  filename
+	 * @param  extension
 	 * @return
 	 */
 	public UploadPath getWritableUploadPath(String type, String filename, String extension) {
@@ -377,7 +362,7 @@ public class ImageService extends BaseService {
 	/**
 	 * 强制创建目录，支持多目录
 	 * 
-	 * @param fullPath
+	 * @param  fullPath
 	 * @return
 	 */
 	public boolean mkdir(String fullPath) {
@@ -387,11 +372,25 @@ public class ImageService extends BaseService {
 		}
 		return true;
 	}
+	
+	/**
+	 * 删除文件
+	 * @param fullPath
+	 * @return
+	 */
+	public boolean rmFile(String fullPath) {
+		File file = new File(fullPath);
+		if (!file.exists()) {
+			return file.delete();
+		}
+		return true;
+	}
 
 	/**
 	 * 上传到又拍云
-	 * @param upYunPath 又拍云路径
-	 * @param localFile 本地文件
+	 * 
+	 * @param  upYunPath   又拍云路径
+	 * @param  localFile   本地文件
 	 * @return
 	 * @throws IOException
 	 * @throws Exception
@@ -412,7 +411,7 @@ public class ImageService extends BaseService {
 	/**
 	 * 得到图片扩展名
 	 * 
-	 * @param pathOrUrl
+	 * @param  pathOrUrl
 	 * @return
 	 */
 	public String getImageExension(String pathOrUrl) {
@@ -434,13 +433,6 @@ public class ImageService extends BaseService {
 		}
 		return StringUtils.defaultIfNull(suffix, "");
 	}
-
-	@Data
-	@AllArgsConstructor
-	public static class ImageDim {
-		public Integer width;
-		public Integer height;
-	};
 
 	public ImageDim getImageDim(String path) throws FileNotFoundException, IOException {
 		BufferedImage img = ImageIO.read(new FileInputStream(path));
@@ -484,20 +476,6 @@ public class ImageService extends BaseService {
 		return p == -1 ? filename : filename.substring(0, p);
 	}
 
-	@Data
-	public static class CropImageParam {
-		public String remoteImgPath;
-		public Integer cropWidth;
-		public Integer cropHeight;
-		public Integer x;
-		public Integer y;
-		public Integer w;
-		public Integer h;
-		public Double imgScaleW;
-		public Integer imgCatId;
-		public Integer remoteImgId;
-	};
-
 	public UploadPath makeCrop(CropImageParam param) throws Exception {
 		String fullPath = fullPath(param.remoteImgPath);
 		String extension = this.getImageExension(fullPath);
@@ -520,7 +498,9 @@ public class ImageService extends BaseService {
 		}
 
 		UploadPath uploadPath = getWritableUploadPath("image", randomFilename(), extension);
-		Thumbnails.of(fullPath).sourceRegion(param.x, param.y, param.w, param.h).size(param.cropWidth, param.cropHeight)
+		Thumbnails.of(fullPath)
+				.sourceRegion(param.x, param.y, param.w, param.h)
+				.size(param.cropWidth, param.cropHeight)
 				.toFile(uploadPath.fullPath);
 		return uploadPath;
 	}
