@@ -74,6 +74,7 @@ export default {
   left: -4px;
   top: 10px;
 }
+
 .new_calss {
   width: 60px;
 }
