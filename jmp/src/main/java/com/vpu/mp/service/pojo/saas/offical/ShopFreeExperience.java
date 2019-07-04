@@ -15,4 +15,5 @@ public class ShopFreeExperience {
     @NotBlank(message = JsonResultMessage.MSG_ACCOUNT_MODILE_NOT_NULL)
     private String    mobile;
     private String    source;
+    private Integer provinceId;
 }
