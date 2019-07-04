@@ -7,12 +7,14 @@ import java.util.List;
 
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.vpu.mp.db.main.tables.records.MpAuthShopRecord;
 import com.vpu.mp.db.main.tables.records.ShopRecord;
 import com.vpu.mp.db.shop.tables.records.ShopCfgRecord;
 import com.vpu.mp.service.foundation.JsonResult;
+import com.vpu.mp.service.foundation.JsonResultCode;
 import com.vpu.mp.service.foundation.Util;
 import com.vpu.mp.service.pojo.shop.config.ShopBaseCfgInfo;
 import com.vpu.mp.service.pojo.shop.config.ShopCommonCfgInfo;
@@ -99,22 +101,22 @@ public class AdminShopController extends AdminBaseController {
 	}
 	
 	@PostMapping(value = "api/admin/config/shop/updateBaseInfo")
-	public JsonResult updateShopBaseInfo(ShopPojo shop) {
+	public JsonResult updateShopBaseInfo(@RequestBody ShopPojo shop) {
 		shop.setShopId(this.shopId());
 		Integer res = saas.shop.updateShopBaseInfo(shop);
 		if(res > 0) {
 			return this.success();
 		}else {
-			return this.fail();
+			return this.fail(JsonResultCode.CODE_FAIL);
 		}
 	}
 	
 	@PostMapping(value = "api/admin/config/shop/updateCommonInfo")
-	public JsonResult updateShopCommonInfo(ShopCommonCfgInfo shopCfg) {
+	public JsonResult updateShopCommonInfo(@RequestBody ShopCommonCfgInfo shopCfg) {
 		if(shop().shopCfg.updateShopCommonInfo(shopCfg)) {
 			return this.success();
 		}else {
-			return this.fail();
+			return this.fail(JsonResultCode.CODE_FAIL);
 		}
 	}
 }
