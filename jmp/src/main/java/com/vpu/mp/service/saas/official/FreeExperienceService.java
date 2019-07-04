@@ -105,8 +105,8 @@ public class FreeExperienceService extends BaseService{
 	public int insertUserInfo(ShopFreeExperience shopFreeExperience) {
 		ShopFreeExperience shop = shopFreeExperience;
 		int i = this.db()
-			.insertInto(SHOP_FREE_EXPERIENCE,SHOP_FREE_EXPERIENCE.CONTACT, SHOP_FREE_EXPERIENCE.MOBILE,SHOP_FREE_EXPERIENCE.SOURCE)
-			.values(shop.getContact(), shop.getMobile(),shop.getSource())
+			.insertInto(SHOP_FREE_EXPERIENCE,SHOP_FREE_EXPERIENCE.CONTACT, SHOP_FREE_EXPERIENCE.MOBILE,SHOP_FREE_EXPERIENCE.SOURCE,SHOP_FREE_EXPERIENCE.PROVINCE_ID)
+			.values(shop.getContact(), shop.getMobile(),shop.getSource(),shop.getProvinceId())
 			.execute();
 		return i;
 	}
