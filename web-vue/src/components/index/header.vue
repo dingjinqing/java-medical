@@ -5,7 +5,7 @@
     </div>
     <div
       class="nav2"
-      v-if="false"
+      v-if="user_flag"
     >
       <div class="f_div">
         <img
@@ -14,7 +14,7 @@
           height="30px"
           style="border: 1px solid #ddd;"
         >
-        <span>{{$t('message.index_nav_test')}}</span>
+        <span>{{username}}</span>
         <img
           :src="imageUrlData[2].image_3"
           class="head_down"
@@ -28,6 +28,7 @@
             :class="item.login_active"
             v-for="(item,index) in loginData_show"
             :key="index"
+            @click="handleLogin(index)"
           >{{item.title}}</a>
         </div>
       </div>
@@ -111,6 +112,8 @@
   </div>
 </template>
 <script>
+import Cookies from 'js-cookie'
+import { loginRequestOut } from '@/api/index/login.js'
 export default {
   data () {
     return {
@@ -142,7 +145,9 @@ export default {
         { image_4: this.$imageHost + '/image/admin/official/blue_down.png' }
       ],
       lo_class: '',
-      rej_class: ''
+      rej_class: '',
+      user_flag: '',
+      username: ''
     }
   },
   mounted () {
@@ -152,9 +157,20 @@ export default {
     this.langDefault()
     this.navshow()
     console.log(this.$router.history.current.name)
+    // 初始化登录
+    this.judgeuserinfo()
   },
   methods: {
-
+    // 初始化登录
+    judgeuserinfo () {
+      if (Cookies.get('V-Token')) {
+        this.user_flag = true
+        this.username = localStorage.getItem('V-Username')
+        // console.log(Cookies.get('V-Token'), '----', localStorage.getItem('V-Username'))
+      } else {
+        this.user_flag = false
+      }
+    },
     // 初始化顶部导航
     navshow () {
       let that = this
@@ -175,7 +191,25 @@ export default {
           break
       }
     },
+    // 进入后台以及推出登录
+    handleLogin (index) {
+      if (index === 0) {
 
+      } else {
+        loginRequestOut().then((res) => {
+          console.log(res)
+          if (res.error === 0) {
+            Cookies.remove('V-Token')
+          } else {
+            this.$message({
+              showClose: true,
+              message: res.message,
+              type: 'error'
+            })
+          }
+        })
+      }
+    },
     // 导航栏子元素点击
     handlenav (index) {
       switch (index) {

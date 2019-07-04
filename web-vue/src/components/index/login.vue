@@ -97,6 +97,7 @@
 </template>
 <script>
 import { loginRequest } from '@/api/index/login.js'
+import Cookies from 'js-cookie'
 export default {
   data () {
     return {
@@ -229,11 +230,19 @@ export default {
       if (index === 1) {
         loginRequest(this.mainData).then((res) => {
           console.log(res)
-          if (res.error) {
+          if (res.error !== 0) {
             this.$message({
               showClose: true,
               message: res.message,
               type: 'error'
+            })
+          } else {
+            Cookies.set('V-Token', res.content.token, { expires: 1 / 48 })
+            localStorage.setItem('V-Username', res.content.userName)
+            this.$message({
+              showClose: true,
+              message: res.message,
+              type: 'success'
             })
           }
         })
@@ -247,7 +256,13 @@ export default {
               type: 'error'
             })
           } else {
-
+            Cookies.set('V-Token', res.content.token, { expires: 1 / 48 })
+            localStorage.setItem('V-Username', res.content.userName)
+            this.$message({
+              showClose: true,
+              message: res.message,
+              type: 'success'
+            })
           }
         })
       }

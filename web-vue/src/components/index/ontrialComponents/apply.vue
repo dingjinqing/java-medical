@@ -30,7 +30,7 @@
       </div>
       <div class="apply_right">
         <img
-          :src="himageUrlData"
+          :src="imageUrlData"
           alt=""
         >
         <h3>{{$t('apply.content')}}</h3>
@@ -47,7 +47,7 @@ export default {
       username: '',
       phonenum: '',
       flag: true,
-      imageUrlData: this.$imageHost + 'image/admin/index_circle.png'
+      imageUrlData: this.$imageHost + '/image/admin/index_circle.png'
 
     }
   },
@@ -129,6 +129,12 @@ export default {
             showClose: true,
             message: '提交申请成功，请等待业务员联系',
             type: 'success'
+          })
+        } else {
+          this.$message({
+            showClose: true,
+            message: res.message,
+            type: 'error'
           })
         }
       })

@@ -6,7 +6,7 @@ import service from '@/util/request.js'
 export function applyrequest (riid) {
   console.log(window.location)
   return service({
-    url: '/index/check/free/experience',
+    url: '/api/official/experience/add',
     method: 'post',
     data: riid
   })

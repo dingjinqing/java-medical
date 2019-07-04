@@ -1,4 +1,5 @@
 import axios from 'axios'
+import Cookies from 'js-cookie'
 // import qs from 'qs'
 import { Message } from 'element-ui'
 
@@ -23,10 +24,13 @@ const service = axios.create({
 service.interceptors.request.use(
   config => {
     if (config.method === 'post') {
-      console.log(localStorage.getItem('contentType'))
+      console.log(localStorage.getItem('contentType'), localStorage.getItem('WEPUBAO_LANGUAGE'))
       config.headers['Content-Type'] = localStorage.getItem('contentType')
-      if (localStorage.getItem('V-Token')) {
-        config.headers['V-Token'] = localStorage.getItem('V-Token')
+      if (Cookies.get('V-Token')) {
+        config.headers['V-Token'] = Cookies.get('V-Token')
+      }
+      if (!localStorage.getItem('WEPUBAO_LANGUAGE')) {
+        localStorage.setItem('WEPUBAO_LANGUAGE', 'zh_CN')
       }
       config.headers['V-Lang'] = localStorage.getItem('WEPUBAO_LANGUAGE')
       // config.data = qs.stringify(config.data)
