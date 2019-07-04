@@ -1,5 +1,8 @@
 <template>
-  <div id="app" class="fillcontain">
+  <div
+    id="app"
+    class="fillcontain"
+  >
     <router-view></router-view>
   </div>
 </template>
@@ -10,6 +13,8 @@ export default {
 }
 </script>
 
-<style lang="less">
-  @import './style/common';
+<style scoped>
+#app {
+  /* overflow-y: scroll; */
+}
 </style>

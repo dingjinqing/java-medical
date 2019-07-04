@@ -162,6 +162,14 @@ const cn = {
     s_title: '客服电话',
     QQ: '咨询QQ:3003715029',
     Q_title: 'QQ咨询'
+  },
+  // admin选择店铺
+  shopData: {
+    set: '账户设置',
+    administration: '子账号管理',
+    public: '授权公众号',
+    choice: '选择店铺',
+    loginOut: '退出'
   }
 }
 

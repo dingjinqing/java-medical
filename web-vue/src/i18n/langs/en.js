@@ -162,6 +162,14 @@ const en = {
     s_title: 'customer service telephone numbers',
     QQ: 'Consultation QQ: 3003715029',
     Q_title: 'QQ Consultation'
+  },
+  // admin选择店铺
+  shopData: {
+    set: 'Account Settings',
+    administration: 'Subaccount management',
+    public: 'Authorized Public Number',
+    choice: 'Choose Shops',
+    loginOut: 'Sign out'
   }
 }
 
