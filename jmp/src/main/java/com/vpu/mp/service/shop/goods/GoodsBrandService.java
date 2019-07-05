@@ -28,11 +28,11 @@ public class GoodsBrandService extends BaseService {
      */
     public PageResult<GoodsBrand> getPageList(GoodsBrandPageListParam param) {
         SelectJoinStep<Record9<Integer, String, String, String, Byte, Timestamp, String, Byte, Integer>> selectFrom = db().select(GOODS_BRAND.ID,
-                GOODS_BRAND.BRAND_NAME, GOODS_BRAND.E_NAME, GOODS_BRAND.LOGO, GOODS_BRAND.FIRST, GOODS_BRAND.ADD_TIME, GOODS_BRAND.DESC, GOODS_BRAND.IS_RECOMMEND, GOODS_BRAND.CLASSIFY_ID).from(GOODS_BRAND);
+                GOODS_BRAND.BRAND_NAME, GOODS_BRAND.E_NAME, GOODS_BRAND.LOGO, GOODS_BRAND.FIRST, GOODS_BRAND.CREATE_TIME, GOODS_BRAND.DESC, GOODS_BRAND.IS_RECOMMEND, GOODS_BRAND.CLASSIFY_ID).from(GOODS_BRAND);
 
         SelectConditionStep<?> select = this.buildOptions(selectFrom, param);
 
-        select.orderBy(GOODS_BRAND.FIRST.desc(), GOODS_BRAND.ADD_TIME.desc());
+        select.orderBy(GOODS_BRAND.FIRST.desc(), GOODS_BRAND.CREATE_TIME.desc());
 
         PageResult<GoodsBrand> pageResult = this.getPageResult(select, param.getCurrentPage(), param.getPageRows(), GoodsBrand.class);
 
@@ -55,11 +55,11 @@ public class GoodsBrandService extends BaseService {
         }
 
         if (param.getStartAddTime() != null) {
-            scs = scs.and(GOODS_BRAND.ADD_TIME.ge(param.getStartAddTime()));
+            scs = scs.and(GOODS_BRAND.CREATE_TIME.ge(param.getStartAddTime()));
         }
 
         if (param.getEndAddTime() != null) {
-            scs = scs.and(GOODS_BRAND.ADD_TIME.le(param.getEndAddTime()));
+            scs = scs.and(GOODS_BRAND.CREATE_TIME.le(param.getEndAddTime()));
         }
 
         if (param.getClassifyId() != GoodsBrandPageListParam.CLASSIFY_ID_DEFAULT_VALUE) {
@@ -97,7 +97,7 @@ public class GoodsBrandService extends BaseService {
      * @return 数据库受影响行数
      */
     public int delete(GoodsBrand goodsBrand) {
-        return db().update(GOODS_BRAND).set(GOODS_BRAND.IS_DELETE, (byte) 1).where(GOODS_BRAND.ID.eq(goodsBrand.getId()))
+        return db().update(GOODS_BRAND).set(GOODS_BRAND.DEL_FLAG, (byte) 1).where(GOODS_BRAND.ID.eq(goodsBrand.getId()))
                 .execute();
     }
 
@@ -124,7 +124,7 @@ public class GoodsBrandService extends BaseService {
      */
     public GoodsBrand select(GoodsBrand goodsBrand) {
         return db().select(GOODS_BRAND.ID,
-                GOODS_BRAND.BRAND_NAME, GOODS_BRAND.E_NAME, GOODS_BRAND.LOGO, GOODS_BRAND.FIRST, GOODS_BRAND.ADD_TIME, GOODS_BRAND.DESC, GOODS_BRAND.IS_RECOMMEND, GOODS_BRAND.CLASSIFY_ID)
+                GOODS_BRAND.BRAND_NAME, GOODS_BRAND.E_NAME, GOODS_BRAND.LOGO, GOODS_BRAND.FIRST, GOODS_BRAND.CREATE_TIME, GOODS_BRAND.DESC, GOODS_BRAND.IS_RECOMMEND, GOODS_BRAND.CLASSIFY_ID)
                 .from(GOODS_BRAND).where(GOODS_BRAND.ID.eq(goodsBrand.getId()))
                 .fetchOne().into(GoodsBrand.class);
 
@@ -138,7 +138,7 @@ public class GoodsBrandService extends BaseService {
     public boolean isBrandNameExist(GoodsBrand goodsBrand) {
         Record1<Integer> countRecord = db().selectCount().from(GOODS_BRAND)
                 .where(GOODS_BRAND.BRAND_NAME.eq(goodsBrand.getBrandName()))
-                .and(GOODS_BRAND.IS_DELETE.eq((byte) 0))
+                .and(GOODS_BRAND.DEL_FLAG.eq((byte) 0))
                 .fetchOne();
         Integer count = countRecord.getValue(0, Integer.class);
         if (count > 0) {
@@ -157,7 +157,7 @@ public class GoodsBrandService extends BaseService {
         Record1<Integer> countRecord = db().selectCount().from(GOODS_BRAND)
                 .where(GOODS_BRAND.BRAND_NAME.eq(goodsBrand.getBrandName()))
                 .and(GOODS_BRAND.ID.ne(goodsBrand.getId()))
-                .and(GOODS_BRAND.IS_DELETE.eq((byte) 0))
+                .and(GOODS_BRAND.DEL_FLAG.eq((byte) 0))
                 .fetchOne();
         Integer count = countRecord.getValue(0, Integer.class);
         if (count > 0) {

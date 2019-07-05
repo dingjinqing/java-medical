@@ -25,7 +25,7 @@ public class OrderService extends BaseService{
 	 public PageResult<Object> getPageList(OrderPageListQueryParam param) {
 		 SelectWhereStep<Record1<String>> select1 = db().select(ORDER_INFO.ORDER_SN).from(ORDER_INFO);
 		 SelectWhereStep<?> select = this.buildOptions(select1, param);
-		 select.orderBy(ORDER_INFO.ADD_TIME.desc());
+		 select.orderBy(ORDER_INFO.CREATE_TIME.desc());
 		 return this.getPageResult(select,Object.class);
 	 }
 	 

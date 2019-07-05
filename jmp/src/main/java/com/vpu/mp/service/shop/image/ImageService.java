@@ -104,7 +104,7 @@ public class ImageService extends BaseService {
 	 */
 	public int setCatId(Integer[] imageIds, Integer catId) {
 		return db().update(UPLOADED_IMAGE)
-				.set(UPLOADED_IMAGE.UPLOAD_TIME, Timestamp.valueOf(LocalDateTime.now()))
+				.set(UPLOADED_IMAGE.CREATE_TIME, Timestamp.valueOf(LocalDateTime.now()))
 				.set(UPLOADED_IMAGE.IMG_CAT_ID, catId)
 				.where(UPLOADED_IMAGE.IMG_ID.in((imageIds)))
 				.execute();
@@ -150,11 +150,11 @@ public class ImageService extends BaseService {
 		}
 
 		if (param.startRq != null) {
-			select.where(UPLOADED_IMAGE.UPLOAD_TIME.ge(param.startRq));
+			select.where(UPLOADED_IMAGE.CREATE_TIME.ge(param.startRq));
 		}
 
 		if (param.endRq != null) {
-			select.where(UPLOADED_IMAGE.UPLOAD_TIME.lt(param.endRq));
+			select.where(UPLOADED_IMAGE.CREATE_TIME.lt(param.endRq));
 		}
 		if (param.imgWidth != null && param.imgWidth > 0) {
 			select.where(UPLOADED_IMAGE.IMG_WIDTH.eq(param.imgWidth));
@@ -175,7 +175,7 @@ public class ImageService extends BaseService {
 				select.where(UPLOADED_IMAGE.IMG_HEIGHT.eq(param.needImgHeight));
 			}
 		}
-		SortField<?>[] sortFields = { UPLOADED_IMAGE.UPLOAD_TIME.desc(), UPLOADED_IMAGE.UPLOAD_TIME.asc(),
+		SortField<?>[] sortFields = { UPLOADED_IMAGE.CREATE_TIME.desc(), UPLOADED_IMAGE.CREATE_TIME.asc(),
 				UPLOADED_IMAGE.IMG_SIZE.desc(), UPLOADED_IMAGE.IMG_SIZE.asc(), UPLOADED_IMAGE.IMG_NAME.desc(),
 				UPLOADED_IMAGE.IMG_NAME.asc() };
 		if (param.uploadSortId != null && param.uploadSortId >= 0 && param.uploadSortId < sortFields.length) {
@@ -236,7 +236,7 @@ public class ImageService extends BaseService {
 			image.setImgHeight(imageInfo.getHeight());
 			image.setImgCatId(catId == null ? 0 : catId);
 			image.setShopId(this.getShopId());
-			image.setUploadTime(Timestamp.valueOf(LocalDateTime.now()));
+			image.setCreateTime(Timestamp.valueOf(LocalDateTime.now()));
 			image.insert();
 			return image;
 		}
