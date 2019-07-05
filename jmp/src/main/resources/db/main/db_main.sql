@@ -126,9 +126,7 @@ create table `b2c_shop` (
   `kuajinggou`       tinyint(1)                              default '0' comment '跨境购',
   `order_real_name`  tinyint(1)                              default '0' comment '下单实名制',
   `hid_bottom`       tinyint(1) default 0          null comment '是否隐藏底部 1是 ',
-  `shop_style`       varchar(50) default 0         null comment '店铺风格',
   `logo`             varchar(200)                  null comment '小程序logo',
-  `share_config`     text                          null comment '分享配置',
   primary key (`shop_id`),
   key `mobile` (`mobile`)
 );
