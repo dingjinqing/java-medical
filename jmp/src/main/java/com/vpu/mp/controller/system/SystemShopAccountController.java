@@ -37,12 +37,14 @@ public class SystemShopAccountController extends SystemBaseController {
 
 	/**
 	 * 商家账户列表查询
+	 * 
 	 * @param param
 	 * @return
 	 */
 	@PostMapping("/system/shop/account/list")
 	public JsonResult getShopAccountList(@RequestBody ShopAccountListQueryParam param) {
 		PageResult<ShopAccountPojo> result = saas.shop.accout.getPageList(param);
+		// TODO 空的判断
 		for (ShopAccountPojo sap : result.dataList) {
 			// sysId
 			sap.setShopNumber(saas.shop.renew.getShopNumber((Integer) sap.getSysId()));
@@ -53,4 +55,5 @@ public class SystemShopAccountController extends SystemBaseController {
 		shopAccountResp.setPage(result.page);
 		return success(shopAccountResp);
 	}
+
 }
