@@ -1,6 +1,10 @@
 package com.vpu.mp.service.pojo.shop.auth;
 
+import java.io.Serializable;
 import java.util.List;
+import java.util.Map;
+
+import org.jooq.Record;
 
 import com.vpu.mp.service.foundation.Page;
 
@@ -14,10 +18,10 @@ import lombok.NoArgsConstructor;
  */
 @Data
 @NoArgsConstructor
-public class ShopAccountResp {
+public class ShopSelectResp{
 
 	public List<?> dataList;
-	public Page page;
+	public Map<String, String> versionMap;
 	
 
 }
