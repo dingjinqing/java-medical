@@ -11,22 +11,6 @@ import lombok.NoArgsConstructor;
 @Data
 @NoArgsConstructor
 public class ShopCfg {
-	public String showLogo = "";
-	public String logoLink = "";
-	public String cancelTime = "";
-	public String invoice = "";
-	public String bindMobile = "";
-	public String salesNumber = "";
-	public String orderRealName = "";
-	public String orderCid = "";
-	public String consigneeRealName = "";
-	public String consigneeCid = "";
-	public String custom = "";
-	public String customTitle = "";
-	public String delMarket = "";
-	public String customService = "";
-	public String showCart = "";
-	public String serviceName = "";
-	public String serviceChoose = "";
-	public String serviceTerms = "";
+	public String k = "";
+	public String v = "";
 }

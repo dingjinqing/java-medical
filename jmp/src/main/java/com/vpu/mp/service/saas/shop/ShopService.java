@@ -238,21 +238,6 @@ public class ShopService extends BaseService {
 		return select.orderBy(SHOP.CREATED.desc())
 				.fetch();
 	}
-
-	public String[] getShopStyle(Integer shopId) {
-		String[] defaultStyle = { "#ff6666", "#fee6e6" };
-		ShopRecord record = this.getShopById(shopId);
-		if (record != null) {
-			String shopStyle = record.getShopStyle();
-			if (shopStyle != null) {
-				String[] arr = shopStyle.split(";");
-				if (arr.length > 1) {
-					return arr[1].split(",");
-				}
-			}
-		}
-		return defaultStyle;
-	}
 	
 	public ShopPojo getShopBaseInfoById(Integer shopId) {
 		return db().select(SHOP.SHOP_AVATAR,SHOP.SHOP_NAME,SHOP.BUSINESS_STATE,SHOP.CREATED,SHOP.BUSINESS_STATE).from(SHOP).where(SHOP.SHOP_ID.eq(shopId)).fetchOne().into(ShopPojo.class);
@@ -263,13 +248,6 @@ public class ShopService extends BaseService {
 				.set(SHOP.SHOP_NAME, shop.getShopName())
 				.set(SHOP.SHOP_AVATAR, shop.getShopAvatar())
                 .set(SHOP.BUSINESS_STATE, shop.getBusinessState())
-                .where(SHOP.SHOP_ID.eq(shop.getShopId()))
-				.execute();
-	}
-	
-	public Integer updateShareCfg(ShopPojo shop) {
-		return db().update(SHOP)
-				.set(SHOP.SHARE_CONFIG, shop.getShareConfig())
                 .where(SHOP.SHOP_ID.eq(shop.getShopId()))
 				.execute();
 	}
