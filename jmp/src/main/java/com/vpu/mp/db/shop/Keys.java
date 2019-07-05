@@ -673,7 +673,6 @@ public class Keys {
     public static final UniqueKey<ShareSplitRecord> KEY_B2C_SHARE_SPLIT_PRIMARY = UniqueKeys0.KEY_B2C_SHARE_SPLIT_PRIMARY;
     public static final UniqueKey<ShippingRecord> KEY_B2C_SHIPPING_PRIMARY = UniqueKeys0.KEY_B2C_SHIPPING_PRIMARY;
     public static final UniqueKey<ShopCfgRecord> KEY_B2C_SHOP_CFG_PRIMARY = UniqueKeys0.KEY_B2C_SHOP_CFG_PRIMARY;
-    public static final UniqueKey<ShopCfgRecord> KEY_B2C_SHOP_CFG_SHOP_ID_K = UniqueKeys0.KEY_B2C_SHOP_CFG_SHOP_ID_K;
     public static final UniqueKey<SmsSendRecordRecord> KEY_B2C_SMS_SEND_RECORD_PRIMARY = UniqueKeys0.KEY_B2C_SMS_SEND_RECORD_PRIMARY;
     public static final UniqueKey<SortRecord> KEY_B2C_SORT_PRIMARY = UniqueKeys0.KEY_B2C_SORT_PRIMARY;
     public static final UniqueKey<SpecRecord> KEY_B2C_SPEC_PRIMARY = UniqueKeys0.KEY_B2C_SPEC_PRIMARY;
@@ -1044,7 +1043,6 @@ public class Keys {
         public static final UniqueKey<ShareSplitRecord> KEY_B2C_SHARE_SPLIT_PRIMARY = Internal.createUniqueKey(ShareSplit.SHARE_SPLIT, "KEY_b2c_share_split_PRIMARY", ShareSplit.SHARE_SPLIT.ID);
         public static final UniqueKey<ShippingRecord> KEY_B2C_SHIPPING_PRIMARY = Internal.createUniqueKey(Shipping.SHIPPING, "KEY_b2c_shipping_PRIMARY", Shipping.SHIPPING.SHIPPING_ID);
         public static final UniqueKey<ShopCfgRecord> KEY_B2C_SHOP_CFG_PRIMARY = Internal.createUniqueKey(ShopCfg.SHOP_CFG, "KEY_b2c_shop_cfg_PRIMARY", ShopCfg.SHOP_CFG.REC_ID);
-        public static final UniqueKey<ShopCfgRecord> KEY_B2C_SHOP_CFG_SHOP_ID_K = Internal.createUniqueKey(ShopCfg.SHOP_CFG, "KEY_b2c_shop_cfg_shop_id_k", ShopCfg.SHOP_CFG.K, ShopCfg.SHOP_CFG.SHOP_ID);
         public static final UniqueKey<SmsSendRecordRecord> KEY_B2C_SMS_SEND_RECORD_PRIMARY = Internal.createUniqueKey(SmsSendRecord.SMS_SEND_RECORD, "KEY_b2c_sms_send_record_PRIMARY", SmsSendRecord.SMS_SEND_RECORD.ID);
         public static final UniqueKey<SortRecord> KEY_B2C_SORT_PRIMARY = Internal.createUniqueKey(Sort.SORT, "KEY_b2c_sort_PRIMARY", Sort.SORT.SORT_ID);
         public static final UniqueKey<SpecRecord> KEY_B2C_SPEC_PRIMARY = Internal.createUniqueKey(Spec.SPEC, "KEY_b2c_spec_PRIMARY", Spec.SPEC.SPEC_ID);

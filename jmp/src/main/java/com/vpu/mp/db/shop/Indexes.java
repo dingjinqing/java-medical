@@ -482,7 +482,6 @@ public class Indexes {
     public static final Index SHIPPING_PRIMARY = Indexes0.SHIPPING_PRIMARY;
     public static final Index SHIPPING_SHIPPING_CODE = Indexes0.SHIPPING_SHIPPING_CODE;
     public static final Index SHOP_CFG_PRIMARY = Indexes0.SHOP_CFG_PRIMARY;
-    public static final Index SHOP_CFG_SHOP_ID_K = Indexes0.SHOP_CFG_SHOP_ID_K;
     public static final Index SMS_SEND_RECORD_PRIMARY = Indexes0.SMS_SEND_RECORD_PRIMARY;
     public static final Index SORT_PARENT_ID = Indexes0.SORT_PARENT_ID;
     public static final Index SORT_PRIMARY = Indexes0.SORT_PRIMARY;
@@ -840,7 +839,6 @@ public class Indexes {
         public static Index SHIPPING_PRIMARY = Internal.createIndex("PRIMARY", Shipping.SHIPPING, new OrderField[] { Shipping.SHIPPING.SHIPPING_ID }, true);
         public static Index SHIPPING_SHIPPING_CODE = Internal.createIndex("shipping_code", Shipping.SHIPPING, new OrderField[] { Shipping.SHIPPING.SHIPPING_CODE, Shipping.SHIPPING.ENABLED }, false);
         public static Index SHOP_CFG_PRIMARY = Internal.createIndex("PRIMARY", ShopCfg.SHOP_CFG, new OrderField[] { ShopCfg.SHOP_CFG.REC_ID }, true);
-        public static Index SHOP_CFG_SHOP_ID_K = Internal.createIndex("shop_id_k", ShopCfg.SHOP_CFG, new OrderField[] { ShopCfg.SHOP_CFG.K, ShopCfg.SHOP_CFG.SHOP_ID }, true);
         public static Index SMS_SEND_RECORD_PRIMARY = Internal.createIndex("PRIMARY", SmsSendRecord.SMS_SEND_RECORD, new OrderField[] { SmsSendRecord.SMS_SEND_RECORD.ID }, true);
         public static Index SORT_PARENT_ID = Internal.createIndex("parent_id", Sort.SORT, new OrderField[] { Sort.SORT.PARENT_ID }, false);
         public static Index SORT_PRIMARY = Internal.createIndex("PRIMARY", Sort.SORT, new OrderField[] { Sort.SORT.SORT_ID }, true);
