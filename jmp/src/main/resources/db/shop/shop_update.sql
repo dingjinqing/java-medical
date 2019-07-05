@@ -21,3 +21,16 @@ ALTER TABLE b2c_sort MODIFY COLUMN sort_name VARCHAR(90) NOT NULL;
 --7月4号 修改b2c_group表名为b2c_store_group,字段in_time改为create_time
 ALTER  TABLE b2c_group RENAME TO b2c_store_group;
 ALTER TABLE b2c_store_group CHANGE column in_time create_time timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP;
+
+-- 7月5日 李晓冰  修改b2c_spec和 b2c_spec_val表，添加非空约束，和唯一索引
+ALTER TABLE b2c_spec
+MODIFY COLUMN create_time timestamp   not null 	default current_timestamp,
+MODIFY COLUMN update_time  timestamp   not null  	default current_timestamp on update current_timestamp comment '最后修改时间',
+ADD UNIQUE INDEX unique_spec_name_goods_id (spec_name,goods_id);
+
+ALTER TABLE b2c_spec_vals
+MODIFY COLUMN create_time timestamp   not null 	default current_timestamp,
+MODIFY COLUMN update_time  timestamp   not null  	default current_timestamp on update current_timestamp comment '最后修改时间',
+CHANGE COLUMN specvalid spec_val_id int(11) 	not null auto_increment ,
+CHANGE COLUMN specvalname spec_val_name VARCHAR(60) not null DEFAULT '',
+ADD UNIQUE INDEX unique_spec_id_spec_val_name (spec_id,spec_val_name);
