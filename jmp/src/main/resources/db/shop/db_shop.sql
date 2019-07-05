@@ -1009,7 +1009,6 @@ create table `b2c_user_explain` (
 -- drop table if exists `b2c_shop_cfg`;
 create table `b2c_shop_cfg` (
   `rec_id`  smallint(5)  not null auto_increment,
-  `shop_id` int(11)      	default 0 comment '店铺id',
   `k`       varchar(191)	default '',
   `v`       text,
   `create_time`      timestamp    	default current_timestamp,
