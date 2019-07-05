@@ -44,7 +44,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class TradesRecordSummary extends TableImpl<TradesRecordSummaryRecord> {
 
-    private static final long serialVersionUID = -2056629661;
+    private static final long serialVersionUID = -827058920;
 
     /**
      * The reference instance of <code>mini_shop_471752.b2c_trades_record_summary</code>
@@ -72,42 +72,47 @@ public class TradesRecordSummary extends TableImpl<TradesRecordSummaryRecord> {
     /**
      * The column <code>mini_shop_471752.b2c_trades_record_summary.income_total_money</code>. 总现金收入
      */
-    public final TableField<TradesRecordSummaryRecord, BigDecimal> INCOME_TOTAL_MONEY = createField("income_total_money", org.jooq.impl.SQLDataType.DECIMAL(10, 2).defaultValue(org.jooq.impl.DSL.inline("0.00", org.jooq.impl.SQLDataType.DECIMAL)), this, "总现金收入");
+    public final TableField<TradesRecordSummaryRecord, BigDecimal> INCOME_TOTAL_MONEY = createField("income_total_money", org.jooq.impl.SQLDataType.DECIMAL(10, 2).nullable(false).defaultValue(org.jooq.impl.DSL.inline("0.00", org.jooq.impl.SQLDataType.DECIMAL)), this, "总现金收入");
 
     /**
      * The column <code>mini_shop_471752.b2c_trades_record_summary.outgo_money</code>. 现金支出
      */
-    public final TableField<TradesRecordSummaryRecord, BigDecimal> OUTGO_MONEY = createField("outgo_money", org.jooq.impl.SQLDataType.DECIMAL(10, 2).defaultValue(org.jooq.impl.DSL.inline("0.00", org.jooq.impl.SQLDataType.DECIMAL)), this, "现金支出");
+    public final TableField<TradesRecordSummaryRecord, BigDecimal> OUTGO_MONEY = createField("outgo_money", org.jooq.impl.SQLDataType.DECIMAL(10, 2).nullable(false).defaultValue(org.jooq.impl.DSL.inline("0.00", org.jooq.impl.SQLDataType.DECIMAL)), this, "现金支出");
 
     /**
      * The column <code>mini_shop_471752.b2c_trades_record_summary.income_real_money</code>. 净现金收入
      */
-    public final TableField<TradesRecordSummaryRecord, BigDecimal> INCOME_REAL_MONEY = createField("income_real_money", org.jooq.impl.SQLDataType.DECIMAL(10, 2).defaultValue(org.jooq.impl.DSL.inline("0.00", org.jooq.impl.SQLDataType.DECIMAL)), this, "净现金收入");
+    public final TableField<TradesRecordSummaryRecord, BigDecimal> INCOME_REAL_MONEY = createField("income_real_money", org.jooq.impl.SQLDataType.DECIMAL(10, 2).nullable(false).defaultValue(org.jooq.impl.DSL.inline("0.00", org.jooq.impl.SQLDataType.DECIMAL)), this, "净现金收入");
 
     /**
      * The column <code>mini_shop_471752.b2c_trades_record_summary.income_total_score</code>. 总积分收入
      */
-    public final TableField<TradesRecordSummaryRecord, BigDecimal> INCOME_TOTAL_SCORE = createField("income_total_score", org.jooq.impl.SQLDataType.DECIMAL(10, 2).defaultValue(org.jooq.impl.DSL.inline("0.00", org.jooq.impl.SQLDataType.DECIMAL)), this, "总积分收入");
+    public final TableField<TradesRecordSummaryRecord, BigDecimal> INCOME_TOTAL_SCORE = createField("income_total_score", org.jooq.impl.SQLDataType.DECIMAL(10, 2).nullable(false).defaultValue(org.jooq.impl.DSL.inline("0.00", org.jooq.impl.SQLDataType.DECIMAL)), this, "总积分收入");
 
     /**
      * The column <code>mini_shop_471752.b2c_trades_record_summary.outgo_score</code>. 积分支出
      */
-    public final TableField<TradesRecordSummaryRecord, BigDecimal> OUTGO_SCORE = createField("outgo_score", org.jooq.impl.SQLDataType.DECIMAL(10, 2).defaultValue(org.jooq.impl.DSL.inline("0.00", org.jooq.impl.SQLDataType.DECIMAL)), this, "积分支出");
+    public final TableField<TradesRecordSummaryRecord, BigDecimal> OUTGO_SCORE = createField("outgo_score", org.jooq.impl.SQLDataType.DECIMAL(10, 2).nullable(false).defaultValue(org.jooq.impl.DSL.inline("0.00", org.jooq.impl.SQLDataType.DECIMAL)), this, "积分支出");
 
     /**
      * The column <code>mini_shop_471752.b2c_trades_record_summary.income_real_score</code>. 净积分收入
      */
-    public final TableField<TradesRecordSummaryRecord, BigDecimal> INCOME_REAL_SCORE = createField("income_real_score", org.jooq.impl.SQLDataType.DECIMAL(10, 2).defaultValue(org.jooq.impl.DSL.inline("0.00", org.jooq.impl.SQLDataType.DECIMAL)), this, "净积分收入");
-
-    /**
-     * The column <code>mini_shop_471752.b2c_trades_record_summary.add_time</code>. 统计时间
-     */
-    public final TableField<TradesRecordSummaryRecord, Timestamp> ADD_TIME = createField("add_time", org.jooq.impl.SQLDataType.TIMESTAMP.nullable(false).defaultValue(org.jooq.impl.DSL.field("CURRENT_TIMESTAMP", org.jooq.impl.SQLDataType.TIMESTAMP)), this, "统计时间");
+    public final TableField<TradesRecordSummaryRecord, BigDecimal> INCOME_REAL_SCORE = createField("income_real_score", org.jooq.impl.SQLDataType.DECIMAL(10, 2).nullable(false).defaultValue(org.jooq.impl.DSL.inline("0.00", org.jooq.impl.SQLDataType.DECIMAL)), this, "净积分收入");
 
     /**
      * The column <code>mini_shop_471752.b2c_trades_record_summary.ref_date</code>. 2018-09-04
      */
     public final TableField<TradesRecordSummaryRecord, Date> REF_DATE = createField("ref_date", org.jooq.impl.SQLDataType.DATE.nullable(false), this, "2018-09-04");
+
+    /**
+     * The column <code>mini_shop_471752.b2c_trades_record_summary.create_time</code>.
+     */
+    public final TableField<TradesRecordSummaryRecord, Timestamp> CREATE_TIME = createField("create_time", org.jooq.impl.SQLDataType.TIMESTAMP.nullable(false).defaultValue(org.jooq.impl.DSL.field("CURRENT_TIMESTAMP", org.jooq.impl.SQLDataType.TIMESTAMP)), this, "");
+
+    /**
+     * The column <code>mini_shop_471752.b2c_trades_record_summary.update_time</code>. 最后修改时间
+     */
+    public final TableField<TradesRecordSummaryRecord, Timestamp> UPDATE_TIME = createField("update_time", org.jooq.impl.SQLDataType.TIMESTAMP.nullable(false).defaultValue(org.jooq.impl.DSL.field("CURRENT_TIMESTAMP", org.jooq.impl.SQLDataType.TIMESTAMP)), this, "最后修改时间");
 
     /**
      * Create a <code>mini_shop_471752.b2c_trades_record_summary</code> table reference

@@ -27,7 +27,7 @@ import org.jooq.impl.TableRecordImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class GoodsRecord extends TableRecordImpl<GoodsRecord> {
 
-    private static final long serialVersionUID = -24116754;
+    private static final long serialVersionUID = 1242231188;
 
     /**
      * Setter for <code>mini_shop_471752.b2c_goods.goods_id</code>.
@@ -44,14 +44,14 @@ public class GoodsRecord extends TableRecordImpl<GoodsRecord> {
     }
 
     /**
-     * Setter for <code>mini_shop_471752.b2c_goods.shop_id</code>. 店铺ID
+     * Setter for <code>mini_shop_471752.b2c_goods.shop_id</code>. 店铺id
      */
     public void setShopId(Integer value) {
         set(1, value);
     }
 
     /**
-     * Getter for <code>mini_shop_471752.b2c_goods.shop_id</code>. 店铺ID
+     * Getter for <code>mini_shop_471752.b2c_goods.shop_id</code>. 店铺id
      */
     public Integer getShopId() {
         return (Integer) get(1);
@@ -100,14 +100,14 @@ public class GoodsRecord extends TableRecordImpl<GoodsRecord> {
     }
 
     /**
-     * Setter for <code>mini_shop_471752.b2c_goods.brand_id</code>. 品牌ID
+     * Setter for <code>mini_shop_471752.b2c_goods.brand_id</code>. 品牌id
      */
     public void setBrandId(Integer value) {
         set(5, value);
     }
 
     /**
-     * Getter for <code>mini_shop_471752.b2c_goods.brand_id</code>. 品牌ID
+     * Getter for <code>mini_shop_471752.b2c_goods.brand_id</code>. 品牌id
      */
     public Integer getBrandId() {
         return (Integer) get(5);
@@ -240,16 +240,16 @@ public class GoodsRecord extends TableRecordImpl<GoodsRecord> {
     }
 
     /**
-     * Setter for <code>mini_shop_471752.b2c_goods.is_delete</code>.
+     * Setter for <code>mini_shop_471752.b2c_goods.del_flag</code>.
      */
-    public void setIsDelete(Byte value) {
+    public void setDelFlag(Byte value) {
         set(15, value);
     }
 
     /**
-     * Getter for <code>mini_shop_471752.b2c_goods.is_delete</code>.
+     * Getter for <code>mini_shop_471752.b2c_goods.del_flag</code>.
      */
-    public Byte getIsDelete() {
+    public Byte getDelFlag() {
         return (Byte) get(15);
     }
 
@@ -268,14 +268,14 @@ public class GoodsRecord extends TableRecordImpl<GoodsRecord> {
     }
 
     /**
-     * Setter for <code>mini_shop_471752.b2c_goods.deliver_template_id</code>. 运费模板ID
+     * Setter for <code>mini_shop_471752.b2c_goods.deliver_template_id</code>. 运费模板id
      */
     public void setDeliverTemplateId(Integer value) {
         set(17, value);
     }
 
     /**
-     * Getter for <code>mini_shop_471752.b2c_goods.deliver_template_id</code>. 运费模板ID
+     * Getter for <code>mini_shop_471752.b2c_goods.deliver_template_id</code>. 运费模板id
      */
     public Integer getDeliverTemplateId() {
         return (Integer) get(17);
@@ -310,16 +310,16 @@ public class GoodsRecord extends TableRecordImpl<GoodsRecord> {
     }
 
     /**
-     * Setter for <code>mini_shop_471752.b2c_goods.add_time</code>.
+     * Setter for <code>mini_shop_471752.b2c_goods.create_time</code>.
      */
-    public void setAddTime(Timestamp value) {
+    public void setCreateTime(Timestamp value) {
         set(20, value);
     }
 
     /**
-     * Getter for <code>mini_shop_471752.b2c_goods.add_time</code>.
+     * Getter for <code>mini_shop_471752.b2c_goods.create_time</code>.
      */
-    public Timestamp getAddTime() {
+    public Timestamp getCreateTime() {
         return (Timestamp) get(20);
     }
 
@@ -366,14 +366,14 @@ public class GoodsRecord extends TableRecordImpl<GoodsRecord> {
     }
 
     /**
-     * Setter for <code>mini_shop_471752.b2c_goods.sub_account_id</code>. 子帐号ID，主要用于官方店铺
+     * Setter for <code>mini_shop_471752.b2c_goods.sub_account_id</code>. 子帐号id，主要用于官方店铺
      */
     public void setSubAccountId(Integer value) {
         set(24, value);
     }
 
     /**
-     * Getter for <code>mini_shop_471752.b2c_goods.sub_account_id</code>. 子帐号ID，主要用于官方店铺
+     * Getter for <code>mini_shop_471752.b2c_goods.sub_account_id</code>. 子帐号id，主要用于官方店铺
      */
     public Integer getSubAccountId() {
         return (Integer) get(24);
@@ -520,28 +520,28 @@ public class GoodsRecord extends TableRecordImpl<GoodsRecord> {
     }
 
     /**
-     * Setter for <code>mini_shop_471752.b2c_goods.goods_video_id</code>. 视频ID
+     * Setter for <code>mini_shop_471752.b2c_goods.goods_video_id</code>. 视频id
      */
     public void setGoodsVideoId(Integer value) {
         set(35, value);
     }
 
     /**
-     * Getter for <code>mini_shop_471752.b2c_goods.goods_video_id</code>. 视频ID
+     * Getter for <code>mini_shop_471752.b2c_goods.goods_video_id</code>. 视频id
      */
     public Integer getGoodsVideoId() {
         return (Integer) get(35);
     }
 
     /**
-     * Setter for <code>mini_shop_471752.b2c_goods.goods_page_id</code>. 详情页装修模板ID
+     * Setter for <code>mini_shop_471752.b2c_goods.goods_page_id</code>. 详情页装修模板id
      */
     public void setGoodsPageId(Integer value) {
         set(36, value);
     }
 
     /**
-     * Getter for <code>mini_shop_471752.b2c_goods.goods_page_id</code>. 详情页装修模板ID
+     * Getter for <code>mini_shop_471752.b2c_goods.goods_page_id</code>. 详情页装修模板id
      */
     public Integer getGoodsPageId() {
         return (Integer) get(36);
@@ -645,7 +645,7 @@ public class GoodsRecord extends TableRecordImpl<GoodsRecord> {
     /**
      * Create a detached, initialised GoodsRecord
      */
-    public GoodsRecord(Integer goodsId, Integer shopId, Integer catId, String goodsSn, String goodsName, Integer brandId, String goodsAd, Integer goodsNumber, BigDecimal goodsWeight, BigDecimal marketPrice, BigDecimal shopPrice, BigDecimal costPrice, String goodsDesc, String goodsImg, Byte isOnSale, Byte isDelete, Byte goodsType, Integer deliverTemplateId, Integer goodsSaleNum, Integer goodsCollectNum, Timestamp addTime, Timestamp updateTime, Byte state, String reason, Integer subAccountId, Timestamp saleTime, Integer limitBuyNum, String unit, Integer addSaleNum, Integer limitMaxNum, Byte saleType, Integer sortId, String goodsVideo, String goodsVideoImg, Integer goodsVideoSize, Integer goodsVideoId, Integer goodsPageId, Byte isPageUp, Byte isCardExclusive, Integer baseSale, Byte source, Byte isControlPrice, Byte canRebate) {
+    public GoodsRecord(Integer goodsId, Integer shopId, Integer catId, String goodsSn, String goodsName, Integer brandId, String goodsAd, Integer goodsNumber, BigDecimal goodsWeight, BigDecimal marketPrice, BigDecimal shopPrice, BigDecimal costPrice, String goodsDesc, String goodsImg, Byte isOnSale, Byte delFlag, Byte goodsType, Integer deliverTemplateId, Integer goodsSaleNum, Integer goodsCollectNum, Timestamp createTime, Timestamp updateTime, Byte state, String reason, Integer subAccountId, Timestamp saleTime, Integer limitBuyNum, String unit, Integer addSaleNum, Integer limitMaxNum, Byte saleType, Integer sortId, String goodsVideo, String goodsVideoImg, Integer goodsVideoSize, Integer goodsVideoId, Integer goodsPageId, Byte isPageUp, Byte isCardExclusive, Integer baseSale, Byte source, Byte isControlPrice, Byte canRebate) {
         super(Goods.GOODS);
 
         set(0, goodsId);
@@ -663,12 +663,12 @@ public class GoodsRecord extends TableRecordImpl<GoodsRecord> {
         set(12, goodsDesc);
         set(13, goodsImg);
         set(14, isOnSale);
-        set(15, isDelete);
+        set(15, delFlag);
         set(16, goodsType);
         set(17, deliverTemplateId);
         set(18, goodsSaleNum);
         set(19, goodsCollectNum);
-        set(20, addTime);
+        set(20, createTime);
         set(21, updateTime);
         set(22, state);
         set(23, reason);

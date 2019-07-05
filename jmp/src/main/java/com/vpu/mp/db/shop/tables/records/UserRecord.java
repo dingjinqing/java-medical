@@ -29,7 +29,7 @@ import org.jooq.impl.UpdatableRecordImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class UserRecord extends UpdatableRecordImpl<UserRecord> {
 
-    private static final long serialVersionUID = 22087813;
+    private static final long serialVersionUID = 21997039;
 
     /**
      * Setter for <code>mini_shop_471752.b2c_user.user_id</code>.
@@ -172,255 +172,255 @@ public class UserRecord extends UpdatableRecordImpl<UserRecord> {
     }
 
     /**
-     * Setter for <code>mini_shop_471752.b2c_user.wechat</code>. 微信
-     */
-    public void setWechat(String value) {
-        set(10, value);
-    }
-
-    /**
-     * Getter for <code>mini_shop_471752.b2c_user.wechat</code>. 微信
-     */
-    public String getWechat() {
-        return (String) get(10);
-    }
-
-    /**
-     * Setter for <code>mini_shop_471752.b2c_user.fanli_grade</code>. 返利会员级别
-     */
-    public void setFanliGrade(Integer value) {
-        set(11, value);
-    }
-
-    /**
-     * Getter for <code>mini_shop_471752.b2c_user.fanli_grade</code>. 返利会员级别
-     */
-    public Integer getFanliGrade() {
-        return (Integer) get(11);
-    }
-
-    /**
-     * Setter for <code>mini_shop_471752.b2c_user.user_grade</code>. 会员级别
-     */
-    public void setUserGrade(Integer value) {
-        set(12, value);
-    }
-
-    /**
-     * Getter for <code>mini_shop_471752.b2c_user.user_grade</code>. 会员级别
-     */
-    public Integer getUserGrade() {
-        return (Integer) get(12);
-    }
-
-    /**
-     * Setter for <code>mini_shop_471752.b2c_user.invite</code>.
-     */
-    public void setInvite(Integer value) {
-        set(13, value);
-    }
-
-    /**
-     * Getter for <code>mini_shop_471752.b2c_user.invite</code>.
-     */
-    public Integer getInvite() {
-        return (Integer) get(13);
-    }
-
-    /**
-     * Setter for <code>mini_shop_471752.b2c_user.invite_source</code>. 邀请来源:groupbuy.拼团,bargain.砍价,integral.积分,seckill.秒杀,lottery.抽奖
-     */
-    public void setInviteSource(String value) {
-        set(14, value);
-    }
-
-    /**
-     * Getter for <code>mini_shop_471752.b2c_user.invite_source</code>. 邀请来源:groupbuy.拼团,bargain.砍价,integral.积分,seckill.秒杀,lottery.抽奖
-     */
-    public String getInviteSource() {
-        return (String) get(14);
-    }
-
-    /**
-     * Setter for <code>mini_shop_471752.b2c_user.invitation_code</code>. 邀请码
-     */
-    public void setInvitationCode(Integer value) {
-        set(15, value);
-    }
-
-    /**
-     * Getter for <code>mini_shop_471752.b2c_user.invitation_code</code>. 邀请码
-     */
-    public Integer getInvitationCode() {
-        return (Integer) get(15);
-    }
-
-    /**
-     * Setter for <code>mini_shop_471752.b2c_user.account</code>. 用户余额
-     */
-    public void setAccount(BigDecimal value) {
-        set(16, value);
-    }
-
-    /**
-     * Getter for <code>mini_shop_471752.b2c_user.account</code>. 用户余额
-     */
-    public BigDecimal getAccount() {
-        return (BigDecimal) get(16);
-    }
-
-    /**
-     * Setter for <code>mini_shop_471752.b2c_user.discount</code>. 折扣
-     */
-    public void setDiscount(Integer value) {
-        set(17, value);
-    }
-
-    /**
-     * Getter for <code>mini_shop_471752.b2c_user.discount</code>. 折扣
-     */
-    public Integer getDiscount() {
-        return (Integer) get(17);
-    }
-
-    /**
-     * Setter for <code>mini_shop_471752.b2c_user.discount_grade</code>. 会员折扣等级
-     */
-    public void setDiscountGrade(Integer value) {
-        set(18, value);
-    }
-
-    /**
-     * Getter for <code>mini_shop_471752.b2c_user.discount_grade</code>. 会员折扣等级
-     */
-    public Integer getDiscountGrade() {
-        return (Integer) get(18);
-    }
-
-    /**
-     * Setter for <code>mini_shop_471752.b2c_user.is_delete</code>.
-     */
-    public void setIsDelete(Byte value) {
-        set(19, value);
-    }
-
-    /**
-     * Getter for <code>mini_shop_471752.b2c_user.is_delete</code>.
-     */
-    public Byte getIsDelete() {
-        return (Byte) get(19);
-    }
-
-    /**
-     * Setter for <code>mini_shop_471752.b2c_user.delete_time</code>. 删除时间
-     */
-    public void setDeleteTime(Timestamp value) {
-        set(20, value);
-    }
-
-    /**
-     * Getter for <code>mini_shop_471752.b2c_user.delete_time</code>. 删除时间
-     */
-    public Timestamp getDeleteTime() {
-        return (Timestamp) get(20);
-    }
-
-    /**
-     * Setter for <code>mini_shop_471752.b2c_user.growth</code>. 成长值
-     */
-    public void setGrowth(Integer value) {
-        set(21, value);
-    }
-
-    /**
-     * Getter for <code>mini_shop_471752.b2c_user.growth</code>. 成长值
-     */
-    public Integer getGrowth() {
-        return (Integer) get(21);
-    }
-
-    /**
-     * Setter for <code>mini_shop_471752.b2c_user.score</code>. 积分
-     */
-    public void setScore(Integer value) {
-        set(22, value);
-    }
-
-    /**
-     * Getter for <code>mini_shop_471752.b2c_user.score</code>. 积分
-     */
-    public Integer getScore() {
-        return (Integer) get(22);
-    }
-
-    /**
-     * Setter for <code>mini_shop_471752.b2c_user.source</code>. 门店来源-1未录入0后台&gt;0为门店
-     */
-    public void setSource(Integer value) {
-        set(23, value);
-    }
-
-    /**
-     * Getter for <code>mini_shop_471752.b2c_user.source</code>. 门店来源-1未录入0后台&gt;0为门店
-     */
-    public Integer getSource() {
-        return (Integer) get(23);
-    }
-
-    /**
-     * Setter for <code>mini_shop_471752.b2c_user.invite_id</code>. 邀请人ID
-     */
-    public void setInviteId(Integer value) {
-        set(24, value);
-    }
-
-    /**
-     * Getter for <code>mini_shop_471752.b2c_user.invite_id</code>. 邀请人ID
-     */
-    public Integer getInviteId() {
-        return (Integer) get(24);
-    }
-
-    /**
-     * Setter for <code>mini_shop_471752.b2c_user.invite_expiry_date</code>. 邀请失效时间
-     */
-    public void setInviteExpiryDate(Date value) {
-        set(25, value);
-    }
-
-    /**
-     * Getter for <code>mini_shop_471752.b2c_user.invite_expiry_date</code>. 邀请失效时间
-     */
-    public Date getInviteExpiryDate() {
-        return (Date) get(25);
-    }
-
-    /**
-     * Setter for <code>mini_shop_471752.b2c_user.wx_union_id</code>. 小程序unionid
-     */
-    public void setWxUnionId(String value) {
-        set(26, value);
-    }
-
-    /**
-     * Getter for <code>mini_shop_471752.b2c_user.wx_union_id</code>. 小程序unionid
-     */
-    public String getWxUnionId() {
-        return (String) get(26);
-    }
-
-    /**
      * Setter for <code>mini_shop_471752.b2c_user.update_time</code>. 最后修改时间
      */
     public void setUpdateTime(Timestamp value) {
-        set(27, value);
+        set(10, value);
     }
 
     /**
      * Getter for <code>mini_shop_471752.b2c_user.update_time</code>. 最后修改时间
      */
     public Timestamp getUpdateTime() {
-        return (Timestamp) get(27);
+        return (Timestamp) get(10);
+    }
+
+    /**
+     * Setter for <code>mini_shop_471752.b2c_user.wechat</code>. 微信
+     */
+    public void setWechat(String value) {
+        set(11, value);
+    }
+
+    /**
+     * Getter for <code>mini_shop_471752.b2c_user.wechat</code>. 微信
+     */
+    public String getWechat() {
+        return (String) get(11);
+    }
+
+    /**
+     * Setter for <code>mini_shop_471752.b2c_user.fanli_grade</code>. 返利会员级别
+     */
+    public void setFanliGrade(Integer value) {
+        set(12, value);
+    }
+
+    /**
+     * Getter for <code>mini_shop_471752.b2c_user.fanli_grade</code>. 返利会员级别
+     */
+    public Integer getFanliGrade() {
+        return (Integer) get(12);
+    }
+
+    /**
+     * Setter for <code>mini_shop_471752.b2c_user.user_grade</code>. 会员级别
+     */
+    public void setUserGrade(Integer value) {
+        set(13, value);
+    }
+
+    /**
+     * Getter for <code>mini_shop_471752.b2c_user.user_grade</code>. 会员级别
+     */
+    public Integer getUserGrade() {
+        return (Integer) get(13);
+    }
+
+    /**
+     * Setter for <code>mini_shop_471752.b2c_user.invite</code>.
+     */
+    public void setInvite(Integer value) {
+        set(14, value);
+    }
+
+    /**
+     * Getter for <code>mini_shop_471752.b2c_user.invite</code>.
+     */
+    public Integer getInvite() {
+        return (Integer) get(14);
+    }
+
+    /**
+     * Setter for <code>mini_shop_471752.b2c_user.invite_source</code>. 邀请来源:groupbuy.拼团,bargain.砍价,integral.积分,seckill.秒杀,lottery.抽奖
+     */
+    public void setInviteSource(String value) {
+        set(15, value);
+    }
+
+    /**
+     * Getter for <code>mini_shop_471752.b2c_user.invite_source</code>. 邀请来源:groupbuy.拼团,bargain.砍价,integral.积分,seckill.秒杀,lottery.抽奖
+     */
+    public String getInviteSource() {
+        return (String) get(15);
+    }
+
+    /**
+     * Setter for <code>mini_shop_471752.b2c_user.invitation_code</code>. 邀请码
+     */
+    public void setInvitationCode(Integer value) {
+        set(16, value);
+    }
+
+    /**
+     * Getter for <code>mini_shop_471752.b2c_user.invitation_code</code>. 邀请码
+     */
+    public Integer getInvitationCode() {
+        return (Integer) get(16);
+    }
+
+    /**
+     * Setter for <code>mini_shop_471752.b2c_user.account</code>. 用户余额
+     */
+    public void setAccount(BigDecimal value) {
+        set(17, value);
+    }
+
+    /**
+     * Getter for <code>mini_shop_471752.b2c_user.account</code>. 用户余额
+     */
+    public BigDecimal getAccount() {
+        return (BigDecimal) get(17);
+    }
+
+    /**
+     * Setter for <code>mini_shop_471752.b2c_user.discount</code>. 折扣
+     */
+    public void setDiscount(Integer value) {
+        set(18, value);
+    }
+
+    /**
+     * Getter for <code>mini_shop_471752.b2c_user.discount</code>. 折扣
+     */
+    public Integer getDiscount() {
+        return (Integer) get(18);
+    }
+
+    /**
+     * Setter for <code>mini_shop_471752.b2c_user.discount_grade</code>. 会员折扣等级
+     */
+    public void setDiscountGrade(Integer value) {
+        set(19, value);
+    }
+
+    /**
+     * Getter for <code>mini_shop_471752.b2c_user.discount_grade</code>. 会员折扣等级
+     */
+    public Integer getDiscountGrade() {
+        return (Integer) get(19);
+    }
+
+    /**
+     * Setter for <code>mini_shop_471752.b2c_user.del_flag</code>.
+     */
+    public void setDelFlag(Byte value) {
+        set(20, value);
+    }
+
+    /**
+     * Getter for <code>mini_shop_471752.b2c_user.del_flag</code>.
+     */
+    public Byte getDelFlag() {
+        return (Byte) get(20);
+    }
+
+    /**
+     * Setter for <code>mini_shop_471752.b2c_user.del_time</code>. 删除时间
+     */
+    public void setDelTime(Timestamp value) {
+        set(21, value);
+    }
+
+    /**
+     * Getter for <code>mini_shop_471752.b2c_user.del_time</code>. 删除时间
+     */
+    public Timestamp getDelTime() {
+        return (Timestamp) get(21);
+    }
+
+    /**
+     * Setter for <code>mini_shop_471752.b2c_user.growth</code>. 成长值
+     */
+    public void setGrowth(Integer value) {
+        set(22, value);
+    }
+
+    /**
+     * Getter for <code>mini_shop_471752.b2c_user.growth</code>. 成长值
+     */
+    public Integer getGrowth() {
+        return (Integer) get(22);
+    }
+
+    /**
+     * Setter for <code>mini_shop_471752.b2c_user.score</code>. 积分
+     */
+    public void setScore(Integer value) {
+        set(23, value);
+    }
+
+    /**
+     * Getter for <code>mini_shop_471752.b2c_user.score</code>. 积分
+     */
+    public Integer getScore() {
+        return (Integer) get(23);
+    }
+
+    /**
+     * Setter for <code>mini_shop_471752.b2c_user.source</code>. 门店来源-1未录入0后台&gt;0为门店
+     */
+    public void setSource(Integer value) {
+        set(24, value);
+    }
+
+    /**
+     * Getter for <code>mini_shop_471752.b2c_user.source</code>. 门店来源-1未录入0后台&gt;0为门店
+     */
+    public Integer getSource() {
+        return (Integer) get(24);
+    }
+
+    /**
+     * Setter for <code>mini_shop_471752.b2c_user.invite_id</code>. 邀请人id
+     */
+    public void setInviteId(Integer value) {
+        set(25, value);
+    }
+
+    /**
+     * Getter for <code>mini_shop_471752.b2c_user.invite_id</code>. 邀请人id
+     */
+    public Integer getInviteId() {
+        return (Integer) get(25);
+    }
+
+    /**
+     * Setter for <code>mini_shop_471752.b2c_user.invite_expiry_date</code>. 邀请失效时间
+     */
+    public void setInviteExpiryDate(Date value) {
+        set(26, value);
+    }
+
+    /**
+     * Getter for <code>mini_shop_471752.b2c_user.invite_expiry_date</code>. 邀请失效时间
+     */
+    public Date getInviteExpiryDate() {
+        return (Date) get(26);
+    }
+
+    /**
+     * Setter for <code>mini_shop_471752.b2c_user.wx_union_id</code>. 小程序unionid
+     */
+    public void setWxUnionId(String value) {
+        set(27, value);
+    }
+
+    /**
+     * Getter for <code>mini_shop_471752.b2c_user.wx_union_id</code>. 小程序unionid
+     */
+    public String getWxUnionId() {
+        return (String) get(27);
     }
 
     /**
@@ -438,14 +438,14 @@ public class UserRecord extends UpdatableRecordImpl<UserRecord> {
     }
 
     /**
-     * Setter for <code>mini_shop_471752.b2c_user.invite_act_id</code>. 邀请来源活动ID
+     * Setter for <code>mini_shop_471752.b2c_user.invite_act_id</code>. 邀请来源活动id
      */
     public void setInviteActId(Integer value) {
         set(29, value);
     }
 
     /**
-     * Getter for <code>mini_shop_471752.b2c_user.invite_act_id</code>. 邀请来源活动ID
+     * Getter for <code>mini_shop_471752.b2c_user.invite_act_id</code>. 邀请来源活动id
      */
     public Integer getInviteActId() {
         return (Integer) get(29);
@@ -466,14 +466,14 @@ public class UserRecord extends UpdatableRecordImpl<UserRecord> {
     }
 
     /**
-     * Setter for <code>mini_shop_471752.b2c_user.ali_user_id</code>. 支付宝用户ID
+     * Setter for <code>mini_shop_471752.b2c_user.ali_user_id</code>. 支付宝用户id
      */
     public void setAliUserId(String value) {
         set(31, value);
     }
 
     /**
-     * Getter for <code>mini_shop_471752.b2c_user.ali_user_id</code>. 支付宝用户ID
+     * Getter for <code>mini_shop_471752.b2c_user.ali_user_id</code>. 支付宝用户id
      */
     public String getAliUserId() {
         return (String) get(31);
@@ -589,7 +589,7 @@ public class UserRecord extends UpdatableRecordImpl<UserRecord> {
     /**
      * Create a detached, initialised UserRecord
      */
-    public UserRecord(Integer userId, Integer shopId, String username, String userPwd, String userCid, String mobile, String userCode, String wxOpenid, String email, Timestamp createTime, String wechat, Integer fanliGrade, Integer userGrade, Integer invite, String inviteSource, Integer invitationCode, BigDecimal account, Integer discount, Integer discountGrade, Byte isDelete, Timestamp deleteTime, Integer growth, Integer score, Integer source, Integer inviteId, Date inviteExpiryDate, String wxUnionId, Timestamp updateTime, Byte isDistributor, Integer inviteActId, Byte distributorLevel, String aliUserId, String device, Date inviteProtectDate, Timestamp lookCollectTime, Byte getCollectGift, Integer inviteGroup, BigDecimal unitPrice) {
+    public UserRecord(Integer userId, Integer shopId, String username, String userPwd, String userCid, String mobile, String userCode, String wxOpenid, String email, Timestamp createTime, Timestamp updateTime, String wechat, Integer fanliGrade, Integer userGrade, Integer invite, String inviteSource, Integer invitationCode, BigDecimal account, Integer discount, Integer discountGrade, Byte delFlag, Timestamp delTime, Integer growth, Integer score, Integer source, Integer inviteId, Date inviteExpiryDate, String wxUnionId, Byte isDistributor, Integer inviteActId, Byte distributorLevel, String aliUserId, String device, Date inviteProtectDate, Timestamp lookCollectTime, Byte getCollectGift, Integer inviteGroup, BigDecimal unitPrice) {
         super(User.USER);
 
         set(0, userId);
@@ -602,24 +602,24 @@ public class UserRecord extends UpdatableRecordImpl<UserRecord> {
         set(7, wxOpenid);
         set(8, email);
         set(9, createTime);
-        set(10, wechat);
-        set(11, fanliGrade);
-        set(12, userGrade);
-        set(13, invite);
-        set(14, inviteSource);
-        set(15, invitationCode);
-        set(16, account);
-        set(17, discount);
-        set(18, discountGrade);
-        set(19, isDelete);
-        set(20, deleteTime);
-        set(21, growth);
-        set(22, score);
-        set(23, source);
-        set(24, inviteId);
-        set(25, inviteExpiryDate);
-        set(26, wxUnionId);
-        set(27, updateTime);
+        set(10, updateTime);
+        set(11, wechat);
+        set(12, fanliGrade);
+        set(13, userGrade);
+        set(14, invite);
+        set(15, inviteSource);
+        set(16, invitationCode);
+        set(17, account);
+        set(18, discount);
+        set(19, discountGrade);
+        set(20, delFlag);
+        set(21, delTime);
+        set(22, growth);
+        set(23, score);
+        set(24, source);
+        set(25, inviteId);
+        set(26, inviteExpiryDate);
+        set(27, wxUnionId);
         set(28, isDistributor);
         set(29, inviteActId);
         set(30, distributorLevel);

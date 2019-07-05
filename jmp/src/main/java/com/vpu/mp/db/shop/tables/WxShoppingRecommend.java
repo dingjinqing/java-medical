@@ -42,7 +42,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class WxShoppingRecommend extends TableImpl<WxShoppingRecommendRecord> {
 
-    private static final long serialVersionUID = -1607851056;
+    private static final long serialVersionUID = 107132228;
 
     /**
      * The reference instance of <code>mini_shop_471752.b2c_wx_shopping_recommend</code>
@@ -68,24 +68,29 @@ public class WxShoppingRecommend extends TableImpl<WxShoppingRecommendRecord> {
     public final TableField<WxShoppingRecommendRecord, Integer> USER_ID = createField("user_id", org.jooq.impl.SQLDataType.INTEGER.nullable(false), this, "");
 
     /**
-     * The column <code>mini_shop_471752.b2c_wx_shopping_recommend.goods_id</code>. 商品ID
+     * The column <code>mini_shop_471752.b2c_wx_shopping_recommend.goods_id</code>. 商品id
      */
-    public final TableField<WxShoppingRecommendRecord, Integer> GOODS_ID = createField("goods_id", org.jooq.impl.SQLDataType.INTEGER.nullable(false), this, "商品ID");
+    public final TableField<WxShoppingRecommendRecord, Integer> GOODS_ID = createField("goods_id", org.jooq.impl.SQLDataType.INTEGER.nullable(false), this, "商品id");
 
     /**
-     * The column <code>mini_shop_471752.b2c_wx_shopping_recommend.order_sn</code>. 订单orderSn
+     * The column <code>mini_shop_471752.b2c_wx_shopping_recommend.order_sn</code>. 订单ordersn
      */
-    public final TableField<WxShoppingRecommendRecord, Integer> ORDER_SN = createField("order_sn", org.jooq.impl.SQLDataType.INTEGER, this, "订单orderSn");
+    public final TableField<WxShoppingRecommendRecord, Integer> ORDER_SN = createField("order_sn", org.jooq.impl.SQLDataType.INTEGER, this, "订单ordersn");
 
     /**
      * The column <code>mini_shop_471752.b2c_wx_shopping_recommend.click_num</code>. 点击次数
      */
-    public final TableField<WxShoppingRecommendRecord, Integer> CLICK_NUM = createField("click_num", org.jooq.impl.SQLDataType.INTEGER.defaultValue(org.jooq.impl.DSL.inline("1", org.jooq.impl.SQLDataType.INTEGER)), this, "点击次数");
+    public final TableField<WxShoppingRecommendRecord, Integer> CLICK_NUM = createField("click_num", org.jooq.impl.SQLDataType.INTEGER.nullable(false).defaultValue(org.jooq.impl.DSL.inline("1", org.jooq.impl.SQLDataType.INTEGER)), this, "点击次数");
 
     /**
-     * The column <code>mini_shop_471752.b2c_wx_shopping_recommend.add_time</code>.
+     * The column <code>mini_shop_471752.b2c_wx_shopping_recommend.create_time</code>.
      */
-    public final TableField<WxShoppingRecommendRecord, Timestamp> ADD_TIME = createField("add_time", org.jooq.impl.SQLDataType.TIMESTAMP, this, "");
+    public final TableField<WxShoppingRecommendRecord, Timestamp> CREATE_TIME = createField("create_time", org.jooq.impl.SQLDataType.TIMESTAMP.nullable(false).defaultValue(org.jooq.impl.DSL.field("CURRENT_TIMESTAMP", org.jooq.impl.SQLDataType.TIMESTAMP)), this, "");
+
+    /**
+     * The column <code>mini_shop_471752.b2c_wx_shopping_recommend.update_time</code>. 最后修改时间
+     */
+    public final TableField<WxShoppingRecommendRecord, Timestamp> UPDATE_TIME = createField("update_time", org.jooq.impl.SQLDataType.TIMESTAMP.nullable(false).defaultValue(org.jooq.impl.DSL.field("CURRENT_TIMESTAMP", org.jooq.impl.SQLDataType.TIMESTAMP)), this, "最后修改时间");
 
     /**
      * Create a <code>mini_shop_471752.b2c_wx_shopping_recommend</code> table reference

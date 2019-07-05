@@ -42,7 +42,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class BrandClassify extends TableImpl<BrandClassifyRecord> {
 
-    private static final long serialVersionUID = -1570431384;
+    private static final long serialVersionUID = 1180588520;
 
     /**
      * The reference instance of <code>mini_shop_471752.b2c_brand_classify</code>
@@ -65,12 +65,7 @@ public class BrandClassify extends TableImpl<BrandClassifyRecord> {
     /**
      * The column <code>mini_shop_471752.b2c_brand_classify.classify_name</code>.
      */
-    public final TableField<BrandClassifyRecord, String> CLASSIFY_NAME = createField("classify_name", org.jooq.impl.SQLDataType.VARCHAR(90).defaultValue(org.jooq.impl.DSL.inline("", org.jooq.impl.SQLDataType.VARCHAR)), this, "");
-
-    /**
-     * The column <code>mini_shop_471752.b2c_brand_classify.create_time</code>.
-     */
-    public final TableField<BrandClassifyRecord, Timestamp> CREATE_TIME = createField("create_time", org.jooq.impl.SQLDataType.TIMESTAMP.nullable(false).defaultValue(org.jooq.impl.DSL.field("CURRENT_TIMESTAMP", org.jooq.impl.SQLDataType.TIMESTAMP)), this, "");
+    public final TableField<BrandClassifyRecord, String> CLASSIFY_NAME = createField("classify_name", org.jooq.impl.SQLDataType.VARCHAR(90).nullable(false).defaultValue(org.jooq.impl.DSL.inline("", org.jooq.impl.SQLDataType.VARCHAR)), this, "");
 
     /**
      * The column <code>mini_shop_471752.b2c_brand_classify.first</code>. 优先级
@@ -78,14 +73,19 @@ public class BrandClassify extends TableImpl<BrandClassifyRecord> {
     public final TableField<BrandClassifyRecord, Short> FIRST = createField("first", org.jooq.impl.SQLDataType.SMALLINT.nullable(false).defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.SMALLINT)), this, "优先级");
 
     /**
-     * The column <code>mini_shop_471752.b2c_brand_classify.update_time</code>.
+     * The column <code>mini_shop_471752.b2c_brand_classify.del_flag</code>.
      */
-    public final TableField<BrandClassifyRecord, Timestamp> UPDATE_TIME = createField("update_time", org.jooq.impl.SQLDataType.TIMESTAMP.nullable(false).defaultValue(org.jooq.impl.DSL.field("CURRENT_TIMESTAMP", org.jooq.impl.SQLDataType.TIMESTAMP)), this, "");
+    public final TableField<BrandClassifyRecord, Byte> DEL_FLAG = createField("del_flag", org.jooq.impl.SQLDataType.TINYINT.nullable(false).defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.TINYINT)), this, "");
 
     /**
-     * The column <code>mini_shop_471752.b2c_brand_classify.is_delete</code>.
+     * The column <code>mini_shop_471752.b2c_brand_classify.create_time</code>.
      */
-    public final TableField<BrandClassifyRecord, Byte> IS_DELETE = createField("is_delete", org.jooq.impl.SQLDataType.TINYINT.defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.TINYINT)), this, "");
+    public final TableField<BrandClassifyRecord, Timestamp> CREATE_TIME = createField("create_time", org.jooq.impl.SQLDataType.TIMESTAMP.nullable(false).defaultValue(org.jooq.impl.DSL.field("CURRENT_TIMESTAMP", org.jooq.impl.SQLDataType.TIMESTAMP)), this, "");
+
+    /**
+     * The column <code>mini_shop_471752.b2c_brand_classify.update_time</code>. 最后修改时间
+     */
+    public final TableField<BrandClassifyRecord, Timestamp> UPDATE_TIME = createField("update_time", org.jooq.impl.SQLDataType.TIMESTAMP.nullable(false).defaultValue(org.jooq.impl.DSL.field("CURRENT_TIMESTAMP", org.jooq.impl.SQLDataType.TIMESTAMP)), this, "最后修改时间");
 
     /**
      * Create a <code>mini_shop_471752.b2c_brand_classify</code> table reference

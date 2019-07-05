@@ -42,7 +42,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class UserImport extends TableImpl<UserImportRecord> {
 
-    private static final long serialVersionUID = 657582191;
+    private static final long serialVersionUID = -1408664075;
 
     /**
      * The reference instance of <code>mini_shop_471752.b2c_user_import</code>
@@ -63,9 +63,9 @@ public class UserImport extends TableImpl<UserImportRecord> {
     public final TableField<UserImportRecord, Integer> ID = createField("id", org.jooq.impl.SQLDataType.INTEGER.nullable(false).identity(true), this, "");
 
     /**
-     * The column <code>mini_shop_471752.b2c_user_import.card_id</code>. 会员卡ID
+     * The column <code>mini_shop_471752.b2c_user_import.card_id</code>. 会员卡id
      */
-    public final TableField<UserImportRecord, String> CARD_ID = createField("card_id", org.jooq.impl.SQLDataType.VARCHAR(100), this, "会员卡ID");
+    public final TableField<UserImportRecord, String> CARD_ID = createField("card_id", org.jooq.impl.SQLDataType.VARCHAR(100), this, "会员卡id");
 
     /**
      * The column <code>mini_shop_471752.b2c_user_import.total_num</code>. 总数
@@ -78,24 +78,24 @@ public class UserImport extends TableImpl<UserImportRecord> {
     public final TableField<UserImportRecord, Integer> SUCCESS_NUM = createField("success_num", org.jooq.impl.SQLDataType.INTEGER.defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.INTEGER)), this, "成功数");
 
     /**
-     * The column <code>mini_shop_471752.b2c_user_import.add_time</code>.
-     */
-    public final TableField<UserImportRecord, Timestamp> ADD_TIME = createField("add_time", org.jooq.impl.SQLDataType.TIMESTAMP, this, "");
-
-    /**
-     * The column <code>mini_shop_471752.b2c_user_import.update_time</code>.
-     */
-    public final TableField<UserImportRecord, Timestamp> UPDATE_TIME = createField("update_time", org.jooq.impl.SQLDataType.TIMESTAMP, this, "");
-
-    /**
      * The column <code>mini_shop_471752.b2c_user_import.del_flag</code>.
      */
     public final TableField<UserImportRecord, Byte> DEL_FLAG = createField("del_flag", org.jooq.impl.SQLDataType.TINYINT.defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.TINYINT)), this, "");
 
     /**
-     * The column <code>mini_shop_471752.b2c_user_import.del_time</code>.
+     * The column <code>mini_shop_471752.b2c_user_import.del_time</code>. 删除时间
      */
-    public final TableField<UserImportRecord, Timestamp> DEL_TIME = createField("del_time", org.jooq.impl.SQLDataType.TIMESTAMP, this, "");
+    public final TableField<UserImportRecord, Timestamp> DEL_TIME = createField("del_time", org.jooq.impl.SQLDataType.TIMESTAMP.nullable(false).defaultValue(org.jooq.impl.DSL.inline("0000-00-00 00:00:00", org.jooq.impl.SQLDataType.TIMESTAMP)), this, "删除时间");
+
+    /**
+     * The column <code>mini_shop_471752.b2c_user_import.create_time</code>.
+     */
+    public final TableField<UserImportRecord, Timestamp> CREATE_TIME = createField("create_time", org.jooq.impl.SQLDataType.TIMESTAMP.nullable(false).defaultValue(org.jooq.impl.DSL.field("CURRENT_TIMESTAMP", org.jooq.impl.SQLDataType.TIMESTAMP)), this, "");
+
+    /**
+     * The column <code>mini_shop_471752.b2c_user_import.update_time</code>. 最后修改时间
+     */
+    public final TableField<UserImportRecord, Timestamp> UPDATE_TIME = createField("update_time", org.jooq.impl.SQLDataType.TIMESTAMP.nullable(false).defaultValue(org.jooq.impl.DSL.field("CURRENT_TIMESTAMP", org.jooq.impl.SQLDataType.TIMESTAMP)), this, "最后修改时间");
 
     /**
      * Create a <code>mini_shop_471752.b2c_user_import</code> table reference

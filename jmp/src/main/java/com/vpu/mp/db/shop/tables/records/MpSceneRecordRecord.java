@@ -29,17 +29,17 @@ import org.jooq.impl.TableRecordImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class MpSceneRecordRecord extends TableRecordImpl<MpSceneRecordRecord> implements Record9<Integer, String, String, Short, String, String, Integer, Timestamp, Timestamp> {
 
-    private static final long serialVersionUID = 709749355;
+    private static final long serialVersionUID = 2025262239;
 
     /**
-     * Setter for <code>mini_shop_471752.b2c_mp_scene_record.user_id</code>. 用户ID
+     * Setter for <code>mini_shop_471752.b2c_mp_scene_record.user_id</code>. 用户id
      */
     public void setUserId(Integer value) {
         set(0, value);
     }
 
     /**
-     * Getter for <code>mini_shop_471752.b2c_mp_scene_record.user_id</code>. 用户ID
+     * Getter for <code>mini_shop_471752.b2c_mp_scene_record.user_id</code>. 用户id
      */
     public Integer getUserId() {
         return (Integer) get(0);
@@ -130,28 +130,28 @@ public class MpSceneRecordRecord extends TableRecordImpl<MpSceneRecordRecord> im
     }
 
     /**
-     * Setter for <code>mini_shop_471752.b2c_mp_scene_record.add_time</code>.
+     * Setter for <code>mini_shop_471752.b2c_mp_scene_record.create_time</code>.
      */
-    public void setAddTime(Timestamp value) {
+    public void setCreateTime(Timestamp value) {
         set(7, value);
     }
 
     /**
-     * Getter for <code>mini_shop_471752.b2c_mp_scene_record.add_time</code>.
+     * Getter for <code>mini_shop_471752.b2c_mp_scene_record.create_time</code>.
      */
-    public Timestamp getAddTime() {
+    public Timestamp getCreateTime() {
         return (Timestamp) get(7);
     }
 
     /**
-     * Setter for <code>mini_shop_471752.b2c_mp_scene_record.update_time</code>.
+     * Setter for <code>mini_shop_471752.b2c_mp_scene_record.update_time</code>. 最后修改时间
      */
     public void setUpdateTime(Timestamp value) {
         set(8, value);
     }
 
     /**
-     * Getter for <code>mini_shop_471752.b2c_mp_scene_record.update_time</code>.
+     * Getter for <code>mini_shop_471752.b2c_mp_scene_record.update_time</code>. 最后修改时间
      */
     public Timestamp getUpdateTime() {
         return (Timestamp) get(8);
@@ -238,7 +238,7 @@ public class MpSceneRecordRecord extends TableRecordImpl<MpSceneRecordRecord> im
      */
     @Override
     public Field<Timestamp> field8() {
-        return MpSceneRecord.MP_SCENE_RECORD.ADD_TIME;
+        return MpSceneRecord.MP_SCENE_RECORD.CREATE_TIME;
     }
 
     /**
@@ -310,7 +310,7 @@ public class MpSceneRecordRecord extends TableRecordImpl<MpSceneRecordRecord> im
      */
     @Override
     public Timestamp component8() {
-        return getAddTime();
+        return getCreateTime();
     }
 
     /**
@@ -382,7 +382,7 @@ public class MpSceneRecordRecord extends TableRecordImpl<MpSceneRecordRecord> im
      */
     @Override
     public Timestamp value8() {
-        return getAddTime();
+        return getCreateTime();
     }
 
     /**
@@ -461,7 +461,7 @@ public class MpSceneRecordRecord extends TableRecordImpl<MpSceneRecordRecord> im
      */
     @Override
     public MpSceneRecordRecord value8(Timestamp value) {
-        setAddTime(value);
+        setCreateTime(value);
         return this;
     }
 
@@ -505,7 +505,7 @@ public class MpSceneRecordRecord extends TableRecordImpl<MpSceneRecordRecord> im
     /**
      * Create a detached, initialised MpSceneRecordRecord
      */
-    public MpSceneRecordRecord(Integer userId, String path, String pathQuery, Short scene, String shareTicket, String referrerInfo, Integer count, Timestamp addTime, Timestamp updateTime) {
+    public MpSceneRecordRecord(Integer userId, String path, String pathQuery, Short scene, String shareTicket, String referrerInfo, Integer count, Timestamp createTime, Timestamp updateTime) {
         super(MpSceneRecord.MP_SCENE_RECORD);
 
         set(0, userId);
@@ -515,7 +515,7 @@ public class MpSceneRecordRecord extends TableRecordImpl<MpSceneRecordRecord> im
         set(4, shareTicket);
         set(5, referrerInfo);
         set(6, count);
-        set(7, addTime);
+        set(7, createTime);
         set(8, updateTime);
     }
 }

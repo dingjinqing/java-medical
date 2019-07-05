@@ -30,7 +30,7 @@ import org.jooq.impl.UpdatableRecordImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class FriendPromoteDetailRecord extends UpdatableRecordImpl<FriendPromoteDetailRecord> implements Record7<Integer, Integer, Integer, Integer, Integer, Timestamp, Timestamp> {
 
-    private static final long serialVersionUID = -1157512669;
+    private static final long serialVersionUID = 425541989;
 
     /**
      * Setter for <code>mini_shop_471752.b2c_friend_promote_detail.id</code>.
@@ -47,42 +47,42 @@ public class FriendPromoteDetailRecord extends UpdatableRecordImpl<FriendPromote
     }
 
     /**
-     * Setter for <code>mini_shop_471752.b2c_friend_promote_detail.launch_id</code>. 助力活动发起ID
+     * Setter for <code>mini_shop_471752.b2c_friend_promote_detail.launch_id</code>. 助力活动发起id
      */
     public void setLaunchId(Integer value) {
         set(1, value);
     }
 
     /**
-     * Getter for <code>mini_shop_471752.b2c_friend_promote_detail.launch_id</code>. 助力活动发起ID
+     * Getter for <code>mini_shop_471752.b2c_friend_promote_detail.launch_id</code>. 助力活动发起id
      */
     public Integer getLaunchId() {
         return (Integer) get(1);
     }
 
     /**
-     * Setter for <code>mini_shop_471752.b2c_friend_promote_detail.user_id</code>. 助力会员ID
+     * Setter for <code>mini_shop_471752.b2c_friend_promote_detail.user_id</code>. 助力会员id
      */
     public void setUserId(Integer value) {
         set(2, value);
     }
 
     /**
-     * Getter for <code>mini_shop_471752.b2c_friend_promote_detail.user_id</code>. 助力会员ID
+     * Getter for <code>mini_shop_471752.b2c_friend_promote_detail.user_id</code>. 助力会员id
      */
     public Integer getUserId() {
         return (Integer) get(2);
     }
 
     /**
-     * Setter for <code>mini_shop_471752.b2c_friend_promote_detail.promote_id</code>. 助力活动ID
+     * Setter for <code>mini_shop_471752.b2c_friend_promote_detail.promote_id</code>. 助力活动id
      */
     public void setPromoteId(Integer value) {
         set(3, value);
     }
 
     /**
-     * Getter for <code>mini_shop_471752.b2c_friend_promote_detail.promote_id</code>. 助力活动ID
+     * Getter for <code>mini_shop_471752.b2c_friend_promote_detail.promote_id</code>. 助力活动id
      */
     public Integer getPromoteId() {
         return (Integer) get(3);
@@ -103,16 +103,16 @@ public class FriendPromoteDetailRecord extends UpdatableRecordImpl<FriendPromote
     }
 
     /**
-     * Setter for <code>mini_shop_471752.b2c_friend_promote_detail.promote_time</code>. 助力时间
+     * Setter for <code>mini_shop_471752.b2c_friend_promote_detail.create_time</code>. 助力时间
      */
-    public void setPromoteTime(Timestamp value) {
+    public void setCreateTime(Timestamp value) {
         set(5, value);
     }
 
     /**
-     * Getter for <code>mini_shop_471752.b2c_friend_promote_detail.promote_time</code>. 助力时间
+     * Getter for <code>mini_shop_471752.b2c_friend_promote_detail.create_time</code>. 助力时间
      */
-    public Timestamp getPromoteTime() {
+    public Timestamp getCreateTime() {
         return (Timestamp) get(5);
     }
 
@@ -207,7 +207,7 @@ public class FriendPromoteDetailRecord extends UpdatableRecordImpl<FriendPromote
      */
     @Override
     public Field<Timestamp> field6() {
-        return FriendPromoteDetail.FRIEND_PROMOTE_DETAIL.PROMOTE_TIME;
+        return FriendPromoteDetail.FRIEND_PROMOTE_DETAIL.CREATE_TIME;
     }
 
     /**
@@ -263,7 +263,7 @@ public class FriendPromoteDetailRecord extends UpdatableRecordImpl<FriendPromote
      */
     @Override
     public Timestamp component6() {
-        return getPromoteTime();
+        return getCreateTime();
     }
 
     /**
@@ -319,7 +319,7 @@ public class FriendPromoteDetailRecord extends UpdatableRecordImpl<FriendPromote
      */
     @Override
     public Timestamp value6() {
-        return getPromoteTime();
+        return getCreateTime();
     }
 
     /**
@@ -380,7 +380,7 @@ public class FriendPromoteDetailRecord extends UpdatableRecordImpl<FriendPromote
      */
     @Override
     public FriendPromoteDetailRecord value6(Timestamp value) {
-        setPromoteTime(value);
+        setCreateTime(value);
         return this;
     }
 
@@ -422,7 +422,7 @@ public class FriendPromoteDetailRecord extends UpdatableRecordImpl<FriendPromote
     /**
      * Create a detached, initialised FriendPromoteDetailRecord
      */
-    public FriendPromoteDetailRecord(Integer id, Integer launchId, Integer userId, Integer promoteId, Integer promoteValue, Timestamp promoteTime, Timestamp updateTime) {
+    public FriendPromoteDetailRecord(Integer id, Integer launchId, Integer userId, Integer promoteId, Integer promoteValue, Timestamp createTime, Timestamp updateTime) {
         super(FriendPromoteDetail.FRIEND_PROMOTE_DETAIL);
 
         set(0, id);
@@ -430,7 +430,7 @@ public class FriendPromoteDetailRecord extends UpdatableRecordImpl<FriendPromote
         set(2, userId);
         set(3, promoteId);
         set(4, promoteValue);
-        set(5, promoteTime);
+        set(5, createTime);
         set(6, updateTime);
     }
 }

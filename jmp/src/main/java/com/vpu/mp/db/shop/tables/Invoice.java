@@ -42,7 +42,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class Invoice extends TableImpl<InvoiceRecord> {
 
-    private static final long serialVersionUID = 1691511515;
+    private static final long serialVersionUID = 1195308060;
 
     /**
      * The reference instance of <code>mini_shop_471752.b2c_invoice</code>
@@ -83,29 +83,34 @@ public class Invoice extends TableImpl<InvoiceRecord> {
     public final TableField<InvoiceRecord, String> TELEPHONE = createField("telephone", org.jooq.impl.SQLDataType.VARCHAR(191), this, "公司电话");
 
     /**
-     * The column <code>mini_shop_471752.b2c_invoice.taxNumber</code>. 税号
+     * The column <code>mini_shop_471752.b2c_invoice.taxnumber</code>. 税号
      */
-    public final TableField<InvoiceRecord, String> TAXNUMBER = createField("taxNumber", org.jooq.impl.SQLDataType.VARCHAR(191), this, "税号");
+    public final TableField<InvoiceRecord, String> TAXNUMBER = createField("taxnumber", org.jooq.impl.SQLDataType.VARCHAR(191), this, "税号");
 
     /**
-     * The column <code>mini_shop_471752.b2c_invoice.companyAddress</code>. 公司地址
+     * The column <code>mini_shop_471752.b2c_invoice.companyaddress</code>. 公司地址
      */
-    public final TableField<InvoiceRecord, String> COMPANYADDRESS = createField("companyAddress", org.jooq.impl.SQLDataType.VARCHAR(191), this, "公司地址");
+    public final TableField<InvoiceRecord, String> COMPANYADDRESS = createField("companyaddress", org.jooq.impl.SQLDataType.VARCHAR(191), this, "公司地址");
 
     /**
-     * The column <code>mini_shop_471752.b2c_invoice.bankName</code>. 银行名称
+     * The column <code>mini_shop_471752.b2c_invoice.bankname</code>. 银行名称
      */
-    public final TableField<InvoiceRecord, String> BANKNAME = createField("bankName", org.jooq.impl.SQLDataType.VARCHAR(191), this, "银行名称");
+    public final TableField<InvoiceRecord, String> BANKNAME = createField("bankname", org.jooq.impl.SQLDataType.VARCHAR(191), this, "银行名称");
 
     /**
-     * The column <code>mini_shop_471752.b2c_invoice.bankAccount</code>. 银行账号
+     * The column <code>mini_shop_471752.b2c_invoice.bankaccount</code>. 银行账号
      */
-    public final TableField<InvoiceRecord, String> BANKACCOUNT = createField("bankAccount", org.jooq.impl.SQLDataType.VARCHAR(191), this, "银行账号");
+    public final TableField<InvoiceRecord, String> BANKACCOUNT = createField("bankaccount", org.jooq.impl.SQLDataType.VARCHAR(191), this, "银行账号");
 
     /**
-     * The column <code>mini_shop_471752.b2c_invoice.add_time</code>.
+     * The column <code>mini_shop_471752.b2c_invoice.create_time</code>.
      */
-    public final TableField<InvoiceRecord, Timestamp> ADD_TIME = createField("add_time", org.jooq.impl.SQLDataType.TIMESTAMP, this, "");
+    public final TableField<InvoiceRecord, Timestamp> CREATE_TIME = createField("create_time", org.jooq.impl.SQLDataType.TIMESTAMP.nullable(false).defaultValue(org.jooq.impl.DSL.field("CURRENT_TIMESTAMP", org.jooq.impl.SQLDataType.TIMESTAMP)), this, "");
+
+    /**
+     * The column <code>mini_shop_471752.b2c_invoice.update_time</code>. 最后修改时间
+     */
+    public final TableField<InvoiceRecord, Timestamp> UPDATE_TIME = createField("update_time", org.jooq.impl.SQLDataType.TIMESTAMP.nullable(false).defaultValue(org.jooq.impl.DSL.field("CURRENT_TIMESTAMP", org.jooq.impl.SQLDataType.TIMESTAMP)), this, "最后修改时间");
 
     /**
      * Create a <code>mini_shop_471752.b2c_invoice</code> table reference

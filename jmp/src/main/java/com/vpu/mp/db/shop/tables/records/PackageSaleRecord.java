@@ -28,7 +28,7 @@ import org.jooq.impl.UpdatableRecordImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class PackageSaleRecord extends UpdatableRecordImpl<PackageSaleRecord> {
 
-    private static final long serialVersionUID = 485631442;
+    private static final long serialVersionUID = -1784770106;
 
     /**
      * Setter for <code>mini_shop_471752.b2c_package_sale.id</code>.
@@ -143,14 +143,14 @@ public class PackageSaleRecord extends UpdatableRecordImpl<PackageSaleRecord> {
     }
 
     /**
-     * Setter for <code>mini_shop_471752.b2c_package_sale.goods_ids_1</code>. 分组goodsIDs
+     * Setter for <code>mini_shop_471752.b2c_package_sale.goods_ids_1</code>. 分组goodsids
      */
     public void setGoodsIds_1(String value) {
         set(8, value);
     }
 
     /**
-     * Getter for <code>mini_shop_471752.b2c_package_sale.goods_ids_1</code>. 分组goodsIDs
+     * Getter for <code>mini_shop_471752.b2c_package_sale.goods_ids_1</code>. 分组goodsids
      */
     public String getGoodsIds_1() {
         return (String) get(8);
@@ -227,14 +227,14 @@ public class PackageSaleRecord extends UpdatableRecordImpl<PackageSaleRecord> {
     }
 
     /**
-     * Setter for <code>mini_shop_471752.b2c_package_sale.goods_ids_2</code>. 分组goodsIDs
+     * Setter for <code>mini_shop_471752.b2c_package_sale.goods_ids_2</code>. 分组goodsids
      */
     public void setGoodsIds_2(String value) {
         set(14, value);
     }
 
     /**
-     * Getter for <code>mini_shop_471752.b2c_package_sale.goods_ids_2</code>. 分组goodsIDs
+     * Getter for <code>mini_shop_471752.b2c_package_sale.goods_ids_2</code>. 分组goodsids
      */
     public String getGoodsIds_2() {
         return (String) get(14);
@@ -311,14 +311,14 @@ public class PackageSaleRecord extends UpdatableRecordImpl<PackageSaleRecord> {
     }
 
     /**
-     * Setter for <code>mini_shop_471752.b2c_package_sale.goods_ids_3</code>. 分组goodsIDs
+     * Setter for <code>mini_shop_471752.b2c_package_sale.goods_ids_3</code>. 分组goodsids
      */
     public void setGoodsIds_3(String value) {
         set(20, value);
     }
 
     /**
-     * Getter for <code>mini_shop_471752.b2c_package_sale.goods_ids_3</code>. 分组goodsIDs
+     * Getter for <code>mini_shop_471752.b2c_package_sale.goods_ids_3</code>. 分组goodsids
      */
     public String getGoodsIds_3() {
         return (String) get(20);
@@ -381,28 +381,28 @@ public class PackageSaleRecord extends UpdatableRecordImpl<PackageSaleRecord> {
     }
 
     /**
-     * Setter for <code>mini_shop_471752.b2c_package_sale.add_time</code>.
+     * Setter for <code>mini_shop_471752.b2c_package_sale.create_time</code>.
      */
-    public void setAddTime(Timestamp value) {
+    public void setCreateTime(Timestamp value) {
         set(25, value);
     }
 
     /**
-     * Getter for <code>mini_shop_471752.b2c_package_sale.add_time</code>.
+     * Getter for <code>mini_shop_471752.b2c_package_sale.create_time</code>.
      */
-    public Timestamp getAddTime() {
+    public Timestamp getCreateTime() {
         return (Timestamp) get(25);
     }
 
     /**
-     * Setter for <code>mini_shop_471752.b2c_package_sale.update_time</code>.
+     * Setter for <code>mini_shop_471752.b2c_package_sale.update_time</code>. 最后修改时间
      */
     public void setUpdateTime(Timestamp value) {
         set(26, value);
     }
 
     /**
-     * Getter for <code>mini_shop_471752.b2c_package_sale.update_time</code>.
+     * Getter for <code>mini_shop_471752.b2c_package_sale.update_time</code>. 最后修改时间
      */
     public Timestamp getUpdateTime() {
         return (Timestamp) get(26);
@@ -434,7 +434,7 @@ public class PackageSaleRecord extends UpdatableRecordImpl<PackageSaleRecord> {
     /**
      * Create a detached, initialised PackageSaleRecord
      */
-    public PackageSaleRecord(Integer id, String packageName, Timestamp startTime, Timestamp endTime, BigDecimal totalMoney, Byte goodsGroup_1, String groupName_1, Integer goodsNumber_1, String goodsIds_1, String catIds_1, String sortIds_1, Byte goodsGroup_2, String groupName_2, Integer goodsNumber_2, String goodsIds_2, String catIds_2, String sortIds_2, Byte goodsGroup_3, String groupName_3, Integer goodsNumber_3, String goodsIds_3, String catIds_3, String sortIds_3, Byte status, Byte delFlag, Timestamp addTime, Timestamp updateTime) {
+    public PackageSaleRecord(Integer id, String packageName, Timestamp startTime, Timestamp endTime, BigDecimal totalMoney, Byte goodsGroup_1, String groupName_1, Integer goodsNumber_1, String goodsIds_1, String catIds_1, String sortIds_1, Byte goodsGroup_2, String groupName_2, Integer goodsNumber_2, String goodsIds_2, String catIds_2, String sortIds_2, Byte goodsGroup_3, String groupName_3, Integer goodsNumber_3, String goodsIds_3, String catIds_3, String sortIds_3, Byte status, Byte delFlag, Timestamp createTime, Timestamp updateTime) {
         super(PackageSale.PACKAGE_SALE);
 
         set(0, id);
@@ -462,7 +462,7 @@ public class PackageSaleRecord extends UpdatableRecordImpl<PackageSaleRecord> {
         set(22, sortIds_3);
         set(23, status);
         set(24, delFlag);
-        set(25, addTime);
+        set(25, createTime);
         set(26, updateTime);
     }
 }

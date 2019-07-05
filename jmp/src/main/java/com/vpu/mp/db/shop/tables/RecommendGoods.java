@@ -42,7 +42,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class RecommendGoods extends TableImpl<RecommendGoodsRecord> {
 
-    private static final long serialVersionUID = 2041216366;
+    private static final long serialVersionUID = -886645004;
 
     /**
      * The reference instance of <code>mini_shop_471752.b2c_recommend_goods</code>
@@ -73,14 +73,14 @@ public class RecommendGoods extends TableImpl<RecommendGoodsRecord> {
     public final TableField<RecommendGoodsRecord, Byte> RECOMMEND_TYPE = createField("recommend_type", org.jooq.impl.SQLDataType.TINYINT.nullable(false).defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.TINYINT)), this, "0.全部商品1.部分商品");
 
     /**
-     * The column <code>mini_shop_471752.b2c_recommend_goods.recommend_goods_id</code>. 推荐商品ID
+     * The column <code>mini_shop_471752.b2c_recommend_goods.recommend_goods_id</code>. 推荐商品id
      */
-    public final TableField<RecommendGoodsRecord, String> RECOMMEND_GOODS_ID = createField("recommend_goods_id", org.jooq.impl.SQLDataType.VARCHAR(299), this, "推荐商品ID");
+    public final TableField<RecommendGoodsRecord, String> RECOMMEND_GOODS_ID = createField("recommend_goods_id", org.jooq.impl.SQLDataType.VARCHAR(299), this, "推荐商品id");
 
     /**
-     * The column <code>mini_shop_471752.b2c_recommend_goods.recommend_cat_id</code>. 推荐分类ID
+     * The column <code>mini_shop_471752.b2c_recommend_goods.recommend_cat_id</code>. 推荐分类id
      */
-    public final TableField<RecommendGoodsRecord, String> RECOMMEND_CAT_ID = createField("recommend_cat_id", org.jooq.impl.SQLDataType.VARCHAR(299), this, "推荐分类ID");
+    public final TableField<RecommendGoodsRecord, String> RECOMMEND_CAT_ID = createField("recommend_cat_id", org.jooq.impl.SQLDataType.VARCHAR(299), this, "推荐分类id");
 
     /**
      * The column <code>mini_shop_471752.b2c_recommend_goods.recommend_use_page</code>. 推荐使用页面
@@ -88,19 +88,9 @@ public class RecommendGoods extends TableImpl<RecommendGoodsRecord> {
     public final TableField<RecommendGoodsRecord, String> RECOMMEND_USE_PAGE = createField("recommend_use_page", org.jooq.impl.SQLDataType.VARCHAR(299).nullable(false).defaultValue(org.jooq.impl.DSL.inline("", org.jooq.impl.SQLDataType.VARCHAR)), this, "推荐使用页面");
 
     /**
-     * The column <code>mini_shop_471752.b2c_recommend_goods.add_time</code>. 添加时间
-     */
-    public final TableField<RecommendGoodsRecord, Timestamp> ADD_TIME = createField("add_time", org.jooq.impl.SQLDataType.TIMESTAMP.defaultValue(org.jooq.impl.DSL.inline("0000-00-00 00:00:00", org.jooq.impl.SQLDataType.TIMESTAMP)), this, "添加时间");
-
-    /**
      * The column <code>mini_shop_471752.b2c_recommend_goods.status</code>. 状态1停用
      */
     public final TableField<RecommendGoodsRecord, Byte> STATUS = createField("status", org.jooq.impl.SQLDataType.TINYINT.defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.TINYINT)), this, "状态1停用");
-
-    /**
-     * The column <code>mini_shop_471752.b2c_recommend_goods.update_time</code>. 更新时间
-     */
-    public final TableField<RecommendGoodsRecord, Timestamp> UPDATE_TIME = createField("update_time", org.jooq.impl.SQLDataType.TIMESTAMP.defaultValue(org.jooq.impl.DSL.field("CURRENT_TIMESTAMP", org.jooq.impl.SQLDataType.TIMESTAMP)), this, "更新时间");
 
     /**
      * The column <code>mini_shop_471752.b2c_recommend_goods.del_flag</code>. 1删除
@@ -108,9 +98,24 @@ public class RecommendGoods extends TableImpl<RecommendGoodsRecord> {
     public final TableField<RecommendGoodsRecord, Byte> DEL_FLAG = createField("del_flag", org.jooq.impl.SQLDataType.TINYINT.defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.TINYINT)), this, "1删除");
 
     /**
-     * The column <code>mini_shop_471752.b2c_recommend_goods.recommend_sort_id</code>. 推荐商家分类ID
+     * The column <code>mini_shop_471752.b2c_recommend_goods.del_time</code>. 删除时间
      */
-    public final TableField<RecommendGoodsRecord, String> RECOMMEND_SORT_ID = createField("recommend_sort_id", org.jooq.impl.SQLDataType.VARCHAR(299), this, "推荐商家分类ID");
+    public final TableField<RecommendGoodsRecord, Timestamp> DEL_TIME = createField("del_time", org.jooq.impl.SQLDataType.TIMESTAMP.nullable(false).defaultValue(org.jooq.impl.DSL.inline("0000-00-00 00:00:00", org.jooq.impl.SQLDataType.TIMESTAMP)), this, "删除时间");
+
+    /**
+     * The column <code>mini_shop_471752.b2c_recommend_goods.recommend_sort_id</code>. 推荐商家分类id
+     */
+    public final TableField<RecommendGoodsRecord, String> RECOMMEND_SORT_ID = createField("recommend_sort_id", org.jooq.impl.SQLDataType.VARCHAR(299), this, "推荐商家分类id");
+
+    /**
+     * The column <code>mini_shop_471752.b2c_recommend_goods.create_time</code>.
+     */
+    public final TableField<RecommendGoodsRecord, Timestamp> CREATE_TIME = createField("create_time", org.jooq.impl.SQLDataType.TIMESTAMP.nullable(false).defaultValue(org.jooq.impl.DSL.field("CURRENT_TIMESTAMP", org.jooq.impl.SQLDataType.TIMESTAMP)), this, "");
+
+    /**
+     * The column <code>mini_shop_471752.b2c_recommend_goods.update_time</code>. 最后修改时间
+     */
+    public final TableField<RecommendGoodsRecord, Timestamp> UPDATE_TIME = createField("update_time", org.jooq.impl.SQLDataType.TIMESTAMP.nullable(false).defaultValue(org.jooq.impl.DSL.field("CURRENT_TIMESTAMP", org.jooq.impl.SQLDataType.TIMESTAMP)), this, "最后修改时间");
 
     /**
      * Create a <code>mini_shop_471752.b2c_recommend_goods</code> table reference

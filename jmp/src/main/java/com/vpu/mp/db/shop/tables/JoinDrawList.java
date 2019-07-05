@@ -42,7 +42,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class JoinDrawList extends TableImpl<JoinDrawListRecord> {
 
-    private static final long serialVersionUID = -2038200898;
+    private static final long serialVersionUID = 1241503206;
 
     /**
      * The reference instance of <code>mini_shop_471752.b2c_join_draw_list</code>
@@ -63,29 +63,29 @@ public class JoinDrawList extends TableImpl<JoinDrawListRecord> {
     public final TableField<JoinDrawListRecord, Integer> ID = createField("id", org.jooq.impl.SQLDataType.INTEGER.nullable(false).identity(true), this, "");
 
     /**
-     * The column <code>mini_shop_471752.b2c_join_draw_list.group_draw_id</code>. 拼团抽奖ID
+     * The column <code>mini_shop_471752.b2c_join_draw_list.group_draw_id</code>. 拼团抽奖id
      */
-    public final TableField<JoinDrawListRecord, Integer> GROUP_DRAW_ID = createField("group_draw_id", org.jooq.impl.SQLDataType.INTEGER.nullable(false), this, "拼团抽奖ID");
+    public final TableField<JoinDrawListRecord, Integer> GROUP_DRAW_ID = createField("group_draw_id", org.jooq.impl.SQLDataType.INTEGER.nullable(false), this, "拼团抽奖id");
 
     /**
-     * The column <code>mini_shop_471752.b2c_join_draw_list.goods_id</code>. 商品ID
+     * The column <code>mini_shop_471752.b2c_join_draw_list.goods_id</code>. 商品id
      */
-    public final TableField<JoinDrawListRecord, Integer> GOODS_ID = createField("goods_id", org.jooq.impl.SQLDataType.INTEGER.nullable(false), this, "商品ID");
+    public final TableField<JoinDrawListRecord, Integer> GOODS_ID = createField("goods_id", org.jooq.impl.SQLDataType.INTEGER.nullable(false), this, "商品id");
 
     /**
-     * The column <code>mini_shop_471752.b2c_join_draw_list.group_id</code>. 拼团ID
+     * The column <code>mini_shop_471752.b2c_join_draw_list.group_id</code>. 拼团id
      */
-    public final TableField<JoinDrawListRecord, Integer> GROUP_ID = createField("group_id", org.jooq.impl.SQLDataType.INTEGER.nullable(false), this, "拼团ID");
+    public final TableField<JoinDrawListRecord, Integer> GROUP_ID = createField("group_id", org.jooq.impl.SQLDataType.INTEGER.nullable(false), this, "拼团id");
 
     /**
-     * The column <code>mini_shop_471752.b2c_join_draw_list.user_id</code>. 抽奖用户ID
+     * The column <code>mini_shop_471752.b2c_join_draw_list.user_id</code>. 抽奖用户id
      */
-    public final TableField<JoinDrawListRecord, Integer> USER_ID = createField("user_id", org.jooq.impl.SQLDataType.INTEGER.nullable(false), this, "抽奖用户ID");
+    public final TableField<JoinDrawListRecord, Integer> USER_ID = createField("user_id", org.jooq.impl.SQLDataType.INTEGER.nullable(false), this, "抽奖用户id");
 
     /**
-     * The column <code>mini_shop_471752.b2c_join_draw_list.draw_id</code>. 抽奖序列ID
+     * The column <code>mini_shop_471752.b2c_join_draw_list.draw_id</code>. 抽奖序列id
      */
-    public final TableField<JoinDrawListRecord, Integer> DRAW_ID = createField("draw_id", org.jooq.impl.SQLDataType.INTEGER.nullable(false), this, "抽奖序列ID");
+    public final TableField<JoinDrawListRecord, Integer> DRAW_ID = createField("draw_id", org.jooq.impl.SQLDataType.INTEGER.nullable(false), this, "抽奖序列id");
 
     /**
      * The column <code>mini_shop_471752.b2c_join_draw_list.is_win_draw</code>. 是否已中奖
@@ -93,9 +93,14 @@ public class JoinDrawList extends TableImpl<JoinDrawListRecord> {
     public final TableField<JoinDrawListRecord, Byte> IS_WIN_DRAW = createField("is_win_draw", org.jooq.impl.SQLDataType.TINYINT.nullable(false).defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.TINYINT)), this, "是否已中奖");
 
     /**
-     * The column <code>mini_shop_471752.b2c_join_draw_list.add_time</code>. 添加时间
+     * The column <code>mini_shop_471752.b2c_join_draw_list.create_time</code>.
      */
-    public final TableField<JoinDrawListRecord, Timestamp> ADD_TIME = createField("add_time", org.jooq.impl.SQLDataType.TIMESTAMP.nullable(false), this, "添加时间");
+    public final TableField<JoinDrawListRecord, Timestamp> CREATE_TIME = createField("create_time", org.jooq.impl.SQLDataType.TIMESTAMP.nullable(false).defaultValue(org.jooq.impl.DSL.field("CURRENT_TIMESTAMP", org.jooq.impl.SQLDataType.TIMESTAMP)), this, "");
+
+    /**
+     * The column <code>mini_shop_471752.b2c_join_draw_list.update_time</code>. 最后修改时间
+     */
+    public final TableField<JoinDrawListRecord, Timestamp> UPDATE_TIME = createField("update_time", org.jooq.impl.SQLDataType.TIMESTAMP.nullable(false).defaultValue(org.jooq.impl.DSL.field("CURRENT_TIMESTAMP", org.jooq.impl.SQLDataType.TIMESTAMP)), this, "最后修改时间");
 
     /**
      * Create a <code>mini_shop_471752.b2c_join_draw_list</code> table reference

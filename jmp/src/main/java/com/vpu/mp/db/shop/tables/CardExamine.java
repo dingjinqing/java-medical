@@ -42,7 +42,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class CardExamine extends TableImpl<CardExamineRecord> {
 
-    private static final long serialVersionUID = -1096431092;
+    private static final long serialVersionUID = -1437407323;
 
     /**
      * The reference instance of <code>mini_shop_471752.b2c_card_examine</code>
@@ -68,9 +68,9 @@ public class CardExamine extends TableImpl<CardExamineRecord> {
     public final TableField<CardExamineRecord, Integer> CARD_ID = createField("card_id", org.jooq.impl.SQLDataType.INTEGER.nullable(false).defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.INTEGER)), this, "会云卡id");
 
     /**
-     * The column <code>mini_shop_471752.b2c_card_examine.card_no</code>. 会员卡NO
+     * The column <code>mini_shop_471752.b2c_card_examine.card_no</code>. 会员卡no
      */
-    public final TableField<CardExamineRecord, String> CARD_NO = createField("card_no", org.jooq.impl.SQLDataType.VARCHAR(32).defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.VARCHAR)), this, "会员卡NO");
+    public final TableField<CardExamineRecord, String> CARD_NO = createField("card_no", org.jooq.impl.SQLDataType.VARCHAR(32).nullable(false).defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.VARCHAR)), this, "会员卡no");
 
     /**
      * The column <code>mini_shop_471752.b2c_card_examine.user_id</code>. 用户id
@@ -148,19 +148,14 @@ public class CardExamine extends TableImpl<CardExamineRecord> {
     public final TableField<CardExamineRecord, Byte> INDUSTRY_INFO = createField("industry_info", org.jooq.impl.SQLDataType.TINYINT, this, "所在行业");
 
     /**
-     * The column <code>mini_shop_471752.b2c_card_examine.add_time</code>. 提交时间
-     */
-    public final TableField<CardExamineRecord, Timestamp> ADD_TIME = createField("add_time", org.jooq.impl.SQLDataType.TIMESTAMP.defaultValue(org.jooq.impl.DSL.field("CURRENT_TIMESTAMP", org.jooq.impl.SQLDataType.TIMESTAMP)), this, "提交时间");
-
-    /**
      * The column <code>mini_shop_471752.b2c_card_examine.pass_time</code>. 通过时间
      */
-    public final TableField<CardExamineRecord, Timestamp> PASS_TIME = createField("pass_time", org.jooq.impl.SQLDataType.TIMESTAMP, this, "通过时间");
+    public final TableField<CardExamineRecord, Timestamp> PASS_TIME = createField("pass_time", org.jooq.impl.SQLDataType.TIMESTAMP.nullable(false).defaultValue(org.jooq.impl.DSL.inline("0000-00-00 00:00:00", org.jooq.impl.SQLDataType.TIMESTAMP)), this, "通过时间");
 
     /**
      * The column <code>mini_shop_471752.b2c_card_examine.refuse_time</code>. 拒绝时间
      */
-    public final TableField<CardExamineRecord, Timestamp> REFUSE_TIME = createField("refuse_time", org.jooq.impl.SQLDataType.TIMESTAMP, this, "拒绝时间");
+    public final TableField<CardExamineRecord, Timestamp> REFUSE_TIME = createField("refuse_time", org.jooq.impl.SQLDataType.TIMESTAMP.nullable(false).defaultValue(org.jooq.impl.DSL.inline("0000-00-00 00:00:00", org.jooq.impl.SQLDataType.TIMESTAMP)), this, "拒绝时间");
 
     /**
      * The column <code>mini_shop_471752.b2c_card_examine.refuse_desc</code>. 拒绝理由
@@ -175,7 +170,17 @@ public class CardExamine extends TableImpl<CardExamineRecord> {
     /**
      * The column <code>mini_shop_471752.b2c_card_examine.def_time</code>. 删除时间
      */
-    public final TableField<CardExamineRecord, Timestamp> DEF_TIME = createField("def_time", org.jooq.impl.SQLDataType.TIMESTAMP, this, "删除时间");
+    public final TableField<CardExamineRecord, Timestamp> DEF_TIME = createField("def_time", org.jooq.impl.SQLDataType.TIMESTAMP.nullable(false).defaultValue(org.jooq.impl.DSL.inline("0000-00-00 00:00:00", org.jooq.impl.SQLDataType.TIMESTAMP)), this, "删除时间");
+
+    /**
+     * The column <code>mini_shop_471752.b2c_card_examine.create_time</code>.
+     */
+    public final TableField<CardExamineRecord, Timestamp> CREATE_TIME = createField("create_time", org.jooq.impl.SQLDataType.TIMESTAMP.nullable(false).defaultValue(org.jooq.impl.DSL.field("CURRENT_TIMESTAMP", org.jooq.impl.SQLDataType.TIMESTAMP)), this, "");
+
+    /**
+     * The column <code>mini_shop_471752.b2c_card_examine.update_time</code>. 最后修改时间
+     */
+    public final TableField<CardExamineRecord, Timestamp> UPDATE_TIME = createField("update_time", org.jooq.impl.SQLDataType.TIMESTAMP.nullable(false).defaultValue(org.jooq.impl.DSL.field("CURRENT_TIMESTAMP", org.jooq.impl.SQLDataType.TIMESTAMP)), this, "最后修改时间");
 
     /**
      * Create a <code>mini_shop_471752.b2c_card_examine</code> table reference

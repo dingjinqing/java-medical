@@ -35,7 +35,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class MpMonthlyRetain extends TableImpl<MpMonthlyRetainRecord> {
 
-    private static final long serialVersionUID = -991159735;
+    private static final long serialVersionUID = 1052668384;
 
     /**
      * The reference instance of <code>mini_shop_471752.b2c_mp_monthly_retain</code>
@@ -66,9 +66,14 @@ public class MpMonthlyRetain extends TableImpl<MpMonthlyRetainRecord> {
     public final TableField<MpMonthlyRetainRecord, String> VISIT_UV = createField("visit_uv", org.jooq.impl.SQLDataType.CLOB, this, "活跃用户留存");
 
     /**
-     * The column <code>mini_shop_471752.b2c_mp_monthly_retain.add_time</code>. 添加时间
+     * The column <code>mini_shop_471752.b2c_mp_monthly_retain.create_time</code>.
      */
-    public final TableField<MpMonthlyRetainRecord, Timestamp> ADD_TIME = createField("add_time", org.jooq.impl.SQLDataType.TIMESTAMP.nullable(false).defaultValue(org.jooq.impl.DSL.field("CURRENT_TIMESTAMP", org.jooq.impl.SQLDataType.TIMESTAMP)), this, "添加时间");
+    public final TableField<MpMonthlyRetainRecord, Timestamp> CREATE_TIME = createField("create_time", org.jooq.impl.SQLDataType.TIMESTAMP.nullable(false).defaultValue(org.jooq.impl.DSL.field("CURRENT_TIMESTAMP", org.jooq.impl.SQLDataType.TIMESTAMP)), this, "");
+
+    /**
+     * The column <code>mini_shop_471752.b2c_mp_monthly_retain.update_time</code>. 最后修改时间
+     */
+    public final TableField<MpMonthlyRetainRecord, Timestamp> UPDATE_TIME = createField("update_time", org.jooq.impl.SQLDataType.TIMESTAMP.nullable(false).defaultValue(org.jooq.impl.DSL.field("CURRENT_TIMESTAMP", org.jooq.impl.SQLDataType.TIMESTAMP)), this, "最后修改时间");
 
     /**
      * Create a <code>mini_shop_471752.b2c_mp_monthly_retain</code> table reference

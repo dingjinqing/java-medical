@@ -42,7 +42,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class MpTemplateFormId extends TableImpl<MpTemplateFormIdRecord> {
 
-    private static final long serialVersionUID = -237824724;
+    private static final long serialVersionUID = -1056846570;
 
     /**
      * The reference instance of <code>mini_shop_471752.b2c_mp_template_form_id</code>
@@ -58,9 +58,9 @@ public class MpTemplateFormId extends TableImpl<MpTemplateFormIdRecord> {
     }
 
     /**
-     * The column <code>mini_shop_471752.b2c_mp_template_form_id.rec_id</code>. 记录Id
+     * The column <code>mini_shop_471752.b2c_mp_template_form_id.rec_id</code>. 记录id
      */
-    public final TableField<MpTemplateFormIdRecord, Integer> REC_ID = createField("rec_id", org.jooq.impl.SQLDataType.INTEGER.nullable(false).identity(true), this, "记录Id");
+    public final TableField<MpTemplateFormIdRecord, Integer> REC_ID = createField("rec_id", org.jooq.impl.SQLDataType.INTEGER.nullable(false).identity(true), this, "记录id");
 
     /**
      * The column <code>mini_shop_471752.b2c_mp_template_form_id.form_id</code>. 小程序提交form_id
@@ -80,7 +80,7 @@ public class MpTemplateFormId extends TableImpl<MpTemplateFormIdRecord> {
     /**
      * The column <code>mini_shop_471752.b2c_mp_template_form_id.use_state</code>. 使用状态，0未使用，1冻结 2 使用
      */
-    public final TableField<MpTemplateFormIdRecord, Byte> USE_STATE = createField("use_state", org.jooq.impl.SQLDataType.TINYINT.defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.TINYINT)), this, "使用状态，0未使用，1冻结 2 使用");
+    public final TableField<MpTemplateFormIdRecord, Byte> USE_STATE = createField("use_state", org.jooq.impl.SQLDataType.TINYINT.nullable(false).defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.TINYINT)), this, "使用状态，0未使用，1冻结 2 使用");
 
     /**
      * The column <code>mini_shop_471752.b2c_mp_template_form_id.status</code>. 1: 发送成功  0：未知
@@ -95,7 +95,7 @@ public class MpTemplateFormId extends TableImpl<MpTemplateFormIdRecord> {
     /**
      * The column <code>mini_shop_471752.b2c_mp_template_form_id.template_type</code>. 使用类型，0 初始 1 订单 2 预约 3 优惠券 4 拼团 5卡券 
      */
-    public final TableField<MpTemplateFormIdRecord, Byte> TEMPLATE_TYPE = createField("template_type", org.jooq.impl.SQLDataType.TINYINT.defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.TINYINT)), this, "使用类型，0 初始 1 订单 2 预约 3 优惠券 4 拼团 5卡券 ");
+    public final TableField<MpTemplateFormIdRecord, Byte> TEMPLATE_TYPE = createField("template_type", org.jooq.impl.SQLDataType.TINYINT.nullable(false).defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.TINYINT)), this, "使用类型，0 初始 1 订单 2 预约 3 优惠券 4 拼团 5卡券 ");
 
     /**
      * The column <code>mini_shop_471752.b2c_mp_template_form_id.mp_link_identity</code>. 发送消息关联id，如果order_sn等
@@ -115,17 +115,22 @@ public class MpTemplateFormId extends TableImpl<MpTemplateFormIdRecord> {
     /**
      * The column <code>mini_shop_471752.b2c_mp_template_form_id.user_visit_time</code>. 用户点击访问时间
      */
-    public final TableField<MpTemplateFormIdRecord, Timestamp> USER_VISIT_TIME = createField("user_visit_time", org.jooq.impl.SQLDataType.TIMESTAMP, this, "用户点击访问时间");
-
-    /**
-     * The column <code>mini_shop_471752.b2c_mp_template_form_id.create_time</code>. 提交时间
-     */
-    public final TableField<MpTemplateFormIdRecord, Timestamp> CREATE_TIME = createField("create_time", org.jooq.impl.SQLDataType.TIMESTAMP.defaultValue(org.jooq.impl.DSL.field("CURRENT_TIMESTAMP", org.jooq.impl.SQLDataType.TIMESTAMP)), this, "提交时间");
+    public final TableField<MpTemplateFormIdRecord, Timestamp> USER_VISIT_TIME = createField("user_visit_time", org.jooq.impl.SQLDataType.TIMESTAMP.nullable(false).defaultValue(org.jooq.impl.DSL.inline("0000-00-00 00:00:00", org.jooq.impl.SQLDataType.TIMESTAMP)), this, "用户点击访问时间");
 
     /**
      * The column <code>mini_shop_471752.b2c_mp_template_form_id.use_time</code>. 使用时间
      */
-    public final TableField<MpTemplateFormIdRecord, Timestamp> USE_TIME = createField("use_time", org.jooq.impl.SQLDataType.TIMESTAMP.defaultValue(org.jooq.impl.DSL.inline("0000-00-00 00:00:00", org.jooq.impl.SQLDataType.TIMESTAMP)), this, "使用时间");
+    public final TableField<MpTemplateFormIdRecord, Timestamp> USE_TIME = createField("use_time", org.jooq.impl.SQLDataType.TIMESTAMP.nullable(false).defaultValue(org.jooq.impl.DSL.inline("0000-00-00 00:00:00", org.jooq.impl.SQLDataType.TIMESTAMP)), this, "使用时间");
+
+    /**
+     * The column <code>mini_shop_471752.b2c_mp_template_form_id.create_time</code>.
+     */
+    public final TableField<MpTemplateFormIdRecord, Timestamp> CREATE_TIME = createField("create_time", org.jooq.impl.SQLDataType.TIMESTAMP.nullable(false).defaultValue(org.jooq.impl.DSL.field("CURRENT_TIMESTAMP", org.jooq.impl.SQLDataType.TIMESTAMP)), this, "");
+
+    /**
+     * The column <code>mini_shop_471752.b2c_mp_template_form_id.update_time</code>. 最后修改时间
+     */
+    public final TableField<MpTemplateFormIdRecord, Timestamp> UPDATE_TIME = createField("update_time", org.jooq.impl.SQLDataType.TIMESTAMP.nullable(false).defaultValue(org.jooq.impl.DSL.field("CURRENT_TIMESTAMP", org.jooq.impl.SQLDataType.TIMESTAMP)), this, "最后修改时间");
 
     /**
      * Create a <code>mini_shop_471752.b2c_mp_template_form_id</code> table reference

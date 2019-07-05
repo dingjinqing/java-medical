@@ -9,6 +9,7 @@ import com.vpu.mp.db.shop.Keys;
 import com.vpu.mp.db.shop.MiniShop_471752;
 import com.vpu.mp.db.shop.tables.records.SpecValsRecord;
 
+import java.sql.Timestamp;
 import java.util.Arrays;
 import java.util.List;
 
@@ -41,7 +42,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class SpecVals extends TableImpl<SpecValsRecord> {
 
-    private static final long serialVersionUID = -786826196;
+    private static final long serialVersionUID = 219906137;
 
     /**
      * The reference instance of <code>mini_shop_471752.b2c_spec_vals</code>
@@ -57,9 +58,9 @@ public class SpecVals extends TableImpl<SpecValsRecord> {
     }
 
     /**
-     * The column <code>mini_shop_471752.b2c_spec_vals.specvalid</code>.
+     * The column <code>mini_shop_471752.b2c_spec_vals.spec_val_id</code>.
      */
-    public final TableField<SpecValsRecord, Integer> SPECVALID = createField("specvalid", org.jooq.impl.SQLDataType.INTEGER.nullable(false).identity(true), this, "");
+    public final TableField<SpecValsRecord, Integer> SPEC_VAL_ID = createField("spec_val_id", org.jooq.impl.SQLDataType.INTEGER.nullable(false).identity(true), this, "");
 
     /**
      * The column <code>mini_shop_471752.b2c_spec_vals.spec_id</code>.
@@ -67,9 +68,9 @@ public class SpecVals extends TableImpl<SpecValsRecord> {
     public final TableField<SpecValsRecord, Integer> SPEC_ID = createField("spec_id", org.jooq.impl.SQLDataType.INTEGER.nullable(false).defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.INTEGER)), this, "");
 
     /**
-     * The column <code>mini_shop_471752.b2c_spec_vals.specvalname</code>.
+     * The column <code>mini_shop_471752.b2c_spec_vals.spec_val_name</code>.
      */
-    public final TableField<SpecValsRecord, String> SPECVALNAME = createField("specvalname", org.jooq.impl.SQLDataType.VARCHAR(60).nullable(false).defaultValue(org.jooq.impl.DSL.inline("", org.jooq.impl.SQLDataType.VARCHAR)), this, "");
+    public final TableField<SpecValsRecord, String> SPEC_VAL_NAME = createField("spec_val_name", org.jooq.impl.SQLDataType.VARCHAR(60).nullable(false).defaultValue(org.jooq.impl.DSL.inline("", org.jooq.impl.SQLDataType.VARCHAR)), this, "");
 
     /**
      * The column <code>mini_shop_471752.b2c_spec_vals.del_flag</code>.
@@ -77,9 +78,19 @@ public class SpecVals extends TableImpl<SpecValsRecord> {
     public final TableField<SpecValsRecord, Byte> DEL_FLAG = createField("del_flag", org.jooq.impl.SQLDataType.TINYINT.nullable(false).defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.TINYINT)), this, "");
 
     /**
-     * The column <code>mini_shop_471752.b2c_spec_vals.shop_id</code>. 店铺ID
+     * The column <code>mini_shop_471752.b2c_spec_vals.goods_id</code>. 店铺id
      */
-    public final TableField<SpecValsRecord, Integer> SHOP_ID = createField("shop_id", org.jooq.impl.SQLDataType.INTEGER.nullable(false).defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.INTEGER)), this, "店铺ID");
+    public final TableField<SpecValsRecord, Integer> GOODS_ID = createField("goods_id", org.jooq.impl.SQLDataType.INTEGER.nullable(false).defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.INTEGER)), this, "店铺id");
+
+    /**
+     * The column <code>mini_shop_471752.b2c_spec_vals.create_time</code>.
+     */
+    public final TableField<SpecValsRecord, Timestamp> CREATE_TIME = createField("create_time", org.jooq.impl.SQLDataType.TIMESTAMP.nullable(false).defaultValue(org.jooq.impl.DSL.field("CURRENT_TIMESTAMP", org.jooq.impl.SQLDataType.TIMESTAMP)), this, "");
+
+    /**
+     * The column <code>mini_shop_471752.b2c_spec_vals.update_time</code>. 最后修改时间
+     */
+    public final TableField<SpecValsRecord, Timestamp> UPDATE_TIME = createField("update_time", org.jooq.impl.SQLDataType.TIMESTAMP.nullable(false).defaultValue(org.jooq.impl.DSL.field("CURRENT_TIMESTAMP", org.jooq.impl.SQLDataType.TIMESTAMP)), this, "最后修改时间");
 
     /**
      * Create a <code>mini_shop_471752.b2c_spec_vals</code> table reference
@@ -127,7 +138,7 @@ public class SpecVals extends TableImpl<SpecValsRecord> {
      */
     @Override
     public List<Index> getIndexes() {
-        return Arrays.<Index>asList(Indexes.SPEC_VALS_PRIMARY, Indexes.SPEC_VALS_SPEC_ID);
+        return Arrays.<Index>asList(Indexes.SPEC_VALS_PRIMARY, Indexes.SPEC_VALS_SPEC_ID, Indexes.SPEC_VALS_UNIQUE_SPEC_ID_SPEC_VAL_NAME);
     }
 
     /**
@@ -151,7 +162,7 @@ public class SpecVals extends TableImpl<SpecValsRecord> {
      */
     @Override
     public List<UniqueKey<SpecValsRecord>> getKeys() {
-        return Arrays.<UniqueKey<SpecValsRecord>>asList(Keys.KEY_B2C_SPEC_VALS_PRIMARY);
+        return Arrays.<UniqueKey<SpecValsRecord>>asList(Keys.KEY_B2C_SPEC_VALS_PRIMARY, Keys.KEY_B2C_SPEC_VALS_UNIQUE_SPEC_ID_SPEC_VAL_NAME);
     }
 
     /**

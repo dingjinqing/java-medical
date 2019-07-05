@@ -42,7 +42,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class ReturnStatusChange extends TableImpl<ReturnStatusChangeRecord> {
 
-    private static final long serialVersionUID = 1420757021;
+    private static final long serialVersionUID = 640343813;
 
     /**
      * The reference instance of <code>mini_shop_471752.b2c_return_status_change</code>
@@ -88,9 +88,14 @@ public class ReturnStatusChange extends TableImpl<ReturnStatusChangeRecord> {
     public final TableField<ReturnStatusChangeRecord, String> ORDER_SN = createField("order_sn", org.jooq.impl.SQLDataType.VARCHAR(20).nullable(false), this, "订单号");
 
     /**
-     * The column <code>mini_shop_471752.b2c_return_status_change.add_time</code>. 变化时间
+     * The column <code>mini_shop_471752.b2c_return_status_change.create_time</code>.
      */
-    public final TableField<ReturnStatusChangeRecord, Timestamp> ADD_TIME = createField("add_time", org.jooq.impl.SQLDataType.TIMESTAMP.nullable(false), this, "变化时间");
+    public final TableField<ReturnStatusChangeRecord, Timestamp> CREATE_TIME = createField("create_time", org.jooq.impl.SQLDataType.TIMESTAMP.nullable(false).defaultValue(org.jooq.impl.DSL.field("CURRENT_TIMESTAMP", org.jooq.impl.SQLDataType.TIMESTAMP)), this, "");
+
+    /**
+     * The column <code>mini_shop_471752.b2c_return_status_change.update_time</code>. 最后修改时间
+     */
+    public final TableField<ReturnStatusChangeRecord, Timestamp> UPDATE_TIME = createField("update_time", org.jooq.impl.SQLDataType.TIMESTAMP.nullable(false).defaultValue(org.jooq.impl.DSL.field("CURRENT_TIMESTAMP", org.jooq.impl.SQLDataType.TIMESTAMP)), this, "最后修改时间");
 
     /**
      * The column <code>mini_shop_471752.b2c_return_status_change.desc</code>. 备注

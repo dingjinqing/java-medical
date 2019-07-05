@@ -43,7 +43,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class SubOrderInfo extends TableImpl<SubOrderInfoRecord> {
 
-    private static final long serialVersionUID = 281243054;
+    private static final long serialVersionUID = -2098462184;
 
     /**
      * The reference instance of <code>mini_shop_471752.b2c_sub_order_info</code>
@@ -74,9 +74,9 @@ public class SubOrderInfo extends TableImpl<SubOrderInfoRecord> {
     public final TableField<SubOrderInfoRecord, String> MAIN_ORDER_SN = createField("main_order_sn", org.jooq.impl.SQLDataType.VARCHAR(20).nullable(false), this, "主订单号");
 
     /**
-     * The column <code>mini_shop_471752.b2c_sub_order_info.user_id</code>. 用户ID
+     * The column <code>mini_shop_471752.b2c_sub_order_info.user_id</code>. 用户id
      */
-    public final TableField<SubOrderInfoRecord, Integer> USER_ID = createField("user_id", org.jooq.impl.SQLDataType.INTEGER.nullable(false), this, "用户ID");
+    public final TableField<SubOrderInfoRecord, Integer> USER_ID = createField("user_id", org.jooq.impl.SQLDataType.INTEGER.nullable(false), this, "用户id");
 
     /**
      * The column <code>mini_shop_471752.b2c_sub_order_info.username</code>. 用户昵称
@@ -114,9 +114,9 @@ public class SubOrderInfo extends TableImpl<SubOrderInfoRecord> {
     public final TableField<SubOrderInfoRecord, String> PAY_SN = createField("pay_sn", org.jooq.impl.SQLDataType.VARCHAR(32), this, "支付流水号");
 
     /**
-     * The column <code>mini_shop_471752.b2c_sub_order_info.prepay_id</code>. 微信支付Id
+     * The column <code>mini_shop_471752.b2c_sub_order_info.prepay_id</code>. 微信支付id
      */
-    public final TableField<SubOrderInfoRecord, String> PREPAY_ID = createField("prepay_id", org.jooq.impl.SQLDataType.VARCHAR(200), this, "微信支付Id");
+    public final TableField<SubOrderInfoRecord, String> PREPAY_ID = createField("prepay_id", org.jooq.impl.SQLDataType.VARCHAR(200), this, "微信支付id");
 
     /**
      * The column <code>mini_shop_471752.b2c_sub_order_info.message</code>. 留言
@@ -126,17 +126,12 @@ public class SubOrderInfo extends TableImpl<SubOrderInfoRecord> {
     /**
      * The column <code>mini_shop_471752.b2c_sub_order_info.pay_time</code>. 支付时间
      */
-    public final TableField<SubOrderInfoRecord, Timestamp> PAY_TIME = createField("pay_time", org.jooq.impl.SQLDataType.TIMESTAMP, this, "支付时间");
-
-    /**
-     * The column <code>mini_shop_471752.b2c_sub_order_info.add_time</code>. 提交订单时间
-     */
-    public final TableField<SubOrderInfoRecord, Timestamp> ADD_TIME = createField("add_time", org.jooq.impl.SQLDataType.TIMESTAMP, this, "提交订单时间");
+    public final TableField<SubOrderInfoRecord, Timestamp> PAY_TIME = createField("pay_time", org.jooq.impl.SQLDataType.TIMESTAMP.nullable(false).defaultValue(org.jooq.impl.DSL.inline("0000-00-00 00:00:00", org.jooq.impl.SQLDataType.TIMESTAMP)), this, "支付时间");
 
     /**
      * The column <code>mini_shop_471752.b2c_sub_order_info.refund_time</code>. 最近一次退款时间
      */
-    public final TableField<SubOrderInfoRecord, Timestamp> REFUND_TIME = createField("refund_time", org.jooq.impl.SQLDataType.TIMESTAMP, this, "最近一次退款时间");
+    public final TableField<SubOrderInfoRecord, Timestamp> REFUND_TIME = createField("refund_time", org.jooq.impl.SQLDataType.TIMESTAMP.nullable(false).defaultValue(org.jooq.impl.DSL.inline("0000-00-00 00:00:00", org.jooq.impl.SQLDataType.TIMESTAMP)), this, "最近一次退款时间");
 
     /**
      * The column <code>mini_shop_471752.b2c_sub_order_info.del_flag</code>.
@@ -144,9 +139,19 @@ public class SubOrderInfo extends TableImpl<SubOrderInfoRecord> {
     public final TableField<SubOrderInfoRecord, Byte> DEL_FLAG = createField("del_flag", org.jooq.impl.SQLDataType.TINYINT.defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.TINYINT)), this, "");
 
     /**
-     * The column <code>mini_shop_471752.b2c_sub_order_info.del_time</code>.
+     * The column <code>mini_shop_471752.b2c_sub_order_info.del_time</code>. 删除时间
      */
-    public final TableField<SubOrderInfoRecord, Timestamp> DEL_TIME = createField("del_time", org.jooq.impl.SQLDataType.TIMESTAMP, this, "");
+    public final TableField<SubOrderInfoRecord, Timestamp> DEL_TIME = createField("del_time", org.jooq.impl.SQLDataType.TIMESTAMP.nullable(false).defaultValue(org.jooq.impl.DSL.inline("0000-00-00 00:00:00", org.jooq.impl.SQLDataType.TIMESTAMP)), this, "删除时间");
+
+    /**
+     * The column <code>mini_shop_471752.b2c_sub_order_info.create_time</code>.
+     */
+    public final TableField<SubOrderInfoRecord, Timestamp> CREATE_TIME = createField("create_time", org.jooq.impl.SQLDataType.TIMESTAMP.nullable(false).defaultValue(org.jooq.impl.DSL.field("CURRENT_TIMESTAMP", org.jooq.impl.SQLDataType.TIMESTAMP)), this, "");
+
+    /**
+     * The column <code>mini_shop_471752.b2c_sub_order_info.update_time</code>. 最后修改时间
+     */
+    public final TableField<SubOrderInfoRecord, Timestamp> UPDATE_TIME = createField("update_time", org.jooq.impl.SQLDataType.TIMESTAMP.nullable(false).defaultValue(org.jooq.impl.DSL.field("CURRENT_TIMESTAMP", org.jooq.impl.SQLDataType.TIMESTAMP)), this, "最后修改时间");
 
     /**
      * Create a <code>mini_shop_471752.b2c_sub_order_info</code> table reference

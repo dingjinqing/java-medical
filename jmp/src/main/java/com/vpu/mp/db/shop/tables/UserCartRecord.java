@@ -42,7 +42,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class UserCartRecord extends TableImpl<UserCartRecordRecord> {
 
-    private static final long serialVersionUID = 623724834;
+    private static final long serialVersionUID = 1359771106;
 
     /**
      * The reference instance of <code>mini_shop_471752.b2c_user_cart_record</code>
@@ -83,14 +83,9 @@ public class UserCartRecord extends TableImpl<UserCartRecordRecord> {
     public final TableField<UserCartRecordRecord, Short> NUM = createField("num", org.jooq.impl.SQLDataType.SMALLINT.nullable(false).defaultValue(org.jooq.impl.DSL.inline("1", org.jooq.impl.SQLDataType.SMALLINT)), this, "件数");
 
     /**
-     * The column <code>mini_shop_471752.b2c_user_cart_record.is_delete</code>. 0：添加，1：删除标记
+     * The column <code>mini_shop_471752.b2c_user_cart_record.del_flag</code>. 0：添加，1：删除标记
      */
-    public final TableField<UserCartRecordRecord, Short> IS_DELETE = createField("is_delete", org.jooq.impl.SQLDataType.SMALLINT.defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.SMALLINT)), this, "0：添加，1：删除标记");
-
-    /**
-     * The column <code>mini_shop_471752.b2c_user_cart_record.add_time</code>. 时间
-     */
-    public final TableField<UserCartRecordRecord, Timestamp> ADD_TIME = createField("add_time", org.jooq.impl.SQLDataType.TIMESTAMP, this, "时间");
+    public final TableField<UserCartRecordRecord, Short> DEL_FLAG = createField("del_flag", org.jooq.impl.SQLDataType.SMALLINT.defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.SMALLINT)), this, "0：添加，1：删除标记");
 
     /**
      * The column <code>mini_shop_471752.b2c_user_cart_record.user_ip</code>. 用户ip
@@ -143,6 +138,16 @@ public class UserCartRecord extends TableImpl<UserCartRecordRecord> {
     public final TableField<UserCartRecordRecord, Short> COUNT = createField("count", org.jooq.impl.SQLDataType.SMALLINT.defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.SMALLINT)), this, "次数");
 
     /**
+     * The column <code>mini_shop_471752.b2c_user_cart_record.create_time</code>.
+     */
+    public final TableField<UserCartRecordRecord, Timestamp> CREATE_TIME = createField("create_time", org.jooq.impl.SQLDataType.TIMESTAMP.nullable(false).defaultValue(org.jooq.impl.DSL.field("CURRENT_TIMESTAMP", org.jooq.impl.SQLDataType.TIMESTAMP)), this, "");
+
+    /**
+     * The column <code>mini_shop_471752.b2c_user_cart_record.update_time</code>. 最后修改时间
+     */
+    public final TableField<UserCartRecordRecord, Timestamp> UPDATE_TIME = createField("update_time", org.jooq.impl.SQLDataType.TIMESTAMP.nullable(false).defaultValue(org.jooq.impl.DSL.field("CURRENT_TIMESTAMP", org.jooq.impl.SQLDataType.TIMESTAMP)), this, "最后修改时间");
+
+    /**
      * Create a <code>mini_shop_471752.b2c_user_cart_record</code> table reference
      */
     public UserCartRecord() {
@@ -188,7 +193,7 @@ public class UserCartRecord extends TableImpl<UserCartRecordRecord> {
      */
     @Override
     public List<Index> getIndexes() {
-        return Arrays.<Index>asList(Indexes.USER_CART_RECORD_ADD_TIME, Indexes.USER_CART_RECORD_GOODS_ADD_TIME, Indexes.USER_CART_RECORD_PRIMARY, Indexes.USER_CART_RECORD_USER_ADD_TIME);
+        return Arrays.<Index>asList(Indexes.USER_CART_RECORD_CREATE_TIME, Indexes.USER_CART_RECORD_GOODS_CREATE_TIME, Indexes.USER_CART_RECORD_PRIMARY, Indexes.USER_CART_RECORD_USER_CREATE_TIME);
     }
 
     /**

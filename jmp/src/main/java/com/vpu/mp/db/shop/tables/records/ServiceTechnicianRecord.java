@@ -30,7 +30,7 @@ import org.jooq.impl.UpdatableRecordImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class ServiceTechnicianRecord extends UpdatableRecordImpl<ServiceTechnicianRecord> implements Record13<Integer, Integer, String, String, String, String, Integer, Byte, String, String, Byte, Timestamp, Timestamp> {
 
-    private static final long serialVersionUID = 273574991;
+    private static final long serialVersionUID = -1380463645;
 
     /**
      * Setter for <code>mini_shop_471752.b2c_service_technician.id</code>. 技师id
@@ -187,28 +187,28 @@ public class ServiceTechnicianRecord extends UpdatableRecordImpl<ServiceTechnici
     }
 
     /**
-     * Setter for <code>mini_shop_471752.b2c_service_technician.add_time</code>.
+     * Setter for <code>mini_shop_471752.b2c_service_technician.create_time</code>.
      */
-    public void setAddTime(Timestamp value) {
+    public void setCreateTime(Timestamp value) {
         set(11, value);
     }
 
     /**
-     * Getter for <code>mini_shop_471752.b2c_service_technician.add_time</code>.
+     * Getter for <code>mini_shop_471752.b2c_service_technician.create_time</code>.
      */
-    public Timestamp getAddTime() {
+    public Timestamp getCreateTime() {
         return (Timestamp) get(11);
     }
 
     /**
-     * Setter for <code>mini_shop_471752.b2c_service_technician.update_time</code>.
+     * Setter for <code>mini_shop_471752.b2c_service_technician.update_time</code>. 最后修改时间
      */
     public void setUpdateTime(Timestamp value) {
         set(12, value);
     }
 
     /**
-     * Getter for <code>mini_shop_471752.b2c_service_technician.update_time</code>.
+     * Getter for <code>mini_shop_471752.b2c_service_technician.update_time</code>. 最后修改时间
      */
     public Timestamp getUpdateTime() {
         return (Timestamp) get(12);
@@ -339,7 +339,7 @@ public class ServiceTechnicianRecord extends UpdatableRecordImpl<ServiceTechnici
      */
     @Override
     public Field<Timestamp> field12() {
-        return ServiceTechnician.SERVICE_TECHNICIAN.ADD_TIME;
+        return ServiceTechnician.SERVICE_TECHNICIAN.CREATE_TIME;
     }
 
     /**
@@ -443,7 +443,7 @@ public class ServiceTechnicianRecord extends UpdatableRecordImpl<ServiceTechnici
      */
     @Override
     public Timestamp component12() {
-        return getAddTime();
+        return getCreateTime();
     }
 
     /**
@@ -547,7 +547,7 @@ public class ServiceTechnicianRecord extends UpdatableRecordImpl<ServiceTechnici
      */
     @Override
     public Timestamp value12() {
-        return getAddTime();
+        return getCreateTime();
     }
 
     /**
@@ -662,7 +662,7 @@ public class ServiceTechnicianRecord extends UpdatableRecordImpl<ServiceTechnici
      */
     @Override
     public ServiceTechnicianRecord value12(Timestamp value) {
-        setAddTime(value);
+        setCreateTime(value);
         return this;
     }
 
@@ -710,7 +710,7 @@ public class ServiceTechnicianRecord extends UpdatableRecordImpl<ServiceTechnici
     /**
      * Create a detached, initialised ServiceTechnicianRecord
      */
-    public ServiceTechnicianRecord(Integer id, Integer storeId, String technicianName, String technicianMobile, String bgImgPath, String technicianIntroduce, Integer groupId, Byte serviceType, String serviceList, String remarks, Byte delFlag, Timestamp addTime, Timestamp updateTime) {
+    public ServiceTechnicianRecord(Integer id, Integer storeId, String technicianName, String technicianMobile, String bgImgPath, String technicianIntroduce, Integer groupId, Byte serviceType, String serviceList, String remarks, Byte delFlag, Timestamp createTime, Timestamp updateTime) {
         super(ServiceTechnician.SERVICE_TECHNICIAN);
 
         set(0, id);
@@ -724,7 +724,7 @@ public class ServiceTechnicianRecord extends UpdatableRecordImpl<ServiceTechnici
         set(8, serviceList);
         set(9, remarks);
         set(10, delFlag);
-        set(11, addTime);
+        set(11, createTime);
         set(12, updateTime);
     }
 }

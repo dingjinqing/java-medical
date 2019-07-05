@@ -42,7 +42,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class UserExplain extends TableImpl<UserExplainRecord> {
 
-    private static final long serialVersionUID = -2075028167;
+    private static final long serialVersionUID = 1446587114;
 
     /**
      * The reference instance of <code>mini_shop_471752.b2c_user_explain</code>
@@ -63,9 +63,9 @@ public class UserExplain extends TableImpl<UserExplainRecord> {
     public final TableField<UserExplainRecord, Short> ID = createField("id", org.jooq.impl.SQLDataType.SMALLINT.nullable(false).identity(true), this, "");
 
     /**
-     * The column <code>mini_shop_471752.b2c_user_explain.shop_id</code>. 店铺ID
+     * The column <code>mini_shop_471752.b2c_user_explain.shop_id</code>. 店铺id
      */
-    public final TableField<UserExplainRecord, Integer> SHOP_ID = createField("shop_id", org.jooq.impl.SQLDataType.INTEGER.nullable(false).defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.INTEGER)), this, "店铺ID");
+    public final TableField<UserExplainRecord, Integer> SHOP_ID = createField("shop_id", org.jooq.impl.SQLDataType.INTEGER.defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.INTEGER)), this, "店铺id");
 
     /**
      * The column <code>mini_shop_471752.b2c_user_explain.text</code>.
@@ -83,9 +83,9 @@ public class UserExplain extends TableImpl<UserExplainRecord> {
     public final TableField<UserExplainRecord, Timestamp> CREATE_TIME = createField("create_time", org.jooq.impl.SQLDataType.TIMESTAMP.nullable(false).defaultValue(org.jooq.impl.DSL.field("CURRENT_TIMESTAMP", org.jooq.impl.SQLDataType.TIMESTAMP)), this, "");
 
     /**
-     * The column <code>mini_shop_471752.b2c_user_explain.up_time</code>.
+     * The column <code>mini_shop_471752.b2c_user_explain.update_time</code>. 最后修改时间
      */
-    public final TableField<UserExplainRecord, Timestamp> UP_TIME = createField("up_time", org.jooq.impl.SQLDataType.TIMESTAMP, this, "");
+    public final TableField<UserExplainRecord, Timestamp> UPDATE_TIME = createField("update_time", org.jooq.impl.SQLDataType.TIMESTAMP.nullable(false).defaultValue(org.jooq.impl.DSL.field("CURRENT_TIMESTAMP", org.jooq.impl.SQLDataType.TIMESTAMP)), this, "最后修改时间");
 
     /**
      * Create a <code>mini_shop_471752.b2c_user_explain</code> table reference

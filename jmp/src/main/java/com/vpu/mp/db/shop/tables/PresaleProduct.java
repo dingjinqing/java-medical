@@ -43,7 +43,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class PresaleProduct extends TableImpl<PresaleProductRecord> {
 
-    private static final long serialVersionUID = 667022030;
+    private static final long serialVersionUID = 67416780;
 
     /**
      * The reference instance of <code>mini_shop_471752.b2c_presale_product</code>
@@ -64,54 +64,59 @@ public class PresaleProduct extends TableImpl<PresaleProductRecord> {
     public final TableField<PresaleProductRecord, Integer> ID = createField("id", org.jooq.impl.SQLDataType.INTEGER.nullable(false).identity(true), this, "");
 
     /**
-     * The column <code>mini_shop_471752.b2c_presale_product.presale_id</code>. 预售ID
+     * The column <code>mini_shop_471752.b2c_presale_product.presale_id</code>. 预售id
      */
-    public final TableField<PresaleProductRecord, Integer> PRESALE_ID = createField("presale_id", org.jooq.impl.SQLDataType.INTEGER.nullable(false).defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.INTEGER)), this, "预售ID");
+    public final TableField<PresaleProductRecord, Integer> PRESALE_ID = createField("presale_id", org.jooq.impl.SQLDataType.INTEGER.nullable(false).defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.INTEGER)), this, "预售id");
 
     /**
-     * The column <code>mini_shop_471752.b2c_presale_product.goods_id</code>. 商品ID
+     * The column <code>mini_shop_471752.b2c_presale_product.goods_id</code>. 商品id
      */
-    public final TableField<PresaleProductRecord, Integer> GOODS_ID = createField("goods_id", org.jooq.impl.SQLDataType.INTEGER.nullable(false).defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.INTEGER)), this, "商品ID");
+    public final TableField<PresaleProductRecord, Integer> GOODS_ID = createField("goods_id", org.jooq.impl.SQLDataType.INTEGER.nullable(false).defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.INTEGER)), this, "商品id");
 
     /**
-     * The column <code>mini_shop_471752.b2c_presale_product.product_id</code>. 产品ID
+     * The column <code>mini_shop_471752.b2c_presale_product.product_id</code>. 产品id
      */
-    public final TableField<PresaleProductRecord, Integer> PRODUCT_ID = createField("product_id", org.jooq.impl.SQLDataType.INTEGER.nullable(false).defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.INTEGER)), this, "产品ID");
+    public final TableField<PresaleProductRecord, Integer> PRODUCT_ID = createField("product_id", org.jooq.impl.SQLDataType.INTEGER.nullable(false).defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.INTEGER)), this, "产品id");
 
     /**
      * The column <code>mini_shop_471752.b2c_presale_product.presale_price</code>. 预售价格
      */
-    public final TableField<PresaleProductRecord, BigDecimal> PRESALE_PRICE = createField("presale_price", org.jooq.impl.SQLDataType.DECIMAL(10, 2).defaultValue(org.jooq.impl.DSL.inline("0.00", org.jooq.impl.SQLDataType.DECIMAL)), this, "预售价格");
+    public final TableField<PresaleProductRecord, BigDecimal> PRESALE_PRICE = createField("presale_price", org.jooq.impl.SQLDataType.DECIMAL(10, 2).nullable(false).defaultValue(org.jooq.impl.DSL.inline("0.00", org.jooq.impl.SQLDataType.DECIMAL)), this, "预售价格");
 
     /**
      * The column <code>mini_shop_471752.b2c_presale_product.presale_number</code>. 预售商品数量
      */
-    public final TableField<PresaleProductRecord, Integer> PRESALE_NUMBER = createField("presale_number", org.jooq.impl.SQLDataType.INTEGER.defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.INTEGER)), this, "预售商品数量");
+    public final TableField<PresaleProductRecord, Integer> PRESALE_NUMBER = createField("presale_number", org.jooq.impl.SQLDataType.INTEGER.nullable(false).defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.INTEGER)), this, "预售商品数量");
 
     /**
      * The column <code>mini_shop_471752.b2c_presale_product.sale_number</code>.
      */
-    public final TableField<PresaleProductRecord, Integer> SALE_NUMBER = createField("sale_number", org.jooq.impl.SQLDataType.INTEGER.defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.INTEGER)), this, "");
+    public final TableField<PresaleProductRecord, Integer> SALE_NUMBER = createField("sale_number", org.jooq.impl.SQLDataType.INTEGER.nullable(false).defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.INTEGER)), this, "");
 
     /**
      * The column <code>mini_shop_471752.b2c_presale_product.presale_money</code>. 预售定金金额
      */
-    public final TableField<PresaleProductRecord, BigDecimal> PRESALE_MONEY = createField("presale_money", org.jooq.impl.SQLDataType.DECIMAL(10, 2).defaultValue(org.jooq.impl.DSL.inline("0.00", org.jooq.impl.SQLDataType.DECIMAL)), this, "预售定金金额");
+    public final TableField<PresaleProductRecord, BigDecimal> PRESALE_MONEY = createField("presale_money", org.jooq.impl.SQLDataType.DECIMAL(10, 2).nullable(false).defaultValue(org.jooq.impl.DSL.inline("0.00", org.jooq.impl.SQLDataType.DECIMAL)), this, "预售定金金额");
 
     /**
      * The column <code>mini_shop_471752.b2c_presale_product.pre_discount_money_1</code>. 预售一阶段定金抵扣金额
      */
-    public final TableField<PresaleProductRecord, BigDecimal> PRE_DISCOUNT_MONEY_1 = createField("pre_discount_money_1", org.jooq.impl.SQLDataType.DECIMAL(10, 2).defaultValue(org.jooq.impl.DSL.inline("0.00", org.jooq.impl.SQLDataType.DECIMAL)), this, "预售一阶段定金抵扣金额");
+    public final TableField<PresaleProductRecord, BigDecimal> PRE_DISCOUNT_MONEY_1 = createField("pre_discount_money_1", org.jooq.impl.SQLDataType.DECIMAL(10, 2).nullable(false).defaultValue(org.jooq.impl.DSL.inline("0.00", org.jooq.impl.SQLDataType.DECIMAL)), this, "预售一阶段定金抵扣金额");
 
     /**
      * The column <code>mini_shop_471752.b2c_presale_product.pre_discount_money_2</code>. 预售二阶段定金抵扣金额
      */
-    public final TableField<PresaleProductRecord, BigDecimal> PRE_DISCOUNT_MONEY_2 = createField("pre_discount_money_2", org.jooq.impl.SQLDataType.DECIMAL(10, 2).defaultValue(org.jooq.impl.DSL.inline("0.00", org.jooq.impl.SQLDataType.DECIMAL)), this, "预售二阶段定金抵扣金额");
+    public final TableField<PresaleProductRecord, BigDecimal> PRE_DISCOUNT_MONEY_2 = createField("pre_discount_money_2", org.jooq.impl.SQLDataType.DECIMAL(10, 2).nullable(false).defaultValue(org.jooq.impl.DSL.inline("0.00", org.jooq.impl.SQLDataType.DECIMAL)), this, "预售二阶段定金抵扣金额");
 
     /**
-     * The column <code>mini_shop_471752.b2c_presale_product.add_time</code>.
+     * The column <code>mini_shop_471752.b2c_presale_product.create_time</code>.
      */
-    public final TableField<PresaleProductRecord, Timestamp> ADD_TIME = createField("add_time", org.jooq.impl.SQLDataType.TIMESTAMP.nullable(false).defaultValue(org.jooq.impl.DSL.field("CURRENT_TIMESTAMP", org.jooq.impl.SQLDataType.TIMESTAMP)), this, "");
+    public final TableField<PresaleProductRecord, Timestamp> CREATE_TIME = createField("create_time", org.jooq.impl.SQLDataType.TIMESTAMP.nullable(false).defaultValue(org.jooq.impl.DSL.field("CURRENT_TIMESTAMP", org.jooq.impl.SQLDataType.TIMESTAMP)), this, "");
+
+    /**
+     * The column <code>mini_shop_471752.b2c_presale_product.update_time</code>. 最后修改时间
+     */
+    public final TableField<PresaleProductRecord, Timestamp> UPDATE_TIME = createField("update_time", org.jooq.impl.SQLDataType.TIMESTAMP.nullable(false).defaultValue(org.jooq.impl.DSL.field("CURRENT_TIMESTAMP", org.jooq.impl.SQLDataType.TIMESTAMP)), this, "最后修改时间");
 
     /**
      * Create a <code>mini_shop_471752.b2c_presale_product</code> table reference

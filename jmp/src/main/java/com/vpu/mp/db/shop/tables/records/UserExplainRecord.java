@@ -30,7 +30,7 @@ import org.jooq.impl.UpdatableRecordImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class UserExplainRecord extends UpdatableRecordImpl<UserExplainRecord> implements Record6<Short, Integer, String, Byte, Timestamp, Timestamp> {
 
-    private static final long serialVersionUID = 1805960194;
+    private static final long serialVersionUID = 1219163454;
 
     /**
      * Setter for <code>mini_shop_471752.b2c_user_explain.id</code>.
@@ -47,14 +47,14 @@ public class UserExplainRecord extends UpdatableRecordImpl<UserExplainRecord> im
     }
 
     /**
-     * Setter for <code>mini_shop_471752.b2c_user_explain.shop_id</code>. 店铺ID
+     * Setter for <code>mini_shop_471752.b2c_user_explain.shop_id</code>. 店铺id
      */
     public void setShopId(Integer value) {
         set(1, value);
     }
 
     /**
-     * Getter for <code>mini_shop_471752.b2c_user_explain.shop_id</code>. 店铺ID
+     * Getter for <code>mini_shop_471752.b2c_user_explain.shop_id</code>. 店铺id
      */
     public Integer getShopId() {
         return (Integer) get(1);
@@ -103,16 +103,16 @@ public class UserExplainRecord extends UpdatableRecordImpl<UserExplainRecord> im
     }
 
     /**
-     * Setter for <code>mini_shop_471752.b2c_user_explain.up_time</code>.
+     * Setter for <code>mini_shop_471752.b2c_user_explain.update_time</code>. 最后修改时间
      */
-    public void setUpTime(Timestamp value) {
+    public void setUpdateTime(Timestamp value) {
         set(5, value);
     }
 
     /**
-     * Getter for <code>mini_shop_471752.b2c_user_explain.up_time</code>.
+     * Getter for <code>mini_shop_471752.b2c_user_explain.update_time</code>. 最后修改时间
      */
-    public Timestamp getUpTime() {
+    public Timestamp getUpdateTime() {
         return (Timestamp) get(5);
     }
 
@@ -193,7 +193,7 @@ public class UserExplainRecord extends UpdatableRecordImpl<UserExplainRecord> im
      */
     @Override
     public Field<Timestamp> field6() {
-        return UserExplain.USER_EXPLAIN.UP_TIME;
+        return UserExplain.USER_EXPLAIN.UPDATE_TIME;
     }
 
     /**
@@ -241,7 +241,7 @@ public class UserExplainRecord extends UpdatableRecordImpl<UserExplainRecord> im
      */
     @Override
     public Timestamp component6() {
-        return getUpTime();
+        return getUpdateTime();
     }
 
     /**
@@ -289,7 +289,7 @@ public class UserExplainRecord extends UpdatableRecordImpl<UserExplainRecord> im
      */
     @Override
     public Timestamp value6() {
-        return getUpTime();
+        return getUpdateTime();
     }
 
     /**
@@ -342,7 +342,7 @@ public class UserExplainRecord extends UpdatableRecordImpl<UserExplainRecord> im
      */
     @Override
     public UserExplainRecord value6(Timestamp value) {
-        setUpTime(value);
+        setUpdateTime(value);
         return this;
     }
 
@@ -374,7 +374,7 @@ public class UserExplainRecord extends UpdatableRecordImpl<UserExplainRecord> im
     /**
      * Create a detached, initialised UserExplainRecord
      */
-    public UserExplainRecord(Short id, Integer shopId, String text, Byte type, Timestamp createTime, Timestamp upTime) {
+    public UserExplainRecord(Short id, Integer shopId, String text, Byte type, Timestamp createTime, Timestamp updateTime) {
         super(UserExplain.USER_EXPLAIN);
 
         set(0, id);
@@ -382,6 +382,6 @@ public class UserExplainRecord extends UpdatableRecordImpl<UserExplainRecord> im
         set(2, text);
         set(3, type);
         set(4, createTime);
-        set(5, upTime);
+        set(5, updateTime);
     }
 }

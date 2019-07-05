@@ -42,7 +42,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class OrderVerifier extends TableImpl<OrderVerifierRecord> {
 
-    private static final long serialVersionUID = 386965716;
+    private static final long serialVersionUID = -1758865487;
 
     /**
      * The reference instance of <code>mini_shop_471752.b2c_order_verifier</code>
@@ -63,14 +63,14 @@ public class OrderVerifier extends TableImpl<OrderVerifierRecord> {
     public final TableField<OrderVerifierRecord, Integer> ID = createField("id", org.jooq.impl.SQLDataType.INTEGER.nullable(false).identity(true), this, "");
 
     /**
-     * The column <code>mini_shop_471752.b2c_order_verifier.store_id</code>. 门店ID
+     * The column <code>mini_shop_471752.b2c_order_verifier.store_id</code>. 门店id
      */
-    public final TableField<OrderVerifierRecord, Integer> STORE_ID = createField("store_id", org.jooq.impl.SQLDataType.INTEGER, this, "门店ID");
+    public final TableField<OrderVerifierRecord, Integer> STORE_ID = createField("store_id", org.jooq.impl.SQLDataType.INTEGER, this, "门店id");
 
     /**
-     * The column <code>mini_shop_471752.b2c_order_verifier.user_id</code>. 用户ID
+     * The column <code>mini_shop_471752.b2c_order_verifier.user_id</code>. 用户id
      */
-    public final TableField<OrderVerifierRecord, Integer> USER_ID = createField("user_id", org.jooq.impl.SQLDataType.INTEGER, this, "用户ID");
+    public final TableField<OrderVerifierRecord, Integer> USER_ID = createField("user_id", org.jooq.impl.SQLDataType.INTEGER, this, "用户id");
 
     /**
      * The column <code>mini_shop_471752.b2c_order_verifier.verify_orders</code>. 核销订单数
@@ -80,17 +80,17 @@ public class OrderVerifier extends TableImpl<OrderVerifierRecord> {
     /**
      * The column <code>mini_shop_471752.b2c_order_verifier.del_flag</code>. 删除
      */
-    public final TableField<OrderVerifierRecord, Byte> DEL_FLAG = createField("del_flag", org.jooq.impl.SQLDataType.TINYINT.defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.TINYINT)), this, "删除");
+    public final TableField<OrderVerifierRecord, Byte> DEL_FLAG = createField("del_flag", org.jooq.impl.SQLDataType.TINYINT.nullable(false).defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.TINYINT)), this, "删除");
 
     /**
-     * The column <code>mini_shop_471752.b2c_order_verifier.add_time</code>. 添加时间
+     * The column <code>mini_shop_471752.b2c_order_verifier.create_time</code>.
      */
-    public final TableField<OrderVerifierRecord, Timestamp> ADD_TIME = createField("add_time", org.jooq.impl.SQLDataType.TIMESTAMP.nullable(false).defaultValue(org.jooq.impl.DSL.inline("0000-00-00 00:00:00", org.jooq.impl.SQLDataType.TIMESTAMP)), this, "添加时间");
+    public final TableField<OrderVerifierRecord, Timestamp> CREATE_TIME = createField("create_time", org.jooq.impl.SQLDataType.TIMESTAMP.nullable(false).defaultValue(org.jooq.impl.DSL.field("CURRENT_TIMESTAMP", org.jooq.impl.SQLDataType.TIMESTAMP)), this, "");
 
     /**
-     * The column <code>mini_shop_471752.b2c_order_verifier.update_time</code>. 更新时间
+     * The column <code>mini_shop_471752.b2c_order_verifier.update_time</code>. 最后修改时间
      */
-    public final TableField<OrderVerifierRecord, Timestamp> UPDATE_TIME = createField("update_time", org.jooq.impl.SQLDataType.TIMESTAMP.nullable(false).defaultValue(org.jooq.impl.DSL.field("CURRENT_TIMESTAMP", org.jooq.impl.SQLDataType.TIMESTAMP)), this, "更新时间");
+    public final TableField<OrderVerifierRecord, Timestamp> UPDATE_TIME = createField("update_time", org.jooq.impl.SQLDataType.TIMESTAMP.nullable(false).defaultValue(org.jooq.impl.DSL.field("CURRENT_TIMESTAMP", org.jooq.impl.SQLDataType.TIMESTAMP)), this, "最后修改时间");
 
     /**
      * Create a <code>mini_shop_471752.b2c_order_verifier</code> table reference

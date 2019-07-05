@@ -42,7 +42,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class PinGroupDefine extends TableImpl<PinGroupDefineRecord> {
 
-    private static final long serialVersionUID = 1830388621;
+    private static final long serialVersionUID = 1403828823;
 
     /**
      * The reference instance of <code>mini_shop_471752.b2c_pin_group_define</code>
@@ -63,14 +63,14 @@ public class PinGroupDefine extends TableImpl<PinGroupDefineRecord> {
     public final TableField<PinGroupDefineRecord, Integer> ID = createField("id", org.jooq.impl.SQLDataType.INTEGER.nullable(false).identity(true), this, "");
 
     /**
-     * The column <code>mini_shop_471752.b2c_pin_group_define.shop_id</code>. 店铺ID
+     * The column <code>mini_shop_471752.b2c_pin_group_define.shop_id</code>. 店铺id
      */
-    public final TableField<PinGroupDefineRecord, Integer> SHOP_ID = createField("shop_id", org.jooq.impl.SQLDataType.INTEGER.nullable(false), this, "店铺ID");
+    public final TableField<PinGroupDefineRecord, Integer> SHOP_ID = createField("shop_id", org.jooq.impl.SQLDataType.INTEGER.nullable(false), this, "店铺id");
 
     /**
-     * The column <code>mini_shop_471752.b2c_pin_group_define.goods_id</code>. 商品ID
+     * The column <code>mini_shop_471752.b2c_pin_group_define.goods_id</code>. 商品id
      */
-    public final TableField<PinGroupDefineRecord, Integer> GOODS_ID = createField("goods_id", org.jooq.impl.SQLDataType.INTEGER.nullable(false), this, "商品ID");
+    public final TableField<PinGroupDefineRecord, Integer> GOODS_ID = createField("goods_id", org.jooq.impl.SQLDataType.INTEGER.nullable(false), this, "商品id");
 
     /**
      * The column <code>mini_shop_471752.b2c_pin_group_define.name</code>. 活动名称
@@ -100,12 +100,12 @@ public class PinGroupDefine extends TableImpl<PinGroupDefineRecord> {
     /**
      * The column <code>mini_shop_471752.b2c_pin_group_define.start_time</code>. 开始时间
      */
-    public final TableField<PinGroupDefineRecord, Timestamp> START_TIME = createField("start_time", org.jooq.impl.SQLDataType.TIMESTAMP.nullable(false), this, "开始时间");
+    public final TableField<PinGroupDefineRecord, Timestamp> START_TIME = createField("start_time", org.jooq.impl.SQLDataType.TIMESTAMP.nullable(false).defaultValue(org.jooq.impl.DSL.inline("0000-00-00 00:00:00", org.jooq.impl.SQLDataType.TIMESTAMP)), this, "开始时间");
 
     /**
      * The column <code>mini_shop_471752.b2c_pin_group_define.end_time</code>. 结束时间
      */
-    public final TableField<PinGroupDefineRecord, Timestamp> END_TIME = createField("end_time", org.jooq.impl.SQLDataType.TIMESTAMP.nullable(false), this, "结束时间");
+    public final TableField<PinGroupDefineRecord, Timestamp> END_TIME = createField("end_time", org.jooq.impl.SQLDataType.TIMESTAMP.nullable(false).defaultValue(org.jooq.impl.DSL.inline("0000-00-00 00:00:00", org.jooq.impl.SQLDataType.TIMESTAMP)), this, "结束时间");
 
     /**
      * The column <code>mini_shop_471752.b2c_pin_group_define.stock</code>. 总库存
@@ -120,27 +120,17 @@ public class PinGroupDefine extends TableImpl<PinGroupDefineRecord> {
     /**
      * The column <code>mini_shop_471752.b2c_pin_group_define.del_flag</code>.
      */
-    public final TableField<PinGroupDefineRecord, Byte> DEL_FLAG = createField("del_flag", org.jooq.impl.SQLDataType.TINYINT.defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.TINYINT)), this, "");
+    public final TableField<PinGroupDefineRecord, Byte> DEL_FLAG = createField("del_flag", org.jooq.impl.SQLDataType.TINYINT.nullable(false).defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.TINYINT)), this, "");
 
     /**
      * The column <code>mini_shop_471752.b2c_pin_group_define.status</code>. 状态： 1：启用  0： 禁用
      */
-    public final TableField<PinGroupDefineRecord, Byte> STATUS = createField("status", org.jooq.impl.SQLDataType.TINYINT.defaultValue(org.jooq.impl.DSL.inline("1", org.jooq.impl.SQLDataType.TINYINT)), this, "状态： 1：启用  0： 禁用");
-
-    /**
-     * The column <code>mini_shop_471752.b2c_pin_group_define.add_time</code>.
-     */
-    public final TableField<PinGroupDefineRecord, Timestamp> ADD_TIME = createField("add_time", org.jooq.impl.SQLDataType.TIMESTAMP.nullable(false), this, "");
-
-    /**
-     * The column <code>mini_shop_471752.b2c_pin_group_define.update_time</code>.
-     */
-    public final TableField<PinGroupDefineRecord, Timestamp> UPDATE_TIME = createField("update_time", org.jooq.impl.SQLDataType.TIMESTAMP.nullable(false), this, "");
+    public final TableField<PinGroupDefineRecord, Byte> STATUS = createField("status", org.jooq.impl.SQLDataType.TINYINT.nullable(false).defaultValue(org.jooq.impl.DSL.inline("1", org.jooq.impl.SQLDataType.TINYINT)), this, "状态： 1：启用  0： 禁用");
 
     /**
      * The column <code>mini_shop_471752.b2c_pin_group_define.del_time</code>.
      */
-    public final TableField<PinGroupDefineRecord, Integer> DEL_TIME = createField("del_time", org.jooq.impl.SQLDataType.INTEGER.defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.INTEGER)), this, "");
+    public final TableField<PinGroupDefineRecord, Integer> DEL_TIME = createField("del_time", org.jooq.impl.SQLDataType.INTEGER.nullable(false).defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.INTEGER)), this, "");
 
     /**
      * The column <code>mini_shop_471752.b2c_pin_group_define.activity_type</code>. 活动类型：1：普通拼团，2：老带新团
@@ -161,6 +151,16 @@ public class PinGroupDefine extends TableImpl<PinGroupDefineRecord> {
      * The column <code>mini_shop_471752.b2c_pin_group_define.share_config</code>. 分享设置
      */
     public final TableField<PinGroupDefineRecord, String> SHARE_CONFIG = createField("share_config", org.jooq.impl.SQLDataType.CLOB, this, "分享设置");
+
+    /**
+     * The column <code>mini_shop_471752.b2c_pin_group_define.create_time</code>.
+     */
+    public final TableField<PinGroupDefineRecord, Timestamp> CREATE_TIME = createField("create_time", org.jooq.impl.SQLDataType.TIMESTAMP.nullable(false).defaultValue(org.jooq.impl.DSL.field("CURRENT_TIMESTAMP", org.jooq.impl.SQLDataType.TIMESTAMP)), this, "");
+
+    /**
+     * The column <code>mini_shop_471752.b2c_pin_group_define.update_time</code>. 最后修改时间
+     */
+    public final TableField<PinGroupDefineRecord, Timestamp> UPDATE_TIME = createField("update_time", org.jooq.impl.SQLDataType.TIMESTAMP.nullable(false).defaultValue(org.jooq.impl.DSL.field("CURRENT_TIMESTAMP", org.jooq.impl.SQLDataType.TIMESTAMP)), this, "最后修改时间");
 
     /**
      * Create a <code>mini_shop_471752.b2c_pin_group_define</code> table reference

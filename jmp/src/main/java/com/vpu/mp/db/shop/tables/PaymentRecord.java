@@ -42,7 +42,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class PaymentRecord extends TableImpl<PaymentRecordRecord> {
 
-    private static final long serialVersionUID = 1275643775;
+    private static final long serialVersionUID = 1883447540;
 
     /**
      * The reference instance of <code>mini_shop_471752.b2c_payment_record</code>
@@ -63,9 +63,9 @@ public class PaymentRecord extends TableImpl<PaymentRecordRecord> {
     public final TableField<PaymentRecordRecord, Integer> ID = createField("id", org.jooq.impl.SQLDataType.INTEGER.nullable(false).identity(true), this, "");
 
     /**
-     * The column <code>mini_shop_471752.b2c_payment_record.shop_id</code>. 店铺ID
+     * The column <code>mini_shop_471752.b2c_payment_record.shop_id</code>. 店铺id
      */
-    public final TableField<PaymentRecordRecord, Integer> SHOP_ID = createField("shop_id", org.jooq.impl.SQLDataType.INTEGER.nullable(false).defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.INTEGER)), this, "店铺ID");
+    public final TableField<PaymentRecordRecord, Integer> SHOP_ID = createField("shop_id", org.jooq.impl.SQLDataType.INTEGER.nullable(false).defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.INTEGER)), this, "店铺id");
 
     /**
      * The column <code>mini_shop_471752.b2c_payment_record.pay_sn</code>. 支付流水号
@@ -145,27 +145,27 @@ public class PaymentRecord extends TableImpl<PaymentRecordRecord> {
     /**
      * The column <code>mini_shop_471752.b2c_payment_record.gmt_create</code>. 支付交易创建时间
      */
-    public final TableField<PaymentRecordRecord, Timestamp> GMT_CREATE = createField("gmt_create", org.jooq.impl.SQLDataType.TIMESTAMP, this, "支付交易创建时间");
+    public final TableField<PaymentRecordRecord, Timestamp> GMT_CREATE = createField("gmt_create", org.jooq.impl.SQLDataType.TIMESTAMP.nullable(false).defaultValue(org.jooq.impl.DSL.inline("0000-00-00 00:00:00", org.jooq.impl.SQLDataType.TIMESTAMP)), this, "支付交易创建时间");
 
     /**
      * The column <code>mini_shop_471752.b2c_payment_record.notify_time</code>. 通知时间
      */
-    public final TableField<PaymentRecordRecord, Timestamp> NOTIFY_TIME = createField("notify_time", org.jooq.impl.SQLDataType.TIMESTAMP, this, "通知时间");
+    public final TableField<PaymentRecordRecord, Timestamp> NOTIFY_TIME = createField("notify_time", org.jooq.impl.SQLDataType.TIMESTAMP.nullable(false).defaultValue(org.jooq.impl.DSL.inline("0000-00-00 00:00:00", org.jooq.impl.SQLDataType.TIMESTAMP)), this, "通知时间");
 
     /**
      * The column <code>mini_shop_471752.b2c_payment_record.gmt_pay_time</code>. 交易付款时间
      */
-    public final TableField<PaymentRecordRecord, Timestamp> GMT_PAY_TIME = createField("gmt_pay_time", org.jooq.impl.SQLDataType.TIMESTAMP, this, "交易付款时间");
+    public final TableField<PaymentRecordRecord, Timestamp> GMT_PAY_TIME = createField("gmt_pay_time", org.jooq.impl.SQLDataType.TIMESTAMP.nullable(false).defaultValue(org.jooq.impl.DSL.inline("0000-00-00 00:00:00", org.jooq.impl.SQLDataType.TIMESTAMP)), this, "交易付款时间");
 
     /**
      * The column <code>mini_shop_471752.b2c_payment_record.gmt_close_time</code>. 交易关闭时间
      */
-    public final TableField<PaymentRecordRecord, Timestamp> GMT_CLOSE_TIME = createField("gmt_close_time", org.jooq.impl.SQLDataType.TIMESTAMP, this, "交易关闭时间");
+    public final TableField<PaymentRecordRecord, Timestamp> GMT_CLOSE_TIME = createField("gmt_close_time", org.jooq.impl.SQLDataType.TIMESTAMP.nullable(false).defaultValue(org.jooq.impl.DSL.inline("0000-00-00 00:00:00", org.jooq.impl.SQLDataType.TIMESTAMP)), this, "交易关闭时间");
 
     /**
      * The column <code>mini_shop_471752.b2c_payment_record.created</code>. 插入时间
      */
-    public final TableField<PaymentRecordRecord, Timestamp> CREATED = createField("created", org.jooq.impl.SQLDataType.TIMESTAMP, this, "插入时间");
+    public final TableField<PaymentRecordRecord, Timestamp> CREATED = createField("created", org.jooq.impl.SQLDataType.TIMESTAMP.nullable(false).defaultValue(org.jooq.impl.DSL.inline("0000-00-00 00:00:00", org.jooq.impl.SQLDataType.TIMESTAMP)), this, "插入时间");
 
     /**
      * The column <code>mini_shop_471752.b2c_payment_record.remark1</code>. 自定义备注  建议用于存储原始数据

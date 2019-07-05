@@ -28,7 +28,7 @@ import org.jooq.impl.UpdatableRecordImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class CardOrderRecord extends UpdatableRecordImpl<CardOrderRecord> {
 
-    private static final long serialVersionUID = 609646520;
+    private static final long serialVersionUID = -387178224;
 
     /**
      * Setter for <code>mini_shop_471752.b2c_card_order.order_id</code>. 订单id
@@ -59,14 +59,14 @@ public class CardOrderRecord extends UpdatableRecordImpl<CardOrderRecord> {
     }
 
     /**
-     * Setter for <code>mini_shop_471752.b2c_card_order.card_no</code>. 会员卡NO
+     * Setter for <code>mini_shop_471752.b2c_card_order.card_no</code>. 会员卡no
      */
     public void setCardNo(String value) {
         set(2, value);
     }
 
     /**
-     * Getter for <code>mini_shop_471752.b2c_card_order.card_no</code>. 会员卡NO
+     * Getter for <code>mini_shop_471752.b2c_card_order.card_no</code>. 会员卡no
      */
     public String getCardNo() {
         return (String) get(2);
@@ -199,14 +199,14 @@ public class CardOrderRecord extends UpdatableRecordImpl<CardOrderRecord> {
     }
 
     /**
-     * Setter for <code>mini_shop_471752.b2c_card_order.prepay_id</code>. 微信支付Id，用于发送模板消息
+     * Setter for <code>mini_shop_471752.b2c_card_order.prepay_id</code>. 微信支付id，用于发送模板消息
      */
     public void setPrepayId(String value) {
         set(12, value);
     }
 
     /**
-     * Getter for <code>mini_shop_471752.b2c_card_order.prepay_id</code>. 微信支付Id，用于发送模板消息
+     * Getter for <code>mini_shop_471752.b2c_card_order.prepay_id</code>. 微信支付id，用于发送模板消息
      */
     public String getPrepayId() {
         return (String) get(12);
@@ -283,157 +283,185 @@ public class CardOrderRecord extends UpdatableRecordImpl<CardOrderRecord> {
     }
 
     /**
-     * Setter for <code>mini_shop_471752.b2c_card_order.add_time</code>. 订单提交时间
-     */
-    public void setAddTime(Timestamp value) {
-        set(18, value);
-    }
-
-    /**
-     * Getter for <code>mini_shop_471752.b2c_card_order.add_time</code>. 订单提交时间
-     */
-    public Timestamp getAddTime() {
-        return (Timestamp) get(18);
-    }
-
-    /**
      * Setter for <code>mini_shop_471752.b2c_card_order.pay_time</code>. 支付时间
      */
     public void setPayTime(Timestamp value) {
-        set(19, value);
+        set(18, value);
     }
 
     /**
      * Getter for <code>mini_shop_471752.b2c_card_order.pay_time</code>. 支付时间
      */
     public Timestamp getPayTime() {
-        return (Timestamp) get(19);
+        return (Timestamp) get(18);
     }
 
     /**
      * Setter for <code>mini_shop_471752.b2c_card_order.seller_remark</code>. 卖家备注
      */
     public void setSellerRemark(String value) {
-        set(20, value);
+        set(19, value);
     }
 
     /**
      * Getter for <code>mini_shop_471752.b2c_card_order.seller_remark</code>. 卖家备注
      */
     public String getSellerRemark() {
-        return (String) get(20);
+        return (String) get(19);
     }
 
     /**
      * Setter for <code>mini_shop_471752.b2c_card_order.star_flag</code>. 标星订单：0 未标星 1 标星
      */
     public void setStarFlag(Byte value) {
-        set(21, value);
+        set(20, value);
     }
 
     /**
      * Getter for <code>mini_shop_471752.b2c_card_order.star_flag</code>. 标星订单：0 未标星 1 标星
      */
     public Byte getStarFlag() {
-        return (Byte) get(21);
+        return (Byte) get(20);
     }
 
     /**
      * Setter for <code>mini_shop_471752.b2c_card_order.del_flag</code>. 删除
      */
     public void setDelFlag(Byte value) {
-        set(22, value);
+        set(21, value);
     }
 
     /**
      * Getter for <code>mini_shop_471752.b2c_card_order.del_flag</code>. 删除
      */
     public Byte getDelFlag() {
-        return (Byte) get(22);
+        return (Byte) get(21);
     }
 
     /**
      * Setter for <code>mini_shop_471752.b2c_card_order.ali_trade_no</code>. 支付宝交易单号
      */
     public void setAliTradeNo(String value) {
-        set(23, value);
+        set(22, value);
     }
 
     /**
      * Getter for <code>mini_shop_471752.b2c_card_order.ali_trade_no</code>. 支付宝交易单号
      */
     public String getAliTradeNo() {
-        return (String) get(23);
+        return (String) get(22);
     }
 
     /**
      * Setter for <code>mini_shop_471752.b2c_card_order.return_flag</code>. 0:未申请退款，1：退款失败，2：退款成功
      */
     public void setReturnFlag(Byte value) {
-        set(24, value);
+        set(23, value);
     }
 
     /**
      * Getter for <code>mini_shop_471752.b2c_card_order.return_flag</code>. 0:未申请退款，1：退款失败，2：退款成功
      */
     public Byte getReturnFlag() {
-        return (Byte) get(24);
+        return (Byte) get(23);
     }
 
     /**
      * Setter for <code>mini_shop_471752.b2c_card_order.return_score</code>. 退款积分
      */
     public void setReturnScore(BigDecimal value) {
-        set(25, value);
+        set(24, value);
     }
 
     /**
      * Getter for <code>mini_shop_471752.b2c_card_order.return_score</code>. 退款积分
      */
     public BigDecimal getReturnScore() {
-        return (BigDecimal) get(25);
+        return (BigDecimal) get(24);
     }
 
     /**
      * Setter for <code>mini_shop_471752.b2c_card_order.return_account</code>. 退款余额
      */
     public void setReturnAccount(BigDecimal value) {
-        set(26, value);
+        set(25, value);
     }
 
     /**
      * Getter for <code>mini_shop_471752.b2c_card_order.return_account</code>. 退款余额
      */
     public BigDecimal getReturnAccount() {
-        return (BigDecimal) get(26);
+        return (BigDecimal) get(25);
     }
 
     /**
      * Setter for <code>mini_shop_471752.b2c_card_order.return_money</code>. 退款余额
      */
     public void setReturnMoney(BigDecimal value) {
-        set(27, value);
+        set(26, value);
     }
 
     /**
      * Getter for <code>mini_shop_471752.b2c_card_order.return_money</code>. 退款余额
      */
     public BigDecimal getReturnMoney() {
-        return (BigDecimal) get(27);
+        return (BigDecimal) get(26);
     }
 
     /**
      * Setter for <code>mini_shop_471752.b2c_card_order.return_time</code>. 退款时间
      */
     public void setReturnTime(Timestamp value) {
-        set(28, value);
+        set(27, value);
     }
 
     /**
      * Getter for <code>mini_shop_471752.b2c_card_order.return_time</code>. 退款时间
      */
     public Timestamp getReturnTime() {
+        return (Timestamp) get(27);
+    }
+
+    /**
+     * Setter for <code>mini_shop_471752.b2c_card_order.del_time</code>. 退款时间
+     */
+    public void setDelTime(Timestamp value) {
+        set(28, value);
+    }
+
+    /**
+     * Getter for <code>mini_shop_471752.b2c_card_order.del_time</code>. 退款时间
+     */
+    public Timestamp getDelTime() {
         return (Timestamp) get(28);
+    }
+
+    /**
+     * Setter for <code>mini_shop_471752.b2c_card_order.create_time</code>.
+     */
+    public void setCreateTime(Timestamp value) {
+        set(29, value);
+    }
+
+    /**
+     * Getter for <code>mini_shop_471752.b2c_card_order.create_time</code>.
+     */
+    public Timestamp getCreateTime() {
+        return (Timestamp) get(29);
+    }
+
+    /**
+     * Setter for <code>mini_shop_471752.b2c_card_order.update_time</code>. 最后修改时间
+     */
+    public void setUpdateTime(Timestamp value) {
+        set(30, value);
+    }
+
+    /**
+     * Getter for <code>mini_shop_471752.b2c_card_order.update_time</code>. 最后修改时间
+     */
+    public Timestamp getUpdateTime() {
+        return (Timestamp) get(30);
     }
 
     // -------------------------------------------------------------------------
@@ -462,7 +490,7 @@ public class CardOrderRecord extends UpdatableRecordImpl<CardOrderRecord> {
     /**
      * Create a detached, initialised CardOrderRecord
      */
-    public CardOrderRecord(Integer orderId, Integer cardId, String cardNo, String orderSn, Integer userId, Byte orderStatus, String orderStatusName, Integer invoiceId, String invoiceDetail, String addMessage, String payCode, String payName, String prepayId, String paySn, BigDecimal moneyPaid, BigDecimal useAccount, BigDecimal useScore, BigDecimal orderAmount, Timestamp addTime, Timestamp payTime, String sellerRemark, Byte starFlag, Byte delFlag, String aliTradeNo, Byte returnFlag, BigDecimal returnScore, BigDecimal returnAccount, BigDecimal returnMoney, Timestamp returnTime) {
+    public CardOrderRecord(Integer orderId, Integer cardId, String cardNo, String orderSn, Integer userId, Byte orderStatus, String orderStatusName, Integer invoiceId, String invoiceDetail, String addMessage, String payCode, String payName, String prepayId, String paySn, BigDecimal moneyPaid, BigDecimal useAccount, BigDecimal useScore, BigDecimal orderAmount, Timestamp payTime, String sellerRemark, Byte starFlag, Byte delFlag, String aliTradeNo, Byte returnFlag, BigDecimal returnScore, BigDecimal returnAccount, BigDecimal returnMoney, Timestamp returnTime, Timestamp delTime, Timestamp createTime, Timestamp updateTime) {
         super(CardOrder.CARD_ORDER);
 
         set(0, orderId);
@@ -483,16 +511,18 @@ public class CardOrderRecord extends UpdatableRecordImpl<CardOrderRecord> {
         set(15, useAccount);
         set(16, useScore);
         set(17, orderAmount);
-        set(18, addTime);
-        set(19, payTime);
-        set(20, sellerRemark);
-        set(21, starFlag);
-        set(22, delFlag);
-        set(23, aliTradeNo);
-        set(24, returnFlag);
-        set(25, returnScore);
-        set(26, returnAccount);
-        set(27, returnMoney);
-        set(28, returnTime);
+        set(18, payTime);
+        set(19, sellerRemark);
+        set(20, starFlag);
+        set(21, delFlag);
+        set(22, aliTradeNo);
+        set(23, returnFlag);
+        set(24, returnScore);
+        set(25, returnAccount);
+        set(26, returnMoney);
+        set(27, returnTime);
+        set(28, delTime);
+        set(29, createTime);
+        set(30, updateTime);
     }
 }

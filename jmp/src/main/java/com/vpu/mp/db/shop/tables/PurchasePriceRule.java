@@ -10,6 +10,7 @@ import com.vpu.mp.db.shop.MiniShop_471752;
 import com.vpu.mp.db.shop.tables.records.PurchasePriceRuleRecord;
 
 import java.math.BigDecimal;
+import java.sql.Timestamp;
 import java.util.Arrays;
 import java.util.List;
 
@@ -42,7 +43,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class PurchasePriceRule extends TableImpl<PurchasePriceRuleRecord> {
 
-    private static final long serialVersionUID = 1253361539;
+    private static final long serialVersionUID = -1623768275;
 
     /**
      * The reference instance of <code>mini_shop_471752.b2c_purchase_price_rule</code>
@@ -63,9 +64,9 @@ public class PurchasePriceRule extends TableImpl<PurchasePriceRuleRecord> {
     public final TableField<PurchasePriceRuleRecord, Integer> ID = createField("id", org.jooq.impl.SQLDataType.INTEGER.nullable(false).identity(true), this, "");
 
     /**
-     * The column <code>mini_shop_471752.b2c_purchase_price_rule.purchase_price_id</code>. 加价购活动ID
+     * The column <code>mini_shop_471752.b2c_purchase_price_rule.purchase_price_id</code>. 加价购活动id
      */
-    public final TableField<PurchasePriceRuleRecord, Integer> PURCHASE_PRICE_ID = createField("purchase_price_id", org.jooq.impl.SQLDataType.INTEGER.nullable(false), this, "加价购活动ID");
+    public final TableField<PurchasePriceRuleRecord, Integer> PURCHASE_PRICE_ID = createField("purchase_price_id", org.jooq.impl.SQLDataType.INTEGER.nullable(false), this, "加价购活动id");
 
     /**
      * The column <code>mini_shop_471752.b2c_purchase_price_rule.full_price</code>. 满多少钱
@@ -88,9 +89,19 @@ public class PurchasePriceRule extends TableImpl<PurchasePriceRuleRecord> {
     public final TableField<PurchasePriceRuleRecord, Byte> DEL_FLAG = createField("del_flag", org.jooq.impl.SQLDataType.TINYINT.defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.TINYINT)), this, "");
 
     /**
-     * The column <code>mini_shop_471752.b2c_purchase_price_rule.del_time</code>.
+     * The column <code>mini_shop_471752.b2c_purchase_price_rule.del_time</code>. 删除时间
      */
-    public final TableField<PurchasePriceRuleRecord, Integer> DEL_TIME = createField("del_time", org.jooq.impl.SQLDataType.INTEGER.defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.INTEGER)), this, "");
+    public final TableField<PurchasePriceRuleRecord, Timestamp> DEL_TIME = createField("del_time", org.jooq.impl.SQLDataType.TIMESTAMP.nullable(false).defaultValue(org.jooq.impl.DSL.inline("0000-00-00 00:00:00", org.jooq.impl.SQLDataType.TIMESTAMP)), this, "删除时间");
+
+    /**
+     * The column <code>mini_shop_471752.b2c_purchase_price_rule.create_time</code>.
+     */
+    public final TableField<PurchasePriceRuleRecord, Timestamp> CREATE_TIME = createField("create_time", org.jooq.impl.SQLDataType.TIMESTAMP.nullable(false).defaultValue(org.jooq.impl.DSL.field("CURRENT_TIMESTAMP", org.jooq.impl.SQLDataType.TIMESTAMP)), this, "");
+
+    /**
+     * The column <code>mini_shop_471752.b2c_purchase_price_rule.update_time</code>. 最后修改时间
+     */
+    public final TableField<PurchasePriceRuleRecord, Timestamp> UPDATE_TIME = createField("update_time", org.jooq.impl.SQLDataType.TIMESTAMP.nullable(false).defaultValue(org.jooq.impl.DSL.field("CURRENT_TIMESTAMP", org.jooq.impl.SQLDataType.TIMESTAMP)), this, "最后修改时间");
 
     /**
      * Create a <code>mini_shop_471752.b2c_purchase_price_rule</code> table reference

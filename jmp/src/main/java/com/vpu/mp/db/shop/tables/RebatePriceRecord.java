@@ -42,7 +42,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class RebatePriceRecord extends TableImpl<RebatePriceRecordRecord> {
 
-    private static final long serialVersionUID = 384946840;
+    private static final long serialVersionUID = -1662944159;
 
     /**
      * The reference instance of <code>mini_shop_471752.b2c_rebate_price_record</code>
@@ -63,24 +63,29 @@ public class RebatePriceRecord extends TableImpl<RebatePriceRecordRecord> {
     public final TableField<RebatePriceRecordRecord, Integer> ID = createField("id", org.jooq.impl.SQLDataType.INTEGER.nullable(false).identity(true), this, "");
 
     /**
-     * The column <code>mini_shop_471752.b2c_rebate_price_record.user_id</code>. 用户ID
+     * The column <code>mini_shop_471752.b2c_rebate_price_record.user_id</code>. 用户id
      */
-    public final TableField<RebatePriceRecordRecord, Integer> USER_ID = createField("user_id", org.jooq.impl.SQLDataType.INTEGER.defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.INTEGER)), this, "用户ID");
+    public final TableField<RebatePriceRecordRecord, Integer> USER_ID = createField("user_id", org.jooq.impl.SQLDataType.INTEGER.nullable(false).defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.INTEGER)), this, "用户id");
 
     /**
      * The column <code>mini_shop_471752.b2c_rebate_price_record.data_sign</code>. md5(rebate_data)
      */
-    public final TableField<RebatePriceRecordRecord, String> DATA_SIGN = createField("data_sign", org.jooq.impl.SQLDataType.VARCHAR(50).defaultValue(org.jooq.impl.DSL.inline("", org.jooq.impl.SQLDataType.VARCHAR)), this, "md5(rebate_data)");
+    public final TableField<RebatePriceRecordRecord, String> DATA_SIGN = createField("data_sign", org.jooq.impl.SQLDataType.VARCHAR(50).nullable(false).defaultValue(org.jooq.impl.DSL.inline("", org.jooq.impl.SQLDataType.VARCHAR)), this, "md5(rebate_data)");
 
     /**
      * The column <code>mini_shop_471752.b2c_rebate_price_record.rebate_data</code>. 分享内容
      */
-    public final TableField<RebatePriceRecordRecord, String> REBATE_DATA = createField("rebate_data", org.jooq.impl.SQLDataType.VARCHAR(5000).defaultValue(org.jooq.impl.DSL.inline("", org.jooq.impl.SQLDataType.VARCHAR)), this, "分享内容");
+    public final TableField<RebatePriceRecordRecord, String> REBATE_DATA = createField("rebate_data", org.jooq.impl.SQLDataType.CLOB, this, "分享内容");
 
     /**
-     * The column <code>mini_shop_471752.b2c_rebate_price_record.add_time</code>. 分享时间
+     * The column <code>mini_shop_471752.b2c_rebate_price_record.create_time</code>.
      */
-    public final TableField<RebatePriceRecordRecord, Timestamp> ADD_TIME = createField("add_time", org.jooq.impl.SQLDataType.TIMESTAMP.nullable(false).defaultValue(org.jooq.impl.DSL.field("CURRENT_TIMESTAMP", org.jooq.impl.SQLDataType.TIMESTAMP)), this, "分享时间");
+    public final TableField<RebatePriceRecordRecord, Timestamp> CREATE_TIME = createField("create_time", org.jooq.impl.SQLDataType.TIMESTAMP.nullable(false).defaultValue(org.jooq.impl.DSL.field("CURRENT_TIMESTAMP", org.jooq.impl.SQLDataType.TIMESTAMP)), this, "");
+
+    /**
+     * The column <code>mini_shop_471752.b2c_rebate_price_record.update_time</code>. 最后修改时间
+     */
+    public final TableField<RebatePriceRecordRecord, Timestamp> UPDATE_TIME = createField("update_time", org.jooq.impl.SQLDataType.TIMESTAMP.nullable(false).defaultValue(org.jooq.impl.DSL.field("CURRENT_TIMESTAMP", org.jooq.impl.SQLDataType.TIMESTAMP)), this, "最后修改时间");
 
     /**
      * Create a <code>mini_shop_471752.b2c_rebate_price_record</code> table reference

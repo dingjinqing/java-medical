@@ -42,7 +42,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class ServiceTechnicianGroup extends TableImpl<ServiceTechnicianGroupRecord> {
 
-    private static final long serialVersionUID = 98937340;
+    private static final long serialVersionUID = 2058494469;
 
     /**
      * The reference instance of <code>mini_shop_471752.b2c_service_technician_group</code>
@@ -73,9 +73,14 @@ public class ServiceTechnicianGroup extends TableImpl<ServiceTechnicianGroupReco
     public final TableField<ServiceTechnicianGroupRecord, Integer> STORE_ID = createField("store_id", org.jooq.impl.SQLDataType.INTEGER.nullable(false), this, "门店id");
 
     /**
-     * The column <code>mini_shop_471752.b2c_service_technician_group.add_time</code>. 添加时间
+     * The column <code>mini_shop_471752.b2c_service_technician_group.create_time</code>.
      */
-    public final TableField<ServiceTechnicianGroupRecord, Timestamp> ADD_TIME = createField("add_time", org.jooq.impl.SQLDataType.TIMESTAMP.nullable(false).defaultValue(org.jooq.impl.DSL.field("CURRENT_TIMESTAMP", org.jooq.impl.SQLDataType.TIMESTAMP)), this, "添加时间");
+    public final TableField<ServiceTechnicianGroupRecord, Timestamp> CREATE_TIME = createField("create_time", org.jooq.impl.SQLDataType.TIMESTAMP.nullable(false).defaultValue(org.jooq.impl.DSL.field("CURRENT_TIMESTAMP", org.jooq.impl.SQLDataType.TIMESTAMP)), this, "");
+
+    /**
+     * The column <code>mini_shop_471752.b2c_service_technician_group.update_time</code>. 最后修改时间
+     */
+    public final TableField<ServiceTechnicianGroupRecord, Timestamp> UPDATE_TIME = createField("update_time", org.jooq.impl.SQLDataType.TIMESTAMP.nullable(false).defaultValue(org.jooq.impl.DSL.field("CURRENT_TIMESTAMP", org.jooq.impl.SQLDataType.TIMESTAMP)), this, "最后修改时间");
 
     /**
      * The column <code>mini_shop_471752.b2c_service_technician_group.del_flag</code>. 0使用，1删除

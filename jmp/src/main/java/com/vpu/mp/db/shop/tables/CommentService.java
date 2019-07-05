@@ -42,7 +42,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class CommentService extends TableImpl<CommentServiceRecord> {
 
-    private static final long serialVersionUID = -2089336504;
+    private static final long serialVersionUID = -29873939;
 
     /**
      * The reference instance of <code>mini_shop_471752.b2c_comment_service</code>
@@ -63,14 +63,14 @@ public class CommentService extends TableImpl<CommentServiceRecord> {
     public final TableField<CommentServiceRecord, Integer> ID = createField("id", org.jooq.impl.SQLDataType.INTEGER.nullable(false).identity(true), this, "");
 
     /**
-     * The column <code>mini_shop_471752.b2c_comment_service.shop_id</code>. 店铺ID
+     * The column <code>mini_shop_471752.b2c_comment_service.shop_id</code>. 店铺id
      */
-    public final TableField<CommentServiceRecord, Integer> SHOP_ID = createField("shop_id", org.jooq.impl.SQLDataType.INTEGER.nullable(false), this, "店铺ID");
+    public final TableField<CommentServiceRecord, Integer> SHOP_ID = createField("shop_id", org.jooq.impl.SQLDataType.INTEGER.nullable(false), this, "店铺id");
 
     /**
-     * The column <code>mini_shop_471752.b2c_comment_service.store_id</code>. 门店ID
+     * The column <code>mini_shop_471752.b2c_comment_service.store_id</code>. 门店id
      */
-    public final TableField<CommentServiceRecord, Integer> STORE_ID = createField("store_id", org.jooq.impl.SQLDataType.INTEGER.nullable(false), this, "门店ID");
+    public final TableField<CommentServiceRecord, Integer> STORE_ID = createField("store_id", org.jooq.impl.SQLDataType.INTEGER.nullable(false), this, "门店id");
 
     /**
      * The column <code>mini_shop_471752.b2c_comment_service.technician_id</code>. 技师id
@@ -78,9 +78,9 @@ public class CommentService extends TableImpl<CommentServiceRecord> {
     public final TableField<CommentServiceRecord, Integer> TECHNICIAN_ID = createField("technician_id", org.jooq.impl.SQLDataType.INTEGER.nullable(false), this, "技师id");
 
     /**
-     * The column <code>mini_shop_471752.b2c_comment_service.user_id</code>. 用户ID
+     * The column <code>mini_shop_471752.b2c_comment_service.user_id</code>. 用户id
      */
-    public final TableField<CommentServiceRecord, Integer> USER_ID = createField("user_id", org.jooq.impl.SQLDataType.INTEGER.nullable(false), this, "用户ID");
+    public final TableField<CommentServiceRecord, Integer> USER_ID = createField("user_id", org.jooq.impl.SQLDataType.INTEGER.nullable(false), this, "用户id");
 
     /**
      * The column <code>mini_shop_471752.b2c_comment_service.commstar</code>. 评价星级
@@ -123,14 +123,14 @@ public class CommentService extends TableImpl<CommentServiceRecord> {
     public final TableField<CommentServiceRecord, String> COMM_IMG = createField("comm_img", org.jooq.impl.SQLDataType.VARCHAR(1000), this, "评论图片");
 
     /**
-     * The column <code>mini_shop_471752.b2c_comment_service.in_time</code>. 创建时间
+     * The column <code>mini_shop_471752.b2c_comment_service.create_time</code>.
      */
-    public final TableField<CommentServiceRecord, Timestamp> IN_TIME = createField("in_time", org.jooq.impl.SQLDataType.TIMESTAMP, this, "创建时间");
+    public final TableField<CommentServiceRecord, Timestamp> CREATE_TIME = createField("create_time", org.jooq.impl.SQLDataType.TIMESTAMP.nullable(false).defaultValue(org.jooq.impl.DSL.field("CURRENT_TIMESTAMP", org.jooq.impl.SQLDataType.TIMESTAMP)), this, "");
 
     /**
-     * The column <code>mini_shop_471752.b2c_comment_service.up_time</code>. 更新时间
+     * The column <code>mini_shop_471752.b2c_comment_service.update_time</code>. 最后修改时间
      */
-    public final TableField<CommentServiceRecord, Timestamp> UP_TIME = createField("up_time", org.jooq.impl.SQLDataType.TIMESTAMP, this, "更新时间");
+    public final TableField<CommentServiceRecord, Timestamp> UPDATE_TIME = createField("update_time", org.jooq.impl.SQLDataType.TIMESTAMP.nullable(false).defaultValue(org.jooq.impl.DSL.field("CURRENT_TIMESTAMP", org.jooq.impl.SQLDataType.TIMESTAMP)), this, "最后修改时间");
 
     /**
      * The column <code>mini_shop_471752.b2c_comment_service.flag</code>. 0:未审批,1:审批通过,2:审批未通过

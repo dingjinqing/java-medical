@@ -42,7 +42,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class DistributorGroup extends TableImpl<DistributorGroupRecord> {
 
-    private static final long serialVersionUID = -1306160543;
+    private static final long serialVersionUID = 879775312;
 
     /**
      * The reference instance of <code>mini_shop_471752.b2c_distributor_group</code>
@@ -58,9 +58,9 @@ public class DistributorGroup extends TableImpl<DistributorGroupRecord> {
     }
 
     /**
-     * The column <code>mini_shop_471752.b2c_distributor_group.id</code>. 分组ID
+     * The column <code>mini_shop_471752.b2c_distributor_group.id</code>. 分组id
      */
-    public final TableField<DistributorGroupRecord, Integer> ID = createField("id", org.jooq.impl.SQLDataType.INTEGER.nullable(false).identity(true), this, "分组ID");
+    public final TableField<DistributorGroupRecord, Integer> ID = createField("id", org.jooq.impl.SQLDataType.INTEGER.nullable(false).identity(true), this, "分组id");
 
     /**
      * The column <code>mini_shop_471752.b2c_distributor_group.group_name</code>. 分组名字
@@ -73,19 +73,24 @@ public class DistributorGroup extends TableImpl<DistributorGroupRecord> {
     public final TableField<DistributorGroupRecord, Byte> IS_DEFAULT = createField("is_default", org.jooq.impl.SQLDataType.TINYINT.defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.TINYINT)), this, "是否为默认");
 
     /**
-     * The column <code>mini_shop_471752.b2c_distributor_group.add_time</code>. 添加时间
-     */
-    public final TableField<DistributorGroupRecord, Timestamp> ADD_TIME = createField("add_time", org.jooq.impl.SQLDataType.TIMESTAMP, this, "添加时间");
-
-    /**
-     * The column <code>mini_shop_471752.b2c_distributor_group.update_time</code>. 更新时间
-     */
-    public final TableField<DistributorGroupRecord, Timestamp> UPDATE_TIME = createField("update_time", org.jooq.impl.SQLDataType.TIMESTAMP.nullable(false).defaultValue(org.jooq.impl.DSL.field("CURRENT_TIMESTAMP", org.jooq.impl.SQLDataType.TIMESTAMP)), this, "更新时间");
-
-    /**
      * The column <code>mini_shop_471752.b2c_distributor_group.del_flag</code>. 是否删除
      */
     public final TableField<DistributorGroupRecord, Byte> DEL_FLAG = createField("del_flag", org.jooq.impl.SQLDataType.TINYINT.defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.TINYINT)), this, "是否删除");
+
+    /**
+     * The column <code>mini_shop_471752.b2c_distributor_group.del_time</code>. 删除时间
+     */
+    public final TableField<DistributorGroupRecord, Timestamp> DEL_TIME = createField("del_time", org.jooq.impl.SQLDataType.TIMESTAMP.nullable(false).defaultValue(org.jooq.impl.DSL.inline("0000-00-00 00:00:00", org.jooq.impl.SQLDataType.TIMESTAMP)), this, "删除时间");
+
+    /**
+     * The column <code>mini_shop_471752.b2c_distributor_group.create_time</code>.
+     */
+    public final TableField<DistributorGroupRecord, Timestamp> CREATE_TIME = createField("create_time", org.jooq.impl.SQLDataType.TIMESTAMP.nullable(false).defaultValue(org.jooq.impl.DSL.field("CURRENT_TIMESTAMP", org.jooq.impl.SQLDataType.TIMESTAMP)), this, "");
+
+    /**
+     * The column <code>mini_shop_471752.b2c_distributor_group.update_time</code>. 最后修改时间
+     */
+    public final TableField<DistributorGroupRecord, Timestamp> UPDATE_TIME = createField("update_time", org.jooq.impl.SQLDataType.TIMESTAMP.nullable(false).defaultValue(org.jooq.impl.DSL.field("CURRENT_TIMESTAMP", org.jooq.impl.SQLDataType.TIMESTAMP)), this, "最后修改时间");
 
     /**
      * Create a <code>mini_shop_471752.b2c_distributor_group</code> table reference

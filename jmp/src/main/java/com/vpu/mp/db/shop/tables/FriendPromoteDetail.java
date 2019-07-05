@@ -42,7 +42,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class FriendPromoteDetail extends TableImpl<FriendPromoteDetailRecord> {
 
-    private static final long serialVersionUID = 248602515;
+    private static final long serialVersionUID = -874937583;
 
     /**
      * The reference instance of <code>mini_shop_471752.b2c_friend_promote_detail</code>
@@ -63,19 +63,19 @@ public class FriendPromoteDetail extends TableImpl<FriendPromoteDetailRecord> {
     public final TableField<FriendPromoteDetailRecord, Integer> ID = createField("id", org.jooq.impl.SQLDataType.INTEGER.nullable(false).identity(true), this, "");
 
     /**
-     * The column <code>mini_shop_471752.b2c_friend_promote_detail.launch_id</code>. 助力活动发起ID
+     * The column <code>mini_shop_471752.b2c_friend_promote_detail.launch_id</code>. 助力活动发起id
      */
-    public final TableField<FriendPromoteDetailRecord, Integer> LAUNCH_ID = createField("launch_id", org.jooq.impl.SQLDataType.INTEGER.defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.INTEGER)), this, "助力活动发起ID");
+    public final TableField<FriendPromoteDetailRecord, Integer> LAUNCH_ID = createField("launch_id", org.jooq.impl.SQLDataType.INTEGER.defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.INTEGER)), this, "助力活动发起id");
 
     /**
-     * The column <code>mini_shop_471752.b2c_friend_promote_detail.user_id</code>. 助力会员ID
+     * The column <code>mini_shop_471752.b2c_friend_promote_detail.user_id</code>. 助力会员id
      */
-    public final TableField<FriendPromoteDetailRecord, Integer> USER_ID = createField("user_id", org.jooq.impl.SQLDataType.INTEGER.defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.INTEGER)), this, "助力会员ID");
+    public final TableField<FriendPromoteDetailRecord, Integer> USER_ID = createField("user_id", org.jooq.impl.SQLDataType.INTEGER.defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.INTEGER)), this, "助力会员id");
 
     /**
-     * The column <code>mini_shop_471752.b2c_friend_promote_detail.promote_id</code>. 助力活动ID
+     * The column <code>mini_shop_471752.b2c_friend_promote_detail.promote_id</code>. 助力活动id
      */
-    public final TableField<FriendPromoteDetailRecord, Integer> PROMOTE_ID = createField("promote_id", org.jooq.impl.SQLDataType.INTEGER.defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.INTEGER)), this, "助力活动ID");
+    public final TableField<FriendPromoteDetailRecord, Integer> PROMOTE_ID = createField("promote_id", org.jooq.impl.SQLDataType.INTEGER.defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.INTEGER)), this, "助力活动id");
 
     /**
      * The column <code>mini_shop_471752.b2c_friend_promote_detail.promote_value</code>. 助力值
@@ -83,9 +83,9 @@ public class FriendPromoteDetail extends TableImpl<FriendPromoteDetailRecord> {
     public final TableField<FriendPromoteDetailRecord, Integer> PROMOTE_VALUE = createField("promote_value", org.jooq.impl.SQLDataType.INTEGER.defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.INTEGER)), this, "助力值");
 
     /**
-     * The column <code>mini_shop_471752.b2c_friend_promote_detail.promote_time</code>. 助力时间
+     * The column <code>mini_shop_471752.b2c_friend_promote_detail.create_time</code>. 助力时间
      */
-    public final TableField<FriendPromoteDetailRecord, Timestamp> PROMOTE_TIME = createField("promote_time", org.jooq.impl.SQLDataType.TIMESTAMP.nullable(false).defaultValue(org.jooq.impl.DSL.field("CURRENT_TIMESTAMP", org.jooq.impl.SQLDataType.TIMESTAMP)), this, "助力时间");
+    public final TableField<FriendPromoteDetailRecord, Timestamp> CREATE_TIME = createField("create_time", org.jooq.impl.SQLDataType.TIMESTAMP.nullable(false).defaultValue(org.jooq.impl.DSL.field("CURRENT_TIMESTAMP", org.jooq.impl.SQLDataType.TIMESTAMP)), this, "助力时间");
 
     /**
      * The column <code>mini_shop_471752.b2c_friend_promote_detail.update_time</code>. 更新时间

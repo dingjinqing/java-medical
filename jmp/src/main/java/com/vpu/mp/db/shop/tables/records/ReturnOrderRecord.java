@@ -28,7 +28,7 @@ import org.jooq.impl.UpdatableRecordImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class ReturnOrderRecord extends UpdatableRecordImpl<ReturnOrderRecord> {
 
-    private static final long serialVersionUID = -1728947129;
+    private static final long serialVersionUID = 1998607477;
 
     /**
      * Setter for <code>mini_shop_471752.b2c_return_order.ret_id</code>.
@@ -87,14 +87,14 @@ public class ReturnOrderRecord extends UpdatableRecordImpl<ReturnOrderRecord> {
     }
 
     /**
-     * Setter for <code>mini_shop_471752.b2c_return_order.shop_id</code>. 店铺ID
+     * Setter for <code>mini_shop_471752.b2c_return_order.shop_id</code>. 店铺id
      */
     public void setShopId(Integer value) {
         set(4, value);
     }
 
     /**
-     * Getter for <code>mini_shop_471752.b2c_return_order.shop_id</code>. 店铺ID
+     * Getter for <code>mini_shop_471752.b2c_return_order.shop_id</code>. 店铺id
      */
     public Integer getShopId() {
         return (Integer) get(4);
@@ -465,17 +465,31 @@ public class ReturnOrderRecord extends UpdatableRecordImpl<ReturnOrderRecord> {
     }
 
     /**
-     * Setter for <code>mini_shop_471752.b2c_return_order.add_time</code>. 创建退款单时间
+     * Setter for <code>mini_shop_471752.b2c_return_order.create_time</code>.
      */
-    public void setAddTime(Timestamp value) {
+    public void setCreateTime(Timestamp value) {
         set(31, value);
     }
 
     /**
-     * Getter for <code>mini_shop_471752.b2c_return_order.add_time</code>. 创建退款单时间
+     * Getter for <code>mini_shop_471752.b2c_return_order.create_time</code>.
      */
-    public Timestamp getAddTime() {
+    public Timestamp getCreateTime() {
         return (Timestamp) get(31);
+    }
+
+    /**
+     * Setter for <code>mini_shop_471752.b2c_return_order.update_time</code>. 最后修改时间
+     */
+    public void setUpdateTime(Timestamp value) {
+        set(32, value);
+    }
+
+    /**
+     * Getter for <code>mini_shop_471752.b2c_return_order.update_time</code>. 最后修改时间
+     */
+    public Timestamp getUpdateTime() {
+        return (Timestamp) get(32);
     }
 
     // -------------------------------------------------------------------------
@@ -504,7 +518,7 @@ public class ReturnOrderRecord extends UpdatableRecordImpl<ReturnOrderRecord> {
     /**
      * Create a detached, initialised ReturnOrderRecord
      */
-    public ReturnOrderRecord(Integer retId, Integer orderId, String orderSn, String returnOrderSn, Integer shopId, Integer userId, Integer goodsId, Byte refundStatus, BigDecimal money, BigDecimal shippingFee, Byte returnType, String reason, String returnDesc, String shippingType, String shippingNo, String goodsImages, String voucherImages, String phone, Timestamp applyTime, Timestamp applyPassTime, Timestamp applyNotPassTime, Timestamp shippingOrRefundTime, Timestamp refundSuccessTime, Timestamp refundRefuseTime, Timestamp refundCancelTime, String applyNotPassReason, String refundRefuseReason, String returnAddress, String merchantTelephone, String consignee, String zipCode, Timestamp addTime) {
+    public ReturnOrderRecord(Integer retId, Integer orderId, String orderSn, String returnOrderSn, Integer shopId, Integer userId, Integer goodsId, Byte refundStatus, BigDecimal money, BigDecimal shippingFee, Byte returnType, String reason, String returnDesc, String shippingType, String shippingNo, String goodsImages, String voucherImages, String phone, Timestamp applyTime, Timestamp applyPassTime, Timestamp applyNotPassTime, Timestamp shippingOrRefundTime, Timestamp refundSuccessTime, Timestamp refundRefuseTime, Timestamp refundCancelTime, String applyNotPassReason, String refundRefuseReason, String returnAddress, String merchantTelephone, String consignee, String zipCode, Timestamp createTime, Timestamp updateTime) {
         super(ReturnOrder.RETURN_ORDER);
 
         set(0, retId);
@@ -538,6 +552,7 @@ public class ReturnOrderRecord extends UpdatableRecordImpl<ReturnOrderRecord> {
         set(28, merchantTelephone);
         set(29, consignee);
         set(30, zipCode);
-        set(31, addTime);
+        set(31, createTime);
+        set(32, updateTime);
     }
 }

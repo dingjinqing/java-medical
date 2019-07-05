@@ -31,7 +31,7 @@ import org.jooq.impl.UpdatableRecordImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class OrderGoodsRebateRecord extends UpdatableRecordImpl<OrderGoodsRebateRecord> implements Record11<Integer, String, Integer, Integer, Byte, Integer, BigDecimal, BigDecimal, BigDecimal, Timestamp, Timestamp> {
 
-    private static final long serialVersionUID = 1119787706;
+    private static final long serialVersionUID = -1499834116;
 
     /**
      * Setter for <code>mini_shop_471752.b2c_order_goods_rebate.rebate_id</code>.
@@ -48,42 +48,42 @@ public class OrderGoodsRebateRecord extends UpdatableRecordImpl<OrderGoodsRebate
     }
 
     /**
-     * Setter for <code>mini_shop_471752.b2c_order_goods_rebate.order_sn</code>. 订单UUID
+     * Setter for <code>mini_shop_471752.b2c_order_goods_rebate.order_sn</code>. 订单uuid
      */
     public void setOrderSn(String value) {
         set(1, value);
     }
 
     /**
-     * Getter for <code>mini_shop_471752.b2c_order_goods_rebate.order_sn</code>. 订单UUID
+     * Getter for <code>mini_shop_471752.b2c_order_goods_rebate.order_sn</code>. 订单uuid
      */
     public String getOrderSn() {
         return (String) get(1);
     }
 
     /**
-     * Setter for <code>mini_shop_471752.b2c_order_goods_rebate.goods_id</code>. 商品ID
+     * Setter for <code>mini_shop_471752.b2c_order_goods_rebate.goods_id</code>. 商品id
      */
     public void setGoodsId(Integer value) {
         set(2, value);
     }
 
     /**
-     * Getter for <code>mini_shop_471752.b2c_order_goods_rebate.goods_id</code>. 商品ID
+     * Getter for <code>mini_shop_471752.b2c_order_goods_rebate.goods_id</code>. 商品id
      */
     public Integer getGoodsId() {
         return (Integer) get(2);
     }
 
     /**
-     * Setter for <code>mini_shop_471752.b2c_order_goods_rebate.product_id</code>. 产品ID
+     * Setter for <code>mini_shop_471752.b2c_order_goods_rebate.product_id</code>. 产品id
      */
     public void setProductId(Integer value) {
         set(3, value);
     }
 
     /**
-     * Getter for <code>mini_shop_471752.b2c_order_goods_rebate.product_id</code>. 产品ID
+     * Getter for <code>mini_shop_471752.b2c_order_goods_rebate.product_id</code>. 产品id
      */
     public Integer getProductId() {
         return (Integer) get(3);
@@ -104,14 +104,14 @@ public class OrderGoodsRebateRecord extends UpdatableRecordImpl<OrderGoodsRebate
     }
 
     /**
-     * Setter for <code>mini_shop_471752.b2c_order_goods_rebate.rebate_user_id</code>. 返利用户ID
+     * Setter for <code>mini_shop_471752.b2c_order_goods_rebate.rebate_user_id</code>. 返利用户id
      */
     public void setRebateUserId(Integer value) {
         set(5, value);
     }
 
     /**
-     * Getter for <code>mini_shop_471752.b2c_order_goods_rebate.rebate_user_id</code>. 返利用户ID
+     * Getter for <code>mini_shop_471752.b2c_order_goods_rebate.rebate_user_id</code>. 返利用户id
      */
     public Integer getRebateUserId() {
         return (Integer) get(5);
@@ -160,28 +160,28 @@ public class OrderGoodsRebateRecord extends UpdatableRecordImpl<OrderGoodsRebate
     }
 
     /**
-     * Setter for <code>mini_shop_471752.b2c_order_goods_rebate.add_time</code>. 添加时间
+     * Setter for <code>mini_shop_471752.b2c_order_goods_rebate.create_time</code>.
      */
-    public void setAddTime(Timestamp value) {
+    public void setCreateTime(Timestamp value) {
         set(9, value);
     }
 
     /**
-     * Getter for <code>mini_shop_471752.b2c_order_goods_rebate.add_time</code>. 添加时间
+     * Getter for <code>mini_shop_471752.b2c_order_goods_rebate.create_time</code>.
      */
-    public Timestamp getAddTime() {
+    public Timestamp getCreateTime() {
         return (Timestamp) get(9);
     }
 
     /**
-     * Setter for <code>mini_shop_471752.b2c_order_goods_rebate.update_time</code>. 更新时间
+     * Setter for <code>mini_shop_471752.b2c_order_goods_rebate.update_time</code>. 最后修改时间
      */
     public void setUpdateTime(Timestamp value) {
         set(10, value);
     }
 
     /**
-     * Getter for <code>mini_shop_471752.b2c_order_goods_rebate.update_time</code>. 更新时间
+     * Getter for <code>mini_shop_471752.b2c_order_goods_rebate.update_time</code>. 最后修改时间
      */
     public Timestamp getUpdateTime() {
         return (Timestamp) get(10);
@@ -296,7 +296,7 @@ public class OrderGoodsRebateRecord extends UpdatableRecordImpl<OrderGoodsRebate
      */
     @Override
     public Field<Timestamp> field10() {
-        return OrderGoodsRebate.ORDER_GOODS_REBATE.ADD_TIME;
+        return OrderGoodsRebate.ORDER_GOODS_REBATE.CREATE_TIME;
     }
 
     /**
@@ -384,7 +384,7 @@ public class OrderGoodsRebateRecord extends UpdatableRecordImpl<OrderGoodsRebate
      */
     @Override
     public Timestamp component10() {
-        return getAddTime();
+        return getCreateTime();
     }
 
     /**
@@ -472,7 +472,7 @@ public class OrderGoodsRebateRecord extends UpdatableRecordImpl<OrderGoodsRebate
      */
     @Override
     public Timestamp value10() {
-        return getAddTime();
+        return getCreateTime();
     }
 
     /**
@@ -569,7 +569,7 @@ public class OrderGoodsRebateRecord extends UpdatableRecordImpl<OrderGoodsRebate
      */
     @Override
     public OrderGoodsRebateRecord value10(Timestamp value) {
-        setAddTime(value);
+        setCreateTime(value);
         return this;
     }
 
@@ -615,7 +615,7 @@ public class OrderGoodsRebateRecord extends UpdatableRecordImpl<OrderGoodsRebate
     /**
      * Create a detached, initialised OrderGoodsRebateRecord
      */
-    public OrderGoodsRebateRecord(Integer rebateId, String orderSn, Integer goodsId, Integer productId, Byte rebateLevel, Integer rebateUserId, BigDecimal rebatePercent, BigDecimal rebateMoney, BigDecimal totalRebateMoney, Timestamp addTime, Timestamp updateTime) {
+    public OrderGoodsRebateRecord(Integer rebateId, String orderSn, Integer goodsId, Integer productId, Byte rebateLevel, Integer rebateUserId, BigDecimal rebatePercent, BigDecimal rebateMoney, BigDecimal totalRebateMoney, Timestamp createTime, Timestamp updateTime) {
         super(OrderGoodsRebate.ORDER_GOODS_REBATE);
 
         set(0, rebateId);
@@ -627,7 +627,7 @@ public class OrderGoodsRebateRecord extends UpdatableRecordImpl<OrderGoodsRebate
         set(6, rebatePercent);
         set(7, rebateMoney);
         set(8, totalRebateMoney);
-        set(9, addTime);
+        set(9, createTime);
         set(10, updateTime);
     }
 }

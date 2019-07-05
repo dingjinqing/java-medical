@@ -31,7 +31,7 @@ import org.jooq.impl.UpdatableRecordImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class UserRebatePriceRecord extends UpdatableRecordImpl<UserRebatePriceRecord> implements Record8<Integer, Integer, Integer, Integer, BigDecimal, Timestamp, Timestamp, Timestamp> {
 
-    private static final long serialVersionUID = 2119430051;
+    private static final long serialVersionUID = 486493231;
 
     /**
      * Setter for <code>mini_shop_471752.b2c_user_rebate_price.id</code>.
@@ -48,42 +48,42 @@ public class UserRebatePriceRecord extends UpdatableRecordImpl<UserRebatePriceRe
     }
 
     /**
-     * Setter for <code>mini_shop_471752.b2c_user_rebate_price.user_id</code>. 用户ID
+     * Setter for <code>mini_shop_471752.b2c_user_rebate_price.user_id</code>. 用户id
      */
     public void setUserId(Integer value) {
         set(1, value);
     }
 
     /**
-     * Getter for <code>mini_shop_471752.b2c_user_rebate_price.user_id</code>. 用户ID
+     * Getter for <code>mini_shop_471752.b2c_user_rebate_price.user_id</code>. 用户id
      */
     public Integer getUserId() {
         return (Integer) get(1);
     }
 
     /**
-     * Setter for <code>mini_shop_471752.b2c_user_rebate_price.goods_id</code>. 商品ID
+     * Setter for <code>mini_shop_471752.b2c_user_rebate_price.goods_id</code>. 商品id
      */
     public void setGoodsId(Integer value) {
         set(2, value);
     }
 
     /**
-     * Getter for <code>mini_shop_471752.b2c_user_rebate_price.goods_id</code>. 商品ID
+     * Getter for <code>mini_shop_471752.b2c_user_rebate_price.goods_id</code>. 商品id
      */
     public Integer getGoodsId() {
         return (Integer) get(2);
     }
 
     /**
-     * Setter for <code>mini_shop_471752.b2c_user_rebate_price.product_id</code>. 产品ID
+     * Setter for <code>mini_shop_471752.b2c_user_rebate_price.product_id</code>. 产品id
      */
     public void setProductId(Integer value) {
         set(3, value);
     }
 
     /**
-     * Getter for <code>mini_shop_471752.b2c_user_rebate_price.product_id</code>. 产品ID
+     * Getter for <code>mini_shop_471752.b2c_user_rebate_price.product_id</code>. 产品id
      */
     public Integer getProductId() {
         return (Integer) get(3);
@@ -104,42 +104,42 @@ public class UserRebatePriceRecord extends UpdatableRecordImpl<UserRebatePriceRe
     }
 
     /**
-     * Setter for <code>mini_shop_471752.b2c_user_rebate_price.add_time</code>. 添加时间
-     */
-    public void setAddTime(Timestamp value) {
-        set(5, value);
-    }
-
-    /**
-     * Getter for <code>mini_shop_471752.b2c_user_rebate_price.add_time</code>. 添加时间
-     */
-    public Timestamp getAddTime() {
-        return (Timestamp) get(5);
-    }
-
-    /**
      * Setter for <code>mini_shop_471752.b2c_user_rebate_price.expire_time</code>. 过期时间
      */
     public void setExpireTime(Timestamp value) {
-        set(6, value);
+        set(5, value);
     }
 
     /**
      * Getter for <code>mini_shop_471752.b2c_user_rebate_price.expire_time</code>. 过期时间
      */
     public Timestamp getExpireTime() {
+        return (Timestamp) get(5);
+    }
+
+    /**
+     * Setter for <code>mini_shop_471752.b2c_user_rebate_price.create_time</code>.
+     */
+    public void setCreateTime(Timestamp value) {
+        set(6, value);
+    }
+
+    /**
+     * Getter for <code>mini_shop_471752.b2c_user_rebate_price.create_time</code>.
+     */
+    public Timestamp getCreateTime() {
         return (Timestamp) get(6);
     }
 
     /**
-     * Setter for <code>mini_shop_471752.b2c_user_rebate_price.update_time</code>. 更新时间
+     * Setter for <code>mini_shop_471752.b2c_user_rebate_price.update_time</code>. 最后修改时间
      */
     public void setUpdateTime(Timestamp value) {
         set(7, value);
     }
 
     /**
-     * Getter for <code>mini_shop_471752.b2c_user_rebate_price.update_time</code>. 更新时间
+     * Getter for <code>mini_shop_471752.b2c_user_rebate_price.update_time</code>. 最后修改时间
      */
     public Timestamp getUpdateTime() {
         return (Timestamp) get(7);
@@ -222,7 +222,7 @@ public class UserRebatePriceRecord extends UpdatableRecordImpl<UserRebatePriceRe
      */
     @Override
     public Field<Timestamp> field6() {
-        return UserRebatePrice.USER_REBATE_PRICE.ADD_TIME;
+        return UserRebatePrice.USER_REBATE_PRICE.EXPIRE_TIME;
     }
 
     /**
@@ -230,7 +230,7 @@ public class UserRebatePriceRecord extends UpdatableRecordImpl<UserRebatePriceRe
      */
     @Override
     public Field<Timestamp> field7() {
-        return UserRebatePrice.USER_REBATE_PRICE.EXPIRE_TIME;
+        return UserRebatePrice.USER_REBATE_PRICE.CREATE_TIME;
     }
 
     /**
@@ -286,7 +286,7 @@ public class UserRebatePriceRecord extends UpdatableRecordImpl<UserRebatePriceRe
      */
     @Override
     public Timestamp component6() {
-        return getAddTime();
+        return getExpireTime();
     }
 
     /**
@@ -294,7 +294,7 @@ public class UserRebatePriceRecord extends UpdatableRecordImpl<UserRebatePriceRe
      */
     @Override
     public Timestamp component7() {
-        return getExpireTime();
+        return getCreateTime();
     }
 
     /**
@@ -350,7 +350,7 @@ public class UserRebatePriceRecord extends UpdatableRecordImpl<UserRebatePriceRe
      */
     @Override
     public Timestamp value6() {
-        return getAddTime();
+        return getExpireTime();
     }
 
     /**
@@ -358,7 +358,7 @@ public class UserRebatePriceRecord extends UpdatableRecordImpl<UserRebatePriceRe
      */
     @Override
     public Timestamp value7() {
-        return getExpireTime();
+        return getCreateTime();
     }
 
     /**
@@ -419,7 +419,7 @@ public class UserRebatePriceRecord extends UpdatableRecordImpl<UserRebatePriceRe
      */
     @Override
     public UserRebatePriceRecord value6(Timestamp value) {
-        setAddTime(value);
+        setExpireTime(value);
         return this;
     }
 
@@ -428,7 +428,7 @@ public class UserRebatePriceRecord extends UpdatableRecordImpl<UserRebatePriceRe
      */
     @Override
     public UserRebatePriceRecord value7(Timestamp value) {
-        setExpireTime(value);
+        setCreateTime(value);
         return this;
     }
 
@@ -471,7 +471,7 @@ public class UserRebatePriceRecord extends UpdatableRecordImpl<UserRebatePriceRe
     /**
      * Create a detached, initialised UserRebatePriceRecord
      */
-    public UserRebatePriceRecord(Integer id, Integer userId, Integer goodsId, Integer productId, BigDecimal advicePrice, Timestamp addTime, Timestamp expireTime, Timestamp updateTime) {
+    public UserRebatePriceRecord(Integer id, Integer userId, Integer goodsId, Integer productId, BigDecimal advicePrice, Timestamp expireTime, Timestamp createTime, Timestamp updateTime) {
         super(UserRebatePrice.USER_REBATE_PRICE);
 
         set(0, id);
@@ -479,8 +479,8 @@ public class UserRebatePriceRecord extends UpdatableRecordImpl<UserRebatePriceRe
         set(2, goodsId);
         set(3, productId);
         set(4, advicePrice);
-        set(5, addTime);
-        set(6, expireTime);
+        set(5, expireTime);
+        set(6, createTime);
         set(7, updateTime);
     }
 }

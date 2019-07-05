@@ -42,7 +42,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class CardReceiveCode extends TableImpl<CardReceiveCodeRecord> {
 
-    private static final long serialVersionUID = 643615402;
+    private static final long serialVersionUID = -153224731;
 
     /**
      * The reference instance of <code>mini_shop_471752.b2c_card_receive_code</code>
@@ -63,19 +63,19 @@ public class CardReceiveCode extends TableImpl<CardReceiveCodeRecord> {
     public final TableField<CardReceiveCodeRecord, Integer> ID = createField("id", org.jooq.impl.SQLDataType.INTEGER.nullable(false).identity(true), this, "");
 
     /**
-     * The column <code>mini_shop_471752.b2c_card_receive_code.card_id</code>. 卡号ID
+     * The column <code>mini_shop_471752.b2c_card_receive_code.card_id</code>. 卡号id
      */
-    public final TableField<CardReceiveCodeRecord, Integer> CARD_ID = createField("card_id", org.jooq.impl.SQLDataType.INTEGER.defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.INTEGER)), this, "卡号ID");
+    public final TableField<CardReceiveCodeRecord, Integer> CARD_ID = createField("card_id", org.jooq.impl.SQLDataType.INTEGER.nullable(false).defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.INTEGER)), this, "卡号id");
 
     /**
-     * The column <code>mini_shop_471752.b2c_card_receive_code.batch_id</code>. 批次ID
+     * The column <code>mini_shop_471752.b2c_card_receive_code.batch_id</code>. 批次id
      */
-    public final TableField<CardReceiveCodeRecord, Integer> BATCH_ID = createField("batch_id", org.jooq.impl.SQLDataType.INTEGER.nullable(false), this, "批次ID");
+    public final TableField<CardReceiveCodeRecord, Integer> BATCH_ID = createField("batch_id", org.jooq.impl.SQLDataType.INTEGER.nullable(false), this, "批次id");
 
     /**
-     * The column <code>mini_shop_471752.b2c_card_receive_code.group_id</code>. 分组ID
+     * The column <code>mini_shop_471752.b2c_card_receive_code.group_id</code>. 分组id
      */
-    public final TableField<CardReceiveCodeRecord, Integer> GROUP_ID = createField("group_id", org.jooq.impl.SQLDataType.INTEGER.defaultValue(org.jooq.impl.DSL.inline("1", org.jooq.impl.SQLDataType.INTEGER)), this, "分组ID");
+    public final TableField<CardReceiveCodeRecord, Integer> GROUP_ID = createField("group_id", org.jooq.impl.SQLDataType.INTEGER.nullable(false).defaultValue(org.jooq.impl.DSL.inline("1", org.jooq.impl.SQLDataType.INTEGER)), this, "分组id");
 
     /**
      * The column <code>mini_shop_471752.b2c_card_receive_code.code</code>. 领取码
@@ -95,12 +95,12 @@ public class CardReceiveCode extends TableImpl<CardReceiveCodeRecord> {
     /**
      * The column <code>mini_shop_471752.b2c_card_receive_code.user_id</code>. 领取人
      */
-    public final TableField<CardReceiveCodeRecord, Integer> USER_ID = createField("user_id", org.jooq.impl.SQLDataType.INTEGER.defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.INTEGER)), this, "领取人");
+    public final TableField<CardReceiveCodeRecord, Integer> USER_ID = createField("user_id", org.jooq.impl.SQLDataType.INTEGER.nullable(false).defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.INTEGER)), this, "领取人");
 
     /**
      * The column <code>mini_shop_471752.b2c_card_receive_code.receive_time</code>. 领取时间
      */
-    public final TableField<CardReceiveCodeRecord, Timestamp> RECEIVE_TIME = createField("receive_time", org.jooq.impl.SQLDataType.TIMESTAMP, this, "领取时间");
+    public final TableField<CardReceiveCodeRecord, Timestamp> RECEIVE_TIME = createField("receive_time", org.jooq.impl.SQLDataType.TIMESTAMP.nullable(false).defaultValue(org.jooq.impl.DSL.inline("0000-00-00 00:00:00", org.jooq.impl.SQLDataType.TIMESTAMP)), this, "领取时间");
 
     /**
      * The column <code>mini_shop_471752.b2c_card_receive_code.error_msg</code>. 错误说明
@@ -108,24 +108,24 @@ public class CardReceiveCode extends TableImpl<CardReceiveCodeRecord> {
     public final TableField<CardReceiveCodeRecord, String> ERROR_MSG = createField("error_msg", org.jooq.impl.SQLDataType.VARCHAR(200), this, "错误说明");
 
     /**
-     * The column <code>mini_shop_471752.b2c_card_receive_code.add_time</code>.
-     */
-    public final TableField<CardReceiveCodeRecord, Timestamp> ADD_TIME = createField("add_time", org.jooq.impl.SQLDataType.TIMESTAMP, this, "");
-
-    /**
-     * The column <code>mini_shop_471752.b2c_card_receive_code.update_time</code>.
-     */
-    public final TableField<CardReceiveCodeRecord, Timestamp> UPDATE_TIME = createField("update_time", org.jooq.impl.SQLDataType.TIMESTAMP, this, "");
-
-    /**
      * The column <code>mini_shop_471752.b2c_card_receive_code.del_flag</code>.
      */
-    public final TableField<CardReceiveCodeRecord, Byte> DEL_FLAG = createField("del_flag", org.jooq.impl.SQLDataType.TINYINT.defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.TINYINT)), this, "");
+    public final TableField<CardReceiveCodeRecord, Byte> DEL_FLAG = createField("del_flag", org.jooq.impl.SQLDataType.TINYINT.nullable(false).defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.TINYINT)), this, "");
 
     /**
-     * The column <code>mini_shop_471752.b2c_card_receive_code.del_time</code>.
+     * The column <code>mini_shop_471752.b2c_card_receive_code.del_time</code>. 删除时间
      */
-    public final TableField<CardReceiveCodeRecord, Timestamp> DEL_TIME = createField("del_time", org.jooq.impl.SQLDataType.TIMESTAMP, this, "");
+    public final TableField<CardReceiveCodeRecord, Timestamp> DEL_TIME = createField("del_time", org.jooq.impl.SQLDataType.TIMESTAMP.nullable(false).defaultValue(org.jooq.impl.DSL.inline("0000-00-00 00:00:00", org.jooq.impl.SQLDataType.TIMESTAMP)), this, "删除时间");
+
+    /**
+     * The column <code>mini_shop_471752.b2c_card_receive_code.create_time</code>.
+     */
+    public final TableField<CardReceiveCodeRecord, Timestamp> CREATE_TIME = createField("create_time", org.jooq.impl.SQLDataType.TIMESTAMP.nullable(false).defaultValue(org.jooq.impl.DSL.field("CURRENT_TIMESTAMP", org.jooq.impl.SQLDataType.TIMESTAMP)), this, "");
+
+    /**
+     * The column <code>mini_shop_471752.b2c_card_receive_code.update_time</code>. 最后修改时间
+     */
+    public final TableField<CardReceiveCodeRecord, Timestamp> UPDATE_TIME = createField("update_time", org.jooq.impl.SQLDataType.TIMESTAMP.nullable(false).defaultValue(org.jooq.impl.DSL.field("CURRENT_TIMESTAMP", org.jooq.impl.SQLDataType.TIMESTAMP)), this, "最后修改时间");
 
     /**
      * Create a <code>mini_shop_471752.b2c_card_receive_code</code> table reference

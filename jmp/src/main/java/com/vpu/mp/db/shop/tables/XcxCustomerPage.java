@@ -42,7 +42,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class XcxCustomerPage extends TableImpl<XcxCustomerPageRecord> {
 
-    private static final long serialVersionUID = -1236244969;
+    private static final long serialVersionUID = -933136387;
 
     /**
      * The reference instance of <code>mini_shop_471752.b2c_xcx_customer_page</code>
@@ -63,9 +63,9 @@ public class XcxCustomerPage extends TableImpl<XcxCustomerPageRecord> {
     public final TableField<XcxCustomerPageRecord, Integer> PAGE_ID = createField("page_id", org.jooq.impl.SQLDataType.INTEGER.nullable(false).identity(true), this, "");
 
     /**
-     * The column <code>mini_shop_471752.b2c_xcx_customer_page.shop_id</code>. 店铺ID
+     * The column <code>mini_shop_471752.b2c_xcx_customer_page.shop_id</code>. 店铺id
      */
-    public final TableField<XcxCustomerPageRecord, Integer> SHOP_ID = createField("shop_id", org.jooq.impl.SQLDataType.INTEGER.nullable(false).defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.INTEGER)), this, "店铺ID");
+    public final TableField<XcxCustomerPageRecord, Integer> SHOP_ID = createField("shop_id", org.jooq.impl.SQLDataType.INTEGER.nullable(false).defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.INTEGER)), this, "店铺id");
 
     /**
      * The column <code>mini_shop_471752.b2c_xcx_customer_page.page_name</code>.
@@ -100,7 +100,12 @@ public class XcxCustomerPage extends TableImpl<XcxCustomerPageRecord> {
     /**
      * The column <code>mini_shop_471752.b2c_xcx_customer_page.page_state</code>. 状态：0未发布，1已发布
      */
-    public final TableField<XcxCustomerPageRecord, Byte> PAGE_STATE = createField("page_state", org.jooq.impl.SQLDataType.TINYINT.defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.TINYINT)), this, "状态：0未发布，1已发布");
+    public final TableField<XcxCustomerPageRecord, Byte> PAGE_STATE = createField("page_state", org.jooq.impl.SQLDataType.TINYINT.nullable(false).defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.TINYINT)), this, "状态：0未发布，1已发布");
+
+    /**
+     * The column <code>mini_shop_471752.b2c_xcx_customer_page.cat_id</code>. 页面分类id
+     */
+    public final TableField<XcxCustomerPageRecord, Integer> CAT_ID = createField("cat_id", org.jooq.impl.SQLDataType.INTEGER.nullable(false).defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.INTEGER)), this, "页面分类id");
 
     /**
      * The column <code>mini_shop_471752.b2c_xcx_customer_page.create_time</code>.
@@ -108,9 +113,9 @@ public class XcxCustomerPage extends TableImpl<XcxCustomerPageRecord> {
     public final TableField<XcxCustomerPageRecord, Timestamp> CREATE_TIME = createField("create_time", org.jooq.impl.SQLDataType.TIMESTAMP.nullable(false).defaultValue(org.jooq.impl.DSL.field("CURRENT_TIMESTAMP", org.jooq.impl.SQLDataType.TIMESTAMP)), this, "");
 
     /**
-     * The column <code>mini_shop_471752.b2c_xcx_customer_page.cat_id</code>. 页面分类id
+     * The column <code>mini_shop_471752.b2c_xcx_customer_page.update_time</code>. 最后修改时间
      */
-    public final TableField<XcxCustomerPageRecord, Integer> CAT_ID = createField("cat_id", org.jooq.impl.SQLDataType.INTEGER.defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.INTEGER)), this, "页面分类id");
+    public final TableField<XcxCustomerPageRecord, Timestamp> UPDATE_TIME = createField("update_time", org.jooq.impl.SQLDataType.TIMESTAMP.nullable(false).defaultValue(org.jooq.impl.DSL.field("CURRENT_TIMESTAMP", org.jooq.impl.SQLDataType.TIMESTAMP)), this, "最后修改时间");
 
     /**
      * Create a <code>mini_shop_471752.b2c_xcx_customer_page</code> table reference

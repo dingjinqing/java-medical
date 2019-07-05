@@ -42,7 +42,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class UserAddress extends TableImpl<UserAddressRecord> {
 
-    private static final long serialVersionUID = 1151227936;
+    private static final long serialVersionUID = 745157889;
 
     /**
      * The reference instance of <code>mini_shop_471752.b2c_user_address</code>
@@ -100,7 +100,7 @@ public class UserAddress extends TableImpl<UserAddressRecord> {
     /**
      * The column <code>mini_shop_471752.b2c_user_address.province_name</code>.
      */
-    public final TableField<UserAddressRecord, String> PROVINCE_NAME = createField("province_name", org.jooq.impl.SQLDataType.VARCHAR(191).defaultValue(org.jooq.impl.DSL.inline("", org.jooq.impl.SQLDataType.VARCHAR)), this, "");
+    public final TableField<UserAddressRecord, String> PROVINCE_NAME = createField("province_name", org.jooq.impl.SQLDataType.VARCHAR(191).nullable(false).defaultValue(org.jooq.impl.DSL.inline("", org.jooq.impl.SQLDataType.VARCHAR)), this, "");
 
     /**
      * The column <code>mini_shop_471752.b2c_user_address.province_code</code>.
@@ -115,7 +115,7 @@ public class UserAddress extends TableImpl<UserAddressRecord> {
     /**
      * The column <code>mini_shop_471752.b2c_user_address.city_name</code>.
      */
-    public final TableField<UserAddressRecord, String> CITY_NAME = createField("city_name", org.jooq.impl.SQLDataType.VARCHAR(191).defaultValue(org.jooq.impl.DSL.inline("", org.jooq.impl.SQLDataType.VARCHAR)), this, "");
+    public final TableField<UserAddressRecord, String> CITY_NAME = createField("city_name", org.jooq.impl.SQLDataType.VARCHAR(191).nullable(false).defaultValue(org.jooq.impl.DSL.inline("", org.jooq.impl.SQLDataType.VARCHAR)), this, "");
 
     /**
      * The column <code>mini_shop_471752.b2c_user_address.district_code</code>.
@@ -125,7 +125,7 @@ public class UserAddress extends TableImpl<UserAddressRecord> {
     /**
      * The column <code>mini_shop_471752.b2c_user_address.district_name</code>.
      */
-    public final TableField<UserAddressRecord, String> DISTRICT_NAME = createField("district_name", org.jooq.impl.SQLDataType.VARCHAR(191).defaultValue(org.jooq.impl.DSL.inline("", org.jooq.impl.SQLDataType.VARCHAR)), this, "");
+    public final TableField<UserAddressRecord, String> DISTRICT_NAME = createField("district_name", org.jooq.impl.SQLDataType.VARCHAR(191).nullable(false).defaultValue(org.jooq.impl.DSL.inline("", org.jooq.impl.SQLDataType.VARCHAR)), this, "");
 
     /**
      * The column <code>mini_shop_471752.b2c_user_address.address</code>.
@@ -165,7 +165,17 @@ public class UserAddress extends TableImpl<UserAddressRecord> {
     /**
      * The column <code>mini_shop_471752.b2c_user_address.last_used_time</code>.
      */
-    public final TableField<UserAddressRecord, Timestamp> LAST_USED_TIME = createField("last_used_time", org.jooq.impl.SQLDataType.TIMESTAMP, this, "");
+    public final TableField<UserAddressRecord, Timestamp> LAST_USED_TIME = createField("last_used_time", org.jooq.impl.SQLDataType.TIMESTAMP.nullable(false).defaultValue(org.jooq.impl.DSL.inline("0000-00-00 00:00:00", org.jooq.impl.SQLDataType.TIMESTAMP)), this, "");
+
+    /**
+     * The column <code>mini_shop_471752.b2c_user_address.create_time</code>.
+     */
+    public final TableField<UserAddressRecord, Timestamp> CREATE_TIME = createField("create_time", org.jooq.impl.SQLDataType.TIMESTAMP.nullable(false).defaultValue(org.jooq.impl.DSL.field("CURRENT_TIMESTAMP", org.jooq.impl.SQLDataType.TIMESTAMP)), this, "");
+
+    /**
+     * The column <code>mini_shop_471752.b2c_user_address.update_time</code>. 最后修改时间
+     */
+    public final TableField<UserAddressRecord, Timestamp> UPDATE_TIME = createField("update_time", org.jooq.impl.SQLDataType.TIMESTAMP.nullable(false).defaultValue(org.jooq.impl.DSL.field("CURRENT_TIMESTAMP", org.jooq.impl.SQLDataType.TIMESTAMP)), this, "最后修改时间");
 
     /**
      * Create a <code>mini_shop_471752.b2c_user_address</code> table reference

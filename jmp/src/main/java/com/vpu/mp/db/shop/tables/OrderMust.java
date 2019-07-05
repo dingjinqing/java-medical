@@ -9,6 +9,7 @@ import com.vpu.mp.db.shop.Keys;
 import com.vpu.mp.db.shop.MiniShop_471752;
 import com.vpu.mp.db.shop.tables.records.OrderMustRecord;
 
+import java.sql.Timestamp;
 import java.util.Arrays;
 import java.util.List;
 
@@ -41,7 +42,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class OrderMust extends TableImpl<OrderMustRecord> {
 
-    private static final long serialVersionUID = -1301642079;
+    private static final long serialVersionUID = 548427854;
 
     /**
      * The reference instance of <code>mini_shop_471752.b2c_order_must</code>
@@ -100,6 +101,16 @@ public class OrderMust extends TableImpl<OrderMustRecord> {
      * The column <code>mini_shop_471752.b2c_order_must.custom</code>. 自定义信息内容
      */
     public final TableField<OrderMustRecord, String> CUSTOM = createField("custom", org.jooq.impl.SQLDataType.VARCHAR(50), this, "自定义信息内容");
+
+    /**
+     * The column <code>mini_shop_471752.b2c_order_must.create_time</code>.
+     */
+    public final TableField<OrderMustRecord, Timestamp> CREATE_TIME = createField("create_time", org.jooq.impl.SQLDataType.TIMESTAMP.nullable(false).defaultValue(org.jooq.impl.DSL.field("CURRENT_TIMESTAMP", org.jooq.impl.SQLDataType.TIMESTAMP)), this, "");
+
+    /**
+     * The column <code>mini_shop_471752.b2c_order_must.update_time</code>. 最后修改时间
+     */
+    public final TableField<OrderMustRecord, Timestamp> UPDATE_TIME = createField("update_time", org.jooq.impl.SQLDataType.TIMESTAMP.nullable(false).defaultValue(org.jooq.impl.DSL.field("CURRENT_TIMESTAMP", org.jooq.impl.SQLDataType.TIMESTAMP)), this, "最后修改时间");
 
     /**
      * Create a <code>mini_shop_471752.b2c_order_must</code> table reference

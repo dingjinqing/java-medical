@@ -31,7 +31,7 @@ import org.jooq.impl.UpdatableRecordImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class BargainRecordRecord extends UpdatableRecordImpl<BargainRecordRecord> implements Record15<Integer, Integer, Integer, Integer, Integer, BigDecimal, BigDecimal, Integer, Byte, Integer, String, Timestamp, Timestamp, Byte, Timestamp> {
 
-    private static final long serialVersionUID = 838522693;
+    private static final long serialVersionUID = 263740141;
 
     /**
      * Setter for <code>mini_shop_471752.b2c_bargain_record.id</code>.
@@ -48,56 +48,56 @@ public class BargainRecordRecord extends UpdatableRecordImpl<BargainRecordRecord
     }
 
     /**
-     * Setter for <code>mini_shop_471752.b2c_bargain_record.user_id</code>. 用户ID
+     * Setter for <code>mini_shop_471752.b2c_bargain_record.user_id</code>. 用户id
      */
     public void setUserId(Integer value) {
         set(1, value);
     }
 
     /**
-     * Getter for <code>mini_shop_471752.b2c_bargain_record.user_id</code>. 用户ID
+     * Getter for <code>mini_shop_471752.b2c_bargain_record.user_id</code>. 用户id
      */
     public Integer getUserId() {
         return (Integer) get(1);
     }
 
     /**
-     * Setter for <code>mini_shop_471752.b2c_bargain_record.bargain_id</code>. 活动ID
+     * Setter for <code>mini_shop_471752.b2c_bargain_record.bargain_id</code>. 活动id
      */
     public void setBargainId(Integer value) {
         set(2, value);
     }
 
     /**
-     * Getter for <code>mini_shop_471752.b2c_bargain_record.bargain_id</code>. 活动ID
+     * Getter for <code>mini_shop_471752.b2c_bargain_record.bargain_id</code>. 活动id
      */
     public Integer getBargainId() {
         return (Integer) get(2);
     }
 
     /**
-     * Setter for <code>mini_shop_471752.b2c_bargain_record.goods_id</code>. 商品ID
+     * Setter for <code>mini_shop_471752.b2c_bargain_record.goods_id</code>. 商品id
      */
     public void setGoodsId(Integer value) {
         set(3, value);
     }
 
     /**
-     * Getter for <code>mini_shop_471752.b2c_bargain_record.goods_id</code>. 商品ID
+     * Getter for <code>mini_shop_471752.b2c_bargain_record.goods_id</code>. 商品id
      */
     public Integer getGoodsId() {
         return (Integer) get(3);
     }
 
     /**
-     * Setter for <code>mini_shop_471752.b2c_bargain_record.prd_id</code>. 产品ID
+     * Setter for <code>mini_shop_471752.b2c_bargain_record.prd_id</code>. 产品id
      */
     public void setPrdId(Integer value) {
         set(4, value);
     }
 
     /**
-     * Getter for <code>mini_shop_471752.b2c_bargain_record.prd_id</code>. 产品ID
+     * Getter for <code>mini_shop_471752.b2c_bargain_record.prd_id</code>. 产品id
      */
     public Integer getPrdId() {
         return (Integer) get(4);
@@ -188,28 +188,28 @@ public class BargainRecordRecord extends UpdatableRecordImpl<BargainRecordRecord
     }
 
     /**
-     * Setter for <code>mini_shop_471752.b2c_bargain_record.add_time</code>.
+     * Setter for <code>mini_shop_471752.b2c_bargain_record.create_time</code>.
      */
-    public void setAddTime(Timestamp value) {
+    public void setCreateTime(Timestamp value) {
         set(11, value);
     }
 
     /**
-     * Getter for <code>mini_shop_471752.b2c_bargain_record.add_time</code>.
+     * Getter for <code>mini_shop_471752.b2c_bargain_record.create_time</code>.
      */
-    public Timestamp getAddTime() {
+    public Timestamp getCreateTime() {
         return (Timestamp) get(11);
     }
 
     /**
-     * Setter for <code>mini_shop_471752.b2c_bargain_record.update_time</code>.
+     * Setter for <code>mini_shop_471752.b2c_bargain_record.update_time</code>. 最后修改时间
      */
     public void setUpdateTime(Timestamp value) {
         set(12, value);
     }
 
     /**
-     * Getter for <code>mini_shop_471752.b2c_bargain_record.update_time</code>.
+     * Getter for <code>mini_shop_471752.b2c_bargain_record.update_time</code>. 最后修改时间
      */
     public Timestamp getUpdateTime() {
         return (Timestamp) get(12);
@@ -368,7 +368,7 @@ public class BargainRecordRecord extends UpdatableRecordImpl<BargainRecordRecord
      */
     @Override
     public Field<Timestamp> field12() {
-        return BargainRecord.BARGAIN_RECORD.ADD_TIME;
+        return BargainRecord.BARGAIN_RECORD.CREATE_TIME;
     }
 
     /**
@@ -488,7 +488,7 @@ public class BargainRecordRecord extends UpdatableRecordImpl<BargainRecordRecord
      */
     @Override
     public Timestamp component12() {
-        return getAddTime();
+        return getCreateTime();
     }
 
     /**
@@ -608,7 +608,7 @@ public class BargainRecordRecord extends UpdatableRecordImpl<BargainRecordRecord
      */
     @Override
     public Timestamp value12() {
-        return getAddTime();
+        return getCreateTime();
     }
 
     /**
@@ -739,7 +739,7 @@ public class BargainRecordRecord extends UpdatableRecordImpl<BargainRecordRecord
      */
     @Override
     public BargainRecordRecord value12(Timestamp value) {
-        setAddTime(value);
+        setCreateTime(value);
         return this;
     }
 
@@ -807,7 +807,7 @@ public class BargainRecordRecord extends UpdatableRecordImpl<BargainRecordRecord
     /**
      * Create a detached, initialised BargainRecordRecord
      */
-    public BargainRecordRecord(Integer id, Integer userId, Integer bargainId, Integer goodsId, Integer prdId, BigDecimal goodsPrice, BigDecimal bargainMoney, Integer userNumber, Byte status, Integer isOrdered, String orderSn, Timestamp addTime, Timestamp updateTime, Byte delFlag, Timestamp delTime) {
+    public BargainRecordRecord(Integer id, Integer userId, Integer bargainId, Integer goodsId, Integer prdId, BigDecimal goodsPrice, BigDecimal bargainMoney, Integer userNumber, Byte status, Integer isOrdered, String orderSn, Timestamp createTime, Timestamp updateTime, Byte delFlag, Timestamp delTime) {
         super(BargainRecord.BARGAIN_RECORD);
 
         set(0, id);
@@ -821,7 +821,7 @@ public class BargainRecordRecord extends UpdatableRecordImpl<BargainRecordRecord
         set(8, status);
         set(9, isOrdered);
         set(10, orderSn);
-        set(11, addTime);
+        set(11, createTime);
         set(12, updateTime);
         set(13, delFlag);
         set(14, delTime);

@@ -29,7 +29,7 @@ import org.jooq.impl.UpdatableRecordImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class StoreServiceRecord extends UpdatableRecordImpl<StoreServiceRecord> {
 
-    private static final long serialVersionUID = -574808249;
+    private static final long serialVersionUID = -1974717407;
 
     /**
      * Setter for <code>mini_shop_471752.b2c_store_service.id</code>.
@@ -46,14 +46,14 @@ public class StoreServiceRecord extends UpdatableRecordImpl<StoreServiceRecord> 
     }
 
     /**
-     * Setter for <code>mini_shop_471752.b2c_store_service.store_id</code>. 门店ID
+     * Setter for <code>mini_shop_471752.b2c_store_service.store_id</code>. 门店id
      */
     public void setStoreId(Integer value) {
         set(1, value);
     }
 
     /**
-     * Getter for <code>mini_shop_471752.b2c_store_service.store_id</code>. 门店ID
+     * Getter for <code>mini_shop_471752.b2c_store_service.store_id</code>. 门店id
      */
     public Integer getStoreId() {
         return (Integer) get(1);
@@ -298,30 +298,30 @@ public class StoreServiceRecord extends UpdatableRecordImpl<StoreServiceRecord> 
     }
 
     /**
-     * Setter for <code>mini_shop_471752.b2c_store_service.add_time</code>. 添加时间
+     * Setter for <code>mini_shop_471752.b2c_store_service.create_time</code>.
      */
-    public void setAddTime(Timestamp value) {
+    public void setCreateTime(Timestamp value) {
         set(19, value);
     }
 
     /**
-     * Getter for <code>mini_shop_471752.b2c_store_service.add_time</code>. 添加时间
+     * Getter for <code>mini_shop_471752.b2c_store_service.create_time</code>.
      */
-    public Timestamp getAddTime() {
+    public Timestamp getCreateTime() {
         return (Timestamp) get(19);
     }
 
     /**
-     * Setter for <code>mini_shop_471752.b2c_store_service.up_time</code>. 更新时间
+     * Setter for <code>mini_shop_471752.b2c_store_service.update_time</code>. 最后修改时间
      */
-    public void setUpTime(Timestamp value) {
+    public void setUpdateTime(Timestamp value) {
         set(20, value);
     }
 
     /**
-     * Getter for <code>mini_shop_471752.b2c_store_service.up_time</code>. 更新时间
+     * Getter for <code>mini_shop_471752.b2c_store_service.update_time</code>. 最后修改时间
      */
-    public Timestamp getUpTime() {
+    public Timestamp getUpdateTime() {
         return (Timestamp) get(20);
     }
 
@@ -340,16 +340,16 @@ public class StoreServiceRecord extends UpdatableRecordImpl<StoreServiceRecord> 
     }
 
     /**
-     * Setter for <code>mini_shop_471752.b2c_store_service.is_delete</code>. 1为删除状态
+     * Setter for <code>mini_shop_471752.b2c_store_service.del_flag</code>. 1为删除状态
      */
-    public void setIsDelete(Byte value) {
+    public void setDelFlag(Byte value) {
         set(22, value);
     }
 
     /**
-     * Getter for <code>mini_shop_471752.b2c_store_service.is_delete</code>. 1为删除状态
+     * Getter for <code>mini_shop_471752.b2c_store_service.del_flag</code>. 1为删除状态
      */
-    public Byte getIsDelete() {
+    public Byte getDelFlag() {
         return (Byte) get(22);
     }
 
@@ -379,7 +379,7 @@ public class StoreServiceRecord extends UpdatableRecordImpl<StoreServiceRecord> 
     /**
      * Create a detached, initialised StoreServiceRecord
      */
-    public StoreServiceRecord(Integer id, Integer storeId, String serviceName, String serviceSn, Integer saleNum, BigDecimal servicePrice, BigDecimal serviceSubsist, Integer catId, Byte serviceShelf, String serviceImg, Date startDate, Date endDate, String startPeriod, String endPeriod, Integer serviceDuration, Byte serviceType, Integer servicesNumber, Integer techServicesNumber, String content, Timestamp addTime, Timestamp upTime, String chargeResolve, Byte isDelete) {
+    public StoreServiceRecord(Integer id, Integer storeId, String serviceName, String serviceSn, Integer saleNum, BigDecimal servicePrice, BigDecimal serviceSubsist, Integer catId, Byte serviceShelf, String serviceImg, Date startDate, Date endDate, String startPeriod, String endPeriod, Integer serviceDuration, Byte serviceType, Integer servicesNumber, Integer techServicesNumber, String content, Timestamp createTime, Timestamp updateTime, String chargeResolve, Byte delFlag) {
         super(StoreService.STORE_SERVICE);
 
         set(0, id);
@@ -401,9 +401,9 @@ public class StoreServiceRecord extends UpdatableRecordImpl<StoreServiceRecord> 
         set(16, servicesNumber);
         set(17, techServicesNumber);
         set(18, content);
-        set(19, addTime);
-        set(20, upTime);
+        set(19, createTime);
+        set(20, updateTime);
         set(21, chargeResolve);
-        set(22, isDelete);
+        set(22, delFlag);
     }
 }

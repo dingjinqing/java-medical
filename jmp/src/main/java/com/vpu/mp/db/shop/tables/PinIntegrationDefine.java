@@ -42,7 +42,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class PinIntegrationDefine extends TableImpl<PinIntegrationDefineRecord> {
 
-    private static final long serialVersionUID = -1378668012;
+    private static final long serialVersionUID = 605922917;
 
     /**
      * The reference instance of <code>mini_shop_471752.b2c_pin_integration_define</code>
@@ -63,9 +63,9 @@ public class PinIntegrationDefine extends TableImpl<PinIntegrationDefineRecord> 
     public final TableField<PinIntegrationDefineRecord, Integer> ID = createField("id", org.jooq.impl.SQLDataType.INTEGER.nullable(false).identity(true), this, "");
 
     /**
-     * The column <code>mini_shop_471752.b2c_pin_integration_define.shop_id</code>. 店铺ID
+     * The column <code>mini_shop_471752.b2c_pin_integration_define.shop_id</code>. 店铺id
      */
-    public final TableField<PinIntegrationDefineRecord, Integer> SHOP_ID = createField("shop_id", org.jooq.impl.SQLDataType.INTEGER.nullable(false), this, "店铺ID");
+    public final TableField<PinIntegrationDefineRecord, Integer> SHOP_ID = createField("shop_id", org.jooq.impl.SQLDataType.INTEGER.nullable(false), this, "店铺id");
 
     /**
      * The column <code>mini_shop_471752.b2c_pin_integration_define.name</code>. 活动名称
@@ -100,37 +100,27 @@ public class PinIntegrationDefine extends TableImpl<PinIntegrationDefineRecord> 
     /**
      * The column <code>mini_shop_471752.b2c_pin_integration_define.start_time</code>. 开始时间
      */
-    public final TableField<PinIntegrationDefineRecord, Timestamp> START_TIME = createField("start_time", org.jooq.impl.SQLDataType.TIMESTAMP.nullable(false), this, "开始时间");
+    public final TableField<PinIntegrationDefineRecord, Timestamp> START_TIME = createField("start_time", org.jooq.impl.SQLDataType.TIMESTAMP.nullable(false).defaultValue(org.jooq.impl.DSL.inline("0000-00-00 00:00:00", org.jooq.impl.SQLDataType.TIMESTAMP)), this, "开始时间");
 
     /**
      * The column <code>mini_shop_471752.b2c_pin_integration_define.end_time</code>. 结束时间
      */
-    public final TableField<PinIntegrationDefineRecord, Timestamp> END_TIME = createField("end_time", org.jooq.impl.SQLDataType.TIMESTAMP.nullable(false), this, "结束时间");
+    public final TableField<PinIntegrationDefineRecord, Timestamp> END_TIME = createField("end_time", org.jooq.impl.SQLDataType.TIMESTAMP.nullable(false).defaultValue(org.jooq.impl.DSL.inline("0000-00-00 00:00:00", org.jooq.impl.SQLDataType.TIMESTAMP)), this, "结束时间");
 
     /**
      * The column <code>mini_shop_471752.b2c_pin_integration_define.status</code>. 状态： 1：启用  0： 禁用
      */
-    public final TableField<PinIntegrationDefineRecord, Byte> STATUS = createField("status", org.jooq.impl.SQLDataType.TINYINT.defaultValue(org.jooq.impl.DSL.inline("1", org.jooq.impl.SQLDataType.TINYINT)), this, "状态： 1：启用  0： 禁用");
-
-    /**
-     * The column <code>mini_shop_471752.b2c_pin_integration_define.add_time</code>.
-     */
-    public final TableField<PinIntegrationDefineRecord, Timestamp> ADD_TIME = createField("add_time", org.jooq.impl.SQLDataType.TIMESTAMP.nullable(false), this, "");
-
-    /**
-     * The column <code>mini_shop_471752.b2c_pin_integration_define.update_time</code>.
-     */
-    public final TableField<PinIntegrationDefineRecord, Timestamp> UPDATE_TIME = createField("update_time", org.jooq.impl.SQLDataType.TIMESTAMP.nullable(false), this, "");
+    public final TableField<PinIntegrationDefineRecord, Byte> STATUS = createField("status", org.jooq.impl.SQLDataType.TINYINT.nullable(false).defaultValue(org.jooq.impl.DSL.inline("1", org.jooq.impl.SQLDataType.TINYINT)), this, "状态： 1：启用  0： 禁用");
 
     /**
      * The column <code>mini_shop_471752.b2c_pin_integration_define.del_flag</code>.
      */
-    public final TableField<PinIntegrationDefineRecord, Byte> DEL_FLAG = createField("del_flag", org.jooq.impl.SQLDataType.TINYINT.defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.TINYINT)), this, "");
+    public final TableField<PinIntegrationDefineRecord, Byte> DEL_FLAG = createField("del_flag", org.jooq.impl.SQLDataType.TINYINT.nullable(false).defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.TINYINT)), this, "");
 
     /**
-     * The column <code>mini_shop_471752.b2c_pin_integration_define.del_time</code>.
+     * The column <code>mini_shop_471752.b2c_pin_integration_define.del_time</code>. 删除时间
      */
-    public final TableField<PinIntegrationDefineRecord, Integer> DEL_TIME = createField("del_time", org.jooq.impl.SQLDataType.INTEGER.defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.INTEGER)), this, "");
+    public final TableField<PinIntegrationDefineRecord, Timestamp> DEL_TIME = createField("del_time", org.jooq.impl.SQLDataType.TIMESTAMP.nullable(false).defaultValue(org.jooq.impl.DSL.inline("0000-00-00 00:00:00", org.jooq.impl.SQLDataType.TIMESTAMP)), this, "删除时间");
 
     /**
      * The column <code>mini_shop_471752.b2c_pin_integration_define.inte_remain</code>. 剩余积分
@@ -150,12 +140,22 @@ public class PinIntegrationDefine extends TableImpl<PinIntegrationDefineRecord> 
     /**
      * The column <code>mini_shop_471752.b2c_pin_integration_define.is_continue</code>. 继续： 1：继续  0： 结束
      */
-    public final TableField<PinIntegrationDefineRecord, Byte> IS_CONTINUE = createField("is_continue", org.jooq.impl.SQLDataType.TINYINT.defaultValue(org.jooq.impl.DSL.inline("1", org.jooq.impl.SQLDataType.TINYINT)), this, "继续： 1：继续  0： 结束");
+    public final TableField<PinIntegrationDefineRecord, Byte> IS_CONTINUE = createField("is_continue", org.jooq.impl.SQLDataType.TINYINT.nullable(false).defaultValue(org.jooq.impl.DSL.inline("1", org.jooq.impl.SQLDataType.TINYINT)), this, "继续： 1：继续  0： 结束");
 
     /**
      * The column <code>mini_shop_471752.b2c_pin_integration_define.advertise</code>. 活动宣传语
      */
     public final TableField<PinIntegrationDefineRecord, String> ADVERTISE = createField("advertise", org.jooq.impl.SQLDataType.VARCHAR(100).nullable(false), this, "活动宣传语");
+
+    /**
+     * The column <code>mini_shop_471752.b2c_pin_integration_define.create_time</code>.
+     */
+    public final TableField<PinIntegrationDefineRecord, Timestamp> CREATE_TIME = createField("create_time", org.jooq.impl.SQLDataType.TIMESTAMP.nullable(false).defaultValue(org.jooq.impl.DSL.field("CURRENT_TIMESTAMP", org.jooq.impl.SQLDataType.TIMESTAMP)), this, "");
+
+    /**
+     * The column <code>mini_shop_471752.b2c_pin_integration_define.update_time</code>. 最后修改时间
+     */
+    public final TableField<PinIntegrationDefineRecord, Timestamp> UPDATE_TIME = createField("update_time", org.jooq.impl.SQLDataType.TIMESTAMP.nullable(false).defaultValue(org.jooq.impl.DSL.field("CURRENT_TIMESTAMP", org.jooq.impl.SQLDataType.TIMESTAMP)), this, "最后修改时间");
 
     /**
      * Create a <code>mini_shop_471752.b2c_pin_integration_define</code> table reference

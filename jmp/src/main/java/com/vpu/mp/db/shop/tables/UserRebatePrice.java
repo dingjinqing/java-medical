@@ -43,7 +43,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class UserRebatePrice extends TableImpl<UserRebatePriceRecord> {
 
-    private static final long serialVersionUID = -198032124;
+    private static final long serialVersionUID = -1844236330;
 
     /**
      * The reference instance of <code>mini_shop_471752.b2c_user_rebate_price</code>
@@ -64,39 +64,39 @@ public class UserRebatePrice extends TableImpl<UserRebatePriceRecord> {
     public final TableField<UserRebatePriceRecord, Integer> ID = createField("id", org.jooq.impl.SQLDataType.INTEGER.nullable(false).identity(true), this, "");
 
     /**
-     * The column <code>mini_shop_471752.b2c_user_rebate_price.user_id</code>. 用户ID
+     * The column <code>mini_shop_471752.b2c_user_rebate_price.user_id</code>. 用户id
      */
-    public final TableField<UserRebatePriceRecord, Integer> USER_ID = createField("user_id", org.jooq.impl.SQLDataType.INTEGER.defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.INTEGER)), this, "用户ID");
+    public final TableField<UserRebatePriceRecord, Integer> USER_ID = createField("user_id", org.jooq.impl.SQLDataType.INTEGER.nullable(false).defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.INTEGER)), this, "用户id");
 
     /**
-     * The column <code>mini_shop_471752.b2c_user_rebate_price.goods_id</code>. 商品ID
+     * The column <code>mini_shop_471752.b2c_user_rebate_price.goods_id</code>. 商品id
      */
-    public final TableField<UserRebatePriceRecord, Integer> GOODS_ID = createField("goods_id", org.jooq.impl.SQLDataType.INTEGER.defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.INTEGER)), this, "商品ID");
+    public final TableField<UserRebatePriceRecord, Integer> GOODS_ID = createField("goods_id", org.jooq.impl.SQLDataType.INTEGER.nullable(false).defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.INTEGER)), this, "商品id");
 
     /**
-     * The column <code>mini_shop_471752.b2c_user_rebate_price.product_id</code>. 产品ID
+     * The column <code>mini_shop_471752.b2c_user_rebate_price.product_id</code>. 产品id
      */
-    public final TableField<UserRebatePriceRecord, Integer> PRODUCT_ID = createField("product_id", org.jooq.impl.SQLDataType.INTEGER.defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.INTEGER)), this, "产品ID");
+    public final TableField<UserRebatePriceRecord, Integer> PRODUCT_ID = createField("product_id", org.jooq.impl.SQLDataType.INTEGER.nullable(false).defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.INTEGER)), this, "产品id");
 
     /**
      * The column <code>mini_shop_471752.b2c_user_rebate_price.advice_price</code>. 分销价格
      */
-    public final TableField<UserRebatePriceRecord, BigDecimal> ADVICE_PRICE = createField("advice_price", org.jooq.impl.SQLDataType.DECIMAL(10, 2).defaultValue(org.jooq.impl.DSL.inline("0.00", org.jooq.impl.SQLDataType.DECIMAL)), this, "分销价格");
-
-    /**
-     * The column <code>mini_shop_471752.b2c_user_rebate_price.add_time</code>. 添加时间
-     */
-    public final TableField<UserRebatePriceRecord, Timestamp> ADD_TIME = createField("add_time", org.jooq.impl.SQLDataType.TIMESTAMP.defaultValue(org.jooq.impl.DSL.inline("0000-00-00 00:00:00", org.jooq.impl.SQLDataType.TIMESTAMP)), this, "添加时间");
+    public final TableField<UserRebatePriceRecord, BigDecimal> ADVICE_PRICE = createField("advice_price", org.jooq.impl.SQLDataType.DECIMAL(10, 2).nullable(false).defaultValue(org.jooq.impl.DSL.inline("0.00", org.jooq.impl.SQLDataType.DECIMAL)), this, "分销价格");
 
     /**
      * The column <code>mini_shop_471752.b2c_user_rebate_price.expire_time</code>. 过期时间
      */
-    public final TableField<UserRebatePriceRecord, Timestamp> EXPIRE_TIME = createField("expire_time", org.jooq.impl.SQLDataType.TIMESTAMP.defaultValue(org.jooq.impl.DSL.inline("0000-00-00 00:00:00", org.jooq.impl.SQLDataType.TIMESTAMP)), this, "过期时间");
+    public final TableField<UserRebatePriceRecord, Timestamp> EXPIRE_TIME = createField("expire_time", org.jooq.impl.SQLDataType.TIMESTAMP.nullable(false).defaultValue(org.jooq.impl.DSL.inline("0000-00-00 00:00:00", org.jooq.impl.SQLDataType.TIMESTAMP)), this, "过期时间");
 
     /**
-     * The column <code>mini_shop_471752.b2c_user_rebate_price.update_time</code>. 更新时间
+     * The column <code>mini_shop_471752.b2c_user_rebate_price.create_time</code>.
      */
-    public final TableField<UserRebatePriceRecord, Timestamp> UPDATE_TIME = createField("update_time", org.jooq.impl.SQLDataType.TIMESTAMP.nullable(false).defaultValue(org.jooq.impl.DSL.field("CURRENT_TIMESTAMP", org.jooq.impl.SQLDataType.TIMESTAMP)), this, "更新时间");
+    public final TableField<UserRebatePriceRecord, Timestamp> CREATE_TIME = createField("create_time", org.jooq.impl.SQLDataType.TIMESTAMP.nullable(false).defaultValue(org.jooq.impl.DSL.field("CURRENT_TIMESTAMP", org.jooq.impl.SQLDataType.TIMESTAMP)), this, "");
+
+    /**
+     * The column <code>mini_shop_471752.b2c_user_rebate_price.update_time</code>. 最后修改时间
+     */
+    public final TableField<UserRebatePriceRecord, Timestamp> UPDATE_TIME = createField("update_time", org.jooq.impl.SQLDataType.TIMESTAMP.nullable(false).defaultValue(org.jooq.impl.DSL.field("CURRENT_TIMESTAMP", org.jooq.impl.SQLDataType.TIMESTAMP)), this, "最后修改时间");
 
     /**
      * Create a <code>mini_shop_471752.b2c_user_rebate_price</code> table reference

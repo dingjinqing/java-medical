@@ -42,7 +42,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class Channel extends TableImpl<ChannelRecord> {
 
-    private static final long serialVersionUID = 1533580927;
+    private static final long serialVersionUID = 1597265209;
 
     /**
      * The reference instance of <code>mini_shop_471752.b2c_channel</code>
@@ -58,9 +58,9 @@ public class Channel extends TableImpl<ChannelRecord> {
     }
 
     /**
-     * The column <code>mini_shop_471752.b2c_channel.id</code>. 渠道页ID
+     * The column <code>mini_shop_471752.b2c_channel.id</code>. 渠道页id
      */
-    public final TableField<ChannelRecord, Integer> ID = createField("id", org.jooq.impl.SQLDataType.INTEGER.nullable(false).identity(true), this, "渠道页ID");
+    public final TableField<ChannelRecord, Integer> ID = createField("id", org.jooq.impl.SQLDataType.INTEGER.nullable(false).identity(true), this, "渠道页id");
 
     /**
      * The column <code>mini_shop_471752.b2c_channel.page_id</code>. page_id
@@ -93,9 +93,19 @@ public class Channel extends TableImpl<ChannelRecord> {
     public final TableField<ChannelRecord, Byte> DEL_FLAG = createField("del_flag", org.jooq.impl.SQLDataType.TINYINT.nullable(false).defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.TINYINT)), this, "0正常，1废除");
 
     /**
-     * The column <code>mini_shop_471752.b2c_channel.add_time</code>.
+     * The column <code>mini_shop_471752.b2c_channel.del_time</code>. 删除时间
      */
-    public final TableField<ChannelRecord, Timestamp> ADD_TIME = createField("add_time", org.jooq.impl.SQLDataType.TIMESTAMP, this, "");
+    public final TableField<ChannelRecord, Timestamp> DEL_TIME = createField("del_time", org.jooq.impl.SQLDataType.TIMESTAMP.nullable(false).defaultValue(org.jooq.impl.DSL.inline("0000-00-00 00:00:00", org.jooq.impl.SQLDataType.TIMESTAMP)), this, "删除时间");
+
+    /**
+     * The column <code>mini_shop_471752.b2c_channel.create_time</code>.
+     */
+    public final TableField<ChannelRecord, Timestamp> CREATE_TIME = createField("create_time", org.jooq.impl.SQLDataType.TIMESTAMP.nullable(false).defaultValue(org.jooq.impl.DSL.field("CURRENT_TIMESTAMP", org.jooq.impl.SQLDataType.TIMESTAMP)), this, "");
+
+    /**
+     * The column <code>mini_shop_471752.b2c_channel.update_time</code>. 最后修改时间
+     */
+    public final TableField<ChannelRecord, Timestamp> UPDATE_TIME = createField("update_time", org.jooq.impl.SQLDataType.TIMESTAMP.nullable(false).defaultValue(org.jooq.impl.DSL.field("CURRENT_TIMESTAMP", org.jooq.impl.SQLDataType.TIMESTAMP)), this, "最后修改时间");
 
     /**
      * Create a <code>mini_shop_471752.b2c_channel</code> table reference

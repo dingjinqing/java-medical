@@ -42,7 +42,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class CardUpgrade extends TableImpl<CardUpgradeRecord> {
 
-    private static final long serialVersionUID = -563305427;
+    private static final long serialVersionUID = -216326688;
 
     /**
      * The reference instance of <code>mini_shop_471752.b2c_card_upgrade</code>
@@ -63,19 +63,19 @@ public class CardUpgrade extends TableImpl<CardUpgradeRecord> {
     public final TableField<CardUpgradeRecord, Integer> ID = createField("id", org.jooq.impl.SQLDataType.INTEGER.nullable(false).identity(true), this, "");
 
     /**
-     * The column <code>mini_shop_471752.b2c_card_upgrade.user_id</code>. 用户ID
+     * The column <code>mini_shop_471752.b2c_card_upgrade.user_id</code>. 用户id
      */
-    public final TableField<CardUpgradeRecord, Integer> USER_ID = createField("user_id", org.jooq.impl.SQLDataType.INTEGER.nullable(false), this, "用户ID");
+    public final TableField<CardUpgradeRecord, Integer> USER_ID = createField("user_id", org.jooq.impl.SQLDataType.INTEGER.nullable(false), this, "用户id");
 
     /**
-     * The column <code>mini_shop_471752.b2c_card_upgrade.old_card_id</code>. 升级前卡ID
+     * The column <code>mini_shop_471752.b2c_card_upgrade.old_card_id</code>. 升级前卡id
      */
-    public final TableField<CardUpgradeRecord, Integer> OLD_CARD_ID = createField("old_card_id", org.jooq.impl.SQLDataType.INTEGER.nullable(false), this, "升级前卡ID");
+    public final TableField<CardUpgradeRecord, Integer> OLD_CARD_ID = createField("old_card_id", org.jooq.impl.SQLDataType.INTEGER.nullable(false), this, "升级前卡id");
 
     /**
-     * The column <code>mini_shop_471752.b2c_card_upgrade.new_card_id</code>. 升级后卡ID
+     * The column <code>mini_shop_471752.b2c_card_upgrade.new_card_id</code>. 升级后卡id
      */
-    public final TableField<CardUpgradeRecord, Integer> NEW_CARD_ID = createField("new_card_id", org.jooq.impl.SQLDataType.INTEGER.nullable(false), this, "升级后卡ID");
+    public final TableField<CardUpgradeRecord, Integer> NEW_CARD_ID = createField("new_card_id", org.jooq.impl.SQLDataType.INTEGER.nullable(false), this, "升级后卡id");
 
     /**
      * The column <code>mini_shop_471752.b2c_card_upgrade.old_grade</code>. 升级前卡等级
@@ -100,17 +100,22 @@ public class CardUpgrade extends TableImpl<CardUpgradeRecord> {
     /**
      * The column <code>mini_shop_471752.b2c_card_upgrade.grade_condition</code>. 条件
      */
-    public final TableField<CardUpgradeRecord, String> GRADE_CONDITION = createField("grade_condition", org.jooq.impl.SQLDataType.VARCHAR(200).defaultValue(org.jooq.impl.DSL.inline("", org.jooq.impl.SQLDataType.VARCHAR)), this, "条件");
+    public final TableField<CardUpgradeRecord, String> GRADE_CONDITION = createField("grade_condition", org.jooq.impl.SQLDataType.VARCHAR(200).nullable(false).defaultValue(org.jooq.impl.DSL.inline("", org.jooq.impl.SQLDataType.VARCHAR)), this, "条件");
 
     /**
      * The column <code>mini_shop_471752.b2c_card_upgrade.operate</code>. 操作备注
      */
-    public final TableField<CardUpgradeRecord, String> OPERATE = createField("operate", org.jooq.impl.SQLDataType.VARCHAR(200).defaultValue(org.jooq.impl.DSL.inline("", org.jooq.impl.SQLDataType.VARCHAR)), this, "操作备注");
+    public final TableField<CardUpgradeRecord, String> OPERATE = createField("operate", org.jooq.impl.SQLDataType.VARCHAR(200).nullable(false).defaultValue(org.jooq.impl.DSL.inline("", org.jooq.impl.SQLDataType.VARCHAR)), this, "操作备注");
 
     /**
-     * The column <code>mini_shop_471752.b2c_card_upgrade.in_time</code>. 升级时间
+     * The column <code>mini_shop_471752.b2c_card_upgrade.create_time</code>.
      */
-    public final TableField<CardUpgradeRecord, Timestamp> IN_TIME = createField("in_time", org.jooq.impl.SQLDataType.TIMESTAMP.nullable(false), this, "升级时间");
+    public final TableField<CardUpgradeRecord, Timestamp> CREATE_TIME = createField("create_time", org.jooq.impl.SQLDataType.TIMESTAMP.nullable(false).defaultValue(org.jooq.impl.DSL.field("CURRENT_TIMESTAMP", org.jooq.impl.SQLDataType.TIMESTAMP)), this, "");
+
+    /**
+     * The column <code>mini_shop_471752.b2c_card_upgrade.update_time</code>. 最后修改时间
+     */
+    public final TableField<CardUpgradeRecord, Timestamp> UPDATE_TIME = createField("update_time", org.jooq.impl.SQLDataType.TIMESTAMP.nullable(false).defaultValue(org.jooq.impl.DSL.field("CURRENT_TIMESTAMP", org.jooq.impl.SQLDataType.TIMESTAMP)), this, "最后修改时间");
 
     /**
      * Create a <code>mini_shop_471752.b2c_card_upgrade</code> table reference

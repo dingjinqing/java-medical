@@ -42,7 +42,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class UserLoginRecord extends TableImpl<UserLoginRecordRecord> {
 
-    private static final long serialVersionUID = -1917002300;
+    private static final long serialVersionUID = 2070923466;
 
     /**
      * The reference instance of <code>mini_shop_471752.b2c_user_login_record</code>
@@ -68,11 +68,6 @@ public class UserLoginRecord extends TableImpl<UserLoginRecordRecord> {
     public final TableField<UserLoginRecordRecord, Integer> USER_ID = createField("user_id", org.jooq.impl.SQLDataType.INTEGER.nullable(false).defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.INTEGER)), this, "登陆用户id");
 
     /**
-     * The column <code>mini_shop_471752.b2c_user_login_record.add_time</code>. 每日登陆时间
-     */
-    public final TableField<UserLoginRecordRecord, Timestamp> ADD_TIME = createField("add_time", org.jooq.impl.SQLDataType.TIMESTAMP, this, "每日登陆时间");
-
-    /**
      * The column <code>mini_shop_471752.b2c_user_login_record.user_ip</code>. 用户登录ip
      */
     public final TableField<UserLoginRecordRecord, String> USER_IP = createField("user_ip", org.jooq.impl.SQLDataType.VARCHAR(64), this, "用户登录ip");
@@ -80,12 +75,7 @@ public class UserLoginRecord extends TableImpl<UserLoginRecordRecord> {
     /**
      * The column <code>mini_shop_471752.b2c_user_login_record.count</code>. 每日登陆次数
      */
-    public final TableField<UserLoginRecordRecord, Integer> COUNT = createField("count", org.jooq.impl.SQLDataType.INTEGER.defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.INTEGER)), this, "每日登陆次数");
-
-    /**
-     * The column <code>mini_shop_471752.b2c_user_login_record.update_time</code>. 最后登录时间
-     */
-    public final TableField<UserLoginRecordRecord, Timestamp> UPDATE_TIME = createField("update_time", org.jooq.impl.SQLDataType.TIMESTAMP, this, "最后登录时间");
+    public final TableField<UserLoginRecordRecord, Integer> COUNT = createField("count", org.jooq.impl.SQLDataType.INTEGER.nullable(false).defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.INTEGER)), this, "每日登陆次数");
 
     /**
      * The column <code>mini_shop_471752.b2c_user_login_record.province_code</code>. 省
@@ -126,6 +116,16 @@ public class UserLoginRecord extends TableImpl<UserLoginRecordRecord> {
      * The column <code>mini_shop_471752.b2c_user_login_record.lng</code>. 纬度
      */
     public final TableField<UserLoginRecordRecord, String> LNG = createField("lng", org.jooq.impl.SQLDataType.VARCHAR(64), this, "纬度");
+
+    /**
+     * The column <code>mini_shop_471752.b2c_user_login_record.create_time</code>.
+     */
+    public final TableField<UserLoginRecordRecord, Timestamp> CREATE_TIME = createField("create_time", org.jooq.impl.SQLDataType.TIMESTAMP.nullable(false).defaultValue(org.jooq.impl.DSL.field("CURRENT_TIMESTAMP", org.jooq.impl.SQLDataType.TIMESTAMP)), this, "");
+
+    /**
+     * The column <code>mini_shop_471752.b2c_user_login_record.update_time</code>. 最后修改时间
+     */
+    public final TableField<UserLoginRecordRecord, Timestamp> UPDATE_TIME = createField("update_time", org.jooq.impl.SQLDataType.TIMESTAMP.nullable(false).defaultValue(org.jooq.impl.DSL.field("CURRENT_TIMESTAMP", org.jooq.impl.SQLDataType.TIMESTAMP)), this, "最后修改时间");
 
     /**
      * Create a <code>mini_shop_471752.b2c_user_login_record</code> table reference
@@ -173,7 +173,7 @@ public class UserLoginRecord extends TableImpl<UserLoginRecordRecord> {
      */
     @Override
     public List<Index> getIndexes() {
-        return Arrays.<Index>asList(Indexes.USER_LOGIN_RECORD_ADD_TIME, Indexes.USER_LOGIN_RECORD_DISTRICT_ADD_TIME, Indexes.USER_LOGIN_RECORD_PRIMARY);
+        return Arrays.<Index>asList(Indexes.USER_LOGIN_RECORD_CREATE_TIME, Indexes.USER_LOGIN_RECORD_DISTRICT_CREATE_TIME, Indexes.USER_LOGIN_RECORD_PRIMARY);
     }
 
     /**

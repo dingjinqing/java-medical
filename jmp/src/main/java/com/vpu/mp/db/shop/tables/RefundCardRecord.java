@@ -43,7 +43,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class RefundCardRecord extends TableImpl<RefundCardRecordRecord> {
 
-    private static final long serialVersionUID = 531893194;
+    private static final long serialVersionUID = 2125287863;
 
     /**
      * The reference instance of <code>mini_shop_471752.b2c_refund_card_record</code>
@@ -97,6 +97,16 @@ public class RefundCardRecord extends TableImpl<RefundCardRecordRecord> {
      * The column <code>mini_shop_471752.b2c_refund_card_record.is_success</code>. 人工处理状态，1：退款失败，2：退款成功
      */
     public final TableField<RefundCardRecordRecord, Byte> IS_SUCCESS = createField("is_success", org.jooq.impl.SQLDataType.TINYINT.nullable(false).defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.TINYINT)), this, "人工处理状态，1：退款失败，2：退款成功");
+
+    /**
+     * The column <code>mini_shop_471752.b2c_refund_card_record.create_time</code>.
+     */
+    public final TableField<RefundCardRecordRecord, Timestamp> CREATE_TIME = createField("create_time", org.jooq.impl.SQLDataType.TIMESTAMP.nullable(false).defaultValue(org.jooq.impl.DSL.field("CURRENT_TIMESTAMP", org.jooq.impl.SQLDataType.TIMESTAMP)), this, "");
+
+    /**
+     * The column <code>mini_shop_471752.b2c_refund_card_record.update_time</code>. 最后修改时间
+     */
+    public final TableField<RefundCardRecordRecord, Timestamp> UPDATE_TIME = createField("update_time", org.jooq.impl.SQLDataType.TIMESTAMP.nullable(false).defaultValue(org.jooq.impl.DSL.field("CURRENT_TIMESTAMP", org.jooq.impl.SQLDataType.TIMESTAMP)), this, "最后修改时间");
 
     /**
      * Create a <code>mini_shop_471752.b2c_refund_card_record</code> table reference

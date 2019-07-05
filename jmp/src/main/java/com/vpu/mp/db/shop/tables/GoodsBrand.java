@@ -42,7 +42,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class GoodsBrand extends TableImpl<GoodsBrandRecord> {
 
-    private static final long serialVersionUID = -1362787363;
+    private static final long serialVersionUID = -329624045;
 
     /**
      * The reference instance of <code>mini_shop_471752.b2c_goods_brand</code>
@@ -73,9 +73,9 @@ public class GoodsBrand extends TableImpl<GoodsBrandRecord> {
     public final TableField<GoodsBrandRecord, String> E_NAME = createField("e_name", org.jooq.impl.SQLDataType.VARCHAR(500).nullable(false).defaultValue(org.jooq.impl.DSL.inline("", org.jooq.impl.SQLDataType.VARCHAR)), this, "品牌英文名称");
 
     /**
-     * The column <code>mini_shop_471752.b2c_goods_brand.logo</code>. 品牌Logo
+     * The column <code>mini_shop_471752.b2c_goods_brand.logo</code>. 品牌logo
      */
-    public final TableField<GoodsBrandRecord, String> LOGO = createField("logo", org.jooq.impl.SQLDataType.VARCHAR(255), this, "品牌Logo");
+    public final TableField<GoodsBrandRecord, String> LOGO = createField("logo", org.jooq.impl.SQLDataType.VARCHAR(255), this, "品牌logo");
 
     /**
      * The column <code>mini_shop_471752.b2c_goods_brand.first</code>. 优先级
@@ -83,19 +83,9 @@ public class GoodsBrand extends TableImpl<GoodsBrandRecord> {
     public final TableField<GoodsBrandRecord, Byte> FIRST = createField("first", org.jooq.impl.SQLDataType.TINYINT.nullable(false).defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.TINYINT)), this, "优先级");
 
     /**
-     * The column <code>mini_shop_471752.b2c_goods_brand.add_time</code>.
+     * The column <code>mini_shop_471752.b2c_goods_brand.del_flag</code>. 0为未删除 1为删除
      */
-    public final TableField<GoodsBrandRecord, Timestamp> ADD_TIME = createField("add_time", org.jooq.impl.SQLDataType.TIMESTAMP.nullable(false), this, "");
-
-    /**
-     * The column <code>mini_shop_471752.b2c_goods_brand.update_time</code>.
-     */
-    public final TableField<GoodsBrandRecord, Timestamp> UPDATE_TIME = createField("update_time", org.jooq.impl.SQLDataType.TIMESTAMP, this, "");
-
-    /**
-     * The column <code>mini_shop_471752.b2c_goods_brand.is_delete</code>. 0为未删除 1为删除
-     */
-    public final TableField<GoodsBrandRecord, Byte> IS_DELETE = createField("is_delete", org.jooq.impl.SQLDataType.TINYINT.nullable(false).defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.TINYINT)), this, "0为未删除 1为删除");
+    public final TableField<GoodsBrandRecord, Byte> DEL_FLAG = createField("del_flag", org.jooq.impl.SQLDataType.TINYINT.nullable(false).defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.TINYINT)), this, "0为未删除 1为删除");
 
     /**
      * The column <code>mini_shop_471752.b2c_goods_brand.desc</code>. 品牌介绍
@@ -103,14 +93,24 @@ public class GoodsBrand extends TableImpl<GoodsBrandRecord> {
     public final TableField<GoodsBrandRecord, String> DESC = createField("desc", org.jooq.impl.SQLDataType.CLOB, this, "品牌介绍");
 
     /**
-     * The column <code>mini_shop_471752.b2c_goods_brand.is_recommend</code>. 是否为推荐品牌
+     * The column <code>mini_shop_471752.b2c_goods_brand.is_recommend</code>. 是否为推荐品牌 0否 1是
      */
-    public final TableField<GoodsBrandRecord, Byte> IS_RECOMMEND = createField("is_recommend", org.jooq.impl.SQLDataType.TINYINT.defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.TINYINT)), this, "是否为推荐品牌");
+    public final TableField<GoodsBrandRecord, Byte> IS_RECOMMEND = createField("is_recommend", org.jooq.impl.SQLDataType.TINYINT.nullable(false).defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.TINYINT)), this, "是否为推荐品牌 0否 1是");
 
     /**
-     * The column <code>mini_shop_471752.b2c_goods_brand.classify_id</code>. 品牌所属分类
+     * The column <code>mini_shop_471752.b2c_goods_brand.classify_id</code>. 品牌所属分类 0未分类 否则是分类id
      */
-    public final TableField<GoodsBrandRecord, Integer> CLASSIFY_ID = createField("classify_id", org.jooq.impl.SQLDataType.INTEGER.defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.INTEGER)), this, "品牌所属分类");
+    public final TableField<GoodsBrandRecord, Integer> CLASSIFY_ID = createField("classify_id", org.jooq.impl.SQLDataType.INTEGER.nullable(false).defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.INTEGER)), this, "品牌所属分类 0未分类 否则是分类id");
+
+    /**
+     * The column <code>mini_shop_471752.b2c_goods_brand.create_time</code>.
+     */
+    public final TableField<GoodsBrandRecord, Timestamp> CREATE_TIME = createField("create_time", org.jooq.impl.SQLDataType.TIMESTAMP.nullable(false).defaultValue(org.jooq.impl.DSL.field("CURRENT_TIMESTAMP", org.jooq.impl.SQLDataType.TIMESTAMP)), this, "");
+
+    /**
+     * The column <code>mini_shop_471752.b2c_goods_brand.update_time</code>. 最后修改时间
+     */
+    public final TableField<GoodsBrandRecord, Timestamp> UPDATE_TIME = createField("update_time", org.jooq.impl.SQLDataType.TIMESTAMP.nullable(false).defaultValue(org.jooq.impl.DSL.field("CURRENT_TIMESTAMP", org.jooq.impl.SQLDataType.TIMESTAMP)), this, "最后修改时间");
 
     /**
      * Create a <code>mini_shop_471752.b2c_goods_brand</code> table reference

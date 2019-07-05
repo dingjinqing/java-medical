@@ -27,7 +27,7 @@ import org.jooq.impl.UpdatableRecordImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class PaymentRecordRecord extends UpdatableRecordImpl<PaymentRecordRecord> {
 
-    private static final long serialVersionUID = -1321533429;
+    private static final long serialVersionUID = -5634037;
 
     /**
      * Setter for <code>mini_shop_471752.b2c_payment_record.id</code>.
@@ -44,14 +44,14 @@ public class PaymentRecordRecord extends UpdatableRecordImpl<PaymentRecordRecord
     }
 
     /**
-     * Setter for <code>mini_shop_471752.b2c_payment_record.shop_id</code>. 店铺ID
+     * Setter for <code>mini_shop_471752.b2c_payment_record.shop_id</code>. 店铺id
      */
     public void setShopId(Integer value) {
         set(1, value);
     }
 
     /**
-     * Getter for <code>mini_shop_471752.b2c_payment_record.shop_id</code>. 店铺ID
+     * Getter for <code>mini_shop_471752.b2c_payment_record.shop_id</code>. 店铺id
      */
     public Integer getShopId() {
         return (Integer) get(1);

@@ -43,7 +43,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class PackageSale extends TableImpl<PackageSaleRecord> {
 
-    private static final long serialVersionUID = 872256296;
+    private static final long serialVersionUID = 50778817;
 
     /**
      * The reference instance of <code>mini_shop_471752.b2c_package_sale</code>
@@ -81,12 +81,12 @@ public class PackageSale extends TableImpl<PackageSaleRecord> {
     /**
      * The column <code>mini_shop_471752.b2c_package_sale.total_money</code>. 结算总价格
      */
-    public final TableField<PackageSaleRecord, BigDecimal> TOTAL_MONEY = createField("total_money", org.jooq.impl.SQLDataType.DECIMAL(10, 2).defaultValue(org.jooq.impl.DSL.inline("0.00", org.jooq.impl.SQLDataType.DECIMAL)), this, "结算总价格");
+    public final TableField<PackageSaleRecord, BigDecimal> TOTAL_MONEY = createField("total_money", org.jooq.impl.SQLDataType.DECIMAL(10, 2).nullable(false).defaultValue(org.jooq.impl.DSL.inline("0.00", org.jooq.impl.SQLDataType.DECIMAL)), this, "结算总价格");
 
     /**
      * The column <code>mini_shop_471752.b2c_package_sale.goods_group_1</code>. 分组一，1启用
      */
-    public final TableField<PackageSaleRecord, Byte> GOODS_GROUP_1 = createField("goods_group_1", org.jooq.impl.SQLDataType.TINYINT.defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.TINYINT)), this, "分组一，1启用");
+    public final TableField<PackageSaleRecord, Byte> GOODS_GROUP_1 = createField("goods_group_1", org.jooq.impl.SQLDataType.TINYINT.nullable(false).defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.TINYINT)), this, "分组一，1启用");
 
     /**
      * The column <code>mini_shop_471752.b2c_package_sale.group_name_1</code>. 分组名称
@@ -96,12 +96,12 @@ public class PackageSale extends TableImpl<PackageSaleRecord> {
     /**
      * The column <code>mini_shop_471752.b2c_package_sale.goods_number_1</code>. 分组商品数
      */
-    public final TableField<PackageSaleRecord, Integer> GOODS_NUMBER_1 = createField("goods_number_1", org.jooq.impl.SQLDataType.INTEGER.defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.INTEGER)), this, "分组商品数");
+    public final TableField<PackageSaleRecord, Integer> GOODS_NUMBER_1 = createField("goods_number_1", org.jooq.impl.SQLDataType.INTEGER.nullable(false).defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.INTEGER)), this, "分组商品数");
 
     /**
-     * The column <code>mini_shop_471752.b2c_package_sale.goods_ids_1</code>. 分组goodsIDs
+     * The column <code>mini_shop_471752.b2c_package_sale.goods_ids_1</code>. 分组goodsids
      */
-    public final TableField<PackageSaleRecord, String> GOODS_IDS_1 = createField("goods_ids_1", org.jooq.impl.SQLDataType.CLOB, this, "分组goodsIDs");
+    public final TableField<PackageSaleRecord, String> GOODS_IDS_1 = createField("goods_ids_1", org.jooq.impl.SQLDataType.CLOB, this, "分组goodsids");
 
     /**
      * The column <code>mini_shop_471752.b2c_package_sale.cat_ids_1</code>. 分组平台分类id
@@ -116,7 +116,7 @@ public class PackageSale extends TableImpl<PackageSaleRecord> {
     /**
      * The column <code>mini_shop_471752.b2c_package_sale.goods_group_2</code>. 分组二，1启用
      */
-    public final TableField<PackageSaleRecord, Byte> GOODS_GROUP_2 = createField("goods_group_2", org.jooq.impl.SQLDataType.TINYINT.defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.TINYINT)), this, "分组二，1启用");
+    public final TableField<PackageSaleRecord, Byte> GOODS_GROUP_2 = createField("goods_group_2", org.jooq.impl.SQLDataType.TINYINT.nullable(false).defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.TINYINT)), this, "分组二，1启用");
 
     /**
      * The column <code>mini_shop_471752.b2c_package_sale.group_name_2</code>. 分组名称
@@ -126,12 +126,12 @@ public class PackageSale extends TableImpl<PackageSaleRecord> {
     /**
      * The column <code>mini_shop_471752.b2c_package_sale.goods_number_2</code>. 分组商品数
      */
-    public final TableField<PackageSaleRecord, Integer> GOODS_NUMBER_2 = createField("goods_number_2", org.jooq.impl.SQLDataType.INTEGER.defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.INTEGER)), this, "分组商品数");
+    public final TableField<PackageSaleRecord, Integer> GOODS_NUMBER_2 = createField("goods_number_2", org.jooq.impl.SQLDataType.INTEGER.nullable(false).defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.INTEGER)), this, "分组商品数");
 
     /**
-     * The column <code>mini_shop_471752.b2c_package_sale.goods_ids_2</code>. 分组goodsIDs
+     * The column <code>mini_shop_471752.b2c_package_sale.goods_ids_2</code>. 分组goodsids
      */
-    public final TableField<PackageSaleRecord, String> GOODS_IDS_2 = createField("goods_ids_2", org.jooq.impl.SQLDataType.CLOB, this, "分组goodsIDs");
+    public final TableField<PackageSaleRecord, String> GOODS_IDS_2 = createField("goods_ids_2", org.jooq.impl.SQLDataType.CLOB, this, "分组goodsids");
 
     /**
      * The column <code>mini_shop_471752.b2c_package_sale.cat_ids_2</code>. 分组平台分类id
@@ -146,7 +146,7 @@ public class PackageSale extends TableImpl<PackageSaleRecord> {
     /**
      * The column <code>mini_shop_471752.b2c_package_sale.goods_group_3</code>. 分组三，1启用
      */
-    public final TableField<PackageSaleRecord, Byte> GOODS_GROUP_3 = createField("goods_group_3", org.jooq.impl.SQLDataType.TINYINT.defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.TINYINT)), this, "分组三，1启用");
+    public final TableField<PackageSaleRecord, Byte> GOODS_GROUP_3 = createField("goods_group_3", org.jooq.impl.SQLDataType.TINYINT.nullable(false).defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.TINYINT)), this, "分组三，1启用");
 
     /**
      * The column <code>mini_shop_471752.b2c_package_sale.group_name_3</code>. 分组名称
@@ -156,12 +156,12 @@ public class PackageSale extends TableImpl<PackageSaleRecord> {
     /**
      * The column <code>mini_shop_471752.b2c_package_sale.goods_number_3</code>. 分组商品数
      */
-    public final TableField<PackageSaleRecord, Integer> GOODS_NUMBER_3 = createField("goods_number_3", org.jooq.impl.SQLDataType.INTEGER.defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.INTEGER)), this, "分组商品数");
+    public final TableField<PackageSaleRecord, Integer> GOODS_NUMBER_3 = createField("goods_number_3", org.jooq.impl.SQLDataType.INTEGER.nullable(false).defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.INTEGER)), this, "分组商品数");
 
     /**
-     * The column <code>mini_shop_471752.b2c_package_sale.goods_ids_3</code>. 分组goodsIDs
+     * The column <code>mini_shop_471752.b2c_package_sale.goods_ids_3</code>. 分组goodsids
      */
-    public final TableField<PackageSaleRecord, String> GOODS_IDS_3 = createField("goods_ids_3", org.jooq.impl.SQLDataType.CLOB, this, "分组goodsIDs");
+    public final TableField<PackageSaleRecord, String> GOODS_IDS_3 = createField("goods_ids_3", org.jooq.impl.SQLDataType.CLOB, this, "分组goodsids");
 
     /**
      * The column <code>mini_shop_471752.b2c_package_sale.cat_ids_3</code>. 分组平台分类id
@@ -176,22 +176,22 @@ public class PackageSale extends TableImpl<PackageSaleRecord> {
     /**
      * The column <code>mini_shop_471752.b2c_package_sale.status</code>. 活动状态1启用
      */
-    public final TableField<PackageSaleRecord, Byte> STATUS = createField("status", org.jooq.impl.SQLDataType.TINYINT.defaultValue(org.jooq.impl.DSL.inline("1", org.jooq.impl.SQLDataType.TINYINT)), this, "活动状态1启用");
+    public final TableField<PackageSaleRecord, Byte> STATUS = createField("status", org.jooq.impl.SQLDataType.TINYINT.nullable(false).defaultValue(org.jooq.impl.DSL.inline("1", org.jooq.impl.SQLDataType.TINYINT)), this, "活动状态1启用");
 
     /**
      * The column <code>mini_shop_471752.b2c_package_sale.del_flag</code>. 删除状态
      */
-    public final TableField<PackageSaleRecord, Byte> DEL_FLAG = createField("del_flag", org.jooq.impl.SQLDataType.TINYINT.defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.TINYINT)), this, "删除状态");
+    public final TableField<PackageSaleRecord, Byte> DEL_FLAG = createField("del_flag", org.jooq.impl.SQLDataType.TINYINT.nullable(false).defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.TINYINT)), this, "删除状态");
 
     /**
-     * The column <code>mini_shop_471752.b2c_package_sale.add_time</code>.
+     * The column <code>mini_shop_471752.b2c_package_sale.create_time</code>.
      */
-    public final TableField<PackageSaleRecord, Timestamp> ADD_TIME = createField("add_time", org.jooq.impl.SQLDataType.TIMESTAMP.nullable(false).defaultValue(org.jooq.impl.DSL.inline("0000-00-00 00:00:00", org.jooq.impl.SQLDataType.TIMESTAMP)), this, "");
+    public final TableField<PackageSaleRecord, Timestamp> CREATE_TIME = createField("create_time", org.jooq.impl.SQLDataType.TIMESTAMP.nullable(false).defaultValue(org.jooq.impl.DSL.field("CURRENT_TIMESTAMP", org.jooq.impl.SQLDataType.TIMESTAMP)), this, "");
 
     /**
-     * The column <code>mini_shop_471752.b2c_package_sale.update_time</code>.
+     * The column <code>mini_shop_471752.b2c_package_sale.update_time</code>. 最后修改时间
      */
-    public final TableField<PackageSaleRecord, Timestamp> UPDATE_TIME = createField("update_time", org.jooq.impl.SQLDataType.TIMESTAMP.nullable(false).defaultValue(org.jooq.impl.DSL.field("CURRENT_TIMESTAMP", org.jooq.impl.SQLDataType.TIMESTAMP)), this, "");
+    public final TableField<PackageSaleRecord, Timestamp> UPDATE_TIME = createField("update_time", org.jooq.impl.SQLDataType.TIMESTAMP.nullable(false).defaultValue(org.jooq.impl.DSL.field("CURRENT_TIMESTAMP", org.jooq.impl.SQLDataType.TIMESTAMP)), this, "最后修改时间");
 
     /**
      * Create a <code>mini_shop_471752.b2c_package_sale</code> table reference

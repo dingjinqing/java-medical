@@ -42,7 +42,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class ShareRecord extends TableImpl<ShareRecordRecord> {
 
-    private static final long serialVersionUID = -780206603;
+    private static final long serialVersionUID = 601909567;
 
     /**
      * The reference instance of <code>mini_shop_471752.b2c_share_record</code>
@@ -78,14 +78,19 @@ public class ShareRecord extends TableImpl<ShareRecordRecord> {
     public final TableField<ShareRecordRecord, Integer> ACTIVITY_TYPE = createField("activity_type", org.jooq.impl.SQLDataType.INTEGER, this, "活动类型");
 
     /**
-     * The column <code>mini_shop_471752.b2c_share_record.add_time</code>. 浏览时间
-     */
-    public final TableField<ShareRecordRecord, Timestamp> ADD_TIME = createField("add_time", org.jooq.impl.SQLDataType.TIMESTAMP, this, "浏览时间");
-
-    /**
      * The column <code>mini_shop_471752.b2c_share_record.count</code>. 次数
      */
     public final TableField<ShareRecordRecord, Integer> COUNT = createField("count", org.jooq.impl.SQLDataType.INTEGER, this, "次数");
+
+    /**
+     * The column <code>mini_shop_471752.b2c_share_record.create_time</code>.
+     */
+    public final TableField<ShareRecordRecord, Timestamp> CREATE_TIME = createField("create_time", org.jooq.impl.SQLDataType.TIMESTAMP.nullable(false).defaultValue(org.jooq.impl.DSL.field("CURRENT_TIMESTAMP", org.jooq.impl.SQLDataType.TIMESTAMP)), this, "");
+
+    /**
+     * The column <code>mini_shop_471752.b2c_share_record.update_time</code>. 最后修改时间
+     */
+    public final TableField<ShareRecordRecord, Timestamp> UPDATE_TIME = createField("update_time", org.jooq.impl.SQLDataType.TIMESTAMP.nullable(false).defaultValue(org.jooq.impl.DSL.field("CURRENT_TIMESTAMP", org.jooq.impl.SQLDataType.TIMESTAMP)), this, "最后修改时间");
 
     /**
      * Create a <code>mini_shop_471752.b2c_share_record</code> table reference

@@ -42,7 +42,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class DistributorLevelRecord extends TableImpl<DistributorLevelRecordRecord> {
 
-    private static final long serialVersionUID = -481819184;
+    private static final long serialVersionUID = -497269379;
 
     /**
      * The reference instance of <code>mini_shop_471752.b2c_distributor_level_record</code>
@@ -63,9 +63,9 @@ public class DistributorLevelRecord extends TableImpl<DistributorLevelRecordReco
     public final TableField<DistributorLevelRecordRecord, Integer> ID = createField("id", org.jooq.impl.SQLDataType.INTEGER.nullable(false).identity(true), this, "");
 
     /**
-     * The column <code>mini_shop_471752.b2c_distributor_level_record.user_id</code>. 用户ID
+     * The column <code>mini_shop_471752.b2c_distributor_level_record.user_id</code>. 用户id
      */
-    public final TableField<DistributorLevelRecordRecord, Integer> USER_ID = createField("user_id", org.jooq.impl.SQLDataType.INTEGER.nullable(false).defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.INTEGER)), this, "用户ID");
+    public final TableField<DistributorLevelRecordRecord, Integer> USER_ID = createField("user_id", org.jooq.impl.SQLDataType.INTEGER.nullable(false).defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.INTEGER)), this, "用户id");
 
     /**
      * The column <code>mini_shop_471752.b2c_distributor_level_record.is_go_up</code>. 升降：0降，1升
@@ -98,9 +98,14 @@ public class DistributorLevelRecord extends TableImpl<DistributorLevelRecordReco
     public final TableField<DistributorLevelRecordRecord, String> UPDATE_NOTE = createField("update_note", org.jooq.impl.SQLDataType.VARCHAR(120), this, "更新备注");
 
     /**
-     * The column <code>mini_shop_471752.b2c_distributor_level_record.update_time</code>. 更新时间
+     * The column <code>mini_shop_471752.b2c_distributor_level_record.create_time</code>.
      */
-    public final TableField<DistributorLevelRecordRecord, Timestamp> UPDATE_TIME = createField("update_time", org.jooq.impl.SQLDataType.TIMESTAMP.nullable(false).defaultValue(org.jooq.impl.DSL.field("CURRENT_TIMESTAMP", org.jooq.impl.SQLDataType.TIMESTAMP)), this, "更新时间");
+    public final TableField<DistributorLevelRecordRecord, Timestamp> CREATE_TIME = createField("create_time", org.jooq.impl.SQLDataType.TIMESTAMP.nullable(false).defaultValue(org.jooq.impl.DSL.field("CURRENT_TIMESTAMP", org.jooq.impl.SQLDataType.TIMESTAMP)), this, "");
+
+    /**
+     * The column <code>mini_shop_471752.b2c_distributor_level_record.update_time</code>. 最后修改时间
+     */
+    public final TableField<DistributorLevelRecordRecord, Timestamp> UPDATE_TIME = createField("update_time", org.jooq.impl.SQLDataType.TIMESTAMP.nullable(false).defaultValue(org.jooq.impl.DSL.field("CURRENT_TIMESTAMP", org.jooq.impl.SQLDataType.TIMESTAMP)), this, "最后修改时间");
 
     /**
      * Create a <code>mini_shop_471752.b2c_distributor_level_record</code> table reference

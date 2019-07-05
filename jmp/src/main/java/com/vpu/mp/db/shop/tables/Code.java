@@ -42,7 +42,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class Code extends TableImpl<CodeRecord> {
 
-    private static final long serialVersionUID = -2075801108;
+    private static final long serialVersionUID = 597515375;
 
     /**
      * The reference instance of <code>mini_shop_471752.b2c_code</code>
@@ -68,14 +68,14 @@ public class Code extends TableImpl<CodeRecord> {
     public final TableField<CodeRecord, Short> TYPE = createField("type", org.jooq.impl.SQLDataType.SMALLINT.nullable(false).defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.SMALLINT)), this, "分类：1店铺，2商品，3服务，4会员卡，5优惠券");
 
     /**
-     * The column <code>mini_shop_471752.b2c_code.param_id</code>. 对应的参数ID
+     * The column <code>mini_shop_471752.b2c_code.param_id</code>. 对应的参数id
      */
-    public final TableField<CodeRecord, String> PARAM_ID = createField("param_id", org.jooq.impl.SQLDataType.VARCHAR(32).nullable(false).defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.VARCHAR)), this, "对应的参数ID");
+    public final TableField<CodeRecord, String> PARAM_ID = createField("param_id", org.jooq.impl.SQLDataType.VARCHAR(32).nullable(false).defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.VARCHAR)), this, "对应的参数id");
 
     /**
-     * The column <code>mini_shop_471752.b2c_code.type_url</code>. type对应的APP页面地址
+     * The column <code>mini_shop_471752.b2c_code.type_url</code>. type对应的app页面地址
      */
-    public final TableField<CodeRecord, String> TYPE_URL = createField("type_url", org.jooq.impl.SQLDataType.VARCHAR(100).nullable(false).defaultValue(org.jooq.impl.DSL.inline("", org.jooq.impl.SQLDataType.VARCHAR)), this, "type对应的APP页面地址");
+    public final TableField<CodeRecord, String> TYPE_URL = createField("type_url", org.jooq.impl.SQLDataType.VARCHAR(100).nullable(false).defaultValue(org.jooq.impl.DSL.inline("", org.jooq.impl.SQLDataType.VARCHAR)), this, "type对应的app页面地址");
 
     /**
      * The column <code>mini_shop_471752.b2c_code.qrcode_img</code>. 二维码位置
@@ -85,17 +85,22 @@ public class Code extends TableImpl<CodeRecord> {
     /**
      * The column <code>mini_shop_471752.b2c_code.flag</code>. 标记位
      */
-    public final TableField<CodeRecord, Byte> FLAG = createField("flag", org.jooq.impl.SQLDataType.TINYINT.defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.TINYINT)), this, "标记位");
-
-    /**
-     * The column <code>mini_shop_471752.b2c_code.add_time</code>. 添加时间
-     */
-    public final TableField<CodeRecord, Timestamp> ADD_TIME = createField("add_time", org.jooq.impl.SQLDataType.TIMESTAMP, this, "添加时间");
+    public final TableField<CodeRecord, Byte> FLAG = createField("flag", org.jooq.impl.SQLDataType.TINYINT.nullable(false).defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.TINYINT)), this, "标记位");
 
     /**
      * The column <code>mini_shop_471752.b2c_code.channel</code>. 渠道分享码
      */
-    public final TableField<CodeRecord, String> CHANNEL = createField("channel", org.jooq.impl.SQLDataType.VARCHAR(20).defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.VARCHAR)), this, "渠道分享码");
+    public final TableField<CodeRecord, String> CHANNEL = createField("channel", org.jooq.impl.SQLDataType.VARCHAR(20).nullable(false).defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.VARCHAR)), this, "渠道分享码");
+
+    /**
+     * The column <code>mini_shop_471752.b2c_code.create_time</code>.
+     */
+    public final TableField<CodeRecord, Timestamp> CREATE_TIME = createField("create_time", org.jooq.impl.SQLDataType.TIMESTAMP.nullable(false).defaultValue(org.jooq.impl.DSL.field("CURRENT_TIMESTAMP", org.jooq.impl.SQLDataType.TIMESTAMP)), this, "");
+
+    /**
+     * The column <code>mini_shop_471752.b2c_code.update_time</code>. 最后修改时间
+     */
+    public final TableField<CodeRecord, Timestamp> UPDATE_TIME = createField("update_time", org.jooq.impl.SQLDataType.TIMESTAMP.nullable(false).defaultValue(org.jooq.impl.DSL.field("CURRENT_TIMESTAMP", org.jooq.impl.SQLDataType.TIMESTAMP)), this, "最后修改时间");
 
     /**
      * Create a <code>mini_shop_471752.b2c_code</code> table reference

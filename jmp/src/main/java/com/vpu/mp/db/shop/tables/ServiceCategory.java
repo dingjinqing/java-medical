@@ -42,7 +42,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class ServiceCategory extends TableImpl<ServiceCategoryRecord> {
 
-    private static final long serialVersionUID = 1487366327;
+    private static final long serialVersionUID = 1381022808;
 
     /**
      * The reference instance of <code>mini_shop_471752.b2c_service_category</code>
@@ -65,7 +65,7 @@ public class ServiceCategory extends TableImpl<ServiceCategoryRecord> {
     /**
      * The column <code>mini_shop_471752.b2c_service_category.cat_name</code>.
      */
-    public final TableField<ServiceCategoryRecord, String> CAT_NAME = createField("cat_name", org.jooq.impl.SQLDataType.VARCHAR(90).defaultValue(org.jooq.impl.DSL.inline("", org.jooq.impl.SQLDataType.VARCHAR)), this, "");
+    public final TableField<ServiceCategoryRecord, String> CAT_NAME = createField("cat_name", org.jooq.impl.SQLDataType.VARCHAR(90).nullable(false).defaultValue(org.jooq.impl.DSL.inline("", org.jooq.impl.SQLDataType.VARCHAR)), this, "");
 
     /**
      * The column <code>mini_shop_471752.b2c_service_category.store_id</code>.
@@ -75,7 +75,12 @@ public class ServiceCategory extends TableImpl<ServiceCategoryRecord> {
     /**
      * The column <code>mini_shop_471752.b2c_service_category.create_time</code>.
      */
-    public final TableField<ServiceCategoryRecord, Timestamp> CREATE_TIME = createField("create_time", org.jooq.impl.SQLDataType.TIMESTAMP.defaultValue(org.jooq.impl.DSL.field("CURRENT_TIMESTAMP", org.jooq.impl.SQLDataType.TIMESTAMP)), this, "");
+    public final TableField<ServiceCategoryRecord, Timestamp> CREATE_TIME = createField("create_time", org.jooq.impl.SQLDataType.TIMESTAMP.nullable(false).defaultValue(org.jooq.impl.DSL.field("CURRENT_TIMESTAMP", org.jooq.impl.SQLDataType.TIMESTAMP)), this, "");
+
+    /**
+     * The column <code>mini_shop_471752.b2c_service_category.update_time</code>. 最后修改时间
+     */
+    public final TableField<ServiceCategoryRecord, Timestamp> UPDATE_TIME = createField("update_time", org.jooq.impl.SQLDataType.TIMESTAMP.nullable(false).defaultValue(org.jooq.impl.DSL.field("CURRENT_TIMESTAMP", org.jooq.impl.SQLDataType.TIMESTAMP)), this, "最后修改时间");
 
     /**
      * Create a <code>mini_shop_471752.b2c_service_category</code> table reference

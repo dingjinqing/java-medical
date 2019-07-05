@@ -30,7 +30,7 @@ import org.jooq.impl.UpdatableRecordImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class CommentServiceRecord extends UpdatableRecordImpl<CommentServiceRecord> implements Record17<Integer, Integer, Integer, Integer, Integer, Byte, Integer, Byte, String, Integer, String, String, String, Timestamp, Timestamp, Byte, Byte> {
 
-    private static final long serialVersionUID = 918119348;
+    private static final long serialVersionUID = -1803787722;
 
     /**
      * Setter for <code>mini_shop_471752.b2c_comment_service.id</code>.
@@ -47,28 +47,28 @@ public class CommentServiceRecord extends UpdatableRecordImpl<CommentServiceReco
     }
 
     /**
-     * Setter for <code>mini_shop_471752.b2c_comment_service.shop_id</code>. 店铺ID
+     * Setter for <code>mini_shop_471752.b2c_comment_service.shop_id</code>. 店铺id
      */
     public void setShopId(Integer value) {
         set(1, value);
     }
 
     /**
-     * Getter for <code>mini_shop_471752.b2c_comment_service.shop_id</code>. 店铺ID
+     * Getter for <code>mini_shop_471752.b2c_comment_service.shop_id</code>. 店铺id
      */
     public Integer getShopId() {
         return (Integer) get(1);
     }
 
     /**
-     * Setter for <code>mini_shop_471752.b2c_comment_service.store_id</code>. 门店ID
+     * Setter for <code>mini_shop_471752.b2c_comment_service.store_id</code>. 门店id
      */
     public void setStoreId(Integer value) {
         set(2, value);
     }
 
     /**
-     * Getter for <code>mini_shop_471752.b2c_comment_service.store_id</code>. 门店ID
+     * Getter for <code>mini_shop_471752.b2c_comment_service.store_id</code>. 门店id
      */
     public Integer getStoreId() {
         return (Integer) get(2);
@@ -89,14 +89,14 @@ public class CommentServiceRecord extends UpdatableRecordImpl<CommentServiceReco
     }
 
     /**
-     * Setter for <code>mini_shop_471752.b2c_comment_service.user_id</code>. 用户ID
+     * Setter for <code>mini_shop_471752.b2c_comment_service.user_id</code>. 用户id
      */
     public void setUserId(Integer value) {
         set(4, value);
     }
 
     /**
-     * Getter for <code>mini_shop_471752.b2c_comment_service.user_id</code>. 用户ID
+     * Getter for <code>mini_shop_471752.b2c_comment_service.user_id</code>. 用户id
      */
     public Integer getUserId() {
         return (Integer) get(4);
@@ -215,30 +215,30 @@ public class CommentServiceRecord extends UpdatableRecordImpl<CommentServiceReco
     }
 
     /**
-     * Setter for <code>mini_shop_471752.b2c_comment_service.in_time</code>. 创建时间
+     * Setter for <code>mini_shop_471752.b2c_comment_service.create_time</code>.
      */
-    public void setInTime(Timestamp value) {
+    public void setCreateTime(Timestamp value) {
         set(13, value);
     }
 
     /**
-     * Getter for <code>mini_shop_471752.b2c_comment_service.in_time</code>. 创建时间
+     * Getter for <code>mini_shop_471752.b2c_comment_service.create_time</code>.
      */
-    public Timestamp getInTime() {
+    public Timestamp getCreateTime() {
         return (Timestamp) get(13);
     }
 
     /**
-     * Setter for <code>mini_shop_471752.b2c_comment_service.up_time</code>. 更新时间
+     * Setter for <code>mini_shop_471752.b2c_comment_service.update_time</code>. 最后修改时间
      */
-    public void setUpTime(Timestamp value) {
+    public void setUpdateTime(Timestamp value) {
         set(14, value);
     }
 
     /**
-     * Getter for <code>mini_shop_471752.b2c_comment_service.up_time</code>. 更新时间
+     * Getter for <code>mini_shop_471752.b2c_comment_service.update_time</code>. 最后修改时间
      */
-    public Timestamp getUpTime() {
+    public Timestamp getUpdateTime() {
         return (Timestamp) get(14);
     }
 
@@ -411,7 +411,7 @@ public class CommentServiceRecord extends UpdatableRecordImpl<CommentServiceReco
      */
     @Override
     public Field<Timestamp> field14() {
-        return CommentService.COMMENT_SERVICE.IN_TIME;
+        return CommentService.COMMENT_SERVICE.CREATE_TIME;
     }
 
     /**
@@ -419,7 +419,7 @@ public class CommentServiceRecord extends UpdatableRecordImpl<CommentServiceReco
      */
     @Override
     public Field<Timestamp> field15() {
-        return CommentService.COMMENT_SERVICE.UP_TIME;
+        return CommentService.COMMENT_SERVICE.UPDATE_TIME;
     }
 
     /**
@@ -547,7 +547,7 @@ public class CommentServiceRecord extends UpdatableRecordImpl<CommentServiceReco
      */
     @Override
     public Timestamp component14() {
-        return getInTime();
+        return getCreateTime();
     }
 
     /**
@@ -555,7 +555,7 @@ public class CommentServiceRecord extends UpdatableRecordImpl<CommentServiceReco
      */
     @Override
     public Timestamp component15() {
-        return getUpTime();
+        return getUpdateTime();
     }
 
     /**
@@ -683,7 +683,7 @@ public class CommentServiceRecord extends UpdatableRecordImpl<CommentServiceReco
      */
     @Override
     public Timestamp value14() {
-        return getInTime();
+        return getCreateTime();
     }
 
     /**
@@ -691,7 +691,7 @@ public class CommentServiceRecord extends UpdatableRecordImpl<CommentServiceReco
      */
     @Override
     public Timestamp value15() {
-        return getUpTime();
+        return getUpdateTime();
     }
 
     /**
@@ -832,7 +832,7 @@ public class CommentServiceRecord extends UpdatableRecordImpl<CommentServiceReco
      */
     @Override
     public CommentServiceRecord value14(Timestamp value) {
-        setInTime(value);
+        setCreateTime(value);
         return this;
     }
 
@@ -841,7 +841,7 @@ public class CommentServiceRecord extends UpdatableRecordImpl<CommentServiceReco
      */
     @Override
     public CommentServiceRecord value15(Timestamp value) {
-        setUpTime(value);
+        setUpdateTime(value);
         return this;
     }
 
@@ -902,7 +902,7 @@ public class CommentServiceRecord extends UpdatableRecordImpl<CommentServiceReco
     /**
      * Create a detached, initialised CommentServiceRecord
      */
-    public CommentServiceRecord(Integer id, Integer shopId, Integer storeId, Integer technicianId, Integer userId, Byte commstar, Integer userScore, Byte anonymousflag, String commtag, Integer serviceId, String orderSn, String commNote, String commImg, Timestamp inTime, Timestamp upTime, Byte flag, Byte delFlag) {
+    public CommentServiceRecord(Integer id, Integer shopId, Integer storeId, Integer technicianId, Integer userId, Byte commstar, Integer userScore, Byte anonymousflag, String commtag, Integer serviceId, String orderSn, String commNote, String commImg, Timestamp createTime, Timestamp updateTime, Byte flag, Byte delFlag) {
         super(CommentService.COMMENT_SERVICE);
 
         set(0, id);
@@ -918,8 +918,8 @@ public class CommentServiceRecord extends UpdatableRecordImpl<CommentServiceReco
         set(10, orderSn);
         set(11, commNote);
         set(12, commImg);
-        set(13, inTime);
-        set(14, upTime);
+        set(13, createTime);
+        set(14, updateTime);
         set(15, flag);
         set(16, delFlag);
     }

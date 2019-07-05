@@ -43,7 +43,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class RefundAmountRecord extends TableImpl<RefundAmountRecordRecord> {
 
-    private static final long serialVersionUID = -1357828288;
+    private static final long serialVersionUID = -679698979;
 
     /**
      * The reference instance of <code>mini_shop_471752.b2c_refund_amount_record</code>
@@ -92,6 +92,16 @@ public class RefundAmountRecord extends TableImpl<RefundAmountRecordRecord> {
      * The column <code>mini_shop_471752.b2c_refund_amount_record.ret_id</code>. b2c_return_order的ret_id
      */
     public final TableField<RefundAmountRecordRecord, Integer> RET_ID = createField("ret_id", org.jooq.impl.SQLDataType.INTEGER.nullable(false), this, "b2c_return_order的ret_id");
+
+    /**
+     * The column <code>mini_shop_471752.b2c_refund_amount_record.create_time</code>.
+     */
+    public final TableField<RefundAmountRecordRecord, Timestamp> CREATE_TIME = createField("create_time", org.jooq.impl.SQLDataType.TIMESTAMP.nullable(false).defaultValue(org.jooq.impl.DSL.field("CURRENT_TIMESTAMP", org.jooq.impl.SQLDataType.TIMESTAMP)), this, "");
+
+    /**
+     * The column <code>mini_shop_471752.b2c_refund_amount_record.update_time</code>. 最后修改时间
+     */
+    public final TableField<RefundAmountRecordRecord, Timestamp> UPDATE_TIME = createField("update_time", org.jooq.impl.SQLDataType.TIMESTAMP.nullable(false).defaultValue(org.jooq.impl.DSL.field("CURRENT_TIMESTAMP", org.jooq.impl.SQLDataType.TIMESTAMP)), this, "最后修改时间");
 
     /**
      * Create a <code>mini_shop_471752.b2c_refund_amount_record</code> table reference

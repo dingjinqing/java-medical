@@ -43,7 +43,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class GiveVoucher extends TableImpl<GiveVoucherRecord> {
 
-    private static final long serialVersionUID = -35776685;
+    private static final long serialVersionUID = -520081287;
 
     /**
      * The reference instance of <code>mini_shop_471752.b2c_give_voucher</code>
@@ -109,11 +109,6 @@ public class GiveVoucher extends TableImpl<GiveVoucherRecord> {
     public final TableField<GiveVoucherRecord, Integer> ACT_ID = createField("act_id", org.jooq.impl.SQLDataType.INTEGER.nullable(false), this, "优惠券");
 
     /**
-     * The column <code>mini_shop_471752.b2c_give_voucher.in_time</code>. 插入时间
-     */
-    public final TableField<GiveVoucherRecord, Timestamp> IN_TIME = createField("in_time", org.jooq.impl.SQLDataType.TIMESTAMP.defaultValue(org.jooq.impl.DSL.field("CURRENT_TIMESTAMP", org.jooq.impl.SQLDataType.TIMESTAMP)), this, "插入时间");
-
-    /**
      * The column <code>mini_shop_471752.b2c_give_voucher.max_ave_price</code>. 均价大于
      */
     public final TableField<GiveVoucherRecord, BigDecimal> MAX_AVE_PRICE = createField("max_ave_price", org.jooq.impl.SQLDataType.DECIMAL(10, 2), this, "均价大于");
@@ -122,11 +117,6 @@ public class GiveVoucher extends TableImpl<GiveVoucherRecord> {
      * The column <code>mini_shop_471752.b2c_give_voucher.min_ave_price</code>. 均价小于
      */
     public final TableField<GiveVoucherRecord, BigDecimal> MIN_AVE_PRICE = createField("min_ave_price", org.jooq.impl.SQLDataType.DECIMAL(10, 2), this, "均价小于");
-
-    /**
-     * The column <code>mini_shop_471752.b2c_give_voucher.update_time</code>. 更新时间
-     */
-    public final TableField<GiveVoucherRecord, Timestamp> UPDATE_TIME = createField("update_time", org.jooq.impl.SQLDataType.TIMESTAMP, this, "更新时间");
 
     /**
      * The column <code>mini_shop_471752.b2c_give_voucher.user</code>. 手动添加会员
@@ -151,7 +141,17 @@ public class GiveVoucher extends TableImpl<GiveVoucherRecord> {
     /**
      * The column <code>mini_shop_471752.b2c_give_voucher.start_time</code>. 发放开始时间
      */
-    public final TableField<GiveVoucherRecord, Timestamp> START_TIME = createField("start_time", org.jooq.impl.SQLDataType.TIMESTAMP.nullable(false), this, "发放开始时间");
+    public final TableField<GiveVoucherRecord, Timestamp> START_TIME = createField("start_time", org.jooq.impl.SQLDataType.TIMESTAMP.nullable(false).defaultValue(org.jooq.impl.DSL.inline("0000-00-00 00:00:00", org.jooq.impl.SQLDataType.TIMESTAMP)), this, "发放开始时间");
+
+    /**
+     * The column <code>mini_shop_471752.b2c_give_voucher.create_time</code>.
+     */
+    public final TableField<GiveVoucherRecord, Timestamp> CREATE_TIME = createField("create_time", org.jooq.impl.SQLDataType.TIMESTAMP.nullable(false).defaultValue(org.jooq.impl.DSL.field("CURRENT_TIMESTAMP", org.jooq.impl.SQLDataType.TIMESTAMP)), this, "");
+
+    /**
+     * The column <code>mini_shop_471752.b2c_give_voucher.update_time</code>. 最后修改时间
+     */
+    public final TableField<GiveVoucherRecord, Timestamp> UPDATE_TIME = createField("update_time", org.jooq.impl.SQLDataType.TIMESTAMP.nullable(false).defaultValue(org.jooq.impl.DSL.field("CURRENT_TIMESTAMP", org.jooq.impl.SQLDataType.TIMESTAMP)), this, "最后修改时间");
 
     /**
      * Create a <code>mini_shop_471752.b2c_give_voucher</code> table reference

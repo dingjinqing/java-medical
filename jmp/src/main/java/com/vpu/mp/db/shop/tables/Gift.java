@@ -42,7 +42,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class Gift extends TableImpl<GiftRecord> {
 
-    private static final long serialVersionUID = -1581721265;
+    private static final long serialVersionUID = 38795140;
 
     /**
      * The reference instance of <code>mini_shop_471752.b2c_gift</code>
@@ -75,12 +75,12 @@ public class Gift extends TableImpl<GiftRecord> {
     /**
      * The column <code>mini_shop_471752.b2c_gift.start_time</code>. 开始时间
      */
-    public final TableField<GiftRecord, Timestamp> START_TIME = createField("start_time", org.jooq.impl.SQLDataType.TIMESTAMP.nullable(false), this, "开始时间");
+    public final TableField<GiftRecord, Timestamp> START_TIME = createField("start_time", org.jooq.impl.SQLDataType.TIMESTAMP.nullable(false).defaultValue(org.jooq.impl.DSL.inline("0000-00-00 00:00:00", org.jooq.impl.SQLDataType.TIMESTAMP)), this, "开始时间");
 
     /**
      * The column <code>mini_shop_471752.b2c_gift.end_time</code>. 结束时间
      */
-    public final TableField<GiftRecord, Timestamp> END_TIME = createField("end_time", org.jooq.impl.SQLDataType.TIMESTAMP.nullable(false), this, "结束时间");
+    public final TableField<GiftRecord, Timestamp> END_TIME = createField("end_time", org.jooq.impl.SQLDataType.TIMESTAMP.nullable(false).defaultValue(org.jooq.impl.DSL.inline("0000-00-00 00:00:00", org.jooq.impl.SQLDataType.TIMESTAMP)), this, "结束时间");
 
     /**
      * The column <code>mini_shop_471752.b2c_gift.goods_id</code>. 活动商品
@@ -90,7 +90,7 @@ public class Gift extends TableImpl<GiftRecord> {
     /**
      * The column <code>mini_shop_471752.b2c_gift.rule</code>. 赠品策略
      */
-    public final TableField<GiftRecord, String> RULE = createField("rule", org.jooq.impl.SQLDataType.CLOB.nullable(false), this, "赠品策略");
+    public final TableField<GiftRecord, String> RULE = createField("rule", org.jooq.impl.SQLDataType.CLOB, this, "赠品策略");
 
     /**
      * The column <code>mini_shop_471752.b2c_gift.explain</code>. 说明
@@ -103,24 +103,24 @@ public class Gift extends TableImpl<GiftRecord> {
     public final TableField<GiftRecord, Byte> STATUS = createField("status", org.jooq.impl.SQLDataType.TINYINT.defaultValue(org.jooq.impl.DSL.inline("1", org.jooq.impl.SQLDataType.TINYINT)), this, "");
 
     /**
-     * The column <code>mini_shop_471752.b2c_gift.add_time</code>.
-     */
-    public final TableField<GiftRecord, Timestamp> ADD_TIME = createField("add_time", org.jooq.impl.SQLDataType.TIMESTAMP, this, "");
-
-    /**
-     * The column <code>mini_shop_471752.b2c_gift.update_time</code>.
-     */
-    public final TableField<GiftRecord, Timestamp> UPDATE_TIME = createField("update_time", org.jooq.impl.SQLDataType.TIMESTAMP, this, "");
-
-    /**
      * The column <code>mini_shop_471752.b2c_gift.del_flag</code>.
      */
     public final TableField<GiftRecord, Byte> DEL_FLAG = createField("del_flag", org.jooq.impl.SQLDataType.TINYINT.defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.TINYINT)), this, "");
 
     /**
-     * The column <code>mini_shop_471752.b2c_gift.del_time</code>.
+     * The column <code>mini_shop_471752.b2c_gift.del_time</code>. 删除时间
      */
-    public final TableField<GiftRecord, Timestamp> DEL_TIME = createField("del_time", org.jooq.impl.SQLDataType.TIMESTAMP, this, "");
+    public final TableField<GiftRecord, Timestamp> DEL_TIME = createField("del_time", org.jooq.impl.SQLDataType.TIMESTAMP.nullable(false).defaultValue(org.jooq.impl.DSL.inline("0000-00-00 00:00:00", org.jooq.impl.SQLDataType.TIMESTAMP)), this, "删除时间");
+
+    /**
+     * The column <code>mini_shop_471752.b2c_gift.create_time</code>.
+     */
+    public final TableField<GiftRecord, Timestamp> CREATE_TIME = createField("create_time", org.jooq.impl.SQLDataType.TIMESTAMP.nullable(false).defaultValue(org.jooq.impl.DSL.field("CURRENT_TIMESTAMP", org.jooq.impl.SQLDataType.TIMESTAMP)), this, "");
+
+    /**
+     * The column <code>mini_shop_471752.b2c_gift.update_time</code>. 最后修改时间
+     */
+    public final TableField<GiftRecord, Timestamp> UPDATE_TIME = createField("update_time", org.jooq.impl.SQLDataType.TIMESTAMP.nullable(false).defaultValue(org.jooq.impl.DSL.field("CURRENT_TIMESTAMP", org.jooq.impl.SQLDataType.TIMESTAMP)), this, "最后修改时间");
 
     /**
      * Create a <code>mini_shop_471752.b2c_gift</code> table reference

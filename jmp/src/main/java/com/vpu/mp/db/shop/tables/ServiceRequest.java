@@ -42,7 +42,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class ServiceRequest extends TableImpl<ServiceRequestRecord> {
 
-    private static final long serialVersionUID = 1080958243;
+    private static final long serialVersionUID = -747040414;
 
     /**
      * The reference instance of <code>mini_shop_471752.b2c_service_request</code>
@@ -63,9 +63,9 @@ public class ServiceRequest extends TableImpl<ServiceRequestRecord> {
     public final TableField<ServiceRequestRecord, Long> ID = createField("id", org.jooq.impl.SQLDataType.BIGINT.nullable(false).identity(true), this, "");
 
     /**
-     * The column <code>mini_shop_471752.b2c_service_request.request_id</code>. 请求requestId
+     * The column <code>mini_shop_471752.b2c_service_request.request_id</code>. 请求requestid
      */
-    public final TableField<ServiceRequestRecord, String> REQUEST_ID = createField("request_id", org.jooq.impl.SQLDataType.VARCHAR(50), this, "请求requestId");
+    public final TableField<ServiceRequestRecord, String> REQUEST_ID = createField("request_id", org.jooq.impl.SQLDataType.VARCHAR(50), this, "请求requestid");
 
     /**
      * The column <code>mini_shop_471752.b2c_service_request.service_name</code>. 服务名
@@ -80,12 +80,12 @@ public class ServiceRequest extends TableImpl<ServiceRequestRecord> {
     /**
      * The column <code>mini_shop_471752.b2c_service_request.request_time</code>. 请求时间
      */
-    public final TableField<ServiceRequestRecord, Timestamp> REQUEST_TIME = createField("request_time", org.jooq.impl.SQLDataType.TIMESTAMP, this, "请求时间");
+    public final TableField<ServiceRequestRecord, Timestamp> REQUEST_TIME = createField("request_time", org.jooq.impl.SQLDataType.TIMESTAMP.nullable(false).defaultValue(org.jooq.impl.DSL.inline("0000-00-00 00:00:00", org.jooq.impl.SQLDataType.TIMESTAMP)), this, "请求时间");
 
     /**
      * The column <code>mini_shop_471752.b2c_service_request.response_time</code>. 响应时间
      */
-    public final TableField<ServiceRequestRecord, Timestamp> RESPONSE_TIME = createField("response_time", org.jooq.impl.SQLDataType.TIMESTAMP, this, "响应时间");
+    public final TableField<ServiceRequestRecord, Timestamp> RESPONSE_TIME = createField("response_time", org.jooq.impl.SQLDataType.TIMESTAMP.nullable(false).defaultValue(org.jooq.impl.DSL.inline("0000-00-00 00:00:00", org.jooq.impl.SQLDataType.TIMESTAMP)), this, "响应时间");
 
     /**
      * The column <code>mini_shop_471752.b2c_service_request.response_content</code>. 响应内容
@@ -96,6 +96,16 @@ public class ServiceRequest extends TableImpl<ServiceRequestRecord> {
      * The column <code>mini_shop_471752.b2c_service_request.ip</code>. 请求ip
      */
     public final TableField<ServiceRequestRecord, String> IP = createField("ip", org.jooq.impl.SQLDataType.VARCHAR(100), this, "请求ip");
+
+    /**
+     * The column <code>mini_shop_471752.b2c_service_request.create_time</code>.
+     */
+    public final TableField<ServiceRequestRecord, Timestamp> CREATE_TIME = createField("create_time", org.jooq.impl.SQLDataType.TIMESTAMP.nullable(false).defaultValue(org.jooq.impl.DSL.field("CURRENT_TIMESTAMP", org.jooq.impl.SQLDataType.TIMESTAMP)), this, "");
+
+    /**
+     * The column <code>mini_shop_471752.b2c_service_request.update_time</code>. 最后修改时间
+     */
+    public final TableField<ServiceRequestRecord, Timestamp> UPDATE_TIME = createField("update_time", org.jooq.impl.SQLDataType.TIMESTAMP.nullable(false).defaultValue(org.jooq.impl.DSL.field("CURRENT_TIMESTAMP", org.jooq.impl.SQLDataType.TIMESTAMP)), this, "最后修改时间");
 
     /**
      * Create a <code>mini_shop_471752.b2c_service_request</code> table reference

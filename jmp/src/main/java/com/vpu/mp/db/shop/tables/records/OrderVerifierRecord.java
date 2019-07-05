@@ -30,7 +30,7 @@ import org.jooq.impl.UpdatableRecordImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class OrderVerifierRecord extends UpdatableRecordImpl<OrderVerifierRecord> implements Record7<Integer, Integer, Integer, Integer, Byte, Timestamp, Timestamp> {
 
-    private static final long serialVersionUID = -1517835181;
+    private static final long serialVersionUID = -508876873;
 
     /**
      * Setter for <code>mini_shop_471752.b2c_order_verifier.id</code>.
@@ -47,28 +47,28 @@ public class OrderVerifierRecord extends UpdatableRecordImpl<OrderVerifierRecord
     }
 
     /**
-     * Setter for <code>mini_shop_471752.b2c_order_verifier.store_id</code>. 门店ID
+     * Setter for <code>mini_shop_471752.b2c_order_verifier.store_id</code>. 门店id
      */
     public void setStoreId(Integer value) {
         set(1, value);
     }
 
     /**
-     * Getter for <code>mini_shop_471752.b2c_order_verifier.store_id</code>. 门店ID
+     * Getter for <code>mini_shop_471752.b2c_order_verifier.store_id</code>. 门店id
      */
     public Integer getStoreId() {
         return (Integer) get(1);
     }
 
     /**
-     * Setter for <code>mini_shop_471752.b2c_order_verifier.user_id</code>. 用户ID
+     * Setter for <code>mini_shop_471752.b2c_order_verifier.user_id</code>. 用户id
      */
     public void setUserId(Integer value) {
         set(2, value);
     }
 
     /**
-     * Getter for <code>mini_shop_471752.b2c_order_verifier.user_id</code>. 用户ID
+     * Getter for <code>mini_shop_471752.b2c_order_verifier.user_id</code>. 用户id
      */
     public Integer getUserId() {
         return (Integer) get(2);
@@ -103,28 +103,28 @@ public class OrderVerifierRecord extends UpdatableRecordImpl<OrderVerifierRecord
     }
 
     /**
-     * Setter for <code>mini_shop_471752.b2c_order_verifier.add_time</code>. 添加时间
+     * Setter for <code>mini_shop_471752.b2c_order_verifier.create_time</code>.
      */
-    public void setAddTime(Timestamp value) {
+    public void setCreateTime(Timestamp value) {
         set(5, value);
     }
 
     /**
-     * Getter for <code>mini_shop_471752.b2c_order_verifier.add_time</code>. 添加时间
+     * Getter for <code>mini_shop_471752.b2c_order_verifier.create_time</code>.
      */
-    public Timestamp getAddTime() {
+    public Timestamp getCreateTime() {
         return (Timestamp) get(5);
     }
 
     /**
-     * Setter for <code>mini_shop_471752.b2c_order_verifier.update_time</code>. 更新时间
+     * Setter for <code>mini_shop_471752.b2c_order_verifier.update_time</code>. 最后修改时间
      */
     public void setUpdateTime(Timestamp value) {
         set(6, value);
     }
 
     /**
-     * Getter for <code>mini_shop_471752.b2c_order_verifier.update_time</code>. 更新时间
+     * Getter for <code>mini_shop_471752.b2c_order_verifier.update_time</code>. 最后修改时间
      */
     public Timestamp getUpdateTime() {
         return (Timestamp) get(6);
@@ -207,7 +207,7 @@ public class OrderVerifierRecord extends UpdatableRecordImpl<OrderVerifierRecord
      */
     @Override
     public Field<Timestamp> field6() {
-        return OrderVerifier.ORDER_VERIFIER.ADD_TIME;
+        return OrderVerifier.ORDER_VERIFIER.CREATE_TIME;
     }
 
     /**
@@ -263,7 +263,7 @@ public class OrderVerifierRecord extends UpdatableRecordImpl<OrderVerifierRecord
      */
     @Override
     public Timestamp component6() {
-        return getAddTime();
+        return getCreateTime();
     }
 
     /**
@@ -319,7 +319,7 @@ public class OrderVerifierRecord extends UpdatableRecordImpl<OrderVerifierRecord
      */
     @Override
     public Timestamp value6() {
-        return getAddTime();
+        return getCreateTime();
     }
 
     /**
@@ -380,7 +380,7 @@ public class OrderVerifierRecord extends UpdatableRecordImpl<OrderVerifierRecord
      */
     @Override
     public OrderVerifierRecord value6(Timestamp value) {
-        setAddTime(value);
+        setCreateTime(value);
         return this;
     }
 
@@ -422,7 +422,7 @@ public class OrderVerifierRecord extends UpdatableRecordImpl<OrderVerifierRecord
     /**
      * Create a detached, initialised OrderVerifierRecord
      */
-    public OrderVerifierRecord(Integer id, Integer storeId, Integer userId, Integer verifyOrders, Byte delFlag, Timestamp addTime, Timestamp updateTime) {
+    public OrderVerifierRecord(Integer id, Integer storeId, Integer userId, Integer verifyOrders, Byte delFlag, Timestamp createTime, Timestamp updateTime) {
         super(OrderVerifier.ORDER_VERIFIER);
 
         set(0, id);
@@ -430,7 +430,7 @@ public class OrderVerifierRecord extends UpdatableRecordImpl<OrderVerifierRecord
         set(2, userId);
         set(3, verifyOrders);
         set(4, delFlag);
-        set(5, addTime);
+        set(5, createTime);
         set(6, updateTime);
     }
 }

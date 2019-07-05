@@ -30,7 +30,7 @@ import org.jooq.impl.UpdatableRecordImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class UserScoreSetRecord extends UpdatableRecordImpl<UserScoreSetRecord> implements Record14<Integer, Integer, String, Byte, Byte, String, String, String, Integer, Byte, String, Timestamp, Timestamp, Byte> {
 
-    private static final long serialVersionUID = 1950978445;
+    private static final long serialVersionUID = -235556863;
 
     /**
      * Setter for <code>mini_shop_471752.b2c_user_score_set.id</code>.
@@ -47,14 +47,14 @@ public class UserScoreSetRecord extends UpdatableRecordImpl<UserScoreSetRecord> 
     }
 
     /**
-     * Setter for <code>mini_shop_471752.b2c_user_score_set.shop_id</code>. 店铺ID
+     * Setter for <code>mini_shop_471752.b2c_user_score_set.shop_id</code>. 店铺id
      */
     public void setShopId(Integer value) {
         set(1, value);
     }
 
     /**
-     * Getter for <code>mini_shop_471752.b2c_user_score_set.shop_id</code>. 店铺ID
+     * Getter for <code>mini_shop_471752.b2c_user_score_set.shop_id</code>. 店铺id
      */
     public Integer getShopId() {
         return (Integer) get(1);
@@ -187,30 +187,30 @@ public class UserScoreSetRecord extends UpdatableRecordImpl<UserScoreSetRecord> 
     }
 
     /**
-     * Setter for <code>mini_shop_471752.b2c_user_score_set.in_time</code>.
+     * Setter for <code>mini_shop_471752.b2c_user_score_set.create_time</code>.
      */
-    public void setInTime(Timestamp value) {
+    public void setCreateTime(Timestamp value) {
         set(11, value);
     }
 
     /**
-     * Getter for <code>mini_shop_471752.b2c_user_score_set.in_time</code>.
+     * Getter for <code>mini_shop_471752.b2c_user_score_set.create_time</code>.
      */
-    public Timestamp getInTime() {
+    public Timestamp getCreateTime() {
         return (Timestamp) get(11);
     }
 
     /**
-     * Setter for <code>mini_shop_471752.b2c_user_score_set.up_time</code>.
+     * Setter for <code>mini_shop_471752.b2c_user_score_set.update_time</code>. 最后修改时间
      */
-    public void setUpTime(Timestamp value) {
+    public void setUpdateTime(Timestamp value) {
         set(12, value);
     }
 
     /**
-     * Getter for <code>mini_shop_471752.b2c_user_score_set.up_time</code>.
+     * Getter for <code>mini_shop_471752.b2c_user_score_set.update_time</code>. 最后修改时间
      */
-    public Timestamp getUpTime() {
+    public Timestamp getUpdateTime() {
         return (Timestamp) get(12);
     }
 
@@ -353,7 +353,7 @@ public class UserScoreSetRecord extends UpdatableRecordImpl<UserScoreSetRecord> 
      */
     @Override
     public Field<Timestamp> field12() {
-        return UserScoreSet.USER_SCORE_SET.IN_TIME;
+        return UserScoreSet.USER_SCORE_SET.CREATE_TIME;
     }
 
     /**
@@ -361,7 +361,7 @@ public class UserScoreSetRecord extends UpdatableRecordImpl<UserScoreSetRecord> 
      */
     @Override
     public Field<Timestamp> field13() {
-        return UserScoreSet.USER_SCORE_SET.UP_TIME;
+        return UserScoreSet.USER_SCORE_SET.UPDATE_TIME;
     }
 
     /**
@@ -465,7 +465,7 @@ public class UserScoreSetRecord extends UpdatableRecordImpl<UserScoreSetRecord> 
      */
     @Override
     public Timestamp component12() {
-        return getInTime();
+        return getCreateTime();
     }
 
     /**
@@ -473,7 +473,7 @@ public class UserScoreSetRecord extends UpdatableRecordImpl<UserScoreSetRecord> 
      */
     @Override
     public Timestamp component13() {
-        return getUpTime();
+        return getUpdateTime();
     }
 
     /**
@@ -577,7 +577,7 @@ public class UserScoreSetRecord extends UpdatableRecordImpl<UserScoreSetRecord> 
      */
     @Override
     public Timestamp value12() {
-        return getInTime();
+        return getCreateTime();
     }
 
     /**
@@ -585,7 +585,7 @@ public class UserScoreSetRecord extends UpdatableRecordImpl<UserScoreSetRecord> 
      */
     @Override
     public Timestamp value13() {
-        return getUpTime();
+        return getUpdateTime();
     }
 
     /**
@@ -700,7 +700,7 @@ public class UserScoreSetRecord extends UpdatableRecordImpl<UserScoreSetRecord> 
      */
     @Override
     public UserScoreSetRecord value12(Timestamp value) {
-        setInTime(value);
+        setCreateTime(value);
         return this;
     }
 
@@ -709,7 +709,7 @@ public class UserScoreSetRecord extends UpdatableRecordImpl<UserScoreSetRecord> 
      */
     @Override
     public UserScoreSetRecord value13(Timestamp value) {
-        setUpTime(value);
+        setUpdateTime(value);
         return this;
     }
 
@@ -758,7 +758,7 @@ public class UserScoreSetRecord extends UpdatableRecordImpl<UserScoreSetRecord> 
     /**
      * Create a detached, initialised UserScoreSetRecord
      */
-    public UserScoreSetRecord(Integer id, Integer shopId, String scoreName, Byte status, Byte twoStatus, String setVal, String setVal2, String setVal3, Integer signVal, Byte signDate, String desc, Timestamp inTime, Timestamp upTime, Byte growthFlag) {
+    public UserScoreSetRecord(Integer id, Integer shopId, String scoreName, Byte status, Byte twoStatus, String setVal, String setVal2, String setVal3, Integer signVal, Byte signDate, String desc, Timestamp createTime, Timestamp updateTime, Byte growthFlag) {
         super(UserScoreSet.USER_SCORE_SET);
 
         set(0, id);
@@ -772,8 +772,8 @@ public class UserScoreSetRecord extends UpdatableRecordImpl<UserScoreSetRecord> 
         set(8, signVal);
         set(9, signDate);
         set(10, desc);
-        set(11, inTime);
-        set(12, upTime);
+        set(11, createTime);
+        set(12, updateTime);
         set(13, growthFlag);
     }
 }

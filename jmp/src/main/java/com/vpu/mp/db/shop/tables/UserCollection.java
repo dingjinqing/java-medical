@@ -42,7 +42,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class UserCollection extends TableImpl<UserCollectionRecord> {
 
-    private static final long serialVersionUID = 1672797593;
+    private static final long serialVersionUID = -1815709696;
 
     /**
      * The reference instance of <code>mini_shop_471752.b2c_user_collection</code>
@@ -68,34 +68,24 @@ public class UserCollection extends TableImpl<UserCollectionRecord> {
     public final TableField<UserCollectionRecord, Integer> USER_ID = createField("user_id", org.jooq.impl.SQLDataType.INTEGER.nullable(false), this, "");
 
     /**
-     * The column <code>mini_shop_471752.b2c_user_collection.username</code>.
-     */
-    public final TableField<UserCollectionRecord, String> USERNAME = createField("username", org.jooq.impl.SQLDataType.VARCHAR(50), this, "");
-
-    /**
      * The column <code>mini_shop_471752.b2c_user_collection.goods_id</code>.
      */
     public final TableField<UserCollectionRecord, Integer> GOODS_ID = createField("goods_id", org.jooq.impl.SQLDataType.INTEGER.nullable(false), this, "");
 
     /**
-     * The column <code>mini_shop_471752.b2c_user_collection.goods_name</code>.
+     * The column <code>mini_shop_471752.b2c_user_collection.shop_id</code>. 店铺id
      */
-    public final TableField<UserCollectionRecord, String> GOODS_NAME = createField("goods_name", org.jooq.impl.SQLDataType.VARCHAR(191).nullable(false), this, "");
+    public final TableField<UserCollectionRecord, Integer> SHOP_ID = createField("shop_id", org.jooq.impl.SQLDataType.INTEGER.nullable(false).defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.INTEGER)), this, "店铺id");
 
     /**
-     * The column <code>mini_shop_471752.b2c_user_collection.goods_img</code>.
+     * The column <code>mini_shop_471752.b2c_user_collection.create_time</code>.
      */
-    public final TableField<UserCollectionRecord, String> GOODS_IMG = createField("goods_img", org.jooq.impl.SQLDataType.VARCHAR(191).nullable(false), this, "");
+    public final TableField<UserCollectionRecord, Timestamp> CREATE_TIME = createField("create_time", org.jooq.impl.SQLDataType.TIMESTAMP.nullable(false).defaultValue(org.jooq.impl.DSL.field("CURRENT_TIMESTAMP", org.jooq.impl.SQLDataType.TIMESTAMP)), this, "");
 
     /**
-     * The column <code>mini_shop_471752.b2c_user_collection.in_time</code>.
+     * The column <code>mini_shop_471752.b2c_user_collection.update_time</code>. 最后修改时间
      */
-    public final TableField<UserCollectionRecord, Timestamp> IN_TIME = createField("in_time", org.jooq.impl.SQLDataType.TIMESTAMP.nullable(false), this, "");
-
-    /**
-     * The column <code>mini_shop_471752.b2c_user_collection.shop_id</code>. 店铺ID
-     */
-    public final TableField<UserCollectionRecord, Integer> SHOP_ID = createField("shop_id", org.jooq.impl.SQLDataType.INTEGER.nullable(false).defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.INTEGER)), this, "店铺ID");
+    public final TableField<UserCollectionRecord, Timestamp> UPDATE_TIME = createField("update_time", org.jooq.impl.SQLDataType.TIMESTAMP.nullable(false).defaultValue(org.jooq.impl.DSL.field("CURRENT_TIMESTAMP", org.jooq.impl.SQLDataType.TIMESTAMP)), this, "最后修改时间");
 
     /**
      * Create a <code>mini_shop_471752.b2c_user_collection</code> table reference

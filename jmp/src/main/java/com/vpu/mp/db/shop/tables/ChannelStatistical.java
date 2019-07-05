@@ -10,6 +10,7 @@ import com.vpu.mp.db.shop.MiniShop_471752;
 import com.vpu.mp.db.shop.tables.records.ChannelStatisticalRecord;
 
 import java.sql.Date;
+import java.sql.Timestamp;
 import java.util.Arrays;
 import java.util.List;
 
@@ -42,7 +43,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class ChannelStatistical extends TableImpl<ChannelStatisticalRecord> {
 
-    private static final long serialVersionUID = -202973856;
+    private static final long serialVersionUID = 41372915;
 
     /**
      * The reference instance of <code>mini_shop_471752.b2c_channel_statistical</code>
@@ -65,17 +66,17 @@ public class ChannelStatistical extends TableImpl<ChannelStatisticalRecord> {
     /**
      * The column <code>mini_shop_471752.b2c_channel_statistical.page_id</code>.
      */
-    public final TableField<ChannelStatisticalRecord, Integer> PAGE_ID = createField("page_id", org.jooq.impl.SQLDataType.INTEGER.defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.INTEGER)), this, "");
+    public final TableField<ChannelStatisticalRecord, Integer> PAGE_ID = createField("page_id", org.jooq.impl.SQLDataType.INTEGER.nullable(false).defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.INTEGER)), this, "");
 
     /**
      * The column <code>mini_shop_471752.b2c_channel_statistical.goods_id</code>.
      */
-    public final TableField<ChannelStatisticalRecord, Integer> GOODS_ID = createField("goods_id", org.jooq.impl.SQLDataType.INTEGER.defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.INTEGER)), this, "");
+    public final TableField<ChannelStatisticalRecord, Integer> GOODS_ID = createField("goods_id", org.jooq.impl.SQLDataType.INTEGER.nullable(false).defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.INTEGER)), this, "");
 
     /**
-     * The column <code>mini_shop_471752.b2c_channel_statistical.channel_id</code>. 渠道ID
+     * The column <code>mini_shop_471752.b2c_channel_statistical.channel_id</code>. 渠道id
      */
-    public final TableField<ChannelStatisticalRecord, String> CHANNEL_ID = createField("channel_id", org.jooq.impl.SQLDataType.CLOB, this, "渠道ID");
+    public final TableField<ChannelStatisticalRecord, String> CHANNEL_ID = createField("channel_id", org.jooq.impl.SQLDataType.CLOB, this, "渠道id");
 
     /**
      * The column <code>mini_shop_471752.b2c_channel_statistical.channel_all_pv</code>.
@@ -146,6 +147,16 @@ public class ChannelStatistical extends TableImpl<ChannelStatisticalRecord> {
      * The column <code>mini_shop_471752.b2c_channel_statistical.ref_type</code>. 1昨天 7天 30天
      */
     public final TableField<ChannelStatisticalRecord, Byte> REF_TYPE = createField("ref_type", org.jooq.impl.SQLDataType.TINYINT.nullable(false).defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.TINYINT)), this, "1昨天 7天 30天");
+
+    /**
+     * The column <code>mini_shop_471752.b2c_channel_statistical.create_time</code>.
+     */
+    public final TableField<ChannelStatisticalRecord, Timestamp> CREATE_TIME = createField("create_time", org.jooq.impl.SQLDataType.TIMESTAMP.nullable(false).defaultValue(org.jooq.impl.DSL.field("CURRENT_TIMESTAMP", org.jooq.impl.SQLDataType.TIMESTAMP)), this, "");
+
+    /**
+     * The column <code>mini_shop_471752.b2c_channel_statistical.update_time</code>. 最后修改时间
+     */
+    public final TableField<ChannelStatisticalRecord, Timestamp> UPDATE_TIME = createField("update_time", org.jooq.impl.SQLDataType.TIMESTAMP.nullable(false).defaultValue(org.jooq.impl.DSL.field("CURRENT_TIMESTAMP", org.jooq.impl.SQLDataType.TIMESTAMP)), this, "最后修改时间");
 
     /**
      * Create a <code>mini_shop_471752.b2c_channel_statistical</code> table reference

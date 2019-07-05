@@ -43,7 +43,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class BargainUserList extends TableImpl<BargainUserListRecord> {
 
-    private static final long serialVersionUID = 1872739334;
+    private static final long serialVersionUID = -355985282;
 
     /**
      * The reference instance of <code>mini_shop_471752.b2c_bargain_user_list</code>
@@ -76,12 +76,17 @@ public class BargainUserList extends TableImpl<BargainUserListRecord> {
     /**
      * The column <code>mini_shop_471752.b2c_bargain_user_list.bargain_money</code>.
      */
-    public final TableField<BargainUserListRecord, BigDecimal> BARGAIN_MONEY = createField("bargain_money", org.jooq.impl.SQLDataType.DECIMAL(10, 2).defaultValue(org.jooq.impl.DSL.inline("0.00", org.jooq.impl.SQLDataType.DECIMAL)), this, "");
+    public final TableField<BargainUserListRecord, BigDecimal> BARGAIN_MONEY = createField("bargain_money", org.jooq.impl.SQLDataType.DECIMAL(10, 2).nullable(false).defaultValue(org.jooq.impl.DSL.inline("0.00", org.jooq.impl.SQLDataType.DECIMAL)), this, "");
 
     /**
-     * The column <code>mini_shop_471752.b2c_bargain_user_list.add_time</code>.
+     * The column <code>mini_shop_471752.b2c_bargain_user_list.create_time</code>.
      */
-    public final TableField<BargainUserListRecord, Timestamp> ADD_TIME = createField("add_time", org.jooq.impl.SQLDataType.TIMESTAMP.defaultValue(org.jooq.impl.DSL.inline("0000-00-00 00:00:00", org.jooq.impl.SQLDataType.TIMESTAMP)), this, "");
+    public final TableField<BargainUserListRecord, Timestamp> CREATE_TIME = createField("create_time", org.jooq.impl.SQLDataType.TIMESTAMP.nullable(false).defaultValue(org.jooq.impl.DSL.field("CURRENT_TIMESTAMP", org.jooq.impl.SQLDataType.TIMESTAMP)), this, "");
+
+    /**
+     * The column <code>mini_shop_471752.b2c_bargain_user_list.update_time</code>. 最后修改时间
+     */
+    public final TableField<BargainUserListRecord, Timestamp> UPDATE_TIME = createField("update_time", org.jooq.impl.SQLDataType.TIMESTAMP.nullable(false).defaultValue(org.jooq.impl.DSL.field("CURRENT_TIMESTAMP", org.jooq.impl.SQLDataType.TIMESTAMP)), this, "最后修改时间");
 
     /**
      * Create a <code>mini_shop_471752.b2c_bargain_user_list</code> table reference

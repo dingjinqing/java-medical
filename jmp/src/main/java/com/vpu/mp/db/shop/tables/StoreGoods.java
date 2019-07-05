@@ -42,7 +42,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class StoreGoods extends TableImpl<StoreGoodsRecord> {
 
-    private static final long serialVersionUID = 876618531;
+    private static final long serialVersionUID = -972817646;
 
     /**
      * The reference instance of <code>mini_shop_471752.b2c_store_goods</code>
@@ -80,17 +80,17 @@ public class StoreGoods extends TableImpl<StoreGoodsRecord> {
     /**
      * The column <code>mini_shop_471752.b2c_store_goods.product_number</code>. 库存
      */
-    public final TableField<StoreGoodsRecord, Integer> PRODUCT_NUMBER = createField("product_number", org.jooq.impl.SQLDataType.INTEGER.defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.INTEGER)), this, "库存");
+    public final TableField<StoreGoodsRecord, Integer> PRODUCT_NUMBER = createField("product_number", org.jooq.impl.SQLDataType.INTEGER.nullable(false).defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.INTEGER)), this, "库存");
 
     /**
      * The column <code>mini_shop_471752.b2c_store_goods.product_price</code>. 价格
      */
-    public final TableField<StoreGoodsRecord, BigDecimal> PRODUCT_PRICE = createField("product_price", org.jooq.impl.SQLDataType.DECIMAL(10, 2).defaultValue(org.jooq.impl.DSL.inline("0.00", org.jooq.impl.SQLDataType.DECIMAL)), this, "价格");
+    public final TableField<StoreGoodsRecord, BigDecimal> PRODUCT_PRICE = createField("product_price", org.jooq.impl.SQLDataType.DECIMAL(10, 2).nullable(false).defaultValue(org.jooq.impl.DSL.inline("0.00", org.jooq.impl.SQLDataType.DECIMAL)), this, "价格");
 
     /**
      * The column <code>mini_shop_471752.b2c_store_goods.is_sync</code>. 是否已同步
      */
-    public final TableField<StoreGoodsRecord, Byte> IS_SYNC = createField("is_sync", org.jooq.impl.SQLDataType.TINYINT.defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.TINYINT)), this, "是否已同步");
+    public final TableField<StoreGoodsRecord, Byte> IS_SYNC = createField("is_sync", org.jooq.impl.SQLDataType.TINYINT.nullable(false).defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.TINYINT)), this, "是否已同步");
 
     /**
      * The column <code>mini_shop_471752.b2c_store_goods.is_on_sale</code>. '是否在售，1在售，0下架'
@@ -98,9 +98,14 @@ public class StoreGoods extends TableImpl<StoreGoodsRecord> {
     public final TableField<StoreGoodsRecord, Byte> IS_ON_SALE = createField("is_on_sale", org.jooq.impl.SQLDataType.TINYINT.nullable(false).defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.TINYINT)), this, "'是否在售，1在售，0下架'");
 
     /**
-     * The column <code>mini_shop_471752.b2c_store_goods.up_time</code>.
+     * The column <code>mini_shop_471752.b2c_store_goods.create_time</code>.
      */
-    public final TableField<StoreGoodsRecord, Timestamp> UP_TIME = createField("up_time", org.jooq.impl.SQLDataType.TIMESTAMP.nullable(false).defaultValue(org.jooq.impl.DSL.field("CURRENT_TIMESTAMP", org.jooq.impl.SQLDataType.TIMESTAMP)), this, "");
+    public final TableField<StoreGoodsRecord, Timestamp> CREATE_TIME = createField("create_time", org.jooq.impl.SQLDataType.TIMESTAMP.nullable(false).defaultValue(org.jooq.impl.DSL.field("CURRENT_TIMESTAMP", org.jooq.impl.SQLDataType.TIMESTAMP)), this, "");
+
+    /**
+     * The column <code>mini_shop_471752.b2c_store_goods.update_time</code>. 最后修改时间
+     */
+    public final TableField<StoreGoodsRecord, Timestamp> UPDATE_TIME = createField("update_time", org.jooq.impl.SQLDataType.TIMESTAMP.nullable(false).defaultValue(org.jooq.impl.DSL.field("CURRENT_TIMESTAMP", org.jooq.impl.SQLDataType.TIMESTAMP)), this, "最后修改时间");
 
     /**
      * The column <code>mini_shop_471752.b2c_store_goods.flag</code>. 1:初始化数据，0:无效数据

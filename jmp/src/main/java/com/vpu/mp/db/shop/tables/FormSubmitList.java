@@ -42,7 +42,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class FormSubmitList extends TableImpl<FormSubmitListRecord> {
 
-    private static final long serialVersionUID = 1581953800;
+    private static final long serialVersionUID = 94027434;
 
     /**
      * The reference instance of <code>mini_shop_471752.b2c_form_submit_list</code>
@@ -68,29 +68,24 @@ public class FormSubmitList extends TableImpl<FormSubmitListRecord> {
     public final TableField<FormSubmitListRecord, Integer> PAGE_ID = createField("page_id", org.jooq.impl.SQLDataType.INTEGER.nullable(false), this, "");
 
     /**
-     * The column <code>mini_shop_471752.b2c_form_submit_list.shop_id</code>. 店铺ID
+     * The column <code>mini_shop_471752.b2c_form_submit_list.shop_id</code>. 店铺id
      */
-    public final TableField<FormSubmitListRecord, Integer> SHOP_ID = createField("shop_id", org.jooq.impl.SQLDataType.INTEGER.nullable(false).defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.INTEGER)), this, "店铺ID");
+    public final TableField<FormSubmitListRecord, Integer> SHOP_ID = createField("shop_id", org.jooq.impl.SQLDataType.INTEGER.nullable(false).defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.INTEGER)), this, "店铺id");
 
     /**
-     * The column <code>mini_shop_471752.b2c_form_submit_list.user_id</code>. 用户Id
+     * The column <code>mini_shop_471752.b2c_form_submit_list.user_id</code>. 用户id
      */
-    public final TableField<FormSubmitListRecord, Integer> USER_ID = createField("user_id", org.jooq.impl.SQLDataType.INTEGER.nullable(false).defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.INTEGER)), this, "用户Id");
+    public final TableField<FormSubmitListRecord, Integer> USER_ID = createField("user_id", org.jooq.impl.SQLDataType.INTEGER.nullable(false).defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.INTEGER)), this, "用户id");
 
     /**
-     * The column <code>mini_shop_471752.b2c_form_submit_list.open_id</code>. 微信OpenId
+     * The column <code>mini_shop_471752.b2c_form_submit_list.open_id</code>. 微信openid
      */
-    public final TableField<FormSubmitListRecord, String> OPEN_ID = createField("open_id", org.jooq.impl.SQLDataType.VARCHAR(255), this, "微信OpenId");
+    public final TableField<FormSubmitListRecord, String> OPEN_ID = createField("open_id", org.jooq.impl.SQLDataType.VARCHAR(255), this, "微信openid");
 
     /**
      * The column <code>mini_shop_471752.b2c_form_submit_list.nick_name</code>. 微信昵称
      */
     public final TableField<FormSubmitListRecord, String> NICK_NAME = createField("nick_name", org.jooq.impl.SQLDataType.VARCHAR(255), this, "微信昵称");
-
-    /**
-     * The column <code>mini_shop_471752.b2c_form_submit_list.create_time</code>. 提交时间
-     */
-    public final TableField<FormSubmitListRecord, Timestamp> CREATE_TIME = createField("create_time", org.jooq.impl.SQLDataType.TIMESTAMP.nullable(false).defaultValue(org.jooq.impl.DSL.field("CURRENT_TIMESTAMP", org.jooq.impl.SQLDataType.TIMESTAMP)), this, "提交时间");
 
     /**
      * The column <code>mini_shop_471752.b2c_form_submit_list.send_score</code>. 送积分
@@ -101,6 +96,16 @@ public class FormSubmitList extends TableImpl<FormSubmitListRecord> {
      * The column <code>mini_shop_471752.b2c_form_submit_list.send_coupons</code>. 送优惠券
      */
     public final TableField<FormSubmitListRecord, String> SEND_COUPONS = createField("send_coupons", org.jooq.impl.SQLDataType.VARCHAR(200), this, "送优惠券");
+
+    /**
+     * The column <code>mini_shop_471752.b2c_form_submit_list.create_time</code>.
+     */
+    public final TableField<FormSubmitListRecord, Timestamp> CREATE_TIME = createField("create_time", org.jooq.impl.SQLDataType.TIMESTAMP.nullable(false).defaultValue(org.jooq.impl.DSL.field("CURRENT_TIMESTAMP", org.jooq.impl.SQLDataType.TIMESTAMP)), this, "");
+
+    /**
+     * The column <code>mini_shop_471752.b2c_form_submit_list.update_time</code>. 最后修改时间
+     */
+    public final TableField<FormSubmitListRecord, Timestamp> UPDATE_TIME = createField("update_time", org.jooq.impl.SQLDataType.TIMESTAMP.nullable(false).defaultValue(org.jooq.impl.DSL.field("CURRENT_TIMESTAMP", org.jooq.impl.SQLDataType.TIMESTAMP)), this, "最后修改时间");
 
     /**
      * Create a <code>mini_shop_471752.b2c_form_submit_list</code> table reference

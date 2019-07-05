@@ -42,7 +42,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class Presale extends TableImpl<PresaleRecord> {
 
-    private static final long serialVersionUID = 1578386835;
+    private static final long serialVersionUID = -1564011590;
 
     /**
      * The reference instance of <code>mini_shop_471752.b2c_presale</code>
@@ -58,9 +58,9 @@ public class Presale extends TableImpl<PresaleRecord> {
     }
 
     /**
-     * The column <code>mini_shop_471752.b2c_presale.id</code>. 活动ID
+     * The column <code>mini_shop_471752.b2c_presale.id</code>. 活动id
      */
-    public final TableField<PresaleRecord, Integer> ID = createField("id", org.jooq.impl.SQLDataType.INTEGER.nullable(false).identity(true), this, "活动ID");
+    public final TableField<PresaleRecord, Integer> ID = createField("id", org.jooq.impl.SQLDataType.INTEGER.nullable(false).identity(true), this, "活动id");
 
     /**
      * The column <code>mini_shop_471752.b2c_presale.presale_type</code>. 预售类型1：全款
@@ -75,7 +75,7 @@ public class Presale extends TableImpl<PresaleRecord> {
     /**
      * The column <code>mini_shop_471752.b2c_presale.pre_pay_step</code>. 定金期数1|2
      */
-    public final TableField<PresaleRecord, Byte> PRE_PAY_STEP = createField("pre_pay_step", org.jooq.impl.SQLDataType.TINYINT.defaultValue(org.jooq.impl.DSL.inline("1", org.jooq.impl.SQLDataType.TINYINT)), this, "定金期数1|2");
+    public final TableField<PresaleRecord, Byte> PRE_PAY_STEP = createField("pre_pay_step", org.jooq.impl.SQLDataType.TINYINT.nullable(false).defaultValue(org.jooq.impl.DSL.inline("1", org.jooq.impl.SQLDataType.TINYINT)), this, "定金期数1|2");
 
     /**
      * The column <code>mini_shop_471752.b2c_presale.pre_start_time</code>. 定金一期支付开始时间
@@ -90,12 +90,12 @@ public class Presale extends TableImpl<PresaleRecord> {
     /**
      * The column <code>mini_shop_471752.b2c_presale.pre_start_time_2</code>. 定金二期支付开始时间
      */
-    public final TableField<PresaleRecord, Timestamp> PRE_START_TIME_2 = createField("pre_start_time_2", org.jooq.impl.SQLDataType.TIMESTAMP.defaultValue(org.jooq.impl.DSL.inline("0000-00-00 00:00:00", org.jooq.impl.SQLDataType.TIMESTAMP)), this, "定金二期支付开始时间");
+    public final TableField<PresaleRecord, Timestamp> PRE_START_TIME_2 = createField("pre_start_time_2", org.jooq.impl.SQLDataType.TIMESTAMP.nullable(false).defaultValue(org.jooq.impl.DSL.inline("0000-00-00 00:00:00", org.jooq.impl.SQLDataType.TIMESTAMP)), this, "定金二期支付开始时间");
 
     /**
      * The column <code>mini_shop_471752.b2c_presale.pre_end_time_2</code>. 定金二期支付结束时间
      */
-    public final TableField<PresaleRecord, Timestamp> PRE_END_TIME_2 = createField("pre_end_time_2", org.jooq.impl.SQLDataType.TIMESTAMP.defaultValue(org.jooq.impl.DSL.inline("0000-00-00 00:00:00", org.jooq.impl.SQLDataType.TIMESTAMP)), this, "定金二期支付结束时间");
+    public final TableField<PresaleRecord, Timestamp> PRE_END_TIME_2 = createField("pre_end_time_2", org.jooq.impl.SQLDataType.TIMESTAMP.nullable(false).defaultValue(org.jooq.impl.DSL.inline("0000-00-00 00:00:00", org.jooq.impl.SQLDataType.TIMESTAMP)), this, "定金二期支付结束时间");
 
     /**
      * The column <code>mini_shop_471752.b2c_presale.start_time</code>. 尾款支付开始时间
@@ -108,69 +108,69 @@ public class Presale extends TableImpl<PresaleRecord> {
     public final TableField<PresaleRecord, Timestamp> END_TIME = createField("end_time", org.jooq.impl.SQLDataType.TIMESTAMP.nullable(false).defaultValue(org.jooq.impl.DSL.inline("0000-00-00 00:00:00", org.jooq.impl.SQLDataType.TIMESTAMP)), this, "尾款支付结束时间");
 
     /**
-     * The column <code>mini_shop_471752.b2c_presale.goods_id</code>. 商品ID
+     * The column <code>mini_shop_471752.b2c_presale.goods_id</code>. 商品id
      */
-    public final TableField<PresaleRecord, Integer> GOODS_ID = createField("goods_id", org.jooq.impl.SQLDataType.INTEGER.defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.INTEGER)), this, "商品ID");
+    public final TableField<PresaleRecord, Integer> GOODS_ID = createField("goods_id", org.jooq.impl.SQLDataType.INTEGER.nullable(false).defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.INTEGER)), this, "商品id");
 
     /**
      * The column <code>mini_shop_471752.b2c_presale.deliver_type</code>. 发货时间模式1:deliver_time;2:deliver_days
      */
-    public final TableField<PresaleRecord, Byte> DELIVER_TYPE = createField("deliver_type", org.jooq.impl.SQLDataType.TINYINT.defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.TINYINT)), this, "发货时间模式1:deliver_time;2:deliver_days");
+    public final TableField<PresaleRecord, Byte> DELIVER_TYPE = createField("deliver_type", org.jooq.impl.SQLDataType.TINYINT.nullable(false).defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.TINYINT)), this, "发货时间模式1:deliver_time;2:deliver_days");
 
     /**
      * The column <code>mini_shop_471752.b2c_presale.deliver_time</code>. 发货日期
      */
-    public final TableField<PresaleRecord, Timestamp> DELIVER_TIME = createField("deliver_time", org.jooq.impl.SQLDataType.TIMESTAMP.defaultValue(org.jooq.impl.DSL.inline("0000-00-00 00:00:00", org.jooq.impl.SQLDataType.TIMESTAMP)), this, "发货日期");
+    public final TableField<PresaleRecord, Timestamp> DELIVER_TIME = createField("deliver_time", org.jooq.impl.SQLDataType.TIMESTAMP.nullable(false).defaultValue(org.jooq.impl.DSL.inline("0000-00-00 00:00:00", org.jooq.impl.SQLDataType.TIMESTAMP)), this, "发货日期");
 
     /**
      * The column <code>mini_shop_471752.b2c_presale.deliver_days</code>. 下单后几日发货
      */
-    public final TableField<PresaleRecord, Integer> DELIVER_DAYS = createField("deliver_days", org.jooq.impl.SQLDataType.INTEGER.defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.INTEGER)), this, "下单后几日发货");
+    public final TableField<PresaleRecord, Integer> DELIVER_DAYS = createField("deliver_days", org.jooq.impl.SQLDataType.INTEGER.nullable(false).defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.INTEGER)), this, "下单后几日发货");
 
     /**
      * The column <code>mini_shop_471752.b2c_presale.discount_type</code>. 优惠策略1:可叠加0:不可叠加
      */
-    public final TableField<PresaleRecord, Byte> DISCOUNT_TYPE = createField("discount_type", org.jooq.impl.SQLDataType.TINYINT.defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.TINYINT)), this, "优惠策略1:可叠加0:不可叠加");
+    public final TableField<PresaleRecord, Byte> DISCOUNT_TYPE = createField("discount_type", org.jooq.impl.SQLDataType.TINYINT.nullable(false).defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.TINYINT)), this, "优惠策略1:可叠加0:不可叠加");
 
     /**
      * The column <code>mini_shop_471752.b2c_presale.return_type</code>. 退定金模式1:自动退定金0:不退定金
      */
-    public final TableField<PresaleRecord, Byte> RETURN_TYPE = createField("return_type", org.jooq.impl.SQLDataType.TINYINT.defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.TINYINT)), this, "退定金模式1:自动退定金0:不退定金");
+    public final TableField<PresaleRecord, Byte> RETURN_TYPE = createField("return_type", org.jooq.impl.SQLDataType.TINYINT.nullable(false).defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.TINYINT)), this, "退定金模式1:自动退定金0:不退定金");
 
     /**
      * The column <code>mini_shop_471752.b2c_presale.show_sale_number</code>. 是否显示销量1:显示
      */
-    public final TableField<PresaleRecord, Integer> SHOW_SALE_NUMBER = createField("show_sale_number", org.jooq.impl.SQLDataType.INTEGER.defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.INTEGER)), this, "是否显示销量1:显示");
+    public final TableField<PresaleRecord, Integer> SHOW_SALE_NUMBER = createField("show_sale_number", org.jooq.impl.SQLDataType.INTEGER.nullable(false).defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.INTEGER)), this, "是否显示销量1:显示");
 
     /**
      * The column <code>mini_shop_471752.b2c_presale.buy_type</code>. 是否支持原价1:支持
      */
-    public final TableField<PresaleRecord, Byte> BUY_TYPE = createField("buy_type", org.jooq.impl.SQLDataType.TINYINT.defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.TINYINT)), this, "是否支持原价1:支持");
+    public final TableField<PresaleRecord, Byte> BUY_TYPE = createField("buy_type", org.jooq.impl.SQLDataType.TINYINT.nullable(false).defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.TINYINT)), this, "是否支持原价1:支持");
 
     /**
      * The column <code>mini_shop_471752.b2c_presale.buy_number</code>. 单用户最多可购买数量
      */
-    public final TableField<PresaleRecord, Integer> BUY_NUMBER = createField("buy_number", org.jooq.impl.SQLDataType.INTEGER.defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.INTEGER)), this, "单用户最多可购买数量");
+    public final TableField<PresaleRecord, Integer> BUY_NUMBER = createField("buy_number", org.jooq.impl.SQLDataType.INTEGER.nullable(false).defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.INTEGER)), this, "单用户最多可购买数量");
 
     /**
      * The column <code>mini_shop_471752.b2c_presale.status</code>. 状态1:启用0:停用
      */
-    public final TableField<PresaleRecord, Byte> STATUS = createField("status", org.jooq.impl.SQLDataType.TINYINT.defaultValue(org.jooq.impl.DSL.inline("1", org.jooq.impl.SQLDataType.TINYINT)), this, "状态1:启用0:停用");
+    public final TableField<PresaleRecord, Byte> STATUS = createField("status", org.jooq.impl.SQLDataType.TINYINT.nullable(false).defaultValue(org.jooq.impl.DSL.inline("1", org.jooq.impl.SQLDataType.TINYINT)), this, "状态1:启用0:停用");
 
     /**
      * The column <code>mini_shop_471752.b2c_presale.del_flag</code>. 删除状态1:删除
      */
-    public final TableField<PresaleRecord, Byte> DEL_FLAG = createField("del_flag", org.jooq.impl.SQLDataType.TINYINT.defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.TINYINT)), this, "删除状态1:删除");
+    public final TableField<PresaleRecord, Byte> DEL_FLAG = createField("del_flag", org.jooq.impl.SQLDataType.TINYINT.nullable(false).defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.TINYINT)), this, "删除状态1:删除");
 
     /**
-     * The column <code>mini_shop_471752.b2c_presale.add_time</code>.
+     * The column <code>mini_shop_471752.b2c_presale.create_time</code>.
      */
-    public final TableField<PresaleRecord, Timestamp> ADD_TIME = createField("add_time", org.jooq.impl.SQLDataType.TIMESTAMP.defaultValue(org.jooq.impl.DSL.inline("0000-00-00 00:00:00", org.jooq.impl.SQLDataType.TIMESTAMP)), this, "");
+    public final TableField<PresaleRecord, Timestamp> CREATE_TIME = createField("create_time", org.jooq.impl.SQLDataType.TIMESTAMP.nullable(false).defaultValue(org.jooq.impl.DSL.field("CURRENT_TIMESTAMP", org.jooq.impl.SQLDataType.TIMESTAMP)), this, "");
 
     /**
-     * The column <code>mini_shop_471752.b2c_presale.update_time</code>.
+     * The column <code>mini_shop_471752.b2c_presale.update_time</code>. 最后修改时间
      */
-    public final TableField<PresaleRecord, Timestamp> UPDATE_TIME = createField("update_time", org.jooq.impl.SQLDataType.TIMESTAMP.nullable(false).defaultValue(org.jooq.impl.DSL.field("CURRENT_TIMESTAMP", org.jooq.impl.SQLDataType.TIMESTAMP)), this, "");
+    public final TableField<PresaleRecord, Timestamp> UPDATE_TIME = createField("update_time", org.jooq.impl.SQLDataType.TIMESTAMP.nullable(false).defaultValue(org.jooq.impl.DSL.field("CURRENT_TIMESTAMP", org.jooq.impl.SQLDataType.TIMESTAMP)), this, "最后修改时间");
 
     /**
      * The column <code>mini_shop_471752.b2c_presale.share_config</code>. 分享设置

@@ -11,6 +11,7 @@ import com.vpu.mp.db.shop.tables.records.GoodsBakRecord;
 
 import java.math.BigDecimal;
 import java.sql.Date;
+import java.sql.Timestamp;
 import java.util.Arrays;
 import java.util.List;
 
@@ -43,7 +44,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class GoodsBak extends TableImpl<GoodsBakRecord> {
 
-    private static final long serialVersionUID = -1448328177;
+    private static final long serialVersionUID = 479100741;
 
     /**
      * The reference instance of <code>mini_shop_471752.b2c_goods_bak</code>
@@ -74,9 +75,9 @@ public class GoodsBak extends TableImpl<GoodsBakRecord> {
     public final TableField<GoodsBakRecord, Integer> GOODS_ID = createField("goods_id", org.jooq.impl.SQLDataType.INTEGER.nullable(false), this, "");
 
     /**
-     * The column <code>mini_shop_471752.b2c_goods_bak.shop_id</code>. 店铺ID
+     * The column <code>mini_shop_471752.b2c_goods_bak.shop_id</code>. 店铺id
      */
-    public final TableField<GoodsBakRecord, Integer> SHOP_ID = createField("shop_id", org.jooq.impl.SQLDataType.INTEGER.defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.INTEGER)), this, "店铺ID");
+    public final TableField<GoodsBakRecord, Integer> SHOP_ID = createField("shop_id", org.jooq.impl.SQLDataType.INTEGER.nullable(false).defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.INTEGER)), this, "店铺id");
 
     /**
      * The column <code>mini_shop_471752.b2c_goods_bak.cat_id</code>.
@@ -86,12 +87,12 @@ public class GoodsBak extends TableImpl<GoodsBakRecord> {
     /**
      * The column <code>mini_shop_471752.b2c_goods_bak.sort_id</code>.
      */
-    public final TableField<GoodsBakRecord, Integer> SORT_ID = createField("sort_id", org.jooq.impl.SQLDataType.INTEGER.defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.INTEGER)), this, "");
+    public final TableField<GoodsBakRecord, Integer> SORT_ID = createField("sort_id", org.jooq.impl.SQLDataType.INTEGER.nullable(false).defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.INTEGER)), this, "");
 
     /**
      * The column <code>mini_shop_471752.b2c_goods_bak.market_price</code>.
      */
-    public final TableField<GoodsBakRecord, BigDecimal> MARKET_PRICE = createField("market_price", org.jooq.impl.SQLDataType.DECIMAL(10, 2).defaultValue(org.jooq.impl.DSL.inline("0.00", org.jooq.impl.SQLDataType.DECIMAL)), this, "");
+    public final TableField<GoodsBakRecord, BigDecimal> MARKET_PRICE = createField("market_price", org.jooq.impl.SQLDataType.DECIMAL(10, 2).nullable(false).defaultValue(org.jooq.impl.DSL.inline("0.00", org.jooq.impl.SQLDataType.DECIMAL)), this, "");
 
     /**
      * The column <code>mini_shop_471752.b2c_goods_bak.shop_price</code>.
@@ -106,12 +107,22 @@ public class GoodsBak extends TableImpl<GoodsBakRecord> {
     /**
      * The column <code>mini_shop_471752.b2c_goods_bak.is_on_sale</code>. 是否在售，1在售，0下架
      */
-    public final TableField<GoodsBakRecord, Byte> IS_ON_SALE = createField("is_on_sale", org.jooq.impl.SQLDataType.TINYINT.defaultValue(org.jooq.impl.DSL.inline("1", org.jooq.impl.SQLDataType.TINYINT)), this, "是否在售，1在售，0下架");
+    public final TableField<GoodsBakRecord, Byte> IS_ON_SALE = createField("is_on_sale", org.jooq.impl.SQLDataType.TINYINT.nullable(false).defaultValue(org.jooq.impl.DSL.inline("1", org.jooq.impl.SQLDataType.TINYINT)), this, "是否在售，1在售，0下架");
 
     /**
      * The column <code>mini_shop_471752.b2c_goods_bak.goods_type</code>. 商品类型，0普通商品，1拼团商品，2分销，3砍价商品 4积分商品 5秒杀商品
      */
-    public final TableField<GoodsBakRecord, Byte> GOODS_TYPE = createField("goods_type", org.jooq.impl.SQLDataType.TINYINT.defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.TINYINT)), this, "商品类型，0普通商品，1拼团商品，2分销，3砍价商品 4积分商品 5秒杀商品");
+    public final TableField<GoodsBakRecord, Byte> GOODS_TYPE = createField("goods_type", org.jooq.impl.SQLDataType.TINYINT.nullable(false).defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.TINYINT)), this, "商品类型，0普通商品，1拼团商品，2分销，3砍价商品 4积分商品 5秒杀商品");
+
+    /**
+     * The column <code>mini_shop_471752.b2c_goods_bak.create_time</code>.
+     */
+    public final TableField<GoodsBakRecord, Timestamp> CREATE_TIME = createField("create_time", org.jooq.impl.SQLDataType.TIMESTAMP.nullable(false).defaultValue(org.jooq.impl.DSL.field("CURRENT_TIMESTAMP", org.jooq.impl.SQLDataType.TIMESTAMP)), this, "");
+
+    /**
+     * The column <code>mini_shop_471752.b2c_goods_bak.update_time</code>. 最后修改时间
+     */
+    public final TableField<GoodsBakRecord, Timestamp> UPDATE_TIME = createField("update_time", org.jooq.impl.SQLDataType.TIMESTAMP.nullable(false).defaultValue(org.jooq.impl.DSL.field("CURRENT_TIMESTAMP", org.jooq.impl.SQLDataType.TIMESTAMP)), this, "最后修改时间");
 
     /**
      * Create a <code>mini_shop_471752.b2c_goods_bak</code> table reference

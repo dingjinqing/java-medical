@@ -27,7 +27,7 @@ import org.jooq.impl.UpdatableRecordImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class StoreRecord extends UpdatableRecordImpl<StoreRecord> {
 
-    private static final long serialVersionUID = 504486665;
+    private static final long serialVersionUID = -24484175;
 
     /**
      * Setter for <code>mini_shop_471752.b2c_store.store_id</code>.
@@ -282,44 +282,44 @@ public class StoreRecord extends UpdatableRecordImpl<StoreRecord> {
     }
 
     /**
-     * Setter for <code>mini_shop_471752.b2c_store.pos_shop_id</code>. pos店铺ID
+     * Setter for <code>mini_shop_471752.b2c_store.pos_shop_id</code>. pos店铺id
      */
     public void setPosShopId(Integer value) {
         set(18, value);
     }
 
     /**
-     * Getter for <code>mini_shop_471752.b2c_store.pos_shop_id</code>. pos店铺ID
+     * Getter for <code>mini_shop_471752.b2c_store.pos_shop_id</code>. pos店铺id
      */
     public Integer getPosShopId() {
         return (Integer) get(18);
     }
 
     /**
-     * Setter for <code>mini_shop_471752.b2c_store.add_time</code>. 添加时间
+     * Setter for <code>mini_shop_471752.b2c_store.create_time</code>.
      */
-    public void setAddTime(Timestamp value) {
+    public void setCreateTime(Timestamp value) {
         set(19, value);
     }
 
     /**
-     * Getter for <code>mini_shop_471752.b2c_store.add_time</code>. 添加时间
+     * Getter for <code>mini_shop_471752.b2c_store.create_time</code>.
      */
-    public Timestamp getAddTime() {
+    public Timestamp getCreateTime() {
         return (Timestamp) get(19);
     }
 
     /**
-     * Setter for <code>mini_shop_471752.b2c_store.up_time</code>. 更新时间
+     * Setter for <code>mini_shop_471752.b2c_store.update_time</code>. 最后修改时间
      */
-    public void setUpTime(Timestamp value) {
+    public void setUpdateTime(Timestamp value) {
         set(20, value);
     }
 
     /**
-     * Getter for <code>mini_shop_471752.b2c_store.up_time</code>. 更新时间
+     * Getter for <code>mini_shop_471752.b2c_store.update_time</code>. 最后修改时间
      */
-    public Timestamp getUpTime() {
+    public Timestamp getUpdateTime() {
         return (Timestamp) get(20);
     }
 
@@ -338,16 +338,16 @@ public class StoreRecord extends UpdatableRecordImpl<StoreRecord> {
     }
 
     /**
-     * Setter for <code>mini_shop_471752.b2c_store.is_delete</code>. 1为删除状态
+     * Setter for <code>mini_shop_471752.b2c_store.del_flag</code>. 1为删除状态
      */
-    public void setIsDelete(Byte value) {
+    public void setDelFlag(Byte value) {
         set(22, value);
     }
 
     /**
-     * Getter for <code>mini_shop_471752.b2c_store.is_delete</code>. 1为删除状态
+     * Getter for <code>mini_shop_471752.b2c_store.del_flag</code>. 1为删除状态
      */
-    public Byte getIsDelete() {
+    public Byte getDelFlag() {
         return (Byte) get(22);
     }
 
@@ -377,7 +377,7 @@ public class StoreRecord extends UpdatableRecordImpl<StoreRecord> {
     /**
      * Create a detached, initialised StoreRecord
      */
-    public StoreRecord(Integer storeId, String storeName, String manager, String mobile, String storeImgs, Byte businessState, Byte businessType, String openingTime, String closeTime, String provinceCode, String cityCode, String districtCode, String latitude, String longitude, String address, Integer group, String service, String content, Integer posShopId, Timestamp addTime, Timestamp upTime, Short autoPick, Byte isDelete) {
+    public StoreRecord(Integer storeId, String storeName, String manager, String mobile, String storeImgs, Byte businessState, Byte businessType, String openingTime, String closeTime, String provinceCode, String cityCode, String districtCode, String latitude, String longitude, String address, Integer group, String service, String content, Integer posShopId, Timestamp createTime, Timestamp updateTime, Short autoPick, Byte delFlag) {
         super(Store.STORE);
 
         set(0, storeId);
@@ -399,9 +399,9 @@ public class StoreRecord extends UpdatableRecordImpl<StoreRecord> {
         set(16, service);
         set(17, content);
         set(18, posShopId);
-        set(19, addTime);
-        set(20, upTime);
+        set(19, createTime);
+        set(20, updateTime);
         set(21, autoPick);
-        set(22, isDelete);
+        set(22, delFlag);
     }
 }

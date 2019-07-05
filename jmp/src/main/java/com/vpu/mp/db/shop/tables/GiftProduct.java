@@ -9,6 +9,7 @@ import com.vpu.mp.db.shop.Keys;
 import com.vpu.mp.db.shop.MiniShop_471752;
 import com.vpu.mp.db.shop.tables.records.GiftProductRecord;
 
+import java.sql.Timestamp;
 import java.util.Arrays;
 import java.util.List;
 
@@ -41,7 +42,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class GiftProduct extends TableImpl<GiftProductRecord> {
 
-    private static final long serialVersionUID = -901719004;
+    private static final long serialVersionUID = -1635418859;
 
     /**
      * The reference instance of <code>mini_shop_471752.b2c_gift_product</code>
@@ -62,19 +63,29 @@ public class GiftProduct extends TableImpl<GiftProductRecord> {
     public final TableField<GiftProductRecord, Integer> ID = createField("id", org.jooq.impl.SQLDataType.INTEGER.nullable(false).identity(true), this, "");
 
     /**
-     * The column <code>mini_shop_471752.b2c_gift_product.gift_id</code>. 赠品活动ID
+     * The column <code>mini_shop_471752.b2c_gift_product.gift_id</code>. 赠品活动id
      */
-    public final TableField<GiftProductRecord, Integer> GIFT_ID = createField("gift_id", org.jooq.impl.SQLDataType.INTEGER.nullable(false), this, "赠品活动ID");
+    public final TableField<GiftProductRecord, Integer> GIFT_ID = createField("gift_id", org.jooq.impl.SQLDataType.INTEGER.nullable(false), this, "赠品活动id");
 
     /**
-     * The column <code>mini_shop_471752.b2c_gift_product.product_id</code>. 规格ID
+     * The column <code>mini_shop_471752.b2c_gift_product.product_id</code>. 规格id
      */
-    public final TableField<GiftProductRecord, Integer> PRODUCT_ID = createField("product_id", org.jooq.impl.SQLDataType.INTEGER.nullable(false), this, "规格ID");
+    public final TableField<GiftProductRecord, Integer> PRODUCT_ID = createField("product_id", org.jooq.impl.SQLDataType.INTEGER.nullable(false), this, "规格id");
 
     /**
      * The column <code>mini_shop_471752.b2c_gift_product.product_number</code>. 库存
      */
     public final TableField<GiftProductRecord, Integer> PRODUCT_NUMBER = createField("product_number", org.jooq.impl.SQLDataType.INTEGER.nullable(false), this, "库存");
+
+    /**
+     * The column <code>mini_shop_471752.b2c_gift_product.create_time</code>.
+     */
+    public final TableField<GiftProductRecord, Timestamp> CREATE_TIME = createField("create_time", org.jooq.impl.SQLDataType.TIMESTAMP.nullable(false).defaultValue(org.jooq.impl.DSL.field("CURRENT_TIMESTAMP", org.jooq.impl.SQLDataType.TIMESTAMP)), this, "");
+
+    /**
+     * The column <code>mini_shop_471752.b2c_gift_product.update_time</code>. 最后修改时间
+     */
+    public final TableField<GiftProductRecord, Timestamp> UPDATE_TIME = createField("update_time", org.jooq.impl.SQLDataType.TIMESTAMP.nullable(false).defaultValue(org.jooq.impl.DSL.field("CURRENT_TIMESTAMP", org.jooq.impl.SQLDataType.TIMESTAMP)), this, "最后修改时间");
 
     /**
      * Create a <code>mini_shop_471752.b2c_gift_product</code> table reference

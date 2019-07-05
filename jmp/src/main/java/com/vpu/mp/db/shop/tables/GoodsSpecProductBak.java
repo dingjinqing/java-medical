@@ -11,6 +11,7 @@ import com.vpu.mp.db.shop.tables.records.GoodsSpecProductBakRecord;
 
 import java.math.BigDecimal;
 import java.sql.Date;
+import java.sql.Timestamp;
 import java.util.Arrays;
 import java.util.List;
 
@@ -43,7 +44,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class GoodsSpecProductBak extends TableImpl<GoodsSpecProductBakRecord> {
 
-    private static final long serialVersionUID = 1949926543;
+    private static final long serialVersionUID = -1048446836;
 
     /**
      * The reference instance of <code>mini_shop_471752.b2c_goods_spec_product_bak</code>
@@ -97,6 +98,16 @@ public class GoodsSpecProductBak extends TableImpl<GoodsSpecProductBakRecord> {
      * The column <code>mini_shop_471752.b2c_goods_spec_product_bak.prd_number</code>. 当前规格组合产品库存
      */
     public final TableField<GoodsSpecProductBakRecord, Integer> PRD_NUMBER = createField("prd_number", org.jooq.impl.SQLDataType.INTEGER.nullable(false).defaultValue(org.jooq.impl.DSL.inline("1", org.jooq.impl.SQLDataType.INTEGER)), this, "当前规格组合产品库存");
+
+    /**
+     * The column <code>mini_shop_471752.b2c_goods_spec_product_bak.create_time</code>.
+     */
+    public final TableField<GoodsSpecProductBakRecord, Timestamp> CREATE_TIME = createField("create_time", org.jooq.impl.SQLDataType.TIMESTAMP.nullable(false).defaultValue(org.jooq.impl.DSL.field("CURRENT_TIMESTAMP", org.jooq.impl.SQLDataType.TIMESTAMP)), this, "");
+
+    /**
+     * The column <code>mini_shop_471752.b2c_goods_spec_product_bak.update_time</code>. 最后修改时间
+     */
+    public final TableField<GoodsSpecProductBakRecord, Timestamp> UPDATE_TIME = createField("update_time", org.jooq.impl.SQLDataType.TIMESTAMP.nullable(false).defaultValue(org.jooq.impl.DSL.field("CURRENT_TIMESTAMP", org.jooq.impl.SQLDataType.TIMESTAMP)), this, "最后修改时间");
 
     /**
      * Create a <code>mini_shop_471752.b2c_goods_spec_product_bak</code> table reference

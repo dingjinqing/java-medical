@@ -31,7 +31,7 @@ import org.jooq.impl.UpdatableRecordImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class BargainRecord extends UpdatableRecordImpl<BargainRecord> implements Record19<Integer, String, Integer, Timestamp, Timestamp, Integer, BigDecimal, Double, Double, Integer, Integer, String, Byte, Byte, Timestamp, Timestamp, Timestamp, String, String> {
 
-    private static final long serialVersionUID = -940702920;
+    private static final long serialVersionUID = -206142496;
 
     /**
      * Setter for <code>mini_shop_471752.b2c_bargain.id</code>.
@@ -62,14 +62,14 @@ public class BargainRecord extends UpdatableRecordImpl<BargainRecord> implements
     }
 
     /**
-     * Setter for <code>mini_shop_471752.b2c_bargain.goods_id</code>. 商品ID
+     * Setter for <code>mini_shop_471752.b2c_bargain.goods_id</code>. 商品id
      */
     public void setGoodsId(Integer value) {
         set(2, value);
     }
 
     /**
-     * Getter for <code>mini_shop_471752.b2c_bargain.goods_id</code>. 商品ID
+     * Getter for <code>mini_shop_471752.b2c_bargain.goods_id</code>. 商品id
      */
     public Integer getGoodsId() {
         return (Integer) get(2);
@@ -230,28 +230,28 @@ public class BargainRecord extends UpdatableRecordImpl<BargainRecord> implements
     }
 
     /**
-     * Setter for <code>mini_shop_471752.b2c_bargain.add_time</code>.
+     * Setter for <code>mini_shop_471752.b2c_bargain.create_time</code>.
      */
-    public void setAddTime(Timestamp value) {
+    public void setCreateTime(Timestamp value) {
         set(14, value);
     }
 
     /**
-     * Getter for <code>mini_shop_471752.b2c_bargain.add_time</code>.
+     * Getter for <code>mini_shop_471752.b2c_bargain.create_time</code>.
      */
-    public Timestamp getAddTime() {
+    public Timestamp getCreateTime() {
         return (Timestamp) get(14);
     }
 
     /**
-     * Setter for <code>mini_shop_471752.b2c_bargain.update_time</code>.
+     * Setter for <code>mini_shop_471752.b2c_bargain.update_time</code>. 最后修改时间
      */
     public void setUpdateTime(Timestamp value) {
         set(15, value);
     }
 
     /**
-     * Getter for <code>mini_shop_471752.b2c_bargain.update_time</code>.
+     * Getter for <code>mini_shop_471752.b2c_bargain.update_time</code>. 最后修改时间
      */
     public Timestamp getUpdateTime() {
         return (Timestamp) get(15);
@@ -448,7 +448,7 @@ public class BargainRecord extends UpdatableRecordImpl<BargainRecord> implements
      */
     @Override
     public Field<Timestamp> field15() {
-        return Bargain.BARGAIN.ADD_TIME;
+        return Bargain.BARGAIN.CREATE_TIME;
     }
 
     /**
@@ -600,7 +600,7 @@ public class BargainRecord extends UpdatableRecordImpl<BargainRecord> implements
      */
     @Override
     public Timestamp component15() {
-        return getAddTime();
+        return getCreateTime();
     }
 
     /**
@@ -752,7 +752,7 @@ public class BargainRecord extends UpdatableRecordImpl<BargainRecord> implements
      */
     @Override
     public Timestamp value15() {
-        return getAddTime();
+        return getCreateTime();
     }
 
     /**
@@ -918,7 +918,7 @@ public class BargainRecord extends UpdatableRecordImpl<BargainRecord> implements
      */
     @Override
     public BargainRecord value15(Timestamp value) {
-        setAddTime(value);
+        setCreateTime(value);
         return this;
     }
 
@@ -999,7 +999,7 @@ public class BargainRecord extends UpdatableRecordImpl<BargainRecord> implements
     /**
      * Create a detached, initialised BargainRecord
      */
-    public BargainRecord(Integer id, String bargainName, Integer goodsId, Timestamp startTime, Timestamp endTime, Integer expectationNumber, BigDecimal expectationPrice, Double bargainMin, Double bargainMax, Integer stock, Integer saleNum, String mrkingVoucherId, Byte status, Byte delFlag, Timestamp addTime, Timestamp updateTime, Timestamp delTime, String rewardCouponId, String shareConfig) {
+    public BargainRecord(Integer id, String bargainName, Integer goodsId, Timestamp startTime, Timestamp endTime, Integer expectationNumber, BigDecimal expectationPrice, Double bargainMin, Double bargainMax, Integer stock, Integer saleNum, String mrkingVoucherId, Byte status, Byte delFlag, Timestamp createTime, Timestamp updateTime, Timestamp delTime, String rewardCouponId, String shareConfig) {
         super(Bargain.BARGAIN);
 
         set(0, id);
@@ -1016,7 +1016,7 @@ public class BargainRecord extends UpdatableRecordImpl<BargainRecord> implements
         set(11, mrkingVoucherId);
         set(12, status);
         set(13, delFlag);
-        set(14, addTime);
+        set(14, createTime);
         set(15, updateTime);
         set(16, delTime);
         set(17, rewardCouponId);

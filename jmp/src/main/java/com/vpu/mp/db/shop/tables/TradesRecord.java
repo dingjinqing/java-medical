@@ -43,7 +43,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class TradesRecord extends TableImpl<TradesRecordRecord> {
 
-    private static final long serialVersionUID = 778358866;
+    private static final long serialVersionUID = -856503435;
 
     /**
      * The reference instance of <code>mini_shop_471752.b2c_trades_record</code>
@@ -59,24 +59,24 @@ public class TradesRecord extends TableImpl<TradesRecordRecord> {
     }
 
     /**
-     * The column <code>mini_shop_471752.b2c_trades_record.id</code>. 交易记录ID
+     * The column <code>mini_shop_471752.b2c_trades_record.id</code>. 交易记录id
      */
-    public final TableField<TradesRecordRecord, Integer> ID = createField("id", org.jooq.impl.SQLDataType.INTEGER.nullable(false).identity(true), this, "交易记录ID");
+    public final TableField<TradesRecordRecord, Integer> ID = createField("id", org.jooq.impl.SQLDataType.INTEGER.nullable(false).identity(true), this, "交易记录id");
 
     /**
      * The column <code>mini_shop_471752.b2c_trades_record.trade_time</code>. 交易时间
      */
-    public final TableField<TradesRecordRecord, Timestamp> TRADE_TIME = createField("trade_time", org.jooq.impl.SQLDataType.TIMESTAMP, this, "交易时间");
+    public final TableField<TradesRecordRecord, Timestamp> TRADE_TIME = createField("trade_time", org.jooq.impl.SQLDataType.TIMESTAMP.nullable(false).defaultValue(org.jooq.impl.DSL.inline("0000-00-00 00:00:00", org.jooq.impl.SQLDataType.TIMESTAMP)), this, "交易时间");
 
     /**
      * The column <code>mini_shop_471752.b2c_trades_record.trade_num</code>. 交易额
      */
-    public final TableField<TradesRecordRecord, BigDecimal> TRADE_NUM = createField("trade_num", org.jooq.impl.SQLDataType.DECIMAL(10, 2).defaultValue(org.jooq.impl.DSL.inline("0.00", org.jooq.impl.SQLDataType.DECIMAL)), this, "交易额");
+    public final TableField<TradesRecordRecord, BigDecimal> TRADE_NUM = createField("trade_num", org.jooq.impl.SQLDataType.DECIMAL(10, 2).nullable(false).defaultValue(org.jooq.impl.DSL.inline("0.00", org.jooq.impl.SQLDataType.DECIMAL)), this, "交易额");
 
     /**
-     * The column <code>mini_shop_471752.b2c_trades_record.user_id</code>. 交易用户ID
+     * The column <code>mini_shop_471752.b2c_trades_record.user_id</code>. 交易用户id
      */
-    public final TableField<TradesRecordRecord, Integer> USER_ID = createField("user_id", org.jooq.impl.SQLDataType.INTEGER.nullable(false).defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.INTEGER)), this, "交易用户ID");
+    public final TableField<TradesRecordRecord, Integer> USER_ID = createField("user_id", org.jooq.impl.SQLDataType.INTEGER.nullable(false).defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.INTEGER)), this, "交易用户id");
 
     /**
      * The column <code>mini_shop_471752.b2c_trades_record.trade_content</code>. 交易内容：0：现金，1：积分
@@ -102,6 +102,16 @@ public class TradesRecord extends TableImpl<TradesRecordRecord> {
      * The column <code>mini_shop_471752.b2c_trades_record.trade_sn</code>. 交易单号
      */
     public final TableField<TradesRecordRecord, String> TRADE_SN = createField("trade_sn", org.jooq.impl.SQLDataType.VARCHAR(20).nullable(false).defaultValue(org.jooq.impl.DSL.inline("", org.jooq.impl.SQLDataType.VARCHAR)), this, "交易单号");
+
+    /**
+     * The column <code>mini_shop_471752.b2c_trades_record.create_time</code>.
+     */
+    public final TableField<TradesRecordRecord, Timestamp> CREATE_TIME = createField("create_time", org.jooq.impl.SQLDataType.TIMESTAMP.nullable(false).defaultValue(org.jooq.impl.DSL.field("CURRENT_TIMESTAMP", org.jooq.impl.SQLDataType.TIMESTAMP)), this, "");
+
+    /**
+     * The column <code>mini_shop_471752.b2c_trades_record.update_time</code>. 最后修改时间
+     */
+    public final TableField<TradesRecordRecord, Timestamp> UPDATE_TIME = createField("update_time", org.jooq.impl.SQLDataType.TIMESTAMP.nullable(false).defaultValue(org.jooq.impl.DSL.field("CURRENT_TIMESTAMP", org.jooq.impl.SQLDataType.TIMESTAMP)), this, "最后修改时间");
 
     /**
      * Create a <code>mini_shop_471752.b2c_trades_record</code> table reference

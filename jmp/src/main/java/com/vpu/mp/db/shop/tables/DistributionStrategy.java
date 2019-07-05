@@ -42,7 +42,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class DistributionStrategy extends TableImpl<DistributionStrategyRecord> {
 
-    private static final long serialVersionUID = 1195980200;
+    private static final long serialVersionUID = 1069201293;
 
     /**
      * The reference instance of <code>mini_shop_471752.b2c_distribution_strategy</code>
@@ -85,7 +85,7 @@ public class DistributionStrategy extends TableImpl<DistributionStrategyRecord> 
     /**
      * The column <code>mini_shop_471752.b2c_distribution_strategy.self_purchase</code>. 自购返利
      */
-    public final TableField<DistributionStrategyRecord, Byte> SELF_PURCHASE = createField("self_purchase", org.jooq.impl.SQLDataType.TINYINT.defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.TINYINT)), this, "自购返利");
+    public final TableField<DistributionStrategyRecord, Byte> SELF_PURCHASE = createField("self_purchase", org.jooq.impl.SQLDataType.TINYINT.nullable(false).defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.TINYINT)), this, "自购返利");
 
     /**
      * The column <code>mini_shop_471752.b2c_distribution_strategy.cost_protection</code>. 成本保护
@@ -105,7 +105,7 @@ public class DistributionStrategy extends TableImpl<DistributionStrategyRecord> 
     /**
      * The column <code>mini_shop_471752.b2c_distribution_strategy.fanli_ratio_2</code>. 二级返利比例（%的系数）
      */
-    public final TableField<DistributionStrategyRecord, Double> FANLI_RATIO_2 = createField("fanli_ratio_2", org.jooq.impl.SQLDataType.FLOAT.defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.FLOAT)), this, "二级返利比例（%的系数）");
+    public final TableField<DistributionStrategyRecord, Double> FANLI_RATIO_2 = createField("fanli_ratio_2", org.jooq.impl.SQLDataType.FLOAT.nullable(false).defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.FLOAT)), this, "二级返利比例（%的系数）");
 
     /**
      * The column <code>mini_shop_471752.b2c_distribution_strategy.rebate_ratio_2</code>. 间接
@@ -115,7 +115,7 @@ public class DistributionStrategy extends TableImpl<DistributionStrategyRecord> 
     /**
      * The column <code>mini_shop_471752.b2c_distribution_strategy.fanli_ratio_3</code>. 三级返利比例（%的系数）
      */
-    public final TableField<DistributionStrategyRecord, Double> FANLI_RATIO_3 = createField("fanli_ratio_3", org.jooq.impl.SQLDataType.FLOAT.defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.FLOAT)), this, "三级返利比例（%的系数）");
+    public final TableField<DistributionStrategyRecord, Double> FANLI_RATIO_3 = createField("fanli_ratio_3", org.jooq.impl.SQLDataType.FLOAT.nullable(false).defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.FLOAT)), this, "三级返利比例（%的系数）");
 
     /**
      * The column <code>mini_shop_471752.b2c_distribution_strategy.rebate_ratio_3</code>. 间接
@@ -125,7 +125,7 @@ public class DistributionStrategy extends TableImpl<DistributionStrategyRecord> 
     /**
      * The column <code>mini_shop_471752.b2c_distribution_strategy.fanli_ratio_4</code>. 四级返利比例（%的系数）
      */
-    public final TableField<DistributionStrategyRecord, Double> FANLI_RATIO_4 = createField("fanli_ratio_4", org.jooq.impl.SQLDataType.FLOAT.defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.FLOAT)), this, "四级返利比例（%的系数）");
+    public final TableField<DistributionStrategyRecord, Double> FANLI_RATIO_4 = createField("fanli_ratio_4", org.jooq.impl.SQLDataType.FLOAT.nullable(false).defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.FLOAT)), this, "四级返利比例（%的系数）");
 
     /**
      * The column <code>mini_shop_471752.b2c_distribution_strategy.rebate_ratio_4</code>. 间接
@@ -135,7 +135,7 @@ public class DistributionStrategy extends TableImpl<DistributionStrategyRecord> 
     /**
      * The column <code>mini_shop_471752.b2c_distribution_strategy.fanli_ratio_5</code>. 五级返利比例（%的系数）
      */
-    public final TableField<DistributionStrategyRecord, Double> FANLI_RATIO_5 = createField("fanli_ratio_5", org.jooq.impl.SQLDataType.FLOAT.defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.FLOAT)), this, "五级返利比例（%的系数）");
+    public final TableField<DistributionStrategyRecord, Double> FANLI_RATIO_5 = createField("fanli_ratio_5", org.jooq.impl.SQLDataType.FLOAT.nullable(false).defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.FLOAT)), this, "五级返利比例（%的系数）");
 
     /**
      * The column <code>mini_shop_471752.b2c_distribution_strategy.rebate_ratio_5</code>. 间接
@@ -163,19 +163,14 @@ public class DistributionStrategy extends TableImpl<DistributionStrategyRecord> 
     public final TableField<DistributionStrategyRecord, Byte> STATUS = createField("status", org.jooq.impl.SQLDataType.TINYINT.defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.TINYINT)), this, "1停用");
 
     /**
-     * The column <code>mini_shop_471752.b2c_distribution_strategy.add_time</code>. 添加时间
-     */
-    public final TableField<DistributionStrategyRecord, Timestamp> ADD_TIME = createField("add_time", org.jooq.impl.SQLDataType.TIMESTAMP.nullable(false).defaultValue(org.jooq.impl.DSL.inline("0000-00-00 00:00:00", org.jooq.impl.SQLDataType.TIMESTAMP)), this, "添加时间");
-
-    /**
      * The column <code>mini_shop_471752.b2c_distribution_strategy.del_flag</code>. 1删除
      */
     public final TableField<DistributionStrategyRecord, Byte> DEL_FLAG = createField("del_flag", org.jooq.impl.SQLDataType.TINYINT.defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.TINYINT)), this, "1删除");
 
     /**
-     * The column <code>mini_shop_471752.b2c_distribution_strategy.update_time</code>. 最后修改时间
+     * The column <code>mini_shop_471752.b2c_distribution_strategy.del_time</code>. 删除时间
      */
-    public final TableField<DistributionStrategyRecord, Timestamp> UPDATE_TIME = createField("update_time", org.jooq.impl.SQLDataType.TIMESTAMP.nullable(false).defaultValue(org.jooq.impl.DSL.field("CURRENT_TIMESTAMP", org.jooq.impl.SQLDataType.TIMESTAMP)), this, "最后修改时间");
+    public final TableField<DistributionStrategyRecord, Timestamp> DEL_TIME = createField("del_time", org.jooq.impl.SQLDataType.TIMESTAMP.nullable(false).defaultValue(org.jooq.impl.DSL.inline("0000-00-00 00:00:00", org.jooq.impl.SQLDataType.TIMESTAMP)), this, "删除时间");
 
     /**
      * The column <code>mini_shop_471752.b2c_distribution_strategy.recommend_sort_id</code>. 返利商家分类ids
@@ -186,6 +181,16 @@ public class DistributionStrategy extends TableImpl<DistributionStrategyRecord> 
      * The column <code>mini_shop_471752.b2c_distribution_strategy.send_coupon</code>. 赠送优惠券
      */
     public final TableField<DistributionStrategyRecord, Byte> SEND_COUPON = createField("send_coupon", org.jooq.impl.SQLDataType.TINYINT.defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.TINYINT)), this, "赠送优惠券");
+
+    /**
+     * The column <code>mini_shop_471752.b2c_distribution_strategy.create_time</code>.
+     */
+    public final TableField<DistributionStrategyRecord, Timestamp> CREATE_TIME = createField("create_time", org.jooq.impl.SQLDataType.TIMESTAMP.nullable(false).defaultValue(org.jooq.impl.DSL.field("CURRENT_TIMESTAMP", org.jooq.impl.SQLDataType.TIMESTAMP)), this, "");
+
+    /**
+     * The column <code>mini_shop_471752.b2c_distribution_strategy.update_time</code>. 最后修改时间
+     */
+    public final TableField<DistributionStrategyRecord, Timestamp> UPDATE_TIME = createField("update_time", org.jooq.impl.SQLDataType.TIMESTAMP.nullable(false).defaultValue(org.jooq.impl.DSL.field("CURRENT_TIMESTAMP", org.jooq.impl.SQLDataType.TIMESTAMP)), this, "最后修改时间");
 
     /**
      * Create a <code>mini_shop_471752.b2c_distribution_strategy</code> table reference

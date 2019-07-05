@@ -10,6 +10,7 @@ import com.vpu.mp.db.shop.MiniShop_471752;
 import com.vpu.mp.db.shop.tables.records.GoodsSpecProductRecord;
 
 import java.math.BigDecimal;
+import java.sql.Timestamp;
 import java.util.Arrays;
 import java.util.List;
 
@@ -42,7 +43,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class GoodsSpecProduct extends TableImpl<GoodsSpecProductRecord> {
 
-    private static final long serialVersionUID = -212966491;
+    private static final long serialVersionUID = 2138856563;
 
     /**
      * The reference instance of <code>mini_shop_471752.b2c_goods_spec_product</code>
@@ -85,7 +86,7 @@ public class GoodsSpecProduct extends TableImpl<GoodsSpecProductRecord> {
     /**
      * The column <code>mini_shop_471752.b2c_goods_spec_product.prd_cost_price</code>. 成本价
      */
-    public final TableField<GoodsSpecProductRecord, BigDecimal> PRD_COST_PRICE = createField("prd_cost_price", org.jooq.impl.SQLDataType.DECIMAL(10, 2).defaultValue(org.jooq.impl.DSL.inline("0.00", org.jooq.impl.SQLDataType.DECIMAL)), this, "成本价");
+    public final TableField<GoodsSpecProductRecord, BigDecimal> PRD_COST_PRICE = createField("prd_cost_price", org.jooq.impl.SQLDataType.DECIMAL(10, 2).nullable(false).defaultValue(org.jooq.impl.DSL.inline("0.00", org.jooq.impl.SQLDataType.DECIMAL)), this, "成本价");
 
     /**
      * The column <code>mini_shop_471752.b2c_goods_spec_product.prd_number</code>. 当前规格组合产品库存
@@ -108,9 +109,9 @@ public class GoodsSpecProduct extends TableImpl<GoodsSpecProductRecord> {
     public final TableField<GoodsSpecProductRecord, String> PRD_SPECS = createField("prd_specs", org.jooq.impl.SQLDataType.VARCHAR(1024).nullable(false).defaultValue(org.jooq.impl.DSL.inline("", org.jooq.impl.SQLDataType.VARCHAR)), this, "");
 
     /**
-     * The column <code>mini_shop_471752.b2c_goods_spec_product.prd_desc</code>. 规格描述，格式例子：颜色:红色 尺码:S
+     * The column <code>mini_shop_471752.b2c_goods_spec_product.prd_desc</code>. 规格描述，格式例子：颜色:红色 尺码:s
      */
-    public final TableField<GoodsSpecProductRecord, String> PRD_DESC = createField("prd_desc", org.jooq.impl.SQLDataType.VARCHAR(1024).nullable(false).defaultValue(org.jooq.impl.DSL.inline("", org.jooq.impl.SQLDataType.VARCHAR)), this, "规格描述，格式例子：颜色:红色 尺码:S");
+    public final TableField<GoodsSpecProductRecord, String> PRD_DESC = createField("prd_desc", org.jooq.impl.SQLDataType.VARCHAR(1024).nullable(false).defaultValue(org.jooq.impl.DSL.inline("", org.jooq.impl.SQLDataType.VARCHAR)), this, "规格描述，格式例子：颜色:红色 尺码:s");
 
     /**
      * The column <code>mini_shop_471752.b2c_goods_spec_product.del_flag</code>.
@@ -136,6 +137,16 @@ public class GoodsSpecProduct extends TableImpl<GoodsSpecProductRecord> {
      * The column <code>mini_shop_471752.b2c_goods_spec_product.price_flag</code>. 0:商家未改价，1：商家改价，2：批量改价，3：毛利改价
      */
     public final TableField<GoodsSpecProductRecord, Byte> PRICE_FLAG = createField("price_flag", org.jooq.impl.SQLDataType.TINYINT.nullable(false).defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.TINYINT)), this, "0:商家未改价，1：商家改价，2：批量改价，3：毛利改价");
+
+    /**
+     * The column <code>mini_shop_471752.b2c_goods_spec_product.create_time</code>.
+     */
+    public final TableField<GoodsSpecProductRecord, Timestamp> CREATE_TIME = createField("create_time", org.jooq.impl.SQLDataType.TIMESTAMP.nullable(false).defaultValue(org.jooq.impl.DSL.field("CURRENT_TIMESTAMP", org.jooq.impl.SQLDataType.TIMESTAMP)), this, "");
+
+    /**
+     * The column <code>mini_shop_471752.b2c_goods_spec_product.update_time</code>. 最后修改时间
+     */
+    public final TableField<GoodsSpecProductRecord, Timestamp> UPDATE_TIME = createField("update_time", org.jooq.impl.SQLDataType.TIMESTAMP.nullable(false).defaultValue(org.jooq.impl.DSL.field("CURRENT_TIMESTAMP", org.jooq.impl.SQLDataType.TIMESTAMP)), this, "最后修改时间");
 
     /**
      * Create a <code>mini_shop_471752.b2c_goods_spec_product</code> table reference

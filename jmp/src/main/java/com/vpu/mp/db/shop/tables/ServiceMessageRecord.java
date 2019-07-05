@@ -39,7 +39,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class ServiceMessageRecord extends TableImpl<ServiceMessageRecordRecord> {
 
-    private static final long serialVersionUID = -1708431384;
+    private static final long serialVersionUID = -1090023653;
 
     /**
      * The reference instance of <code>mini_shop_471752.b2c_service_message_record</code>
@@ -55,9 +55,9 @@ public class ServiceMessageRecord extends TableImpl<ServiceMessageRecordRecord> 
     }
 
     /**
-     * The column <code>mini_shop_471752.b2c_service_message_record.user_id</code>. 用户ID
+     * The column <code>mini_shop_471752.b2c_service_message_record.user_id</code>. 用户id
      */
-    public final TableField<ServiceMessageRecordRecord, Integer> USER_ID = createField("user_id", org.jooq.impl.SQLDataType.INTEGER, this, "用户ID");
+    public final TableField<ServiceMessageRecordRecord, Integer> USER_ID = createField("user_id", org.jooq.impl.SQLDataType.INTEGER, this, "用户id");
 
     /**
      * The column <code>mini_shop_471752.b2c_service_message_record.mobile</code>. 用户手机号
@@ -67,17 +67,17 @@ public class ServiceMessageRecord extends TableImpl<ServiceMessageRecordRecord> 
     /**
      * The column <code>mini_shop_471752.b2c_service_message_record.request_action</code>. 请求类型：100:短信平台
      */
-    public final TableField<ServiceMessageRecordRecord, Byte> REQUEST_ACTION = createField("request_action", org.jooq.impl.SQLDataType.TINYINT.defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.TINYINT)), this, "请求类型：100:短信平台");
+    public final TableField<ServiceMessageRecordRecord, Byte> REQUEST_ACTION = createField("request_action", org.jooq.impl.SQLDataType.TINYINT.nullable(false).defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.TINYINT)), this, "请求类型：100:短信平台");
 
     /**
-     * The column <code>mini_shop_471752.b2c_service_message_record.identity_id</code>. 关联其他表：如：外部请求requestId
+     * The column <code>mini_shop_471752.b2c_service_message_record.identity_id</code>. 关联其他表：如：外部请求requestid
      */
-    public final TableField<ServiceMessageRecordRecord, String> IDENTITY_ID = createField("identity_id", org.jooq.impl.SQLDataType.VARCHAR(50), this, "关联其他表：如：外部请求requestId");
+    public final TableField<ServiceMessageRecordRecord, String> IDENTITY_ID = createField("identity_id", org.jooq.impl.SQLDataType.VARCHAR(50), this, "关联其他表：如：外部请求requestid");
 
     /**
      * The column <code>mini_shop_471752.b2c_service_message_record.template_platform</code>. 模板平台：1： 小程序 2：公众号
      */
-    public final TableField<ServiceMessageRecordRecord, Byte> TEMPLATE_PLATFORM = createField("template_platform", org.jooq.impl.SQLDataType.TINYINT.defaultValue(org.jooq.impl.DSL.inline("1", org.jooq.impl.SQLDataType.TINYINT)), this, "模板平台：1： 小程序 2：公众号");
+    public final TableField<ServiceMessageRecordRecord, Byte> TEMPLATE_PLATFORM = createField("template_platform", org.jooq.impl.SQLDataType.TINYINT.nullable(false).defaultValue(org.jooq.impl.DSL.inline("1", org.jooq.impl.SQLDataType.TINYINT)), this, "模板平台：1： 小程序 2：公众号");
 
     /**
      * The column <code>mini_shop_471752.b2c_service_message_record.template_content</code>. 模板内容
@@ -97,7 +97,7 @@ public class ServiceMessageRecord extends TableImpl<ServiceMessageRecordRecord> 
     /**
      * The column <code>mini_shop_471752.b2c_service_message_record.path</code>. 小程序路径
      */
-    public final TableField<ServiceMessageRecordRecord, String> PATH = createField("path", org.jooq.impl.SQLDataType.VARCHAR(50), this, "小程序路径");
+    public final TableField<ServiceMessageRecordRecord, String> PATH = createField("path", org.jooq.impl.SQLDataType.VARCHAR(200), this, "小程序路径");
 
     /**
      * The column <code>mini_shop_471752.b2c_service_message_record.path_query</code>. 小程序路径参数
@@ -107,17 +107,17 @@ public class ServiceMessageRecord extends TableImpl<ServiceMessageRecordRecord> 
     /**
      * The column <code>mini_shop_471752.b2c_service_message_record.send_status</code>. 1: 发送成功  0：未知
      */
-    public final TableField<ServiceMessageRecordRecord, Byte> SEND_STATUS = createField("send_status", org.jooq.impl.SQLDataType.TINYINT.defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.TINYINT)), this, "1: 发送成功  0：未知");
+    public final TableField<ServiceMessageRecordRecord, Byte> SEND_STATUS = createField("send_status", org.jooq.impl.SQLDataType.TINYINT.nullable(false).defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.TINYINT)), this, "1: 发送成功  0：未知");
 
     /**
      * The column <code>mini_shop_471752.b2c_service_message_record.is_visit</code>. 是否已点击访问 1：是 0： 否
      */
-    public final TableField<ServiceMessageRecordRecord, Byte> IS_VISIT = createField("is_visit", org.jooq.impl.SQLDataType.TINYINT.defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.TINYINT)), this, "是否已点击访问 1：是 0： 否");
+    public final TableField<ServiceMessageRecordRecord, Byte> IS_VISIT = createField("is_visit", org.jooq.impl.SQLDataType.TINYINT.nullable(false).defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.TINYINT)), this, "是否已点击访问 1：是 0： 否");
 
     /**
      * The column <code>mini_shop_471752.b2c_service_message_record.visit_time</code>. 访问时间
      */
-    public final TableField<ServiceMessageRecordRecord, Timestamp> VISIT_TIME = createField("visit_time", org.jooq.impl.SQLDataType.TIMESTAMP, this, "访问时间");
+    public final TableField<ServiceMessageRecordRecord, Timestamp> VISIT_TIME = createField("visit_time", org.jooq.impl.SQLDataType.TIMESTAMP.nullable(false).defaultValue(org.jooq.impl.DSL.inline("0000-00-00 00:00:00", org.jooq.impl.SQLDataType.TIMESTAMP)), this, "访问时间");
 
     /**
      * The column <code>mini_shop_471752.b2c_service_message_record.template_type</code>. 模板类型 7：商家自定义
@@ -125,14 +125,19 @@ public class ServiceMessageRecord extends TableImpl<ServiceMessageRecordRecord> 
     public final TableField<ServiceMessageRecordRecord, Byte> TEMPLATE_TYPE = createField("template_type", org.jooq.impl.SQLDataType.TINYINT, this, "模板类型 7：商家自定义");
 
     /**
-     * The column <code>mini_shop_471752.b2c_service_message_record.link_identity</code>. 模板消息关联Id
+     * The column <code>mini_shop_471752.b2c_service_message_record.link_identity</code>. 模板消息关联id
      */
-    public final TableField<ServiceMessageRecordRecord, String> LINK_IDENTITY = createField("link_identity", org.jooq.impl.SQLDataType.VARCHAR(50), this, "模板消息关联Id");
+    public final TableField<ServiceMessageRecordRecord, String> LINK_IDENTITY = createField("link_identity", org.jooq.impl.SQLDataType.VARCHAR(50), this, "模板消息关联id");
 
     /**
-     * The column <code>mini_shop_471752.b2c_service_message_record.add_time</code>.
+     * The column <code>mini_shop_471752.b2c_service_message_record.create_time</code>.
      */
-    public final TableField<ServiceMessageRecordRecord, Timestamp> ADD_TIME = createField("add_time", org.jooq.impl.SQLDataType.TIMESTAMP, this, "");
+    public final TableField<ServiceMessageRecordRecord, Timestamp> CREATE_TIME = createField("create_time", org.jooq.impl.SQLDataType.TIMESTAMP.nullable(false).defaultValue(org.jooq.impl.DSL.field("CURRENT_TIMESTAMP", org.jooq.impl.SQLDataType.TIMESTAMP)), this, "");
+
+    /**
+     * The column <code>mini_shop_471752.b2c_service_message_record.update_time</code>. 最后修改时间
+     */
+    public final TableField<ServiceMessageRecordRecord, Timestamp> UPDATE_TIME = createField("update_time", org.jooq.impl.SQLDataType.TIMESTAMP.nullable(false).defaultValue(org.jooq.impl.DSL.field("CURRENT_TIMESTAMP", org.jooq.impl.SQLDataType.TIMESTAMP)), this, "最后修改时间");
 
     /**
      * Create a <code>mini_shop_471752.b2c_service_message_record</code> table reference

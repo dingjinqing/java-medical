@@ -30,7 +30,7 @@ import org.jooq.impl.TableRecordImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class FanliGoodsStatisticsRecord extends TableRecordImpl<FanliGoodsStatisticsRecord> implements Record8<Integer, String, Integer, Integer, Integer, BigDecimal, Timestamp, Timestamp> {
 
-    private static final long serialVersionUID = 1643552716;
+    private static final long serialVersionUID = -1864518440;
 
     /**
      * Setter for <code>mini_shop_471752.b2c_fanli_goods_statistics.prd_id</code>.
@@ -75,14 +75,14 @@ public class FanliGoodsStatisticsRecord extends TableRecordImpl<FanliGoodsStatis
     }
 
     /**
-     * Setter for <code>mini_shop_471752.b2c_fanli_goods_statistics.cat_id</code>. 分类ID
+     * Setter for <code>mini_shop_471752.b2c_fanli_goods_statistics.cat_id</code>. 分类id
      */
     public void setCatId(Integer value) {
         set(3, value);
     }
 
     /**
-     * Getter for <code>mini_shop_471752.b2c_fanli_goods_statistics.cat_id</code>. 分类ID
+     * Getter for <code>mini_shop_471752.b2c_fanli_goods_statistics.cat_id</code>. 分类id
      */
     public Integer getCatId() {
         return (Integer) get(3);
@@ -117,28 +117,28 @@ public class FanliGoodsStatisticsRecord extends TableRecordImpl<FanliGoodsStatis
     }
 
     /**
-     * Setter for <code>mini_shop_471752.b2c_fanli_goods_statistics.add_time</code>.
+     * Setter for <code>mini_shop_471752.b2c_fanli_goods_statistics.create_time</code>.
      */
-    public void setAddTime(Timestamp value) {
+    public void setCreateTime(Timestamp value) {
         set(6, value);
     }
 
     /**
-     * Getter for <code>mini_shop_471752.b2c_fanli_goods_statistics.add_time</code>.
+     * Getter for <code>mini_shop_471752.b2c_fanli_goods_statistics.create_time</code>.
      */
-    public Timestamp getAddTime() {
+    public Timestamp getCreateTime() {
         return (Timestamp) get(6);
     }
 
     /**
-     * Setter for <code>mini_shop_471752.b2c_fanli_goods_statistics.update_time</code>.
+     * Setter for <code>mini_shop_471752.b2c_fanli_goods_statistics.update_time</code>. 最后修改时间
      */
     public void setUpdateTime(Timestamp value) {
         set(7, value);
     }
 
     /**
-     * Getter for <code>mini_shop_471752.b2c_fanli_goods_statistics.update_time</code>.
+     * Getter for <code>mini_shop_471752.b2c_fanli_goods_statistics.update_time</code>. 最后修改时间
      */
     public Timestamp getUpdateTime() {
         return (Timestamp) get(7);
@@ -217,7 +217,7 @@ public class FanliGoodsStatisticsRecord extends TableRecordImpl<FanliGoodsStatis
      */
     @Override
     public Field<Timestamp> field7() {
-        return FanliGoodsStatistics.FANLI_GOODS_STATISTICS.ADD_TIME;
+        return FanliGoodsStatistics.FANLI_GOODS_STATISTICS.CREATE_TIME;
     }
 
     /**
@@ -281,7 +281,7 @@ public class FanliGoodsStatisticsRecord extends TableRecordImpl<FanliGoodsStatis
      */
     @Override
     public Timestamp component7() {
-        return getAddTime();
+        return getCreateTime();
     }
 
     /**
@@ -345,7 +345,7 @@ public class FanliGoodsStatisticsRecord extends TableRecordImpl<FanliGoodsStatis
      */
     @Override
     public Timestamp value7() {
-        return getAddTime();
+        return getCreateTime();
     }
 
     /**
@@ -415,7 +415,7 @@ public class FanliGoodsStatisticsRecord extends TableRecordImpl<FanliGoodsStatis
      */
     @Override
     public FanliGoodsStatisticsRecord value7(Timestamp value) {
-        setAddTime(value);
+        setCreateTime(value);
         return this;
     }
 
@@ -458,7 +458,7 @@ public class FanliGoodsStatisticsRecord extends TableRecordImpl<FanliGoodsStatis
     /**
      * Create a detached, initialised FanliGoodsStatisticsRecord
      */
-    public FanliGoodsStatisticsRecord(Integer prdId, String prdSn, Integer goodsId, Integer catId, Integer saleNumber, BigDecimal prdTotalFanli, Timestamp addTime, Timestamp updateTime) {
+    public FanliGoodsStatisticsRecord(Integer prdId, String prdSn, Integer goodsId, Integer catId, Integer saleNumber, BigDecimal prdTotalFanli, Timestamp createTime, Timestamp updateTime) {
         super(FanliGoodsStatistics.FANLI_GOODS_STATISTICS);
 
         set(0, prdId);
@@ -467,7 +467,7 @@ public class FanliGoodsStatisticsRecord extends TableRecordImpl<FanliGoodsStatis
         set(3, catId);
         set(4, saleNumber);
         set(5, prdTotalFanli);
-        set(6, addTime);
+        set(6, createTime);
         set(7, updateTime);
     }
 }

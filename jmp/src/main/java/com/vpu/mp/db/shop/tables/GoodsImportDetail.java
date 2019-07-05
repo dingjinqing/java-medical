@@ -42,7 +42,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class GoodsImportDetail extends TableImpl<GoodsImportDetailRecord> {
 
-    private static final long serialVersionUID = 1640956047;
+    private static final long serialVersionUID = 1128717455;
 
     /**
      * The reference instance of <code>mini_shop_471752.b2c_goods_import_detail</code>
@@ -63,9 +63,9 @@ public class GoodsImportDetail extends TableImpl<GoodsImportDetailRecord> {
     public final TableField<GoodsImportDetailRecord, Integer> ID = createField("id", org.jooq.impl.SQLDataType.INTEGER.nullable(false).identity(true), this, "");
 
     /**
-     * The column <code>mini_shop_471752.b2c_goods_import_detail.batch_id</code>. 主表ID
+     * The column <code>mini_shop_471752.b2c_goods_import_detail.batch_id</code>. 主表id
      */
-    public final TableField<GoodsImportDetailRecord, Integer> BATCH_ID = createField("batch_id", org.jooq.impl.SQLDataType.INTEGER.nullable(false), this, "主表ID");
+    public final TableField<GoodsImportDetailRecord, Integer> BATCH_ID = createField("batch_id", org.jooq.impl.SQLDataType.INTEGER.nullable(false), this, "主表id");
 
     /**
      * The column <code>mini_shop_471752.b2c_goods_import_detail.goods_sn</code>. 商品sn
@@ -93,14 +93,19 @@ public class GoodsImportDetail extends TableImpl<GoodsImportDetailRecord> {
     public final TableField<GoodsImportDetailRecord, String> ERROR_MSG = createField("error_msg", org.jooq.impl.SQLDataType.VARCHAR(100), this, "错误内容");
 
     /**
-     * The column <code>mini_shop_471752.b2c_goods_import_detail.add_time</code>. 添加时间
-     */
-    public final TableField<GoodsImportDetailRecord, Timestamp> ADD_TIME = createField("add_time", org.jooq.impl.SQLDataType.TIMESTAMP, this, "添加时间");
-
-    /**
      * The column <code>mini_shop_471752.b2c_goods_import_detail.is_success</code>. 导入成功标识：0不成功，1成功
      */
-    public final TableField<GoodsImportDetailRecord, Byte> IS_SUCCESS = createField("is_success", org.jooq.impl.SQLDataType.TINYINT.defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.TINYINT)), this, "导入成功标识：0不成功，1成功");
+    public final TableField<GoodsImportDetailRecord, Byte> IS_SUCCESS = createField("is_success", org.jooq.impl.SQLDataType.TINYINT.nullable(false).defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.TINYINT)), this, "导入成功标识：0不成功，1成功");
+
+    /**
+     * The column <code>mini_shop_471752.b2c_goods_import_detail.create_time</code>.
+     */
+    public final TableField<GoodsImportDetailRecord, Timestamp> CREATE_TIME = createField("create_time", org.jooq.impl.SQLDataType.TIMESTAMP.nullable(false).defaultValue(org.jooq.impl.DSL.field("CURRENT_TIMESTAMP", org.jooq.impl.SQLDataType.TIMESTAMP)), this, "");
+
+    /**
+     * The column <code>mini_shop_471752.b2c_goods_import_detail.update_time</code>. 最后修改时间
+     */
+    public final TableField<GoodsImportDetailRecord, Timestamp> UPDATE_TIME = createField("update_time", org.jooq.impl.SQLDataType.TIMESTAMP.nullable(false).defaultValue(org.jooq.impl.DSL.field("CURRENT_TIMESTAMP", org.jooq.impl.SQLDataType.TIMESTAMP)), this, "最后修改时间");
 
     /**
      * Create a <code>mini_shop_471752.b2c_goods_import_detail</code> table reference

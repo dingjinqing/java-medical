@@ -43,7 +43,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class GoodsSummary extends TableImpl<GoodsSummaryRecord> {
 
-    private static final long serialVersionUID = -1366714810;
+    private static final long serialVersionUID = 593602624;
 
     /**
      * The reference instance of <code>mini_shop_471752.b2c_goods_summary</code>
@@ -114,9 +114,14 @@ public class GoodsSummary extends TableImpl<GoodsSummaryRecord> {
     public final TableField<GoodsSummaryRecord, Integer> PAID_GOODS_NUMBER = createField("paid_goods_number", org.jooq.impl.SQLDataType.INTEGER, this, "付款商品件数");
 
     /**
-     * The column <code>mini_shop_471752.b2c_goods_summary.add_time</code>.
+     * The column <code>mini_shop_471752.b2c_goods_summary.create_time</code>.
      */
-    public final TableField<GoodsSummaryRecord, Timestamp> ADD_TIME = createField("add_time", org.jooq.impl.SQLDataType.TIMESTAMP, this, "");
+    public final TableField<GoodsSummaryRecord, Timestamp> CREATE_TIME = createField("create_time", org.jooq.impl.SQLDataType.TIMESTAMP.nullable(false).defaultValue(org.jooq.impl.DSL.field("CURRENT_TIMESTAMP", org.jooq.impl.SQLDataType.TIMESTAMP)), this, "");
+
+    /**
+     * The column <code>mini_shop_471752.b2c_goods_summary.update_time</code>. 最后修改时间
+     */
+    public final TableField<GoodsSummaryRecord, Timestamp> UPDATE_TIME = createField("update_time", org.jooq.impl.SQLDataType.TIMESTAMP.nullable(false).defaultValue(org.jooq.impl.DSL.field("CURRENT_TIMESTAMP", org.jooq.impl.SQLDataType.TIMESTAMP)), this, "最后修改时间");
 
     /**
      * Create a <code>mini_shop_471752.b2c_goods_summary</code> table reference

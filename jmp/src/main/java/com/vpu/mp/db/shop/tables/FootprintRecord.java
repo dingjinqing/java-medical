@@ -42,7 +42,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class FootprintRecord extends TableImpl<FootprintRecordRecord> {
 
-    private static final long serialVersionUID = 806310846;
+    private static final long serialVersionUID = 757424215;
 
     /**
      * The reference instance of <code>mini_shop_471752.b2c_footprint_record</code>
@@ -63,19 +63,14 @@ public class FootprintRecord extends TableImpl<FootprintRecordRecord> {
     public final TableField<FootprintRecordRecord, Integer> ID = createField("id", org.jooq.impl.SQLDataType.INTEGER.nullable(false).identity(true), this, "");
 
     /**
-     * The column <code>mini_shop_471752.b2c_footprint_record.goods_id</code>. 商品ID
+     * The column <code>mini_shop_471752.b2c_footprint_record.goods_id</code>. 商品id
      */
-    public final TableField<FootprintRecordRecord, Integer> GOODS_ID = createField("goods_id", org.jooq.impl.SQLDataType.INTEGER.nullable(false), this, "商品ID");
+    public final TableField<FootprintRecordRecord, Integer> GOODS_ID = createField("goods_id", org.jooq.impl.SQLDataType.INTEGER.nullable(false), this, "商品id");
 
     /**
      * The column <code>mini_shop_471752.b2c_footprint_record.user_id</code>.
      */
     public final TableField<FootprintRecordRecord, Integer> USER_ID = createField("user_id", org.jooq.impl.SQLDataType.INTEGER.nullable(false), this, "");
-
-    /**
-     * The column <code>mini_shop_471752.b2c_footprint_record.update_time</code>. 浏览时间
-     */
-    public final TableField<FootprintRecordRecord, Timestamp> UPDATE_TIME = createField("update_time", org.jooq.impl.SQLDataType.TIMESTAMP.nullable(false), this, "浏览时间");
 
     /**
      * The column <code>mini_shop_471752.b2c_footprint_record.count</code>. 浏览次数
@@ -86,6 +81,16 @@ public class FootprintRecord extends TableImpl<FootprintRecordRecord> {
      * The column <code>mini_shop_471752.b2c_footprint_record.type</code>. 0 老用户 1新用户
      */
     public final TableField<FootprintRecordRecord, Byte> TYPE = createField("type", org.jooq.impl.SQLDataType.TINYINT.defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.TINYINT)), this, "0 老用户 1新用户");
+
+    /**
+     * The column <code>mini_shop_471752.b2c_footprint_record.create_time</code>.
+     */
+    public final TableField<FootprintRecordRecord, Timestamp> CREATE_TIME = createField("create_time", org.jooq.impl.SQLDataType.TIMESTAMP.nullable(false).defaultValue(org.jooq.impl.DSL.field("CURRENT_TIMESTAMP", org.jooq.impl.SQLDataType.TIMESTAMP)), this, "");
+
+    /**
+     * The column <code>mini_shop_471752.b2c_footprint_record.update_time</code>. 最后修改时间
+     */
+    public final TableField<FootprintRecordRecord, Timestamp> UPDATE_TIME = createField("update_time", org.jooq.impl.SQLDataType.TIMESTAMP.nullable(false).defaultValue(org.jooq.impl.DSL.field("CURRENT_TIMESTAMP", org.jooq.impl.SQLDataType.TIMESTAMP)), this, "最后修改时间");
 
     /**
      * Create a <code>mini_shop_471752.b2c_footprint_record</code> table reference

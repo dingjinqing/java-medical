@@ -30,7 +30,7 @@ import org.jooq.impl.UpdatableRecordImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class CommentGoodsRecord extends UpdatableRecordImpl<CommentGoodsRecord> implements Record15<Integer, Integer, Integer, Byte, Integer, Byte, String, Integer, String, String, String, Timestamp, Timestamp, Byte, Byte> {
 
-    private static final long serialVersionUID = -1906833503;
+    private static final long serialVersionUID = -644687497;
 
     /**
      * Setter for <code>mini_shop_471752.b2c_comment_goods.id</code>.
@@ -47,28 +47,28 @@ public class CommentGoodsRecord extends UpdatableRecordImpl<CommentGoodsRecord> 
     }
 
     /**
-     * Setter for <code>mini_shop_471752.b2c_comment_goods.shop_id</code>. 店铺ID
+     * Setter for <code>mini_shop_471752.b2c_comment_goods.shop_id</code>. 店铺id
      */
     public void setShopId(Integer value) {
         set(1, value);
     }
 
     /**
-     * Getter for <code>mini_shop_471752.b2c_comment_goods.shop_id</code>. 店铺ID
+     * Getter for <code>mini_shop_471752.b2c_comment_goods.shop_id</code>. 店铺id
      */
     public Integer getShopId() {
         return (Integer) get(1);
     }
 
     /**
-     * Setter for <code>mini_shop_471752.b2c_comment_goods.user_id</code>. 用户ID
+     * Setter for <code>mini_shop_471752.b2c_comment_goods.user_id</code>. 用户id
      */
     public void setUserId(Integer value) {
         set(2, value);
     }
 
     /**
-     * Getter for <code>mini_shop_471752.b2c_comment_goods.user_id</code>. 用户ID
+     * Getter for <code>mini_shop_471752.b2c_comment_goods.user_id</code>. 用户id
      */
     public Integer getUserId() {
         return (Integer) get(2);
@@ -187,30 +187,30 @@ public class CommentGoodsRecord extends UpdatableRecordImpl<CommentGoodsRecord> 
     }
 
     /**
-     * Setter for <code>mini_shop_471752.b2c_comment_goods.in_time</code>. 创建时间
+     * Setter for <code>mini_shop_471752.b2c_comment_goods.create_time</code>.
      */
-    public void setInTime(Timestamp value) {
+    public void setCreateTime(Timestamp value) {
         set(11, value);
     }
 
     /**
-     * Getter for <code>mini_shop_471752.b2c_comment_goods.in_time</code>. 创建时间
+     * Getter for <code>mini_shop_471752.b2c_comment_goods.create_time</code>.
      */
-    public Timestamp getInTime() {
+    public Timestamp getCreateTime() {
         return (Timestamp) get(11);
     }
 
     /**
-     * Setter for <code>mini_shop_471752.b2c_comment_goods.up_time</code>. 更新时间
+     * Setter for <code>mini_shop_471752.b2c_comment_goods.update_time</code>. 最后修改时间
      */
-    public void setUpTime(Timestamp value) {
+    public void setUpdateTime(Timestamp value) {
         set(12, value);
     }
 
     /**
-     * Getter for <code>mini_shop_471752.b2c_comment_goods.up_time</code>. 更新时间
+     * Getter for <code>mini_shop_471752.b2c_comment_goods.update_time</code>. 最后修改时间
      */
-    public Timestamp getUpTime() {
+    public Timestamp getUpdateTime() {
         return (Timestamp) get(12);
     }
 
@@ -367,7 +367,7 @@ public class CommentGoodsRecord extends UpdatableRecordImpl<CommentGoodsRecord> 
      */
     @Override
     public Field<Timestamp> field12() {
-        return CommentGoods.COMMENT_GOODS.IN_TIME;
+        return CommentGoods.COMMENT_GOODS.CREATE_TIME;
     }
 
     /**
@@ -375,7 +375,7 @@ public class CommentGoodsRecord extends UpdatableRecordImpl<CommentGoodsRecord> 
      */
     @Override
     public Field<Timestamp> field13() {
-        return CommentGoods.COMMENT_GOODS.UP_TIME;
+        return CommentGoods.COMMENT_GOODS.UPDATE_TIME;
     }
 
     /**
@@ -487,7 +487,7 @@ public class CommentGoodsRecord extends UpdatableRecordImpl<CommentGoodsRecord> 
      */
     @Override
     public Timestamp component12() {
-        return getInTime();
+        return getCreateTime();
     }
 
     /**
@@ -495,7 +495,7 @@ public class CommentGoodsRecord extends UpdatableRecordImpl<CommentGoodsRecord> 
      */
     @Override
     public Timestamp component13() {
-        return getUpTime();
+        return getUpdateTime();
     }
 
     /**
@@ -607,7 +607,7 @@ public class CommentGoodsRecord extends UpdatableRecordImpl<CommentGoodsRecord> 
      */
     @Override
     public Timestamp value12() {
-        return getInTime();
+        return getCreateTime();
     }
 
     /**
@@ -615,7 +615,7 @@ public class CommentGoodsRecord extends UpdatableRecordImpl<CommentGoodsRecord> 
      */
     @Override
     public Timestamp value13() {
-        return getUpTime();
+        return getUpdateTime();
     }
 
     /**
@@ -738,7 +738,7 @@ public class CommentGoodsRecord extends UpdatableRecordImpl<CommentGoodsRecord> 
      */
     @Override
     public CommentGoodsRecord value12(Timestamp value) {
-        setInTime(value);
+        setCreateTime(value);
         return this;
     }
 
@@ -747,7 +747,7 @@ public class CommentGoodsRecord extends UpdatableRecordImpl<CommentGoodsRecord> 
      */
     @Override
     public CommentGoodsRecord value13(Timestamp value) {
-        setUpTime(value);
+        setUpdateTime(value);
         return this;
     }
 
@@ -806,7 +806,7 @@ public class CommentGoodsRecord extends UpdatableRecordImpl<CommentGoodsRecord> 
     /**
      * Create a detached, initialised CommentGoodsRecord
      */
-    public CommentGoodsRecord(Integer id, Integer shopId, Integer userId, Byte commstar, Integer userScore, Byte anonymousflag, String commtag, Integer goodsId, String orderSn, String commNote, String commImg, Timestamp inTime, Timestamp upTime, Byte flag, Byte delFlag) {
+    public CommentGoodsRecord(Integer id, Integer shopId, Integer userId, Byte commstar, Integer userScore, Byte anonymousflag, String commtag, Integer goodsId, String orderSn, String commNote, String commImg, Timestamp createTime, Timestamp updateTime, Byte flag, Byte delFlag) {
         super(CommentGoods.COMMENT_GOODS);
 
         set(0, id);
@@ -820,8 +820,8 @@ public class CommentGoodsRecord extends UpdatableRecordImpl<CommentGoodsRecord> 
         set(8, orderSn);
         set(9, commNote);
         set(10, commImg);
-        set(11, inTime);
-        set(12, upTime);
+        set(11, createTime);
+        set(12, updateTime);
         set(13, flag);
         set(14, delFlag);
     }

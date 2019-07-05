@@ -42,7 +42,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class UserScore extends TableImpl<UserScoreRecord> {
 
-    private static final long serialVersionUID = 173355072;
+    private static final long serialVersionUID = 533410453;
 
     /**
      * The reference instance of <code>mini_shop_471752.b2c_user_score</code>
@@ -85,7 +85,7 @@ public class UserScore extends TableImpl<UserScoreRecord> {
     /**
      * The column <code>mini_shop_471752.b2c_user_score.usable_score</code>. 可用积分
      */
-    public final TableField<UserScoreRecord, Integer> USABLE_SCORE = createField("usable_score", org.jooq.impl.SQLDataType.INTEGER.defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.INTEGER)), this, "可用积分");
+    public final TableField<UserScoreRecord, Integer> USABLE_SCORE = createField("usable_score", org.jooq.impl.SQLDataType.INTEGER.nullable(false).defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.INTEGER)), this, "可用积分");
 
     /**
      * The column <code>mini_shop_471752.b2c_user_score.identity_id</code>. 关联其他属性：例如order_sn
@@ -103,9 +103,9 @@ public class UserScore extends TableImpl<UserScoreRecord> {
     public final TableField<UserScoreRecord, String> ORDER_SN = createField("order_sn", org.jooq.impl.SQLDataType.VARCHAR(20).nullable(false).defaultValue(org.jooq.impl.DSL.inline("", org.jooq.impl.SQLDataType.VARCHAR)), this, "");
 
     /**
-     * The column <code>mini_shop_471752.b2c_user_score.shop_id</code>. 店铺ID
+     * The column <code>mini_shop_471752.b2c_user_score.shop_id</code>. 店铺id
      */
-    public final TableField<UserScoreRecord, Integer> SHOP_ID = createField("shop_id", org.jooq.impl.SQLDataType.INTEGER.nullable(false).defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.INTEGER)), this, "店铺ID");
+    public final TableField<UserScoreRecord, Integer> SHOP_ID = createField("shop_id", org.jooq.impl.SQLDataType.INTEGER.nullable(false).defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.INTEGER)), this, "店铺id");
 
     /**
      * The column <code>mini_shop_471752.b2c_user_score.desc</code>.
@@ -118,14 +118,14 @@ public class UserScore extends TableImpl<UserScoreRecord> {
     public final TableField<UserScoreRecord, String> REMARK = createField("remark", org.jooq.impl.SQLDataType.VARCHAR(1024), this, "备注");
 
     /**
-     * The column <code>mini_shop_471752.b2c_user_score.in_time</code>.
+     * The column <code>mini_shop_471752.b2c_user_score.create_time</code>.
      */
-    public final TableField<UserScoreRecord, Timestamp> IN_TIME = createField("in_time", org.jooq.impl.SQLDataType.TIMESTAMP, this, "");
+    public final TableField<UserScoreRecord, Timestamp> CREATE_TIME = createField("create_time", org.jooq.impl.SQLDataType.TIMESTAMP.nullable(false).defaultValue(org.jooq.impl.DSL.field("CURRENT_TIMESTAMP", org.jooq.impl.SQLDataType.TIMESTAMP)), this, "");
 
     /**
      * The column <code>mini_shop_471752.b2c_user_score.expire_time</code>.
      */
-    public final TableField<UserScoreRecord, Timestamp> EXPIRE_TIME = createField("expire_time", org.jooq.impl.SQLDataType.TIMESTAMP, this, "");
+    public final TableField<UserScoreRecord, Timestamp> EXPIRE_TIME = createField("expire_time", org.jooq.impl.SQLDataType.TIMESTAMP.nullable(false).defaultValue(org.jooq.impl.DSL.inline("0000-00-00 00:00:00", org.jooq.impl.SQLDataType.TIMESTAMP)), this, "");
 
     /**
      * The column <code>mini_shop_471752.b2c_user_score.admin_user</code>. 操作员

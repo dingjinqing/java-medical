@@ -6,6 +6,8 @@ package com.vpu.mp.db.shop.tables.records;
 
 import com.vpu.mp.db.shop.tables.UserDetail;
 
+import java.sql.Timestamp;
+
 import javax.annotation.Generated;
 
 import org.jooq.Record1;
@@ -25,7 +27,7 @@ import org.jooq.impl.UpdatableRecordImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class UserDetailRecord extends UpdatableRecordImpl<UserDetailRecord> {
 
-    private static final long serialVersionUID = 1772201355;
+    private static final long serialVersionUID = 1751727534;
 
     /**
      * Setter for <code>mini_shop_471752.b2c_user_detail.id</code>.
@@ -56,14 +58,14 @@ public class UserDetailRecord extends UpdatableRecordImpl<UserDetailRecord> {
     }
 
     /**
-     * Setter for <code>mini_shop_471752.b2c_user_detail.shop_id</code>. 店铺ID
+     * Setter for <code>mini_shop_471752.b2c_user_detail.shop_id</code>. 店铺id
      */
     public void setShopId(Integer value) {
         set(2, value);
     }
 
     /**
-     * Getter for <code>mini_shop_471752.b2c_user_detail.shop_id</code>. 店铺ID
+     * Getter for <code>mini_shop_471752.b2c_user_detail.shop_id</code>. 店铺id
      */
     public Integer getShopId() {
         return (Integer) get(2);
@@ -377,6 +379,34 @@ public class UserDetailRecord extends UpdatableRecordImpl<UserDetailRecord> {
         return (String) get(24);
     }
 
+    /**
+     * Setter for <code>mini_shop_471752.b2c_user_detail.create_time</code>.
+     */
+    public void setCreateTime(Timestamp value) {
+        set(25, value);
+    }
+
+    /**
+     * Getter for <code>mini_shop_471752.b2c_user_detail.create_time</code>.
+     */
+    public Timestamp getCreateTime() {
+        return (Timestamp) get(25);
+    }
+
+    /**
+     * Setter for <code>mini_shop_471752.b2c_user_detail.update_time</code>. 最后修改时间
+     */
+    public void setUpdateTime(Timestamp value) {
+        set(26, value);
+    }
+
+    /**
+     * Getter for <code>mini_shop_471752.b2c_user_detail.update_time</code>. 最后修改时间
+     */
+    public Timestamp getUpdateTime() {
+        return (Timestamp) get(26);
+    }
+
     // -------------------------------------------------------------------------
     // Primary key information
     // -------------------------------------------------------------------------
@@ -403,7 +433,7 @@ public class UserDetailRecord extends UpdatableRecordImpl<UserDetailRecord> {
     /**
      * Create a detached, initialised UserDetailRecord
      */
-    public UserDetailRecord(Integer id, Integer userId, Integer shopId, String username, String sex, Integer birthdayYear, Integer birthdayMonth, Integer birthdayDay, String email, String realName, Integer provinceCode, Integer cityCode, Integer districtCode, String address, Byte maritalStatus, Byte monthlyIncome, String cid, Byte education, Byte industryInfo, String bigImage, String bankUserName, String shopBank, String bankNo, String withdrawPasswd, String userAvatar) {
+    public UserDetailRecord(Integer id, Integer userId, Integer shopId, String username, String sex, Integer birthdayYear, Integer birthdayMonth, Integer birthdayDay, String email, String realName, Integer provinceCode, Integer cityCode, Integer districtCode, String address, Byte maritalStatus, Byte monthlyIncome, String cid, Byte education, Byte industryInfo, String bigImage, String bankUserName, String shopBank, String bankNo, String withdrawPasswd, String userAvatar, Timestamp createTime, Timestamp updateTime) {
         super(UserDetail.USER_DETAIL);
 
         set(0, id);
@@ -431,5 +461,7 @@ public class UserDetailRecord extends UpdatableRecordImpl<UserDetailRecord> {
         set(22, bankNo);
         set(23, withdrawPasswd);
         set(24, userAvatar);
+        set(25, createTime);
+        set(26, updateTime);
     }
 }

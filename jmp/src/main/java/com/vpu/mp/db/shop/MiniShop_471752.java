@@ -4,6 +4,193 @@
 package com.vpu.mp.db.shop;
 
 
+import com.vpu.mp.db.shop.tables.Bargain;
+import com.vpu.mp.db.shop.tables.BargainRecord;
+import com.vpu.mp.db.shop.tables.BargainUserList;
+import com.vpu.mp.db.shop.tables.BatchPrice;
+import com.vpu.mp.db.shop.tables.BatchProfit;
+import com.vpu.mp.db.shop.tables.BrandClassify;
+import com.vpu.mp.db.shop.tables.CardBatch;
+import com.vpu.mp.db.shop.tables.CardConsumer;
+import com.vpu.mp.db.shop.tables.CardExamine;
+import com.vpu.mp.db.shop.tables.CardOrder;
+import com.vpu.mp.db.shop.tables.CardReceiveCode;
+import com.vpu.mp.db.shop.tables.CardUpgrade;
+import com.vpu.mp.db.shop.tables.Cart;
+import com.vpu.mp.db.shop.tables.Channel;
+import com.vpu.mp.db.shop.tables.ChannelRecord;
+import com.vpu.mp.db.shop.tables.ChannelStatistical;
+import com.vpu.mp.db.shop.tables.ChargeMoney;
+import com.vpu.mp.db.shop.tables.Code;
+import com.vpu.mp.db.shop.tables.CommentGoods;
+import com.vpu.mp.db.shop.tables.CommentGoodsAnswer;
+import com.vpu.mp.db.shop.tables.CommentService;
+import com.vpu.mp.db.shop.tables.CouponActivity;
+import com.vpu.mp.db.shop.tables.CouponActivityRecord;
+import com.vpu.mp.db.shop.tables.CouponPayrewardRecord;
+import com.vpu.mp.db.shop.tables.CustomerAvailCoupons;
+import com.vpu.mp.db.shop.tables.DecorateLink;
+import com.vpu.mp.db.shop.tables.DeliverFeeTemplate;
+import com.vpu.mp.db.shop.tables.DistributionOrder;
+import com.vpu.mp.db.shop.tables.DistributionStrategy;
+import com.vpu.mp.db.shop.tables.DistributionTag;
+import com.vpu.mp.db.shop.tables.DistributionWithdraw;
+import com.vpu.mp.db.shop.tables.DistributorApply;
+import com.vpu.mp.db.shop.tables.DistributorGroup;
+import com.vpu.mp.db.shop.tables.DistributorLevel;
+import com.vpu.mp.db.shop.tables.DistributorLevelRecord;
+import com.vpu.mp.db.shop.tables.FanliGoodsStatistics;
+import com.vpu.mp.db.shop.tables.FootprintRecord;
+import com.vpu.mp.db.shop.tables.FormPage;
+import com.vpu.mp.db.shop.tables.FormSubmitDetails;
+import com.vpu.mp.db.shop.tables.FormSubmitList;
+import com.vpu.mp.db.shop.tables.FriendPromoteActivity;
+import com.vpu.mp.db.shop.tables.FriendPromoteDetail;
+import com.vpu.mp.db.shop.tables.FriendPromoteLaunch;
+import com.vpu.mp.db.shop.tables.FriendPromoteTimes;
+import com.vpu.mp.db.shop.tables.Gift;
+import com.vpu.mp.db.shop.tables.GiftProduct;
+import com.vpu.mp.db.shop.tables.GiveVoucher;
+import com.vpu.mp.db.shop.tables.Goods;
+import com.vpu.mp.db.shop.tables.GoodsBak;
+import com.vpu.mp.db.shop.tables.GoodsBrand;
+import com.vpu.mp.db.shop.tables.GoodsCardCouple;
+import com.vpu.mp.db.shop.tables.GoodsImg;
+import com.vpu.mp.db.shop.tables.GoodsImport;
+import com.vpu.mp.db.shop.tables.GoodsImportDetail;
+import com.vpu.mp.db.shop.tables.GoodsLabel;
+import com.vpu.mp.db.shop.tables.GoodsLabelCouple;
+import com.vpu.mp.db.shop.tables.GoodsOpaiSpec;
+import com.vpu.mp.db.shop.tables.GoodsRebatePrice;
+import com.vpu.mp.db.shop.tables.GoodsSpecProduct;
+import com.vpu.mp.db.shop.tables.GoodsSpecProductBak;
+import com.vpu.mp.db.shop.tables.GoodsSummary;
+import com.vpu.mp.db.shop.tables.GoodsUserSummary;
+import com.vpu.mp.db.shop.tables.GradePrd;
+import com.vpu.mp.db.shop.tables.GroupDraw;
+import com.vpu.mp.db.shop.tables.GroupDrawInvite;
+import com.vpu.mp.db.shop.tables.IncomeOutcomeDetail;
+import com.vpu.mp.db.shop.tables.IndexFootRecord;
+import com.vpu.mp.db.shop.tables.IntegralMallDefine;
+import com.vpu.mp.db.shop.tables.IntegralMallProduct;
+import com.vpu.mp.db.shop.tables.IntegralMallRecord;
+import com.vpu.mp.db.shop.tables.Invoice;
+import com.vpu.mp.db.shop.tables.JoinDrawList;
+import com.vpu.mp.db.shop.tables.JoinGroupList;
+import com.vpu.mp.db.shop.tables.Lottery;
+import com.vpu.mp.db.shop.tables.LotteryRecord;
+import com.vpu.mp.db.shop.tables.LotteryShare;
+import com.vpu.mp.db.shop.tables.MemberCard;
+import com.vpu.mp.db.shop.tables.MessageTemplate;
+import com.vpu.mp.db.shop.tables.MpDailyRetain;
+import com.vpu.mp.db.shop.tables.MpDailyVisit;
+import com.vpu.mp.db.shop.tables.MpDistributionVisit;
+import com.vpu.mp.db.shop.tables.MpJump;
+import com.vpu.mp.db.shop.tables.MpJumpUsable;
+import com.vpu.mp.db.shop.tables.MpMonthlyRetain;
+import com.vpu.mp.db.shop.tables.MpMonthlyVisit;
+import com.vpu.mp.db.shop.tables.MpSceneRecord;
+import com.vpu.mp.db.shop.tables.MpSummaryTrend;
+import com.vpu.mp.db.shop.tables.MpTemplateFormId;
+import com.vpu.mp.db.shop.tables.MpUserPortrait;
+import com.vpu.mp.db.shop.tables.MpVisitPage;
+import com.vpu.mp.db.shop.tables.MpWeeklyRetain;
+import com.vpu.mp.db.shop.tables.MpWeeklyVisit;
+import com.vpu.mp.db.shop.tables.MrkingStrategy;
+import com.vpu.mp.db.shop.tables.MrkingStrategyCondition;
+import com.vpu.mp.db.shop.tables.MrkingVoucher;
+import com.vpu.mp.db.shop.tables.OrderAction;
+import com.vpu.mp.db.shop.tables.OrderGoods;
+import com.vpu.mp.db.shop.tables.OrderGoodsRebate;
+import com.vpu.mp.db.shop.tables.OrderInfo;
+import com.vpu.mp.db.shop.tables.OrderMust;
+import com.vpu.mp.db.shop.tables.OrderRefundRecord;
+import com.vpu.mp.db.shop.tables.OrderVerifier;
+import com.vpu.mp.db.shop.tables.PackageGoodsCart;
+import com.vpu.mp.db.shop.tables.PackageSale;
+import com.vpu.mp.db.shop.tables.PageClassification;
+import com.vpu.mp.db.shop.tables.PartOrderGoodsShip;
+import com.vpu.mp.db.shop.tables.Payment;
+import com.vpu.mp.db.shop.tables.PaymentRecord;
+import com.vpu.mp.db.shop.tables.Pictorial;
+import com.vpu.mp.db.shop.tables.PinGroupDefine;
+import com.vpu.mp.db.shop.tables.PinGroupList;
+import com.vpu.mp.db.shop.tables.PinGroupProductDefine;
+import com.vpu.mp.db.shop.tables.PinIntegrationDefine;
+import com.vpu.mp.db.shop.tables.PinIntegrationList;
+import com.vpu.mp.db.shop.tables.Presale;
+import com.vpu.mp.db.shop.tables.PresaleProduct;
+import com.vpu.mp.db.shop.tables.PurchasePriceDefine;
+import com.vpu.mp.db.shop.tables.PurchasePriceRule;
+import com.vpu.mp.db.shop.tables.RebatePriceRecord;
+import com.vpu.mp.db.shop.tables.RecommendGoods;
+import com.vpu.mp.db.shop.tables.RecordAdminAction;
+import com.vpu.mp.db.shop.tables.ReducePrice;
+import com.vpu.mp.db.shop.tables.ReducePriceGoods;
+import com.vpu.mp.db.shop.tables.ReducePriceProduct;
+import com.vpu.mp.db.shop.tables.RefundAmountRecord;
+import com.vpu.mp.db.shop.tables.RefundCardRecord;
+import com.vpu.mp.db.shop.tables.ReturnOrder;
+import com.vpu.mp.db.shop.tables.ReturnOrderGoods;
+import com.vpu.mp.db.shop.tables.ReturnStatusChange;
+import com.vpu.mp.db.shop.tables.SearchHistory;
+import com.vpu.mp.db.shop.tables.SecKillDefine;
+import com.vpu.mp.db.shop.tables.SecKillList;
+import com.vpu.mp.db.shop.tables.SecKillProductDefine;
+import com.vpu.mp.db.shop.tables.ServiceCategory;
+import com.vpu.mp.db.shop.tables.ServiceMessageRecord;
+import com.vpu.mp.db.shop.tables.ServiceOrder;
+import com.vpu.mp.db.shop.tables.ServiceRequest;
+import com.vpu.mp.db.shop.tables.ServiceSchedule;
+import com.vpu.mp.db.shop.tables.ServiceTechnician;
+import com.vpu.mp.db.shop.tables.ServiceTechnicianGroup;
+import com.vpu.mp.db.shop.tables.ServiceTechnicianSchedule;
+import com.vpu.mp.db.shop.tables.ShareRecord;
+import com.vpu.mp.db.shop.tables.ShareSplit;
+import com.vpu.mp.db.shop.tables.Shipping;
+import com.vpu.mp.db.shop.tables.ShopCfg;
+import com.vpu.mp.db.shop.tables.SmsSendRecord;
+import com.vpu.mp.db.shop.tables.Sort;
+import com.vpu.mp.db.shop.tables.Spec;
+import com.vpu.mp.db.shop.tables.SpecVals;
+import com.vpu.mp.db.shop.tables.Store;
+import com.vpu.mp.db.shop.tables.StoreGoods;
+import com.vpu.mp.db.shop.tables.StoreGroup;
+import com.vpu.mp.db.shop.tables.StoreOrder;
+import com.vpu.mp.db.shop.tables.StoreService;
+import com.vpu.mp.db.shop.tables.SubOrderInfo;
+import com.vpu.mp.db.shop.tables.Tag;
+import com.vpu.mp.db.shop.tables.TemplateConfig;
+import com.vpu.mp.db.shop.tables.Trades;
+import com.vpu.mp.db.shop.tables.TradesRecord;
+import com.vpu.mp.db.shop.tables.TradesRecordSummary;
+import com.vpu.mp.db.shop.tables.UploadedImage;
+import com.vpu.mp.db.shop.tables.UploadedImageCategory;
+import com.vpu.mp.db.shop.tables.UploadedVideo;
+import com.vpu.mp.db.shop.tables.User;
+import com.vpu.mp.db.shop.tables.UserAccount;
+import com.vpu.mp.db.shop.tables.UserAddress;
+import com.vpu.mp.db.shop.tables.UserCard;
+import com.vpu.mp.db.shop.tables.UserCartRecord;
+import com.vpu.mp.db.shop.tables.UserCollection;
+import com.vpu.mp.db.shop.tables.UserDetail;
+import com.vpu.mp.db.shop.tables.UserExplain;
+import com.vpu.mp.db.shop.tables.UserFanliStatistics;
+import com.vpu.mp.db.shop.tables.UserGoodsRecord;
+import com.vpu.mp.db.shop.tables.UserImport;
+import com.vpu.mp.db.shop.tables.UserImportDetail;
+import com.vpu.mp.db.shop.tables.UserLoginRecord;
+import com.vpu.mp.db.shop.tables.UserRebatePrice;
+import com.vpu.mp.db.shop.tables.UserScore;
+import com.vpu.mp.db.shop.tables.UserScoreSet;
+import com.vpu.mp.db.shop.tables.UserSummaryTrend;
+import com.vpu.mp.db.shop.tables.UserTag;
+import com.vpu.mp.db.shop.tables.UserTotalFanli;
+import com.vpu.mp.db.shop.tables.WxShoppingRecommend;
+import com.vpu.mp.db.shop.tables.WxpUnlimitCode;
+import com.vpu.mp.db.shop.tables.WxpUnlimitScene;
+import com.vpu.mp.db.shop.tables.XcxCustomerPage;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -13,8 +200,6 @@ import javax.annotation.Generated;
 import org.jooq.Catalog;
 import org.jooq.Table;
 import org.jooq.impl.SchemaImpl;
-
-import com.vpu.mp.db.shop.tables.*;
 
 
 /**
@@ -30,7 +215,7 @@ import com.vpu.mp.db.shop.tables.*;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class MiniShop_471752 extends SchemaImpl {
 
-    private static final long serialVersionUID = 1536053597;
+    private static final long serialVersionUID = 271458695;
 
     /**
      * The reference instance of <code>mini_shop_471752</code>
@@ -351,11 +536,6 @@ public class MiniShop_471752 extends SchemaImpl {
      * The table <code>mini_shop_471752.b2c_grade_prd</code>.
      */
     public final GradePrd GRADE_PRD = com.vpu.mp.db.shop.tables.GradePrd.GRADE_PRD;
-
-    /**
-     * The table <code>mini_shop_471752.b2c_store_group</code>.
-     */
-    public final StoreGroup STORE_GROUP = com.vpu.mp.db.shop.tables.StoreGroup.STORE_GROUP;
 
     /**
      * The table <code>mini_shop_471752.b2c_group_draw</code>.
@@ -798,6 +978,11 @@ public class MiniShop_471752 extends SchemaImpl {
     public final StoreGoods STORE_GOODS = com.vpu.mp.db.shop.tables.StoreGoods.STORE_GOODS;
 
     /**
+     * The table <code>mini_shop_471752.b2c_store_group</code>.
+     */
+    public final StoreGroup STORE_GROUP = com.vpu.mp.db.shop.tables.StoreGroup.STORE_GROUP;
+
+    /**
      * The table <code>mini_shop_471752.b2c_store_order</code>.
      */
     public final StoreOrder STORE_ORDER = com.vpu.mp.db.shop.tables.StoreOrder.STORE_ORDER;
@@ -1055,7 +1240,6 @@ public class MiniShop_471752 extends SchemaImpl {
             GoodsSummary.GOODS_SUMMARY,
             GoodsUserSummary.GOODS_USER_SUMMARY,
             GradePrd.GRADE_PRD,
-            StoreGroup.STORE_GROUP,
             GroupDraw.GROUP_DRAW,
             GroupDrawInvite.GROUP_DRAW_INVITE,
             IncomeOutcomeDetail.INCOME_OUTCOME_DETAIL,
@@ -1144,6 +1328,7 @@ public class MiniShop_471752 extends SchemaImpl {
             SpecVals.SPEC_VALS,
             Store.STORE,
             StoreGoods.STORE_GOODS,
+            StoreGroup.STORE_GROUP,
             StoreOrder.STORE_ORDER,
             StoreService.STORE_SERVICE,
             SubOrderInfo.SUB_ORDER_INFO,

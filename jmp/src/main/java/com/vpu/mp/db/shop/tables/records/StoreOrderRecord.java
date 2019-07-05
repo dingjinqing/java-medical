@@ -28,7 +28,7 @@ import org.jooq.impl.UpdatableRecordImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class StoreOrderRecord extends UpdatableRecordImpl<StoreOrderRecord> {
 
-    private static final long serialVersionUID = -354688881;
+    private static final long serialVersionUID = -255785314;
 
     /**
      * Setter for <code>mini_shop_471752.b2c_store_order.order_id</code>. 订单id
@@ -185,14 +185,14 @@ public class StoreOrderRecord extends UpdatableRecordImpl<StoreOrderRecord> {
     }
 
     /**
-     * Setter for <code>mini_shop_471752.b2c_store_order.prepay_id</code>. 微信支付Id，用于发送模板消息
+     * Setter for <code>mini_shop_471752.b2c_store_order.prepay_id</code>. 微信支付id，用于发送模板消息
      */
     public void setPrepayId(String value) {
         set(11, value);
     }
 
     /**
-     * Getter for <code>mini_shop_471752.b2c_store_order.prepay_id</code>. 微信支付Id，用于发送模板消息
+     * Getter for <code>mini_shop_471752.b2c_store_order.prepay_id</code>. 微信支付id，用于发送模板消息
      */
     public String getPrepayId() {
         return (String) get(11);
@@ -227,14 +227,14 @@ public class StoreOrderRecord extends UpdatableRecordImpl<StoreOrderRecord> {
     }
 
     /**
-     * Setter for <code>mini_shop_471752.b2c_store_order.member_card_no</code>. 会员卡NO
+     * Setter for <code>mini_shop_471752.b2c_store_order.member_card_no</code>. 会员卡no
      */
     public void setMemberCardNo(String value) {
         set(14, value);
     }
 
     /**
-     * Getter for <code>mini_shop_471752.b2c_store_order.member_card_no</code>. 会员卡NO
+     * Getter for <code>mini_shop_471752.b2c_store_order.member_card_no</code>. 会员卡no
      */
     public String getMemberCardNo() {
         return (String) get(14);
@@ -311,87 +311,101 @@ public class StoreOrderRecord extends UpdatableRecordImpl<StoreOrderRecord> {
     }
 
     /**
-     * Setter for <code>mini_shop_471752.b2c_store_order.add_time</code>. 订单提交时间
-     */
-    public void setAddTime(Timestamp value) {
-        set(20, value);
-    }
-
-    /**
-     * Getter for <code>mini_shop_471752.b2c_store_order.add_time</code>. 订单提交时间
-     */
-    public Timestamp getAddTime() {
-        return (Timestamp) get(20);
-    }
-
-    /**
      * Setter for <code>mini_shop_471752.b2c_store_order.pay_time</code>. 支付时间
      */
     public void setPayTime(Timestamp value) {
-        set(21, value);
+        set(20, value);
     }
 
     /**
      * Getter for <code>mini_shop_471752.b2c_store_order.pay_time</code>. 支付时间
      */
     public Timestamp getPayTime() {
-        return (Timestamp) get(21);
+        return (Timestamp) get(20);
     }
 
     /**
      * Setter for <code>mini_shop_471752.b2c_store_order.seller_remark</code>. 卖家备注
      */
     public void setSellerRemark(String value) {
-        set(22, value);
+        set(21, value);
     }
 
     /**
      * Getter for <code>mini_shop_471752.b2c_store_order.seller_remark</code>. 卖家备注
      */
     public String getSellerRemark() {
-        return (String) get(22);
+        return (String) get(21);
     }
 
     /**
      * Setter for <code>mini_shop_471752.b2c_store_order.star_flag</code>. 标星订单：0 未标星 1 标星
      */
     public void setStarFlag(Byte value) {
-        set(23, value);
+        set(22, value);
     }
 
     /**
      * Getter for <code>mini_shop_471752.b2c_store_order.star_flag</code>. 标星订单：0 未标星 1 标星
      */
     public Byte getStarFlag() {
-        return (Byte) get(23);
+        return (Byte) get(22);
     }
 
     /**
      * Setter for <code>mini_shop_471752.b2c_store_order.del_flag</code>. 删除
      */
     public void setDelFlag(Byte value) {
-        set(24, value);
+        set(23, value);
     }
 
     /**
      * Getter for <code>mini_shop_471752.b2c_store_order.del_flag</code>. 删除
      */
     public Byte getDelFlag() {
-        return (Byte) get(24);
+        return (Byte) get(23);
     }
 
     /**
      * Setter for <code>mini_shop_471752.b2c_store_order.ali_trade_no</code>. 支付宝交易单号
      */
     public void setAliTradeNo(String value) {
-        set(25, value);
+        set(24, value);
     }
 
     /**
      * Getter for <code>mini_shop_471752.b2c_store_order.ali_trade_no</code>. 支付宝交易单号
      */
     public String getAliTradeNo() {
-        return (String) get(25);
+        return (String) get(24);
+    }
+
+    /**
+     * Setter for <code>mini_shop_471752.b2c_store_order.create_time</code>.
+     */
+    public void setCreateTime(Timestamp value) {
+        set(25, value);
+    }
+
+    /**
+     * Getter for <code>mini_shop_471752.b2c_store_order.create_time</code>.
+     */
+    public Timestamp getCreateTime() {
+        return (Timestamp) get(25);
+    }
+
+    /**
+     * Setter for <code>mini_shop_471752.b2c_store_order.update_time</code>. 最后修改时间
+     */
+    public void setUpdateTime(Timestamp value) {
+        set(26, value);
+    }
+
+    /**
+     * Getter for <code>mini_shop_471752.b2c_store_order.update_time</code>. 最后修改时间
+     */
+    public Timestamp getUpdateTime() {
+        return (Timestamp) get(26);
     }
 
     // -------------------------------------------------------------------------
@@ -420,7 +434,7 @@ public class StoreOrderRecord extends UpdatableRecordImpl<StoreOrderRecord> {
     /**
      * Create a detached, initialised StoreOrderRecord
      */
-    public StoreOrderRecord(Integer orderId, Integer storeId, String orderSn, Integer userId, Byte orderStatus, String orderStatusName, Integer invoiceId, String invoiceDetail, String addMessage, String payCode, String payName, String prepayId, String paySn, BigDecimal moneyPaid, String memberCardNo, BigDecimal memberCardRedunce, BigDecimal memberCardBalance, BigDecimal scoreDiscount, BigDecimal useAccount, BigDecimal orderAmount, Timestamp addTime, Timestamp payTime, String sellerRemark, Byte starFlag, Byte delFlag, String aliTradeNo) {
+    public StoreOrderRecord(Integer orderId, Integer storeId, String orderSn, Integer userId, Byte orderStatus, String orderStatusName, Integer invoiceId, String invoiceDetail, String addMessage, String payCode, String payName, String prepayId, String paySn, BigDecimal moneyPaid, String memberCardNo, BigDecimal memberCardRedunce, BigDecimal memberCardBalance, BigDecimal scoreDiscount, BigDecimal useAccount, BigDecimal orderAmount, Timestamp payTime, String sellerRemark, Byte starFlag, Byte delFlag, String aliTradeNo, Timestamp createTime, Timestamp updateTime) {
         super(StoreOrder.STORE_ORDER);
 
         set(0, orderId);
@@ -443,11 +457,12 @@ public class StoreOrderRecord extends UpdatableRecordImpl<StoreOrderRecord> {
         set(17, scoreDiscount);
         set(18, useAccount);
         set(19, orderAmount);
-        set(20, addTime);
-        set(21, payTime);
-        set(22, sellerRemark);
-        set(23, starFlag);
-        set(24, delFlag);
-        set(25, aliTradeNo);
+        set(20, payTime);
+        set(21, sellerRemark);
+        set(22, starFlag);
+        set(23, delFlag);
+        set(24, aliTradeNo);
+        set(25, createTime);
+        set(26, updateTime);
     }
 }

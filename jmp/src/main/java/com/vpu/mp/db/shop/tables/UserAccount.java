@@ -43,7 +43,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class UserAccount extends TableImpl<UserAccountRecord> {
 
-    private static final long serialVersionUID = 1404553666;
+    private static final long serialVersionUID = 1866275008;
 
     /**
      * The reference instance of <code>mini_shop_471752.b2c_user_account</code>
@@ -84,11 +84,6 @@ public class UserAccount extends TableImpl<UserAccountRecord> {
     public final TableField<UserAccountRecord, BigDecimal> AMOUNT = createField("amount", org.jooq.impl.SQLDataType.DECIMAL(10, 2).nullable(false), this, "金额");
 
     /**
-     * The column <code>mini_shop_471752.b2c_user_account.add_time</code>. 创建时间
-     */
-    public final TableField<UserAccountRecord, Timestamp> ADD_TIME = createField("add_time", org.jooq.impl.SQLDataType.TIMESTAMP, this, "创建时间");
-
-    /**
      * The column <code>mini_shop_471752.b2c_user_account.admin_note</code>. 操作员备注
      */
     public final TableField<UserAccountRecord, String> ADMIN_NOTE = createField("admin_note", org.jooq.impl.SQLDataType.VARCHAR(191).nullable(false), this, "操作员备注");
@@ -112,6 +107,16 @@ public class UserAccount extends TableImpl<UserAccountRecord> {
      * The column <code>mini_shop_471752.b2c_user_account.source</code>. 1:分销来源，0:充值
      */
     public final TableField<UserAccountRecord, Byte> SOURCE = createField("source", org.jooq.impl.SQLDataType.TINYINT.defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.TINYINT)), this, "1:分销来源，0:充值");
+
+    /**
+     * The column <code>mini_shop_471752.b2c_user_account.create_time</code>.
+     */
+    public final TableField<UserAccountRecord, Timestamp> CREATE_TIME = createField("create_time", org.jooq.impl.SQLDataType.TIMESTAMP.nullable(false).defaultValue(org.jooq.impl.DSL.field("CURRENT_TIMESTAMP", org.jooq.impl.SQLDataType.TIMESTAMP)), this, "");
+
+    /**
+     * The column <code>mini_shop_471752.b2c_user_account.update_time</code>. 最后修改时间
+     */
+    public final TableField<UserAccountRecord, Timestamp> UPDATE_TIME = createField("update_time", org.jooq.impl.SQLDataType.TIMESTAMP.nullable(false).defaultValue(org.jooq.impl.DSL.field("CURRENT_TIMESTAMP", org.jooq.impl.SQLDataType.TIMESTAMP)), this, "最后修改时间");
 
     /**
      * Create a <code>mini_shop_471752.b2c_user_account</code> table reference

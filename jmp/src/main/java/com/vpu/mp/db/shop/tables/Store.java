@@ -42,7 +42,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class Store extends TableImpl<StoreRecord> {
 
-    private static final long serialVersionUID = -990180558;
+    private static final long serialVersionUID = 188878068;
 
     /**
      * The reference instance of <code>mini_shop_471752.b2c_store</code>
@@ -148,19 +148,19 @@ public class Store extends TableImpl<StoreRecord> {
     public final TableField<StoreRecord, String> CONTENT = createField("content", org.jooq.impl.SQLDataType.CLOB, this, "介绍");
 
     /**
-     * The column <code>mini_shop_471752.b2c_store.pos_shop_id</code>. pos店铺ID
+     * The column <code>mini_shop_471752.b2c_store.pos_shop_id</code>. pos店铺id
      */
-    public final TableField<StoreRecord, Integer> POS_SHOP_ID = createField("pos_shop_id", org.jooq.impl.SQLDataType.INTEGER.defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.INTEGER)), this, "pos店铺ID");
+    public final TableField<StoreRecord, Integer> POS_SHOP_ID = createField("pos_shop_id", org.jooq.impl.SQLDataType.INTEGER.nullable(false).defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.INTEGER)), this, "pos店铺id");
 
     /**
-     * The column <code>mini_shop_471752.b2c_store.add_time</code>. 添加时间
+     * The column <code>mini_shop_471752.b2c_store.create_time</code>.
      */
-    public final TableField<StoreRecord, Timestamp> ADD_TIME = createField("add_time", org.jooq.impl.SQLDataType.TIMESTAMP.nullable(false).defaultValue(org.jooq.impl.DSL.field("CURRENT_TIMESTAMP", org.jooq.impl.SQLDataType.TIMESTAMP)), this, "添加时间");
+    public final TableField<StoreRecord, Timestamp> CREATE_TIME = createField("create_time", org.jooq.impl.SQLDataType.TIMESTAMP.nullable(false).defaultValue(org.jooq.impl.DSL.field("CURRENT_TIMESTAMP", org.jooq.impl.SQLDataType.TIMESTAMP)), this, "");
 
     /**
-     * The column <code>mini_shop_471752.b2c_store.up_time</code>. 更新时间
+     * The column <code>mini_shop_471752.b2c_store.update_time</code>. 最后修改时间
      */
-    public final TableField<StoreRecord, Timestamp> UP_TIME = createField("up_time", org.jooq.impl.SQLDataType.TIMESTAMP, this, "更新时间");
+    public final TableField<StoreRecord, Timestamp> UPDATE_TIME = createField("update_time", org.jooq.impl.SQLDataType.TIMESTAMP.nullable(false).defaultValue(org.jooq.impl.DSL.field("CURRENT_TIMESTAMP", org.jooq.impl.SQLDataType.TIMESTAMP)), this, "最后修改时间");
 
     /**
      * The column <code>mini_shop_471752.b2c_store.auto_pick</code>. 设定自提
@@ -168,9 +168,9 @@ public class Store extends TableImpl<StoreRecord> {
     public final TableField<StoreRecord, Short> AUTO_PICK = createField("auto_pick", org.jooq.impl.SQLDataType.SMALLINT.defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.SMALLINT)), this, "设定自提");
 
     /**
-     * The column <code>mini_shop_471752.b2c_store.is_delete</code>. 1为删除状态
+     * The column <code>mini_shop_471752.b2c_store.del_flag</code>. 1为删除状态
      */
-    public final TableField<StoreRecord, Byte> IS_DELETE = createField("is_delete", org.jooq.impl.SQLDataType.TINYINT.defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.TINYINT)), this, "1为删除状态");
+    public final TableField<StoreRecord, Byte> DEL_FLAG = createField("del_flag", org.jooq.impl.SQLDataType.TINYINT.defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.TINYINT)), this, "1为删除状态");
 
     /**
      * Create a <code>mini_shop_471752.b2c_store</code> table reference

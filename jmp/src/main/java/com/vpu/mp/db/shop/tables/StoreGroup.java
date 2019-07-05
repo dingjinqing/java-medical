@@ -42,10 +42,10 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class StoreGroup extends TableImpl<StoreGroupRecord> {
 
-    private static final long serialVersionUID = -185403702;
+    private static final long serialVersionUID = -1857251793;
 
     /**
-     * The reference instance of <code>mini_shop.b2c_store_group</code>
+     * The reference instance of <code>mini_shop_471752.b2c_store_group</code>
      */
     public static final StoreGroup STORE_GROUP = new StoreGroup();
 
@@ -58,36 +58,41 @@ public class StoreGroup extends TableImpl<StoreGroupRecord> {
     }
 
     /**
-     * The column <code>mini_shop.b2c_store_group.group_id</code>.
+     * The column <code>mini_shop_471752.b2c_store_group.group_id</code>.
      */
     public final TableField<StoreGroupRecord, Integer> GROUP_ID = createField("group_id", org.jooq.impl.SQLDataType.INTEGER.nullable(false).identity(true), this, "");
 
     /**
-     * The column <code>mini_shop.b2c_store_group.group_name</code>.
+     * The column <code>mini_shop_471752.b2c_store_group.group_name</code>.
      */
     public final TableField<StoreGroupRecord, String> GROUP_NAME = createField("group_name", org.jooq.impl.SQLDataType.VARCHAR(20).nullable(false), this, "");
 
     /**
-     * The column <code>mini_shop.b2c_store_group.in_time</code>.
+     * The column <code>mini_shop_471752.b2c_store_group.create_time</code>.
      */
-    public final TableField<StoreGroupRecord, Timestamp> IN_TIME = createField("in_time", org.jooq.impl.SQLDataType.TIMESTAMP.defaultValue(org.jooq.impl.DSL.field("CURRENT_TIMESTAMP", org.jooq.impl.SQLDataType.TIMESTAMP)), this, "");
+    public final TableField<StoreGroupRecord, Timestamp> CREATE_TIME = createField("create_time", org.jooq.impl.SQLDataType.TIMESTAMP.nullable(false).defaultValue(org.jooq.impl.DSL.field("CURRENT_TIMESTAMP", org.jooq.impl.SQLDataType.TIMESTAMP)), this, "");
 
     /**
-     * Create a <code>mini_shop.b2c_store_group</code> table reference
+     * The column <code>mini_shop_471752.b2c_store_group.update_time</code>. 最后修改时间
+     */
+    public final TableField<StoreGroupRecord, Timestamp> UPDATE_TIME = createField("update_time", org.jooq.impl.SQLDataType.TIMESTAMP.nullable(false).defaultValue(org.jooq.impl.DSL.field("CURRENT_TIMESTAMP", org.jooq.impl.SQLDataType.TIMESTAMP)), this, "最后修改时间");
+
+    /**
+     * Create a <code>mini_shop_471752.b2c_store_group</code> table reference
      */
     public StoreGroup() {
         this(DSL.name("b2c_store_group"), null);
     }
 
     /**
-     * Create an aliased <code>mini_shop.b2c_store_group</code> table reference
+     * Create an aliased <code>mini_shop_471752.b2c_store_group</code> table reference
      */
     public StoreGroup(String alias) {
         this(DSL.name(alias), STORE_GROUP);
     }
 
     /**
-     * Create an aliased <code>mini_shop.b2c_store_group</code> table reference
+     * Create an aliased <code>mini_shop_471752.b2c_store_group</code> table reference
      */
     public StoreGroup(Name alias) {
         this(alias, STORE_GROUP);

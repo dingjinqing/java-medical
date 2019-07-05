@@ -30,7 +30,7 @@ import org.jooq.impl.UpdatableRecordImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class MpJumpUsableRecord extends UpdatableRecordImpl<MpJumpUsableRecord> implements Record6<Integer, Integer, String, Byte, Timestamp, Timestamp> {
 
-    private static final long serialVersionUID = 56563087;
+    private static final long serialVersionUID = -1610680355;
 
     /**
      * Setter for <code>mini_shop_471752.b2c_mp_jump_usable.id</code>.
@@ -47,28 +47,28 @@ public class MpJumpUsableRecord extends UpdatableRecordImpl<MpJumpUsableRecord> 
     }
 
     /**
-     * Setter for <code>mini_shop_471752.b2c_mp_jump_usable.template_id</code>. 小程序模板ID
+     * Setter for <code>mini_shop_471752.b2c_mp_jump_usable.template_id</code>. 小程序模板id
      */
     public void setTemplateId(Integer value) {
         set(1, value);
     }
 
     /**
-     * Getter for <code>mini_shop_471752.b2c_mp_jump_usable.template_id</code>. 小程序模板ID
+     * Getter for <code>mini_shop_471752.b2c_mp_jump_usable.template_id</code>. 小程序模板id
      */
     public Integer getTemplateId() {
         return (Integer) get(1);
     }
 
     /**
-     * Setter for <code>mini_shop_471752.b2c_mp_jump_usable.app_id</code>. 跳转小程序APPID
+     * Setter for <code>mini_shop_471752.b2c_mp_jump_usable.app_id</code>. 跳转小程序appid
      */
     public void setAppId(String value) {
         set(2, value);
     }
 
     /**
-     * Getter for <code>mini_shop_471752.b2c_mp_jump_usable.app_id</code>. 跳转小程序APPID
+     * Getter for <code>mini_shop_471752.b2c_mp_jump_usable.app_id</code>. 跳转小程序appid
      */
     public String getAppId() {
         return (String) get(2);
@@ -89,28 +89,28 @@ public class MpJumpUsableRecord extends UpdatableRecordImpl<MpJumpUsableRecord> 
     }
 
     /**
-     * Setter for <code>mini_shop_471752.b2c_mp_jump_usable.add_time</code>.
+     * Setter for <code>mini_shop_471752.b2c_mp_jump_usable.create_time</code>.
      */
-    public void setAddTime(Timestamp value) {
+    public void setCreateTime(Timestamp value) {
         set(4, value);
     }
 
     /**
-     * Getter for <code>mini_shop_471752.b2c_mp_jump_usable.add_time</code>.
+     * Getter for <code>mini_shop_471752.b2c_mp_jump_usable.create_time</code>.
      */
-    public Timestamp getAddTime() {
+    public Timestamp getCreateTime() {
         return (Timestamp) get(4);
     }
 
     /**
-     * Setter for <code>mini_shop_471752.b2c_mp_jump_usable.update_time</code>.
+     * Setter for <code>mini_shop_471752.b2c_mp_jump_usable.update_time</code>. 最后修改时间
      */
     public void setUpdateTime(Timestamp value) {
         set(5, value);
     }
 
     /**
-     * Getter for <code>mini_shop_471752.b2c_mp_jump_usable.update_time</code>.
+     * Getter for <code>mini_shop_471752.b2c_mp_jump_usable.update_time</code>. 最后修改时间
      */
     public Timestamp getUpdateTime() {
         return (Timestamp) get(5);
@@ -185,7 +185,7 @@ public class MpJumpUsableRecord extends UpdatableRecordImpl<MpJumpUsableRecord> 
      */
     @Override
     public Field<Timestamp> field5() {
-        return MpJumpUsable.MP_JUMP_USABLE.ADD_TIME;
+        return MpJumpUsable.MP_JUMP_USABLE.CREATE_TIME;
     }
 
     /**
@@ -233,7 +233,7 @@ public class MpJumpUsableRecord extends UpdatableRecordImpl<MpJumpUsableRecord> 
      */
     @Override
     public Timestamp component5() {
-        return getAddTime();
+        return getCreateTime();
     }
 
     /**
@@ -281,7 +281,7 @@ public class MpJumpUsableRecord extends UpdatableRecordImpl<MpJumpUsableRecord> 
      */
     @Override
     public Timestamp value5() {
-        return getAddTime();
+        return getCreateTime();
     }
 
     /**
@@ -333,7 +333,7 @@ public class MpJumpUsableRecord extends UpdatableRecordImpl<MpJumpUsableRecord> 
      */
     @Override
     public MpJumpUsableRecord value5(Timestamp value) {
-        setAddTime(value);
+        setCreateTime(value);
         return this;
     }
 
@@ -374,14 +374,14 @@ public class MpJumpUsableRecord extends UpdatableRecordImpl<MpJumpUsableRecord> 
     /**
      * Create a detached, initialised MpJumpUsableRecord
      */
-    public MpJumpUsableRecord(Integer id, Integer templateId, String appId, Byte usable, Timestamp addTime, Timestamp updateTime) {
+    public MpJumpUsableRecord(Integer id, Integer templateId, String appId, Byte usable, Timestamp createTime, Timestamp updateTime) {
         super(MpJumpUsable.MP_JUMP_USABLE);
 
         set(0, id);
         set(1, templateId);
         set(2, appId);
         set(3, usable);
-        set(4, addTime);
+        set(4, createTime);
         set(5, updateTime);
     }
 }

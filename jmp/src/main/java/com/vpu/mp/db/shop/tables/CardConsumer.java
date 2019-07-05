@@ -43,7 +43,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class CardConsumer extends TableImpl<CardConsumerRecord> {
 
-    private static final long serialVersionUID = 845760589;
+    private static final long serialVersionUID = 1922736948;
 
     /**
      * The reference instance of <code>mini_shop_471752.b2c_card_consumer</code>
@@ -74,19 +74,14 @@ public class CardConsumer extends TableImpl<CardConsumerRecord> {
     public final TableField<CardConsumerRecord, Integer> CARD_ID = createField("card_id", org.jooq.impl.SQLDataType.INTEGER.nullable(false).defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.INTEGER)), this, "会员卡id");
 
     /**
-     * The column <code>mini_shop_471752.b2c_card_consumer.add_time</code>. 充值时间
-     */
-    public final TableField<CardConsumerRecord, Timestamp> ADD_TIME = createField("add_time", org.jooq.impl.SQLDataType.TIMESTAMP, this, "充值时间");
-
-    /**
      * The column <code>mini_shop_471752.b2c_card_consumer.money</code>. 消费的卡余额
      */
-    public final TableField<CardConsumerRecord, BigDecimal> MONEY = createField("money", org.jooq.impl.SQLDataType.DECIMAL(10, 2).defaultValue(org.jooq.impl.DSL.inline("0.00", org.jooq.impl.SQLDataType.DECIMAL)), this, "消费的卡余额");
+    public final TableField<CardConsumerRecord, BigDecimal> MONEY = createField("money", org.jooq.impl.SQLDataType.DECIMAL(10, 2).nullable(false).defaultValue(org.jooq.impl.DSL.inline("0.00", org.jooq.impl.SQLDataType.DECIMAL)), this, "消费的卡余额");
 
     /**
      * The column <code>mini_shop_471752.b2c_card_consumer.count</code>. 消费次数
      */
-    public final TableField<CardConsumerRecord, Short> COUNT = createField("count", org.jooq.impl.SQLDataType.SMALLINT.defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.SMALLINT)), this, "消费次数");
+    public final TableField<CardConsumerRecord, Short> COUNT = createField("count", org.jooq.impl.SQLDataType.SMALLINT.nullable(false).defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.SMALLINT)), this, "消费次数");
 
     /**
      * The column <code>mini_shop_471752.b2c_card_consumer.type</code>. 消费类型 0是普通卡 1限次卡
@@ -101,7 +96,7 @@ public class CardConsumer extends TableImpl<CardConsumerRecord> {
     /**
      * The column <code>mini_shop_471752.b2c_card_consumer.message</code>. 备注
      */
-    public final TableField<CardConsumerRecord, String> MESSAGE = createField("message", org.jooq.impl.SQLDataType.VARCHAR(191).defaultValue(org.jooq.impl.DSL.inline("", org.jooq.impl.SQLDataType.VARCHAR)), this, "备注");
+    public final TableField<CardConsumerRecord, String> MESSAGE = createField("message", org.jooq.impl.SQLDataType.VARCHAR(191).nullable(false).defaultValue(org.jooq.impl.DSL.inline("", org.jooq.impl.SQLDataType.VARCHAR)), this, "备注");
 
     /**
      * The column <code>mini_shop_471752.b2c_card_consumer.card_no</code>. 会员卡号
@@ -111,12 +106,22 @@ public class CardConsumer extends TableImpl<CardConsumerRecord> {
     /**
      * The column <code>mini_shop_471752.b2c_card_consumer.exchang_count</code>. 兑换次数
      */
-    public final TableField<CardConsumerRecord, Short> EXCHANG_COUNT = createField("exchang_count", org.jooq.impl.SQLDataType.SMALLINT.defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.SMALLINT)), this, "兑换次数");
+    public final TableField<CardConsumerRecord, Short> EXCHANG_COUNT = createField("exchang_count", org.jooq.impl.SQLDataType.SMALLINT.nullable(false).defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.SMALLINT)), this, "兑换次数");
 
     /**
      * The column <code>mini_shop_471752.b2c_card_consumer.order_sn</code>. 订单号
      */
-    public final TableField<CardConsumerRecord, String> ORDER_SN = createField("order_sn", org.jooq.impl.SQLDataType.VARCHAR(20).defaultValue(org.jooq.impl.DSL.inline("", org.jooq.impl.SQLDataType.VARCHAR)), this, "订单号");
+    public final TableField<CardConsumerRecord, String> ORDER_SN = createField("order_sn", org.jooq.impl.SQLDataType.VARCHAR(20).nullable(false).defaultValue(org.jooq.impl.DSL.inline("", org.jooq.impl.SQLDataType.VARCHAR)), this, "订单号");
+
+    /**
+     * The column <code>mini_shop_471752.b2c_card_consumer.create_time</code>.
+     */
+    public final TableField<CardConsumerRecord, Timestamp> CREATE_TIME = createField("create_time", org.jooq.impl.SQLDataType.TIMESTAMP.nullable(false).defaultValue(org.jooq.impl.DSL.field("CURRENT_TIMESTAMP", org.jooq.impl.SQLDataType.TIMESTAMP)), this, "");
+
+    /**
+     * The column <code>mini_shop_471752.b2c_card_consumer.update_time</code>. 最后修改时间
+     */
+    public final TableField<CardConsumerRecord, Timestamp> UPDATE_TIME = createField("update_time", org.jooq.impl.SQLDataType.TIMESTAMP.nullable(false).defaultValue(org.jooq.impl.DSL.field("CURRENT_TIMESTAMP", org.jooq.impl.SQLDataType.TIMESTAMP)), this, "最后修改时间");
 
     /**
      * Create a <code>mini_shop_471752.b2c_card_consumer</code> table reference

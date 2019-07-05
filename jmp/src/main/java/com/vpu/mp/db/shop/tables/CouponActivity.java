@@ -42,7 +42,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class CouponActivity extends TableImpl<CouponActivityRecord> {
 
-    private static final long serialVersionUID = 1292908977;
+    private static final long serialVersionUID = -87098319;
 
     /**
      * The reference instance of <code>mini_shop_471752.b2c_coupon_activity</code>
@@ -90,12 +90,12 @@ public class CouponActivity extends TableImpl<CouponActivityRecord> {
     /**
      * The column <code>mini_shop_471752.b2c_coupon_activity.start_date</code>. 有效期-起始
      */
-    public final TableField<CouponActivityRecord, Timestamp> START_DATE = createField("start_date", org.jooq.impl.SQLDataType.TIMESTAMP.nullable(false), this, "有效期-起始");
+    public final TableField<CouponActivityRecord, Timestamp> START_DATE = createField("start_date", org.jooq.impl.SQLDataType.TIMESTAMP.nullable(false).defaultValue(org.jooq.impl.DSL.inline("0000-00-00 00:00:00", org.jooq.impl.SQLDataType.TIMESTAMP)), this, "有效期-起始");
 
     /**
      * The column <code>mini_shop_471752.b2c_coupon_activity.end_date</code>. 有效期-结束
      */
-    public final TableField<CouponActivityRecord, Timestamp> END_DATE = createField("end_date", org.jooq.impl.SQLDataType.TIMESTAMP.nullable(false), this, "有效期-结束");
+    public final TableField<CouponActivityRecord, Timestamp> END_DATE = createField("end_date", org.jooq.impl.SQLDataType.TIMESTAMP.nullable(false).defaultValue(org.jooq.impl.DSL.inline("0000-00-00 00:00:00", org.jooq.impl.SQLDataType.TIMESTAMP)), this, "有效期-结束");
 
     /**
      * The column <code>mini_shop_471752.b2c_coupon_activity.mrking_voucher_id</code>. 活动优惠券，逗号分隔
@@ -108,16 +108,6 @@ public class CouponActivity extends TableImpl<CouponActivityRecord> {
     public final TableField<CouponActivityRecord, Byte> STATUS = createField("status", org.jooq.impl.SQLDataType.TINYINT.nullable(false).defaultValue(org.jooq.impl.DSL.inline("1", org.jooq.impl.SQLDataType.TINYINT)), this, "状态： 1: 正常 0: 关闭");
 
     /**
-     * The column <code>mini_shop_471752.b2c_coupon_activity.add_time</code>.
-     */
-    public final TableField<CouponActivityRecord, Timestamp> ADD_TIME = createField("add_time", org.jooq.impl.SQLDataType.TIMESTAMP.nullable(false), this, "");
-
-    /**
-     * The column <code>mini_shop_471752.b2c_coupon_activity.update_time</code>.
-     */
-    public final TableField<CouponActivityRecord, Timestamp> UPDATE_TIME = createField("update_time", org.jooq.impl.SQLDataType.TIMESTAMP.nullable(false).defaultValue(org.jooq.impl.DSL.field("CURRENT_TIMESTAMP", org.jooq.impl.SQLDataType.TIMESTAMP)), this, "");
-
-    /**
      * The column <code>mini_shop_471752.b2c_coupon_activity.del_flag</code>.
      */
     public final TableField<CouponActivityRecord, Byte> DEL_FLAG = createField("del_flag", org.jooq.impl.SQLDataType.TINYINT.nullable(false).defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.TINYINT)), this, "");
@@ -125,7 +115,17 @@ public class CouponActivity extends TableImpl<CouponActivityRecord> {
     /**
      * The column <code>mini_shop_471752.b2c_coupon_activity.del_time</code>.
      */
-    public final TableField<CouponActivityRecord, Integer> DEL_TIME = createField("del_time", org.jooq.impl.SQLDataType.INTEGER.nullable(false).defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.INTEGER)), this, "");
+    public final TableField<CouponActivityRecord, Timestamp> DEL_TIME = createField("del_time", org.jooq.impl.SQLDataType.TIMESTAMP.nullable(false).defaultValue(org.jooq.impl.DSL.inline("0000-00-00 00:00:00", org.jooq.impl.SQLDataType.TIMESTAMP)), this, "");
+
+    /**
+     * The column <code>mini_shop_471752.b2c_coupon_activity.create_time</code>.
+     */
+    public final TableField<CouponActivityRecord, Timestamp> CREATE_TIME = createField("create_time", org.jooq.impl.SQLDataType.TIMESTAMP.nullable(false).defaultValue(org.jooq.impl.DSL.field("CURRENT_TIMESTAMP", org.jooq.impl.SQLDataType.TIMESTAMP)), this, "");
+
+    /**
+     * The column <code>mini_shop_471752.b2c_coupon_activity.update_time</code>. 最后修改时间
+     */
+    public final TableField<CouponActivityRecord, Timestamp> UPDATE_TIME = createField("update_time", org.jooq.impl.SQLDataType.TIMESTAMP.nullable(false).defaultValue(org.jooq.impl.DSL.field("CURRENT_TIMESTAMP", org.jooq.impl.SQLDataType.TIMESTAMP)), this, "最后修改时间");
 
     /**
      * Create a <code>mini_shop_471752.b2c_coupon_activity</code> table reference

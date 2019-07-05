@@ -43,7 +43,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class MrkingVoucher extends TableImpl<MrkingVoucherRecord> {
 
-    private static final long serialVersionUID = 1069932982;
+    private static final long serialVersionUID = 906477283;
 
     /**
      * The reference instance of <code>mini_shop_471752.b2c_mrking_voucher</code>
@@ -64,14 +64,14 @@ public class MrkingVoucher extends TableImpl<MrkingVoucherRecord> {
     public final TableField<MrkingVoucherRecord, Integer> ID = createField("id", org.jooq.impl.SQLDataType.INTEGER.nullable(false).identity(true), this, "");
 
     /**
-     * The column <code>mini_shop_471752.b2c_mrking_voucher.shop_id</code>. 店铺ID
+     * The column <code>mini_shop_471752.b2c_mrking_voucher.shop_id</code>. 店铺id
      */
-    public final TableField<MrkingVoucherRecord, Integer> SHOP_ID = createField("shop_id", org.jooq.impl.SQLDataType.INTEGER.defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.INTEGER)), this, "店铺ID");
+    public final TableField<MrkingVoucherRecord, Integer> SHOP_ID = createField("shop_id", org.jooq.impl.SQLDataType.INTEGER.nullable(false).defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.INTEGER)), this, "店铺id");
 
     /**
      * The column <code>mini_shop_471752.b2c_mrking_voucher.act_code</code>.
      */
-    public final TableField<MrkingVoucherRecord, String> ACT_CODE = createField("act_code", org.jooq.impl.SQLDataType.VARCHAR(50).defaultValue(org.jooq.impl.DSL.inline("voucher", org.jooq.impl.SQLDataType.VARCHAR)), this, "");
+    public final TableField<MrkingVoucherRecord, String> ACT_CODE = createField("act_code", org.jooq.impl.SQLDataType.VARCHAR(50).nullable(false).defaultValue(org.jooq.impl.DSL.inline("voucher", org.jooq.impl.SQLDataType.VARCHAR)), this, "");
 
     /**
      * The column <code>mini_shop_471752.b2c_mrking_voucher.act_name</code>.
@@ -81,12 +81,12 @@ public class MrkingVoucher extends TableImpl<MrkingVoucherRecord> {
     /**
      * The column <code>mini_shop_471752.b2c_mrking_voucher.start_time</code>.
      */
-    public final TableField<MrkingVoucherRecord, Timestamp> START_TIME = createField("start_time", org.jooq.impl.SQLDataType.TIMESTAMP, this, "");
+    public final TableField<MrkingVoucherRecord, Timestamp> START_TIME = createField("start_time", org.jooq.impl.SQLDataType.TIMESTAMP.nullable(false).defaultValue(org.jooq.impl.DSL.inline("0000-00-00 00:00:00", org.jooq.impl.SQLDataType.TIMESTAMP)), this, "");
 
     /**
      * The column <code>mini_shop_471752.b2c_mrking_voucher.end_time</code>.
      */
-    public final TableField<MrkingVoucherRecord, Timestamp> END_TIME = createField("end_time", org.jooq.impl.SQLDataType.TIMESTAMP, this, "");
+    public final TableField<MrkingVoucherRecord, Timestamp> END_TIME = createField("end_time", org.jooq.impl.SQLDataType.TIMESTAMP.nullable(false).defaultValue(org.jooq.impl.DSL.inline("0000-00-00 00:00:00", org.jooq.impl.SQLDataType.TIMESTAMP)), this, "");
 
     /**
      * The column <code>mini_shop_471752.b2c_mrking_voucher.denomination</code>.
@@ -106,102 +106,97 @@ public class MrkingVoucher extends TableImpl<MrkingVoucherRecord> {
     /**
      * The column <code>mini_shop_471752.b2c_mrking_voucher.remain_amount</code>.
      */
-    public final TableField<MrkingVoucherRecord, Integer> REMAIN_AMOUNT = createField("remain_amount", org.jooq.impl.SQLDataType.INTEGER.defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.INTEGER)), this, "");
+    public final TableField<MrkingVoucherRecord, Integer> REMAIN_AMOUNT = createField("remain_amount", org.jooq.impl.SQLDataType.INTEGER.nullable(false).defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.INTEGER)), this, "");
 
     /**
      * The column <code>mini_shop_471752.b2c_mrking_voucher.use_consume_restrict</code>.
      */
-    public final TableField<MrkingVoucherRecord, Byte> USE_CONSUME_RESTRICT = createField("use_consume_restrict", org.jooq.impl.SQLDataType.TINYINT.defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.TINYINT)), this, "");
+    public final TableField<MrkingVoucherRecord, Byte> USE_CONSUME_RESTRICT = createField("use_consume_restrict", org.jooq.impl.SQLDataType.TINYINT.nullable(false).defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.TINYINT)), this, "");
 
     /**
      * The column <code>mini_shop_471752.b2c_mrking_voucher.least_consume</code>.
      */
-    public final TableField<MrkingVoucherRecord, Integer> LEAST_CONSUME = createField("least_consume", org.jooq.impl.SQLDataType.INTEGER.defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.INTEGER)), this, "");
+    public final TableField<MrkingVoucherRecord, Integer> LEAST_CONSUME = createField("least_consume", org.jooq.impl.SQLDataType.INTEGER.nullable(false).defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.INTEGER)), this, "");
 
     /**
      * The column <code>mini_shop_471752.b2c_mrking_voucher.use_explain</code>.
      */
-    public final TableField<MrkingVoucherRecord, String> USE_EXPLAIN = createField("use_explain", org.jooq.impl.SQLDataType.VARCHAR(256).defaultValue(org.jooq.impl.DSL.inline("", org.jooq.impl.SQLDataType.VARCHAR)), this, "");
+    public final TableField<MrkingVoucherRecord, String> USE_EXPLAIN = createField("use_explain", org.jooq.impl.SQLDataType.VARCHAR(256).nullable(false).defaultValue(org.jooq.impl.DSL.inline("", org.jooq.impl.SQLDataType.VARCHAR)), this, "");
 
     /**
      * The column <code>mini_shop_471752.b2c_mrking_voucher.enabled</code>.
      */
-    public final TableField<MrkingVoucherRecord, Byte> ENABLED = createField("enabled", org.jooq.impl.SQLDataType.TINYINT.defaultValue(org.jooq.impl.DSL.inline("1", org.jooq.impl.SQLDataType.TINYINT)), this, "");
-
-    /**
-     * The column <code>mini_shop_471752.b2c_mrking_voucher.created</code>.
-     */
-    public final TableField<MrkingVoucherRecord, Timestamp> CREATED = createField("created", org.jooq.impl.SQLDataType.TIMESTAMP, this, "");
+    public final TableField<MrkingVoucherRecord, Byte> ENABLED = createField("enabled", org.jooq.impl.SQLDataType.TINYINT.nullable(false).defaultValue(org.jooq.impl.DSL.inline("1", org.jooq.impl.SQLDataType.TINYINT)), this, "");
 
     /**
      * The column <code>mini_shop_471752.b2c_mrking_voucher.is_random</code>.
      */
-    public final TableField<MrkingVoucherRecord, Byte> IS_RANDOM = createField("is_random", org.jooq.impl.SQLDataType.TINYINT.defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.TINYINT)), this, "");
+    public final TableField<MrkingVoucherRecord, Byte> IS_RANDOM = createField("is_random", org.jooq.impl.SQLDataType.TINYINT.nullable(false).defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.TINYINT)), this, "");
 
     /**
      * The column <code>mini_shop_471752.b2c_mrking_voucher.most_denomination</code>.
      */
-    public final TableField<MrkingVoucherRecord, Integer> MOST_DENOMINATION = createField("most_denomination", org.jooq.impl.SQLDataType.INTEGER.defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.INTEGER)), this, "");
+    public final TableField<MrkingVoucherRecord, Integer> MOST_DENOMINATION = createField("most_denomination", org.jooq.impl.SQLDataType.INTEGER.nullable(false).defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.INTEGER)), this, "");
 
     /**
      * The column <code>mini_shop_471752.b2c_mrking_voucher.receive_per_person</code>.
      */
-    public final TableField<MrkingVoucherRecord, Short> RECEIVE_PER_PERSON = createField("receive_per_person", org.jooq.impl.SQLDataType.SMALLINT.defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.SMALLINT)), this, "");
+    public final TableField<MrkingVoucherRecord, Short> RECEIVE_PER_PERSON = createField("receive_per_person", org.jooq.impl.SQLDataType.SMALLINT.nullable(false).defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.SMALLINT)), this, "");
 
     /**
      * The column <code>mini_shop_471752.b2c_mrking_voucher.suit_goods</code>. 0:全店通用,1:指定店铺
      */
-    public final TableField<MrkingVoucherRecord, Byte> SUIT_GOODS = createField("suit_goods", org.jooq.impl.SQLDataType.TINYINT.defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.TINYINT)), this, "0:全店通用,1:指定店铺");
+    public final TableField<MrkingVoucherRecord, Byte> SUIT_GOODS = createField("suit_goods", org.jooq.impl.SQLDataType.TINYINT.nullable(false).defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.TINYINT)), this, "0:全店通用,1:指定店铺");
 
     /**
      * The column <code>mini_shop_471752.b2c_mrking_voucher.together_used</code>. 是否与其他优惠券同时使用
      */
-    public final TableField<MrkingVoucherRecord, Byte> TOGETHER_USED = createField("together_used", org.jooq.impl.SQLDataType.TINYINT.defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.TINYINT)), this, "是否与其他优惠券同时使用");
+    public final TableField<MrkingVoucherRecord, Byte> TOGETHER_USED = createField("together_used", org.jooq.impl.SQLDataType.TINYINT.nullable(false).defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.TINYINT)), this, "是否与其他优惠券同时使用");
 
     /**
      * The column <code>mini_shop_471752.b2c_mrking_voucher.permit_share</code>. 是否允许分享优惠券链接
      */
-    public final TableField<MrkingVoucherRecord, Byte> PERMIT_SHARE = createField("permit_share", org.jooq.impl.SQLDataType.TINYINT.defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.TINYINT)), this, "是否允许分享优惠券链接");
+    public final TableField<MrkingVoucherRecord, Byte> PERMIT_SHARE = createField("permit_share", org.jooq.impl.SQLDataType.TINYINT.nullable(false).defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.TINYINT)), this, "是否允许分享优惠券链接");
 
     /**
      * The column <code>mini_shop_471752.b2c_mrking_voucher.remind_owner</code>. 是否到期前提醒用户
      */
-    public final TableField<MrkingVoucherRecord, Byte> REMIND_OWNER = createField("remind_owner", org.jooq.impl.SQLDataType.TINYINT.defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.TINYINT)), this, "是否到期前提醒用户");
+    public final TableField<MrkingVoucherRecord, Byte> REMIND_OWNER = createField("remind_owner", org.jooq.impl.SQLDataType.TINYINT.nullable(false).defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.TINYINT)), this, "是否到期前提醒用户");
 
     /**
      * The column <code>mini_shop_471752.b2c_mrking_voucher.giveout_amount</code>. 发放优惠券数量
      */
-    public final TableField<MrkingVoucherRecord, Short> GIVEOUT_AMOUNT = createField("giveout_amount", org.jooq.impl.SQLDataType.SMALLINT.defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.SMALLINT)), this, "发放优惠券数量");
+    public final TableField<MrkingVoucherRecord, Short> GIVEOUT_AMOUNT = createField("giveout_amount", org.jooq.impl.SQLDataType.SMALLINT.nullable(false).defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.SMALLINT)), this, "发放优惠券数量");
 
     /**
      * The column <code>mini_shop_471752.b2c_mrking_voucher.giveout_person</code>. 发放优惠券人数
      */
-    public final TableField<MrkingVoucherRecord, Short> GIVEOUT_PERSON = createField("giveout_person", org.jooq.impl.SQLDataType.SMALLINT.defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.SMALLINT)), this, "发放优惠券人数");
+    public final TableField<MrkingVoucherRecord, Short> GIVEOUT_PERSON = createField("giveout_person", org.jooq.impl.SQLDataType.SMALLINT.nullable(false).defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.SMALLINT)), this, "发放优惠券人数");
 
     /**
      * The column <code>mini_shop_471752.b2c_mrking_voucher.receive_amount</code>. 领取优惠券数量
      */
-    public final TableField<MrkingVoucherRecord, Short> RECEIVE_AMOUNT = createField("receive_amount", org.jooq.impl.SQLDataType.SMALLINT.defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.SMALLINT)), this, "领取优惠券数量");
+    public final TableField<MrkingVoucherRecord, Short> RECEIVE_AMOUNT = createField("receive_amount", org.jooq.impl.SQLDataType.SMALLINT.nullable(false).defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.SMALLINT)), this, "领取优惠券数量");
 
     /**
      * The column <code>mini_shop_471752.b2c_mrking_voucher.receive_person</code>. 领取优惠券人数
      */
-    public final TableField<MrkingVoucherRecord, Short> RECEIVE_PERSON = createField("receive_person", org.jooq.impl.SQLDataType.SMALLINT.defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.SMALLINT)), this, "领取优惠券人数");
+    public final TableField<MrkingVoucherRecord, Short> RECEIVE_PERSON = createField("receive_person", org.jooq.impl.SQLDataType.SMALLINT.nullable(false).defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.SMALLINT)), this, "领取优惠券人数");
 
     /**
      * The column <code>mini_shop_471752.b2c_mrking_voucher.used_amount</code>. 已使用优惠券数量
      */
-    public final TableField<MrkingVoucherRecord, Short> USED_AMOUNT = createField("used_amount", org.jooq.impl.SQLDataType.SMALLINT.defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.SMALLINT)), this, "已使用优惠券数量");
+    public final TableField<MrkingVoucherRecord, Short> USED_AMOUNT = createField("used_amount", org.jooq.impl.SQLDataType.SMALLINT.nullable(false).defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.SMALLINT)), this, "已使用优惠券数量");
 
     /**
      * The column <code>mini_shop_471752.b2c_mrking_voucher.alias_code</code>. 唯一活动代码
      */
-    public final TableField<MrkingVoucherRecord, String> ALIAS_CODE = createField("alias_code", org.jooq.impl.SQLDataType.VARCHAR(16).defaultValue(org.jooq.impl.DSL.inline("", org.jooq.impl.SQLDataType.VARCHAR)), this, "唯一活动代码");
+    public final TableField<MrkingVoucherRecord, String> ALIAS_CODE = createField("alias_code", org.jooq.impl.SQLDataType.VARCHAR(16).nullable(false).defaultValue(org.jooq.impl.DSL.inline("", org.jooq.impl.SQLDataType.VARCHAR)), this, "唯一活动代码");
 
     /**
      * The column <code>mini_shop_471752.b2c_mrking_voucher.validation_code</code>. 领取码
      */
-    public final TableField<MrkingVoucherRecord, String> VALIDATION_CODE = createField("validation_code", org.jooq.impl.SQLDataType.VARCHAR(10).defaultValue(org.jooq.impl.DSL.inline("", org.jooq.impl.SQLDataType.VARCHAR)), this, "领取码");
+    public final TableField<MrkingVoucherRecord, String> VALIDATION_CODE = createField("validation_code", org.jooq.impl.SQLDataType.VARCHAR(10).nullable(false).defaultValue(org.jooq.impl.DSL.inline("", org.jooq.impl.SQLDataType.VARCHAR)), this, "领取码");
 
     /**
      * The column <code>mini_shop_471752.b2c_mrking_voucher.recommend_goods_id</code>. 指定商品可用
@@ -216,42 +211,42 @@ public class MrkingVoucher extends TableImpl<MrkingVoucherRecord> {
     /**
      * The column <code>mini_shop_471752.b2c_mrking_voucher.validity</code>. 优惠券有效天数
      */
-    public final TableField<MrkingVoucherRecord, Integer> VALIDITY = createField("validity", org.jooq.impl.SQLDataType.INTEGER.defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.INTEGER)), this, "优惠券有效天数");
+    public final TableField<MrkingVoucherRecord, Integer> VALIDITY = createField("validity", org.jooq.impl.SQLDataType.INTEGER.nullable(false).defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.INTEGER)), this, "优惠券有效天数");
 
     /**
      * The column <code>mini_shop_471752.b2c_mrking_voucher.activity_names</code>. 分裂优惠卷活动名称
      */
-    public final TableField<MrkingVoucherRecord, String> ACTIVITY_NAMES = createField("activity_names", org.jooq.impl.SQLDataType.VARCHAR(50).defaultValue(org.jooq.impl.DSL.inline("", org.jooq.impl.SQLDataType.VARCHAR)), this, "分裂优惠卷活动名称");
+    public final TableField<MrkingVoucherRecord, String> ACTIVITY_NAMES = createField("activity_names", org.jooq.impl.SQLDataType.VARCHAR(50).nullable(false).defaultValue(org.jooq.impl.DSL.inline("", org.jooq.impl.SQLDataType.VARCHAR)), this, "分裂优惠卷活动名称");
 
     /**
      * The column <code>mini_shop_471752.b2c_mrking_voucher.act_start_time</code>. 分裂优惠卷活动起始时间
      */
-    public final TableField<MrkingVoucherRecord, Timestamp> ACT_START_TIME = createField("act_start_time", org.jooq.impl.SQLDataType.TIMESTAMP, this, "分裂优惠卷活动起始时间");
+    public final TableField<MrkingVoucherRecord, Timestamp> ACT_START_TIME = createField("act_start_time", org.jooq.impl.SQLDataType.TIMESTAMP.nullable(false).defaultValue(org.jooq.impl.DSL.inline("0000-00-00 00:00:00", org.jooq.impl.SQLDataType.TIMESTAMP)), this, "分裂优惠卷活动起始时间");
 
     /**
      * The column <code>mini_shop_471752.b2c_mrking_voucher.act_end_time</code>. 分裂优惠卷活动结束时间
      */
-    public final TableField<MrkingVoucherRecord, Timestamp> ACT_END_TIME = createField("act_end_time", org.jooq.impl.SQLDataType.TIMESTAMP, this, "分裂优惠卷活动结束时间");
+    public final TableField<MrkingVoucherRecord, Timestamp> ACT_END_TIME = createField("act_end_time", org.jooq.impl.SQLDataType.TIMESTAMP.nullable(false).defaultValue(org.jooq.impl.DSL.inline("0000-00-00 00:00:00", org.jooq.impl.SQLDataType.TIMESTAMP)), this, "分裂优惠卷活动结束时间");
 
     /**
      * The column <code>mini_shop_471752.b2c_mrking_voucher.cou_limit</code>. 分裂优惠卷数量
      */
-    public final TableField<MrkingVoucherRecord, Integer> COU_LIMIT = createField("cou_limit", org.jooq.impl.SQLDataType.INTEGER.defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.INTEGER)), this, "分裂优惠卷数量");
+    public final TableField<MrkingVoucherRecord, Integer> COU_LIMIT = createField("cou_limit", org.jooq.impl.SQLDataType.INTEGER.nullable(false).defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.INTEGER)), this, "分裂优惠卷数量");
 
     /**
      * The column <code>mini_shop_471752.b2c_mrking_voucher.least_money</code>. 分裂优惠卷触发条件
      */
-    public final TableField<MrkingVoucherRecord, Integer> LEAST_MONEY = createField("least_money", org.jooq.impl.SQLDataType.INTEGER.defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.INTEGER)), this, "分裂优惠卷触发条件");
+    public final TableField<MrkingVoucherRecord, Integer> LEAST_MONEY = createField("least_money", org.jooq.impl.SQLDataType.INTEGER.nullable(false).defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.INTEGER)), this, "分裂优惠卷触发条件");
 
     /**
      * The column <code>mini_shop_471752.b2c_mrking_voucher.type</code>. 优惠卷类型，1为分裂 0为正常 2抽奖 3送券 4跳转自定义链接
      */
-    public final TableField<MrkingVoucherRecord, Byte> TYPE = createField("type", org.jooq.impl.SQLDataType.TINYINT.defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.TINYINT)), this, "优惠卷类型，1为分裂 0为正常 2抽奖 3送券 4跳转自定义链接");
+    public final TableField<MrkingVoucherRecord, Byte> TYPE = createField("type", org.jooq.impl.SQLDataType.TINYINT.nullable(false).defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.TINYINT)), this, "优惠卷类型，1为分裂 0为正常 2抽奖 3送券 4跳转自定义链接");
 
     /**
-     * The column <code>mini_shop_471752.b2c_mrking_voucher.is_delete</code>. 1为删除状态
+     * The column <code>mini_shop_471752.b2c_mrking_voucher.del_flag</code>. 1为删除状态
      */
-    public final TableField<MrkingVoucherRecord, Byte> IS_DELETE = createField("is_delete", org.jooq.impl.SQLDataType.TINYINT.defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.TINYINT)), this, "1为删除状态");
+    public final TableField<MrkingVoucherRecord, Byte> DEL_FLAG = createField("del_flag", org.jooq.impl.SQLDataType.TINYINT.nullable(false).defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.TINYINT)), this, "1为删除状态");
 
     /**
      * The column <code>mini_shop_471752.b2c_mrking_voucher.recommend_sort_id</code>. 指定商家分类可用
@@ -261,7 +256,7 @@ public class MrkingVoucher extends TableImpl<MrkingVoucherRecord> {
     /**
      * The column <code>mini_shop_471752.b2c_mrking_voucher.action</code>. 1:系統创建 2：来自crm
      */
-    public final TableField<MrkingVoucherRecord, Byte> ACTION = createField("action", org.jooq.impl.SQLDataType.TINYINT.defaultValue(org.jooq.impl.DSL.inline("1", org.jooq.impl.SQLDataType.TINYINT)), this, "1:系統创建 2：来自crm");
+    public final TableField<MrkingVoucherRecord, Byte> ACTION = createField("action", org.jooq.impl.SQLDataType.TINYINT.nullable(false).defaultValue(org.jooq.impl.DSL.inline("1", org.jooq.impl.SQLDataType.TINYINT)), this, "1:系統创建 2：来自crm");
 
     /**
      * The column <code>mini_shop_471752.b2c_mrking_voucher.identity_id</code>. 关联外部优惠券规则唯一码
@@ -274,24 +269,24 @@ public class MrkingVoucher extends TableImpl<MrkingVoucherRecord> {
     public final TableField<MrkingVoucherRecord, String> RECOMMEND_PRODUCT_ID = createField("recommend_product_id", org.jooq.impl.SQLDataType.CLOB, this, "关联商品规格");
 
     /**
-     * The column <code>mini_shop_471752.b2c_mrking_voucher.coupon_ids</code>. 支付送券的优惠券ID
+     * The column <code>mini_shop_471752.b2c_mrking_voucher.coupon_ids</code>. 支付送券的优惠券id
      */
-    public final TableField<MrkingVoucherRecord, String> COUPON_IDS = createField("coupon_ids", org.jooq.impl.SQLDataType.VARCHAR(50), this, "支付送券的优惠券ID");
+    public final TableField<MrkingVoucherRecord, String> COUPON_IDS = createField("coupon_ids", org.jooq.impl.SQLDataType.VARCHAR(50), this, "支付送券的优惠券id");
 
     /**
      * The column <code>mini_shop_471752.b2c_mrking_voucher.use_score</code>. 是否可以积分兑换
      */
-    public final TableField<MrkingVoucherRecord, Byte> USE_SCORE = createField("use_score", org.jooq.impl.SQLDataType.TINYINT.defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.TINYINT)), this, "是否可以积分兑换");
+    public final TableField<MrkingVoucherRecord, Byte> USE_SCORE = createField("use_score", org.jooq.impl.SQLDataType.TINYINT.nullable(false).defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.TINYINT)), this, "是否可以积分兑换");
 
     /**
      * The column <code>mini_shop_471752.b2c_mrking_voucher.score_number</code>. 需要积分数
      */
-    public final TableField<MrkingVoucherRecord, Integer> SCORE_NUMBER = createField("score_number", org.jooq.impl.SQLDataType.INTEGER.defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.INTEGER)), this, "需要积分数");
+    public final TableField<MrkingVoucherRecord, Integer> SCORE_NUMBER = createField("score_number", org.jooq.impl.SQLDataType.INTEGER.nullable(false).defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.INTEGER)), this, "需要积分数");
 
     /**
-     * The column <code>mini_shop_471752.b2c_mrking_voucher.lottery</code>. 抽奖活动ID
+     * The column <code>mini_shop_471752.b2c_mrking_voucher.lottery</code>. 抽奖活动id
      */
-    public final TableField<MrkingVoucherRecord, Integer> LOTTERY = createField("lottery", org.jooq.impl.SQLDataType.INTEGER, this, "抽奖活动ID");
+    public final TableField<MrkingVoucherRecord, Integer> LOTTERY = createField("lottery", org.jooq.impl.SQLDataType.INTEGER, this, "抽奖活动id");
 
     /**
      * The column <code>mini_shop_471752.b2c_mrking_voucher.card_id</code>. 专属会员卡
@@ -301,17 +296,27 @@ public class MrkingVoucher extends TableImpl<MrkingVoucherRecord> {
     /**
      * The column <code>mini_shop_471752.b2c_mrking_voucher.pay_reward_img_path</code>. 支付有礼跳转活动图片路径
      */
-    public final TableField<MrkingVoucherRecord, String> PAY_REWARD_IMG_PATH = createField("pay_reward_img_path", org.jooq.impl.SQLDataType.VARCHAR(191).nullable(false).defaultValue(org.jooq.impl.DSL.inline("", org.jooq.impl.SQLDataType.VARCHAR)), this, "支付有礼跳转活动图片路径");
+    public final TableField<MrkingVoucherRecord, String> PAY_REWARD_IMG_PATH = createField("pay_reward_img_path", org.jooq.impl.SQLDataType.VARCHAR(500).nullable(false).defaultValue(org.jooq.impl.DSL.inline("", org.jooq.impl.SQLDataType.VARCHAR)), this, "支付有礼跳转活动图片路径");
 
     /**
      * The column <code>mini_shop_471752.b2c_mrking_voucher.pay_reward_url</code>. 支付有礼跳转活动链接
      */
-    public final TableField<MrkingVoucherRecord, String> PAY_REWARD_URL = createField("pay_reward_url", org.jooq.impl.SQLDataType.VARCHAR(191).nullable(false).defaultValue(org.jooq.impl.DSL.inline("", org.jooq.impl.SQLDataType.VARCHAR)), this, "支付有礼跳转活动链接");
+    public final TableField<MrkingVoucherRecord, String> PAY_REWARD_URL = createField("pay_reward_url", org.jooq.impl.SQLDataType.VARCHAR(500).nullable(false).defaultValue(org.jooq.impl.DSL.inline("", org.jooq.impl.SQLDataType.VARCHAR)), this, "支付有礼跳转活动链接");
 
     /**
      * The column <code>mini_shop_471752.b2c_mrking_voucher.recommend_type</code>. 支付有礼跳转链接 1:全部商品可用 2：指定商品可用
      */
     public final TableField<MrkingVoucherRecord, Byte> RECOMMEND_TYPE = createField("recommend_type", org.jooq.impl.SQLDataType.TINYINT.nullable(false).defaultValue(org.jooq.impl.DSL.inline("1", org.jooq.impl.SQLDataType.TINYINT)), this, "支付有礼跳转链接 1:全部商品可用 2：指定商品可用");
+
+    /**
+     * The column <code>mini_shop_471752.b2c_mrking_voucher.create_time</code>.
+     */
+    public final TableField<MrkingVoucherRecord, Timestamp> CREATE_TIME = createField("create_time", org.jooq.impl.SQLDataType.TIMESTAMP.nullable(false).defaultValue(org.jooq.impl.DSL.field("CURRENT_TIMESTAMP", org.jooq.impl.SQLDataType.TIMESTAMP)), this, "");
+
+    /**
+     * The column <code>mini_shop_471752.b2c_mrking_voucher.update_time</code>. 最后修改时间
+     */
+    public final TableField<MrkingVoucherRecord, Timestamp> UPDATE_TIME = createField("update_time", org.jooq.impl.SQLDataType.TIMESTAMP.nullable(false).defaultValue(org.jooq.impl.DSL.field("CURRENT_TIMESTAMP", org.jooq.impl.SQLDataType.TIMESTAMP)), this, "最后修改时间");
 
     /**
      * Create a <code>mini_shop_471752.b2c_mrking_voucher</code> table reference

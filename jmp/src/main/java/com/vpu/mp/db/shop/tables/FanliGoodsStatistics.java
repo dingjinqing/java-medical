@@ -36,7 +36,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class FanliGoodsStatistics extends TableImpl<FanliGoodsStatisticsRecord> {
 
-    private static final long serialVersionUID = -1697161411;
+    private static final long serialVersionUID = -1983178491;
 
     /**
      * The reference instance of <code>mini_shop_471752.b2c_fanli_goods_statistics</code>
@@ -67,9 +67,9 @@ public class FanliGoodsStatistics extends TableImpl<FanliGoodsStatisticsRecord> 
     public final TableField<FanliGoodsStatisticsRecord, Integer> GOODS_ID = createField("goods_id", org.jooq.impl.SQLDataType.INTEGER, this, "");
 
     /**
-     * The column <code>mini_shop_471752.b2c_fanli_goods_statistics.cat_id</code>. 分类ID
+     * The column <code>mini_shop_471752.b2c_fanli_goods_statistics.cat_id</code>. 分类id
      */
-    public final TableField<FanliGoodsStatisticsRecord, Integer> CAT_ID = createField("cat_id", org.jooq.impl.SQLDataType.INTEGER, this, "分类ID");
+    public final TableField<FanliGoodsStatisticsRecord, Integer> CAT_ID = createField("cat_id", org.jooq.impl.SQLDataType.INTEGER, this, "分类id");
 
     /**
      * The column <code>mini_shop_471752.b2c_fanli_goods_statistics.sale_number</code>. 销量
@@ -82,14 +82,14 @@ public class FanliGoodsStatistics extends TableImpl<FanliGoodsStatisticsRecord> 
     public final TableField<FanliGoodsStatisticsRecord, BigDecimal> PRD_TOTAL_FANLI = createField("prd_total_fanli", org.jooq.impl.SQLDataType.DECIMAL(10, 2).defaultValue(org.jooq.impl.DSL.inline("0.00", org.jooq.impl.SQLDataType.DECIMAL)), this, "商品返利总金额");
 
     /**
-     * The column <code>mini_shop_471752.b2c_fanli_goods_statistics.add_time</code>.
+     * The column <code>mini_shop_471752.b2c_fanli_goods_statistics.create_time</code>.
      */
-    public final TableField<FanliGoodsStatisticsRecord, Timestamp> ADD_TIME = createField("add_time", org.jooq.impl.SQLDataType.TIMESTAMP.nullable(false).defaultValue(org.jooq.impl.DSL.field("CURRENT_TIMESTAMP", org.jooq.impl.SQLDataType.TIMESTAMP)), this, "");
+    public final TableField<FanliGoodsStatisticsRecord, Timestamp> CREATE_TIME = createField("create_time", org.jooq.impl.SQLDataType.TIMESTAMP.nullable(false).defaultValue(org.jooq.impl.DSL.field("CURRENT_TIMESTAMP", org.jooq.impl.SQLDataType.TIMESTAMP)), this, "");
 
     /**
-     * The column <code>mini_shop_471752.b2c_fanli_goods_statistics.update_time</code>.
+     * The column <code>mini_shop_471752.b2c_fanli_goods_statistics.update_time</code>. 最后修改时间
      */
-    public final TableField<FanliGoodsStatisticsRecord, Timestamp> UPDATE_TIME = createField("update_time", org.jooq.impl.SQLDataType.TIMESTAMP.nullable(false).defaultValue(org.jooq.impl.DSL.inline("0000-00-00 00:00:00", org.jooq.impl.SQLDataType.TIMESTAMP)), this, "");
+    public final TableField<FanliGoodsStatisticsRecord, Timestamp> UPDATE_TIME = createField("update_time", org.jooq.impl.SQLDataType.TIMESTAMP.nullable(false).defaultValue(org.jooq.impl.DSL.field("CURRENT_TIMESTAMP", org.jooq.impl.SQLDataType.TIMESTAMP)), this, "最后修改时间");
 
     /**
      * Create a <code>mini_shop_471752.b2c_fanli_goods_statistics</code> table reference

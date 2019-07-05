@@ -9,6 +9,7 @@ import com.vpu.mp.db.shop.Keys;
 import com.vpu.mp.db.shop.MiniShop_471752;
 import com.vpu.mp.db.shop.tables.records.WxpUnlimitSceneRecord;
 
+import java.sql.Timestamp;
 import java.util.Arrays;
 import java.util.List;
 
@@ -41,7 +42,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class WxpUnlimitScene extends TableImpl<WxpUnlimitSceneRecord> {
 
-    private static final long serialVersionUID = -2002240652;
+    private static final long serialVersionUID = 1102929723;
 
     /**
      * The reference instance of <code>mini_shop_471752.b2c_wxp_unlimit_scene</code>
@@ -65,6 +66,16 @@ public class WxpUnlimitScene extends TableImpl<WxpUnlimitSceneRecord> {
      * The column <code>mini_shop_471752.b2c_wxp_unlimit_scene.scene_value</code>.
      */
     public final TableField<WxpUnlimitSceneRecord, String> SCENE_VALUE = createField("scene_value", org.jooq.impl.SQLDataType.VARCHAR(1200), this, "");
+
+    /**
+     * The column <code>mini_shop_471752.b2c_wxp_unlimit_scene.create_time</code>.
+     */
+    public final TableField<WxpUnlimitSceneRecord, Timestamp> CREATE_TIME = createField("create_time", org.jooq.impl.SQLDataType.TIMESTAMP.nullable(false).defaultValue(org.jooq.impl.DSL.field("CURRENT_TIMESTAMP", org.jooq.impl.SQLDataType.TIMESTAMP)), this, "");
+
+    /**
+     * The column <code>mini_shop_471752.b2c_wxp_unlimit_scene.update_time</code>. 最后修改时间
+     */
+    public final TableField<WxpUnlimitSceneRecord, Timestamp> UPDATE_TIME = createField("update_time", org.jooq.impl.SQLDataType.TIMESTAMP.nullable(false).defaultValue(org.jooq.impl.DSL.field("CURRENT_TIMESTAMP", org.jooq.impl.SQLDataType.TIMESTAMP)), this, "最后修改时间");
 
     /**
      * Create a <code>mini_shop_471752.b2c_wxp_unlimit_scene</code> table reference

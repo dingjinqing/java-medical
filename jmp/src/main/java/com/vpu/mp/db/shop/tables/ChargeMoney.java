@@ -43,7 +43,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class ChargeMoney extends TableImpl<ChargeMoneyRecord> {
 
-    private static final long serialVersionUID = 1993707312;
+    private static final long serialVersionUID = -181115857;
 
     /**
      * The reference instance of <code>mini_shop_471752.b2c_charge_money</code>
@@ -74,19 +74,14 @@ public class ChargeMoney extends TableImpl<ChargeMoneyRecord> {
     public final TableField<ChargeMoneyRecord, Integer> CARD_ID = createField("card_id", org.jooq.impl.SQLDataType.INTEGER.nullable(false).defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.INTEGER)), this, "会员卡id");
 
     /**
-     * The column <code>mini_shop_471752.b2c_charge_money.add_time</code>. 充值时间
-     */
-    public final TableField<ChargeMoneyRecord, Timestamp> ADD_TIME = createField("add_time", org.jooq.impl.SQLDataType.TIMESTAMP, this, "充值时间");
-
-    /**
      * The column <code>mini_shop_471752.b2c_charge_money.charge</code>. 充值的钱
      */
-    public final TableField<ChargeMoneyRecord, BigDecimal> CHARGE = createField("charge", org.jooq.impl.SQLDataType.DECIMAL(10, 2).defaultValue(org.jooq.impl.DSL.inline("0.00", org.jooq.impl.SQLDataType.DECIMAL)), this, "充值的钱");
+    public final TableField<ChargeMoneyRecord, BigDecimal> CHARGE = createField("charge", org.jooq.impl.SQLDataType.DECIMAL(10, 2).nullable(false).defaultValue(org.jooq.impl.DSL.inline("0.00", org.jooq.impl.SQLDataType.DECIMAL)), this, "充值的钱");
 
     /**
      * The column <code>mini_shop_471752.b2c_charge_money.count</code>. 充值次数
      */
-    public final TableField<ChargeMoneyRecord, Short> COUNT = createField("count", org.jooq.impl.SQLDataType.SMALLINT.defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.SMALLINT)), this, "充值次数");
+    public final TableField<ChargeMoneyRecord, Short> COUNT = createField("count", org.jooq.impl.SQLDataType.SMALLINT.nullable(false).defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.SMALLINT)), this, "充值次数");
 
     /**
      * The column <code>mini_shop_471752.b2c_charge_money.payment</code>. 支付方式
@@ -104,14 +99,14 @@ public class ChargeMoney extends TableImpl<ChargeMoneyRecord> {
     public final TableField<ChargeMoneyRecord, String> REASON = createField("reason", org.jooq.impl.SQLDataType.VARCHAR(191), this, "充值原因");
 
     /**
-     * The column <code>mini_shop_471752.b2c_charge_money.prepay_id</code>. 微信支付Id，用于发送模板消息
+     * The column <code>mini_shop_471752.b2c_charge_money.prepay_id</code>. 微信支付id，用于发送模板消息
      */
-    public final TableField<ChargeMoneyRecord, String> PREPAY_ID = createField("prepay_id", org.jooq.impl.SQLDataType.VARCHAR(191), this, "微信支付Id，用于发送模板消息");
+    public final TableField<ChargeMoneyRecord, String> PREPAY_ID = createField("prepay_id", org.jooq.impl.SQLDataType.VARCHAR(191), this, "微信支付id，用于发送模板消息");
 
     /**
      * The column <code>mini_shop_471752.b2c_charge_money.message</code>. 备注
      */
-    public final TableField<ChargeMoneyRecord, String> MESSAGE = createField("message", org.jooq.impl.SQLDataType.VARCHAR(191).defaultValue(org.jooq.impl.DSL.inline("", org.jooq.impl.SQLDataType.VARCHAR)), this, "备注");
+    public final TableField<ChargeMoneyRecord, String> MESSAGE = createField("message", org.jooq.impl.SQLDataType.VARCHAR(191).nullable(false).defaultValue(org.jooq.impl.DSL.inline("", org.jooq.impl.SQLDataType.VARCHAR)), this, "备注");
 
     /**
      * The column <code>mini_shop_471752.b2c_charge_money.order_sn</code>.
@@ -141,12 +136,22 @@ public class ChargeMoney extends TableImpl<ChargeMoneyRecord> {
     /**
      * The column <code>mini_shop_471752.b2c_charge_money.ali_trade_no</code>. 支付宝交易单号
      */
-    public final TableField<ChargeMoneyRecord, String> ALI_TRADE_NO = createField("ali_trade_no", org.jooq.impl.SQLDataType.VARCHAR(60).defaultValue(org.jooq.impl.DSL.inline("", org.jooq.impl.SQLDataType.VARCHAR)), this, "支付宝交易单号");
+    public final TableField<ChargeMoneyRecord, String> ALI_TRADE_NO = createField("ali_trade_no", org.jooq.impl.SQLDataType.VARCHAR(60).nullable(false).defaultValue(org.jooq.impl.DSL.inline("", org.jooq.impl.SQLDataType.VARCHAR)), this, "支付宝交易单号");
 
     /**
      * The column <code>mini_shop_471752.b2c_charge_money.exchang_count</code>. 兑换充值次数
      */
-    public final TableField<ChargeMoneyRecord, Short> EXCHANG_COUNT = createField("exchang_count", org.jooq.impl.SQLDataType.SMALLINT.defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.SMALLINT)), this, "兑换充值次数");
+    public final TableField<ChargeMoneyRecord, Short> EXCHANG_COUNT = createField("exchang_count", org.jooq.impl.SQLDataType.SMALLINT.nullable(false).defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.SMALLINT)), this, "兑换充值次数");
+
+    /**
+     * The column <code>mini_shop_471752.b2c_charge_money.create_time</code>.
+     */
+    public final TableField<ChargeMoneyRecord, Timestamp> CREATE_TIME = createField("create_time", org.jooq.impl.SQLDataType.TIMESTAMP.nullable(false).defaultValue(org.jooq.impl.DSL.field("CURRENT_TIMESTAMP", org.jooq.impl.SQLDataType.TIMESTAMP)), this, "");
+
+    /**
+     * The column <code>mini_shop_471752.b2c_charge_money.update_time</code>. 最后修改时间
+     */
+    public final TableField<ChargeMoneyRecord, Timestamp> UPDATE_TIME = createField("update_time", org.jooq.impl.SQLDataType.TIMESTAMP.nullable(false).defaultValue(org.jooq.impl.DSL.field("CURRENT_TIMESTAMP", org.jooq.impl.SQLDataType.TIMESTAMP)), this, "最后修改时间");
 
     /**
      * Create a <code>mini_shop_471752.b2c_charge_money</code> table reference

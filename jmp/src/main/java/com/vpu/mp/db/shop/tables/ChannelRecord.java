@@ -42,7 +42,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class ChannelRecord extends TableImpl<ChannelRecordRecord> {
 
-    private static final long serialVersionUID = -414069230;
+    private static final long serialVersionUID = 223487656;
 
     /**
      * The reference instance of <code>mini_shop_471752.b2c_channel_record</code>
@@ -63,14 +63,14 @@ public class ChannelRecord extends TableImpl<ChannelRecordRecord> {
     public final TableField<ChannelRecordRecord, Integer> ID = createField("id", org.jooq.impl.SQLDataType.INTEGER.nullable(false).identity(true), this, "id");
 
     /**
-     * The column <code>mini_shop_471752.b2c_channel_record.channel_id</code>. 渠道页ID
+     * The column <code>mini_shop_471752.b2c_channel_record.channel_id</code>. 渠道页id
      */
-    public final TableField<ChannelRecordRecord, Integer> CHANNEL_ID = createField("channel_id", org.jooq.impl.SQLDataType.INTEGER.nullable(false), this, "渠道页ID");
+    public final TableField<ChannelRecordRecord, Integer> CHANNEL_ID = createField("channel_id", org.jooq.impl.SQLDataType.INTEGER.nullable(false), this, "渠道页id");
 
     /**
-     * The column <code>mini_shop_471752.b2c_channel_record.user_id</code>. userID
+     * The column <code>mini_shop_471752.b2c_channel_record.user_id</code>. userid
      */
-    public final TableField<ChannelRecordRecord, Integer> USER_ID = createField("user_id", org.jooq.impl.SQLDataType.INTEGER.nullable(false), this, "userID");
+    public final TableField<ChannelRecordRecord, Integer> USER_ID = createField("user_id", org.jooq.impl.SQLDataType.INTEGER.nullable(false), this, "userid");
 
     /**
      * The column <code>mini_shop_471752.b2c_channel_record.type</code>. 类型 1新用 0老用户
@@ -83,9 +83,14 @@ public class ChannelRecord extends TableImpl<ChannelRecordRecord> {
     public final TableField<ChannelRecordRecord, Integer> COUNT = createField("count", org.jooq.impl.SQLDataType.INTEGER.nullable(false), this, "访问次数");
 
     /**
-     * The column <code>mini_shop_471752.b2c_channel_record.add_time</code>.
+     * The column <code>mini_shop_471752.b2c_channel_record.create_time</code>.
      */
-    public final TableField<ChannelRecordRecord, Timestamp> ADD_TIME = createField("add_time", org.jooq.impl.SQLDataType.TIMESTAMP, this, "");
+    public final TableField<ChannelRecordRecord, Timestamp> CREATE_TIME = createField("create_time", org.jooq.impl.SQLDataType.TIMESTAMP.nullable(false).defaultValue(org.jooq.impl.DSL.field("CURRENT_TIMESTAMP", org.jooq.impl.SQLDataType.TIMESTAMP)), this, "");
+
+    /**
+     * The column <code>mini_shop_471752.b2c_channel_record.update_time</code>. 最后修改时间
+     */
+    public final TableField<ChannelRecordRecord, Timestamp> UPDATE_TIME = createField("update_time", org.jooq.impl.SQLDataType.TIMESTAMP.nullable(false).defaultValue(org.jooq.impl.DSL.field("CURRENT_TIMESTAMP", org.jooq.impl.SQLDataType.TIMESTAMP)), this, "最后修改时间");
 
     /**
      * Create a <code>mini_shop_471752.b2c_channel_record</code> table reference

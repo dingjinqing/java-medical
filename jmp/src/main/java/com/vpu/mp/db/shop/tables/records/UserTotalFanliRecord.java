@@ -31,17 +31,17 @@ import org.jooq.impl.UpdatableRecordImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class UserTotalFanliRecord extends UpdatableRecordImpl<UserTotalFanliRecord> implements Record8<Integer, String, Integer, BigDecimal, BigDecimal, BigDecimal, Timestamp, Timestamp> {
 
-    private static final long serialVersionUID = -279976198;
+    private static final long serialVersionUID = 1318174206;
 
     /**
-     * Setter for <code>mini_shop_471752.b2c_user_total_fanli.user_id</code>. 会员ID
+     * Setter for <code>mini_shop_471752.b2c_user_total_fanli.user_id</code>. 会员id
      */
     public void setUserId(Integer value) {
         set(0, value);
     }
 
     /**
-     * Getter for <code>mini_shop_471752.b2c_user_total_fanli.user_id</code>. 会员ID
+     * Getter for <code>mini_shop_471752.b2c_user_total_fanli.user_id</code>. 会员id
      */
     public Integer getUserId() {
         return (Integer) get(0);
@@ -118,28 +118,28 @@ public class UserTotalFanliRecord extends UpdatableRecordImpl<UserTotalFanliReco
     }
 
     /**
-     * Setter for <code>mini_shop_471752.b2c_user_total_fanli.add_time</code>.
+     * Setter for <code>mini_shop_471752.b2c_user_total_fanli.create_time</code>.
      */
-    public void setAddTime(Timestamp value) {
+    public void setCreateTime(Timestamp value) {
         set(6, value);
     }
 
     /**
-     * Getter for <code>mini_shop_471752.b2c_user_total_fanli.add_time</code>.
+     * Getter for <code>mini_shop_471752.b2c_user_total_fanli.create_time</code>.
      */
-    public Timestamp getAddTime() {
+    public Timestamp getCreateTime() {
         return (Timestamp) get(6);
     }
 
     /**
-     * Setter for <code>mini_shop_471752.b2c_user_total_fanli.update_time</code>.
+     * Setter for <code>mini_shop_471752.b2c_user_total_fanli.update_time</code>. 最后修改时间
      */
     public void setUpdateTime(Timestamp value) {
         set(7, value);
     }
 
     /**
-     * Getter for <code>mini_shop_471752.b2c_user_total_fanli.update_time</code>.
+     * Getter for <code>mini_shop_471752.b2c_user_total_fanli.update_time</code>. 最后修改时间
      */
     public Timestamp getUpdateTime() {
         return (Timestamp) get(7);
@@ -230,7 +230,7 @@ public class UserTotalFanliRecord extends UpdatableRecordImpl<UserTotalFanliReco
      */
     @Override
     public Field<Timestamp> field7() {
-        return UserTotalFanli.USER_TOTAL_FANLI.ADD_TIME;
+        return UserTotalFanli.USER_TOTAL_FANLI.CREATE_TIME;
     }
 
     /**
@@ -294,7 +294,7 @@ public class UserTotalFanliRecord extends UpdatableRecordImpl<UserTotalFanliReco
      */
     @Override
     public Timestamp component7() {
-        return getAddTime();
+        return getCreateTime();
     }
 
     /**
@@ -358,7 +358,7 @@ public class UserTotalFanliRecord extends UpdatableRecordImpl<UserTotalFanliReco
      */
     @Override
     public Timestamp value7() {
-        return getAddTime();
+        return getCreateTime();
     }
 
     /**
@@ -428,7 +428,7 @@ public class UserTotalFanliRecord extends UpdatableRecordImpl<UserTotalFanliReco
      */
     @Override
     public UserTotalFanliRecord value7(Timestamp value) {
-        setAddTime(value);
+        setCreateTime(value);
         return this;
     }
 
@@ -471,7 +471,7 @@ public class UserTotalFanliRecord extends UpdatableRecordImpl<UserTotalFanliReco
     /**
      * Create a detached, initialised UserTotalFanliRecord
      */
-    public UserTotalFanliRecord(Integer userId, String mobile, Integer sublayerNumber, BigDecimal totalMoney, BigDecimal canMoney, BigDecimal blocked, Timestamp addTime, Timestamp updateTime) {
+    public UserTotalFanliRecord(Integer userId, String mobile, Integer sublayerNumber, BigDecimal totalMoney, BigDecimal canMoney, BigDecimal blocked, Timestamp createTime, Timestamp updateTime) {
         super(UserTotalFanli.USER_TOTAL_FANLI);
 
         set(0, userId);
@@ -480,7 +480,7 @@ public class UserTotalFanliRecord extends UpdatableRecordImpl<UserTotalFanliReco
         set(3, totalMoney);
         set(4, canMoney);
         set(5, blocked);
-        set(6, addTime);
+        set(6, createTime);
         set(7, updateTime);
     }
 }
