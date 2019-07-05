@@ -7,6 +7,9 @@ import static com.vpu.mp.db.main.tables.ShopChildRole.SHOP_CHILD_ROLE;
 import static com.vpu.mp.db.main.tables.ShopRenew.SHOP_RENEW;
 
 import java.sql.Timestamp;
+import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.List;
 
 import org.jooq.Record;
 import org.jooq.Record1;
@@ -19,10 +22,14 @@ import org.jooq.tools.StringUtils;
 import com.vpu.mp.db.main.tables.records.ShopRecord;
 import com.vpu.mp.service.foundation.BaseService;
 import com.vpu.mp.service.foundation.DbConfig;
+import com.vpu.mp.service.foundation.FieldsUtil;
 import com.vpu.mp.service.foundation.PageResult;
 import com.vpu.mp.service.foundation.Util;
 import com.vpu.mp.service.pojo.saas.shop.ShopListQueryParam;
 import com.vpu.mp.service.pojo.saas.shop.ShopPojo;
+import com.vpu.mp.service.pojo.shop.auth.AdminTokenAuthInfo;
+import com.vpu.mp.service.pojo.shop.auth.ShopReq;
+import com.vpu.mp.service.pojo.shop.auth.ShopSelectInnerResp;
 
 /**
  * 
@@ -127,18 +134,26 @@ public class ShopService extends BaseService {
 		}
 		return select;
 	}
-
-	public ShopRecord addShop(ShopPojo shop) {
-		shop.setShopId(getCanUseShopId());
-		shop.setIsEnabled(shop.getIsEnabled() == null ? 0 : shop.getIsEnabled());
-		shop.setIsEnabled(shop.getHidBottom() == null ? 0 : shop.getHidBottom());
-		DbConfig dbConfig = dm.getInstallShopDbConfig(shop.getShopId());
-		shop.setDbConfig(Util.toJSON(dbConfig));
-		dm.installShopDb(dbConfig);
-
-		ShopRecord record = db().newRecord(SHOP, shop);
-		db().executeInsert(record);
-		return record;
+	
+	
+	/**
+	 * TODO 加个事务
+	 * @param shopReq
+	 * @return
+	 */
+	public Boolean addShop(ShopReq shopReq) {
+		shopReq.setShopId(getCanUseShopId());
+		DbConfig dbConfig = dm.getInstallShopDbConfig(shopReq.getShopId());
+		shopReq.setDbConfig(Util.toJSON(dbConfig));
+		if(!dm.installShopDb(dbConfig)) {
+			return false;
+		}
+		ShopRecord record =new ShopRecord();
+		FieldsUtil.assignNotNull(shopReq, record);
+		if(db().executeInsert(record)!=1) {
+			return false;
+		}
+		return true;
 	}
 
 	public Integer getCanUseShopId() {
@@ -257,6 +272,60 @@ public class ShopService extends BaseService {
 				.set(SHOP.SHARE_CONFIG, shop.getShareConfig())
                 .where(SHOP.SHOP_ID.eq(shop.getShopId()))
 				.execute();
+	}
+	public List getShopList(AdminTokenAuthInfo info,
+			List<Record9<Integer, Integer, String, String, Timestamp, Byte, Byte, Byte, String>> shopList) {
+		List dataList=new ArrayList<>(shopList.size());
+		for (Record9 record : shopList) {
+			ShopSelectInnerResp shopInner = new ShopSelectInnerResp();
+			Timestamp expireTime = renew.getShopRenewExpireTime(Util.getInteger(record.get(SHOP.SHOP_ID)));
+			String expireStatus = "1";
+			if (expireTime != null) {
+				Calendar cal = Calendar.getInstance();
+				cal.setTime(expireTime);
+				cal.set(Calendar.HOUR, 0);
+				cal.set(Calendar.MINUTE, 0);
+				cal.set(Calendar.SECOND, 0);
+				if (cal.getTimeInMillis() > Calendar.getInstance().getTimeInMillis()) {
+					expireStatus = "0";
+				}
+			}
+			shopInner.setShopId(record.get(SHOP.SHOP_ID));
+			shopInner.setSysId(record.get(SHOP.SYS_ID));
+			shopInner.setShopName(record.get(SHOP.SHOP_NAME));
+			shopInner.setShopAvatar(record.get(SHOP.SHOP_AVATAR));
+			shopInner.setCreated(record.get(SHOP.CREATED));
+			shopInner.setState(record.get(SHOP.STATE));
+			shopInner.setBusinessState(record.get(SHOP.BUSINESS_STATE));
+			shopInner.setIsEnabled(record.get(SHOP.IS_ENABLED));
+			shopInner.setShopType(record.get(SHOP.SHOP_TYPE));
+			shopInner.setExpireTime(expireTime);
+			shopInner.setExpireTimeStatus(expireStatus);
+			dataList.add(shopInner);
+		}
+		return dataList;
+	}
+	
+	/**
+	 * 判断店铺是否过期,true为过期，false没过期
+	 * @return
+	 */
+	public Boolean checkExpire(Integer shopId) {
+		Timestamp expireTime = renew.getShopRenewExpireTime(shopId);
+		if(expireTime==null) {
+			return true;
+		}
+		if (expireTime != null) {
+			Calendar cal = Calendar.getInstance();
+			cal.setTime(expireTime);
+			cal.set(Calendar.HOUR, 0);
+			cal.set(Calendar.MINUTE, 0);
+			cal.set(Calendar.SECOND, 0);
+			if (cal.getTimeInMillis() > Calendar.getInstance().getTimeInMillis()) {
+				return false;
+			}
+		}
+		return true;
 	}
 
 }

@@ -10,7 +10,12 @@ import static com.vpu.mp.db.main.tables.ShopRenew.SHOP_RENEW;
 import java.math.BigDecimal;
 import java.sql.Timestamp;
 
+import com.vpu.mp.db.main.tables.records.ShopRenewRecord;
 import com.vpu.mp.service.foundation.BaseService;
+import com.vpu.mp.service.foundation.FieldsUtil;
+import com.vpu.mp.service.pojo.saas.auth.SystemTokenAuthInfo;
+import com.vpu.mp.service.pojo.shop.auth.AdminTokenAuthInfo;
+import com.vpu.mp.service.pojo.shop.auth.ShopRenewReq;
 
 /**
  * 
@@ -53,7 +58,19 @@ public class ShopRenewService extends BaseService {
 	}
 
 	public Timestamp getShopRenewExpireTime(Integer shopId) {
-		return  db().select().from(SHOP_RENEW).where(SHOP_RENEW.SHOP_ID.eq(shopId))
+		return db().select().from(SHOP_RENEW).where(SHOP_RENEW.SHOP_ID.eq(shopId))
 				.orderBy(SHOP_RENEW.EXPIRE_TIME.desc()).fetchAny(SHOP_RENEW.EXPIRE_TIME);
+	}
+
+	public int insertShopRenew(ShopRenewReq sReq,SystemTokenAuthInfo info) {
+		ShopRenewRecord sRecord=new ShopRenewRecord();
+		FieldsUtil.assignNotNull(sReq, sRecord);
+		if(info.isSubLogin()) {
+			//子账户登录
+			sRecord.setOperator(info.getSubAccountId());
+		}else {
+			sRecord.setOperator(0);
+		}
+		return db().executeInsert(sRecord);
 	}
 }

@@ -17,10 +17,13 @@ import org.jooq.tools.StringUtils;
 import com.vpu.mp.db.main.tables.records.ShopAccountRecord;
 import com.vpu.mp.service.foundation.BaseService;
 import com.vpu.mp.service.foundation.FieldsUtil;
+import com.vpu.mp.service.foundation.JedisManager;
 import com.vpu.mp.service.foundation.PageResult;
 import com.vpu.mp.service.foundation.Util;
+import com.vpu.mp.service.pojo.saas.auth.SystemTokenAuthInfo;
 import com.vpu.mp.service.pojo.saas.shop.ShopAccountListQueryParam;
 import com.vpu.mp.service.pojo.saas.shop.ShopAccountPojo;
+import com.vpu.mp.service.pojo.shop.auth.AdminTokenAuthInfo;
 
 /**
  * 
@@ -28,6 +31,7 @@ import com.vpu.mp.service.pojo.saas.shop.ShopAccountPojo;
  *
  */
 public class ShopAccountService extends BaseService {
+	protected JedisManager jedis = JedisManager.instance();
 
 	public PageResult<ShopAccountPojo> getPageList(ShopAccountListQueryParam param) {
 		SelectWhereStep<? extends Record> select = db()
@@ -39,7 +43,8 @@ public class ShopAccountService extends BaseService {
 		return this.getPageResult(select, param.page.currentPage, param.page.pageRows, ShopAccountPojo.class);
 	}
 
-	public SelectWhereStep<? extends Record> buildOptions(SelectWhereStep<? extends Record> select, ShopAccountListQueryParam param) {
+	public SelectWhereStep<? extends Record> buildOptions(SelectWhereStep<? extends Record> select,
+			ShopAccountListQueryParam param) {
 		if (param == null) {
 			return select;
 		}
@@ -59,23 +64,17 @@ public class ShopAccountService extends BaseService {
 	}
 
 	public ShopAccountRecord verify(String username, String password) {
-		return db().selectFrom(SHOP_ACCOUNT)
-				.where(SHOP_ACCOUNT.USER_NAME.eq(username))
-				.and(SHOP_ACCOUNT.PASSWORD.eq(Util.md5(password)))
-				.fetchAny();
+		return db().selectFrom(SHOP_ACCOUNT).where(SHOP_ACCOUNT.USER_NAME.eq(username))
+				.and(SHOP_ACCOUNT.PASSWORD.eq(Util.md5(password))).fetchAny();
 	}
-	
+
 	public ShopAccountRecord checkByIdAndNameOnMain(String username, Integer sysid) {
-		return db().selectFrom(SHOP_ACCOUNT)
-				.where(SHOP_ACCOUNT.USER_NAME.eq(username))
-				.and(SHOP_ACCOUNT.SYS_ID.eq(sysid))
-				.fetchAny();
+		return db().selectFrom(SHOP_ACCOUNT).where(SHOP_ACCOUNT.USER_NAME.eq(username))
+				.and(SHOP_ACCOUNT.SYS_ID.eq(sysid)).fetchAny();
 	}
 
 	public ShopAccountRecord getAccountInfo(String username) {
-		return db().selectFrom(SHOP_ACCOUNT)
-				.where(SHOP_ACCOUNT.USER_NAME.eq(username))
-				.fetchAny();
+		return db().selectFrom(SHOP_ACCOUNT).where(SHOP_ACCOUNT.USER_NAME.eq(username)).fetchAny();
 	}
 
 	public Integer getShopAccountNumber(String startTime, String endTime) {
@@ -111,22 +110,17 @@ public class ShopAccountService extends BaseService {
 	}
 
 	public List<String> getPrincipalName(Integer sysId) {
-		return db().select().from(SHOP_ACCOUNT)
-				.join(SHOP).on(SHOP_ACCOUNT.SYS_ID.eq(SHOP.SYS_ID))
-				.join(MP_AUTH_SHOP).on(SHOP.SHOP_ID.eq(DSL.cast(MP_AUTH_SHOP.SHOP_ID, Integer.class)))
-				.fetch(MP_AUTH_SHOP.PRINCIPAL_NAME);
+		return db().select().from(SHOP_ACCOUNT).join(SHOP).on(SHOP_ACCOUNT.SYS_ID.eq(SHOP.SYS_ID)).join(MP_AUTH_SHOP)
+				.on(SHOP.SHOP_ID.eq(DSL.cast(MP_AUTH_SHOP.SHOP_ID, Integer.class))).fetch(MP_AUTH_SHOP.PRINCIPAL_NAME);
 	}
 
 	public ShopAccountRecord getAccountInfoForID(Integer sysId) {
-		return db().selectFrom(SHOP_ACCOUNT)
-				.where(SHOP_ACCOUNT.SYS_ID.eq(sysId))
-				.fetchAny();
+		return db().selectFrom(SHOP_ACCOUNT).where(SHOP_ACCOUNT.SYS_ID.eq(sysId)).fetchAny();
 	}
 
 	public ShopAccountRecord getAccountInfoForID(String nameOrMobile) {
 		return db().selectFrom(SHOP_ACCOUNT)
-				.where(SHOP_ACCOUNT.USER_NAME.eq(nameOrMobile).or(SHOP_ACCOUNT.MOBILE.eq(nameOrMobile)))
-				.fetchAny();
+				.where(SHOP_ACCOUNT.USER_NAME.eq(nameOrMobile).or(SHOP_ACCOUNT.MOBILE.eq(nameOrMobile))).fetchAny();
 	}
 
 	public ShopAccountRecord addAccountInfo(ShopAccountPojo account) {
@@ -134,7 +128,7 @@ public class ShopAccountService extends BaseService {
 		db().executeInsert(record);
 		return record;
 	}
-	
+
 	public ShopAccountRecord addAccountInfo(ShopAccountRecord addAccountInfo) {
 		db().executeInsert(addAccountInfo);
 		return addAccountInfo;
@@ -145,9 +139,10 @@ public class ShopAccountService extends BaseService {
 		db().executeUpdate(record);
 		return record;
 	}
-	
+
 	/**
 	 * 商家账户添加
+	 * 
 	 * @param account
 	 * @return
 	 */
@@ -160,10 +155,30 @@ public class ShopAccountService extends BaseService {
 			return false;
 		}
 		account.setPassword(Util.md5(account.getPassword()));
-		ShopAccountRecord shop2=new ShopAccountRecord();
+		ShopAccountRecord shop2 = new ShopAccountRecord();
 		FieldsUtil.assignNotNull(account, shop2);
 		this.addAccountInfo(shop2);
 		return true;
 
 	}
+
+	public AdminTokenAuthInfo shopSelectService(String token) {
+		String value = jedis.get(token);
+		AdminTokenAuthInfo info = Util.parseJSON(value, AdminTokenAuthInfo.class);
+		return info;
+	}
+	
+	public SystemTokenAuthInfo shopSelectOnMainService(String token) {
+		String value = jedis.get(token);
+		SystemTokenAuthInfo info = Util.parseJSON(value, SystemTokenAuthInfo.class);
+		return info;
+	}
+	
+	public void updateSwitchShop(String token,Integer loginShopId) {
+		AdminTokenAuthInfo info=shopSelectService(token);
+		info.setLoginShopId(loginShopId);
+		info.setShopLogin(true);
+		jedis.set(token, Util.toJSON(info));
+	}
+
 }
