@@ -67,3 +67,5 @@ INSERT INTO `b2c_shop_cfg`(k,v) VALUES ('bind_mobile',1);
 INSERT INTO `b2c_shop_cfg`(k,v) VALUES ('comment',1);
 INSERT INTO `b2c_shop_cfg`(k,v) VALUES ('store_buy',1);
 INSERT INTO `b2c_shop_cfg`(k,v) VALUES ('sales_number',1);
+INSERT INTO `b2c_shop_cfg`(k,v) VALUES ('shop_style','');
+INSERT INTO `b2c_shop_cfg`(k,v) VALUES ('share_config','');

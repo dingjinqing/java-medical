@@ -16,5 +16,7 @@ MODIFY COLUMN `pub_time`  timestamp NOT NULL DEFAULT '0000-00-00 00:00:00' COMME
 --表中店铺续费金额字段变为decimal
 alter table b2c_shop_renew modify column renew_money decimal(12,2);
 
---删除店铺表中share_config字段，该项配置转移到店铺库shop_cfg表中
+--删除店铺表中share_config、shop_style字段，该项配置转移到店铺库shop_cfg表中
 alter table b2c_shop drop column share_config;
+alter table b2c_shop drop column shop_style;
+
