@@ -46,4 +46,9 @@ public class JsonResultMessage {
 	final public static String	ARTICLE_TITLE_ISNULL = "api.code.article_title_isNull";
 	final public static String	ARTICLE_ARTICLEID_ISNULL = "api.code.article_articleId_isNull";
 	final public static String	ARTICLE_CATEGORY_UPDATE_FAILED = "api.code_article_category_update_failed";
+
+	//小程序管理
+
+	final public static String PAGE_CLASSIFICAIION_EXIST="applets.page.classification.exist";
+	final public static String PAGE_CLASSIFICAIION_INSERT_FAILED="applets.page.classification.insert.failed";
 }
