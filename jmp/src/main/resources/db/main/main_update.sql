@@ -9,7 +9,7 @@ ALTER TABLE `b2c_article`
 DROP COLUMN `show_footer`,
 MODIFY COLUMN `create_time`  timestamp NOT NULL DEFAULT current_timestamp() COMMENT '创建时间',
 MODIFY COLUMN `update_time`  timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',
-MODIFY COLUMN `pub_time`  timestamp NOT NULL DEFAULT NULL COMMENT '发布时间';
+MODIFY COLUMN `pub_time`  timestamp NOT NULL DEFAULT '0000-00-00 00:00:00' COMMENT '发布时间';
 
 
 
