@@ -38,7 +38,7 @@ public class SystemShopController extends SystemBaseController {
 		}
 		ShopRecord recode = saas.shop.getShopByMobile(shopMobileReq.mobile);
 		if (recode != null) {
-			return success(JsonResultCode.CODE_ACCOUNT_MODILE_APPLIED);
+			return fail(JsonResultCode.CODE_ACCOUNT_MODILE_APPLIED);
 		}
 		return success(JsonResultCode.CODE_SUCCESS);
 	}
