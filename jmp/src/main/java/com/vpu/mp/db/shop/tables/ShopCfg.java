@@ -42,7 +42,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class ShopCfg extends TableImpl<ShopCfgRecord> {
 
-    private static final long serialVersionUID = -1976024678;
+    private static final long serialVersionUID = 1111616694;
 
     /**
      * The reference instance of <code>mini_shop_471752.b2c_shop_cfg</code>
@@ -61,11 +61,6 @@ public class ShopCfg extends TableImpl<ShopCfgRecord> {
      * The column <code>mini_shop_471752.b2c_shop_cfg.rec_id</code>.
      */
     public final TableField<ShopCfgRecord, Short> REC_ID = createField("rec_id", org.jooq.impl.SQLDataType.SMALLINT.nullable(false).identity(true), this, "");
-
-    /**
-     * The column <code>mini_shop_471752.b2c_shop_cfg.shop_id</code>. 店铺id
-     */
-    public final TableField<ShopCfgRecord, Integer> SHOP_ID = createField("shop_id", org.jooq.impl.SQLDataType.INTEGER.defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.INTEGER)), this, "店铺id");
 
     /**
      * The column <code>mini_shop_471752.b2c_shop_cfg.k</code>.
@@ -133,7 +128,7 @@ public class ShopCfg extends TableImpl<ShopCfgRecord> {
      */
     @Override
     public List<Index> getIndexes() {
-        return Arrays.<Index>asList(Indexes.SHOP_CFG_PRIMARY, Indexes.SHOP_CFG_SHOP_ID_K);
+        return Arrays.<Index>asList(Indexes.SHOP_CFG_PRIMARY);
     }
 
     /**
@@ -157,7 +152,7 @@ public class ShopCfg extends TableImpl<ShopCfgRecord> {
      */
     @Override
     public List<UniqueKey<ShopCfgRecord>> getKeys() {
-        return Arrays.<UniqueKey<ShopCfgRecord>>asList(Keys.KEY_B2C_SHOP_CFG_PRIMARY, Keys.KEY_B2C_SHOP_CFG_SHOP_ID_K);
+        return Arrays.<UniqueKey<ShopCfgRecord>>asList(Keys.KEY_B2C_SHOP_CFG_PRIMARY);
     }
 
     /**
