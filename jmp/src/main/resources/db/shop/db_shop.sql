@@ -1015,8 +1015,7 @@ create table `b2c_shop_cfg` (
   `v`       text,
   `create_time`      timestamp    	default current_timestamp,
   `update_time`      timestamp     	default current_timestamp on update current_timestamp comment '最后修改时间',
-  primary key (`rec_id`),
-  unique key `shop_id_k` (`k`, `shop_id`)
+  primary key (`rec_id`)
 );
 
 -- -- 商品评价表
