@@ -6,7 +6,6 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.vpu.mp.controller.BaseController;
 import com.vpu.mp.service.foundation.JsonResult;
 import com.vpu.mp.service.foundation.JsonResultCode;
 import com.vpu.mp.service.foundation.PageResult;
@@ -24,7 +23,7 @@ import com.vpu.mp.service.pojo.saas.article.category.ArticleCategoryOutPut;
  */
 @RestController
 @RequestMapping("/api/system/article")
-public class SystemArticleController extends BaseController{
+public class SystemArticleController extends SystemBaseController{
 	@PostMapping("/list")
 	public JsonResult get(@RequestBody ArticleListQueryParam param) {
 		PageResult<ArticleOutPut> pageList = saas.article.getPageList(param);
@@ -75,8 +74,8 @@ public class SystemArticleController extends BaseController{
 		if(StringUtils.isEmpty(article.getTitle())) {
 			return fail(JsonResultCode.CODE_ARTICLE_TITLE_ISNULL);
 		}
-		String token = request.getHeader("V-Token");
-		return saas.article.insertArticle(article,token)?success():fail();	
+		article.setAuthor(sysAuth.user() == null ? null:sysAuth.user().getSystemUserId().toString());
+		return saas.article.insertArticle(article)?success():fail();	
 	}
 	
 	@PostMapping("/update")

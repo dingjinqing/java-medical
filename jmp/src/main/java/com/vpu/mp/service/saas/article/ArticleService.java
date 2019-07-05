@@ -18,11 +18,9 @@ import com.vpu.mp.service.foundation.BaseService;
 import com.vpu.mp.service.foundation.FieldsUtil;
 import com.vpu.mp.service.foundation.JedisManager;
 import com.vpu.mp.service.foundation.PageResult;
-import com.vpu.mp.service.foundation.Util;
 import com.vpu.mp.service.pojo.saas.article.ArticleInPut;
 import com.vpu.mp.service.pojo.saas.article.ArticleListQueryParam;
 import com.vpu.mp.service.pojo.saas.article.ArticleOutPut;
-import com.vpu.mp.service.pojo.saas.auth.SystemTokenAuthInfo;
 import com.vpu.mp.service.saas.region.CityService;
 
 /**
@@ -114,15 +112,9 @@ public class ArticleService extends BaseService {
 				.fetchAny();
 	}
 	
-	public boolean insertArticle(ArticleInPut arArticle, String token) {
+	public boolean insertArticle(ArticleInPut arArticle) {
 		//防止传id
 		arArticle.setArticleId(null);
-		//从redis取tokenInfo
-		String json = jedis.get(token);
-		SystemTokenAuthInfo tokenAuthInfo = Util.parseJSON(json, SystemTokenAuthInfo.class);
-		Integer systemUserId = tokenAuthInfo.getSystemUserId();
-		arArticle.setAuthor(systemUserId==null?null:systemUserId.toString());
-		
 		ArticleRecord record = db().newRecord(ARTICLE);
 		FieldsUtil.assignNotNull(arArticle, record);
 		//更新发布状态
@@ -166,7 +158,7 @@ public class ArticleService extends BaseService {
 				.where(ARTICLE.ARTICLE_ID.eq(articleId)).fetchOne();
 		Integer integer = article.get(ARTICLE.PV);
 		//更新访问量
-		db().update(ARTICLE).set(ARTICLE.PV, integer + 1);
+		db().update(ARTICLE).set(ARTICLE.PV, integer ==null ? 0 : integer + 1);
 		return	article==null?null:article.into(ArticleOutPut.class);
 	}
 
