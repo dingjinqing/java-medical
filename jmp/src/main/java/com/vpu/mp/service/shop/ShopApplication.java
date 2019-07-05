@@ -7,6 +7,7 @@ import com.vpu.mp.service.shop.decoration.PageClassificationService;
 import com.vpu.mp.service.shop.goods.GoodsService;
 import com.vpu.mp.service.shop.image.ImageService;
 import com.vpu.mp.service.shop.order.OrderService;
+import com.vpu.mp.service.shop.store.store.StoreService;
 import com.vpu.mp.service.shop.version.VersionService;
 
 /**
@@ -23,6 +24,7 @@ public class ShopApplication extends ServiceContainer {
 	public PageClassificationService pageClassification;
 	public VersionService version;
 	public ShopCfgService shopCfg;
+	public StoreService store;
 
 	public ShopApplication(Integer shopId) {
 		this.shopId = shopId;

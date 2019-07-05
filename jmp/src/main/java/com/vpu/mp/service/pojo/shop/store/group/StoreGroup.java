@@ -25,16 +25,20 @@ public class StoreGroup implements Serializable {
 
     private static final long serialVersionUID = -1124781756;
 
+
+
     private Integer   groupId;
     private String    groupName;
-    private Timestamp inTime;
+    private Timestamp createTime;
 
+    //非持久化字段
+    private Integer numbers;    //统计所属门店数量
     public StoreGroup() {}
 
     public StoreGroup(StoreGroup value) {
         this.groupId = value.groupId;
         this.groupName = value.groupName;
-        this.inTime = value.inTime;
+        this.createTime = value.createTime;
     }
 
     public StoreGroup(
@@ -44,7 +48,7 @@ public class StoreGroup implements Serializable {
     ) {
         this.groupId = groupId;
         this.groupName = groupName;
-        this.inTime = inTime;
+        this.createTime = inTime;
     }
 
     public Integer getGroupId() {
@@ -64,20 +68,27 @@ public class StoreGroup implements Serializable {
     }
 
     public Timestamp getInTime() {
-        return this.inTime;
+        return this.createTime;
     }
 
-    public void setInTime(Timestamp inTime) {
-        this.inTime = inTime;
+    public void setInTime(Timestamp createTime) {
+        this.createTime = createTime;
     }
 
+    public Integer getNumbers() {
+        return numbers;
+    }
+
+    public void setNumbers(Integer numbers) {
+        this.numbers = numbers;
+    }
     @Override
     public String toString() {
         StringBuilder sb = new StringBuilder("StoreGroup (");
 
         sb.append(groupId);
         sb.append(", ").append(groupName);
-        sb.append(", ").append(inTime);
+        sb.append(", ").append(createTime);
 
         sb.append(")");
         return sb.toString();

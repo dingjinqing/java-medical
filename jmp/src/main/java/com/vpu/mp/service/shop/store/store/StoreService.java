@@ -3,8 +3,11 @@ package com.vpu.mp.service.shop.store.store;
 import static com.vpu.mp.db.shop.tables.Store.STORE;
 import static com.vpu.mp.db.shop.tables.StoreGroup.STORE_GROUP;
 
+import com.vpu.mp.service.pojo.shop.store.group.StoreGroup;
+import com.vpu.mp.service.pojo.shop.store.group.StoreGroupQueryParam;
 import org.jooq.Record;
 import org.jooq.SelectWhereStep;
+import org.jooq.impl.DSL;
 import org.jooq.tools.StringUtils;
 
 import com.vpu.mp.service.foundation.BaseService;
@@ -52,4 +55,29 @@ public class StoreService extends BaseService {
 		return select;
 	}
 
+	/**
+	 * 门店分组列表-查询
+	 * @param param
+	 * @return
+	 */
+	public PageResult<StoreGroup> getStoreGroupPageList(StoreGroupQueryParam param){
+		SelectWhereStep<? extends Record> select = db().select(STORE_GROUP.GROUP_ID,STORE_GROUP.GROUP_NAME,
+				STORE_GROUP.CREATE_TIME, DSL.count(STORE.GROUP).as("numbers"))
+				.from(STORE_GROUP)
+				.leftJoin(STORE).on(STORE.GROUP.eq(STORE_GROUP.GROUP_ID));
+		buildParams(select,param);
+		select.groupBy(STORE_GROUP.GROUP_ID).orderBy(STORE_GROUP.CREATE_TIME.asc());
+		if(null != param.getPageRows()) {
+			return getPageResult(select,param.getCurrentPage(),param.getPageRows(),StoreGroup.class);
+		}else {
+			return getPageResult(select,param.getPageRows(),StoreGroup.class);
+		}
+	}
+	public void buildParams(SelectWhereStep<? extends  Record> select, StoreGroupQueryParam param) {
+		if (param != null) {
+			if (param.getGroupName() != null && !"".equals(param.getGroupName())) {
+				select.where(STORE_GROUP.GROUP_NAME.like(this.likeValue(param.getGroupName())));
+			}
+		}
+	}
 }
