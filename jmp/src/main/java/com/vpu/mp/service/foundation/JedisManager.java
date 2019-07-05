@@ -29,6 +29,9 @@ public class JedisManager {
 	 * redis缓存池
 	 */
 	private JedisPool pool = null;
+	
+	
+	private static Jedis jedis=null;
 
 	/**
 	 * 获取缓存连接池
@@ -57,10 +60,14 @@ public class JedisManager {
 	 * @return
 	 */
 	public Jedis getJedis() {
-		JedisPool pool = getJedisPool();
-		synchronized (JedisManager.class) {
-			return pool.getResource();
+		if(jedis==null) {
+			synchronized (JedisManager.class) {
+				if(jedis==null) {
+					jedis=pool.getResource();
+				}
+			}
 		}
+		return jedis;
 	}
 
 	public void set(String key, String value, int seconds) {
