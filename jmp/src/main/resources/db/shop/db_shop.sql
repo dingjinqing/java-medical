@@ -242,22 +242,24 @@ create table `b2c_spec` (
   `spec_name` varchar(60)	not null default '',
   `del_flag`  tinyint(1)   	not null default '0',
   `goods_id`   int(11)     	not null default 0 comment '店铺id',
-  `create_time`      timestamp    	default current_timestamp,
-  `update_time`      timestamp     	default current_timestamp on update current_timestamp comment '最后修改时间',
-  primary key (`spec_id`)
+  `create_time`      timestamp   not null   	default current_timestamp,
+  `update_time`      timestamp    not null   	default current_timestamp on update current_timestamp comment '最后修改时间',
+  primary key (`spec_id`),
+  UNIQUE INDEX unique_spec_name_goods_id (spec_name,goods_id)
 );
 
 -- drop table if exists `b2c_spec_vals`;
 create table `b2c_spec_vals` (
-  `specvalid`   int(10)  	not null auto_increment,
-  `spec_id`     int(10)			not null default '0',
-  `specvalname` varchar(60)  	not null default '',
+  `spec_val_id`   int(11)  	not null auto_increment,
+  `spec_id`     int(11)			not null default '0',
+  `spec_val_name` varchar(60)  	not null default '',
   `del_flag`    tinyint(1)    	not null default '0',
   `goods_id`    int(11)        	not null default 0 comment '店铺id',
   `create_time`      timestamp    	default current_timestamp,
   `update_time`      timestamp     	default current_timestamp on update current_timestamp comment '最后修改时间',
-  primary key (`specvalid`),
-  key `spec_id` (`spec_id`)
+  primary key (`spec_val_id`),
+  key `spec_id` (`spec_id`),
+  UNIQUE INDEX unique_spec_id_spec_val_name (spec_id,spec_val_name)
 );
 -- --  商品规格组合的产品表 `b2c_goods_spec_product`
 -- drop table if exists `b2c_goods_spec_product`;
@@ -1938,7 +1940,7 @@ create table `b2c_fanli_goods_statistics` (
 create table `b2c_sort` (
   `sort_id`     int(11)  not null auto_increment,
   `sort_name`   varchar(90)      not null default '',
-  `parent_id`   smallint(5)      not null default '0',
+  `parent_id`   int(11)      not null default '0' COMMENT '分类父节点，0表示一级',
   `level`       smallint(5)      not null default 0,
   `has_child`   tinyint(1)       not null default 0,
   `sort_img`    varchar(191)     not null default '' comment '一级分类是头图 其他为分类图标',
@@ -1946,7 +1948,6 @@ create table `b2c_sort` (
   `first`       smallint(2)      not null default '0' comment '优先级',
   `type`        tinyint(1)       not null default 0 comment '0普通商家分类 1推荐分类',
   `sort_desc`   varchar(191)     not null default '',
-  `keywords`    varchar(191)     not null default '',
   `create_time`		timestamp      default current_timestamp,
   `update_time` 	timestamp      default current_timestamp on update current_timestamp comment '最后修改时间',
   primary key (`sort_id`),
@@ -3047,10 +3048,10 @@ create table `b2c_goods_brand` (
   `first`       tinyint(3)  	not null default '0' comment '优先级',
   `del_flag`    tinyint(1)  	not null default '0' comment '0为未删除 1为删除',
   `desc`        text							comment '品牌介绍',
-  `is_recommend` tinyint(1) 	default 0 null comment '是否为推荐品牌',
-  `classify_id`  int(11) 		default 0    null comment '品牌所属分类',
-  `create_time`		timestamp      	default current_timestamp,
-  `update_time` 	timestamp      	default current_timestamp on update current_timestamp comment '最后修改时间',
+  `is_recommend` tinyint(1) 	default 0 not null comment '是否为推荐品牌 0否 1是',
+  `classify_id`  int(11) 		default 0 not null comment '品牌所属分类 0未分类 否则是分类id',
+  `create_time`		timestamp   not null   	default current_timestamp,
+  `update_time` 	timestamp   not null    	default current_timestamp on update current_timestamp comment '最后修改时间',
   primary key (`id`)
 );
 
