@@ -1,6 +1,10 @@
 <template>
   <div class="contact_container">
-    <div class="mobile common">
+    <div
+      class="mobile common"
+      @mouseenter="enter(1)"
+      @mouseleave="leave(1)"
+    >
       <img src="../../assets/adminImg/left_menu_phone.png">
       <div
         class="suspension_message"
@@ -10,7 +14,11 @@
         客服电话：400-010-1039
       </div>
     </div>
-    <div class="news common">
+    <div
+      class="news common"
+      @mouseenter="enter(2)"
+      @mouseleave="leave(2)"
+    >
       <img src="../../assets/adminImg/left_menu_zx.png">
       <div
         class="suspension_message new_calss"
@@ -28,6 +36,30 @@ export default {
     return {
       hidden_phone: false,
       hidden_new: false
+    }
+  },
+  methods: {
+    // 鼠标划入
+    enter (index) {
+      switch (index) {
+        case 1:
+          this.hidden_phone = true
+          break
+        case 2:
+          this.hidden_new = true
+          break
+      }
+    },
+    // 鼠标划出
+    leave (index) {
+      switch (index) {
+        case 1:
+          this.hidden_phone = ''
+          break
+        case 2:
+          this.hidden_new = ''
+          break
+      }
     }
   }
 }

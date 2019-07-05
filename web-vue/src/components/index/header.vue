@@ -21,8 +21,6 @@
         >
         <div class="head_list">
           <a
-            :href="item.a_href"
-            target="_blank"
             @mouseenter="con_enter(index)"
             @mouseleave="con_leave(index)"
             :class="item.login_active"
@@ -193,8 +191,11 @@ export default {
     },
     // 进入后台以及推出登录
     handleLogin (index) {
+      console.log('进入后台')
       if (index === 0) {
-
+        this.$router.push({
+          name: 'adminHome'
+        })
       } else {
         loginRequestOut().then((res) => {
           console.log(res)

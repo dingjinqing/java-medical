@@ -21,7 +21,7 @@
             </span>
             <span>
               <label>
-                测试001
+                {{this.username}}
               </label>
               <img :src="imageUrl[2].img_3">
             </span>
@@ -37,6 +37,7 @@
           :key="index"
           @mouseenter="user_enter(index)"
           @mouseleave="user_leave(index)"
+          @click="handle_user_list(index)"
           :class="changeColorIndex === index?'changeColor':''"
         >
           {{item}}
@@ -48,6 +49,8 @@
   </div>
 </template>
 <script>
+import Cookies from 'js-cookie'
+import { loginRequestOut } from '@/api/index/login.js'
 export default {
   data () {
     return {
@@ -67,15 +70,57 @@ export default {
       ],
       log_menu_show: false,
       hiddle_menu_list: [this.$t('shopData.set'), this.$t('shopData.administration'), this.$t('shopData.public'), this.$t('shopData.choice'), this.$t('shopData.loginOut')],
-      changeColorIndex: ''
+      changeColorIndex: '',
+      username: ''
     }
   },
   mounted () {
     // 初始化语言
     this.langDefault()
+    // 初始化登录
+    this.judgeuserinfo()
   },
 
   methods: {
+    // 初始化登录
+    judgeuserinfo () {
+      if (Cookies.get('V-Token')) {
+        this.user_flag = true
+        this.username = localStorage.getItem('V-Username')
+        // console.log(Cookies.get('V-Token'), '----', localStorage.getItem('V-Username'))
+      } else {
+        this.user_flag = false
+      }
+    },
+    // 用户选项点击
+    handle_user_list (index) {
+      switch (index) {
+        case 0:
+          this.$emit('change_components', '0')
+          break
+        case 3:
+          this.$emit('change_components', '3')
+          break
+        case 4:
+          loginRequestOut().then((res) => {
+            console.log(res)
+            if (res.error === 0) {
+              Cookies.remove('V-Token')
+              console.log(this)
+              this.$router.push({
+                path: '/index/login'
+              })
+            } else {
+              this.$message({
+                showClose: true,
+                message: res.message,
+                type: 'error'
+              })
+            }
+          })
+          break
+      }
+    },
     // 鼠标划入
     user_enter (index) {
       this.log_menu_show = true
@@ -99,6 +144,7 @@ export default {
   color: #fff;
   background: #5a8bff;
   padding: 0 25px 0 45px;
+  position: absolute;
 }
 .left {
   float: left;
@@ -161,7 +207,7 @@ label {
   height: 210px !important;
   background: #fff;
   position: absolute;
-  right: 31px;
+  left: -60px;
   width: 170px;
   z-index: 1000;
   top: 70px;

@@ -10,34 +10,25 @@
       </div>
       <div class="main_content">
         <ul>
-          <li>
+          <li
+            v-for="(item,index) in shop_list"
+            :key="index"
+            @mouseenter="enter(index)"
+            @mouseleave="leave(index)"
+            :class="shop_list_index === index?'shop_li_style':''"
+          >
             <div>
               <div class="shop_state">
               </div>
               <div class="shop_logo">
                 <img
-                  :src="imageUrl[1].img_2"
+                  :src="item.imageUrl"
                   class="shop_img_default"
                 >
               </div>
-              <div class="title">旺店通小程序案例</div>
-              <p>有效期：2018-04-02 ~ 2020-08-01</p>
-              <span class="title_type">旗舰版 </span>
-            </div>
-          </li>
-          <li>
-            <div>
-              <div class="shop_state">
-              </div>
-              <div class="shop_logo">
-                <img
-                  :src="imageUrl[1].img_2"
-                  class="shop_img_default"
-                >
-              </div>
-              <div class="title">旺店通小程序案例</div>
-              <p>有效期：2018-04-02 ~ 2020-08-01</p>
-              <span class="title_type">旗舰版 </span>
+              <div class="title">{{item.title}}</div>
+              <p>{{item.date}}</p>
+              <span class="title_type">{{item.type}}</span>
             </div>
           </li>
         </ul>
@@ -57,10 +48,35 @@ export default {
         { img_1: this.$imageHost + '/image/admin/expand.png' },
         { img_2: this.$imageHost + '/upload/7467397/image/20181127/crop_u4Diqvh5HbY9QB0b.jpeg' },
         { img_3: this.$imageHost + '/image/admin/ad_img.png' }
-      ]
+      ],
+      shop_list: [
+        {
+          imageUrl: 'http://mpimg2.weipubao.cn/upload/7467397/image/20181127/crop_u4Diqvh5HbY9QB0b.jpeg',
+          title: '旺店通小程序案例',
+          date: '有效期：2018-04-02 ~ 2020-08-01',
+          type: '旗舰版'
+        },
+        {
+          imageUrl: 'http://mpimg2.weipubao.cn/upload/7467397/image/20181127/crop_u4Diqvh5HbY9QB0b.jpeg',
+          title: '旺店通小程序案例',
+          date: '有效期：2018-04-02 ~ 2020-08-01',
+          type: '旗舰版'
+        }
+      ],
+      shop_list_index: ''
     }
   },
-  methods: {}
+  methods: {
+    // 鼠标划入
+    enter (index) {
+      this.shop_list_index = index
+    },
+    // 鼠标划出
+    leave (index) {
+      this.shop_list_index = ''
+    }
+  }
+
 }
 </script>
 <style scoped>
@@ -70,6 +86,7 @@ export default {
   margin: 20px auto;
   padding: 0 100px 30px;
   box-shadow: 0 5px 16px rgba(0, 0, 0, 0.2);
+  margin-top: 107px;
 }
 .main_top {
   padding: 10px 0px;
@@ -107,6 +124,7 @@ export default {
   color: #333;
   margin: 0 1%;
   float: left;
+  cursor: pointer;
 }
 .main_content p {
   font-size: 14px;
@@ -133,4 +151,9 @@ export default {
   text-align: center;
   color: #333;
 }
+.shop_li_style {
+  border-top: 2px solid #f7931e !important;
+  box-shadow: 0 5px 16px rgba(0, 0, 0, 0.2);
+}
+/* :class="shop_list_index == index?'shop_li_style':''" */
 </style>

@@ -15,6 +15,8 @@ export default {
 
 <style scoped>
 #app {
-  /* overflow-y: scroll; */
+  height: 100%;
+  position: absolute;
+  width: 100%;
 }
 </style>
