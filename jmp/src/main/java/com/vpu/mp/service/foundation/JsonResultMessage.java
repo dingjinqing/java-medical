@@ -22,6 +22,9 @@ public class JsonResultMessage {
 	final public static String MSG_ACCOUNT_NAME_NOT_NULL = "account.name.notNull";
 	final public static String MSG_ACCOUNT_ISSUBLOGIN_NOT_NULL = "account.isSubLogin.notNull";
 	final public static String MSG_ACCOUNT_SAME = "account.name.same";
+	final public static String MSG_MOBILE_SAME="account.mobile.same";
+	final public static String MSG_ACCOUNT_SHOP_NULL="account.shop.null";
+	final public static String MSG_ACCOUNT_SHOP_EXPIRE="account.shop.expire";
 	
 	// 图片
 	
