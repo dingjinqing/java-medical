@@ -7,6 +7,7 @@ package com.vpu.mp.db.main.tables.records;
 import com.vpu.mp.db.main.tables.Shop;
 
 import java.math.BigDecimal;
+import java.sql.Date;
 import java.sql.Timestamp;
 
 import javax.annotation.Generated;
@@ -28,7 +29,7 @@ import org.jooq.impl.UpdatableRecordImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class ShopRecord extends UpdatableRecordImpl<ShopRecord> {
 
-    private static final long serialVersionUID = 2045254011;
+    private static final long serialVersionUID = -1170718136;
 
     /**
      * Setter for <code>mini_main.b2c_shop.shop_id</code>. 店铺ID
@@ -591,45 +592,31 @@ public class ShopRecord extends UpdatableRecordImpl<ShopRecord> {
     }
 
     /**
-     * Setter for <code>mini_main.b2c_shop.shop_style</code>. 店铺风格
-     */
-    public void setShopStyle(String value) {
-        set(40, value);
-    }
-
-    /**
-     * Getter for <code>mini_main.b2c_shop.shop_style</code>. 店铺风格
-     */
-    public String getShopStyle() {
-        return (String) get(40);
-    }
-
-    /**
      * Setter for <code>mini_main.b2c_shop.logo</code>. 小程序logo
      */
     public void setLogo(String value) {
-        set(41, value);
+        set(40, value);
     }
 
     /**
      * Getter for <code>mini_main.b2c_shop.logo</code>. 小程序logo
      */
     public String getLogo() {
-        return (String) get(41);
+        return (String) get(40);
     }
 
     /**
-     * Setter for <code>mini_main.b2c_shop.share_config</code>. 分享配置
+     * Setter for <code>mini_main.b2c_shop.expire_time</code>. 到期时间
      */
-    public void setShareConfig(String value) {
-        set(42, value);
+    public void setExpireTime(Date value) {
+        set(41, value);
     }
 
     /**
-     * Getter for <code>mini_main.b2c_shop.share_config</code>. 分享配置
+     * Getter for <code>mini_main.b2c_shop.expire_time</code>. 到期时间
      */
-    public String getShareConfig() {
-        return (String) get(42);
+    public Date getExpireTime() {
+        return (Date) get(41);
     }
 
     // -------------------------------------------------------------------------
@@ -658,7 +645,7 @@ public class ShopRecord extends UpdatableRecordImpl<ShopRecord> {
     /**
      * Create a detached, initialised ShopRecord
      */
-    public ShopRecord(Integer shopId, Integer sysId, String mobile, String receiveMobile, String shopName, String shopAvatar, String shopBgPath, String shopPhone, String shopNotice, String shopWx, String shopEmail, Timestamp created, Byte isEnabled, Integer provinceCode, String provinceName, Integer cityCode, String cityName, Integer districtCode, String districtName, String address, String completeAddress, Integer shopSellType, String shopQq, String lastLoginIp, Byte state, Byte businessState, BigDecimal manageFee, BigDecimal surplus, String dbConfig, String shopType, String versionConfig, Byte shopFlag, String memberKey, String tenancyName, String userName, String password, String smsAccount, Byte kuajinggou, Byte orderRealName, Byte hidBottom, String shopStyle, String logo, String shareConfig) {
+    public ShopRecord(Integer shopId, Integer sysId, String mobile, String receiveMobile, String shopName, String shopAvatar, String shopBgPath, String shopPhone, String shopNotice, String shopWx, String shopEmail, Timestamp created, Byte isEnabled, Integer provinceCode, String provinceName, Integer cityCode, String cityName, Integer districtCode, String districtName, String address, String completeAddress, Integer shopSellType, String shopQq, String lastLoginIp, Byte state, Byte businessState, BigDecimal manageFee, BigDecimal surplus, String dbConfig, String shopType, String versionConfig, Byte shopFlag, String memberKey, String tenancyName, String userName, String password, String smsAccount, Byte kuajinggou, Byte orderRealName, Byte hidBottom, String logo, Date expireTime) {
         super(Shop.SHOP);
 
         set(0, shopId);
@@ -701,8 +688,7 @@ public class ShopRecord extends UpdatableRecordImpl<ShopRecord> {
         set(37, kuajinggou);
         set(38, orderRealName);
         set(39, hidBottom);
-        set(40, shopStyle);
-        set(41, logo);
-        set(42, shareConfig);
+        set(40, logo);
+        set(41, expireTime);
     }
 }

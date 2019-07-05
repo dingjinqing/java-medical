@@ -10,6 +10,7 @@ import com.vpu.mp.db.main.MiniMain;
 import com.vpu.mp.db.main.tables.records.ShopRecord;
 
 import java.math.BigDecimal;
+import java.sql.Date;
 import java.sql.Timestamp;
 import java.util.Arrays;
 import java.util.List;
@@ -43,7 +44,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class Shop extends TableImpl<ShopRecord> {
 
-    private static final long serialVersionUID = 866847116;
+    private static final long serialVersionUID = 1577691778;
 
     /**
      * The reference instance of <code>mini_main.b2c_shop</code>
@@ -259,19 +260,14 @@ public class Shop extends TableImpl<ShopRecord> {
     public final TableField<ShopRecord, Byte> HID_BOTTOM = createField("hid_bottom", org.jooq.impl.SQLDataType.TINYINT.defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.TINYINT)), this, "是否隐藏底部 1是 ");
 
     /**
-     * The column <code>mini_main.b2c_shop.shop_style</code>. 店铺风格
-     */
-    public final TableField<ShopRecord, String> SHOP_STYLE = createField("shop_style", org.jooq.impl.SQLDataType.VARCHAR(50).defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.VARCHAR)), this, "店铺风格");
-
-    /**
      * The column <code>mini_main.b2c_shop.logo</code>. 小程序logo
      */
     public final TableField<ShopRecord, String> LOGO = createField("logo", org.jooq.impl.SQLDataType.VARCHAR(200), this, "小程序logo");
 
     /**
-     * The column <code>mini_main.b2c_shop.share_config</code>. 分享配置
+     * The column <code>mini_main.b2c_shop.expire_time</code>. 到期时间
      */
-    public final TableField<ShopRecord, String> SHARE_CONFIG = createField("share_config", org.jooq.impl.SQLDataType.CLOB, this, "分享配置");
+    public final TableField<ShopRecord, Date> EXPIRE_TIME = createField("expire_time", org.jooq.impl.SQLDataType.DATE, this, "到期时间");
 
     /**
      * Create a <code>mini_main.b2c_shop</code> table reference
