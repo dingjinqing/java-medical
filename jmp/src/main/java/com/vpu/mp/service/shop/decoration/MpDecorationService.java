@@ -1,12 +1,14 @@
 package com.vpu.mp.service.shop.decoration;
 
 import static com.vpu.mp.db.main.tables.DecorationTemplate.DECORATION_TEMPLATE;
+import static com.vpu.mp.db.shop.tables.ShopCfg.SHOP_CFG;
 import static com.vpu.mp.db.shop.tables.XcxCustomerPage.XCX_CUSTOMER_PAGE;
 
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import com.vpu.mp.service.pojo.shop.decoration.DecorateStyleParam;
 import org.jooq.Record;
 import org.jooq.Result;
 import org.jooq.SelectWhereStep;
@@ -355,5 +357,24 @@ public class MpDecorationService extends BaseService {
 	protected void recordPageChange(PageStoreParam page) {
 
 	}
+
+	/**
+	 *  更新店铺风格
+	 * @param param
+	 */
+    public void updateShopStyle(DecorateStyleParam param) {
+		if (db().fetchCount(SHOP_CFG, SHOP_CFG.SHOP_ID.eq(shopId)) > 0) {
+			 db().update(SHOP_CFG)
+					.set(SHOP_CFG.K, "shop_style")
+					.set(SHOP_CFG.V, param.getShopStyleId()+";"+param.getShopStyleValue())
+					.where(SHOP_CFG.SHOP_ID.eq(shopId))
+					.execute();
+		} else {
+            db().insertInto(SHOP_CFG).columns(SHOP_CFG.SHOP_ID, SHOP_CFG.K, SHOP_CFG.V)
+                    .values(shopId, "shop_style", param.getShopStyleId()+";"+param.getShopStyleValue())
+                    .execute();
+        }
+    }
+
 
 }
