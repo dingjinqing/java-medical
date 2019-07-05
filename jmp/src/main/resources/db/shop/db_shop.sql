@@ -23,7 +23,7 @@ create table `b2c_user` (
   `account`             decimal(10, 2)       	not null default '0.00' 	comment '用户余额',
   `discount`            int(11)              	not null default '0' 	comment '折扣',
   `discount_grade`      int(11)              	not null default '0' 	comment '会员折扣等级',
-  `is_delete`           tinyint(1)   		 	not null default '0',
+  `del_flag`            tinyint(1)   		 	not null default '0',
   `delete_time`         timestamp            	default null 	comment '删除时间',
   `growth`              int(11)              	not null default '0' 	comment '成长值',
   `score`               int(11)              	not null default '0' 	comment '积分',
@@ -127,7 +127,7 @@ create table `b2c_user_detail` (
   `shop_bank`       varchar(100)        default null comment '开户行',
   `bank_no`         varchar(32)         default null comment '开户行卡号',
   `withdraw_passwd` varchar(64)         default null comment '提现密码验证',
-  `user_avatar`     varchar(191)        not null default '/image/admin/head_icon.png' comment '用户头像', 
+  `user_avatar`     varchar(191)        not null default '/image/admin/head_icon.png' comment '用户头像',
   `create_time`      timestamp            	default current_timestamp,
   `update_time`      timestamp            	default current_timestamp on update current_timestamp comment '最后修改时间',
   primary key (`id`),
@@ -147,7 +147,7 @@ create table `b2c_user_score_set` (
   `set_val3`    text,
   `sign_val`    int(11)      		not null default '0' comment '签到积分',
   `sign_date`   tinyint(1)   		not null default '0' comment '签到天数',
-  `desc`        varchar(191) 		not null default '', 
+  `desc`        varchar(191) 		not null default '',
   `create_time`      timestamp    	default current_timestamp,
   `update_time`      timestamp     	default current_timestamp on update current_timestamp comment '最后修改时间',
   `growth_flag` tinyint(1)   		not null default '0' comment '0:不送成长值，1：送成长值',
@@ -187,7 +187,7 @@ create table `b2c_goods` (
   `goods_desc`          text,
   `goods_img`           varchar(500)          	not null default '' ,
   `is_on_sale`          tinyint(1)            	not null default '1' 	comment '是否在售，1在售，0下架',
-  `is_delete`           tinyint(1)         	 	not null default '0',
+  `del_flag`           tinyint(1)         	 	not null default '0',
   `goods_type`          tinyint(2)  			not null default 0 		comment '商品类型，0普通商品，1拼团商品，2分销，3砍价商品 4积分商品 5秒杀商品',
   `deliver_template_id` int(5)               	not null default '0' 	comment '运费模板id',
   `goods_sale_num`      int(8)                	not null default '0' 	comment '销售数量',
@@ -680,7 +680,7 @@ create table `b2c_mrking_voucher` (
   `cou_limit`            int                    not null default 0 comment '分裂优惠卷数量',
   `least_money`          int                   	not null default 0 comment '分裂优惠卷触发条件',
   `type`                 tinyint(1)            	not null default 0 comment '优惠卷类型，1为分裂 0为正常 2抽奖 3送券 4跳转自定义链接',
-  `is_delete`            tinyint(1)           	not null default '0' comment '1为删除状态',
+  `del_flag`             tinyint(1)           	not null default '0' comment '1为删除状态',
   `recommend_sort_id`    text                  	comment '指定商家分类可用',
   `action`               tinyint(1) 			not null default 1   comment '1:系統创建 2：来自crm',
   `identity_id`          varchar(50)            default null comment '关联外部优惠券规则唯一码',
@@ -999,7 +999,7 @@ create table `b2c_user_explain` (
   `id`          smallint(5)  		not null  auto_increment,
   `shop_id`     int(11) 			default 0 comment '店铺id',
   `text`        text,
-  `type`        tinyint(1)        	default '0' comment '1-余额，2-级别，3-成长值，4-积分', 
+  `type`        tinyint(1)        	default '0' comment '1-余额，2-级别，3-成长值，4-积分',
   `create_time`      timestamp    	default current_timestamp,
   `update_time`      timestamp     	default current_timestamp on update current_timestamp comment '最后修改时间',
   primary key (`id`),
@@ -1121,7 +1121,7 @@ create table `b2c_member_card` (
   `use_time`          int(11)                                 default null comment '使用时间 1工作日 2双休 0不限制',
   `store_list`        varchar(191) not null                   default '{}' comment '可用门店',
   `count`             int(11)                                 default null comment '卡总次数',
-  `is_delete`         tinyint(1)   not null                        default '0' comment '1为删除状态',
+  `del_flag`          tinyint(1)   not null                        default '0' comment '1为删除状态',
   `grade`             char(10)     not null                        default '' comment '等级卡的等级',
   `grade_condition`   varchar(200) not null                        default '' comment '等级卡的条件',
   `activation_cfg`    varchar(200) default null comment '激活信息配置',
@@ -1144,7 +1144,7 @@ create table `b2c_member_card` (
 );
 
 -- -- 门店分组
--- drop table if exists `b2c_group`;
+-- drop table if exists `b2c_store_group`;
 create table `b2c_store_group` (
   `group_id`   int(11)     not null auto_increment,
   `group_name` varchar(20) not null,
@@ -1196,7 +1196,7 @@ create table `b2c_store` (
   `create_time`		timestamp       default current_timestamp,
   `update_time` 	timestamp     	default current_timestamp on update current_timestamp comment '最后修改时间',
   `auto_pick`      smallint(1)    null     default '0' comment '设定自提',
-  `is_delete`      tinyint(1)     null     default '0' comment '1为删除状态',
+  `del_flag`       tinyint(1)     null     default '0' comment '1为删除状态',
   primary key (`store_id`)
 );
 
@@ -1263,7 +1263,7 @@ create table `b2c_store_service` (
   `create_time`			timestamp       default current_timestamp,
   `update_time` 		timestamp     	default current_timestamp on update current_timestamp comment '最后修改时间',
   `charge_resolve`       varchar(255)          null comment '收费说明',
-  `is_delete`            tinyint(1)            not null	default '0' comment '1为删除状态',
+  `del_flag`             tinyint(1)            not null	default '0' comment '1为删除状态',
   primary key (`id`)
 );
 
@@ -2461,7 +2461,7 @@ create table `b2c_user_cart_record` (
   `goods_id`      int(11)      not null              default '0' comment '商品id',
   `prd_id`        int(11)      not null              default '0' comment '规格id',
   `num`           smallint(3)      not null              default '1' comment '件数',
-  `is_delete`     smallint(3)      null                  default '0' comment '0：添加，1：删除标记',
+  `del_flag`      smallint(3)      null                  default '0' comment '0：添加，1：删除标记',
   `user_ip`       varchar(64)      null                  default null comment '用户ip',
   `province_code` varchar(20)  default null comment '省',
   `province`      varchar(20)  default null comment '省',
@@ -2683,7 +2683,7 @@ create table `b2c_goods_label` (
   `goods_detail` tinyint(1)                              not null default '0' comment '是否应用于商品详情页： 1：是  0： 否',
   `goods_list`   tinyint(1)                              not null default '0' comment '是否应用于商品列表页： 1：是  0： 否',
   `is_all`       tinyint(1)                              not null default '0' comment '是否适用于全部商品： 1：是  0： 否',
-  `level`        smallint(5)                             not null default '0',  
+  `level`        smallint(5)                             not null default '0',
   `del_time`			timestamp      	default '0000-00-00 00:00:00' comment '删除时间',
   `del_flag`     int(1)                                  not null default '0',
   `list_pattern` smallint(5)                             not null default '0' comment '列表样式',
@@ -2800,7 +2800,7 @@ create table `b2c_goods_opai_spec` (
   `prd_sn`     varchar(64)  default null,
   `prd_price`  decimal(10, 2)                         default null,
   `is_on_sale` tinyint(1)                             default '0' comment '1:上架，0:下架',
-  `is_delete`  tinyint(1)                             default '0' comment '1:删除',
+  `del_flag`   tinyint(1)                             default '0' comment '1:删除',
   `create_time`		timestamp      	default current_timestamp,
   `update_time` 	timestamp      	default current_timestamp on update current_timestamp comment '最后修改时间',
   primary key (`id`)
@@ -2962,7 +2962,7 @@ create table `b2c_mp_jump` (
   `app_id`      varchar(64)   not null,
   `app_name`    varchar(200)  not null,
   `flag`        tinyint(1)                              not null default '0' comment '0:可用，1:停用',
-  `is_delete`   tinyint(1)                              not null default '0' comment '0:未删除，1:已删除',
+  `del_flag`    tinyint(1)                              not null default '0' comment '0:未删除，1:已删除',
   `create_time`		timestamp      	default current_timestamp,
   `update_time` 	timestamp      	default current_timestamp on update current_timestamp comment '最后修改时间',
   primary key (`id`)
@@ -3051,7 +3051,7 @@ create table `b2c_goods_brand` (
   `e_name`      varchar(500) 	not null default '' comment '品牌英文名称',
   `logo`        varchar(255)         	default null comment '品牌logo',
   `first`       tinyint(3)  	not null default '0' comment '优先级',
-  `is_delete`   tinyint(1)  	not null default '0' comment '0为未删除 1为删除',
+  `del_flag`    tinyint(1)  	not null default '0' comment '0为未删除 1为删除',
   `desc`        text							comment '品牌介绍',
   `is_recommend` tinyint(1) 	default 0 null comment '是否为推荐品牌',
   `classify_id`  int(11) 		default 0    null comment '品牌所属分类',
@@ -3716,7 +3716,7 @@ create table `b2c_brand_classify` (
   `classify_id`     int(11)  		 not null auto_increment,
   `classify_name`   varchar(90)      not null default '',
   `first`       	smallint(2)      not null default '0' comment '优先级',
-  `is_delete`       tinyint(1)       not null default '0',
+  `del_flag`        tinyint(1)       not null default '0',
   `create_time`		timestamp      	default current_timestamp,
   `update_time` 	timestamp      	default current_timestamp on update current_timestamp comment '最后修改时间',
    primary key (`classify_id`)
