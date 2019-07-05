@@ -68,6 +68,11 @@ public class JedisManager {
 		jedis.set(key, value);
 		jedis.expire(key, seconds);
 	}
+	
+	public void set(String key, String value) {
+		Jedis jedis = getJedis();
+		jedis.set(key, value);
+	}
 
 	public void delete(String key) {
 		getJedis().del(key);
