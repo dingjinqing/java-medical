@@ -78,7 +78,7 @@
 </template>
 <script>
 export default {
-  data() {
+  data () {
     return {
       imageUrlData: [
         {
@@ -90,7 +90,8 @@ export default {
       ]
     }
   },
-  mounted() {
+
+  mounted () {
     this.langDefault()
   },
   methods: {
