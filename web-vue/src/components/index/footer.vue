@@ -2,7 +2,7 @@
   <div class="footer">
     <ul class="footer_ul clearfix">
       <li>
-        <img :src="imageUrlData.img_1">
+        <img :src="imageUrlData[0].img_1">
         <p>{{$t('footer.title')}}</p>
       </li>
       <li>
@@ -15,7 +15,7 @@
       </li>
       <li>
         <img
-          :src="imageUrlData.img_2"
+          :src="imageUrlData[1].img_2"
           width="100px"
         >
         <p>{{$t('footer.content')}}</p>
@@ -78,7 +78,7 @@
 </template>
 <script>
 export default {
-  data () {
+  data() {
     return {
       imageUrlData: [
         {
@@ -90,7 +90,7 @@ export default {
       ]
     }
   },
-  mounted () {
+  mounted() {
     this.langDefault()
   },
   methods: {
