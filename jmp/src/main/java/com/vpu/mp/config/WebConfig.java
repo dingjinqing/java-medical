@@ -44,7 +44,7 @@ public class WebConfig implements WebMvcConfigurer {
 				.excludePathPatterns("/api/system/login", "/api/system/logout", "/api/system/message");
 		registry.addInterceptor(adminAuthInterceptor).addPathPatterns("/api/admin/**").addPathPatterns("/api/wechat/**")
 				.excludePathPatterns("/api/admin/login", "/api/admin/logout", "/api/admin/shopDecorate/**",
-						"/api/admin/order/orderList", "/api/wechat/proxy/**");
+						"/api/admin/order/orderList", "/api/wechat/proxy/**","/admin/**");
 	}
 
 	@Override
