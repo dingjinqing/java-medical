@@ -50,11 +50,11 @@ public class ShopRenewService extends BaseService {
 		return total == null ? new BigDecimal("0") : Convert.convert(total, BigDecimal.class);
 	}
 
-	public double getShopRenewTotal(Integer shopId) {
+	public BigDecimal getShopRenewTotal(Integer shopId) {
 		Object total = db().select(DSL.sum(SHOP_RENEW.RENEW_MONEY)).from(SHOP_RENEW)
 				.where(SHOP_RENEW.SHOP_ID.eq(shopId)).fetchAny(0);
 
-		return total == null ? 0 : Convert.convert(total, Double.class).doubleValue();
+		return total == null ? new BigDecimal(0) : Convert.convert(total, BigDecimal.class);
 	}
 
 	public Timestamp getShopRenewExpireTime(Integer shopId) {
