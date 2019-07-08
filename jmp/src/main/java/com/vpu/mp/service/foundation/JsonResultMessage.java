@@ -54,4 +54,7 @@ public class JsonResultMessage {
 	final public static String PAGE_CLASSIFICAIION_NOT_EXIST="applets.page.classification.not.exist";
 	final public static String PAGE_CLASSIFICATION_UPDATE_FAILED="applets.page.classification.update.failed";
 	final public static String CODE_PAGE_CLASSIFICATION_DELETE_FAILED="applets.page.classification.delete.failed";
+
+	//门店管理
+	final public static String STORE_GROPUP_NAME_EXIST="store.group.name.exist";
 }
