@@ -1,5 +1,8 @@
 package com.vpu.mp.controller.admin;
 
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RestController;
 
 import com.vpu.mp.service.shop.config.ShopCfgService;
 import org.springframework.web.bind.annotation.*;
@@ -9,6 +12,7 @@ import com.vpu.mp.service.foundation.JsonResult;
 import com.vpu.mp.service.foundation.PageResult;
 import com.vpu.mp.service.pojo.shop.decoration.PageListQueryParam;
 import com.vpu.mp.service.pojo.shop.decoration.XcxCustomerPagePojo;
+import com.vpu.mp.service.shop.ShopApplication;
 
 /**
  * 装修模块
@@ -17,16 +21,19 @@ import com.vpu.mp.service.pojo.shop.decoration.XcxCustomerPagePojo;
  * 2019年6月27日
  */
 @RestController
-@RequestMapping("/api")
+//@RequestMapping("/api")
 public class AdminShopDecorateController extends AdminBaseController {
-	
+	@Override
+    protected ShopApplication shop() {
+        return saas.getShopApp(471752);
+    }
 	/**
 	 * 装修页面列表
 	 * @param param
 	 * @return
 	 */
-	@PostMapping(value = "/admin/shopDecorate/pageList")
-	public JsonResult list(PageListQueryParam param) {		
+	@PostMapping(value = "/admin/shopDecorate/list")
+	public JsonResult list(XcxCustomerPagePojo param) {		
 		PageResult<XcxCustomerPagePojo> list = shop().mpDecoration.getPageList(param );
 		return success(list);
 	}
@@ -36,8 +43,7 @@ public class AdminShopDecorateController extends AdminBaseController {
 	 * @param pageId
 	 * @return
 	 */
-	@ResponseBody
-	@RequestMapping(value = "/admin/shopDecorate/pageDetail")
+	@PostMapping(value = "/admin/shopDecorate/detail")
 	public JsonResult pageDetail(Integer pageId) {
 		XcxCustomerPageRecord detail = shop().mpDecoration.getPageById(pageId);
 		return success(detail.intoMap());
@@ -48,12 +54,35 @@ public class AdminShopDecorateController extends AdminBaseController {
 	 * @param pageId
 	 * @return
 	 */
-	@ResponseBody
-	@RequestMapping(value = "/admin/shopDecorate/setIndex")
+	@PostMapping(value = "/admin/shopDecorate/setIndex")
 	public JsonResult setIndex(Integer pageId) {
 		boolean res = shop().mpDecoration.setIndex(pageId);
 		return success(res);
 	}
+	
+	/**
+	 * 复制页面
+	 * @param PageId
+	 * @return
+	 */
+	@PostMapping(value = "/admin/shopDecorate/copyDecoration")
+	public JsonResult copyDecoration(Integer PageId) {
+		XcxCustomerPageRecord res = shop().mpDecoration.copyDecoration(PageId);
+		return success(res);
+	}
+
+	
+	/**
+	 * 保存装修数据
+	 * @param param
+	 * @return
+	 */
+	@PostMapping(value = "/admin/shopDecorate/saveDecoration")
+	public JsonResult saveDecoration(XcxCustomerPagePojo param) {
+		XcxCustomerPageRecord res = shop().mpDecoration.saveDecoration(param);
+		return success(res);
+	}
+	
 
 	/**
 	 * 设置店铺风格
@@ -97,7 +126,4 @@ public class AdminShopDecorateController extends AdminBaseController {
 		shop().shopCfg.setShopCfg(ShopCfgService.K_BOTTOM,jsonParam);
 		return success();
 	}
-
-
-
 }

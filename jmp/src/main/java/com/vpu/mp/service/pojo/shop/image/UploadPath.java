@@ -16,4 +16,8 @@ public class UploadPath {
 	public String type;
 	public String filname;
 	public String extension;
+	public Object into(Class<CropImageParam> class1) {
+		// TODO Auto-generated method stub
+		return null;
+	}
 };

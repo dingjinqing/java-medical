@@ -9,14 +9,18 @@ import java.util.List;
 import javax.imageio.ImageIO;
 import javax.servlet.http.Part;
 
-import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
 import com.vpu.mp.db.shop.tables.records.UploadedImageRecord;
 import com.vpu.mp.service.foundation.JsonResult;
 import com.vpu.mp.service.foundation.JsonResultCode;
+import com.vpu.mp.service.foundation.PageResult;
 import com.vpu.mp.service.foundation.Util;
+import com.vpu.mp.service.pojo.shop.image.CropImageParam;
+import com.vpu.mp.service.pojo.shop.image.ImageListQueryParam;
+import com.vpu.mp.service.pojo.shop.image.UploadImageCatNamePojo;
 import com.vpu.mp.service.pojo.shop.image.UploadImageParam;
 import com.vpu.mp.service.pojo.shop.image.UploadPath;
 import com.vpu.mp.service.pojo.shop.image.UploadedImagePojo;
@@ -27,9 +31,9 @@ import com.vpu.mp.service.shop.ShopApplication;
  * @author 新国
  *
  */
-@Controller
+@RestController
+@RequestMapping("/api")
 public class AdminImageController extends AdminBaseController {
-
 	/**
 	 * 上传多张图片
 	 * 
@@ -39,7 +43,6 @@ public class AdminImageController extends AdminBaseController {
 	 * @throws Exception
 	 */
 	@PostMapping(value = "/admin/image/upload")
-	@ResponseBody
 	public JsonResult imageUpload(UploadImageParam param) throws IOException, Exception {
 		List<UploadedImagePojo> uploadImages = new ArrayList<UploadedImagePojo>();
 		JsonResult result = null;
@@ -69,6 +72,7 @@ public class AdminImageController extends AdminBaseController {
 	 * @throws IOException
 	 * @throws Exception
 	 */
+	@PostMapping(value = "/admin/image/uploadOneImgae")
 	protected JsonResult uploadOneFile(UploadImageParam param, Part file) throws IOException, Exception {
 		ShopApplication shop = shop();
 		Integer maxSize = 5 * 1024 * 1024;
@@ -89,7 +93,6 @@ public class AdminImageController extends AdminBaseController {
 				return this.fail(JsonResultCode.CODE_IMGAE_UPLOAD_EQ_HEIGHT, param.needImgHeight);
 			}
 		}
-
 		UploadPath uploadPath = shop.image.getImageWritableUploadPath(file.getContentType());
 		file.write(uploadPath.fullPath);
 		
@@ -101,5 +104,34 @@ public class AdminImageController extends AdminBaseController {
 			return this.success(record.into(UploadedImagePojo.class));
 		}
 		return fail(JsonResultCode.CODE_IMGAE_UPLOAD_FAILED);
+	}
+	
+	
+	/**
+	 * 图片列表
+	 * @param param
+	 * @return
+	 */
+	@PostMapping(value = "/admin/image/list")
+	public JsonResult getImageList(ImageListQueryParam param) {
+		
+		ShopApplication shop = shop();
+		PageResult<UploadImageCatNamePojo> imageList = shop.image.getPageList(param);
+		return this.success(imageList);
+	}
+	
+	/**
+	 * 图片裁剪
+	 * @param param
+	 * @return
+	 * @throws Exception
+	 */
+	@PostMapping(value = "/admin/image/makeCrop")
+	public boolean makeCrop(CropImageParam param) throws Exception {
+//		System.out.println(param.remoteImgPath);
+		ShopApplication shop = shop();
+		UploadPath uploadPath = shop.image.makeCrop(param);
+		System.out.println(uploadPath);
+		return true;
 	}
 }

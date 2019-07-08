@@ -8,9 +8,8 @@ import java.util.List;
 import java.util.Map;
 
 import org.jooq.Record;
-import org.jooq.Result;
+import org.jooq.SelectConditionStep;
 import org.jooq.SelectWhereStep;
-import org.jooq.tools.StringUtils;
 
 import com.vpu.mp.db.main.tables.records.DecorationTemplateRecord;
 import com.vpu.mp.db.shop.tables.records.XcxCustomerPageRecord;
@@ -28,23 +27,20 @@ import com.vpu.mp.service.pojo.shop.decoration.XcxCustomerPagePojo;
  *
  */
 public class MpDecorationService extends BaseService {
-
-	
-
 	/**
 	 * 装修页面列表
 	 * 
 	 * @param param
 	 * @return
 	 */
-	public PageResult<XcxCustomerPagePojo> getPageList(PageListQueryParam param) {
+	public PageResult<XcxCustomerPagePojo> getPageList(XcxCustomerPagePojo param) {
 		if (getPageCount() == 0) {
 			this.addDefaultPage();
 		}
 		SelectWhereStep<Record> select = db().select().from(XCX_CUSTOMER_PAGE);
-		select = this.buildOptions(select, param);
+		SelectConditionStep<Record> sql = this.buildOptions(select, param);
 		select.orderBy(XCX_CUSTOMER_PAGE.PAGE_TYPE.desc(), XCX_CUSTOMER_PAGE.CREATE_TIME.desc());
-		return this.getPageResult(select, param.page,XcxCustomerPagePojo.class);
+		return this.getPageResult(sql, param.page,XcxCustomerPagePojo.class);
 	}
 
 	/**
@@ -54,23 +50,21 @@ public class MpDecorationService extends BaseService {
 	 * @param param
 	 * @return
 	 */
-	public SelectWhereStep<Record> buildOptions(SelectWhereStep<Record> select, PageListQueryParam param) {
+	public SelectConditionStep<Record> buildOptions(SelectWhereStep<Record> select, XcxCustomerPagePojo param) {
 		Byte enabled = 1;
-		select.where(XCX_CUSTOMER_PAGE.PAGE_ENABLED.eq(enabled));
+		SelectConditionStep<Record> sql = select.where(XCX_CUSTOMER_PAGE.PAGE_ENABLED.eq(enabled));
 
-		if (param == null) {
-			return select;
+		//页面内容
+		if (param.getPageName() != null) {
+			sql.and(XCX_CUSTOMER_PAGE.PAGE_NAME.eq(param.getPageName()));
 		}
 
-		if (param.catId != null && param.catId > 0) {
-			select.where(XCX_CUSTOMER_PAGE.CAT_ID.eq(param.catId));
+		//页面分类
+		if (param.getCatId() != null && param.getCatId() > 0) {
+			sql.and(XCX_CUSTOMER_PAGE.CAT_ID.eq(param.getCatId()));
 		}
 
-		if (!StringUtils.isBlank(param.keywords)) {
-			select.where(XCX_CUSTOMER_PAGE.PAGE_NAME.like(this.likeValue(param.keywords)));
-		}
-
-		return select;
+		return sql;
 	}
 
 	/**
@@ -193,15 +187,15 @@ public class MpDecorationService extends BaseService {
 	 * @param param
 	 * @return
 	 */
-	public Result<Record> getMpList(PageListQueryParam param) {
-		if (getPageCount() == 0) {
-			this.addDefaultPage();
-		}
-		SelectWhereStep<Record> select = db().select().from(XCX_CUSTOMER_PAGE);
-		select = this.buildOptions(select, param);
-		select.orderBy(XCX_CUSTOMER_PAGE.PAGE_TYPE.desc(), XCX_CUSTOMER_PAGE.CREATE_TIME.desc());
-		return select.fetch();
-	}
+//	public Result<Record> getMpList(PageListQueryParam param) {
+//		if (getPageCount() == 0) {
+//			this.addDefaultPage();
+//		}
+//		SelectWhereStep<Record> select = db().select().from(XCX_CUSTOMER_PAGE);
+//		select = this.buildOptions(select, param);
+//		select.orderBy(XCX_CUSTOMER_PAGE.PAGE_TYPE.desc(), XCX_CUSTOMER_PAGE.CREATE_TIME.desc());
+//		return select.fetch();
+//	}
 
 	/**
 	 * 设置首页
@@ -223,6 +217,16 @@ public class MpDecorationService extends BaseService {
 		return false;
 	}
 	
+	/**
+	 * 编辑保存
+	 * @param info
+	 * @return
+	 */
+	public XcxCustomerPageRecord saveDecoration(XcxCustomerPagePojo info) {
+		XcxCustomerPageRecord record = db().newRecord(XCX_CUSTOMER_PAGE, info);
+		db().executeInsert(record);
+		return record;
+	}
 
 	/**
 	 * 获取首页

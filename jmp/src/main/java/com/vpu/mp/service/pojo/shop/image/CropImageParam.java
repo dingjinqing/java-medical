@@ -19,4 +19,5 @@ public class CropImageParam {
 	public Double imgScaleW;
 	public Integer imgCatId;
 	public Integer remoteImgId;
+	public String imageCrop;
 };
