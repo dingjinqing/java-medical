@@ -18,13 +18,14 @@ public class ShopReq {
 	private Integer shopId;
 	private Integer sysId;
 	private String mobile;
+	private String shopType;
 	private String receiveMobile;
 	private String shopName;
 	private String shopPhone;
 	private String shopNotice;
 	private String shopWx;
 	private String shopEmail;
-	private Timestamp created;
+	//private Timestamp created;
 	private Byte isEnabled;
 	private String shopQq;
 	private Byte shopFlag;
