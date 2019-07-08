@@ -3846,5 +3846,17 @@ create table `b2c_record_admin_action` (
   `update_time`     timestamp   default current_timestamp on update current_timestamp comment '更新时间',
   primary key (`id`)
 );
-
+-- --服务承诺表
+-- drop table if exists `b2c_pledge`;
+create table `b2c_pledge` (
+  `id`             int(9)          not null  auto_increment comment 'ID',
+  `pledge_name`    varchar(100)    not null  default '' comment '承诺名称',
+  `pledge_logo`    varchar(255)              default null comment '服务承诺的图标',
+  `pledge_content` varchar(500)    not null  default '' comment '服务承诺的说明',
+  `create_time`    timestamp                 default current_timestamp comment '创建时间',
+  `update_time`        timestamp             default current_timestamp on update current_timestamp comment '更新时间',
+  `state`          tinyint(1)      not null  default '1' comment '开启状态1:开启，0:关闭',
+  `del_flag`       tinyint(1)      null      default 0 comment '删除标识：0未删除，1已删除',
+  primary key (`id`)
+);
 commit;
