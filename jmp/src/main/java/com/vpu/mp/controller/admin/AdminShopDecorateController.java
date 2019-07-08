@@ -21,12 +21,8 @@ import com.vpu.mp.service.shop.ShopApplication;
  * 2019年6月27日
  */
 @RestController
-//@RequestMapping("/api")
+@RequestMapping("/api")
 public class AdminShopDecorateController extends AdminBaseController {
-	@Override
-    protected ShopApplication shop() {
-        return saas.getShopApp(471752);
-    }
 	/**
 	 * 装修页面列表
 	 * @param param
