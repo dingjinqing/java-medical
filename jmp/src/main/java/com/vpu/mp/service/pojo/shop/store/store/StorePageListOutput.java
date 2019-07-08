@@ -15,6 +15,9 @@ public class StorePageListOutput {
 	public String storeName;
 	public Integer posShopId;//门店编码
 	public String groupName;
+	public String provinceCode;
+	public String cityCode;
+	public String districtCode;
 	public String address;
 	public String manager;
 	public String mobile;

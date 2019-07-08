@@ -3,22 +3,24 @@ package com.vpu.mp.service.shop.store.store;
 import static com.vpu.mp.db.shop.tables.Store.STORE;
 import static com.vpu.mp.db.shop.tables.StoreGroup.STORE_GROUP;
 
-import com.vpu.mp.db.shop.tables.records.StoreGroupRecord;
-import com.vpu.mp.service.pojo.shop.store.group.StoreGroup;
-import com.vpu.mp.service.pojo.shop.store.group.StoreGroupQueryParam;
-import org.jooq.*;
+import java.sql.Timestamp;
+import java.util.List;
+
+import org.jooq.DSLContext;
+import org.jooq.Record;
+import org.jooq.SelectWhereStep;
 import org.jooq.impl.DSL;
 import org.jooq.tools.StringUtils;
 
+import com.vpu.mp.db.shop.tables.records.StoreGroupRecord;
+import com.vpu.mp.db.shop.tables.records.StoreRecord;
 import com.vpu.mp.service.foundation.BaseService;
 import com.vpu.mp.service.foundation.PageResult;
-import com.vpu.mp.service.pojo.saas.article.ArticleOutPut;
+import com.vpu.mp.service.pojo.shop.store.group.StoreGroup;
+import com.vpu.mp.service.pojo.shop.store.group.StoreGroupQueryParam;
 import com.vpu.mp.service.pojo.shop.store.store.StoreListQueryParam;
-import org.springframework.beans.BeanUtils;
-
-import java.sql.Timestamp;
-import java.util.Date;
-import java.util.List;
+import com.vpu.mp.service.pojo.shop.store.store.StorePageListOutput;
+import com.vpu.mp.service.pojo.shop.store.store.StorePojo;
 
 /**
  * @author 王兵兵
@@ -27,17 +29,20 @@ import java.util.List;
  */
 public class StoreService extends BaseService {
 	
-	public PageResult<ArticleOutPut> getPageList(StoreListQueryParam param) {
+	/**
+	 * 门店列表分页查询
+	 * @param StoreListQueryParam
+	 * @return StorePageListOutput
+	 */
+	public PageResult<StorePageListOutput> getPageList(StoreListQueryParam param) {
 		SelectWhereStep<? extends Record> select = db().select(
+				STORE.STORE_NAME,STORE.POS_SHOP_ID,STORE_GROUP.GROUP_NAME,STORE.PROVINCE_CODE,STORE.CITY_CODE,STORE.DISTRICT_CODE,STORE.ADDRESS,STORE.MANAGER,
+				STORE.MOBILE,STORE.OPENING_TIME,STORE.CLOSE_TIME,STORE.BUSINESS_STATE
 				).from(STORE)
 				.leftJoin(STORE_GROUP).on(STORE.GROUP.eq(STORE_GROUP.GROUP_ID));
 		select = this.buildOptions(select, param);
 		select.orderBy(STORE.CREATE_TIME);
-		if(null != param.getPage().getPageRows()) {
-			return getPageResult(select,param.getPage().getCurrentPage(),param.getPage().getPageRows(),ArticleOutPut.class);
-		}else {
-			return getPageResult(select,param.getPage().getPageRows(),ArticleOutPut.class);
-		}
+		return getPageResult(select,param.getCurrentPage(),param.getPageRows(),StorePageListOutput.class);
 	}
 
 	public SelectWhereStep<? extends Record> buildOptions(SelectWhereStep<? extends  Record> select, StoreListQueryParam param) {
@@ -47,6 +52,9 @@ public class StoreService extends BaseService {
 		if (param.getGroupName() != null && !"".equals(param.getGroupName())) {
 			select.where(STORE_GROUP.GROUP_NAME.eq(param.getGroupName()));
 		}
+		if (param.getGroupId() != null && param.getGroupId() > 0) {
+			select.where(STORE_GROUP.GROUP_ID.eq(param.getGroupId()));
+		}
 		if (param.getIsAuthPos() != null) {
 			if(param.getIsAuthPos()) {
 				select.where(STORE.POS_SHOP_ID.gt(0));
@@ -55,9 +63,38 @@ public class StoreService extends BaseService {
 			}
 		}
 		if (!StringUtils.isEmpty(param.getKeywords())) {
-			select.where(STORE.STORE_NAME.like(param.getKeywords()).or(STORE.MANAGER.like(param.getKeywords())).or(STORE.POS_SHOP_ID.like(param.getKeywords())));
+			select.where(STORE.STORE_NAME.contains(param.getKeywords()).or(STORE.MANAGER.contains(param.getKeywords())).or(STORE.POS_SHOP_ID.like(param.getKeywords())));
 		}
 		return select;
+	}
+	
+	/**
+	 * 新增门店
+	 * @param StorePojo
+	 * @return
+	 */
+	public Boolean addStore(StorePojo store) {
+		StoreRecord record = db().newRecord(STORE,store);
+		return record.insert() > 0 ? true : false;
+	}
+	
+	/**
+	 * 更新门店
+	 * @param StorePojo
+	 * @return
+	 */
+	public Boolean updateStore(StorePojo store) {
+		StoreRecord record = db().newRecord(STORE,store);
+		return record.update() > 0 ? true : false;
+	}
+	
+	/**
+	 * 删除门店
+	 * @param StorePojo
+	 * @return
+	 */
+	public Boolean delStore(Integer storeId) {
+		return db().update(STORE).set(STORE.DEL_FLAG,(byte)1).where(STORE.STORE_ID.eq(storeId)).execute() > 0 ? true : false;
 	}
 
 	/**

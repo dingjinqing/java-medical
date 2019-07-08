@@ -14,8 +14,13 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class StoreListQueryParam {
 	public String groupName;
+	public Integer groupId;
 	public Boolean isAuthPos;
-	public String Keywords;//门店名称/编码/负责人
+	public String keywords;//门店名称/编码/负责人
 	
-	private Page page;
+	/**
+     * 	分页信息
+     */
+    private int currentPage = Page.DEFAULT_CURRENT_PAGE;
+    private int pageRows = Page.DEFAULT_PAGE_ROWS;
 }
