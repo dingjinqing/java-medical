@@ -134,7 +134,9 @@ public class AdminAuth{
 		if (shop.getSysId() != info.getSysId()) {
 			return false;
 		}
-
+		if(saas.shop.checkExpire(shopId)) {
+			return false;
+		}
 		Integer roleId = 0;
 		if (info.isSubLogin()) {
 			roleId = saas.shop.getShopAccessRoleId(info.getSysId(), shopId, info.getSubAccountId());
