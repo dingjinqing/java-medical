@@ -200,6 +200,7 @@ public class ShopCfgService extends BaseService{
 	 */
 	final public static  String K_SHOP_STYLE="shop_style";
 	
+	final public static String K_SEARCH_CONFIG="search_config";
 	
 
 	public  List<ShopCfgRecord> getAllShopCfg() {
