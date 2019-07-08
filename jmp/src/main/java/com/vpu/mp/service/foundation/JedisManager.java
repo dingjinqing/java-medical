@@ -31,7 +31,7 @@ public class JedisManager {
 	private JedisPool pool = null;
 	
 	
-	private static Jedis jedis=null;
+	private volatile static Jedis jedis=null;
 
 	/**
 	 * 获取缓存连接池
