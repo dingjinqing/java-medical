@@ -1,15 +1,18 @@
 package com.vpu.mp.service.shop.goods;
 
 import com.vpu.mp.service.foundation.BaseService;
+
 /**
- * 
- * @author 新国
+ *	 商品品牌
  *
+ * @author 李晓冰
+ * @date 2019年6月25日
  */
 public class GoodsService extends BaseService {
-	public GoodsBrandService goodsBrand;
-	public GoodsSortService goodsSort;
-	public void test() {
-		System.out.println("test current shop id:" + this.getShopId());
-	}
+    public GoodsBrandService goodsBrand;
+    public GoodsSortService goodsSort;
+    public GoodsSpecProductService goodsSpecProductService;
+
+    private GoodsSpecService goodsSpecService=new GoodsSpecService();
 }
+
