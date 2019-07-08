@@ -12,6 +12,9 @@ public class GoodsService extends BaseService {
     public GoodsBrandService goodsBrand;
     public GoodsSortService goodsSort;
     public GoodsSpecProductService goodsSpecProductService;
+    
+	public GoodsLabelService goodsLabel;
+	public GoodsLabelCoupleService goodsLabelCouple;
 
     private GoodsSpecService goodsSpecService=new GoodsSpecService();
 }
