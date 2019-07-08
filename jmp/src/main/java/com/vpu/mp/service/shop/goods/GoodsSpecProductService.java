@@ -2,8 +2,9 @@ package com.vpu.mp.service.shop.goods;
 
 import com.vpu.mp.db.shop.tables.records.GoodsSpecProductRecord;
 import com.vpu.mp.service.foundation.BaseService;
+import com.vpu.mp.service.foundation.Util;
 import com.vpu.mp.service.pojo.shop.goods.spec.GoodsSpecProduct;
-import org.jooq.impl.DefaultDSLContext;
+import org.jooq.DSLContext;
 
 import java.util.List;
 import java.util.Map;
@@ -14,7 +15,7 @@ import static com.vpu.mp.db.shop.Tables.GOODS_SPEC_PRODUCT;
  * @author 李晓冰
  * @date 2019年07月05日
  */
-public class GoodsSpecProductService extends BaseService {
+public class GoodsSpecProductService {
 
     static final String PRD_DESC_DELIMITER=";";//规格名值描述分割符
     static final String PRD_SPEC_DELIMITER="!!";//规格名值id分隔符
@@ -22,9 +23,13 @@ public class GoodsSpecProductService extends BaseService {
 
     static final String PRD_SPEC_ID_KEY=GoodsSpecService.PRD_SPEC_ID_KEY;//规格名值处理后map内id值的key名称
 
-    protected void insert(DefaultDSLContext db, List<GoodsSpecProduct> goodsSpecProducts, Map<String, Map<String, Integer>> goodsSpecsMap, Integer goodsId) {
+    protected void insert(DSLContext db, List<GoodsSpecProduct> goodsSpecProducts, Map<String, Map<String, Integer>> goodsSpecsMap, Integer goodsId) {
         for (GoodsSpecProduct goodsSpecProduct : goodsSpecProducts) {
             goodsSpecProduct.setGoodsId(goodsId);
+
+            if (goodsSpecProduct.getPrdSn() == null) {
+                goodsSpecProduct.setPrdSn(Util.UUID());
+            }
 
             String prdDescs = goodsSpecProduct.getPrdDesc();
 

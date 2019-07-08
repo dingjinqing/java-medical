@@ -4,7 +4,7 @@ import com.vpu.mp.db.shop.tables.records.SpecRecord;
 import com.vpu.mp.db.shop.tables.records.SpecValsRecord;
 import com.vpu.mp.service.pojo.shop.goods.spec.GoodsSpec;
 import com.vpu.mp.service.pojo.shop.goods.spec.GoodsSpecVal;
-import org.jooq.impl.DefaultDSLContext;
+import org.jooq.DSLContext;
 
 import java.util.HashMap;
 import java.util.List;
@@ -27,7 +27,7 @@ public class GoodsSpecService {
      * @param goodsSpecs 内部包含了对应的specsVal值
      * @param goodsId
      */
-    protected void insertSpecAndSpecVal(DefaultDSLContext db, List<GoodsSpec> goodsSpecs, Integer goodsId){
+    protected void insertSpecAndSpecVal(DSLContext db, List<GoodsSpec> goodsSpecs, Integer goodsId){
         for (GoodsSpec goodsSpec : goodsSpecs) {
             goodsSpec.setGoodsId(goodsId);
             SpecRecord specRecord = db.newRecord(SPEC, goodsSpec);
@@ -52,7 +52,7 @@ public class GoodsSpecService {
      * @param goodsId
      * @return
      */
-    protected Map<String, Map<String,Integer>> insertSpecAndSpecValWithPrepareResult(DefaultDSLContext db, List<GoodsSpec> goodsSpecs, Integer goodsId){
+    protected Map<String, Map<String,Integer>> insertSpecAndSpecValWithPrepareResult(DSLContext db, List<GoodsSpec> goodsSpecs, Integer goodsId){
         insertSpecAndSpecVal(db,goodsSpecs,goodsId);
         Map<String, Map<String, Integer>> resultMap = prepareResultMap(goodsSpecs);
         return resultMap;
