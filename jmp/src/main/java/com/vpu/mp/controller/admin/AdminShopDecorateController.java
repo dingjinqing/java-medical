@@ -1,9 +1,7 @@
 package com.vpu.mp.controller.admin;
 
 
-import com.vpu.mp.service.pojo.shop.decoration.DecorateBonntParam;
-import com.vpu.mp.service.pojo.shop.decoration.DecorateStyleParam;
-import org.json.JSONObject;
+import com.vpu.mp.service.shop.config.ShopCfgService;
 import org.springframework.web.bind.annotation.*;
 
 import com.vpu.mp.db.shop.tables.records.XcxCustomerPageRecord;
@@ -11,8 +9,6 @@ import com.vpu.mp.service.foundation.JsonResult;
 import com.vpu.mp.service.foundation.PageResult;
 import com.vpu.mp.service.pojo.shop.decoration.XcxCustomerPagePojo;
 import com.vpu.mp.service.shop.decoration.MpDecorationService.PageListQueryParam;
-
-import javax.validation.Valid;
 
 /**
  * 装修模块
@@ -61,12 +57,12 @@ public class AdminShopDecorateController extends AdminBaseController {
 
 	/**
 	 * 设置店铺风格
-	 * @param param
+	 * @param jsonParam
 	 * @return
 	 */
 	@PostMapping("/admin/manage/decorate/updateStyle")
-	public JsonResult upadteShopStyle(@RequestBody @Valid DecorateStyleParam param){
-		shop().mpDecoration.updateShopStyle(param);
+	public JsonResult upadteShopStyle(@RequestBody String jsonParam){
+		shop().shopCfg.setShopCfg(ShopCfgService.K_SHOP_STYLE,jsonParam);
 		return success();
 	}
 
@@ -76,7 +72,7 @@ public class AdminShopDecorateController extends AdminBaseController {
 	 */
 	@GetMapping("/admin/manage/decorate/getStyle")
 	public JsonResult getShopStyle() {
-		return success(shop().mpDecoration.getShopStyle());
+		return success(shop().shopCfg.getShopCfg(ShopCfgService.K_SHOP_STYLE));
 	}
 
 	/**
@@ -86,7 +82,7 @@ public class AdminShopDecorateController extends AdminBaseController {
 	 */
 	@GetMapping("/admin/manage/bottom/get")
 	public JsonResult getDecorateBottom(){
-		return success(shop().mpDecoration.getDecorateBonnt());
+		return success(shop().shopCfg.getShopCfg(ShopCfgService.K_BOTTOM));
 	}
 
 
@@ -98,7 +94,7 @@ public class AdminShopDecorateController extends AdminBaseController {
 	@PostMapping("/admin/manage/bottom/update")
 	public JsonResult updateDecorateBottom(@RequestBody String jsonParam){
 		//底部导航配置以json形式存储在数据库，所以不需要转换pojo
-		shop().mpDecoration.updataDecorateBonnt(jsonParam);
+		shop().shopCfg.setShopCfg(ShopCfgService.K_BOTTOM,jsonParam);
 		return success();
 	}
 

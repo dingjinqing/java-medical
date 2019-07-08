@@ -195,7 +195,10 @@ public class ShopCfgService extends BaseService{
 	 * 
 	 */
 	final public static String K_SHARE_CONFIG = "share_config";
-	
+	/**
+	 * 店铺风格
+	 */
+	final public static  String K_SHOP_STYLE="shop_style";
 	
 	
 
