@@ -68,9 +68,7 @@ public class SystemShopController extends SystemBaseController {
 	 */
 	@PostMapping("/system/shop/renew")
 	public JsonResult shopRenew(@RequestBody ShopRenewReq sReq) {
-		String token = request.getHeader(TOKEN);
-		SystemTokenAuthInfo info = saas.shop.accout.shopSelectOnMainService(token);
-		int num = saas.shop.renew.insertShopRenew(sReq, info);
+		int num = saas.shop.renew.insertShopRenew(sReq, sysAuth.user());
 		if(num<1) {
 			return fail(JsonResultCode.CODE_FAIL);
 		}
