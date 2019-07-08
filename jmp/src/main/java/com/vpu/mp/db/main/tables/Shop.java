@@ -10,7 +10,6 @@ import com.vpu.mp.db.main.MiniMain;
 import com.vpu.mp.db.main.tables.records.ShopRecord;
 
 import java.math.BigDecimal;
-import java.sql.Date;
 import java.sql.Timestamp;
 import java.util.Arrays;
 import java.util.List;
@@ -44,7 +43,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class Shop extends TableImpl<ShopRecord> {
 
-    private static final long serialVersionUID = 1577691778;
+    private static final long serialVersionUID = -428488378;
 
     /**
      * The reference instance of <code>mini_main.b2c_shop</code>
@@ -263,11 +262,6 @@ public class Shop extends TableImpl<ShopRecord> {
      * The column <code>mini_main.b2c_shop.logo</code>. 小程序logo
      */
     public final TableField<ShopRecord, String> LOGO = createField("logo", org.jooq.impl.SQLDataType.VARCHAR(200), this, "小程序logo");
-
-    /**
-     * The column <code>mini_main.b2c_shop.expire_time</code>. 到期时间
-     */
-    public final TableField<ShopRecord, Date> EXPIRE_TIME = createField("expire_time", org.jooq.impl.SQLDataType.DATE, this, "到期时间");
 
     /**
      * Create a <code>mini_main.b2c_shop</code> table reference

@@ -7,7 +7,6 @@ package com.vpu.mp.db.main.tables.records;
 import com.vpu.mp.db.main.tables.Shop;
 
 import java.math.BigDecimal;
-import java.sql.Date;
 import java.sql.Timestamp;
 
 import javax.annotation.Generated;
@@ -29,7 +28,7 @@ import org.jooq.impl.UpdatableRecordImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class ShopRecord extends UpdatableRecordImpl<ShopRecord> {
 
-    private static final long serialVersionUID = -1170718136;
+    private static final long serialVersionUID = 754306558;
 
     /**
      * Setter for <code>mini_main.b2c_shop.shop_id</code>. 店铺ID
@@ -605,20 +604,6 @@ public class ShopRecord extends UpdatableRecordImpl<ShopRecord> {
         return (String) get(40);
     }
 
-    /**
-     * Setter for <code>mini_main.b2c_shop.expire_time</code>. 到期时间
-     */
-    public void setExpireTime(Date value) {
-        set(41, value);
-    }
-
-    /**
-     * Getter for <code>mini_main.b2c_shop.expire_time</code>. 到期时间
-     */
-    public Date getExpireTime() {
-        return (Date) get(41);
-    }
-
     // -------------------------------------------------------------------------
     // Primary key information
     // -------------------------------------------------------------------------
@@ -645,7 +630,7 @@ public class ShopRecord extends UpdatableRecordImpl<ShopRecord> {
     /**
      * Create a detached, initialised ShopRecord
      */
-    public ShopRecord(Integer shopId, Integer sysId, String mobile, String receiveMobile, String shopName, String shopAvatar, String shopBgPath, String shopPhone, String shopNotice, String shopWx, String shopEmail, Timestamp created, Byte isEnabled, Integer provinceCode, String provinceName, Integer cityCode, String cityName, Integer districtCode, String districtName, String address, String completeAddress, Integer shopSellType, String shopQq, String lastLoginIp, Byte state, Byte businessState, BigDecimal manageFee, BigDecimal surplus, String dbConfig, String shopType, String versionConfig, Byte shopFlag, String memberKey, String tenancyName, String userName, String password, String smsAccount, Byte kuajinggou, Byte orderRealName, Byte hidBottom, String logo, Date expireTime) {
+    public ShopRecord(Integer shopId, Integer sysId, String mobile, String receiveMobile, String shopName, String shopAvatar, String shopBgPath, String shopPhone, String shopNotice, String shopWx, String shopEmail, Timestamp created, Byte isEnabled, Integer provinceCode, String provinceName, Integer cityCode, String cityName, Integer districtCode, String districtName, String address, String completeAddress, Integer shopSellType, String shopQq, String lastLoginIp, Byte state, Byte businessState, BigDecimal manageFee, BigDecimal surplus, String dbConfig, String shopType, String versionConfig, Byte shopFlag, String memberKey, String tenancyName, String userName, String password, String smsAccount, Byte kuajinggou, Byte orderRealName, Byte hidBottom, String logo) {
         super(Shop.SHOP);
 
         set(0, shopId);
@@ -689,6 +674,5 @@ public class ShopRecord extends UpdatableRecordImpl<ShopRecord> {
         set(38, orderRealName);
         set(39, hidBottom);
         set(40, logo);
-        set(41, expireTime);
     }
 }
