@@ -6,14 +6,7 @@ import java.net.InetAddress;
 import java.net.UnknownHostException;
 import java.nio.charset.StandardCharsets;
 import java.sql.Timestamp;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Locale;
-import java.util.Map;
-import java.util.Properties;
-import java.util.Random;
+import java.util.*;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
@@ -340,6 +333,15 @@ public class Util {
             }
         }
         return sb.toString().toLowerCase();
+    }
+
+    /**
+     * 产生uuid
+     * @return
+     */
+    public static String UUID(){
+	    UUID uuid=UUID.randomUUID();
+	    return uuid.toString();
     }
 
 }
