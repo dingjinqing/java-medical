@@ -29,10 +29,8 @@ public class Page {
 
 	public static Page getPage(Integer totalRows, Integer currentPage, Integer pageRows) {
 		//currentPage pageRows为null取默认值;<1取默认
-		currentPage = currentPage == null ? DEFAULT_CURRENT_PAGE : currentPage;
-		currentPage = currentPage < 1  ? DEFAULT_CURRENT_PAGE : currentPage;
-		pageRows = pageRows == null ? DEFAULT_PAGE_ROWS : pageRows;
-		pageRows = pageRows < 1 ? DEFAULT_PAGE_ROWS : pageRows;
+		currentPage = currentPage == null || currentPage < 1 ? DEFAULT_CURRENT_PAGE : currentPage;
+		pageRows = pageRows == null || pageRows < 1 ? DEFAULT_PAGE_ROWS : pageRows;
 		Integer pageCount = (Integer)(int)Math.ceil(Double.valueOf(totalRows) / Double.valueOf(pageRows));
 		Integer lastPage = pageCount > 0 ? pageCount : 1;
 		currentPage = currentPage > lastPage ? lastPage : (currentPage <= 0 ? 1 : currentPage);
