@@ -514,7 +514,7 @@ create table `b2c_shop_renew` (
   `shop_id`     int(11)                 not null comment '店铺ID',
   `sys_id`      int(11)                 not null,
   `mobile`      varchar(32)                       default '',
-  `renew_money` double(10, 2)                     default 0 comment '店铺续费金额',
+  `renew_money` decimal(12, 2)                    default 0 comment '店铺续费金额',
   `renew_date`  timestamp comment '店铺续费日期',
   `expire_time` timestamp comment '到期时间',
   `operator`    int(11)                           default 0 comment '操作员ID,主账号是0，子账号ID',
