@@ -178,12 +178,15 @@ public class MenuUtil {
 		ArrayList<String> roleLinkList = new ArrayList<String>();
 		for (String privilege : privilegeList) {
 			for (Menu menu : authorityMenu) {
-				List<String> names = Arrays.asList(menu.getPrivilgeNames());
-				if (menu.getEnName().equals(privilege) || names.indexOf(privilege) != -1) {
-					if (menu.getLinkUrl() != null && roleLinkList.indexOf(menu.getLinkUrl()) == -1) {
-						roleLinkList.add(menu.getLinkUrl());
-					}
-					break;
+				//TODO 现在先加了个非空，以后再改
+				if(menu.getPrivilgeNames()!=null) {
+					List<String> names = Arrays.asList(menu.getPrivilgeNames());
+					if (menu.getEnName().equals(privilege) || names.indexOf(privilege) != -1) {
+						if (menu.getLinkUrl() != null && roleLinkList.indexOf(menu.getLinkUrl()) == -1) {
+							roleLinkList.add(menu.getLinkUrl());
+						}
+						break;
+					}					
 				}
 			}
 		}
