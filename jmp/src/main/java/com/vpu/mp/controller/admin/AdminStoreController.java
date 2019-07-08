@@ -81,6 +81,20 @@ public class AdminStoreController extends AdminBaseController{
     	   return fail();
        }
     }
+    
+    /**
+     * 门店-取单个门店信息
+     * @return
+     */
+    @PostMapping(value = "/api/admin/store/getStore")
+    public JsonResult getStore(@RequestBody(required = true) @Valid StorePojo store) {
+       StorePojo storeRes = shop().store.getStore(store.getStoreId());
+       if(null != storeRes) {
+    	   return success(storeRes);
+       }else {
+    	   return fail();
+       }
+    }
 
     /**
      * 门店分组-新增

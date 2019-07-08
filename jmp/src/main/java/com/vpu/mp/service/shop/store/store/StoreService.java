@@ -15,6 +15,7 @@ import org.jooq.tools.StringUtils;
 import com.vpu.mp.db.shop.tables.records.StoreGroupRecord;
 import com.vpu.mp.db.shop.tables.records.StoreRecord;
 import com.vpu.mp.service.foundation.BaseService;
+import com.vpu.mp.service.foundation.FieldsUtil;
 import com.vpu.mp.service.foundation.PageResult;
 import com.vpu.mp.service.pojo.shop.store.group.StoreGroup;
 import com.vpu.mp.service.pojo.shop.store.group.StoreGroupQueryParam;
@@ -74,8 +75,9 @@ public class StoreService extends BaseService {
 	 * @return
 	 */
 	public Boolean addStore(StorePojo store) {
-		StoreRecord record = db().newRecord(STORE,store);
-		return record.insert() > 0 ? true : false;
+		StoreRecord record = new StoreRecord();
+		FieldsUtil.assignNotNull(store,record);
+		return db().executeInsert(record) > 0 ? true : false;
 	}
 	
 	/**
@@ -95,6 +97,15 @@ public class StoreService extends BaseService {
 	 */
 	public Boolean delStore(Integer storeId) {
 		return db().update(STORE).set(STORE.DEL_FLAG,(byte)1).where(STORE.STORE_ID.eq(storeId)).execute() > 0 ? true : false;
+	}
+	
+	/**
+	 * 取单个门店信息
+	 * @param Integer
+	 * @return StorePojo
+	 */
+	public StorePojo getStore(Integer storeId) {
+		return db().fetchOne(STORE,STORE.STORE_ID.eq(storeId)).into(StorePojo.class);
 	}
 
 	/**
