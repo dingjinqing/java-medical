@@ -51,4 +51,7 @@ public class JsonResultMessage {
 
 	final public static String PAGE_CLASSIFICAIION_EXIST="applets.page.classification.exist";
 	final public static String PAGE_CLASSIFICAIION_INSERT_FAILED="applets.page.classification.insert.failed";
+	final public static String PAGE_CLASSIFICAIION_NOT_EXIST="applets.page.classification.not.exist";
+	final public static String PAGE_CLASSIFICATION_UPDATE_FAILED="applets.page.classification.update.failed";
+	final public static String CODE_PAGE_CLASSIFICATION_DELETE_FAILED="applets.page.classification.delete.failed";
 }

@@ -19,17 +19,42 @@ import org.springframework.web.bind.annotation.RestController;
 public class AdminPageClassificationController extends AdminBaseController {
     private Logger logger = LoggerFactory.getLogger(AdminPageClassificationController.class);
 
-    @PostMapping("/api/admin/applets/pageclassification/safeAdd")
-    public JsonResult safeInsert(@RequestBody PageClassificationIn pageIn){
-        boolean[] result = shop().pageClassification.checkExistThenInsert(pageIn.getPageName());
-        return result[0] ? fail(JsonResultCode.CODE_PAGE_CLASSIFICATION_EXIST) : result[1] ? success() : fail(JsonResultCode.CODE_PAGE_CLASSIFICATION_INSERT_FAILED);
-    }
-
+    /**
+     * 添加页面分类
+     * @param pageIn
+     * @return
+     */
     @PostMapping("/api/admin/applets/pageclassification/add")
     public JsonResult insert(@RequestBody PageClassificationIn pageIn){
         if(shop().pageClassification.isRowExist(pageIn.getPageName())){
             return fail(JsonResultCode.CODE_PAGE_CLASSIFICATION_EXIST);
         }
         return shop().pageClassification.addRow(pageIn.getPageName()) > 0 ? success() : fail(JsonResultCode.CODE_PAGE_CLASSIFICATION_INSERT_FAILED);
+    }
+
+    /**
+     * 修改页面分类名称，id码值不变
+     * @param pageIn
+     * @return
+     */
+    @PostMapping("/api/admin/applets/pageclassification/updateCategoryName")
+    public JsonResult updateCategoryName(@RequestBody PageClassificationIn pageIn){
+        if(!shop().pageClassification.isRowExist(pageIn.getPageName())){
+            return fail(JsonResultCode.CODE_PAGE_CLASSIFICATION_NOT_EXIST);
+        }
+        return shop().pageClassification.setName(pageIn.getPageId(),pageIn.getPageName()) > 0 ? success() : fail(JsonResultCode.CODE_PAGE_CLASSIFICATION_UPDATE_FAILED);
+    }
+
+    /**
+     * 根据ID删除分类，同时将该分类下的页面重新归属于未分类类别，码值为0
+     * @param pageIn
+     * @return
+     */
+    @PostMapping("/api/admin/applets/pageclassification/deleteCategoryById")
+    public JsonResult deleteCategoryById(@RequestBody PageClassificationIn pageIn){
+        if(!shop().pageClassification.isRowExist(pageIn.getPageName())){
+            return fail(JsonResultCode.CODE_PAGE_CLASSIFICATION_NOT_EXIST);
+        }
+        return shop().pageClassification.rmAndResetCategory(pageIn.getPageId()) ? success() : fail(JsonResultCode.CODE_PAGE_CLASSIFICATION_DELETE_FAILED);
     }
 }
