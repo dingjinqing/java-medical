@@ -33,8 +33,7 @@ public class AdminRoleController extends AdminBaseController {
 	 */
 	@PostMapping(value = "/admin/account/shop/select")
 	public JsonResult shopSelect() {
-		String token = request.getHeader(TOKEN);
-		AdminTokenAuthInfo info = saas.shop.accout.shopSelectService(token);
+		AdminTokenAuthInfo info = adminAuth.user();
 		if (info == null) {
 			return fail(JsonResultCode.CODE_ACCOUNT_LOGIN_EXPIRED);
 		}
@@ -58,23 +57,10 @@ public class AdminRoleController extends AdminBaseController {
 	 */
 	@RequestMapping(value = "/admin/account/shop/switch")
 	public JsonResult switchShop(@RequestBody ShopReq shopReq) {
-		String token = request.getHeader(TOKEN);
-		AdminTokenAuthInfo info = saas.shop.accout.shopSelectService(token);
-		if (info == null) {
-			return fail(JsonResultCode.CODE_ACCOUNT_LOGIN_EXPIRED);
-		}
-		//验证店铺有效期
-		if(saas.shop.checkExpire(shopReq.getShopId())) {
-			return fail(JsonResultCode.CODE_ACCOUNT_SHOP_NULL);
-		}
-		//用户角色
-		int roleId=saas.shop.getShopAccessRoleId(info.getSysId(), shopReq.getShopId(), info.getSubAccountId());
-		if(roleId==-1) {
-			//店铺错误或者没有权限
-			return fail(JsonResultCode.CODE_ACCOUNT_SHOP_NULL);
-		}
 		//更新redis
-		saas.shop.accout.updateSwitchShop(token, shopReq.getShopId());
-		return success();
+		if(adminAuth.switchShopLogin(shopReq.getShopId())){
+			return success();			
+		}
+		return fail(JsonResultCode.CODE_ACCOUNT_SHOP_NULL); 
 	}
 }
