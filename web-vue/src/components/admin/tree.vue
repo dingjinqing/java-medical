@@ -85,7 +85,7 @@ import {
 
 export default {
   name: 'ly-tree',
-  data() {
+  data () {
     return {
       treeData: [],
       isEdit: false,
@@ -108,15 +108,15 @@ export default {
     }
   },
 
-  created() {
+  created () {
     this.refresh()
   },
-  mounted() {
+  mounted () {
 
   },
   methods: {
     // 节点右键点击
-    nodeRight(event, object, value, element) {
+    nodeRight (event, object, value, element) {
       this.menuVisible = true
       let menu = document.querySelector('#menu_')
       /* 菜单定位基于鼠标点击位置 */
@@ -142,25 +142,25 @@ export default {
       // console.log('右键被点击的element:', element)
       document.addEventListener('click', this.foo)
     },
-    foo() { // 取消鼠标监听事件 菜单栏
+    foo () { // 取消鼠标监听事件 菜单栏
       console.log('关闭菜单')
       this.menuVisible = false
       document.removeEventListener('click', this.foo)
     },
 
     // 节点被点击时的状态
-    nodeClick(data, node, mynode) {
+    nodeClick (data, node, mynode) {
       console.log('123')
       console.log(data, node, mynode)
       this.menuVisible = false
     },
-    refresh() {
+    refresh () {
       let res = getServiceTree()
       this.is_superuser = res.is_superuser
       this.treeData = res.data
     },
 
-    append(node, data, e) {
+    append (node, data, e) {
       e = event || window.event
       e.stopPropagation()
       if (!this.isEdit) {
@@ -190,7 +190,7 @@ export default {
       this.menuVisible = false
     },
 
-    remove(node, data, e) {
+    remove (node, data, e) {
       e = event || window.event
       e.stopPropagation()
       if (this.isEdit) {
@@ -207,7 +207,7 @@ export default {
       this.menuVisible = false
     },
 
-    delSelect() {
+    delSelect () {
       delItem(this.treeData, { id: this.select_node.data.id })
       this.delDialogVisible = false
       this.$notify({
@@ -218,7 +218,7 @@ export default {
       })
     },
 
-    update(node, data, e) {
+    update (node, data, e) {
       e = event || window.event
       e.stopPropagation()
       if (this.isEdit) {
@@ -237,7 +237,7 @@ export default {
       this.menuVisible = false
     },
 
-    editMsg(data, node, e) {
+    editMsg (data, node, e) {
       console.log('添加')
       e = event || window.event
       e.stopPropagation()
@@ -287,7 +287,7 @@ export default {
       }
     },
 
-    close(data, node, e) {
+    close (data, node, e) {
       e = event || window.event
       e.stopPropagation()
       if (!data.id) {
@@ -303,21 +303,21 @@ export default {
       this.isEdit = false
     },
 
-    nameChange(e) {
+    nameChange (e) {
       e = event || window.event
       e.stopPropagation()
       this.edit_name = e.target.value
       console.log(e.target.value)
     },
 
-    isSelect(data) {
+    isSelect (data) {
       return data.id === this.select_id &&
         data.level === this.select_level
     },
-    nameBlur(data, node) {
+    nameBlur (data, node) {
       this.editMsg(data, node)
     },
-    renderContent(h, { node, data }) {
+    renderContent (h, { node, data }) {
       return (
         <span class="ly-tree-node">
           {
