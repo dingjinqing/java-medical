@@ -7,8 +7,8 @@ import org.springframework.web.bind.annotation.*;
 import com.vpu.mp.db.shop.tables.records.XcxCustomerPageRecord;
 import com.vpu.mp.service.foundation.JsonResult;
 import com.vpu.mp.service.foundation.PageResult;
+import com.vpu.mp.service.pojo.shop.decoration.PageListQueryParam;
 import com.vpu.mp.service.pojo.shop.decoration.XcxCustomerPagePojo;
-import com.vpu.mp.service.shop.decoration.MpDecorationService.PageListQueryParam;
 
 /**
  * 装修模块
