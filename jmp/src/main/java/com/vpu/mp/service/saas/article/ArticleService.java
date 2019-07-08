@@ -62,7 +62,7 @@ public class ArticleService extends BaseService {
 			select.where(ARTICLE.STATUS.eq(param.getStatus()));
 		}
 		if (!StringUtils.isEmpty(param.getKeywords())) {
-			select.where(ARTICLE.TITLE.like(param.getKeywords()).or(ARTICLE.DESC.like(param.getKeywords())));
+			select.where(ARTICLE.TITLE.like(likeValue(param.getKeywords())).or(ARTICLE.DESC.like(likeValue(param.getKeywords()))));
 		}
 		if (!StringUtils.isEmpty(param.getSortName())) {
 			String[] sortNames = param.getSortName().split(";");
