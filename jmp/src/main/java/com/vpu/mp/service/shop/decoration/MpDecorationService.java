@@ -7,7 +7,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import com.vpu.mp.service.shop.config.ShopCfgService;
 import org.jooq.Record;
 import org.jooq.Result;
 import org.jooq.SelectWhereStep;
@@ -19,9 +18,9 @@ import com.vpu.mp.service.foundation.BaseService;
 import com.vpu.mp.service.foundation.PageResult;
 import com.vpu.mp.service.foundation.Util;
 import com.vpu.mp.service.pojo.saas.shop.version.VersionConfig;
+import com.vpu.mp.service.pojo.shop.decoration.PageListQueryParam;
+import com.vpu.mp.service.pojo.shop.decoration.PageStoreParam;
 import com.vpu.mp.service.pojo.shop.decoration.XcxCustomerPagePojo;
-
-import lombok.Data;
 
 /**
  * 
@@ -30,28 +29,7 @@ import lombok.Data;
  */
 public class MpDecorationService extends BaseService {
 
-	@Data
-	public static class PageListQueryParam {
-		/**
-		 * 需要删除页面ID
-		 */
-		public Integer del;
-
-		/**
-		 * 需要设置为首页的ID
-		 */
-		public Integer index;
-
-		/**
-		 * 页面ID
-		 */
-		public Integer pageId;
-
-		public Integer catId;
-		public Integer page;
-		public String keywords;
-		public String fistOpt;
-	};
+	
 
 	/**
 	 * 装修页面列表
@@ -295,14 +273,7 @@ public class MpDecorationService extends BaseService {
 		return db().fetchCount(XCX_CUSTOMER_PAGE, XCX_CUSTOMER_PAGE.CAT_ID.eq(catId));
 	}
 
-	@Data
-	public static class PageStoreParam {
-		public Integer pageId;
-		public String pageName;
-		public String pageContent;
-		public Byte pageState;
-		public Integer catId;
-	}
+	
 
 	/**
 	 * 保存页面，包含添加和更新
