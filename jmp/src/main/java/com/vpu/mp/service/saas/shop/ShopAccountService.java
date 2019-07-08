@@ -139,6 +139,9 @@ public class ShopAccountService extends BaseService {
 		db().executeUpdate(record);
 		return record;
 	}
+	public int updateById(ShopAccountRecord record) {
+		return db().executeUpdate(record);
+	}
 
 	/**
 	 * 商家账户添加
