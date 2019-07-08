@@ -4,15 +4,19 @@
 package com.vpu.mp.service.pojo.shop.decoration;
 
 
-import java.sql.Timestamp;
-
+import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
-
+import java.sql.Timestamp;
 @Data
+@NoArgsConstructor
+@AllArgsConstructor
 public class PageClassificationPojo{
+
     private Integer   id;
     private Integer   shopId;
+    private Integer   subPageCount;
     private String    name;
     private Timestamp createTime;
 

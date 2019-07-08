@@ -56,7 +56,7 @@ public class JsonResultMessage {
 	final public static String PAGE_CLASSIFICAIION_INSERT_FAILED="applets.page.classification.insert.failed";
 	final public static String PAGE_CLASSIFICAIION_NOT_EXIST="applets.page.classification.not.exist";
 	final public static String PAGE_CLASSIFICATION_UPDATE_FAILED="applets.page.classification.update.failed";
-	final public static String CODE_PAGE_CLASSIFICATION_DELETE_FAILED="applets.page.classification.delete.failed";
+	final public static String PAGE_CLASSIFICATION_DELETE_FAILED="applets.page.classification.delete.failed";
 
 	final public static String DECORATE_BOTTOM_ISNOTJSON="applets.bottom.is_not_json";
 	final public static String DECORATE_STYLE_ISNOTJSON="applets.style.is_not_json";

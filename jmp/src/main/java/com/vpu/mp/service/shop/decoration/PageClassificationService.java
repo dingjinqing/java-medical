@@ -35,7 +35,7 @@ public class PageClassificationService extends BaseService {
 		SelectWhereStep<Record> select = db().select().from(PAGE_CLASSIFICATION);
 		select = this.buildOptions(select, param);
 		select.orderBy(PAGE_CLASSIFICATION.CREATE_TIME.desc());
-		return this.getPageResult(select, param.page,PageClassificationPojo.class);
+		return this.getPageResult(select, param.currentPage,PageClassificationPojo.class);
 	}
 
 	/**
@@ -122,12 +122,22 @@ public class PageClassificationService extends BaseService {
 				.execute();
 	}
 
-    /**
-     * @param pageName
-     * @return 存在返回true，不存在返回false
-     */
-	public boolean isRowExist(String pageName){
-		return db().fetchCount(PageClassification.PAGE_CLASSIFICATION,PageClassification.PAGE_CLASSIFICATION.NAME.eq(pageName)) > 0;
+	/**
+	 *
+	 * @param pageId 若不涉及，置为-1
+	 * @param pageName 若不涉及，置为""
+	 * @return 存在返回true，不存在返回false
+	 */
+	public boolean checkExist(int pageId,String pageName){
+		Condition IdCondition = PageClassification.PAGE_CLASSIFICATION.ID.eq(pageId);
+		Condition NamecCondition = (PageClassification.PAGE_CLASSIFICATION.NAME.eq(pageName));
+		if(db().fetchCount(PageClassification.PAGE_CLASSIFICATION,IdCondition) > 0) {
+			return true;
+		}
+		if (db().fetchCount(PageClassification.PAGE_CLASSIFICATION,NamecCondition) > 0) {
+			return true;
+		}
+		return false;
 	}
 
 	/**
@@ -136,16 +146,30 @@ public class PageClassificationService extends BaseService {
 	 * @return 操作成功，返回true，否false
 	 */
 	public boolean rmAndResetCategory(int pageId){
-		int[] result = {0};
+		int[] result = {-1};
 		db().transaction(configuration->{
 			DSLContext db = DSL.using(configuration);
+			Condition countCondition = XcxCustomerPage.XCX_CUSTOMER_PAGE.CAT_ID.eq(pageId);
+			if(db.fetchCount(XcxCustomerPage.XCX_CUSTOMER_PAGE,countCondition) > 0){
+				result[0] = db.update(XcxCustomerPage.XCX_CUSTOMER_PAGE)
+						.set(XcxCustomerPage.XCX_CUSTOMER_PAGE.CAT_ID,0)
+						.where(XcxCustomerPage.XCX_CUSTOMER_PAGE.CAT_ID.eq(pageId))
+						.execute();
+			}
 			result[0] = removeRow(pageId);
-			result[0] = db.update(XcxCustomerPage.XCX_CUSTOMER_PAGE)
-					.set(XcxCustomerPage.XCX_CUSTOMER_PAGE.CAT_ID,0)
-					.where(XcxCustomerPage.XCX_CUSTOMER_PAGE.CAT_ID.eq(pageId))
-					.execute();
+
 		});
-		return result[0] > 0;
+		return result[0] > -1;
+	}
+
+	/**
+	 * 根据页面分类id获取该类目下包含多少页面
+	 * @param categoryId
+	 * @return
+	 */
+	public int getPageCountByCategory(int categoryId){
+		Condition condition = XcxCustomerPage.XCX_CUSTOMER_PAGE.CAT_ID.eq(categoryId);
+		return db().fetchCount(XcxCustomerPage.XCX_CUSTOMER_PAGE,condition);
 	}
 
 }

@@ -14,6 +14,5 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class PageClassificationIn {
     private int pageId;
-    private int shopId;
     private String pageName;
 }
