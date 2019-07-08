@@ -10,7 +10,7 @@ import com.vpu.mp.db.main.tables.records.ShopAccountRecord;
 import com.vpu.mp.db.main.tables.records.ShopRecord;
 import com.vpu.mp.service.foundation.JsonResult;
 import com.vpu.mp.service.foundation.JsonResultCode;
-import com.vpu.mp.service.pojo.saas.auth.SystemTokenAuthInfo;
+import com.vpu.mp.service.pojo.saas.shop.ShopListQueryParam;
 import com.vpu.mp.service.pojo.shop.auth.ShopMobileReq;
 import com.vpu.mp.service.pojo.shop.auth.ShopRenewReq;
 import com.vpu.mp.service.pojo.shop.auth.ShopReq;
@@ -63,15 +63,21 @@ public class SystemShopController extends SystemBaseController {
 
 	/**
 	 * 续费
+	 * 
 	 * @param sReq
 	 * @return
 	 */
 	@PostMapping("/system/shop/renew")
 	public JsonResult shopRenew(@RequestBody ShopRenewReq sReq) {
 		int num = saas.shop.renew.insertShopRenew(sReq, sysAuth.user());
-		if(num<1) {
+		if (num < 1) {
 			return fail(JsonResultCode.CODE_FAIL);
 		}
 		return success(JsonResultCode.CODE_SUCCESS);
+	}
+
+	@PostMapping(value = "/system/shop/list")
+	public JsonResult shopList(@RequestBody ShopListQueryParam param) {
+		return success(saas.shop.getPageList(param));
 	}
 }
