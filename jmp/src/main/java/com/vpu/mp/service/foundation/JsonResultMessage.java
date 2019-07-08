@@ -25,7 +25,9 @@ public class JsonResultMessage {
 	final public static String MSG_MOBILE_SAME="account.mobile.same";
 	final public static String MSG_ACCOUNT_SHOP_NULL="account.shop.null";
 	final public static String MSG_ACCOUNT_SHOP_EXPIRE="account.shop.expire";
-	
+	final public static String MSG_ACCOUNT_SHOPAVATAR_NOT_NULL="account.shopAvatar.notNull";
+	final public static String MSG_ACCOUNT_ACCOUNTNAME_NOT_NULL="account.accountName.notNull";
+
 	// 图片
 	
 	final public static String MSG_IMGAE_UPLOAD_FAILED = "image.upload.failed";
