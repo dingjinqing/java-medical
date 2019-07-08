@@ -3,10 +3,10 @@ package com.vpu.mp.service.shop.store.store;
 import static com.vpu.mp.db.shop.tables.Store.STORE;
 import static com.vpu.mp.db.shop.tables.StoreGroup.STORE_GROUP;
 
+import com.vpu.mp.db.shop.tables.records.StoreGroupRecord;
 import com.vpu.mp.service.pojo.shop.store.group.StoreGroup;
 import com.vpu.mp.service.pojo.shop.store.group.StoreGroupQueryParam;
-import org.jooq.Record;
-import org.jooq.SelectWhereStep;
+import org.jooq.*;
 import org.jooq.impl.DSL;
 import org.jooq.tools.StringUtils;
 
@@ -14,6 +14,11 @@ import com.vpu.mp.service.foundation.BaseService;
 import com.vpu.mp.service.foundation.PageResult;
 import com.vpu.mp.service.pojo.saas.article.ArticleOutPut;
 import com.vpu.mp.service.pojo.shop.store.store.StoreListQueryParam;
+import org.springframework.beans.BeanUtils;
+
+import java.sql.Timestamp;
+import java.util.Date;
+import java.util.List;
 
 /**
  * @author 王兵兵
@@ -76,8 +81,71 @@ public class StoreService extends BaseService {
 	public void buildParams(SelectWhereStep<? extends  Record> select, StoreGroupQueryParam param) {
 		if (param != null) {
 			if (param.getGroupName() != null && !"".equals(param.getGroupName())) {
-				select.where(STORE_GROUP.GROUP_NAME.like(this.likeValue(param.getGroupName())));
+				if ( param.isNeedAccurateQuery() ){
+					select.where(STORE_GROUP.GROUP_NAME.eq(param.getGroupName()));
+				}else{
+					select.where(STORE_GROUP.GROUP_NAME.like(this.likeValue(param.getGroupName())));
+				}
 			}
 		}
+	}
+
+    /**
+     * 门店分组-(检查组名是否可用)
+     * @param param
+     * @return true可用，fasle不可用
+     */
+    public boolean isStoreGroupExist(StoreGroupQueryParam param) {
+    	param.setNeedAccurateQuery(Boolean.TRUE);
+		SelectWhereStep<? extends Record> select = db().select(STORE_GROUP.GROUP_NAME)
+                .from(STORE_GROUP);
+		buildParams(select,param);
+		return db().fetchCount(select) > 0?Boolean.FALSE:Boolean.TRUE;
+    }
+
+	/**
+	 * 门店分组-新增
+	 * @param param
+	 * @return
+	 */
+	public int insertStoreGroup(StoreGroupQueryParam param) {
+		StoreGroupRecord record = db().newRecord(STORE_GROUP,param);
+		return  record.insert();
+	}
+
+	/**
+	 * 门店分组-修改
+	 * @param param
+	 * @return
+	 */
+	public int updateStoreGroup(StoreGroupQueryParam param) {
+		StoreGroupRecord record = db().newRecord(STORE_GROUP,param);
+		record.setUpdateTime(new Timestamp(System.currentTimeMillis()));
+		return  record.update();
+	}
+
+	/**
+	 * 门店分组-删除
+	 * @param param
+	 * @return
+	 */
+	public void deleteStoreGroup(StoreGroupQueryParam param) {
+		db().transaction(configuration->{
+			DSLContext dslContext = DSL.using(configuration);
+			StoreGroupRecord record = dslContext.newRecord(STORE_GROUP,param);
+			List<Integer> result = dslContext.select(STORE.STORE_ID)
+					.from(STORE)
+					.where(STORE.GROUP.eq(param.getGroupId()))
+					.fetch(STORE.STORE_ID);
+			if ( result.size() > 0){
+				dslContext.update(STORE)
+						.set(STORE.GROUP,(Integer)null)
+						.where(STORE.STORE_ID.in(result))
+						.execute();
+			}
+			dslContext.delete(STORE_GROUP)
+					.where(STORE_GROUP.GROUP_ID.eq(param.getGroupId()))
+					.execute();
+		});
 	}
 }

@@ -15,4 +15,8 @@ public class StoreGroupQueryParam {
     private Integer currentPage;
 
     private Integer pageRows = Page.DEFAULT_PAGE_ROWS;
+
+    private boolean needAccurateQuery = Boolean.FALSE;
+
+    private Integer groupId;
 }
