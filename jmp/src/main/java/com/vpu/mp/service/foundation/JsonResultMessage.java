@@ -39,6 +39,7 @@ public class JsonResultMessage {
 	
     final public static String GOODS_BRAND_NAME_EXIST="goods.brand.name.exist";
     final public static String GOODS_SORT_NAME_EXIST="goods.sort.name.exist";
+    final public static String GOODS_LABEL_NAME_EXIST="goods.label.name.exist";
     
     final public static String	ARTICLE_CATEGORY_IS_EXIST =  "api.code.article_category_is_exist";
 	final public static String	ARTICLE_CATEGORY_CATEGORYNAME_ISNULL = "api.code.article_category_categoryName_isNull";
