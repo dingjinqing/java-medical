@@ -26,6 +26,7 @@ import com.vpu.mp.service.foundation.FieldsUtil;
 import com.vpu.mp.service.foundation.PageResult;
 import com.vpu.mp.service.foundation.Util;
 import com.vpu.mp.service.pojo.saas.shop.ShopListQueryParam;
+import com.vpu.mp.service.pojo.saas.shop.ShopListQueryResp;
 import com.vpu.mp.service.pojo.saas.shop.ShopPojo;
 import com.vpu.mp.service.pojo.shop.auth.AdminTokenAuthInfo;
 import com.vpu.mp.service.pojo.shop.auth.ShopReq;
@@ -47,29 +48,22 @@ public class ShopService extends BaseService {
 	public MpDecorationService decoration;
 	public MpAuthShopService mp;
 
+	public PageResult<ShopListQueryResp> getPageList(ShopListQueryParam param) {
+		SelectWhereStep<Record> select = db()
+				.select(SHOP.asterisk(), MP_AUTH_SHOP.APP_ID, MP_AUTH_SHOP.IS_AUTH_OK, MP_AUTH_SHOP.NICK_NAME,
+						MP_AUTH_SHOP.PRINCIPAL_NAME)
+				.from(SHOP).join(SHOP_ACCOUNT).on(SHOP.SYS_ID.eq(SHOP_ACCOUNT.SYS_ID)).leftJoin(MP_AUTH_SHOP)
+				.on(SHOP.SHOP_ID.eq(DSL.cast(MP_AUTH_SHOP.SHOP_ID, Integer.class)));
+		select = this.buildOptions(select, param);
+		select.orderBy(SHOP.CREATED.desc());
+		PageResult<ShopListQueryResp> result = accout.getPageResult(select, param.page.currentPage, param.page.pageRows,
+				ShopListQueryResp.class);
+		for (ShopListQueryResp shopList : result.dataList) {
+			shopList.setRenewMoney(this.renew.getShopRenewTotal(shopList.getShopId()));
+			shopList.setExpireTime(this.renew.getShopRenewExpireTime(shopList.getShopId()));
 
-	public PageResult<Object> getPageList(ShopListQueryParam param) {
-//		SelectWhereStep<Record> select = db()
-//				.select(SHOP.asterisk(),
-//						MP_AUTH_SHOP.APP_ID,
-//						MP_AUTH_SHOP.IS_AUTH_OK,
-//						MP_AUTH_SHOP.NICK_NAME,
-//						MP_AUTH_SHOP.PRINCIPAL_NAME)
-//				.from(SHOP)
-//				.join(SHOP_ACCOUNT).on(SHOP.SYS_ID.eq(SHOP_ACCOUNT.SYS_ID))
-//				.leftJoin(MP_AUTH_SHOP).on(SHOP.SHOP_ID.eq(DSL.cast(MP_AUTH_SHOP.SHOP_ID, Integer.class)));
-//		select = this.buildOptions(select, param);
-//		select.orderBy(SHOP.CREATED.desc());
-////		PageResult<HashMap> result = this.getPageResult(select, param.page);
-////		for (Map<String, Object> record : result.dataList) {
-////			Integer shopId = Util.convert(record.get("shop_id"), Integer.class, 0);
-////			Integer sysId = Util.convert(record.get("sys_id"), Integer.class, 0);
-////			ShopAccountRecord accountInfo = this.accout.getAccountInfoForID(sysId);
-////			record.put("renew_money", this.renew.getShopRenewTotal(shopId));
-////			record.put("expire_time", this.renew.getShopRenewExpireTime(shopId));
-////			record.put("account_info", accountInfo == null ? null : accountInfo.intoMap());
-////		}
-		return null;
+		}
+		return result;
 	}
 
 	public SelectWhereStep<Record> buildOptions(SelectWhereStep<Record> select, ShopListQueryParam param) {
@@ -83,10 +77,6 @@ public class ShopService extends BaseService {
 					.or(SHOP.MOBILE.like(keywords))
 					.or(MP_AUTH_SHOP.NICK_NAME.like(keywords))
 					.or(SHOP.SHOP_ID.eq(shopId)));
-		}
-
-		if (param.sysId != null) {
-			select.where(SHOP.SYS_ID.eq(param.sysId));
 		}
 
 		Integer shopUsingStatus = 1;
