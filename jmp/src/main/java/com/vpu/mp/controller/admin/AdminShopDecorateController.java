@@ -12,6 +12,8 @@ import com.vpu.mp.service.foundation.PageResult;
 import com.vpu.mp.service.pojo.shop.decoration.XcxCustomerPagePojo;
 import com.vpu.mp.service.shop.decoration.MpDecorationService.PageListQueryParam;
 
+import javax.validation.Valid;
+
 /**
  * 装修模块
  * 
@@ -63,7 +65,7 @@ public class AdminShopDecorateController extends AdminBaseController {
 	 * @return
 	 */
 	@PostMapping("/admin/manage/decorate/updateStyle")
-	public JsonResult upadteShopStyle(DecorateStyleParam param){
+	public JsonResult upadteShopStyle(@RequestBody @Valid DecorateStyleParam param){
 		shop().mpDecoration.updateShopStyle(param);
 		return success();
 	}

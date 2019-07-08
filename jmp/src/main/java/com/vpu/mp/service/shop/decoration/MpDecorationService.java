@@ -9,6 +9,7 @@ import java.util.List;
 import java.util.Map;
 
 import com.vpu.mp.db.shop.tables.records.ShopCfgRecord;
+import com.vpu.mp.service.pojo.shop.config.ShopCfgK;
 import com.vpu.mp.service.pojo.shop.decoration.DecorateBonntParam;
 import com.vpu.mp.service.pojo.shop.decoration.DecorateStyleParam;
 import org.jooq.Record;
@@ -366,30 +367,33 @@ public class MpDecorationService extends BaseService {
 	 */
     public void updateShopStyle(DecorateStyleParam param) {
     	String shopCFGV =Util.toJSON(param);
-		if (db().fetchCount(SHOP_CFG, SHOP_CFG.K.eq("shop_style")) > 0) {
+		if (db().fetchCount(SHOP_CFG, SHOP_CFG.K.eq(ShopCfgK.SHOP_STYLE)) > 0) {
 			 db().update(SHOP_CFG)
 					.set(SHOP_CFG.V, shopCFGV)
-					.where(SHOP_CFG.K.eq("shop_style"))
+					.where(SHOP_CFG.K.eq(ShopCfgK.SHOP_STYLE))
 					.execute();
 		} else {
             db().insertInto(SHOP_CFG).columns( SHOP_CFG.K, SHOP_CFG.V)
-                    .values("shop_style", shopCFGV)
+                    .values(ShopCfgK.SHOP_STYLE, shopCFGV)
                     .execute();
         }
     }
 
     public String getShopStyle(){
-		ShopCfgRecord shopCfg =db().fetchOne(SHOP_CFG, SHOP_CFG.K.eq("shop_style"));
+		ShopCfgRecord shopCfg =db().fetchOne(SHOP_CFG, SHOP_CFG.K.eq(ShopCfgK.SHOP_STYLE));
     	return shopCfg.getV();
 	}
 
 	public String getDecorateBonnt(){
-		ShopCfgRecord shopCfgRecord= db().fetchOne(SHOP_CFG,SHOP_CFG.K.eq("bottom"));
+		ShopCfgRecord shopCfgRecord= db().fetchOne(SHOP_CFG,SHOP_CFG.K.eq(ShopCfgK.BOTTOM));
     	return shopCfgRecord.getV();
 	}
 
     public void  updataDecorateBonnt(String decorateBonntParam){
-
+		db().update(SHOP_CFG)
+				.set(SHOP_CFG.V, decorateBonntParam)
+				.where(SHOP_CFG.K.eq(ShopCfgK.BOTTOM))
+				.execute();
 
     }
 
