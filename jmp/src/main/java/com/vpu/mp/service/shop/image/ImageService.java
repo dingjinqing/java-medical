@@ -335,7 +335,7 @@ public class ImageService extends BaseService {
 	public String getRelativePathDirectory(String type) {
 		Calendar cal = Calendar.getInstance();
 		return String.format("upload/%d/%s/%04d%02d%02d/", this.shopId, type, cal.get(Calendar.YEAR),
-				cal.get(Calendar.MONTH), cal.get(Calendar.DATE));
+				cal.get(Calendar.MONTH)+1, cal.get(Calendar.DATE));
 	}
 
 	/**
@@ -496,8 +496,8 @@ public class ImageService extends BaseService {
 			param.cropWidth = param.w;
 			param.cropHeight = param.h;
 		}
-
 		UploadPath uploadPath = getWritableUploadPath("image", randomFilename(), extension);
+		System.out.println(param.w);
 		Thumbnails.of(fullPath)
 				.sourceRegion(param.x, param.y, param.w, param.h)
 				.size(param.cropWidth, param.cropHeight)
