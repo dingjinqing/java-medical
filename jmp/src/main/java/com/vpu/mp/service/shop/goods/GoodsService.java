@@ -9,13 +9,21 @@ import com.vpu.mp.service.foundation.BaseService;
  * @date 2019年6月25日
  */
 public class GoodsService extends BaseService {
-    public GoodsBrandService goodsBrand;
-    public GoodsSortService goodsSort;
+
+	public GoodsBrandService goodsBrand;
+	public GoodsSortService goodsSort;
+	public GoodsCommentService goodsComment;
+	public void test() {
+		System.out.println("test current shop id:" + this.getShopId());
+	}
+
+    
     public GoodsSpecProductService goodsSpecProductService;
     
 	public GoodsLabelService goodsLabel;
 	public GoodsLabelCoupleService goodsLabelCouple;
 
     private GoodsSpecService goodsSpecService=new GoodsSpecService();
+
 }
 
