@@ -31,6 +31,7 @@ public class Goods {
 	
 	private List<GoodsSpec> goodsSpecs;//商品规格属性规格值信息
 	private List<GoodsSpecProduct> goodsSpecProducts;//商品规格信息
+
 	private Integer goodsNumber;//商品库存
 	private BigDecimal shopPrice;//商品价格
 	private BigDecimal marketPrice;//市场价格

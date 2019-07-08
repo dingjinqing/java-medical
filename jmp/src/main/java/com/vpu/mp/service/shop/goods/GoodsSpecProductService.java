@@ -23,6 +23,15 @@ public class GoodsSpecProductService {
 
     static final String PRD_SPEC_ID_KEY=GoodsSpecService.PRD_SPEC_ID_KEY;//规格名值处理后map内id值的key名称
 
+    protected void insert(DSLContext db, GoodsSpecProduct goodsSpecProduct){
+        if (goodsSpecProduct.getPrdSn() == null) {
+            goodsSpecProduct.setPrdSn(Util.UUID());
+        }
+
+        GoodsSpecProductRecord goodsSpecProductRecord = db.newRecord(GOODS_SPEC_PRODUCT, goodsSpecProduct);
+        goodsSpecProductRecord.insert();
+    }
+
     protected void insert(DSLContext db, List<GoodsSpecProduct> goodsSpecProducts, Map<String, Map<String, Integer>> goodsSpecsMap, Integer goodsId) {
         for (GoodsSpecProduct goodsSpecProduct : goodsSpecProducts) {
             goodsSpecProduct.setGoodsId(goodsId);

@@ -3,6 +3,7 @@ package com.vpu.mp.controller.admin;
 import com.vpu.mp.service.foundation.JsonResult;
 import com.vpu.mp.service.pojo.shop.goods.Goods;
 import com.vpu.mp.service.pojo.shop.goods.GoodsColumnCheckExistParam;
+import com.vpu.mp.service.shop.ShopApplication;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
@@ -14,6 +15,10 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 public class AdminGoodsController extends AdminBaseController{
 
+    @Override
+    protected ShopApplication shop() {
+        return saas.getShopApp(471752);
+    }
 
     @PostMapping("/api/admin/goods/add")
     public JsonResult insert(@RequestBody Goods goods){

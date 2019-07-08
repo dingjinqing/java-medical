@@ -24,11 +24,11 @@ import static com.vpu.mp.db.shop.Tables.GOODS_SPEC_PRODUCT;
  */
 public class GoodsService extends BaseService {
 
-	public GoodsBrandService goodsBrand;
-	public GoodsSortService goodsSort;
-	public GoodsCommentService goodsComment;
-	public GoodsLabelService goodsLabel;
-	public GoodsLabelCoupleService goodsLabelCouple;
+    public GoodsBrandService goodsBrand;
+    public GoodsSortService goodsSort;
+    public GoodsCommentService goodsComment;
+    public GoodsLabelService goodsLabel;
+    public GoodsLabelCoupleService goodsLabelCouple;
 
     private GoodsSpecProductService goodsSpecProductService = new GoodsSpecProductService();
     private GoodsSpecService goodsSpecService = new GoodsSpecService();
@@ -45,11 +45,34 @@ public class GoodsService extends BaseService {
             DSLContext db = DSL.using(configuration);
             insert(db, goods);
 
-            Map<String, Map<String, Integer>> goodsSpecMap = goodsSpecService
-                    .insertSpecAndSpecValWithPrepareResult(db, goods.getGoodsSpecs(), goods.getGoodsId());
+            if (goods.getGoodsSpecProducts() == null || goods.getGoodsSpecProducts().size() == 0) {
+                GoodsSpecProduct goodsSpecProduct = createGoodsSpecProduct(goods);
+                goodsSpecProductService.insert(db, goodsSpecProduct);
+            } else {
+                Map<String, Map<String, Integer>> goodsSpecMap = goodsSpecService
+                        .insertSpecAndSpecValWithPrepareResult(db, goods.getGoodsSpecs(), goods.getGoodsId());
 
-            goodsSpecProductService.insert(db, goods.getGoodsSpecProducts(), goodsSpecMap, goods.getGoodsId());
+                goodsSpecProductService.insert(db, goods.getGoodsSpecProducts(), goodsSpecMap, goods.getGoodsId());
+            }
         });
+    }
+
+    private GoodsSpecProduct createGoodsSpecProduct(Goods goods) {
+        GoodsSpecProduct goodsSpecProduct = new GoodsSpecProduct();
+
+        if (goods.getPrdSn() == null) {
+            goodsSpecProduct.setPrdSn(Util.UUID());
+        } else {
+            goodsSpecProduct.setPrdSn(goods.getPrdSn());
+        }
+
+        goodsSpecProduct.setGoodsId(goods.getGoodsId());
+        goodsSpecProduct.setPrdPrice(goods.getShopPrice());
+        goodsSpecProduct.setPrdMarketPrice(goods.getMarketPrice());
+        goodsSpecProduct.setPrdCostPrice(goods.getCostPrice());
+        goodsSpecProduct.setPrdNumber(goods.getGoodsNumber());
+
+        return goodsSpecProduct;
     }
 
     /**
@@ -60,9 +83,11 @@ public class GoodsService extends BaseService {
      */
     private void insert(DSLContext db, Goods goods) {
 
-        calculateGoodsPriceAndNumber(goods);
+        if (goods.getGoodsSpecProducts() != null) {
+            calculateGoodsPriceAndNumber(goods);
+        }
 
-        if (goods.getGoodsSn()==null){
+        if (goods.getGoodsSn() == null) {
             goods.setGoodsSn(Util.UUID());
         }
 
