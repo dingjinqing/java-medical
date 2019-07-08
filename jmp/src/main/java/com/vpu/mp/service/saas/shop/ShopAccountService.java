@@ -162,23 +162,4 @@ public class ShopAccountService extends BaseService {
 
 	}
 
-	public AdminTokenAuthInfo shopSelectService(String token) {
-		String value = jedis.get(token);
-		AdminTokenAuthInfo info = Util.parseJSON(value, AdminTokenAuthInfo.class);
-		return info;
-	}
-	
-	public SystemTokenAuthInfo shopSelectOnMainService(String token) {
-		String value = jedis.get(token);
-		SystemTokenAuthInfo info = Util.parseJSON(value, SystemTokenAuthInfo.class);
-		return info;
-	}
-	
-	public void updateSwitchShop(String token,Integer loginShopId) {
-		AdminTokenAuthInfo info=shopSelectService(token);
-		info.setLoginShopId(loginShopId);
-		info.setShopLogin(true);
-		jedis.set(token, Util.toJSON(info));
-	}
-
 }
