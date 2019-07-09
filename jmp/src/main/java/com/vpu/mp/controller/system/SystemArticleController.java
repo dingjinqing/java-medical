@@ -74,7 +74,7 @@ public class SystemArticleController extends SystemBaseController{
 		if(StringUtils.isEmpty(article.getTitle())) {
 			return fail(JsonResultCode.CODE_ARTICLE_TITLE_ISNULL);
 		}
-		article.setAuthor(sysAuth.user() == null ? null:sysAuth.user().getSystemUserId().toString());
+		article.setAuthor(sysAuth.user().getSystemUserId().toString());
 		return saas.article.insertArticle(article)?success():fail();	
 	}
 	
