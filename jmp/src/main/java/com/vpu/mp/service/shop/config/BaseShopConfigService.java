@@ -1,6 +1,8 @@
 package com.vpu.mp.service.shop.config;
 
 import static com.vpu.mp.db.shop.tables.ShopCfg.SHOP_CFG;
+
+import com.fasterxml.jackson.core.type.TypeReference;
 import com.vpu.mp.service.foundation.BaseService;
 import com.vpu.mp.service.foundation.Util;
 
@@ -92,6 +94,20 @@ public class BaseShopConfigService extends BaseService {
 	protected <T> T getJsonObject(String key, Class<? extends T> toClass) {
 		return Util.parseJSON(get(key), toClass);
 	}
+	
+	/**
+	 *  按T类型取配置key对应json对象的value
+	 * @param <T>
+	 * @param key
+	 * @param toClass
+	 * @return
+	 */
+	@SuppressWarnings("rawtypes")
+	protected <T> T getJsonObject(String key, TypeReference valueTypeRef) {
+		return Util.parseJSON(get(key), valueTypeRef);
+	}
+	
+	
 		
 
 	/**

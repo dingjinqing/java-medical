@@ -23,6 +23,7 @@ import org.springframework.core.io.ClassPathResource;
 import org.springframework.core.io.support.PropertiesLoaderUtils;
 import org.springframework.util.DigestUtils;
 import com.fasterxml.jackson.core.JsonParseException;
+import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -66,6 +67,26 @@ public class Util {
 		}
 		return null;
 	}
+	
+	@SuppressWarnings("rawtypes")
+	public static <T> T parseJSON(String json, TypeReference valueTypeRef) {
+		ObjectMapper mapper = new ObjectMapper();
+		// 如果json中有新增的字段并且是实体类类中不存在的，不报错
+		mapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
+		try {
+			return mapper.readValue(json, valueTypeRef);
+		} catch (JsonParseException e) {
+			e.printStackTrace();
+		} catch (JsonMappingException e) {
+			e.printStackTrace();
+		} catch (IOException e) {
+			e.printStackTrace();
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return null;
+	}
+
 
 	public static String[] mergeArray(String[] array1, String[] array2) {
 		Map<String, Integer> map = new HashMap<String, Integer>(0);

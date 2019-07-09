@@ -29,7 +29,7 @@ import java.util.List;
  * @author 常乐 2019年6月27日
  */
 @RestController
-//@RequestMapping("/api")
+@RequestMapping("/api")
 public class AdminShopDecorateController extends AdminBaseController {
 
 	private static ObjectMapper mapper = new ObjectMapper();
