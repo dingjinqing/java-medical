@@ -13,8 +13,7 @@ import com.vpu.mp.db.shop.tables.records.RecommendGoodsRecord;
 import com.vpu.mp.service.foundation.BaseService;
 import com.vpu.mp.service.foundation.DelFlag;
 import com.vpu.mp.service.foundation.PageResult;
-import com.vpu.mp.service.pojo.shop.goods.recommend.GoodsRecommend;
-import com.vpu.mp.service.pojo.shop.goods.recommend.GoodsRecommendPageListParam;
+
 /**
  * @author 黄荣刚
  * @date 2019年7月9日
