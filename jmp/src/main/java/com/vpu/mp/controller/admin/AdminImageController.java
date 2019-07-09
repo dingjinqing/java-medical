@@ -8,9 +8,11 @@ import java.util.List;
 
 import javax.imageio.ImageIO;
 import javax.servlet.http.Part;
+import javax.validation.Valid;
 
 import com.vpu.mp.service.pojo.shop.image.*;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -136,8 +138,8 @@ public class AdminImageController extends AdminBaseController {
 	 * @param  param
 	 * @return
 	 */
-	@PostMapping("/admin/image/batchMove")
-	public JsonResult batchMoveImage(BatchMoveImageParam param){
+	@PostMapping("/admin/image/batch/move")
+	public JsonResult batchMoveImage(@RequestBody @Valid BatchMoveImageParam param){
 		shop().image.setCatId(param.getImageIds().toArray(new Integer[0]),param.getImageCatId());
 		return success();
 	}
@@ -147,7 +149,7 @@ public class AdminImageController extends AdminBaseController {
 	 * @param param
 	 * @return
 	 */
-	@PostMapping("/admin/image/batchDelete")
+	@PostMapping("/admin/image/batch/delete")
 	public JsonResult batchDeleteImage(BatchDeleteImageParam param){
 		shop().image.removeRows(param.getImageIds());
 		return success();
