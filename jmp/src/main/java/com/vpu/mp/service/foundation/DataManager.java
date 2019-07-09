@@ -1,5 +1,11 @@
 package com.vpu.mp.service.foundation;
 
+import static com.vpu.mp.db.main.tables.Shop.SHOP;
+
+import java.io.IOException;
+import java.nio.charset.StandardCharsets;
+import java.util.HashMap;
+
 import org.apache.commons.dbcp2.BasicDataSource;
 import org.apache.tools.ant.BuildException;
 import org.apache.tools.ant.Project;
@@ -11,15 +17,12 @@ import org.jooq.impl.DataSourceConnectionProvider;
 import org.jooq.impl.DefaultConfiguration;
 import org.jooq.impl.DefaultDSLContext;
 import org.jooq.impl.DefaultExecuteListenerProvider;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.util.FileCopyUtils;
 
-import static com.vpu.mp.db.main.tables.Shop.SHOP;
 import com.vpu.mp.db.main.tables.records.ShopRecord;
-
-import java.io.IOException;
-import java.nio.charset.StandardCharsets;
-import java.util.HashMap;
 
 /**
  * 
@@ -41,6 +44,8 @@ public class DataManager {
 	protected String driver = "com.mysql.cj.jdbc.Driver";
 	protected String dialect = "MYSQL";
 
+	
+	Logger loger=LoggerFactory.getLogger(DataManager.class);
 	private DefaultDSLContext db = null;
 
 	private HashMap<Integer, DefaultDSLContext> shopDbList = new HashMap<Integer, DefaultDSLContext>();
@@ -126,9 +131,13 @@ public class DataManager {
 
 		boolean ret = execScript(dbConfig.host, dbConfig.database, dbConfig.username, dbConfig.password,
 				"db/shop/db_shop.sql");
+		//测试用，测完删log
+		loger.info("db_shop.sql执行结果"+ret);
 		if (ret) {
+			loger.info("准备执行db_shop.sql的dbConfig"+dbConfig);	
 			ret = execScript(dbConfig.host, dbConfig.database, dbConfig.username, dbConfig.password,
 					"db/shop/db_shop_data.sql");
+			loger.info("db_shop_data.sql执行结果"+ret);
 		}
 		return ret;
 	}
