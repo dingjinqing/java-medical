@@ -10,6 +10,11 @@ const routes = [
         component: r => require.ensure([], () => r(require('@/components/admin/shop_main')), 'shopMain')
       }
     ]
+  },
+  {
+    path: '/admin/selectlinks',
+    name: 'selectLinks',
+    component: r => require.ensure([], () => r(require('@/components/admin/index/selectLinks')), 'selectLinks')
   }
 ]
 export default routes

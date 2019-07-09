@@ -201,6 +201,8 @@ export default {
           console.log(res)
           if (res.error === 0) {
             Cookies.remove('V-Token')
+            localStorage.removeItem('V-Username')
+            this.user_flag = false
           } else {
             this.$message({
               showClose: true,

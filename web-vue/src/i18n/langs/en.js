@@ -1,4 +1,5 @@
 // en.js
+import enLocale from 'element-ui/lib/locale/lang/en'
 const en = {
   message: {
     'lang': 'English',
@@ -170,7 +171,66 @@ const en = {
     public: 'Authorized Public Number',
     choice: 'Choose Shops',
     loginOut: 'Sign out'
-  }
+  },
+  // admin选择店铺页面contact组件数据
+  adminContact: {
+    phoneNum: 'Customer Service Telephone: 400-010-1039',
+    onLine: 'Online consultation'
+  },
+  // admin选择店铺页面数据
+  selectShop: {
+    allShop: 'All stores',
+    data: 'Term of validity'
+  },
+  // admin  账户设置数据
+  accountSetting: {
+    title: 'Account Settings',
+    account: 'Login Account:',
+    modifyPassword: 'Modify login password',
+    phone: 'Contact number:',
+    name: 'Account nickname:',
+    namePlaceholder: 'Please enter a nickname',
+    head: 'Account avatar:',
+    modify: 'Modify the Avatar',
+    s_modify: 'Confirmation of modifications',
+    to_shop_list: 'Return to the store list'
+  },
+  // 浏览图片dialog数据
+  imgageDalog: {
+    title: 'Browse pictures',
+    upload: 'Upload pictures',
+    tip: 'Uploaded pictures support jpeg, jpg, PNG and BMP formats. In order to ensure the smooth loading of the front-end, the size of a single picture can not exceed 5M.',
+    imagePlaceholder: 'Please enter the name of the picture.',
+    search: 'search',
+    OriginalImg: 'Original graph',
+    delImg: 'delete',
+    currentPage: 'Current page',
+    totalPage: 'Total Records',
+    strip: 'strip',
+    cancel: 'cancel',
+    Determine: 'Determine'
+  },
+  // admin 浏览图片弹窗 selectoptions数据
+  options: [{
+    value: '选项1',
+    label: 'Upload from late to early'
+  }, {
+    value: '选项2',
+    label: 'Upload time from morning to night'
+  }, {
+    value: '选项3',
+    label: 'From big to small by picture'
+  }, {
+    value: '选项4',
+    label: 'From small to large by picture'
+  }, {
+    value: '选项5',
+    label: 'Descend by image name'
+  }, {
+    value: '选项6',
+    label: 'Upgrade by image name'
+  }],
+  ...enLocale
 }
 
 export default en

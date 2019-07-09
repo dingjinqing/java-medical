@@ -1,7 +1,7 @@
 <template>
   <div>
     <el-dialog
-      title="浏览图片"
+      :title="$t('imgageDalog.title')"
       :visible.sync="dialogTableVisible"
       width="825px"
     >
@@ -19,13 +19,14 @@
           <el-button
             size="small"
             type="primary"
-          >上传图片</el-button>
+          >{{$t('imgageDalog.upload')}}</el-button>
           <div
             slot="tip"
             class="tips"
+            :class="imageDalogTip_lineHeight"
           >
             <img :src="imgUrl[0].img_1">
-            上传图片支持jpeg、jpg、png、bmp格式，为保障前端加载顺利，单张图片大小不能超过5M</div>
+            {{$t('imgageDalog.tip')}}</div>
         </el-upload>
       </div>
       <div class="dialog_middle">
@@ -48,14 +49,14 @@
               </el-select>
               <el-input
                 v-model="imgNameInput"
-                placeholder="请输入图片名称"
+                :placeholder="$t('imgageDalog.imagePlaceholder')"
                 size='mini'
               ></el-input>
               <el-button
                 type="info"
                 plain
                 size="mini"
-              >搜索</el-button>
+              >{{$t('imgageDalog.search')}}</el-button>
               <el-checkbox v-model="checked">52px x 52px</el-checkbox>
             </div>
             <div class="right_content">
@@ -74,13 +75,13 @@
                     class="img_mask"
                     :class="item.imgIndex === index?'mask_flag':''"
                   >
-                    <p>
+                    <p :class="imageDalog_p_height">
                       <a
                         class="old_pic"
                         href="http://mpdevimg2.weipubao.cn/upload/4748160/image/20190708/crop_aeZqHE9BhNhWub8j.jpeg"
                         target="_blank"
                         title="显示原图"
-                      >原图</a>
+                      >{{$t('imgageDalog.OriginalImg')}}</a>
                       <a
                         class="remove_image"
                         url="http://mpdevimg2.weipubao.cn/upload/4748160/image/20190708/crop_aeZqHE9BhNhWub8j.jpeg"
@@ -89,7 +90,7 @@
                         img_height="52"
                         img_path="upload/4748160/image/20190708/crop_aeZqHE9BhNhWub8j.jpeg"
                         title="删除图片"
-                      >删除</a>
+                      >{{$t('imgageDalog.delImg')}}</a>
                     </p>
                   </div>
                   <div
@@ -99,49 +100,14 @@
                     <p style="text-align:center">{{item.size}}</p>
                   </div>
                 </li>
-
-                <!-- <li
-                  @mouseenter="enter(index)"
-                  @mouseleave="leave(index)"
-                >
-
-                  <div>
-                    <img :src="c_imgUrl">
-                  </div>
-                  <div
-                    class="img_mask"
-                    v-show="mask_flag"
-                  >
-                    <p>
-                      <a
-                        class="old_pic"
-                        href="http://mpdevimg2.weipubao.cn/upload/4748160/image/20190708/crop_aeZqHE9BhNhWub8j.jpeg"
-                        target="_blank"
-                        title="显示原图"
-                      >原图</a>
-                      <a
-                        class="remove_image"
-                        url="http://mpdevimg2.weipubao.cn/upload/4748160/image/20190708/crop_aeZqHE9BhNhWub8j.jpeg"
-                        img_id="17"
-                        img_width="52"
-                        img_height="52"
-                        img_path="upload/4748160/image/20190708/crop_aeZqHE9BhNhWub8j.jpeg"
-                        title="删除图片"
-                      >删除</a>
-                    </p>
-                  </div>
-                  <div
-                    class="img_dim"
-                    v-show="dim_flag"
-                  >
-                    <p style="text-align:center">52x52</p>
-                  </div>
-                </li> -->
               </ul>
               <div class="bottom">
-                <div class="totle">
-                  <span>当前页面1/2,</span>
-                  <span>总记录12条</span>
+                <div
+                  class="totle"
+                  :class="admin_imageDalog_totle"
+                >
+                  <span>{{$t('imgageDalog.currentPage')}}1/2,</span>
+                  <span>{{$t('imgageDalog.totalPage')}}12{{$t('imgageDalog.strip')}}</span>
                 </div>
                 <el-pagination
                   @size-change="handleSizeChange"
@@ -163,11 +129,11 @@
         slot="footer"
         class="dialog-footer"
       >
-        <el-button @click="dialogTableVisible = false">取 消</el-button>
+        <el-button @click="dialogTableVisible = false">{{$t('imgageDalog.cancel')}}</el-button>
         <el-button
           type="primary"
           @click="dialogTableVisible = false"
-        >确 定</el-button>
+        >{{$t('imgageDalog.Determine')}}</el-button>
       </span>
     </el-dialog>
 
@@ -185,25 +151,7 @@ export default {
           img_1: this.$imageHost + '/image/admin/notice_img.png'
         }
       ],
-      options: [{
-        value: '选项1',
-        label: '按上传时间从晚到早'
-      }, {
-        value: '选项2',
-        label: '按上传时间从早到晚'
-      }, {
-        value: '选项3',
-        label: '按图片从大到小'
-      }, {
-        value: '选项4',
-        label: '按图片从小到大'
-      }, {
-        value: '选项5',
-        label: '按图片名降序'
-      }, {
-        value: '选项6',
-        label: '按图片名升序'
-      }],
+      options: this.$t('options'),
       value: '',
       imgNameInput: '',
       checked: false,
@@ -215,7 +163,10 @@ export default {
       img_list: [
         { imgIndex: '', imgUrl: this.$imageHost + '/upload/0/image/20180528/i561Ez0lgWDeUOHe.jpeg!middle', size: '52x52' },
         { imgIndex: '', imgUrl: this.$imageHost + '/upload/0/image/20180528/i561Ez0lgWDeUOHe.jpeg!middle', size: '72x72' }
-      ]
+      ],
+      imageDalogTip_lineHeight: '',
+      imageDalog_p_height: '',
+      admin_imageDalog_totle: ''
     }
   },
   mounted () {
@@ -224,6 +175,8 @@ export default {
       this.dialogTableVisible = true
     })
     this.value = this.options[0].label
+    // 初始化语言
+    this.langDefault()
   },
   methods: {
 
@@ -270,6 +223,12 @@ export default {
 }
 </script>
 <style scoped>
+.imageDalog_p_height {
+  display: flex;
+  flex-direction: column;
+  text-align: center;
+}
+
 .mask_flag {
   display: block !important;
 }
@@ -380,8 +339,18 @@ ul {
   color: white;
   text-decoration: none;
 }
+.imageDalogTip_lineHeight {
+  line-height: 14px !important;
+}
 </style>
 <style>
+.admin_imageDalog_totle {
+  font-size: 12px;
+  width: 260px;
+}
+.el-pagination__jump {
+  margin-left: 0 !important;
+}
 .tree_container .is-always-shadow {
   width: 160px;
 }
@@ -399,4 +368,7 @@ ul {
   margin-top: 23px;
   width: 400px !important;
 }
+/* .el-popper[x-placement^="bottom"] {
+  margin-top: 10px !important;
+} */
 </style>

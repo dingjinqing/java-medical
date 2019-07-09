@@ -2,7 +2,7 @@
   <div class="shop_container">
     <div class="main">
       <div class="main_top">
-        全部店铺
+        {{$t('selectShop.allShop')}}
         <img
           :src="imageUrl[0].img_1"
           style="margin-left: 5px;"
@@ -22,13 +22,13 @@
               </div>
               <div class="shop_logo">
                 <img
-                  :src="item.imageUrl"
+                  :src="item.shopAvatar"
                   class="shop_img_default"
                 >
               </div>
-              <div class="title">{{item.title}}</div>
-              <p>{{item.date}}</p>
-              <span class="title_type">{{item.type}}</span>
+              <div class="title">{{item.shopName}}</div>
+              <p>{{$t('selectShop.data')}}：{{item.created}} ~ {{item.expireTime}}</p>
+              <span class="title_type">{{item.shopType}}</span>
             </div>
           </li>
         </ul>
@@ -41,6 +41,7 @@
   </div>
 </template>
 <script>
+import { shopListRequest } from '@/api/admin/shopsPages.js'
 export default {
   data () {
     return {
@@ -50,23 +51,50 @@ export default {
         { img_3: this.$imageHost + '/image/admin/ad_img.png' }
       ],
       shop_list: [
-        {
-          imageUrl: 'http://mpimg2.weipubao.cn/upload/7467397/image/20181127/crop_u4Diqvh5HbY9QB0b.jpeg',
-          title: '旺店通小程序案例',
-          date: '有效期：2018-04-02 ~ 2020-08-01',
-          type: '旗舰版'
-        },
-        {
-          imageUrl: 'http://mpimg2.weipubao.cn/upload/7467397/image/20181127/crop_u4Diqvh5HbY9QB0b.jpeg',
-          title: '旺店通小程序案例',
-          date: '有效期：2018-04-02 ~ 2020-08-01',
-          type: '旗舰版'
-        }
+        // {
+        //   imageUrl: 'http://mpimg2.weipubao.cn/upload/7467397/image/20181127/crop_u4Diqvh5HbY9QB0b.jpeg',
+        //   title: '旺店通小程序案例',
+        //   date: '有效期：2018-04-02 ~ 2020-08-01',
+        //   type: '旗舰版'
+        // },
+        // {
+        //   imageUrl: 'http://mpimg2.weipubao.cn/upload/7467397/image/20181127/crop_u4Diqvh5HbY9QB0b.jpeg',
+        //   title: '旺店通小程序案例',
+        //   date: '有效期：2018-04-02 ~ 2020-08-01',
+        //   type: '旗舰版'
+        // }
       ],
       shop_list_index: ''
     }
   },
+  mounted () {
+    this.getAllshopsData()
+  },
   methods: {
+    getAllshopsData () {
+      shopListRequest().then((res) => {
+        res.content.dataList.map((item, index) => {
+          if (item.created) item.created = item.created.split(' ')[0]
+          if (item.expireTime) item.expireTime = item.expireTime.split(' ')[0]
+          switch (item.shopType) {
+            case 'v1':
+              item.shopType = '体验版'
+              break
+            case 'v2':
+              item.shopType = '基础版'
+              break
+            case 'v3':
+              item.shopType = '高级版'
+              break
+            case 'v4':
+              item.shopType = '旗舰版'
+              break
+          }
+        })
+        this.shop_list = res.content.dataList
+        console.log(res)
+      })
+    },
     // 鼠标划入
     enter (index) {
       this.shop_list_index = index

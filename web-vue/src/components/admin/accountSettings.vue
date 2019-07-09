@@ -2,30 +2,40 @@
   <div class="container">
     <div class="main">
       <div class="top">
-        <span>账户设置</span>
+        <span>{{$t('accountSetting.title')}}</span>
       </div>
       <div class="content">
         <div class="shop_config">
           <ul>
             <li>
-              <div class="li">登录账户：</div>
+              <div
+                class="li"
+                :class="modifyWidth"
+              >{{$t('accountSetting.account')}}</div>
               <div class="li">
                 <div class="mdy-input">tester001</div>
-                <div class="update">修改登录密码</div>
+                <div class="update">{{$t('accountSetting.modifyPassword')}}</div>
               </div>
             </li>
             <li>
-              <div class="li">联系电话：</div>
+              <div
+                class="li"
+                :class="modifyWidth"
+              >{{$t('accountSetting.phone')}}</div>
               <div class="li mdy-input">
                 <div>13683043470</div>
               </div>
             </li>
             <li>
-              <div class="li">账户昵称：</div>
+              <div
+                class="li"
+                :class="modifyWidth"
+              >{{$t('accountSetting.name')}}</div>
               <div class="li mdy-input">
                 <el-input
                   v-model="username"
-                  placeholder="请输入内容"
+                  :placeholder="$t('accountSetting.namePlaceholder')"
+                  :value="username"
                 ></el-input>
               </div>
             </li>
@@ -33,16 +43,22 @@
               class="li_head"
               @click="handleChangeHead()"
             >
-              <div class="li">账户头像：</div>
+              <div
+                class="li"
+                :class="modifyWidth"
+              >{{$t('accountSetting.head')}}</div>
               <div class="li mdy-input head">
                 <img :src="imageUrl[0].img_1">
-                <span>修改头像</span>
+                <span :class="maskspanheight">{{$t('accountSetting.modify')}}</span>
               </div>
             </li>
             <li>
               <div class="li modify btn">
-                <el-button type="primary">确认修改</el-button>
-                <el-button size="medium">返回店铺列表</el-button>
+                <el-button
+                  type="primary"
+                  @click="handleSave()"
+                >{{$t('accountSetting.s_modify')}}</el-button>
+                <el-button size="medium">{{$t('accountSetting.to_shop_list')}}</el-button>
               </div>
             </li>
           </ul>
@@ -54,6 +70,7 @@
   </div>
 </template>
 <script>
+import { accountManageRequest } from '@/api/admin/shopsPages.js'
 import ImageDalog from '@/components/admin/imageDalog'
 export default {
   components: { ImageDalog },
@@ -63,13 +80,30 @@ export default {
         { img_1: this.$imageHost + '/image/admin/icon_4.png' }
       ],
       username: '',
-      dialogTableVisible: false
+      dialogTableVisible: false,
+      modifyWidth: 'headWidth',
+      maskspanheight: ''
     }
+  },
+  mounted () {
+    // 初始化语言
+    this.langDefault()
+    this.username = localStorage.getItem('V-Username')
   },
   methods: {
     // 主动调起图片弹窗
     handleChangeHead () {
       this.$http.$emit('dtVisible')
+    },
+    // 确认修改
+    handleSave () {
+      let obj = {
+        shopAvatar: null,
+        accountName: this.username
+      }
+      accountManageRequest(obj).then((res) => {
+        console.log(res)
+      })
     }
   }
 }
@@ -112,6 +146,9 @@ export default {
   line-height: 30px;
   margin-left: 16px;
 }
+.headWidth {
+  width: 120px !important;
+}
 .mdy-input,
 .update {
   line-height: 30px;
@@ -151,6 +188,9 @@ export default {
   height: 20px;
   line-height: 20px;
   font-size: 12px;
+}
+.maskspanheight {
+  height: 40px !important;
 }
 .li_head {
   margin-top: 12px;

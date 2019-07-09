@@ -1,5 +1,6 @@
 import Vue from 'vue'
 import Router from 'vue-router'
+import Cookies from 'js-cookie'
 // 引入其他路由文件
 import indexRoutes from '@/router/index/index'
 import adminRoutes from '@/router/admin/index'
@@ -24,6 +25,28 @@ const baseRoutes = [
   }
 ]
 const routes = baseRoutes.concat(baseRoutes, indexRoutes, adminRoutes)
-export default new Router({
+
+const router = new Router({
   routes
 })
+// 全局路由守卫
+router.beforeEach((to, from, next) => {
+  const nextRoute = ['shopMain'] // 需要登录的页面
+  let token = Cookies.get('V-Token') // 判断是否登录
+  if (nextRoute.indexOf(to.name) >= 0) { // 检测是否登录的页面
+    if (token) {
+      next()
+    } else {
+      // 如果没有登录你访问的不是login就让你强制跳转到login页面
+      if (to.path !== '/index/login') {
+        next({ path: '/index/login' })
+      } else {
+
+      }
+    }
+  } else {
+    next()
+  }
+})
+
+export default router

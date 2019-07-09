@@ -1,4 +1,5 @@
 // cn.js
+import zhLocale from 'element-ui/lib/locale/lang/zh-CN'
 const cn = {
   message: {
     'lang': '中文',
@@ -163,14 +164,74 @@ const cn = {
     QQ: '咨询QQ:3003715029',
     Q_title: 'QQ咨询'
   },
-  // admin选择店铺
+  // admin选择店铺数据
   shopData: {
     set: '账户设置',
     administration: '子账号管理',
     public: '授权公众号',
     choice: '选择店铺',
     loginOut: '退出'
-  }
+  },
+  // admin选择店铺页面contact组件数据
+  adminContact: {
+    phoneNum: '客服电话：400-010-1039',
+    onLine: '在线咨询'
+  },
+  // admin选择店铺页面数据
+  selectShop: {
+    allShop: '全部店铺',
+    data: '有效期'
+  },
+  // admin  账户设置数据
+  accountSetting: {
+    title: '账户设置',
+    account: '登录账户：',
+    modifyPassword: '修改登录密码',
+    phone: '联系电话：',
+    name: '账户昵称：',
+    namePlaceholder: '请输入昵称',
+    head: '账户头像：',
+    modify: '修改头像',
+    s_modify: '确认修改',
+    to_shop_list: '返回店铺列表'
+  },
+  // 浏览图片dialog数据
+  imgageDalog: {
+    title: '浏览图片',
+    upload: '上传图片',
+    tip: '上传图片支持jpeg、jpg、png、bmp格式，为保障前端加载顺利，单张图片大小不能超过5M',
+    imagePlaceholder: '请输入图片名称',
+    search: '搜索',
+    OriginalImg: '原图',
+    delImg: '删除',
+    currentPage: '当前页面',
+    totalPage: '总记录',
+    strip: '条',
+    cancel: '取消',
+    Determine: '确定'
+  },
+  // admin 浏览图片弹窗 selectoptions数据
+  options: [{
+    value: '选项1',
+    label: '按上传时间从晚到早'
+  }, {
+    value: '选项2',
+    label: '按上传时间从早到晚'
+  }, {
+    value: '选项3',
+    label: '按图片从大到小'
+  }, {
+    value: '选项4',
+    label: '按图片从小到大'
+  }, {
+    value: '选项5',
+    label: '按图片名降序'
+  }, {
+    value: '选项6',
+    label: '按图片名升序'
+  }],
+  ...zhLocale
+
 }
 
 export default cn

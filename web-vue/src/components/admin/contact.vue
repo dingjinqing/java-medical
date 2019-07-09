@@ -8,10 +8,11 @@
       <img src="../../assets/adminImg/left_menu_phone.png">
       <div
         class="suspension_message"
+        :class="en_phone"
         v-if="hidden_phone"
       >
         <img src="../../assets/adminImg/left_menu_jt.png">
-        客服电话：400-010-1039
+        {{$t('adminContact.phoneNum')}}
       </div>
     </div>
     <div
@@ -22,10 +23,11 @@
       <img src="../../assets/adminImg/left_menu_zx.png">
       <div
         class="suspension_message new_calss"
+        :class="en_line"
         v-if="hidden_new"
       >
         <img src="../../assets/adminImg/left_menu_jt.png">
-        在线咨询
+        {{$t('adminContact.onLine')}}
       </div>
     </div>
   </div>
@@ -35,8 +37,14 @@ export default {
   data () {
     return {
       hidden_phone: false,
-      hidden_new: false
+      hidden_new: false,
+      en_phone: '',
+      en_line: ''
     }
+  },
+  mounted () {
+    // 初始化语言
+    this.langDefault()
   },
   methods: {
     // 鼠标划入
@@ -109,5 +117,12 @@ export default {
 
 .new_calss {
   width: 60px;
+}
+
+.admin_en_phone_width {
+  width: 265px !important;
+}
+.admin_en_onLine_width {
+  width: 130px !important;
 }
 </style>

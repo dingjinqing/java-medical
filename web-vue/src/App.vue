@@ -15,8 +15,8 @@ export default {
 
 <style scoped>
 #app {
-  height: 100%;
-  position: absolute;
+  /* height: 100%;
+  position: absolute; */
   width: 100%;
 }
 </style>

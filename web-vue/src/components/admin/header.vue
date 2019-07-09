@@ -31,6 +31,7 @@
       <div
         class="log-menu"
         v-show="log_menu_show"
+        :class="menu_width"
       >
         <div
           v-for="(item,index) in hiddle_menu_list"
@@ -71,14 +72,15 @@ export default {
       log_menu_show: false,
       hiddle_menu_list: [this.$t('shopData.set'), this.$t('shopData.administration'), this.$t('shopData.public'), this.$t('shopData.choice'), this.$t('shopData.loginOut')],
       changeColorIndex: '',
-      username: ''
+      username: '',
+      menu_width: ''
     }
   },
   mounted () {
-    // 初始化语言
-    this.langDefault()
     // 初始化登录
     this.judgeuserinfo()
+    // 初始化语言
+    this.langDefault()
   },
 
   methods: {
@@ -106,7 +108,7 @@ export default {
             console.log(res)
             if (res.error === 0) {
               Cookies.remove('V-Token')
-              console.log(this)
+              localStorage.removeItem('V-Username')
               this.$router.push({
                 path: '/index/login'
               })
@@ -228,5 +230,8 @@ label {
 }
 .changeColor {
   color: red;
+}
+.admin_menu_width {
+  width: 220px !important;
 }
 </style>

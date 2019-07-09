@@ -246,7 +246,7 @@ export default {
               type: 'success'
             })
             this.$router.push({
-              name: 'indexLogin'
+              name: 'shopMain'
             })
           }
         })
@@ -268,7 +268,7 @@ export default {
               type: 'success'
             })
             this.$router.push({
-              name: 'indexLogin'
+              name: 'shopMain'
             })
           }
         })
@@ -316,7 +316,7 @@ export default {
   background: white;
   color: #333;
   font-size: 16px;
-  margin-top: 8px;
+  /* margin-top: 8px; */
 }
 
 .main-left {

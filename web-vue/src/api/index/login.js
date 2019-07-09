@@ -15,7 +15,7 @@ export function loginRequest (riid) {
 export function loginRequestOut (riid) {
   return request({
     url: '/api/admin/logout',
-    method: 'post',
+    method: 'get',
     data: riid
   })
 }
