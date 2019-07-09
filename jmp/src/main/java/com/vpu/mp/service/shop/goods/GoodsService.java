@@ -186,7 +186,7 @@ public class GoodsService extends BaseService {
         }
 
         if (goods.getGoodsSn() == null) {
-            goods.setGoodsSn(Util.UUID());
+            goods.setGoodsSn(Util.randomId());
         }
 
         GoodsRecord goodsRecord = db.newRecord(GOODS, goods);
