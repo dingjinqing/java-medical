@@ -2,6 +2,7 @@ package com.vpu.mp.controller.admin;
 
 import com.vpu.mp.service.foundation.JsonResult;
 import com.vpu.mp.service.foundation.JsonResultMessage;
+import com.vpu.mp.service.pojo.shop.config.ShopCfg;
 import com.vpu.mp.service.pojo.shop.config.trade.PaymentConfigIn;
 import com.vpu.mp.service.pojo.shop.config.trade.WxpayConfigIn;
 import org.springframework.validation.BindingResult;
@@ -16,6 +17,7 @@ import java.beans.Introspector;
 import java.beans.PropertyDescriptor;
 import java.lang.reflect.InvocationTargetException;
 import java.util.Arrays;
+import java.util.List;
 
 /**
  * @Author:liufei
@@ -79,14 +81,17 @@ public class AdminTradeController extends AdminBaseController {
         if(!saas.wechat.checkAuthShopExist(wxpayConfigIn.getAppId())){
             return fail(JsonResultMessage.AUTH_SHOP_NOT_EXIST);
         }
-        saas.wechat.udpateWxpayConfig(wxpayConfigIn);
 
-        return success();
+        return saas.wechat.udpateWxpayConfig(wxpayConfigIn) > 0 ? success() : fail(JsonResultMessage.WECAHT_PAY_CONFIG_UPDATE_DAILED);
     }
 
+    /**
+     * 订单流程配置更新
+     * @param shopCfgList
+     * @return
+     */
     @PostMapping("/api/admin/config/trade/orderProcess")
-    public JsonResult orderProcess(){
-
-        return success();
+    public JsonResult orderProcess(@RequestBody List<ShopCfg> shopCfgList){
+        return shop().trade.updateOrderProcess(shopCfgList) > 0 ? success() : fail(JsonResultMessage.ORDER_PROCESS_CONFIG_UDPATE_FAILED);
     }
 }

@@ -1,5 +1,6 @@
 package com.vpu.mp.service.pojo.shop.config;
 
+import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
@@ -10,6 +11,7 @@ import lombok.NoArgsConstructor;
  */
 @Data
 @NoArgsConstructor
+@AllArgsConstructor
 public class ShopCfg {
 	public String k = "";
 	public String v = "";
