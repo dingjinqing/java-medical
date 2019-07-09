@@ -34,11 +34,8 @@ public class ArticleCategoryService extends BaseService {
 		select.where(ArticleCategory.ARTICLE_CATEGORY.DEL_STATE.equal(DelFlag.NORMAL.getCode()));
 		select.orderBy(ArticleCategory.ARTICLE_CATEGORY.CATEGORY_ID.asc());	
 		Page page = param.getPage();
-		if(null != page.getPageRows()) {
-			return getPageResult(select,page.getCurrentPage(),page.getPageRows(),ArticleCategoryOutPut.class);
-		}else {
-			return getPageResult(select,page.getPageRows(),ArticleCategoryOutPut.class);
-		}
+		return getPageResult(select,page.getCurrentPage(),page.getPageRows(),ArticleCategoryOutPut.class);
+
 	}
 	/**
 	 * 文章类型新增

@@ -43,11 +43,8 @@ public class ArticleService extends BaseService {
 				ARTICLE_CATEGORY.CATEGORY_NAME).from(ARTICLE)
 				.leftJoin(ARTICLE_CATEGORY).on(ARTICLE.CATEGORY_ID.eq(ARTICLE_CATEGORY.CATEGORY_ID));
 		select = this.buildOptions(select, param);
-		if(null != param.getPage().getPageRows()) {
-			return getPageResult(select,param.getPage().getCurrentPage(),param.getPage().getPageRows(),ArticleOutPut.class);
-		}else {
-			return getPageResult(select,param.getPage().getPageRows(),ArticleOutPut.class);
-		}
+		return getPageResult(select,param.getPage().getCurrentPage(),param.getPage().getPageRows(),ArticleOutPut.class);
+		
 	}
 
 	public SelectWhereStep<? extends Record> buildOptions(SelectWhereStep<? extends  Record> select, ArticleListQueryParam param) {
