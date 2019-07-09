@@ -27,6 +27,7 @@ public class GoodsService extends BaseService {
     public GoodsBrandService goodsBrand;
     public GoodsSortService goodsSort;
     public GoodsCommentService goodsComment;
+    public CommentConfigService commentConfig;
     public GoodsLabelService goodsLabel;
     public GoodsLabelCoupleService goodsLabelCouple;
 

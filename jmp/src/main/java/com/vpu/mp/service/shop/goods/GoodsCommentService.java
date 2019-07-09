@@ -1,27 +1,28 @@
 package com.vpu.mp.service.shop.goods;
 
+import static com.vpu.mp.db.shop.Tables.COMMENT_GOODS;
+import static com.vpu.mp.db.shop.Tables.COMMENT_GOODS_ANSWER;
+import static com.vpu.mp.db.shop.Tables.LOTTERY_RECORD;
+import static com.vpu.mp.db.shop.Tables.ORDER_GOODS;
+import static com.vpu.mp.db.shop.Tables.SHOP_CFG;
+import static com.vpu.mp.db.shop.Tables.USER;
+import static org.jooq.impl.DSL.field;
+
+import java.sql.Timestamp;
+
+import org.jooq.Record12;
+import org.jooq.Record13;
+import org.jooq.SelectConditionStep;
+import org.jooq.tools.StringUtils;
+
 import com.vpu.mp.service.foundation.BaseService;
 import com.vpu.mp.service.foundation.PageResult;
-import com.vpu.mp.service.pojo.shop.goods.brand.GoodsBrandPageListParam;
 import com.vpu.mp.service.pojo.shop.goods.comment.GoodsComment;
 import com.vpu.mp.service.pojo.shop.goods.comment.GoodsCommentAnswer;
 import com.vpu.mp.service.pojo.shop.goods.comment.GoodsCommentCheck;
 import com.vpu.mp.service.pojo.shop.goods.comment.GoodsCommentCheckPageListParam;
 import com.vpu.mp.service.pojo.shop.goods.comment.GoodsCommentPageListParam;
-import com.vpu.mp.service.pojo.shop.goods.brand.GoodsBrand;
-import org.jooq.*;
-import org.jooq.tools.StringUtils;
-
-import java.sql.Timestamp;
-
-import javax.print.DocFlavor.STRING;
-
-import static com.vpu.mp.db.shop.Tables.COMMENT_GOODS;
-import static com.vpu.mp.db.shop.Tables.ORDER_GOODS;
-import static com.vpu.mp.db.shop.Tables.USER;
-import static com.vpu.mp.db.shop.Tables.LOTTERY_RECORD;
-import static com.vpu.mp.db.shop.Tables.COMMENT_GOODS_ANSWER;
-import static org.jooq.impl.DSL.field;
+import com.vpu.mp.service.pojo.shop.goods.comment.GoodsCommentConfig;
 
 /**
  * 商品评价
@@ -194,5 +195,4 @@ public class GoodsCommentService extends BaseService {
                 .execute();
     }
 
-    
 }

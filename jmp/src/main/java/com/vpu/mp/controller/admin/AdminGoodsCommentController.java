@@ -12,6 +12,7 @@ import com.vpu.mp.service.pojo.shop.goods.comment.GoodsCommentAnswer;
 import com.vpu.mp.service.pojo.shop.goods.comment.GoodsCommentCheck;
 import com.vpu.mp.service.pojo.shop.goods.comment.GoodsCommentCheckPageListParam;
 import com.vpu.mp.service.pojo.shop.goods.comment.GoodsCommentPageListParam;
+import com.vpu.mp.service.pojo.shop.goods.comment.GoodsCommentConfig;
 import com.vpu.mp.service.shop.ShopApplication;
 
 /**
@@ -55,12 +56,12 @@ public class AdminGoodsCommentController extends AdminBaseController {
 	/**
 	 * 评论回复
 	 * 
-	 * @param param
+	 * @param goodsCommentAnswer
 	 * @return
 	 *
 	 */
 	@PostMapping("api/admin/goods/comment/answer")
-	public JsonResult insert(@RequestBody GoodsCommentAnswer goodsCommentAnswer) {
+	public JsonResult insertAnswer(@RequestBody GoodsCommentAnswer goodsCommentAnswer) {
 
 		shop().goods.goodsComment.insertAnswer(goodsCommentAnswer);
 
@@ -104,5 +105,35 @@ public class AdminGoodsCommentController extends AdminBaseController {
 
 		return success();
 	}
+	
+	/**
+	 * 修改审核状态
+	 * 
+	 * @param goodsCommentConfig
+	 * @return
+	 *
+	 */
+	@PostMapping("api/admin/goods/comment/checkconfig")
+	public JsonResult checkConfig(@RequestBody GoodsCommentConfig goodsCommentConfig) {
+		
+			shop().goods.commentConfig.setCheckConfig(goodsCommentConfig);
 
+		return success();
+	}
+	
+	/**
+	 * 修改审核状态
+	 * 
+	 * @param goodsCommentConfig
+	 * @return
+	 *
+	 */
+	@PostMapping("api/admin/goods/comment/switchconfig")
+	public JsonResult switchConfig(@RequestBody GoodsCommentConfig goodsCommentConfig) {
+		
+			shop().goods.commentConfig.setSwitchConfig(goodsCommentConfig);
+
+		return success();
+	}
+	
 }
