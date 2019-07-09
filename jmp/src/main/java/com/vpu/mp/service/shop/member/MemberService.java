@@ -10,10 +10,6 @@ import static com.vpu.mp.db.shop.Tables.USER;
 
 import org.jooq.Field;
 import org.jooq.Record;
-import org.jooq.Record1;
-import org.jooq.Record2;
-import org.jooq.Record3;
-import org.jooq.SelectConditionStep;
 import org.jooq.SelectWhereStep;
 import org.jooq.tools.StringUtils;
 
@@ -55,8 +51,9 @@ public class MemberService extends BaseService {
 	 */
 	private SelectWhereStep<? extends Record> buildOptions(SelectWhereStep<? extends Record> select,User u,MemberPageListParam param) {
 
-		if(param == null)
+		if(param == null) {
 			return select;
+		}
 		//手机号
 		if(!StringUtils.isEmpty(param.getMobile())) {
 			select.where(u.MOBILE.eq(param.getMobile()));

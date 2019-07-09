@@ -7,40 +7,50 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.vpu.mp.service.foundation.JsonResultCode;
-import com.vpu.mp.service.shop.config.ShopCfgService;
+import com.vpu.mp.service.shop.config.BaseShopConfigService;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.*;
+
 import com.vpu.mp.db.shop.tables.records.XcxCustomerPageRecord;
 import com.vpu.mp.service.foundation.JsonResult;
 import com.vpu.mp.service.foundation.PageResult;
+import com.vpu.mp.service.pojo.shop.config.BottomNavigatorConfig;
+import com.vpu.mp.service.pojo.shop.config.SearchConfig;
+import com.vpu.mp.service.pojo.shop.config.ShopStyleConfig;
+import com.vpu.mp.service.pojo.shop.decoration.PageListQueryParam;
 import com.vpu.mp.service.pojo.shop.decoration.XcxCustomerPagePojo;
 
 import java.io.IOException;
+import java.util.List;
 
 /**
  * 装修模块
  * 
- * @author 常乐
- * 2019年6月27日
+ * @author 常乐 2019年6月27日
  */
 @RestController
 //@RequestMapping("/api")
 public class AdminShopDecorateController extends AdminBaseController {
 
-	private static ObjectMapper mapper =new ObjectMapper();
+	private static ObjectMapper mapper = new ObjectMapper();
+
 
 	/**
 	 * 装修页面列表
-	 * @param param
+	 * 
+	 * @param  param
 	 * @return
 	 */
 	@PostMapping(value = "/admin/shopDecorate/list")
 	public JsonResult list(XcxCustomerPagePojo param) {
-		PageResult<XcxCustomerPagePojo> list = shop().mpDecoration.getPageList(param );
+		PageResult<XcxCustomerPagePojo> list = shop().mpDecoration.getPageList(param);
 		return success(list);
 	}
-	
+
 	/**
 	 * 装修页面详情
-	 * @param pageId
+	 * 
+	 * @param  pageId
 	 * @return
 	 */
 	@PostMapping(value = "/admin/shopDecorate/detail")
@@ -48,10 +58,11 @@ public class AdminShopDecorateController extends AdminBaseController {
 		XcxCustomerPageRecord detail = shop().mpDecoration.getPageById(pageId);
 		return success(detail.intoMap());
 	}
-	
+
 	/**
 	 * 设为首页
-	 * @param pageId
+	 * 
+	 * @param  pageId
 	 * @return
 	 */
 	@PostMapping(value = "/admin/shopDecorate/setIndex")
@@ -62,7 +73,8 @@ public class AdminShopDecorateController extends AdminBaseController {
 
 	/**
 	 * 复制页面
-	 * @param PageId
+	 * 
+	 * @param  PageId
 	 * @return
 	 */
 	@PostMapping(value = "/admin/shopDecorate/copyDecoration")
@@ -71,10 +83,10 @@ public class AdminShopDecorateController extends AdminBaseController {
 		return success();
 	}
 
-
 	/**
 	 * 保存装修数据
-	 * @param param
+	 * 
+	 * @param  param
 	 * @return
 	 */
 	@PostMapping(value = "/admin/shopDecorate/saveDecoration")
@@ -89,40 +101,27 @@ public class AdminShopDecorateController extends AdminBaseController {
 		
 	}
 
-
 	/**
 	 * 设置店铺风格
-	 * @param jsonParam
+	 * 
+	 * @param  config
 	 * @return
 	 */
 	@PostMapping("/admin/decorate/updateStyle")
-	public JsonResult updateShopStyle(@RequestBody String jsonParam){
-
-		try {
-			mapper.readValue(jsonParam, Object.class);
-			shop().shopCfg.setShopCfg(ShopCfgService.K_SHOP_STYLE,jsonParam);
-			return success();
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-		return fail(JsonResultCode.DECORATE_STYLE_ISNOTJSON);
+	public JsonResult updateShopStyle(@RequestBody ShopStyleConfig config) {
+		shop().config.shopStyleCfg.setShopStyleConfig(config);
+		return success();
 	}
 
 	/**
 	 * 店铺风格查询
+	 * 
 	 * @return
 	 */
 	@GetMapping("/admin/decorate/getStyle")
 	public JsonResult getShopStyle() {
-
-		try {
-			Object content= mapper.readValue(shop().shopCfg.getShopCfg(ShopCfgService.K_SHOP_STYLE), Object.class);
-
-			return success(content);
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-		return fail(JsonResultCode.DECORATE_STYLE_ISNOTJSON);
+		ShopStyleConfig config = shop().config.shopStyleCfg.getShopStyleConfig();
+		return config != null ? success(config) :  fail(JsonResultCode.DECORATE_STYLE_ISNOTJSON);
 	}
 
 	/**
@@ -131,17 +130,13 @@ public class AdminShopDecorateController extends AdminBaseController {
 	 * @return
 	 */
 	@GetMapping("/admin/bottom/get")
-	public JsonResult getDecorateBottom(){
-
-		try {
-			Object content =mapper.readValue(shop().shopCfg.getShopCfg(ShopCfgService.K_BOTTOM),Object.class);
-			return success(content);
-		} catch (IOException e) {
-			e.printStackTrace();
+	public JsonResult getDecorateBottom() {
+		List<BottomNavigatorConfig> cfg = shop().config.bottomCfg.getBottomNavigatorConfig();
+		if (cfg != null) {
+			return success(cfg);
 		}
 		return fail(JsonResultCode.DECORATE_BOTTOM_ISNOTJSON);
 	}
-
 
 	/**
 	 * 底部导航设置
@@ -149,17 +144,9 @@ public class AdminShopDecorateController extends AdminBaseController {
 	 * @return
 	 */
 	@PostMapping("/admin/bottom/update")
-	public JsonResult updateDecorateBottom(@RequestBody String jsonParam){
-
-		try {
-			mapper.readValue(jsonParam, Object.class);
-			//底部导航配置以json形式存储在数据库，所以不需要转换pojo
-			shop().shopCfg.setShopCfg(ShopCfgService.K_BOTTOM,jsonParam);
-			return success();
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-		return fail(JsonResultCode.DECORATE_BOTTOM_ISNOTJSON);
+	public JsonResult updateDecorateBottom(@RequestBody List<BottomNavigatorConfig> bottomNavConfg) {
+		shop().config.bottomCfg.setBottomNavigatorConfig(bottomNavConfg);
+		return success();
 	}
 	
 //	/**

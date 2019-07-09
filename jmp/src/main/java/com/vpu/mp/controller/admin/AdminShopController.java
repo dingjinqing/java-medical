@@ -33,16 +33,17 @@ import com.vpu.mp.service.pojo.shop.config.ShopCfgPojo;
 public class AdminShopController extends AdminBaseController {
 
 	@GetMapping(value = "/api/admin/config/shop/getCommonInfo")
-	public JsonResult getShopCommonInfo() throws NoSuchFieldException, SecurityException, IllegalArgumentException, IllegalAccessException  {
-		List<String> keys = asList("show_logo","logo_link","cancel_time","invoice","bind_mobile","sales_number","order_realName","order_cid","consignee_realName","consignee_cid","custom","custom_title","del_market","custom_service","show_cart","service_name","service_choose","service_terms","share_cfg","shop_style");
-		List<ShopCfg> shopCommonInfo = new ArrayList<ShopCfg>();
-		for(String key : keys) {
-			ShopCfg shopCfg = new ShopCfg();
-			shopCfg.setK(key);
-			shopCfg.setV(shop().shopCfg.getShopCfg(key));
-			shopCommonInfo.add(shopCfg);
-		}
-		return this.success(shopCommonInfo);
+	public JsonResult getShopCommonInfo()   {
+		return null;
+		//		List<String> keys = asList("show_logo","logo_link","cancel_time","invoice","bind_mobile","sales_number","order_realName","order_cid","consignee_realName","consignee_cid","custom","custom_title","del_market","custom_service","show_cart","service_name","service_choose","service_terms","share_cfg","shop_style");
+//		List<ShopCfg> shopCommonInfo = new ArrayList<ShopCfg>();
+//		for(String key : keys) {
+//			ShopCfg shopCfg = new ShopCfg();
+//			shopCfg.setK(key);
+//			shopCfg.setV(shop().shopCfg.getShopCfg(key));
+//			shopCommonInfo.add(shopCfg);
+//		}
+//		return this.success(shopCommonInfo);
 	}
 	
 	@GetMapping(value = "api/admin/config/shop/getBaseInfo")
@@ -70,10 +71,11 @@ public class AdminShopController extends AdminBaseController {
 	
 	@PostMapping(value = "api/admin/config/shop/updateCommonInfo")
 	public JsonResult updateShopCommonInfo(@RequestBody @Valid List<ShopCfgPojo> cfgs) {
-		if(shop().shopCfg.updateShopCommonInfo(cfgs)) {
-			return this.success();
-		}else {
-			return this.fail(JsonResultCode.CODE_FAIL);
-		}
+		return null;
+//		if(shop().shopCfg.updateShopCommonInfo(cfgs)) {
+//			return this.success();
+//		}else {
+//			return this.fail(JsonResultCode.CODE_FAIL);
+//		}
 	}
 }

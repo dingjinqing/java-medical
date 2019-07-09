@@ -7,7 +7,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.vpu.mp.service.foundation.JsonResult;
-import com.vpu.mp.service.shop.config.ShopCfgService;
+import com.vpu.mp.service.pojo.shop.config.SearchConfig;
+import com.vpu.mp.service.shop.config.BaseShopConfigService;
 
 /**
  * @author 黄荣刚
@@ -24,7 +25,7 @@ public class AdminShopCfgController  extends AdminBaseController {
 	 */
 	@GetMapping("/getSearchCfg")
 	public JsonResult getSearchCfg() {
-		return success(shop().shopCfg.getShopCfg(ShopCfgService.K_SEARCH_CONFIG));
+		return success(shop().config.searchCfg.getSearchConfig());
 	}
 	/**
 	 * 修改搜索配置
@@ -32,8 +33,8 @@ public class AdminShopCfgController  extends AdminBaseController {
 	 * @return
 	 */
 	@PostMapping("/updateSearchCfg")
-	public JsonResult updateSearchCfg(@RequestBody String jsonParam){
-		shop().shopCfg.setShopCfg(ShopCfgService.K_SEARCH_CONFIG,jsonParam);
+	public JsonResult updateSearchCfg(@RequestBody SearchConfig config){
+		shop().config.searchCfg.setSearchConfig(config);
 		return success();
 	}
 	

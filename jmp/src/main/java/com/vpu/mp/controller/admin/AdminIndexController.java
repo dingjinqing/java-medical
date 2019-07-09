@@ -23,6 +23,7 @@ public class AdminIndexController extends AdminBaseController {
 	JedisManager jedis = JedisManager.instance();
 
 	public class MyThread extends Thread {
+		@Override
 		public void run() {
 				jedis.set("k", "v");
 				String message = String.format("a:%d,waiter:%d", jedis.getJedisPool().getNumActive(),
