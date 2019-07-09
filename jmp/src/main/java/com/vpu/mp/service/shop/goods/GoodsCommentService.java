@@ -4,6 +4,9 @@ import com.vpu.mp.service.foundation.BaseService;
 import com.vpu.mp.service.foundation.PageResult;
 import com.vpu.mp.service.pojo.shop.goods.brand.GoodsBrandPageListParam;
 import com.vpu.mp.service.pojo.shop.goods.comment.GoodsComment;
+import com.vpu.mp.service.pojo.shop.goods.comment.GoodsCommentAnswer;
+import com.vpu.mp.service.pojo.shop.goods.comment.GoodsCommentCheck;
+import com.vpu.mp.service.pojo.shop.goods.comment.GoodsCommentCheckPageListParam;
 import com.vpu.mp.service.pojo.shop.goods.comment.GoodsCommentPageListParam;
 import com.vpu.mp.service.pojo.shop.goods.brand.GoodsBrand;
 import org.jooq.*;
@@ -17,6 +20,7 @@ import static com.vpu.mp.db.shop.Tables.COMMENT_GOODS;
 import static com.vpu.mp.db.shop.Tables.ORDER_GOODS;
 import static com.vpu.mp.db.shop.Tables.USER;
 import static com.vpu.mp.db.shop.Tables.LOTTERY_RECORD;
+import static com.vpu.mp.db.shop.Tables.COMMENT_GOODS_ANSWER;
 import static org.jooq.impl.DSL.field;
 
 /**
@@ -34,15 +38,16 @@ public class GoodsCommentService extends BaseService {
      * @return
      */
     public PageResult<GoodsComment> getPageList(GoodsCommentPageListParam param) {
-        SelectConditionStep<Record10<String,Byte, String, Timestamp, String,  String, String,String, Byte,String>> selectFrom = db()
-        		.select(
+        SelectConditionStep<Record12<Integer,String,Byte, String, String,Timestamp, String,  String, String,String, Byte,String>> selectFrom = db()
+        		.select(COMMENT_GOODS.ID,
         		COMMENT_GOODS.ORDER_SN,COMMENT_GOODS.COMMSTAR,
-        		COMMENT_GOODS.COMM_NOTE,COMMENT_GOODS.CREATE_TIME,
+        		COMMENT_GOODS.COMM_NOTE,COMMENT_GOODS_ANSWER.CONTENT,COMMENT_GOODS.CREATE_TIME,
         		ORDER_GOODS.GOODS_NAME,ORDER_GOODS.GOODS_IMG,USER.USERNAME,USER.MOBILE,COMMENT_GOODS.ANONYMOUSFLAG,LOTTERY_RECORD.LOTTERY_AWARD)
-        		.from(COMMENT_GOODS,ORDER_GOODS,USER,LOTTERY_RECORD)
+        		.from(COMMENT_GOODS,ORDER_GOODS,USER,LOTTERY_RECORD,COMMENT_GOODS_ANSWER)
         		.where(COMMENT_GOODS.ORDER_SN.eq(ORDER_GOODS.ORDER_SN))
         		.and(COMMENT_GOODS.USER_ID.eq(USER.USER_ID))
-        		.and(COMMENT_GOODS.ORDER_SN.eq(LOTTERY_RECORD.ORDER_SN));
+        		.and(COMMENT_GOODS.ORDER_SN.eq(LOTTERY_RECORD.ORDER_SN))
+        		.and(COMMENT_GOODS.ID.eq(COMMENT_GOODS_ANSWER.COMMENT_ID));
 
         SelectConditionStep<?> select = this.buildOptions(selectFrom, param);
 
@@ -60,7 +65,7 @@ public class GoodsCommentService extends BaseService {
      * @param param
      * @return
      */
-    private SelectConditionStep<?> buildOptions(SelectConditionStep<Record10<String, Byte,String, Timestamp,  String, String, String,String,Byte, String>> selectFrom, GoodsCommentPageListParam param) {
+    private SelectConditionStep<?> buildOptions(SelectConditionStep<Record12<Integer,String, Byte,String, String,Timestamp,  String, String, String,String,Byte, String>> selectFrom, GoodsCommentPageListParam param) {
         SelectConditionStep<?> scs = selectFrom
                 .and(COMMENT_GOODS.DEL_FLAG.eq((byte) GoodsCommentPageListParam.IS_DELETE_DEFAULT_VALUE));
 
@@ -76,17 +81,6 @@ public class GoodsCommentService extends BaseService {
             scs = scs.and(USER.MOBILE.like(this.likeValue(param.getMobile())));
         }
 
-        
-      /*  
-
-        if (param.getEndAddTime() != null) {
-            scs = scs.and(GOODS_BRAND.CREATE_TIME.le(param.getEndAddTime()));
-        }
-
-        if (param.getClassifyId() != GoodsBrandPageListParam.CLASSIFY_ID_DEFAULT_VALUE) {
-            scs = scs.and(field("classify_id").eq(param.getClassifyId()));
-        }
-*/
         if (param.getCommstar() != GoodsCommentPageListParam.COMMSTAR_DEFAULT_VALUE) {
             scs = scs.and(field("commstar").eq(param.getCommstar()));
         }
@@ -95,97 +89,110 @@ public class GoodsCommentService extends BaseService {
     }
 
     /**
-     * 添加品牌
+     * 分页获取评价审核信息
      *
-     * @param goodsBrand
-     * @return 数据库受影响行数
-     *//*
-    public int insert(GoodsBrand goodsBrand) {
-        int result = db()
-                .insertInto(GOODS_BRAND, GOODS_BRAND.BRAND_NAME, GOODS_BRAND.E_NAME,
-                        GOODS_BRAND.LOGO, GOODS_BRAND.FIRST, GOODS_BRAND.DESC,
-                        GOODS_BRAND.IS_RECOMMEND, GOODS_BRAND.CLASSIFY_ID)
-                .values(goodsBrand.getBrandName(), goodsBrand.getEName(), goodsBrand.getLogo(), goodsBrand.getFirst(), goodsBrand.getDesc(),
-                        goodsBrand.getIsRecommend(), goodsBrand.getClassifyId())
-                .execute();
-        return result;
-    }
-
-    *//**
-     * 假删除指定品牌
-     *
-     * @param goodsBrand
-     * @return 数据库受影响行数
-     *//*
-    public int delete(GoodsBrand goodsBrand) {
-        return db().update(GOODS_BRAND).set(GOODS_BRAND.DEL_FLAG, (byte) 1).where(GOODS_BRAND.ID.eq(goodsBrand.getId()))
-                .execute();
-    }
-
-    *//**
-     * 更新指定商品
-     *
-     * @param goodsBrand
+     * @param param
      * @return
-     *//*
-    public int update(GoodsBrand goodsBrand) {
-        return db().update(GOODS_BRAND).set(GOODS_BRAND.BRAND_NAME, goodsBrand.getBrandName())
-                .set(GOODS_BRAND.E_NAME, goodsBrand.getEName()).set(GOODS_BRAND.LOGO, goodsBrand.getLogo())
-                .set(GOODS_BRAND.FIRST, goodsBrand.getFirst()).set(GOODS_BRAND.DESC, goodsBrand.getDesc())
-                .set(GOODS_BRAND.IS_RECOMMEND, goodsBrand.getIsRecommend()).set(GOODS_BRAND.CLASSIFY_ID, goodsBrand.getClassifyId())
-                .where(GOODS_BRAND.ID.eq(goodsBrand.getId()))
-                .execute();
+     */
+    public PageResult<GoodsCommentCheck> getCheckPageList(GoodsCommentCheckPageListParam param) {
+    	SelectConditionStep<Record13<Integer,String, String,  String,  String ,String,Byte, String,String, String,Timestamp,Byte,Byte>> selectFrom = db()
+        		.select(COMMENT_GOODS.ID,
+        		COMMENT_GOODS.ORDER_SN,ORDER_GOODS.GOODS_IMG,ORDER_GOODS.GOODS_NAME,USER.USERNAME,USER.MOBILE,
+        		COMMENT_GOODS.COMMSTAR,COMMENT_GOODS.COMM_NOTE,LOTTERY_RECORD.LOTTERY_AWARD,COMMENT_GOODS_ANSWER.CONTENT,COMMENT_GOODS.CREATE_TIME,
+        		COMMENT_GOODS.ANONYMOUSFLAG,COMMENT_GOODS.FLAG)        		
+        		.from(COMMENT_GOODS,ORDER_GOODS,USER,LOTTERY_RECORD,COMMENT_GOODS_ANSWER)
+        		.where(COMMENT_GOODS.ORDER_SN.eq(ORDER_GOODS.ORDER_SN))
+        		.and(COMMENT_GOODS.USER_ID.eq(USER.USER_ID))
+        		.and(COMMENT_GOODS.ORDER_SN.eq(LOTTERY_RECORD.ORDER_SN))
+        		.and(COMMENT_GOODS.ID.eq(COMMENT_GOODS_ANSWER.COMMENT_ID));
+
+        SelectConditionStep<?> select = this.buildCheckOptions(selectFrom, param);
+
+        select.orderBy( COMMENT_GOODS.CREATE_TIME.desc());
+
+        PageResult<GoodsCommentCheck> pageResult = this.getPageResult(select, param.getCurrentPage(), param.getPageRows(), GoodsCommentCheck.class);
+
+        return pageResult;
     }
 
-    *//**
-     * 查询单个
+    /**
+     * 根据过滤条件构造对应的sql语句
      *
-     * @param goodsBrand
+     * @param selectFrom
+     * @param param
      * @return
-     *//*
-    public GoodsBrand select(GoodsBrand goodsBrand) {
-        return db().select(GOODS_BRAND.ID,
-                GOODS_BRAND.BRAND_NAME, GOODS_BRAND.E_NAME, GOODS_BRAND.LOGO, GOODS_BRAND.FIRST, GOODS_BRAND.CREATE_TIME, GOODS_BRAND.DESC, GOODS_BRAND.IS_RECOMMEND, GOODS_BRAND.CLASSIFY_ID)
-                .from(GOODS_BRAND).where(GOODS_BRAND.ID.eq(goodsBrand.getId()))
-                .fetchOne().into(GoodsBrand.class);
+     */
+    private SelectConditionStep<?> buildCheckOptions(SelectConditionStep<Record13<Integer,String, String,  String,  String ,String,Byte, String,String, String,Timestamp,Byte,Byte>> selectFrom, GoodsCommentCheckPageListParam param) {
+        SelectConditionStep<?> scs = selectFrom
+                .and(COMMENT_GOODS.DEL_FLAG.eq((byte) GoodsCommentCheckPageListParam.IS_DELETE_DEFAULT_VALUE));
 
-    }
-
-    *//**
-     *  判断商品名称是否存在，新增使用
-     * @param goodsBrand
-     * @return
-     *//*
-    public boolean isBrandNameExist(GoodsBrand goodsBrand) {
-        Record1<Integer> countRecord = db().selectCount().from(GOODS_BRAND)
-                .where(GOODS_BRAND.BRAND_NAME.eq(goodsBrand.getBrandName()))
-                .and(GOODS_BRAND.DEL_FLAG.eq((byte) 0))
-                .fetchOne();
-        Integer count = countRecord.getValue(0, Integer.class);
-        if (count > 0) {
-            return true;
-        } else {
-            return false;
+        if (!StringUtils.isBlank(param.getOrderSn())) {
+            scs = scs.and(COMMENT_GOODS.ORDER_SN.like(this.likeValue(param.getOrderSn())));
         }
+        
+        if (!StringUtils.isBlank(param.getGoodsName())) {
+            scs = scs.and(ORDER_GOODS.GOODS_NAME.like(this.likeValue(param.getGoodsName())));
+        }
+        
+        if (!StringUtils.isBlank(param.getMobile())) {
+            scs = scs.and(USER.MOBILE.like(this.likeValue(param.getMobile())));
+        }
+
+        if (param.getCommstar() != GoodsCommentCheckPageListParam.COMMSTAR_DEFAULT_VALUE) {
+            scs = scs.and(field("commstar").eq(param.getCommstar()));
+        }
+        
+        if (param.getFlag() != GoodsCommentCheckPageListParam.FLAG_DEFAULT_VALUE) {
+            scs = scs.and(field("flag").eq(param.getFlag()));
+        }
+
+        return scs;
     }
     
-    *//**
-     *  判断其他商品名称是否存在同名，修改使用
-     * @param goodsBrand
-     * @return
-     *//*
-    public boolean isOtherBrandNameExist(GoodsBrand goodsBrand) {
-        Record1<Integer> countRecord = db().selectCount().from(GOODS_BRAND)
-                .where(GOODS_BRAND.BRAND_NAME.eq(goodsBrand.getBrandName()))
-                .and(GOODS_BRAND.ID.ne(goodsBrand.getId()))
-                .and(GOODS_BRAND.DEL_FLAG.eq((byte) 0))
-                .fetchOne();
-        Integer count = countRecord.getValue(0, Integer.class);
-        if (count > 0) {
-            return true;
-        } else {
-            return false;
-        }
+    /**
+     * 假删除指定评价
+     *
+     * @param goodsComment
+     * @return 数据库受影响行数
+     */
+    public int delete(GoodsComment goodsComment) {
+        return db().update(COMMENT_GOODS).set(COMMENT_GOODS.DEL_FLAG, (byte) 1).where(COMMENT_GOODS.ID.eq(goodsComment.getId()))
+                .execute();
     }
-*/
+    
+    /**
+     * 评价回复
+     *
+     * @param goodsComment
+     * @return 数据库受影响行数
+     */
+	public int insertAnswer(GoodsCommentAnswer goodsCommentAnswer) {
+		 int result = db()
+	                .insertInto(COMMENT_GOODS_ANSWER, COMMENT_GOODS_ANSWER.COMMENT_ID, COMMENT_GOODS_ANSWER.CONTENT)
+	                .values(goodsCommentAnswer.getCommentId(),goodsCommentAnswer.getContent())
+	                .execute();
+	        return result;
+	}
+
+
+  
+    /**
+     * 修改评价审核状态
+     *
+     * @param goodsComment
+     * @return
+     */
+    public int passflag(GoodsComment goodsComment) {
+        return db().update(COMMENT_GOODS).set(COMMENT_GOODS.FLAG,(byte)GoodsCommentCheckPageListParam.FLAG_PASS_VALUE)
+                .where(COMMENT_GOODS.ID.eq(goodsComment.getId()))
+                .execute();
+    }
+    
+    public int refuseflag(GoodsComment goodsComment) {
+        return db().update(COMMENT_GOODS).set(COMMENT_GOODS.FLAG,(byte)GoodsCommentCheckPageListParam.FLAG_REFUSE_VALUE)
+                .where(COMMENT_GOODS.ID.eq(goodsComment.getId()))
+                .execute();
+    }
+
+    
 }
