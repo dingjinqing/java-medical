@@ -27,6 +27,13 @@ public class JsonResultMessage {
 	final public static String MSG_ACCOUNT_SHOP_EXPIRE="account.shop.expire";
 	final public static String MSG_ACCOUNT_SHOPAVATAR_NOT_NULL="account.shopAvatar.notNull";
 	final public static String MSG_ACCOUNT_ACCOUNTNAME_NOT_NULL="account.accountName.notNull";
+	final public static String MSG_ACCOUNT_PASSWD_NO_SAME="account.passwd.noSame";
+	final public static String MSG_ACCOUNT_OLD_PASSWD_ERROR="account.account.oldPasswd.error";
+	final public static String MSG_ACCOUNT_OLD_NEW_PASSWD_NO_SAME="account.oldAndNew.passwd.noSame";
+	final public static String MSG_ACCOUNT_PASSWD_NOT_NULL="account.passwd.notNull";
+	final public static String MSG_ACCOUNT_NEWPASSWD_NOT_NULL="account.newpasswd.notNull";
+	final public static String MSG_ACCOUNT_CONFNEWPASSWD_NOT_NULL="account.confnewpasswd.notNull";
+	final public static String MSG_ACCOUNT_PASSWD_LENGTH_LIMIT="account.passwd.length.limit";
 
 	// 图片
 	
