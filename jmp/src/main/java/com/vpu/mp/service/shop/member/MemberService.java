@@ -3,7 +3,7 @@ package com.vpu.mp.service.shop.member;
 import com.vpu.mp.service.foundation.BaseService;
 import com.vpu.mp.service.foundation.PageResult;
 import com.vpu.mp.service.foundation.Util;
-import com.vpu.mp.service.pojo.shop.member.MemberInfo;
+import com.vpu.mp.service.pojo.shop.member.MemberInfoVo;
 import com.vpu.mp.service.pojo.shop.member.MemberPageListParam;
 import com.vpu.mp.db.shop.tables.User;
 import static com.vpu.mp.db.shop.Tables.USER;
@@ -25,7 +25,7 @@ public class MemberService extends BaseService {
 	 * @param param
 	 * @return
 	 */
-	public PageResult<MemberInfo> getPageList(MemberPageListParam param) {
+	public PageResult<MemberInfoVo> getPageList(MemberPageListParam param) {
 		// TODO Auto-generated method stub
 		System.out.println("getPageList 正在查询数据... ...");
 		User u = USER.as("u");
@@ -40,7 +40,7 @@ public class MemberService extends BaseService {
 	    select = this.buildOptions(select,u, param);
 		
 		
-		return this.getPageResult(select,param.getPage().getCurrentPage(),param.getPage().getPageRows() , MemberInfo.class);
+		return this.getPageResult(select,param.getPage().getCurrentPage(),param.getPage().getPageRows() , MemberInfoVo.class);
 	}
 
 	/**
@@ -50,8 +50,9 @@ public class MemberService extends BaseService {
 	 * @return 
 	 */
 	private SelectWhereStep<? extends Record> buildOptions(SelectWhereStep<? extends Record> select,User u,MemberPageListParam param) {
-
+		
 		if(param == null) {
+
 			return select;
 		}
 		//手机号
