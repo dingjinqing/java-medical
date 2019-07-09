@@ -1,8 +1,8 @@
 package com.vpu.mp.service.pojo.shop.auth;
 
 import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.Pattern;
 
-import org.hibernate.validator.constraints.Length;
 
 import com.vpu.mp.service.foundation.JsonResultMessage;
 
@@ -19,16 +19,16 @@ import lombok.NoArgsConstructor;
 public class ShopManagePwdParam {
 	//旧密码
 	@NotBlank(message = JsonResultMessage.MSG_ACCOUNT_PASSWD_NOT_NULL)
-	@Length(min = 6,max = 16,message = JsonResultMessage.MSG_ACCOUNT_PASSWD_LENGTH_LIMIT)
+	@Pattern(regexp = "^[^\\u4e00-\\u9fa5]{6,16}$",message = JsonResultMessage.MSG_ACCOUNT_PASSWD_LENGTH_LIMIT)
 	public String passwd;
 	
 	//新密码
 	@NotBlank(message = JsonResultMessage.MSG_ACCOUNT_NEWPASSWD_NOT_NULL)
-	@Length(min = 6,max = 16,message = JsonResultMessage.MSG_ACCOUNT_PASSWD_LENGTH_LIMIT)
+	@Pattern(regexp = "^[^\\u4e00-\\u9fa5]{6,16}$",message = JsonResultMessage.MSG_ACCOUNT_PASSWD_LENGTH_LIMIT)
 	public String newPasswd;
 	
 	//确认新密码
 	@NotBlank(message = JsonResultMessage.MSG_ACCOUNT_CONFNEWPASSWD_NOT_NULL)
-	@Length(min = 6,max = 16,message = JsonResultMessage.MSG_ACCOUNT_PASSWD_LENGTH_LIMIT)
+	@Pattern(regexp = "^[^\\u4e00-\\u9fa5]{6,16}$",message = JsonResultMessage.MSG_ACCOUNT_PASSWD_LENGTH_LIMIT)
 	public String confNewPasswd;
 }
