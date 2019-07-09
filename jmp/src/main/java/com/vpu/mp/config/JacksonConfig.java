@@ -18,6 +18,11 @@ import java.io.IOException;
 import java.sql.Timestamp;
 import java.text.SimpleDateFormat;
 
+/**
+ *	
+ * @author 李晓冰
+ * @date 2019年7月9日
+ */
 @Configuration
 public class JacksonConfig {
 

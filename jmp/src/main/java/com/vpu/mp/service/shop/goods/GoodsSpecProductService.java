@@ -16,11 +16,15 @@ import static com.vpu.mp.db.shop.Tables.GOODS_SPEC_PRODUCT;
  */
 public class GoodsSpecProductService {
 
-    static final String PRD_DESC_DELIMITER=";";//规格名值描述分割符
-    static final String PRD_SPEC_DELIMITER="!!";//规格名值id分隔符
-    static final String PRD_VAL_DELIMITER=":";//规格名和值分隔符
-
-    static final String PRD_SPEC_ID_KEY=GoodsSpecService.PRD_SPEC_ID_KEY;//规格名值处理后map内id值的key名称
+	//规格名值描述分割符
+    static final String PRD_DESC_DELIMITER=";";
+  //规格名值id分隔符
+    static final String PRD_SPEC_DELIMITER="!!";
+  //规格名和值分隔符
+    static final String PRD_VAL_DELIMITER=":";
+    
+  //规格名值处理后map内id值的key名称
+    static final String PRD_SPEC_ID_KEY=GoodsSpecService.PRD_SPEC_ID_KEY;
 
     /**
      *  插入商品sku之前预处理器prdDesc字段
@@ -45,8 +49,9 @@ public class GoodsSpecProductService {
 
                 for (String prdDesc : prdDescs.split(PRD_DESC_DELIMITER)) {
                     String[] s = prdDesc.split(PRD_VAL_DELIMITER);
-
-                    if (s == null || s.length < 2) {//安全检查，防止出现空指针，主要针对他人恶意接口调用。
+                    
+                  //安全检查，防止出现空指针，主要针对他人恶意接口调用。
+                    if (s == null || s.length < 2) {
                         continue;
                     }
                     String spec = s[0], specVal = s[1];

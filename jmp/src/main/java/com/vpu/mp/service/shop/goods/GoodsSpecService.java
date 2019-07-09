@@ -19,7 +19,8 @@ import static com.vpu.mp.db.shop.Tables.SPEC_VALS;
  */
 public class GoodsSpecService {
 
-    static final String PRD_SPEC_ID_KEY="specId";//规格名值处理后map内id值的key名称
+	//规格名值处理后map内id值的key名称
+    static final String PRD_SPEC_ID_KEY="specId";
 
     /**
      * 	此服务目前只由goodsService使用，所以没有被ServiceContainer管理
@@ -65,10 +66,10 @@ public class GoodsSpecService {
      */
     private   Map<String, Map<String,Integer>> prepareResultMap(List<GoodsSpec> goodsSpecs){
         // 产生 规格属性预处理数据
-        Map<String, Map<String,Integer>> goodsSpecsMap = new HashMap<>();
+        Map<String, Map<String,Integer>> goodsSpecsMap = new HashMap<>(goodsSpecs.size());
         for (GoodsSpec goodsSpec : goodsSpecs) {
 
-            Map<String,Integer> goodsSpecsValMap = new HashMap<>();
+            Map<String,Integer> goodsSpecsValMap = new HashMap<>(goodsSpec.getGoodsSpecVals().size());
             goodsSpecsValMap.put(PRD_SPEC_ID_KEY, goodsSpec.getSpecId());
 
             for (GoodsSpecVal goodsSpecVal : goodsSpec.getGoodsSpecVals()) {

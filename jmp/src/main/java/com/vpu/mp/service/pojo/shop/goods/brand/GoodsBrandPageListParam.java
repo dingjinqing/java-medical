@@ -12,9 +12,18 @@ import java.sql.Timestamp;
  */
 @Data
 public class GoodsBrandPageListParam {
-    public static final int CLASSIFY_ID_DEFAULT_VALUE = 0;// 品牌所附分类默认值
-    public static final int IS_RECOMMEND_DEFAULT_VALUE = 0;// 是否推荐默认值
-    public static final int IS_DELETE_DEFAULT_VALUE = 0;// 是否删除默认值0 未删除，1已删除
+	/**
+	 * 品牌所附分类默认值
+	 */
+    public static final int CLASSIFY_ID_DEFAULT_VALUE = 0;
+    /**
+     *是否推荐默认值
+     */
+    public static final int IS_RECOMMEND_DEFAULT_VALUE = 0;
+    /**
+     * 是否删除默认值0 未删除，1已删除
+     */
+    public static final int IS_DELETE_DEFAULT_VALUE = 0;
     /**
      * 	搜索条件
      */
