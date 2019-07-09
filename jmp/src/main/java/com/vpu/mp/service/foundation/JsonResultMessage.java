@@ -83,4 +83,9 @@ public class JsonResultMessage {
 	 * 基础配置
 	 */
 	final public static String CONFIG_PLEDGE_EXCEED = "config.pledge.numbers.exceed";
+    final public static String CONFIG_PLEDGE_NAME_NULL = "config.pledge.name.null";
+    final public static String CONFIG_PLEDGE_NAME_LENGTH = "config.pledge.name.length";
+    final public static String CONFIG_PLEDGE_CONTENT_NULL = "config.pledge.content.null";
+    final public static String CONFIG_PLEDGE_CONTENT_LENGTH = "config.pledge.content.length";
+    final public static String CONFIG_PLEDGE_LOGO_NULL = "config.pledge.logo.null";
 }
