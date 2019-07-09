@@ -3858,5 +3858,5 @@ CREATE TABLE `b2c_pledge` (
   `state` tinyint(1) NOT NULL DEFAULT '0' COMMENT '开启状态1:开启，0:关闭',
   `del_flag` tinyint(1) NOT NULL DEFAULT '0' COMMENT '删除标识：0未删除，1已删除',
   PRIMARY KEY (`id`)
-)
+);
 commit;
