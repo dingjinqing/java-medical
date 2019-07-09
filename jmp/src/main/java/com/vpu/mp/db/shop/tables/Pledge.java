@@ -90,12 +90,12 @@ public class Pledge extends TableImpl<PledgeRecord> {
     /**
      * The column <code>mini_shop12.b2c_pledge.state</code>. 开启状态1:开启，0:关闭
      */
-    public final TableField<PledgeRecord, Byte> STATE = createField("state", org.jooq.impl.SQLDataType.TINYINT.nullable(false).defaultValue(org.jooq.impl.DSL.inline("1", org.jooq.impl.SQLDataType.TINYINT)), this, "开启状态1:开启，0:关闭");
+    public final TableField<PledgeRecord, Byte> STATE = createField("state", org.jooq.impl.SQLDataType.TINYINT.nullable(false).defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.TINYINT)), this, "开启状态1:开启，0:关闭");
 
     /**
      * The column <code>mini_shop12.b2c_pledge.del_flag</code>. 删除标识：0未删除，1已删除
      */
-    public final TableField<PledgeRecord, Byte> DEL_FLAG = createField("del_flag", org.jooq.impl.SQLDataType.TINYINT.defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.TINYINT)), this, "删除标识：0未删除，1已删除");
+    public final TableField<PledgeRecord, Byte> DEL_FLAG = createField("del_flag", org.jooq.impl.SQLDataType.TINYINT.nullable(false).defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.TINYINT)), this, "删除标识：0未删除，1已删除");
 
     /**
      * Create a <code>mini_shop12.b2c_pledge</code> table reference

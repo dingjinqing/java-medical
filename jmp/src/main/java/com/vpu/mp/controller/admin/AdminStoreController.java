@@ -16,10 +16,11 @@ import com.vpu.mp.service.pojo.shop.store.store.StorePageListOutput;
 import com.vpu.mp.service.pojo.shop.store.store.StorePojo;
 
 /**
- * 
- * @author luguangyao
+ * 门店管理
+ * @author: 卢光耀
+ * @date: 2019-07-09 15:06
  *
- */
+*/
 @RestController
 public class AdminStoreController extends AdminBaseController{
     /**
