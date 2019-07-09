@@ -1,4 +1,4 @@
-package com.vpu.mp.service.shop.goods;
+package com.vpu.mp.service.shop.config;
 
 import com.vpu.mp.service.pojo.shop.goods.comment.GoodsCommentConfig;
 import com.vpu.mp.service.shop.config.BaseShopConfigService;
@@ -14,8 +14,8 @@ public class CommentConfigService extends BaseShopConfigService{
      * @param goodsCommentConfig
      * @return 
      */
-	public int setCheckConfig(GoodsCommentConfig goodsCommentConfig) {
-		return this.set(K_COMMENT,goodsCommentConfig.getV());
+	public int setCheckConfig(String value) {
+		return this.set(K_COMMENT,value);
 	}
 	
 	/**
@@ -24,7 +24,7 @@ public class CommentConfigService extends BaseShopConfigService{
      * @param goodsCommentConfig
      * @return 
      */
-	public int setSwitchConfig(GoodsCommentConfig goodsCommentConfig) {
-		return this.set(K_COMMENT_STATE,goodsCommentConfig.getV());
+	public int setSwitchConfig(String value) {
+		return this.set(K_COMMENT_STATE,value);
 	}
 }

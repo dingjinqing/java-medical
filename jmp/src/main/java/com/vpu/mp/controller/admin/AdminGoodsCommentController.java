@@ -116,7 +116,7 @@ public class AdminGoodsCommentController extends AdminBaseController {
 	@PostMapping("api/admin/goods/comment/checkconfig")
 	public JsonResult checkConfig(@RequestBody GoodsCommentConfig goodsCommentConfig) {
 		
-			shop().goods.commentConfig.setCheckConfig(goodsCommentConfig);
+			shop().config.commentConfigService.setCheckConfig(goodsCommentConfig.getV());
 
 		return success();
 	}
@@ -131,7 +131,7 @@ public class AdminGoodsCommentController extends AdminBaseController {
 	@PostMapping("api/admin/goods/comment/switchconfig")
 	public JsonResult switchConfig(@RequestBody GoodsCommentConfig goodsCommentConfig) {
 		
-			shop().goods.commentConfig.setSwitchConfig(goodsCommentConfig);
+			shop().config.commentConfigService.setSwitchConfig(goodsCommentConfig.getV());
 
 		return success();
 	}

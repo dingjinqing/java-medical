@@ -11,4 +11,5 @@ public class ConfigService extends BaseService {
 	public BottomNavigatorConfigService bottomCfg;
 	public SearchConfigService searchCfg;
 	public ShopStyleConfigService shopStyleCfg;
+	public CommentConfigService commentConfigService;
 }
