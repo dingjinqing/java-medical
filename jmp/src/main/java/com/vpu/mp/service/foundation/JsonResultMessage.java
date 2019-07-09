@@ -34,6 +34,8 @@ public class JsonResultMessage {
 	final public static String MSG_ACCOUNT_NEWPASSWD_NOT_NULL="account.newpasswd.notNull";
 	final public static String MSG_ACCOUNT_CONFNEWPASSWD_NOT_NULL="account.confnewpasswd.notNull";
 	final public static String MSG_ACCOUNT_PASSWD_LENGTH_LIMIT="account.passwd.length.limit";
+	final public static String MSG_ACCOUNT_USERNAME_NOT_NULL="account.username.not.null";
+	final public static String MSG_ACCOUNT_SHOPID_NOT_NULL="account.shopId.not.null";
 
 	// 图片
 	
