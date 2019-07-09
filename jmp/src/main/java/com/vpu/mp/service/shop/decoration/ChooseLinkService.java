@@ -1,6 +1,15 @@
 package com.vpu.mp.service.shop.decoration;
 
+import static com.vpu.mp.db.shop.Tables.STORE;
+
+import org.jooq.Record3;
+import org.jooq.SelectJoinStep;
+
 import com.vpu.mp.service.foundation.BaseService;
+import com.vpu.mp.service.foundation.PageResult;
+import com.vpu.mp.service.pojo.shop.decoration.StoreParam;
+import com.vpu.mp.service.pojo.shop.decoration.XcxCustomerPagePojo;
+import com.vpu.mp.service.pojo.shop.store.store.StoreListQueryParam;
 
 /**
  * 
@@ -19,9 +28,16 @@ public class ChooseLinkService extends BaseService {
 		return false;
 	}
 	
-//	自定义页面
-	public Boolean customLink() {
-		return false;
+	/**
+	 * 自定义页面
+	 * @param page
+	 * @return
+	 */
+	public PageResult<XcxCustomerPagePojo> customPage(Integer page) {
+		XcxCustomerPagePojo xcx = new XcxCustomerPagePojo();
+		xcx.setPageId(page);
+		PageResult<XcxCustomerPagePojo> list = saas().getShopApp(shopId).mpDecoration.getPageList(xcx);
+		return list;
 	}
 	
 //	营销活动
@@ -49,8 +65,17 @@ public class ChooseLinkService extends BaseService {
 		return false;
 	}
 	
-//	门店
-	public Boolean store() {
-		return false;
+	/**
+	 * 门店
+	 * @param page
+	 * @return
+	 */
+	public PageResult<StoreParam> store(StoreListQueryParam param) {
+		SelectJoinStep<Record3<String,Byte,Integer>> select = db()
+				.select(STORE.STORE_NAME,STORE.BUSINESS_STATE,STORE.STORE_ID)
+				.from(STORE);
+		select.orderBy(STORE.STORE_ID.desc());
+		PageResult<StoreParam> pageResult = this.getPageResult(select, param.getCurrentPage(), param.getPageRows(), StoreParam.class);
+		return pageResult;
 	}
 }

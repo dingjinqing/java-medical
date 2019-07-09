@@ -1,8 +1,11 @@
 package com.vpu.mp.controller.admin;
 
+import java.io.IOException;
+
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -10,17 +13,15 @@ import com.vpu.mp.service.foundation.JsonResultCode;
 import com.vpu.mp.service.shop.config.BaseShopConfigService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
-
 import com.vpu.mp.db.shop.tables.records.XcxCustomerPageRecord;
 import com.vpu.mp.service.foundation.JsonResult;
+import com.vpu.mp.service.foundation.JsonResultCode;
 import com.vpu.mp.service.foundation.PageResult;
 import com.vpu.mp.service.pojo.shop.config.BottomNavigatorConfig;
 import com.vpu.mp.service.pojo.shop.config.SearchConfig;
 import com.vpu.mp.service.pojo.shop.config.ShopStyleConfig;
 import com.vpu.mp.service.pojo.shop.decoration.PageListQueryParam;
 import com.vpu.mp.service.pojo.shop.decoration.XcxCustomerPagePojo;
-
-import java.io.IOException;
 import java.util.List;
 
 /**
@@ -41,7 +42,7 @@ public class AdminShopDecorateController extends AdminBaseController {
 	 * @param  param
 	 * @return
 	 */
-	@PostMapping(value = "/admin/shopDecorate/list")
+	@PostMapping(value = "/admin/decorate/list")
 	public JsonResult list(XcxCustomerPagePojo param) {
 		PageResult<XcxCustomerPagePojo> list = shop().mpDecoration.getPageList(param);
 		return success(list);
@@ -53,7 +54,7 @@ public class AdminShopDecorateController extends AdminBaseController {
 	 * @param  pageId
 	 * @return
 	 */
-	@PostMapping(value = "/admin/shopDecorate/detail")
+	@PostMapping(value = "/admin/decorate/detail")
 	public JsonResult pageDetail(Integer pageId) {
 		XcxCustomerPageRecord detail = shop().mpDecoration.getPageById(pageId);
 		return success(detail.intoMap());
@@ -65,7 +66,7 @@ public class AdminShopDecorateController extends AdminBaseController {
 	 * @param  pageId
 	 * @return
 	 */
-	@PostMapping(value = "/admin/shopDecorate/setIndex")
+	@PostMapping(value = "/admin/decorate/index/set")
 	public JsonResult setIndex(Integer pageId) {
 		boolean res = shop().mpDecoration.setIndex(pageId);
 		return success(res);
@@ -77,7 +78,7 @@ public class AdminShopDecorateController extends AdminBaseController {
 	 * @param  param
 	 * @return
 	 */
-	@PostMapping(value = "/admin/shopDecorate/copyDecoration")
+	@PostMapping(value = "/admin/decorate/copy")
 	public JsonResult copyDecoration(@RequestBody XcxCustomerPagePojo param) {
 		Boolean res = shop().mpDecoration.copyDecoration(param.getPageId());
 		return success();
@@ -89,7 +90,7 @@ public class AdminShopDecorateController extends AdminBaseController {
 	 * @param  param
 	 * @return
 	 */
-	@PostMapping(value = "/admin/shopDecorate/saveDecoration")
+	@PostMapping(value = "/admin/decorate/save")
 	public JsonResult saveDecoration(@RequestBody XcxCustomerPagePojo param) {
 		System.out.println(param);
 		boolean res = shop().mpDecoration.saveDecoration(param);
@@ -148,11 +149,4 @@ public class AdminShopDecorateController extends AdminBaseController {
 		shop().config.bottomCfg.setBottomNavigatorConfig(bottomNavConfg);
 		return success();
 	}
-	
-//	/**
-//	 * 选择链接
-//	 */
-//	public chooseLink() {
-//		
-//	}
 }
