@@ -6,21 +6,27 @@ import static com.vpu.mp.db.shop.Tables.LOTTERY_RECORD;
 import static com.vpu.mp.db.shop.Tables.ORDER_GOODS;
 import static com.vpu.mp.db.shop.Tables.SHOP_CFG;
 import static com.vpu.mp.db.shop.Tables.USER;
+import static com.vpu.mp.db.shop.Tables.GOODS;
+import static com.vpu.mp.db.shop.Tables.SORT;
+import static com.vpu.mp.db.shop.Tables.GOODS_SUMMARY;
 import static org.jooq.impl.DSL.field;
 
+import java.math.BigDecimal;
 import java.sql.Timestamp;
 
+import org.jooq.Record10;
 import org.jooq.Record12;
 import org.jooq.Record13;
+import org.jooq.Record9;
 import org.jooq.SelectConditionStep;
 import org.jooq.tools.StringUtils;
 
 import com.vpu.mp.service.foundation.BaseService;
 import com.vpu.mp.service.foundation.PageResult;
 import com.vpu.mp.service.pojo.shop.goods.comment.GoodsComment;
+import com.vpu.mp.service.pojo.shop.goods.comment.GoodsCommentAdd;
 import com.vpu.mp.service.pojo.shop.goods.comment.GoodsCommentAnswer;
 import com.vpu.mp.service.pojo.shop.goods.comment.GoodsCommentCheck;
-import com.vpu.mp.service.pojo.shop.goods.comment.GoodsCommentCheckPageListParam;
 import com.vpu.mp.service.pojo.shop.goods.comment.GoodsCommentPageListParam;
 import com.vpu.mp.service.pojo.shop.goods.comment.GoodsCommentConfig;
 
@@ -95,7 +101,7 @@ public class GoodsCommentService extends BaseService {
      * @param param
      * @return
      */
-    public PageResult<GoodsCommentCheck> getCheckPageList(GoodsCommentCheckPageListParam param) {
+    public PageResult<GoodsCommentCheck> getCheckPageList(GoodsCommentPageListParam param) {
     	SelectConditionStep<Record13<Integer,String, String,  String,  String ,String,Byte, String,String, String,Timestamp,Byte,Byte>> selectFrom = db()
         		.select(COMMENT_GOODS.ID,
         		COMMENT_GOODS.ORDER_SN,ORDER_GOODS.GOODS_IMG,ORDER_GOODS.GOODS_NAME,USER.USERNAME,USER.MOBILE,
@@ -123,9 +129,9 @@ public class GoodsCommentService extends BaseService {
      * @param param
      * @return
      */
-    private SelectConditionStep<?> buildCheckOptions(SelectConditionStep<Record13<Integer,String, String,  String,  String ,String,Byte, String,String, String,Timestamp,Byte,Byte>> selectFrom, GoodsCommentCheckPageListParam param) {
+    private SelectConditionStep<?> buildCheckOptions(SelectConditionStep<Record13<Integer,String, String,  String,  String ,String,Byte, String,String, String,Timestamp,Byte,Byte>> selectFrom, GoodsCommentPageListParam param) {
         SelectConditionStep<?> scs = selectFrom
-                .and(COMMENT_GOODS.DEL_FLAG.eq((byte) GoodsCommentCheckPageListParam.IS_DELETE_DEFAULT_VALUE));
+                .and(COMMENT_GOODS.DEL_FLAG.eq((byte) GoodsCommentPageListParam.IS_DELETE_DEFAULT_VALUE));
 
         if (!StringUtils.isBlank(param.getOrderSn())) {
             scs = scs.and(COMMENT_GOODS.ORDER_SN.like(this.likeValue(param.getOrderSn())));
@@ -139,11 +145,11 @@ public class GoodsCommentService extends BaseService {
             scs = scs.and(USER.MOBILE.like(this.likeValue(param.getMobile())));
         }
 
-        if (param.getCommstar() != GoodsCommentCheckPageListParam.COMMSTAR_DEFAULT_VALUE) {
+        if (param.getCommstar() != GoodsCommentPageListParam.COMMSTAR_DEFAULT_VALUE) {
             scs = scs.and(field("commstar").eq(param.getCommstar()));
         }
         
-        if (param.getFlag() != GoodsCommentCheckPageListParam.FLAG_DEFAULT_VALUE) {
+        if (param.getFlag() != GoodsCommentPageListParam.FLAG_DEFAULT_VALUE) {
             scs = scs.and(field("flag").eq(param.getFlag()));
         }
 
@@ -184,15 +190,59 @@ public class GoodsCommentService extends BaseService {
      * @return
      */
     public int passflag(GoodsComment goodsComment) {
-        return db().update(COMMENT_GOODS).set(COMMENT_GOODS.FLAG,(byte)GoodsCommentCheckPageListParam.FLAG_PASS_VALUE)
+        return db().update(COMMENT_GOODS).set(COMMENT_GOODS.FLAG,(byte)GoodsCommentPageListParam.FLAG_PASS_VALUE)
                 .where(COMMENT_GOODS.ID.eq(goodsComment.getId()))
                 .execute();
     }
     
     public int refuseflag(GoodsComment goodsComment) {
-        return db().update(COMMENT_GOODS).set(COMMENT_GOODS.FLAG,(byte)GoodsCommentCheckPageListParam.FLAG_REFUSE_VALUE)
+        return db().update(COMMENT_GOODS).set(COMMENT_GOODS.FLAG,(byte)GoodsCommentPageListParam.FLAG_REFUSE_VALUE)
                 .where(COMMENT_GOODS.ID.eq(goodsComment.getId()))
                 .execute();
     }
+    
+    /**
+     * 分页查询添加评论列表
+     *
+     * @param goodsCommentAdd
+     * @return
+     */
+    public PageResult<GoodsCommentAdd> getAddList(GoodsCommentPageListParam param) {
+		
+    	SelectConditionStep<Record10<Integer, String, String, String,String,  BigDecimal, Integer, Integer, Integer, Integer>> selectFrom = db()
+    			.select(GOODS.GOODS_ID, GOODS.GOODS_IMG, GOODS.GOODS_NAME, GOODS.GOODS_SN,SORT.SORT_NAME, GOODS.SHOP_PRICE, 
+    					GOODS.GOODS_NUMBER, GOODS.GOODS_SALE_NUM, GOODS_SUMMARY.UV, GOODS_SUMMARY.PV)
+    			.from(GOODS,SORT,GOODS_SUMMARY)
+    			.where(GOODS.SORT_ID.eq(SORT.SORT_ID))
+    			.and(GOODS.GOODS_ID.eq(GOODS_SUMMARY.GOODS_ID));
 
+        SelectConditionStep<?> select = this.buildAddOptions(selectFrom, param);
+
+        PageResult<GoodsCommentAdd> pageResult = this.getPageResult(select, param.getCurrentPage(), param.getPageRows(), GoodsCommentAdd.class);
+
+    	return pageResult;
+	}
+    
+    /**
+     * 根据过滤条件构造对应的sql语句
+     *
+     * @param selectFrom
+     * @param param
+     * @return
+     */
+    private SelectConditionStep<?> buildAddOptions(SelectConditionStep<Record10<Integer, String,String, String, String,  BigDecimal, Integer, Integer, Integer, Integer>> selectFrom, GoodsCommentPageListParam param) {
+        SelectConditionStep<?> scs = selectFrom
+                .and(GOODS.DEL_FLAG.eq((byte) GoodsCommentPageListParam.IS_DELETE_DEFAULT_VALUE));
+
+        if (!StringUtils.isBlank(param.getGoodsName())) {
+            scs = scs.and(GOODS.GOODS_NAME.like(this.likeValue(param.getGoodsName())));
+        }
+        
+        if (param.getSortName() != GoodsCommentPageListParam.SORTNAME_DEFAULT_VALUE) {
+            scs = scs.and(field("sort_name").eq(param.getSortName()));
+        }
+        
+        return scs;
+    }
+    
 }

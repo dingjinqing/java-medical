@@ -8,9 +8,9 @@ import com.vpu.mp.service.foundation.JsonResult;
 import com.vpu.mp.service.foundation.JsonResultCode;
 import com.vpu.mp.service.foundation.PageResult;
 import com.vpu.mp.service.pojo.shop.goods.comment.GoodsComment;
+import com.vpu.mp.service.pojo.shop.goods.comment.GoodsCommentAdd;
 import com.vpu.mp.service.pojo.shop.goods.comment.GoodsCommentAnswer;
 import com.vpu.mp.service.pojo.shop.goods.comment.GoodsCommentCheck;
-import com.vpu.mp.service.pojo.shop.goods.comment.GoodsCommentCheckPageListParam;
 import com.vpu.mp.service.pojo.shop.goods.comment.GoodsCommentPageListParam;
 import com.vpu.mp.service.pojo.shop.goods.comment.GoodsCommentConfig;
 import com.vpu.mp.service.shop.ShopApplication;
@@ -46,7 +46,7 @@ public class AdminGoodsCommentController extends AdminBaseController {
 	 * @return
 	 */
 	@PostMapping("/api/admin/goods/comment/checklist")
-	public JsonResult getPageList(@RequestBody GoodsCommentCheckPageListParam param) {
+	public JsonResult getCheckPageList(@RequestBody GoodsCommentPageListParam param) {
 
 		PageResult<GoodsCommentCheck> pageResult = shop().goods.goodsComment.getCheckPageList(param);
 
@@ -134,6 +134,19 @@ public class AdminGoodsCommentController extends AdminBaseController {
 			shop().config.commentConfigService.setSwitchConfig(goodsCommentConfig.getV());
 
 		return success();
+	}
+	/**
+	 * 添加评论分页查询
+	 *
+	 * @param param
+	 * @return
+	 */
+	@PostMapping("/api/admin/goods/comment/addlist")
+	public JsonResult getAddPageList(@RequestBody GoodsCommentPageListParam param) {
+
+		PageResult<GoodsCommentAdd> pageResult = shop().goods.goodsComment.getAddList(param);
+
+		return success(pageResult);
 	}
 	
 }
