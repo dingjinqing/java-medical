@@ -77,4 +77,9 @@ public class JsonResultMessage {
 	 * 	门店管理
 	 */
 	final public static String STORE_GROUP_NAME_EXIST="store.group.name.exist";
+
+	/**
+	 * 基础配置
+	 */
+	final public static String CONFIG_PLEDGE_EXCEED = "config.pledge.numbers.exceed";
 }
