@@ -74,7 +74,7 @@ public class AdminShopDecorateController extends AdminBaseController {
 	/**
 	 * 复制页面
 	 * 
-	 * @param  PageId
+	 * @param  param
 	 * @return
 	 */
 	@PostMapping(value = "/admin/shopDecorate/copyDecoration")

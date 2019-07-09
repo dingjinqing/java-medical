@@ -266,7 +266,7 @@ public class MpDecorationService extends BaseService {
 	public Boolean copyDecoration(Integer pageId) {
 		XcxCustomerPageRecord source = this.getPageById(pageId);
 		XcxCustomerPageRecord page = db().newRecord(XCX_CUSTOMER_PAGE);
-		page.setPageName(source.getPageName() + "+副本");
+		page.setPageName(source.getPageName() + "+copy");
 		page.setPageContent(source.getPageContent());
 		page.setShopId(source.getShopId());
 		page.setPageType(source.getPageType());

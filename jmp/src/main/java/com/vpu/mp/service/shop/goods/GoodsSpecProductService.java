@@ -34,7 +34,7 @@ public class GoodsSpecProductService {
             goodsSpecProduct.setGoodsId(goodsId);
 
             if (goodsSpecProduct.getPrdSn() == null) {
-                goodsSpecProduct.setPrdSn(Util.UUID());
+                goodsSpecProduct.setPrdSn(Util.randomId());
             }
 
             String prdDescs = goodsSpecProduct.getPrdDesc();
@@ -85,7 +85,7 @@ public class GoodsSpecProductService {
      */
     private void insert(DSLContext db, GoodsSpecProduct goodsSpecProduct){
         if (goodsSpecProduct.getPrdSn() == null) {
-            goodsSpecProduct.setPrdSn(Util.UUID());
+            goodsSpecProduct.setPrdSn(Util.randomId());
         }
 
         GoodsSpecProductRecord goodsSpecProductRecord = db.newRecord(GOODS_SPEC_PRODUCT, goodsSpecProduct);

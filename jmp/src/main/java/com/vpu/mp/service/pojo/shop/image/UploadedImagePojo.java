@@ -6,8 +6,15 @@ package com.vpu.mp.service.pojo.shop.image;
 import java.sql.Timestamp;
 
 import lombok.Data;
+import lombok.ToString;
 
+/**
+ * 
+ * @author 新国
+ *
+ */
 @Data
+@ToString
 public class UploadedImagePojo {
     private Integer   imgId;
     private String    imgType;

@@ -5,6 +5,11 @@ import java.util.List;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 
+/**
+ * 
+ * @author 新国
+ *
+ */
 public class SearchConfig {
 	
 	/**

@@ -35,7 +35,9 @@ import com.vpu.mp.MpRunListener;
  *
  */
 public class Util {
-
+	
+	final protected static String UNDEER_LINE = "_";
+	
 	public static String toJSON(Object o) {
 		ObjectMapper mapper = new ObjectMapper();
 		try {
@@ -297,7 +299,7 @@ public class Util {
 		source.setBasename("static/i18n/messages");
 		source.setDefaultEncoding("UTF-8");
 		MessageSourceAccessor accessor = new MessageSourceAccessor(source);
-		String[] languages = language.split("_");
+		String[] languages = language.split(UNDEER_LINE);
 		Locale locale = new Locale(languages[0], languages[1]);
 		return accessor.getMessage(message, defaultMessage, locale);
 	}
@@ -312,6 +314,8 @@ public class Util {
 		return translateMessage( language, message, message);
 	}
 	
+	
+	
 	/***
 	 * 下划线命名转为驼峰命名
 	 * 
@@ -320,9 +324,9 @@ public class Util {
 	 */
 	public static String underlineToHump(String para){
 		StringBuilder result=new StringBuilder();
-		String a[]=para.split("_");
+		String[] a=para.split(UNDEER_LINE);
 		for(String s:a){
-			if (!para.contains("_")) {
+			if (!para.contains(UNDEER_LINE)) {
                 result.append(s);
                 continue;
             }
@@ -345,10 +349,10 @@ public class Util {
 	public static String humpToUnderline(String para){
         StringBuilder sb=new StringBuilder(para);
         int temp=0;
-        if (!para.contains("_")) {
+        if (!para.contains(UNDEER_LINE)) {
             for(int i=0;i<para.length();i++){
                 if(Character.isUpperCase(para.charAt(i))){
-                    sb.insert(i+temp, "_");
+                    sb.insert(i+temp, UNDEER_LINE);
                     temp+=1;
                 }
             }
@@ -360,7 +364,7 @@ public class Util {
      * 产生uuid
      * @return
      */
-    public static String UUID(){
+    public static String randomId(){
 	    UUID uuid=UUID.randomUUID();
 	    return uuid.toString();
     }

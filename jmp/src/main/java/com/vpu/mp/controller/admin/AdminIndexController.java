@@ -36,7 +36,8 @@ public class AdminIndexController extends AdminBaseController {
 	@ResponseBody
 	public String test() throws InterruptedException {
 		System.out.println("test------------------: ");
-		for (int i = 0; i < 100; i++) {
+		int max = 100;
+		for (int i = 0; i < max; i++) {
 			MyThread t = new MyThread();
 			t.start();
 		}
