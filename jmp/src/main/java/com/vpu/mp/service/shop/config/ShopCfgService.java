@@ -268,8 +268,8 @@ public class ShopCfgService extends BaseService{
 	final public static  String K_SHOP_STYLE="shop_style";
 	
 	/**
-	 * 分享配置
-	 * TODO 格式解析待完善
+	   * 搜索配置
+	 * {"title_action":"2","title_custom":"","is_open_history":"1","is_open_hot_words":"1","hot_words":["瓜子花生八宝粥","啤酒饮料矿泉水"]}
 	 */
 	final public static String K_SEARCH_CONFIG="search_config";
 	
