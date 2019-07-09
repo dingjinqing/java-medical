@@ -4,6 +4,7 @@ import com.vpu.mp.service.foundation.ServiceContainer;
 import com.vpu.mp.service.shop.config.ConfigService;
 import com.vpu.mp.service.shop.config.TradeService;
 import com.vpu.mp.service.shop.decoration.ChooseLinkService;
+import com.vpu.mp.service.shop.config.ShopBasicConfigService;
 import com.vpu.mp.service.shop.decoration.MpDecorationService;
 import com.vpu.mp.service.shop.decoration.PageClassificationService;
 import com.vpu.mp.service.shop.goods.GoodsRecommendService;
@@ -33,6 +34,7 @@ public class ShopApplication extends ServiceContainer {
 	public ChooseLinkService chooselink;
 	public TradeService trade;
 	public GoodsRecommendService goodsRecommend;
+	public ShopBasicConfigService shopBasicConfig;
 
 	public ShopApplication(Integer shopId) {
 		this.shopId = shopId;
