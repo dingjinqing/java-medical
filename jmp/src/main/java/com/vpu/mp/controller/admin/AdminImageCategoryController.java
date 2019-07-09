@@ -3,10 +3,7 @@ package com.vpu.mp.controller.admin;
 
 import com.vpu.mp.service.foundation.JsonResult;
 import com.vpu.mp.service.pojo.shop.image.UploadedImageCategoryParam;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 /**
  * 图片分组列表
@@ -75,7 +72,7 @@ public class AdminImageCategoryController extends AdminShopController {
      *
      * @return
      */
-    @PostMapping("/admin/imageCategory/list")
+    @GetMapping("/admin/imageCategory/list")
     public JsonResult getImageCategoryList() {
         return success(shop().imageCatgory.getImageCategoryForZTree(0));
     }
