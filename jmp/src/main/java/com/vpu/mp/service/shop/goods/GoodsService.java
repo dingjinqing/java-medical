@@ -35,6 +35,7 @@ import com.vpu.mp.service.pojo.shop.goods.Goods;
 import com.vpu.mp.service.pojo.shop.goods.GoodsColumnCheckExistParam;
 import com.vpu.mp.service.pojo.shop.goods.GoodsPageListParam;
 import com.vpu.mp.service.pojo.shop.goods.GoodsPageListResp;
+import com.vpu.mp.service.pojo.shop.goods.GoodsView;
 import com.vpu.mp.service.pojo.shop.goods.label.GoodsLabelCouple;
 import com.vpu.mp.service.pojo.shop.goods.spec.GoodsSpecProduct;
 
@@ -359,6 +360,20 @@ public class GoodsService extends BaseService {
 		}
 
 		return scs;
+	}
+	
+	  /**
+     * @author 黄荣刚
+     * @param ids 商品ID列表
+     * @return
+     */
+    public List<GoodsView> selectGoodsViewList(List<Integer> ids){
+		if(ids == null || ids.isEmpty()) {
+			return new ArrayList<GoodsView>();
+		}
+		List<GoodsView> goodsViewList = db().select(GOODS.GOODS_ID, GOODS.GOODS_NAME, GOODS.GOODS_IMG, GOODS.GOODS_NUMBER, GOODS.SHOP_PRICE, GOODS.UNIT)
+			.from(GOODS).where(GOODS.GOODS_ID.in(ids)).fetchInto(GoodsView.class);
+		return goodsViewList;
 	}
 
 }
