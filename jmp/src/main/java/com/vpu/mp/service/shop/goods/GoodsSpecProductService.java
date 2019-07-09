@@ -1,7 +1,6 @@
 package com.vpu.mp.service.shop.goods;
 
 import com.vpu.mp.db.shop.tables.records.GoodsSpecProductRecord;
-import com.vpu.mp.service.foundation.BaseService;
 import com.vpu.mp.service.foundation.Util;
 import com.vpu.mp.service.pojo.shop.goods.spec.GoodsSpecProduct;
 import org.jooq.DSLContext;
@@ -23,15 +22,13 @@ public class GoodsSpecProductService {
 
     static final String PRD_SPEC_ID_KEY=GoodsSpecService.PRD_SPEC_ID_KEY;//规格名值处理后map内id值的key名称
 
-    protected void insert(DSLContext db, GoodsSpecProduct goodsSpecProduct){
-        if (goodsSpecProduct.getPrdSn() == null) {
-            goodsSpecProduct.setPrdSn(Util.UUID());
-        }
-
-        GoodsSpecProductRecord goodsSpecProductRecord = db.newRecord(GOODS_SPEC_PRODUCT, goodsSpecProduct);
-        goodsSpecProductRecord.insert();
-    }
-
+    /**
+     *  插入商品sku之前预处理器prdDesc字段
+     * @param db
+     * @param goodsSpecProducts
+     * @param goodsSpecsMap
+     * @param goodsId
+     */
     protected void insert(DSLContext db, List<GoodsSpecProduct> goodsSpecProducts, Map<String, Map<String, Integer>> goodsSpecsMap, Integer goodsId) {
         for (GoodsSpecProduct goodsSpecProduct : goodsSpecProducts) {
             goodsSpecProduct.setGoodsId(goodsId);
@@ -67,5 +64,31 @@ public class GoodsSpecProductService {
             GoodsSpecProductRecord goodsSpecProductRecord = db.newRecord(GOODS_SPEC_PRODUCT, goodsSpecProduct);
             goodsSpecProductRecord.insert();
         }
+    }
+
+    /**
+     *  插入单条
+     * @param db
+     * @param goodsSpecProducts
+     * @param goodsId
+     */
+    protected void insert(DSLContext db,GoodsSpecProduct goodsSpecProducts,Integer goodsId){
+        goodsSpecProducts.setGoodsId(goodsId);
+
+        insert(db,goodsSpecProducts);
+    }
+
+    /**
+     *  插入商品sku数据
+     * @param db
+     * @param goodsSpecProduct
+     */
+    private void insert(DSLContext db, GoodsSpecProduct goodsSpecProduct){
+        if (goodsSpecProduct.getPrdSn() == null) {
+            goodsSpecProduct.setPrdSn(Util.UUID());
+        }
+
+        GoodsSpecProductRecord goodsSpecProductRecord = db.newRecord(GOODS_SPEC_PRODUCT, goodsSpecProduct);
+        goodsSpecProductRecord.insert();
     }
 }

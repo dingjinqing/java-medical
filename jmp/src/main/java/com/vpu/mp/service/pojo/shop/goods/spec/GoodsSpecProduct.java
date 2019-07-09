@@ -30,7 +30,4 @@ public class GoodsSpecProduct {
 	private BigDecimal lowShopPrice;
 	private String prdImg;
 
-
-	private Timestamp createTime;
-	private Timestamp updateTime;
 }

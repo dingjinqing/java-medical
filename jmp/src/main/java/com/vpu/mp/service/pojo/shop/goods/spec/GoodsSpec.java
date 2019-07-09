@@ -15,8 +15,6 @@ public class GoodsSpec {
     private Integer specId;
     private String specName;
     private Integer goodsId;
-    private Timestamp createTime;
-    private Timestamp updateTime;
 
     private List<GoodsSpecVal> goodsSpecVals;
 }

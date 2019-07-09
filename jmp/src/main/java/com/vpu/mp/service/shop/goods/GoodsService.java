@@ -34,9 +34,9 @@ public class GoodsService extends BaseService {
     private GoodsSpecService goodsSpecService = new GoodsSpecService();
 
     /**
-     * 先插入商品，从而得到商品的id，
-     * 然后插入商品规格的属性和规格值，从而得到规格属性和规格值的id,
-     * 最后拼凑出prdSpecs再插入具体的商品规格
+     * 	先插入商品，从而得到商品的id，
+     * 	然后插入商品规格的属性和规格值，从而得到规格属性和规格值的id,
+     *	 最后拼凑出prdSpecs再插入具体的商品规格
      *
      * @param goods
      */
@@ -45,38 +45,22 @@ public class GoodsService extends BaseService {
             DSLContext db = DSL.using(configuration);
             insert(db, goods);
 
-            if (goods.getGoodsSpecProducts() == null || goods.getGoodsSpecProducts().size() == 0) {
-                GoodsSpecProduct goodsSpecProduct = createGoodsSpecProduct(goods);
-                goodsSpecProductService.insert(db, goodsSpecProduct);
-            } else {
+            //用户使用默认的规格数据，则sku只有一条，对应的规格列表为空
+            if (goods.getGoodsSpecs()==null||goods.getGoodsSpecs().size()==0){
+                goodsSpecProductService.insert(db,goods.getGoodsSpecProducts().get(0), goods.getGoodsId());
+
+            }else{//如果存在规格列表字段，则表明用户自己定义了具体的规格
                 Map<String, Map<String, Integer>> goodsSpecMap = goodsSpecService
                         .insertSpecAndSpecValWithPrepareResult(db, goods.getGoodsSpecs(), goods.getGoodsId());
 
                 goodsSpecProductService.insert(db, goods.getGoodsSpecProducts(), goodsSpecMap, goods.getGoodsId());
             }
+
         });
     }
 
-    private GoodsSpecProduct createGoodsSpecProduct(Goods goods) {
-        GoodsSpecProduct goodsSpecProduct = new GoodsSpecProduct();
-
-        if (goods.getPrdSn() == null) {
-            goodsSpecProduct.setPrdSn(Util.UUID());
-        } else {
-            goodsSpecProduct.setPrdSn(goods.getPrdSn());
-        }
-
-        goodsSpecProduct.setGoodsId(goods.getGoodsId());
-        goodsSpecProduct.setPrdPrice(goods.getShopPrice());
-        goodsSpecProduct.setPrdMarketPrice(goods.getMarketPrice());
-        goodsSpecProduct.setPrdCostPrice(goods.getCostPrice());
-        goodsSpecProduct.setPrdNumber(goods.getGoodsNumber());
-
-        return goodsSpecProduct;
-    }
-
     /**
-     * 插入数据并设置对应入参的id值
+     * 	插入数据并设置对应入参的id值
      *
      * @param db
      * @param goods
@@ -97,8 +81,8 @@ public class GoodsService extends BaseService {
     }
 
     /**
-     * 预处理通过规格信息计算出商品的库存，最小商品价格信息,
-     * 并将结果注入到传入的引用对象。
+     * 	预处理通过规格信息计算出商品的库存，最小商品价格信息,
+     * 	并将结果注入到传入的引用对象。
      *
      * @param goods
      */
@@ -129,7 +113,6 @@ public class GoodsService extends BaseService {
                 scs = buildGoodsSpecPrdColumnExistOption(selectFrom.from(GOODS_SPEC_PRODUCT), goodsColumnExistParam);
                 break;
             default:
-                E_GOODS:
                 scs = buildGoodsColumnExistOption(selectFrom.from(GOODS), goodsColumnExistParam);
         }
 
@@ -143,9 +126,8 @@ public class GoodsService extends BaseService {
         }
     }
 
-
     /**
-     * 商品名和商品码查重
+     *	 商品名和商品码查重
      *
      * @param select
      * @param goodsColumnExistParam
@@ -169,7 +151,7 @@ public class GoodsService extends BaseService {
     }
 
     /**
-     * 商品规格字段重复检查
+     * 	商品规格字段重复检查
      *
      * @param select
      * @param goodsColumnExistParam

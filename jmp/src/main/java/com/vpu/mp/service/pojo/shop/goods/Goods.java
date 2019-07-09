@@ -39,7 +39,6 @@ public class Goods {
 	private Integer limitBuyNum;//商品最小限购数量
 	private Integer limitMaxNum;//商品最大限购数量
 	private BigDecimal costPrice;//成本价格
-	private String prdSn;//商品规格编码，只有在用户为添加自定义规格的时候该属性才有效。
 
     private Integer deliverTemplateId;//运费模板
 	private BigDecimal  goodsWeight;//商品重量
