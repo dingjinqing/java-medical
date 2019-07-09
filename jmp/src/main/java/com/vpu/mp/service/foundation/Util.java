@@ -368,5 +368,24 @@ public class Util {
 	    UUID uuid=UUID.randomUUID();
 	    return uuid.toString();
     }
-
+    
+    /**
+     * 将字符串数组中的每一个 元素 转换为 Integer类型，转换失败直接跳过，不会抛异常
+     * @param from
+     * @return
+     */
+    public static List<Integer> valueOf(String[] from){
+		if(from == null || from.length == 0) {
+			return new ArrayList<Integer>(0);
+		}
+		ArrayList<Integer> list = new ArrayList<Integer>(from.length);
+		for(int i=0;i<from.length;i++) {
+			try {
+				list.add(Integer.valueOf(from[i]));
+			}catch (Exception e) {
+				e.printStackTrace();
+			}
+		}
+		return list;
+	}
 }
