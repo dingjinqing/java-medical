@@ -4,6 +4,7 @@ import com.vpu.mp.service.foundation.ServiceContainer;
 import com.vpu.mp.service.shop.config.ConfigService;
 import com.vpu.mp.service.shop.decoration.MpDecorationService;
 import com.vpu.mp.service.shop.decoration.PageClassificationService;
+import com.vpu.mp.service.shop.goods.GoodsRecommendService;
 import com.vpu.mp.service.shop.goods.GoodsService;
 import com.vpu.mp.service.shop.image.ImageCategoryService;
 import com.vpu.mp.service.shop.image.ImageService;
@@ -27,6 +28,7 @@ public class ShopApplication extends ServiceContainer {
 	public VersionService version;
 	public ConfigService config;;
 	public StoreService store;
+	public GoodsRecommendService goodsRecommend;
 
 	public ShopApplication(Integer shopId) {
 		this.shopId = shopId;
