@@ -2,21 +2,16 @@ package com.vpu.mp.controller.admin;
 
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.vpu.mp.service.foundation.JsonResultCode;
 import com.vpu.mp.service.shop.config.ShopCfgService;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.*;
-
 import com.vpu.mp.db.shop.tables.records.XcxCustomerPageRecord;
 import com.vpu.mp.service.foundation.JsonResult;
 import com.vpu.mp.service.foundation.PageResult;
-import com.vpu.mp.service.pojo.shop.decoration.PageListQueryParam;
 import com.vpu.mp.service.pojo.shop.decoration.XcxCustomerPagePojo;
-import com.vpu.mp.service.shop.ShopApplication;
 
 import java.io.IOException;
 
@@ -27,10 +22,11 @@ import java.io.IOException;
  * 2019年6月27日
  */
 @RestController
-@RequestMapping("/api")
+//@RequestMapping("/api")
 public class AdminShopDecorateController extends AdminBaseController {
 
 	private static ObjectMapper mapper =new ObjectMapper();
+
 	/**
 	 * 装修页面列表
 	 * @param param
@@ -70,9 +66,9 @@ public class AdminShopDecorateController extends AdminBaseController {
 	 * @return
 	 */
 	@PostMapping(value = "/admin/shopDecorate/copyDecoration")
-	public JsonResult copyDecoration(Integer PageId) {
-		XcxCustomerPageRecord res = shop().mpDecoration.copyDecoration(PageId);
-		return success(res);
+	public JsonResult copyDecoration(@RequestBody XcxCustomerPagePojo param) {
+		Boolean res = shop().mpDecoration.copyDecoration(param.getPageId());
+		return success();
 	}
 
 
@@ -82,9 +78,15 @@ public class AdminShopDecorateController extends AdminBaseController {
 	 * @return
 	 */
 	@PostMapping(value = "/admin/shopDecorate/saveDecoration")
-	public JsonResult saveDecoration(XcxCustomerPagePojo param) {
-		XcxCustomerPageRecord res = shop().mpDecoration.saveDecoration(param);
-		return success(res);
+	public JsonResult saveDecoration(@RequestBody XcxCustomerPagePojo param) {
+		System.out.println(param);
+		boolean res = shop().mpDecoration.saveDecoration(param);
+		if(res) {
+			return this.success();
+		}else {
+			return this.fail();
+		}
+		
 	}
 
 
@@ -159,4 +161,11 @@ public class AdminShopDecorateController extends AdminBaseController {
 		}
 		return fail(JsonResultCode.DECORATE_BOTTOM_ISNOTJSON);
 	}
+	
+//	/**
+//	 * 选择链接
+//	 */
+//	public chooseLink() {
+//		
+//	}
 }

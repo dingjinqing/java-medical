@@ -222,10 +222,15 @@ public class MpDecorationService extends BaseService {
 	 * @param info
 	 * @return
 	 */
-	public XcxCustomerPageRecord saveDecoration(XcxCustomerPagePojo info) {
+	public Boolean saveDecoration(XcxCustomerPagePojo info) {
 		XcxCustomerPageRecord record = db().newRecord(XCX_CUSTOMER_PAGE, info);
-		db().executeInsert(record);
-		return record;
+		int res = db().executeUpdate(record);
+		if(res > 0) {
+			return true;
+		}else {
+			return false;
+		}
+		
 	}
 
 	/**
@@ -258,13 +263,22 @@ public class MpDecorationService extends BaseService {
 	 * @param copyId
 	 * @return
 	 */
-	public XcxCustomerPageRecord copyDecoration(Integer copyId) {
-		XcxCustomerPageRecord source = this.getPageById(copyId);
+	public Boolean copyDecoration(Integer pageId) {
+		XcxCustomerPageRecord source = this.getPageById(pageId);
 		XcxCustomerPageRecord page = db().newRecord(XCX_CUSTOMER_PAGE);
 		page.setPageName(source.getPageName() + "+副本");
 		page.setPageContent(source.getPageContent());
+		page.setShopId(source.getShopId());
+		page.setPageType(source.getPageType());
+		page.setPageEnabled(source.getPageEnabled());
+		page.setPageTplType(source.getPageTplType());
+		page.setPageContent(source.getPageContent());
+		page.setPagePublishContent(source.getPagePublishContent());
+		page.setPageState(source.getPageState());
+		page.setCatId(source.getCatId());
+		System.out.println(page);
 		page.insert();
-		return page;
+		return true;
 	}
 
 	/**
