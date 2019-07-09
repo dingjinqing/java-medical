@@ -25,7 +25,7 @@ public class GoodsLabelCouple {
 	public GoodsLabelCoupleRecord toRecord(){
 		GoodsLabelCoupleRecord labelCoupleRecord = new GoodsLabelCoupleRecord();
 		labelCoupleRecord.setId(this.id);
-		labelCoupleRecord.setLabelId(this.labelId.toString());
+		labelCoupleRecord.setLabelId(this.labelId);
 		labelCoupleRecord.setGtaId(this.gtaId);
 		labelCoupleRecord.setType(this.type);
 		return labelCoupleRecord;

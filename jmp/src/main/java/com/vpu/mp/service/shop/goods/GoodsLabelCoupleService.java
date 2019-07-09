@@ -30,7 +30,7 @@ public class GoodsLabelCoupleService extends BaseService {
 		}
 		List<GoodsLabelCouple> list = db().select(GOODS_LABEL_COUPLE.ID, GOODS_LABEL_COUPLE.LABEL_ID, GOODS_LABEL_COUPLE.GTA_ID, GOODS_LABEL_COUPLE.TYPE)
 				.from(GOODS_LABEL_COUPLE)
-				.where(GOODS_LABEL_COUPLE.LABEL_ID.eq(goodsLabel.getId().toString()))
+				.where(GOODS_LABEL_COUPLE.LABEL_ID.eq(goodsLabel.getId()))
 				.fetchInto(GoodsLabelCouple.class);
 		return list;
 	}
