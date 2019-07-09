@@ -77,6 +77,7 @@ public class JsonResultMessage {
 	 * 	门店管理
 	 */
 	final public static String STORE_GROUP_NAME_EXIST="store.group.name.exist";
+	final public static String STORE_POS_SHOP_ID_EXIST="store.pos.shop.id.exist";
 
 	/**
 	 * 基础配置

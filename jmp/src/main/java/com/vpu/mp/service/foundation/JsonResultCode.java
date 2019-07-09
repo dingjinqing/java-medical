@@ -24,6 +24,7 @@ public enum JsonResultCode {
 	 * @serialField 15开头：用户
 	 * @serialField 16开头：文章_分类
 	 * @serialField 17开头：小程序管理
+	 * @serialField 18开头：门店管理
 	 */
 
 	// 公共码
@@ -96,6 +97,7 @@ public enum JsonResultCode {
 
 	//门店管理
 	CODE_STORE_GROUP_NAME_EXIST(180001,JsonResultMessage.STORE_GROUP_NAME_EXIST),
+	CODE_POS_SHOP_ID_EXIST(180002,JsonResultMessage.STORE_POS_SHOP_ID_EXIST),
 
 	//基础配置
 	CODE_CONFIG_PLEDGE_EXCEED(190001,JsonResultMessage.CONFIG_PLEDGE_EXCEED)

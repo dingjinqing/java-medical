@@ -6,6 +6,7 @@ import static com.vpu.mp.db.shop.tables.StoreGroup.STORE_GROUP;
 import java.sql.Timestamp;
 import java.util.List;
 
+import org.jooq.Condition;
 import org.jooq.DSLContext;
 import org.jooq.Record;
 import org.jooq.SelectWhereStep;
@@ -107,6 +108,21 @@ public class StoreService extends BaseService {
 	public StorePojo getStore(Integer storeId) {
 		return db().fetchOne(STORE,STORE.STORE_ID.eq(storeId)).into(StorePojo.class);
 	}
+	
+	/**
+	 * 检查门店编码是否可用,返回true表示可用
+	 * @param Integer
+	 * @return Boolean
+	 */
+	public Boolean checkStoreCoding(Integer posShopId) {
+		Condition condition = STORE.POS_SHOP_ID.eq(posShopId).and(STORE.DEL_FLAG.eq((byte)0));
+		if(null != db().fetchAny(STORE,condition)) {
+			return false;
+		}else {
+			return true;
+		}
+	}
+
 
 	/**
 	 * 门店分组列表-查询

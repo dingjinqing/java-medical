@@ -95,6 +95,19 @@ public class AdminStoreController extends AdminBaseController{
     	   return fail();
        }
     }
+    
+    /**
+     * 检查门店编码
+     * @return
+     */
+    @PostMapping(value = "/api/admin/store/checkStoreCoding")
+    public JsonResult checkStoreCoding(@RequestBody(required = true) @Valid StorePojo store) {
+       if(shop().store.checkStoreCoding(store.getPosShopId())) {
+    	   return success();
+       }else {
+    	   return fail(JsonResultCode.CODE_POS_SHOP_ID_EXIST);
+       }
+    }
 
     /**
      * 门店分组-新增
