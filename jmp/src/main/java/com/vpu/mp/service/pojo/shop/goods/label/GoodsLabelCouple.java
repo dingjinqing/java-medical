@@ -2,6 +2,7 @@ package com.vpu.mp.service.pojo.shop.goods.label;
 
 import com.vpu.mp.db.shop.tables.records.GoodsLabelCoupleRecord;
 
+import lombok.AllArgsConstructor;
 import lombok.Data;
 
 /**
@@ -10,6 +11,7 @@ import lombok.Data;
  *
  */
 @Data
+@AllArgsConstructor
 public class GoodsLabelCouple {
 	
 	//李晓冰添加关联商品码值
