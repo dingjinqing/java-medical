@@ -12,7 +12,7 @@ import lombok.NoArgsConstructor;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class PageClassificationIn {
+public class PageClassificationParam {
     private int pageId;
     private String pageName;
 }

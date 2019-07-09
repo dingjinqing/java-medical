@@ -2,7 +2,7 @@ package com.vpu.mp.service.saas.wechat;
 
 import com.vpu.mp.db.main.tables.MpAuthShop;
 import com.vpu.mp.service.foundation.BaseService;
-import com.vpu.mp.service.pojo.shop.config.trade.WxpayConfigIn;
+import com.vpu.mp.service.pojo.shop.config.trade.WxpayConfigParam;
 import org.jooq.Condition;
 
 /**
@@ -14,16 +14,16 @@ public class WechatService extends BaseService {
 
     /**
      * 更新微信支付配置
-     * @param wxpayConfigIn
+     * @param wxpayConfigParam
      * @return
      */
-    public int udpateWxpayConfig (WxpayConfigIn wxpayConfigIn){
+    public int udpateWxpayConfig (WxpayConfigParam wxpayConfigParam){
           return db().update(MpAuthShop.MP_AUTH_SHOP)
-                .set(MpAuthShop.MP_AUTH_SHOP.PAY_MCH_ID,wxpayConfigIn.getPayMchId())
-                .set(MpAuthShop.MP_AUTH_SHOP.PAY_KEY,wxpayConfigIn.getPayKey())
-                .set(MpAuthShop.MP_AUTH_SHOP.PAY_CERT_CONTENT,wxpayConfigIn.getPayCertContent())
-                .set(MpAuthShop.MP_AUTH_SHOP.PAY_KEY_CONTENT,wxpayConfigIn.getPayKeyContent())
-                .where(MpAuthShop.MP_AUTH_SHOP.APP_ID.eq(wxpayConfigIn.getAppId()))
+                .set(MpAuthShop.MP_AUTH_SHOP.PAY_MCH_ID, wxpayConfigParam.getPayMchId())
+                .set(MpAuthShop.MP_AUTH_SHOP.PAY_KEY, wxpayConfigParam.getPayKey())
+                .set(MpAuthShop.MP_AUTH_SHOP.PAY_CERT_CONTENT, wxpayConfigParam.getPayCertContent())
+                .set(MpAuthShop.MP_AUTH_SHOP.PAY_KEY_CONTENT, wxpayConfigParam.getPayKeyContent())
+                .where(MpAuthShop.MP_AUTH_SHOP.APP_ID.eq(wxpayConfigParam.getAppId()))
                 .execute();
     }
 

@@ -14,7 +14,7 @@ import javax.validation.constraints.NotBlank;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class WxpayConfigIn {
+public class WxpayConfigParam {
     @NotBlank
     private String appId;
     @NotBlank

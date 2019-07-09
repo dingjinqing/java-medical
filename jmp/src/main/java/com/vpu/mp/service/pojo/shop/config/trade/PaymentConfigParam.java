@@ -12,7 +12,7 @@ import lombok.NoArgsConstructor;
  */
 @Data
 @NoArgsConstructor
-public class PaymentConfigIn {
+public class PaymentConfigParam {
     /** 支付方式-微信支付 */
     private boolean wxpay;
     /** 支付方式-积分支付 */
