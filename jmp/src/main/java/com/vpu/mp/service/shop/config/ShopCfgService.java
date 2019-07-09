@@ -246,7 +246,9 @@ public class ShopCfgService extends BaseService{
 	final public static String K_ORDER_REQUIRE_GOODS_PACKAGE = "order_require_goods_package";
 	
 	/**
-	 * 购买按钮：结构{"show_cart":1,"cart_type":"3"}show_cart：开关，cart_type按钮类型
+	 * 购买按钮：结构
+	 * {"show_cart":1,"cart_type":"3"}
+	 * show_cart：是否展示购买按钮开关，cart_type按钮类型[0,1,2,3]4种
 	 */
 	final public static String K_SHOW_CART = "show_cart";
 	
@@ -257,6 +259,7 @@ public class ShopCfgService extends BaseService{
 	
 	/**
 	 * 分享配置,json串存储
+	 * TODO 格式解析待完善
 	 */
 	final public static String K_SHARE_CONFIG = "share_config";
 	
@@ -279,19 +282,12 @@ public class ShopCfgService extends BaseService{
 	}
 	
 	public String getShopCfg(String k) {
-		String v = db().select().from(SHOP_CFG).where(SHOP_CFG.K.eq(k)).fetchAny(SHOP_CFG.V);
-		 if(v == null) {
-			 this.setShopCfg(k, "");
-			 return "";
-		 }else {
-			 return v;
-		 }
+		return db().select().from(SHOP_CFG).where(SHOP_CFG.K.eq(k)).fetchAny(SHOP_CFG.V);
 	}
 	
 	public String getShopCfg(String k,String v) {
 		String result =  (String) db().select().from(SHOP_CFG).where(SHOP_CFG.K.eq(k)).fetchAny(SHOP_CFG.V);
 		if(result == null) {
-			 this.setShopCfg(k, v);
 			 return v;
 		 }else {
 			 return result;
@@ -300,7 +296,7 @@ public class ShopCfgService extends BaseService{
 	}
 	
 	public  List<ShopCfgRecord> getShopCfgs(List<String> keys){
-		return    db().selectFrom(SHOP_CFG).where(SHOP_CFG.K.in(keys)).fetch();
+		return db().selectFrom(SHOP_CFG).where(SHOP_CFG.K.in(keys)).fetch();
 	}
 	
 	public Boolean setShopCfg(String k,String v) {
