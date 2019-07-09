@@ -129,12 +129,12 @@ public class PageClassificationService extends BaseService {
 	 * @return 存在返回true，不存在返回false
 	 */
 	public boolean checkExist(int pageId,String pageName){
-		Condition IdCondition = PageClassification.PAGE_CLASSIFICATION.ID.eq(pageId);
-		Condition NamecCondition = (PageClassification.PAGE_CLASSIFICATION.NAME.eq(pageName));
-		if(db().fetchCount(PageClassification.PAGE_CLASSIFICATION,IdCondition) > 0) {
+		Condition idCondition = PageClassification.PAGE_CLASSIFICATION.ID.eq(pageId);
+		Condition nameCondition = (PageClassification.PAGE_CLASSIFICATION.NAME.eq(pageName));
+		if(db().fetchCount(PageClassification.PAGE_CLASSIFICATION,idCondition) > 0) {
 			return true;
 		}
-		if (db().fetchCount(PageClassification.PAGE_CLASSIFICATION,NamecCondition) > 0) {
+		if (db().fetchCount(PageClassification.PAGE_CLASSIFICATION,nameCondition) > 0) {
 			return true;
 		}
 		return false;
