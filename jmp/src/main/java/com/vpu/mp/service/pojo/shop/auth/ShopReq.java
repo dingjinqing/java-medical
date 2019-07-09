@@ -1,7 +1,8 @@
 package com.vpu.mp.service.pojo.shop.auth;
 
-import java.math.BigDecimal;
-import java.sql.Timestamp;
+import javax.validation.constraints.NotBlank;
+
+import com.vpu.mp.service.foundation.JsonResultMessage;
 
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -15,6 +16,7 @@ import lombok.NoArgsConstructor;
 @Data
 @NoArgsConstructor
 public class ShopReq {
+	@NotBlank(message = JsonResultMessage.MSG_ACCOUNT_USERNAME_NOT_NULL)
 	private Integer shopId;
 	private Integer sysId;
 	private String mobile;
@@ -25,7 +27,6 @@ public class ShopReq {
 	private String shopNotice;
 	private String shopWx;
 	private String shopEmail;
-	//private Timestamp created;
 	private Byte isEnabled;
 	private String shopQq;
 	private Byte shopFlag;
