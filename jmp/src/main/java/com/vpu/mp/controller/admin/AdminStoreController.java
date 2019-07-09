@@ -86,7 +86,7 @@ public class AdminStoreController extends AdminBaseController{
      * 门店-取单个门店信息
      * @return
      */
-    @PostMapping(value = "/api/admin/store/getStore")
+    @PostMapping(value = "/api/admin/store/get")
     public JsonResult getStore(@RequestBody(required = true) @Valid StorePojo store) {
        StorePojo storeRes = shop().store.getStore(store.getStoreId());
        if(null != storeRes) {
@@ -100,7 +100,7 @@ public class AdminStoreController extends AdminBaseController{
      * 检查门店编码
      * @return
      */
-    @PostMapping(value = "/api/admin/store/checkStoreCoding")
+    @PostMapping(value = "/api/admin/store/coding/check")
     public JsonResult checkStoreCoding(@RequestBody(required = true) @Valid StorePojo store) {
        if(shop().store.checkStoreCoding(store.getPosShopId())) {
     	   return success();
