@@ -2,6 +2,9 @@ package com.vpu.mp.service.pojo.shop.image;
 
 import lombok.Data;
 
+import java.util.ArrayList;
+import java.util.List;
+
 /**
  * 
  * @author 新国
@@ -9,8 +12,8 @@ import lombok.Data;
  */
 @Data
 public class CategoryTreeItem {
-	public Integer id = 0;
-	public String name = "";
-	public Boolean open = true;
-	public Integer pId = 0;
+	private Integer id = 0;
+	private String name ;
+	private Integer level=0;
+	private List<CategoryTreeItem> child=new ArrayList<>();
 }

@@ -2,9 +2,11 @@ package com.vpu.mp.service.shop.image;
 
 import com.vpu.mp.service.foundation.BaseService;
 import com.vpu.mp.service.foundation.Util;
+import com.vpu.mp.service.pojo.shop.goods.sort.Sort;
 import com.vpu.mp.service.pojo.shop.image.CategoryTreeItem;
-import com.vpu.mp.service.pojo.shop.image.UploadedImageCategoryPojo;
+import com.vpu.mp.service.pojo.shop.image.UploadedImageCategoryParam;
 
+import static com.vpu.mp.db.shop.tables.Sort.SORT;
 import static com.vpu.mp.db.shop.tables.UploadedImage.UPLOADED_IMAGE;
 import static com.vpu.mp.db.shop.tables.UploadedImageCategory.UPLOADED_IMAGE_CATEGORY;
 
@@ -17,14 +19,16 @@ import java.util.Map;
 
 import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.StringUtils;
+import org.jooq.Record;
 import org.jooq.Result;
+import org.jooq.SelectConditionStep;
 import org.jooq.SelectWhereStep;
 import org.jooq.impl.DSL;
 
 import com.vpu.mp.db.shop.tables.records.UploadedImageCategoryRecord;
 /**
  * 
- * @author 新国
+ * @author 新国，孔德成
  *
  */
 public class ImageCategoryService extends BaseService {
@@ -35,15 +39,23 @@ public class ImageCategoryService extends BaseService {
 	 * @param cat
 	 * @return
 	 */
-	public UploadedImageCategoryRecord addCategory(UploadedImageCategoryPojo cat) {
+	public Boolean addCategory(UploadedImageCategoryParam cat) {
 		UploadedImageCategoryRecord record = db().newRecord(UPLOADED_IMAGE_CATEGORY, cat);
-		record.setCreateTime(Timestamp.valueOf(LocalDateTime.now()));
+		record.setShopId(shopId);
 		record.insert();
-		Integer[] catIds = getUpCatIds(record.getImgCatId().intValue());
-		record.setCatIds(StringUtils.join(catIds));
-		record.setLevel((byte) catIds.length);
-		record.update();
-		return record;
+		//父节点不是顶节点，查询父节点的ids
+		if (!cat.getImgCatParentId().equals(0)){
+			UploadedImageCategoryRecord parent = this.getCategoryById(cat.getImgCatParentId());
+			if (parent!=null){
+				record.setCatIds(parent.getCatIds()+","+record.getImgCatId());
+				record.setLevel((byte) (parent.getLevel()+1));
+				return record.update()>0;
+			}
+		}
+		record.setImgCatParentId(0);
+		record.setCatIds(String.valueOf(record.getImgCatId()));
+		record.setLevel((byte) 1);
+		return record.update()>0;
 	}
 
 	/**
@@ -189,35 +201,6 @@ public class ImageCategoryService extends BaseService {
 		public Map<Integer, List<UploadedImageCategoryRecord>> parent = new HashMap<Integer, List<UploadedImageCategoryRecord>>();
 	}
 
-	/**
-	 * 得到指定等级的分类树
-	 * @param maxLevel
-	 * @return
-	 */
-	public Result<UploadedImageCategoryRecord> getCategoryTree(Byte maxLevel) {
-		Result<UploadedImageCategoryRecord> result = db().fetch(UPLOADED_IMAGE_CATEGORY, DSL.falseCondition());
-		CategoryMap catMap = this.getCategoryMap(maxLevel);
-		getChildCategoryTree(catMap.parent.get(0), catMap, result);
-		return result;
-	}
-
-	/**
-	 * 递归获取分类树
-	 * @param list
-	 * @param catMap
-	 * @param result
-	 */
-	protected void getChildCategoryTree(List<UploadedImageCategoryRecord> list, CategoryMap catMap,
-			Result<UploadedImageCategoryRecord> result) {
-		if (list == null || list.size() == 0) {
-			return;
-		}
-		for (UploadedImageCategoryRecord record : list) {
-			result.add(record);
-			List<UploadedImageCategoryRecord> childCats = catMap.parent.get(record.getImgCatId().intValue());
-			getChildCategoryTree(childCats, catMap, result);
-		}
-	}
 
 	/**
 	 * 得到最大等级
@@ -266,19 +249,39 @@ public class ImageCategoryService extends BaseService {
 	public List<CategoryTreeItem> getImageCategoryForZTree(Integer openId) {
 		List<CategoryTreeItem> result = new ArrayList<CategoryTreeItem>();
 		CategoryTreeItem root = new CategoryTreeItem();
-		root.name = "我的图片";
-		result.add(root);
+		root.setName("我的图片");
+		root.setId(openId);
+		root.setLevel(1);
 		Result<UploadedImageCategoryRecord> records = this.getAll();
-		for (UploadedImageCategoryRecord record : records) {
-			CategoryTreeItem cat = new CategoryTreeItem();
-			cat.id = record.getImgCatId().intValue();
-			cat.name = record.getImgCatName();
-			cat.pId = record.getImgCatParentId();
-			cat.open = cat.pId == 0 || openId != null && openId.equals(cat.id);
-			result.add(cat);
-		}
+		this.getImageCategoryTree(root,records,2);
+		result.add(root);
 		return result;
 	}
+
+	/**
+	 * 遍历图片标签树
+	 * @param root
+	 * @param categoryTreeItemList
+	 * @param level
+	 * @return
+	 */
+	public CategoryTreeItem getImageCategoryTree(CategoryTreeItem root,List<UploadedImageCategoryRecord> categoryTreeItemList,Integer level){
+		for (int i = 0; i <categoryTreeItemList.size() ; i++) {
+			UploadedImageCategoryRecord item =categoryTreeItemList.get(i);
+			if (root.getId().equals(item.getImgCatParentId())){
+				CategoryTreeItem child = new CategoryTreeItem();
+				child.setId(item.getImgCatId());
+				child.setName(item.getImgCatName());
+				child.setLevel(level);
+				root.getChild().add(child);
+				categoryTreeItemList.remove(item);
+				i--;
+				getImageCategoryTree(child,categoryTreeItemList,level+1);
+			}
+		}
+		return root;
+	}
+
 	
 	/**
 	 * 设置分类名称

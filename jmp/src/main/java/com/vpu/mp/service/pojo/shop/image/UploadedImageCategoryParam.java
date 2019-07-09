@@ -5,17 +5,25 @@ package com.vpu.mp.service.pojo.shop.image;
 
 
 import java.sql.Timestamp;
-import lombok.Data;
+import java.time.LocalDateTime;
 
+import lombok.Data;
+import lombok.NoArgsConstructor;
+
+/**
+ *
+ * @author 新国，孔德成
+ */
 @Data
-public class UploadedImageCategoryPojo  {
-    private Integer   imgCatId;
+@NoArgsConstructor
+public class UploadedImageCategoryParam  {
+
     private Integer   shopId;
     private String    imgCatName;
     private Integer   imgCatParentId;
-    private Timestamp createTime;
-    private String    catIds;
     private Byte      level;
     private Integer   sort;
+    private Timestamp createTime;
+    private Timestamp updateTime;
 
 }
