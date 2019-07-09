@@ -34,3 +34,7 @@ MODIFY COLUMN update_time  timestamp   not null  	default current_timestamp on u
 CHANGE COLUMN specvalid spec_val_id int(11) 	not null auto_increment ,
 CHANGE COLUMN specvalname spec_val_name VARCHAR(60) not null DEFAULT '',
 ADD UNIQUE INDEX unique_spec_id_spec_val_name (spec_id,spec_val_name);
+
+-- 7月9日添加
+-- 修改标签组关系表
+ALTER TABLE b2c_goods_label_couple MODIFY COLUMN label_id INT(11) NOT NULL;
