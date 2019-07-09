@@ -2,6 +2,8 @@ package com.vpu.mp.service.shop.config;
 
 import static com.vpu.mp.db.shop.tables.ShopCfg.SHOP_CFG;
 
+import org.jooq.DSLContext;
+
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.vpu.mp.service.foundation.BaseService;
 import com.vpu.mp.service.foundation.Util;
@@ -40,6 +42,22 @@ public class BaseShopConfigService extends BaseService {
 	}
 	
 	/**
+	 * 设置配置key对应value
+	 * @param key
+	 * @param value
+	 * @param db
+	 * @return
+	 */
+	protected int set(DSLContext db, String key, String value) {
+		String val = get(key);
+		if (val == null) {
+			return db.insertInto(SHOP_CFG, SHOP_CFG.K, SHOP_CFG.V).values(key, value).execute();
+		} else {
+			return db.update(SHOP_CFG).set(SHOP_CFG.V, value).where(SHOP_CFG.K.eq(key)).execute();
+		}
+	}
+	
+	/**
 	 * 设置其他类型数据配置
 	 * @param <T>
 	 * @param key
@@ -52,6 +70,19 @@ public class BaseShopConfigService extends BaseService {
 	}
 	
 	/**
+	 * 设置其他类型数据配置
+	 * @param db
+	 * @param <T>
+	 * @param key
+	 * @param value
+	 * @param toClass
+	 * @return
+	 */
+	protected <T> int set(DSLContext db, String key, T value,Class<? extends T> toClass) {
+		return this.set(db, key, value.toString());
+	}
+	
+	/**
 	 * 设置json对象数据配置
 	 * @param key
 	 * @param value
@@ -59,6 +90,17 @@ public class BaseShopConfigService extends BaseService {
 	 */
 	protected int setJsonObject(String key, Object value) {
 		return this.set(key, Util.toJSON(value));
+	}
+	
+	/**
+	 * 设置json对象数据配置
+	 * @param key
+	 * @param value
+	 * @param db
+	 * @return
+	 */
+	protected int setJsonObject(DSLContext db, String key, Object value) {
+		return this.set(db, key, Util.toJSON(value));
 	}
 
 	/**
@@ -92,7 +134,12 @@ public class BaseShopConfigService extends BaseService {
 	 * @return
 	 */
 	protected <T> T getJsonObject(String key, Class<? extends T> toClass) {
-		return Util.parseJSON(get(key), toClass);
+		String value = get(key);
+		if(null != value) {
+			return Util.parseJSON(value, toClass);
+		}else {
+			return null;
+		}
 	}
 	
 	/**
