@@ -3,7 +3,7 @@ package com.vpu.mp.controller.admin;
 import com.vpu.mp.service.foundation.JsonResult;
 import com.vpu.mp.service.foundation.JsonResultCode;
 import com.vpu.mp.service.foundation.PageResult;
-import com.vpu.mp.service.pojo.shop.applets.page.PageClassificationIn;
+import com.vpu.mp.service.pojo.shop.applets.page.PageClassificationParam;
 import com.vpu.mp.service.pojo.shop.decoration.PageCategoryListQueryParam;
 import com.vpu.mp.service.pojo.shop.decoration.PageClassificationPojo;
 import org.slf4j.Logger;
@@ -34,7 +34,7 @@ public class AdminPageClassificationController extends AdminBaseController {
      * @return
      */
     @PostMapping("/api/admin/applets/pageclassification/add")
-    public JsonResult insert(@RequestBody PageClassificationIn pageIn){
+    public JsonResult insert(@RequestBody PageClassificationParam pageIn){
         if(shop().pageClassification.checkExist(-1,pageIn.getPageName())){
             return fail(JsonResultCode.CODE_PAGE_CLASSIFICATION_EXIST);
         }
@@ -47,7 +47,7 @@ public class AdminPageClassificationController extends AdminBaseController {
      * @return
      */
     @PostMapping("/api/admin/applets/pageclassification/updateCategoryName")
-    public JsonResult updateCategoryName(@RequestBody PageClassificationIn pageIn){
+    public JsonResult updateCategoryName(@RequestBody PageClassificationParam pageIn){
         if(!shop().pageClassification.checkExist(pageIn.getPageId(),"")){
             return fail(JsonResultCode.CODE_PAGE_CLASSIFICATION_NOT_EXIST);
         }
@@ -60,7 +60,7 @@ public class AdminPageClassificationController extends AdminBaseController {
      * @return
      */
     @PostMapping("/api/admin/applets/pageclassification/deleteCategoryById")
-    public JsonResult deleteCategoryById(@RequestBody PageClassificationIn pageIn){
+    public JsonResult deleteCategoryById(@RequestBody PageClassificationParam pageIn){
         if(!shop().pageClassification.checkExist(pageIn.getPageId(),"")){
             return fail(JsonResultCode.CODE_PAGE_CLASSIFICATION_NOT_EXIST);
         }

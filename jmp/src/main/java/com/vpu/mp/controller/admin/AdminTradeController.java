@@ -3,8 +3,8 @@ package com.vpu.mp.controller.admin;
 import com.vpu.mp.service.foundation.JsonResult;
 import com.vpu.mp.service.foundation.JsonResultMessage;
 import com.vpu.mp.service.pojo.shop.config.ShopCfg;
-import com.vpu.mp.service.pojo.shop.config.trade.PaymentConfigIn;
-import com.vpu.mp.service.pojo.shop.config.trade.WxpayConfigIn;
+import com.vpu.mp.service.pojo.shop.config.trade.PaymentConfigParam;
+import com.vpu.mp.service.pojo.shop.config.trade.WxpayConfigParam;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -31,15 +31,15 @@ public class AdminTradeController extends AdminBaseController {
 
     /**
      * 支付方式开关配置
-     * @param paymentConfigIn
+     * @param paymentConfigParam
      * @return
      */
     @PostMapping("/api/admin/config/trade/enablePayment")
-    public JsonResult enablePayment(@RequestBody PaymentConfigIn paymentConfigIn){
+    public JsonResult enablePayment(@RequestBody PaymentConfigParam paymentConfigParam){
         try {
-            BeanInfo beanInfo = Introspector.getBeanInfo(paymentConfigIn.getClass());
+            BeanInfo beanInfo = Introspector.getBeanInfo(paymentConfigParam.getClass());
             PropertyDescriptor[] descriptor = beanInfo.getPropertyDescriptors();
-            Arrays.asList(descriptor).forEach((e)->invoke(e,paymentConfigIn));
+            Arrays.asList(descriptor).forEach((e)->invoke(e, paymentConfigParam));
         }catch(IntrospectionException e){
             e.printStackTrace();
         }
@@ -49,12 +49,12 @@ public class AdminTradeController extends AdminBaseController {
     /**
      * 循环更新每一种支付方式的开启状态
      * @param descriptor
-     * @param paymentConfigIn
+     * @param paymentConfigParam
      */
-    public void invoke(PropertyDescriptor descriptor,PaymentConfigIn paymentConfigIn){
+    public void invoke(PropertyDescriptor descriptor,PaymentConfigParam paymentConfigParam){
         try{
             String paycode = descriptor.getName();
-            Object object = descriptor.getReadMethod().invoke(paymentConfigIn,null);
+            Object object = descriptor.getReadMethod().invoke(paymentConfigParam,null);
             if(object!=null){
                 boolean boo = Boolean.parseBoolean(object.toString());
                 byte enabled = boo ? PAY_ENABLED : PAY_UNENABLED;
@@ -69,20 +69,20 @@ public class AdminTradeController extends AdminBaseController {
 
     /**
      * 微信支付密钥配置
-     * @param wxpayConfigIn
+     * @param wxpayConfigParam
      * @param result
      * @return
      */
     @PostMapping("/api/admin/config/trade/wxpayConfig")
-    public JsonResult wxpayConfig(@RequestBody @Validated WxpayConfigIn wxpayConfigIn, BindingResult result){
+    public JsonResult wxpayConfig(@RequestBody @Validated WxpayConfigParam wxpayConfigParam, BindingResult result){
         if (result.hasErrors()) {
             return this.fail(result.getFieldError().getDefaultMessage());
         }
-        if(!saas.wechat.checkAuthShopExist(wxpayConfigIn.getAppId())){
+        if(!saas.wechat.checkAuthShopExist(wxpayConfigParam.getAppId())){
             return fail(JsonResultMessage.AUTH_SHOP_NOT_EXIST);
         }
 
-        return saas.wechat.udpateWxpayConfig(wxpayConfigIn) > 0 ? success() : fail(JsonResultMessage.WECAHT_PAY_CONFIG_UPDATE_DAILED);
+        return saas.wechat.udpateWxpayConfig(wxpayConfigParam) > 0 ? success() : fail(JsonResultMessage.WECAHT_PAY_CONFIG_UPDATE_DAILED);
     }
 
     /**
