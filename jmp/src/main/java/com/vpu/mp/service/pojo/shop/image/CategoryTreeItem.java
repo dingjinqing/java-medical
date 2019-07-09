@@ -14,6 +14,6 @@ import java.util.List;
 public class CategoryTreeItem {
 	private Integer id = 0;
 	private String name ;
-	private Integer level=0;
+	private Integer level=1;
 	private List<CategoryTreeItem> child=new ArrayList<>();
 }

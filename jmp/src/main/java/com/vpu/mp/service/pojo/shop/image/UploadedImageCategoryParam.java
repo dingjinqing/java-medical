@@ -18,12 +18,8 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class UploadedImageCategoryParam  {
 
-    private Integer   shopId;
     private String    imgCatName;
     private Integer   imgCatParentId;
-    private Byte      level;
     private Integer   sort;
-    private Timestamp createTime;
-    private Timestamp updateTime;
 
 }

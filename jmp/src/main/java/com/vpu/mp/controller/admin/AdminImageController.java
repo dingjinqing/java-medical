@@ -9,6 +9,7 @@ import java.util.List;
 import javax.imageio.ImageIO;
 import javax.servlet.http.Part;
 
+import com.vpu.mp.service.pojo.shop.image.*;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -18,12 +19,6 @@ import com.vpu.mp.service.foundation.JsonResult;
 import com.vpu.mp.service.foundation.JsonResultCode;
 import com.vpu.mp.service.foundation.PageResult;
 import com.vpu.mp.service.foundation.Util;
-import com.vpu.mp.service.pojo.shop.image.CropImageParam;
-import com.vpu.mp.service.pojo.shop.image.ImageListQueryParam;
-import com.vpu.mp.service.pojo.shop.image.UploadImageCatNamePojo;
-import com.vpu.mp.service.pojo.shop.image.UploadImageParam;
-import com.vpu.mp.service.pojo.shop.image.UploadPath;
-import com.vpu.mp.service.pojo.shop.image.UploadedImagePojo;
 import com.vpu.mp.service.shop.ShopApplication;
 
 /**
@@ -114,7 +109,7 @@ public class AdminImageController extends AdminBaseController {
 	 */
 	@PostMapping(value = "/admin/image/list")
 	public JsonResult getImageList(ImageListQueryParam param) {
-		
+
 		ShopApplication shop = shop();
 		PageResult<UploadImageCatNamePojo> imageList = shop.image.getPageList(param);
 		return this.success(imageList);
@@ -134,4 +129,29 @@ public class AdminImageController extends AdminBaseController {
 		System.out.println(uploadPath);
 		return true;
 	}
+
+
+	/**
+	 * 批量移动分组
+	 * @param  param
+	 * @return
+	 */
+	@PostMapping("/admin/image/batchMove")
+	public JsonResult batchMoveImage(BatchMoveImageParam param){
+		shop().image.setCatId(param.getImageIds().toArray(new Integer[0]),param.getImageCatId());
+		return success();
+	}
+
+	/**
+	 * 批量删除图片
+	 * @param param
+	 * @return
+	 */
+	@PostMapping("/admin/image/batchDelete")
+	public JsonResult batchDeleteImage(BatchDeleteImageParam param){
+		shop().image.removeRows(param.getImageIds());
+		return success();
+	}
+
+
 }

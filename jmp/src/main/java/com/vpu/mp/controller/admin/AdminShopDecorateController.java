@@ -1,27 +1,22 @@
 package com.vpu.mp.controller.admin;
 
-import java.io.IOException;
-
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.vpu.mp.service.foundation.JsonResultCode;
-import com.vpu.mp.service.shop.config.BaseShopConfigService;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.*;
 import com.vpu.mp.db.shop.tables.records.XcxCustomerPageRecord;
 import com.vpu.mp.service.foundation.JsonResult;
-import com.vpu.mp.service.foundation.JsonResultCode;
 import com.vpu.mp.service.foundation.PageResult;
 import com.vpu.mp.service.pojo.shop.config.BottomNavigatorConfig;
-import com.vpu.mp.service.pojo.shop.config.SearchConfig;
 import com.vpu.mp.service.pojo.shop.config.ShopStyleConfig;
-import com.vpu.mp.service.pojo.shop.decoration.PageListQueryParam;
 import com.vpu.mp.service.pojo.shop.decoration.XcxCustomerPagePojo;
+
+import javax.validation.Valid;
+import java.io.IOException;
 import java.util.List;
 
 /**
@@ -108,8 +103,11 @@ public class AdminShopDecorateController extends AdminBaseController {
 	 * @param  config
 	 * @return
 	 */
-	@PostMapping("/admin/decorate/updateStyle")
-	public JsonResult updateShopStyle(@RequestBody ShopStyleConfig config) {
+	@PostMapping("/admin/decorate/style/update")
+	public JsonResult updateShopStyle(@RequestBody @Valid ShopStyleConfig config, BindingResult bindingResult) {
+		if (bindingResult.hasErrors()) {
+			return fail(bindingResult.getFieldError().getDefaultMessage());
+		}
 		shop().config.shopStyleCfg.setShopStyleConfig(config);
 		return success();
 	}
@@ -119,7 +117,7 @@ public class AdminShopDecorateController extends AdminBaseController {
 	 * 
 	 * @return
 	 */
-	@GetMapping("/admin/decorate/getStyle")
+	@GetMapping("/admin/decorate/style/get")
 	public JsonResult getShopStyle() {
 		ShopStyleConfig config = shop().config.shopStyleCfg.getShopStyleConfig();
 		return config != null ? success(config) :  fail(JsonResultCode.DECORATE_STYLE_ISNOTJSON);

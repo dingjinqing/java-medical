@@ -74,6 +74,10 @@ public class JsonResultMessage {
 
 	final public static String DECORATE_BOTTOM_ISNOTJSON="applets.bottom.is_not_json";
 	final public static String DECORATE_STYLE_ISNOTJSON="applets.style.is_not_json";
+	final public static String DECORATE_STYLE_PARAM_ID_NULL="applets.style.param_id_null";
+	final public static String DECORATE_STYLE_PARAM_VALUE_NULL="applets.style.param_value_null";
+
+
 
 	/**
 	 * 	门店管理

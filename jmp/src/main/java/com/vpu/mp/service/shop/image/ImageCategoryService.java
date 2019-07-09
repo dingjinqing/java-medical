@@ -33,6 +33,8 @@ import com.vpu.mp.db.shop.tables.records.UploadedImageCategoryRecord;
  */
 public class ImageCategoryService extends BaseService {
 
+	private static final String  ROOT_NAME="我的图片";
+
 	/**
 	 * 添加分类
 	 * 
@@ -246,12 +248,11 @@ public class ImageCategoryService extends BaseService {
 	 * @param openId
 	 * @return
 	 */
-	public List<CategoryTreeItem> getImageCategoryForZTree(Integer openId) {
+	public List<CategoryTreeItem> getImageCategoryForTree(Integer openId) {
 		List<CategoryTreeItem> result = new ArrayList<CategoryTreeItem>();
 		CategoryTreeItem root = new CategoryTreeItem();
-		root.setName("我的图片");
+		root.setName(ROOT_NAME);
 		root.setId(openId);
-		root.setLevel(1);
 		Result<UploadedImageCategoryRecord> records = this.getAll();
 		this.getImageCategoryTree(root,records,2);
 		result.add(root);

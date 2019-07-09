@@ -22,7 +22,7 @@ public class AdminImageCategoryController extends AdminShopController {
      * @param param
      * @return
      */
-    @PostMapping("/admin/ImageCategory/add")
+    @PostMapping("/admin/image/category/add")
     public JsonResult addImageCategory(@RequestBody UploadedImageCategoryParam param) {
         shop().imageCatgory.addCategory(param);
         return success();
@@ -35,8 +35,8 @@ public class AdminImageCategoryController extends AdminShopController {
      * @param catId
      * @return
      */
-    @PostMapping("/admin/ImageCategory/delete")
-    public JsonResult deleteImageCategory( Integer catId) {
+    @PostMapping("/admin/image/category/delete")
+    public JsonResult deleteImageCategory(Integer catId) {
         shop().imageCatgory.removeCategory(catId);
         return success();
     }
@@ -47,22 +47,22 @@ public class AdminImageCategoryController extends AdminShopController {
      *
      * @return
      */
-    @PostMapping("/admin/imageCategory/move")
-    public JsonResult moveImageCategory(Integer catId, Integer parantCatId) {
-        shop().imageCatgory.moveCategory(catId,parantCatId);
+    @PostMapping("/admin/image/category/move")
+    public JsonResult moveImageCategory(Integer catId, Integer parentCatId) {
+        shop().imageCatgory.moveCategory(catId,parentCatId);
         return success();
     }
 
     /**
      * 更新分组名称
      *
-     * @param rename
+     * @param name
      * @param catId
      * @return
      */
-    @PostMapping("/admin/imageCategory/rename")
-    public JsonResult renameImageCategory(String rename, Integer catId) {
-        shop().imageCatgory.setCategoryName(catId, rename);
+    @PostMapping("/admin/image/category/rename")
+    public JsonResult renameImageCategory(String name, Integer catId) {
+        shop().imageCatgory.setCategoryName(catId, name);
         return success();
     }
 
@@ -72,9 +72,9 @@ public class AdminImageCategoryController extends AdminShopController {
      *
      * @return
      */
-    @GetMapping("/admin/imageCategory/list")
+    @GetMapping("/admin/image/category/list")
     public JsonResult getImageCategoryList() {
-        return success(shop().imageCatgory.getImageCategoryForZTree(0));
+        return success(shop().imageCatgory.getImageCategoryForTree(0));
     }
 
 
