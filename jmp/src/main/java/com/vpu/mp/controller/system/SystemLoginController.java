@@ -1,5 +1,8 @@
 package com.vpu.mp.controller.system;
 
+import javax.validation.Valid;
+
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -27,7 +30,10 @@ public class SystemLoginController extends SystemBaseController {
 	 * @return
 	 */
 	@PostMapping(value = "/system/login")
-	public JsonResult login(@RequestBody SystemLoginParam param) {
+	public JsonResult login(@RequestBody @Valid SystemLoginParam param, BindingResult bResult) {
+		if (bResult.hasErrors()) {
+			return this.fail(bResult.getFieldError().getDefaultMessage());
+		}
 		SystemTokenAuthInfo result = sysAuth.login(param);
 		if (result != null) {
 			return success(result);
