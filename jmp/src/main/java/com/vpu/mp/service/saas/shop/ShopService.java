@@ -138,6 +138,7 @@ public class ShopService extends BaseService {
 		if(!dm.installShopDb(dbConfig)) {
 			return false;
 		}
+		logger().info("数据库创建成功");
 		ShopRecord record =new ShopRecord();
 		FieldsUtil.assignNotNull(shopReq, record);
 		if(db().executeInsert(record)!=1) {
