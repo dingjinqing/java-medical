@@ -13,7 +13,7 @@ import com.vpu.mp.service.foundation.JsonResult;
 import com.vpu.mp.service.foundation.PageResult;
 import com.vpu.mp.service.pojo.shop.config.BottomNavigatorConfig;
 import com.vpu.mp.service.pojo.shop.config.ShopStyleConfig;
-import com.vpu.mp.service.pojo.shop.decoration.XcxCustomerPagePojo;
+import com.vpu.mp.service.pojo.shop.decoration.XcxCustomerPageVo;
 
 import javax.validation.Valid;
 import java.io.IOException;
@@ -38,8 +38,8 @@ public class AdminShopDecorateController extends AdminBaseController {
 	 * @return
 	 */
 	@PostMapping(value = "/admin/decorate/list")
-	public JsonResult list(XcxCustomerPagePojo param) {
-		PageResult<XcxCustomerPagePojo> list = shop().mpDecoration.getPageList(param);
+	public JsonResult list(XcxCustomerPageVo param) {
+		PageResult<XcxCustomerPageVo> list = shop().mpDecoration.getPageList(param);
 		return success(list);
 	}
 
@@ -74,7 +74,7 @@ public class AdminShopDecorateController extends AdminBaseController {
 	 * @return
 	 */
 	@PostMapping(value = "/admin/decorate/copy")
-	public JsonResult copyDecoration(@RequestBody XcxCustomerPagePojo param) {
+	public JsonResult copyDecoration(@RequestBody XcxCustomerPageVo param) {
 		Boolean res = shop().mpDecoration.copyDecoration(param.getPageId());
 		return success();
 	}
@@ -86,7 +86,7 @@ public class AdminShopDecorateController extends AdminBaseController {
 	 * @return
 	 */
 	@PostMapping(value = "/admin/decorate/save")
-	public JsonResult saveDecoration(@RequestBody XcxCustomerPagePojo param) {
+	public JsonResult saveDecoration(@RequestBody XcxCustomerPageVo param) {
 		System.out.println(param);
 		boolean res = shop().mpDecoration.saveDecoration(param);
 		if(res) {

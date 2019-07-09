@@ -1,5 +1,7 @@
 package com.vpu.mp.controller.admin;
 
+import java.util.List;
+
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -7,8 +9,10 @@ import org.springframework.web.bind.annotation.RestController;
 import com.vpu.mp.service.foundation.JsonResult;
 import com.vpu.mp.service.foundation.PageResult;
 import com.vpu.mp.service.pojo.shop.decoration.ChooseLinkParam;
-import com.vpu.mp.service.pojo.shop.decoration.StoreParam;
-import com.vpu.mp.service.pojo.shop.decoration.XcxCustomerPagePojo;
+import com.vpu.mp.service.pojo.shop.decoration.StoreVo;
+import com.vpu.mp.service.pojo.shop.decoration.XcxCustomerPageVo;
+import com.vpu.mp.service.pojo.shop.decoration.XcxLinkListVo;
+import com.vpu.mp.service.pojo.shop.decoration.XcxNameListVo;
 import com.vpu.mp.service.pojo.shop.store.store.StoreListQueryParam;
 import com.vpu.mp.service.shop.ShopApplication;
 
@@ -47,7 +51,7 @@ public class AdminChooseLinkController extends AdminBaseController{
 	 */
 	@PostMapping(value = "/admin/decorate/page/custom")
 	public JsonResult customPage(ChooseLinkParam param) {
-		PageResult<XcxCustomerPagePojo> pageList = shop().chooselink.customPage(param.getPage());
+		PageResult<XcxCustomerPageVo> pageList = shop().chooselink.customPage(param.getPage());
 		return success(pageList);
 	}
 	
@@ -76,7 +80,7 @@ public class AdminChooseLinkController extends AdminBaseController{
 	}
 	
 	/**
-	 * 小程序跳转
+	 * 小程序跳转列表
 	 * @return
 	 */
 	public Boolean xcxSkip() {
@@ -98,7 +102,27 @@ public class AdminChooseLinkController extends AdminBaseController{
 	 */
 	@PostMapping(value = "/admin/decorate/store")
 	public JsonResult store(StoreListQueryParam param) {
-		PageResult<StoreParam> storeList = shop().chooselink.store(param);
+		PageResult<StoreVo> storeList = shop().chooselink.store(param);
 		return this.success(storeList);
+	}
+	
+	/**
+	 * 获取小程序名称
+	 * @return
+	 */
+	@PostMapping(value = "/admin/decorate/xcx/list")
+	public JsonResult getXcxNameList() {
+		List<XcxNameListVo> list = shop().chooselink.getXcxNameList();
+		return this.success(list);
+	}
+	
+	/**
+	 * 装修跳转链接列表
+	 * @return
+	 */
+	@PostMapping(value = "/admin/decorate/link/list")
+	public JsonResult XcxLinkList() {
+		List<XcxLinkListVo> linkList = shop().chooselink.getXcxLinkList();
+		return this.success(linkList);
 	}
 }

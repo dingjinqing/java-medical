@@ -19,7 +19,7 @@ import com.vpu.mp.service.foundation.Util;
 import com.vpu.mp.service.pojo.saas.shop.version.VersionConfig;
 import com.vpu.mp.service.pojo.shop.decoration.PageListQueryParam;
 import com.vpu.mp.service.pojo.shop.decoration.PageStoreParam;
-import com.vpu.mp.service.pojo.shop.decoration.XcxCustomerPagePojo;
+import com.vpu.mp.service.pojo.shop.decoration.XcxCustomerPageVo;
 
 /**
  * 
@@ -33,14 +33,14 @@ public class MpDecorationService extends BaseService {
 	 * @param param
 	 * @return
 	 */
-	public PageResult<XcxCustomerPagePojo> getPageList(XcxCustomerPagePojo param) {
+	public PageResult<XcxCustomerPageVo> getPageList(XcxCustomerPageVo param) {
 		if (getPageCount() == 0) {
 			this.addDefaultPage();
 		}
 		SelectWhereStep<Record> select = db().select().from(XCX_CUSTOMER_PAGE);
 		select = buildOptions(select, param);
 		select.orderBy(XCX_CUSTOMER_PAGE.PAGE_TYPE.desc(), XCX_CUSTOMER_PAGE.CREATE_TIME.desc());
-		return this.getPageResult(select, XcxCustomerPagePojo.page,XcxCustomerPagePojo.class);
+		return this.getPageResult(select, XcxCustomerPageVo.page,XcxCustomerPageVo.class);
 	}
 
 	/**
@@ -50,7 +50,7 @@ public class MpDecorationService extends BaseService {
 	 * @param param
 	 * @return
 	 */
-	public SelectWhereStep<Record> buildOptions(SelectWhereStep<Record> select, XcxCustomerPagePojo param) {
+	public SelectWhereStep<Record> buildOptions(SelectWhereStep<Record> select, XcxCustomerPageVo param) {
 		Byte enabled = 1;
 		select.where(XCX_CUSTOMER_PAGE.PAGE_ENABLED.eq(enabled));
 
@@ -86,7 +86,7 @@ public class MpDecorationService extends BaseService {
 	 * @param page
 	 * @return
 	 */
-	public XcxCustomerPageRecord addPage(XcxCustomerPagePojo page) {
+	public XcxCustomerPageRecord addPage(XcxCustomerPageVo page) {
 		XcxCustomerPageRecord record = db().newRecord(XCX_CUSTOMER_PAGE, page);
 		record.insert();
 		return record;
@@ -222,7 +222,7 @@ public class MpDecorationService extends BaseService {
 	 * @param info
 	 * @return
 	 */
-	public Boolean saveDecoration(XcxCustomerPagePojo info) {
+	public Boolean saveDecoration(XcxCustomerPageVo info) {
 		XcxCustomerPageRecord record = db().newRecord(XCX_CUSTOMER_PAGE, info);
 		int res = db().executeUpdate(record);
 		if(res > 0) {

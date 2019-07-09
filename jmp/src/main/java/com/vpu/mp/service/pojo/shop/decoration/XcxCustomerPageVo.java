@@ -11,7 +11,7 @@ import javax.annotation.Generated;
 
 
 
-public class XcxCustomerPagePojo implements Serializable {
+public class XcxCustomerPageVo implements Serializable {
 
     private static final long serialVersionUID = -623202346;
 
