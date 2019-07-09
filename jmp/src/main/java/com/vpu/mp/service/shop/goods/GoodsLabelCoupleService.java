@@ -5,6 +5,8 @@ import static com.vpu.mp.db.shop.Tables.GOODS_LABEL_COUPLE;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.jooq.DSLContext;
+
 import com.vpu.mp.db.shop.tables.records.GoodsLabelCoupleRecord;
 import com.vpu.mp.service.foundation.BaseService;
 import com.vpu.mp.service.pojo.shop.goods.label.GoodsLabel;
@@ -69,6 +71,26 @@ public class GoodsLabelCoupleService extends BaseService {
 	 * @param goodsLabelCoupleList
 	 */
 	public void batchInsert(List<GoodsLabelCouple> goodsLabelCoupleList) {
+//		if(goodsLabelCoupleList == null || goodsLabelCoupleList.size()==0) {
+//			return ;
+//		}
+//		List<GoodsLabelCoupleRecord> labelCoupleRecordList = new ArrayList(goodsLabelCoupleList.size());
+//		for (GoodsLabelCouple goodsLabelCouple : goodsLabelCoupleList) {
+//			labelCoupleRecordList.add(goodsLabelCouple.toRecord());
+//		}
+//		db().batchInsert(labelCoupleRecordList).execute();
+//		return ;
+		
+		batchInsert(db(),goodsLabelCoupleList);
+	}
+	
+	/**
+	 *	重载batchInsert方法，对外提供统一事务处理接口
+	 *@author 李晓冰
+	 *@param db
+	 *@param goodsLabelCoupleList
+	 */
+	public void batchInsert(DSLContext db,List<GoodsLabelCouple> goodsLabelCoupleList) {
 		if(goodsLabelCoupleList == null || goodsLabelCoupleList.size()==0) {
 			return ;
 		}
@@ -76,8 +98,7 @@ public class GoodsLabelCoupleService extends BaseService {
 		for (GoodsLabelCouple goodsLabelCouple : goodsLabelCoupleList) {
 			labelCoupleRecordList.add(goodsLabelCouple.toRecord());
 		}
-		db().batchInsert(labelCoupleRecordList).execute();
-		return ;
+		db.batchInsert(labelCoupleRecordList).execute();
 	}
 	
 	
