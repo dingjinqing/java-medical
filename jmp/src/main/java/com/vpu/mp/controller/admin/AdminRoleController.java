@@ -16,8 +16,10 @@ import org.springframework.web.bind.annotation.RestController;
 import com.vpu.mp.db.main.tables.records.ShopAccountRecord;
 import com.vpu.mp.service.foundation.JsonResult;
 import com.vpu.mp.service.foundation.JsonResultCode;
+import com.vpu.mp.service.foundation.Util;
 import com.vpu.mp.service.pojo.shop.auth.AdminTokenAuthInfo;
 import com.vpu.mp.service.pojo.shop.auth.ShopManageParam;
+import com.vpu.mp.service.pojo.shop.auth.ShopManagePwdParam;
 import com.vpu.mp.service.pojo.shop.auth.ShopReq;
 import com.vpu.mp.service.pojo.shop.auth.ShopSelectResp;
 
@@ -72,8 +74,8 @@ public class AdminRoleController extends AdminBaseController {
 	}
 
 	/**
-	 * 账户设置的查询
-	 * 只让主账户进入设置
+	 * 账户设置的查询 只让主账户进入设置
+	 * 
 	 * @return
 	 */
 	@RequestMapping(value = "/admin/account/manage/query")
@@ -84,10 +86,10 @@ public class AdminRoleController extends AdminBaseController {
 			return fail(JsonResultCode.CODE_ACCOUNT_ROLE__AUTH_INSUFFICIENT);
 		}
 		ShopAccountRecord shopRecord = saas.shop.accout.checkByIdAndNameOnMain(info.getUserName(), info.getSysId());
-		if(shopRecord==null) {
+		if (shopRecord == null) {
 			return fail();
 		}
-		ShopManageParam resp=new ShopManageParam();
+		ShopManageParam resp = new ShopManageParam();
 		resp.setSysId(shopRecord.getSysId());
 		resp.setAccountName(shopRecord.getAccountName());
 		resp.setMobile(shopRecord.getMobile());
@@ -95,25 +97,60 @@ public class AdminRoleController extends AdminBaseController {
 		resp.setShopAvatar(shopRecord.getShopAvatar());
 		return success(resp);
 	}
-	
+
 	/**
 	 * 账户设置更新
+	 * 
 	 * @param shopManageParam
 	 * @param result
 	 * @return
 	 */
 	@RequestMapping(value = "/admin/account/manage")
-	public JsonResult manage(@RequestBody @Valid ShopManageParam shopManageParam,BindingResult result) {
-		//saas.shop.accout.updateAccountInfo()
-		if(result.hasErrors()) {
+	public JsonResult manage(@RequestBody @Valid ShopManageParam shopManageParam, BindingResult result) {
+		// saas.shop.accout.updateAccountInfo()
+		if (result.hasErrors()) {
 			return this.fail(result.getFieldError().getDefaultMessage());
 		}
 		AdminTokenAuthInfo info = adminAuth.user();
-		ShopAccountRecord pojo=new ShopAccountRecord();
+		ShopAccountRecord pojo = new ShopAccountRecord();
 		pojo.setSysId(info.getSysId());
 		pojo.setAccountName(shopManageParam.getAccountName());
 		pojo.setShopAvatar(shopManageParam.getShopAvatar());
-		if(saas.shop.accout.updateById(pojo)<0) {
+		if (saas.shop.accout.updateById(pojo) < 0) {
+			return fail(JsonResultCode.CODE_FAIL);
+		}
+		return success(JsonResultCode.CODE_SUCCESS);
+	}
+
+	/**
+	 * 更新用户密码
+	 * @param sParam
+	 * @return
+	 */
+	@PostMapping(value = "/admin/account/manage/updatepwd")
+	public JsonResult managePasswd(@RequestBody @Valid ShopManagePwdParam sParam, BindingResult result) {
+		if (result.hasErrors()) {
+			return this.fail(result.getFieldError().getDefaultMessage());
+		}
+		AdminTokenAuthInfo info = adminAuth.user();
+		if (info == null) {
+			return fail(JsonResultCode.CODE_ACCOUNT_LOGIN_EXPIRED);
+		}
+		if (!sParam.getNewPasswd().equals(sParam.confNewPasswd)) {
+			return fail(JsonResultCode.CODE_ACCOUNT_PASSWD_NO_SAME);
+		}
+		ShopAccountRecord oldRecode = saas.shop.accout.verify(info.getUserName(), sParam.getPasswd());
+		if(oldRecode==null) {
+			return fail(JsonResultCode.CODE_ACCOUNT_OLD_PASSWD_ERROR);
+		}
+		if(sParam.getNewPasswd().equals(sParam.getPasswd())) {
+			return fail(JsonResultCode.CODE_ACCOUNT_OLD_NEW_PASSWD_NO_SAME);
+		}
+		ShopAccountRecord pojo = new ShopAccountRecord();
+		pojo.setSysId(info.getSysId());
+		pojo.setPassword(Util.md5(sParam.newPasswd));
+		
+		if (saas.shop.accout.updateById(pojo) < 0) {
 			return fail(JsonResultCode.CODE_FAIL);
 		}
 		return success(JsonResultCode.CODE_SUCCESS);
