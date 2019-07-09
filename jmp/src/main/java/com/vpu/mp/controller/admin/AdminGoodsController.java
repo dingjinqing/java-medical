@@ -2,8 +2,11 @@ package com.vpu.mp.controller.admin;
 
 import com.vpu.mp.service.foundation.JsonResult;
 import com.vpu.mp.service.foundation.JsonResultCode;
+import com.vpu.mp.service.foundation.PageResult;
 import com.vpu.mp.service.pojo.shop.goods.Goods;
 import com.vpu.mp.service.pojo.shop.goods.GoodsColumnCheckExistParam;
+import com.vpu.mp.service.pojo.shop.goods.GoodsPageListParam;
+import com.vpu.mp.service.pojo.shop.goods.GoodsPageListResp;
 import com.vpu.mp.service.pojo.shop.goods.spec.GoodsSpec;
 import com.vpu.mp.service.pojo.shop.goods.spec.GoodsSpecProduct;
 import com.vpu.mp.service.pojo.shop.goods.spec.GoodsSpecVal;
@@ -25,9 +28,12 @@ import java.util.Map;
 public class AdminGoodsController extends AdminBaseController {
 
 
-    @Override
-    protected ShopApplication shop() {
-        return saas.getShopApp(471752);
+
+    @PostMapping("/api/admin/goods/list")
+    public JsonResult getPageList(@RequestBody GoodsPageListParam param){
+        PageResult<GoodsPageListResp> pageList = shop().goods.getPageList(param);
+
+        return success(pageList);
     }
 
     @PostMapping("/api/admin/goods/add")
