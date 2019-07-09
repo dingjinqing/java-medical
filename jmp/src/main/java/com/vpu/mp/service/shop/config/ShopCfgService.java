@@ -271,7 +271,12 @@ public class ShopCfgService extends BaseService{
 	final public static  String K_SHOP_STYLE="shop_style";
 	
 	/**
-	   * 搜索配置
+	   * 搜索配置  
+	 *  title_action:默认搜索（取值如下   0：不设置，1：全部商品，2：自定义）
+	 *  title_custom:自定义搜索值
+	 *  is_open_history:是否开启搜索历史
+	 *  is_open_hot_words：是否开启热词
+	 *  hot_words: 热词
 	 * {"title_action":"2","title_custom":"","is_open_history":"1","is_open_hot_words":"1","hot_words":["瓜子花生八宝粥","啤酒饮料矿泉水"]}
 	 */
 	final public static String K_SEARCH_CONFIG="search_config";
