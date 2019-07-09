@@ -1,5 +1,7 @@
 package com.vpu.mp.service.auth;
 
+import java.util.Calendar;
+
 import javax.servlet.http.HttpServletRequest;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
@@ -13,6 +15,7 @@ import com.vpu.mp.db.main.tables.records.ShopRecord;
 import com.vpu.mp.service.foundation.JedisManager;
 import com.vpu.mp.service.foundation.Util;
 import com.vpu.mp.service.pojo.shop.auth.ShopLoginParam;
+import com.vpu.mp.service.pojo.saas.auth.SystemTokenAuthInfo;
 import com.vpu.mp.service.pojo.shop.auth.AdminTokenAuthInfo;
 import com.vpu.mp.service.saas.SaasApplication;
 
@@ -22,7 +25,7 @@ import com.vpu.mp.service.saas.SaasApplication;
  *
  */
 @Component
-public class AdminAuth{
+public class AdminAuth {
 
 	@Autowired
 	protected HttpServletRequest request;
@@ -40,24 +43,22 @@ public class AdminAuth{
 	 * 登出
 	 */
 	public boolean logout() {
-		String token = getToken();
-		if (isValidToken(token)) {
-			if (jedis.get(token) != null) {
-				jedis.delete(token);
-				return true;
-			}
+		AdminTokenAuthInfo info = user();
+		if(info == null) {
+			return false;
 		}
-		return false;
+		this.deleteTokenInfo(info);
+		return true;
 	}
-	
+
 	protected String getToken() {
 		return request.getHeader(TOKEN);
 	}
-	
+
 	/**
 	 * 是否有效system登录TOKEN
 	 * 
-	 * @param token
+	 * @param  token
 	 * @return
 	 */
 	public boolean isValidToken(String token) {
@@ -67,7 +68,7 @@ public class AdminAuth{
 	/**
 	 * 登录账户
 	 * 
-	 * @param param
+	 * @param  param
 	 * @return
 	 */
 	public AdminTokenAuthInfo login(ShopLoginParam param) {
@@ -94,29 +95,46 @@ public class AdminAuth{
 		info.setSubUserName(subAccount != null ? subAccount.getAccountName() : "");
 		info.setSubLogin(subAccount != null);
 		info.setLoginShopId(0);
-		String token = this.getToken(info);
-		info.setToken(token);
-
-		Integer timeout = Util.getInteger(Util.getProperty(AUTH_TIMEOUT));
-		jedis.set(token, Util.toJSON(info), timeout);
+		
+		// 如果当前登录用户与正在登录的用户相同，则使用当前登录用户的Token
+		AdminTokenAuthInfo user = user();
+		if(user!=null && user.getSysId() == info.getSysId() && user.getSubAccountId() == info.getSubAccountId()) {
+			info.setToken(user.getToken());
+		}
+		
+		this.saveTokenInfo(info);
 		return info;
 	}
 
 	/**
-	 * 得到登录账户的token
+	 * 保存登录信息
 	 * 
 	 * @param info
-	 * @return
 	 */
-	protected String getToken(AdminTokenAuthInfo info) {
-		String str = String.format("admin_%d_%d_%s", info.getSysId(), info.getSubAccountId(),
-				Util.getProperty(AUTH_SECRET));
-		return TOKEN_PREFIX+Util.md5(str);
+	protected void saveTokenInfo(AdminTokenAuthInfo info) {
+		if (StringUtils.isBlank(info.getToken())) {
+			String loginToken = TOKEN_PREFIX
+					+ Util.md5(String.format("admin_login_%d_%d_%s_%d", info.getSysId(), info.getSubAccountId(),
+							Util.getProperty(AUTH_SECRET), Calendar.getInstance().getTimeInMillis()));
+			info.setToken(loginToken);
+		}
+		Integer timeout = Util.getInteger(Util.getProperty(AUTH_TIMEOUT));
+		jedis.set(info.token, Util.toJSON(info), timeout);
+	}
+
+	/**
+	 * 删除登录信息
+	 * 
+	 * @param info
+	 */
+	protected void deleteTokenInfo(AdminTokenAuthInfo info) {
+		jedis.delete(info.token);
 	}
 
 	/**
 	 * 切换店铺
-	 * @param shopId
+	 * 
+	 * @param  shopId
 	 * @return
 	 */
 	public boolean switchShopLogin(Integer shopId) {
@@ -134,7 +152,7 @@ public class AdminAuth{
 		if (shop.getSysId() != info.getSysId()) {
 			return false;
 		}
-		if(saas.shop.checkExpire(shopId)) {
+		if (saas.shop.checkExpire(shopId)) {
 			return false;
 		}
 		Integer roleId = 0;
@@ -146,8 +164,7 @@ public class AdminAuth{
 		}
 		info.setLoginShopId(shopId);
 		info.setShopLogin(true);
-		Integer timeout = Util.getInteger(Util.getProperty(AUTH_TIMEOUT));
-		jedis.set(info.token, Util.toJSON(info), timeout);
+		this.saveTokenInfo(info);
 		return true;
 	}
 
@@ -166,15 +183,16 @@ public class AdminAuth{
 		}
 		return null;
 	}
-	
-	
+
 	/**
 	 * 重置token的存活时间
+	 * 
 	 * @param token
 	 */
 	public void reTokenTtl() {
-		String token =  getToken();
-		Integer timeout = Util.getInteger(Util.getProperty(AUTH_TIMEOUT));
-		jedis.expire(token, timeout);
+		AdminTokenAuthInfo info = user();
+		if (null != info) {
+			this.saveTokenInfo(info);
+		}
 	}
 }
