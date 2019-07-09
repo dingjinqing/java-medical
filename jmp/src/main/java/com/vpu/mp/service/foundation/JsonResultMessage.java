@@ -90,4 +90,6 @@ public class JsonResultMessage {
     final public static String CONFIG_PLEDGE_CONTENT_NULL = "config.pledge.content.null";
     final public static String CONFIG_PLEDGE_CONTENT_LENGTH = "config.pledge.content.length";
     final public static String CONFIG_PLEDGE_LOGO_NULL = "config.pledge.logo.null";
+
+	final public static String AUTH_SHOP_NOT_EXIST = "auth.shop.appId.not.exist";
 }
