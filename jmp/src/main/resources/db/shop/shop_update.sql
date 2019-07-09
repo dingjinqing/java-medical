@@ -35,6 +35,14 @@ CHANGE COLUMN specvalid spec_val_id int(11) 	not null auto_increment ,
 CHANGE COLUMN specvalname spec_val_name VARCHAR(60) not null DEFAULT '',
 ADD UNIQUE INDEX unique_spec_id_spec_val_name (spec_id,spec_val_name);
 
+
+-- 7月9日 黄壮壮 修改b2c_tag表名in_time为create_time 并且添加字段update_time
+alter table b2c_tag CHANGE COLUMN in_time create_time TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP; 
+ALTER TABLE b2c_tag ADD COLUMN update_time TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '记录修改时间' AFTER create_time;
+
+
+
 -- 7月9日添加
 -- 修改标签组关系表
 ALTER TABLE b2c_goods_label_couple MODIFY COLUMN label_id INT(11) NOT NULL;
+
