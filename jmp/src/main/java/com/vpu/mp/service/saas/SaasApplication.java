@@ -13,6 +13,7 @@ import com.vpu.mp.service.saas.privilege.SystemUserService;
 import com.vpu.mp.service.saas.region.CityService;
 import com.vpu.mp.service.saas.region.RegionService;
 import com.vpu.mp.service.saas.shop.ShopService;
+import com.vpu.mp.service.saas.wechat.WechatService;
 import com.vpu.mp.service.shop.ShopApplication;
 
 
@@ -32,6 +33,7 @@ public class SaasApplication extends ServiceContainer {
 	public ArticleService article;
 	public ArticleCategoryService articleCategory;
 	public OfficialService official;
+	public WechatService wechat;
 	
 	protected CityService city;
 
