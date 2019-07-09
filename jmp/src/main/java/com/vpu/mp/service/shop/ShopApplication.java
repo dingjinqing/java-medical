@@ -11,6 +11,8 @@ import com.vpu.mp.service.shop.goods.GoodsRecommendService;
 import com.vpu.mp.service.shop.goods.GoodsService;
 import com.vpu.mp.service.shop.image.ImageCategoryService;
 import com.vpu.mp.service.shop.image.ImageService;
+import com.vpu.mp.service.shop.member.MemberService;
+import com.vpu.mp.service.shop.member.TagService;
 import com.vpu.mp.service.shop.order.OrderService;
 import com.vpu.mp.service.shop.store.store.StoreService;
 import com.vpu.mp.service.shop.version.VersionService;
@@ -34,6 +36,16 @@ public class ShopApplication extends ServiceContainer {
 	public ChooseLinkService chooselink;
 	public TradeService trade;
 	public GoodsRecommendService goodsRecommend;
+	/**
+	 * 会员
+	 */
+	public MemberService member;
+	/**
+	 * 会员标签
+	 */
+	public TagService tag;
+	
+
 	public ShopBasicConfigService shopBasicConfig;
 
 	public ShopApplication(Integer shopId) {
