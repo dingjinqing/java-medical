@@ -1,11 +1,10 @@
 package com.vpu.mp.service.pojo.shop.goods;
 
-import lombok.Data;
-
 import java.math.BigDecimal;
 import java.util.List;
 
-import com.vpu.mp.service.pojo.shop.goods.label.GoodsLabelCouple;
+
+import lombok.Data;
 
 /**
  * @author 李晓冰
@@ -24,5 +23,11 @@ public class GoodsPageListResp {
     private String brandName;
     private Integer goodsNumber;
     private Integer goodsSaleNum;
-    private List<GoodsLabelCouple> goodsLabelCouples;
+    private List<GoodsLabel> goodsLabels;
+
+    @Data
+    public static class GoodsLabel{
+        private Integer id;
+        private String name;
+    }
 }

@@ -27,9 +27,7 @@ import java.util.Map;
 @RestController
 public class AdminGoodsController extends AdminBaseController {
 
-
-
-    /**
+	/**
      * 商品分页查询
      *
      * @param param
