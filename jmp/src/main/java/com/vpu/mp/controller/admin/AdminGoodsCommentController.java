@@ -15,7 +15,7 @@ import com.vpu.mp.service.pojo.shop.goods.comment.GoodsCommentPageListParam;
 import com.vpu.mp.service.shop.ShopApplication;
 
 /**
- * 商品品牌控制器
+ * 商品评论控制器
  *
  * @author liangchen
  * @date 2019年7月7日
@@ -44,7 +44,7 @@ public class AdminGoodsCommentController extends AdminBaseController {
 	 * @param param
 	 * @return
 	 */
-	@PostMapping("/api/admin/goods/comment/check")
+	@PostMapping("/api/admin/goods/comment/checklist")
 	public JsonResult getPageList(@RequestBody GoodsCommentCheckPageListParam param) {
 
 		PageResult<GoodsCommentCheck> pageResult = shop().goods.goodsComment.getCheckPageList(param);
@@ -71,7 +71,7 @@ public class AdminGoodsCommentController extends AdminBaseController {
 	/**
 	 * 删除
 	 *
-	 * @param goodsBrand
+	 * @param goodsComment
 	 * @return
 	 */
 	@PostMapping("/api/admin/goods/comment/delete")
@@ -85,7 +85,7 @@ public class AdminGoodsCommentController extends AdminBaseController {
 	/**
 	 * 修改审核状态
 	 *
-	 * @param goodsBrand
+	 * @param goodsComment
 	 * @return
 	 */
 
