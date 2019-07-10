@@ -11,9 +11,8 @@ import lombok.Data;
  * 2019-07-05 18:06
  */
 @Data
-public class MemberPageListParam {
-	static final Page DEFAULT_PAGE = new Page();
-	private Page page=DEFAULT_PAGE;
+public class MemberPageListParam extends BaseMemberPojo{
+
 	private String mobile;
 	private String username;
 	//来源 门店来源-1未录入0后台>0为门店
