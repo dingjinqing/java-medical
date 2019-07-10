@@ -11,7 +11,7 @@ import lombok.Data;
  * @date 2019年07月09日
  */
 @Data
-public class GoodsPageListResp {
+public class GoodsPageListVo {
     private Integer goodsId;
     private String goodsName;
     private BigDecimal shopPrice;

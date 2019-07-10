@@ -2,7 +2,6 @@ package com.vpu.mp.service.pojo.shop.goods.spec;
 
 import lombok.Data;
 
-import java.sql.Timestamp;
 import java.util.List;
 
 /**

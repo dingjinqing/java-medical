@@ -1,9 +1,8 @@
 package com.vpu.mp.service.pojo.shop.goods.spec;
 
-import lombok.Data;
-
 import java.math.BigDecimal;
-import java.sql.Timestamp;
+
+import lombok.Data;
 
 /**
  * 货品SKU

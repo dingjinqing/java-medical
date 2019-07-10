@@ -1,24 +1,25 @@
 package com.vpu.mp.controller.admin;
 
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RestController;
+
 import com.vpu.mp.service.foundation.JsonResult;
 import com.vpu.mp.service.foundation.JsonResultCode;
 import com.vpu.mp.service.foundation.PageResult;
 import com.vpu.mp.service.pojo.shop.goods.Goods;
 import com.vpu.mp.service.pojo.shop.goods.GoodsColumnCheckExistParam;
 import com.vpu.mp.service.pojo.shop.goods.GoodsPageListParam;
-import com.vpu.mp.service.pojo.shop.goods.GoodsPageListResp;
+import com.vpu.mp.service.pojo.shop.goods.GoodsPageListVo;
 import com.vpu.mp.service.pojo.shop.goods.spec.GoodsSpec;
 import com.vpu.mp.service.pojo.shop.goods.spec.GoodsSpecProduct;
 import com.vpu.mp.service.pojo.shop.goods.spec.GoodsSpecVal;
 import com.vpu.mp.service.shop.ShopApplication;
 import com.vpu.mp.service.shop.goods.GoodsService;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RestController;
-
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 
 /**
  * @author 李晓冰
@@ -35,7 +36,7 @@ public class AdminGoodsController extends AdminBaseController {
      */
     @PostMapping("/api/admin/goods/list")
     public JsonResult getPageList(@RequestBody GoodsPageListParam param) {
-        PageResult<GoodsPageListResp> pageList = shop().goods.getPageList(param);
+        PageResult<GoodsPageListVo> pageList = shop().goods.getPageList(param);
 
         return success(pageList);
     }

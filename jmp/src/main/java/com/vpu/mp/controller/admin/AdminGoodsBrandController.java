@@ -9,7 +9,6 @@ import com.vpu.mp.service.foundation.JsonResultCode;
 import com.vpu.mp.service.foundation.PageResult;
 import com.vpu.mp.service.pojo.shop.goods.brand.GoodsBrand;
 import com.vpu.mp.service.pojo.shop.goods.brand.GoodsBrandPageListParam;
-import com.vpu.mp.service.shop.ShopApplication;
 
 /**
  * 	商品品牌控制器
