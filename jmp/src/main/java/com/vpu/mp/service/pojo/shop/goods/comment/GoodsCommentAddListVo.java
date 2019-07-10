@@ -9,7 +9,7 @@ import java.math.BigDecimal;
  * @date 2019年07月09日
  */
 @Data
-public class GoodsCommentAdd {
+public class GoodsCommentAddListVo {
 	
 	private Integer goodsId;
 	private String goodsImg;

@@ -21,11 +21,11 @@ import org.jooq.tools.StringUtils;
 
 import com.vpu.mp.service.foundation.BaseService;
 import com.vpu.mp.service.foundation.PageResult;
-import com.vpu.mp.service.pojo.shop.goods.comment.GoodsComment;
-import com.vpu.mp.service.pojo.shop.goods.comment.GoodsCommentAdd;
-import com.vpu.mp.service.pojo.shop.goods.comment.GoodsCommentAddComm;
-import com.vpu.mp.service.pojo.shop.goods.comment.GoodsCommentAnswer;
-import com.vpu.mp.service.pojo.shop.goods.comment.GoodsCommentCheck;
+import com.vpu.mp.service.pojo.shop.goods.comment.GoodsCommentParam;
+import com.vpu.mp.service.pojo.shop.goods.comment.GoodsCommentAddListVo;
+import com.vpu.mp.service.pojo.shop.goods.comment.GoodsCommentAddCommParam;
+import com.vpu.mp.service.pojo.shop.goods.comment.GoodsCommentAnswerParam;
+import com.vpu.mp.service.pojo.shop.goods.comment.GoodsCommentCheckListVo;
 import com.vpu.mp.service.pojo.shop.goods.comment.GoodsCommentPageListParam;
 
 /**
@@ -42,7 +42,7 @@ public class GoodsCommentService extends BaseService {
      * @param param
      * @return
      */
-    public PageResult<GoodsComment> getPageList(GoodsCommentPageListParam param) {
+    public PageResult<GoodsCommentParam> getPageList(GoodsCommentPageListParam param) {
         SelectConditionStep<Record12<Integer,String,Byte, String, String,Timestamp, String,  String, String,String, Byte,String>> selectFrom = db()
         		.select(COMMENT_GOODS.ID,
         		COMMENT_GOODS.ORDER_SN,COMMENT_GOODS.COMMSTAR,
@@ -58,7 +58,7 @@ public class GoodsCommentService extends BaseService {
 
         select.orderBy( COMMENT_GOODS.CREATE_TIME.desc());
 
-        PageResult<GoodsComment> pageResult = this.getPageResult(select, param.getCurrentPage(), param.getPageRows(), GoodsComment.class);
+        PageResult<GoodsCommentParam> pageResult = this.getPageResult(select, param.getCurrentPage(), param.getPageRows(), GoodsCommentParam.class);
 
         return pageResult;
     }
@@ -99,7 +99,7 @@ public class GoodsCommentService extends BaseService {
      * @param param
      * @return
      */
-    public PageResult<GoodsCommentCheck> getCheckPageList(GoodsCommentPageListParam param) {
+    public PageResult<GoodsCommentCheckListVo> getCheckPageList(GoodsCommentPageListParam param) {
     	SelectConditionStep<Record13<Integer,String, String,  String,  String ,String,Byte, String,String, String,Timestamp,Byte,Byte>> selectFrom = db()
         		.select(COMMENT_GOODS.ID,
         		COMMENT_GOODS.ORDER_SN,ORDER_GOODS.GOODS_IMG,ORDER_GOODS.GOODS_NAME,USER.USERNAME,USER.MOBILE,
@@ -115,7 +115,7 @@ public class GoodsCommentService extends BaseService {
 
         select.orderBy( COMMENT_GOODS.CREATE_TIME.desc());
 
-        PageResult<GoodsCommentCheck> pageResult = this.getPageResult(select, param.getCurrentPage(), param.getPageRows(), GoodsCommentCheck.class);
+        PageResult<GoodsCommentCheckListVo> pageResult = this.getPageResult(select, param.getCurrentPage(), param.getPageRows(), GoodsCommentCheckListVo.class);
 
         return pageResult;
     }
@@ -148,7 +148,7 @@ public class GoodsCommentService extends BaseService {
         }
         
         if (param.getFlag() != GoodsCommentPageListParam.FLAG_DEFAULT_VALUE) {
-            scs = scs.and(field("flag").eq(param.getFlag()));
+            scs = scs.and(COMMENT_GOODS.FLAG.eq((byte)param.getFlag()));
         }
 
         return scs;
@@ -160,7 +160,7 @@ public class GoodsCommentService extends BaseService {
      * @param goodsComment
      * @return 数据库受影响行数
      */
-    public int delete(GoodsComment goodsComment) {
+    public int delete(GoodsCommentParam goodsComment) {
         return db().update(COMMENT_GOODS).set(COMMENT_GOODS.DEL_FLAG, (byte) 1).where(COMMENT_GOODS.ID.eq(goodsComment.getId()))
                 .execute();
     }
@@ -171,7 +171,7 @@ public class GoodsCommentService extends BaseService {
      * @param goodsCommentAnswer
      * @return 数据库受影响行数
      */
-	public int insertAnswer(GoodsCommentAnswer goodsCommentAnswer) {
+	public int insertAnswer(GoodsCommentAnswerParam goodsCommentAnswer) {
 		 int result = db()
 	                .insertInto(COMMENT_GOODS_ANSWER, COMMENT_GOODS_ANSWER.COMMENT_ID, COMMENT_GOODS_ANSWER.CONTENT)
 	                .values(goodsCommentAnswer.getCommentId(),goodsCommentAnswer.getContent())
@@ -187,13 +187,13 @@ public class GoodsCommentService extends BaseService {
      * @param goodsComment
      * @return
      */
-    public int passflag(GoodsComment goodsComment) {
+    public int passflag(GoodsCommentParam goodsComment) {
         return db().update(COMMENT_GOODS).set(COMMENT_GOODS.FLAG,(byte)GoodsCommentPageListParam.FLAG_PASS_VALUE)
                 .where(COMMENT_GOODS.ID.eq(goodsComment.getId()))
                 .execute();
     }
     
-    public int refuseflag(GoodsComment goodsComment) {
+    public int refuseflag(GoodsCommentParam goodsComment) {
         return db().update(COMMENT_GOODS).set(COMMENT_GOODS.FLAG,(byte)GoodsCommentPageListParam.FLAG_REFUSE_VALUE)
                 .where(COMMENT_GOODS.ID.eq(goodsComment.getId()))
                 .execute();
@@ -205,7 +205,7 @@ public class GoodsCommentService extends BaseService {
      * @param goodsCommentAdd
      * @return
      */
-    public PageResult<GoodsCommentAdd> getAddList(GoodsCommentPageListParam param) {
+    public PageResult<GoodsCommentAddListVo> getAddList(GoodsCommentPageListParam param) {
 		
     	SelectConditionStep<Record10<Integer, String, String, String,String,  BigDecimal, Integer, Integer, Integer, Integer>> selectFrom = db()
     			.select(GOODS.GOODS_ID, GOODS.GOODS_IMG, GOODS.GOODS_NAME, GOODS.GOODS_SN,SORT.SORT_NAME, GOODS.SHOP_PRICE, 
@@ -216,7 +216,7 @@ public class GoodsCommentService extends BaseService {
 
         SelectConditionStep<?> select = this.buildAddOptions(selectFrom, param);
 
-        PageResult<GoodsCommentAdd> pageResult = this.getPageResult(select, param.getCurrentPage(), param.getPageRows(), GoodsCommentAdd.class);
+        PageResult<GoodsCommentAddListVo> pageResult = this.getPageResult(select, param.getCurrentPage(), param.getPageRows(), GoodsCommentAddListVo.class);
 
     	return pageResult;
 	}
@@ -249,7 +249,7 @@ public class GoodsCommentService extends BaseService {
      * @param goodsCommentAddComm
      * @return 数据库受影响行数
      */
-	public int addComment(GoodsCommentAddComm goodsCommentAddComm) {
+	public int addComment(GoodsCommentAddCommParam goodsCommentAddComm) {
 		
 		 int result = db()
 	                .insertInto(COMMENT_GOODS,COMMENT_GOODS.GOODS_ID,COMMENT_GOODS.BOGUS_USERNAME,COMMENT_GOODS.BOGUS_USER_AVATAR,

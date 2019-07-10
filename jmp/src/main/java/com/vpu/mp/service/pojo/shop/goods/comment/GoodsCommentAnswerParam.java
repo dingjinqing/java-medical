@@ -9,7 +9,7 @@ import java.sql.Timestamp;
  * @date 2019年07月07日
  */
 @Data
-public class GoodsCommentAnswer {
+public class GoodsCommentAnswerParam {
 	
 	private Integer answerId;
 	private Integer commentId;

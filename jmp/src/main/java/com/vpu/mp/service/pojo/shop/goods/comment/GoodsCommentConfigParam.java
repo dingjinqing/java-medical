@@ -8,7 +8,7 @@ import java.sql.Timestamp;;
  */
 
 @Data
-public class GoodsCommentConfig {
+public class GoodsCommentConfigParam {
 	private Integer recId;
 	private String k;
 	private String v;
