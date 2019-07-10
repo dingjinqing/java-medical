@@ -27,7 +27,7 @@ import com.vpu.mp.service.pojo.shop.order.OrderPageListQueryParam;
 
 /**
  * 
- * @author 常乐 2019年6月27日
+ * @author 常乐,王帅 2019年6月27日
  */
 public class OrderService extends BaseService {
 
@@ -37,8 +37,6 @@ public class OrderService extends BaseService {
 	 * @return PageResult
 	 */
 	public PageResult<OrderListInfoOutput> getPageList(OrderPageListQueryParam param) {
-		// 提交需删除
-		shopId=6797286;
 		PageResult<OrderListInfoOutput> pageResult = new PageResult<>();
 		Page page = param.getPage();
 		SelectJoinStep<Record1<String>> mainOrder = db().select(ORDER_INFO.MAIN_ORDER_SN).from(ORDER_INFO);
@@ -170,13 +168,6 @@ public class OrderService extends BaseService {
 		return select;
 	 }
 
-	// /**
-	// * 订单数量
-	// * @return
-	// */
-	// public int getPageCount() {
-	// return db().fetchCount(ORDER_INFO);
-	// }
 	public OrderListInfoOutput get(String orderSn) {
 		List<OrderListInfoOutput> result = db().select(ORDER_INFO.asterisk())
 			.from(ORDER_INFO)
