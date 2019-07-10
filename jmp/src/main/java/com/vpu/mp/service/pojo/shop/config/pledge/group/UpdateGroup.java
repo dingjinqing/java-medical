@@ -8,5 +8,5 @@ import javax.validation.groups.Default;
  * @date: 2019-07-09 16:09
  *
 */
-public class UpdateGroup implements Default {
+public interface UpdateGroup extends Default {
 }

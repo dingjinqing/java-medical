@@ -17,12 +17,12 @@ import javax.validation.constraints.Size;
 @NoArgsConstructor
 public class PledgeParam {
 
-    @NotNull(groups = UpdateGroup.class,message = JsonResultMessage.MSG_PARAM_ERROR)
+    @NotNull(groups = {UpdateGroup.class},message = JsonResultMessage.MSG_PARAM_ERROR)
     private Integer   id;
     @NotBlank(message = JsonResultMessage.CONFIG_PLEDGE_NAME_NULL)
     @Size(min = 1,max = 5,message = JsonResultMessage.CONFIG_PLEDGE_NAME_LENGTH)
     private String    pledgeName;
-    @NotBlank
+    @NotBlank(message = JsonResultMessage.CONFIG_PLEDGE_LOGO_NULL)
     private String    pledgeLogo;
     @NotBlank(message = JsonResultMessage.CONFIG_PLEDGE_CONTENT_NULL)
     @Size(min = 1,max = 300,message = JsonResultMessage.CONFIG_PLEDGE_CONTENT_LENGTH)
