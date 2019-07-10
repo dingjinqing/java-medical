@@ -2,12 +2,15 @@ package com.vpu.mp.service.pojo.shop.config;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 
+import lombok.Data;
+
 /**
  * @author 王兵兵
  * @description 购买按钮样例{"show_cart":1,"cart_type":"3"} 
  *
  * 2019年7月9日
  */
+@Data
 public class ShowCartConfig {
 	/**
 	 * 商品搜索页以及推荐商品列表中会显示购买按钮

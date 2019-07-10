@@ -185,12 +185,12 @@ public class ShopCommonConfigService extends BaseShopConfigService{
 		        this.set(db, K_CUSTOM_TITLE, commonCfg.getCustomTitle(), String.class);
 		        this.set(db, K_DEL_MARKET, commonCfg.getDelMarket(), Byte.class);
 		        this.set(db, K_CUSTOM_SERVICE, commonCfg.getCustomService(), Byte.class);
-		        this.set(db, K_SHOW_CART, commonCfg.getShowCart(), ShowCartConfig.class);
+		        this.setJsonObject(db, K_SHOW_CART, commonCfg.getShowCart());
 		        this.set(db, K_SERVICE_NAME, commonCfg.getServiceName(), String.class);
 		        this.set(db, K_SERVICE_CHOSE, commonCfg.getServiceChoose(), Byte.class);
 		        this.set(db, K_SERVICE_TERMS, commonCfg.getServiceTerms(), Byte.class);
-		        this.set(db, K_SHARE_CONFIG, commonCfg.getShareCfg(), ShopShareConfig.class);
-		        this.set(db, K_SHOP_STYLE, commonCfg.getShopStyle(), ShopStyleConfig.class);
+		        this.setJsonObject(db, K_SHARE_CONFIG, commonCfg.getShareCfg());
+		        this.setJsonObject(db, K_SHOP_STYLE, commonCfg.getShopStyle());
 			 });
 		 }
 		 catch(RuntimeException e) {

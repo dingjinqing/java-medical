@@ -2,11 +2,14 @@ package com.vpu.mp.service.pojo.shop.config;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 
+import lombok.Data;
+
 /**
  * @author 王兵兵
  * @description	{"share_action":"2","share_doc":"\u5e97\u94faaa","share_img_action":"1","share_img":null}
  * 2019年7月9日
  */
+@Data
 public class ShopShareConfig {
 	
 	/**
