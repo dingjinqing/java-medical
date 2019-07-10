@@ -12,7 +12,8 @@ import com.vpu.mp.service.foundation.PageResult;
 import com.vpu.mp.service.pojo.shop.store.group.StoreGroup;
 import com.vpu.mp.service.pojo.shop.store.group.StoreGroupQueryParam;
 import com.vpu.mp.service.pojo.shop.store.store.StoreListQueryParam;
-import com.vpu.mp.service.pojo.shop.store.store.StorePageListOutput;
+import com.vpu.mp.service.pojo.shop.store.store.StorePageListVo;
+import com.vpu.mp.service.pojo.shop.store.store.StoreParam;
 import com.vpu.mp.service.pojo.shop.store.store.StorePojo;
 
 /**
@@ -39,7 +40,7 @@ public class AdminStoreController extends AdminBaseController{
      */
     @PostMapping(value = "/api/admin/store/list")
     public JsonResult getStorePageList(@RequestBody(required = false) StoreListQueryParam param) {
-        PageResult<StorePageListOutput> storePageResult = shop().store.getPageList(param);
+        PageResult<StorePageListVo> storePageResult = shop().store.getPageList(param);
         return success(storePageResult);
     }
     
@@ -75,7 +76,7 @@ public class AdminStoreController extends AdminBaseController{
      * @return
      */
     @PostMapping(value = "/api/admin/store/del")
-    public JsonResult delStore(@RequestBody(required = true) @Valid StorePojo store) {
+    public JsonResult delStore(@RequestBody(required = true) @Valid StoreParam store) {
        if(shop().store.delStore(store.getStoreId())) {
     	   return success();
        }else {
@@ -88,7 +89,7 @@ public class AdminStoreController extends AdminBaseController{
      * @return
      */
     @PostMapping(value = "/api/admin/store/get")
-    public JsonResult getStore(@RequestBody(required = true) @Valid StorePojo store) {
+    public JsonResult getStore(@RequestBody(required = true) @Valid StoreParam store) {
        StorePojo storeRes = shop().store.getStore(store.getStoreId());
        if(null != storeRes) {
     	   return success(storeRes);

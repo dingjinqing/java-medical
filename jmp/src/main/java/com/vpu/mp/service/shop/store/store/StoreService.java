@@ -21,7 +21,7 @@ import com.vpu.mp.service.foundation.PageResult;
 import com.vpu.mp.service.pojo.shop.store.group.StoreGroup;
 import com.vpu.mp.service.pojo.shop.store.group.StoreGroupQueryParam;
 import com.vpu.mp.service.pojo.shop.store.store.StoreListQueryParam;
-import com.vpu.mp.service.pojo.shop.store.store.StorePageListOutput;
+import com.vpu.mp.service.pojo.shop.store.store.StorePageListVo;
 import com.vpu.mp.service.pojo.shop.store.store.StorePojo;
 
 /**
@@ -36,7 +36,7 @@ public class StoreService extends BaseService {
 	 * @param StoreListQueryParam
 	 * @return StorePageListOutput
 	 */
-	public PageResult<StorePageListOutput> getPageList(StoreListQueryParam param) {
+	public PageResult<StorePageListVo> getPageList(StoreListQueryParam param) {
 		SelectWhereStep<? extends Record> select = db().select(
 				STORE.STORE_NAME,STORE.POS_SHOP_ID,STORE_GROUP.GROUP_NAME,STORE.PROVINCE_CODE,STORE.CITY_CODE,STORE.DISTRICT_CODE,STORE.ADDRESS,STORE.MANAGER,
 				STORE.MOBILE,STORE.OPENING_TIME,STORE.CLOSE_TIME,STORE.BUSINESS_STATE
@@ -44,7 +44,7 @@ public class StoreService extends BaseService {
 				.leftJoin(STORE_GROUP).on(STORE.GROUP.eq(STORE_GROUP.GROUP_ID));
 		select = this.buildOptions(select, param);
 		select.orderBy(STORE.CREATE_TIME);
-		return getPageResult(select,param.getCurrentPage(),param.getPageRows(),StorePageListOutput.class);
+		return getPageResult(select,param.getCurrentPage(),param.getPageRows(),StorePageListVo.class);
 	}
 
 	public SelectWhereStep<? extends Record> buildOptions(SelectWhereStep<? extends  Record> select, StoreListQueryParam param) {
