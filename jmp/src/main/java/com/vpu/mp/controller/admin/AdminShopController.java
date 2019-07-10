@@ -10,7 +10,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.vpu.mp.service.foundation.JsonResult;
 import com.vpu.mp.service.foundation.JsonResultCode;
 import com.vpu.mp.service.pojo.saas.shop.ShopPojo;
-import com.vpu.mp.service.pojo.shop.config.ShopBaseCfgInfo;
+import com.vpu.mp.service.pojo.shop.config.ShopBaseConfig;
 import com.vpu.mp.service.pojo.shop.config.ShopCommonCfgInfo;
 
 
@@ -31,7 +31,7 @@ public class AdminShopController extends AdminBaseController {
 	
 	@GetMapping(value = "api/admin/config/shop/base/get")
 	public JsonResult getShopBaseInfo() {
-		ShopBaseCfgInfo shopBaseCfgInfo = new ShopBaseCfgInfo();
+		ShopBaseConfig shopBaseCfgInfo = new ShopBaseConfig();
 		ShopPojo shop = saas.shop.getShopBaseInfoById(this.shopId());
 		shopBaseCfgInfo.setExpireTime(saas.shop.renew.getShopRenewExpireTime(this.shopId()));
 		shopBaseCfgInfo.setShopName(shop.getShopName());

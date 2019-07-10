@@ -2,11 +2,14 @@ package com.vpu.mp.service.shop.config;
 
 import static com.vpu.mp.db.shop.tables.ShopCfg.SHOP_CFG;
 
+import java.util.List;
+
 import org.jooq.DSLContext;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.vpu.mp.service.foundation.BaseService;
 import com.vpu.mp.service.foundation.Util;
+import com.vpu.mp.service.pojo.shop.config.BottomNavigatorConfig;
 
 /**
  * @author 王兵兵
@@ -15,21 +18,23 @@ import com.vpu.mp.service.foundation.Util;
  * 
  */
 public class BaseShopConfigService extends BaseService {
+
 	
 	/**
 	 * 获取配置key对应value
-	 * @param key
+	 * 
+	 * @param  key
 	 * @return
 	 */
 	protected String get(String key) {
 		return db().select().from(SHOP_CFG).where(SHOP_CFG.K.eq(key)).fetchAny(SHOP_CFG.V);
 	}
 
-	
 	/**
 	 * 设置配置key对应value
-	 * @param key
-	 * @param value
+	 * 
+	 * @param  key
+	 * @param  value
 	 * @return
 	 */
 	protected int set(String key, String value) {
@@ -40,12 +45,13 @@ public class BaseShopConfigService extends BaseService {
 			return db().update(SHOP_CFG).set(SHOP_CFG.V, value).where(SHOP_CFG.K.eq(key)).execute();
 		}
 	}
-	
+
 	/**
 	 * 设置配置key对应value
-	 * @param key
-	 * @param value
-	 * @param db
+	 * 
+	 * @param  key
+	 * @param  value
+	 * @param  db
 	 * @return
 	 */
 	protected int set(DSLContext db, String key, String value) {
@@ -56,47 +62,51 @@ public class BaseShopConfigService extends BaseService {
 			return db.update(SHOP_CFG).set(SHOP_CFG.V, value).where(SHOP_CFG.K.eq(key)).execute();
 		}
 	}
-	
+
 	/**
 	 * 设置其他类型数据配置
-	 * @param <T>
-	 * @param key
-	 * @param value
-	 * @param toClass
+	 * 
+	 * @param  <T>
+	 * @param  key
+	 * @param  value
+	 * @param  toClass
 	 * @return
 	 */
-	protected <T> int set(String key, T value,Class<? extends T> toClass) {
+	protected <T> int set(String key, T value, Class<? extends T> toClass) {
 		return this.set(key, value.toString());
 	}
-	
+
 	/**
 	 * 设置其他类型数据配置
-	 * @param db
-	 * @param <T>
-	 * @param key
-	 * @param value
-	 * @param toClass
+	 * 
+	 * @param  db
+	 * @param  <T>
+	 * @param  key
+	 * @param  value
+	 * @param  toClass
 	 * @return
 	 */
-	protected <T> int set(DSLContext db, String key, T value,Class<? extends T> toClass) {
+	protected <T> int set(DSLContext db, String key, T value, Class<? extends T> toClass) {
 		return this.set(db, key, value.toString());
 	}
-	
+
 	/**
 	 * 设置json对象数据配置
-	 * @param key
-	 * @param value
+	 * 
+	 * @param  key
+	 * @param  value
 	 * @return
 	 */
 	protected int setJsonObject(String key, Object value) {
 		return this.set(key, Util.toJSON(value));
 	}
-	
+
 	/**
 	 * 设置json对象数据配置
-	 * @param key
-	 * @param value
-	 * @param db
+	 * 
+	 * @param  key
+	 * @param  value
+	 * @param  db
 	 * @return
 	 */
 	protected int setJsonObject(DSLContext db, String key, Object value) {
@@ -105,8 +115,9 @@ public class BaseShopConfigService extends BaseService {
 
 	/**
 	 * 获取配置key对应value,未取到时，则返回默认值
-	 * @param key
-	 * @param defaultValue
+	 * 
+	 * @param  key
+	 * @param  defaultValue
 	 * @return
 	 */
 	protected String get(String key, String defaultValue) {
@@ -116,10 +127,11 @@ public class BaseShopConfigService extends BaseService {
 
 	/**
 	 * 按T类型取配置key对应value
-	 * @param <T>
-	 * @param key
-	 * @param toClass
-	 * @param defaultValue
+	 * 
+	 * @param  <T>
+	 * @param  key
+	 * @param  toClass
+	 * @param  defaultValue
 	 * @return
 	 */
 	protected <T> T get(String key, Class<? extends T> toClass, T defaultValue) {
@@ -127,42 +139,42 @@ public class BaseShopConfigService extends BaseService {
 	}
 
 	/**
-	 *  按T类型取配置key对应json对象的value
-	 * @param <T>
-	 * @param key
-	 * @param toClass
+	 * 按T类型取配置key对应json对象的value
+	 * 
+	 * @param  <T>
+	 * @param  key
+	 * @param  toClass
 	 * @return
 	 */
 	protected <T> T getJsonObject(String key, Class<? extends T> toClass) {
 		String value = get(key);
-		if(null != value) {
+		if (null != value) {
 			return Util.parseJSON(value, toClass);
-		}else {
+		} else {
 			return null;
 		}
 	}
-	
+
 	/**
-	 *  按T类型取配置key对应json对象的value
-	 * @param <T>
-	 * @param key
-	 * @param toClass
+	 * 按T类型取配置key对应json对象的value
+	 * 
+	 * @param  <T>
+	 * @param  key
+	 * @param  toClass
 	 * @return
 	 */
 	@SuppressWarnings("rawtypes")
 	protected <T> T getJsonObject(String key, TypeReference valueTypeRef) {
 		return Util.parseJSON(get(key), valueTypeRef);
 	}
-	
-	
-		
 
 	/**
 	 * 按T类型取配置key对应json对象的value,如果未取到，则返回默认值
-	 * @param <T>
-	 * @param key
-	 * @param toClass
-	 * @param defaultValue
+	 * 
+	 * @param  <T>
+	 * @param  key
+	 * @param  toClass
+	 * @param  defaultValue
 	 * @return
 	 */
 	protected <T> T getJsonObject(String key, Class<? extends T> toClass, T defaultValue) {
@@ -172,8 +184,7 @@ public class BaseShopConfigService extends BaseService {
 		}
 		return result;
 	}
-	
-	
+
 // TODO: 把下面的配置写到子类中去处理	
 //
 //	/**
@@ -406,6 +417,4 @@ public class BaseShopConfigService extends BaseService {
 //	 */
 //	final public static String K_SHARE_CONFIG = "share_config";
 
-	
-	
 }

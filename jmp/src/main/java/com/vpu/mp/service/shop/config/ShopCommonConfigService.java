@@ -116,6 +116,25 @@ public class ShopCommonConfigService extends BaseShopConfigService{
 	final public static String K_SHOP_STYLE = "shop_style";
 	
 	/**
+	 * 是否显示Logo配置
+	 * @return
+	 */
+	public Byte getShowLogo() {
+		return this.get(K_SHOW_LOGO, Byte.class, (byte)0);
+	}
+	
+	/**
+	 * 设置显示Logo配置
+	 * @param value 0 或者 1
+	 * @return
+	 */
+	public int setShowLogo(Byte value) {
+		assert(value ==(byte)0 || value == (byte)1);
+		return this.set(K_SHOW_LOGO, value,Byte.class);
+	}
+	
+
+	/**
 	 * 取通用配置
 	 */
 	public ShopCommonCfgInfo getShopCommonCfg() {

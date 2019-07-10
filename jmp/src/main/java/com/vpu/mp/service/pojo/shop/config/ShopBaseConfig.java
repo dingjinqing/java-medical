@@ -12,7 +12,7 @@ import lombok.NoArgsConstructor;
  */
 @Data
 @NoArgsConstructor
-public class ShopBaseCfgInfo {
+public class ShopBaseConfig {
 	public Timestamp expireTime = null;
 	public String shopName = "";
 	public String shopAvatar = "";
