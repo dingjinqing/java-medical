@@ -7,10 +7,10 @@
   </div>
 </template>
 <script>
-import AboutUs from '@/components/index/aboutUs/aboutUsIndex'
-import Development from '@/components/index/aboutUs/development'
-import Environmental from '@/components/index/aboutUs/environmental'
-import ContactUs from '@/components/index/aboutUs/contactUs'
+import AboutUs from '@/view/index/aboutUs/aboutUsIndex'
+import Development from '@/view/index/aboutUs/development'
+import Environmental from '@/view/index/aboutUs/environmental'
+import ContactUs from '@/view/index/aboutUs/contactUs'
 export default {
   components: { AboutUs, Development, Environmental, ContactUs }
 }

@@ -4,7 +4,7 @@
   </div>
 </template>
 <script>
-import Header from '@/components/admin/index/header'
+import Header from '@/view/admin/index/header'
 export default {
   components: { Header }
 }

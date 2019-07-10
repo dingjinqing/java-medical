@@ -7,9 +7,9 @@
   </div>
 </template>
 <script>
-import Header from '@/components/index/header'
-import Footer from '@/components/index/footer'
-import Contact from '@/components/index/contact'
+import Header from '@/view/index/header'
+import Footer from '@/view/index/footer'
+import Contact from '@/view/index/contact'
 export default {
   components: { Header, Footer, Contact },
   data () {

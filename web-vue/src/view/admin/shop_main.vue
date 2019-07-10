@@ -10,10 +10,10 @@
   </div>
 </template>
 <script>
-import Header from '@/components/admin/header'
-import SelectShop from '@/components/admin/selectShop'
-import Contact from '@/components/admin/contact'
-import AccountSettings from '@/components/admin/accountSettings'
+import Header from '@/view/admin/header'
+import SelectShop from '@/view/admin/selectShop'
+import Contact from '@/view/admin/contact'
+import AccountSettings from '@/view/admin/accountSettings'
 export default {
   components: { Header, SelectShop, Contact, AccountSettings },
   data () {
