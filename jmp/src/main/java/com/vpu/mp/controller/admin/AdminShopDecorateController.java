@@ -14,6 +14,7 @@ import com.vpu.mp.service.foundation.PageResult;
 import com.vpu.mp.service.pojo.shop.config.BottomNavigatorConfig;
 import com.vpu.mp.service.pojo.shop.config.ShopStyleConfig;
 import com.vpu.mp.service.pojo.shop.decoration.XcxCustomerPageVo;
+import com.vpu.mp.service.shop.ShopApplication;
 
 import javax.validation.Valid;
 import java.io.IOException;
@@ -25,11 +26,14 @@ import java.util.List;
  * @author 常乐 2019年6月27日
  */
 @RestController
-@RequestMapping("/api")
+//@RequestMapping("/api")
 public class AdminShopDecorateController extends AdminBaseController {
 
 	private static ObjectMapper mapper = new ObjectMapper();
-
+	@Override
+    protected ShopApplication shop() {
+        return saas.getShopApp(471752);
+    }
 
 	/**
 	 * 装修页面列表

@@ -1,14 +1,15 @@
 package com.vpu.mp.service.shop.decoration;
 
 import static com.vpu.mp.db.main.tables.DecorationTemplate.DECORATION_TEMPLATE;
+import static com.vpu.mp.db.shop.tables.PageClassification.PAGE_CLASSIFICATION;
 import static com.vpu.mp.db.shop.tables.XcxCustomerPage.XCX_CUSTOMER_PAGE;
 
+import java.sql.Timestamp;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import org.jooq.Record5;
 
-import org.jooq.Record;
-import org.jooq.SelectConditionStep;
 import org.jooq.SelectWhereStep;
 
 import com.vpu.mp.db.main.tables.records.DecorationTemplateRecord;
@@ -17,7 +18,6 @@ import com.vpu.mp.service.foundation.BaseService;
 import com.vpu.mp.service.foundation.PageResult;
 import com.vpu.mp.service.foundation.Util;
 import com.vpu.mp.service.pojo.saas.shop.version.VersionConfig;
-import com.vpu.mp.service.pojo.shop.decoration.PageListQueryParam;
 import com.vpu.mp.service.pojo.shop.decoration.PageStoreParam;
 import com.vpu.mp.service.pojo.shop.decoration.XcxCustomerPageVo;
 
@@ -37,7 +37,10 @@ public class MpDecorationService extends BaseService {
 		if (getPageCount() == 0) {
 			this.addDefaultPage();
 		}
-		SelectWhereStep<Record> select = db().select().from(XCX_CUSTOMER_PAGE);
+		 SelectWhereStep<Record5<Integer, String, Timestamp, Byte, String>> select = db().select(XCX_CUSTOMER_PAGE.PAGE_ID,XCX_CUSTOMER_PAGE.PAGE_NAME,XCX_CUSTOMER_PAGE.CREATE_TIME,XCX_CUSTOMER_PAGE.PAGE_TYPE,PAGE_CLASSIFICATION.NAME)
+				.from(XCX_CUSTOMER_PAGE 
+				.leftJoin(PAGE_CLASSIFICATION)
+				.on(XCX_CUSTOMER_PAGE.CAT_ID . eq(PAGE_CLASSIFICATION.ID)));
 		select = buildOptions(select, param);
 		select.orderBy(XCX_CUSTOMER_PAGE.PAGE_TYPE.desc(), XCX_CUSTOMER_PAGE.CREATE_TIME.desc());
 		return this.getPageResult(select, XcxCustomerPageVo.page,XcxCustomerPageVo.class);
@@ -50,7 +53,7 @@ public class MpDecorationService extends BaseService {
 	 * @param param
 	 * @return
 	 */
-	public SelectWhereStep<Record> buildOptions(SelectWhereStep<Record> select, XcxCustomerPageVo param) {
+	public SelectWhereStep<Record5<Integer, String, Timestamp, Byte, String>> buildOptions(SelectWhereStep<Record5<Integer, String, Timestamp, Byte, String>> select, XcxCustomerPageVo param) {
 		Byte enabled = 1;
 		select.where(XCX_CUSTOMER_PAGE.PAGE_ENABLED.eq(enabled));
 
@@ -276,7 +279,6 @@ public class MpDecorationService extends BaseService {
 		page.setPagePublishContent(source.getPagePublishContent());
 		page.setPageState(source.getPageState());
 		page.setCatId(source.getCatId());
-		System.out.println(page);
 		page.insert();
 		return true;
 	}

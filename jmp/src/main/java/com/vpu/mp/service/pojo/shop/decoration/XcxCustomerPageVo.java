@@ -29,6 +29,7 @@ public class XcxCustomerPageVo implements Serializable {
     private Timestamp createTime;
     private Timestamp updateTime;
     private Integer   catId;
+    private String    name;
     
     
     
@@ -110,6 +111,12 @@ public class XcxCustomerPageVo implements Serializable {
 	}
 	public static Integer getPage() {
 		return page;
+	}
+	public String getName() {
+		return name;
+	}
+	public void setName(String name) {
+		this.name = name;
 	}
 
 
