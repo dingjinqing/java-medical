@@ -80,14 +80,6 @@ public class AdminChooseLinkController extends AdminBaseController{
 	}
 	
 	/**
-	 * 小程序跳转列表
-	 * @return
-	 */
-	public Boolean xcxSkip() {
-		return false;
-	}
-	
-	/**
 	 * 表单页面
 	 * @return
 	 */
@@ -117,12 +109,27 @@ public class AdminChooseLinkController extends AdminBaseController{
 	}
 	
 	/**
-	 * 装修跳转链接列表
+	 * 小程序跳转链接列表
 	 * @return
 	 */
 	@PostMapping(value = "/admin/decorate/link/list")
 	public JsonResult XcxLinkList() {
 		List<XcxLinkListVo> linkList = shop().chooselink.getXcxLinkList();
 		return this.success(linkList);
+	}
+	
+	/**
+	 * 添加小程序跳转链接
+	 * @param param
+	 * @return
+	 */
+	@PostMapping(value = "/admin/decorate/link/save")
+	public JsonResult XcxLinkSave(XcxLinkListVo param) {
+		Boolean res = shop().chooselink.saveXcxLink(param);
+		if(res) {
+			return this.success();
+		}else{
+			return this.fail();
+		}
 	}
 }

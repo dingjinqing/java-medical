@@ -4,6 +4,7 @@ import static com.vpu.mp.db.shop.Tables.DECORATE_LINK;
 import static com.vpu.mp.db.shop.Tables.MP_JUMP;
 import static com.vpu.mp.db.shop.Tables.MP_JUMP_USABLE;
 import static com.vpu.mp.db.shop.Tables.STORE;
+import static com.vpu.mp.db.shop.tables.XcxCustomerPage.XCX_CUSTOMER_PAGE;
 
 import java.util.List;
 
@@ -11,6 +12,7 @@ import org.jooq.Record3;
 import org.jooq.Result;
 import org.jooq.SelectJoinStep;
 
+import com.vpu.mp.db.shop.tables.records.XcxCustomerPageRecord;
 import com.vpu.mp.service.foundation.BaseService;
 import com.vpu.mp.service.foundation.PageResult;
 import com.vpu.mp.service.pojo.shop.decoration.StoreVo;
@@ -63,11 +65,6 @@ public class ChooseLinkService extends BaseService {
 		return false;
 	}
 	
-//	小程序跳转
-	public Boolean xcxSkip() {
-		return false;
-	}
-	
 //	表单页面
 	public Boolean fromPage() {
 		return false;
@@ -109,5 +106,22 @@ public class ChooseLinkService extends BaseService {
 				.orderBy(DECORATE_LINK.ID.desc())
 				.fetch().into(XcxLinkListVo.class);
 		return linkList;
+	}
+	
+	/**
+	 * 保存小程序跳转链接
+	 * @param info
+	 * @return
+	 */
+	public Boolean saveXcxLink(XcxLinkListVo info) {
+		XcxCustomerPageRecord record = db().newRecord(XCX_CUSTOMER_PAGE, info);
+		int res = db().executeInsert(record);
+		if(res == 0) {
+			return true;
+		}else {
+			return false;
+		}
+		
+		
 	}
 }
