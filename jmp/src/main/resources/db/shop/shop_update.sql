@@ -36,6 +36,14 @@ CHANGE COLUMN specvalname spec_val_name VARCHAR(60) not null DEFAULT '',
 ADD UNIQUE INDEX unique_spec_id_spec_val_name (spec_id,spec_val_name);
 
 
+--7月10日 梁晨 b2c_comment_goods 添加is_shop_add  bogus_username  bogus_user_avatar字段
+ALTER TABLE b2c_comment_goods ADD COLUMN is_shop_add tinyint(1)  not null DEFAULT '' comment '是否商家增加：0不是，1是',
+ALTER TABLE b2c_comment_goods ADD COLUMN bogus_username  varchar(32)  not null default '' comment '用户名称：商家添加时使用',
+ALTER TABLE b2c_comment_goods ADD COLUMN bogus_user_avatar varchar(100)  not null default '' comment '用户头像：商家添加时使用';
+
+
+
+
 -- 7月9日 黄壮壮 修改b2c_tag表名in_time为create_time 并且添加字段update_time
 alter table b2c_tag CHANGE COLUMN in_time create_time TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP; 
 ALTER TABLE b2c_tag ADD COLUMN update_time TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '记录修改时间' AFTER create_time;
@@ -45,4 +53,5 @@ ALTER TABLE b2c_tag ADD COLUMN update_time TIMESTAMP DEFAULT CURRENT_TIMESTAMP O
 -- 7月9日添加
 -- 修改标签组关系表
 ALTER TABLE b2c_goods_label_couple MODIFY COLUMN label_id INT(11) NOT NULL;
+
 

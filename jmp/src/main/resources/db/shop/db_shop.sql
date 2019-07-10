@@ -1036,6 +1036,10 @@ create table `b2c_comment_goods` (
   `update_time`   timestamp     	default current_timestamp on update current_timestamp comment '最后修改时间',
   `flag`          tinyint(1)    	default '0' comment '0:未审批,1:审批通过,2:审批未通过',
   `del_flag`      tinyint(1)    	default '0' comment '1:删除',
+  `is_shop_add`       tinyint(1)    not null default '0' comment '是否商家增加：0不是，1是',
+  `bogus_username`    varchar(32)   not null default '' comment '用户名称：商家添加时使用',
+  `bogus_user_avatar` varchar(100)  not null default '' comment '用户头像：商家添加时使用',
+
   primary key (`id`),
   index `shop_id` (`shop_id`)
 );
