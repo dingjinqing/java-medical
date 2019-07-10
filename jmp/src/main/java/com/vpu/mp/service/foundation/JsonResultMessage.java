@@ -99,4 +99,8 @@ public class JsonResultMessage {
 	final public static String ORDER_PROCESS_CONFIG_UDPATE_FAILED = "order.process.config.update.failed";
 	final public static String WECAHT_PAY_CONFIG_UPDATE_DAILED = "wechat.pay.config.update.failed";
 
+	/**
+	 *  会员管理
+	 */
+	final public static String MSG_MEMBER_TAG_LENGTH_LIMIT="member.tag.length.limit";
 }
