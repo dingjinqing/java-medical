@@ -2,11 +2,12 @@
   <div class="container">
     <div class="main">
       <div class="top">
-        <span>{{$t('accountSetting.title')}}</span>
+        <span v-if="shop_config_ul_flag">{{$t('accountSetting.title')}}</span>
+        <span v-else>{{$t('accountSetting.modifyPasswordtitle')}}</span>
       </div>
       <div class="content">
         <div class="shop_config">
-          <ul>
+          <ul v-if="shop_config_ul_flag">
             <li>
               <div
                 class="li"
@@ -14,7 +15,10 @@
               >{{$t('accountSetting.account')}}</div>
               <div class="li">
                 <div class="mdy-input">tester001</div>
-                <div class="update">{{$t('accountSetting.modifyPassword')}}</div>
+                <div
+                  class="update"
+                  @click="change_modifyPassword()"
+                >{{$t('accountSetting.modifyPassword')}}</div>
               </div>
             </li>
             <li>
@@ -58,8 +62,64 @@
                   type="primary"
                   @click="handleSave()"
                 >{{$t('accountSetting.s_modify')}}</el-button>
-                <el-button size="medium">{{$t('accountSetting.to_shop_list')}}</el-button>
+                <el-button
+                  @click="to_allShops()"
+                  size="medium"
+                  style="margin-left:20px"
+                >{{$t('accountSetting.to_shop_list')}}</el-button>
               </div>
+            </li>
+          </ul>
+          <ul
+            v-else
+            class="modifyPul"
+          >
+            <li>
+              <div>
+                旧密码：
+              </div>
+              <div>
+                <el-input
+                  v-model="modifyObj.passwd"
+                  size="mini"
+                ></el-input>
+              </div>
+            </li>
+            <li>
+              <div>
+                新密码：
+              </div>
+              <div>
+                <el-input
+                  v-model="modifyObj.newPasswd"
+                  size="mini"
+                ></el-input>
+              </div>
+            </li>
+            <li>
+              <div>
+                确认新密码：
+              </div>
+              <div>
+                <el-input
+                  v-model="modifyObj.confNewPasswd"
+                  size="mini"
+                ></el-input>
+              </div>
+            </li>
+            <li>
+              <el-button
+                type="primary"
+                size="mini"
+                @click="modifyPasswordSure()"
+              >确认修改</el-button>
+              <el-button
+                type="info"
+                plain
+                size="mini"
+                style="margin-left:20px"
+                @click="to_accountmain()"
+              >返回</el-button>
             </li>
           </ul>
         </div>
@@ -70,7 +130,7 @@
   </div>
 </template>
 <script>
-import { accountManageRequest } from '@/api/admin/shopsPages.js'
+import { accountManageRequest, modifyPasswordRequest } from '@/api/admin/shopsPages.js'
 import ImageDalog from '@/components/admin/imageDalog'
 export default {
   components: { ImageDalog },
@@ -82,7 +142,13 @@ export default {
       username: '',
       dialogTableVisible: false,
       modifyWidth: 'headWidth',
-      maskspanheight: ''
+      shop_config_ul_flag: true,
+      maskspanheight: '',
+      modifyObj: {
+        passwd: '',
+        newPasswd: '',
+        confNewPasswd: ''
+      }
     }
   },
   mounted () {
@@ -104,6 +170,62 @@ export default {
       accountManageRequest(obj).then((res) => {
         console.log(res)
       })
+    },
+    // 跳转修改登录密码页面
+    change_modifyPassword () {
+      this.shop_config_ul_flag = false
+    },
+    // 跳转到店铺列表页
+    to_allShops () {
+      console.log(1)
+      this.$emit('change_components', '3')
+    },
+    // 修改登录密码页面返回按钮事件
+    to_accountmain () {
+      this.shop_config_ul_flag = true
+    },
+    // 修改登录密码页面保存事件
+    modifyPasswordSure () {
+      let flag = this.checkPassword()
+      if (flag === false) return
+      modifyPasswordRequest(this.modifyObj).then((res) => {
+        if (res.error === 0) {
+          this.$message({
+            message: '修改密码成功',
+            type: 'success'
+          })
+        }
+      })
+    },
+    // 校验登录密码
+    checkPassword () {
+      let reg = /^[^\u4e00-\u9fa5][\S+$]{5,16}$/
+      for (let item in this.modifyObj) {
+        console.log(this.modifyObj[item])
+        // if (!this.modifyObj[item] || !reg.test(this.modifyObj[item])) { this.$message({ message: '警告哦，这是一条警告消息', type: 'warning' }) }
+        if (!reg.test(this.modifyObj[item])) {
+          this.$message({
+            message: '密码应为6至16位非中文且不能为空',
+            type: 'warning'
+          })
+          return false
+        }
+        if (this.modifyObj.passwd === this.modifyObj.newPasswd) {
+          this.$message({
+            message: '新密码不能与旧密码相同',
+            type: 'warning'
+          })
+          return false
+        }
+        if (this.modifyObj.newPasswd !== this.modifyObj.confNewPasswd) {
+          this.$message({
+            message: '确认密码不相同',
+            type: 'warning'
+          })
+          return false
+        }
+      }
+      return true
     }
   }
 }
@@ -204,6 +326,22 @@ li:nth-of-type(5) {
 }
 .btn {
   display: flex;
+}
+.modifyPul li {
+  display: flex;
+}
+.modifyPul div {
+  height: 30px;
+  line-height: 30px;
+}
+.modifyPul li div:nth-of-type(2) {
+  margin-left: 45px;
+}
+.modifyPul li:nth-of-type(3) div:nth-of-type(2) {
+  margin-left: 20px;
+}
+.modifyPul li:nth-of-type(4) {
+  padding-left: 98px;
 }
 </style>
 <style>

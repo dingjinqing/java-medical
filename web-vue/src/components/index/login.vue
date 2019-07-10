@@ -112,8 +112,7 @@ export default {
         subUsername: '',
         isSubLogin: true
       },
-      isSubLogin: false,
-      flag: 'true'
+      isSubLogin: false
 
     }
   },
@@ -121,110 +120,53 @@ export default {
     this.langDefault()
   },
   methods: {
-
     // 表单校验
     JudgementForm (index) {
-      if (localStorage.getItem('WEPUBAO_LANGUAGE') === 'en_US') {
-        if (index === 1) {
-          if (!this.mainData.username) {
-            this.$message({
-              showClose: true,
-              message: 'Please fill in the username of your main account',
-              type: 'warning'
-            })
-            this.flag = false
-            return
-          }
-          if (!this.mainData.password) {
-            this.$message({
-              showClose: true,
-              message: 'Please fill in your password',
-              type: 'warning'
-            })
-            this.flag = false
-          }
-        } else {
-          if (!this.subData.username) {
-            this.$message({
-              showClose: true,
-              message: 'Please fill in the username of your main account',
-              type: 'warning'
-            })
-            this.flag = false
-            return
-          }
-          if (!this.subData.password) {
-            this.$message({
-              showClose: true,
-              message: 'Please fill in your sub-account username or mobile phone number',
-              type: 'warning'
-            })
-            this.flag = false
-            return
-          }
-          if (!this.subData.subUsername) {
-            this.$message({
-              showClose: true,
-              message: 'Please fill in your password',
-              type: 'warning'
-            })
-            this.flag = false
-          }
-        }
-        return
-      }
+      let userNameReg = /^[^\u4e00-\u9fa5][\S+$]{0,}$/
+      let passwordReg = /^[^\u4e00-\u9fa5][\S+$]{5,16}$/
       if (index === 1) {
-        console.log(this.mainData.username)
-        if (!this.mainData.username) {
+        if (!userNameReg.test(this.mainData.username)) {
           this.$message({
-            showClose: true,
-            message: '请填写您的主账号用户名',
+            message: '主账号用户名应为非中文且不能为空',
             type: 'warning'
           })
-          this.flag = false
-          return
+          return false
         }
-        if (!this.mainData.password) {
+        if (!passwordReg.test(this.mainData.password)) {
           this.$message({
-            showClose: true,
-            message: '请填写您的密码',
+            message: '密码应为6至16位非中文且不能为空',
             type: 'warning'
           })
-          this.flag = false
+          return false
         }
       } else {
-        if (!this.subData.username) {
+        if (!userNameReg.test(this.subData.username)) {
           this.$message({
-            showClose: true,
-            message: '请填写您的主账号用户名',
+            message: '主账号用户名应为非中文且不能为空',
             type: 'warning'
           })
-          this.flag = false
-          return
+          return false
         }
-        if (!this.subData.password) {
+        if (!userNameReg.test(this.subData.subUsername)) {
           this.$message({
-            showClose: true,
-            message: '请填写您的子账号用户名或手机号',
+            message: '子账号用户名或手机号应为非中文且不能为空',
             type: 'warning'
           })
-          this.flag = false
-          return
+          return false
         }
-        if (!this.subData.subUsername) {
+        if (!passwordReg.test(this.subData.password)) {
           this.$message({
-            showClose: true,
-            message: '请填写您的密码',
+            message: '密码应为6至16位非中文且不能为空',
             type: 'warning'
           })
-          this.flag = false
+          return false
         }
       }
     },
     onSubmit (index) {
-      this.JudgementForm(index)
+      let flag = this.JudgementForm(index)
       console.log(this.flag)
-      if (this.flag === false) return
+      if (flag === false) return
       console.log(index)
       localStorage.setItem('contentType', 'application/json;charset=UTF-8')
       if (index === 1) {

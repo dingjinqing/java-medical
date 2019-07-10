@@ -1,6 +1,7 @@
 import axios from 'axios'
 import Cookies from 'js-cookie'
 // import qs from 'qs'
+import router from '@/router/index.js'
 import { Message } from 'element-ui'
 
 // 环境的切换
@@ -54,6 +55,13 @@ service.interceptors.response.use(
       switch (res.status) {
         // 成功
         case 200:
+          if (res.data.error === 100004) {
+            Message.error({
+              message: res.data.message,
+              showClose: true
+            })
+            router.push('/index/login')
+          }
           return res.data
         default:
           Message.error({
@@ -62,6 +70,7 @@ service.interceptors.response.use(
           })
       }
     }
+
     return res
   },
   error => {

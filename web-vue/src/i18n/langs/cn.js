@@ -168,6 +168,7 @@ const cn = {
   shopData: {
     set: '账户设置',
     administration: '子账号管理',
+    administration_J: ' 子账号权限管理',
     public: '授权公众号',
     choice: '选择店铺',
     loginOut: '退出'
@@ -193,7 +194,8 @@ const cn = {
     head: '账户头像：',
     modify: '修改头像',
     s_modify: '确认修改',
-    to_shop_list: '返回店铺列表'
+    to_shop_list: '返回店铺列表',
+    modifyPasswordtitle: '修改密码'
   },
   // 浏览图片dialog数据
   imgageDalog: {

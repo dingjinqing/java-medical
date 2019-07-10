@@ -16,6 +16,7 @@
             @mouseenter="enter(index)"
             @mouseleave="leave(index)"
             :class="shop_list_index === index?'shop_li_style':''"
+            style="margin-bottom:20px"
           >
             <div>
               <div class="shop_state">

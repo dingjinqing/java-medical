@@ -3,7 +3,10 @@
     <Header @change_components="handleChange" />
     <SelectShop v-if="flag" />
     <Contact v-if="flag" />
-    <AccountSettings v-if="!flag" />
+    <AccountSettings
+      v-if="!flag"
+      @change_components="handleChange"
+    />
   </div>
 </template>
 <script>

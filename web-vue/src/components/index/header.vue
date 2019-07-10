@@ -194,7 +194,7 @@ export default {
       console.log('进入后台')
       if (index === 0) {
         this.$router.push({
-          name: 'adminHome'
+          name: 'shopMain'
         })
       } else {
         loginRequestOut().then((res) => {

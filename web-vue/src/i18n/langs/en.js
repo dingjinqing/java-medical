@@ -168,6 +168,7 @@ const en = {
   shopData: {
     set: 'Account Settings',
     administration: 'Subaccount management',
+    administration_J: 'Subaccount Authority',
     public: 'Authorized Public Number',
     choice: 'Choose Shops',
     loginOut: 'Sign out'
@@ -193,7 +194,8 @@ const en = {
     head: 'Account avatar:',
     modify: 'Modify the Avatar',
     s_modify: 'Confirmation of modifications',
-    to_shop_list: 'Return to the store list'
+    to_shop_list: 'Return to the store list',
+    modifyPasswordtitle: 'Change Password'
   },
   // 浏览图片dialog数据
   imgageDalog: {
