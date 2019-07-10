@@ -9,22 +9,28 @@ import static com.vpu.mp.db.shop.Tables.USER;
 import static com.vpu.mp.db.shop.Tables.GOODS;
 import static com.vpu.mp.db.shop.Tables.SORT;
 import static com.vpu.mp.db.shop.Tables.GOODS_SUMMARY;
+import static com.vpu.mp.db.shop.Tables.USER_DETAIL;
 import static org.jooq.impl.DSL.field;
 
 import java.math.BigDecimal;
 import java.sql.Timestamp;
 
+import org.jooq.Record1;
 import org.jooq.Record10;
 import org.jooq.Record12;
 import org.jooq.Record13;
 import org.jooq.Record9;
+import org.jooq.Select;
 import org.jooq.SelectConditionStep;
+import org.jooq.impl.DSL;
 import org.jooq.tools.StringUtils;
 
+import com.jayway.jsonpath.internal.function.numeric.Max;
 import com.vpu.mp.service.foundation.BaseService;
 import com.vpu.mp.service.foundation.PageResult;
 import com.vpu.mp.service.pojo.shop.goods.comment.GoodsComment;
 import com.vpu.mp.service.pojo.shop.goods.comment.GoodsCommentAdd;
+import com.vpu.mp.service.pojo.shop.goods.comment.GoodsCommentAddComm;
 import com.vpu.mp.service.pojo.shop.goods.comment.GoodsCommentAnswer;
 import com.vpu.mp.service.pojo.shop.goods.comment.GoodsCommentCheck;
 import com.vpu.mp.service.pojo.shop.goods.comment.GoodsCommentPageListParam;
@@ -170,7 +176,7 @@ public class GoodsCommentService extends BaseService {
     /**
      * 评价回复
      *
-     * @param goodsComment
+     * @param goodsCommentAnswer
      * @return 数据库受影响行数
      */
 	public int insertAnswer(GoodsCommentAnswer goodsCommentAnswer) {
@@ -245,4 +251,21 @@ public class GoodsCommentService extends BaseService {
         return scs;
     }
     
+    /**
+     * 评价回复
+     *
+     * @param goodsCommentAddComm
+     * @return 数据库受影响行数
+     */
+	public int addComment(GoodsCommentAddComm goodsCommentAddComm) {
+		
+		 int result = db()
+	                .insertInto(COMMENT_GOODS,COMMENT_GOODS.GOODS_ID,COMMENT_GOODS.BOGUS_USERNAME,COMMENT_GOODS.BOGUS_USER_AVATAR,
+	                		COMMENT_GOODS.CREATE_TIME, COMMENT_GOODS.COMMSTAR,COMMENT_GOODS.COMM_NOTE,COMMENT_GOODS.ANONYMOUSFLAG)
+	                .values(goodsCommentAddComm.getGoodsId(),goodsCommentAddComm.getBogusUsername(),goodsCommentAddComm.getBogusUserAvatar(),
+	                		goodsCommentAddComm.getCreateTime(),goodsCommentAddComm.getCommstar(),goodsCommentAddComm.getCommNote(),goodsCommentAddComm.getAnonymousFlag())
+	                .execute();
+	    
+		 return result;
+	}
 }

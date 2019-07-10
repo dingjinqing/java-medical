@@ -9,6 +9,7 @@ import com.vpu.mp.service.foundation.JsonResultCode;
 import com.vpu.mp.service.foundation.PageResult;
 import com.vpu.mp.service.pojo.shop.goods.comment.GoodsComment;
 import com.vpu.mp.service.pojo.shop.goods.comment.GoodsCommentAdd;
+import com.vpu.mp.service.pojo.shop.goods.comment.GoodsCommentAddComm;
 import com.vpu.mp.service.pojo.shop.goods.comment.GoodsCommentAnswer;
 import com.vpu.mp.service.pojo.shop.goods.comment.GoodsCommentCheck;
 import com.vpu.mp.service.pojo.shop.goods.comment.GoodsCommentPageListParam;
@@ -147,6 +148,21 @@ public class AdminGoodsCommentController extends AdminBaseController {
 		PageResult<GoodsCommentAdd> pageResult = shop().goods.goodsComment.getAddList(param);
 
 		return success(pageResult);
+	}
+	
+	
+	/**
+	 * 添加评论分页查询
+	 *
+	 * @param goodsCommentAddComm
+	 * @return
+	 */
+	@PostMapping("/api/admin/goods/comment/addcomm")
+	public JsonResult addComment(@RequestBody GoodsCommentAddComm goodsCommentAddComm) {
+
+		shop().goods.goodsComment.addComment(goodsCommentAddComm);
+
+		return success();
 	}
 	
 }
