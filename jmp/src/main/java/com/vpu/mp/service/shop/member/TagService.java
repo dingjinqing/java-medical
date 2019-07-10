@@ -2,7 +2,7 @@ package com.vpu.mp.service.shop.member;
 
 import org.jooq.Field;
 import org.jooq.Record;
-import org.jooq.Record3;
+import org.jooq.Record4;
 import org.jooq.SelectWhereStep;
 import org.jooq.impl.DSL;
 
@@ -32,9 +32,12 @@ public class TagService extends BaseService {
 
 		Field<Integer> count = this.db().select(DSL.count()).from(ut).where(ut.TAG_ID.eq(t.TAG_ID)).groupBy(ut.USER_ID)
 				.asField("count");
-		SelectWhereStep<Record3<String, Timestamp, Integer>> select = this.db().select(t.TAG_NAME, t.CREATE_TIME, count)
+		SelectWhereStep<Record4<Integer,String, Timestamp, Integer>> select = this.db().select(t.TAG_ID,t.TAG_NAME, t.CREATE_TIME, count)
 				.from(t);
-
+		/*
+		 * 按照降序进行查询
+		 */
+		select.orderBy(t.CREATE_TIME.desc());
 		PageResult<TagInfoVo> pageResult = this.getPageResult(select, param.getPage().getCurrentPage(),
 				param.getPage().getPageRows(), TagInfoVo.class);
 		for (TagInfoVo tag : pageResult.dataList) {
