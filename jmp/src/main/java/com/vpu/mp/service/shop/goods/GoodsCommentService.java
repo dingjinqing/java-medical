@@ -4,28 +4,21 @@ import static com.vpu.mp.db.shop.Tables.COMMENT_GOODS;
 import static com.vpu.mp.db.shop.Tables.COMMENT_GOODS_ANSWER;
 import static com.vpu.mp.db.shop.Tables.LOTTERY_RECORD;
 import static com.vpu.mp.db.shop.Tables.ORDER_GOODS;
-import static com.vpu.mp.db.shop.Tables.SHOP_CFG;
 import static com.vpu.mp.db.shop.Tables.USER;
 import static com.vpu.mp.db.shop.Tables.GOODS;
 import static com.vpu.mp.db.shop.Tables.SORT;
 import static com.vpu.mp.db.shop.Tables.GOODS_SUMMARY;
-import static com.vpu.mp.db.shop.Tables.USER_DETAIL;
 import static org.jooq.impl.DSL.field;
 
 import java.math.BigDecimal;
 import java.sql.Timestamp;
 
-import org.jooq.Record1;
 import org.jooq.Record10;
 import org.jooq.Record12;
 import org.jooq.Record13;
-import org.jooq.Record9;
-import org.jooq.Select;
 import org.jooq.SelectConditionStep;
-import org.jooq.impl.DSL;
 import org.jooq.tools.StringUtils;
 
-import com.jayway.jsonpath.internal.function.numeric.Max;
 import com.vpu.mp.service.foundation.BaseService;
 import com.vpu.mp.service.foundation.PageResult;
 import com.vpu.mp.service.pojo.shop.goods.comment.GoodsComment;
@@ -34,7 +27,6 @@ import com.vpu.mp.service.pojo.shop.goods.comment.GoodsCommentAddComm;
 import com.vpu.mp.service.pojo.shop.goods.comment.GoodsCommentAnswer;
 import com.vpu.mp.service.pojo.shop.goods.comment.GoodsCommentCheck;
 import com.vpu.mp.service.pojo.shop.goods.comment.GoodsCommentPageListParam;
-import com.vpu.mp.service.pojo.shop.goods.comment.GoodsCommentConfig;
 
 /**
  * 商品评价
