@@ -312,7 +312,7 @@ export default {
 
 .main {
   width: 100%;
-  height: 480px;
+  /* height: 480px; */
   background: white;
   color: #333;
   font-size: 16px;
