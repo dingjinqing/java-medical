@@ -9,11 +9,12 @@ import static com.vpu.mp.db.shop.tables.XcxCustomerPage.XCX_CUSTOMER_PAGE;
 import java.util.List;
 
 import org.jooq.Record3;
-import org.jooq.Result;
 import org.jooq.SelectJoinStep;
 
+import com.vpu.mp.db.shop.tables.records.DecorateLinkRecord;
 import com.vpu.mp.db.shop.tables.records.XcxCustomerPageRecord;
 import com.vpu.mp.service.foundation.BaseService;
+import com.vpu.mp.service.foundation.FieldsUtil;
 import com.vpu.mp.service.foundation.PageResult;
 import com.vpu.mp.service.pojo.shop.decoration.StoreVo;
 import com.vpu.mp.service.pojo.shop.decoration.XcxCustomerPageVo;
@@ -60,9 +61,36 @@ public class ChooseLinkService extends BaseService {
 		return false;
 	}
 	
-//	网页跳转
-	public Boolean webLink() {
-		return false;
+	/**
+	 * 创建跳转网页内容
+	 * @param info
+	 * @return
+	 */
+	public Boolean saveWebLink(XcxLinkListVo info) {
+		DecorateLinkRecord record = db().newRecord(DECORATE_LINK,info);
+		record.setShopId(shopId);
+		record.setLinkAction((byte) 1);
+		System.out.println(record);
+//		//过滤空参数
+//		DecorateLinkRecord record1 = new DecorateLinkRecord();
+//		FieldsUtil.assignNotNull(record, record1);
+		int res = db().executeInsert(record);
+		if(res > 0) {
+			return true;
+		}else {
+			return false;
+		}
+	}
+	
+	/**
+	 * 网页跳转列表
+	 * @return
+	 */
+	public List<XcxLinkListVo> getWebLink() {
+		List<XcxLinkListVo> list = db().select().from(DECORATE_LINK)
+				.where(DECORATE_LINK.LINK_ACTION.eq((byte) 1))
+				.fetch().into(XcxLinkListVo.class);
+		return list;
 	}
 	
 //	表单页面
@@ -101,7 +129,8 @@ public class ChooseLinkService extends BaseService {
 	 * @return
 	 */
 	public  List<XcxLinkListVo> getXcxLinkList() {
-		 List<XcxLinkListVo> linkList = db().select(DECORATE_LINK.APPID,DECORATE_LINK.TITLE,DECORATE_LINK.PATH_NAME,DECORATE_LINK.LINK_PATH).from(DECORATE_LINK)
+		 List<XcxLinkListVo> linkList = db().select(DECORATE_LINK.APPID,DECORATE_LINK.TITLE,DECORATE_LINK.PATH_NAME,DECORATE_LINK.LINK_PATH)
+				 .from(DECORATE_LINK)
 				.where(DECORATE_LINK.DEL_FLAG.eq((byte) 0))
 				.orderBy(DECORATE_LINK.ID.desc())
 				.fetch().into(XcxLinkListVo.class);
@@ -116,12 +145,10 @@ public class ChooseLinkService extends BaseService {
 	public Boolean saveXcxLink(XcxLinkListVo info) {
 		XcxCustomerPageRecord record = db().newRecord(XCX_CUSTOMER_PAGE, info);
 		int res = db().executeInsert(record);
-		if(res == 0) {
+		if(res > 0) {
 			return true;
 		}else {
 			return false;
 		}
-		
-		
 	}
 }

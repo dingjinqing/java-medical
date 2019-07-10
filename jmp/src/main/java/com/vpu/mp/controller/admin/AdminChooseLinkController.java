@@ -3,6 +3,7 @@ package com.vpu.mp.controller.admin;
 import java.util.List;
 
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -72,11 +73,29 @@ public class AdminChooseLinkController extends AdminBaseController{
 	}
 	
 	/**
-	 * 页面跳转
+	 * 创建网页跳转内容
+	 * @param param
 	 * @return
 	 */
-	public Boolean webLink() {
-		return false;
+	@PostMapping(value = "/admin/decorate/web/save")
+	public JsonResult saveWebLink(@RequestBody XcxLinkListVo param) {
+		Boolean result = shop().chooselink.saveWebLink(param);
+		if(result) {
+			return this.success(result);
+		}else {
+			return this.fail();
+		}
+	}
+	
+	/**
+	 * 网页跳转列表
+	 * @return
+	 */
+	@PostMapping(value = "/admin/decorate/web/list")
+	public JsonResult webLink() {
+		List<XcxLinkListVo> list = shop().chooselink.getWebLink();
+		return this.success(list);
+		
 	}
 	
 	/**
