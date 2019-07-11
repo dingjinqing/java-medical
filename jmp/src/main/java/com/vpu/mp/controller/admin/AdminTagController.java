@@ -28,9 +28,7 @@ public class AdminTagController extends AdminBaseController {
 	 */
 	@PostMapping(value = "/api/admin/tag/list")
 	public JsonResult getTagList(@RequestBody TagPageListParam param) {
-		System.out.println(param);
-		PageResult<TagInfoVo> pageResult = shop().tag.getPageList(param);
-		return this.success(pageResult);
+		return this.success(shop().tag.getPageList(param));
 	}
 	
 	
