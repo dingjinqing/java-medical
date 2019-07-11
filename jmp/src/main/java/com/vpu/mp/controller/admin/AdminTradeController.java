@@ -4,6 +4,7 @@ import com.vpu.mp.service.foundation.JsonResult;
 import com.vpu.mp.service.foundation.JsonResultMessage;
 import com.vpu.mp.service.pojo.shop.config.ShopCfg;
 import com.vpu.mp.service.pojo.shop.config.trade.PaymentConfigParam;
+import com.vpu.mp.service.pojo.shop.config.trade.RetrunConfigParam;
 import com.vpu.mp.service.pojo.shop.config.trade.WxpayConfigParam;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.annotation.Validated;
@@ -93,5 +94,15 @@ public class AdminTradeController extends AdminBaseController {
     @PostMapping("/api/admin/config/trade/orderProcess")
     public JsonResult orderProcess(@RequestBody List<ShopCfg> shopCfgList){
         return shop().trade.updateOrderProcess(shopCfgList) > 0 ? success() : fail(JsonResultMessage.ORDER_PROCESS_CONFIG_UDPATE_FAILED);
+    }
+
+    /**
+     * 退换货配置更新
+     * @param retrunConfigParam
+     * @return
+     */
+    @PostMapping("/api/admin/config/trade/retrunConfig")
+    public JsonResult retrunConfig(@RequestBody RetrunConfigParam retrunConfigParam) {
+        return shop().config.returnConfigService.updateReturnConfig(retrunConfigParam) ? success() : fail(JsonResultMessage.RETURN_CONFIG_UPDATE_FAILED);
     }
 }

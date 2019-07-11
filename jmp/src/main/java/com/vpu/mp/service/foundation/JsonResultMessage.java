@@ -97,6 +97,7 @@ public class JsonResultMessage {
 	final public static String AUTH_SHOP_NOT_EXIST = "auth.shop.appId.not.exist";
 	final public static String ORDER_PROCESS_CONFIG_UDPATE_FAILED = "order.process.config.update.failed";
 	final public static String WECAHT_PAY_CONFIG_UPDATE_DAILED = "wechat.pay.config.update.failed";
+	final public static String RETURN_CONFIG_UPDATE_FAILED = "return.config.update.failed";
 
 	/**
 	 *  会员管理
