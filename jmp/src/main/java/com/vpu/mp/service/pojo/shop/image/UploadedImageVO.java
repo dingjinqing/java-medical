@@ -15,7 +15,7 @@ import lombok.ToString;
  */
 @Data
 @ToString
-public class UploadedImagePojo {
+public class UploadedImageVO {
     private Integer   imgId;
     private String    imgType;
     private Integer   imgSize;
@@ -25,5 +25,6 @@ public class UploadedImagePojo {
     private Integer   imgCatId;
     private Integer   imgWidth;
     private Integer   imgHeight;
-    private Timestamp uploadTime;
+    private Timestamp createTime;
+    private Timestamp updateTime;
 }

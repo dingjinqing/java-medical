@@ -3,7 +3,7 @@ package com.vpu.mp.service.shop.image;
 import com.vpu.mp.service.foundation.BaseService;
 import com.vpu.mp.service.foundation.Util;
 import com.vpu.mp.service.pojo.shop.goods.sort.Sort;
-import com.vpu.mp.service.pojo.shop.image.CategoryTreeItem;
+import com.vpu.mp.service.pojo.shop.image.CategoryTreeItemVO;
 import com.vpu.mp.service.pojo.shop.image.UploadedImageCategoryParam;
 
 import static com.vpu.mp.db.shop.tables.Sort.SORT;
@@ -243,14 +243,14 @@ public class ImageCategoryService extends BaseService {
  
 
 	/**
-	 * 得到ZTree图片目录列表
+	 * 得到Tree图片目录列表
 	 * 
 	 * @param openId
 	 * @return
 	 */
-	public List<CategoryTreeItem> getImageCategoryForTree(Integer openId) {
-		List<CategoryTreeItem> result = new ArrayList<CategoryTreeItem>();
-		CategoryTreeItem root = new CategoryTreeItem();
+	public List<CategoryTreeItemVO> getImageCategoryForTree(Integer openId) {
+		List<CategoryTreeItemVO> result = new ArrayList<CategoryTreeItemVO>();
+		CategoryTreeItemVO root = new CategoryTreeItemVO();
 		root.setName(ROOT_NAME);
 		root.setId(openId);
 		Result<UploadedImageCategoryRecord> records = this.getAll();
@@ -266,11 +266,11 @@ public class ImageCategoryService extends BaseService {
 	 * @param level
 	 * @return
 	 */
-	public CategoryTreeItem getImageCategoryTree(CategoryTreeItem root,List<UploadedImageCategoryRecord> categoryTreeItemList,Integer level){
+	public CategoryTreeItemVO getImageCategoryTree(CategoryTreeItemVO root,List<UploadedImageCategoryRecord> categoryTreeItemList,Integer level){
 		for (int i = 0; i <categoryTreeItemList.size() ; i++) {
 			UploadedImageCategoryRecord item =categoryTreeItemList.get(i);
 			if (root.getId().equals(item.getImgCatParentId())){
-				CategoryTreeItem child = new CategoryTreeItem();
+				CategoryTreeItemVO child = new CategoryTreeItemVO();
 				child.setId(item.getImgCatId());
 				child.setName(item.getImgCatName());
 				child.setLevel(level);

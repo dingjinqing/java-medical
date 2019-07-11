@@ -108,10 +108,7 @@ public class AdminShopDecorateController extends AdminBaseController {
 	 * @return
 	 */
 	@PostMapping("/admin/decorate/style/update")
-	public JsonResult updateShopStyle(@RequestBody @Valid ShopStyleConfig config, BindingResult bindingResult) {
-		if (bindingResult.hasErrors()) {
-			return fail(bindingResult.getFieldError().getDefaultMessage());
-		}
+	public JsonResult updateShopStyle(@RequestBody @Valid ShopStyleConfig config) {
 		shop().config.shopStyleCfg.setShopStyleConfig(config);
 		return success();
 	}

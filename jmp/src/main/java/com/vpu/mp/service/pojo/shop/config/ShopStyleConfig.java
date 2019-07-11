@@ -20,12 +20,12 @@ public class ShopStyleConfig {
 	/**
 	 * 店铺风格ID
 	 */
-	@NotNull(message = JsonResultMessage.DECORATE_STYLE_PARAM_ID_NULL)
+	@NotNull(message = JsonResultMessage.DECORATE_STYLE_PARAM_UPDATE_ID_NULL)
 	public Integer shopStyleId;
 	
 	/**
 	 * 店铺风格值
 	 */
-	@NotBlank(message = JsonResultMessage.DECORATE_STYLE_PARAM_VALUE_NULL)
+	@NotBlank(message = JsonResultMessage.DECORATE_STYLE_PARAM_UPDATE_VALUE_NULL)
 	public String shopStyleValue;
 }

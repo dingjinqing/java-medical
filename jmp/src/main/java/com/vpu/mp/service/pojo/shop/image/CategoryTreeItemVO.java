@@ -11,9 +11,9 @@ import java.util.List;
  *
  */
 @Data
-public class CategoryTreeItem {
+public class CategoryTreeItemVO {
 	private Integer id = 0;
 	private String name ;
 	private Integer level=1;
-	private List<CategoryTreeItem> child=new ArrayList<>();
+	private List<CategoryTreeItemVO> child=new ArrayList<>();
 }
