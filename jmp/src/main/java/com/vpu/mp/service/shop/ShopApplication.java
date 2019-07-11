@@ -31,7 +31,7 @@ public class ShopApplication extends ServiceContainer {
 	public OrderService order;
 	public PageClassificationService pageClassification;
 	public VersionService version;
-	public ConfigService config;;
+	public ConfigService config;
 	public StoreService store;
 	public ChooseLinkService chooselink;
 	public TradeService trade;

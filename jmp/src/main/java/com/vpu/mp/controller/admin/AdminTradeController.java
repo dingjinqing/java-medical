@@ -3,6 +3,7 @@ package com.vpu.mp.controller.admin;
 import com.vpu.mp.service.foundation.JsonResult;
 import com.vpu.mp.service.foundation.JsonResultMessage;
 import com.vpu.mp.service.pojo.shop.config.ShopCfg;
+import com.vpu.mp.service.pojo.shop.config.trade.OrderProcessParam;
 import com.vpu.mp.service.pojo.shop.config.trade.PaymentConfigParam;
 import com.vpu.mp.service.pojo.shop.config.trade.RetrunConfigParam;
 import com.vpu.mp.service.pojo.shop.config.trade.WxpayConfigParam;
@@ -88,12 +89,12 @@ public class AdminTradeController extends AdminBaseController {
 
     /**
      * 订单流程配置更新
-     * @param shopCfgList
+     * @param orderProcessParam
      * @return
      */
     @PostMapping("/api/admin/config/trade/orderProcess")
-    public JsonResult orderProcess(@RequestBody List<ShopCfg> shopCfgList){
-        return shop().trade.updateOrderProcess(shopCfgList) > 0 ? success() : fail(JsonResultMessage.ORDER_PROCESS_CONFIG_UDPATE_FAILED);
+    public JsonResult orderProcess(@RequestBody OrderProcessParam orderProcessParam){
+        return shop().trade.updateOrderProcess(orderProcessParam) ? success() : fail(JsonResultMessage.ORDER_PROCESS_CONFIG_UDPATE_FAILED);
     }
 
     /**

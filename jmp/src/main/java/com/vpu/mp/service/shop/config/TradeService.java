@@ -1,19 +1,26 @@
 package com.vpu.mp.service.shop.config;
 
 import com.vpu.mp.db.shop.tables.Payment;
-import com.vpu.mp.db.shop.tables.ShopCfg;
-import com.vpu.mp.service.foundation.BaseService;
-import org.jooq.*;
-import org.jooq.impl.DSL;
-
-import java.util.List;
+import com.vpu.mp.service.pojo.shop.config.trade.OrderProcessParam;
 
 /**
  * @Author:liufei
  * @Date:2019/7/8
  * @Description:
  */
-public class TradeService extends BaseService {
+public class TradeService extends BaseShopConfigService {
+
+    /** 是否启用快递 */
+    final public static String K_EXPRESS = "express";
+
+    /** 是否启用自提 */
+    final public static String K_FETCH = "fetch";
+
+    /** 发货后drawback_days天，自动确认收货 */
+    final public static String K_DRAWBACK_DAYS = "drawback_days";
+
+    /** 确认收货后order_timeout_days天，订单完成 */
+    final public static String K_ORDER_TIMEOUT_DAYS = "order_timeout_days";
 
     /**
      * 更新支付方式开关
@@ -30,15 +37,23 @@ public class TradeService extends BaseService {
 
     /**
      * 更新订单流程配置
-     * @param shopCfgList
+     * @param orderProcessParam
      * @return
      */
-    public int updateOrderProcess(List<com.vpu.mp.service.pojo.shop.config.ShopCfg> shopCfgList){
-        int[] result = {-1};
-        db().transaction(configuration -> {
-            DSLContext db = DSL.using(configuration);
-            shopCfgList.forEach((e)-> result[0] = db.update(ShopCfg.SHOP_CFG).set(ShopCfg.SHOP_CFG.V,e.getV()).where(ShopCfg.SHOP_CFG.K.eq(e.getK())).execute());
-        });
-        return result[0];
+    public boolean updateOrderProcess(OrderProcessParam orderProcessParam){
+        try {
+            this.transaction(()->{
+                this.set(db(), K_EXPRESS, orderProcessParam.getExpress(), Byte.class);
+                this.set(db(), K_FETCH, orderProcessParam.getOrderTimeoutDays(), String.class);
+                this.set(db(), K_DRAWBACK_DAYS, orderProcessParam.getDrawbackDays(), String.class);
+                this.set(db(), K_ORDER_TIMEOUT_DAYS, orderProcessParam.getOrderTimeoutDays(), String.class);
+
+            });
+        }
+        catch(RuntimeException e) {
+            e.printStackTrace();
+            return false;
+        }
+        return true;
     }
 }
