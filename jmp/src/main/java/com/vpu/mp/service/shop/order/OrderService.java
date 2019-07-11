@@ -111,7 +111,7 @@ public class OrderService extends BaseService {
 	}
 
 	/**
-	  * 条件查询
+	  * 构造条件
 	  * @param select
 	  * @param param
 	  * @return
@@ -186,7 +186,11 @@ public class OrderService extends BaseService {
 		}
 		return select;
 	 }
-
+	/**
+	 * 订单详情
+	 * @param mainOrderSn
+	 * @return
+	 */
 	public OrderInfoVo get(String mainOrderSn) {
 		List<OrderInfoVo> result = db().select(ORDER_INFO.asterisk())
 			.from(ORDER_INFO)
@@ -227,7 +231,7 @@ public class OrderService extends BaseService {
 	/**
 	 * 过滤子订单数量>0时,过滤主订单下已被拆除的商品行（通过减小数量为0则不展示）
 	 * @param goodsListToSearch
-	 * @return  Map<Integer, List<OrderGoods>>
+	 * @return  OrderListInfoOutput 订单
 	 */
 	public OrderListInfoOutput filterMainOrderGoods(OrderListInfoOutput order , List<OrderGoods> goods) {
 		List<? extends OrderListInfoOutput> cOrders = order.getChildOrders();
@@ -237,8 +241,8 @@ public class OrderService extends BaseService {
 			for (OrderGoods tempGoods : oneOrder.getGoods()) {
 				Integer tempCount = childGoodsCount.get(tempGoods.getProductId());
 				if(tempCount == null) {
-					//第一次加1
-					childGoodsCount.put(tempGoods.getProductId(),1);
+					//第一次goodsNumber
+					childGoodsCount.put(tempGoods.getProductId(),tempGoods.getGoodsNumber().intValue());
 				}else {
 					//后续加goodsNumber
 					childGoodsCount.put(tempGoods.getProductId(),tempCount + tempGoods.getGoodsNumber().intValue());
