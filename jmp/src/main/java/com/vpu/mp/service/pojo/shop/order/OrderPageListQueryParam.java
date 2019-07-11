@@ -25,7 +25,7 @@ public class OrderPageListQueryParam {
 	public Timestamp createTimeStart;
 	/** 下单时间结束 */
 	public Timestamp createTimeEnd;
-	/** 配送方式 */
+	/** 配送方式 :0 快递 1 自提*/
 	public Byte deliverType;
 	/** 买家昵称,会员表的username */
 	public String userName;
@@ -45,4 +45,6 @@ public class OrderPageListQueryParam {
 	public Integer provinceCode;
 	public Integer cityCode;
 	public Integer districtCode;
+	/** 退款退货状态:0是默认,1是审核中,2是通过审核,3退货没通过审核,4买家再次提交申请,5：退款退货成功,6是拒绝退款退货 */
+	public Byte refund_status;
 }

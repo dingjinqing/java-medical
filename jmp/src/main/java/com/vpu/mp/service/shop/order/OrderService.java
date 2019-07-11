@@ -138,7 +138,7 @@ public class OrderService extends BaseService {
 		//昵称需要连表查询
 		if(!StringUtils.isEmpty(param.userName)){
 			select.innerJoin(User.USER).on(ORDER_INFO.USER_ID.eq(User.USER.USER_ID));
-			select.where(User.USER.USERNAME.eq(param.userName));
+			select.where(User.USER.USERNAME.like(likeValue(param.userName)));
 		}
 		if(!StringUtils.isEmpty(param.source)){
 			select.where(ORDER_INFO.SOURCE.eq(param.source));
