@@ -4,7 +4,10 @@ import static com.vpu.mp.db.main.tables.Article.ARTICLE;
 
 import java.sql.Timestamp;
 
+import javax.validation.constraints.NotBlank;
+
 import com.vpu.mp.db.main.tables.records.ArticleRecord;
+import com.vpu.mp.service.foundation.JsonResultMessage;
 
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -15,12 +18,13 @@ import lombok.NoArgsConstructor;
  */
 @Data
 @NoArgsConstructor
-public class ArticleInPut {
+public class ArticleParam {
 	/**文章id*/
 	private Integer articleId;
 	/**文章分类*/
 	private Integer categoryId;
 	/**标题*/
+	@NotBlank(message = JsonResultMessage.ARTICLE_TITLE_ISNULL)
 	private String title;
 	/**创建人*/
 	private String author;

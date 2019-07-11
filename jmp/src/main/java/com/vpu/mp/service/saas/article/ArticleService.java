@@ -18,9 +18,9 @@ import com.vpu.mp.service.foundation.BaseService;
 import com.vpu.mp.service.foundation.FieldsUtil;
 import com.vpu.mp.service.foundation.JedisManager;
 import com.vpu.mp.service.foundation.PageResult;
-import com.vpu.mp.service.pojo.saas.article.ArticleInPut;
+import com.vpu.mp.service.pojo.saas.article.ArticleParam;
 import com.vpu.mp.service.pojo.saas.article.ArticleListQueryParam;
-import com.vpu.mp.service.pojo.saas.article.ArticleOutPut;
+import com.vpu.mp.service.pojo.saas.article.ArticleVo;
 import com.vpu.mp.service.saas.region.CityService;
 
 /**
@@ -37,13 +37,13 @@ public class ArticleService extends BaseService {
 	 * @param ArticleListQueryParam
 	 * @return PageResult<ArticleOutPut>
 	 */
-	public PageResult<ArticleOutPut> getPageList(ArticleListQueryParam param) {
+	public PageResult<ArticleVo> getPageList(ArticleListQueryParam param) {
 		SelectWhereStep<? extends Record> select = db().select(
 				ARTICLE.ARTICLE_ID,ARTICLE.TITLE,ARTICLE.DESC,ARTICLE.KEYWORD,ARTICLE.AUTHOR,ARTICLE.IS_RECOMMEND,ARTICLE.STATUS,ARTICLE.IS_TOP,ARTICLE.HEAD_PIC,ARTICLE.UPDATE_TIME,
 				ARTICLE_CATEGORY.CATEGORY_NAME).from(ARTICLE)
 				.leftJoin(ARTICLE_CATEGORY).on(ARTICLE.CATEGORY_ID.eq(ARTICLE_CATEGORY.CATEGORY_ID));
 		select = this.buildOptions(select, param);
-		return getPageResult(select,param.getPage().getCurrentPage(),param.getPage().getPageRows(),ArticleOutPut.class);
+		return getPageResult(select,param.getPage().getCurrentPage(),param.getPage().getPageRows(),ArticleVo.class);
 		
 	}
 
@@ -109,7 +109,7 @@ public class ArticleService extends BaseService {
 				.fetchAny();
 	}
 	
-	public boolean insertArticle(ArticleInPut arArticle) {
+	public boolean insertArticle(ArticleParam arArticle) {
 		//防止传id
 		arArticle.setArticleId(null);
 		ArticleRecord record = db().newRecord(ARTICLE);
@@ -132,7 +132,7 @@ public class ArticleService extends BaseService {
 		return  num > 0 ? true : false;
 	}
 
-	public boolean updateArticle(ArticleInPut arArticle) {
+	public boolean updateArticle(ArticleParam arArticle) {
 		ArticleRecord record = db().fetchOne(ARTICLE,ARTICLE.ARTICLE_ID.eq(arArticle.getArticleId()));
 		FieldsUtil.assignNotNull(arArticle, record);
 		//更新发布状态
@@ -148,7 +148,7 @@ public class ArticleService extends BaseService {
 		return  num > 0 ? true : false;
 	}
 	
-	public ArticleOutPut get(Integer articleId) {
+	public ArticleVo get(Integer articleId) {
 		Record13<Integer, Integer, String, String, String, String, String, Byte, Byte, String, String, Timestamp, Integer> article = db().select(ARTICLE.ARTICLE_ID,ARTICLE.CATEGORY_ID,ARTICLE.TITLE,ARTICLE.AUTHOR,ARTICLE.KEYWORD,ARTICLE.DESC,ARTICLE.CONTENT,ARTICLE.IS_RECOMMEND,ARTICLE.STATUS,ARTICLE.HEAD_PIC,ARTICLE_CATEGORY.CATEGORY_NAME,ARTICLE.UPDATE_TIME,ARTICLE.PV)
 				.from(ARTICLE)
 				.leftJoin(ARTICLE_CATEGORY).on(ARTICLE.CATEGORY_ID.eq(ARTICLE_CATEGORY.CATEGORY_ID))
@@ -156,7 +156,7 @@ public class ArticleService extends BaseService {
 		Integer integer = article.get(ARTICLE.PV);
 		//更新访问量
 		db().update(ARTICLE).set(ARTICLE.PV, integer ==null ? 0 : integer + 1);
-		return	article==null?null:article.into(ArticleOutPut.class);
+		return	article==null?null:article.into(ArticleVo.class);
 	}
 
 }

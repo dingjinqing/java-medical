@@ -8,9 +8,9 @@ import org.springframework.web.bind.annotation.RestController;
 import com.vpu.mp.service.foundation.JsonResult;
 import com.vpu.mp.service.foundation.JsonResultCode;
 import com.vpu.mp.service.foundation.PageResult;
-import com.vpu.mp.service.pojo.saas.article.ArticleInPut;
+import com.vpu.mp.service.pojo.saas.article.ArticleParam;
 import com.vpu.mp.service.pojo.saas.article.ArticleListQueryParam;
-import com.vpu.mp.service.pojo.saas.article.ArticleOutPut;
+import com.vpu.mp.service.pojo.saas.article.ArticleVo;
 
 /**
  * 
@@ -28,17 +28,17 @@ public class ArticleOffcialController extends OfficialBaseController{
 	 */
 	@PostMapping("/list")
 	public JsonResult get(@RequestBody ArticleListQueryParam param) {
-		PageResult<ArticleOutPut> pageList = saas.article.getPageList(param);
+		PageResult<ArticleVo> pageList = saas.article.getPageList(param);
 		return success(pageList);
 	}
 	
 	/**
 	 * 官网新闻资讯文章具体查询
-	 * @param ArticleInPut
+	 * @param ArticleParam
 	 * @return JsonResult
 	 */
 	@PostMapping("/get")
-	private JsonResult get(@RequestBody ArticleInPut article ) {
+	private JsonResult get(@RequestBody ArticleParam article ) {
 		if(null == article.getArticleId()) {
 			return fail(JsonResultCode.CODE_ARTICLE_ARTICLEID_ISNULL);
 		}

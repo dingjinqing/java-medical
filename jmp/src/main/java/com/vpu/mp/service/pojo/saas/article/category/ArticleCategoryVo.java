@@ -9,7 +9,7 @@ import lombok.NoArgsConstructor;
  */
 @Data
 @NoArgsConstructor
-public class ArticleCategoryOutPut {
+public class ArticleCategoryVo {
 	private Integer categoryId;
 	private String categoryName;
 }

@@ -1,6 +1,7 @@
 package com.vpu.mp.controller.system;
 
-import org.jooq.tools.StringUtils;
+import javax.validation.Valid;
+
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -9,12 +10,12 @@ import org.springframework.web.bind.annotation.RestController;
 import com.vpu.mp.service.foundation.JsonResult;
 import com.vpu.mp.service.foundation.JsonResultCode;
 import com.vpu.mp.service.foundation.PageResult;
-import com.vpu.mp.service.pojo.saas.article.ArticleInPut;
 import com.vpu.mp.service.pojo.saas.article.ArticleListQueryParam;
-import com.vpu.mp.service.pojo.saas.article.ArticleOutPut;
+import com.vpu.mp.service.pojo.saas.article.ArticleParam;
+import com.vpu.mp.service.pojo.saas.article.ArticleVo;
 import com.vpu.mp.service.pojo.saas.article.category.ArtCategoryListQuertParam;
-import com.vpu.mp.service.pojo.saas.article.category.ArticleCategoryInPut;
-import com.vpu.mp.service.pojo.saas.article.category.ArticleCategoryOutPut;
+import com.vpu.mp.service.pojo.saas.article.category.ArticleCategoryParam;
+import com.vpu.mp.service.pojo.saas.article.category.ArticleCategoryVo;
 
 /**
  * 文章与其分类控制器
@@ -26,16 +27,16 @@ import com.vpu.mp.service.pojo.saas.article.category.ArticleCategoryOutPut;
 public class SystemArticleController extends SystemBaseController{
 	@PostMapping("/list")
 	public JsonResult get(@RequestBody ArticleListQueryParam param) {
-		PageResult<ArticleOutPut> pageList = saas.article.getPageList(param);
+		PageResult<ArticleVo> pageList = saas.article.getPageList(param);
 		return success(pageList);
 	}
 	@PostMapping("/category/list")
 	public JsonResult getCategory(@RequestBody ArtCategoryListQuertParam param) {
-		PageResult<ArticleCategoryOutPut> pageList = saas.articleCategory.getPageList(param);
+		PageResult<ArticleCategoryVo> pageList = saas.articleCategory.getPageList(param);
 		return success(pageList);
 	}
 	@PostMapping("/category/delete")
-	private JsonResult deleteCategory(@RequestBody ArticleCategoryInPut input) {
+	private JsonResult deleteCategory(@RequestBody ArticleCategoryParam input) {
 		if(null == input.getCategoryId()) {
 			return fail(JsonResultCode.CODE_ARTICLE_CATEGORY_CATEGORYID_ISNULL);
 		}
@@ -43,10 +44,7 @@ public class SystemArticleController extends SystemBaseController{
 	}
 	
 	@PostMapping("/category/add")
-	private JsonResult insertCategory(@RequestBody ArticleCategoryInPut input ) {
-		if(StringUtils.isEmpty(input.getCategoryName())) {
-			return fail(JsonResultCode.CODE_ARTICLE_CATEGORY_CATEGORYNAME_ISNULL);
-		}
+	private JsonResult insertCategory(@RequestBody @Valid ArticleCategoryParam input ) {
 		if(saas.articleCategory.isExist(input.getCategoryName())) {
 			return fail(JsonResultCode.CODE_ARTICLE_CATEGORY_IS_EXIST);
 		}
@@ -54,15 +52,15 @@ public class SystemArticleController extends SystemBaseController{
 	}
 	
 	@PostMapping("/category/update")
-	private JsonResult updateCategory(@RequestBody ArticleCategoryInPut input ) {
-		if(StringUtils.isEmpty(input.getCategoryName()) || null == input.getCategoryId()) {
-			return fail(JsonResultCode.CODE_ARTICLE_CATEGORY_UPDATE_FAILED);
+	private JsonResult updateCategory(@RequestBody @Valid ArticleCategoryParam input ) {
+		if(null == input.getCategoryId()) {
+			return fail(JsonResultCode.CODE_ARTICLE_CATEGORY_CATEGORYID_ISNULL);
 		}
 		return saas.articleCategory.updateArticleCategory(input)?success():fail();
 	}
 	
 	@PostMapping("/delete")
-	private JsonResult delete(@RequestBody ArticleInPut article) {
+	private JsonResult delete(@RequestBody ArticleParam article) {
 		if(null == article.getArticleId()) {
 			return fail(JsonResultCode.CODE_ARTICLE_ARTICLEID_ISNULL);
 		}
@@ -70,16 +68,13 @@ public class SystemArticleController extends SystemBaseController{
 	}
 	
 	@PostMapping("/add")
-	private JsonResult insert(@RequestBody ArticleInPut article ) {
-		if(StringUtils.isEmpty(article.getTitle())) {
-			return fail(JsonResultCode.CODE_ARTICLE_TITLE_ISNULL);
-		}
+	private JsonResult insert(@RequestBody @Valid ArticleParam article ) {
 		article.setAuthor(sysAuth.user().getSystemUserId().toString());
 		return saas.article.insertArticle(article)?success():fail();	
 	}
 	
 	@PostMapping("/update")
-	private JsonResult update(@RequestBody ArticleInPut article ) {
+	private JsonResult update(@RequestBody ArticleParam article ) {
 		if(null == article.getArticleId()) {
 			return fail(JsonResultCode.CODE_ARTICLE_ARTICLEID_ISNULL);
 		}
@@ -87,7 +82,7 @@ public class SystemArticleController extends SystemBaseController{
 	}
 	
 	@PostMapping("/get")
-	private JsonResult get(@RequestBody ArticleInPut article ) {
+	private JsonResult get(@RequestBody ArticleParam article ) {
 		if(null == article.getArticleId()) {
 			return fail(JsonResultCode.CODE_ARTICLE_ARTICLEID_ISNULL);
 		}

@@ -62,6 +62,8 @@ public class JsonResultMessage {
     final public static String GOODS_RECOMMEND_ID_NOT_EXIST="goods.recommend.id.notexist";
     final public static String GOODS_RECOMMEND_NOT_EXIST="goods.recommend.id.notexist";
     
+    //文章_分类
+    
     final public static String	ARTICLE_CATEGORY_IS_EXIST =  "api.code.article_category_is_exist";
 	final public static String	ARTICLE_CATEGORY_CATEGORYNAME_ISNULL = "api.code.article_category_categoryName_isNull";
 	final public static String	ARTICLE_CATEGORY_CATEGORYID_ISNULL = "api.code.article_category_categoryId_isNull";

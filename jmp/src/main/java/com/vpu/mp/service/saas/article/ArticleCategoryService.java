@@ -12,8 +12,8 @@ import com.vpu.mp.service.foundation.DelFlag;
 import com.vpu.mp.service.foundation.Page;
 import com.vpu.mp.service.foundation.PageResult;
 import com.vpu.mp.service.pojo.saas.article.category.ArtCategoryListQuertParam;
-import com.vpu.mp.service.pojo.saas.article.category.ArticleCategoryInPut;
-import com.vpu.mp.service.pojo.saas.article.category.ArticleCategoryOutPut;
+import com.vpu.mp.service.pojo.saas.article.category.ArticleCategoryParam;
+import com.vpu.mp.service.pojo.saas.article.category.ArticleCategoryVo;
 
 /**
  * 文章分类业务逻辑
@@ -26,7 +26,7 @@ public class ArticleCategoryService extends BaseService {
 	 * 分页查询文章分类
 	 * 
 	 */
-	public PageResult<ArticleCategoryOutPut> getPageList(ArtCategoryListQuertParam param) {
+	public PageResult<ArticleCategoryVo> getPageList(ArtCategoryListQuertParam param) {
 		SelectWhereStep<Record2<Integer, String>> select = db().select(
 				ArticleCategory.ARTICLE_CATEGORY.CATEGORY_ID,
 				ArticleCategory.ARTICLE_CATEGORY.CATEGORY_NAME
@@ -34,7 +34,7 @@ public class ArticleCategoryService extends BaseService {
 		select.where(ArticleCategory.ARTICLE_CATEGORY.DEL_STATE.equal(DelFlag.NORMAL.getCode()));
 		select.orderBy(ArticleCategory.ARTICLE_CATEGORY.CATEGORY_ID.asc());	
 		Page page = param.getPage();
-		return getPageResult(select,page.getCurrentPage(),page.getPageRows(),ArticleCategoryOutPut.class);
+		return getPageResult(select,page.getCurrentPage(),page.getPageRows(),ArticleCategoryVo.class);
 
 	}
 	/**
@@ -43,7 +43,7 @@ public class ArticleCategoryService extends BaseService {
 	 * @return
 	 */
 	
-	public boolean insertArticleCategory(ArticleCategoryInPut arArticleCategory) {
+	public boolean insertArticleCategory(ArticleCategoryParam arArticleCategory) {
 		int num = db().insertInto(ArticleCategory.ARTICLE_CATEGORY,ArticleCategory.ARTICLE_CATEGORY.CATEGORY_NAME)
 			.values(arArticleCategory.getCategoryName()).execute();
 		return num > 0 ? true : false;
@@ -54,7 +54,7 @@ public class ArticleCategoryService extends BaseService {
 	 * @param arArticleCategory
 	 * @return
 	 */
-	public boolean deleteArticleCategory(ArticleCategoryInPut arArticleCategory) {
+	public boolean deleteArticleCategory(ArticleCategoryParam arArticleCategory) {
 		Integer defaultCategory = 1;
 		int[] num = {0,0};
 		//删除文章分类需置等于该分类的文章的分类为1（数据库默认）
@@ -67,7 +67,7 @@ public class ArticleCategoryService extends BaseService {
 		return  (num[0] > 0 && num[1] >=0 )? true : false;
 	}
 
-	public boolean updateArticleCategory(ArticleCategoryInPut arArticleCategory) {
+	public boolean updateArticleCategory(ArticleCategoryParam arArticleCategory) {
 		int num = db().update(ArticleCategory.ARTICLE_CATEGORY)
 			.set(ArticleCategory.ARTICLE_CATEGORY.CATEGORY_NAME, arArticleCategory.getCategoryName()).where(ArticleCategory.ARTICLE_CATEGORY.CATEGORY_ID.eq(arArticleCategory.getCategoryId())).execute();
 		return  num > 0 ? true : false;

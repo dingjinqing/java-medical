@@ -11,7 +11,7 @@ import lombok.NoArgsConstructor;
  */
 @Data
 @NoArgsConstructor
-public class ArticleOutPut {
+public class ArticleVo {
 	private Integer articleId;
 	private Integer categoryId;
 	private String categoryName;
