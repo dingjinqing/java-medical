@@ -102,4 +102,7 @@ public class JsonResultMessage {
 	 *  会员管理
 	 */
 	final public static String MSG_MEMBER_TAG_LENGTH_LIMIT="member.tag.length.limit";
+	final public static String MSG_MEMBER_TAG_NOT_NULL="member.tag.notnull";
+	final public static String MSG_MEMBER_TAG_NAME_EXIST="member.tag.name.exists";
+	final public static String MSG_MEMBER_TAG_ADD_SUCCESS = "member.tag.add.success";
 }
