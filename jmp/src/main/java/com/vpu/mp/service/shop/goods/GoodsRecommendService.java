@@ -11,6 +11,7 @@ import org.jooq.SelectConditionStep;
 import org.jooq.SelectWhereStep;
 import org.jooq.tools.StringUtils;
 
+import com.fasterxml.jackson.core.type.TypeReference;
 import com.vpu.mp.db.shop.tables.records.RecommendGoodsRecord;
 import com.vpu.mp.service.foundation.BaseService;
 import com.vpu.mp.service.foundation.DelFlag;
@@ -286,7 +287,7 @@ public class GoodsRecommendService extends BaseService {
 		recommend.setUpdateTime(record.getUpdateTime());
 		recommend.setCreateTime(record.getCreateTime());
 		String usePageJson = record.getRecommendUsePage();
-		List<String> usePageList = Util.parseJSON(usePageJson, List.class);
+		List<String> usePageList = Util.parseJSON(usePageJson,new TypeReference<List<String>>() {} );
 		recommend.setRecommendUsePage(usePageList);
 		if(GoodsRecommend.PARTTYPE.equals(recommend.getRecommendType())) {
 			String catIds = record.getRecommendCatId();
