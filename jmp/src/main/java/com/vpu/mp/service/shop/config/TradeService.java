@@ -2,6 +2,9 @@ package com.vpu.mp.service.shop.config;
 
 import com.vpu.mp.db.shop.tables.Payment;
 import com.vpu.mp.service.pojo.shop.config.trade.OrderProcessParam;
+import com.vpu.mp.service.pojo.shop.config.trade.PaymentConfigVo;
+
+import java.util.List;
 
 /**
  * @Author:liufei
@@ -70,6 +73,15 @@ public class TradeService extends BaseShopConfigService {
     }
 
     /**
+     * 查询支付方式开关
+     * @return
+     */
+    public List<PaymentConfigVo> getPaymentEnabled(){
+        return db().select(Payment.PAYMENT.PAY_CODE,Payment.PAYMENT.PAY_NAME,Payment.PAYMENT.ENABLED)
+                .from(Payment.PAYMENT).fetchInto(PaymentConfigVo.class);
+    }
+
+    /**
      * 更新订单流程配置
      * @param orderProcessParam
      * @return
@@ -89,5 +101,18 @@ public class TradeService extends BaseShopConfigService {
             return false;
         }
         return true;
+    }
+
+    /**
+     * 查询订单流程配置
+     * @return
+     */
+    public OrderProcessParam getOrderProcessConfig(){
+        OrderProcessParam orderProcessParam = new OrderProcessParam();
+        orderProcessParam.setDrawbackDays(this.getDrawbackDays());
+        orderProcessParam.setExpress(this.getExpress());
+        orderProcessParam.setExpress(this.getFetch());
+        orderProcessParam.setOrderTimeoutDays(this.getOrderTimeoutDays());
+        return orderProcessParam;
     }
 }

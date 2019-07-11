@@ -3,6 +3,7 @@ package com.vpu.mp.service.saas.wechat;
 import com.vpu.mp.db.main.tables.MpAuthShop;
 import com.vpu.mp.service.foundation.BaseService;
 import com.vpu.mp.service.pojo.shop.config.trade.WxpayConfigParam;
+import com.vpu.mp.service.pojo.shop.config.trade.WxpaySearchParam;
 import org.jooq.Condition;
 
 /**
@@ -36,4 +37,22 @@ public class WechatService extends BaseService {
         Condition conditionAuthShop = MpAuthShop.MP_AUTH_SHOP.APP_ID.eq(appId);
         return db().fetchCount(MpAuthShop.MP_AUTH_SHOP,conditionAuthShop) > 0;
     }
+
+    /**
+     * 查询微信支付配置
+     * @return
+     */
+    public WxpayConfigParam getWxpayConfig (WxpaySearchParam wxpaySearchParam){
+        return db().select(MpAuthShop.MP_AUTH_SHOP.APP_ID,
+                MpAuthShop.MP_AUTH_SHOP.PAY_MCH_ID,
+                MpAuthShop.MP_AUTH_SHOP.PAY_KEY,
+                MpAuthShop.MP_AUTH_SHOP.PAY_CERT_CONTENT,
+                MpAuthShop.MP_AUTH_SHOP.PAY_KEY_CONTENT)
+                .from(MpAuthShop.MP_AUTH_SHOP)
+                .where(MpAuthShop.MP_AUTH_SHOP.APP_ID.eq(wxpaySearchParam.getAppId()))
+                .fetchInto(WxpayConfigParam.class).get(0);
+
+    }
+
+
 }

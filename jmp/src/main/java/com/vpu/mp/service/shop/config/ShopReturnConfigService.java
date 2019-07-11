@@ -49,7 +49,7 @@ public class ShopReturnConfigService extends BaseShopConfigService {
     /**
      * 商家默认收货地址(包括收件人，收件电话，邮编，退货地址)
      */
-    final public static String K_BUSINESS_ADDRESS = "business_adress";
+    final public static String K_BUSINESS_ADDRESS = "business_address";
 
     /**
      * 退换货配置选项，可退换(0)，还是不可退还(1)
@@ -112,11 +112,11 @@ public class ShopReturnConfigService extends BaseShopConfigService {
     }
 
     public ReturnBusinessAdressParam getBusinessAddress() {
-        return this.get(K_BUSINESS_ADDRESS, ReturnBusinessAdressParam.class, null);
+        return this.getJsonObject(K_BUSINESS_ADDRESS, ReturnBusinessAdressParam.class, null);
     }
 
     public int setBusinessAddress(ReturnBusinessAdressParam businessAddress) {
-        return this.set(K_BUSINESS_ADDRESS, businessAddress,ReturnBusinessAdressParam.class);
+        return this.setJsonObject(K_BUSINESS_ADDRESS, businessAddress);
     }
 
     public Byte getReturnChangeGoodsStatus() {
@@ -129,11 +129,11 @@ public class ShopReturnConfigService extends BaseShopConfigService {
     }
 
     public ReturnPackageParam getOrderReturnGoodsPackage() {
-        return this.get(K_ORDER_RETURN_GOODS_PACKAGE, ReturnPackageParam.class, null);
+        return this.getJsonObject(K_ORDER_RETURN_GOODS_PACKAGE, ReturnPackageParam.class, null);
     }
 
     public int setOrderReturnGoodsPackage(ReturnPackageParam orderReturnGoodsPackage) {
-        return this.set(K_ORDER_RETURN_GOODS_PACKAGE, orderReturnGoodsPackage,ReturnPackageParam.class);
+        return this.setJsonObject(K_ORDER_RETURN_GOODS_PACKAGE, orderReturnGoodsPackage);
     }
 
     public RetrunConfigParam getRetrunConfigParam() {

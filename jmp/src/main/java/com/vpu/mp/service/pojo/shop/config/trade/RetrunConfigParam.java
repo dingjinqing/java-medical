@@ -30,7 +30,7 @@ public class RetrunConfigParam {
     public Byte returnShoppingDays;
     @JsonProperty(value = "is_refund_coupon")
     public Byte isReturnCoupon;
-    @JsonProperty(value = "business_adress")
+    @JsonProperty(value = "business_address")
     public ReturnBusinessAdressParam businessAddress;
     @JsonProperty(value = "return_change_goods_status")
     public Byte returnChangeGoodsStatus;
