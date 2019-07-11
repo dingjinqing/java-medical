@@ -6,13 +6,14 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.vpu.mp.service.foundation.JsonResult;
 import com.vpu.mp.service.foundation.PageResult;
-import com.vpu.mp.service.pojo.shop.goods.comment.GoodsCommentParam;
+import com.vpu.mp.service.pojo.shop.goods.comment.GoodsCommentVo;
 import com.vpu.mp.service.pojo.shop.goods.comment.GoodsCommentAddListVo;
 import com.vpu.mp.service.pojo.shop.goods.comment.GoodsCommentAddCommParam;
 import com.vpu.mp.service.pojo.shop.goods.comment.GoodsCommentAnswerParam;
 import com.vpu.mp.service.pojo.shop.goods.comment.GoodsCommentCheckListVo;
 import com.vpu.mp.service.pojo.shop.goods.comment.GoodsCommentPageListParam;
 import com.vpu.mp.service.pojo.shop.goods.comment.GoodsCommentConfigParam;
+import com.vpu.mp.service.pojo.shop.goods.comment.GoodsCommentIdParam;
 
 /**
  * 商品评论控制器
@@ -33,7 +34,7 @@ public class AdminGoodsCommentController extends AdminBaseController {
 	@PostMapping("/api/admin/goods/comment/list")
 	public JsonResult getPageList(@RequestBody GoodsCommentPageListParam param) {
 
-		PageResult<GoodsCommentParam> pageResult = shop().goods.goodsComment.getPageList(param);
+		PageResult<GoodsCommentVo> pageResult = shop().goods.goodsComment.getPageList(param);
 
 		return success(pageResult);
 	}
@@ -71,13 +72,13 @@ public class AdminGoodsCommentController extends AdminBaseController {
 	/**
 	 * 删除
 	 *
-	 * @param goodsComment
+	 * @param goodsCommentId
 	 * @return
 	 */
 	@PostMapping("/api/admin/goods/comment/delete")
-	public JsonResult delete(@RequestBody GoodsCommentParam goodsComment) {
+	public JsonResult delete(@RequestBody GoodsCommentIdParam goodsCommentId) {
 
-		shop().goods.goodsComment.delete(goodsComment);
+		shop().goods.goodsComment.delete(goodsCommentId);
 
 		return success();
 	}
@@ -85,28 +86,28 @@ public class AdminGoodsCommentController extends AdminBaseController {
 	/**
 	 * 修改审核状态
 	 *
-	 * @param goodsComment
+	 * @param goodsCommentId
 	 * @return
 	 */
 
 	@PostMapping("/api/admin/goods/comment/passflag")
-	public JsonResult passflag(@RequestBody GoodsCommentParam goodsComment) {
+	public JsonResult passflag(@RequestBody GoodsCommentIdParam goodsCommentId) {
 
-		shop().goods.goodsComment.passflag(goodsComment);
+		shop().goods.goodsComment.passflag(goodsCommentId);
 
 		return success();
 	}
 	
 	@PostMapping("/api/admin/goods/comment/refuseflag")
-	public JsonResult refuseflag(@RequestBody GoodsCommentParam goodsComment) {
+	public JsonResult refuseflag(@RequestBody GoodsCommentIdParam goodsCommentId) {
 
-		shop().goods.goodsComment.refuseflag(goodsComment);
+		shop().goods.goodsComment.refuseflag(goodsCommentId);
 
 		return success();
 	}
 	
 	/**
-	 * 修改审核状态
+	 * 修改审核配置
 	 * 
 	 * @param goodsCommentConfig
 	 * @return
@@ -121,7 +122,7 @@ public class AdminGoodsCommentController extends AdminBaseController {
 	}
 	
 	/**
-	 * 修改审核状态
+	 * 修改开关配置
 	 * 
 	 * @param goodsCommentConfig
 	 * @return

@@ -21,11 +21,12 @@ import org.jooq.tools.StringUtils;
 
 import com.vpu.mp.service.foundation.BaseService;
 import com.vpu.mp.service.foundation.PageResult;
-import com.vpu.mp.service.pojo.shop.goods.comment.GoodsCommentParam;
+import com.vpu.mp.service.pojo.shop.goods.comment.GoodsCommentVo;
 import com.vpu.mp.service.pojo.shop.goods.comment.GoodsCommentAddListVo;
 import com.vpu.mp.service.pojo.shop.goods.comment.GoodsCommentAddCommParam;
 import com.vpu.mp.service.pojo.shop.goods.comment.GoodsCommentAnswerParam;
 import com.vpu.mp.service.pojo.shop.goods.comment.GoodsCommentCheckListVo;
+import com.vpu.mp.service.pojo.shop.goods.comment.GoodsCommentIdParam;
 import com.vpu.mp.service.pojo.shop.goods.comment.GoodsCommentPageListParam;
 
 /**
@@ -42,7 +43,7 @@ public class GoodsCommentService extends BaseService {
      * @param param
      * @return
      */
-    public PageResult<GoodsCommentParam> getPageList(GoodsCommentPageListParam param) {
+    public PageResult<GoodsCommentVo> getPageList(GoodsCommentPageListParam param) {
         SelectConditionStep<Record12<Integer,String,Byte, String, String,Timestamp, String,  String, String,String, Byte,String>> selectFrom = db()
         		.select(COMMENT_GOODS.ID,
         		COMMENT_GOODS.ORDER_SN,COMMENT_GOODS.COMMSTAR,
@@ -58,7 +59,7 @@ public class GoodsCommentService extends BaseService {
 
         select.orderBy( COMMENT_GOODS.CREATE_TIME.desc());
 
-        PageResult<GoodsCommentParam> pageResult = this.getPageResult(select, param.getCurrentPage(), param.getPageRows(), GoodsCommentParam.class);
+        PageResult<GoodsCommentVo> pageResult = this.getPageResult(select, param.getCurrentPage(), param.getPageRows(), GoodsCommentVo.class);
 
         return pageResult;
     }
@@ -87,7 +88,7 @@ public class GoodsCommentService extends BaseService {
         }
 
         if (param.getCommstar() != GoodsCommentPageListParam.COMMSTAR_DEFAULT_VALUE) {
-            scs = scs.and(field("commstar").eq(param.getCommstar()));
+            scs = scs.and(COMMENT_GOODS.COMMSTAR.eq((byte)param.getCommstar()));
         }
 
         return scs;
@@ -144,7 +145,7 @@ public class GoodsCommentService extends BaseService {
         }
 
         if (param.getCommstar() != GoodsCommentPageListParam.COMMSTAR_DEFAULT_VALUE) {
-            scs = scs.and(field("commstar").eq(param.getCommstar()));
+            scs = scs.and(COMMENT_GOODS.COMMSTAR.eq((byte)param.getCommstar()));
         }
         
         if (param.getFlag() != GoodsCommentPageListParam.FLAG_DEFAULT_VALUE) {
@@ -160,8 +161,8 @@ public class GoodsCommentService extends BaseService {
      * @param goodsComment
      * @return 数据库受影响行数
      */
-    public int delete(GoodsCommentParam goodsComment) {
-        return db().update(COMMENT_GOODS).set(COMMENT_GOODS.DEL_FLAG, (byte) 1).where(COMMENT_GOODS.ID.eq(goodsComment.getId()))
+    public int delete(GoodsCommentIdParam goodsCommentId) {
+        return db().update(COMMENT_GOODS).set(COMMENT_GOODS.DEL_FLAG, (byte) 1).where(COMMENT_GOODS.ID.eq(goodsCommentId.getId()))
                 .execute();
     }
     
@@ -187,15 +188,15 @@ public class GoodsCommentService extends BaseService {
      * @param goodsComment
      * @return
      */
-    public int passflag(GoodsCommentParam goodsComment) {
+    public int passflag(GoodsCommentIdParam goodsCommentId) {
         return db().update(COMMENT_GOODS).set(COMMENT_GOODS.FLAG,(byte)GoodsCommentPageListParam.FLAG_PASS_VALUE)
-                .where(COMMENT_GOODS.ID.eq(goodsComment.getId()))
+                .where(COMMENT_GOODS.ID.eq(goodsCommentId.getId()))
                 .execute();
     }
     
-    public int refuseflag(GoodsCommentParam goodsComment) {
+    public int refuseflag(GoodsCommentIdParam goodsCommentId) {
         return db().update(COMMENT_GOODS).set(COMMENT_GOODS.FLAG,(byte)GoodsCommentPageListParam.FLAG_REFUSE_VALUE)
-                .where(COMMENT_GOODS.ID.eq(goodsComment.getId()))
+                .where(COMMENT_GOODS.ID.eq(goodsCommentId.getId()))
                 .execute();
     }
     
@@ -237,7 +238,7 @@ public class GoodsCommentService extends BaseService {
         }
         
         if (param.getSortName() != GoodsCommentPageListParam.SORTNAME_DEFAULT_VALUE) {
-            scs = scs.and(field("sort_name").eq(param.getSortName()));
+            scs = scs.and(SORT.SORT_NAME.eq(param.getSortName()));
         }
         
         return scs;

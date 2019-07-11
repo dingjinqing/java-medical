@@ -2,7 +2,6 @@ package com.vpu.mp.service.pojo.shop.goods.comment;
 
 import lombok.Data;
 
-import java.sql.Timestamp;
 
 /**
  * @author liangchen
