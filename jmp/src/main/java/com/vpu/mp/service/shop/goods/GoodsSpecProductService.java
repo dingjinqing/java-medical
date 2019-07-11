@@ -1,9 +1,11 @@
 package com.vpu.mp.service.shop.goods;
 
 import com.vpu.mp.db.shop.tables.records.GoodsSpecProductRecord;
+import com.vpu.mp.service.foundation.DelFlag;
 import com.vpu.mp.service.foundation.Util;
 import com.vpu.mp.service.pojo.shop.goods.spec.GoodsSpecProduct;
 import org.jooq.DSLContext;
+import org.jooq.impl.DSL;
 
 import java.util.List;
 import java.util.Map;
@@ -16,14 +18,22 @@ import static com.vpu.mp.db.shop.Tables.GOODS_SPEC_PRODUCT;
  */
 public class GoodsSpecProductService {
 
-	//规格名值描述分割符
+	/**
+	 * 	规格名值描述分割符
+	 */
     static final String PRD_DESC_DELIMITER=";";
-  //规格名值id分隔符
+  /**
+   *	 规格名值id分隔符
+   */
     static final String PRD_SPEC_DELIMITER="!!";
-  //规格名和值分隔符
+  /**
+   * 	规格名和值分隔符
+   */
     static final String PRD_VAL_DELIMITER=":";
     
-  //规格名值处理后map内id值的key名称
+  /**
+   * 	规格名值处理后map内id值的key名称
+   */
     static final String PRD_SPEC_ID_KEY=GoodsSpecService.PRD_SPEC_ID_KEY;
 
     /**
@@ -33,7 +43,7 @@ public class GoodsSpecProductService {
      * @param goodsSpecsMap
      * @param goodsId
      */
-    protected void insert(DSLContext db, List<GoodsSpecProduct> goodsSpecProducts, Map<String, Map<String, Integer>> goodsSpecsMap, Integer goodsId) {
+    public void insert(DSLContext db, List<GoodsSpecProduct> goodsSpecProducts, Map<String, Map<String, Integer>> goodsSpecsMap, Integer goodsId) {
         for (GoodsSpecProduct goodsSpecProduct : goodsSpecProducts) {
             goodsSpecProduct.setGoodsId(goodsId);
 
@@ -95,5 +105,20 @@ public class GoodsSpecProductService {
 
         GoodsSpecProductRecord goodsSpecProductRecord = db.newRecord(GOODS_SPEC_PRODUCT, goodsSpecProduct);
         goodsSpecProductRecord.insert();
+    }
+
+    /**
+     *  根据商品ids删除规格值
+     * @param db
+     * @param goodsIds
+     */
+    public void deleteByGoodsIds(DSLContext db,List<Integer> goodsIds){
+        db.update(GOODS_SPEC_PRODUCT).set(GOODS_SPEC_PRODUCT.DEL_FLAG,DelFlag.DISABLE_VALUE)
+                .set(GOODS_SPEC_PRODUCT.PRD_SN, DSL.concat(DelFlag.DEL_ITEM_PREFIX)
+                        .concat(GOODS_SPEC_PRODUCT.PRD_ID)
+                        .concat(DelFlag.DEL_ITEM_SPLITER)
+                        .concat(GOODS_SPEC_PRODUCT.PRD_SN))
+                        .where(GOODS_SPEC_PRODUCT.GOODS_ID.in(goodsIds))
+                        .execute();
     }
 }

@@ -13,19 +13,19 @@ import java.math.BigDecimal;
 public class GoodsPageListParam {
 
 	
-	//出售状态默认值
+	/**
+	 * 	出售状态默认值
+	 */
     public static final Byte IS_ON_SALE_DEFAULT=1;
     public static final String ASC="asc";
     public static final String DESC="desc";
     
-    //待排序字段
+    /**
+     * 	待排序字段
+     */
     public static final String SHOP_PRICE="shopPrice";
     public static final String GOODS_NUMBER="goodsNumber";
     public static final String GOODS_SALE_NUM="goodsSaleNum";
-    
-    //标签类别对应码
-    public static final Byte GOODS_LABEL=1;
-    public static final Byte CATEGORY_LABEL=2;
     
 
     private Integer goodsId;

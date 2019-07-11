@@ -22,7 +22,10 @@ public class GoodsSpecProduct {
     private BigDecimal prdCostPrice;
     private Integer prdNumber;
 
-	private String prdSn;//规格编码
+    /**
+     * 	规格编码
+     */
+	private String prdSn;
 	private String prdSpecs;
 	private String prdDesc;
 

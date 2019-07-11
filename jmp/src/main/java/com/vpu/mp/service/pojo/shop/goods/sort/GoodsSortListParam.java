@@ -10,8 +10,14 @@ import lombok.Data;
  */
 @Data
 public class GoodsSortListParam {
-    public static final byte TYPE_DEFAULT_VALUE = 0;//商家分类类型默认值 0普通分类，1推荐分类
-    public static final int PARENT_ID_DEFAULT_VALUE = 0;//分类父id默认值 0一级分类，否则为二级分类
+	/**
+	 * 商家分类类型默认值 0普通分类，1推荐分类
+	 */
+    public static final byte TYPE_DEFAULT_VALUE = 0;
+    /**
+     * 	分类父id默认值 0一级分类，否则为二级分类
+     */
+    public static final int PARENT_ID_DEFAULT_VALUE = 0;
 
     private byte type = TYPE_DEFAULT_VALUE;
     private int parentId = PARENT_ID_DEFAULT_VALUE;
