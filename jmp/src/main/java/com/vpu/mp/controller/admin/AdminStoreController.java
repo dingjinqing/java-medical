@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.vpu.mp.service.foundation.JsonResult;
 import com.vpu.mp.service.foundation.JsonResultCode;
 import com.vpu.mp.service.foundation.PageResult;
+import com.vpu.mp.service.pojo.shop.config.store.StoreServiceConfig;
 import com.vpu.mp.service.pojo.shop.store.group.StoreGroup;
 import com.vpu.mp.service.pojo.shop.store.group.StoreGroupQueryParam;
 import com.vpu.mp.service.pojo.shop.store.store.StoreListQueryParam;
@@ -159,5 +160,27 @@ public class AdminStoreController extends AdminBaseController{
         shop().store.deleteStoreGroup(param);
         return success();
 
+    }
+    
+    /**
+     * 获取门店服务配置
+     * @return
+     */
+    @PostMapping(value = "/api/admin/store/service/get")
+    public JsonResult getStoreServiceConfig() {
+    	return success(shop().config.storeConfigService.getStoreServiceConfig()); 
+    }
+    
+    /**
+     * 获取门店服务配置
+     * @return
+     */
+    @PostMapping(value = "/api/admin/store/service/update")
+    public JsonResult updateStoreServiceConfig(@RequestBody StoreServiceConfig storeServiceConfig) {
+    	if(shop().config.storeConfigService.setStoreServiceConfig(storeServiceConfig)) {
+    		return success();
+    	}else {
+    		return fail();
+    	}
     }
 }

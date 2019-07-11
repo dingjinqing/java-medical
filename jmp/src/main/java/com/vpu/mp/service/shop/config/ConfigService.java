@@ -15,4 +15,5 @@ public class ConfigService extends BaseService {
 	public PledgeConfigService pledgeCfg;
 	public ShopCommonConfigService shopCommonConfigService;
 	public ShopReturnConfigService returnConfigService;
+	public StoreConfigService storeConfigService;
 }
