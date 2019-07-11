@@ -36,7 +36,9 @@ public class JsonResultMessage {
 	final public static String MSG_ACCOUNT_PASSWD_LENGTH_LIMIT="account.passwd.length.limit";
 	final public static String MSG_ACCOUNT_USERNAME_NOT_NULL="account.username.not.null";
 	final public static String MSG_ACCOUNT_SHOPID_NOT_NULL="account.shopId.not.null";
-
+	public static final String MSG_ACCOUNT_PASSWD_ERROR = "account.passwd.error";
+	public static final String MSG_CODE_ACCOUNT_SHOP_ROLE_INSUFFICIENT = "account.shop.role.insufficient";
+	public static final String MSG_CODE_ACCOUNT_SHOP_ROLE_OCCUPY = "account.shop.role.occupy";
 	// 图片
 	
 	final public static String MSG_IMGAE_UPLOAD_FAILED = "image.upload.failed";
