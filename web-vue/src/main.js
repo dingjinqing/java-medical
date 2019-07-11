@@ -3,6 +3,7 @@
 import Vue from 'vue'
 import App from './App'
 import router from './router'
+import store from './store'
 import i18n from './i18n/i18n'
 import vueSwiper from 'vue-awesome-swiper'
 import ElementUI from 'element-ui'
@@ -20,6 +21,7 @@ Vue.mixin(myMixins)
 new Vue({
   el: '#app',
   i18n,
+  store,
   router,
   components: { App },
   template: '<App/>'

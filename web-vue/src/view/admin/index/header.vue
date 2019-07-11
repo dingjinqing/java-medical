@@ -64,6 +64,7 @@
   </div>
 </template>
 <script>
+import Vuex from 'vuex'
 import Cookies from 'js-cookie'
 import { loginRequestOut } from '@/api/index/login.js'
 export default {
@@ -108,9 +109,52 @@ export default {
     this.judgeuserinfo()
     // 初始化语言
     this.langDefault()
+    // 初始化顶部导航
+    this.judgeHeader()
   },
 
   methods: {
+    ...Vuex.mapActions(['changeNavLeft']),
+    // 初始化顶部导航
+    judgeHeader () {
+      console.log(this.$route)
+      this.changeNavLeft(this.$route.name)
+      let name = this.$route.name
+      switch (name) {
+        case 'overviewOfMall':
+          this.nav_index = 0
+          this.click_nav_index = 0
+          break
+        case 'first_web_decoration':
+          this.nav_index = 1
+          this.click_nav_index = 1
+          break
+        case 'goods_manage':
+          this.nav_index = 2
+          this.click_nav_index = 2
+          break
+        case 'first_trade_manageL':
+          this.nav_index = 3
+          this.click_nav_index = 3
+          break
+        case 'first_market_manage':
+          this.nav_index = 4
+          this.click_nav_index = 4
+          break
+        case 'user_manger':
+          this.nav_index = 5
+          this.click_nav_index = 5
+          break
+        case 'store_manage':
+          this.nav_index = 6
+          this.click_nav_index = 6
+          break
+        case 'base_manger':
+          this.nav_index = 7
+          this.click_nav_index = 7
+          break
+      }
+    },
     // 初始化登录
     judgeuserinfo () {
       if (Cookies.get('V-Token')) {
@@ -166,17 +210,68 @@ export default {
       this.changeColorIndex = ''
     },
     header_nav_leave (index) {
-      this.nav_index = ''
+      this.nav_index = null
     },
     // 顶部导航点击
     headerNavClick (index) {
-      this.nav_index = index
+      this.click_nav_index = index
+      switch (index) {
+        case 0:
+          this.$router.push({
+            name: 'overviewOfMall'
+          })
+          this.changeNavLeft('overviewOfMall')
+          break
+        case 1:
+          this.$router.push({
+            name: 'first_web_decoration'
+          })
+          this.changeNavLeft('first_web_decoration')
+          break
+        case 2:
+          this.$router.push({
+            name: 'goods_manage'
+          })
+          this.changeNavLeft('goods_manage')
+          break
+        case 3:
+          this.$router.push({
+            name: 'first_trade_manageL'
+          })
+          this.changeNavLeft('first_trade_manageL')
+          break
+        case 4:
+          this.$router.push({
+            name: 'first_market_manage'
+          })
+          this.changeNavLeft('first_market_manage')
+          break
+        case 5:
+          this.$router.push({
+            name: 'user_manger'
+          })
+          this.changeNavLeft('user_manger')
+          break
+        case 6:
+          this.$router.push({
+            name: 'store_manage'
+          })
+          this.changeNavLeft('store_manage')
+          break
+        case 7:
+          this.$router.push({
+            name: 'base_manger'
+          })
+          this.changeNavLeft('base_manger')
+          break
+      }
     }
   }
 }
 </script>
 <style scoped>
 .header_container {
+  min-width: 1250px;
   width: 100%;
   height: 85px;
   line-height: 85px;
