@@ -10,11 +10,12 @@ import com.vpu.mp.service.foundation.JsonResult;
 import com.vpu.mp.service.foundation.PageResult;
 import com.vpu.mp.service.pojo.shop.order.OrderListInfoOutput;
 import com.vpu.mp.service.pojo.shop.order.OrderPageListQueryParam;
+import com.vpu.mp.service.pojo.shop.order.OrderParam;
 
 /**
  * 订单模块
  * 
- * @author 常乐
+ * @author 常乐,王帅
  * 2019年6月27日
  */
 @RestController
@@ -28,11 +29,11 @@ public class AdminOrderController extends AdminBaseController{
 	}
 	
 	@PostMapping("/get")
-	public JsonResult get(@RequestBody String orderSn) {
-		if(StringUtils.isEmpty(orderSn)) {
+	public JsonResult get(@RequestBody OrderParam order) {
+		if(StringUtils.isEmpty(order.getMainOrderSn())) {
 			//todo
 			return fail();
 		}
-		return success(shop().order.get(orderSn));
+		return success(shop().order.get(order.getMainOrderSn()));
 	}
 }

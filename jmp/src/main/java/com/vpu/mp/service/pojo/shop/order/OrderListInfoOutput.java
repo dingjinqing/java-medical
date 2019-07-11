@@ -19,7 +19,7 @@ public class OrderListInfoOutput {
 	private Integer orderId;
 	private String orderSn;
 	private String mainOrderSn;
-	private List<OrderListInfoOutput> childOrders;
+	private List<? extends OrderListInfoOutput> childOrders;
 	private List<OrderGoods> goods;
 	private Byte orderStatus;
 	private String orderStatusName;

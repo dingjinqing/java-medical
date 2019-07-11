@@ -26,5 +26,7 @@ public class OrderGoods {
 	private BigDecimal goodsPrice;
 	/**属性（规格）*/
 	private String goodsAttr;
+	/**SKU*/
+	private Integer productId;
 	
 }
