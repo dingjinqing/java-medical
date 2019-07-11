@@ -1,10 +1,9 @@
 package com.vpu.mp.service.saas.shop;
 
-import static com.vpu.mp.db.main.tables.ShopChildAccount.SHOP_CHILD_ACCOUNT;
-import static com.vpu.mp.db.main.tables.ShopRole.SHOP_ROLE;
-import static com.vpu.mp.db.main.tables.ShopChildRole.SHOP_CHILD_ROLE;
 import static com.vpu.mp.db.main.tables.Shop.SHOP;
-
+import static com.vpu.mp.db.main.tables.ShopChildAccount.SHOP_CHILD_ACCOUNT;
+import static com.vpu.mp.db.main.tables.ShopChildRole.SHOP_CHILD_ROLE;
+import static com.vpu.mp.db.main.tables.ShopRole.SHOP_ROLE;
 
 import org.jooq.Record;
 import org.jooq.Record6;
@@ -13,11 +12,13 @@ import org.jooq.SelectLimitStep;
 import org.jooq.SelectWhereStep;
 
 import com.vpu.mp.db.main.tables.records.ShopChildAccountRecord;
+import com.vpu.mp.db.main.tables.records.ShopChildRoleRecord;
 import com.vpu.mp.service.foundation.BaseService;
 import com.vpu.mp.service.foundation.PageResult;
 import com.vpu.mp.service.foundation.Util;
 import com.vpu.mp.service.pojo.saas.shop.ShopChildAccountListQueryParam;
 import com.vpu.mp.service.pojo.saas.shop.ShopChildAccountPojo;
+import com.vpu.mp.service.pojo.shop.auth.AdminTokenAuthInfo;
 
 /**
  * 
@@ -94,6 +95,13 @@ public class ShopChildAccountService extends BaseService {
 	public ShopChildAccountRecord checkByIdAndNameOnChild(Integer sysId, String accountname, Integer accountId) {
 		return db().selectFrom(SHOP_CHILD_ACCOUNT).where(SHOP_CHILD_ACCOUNT.SYS_ID.eq(sysId))
 				.and(SHOP_CHILD_ACCOUNT.ACCOUNT_NAME.eq(accountname)).and(SHOP_CHILD_ACCOUNT.ACCOUNT_ID.eq(accountId))
+				.fetchAny();
+	}
+
+	public ShopChildRoleRecord checkByRecode(Integer roleId, AdminTokenAuthInfo info) {
+		return db().selectFrom(SHOP_CHILD_ROLE)
+				.where(SHOP_CHILD_ROLE.SYS_ID.eq(info.getSysId())
+						.and(SHOP_CHILD_ROLE.ROLE_ID.eq(roleId).and(SHOP_CHILD_ROLE.SHOP_ID.eq(info.getLoginShopId()))))
 				.fetchAny();
 	}
 
