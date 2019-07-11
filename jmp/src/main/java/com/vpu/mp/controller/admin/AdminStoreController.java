@@ -2,6 +2,7 @@ package com.vpu.mp.controller.admin;
 
 import javax.validation.Valid;
 
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
@@ -166,13 +167,13 @@ public class AdminStoreController extends AdminBaseController{
      * 获取门店服务配置
      * @return
      */
-    @PostMapping(value = "/api/admin/store/service/get")
+    @GetMapping(value = "/api/admin/store/service/get")
     public JsonResult getStoreServiceConfig() {
     	return success(shop().config.storeConfigService.getStoreServiceConfig()); 
     }
     
     /**
-     * 获取门店服务配置
+     * 更新门店服务配置
      * @return
      */
     @PostMapping(value = "/api/admin/store/service/update")
