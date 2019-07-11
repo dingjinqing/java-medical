@@ -4,6 +4,7 @@ import java.util.HashMap;
 
 import org.jooq.Configuration;
 import org.jooq.ContextTransactionalRunnable;
+import org.jooq.Record;
 import org.jooq.Result;
 import org.jooq.SelectLimitStep;
 import org.jooq.impl.DSL;
@@ -136,6 +137,15 @@ public class BaseService extends ServiceContainer {
 
 	public <T> PageResult<T> getPageResult(SelectLimitStep<?> select, Class<T> clazz) {
 		return getPageResult(select, 1, 20, clazz);
+	}
+	
+	/**
+	 * 复制from到jooq的记录对象中，不含值为null的字段
+	 * @param from
+	 * @param to
+	 */
+	public void assign(Object from,Record to) {
+		FieldsUtil.assignNotNull(from, to);
 	}
 
 	public String likeValue(String val) {
