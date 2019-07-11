@@ -108,7 +108,7 @@ public class SystemAuth {
 			info.setToken(loginToken);
 		}
 		Integer timeout = Util.getInteger(Util.getProperty(AUTH_TIMEOUT));
-		jedis.set(info.token, Util.toJSON(info), timeout);
+		jedis.set(info.token, Util.toJson(info), timeout);
 	}
 
 	/**
@@ -130,7 +130,7 @@ public class SystemAuth {
 		if (this.isValidToken(token)) {
 			String json = jedis.get(token);
 			if (!StringUtils.isBlank(json)) {
-				return Util.parseJSON(json, SystemTokenAuthInfo.class);
+				return Util.parseJson(json, SystemTokenAuthInfo.class);
 			}
 		}
 		return null;

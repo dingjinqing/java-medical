@@ -80,8 +80,7 @@ public class AdminImageController extends AdminBaseController {
 		if (!shop().image.validImageType(file.getContentType())) {
 			return this.fail(JsonResultCode.CODE_IMGAE_FORMAT_INVALID);
 		}
-		if (param.needImgWidth != null && param.needImgWidth > 0
-				|| param.needImgHeight != null && param.needImgHeight > 0) {
+		if (param.needImgWidth != null || param.needImgHeight != null) {
 			BufferedImage bufferImage;
 			bufferImage = ImageIO.read(file.getInputStream());
 			if (param.needImgWidth != null && param.needImgWidth != bufferImage.getWidth()) {
@@ -93,9 +92,9 @@ public class AdminImageController extends AdminBaseController {
 		}
 		UploadPath uploadPath = shop.image.getImageWritableUploadPath(file.getContentType());
 		file.write(uploadPath.fullPath);
-		
+
 		boolean ret = shop.image.uploadToUpYun(uploadPath.relativeFilePath, new File(uploadPath.fullPath));
-		if(ret) {
+		if (ret) {
 			UploadedImageRecord record = shop.image.addImageToDb(uploadPath.relativeFilePath,
 					shop.image.baseFilename(file.getSubmittedFileName()), file.getSubmittedFileName(), param.imgCatId);
 			shop.image.rmFile(uploadPath.fullPath);
@@ -103,11 +102,11 @@ public class AdminImageController extends AdminBaseController {
 		}
 		return fail(JsonResultCode.CODE_IMGAE_UPLOAD_FAILED);
 	}
-	
-	
+
 	/**
 	 * 图片列表
-	 * @param param
+	 * 
+	 * @param  param
 	 * @return
 	 */
 	@PostMapping(value = "/admin/image/list")
@@ -117,10 +116,11 @@ public class AdminImageController extends AdminBaseController {
 		PageResult<UploadImageCatNameVo> imageList = shop.image.getPageList(param);
 		return this.success(imageList);
 	}
-	
+
 	/**
 	 * 图片裁剪
-	 * @param param
+	 * 
+	 * @param  param
 	 * @return
 	 * @throws Exception
 	 */
@@ -133,28 +133,28 @@ public class AdminImageController extends AdminBaseController {
 		return true;
 	}
 
-
 	/**
 	 * 批量移动分组
+	 * 
 	 * @param  param
 	 * @return
 	 */
 	@PostMapping("/admin/image/batch/move")
-	public JsonResult batchMoveImage(@RequestBody @Valid BatchMoveImageParam param){
-		shop().image.setCatId(param.getImageIds().toArray(new Integer[0]),param.getImageCatId());
+	public JsonResult batchMoveImage(@RequestBody @Valid BatchMoveImageParam param) {
+		shop().image.setCatId(param.getImageIds().toArray(new Integer[0]), param.getImageCatId());
 		return success();
 	}
 
 	/**
 	 * 批量删除图片
-	 * @param param
+	 * 
+	 * @param  param
 	 * @return
 	 */
 	@PostMapping("/admin/image/batch/delete")
-	public JsonResult batchDeleteImage(BatchDeleteImageParam param){
+	public JsonResult batchDeleteImage(BatchDeleteImageParam param) {
 		shop().image.removeRows(param.getImageIds());
 		return success();
 	}
-
 
 }

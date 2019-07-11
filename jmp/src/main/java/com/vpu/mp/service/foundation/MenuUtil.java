@@ -243,7 +243,7 @@ public class MenuUtil {
 	public static List<Menu> loadMenu(String jsonPath) {
 		String json = Util.loadResource(jsonPath);
 		try {
-			ArrayList<?> list = Util.parseJSON(json, ArrayList.class);
+			ArrayList<?> list = Util.parseJson(json, ArrayList.class);
 			return convertMenuList(list);
 		} catch (Exception e) {
 			e.printStackTrace();

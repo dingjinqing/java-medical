@@ -140,7 +140,7 @@ public class MpDecorationService extends BaseService {
 		if (pageContent == null) {
 			return null;
 		}
-		Map<String, Map<String, Object>> result = Util.parseJSON(pageContent, Map.class);
+		Map<String, Map<String, Object>> result = Util.parseJson(pageContent, Map.class);
 		for (Map.Entry<String, Map<String, Object>> entry : result.entrySet()) {
 			Map<String, Object> v = entry.getValue();
 			filterActivityModules(v);

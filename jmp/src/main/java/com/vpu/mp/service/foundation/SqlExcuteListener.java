@@ -30,7 +30,7 @@ import org.jooq.tools.StringUtils;
  */
 public class SqlExcuteListener extends DefaultExecuteListener {
 
-	private static final JooqLogger logger   = JooqLogger.getLogger(SqlExcuteListener.class);
+	private static final JooqLogger LOGGER   = JooqLogger.getLogger(SqlExcuteListener.class);
 
 	/**
 	 * 
@@ -72,42 +72,42 @@ public class SqlExcuteListener extends DefaultExecuteListener {
 	}
 
 
-	private static final int maxLength = 2000;
+	private static final int BIND_PARAM_MAX_LENGTH = 2000;
 
 
 	@Override
 	public void renderEnd(ExecuteContext ctx) {
-		if (logger.isDebugEnabled()) {
+		if (LOGGER.isDebugEnabled()) {
 			Configuration configuration = ctx.configuration();
 			String newline = TRUE.equals(configuration.settings().isRenderFormatted()) ? "\n" : "";
 
 			// [#2939] Prevent excessive logging of bind variables only in DEBUG mode, not in TRACE mode.
-			if (!logger.isTraceEnabled()) {
+			if (!LOGGER.isTraceEnabled()) {
 				configuration = abbreviateBindVariables(configuration);
 			}
-			String[] batchSQL = ctx.batchSQL();
+			String[] batchSql = ctx.batchSQL();
 			if (ctx.query() != null) {
 
 				// Actual SQL passed to JDBC
-				logger.debug("Executing query", newline + ctx.sql());
+				LOGGER.debug("Executing query", newline + ctx.sql());
 
 				// [#1278] DEBUG log also SQL with inlined bind values, if
 				// that is not the same as the actual SQL passed to JDBC
 				String inlined = DSL.using(configuration).renderInlined(ctx.query());
 				if (!ctx.sql().equals(inlined)) {
-					logger.debug("-> with bind values", newline + inlined);
+					LOGGER.debug("-> with bind values", newline + inlined);
 				}
 			}
 
 			// [#2987] Log routines
 			else if (ctx.routine() != null) {
-				logger.debug("Calling routine", newline + ctx.sql());
+				LOGGER.debug("Calling routine", newline + ctx.sql());
 
 				String inlined = DSL.using(configuration)
 						.renderInlined(ctx.routine());
 
 				if (!ctx.sql().equals(inlined)) {
-					logger.debug("-> with bind values", newline + inlined);
+					LOGGER.debug("-> with bind values", newline + inlined);
 				}
 			}
 
@@ -115,18 +115,18 @@ public class SqlExcuteListener extends DefaultExecuteListener {
 
 				// [#1529] Batch queries should be logged specially
 				if (ctx.type() == ExecuteType.BATCH) {
-					logger.debug("Executing batch query", newline + ctx.sql());
+					LOGGER.debug("Executing batch query", newline + ctx.sql());
 				}
 				else {
-					logger.debug("Executing query", newline + ctx.sql());
+					LOGGER.debug("Executing query", newline + ctx.sql());
 				}
 			}
 
 			// [#2532] Log a complete BatchMultiple query
-			else if (batchSQL.length > 0) {
-				if (batchSQL[batchSQL.length - 1] != null) {
-					for (String sql : batchSQL) {
-						logger.debug("Executing batch query", newline + sql);
+			else if (batchSql.length > 0) {
+				if (batchSql[batchSql.length - 1] != null) {
+					for (String sql : batchSql) {
+						LOGGER.debug("Executing batch query", newline + sql);
 					}
 				}
 			}
@@ -157,13 +157,13 @@ public class SqlExcuteListener extends DefaultExecuteListener {
 					Param<?> param = (Param<?>) part;
 					Object value = param.getValue();
 
-					if (value instanceof String && ((String) value).length() > maxLength) {
+					if (value instanceof String && ((String) value).length() > BIND_PARAM_MAX_LENGTH) {
 						anyAbbreviations = true;
-						context.queryPart(val(abbreviate((String) value, maxLength)));
+						context.queryPart(val(abbreviate((String) value, BIND_PARAM_MAX_LENGTH)));
 					}
-					else if (value instanceof byte[] && ((byte[]) value).length > maxLength) {
+					else if (value instanceof byte[] && ((byte[]) value).length > BIND_PARAM_MAX_LENGTH) {
 						anyAbbreviations = true;
-						context.queryPart(val(Arrays.copyOf((byte[]) value, maxLength)));
+						context.queryPart(val(Arrays.copyOf((byte[]) value, BIND_PARAM_MAX_LENGTH)));
 					}
 				}
 			}

@@ -119,7 +119,7 @@ public class AdminAuth {
 			info.setToken(loginToken);
 		}
 		Integer timeout = Util.getInteger(Util.getProperty(AUTH_TIMEOUT));
-		jedis.set(info.token, Util.toJSON(info), timeout);
+		jedis.set(info.token, Util.toJson(info), timeout);
 	}
 
 	/**
@@ -178,7 +178,7 @@ public class AdminAuth {
 		if (!StringUtils.isBlank(token)) {
 			String json = jedis.get(token);
 			if (!StringUtils.isBlank(json)) {
-				return Util.parseJSON(json, AdminTokenAuthInfo.class);
+				return Util.parseJson(json, AdminTokenAuthInfo.class);
 			}
 		}
 		return null;

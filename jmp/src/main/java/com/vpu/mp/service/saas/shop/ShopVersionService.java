@@ -71,7 +71,7 @@ public class ShopVersionService extends BaseService {
 			return null;
 		}
 		String json = shop.getVersionConfig();
-		VersionConfig versionConfig = StringUtils.isBlank(json) ? null : Util.parseJSON(json, VersionConfig.class);
+		VersionConfig versionConfig = StringUtils.isBlank(json) ? null : Util.parseJson(json, VersionConfig.class);
 		if (versionConfig == null) {
 			versionConfig = new VersionConfig();
 		}
@@ -82,7 +82,7 @@ public class ShopVersionService extends BaseService {
 		}
 
 		json = versionRecord.getContent();
-		VersionConfig levelVersionConfig = StringUtils.isBlank(json) ? null : Util.parseJSON(json, VersionConfig.class);
+		VersionConfig levelVersionConfig = StringUtils.isBlank(json) ? null : Util.parseJson(json, VersionConfig.class);
 		if (levelVersionConfig == null) {
 			return null;
 		}
@@ -197,7 +197,7 @@ public class ShopVersionService extends BaseService {
 	 */
 	protected VersionConfig getVersionConfig(String level) {
 		ShopVersionRecord version = this.getVersionByLevel(level);
-		return Util.parseJSON(version.getContent(), VersionConfig.class);
+		return Util.parseJson(version.getContent(), VersionConfig.class);
 	}
 
 	/**

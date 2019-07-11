@@ -95,7 +95,7 @@ public class BaseShopConfigService extends BaseService {
 	 * @return
 	 */
 	protected int setJsonObject(String key, Object value) {
-		return this.set(key, Util.toJSON(value));
+		return this.set(key, Util.toJson(value));
 	}
 
 	/**
@@ -107,7 +107,7 @@ public class BaseShopConfigService extends BaseService {
 	 * @return
 	 */
 	protected int setJsonObject(DSLContext db, String key, Object value) {
-		return this.set(db, key, Util.toJSON(value));
+		return this.set(db, key, Util.toJson(value));
 	}
 
 	/**
@@ -146,7 +146,7 @@ public class BaseShopConfigService extends BaseService {
 	protected <T> T getJsonObject(String key, Class<? extends T> toClass) {
 		String value = get(key);
 		if (null != value) {
-			return Util.parseJSON(value, toClass);
+			return Util.parseJson(value, toClass);
 		} else {
 			return null;
 		}
@@ -162,7 +162,7 @@ public class BaseShopConfigService extends BaseService {
 	 */
 	@SuppressWarnings("rawtypes")
 	protected <T> T getJsonObject(String key, TypeReference valueTypeRef) {
-		return Util.parseJSON(get(key), valueTypeRef);
+		return Util.parseJson(get(key), valueTypeRef);
 	}
 
 	/**

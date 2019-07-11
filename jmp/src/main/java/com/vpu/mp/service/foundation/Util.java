@@ -38,7 +38,7 @@ public class Util {
 	
 	final protected static String UNDEER_LINE = "_";
 	
-	public static String toJSON(Object o) {
+	public static String toJson(Object o) {
 		ObjectMapper mapper = new ObjectMapper();
 		try {
 			return mapper.writeValueAsString(o);
@@ -52,7 +52,7 @@ public class Util {
 		return null;
 	}
 
-	public static <T> T parseJSON(String json, Class<T> valueType) {
+	public static <T> T parseJson(String json, Class<T> valueType) {
 		ObjectMapper mapper = new ObjectMapper();
 		// 如果json中有新增的字段并且是实体类类中不存在的，不报错
 		mapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
@@ -71,7 +71,7 @@ public class Util {
 	}
 	
 	@SuppressWarnings("rawtypes")
-	public static <T> T parseJSON(String json, TypeReference valueTypeRef) {
+	public static <T> T parseJson(String json, TypeReference valueTypeRef) {
 		ObjectMapper mapper = new ObjectMapper();
 		// 如果json中有新增的字段并且是实体类类中不存在的，不报错
 		mapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
@@ -220,38 +220,6 @@ public class Util {
 	public static Integer randomInteger(Integer min, Integer max) {
 		Random rnd = new Random();
 		return min + rnd.nextInt(max - min);
-	}
-
-	public static final List<Integer> convertToIntegers(List<UInteger> nums) {
-		List<Integer> result = new ArrayList<Integer>();
-		for (UInteger n : nums) {
-			result.add(n.intValue());
-		}
-		return result;
-	}
-
-	public static final List<UInteger> convertToUIntegers(List<Integer> nums) {
-		List<UInteger> result = new ArrayList<UInteger>();
-		for (Integer n : nums) {
-			result.add(UInteger.valueOf(n));
-		}
-		return result;
-	}
-
-	public static final Integer[] convertToIntegers(UInteger[] nums) {
-		Integer[] result = new Integer[nums.length];
-		for (int i = 0; i < nums.length; i++) {
-			result[i] = nums[i].intValue();
-		}
-		return result;
-	}
-
-	public static final UInteger[] convertToUIntegers(Integer[] nums) {
-		UInteger[] result = new UInteger[nums.length];
-		for (int i = 0; i < nums.length; i++) {
-			result[i] = UInteger.valueOf(nums[i]);
-		}
-		return result;
 	}
 
 	public static List<Part> getFilePart(HttpServletRequest request, String name) throws IOException, ServletException {

@@ -1,23 +1,18 @@
 package com.vpu.mp.service.pojo.shop.image;
 
-import java.sql.Timestamp;
 
-import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
+import lombok.ToString;
 
 /**
  * @author 新国
  */
-@Data
-public class UploadImageCatNameVo {
-    private Integer imgId;
-    private String imgType;
-    private Integer imgSize;
-    private String imgName;
-    private String imgUrl;
-    private Integer imgCatId;
-    private Integer imgWidth;
-    private Integer imgHeight;
+@Getter
+@Setter
+@ToString
+public class UploadImageCatNameVo extends UploadedImageVo {
+
     private String imgCatName;
-    private Timestamp createTime;
-    private Timestamp updateTime;
+
 }

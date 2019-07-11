@@ -1,25 +1,24 @@
 package com.vpu.mp.controller.admin;
 
-import com.vpu.mp.service.foundation.JsonResult;
-import com.vpu.mp.service.foundation.JsonResultMessage;
-import com.vpu.mp.service.pojo.shop.config.ShopCfg;
-import com.vpu.mp.service.pojo.shop.config.trade.OrderProcessParam;
-import com.vpu.mp.service.pojo.shop.config.trade.PaymentConfigParam;
-import com.vpu.mp.service.pojo.shop.config.trade.RetrunConfigParam;
-import com.vpu.mp.service.pojo.shop.config.trade.WxpayConfigParam;
-import org.springframework.validation.BindingResult;
-import org.springframework.validation.annotation.Validated;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RestController;
-
 import java.beans.BeanInfo;
 import java.beans.IntrospectionException;
 import java.beans.Introspector;
 import java.beans.PropertyDescriptor;
 import java.lang.reflect.InvocationTargetException;
 import java.util.Arrays;
-import java.util.List;
+
+import org.springframework.validation.BindingResult;
+import org.springframework.validation.annotation.Validated;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RestController;
+
+import com.vpu.mp.service.foundation.JsonResult;
+import com.vpu.mp.service.foundation.JsonResultMessage;
+import com.vpu.mp.service.pojo.shop.config.trade.OrderProcessParam;
+import com.vpu.mp.service.pojo.shop.config.trade.PaymentConfigParam;
+import com.vpu.mp.service.pojo.shop.config.trade.RetrunConfigParam;
+import com.vpu.mp.service.pojo.shop.config.trade.WxpayConfigParam;
 
 /**
  * @Author:liufei

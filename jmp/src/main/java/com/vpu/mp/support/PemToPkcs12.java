@@ -27,8 +27,8 @@ public class PemToPkcs12 {
 	 * @return
 	 * @throws Exception
 	 */
-	public static byte[] pemToPKCS12(String privateKeyStr, String certificateStr, char[] password) throws Exception {
-		return pemToPKCS12(privateKeyStr, certificateStr, password, "alias");
+	public static byte[] pemToPkcs12(String privateKeyStr, String certificateStr, char[] password) throws Exception {
+		return pemToPkcs12(privateKeyStr, certificateStr, password, "alias");
 	}
 
 	/**
@@ -40,22 +40,22 @@ public class PemToPkcs12 {
 	 * @return
 	 * @throws Exception
 	 */
-	public static byte[] pemToPKCS12(String privateKeyStr, String certificateStr, char[] password,
+	public static byte[] pemToPkcs12(String privateKeyStr, String certificateStr, char[] password,
 			String alias)
 			throws Exception {
 		byte privateKeyData[] = privateKeyStr.getBytes();
 		byte certificateData[] = certificateStr.getBytes();
 
 		// Remove PEM header, footer and \n
-		String privateKeyPEM = new String(privateKeyData, StandardCharsets.UTF_8);
-		privateKeyPEM = privateKeyPEM.replace(
+		String privateKeyPem = new String(privateKeyData, StandardCharsets.UTF_8);
+		privateKeyPem = privateKeyPem.replace(
 				"-----BEGIN PRIVATE KEY-----\n", "")
 				.replace("-----END PRIVATE KEY-----", "")
 				.replaceAll("\n", "");
-		byte privateKeyDER[] = Base64.getDecoder().decode(privateKeyPEM);
+		byte privateKeyDer[] = Base64.getDecoder().decode(privateKeyPem);
 
 		// Used to read User_privkey.pem file to get private key
-		PKCS8EncodedKeySpec spec = new PKCS8EncodedKeySpec(privateKeyDER);
+		PKCS8EncodedKeySpec spec = new PKCS8EncodedKeySpec(privateKeyDer);
 		KeyFactory keyFactory = KeyFactory.getInstance("RSA");
 		PrivateKey privateKey = keyFactory.generatePrivate(spec);
 

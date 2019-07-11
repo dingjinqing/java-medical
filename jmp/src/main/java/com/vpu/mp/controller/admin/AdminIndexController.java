@@ -5,6 +5,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.vpu.mp.service.foundation.JedisManager;
+import com.vpu.mp.service.foundation.JsonResult;
 
 /**
  * 
@@ -28,8 +29,8 @@ public class AdminIndexController extends AdminBaseController {
 
 	@RequestMapping(value = "/admin/test")
 	@ResponseBody
-	public String test() throws InterruptedException {
-//		saas.getShopApp(471752).config.bottomCfg.test();
-		return "ok";
+	public JsonResult test() throws InterruptedException {
+		saas.getShopApp(471752).config.bottomCfg.test();
+		return success( );
 	}
 }

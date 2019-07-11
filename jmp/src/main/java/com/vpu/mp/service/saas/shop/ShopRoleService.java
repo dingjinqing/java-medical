@@ -22,6 +22,6 @@ public class ShopRoleService extends BaseService {
 		if(role == null) {
 			return null;
 		}
-		return Util.parseJSON(role.getPrivilegeList(),String[].class);
+		return Util.parseJson(role.getPrivilegeList(),String[].class);
 	}
 }

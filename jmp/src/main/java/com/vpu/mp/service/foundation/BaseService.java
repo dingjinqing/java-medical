@@ -87,10 +87,10 @@ public class BaseService extends ServiceContainer {
 	
 	/**
 	 * 得到店铺ID的事务连接，店铺为0时为主库
-	 * @param ShopId
+	 * @param shopId
 	 * @return
 	 */
-	protected DefaultDSLContext getTransactionDb(Integer ShopId) {
+	protected DefaultDSLContext getTransactionDb(Integer shopId) {
 		if(transactionConfiuration().containsKey(shopId)) {
 			return (DefaultDSLContext) DSL.using(transactionConfiuration().get(shopId));
 		}

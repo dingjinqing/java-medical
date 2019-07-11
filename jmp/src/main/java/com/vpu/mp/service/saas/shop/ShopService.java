@@ -134,7 +134,7 @@ public class ShopService extends BaseService {
 	public Boolean addShop(ShopReq shopReq) {
 		shopReq.setShopId(getCanUseShopId());
 		DbConfig dbConfig = dm.getInstallShopDbConfig(shopReq.getShopId());
-		shopReq.setDbConfig(Util.toJSON(dbConfig));
+		shopReq.setDbConfig(Util.toJson(dbConfig));
 		if(!dm.installShopDb(dbConfig)) {
 			return false;
 		}

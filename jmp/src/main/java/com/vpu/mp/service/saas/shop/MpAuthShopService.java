@@ -38,12 +38,12 @@ public class MpAuthShopService extends BaseService {
 		record.setAlias(authorizerInfo.getAlias());
 		record.setVerifyTypeInfo(authorizerInfo.getVerifyTypeInfo().toString());
 		record.setHeadImg(authorizerInfo.getHeadImg());
-		record.setFuncInfo(Util.toJSON(authorizationInfo.getFuncInfo()));
+		record.setFuncInfo(Util.toJson(authorizationInfo.getFuncInfo()));
 		record.setOpenCard(authorizerInfo.getBusinessInfo().get("open_card").byteValue());
 		record.setOpenPay(authorizerInfo.getBusinessInfo().get("open_pay").byteValue());
 		record.setIsAuthOk((byte) 1);
-		record.setAuthorizationInfo(Util.toJSON(authorizationInfo));
-		record.setAuthorizerInfo(Util.toJSON(authorizerInfo));
+		record.setAuthorizationInfo(Util.toJson(authorizationInfo));
+		record.setAuthorizerInfo(Util.toJson(authorizerInfo));
 		record.setLastUploadTime(Timestamp.valueOf(LocalDateTime.now()));
 		record.setPrincipalName(authorizerInfo.getPrincipalName());
 		if (this.getAuthShopByAppId(appId) == null) {
@@ -112,10 +112,10 @@ public class MpAuthShopService extends BaseService {
 	 */
 	public Map<String, Object> getParseMpInfo(MpAuthShopRecord record) {
 		Map<String, Object> mp = record.intoMap();
-		mp.put("tester", Util.parseJSON((String) mp.getOrDefault("tester", "[]"), ArrayList.class));
-		mp.put("category", Util.parseJSON((String) mp.getOrDefault("category", "[]"), ArrayList.class));
-		mp.put("page_cfg", Util.parseJSON((String) mp.getOrDefault("page_cfg", "[]"), ArrayList.class));
-		mp.put("func_info", Util.parseJSON((String) mp.getOrDefault("func_info", "[]"), ArrayList.class));
+		mp.put("tester", Util.parseJson((String) mp.getOrDefault("tester", "[]"), ArrayList.class));
+		mp.put("category", Util.parseJson((String) mp.getOrDefault("category", "[]"), ArrayList.class));
+		mp.put("page_cfg", Util.parseJson((String) mp.getOrDefault("page_cfg", "[]"), ArrayList.class));
+		mp.put("func_info", Util.parseJson((String) mp.getOrDefault("func_info", "[]"), ArrayList.class));
 		return mp;
 	}
 

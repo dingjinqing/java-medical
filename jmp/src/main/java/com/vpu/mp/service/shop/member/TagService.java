@@ -59,8 +59,9 @@ public class TagService extends BaseService {
 	 */
 	private SelectWhereStep<Record4<Integer, String, Timestamp, Integer>> buildOptions(SelectWhereStep<Record4<Integer, String, Timestamp, Integer>> select,
 			TagPageListParam param,Tag t) {
-		if(param == null)
+		if(param == null) {
 			return select;
+		}
 		if(!StringUtils.isEmpty(param.getTagName())) {
 			//like value
 			String likeValue = this.likeValue(param.getTagName());

@@ -68,6 +68,6 @@ public class JsonResult {
 
 	@Override
 	public String toString() {
-		return Util.toJSON(this);
+		return Util.toJson(this);
 	}
 }

@@ -287,7 +287,7 @@ public class GoodsRecommendService extends BaseService {
 		recommend.setUpdateTime(record.getUpdateTime());
 		recommend.setCreateTime(record.getCreateTime());
 		String usePageJson = record.getRecommendUsePage();
-		List<String> usePageList = Util.parseJSON(usePageJson,new TypeReference<List<String>>() {} );
+		List<String> usePageList = Util.parseJson(usePageJson,new TypeReference<List<String>>() {} );
 		recommend.setRecommendUsePage(usePageList);
 		if(GoodsRecommend.PARTTYPE.equals(recommend.getRecommendType())) {
 			String catIds = record.getRecommendCatId();
@@ -342,7 +342,7 @@ public class GoodsRecommendService extends BaseService {
 	
 	private String convertUsePageList2Json(List<String> usePageList) {
 		usePageList = usePageList != null?usePageList:new ArrayList<String>(0);
-		return Util.toJSON(usePageList);
+		return Util.toJson(usePageList);
 	}
 
 }

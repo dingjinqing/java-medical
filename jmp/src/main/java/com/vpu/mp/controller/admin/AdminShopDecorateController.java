@@ -9,7 +9,6 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.vpu.mp.db.shop.tables.records.XcxCustomerPageRecord;
 import com.vpu.mp.service.foundation.JsonResult;
 import com.vpu.mp.service.foundation.JsonResultCode;
@@ -28,7 +27,6 @@ import com.vpu.mp.service.shop.ShopApplication;
 //@RequestMapping("/api")
 public class AdminShopDecorateController extends AdminBaseController {
 
-	private static ObjectMapper mapper = new ObjectMapper();
 	@Override
     protected ShopApplication shop() {
         return saas.getShopApp(471752);

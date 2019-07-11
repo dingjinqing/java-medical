@@ -93,7 +93,7 @@ public class AdminAuthInterceptor extends HandlerInterceptorAdapter {
 			JsonResult result) throws Exception {
 		response.setContentType("application/json;charset=UTF-8");
 		PrintWriter writer = response.getWriter();
-		writer.write(Util.toJSON(result));
+		writer.write(Util.toJson(result));
 		writer.close();
 		response.flushBuffer();
 	}
