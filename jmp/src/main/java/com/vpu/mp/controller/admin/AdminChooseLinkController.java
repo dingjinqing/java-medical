@@ -4,11 +4,11 @@ import java.util.List;
 
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.vpu.mp.service.foundation.JsonResult;
 import com.vpu.mp.service.foundation.PageResult;
+import com.vpu.mp.service.pojo.shop.decoration.ActivityVo;
 import com.vpu.mp.service.pojo.shop.decoration.ChooseLinkParam;
 import com.vpu.mp.service.pojo.shop.decoration.GoodsLinkVo;
 import com.vpu.mp.service.pojo.shop.decoration.StoreVo;
@@ -24,8 +24,13 @@ import com.vpu.mp.service.shop.ShopApplication;
  * 2019年7月9日
  */
 @RestController
-@RequestMapping("/api")
+//@RequestMapping("/api")
 public class AdminChooseLinkController extends AdminBaseController{
+	@Override
+    protected ShopApplication shop() {
+        return saas.getShopApp(471752);
+    }
+	
 	/**
 	 * 常用链接
 	 */
@@ -37,9 +42,10 @@ public class AdminChooseLinkController extends AdminBaseController{
 	 * 商品链接
 	 * @return
 	 */
-	public JsonResult goodsLink(GoodsLinkVo param) {
-		PageResult<GoodsLinkVo> list = shop().chooselink.getGoodsLink(param);
-		return this.success(list);
+	@PostMapping(value = "/admin/decorate/goods/list")
+	public JsonResult goodsLink(@RequestBody GoodsLinkVo param) {
+		PageResult<GoodsLinkVo> goodsLinkList = shop().chooselink.getGoodsLink(param);
+		return this.success(goodsLinkList);
 	}
 	
 	/**
@@ -147,5 +153,25 @@ public class AdminChooseLinkController extends AdminBaseController{
 		}else{
 			return this.fail();
 		}
+	}
+	
+	/**
+	 * 拼团抽奖链接列表
+	 * @return
+	 */
+	@PostMapping(value = "/admin/decorate/pin/list")
+	public JsonResult groupDraw() {
+		List<ActivityVo> pinDrawList = shop().chooselink.getGroupDrawList();
+		return this.success(pinDrawList);
+	}
+	
+	/**
+	 * 瓜分积分链接列表
+	 * @return
+	 */
+	@PostMapping(value = "/admin/decorate/integration/list")
+	public JsonResult pinIntegration() {
+		List<ActivityVo> integrationList = shop().chooselink.getIntegrationList();
+		return this.success(integrationList);
 	}
 }

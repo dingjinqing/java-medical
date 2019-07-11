@@ -2,21 +2,26 @@ package com.vpu.mp.service.shop.decoration;
 
 import static com.vpu.mp.db.shop.Tables.DECORATE_LINK;
 import static com.vpu.mp.db.shop.Tables.GOODS;
+import static com.vpu.mp.db.shop.Tables.GROUP_DRAW;
 import static com.vpu.mp.db.shop.Tables.MP_JUMP;
 import static com.vpu.mp.db.shop.Tables.MP_JUMP_USABLE;
+import static com.vpu.mp.db.shop.Tables.PIN_INTEGRATION_DEFINE;
 import static com.vpu.mp.db.shop.Tables.STORE;
 import static com.vpu.mp.db.shop.tables.XcxCustomerPage.XCX_CUSTOMER_PAGE;
 
+import java.sql.Timestamp;
+import java.util.Date;
 import java.util.List;
 
 import org.jooq.Record3;
-import org.jooq.SelectConditionStep;
+import org.jooq.Record4;
 import org.jooq.SelectJoinStep;
 
 import com.vpu.mp.db.shop.tables.records.DecorateLinkRecord;
 import com.vpu.mp.db.shop.tables.records.XcxCustomerPageRecord;
 import com.vpu.mp.service.foundation.BaseService;
 import com.vpu.mp.service.foundation.PageResult;
+import com.vpu.mp.service.pojo.shop.decoration.ActivityVo;
 import com.vpu.mp.service.pojo.shop.decoration.GoodsLinkVo;
 import com.vpu.mp.service.pojo.shop.decoration.StoreVo;
 import com.vpu.mp.service.pojo.shop.decoration.XcxCustomerPageVo;
@@ -30,7 +35,6 @@ import com.vpu.mp.service.pojo.shop.store.store.StoreListQueryParam;
  * 2019年7月9日
  */
 public class ChooseLinkService extends BaseService {
-
 //	常用链接
 	public Boolean commonLink() {
 		return false;
@@ -42,7 +46,9 @@ public class ChooseLinkService extends BaseService {
 	 * @return
 	 */
 	public PageResult<GoodsLinkVo> getGoodsLink(GoodsLinkVo param) {
-		SelectJoinStep<Record3<Integer, String, String>> select = db().select(GOODS.GOODS_ID,GOODS.GOODS_NAME,GOODS.GOODS_SN).from(GOODS);
+		SelectJoinStep<Record4<Integer, String, String, String>> select = db()
+				.select(GOODS.GOODS_ID,GOODS.GOODS_NAME,GOODS.GOODS_SN,GOODS.GOODS_IMG)
+				.from(GOODS);
 		select = buildOptions(select, param);
 		select.orderBy(GOODS.GOODS_ID.desc());
 		return this.getPageResult(select, GoodsLinkVo.page,GoodsLinkVo.class);
@@ -54,8 +60,10 @@ public class ChooseLinkService extends BaseService {
 	 * @param param
 	 * @return
 	 */
-	public SelectJoinStep<Record3<Integer, String, String>> buildOptions(SelectJoinStep<Record3<Integer,String,String>> select, GoodsLinkVo param) {
-		select.where(GOODS.GOODS_NAME.contains(param.getGoodsName()).or(GOODS.GOODS_SN.contains(param.getGoodsName())));
+	public SelectJoinStep<Record4<Integer, String, String, String>> buildOptions(SelectJoinStep<Record4<Integer, String, String, String>> select, GoodsLinkVo param) {
+		if(param.getGoodsName() != null) {
+			select.where(GOODS.GOODS_NAME.contains(param.getKeyWords()).or(GOODS.GOODS_SN.contains(param.getKeyWords())));
+		}
 		return select;
 	}
 		
@@ -71,9 +79,30 @@ public class ChooseLinkService extends BaseService {
 		return list;
 	}
 	
-//	营销活动
-	public Boolean activityList() {
-		return false;
+	/**
+	 * 拼团抽奖链接
+	 * @return
+	 */
+	public List<ActivityVo> getGroupDrawList() {
+		Date now_date = new Date();
+		List<ActivityVo> list = db().select(GROUP_DRAW.ID,GROUP_DRAW.NAME,GROUP_DRAW.START_TIME,GROUP_DRAW.END_TIME)
+				.from(GROUP_DRAW)
+				.where(GROUP_DRAW.END_TIME.ge((Timestamp) now_date))
+				.fetch().into(ActivityVo.class);
+		return list;
+	}
+	
+	/**
+	 * 瓜分积分链接
+	 * @return
+	 */
+	public List<ActivityVo> getIntegrationList() {
+		Date now_date = new Date();
+		List<ActivityVo> list = db().select(PIN_INTEGRATION_DEFINE.ID,PIN_INTEGRATION_DEFINE.NAME,PIN_INTEGRATION_DEFINE.START_TIME,PIN_INTEGRATION_DEFINE.END_TIME)
+				.from(PIN_INTEGRATION_DEFINE)
+				.where(PIN_INTEGRATION_DEFINE.END_TIME.ge((Timestamp) now_date))
+				.fetch().into(ActivityVo.class);
+		return list;
 	}
 	
 //	商品分类
