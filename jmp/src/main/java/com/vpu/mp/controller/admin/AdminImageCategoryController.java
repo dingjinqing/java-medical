@@ -13,7 +13,7 @@ import org.springframework.web.bind.annotation.*;
  */
 @RequestMapping("/api")
 @RestController
-public class AdminImageCategoryController extends AdminShopController {
+public class AdminImageCategoryController extends AdminBaseController {
 
 
     /**

@@ -2,6 +2,8 @@ package com.vpu.mp.controller.admin;
 
 import java.util.List;
 
+import javax.validation.Valid;
+
 import org.springframework.util.StringUtils;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -16,6 +18,9 @@ import com.vpu.mp.db.main.tables.records.ShopRoleRecord;
 import com.vpu.mp.service.foundation.JsonResult;
 import com.vpu.mp.service.foundation.JsonResultCode;
 import com.vpu.mp.service.foundation.Util;
+import com.vpu.mp.service.pojo.saas.shop.ShopPojo;
+import com.vpu.mp.service.pojo.shop.config.ShopBaseConfig;
+import com.vpu.mp.service.pojo.shop.config.ShopCommonCfgInfo;
 import com.vpu.mp.service.pojo.shop.config.group.ShopRoleDelParam;
 import com.vpu.mp.service.pojo.shop.config.group.ShopRoleParam;
 import com.vpu.mp.service.pojo.shop.config.group.ShopRoleUpdateParam;
@@ -226,6 +231,60 @@ public class AdminBasicConfigController extends AdminBaseController{
 			return fail(JsonResultCode.CODE_FAIL);
 		}
 		return success(JsonResultCode.CODE_SUCCESS);
+	}
+	
+	/**
+	 * 店铺基础配置-取店铺通用设置信息
+	 * @return
+	 */
+	@GetMapping(value = "/shop/common/get")
+	public JsonResult getShopCommonInfo()   {
+		return success(shop().config.shopCommonConfigService.getShopCommonCfg());
+	}
+	
+	/**
+	 * 店铺基础配置-取店铺基础信息
+	 * @return
+	 */
+	@GetMapping(value = "/shop/base/get")
+	public JsonResult getShopBaseInfo() {
+		ShopBaseConfig shopBaseCfgInfo = new ShopBaseConfig();
+		ShopPojo shop = saas.shop.getShopBaseInfoById(this.shopId());
+		shopBaseCfgInfo.setExpireTime(saas.shop.renew.getShopRenewExpireTime(this.shopId()));
+		shopBaseCfgInfo.setShopName(shop.getShopName());
+		shopBaseCfgInfo.setShopAvatar(shop.getShopAvatar());
+		shopBaseCfgInfo.setCreated(shop.getCreated());
+		shopBaseCfgInfo.setBusinessState(shop.getBusinessState());
+		return this.success(shopBaseCfgInfo);
+	}
+	
+	/**
+	 * 店铺基础配置-店铺基础信息更新
+	 * @return
+	 */
+	@PostMapping(value = "/shop/base/update")
+	public JsonResult updateShopBaseInfo(@RequestBody @Valid ShopPojo shop) {
+		shop.setShopId(this.shopId());
+		Integer res = saas.shop.updateShopBaseInfo(shop);
+		if(res > 0) {
+			return this.success();
+		}else {
+			return this.fail();
+		}
+	}
+	
+	/**
+	 * 店铺基础配置-店铺通用配置更新
+	 * @return
+	 */
+	@PostMapping(value = "/shop/common/update")
+	public JsonResult updateShopCommonInfo(@RequestBody @Valid ShopCommonCfgInfo commonCfg) {
+		System.out.println(commonCfg);
+		if(shop().config.shopCommonConfigService.updateShopCommonInfo(commonCfg)) {
+			return this.success();
+		}else {
+			return this.fail(JsonResultCode.CODE_FAIL);
+		}
 	}
 	
 
