@@ -110,14 +110,14 @@ public class ImageService extends BaseService {
      * @param param
      * @return
      */
-    public PageResult<UploadImageCatNameVO> getPageList(ImageListQueryParam param) {
+    public PageResult<UploadImageCatNameVo> getPageList(ImageListQueryParam param) {
         SelectWhereStep<Record> select = db().select(UPLOADED_IMAGE.asterisk(), UPLOADED_IMAGE_CATEGORY.IMG_CAT_NAME)
                 .from(UPLOADED_IMAGE)
                 .leftJoin(UPLOADED_IMAGE_CATEGORY)
                 .on(UPLOADED_IMAGE.IMG_CAT_ID.eq(DSL.cast(UPLOADED_IMAGE_CATEGORY.IMG_CAT_ID, Integer.class)));
         select = this.buildOptions(select, param);
         select.orderBy(UPLOADED_IMAGE.IMG_ID.desc());
-        return this.getPageResult(select, param.page, UploadImageCatNameVO.class);
+        return this.getPageResult(select, param.page, UploadImageCatNameVo.class);
     }
 
 

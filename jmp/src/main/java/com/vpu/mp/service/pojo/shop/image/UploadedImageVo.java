@@ -15,7 +15,7 @@ import lombok.ToString;
  */
 @Data
 @ToString
-public class UploadedImageVO {
+public class UploadedImageVo {
     private Integer   imgId;
     private String    imgType;
     private Integer   imgSize;

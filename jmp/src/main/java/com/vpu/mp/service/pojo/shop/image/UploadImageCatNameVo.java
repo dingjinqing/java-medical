@@ -8,7 +8,7 @@ import lombok.Data;
  * @author 新国
  */
 @Data
-public class UploadImageCatNameVO {
+public class UploadImageCatNameVo {
     private Integer imgId;
     private String imgType;
     private Integer imgSize;

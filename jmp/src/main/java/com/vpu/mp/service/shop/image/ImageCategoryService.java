@@ -8,6 +8,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import com.vpu.mp.service.pojo.shop.image.CategoryTreeItemVo;
 import org.apache.commons.lang3.ArrayUtils;
 import org.jooq.Result;
 import org.jooq.SelectWhereStep;
@@ -16,7 +17,6 @@ import org.jooq.impl.DSL;
 import com.vpu.mp.db.shop.tables.records.UploadedImageCategoryRecord;
 import com.vpu.mp.service.foundation.BaseService;
 import com.vpu.mp.service.foundation.Util;
-import com.vpu.mp.service.pojo.shop.image.CategoryTreeItemVO;
 import com.vpu.mp.service.pojo.shop.image.UploadedImageCategoryParam;
 /**
  * 
@@ -240,9 +240,9 @@ public class ImageCategoryService extends BaseService {
 	 * @param openId
 	 * @return
 	 */
-	public List<CategoryTreeItemVO> getImageCategoryForTree(Integer openId) {
-		List<CategoryTreeItemVO> result = new ArrayList<CategoryTreeItemVO>();
-		CategoryTreeItemVO root = new CategoryTreeItemVO();
+	public List<CategoryTreeItemVo> getImageCategoryForTree(Integer openId) {
+		List<CategoryTreeItemVo> result = new ArrayList<CategoryTreeItemVo>();
+		CategoryTreeItemVo root = new CategoryTreeItemVo();
 		root.setName(ROOT_NAME);
 		root.setId(openId);
 		Result<UploadedImageCategoryRecord> records = this.getAll();
@@ -258,11 +258,11 @@ public class ImageCategoryService extends BaseService {
 	 * @param level
 	 * @return
 	 */
-	public CategoryTreeItemVO getImageCategoryTree(CategoryTreeItemVO root,List<UploadedImageCategoryRecord> categoryTreeItemList,Integer level){
+	public CategoryTreeItemVo getImageCategoryTree(CategoryTreeItemVo root, List<UploadedImageCategoryRecord> categoryTreeItemList, Integer level){
 		for (int i = 0; i <categoryTreeItemList.size() ; i++) {
 			UploadedImageCategoryRecord item =categoryTreeItemList.get(i);
 			if (root.getId().equals(item.getImgCatParentId())){
-				CategoryTreeItemVO child = new CategoryTreeItemVO();
+				CategoryTreeItemVo child = new CategoryTreeItemVo();
 				child.setId(item.getImgCatId());
 				child.setName(item.getImgCatName());
 				child.setLevel(level);

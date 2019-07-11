@@ -42,7 +42,7 @@ public class AdminImageController extends AdminBaseController {
 	 */
 	@PostMapping(value = "/admin/image/upload")
 	public JsonResult imageUpload(UploadImageParam param) throws IOException, Exception {
-		List<UploadedImageVO> uploadImages = new ArrayList<UploadedImageVO>();
+		List<UploadedImageVo> uploadImages = new ArrayList<UploadedImageVo>();
 		JsonResult result = null;
 		List<Part> files = Util.getFilePart(request, param.uploadFileId);
 		int success = 0;
@@ -50,7 +50,7 @@ public class AdminImageController extends AdminBaseController {
 			Part file = files.get(i);
 			result = this.uploadOneFile(param, file);
 			if (result.getError() == JsonResultCode.CODE_SUCCESS.getCode()) {
-				uploadImages.add((UploadedImageVO) result.getContent());
+				uploadImages.add((UploadedImageVo) result.getContent());
 				success++;
 			}
 		}
@@ -99,7 +99,7 @@ public class AdminImageController extends AdminBaseController {
 			UploadedImageRecord record = shop.image.addImageToDb(uploadPath.relativeFilePath,
 					shop.image.baseFilename(file.getSubmittedFileName()), file.getSubmittedFileName(), param.imgCatId);
 			shop.image.rmFile(uploadPath.fullPath);
-			return this.success(record.into(UploadedImageVO.class));
+			return this.success(record.into(UploadedImageVo.class));
 		}
 		return fail(JsonResultCode.CODE_IMGAE_UPLOAD_FAILED);
 	}
@@ -114,7 +114,7 @@ public class AdminImageController extends AdminBaseController {
 	public JsonResult getImageList(ImageListQueryParam param) {
 
 		ShopApplication shop = shop();
-		PageResult<UploadImageCatNameVO> imageList = shop.image.getPageList(param);
+		PageResult<UploadImageCatNameVo> imageList = shop.image.getPageList(param);
 		return this.success(imageList);
 	}
 	
