@@ -214,8 +214,29 @@ public class AdminChooseLinkController extends AdminBaseController{
 	 * 会员卡链接
 	 * @return
 	 */
+	@PostMapping(value = "/admin/decorate/card/list")
 	public JsonResult cardList() {
 		 List<ActivityVo> cardList = shop().chooselink.getCardList();
 		 return this.success(cardList);
+	}
+	
+	/**
+	 * 一口价链接
+	 * @return
+	 */
+	@PostMapping(value = "/admin/decorate/package/list")
+	public JsonResult packageList() {
+		 List<ActivityVo> packageList = shop().chooselink.getPackageList();
+		 return this.success(packageList);
+	}
+	
+	/**
+	 * 满折满减活动链接
+	 * @return
+	 */
+	@PostMapping(value = "/admin/decorate/mrking/list")
+	public JsonResult mrkingList() {
+		List<ActivityVo> mrkingList = shop().chooselink.getMrkingList();
+		return this.success(mrkingList);
 	}
 }
