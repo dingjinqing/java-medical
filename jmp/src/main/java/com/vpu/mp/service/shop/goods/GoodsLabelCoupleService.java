@@ -100,6 +100,17 @@ public class GoodsLabelCoupleService extends BaseService {
 		}
 		db.batchInsert(labelCoupleRecordList).execute();
 	}
-	
+
+    /**
+     *  根据商品ids 删除对应标签对应关系 并对外提供统一事务入口
+     * @author 李晓冰
+     * @param db    调用者传入，可进行事务控制
+     * @param goodsIds
+     */
+	public void deleteByGoodsIds(DSLContext db,List<Integer> goodsIds){
+	    db.delete(GOODS_LABEL_COUPLE)
+                .where(GOODS_LABEL_COUPLE.GTA_ID.in(goodsIds))
+                .and(GOODS_LABEL_COUPLE.TYPE.eq(GoodsLabelCouple.GOODS_LABEL_CODE));
+    }
 	
 }

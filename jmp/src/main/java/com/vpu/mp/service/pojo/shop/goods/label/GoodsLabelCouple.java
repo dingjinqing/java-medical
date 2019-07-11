@@ -15,9 +15,10 @@ import lombok.Data;
 public class GoodsLabelCouple {
 	
 	/**
-	 * 李晓冰添加关联商品码值
+	 * 李晓冰添加关联商品码值和平台分类码值
 	 */
 	public static final Byte GOODS_LABEL_CODE=1;
+    public static final Byte CATEGORY_LABEL_CODE=2;
 
 	private Integer id;
 	private Integer labelId;
