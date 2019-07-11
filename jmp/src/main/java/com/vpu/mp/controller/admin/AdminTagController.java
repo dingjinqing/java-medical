@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.vpu.mp.service.foundation.JsonResult;
 import com.vpu.mp.service.foundation.JsonResultMessage;
+import com.vpu.mp.service.pojo.shop.member.TagInfoParam;
 import com.vpu.mp.service.pojo.shop.member.TagPageListParam;
 
 /**
@@ -25,14 +26,14 @@ public class AdminTagController extends AdminBaseController {
 	 * @return
 	 */
 	@PostMapping(value = "/api/admin/tag/list")
-	public JsonResult getTagList(@RequestBody TagPageListParam param) {
+	public JsonResult getTagList(@RequestBody @Valid TagPageListParam param) {
 		
 		return this.success(shop().tag.getPageList(param));
 	}
 	
 	
 	@PostMapping(value = "/api/admin/tag/add")
-	public JsonResult addTag(@RequestBody @Valid TagPageListParam param,BindingResult result) {
+	public JsonResult addTag(@RequestBody @Valid TagInfoParam param,BindingResult result) {
 
 		//测试参数
 		if(result.hasErrors()) {
