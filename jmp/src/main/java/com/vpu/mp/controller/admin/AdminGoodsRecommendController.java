@@ -1,20 +1,21 @@
 package com.vpu.mp.controller.admin;
 
-import java.util.ArrayList;
-import java.util.List;
+import javax.validation.Valid;
 
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.vpu.mp.db.shop.tables.records.RecommendGoodsRecord;
 import com.vpu.mp.service.foundation.JsonResult;
+import com.vpu.mp.service.foundation.JsonResultCode;
 import com.vpu.mp.service.foundation.PageResult;
-import com.vpu.mp.service.foundation.Util;
-import com.vpu.mp.service.pojo.shop.goods.GoodsView;
 import com.vpu.mp.service.pojo.shop.goods.recommend.GoodsRecommend;
+import com.vpu.mp.service.pojo.shop.goods.recommend.GoodsRecommendInsertParam;
 import com.vpu.mp.service.pojo.shop.goods.recommend.GoodsRecommendPageListParam;
+import com.vpu.mp.service.pojo.shop.goods.recommend.GoodsRecommendUpdateParam;
 
 /**
  * @author 黄荣刚
@@ -25,30 +26,62 @@ import com.vpu.mp.service.pojo.shop.goods.recommend.GoodsRecommendPageListParam;
 @RequestMapping("/api/admin/goods")
 public class AdminGoodsRecommendController extends AdminBaseController {
 	
+	/**
+	 * 分页查询商品推荐列表，支持根据名称模糊查询
+	 * @param param
+	 * @return
+	 */
 	@PostMapping("/recommend/list")
 	public JsonResult getPageList(@RequestBody GoodsRecommendPageListParam param) {
-		PageResult<RecommendGoodsRecord> pageList = shop().goodsRecommend.getPageList(param);
-		List<GoodsRecommend> dataList = new ArrayList();
-		if(pageList.getDataList()!= null) {
-			List<RecommendGoodsRecord> list = pageList.getDataList();
-			for (RecommendGoodsRecord record : list) {
-				GoodsRecommend goodsRecommend = GoodsRecommend.fromRecord(record);
-				dataList.add(goodsRecommend);
-				if(!GoodsRecommend.PARTTYPE.equals(record.getRecommendType())) {
-					continue;
-				}
-				String recommendGoodsId = record.getRecommendGoodsId();
-				if(recommendGoodsId!=null) {
-					String[] split = recommendGoodsId.split(GoodsRecommend.DELIMITER);
-					List<Integer> goodsIdList = Util.valueOf(split);
-					List<GoodsView> goodsViewList = shop().goods.selectGoodsViewList(goodsIdList);
-					goodsRecommend.setRecommendGoods(goodsViewList);
-				}
-			}
+		PageResult<GoodsRecommend> pageList = shop().goodsRecommend.getPageList(param);
+		return success(pageList);
+	}
+	@PostMapping("/recommend/add")
+	public JsonResult insert(@RequestBody @Valid GoodsRecommendInsertParam goodsRecommendParam) {
+
+		if(shop().goodsRecommend.isGoodsRecommendNameExist(goodsRecommendParam.getRecommendName())) {
+			return fail(JsonResultCode.GOODS_RECOMMEND_NAME_EXIST);
 		}
-		PageResult<GoodsRecommend> result = new PageResult<GoodsRecommend>();
-		result.setDataList(dataList);
-		result.setPage(pageList.getPage());
-		return success(result);
+		
+		int result = shop().goodsRecommend.insert(goodsRecommendParam);
+		if(result>0) {
+			return success(JsonResultCode.CODE_SUCCESS);
+		}
+		return fail(JsonResultCode.CODE_FAIL);
+	}
+	@PostMapping("/recommend/delete/{id}")
+	public JsonResult delete(@PathVariable Integer id) {
+		if(id == null || shop().goodsRecommend.selectRecord(id) == null) {
+			return fail(JsonResultCode.GOODS_RECOMMEND_ID_NOT_EXIST);
+		}
+		int result = shop().goodsRecommend.delete(id);
+		if(result >0 ) {
+			return success(JsonResultCode.CODE_SUCCESS);
+		}
+		return fail(JsonResultCode.CODE_FAIL);
+	}
+	
+	@PostMapping("/recommend/update")
+	public JsonResult update(@RequestBody @Valid GoodsRecommendUpdateParam goodsRecommendParam) {
+		if(shop().goodsRecommend.selectRecord(goodsRecommendParam.getId()) == null) {
+			return fail(JsonResultCode.GOODS_RECOMMEND_ID_NOT_EXIST);
+		}
+		int result = shop().goodsRecommend.update(goodsRecommendParam);
+		if(result>0) {
+			return success(JsonResultCode.CODE_SUCCESS);
+		}
+		return fail(JsonResultCode.CODE_FAIL);
+	}
+	
+	@GetMapping("/recommend/select/{id}")
+	public JsonResult select(@PathVariable Integer id) {
+		if(id == null) {
+			return fail(JsonResultCode.GOODS_RECOMMEND_ID_NOT_EXIST);
+		}
+		GoodsRecommend goodsRecommend = shop().goodsRecommend.select(id);
+		if(goodsRecommend == null) {
+			fail(JsonResultCode.GOODS_RECOMMEND_NOT_EXIST);
+		}
+		return success(goodsRecommend);
 	}
 }

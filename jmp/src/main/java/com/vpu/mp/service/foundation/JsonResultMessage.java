@@ -56,6 +56,11 @@ public class JsonResultMessage {
     final public static String GOODS_SPEC_PRD_SN_EXIST="goods.spec.prd.sn.exist";
     final public static String GOODS_SPEC_NAME_REPETITION="goods.spec.name.repetition";
     final public static String GOODS_SPEC_VAL_REPETITION="goods.spec.val.repetition";
+    final public static String GOODS_RECOMMEND_NAME_NOT_NULL="goods.recommend.name.notNull";
+    final public static String GOODS_RECOMMEND_TYPE_NOT_NULL="goods.recommend.type.notNull";
+    final public static String GOODS_RECOMMEND_NAME_EXIST="goods.recommend.name.exist";
+    final public static String GOODS_RECOMMEND_ID_NOT_EXIST="goods.recommend.id.notexist";
+    final public static String GOODS_RECOMMEND_NOT_EXIST="goods.recommend.id.notexist";
     
     final public static String	ARTICLE_CATEGORY_IS_EXIST =  "api.code.article_category_is_exist";
 	final public static String	ARTICLE_CATEGORY_CATEGORYNAME_ISNULL = "api.code.article_category_categoryName_isNull";
