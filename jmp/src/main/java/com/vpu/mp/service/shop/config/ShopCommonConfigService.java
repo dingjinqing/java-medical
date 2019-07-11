@@ -1,8 +1,5 @@
 package com.vpu.mp.service.shop.config;
 
-import org.jooq.DSLContext;
-import org.jooq.impl.DSL;
-
 import com.vpu.mp.service.pojo.shop.config.ShopCommonCfgInfo;
 import com.vpu.mp.service.pojo.shop.config.ShopShareConfig;
 import com.vpu.mp.service.pojo.shop.config.ShopStyleConfig;
@@ -146,7 +143,7 @@ public class ShopCommonConfigService extends BaseShopConfigService{
 	 * @param
 	 * @return
 	 */
-	public int setShowLogo(String value) {
+	public int setLogoLink(String value) {
 		assert(!"".equals(value));
 		return this.set(K_LOGO_LINK, value);
 	}
@@ -227,7 +224,7 @@ public class ShopCommonConfigService extends BaseShopConfigService{
 	 * 下单填写真实姓名开关
 	 * @return
 	 */
-	public Byte getOrderRealNumber() {
+	public Byte getOrderRealName() {
 		return this.get(K_ORDER_REAL_NAME, Byte.class, (byte)0);
 	}
 	
@@ -236,7 +233,7 @@ public class ShopCommonConfigService extends BaseShopConfigService{
 	 * @param value 0 或者 1
 	 * @return
 	 */
-	public int setOrderRealNumber(Byte value) {
+	public int setOrderRealName(Byte value) {
 		assert(value ==(byte)0 || value == (byte)1);
 		return this.set(K_ORDER_REAL_NAME, value,Byte.class);
 	}
@@ -416,7 +413,7 @@ public class ShopCommonConfigService extends BaseShopConfigService{
 	 * @param value 0 或者 1
 	 * @return
 	 */
-	public int setServiceChose(Byte value) {
+	public int setServiceChoose(Byte value) {
 		assert(value ==(byte)0 || value == (byte)1);
 		return this.set(K_SERVICE_CHOSE, value,Byte.class);
 	}
@@ -481,26 +478,29 @@ public class ShopCommonConfigService extends BaseShopConfigService{
 	 */
 	public ShopCommonCfgInfo getShopCommonCfg() {
 		ShopCommonCfgInfo commonCfg = new ShopCommonCfgInfo();
-		commonCfg.setShowLogo((Byte) this.get(K_SHOW_LOGO, Byte.class, (byte)0));
-		commonCfg.setLogoLink(this.get(K_LOGO_LINK, String.class, ""));
-		commonCfg.setCancelTime(this.get(K_CANCEL_TIME, Integer.class, 0));
-		commonCfg.setInvoice((Byte) this.get(K_INVOICE, Byte.class, (byte)0));
-		commonCfg.setBindMobile((Byte) this.get(K_BIND_MOBILE, Byte.class, (byte)0));
-		commonCfg.setSalesNumber((Byte) this.get(K_SALES_NUMBER, Byte.class, (byte)0));
-		commonCfg.setOrderRealName((Byte) this.get(K_ORDER_REAL_NAME, Byte.class, (byte)0));
-		commonCfg.setOrderCid((Byte) this.get(K_ORDER_CID, Byte.class, (byte)0));
-		commonCfg.setConsigneeRealName((Byte) this.get(K_CONSIGNEE_REAL_NAME, Byte.class, (byte)0));
-		commonCfg.setConsigneeCid((Byte) this.get(K_CONSIGNEE_CID, Byte.class, (byte)0));
-		commonCfg.setCustom((Byte) this.get(K_CUSTOM, Byte.class, (byte)0));
-		commonCfg.setCustomTitle(this.get(K_CUSTOM_TITLE, String.class, ""));
-		commonCfg.setDelMarket((Byte) this.get(K_DEL_MARKET, Byte.class, (byte)0));
-		commonCfg.setCustomService((Byte) this.get(K_CUSTOM_SERVICE, Byte.class, (byte)0));
-		commonCfg.setShowCart(this.getJsonObject(K_SHOW_CART, ShowCartConfig.class));
-		commonCfg.setServiceName(this.get(K_SERVICE_NAME, String.class, ""));
-		commonCfg.setServiceChoose((Byte) this.get(K_SERVICE_CHOSE, Byte.class, (byte)0));
-		commonCfg.setServiceTerms((Byte) this.get(K_SERVICE_TERMS, Byte.class, (byte)0));
-		commonCfg.setShareCfg(this.getJsonObject(K_SHARE_CONFIG, ShopShareConfig.class));
-		commonCfg.setShopStyle(this.getJsonObject(K_SHOP_STYLE, ShopStyleConfig.class));
+		this.transaction(() ->{
+			commonCfg.setShowLogo(this.getShowLogo());
+			commonCfg.setLogoLink(this.getLogoLink());
+			commonCfg.setCancelTime(this.getCancelTime());
+			commonCfg.setInvoice(this.getInvoice());
+			commonCfg.setBindMobile(this.getBindMobile());
+			commonCfg.setSalesNumber(this.getSalesNumber());
+			commonCfg.setOrderRealName(this.getOrderRealName());
+			commonCfg.setOrderCid(this.getOrderCid());
+			commonCfg.setConsigneeRealName(this.getConsigneeRealName());
+			commonCfg.setConsigneeCid(this.getConsigneeCid());
+			commonCfg.setCustom(this.getCustom());
+			commonCfg.setCustomTitle(this.getCustomTitle());
+			commonCfg.setDelMarket(this.getDelMarket());
+			commonCfg.setCustomService(this.getCustomService());
+			commonCfg.setShowCart(this.getShowCart());
+			commonCfg.setServiceName(this.getServiceName());
+			commonCfg.setServiceChoose(this.getServiceChose());
+			commonCfg.setServiceTerms(this.getServiceTerms());
+			commonCfg.setShareConfig(this.getShareConfig());
+			commonCfg.setShopStyle(this.getShopStyle());
+		});
+	
 		return commonCfg;
 	}
 	
@@ -509,36 +509,28 @@ public class ShopCommonConfigService extends BaseShopConfigService{
 	 * 
 	 */
 	public Boolean updateShopCommonInfo(ShopCommonCfgInfo commonCfg) {
-		try {
-			 db().transaction(configuration -> {
-				DSLContext db = DSL.using(configuration);
-				
-		        this.set(db, K_SHOW_LOGO, commonCfg.getShowLogo(), Byte.class);
-		        this.set(db, K_LOGO_LINK, commonCfg.getLogoLink(), String.class);
-		        this.set(db, K_CANCEL_TIME, commonCfg.getCancelTime(), Integer.class);
-		        this.set(db, K_INVOICE, commonCfg.getInvoice(), Byte.class);
-		        this.set(db, K_BIND_MOBILE, commonCfg.getBindMobile(), Byte.class);
-		        this.set(db, K_SALES_NUMBER, commonCfg.getSalesNumber(), Byte.class);
-		        this.set(db, K_ORDER_REAL_NAME, commonCfg.getOrderRealName(), Byte.class);
-		        this.set(db, K_ORDER_CID, commonCfg.getOrderCid(), Byte.class);
-		        this.set(db, K_CONSIGNEE_REAL_NAME, commonCfg.getConsigneeRealName(), Byte.class);
-		        this.set(db, K_CONSIGNEE_CID, commonCfg.getConsigneeCid(), Byte.class);
-		        this.set(db, K_CUSTOM, commonCfg.getCustom(), Byte.class);
-		        this.set(db, K_CUSTOM_TITLE, commonCfg.getCustomTitle(), String.class);
-		        this.set(db, K_DEL_MARKET, commonCfg.getDelMarket(), Byte.class);
-		        this.set(db, K_CUSTOM_SERVICE, commonCfg.getCustomService(), Byte.class);
-		        this.setJsonObject(db, K_SHOW_CART, commonCfg.getShowCart());
-		        this.set(db, K_SERVICE_NAME, commonCfg.getServiceName(), String.class);
-		        this.set(db, K_SERVICE_CHOSE, commonCfg.getServiceChoose(), Byte.class);
-		        this.set(db, K_SERVICE_TERMS, commonCfg.getServiceTerms(), Byte.class);
-		        this.setJsonObject(db, K_SHARE_CONFIG, commonCfg.getShareCfg());
-		        this.setJsonObject(db, K_SHOP_STYLE, commonCfg.getShopStyle());
-			 });
-		 }
-		 catch(RuntimeException e) {
-			 e.printStackTrace();
-			 return false;
-		 }
+		this.transaction(()->{
+			this.setShowLogo(commonCfg.getShowLogo());
+			this.setLogoLink(commonCfg.getLogoLink());
+			this.setCancelTime(commonCfg.getCancelTime());
+			this.setInvoice(commonCfg.getInvoice());
+			this.setBindMobile(commonCfg.getBindMobile());
+			this.setSalesNumber(commonCfg.getSalesNumber());
+			this.setOrderRealName(commonCfg.getOrderRealName());
+			this.setOrderCid(commonCfg.getOrderCid());
+			this.setConsigneeRealName(commonCfg.getConsigneeRealName());
+			this.setConsigneeCid(commonCfg.getConsigneeCid());
+			this.setCustom(commonCfg.getCustom());
+			this.setCustomTitle(commonCfg.getCustomTitle());
+			this.setDelMarket(commonCfg.getDelMarket());
+			this.setCustomService(commonCfg.getCustomService());
+			this.setShowCart(commonCfg.getShowCart());
+			this.setServiceName(commonCfg.getServiceName());
+			this.setServiceChoose(commonCfg.getServiceChoose());
+			this.setServiceTerms(commonCfg.getServiceTerms());
+			this.setShareConfig(commonCfg.getShareConfig());
+			this.setShopStyle(commonCfg.getShopStyle());
+		});
 		return true;
 	}
 }

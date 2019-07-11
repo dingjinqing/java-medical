@@ -29,7 +29,7 @@ public class AdminIndexController extends AdminBaseController {
 	@RequestMapping(value = "/admin/test")
 	@ResponseBody
 	public String test() throws InterruptedException {
-		saas.getShopApp(471752).config.bottomCfg.test();
+//		saas.getShopApp(471752).config.bottomCfg.test();
 		return "ok";
 	}
 }

@@ -125,7 +125,7 @@ public class ShopCommonCfgInfo {
 	 *店铺分享配置
 	 */
 	@JsonProperty(value = "share_config")
-	public ShopShareConfig shareCfg;
+	public ShopShareConfig shareConfig;
 	
 	/**
 	 *店铺风格
