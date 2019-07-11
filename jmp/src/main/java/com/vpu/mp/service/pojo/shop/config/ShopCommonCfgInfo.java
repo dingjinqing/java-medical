@@ -112,7 +112,7 @@ public class ShopCommonCfgInfo {
 	/**
 	 *首次下单是否默认勾选服务条款
 	 */
-	@JsonProperty(value = "service_chose")
+	@JsonProperty(value = "service_choose")
 	public Byte serviceChoose;
 	
 	/**
