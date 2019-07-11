@@ -17,6 +17,7 @@ import java.sql.Timestamp;
 import static com.vpu.mp.db.shop.Tables.TAG;
 import static com.vpu.mp.db.shop.Tables.USER_TAG;
 import com.vpu.mp.db.shop.tables.UserTag;
+import com.vpu.mp.db.shop.tables.records.TagRecord;
 import com.vpu.mp.db.shop.tables.Tag;
 
 /**
@@ -46,6 +47,23 @@ public class TagService extends BaseService {
 			}
 		}
 		return pageResult;
+	}
+
+	/**
+	 * check if tagName is exits
+	 * @param tagName
+	 */
+	public boolean tagNameExists(String tagName) {
+		return this.db().fetchCount(TAG, TAG.TAG_NAME.eq(tagName))>0;
+	}
+
+	/**
+	 * 
+	 * @param tagName
+	 * @return int 
+	 */
+	public int addTagName(String tagName) {
+		return this.db().insertInto(TAG,TAG.TAG_NAME).values(tagName).execute();
 	}
 
 }
