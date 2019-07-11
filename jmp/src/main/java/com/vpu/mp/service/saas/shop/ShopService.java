@@ -242,10 +242,10 @@ public class ShopService extends BaseService {
                 .where(SHOP.SHOP_ID.eq(shop.getShopId()))
 				.execute();
 	}
-	public List getShopList(AdminTokenAuthInfo info,
+	public List<ShopSelectInnerResp> getShopList(AdminTokenAuthInfo info,
 			List<Record9<Integer, Integer, String, String, Timestamp, Byte, Byte, Byte, String>> shopList) {
-		List dataList=new ArrayList<>(shopList.size());
-		for (Record9 record : shopList) {
+		List<ShopSelectInnerResp> dataList=new ArrayList<>(shopList.size());
+		for (Record9<Integer, Integer, String, String, Timestamp, Byte, Byte, Byte, String> record : shopList) {
 			ShopSelectInnerResp shopInner = new ShopSelectInnerResp();
 			Timestamp expireTime = renew.getShopRenewExpireTime(Util.getInteger(record.get(SHOP.SHOP_ID)));
 			String expireStatus = "1";
