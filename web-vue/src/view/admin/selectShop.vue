@@ -17,6 +17,7 @@
             @mouseleave="leave(index)"
             :class="shop_list_index === index?'shop_li_style':''"
             style="margin-bottom:20px"
+            @click="handle_to_shop()"
           >
             <div>
               <div class="shop_state">
@@ -51,20 +52,7 @@ export default {
         { img_2: this.$imageHost + '/upload/7467397/image/20181127/crop_u4Diqvh5HbY9QB0b.jpeg' },
         { img_3: this.$imageHost + '/image/admin/ad_img.png' }
       ],
-      shop_list: [
-        // {
-        //   imageUrl: 'http://mpimg2.weipubao.cn/upload/7467397/image/20181127/crop_u4Diqvh5HbY9QB0b.jpeg',
-        //   title: '旺店通小程序案例',
-        //   date: '有效期：2018-04-02 ~ 2020-08-01',
-        //   type: '旗舰版'
-        // },
-        // {
-        //   imageUrl: 'http://mpimg2.weipubao.cn/upload/7467397/image/20181127/crop_u4Diqvh5HbY9QB0b.jpeg',
-        //   title: '旺店通小程序案例',
-        //   date: '有效期：2018-04-02 ~ 2020-08-01',
-        //   type: '旗舰版'
-        // }
-      ],
+      shop_list: [],
       shop_list_index: ''
     }
   },
@@ -103,6 +91,12 @@ export default {
     // 鼠标划出
     leave (index) {
       this.shop_list_index = ''
+    },
+    // 店铺点击
+    handle_to_shop () {
+      this.$router.push({
+        name: 'overviewOfMall'
+      })
     }
   }
 

@@ -118,10 +118,10 @@ export default {
     // 初始化顶部导航
     judgeHeader () {
       console.log(this.$route)
-      this.changeNavLeft(this.$route.name)
-      let name = this.$route.name
-      switch (name) {
-        case 'overviewOfMall':
+      this.changeNavLeft(this.$route.meta)
+      let meta = this.$route.meta
+      switch (meta) {
+        case 'first_web_manage':
           this.nav_index = 0
           this.click_nav_index = 0
           break
@@ -220,7 +220,7 @@ export default {
           this.$router.push({
             name: 'overviewOfMall'
           })
-          this.changeNavLeft('overviewOfMall')
+          this.changeNavLeft('first_web_manage')
           break
         case 1:
           this.$router.push({

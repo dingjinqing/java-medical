@@ -374,61 +374,70 @@ export default {
       console.log(this.admin_leftVav_flag)
       this.flag = this.admin_leftVav_flag
       switch (this.flag) {
-        case 'overviewOfMall':
-          this.navLeftData = this.first_web_manage
-          this.nav_s_class_index = false
-          this.nav_index = ''
-          this.click_nav_index = ''
+        case 'first_web_manage':
+          console.log(123213)
+          this.handleLeftNav(this.first_web_manage, false, this.flag)
           break
         case 'first_web_decoration':
-          this.navLeftData = this.first_web_decoration
-          this.nav_s_class_index = false
-          this.nav_index = ''
-          this.click_nav_index = ''
+          this.handleLeftNav(this.first_web_decoration, false, this.flag)
           break
         case 'goods_manage':
-          this.navLeftData = this.goods_manage
-          this.nav_s_class_index = false
-          this.nav_index = ''
-          this.click_nav_index = ''
+          this.handleLeftNav(this.goods_manage, false)
           break
         case 'first_trade_manageL':
-          this.navLeftData = this.first_trade_manageL
-          this.nav_s_class_index = false
-          this.nav_index = ''
-          this.click_nav_index = ''
+          this.handleLeftNav(this.first_trade_manageL, false)
           break
         case 'first_market_manage':
-          this.navLeftData = this.first_market_manage
-          this.nav_s_class_index = true
-          this.nav_index = ''
-          this.click_nav_index = ''
+          this.handleLeftNav(this.first_market_manage, true)
           break
         case 'user_manger':
-          this.navLeftData = this.user_manger
-          this.nav_s_class_index = false
-          this.nav_index = ''
-          this.click_nav_index = ''
+          this.handleLeftNav(this.user_manger, false)
           break
         case 'store_manage':
-          this.navLeftData = this.store_manage
-          this.nav_s_class_index = false
-          this.nav_index = ''
-          this.click_nav_index = ''
+          this.handleLeftNav(this.store_manage, false)
           break
         case 'base_manger':
-          this.navLeftData = this.base_manger
-          this.nav_s_class_index = false
-          this.nav_index = ''
-          this.click_nav_index = ''
+          this.handleLeftNav(this.base_manger, false)
           break
+      }
+    },
+    // 页面主动刷新初始化函数
+    handleLeftNav (show, boolean, flag) {
+      this.navLeftData = show
+      this.nav_s_class_index = boolean
+      this.nav_index = ''
+      this.click_nav_index = ''
+      let name = this.$route.name
+      console.log(name, flag)
+
+      switch (name) {
+        // 小程序管理
+        case 'page_classification':
+          if (flag === 'first_web_decoration') {
+            this.nav_index = 1
+            this.click_nav_index = 1
+          }
+          break
+        case 'freight_template':
+          if (flag === 'first_web_decoration') {
+            this.nav_index = 2
+            this.click_nav_index = 2
+          }
+          break
+        case 'overviewStatistics':
+          console.log('sun==' + flag)
+          if (flag === 'first_web_manage') {
+            this.nav_index = 1
+            this.click_nav_index = 1
+          }
       }
     },
     // 左侧菜单栏点击事件
     leftNavClick (index) {
       this.click_nav_index = index
+      console.log(this.flag)
       // 概况模块左侧点击
-      if (this.flag === 'overviewOfMall') {
+      if (this.flag === 'first_web_manage') {
         switch (index) {
           case 0:
             this.$router.push({
@@ -438,6 +447,27 @@ export default {
           case 1:
             this.$router.push({
               name: 'overviewStatistics'
+            })
+            break
+        }
+      }
+      // 小程序管理模块左侧点击
+      if (this.flag === 'first_web_decoration') {
+        switch (index) {
+          case 0:
+            this.$router.push({
+              name: 'first_web_decoration'
+            })
+            break
+          case 1:
+            console.log('qqq')
+            this.$router.push({
+              name: 'page_classification'
+            })
+            break
+          case 2:
+            this.$router.push({
+              name: 'freight_template'
             })
             break
         }
