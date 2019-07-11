@@ -18,11 +18,11 @@ import lombok.Data;
 @Data
 public class TagPageListParam extends BaseMemberPojo{
 		
-		@NotNull(message="缺少标签id(tagId)")
-		private Integer tagId;
+//		@NotNull(message="缺少标签id(tagId)")
+//		private Integer tagId;
 		
 		//@NotBlank(message="标签名不能为空")
-		@NotBlank(message = JsonResultMessage.MSG_ACCOUNT_NAME_NOT_NULL)
+		@NotBlank(message = JsonResultMessage.MSG_MEMBER_TAG_NOT_NULL)
 		@Size(max=15,message = JsonResultMessage.MSG_MEMBER_TAG_LENGTH_LIMIT)
 		private String tagName;
 }
