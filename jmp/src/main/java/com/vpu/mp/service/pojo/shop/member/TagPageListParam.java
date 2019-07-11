@@ -1,11 +1,11 @@
 package com.vpu.mp.service.pojo.shop.member;
 
-import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Size;
 
 import com.vpu.mp.service.foundation.JsonResultMessage;
 
-import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
 
 /**
  * 
@@ -14,7 +14,8 @@ import lombok.Data;
  * @author 黄壮壮 2019-07-09 11:09
  */
 
-@Data
+@Getter
+@Setter
 public class TagPageListParam extends BaseMemberPojo{
 	
 	@Size(max=15,message = JsonResultMessage.MSG_MEMBER_TAG_LENGTH_LIMIT)
