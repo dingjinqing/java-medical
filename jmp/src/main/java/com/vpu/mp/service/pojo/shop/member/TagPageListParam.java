@@ -17,7 +17,8 @@ import lombok.Data;
 
 @Data
 public class TagPageListParam extends BaseMemberPojo{
-		
+	final static private Page DEFAULT_PAGE = new Page();
+	public Page page=DEFAULT_PAGE;
 //		@NotNull(message="缺少标签id(tagId)")
 //		private Integer tagId;
 		

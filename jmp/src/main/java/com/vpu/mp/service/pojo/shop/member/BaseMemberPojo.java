@@ -13,5 +13,5 @@ import lombok.Data;
 @Data
 public class BaseMemberPojo {
 	final static private Page DEFAULT_PAGE = new Page();
-	private Page page=DEFAULT_PAGE;
+	public Page page=DEFAULT_PAGE;
 }
