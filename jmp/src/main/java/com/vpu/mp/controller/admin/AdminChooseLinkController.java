@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.vpu.mp.service.foundation.JsonResult;
 import com.vpu.mp.service.foundation.PageResult;
 import com.vpu.mp.service.pojo.shop.decoration.ChooseLinkParam;
+import com.vpu.mp.service.pojo.shop.decoration.GoodsLinkVo;
 import com.vpu.mp.service.pojo.shop.decoration.StoreVo;
 import com.vpu.mp.service.pojo.shop.decoration.XcxCustomerPageVo;
 import com.vpu.mp.service.pojo.shop.decoration.XcxLinkListVo;
@@ -25,11 +26,6 @@ import com.vpu.mp.service.shop.ShopApplication;
 @RestController
 @RequestMapping("/api")
 public class AdminChooseLinkController extends AdminBaseController{
-	@Override
-    protected ShopApplication shop() {
-        return saas.getShopApp(471752);
-    }
-	
 	/**
 	 * 常用链接
 	 */
@@ -41,8 +37,9 @@ public class AdminChooseLinkController extends AdminBaseController{
 	 * 商品链接
 	 * @return
 	 */
-	public Boolean goodsLink() {
-		return false;
+	public JsonResult goodsLink(GoodsLinkVo param) {
+		PageResult<GoodsLinkVo> list = shop().chooselink.getGoodsLink(param);
+		return this.success(list);
 	}
 	
 	/**

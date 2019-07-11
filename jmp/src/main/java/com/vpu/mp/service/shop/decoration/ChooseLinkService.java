@@ -1,6 +1,7 @@
 package com.vpu.mp.service.shop.decoration;
 
 import static com.vpu.mp.db.shop.Tables.DECORATE_LINK;
+import static com.vpu.mp.db.shop.Tables.GOODS;
 import static com.vpu.mp.db.shop.Tables.MP_JUMP;
 import static com.vpu.mp.db.shop.Tables.MP_JUMP_USABLE;
 import static com.vpu.mp.db.shop.Tables.STORE;
@@ -9,13 +10,14 @@ import static com.vpu.mp.db.shop.tables.XcxCustomerPage.XCX_CUSTOMER_PAGE;
 import java.util.List;
 
 import org.jooq.Record3;
+import org.jooq.SelectConditionStep;
 import org.jooq.SelectJoinStep;
 
 import com.vpu.mp.db.shop.tables.records.DecorateLinkRecord;
 import com.vpu.mp.db.shop.tables.records.XcxCustomerPageRecord;
 import com.vpu.mp.service.foundation.BaseService;
-import com.vpu.mp.service.foundation.FieldsUtil;
 import com.vpu.mp.service.foundation.PageResult;
+import com.vpu.mp.service.pojo.shop.decoration.GoodsLinkVo;
 import com.vpu.mp.service.pojo.shop.decoration.StoreVo;
 import com.vpu.mp.service.pojo.shop.decoration.XcxCustomerPageVo;
 import com.vpu.mp.service.pojo.shop.decoration.XcxLinkListVo;
@@ -34,11 +36,29 @@ public class ChooseLinkService extends BaseService {
 		return false;
 	}
 	
-//	商品链接
-	public Boolean goodsLink() {
-		return false;
+	/**
+	 * 商品链接列表
+	 * @param param
+	 * @return
+	 */
+	public PageResult<GoodsLinkVo> getGoodsLink(GoodsLinkVo param) {
+		SelectJoinStep<Record3<Integer, String, String>> select = db().select(GOODS.GOODS_ID,GOODS.GOODS_NAME,GOODS.GOODS_SN).from(GOODS);
+		select = buildOptions(select, param);
+		select.orderBy(GOODS.GOODS_ID.desc());
+		return this.getPageResult(select, GoodsLinkVo.page,GoodsLinkVo.class);
 	}
 	
+	/**
+	 * 商品链接条件查询
+	 * @param select
+	 * @param param
+	 * @return
+	 */
+	public SelectJoinStep<Record3<Integer, String, String>> buildOptions(SelectJoinStep<Record3<Integer,String,String>> select, GoodsLinkVo param) {
+		select.where(GOODS.GOODS_NAME.contains(param.getGoodsName()).or(GOODS.GOODS_SN.contains(param.getGoodsName())));
+		return select;
+	}
+		
 	/**
 	 * 自定义页面
 	 * @param page
@@ -70,10 +90,6 @@ public class ChooseLinkService extends BaseService {
 		DecorateLinkRecord record = db().newRecord(DECORATE_LINK,info);
 		record.setShopId(shopId);
 		record.setLinkAction((byte) 1);
-		System.out.println(record);
-//		//过滤空参数
-//		DecorateLinkRecord record1 = new DecorateLinkRecord();
-//		FieldsUtil.assignNotNull(record, record1);
 		int res = db().executeInsert(record);
 		if(res > 0) {
 			return true;
