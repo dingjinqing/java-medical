@@ -22,6 +22,40 @@ public class TradeService extends BaseShopConfigService {
     /** 确认收货后order_timeout_days天，订单完成 */
     final public static String K_ORDER_TIMEOUT_DAYS = "order_timeout_days";
 
+    public Byte getExpress() {
+        return this.get(K_EXPRESS,Byte.class,(byte)0);
+    }
+
+    public int setExpress(Byte express) {
+        assert(express ==(byte)0 || express == (byte)1);
+        return this.set(K_EXPRESS, express,Byte.class);
+    }
+
+    public Byte getFetch() {
+        return this.get(K_FETCH,Byte.class,(byte)0);
+    }
+
+    public int setFetch(Byte fetch) {
+        assert(fetch ==(byte)0 || fetch == (byte)1);
+        return this.set(K_FETCH, fetch,Byte.class);
+    }
+
+    public Byte getDrawbackDays() {
+        return this.get(K_DRAWBACK_DAYS,Byte.class,(byte)0);
+    }
+
+    public int setDrawbackDays(Byte drawbackDays) {
+        return this.set(K_DRAWBACK_DAYS, drawbackDays,Byte.class);
+    }
+
+    public Byte getOrderTimeoutDays() {
+        return this.get(K_ORDER_TIMEOUT_DAYS,Byte.class,(byte)0);
+    }
+
+    public int setOrderTimeoutDays(Byte orderTimeoutDays) {
+        return this.set(K_ORDER_TIMEOUT_DAYS, orderTimeoutDays,Byte.class);
+    }
+
     /**
      * 更新支付方式开关
      * @param payCode
@@ -43,10 +77,10 @@ public class TradeService extends BaseShopConfigService {
     public boolean updateOrderProcess(OrderProcessParam orderProcessParam){
         try {
             this.transaction(()->{
-                this.set(db(), K_EXPRESS, orderProcessParam.getExpress(), Byte.class);
-                this.set(db(), K_FETCH, orderProcessParam.getOrderTimeoutDays(), String.class);
-                this.set(db(), K_DRAWBACK_DAYS, orderProcessParam.getDrawbackDays(), String.class);
-                this.set(db(), K_ORDER_TIMEOUT_DAYS, orderProcessParam.getOrderTimeoutDays(), String.class);
+                this.setExpress(orderProcessParam.getExpress());
+                this.setFetch(orderProcessParam.getFetch());
+                this.setDrawbackDays(orderProcessParam.getDrawbackDays());
+                this.setOrderTimeoutDays(orderProcessParam.getOrderTimeoutDays());
 
             });
         }

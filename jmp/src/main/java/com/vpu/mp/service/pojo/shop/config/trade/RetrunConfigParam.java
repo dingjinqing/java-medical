@@ -6,6 +6,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import javax.validation.constraints.Pattern;
+import java.sql.Timestamp;
 
 /**
  * @Author:liufei
@@ -18,9 +19,9 @@ import javax.validation.constraints.Pattern;
 public class RetrunConfigParam {
     @JsonProperty(value = "auto_return")
     public Byte autoReturn;
-    @Pattern(regexp = "")
     @JsonProperty(value = "auto_return_time")
-    public Byte autoReturnTime;
+    public Timestamp autoReturnTime;
+    @Pattern(regexp = "")
     @JsonProperty(value = "return_money_days")
     public Byte returnMoneyDays;
     @JsonProperty(value = "return_address_days")
