@@ -26,7 +26,7 @@ public class GoodsLabelCoupleService extends BaseService {
 	 */
 	public List<GoodsLabelCouple> getList(GoodsLabel goodsLabel){
 		if(goodsLabel == null) {
-			return new ArrayList();
+			return new ArrayList<GoodsLabelCouple>();
 		}
 		List<GoodsLabelCouple> list = db().select(GOODS_LABEL_COUPLE.ID, GOODS_LABEL_COUPLE.LABEL_ID, GOODS_LABEL_COUPLE.GTA_ID, GOODS_LABEL_COUPLE.TYPE)
 				.from(GOODS_LABEL_COUPLE)
@@ -59,7 +59,7 @@ public class GoodsLabelCoupleService extends BaseService {
 		if(goodsLabelCoupleList == null || goodsLabelCoupleList.size()==0) {
 			return ;
 		}
-		List<GoodsLabelCoupleRecord> labelCoupleRecordList = new ArrayList(goodsLabelCoupleList.size());
+		List<GoodsLabelCoupleRecord> labelCoupleRecordList = new ArrayList<GoodsLabelCoupleRecord>(goodsLabelCoupleList.size());
 		for (GoodsLabelCouple goodsLabelCouple : goodsLabelCoupleList) {
 			labelCoupleRecordList.add(goodsLabelCouple.toRecord());
 		}
@@ -94,7 +94,7 @@ public class GoodsLabelCoupleService extends BaseService {
 		if(goodsLabelCoupleList == null || goodsLabelCoupleList.size()==0) {
 			return ;
 		}
-		List<GoodsLabelCoupleRecord> labelCoupleRecordList = new ArrayList(goodsLabelCoupleList.size());
+		List<GoodsLabelCoupleRecord> labelCoupleRecordList = new ArrayList<GoodsLabelCoupleRecord>(goodsLabelCoupleList.size());
 		for (GoodsLabelCouple goodsLabelCouple : goodsLabelCoupleList) {
 			labelCoupleRecordList.add(goodsLabelCouple.toRecord());
 		}

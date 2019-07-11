@@ -12,8 +12,8 @@ import lombok.Data;
 @Data
 public class GoodsLabelPageListParam {
 	
-	
-	public static final int DEL_FLAG = 0;// 是否删除默认值0 未删除，1已删除
+	/** 是否删除默认值0 未删除，1已删除 */
+	public static final int DEL_FLAG = 0;
 	
 	 /**
      * 	搜索条件

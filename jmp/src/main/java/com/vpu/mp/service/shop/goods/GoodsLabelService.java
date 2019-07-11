@@ -85,7 +85,7 @@ public class GoodsLabelService extends BaseService {
 	                .insertInto(GOODS_LABEL, GOODS_LABEL.NAME, GOODS_LABEL.GOODS_DETAIL,GOODS_LABEL.GOODS_LIST,GOODS_LABEL.IS_ALL,GOODS_LABEL.LEVEL,GOODS_LABEL.CREATE_TIME,GOODS_LABEL.LIST_PATTERN,GOODS_LABEL.GOODS_SELECT)
 	                .values(goodsLabel.getName(),goodsLabel.getGoodsDetail(),goodsLabel.getGoodsList(),goodsLabel.getIsAll(),goodsLabel.getLevel(),goodsLabel.getCreateTime(),goodsLabel.getListPattern(),goodsLabel.getGoodsSelect())
 	                .returningResult(GOODS_LABEL.ID).fetchOne();
-	        Integer id = result.get(0, Integer.class);
+	        int  id = result.get(0, Integer.class);
 	        goodsLabel.setId(id);
 	        return id;
 	}
