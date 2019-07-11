@@ -156,7 +156,7 @@ public class AdminChooseLinkController extends AdminBaseController{
 	}
 	
 	/**
-	 * 拼团抽奖链接列表
+	 * 拼团抽奖链接
 	 * @return
 	 */
 	@PostMapping(value = "/admin/decorate/pin/list")
@@ -166,12 +166,42 @@ public class AdminChooseLinkController extends AdminBaseController{
 	}
 	
 	/**
-	 * 瓜分积分链接列表
+	 * 瓜分积分链接
 	 * @return
 	 */
 	@PostMapping(value = "/admin/decorate/integration/list")
 	public JsonResult pinIntegration() {
 		List<ActivityVo> integrationList = shop().chooselink.getIntegrationList();
 		return this.success(integrationList);
+	}
+	
+	/**
+	 * 好友助力链接
+	 * @return
+	 */
+	@PostMapping(value = "/admin/decorate/promote/list")
+	public JsonResult promoteList() {
+		List<ActivityVo> promoteList = shop().chooselink.getPromoteList();
+		return this.success(promoteList);
+	}
+	
+	/**
+	 * 加价购链接
+	 * @return
+	 */
+	@PostMapping(value = "/admin/decorate/price/list")
+	public JsonResult priceList(){
+		List<ActivityVo> priceList = shop().chooselink.getPriceList();
+		return this.success(priceList);
+	}
+	
+	/**
+	 * 幸运到抽奖链接
+	 * @return
+	 */
+	@PostMapping(value = "/admin/decorate/lottery/list")
+	public JsonResult lotteryList() {
+		List<ActivityVo> lotteryList = shop().chooselink.getLotteryList();
+		return this.success(lotteryList);
 	}
 }

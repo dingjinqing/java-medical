@@ -1,16 +1,18 @@
 package com.vpu.mp.service.shop.decoration;
 
 import static com.vpu.mp.db.shop.Tables.DECORATE_LINK;
+import static com.vpu.mp.db.shop.Tables.FRIEND_PROMOTE_ACTIVITY;
 import static com.vpu.mp.db.shop.Tables.GOODS;
 import static com.vpu.mp.db.shop.Tables.GROUP_DRAW;
 import static com.vpu.mp.db.shop.Tables.MP_JUMP;
 import static com.vpu.mp.db.shop.Tables.MP_JUMP_USABLE;
 import static com.vpu.mp.db.shop.Tables.PIN_INTEGRATION_DEFINE;
+import static com.vpu.mp.db.shop.Tables.PURCHASE_PRICE_DEFINE;
 import static com.vpu.mp.db.shop.Tables.STORE;
+import static com.vpu.mp.db.shop.Tables.LOTTERY;
 import static com.vpu.mp.db.shop.tables.XcxCustomerPage.XCX_CUSTOMER_PAGE;
 
 import java.sql.Timestamp;
-import java.util.Date;
 import java.util.List;
 
 import org.jooq.Record3;
@@ -84,10 +86,9 @@ public class ChooseLinkService extends BaseService {
 	 * @return
 	 */
 	public List<ActivityVo> getGroupDrawList() {
-		Date now_date = new Date();
 		List<ActivityVo> list = db().select(GROUP_DRAW.ID,GROUP_DRAW.NAME,GROUP_DRAW.START_TIME,GROUP_DRAW.END_TIME)
 				.from(GROUP_DRAW)
-				.where(GROUP_DRAW.END_TIME.ge((Timestamp) now_date))
+				.where(GROUP_DRAW.END_TIME.ge(new Timestamp(System.currentTimeMillis())))
 				.fetch().into(ActivityVo.class);
 		return list;
 	}
@@ -97,10 +98,48 @@ public class ChooseLinkService extends BaseService {
 	 * @return
 	 */
 	public List<ActivityVo> getIntegrationList() {
-		Date now_date = new Date();
 		List<ActivityVo> list = db().select(PIN_INTEGRATION_DEFINE.ID,PIN_INTEGRATION_DEFINE.NAME,PIN_INTEGRATION_DEFINE.START_TIME,PIN_INTEGRATION_DEFINE.END_TIME)
 				.from(PIN_INTEGRATION_DEFINE)
-				.where(PIN_INTEGRATION_DEFINE.END_TIME.ge((Timestamp) now_date))
+				.where(PIN_INTEGRATION_DEFINE.END_TIME.ge(new Timestamp(System.currentTimeMillis())))
+				.fetch().into(ActivityVo.class);
+		return list;
+	}
+	
+	/**
+	 * 好友助力链接
+	 * @return
+	 */
+	public List<ActivityVo> getPromoteList() {
+		List<ActivityVo> list = db().select(FRIEND_PROMOTE_ACTIVITY.ID,FRIEND_PROMOTE_ACTIVITY.ACT_NAME,FRIEND_PROMOTE_ACTIVITY.START_TIME,FRIEND_PROMOTE_ACTIVITY.END_TIME)
+				.from(FRIEND_PROMOTE_ACTIVITY)
+				.where(FRIEND_PROMOTE_ACTIVITY.END_TIME.ge(new Timestamp(System.currentTimeMillis())))
+				.fetch().into(ActivityVo.class);
+		return list;
+	}
+	
+	/**
+	 * 加价购活动链接
+	 * @return
+	 */
+	public List<ActivityVo> getPriceList() {
+		List<ActivityVo> list = db().select(PURCHASE_PRICE_DEFINE.NAME,PURCHASE_PRICE_DEFINE.END_TIME,PURCHASE_PRICE_DEFINE.START_TIME)
+				.from(PURCHASE_PRICE_DEFINE)
+				.where(PURCHASE_PRICE_DEFINE.END_TIME.ge(new Timestamp(System.currentTimeMillis())))
+				.and(PURCHASE_PRICE_DEFINE.DEL_FLAG.eq((byte) 0))
+				.and(PURCHASE_PRICE_DEFINE.STATUS.eq((byte) 1))
+				.fetch().into(ActivityVo.class);
+		return list;
+	}
+	
+	/**
+	 * 幸运大抽奖
+	 * @return
+	 */
+	public List<ActivityVo> getLotteryList() {
+		 List<ActivityVo> list = db().select(LOTTERY.LOTTERY_NAME).from(LOTTERY)
+				.where(LOTTERY.END_TIME.ge(new Timestamp(System.currentTimeMillis())))
+				.and(LOTTERY.DEL_FLAG.eq( (byte) 0))
+				.and(LOTTERY.STATUS.eq((byte) 0))
 				.fetch().into(ActivityVo.class);
 		return list;
 	}
