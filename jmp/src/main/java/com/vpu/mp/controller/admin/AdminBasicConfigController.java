@@ -1,14 +1,30 @@
 package com.vpu.mp.controller.admin;
 
+import java.util.List;
+
+import org.springframework.util.StringUtils;
+import org.springframework.validation.annotation.Validated;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
+
+import com.vpu.mp.db.main.tables.records.ShopAccountRecord;
+import com.vpu.mp.db.main.tables.records.ShopChildRoleRecord;
+import com.vpu.mp.db.main.tables.records.ShopRoleRecord;
 import com.vpu.mp.service.foundation.JsonResult;
 import com.vpu.mp.service.foundation.JsonResultCode;
-import com.vpu.mp.service.pojo.shop.config.pledge.*;
+import com.vpu.mp.service.foundation.Util;
+import com.vpu.mp.service.pojo.shop.config.group.ShopRoleDelParam;
+import com.vpu.mp.service.pojo.shop.config.group.ShopRoleParam;
+import com.vpu.mp.service.pojo.shop.config.group.ShopRoleUpdateParam;
+import com.vpu.mp.service.pojo.shop.config.pledge.PledgeInfo;
+import com.vpu.mp.service.pojo.shop.config.pledge.PledgeParam;
+import com.vpu.mp.service.pojo.shop.config.pledge.PledgeStateUpdateParam;
+import com.vpu.mp.service.pojo.shop.config.pledge.PledgeVo;
 import com.vpu.mp.service.pojo.shop.config.pledge.group.PledgeStateUpdateGroup;
 import com.vpu.mp.service.pojo.shop.config.pledge.group.UpdateGroup;
-import org.springframework.validation.annotation.Validated;
-import org.springframework.web.bind.annotation.*;
-
-import java.util.List;
 
 /**
  * 商家--基础配置
@@ -90,5 +106,127 @@ public class AdminBasicConfigController extends AdminBaseController{
         shop().config.pledgeCfg.setPledgeConfig(state);
         return success();
     }
+    
+    
+    
+	/**
+	 * 基础配置 / 权限组管理/ 添加权限组
+	 * 
+	 * @return
+	 */
+	@PostMapping(value = "/role/add")
+	public JsonResult addRole(@RequestBody ShopRoleParam param) {
+		if (!StringUtils.isEmpty(param.getPrivilegePass())) {
+			if (StringUtils.isEmpty(param.getLoginPass()) || StringUtils.isEmpty(param.getRolePass())) {
+				// 请输入密码
+				return fail(JsonResultCode.CODE_MSG_ACCOUNT_PASSWD_NOT_NULL);
+			}
+			// 验证登陆密码
+			ShopAccountRecord shopRecord = saas.shop.accout.verify(adminAuth.user().getUserName(),
+					param.getLoginPass());
+			if (shopRecord == null) {
+				// 管理员登陆密码错误
+				return fail(JsonResultCode.CODE_ACCOUNT_PASSWD_ERROR);
+			}
+		}
+		int num = saas.shop.role.insertRole(param, adminAuth.user());
+		if (num != 1) {
+			return fail(JsonResultCode.CODE_FAIL);
+		}
+		return success(JsonResultCode.CODE_SUCCESS);
+	}
+
+	/**
+	 * 基础配置 / 权限组管理/ 添加权限组 ->查询
+	 * 
+	 * @param param
+	 * @return
+	 */
+	@PostMapping(value = "/role/group/list")
+	public JsonResult listRole() {
+		return success(saas.shop.role.getInfo(adminAuth.user().getSysId()));
+	}
+
+	/**
+	 * 基础配置 / 权限组管理/ 添加权限组 ->删除
+	 * 
+	 * @param param
+	 * @return
+	 */
+	@PostMapping(value = "/role/group/del")
+	public JsonResult delRole(@RequestBody ShopRoleDelParam param) {
+		ShopRoleRecord sRecord = saas.shop.role.getRoleByIdAndSysId(param.getRoleId(), adminAuth.user().getSysId());
+		if (sRecord == null) {
+			// 您没有权限操作此角色
+			return fail(JsonResultCode.CODE_ACCOUNT_SHOP_ROLE_INSUFFICIENT);
+		}
+		// 是否有子账户在用这个角色
+		ShopChildRoleRecord sChildRecord = saas.shop.subAccount.checkByRecode(param.getRoleId(), adminAuth.user());
+		if (sChildRecord != null) {
+			// 有子账户正在使用此角色，请修改后再删除
+			return fail(JsonResultCode.CODE_ACCOUNT_SHOP_ROLE_OCCUPY);
+		}
+		int delNum = saas.shop.role.deleteById(param.getRoleId(), adminAuth.user().getSysId(),
+				adminAuth.user().getLoginShopId());
+		if (delNum != 1) {
+			// 删除失败
+			return fail(JsonResultCode.CODE_FAIL);
+		}
+		return success(JsonResultCode.CODE_SUCCESS);
+	}
+
+	
+	/**
+	 * 基础配置 / 权限组管理/ 添加权限组 ->编辑，先返回角色对应的权限
+	 * @param param
+	 * @return
+	 */
+	@PostMapping(value = "/role/group/editView")
+	public JsonResult editRole(@RequestBody ShopRoleDelParam param) {
+		ShopRoleRecord sRecord = saas.shop.role.getRoleByIdAndSysId(param.getRoleId(), adminAuth.user().getSysId());
+		if (sRecord == null) {
+			// 您没有权限操作此角色
+			return fail(JsonResultCode.CODE_ACCOUNT_SHOP_ROLE_INSUFFICIENT);
+		}
+		ShopRoleParam vo=new ShopRoleParam();
+		vo.setRoleName(sRecord.getRoleName());
+		vo.setPrivilegeList(Util.parseJson(sRecord.getPrivilegeList(), List.class));
+		vo.setPrivilegePass(Util.parseJson(sRecord.getPrivilegePass(), List.class));
+		return success(vo);
+	}
+	
+	/**
+	 * 基础配置 / 权限组管理/ 添加权限组 ->编辑，编辑后提交
+	 * @param upParam
+	 * @return
+	 */
+	@PostMapping(value = "/role/group/editUpdate")
+	public JsonResult updateRole(@RequestBody ShopRoleUpdateParam upParam) {
+		if (!StringUtils.isEmpty(upParam.getPrivilegePass())) {
+			if (StringUtils.isEmpty(upParam.getLoginPass()) || StringUtils.isEmpty(upParam.getRolePass())) {
+				// 请输入密码
+				return fail(JsonResultCode.CODE_MSG_ACCOUNT_PASSWD_NOT_NULL);
+			}
+			// 验证登陆密码
+			ShopAccountRecord shopRecord = saas.shop.accout.verify(adminAuth.user().getUserName(),
+					upParam.getLoginPass());
+			if (shopRecord == null) {
+				// 管理员登陆密码错误
+				return fail(JsonResultCode.CODE_ACCOUNT_PASSWD_ERROR);
+			}
+		}
+		ShopRoleRecord sRecord = saas.shop.role.getRoleByIdAndSysId(upParam.getRoleId(), adminAuth.user().getSysId());
+		if (sRecord == null) {
+			// 您没有权限操作此角色
+			return fail(JsonResultCode.CODE_ACCOUNT_SHOP_ROLE_INSUFFICIENT);
+		}
+		int updateNum=saas.shop.role.updateRole(upParam, adminAuth.user());
+		if(updateNum!=1) {
+			//更新失败
+			return fail(JsonResultCode.CODE_FAIL);
+		}
+		return success(JsonResultCode.CODE_SUCCESS);
+	}
+	
 
 }
