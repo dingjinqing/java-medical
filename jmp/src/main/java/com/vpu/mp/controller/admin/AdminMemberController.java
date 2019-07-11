@@ -24,12 +24,8 @@ public class AdminMemberController extends AdminBaseController{
 	 */
 	@PostMapping("api/admin/member/list")
 	public JsonResult getPageList(@RequestBody MemberPageListParam param) {
-		//TODO 
-		System.out.println("AdminMemberController getPageList method");
-		System.out.println("获取会员列表");
-		System.out.println("param: "+param);
-		//TODO 测试用的shopid
-		PageResult<MemberInfoVo> pageResult = this.saas.getShopApp(4891645).member.getPageList(param);
+
+		PageResult<MemberInfoVo> pageResult = this.shop().member.getPageList(param);
 		return this.success(pageResult);
 	}
 }
