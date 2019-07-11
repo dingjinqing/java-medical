@@ -26,8 +26,7 @@ public class MemberService extends BaseService {
 	 * @return
 	 */
 	public PageResult<MemberInfoVo> getPageList(MemberPageListParam param) {
-		// TODO Auto-generated method stub
-		System.out.println("getPageList 正在查询数据... ...");
+		
 		User u = USER.as("u");
 		User n = USER.as("n");
 		
