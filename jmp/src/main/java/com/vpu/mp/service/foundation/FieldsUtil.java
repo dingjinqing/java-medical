@@ -30,13 +30,13 @@ public class FieldsUtil {
 				if (!field.getName().equals(uid)) {
 					PropertyDescriptor pd = new PropertyDescriptor(field.getName(), clazz);
 					// 获得读方法
-					Method rM = pd.getReadMethod();
-					Object o = rM.invoke(object1);
+					Method rm = pd.getReadMethod();
+					Object o = rm.invoke(object1);
 					if (o != null) {
 						PropertyDescriptor pd2 = new PropertyDescriptor(field.getName(), clazz2);
 						// 获得写方法
-						Method wM = pd2.getWriteMethod();
-						wM.invoke(object2, o);
+						Method wm = pd2.getWriteMethod();
+						wm.invoke(object2, o);
 					}
 				}
 			} catch (Exception e) {
