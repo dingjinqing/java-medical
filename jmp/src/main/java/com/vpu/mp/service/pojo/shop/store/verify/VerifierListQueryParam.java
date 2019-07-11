@@ -1,4 +1,6 @@
-package com.vpu.mp.service.pojo.shop.store.store;
+package com.vpu.mp.service.pojo.shop.store.verify;
+
+import javax.validation.constraints.NotNull;
 
 import com.vpu.mp.service.foundation.Page;
 
@@ -8,18 +10,16 @@ import lombok.NoArgsConstructor;
 /**
  * @author 王兵兵
  *
- * 2019年7月4日
+ * 2019年7月11日
  */
 @Data
 @NoArgsConstructor
-public class StoreListQueryParam {
-	public String groupName;
-	public Integer groupId;
-	public Boolean isAuthPos;
-	/**
-	 *  门店名称/编码/负责人
-	 */
-	public String keywords;
+public class VerifierListQueryParam {
+	@NotNull
+	public Integer storeId;
+	
+	public String mobile;
+	public String username;
 	
 	/**
      * 	分页信息

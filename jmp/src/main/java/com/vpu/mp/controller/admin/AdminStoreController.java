@@ -17,6 +17,7 @@ import com.vpu.mp.service.pojo.shop.store.store.StoreListQueryParam;
 import com.vpu.mp.service.pojo.shop.store.store.StorePageListVo;
 import com.vpu.mp.service.pojo.shop.store.store.StoreParam;
 import com.vpu.mp.service.pojo.shop.store.store.StorePojo;
+import com.vpu.mp.service.pojo.shop.store.verify.VerifierListQueryParam;
 
 /**
  * 门店管理
@@ -183,5 +184,14 @@ public class AdminStoreController extends AdminBaseController{
     	}else {
     		return fail();
     	}
+    }
+    
+    /**
+     * 获取核销员分页列表
+     * @return
+     */
+    @PostMapping(value = "/api/admin/store/verifier/list")
+    public JsonResult getStoreVerifierList(@RequestBody(required = true) @Valid VerifierListQueryParam verifierListQueryParam) {
+    	return success(shop().store.storeVerifier.getPageList(verifierListQueryParam));
     }
 }

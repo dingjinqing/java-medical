@@ -13,7 +13,10 @@ import lombok.NoArgsConstructor;
 public class StorePageListVo {
 
 	public String storeName;
-	public Integer posShopId;//门店编码
+	/**
+	 * 门店编码（对接pos之后的posId）
+	 */
+	public Integer posShopId;
 	public String groupName;
 	public String provinceCode;
 	public String cityCode;

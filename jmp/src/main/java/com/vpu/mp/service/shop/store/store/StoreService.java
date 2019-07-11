@@ -16,6 +16,7 @@ import org.jooq.tools.StringUtils;
 import com.vpu.mp.db.shop.tables.records.StoreGroupRecord;
 import com.vpu.mp.db.shop.tables.records.StoreRecord;
 import com.vpu.mp.service.foundation.BaseService;
+import com.vpu.mp.service.foundation.DelFlag;
 import com.vpu.mp.service.foundation.FieldsUtil;
 import com.vpu.mp.service.foundation.PageResult;
 import com.vpu.mp.service.pojo.shop.store.group.StoreGroup;
@@ -23,6 +24,7 @@ import com.vpu.mp.service.pojo.shop.store.group.StoreGroupQueryParam;
 import com.vpu.mp.service.pojo.shop.store.store.StoreListQueryParam;
 import com.vpu.mp.service.pojo.shop.store.store.StorePageListVo;
 import com.vpu.mp.service.pojo.shop.store.store.StorePojo;
+import com.vpu.mp.service.shop.store.verify.StoreVerifierService;
 
 /**
  * @author 王兵兵
@@ -32,9 +34,14 @@ import com.vpu.mp.service.pojo.shop.store.store.StorePojo;
 public class StoreService extends BaseService {
 	
 	/**
+	 * 核销员
+	 */
+	public StoreVerifierService storeVerifier;
+	
+	/**
 	 * 门店列表分页查询
 	 * @param StoreListQueryParam
-	 * @return StorePageListOutput
+	 * @return StorePageListVo
 	 */
 	public PageResult<StorePageListVo> getPageList(StoreListQueryParam param) {
 		SelectWhereStep<? extends Record> select = db().select(
@@ -42,8 +49,9 @@ public class StoreService extends BaseService {
 				STORE.MOBILE,STORE.OPENING_TIME,STORE.CLOSE_TIME,STORE.BUSINESS_STATE
 				).from(STORE)
 				.leftJoin(STORE_GROUP).on(STORE.GROUP.eq(STORE_GROUP.GROUP_ID));
+				
 		select = this.buildOptions(select, param);
-		select.orderBy(STORE.CREATE_TIME);
+		select.where(STORE.DEL_FLAG.eq(DelFlag.NORMAL.getCode())).orderBy(STORE.CREATE_TIME);
 		return getPageResult(select,param.getCurrentPage(),param.getPageRows(),StorePageListVo.class);
 	}
 
@@ -97,7 +105,7 @@ public class StoreService extends BaseService {
 	 * @return
 	 */
 	public Boolean delStore(Integer storeId) {
-		return db().update(STORE).set(STORE.DEL_FLAG,(byte)1).where(STORE.STORE_ID.eq(storeId)).execute() > 0 ? true : false;
+		return db().update(STORE).set(STORE.DEL_FLAG,DelFlag.DISABLE.getCode()).where(STORE.STORE_ID.eq(storeId)).execute() > 0 ? true : false;
 	}
 	
 	/**
@@ -115,7 +123,7 @@ public class StoreService extends BaseService {
 	 * @return Boolean
 	 */
 	public Boolean checkStoreCoding(Integer posShopId) {
-		Condition condition = STORE.POS_SHOP_ID.eq(posShopId).and(STORE.DEL_FLAG.eq((byte)0));
+		Condition condition = STORE.POS_SHOP_ID.eq(posShopId).and(STORE.DEL_FLAG.eq(DelFlag.NORMAL.getCode()));
 		if(null != db().fetchAny(STORE,condition)) {
 			return false;
 		}else {
