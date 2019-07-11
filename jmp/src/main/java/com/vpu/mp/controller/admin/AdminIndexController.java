@@ -1,16 +1,10 @@
 package com.vpu.mp.controller.admin;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import org.springframework.stereotype.Controller;
-
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.vpu.mp.service.foundation.JedisManager;
-
-import redis.clients.jedis.Jedis;
 
 /**
  * 
@@ -35,13 +29,7 @@ public class AdminIndexController extends AdminBaseController {
 	@RequestMapping(value = "/admin/test")
 	@ResponseBody
 	public String test() throws InterruptedException {
-		System.out.println("test------------------: ");
-		int max = 100;
-		for (int i = 0; i < max; i++) {
-			MyThread t = new MyThread();
-			t.start();
-		}
-		Thread.sleep(100000);
+		saas.getShopApp(471752).config.bottomCfg.test();
 		return "ok";
 	}
 }

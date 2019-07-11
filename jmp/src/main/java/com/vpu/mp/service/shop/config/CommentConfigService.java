@@ -1,8 +1,5 @@
 package com.vpu.mp.service.shop.config;
 
-import com.vpu.mp.service.pojo.shop.goods.comment.GoodsCommentConfigParam;
-import com.vpu.mp.service.shop.config.BaseShopConfigService;
-
 public class CommentConfigService extends BaseShopConfigService{
 	
 	final public static String K_COMMENT = "comment";

@@ -3,6 +3,7 @@ package com.vpu.mp.service.auth;
 import java.util.Calendar;
 
 import javax.servlet.http.HttpServletRequest;
+
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -14,9 +15,8 @@ import com.vpu.mp.db.main.tables.records.ShopChildAccountRecord;
 import com.vpu.mp.db.main.tables.records.ShopRecord;
 import com.vpu.mp.service.foundation.JedisManager;
 import com.vpu.mp.service.foundation.Util;
-import com.vpu.mp.service.pojo.shop.auth.ShopLoginParam;
-import com.vpu.mp.service.pojo.saas.auth.SystemTokenAuthInfo;
 import com.vpu.mp.service.pojo.shop.auth.AdminTokenAuthInfo;
+import com.vpu.mp.service.pojo.shop.auth.ShopLoginParam;
 import com.vpu.mp.service.saas.SaasApplication;
 
 /**

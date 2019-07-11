@@ -15,7 +15,6 @@ import com.vpu.mp.service.foundation.Util;
 import com.vpu.mp.service.pojo.shop.goods.GoodsView;
 import com.vpu.mp.service.pojo.shop.goods.recommend.GoodsRecommend;
 import com.vpu.mp.service.pojo.shop.goods.recommend.GoodsRecommendPageListParam;
-import com.vpu.mp.service.shop.goods.GoodsRecommendService;
 
 /**
  * @author 黄荣刚

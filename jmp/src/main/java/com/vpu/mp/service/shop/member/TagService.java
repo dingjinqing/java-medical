@@ -1,24 +1,21 @@
 package com.vpu.mp.service.shop.member;
 
+import static com.vpu.mp.db.shop.Tables.TAG;
+import static com.vpu.mp.db.shop.Tables.USER_TAG;
+
+import java.sql.Timestamp;
+
 import org.jooq.Field;
-import org.jooq.Record;
 import org.jooq.Record4;
 import org.jooq.SelectWhereStep;
 import org.jooq.impl.DSL;
 
+import com.vpu.mp.db.shop.tables.Tag;
+import com.vpu.mp.db.shop.tables.UserTag;
 import com.vpu.mp.service.foundation.BaseService;
 import com.vpu.mp.service.foundation.PageResult;
 import com.vpu.mp.service.pojo.shop.member.TagInfoVo;
 import com.vpu.mp.service.pojo.shop.member.TagPageListParam;
-import static org.jooq.impl.DSL.*;
-
-import java.sql.Timestamp;
-
-import static com.vpu.mp.db.shop.Tables.TAG;
-import static com.vpu.mp.db.shop.Tables.USER_TAG;
-import com.vpu.mp.db.shop.tables.UserTag;
-import com.vpu.mp.db.shop.tables.records.TagRecord;
-import com.vpu.mp.db.shop.tables.Tag;
 
 /**
  * 

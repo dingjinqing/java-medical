@@ -1,8 +1,8 @@
 package com.vpu.mp.service.pojo.shop.store.group;
 
 import com.vpu.mp.service.foundation.Page;
+
 import lombok.Data;
-import lombok.NoArgsConstructor;
 
 /**
  * @author luguangyao

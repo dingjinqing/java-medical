@@ -7,8 +7,6 @@ package com.vpu.mp.service.pojo.shop.decoration;
 import java.io.Serializable;
 import java.sql.Timestamp;
 
-import javax.annotation.Generated;
-
 
 
 public class XcxCustomerPageVo implements Serializable {

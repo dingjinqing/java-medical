@@ -2,14 +2,11 @@ package com.vpu.mp.service.shop.config;
 
 import static com.vpu.mp.db.shop.tables.ShopCfg.SHOP_CFG;
 
-import java.util.List;
-
 import org.jooq.DSLContext;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.vpu.mp.service.foundation.BaseService;
 import com.vpu.mp.service.foundation.Util;
-import com.vpu.mp.service.pojo.shop.config.BottomNavigatorConfig;
 
 /**
  * @author 王兵兵

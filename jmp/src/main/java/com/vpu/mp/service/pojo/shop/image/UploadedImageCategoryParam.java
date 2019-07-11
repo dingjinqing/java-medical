@@ -4,9 +4,6 @@
 package com.vpu.mp.service.pojo.shop.image;
 
 
-import java.sql.Timestamp;
-import java.time.LocalDateTime;
-
 import lombok.Data;
 import lombok.NoArgsConstructor;
 

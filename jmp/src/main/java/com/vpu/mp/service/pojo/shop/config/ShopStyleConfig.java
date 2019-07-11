@@ -1,13 +1,11 @@
 package com.vpu.mp.service.pojo.shop.config;
 
-import com.vpu.mp.config.JacksonConfig;
-import com.vpu.mp.service.foundation.JsonResult;
-import com.vpu.mp.service.foundation.JsonResultCode;
-import com.vpu.mp.service.foundation.JsonResultMessage;
-import lombok.Data;
-
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
+
+import com.vpu.mp.service.foundation.JsonResultMessage;
+
+import lombok.Data;
 
 /**
  * 

@@ -1,23 +1,19 @@
 package com.vpu.mp.service.shop.config;
 
-import com.vpu.mp.db.shop.tables.Pledge;
-import com.vpu.mp.db.shop.tables.records.PledgeRecord;
-import com.vpu.mp.service.foundation.BaseService;
-import com.vpu.mp.service.foundation.JsonResultCode;
-import com.vpu.mp.service.pojo.shop.config.pledge.PledgeInfo;
-import com.vpu.mp.service.pojo.shop.config.pledge.PledgeParam;
-import com.vpu.mp.service.pojo.shop.config.pledge.PledgePojo;
-import com.vpu.mp.service.pojo.shop.config.pledge.PledgeStateUpdateParam;
-import org.apache.commons.lang3.StringUtils;
-import org.jooq.Record;
-import org.jooq.SelectWhereStep;
-import org.jooq.UpdateSetFirstStep;
-import org.jooq.UpdateSetStep;
+import static com.vpu.mp.db.shop.tables.Pledge.PLEDGE;
 
 import java.sql.Timestamp;
 import java.util.List;
 
-import static com.vpu.mp.db.shop.tables.Pledge.PLEDGE;
+import org.jooq.Record;
+import org.jooq.SelectWhereStep;
+
+import com.vpu.mp.db.shop.tables.records.PledgeRecord;
+import com.vpu.mp.service.foundation.BaseService;
+import com.vpu.mp.service.pojo.shop.config.pledge.PledgeInfo;
+import com.vpu.mp.service.pojo.shop.config.pledge.PledgeParam;
+import com.vpu.mp.service.pojo.shop.config.pledge.PledgePojo;
+import com.vpu.mp.service.pojo.shop.config.pledge.PledgeStateUpdateParam;
 
 /**
  * PledgeService

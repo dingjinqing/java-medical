@@ -18,7 +18,6 @@ import com.vpu.mp.service.pojo.shop.goods.GoodsPageListVo;
 import com.vpu.mp.service.pojo.shop.goods.spec.GoodsSpec;
 import com.vpu.mp.service.pojo.shop.goods.spec.GoodsSpecProduct;
 import com.vpu.mp.service.pojo.shop.goods.spec.GoodsSpecVal;
-import com.vpu.mp.service.shop.ShopApplication;
 import com.vpu.mp.service.shop.goods.GoodsService;
 
 /**

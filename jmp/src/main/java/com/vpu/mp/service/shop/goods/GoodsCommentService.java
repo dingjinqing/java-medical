@@ -2,13 +2,12 @@ package com.vpu.mp.service.shop.goods;
 
 import static com.vpu.mp.db.shop.Tables.COMMENT_GOODS;
 import static com.vpu.mp.db.shop.Tables.COMMENT_GOODS_ANSWER;
+import static com.vpu.mp.db.shop.Tables.GOODS;
+import static com.vpu.mp.db.shop.Tables.GOODS_SUMMARY;
 import static com.vpu.mp.db.shop.Tables.LOTTERY_RECORD;
 import static com.vpu.mp.db.shop.Tables.ORDER_GOODS;
-import static com.vpu.mp.db.shop.Tables.USER;
-import static com.vpu.mp.db.shop.Tables.GOODS;
 import static com.vpu.mp.db.shop.Tables.SORT;
-import static com.vpu.mp.db.shop.Tables.GOODS_SUMMARY;
-import static org.jooq.impl.DSL.field;
+import static com.vpu.mp.db.shop.Tables.USER;
 
 import java.math.BigDecimal;
 import java.sql.Timestamp;
@@ -21,13 +20,13 @@ import org.jooq.tools.StringUtils;
 
 import com.vpu.mp.service.foundation.BaseService;
 import com.vpu.mp.service.foundation.PageResult;
-import com.vpu.mp.service.pojo.shop.goods.comment.GoodsCommentVo;
-import com.vpu.mp.service.pojo.shop.goods.comment.GoodsCommentAddListVo;
 import com.vpu.mp.service.pojo.shop.goods.comment.GoodsCommentAddCommParam;
+import com.vpu.mp.service.pojo.shop.goods.comment.GoodsCommentAddListVo;
 import com.vpu.mp.service.pojo.shop.goods.comment.GoodsCommentAnswerParam;
 import com.vpu.mp.service.pojo.shop.goods.comment.GoodsCommentCheckListVo;
 import com.vpu.mp.service.pojo.shop.goods.comment.GoodsCommentIdParam;
 import com.vpu.mp.service.pojo.shop.goods.comment.GoodsCommentPageListParam;
+import com.vpu.mp.service.pojo.shop.goods.comment.GoodsCommentVo;
 
 /**
  * 商品评价

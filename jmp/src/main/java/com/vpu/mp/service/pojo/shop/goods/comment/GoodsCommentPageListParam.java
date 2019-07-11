@@ -1,9 +1,8 @@
 package com.vpu.mp.service.pojo.shop.goods.comment;
 
 import com.vpu.mp.service.foundation.Page;
-import lombok.Data;
 
-import java.sql.Timestamp;
+import lombok.Data;
 
 /**
  * 映射分页查询条件实体类

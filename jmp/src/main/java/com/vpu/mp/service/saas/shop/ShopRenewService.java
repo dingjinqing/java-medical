@@ -1,20 +1,19 @@
 package com.vpu.mp.service.saas.shop;
 
-import org.jooq.Record;
-import org.jooq.Result;
-import org.jooq.impl.DSL;
-import org.jooq.tools.Convert;
-
 import static com.vpu.mp.db.main.tables.ShopRenew.SHOP_RENEW;
 
 import java.math.BigDecimal;
 import java.sql.Timestamp;
 
+import org.jooq.Record;
+import org.jooq.Result;
+import org.jooq.impl.DSL;
+import org.jooq.tools.Convert;
+
 import com.vpu.mp.db.main.tables.records.ShopRenewRecord;
 import com.vpu.mp.service.foundation.BaseService;
 import com.vpu.mp.service.foundation.FieldsUtil;
 import com.vpu.mp.service.pojo.saas.auth.SystemTokenAuthInfo;
-import com.vpu.mp.service.pojo.shop.auth.AdminTokenAuthInfo;
 import com.vpu.mp.service.pojo.shop.auth.ShopRenewReq;
 
 /**

@@ -1,23 +1,27 @@
 package com.vpu.mp.service.foundation;
 
-import java.sql.DatabaseMetaData;
+import static java.lang.Boolean.TRUE;
+import static org.jooq.impl.DSL.val;
+import static org.jooq.tools.StringUtils.abbreviate;
+
 import java.sql.SQLException;
 import java.util.Arrays;
 import java.util.List;
 
-import org.jooq.*;
+import org.jooq.Configuration;
+import org.jooq.ExecuteContext;
+import org.jooq.ExecuteType;
+import org.jooq.Param;
+import org.jooq.QueryPart;
+import org.jooq.VisitContext;
+import org.jooq.VisitListener;
+import org.jooq.VisitListenerProvider;
 import org.jooq.impl.DSL;
 import org.jooq.impl.DefaultExecuteListener;
 import org.jooq.impl.DefaultVisitListener;
 import org.jooq.impl.DefaultVisitListenerProvider;
 import org.jooq.tools.JooqLogger;
 import org.jooq.tools.StringUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import static java.lang.Boolean.TRUE;
-import static org.jooq.impl.DSL.val;
-import static org.jooq.tools.StringUtils.abbreviate;
 
 /**
  * 

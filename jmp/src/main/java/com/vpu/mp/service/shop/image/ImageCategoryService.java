@@ -1,31 +1,23 @@
 package com.vpu.mp.service.shop.image;
 
-import com.vpu.mp.service.foundation.BaseService;
-import com.vpu.mp.service.foundation.Util;
-import com.vpu.mp.service.pojo.shop.goods.sort.Sort;
-import com.vpu.mp.service.pojo.shop.image.CategoryTreeItemVO;
-import com.vpu.mp.service.pojo.shop.image.UploadedImageCategoryParam;
-
-import static com.vpu.mp.db.shop.tables.Sort.SORT;
 import static com.vpu.mp.db.shop.tables.UploadedImage.UPLOADED_IMAGE;
 import static com.vpu.mp.db.shop.tables.UploadedImageCategory.UPLOADED_IMAGE_CATEGORY;
 
-import java.sql.Timestamp;
-import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 import org.apache.commons.lang3.ArrayUtils;
-import org.apache.commons.lang3.StringUtils;
-import org.jooq.Record;
 import org.jooq.Result;
-import org.jooq.SelectConditionStep;
 import org.jooq.SelectWhereStep;
 import org.jooq.impl.DSL;
 
 import com.vpu.mp.db.shop.tables.records.UploadedImageCategoryRecord;
+import com.vpu.mp.service.foundation.BaseService;
+import com.vpu.mp.service.foundation.Util;
+import com.vpu.mp.service.pojo.shop.image.CategoryTreeItemVO;
+import com.vpu.mp.service.pojo.shop.image.UploadedImageCategoryParam;
 /**
  * 
  * @author 新国，孔德成

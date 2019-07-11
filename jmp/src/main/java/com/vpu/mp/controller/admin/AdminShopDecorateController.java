@@ -1,24 +1,23 @@
 package com.vpu.mp.controller.admin;
 
-import org.springframework.validation.BindingResult;
+import java.util.List;
+
+import javax.validation.Valid;
+
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.vpu.mp.service.foundation.JsonResultCode;
 import com.vpu.mp.db.shop.tables.records.XcxCustomerPageRecord;
 import com.vpu.mp.service.foundation.JsonResult;
+import com.vpu.mp.service.foundation.JsonResultCode;
 import com.vpu.mp.service.foundation.PageResult;
 import com.vpu.mp.service.pojo.shop.config.BottomNavigatorConfig;
 import com.vpu.mp.service.pojo.shop.config.ShopStyleConfig;
 import com.vpu.mp.service.pojo.shop.decoration.XcxCustomerPageVo;
 import com.vpu.mp.service.shop.ShopApplication;
-
-import javax.validation.Valid;
-import java.io.IOException;
-import java.util.List;
 
 /**
  * 装修模块

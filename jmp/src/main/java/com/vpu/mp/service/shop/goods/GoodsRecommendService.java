@@ -1,25 +1,15 @@
 package com.vpu.mp.service.shop.goods;
 
 import static com.vpu.mp.db.shop.Tables.RECOMMEND_GOODS;
-import static com.vpu.mp.db.shop.Tables.GOODS;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import org.jooq.Record;
-import org.jooq.RecordMapper;
 import org.jooq.SelectConditionStep;
-import org.jooq.SelectJoinStep;
 import org.jooq.SelectWhereStep;
 import org.jooq.tools.StringUtils;
 
-import com.vpu.mp.db.shop.tables.RecommendGoods;
 import com.vpu.mp.db.shop.tables.records.RecommendGoodsRecord;
 import com.vpu.mp.service.foundation.BaseService;
 import com.vpu.mp.service.foundation.DelFlag;
 import com.vpu.mp.service.foundation.PageResult;
-import com.vpu.mp.service.pojo.shop.goods.Goods;
-import com.vpu.mp.service.pojo.shop.goods.recommend.GoodsRecommend;
 import com.vpu.mp.service.pojo.shop.goods.recommend.GoodsRecommendPageListParam;
 
 /**

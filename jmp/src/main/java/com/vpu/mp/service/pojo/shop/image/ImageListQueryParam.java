@@ -1,8 +1,5 @@
 package com.vpu.mp.service.pojo.shop.image;
 
-import java.sql.Timestamp;
-
-import com.vpu.mp.service.foundation.Page;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 

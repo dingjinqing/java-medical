@@ -20,10 +20,8 @@ import com.vpu.mp.service.foundation.FieldsUtil;
 import com.vpu.mp.service.foundation.JedisManager;
 import com.vpu.mp.service.foundation.PageResult;
 import com.vpu.mp.service.foundation.Util;
-import com.vpu.mp.service.pojo.saas.auth.SystemTokenAuthInfo;
 import com.vpu.mp.service.pojo.saas.shop.ShopAccountListQueryParam;
 import com.vpu.mp.service.pojo.saas.shop.ShopAccountPojo;
-import com.vpu.mp.service.pojo.shop.auth.AdminTokenAuthInfo;
 
 /**
  * 

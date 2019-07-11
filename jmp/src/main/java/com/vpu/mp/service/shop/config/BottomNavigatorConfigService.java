@@ -1,11 +1,10 @@
 package com.vpu.mp.service.shop.config;
 
-import java.util.ArrayList;
+import static com.vpu.mp.db.shop.tables.ShopCfg.SHOP_CFG;
+
 import java.util.List;
-import java.util.Map;
 
 import com.fasterxml.jackson.core.type.TypeReference;
-import com.vpu.mp.service.foundation.Util;
 import com.vpu.mp.service.pojo.shop.config.BottomNavigatorConfig;
 
 /**
@@ -35,5 +34,15 @@ public class BottomNavigatorConfigService extends BaseShopConfigService {
 	 */
 	public int setBottomNavigatorConfig(List<BottomNavigatorConfig> config) {
 		return this.setJsonObject(K_BOTTOM, config);
+	}
+	
+	
+	public void test() {
+		this.transaction(() -> {
+			Short v =100;
+			db().update(SHOP_CFG).set(SHOP_CFG.V, "3").where(SHOP_CFG.K.eq("express")).execute();
+			db().insertInto(SHOP_CFG, SHOP_CFG.REC_ID).values(v).execute();
+			this.setBottomNavigatorConfig(null);
+		});
 	}
 }

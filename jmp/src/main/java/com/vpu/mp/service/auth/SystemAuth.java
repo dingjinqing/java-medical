@@ -16,7 +16,6 @@ import com.vpu.mp.service.foundation.JedisManager;
 import com.vpu.mp.service.foundation.Util;
 import com.vpu.mp.service.pojo.saas.auth.SystemLoginParam;
 import com.vpu.mp.service.pojo.saas.auth.SystemTokenAuthInfo;
-import com.vpu.mp.service.pojo.shop.auth.AdminTokenAuthInfo;
 import com.vpu.mp.service.saas.SaasApplication;
 
 /**
