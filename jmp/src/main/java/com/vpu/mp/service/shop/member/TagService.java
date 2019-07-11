@@ -6,6 +6,7 @@ import org.jooq.Field;
 import org.jooq.Record4;
 import org.jooq.SelectWhereStep;
 import org.jooq.impl.DSL;
+import org.jooq.tools.StringUtils;
 
 import com.vpu.mp.service.foundation.BaseService;
 import com.vpu.mp.service.foundation.PageResult;
@@ -36,6 +37,9 @@ public class TagService extends BaseService {
 		/*
 		 * 按照降序进行查询
 		 */
+		
+		select = buildOptions(select,param,t);
+		
 		select.orderBy(t.CREATE_TIME.desc());
 		PageResult<TagInfoVo> pageResult = this.getPageResult(select, param.getPage().getCurrentPage(),
 				param.getPage().getPageRows(), TagInfoVo.class);
@@ -45,6 +49,24 @@ public class TagService extends BaseService {
 			}
 		}
 		return pageResult;
+	}
+
+	/**
+	 * 构建选择条件
+	 * @param select
+	 * @param param
+	 * @return 
+	 */
+	private SelectWhereStep<Record4<Integer, String, Timestamp, Integer>> buildOptions(SelectWhereStep<Record4<Integer, String, Timestamp, Integer>> select,
+			TagPageListParam param,Tag t) {
+		if(param == null)
+			return select;
+		if(!StringUtils.isEmpty(param.getTagName())) {
+			//like value
+			String likeValue = this.likeValue(param.getTagName());
+			select.where(t.TAG_NAME.like(likeValue));
+		}
+		return select;
 	}
 
 	/**
