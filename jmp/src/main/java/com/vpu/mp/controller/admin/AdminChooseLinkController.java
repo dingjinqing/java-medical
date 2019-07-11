@@ -4,6 +4,7 @@ import java.util.List;
 
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.vpu.mp.service.foundation.JsonResult;
@@ -16,7 +17,6 @@ import com.vpu.mp.service.pojo.shop.decoration.XcxCustomerPageVo;
 import com.vpu.mp.service.pojo.shop.decoration.XcxLinkListVo;
 import com.vpu.mp.service.pojo.shop.decoration.XcxNameListVo;
 import com.vpu.mp.service.pojo.shop.store.store.StoreListQueryParam;
-import com.vpu.mp.service.shop.ShopApplication;
 
 /**
  * 装修通用弹窗-选择链接
@@ -24,13 +24,8 @@ import com.vpu.mp.service.shop.ShopApplication;
  * 2019年7月9日
  */
 @RestController
-//@RequestMapping("/api")
+@RequestMapping("/api")
 public class AdminChooseLinkController extends AdminBaseController{
-	@Override
-    protected ShopApplication shop() {
-        return saas.getShopApp(471752);
-    }
-	
 	/**
 	 * 常用链接
 	 */
@@ -135,7 +130,7 @@ public class AdminChooseLinkController extends AdminBaseController{
 	 * @return
 	 */
 	@PostMapping(value = "/admin/decorate/link/list")
-	public JsonResult XcxLinkList() {
+	public JsonResult xcxLinkList() {
 		List<XcxLinkListVo> linkList = shop().chooselink.getXcxLinkList();
 		return this.success(linkList);
 	}
@@ -146,7 +141,7 @@ public class AdminChooseLinkController extends AdminBaseController{
 	 * @return
 	 */
 	@PostMapping(value = "/admin/decorate/link/save")
-	public JsonResult XcxLinkSave(XcxLinkListVo param) {
+	public JsonResult xcxLinkSave(XcxLinkListVo param) {
 		Boolean res = shop().chooselink.saveXcxLink(param);
 		if(res) {
 			return this.success();
@@ -203,5 +198,24 @@ public class AdminChooseLinkController extends AdminBaseController{
 	public JsonResult lotteryList() {
 		List<ActivityVo> lotteryList = shop().chooselink.getLotteryList();
 		return this.success(lotteryList);
+	}
+	
+	/**
+	 * 优惠券链接
+	 * @return
+	 */
+	@PostMapping(value = "/admin/decorate/voucher/list")
+	public JsonResult voucherList() {
+		 List<ActivityVo> voucherList = shop().chooselink.getVoucherList();
+		 return this.success(voucherList);
+	}
+	
+	/**
+	 * 会员卡链接
+	 * @return
+	 */
+	public JsonResult cardList() {
+		 List<ActivityVo> cardList = shop().chooselink.getCardList();
+		 return this.success(cardList);
 	}
 }

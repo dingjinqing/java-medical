@@ -10,6 +10,8 @@ import static com.vpu.mp.db.shop.Tables.PIN_INTEGRATION_DEFINE;
 import static com.vpu.mp.db.shop.Tables.PURCHASE_PRICE_DEFINE;
 import static com.vpu.mp.db.shop.Tables.STORE;
 import static com.vpu.mp.db.shop.Tables.LOTTERY;
+import static com.vpu.mp.db.shop.Tables.MRKING_VOUCHER;
+import static com.vpu.mp.db.shop.Tables.MEMBER_CARD;
 import static com.vpu.mp.db.shop.tables.XcxCustomerPage.XCX_CUSTOMER_PAGE;
 
 import java.sql.Timestamp;
@@ -140,6 +142,31 @@ public class ChooseLinkService extends BaseService {
 				.where(LOTTERY.END_TIME.ge(new Timestamp(System.currentTimeMillis())))
 				.and(LOTTERY.DEL_FLAG.eq( (byte) 0))
 				.and(LOTTERY.STATUS.eq((byte) 0))
+				.fetch().into(ActivityVo.class);
+		return list;
+	}
+	
+	/**
+	 * 优惠券链接
+	 * @return
+	 */
+	public  List<ActivityVo> getVoucherList() {
+		 List<ActivityVo>list = db().select(MRKING_VOUCHER.ACT_NAME,MRKING_VOUCHER.START_TIME,MRKING_VOUCHER.END_TIME).from(MRKING_VOUCHER)
+				.where(MRKING_VOUCHER.END_TIME.ge(new Timestamp(System.currentTimeMillis())))
+				.and(MRKING_VOUCHER.DEL_FLAG.eq((byte) 0))
+				.fetch().into(ActivityVo.class);
+		return list;
+	}
+	
+	/**
+	 * 会员卡链接
+	 * @return
+	 */
+	public  List<ActivityVo> getCardList() {
+		 List<ActivityVo> list = db().select(MEMBER_CARD.ID,MEMBER_CARD.CARD_NAME,MEMBER_CARD.START_TIME,MEMBER_CARD.END_TIME)
+				.from(MEMBER_CARD)
+				.where(MEMBER_CARD.END_TIME.ge(new Timestamp(System.currentTimeMillis())))
+				.and(MEMBER_CARD.DEL_FLAG.eq((byte) 0))
 				.fetch().into(ActivityVo.class);
 		return list;
 	}
