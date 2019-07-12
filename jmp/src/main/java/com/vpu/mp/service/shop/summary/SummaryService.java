@@ -216,7 +216,7 @@ public class SummaryService extends BaseService {
                 MP_DAILY_VISIT.VISIT_UV, MP_DAILY_VISIT.VISIT_UV_NEW, MP_DAILY_VISIT.STAY_TIME_UV,
                 MP_DAILY_VISIT.STAY_TIME_SESSION, MP_DAILY_VISIT.VISIT_DEPTH)
                 .from(MP_DAILY_VISIT)
-                .where(MP_DAILY_VISIT.REF_DATE.between(startDate, endDate)).fetch().into(MP_DAILY_VISIT);
+                .where(MP_DAILY_VISIT.REF_DATE.between(startDate).and(endDate)).fetch().into(MP_DAILY_VISIT);
     }
 
     /**
