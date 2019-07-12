@@ -37,6 +37,9 @@ public class SummaryService extends BaseService {
         }
     }
 
+    /**
+     * 访问统计折线图
+     */
     public VisitStatisticsVo getVisitStatistics(VisitStatisticsParam param) {
         Integer action = param.getAction();
         String startDate = param.getStartDate();
@@ -59,6 +62,12 @@ public class SummaryService extends BaseService {
         return null;
     }
 
+    /**
+     * 按粒度分组
+     *
+     * @param visitUnits 日单元
+     * @param grading    粒度
+     */
     public VisitStatisticsVo getGroupedValue(List<VisitStatisticsUnit> visitUnits, Integer grading) {
         VisitStatisticsVo vo = new VisitStatisticsVo();
         if (1 == grading) {
@@ -70,6 +79,12 @@ public class SummaryService extends BaseService {
         return vo;
     }
 
+    /**
+     * 统计数据
+     *
+     * @param startDate 开始日期
+     * @param endDate   结束日期
+     */
     public Result<MpDailyVisitRecord> getSessionCounts(
             String startDate, String endDate) {
         return db().select(MP_DAILY_VISIT.REF_DATE, MP_DAILY_VISIT.SESSION_CNT, MP_DAILY_VISIT.VISIT_PV,
