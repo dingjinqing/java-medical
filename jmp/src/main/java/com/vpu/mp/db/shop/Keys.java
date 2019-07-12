@@ -4,19 +4,178 @@
 package com.vpu.mp.db.shop;
 
 
-import com.vpu.mp.db.shop.tables.*;
+import com.vpu.mp.db.shop.tables.AssessActivity;
+import com.vpu.mp.db.shop.tables.AssessRecord;
+import com.vpu.mp.db.shop.tables.AssessResult;
+import com.vpu.mp.db.shop.tables.AssessTopic;
+import com.vpu.mp.db.shop.tables.Bargain;
+import com.vpu.mp.db.shop.tables.BargainUserList;
+import com.vpu.mp.db.shop.tables.BatchPrice;
+import com.vpu.mp.db.shop.tables.BatchProfit;
+import com.vpu.mp.db.shop.tables.BrandClassify;
+import com.vpu.mp.db.shop.tables.CardBatch;
+import com.vpu.mp.db.shop.tables.CardConsumer;
+import com.vpu.mp.db.shop.tables.CardExamine;
+import com.vpu.mp.db.shop.tables.CardOrder;
+import com.vpu.mp.db.shop.tables.CardReceiveCode;
+import com.vpu.mp.db.shop.tables.CardUpgrade;
+import com.vpu.mp.db.shop.tables.Cart;
+import com.vpu.mp.db.shop.tables.Channel;
+import com.vpu.mp.db.shop.tables.ChannelStatistical;
+import com.vpu.mp.db.shop.tables.ChargeMoney;
+import com.vpu.mp.db.shop.tables.Code;
+import com.vpu.mp.db.shop.tables.CommentGoods;
+import com.vpu.mp.db.shop.tables.CommentGoodsAnswer;
+import com.vpu.mp.db.shop.tables.CommentService;
+import com.vpu.mp.db.shop.tables.CouponActivity;
+import com.vpu.mp.db.shop.tables.CouponPack;
+import com.vpu.mp.db.shop.tables.CouponPackVoucher;
+import com.vpu.mp.db.shop.tables.CouponPayrewardRecord;
+import com.vpu.mp.db.shop.tables.CustomerAvailCoupons;
+import com.vpu.mp.db.shop.tables.DecorateLink;
+import com.vpu.mp.db.shop.tables.DeliverFeeTemplate;
+import com.vpu.mp.db.shop.tables.DistributionStrategy;
+import com.vpu.mp.db.shop.tables.DistributionWithdraw;
+import com.vpu.mp.db.shop.tables.DistributorApply;
+import com.vpu.mp.db.shop.tables.DistributorGroup;
+import com.vpu.mp.db.shop.tables.DistributorLevel;
+import com.vpu.mp.db.shop.tables.FootprintRecord;
+import com.vpu.mp.db.shop.tables.FormPage;
+import com.vpu.mp.db.shop.tables.FormSubmitDetails;
+import com.vpu.mp.db.shop.tables.FormSubmitList;
+import com.vpu.mp.db.shop.tables.FriendPromoteActivity;
+import com.vpu.mp.db.shop.tables.FriendPromoteDetail;
+import com.vpu.mp.db.shop.tables.FriendPromoteLaunch;
+import com.vpu.mp.db.shop.tables.FriendPromoteTimes;
+import com.vpu.mp.db.shop.tables.Gift;
+import com.vpu.mp.db.shop.tables.GiftProduct;
+import com.vpu.mp.db.shop.tables.GiveVoucher;
+import com.vpu.mp.db.shop.tables.Goods;
+import com.vpu.mp.db.shop.tables.GoodsBak;
+import com.vpu.mp.db.shop.tables.GoodsBrand;
+import com.vpu.mp.db.shop.tables.GoodsCardCouple;
+import com.vpu.mp.db.shop.tables.GoodsImg;
+import com.vpu.mp.db.shop.tables.GoodsImport;
+import com.vpu.mp.db.shop.tables.GoodsImportDetail;
+import com.vpu.mp.db.shop.tables.GoodsLabel;
+import com.vpu.mp.db.shop.tables.GoodsLabelCouple;
+import com.vpu.mp.db.shop.tables.GoodsOpaiSpec;
+import com.vpu.mp.db.shop.tables.GoodsRebatePrice;
+import com.vpu.mp.db.shop.tables.GoodsSpecProduct;
+import com.vpu.mp.db.shop.tables.GoodsSpecProductBak;
+import com.vpu.mp.db.shop.tables.GoodsSummary;
+import com.vpu.mp.db.shop.tables.GoodsUserSummary;
+import com.vpu.mp.db.shop.tables.GradePrd;
+import com.vpu.mp.db.shop.tables.GroupDraw;
+import com.vpu.mp.db.shop.tables.GroupDrawInvite;
+import com.vpu.mp.db.shop.tables.IncomeOutcomeDetail;
+import com.vpu.mp.db.shop.tables.IndexFootRecord;
+import com.vpu.mp.db.shop.tables.IntegralMallDefine;
+import com.vpu.mp.db.shop.tables.IntegralMallProduct;
+import com.vpu.mp.db.shop.tables.IntegralMallRecord;
+import com.vpu.mp.db.shop.tables.Invoice;
+import com.vpu.mp.db.shop.tables.JoinDrawList;
+import com.vpu.mp.db.shop.tables.JoinGroupList;
+import com.vpu.mp.db.shop.tables.Lottery;
+import com.vpu.mp.db.shop.tables.LotteryShare;
+import com.vpu.mp.db.shop.tables.MemberCard;
+import com.vpu.mp.db.shop.tables.MessageTemplate;
+import com.vpu.mp.db.shop.tables.MpJump;
+import com.vpu.mp.db.shop.tables.MpJumpUsable;
+import com.vpu.mp.db.shop.tables.MpTemplateFormId;
+import com.vpu.mp.db.shop.tables.MrkingStrategy;
+import com.vpu.mp.db.shop.tables.MrkingStrategyCondition;
+import com.vpu.mp.db.shop.tables.MrkingVoucher;
+import com.vpu.mp.db.shop.tables.OrderAction;
+import com.vpu.mp.db.shop.tables.OrderGoods;
+import com.vpu.mp.db.shop.tables.OrderGoodsRebate;
+import com.vpu.mp.db.shop.tables.OrderInfo;
+import com.vpu.mp.db.shop.tables.OrderMust;
+import com.vpu.mp.db.shop.tables.OrderRefundRecord;
+import com.vpu.mp.db.shop.tables.OrderVerifier;
+import com.vpu.mp.db.shop.tables.PackageGoodsCart;
+import com.vpu.mp.db.shop.tables.PackageSale;
+import com.vpu.mp.db.shop.tables.PageClassification;
+import com.vpu.mp.db.shop.tables.PartOrderGoodsShip;
+import com.vpu.mp.db.shop.tables.Payment;
+import com.vpu.mp.db.shop.tables.Pictorial;
+import com.vpu.mp.db.shop.tables.PinGroupDefine;
+import com.vpu.mp.db.shop.tables.PinGroupList;
+import com.vpu.mp.db.shop.tables.PinGroupProductDefine;
+import com.vpu.mp.db.shop.tables.PinIntegrationDefine;
+import com.vpu.mp.db.shop.tables.PinIntegrationList;
+import com.vpu.mp.db.shop.tables.Presale;
+import com.vpu.mp.db.shop.tables.PresaleProduct;
+import com.vpu.mp.db.shop.tables.PurchasePriceDefine;
+import com.vpu.mp.db.shop.tables.PurchasePriceRule;
+import com.vpu.mp.db.shop.tables.RebatePriceRecord;
+import com.vpu.mp.db.shop.tables.RecommendGoods;
+import com.vpu.mp.db.shop.tables.RecordAdminAction;
+import com.vpu.mp.db.shop.tables.ReducePrice;
+import com.vpu.mp.db.shop.tables.ReducePriceGoods;
+import com.vpu.mp.db.shop.tables.ReducePriceProduct;
+import com.vpu.mp.db.shop.tables.RefundAmountRecord;
+import com.vpu.mp.db.shop.tables.RefundCardRecord;
+import com.vpu.mp.db.shop.tables.ReturnOrder;
+import com.vpu.mp.db.shop.tables.ReturnOrderGoods;
+import com.vpu.mp.db.shop.tables.ReturnStatusChange;
+import com.vpu.mp.db.shop.tables.SecKillDefine;
+import com.vpu.mp.db.shop.tables.SecKillList;
+import com.vpu.mp.db.shop.tables.SecKillProductDefine;
+import com.vpu.mp.db.shop.tables.ServiceCategory;
+import com.vpu.mp.db.shop.tables.ServiceOrder;
+import com.vpu.mp.db.shop.tables.ServiceRequest;
+import com.vpu.mp.db.shop.tables.ServiceSchedule;
+import com.vpu.mp.db.shop.tables.ServiceTechnician;
+import com.vpu.mp.db.shop.tables.ServiceTechnicianGroup;
+import com.vpu.mp.db.shop.tables.ServiceTechnicianSchedule;
+import com.vpu.mp.db.shop.tables.ShareRecord;
+import com.vpu.mp.db.shop.tables.ShareSplit;
+import com.vpu.mp.db.shop.tables.Shipping;
+import com.vpu.mp.db.shop.tables.ShopCfg;
+import com.vpu.mp.db.shop.tables.SmsSendRecord;
+import com.vpu.mp.db.shop.tables.Sort;
+import com.vpu.mp.db.shop.tables.Spec;
+import com.vpu.mp.db.shop.tables.SpecVals;
+import com.vpu.mp.db.shop.tables.Store;
+import com.vpu.mp.db.shop.tables.StoreGoods;
+import com.vpu.mp.db.shop.tables.StoreGroup;
+import com.vpu.mp.db.shop.tables.StoreOrder;
+import com.vpu.mp.db.shop.tables.StoreService;
+import com.vpu.mp.db.shop.tables.SubOrderInfo;
+import com.vpu.mp.db.shop.tables.Tag;
+import com.vpu.mp.db.shop.tables.TemplateConfig;
 import com.vpu.mp.db.shop.tables.TradesRecord;
+import com.vpu.mp.db.shop.tables.TradesRecordSummary;
+import com.vpu.mp.db.shop.tables.UploadedImage;
+import com.vpu.mp.db.shop.tables.UploadedImageCategory;
+import com.vpu.mp.db.shop.tables.UploadedVideo;
+import com.vpu.mp.db.shop.tables.User;
+import com.vpu.mp.db.shop.tables.UserAccount;
+import com.vpu.mp.db.shop.tables.UserAddress;
+import com.vpu.mp.db.shop.tables.UserCard;
+import com.vpu.mp.db.shop.tables.UserCartRecord;
+import com.vpu.mp.db.shop.tables.UserCollection;
+import com.vpu.mp.db.shop.tables.UserDetail;
+import com.vpu.mp.db.shop.tables.UserExplain;
+import com.vpu.mp.db.shop.tables.UserGoodsRecord;
+import com.vpu.mp.db.shop.tables.UserImport;
+import com.vpu.mp.db.shop.tables.UserImportDetail;
+import com.vpu.mp.db.shop.tables.UserLoginRecord;
+import com.vpu.mp.db.shop.tables.UserRebatePrice;
+import com.vpu.mp.db.shop.tables.UserScore;
+import com.vpu.mp.db.shop.tables.UserScoreSet;
+import com.vpu.mp.db.shop.tables.UserSummaryTrend;
+import com.vpu.mp.db.shop.tables.UserTag;
+import com.vpu.mp.db.shop.tables.UserTotalFanli;
+import com.vpu.mp.db.shop.tables.WxShoppingRecommend;
+import com.vpu.mp.db.shop.tables.WxpUnlimitCode;
+import com.vpu.mp.db.shop.tables.WxpUnlimitScene;
+import com.vpu.mp.db.shop.tables.XcxCustomerPage;
 import com.vpu.mp.db.shop.tables.records.*;
-import com.vpu.mp.db.shop.tables.records.AssessTopicRecord;
 
 import javax.annotation.Generated;
 
-import com.vpu.mp.db.shop.tables.records.BargainRecord;
-import com.vpu.mp.db.shop.tables.records.ChannelRecord;
-import com.vpu.mp.db.shop.tables.records.CouponActivityRecord;
-import com.vpu.mp.db.shop.tables.records.DistributorLevelRecord;
-import com.vpu.mp.db.shop.tables.records.LotteryRecord;
-import com.vpu.mp.db.shop.tables.records.PaymentRecord;
 import org.jooq.Identity;
 import org.jooq.UniqueKey;
 import org.jooq.impl.Internal;
@@ -41,6 +200,11 @@ public class Keys {
     // IDENTITY definitions
     // -------------------------------------------------------------------------
 
+    public static final Identity<AssessActivityRecord, UInteger> IDENTITY_ASSESS_ACTIVITY = Identities0.IDENTITY_ASSESS_ACTIVITY;
+    public static final Identity<AssessRecordRecord, UInteger> IDENTITY_ASSESS_RECORD = Identities0.IDENTITY_ASSESS_RECORD;
+    public static final Identity<AssessResultRecord, UInteger> IDENTITY_ASSESS_RESULT = Identities0.IDENTITY_ASSESS_RESULT;
+    public static final Identity<AssessTopicRecord, UInteger> IDENTITY_ASSESS_TOPIC = Identities0.IDENTITY_ASSESS_TOPIC;
+    public static final Identity<AssessTopicRecordRecord, UInteger> IDENTITY_ASSESS_TOPIC_RECORD = Identities0.IDENTITY_ASSESS_TOPIC_RECORD;
     public static final Identity<BargainRecord, Integer> IDENTITY_BARGAIN = Identities0.IDENTITY_BARGAIN;
     public static final Identity<BargainRecordRecord, Integer> IDENTITY_BARGAIN_RECORD = Identities0.IDENTITY_BARGAIN_RECORD;
     public static final Identity<BargainUserListRecord, Integer> IDENTITY_BARGAIN_USER_LIST = Identities0.IDENTITY_BARGAIN_USER_LIST;
@@ -64,6 +228,8 @@ public class Keys {
     public static final Identity<CommentServiceRecord, Integer> IDENTITY_COMMENT_SERVICE = Identities0.IDENTITY_COMMENT_SERVICE;
     public static final Identity<CouponActivityRecord, Integer> IDENTITY_COUPON_ACTIVITY = Identities0.IDENTITY_COUPON_ACTIVITY;
     public static final Identity<CouponActivityRecordRecord, Integer> IDENTITY_COUPON_ACTIVITY_RECORD = Identities0.IDENTITY_COUPON_ACTIVITY_RECORD;
+    public static final Identity<CouponPackRecord, Integer> IDENTITY_COUPON_PACK = Identities0.IDENTITY_COUPON_PACK;
+    public static final Identity<CouponPackVoucherRecord, Integer> IDENTITY_COUPON_PACK_VOUCHER = Identities0.IDENTITY_COUPON_PACK_VOUCHER;
     public static final Identity<CouponPayrewardRecordRecord, Integer> IDENTITY_COUPON_PAYREWARD_RECORD = Identities0.IDENTITY_COUPON_PAYREWARD_RECORD;
     public static final Identity<CustomerAvailCouponsRecord, Integer> IDENTITY_CUSTOMER_AVAIL_COUPONS = Identities0.IDENTITY_CUSTOMER_AVAIL_COUPONS;
     public static final Identity<DecorateLinkRecord, Integer> IDENTITY_DECORATE_LINK = Identities0.IDENTITY_DECORATE_LINK;
@@ -205,12 +371,16 @@ public class Keys {
     public static final Identity<WxpUnlimitSceneRecord, Integer> IDENTITY_WXP_UNLIMIT_SCENE = Identities0.IDENTITY_WXP_UNLIMIT_SCENE;
     public static final Identity<WxShoppingRecommendRecord, Integer> IDENTITY_WX_SHOPPING_RECOMMEND = Identities0.IDENTITY_WX_SHOPPING_RECOMMEND;
     public static final Identity<XcxCustomerPageRecord, Integer> IDENTITY_XCX_CUSTOMER_PAGE = Identities0.IDENTITY_XCX_CUSTOMER_PAGE;
-    public static final Identity<PledgeRecord, Integer> IDENTITY_PLEDGE = Identities0.IDENTITY_PLEDGE;
 
     // -------------------------------------------------------------------------
     // UNIQUE and PRIMARY KEY definitions
     // -------------------------------------------------------------------------
 
+    public static final UniqueKey<AssessActivityRecord> KEY_B2C_ASSESS_ACTIVITY_PRIMARY = UniqueKeys0.KEY_B2C_ASSESS_ACTIVITY_PRIMARY;
+    public static final UniqueKey<AssessRecordRecord> KEY_B2C_ASSESS_RECORD_PRIMARY = UniqueKeys0.KEY_B2C_ASSESS_RECORD_PRIMARY;
+    public static final UniqueKey<AssessResultRecord> KEY_B2C_ASSESS_RESULT_PRIMARY = UniqueKeys0.KEY_B2C_ASSESS_RESULT_PRIMARY;
+    public static final UniqueKey<AssessTopicRecord> KEY_B2C_ASSESS_TOPIC_PRIMARY = UniqueKeys0.KEY_B2C_ASSESS_TOPIC_PRIMARY;
+    public static final UniqueKey<AssessTopicRecordRecord> KEY_B2C_ASSESS_TOPIC_RECORD_PRIMARY = UniqueKeys0.KEY_B2C_ASSESS_TOPIC_RECORD_PRIMARY;
     public static final UniqueKey<BargainRecord> KEY_B2C_BARGAIN_PRIMARY = UniqueKeys0.KEY_B2C_BARGAIN_PRIMARY;
     public static final UniqueKey<BargainRecordRecord> KEY_B2C_BARGAIN_RECORD_PRIMARY = UniqueKeys0.KEY_B2C_BARGAIN_RECORD_PRIMARY;
     public static final UniqueKey<BargainUserListRecord> KEY_B2C_BARGAIN_USER_LIST_PRIMARY = UniqueKeys0.KEY_B2C_BARGAIN_USER_LIST_PRIMARY;
@@ -234,6 +404,8 @@ public class Keys {
     public static final UniqueKey<CommentServiceRecord> KEY_B2C_COMMENT_SERVICE_PRIMARY = UniqueKeys0.KEY_B2C_COMMENT_SERVICE_PRIMARY;
     public static final UniqueKey<CouponActivityRecord> KEY_B2C_COUPON_ACTIVITY_PRIMARY = UniqueKeys0.KEY_B2C_COUPON_ACTIVITY_PRIMARY;
     public static final UniqueKey<CouponActivityRecordRecord> KEY_B2C_COUPON_ACTIVITY_RECORD_PRIMARY = UniqueKeys0.KEY_B2C_COUPON_ACTIVITY_RECORD_PRIMARY;
+    public static final UniqueKey<CouponPackRecord> KEY_B2C_COUPON_PACK_PRIMARY = UniqueKeys0.KEY_B2C_COUPON_PACK_PRIMARY;
+    public static final UniqueKey<CouponPackVoucherRecord> KEY_B2C_COUPON_PACK_VOUCHER_PRIMARY = UniqueKeys0.KEY_B2C_COUPON_PACK_VOUCHER_PRIMARY;
     public static final UniqueKey<CouponPayrewardRecordRecord> KEY_B2C_COUPON_PAYREWARD_RECORD_PRIMARY = UniqueKeys0.KEY_B2C_COUPON_PAYREWARD_RECORD_PRIMARY;
     public static final UniqueKey<CustomerAvailCouponsRecord> KEY_B2C_CUSTOMER_AVAIL_COUPONS_PRIMARY = UniqueKeys0.KEY_B2C_CUSTOMER_AVAIL_COUPONS_PRIMARY;
     public static final UniqueKey<CustomerAvailCouponsRecord> KEY_B2C_CUSTOMER_AVAIL_COUPONS_COUPON_SN = UniqueKeys0.KEY_B2C_CUSTOMER_AVAIL_COUPONS_COUPON_SN;
@@ -403,25 +575,13 @@ public class Keys {
     public static final UniqueKey<WxpUnlimitSceneRecord> KEY_B2C_WXP_UNLIMIT_SCENE_PRIMARY = UniqueKeys0.KEY_B2C_WXP_UNLIMIT_SCENE_PRIMARY;
     public static final UniqueKey<WxShoppingRecommendRecord> KEY_B2C_WX_SHOPPING_RECOMMEND_PRIMARY = UniqueKeys0.KEY_B2C_WX_SHOPPING_RECOMMEND_PRIMARY;
     public static final UniqueKey<XcxCustomerPageRecord> KEY_B2C_XCX_CUSTOMER_PAGE_PRIMARY = UniqueKeys0.KEY_B2C_XCX_CUSTOMER_PAGE_PRIMARY;
-    public static final UniqueKey<PledgeRecord> KEY_B2C_PLEDGE_PRIMARY = UniqueKeys0.KEY_B2C_PLEDGE_PRIMARY;
+	public static final UniqueKey<AssessActivityRecord> KEY_B2C_ASSESS_ACTIVITY_ACT_CODE = null;
+	public static final Identity<PledgeRecord, Integer> IDENTITY_PLEDGE = null;
+	public static final UniqueKey<PledgeRecord> KEY_B2C_PLEDGE_PRIMARY = null;
+
     // -------------------------------------------------------------------------
     // FOREIGN KEY definitions
     // -------------------------------------------------------------------------
-	public static final Identity<AssessActivityRecord, UInteger> IDENTITY_ASSESS_ACTIVITY = null;
-	public static final UniqueKey<AssessActivityRecord> KEY_B2C_ASSESS_ACTIVITY_PRIMARY = null;
-	public static final UniqueKey<AssessActivityRecord> KEY_B2C_ASSESS_ACTIVITY_ACT_CODE = null;
-	public static final Identity<AssessResultRecord, UInteger> IDENTITY_ASSESS_RESULT = null;
-	public static final UniqueKey<AssessResultRecord> KEY_B2C_ASSESS_RESULT_PRIMARY = null;
-	public static final Identity<AssessRecordRecord, UInteger> IDENTITY_ASSESS_RECORD = null;
-	public static final UniqueKey<AssessRecordRecord> KEY_B2C_ASSESS_RECORD_PRIMARY = null;
-	public static final Identity<AssessTopicRecord, UInteger> IDENTITY_ASSESS_TOPIC = null;
-	public static final UniqueKey<AssessTopicRecord> KEY_B2C_ASSESS_TOPIC_PRIMARY = null;
-	public static final UniqueKey<AssessTopicRecordRecord> KEY_B2C_ASSESS_TOPIC_RECORD_PRIMARY = null;
-	public static final Identity<AssessTopicRecordRecord, UInteger> IDENTITY_ASSESS_TOPIC_RECORD = null;
-	public static final Identity<CouponPackRecord, Integer> IDENTITY_COUPON_PACK = null;
-	public static final UniqueKey<CouponPackRecord> KEY_B2C_COUPON_PACK_PRIMARY = null;
-	public static final Identity<CouponPackVoucherRecord, Integer> IDENTITY_COUPON_PACK_VOUCHER = null;
-	public static final UniqueKey<CouponPackVoucherRecord> KEY_B2C_COUPON_PACK_VOUCHER_PRIMARY = null;
 
 
     // -------------------------------------------------------------------------
@@ -429,6 +589,11 @@ public class Keys {
     // -------------------------------------------------------------------------
 
     private static class Identities0 {
+        public static Identity<AssessActivityRecord, UInteger> IDENTITY_ASSESS_ACTIVITY = Internal.createIdentity(AssessActivity.ASSESS_ACTIVITY, AssessActivity.ASSESS_ACTIVITY.ID);
+        public static Identity<AssessRecordRecord, UInteger> IDENTITY_ASSESS_RECORD = Internal.createIdentity(AssessRecord.ASSESS_RECORD, AssessRecord.ASSESS_RECORD.ID);
+        public static Identity<AssessResultRecord, UInteger> IDENTITY_ASSESS_RESULT = Internal.createIdentity(AssessResult.ASSESS_RESULT, AssessResult.ASSESS_RESULT.ID);
+        public static Identity<AssessTopicRecord, UInteger> IDENTITY_ASSESS_TOPIC = Internal.createIdentity(AssessTopic.ASSESS_TOPIC, AssessTopic.ASSESS_TOPIC.ID);
+        public static Identity<AssessTopicRecordRecord, UInteger> IDENTITY_ASSESS_TOPIC_RECORD = Internal.createIdentity(com.vpu.mp.db.shop.tables.AssessTopicRecord.ASSESS_TOPIC_RECORD, com.vpu.mp.db.shop.tables.AssessTopicRecord.ASSESS_TOPIC_RECORD.ID);
         public static Identity<BargainRecord, Integer> IDENTITY_BARGAIN = Internal.createIdentity(Bargain.BARGAIN, Bargain.BARGAIN.ID);
         public static Identity<BargainRecordRecord, Integer> IDENTITY_BARGAIN_RECORD = Internal.createIdentity(com.vpu.mp.db.shop.tables.BargainRecord.BARGAIN_RECORD, com.vpu.mp.db.shop.tables.BargainRecord.BARGAIN_RECORD.ID);
         public static Identity<BargainUserListRecord, Integer> IDENTITY_BARGAIN_USER_LIST = Internal.createIdentity(BargainUserList.BARGAIN_USER_LIST, BargainUserList.BARGAIN_USER_LIST.ID);
@@ -452,6 +617,8 @@ public class Keys {
         public static Identity<CommentServiceRecord, Integer> IDENTITY_COMMENT_SERVICE = Internal.createIdentity(CommentService.COMMENT_SERVICE, CommentService.COMMENT_SERVICE.ID);
         public static Identity<CouponActivityRecord, Integer> IDENTITY_COUPON_ACTIVITY = Internal.createIdentity(CouponActivity.COUPON_ACTIVITY, CouponActivity.COUPON_ACTIVITY.ID);
         public static Identity<CouponActivityRecordRecord, Integer> IDENTITY_COUPON_ACTIVITY_RECORD = Internal.createIdentity(com.vpu.mp.db.shop.tables.CouponActivityRecord.COUPON_ACTIVITY_RECORD, com.vpu.mp.db.shop.tables.CouponActivityRecord.COUPON_ACTIVITY_RECORD.ID);
+        public static Identity<CouponPackRecord, Integer> IDENTITY_COUPON_PACK = Internal.createIdentity(CouponPack.COUPON_PACK, CouponPack.COUPON_PACK.ID);
+        public static Identity<CouponPackVoucherRecord, Integer> IDENTITY_COUPON_PACK_VOUCHER = Internal.createIdentity(CouponPackVoucher.COUPON_PACK_VOUCHER, CouponPackVoucher.COUPON_PACK_VOUCHER.ID);
         public static Identity<CouponPayrewardRecordRecord, Integer> IDENTITY_COUPON_PAYREWARD_RECORD = Internal.createIdentity(CouponPayrewardRecord.COUPON_PAYREWARD_RECORD, CouponPayrewardRecord.COUPON_PAYREWARD_RECORD.ID);
         public static Identity<CustomerAvailCouponsRecord, Integer> IDENTITY_CUSTOMER_AVAIL_COUPONS = Internal.createIdentity(CustomerAvailCoupons.CUSTOMER_AVAIL_COUPONS, CustomerAvailCoupons.CUSTOMER_AVAIL_COUPONS.ID);
         public static Identity<DecorateLinkRecord, Integer> IDENTITY_DECORATE_LINK = Internal.createIdentity(DecorateLink.DECORATE_LINK, DecorateLink.DECORATE_LINK.ID);
@@ -593,10 +760,14 @@ public class Keys {
         public static Identity<WxpUnlimitSceneRecord, Integer> IDENTITY_WXP_UNLIMIT_SCENE = Internal.createIdentity(WxpUnlimitScene.WXP_UNLIMIT_SCENE, WxpUnlimitScene.WXP_UNLIMIT_SCENE.SCENE_ID);
         public static Identity<WxShoppingRecommendRecord, Integer> IDENTITY_WX_SHOPPING_RECOMMEND = Internal.createIdentity(WxShoppingRecommend.WX_SHOPPING_RECOMMEND, WxShoppingRecommend.WX_SHOPPING_RECOMMEND.ID);
         public static Identity<XcxCustomerPageRecord, Integer> IDENTITY_XCX_CUSTOMER_PAGE = Internal.createIdentity(XcxCustomerPage.XCX_CUSTOMER_PAGE, XcxCustomerPage.XCX_CUSTOMER_PAGE.PAGE_ID);
-        public static Identity<PledgeRecord, Integer> IDENTITY_PLEDGE = Internal.createIdentity(Pledge.PLEDGE, Pledge.PLEDGE.ID);
     }
 
     private static class UniqueKeys0 {
+        public static final UniqueKey<AssessActivityRecord> KEY_B2C_ASSESS_ACTIVITY_PRIMARY = Internal.createUniqueKey(AssessActivity.ASSESS_ACTIVITY, "KEY_b2c_assess_activity_PRIMARY", AssessActivity.ASSESS_ACTIVITY.ID);
+        public static final UniqueKey<AssessRecordRecord> KEY_B2C_ASSESS_RECORD_PRIMARY = Internal.createUniqueKey(AssessRecord.ASSESS_RECORD, "KEY_b2c_assess_record_PRIMARY", AssessRecord.ASSESS_RECORD.ID);
+        public static final UniqueKey<AssessResultRecord> KEY_B2C_ASSESS_RESULT_PRIMARY = Internal.createUniqueKey(AssessResult.ASSESS_RESULT, "KEY_b2c_assess_result_PRIMARY", AssessResult.ASSESS_RESULT.ID);
+        public static final UniqueKey<AssessTopicRecord> KEY_B2C_ASSESS_TOPIC_PRIMARY = Internal.createUniqueKey(AssessTopic.ASSESS_TOPIC, "KEY_b2c_assess_topic_PRIMARY", AssessTopic.ASSESS_TOPIC.ID);
+        public static final UniqueKey<AssessTopicRecordRecord> KEY_B2C_ASSESS_TOPIC_RECORD_PRIMARY = Internal.createUniqueKey(com.vpu.mp.db.shop.tables.AssessTopicRecord.ASSESS_TOPIC_RECORD, "KEY_b2c_assess_topic_record_PRIMARY", com.vpu.mp.db.shop.tables.AssessTopicRecord.ASSESS_TOPIC_RECORD.ID);
         public static final UniqueKey<BargainRecord> KEY_B2C_BARGAIN_PRIMARY = Internal.createUniqueKey(Bargain.BARGAIN, "KEY_b2c_bargain_PRIMARY", Bargain.BARGAIN.ID);
         public static final UniqueKey<BargainRecordRecord> KEY_B2C_BARGAIN_RECORD_PRIMARY = Internal.createUniqueKey(com.vpu.mp.db.shop.tables.BargainRecord.BARGAIN_RECORD, "KEY_b2c_bargain_record_PRIMARY", com.vpu.mp.db.shop.tables.BargainRecord.BARGAIN_RECORD.ID);
         public static final UniqueKey<BargainUserListRecord> KEY_B2C_BARGAIN_USER_LIST_PRIMARY = Internal.createUniqueKey(BargainUserList.BARGAIN_USER_LIST, "KEY_b2c_bargain_user_list_PRIMARY", BargainUserList.BARGAIN_USER_LIST.ID);
@@ -620,6 +791,8 @@ public class Keys {
         public static final UniqueKey<CommentServiceRecord> KEY_B2C_COMMENT_SERVICE_PRIMARY = Internal.createUniqueKey(CommentService.COMMENT_SERVICE, "KEY_b2c_comment_service_PRIMARY", CommentService.COMMENT_SERVICE.ID);
         public static final UniqueKey<CouponActivityRecord> KEY_B2C_COUPON_ACTIVITY_PRIMARY = Internal.createUniqueKey(CouponActivity.COUPON_ACTIVITY, "KEY_b2c_coupon_activity_PRIMARY", CouponActivity.COUPON_ACTIVITY.ID);
         public static final UniqueKey<CouponActivityRecordRecord> KEY_B2C_COUPON_ACTIVITY_RECORD_PRIMARY = Internal.createUniqueKey(com.vpu.mp.db.shop.tables.CouponActivityRecord.COUPON_ACTIVITY_RECORD, "KEY_b2c_coupon_activity_record_PRIMARY", com.vpu.mp.db.shop.tables.CouponActivityRecord.COUPON_ACTIVITY_RECORD.ID);
+        public static final UniqueKey<CouponPackRecord> KEY_B2C_COUPON_PACK_PRIMARY = Internal.createUniqueKey(CouponPack.COUPON_PACK, "KEY_b2c_coupon_pack_PRIMARY", CouponPack.COUPON_PACK.ID);
+        public static final UniqueKey<CouponPackVoucherRecord> KEY_B2C_COUPON_PACK_VOUCHER_PRIMARY = Internal.createUniqueKey(CouponPackVoucher.COUPON_PACK_VOUCHER, "KEY_b2c_coupon_pack_voucher_PRIMARY", CouponPackVoucher.COUPON_PACK_VOUCHER.ID);
         public static final UniqueKey<CouponPayrewardRecordRecord> KEY_B2C_COUPON_PAYREWARD_RECORD_PRIMARY = Internal.createUniqueKey(CouponPayrewardRecord.COUPON_PAYREWARD_RECORD, "KEY_b2c_coupon_payreward_record_PRIMARY", CouponPayrewardRecord.COUPON_PAYREWARD_RECORD.ID);
         public static final UniqueKey<CustomerAvailCouponsRecord> KEY_B2C_CUSTOMER_AVAIL_COUPONS_PRIMARY = Internal.createUniqueKey(CustomerAvailCoupons.CUSTOMER_AVAIL_COUPONS, "KEY_b2c_customer_avail_coupons_PRIMARY", CustomerAvailCoupons.CUSTOMER_AVAIL_COUPONS.ID);
         public static final UniqueKey<CustomerAvailCouponsRecord> KEY_B2C_CUSTOMER_AVAIL_COUPONS_COUPON_SN = Internal.createUniqueKey(CustomerAvailCoupons.CUSTOMER_AVAIL_COUPONS, "KEY_b2c_customer_avail_coupons_coupon_sn", CustomerAvailCoupons.CUSTOMER_AVAIL_COUPONS.COUPON_SN);
@@ -789,6 +962,5 @@ public class Keys {
         public static final UniqueKey<WxpUnlimitSceneRecord> KEY_B2C_WXP_UNLIMIT_SCENE_PRIMARY = Internal.createUniqueKey(WxpUnlimitScene.WXP_UNLIMIT_SCENE, "KEY_b2c_wxp_unlimit_scene_PRIMARY", WxpUnlimitScene.WXP_UNLIMIT_SCENE.SCENE_ID);
         public static final UniqueKey<WxShoppingRecommendRecord> KEY_B2C_WX_SHOPPING_RECOMMEND_PRIMARY = Internal.createUniqueKey(WxShoppingRecommend.WX_SHOPPING_RECOMMEND, "KEY_b2c_wx_shopping_recommend_PRIMARY", WxShoppingRecommend.WX_SHOPPING_RECOMMEND.ID);
         public static final UniqueKey<XcxCustomerPageRecord> KEY_B2C_XCX_CUSTOMER_PAGE_PRIMARY = Internal.createUniqueKey(XcxCustomerPage.XCX_CUSTOMER_PAGE, "KEY_b2c_xcx_customer_page_PRIMARY", XcxCustomerPage.XCX_CUSTOMER_PAGE.PAGE_ID);
-        public static final UniqueKey<PledgeRecord> KEY_B2C_PLEDGE_PRIMARY = Internal.createUniqueKey(Pledge.PLEDGE, "KEY_b2c_pledge_PRIMARY", Pledge.PLEDGE.ID);
     }
 }

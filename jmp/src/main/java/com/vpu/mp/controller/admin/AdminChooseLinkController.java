@@ -2,9 +2,9 @@ package com.vpu.mp.controller.admin;
 
 import java.util.List;
 
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.vpu.mp.service.foundation.JsonResult;
@@ -17,6 +17,7 @@ import com.vpu.mp.service.pojo.shop.decoration.XcxCustomerPageVo;
 import com.vpu.mp.service.pojo.shop.decoration.XcxLinkListVo;
 import com.vpu.mp.service.pojo.shop.decoration.XcxNameListVo;
 import com.vpu.mp.service.pojo.shop.store.store.StoreListQueryParam;
+import com.vpu.mp.service.shop.ShopApplication;
 
 /**
  * 装修通用弹窗-选择链接
@@ -24,7 +25,7 @@ import com.vpu.mp.service.pojo.shop.store.store.StoreListQueryParam;
  * 2019年7月9日
  */
 @RestController
-@RequestMapping("/api")
+//@RequestMapping("/api")
 public class AdminChooseLinkController extends AdminBaseController{
 	/**
 	 * 常用链接
@@ -154,7 +155,7 @@ public class AdminChooseLinkController extends AdminBaseController{
 	 * 拼团抽奖链接
 	 * @return
 	 */
-	@PostMapping(value = "/admin/decorate/pin/list")
+	@GetMapping(value = "/admin/decorate/pin/list")
 	public JsonResult groupDraw() {
 		List<ActivityVo> pinDrawList = shop().chooselink.getGroupDrawList();
 		return this.success(pinDrawList);
@@ -164,7 +165,7 @@ public class AdminChooseLinkController extends AdminBaseController{
 	 * 瓜分积分链接
 	 * @return
 	 */
-	@PostMapping(value = "/admin/decorate/integration/list")
+	@GetMapping(value = "/admin/decorate/integration/list")
 	public JsonResult pinIntegration() {
 		List<ActivityVo> integrationList = shop().chooselink.getIntegrationList();
 		return this.success(integrationList);
@@ -174,7 +175,7 @@ public class AdminChooseLinkController extends AdminBaseController{
 	 * 好友助力链接
 	 * @return
 	 */
-	@PostMapping(value = "/admin/decorate/promote/list")
+	@GetMapping(value = "/admin/decorate/promote/list")
 	public JsonResult promoteList() {
 		List<ActivityVo> promoteList = shop().chooselink.getPromoteList();
 		return this.success(promoteList);
@@ -184,7 +185,7 @@ public class AdminChooseLinkController extends AdminBaseController{
 	 * 加价购链接
 	 * @return
 	 */
-	@PostMapping(value = "/admin/decorate/price/list")
+	@GetMapping(value = "/admin/decorate/price/list")
 	public JsonResult priceList(){
 		List<ActivityVo> priceList = shop().chooselink.getPriceList();
 		return this.success(priceList);
@@ -194,7 +195,7 @@ public class AdminChooseLinkController extends AdminBaseController{
 	 * 幸运到抽奖链接
 	 * @return
 	 */
-	@PostMapping(value = "/admin/decorate/lottery/list")
+	@GetMapping(value = "/admin/decorate/lottery/list")
 	public JsonResult lotteryList() {
 		List<ActivityVo> lotteryList = shop().chooselink.getLotteryList();
 		return this.success(lotteryList);
@@ -204,7 +205,7 @@ public class AdminChooseLinkController extends AdminBaseController{
 	 * 优惠券链接
 	 * @return
 	 */
-	@PostMapping(value = "/admin/decorate/voucher/list")
+	@GetMapping(value = "/admin/decorate/voucher/list")
 	public JsonResult voucherList() {
 		 List<ActivityVo> voucherList = shop().chooselink.getVoucherList();
 		 return this.success(voucherList);
@@ -214,7 +215,7 @@ public class AdminChooseLinkController extends AdminBaseController{
 	 * 会员卡链接
 	 * @return
 	 */
-	@PostMapping(value = "/admin/decorate/card/list")
+	@GetMapping(value = "/admin/decorate/card/list")
 	public JsonResult cardList() {
 		 List<ActivityVo> cardList = shop().chooselink.getCardList();
 		 return this.success(cardList);
@@ -224,7 +225,7 @@ public class AdminChooseLinkController extends AdminBaseController{
 	 * 一口价链接
 	 * @return
 	 */
-	@PostMapping(value = "/admin/decorate/package/list")
+	@GetMapping(value = "/admin/decorate/package/list")
 	public JsonResult packageList() {
 		 List<ActivityVo> packageList = shop().chooselink.getPackageList();
 		 return this.success(packageList);
@@ -234,9 +235,29 @@ public class AdminChooseLinkController extends AdminBaseController{
 	 * 满折满减活动链接
 	 * @return
 	 */
-	@PostMapping(value = "/admin/decorate/mrking/list")
+	@GetMapping(value = "/admin/decorate/mrking/list")
 	public JsonResult mrkingList() {
 		List<ActivityVo> mrkingList = shop().chooselink.getMrkingList();
 		return this.success(mrkingList);
+	}
+	
+	/**
+	 * 测评活动链接
+	 * @return
+	 */
+	@GetMapping(value = "/admin/decorate/assess/list")
+	public JsonResult assessList() {
+		 List<ActivityVo> assessList = shop().chooselink.getAssessList();
+		 return this.success(assessList);
+	}
+	
+	/**
+	 * 优惠券礼包
+	 * @return
+	 */
+	@GetMapping(value = "/admin/decorate/pack/list")
+	public JsonResult packList() {
+		List<ActivityVo> packList = shop().chooselink.getPackList();
+		return this.success(packList);
 	}
 }
