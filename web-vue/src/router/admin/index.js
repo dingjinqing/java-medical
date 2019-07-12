@@ -44,7 +44,7 @@ const routes = [
             path: '/admin/home/main/freight_template',
             name: 'freight_template',
             meta: 'first_web_decoration',
-            component: r => require.ensure([], () => r(require('@/view/admin/index/leftNavComponents/first_web_decoration/freight_template')), 'freight_template')
+            component: r => require.ensure([], () => r(require('@/view/admin/index/leftNavComponents/first_web_decoration/PictureSpace/freight_template')), 'freight_template')
           },
           // 商品管理系列子路由
           {

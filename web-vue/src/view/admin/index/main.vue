@@ -3,8 +3,7 @@
     <Header />
     <div class="admin_contant">
       <LeftNavigation />
-
-      <router-view />
+      <router-view class="right_container" />
     </div>
   </div>
 </template>
@@ -23,5 +22,10 @@ export default {
   overflow: hidden;
   bottom: 0;
   top: 85px;
+}
+.right_container {
+  flex: 1;
+  background-color: #e6e9f0;
+  min-width: 600px;
 }
 </style>

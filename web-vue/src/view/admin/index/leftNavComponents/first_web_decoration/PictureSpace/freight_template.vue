@@ -4,12 +4,16 @@
       :mTitle="M_title"
       :subtitle="Subtitle"
     />
+    <div class="main_acontainer">
+      <PictureSpaceTree />
+    </div>
   </div>
 </template>
 <script>
 import Crumbs from '@/components/admin/crumbs'
+import PictureSpaceTree from '@/view/admin/index/leftNavComponents/first_web_decoration/PictureSpace/pictureSpaceTree'
 export default {
-  components: { Crumbs },
+  components: { Crumbs, PictureSpaceTree },
   data () {
     return {
       M_title: '小程序管理',
@@ -19,8 +23,4 @@ export default {
 }
 </script>
 <style scoped>
-.freight_container {
-  flex: 1;
-  overflow-y: scroll;
-}
 </style>

@@ -73,11 +73,14 @@
 
 <script>
 import {
-  getServiceTree,
-  delItem,
-  addItem,
+
   updateItem
 } from '@/mock/tree.api.js'
+import {
+  getTreeListRequest,
+  groupAddRequest,
+  groupDelRequest
+} from '@/api/admin/pictureSpace.js'
 import {
   getEditContent,
   getDefaultContent
@@ -90,7 +93,6 @@ export default {
       treeData: [],
       isEdit: false,
       edit_name: '',
-      is_superuser: 'False',
       defaultProps: {
         children: 'child',
         label: 'name'
@@ -155,9 +157,12 @@ export default {
       this.menuVisible = false
     },
     refresh () {
-      let res = getServiceTree()
-      this.is_superuser = res.is_superuser
-      this.treeData = res.data
+      // let res = getServiceTree()
+      getTreeListRequest().then((res) => {
+        console.log(res)
+        this.treeData = res.content
+      })
+      // console.log(res)
     },
 
     append (node, data, e) {
@@ -208,7 +213,12 @@ export default {
     },
 
     delSelect () {
-      delItem(this.treeData, { id: this.select_node.data.id })
+      let obj = {
+        catId: this.select_node.data.id
+      }
+      groupDelRequest(obj).then((res) => {
+        console.log(res)
+      })
       this.delDialogVisible = false
       this.$notify({
         type: 'success',
@@ -246,11 +256,15 @@ export default {
         if (!data.id) {
           let virtualNode = node.parent
           let params = {
-            name: this.edit_name,
-            id: virtualNode.data.id
+            imgCatName: this.edit_name,
+            imgCatParentId: virtualNode.data.id,
+            sort: ''
           }
+          console.log(virtualNode)
           //   let addChild = addItem(this.treeData, params)
-          addItem(this.treeData, params)
+          groupAddRequest(params).then((res) => {
+            this.refresh()
+          })
           // 如果是用的真api,需要在添加的接口返回添加的节点
           // 添加成功后，将返回的节点加入数据中，然后删除掉没有id的假节点
           virtualNode.data.child.forEach((item, i) => {

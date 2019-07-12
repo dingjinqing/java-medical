@@ -24,18 +24,17 @@ const service = axios.create({
 // request拦截器
 service.interceptors.request.use(
   config => {
-    if (config.method === 'post') {
-      console.log(localStorage.getItem('contentType'), localStorage.getItem('WEPUBAO_LANGUAGE'))
-      config.headers['Content-Type'] = localStorage.getItem('contentType')
-      if (Cookies.get('V-Token')) {
-        config.headers['V-Token'] = Cookies.get('V-Token')
-      }
-      if (!localStorage.getItem('WEPUBAO_LANGUAGE')) {
-        localStorage.setItem('WEPUBAO_LANGUAGE', 'zh_CN')
-      }
-      config.headers['V-Lang'] = localStorage.getItem('WEPUBAO_LANGUAGE')
-      // config.data = qs.stringify(config.data)
+    console.log(localStorage.getItem('contentType'), localStorage.getItem('WEPUBAO_LANGUAGE'))
+    config.headers['Content-Type'] = localStorage.getItem('contentType')
+    console.log(Cookies.get('V-Token'))
+    if (Cookies.get('V-Token')) {
+      config.headers['V-Token'] = Cookies.get('V-Token')
     }
+    if (!localStorage.getItem('WEPUBAO_LANGUAGE')) {
+      localStorage.setItem('WEPUBAO_LANGUAGE', 'zh_CN')
+    }
+    config.headers['V-Lang'] = localStorage.getItem('WEPUBAO_LANGUAGE')
+    // config.data = qs.stringify(config.data)
 
     return config
   },

@@ -17,7 +17,7 @@
             @mouseleave="leave(index)"
             :class="shop_list_index === index?'shop_li_style':''"
             style="margin-bottom:20px"
-            @click="handle_to_shop()"
+            @click="handle_to_shop(item.shopId)"
           >
             <div>
               <div class="shop_state">
@@ -43,7 +43,7 @@
   </div>
 </template>
 <script>
-import { shopListRequest } from '@/api/admin/shopsPages.js'
+import { shopListRequest, changeShopRequest } from '@/api/admin/shopsPages.js'
 export default {
   data () {
     return {
@@ -93,7 +93,13 @@ export default {
       this.shop_list_index = ''
     },
     // 店铺点击
-    handle_to_shop () {
+    handle_to_shop (data) {
+      let obj = {
+        shopId: data
+      }
+      changeShopRequest(obj).then((res) => {
+        console.log(res)
+      })
       this.$router.push({
         name: 'overviewOfMall'
       })

@@ -27,3 +27,13 @@ export function modifyPasswordRequest (riid) {
     data: riid
   })
 }
+
+// 选择店铺接口
+
+export function changeShopRequest (riid) {
+  return service({
+    url: '/api/admin/account/shop/switch',
+    method: 'post',
+    data: riid
+  })
+}
