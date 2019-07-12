@@ -33,4 +33,5 @@ public class GoodsLabelCouple {
 		labelCoupleRecord.setType(this.type);
 		return labelCoupleRecord;
 	}
+	
 }

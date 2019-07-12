@@ -1,7 +1,5 @@
 package com.vpu.mp.controller.admin;
 
-import java.util.List;
-
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -12,8 +10,8 @@ import com.vpu.mp.service.foundation.JsonResult;
 import com.vpu.mp.service.foundation.JsonResultCode;
 import com.vpu.mp.service.foundation.PageResult;
 import com.vpu.mp.service.pojo.shop.goods.label.GoodsLabel;
-import com.vpu.mp.service.pojo.shop.goods.label.GoodsLabelCouple;
 import com.vpu.mp.service.pojo.shop.goods.label.GoodsLabelPageListParam;
+import com.vpu.mp.service.pojo.shop.goods.label.GoodsLabelVo;
 
 /**
  * @author 黄荣刚
@@ -33,7 +31,7 @@ public class AdminGoodsLabelController extends AdminBaseController {
     @PostMapping("/api/admin/goods/label/list")
     public JsonResult getPageList(@RequestBody GoodsLabelPageListParam param) {
 
-        PageResult<GoodsLabel> pageResult = shop().goods.goodsLabel.getPageList(param);
+        PageResult<GoodsLabelVo> pageResult = shop().goods.goodsLabel.getPageList(param);
         return success(pageResult);
     }
     
@@ -49,10 +47,7 @@ public class AdminGoodsLabelController extends AdminBaseController {
     		return fail(JsonResultCode.GOODS_LABEL_NAME_EXIST);
     	}
     	shop().goods.goodsLabel.insert(goodsLabel);
-    	if(goodsLabel.getAddGoodsLabelCoupleList() != null) {
-    		shop().goods.goodsLabelCouple.insert(goodsLabel);
-    	}
-    	return success();
+    	return success(JsonResultCode.CODE_SUCCESS);
     }
     
     /**
@@ -60,10 +55,13 @@ public class AdminGoodsLabelController extends AdminBaseController {
      * @param goodsLabel
      * @return
      */
-    @PostMapping("/api/admin/goods/label/delete")
-    public JsonResult delete(@RequestBody GoodsLabel goodsLabel) {
-    	shop().goods.goodsLabel.delete(goodsLabel);
-    	return success();
+    @PostMapping("/api/admin/goods/label/delete/{id}")
+    public JsonResult delete(@PathVariable Integer id) {
+    	int result = shop().goods.goodsLabel.delete(id);
+    	if(result >0) {
+    		return success(JsonResultCode.CODE_SUCCESS);
+    	}
+    	return fail(JsonResultCode.CODE_FAIL);
     }
     
     /**
@@ -77,24 +75,21 @@ public class AdminGoodsLabelController extends AdminBaseController {
     		return fail(JsonResultCode.GOODS_LABEL_NAME_EXIST);
     	}
     	shop().goods.goodsLabel.update(goodsLabel);
-    	shop().goods.goodsLabelCouple.batchInsert(goodsLabel.getAddGoodsLabelCoupleList());
-    	shop().goods.goodsLabelCouple.batchDelete(goodsLabel.getDelGoodsLabelCoupleList());
     	return success();
     }
     
     /**
-              * 根据商品标签ID查询指定商品标签
+     * 根据商品标签ID查询指定商品标签
      * @param id
      * @return
      */
     @GetMapping("/api/admin/goods/label/select/{id}")
     public JsonResult select(@PathVariable Integer id) {
-    	GoodsLabel goodsLabel = shop().goods.goodsLabel.selectById(id);
-    	if(goodsLabel != null) {
-    		List<GoodsLabelCouple> list = shop().goods.goodsLabelCouple.getList(goodsLabel);
-    		goodsLabel.setGoodsLabelCoupleList(list);
+    	GoodsLabelVo goodsLabelVo = shop().goods.goodsLabel.selectGoodsLabelVoById(id);
+    	if(goodsLabelVo != null) {
+    		return success(goodsLabelVo);
     	}
-    	return success(goodsLabel);
+    	return fail(JsonResultCode.GOODS_LABEL_NOT_EXIST);
     }
     
     
