@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.vpu.mp.db.main.tables.records.ShopAccountRecord;
+import com.vpu.mp.db.main.tables.records.ShopChildAccountRecord;
 import com.vpu.mp.db.main.tables.records.ShopChildRoleRecord;
 import com.vpu.mp.db.main.tables.records.ShopRoleRecord;
 import com.vpu.mp.service.foundation.JsonResult;
@@ -21,9 +22,15 @@ import com.vpu.mp.service.foundation.Util;
 import com.vpu.mp.service.pojo.saas.shop.ShopPojo;
 import com.vpu.mp.service.pojo.shop.config.ShopBaseConfig;
 import com.vpu.mp.service.pojo.shop.config.ShopCommonCfgInfo;
+import com.vpu.mp.service.pojo.shop.config.group.ShopChildAccountListVo;
+import com.vpu.mp.service.pojo.shop.config.group.ShopChildAccountVo;
+import com.vpu.mp.service.pojo.shop.config.group.ShopRoleAddListVo;
+import com.vpu.mp.service.pojo.shop.config.group.ShopRoleAddParam;
 import com.vpu.mp.service.pojo.shop.config.group.ShopRoleDelParam;
 import com.vpu.mp.service.pojo.shop.config.group.ShopRoleParam;
 import com.vpu.mp.service.pojo.shop.config.group.ShopRoleUpdateParam;
+import com.vpu.mp.service.pojo.shop.config.group.ShopRoleGroupUpdateParam;
+import com.vpu.mp.service.pojo.shop.config.group.ShopRoleVo;
 import com.vpu.mp.service.pojo.shop.config.pledge.PledgeInfo;
 import com.vpu.mp.service.pojo.shop.config.pledge.PledgeParam;
 import com.vpu.mp.service.pojo.shop.config.pledge.PledgeStateUpdateParam;
@@ -119,7 +126,7 @@ public class AdminBasicConfigController extends AdminBaseController{
 	 * 
 	 * @return
 	 */
-	@PostMapping(value = "/role/add")
+	@PostMapping(value = "/role/group/add")
 	public JsonResult addRole(@RequestBody ShopRoleParam param) {
 		if (!StringUtils.isEmpty(param.getPrivilegePass())) {
 			if (StringUtils.isEmpty(param.getLoginPass()) || StringUtils.isEmpty(param.getRolePass())) {
@@ -193,20 +200,21 @@ public class AdminBasicConfigController extends AdminBaseController{
 			// 您没有权限操作此角色
 			return fail(JsonResultCode.CODE_ACCOUNT_SHOP_ROLE_INSUFFICIENT);
 		}
-		ShopRoleParam vo=new ShopRoleParam();
+		ShopRoleParam vo = new ShopRoleParam();
 		vo.setRoleName(sRecord.getRoleName());
 		vo.setPrivilegeList(Util.parseJson(sRecord.getPrivilegeList(), List.class));
 		vo.setPrivilegePass(Util.parseJson(sRecord.getPrivilegePass(), List.class));
 		return success(vo);
 	}
-	
+
 	/**
 	 * 基础配置 / 权限组管理/ 添加权限组 ->编辑，编辑后提交
+	 * 
 	 * @param upParam
 	 * @return
 	 */
 	@PostMapping(value = "/role/group/editUpdate")
-	public JsonResult updateRole(@RequestBody ShopRoleUpdateParam upParam) {
+	public JsonResult updateRole(@RequestBody ShopRoleGroupUpdateParam upParam) {
 		if (!StringUtils.isEmpty(upParam.getPrivilegePass())) {
 			if (StringUtils.isEmpty(upParam.getLoginPass()) || StringUtils.isEmpty(upParam.getRolePass())) {
 				// 请输入密码
@@ -225,9 +233,9 @@ public class AdminBasicConfigController extends AdminBaseController{
 			// 您没有权限操作此角色
 			return fail(JsonResultCode.CODE_ACCOUNT_SHOP_ROLE_INSUFFICIENT);
 		}
-		int updateNum=saas.shop.role.updateRole(upParam, adminAuth.user());
-		if(updateNum!=1) {
-			//更新失败
+		int updateNum = saas.shop.role.updateRole(upParam, adminAuth.user());
+		if (updateNum != 1) {
+			// 更新失败
 			return fail(JsonResultCode.CODE_FAIL);
 		}
 		return success(JsonResultCode.CODE_SUCCESS);
@@ -287,5 +295,118 @@ public class AdminBasicConfigController extends AdminBaseController{
 		}
 	}
 	
+	/**
+	 * 店铺子账户管理-查询
+	 * 
+	 * @return
+	 */
+	@RequestMapping(value = "/role/query")
+	public JsonResult queryaddRoleToMobile() {
+		if (StringUtils.isEmpty(adminAuth.user().getLoginShopId())) {
+			// 请先选择店铺
+			return fail();
+		}
+		// 子账户手机号
+		List<ShopChildAccountVo> mobileList = saas.shop.subAccount.getInfoBySysId(adminAuth.user().getSysId());
+		// 权限组
+		List<ShopRoleVo> groupRoleList = saas.shop.role.getInfo(adminAuth.user().getSysId());
+		// 下面显示的子账户对应的列表
+		List<ShopRoleAddListVo> totalList = saas.shop.subAccount.queryRoleAndAccount(adminAuth.user().getSysId());
+		ShopChildAccountListVo voList = new ShopChildAccountListVo();
+		voList.setMobileList(mobileList);
+		voList.setTotalList(totalList);
+		voList.setGroupRoleList(groupRoleList);
+		return success(voList);
+	}
+
+	/**
+	 * 店铺子账户管理-保存/编辑
+	 * 
+	 * @param sAddParam
+	 * @return
+	 */
+	@RequestMapping(value = "/role/add")
+	public JsonResult addRoleToMobile(@RequestBody ShopRoleAddParam sAddParam) {
+
+		ShopChildRoleRecord sChildRecord = saas.shop.subAccount.checkByRecodeAndAccId(sAddParam.getRoleId(),
+				sAddParam.getAccountId(), adminAuth.user());
+		if (sChildRecord != null) {
+			// 账号已分配角色
+			return fail(JsonResultCode.CODE_ACCOUNT_ASSIGNED_ROLE);
+		}
+		JsonResultCode code = checkPower(sAddParam.getRoleId(), sAddParam.getAccountId());
+		if (!code.equals(JsonResultCode.CODE_SUCCESS)) {
+			return fail(code);
+		}
+		int insetNum = saas.shop.subAccount.insertshopChildRole(sAddParam, adminAuth.user());
+		if (insetNum != 1) {
+			return fail(JsonResultCode.CODE_FAIL);
+		}
+		return success(JsonResultCode.CODE_SUCCESS);
+	}
+
+	@RequestMapping(value = "/role/edit")
+	public JsonResult editRole(@RequestBody ShopRoleUpdateParam sUpdateParam) {
+		JsonResultCode code = checkPower(sUpdateParam.getRoleId(), sUpdateParam.getAccountId());
+		if (!code.equals(JsonResultCode.CODE_SUCCESS)) {
+			return fail(code);
+		}
+
+		int upNum = saas.shop.subAccount.updateShopChildRole(sUpdateParam, adminAuth.user());
+		if (upNum != 1) {
+			return fail(JsonResultCode.CODE_FAIL);
+		}
+		return success(JsonResultCode.CODE_SUCCESS);
+	}
+
+	/**
+	 * 店铺子账户管理-保存/删除
+	 * 
+	 * @param sUpdateParam
+	 * @return
+	 */
+	@RequestMapping(value = "/role/del")
+	public JsonResult deleteRoleAccount(@RequestBody ShopRoleUpdateParam sUpdateParam) {
+		JsonResultCode code = checkPower(sUpdateParam.getRoleId(), sUpdateParam.getAccountId());
+		if (!code.equals(JsonResultCode.CODE_SUCCESS)) {
+			return fail(code);
+		}
+		int delNum = saas.shop.subAccount.deleteShopChildRole(sUpdateParam);
+		if (delNum != 1) {
+			return fail(JsonResultCode.CODE_FAIL);
+		}
+		return success(JsonResultCode.CODE_SUCCESS);
+	}
+
+	/**
+	 * TODO 公众号解绑
+	 */
+
+	/**
+	 * 校验
+	 * 
+	 * @param roleId
+	 * @param accountId
+	 * @return
+	 */
+	protected JsonResultCode checkPower(Integer roleId, Integer accountId) {
+		if (StringUtils.isEmpty(adminAuth.user().getLoginShopId())) {
+			// 请先选择店铺
+			return JsonResultCode.CODE_FAIL;
+		}
+
+		ShopRoleRecord sRecord = saas.shop.role.getRoleByIdAndSysId(roleId, adminAuth.user().getSysId());
+		if (sRecord == null) {
+			// 您没有权限操作此角色
+			return JsonResultCode.CODE_ACCOUNT_SHOP_ROLE_INSUFFICIENT;
+		}
+		ShopChildAccountRecord sChildAccRecord = saas.shop.subAccount.getSubAccountInfo(adminAuth.user().getSysId(),
+				accountId);
+		if (sChildAccRecord == null) {
+			// 您没有权限操作此子账户
+			return JsonResultCode.CODE_ACCOUNT_SHOP_ROLE_INSUFFICIENT;
+		}
+		return JsonResultCode.CODE_SUCCESS;
+	}
 
 }
