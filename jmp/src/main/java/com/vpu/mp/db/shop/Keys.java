@@ -652,7 +652,7 @@ public class Keys {
         public static Identity<GoodsOpaiSpecRecord, Long> IDENTITY_GOODS_OPAI_SPEC = Internal.createIdentity(GoodsOpaiSpec.GOODS_OPAI_SPEC, GoodsOpaiSpec.GOODS_OPAI_SPEC.ID);
         public static Identity<GoodsRebatePriceRecord, Integer> IDENTITY_GOODS_REBATE_PRICE = Internal.createIdentity(GoodsRebatePrice.GOODS_REBATE_PRICE, GoodsRebatePrice.GOODS_REBATE_PRICE.ID);
         public static Identity<GoodsSpecProductRecord, Integer> IDENTITY_GOODS_SPEC_PRODUCT = Internal.createIdentity(GoodsSpecProduct.GOODS_SPEC_PRODUCT, GoodsSpecProduct.GOODS_SPEC_PRODUCT.PRD_ID);
-        public static Identity<GoodsSpecProductBakRecord, Integer> IDENTITY_GOODS_SPEC_PRODUCT_BAK = Internal.createIdentity(GoodsSpecProductBak.GOODS_SPEC_PRODUCT_BAK, GoodsSpecProductBak.GOODS_SPEC_PRODUCT_BAK.ID);
+        public static Identity<GoodsSpecProductBakRecord, Integer> IDENTITY_GOODS_SPEC_PRODUCT_BAK = Internal.createIdentity(GoodsSpecProductBak.GOODS_SPEC_PRODUCT_BAK, GoodsSpecProductBak.GOODS_SPEC_PRODUCT_BAK.PRD_BAK_ID);
         public static Identity<GoodsSummaryRecord, Integer> IDENTITY_GOODS_SUMMARY = Internal.createIdentity(GoodsSummary.GOODS_SUMMARY, GoodsSummary.GOODS_SUMMARY.ID);
         public static Identity<GoodsUserSummaryRecord, Integer> IDENTITY_GOODS_USER_SUMMARY = Internal.createIdentity(GoodsUserSummary.GOODS_USER_SUMMARY, GoodsUserSummary.GOODS_USER_SUMMARY.ID);
         public static Identity<GradePrdRecord, Integer> IDENTITY_GRADE_PRD = Internal.createIdentity(GradePrd.GRADE_PRD, GradePrd.GRADE_PRD.ID);
@@ -831,7 +831,7 @@ public class Keys {
         public static final UniqueKey<GoodsOpaiSpecRecord> KEY_B2C_GOODS_OPAI_SPEC_PRIMARY = Internal.createUniqueKey(GoodsOpaiSpec.GOODS_OPAI_SPEC, "KEY_b2c_goods_opai_spec_PRIMARY", GoodsOpaiSpec.GOODS_OPAI_SPEC.ID);
         public static final UniqueKey<GoodsRebatePriceRecord> KEY_B2C_GOODS_REBATE_PRICE_PRIMARY = Internal.createUniqueKey(GoodsRebatePrice.GOODS_REBATE_PRICE, "KEY_b2c_goods_rebate_price_PRIMARY", GoodsRebatePrice.GOODS_REBATE_PRICE.ID);
         public static final UniqueKey<GoodsSpecProductRecord> KEY_B2C_GOODS_SPEC_PRODUCT_PRIMARY = Internal.createUniqueKey(GoodsSpecProduct.GOODS_SPEC_PRODUCT, "KEY_b2c_goods_spec_product_PRIMARY", GoodsSpecProduct.GOODS_SPEC_PRODUCT.PRD_ID);
-        public static final UniqueKey<GoodsSpecProductBakRecord> KEY_B2C_GOODS_SPEC_PRODUCT_BAK_PRIMARY = Internal.createUniqueKey(GoodsSpecProductBak.GOODS_SPEC_PRODUCT_BAK, "KEY_b2c_goods_spec_product_bak_PRIMARY", GoodsSpecProductBak.GOODS_SPEC_PRODUCT_BAK.ID);
+        public static final UniqueKey<GoodsSpecProductBakRecord> KEY_B2C_GOODS_SPEC_PRODUCT_BAK_PRIMARY = Internal.createUniqueKey(GoodsSpecProductBak.GOODS_SPEC_PRODUCT_BAK, "KEY_b2c_goods_spec_product_bak_PRIMARY", GoodsSpecProductBak.GOODS_SPEC_PRODUCT_BAK.PRD_BAK_ID);
         public static final UniqueKey<GoodsSummaryRecord> KEY_B2C_GOODS_SUMMARY_PRIMARY = Internal.createUniqueKey(GoodsSummary.GOODS_SUMMARY, "KEY_b2c_goods_summary_PRIMARY", GoodsSummary.GOODS_SUMMARY.ID);
         public static final UniqueKey<GoodsUserSummaryRecord> KEY_B2C_GOODS_USER_SUMMARY_PRIMARY = Internal.createUniqueKey(GoodsUserSummary.GOODS_USER_SUMMARY, "KEY_b2c_goods_user_summary_PRIMARY", GoodsUserSummary.GOODS_USER_SUMMARY.ID);
         public static final UniqueKey<GradePrdRecord> KEY_B2C_GRADE_PRD_PRIMARY = Internal.createUniqueKey(GradePrd.GRADE_PRD, "KEY_b2c_grade_prd_PRIMARY", GradePrd.GRADE_PRD.ID);

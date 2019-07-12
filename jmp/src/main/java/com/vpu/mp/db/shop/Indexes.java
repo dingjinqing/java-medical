@@ -347,6 +347,9 @@ public class Indexes {
     public static final Index GOODS_SPEC_PRODUCT_GSP_GOODS_ID = Indexes0.GOODS_SPEC_PRODUCT_GSP_GOODS_ID;
     public static final Index GOODS_SPEC_PRODUCT_GSP_PRD_SN = Indexes0.GOODS_SPEC_PRODUCT_GSP_PRD_SN;
     public static final Index GOODS_SPEC_PRODUCT_PRIMARY = Indexes0.GOODS_SPEC_PRODUCT_PRIMARY;
+    public static final Index GOODS_SPEC_PRODUCT_BAK_GSP_GOODS_CODES = Indexes0.GOODS_SPEC_PRODUCT_BAK_GSP_GOODS_CODES;
+    public static final Index GOODS_SPEC_PRODUCT_BAK_GSP_GOODS_ID = Indexes0.GOODS_SPEC_PRODUCT_BAK_GSP_GOODS_ID;
+    public static final Index GOODS_SPEC_PRODUCT_BAK_GSP_PRD_SN = Indexes0.GOODS_SPEC_PRODUCT_BAK_GSP_PRD_SN;
     public static final Index GOODS_SPEC_PRODUCT_BAK_PRIMARY = Indexes0.GOODS_SPEC_PRODUCT_BAK_PRIMARY;
     public static final Index GOODS_SUMMARY_PRIMARY = Indexes0.GOODS_SUMMARY_PRIMARY;
     public static final Index GOODS_SUMMARY_REF_TYPE = Indexes0.GOODS_SUMMARY_REF_TYPE;
@@ -726,7 +729,10 @@ public class Indexes {
         public static Index GOODS_SPEC_PRODUCT_GSP_GOODS_ID = Internal.createIndex("gsp_goods_id", GoodsSpecProduct.GOODS_SPEC_PRODUCT, new OrderField[] { GoodsSpecProduct.GOODS_SPEC_PRODUCT.GOODS_ID }, false);
         public static Index GOODS_SPEC_PRODUCT_GSP_PRD_SN = Internal.createIndex("gsp_prd_sn", GoodsSpecProduct.GOODS_SPEC_PRODUCT, new OrderField[] { GoodsSpecProduct.GOODS_SPEC_PRODUCT.PRD_SN }, false);
         public static Index GOODS_SPEC_PRODUCT_PRIMARY = Internal.createIndex("PRIMARY", GoodsSpecProduct.GOODS_SPEC_PRODUCT, new OrderField[] { GoodsSpecProduct.GOODS_SPEC_PRODUCT.PRD_ID }, true);
-        public static Index GOODS_SPEC_PRODUCT_BAK_PRIMARY = Internal.createIndex("PRIMARY", GoodsSpecProductBak.GOODS_SPEC_PRODUCT_BAK, new OrderField[] { GoodsSpecProductBak.GOODS_SPEC_PRODUCT_BAK.ID }, true);
+        public static Index GOODS_SPEC_PRODUCT_BAK_GSP_GOODS_CODES = Internal.createIndex("gsp_goods_codes", GoodsSpecProductBak.GOODS_SPEC_PRODUCT_BAK, new OrderField[] { GoodsSpecProductBak.GOODS_SPEC_PRODUCT_BAK.PRD_CODES }, false);
+        public static Index GOODS_SPEC_PRODUCT_BAK_GSP_GOODS_ID = Internal.createIndex("gsp_goods_id", GoodsSpecProductBak.GOODS_SPEC_PRODUCT_BAK, new OrderField[] { GoodsSpecProductBak.GOODS_SPEC_PRODUCT_BAK.GOODS_ID }, false);
+        public static Index GOODS_SPEC_PRODUCT_BAK_GSP_PRD_SN = Internal.createIndex("gsp_prd_sn", GoodsSpecProductBak.GOODS_SPEC_PRODUCT_BAK, new OrderField[] { GoodsSpecProductBak.GOODS_SPEC_PRODUCT_BAK.PRD_SN }, false);
+        public static Index GOODS_SPEC_PRODUCT_BAK_PRIMARY = Internal.createIndex("PRIMARY", GoodsSpecProductBak.GOODS_SPEC_PRODUCT_BAK, new OrderField[] { GoodsSpecProductBak.GOODS_SPEC_PRODUCT_BAK.PRD_BAK_ID }, true);
         public static Index GOODS_SUMMARY_PRIMARY = Internal.createIndex("PRIMARY", GoodsSummary.GOODS_SUMMARY, new OrderField[] { GoodsSummary.GOODS_SUMMARY.ID }, true);
         public static Index GOODS_SUMMARY_REF_TYPE = Internal.createIndex("ref_type", GoodsSummary.GOODS_SUMMARY, new OrderField[] { GoodsSummary.GOODS_SUMMARY.REF_DATE, GoodsSummary.GOODS_SUMMARY.TYPE }, false);
         public static Index GOODS_USER_SUMMARY_PRIMARY = Internal.createIndex("PRIMARY", GoodsUserSummary.GOODS_USER_SUMMARY, new OrderField[] { GoodsUserSummary.GOODS_USER_SUMMARY.ID }, true);
