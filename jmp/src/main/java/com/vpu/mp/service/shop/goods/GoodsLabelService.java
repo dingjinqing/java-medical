@@ -185,7 +185,6 @@ public class GoodsLabelService extends BaseService {
 	 * @return
 	 */
 	public int insert(GoodsLabel goodsLabel) {
-		final Integer  resultCode =0;
 		this.transaction(()->{
 			Record1<Integer> result = db()
 					.insertInto(GOODS_LABEL, 
@@ -202,7 +201,7 @@ public class GoodsLabelService extends BaseService {
 			goodsLabel.setId(id);
 			goodsLabelCoupleService.insert(goodsLabel);
 		});
-	    return resultCode;
+	    return 0;
 	}
 
 	/**
