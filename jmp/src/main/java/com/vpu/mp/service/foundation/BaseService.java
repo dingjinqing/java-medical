@@ -109,7 +109,7 @@ public class BaseService extends ServiceContainer {
 			transactionConfiuration().remove(shopId);
 		});
 	}
-	
+
 	/**
 	 * 得到分页结果
 	 * @param <T>

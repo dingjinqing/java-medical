@@ -5,7 +5,6 @@ import static com.vpu.mp.db.main.tables.MpAuthShop.MP_AUTH_SHOP;
 import java.sql.Timestamp;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.Map;
 
 import com.vpu.mp.db.main.tables.records.MpAuthShopRecord;
@@ -139,40 +138,5 @@ public class MpAuthShopService extends BaseService {
 				.execute();
 	}
 
-	/**
-	 * 小程序所需权限
-	 * 
-	 * @return
-	 */
-	public Map<Integer, String> getNeededMpAuthMap() {
-		Map<Integer, String> result = new HashMap<Integer, String>(6);
-		result.put(17, "帐号管理权限（小程序）");
-		result.put(18, "开发管理与数据分析权限（小程序）");
-		result.put(19, "客服消息管理权限（小程序）");
-		result.put(25, "开放平台帐号管理权限（小程序）");
-		result.put(30, "小程序基本信息设置权限");
-		result.put(31, "小程序认证权限");
-		return result;
-	}
-
-	public void convertMpFuncInfo() {
-
-	}
-
-//	public function convertMpFuncInfo(array $funcInfo)
-//    {
-//        $result = [];
-//        $authMap = $this->getNeededMpAuthMap();
-//        foreach ($authMap as $id => $name) {
-//            $tmp = ['name' => $name, 'has' => 0];
-//            foreach ($funcInfo as $func) {
-//                if ($func['funcscope_category']['id'] == $id) {
-//                    $tmp['has'] = 1;
-//                }
-//            }
-//            $result[] = $tmp;
-//        }
-//        return $result;
-//    }
 
 }

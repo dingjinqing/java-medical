@@ -30,7 +30,7 @@ public class AdminIndexController extends AdminBaseController {
 	@RequestMapping(value = "/admin/test")
 	@ResponseBody
 	public JsonResult test() throws InterruptedException {
-		saas.getShopApp(471752).config.bottomCfg.test();
+		System.out.println("@Controller id:"+Thread.currentThread().getId());
 		return success( );
 	}
 }

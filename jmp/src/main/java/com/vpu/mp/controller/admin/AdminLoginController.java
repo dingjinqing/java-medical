@@ -4,7 +4,6 @@ import javax.validation.Valid;
 
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -44,12 +43,4 @@ public class AdminLoginController extends AdminBaseController {
 		return success(JsonResultCode.CODE_SUCCESS);
 	}
 	
-	@GetMapping(value = "/admin/account/shop/switch/{shopId}")
-	public JsonResult switchShop(@PathVariable Integer shopId ) {
-		if(adminAuth.switchShopLogin(shopId)) {
-			return success();
-		}
-		return fail(JsonResultCode.CODE_ACCOUNT_ROLE__AUTH_INSUFFICIENT);
-	}
-
 }

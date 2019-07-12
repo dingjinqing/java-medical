@@ -36,4 +36,7 @@ public class RetrunConfigParam {
     public Byte returnChangeGoodsStatus;
     @JsonProperty(value = "order_return_goods_package")
     public ReturnPackageParam orderReturnGoodsPackage;
+    
+    
+    
 }
