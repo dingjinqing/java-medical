@@ -18,7 +18,7 @@ ALTER TABLE b2c_sort MODIFY COLUMN sort_name VARCHAR(90) NOT NULL;
 ALTER TABLE b2c_sort MODIFY COLUMN parent_id INT(11) NOT NULL DEFAULT 0 COMMENT '分类父节点，0表示一级';
 ALTER TABLE b2c_sort MODIFY COLUMN sort_name VARCHAR(90) NOT NULL;
 
---7月4号 修改b2c_group表名为b2c_store_group,字段in_time改为create_time
+-- 7月4号 修改b2c_group表名为b2c_store_group,字段in_time改为create_time
 ALTER  TABLE b2c_group RENAME TO b2c_store_group;
 ALTER TABLE b2c_store_group CHANGE column in_time create_time timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP;
 
@@ -36,7 +36,7 @@ CHANGE COLUMN specvalname spec_val_name VARCHAR(60) not null DEFAULT '',
 ADD UNIQUE INDEX unique_spec_id_spec_val_name (spec_id,spec_val_name);
 
 
---7月10日 梁晨 b2c_comment_goods 添加is_shop_add  bogus_username  bogus_user_avatar字段
+-- 7月10日 梁晨 b2c_comment_goods 添加is_shop_add  bogus_username  bogus_user_avatar字段
 ALTER TABLE b2c_comment_goods ADD COLUMN is_shop_add tinyint(1)  not null DEFAULT '0' comment '是否商家增加：0不是，1是',
 ALTER TABLE b2c_comment_goods ADD COLUMN bogus_username  varchar(32)  not null default '' comment '用户名称：商家添加时使用',
 ALTER TABLE b2c_comment_goods ADD COLUMN bogus_user_avatar varchar(100)  not null default '' comment '用户头像：商家添加时使用';
@@ -54,9 +54,9 @@ ALTER TABLE b2c_tag ADD COLUMN update_time TIMESTAMP DEFAULT CURRENT_TIMESTAMP O
 -- 修改标签组关系表
 ALTER TABLE b2c_goods_label_couple MODIFY COLUMN label_id INT(11) NOT NULL;
 
---7月11日 常乐 创建测评活动相关表结构
-##测评活动表
-##drop table if exists `b2c_assess_activity`;
+-- 7月11日 常乐 创建测评活动相关表结构
+-- 测评活动表
+-- drop table if exists `b2c_assess_activity`;
 create table `b2c_assess_activity` (
   `id`                mediumint(8) unsigned not null auto_increment,
   `shop_id`           int(11)               null     default 0 comment '店铺ID',
@@ -83,8 +83,8 @@ create table `b2c_assess_activity` (
   key (`shop_id`)
 );
 
-##测评活动题目表
-##drop table if exists `b2c_assess_topic`;
+-- 测评活动题目表
+-- drop table if exists `b2c_assess_topic`;
 create table `b2c_assess_topic` (
   `id`                mediumint(8) unsigned not null auto_increment,
   `shop_id`           int(11)               null     default 0 comment '店铺ID',
@@ -108,8 +108,8 @@ create table `b2c_assess_topic` (
   key (`shop_id`)
 );
 
-##测评活动结果表
-#drop table if exists `b2c_assess_result`;
+-- 测评活动结果表
+-- drop table if exists `b2c_assess_result`;
 create table `b2c_assess_result` (
   `id`                     mediumint(8) unsigned not null auto_increment,
   `shop_id`                int(11)               null     default 0 comment '店铺ID',
@@ -133,8 +133,8 @@ create table `b2c_assess_result` (
   key (`shop_id`)
 );
 
-##测评活动记录表
-#drop table if exists `b2c_assess_record`;
+-- 测评活动记录表
+-- drop table if exists `b2c_assess_record`;
 create table `b2c_assess_record` (
   `id`           mediumint(8) unsigned not null  auto_increment,
   `shop_id`      int(11)               not null  default 0 comment '店铺ID',
@@ -154,8 +154,8 @@ create table `b2c_assess_record` (
   key (`user_id`)
 );
 
-##测评活动答题记录表
-#drop table if exists `b2c_assess_topic_record`;
+-- 测评活动答题记录表
+-- drop table if exists `b2c_assess_topic_record`;
 create table `b2c_assess_topic_record` (
   `id`           mediumint(8) unsigned not null auto_increment,
   `record_id`    int(11)               not null default 0 comment '测评活动记录表关联ID',
@@ -170,7 +170,7 @@ create table `b2c_assess_topic_record` (
   key (`result_id`)
 );
 
---7月12日 常乐 添加优惠礼包表结构
+-- 7月12日 常乐 添加优惠礼包表结构
 ##优惠券礼包
 #DROP TABLE IF EXISTS `b2c_coupon_pack`;
 create table `b2c_coupon_pack` (
@@ -193,4 +193,32 @@ create table `b2c_coupon_pack` (
   primary key (`id`)
 );
 
-
+-- 李晓冰 7月12日添加
+-- 修改表 b2c_goods_spec_product_bak
+drop table if exists `b2c_goods_spec_product_bak`;
+create table `b2c_goods_spec_product_bak` (
+  `prd_bak_id`           int(10)                         	not null auto_increment,
+	`del_time`				timestamp													not null DEFAULT current_timestamp,
+	`prd_id`					 int(10)													not null default '0',
+  `shop_id`          int(11)                        	not null default '0',
+  `goods_id`         int(10)                        	not null default '0',
+  `prd_price`        decimal(10, 2)                   	not null default '0.00',
+  `prd_market_price` decimal(10, 2)                   	not null default '0.00' 	comment '市场价',
+  `prd_cost_price`   decimal(10, 2) 					not null default '0.00' 	comment '成本价',
+  `prd_number`       int(11)                        	not null default '0' 	comment '当前规格组合产品库存',
+  `prd_sn`           varchar(65)                       	not null default '' 		comment '商家编码',
+  `prd_codes`        varchar(500)                     	not null default '' 		comment '商品条码',
+  `prd_specs`        varchar(1024)                     	not null default '',
+  `prd_desc`         varchar(1024)                     	not null default '' 		comment '规格描述，格式例子：颜色:红色 尺码:s',
+  `del_flag`         tinyint(1)                       	not null default '0',
+  `self_flag`        tinyint(1) 						not null default '0'   	comment '1:商家自己添加商品，其他没用',
+  `low_shop_price`   varchar(1024)                     	not null default '0.00' 	comment '最低售出价格',
+  `prd_img`          varchar(1024)                     	not null default '' 		comment '图片地址',
+  `price_flag`       tinyint(1)                       	not null default '0' 	comment '0:商家未改价，1：商家改价，2：批量改价，3：毛利改价',
+  `create_time`      timestamp    	not null comment '规格记录在原表内的添加时间',
+  `update_time`      timestamp     	not null comment '规格记录在原表内的最后修改时间',
+  primary key (`prd_bak_id`),
+  key `gsp_goods_id` (`goods_id`),
+  key `gsp_goods_codes` (`prd_codes`),
+  key `gsp_prd_sn` (`prd_sn`)
+);
