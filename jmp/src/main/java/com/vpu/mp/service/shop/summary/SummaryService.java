@@ -1,10 +1,11 @@
 package com.vpu.mp.service.shop.summary;
 
+import com.vpu.mp.db.shop.tables.records.MpDailyVisitRecord;
 import com.vpu.mp.service.foundation.BaseService;
 import com.vpu.mp.service.pojo.shop.summary.VisitStatisticsParam;
 import com.vpu.mp.service.pojo.shop.summary.VisitStatisticsUnit;
 import com.vpu.mp.service.pojo.shop.summary.VisitStatisticsVo;
-import org.jooq.Record2;
+import org.jooq.Record8;
 import org.jooq.Result;
 
 import java.time.LocalDate;
@@ -13,7 +14,8 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import static com.vpu.mp.db.shop.tables.MpDailyVisit.MP_DAILY_VISIT;
-import static com.vpu.mp.service.pojo.shop.summary.VisitStatisticsParam.*;
+import static com.vpu.mp.service.pojo.shop.summary.VisitStatisticsParam.PV;
+import static com.vpu.mp.service.pojo.shop.summary.VisitStatisticsParam.SESSION_COUNT;
 
 /**
  * 概况统计
@@ -40,21 +42,19 @@ public class SummaryService extends BaseService {
         String startDate = param.getStartDate();
         String endDate = param.getEndDate();
         Integer grading = param.getGrading();
+        Result<MpDailyVisitRecord> result = getSessionCounts(startDate, endDate);
         switch (action) {
             case SESSION_COUNT:
-                Result<Record2<String, Integer>> result = getSessionCounts(startDate, endDate);
-                List<String> dates = result.getValues(MP_DAILY_VISIT.REF_DATE);
-                List<Integer> values = result.getValues(MP_DAILY_VISIT.SESSION_CNT);
-                List<VisitStatisticsUnit> visitUnitList = new ArrayList<>();
-                for (int i = 0; i < dates.size(); i++) {
-                    String date = dates.get(i);
-                    Integer value = values.get(i);
-                    VisitStatisticsUnit unit = new VisitStatisticsUnit();
-                    unit.setRefDate(date);
-                    unit.setValue(value.doubleValue());
-                    visitUnitList.add(unit);
-                }
-                return getGroupedValue(visitUnitList, grading);
+                List<VisitStatisticsUnit> units = new ArrayList<>(
+                        result.map(r -> {
+                            VisitStatisticsUnit unit = new VisitStatisticsUnit();
+                            unit.setRefDate(r.getRefDate());
+                            unit.setValue(r.getSessionCnt().doubleValue());
+                            return unit;
+                        }));
+                return getGroupedValue(units, grading);
+            case PV:
+                return null;
         }
         return null;
     }
@@ -70,10 +70,13 @@ public class SummaryService extends BaseService {
         return vo;
     }
 
-    public Result<Record2<String, Integer>> getSessionCounts(String startDate, String endDate) {
-        return db().select(MP_DAILY_VISIT.REF_DATE, MP_DAILY_VISIT.SESSION_CNT)
+    public Result<MpDailyVisitRecord> getSessionCounts(
+            String startDate, String endDate) {
+        return db().select(MP_DAILY_VISIT.REF_DATE, MP_DAILY_VISIT.SESSION_CNT, MP_DAILY_VISIT.VISIT_PV,
+                MP_DAILY_VISIT.VISIT_UV, MP_DAILY_VISIT.VISIT_UV_NEW, MP_DAILY_VISIT.STAY_TIME_UV,
+                MP_DAILY_VISIT.STAY_TIME_SESSION, MP_DAILY_VISIT.VISIT_DEPTH)
                 .from(MP_DAILY_VISIT)
-                .where(MP_DAILY_VISIT.REF_DATE.between(startDate, endDate)).fetch();
+                .where(MP_DAILY_VISIT.REF_DATE.between(startDate, endDate)).fetch().into(MP_DAILY_VISIT);
     }
 
     /**
