@@ -222,3 +222,6 @@ create table `b2c_goods_spec_product_bak` (
   key `gsp_goods_codes` (`prd_codes`),
   key `gsp_prd_sn` (`prd_sn`)
 );
+-- 李晓冰 7月12日添加
+-- b2c_goods 添加主键约束
+ALTER TABLE b2c_goods  add PRIMARY KEY(goods_id);
