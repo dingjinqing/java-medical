@@ -363,3 +363,8 @@ input::-webkit-input-placeholder {
   font-size: 16px !important;
 }
 </style>
+<style>
+.el-button{
+      padding: 12px 20px!important;
+}
+</style>
