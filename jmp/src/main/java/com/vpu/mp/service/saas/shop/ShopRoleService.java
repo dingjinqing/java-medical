@@ -15,7 +15,7 @@ import com.vpu.mp.service.foundation.BaseService;
 import com.vpu.mp.service.foundation.Util;
 import com.vpu.mp.service.pojo.shop.auth.AdminTokenAuthInfo;
 import com.vpu.mp.service.pojo.shop.config.group.ShopRoleParam;
-import com.vpu.mp.service.pojo.shop.config.group.ShopRoleUpdateParam;
+import com.vpu.mp.service.pojo.shop.config.group.ShopRoleGroupUpdateParam;
 import com.vpu.mp.service.pojo.shop.config.group.ShopRoleVo;
 
 /**
@@ -77,7 +77,7 @@ public class ShopRoleService extends BaseService {
 				.execute();
 	}
 
-	public int updateRole(ShopRoleUpdateParam param, AdminTokenAuthInfo info) {
+	public int updateRole(ShopRoleGroupUpdateParam param, AdminTokenAuthInfo info) {
 		ShopRoleRecord role = new ShopRoleRecord();
 		role.setPrivilegeList(Util.toJson(param.getPrivilegeList()));
 		role.setPrivilegePass(Util.toJson(param.getPrivilegePass()));
