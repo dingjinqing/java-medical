@@ -11,6 +11,7 @@ import com.vpu.mp.service.foundation.JsonResult;
 import com.vpu.mp.service.foundation.JsonResultCode;
 import com.vpu.mp.service.foundation.PageResult;
 import com.vpu.mp.service.pojo.shop.config.store.StoreServiceConfig;
+import com.vpu.mp.service.pojo.shop.store.goods.StoreGoodsListQueryParam;
 import com.vpu.mp.service.pojo.shop.store.group.StoreGroup;
 import com.vpu.mp.service.pojo.shop.store.group.StoreGroupQueryParam;
 import com.vpu.mp.service.pojo.shop.store.store.StoreListQueryParam;
@@ -207,5 +208,14 @@ public class AdminStoreController extends AdminBaseController{
     	}else {
     		return fail();
     	}
+    }
+    
+    /**
+     * 获取门店商品分页列表
+     * @return
+     */
+    @PostMapping(value = "/api/admin/store/goods/list")
+    public JsonResult getStoreGoodsList(@RequestBody(required = false) @Valid StoreGoodsListQueryParam param) {
+    	return success(shop().store.storeGoods.getPageList(param));
     }
 }

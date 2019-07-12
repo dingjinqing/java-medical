@@ -39,6 +39,11 @@ public class StoreService extends BaseService {
 	public StoreVerifierService storeVerifier;
 	
 	/**
+	 * 门店商品
+	 */
+	public StoreGoodsService storeGoods;
+	
+	/**
 	 * 门店列表分页查询
 	 * @param StoreListQueryParam
 	 * @return StorePageListVo

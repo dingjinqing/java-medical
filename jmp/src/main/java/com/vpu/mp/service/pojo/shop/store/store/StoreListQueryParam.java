@@ -13,13 +13,13 @@ import lombok.NoArgsConstructor;
 @Data
 @NoArgsConstructor
 public class StoreListQueryParam {
-	public String groupName;
-	public Integer groupId;
-	public Boolean isAuthPos;
+	private String groupName;
+	private Integer groupId;
+	private Boolean isAuthPos;
 	/**
 	 *  门店名称/编码/负责人
 	 */
-	public String keywords;
+	private String keywords;
 	
 	/**
      * 	分页信息
