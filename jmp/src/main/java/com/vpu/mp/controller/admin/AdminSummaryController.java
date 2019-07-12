@@ -21,12 +21,12 @@ public class AdminSummaryController extends AdminBaseController {
 
     @GetMapping("/api/admin/summary/test")
     public void testAddDailyVisit() {
-        shop().summary.addTestDailyVisit();
+        shop().amount.addTestDailyVisit();
     }
 
     @PostMapping("/api/admin/summary/visit/amount")
     public JsonResult getVisitStatistics(@Valid @RequestBody VisitStatisticsParam param) {
-        VisitStatisticsVo vo = shop().summary.getVisitStatistics(param);
+        VisitStatisticsVo vo = shop().amount.getVisitStatistics(param);
         return success(vo);
     }
 }

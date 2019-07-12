@@ -15,7 +15,7 @@ import com.vpu.mp.service.shop.member.MemberService;
 import com.vpu.mp.service.shop.member.TagService;
 import com.vpu.mp.service.shop.order.OrderService;
 import com.vpu.mp.service.shop.store.store.StoreService;
-import com.vpu.mp.service.shop.summary.SummaryService;
+import com.vpu.mp.service.shop.summary.visit.AmountService;
 import com.vpu.mp.service.shop.version.VersionService;
 
 /**
@@ -37,7 +37,7 @@ public class ShopApplication extends ServiceContainer {
 	public ChooseLinkService chooselink;
 	public TradeService trade;
 	public GoodsRecommendService goodsRecommend;
-	public SummaryService summary;
+	public AmountService amount;
 	/**
 	 * 会员
 	 */

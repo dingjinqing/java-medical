@@ -1,4 +1,4 @@
-package com.vpu.mp.service.shop.summary;
+package com.vpu.mp.service.shop.summary.visit;
 
 import com.vpu.mp.db.shop.tables.records.MpDailyVisitRecord;
 import com.vpu.mp.service.foundation.BaseService;
@@ -7,7 +7,6 @@ import com.vpu.mp.service.pojo.shop.summary.VisitStatisticsUnit;
 import com.vpu.mp.service.pojo.shop.summary.VisitStatisticsVo;
 import org.jooq.Result;
 
-import javax.lang.model.type.UnionType;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -18,12 +17,12 @@ import static com.vpu.mp.db.shop.tables.MpDailyVisit.MP_DAILY_VISIT;
 import static com.vpu.mp.service.pojo.shop.summary.VisitStatisticsParam.*;
 
 /**
- * 概况统计
+ * 折线图
  *
  * @author 郑保乐
  * @date 2019年7月11日
  */
-public class SummaryService extends BaseService {
+public class AmountService extends BaseService {
 
     public void addTestDailyVisit() {
         LocalDate dateToday = LocalDate.now();
@@ -168,7 +167,7 @@ public class SummaryService extends BaseService {
      * @param visitUnits 日单元
      * @param grading    粒度
      */
-    public VisitStatisticsVo getGroupedValue(List<VisitStatisticsUnit> visitUnits, Integer grading) {
+    private VisitStatisticsVo getGroupedValue(List<VisitStatisticsUnit> visitUnits, Integer grading) {
         VisitStatisticsVo vo = new VisitStatisticsVo();
         /* 默认是时间倒序, 改成正序 */
         Collections.reverse(visitUnits);
@@ -210,7 +209,7 @@ public class SummaryService extends BaseService {
      * @param startDate 开始日期
      * @param endDate   结束日期
      */
-    public Result<MpDailyVisitRecord> getSessionCounts(
+    private Result<MpDailyVisitRecord> getSessionCounts(
             String startDate, String endDate) {
         return db().select(MP_DAILY_VISIT.REF_DATE, MP_DAILY_VISIT.SESSION_CNT, MP_DAILY_VISIT.VISIT_PV,
                 MP_DAILY_VISIT.VISIT_UV, MP_DAILY_VISIT.VISIT_UV_NEW, MP_DAILY_VISIT.STAY_TIME_UV,
@@ -222,7 +221,7 @@ public class SummaryService extends BaseService {
     /**
      * 日期格式化（20190711 形式）
      */
-    public String formatDate(LocalDate date) {
+    private String formatDate(LocalDate date) {
         return date.toString().replaceAll("-", "");
     }
 }
