@@ -10,7 +10,7 @@
 import Crumbs from '@/components/admin/crumbs'
 export default {
   components: { Crumbs },
-  data() {
+  data () {
     return {
       M_title: '小程序管理',
       Subtitle: '图片空间'
