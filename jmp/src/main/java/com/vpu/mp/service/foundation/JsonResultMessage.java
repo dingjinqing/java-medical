@@ -39,6 +39,9 @@ public class JsonResultMessage {
 	public static final String MSG_ACCOUNT_PASSWD_ERROR = "account.passwd.error";
 	public static final String MSG_CODE_ACCOUNT_SHOP_ROLE_INSUFFICIENT = "account.shop.role.insufficient";
 	public static final String MSG_CODE_ACCOUNT_SHOP_ROLE_OCCUPY = "account.shop.role.occupy";
+	public static final String MSG_CODE_ACCOUNT_ASSIGNED_ROLE="account.assigned.role";
+	public static final String MSG_CODE_ACCOUNT_SELECT_SHOP="account.select.shop";
+	
 	// 图片
 	
 	final public static String MSG_IMGAE_UPLOAD_FAILED = "image.upload.failed";
