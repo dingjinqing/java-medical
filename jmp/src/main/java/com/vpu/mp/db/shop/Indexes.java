@@ -383,6 +383,27 @@ public class Indexes {
     public static final Index WX_SHOPPING_RECOMMEND_USER_ID = Indexes0.WX_SHOPPING_RECOMMEND_USER_ID;
     public static final Index XCX_CUSTOMER_PAGE_PRIMARY = Indexes0.XCX_CUSTOMER_PAGE_PRIMARY;
     public static final Index PLEDGE_PRIMARY = Indexes0.PLEDGE_PRIMARY;
+	public static final Index ASSESS_ACTIVITY_ACT_CODE = null;
+	public static final Index ASSESS_ACTIVITY_ACT_NAME = null;
+	public static final Index ASSESS_ACTIVITY_PRIMARY = null;
+	public static final Index ASSESS_ACTIVITY_SHOP_ID = null;
+	public static final Index ASSESS_RESULT_ASSESS_ID = null;
+	public static final Index ASSESS_RESULT_PRIMARY = null;
+	public static final Index ASSESS_RESULT_SHOP_ID = null;
+	public static final Index ASSESS_RECORD_ASSESS_ID = null;
+	public static final Index ASSESS_RECORD_PRIMARY = null;
+	public static final Index ASSESS_RECORD_SHOP_ID = null;
+	public static final Index ASSESS_RECORD_USER_ID = null;
+	public static final Index ASSESS_TOPIC_ASSESS_ID = null;
+	public static final Index ASSESS_TOPIC_PRIMARY = null;
+	public static final Index ASSESS_TOPIC_SHOP_ID = null;
+	public static final Index ASSESS_TOPIC_RECORD_PRIMARY = null;
+	public static final Index ASSESS_TOPIC_RECORD_RECORD_ID = null;
+	public static final Index ASSESS_TOPIC_RECORD_RESULT_ID = null;
+	public static final Index COUPON_PACK_PRIMARY = null;
+	public static final Index COUPON_PACK_VOUCHER_ACT_ID = null;
+	public static final Index COUPON_PACK_VOUCHER_PRIMARY = null;
+	public static final Index COUPON_PACK_VOUCHER_VOUCHER_ID = null;
 
     // -------------------------------------------------------------------------
     // [#1459] distribute members to avoid static initialisers > 64kb

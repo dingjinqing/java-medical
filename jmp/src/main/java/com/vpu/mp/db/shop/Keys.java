@@ -7,6 +7,7 @@ package com.vpu.mp.db.shop;
 import com.vpu.mp.db.shop.tables.*;
 import com.vpu.mp.db.shop.tables.TradesRecord;
 import com.vpu.mp.db.shop.tables.records.*;
+import com.vpu.mp.db.shop.tables.records.AssessTopicRecord;
 
 import javax.annotation.Generated;
 
@@ -406,6 +407,21 @@ public class Keys {
     // -------------------------------------------------------------------------
     // FOREIGN KEY definitions
     // -------------------------------------------------------------------------
+	public static final Identity<AssessActivityRecord, UInteger> IDENTITY_ASSESS_ACTIVITY = null;
+	public static final UniqueKey<AssessActivityRecord> KEY_B2C_ASSESS_ACTIVITY_PRIMARY = null;
+	public static final UniqueKey<AssessActivityRecord> KEY_B2C_ASSESS_ACTIVITY_ACT_CODE = null;
+	public static final Identity<AssessResultRecord, UInteger> IDENTITY_ASSESS_RESULT = null;
+	public static final UniqueKey<AssessResultRecord> KEY_B2C_ASSESS_RESULT_PRIMARY = null;
+	public static final Identity<AssessRecordRecord, UInteger> IDENTITY_ASSESS_RECORD = null;
+	public static final UniqueKey<AssessRecordRecord> KEY_B2C_ASSESS_RECORD_PRIMARY = null;
+	public static final Identity<AssessTopicRecord, UInteger> IDENTITY_ASSESS_TOPIC = null;
+	public static final UniqueKey<AssessTopicRecord> KEY_B2C_ASSESS_TOPIC_PRIMARY = null;
+	public static final UniqueKey<AssessTopicRecordRecord> KEY_B2C_ASSESS_TOPIC_RECORD_PRIMARY = null;
+	public static final Identity<AssessTopicRecordRecord, UInteger> IDENTITY_ASSESS_TOPIC_RECORD = null;
+	public static final Identity<CouponPackRecord, Integer> IDENTITY_COUPON_PACK = null;
+	public static final UniqueKey<CouponPackRecord> KEY_B2C_COUPON_PACK_PRIMARY = null;
+	public static final Identity<CouponPackVoucherRecord, Integer> IDENTITY_COUPON_PACK_VOUCHER = null;
+	public static final UniqueKey<CouponPackVoucherRecord> KEY_B2C_COUPON_PACK_VOUCHER_PRIMARY = null;
 
 
     // -------------------------------------------------------------------------

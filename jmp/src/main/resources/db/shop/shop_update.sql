@@ -155,7 +155,7 @@ create table `b2c_assess_record` (
 );
 
 ##测评活动答题记录表
-#drop table if exists `b2c_assess_record`;
+#drop table if exists `b2c_assess_topic_record`;
 create table `b2c_assess_topic_record` (
   `id`           mediumint(8) unsigned not null auto_increment,
   `record_id`    int(11)               not null default 0 comment '测评活动记录表关联ID',
