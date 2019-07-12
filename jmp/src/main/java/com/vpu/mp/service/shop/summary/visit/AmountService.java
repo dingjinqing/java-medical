@@ -1,15 +1,13 @@
 package com.vpu.mp.service.shop.summary.visit;
 
 import com.vpu.mp.db.shop.tables.records.MpDailyVisitRecord;
-import com.vpu.mp.service.foundation.BaseService;
+import com.vpu.mp.service.pojo.shop.summary.RefDateRecord;
 import com.vpu.mp.service.pojo.shop.summary.VisitStatisticsParam;
 import com.vpu.mp.service.pojo.shop.summary.VisitStatisticsUnit;
 import com.vpu.mp.service.pojo.shop.summary.VisitStatisticsVo;
 import org.jooq.Result;
 
 import java.time.LocalDate;
-import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -22,7 +20,7 @@ import static com.vpu.mp.service.pojo.shop.summary.VisitStatisticsParam.*;
  * @author 郑保乐
  * @date 2019年7月11日
  */
-public class AmountService extends BaseService {
+public class AmountService extends BaseVisitService {
 
     public void addTestDailyVisit() {
         LocalDate dateToday = LocalDate.now();
@@ -45,7 +43,7 @@ public class AmountService extends BaseService {
         String endDate = param.getEndDate();
         Integer grading = param.getGrading();
         Result<MpDailyVisitRecord> result = getSessionCounts(startDate, endDate);
-        List<VisitStatisticsUnit> units;
+        List<RefDateRecord<Double>> units;
         switch (action) {
             case SESSION_COUNT:
                 units = sessionUnits(result);
@@ -71,13 +69,13 @@ public class AmountService extends BaseService {
             default:
                 throw new RuntimeException("Unsupported action");
         }
-        return getGroupedValue(units, grading);
+        return getStatisticsVo(units, grading);
     }
 
     /**
      * 打开次数
      */
-    private List<VisitStatisticsUnit> sessionUnits(Result<MpDailyVisitRecord> result) {
+    private List<RefDateRecord<Double>> sessionUnits(Result<MpDailyVisitRecord> result) {
         return result.map(r -> {
             VisitStatisticsUnit unit = new VisitStatisticsUnit();
             unit.setRefDate(r.getRefDate());
@@ -89,7 +87,7 @@ public class AmountService extends BaseService {
     /**
      * 访问次数
      */
-    private List<VisitStatisticsUnit> pvUnits(Result<MpDailyVisitRecord> result) {
+    private List<RefDateRecord<Double>> pvUnits(Result<MpDailyVisitRecord> result) {
         return result.map(r -> {
             VisitStatisticsUnit unit = visitStatisticsUnit(r);
             unit.setValue(r.getVisitPv().doubleValue());
@@ -100,7 +98,7 @@ public class AmountService extends BaseService {
     /**
      * 访问人数
      */
-    private List<VisitStatisticsUnit> uvUnits(Result<MpDailyVisitRecord> result) {
+    private List<RefDateRecord<Double>> uvUnits(Result<MpDailyVisitRecord> result) {
         return result.map(r -> {
             VisitStatisticsUnit unit = visitStatisticsUnit(r);
             unit.setValue(r.getVisitUv().doubleValue());
@@ -111,7 +109,7 @@ public class AmountService extends BaseService {
     /**
      * 新用户人数
      */
-    private List<VisitStatisticsUnit> uvNewUnits(Result<MpDailyVisitRecord> result) {
+    private List<RefDateRecord<Double>> uvNewUnits(Result<MpDailyVisitRecord> result) {
         return result.map(r -> {
             VisitStatisticsUnit unit = visitStatisticsUnit(r);
             unit.setValue(r.getVisitUvNew().doubleValue());
@@ -122,7 +120,7 @@ public class AmountService extends BaseService {
     /**
      * 人均停留时长
      */
-    private List<VisitStatisticsUnit> uvStayUnits(Result<MpDailyVisitRecord> result) {
+    private List<RefDateRecord<Double>> uvStayUnits(Result<MpDailyVisitRecord> result) {
         return result.map(r -> {
             VisitStatisticsUnit unit = visitStatisticsUnit(r);
             unit.setValue(r.getStayTimeUv());
@@ -133,7 +131,7 @@ public class AmountService extends BaseService {
     /**
      * 次均停留时长
      */
-    private List<VisitStatisticsUnit> sessionStayUnits(Result<MpDailyVisitRecord> result) {
+    private List<RefDateRecord<Double>> sessionStayUnits(Result<MpDailyVisitRecord> result) {
         return result.map(r -> {
             VisitStatisticsUnit unit = visitStatisticsUnit(r);
             unit.setValue(r.getStayTimeSession());
@@ -144,7 +142,7 @@ public class AmountService extends BaseService {
     /**
      * 平均访问深度
      */
-    private List<VisitStatisticsUnit> visitDepthUnits(Result<MpDailyVisitRecord> result) {
+    private List<RefDateRecord<Double>> visitDepthUnits(Result<MpDailyVisitRecord> result) {
         return result.map(r -> {
             VisitStatisticsUnit unit = visitStatisticsUnit(r);
             unit.setValue(r.getVisitDepth());
@@ -167,39 +165,13 @@ public class AmountService extends BaseService {
      * @param visitUnits 日单元
      * @param grading    粒度
      */
-    private VisitStatisticsVo getGroupedValue(List<VisitStatisticsUnit> visitUnits, Integer grading) {
+    private VisitStatisticsVo getStatisticsVo(List<RefDateRecord<Double>> visitUnits, Integer grading) {
+        List<RefDateRecord<Double>> groupedValue = getGroupedValue(visitUnits, grading);
         VisitStatisticsVo vo = new VisitStatisticsVo();
-        /* 默认是时间倒序, 改成正序 */
-        Collections.reverse(visitUnits);
-        if (1 == grading) {
-            List<String> date = visitUnits.stream().map(VisitStatisticsUnit::getRefDate).collect(Collectors.toList());
-            List<Double> list = visitUnits.stream().map(VisitStatisticsUnit::getValue).collect(Collectors.toList());
-            vo.setDate(date);
-            vo.setList(list);
-        } else {
-            String start;
-            String end;
-            int startI;
-            int endI;
-            int i = visitUnits.size() - 1;
-            List<String> dates = new ArrayList<>();
-            List<Double> values = new ArrayList<>();
-            do {
-                end = visitUnits.get(i).getRefDate();
-                endI = i;
-                i -= grading;
-                if(i < 0) i = 0;
-                start = visitUnits.get(i).getRefDate();
-                startI = i;
-                double sum = visitUnits.subList(startI, endI).stream().mapToDouble(VisitStatisticsUnit::getValue).sum();
-                String dateResult = start + "-" + end;
-                dates.add(dateResult);
-                values.add(sum);
-                i--;
-            } while (i > 0);
-            vo.setDate(dates);
-            vo.setList(values);
-        }
+        List<String> dates = groupedValue.stream().map(RefDateRecord::getRefDate).collect(Collectors.toList());
+        List<Double> values = groupedValue.stream().map(RefDateRecord::getValue).collect(Collectors.toList());
+        vo.setDate(dates);
+        vo.setList(values);
         return vo;
     }
 

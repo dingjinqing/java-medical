@@ -8,7 +8,7 @@ import lombok.Data;
  * @author 郑保乐
  */
 @Data
-public class VisitStatisticsUnit {
+public class VisitStatisticsUnit implements RefDateRecord<Double> {
 
     private String refDate;
     private Double value;
