@@ -1,17 +1,23 @@
 package com.vpu.mp.service.shop.member;
 
-import com.vpu.mp.service.foundation.BaseService;
-import com.vpu.mp.service.foundation.PageResult;
-import com.vpu.mp.service.foundation.Util;
-import com.vpu.mp.service.pojo.shop.member.MemberInfoVo;
-import com.vpu.mp.service.pojo.shop.member.MemberPageListParam;
-import com.vpu.mp.db.shop.tables.User;
+import static com.vpu.mp.db.shop.Tables.ORDER_VERIFIER;
 import static com.vpu.mp.db.shop.Tables.USER;
 
 import org.jooq.Field;
 import org.jooq.Record;
+import org.jooq.SelectJoinStep;
 import org.jooq.SelectWhereStep;
 import org.jooq.tools.StringUtils;
+
+import com.vpu.mp.db.shop.tables.User;
+import com.vpu.mp.service.foundation.BaseService;
+import com.vpu.mp.service.foundation.DelFlag;
+import com.vpu.mp.service.foundation.PageResult;
+import com.vpu.mp.service.foundation.Util;
+import com.vpu.mp.service.pojo.shop.member.CommonMemberPageListQueryParam;
+import com.vpu.mp.service.pojo.shop.member.CommonMemberPageListQueryVo;
+import com.vpu.mp.service.pojo.shop.member.MemberInfoVo;
+import com.vpu.mp.service.pojo.shop.member.MemberPageListParam;
 
 /**
  * 
@@ -88,6 +94,49 @@ public class MemberService extends BaseService {
 		//TODO 客单价
 		//TODO 累计购买次数
 		//TODO 购买指定商品
+		
+		return select;
+	}
+	
+	/**
+	 * 通用会员列表弹窗分页查询
+	 * @param param
+	 * @return
+	 */
+	public PageResult<CommonMemberPageListQueryVo> getCommonPageList(CommonMemberPageListQueryParam param) {
+		SelectJoinStep<? extends Record> select = db().select(USER.USER_ID,USER.USERNAME,USER.MOBILE).from(USER);
+		select = this.buildCommonPageListQueryOptions(select, param);
+		select.where(USER.DEL_FLAG.eq(DelFlag.NORMAL.getCode())).orderBy(USER.CREATE_TIME);
+		return this.getPageResult(select, param.getCurrentPage(), param.getPageRows(), CommonMemberPageListQueryVo.class);
+	}
+	
+	/**
+	 * 通用会员选择弹窗的指定规则过滤条件构造
+	 * @param SelectJoinStep
+	 * @param CommonMemberPageListQueryParam
+	 * @return 
+	 */
+	private SelectJoinStep<? extends Record> buildCommonPageListQueryOptions(SelectJoinStep<? extends Record> select, CommonMemberPageListQueryParam param) {
+		if(param == null) {
+			return select;
+		}
+		
+		if(null != param.getUserId() && param.getUserId() > 0) {
+			select.where(USER.USER_ID.eq(param.getUserId()));
+		}
+		if(!StringUtils.isEmpty(param.getMobile())) {
+			select.where(USER.MOBILE.contains(param.getMobile()));
+		}
+		if(!StringUtils.isEmpty(param.getUsername())) {
+			select.where(USER.USERNAME.contains(param.getUsername()));
+		}
+		
+		/**
+		 * 过滤已经是该门店核销员的用户，用于为该门店添加核销员
+		 */
+		if(null != param.getStoreId() && param.getStoreId() > 0) {
+			select.leftJoin(ORDER_VERIFIER).on(USER.USER_ID.eq(ORDER_VERIFIER.USER_ID)).where(ORDER_VERIFIER.STORE_ID.ne(param.getStoreId()));
+		}
 		
 		return select;
 	}
