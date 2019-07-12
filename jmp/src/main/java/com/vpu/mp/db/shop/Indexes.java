@@ -329,6 +329,7 @@ public class Indexes {
     public static final Index GOODS_GOODS_ID = Indexes0.GOODS_GOODS_ID;
     public static final Index GOODS_GOODS_ID_2 = Indexes0.GOODS_GOODS_ID_2;
     public static final Index GOODS_GOODS_SN = Indexes0.GOODS_GOODS_SN;
+    public static final Index GOODS_PRIMARY = Indexes0.GOODS_PRIMARY;
     public static final Index GOODS_SHOP_ID = Indexes0.GOODS_SHOP_ID;
     public static final Index GOODS_BAK_PRIMARY = Indexes0.GOODS_BAK_PRIMARY;
     public static final Index GOODS_BRAND_PRIMARY = Indexes0.GOODS_BRAND_PRIMARY;
@@ -711,6 +712,7 @@ public class Indexes {
         public static Index GOODS_GOODS_ID = Internal.createIndex("goods_id", Goods.GOODS, new OrderField[] { Goods.GOODS.GOODS_ID, Goods.GOODS.SHOP_ID }, true);
         public static Index GOODS_GOODS_ID_2 = Internal.createIndex("goods_id_2", Goods.GOODS, new OrderField[] { Goods.GOODS.GOODS_ID }, false);
         public static Index GOODS_GOODS_SN = Internal.createIndex("goods_sn", Goods.GOODS, new OrderField[] { Goods.GOODS.GOODS_SN, Goods.GOODS.SHOP_ID }, true);
+        public static Index GOODS_PRIMARY = Internal.createIndex("PRIMARY", Goods.GOODS, new OrderField[] { Goods.GOODS.GOODS_ID }, true);
         public static Index GOODS_SHOP_ID = Internal.createIndex("shop_id", Goods.GOODS, new OrderField[] { Goods.GOODS.SHOP_ID }, false);
         public static Index GOODS_BAK_PRIMARY = Internal.createIndex("PRIMARY", GoodsBak.GOODS_BAK, new OrderField[] { GoodsBak.GOODS_BAK.ID }, true);
         public static Index GOODS_BRAND_PRIMARY = Internal.createIndex("PRIMARY", GoodsBrand.GOODS_BRAND, new OrderField[] { GoodsBrand.GOODS_BRAND.ID }, true);

@@ -13,12 +13,15 @@ import static com.vpu.mp.service.pojo.shop.goods.GoodsPageListParam.IS_ON_SALE_D
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 
 import com.vpu.mp.db.shop.tables.records.GoodsLabelCoupleRecord;
 import com.vpu.mp.service.foundation.*;
 import com.vpu.mp.service.pojo.shop.goods.*;
+import com.vpu.mp.service.pojo.shop.goods.spec.GoodsSpec;
+import com.vpu.mp.service.pojo.shop.goods.spec.GoodsSpecVal;
 import org.jooq.*;
 import org.jooq.impl.DSL;
 import org.jooq.tools.StringUtils;
@@ -46,7 +49,6 @@ public class GoodsService extends BaseService {
     public GoodsLabelCoupleService goodsLabelCouple;
 
     private GoodsSpecProductService goodsSpecProductService = new GoodsSpecProductService();
-    private GoodsSpecService goodsSpecService = new GoodsSpecService();
 
     /**
      * 商品分页查询
@@ -289,10 +291,7 @@ public class GoodsService extends BaseService {
 
             } else {
                 // 如果存在规格列表字段，则表明用户自己定义了具体的规格
-                Map<String, Map<String, Integer>> goodsSpecMap = goodsSpecService
-                        .insertSpecAndSpecValWithPrepareResult(db, goods.getGoodsSpecs(), goods.getGoodsId());
-
-                goodsSpecProductService.insert(db, goods.getGoodsSpecProducts(), goodsSpecMap, goods.getGoodsId());
+                goodsSpecProductService.insert(db, goods.getGoodsSpecProducts(), goods.getGoodsSpecs(), goods.getGoodsId());
             }
 
         });
@@ -465,8 +464,8 @@ public class GoodsService extends BaseService {
     public void batchOperate(GoodsBatchOperateParam operateParam) {
         db().transaction(configuration -> {
             DSLContext db = DSL.using(configuration);
-            batchGoodsOprerate(db,operateParam);
-            batchLabelOperate(db,operateParam);
+            batchGoodsOprerate(db, operateParam);
+            batchLabelOperate(db, operateParam);
         });
     }
 
@@ -513,32 +512,31 @@ public class GoodsService extends BaseService {
     }
 
     /**
-     *  商品批量删除及单个删除
+     * 商品批量删除及单个删除
+     *
      * @param operateParam
      */
     public void delete(GoodsBatchOperateParam operateParam) {
-        List<Integer> goodsIds=operateParam.getGoodsIds();
+        List<Integer> goodsIds = operateParam.getGoodsIds();
         db().transaction(configuration -> {
             DSLContext db = DSL.using(configuration);
-            db.update(GOODS).set(GOODS.DEL_FLAG,DelFlag.DISABLE_VALUE)
-                    .set(GOODS.GOODS_SN,DSL.concat(DelFlag.DEL_ITEM_PREFIX)
+            db.update(GOODS).set(GOODS.DEL_FLAG, DelFlag.DISABLE_VALUE)
+                    .set(GOODS.GOODS_SN, DSL.concat(DelFlag.DEL_ITEM_PREFIX)
                             .concat(GOODS.GOODS_ID)
                             .concat(DelFlag.DEL_ITEM_SPLITER)
                             .concat(GOODS.GOODS_SN))
-                    .set(GOODS.GOODS_NAME,DSL.concat(DelFlag.DEL_ITEM_PREFIX)
-                    .concat(GOODS.GOODS_ID)
-                    .concat(DelFlag.DEL_ITEM_SPLITER)
-                    .concat(GOODS.GOODS_NAME))
+                    .set(GOODS.GOODS_NAME, DSL.concat(DelFlag.DEL_ITEM_PREFIX)
+                            .concat(GOODS.GOODS_ID)
+                            .concat(DelFlag.DEL_ITEM_SPLITER)
+                            .concat(GOODS.GOODS_NAME))
                     .where(GOODS.GOODS_ID.in(goodsIds))
                     .execute();
 
-            delteImg(db,goodsIds);
+            delteImg(db, goodsIds);
 
-            goodsSpecProductService.deleteByGoodsIds(db,goodsIds);
+            goodsSpecProductService.deleteByGoodsIds(db, goodsIds);
 
-            goodsSpecService.deleteByGoodsIds(db,goodsIds);
-
-            goodsLabelCouple.deleteByGoodsIds(db,goodsIds);
+            goodsLabelCouple.deleteByGoodsIds(db, goodsIds);
 
         });
 
@@ -547,9 +545,121 @@ public class GoodsService extends BaseService {
 
     /**
      * 删除关联图片
+     *
      * @param goodsIds
      */
-    private void delteImg(DSLContext db,List<Integer> goodsIds) {
+    private void delteImg(DSLContext db, List<Integer> goodsIds) {
         db.delete(GOODS_IMG).where(GOODS_IMG.GOODS_ID.in(goodsIds)).execute();
+    }
+
+    /**
+     *  商品修改
+     * @param goods
+     */
+    public void update(Goods goods) {
+        db().transaction(configuration -> {
+            DSLContext db = DSL.using(configuration);
+
+            updateGoods(db, goods);
+
+            updateImgs(db, goods);
+
+            updateLabels(db, goods);
+
+            updateSpec(db, goods);
+        });
+    }
+
+    /**
+     * 修改商品表
+     *
+     * @param db
+     * @param goods
+     */
+    private void updateGoods(DSLContext db, Goods goods) {
+        if (goods.getGoodsSpecProducts() != null) {
+            calculateGoodsPriceAndNumber(goods);
+        }
+
+        if (goods.getGoodsSn() == null) {
+            goods.setGoodsSn(Util.randomId());
+        }
+
+        GoodsRecord goodsRecord = db.fetchOne(GOODS, GOODS.GOODS_ID.eq(goods.getGoodsId()));
+
+        assign(goods, goodsRecord);
+
+        goodsRecord.store();
+    }
+
+
+    /**
+     * 修改商品图片
+     *
+     * @param db
+     * @param goods
+     */
+    private void updateImgs(DSLContext db, Goods goods) {
+        List<Integer> goodsIds = Arrays.asList(goods.getGoodsId());
+
+        delteImg(db, goodsIds);
+
+        if (goods.getGoodsImgs() != null && goods.getGoodsImgs().size() != 0) {
+            insertGoodsImgs(db, goods.getGoodsImgs(), goods.getGoodsId());
+        }
+    }
+
+    /**
+     * 修改商品标签
+     *
+     * @param db
+     * @param goods
+     */
+    private void updateLabels(DSLContext db, Goods goods) {
+        List<Integer> goodsIds = Arrays.asList(goods.getGoodsId());
+
+        goodsLabelCouple.deleteByGoodsIds(db, goodsIds);
+
+        if (goods.getGoodsLabels() != null && goods.getGoodsLabels().size() != 0) {
+            insertGoodsLabels(db, goods.getGoodsLabels(), goods.getGoodsId());
+        }
+    }
+
+    /**
+     * 修改商品sku
+     *
+     * @param db
+     * @param goods
+     */
+    private void updateSpec(DSLContext db, Goods goods) {
+        boolean isChange = goodsSpecProductService.isChange(db, goods.getGoodsSpecProducts(), goods.getGoodsId());
+
+        if (!isChange) {
+            return;
+        }
+
+        goodsSpecProductService.deleteByGoodsIds(db, Arrays.asList(goods.getGoodsId()));
+
+
+        goods.getGoodsSpecProducts().forEach(goodsSpecProduct -> goodsSpecProduct.setGoodsId(null));
+
+        // 用户使用默认的规格数据，则sku只有一条，对应的规格列表为空
+        if (goods.getGoodsSpecs() == null || goods.getGoodsSpecs().size() == 0) {
+            goodsSpecProductService.insert(db, goods.getGoodsSpecProducts().get(0), goods.getGoodsId());
+        } else {
+            // 如果存在规格列表字段，则表明用户自己定义了具体的规格
+
+            for (GoodsSpec goodsSpec : goods.getGoodsSpecs()) {
+                goodsSpec.setSpecId(null);
+                if (goodsSpec.getGoodsSpecVals() != null) {
+                    for (GoodsSpecVal goodsSpecVal : goodsSpec.getGoodsSpecVals()) {
+                        goodsSpecVal.setSpecValId(null);
+                    }
+                }
+            }
+
+            goodsSpecProductService.insert(db, goods.getGoodsSpecProducts(), goods.getGoodsSpecs(), goods.getGoodsId());
+        }
+
     }
 }

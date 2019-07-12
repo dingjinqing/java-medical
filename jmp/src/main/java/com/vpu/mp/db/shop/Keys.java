@@ -431,6 +431,7 @@ public class Keys {
     public static final UniqueKey<GiftRecord> KEY_B2C_GIFT_PRIMARY = UniqueKeys0.KEY_B2C_GIFT_PRIMARY;
     public static final UniqueKey<GiftProductRecord> KEY_B2C_GIFT_PRODUCT_PRIMARY = UniqueKeys0.KEY_B2C_GIFT_PRODUCT_PRIMARY;
     public static final UniqueKey<GiveVoucherRecord> KEY_B2C_GIVE_VOUCHER_PRIMARY = UniqueKeys0.KEY_B2C_GIVE_VOUCHER_PRIMARY;
+    public static final UniqueKey<GoodsRecord> KEY_B2C_GOODS_PRIMARY = UniqueKeys0.KEY_B2C_GOODS_PRIMARY;
     public static final UniqueKey<GoodsRecord> KEY_B2C_GOODS_GOODS_ID = UniqueKeys0.KEY_B2C_GOODS_GOODS_ID;
     public static final UniqueKey<GoodsRecord> KEY_B2C_GOODS_GOODS_SN = UniqueKeys0.KEY_B2C_GOODS_GOODS_SN;
     public static final UniqueKey<GoodsBakRecord> KEY_B2C_GOODS_BAK_PRIMARY = UniqueKeys0.KEY_B2C_GOODS_BAK_PRIMARY;
@@ -818,6 +819,7 @@ public class Keys {
         public static final UniqueKey<GiftRecord> KEY_B2C_GIFT_PRIMARY = Internal.createUniqueKey(Gift.GIFT, "KEY_b2c_gift_PRIMARY", Gift.GIFT.ID);
         public static final UniqueKey<GiftProductRecord> KEY_B2C_GIFT_PRODUCT_PRIMARY = Internal.createUniqueKey(GiftProduct.GIFT_PRODUCT, "KEY_b2c_gift_product_PRIMARY", GiftProduct.GIFT_PRODUCT.ID);
         public static final UniqueKey<GiveVoucherRecord> KEY_B2C_GIVE_VOUCHER_PRIMARY = Internal.createUniqueKey(GiveVoucher.GIVE_VOUCHER, "KEY_b2c_give_voucher_PRIMARY", GiveVoucher.GIVE_VOUCHER.ID);
+        public static final UniqueKey<GoodsRecord> KEY_B2C_GOODS_PRIMARY = Internal.createUniqueKey(Goods.GOODS, "KEY_b2c_goods_PRIMARY", Goods.GOODS.GOODS_ID);
         public static final UniqueKey<GoodsRecord> KEY_B2C_GOODS_GOODS_ID = Internal.createUniqueKey(Goods.GOODS, "KEY_b2c_goods_goods_id", Goods.GOODS.GOODS_ID, Goods.GOODS.SHOP_ID);
         public static final UniqueKey<GoodsRecord> KEY_B2C_GOODS_GOODS_SN = Internal.createUniqueKey(Goods.GOODS, "KEY_b2c_goods_goods_sn", Goods.GOODS.GOODS_SN, Goods.GOODS.SHOP_ID);
         public static final UniqueKey<GoodsBakRecord> KEY_B2C_GOODS_BAK_PRIMARY = Internal.createUniqueKey(GoodsBak.GOODS_BAK, "KEY_b2c_goods_bak_PRIMARY", GoodsBak.GOODS_BAK.ID);
