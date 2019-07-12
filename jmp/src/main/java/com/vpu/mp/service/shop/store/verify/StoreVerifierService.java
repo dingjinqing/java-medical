@@ -3,6 +3,7 @@ package com.vpu.mp.service.shop.store.verify;
 import static com.vpu.mp.db.shop.tables.OrderVerifier.ORDER_VERIFIER;
 import static com.vpu.mp.db.shop.tables.User.USER;
 
+import org.jooq.InsertValuesStep3;
 import org.jooq.Record;
 import org.jooq.SelectWhereStep;
 import org.jooq.tools.StringUtils;
@@ -10,6 +11,7 @@ import org.jooq.tools.StringUtils;
 import com.vpu.mp.service.foundation.BaseService;
 import com.vpu.mp.service.foundation.DelFlag;
 import com.vpu.mp.service.foundation.PageResult;
+import com.vpu.mp.service.pojo.shop.store.verify.VerifierAddParam;
 import com.vpu.mp.service.pojo.shop.store.verify.VerifierListQueryParam;
 import com.vpu.mp.service.pojo.shop.store.verify.VerifierListVo;
 
@@ -48,6 +50,21 @@ public class StoreVerifierService extends BaseService{
 			select.where(USER.USERNAME.contains(param.getUsername()));
 		}
 		return select;
+	}
+	
+	/**
+	 * 添加核销员
+	 * @param VerifierAddParam
+	 * @return
+	 */
+	public Boolean addVerifiers(VerifierAddParam param) {
+		InsertValuesStep3<? extends Record,Integer,Integer,Integer>  step = db().insertInto(ORDER_VERIFIER,ORDER_VERIFIER.STORE_ID,ORDER_VERIFIER.USER_ID,ORDER_VERIFIER.VERIFY_ORDERS);
+		Integer[] userIds = param.getUserIds();
+		Integer storeId = param.getStoreId();
+		for(int i = 0;i<userIds.length;i++) {
+			step.values(storeId, userIds[i], 0);
+		}
+		return step.execute() > 0 ? true : false;
 	}
 	
 }
