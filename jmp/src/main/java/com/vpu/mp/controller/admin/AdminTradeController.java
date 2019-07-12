@@ -1,28 +1,19 @@
 package com.vpu.mp.controller.admin;
 
-import java.beans.BeanInfo;
-import java.beans.IntrospectionException;
-import java.beans.Introspector;
-import java.beans.PropertyDescriptor;
-import java.lang.reflect.InvocationTargetException;
-import java.util.Arrays;
-
-import org.springframework.validation.BindingResult;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.vpu.mp.service.foundation.JsonResult;
+import com.vpu.mp.service.foundation.JsonResultMessage;
+import com.vpu.mp.service.pojo.shop.config.trade.*;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.vpu.mp.service.foundation.JsonResult;
-import com.vpu.mp.service.foundation.JsonResultMessage;
-import com.vpu.mp.service.pojo.shop.config.trade.*;
-
 import java.beans.BeanInfo;
 import java.beans.IntrospectionException;
 import java.beans.Introspector;
 import java.beans.PropertyDescriptor;
 import java.lang.reflect.InvocationTargetException;
-import java.nio.file.FileAlreadyExistsException;
 import java.util.Arrays;
 import java.util.List;
 
@@ -33,8 +24,6 @@ import java.util.List;
  */
 @RestController
 public class AdminTradeController extends AdminBaseController {
-    private final static Byte PAY_ENABLED = 1;
-    private final static Byte PAY_UNENABLED = 0;
 
     /**
      * 支付方式开关配置
@@ -61,11 +50,9 @@ public class AdminTradeController extends AdminBaseController {
     public void invoke(PropertyDescriptor descriptor,PaymentConfigParam paymentConfigParam){
         try{
             String paycode = descriptor.getName();
-            Object object = descriptor.getReadMethod().invoke(paymentConfigParam,null);
-            if(object!=null){
-                boolean boo = Boolean.parseBoolean(object.toString());
-                byte enabled = boo ? PAY_ENABLED : PAY_UNENABLED;
-                shop().trade.updatePayment(paycode,enabled);
+            Object enabled = descriptor.getReadMethod().invoke(paymentConfigParam,null);
+            if(enabled!=null){
+                shop().trade.updatePayment(paycode,(byte)enabled);
             }
         }catch(IllegalAccessException e){
             e.printStackTrace();
@@ -149,6 +136,7 @@ public class AdminTradeController extends AdminBaseController {
      */
     @PostMapping("/api/admin/config/trade/getRetrunConfig")
     public JsonResult getRetrunConfig(){
+        ObjectMapper mapper = new ObjectMapper();
         RetrunConfigParam param = shop().config.returnConfigService.getRetrunConfigParam();
         return param != null ? success(param) : fail(JsonResultMessage.RETURN_CONFIG_IS_NULL);
     }

@@ -1,8 +1,6 @@
 package com.vpu.mp.service.pojo.shop.applets.page;
 
-import lombok.AllArgsConstructor;
 import lombok.Data;
-import lombok.NoArgsConstructor;
 
 /**
  * @Author:liufei
@@ -10,8 +8,6 @@ import lombok.NoArgsConstructor;
  * @Description:
  */
 @Data
-@AllArgsConstructor
-@NoArgsConstructor
 public class PageClassificationParam {
     private int pageId;
     private String pageName;

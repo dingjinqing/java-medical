@@ -1,8 +1,6 @@
 package com.vpu.mp.service.pojo.shop.decoration;
 
-import lombok.AllArgsConstructor;
 import lombok.Data;
-import lombok.NoArgsConstructor;
 
 /**
  * 
@@ -10,9 +8,8 @@ import lombok.NoArgsConstructor;
  *
  */
 @Data
-@NoArgsConstructor
-@AllArgsConstructor
 public class PageCategoryListQueryParam {
 	public Integer currentPage;
+	public Integer pageRows;
 	public String keywords;
 }

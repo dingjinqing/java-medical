@@ -1,9 +1,7 @@
 package com.vpu.mp.service.pojo.shop.config.trade;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-import lombok.AllArgsConstructor;
 import lombok.Data;
-import lombok.NoArgsConstructor;
 
 /**
  * @Author:liufei
@@ -11,8 +9,6 @@ import lombok.NoArgsConstructor;
  * @Description:
  */
 @Data
-@AllArgsConstructor
-@NoArgsConstructor
 public class ReturnPackageParam {
     @JsonProperty(value = "add_goods")
     private String addGoods;

@@ -75,7 +75,7 @@ public class ShopReturnConfigService extends BaseShopConfigService {
     }
 
     public int setAutoReturnTime(Timestamp autoReturnTime) {
-        return this.set(K_AUTO_RETURN_TIME, autoReturnTime,Timestamp.class);
+        return autoReturnTime !=null ? this.set(K_AUTO_RETURN_TIME, autoReturnTime,Timestamp.class) : -1;
     }
 
     public Byte getReturnMoneyDays() {
@@ -83,7 +83,7 @@ public class ShopReturnConfigService extends BaseShopConfigService {
     }
 
     public int setReturnMoneyDays(Byte returnMoneyDays) {
-        return this.set(K_RETURN_MONEY_DAYS, returnMoneyDays,Byte.class);
+        return returnMoneyDays != null ? this.set(K_RETURN_MONEY_DAYS, returnMoneyDays,Byte.class) : -1;
     }
 
     public Byte getReturnAddressDays() {
@@ -91,7 +91,7 @@ public class ShopReturnConfigService extends BaseShopConfigService {
     }
 
     public int setReturnAddressDays(Byte returnAddressDays) {
-        return this.set(K_RETURN_ADDRESS_DAYS, returnAddressDays,Byte.class);
+        return returnAddressDays !=null ? this.set(K_RETURN_ADDRESS_DAYS, returnAddressDays,Byte.class) : -1;
     }
 
     public Byte getReturnShoppingDays() {
@@ -99,7 +99,7 @@ public class ShopReturnConfigService extends BaseShopConfigService {
     }
 
     public int setReturnShoppingDays(Byte returnShoppingDays) {
-        return this.set(K_RETURN_SHOPPING_DAYS, returnShoppingDays,Byte.class);
+        return returnShoppingDays !=null ? this.set(K_RETURN_SHOPPING_DAYS, returnShoppingDays,Byte.class) : -1;
     }
 
     public Byte getIsReturnCoupon() {
@@ -116,7 +116,7 @@ public class ShopReturnConfigService extends BaseShopConfigService {
     }
 
     public int setBusinessAddress(ReturnBusinessAdressParam businessAddress) {
-        return this.setJsonObject(K_BUSINESS_ADDRESS, businessAddress);
+        return businessAddress !=null ? this.setJsonObject(K_BUSINESS_ADDRESS, businessAddress) : -1;
     }
 
     public Byte getReturnChangeGoodsStatus() {
@@ -133,7 +133,7 @@ public class ShopReturnConfigService extends BaseShopConfigService {
     }
 
     public int setOrderReturnGoodsPackage(ReturnPackageParam orderReturnGoodsPackage) {
-        return this.setJsonObject(K_ORDER_RETURN_GOODS_PACKAGE, orderReturnGoodsPackage);
+        return orderReturnGoodsPackage !=null ? this.setJsonObject(K_ORDER_RETURN_GOODS_PACKAGE, orderReturnGoodsPackage) : -1;
     }
 
     public RetrunConfigParam getRetrunConfigParam() {

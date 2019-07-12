@@ -48,7 +48,7 @@ public class TradeService extends BaseShopConfigService {
     }
 
     public int setDrawbackDays(Byte drawbackDays) {
-        return this.set(K_DRAWBACK_DAYS, drawbackDays,Byte.class);
+        return drawbackDays != null ? this.set(K_DRAWBACK_DAYS, drawbackDays,Byte.class) : -1;
     }
 
     public Byte getOrderTimeoutDays() {
@@ -56,7 +56,7 @@ public class TradeService extends BaseShopConfigService {
     }
 
     public int setOrderTimeoutDays(Byte orderTimeoutDays) {
-        return this.set(K_ORDER_TIMEOUT_DAYS, orderTimeoutDays,Byte.class);
+        return orderTimeoutDays !=null ? this.set(K_ORDER_TIMEOUT_DAYS, orderTimeoutDays,Byte.class) : -1;
     }
 
     /**

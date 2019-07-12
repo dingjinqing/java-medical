@@ -1,11 +1,8 @@
 package com.vpu.mp.service.pojo.shop.config.trade;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-import lombok.AllArgsConstructor;
 import lombok.Data;
-import lombok.NoArgsConstructor;
 
-import javax.validation.constraints.Pattern;
 import java.sql.Timestamp;
 
 /**
@@ -14,14 +11,11 @@ import java.sql.Timestamp;
  * @Description:
  */
 @Data
-@NoArgsConstructor
-@AllArgsConstructor
 public class RetrunConfigParam {
     @JsonProperty(value = "auto_return")
     public Byte autoReturn;
     @JsonProperty(value = "auto_return_time")
     public Timestamp autoReturnTime;
-    @Pattern(regexp = "")
     @JsonProperty(value = "return_money_days")
     public Byte returnMoneyDays;
     @JsonProperty(value = "return_address_days")

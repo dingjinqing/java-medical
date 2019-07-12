@@ -73,7 +73,7 @@ public class AdminPageClassificationController extends AdminBaseController {
      * @return
      */
     @PostMapping("/api/admin/applets/pageclassification/getListByPage")
-    public JsonResult getListByPage(@RequestBody  @Valid PageCategoryListQueryParam pageListParam, BindingResult result){
+    public JsonResult getListByPage(@RequestBody  @Valid PageCategoryListQueryParam pageListParam){
         PageResult<PageClassificationPojo> pageResult = shop().pageClassification.getPageList(pageListParam);
         setSubPageCount(pageResult);
         return success(pageResult);

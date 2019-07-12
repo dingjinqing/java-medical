@@ -4,9 +4,7 @@
 package com.vpu.mp.service.pojo.shop.decoration;
 
 
-import lombok.AllArgsConstructor;
 import lombok.Data;
-import lombok.NoArgsConstructor;
 
 import java.sql.Timestamp;
 
@@ -14,8 +12,6 @@ import java.sql.Timestamp;
  * @author liufei
  */
 @Data
-@NoArgsConstructor
-@AllArgsConstructor
 public class PageClassificationPojo{
 
     private Integer   id;
