@@ -170,4 +170,27 @@ create table `b2c_assess_topic_record` (
   key (`result_id`)
 );
 
+--7月12日 常乐 添加优惠礼包表结构
+##优惠券礼包
+#DROP TABLE IF EXISTS `b2c_coupon_pack`;
+create table `b2c_coupon_pack` (
+  `id`              int                      not null auto_increment,
+  `act_name`        varchar(100)             not null comment '活动名称',
+  `start_time`      datetime                 not null comment '开始时间',
+  `end_time`        datetime                 not null comment '结束时间',
+  `pack_name`       varchar(20)              not null comment '礼包名称',
+  `limit_get_times` tinyint(5)  unsigned     not null default 0 comment '单用户领取限制次数，0不限制',
+  `total_amount`    int(11)     unsigned     not null default '0' comment '总数量',
+  `issued_amount`   int(11)     unsigned     not null default '0' comment '已发放数量',
+  `access_mode`     tinyint(1)               not null default '0' comment '获取方式，0：现金购买，1：积分购买，2直接领取',
+  `access_cost`     decimal(10, 2)           null     default 0.00 comment '价格（现金或积分，直接领取时该值为0）',
+  `act_rule`        text collate utf8mb4_bin null comment '活动规则',
+  `state`           tinyint(1)               not null default '1' comment '开启状态1:开启，0:停用',
+  `create_time`     timestamp       default current_timestamp,
+  `update_time`     timestamp       default current_timestamp on update current_timestamp comment '最后修改时间',
+  `del_flag`        tinyint(1)                        default 0,
+  `del_time`        timestamp       default current_timestamp,
+  primary key (`id`)
+);
+
 
