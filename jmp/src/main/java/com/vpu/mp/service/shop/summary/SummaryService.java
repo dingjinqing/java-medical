@@ -5,17 +5,17 @@ import com.vpu.mp.service.foundation.BaseService;
 import com.vpu.mp.service.pojo.shop.summary.VisitStatisticsParam;
 import com.vpu.mp.service.pojo.shop.summary.VisitStatisticsUnit;
 import com.vpu.mp.service.pojo.shop.summary.VisitStatisticsVo;
-import org.jooq.Record8;
 import org.jooq.Result;
 
+import javax.lang.model.type.UnionType;
 import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
 import static com.vpu.mp.db.shop.tables.MpDailyVisit.MP_DAILY_VISIT;
-import static com.vpu.mp.service.pojo.shop.summary.VisitStatisticsParam.PV;
-import static com.vpu.mp.service.pojo.shop.summary.VisitStatisticsParam.SESSION_COUNT;
+import static com.vpu.mp.service.pojo.shop.summary.VisitStatisticsParam.*;
 
 /**
  * 概况统计
@@ -46,20 +46,120 @@ public class SummaryService extends BaseService {
         String endDate = param.getEndDate();
         Integer grading = param.getGrading();
         Result<MpDailyVisitRecord> result = getSessionCounts(startDate, endDate);
+        List<VisitStatisticsUnit> units;
         switch (action) {
             case SESSION_COUNT:
-                List<VisitStatisticsUnit> units = new ArrayList<>(
-                        result.map(r -> {
-                            VisitStatisticsUnit unit = new VisitStatisticsUnit();
-                            unit.setRefDate(r.getRefDate());
-                            unit.setValue(r.getSessionCnt().doubleValue());
-                            return unit;
-                        }));
-                return getGroupedValue(units, grading);
+                units = sessionUnits(result);
+                break;
             case PV:
-                return null;
+                units = pvUnits(result);
+                break;
+            case UV:
+                units = uvUnits(result);
+                break;
+            case UV_NEW:
+                units = uvNewUnits(result);
+                break;
+            case STAY_TIME_UV:
+                units = uvStayUnits(result);
+                break;
+            case STAY_TIME_SESSION:
+                units = sessionStayUnits(result);
+                break;
+            case VISIT_DEPTH:
+                units = visitDepthUnits(result);
+                break;
+            default:
+                throw new RuntimeException("Unsupported action");
         }
-        return null;
+        return getGroupedValue(units, grading);
+    }
+
+    /**
+     * 打开次数
+     */
+    private List<VisitStatisticsUnit> sessionUnits(Result<MpDailyVisitRecord> result) {
+        return result.map(r -> {
+            VisitStatisticsUnit unit = new VisitStatisticsUnit();
+            unit.setRefDate(r.getRefDate());
+            unit.setValue(r.getSessionCnt().doubleValue());
+            return unit;
+        });
+    }
+
+    /**
+     * 访问次数
+     */
+    private List<VisitStatisticsUnit> pvUnits(Result<MpDailyVisitRecord> result) {
+        return result.map(r -> {
+            VisitStatisticsUnit unit = visitStatisticsUnit(r);
+            unit.setValue(r.getVisitPv().doubleValue());
+            return unit;
+        });
+    }
+
+    /**
+     * 访问人数
+     */
+    private List<VisitStatisticsUnit> uvUnits(Result<MpDailyVisitRecord> result) {
+        return result.map(r -> {
+            VisitStatisticsUnit unit = visitStatisticsUnit(r);
+            unit.setValue(r.getVisitUv().doubleValue());
+            return unit;
+        });
+    }
+
+    /**
+     * 新用户人数
+     */
+    private List<VisitStatisticsUnit> uvNewUnits(Result<MpDailyVisitRecord> result) {
+        return result.map(r -> {
+            VisitStatisticsUnit unit = visitStatisticsUnit(r);
+            unit.setValue(r.getVisitUvNew().doubleValue());
+            return unit;
+        });
+    }
+
+    /**
+     * 人均停留时长
+     */
+    private List<VisitStatisticsUnit> uvStayUnits(Result<MpDailyVisitRecord> result) {
+        return result.map(r -> {
+            VisitStatisticsUnit unit = visitStatisticsUnit(r);
+            unit.setValue(r.getStayTimeUv());
+            return unit;
+        });
+    }
+
+    /**
+     * 次均停留时长
+     */
+    private List<VisitStatisticsUnit> sessionStayUnits(Result<MpDailyVisitRecord> result) {
+        return result.map(r -> {
+            VisitStatisticsUnit unit = visitStatisticsUnit(r);
+            unit.setValue(r.getStayTimeSession());
+            return unit;
+        });
+    }
+
+    /**
+     * 平均访问深度
+     */
+    private List<VisitStatisticsUnit> visitDepthUnits(Result<MpDailyVisitRecord> result) {
+        return result.map(r -> {
+            VisitStatisticsUnit unit = visitStatisticsUnit(r);
+            unit.setValue(r.getVisitDepth());
+            return unit;
+        });
+    }
+
+    /**
+     * 创建带日期的处理单元
+     */
+    private VisitStatisticsUnit visitStatisticsUnit(MpDailyVisitRecord record) {
+        VisitStatisticsUnit unit = new VisitStatisticsUnit();
+        unit.setRefDate(record.getRefDate());
+        return unit;
     }
 
     /**
@@ -70,11 +170,36 @@ public class SummaryService extends BaseService {
      */
     public VisitStatisticsVo getGroupedValue(List<VisitStatisticsUnit> visitUnits, Integer grading) {
         VisitStatisticsVo vo = new VisitStatisticsVo();
+        /* 默认是时间倒序, 改成正序 */
+        Collections.reverse(visitUnits);
         if (1 == grading) {
             List<String> date = visitUnits.stream().map(VisitStatisticsUnit::getRefDate).collect(Collectors.toList());
             List<Double> list = visitUnits.stream().map(VisitStatisticsUnit::getValue).collect(Collectors.toList());
             vo.setDate(date);
             vo.setList(list);
+        } else {
+            String start;
+            String end;
+            int startI;
+            int endI;
+            int i = visitUnits.size() - 1;
+            List<String> dates = new ArrayList<>();
+            List<Double> values = new ArrayList<>();
+            do {
+                end = visitUnits.get(i).getRefDate();
+                endI = i;
+                i -= grading;
+                if(i < 0) i = 0;
+                start = visitUnits.get(i).getRefDate();
+                startI = i;
+                double sum = visitUnits.subList(startI, endI).stream().mapToDouble(VisitStatisticsUnit::getValue).sum();
+                String dateResult = start + "-" + end;
+                dates.add(dateResult);
+                values.add(sum);
+                i--;
+            } while (i > 0);
+            vo.setDate(dates);
+            vo.setList(values);
         }
         return vo;
     }
