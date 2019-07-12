@@ -224,7 +224,7 @@ export default {
 }
 </script>
 
-<style>
+<style scoped>
 .fr a {
   color: #5a8bff;
 }
