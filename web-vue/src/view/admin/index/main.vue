@@ -1,8 +1,9 @@
 <template>
   <div>
     <Header />
-    <LeftNavigation />
-    <div class="admin_right_contant">
+    <div class="admin_contant">
+      <LeftNavigation />
+
       <router-view />
     </div>
   </div>
@@ -15,7 +16,12 @@ export default {
 }
 </script>
 <style scoped>
-.admin_right_contant {
-  margin: 85px 0 0 150px;
+.admin_contant {
+  width: 100%;
+  display: flex;
+  position: absolute;
+  overflow: hidden;
+  bottom: 0;
+  top: 85px;
 }
 </style>

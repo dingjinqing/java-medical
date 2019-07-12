@@ -486,9 +486,6 @@ export default {
 </script>
 <style scoped>
 .container {
-  position: fixed;
-  top: 0;
-  left: 0;
   height: 100%;
   width: 150px;
   z-index: 10;
@@ -496,11 +493,8 @@ export default {
 .left_menu {
   background: #323a4d;
   width: 150px;
-  position: absolute;
   z-index: 100;
-  top: 85px;
-  left: 0;
-  bottom: 0;
+  height: 100%;
 }
 ul li {
   height: 45px;

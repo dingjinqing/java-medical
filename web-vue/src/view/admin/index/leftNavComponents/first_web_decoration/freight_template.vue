@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div class="freight_container">
     <Crumbs
       :mTitle="M_title"
       :subtitle="Subtitle"
@@ -10,7 +10,7 @@
 import Crumbs from '@/components/admin/crumbs'
 export default {
   components: { Crumbs },
-  data () {
+  data() {
     return {
       M_title: '小程序管理',
       Subtitle: '图片空间'
@@ -19,4 +19,8 @@ export default {
 }
 </script>
 <style scoped>
+.freight_container {
+  flex: 1;
+  overflow-y: scroll;
+}
 </style>
