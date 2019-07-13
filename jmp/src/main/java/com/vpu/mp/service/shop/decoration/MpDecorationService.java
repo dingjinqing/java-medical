@@ -8,8 +8,8 @@ import java.sql.Timestamp;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import org.jooq.Record5;
 
+import org.jooq.Record5;
 import org.jooq.SelectWhereStep;
 
 import com.vpu.mp.db.main.tables.records.DecorationTemplateRecord;
@@ -18,6 +18,7 @@ import com.vpu.mp.service.foundation.BaseService;
 import com.vpu.mp.service.foundation.PageResult;
 import com.vpu.mp.service.foundation.Util;
 import com.vpu.mp.service.pojo.saas.shop.version.VersionConfig;
+import com.vpu.mp.service.pojo.shop.decoration.PageClassificationVo;
 import com.vpu.mp.service.pojo.shop.decoration.PageStoreParam;
 import com.vpu.mp.service.pojo.shop.decoration.XcxCustomerPageVo;
 
@@ -221,6 +222,32 @@ public class MpDecorationService extends BaseService {
 	}
 	
 	/**
+	 * 获取页面分类信息
+	 * @return
+	 */
+	public List<PageClassificationVo> getPageCate() {
+		List<PageClassificationVo>list = db().select(PAGE_CLASSIFICATION.ID,PAGE_CLASSIFICATION.NAME)
+				.from(PAGE_CLASSIFICATION)
+				.fetch().into(PageClassificationVo.class);
+		return list;
+	}
+	
+	/**
+	 * 保存页面分类数据
+	 * @param param 
+	 * @param param
+	 * @return
+	 */
+	public int setPageCate(PageClassificationVo param) {
+		
+		int result = db().update(XCX_CUSTOMER_PAGE)
+				.set(XCX_CUSTOMER_PAGE.CAT_ID,param.getId())
+				.where(XCX_CUSTOMER_PAGE.PAGE_ID.eq(param.getPageId()))
+				.execute();
+		return result;
+	}
+	
+	/**
 	 * 编辑保存
 	 * @param info
 	 * @return
@@ -233,7 +260,6 @@ public class MpDecorationService extends BaseService {
 		}else {
 			return false;
 		}
-		
 	}
 
 	/**
