@@ -233,6 +233,19 @@ public class MpDecorationService extends BaseService {
 	}
 	
 	/**
+	 * 删除装修页面
+	 * @param param
+	 * @return
+	 */
+	public int delXcxPage(PageClassificationVo param) {
+		int result = db()
+				.delete(XCX_CUSTOMER_PAGE)
+				.where(XCX_CUSTOMER_PAGE.PAGE_ID.eq(param.getPageId()))
+				.execute();
+		return result;
+	}
+	
+	/**
 	 * 保存页面分类数据
 	 * @param param 
 	 * @param param

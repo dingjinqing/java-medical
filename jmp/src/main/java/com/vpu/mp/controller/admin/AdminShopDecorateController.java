@@ -92,6 +92,21 @@ public class AdminShopDecorateController extends AdminBaseController {
 	}
 
 	/**
+	 * 删除装修页面
+	 * @param param
+	 * @return
+	 */
+	@PostMapping(value = "/admin/decorate/page/del")
+	public JsonResult delXcxPage(@RequestBody PageClassificationVo param) {
+		int res = shop().mpDecoration.delXcxPage(param);
+		if(res > 0) {
+			return this.success();
+		}else {
+			return this.fail();
+		}
+	}
+	
+	/**
 	 * 复制页面
 	 * 
 	 * @param  param
