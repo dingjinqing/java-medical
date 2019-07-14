@@ -124,13 +124,19 @@
                 <div class="bottom_radio">
                   <el-checkbox
                     v-model="b_checked"
+                    true-label="1"
+                    false-label="0"
                     @change="allChecked()"
                   >全选</el-checkbox>
                   <el-button
                     size="mini"
                     style="margin-right:5px"
+                    @click="deleteImgs()"
                   >批量删除</el-button>
-                  <el-button size="mini">批量移动</el-button>
+                  <el-button
+                    size="mini"
+                    @click="handleMoveimgs()"
+                  >批量移动</el-button>
                 </div>
                 <div class="bottom_right_p">
                   <div
@@ -161,10 +167,42 @@
 
     </div>
 
+    <!--批量移动弹窗-->
+    <el-dialog
+      title="提示"
+      :visible.sync="dialogVisible"
+      width="30%"
+    >
+      <el-select
+        v-model="value_move"
+        placeholder="请选择"
+      >
+        <el-option
+          v-for="item in options_move"
+          :key="item.value"
+          :label="item.label"
+          :value="item.value"
+        >
+        </el-option>
+      </el-select>
+      <span
+        slot="footer"
+        class="dialog-footer"
+      >
+        <el-button @click="dialogVisible = false">取 消</el-button>
+        <el-button
+          type="primary"
+          @click="dialogVisible = false"
+        >确 定</el-button>
+      </span>
+    </el-dialog>
+
   </div>
 </template>
 <script>
+import { mapGetters } from 'vuex'
 import Tree from '@/components/admin/tree'
+import { imgsdeleteRequest } from '@/api/admin/pictureSpace.js'
 export default {
   components: { Tree },
   data () {
@@ -192,15 +230,71 @@ export default {
       imageDalog_p_height: '',
       admin_imageDalog_totle: '',
       tip_hidden_flag: false,
-      b_checked: false
+      b_checked: false,
+      dialogVisible: false,
+      options_move: [{
+        value: '选项1',
+        label: '我的图片'
+      }, {
+        value: '选项2',
+        label: '轮播图'
+      }, {
+        value: '选项3',
+        label: '护肤品'
+      }, {
+        value: '选项4',
+        label: '商品主图'
+      }, {
+        value: '选项5',
+        label: '123'
+      },
+      {
+        value: '选项5',
+        label: '456'
+      },
+      {
+        value: '选项5',
+        label: '12111'
+      },
+      {
+        value: '选项5',
+        label: '目录'
+      }],
+      value_move: ''
+    }
+  },
+  computed: {
+    ...mapGetters(['clickNode', 'allNodes']),
+    clickNode_ () {
+      return this.clickNode
+    },
+    allNodes_ () {
+      return this.allNodes
+    }
+  },
+  watch: {
+    clickNode_ (newData, oldData) {
+      this.Initialization_nodeClick(newData)
+    },
+    allNodes_ (newData, oldData) {
+      this.Initialization_allTree(newData)
     }
   },
   mounted () {
     this.value = this.options[0].label
+    this.value_move = this.options_move[0].label
+    console.log(this.clickNode)
     // 初始化语言
     this.langDefault()
   },
   methods: {
+    // 初始化点击节点数据
+    Initialization_nodeClick (data) {
+      console.log(data)
+    },
+    Initialization_allTree (data) {
+      console.log(data)
+    },
     // 文件上传成功后的钩子
     handleSuccess () {
 
@@ -252,8 +346,33 @@ export default {
       this.img_list[index].checked = !this.img_list[index].checked
     },
     // 全部选中
-    allChecked (data) {
-      console.log(data)
+    allChecked () {
+      console.log(this.b_checked)
+      this.img_list.map((item, index) => {
+        if (this.b_checked === '1') {
+          item.checked = true
+        } else {
+          item.checked = false
+        }
+      })
+    },
+    // 图片批量删除
+    deleteImgs () {
+      imgsdeleteRequest().then((res) => {
+        console.log(res)
+      })
+    },
+    // 图片批量移动
+    handleMoveimgs () {
+      let checkArr = this.img_list.filter((item, index) => {
+        return item.checked === true
+      })
+      if (checkArr.length === 0) {
+        this.$message('请选择图片')
+        return
+      }
+      this.dialogVisible = true
+      console.log(checkArr)
     }
   }
 }
@@ -269,6 +388,7 @@ export default {
 }
 .bottom_right_p {
   display: flex;
+  height: 28px;
 }
 .bottom_radio {
   display: flex;
@@ -473,7 +593,7 @@ ul {
   width: 50px !important;
 }
 .right_content .el-pagination {
-  /* margin-top: 23px; */
+  margin-top: none !important;
   width: 400px !important;
 }
 

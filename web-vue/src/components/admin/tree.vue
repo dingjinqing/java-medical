@@ -73,19 +73,16 @@
 
 <script>
 import {
-
-  updateItem
-} from '@/mock/tree.api.js'
-import {
   getTreeListRequest,
   groupAddRequest,
-  groupDelRequest
+  groupDelRequest,
+  renameRequest
 } from '@/api/admin/pictureSpace.js'
 import {
   getEditContent,
   getDefaultContent
 } from '@/util/tree.utils.js'
-
+import { mapActions } from 'vuex'
 export default {
   name: 'ly-tree',
   data () {
@@ -117,6 +114,7 @@ export default {
 
   },
   methods: {
+    ...mapActions(['changeTreeNode', 'allNodes']),
     // 节点右键点击
     nodeRight (event, object, value, element) {
       this.menuVisible = true
@@ -154,17 +152,19 @@ export default {
     nodeClick (data, node, mynode) {
       console.log('123')
       console.log(data, node, mynode)
+
       this.menuVisible = false
     },
     refresh () {
       // let res = getServiceTree()
       getTreeListRequest().then((res) => {
-        console.log(res)
+        console.log(res.content[0].id)
+        this.changeTreeNode(res.content[0])
+        this.allNodes(res)
         this.treeData = res.content
       })
       // console.log(res)
     },
-
     append (node, data, e) {
       e = event || window.event
       e.stopPropagation()
@@ -263,24 +263,26 @@ export default {
           console.log(virtualNode)
           //   let addChild = addItem(this.treeData, params)
           groupAddRequest(params).then((res) => {
-            this.refresh()
+            if (res.error === 0) {
+              virtualNode.data.child.forEach((item, i) => {
+                if (!item.id) {
+                  virtualNode.data.child.splice(i, 1)
+                }
+              })
+              this.isEdit = false
+              this.select_id = null
+              this.select_level = null
+              this.$notify({
+                type: 'success',
+                title: '操作提示',
+                message: '添加成功！',
+                duration: 2000
+              })
+              this.refresh()
+            }
           })
           // 如果是用的真api,需要在添加的接口返回添加的节点
           // 添加成功后，将返回的节点加入数据中，然后删除掉没有id的假节点
-          virtualNode.data.child.forEach((item, i) => {
-            if (!item.id) {
-              virtualNode.data.child.splice(i, 1)
-            }
-          })
-          this.isEdit = false
-          this.select_id = null
-          this.select_level = null
-          this.$notify({
-            type: 'success',
-            title: '操作提示',
-            message: '添加成功！',
-            duration: 2000
-          })
           return
         }
 
@@ -288,15 +290,20 @@ export default {
           name: this.edit_name,
           id: data.id
         }
-        updateItem(this.treeData, params)
-        this.isEdit = false
-        this.select_id = null
-        this.select_level = null
-        this.$notify({
-          type: 'success',
-          title: '操作提示',
-          message: '编辑成功！',
-          duration: 2000
+        renameRequest(params).then((res) => {
+          console.log(res)
+          if (res.error === 0) {
+            this.isEdit = false
+            this.select_id = null
+            this.select_level = null
+            this.$notify({
+              type: 'success',
+              title: '操作提示',
+              message: '编辑成功！',
+              duration: 2000
+            })
+            this.refresh()
+          }
         })
       }
     },
