@@ -54,6 +54,9 @@ public class JsonResultMessage {
 	// 商品
 	
     final public static String GOODS_BRAND_NAME_EXIST="goods.brand.name.exist";
+    final public static String GOODS_BRAND_NAME_IS_NULL="goods.brand.name.is.null";
+    final public static String GOODS_BRAND_ID_IS_NULL="goods.brand.id.is.null";
+
     final public static String GOODS_SORT_NAME_EXIST="goods.sort.name.exist";
     final public static String GOODS_LABEL_NAME_EXIST="goods.label.name.exist";
     final public static String GOODS_LABEL_NOT_EXIST="goods.label.not.exist";
