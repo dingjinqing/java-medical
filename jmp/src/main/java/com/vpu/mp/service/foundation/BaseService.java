@@ -165,4 +165,10 @@ public class BaseService extends ServiceContainer {
 		return "%" + likeReplace(val);
 	}
 
+	public String getDelPrefix(Integer recordId) {
+        if (recordId == null) {
+            return null;
+        }
+        return DelFlag.DEL_ITEM_PREFIX+recordId+DelFlag.DEL_ITEM_SPLITER;
+    }
 }
