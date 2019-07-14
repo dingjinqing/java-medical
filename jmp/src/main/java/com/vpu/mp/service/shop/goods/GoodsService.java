@@ -40,8 +40,7 @@ import com.vpu.mp.service.pojo.shop.goods.spec.GoodsSpecProduct;
  * @date 2019年6月25日
  */
 public class GoodsService extends BaseService {
-
-
+    
     public GoodsBrandService goodsBrand;
     public GoodsSortService goodsSort;
     public GoodsCommentService goodsComment;

@@ -1,5 +1,6 @@
 package com.vpu.mp.controller.admin;
 
+import com.vpu.mp.service.shop.ShopApplication;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
@@ -19,10 +20,13 @@ import com.vpu.mp.service.pojo.shop.goods.brand.GoodsBrandPageListParam;
 @RestController
 public class AdminGoodsBrandController extends AdminBaseController {
 
- 
+    @Override
+    protected ShopApplication shop() {
+        return saas.getShopApp(471752);
+    }
+
     /**
-     *	 商品品牌分页查询
-     *
+     *	商品品牌分页查询
      * @param param
      * @return
      */
@@ -43,6 +47,10 @@ public class AdminGoodsBrandController extends AdminBaseController {
     @PostMapping("/api/admin/goods/brand/add")
     public JsonResult insert(@RequestBody GoodsBrand goodsBrand) {
 
+        if (goodsBrand.getBrandName() == null) {
+            return fail(JsonResultCode.GOODS_BRAND_NAME_IS_NULL);
+        }
+
         boolean isExist=shop().goods.goodsBrand.isBrandNameExist(goodsBrand);
         if (isExist){
             return fail(JsonResultCode.GOODS_BRAND_NAME_EXIST);
@@ -61,6 +69,9 @@ public class AdminGoodsBrandController extends AdminBaseController {
      */
     @PostMapping("/api/admin/goods/brand/delete")
     public JsonResult delete(@RequestBody GoodsBrand goodsBrand) {
+        if (goodsBrand.getId() == null) {
+            return fail(JsonResultCode.GOODS_BRAND_ID_IS_NULL);
+        }
 
         shop().goods.goodsBrand.delete(goodsBrand);
 

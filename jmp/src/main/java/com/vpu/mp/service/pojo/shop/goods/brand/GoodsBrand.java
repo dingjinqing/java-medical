@@ -2,6 +2,7 @@ package com.vpu.mp.service.pojo.shop.goods.brand;
 
 import lombok.Data;
 
+import javax.validation.constraints.NotNull;
 import java.sql.Timestamp;
 
 /**
@@ -16,7 +17,7 @@ public class GoodsBrand {
     private String eName;
     private String logo;
     private Byte first;
-    private Timestamp addTime;
+    private Timestamp createTime;
     private String desc;
     private Byte isRecommend;
     private Integer classifyId;

@@ -1,16 +1,18 @@
 package com.vpu.mp.service.shop.goods;
 
+import com.vpu.mp.db.shop.tables.records.GoodsBrandRecord;
 import com.vpu.mp.service.foundation.BaseService;
+import com.vpu.mp.service.foundation.DelFlag;
 import com.vpu.mp.service.foundation.PageResult;
 import com.vpu.mp.service.pojo.shop.goods.brand.GoodsBrandPageListParam;
 import com.vpu.mp.service.pojo.shop.goods.brand.GoodsBrand;
 import org.jooq.*;
+import org.jooq.impl.DSL;
 import org.jooq.tools.StringUtils;
 
 import java.sql.Timestamp;
 
 import static com.vpu.mp.db.shop.Tables.GOODS_BRAND;
-import static org.jooq.impl.DSL.field;
 
 /**
  * 商品品牌
@@ -47,27 +49,26 @@ public class GoodsBrandService extends BaseService {
      * @return
      */
     private SelectConditionStep<?> buildOptions(SelectWhereStep<?> select, GoodsBrandPageListParam param) {
-        SelectConditionStep<?> scs = select
-                .where(field("is_delete").eq(GoodsBrandPageListParam.IS_DELETE_DEFAULT_VALUE));
+        SelectConditionStep<?> scs = select.where(GOODS_BRAND.DEL_FLAG.eq(DelFlag.NORMAL.getCode()));
 
         if (!StringUtils.isBlank(param.getBrandName())) {
             scs = scs.and(GOODS_BRAND.BRAND_NAME.like(this.likeValue(param.getBrandName())));
         }
 
-        if (param.getStartAddTime() != null) {
-            scs = scs.and(GOODS_BRAND.CREATE_TIME.ge(param.getStartAddTime()));
+        if (param.getStartCreateTime() != null) {
+            scs = scs.and(GOODS_BRAND.CREATE_TIME.ge(param.getStartCreateTime()));
         }
 
-        if (param.getEndAddTime() != null) {
-            scs = scs.and(GOODS_BRAND.CREATE_TIME.le(param.getEndAddTime()));
+        if (param.getEndCreateTime() != null) {
+            scs = scs.and(GOODS_BRAND.CREATE_TIME.le(param.getEndCreateTime()));
         }
 
-        if (param.getClassifyId() != GoodsBrandPageListParam.CLASSIFY_ID_DEFAULT_VALUE) {
-            scs = scs.and(field("classify_id").eq(param.getClassifyId()));
+        if (param.getClassifyId() != null) {
+            scs = scs.and(GOODS_BRAND.CLASSIFY_ID.eq(param.getClassifyId()));
         }
 
-        if (param.getIsRecommend() != GoodsBrandPageListParam.IS_RECOMMEND_DEFAULT_VALUE) {
-            scs = scs.and(field("is_recommend").eq(param.getIsRecommend()));
+        if (param.getIsRecommend() != null) {
+            scs = scs.and(GOODS_BRAND.IS_RECOMMEND.eq(param.getIsRecommend()));
         }
 
         return scs;
@@ -79,15 +80,10 @@ public class GoodsBrandService extends BaseService {
      * @param goodsBrand
      * @return 数据库受影响行数
      */
-    public int insert(GoodsBrand goodsBrand) {
-        int result = db()
-                .insertInto(GOODS_BRAND, GOODS_BRAND.BRAND_NAME, GOODS_BRAND.E_NAME,
-                        GOODS_BRAND.LOGO, GOODS_BRAND.FIRST, GOODS_BRAND.DESC,
-                        GOODS_BRAND.IS_RECOMMEND, GOODS_BRAND.CLASSIFY_ID)
-                .values(goodsBrand.getBrandName(), goodsBrand.getEName(), goodsBrand.getLogo(), goodsBrand.getFirst(), goodsBrand.getDesc(),
-                        goodsBrand.getIsRecommend(), goodsBrand.getClassifyId())
-                .execute();
-        return result;
+    public void insert(GoodsBrand goodsBrand) {
+        GoodsBrandRecord goodsBrandRecord = new GoodsBrandRecord();
+        assign(goodsBrand, goodsBrandRecord);
+        db().executeInsert(goodsBrandRecord);
     }
 
     /**
@@ -97,7 +93,11 @@ public class GoodsBrandService extends BaseService {
      * @return 数据库受影响行数
      */
     public int delete(GoodsBrand goodsBrand) {
-        return db().update(GOODS_BRAND).set(GOODS_BRAND.DEL_FLAG, (byte) 1).where(GOODS_BRAND.ID.eq(goodsBrand.getId()))
+        return db().update(GOODS_BRAND)
+                .set(GOODS_BRAND.DEL_FLAG, DelFlag.DISABLE.getCode())
+                .set(GOODS_BRAND.BRAND_NAME, DSL.concat(getDelPrefix(goodsBrand.getId()))
+                        .concat(GOODS_BRAND.BRAND_NAME))
+                .where(GOODS_BRAND.ID.eq(goodsBrand.getId()))
                 .execute();
     }
 
@@ -131,14 +131,16 @@ public class GoodsBrandService extends BaseService {
     }
 
     /**
-     *  判断商品名称是否存在，新增使用
+     * 判断商品名称是否存在，新增使用
+     *
      * @param goodsBrand
      * @return
      */
     public boolean isBrandNameExist(GoodsBrand goodsBrand) {
+
         Record1<Integer> countRecord = db().selectCount().from(GOODS_BRAND)
                 .where(GOODS_BRAND.BRAND_NAME.eq(goodsBrand.getBrandName()))
-                .and(GOODS_BRAND.DEL_FLAG.eq((byte) 0))
+                .and(GOODS_BRAND.DEL_FLAG.eq(DelFlag.NORMAL.getCode()))
                 .fetchOne();
         Integer count = countRecord.getValue(0, Integer.class);
         if (count > 0) {
@@ -147,9 +149,10 @@ public class GoodsBrandService extends BaseService {
             return false;
         }
     }
-    
+
     /**
-     *  判断其他商品名称是否存在同名，修改使用
+     * 判断其他商品名称是否存在同名，修改使用
+     *
      * @param goodsBrand
      * @return
      */
@@ -157,7 +160,7 @@ public class GoodsBrandService extends BaseService {
         Record1<Integer> countRecord = db().selectCount().from(GOODS_BRAND)
                 .where(GOODS_BRAND.BRAND_NAME.eq(goodsBrand.getBrandName()))
                 .and(GOODS_BRAND.ID.ne(goodsBrand.getId()))
-                .and(GOODS_BRAND.DEL_FLAG.eq((byte) 0))
+                .and(GOODS_BRAND.DEL_FLAG.eq(DelFlag.NORMAL.getCode()))
                 .fetchOne();
         Integer count = countRecord.getValue(0, Integer.class);
         if (count > 0) {
