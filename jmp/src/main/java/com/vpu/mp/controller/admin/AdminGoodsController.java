@@ -25,13 +25,6 @@ import java.util.Map;
 @RestController
 public class AdminGoodsController extends AdminBaseController {
 
-
-    @Override
-    protected ShopApplication shop() {
-        // TODO Auto-generated method stub
-        return saas.getShopApp(471752);
-    }
-
     /**
      * 商品分页查询
      *

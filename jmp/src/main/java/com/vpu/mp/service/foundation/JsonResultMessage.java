@@ -52,12 +52,16 @@ public class JsonResultMessage {
 	final public static String MSG_IMGAE_UPLOAD_EQ_HEIGHT = "image.upload.eqHeight";
 
 	// 商品
-	
+	    //商品品牌
     final public static String GOODS_BRAND_NAME_EXIST="goods.brand.name.exist";
     final public static String GOODS_BRAND_NAME_IS_NULL="goods.brand.name.is.null";
     final public static String GOODS_BRAND_ID_IS_NULL="goods.brand.id.is.null";
-
+        //商品分类
     final public static String GOODS_SORT_NAME_EXIST="goods.sort.name.exist";
+    final public static String GOODS_SORT_NAME_IS_NULL="goods.sort.name.is.null";
+    final public static String GOODS_SORT_ID_IS_NULL="goods.sort.id.is.null";
+
+
     final public static String GOODS_LABEL_NAME_EXIST="goods.label.name.exist";
     final public static String GOODS_LABEL_NOT_EXIST="goods.label.not.exist";
     final public static String GOODS_LABEL_ID_NOT_NULL="goods.label.id.notNull";

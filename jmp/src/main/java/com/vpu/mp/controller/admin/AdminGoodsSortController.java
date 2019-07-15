@@ -3,6 +3,7 @@ package com.vpu.mp.controller.admin;
 import java.util.List;
 
 import com.vpu.mp.service.foundation.JsonResultCode;
+import com.vpu.mp.service.shop.ShopApplication;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
@@ -52,6 +53,22 @@ public class AdminGoodsSortController extends AdminBaseController {
     }
 
     /**
+     *  推荐商品新增接口
+     * @param sorts
+     * @return
+     */
+    @PostMapping("/api/admin/goods/sort/recommend/add")
+    public JsonResult insertRecommendSort(@RequestBody List<Sort> sorts) {
+        if (sorts == null || sorts.size() == 0) {
+            return success();
+        }
+
+        shop().goods.goodsSort.insertRecommendSort(sorts);
+
+        return success();
+    }
+
+    /**
      * 删除
      *
      * @param sort
@@ -59,6 +76,10 @@ public class AdminGoodsSortController extends AdminBaseController {
      */
     @PostMapping("/api/admin/goods/sort/delete")
     public JsonResult delete(@RequestBody Sort sort) {
+
+        if (sort.getSortId() == null) {
+            return fail(JsonResultCode.GOODS_SORT_ID_IS_NULL);
+        }
 
         shop().goods.goodsSort.delete(sort);
 
@@ -73,6 +94,10 @@ public class AdminGoodsSortController extends AdminBaseController {
      */
     @PostMapping("/api/admin/goods/sort/update")
     public JsonResult update(@RequestBody Sort sort) {
+
+        if (sort.getSortId() == null) {
+            return fail(JsonResultCode.GOODS_SORT_ID_IS_NULL);
+        }
 
         boolean isExist = shop().goods.goodsSort.isOtherSortNameExist(sort);
         if (isExist) {
