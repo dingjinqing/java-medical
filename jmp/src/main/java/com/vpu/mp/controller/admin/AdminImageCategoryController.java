@@ -2,8 +2,13 @@ package com.vpu.mp.controller.admin;
 
 
 import com.vpu.mp.service.foundation.JsonResult;
+import com.vpu.mp.service.pojo.shop.image.category.ImageCategoryIDParam;
+import com.vpu.mp.service.pojo.shop.image.category.ImageCategoryParam;
+import com.vpu.mp.service.pojo.shop.image.category.ImageCategoryRenameParam;
 import com.vpu.mp.service.pojo.shop.image.category.UploadedImageCategoryParam;
 import org.springframework.web.bind.annotation.*;
+
+import javax.validation.Valid;
 
 /**
  * 图片分组列表
@@ -23,7 +28,7 @@ public class AdminImageCategoryController extends AdminBaseController {
      * @return
      */
     @PostMapping("/admin/image/category/add")
-    public JsonResult addImageCategory(@RequestBody UploadedImageCategoryParam param) {
+    public JsonResult addImageCategory(@RequestBody  @Valid ImageCategoryParam param) {
         shop().imageCatgory.addCategory(param);
         return success();
     }
@@ -36,7 +41,7 @@ public class AdminImageCategoryController extends AdminBaseController {
      * @return
      */
     @PostMapping("/admin/image/category/delete")
-    public JsonResult deleteImageCategory(UploadedImageCategoryParam param) {
+    public JsonResult deleteImageCategory(@RequestBody @Valid ImageCategoryIDParam param) {
         shop().imageCatgory.removeCategory(param.getImgCatId());
         return success();
     }
@@ -48,7 +53,7 @@ public class AdminImageCategoryController extends AdminBaseController {
      * @return
      */
     @PostMapping("/admin/image/category/move")
-    public JsonResult moveImageCategory(@RequestBody  UploadedImageCategoryParam param) {
+    public JsonResult moveImageCategory(@RequestBody @Valid UploadedImageCategoryParam param) {
         shop().imageCatgory.moveCategory(param.getImgCatId(),param.getImgCatParentId());
         return success();
     }
@@ -60,7 +65,7 @@ public class AdminImageCategoryController extends AdminBaseController {
      * @return
      */
     @PostMapping("/admin/image/category/rename")
-    public JsonResult renameImageCategory(@RequestBody UploadedImageCategoryParam param) {
+    public JsonResult renameImageCategory(@RequestBody @Valid ImageCategoryRenameParam param) {
         shop().imageCatgory.setCategoryName(param.getImgCatId(), param.getImgCatName());
         return success();
     }

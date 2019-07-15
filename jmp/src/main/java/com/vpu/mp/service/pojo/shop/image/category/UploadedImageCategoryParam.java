@@ -7,6 +7,8 @@ package com.vpu.mp.service.pojo.shop.image.category;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import javax.validation.constraints.NotNull;
+
 /**
  * @author 新国，孔德成
  */
@@ -14,8 +16,9 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class UploadedImageCategoryParam {
 
+    @NotNull
     private Integer imgCatId;
-    private String imgCatName;
+    @NotNull
     private Integer imgCatParentId;
     private Integer sort;
 

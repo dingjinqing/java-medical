@@ -1,6 +1,5 @@
 package com.vpu.mp.service.shop.image;
 
-import static com.vpu.mp.db.shop.tables.UploadedImage.UPLOADED_IMAGE;
 import static com.vpu.mp.db.shop.tables.UploadedImageCategory.UPLOADED_IMAGE_CATEGORY;
 
 import java.util.ArrayList;
@@ -9,7 +8,7 @@ import java.util.List;
 import java.util.Map;
 
 import com.vpu.mp.service.pojo.shop.image.category.CategoryTreeItemVo;
-import com.vpu.mp.service.pojo.shop.image.category.UploadedImageCategoryParam;
+import com.vpu.mp.service.pojo.shop.image.category.ImageCategoryParam;
 import org.apache.commons.lang3.ArrayUtils;
 import org.jooq.Result;
 import org.jooq.SelectWhereStep;
@@ -32,7 +31,7 @@ public class ImageCategoryService extends BaseService {
      * @param cat
      * @return
      */
-    public Boolean addCategory(UploadedImageCategoryParam cat) {
+    public Boolean addCategory(ImageCategoryParam cat) {
         UploadedImageCategoryRecord record = db().newRecord(UPLOADED_IMAGE_CATEGORY, cat);
         record.setShopId(shopId);
         record.insert();
@@ -296,7 +295,7 @@ public class ImageCategoryService extends BaseService {
     public int setCategoryName(Integer catId, String catName) {
         return db().update(UPLOADED_IMAGE_CATEGORY)
                 .set(UPLOADED_IMAGE_CATEGORY.IMG_CAT_NAME, catName)
-                .where(UPLOADED_IMAGE.IMG_CAT_ID.eq(catId))
+                .where(UPLOADED_IMAGE_CATEGORY.IMG_CAT_ID.eq(catId))
                 .execute();
     }
 
