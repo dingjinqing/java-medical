@@ -5,7 +5,7 @@ package com.vpu.mp.service.pojo.shop.summary;
  *
  * @author 郑保乐
  */
-public enum VisitDuration {
+public enum VisitDuration implements ChartInfo {
 
     L1(1, "0-2s"),
     L2(2, "3-5s"),
@@ -16,5 +16,21 @@ public enum VisitDuration {
     L7(7, "50-100s"),
     L8(8, ">100s");
 
-    VisitDuration(Integer index, String duration) { }
+    private Integer index;
+    private String name;
+
+    VisitDuration(Integer index, String duration) {
+        this.index = index;
+        this.name = duration;
+    }
+
+    @Override
+    public String getName() {
+        return name;
+    }
+
+    @Override
+    public Integer getKey() {
+        return index;
+    }
 }

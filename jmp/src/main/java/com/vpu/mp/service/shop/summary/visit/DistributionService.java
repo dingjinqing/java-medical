@@ -48,8 +48,9 @@ public class DistributionService extends BaseVisitService {
         vo.setVisitSource(xKeyYValueVo(sourceMap));
         vo.setVisitDepth(yKeyXValueVo(depthMap));
         vo.setVisitStayTime(yKeyXValueVo(stayTimeMap));
-        vo.setAccessSourceSessionCnt(infoDict(sourceMap, AccessSource.values()));
-        vo.setAccessDepthInfo(infoDict(depthMap, AccessDepth.values()));
+        vo.setAccessSourceSessionCnt(getInfoDict(sourceMap, AccessSource.values()));
+        vo.setAccessDepthInfo(getInfoDict(depthMap, AccessDepth.values()));
+        vo.setAccessStayTimeInfo(getInfoDict(stayTimeMap, VisitDuration.values()));
         return vo;
     }
 
@@ -100,7 +101,7 @@ public class DistributionService extends BaseVisitService {
                 .fetch().into(MP_DISTRIBUTION_VISIT);
     }
 
-    private <T extends ChartInfo> List<VisitInfoItem> infoDict(Map<String, Integer> map, T[] chartInfo) {
+    private <T extends ChartInfo> List<VisitInfoItem> getInfoDict(Map<String, Integer> map, T[] chartInfo) {
         return Arrays.stream(chartInfo)
                 .map(s -> {
                     VisitInfoItem item = new VisitInfoItem();
