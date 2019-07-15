@@ -22,13 +22,13 @@ class BaseVisitService extends BaseService {
      * @param grading    粒度
      */
     @SuppressWarnings("unchecked")
-    <T> List<RefDateRecord<T>> getGroupedValue(List<RefDateRecord<T>> records, Integer grading) {
+    <T extends Number> List<RefDateRecord<T>> getGroupedValue(List<RefDateRecord<T>> records, Integer grading) {
         /* 默认是时间倒序, 改成正序 */
         Collections.reverse(records);
         List<RefDateRecord<T>> groupedRecords = new ArrayList<>();
         if (1 == grading) {
-            for (RefDateRecord unit : records) {
-                RefDateRecordHolder holder = new RefDateRecordHolder();
+            for (RefDateRecord<T> unit : records) {
+                RefDateRecordHolder<T> holder = new RefDateRecordHolder<>();
                 holder.setRefDate(unit.getRefDate());
                 holder.setValue(unit.getValue());
                 groupedRecords.add(holder);
@@ -46,12 +46,12 @@ class BaseVisitService extends BaseService {
                 if (i < 0) i = 0;
                 start = records.get(i).getRefDate();
                 startI = i;
-                double sum = records.subList(startI, endI).stream().mapToDouble(r -> (Double) r.getValue()).sum();
+                Double sum = records.subList(startI, endI).stream().mapToDouble(r -> (Double) r.getValue()).sum();
                 String dateResult = start + "-" + end;
-                RefDateRecordHolder holder = new RefDateRecordHolder();
+                RefDateRecordHolder<Double> holder = new RefDateRecordHolder<>();
                 holder.setRefDate(dateResult);
                 holder.setValue(sum);
-                groupedRecords.add(holder);
+                groupedRecords.add((RefDateRecord<T>) holder);
                 i--;
             } while (i > 0);
         }
