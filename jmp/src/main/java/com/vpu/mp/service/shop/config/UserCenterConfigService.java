@@ -1,5 +1,11 @@
 package com.vpu.mp.service.shop.config;
 
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.vpu.mp.service.pojo.shop.config.center.UserCenterConfigParam;
+import com.vpu.mp.service.pojo.shop.config.center.UserCenterConfigVo;
+
+import java.util.List;
+
 /**
  * 个人中心
  *
@@ -14,12 +20,12 @@ public class UserCenterConfigService extends BaseShopConfigService {
     final public static String K_USER_CENTER = "user_center";
 
 
-    public Object getkUserCenterConfig(){
-        return getJsonObject(K_USER_CENTER,Object.class);
+    public List<UserCenterConfigVo> getkUserCenterConfig(){
+        return getJsonObject(K_USER_CENTER, new TypeReference<List<UserCenterConfigVo>>(){});
     }
 
 
-    public Boolean setUserConterConfig(Object object){
+    public Boolean updateUserCenterConfig(List<UserCenterConfigParam> object){
         return setJsonObject(K_USER_CENTER,object)==1;
     }
 

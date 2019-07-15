@@ -11,6 +11,7 @@ import javax.servlet.http.Part;
 import javax.validation.Valid;
 
 import com.vpu.mp.service.pojo.shop.image.*;
+import lombok.NoArgsConstructor;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -41,7 +42,7 @@ public class AdminImageController extends AdminBaseController {
 	 * @throws Exception
 	 */
 	@PostMapping(value = "/admin/image/upload")
-	public JsonResult imageUpload(UploadImageParam param) throws IOException, Exception {
+	public JsonResult imageUpload(@RequestBody UploadImageParam param) throws IOException, Exception {
 		List<UploadedImageVo> uploadImages = new ArrayList<UploadedImageVo>();
 		JsonResult result = null;
 		List<Part> files = Util.getFilePart(request, param.uploadFileId);
@@ -71,7 +72,7 @@ public class AdminImageController extends AdminBaseController {
 	 * @throws Exception
 	 */
 	@PostMapping(value = "/admin/image/uploadOneImgae")
-	protected JsonResult uploadOneFile(UploadImageParam param, Part file) throws IOException, Exception {
+	protected JsonResult uploadOneFile(@RequestBody UploadImageParam param, Part file) throws IOException, Exception {
 		ShopApplication shop = shop();
 		Integer maxSize = 5 * 1024 * 1024;
 		if (file.getSize() > maxSize) {
@@ -86,7 +87,7 @@ public class AdminImageController extends AdminBaseController {
 			if (param.needImgWidth != null && param.needImgWidth != bufferImage.getWidth()) {
 				return this.fail(JsonResultCode.CODE_IMGAE_UPLOAD_EQ_WIDTH, param.needImgWidth);
 			}
-			if (param.needImgHeight != null && param.needImgHeight != bufferImage.getWidth()) {
+			if (param.needImgHeight != null && param.needImgHeight != bufferImage.getHeight()) {
 				return this.fail(JsonResultCode.CODE_IMGAE_UPLOAD_EQ_HEIGHT, param.needImgHeight);
 			}
 		}
@@ -110,7 +111,7 @@ public class AdminImageController extends AdminBaseController {
 	 * @return
 	 */
 	@PostMapping(value = "/admin/image/list")
-	public JsonResult getImageList(ImageListQueryParam param) {
+	public JsonResult getImageList(@RequestBody ImageListQueryParam param) {
 
 		ShopApplication shop = shop();
 		PageResult<UploadImageCatNameVo> imageList = shop.image.getPageList(param);
@@ -125,7 +126,7 @@ public class AdminImageController extends AdminBaseController {
 	 * @throws Exception
 	 */
 	@PostMapping(value = "/admin/image/makeCrop")
-	public boolean makeCrop(CropImageParam param) throws Exception {
+	public boolean makeCrop(@RequestBody CropImageParam param) throws Exception {
 //		System.out.println(param.remoteImgPath);
 		ShopApplication shop = shop();
 		UploadPath uploadPath = shop.image.makeCrop(param);
@@ -152,7 +153,7 @@ public class AdminImageController extends AdminBaseController {
 	 * @return
 	 */
 	@PostMapping("/admin/image/batch/delete")
-	public JsonResult batchDeleteImage(BatchDeleteImageParam param) {
+	public JsonResult batchDeleteImage(@RequestBody BatchDeleteImageParam param) {
 		shop().image.removeRows(param.getImageIds());
 		return success();
 	}

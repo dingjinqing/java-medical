@@ -1,8 +1,10 @@
 package com.vpu.mp.controller.admin;
 
 import com.vpu.mp.service.foundation.JsonResult;
-import org.springframework.stereotype.Component;
+import com.vpu.mp.service.pojo.shop.config.center.UserCenterConfigParam;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 /**
  *
@@ -31,9 +33,9 @@ public class AdminUserCenterConfigController extends AdminBaseController{
      * @param param
      * @return
      */
-    @PostMapping("/admin/user/center/config/set")
-    public JsonResult setUserCenterConfig(@RequestBody String param){
-        shop().config.userCenterConfigService.setUserConterConfig(param);
+    @PostMapping("/admin/user/center/config/update")
+    public JsonResult updateUserCenterConfig(@RequestBody List<UserCenterConfigParam> param){
+        shop().config.userCenterConfigService.updateUserCenterConfig(param);
         return success();
     }
 

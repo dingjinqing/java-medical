@@ -4,6 +4,7 @@ import com.vpu.mp.service.foundation.ServiceContainer;
 import com.vpu.mp.service.shop.config.ConfigService;
 import com.vpu.mp.service.shop.config.ShopBasicConfigService;
 import com.vpu.mp.service.shop.config.TradeService;
+import com.vpu.mp.service.shop.decoration.AppletsJumpService;
 import com.vpu.mp.service.shop.decoration.ChooseLinkService;
 import com.vpu.mp.service.shop.decoration.MpDecorationService;
 import com.vpu.mp.service.shop.decoration.PageClassificationService;
@@ -40,6 +41,7 @@ public class ShopApplication extends ServiceContainer {
 	public GoodsRecommendService goodsRecommend;
 	public AmountService amount;
 	public BrandService brand;
+	public AppletsJumpService appletsJump;
 	/**
 	 * 会员
 	 */
