@@ -37,3 +37,21 @@ export function changeShopRequest (riid) {
     data: riid
   })
 }
+
+// 上传单张图片接口
+export function uponeImgRequest (riid) {
+  return service({
+    url: '/api/admin/image/uploadOneImgae',
+    method: 'post',
+    data: riid
+  })
+}
+
+// 上传多张图片接口
+export function upmoreImgsRequest (riid) {
+  return service({
+    url: '/api/admin/image/upload',
+    method: 'post',
+    data: riid
+  })
+}

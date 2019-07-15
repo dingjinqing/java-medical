@@ -6,12 +6,12 @@
         <el-upload
           class="upload-demo"
           action="https://jsonplaceholder.typicode.com/posts/"
-          :on-remove="handleRemove"
           :on-success="handleSuccess"
-          :before-remove="beforeRemove"
+          :before-upload="beforeUpLoad"
           multiple
           :limit="5"
           :on-exceed="handleExceed"
+          :show-file-list="false"
         >
           <el-button
             size="small"
@@ -373,13 +373,9 @@ export default {
     handleSuccess () {
 
     },
-    // 删除前的钩子
-    beforeRemove () {
-
-    },
-    // 图片删除钩子
-    handleRemove () {
-
+    // 图片上传前的钩子
+    beforeUpLoad (file) {
+      console.log(file)
     },
     // 文件数量超出限制钩子
     handleExceed () {
