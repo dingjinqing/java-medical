@@ -71,6 +71,9 @@ public class AdminGoodsLabelController extends AdminBaseController {
      */
     @PostMapping("/api/admin/goods/label/update")
     public JsonResult update(@RequestBody GoodsLabel goodsLabel) {
+    	if(shop().goods.goodsLabel.selectById(goodsLabel.getId())==null) {
+    		return fail(JsonResultCode.GOODS_LABEL_NOT_EXIST);
+    	}
     	if(shop().goods.goodsLabel.isOtherLabelNameExist(goodsLabel)) {
     		return fail(JsonResultCode.GOODS_LABEL_NAME_EXIST);
     	}

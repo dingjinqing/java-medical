@@ -1,7 +1,11 @@
 package com.vpu.mp.service.pojo.shop.goods.label;
 
-import java.sql.Timestamp;
 import java.util.List;
+
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
+
+import com.vpu.mp.service.foundation.JsonResultMessage;
 
 import lombok.Data;
 
@@ -13,6 +17,7 @@ import lombok.Data;
 @Data
 public class GoodsLabel {
 	private Integer id;
+	@NotBlank(message = JsonResultMessage.GOODS_LABEL_NAME_NOT_NULL)
 	private String name;
 	private Byte goodsDetail;
 	private Byte goodsList;

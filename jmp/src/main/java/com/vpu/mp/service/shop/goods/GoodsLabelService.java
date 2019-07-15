@@ -241,7 +241,7 @@ public class GoodsLabelService extends BaseService {
 											.from(GOODS_LABEL)
 											.where(GOODS_LABEL.NAME.eq(goodsLabel.getName()))
 											.and(GOODS_LABEL.ID.ne(goodsLabel.getId()))
-											.and(GOODS_LABEL.DEL_FLAG.eq(GoodsLabelPageListParam.DEL_FLAG))
+											.and(GOODS_LABEL.DEL_FLAG.eq(NORMAL))
 											.fetchOne();
 		Integer count = recordCount.getValue(0,Integer.class);
 		if(count>0) {
@@ -278,6 +278,7 @@ public class GoodsLabelService extends BaseService {
 		GoodsLabel goodsLabel = db().select()
 		.from(GOODS_LABEL)
 		.where(GOODS_LABEL.ID.eq(id))
+		.and(GOODS_LABEL.DEL_FLAG.eq(NORMAL))
 		.fetchOneInto(GoodsLabel.class); 
 		return goodsLabel;
 	}

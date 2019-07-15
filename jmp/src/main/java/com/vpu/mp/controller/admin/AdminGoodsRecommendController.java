@@ -9,6 +9,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.vpu.mp.db.shop.tables.records.RecommendGoodsRecord;
+import com.vpu.mp.service.foundation.DelFlag;
 import com.vpu.mp.service.foundation.JsonResult;
 import com.vpu.mp.service.foundation.JsonResultCode;
 import com.vpu.mp.service.foundation.PageResult;
@@ -63,8 +65,9 @@ public class AdminGoodsRecommendController extends AdminBaseController {
 	
 	@PostMapping("/recommend/update")
 	public JsonResult update(@RequestBody @Valid GoodsRecommendUpdateParam goodsRecommendParam) {
-		if(shop().goodsRecommend.selectRecord(goodsRecommendParam.getId()) == null) {
-			return fail(JsonResultCode.GOODS_RECOMMEND_ID_NOT_EXIST);
+		RecommendGoodsRecord record = shop().goodsRecommend.selectRecord(goodsRecommendParam.getId());
+		if(record == null || DelFlag.DISABLE.getCode()==record.getDelFlag()) {
+			return fail(JsonResultCode.GOODS_RECOMMEND_NOT_EXIST);
 		}
 		int result = shop().goodsRecommend.update(goodsRecommendParam);
 		if(result>0) {
