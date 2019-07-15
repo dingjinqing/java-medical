@@ -1,7 +1,7 @@
 package com.vpu.mp.service.pojo.shop.summary;
 
 /**
- * 访问来源 KV
+ * 访问来源 key 对应关系
  *
  * @author 郑保乐
  */
