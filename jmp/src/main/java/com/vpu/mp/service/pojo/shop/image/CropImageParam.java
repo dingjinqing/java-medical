@@ -9,6 +9,9 @@ import lombok.Data;
  */
 @Data
 public class CropImageParam {
+	/**
+	 * 图片存放地址
+	 */
 	public String remoteImgPath;
 	public Integer cropWidth;
 	public Integer cropHeight;
@@ -19,5 +22,4 @@ public class CropImageParam {
 	public Double imgScaleW;
 	public Integer imgCatId;
 	public Integer remoteImgId;
-	public String imageCrop;
 };

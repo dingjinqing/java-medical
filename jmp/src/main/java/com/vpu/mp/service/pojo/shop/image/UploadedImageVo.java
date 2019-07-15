@@ -26,5 +26,4 @@ public class UploadedImageVo {
     private Integer   imgWidth;
     private Integer   imgHeight;
     private Timestamp createTime;
-    private Timestamp updateTime;
 }

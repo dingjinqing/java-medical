@@ -8,7 +8,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import com.vpu.mp.service.pojo.shop.image.CategoryTreeItemVo;
+import com.vpu.mp.service.pojo.shop.image.category.CategoryTreeItemVo;
+import com.vpu.mp.service.pojo.shop.image.category.UploadedImageCategoryParam;
 import org.apache.commons.lang3.ArrayUtils;
 import org.jooq.Result;
 import org.jooq.SelectWhereStep;
@@ -17,7 +18,6 @@ import org.jooq.impl.DSL;
 import com.vpu.mp.db.shop.tables.records.UploadedImageCategoryRecord;
 import com.vpu.mp.service.foundation.BaseService;
 import com.vpu.mp.service.foundation.Util;
-import com.vpu.mp.service.pojo.shop.image.UploadedImageCategoryParam;
 
 /**
  * @author 新国，孔德成

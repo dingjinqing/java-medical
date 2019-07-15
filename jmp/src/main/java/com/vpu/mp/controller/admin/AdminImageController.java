@@ -112,7 +112,6 @@ public class AdminImageController extends AdminBaseController {
 	 */
 	@PostMapping(value = "/admin/image/list")
 	public JsonResult getImageList(@RequestBody ImageListQueryParam param) {
-
 		ShopApplication shop = shop();
 		PageResult<UploadImageCatNameVo> imageList = shop.image.getPageList(param);
 		return this.success(imageList);
@@ -126,12 +125,12 @@ public class AdminImageController extends AdminBaseController {
 	 * @throws Exception
 	 */
 	@PostMapping(value = "/admin/image/makeCrop")
-	public boolean makeCrop(@RequestBody CropImageParam param) throws Exception {
+	public JsonResult makeCrop(@RequestBody CropImageParam param) throws Exception {
 //		System.out.println(param.remoteImgPath);
 		ShopApplication shop = shop();
 		UploadPath uploadPath = shop.image.makeCrop(param);
 		System.out.println(uploadPath);
-		return true;
+		return success();
 	}
 
 	/**

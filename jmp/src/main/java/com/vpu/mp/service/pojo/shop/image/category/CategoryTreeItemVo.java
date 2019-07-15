@@ -1,4 +1,4 @@
-package com.vpu.mp.service.pojo.shop.image;
+package com.vpu.mp.service.pojo.shop.image.category;
 
 import lombok.Data;
 

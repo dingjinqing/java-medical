@@ -482,7 +482,6 @@ public class ImageService extends BaseService {
             param.cropHeight = param.h;
         }
         UploadPath uploadPath = getWritableUploadPath("image", randomFilename(), extension);
-        System.out.println(param.w);
         Thumbnails.of(fullPath)
                 .sourceRegion(param.x, param.y, param.w, param.h)
                 .size(param.cropWidth, param.cropHeight)

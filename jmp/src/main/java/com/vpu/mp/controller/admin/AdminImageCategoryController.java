@@ -2,7 +2,7 @@ package com.vpu.mp.controller.admin;
 
 
 import com.vpu.mp.service.foundation.JsonResult;
-import com.vpu.mp.service.pojo.shop.image.UploadedImageCategoryParam;
+import com.vpu.mp.service.pojo.shop.image.category.UploadedImageCategoryParam;
 import org.springframework.web.bind.annotation.*;
 
 /**
@@ -32,12 +32,12 @@ public class AdminImageCategoryController extends AdminBaseController {
     /**
      * 删除
      *
-     * @param catId
+     * @param param
      * @return
      */
     @PostMapping("/admin/image/category/delete")
-    public JsonResult deleteImageCategory(Integer catId) {
-        shop().imageCatgory.removeCategory(catId);
+    public JsonResult deleteImageCategory(UploadedImageCategoryParam param) {
+        shop().imageCatgory.removeCategory(param.getImgCatId());
         return success();
     }
 
@@ -48,21 +48,20 @@ public class AdminImageCategoryController extends AdminBaseController {
      * @return
      */
     @PostMapping("/admin/image/category/move")
-    public JsonResult moveImageCategory(Integer catId, Integer parentCatId) {
-        shop().imageCatgory.moveCategory(catId,parentCatId);
+    public JsonResult moveImageCategory(@RequestBody  UploadedImageCategoryParam param) {
+        shop().imageCatgory.moveCategory(param.getImgCatId(),param.getImgCatParentId());
         return success();
     }
 
     /**
      * 更新分组名称
      *
-     * @param name
-     * @param catId
+     * @param param
      * @return
      */
     @PostMapping("/admin/image/category/rename")
-    public JsonResult renameImageCategory(String name, Integer catId) {
-        shop().imageCatgory.setCategoryName(catId, name);
+    public JsonResult renameImageCategory(@RequestBody UploadedImageCategoryParam param) {
+        shop().imageCatgory.setCategoryName(param.getImgCatId(), param.getImgCatName());
         return success();
     }
 
