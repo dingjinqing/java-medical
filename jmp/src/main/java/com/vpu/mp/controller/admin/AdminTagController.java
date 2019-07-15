@@ -9,8 +9,10 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.vpu.mp.service.foundation.JsonResult;
 import com.vpu.mp.service.foundation.JsonResultMessage;
+import com.vpu.mp.service.pojo.shop.member.DeleteTagParam;
 import com.vpu.mp.service.pojo.shop.member.TagInfoParam;
 import com.vpu.mp.service.pojo.shop.member.TagPageListParam;
+import com.vpu.mp.service.pojo.shop.member.UpdateTagParam;
 
 /**
  * 会员标签管理
@@ -31,7 +33,12 @@ public class AdminTagController extends AdminBaseController {
 		return this.success(shop().tag.getPageList(param));
 	}
 	
-	
+	/**
+	 * 添加标签
+	 * @param param
+	 * @param result
+	 * @return
+	 */
 	@PostMapping(value = "/api/admin/tag/add")
 	public JsonResult addTag(@RequestBody @Valid TagInfoParam param,BindingResult result) {
 
@@ -55,4 +62,35 @@ public class AdminTagController extends AdminBaseController {
 		return this.success();
 	}
 	
+	/**
+	 * 删除标签
+	 * @param param
+	 * @return
+	 */
+	@PostMapping(value="/api/admin/tag/delete")
+	public JsonResult deleteTag(@RequestBody  @Valid DeleteTagParam param) {
+		
+		//check tagName is exist
+		boolean tagIdExists = shop().tag.tagIdExists(param.getTagId());
+		if(!tagIdExists) {
+			return this.success();
+		}
+		shop().tag.deleteTag(param.getTagId());
+		return this.success();
+	}
+	
+	/**
+	 * 更新标签名称
+	 * @param param
+	 * @return
+	 */
+	@PostMapping(value="/api/admin/tag/update")
+	public JsonResult updateTagName(@RequestBody @Valid UpdateTagParam param) {
+		int result =  shop().tag.updateTag(param);
+		System.out.println(result);
+		if(result != 1) {
+			return this.fail();
+		}
+		return this.success();
+	}
 }
