@@ -20,11 +20,6 @@ import com.vpu.mp.service.pojo.shop.goods.brand.GoodsBrandPageListParam;
 @RestController
 public class AdminGoodsBrandController extends AdminBaseController {
 
-    @Override
-    protected ShopApplication shop() {
-        return saas.getShopApp(471752);
-    }
-
     /**
      *	商品品牌分页查询
      * @param param
