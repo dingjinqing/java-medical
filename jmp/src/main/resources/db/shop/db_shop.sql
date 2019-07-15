@@ -1064,6 +1064,7 @@ create table `b2c_tag` (
   `tag_name` 		 varchar(20)   	default null,
   `create_time`      timestamp    	default current_timestamp,
   `update_time`      timestamp     	default current_timestamp on update current_timestamp comment '最后修改时间',
+  `is_delete`		tinyint(1)      DEFAULT 0 NOT NULL  COMMENT "0未删除，1已删除",
   primary key (`tag_id`),
   unique key `tag_name` (`tag_name`)
 );
@@ -1074,6 +1075,7 @@ create table `b2c_user_tag` (
   `tag_id`   int(11)   not null,
   `create_time`      timestamp    	default current_timestamp,
   `update_time`      timestamp     	default current_timestamp on update current_timestamp comment '最后修改时间',
+  `is_delete`		 tinyint(1)     DEFAULT 0 NOT NULL  COMMENT "0未删除，1已删除",
   primary key (`user_id`, `tag_id`),
   unique key `user_tag` (`user_id`, `tag_id`)
 );
