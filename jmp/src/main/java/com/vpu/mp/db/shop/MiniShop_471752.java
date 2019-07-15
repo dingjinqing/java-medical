@@ -137,7 +137,7 @@ import com.vpu.mp.db.shop.tables.SearchHistory;
 import com.vpu.mp.db.shop.tables.SecKillDefine;
 import com.vpu.mp.db.shop.tables.SecKillList;
 import com.vpu.mp.db.shop.tables.SecKillProductDefine;
-import com.vpu.mp.db.shop.tables.ServiceCategory;
+import com.vpu.mp.db.shop.tables.StoreServiceCategory;
 import com.vpu.mp.db.shop.tables.ServiceMessageRecord;
 import com.vpu.mp.db.shop.tables.ServiceOrder;
 import com.vpu.mp.db.shop.tables.ServiceRequest;
@@ -890,7 +890,7 @@ public class MiniShop_471752 extends SchemaImpl {
     /**
      * The table <code>mini_shop_471752.b2c_service_category</code>.
      */
-    public final ServiceCategory SERVICE_CATEGORY = com.vpu.mp.db.shop.tables.ServiceCategory.SERVICE_CATEGORY;
+    public final StoreServiceCategory SERVICE_CATEGORY = com.vpu.mp.db.shop.tables.StoreServiceCategory.STORE_SERVICE_CATEGORY;
 
     /**
      * The table <code>mini_shop_471752.b2c_service_message_record</code>.
@@ -1310,7 +1310,7 @@ public class MiniShop_471752 extends SchemaImpl {
             SecKillDefine.SEC_KILL_DEFINE,
             SecKillList.SEC_KILL_LIST,
             SecKillProductDefine.SEC_KILL_PRODUCT_DEFINE,
-            ServiceCategory.SERVICE_CATEGORY,
+            StoreServiceCategory.STORE_SERVICE_CATEGORY,
             ServiceMessageRecord.SERVICE_MESSAGE_RECORD,
             ServiceOrder.SERVICE_ORDER,
             ServiceRequest.SERVICE_REQUEST,

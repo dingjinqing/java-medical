@@ -144,7 +144,7 @@ import com.vpu.mp.db.shop.tables.SearchHistory;
 import com.vpu.mp.db.shop.tables.SecKillDefine;
 import com.vpu.mp.db.shop.tables.SecKillList;
 import com.vpu.mp.db.shop.tables.SecKillProductDefine;
-import com.vpu.mp.db.shop.tables.ServiceCategory;
+import com.vpu.mp.db.shop.tables.StoreServiceCategory;
 import com.vpu.mp.db.shop.tables.ServiceMessageRecord;
 import com.vpu.mp.db.shop.tables.ServiceOrder;
 import com.vpu.mp.db.shop.tables.ServiceRequest;
@@ -917,7 +917,7 @@ public class Tables {
     /**
      * The table <code>mini_shop_471752.b2c_service_category</code>.
      */
-    public static final ServiceCategory SERVICE_CATEGORY = com.vpu.mp.db.shop.tables.ServiceCategory.SERVICE_CATEGORY;
+    public static final StoreServiceCategory SERVICE_CATEGORY = com.vpu.mp.db.shop.tables.StoreServiceCategory.STORE_SERVICE_CATEGORY;
 
     /**
      * The table <code>mini_shop_471752.b2c_service_message_record</code>.
