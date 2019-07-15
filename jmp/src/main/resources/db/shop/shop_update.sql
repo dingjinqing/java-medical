@@ -45,7 +45,7 @@ ALTER TABLE b2c_comment_goods ADD COLUMN bogus_user_avatar varchar(100)  not nul
 
 
 -- 7月9日 黄壮壮 修改b2c_tag表名in_time为create_time 并且添加字段update_time
-alter table b2c_tag CHANGE COLUMN in_time create_time TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP; 
+alter table b2c_tag CHANGE COLUMN in_time create_time TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP;
 ALTER TABLE b2c_tag ADD COLUMN update_time TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '记录修改时间' AFTER create_time;
 
 
@@ -225,3 +225,7 @@ create table `b2c_goods_spec_product_bak` (
 -- 李晓冰 7月12日添加
 -- b2c_goods 添加主键约束
 ALTER TABLE b2c_goods  add PRIMARY KEY(goods_id);
+
+-- 王兵兵 7月15日
+-- b2c_service_category 修改表名
+alter table `b2c_service_category` rename to `b2c_store_service_category`;
