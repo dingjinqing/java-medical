@@ -171,7 +171,7 @@ public class Keys {
     public static final Identity<ServiceRequestRecord, Long> IDENTITY_SERVICE_REQUEST = Identities0.IDENTITY_SERVICE_REQUEST;
     public static final Identity<ServiceScheduleRecord, Byte> IDENTITY_SERVICE_SCHEDULE = Identities0.IDENTITY_SERVICE_SCHEDULE;
     public static final Identity<ServiceTechnicianRecord, Integer> IDENTITY_SERVICE_TECHNICIAN = Identities0.IDENTITY_SERVICE_TECHNICIAN;
-    public static final Identity<ServiceTechnicianGroupRecord, Short> IDENTITY_SERVICE_TECHNICIAN_GROUP = Identities0.IDENTITY_SERVICE_TECHNICIAN_GROUP;
+    public static final Identity<ServiceTechnicianGroupRecord, Integer> IDENTITY_SERVICE_TECHNICIAN_GROUP = Identities0.IDENTITY_SERVICE_TECHNICIAN_GROUP;
     public static final Identity<ServiceTechnicianScheduleRecord, Integer> IDENTITY_SERVICE_TECHNICIAN_SCHEDULE = Identities0.IDENTITY_SERVICE_TECHNICIAN_SCHEDULE;
     public static final Identity<ShareRecordRecord, Integer> IDENTITY_SHARE_RECORD = Identities0.IDENTITY_SHARE_RECORD;
     public static final Identity<ShareSplitRecord, Integer> IDENTITY_SHARE_SPLIT = Identities0.IDENTITY_SHARE_SPLIT;
@@ -560,7 +560,7 @@ public class Keys {
         public static Identity<ServiceRequestRecord, Long> IDENTITY_SERVICE_REQUEST = Internal.createIdentity(ServiceRequest.SERVICE_REQUEST, ServiceRequest.SERVICE_REQUEST.ID);
         public static Identity<ServiceScheduleRecord, Byte> IDENTITY_SERVICE_SCHEDULE = Internal.createIdentity(ServiceSchedule.SERVICE_SCHEDULE, ServiceSchedule.SERVICE_SCHEDULE.SCHEDULE_ID);
         public static Identity<ServiceTechnicianRecord, Integer> IDENTITY_SERVICE_TECHNICIAN = Internal.createIdentity(ServiceTechnician.SERVICE_TECHNICIAN, ServiceTechnician.SERVICE_TECHNICIAN.ID);
-        public static Identity<ServiceTechnicianGroupRecord, Short> IDENTITY_SERVICE_TECHNICIAN_GROUP = Internal.createIdentity(ServiceTechnicianGroup.SERVICE_TECHNICIAN_GROUP, ServiceTechnicianGroup.SERVICE_TECHNICIAN_GROUP.GROUP_ID);
+        public static Identity<ServiceTechnicianGroupRecord, Integer> IDENTITY_SERVICE_TECHNICIAN_GROUP = Internal.createIdentity(ServiceTechnicianGroup.SERVICE_TECHNICIAN_GROUP, ServiceTechnicianGroup.SERVICE_TECHNICIAN_GROUP.GROUP_ID);
         public static Identity<ServiceTechnicianScheduleRecord, Integer> IDENTITY_SERVICE_TECHNICIAN_SCHEDULE = Internal.createIdentity(ServiceTechnicianSchedule.SERVICE_TECHNICIAN_SCHEDULE, ServiceTechnicianSchedule.SERVICE_TECHNICIAN_SCHEDULE.ID);
         public static Identity<ShareRecordRecord, Integer> IDENTITY_SHARE_RECORD = Internal.createIdentity(ShareRecord.SHARE_RECORD, ShareRecord.SHARE_RECORD.ID);
         public static Identity<ShareSplitRecord, Integer> IDENTITY_SHARE_SPLIT = Internal.createIdentity(ShareSplit.SHARE_SPLIT, ShareSplit.SHARE_SPLIT.ID);
