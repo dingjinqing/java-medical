@@ -14,6 +14,7 @@ import com.vpu.mp.service.shop.goods.GoodsService;
 import com.vpu.mp.service.shop.image.ImageCategoryService;
 import com.vpu.mp.service.shop.image.ImageService;
 import com.vpu.mp.service.shop.member.MemberService;
+import com.vpu.mp.service.shop.member.ScoreCfgService;
 import com.vpu.mp.service.shop.member.TagService;
 import com.vpu.mp.service.shop.order.OrderService;
 import com.vpu.mp.service.shop.overview.MallOverviewService;
@@ -54,6 +55,10 @@ public class ShopApplication extends ServiceContainer {
 	 * 会员标签
 	 */
 	public TagService tag;
+	/**
+	 * 积分管理
+	 */
+	public ScoreCfgService score;
 	
 
 	public ShopBasicConfigService shopBasicConfig;
