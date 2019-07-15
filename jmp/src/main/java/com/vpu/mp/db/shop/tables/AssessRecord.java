@@ -27,7 +27,6 @@ import org.jooq.TableField;
 import org.jooq.UniqueKey;
 import org.jooq.impl.DSL;
 import org.jooq.impl.TableImpl;
-import org.jooq.types.UInteger;
 
 
 /**
@@ -43,7 +42,7 @@ import org.jooq.types.UInteger;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class AssessRecord extends TableImpl<AssessRecordRecord> {
 
-    private static final long serialVersionUID = 1626217856;
+    private static final long serialVersionUID = 649863520;
 
     /**
      * The reference instance of <code>mini_shop_471752.b2c_assess_record</code>
@@ -61,7 +60,7 @@ public class AssessRecord extends TableImpl<AssessRecordRecord> {
     /**
      * The column <code>mini_shop_471752.b2c_assess_record.id</code>.
      */
-    public final TableField<AssessRecordRecord, UInteger> ID = createField("id", org.jooq.impl.SQLDataType.INTEGERUNSIGNED.nullable(false).identity(true), this, "");
+    public final TableField<AssessRecordRecord, Integer> ID = createField("id", org.jooq.impl.SQLDataType.INTEGER.nullable(false).identity(true), this, "");
 
     /**
      * The column <code>mini_shop_471752.b2c_assess_record.shop_id</code>. 店铺ID
@@ -171,7 +170,7 @@ public class AssessRecord extends TableImpl<AssessRecordRecord> {
      * {@inheritDoc}
      */
     @Override
-    public Identity<AssessRecordRecord, UInteger> getIdentity() {
+    public Identity<AssessRecordRecord, Integer> getIdentity() {
         return Keys.IDENTITY_ASSESS_RECORD;
     }
 

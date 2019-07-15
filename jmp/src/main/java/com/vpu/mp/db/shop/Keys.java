@@ -41,11 +41,11 @@ public class Keys {
     // IDENTITY definitions
     // -------------------------------------------------------------------------
 
-    public static final Identity<AssessActivityRecord, UInteger> IDENTITY_ASSESS_ACTIVITY = Identities0.IDENTITY_ASSESS_ACTIVITY;
-    public static final Identity<AssessRecordRecord, UInteger> IDENTITY_ASSESS_RECORD = Identities0.IDENTITY_ASSESS_RECORD;
-    public static final Identity<AssessResultRecord, UInteger> IDENTITY_ASSESS_RESULT = Identities0.IDENTITY_ASSESS_RESULT;
-    public static final Identity<AssessTopicRecord, UInteger> IDENTITY_ASSESS_TOPIC = Identities0.IDENTITY_ASSESS_TOPIC;
-    public static final Identity<AssessTopicRecordRecord, UInteger> IDENTITY_ASSESS_TOPIC_RECORD = Identities0.IDENTITY_ASSESS_TOPIC_RECORD;
+	public static final Identity<AssessActivityRecord, Integer> IDENTITY_ASSESS_ACTIVITY = Identities0.IDENTITY_ASSESS_ACTIVITY;
+    public static final Identity<AssessRecordRecord, Integer> IDENTITY_ASSESS_RECORD = Identities0.IDENTITY_ASSESS_RECORD;
+    public static final Identity<AssessResultRecord, Integer> IDENTITY_ASSESS_RESULT = Identities0.IDENTITY_ASSESS_RESULT;
+    public static final Identity<AssessTopicRecord, Integer> IDENTITY_ASSESS_TOPIC = Identities0.IDENTITY_ASSESS_TOPIC;
+    public static final Identity<AssessTopicRecordRecord, Integer> IDENTITY_ASSESS_TOPIC_RECORD = Identities0.IDENTITY_ASSESS_TOPIC_RECORD;
     public static final Identity<BargainRecord, Integer> IDENTITY_BARGAIN = Identities0.IDENTITY_BARGAIN;
     public static final Identity<BargainRecordRecord, Integer> IDENTITY_BARGAIN_RECORD = Identities0.IDENTITY_BARGAIN_RECORD;
     public static final Identity<BargainUserListRecord, Integer> IDENTITY_BARGAIN_USER_LIST = Identities0.IDENTITY_BARGAIN_USER_LIST;
@@ -430,11 +430,11 @@ public class Keys {
     // -------------------------------------------------------------------------
 
     private static class Identities0 {
-        public static Identity<AssessActivityRecord, UInteger> IDENTITY_ASSESS_ACTIVITY = Internal.createIdentity(AssessActivity.ASSESS_ACTIVITY, AssessActivity.ASSESS_ACTIVITY.ID);
-        public static Identity<AssessRecordRecord, UInteger> IDENTITY_ASSESS_RECORD = Internal.createIdentity(AssessRecord.ASSESS_RECORD, AssessRecord.ASSESS_RECORD.ID);
-        public static Identity<AssessResultRecord, UInteger> IDENTITY_ASSESS_RESULT = Internal.createIdentity(AssessResult.ASSESS_RESULT, AssessResult.ASSESS_RESULT.ID);
-        public static Identity<AssessTopicRecord, UInteger> IDENTITY_ASSESS_TOPIC = Internal.createIdentity(AssessTopic.ASSESS_TOPIC, AssessTopic.ASSESS_TOPIC.ID);
-        public static Identity<AssessTopicRecordRecord, UInteger> IDENTITY_ASSESS_TOPIC_RECORD = Internal.createIdentity(com.vpu.mp.db.shop.tables.AssessTopicRecord.ASSESS_TOPIC_RECORD, com.vpu.mp.db.shop.tables.AssessTopicRecord.ASSESS_TOPIC_RECORD.ID);
+    	public static Identity<AssessActivityRecord, Integer> IDENTITY_ASSESS_ACTIVITY = Internal.createIdentity(AssessActivity.ASSESS_ACTIVITY, AssessActivity.ASSESS_ACTIVITY.ID);
+        public static Identity<AssessRecordRecord, Integer> IDENTITY_ASSESS_RECORD = Internal.createIdentity(AssessRecord.ASSESS_RECORD, AssessRecord.ASSESS_RECORD.ID);
+        public static Identity<AssessResultRecord, Integer> IDENTITY_ASSESS_RESULT = Internal.createIdentity(AssessResult.ASSESS_RESULT, AssessResult.ASSESS_RESULT.ID);
+        public static Identity<AssessTopicRecord, Integer> IDENTITY_ASSESS_TOPIC = Internal.createIdentity(AssessTopic.ASSESS_TOPIC, AssessTopic.ASSESS_TOPIC.ID);
+        public static Identity<AssessTopicRecordRecord, Integer> IDENTITY_ASSESS_TOPIC_RECORD = Internal.createIdentity(com.vpu.mp.db.shop.tables.AssessTopicRecord.ASSESS_TOPIC_RECORD, com.vpu.mp.db.shop.tables.AssessTopicRecord.ASSESS_TOPIC_RECORD.ID);
         public static Identity<BargainRecord, Integer> IDENTITY_BARGAIN = Internal.createIdentity(Bargain.BARGAIN, Bargain.BARGAIN.ID);
         public static Identity<BargainRecordRecord, Integer> IDENTITY_BARGAIN_RECORD = Internal.createIdentity(com.vpu.mp.db.shop.tables.BargainRecord.BARGAIN_RECORD, com.vpu.mp.db.shop.tables.BargainRecord.BARGAIN_RECORD.ID);
         public static Identity<BargainUserListRecord, Integer> IDENTITY_BARGAIN_USER_LIST = Internal.createIdentity(BargainUserList.BARGAIN_USER_LIST, BargainUserList.BARGAIN_USER_LIST.ID);

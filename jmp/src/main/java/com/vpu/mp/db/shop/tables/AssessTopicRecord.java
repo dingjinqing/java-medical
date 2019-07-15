@@ -27,7 +27,6 @@ import org.jooq.TableField;
 import org.jooq.UniqueKey;
 import org.jooq.impl.DSL;
 import org.jooq.impl.TableImpl;
-import org.jooq.types.UInteger;
 
 
 /**
@@ -43,7 +42,7 @@ import org.jooq.types.UInteger;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class AssessTopicRecord extends TableImpl<AssessTopicRecordRecord> {
 
-    private static final long serialVersionUID = -631701694;
+    private static final long serialVersionUID = -2118958452;
 
     /**
      * The reference instance of <code>mini_shop_471752.b2c_assess_topic_record</code>
@@ -61,7 +60,7 @@ public class AssessTopicRecord extends TableImpl<AssessTopicRecordRecord> {
     /**
      * The column <code>mini_shop_471752.b2c_assess_topic_record.id</code>.
      */
-    public final TableField<AssessTopicRecordRecord, UInteger> ID = createField("id", org.jooq.impl.SQLDataType.INTEGERUNSIGNED.nullable(false).identity(true), this, "");
+    public final TableField<AssessTopicRecordRecord, Integer> ID = createField("id", org.jooq.impl.SQLDataType.INTEGER.nullable(false).identity(true), this, "");
 
     /**
      * The column <code>mini_shop_471752.b2c_assess_topic_record.record_id</code>. 测评活动记录表关联ID
@@ -151,7 +150,7 @@ public class AssessTopicRecord extends TableImpl<AssessTopicRecordRecord> {
      * {@inheritDoc}
      */
     @Override
-    public Identity<AssessTopicRecordRecord, UInteger> getIdentity() {
+    public Identity<AssessTopicRecordRecord, Integer> getIdentity() {
         return Keys.IDENTITY_ASSESS_TOPIC_RECORD;
     }
 

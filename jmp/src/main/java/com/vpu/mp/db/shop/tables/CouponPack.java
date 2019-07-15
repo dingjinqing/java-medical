@@ -28,8 +28,6 @@ import org.jooq.TableField;
 import org.jooq.UniqueKey;
 import org.jooq.impl.DSL;
 import org.jooq.impl.TableImpl;
-import org.jooq.types.UByte;
-import org.jooq.types.UInteger;
 
 
 /**
@@ -45,7 +43,7 @@ import org.jooq.types.UInteger;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class CouponPack extends TableImpl<CouponPackRecord> {
 
-    private static final long serialVersionUID = 718951813;
+    private static final long serialVersionUID = -1006726316;
 
     /**
      * The reference instance of <code>mini_shop_471752.b2c_coupon_pack</code>
@@ -88,17 +86,17 @@ public class CouponPack extends TableImpl<CouponPackRecord> {
     /**
      * The column <code>mini_shop_471752.b2c_coupon_pack.limit_get_times</code>. 单用户领取限制次数，0不限制
      */
-    public final TableField<CouponPackRecord, UByte> LIMIT_GET_TIMES = createField("limit_get_times", org.jooq.impl.SQLDataType.TINYINTUNSIGNED.nullable(false).defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.TINYINTUNSIGNED)), this, "单用户领取限制次数，0不限制");
+    public final TableField<CouponPackRecord, Byte> LIMIT_GET_TIMES = createField("limit_get_times", org.jooq.impl.SQLDataType.TINYINT.nullable(false).defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.TINYINT)), this, "单用户领取限制次数，0不限制");
 
     /**
      * The column <code>mini_shop_471752.b2c_coupon_pack.total_amount</code>. 总数量
      */
-    public final TableField<CouponPackRecord, UInteger> TOTAL_AMOUNT = createField("total_amount", org.jooq.impl.SQLDataType.INTEGERUNSIGNED.nullable(false).defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.INTEGERUNSIGNED)), this, "总数量");
+    public final TableField<CouponPackRecord, Integer> TOTAL_AMOUNT = createField("total_amount", org.jooq.impl.SQLDataType.INTEGER.nullable(false).defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.INTEGER)), this, "总数量");
 
     /**
      * The column <code>mini_shop_471752.b2c_coupon_pack.issued_amount</code>. 已发放数量
      */
-    public final TableField<CouponPackRecord, UInteger> ISSUED_AMOUNT = createField("issued_amount", org.jooq.impl.SQLDataType.INTEGERUNSIGNED.nullable(false).defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.INTEGERUNSIGNED)), this, "已发放数量");
+    public final TableField<CouponPackRecord, Integer> ISSUED_AMOUNT = createField("issued_amount", org.jooq.impl.SQLDataType.INTEGER.nullable(false).defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.INTEGER)), this, "已发放数量");
 
     /**
      * The column <code>mini_shop_471752.b2c_coupon_pack.access_mode</code>. 获取方式，0：现金购买，1：积分购买，2直接领取
