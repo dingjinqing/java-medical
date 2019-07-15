@@ -31,7 +31,7 @@ import org.jooq.types.UInteger;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class AssessActivityRecord extends UpdatableRecordImpl<AssessActivityRecord> implements Record20<UInteger, Integer, String, String, Timestamp, Timestamp, Byte, Byte, Integer, Integer, Integer, Byte, Byte, String, String, Timestamp, Timestamp, Byte, Byte, Byte> {
 
-    private static final long serialVersionUID = -1995247580;
+    private static final long serialVersionUID = -1937118678;
 
     /**
      * Setter for <code>mini_shop_471752.b2c_assess_activity.id</code>.
@@ -244,30 +244,30 @@ public class AssessActivityRecord extends UpdatableRecordImpl<AssessActivityReco
     }
 
     /**
-     * Setter for <code>mini_shop_471752.b2c_assess_activity.in_time</code>. 添加时间
+     * Setter for <code>mini_shop_471752.b2c_assess_activity.create_time</code>.
      */
-    public void setInTime(Timestamp value) {
+    public void setCreateTime(Timestamp value) {
         set(15, value);
     }
 
     /**
-     * Getter for <code>mini_shop_471752.b2c_assess_activity.in_time</code>. 添加时间
+     * Getter for <code>mini_shop_471752.b2c_assess_activity.create_time</code>.
      */
-    public Timestamp getInTime() {
+    public Timestamp getCreateTime() {
         return (Timestamp) get(15);
     }
 
     /**
-     * Setter for <code>mini_shop_471752.b2c_assess_activity.up_time</code>. 更新时间
+     * Setter for <code>mini_shop_471752.b2c_assess_activity.update_time</code>. 最后修改时间
      */
-    public void setUpTime(Timestamp value) {
+    public void setUpdateTime(Timestamp value) {
         set(16, value);
     }
 
     /**
-     * Getter for <code>mini_shop_471752.b2c_assess_activity.up_time</code>. 更新时间
+     * Getter for <code>mini_shop_471752.b2c_assess_activity.update_time</code>. 最后修改时间
      */
-    public Timestamp getUpTime() {
+    public Timestamp getUpdateTime() {
         return (Timestamp) get(16);
     }
 
@@ -470,7 +470,7 @@ public class AssessActivityRecord extends UpdatableRecordImpl<AssessActivityReco
      */
     @Override
     public Field<Timestamp> field16() {
-        return AssessActivity.ASSESS_ACTIVITY.IN_TIME;
+        return AssessActivity.ASSESS_ACTIVITY.CREATE_TIME;
     }
 
     /**
@@ -478,7 +478,7 @@ public class AssessActivityRecord extends UpdatableRecordImpl<AssessActivityReco
      */
     @Override
     public Field<Timestamp> field17() {
-        return AssessActivity.ASSESS_ACTIVITY.UP_TIME;
+        return AssessActivity.ASSESS_ACTIVITY.UPDATE_TIME;
     }
 
     /**
@@ -630,7 +630,7 @@ public class AssessActivityRecord extends UpdatableRecordImpl<AssessActivityReco
      */
     @Override
     public Timestamp component16() {
-        return getInTime();
+        return getCreateTime();
     }
 
     /**
@@ -638,7 +638,7 @@ public class AssessActivityRecord extends UpdatableRecordImpl<AssessActivityReco
      */
     @Override
     public Timestamp component17() {
-        return getUpTime();
+        return getUpdateTime();
     }
 
     /**
@@ -790,7 +790,7 @@ public class AssessActivityRecord extends UpdatableRecordImpl<AssessActivityReco
      */
     @Override
     public Timestamp value16() {
-        return getInTime();
+        return getCreateTime();
     }
 
     /**
@@ -798,7 +798,7 @@ public class AssessActivityRecord extends UpdatableRecordImpl<AssessActivityReco
      */
     @Override
     public Timestamp value17() {
-        return getUpTime();
+        return getUpdateTime();
     }
 
     /**
@@ -965,7 +965,7 @@ public class AssessActivityRecord extends UpdatableRecordImpl<AssessActivityReco
      */
     @Override
     public AssessActivityRecord value16(Timestamp value) {
-        setInTime(value);
+        setCreateTime(value);
         return this;
     }
 
@@ -974,7 +974,7 @@ public class AssessActivityRecord extends UpdatableRecordImpl<AssessActivityReco
      */
     @Override
     public AssessActivityRecord value17(Timestamp value) {
-        setUpTime(value);
+        setUpdateTime(value);
         return this;
     }
 
@@ -1047,7 +1047,7 @@ public class AssessActivityRecord extends UpdatableRecordImpl<AssessActivityReco
     /**
      * Create a detached, initialised AssessActivityRecord
      */
-    public AssessActivityRecord(UInteger id, Integer shopId, String actCode, String actName, Timestamp startTime, Timestamp endTime, Byte dueTimeType, Byte partTimesType, Integer partTimesDay, Integer partTimesTotal, Integer feedbackTotal, Byte assessJudgeType, Byte coverStyleType, String coverStyle, String assessDesc, Timestamp inTime, Timestamp upTime, Byte isBlock, Byte delFlag, Byte pubFlag) {
+    public AssessActivityRecord(UInteger id, Integer shopId, String actCode, String actName, Timestamp startTime, Timestamp endTime, Byte dueTimeType, Byte partTimesType, Integer partTimesDay, Integer partTimesTotal, Integer feedbackTotal, Byte assessJudgeType, Byte coverStyleType, String coverStyle, String assessDesc, Timestamp createTime, Timestamp updateTime, Byte isBlock, Byte delFlag, Byte pubFlag) {
         super(AssessActivity.ASSESS_ACTIVITY);
 
         set(0, id);
@@ -1065,8 +1065,8 @@ public class AssessActivityRecord extends UpdatableRecordImpl<AssessActivityReco
         set(12, coverStyleType);
         set(13, coverStyle);
         set(14, assessDesc);
-        set(15, inTime);
-        set(16, upTime);
+        set(15, createTime);
+        set(16, updateTime);
         set(17, isBlock);
         set(18, delFlag);
         set(19, pubFlag);
