@@ -1,15 +1,22 @@
 package com.vpu.mp.service.shop.goods;
 
-import static com.vpu.mp.db.main.Tables.CATEGORY;
-import static com.vpu.mp.db.shop.Tables.GOODS;
-import static com.vpu.mp.db.shop.Tables.GOODS_BRAND;
-import static com.vpu.mp.db.shop.Tables.GOODS_IMG;
-import static com.vpu.mp.db.shop.Tables.GOODS_SPEC_PRODUCT;
-import static com.vpu.mp.db.shop.Tables.SORT;
-import static com.vpu.mp.db.shop.Tables.GOODS_LABEL_COUPLE;
-import static com.vpu.mp.db.shop.Tables.GOODS_LABEL;
-import static com.vpu.mp.service.pojo.shop.goods.GoodsPageListParam.ASC;
-import static com.vpu.mp.service.pojo.shop.goods.GoodsPageListParam.IS_ON_SALE_DEFAULT;
+import com.vpu.mp.db.shop.tables.records.GoodsImgRecord;
+import com.vpu.mp.db.shop.tables.records.GoodsLabelCoupleRecord;
+import com.vpu.mp.db.shop.tables.records.GoodsRecord;
+import com.vpu.mp.service.foundation.BaseService;
+import com.vpu.mp.service.foundation.DelFlag;
+import com.vpu.mp.service.foundation.PageResult;
+import com.vpu.mp.service.foundation.Util;
+import com.vpu.mp.service.pojo.shop.goods.*;
+import com.vpu.mp.service.pojo.shop.goods.label.GoodsLabelCouple;
+import com.vpu.mp.service.pojo.shop.goods.label.GoodsLabelCoupleTypeEnum;
+import com.vpu.mp.service.pojo.shop.goods.label.GoodsLabelListVo;
+import com.vpu.mp.service.pojo.shop.goods.spec.GoodsSpec;
+import com.vpu.mp.service.pojo.shop.goods.spec.GoodsSpecProduct;
+import com.vpu.mp.service.pojo.shop.goods.spec.GoodsSpecVal;
+import org.jooq.*;
+import org.jooq.impl.DSL;
+import org.jooq.tools.StringUtils;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
@@ -17,21 +24,10 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 
-import com.vpu.mp.db.shop.tables.records.GoodsLabelCoupleRecord;
-import com.vpu.mp.service.foundation.*;
-import com.vpu.mp.service.pojo.shop.goods.*;
-import com.vpu.mp.service.pojo.shop.goods.spec.GoodsSpec;
-import com.vpu.mp.service.pojo.shop.goods.spec.GoodsSpecVal;
-import org.jooq.*;
-import org.jooq.impl.DSL;
-import org.jooq.tools.StringUtils;
-
-import static com.vpu.mp.service.pojo.shop.goods.GoodsPageListVo.GoodsLabel;
-
-import com.vpu.mp.db.shop.tables.records.GoodsImgRecord;
-import com.vpu.mp.db.shop.tables.records.GoodsRecord;
-import com.vpu.mp.service.pojo.shop.goods.label.GoodsLabelCouple;
-import com.vpu.mp.service.pojo.shop.goods.spec.GoodsSpecProduct;
+import static com.vpu.mp.db.main.Tables.CATEGORY;
+import static com.vpu.mp.db.shop.Tables.*;
+import static com.vpu.mp.service.pojo.shop.goods.GoodsPageListParam.ASC;
+import static com.vpu.mp.service.pojo.shop.goods.GoodsPageListParam.IS_ON_SALE_DEFAULT;
 
 /**
  * 商品品牌
@@ -40,7 +36,7 @@ import com.vpu.mp.service.pojo.shop.goods.spec.GoodsSpecProduct;
  * @date 2019年6月25日
  */
 public class GoodsService extends BaseService {
-    
+
     public GoodsBrandService goodsBrand;
     public GoodsSortService goodsSort;
     public GoodsCommentService goodsComment;
@@ -59,12 +55,15 @@ public class GoodsService extends BaseService {
     public PageResult<GoodsPageListVo> getPageList(GoodsPageListParam goodsPageListParam) {
         SelectOnConditionStep<?> selectFrom = db()
                 .select(GOODS.GOODS_ID, GOODS.GOODS_NAME, GOODS.GOODS_IMG, GOODS.GOODS_SN, GOODS.SHOP_PRICE,
-                        GOODS.CAT_ID, SORT.SORT_NAME, GOODS_BRAND.BRAND_NAME, GOODS.GOODS_NUMBER, GOODS.GOODS_SALE_NUM)
-                .from(GOODS).leftJoin(SORT).on(GOODS.SORT_ID.eq(SORT.SORT_ID))
-                .leftJoin(GOODS_BRAND).on(GOODS.BRAND_ID.eq(GOODS_BRAND.ID));
+                        GOODS.CAT_ID, SORT.SORT_NAME, GOODS.SORT_ID, GOODS_BRAND.BRAND_NAME, GOODS.GOODS_NUMBER, GOODS.GOODS_SALE_NUM)
+                .from(GOODS).leftJoin(SORT).on(GOODS.SORT_ID.eq(SORT.SORT_ID)).leftJoin(GOODS_BRAND)
+                .on(GOODS.BRAND_ID.eq(GOODS_BRAND.ID));
 
-
+        // 拼接过滤条件
         SelectConditionStep<?> select = this.buildOptions(selectFrom, goodsPageListParam);
+
+        // 拼接排序
+        select = this.buildOrderFileds(select, goodsPageListParam);
 
         PageResult<GoodsPageListVo> pageResult = this.getPageResult(select, goodsPageListParam.getCurrentPage(),
                 goodsPageListParam.getPageRows(), GoodsPageListVo.class);
@@ -82,8 +81,14 @@ public class GoodsService extends BaseService {
      * @param goodsPageListVos
      */
     private void disposeCategoryName(List<GoodsPageListVo> goodsPageListVos) {
-        Map<Short, String> catIdNameMap = mainDb().select(CATEGORY.CAT_ID, CATEGORY.CAT_NAME).from(CATEGORY).fetch()
-                .intoMap(CATEGORY.CAT_ID, CATEGORY.CAT_NAME);
+        List<Short> catIds = new ArrayList<Short>(goodsPageListVos.size());
+
+        for (GoodsPageListVo vo : goodsPageListVos) {
+            catIds.add(vo.getCatId());
+        }
+
+        Map<Short, String> catIdNameMap = mainDb().select(CATEGORY.CAT_ID, CATEGORY.CAT_NAME).from(CATEGORY)
+                .where(CATEGORY.CAT_ID.in(catIds)).fetch().intoMap(CATEGORY.CAT_ID, CATEGORY.CAT_NAME);
 
         for (GoodsPageListVo goodsPageListVo : goodsPageListVos) {
             Short catId = goodsPageListVo.getCatId();
@@ -97,52 +102,25 @@ public class GoodsService extends BaseService {
      * @param goodsPageListVos
      */
     private void disposeGoodsLabels(List<GoodsPageListVo> goodsPageListVos) {
+        //通过商品id关联对应 的标签
         List<Integer> goodsIds = new ArrayList<>(goodsPageListVos.size());
-        List<Short> catIds = new ArrayList<>(goodsPageListVos.size());
 
         for (GoodsPageListVo v : goodsPageListVos) {
             goodsIds.add(v.getGoodsId());
-            catIds.add(v.getCatId());
         }
 
-        //gatid和标签映射
-        Map<Integer, List<GoodsLabel>> goodsIdLabelMap = db().select().from(GOODS_LABEL).innerJoin(GOODS_LABEL_COUPLE)
-                .on(GOODS_LABEL.ID.eq(GOODS_LABEL_COUPLE.LABEL_ID))
-                .where(GOODS_LABEL_COUPLE.TYPE.eq(GoodsLabelCouple.GOODS_LABEL_CODE))
-                .and(GOODS_LABEL_COUPLE.GTA_ID.in(goodsIds))
-                .fetch().intoGroups(GOODS_LABEL_COUPLE.GTA_ID, GoodsLabel.class);
-
-
-        //通过属于平台分类查询 分类类型和标签的对应
-        Map<Integer, List<GoodsLabel>> catIdLabelMap = db().select().from(GOODS_LABEL).innerJoin(GOODS_LABEL_COUPLE)
-                .on(GOODS_LABEL.ID.eq(GOODS_LABEL_COUPLE.LABEL_ID))
-                .where(GOODS_LABEL_COUPLE.TYPE.eq(GoodsLabelCouple.CATEGORY_LABEL_CODE))
-                .and(GOODS_LABEL_COUPLE.GTA_ID.in(catIds))
-                .fetch().intoGroups(GOODS_LABEL_COUPLE.GTA_ID, GoodsLabel.class);
-
+        // gatid和标签映射
+        Map<Integer, List<GoodsLabelListVo>> goodsIdLabelMap = goodsLabel.getGtaLabelMap(goodsIds, GoodsLabelCoupleTypeEnum.GOODSTYPE);
 
         for (GoodsPageListVo v : goodsPageListVos) {
             Integer goodsId = v.getGoodsId();
-            Short categoryId = v.getCatId();
 
-            List<GoodsLabel> goodsIdLabels = goodsIdLabelMap.get(goodsId);
+            //商品关联
+            List<GoodsLabelListVo> goodsIdLabels = goodsIdLabelMap.get(goodsId);
             if (goodsIdLabels != null) {
                 v.setGoodsLabels(goodsIdLabels);
             }
-
-            @SuppressWarnings(value = "all")
-            List<GoodsLabel> categoryIdLabels = catIdLabelMap.get(categoryId);
-
-            if (categoryIdLabels != null) {
-                List<GoodsLabel> oldLabel = v.getGoodsLabels();
-                if (oldLabel == null) {
-                    v.setGoodsLabels(categoryIdLabels);
-                } else {
-                    oldLabel.addAll(categoryIdLabels);
-                }
-            }
         }
-
     }
 
     /**
@@ -154,9 +132,9 @@ public class GoodsService extends BaseService {
      */
     private SelectConditionStep<?> buildOptions(SelectOnConditionStep<?> select,
                                                 GoodsPageListParam goodsPageListParam) {
-        SelectConditionStep<?> scs = select.where(GOODS.DEL_FLAG.eq(DelFlag.NORMAL_VALUE));
+        SelectConditionStep<?> scs = select.where(GOODS.DEL_FLAG.eq(DelFlag.NORMAL.getCode()));
 
-        //默认显示在售商品
+        // 默认显示在售商品
         if (goodsPageListParam.getIsOnSale() == null) {
             goodsPageListParam.setIsOnSale(IS_ON_SALE_DEFAULT);
         }
@@ -172,7 +150,9 @@ public class GoodsService extends BaseService {
         }
 
         if (goodsPageListParam.getSortId() != null) {
-            scs = scs.and(GOODS.SORT_ID.eq(goodsPageListParam.getSortId()));
+            List<Integer> childrenId = goodsSort.findChildrenByParentId(goodsPageListParam.getSortId());
+            childrenId.add(goodsPageListParam.getSortId());
+            scs = scs.and(GOODS.SORT_ID.in(childrenId));
         }
 
         if (goodsPageListParam.getBrandId() != null) {
@@ -191,28 +171,37 @@ public class GoodsService extends BaseService {
             scs = scs.and(GOODS.SHOP_PRICE.le(goodsPageListParam.getHighShopPrice()));
         }
 
-        //根据标签过滤商品
+        // 根据标签过滤商品
         if (goodsPageListParam.getLabelId() != null) {
 
-            //根据标签类型和标签id值过滤出改标签对应的商品id或者平台分类id
-            List<Integer> gtaIds = db().selectDistinct(GOODS_LABEL_COUPLE.GTA_ID).from(GOODS_LABEL_COUPLE)
-                    .where(GOODS_LABEL_COUPLE.TYPE.eq(goodsPageListParam.getLabelType()))
-                    .and(GOODS_LABEL_COUPLE.LABEL_ID.eq(goodsPageListParam.getLabelId()))
-                    .fetch(GOODS_LABEL_COUPLE.GTA_ID);
+            // 根据标签类型和标签id值过滤出该标签对应的商品id或者平台分类id
+            List<Integer> gatIds = goodsLabelCouple.selectGatIdsByLabelIds(
+                    Arrays.asList(goodsPageListParam.getLabelId()), goodsPageListParam.getLabelType());
 
-
-            if (GoodsLabelCouple.GOODS_LABEL_CODE.equals(goodsPageListParam.getLabelType())) {
-                //标签是针对单个商品的类型
-                scs = scs.and(GOODS.GOODS_ID.in(gtaIds));
+            // 目前仅仅考虑了标签属于商品，属于平台分类和全部商品的情况，未考虑标签属于商家分类的情况
+            if (GoodsLabelCoupleTypeEnum.GOODSTYPE.getCode().equals(goodsPageListParam.getLabelType())) {
+                // 标签是针对单个商品的类型
+                scs = scs.and(GOODS.GOODS_ID.in(gatIds));
+            } else if (GoodsLabelCoupleTypeEnum.CATTYPE.getCode().equals(goodsPageListParam.getLabelType())) {
+                // 标签是针对平台分类的类型
+                scs = scs.and(GOODS.CAT_ID.in(gatIds));
+            } else if (GoodsLabelCoupleTypeEnum.SORTTYPE.getCode().equals(goodsPageListParam.getLabelType())) {
+                scs = scs.and(GOODS.SORT_ID.in(gatIds));
             } else {
-                //标签是针对平台分类的类型
-                scs = scs.and(GOODS.CAT_ID.in(gtaIds));
+                //全部商品情况不用添加过滤条件
             }
 
         }
+        return scs;
+    }
 
-
-        //筛选排序条件，默认是根据创建时间进行排序
+    /**
+     * 排序条件过滤
+     *
+     * @return
+     */
+    private SelectConditionStep<?> buildOrderFileds(SelectConditionStep<?> scs, GoodsPageListParam goodsPageListParam) {
+        // 筛选排序条件，默认是根据创建时间进行排序
         String orderField = goodsPageListParam.getOrderField();
         String orderDire = goodsPageListParam.getOrderDirection();
 
@@ -248,7 +237,6 @@ public class GoodsService extends BaseService {
         return scs;
     }
 
-
     /**
      * @param ids 商品ID列表
      * @return
@@ -258,15 +246,14 @@ public class GoodsService extends BaseService {
         if (ids == null || ids.isEmpty()) {
             return new ArrayList<GoodsView>();
         }
-        List<GoodsView> goodsViewList = db().select(GOODS.GOODS_ID, GOODS.GOODS_NAME, GOODS.GOODS_IMG, GOODS.GOODS_NUMBER, GOODS.SHOP_PRICE, GOODS.UNIT)
-                .from(GOODS).where(GOODS.GOODS_ID.in(ids)).fetchInto(GoodsView.class);
+        List<GoodsView> goodsViewList = db().select(GOODS.GOODS_ID, GOODS.GOODS_NAME, GOODS.GOODS_IMG,
+                GOODS.GOODS_NUMBER, GOODS.SHOP_PRICE, GOODS.UNIT).from(GOODS).where(GOODS.GOODS_ID.in(ids))
+                .fetchInto(GoodsView.class);
         return goodsViewList;
     }
 
-
     /**
-     * 先插入商品，从而得到商品的id，
-     * 然后插入商品规格的属性和规格值，从而得到规格属性和规格值的id, 最后拼凑出prdSpecs再插入具体的商品规格
+     * 先插入商品，从而得到商品的id， 然后插入商品规格的属性和规格值，从而得到规格属性和规格值的id, 最后拼凑出prdSpecs再插入具体的商品规格
      *
      * @param goods
      */
@@ -291,7 +278,8 @@ public class GoodsService extends BaseService {
 
             } else {
                 // 如果存在规格列表字段，则表明用户自己定义了具体的规格
-                goodsSpecProductService.insert(db, goods.getGoodsSpecProducts(), goods.getGoodsSpecs(), goods.getGoodsId());
+                goodsSpecProductService.insert(db, goods.getGoodsSpecProducts(), goods.getGoodsSpecs(),
+                        goods.getGoodsId());
             }
 
         });
@@ -405,7 +393,6 @@ public class GoodsService extends BaseService {
             return false;
         }
     }
-
 
     /**
      * 商品名和商品码查重
@@ -521,16 +508,12 @@ public class GoodsService extends BaseService {
         db().transaction(configuration -> {
             DSLContext db = DSL.using(configuration);
             db.update(GOODS).set(GOODS.DEL_FLAG, DelFlag.DISABLE_VALUE)
-                    .set(GOODS.GOODS_SN, DSL.concat(DelFlag.DEL_ITEM_PREFIX)
-                            .concat(GOODS.GOODS_ID)
-                            .concat(DelFlag.DEL_ITEM_SPLITER)
-                            .concat(GOODS.GOODS_SN))
-                    .set(GOODS.GOODS_NAME, DSL.concat(DelFlag.DEL_ITEM_PREFIX)
-                            .concat(GOODS.GOODS_ID)
-                            .concat(DelFlag.DEL_ITEM_SPLITER)
-                            .concat(GOODS.GOODS_NAME))
-                    .where(GOODS.GOODS_ID.in(goodsIds))
-                    .execute();
+                    .set(GOODS.GOODS_SN,
+                            DSL.concat(DelFlag.DEL_ITEM_PREFIX).concat(GOODS.GOODS_ID).concat(DelFlag.DEL_ITEM_SPLITER)
+                                    .concat(GOODS.GOODS_SN))
+                    .set(GOODS.GOODS_NAME, DSL.concat(DelFlag.DEL_ITEM_PREFIX).concat(GOODS.GOODS_ID)
+                            .concat(DelFlag.DEL_ITEM_SPLITER).concat(GOODS.GOODS_NAME))
+                    .where(GOODS.GOODS_ID.in(goodsIds)).execute();
 
             delteImg(db, goodsIds);
 
@@ -539,7 +522,6 @@ public class GoodsService extends BaseService {
             goodsLabelCouple.deleteByGoodsIds(db, goodsIds);
 
         });
-
 
     }
 
@@ -553,7 +535,8 @@ public class GoodsService extends BaseService {
     }
 
     /**
-     *  商品修改
+     * 商品修改
+     *
      * @param goods
      */
     public void update(Goods goods) {
@@ -591,7 +574,6 @@ public class GoodsService extends BaseService {
 
         goodsRecord.store();
     }
-
 
     /**
      * 修改商品图片
@@ -639,7 +621,6 @@ public class GoodsService extends BaseService {
         }
 
         goodsSpecProductService.deleteByGoodsIds(db, Arrays.asList(goods.getGoodsId()));
-
 
         goods.getGoodsSpecProducts().forEach(goodsSpecProduct -> goodsSpecProduct.setGoodsId(null));
 

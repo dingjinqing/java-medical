@@ -1,10 +1,10 @@
 package com.vpu.mp.service.pojo.shop.goods;
 
+import com.vpu.mp.service.pojo.shop.goods.label.GoodsLabelListVo;
+import lombok.Data;
+
 import java.math.BigDecimal;
 import java.util.List;
-
-
-import lombok.Data;
 
 /**
  * @author 李晓冰
@@ -20,14 +20,10 @@ public class GoodsPageListVo {
     private Short catId;
     private String catName;
     private String sortName;
+    private Integer sortId;
     private String brandName;
     private Integer goodsNumber;
     private Integer goodsSaleNum;
-    private List<GoodsLabel> goodsLabels;
+    private List<GoodsLabelListVo> goodsLabels;
 
-    @Data
-    public static class GoodsLabel{
-        private Integer id;
-        private String name;
-    }
 }

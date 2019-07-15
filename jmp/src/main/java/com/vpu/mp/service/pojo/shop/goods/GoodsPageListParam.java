@@ -1,9 +1,8 @@
 package com.vpu.mp.service.pojo.shop.goods;
 
-import com.vpu.mp.service.foundation.Page;
-import lombok.Data;
-
 import java.math.BigDecimal;
+
+import lombok.Data;
 
 /**
  * @author 李晓冰
@@ -53,6 +52,6 @@ public class GoodsPageListParam {
     /**
      * 	分页信息
      */
-    private int currentPage = Page.DEFAULT_CURRENT_PAGE;
-    private int pageRows = Page.DEFAULT_PAGE_ROWS;
+    private int currentPage;
+    private int pageRows;
 }
