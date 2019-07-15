@@ -3867,6 +3867,34 @@ commit;
 
 ##测评活动表
 ##drop table if exists `b2c_assess_activity`;
+create table `b2c_assess_activity` (
+  `id`                int(11)               not null auto_increment,
+  `shop_id`           int(11)               null     default 0 comment '店铺ID',
+  `act_code`          varchar(32)           null     default '' comment '活动编码',
+  `act_name`          varchar(120)          not null default '' comment '活动名称',
+  `start_time`        datetime              not null comment '活动起始时间',
+  `end_time`          datetime              not null comment '活动截止时间',
+  `due_time_type`     tinyint(1)            null     default 0 comment '是否永久有效：0否，1是',
+  `part_times_type`   tinyint(1)            null     default 0 comment '单用户参与次数类型：0不限制，1限制次数',
+  `part_times_day`    int(4)                null     default 1 comment '每天最多参与次数：默认为1,0表示不限制',
+  `part_times_total`  int(4)                null     default 1 comment '累计最多参与次数：默认为1,0表示不限制',
+  `feedback_total`    int(4)                null     default 0 comment '活动总反馈数量：默认为0,0表示不限制',
+  `assess_judge_type` tinyint(1)            null     default 0 comment '测评结果判断条件：0根据选项判断，1根据得分判断',
+  `cover_style_type`  tinyint(1)            null     default 0 comment '封面样式类型：0默认样式，1自定义',
+  `cover_style`       text comment '封面样式内容，json串',
+  `assess_desc`       varchar(500)          not null default '' comment '测评介绍',
+  `create_time`       timestamp       default current_timestamp,
+  `update_time`       timestamp       default current_timestamp on update current_timestamp comment '最后修改时间',
+  `is_block`          tinyint(1)            null     default 0 comment '活动状态：0未停用，1已停用',
+  `del_flag`          tinyint(1)            null     default 0 comment '删除标识：0未删除，1已删除',
+  `pub_flag`          tinyint(1)            null     default 0 comment '发布标识：0未发布，1已发布',
+  primary key (`id`),
+  key `act_name` (`act_name`),
+  key (`shop_id`)
+);
+
+-- 测评活动题目表
+-- drop table if exists `b2c_assess_topic`;
 create table `b2c_assess_topic` (
   `id`                int(8)                not null auto_increment,
   `shop_id`           int(11)               null     default 0 comment '店铺ID',
