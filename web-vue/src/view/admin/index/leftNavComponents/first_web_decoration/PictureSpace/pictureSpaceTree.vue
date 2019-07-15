@@ -10,7 +10,7 @@
           :on-success="handleSuccess"
           :before-remove="beforeRemove"
           multiple
-          :limit="3"
+          :limit="5"
           :on-exceed="handleExceed"
         >
           <el-button
@@ -21,17 +21,17 @@
             @mouseover="tip_over()"
             @mouseleave="tip_leave()"
             class="title_tip"
-          >当前版本为旗舰版，剩余9845.36M内存空间<img :src="tip_img">
+          >{{$t('imgsSpace.tipTitle')}}<img :src="tip_img">
             <div
               class="tip_hidden"
               v-if="tip_hidden_flag"
             >
-              <div class="system_info_content_top">体验版100M内存空间，基础版500M内存空间，高级版2048M内存空间，旗舰版10240M内存空间</div>
+              <div class="system_info_content_top">{{$t('imgsSpace.hiddleTitle')}}</div>
               <div class="system_info_content_bottom">
                 <el-button
                   type="primary"
                   size="mini"
-                >了解更多</el-button>
+                >{{$t('imgsSpace.modeText')}}</el-button>
               </div>
             </div>
           </div>
@@ -59,6 +59,7 @@
                   :key="item.value"
                   :label="item.label"
                   :value="item.value"
+                  size='mini'
                 >
                 </el-option>
               </el-select>
@@ -71,10 +72,14 @@
                 type="info"
                 plain
                 size="mini"
+                @click="detailImgsSearch()"
               >{{$t('imgageDalog.search')}}</el-button>
 
             </div>
-            <div class="right_content">
+            <div
+              class="right_content"
+              v-if="right_content_hidden"
+            >
               <ul>
                 <li
                   @mouseenter="enter(index)"
@@ -84,7 +89,9 @@
                   :key="index"
                 >
                   <div style="position:relative">
-                    <img :src="item.imgUrl">
+                    <a :title="item.imgName">
+                      <img :src="item.imgUrl">
+                    </a>
                     <div
                       v-show="item.checked"
                       class="img_sel"
@@ -97,13 +104,12 @@
                     <p :class="imageDalog_p_height">
                       <a
                         class="old_pic"
-                        href="http://mpdevimg2.weipubao.cn/upload/4748160/image/20190708/crop_aeZqHE9BhNhWub8j.jpeg"
+                        :href="item.imgUrl"
                         target="_blank"
                         title="显示原图"
                       >{{$t('imgageDalog.OriginalImg')}}</a>
                       <a
                         class="remove_image"
-                        url="http://mpdevimg2.weipubao.cn/upload/4748160/image/20190708/crop_aeZqHE9BhNhWub8j.jpeg"
                         img_id="17"
                         img_width="52"
                         img_height="52"
@@ -116,7 +122,7 @@
                     class="img_dim"
                     :class="item.imgIndex === index?'dim_flag':''"
                   >
-                    <p style="text-align:center">{{item.size}}</p>
+                    <p style="text-align:center">{{item.imgWidth}}x{{item.imgHeight}}</p>
                   </div>
                 </li>
               </ul>
@@ -127,38 +133,49 @@
                     true-label="1"
                     false-label="0"
                     @change="allChecked()"
-                  >全选</el-checkbox>
+                  >{{$t('imgsSpace.allCheckedText')}}</el-checkbox>
                   <el-button
                     size="mini"
                     style="margin-right:5px"
                     @click="deleteImgs()"
-                  >批量删除</el-button>
+                  >{{$t('imgsSpace.deleteImgsText')}}</el-button>
                   <el-button
                     size="mini"
                     @click="handleMoveimgs()"
-                  >批量移动</el-button>
+                  >{{$t('imgsSpace.moveImgsText')}}</el-button>
                 </div>
                 <div class="bottom_right_p">
                   <div
                     class="totle"
                     :class="admin_imageDalog_totle"
                   >
-                    <span>{{$t('imgageDalog.currentPage')}}1/2,</span>
-                    <span>{{$t('imgageDalog.totalPage')}}12{{$t('imgageDalog.strip')}}</span>
+                    <span>{{$t('imgageDalog.currentPage')}}{{this.currentPage}}/{{this.pageCount}},</span>
+                    <span>{{$t('imgageDalog.totalPage')}}{{this.totalRows}}{{$t('imgageDalog.strip')}}</span>
                   </div>
                   <el-pagination
                     @size-change="handleSizeChange"
                     @current-change="handleCurrentChange"
                     :current-page.sync="currentPage3"
-                    :page-size="100"
+                    :page-size="20"
                     layout="prev, pager, next, jumper"
-                    :total="1000"
+                    :total="totalRows"
                     :small="pagination_b"
                   >
                   </el-pagination>
                 </div>
 
               </div>
+            </div>
+            <div
+              class="text-warning padding-top-10 right_content"
+              style="text-align: center;width: 100%;height: 150px;margin-top: 60px"
+              v-else
+            >
+              <img
+                src="http://mpdevimg2.weipubao.cn/image/admin/image_no_data.png"
+                style="margin-top: 20px"
+              >
+              <p style="color:#999;font-size: 14px;text-align: center;margin-top: 15px">{{$t('imgsSpace.noneImgsText')}}</p>
             </div>
           </div>
         </div>
@@ -179,9 +196,9 @@
       >
         <el-option
           v-for="item in options_move"
-          :key="item.value"
-          :label="item.label"
-          :value="item.value"
+          :key="item.id"
+          :label="item.name"
+          :value="item.name"
         >
         </el-option>
       </el-select>
@@ -192,7 +209,7 @@
         <el-button @click="dialogVisible = false">取 消</el-button>
         <el-button
           type="primary"
-          @click="dialogVisible = false"
+          @click="allNodesSelectSure()"
         >确 定</el-button>
       </span>
     </el-dialog>
@@ -202,7 +219,7 @@
 <script>
 import { mapGetters } from 'vuex'
 import Tree from '@/components/admin/tree'
-import { imgsdeleteRequest } from '@/api/admin/pictureSpace.js'
+import { imgsdeleteRequest, queryImgsRequest, moveImgsRequest } from '@/api/admin/pictureSpace.js'
 export default {
   components: { Tree },
   data () {
@@ -222,8 +239,8 @@ export default {
       dim_flag: 'dim_flag',
       mask_flag: 'mask_flag',
       img_list: [
-        { checked: false, imgIndex: '', imgUrl: this.$imageHost + '/upload/0/image/20180528/i561Ez0lgWDeUOHe.jpeg!middle', size: '52x52' },
-        { checked: false, imgIndex: '', imgUrl: this.$imageHost + '/upload/0/image/20180528/i561Ez0lgWDeUOHe.jpeg!middle', size: '72x72' }
+        // { checked: false, imgIndex: '', imgUrl: this.$imageHost + '/upload/0/image/20180528/i561Ez0lgWDeUOHe.jpeg!middle', size: '52x52' },
+        // { checked: false, imgIndex: '', imgUrl: this.$imageHost + '/upload/0/image/20180528/i561Ez0lgWDeUOHe.jpeg!middle', size: '72x72' }
       ],
       tip_img: this.$imageHost + '/image/admin/system_icon.png',
       imageDalogTip_lineHeight: '',
@@ -232,35 +249,15 @@ export default {
       tip_hidden_flag: false,
       b_checked: false,
       dialogVisible: false,
-      options_move: [{
-        value: '选项1',
-        label: '我的图片'
-      }, {
-        value: '选项2',
-        label: '轮播图'
-      }, {
-        value: '选项3',
-        label: '护肤品'
-      }, {
-        value: '选项4',
-        label: '商品主图'
-      }, {
-        value: '选项5',
-        label: '123'
-      },
-      {
-        value: '选项5',
-        label: '456'
-      },
-      {
-        value: '选项5',
-        label: '12111'
-      },
-      {
-        value: '选项5',
-        label: '目录'
-      }],
-      value_move: ''
+      options_move: [],
+      value_move: '',
+      allNodesName: [],
+      firstNodeId: '',
+      totalRows: null,
+      currentPage: '',
+      pageCount: '',
+      right_content_hidden: true,
+      checkArr: ''
     }
   },
   computed: {
@@ -277,12 +274,23 @@ export default {
       this.Initialization_nodeClick(newData)
     },
     allNodes_ (newData, oldData) {
-      this.Initialization_allTree(newData)
+      console.log(newData)
+
+      // 初始化图片查询数据
+      if (newData.content) {
+        this.Initialization_allTree(newData)
+        this.firstNodeId = newData.content[0].id
+      } else {
+        this.firstNodeId = newData.id
+      }
+
+      this.queryImgs()
     }
   },
   mounted () {
-    this.value = this.options[0].label
-    this.value_move = this.options_move[0].label
+    console.log(this.options[0].value)
+    this.value = this.options[0].value
+
     console.log(this.clickNode)
     // 初始化语言
     this.langDefault()
@@ -293,7 +301,73 @@ export default {
       console.log(data)
     },
     Initialization_allTree (data) {
+      let content = data.content[0]
+      let obj = {
+        name: content.name,
+        id: content.id
+      }
+      this.value_move = content.name
+      this.allNodesName.push(obj)
+      this.handleAllNodes(content.child)
+      console.log(this.allNodesName)
+      this.options_move = this.allNodesName
+      console.log(content)
+    },
+    // 处理所有节点数据、
+    handleAllNodes (data) {
       console.log(data)
+      data.map((item, index) => {
+        if (item.name !== '') {
+          let obj = {
+            name: item.name,
+            id: item.id
+          }
+          this.allNodesName.push(obj)
+        }
+        console.log(item.child.length)
+        if (item.child.length !== 0) {
+          this.handleAllNodes(item.child)
+        }
+      })
+      // console.log(item.chil)
+    },
+    // 图片分组查询
+    queryImgs () {
+      console.log(this.firstNodeId)
+      let obj = {
+        'page': 1,
+        'imgCatId': this.firstNodeId,
+        'keywords': '',
+        'searchNeed': 0,
+        'needImgWidth': '',
+        'needImgHeight': '',
+        'uploadSortId': this.value
+      }
+      console.log(obj)
+      queryImgsRequest(obj).then((res) => {
+        console.log(res)
+        console.log(res.content.dataList)
+        if (res.error === 0) {
+          console.log(res.content.dataList.length)
+          if (res.content.dataList.length === 0) {
+            this.right_content_hidden = false
+            return
+          }
+          console.log(res.content.page.totalRows)
+          this.totalRows = res.content.page.totalRows
+          this.currentPage = res.content.page.currentPage
+          this.pageCount = res.content.page.pageCount
+          res.content.dataList.map((item, index) => {
+            item.checked = false
+            item.imgIndex = ''
+
+            // item.imgUrl = item.imgUrl.split('cn')[1]
+            // console.log(item.imgUrl)
+          })
+          this.img_list = res.content.dataList
+          this.right_content_hidden = true
+        }
+      })
     },
     // 文件上传成功后的钩子
     handleSuccess () {
@@ -317,15 +391,27 @@ export default {
     },
     // currentPage 改变时会触发
     handleCurrentChange () {
-
+      console.log(this.currentPage3)
+      let obj = {
+        'page': this.currentPage3,
+        'imgCatId': this.firstNodeId,
+        'keywords': this.imgNameInput,
+        'searchNeed': 0,
+        'needImgWidth': '',
+        'needImgHeight': '',
+        'uploadSortId': this.value
+      }
+      queryImgsRequest(obj).then((res) => {
+        console.log(res)
+      })
     },
     // 鼠标划入
     enter (index) {
-      console.log(index)
+      // console.log(index)
       // this.mask_flag = !this.mask_flag
       // this.dim_flag = !this.dim_flag
       this.img_list[index].imgIndex = index
-      console.log(this.img_list[index].imgIndex)
+      // console.log(this.img_list[index].imgIndex)
     },
     tip_over () {
       this.tip_hidden_flag = true
@@ -335,7 +421,7 @@ export default {
       // this.mask_flag = !this.mask_flag
       // this.dim_flag = !this.dim_flag
       this.img_list[index].imgIndex = ''
-      console.log(this.img_list[index].imgIndex)
+      // console.log(this.img_list[index].imgIndex)
     },
     // 头部问号说明
     tip_leave () {
@@ -358,12 +444,6 @@ export default {
     },
     // 图片批量删除
     deleteImgs () {
-      imgsdeleteRequest().then((res) => {
-        console.log(res)
-      })
-    },
-    // 图片批量移动
-    handleMoveimgs () {
       let checkArr = this.img_list.filter((item, index) => {
         return item.checked === true
       })
@@ -371,8 +451,100 @@ export default {
         this.$message('请选择图片')
         return
       }
+      console.log(this.img_list)
+      let arr = []
+      this.img_list.map((item, index) => {
+        if (item.checked) arr.push(item.imgId)
+      })
+      console.log(arr)
+      let obj = {
+        imageIds: arr
+      }
+      imgsdeleteRequest(obj).then((res) => {
+        console.log(res)
+        if (res.error === 0) {
+          this.detailImgsSearch()
+        }
+      })
+    },
+    // 图片批量移动
+    handleMoveimgs () {
+      this.checkArr = this.img_list.filter((item, index) => {
+        return item.checked === true
+      })
+      if (this.checkArr.length === 0) {
+        this.$message('请选择图片')
+        return
+      }
       this.dialogVisible = true
-      console.log(checkArr)
+      console.log(this.checkArr)
+    },
+    // 图片批量移动下拉框确定事件
+    allNodesSelectSure () {
+      console.log(this.checkArr)
+      let arr = []
+      this.checkArr.map((item, index) => {
+        arr.push(item.imgId)
+      })
+
+      let obj = this.options_move.filter((item, index) => {
+        return item.name === this.value_move
+      })
+      console.log(obj[0].id)
+      console.log(this.value_move)
+      let query = {
+        imageIds: arr,
+        imageCatId: obj[0].id
+      }
+      moveImgsRequest(query).then((res) => {
+        console.log(res)
+        if (res.error === 0) {
+          this.detailImgsSearch()
+        }
+      })
+      this.dialogVisible = false
+    },
+    // 图片精确查询
+    detailImgsSearch () {
+      console.log(this.value, '---', this.imgNameInput)
+      console.log(this.firstNodeId)
+      console.log(this.options)
+      // let id = this.options.filter((item, index) => {
+      //   console.log(item.label)
+      //   return item.label === this.value
+      // })
+
+      let obj = {
+        'page': 1,
+        'imgCatId': this.firstNodeId,
+        'keywords': this.imgNameInput,
+        'searchNeed': 0,
+        'needImgWidth': '',
+        'needImgHeight': '',
+        'uploadSortId': this.value
+      }
+      console.log(obj)
+      queryImgsRequest(obj).then((res) => {
+        if (res.error === 0) {
+          if (res.content.dataList.length === 0) {
+            this.right_content_hidden = false
+            return
+          }
+          this.totalRows = res.content.page.totalRows
+          this.currentPage = res.content.page.currentPage
+          this.pageCount = res.content.page.pageCount
+          res.content.dataList.map((item, index) => {
+            item.checked = false
+            item.imgIndex = ''
+
+            // item.imgUrl = item.imgUrl.split('cn')[1]
+            // console.log(item.imgUrl)
+          })
+          this.img_list = res.content.dataList
+          this.right_content_hidden = true
+        }
+        console.log(res)
+      })
     }
   }
 }
@@ -435,7 +607,7 @@ export default {
 }
 .pic_container {
   padding: 10px;
-  min-width: 1050px;
+  min-width: 1400px;
 }
 .imageDalog_p_height {
   display: flex;
@@ -490,7 +662,9 @@ export default {
   width: 100%;
 }
 ul {
-  height: 230px;
+  height: auto;
+  overflow: hidden;
+  padding-top: 5px;
 }
 .bottom {
   display: flex;

@@ -1,9 +1,6 @@
 <template>
   <div class="freight_container">
-    <Crumbs
-      :mTitle="M_title"
-      :subtitle="Subtitle"
-    />
+    <Crumbs :mTitle="M_title" />
     <div class="main_acontainer">
       <PictureSpaceTree />
     </div>
@@ -16,8 +13,9 @@ export default {
   components: { Crumbs, PictureSpaceTree },
   data () {
     return {
-      M_title: '小程序管理',
-      Subtitle: '图片空间'
+      M_title: [
+        '小程序管理', '图片空间'
+      ]
     }
   }
 }

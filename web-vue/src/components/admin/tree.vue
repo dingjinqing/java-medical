@@ -152,7 +152,7 @@ export default {
     nodeClick (data, node, mynode) {
       console.log('123')
       console.log(data, node, mynode)
-
+      this.allNodes(data)
       this.menuVisible = false
     },
     refresh () {
@@ -214,17 +214,20 @@ export default {
 
     delSelect () {
       let obj = {
-        catId: this.select_node.data.id
+        imgCatId: this.select_node.data.id
       }
       groupDelRequest(obj).then((res) => {
+        if (res.error === 0) {
+          this.delDialogVisible = false
+          this.refresh()
+          this.$notify({
+            type: 'success',
+            title: '操作提示',
+            message: '删除成功!',
+            duration: 2000
+          })
+        }
         console.log(res)
-      })
-      this.delDialogVisible = false
-      this.$notify({
-        type: 'success',
-        title: '操作提示',
-        message: '删除成功!',
-        duration: 2000
       })
     },
 
@@ -287,8 +290,8 @@ export default {
         }
 
         let params = {
-          name: this.edit_name,
-          id: data.id
+          imgCatName: this.edit_name,
+          imgCatId: data.id
         }
         renameRequest(params).then((res) => {
           console.log(res)

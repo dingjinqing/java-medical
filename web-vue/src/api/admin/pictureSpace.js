@@ -38,7 +38,7 @@ export function renameRequest (riid) {
 // 图片批量删除接口
 export function imgsdeleteRequest (riid) {
   return service({
-    url: '/api/admin/image/batch/detele',
+    url: '/api/admin/image/batch/delete',
     method: 'post',
     data: riid
   })

@@ -170,9 +170,21 @@ export default {
       switch (index) {
         case 0:
           this.$emit('change_components', '0')
+          this.$router.push({
+            path: '/admin/home/shop_main',
+            query: {
+              change_components: '0'
+            }
+          })
           break
         case 3:
           this.$emit('change_components', '3')
+          this.$router.push({
+            path: '/admin/home/shop_main',
+            query: {
+              change_components: '3'
+            }
+          })
           break
         case 4:
           loginRequestOut().then((res) => {

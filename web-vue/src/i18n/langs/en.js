@@ -232,6 +232,17 @@ const en = {
     value: '选项6',
     label: 'Upgrade by image name'
   }],
+  // 图片空间数据
+  imgsSpace: {
+    tipTitle: 'The current version is the flagship version, with 9845.36M of memory remaining',
+    hiddleTitle: 'Experience version 100M memory space, base version 500M memory space, advanced version 2048M memory space, flagship version 10240M memory space',
+    modeText: 'Learn more',
+    allCheckedText: 'All election',
+    deleteImgsText: 'Batch deletion',
+    moveImgsText: 'Batch movement',
+    noneImgsText: 'The current folder did not find the required picture'
+
+  },
   ...enLocale
 }
 

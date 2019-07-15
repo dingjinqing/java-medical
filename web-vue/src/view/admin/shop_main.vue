@@ -21,6 +21,11 @@ export default {
       flag: true
     }
   },
+  mounted () {
+    console.log(this.$route)
+    // 初始化组建切换
+    this.changeComponents()
+  },
   methods: {
     // 切换组件
     handleChange (index) {
@@ -30,6 +35,17 @@ export default {
           break
         case '3': this.flag = true
           break
+      }
+    },
+    changeComponents () {
+      if (this.$route.query) {
+        let query = this.$route.query.change_components
+        switch (query) {
+          case '0': this.flag = false
+            break
+          case '3': this.flag = true
+            break
+        }
       }
     }
   }

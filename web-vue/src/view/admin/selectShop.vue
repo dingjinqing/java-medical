@@ -53,8 +53,18 @@ export default {
         { img_3: this.$imageHost + '/image/admin/ad_img.png' }
       ],
       shop_list: [],
-      shop_list_index: ''
+      shop_list_index: '',
+      fullscreenLoading: false,
+      loading: ''
     }
+  },
+  created () {
+    this.loading = this.$loading({
+      lock: true,
+      text: 'Loading',
+      spinner: 'el-icon-loading',
+      background: 'rgba(0, 0, 0, 0.7)'
+    })
   },
   mounted () {
     this.getAllshopsData()
@@ -81,6 +91,7 @@ export default {
           }
         })
         this.shop_list = res.content.dataList
+        this.loading.close()
         console.log(res)
       })
     },
@@ -116,6 +127,10 @@ export default {
   padding: 0 100px 30px;
   box-shadow: 0 5px 16px rgba(0, 0, 0, 0.2);
   margin-top: 107px;
+  min-width: 1100px;
+}
+.main {
+  min-width: 950px;
 }
 .main_top {
   padding: 10px 0px;

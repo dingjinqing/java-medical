@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div class="imageDalog">
     <el-dialog
       :title="$t('imgageDalog.title')"
       :visible.sync="dialogTableVisible"
@@ -364,7 +364,7 @@ ul {
 .right_content .el-input {
   width: 50px !important;
 }
-.right_content .el-pagination {
+.imageDalog .right_content .el-pagination {
   margin-top: 23px;
   width: 400px !important;
 }
