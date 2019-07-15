@@ -14,6 +14,10 @@ import com.vpu.mp.service.pojo.shop.config.store.StoreServiceConfig;
 import com.vpu.mp.service.pojo.shop.store.goods.StoreGoodsListQueryParam;
 import com.vpu.mp.service.pojo.shop.store.group.StoreGroup;
 import com.vpu.mp.service.pojo.shop.store.group.StoreGroupQueryParam;
+import com.vpu.mp.service.pojo.shop.store.service.StoreServiceCategoryListQueryParam;
+import com.vpu.mp.service.pojo.shop.store.service.StoreServiceCategoryParam;
+import com.vpu.mp.service.pojo.shop.store.service.StoreServiceListQueryParam;
+import com.vpu.mp.service.pojo.shop.store.service.StoreServiceParam;
 import com.vpu.mp.service.pojo.shop.store.store.StoreListQueryParam;
 import com.vpu.mp.service.pojo.shop.store.store.StorePageListVo;
 import com.vpu.mp.service.pojo.shop.store.store.StoreParam;
@@ -170,7 +174,7 @@ public class AdminStoreController extends AdminBaseController{
      * 获取门店服务配置
      * @return
      */
-    @GetMapping(value = "/api/admin/store/service/get")
+    @GetMapping(value = "/api/admin/store/config/get")
     public JsonResult getStoreServiceConfig() {
     	return success(shop().config.storeConfigService.getStoreServiceConfig()); 
     }
@@ -179,7 +183,7 @@ public class AdminStoreController extends AdminBaseController{
      * 更新门店服务配置
      * @return
      */
-    @PostMapping(value = "/api/admin/store/service/update")
+    @PostMapping(value = "/api/admin/store/config/update")
     public JsonResult updateStoreServiceConfig(@RequestBody StoreServiceConfig storeServiceConfig) {
     	if(shop().config.storeConfigService.setStoreServiceConfig(storeServiceConfig)) {
     		return success();
@@ -217,5 +221,103 @@ public class AdminStoreController extends AdminBaseController{
     @PostMapping(value = "/api/admin/store/goods/list")
     public JsonResult getStoreGoodsList(@RequestBody(required = false) @Valid StoreGoodsListQueryParam param) {
     	return success(shop().store.storeGoods.getPageList(param));
+    }
+    
+    /**
+     * 获取门店服务分类分页列表
+     * @return
+     */
+    @PostMapping(value = "/api/admin/store/service/category/list")
+    public JsonResult getStoreServiceCategoryList(@RequestBody(required = false) @Valid StoreServiceCategoryListQueryParam param) {
+    	return success(shop().store.storeService.getCatePageList(param));
+    }
+    
+    /**
+     * 门店服务分类-添加
+     * @return
+     */
+    @PostMapping(value = "/api/admin/store/service/category/add")
+    public JsonResult addStoreServiceCategory(@RequestBody(required = true) @Valid StoreServiceCategoryParam storeServiceCategory) {
+       if(shop().store.storeService.addStoreServiceCategory(storeServiceCategory)) {
+    	   return success();
+       }else {
+    	   return fail();
+       }
+    }
+    
+    /**
+     * 门店服务分类-修改
+     * @return
+     */
+    @PostMapping(value = "/api/admin/store/service/category/update")
+    public JsonResult updateStoreServiceCategory(@RequestBody(required = true) @Valid StoreServiceCategoryParam storeServiceCategory) {
+       if(shop().store.storeService.updateStoreServiceCategory(storeServiceCategory)) {
+    	   return success();
+       }else {
+    	   return fail();
+       }
+    }
+    
+
+    /**
+     * 门店服务分类-删除
+     * @return
+     */
+    @PostMapping(value = "/api/admin/store/service/category/del")
+    public JsonResult delStoreServiceCategory(@RequestBody(required = true) @Valid StoreServiceCategoryParam storeServiceCategory) {
+       if(shop().store.storeService.delStoreServiceCategory(storeServiceCategory.getCatId())) {
+    	   return success();
+       }else {
+    	   return fail();
+       }
+    }
+    
+    /**
+     * 获取门店服务分页列表
+     * @return
+     */
+    @PostMapping(value = "/api/admin/store/service/list")
+    public JsonResult getStoreServiceList(@RequestBody(required = false) @Valid StoreServiceListQueryParam param) {
+    	return success(shop().store.storeService.getServicePageList(param));
+    }
+    
+    /**
+     * 门店服务-添加
+     * @return
+     */
+    @PostMapping(value = "/api/admin/store/service/add")
+    public JsonResult addStoreService(@RequestBody(required = true) @Valid StoreServiceParam storeService) {
+       if(shop().store.storeService.addStoreService(storeService)) {
+    	   return success();
+       }else {
+    	   return fail();
+       }
+    }
+    
+    /**
+     * 门店服务-修改
+     * @return
+     */
+    @PostMapping(value = "/api/admin/store/service/update")
+    public JsonResult updateStoreService(@RequestBody(required = true) @Valid StoreServiceParam storeService) {
+       if(shop().store.storeService.updateStoreService(storeService)) {
+    	   return success();
+       }else {
+    	   return fail();
+       }
+    }
+    
+
+    /**
+     * 门店服务-删除
+     * @return
+     */
+    @PostMapping(value = "/api/admin/store/service/del")
+    public JsonResult delStoreService(@RequestBody(required = true) @Valid StoreServiceParam storeService) {
+       if(shop().store.storeService.delStoreService(storeService.getId())) {
+    	   return success();
+       }else {
+    	   return fail();
+       }
     }
 }

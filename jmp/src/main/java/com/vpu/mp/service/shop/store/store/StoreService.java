@@ -24,6 +24,7 @@ import com.vpu.mp.service.pojo.shop.store.group.StoreGroupQueryParam;
 import com.vpu.mp.service.pojo.shop.store.store.StoreListQueryParam;
 import com.vpu.mp.service.pojo.shop.store.store.StorePageListVo;
 import com.vpu.mp.service.pojo.shop.store.store.StorePojo;
+import com.vpu.mp.service.shop.store.service.StoreServiceService;
 import com.vpu.mp.service.shop.store.verify.StoreVerifierService;
 
 /**
@@ -42,6 +43,11 @@ public class StoreService extends BaseService {
 	 * 门店商品
 	 */
 	public StoreGoodsService storeGoods;
+	
+	/**
+	 * 门店商品
+	 */
+	public StoreServiceService storeService;
 	
 	/**
 	 * 门店列表分页查询

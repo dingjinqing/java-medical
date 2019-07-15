@@ -1,5 +1,7 @@
 package com.vpu.mp.service.pojo.shop.store.goods;
 
+import java.math.BigDecimal;
+
 import lombok.Data;
 
 /**
@@ -20,7 +22,7 @@ public class StoreGoodsListQueryVo {
 	/**
 	 * 未同步时的规格价格
 	 */
-	private Double prdPrice;
+	private BigDecimal prdPrice;
 	/**
 	 * 未同步时的规格库存
 	 */
@@ -30,7 +32,7 @@ public class StoreGoodsListQueryVo {
 	/**
 	 * 同步之后的规格价格
 	 */
-	private Double productPrice;
+	private BigDecimal productPrice;
 	/**
 	 * 同步之后的规格库存
 	 */
