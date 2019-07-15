@@ -11,6 +11,7 @@ import org.jooq.impl.DSL;
 import org.jooq.tools.StringUtils;
 
 import java.sql.Timestamp;
+import java.util.List;
 
 import static com.vpu.mp.db.shop.Tables.GOODS_BRAND;
 
@@ -107,13 +108,10 @@ public class GoodsBrandService extends BaseService {
      * @param goodsBrand
      * @return
      */
-    public int update(GoodsBrand goodsBrand) {
-        return db().update(GOODS_BRAND).set(GOODS_BRAND.BRAND_NAME, goodsBrand.getBrandName())
-                .set(GOODS_BRAND.E_NAME, goodsBrand.getEName()).set(GOODS_BRAND.LOGO, goodsBrand.getLogo())
-                .set(GOODS_BRAND.FIRST, goodsBrand.getFirst()).set(GOODS_BRAND.DESC, goodsBrand.getDesc())
-                .set(GOODS_BRAND.IS_RECOMMEND, goodsBrand.getIsRecommend()).set(GOODS_BRAND.CLASSIFY_ID, goodsBrand.getClassifyId())
-                .where(GOODS_BRAND.ID.eq(goodsBrand.getId()))
-                .execute();
+    public void update(GoodsBrand goodsBrand) {
+        GoodsBrandRecord goodsBrandRecord=new GoodsBrandRecord();
+        assign(goodsBrand,goodsBrandRecord);
+        db().executeUpdate(goodsBrandRecord);
     }
 
     /**
@@ -168,6 +166,18 @@ public class GoodsBrandService extends BaseService {
         } else {
             return false;
         }
+    }
+
+    /**
+     * 列出所有品牌
+     * @return
+     */
+    public List<GoodsBrand> listAllGoodsBrand(){
+        List<GoodsBrand> goodsBrands = db().selectFrom(GOODS_BRAND)
+                .where(GOODS_BRAND.DEL_FLAG.eq(DelFlag.NORMAL.getCode()))
+                .fetch().into(GoodsBrand.class);
+
+        return goodsBrands;
     }
 
 }
