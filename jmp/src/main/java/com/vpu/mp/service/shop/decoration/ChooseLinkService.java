@@ -1,6 +1,8 @@
 package com.vpu.mp.service.shop.decoration;
 
+import static com.vpu.mp.db.main.Tables.CATEGORY;
 import static com.vpu.mp.db.shop.Tables.ASSESS_ACTIVITY;
+import static com.vpu.mp.db.shop.Tables.COUPON_PACK;
 import static com.vpu.mp.db.shop.Tables.DECORATE_LINK;
 import static com.vpu.mp.db.shop.Tables.FRIEND_PROMOTE_ACTIVITY;
 import static com.vpu.mp.db.shop.Tables.GOODS;
@@ -15,7 +17,8 @@ import static com.vpu.mp.db.shop.Tables.PACKAGE_SALE;
 import static com.vpu.mp.db.shop.Tables.PIN_INTEGRATION_DEFINE;
 import static com.vpu.mp.db.shop.Tables.PURCHASE_PRICE_DEFINE;
 import static com.vpu.mp.db.shop.Tables.STORE;
-import static com.vpu.mp.db.shop.Tables.COUPON_PACK;
+import static com.vpu.mp.db.shop.Tables.SORT;
+
 import static com.vpu.mp.db.shop.tables.XcxCustomerPage.XCX_CUSTOMER_PAGE;
 
 import java.sql.Timestamp;
@@ -30,12 +33,14 @@ import com.vpu.mp.db.shop.tables.records.XcxCustomerPageRecord;
 import com.vpu.mp.service.foundation.BaseService;
 import com.vpu.mp.service.foundation.DelFlag;
 import com.vpu.mp.service.foundation.PageResult;
+import com.vpu.mp.service.pojo.saas.category.SysCatevo;
 import com.vpu.mp.service.pojo.shop.decoration.ActivityVo;
 import com.vpu.mp.service.pojo.shop.decoration.GoodsLinkVo;
 import com.vpu.mp.service.pojo.shop.decoration.StoreVo;
 import com.vpu.mp.service.pojo.shop.decoration.XcxCustomerPageVo;
 import com.vpu.mp.service.pojo.shop.decoration.XcxLinkListVo;
 import com.vpu.mp.service.pojo.shop.decoration.XcxNameListVo;
+import com.vpu.mp.service.pojo.shop.sort.SortVo;
 import com.vpu.mp.service.pojo.shop.store.store.StoreListQueryParam;
 
 /**
@@ -96,6 +101,7 @@ public class ChooseLinkService extends BaseService {
 		List<ActivityVo> list = db().select(GROUP_DRAW.ID,GROUP_DRAW.NAME.as("actName"),GROUP_DRAW.START_TIME,GROUP_DRAW.END_TIME)
 				.from(GROUP_DRAW)
 				.where(GROUP_DRAW.END_TIME.ge(new Timestamp(System.currentTimeMillis())))
+				.and(GROUP_DRAW.DEL_FLAG.eq(DelFlag.NORMAL.getCode()))
 				.fetch().into(ActivityVo.class);
 		return list;
 	}
@@ -120,6 +126,7 @@ public class ChooseLinkService extends BaseService {
 		List<ActivityVo> list = db().select(FRIEND_PROMOTE_ACTIVITY.ID,FRIEND_PROMOTE_ACTIVITY.ACT_NAME,FRIEND_PROMOTE_ACTIVITY.START_TIME,FRIEND_PROMOTE_ACTIVITY.END_TIME)
 				.from(FRIEND_PROMOTE_ACTIVITY)
 				.where(FRIEND_PROMOTE_ACTIVITY.END_TIME.ge(new Timestamp(System.currentTimeMillis())))
+				.and(FRIEND_PROMOTE_ACTIVITY.DEL_FLAG.eq(DelFlag.NORMAL.getCode()))
 				.fetch().into(ActivityVo.class);
 		return list;
 	}
@@ -319,5 +326,49 @@ public class ChooseLinkService extends BaseService {
 		}else {
 			return false;
 		}
+	}
+	
+	/**
+	 * 选择平台分分类列表
+	 * @return
+	 */
+	public List<SysCatevo> getSysCate() {
+		//获取平台一级分类
+		List<SysCatevo>	parentList = mainDb().select(CATEGORY.CAT_ID,CATEGORY.CAT_NAME)
+				 .from(CATEGORY)
+				 .where(CATEGORY.PARENT_ID.eq((short) 0 ))
+				 .fetchInto(SysCatevo.class);
+		
+		//查询每级分类下的二级分类
+		for(SysCatevo list : parentList ){
+			List<SysCatevo> childList = mainDb().select(CATEGORY.CAT_ID,CATEGORY.CAT_NAME,CATEGORY.PARENT_ID)
+					.from(CATEGORY)
+					.where(CATEGORY.PARENT_ID.eq(list.getCatId()))
+					.fetchInto(SysCatevo.class);
+			list.setChildCate(childList);
+		}
+		return parentList;
+	}
+	
+	/**
+	 * 选择商家分类
+	 * @return
+	 */
+	public List<SortVo> getSortList() {
+		//一级分类信息
+		List<SortVo> levelList = db().select(SORT.SORT_ID,SORT.SORT_NAME)
+				.from(SORT)
+				.where(SORT.LEVEL.eq((short) 0))
+				.fetch().into(SortVo.class);
+		//遍历每级分类下子分类
+		for(SortVo level1 : levelList) {
+			List<SortVo> level2List = db().select(SORT.SORT_ID,SORT.SORT_NAME)
+				.from(SORT)
+				.where(SORT.PARENT_ID.eq((int) level1.getSortId()))
+				.fetch().into(SortVo.class);
+			
+			level1.setLevelList2(level2List);
+		}
+		return levelList;
 	}
 }

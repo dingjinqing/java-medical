@@ -17,6 +17,8 @@ import com.vpu.mp.service.pojo.shop.decoration.StoreVo;
 import com.vpu.mp.service.pojo.shop.decoration.XcxCustomerPageVo;
 import com.vpu.mp.service.pojo.shop.decoration.XcxLinkListVo;
 import com.vpu.mp.service.pojo.shop.decoration.XcxNameListVo;
+import com.vpu.mp.service.pojo.shop.goods.brand.BrandVo;
+import com.vpu.mp.service.pojo.shop.sort.SortVo;
 import com.vpu.mp.service.pojo.shop.store.store.StoreListQueryParam;
 import com.vpu.mp.service.shop.ShopApplication;
 
@@ -65,14 +67,6 @@ public class AdminChooseLinkController extends AdminBaseController{
 	 * @return
 	 */
 	public Boolean activityList () {
-		return false;
-	}
-	
-	/**
-	 * 商品分类
-	 * @return
-	 */
-	public Boolean goodsCategory() {
 		return false;
 	}
 	
@@ -267,12 +261,32 @@ public class AdminChooseLinkController extends AdminBaseController{
 	}
 	
 	/**
-	 * 平台分类
+	 * 选择平台分类
 	 * @return
 	 */
 	@GetMapping(value = "/admin/decorate/cate/list")
 	public JsonResult sysCate() {
-		List<SysCatevo> parentList = saas.sysCate.getSysCate();
+		List<SysCatevo> parentList = shop().chooselink.getSysCate();
 		return this.success(parentList);
+	}
+	
+	/**
+	 * 品牌分类
+	 * @return
+	 */
+	@GetMapping("/admin/decorate/brand/list")
+	public JsonResult brandClassifyList() {
+		List<BrandVo> chooseBrandList = shop().brand.getBrandClassifyList();
+		return this.success(chooseBrandList);
+    }
+	
+	/**
+	 * 商家分类
+	 * @return
+	 */
+	@GetMapping("/admin/decorate/sort/list")
+	public JsonResult sortList() {
+		List<SortVo> sortList = shop().chooselink.getSortList();
+		return this.success(sortList);
 	}
 }
