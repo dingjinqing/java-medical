@@ -58,7 +58,7 @@ ALTER TABLE b2c_goods_label_couple MODIFY COLUMN label_id INT(11) NOT NULL;
 -- 测评活动表
 -- drop table if exists `b2c_assess_activity`;
 create table `b2c_assess_activity` (
-  `id`                mediumint(8) unsigned not null auto_increment,
+  `id`                int(11)               not null auto_increment,
   `shop_id`           int(11)               null     default 0 comment '店铺ID',
   `act_code`          varchar(32)           null     default '' comment '活动编码',
   `act_name`          varchar(120)          not null default '' comment '活动名称',
@@ -86,7 +86,7 @@ create table `b2c_assess_activity` (
 -- 测评活动题目表
 -- drop table if exists `b2c_assess_topic`;
 create table `b2c_assess_topic` (
-  `id`                mediumint(8) unsigned not null auto_increment,
+  `id`                int(8)                not null auto_increment,
   `shop_id`           int(11)               null     default 0 comment '店铺ID',
   `assess_id`         int(11)               null     default 0 comment '测评活动ID',
   `topic_type`        tinyint(1)            null     default 0 comment '题目格式：0文本，1图片，2视频',
@@ -111,7 +111,7 @@ create table `b2c_assess_topic` (
 -- 测评活动结果表
 -- drop table if exists `b2c_assess_result`;
 create table `b2c_assess_result` (
-  `id`                     mediumint(8) unsigned not null auto_increment,
+  `id`                     int(11)                not null auto_increment,
   `shop_id`                int(11)               null     default 0 comment '店铺ID',
   `assess_id`              int(11)               null     default 0 comment '测评活动ID',
   `result`                 varchar(200)          null     default '' comment '测试结果',
@@ -136,7 +136,7 @@ create table `b2c_assess_result` (
 -- 测评活动记录表
 -- drop table if exists `b2c_assess_record`;
 create table `b2c_assess_record` (
-  `id`           mediumint(8) unsigned not null  auto_increment,
+  `id`           int(11)               not null  auto_increment,
   `shop_id`      int(11)               not null  default 0 comment '店铺ID',
   `user_id`      int(11)               not null  default 0 comment '会员ID',
   `assess_id`    int(11)               not null  default 0 comment '测评活动ID',
@@ -157,7 +157,7 @@ create table `b2c_assess_record` (
 -- 测评活动答题记录表
 -- drop table if exists `b2c_assess_topic_record`;
 create table `b2c_assess_topic_record` (
-  `id`           mediumint(8) unsigned not null auto_increment,
+  `id`           int(11)               not null auto_increment,
   `record_id`    int(11)               not null default 0 comment '测评活动记录表关联ID',
   `topic_id`     int(11)               not null default 0 comment '测评题目的ID',
   `topic_option` varchar(11)           not null default '' comment '测评题目选项编号,多选的逗号隔开',
@@ -174,7 +174,7 @@ create table `b2c_assess_topic_record` (
 ##优惠券礼包
 #DROP TABLE IF EXISTS `b2c_coupon_pack`;
 create table `b2c_coupon_pack` (
-  `id`              int                      not null auto_increment,
+  `id`              int(11)                  not null auto_increment,
   `act_name`        varchar(100)             not null comment '活动名称',
   `start_time`      datetime                 not null comment '开始时间',
   `end_time`        datetime                 not null comment '结束时间',

@@ -3867,36 +3867,8 @@ commit;
 
 ##测评活动表
 ##drop table if exists `b2c_assess_activity`;
-create table `b2c_assess_activity` (
-  `id`                mediumint(8) unsigned not null auto_increment,
-  `shop_id`           int(11)               null     default 0 comment '店铺ID',
-  `act_code`          varchar(32)           null     default '' comment '活动编码',
-  `act_name`          varchar(120)          not null default '' comment '活动名称',
-  `start_time`        datetime              not null comment '活动起始时间',
-  `end_time`          datetime              not null comment '活动截止时间',
-  `due_time_type`     tinyint(1)            null     default 0 comment '是否永久有效：0否，1是',
-  `part_times_type`   tinyint(1)            null     default 0 comment '单用户参与次数类型：0不限制，1限制次数',
-  `part_times_day`    int(4)                null     default 1 comment '每天最多参与次数：默认为1,0表示不限制',
-  `part_times_total`  int(4)                null     default 1 comment '累计最多参与次数：默认为1,0表示不限制',
-  `feedback_total`    int(4)                null     default 0 comment '活动总反馈数量：默认为0,0表示不限制',
-  `assess_judge_type` tinyint(1)            null     default 0 comment '测评结果判断条件：0根据选项判断，1根据得分判断',
-  `cover_style_type`  tinyint(1)            null     default 0 comment '封面样式类型：0默认样式，1自定义',
-  `cover_style`       text comment '封面样式内容，json串',
-  `assess_desc`       varchar(500)          not null default '' comment '测评介绍',
-  `create_time`       timestamp       default current_timestamp,
-  `update_time`       timestamp       default current_timestamp on update current_timestamp comment '最后修改时间',
-  `is_block`          tinyint(1)            null     default 0 comment '活动状态：0未停用，1已停用',
-  `del_flag`          tinyint(1)            null     default 0 comment '删除标识：0未删除，1已删除',
-  `pub_flag`          tinyint(1)            null     default 0 comment '发布标识：0未发布，1已发布',
-  primary key (`id`),
-  key `act_name` (`act_name`),
-  key (`shop_id`)
-);
-
-##测评活动题目表
-##drop table if exists `b2c_assess_topic`;
 create table `b2c_assess_topic` (
-  `id`                mediumint(8) unsigned not null auto_increment,
+  `id`                int(8)                not null auto_increment,
   `shop_id`           int(11)               null     default 0 comment '店铺ID',
   `assess_id`         int(11)               null     default 0 comment '测评活动ID',
   `topic_type`        tinyint(1)            null     default 0 comment '题目格式：0文本，1图片，2视频',
@@ -3918,10 +3890,10 @@ create table `b2c_assess_topic` (
   key (`shop_id`)
 );
 
-##测评活动结果表
-#drop table if exists `b2c_assess_result`;
+-- 测评活动结果表
+-- drop table if exists `b2c_assess_result`;
 create table `b2c_assess_result` (
-  `id`                     mediumint(8) unsigned not null auto_increment,
+  `id`                     int(11)                not null auto_increment,
   `shop_id`                int(11)               null     default 0 comment '店铺ID',
   `assess_id`              int(11)               null     default 0 comment '测评活动ID',
   `result`                 varchar(200)          null     default '' comment '测试结果',
@@ -3943,10 +3915,10 @@ create table `b2c_assess_result` (
   key (`shop_id`)
 );
 
-##测评活动记录表
-#drop table if exists `b2c_assess_record`;
+-- 测评活动记录表
+-- drop table if exists `b2c_assess_record`;
 create table `b2c_assess_record` (
-  `id`           mediumint(8) unsigned not null  auto_increment,
+  `id`           int(11)               not null  auto_increment,
   `shop_id`      int(11)               not null  default 0 comment '店铺ID',
   `user_id`      int(11)               not null  default 0 comment '会员ID',
   `assess_id`    int(11)               not null  default 0 comment '测评活动ID',
@@ -3964,10 +3936,10 @@ create table `b2c_assess_record` (
   key (`user_id`)
 );
 
-##测评活动答题记录表
-#drop table if exists `b2c_assess_record`;
+-- 测评活动答题记录表
+-- drop table if exists `b2c_assess_topic_record`;
 create table `b2c_assess_topic_record` (
-  `id`           mediumint(8) unsigned not null auto_increment,
+  `id`           int(11)               not null auto_increment,
   `record_id`    int(11)               not null default 0 comment '测评活动记录表关联ID',
   `topic_id`     int(11)               not null default 0 comment '测评题目的ID',
   `topic_option` varchar(11)           not null default '' comment '测评题目选项编号,多选的逗号隔开',
@@ -3980,17 +3952,18 @@ create table `b2c_assess_topic_record` (
   key (`result_id`)
 );
 
+-- 7月12日 常乐 添加优惠礼包表结构
 ##优惠券礼包
 #DROP TABLE IF EXISTS `b2c_coupon_pack`;
 create table `b2c_coupon_pack` (
-  `id`              int                      not null auto_increment,
+  `id`              int(11)                  not null auto_increment,
   `act_name`        varchar(100)             not null comment '活动名称',
   `start_time`      datetime                 not null comment '开始时间',
   `end_time`        datetime                 not null comment '结束时间',
   `pack_name`       varchar(20)              not null comment '礼包名称',
-  `limit_get_times` tinyint(5)  unsigned     not null default 0 comment '单用户领取限制次数，0不限制',
-  `total_amount`    int(11)     unsigned     not null default '0' comment '总数量',
-  `issued_amount`   int(11)     unsigned     not null default '0' comment '已发放数量',
+  `limit_get_times` tinyint(5)           not null default 0 comment '单用户领取限制次数，0不限制',
+  `total_amount`    int(11)                  not null default '0' comment '总数量',
+  `issued_amount`   int(11)                  not null default '0' comment '已发放数量',
   `access_mode`     tinyint(1)               not null default '0' comment '获取方式，0：现金购买，1：积分购买，2直接领取',
   `access_cost`     decimal(10, 2)           null     default 0.00 comment '价格（现金或积分，直接领取时该值为0）',
   `act_rule`        text collate utf8mb4_bin null comment '活动规则',
@@ -4001,3 +3974,4 @@ create table `b2c_coupon_pack` (
   `del_time`        timestamp       default current_timestamp,
   primary key (`id`)
 );
+
