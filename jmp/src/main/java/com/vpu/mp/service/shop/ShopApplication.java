@@ -2,11 +2,12 @@ package com.vpu.mp.service.shop;
 
 import com.vpu.mp.service.foundation.ServiceContainer;
 import com.vpu.mp.service.shop.config.ConfigService;
+import com.vpu.mp.service.shop.config.ShopBasicConfigService;
 import com.vpu.mp.service.shop.config.TradeService;
 import com.vpu.mp.service.shop.decoration.ChooseLinkService;
-import com.vpu.mp.service.shop.config.ShopBasicConfigService;
 import com.vpu.mp.service.shop.decoration.MpDecorationService;
 import com.vpu.mp.service.shop.decoration.PageClassificationService;
+import com.vpu.mp.service.shop.goods.BrandService;
 import com.vpu.mp.service.shop.goods.GoodsRecommendService;
 import com.vpu.mp.service.shop.goods.GoodsService;
 import com.vpu.mp.service.shop.image.ImageCategoryService;
@@ -38,6 +39,7 @@ public class ShopApplication extends ServiceContainer {
 	public TradeService trade;
 	public GoodsRecommendService goodsRecommend;
 	public AmountService amount;
+	public BrandService brand;
 	/**
 	 * 会员
 	 */

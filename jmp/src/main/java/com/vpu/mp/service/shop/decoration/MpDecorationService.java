@@ -9,10 +9,13 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.jooq.DSLContext;
 import org.jooq.Record5;
 import org.jooq.SelectWhereStep;
+import org.jooq.impl.DSL;
 
 import com.vpu.mp.db.main.tables.records.DecorationTemplateRecord;
+import com.vpu.mp.db.shop.tables.records.StoreGroupRecord;
 import com.vpu.mp.db.shop.tables.records.XcxCustomerPageRecord;
 import com.vpu.mp.service.foundation.BaseService;
 import com.vpu.mp.service.foundation.PageResult;
@@ -202,23 +205,23 @@ public class MpDecorationService extends BaseService {
 //	}
 
 	/**
-	 * 设置首页
+	 * 设置首页(事务处理)
 	 * 
 	 * @param pageId
+	 * @return 
 	 */
 	public boolean setIndex(Integer pageId) {
-		int a = db().update(XCX_CUSTOMER_PAGE)
-				.set(XCX_CUSTOMER_PAGE.PAGE_TYPE, (byte) 0)
-				.where(XCX_CUSTOMER_PAGE.PAGE_TYPE.eq((byte) 1))
-				.execute();
-		int b = db().update(XCX_CUSTOMER_PAGE)
-				.set(XCX_CUSTOMER_PAGE.PAGE_TYPE, (byte) 1)
-				.where(XCX_CUSTOMER_PAGE.PAGE_ID.eq((pageId)))
-				.execute();
-		if(a>0 && b>0) {
-			return true;
-		}
-		return false;
+		this.transaction(()->{
+			db().update(XCX_CUSTOMER_PAGE)
+					.set(XCX_CUSTOMER_PAGE.PAGE_TYPE, (byte) 0)
+					.where(XCX_CUSTOMER_PAGE.PAGE_TYPE.eq((byte) 1))
+					.execute();
+		    db().update(XCX_CUSTOMER_PAGE)
+					.set(XCX_CUSTOMER_PAGE.PAGE_TYPE, (byte) 1)
+					.where(XCX_CUSTOMER_PAGE.PAGE_ID.eq((pageId)))
+					.execute();
+		});
+		return true;
 	}
 	
 	/**

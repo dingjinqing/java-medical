@@ -5,6 +5,7 @@ import java.util.HashMap;
 import com.vpu.mp.service.foundation.ServiceContainer;
 import com.vpu.mp.service.saas.article.ArticleCategoryService;
 import com.vpu.mp.service.saas.article.ArticleService;
+import com.vpu.mp.service.saas.categroy.SysCateService;
 import com.vpu.mp.service.saas.official.OfficialService;
 import com.vpu.mp.service.saas.privilege.ChildAccountService;
 import com.vpu.mp.service.saas.privilege.MenuService;
@@ -33,6 +34,7 @@ public class SaasApplication extends ServiceContainer {
 	public ArticleService article;
 	public ArticleCategoryService articleCategory;
 	public OfficialService official;
+	public SysCateService sysCate;
 	public WechatService wechat;
 	
 	protected CityService city;

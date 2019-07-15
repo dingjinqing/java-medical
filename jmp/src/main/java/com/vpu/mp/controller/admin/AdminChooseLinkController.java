@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.vpu.mp.service.foundation.JsonResult;
 import com.vpu.mp.service.foundation.PageResult;
+import com.vpu.mp.service.pojo.saas.category.SysCatevo;
 import com.vpu.mp.service.pojo.shop.decoration.ActivityVo;
 import com.vpu.mp.service.pojo.shop.decoration.ChooseLinkParam;
 import com.vpu.mp.service.pojo.shop.decoration.GoodsLinkVo;
@@ -27,6 +28,10 @@ import com.vpu.mp.service.shop.ShopApplication;
 @RestController
 //@RequestMapping("/api")
 public class AdminChooseLinkController extends AdminBaseController{
+	@Override
+    protected ShopApplication shop() {
+        return saas.getShopApp(471752);
+    }
 	/**
 	 * 常用链接
 	 */
@@ -259,5 +264,15 @@ public class AdminChooseLinkController extends AdminBaseController{
 	public JsonResult packList() {
 		List<ActivityVo> packList = shop().chooselink.getPackList();
 		return this.success(packList);
+	}
+	
+	/**
+	 * 平台分类
+	 * @return
+	 */
+	@GetMapping(value = "/admin/decorate/cate/list")
+	public JsonResult sysCate() {
+		List<SysCatevo> parentList = saas.sysCate.getSysCate();
+		return this.success(parentList);
 	}
 }

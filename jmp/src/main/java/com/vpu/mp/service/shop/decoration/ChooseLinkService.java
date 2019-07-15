@@ -28,6 +28,7 @@ import org.jooq.SelectJoinStep;
 import com.vpu.mp.db.shop.tables.records.DecorateLinkRecord;
 import com.vpu.mp.db.shop.tables.records.XcxCustomerPageRecord;
 import com.vpu.mp.service.foundation.BaseService;
+import com.vpu.mp.service.foundation.DelFlag;
 import com.vpu.mp.service.foundation.PageResult;
 import com.vpu.mp.service.pojo.shop.decoration.ActivityVo;
 import com.vpu.mp.service.pojo.shop.decoration.GoodsLinkVo;
@@ -131,7 +132,7 @@ public class ChooseLinkService extends BaseService {
 		List<ActivityVo> list = db().select(PURCHASE_PRICE_DEFINE.NAME.as("actName"),PURCHASE_PRICE_DEFINE.END_TIME,PURCHASE_PRICE_DEFINE.START_TIME)
 				.from(PURCHASE_PRICE_DEFINE)
 				.where(PURCHASE_PRICE_DEFINE.END_TIME.ge(new Timestamp(System.currentTimeMillis())))
-				.and(PURCHASE_PRICE_DEFINE.DEL_FLAG.eq((byte) 0))
+				.and(PURCHASE_PRICE_DEFINE.DEL_FLAG.eq(DelFlag.NORMAL.getCode()))
 				.and(PURCHASE_PRICE_DEFINE.STATUS.eq((byte) 1))
 				.fetch().into(ActivityVo.class);
 		return list;
@@ -145,7 +146,7 @@ public class ChooseLinkService extends BaseService {
 		 List<ActivityVo> list = db().select(LOTTERY.LOTTERY_NAME.as("actName"),LOTTERY.START_TIME,LOTTERY.END_TIME,LOTTERY.ID)
 				 .from(LOTTERY)
 				.where(LOTTERY.END_TIME.ge(new Timestamp(System.currentTimeMillis())))
-				.and(LOTTERY.DEL_FLAG.eq( (byte) 0))
+				.and(LOTTERY.DEL_FLAG.eq(DelFlag.NORMAL.getCode()))
 				.and(LOTTERY.STATUS.eq((byte) 0))
 				.fetch().into(ActivityVo.class);
 		return list;
@@ -156,9 +157,9 @@ public class ChooseLinkService extends BaseService {
 	 * @return
 	 */
 	public List<ActivityVo> getVoucherList() {
-		 List<ActivityVo>list = db().select(MRKING_VOUCHER.ACT_NAME,MRKING_VOUCHER.START_TIME,MRKING_VOUCHER.END_TIME).from(MRKING_VOUCHER)
+		 List<ActivityVo>list = db().select(MRKING_VOUCHER.ID,MRKING_VOUCHER.ACT_NAME,MRKING_VOUCHER.START_TIME,MRKING_VOUCHER.END_TIME).from(MRKING_VOUCHER)
 				.where(MRKING_VOUCHER.END_TIME.ge(new Timestamp(System.currentTimeMillis())))
-				.and(MRKING_VOUCHER.DEL_FLAG.eq((byte) 0))
+				.and(MRKING_VOUCHER.DEL_FLAG.eq(DelFlag.NORMAL.getCode()))
 				.fetch().into(ActivityVo.class);
 		return list;
 	}
@@ -171,7 +172,7 @@ public class ChooseLinkService extends BaseService {
 		 List<ActivityVo> list = db().select(MEMBER_CARD.ID,MEMBER_CARD.CARD_NAME,MEMBER_CARD.START_TIME,MEMBER_CARD.END_TIME)
 				.from(MEMBER_CARD)
 				.where(MEMBER_CARD.END_TIME.ge(new Timestamp(System.currentTimeMillis())))
-				.and(MEMBER_CARD.DEL_FLAG.eq((byte) 0))
+				.and(MEMBER_CARD.DEL_FLAG.eq(DelFlag.NORMAL.getCode()))
 				.fetch().into(ActivityVo.class);
 		return list;
 	}
@@ -184,7 +185,7 @@ public class ChooseLinkService extends BaseService {
 		 List<ActivityVo> list = db().select(PACKAGE_SALE.ID,PACKAGE_SALE.PACKAGE_NAME,PACKAGE_SALE.START_TIME,PACKAGE_SALE.END_TIME)
 				.from(PACKAGE_SALE)
 				.where(PACKAGE_SALE.END_TIME.ge(new Timestamp(System.currentTimeMillis())))
-				.and(PACKAGE_SALE.DEL_FLAG.eq((byte) 0))
+				.and(PACKAGE_SALE.DEL_FLAG.eq(DelFlag.NORMAL.getCode()))
 				.fetch().into(ActivityVo.class);
 		return list;
 	}
@@ -210,7 +211,7 @@ public class ChooseLinkService extends BaseService {
 		 List<ActivityVo> assessList = db().select(ASSESS_ACTIVITY.ACT_NAME,ASSESS_ACTIVITY.ID,ASSESS_ACTIVITY.START_TIME,ASSESS_ACTIVITY.END_TIME)
 				.from(ASSESS_ACTIVITY)
 				.where(ASSESS_ACTIVITY.END_TIME.ge(new Timestamp(System.currentTimeMillis())))
-				.and(ASSESS_ACTIVITY.DEL_FLAG.eq((byte) 0))
+				.and(ASSESS_ACTIVITY.DEL_FLAG.eq(DelFlag.NORMAL.getCode()))
 				.fetch().into(ActivityVo.class);
 		return assessList;
 	}
@@ -222,8 +223,8 @@ public class ChooseLinkService extends BaseService {
 	public List<ActivityVo> getPackList() {
 		List<ActivityVo>packList = db().select(COUPON_PACK.ID,COUPON_PACK.ACT_NAME,COUPON_PACK.START_TIME,COUPON_PACK.END_TIME)
 				.from(COUPON_PACK)
-//				.where(COUPON_PACK.DEL_FLAG.eq((byte) 0 ))
-//				.and(COUPON_PACK.END_TIME.ge(new Timestamp(System.currentTimeMillis())))
+				.where(COUPON_PACK.DEL_FLAG.eq(DelFlag.NORMAL.getCode()))
+				.and(COUPON_PACK.END_TIME.ge(new Timestamp(System.currentTimeMillis())))
 				.fetch().into(ActivityVo.class);
 		return packList;
 	}
@@ -267,7 +268,7 @@ public class ChooseLinkService extends BaseService {
 	}
 	
 	/**
-	 * 门店
+	 * 门店列表
 	 * @param page
 	 * @return
 	 */
@@ -287,7 +288,7 @@ public class ChooseLinkService extends BaseService {
 	public List<XcxNameListVo> getXcxNameList() {
 		List<XcxNameListVo> list = db().select(MP_JUMP.APP_NAME)
 				.from(MP_JUMP .leftJoin(MP_JUMP_USABLE) .on(MP_JUMP.APP_ID.eq(MP_JUMP_USABLE.APP_ID)))
-				.where(MP_JUMP.DEL_FLAG.eq((byte) 0))
+				.where(MP_JUMP.DEL_FLAG.eq(DelFlag.NORMAL.getCode()))
 				.fetch().into(XcxNameListVo.class);
 		return list;
 	}
@@ -299,7 +300,7 @@ public class ChooseLinkService extends BaseService {
 	public  List<XcxLinkListVo> getXcxLinkList() {
 		 List<XcxLinkListVo> linkList = db().select(DECORATE_LINK.APPID,DECORATE_LINK.TITLE,DECORATE_LINK.PATH_NAME,DECORATE_LINK.LINK_PATH)
 				 .from(DECORATE_LINK)
-				.where(DECORATE_LINK.DEL_FLAG.eq((byte) 0))
+				.where(DECORATE_LINK.DEL_FLAG.eq(DelFlag.NORMAL.getCode()))
 				.orderBy(DECORATE_LINK.ID.desc())
 				.fetch().into(XcxLinkListVo.class);
 		return linkList;
