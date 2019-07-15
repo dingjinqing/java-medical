@@ -138,10 +138,12 @@ public class JsonResultMessage {
 	final public static String MSG_MEMBER_TAG_NOT_NULL="member.tag.notnull";
 	final public static String MSG_MEMBER_TAG_NAME_EXIST="member.tag.name.exists";
 	final public static String MSG_MEMBER_TAG_ADD_SUCCESS = "member.tag.add.success";
+	final public static String MSG_MEMBER_TAG_ID_NOT_NULL = "member.tag.id.notnull";
 
 	/**
 	 *  概览
 	 */
 	final public static String OVERVIEW_MALL_DATADEMONSTRATION_GET_FAILED = "overview.mall.datademonstration.get.failed";
 	final public static String OVERVIEW_MALL_BING_UNBING_FAILED = "overview.mall.bind.unbind.failed";
+
 }
