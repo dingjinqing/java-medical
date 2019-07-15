@@ -4,6 +4,7 @@ import com.vpu.mp.service.foundation.Page;
 
 import lombok.Data;
 
+
 /**
  * 映射分页查询条件实体类
  * @author liangchen

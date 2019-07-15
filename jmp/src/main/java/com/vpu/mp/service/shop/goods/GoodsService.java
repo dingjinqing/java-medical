@@ -46,6 +46,7 @@ public class GoodsService extends BaseService {
     public GoodsCommentService goodsComment;
     public GoodsLabelService goodsLabel;
     public GoodsLabelCoupleService goodsLabelCouple;
+    public GoodsDeliverTamplateService goodsDeliver;
 
     private GoodsSpecProductService goodsSpecProductService = new GoodsSpecProductService();
 
