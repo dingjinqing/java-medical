@@ -8,5 +8,4 @@ package com.vpu.mp.service.shop.summary.visit;
  */
 public class DistributionService extends BaseVisitService {
 
-
 }
