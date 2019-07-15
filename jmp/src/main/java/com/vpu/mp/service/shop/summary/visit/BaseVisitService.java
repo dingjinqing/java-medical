@@ -55,6 +55,8 @@ class BaseVisitService extends BaseService {
                 i--;
             } while (i > 0);
         }
+        /* 按时间升序排序 */
+        Collections.reverse(groupedRecords);
         return groupedRecords;
     }
 }
