@@ -4,6 +4,8 @@ import lombok.Data;
 
 /**
  * 带日期数据容器
+ *
+ * @author 郑保乐
  */
 @Data
 public class RefDateRecordHolder<T extends Number> implements RefDateRecord<T> {

@@ -1,14 +1,20 @@
 package com.vpu.mp.service.pojo.shop.summary;
 
-import lombok.Data;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 import java.util.List;
 
 /**
  * 图表数据出参（x轴为 value，y轴为 key）
+ *
+ * @author 郑保乐
  */
-@Data
-public class ChartXValueYKey implements ChartData {
+@Getter
+@Setter
+@NoArgsConstructor
+public class ChartXValueYKey extends AbstractChart {
 
     private List<Integer> xAxis;
     private List<String> yAxis;
