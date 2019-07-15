@@ -6,6 +6,8 @@ import java.net.InetAddress;
 import java.net.UnknownHostException;
 import java.nio.charset.StandardCharsets;
 import java.sql.Timestamp;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.*;
 
 import javax.servlet.ServletException;
@@ -355,5 +357,38 @@ public class Util {
 			}
 		}
 		return list;
+	}
+
+	/**
+	 * 获取某一天的开始时间
+	 * @return
+	 */
+	public static Timestamp getStartToday(Date date){
+		try {
+			SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
+			date = formatter.parse(formatter.format(date));
+			return new Timestamp(date.getTime());
+		} catch (ParseException e) {
+			e.printStackTrace();
+			return null;
+//			return new Timestamp(0);
+		}
+	}
+
+	/**
+	 * 获取给定日期之前/之后多少天的日期
+	 * @param date 给定日期
+	 * @param days 指定多少天之前/之后
+	 * @return 返回的是后推或者前移后的日期的开始时间
+	 */
+	public static Timestamp getBeforeOrAfterDay(Date date,int days){
+		date = getStartToday(date);
+		Calendar calendar = new GregorianCalendar();
+		calendar.setTime(date);
+		/** 把日期往后推或者往前移；正数往后推,负数往前移 */
+		calendar.add(Calendar.DATE,days);
+		/** 这个时间就是变动后的结果 */
+		date=calendar.getTime();
+		return new Timestamp(date.getTime());
 	}
 }

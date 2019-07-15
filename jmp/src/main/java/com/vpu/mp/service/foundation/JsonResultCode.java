@@ -25,6 +25,8 @@ public enum JsonResultCode {
 	 * @serialField 16开头：文章_分类
 	 * @serialField 17开头：小程序管理
 	 * @serialField 18开头：门店管理
+	 * @serialField 19开头：基础配置
+	 * @serialField 20开头：概览
 	 */
 
 	// 公共码
@@ -148,7 +150,11 @@ public enum JsonResultCode {
 	PAYMENT_CONFIG_IS_NULL(190011,JsonResultMessage.PAYMENT_CONFIG_IS_NULL),
 	ORDER_PROCESS_CONFIG_IS_NULL(190012,JsonResultMessage.ORDER_PROCESS_CONFIG_IS_NULL),
     RETURN_CONFIG_IS_NULL(190013,JsonResultMessage.RETURN_CONFIG_IS_NULL),
-	WXPAY_CONFIG_IS_NULL(190014,JsonResultMessage.WXPAY_CONFIG_IS_NULL)
+	WXPAY_CONFIG_IS_NULL(190014,JsonResultMessage.WXPAY_CONFIG_IS_NULL),
+
+	//概览
+	OVERVIEW_MALL_DATADEMONSTRATION_GET_FAILED(2000001,JsonResultMessage.OVERVIEW_MALL_DATADEMONSTRATION_GET_FAILED),
+	OVERVIEW_MALL_BING_UNBING_FAILED(2000002,JsonResultMessage.OVERVIEW_MALL_BING_UNBING_FAILED)
 	;
 
 
