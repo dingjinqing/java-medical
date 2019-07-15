@@ -1,27 +1,23 @@
 package com.vpu.mp.service.shop.goods;
 
 
-import static com.vpu.mp.db.shop.Tables.GOODS_LABEL;
-
-import java.sql.Timestamp;
-import java.util.ArrayList;
-import java.util.List;
-
+import com.vpu.mp.db.shop.tables.records.GoodsLabelRecord;
+import com.vpu.mp.service.foundation.BaseService;
+import com.vpu.mp.service.foundation.PageResult;
+import com.vpu.mp.service.pojo.shop.goods.GoodsView;
+import com.vpu.mp.service.pojo.shop.goods.label.*;
 import org.jooq.Record1;
 import org.jooq.SelectConditionStep;
 import org.jooq.SelectWhereStep;
 import org.jooq.tools.StringUtils;
 
-import com.vpu.mp.db.shop.tables.records.GoodsLabelRecord;
-import com.vpu.mp.service.foundation.BaseService;
-import com.vpu.mp.service.foundation.PageResult;
-import com.vpu.mp.service.pojo.shop.goods.GoodsView;
-import com.vpu.mp.service.pojo.shop.goods.label.GoodsLabel;
-import com.vpu.mp.service.pojo.shop.goods.label.GoodsLabelCouple;
-import com.vpu.mp.service.pojo.shop.goods.label.GoodsLabelCoupleTypeEnum;
-import com.vpu.mp.service.pojo.shop.goods.label.GoodsLabelPageListParam;
-import com.vpu.mp.service.pojo.shop.goods.label.GoodsLabelTypeEnum;
-import com.vpu.mp.service.pojo.shop.goods.label.GoodsLabelVo;
+import java.sql.Timestamp;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+
+import static com.vpu.mp.db.shop.Tables.GOODS_LABEL;
+import static com.vpu.mp.db.shop.Tables.GOODS_LABEL_COUPLE;
 
 /**
  * @author 黄荣刚
@@ -295,6 +291,27 @@ public class GoodsLabelService extends BaseService {
 		return goodsLabelVo;
 	}
 
-	
+    /**
+     *  根据标签的类型和gta集合查找结果，提供可用于快速的标签匹配的结果。
+     * @author 李晓冰
+     * @param gtas
+     * @param type
+     * @return
+     */
+	public Map<Integer,List<GoodsLabelListVo>> getGtaLabelMap(List<Integer> gtas,GoodsLabelCoupleTypeEnum type) {
+	   return db().select()
+                .from(GOODS_LABEL).innerJoin(GOODS_LABEL_COUPLE).on(GOODS_LABEL.ID.eq(GOODS_LABEL_COUPLE.LABEL_ID))
+                .where(GOODS_LABEL_COUPLE.GTA_ID.in(gtas)).and(GOODS_LABEL_COUPLE.TYPE.eq(type.getCode()))
+                .fetch()
+                .intoGroups(GOODS_LABEL_COUPLE.GTA_ID, GoodsLabelListVo.class);
+    }
+
+    public Map<Integer,List<GoodsLabelListVo>> getGtaLabelMap(GoodsLabelCoupleTypeEnum type) {
+        return db().select()
+                .from(GOODS_LABEL).innerJoin(GOODS_LABEL_COUPLE).on(GOODS_LABEL.ID.eq(GOODS_LABEL_COUPLE.LABEL_ID))
+                .where(GOODS_LABEL_COUPLE.TYPE.eq(type.getCode()))
+                .fetch()
+                .intoGroups(GOODS_LABEL_COUPLE.GTA_ID,GoodsLabelListVo.class);
+    }
 	
 }

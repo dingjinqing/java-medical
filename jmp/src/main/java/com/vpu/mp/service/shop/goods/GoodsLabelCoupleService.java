@@ -190,6 +190,18 @@ public class GoodsLabelCoupleService extends BaseService {
     }
 	
 	/**
+	 * 	根据标签id活动所有关联的商品ids或分类ids
+	 *@param labelIds
+	 *@return
+	 */
+    public List<Integer> selectGatIdsByLabelIds(List<Integer> labelIds,Byte labelType){
+        return db().selectDistinct(GOODS_LABEL_COUPLE.GTA_ID).from(GOODS_LABEL_COUPLE)
+                .where(GOODS_LABEL_COUPLE.LABEL_ID.in(labelIds))
+                .and(GOODS_LABEL_COUPLE.TYPE.eq(labelType))
+                .fetch(GOODS_LABEL_COUPLE.GTA_ID);
+    }
+	
+	/**
 	 * 根据商品标签ID删除所有关联该标签的所有信息 
 	 * @param id
 	 */
