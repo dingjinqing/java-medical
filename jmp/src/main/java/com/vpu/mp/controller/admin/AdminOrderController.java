@@ -8,7 +8,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.vpu.mp.service.foundation.JsonResult;
 import com.vpu.mp.service.foundation.PageResult;
-import com.vpu.mp.service.pojo.shop.order.OrderListInfoOutput;
+import com.vpu.mp.service.pojo.shop.order.OrderListInfoVo;
 import com.vpu.mp.service.pojo.shop.order.OrderPageListQueryParam;
 import com.vpu.mp.service.pojo.shop.order.OrderParam;
 
@@ -24,14 +24,14 @@ public class AdminOrderController extends AdminBaseController{
 	
 	@PostMapping("/list")
 	public JsonResult orderList(@RequestBody OrderPageListQueryParam param) {
-		PageResult<OrderListInfoOutput> result = shop().order.getPageList(param);
+		PageResult<? extends OrderListInfoVo> result = shop().order.getPageList(param);
 		return success(result);
 	}
 	
 	@PostMapping("/get")
 	public JsonResult get(@RequestBody OrderParam order) {
 		if(StringUtils.isEmpty(order.getMainOrderSn())) {
-			//todo
+			//TODO
 			return fail();
 		}
 		return success(shop().order.get(order.getMainOrderSn()));

@@ -1,4 +1,4 @@
 package com.vpu.mp.service.pojo.shop.order;
 
-public class OrderInfoVo extends OrderListInfoOutput{
+public class OrderInfoVo extends OrderListInfoVo{
 }

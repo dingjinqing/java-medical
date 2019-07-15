@@ -14,13 +14,14 @@ import lombok.NoArgsConstructor;
 
 @Data
 @NoArgsConstructor
-public class OrderGoods {
+public class OrderGoodsVo {
 	private Integer orderId;
 	private String orderSn;
 	private String goodsId;
 	/**货号*/
 	private String goodsSn;
 	private String goodsName;
+	/**退货时为退货数量*/
 	private UShort goodsNumber;
 	/**单价*/
 	private BigDecimal goodsPrice;
@@ -28,5 +29,6 @@ public class OrderGoods {
 	private String goodsAttr;
 	/**SKU*/
 	private Integer productId;
+	private String goodsImg;
 	
 }

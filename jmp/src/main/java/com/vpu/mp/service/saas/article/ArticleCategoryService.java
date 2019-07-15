@@ -5,8 +5,8 @@ import org.jooq.Record2;
 import org.jooq.SelectWhereStep;
 import org.jooq.impl.DSL;
 
-import com.vpu.mp.db.main.tables.Article;
-import com.vpu.mp.db.main.tables.ArticleCategory;
+import static com.vpu.mp.db.main.tables.Article.ARTICLE;
+import static com.vpu.mp.db.main.tables.ArticleCategory.ARTICLE_CATEGORY;
 import com.vpu.mp.service.foundation.BaseService;
 import com.vpu.mp.service.foundation.DelFlag;
 import com.vpu.mp.service.foundation.Page;
@@ -28,11 +28,11 @@ public class ArticleCategoryService extends BaseService {
 	 */
 	public PageResult<ArticleCategoryVo> getPageList(ArtCategoryListQuertParam param) {
 		SelectWhereStep<Record2<Integer, String>> select = db().select(
-				ArticleCategory.ARTICLE_CATEGORY.CATEGORY_ID,
-				ArticleCategory.ARTICLE_CATEGORY.CATEGORY_NAME
-				).from(ArticleCategory.ARTICLE_CATEGORY);
-		select.where(ArticleCategory.ARTICLE_CATEGORY.DEL_STATE.equal(DelFlag.NORMAL.getCode()));
-		select.orderBy(ArticleCategory.ARTICLE_CATEGORY.CATEGORY_ID.asc());	
+				ARTICLE_CATEGORY.CATEGORY_ID,
+				ARTICLE_CATEGORY.CATEGORY_NAME
+				).from(ARTICLE_CATEGORY);
+		select.where(ARTICLE_CATEGORY.DEL_STATE.equal(DelFlag.NORMAL.getCode()));
+		select.orderBy(ARTICLE_CATEGORY.CATEGORY_ID.asc());	
 		Page page = param.getPage();
 		return getPageResult(select,page.getCurrentPage(),page.getPageRows(),ArticleCategoryVo.class);
 
@@ -44,7 +44,7 @@ public class ArticleCategoryService extends BaseService {
 	 */
 	
 	public boolean insertArticleCategory(ArticleCategoryParam arArticleCategory) {
-		int num = db().insertInto(ArticleCategory.ARTICLE_CATEGORY,ArticleCategory.ARTICLE_CATEGORY.CATEGORY_NAME)
+		int num = db().insertInto(ARTICLE_CATEGORY,ARTICLE_CATEGORY.CATEGORY_NAME)
 			.values(arArticleCategory.getCategoryName()).execute();
 		return num > 0 ? true : false;
 	}
@@ -60,16 +60,17 @@ public class ArticleCategoryService extends BaseService {
 		//删除文章分类需置等于该分类的文章的分类为1（数据库默认）
 		db().transaction(configuration -> {
 			DSLContext db = DSL.using(configuration);
-			num[0] = db.update(ArticleCategory.ARTICLE_CATEGORY)
-			.set(ArticleCategory.ARTICLE_CATEGORY.DEL_STATE, DelFlag.DISABLE.getCode()).where(ArticleCategory.ARTICLE_CATEGORY.CATEGORY_ID.eq(arArticleCategory.getCategoryId())).execute();
-			num[1] = db.update(Article.ARTICLE).set(Article.ARTICLE.CATEGORY_ID, defaultCategory).where(Article.ARTICLE.CATEGORY_ID.eq(arArticleCategory.getCategoryId())).execute();
+			num[0] = db.update(ARTICLE_CATEGORY)
+			.set(ARTICLE_CATEGORY.DEL_STATE, DelFlag.DISABLE.getCode()).set(ARTICLE_CATEGORY.CATEGORY_NAME,"del_"+arArticleCategory.getCategoryId()+arArticleCategory.getCategoryName())
+			.where(ARTICLE_CATEGORY.CATEGORY_ID.eq(arArticleCategory.getCategoryId())).execute();
+			num[1] = db.update(ARTICLE).set(ARTICLE.CATEGORY_ID, defaultCategory).where(ARTICLE.CATEGORY_ID.eq(arArticleCategory.getCategoryId())).execute();
 		});
 		return  (num[0] > 0 && num[1] >=0 )? true : false;
 	}
 
 	public boolean updateArticleCategory(ArticleCategoryParam arArticleCategory) {
-		int num = db().update(ArticleCategory.ARTICLE_CATEGORY)
-			.set(ArticleCategory.ARTICLE_CATEGORY.CATEGORY_NAME, arArticleCategory.getCategoryName()).where(ArticleCategory.ARTICLE_CATEGORY.CATEGORY_ID.eq(arArticleCategory.getCategoryId())).execute();
+		int num = db().update(ARTICLE_CATEGORY)
+			.set(ARTICLE_CATEGORY.CATEGORY_NAME, arArticleCategory.getCategoryName()).where(ARTICLE_CATEGORY.CATEGORY_ID.eq(arArticleCategory.getCategoryId())).execute();
 		return  num > 0 ? true : false;
 	}
 	
@@ -78,8 +79,8 @@ public class ArticleCategoryService extends BaseService {
 	 * 
 	 */
 	public boolean isExist(String categoryName) {
-		int num = db().fetchCount(ArticleCategory.ARTICLE_CATEGORY,ArticleCategory.ARTICLE_CATEGORY.CATEGORY_NAME.eq(categoryName)
-			.and(ArticleCategory.ARTICLE_CATEGORY.DEL_STATE.equal(DelFlag.NORMAL.getCode())));
+		int num = db().fetchCount(ARTICLE_CATEGORY,ARTICLE_CATEGORY.CATEGORY_NAME.eq(categoryName)
+			.and(ARTICLE_CATEGORY.DEL_STATE.equal(DelFlag.NORMAL.getCode())));
 		return num > 0 ? true : false;
 	}
 }
