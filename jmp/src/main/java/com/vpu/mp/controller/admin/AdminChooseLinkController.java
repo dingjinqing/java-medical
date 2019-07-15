@@ -18,6 +18,7 @@ import com.vpu.mp.service.pojo.shop.decoration.XcxCustomerPageVo;
 import com.vpu.mp.service.pojo.shop.decoration.XcxLinkListVo;
 import com.vpu.mp.service.pojo.shop.decoration.XcxNameListVo;
 import com.vpu.mp.service.pojo.shop.goods.brand.BrandVo;
+import com.vpu.mp.service.pojo.shop.goods.label.GoodsLabelVo;
 import com.vpu.mp.service.pojo.shop.sort.SortVo;
 import com.vpu.mp.service.pojo.shop.store.store.StoreListQueryParam;
 import com.vpu.mp.service.shop.ShopApplication;
@@ -288,5 +289,15 @@ public class AdminChooseLinkController extends AdminBaseController{
 	public JsonResult sortList() {
 		List<SortVo> sortList = shop().chooselink.getSortList();
 		return this.success(sortList);
+	}
+	
+	/**
+	 * 商品标签链接
+	 * @return
+	 */
+	@GetMapping("/admin/decorate/label/list")
+	public JsonResult goodsLabel() {
+		List<GoodsLabelVo> goodsLabelList = shop().chooselink.getLabelList();
+		return this.success(goodsLabelList);
 	}
 }

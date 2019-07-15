@@ -6,6 +6,7 @@ import static com.vpu.mp.db.shop.Tables.COUPON_PACK;
 import static com.vpu.mp.db.shop.Tables.DECORATE_LINK;
 import static com.vpu.mp.db.shop.Tables.FRIEND_PROMOTE_ACTIVITY;
 import static com.vpu.mp.db.shop.Tables.GOODS;
+import static com.vpu.mp.db.shop.Tables.GOODS_LABEL;
 import static com.vpu.mp.db.shop.Tables.GROUP_DRAW;
 import static com.vpu.mp.db.shop.Tables.LOTTERY;
 import static com.vpu.mp.db.shop.Tables.MEMBER_CARD;
@@ -16,9 +17,8 @@ import static com.vpu.mp.db.shop.Tables.MRKING_VOUCHER;
 import static com.vpu.mp.db.shop.Tables.PACKAGE_SALE;
 import static com.vpu.mp.db.shop.Tables.PIN_INTEGRATION_DEFINE;
 import static com.vpu.mp.db.shop.Tables.PURCHASE_PRICE_DEFINE;
-import static com.vpu.mp.db.shop.Tables.STORE;
 import static com.vpu.mp.db.shop.Tables.SORT;
-
+import static com.vpu.mp.db.shop.Tables.STORE;
 import static com.vpu.mp.db.shop.tables.XcxCustomerPage.XCX_CUSTOMER_PAGE;
 
 import java.sql.Timestamp;
@@ -40,6 +40,7 @@ import com.vpu.mp.service.pojo.shop.decoration.StoreVo;
 import com.vpu.mp.service.pojo.shop.decoration.XcxCustomerPageVo;
 import com.vpu.mp.service.pojo.shop.decoration.XcxLinkListVo;
 import com.vpu.mp.service.pojo.shop.decoration.XcxNameListVo;
+import com.vpu.mp.service.pojo.shop.goods.label.GoodsLabelVo;
 import com.vpu.mp.service.pojo.shop.sort.SortVo;
 import com.vpu.mp.service.pojo.shop.store.store.StoreListQueryParam;
 
@@ -370,5 +371,17 @@ public class ChooseLinkService extends BaseService {
 			level1.setLevelList2(level2List);
 		}
 		return levelList;
+	}
+	
+	/**
+	 * 商品标签链接
+	 * @return
+	 */
+	public List<GoodsLabelVo> getLabelList() {
+		List<GoodsLabelVo> list = db().select(GOODS_LABEL.ID,GOODS_LABEL.NAME)
+				.from(GOODS_LABEL)
+				.where(GOODS_LABEL.DEL_FLAG.eq((int) 0))
+				.fetch().into(GoodsLabelVo.class);
+		return list;
 	}
 }
