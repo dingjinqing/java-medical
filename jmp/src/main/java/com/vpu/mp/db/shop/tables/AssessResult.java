@@ -43,7 +43,7 @@ import org.jooq.types.UInteger;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class AssessResult extends TableImpl<AssessResultRecord> {
 
-    private static final long serialVersionUID = 309429850;
+    private static final long serialVersionUID = 1366302297;
 
     /**
      * The reference instance of <code>mini_shop_471752.b2c_assess_result</code>
@@ -106,12 +106,7 @@ public class AssessResult extends TableImpl<AssessResultRecord> {
     /**
      * The column <code>mini_shop_471752.b2c_assess_result.reward_info</code>. 奖励内容
      */
-    public final TableField<AssessResultRecord, String> REWARD_INFO = createField("reward_info", org.jooq.impl.SQLDataType.VARCHAR(50).defaultValue(org.jooq.impl.DSL.inline("", org.jooq.impl.SQLDataType.VARCHAR)), this, "奖励内容");
-
-    /**
-     * The column <code>mini_shop_471752.b2c_assess_result.reward_num</code>. 奖励份数
-     */
-    public final TableField<AssessResultRecord, Integer> REWARD_NUM = createField("reward_num", org.jooq.impl.SQLDataType.INTEGER.defaultValue(org.jooq.impl.DSL.inline("1", org.jooq.impl.SQLDataType.INTEGER)), this, "奖励份数");
+    public final TableField<AssessResultRecord, String> REWARD_INFO = createField("reward_info", org.jooq.impl.SQLDataType.VARCHAR(300).defaultValue(org.jooq.impl.DSL.inline("", org.jooq.impl.SQLDataType.VARCHAR)), this, "奖励内容");
 
     /**
      * The column <code>mini_shop_471752.b2c_assess_result.reward_limit_type</code>. 领奖限制类型：0无限制，1分享好友领奖品，2填写信息领奖品
@@ -129,19 +124,19 @@ public class AssessResult extends TableImpl<AssessResultRecord> {
     public final TableField<AssessResultRecord, Byte> BG_TYPE = createField("bg_type", org.jooq.impl.SQLDataType.TINYINT.defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.TINYINT)), this, "结果页背景类型：0默认，1自定义");
 
     /**
-     * The column <code>mini_shop_471752.b2c_assess_result.bg_img_type</code>. 结果页背景图片路径
+     * The column <code>mini_shop_471752.b2c_assess_result.bg_img_path</code>. 结果页背景图片路径
      */
-    public final TableField<AssessResultRecord, String> BG_IMG_TYPE = createField("bg_img_type", org.jooq.impl.SQLDataType.VARCHAR(132).defaultValue(org.jooq.impl.DSL.inline("", org.jooq.impl.SQLDataType.VARCHAR)), this, "结果页背景图片路径");
+    public final TableField<AssessResultRecord, String> BG_IMG_PATH = createField("bg_img_path", org.jooq.impl.SQLDataType.VARCHAR(132).defaultValue(org.jooq.impl.DSL.inline("", org.jooq.impl.SQLDataType.VARCHAR)), this, "结果页背景图片路径");
 
     /**
-     * The column <code>mini_shop_471752.b2c_assess_result.in_time</code>. 添加时间
+     * The column <code>mini_shop_471752.b2c_assess_result.create_time</code>.
      */
-    public final TableField<AssessResultRecord, Timestamp> IN_TIME = createField("in_time", org.jooq.impl.SQLDataType.TIMESTAMP.nullable(false), this, "添加时间");
+    public final TableField<AssessResultRecord, Timestamp> CREATE_TIME = createField("create_time", org.jooq.impl.SQLDataType.TIMESTAMP.nullable(false).defaultValue(org.jooq.impl.DSL.field("CURRENT_TIMESTAMP", org.jooq.impl.SQLDataType.TIMESTAMP)), this, "");
 
     /**
-     * The column <code>mini_shop_471752.b2c_assess_result.up_time</code>. 更新时间
+     * The column <code>mini_shop_471752.b2c_assess_result.update_time</code>. 最后修改时间
      */
-    public final TableField<AssessResultRecord, Timestamp> UP_TIME = createField("up_time", org.jooq.impl.SQLDataType.TIMESTAMP.nullable(false), this, "更新时间");
+    public final TableField<AssessResultRecord, Timestamp> UPDATE_TIME = createField("update_time", org.jooq.impl.SQLDataType.TIMESTAMP.nullable(false).defaultValue(org.jooq.impl.DSL.field("CURRENT_TIMESTAMP", org.jooq.impl.SQLDataType.TIMESTAMP)), this, "最后修改时间");
 
     /**
      * The column <code>mini_shop_471752.b2c_assess_result.del_flag</code>. 删除标识：0未删除，1已删除
