@@ -81,6 +81,7 @@ public enum JsonResultCode {
 	// 订单
 
     // 商品
+    GOODS_ID_IS_NULL(130001,JsonResultMessage.GOODS_ID_IS_NULL),
         //商品标签
     GOODS_BRAND_NAME_EXIST(131001, JsonResultMessage.GOODS_BRAND_NAME_EXIST),
     GOODS_BRAND_NAME_IS_NULL(131002, JsonResultMessage.GOODS_BRAND_NAME_IS_NULL),

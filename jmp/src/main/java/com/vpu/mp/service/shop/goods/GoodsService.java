@@ -507,7 +507,7 @@ public class GoodsService extends BaseService {
         List<Integer> goodsIds = operateParam.getGoodsIds();
         db().transaction(configuration -> {
             DSLContext db = DSL.using(configuration);
-            db.update(GOODS).set(GOODS.DEL_FLAG, DelFlag.DISABLE_VALUE)
+            db.update(GOODS).set(GOODS.DEL_FLAG, DelFlag.DISABLE.getCode())
                     .set(GOODS.GOODS_SN,
                             DSL.concat(DelFlag.DEL_ITEM_PREFIX).concat(GOODS.GOODS_ID).concat(DelFlag.DEL_ITEM_SPLITER)
                                     .concat(GOODS.GOODS_SN))

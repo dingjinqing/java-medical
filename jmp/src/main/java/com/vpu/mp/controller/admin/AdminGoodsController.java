@@ -39,7 +39,6 @@ public class AdminGoodsController extends AdminBaseController {
 
     /**
      * 商品新增
-     *
      * @param goods
      * @return
      */
@@ -149,6 +148,10 @@ public class AdminGoodsController extends AdminBaseController {
 
     @PostMapping("/api/admin/goods/delete")
     public JsonResult delete(@RequestBody GoodsBatchOperateParam param) {
+        if (param.getGoodsIds() == null || param.getGoodsIds().size() == 0) {
+            return fail(JsonResultCode.GOODS_ID_IS_NULL);
+        }
+
         shop().goods.delete(param);
         return success();
     }

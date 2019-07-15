@@ -185,7 +185,7 @@ public class GoodsLabelCoupleService extends BaseService {
 	public void deleteByGoodsIds(DSLContext db,List<Integer> goodsIds){
 	    db.delete(GOODS_LABEL_COUPLE)
                 .where(GOODS_LABEL_COUPLE.GTA_ID.in(goodsIds))
-                .and(GOODS_LABEL_COUPLE.TYPE.eq(GoodsLabelCouple.GOODS_LABEL_CODE))
+                .and(GOODS_LABEL_COUPLE.TYPE.eq(GoodsLabelCoupleTypeEnum.GOODSTYPE.getCode()))
                 .execute();
     }
 	

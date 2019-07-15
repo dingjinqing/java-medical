@@ -56,6 +56,7 @@ public class JsonResultMessage {
 	final public static String MSG_IMAGE_CATEGORY_IMGCATNAME_NOT_NULL="image.category.imgCatName.notNull";
 
 	// 商品
+    final public static String GOODS_ID_IS_NULL="goods.id.is.null";
 	    //商品品牌
     final public static String GOODS_BRAND_NAME_EXIST="goods.brand.name.exist";
     final public static String GOODS_BRAND_NAME_IS_NULL="goods.brand.name.is.null";
