@@ -4,6 +4,7 @@ import com.vpu.mp.db.shop.tables.records.GoodsBrandRecord;
 import com.vpu.mp.service.foundation.BaseService;
 import com.vpu.mp.service.foundation.DelFlag;
 import com.vpu.mp.service.foundation.PageResult;
+import com.vpu.mp.service.pojo.shop.goods.brand.GoodsBrandVo;
 import com.vpu.mp.service.pojo.shop.goods.brand.GoodsBrandPageListParam;
 import com.vpu.mp.service.pojo.shop.goods.brand.GoodsBrand;
 import org.jooq.*;
@@ -172,12 +173,13 @@ public class GoodsBrandService extends BaseService {
      * 列出所有品牌
      * @return
      */
-    public List<GoodsBrand> listAllGoodsBrand(){
-        List<GoodsBrand> goodsBrands = db().selectFrom(GOODS_BRAND)
+    public List<GoodsBrandVo> listGoodsBrandName(){
+        List<GoodsBrandVo> goodsBrandNames = db().select(GOODS_BRAND.ID,GOODS_BRAND.BRAND_NAME)
+                .from(GOODS_BRAND)
                 .where(GOODS_BRAND.DEL_FLAG.eq(DelFlag.NORMAL.getCode()))
-                .fetch().into(GoodsBrand.class);
+                .fetch().into(GoodsBrandVo.class);
 
-        return goodsBrands;
+        return goodsBrandNames;
     }
 
 }

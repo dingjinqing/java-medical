@@ -1,15 +1,15 @@
 package com.vpu.mp.controller.admin;
 
-import com.vpu.mp.service.shop.ShopApplication;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RestController;
-
 import com.vpu.mp.service.foundation.JsonResult;
 import com.vpu.mp.service.foundation.JsonResultCode;
 import com.vpu.mp.service.foundation.PageResult;
 import com.vpu.mp.service.pojo.shop.goods.brand.GoodsBrand;
 import com.vpu.mp.service.pojo.shop.goods.brand.GoodsBrandPageListParam;
+import com.vpu.mp.service.pojo.shop.goods.brand.GoodsBrandVo;
+import com.vpu.mp.service.shop.ShopApplication;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
 
@@ -21,6 +21,7 @@ import java.util.List;
  */
 @RestController
 public class AdminGoodsBrandController extends AdminBaseController {
+
 
     /**
      * 商品品牌分页查询
@@ -115,10 +116,9 @@ public class AdminGoodsBrandController extends AdminBaseController {
      *
      * @return
      */
-    @PostMapping("/api/admin/goods/brand/list/all")
-    public JsonResult listAllGoodsBrand() {
-        List<GoodsBrand> goodsBrands = shop().goods.goodsBrand.listAllGoodsBrand();
-
+    @PostMapping("/api/admin/goods/brand/name/list")
+    public JsonResult listGoodsBrandName() {
+        List<GoodsBrandVo> goodsBrands = shop().goods.goodsBrand.listGoodsBrandName();
         return success(goodsBrands);
     }
 }
