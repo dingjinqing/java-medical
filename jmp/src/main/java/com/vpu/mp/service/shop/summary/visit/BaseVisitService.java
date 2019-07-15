@@ -4,7 +4,6 @@ import com.vpu.mp.service.foundation.BaseService;
 import com.vpu.mp.service.pojo.shop.summary.RefDateRecord;
 import com.vpu.mp.service.pojo.shop.summary.RefDateRecordHolder;
 
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
@@ -28,6 +27,7 @@ class BaseVisitService extends BaseService {
         Collections.reverse(records);
         List<RefDateRecord<T>> groupedRecords = new LinkedList<>();
         if (1 == grading) {
+            /* 按天统计 */
             for (RefDateRecord<T> unit : records) {
                 RefDateRecordHolder<T> holder = new RefDateRecordHolder<>();
                 holder.setRefDate(unit.getRefDate());
@@ -35,18 +35,21 @@ class BaseVisitService extends BaseService {
                 groupedRecords.add(holder);
             }
         } else {
+            /* 按 n 天统计 */
             String start;
             String end;
             int startI;
             int endI;
             int i = records.size() - 1;
             do {
+                /* 一个粒度区间 */
                 end = records.get(i).getRefDate();
                 endI = i;
                 i -= grading;
                 if (i < 0) i = 0;
                 start = records.get(i).getRefDate();
                 startI = i;
+                /* 总和 */
                 Double sum = records.subList(startI, endI).stream().mapToDouble(r -> (Double) r.getValue()).sum();
                 String dateResult = start + "-" + end;
                 RefDateRecordHolder<Double> holder = new RefDateRecordHolder<>();
