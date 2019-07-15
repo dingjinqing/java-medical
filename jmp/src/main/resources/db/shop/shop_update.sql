@@ -235,5 +235,6 @@ alter table `b2c_store_service_category` modify  column `cat_id` int(11) NOT NUL
 
 -- 黄荣刚 7月15日
 -- 修改
-ALTER TABLE b2c_service_technician MODIFY COLUMN group_id SMALLINT(6) DEFAULT 0  COMMENT '技师分组';
+ALTER TABLE b2c_service_technician MODIFY COLUMN group_id int(11) DEFAULT 0  COMMENT '技师分组';
+ALTER TABLE b2c_service_technician_group MODIFY COLUMN group_id int(11) NOT NULL AUTO_INCREMENT COMMENT '技师分组';
 
