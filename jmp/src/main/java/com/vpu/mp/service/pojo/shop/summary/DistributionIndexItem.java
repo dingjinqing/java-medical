@@ -10,6 +10,6 @@ import lombok.Data;
 @Data
 public class DistributionIndexItem {
 
-    private String key;
+    private Integer key;
     private Integer value;
 }

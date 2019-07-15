@@ -5,7 +5,7 @@ package com.vpu.mp.service.pojo.shop.summary;
  *
  * @author 郑保乐
  */
-public enum AccessDepth {
+public enum AccessDepth implements ChartInfo {
 
     L1(1, "1 页"),
     L2(2, "2 页"),
@@ -15,5 +15,21 @@ public enum AccessDepth {
     L6(6, "6-10 页"),
     L7(7, ">10 页");
 
-    AccessDepth(Integer index, String duration) { }
+    private Integer index;
+    private String duration;
+
+    AccessDepth(Integer index, String duration) {
+        this.index = index;
+        this.duration = duration;
+    }
+
+    @Override
+    public String getName() {
+        return duration;
+    }
+
+    @Override
+    public Integer getKey() {
+        return index;
+    }
 }

@@ -1,6 +1,8 @@
 package com.vpu.mp.controller.admin;
 
 import com.vpu.mp.service.foundation.JsonResult;
+import com.vpu.mp.service.pojo.shop.summary.VisitDistributionParam;
+import com.vpu.mp.service.pojo.shop.summary.VisitDistributionVo;
 import com.vpu.mp.service.pojo.shop.summary.VisitStatisticsParam;
 import com.vpu.mp.service.pojo.shop.summary.VisitStatisticsVo;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -27,6 +29,12 @@ public class AdminSummaryController extends AdminBaseController {
     @PostMapping("/api/admin/summary/visit/amount")
     public JsonResult getVisitStatistics(@Valid @RequestBody VisitStatisticsParam param) {
         VisitStatisticsVo vo = shop().amount.getVisitStatistics(param);
+        return success(vo);
+    }
+
+    @PostMapping("/api/admin/summary/visit/distribution")
+    public JsonResult getVisitDistribution(@Valid @RequestBody VisitDistributionParam param) {
+        VisitDistributionVo vo = shop().distribution.getVisitDistribution(param);
         return success(vo);
     }
 }

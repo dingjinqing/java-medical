@@ -5,7 +5,7 @@ package com.vpu.mp.service.pojo.shop.summary;
  *
  * @author 郑保乐
  */
-public enum AccessSource {
+public enum AccessSource implements ChartInfo {
 
     MP_HISTORY_LIST(1, "小程序历史列表"),
     SEARCH(2, "搜索"),
@@ -41,5 +41,29 @@ public enum AccessSource {
     DISCOVER_ENTRY_MY_MP(35, "发现入口-我的小程序"),
     TASK_BAR_MY_MP(36, "任务栏-我的小程序");
 
-    AccessSource(Integer index, String source) { }
+    private Integer index;
+    private String source;
+
+    AccessSource(Integer index, String source) {
+        this.index = index;
+        this.source = source;
+    }
+
+    public Integer getIndex() {
+        return index;
+    }
+
+    public String getSource() {
+        return source;
+    }
+
+    @Override
+    public String getName() {
+        return getSource();
+    }
+
+    @Override
+    public Integer getKey() {
+        return index;
+    }
 }

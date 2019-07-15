@@ -6,6 +6,7 @@ import com.vpu.mp.service.pojo.shop.summary.RefDateRecordHolder;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.LinkedList;
 import java.util.List;
 
 /**
@@ -25,7 +26,7 @@ class BaseVisitService extends BaseService {
     <T extends Number> List<RefDateRecord<T>> getGroupedValue(List<RefDateRecord<T>> records, Integer grading) {
         /* 默认是时间倒序, 改成正序 */
         Collections.reverse(records);
-        List<RefDateRecord<T>> groupedRecords = new ArrayList<>();
+        List<RefDateRecord<T>> groupedRecords = new LinkedList<>();
         if (1 == grading) {
             for (RefDateRecord<T> unit : records) {
                 RefDateRecordHolder<T> holder = new RefDateRecordHolder<>();

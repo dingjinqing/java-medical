@@ -11,6 +11,7 @@ import lombok.Data;
 public class VisitInfoItem {
 
     private String name;
+    private Integer key;
     private Integer value;
     private Integer isShow = 1;
 }
