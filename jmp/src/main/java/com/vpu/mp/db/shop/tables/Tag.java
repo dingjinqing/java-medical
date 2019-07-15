@@ -42,7 +42,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class Tag extends TableImpl<TagRecord> {
 
-    private static final long serialVersionUID = 459062985;
+    private static final long serialVersionUID = 1674922509;
 
     /**
      * The reference instance of <code>mini_shop_471752.b2c_tag</code>
@@ -73,9 +73,14 @@ public class Tag extends TableImpl<TagRecord> {
     public final TableField<TagRecord, Timestamp> CREATE_TIME = createField("create_time", org.jooq.impl.SQLDataType.TIMESTAMP.nullable(false).defaultValue(org.jooq.impl.DSL.field("CURRENT_TIMESTAMP", org.jooq.impl.SQLDataType.TIMESTAMP)), this, "");
 
     /**
-     * The column <code>mini_shop_471752.b2c_tag.update_time</code>. 最后修改时间
+     * The column <code>mini_shop_471752.b2c_tag.update_time</code>. 记录修改时间
      */
-    public final TableField<TagRecord, Timestamp> UPDATE_TIME = createField("update_time", org.jooq.impl.SQLDataType.TIMESTAMP.nullable(false).defaultValue(org.jooq.impl.DSL.field("CURRENT_TIMESTAMP", org.jooq.impl.SQLDataType.TIMESTAMP)), this, "最后修改时间");
+    public final TableField<TagRecord, Timestamp> UPDATE_TIME = createField("update_time", org.jooq.impl.SQLDataType.TIMESTAMP.nullable(false).defaultValue(org.jooq.impl.DSL.field("CURRENT_TIMESTAMP", org.jooq.impl.SQLDataType.TIMESTAMP)), this, "记录修改时间");
+
+    /**
+     * The column <code>mini_shop_471752.b2c_tag.is_delete</code>. 0未删除，1已删除
+     */
+    public final TableField<TagRecord, Byte> IS_DELETE = createField("is_delete", org.jooq.impl.SQLDataType.TINYINT.nullable(false).defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.TINYINT)), this, "0未删除，1已删除");
 
     /**
      * Create a <code>mini_shop_471752.b2c_tag</code> table reference
