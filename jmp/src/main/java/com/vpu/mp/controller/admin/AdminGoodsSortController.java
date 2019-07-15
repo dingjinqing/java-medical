@@ -1,6 +1,8 @@
 package com.vpu.mp.controller.admin;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import com.vpu.mp.service.foundation.JsonResultCode;
 import com.vpu.mp.service.shop.ShopApplication;
@@ -18,6 +20,7 @@ import com.vpu.mp.service.pojo.shop.goods.sort.Sort;
  */
 @RestController
 public class AdminGoodsSortController extends AdminBaseController {
+
 
     /**
      * 商品分类查询，未分页
@@ -53,7 +56,7 @@ public class AdminGoodsSortController extends AdminBaseController {
     }
 
     /**
-     *  推荐商品新增接口
+     *  推荐商品批量新增接口
      * @param sorts
      * @return
      */
@@ -63,9 +66,38 @@ public class AdminGoodsSortController extends AdminBaseController {
             return success();
         }
 
+        //如果提交的内容内部有重复
+        if (isSortNameRepeate(sorts)) {
+            return fail(JsonResultCode.GOODS_SORT_NAME_EXIST);
+        }
+
+        for (Sort sort : sorts) {
+            if (shop().goods.goodsSort.isSortNameExist(sort)) {
+                return fail(JsonResultCode.GOODS_SORT_NAME_EXIST);
+            }
+        }
+
         shop().goods.goodsSort.insertRecommendSort(sorts);
 
         return success();
+    }
+
+    /**
+     *  判断批量商品新增时候是否内部有重复值
+     * @param sorts
+     * @return
+     */
+    private boolean isSortNameRepeate(List<Sort> sorts) {
+        Map<String,Object> map=new HashMap<>(sorts.size());
+        for (Sort sort : sorts) {
+            map.put(sort.getSortName(),null);
+        }
+
+        if (map.size() != sorts.size()) {
+            return true;
+        } else {
+            return false;
+        }
     }
 
     /**
