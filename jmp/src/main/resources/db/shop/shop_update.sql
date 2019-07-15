@@ -41,9 +41,6 @@ ALTER TABLE b2c_comment_goods ADD COLUMN is_shop_add tinyint(1)  not null DEFAUL
 ALTER TABLE b2c_comment_goods ADD COLUMN bogus_username  varchar(32)  not null default '' comment '用户名称：商家添加时使用';
 ALTER TABLE b2c_comment_goods ADD COLUMN bogus_user_avatar varchar(100)  not null default '' comment '用户头像：商家添加时使用';
 
-
-
-
 -- 7月9日 黄壮壮 修改b2c_tag表名in_time为create_time 并且添加字段update_time
 alter table b2c_tag CHANGE COLUMN in_time create_time TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP;
 ALTER TABLE b2c_tag ADD COLUMN update_time TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '记录修改时间' AFTER create_time;
@@ -53,6 +50,10 @@ ALTER TABLE b2c_tag ADD COLUMN update_time TIMESTAMP DEFAULT CURRENT_TIMESTAMP O
 -- 7月9日添加
 -- 修改标签组关系表
 ALTER TABLE b2c_goods_label_couple MODIFY COLUMN label_id INT(11) NOT NULL;
+
+-- 7月11日 黄壮壮 在表b2c_tag 中添加is_delete字段
+alter table b2c_tag add COLUMN is_delete TINYINT(1) DEFAULT 0 NOT NULL  COMMENT "0未删除，1已删除" AFTER update_time;
+
 
 -- 7月11日 常乐 创建测评活动相关表结构
 -- 测评活动表
@@ -82,6 +83,12 @@ create table `b2c_assess_activity` (
   key `act_name` (`act_name`),
   key (`shop_id`)
 );
+
+
+
+-- 7月11日 黄壮壮 在表b2c_user_tag 中添加is_delete字段
+alter table b2c_user_tag add COLUMN is_delete TINYINT(1) DEFAULT 0 NOT NULL  COMMENT "0未删除，1已删除" AFTER add_time;
+
 
 -- 测评活动题目表
 -- drop table if exists `b2c_assess_topic`;
