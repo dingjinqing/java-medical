@@ -28,24 +28,27 @@ public class RetainService extends BaseVisitService {
         Integer action = param.getAction();
         Result<MpDailyRetainRecord> retainResult;
         AccessRetainVo vo = new AccessRetainVo();
-        List<AccessRetain> retains = new LinkedList<>();
+        List<AccessRetain> retains;
         switch (action) {
             case ACTION_NEW_RETAIN:
                 retainResult = getNewRetainResult(startDate, endDate);
-                filter(retainResult, retains, MP_DAILY_RETAIN.VISIT_UV_NEW);
+                retains = getRetainList(retainResult, MP_DAILY_RETAIN.VISIT_UV_NEW);
                 break;
             case ACTION_RETAIN:
                 retainResult = getRetainResult(startDate, endDate);
-                filter(retainResult, retains, MP_DAILY_RETAIN.VISIT_UV);
+                retains = getRetainList(retainResult, MP_DAILY_RETAIN.VISIT_UV);
                 break;
+            default:
+                throw new IllegalStateException("Unexpected action: " + action);
         }
         vo.setData(retains);
         return vo;
     }
 
-    private void filter(
+    private List<AccessRetain> getRetainList(
             Result<MpDailyRetainRecord> retainResult,
-            List<AccessRetain> retains, TableField<MpDailyRetainRecord, String> field) {
+            TableField<MpDailyRetainRecord, String> field) {
+        List<AccessRetain> retains = new LinkedList<>();
         retainResult.forEach(r -> {
             /* one day */
             String refDate = r.get(MP_DAILY_RETAIN.REF_DATE);
@@ -56,6 +59,7 @@ public class RetainService extends BaseVisitService {
             day.setList(Objects.requireNonNull(items));
             retains.add(day);
         });
+        return retains;
     }
 
     /**
