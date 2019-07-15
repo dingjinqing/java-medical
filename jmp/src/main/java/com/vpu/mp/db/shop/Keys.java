@@ -185,7 +185,7 @@ public class Keys {
     public static final Identity<StoreGroupRecord, Integer> IDENTITY_STORE_GROUP = Identities0.IDENTITY_STORE_GROUP;
     public static final Identity<StoreOrderRecord, Integer> IDENTITY_STORE_ORDER = Identities0.IDENTITY_STORE_ORDER;
     public static final Identity<StoreServiceRecord, Integer> IDENTITY_STORE_SERVICE = Identities0.IDENTITY_STORE_SERVICE;
-    public static final Identity<StoreServiceCategoryRecord, Short> IDENTITY_STORE_SERVICE_CATEGORY = Identities0.IDENTITY_STORE_SERVICE_CATEGORY;
+    public static final Identity<StoreServiceCategoryRecord, Integer> IDENTITY_STORE_SERVICE_CATEGORY = Identities0.IDENTITY_STORE_SERVICE_CATEGORY;
     public static final Identity<SubOrderInfoRecord, Integer> IDENTITY_SUB_ORDER_INFO = Identities0.IDENTITY_SUB_ORDER_INFO;
     public static final Identity<TagRecord, Integer> IDENTITY_TAG = Identities0.IDENTITY_TAG;
     public static final Identity<TemplateConfigRecord, Integer> IDENTITY_TEMPLATE_CONFIG = Identities0.IDENTITY_TEMPLATE_CONFIG;
@@ -574,7 +574,7 @@ public class Keys {
         public static Identity<StoreGroupRecord, Integer> IDENTITY_STORE_GROUP = Internal.createIdentity(StoreGroup.STORE_GROUP, StoreGroup.STORE_GROUP.GROUP_ID);
         public static Identity<StoreOrderRecord, Integer> IDENTITY_STORE_ORDER = Internal.createIdentity(StoreOrder.STORE_ORDER, StoreOrder.STORE_ORDER.ORDER_ID);
         public static Identity<StoreServiceRecord, Integer> IDENTITY_STORE_SERVICE = Internal.createIdentity(StoreService.STORE_SERVICE, StoreService.STORE_SERVICE.ID);
-        public static Identity<StoreServiceCategoryRecord, Short> IDENTITY_STORE_SERVICE_CATEGORY = Internal.createIdentity(StoreServiceCategory.STORE_SERVICE_CATEGORY, StoreServiceCategory.STORE_SERVICE_CATEGORY.CAT_ID);
+        public static Identity<StoreServiceCategoryRecord, Integer> IDENTITY_STORE_SERVICE_CATEGORY = Internal.createIdentity(StoreServiceCategory.STORE_SERVICE_CATEGORY, StoreServiceCategory.STORE_SERVICE_CATEGORY.CAT_ID);
         public static Identity<SubOrderInfoRecord, Integer> IDENTITY_SUB_ORDER_INFO = Internal.createIdentity(SubOrderInfo.SUB_ORDER_INFO, SubOrderInfo.SUB_ORDER_INFO.ID);
         public static Identity<TagRecord, Integer> IDENTITY_TAG = Internal.createIdentity(Tag.TAG, Tag.TAG.TAG_ID);
         public static Identity<TemplateConfigRecord, Integer> IDENTITY_TEMPLATE_CONFIG = Internal.createIdentity(TemplateConfig.TEMPLATE_CONFIG, TemplateConfig.TEMPLATE_CONFIG.ID);

@@ -229,3 +229,5 @@ ALTER TABLE b2c_goods  add PRIMARY KEY(goods_id);
 -- 王兵兵 7月15日
 -- b2c_service_category 修改表名
 alter table `b2c_service_category` rename to `b2c_store_service_category`;
+-- b2c_service_category 统一主键字段类型
+alter table `b2c_store_service_category` modify  column `cat_id` int(11) NOT NULL AUTO_INCREMENT;

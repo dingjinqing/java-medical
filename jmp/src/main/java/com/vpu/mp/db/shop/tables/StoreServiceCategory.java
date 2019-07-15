@@ -42,7 +42,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class StoreServiceCategory extends TableImpl<StoreServiceCategoryRecord> {
 
-    private static final long serialVersionUID = 59663291;
+    private static final long serialVersionUID = -1007532797;
 
     /**
      * The reference instance of <code>mini_shop_471752.b2c_store_service_category</code>
@@ -60,7 +60,7 @@ public class StoreServiceCategory extends TableImpl<StoreServiceCategoryRecord> 
     /**
      * The column <code>mini_shop_471752.b2c_store_service_category.cat_id</code>.
      */
-    public final TableField<StoreServiceCategoryRecord, Short> CAT_ID = createField("cat_id", org.jooq.impl.SQLDataType.SMALLINT.nullable(false).identity(true), this, "");
+    public final TableField<StoreServiceCategoryRecord, Integer> CAT_ID = createField("cat_id", org.jooq.impl.SQLDataType.INTEGER.nullable(false).identity(true), this, "");
 
     /**
      * The column <code>mini_shop_471752.b2c_store_service_category.cat_name</code>.
@@ -135,7 +135,7 @@ public class StoreServiceCategory extends TableImpl<StoreServiceCategoryRecord> 
      * {@inheritDoc}
      */
     @Override
-    public Identity<StoreServiceCategoryRecord, Short> getIdentity() {
+    public Identity<StoreServiceCategoryRecord, Integer> getIdentity() {
         return Keys.IDENTITY_STORE_SERVICE_CATEGORY;
     }
 

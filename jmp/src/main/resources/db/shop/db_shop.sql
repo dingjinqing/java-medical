@@ -1232,7 +1232,7 @@ create table `b2c_give_voucher` (
 -- -- 店铺服务分类
 -- drop table if exists `b2c_store_service_category`;
 create table `b2c_store_service_category` (
-  `cat_id`      	smallint(5)  not null auto_increment,
+  `cat_id`      	int(11)  not null auto_increment,
   `cat_name`    	varchar(90)          not null 	default '',
   `store_id`    	int(11)              not null,
   `create_time`		timestamp       default current_timestamp,
