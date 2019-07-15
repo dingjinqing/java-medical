@@ -4,6 +4,7 @@
 package com.vpu.mp.service.pojo.shop.image.category;
 
 
+import com.vpu.mp.service.foundation.JsonResultMessage;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
@@ -16,9 +17,9 @@ import javax.validation.constraints.NotNull;
 @NoArgsConstructor
 public class UploadedImageCategoryParam {
 
-    @NotNull
+    @NotNull(message = JsonResultMessage.MSG_IMAGE_CATEGORY_IMGCATID_NOT_NULL)
     private Integer imgCatId;
-    @NotNull
+    @NotNull(message = JsonResultMessage.MSG_IMAGE_CATEGORY_IMGCATPARENTID_NOT_NULL)
     private Integer imgCatParentId;
     private Integer sort;
 

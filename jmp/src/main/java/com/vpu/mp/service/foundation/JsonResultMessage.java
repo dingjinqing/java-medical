@@ -51,6 +51,10 @@ public class JsonResultMessage {
 	final public static String MSG_IMGAE_UPLOAD_EQ_WIDTH = "image.upload.eqWidth";
 	final public static String MSG_IMGAE_UPLOAD_EQ_HEIGHT = "image.upload.eqHeight";
 
+	final public static String MSG_IMAGE_CATEGORY_IMGCATID_NOT_NULL="image.category.imgCatId.notNull";
+	final public static String MSG_IMAGE_CATEGORY_IMGCATPARENTID_NOT_NULL="image.category.imgCatParentId.notNull";
+	final public static String MSG_IMAGE_CATEGORY_IMGCATNAME_NOT_NULL="image.category.imgCatName.notNull";
+
 	// 商品
 	    //商品品牌
     final public static String GOODS_BRAND_NAME_EXIST="goods.brand.name.exist";
