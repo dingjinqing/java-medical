@@ -7,6 +7,7 @@ package com.vpu.mp.db.shop.tables;
 import com.vpu.mp.db.shop.Indexes;
 import com.vpu.mp.db.shop.Keys;
 import com.vpu.mp.db.shop.MiniShop_471752;
+import com.vpu.mp.db.shop.tables.records.PledgeRecord;
 
 import java.sql.Timestamp;
 import java.util.Arrays;
@@ -14,7 +15,6 @@ import java.util.List;
 
 import javax.annotation.Generated;
 
-import com.vpu.mp.db.shop.tables.records.PledgeRecord;
 import org.jooq.Field;
 import org.jooq.ForeignKey;
 import org.jooq.Identity;
@@ -42,10 +42,10 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class Pledge extends TableImpl<PledgeRecord> {
 
-    private static final long serialVersionUID = -2061697961;
+    private static final long serialVersionUID = -1283651533;
 
     /**
-     * The reference instance of <code>mini_shop12.b2c_pledge</code>
+     * The reference instance of <code>mini_shop_471752.b2c_pledge</code>
      */
     public static final Pledge PLEDGE = new Pledge();
 
@@ -58,61 +58,61 @@ public class Pledge extends TableImpl<PledgeRecord> {
     }
 
     /**
-     * The column <code>mini_shop12.b2c_pledge.id</code>. ID
+     * The column <code>mini_shop_471752.b2c_pledge.id</code>. ID
      */
     public final TableField<PledgeRecord, Integer> ID = createField("id", org.jooq.impl.SQLDataType.INTEGER.nullable(false).identity(true), this, "ID");
 
     /**
-     * The column <code>mini_shop12.b2c_pledge.pledge_name</code>. 承诺名称
+     * The column <code>mini_shop_471752.b2c_pledge.pledge_name</code>. 承诺名称
      */
     public final TableField<PledgeRecord, String> PLEDGE_NAME = createField("pledge_name", org.jooq.impl.SQLDataType.VARCHAR(100).nullable(false).defaultValue(org.jooq.impl.DSL.inline("", org.jooq.impl.SQLDataType.VARCHAR)), this, "承诺名称");
 
     /**
-     * The column <code>mini_shop12.b2c_pledge.pledge_logo</code>. 服务承诺的图标
+     * The column <code>mini_shop_471752.b2c_pledge.pledge_logo</code>. 服务承诺的图标
      */
     public final TableField<PledgeRecord, String> PLEDGE_LOGO = createField("pledge_logo", org.jooq.impl.SQLDataType.VARCHAR(255), this, "服务承诺的图标");
 
     /**
-     * The column <code>mini_shop12.b2c_pledge.pledge_content</code>. 服务承诺的说明
+     * The column <code>mini_shop_471752.b2c_pledge.pledge_content</code>. 服务承诺的说明
      */
     public final TableField<PledgeRecord, String> PLEDGE_CONTENT = createField("pledge_content", org.jooq.impl.SQLDataType.VARCHAR(500).nullable(false).defaultValue(org.jooq.impl.DSL.inline("", org.jooq.impl.SQLDataType.VARCHAR)), this, "服务承诺的说明");
 
     /**
-     * The column <code>mini_shop12.b2c_pledge.create_time</code>. 创建时间
+     * The column <code>mini_shop_471752.b2c_pledge.create_time</code>. 创建时间
      */
     public final TableField<PledgeRecord, Timestamp> CREATE_TIME = createField("create_time", org.jooq.impl.SQLDataType.TIMESTAMP.defaultValue(org.jooq.impl.DSL.field("CURRENT_TIMESTAMP", org.jooq.impl.SQLDataType.TIMESTAMP)), this, "创建时间");
 
     /**
-     * The column <code>mini_shop12.b2c_pledge.update_time</code>. 更新时间
+     * The column <code>mini_shop_471752.b2c_pledge.update_time</code>. 更新时间
      */
     public final TableField<PledgeRecord, Timestamp> UPDATE_TIME = createField("update_time", org.jooq.impl.SQLDataType.TIMESTAMP.defaultValue(org.jooq.impl.DSL.field("CURRENT_TIMESTAMP", org.jooq.impl.SQLDataType.TIMESTAMP)), this, "更新时间");
 
     /**
-     * The column <code>mini_shop12.b2c_pledge.state</code>. 开启状态1:开启，0:关闭
+     * The column <code>mini_shop_471752.b2c_pledge.state</code>. 开启状态1:开启，0:关闭
      */
     public final TableField<PledgeRecord, Byte> STATE = createField("state", org.jooq.impl.SQLDataType.TINYINT.nullable(false).defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.TINYINT)), this, "开启状态1:开启，0:关闭");
 
     /**
-     * The column <code>mini_shop12.b2c_pledge.del_flag</code>. 删除标识：0未删除，1已删除
+     * The column <code>mini_shop_471752.b2c_pledge.del_flag</code>. 删除标识：0未删除，1已删除
      */
     public final TableField<PledgeRecord, Byte> DEL_FLAG = createField("del_flag", org.jooq.impl.SQLDataType.TINYINT.nullable(false).defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.TINYINT)), this, "删除标识：0未删除，1已删除");
 
     /**
-     * Create a <code>mini_shop12.b2c_pledge</code> table reference
+     * Create a <code>mini_shop_471752.b2c_pledge</code> table reference
      */
     public Pledge() {
         this(DSL.name("b2c_pledge"), null);
     }
 
     /**
-     * Create an aliased <code>mini_shop12.b2c_pledge</code> table reference
+     * Create an aliased <code>mini_shop_471752.b2c_pledge</code> table reference
      */
     public Pledge(String alias) {
         this(DSL.name(alias), PLEDGE);
     }
 
     /**
-     * Create an aliased <code>mini_shop12.b2c_pledge</code> table reference
+     * Create an aliased <code>mini_shop_471752.b2c_pledge</code> table reference
      */
     public Pledge(Name alias) {
         this(alias, PLEDGE);

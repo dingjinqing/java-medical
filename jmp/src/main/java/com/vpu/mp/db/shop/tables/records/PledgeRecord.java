@@ -30,115 +30,115 @@ import org.jooq.impl.UpdatableRecordImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class PledgeRecord extends UpdatableRecordImpl<PledgeRecord> implements Record8<Integer, String, String, String, Timestamp, Timestamp, Byte, Byte> {
 
-    private static final long serialVersionUID = -2057668171;
+    private static final long serialVersionUID = 1366153213;
 
     /**
-     * Setter for <code>mini_shop12.b2c_pledge.id</code>. ID
+     * Setter for <code>mini_shop_471752.b2c_pledge.id</code>. ID
      */
     public void setId(Integer value) {
         set(0, value);
     }
 
     /**
-     * Getter for <code>mini_shop12.b2c_pledge.id</code>. ID
+     * Getter for <code>mini_shop_471752.b2c_pledge.id</code>. ID
      */
     public Integer getId() {
         return (Integer) get(0);
     }
 
     /**
-     * Setter for <code>mini_shop12.b2c_pledge.pledge_name</code>. 承诺名称
+     * Setter for <code>mini_shop_471752.b2c_pledge.pledge_name</code>. 承诺名称
      */
     public void setPledgeName(String value) {
         set(1, value);
     }
 
     /**
-     * Getter for <code>mini_shop12.b2c_pledge.pledge_name</code>. 承诺名称
+     * Getter for <code>mini_shop_471752.b2c_pledge.pledge_name</code>. 承诺名称
      */
     public String getPledgeName() {
         return (String) get(1);
     }
 
     /**
-     * Setter for <code>mini_shop12.b2c_pledge.pledge_logo</code>. 服务承诺的图标
+     * Setter for <code>mini_shop_471752.b2c_pledge.pledge_logo</code>. 服务承诺的图标
      */
     public void setPledgeLogo(String value) {
         set(2, value);
     }
 
     /**
-     * Getter for <code>mini_shop12.b2c_pledge.pledge_logo</code>. 服务承诺的图标
+     * Getter for <code>mini_shop_471752.b2c_pledge.pledge_logo</code>. 服务承诺的图标
      */
     public String getPledgeLogo() {
         return (String) get(2);
     }
 
     /**
-     * Setter for <code>mini_shop12.b2c_pledge.pledge_content</code>. 服务承诺的说明
+     * Setter for <code>mini_shop_471752.b2c_pledge.pledge_content</code>. 服务承诺的说明
      */
     public void setPledgeContent(String value) {
         set(3, value);
     }
 
     /**
-     * Getter for <code>mini_shop12.b2c_pledge.pledge_content</code>. 服务承诺的说明
+     * Getter for <code>mini_shop_471752.b2c_pledge.pledge_content</code>. 服务承诺的说明
      */
     public String getPledgeContent() {
         return (String) get(3);
     }
 
     /**
-     * Setter for <code>mini_shop12.b2c_pledge.create_time</code>. 创建时间
+     * Setter for <code>mini_shop_471752.b2c_pledge.create_time</code>. 创建时间
      */
     public void setCreateTime(Timestamp value) {
         set(4, value);
     }
 
     /**
-     * Getter for <code>mini_shop12.b2c_pledge.create_time</code>. 创建时间
+     * Getter for <code>mini_shop_471752.b2c_pledge.create_time</code>. 创建时间
      */
     public Timestamp getCreateTime() {
         return (Timestamp) get(4);
     }
 
     /**
-     * Setter for <code>mini_shop12.b2c_pledge.update_time</code>. 更新时间
+     * Setter for <code>mini_shop_471752.b2c_pledge.update_time</code>. 更新时间
      */
     public void setUpdateTime(Timestamp value) {
         set(5, value);
     }
 
     /**
-     * Getter for <code>mini_shop12.b2c_pledge.update_time</code>. 更新时间
+     * Getter for <code>mini_shop_471752.b2c_pledge.update_time</code>. 更新时间
      */
     public Timestamp getUpdateTime() {
         return (Timestamp) get(5);
     }
 
     /**
-     * Setter for <code>mini_shop12.b2c_pledge.state</code>. 开启状态1:开启，0:关闭
+     * Setter for <code>mini_shop_471752.b2c_pledge.state</code>. 开启状态1:开启，0:关闭
      */
     public void setState(Byte value) {
         set(6, value);
     }
 
     /**
-     * Getter for <code>mini_shop12.b2c_pledge.state</code>. 开启状态1:开启，0:关闭
+     * Getter for <code>mini_shop_471752.b2c_pledge.state</code>. 开启状态1:开启，0:关闭
      */
     public Byte getState() {
         return (Byte) get(6);
     }
 
     /**
-     * Setter for <code>mini_shop12.b2c_pledge.del_flag</code>. 删除标识：0未删除，1已删除
+     * Setter for <code>mini_shop_471752.b2c_pledge.del_flag</code>. 删除标识：0未删除，1已删除
      */
     public void setDelFlag(Byte value) {
         set(7, value);
     }
 
     /**
-     * Getter for <code>mini_shop12.b2c_pledge.del_flag</code>. 删除标识：0未删除，1已删除
+     * Getter for <code>mini_shop_471752.b2c_pledge.del_flag</code>. 删除标识：0未删除，1已删除
      */
     public Byte getDelFlag() {
         return (Byte) get(7);

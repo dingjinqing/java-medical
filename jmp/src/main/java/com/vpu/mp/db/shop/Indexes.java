@@ -463,6 +463,7 @@ public class Indexes {
     public static final Index PIN_GROUP_PRODUCT_DEFINE_PRIMARY = Indexes0.PIN_GROUP_PRODUCT_DEFINE_PRIMARY;
     public static final Index PIN_INTEGRATION_DEFINE_PRIMARY = Indexes0.PIN_INTEGRATION_DEFINE_PRIMARY;
     public static final Index PIN_INTEGRATION_LIST_PRIMARY = Indexes0.PIN_INTEGRATION_LIST_PRIMARY;
+    public static final Index PLEDGE_PRIMARY = Indexes0.PLEDGE_PRIMARY;
     public static final Index PRESALE_PRIMARY = Indexes0.PRESALE_PRIMARY;
     public static final Index PRESALE_PRODUCT_PRESALE_ID = Indexes0.PRESALE_PRODUCT_PRESALE_ID;
     public static final Index PRESALE_PRODUCT_PRESALE_ID_2 = Indexes0.PRESALE_PRODUCT_PRESALE_ID_2;
@@ -844,6 +845,7 @@ public class Indexes {
         public static Index PIN_GROUP_PRODUCT_DEFINE_PRIMARY = Internal.createIndex("PRIMARY", PinGroupProductDefine.PIN_GROUP_PRODUCT_DEFINE, new OrderField[] { PinGroupProductDefine.PIN_GROUP_PRODUCT_DEFINE.ID }, true);
         public static Index PIN_INTEGRATION_DEFINE_PRIMARY = Internal.createIndex("PRIMARY", PinIntegrationDefine.PIN_INTEGRATION_DEFINE, new OrderField[] { PinIntegrationDefine.PIN_INTEGRATION_DEFINE.ID }, true);
         public static Index PIN_INTEGRATION_LIST_PRIMARY = Internal.createIndex("PRIMARY", PinIntegrationList.PIN_INTEGRATION_LIST, new OrderField[] { PinIntegrationList.PIN_INTEGRATION_LIST.ID }, true);
+        public static Index PLEDGE_PRIMARY = Internal.createIndex("PRIMARY", Pledge.PLEDGE, new OrderField[] { Pledge.PLEDGE.ID }, true);
         public static Index PRESALE_PRIMARY = Internal.createIndex("PRIMARY", Presale.PRESALE, new OrderField[] { Presale.PRESALE.ID }, true);
         public static Index PRESALE_PRODUCT_PRESALE_ID = Internal.createIndex("presale_id", PresaleProduct.PRESALE_PRODUCT, new OrderField[] { PresaleProduct.PRESALE_PRODUCT.PRESALE_ID, PresaleProduct.PRESALE_PRODUCT.GOODS_ID, PresaleProduct.PRESALE_PRODUCT.PRODUCT_ID }, false);
         public static Index PRESALE_PRODUCT_PRESALE_ID_2 = Internal.createIndex("presale_id_2", PresaleProduct.PRESALE_PRODUCT, new OrderField[] { PresaleProduct.PRESALE_PRODUCT.PRESALE_ID, PresaleProduct.PRESALE_PRODUCT.PRODUCT_ID }, false);
