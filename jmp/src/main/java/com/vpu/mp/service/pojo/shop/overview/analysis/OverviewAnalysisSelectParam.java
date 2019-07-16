@@ -18,7 +18,7 @@ public class OverviewAnalysisSelectParam {
 	private Integer shareUv;
 	private Float stayTimeUv;
 	private Float stayTimeSession;
-
-	
+	private String startTime;
+	private String endTime;
 	
 }

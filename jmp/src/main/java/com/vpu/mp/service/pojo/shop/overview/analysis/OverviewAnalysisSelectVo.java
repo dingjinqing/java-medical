@@ -10,15 +10,8 @@ import lombok.Data;
 public class OverviewAnalysisSelectVo {
 	
 	private String refDate;
-	private Integer totalSessionCnt;
-	private Integer sessionCnt;
-	private Integer visitPv;
-	private Integer visitUv;
-	private Integer visitUvNew;
-	private Integer sharePv;
-	private Integer shareUv;
-	private Float stayTimeUv;
-	private Float stayTimeSession;
+	private Integer num;
+
 
 	
 	
