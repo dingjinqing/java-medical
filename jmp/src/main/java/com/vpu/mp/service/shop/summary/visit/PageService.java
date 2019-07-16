@@ -1,5 +1,8 @@
 package com.vpu.mp.service.shop.summary.visit;
 
+import com.vpu.mp.service.pojo.shop.summary.PageVisitVo;
+import com.vpu.mp.service.pojo.shop.summary.VisitDistributionParam;
+
 /**
  * 访问页面统计
  *
@@ -7,4 +10,7 @@ package com.vpu.mp.service.shop.summary.visit;
  */
 public class PageService extends BaseVisitService {
 
+    public PageVisitVo getPageVisit(VisitDistributionParam param) {
+        return null;
+    }
 }

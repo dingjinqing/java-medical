@@ -25,19 +25,21 @@ public class AdminSummaryController extends AdminBaseController {
 
     @PostMapping("/api/admin/summary/visit/amount")
     public JsonResult getVisitStatistics(@Valid @RequestBody VisitStatisticsParam param) {
-        VisitStatisticsVo vo = shop().amount.getVisitStatistics(param);
-        return success(vo);
+        return success(shop().amount.getVisitStatistics(param));
     }
 
     @PostMapping("/api/admin/summary/visit/distribution")
     public JsonResult getVisitDistribution(@Valid @RequestBody VisitDistributionParam param) {
-        VisitDistributionVo vo = shop().distribution.getVisitDistribution(param);
-        return success(vo);
+        return success(shop().distribution.getVisitDistribution(param));
     }
 
     @PostMapping("/api/admin/summary/visit/retain")
     public JsonResult getVisitDistribution(@Valid @RequestBody VisitStatisticsParam param) {
-        AccessRetainVo vo = shop().retain.getAccessRetain(param);
-        return success(vo);
+        return success(shop().retain.getAccessRetain(param));
+    }
+
+    @PostMapping("/api/admin/summary/visit/page")
+    public JsonResult getVisitPage(@Valid @RequestBody VisitDistributionParam param) {
+        return success(shop().page.getPageVisit(param));
     }
 }
