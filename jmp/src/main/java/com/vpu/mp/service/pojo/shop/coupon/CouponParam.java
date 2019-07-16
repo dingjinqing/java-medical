@@ -21,6 +21,7 @@ public class CouponParam {
     private Timestamp  endTime;
     private BigDecimal denomination;
     private Integer    totalAmount;
+    private Byte       type;
     private Integer    surplus;
     private Integer    remainAmount;
     private Byte       useConsumeRestrict;

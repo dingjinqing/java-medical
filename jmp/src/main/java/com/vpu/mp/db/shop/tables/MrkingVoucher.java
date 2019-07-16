@@ -43,7 +43,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class MrkingVoucher extends TableImpl<MrkingVoucherRecord> {
 
-    private static final long serialVersionUID = 662608169;
+    private static final long serialVersionUID = -1582584043;
 
     /**
      * The reference instance of <code>jmini_shop_471752.b2c_mrking_voucher</code>
@@ -97,6 +97,11 @@ public class MrkingVoucher extends TableImpl<MrkingVoucherRecord> {
      * The column <code>jmini_shop_471752.b2c_mrking_voucher.total_amount</code>. 发行量
      */
     public final TableField<MrkingVoucherRecord, Integer> TOTAL_AMOUNT = createField("total_amount", org.jooq.impl.SQLDataType.INTEGER.nullable(false).defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.INTEGER)), this, "发行量");
+
+    /**
+     * The column <code>jmini_shop_471752.b2c_mrking_voucher.type</code>. 优惠卷类型，0普通优惠券；1分裂优惠券
+     */
+    public final TableField<MrkingVoucherRecord, Byte> TYPE = createField("type", org.jooq.impl.SQLDataType.TINYINT.defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.TINYINT)), this, "优惠卷类型，0普通优惠券；1分裂优惠券");
 
     /**
      * The column <code>jmini_shop_471752.b2c_mrking_voucher.surplus</code>.
