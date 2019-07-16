@@ -33,7 +33,7 @@ public class VisitPageParam {
      */
     @NotBlank(message = JsonResultMessage.MSG_PARAM_ERROR)
     @Min(1)
-    @Max(8)
+    @Max(7)
     private Integer action;
 
     /**

@@ -29,9 +29,9 @@ public class PageService extends BaseVisitService {
         PageVisitVo vo = new PageVisitVo();
         List<PageVisitVoItem> items = records.parallelStream().map(r -> {
             PageVisitVoItem item = new PageVisitVoItem();
+            item.setPagePath(r.getPagePath());
             item.setEntryPagePv(String.valueOf(r.getEntrypagePv()));
             item.setExitPagePv(String.valueOf(r.getExitpagePv()));
-            item.setPagePath(r.getPagePath());
             item.setPageSharePv(String.valueOf(r.getPageSharePv()));
             item.setPageShareUv(String.valueOf(r.getPageShareUv()));
             item.setPageVisitPv(String.valueOf(r.getPageVisitPv()));
