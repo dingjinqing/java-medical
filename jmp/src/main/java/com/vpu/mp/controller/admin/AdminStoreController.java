@@ -291,6 +291,32 @@ public class AdminStoreController extends AdminBaseController{
     }
     
     /**
+     * 批量上架门店服务
+     * @return
+     */
+    @PostMapping(value = "/api/admin/store/service/batch/on")
+    public JsonResult batchOnStoreService(@RequestBody(required = true) @Valid Integer[] serviceIds) {
+    	if(shop().store.storeService.batchOnStoreService(serviceIds)) {
+     	   return success();
+        }else {
+     	   return fail();
+        }
+    }
+    
+    /**
+     * 批量下架门店服务
+     * @return
+     */
+    @PostMapping(value = "/api/admin/store/service/batch/off")
+    public JsonResult batchOffStoreService(@RequestBody(required = true) @Valid Integer[] serviceIds) {
+    	if(shop().store.storeService.batchOffStoreService(serviceIds)) {
+     	   return success();
+        }else {
+     	   return fail();
+        }
+    }
+    
+    /**
      * 门店服务-添加
      * @return
      */

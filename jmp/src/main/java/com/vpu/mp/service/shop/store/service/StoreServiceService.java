@@ -204,5 +204,23 @@ public class StoreServiceService extends BaseService{
 	public Boolean delStoreService(Integer id) {
 		return db().update(STORE_SERVICE).set(STORE_SERVICE.DEL_FLAG,DelFlag.DISABLE.getCode()).where(STORE_SERVICE.ID.eq(id)).execute() > 0 ? true : false;
 	}
+	
+	/**
+	 * 批量上架门店服务
+	 * @param serviceIds
+	 * @return
+	 */
+	public Boolean batchOnStoreService(Integer[] serviceIds) {
+		return db().update(STORE_SERVICE).set(STORE_SERVICE.SERVICE_SHELF,(byte)1).where(STORE_SERVICE.ID.in(serviceIds)).execute() > 0 ? true : false;
+	}
+	
+	/**
+	 * 批量下架门店服务
+	 * @param serviceIds
+	 * @return
+	 */
+	public Boolean batchOffStoreService(Integer[] serviceIds) {
+		return db().update(STORE_SERVICE).set(STORE_SERVICE.SERVICE_SHELF,(byte)0).where(STORE_SERVICE.ID.in(serviceIds)).execute() > 0 ? true : false;
+	}
 
 }
