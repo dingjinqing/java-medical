@@ -67,7 +67,7 @@ public class AmountService extends BaseVisitService {
                 units = visitDepthUnits(result);
                 break;
             default:
-                throw new RuntimeException("Unsupported action");
+                throw new IllegalStateException("Unexpected action: " + action);
         }
         return getStatisticsVo(units, grading);
     }
