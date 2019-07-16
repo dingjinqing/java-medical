@@ -11,6 +11,8 @@ import com.vpu.mp.service.foundation.PageResult;
 import com.vpu.mp.service.pojo.shop.order.OrderListInfoVo;
 import com.vpu.mp.service.pojo.shop.order.OrderPageListQueryParam;
 import com.vpu.mp.service.pojo.shop.order.OrderParam;
+import com.vpu.mp.service.pojo.shop.order.StoreOrderListInfoVo;
+import com.vpu.mp.service.pojo.shop.order.StoreOrderPageListQueryParam;
 
 /**
  * 订单模块
@@ -21,13 +23,22 @@ import com.vpu.mp.service.pojo.shop.order.OrderParam;
 @RestController
 @RequestMapping("/api/admin/order")
 public class AdminOrderController extends AdminBaseController{
-	
+	/**
+	 * 订单综合查询（不包括买单订单、虚拟商品订单）
+	 * @param param
+	 * @return
+	 */
 	@PostMapping("/list")
 	public JsonResult orderList(@RequestBody OrderPageListQueryParam param) {
 		PageResult<? extends OrderListInfoVo> result = shop().order.getPageList(param);
 		return success(result);
 	}
 	
+	/**
+	 * 订单详情（不包括退款货、买单订单、虚拟商品订单）
+	 * @param order
+	 * @return
+	 */
 	@PostMapping("/get")
 	public JsonResult get(@RequestBody OrderParam order) {
 		if(StringUtils.isEmpty(order.getMainOrderSn())) {
@@ -36,4 +47,14 @@ public class AdminOrderController extends AdminBaseController{
 		}
 		return success(shop().order.get(order.getMainOrderSn()));
 	}
+	
+	/**
+	 * 买单订单列表查询
+	 */
+	//TODO
+	public JsonResult storyOrderList(@RequestBody StoreOrderPageListQueryParam param) {
+		PageResult<StoreOrderListInfoVo> result = shop().order.getPageList(param);
+		return success(result);
+	}
 }
+

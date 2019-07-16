@@ -2,11 +2,12 @@ package com.vpu.mp.service.shop.order;
 
 import static com.vpu.mp.db.shop.tables.OrderGoods.ORDER_GOODS;
 import static com.vpu.mp.db.shop.tables.OrderInfo.ORDER_INFO;
-import static com.vpu.mp.db.shop.tables.ReturnOrder.RETURN_ORDER;
 import static com.vpu.mp.db.shop.tables.PinGroupList.PIN_GROUP_LIST;
+import static com.vpu.mp.db.shop.tables.ReturnOrder.RETURN_ORDER;
+import static com.vpu.mp.db.shop.tables.ReturnOrderGoods.RETURN_ORDER_GOODS;
+import static com.vpu.mp.db.shop.tables.StoreOrder.STORE_ORDER;
 import static com.vpu.mp.db.shop.tables.User.USER;
 import static com.vpu.mp.db.shop.tables.UserTag.USER_TAG;
-import static com.vpu.mp.db.shop.tables.ReturnOrderGoods.RETURN_ORDER_GOODS;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -36,6 +37,8 @@ import com.vpu.mp.service.pojo.shop.order.OrderListInfoVo;
 import com.vpu.mp.service.pojo.shop.order.OrderPageListQueryParam;
 import com.vpu.mp.service.pojo.shop.order.OrderReturnGoodsVo;
 import com.vpu.mp.service.pojo.shop.order.OrderReturnListVo;
+import com.vpu.mp.service.pojo.shop.order.StoreOrderListInfoVo;
+import com.vpu.mp.service.pojo.shop.order.StoreOrderPageListQueryParam;
 
 /**
  * 
@@ -332,6 +335,51 @@ public class OrderService extends BaseService {
 		}
 		if(param.getReturnEnd() != null ) {
 			select.where(RETURN_ORDER.APPLY_TIME.le(param.getReturnStart()));
+		}
+		return select; 
+	}
+	 
+	 /**
+	  * 买单订单查询
+	  * @param param
+	  * @return
+	  */
+	 public PageResult<StoreOrderListInfoVo> getPageList(StoreOrderPageListQueryParam param) {
+		SelectWhereStep<? extends Record> select = db().select(STORE_ORDER.ORDER_ID,STORE_ORDER.ORDER_SN,STORE_ORDER.ORDER_STATUS,STORE_ORDER.STORE_ID,STORE_ORDER.PAY_TIME,STORE_ORDER.MONEY_PAID,STORE_ORDER.PAY_CODE,STORE_ORDER.PAY_NAME,USER.USERNAME)
+				.from(STORE_ORDER).innerJoin(USER)
+				.on(USER.USER_ID.eq(STORE_ORDER.USER_ID));
+		buildOptionsStore(select,param);
+		PageResult<StoreOrderListInfoVo> result = getPageResult(select,param.getPage().getCurrentPage(),param.getPage().getPageRows(),StoreOrderListInfoVo.class);
+		return result;
+	 }
+	 
+	 /**
+	  * 构造买单订单查询条件
+	  * @param select
+	  * @param param
+	  * @return
+	  */
+	 public SelectWhereStep<?> buildOptionsStore(SelectWhereStep<?> select, StoreOrderPageListQueryParam param) {
+		//自增id排序
+		select.orderBy(STORE_ORDER.ORDER_ID);
+		
+		if(!StringUtils.isEmpty(param.getOrderSn())) {
+			select.where(STORE_ORDER.ORDER_SN.eq(param.getOrderSn()));
+		}
+		if(param.getUserName() != null) {
+			select.where(USER.USERNAME.like(likeValue(param.getUserName())));
+		}
+		if(param.getPayTimeStart() != null ) {
+			select.where(STORE_ORDER.PAY_TIME.ge(param.getPayTimeStart()));
+		}
+		if(param.getPayTimeEnd() != null ) {
+			select.where(STORE_ORDER.PAY_TIME.le(param.getPayTimeEnd()));
+		}
+		if(param.getStoreId() != null ) {
+			select.where(STORE_ORDER.STORE_ID.eq(param.getStoreId()));
+		}
+		if(param.getOrderStatus()!= null ) {
+			select.where(STORE_ORDER.ORDER_STATUS.in(param.getOrderStatus()));
 		}
 		return select; 
 	 }
