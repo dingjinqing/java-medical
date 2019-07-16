@@ -1,20 +1,17 @@
 package com.vpu.mp.service.shop.goods;
 
-import static com.vpu.mp.db.shop.tables.Sort.SORT;
-
-import java.util.ArrayList;
-import java.util.List;
-
-import com.vpu.mp.db.shop.tables.records.GoodsLabelCoupleRecord;
 import com.vpu.mp.db.shop.tables.records.SortRecord;
-import com.vpu.mp.service.pojo.shop.goods.label.GoodsLabelCouple;
+import com.vpu.mp.service.foundation.BaseService;
+import com.vpu.mp.service.pojo.shop.goods.sort.GoodsSortListParam;
+import com.vpu.mp.service.pojo.shop.goods.sort.Sort;
 import org.jooq.*;
 import org.jooq.impl.DSL;
 import org.jooq.tools.StringUtils;
 
-import com.vpu.mp.service.pojo.shop.goods.sort.GoodsSortListParam;
-import com.vpu.mp.service.pojo.shop.goods.sort.Sort;
-import com.vpu.mp.service.foundation.BaseService;
+import java.util.ArrayList;
+import java.util.List;
+
+import static com.vpu.mp.db.shop.tables.Sort.SORT;
 
 /**
  * @author 李晓冰
@@ -76,10 +73,13 @@ public class GoodsSortService extends BaseService {
 
         db().transaction(configuration -> {
             DSLContext db = DSL.using(configuration);
+            //防止故意传递错误的类型
+            sort.setType(Sort.NORMAL_TYPE_CODE);
+            sort.setHasChild(Sort.HAS_NO_CHILD_CODE);
 
             //是二级分类
             if (sort.getParentId() != null && sort.getParentId() != 0) {
-                db.update(SORT).set(SORT.HAS_CHILD, (byte) 1).where(SORT.SORT_ID.eq(sort.getParentId()))
+                db.update(SORT).set(SORT.HAS_CHILD, Sort.HAS_CHILD_CODE).where(SORT.SORT_ID.eq(sort.getParentId()))
                         .execute();
             }
 
@@ -93,28 +93,31 @@ public class GoodsSortService extends BaseService {
     /**
      * 批量插入推荐分类
      * 默认列表中第一个分类为一级分类
-     *
      */
     public void insertRecommendSort(List<Sort> sorts) {
-        transaction(()->{
-            DSLContext db=db();
+        transaction(() -> {
+            DSLContext db = db();
             Sort parentSort = sorts.remove(0);
 
             //存在子分类
             if (sorts.size() > 0) {
-                parentSort.setHasChild((byte) 1);
+                parentSort.setHasChild(Sort.HAS_CHILD_CODE);
             }
+            parentSort.setType(Sort.RECOMMENT_TYPE_CODE);
 
             SortRecord parentRecord = db.newRecord(SORT, parentSort);
             parentRecord.insert();
             parentSort.setSortId(parentRecord.getSortId());
 
-            List<SortRecord> sortRecords=new ArrayList<>(sorts.size());
-            sortRecords.add(parentRecord);
+            List<SortRecord> sortRecords = new ArrayList<>(sorts.size());
+
             for (Sort sort : sorts) {
+                sort.setType(Sort.RECOMMENT_TYPE_CODE);
+                sort.setHasChild(Sort.HAS_NO_CHILD_CODE);
+
                 sort.setParentId(parentSort.getSortId());
                 SortRecord record = new SortRecord();
-                assign(sort,record);
+                assign(sort, record);
                 sortRecords.add(record);
             }
 
@@ -181,8 +184,8 @@ public class GoodsSortService extends BaseService {
 
             db.delete(SORT).where(SORT.SORT_ID.eq(sortId)).execute();
 
-            //有子分类
-            if (s.getHasChild() != 0) {
+            //是一级节点，有子分类
+            if (s.getParentId() == 0 && s.getHasChild() != 0) {
                 db.delete(SORT).where(SORT.PARENT_ID.eq(sortId)).execute();
             }
 
@@ -190,7 +193,7 @@ public class GoodsSortService extends BaseService {
             if (s.getParentId() != 0) {
                 Record1<Integer> countRecord = db().selectCount().from(SORT).where(SORT.PARENT_ID.eq(s.getParentId())).fetchOne();
                 if (countRecord.getValue(0, Integer.class) == 0) {
-                    db.update(SORT).set(SORT.HAS_CHILD, (byte) 0).where(SORT.SORT_ID.eq(s.getParentId())).execute();
+                    db.update(SORT).set(SORT.HAS_CHILD, Sort.HAS_NO_CHILD_CODE).where(SORT.SORT_ID.eq(s.getParentId())).execute();
                 }
             }
 
@@ -206,6 +209,10 @@ public class GoodsSortService extends BaseService {
 
         //不允许修改父节点
         sort.setParentId(null);
+        //不允许修改类型
+        sort.setType(null);
+        //不允许修改子节点情况
+        sort.setHasChild(null);
 
         SortRecord sortRecord = new SortRecord();
         assign(sort, sortRecord);

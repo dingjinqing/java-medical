@@ -11,6 +11,11 @@ import java.sql.Timestamp;
 @Data
 public class Sort {
 
+    public static final Byte RECOMMENT_TYPE_CODE=1;
+    public static final Byte NORMAL_TYPE_CODE=0;
+    public static final Byte HAS_CHILD_CODE=1;
+    public static final Byte HAS_NO_CHILD_CODE=0;
+
     private Integer sortId;
     private String sortName;
     private Integer parentId;

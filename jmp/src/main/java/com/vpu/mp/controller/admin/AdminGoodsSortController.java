@@ -45,6 +45,10 @@ public class AdminGoodsSortController extends AdminBaseController {
     @PostMapping("/api/admin/goods/sort/add")
     public JsonResult insert(@RequestBody Sort sort) {
 
+        if (sort.getSortName()==null) {
+            return fail(JsonResultCode.GOODS_SORT_NAME_IS_NULL);
+        }
+
         boolean isExist = shop().goods.goodsSort.isSortNameExist(sort);
         if (isExist) {
             return fail(JsonResultCode.GOODS_SORT_NAME_EXIST);
@@ -71,6 +75,7 @@ public class AdminGoodsSortController extends AdminBaseController {
             return fail(JsonResultCode.GOODS_SORT_NAME_EXIST);
         }
 
+        //判断内容和数据库内有重复
         for (Sort sort : sorts) {
             if (shop().goods.goodsSort.isSortNameExist(sort)) {
                 return fail(JsonResultCode.GOODS_SORT_NAME_EXIST);
