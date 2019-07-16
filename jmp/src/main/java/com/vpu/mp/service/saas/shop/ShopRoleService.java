@@ -9,6 +9,7 @@ import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.jooq.Record1;
 import org.jooq.Record2;
 import org.jooq.Record3;
 import org.jooq.SelectConditionStep;
@@ -99,21 +100,21 @@ public class ShopRoleService extends BaseService {
 	}
 
 	public MenuReturnParam getPrivilegeListPublic(Integer roleId) {
-		SelectConditionStep<Record2<String, String>> selectLists = db().select(SHOP_ROLE.PRIVILEGE_LIST,SHOP_ROLE.PRIVILEGE_PASS).from(SHOP_ROLE)
+		SelectConditionStep<Record2<String, String>> selectLists = db()
+				.select(SHOP_ROLE.PRIVILEGE_LIST, SHOP_ROLE.PRIVILEGE_PASS).from(SHOP_ROLE)
 				.where(SHOP_ROLE.ROLE_ID.eq(roleId));
 		String prlJson = null;
-		String prpJson=null;
-		for (Record2<String,String> selectList : selectLists) {
+		String prpJson = null;
+		for (Record2<String, String> selectList : selectLists) {
 			prlJson = selectList.get(SHOP_ROLE.PRIVILEGE_LIST);
-			prpJson=selectList.get(SHOP_ROLE.PRIVILEGE_PASS);
+			prpJson = selectList.get(SHOP_ROLE.PRIVILEGE_PASS);
 		}
-		MenuReturnParam param=new MenuReturnParam();
+		MenuReturnParam param = new MenuReturnParam();
 		param.setPrivilegeList(Util.parseJson(prlJson, List.class));
 		param.setPrivilegePass(Util.parseJson(prpJson, List.class));
 		return param;
 	}
-	
-	
+
 	public MenuParam outParam(MenuParam menuParam, List<?> userList) {
 		Class<?> clazz = menuParam.getClass();
 		Field[] fields = clazz.getDeclaredFields();
@@ -158,6 +159,7 @@ public class ShopRoleService extends BaseService {
 
 	/**
 	 * 密码校验
+	 * 
 	 * @param passwd
 	 * @param roleId
 	 * @return
@@ -167,6 +169,26 @@ public class ShopRoleService extends BaseService {
 				.where(SHOP_ROLE.ROLE_ID.eq(roleId).and(SHOP_ROLE.ROLE_PASS.eq(Util.md5(passwd)))).fetchAny();
 		if (record != null) {
 			return true;
+		}
+		return false;
+	}
+
+	public Boolean checkPrivilegeList(Integer roleId, String enName) {
+		SelectConditionStep<Record1<String>> selectLists = db().select(SHOP_ROLE.PRIVILEGE_LIST).from(SHOP_ROLE)
+				.where(SHOP_ROLE.ROLE_ID.eq(roleId));
+		if(StringUtils.isEmpty(enName)) {
+			return false;
+		}
+		String prlJson = null;
+		for (Record1<String> selectList : selectLists) {
+			prlJson = selectList.get(SHOP_ROLE.PRIVILEGE_LIST);
+		}
+
+		List<?> list = Util.parseJson(prlJson, List.class);
+		for (Object enInnerName : list) {
+			if (enName.equals(enInnerName)) {
+				return true;
+			}
 		}
 		return false;
 	}

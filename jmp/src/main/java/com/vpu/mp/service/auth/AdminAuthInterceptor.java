@@ -50,6 +50,12 @@ public class AdminAuthInterceptor extends HandlerInterceptorAdapter {
 			"/api/admin/service/auth/list", "/wechat/official/account/authorization", "/api/admin/service/auth/detail",
 			"/api/admin/public/image/account/*", "/api/admin/frame/image/dialog/select", "/api/admin/authority/not",
 			"/api/admin/frame/*", "/api/admin/ajax/*", "/api/admin/account/*", "/api/admin/public/*" };
+	
+	
+	/**
+	 * 一些特殊的IP，不校验
+	 */
+	protected String[] specialExcept= {"/api/admin/checkMenu"};
 
 	@Override
 	public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler)
@@ -82,19 +88,18 @@ public class AdminAuthInterceptor extends HandlerInterceptorAdapter {
 						(new JsonResult()).fail(language, JsonResultCode.CODE_ACCOUNT_ROLE__SHOP_SELECT));
 				return false;
 			} else {
+				if(match(specialExcept, path)) {
+					return true;
+				}
 				// 账号和店铺都登录，判断路径权限
 				Integer roleId = saas.shop.getShopAccessRoleId(user.getSysId(), user.getLoginShopId(), user.getSubAccountId());
-				
 				JsonResultCode jsoCode=	saas.shop.menu.passwdAccess(roleId, path, prName,passwd);
-				
 				if(!saas.shop.menu.apiAccess(roleId, path, eName)) {
-					errorResponse(request, response, URL_NO_AUTH,
-							(new JsonResult()).fail(language, JsonResultCode.CODE_ACCOUNT_ROLE__AUTH_INSUFFICIENT));
+					errorResponse(request, response, URL_NO_AUTH,(new JsonResult()).fail(language, JsonResultCode.CODE_ACCOUNT_ROLE__AUTH_INSUFFICIENT));
 					return false;
 				}
 				if(!jsoCode.equals(JsonResultCode.CODE_SUCCESS)) {
-					errorResponse(request, response, URL_NO_AUTH,
-							(new JsonResult()).fail(language, jsoCode));
+					errorResponse(request, response, URL_NO_AUTH,(new JsonResult()).fail(language, jsoCode));
 					return false;
 				}
 			}

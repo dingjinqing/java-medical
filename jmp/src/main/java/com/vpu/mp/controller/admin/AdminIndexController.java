@@ -2,12 +2,15 @@ package com.vpu.mp.controller.admin;
 
 import java.util.Arrays;
 
+import org.springframework.util.StringUtils;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.vpu.mp.service.foundation.JedisManager;
 import com.vpu.mp.service.foundation.JsonResult;
+import com.vpu.mp.service.foundation.JsonResultCode;
 import com.vpu.mp.service.foundation.Util;
 import com.vpu.mp.service.pojo.shop.auth.MenuParam;
 import com.vpu.mp.service.pojo.shop.auth.MenuReturnParam;
@@ -31,7 +34,7 @@ public class AdminIndexController extends AdminBaseController {
 	 * 
 	 * @return
 	 */
-	@RequestMapping(value = "/admin/showMenu")
+	//@RequestMapping(value = "/admin/showMenu")
 	public JsonResult showMenu() {
 		String json = Util.loadResource(menuJsonPath);
 		String json2 = Util.loadResource(privilegeJsonPath);
@@ -61,7 +64,7 @@ public class AdminIndexController extends AdminBaseController {
 		}
 	}
 
-@RequestMapping(value = "/admin/test")
+	@RequestMapping(value = "/admin/test")
 	@ResponseBody
 	public JsonResult test() throws InterruptedException {
 		if("main".equals(this.input("db"))) {
@@ -76,4 +79,32 @@ public class AdminIndexController extends AdminBaseController {
 			return fail();
 		}
 		return success( );
-	}}
+	}
+	
+	/**
+	 * 点击的菜单或者功能有没有权限
+	 * @return
+	 */
+	@RequestMapping(value = "/admin/checkMenu")
+	public JsonResult checkMenu() {
+		if(StringUtils.isEmpty(adminAuth.user().loginShopId)) {
+			return fail(JsonResultCode.CODE_ACCOUNT_ROLE__SHOP_SELECT);
+		}
+		Integer roleId = saas.shop.getShopAccessRoleId(adminAuth.user().sysId, adminAuth.user().loginShopId,
+				adminAuth.user().subAccountId);
+		if(roleId==-1) {
+			//错误
+			return fail(JsonResultCode.CODE_FAIL);
+		}
+		if (roleId == 0) {
+			// 不是子账户,返回有权限
+			return success(JsonResultCode.CODE_SUCCESS);
+		}
+		//子账户，判断是否可以点击
+		if(saas.shop.role.checkPrivilegeList(roleId, request.getHeader("enName"))) {
+			return success(JsonResultCode.CODE_SUCCESS);
+		}
+		return fail(JsonResultCode.CODE_FAIL);
+	}
+
+}
