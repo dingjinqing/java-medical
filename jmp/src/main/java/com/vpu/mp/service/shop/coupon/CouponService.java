@@ -2,9 +2,12 @@ package com.vpu.mp.service.shop.coupon;
 
 import static com.vpu.mp.db.shop.Tables.MRKING_VOUCHER;
 
+import java.util.List;
+
 import org.jooq.Record;
 import org.jooq.SelectConditionStep;
 import org.jooq.SelectJoinStep;
+import org.jooq.UpdateSetFirstStep;
 
 import com.vpu.mp.db.shop.tables.records.MrkingVoucherRecord;
 import com.vpu.mp.service.foundation.BaseService;
@@ -55,5 +58,41 @@ public class CouponService extends BaseService{
 			sql = sql.and(MRKING_VOUCHER.ACT_NAME.eq(param.getActName()));
 		}
 		return sql;
+	}
+	
+	/**
+	 * 获取单条优惠券信息
+	 * @param couponId
+	 * @return
+	 */
+	public List<CouponParam> getOneCouponInfo(Integer couponId) {
+		List<CouponParam> couponInfo = db().select().from(MRKING_VOUCHER)
+				.where(MRKING_VOUCHER.ID.eq(couponId))
+				.fetch().into(CouponParam.class);
+		return couponInfo;
+	}
+	
+	/**
+	 * 保存编辑信息
+	 * @param param
+	 * @return 
+	 */
+	public boolean saveCouponInfo(CouponParam param) {
+		MrkingVoucherRecord record = new MrkingVoucherRecord();
+		this.assign(param,record);
+		return db().executeInsert(record) > 0 ? true : false;
+	}
+	
+	/**
+	 * 停用优惠券
+	 * @param couponId
+	 * @return
+	 */
+	public boolean couponPause(Integer couponId) {
+		int result = db().update(MRKING_VOUCHER)
+				.set(MRKING_VOUCHER.ENABLED,(byte) 0)
+				.where(MRKING_VOUCHER.ID.eq(couponId))
+				.execute();
+		return result > 0 ? true : false;
 	}
 }

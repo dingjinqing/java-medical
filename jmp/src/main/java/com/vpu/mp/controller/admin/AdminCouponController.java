@@ -1,5 +1,7 @@
 package com.vpu.mp.controller.admin;
 
+import java.util.List;
+
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
@@ -44,5 +46,40 @@ public class AdminCouponController extends AdminBaseController{
 	public JsonResult couponList(CouponListParam parma) {
 		PageResult<CouponListVo> couponList = shop().coupon.getCouponList(parma);
 		return this.success(couponList);
+	}
+	
+	/**
+	 * 单条优惠券信息
+	 * @param couponId
+	 * @return
+	 */
+	public JsonResult oneCouponInfo(Integer couponId) {
+		List<CouponParam> couponInfo = shop().coupon.getOneCouponInfo(couponId);
+		return this.success(couponInfo);
+	}
+	
+	/**
+	 * 保存编辑信息
+	 * @param param
+	 * @return
+	 */
+	public JsonResult couponInfoSave(CouponParam param) {
+		Boolean result = shop().coupon.saveCouponInfo(param);
+		return this.success(result);
+	}
+	
+	
+	/**
+	 * 停用优惠券
+	 * @param couponId
+	 * @return
+	 */
+	public JsonResult couponPause(Integer couponId) {
+		boolean result = shop().coupon.couponPause(couponId);
+		if(result) {
+			return this.success(result);
+		}else {
+			return this.fail();
+		}
 	}
 }
