@@ -39,7 +39,7 @@ public class AdminSummaryController extends AdminBaseController {
     }
 
     @PostMapping("/api/admin/summary/visit/page")
-    public JsonResult getVisitPage(@Valid @RequestBody VisitDistributionParam param) {
+    public JsonResult getVisitPage(@Valid @RequestBody VisitPageParam param) {
         return success(shop().page.getPageVisit(param));
     }
 }
