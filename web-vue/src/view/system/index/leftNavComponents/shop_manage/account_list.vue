@@ -5,11 +5,6 @@
       <span class="line">/</span>
       <span class="shoper">商家账号添加</span>
     </div>
-    <!-- <el-tabs type="border-card">
-      <el-tab-pane label="商家账号列表" class="list">
-      </el-tab-pane>
-      <el-tab-pane label="商家账号添加">商家账号添加</el-tab-pane>
-    </el-tabs> -->
     <div class="account-info">
       <div class="account-list">商家账号列表</div>
       <div class="account-add">商家账号添加</div>

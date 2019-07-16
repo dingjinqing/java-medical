@@ -11,16 +11,12 @@
         @click="headerNavClick(index)"
         @mouseover="header_nav_over(index)"
         @mouseleave="header_nav_leave(index)"
+        class="wrapper"
       >
-        <span>{{item.title}}</span>
+        <span class="title">{{item.title}}</span>
       </div>
     </div>
 
-    <!-- <div class="right">
-      <div class="right_main">
-        <img src="../../../assets/adminImg/notice_ld.png">
-      </div>
-    </div> -->
     <div
       class="middle"
       @mouseenter="user_enter()"
@@ -30,13 +26,10 @@
         <div class="menu">
           <div class="menu_main">
             <span>
-              <img :src="imageUrl[1].img_2">
-            </span>
-            <span>
               <label>
-                {{this.username}}
+                {{this.username}}system
               </label>
-              <img :src="imageUrl[2].img_3">
+              <img :src="imageUrl[7].img_7">
             </span>
           </div>
         </div>
@@ -56,7 +49,7 @@
         >
           {{item}}
         </div>
-        <img :src="imageUrl[3].img_4">
+        <img :src="imageUrl[8].img_8">
       </div>
     </div>
 
@@ -76,7 +69,9 @@ export default {
         { img_3: this.$imageHost + '/image/system/first_3.png' },
         { img_4: this.$imageHost + '/image/system/first_4.png' },
         { img_5: this.$imageHost + '/image/system/get_user.png' },
-        { img_6: this.$imageHost + '/image/system/first_5.png' }
+        { img_6: this.$imageHost + '/image/system/first_5.png' },
+        { img_7: this.$imageHost + '/image/admin/img1.png' },
+        { img_8: this.$imageHost + '/image/admin/menu_top_1.png' }
       ],
       log_menu_show: false,
       // hiddle_menu_list: [this.$t('shopData.set'), this.$t('shopData.administration_J'), this.$t('shopData.public'), this.$t('shopData.choice'), this.$t('shopData.loginOut')],
@@ -109,11 +104,10 @@ export default {
 
   methods: {
     ...Vuex.mapActions(['changesysNavLeft']),
-    // 初始化顶部导航
+    // 初始化顶部导航 通过传入的路由的meta值来进行对应的匹配
     judgeHeader () {
       console.log(this.$route)
       this.changesysNavLeft(this.$route.meta)
-      console.log(this.$route.meta)
       let meta = this.$route.meta
       switch (meta) {
         case 'overview':
@@ -161,9 +155,21 @@ export default {
       switch (index) {
         case 0:
           this.$emit('change_components', '0')
+          this.$router.push({
+            path: '/admin/home/shop_main',
+            query: {
+              change_components: '0'
+            }
+          })
           break
         case 3:
           this.$emit('change_components', '3')
+          this.$router.push({
+            path: '/admin/home/shop_main',
+            query: {
+              change_components: '3'
+            }
+          })
           break
         case 4:
           loginRequestOut().then((res) => {
@@ -203,7 +209,7 @@ export default {
     header_nav_leave (index) {
       this.nav_index = null
     },
-    // 顶部导航点击
+    // 顶部导航点击 通过传入路由的name来默认匹配每一次点击后的第一个页面
     headerNavClick (index) {
       this.click_nav_index = index
       switch (index) {
@@ -256,14 +262,13 @@ export default {
 </script>
 <style scoped>
 .header_container {
-  min-width: 1250px;
+  min-width: 1280px;
   width: 100%;
   height: 85px;
   line-height: 85px;
   color: #fff;
   background: #86a7cb;
-  padding: 0 25px 0 45px;
-  padding-left: 34px;
+  padding: 0 25px 0 24px;
   position: absolute;
 }
 .left {
@@ -271,13 +276,14 @@ export default {
   height: 100%;
 }
 .left img {
-  height: 49px;
-  margin-top: 18px;
+  height: 40px;
+  width: 128px;
+  margin-top: 20px;
 }
 .middle {
   float: right;
   height: 100%;
-  margin-right: 38px;
+  margin-right: 35px;
   position: relative;
 }
 .account {
@@ -311,24 +317,16 @@ label {
   cursor: pointer;
   display: inline-block;
   max-width: 100%;
-  margin-bottom: 5px;
   font-weight: 700;
   font-size: 14px;
 }
-.right {
-  height: 100%;
-  float: right;
-}
-.right_main {
-  cursor: pointer;
-}
 .log-menu {
   color: #000;
-  height: 210px !important;
+  height: 135px !important;
+  width: 170px !important;
   background: #fff;
   position: absolute;
   left: -60px;
-  width: 170px;
   z-index: 1000;
   top: 70px;
   padding: 10px 20px;
@@ -337,7 +335,7 @@ label {
 }
 .log-menu img {
   position: absolute;
-  right: 33px;
+  right: 75px;
   top: -8px;
 }
 .log-menu div {
@@ -356,7 +354,7 @@ label {
   display: flex;
   height: 85px;
   float: left;
-  margin-left: 95px;
+  margin-left: 208px;
 }
 .header_nav > div {
   height: 85px;
@@ -371,5 +369,8 @@ label {
   line-height: 52px;
   font-size: 14px;
   color: #fff;
+}
+.wrapper {
+  border: 1px solid #fff;
 }
 </style>
