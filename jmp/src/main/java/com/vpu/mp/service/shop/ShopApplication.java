@@ -4,6 +4,7 @@ import com.vpu.mp.service.foundation.ServiceContainer;
 import com.vpu.mp.service.shop.config.ConfigService;
 import com.vpu.mp.service.shop.config.ShopBasicConfigService;
 import com.vpu.mp.service.shop.config.TradeService;
+import com.vpu.mp.service.shop.coupon.CouponService;
 import com.vpu.mp.service.shop.decoration.AppletsJumpService;
 import com.vpu.mp.service.shop.decoration.ChooseLinkService;
 import com.vpu.mp.service.shop.decoration.MpDecorationService;
@@ -36,23 +37,25 @@ public class ShopApplication extends ServiceContainer {
 	public GoodsService goods;
 	public ImageService image;
 	public ImageCategoryService imageCatgory;
-	public MpDecorationService mpDecoration;
+	public MpDecorationService mpDecoration;	//装修模块
 	public OrderService order;
 	public PageClassificationService pageClassification;
 	public VersionService version;
 	public ConfigService config;
 	public StoreService store;
-	public ChooseLinkService chooselink;
+	public ChooseLinkService chooselink;	//选择链接通用弹窗
 	public TradeService trade;
 	public GoodsRecommendService goodsRecommend;
 	public AmountService amount;
 	public OverviewService overview;
 	public DistributionService distribution;
-	public BrandService brand;
+	public BrandService brand;	//品牌管理
 	public AppletsJumpService appletsJump;
 	public MallOverviewService mallOverview;
+	public CouponService coupon;	//优惠券管理
 	public RetainService retain;
 	public PageService page;
+
 	/**
 	 * 会员
 	 */

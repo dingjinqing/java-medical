@@ -41,6 +41,9 @@ ALTER TABLE b2c_comment_goods ADD COLUMN is_shop_add tinyint(1)  not null DEFAUL
 ALTER TABLE b2c_comment_goods ADD COLUMN bogus_username  varchar(32)  not null default '' comment '用户名称：商家添加时使用';
 ALTER TABLE b2c_comment_goods ADD COLUMN bogus_user_avatar varchar(100)  not null default '' comment '用户头像：商家添加时使用';
 
+
+
+
 -- 7月9日 黄壮壮 修改b2c_tag表名in_time为create_time 并且添加字段update_time
 alter table b2c_tag CHANGE COLUMN in_time create_time TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP;
 ALTER TABLE b2c_tag ADD COLUMN update_time TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '记录修改时间' AFTER create_time;
@@ -50,10 +53,6 @@ ALTER TABLE b2c_tag ADD COLUMN update_time TIMESTAMP DEFAULT CURRENT_TIMESTAMP O
 -- 7月9日添加
 -- 修改标签组关系表
 ALTER TABLE b2c_goods_label_couple MODIFY COLUMN label_id INT(11) NOT NULL;
-
--- 7月11日 黄壮壮 在表b2c_tag 中添加is_delete字段
-alter table b2c_tag add COLUMN is_delete TINYINT(1) DEFAULT 0 NOT NULL  COMMENT "0未删除，1已删除" AFTER update_time;
-
 
 -- 7月11日 常乐 创建测评活动相关表结构
 -- 测评活动表
@@ -83,12 +82,6 @@ create table `b2c_assess_activity` (
   key `act_name` (`act_name`),
   key (`shop_id`)
 );
-
-
-
--- 7月11日 黄壮壮 在表b2c_user_tag 中添加is_delete字段
-alter table b2c_user_tag add COLUMN is_delete TINYINT(1) DEFAULT 0 NOT NULL  COMMENT "0未删除，1已删除" AFTER add_time;
-
 
 -- 测评活动题目表
 -- drop table if exists `b2c_assess_topic`;
@@ -186,9 +179,9 @@ create table `b2c_coupon_pack` (
   `start_time`      datetime                 not null comment '开始时间',
   `end_time`        datetime                 not null comment '结束时间',
   `pack_name`       varchar(20)              not null comment '礼包名称',
-  `limit_get_times` tinyint(5)  unsigned     not null default 0 comment '单用户领取限制次数，0不限制',
-  `total_amount`    int(11)     unsigned     not null default '0' comment '总数量',
-  `issued_amount`   int(11)     unsigned     not null default '0' comment '已发放数量',
+  `limit_get_times` tinyint(5)       		 not null default 0 comment '单用户领取限制次数，0不限制',
+  `total_amount`    int(11)                  not null default '0' comment '总数量',
+  `issued_amount`   int(11)                  not null default '0' comment '已发放数量',
   `access_mode`     tinyint(1)               not null default '0' comment '获取方式，0：现金购买，1：积分购买，2直接领取',
   `access_cost`     decimal(10, 2)           null     default 0.00 comment '价格（现金或积分，直接领取时该值为0）',
   `act_rule`        text collate utf8mb4_bin null comment '活动规则',
@@ -239,6 +232,55 @@ alter table `b2c_service_category` rename to `b2c_store_service_category`;
 -- b2c_service_category 统一主键字段类型
 alter table `b2c_store_service_category` modify  column `cat_id` int(11) NOT NULL AUTO_INCREMENT;
 
+--常乐  7月16日 重新设计优惠券表结构
+-- -- 优惠券列表
+-- drop table if exists `b2c_mrking_voucher`;
+create table `b2c_mrking_voucher` (
+  `id`                   int(11)                not null auto_increment,
+  `shop_id`              int(11)                not null default 0 comment '店铺id',
+  `act_code`             varchar(50)            not null default 'voucher',
+  `act_name`             varchar(120)           not null default '',
+  `start_time`           timestamp              default '0000-00-00 00:00:00',
+  `end_time`             timestamp              default '0000-00-00 00:00:00',
+  `denomination`         decimal(10, 2)         not null default '0' comment '面额',
+  `total_amount`         int(11)                not null default '0' comment '发行量',
+  `surplus`              int(11)                not null default '0',
+  `remain_amount`        int(11)                not null default '0',
+  `use_consume_restrict` tinyint(1)             not null default '0' comment '使用限制',
+  `least_consume`        mediumint(5)           not null default '0' comment '满多少可用',
+  `use_explain`          varchar(256)           not null default '',
+  `enabled`              tinyint(1)             not null default '1',
+  `is_random`            tinyint(1)             not null default '0' comment '是否需要积分兑换',
+  `receive_per_person`   smallint(3)            not null default '0' comment '每人限领张数',
+  `suit_goods`           tinyint(1)             not null default '0' comment '0:全店通用,1:指定店铺',
+  `together_used`        tinyint(1)             not null default '0' comment '是否与其他优惠券同时使用',
+  `permit_share`         tinyint(1)             not null default '0' comment '是否允许分享优惠券链接',
+  `remind_owner`         tinyint(1)             not null default '0' comment '是否到期前提醒用户',
+  `giveout_amount`       smallint(4)            not null default '0' comment '发放优惠券数量',
+  `giveout_person`       smallint(4)            not null default '0' comment '发放优惠券人数',
+  `receive_amount`       smallint(4)            not null default '0' comment '领取优惠券数量',
+  `receive_person`       smallint(4)            not null default '0' comment '领取优惠券人数',
+  `used_amount`          smallint(4)            not null default '0' comment '已使用优惠券数量',
+  `alias_code`           varchar(16)            not null default '' comment '唯一活动代码',
+  `validation_code`      varchar(10)            not null default '' comment '领取码',
+  `recommend_goods_id`   text                   comment '指定商品可用',
+  `recommend_cat_id`     text                   comment '指定平台可用',
+  `recommend_sort_id`    text                   comment '指定商家分类可用',
+  `validity`             mediumint(11)      not null default 0    comment '优惠券有效天数',
+  `del_flag`             tinyint(1)             not null default '0' comment '1为删除状态',
+  `action`               tinyint(1)       not null default 1   comment '1:系統创建 2：来自crm',
+  `identity_id`          varchar(50)            default null comment '关联外部优惠券规则唯一码',
+  `recommend_product_id` text                   comment '关联商品规格',
+  `use_score`            tinyint(2)       not null default 0    comment '是否可以积分兑换',
+  `score_number`         int(6)         not null default 0    comment '需要积分数',
+  `card_id`              text                 comment '专属会员卡',
+  `create_time`          timestamp      default current_timestamp,
+  `update_time`          timestamp      default current_timestamp on update current_timestamp comment '最后修改时间',
+  primary key (`id`),
+  unique key `alias_code` (`alias_code`),
+  key `act_name` (`act_name`),
+  key (`shop_id`)
+);
 
 -- 黄荣刚 7月15日
 -- 修改
