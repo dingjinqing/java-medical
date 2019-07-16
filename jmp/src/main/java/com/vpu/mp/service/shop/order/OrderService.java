@@ -2,6 +2,11 @@ package com.vpu.mp.service.shop.order;
 
 import static com.vpu.mp.db.shop.tables.OrderGoods.ORDER_GOODS;
 import static com.vpu.mp.db.shop.tables.OrderInfo.ORDER_INFO;
+import static com.vpu.mp.db.shop.tables.ReturnOrder.RETURN_ORDER;
+import static com.vpu.mp.db.shop.tables.PinGroupList.PIN_GROUP_LIST;
+import static com.vpu.mp.db.shop.tables.User.USER;
+import static com.vpu.mp.db.shop.tables.UserTag.USER_TAG;
+import static com.vpu.mp.db.shop.tables.ReturnOrderGoods.RETURN_ORDER_GOODS;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -12,6 +17,7 @@ import java.util.Map.Entry;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+import org.jooq.Record;
 import org.jooq.Record1;
 import org.jooq.SelectJoinStep;
 import org.jooq.SelectWhereStep;
@@ -21,15 +27,15 @@ import org.jooq.types.UShort;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.vpu.mp.db.shop.tables.User;
-import com.vpu.mp.db.shop.tables.UserTag;
 import com.vpu.mp.service.foundation.BaseService;
 import com.vpu.mp.service.foundation.Page;
 import com.vpu.mp.service.foundation.PageResult;
-import com.vpu.mp.service.pojo.shop.order.OrderGoods;
+import com.vpu.mp.service.pojo.shop.order.OrderGoodsVo;
 import com.vpu.mp.service.pojo.shop.order.OrderInfoVo;
-import com.vpu.mp.service.pojo.shop.order.OrderListInfoOutput;
+import com.vpu.mp.service.pojo.shop.order.OrderListInfoVo;
 import com.vpu.mp.service.pojo.shop.order.OrderPageListQueryParam;
+import com.vpu.mp.service.pojo.shop.order.OrderReturnGoodsVo;
+import com.vpu.mp.service.pojo.shop.order.OrderReturnListVo;
 
 /**
  * 
@@ -44,9 +50,13 @@ public class OrderService extends BaseService {
 	 * @param OrderPageListQueryParam
 	 * @return PageResult
 	 */
-	public PageResult<OrderListInfoOutput> getPageList(OrderPageListQueryParam param) {
+	public PageResult<? extends OrderListInfoVo> getPageList(OrderPageListQueryParam param) {
 		logger.info("订单综合查询开始");
-		PageResult<OrderListInfoOutput> pageResult = new PageResult<>();
+		//退款退货订单查询(其主表不同，所以走分支逻辑)
+		if(param.searchType != null && param.searchType == 1) {
+			return getReturnPageList(param);
+		}
+		PageResult<OrderListInfoVo> pageResult = new PageResult<>();
 		Page page = param.getPage();
 		SelectJoinStep<Record1<String>> mainOrder = db().select(ORDER_INFO.MAIN_ORDER_SN).from(ORDER_INFO);
 		//分组聚合主订单
@@ -59,22 +69,22 @@ public class OrderService extends BaseService {
 			return pageResult;
 		}
 		//查询出全部订单按照MAIN_ORDER_SN分组
-		Map<String, List<OrderListInfoOutput>> allOrder = db().selectDistinct(ORDER_INFO.ORDER_ID.as("Id") , ORDER_INFO.asterisk())
+		Map<String, List<OrderListInfoVo>> allOrder = db().selectDistinct(ORDER_INFO.ORDER_ID.as("Id") , ORDER_INFO.asterisk())
 				.from(ORDER_INFO).where(ORDER_INFO.MAIN_ORDER_SN.in(mainOrderResult.getDataList()))
 				.orderBy(ORDER_INFO.ORDER_ID)
-				.fetchGroups(ORDER_INFO.MAIN_ORDER_SN,OrderListInfoOutput.class);
+				.fetchGroups(ORDER_INFO.MAIN_ORDER_SN,OrderListInfoVo.class);
 		//构造展示商品的订单:MainOrderCount.count=1的可能为正常订单或处于未子订单未被拆分,>1的为已经拆分
-		Map<Integer,OrderListInfoOutput> goodsList = new HashMap<Integer,OrderListInfoOutput>();
+		Map<Integer,OrderListInfoVo> goodsList = new HashMap<Integer,OrderListInfoVo>();
 		//主订单
-		ArrayList<OrderListInfoOutput> mainOrderList = new ArrayList<OrderListInfoOutput>(mainOrderResult.getDataList().size());
+		ArrayList<OrderListInfoVo> mainOrderList = new ArrayList<OrderListInfoVo>(mainOrderResult.getDataList().size());
 		//现子订单数>0的主订单
 		ArrayList<Integer> orderCountMoreZero = new ArrayList<Integer>();
 		for (String moc : mainOrderResult.getDataList()) {
-			List<OrderListInfoOutput> list = allOrder.get(moc);
+			List<OrderListInfoVo> list = allOrder.get(moc);
 			int size = list.size();
-			OrderListInfoOutput mOrder = null;
-			List<OrderListInfoOutput> cList = size > 1 ? new ArrayList<OrderListInfoOutput>(size - 1) : null;
-			for (OrderListInfoOutput order : list) {
+			OrderListInfoVo mOrder = null;
+			List<OrderListInfoVo> cList = size > 1 ? new ArrayList<OrderListInfoVo>(size - 1) : null;
+			for (OrderListInfoVo order : list) {
 				//将所有订单id放入goodsList,在后续向订单添加商品时增加过滤主订单下与子订单重复的商品
 				goodsList.put(order.getOrderId(),order);
 				if(order.getOrderSn().equals(moc)) {
@@ -95,9 +105,9 @@ public class OrderService extends BaseService {
 		//需要查询商品的订单
 		Integer[] goodsListToSearch = goodsList.keySet().toArray(new Integer[0]);
 		//key为order_id,v为其下商品
-		Map<Integer, List<OrderGoods>> goods = getGoodsByOrderId(goodsListToSearch);
-		Set<Entry<Integer, List<OrderGoods>>> entrySet = goods.entrySet();
-		for (Entry<Integer, List<OrderGoods>> entry : entrySet) {
+		Map<Integer, List<OrderGoodsVo>> goods = getGoodsByOrderId(goodsListToSearch);
+		Set<Entry<Integer, List<OrderGoodsVo>>> entrySet = goods.entrySet();
+		for (Entry<Integer, List<OrderGoodsVo>> entry : entrySet) {
 			//过滤主订单中已经拆到子订单的商品(依赖于orderinfo表自增id,当循环到主订单时其子订单下的商品都已插入到childOrders.goods里)
 			if(orderCountMoreZero.contains(entry.getKey())) {
 				filterMainOrderGoods(goodsList.get(entry.getKey()),entry.getValue());
@@ -111,7 +121,7 @@ public class OrderService extends BaseService {
 	}
 
 	/**
-	  * 构造条件
+	  * 构造综合查询条件
 	  * @param select
 	  * @param param
 	  * @return
@@ -137,8 +147,8 @@ public class OrderService extends BaseService {
 		}
 		//昵称需要连表查询
 		if(!StringUtils.isEmpty(param.userName)){
-			select.innerJoin(User.USER).on(ORDER_INFO.USER_ID.eq(User.USER.USER_ID));
-			select.where(User.USER.USERNAME.like(likeValue(param.userName)));
+			select.innerJoin(USER).on(ORDER_INFO.USER_ID.eq(USER.USER_ID));
+			select.where(USER.USERNAME.like(likeValue(param.userName)));
 		}
 		if(!StringUtils.isEmpty(param.source)){
 			select.where(ORDER_INFO.SOURCE.eq(param.source));
@@ -146,10 +156,10 @@ public class OrderService extends BaseService {
 		//会员标签tag
 		if(param.tagIds != null){
 			if(StringUtils.isEmpty(param.userName)) {
-				select.innerJoin(User.USER).on(ORDER_INFO.USER_ID.eq(User.USER.USER_ID));
+				select.innerJoin(USER).on(ORDER_INFO.USER_ID.eq(USER.USER_ID));
 			}
-			select.innerJoin(UserTag.USER_TAG).on(UserTag.USER_TAG.USER_ID.eq(User.USER.USER_ID));
-			select.where(UserTag.USER_TAG.TAG_ID.in(param.tagIds));
+			select.innerJoin(USER_TAG).on(USER_TAG.USER_ID.eq(USER.USER_ID));
+			select.where(USER_TAG.TAG_ID.in(param.tagIds));
 		}
 		if(param.storeId != null){
 			select.where(ORDER_INFO.STORE_ID.eq(param.storeId));
@@ -184,6 +194,11 @@ public class OrderService extends BaseService {
 		if(param.finishedTimeEnd != null){
 			select.where(ORDER_INFO.FINISHED_TIME.le(param.finishedTimeEnd));
 		}
+		//拼团退款失败订单
+		if(param.pinStatus != null){
+			select.innerJoin(PIN_GROUP_LIST).on(ORDER_INFO.ORDER_SN.eq(PIN_GROUP_LIST.ORDER_SN));
+			select.where(PIN_GROUP_LIST.STATUS.in(param.pinStatus));
+		}
 		return select;
 	 }
 	/**
@@ -201,7 +216,7 @@ public class OrderService extends BaseService {
 		OrderInfoVo order = null;		
 		if(size == 1) {
 			order = result.get(0);
-			Map<Integer, List<OrderGoods>> goods = getGoodsByOrderId(new Integer[] {order.getOrderId()});
+			Map<Integer, List<OrderGoodsVo>> goods = getGoodsByOrderId(new Integer[] {order.getOrderId()});
 			order.setGoods(goods.get(order.getOrderId()));
 		}else if(size > 1){
 			//拆单下过滤主订单
@@ -210,7 +225,6 @@ public class OrderService extends BaseService {
 			order = result.get(0);
 			order.setChildOrders(childOrders);
 		}
-
 		return order;
 	}
 	
@@ -219,11 +233,11 @@ public class OrderService extends BaseService {
 	 * @param goodsListToSearch
 	 * @return  Map<Integer, List<OrderGoods>>
 	 */
-	public Map<Integer, List<OrderGoods>> getGoodsByOrderId(Integer[] goodsListToSearch) {
-		Map<Integer, List<OrderGoods>> goods = db().select(ORDER_GOODS.ORDER_ID,ORDER_GOODS.ORDER_SN,ORDER_GOODS.GOODS_ID,ORDER_GOODS.GOODS_NAME,ORDER_GOODS.GOODS_SN,ORDER_GOODS.GOODS_NUMBER,ORDER_GOODS.GOODS_PRICE,ORDER_GOODS.GOODS_ATTR,ORDER_GOODS.PRODUCT_ID).from(ORDER_GOODS)
+	public Map<Integer, List<OrderGoodsVo>> getGoodsByOrderId(Integer[] goodsListToSearch) {
+		Map<Integer, List<OrderGoodsVo>> goods = db().select(ORDER_GOODS.ORDER_ID,ORDER_GOODS.ORDER_SN,ORDER_GOODS.GOODS_ID,ORDER_GOODS.GOODS_NAME,ORDER_GOODS.GOODS_SN,ORDER_GOODS.GOODS_NUMBER,ORDER_GOODS.GOODS_PRICE,ORDER_GOODS.GOODS_ATTR,ORDER_GOODS.PRODUCT_ID).from(ORDER_GOODS)
 				.where(ORDER_GOODS.ORDER_ID.in(goodsListToSearch))
 				.orderBy(ORDER_GOODS.ORDER_ID.desc())
-				.fetchGroups(ORDER_GOODS.ORDER_ID,OrderGoods.class);
+				.fetchGroups(ORDER_GOODS.ORDER_ID,OrderGoodsVo.class);
 		return goods;
 		
 	}
@@ -231,14 +245,14 @@ public class OrderService extends BaseService {
 	/**
 	 * 过滤子订单数量>0时,过滤主订单下已被拆除的商品行（通过减小数量为0则不展示）
 	 * @param goodsListToSearch
-	 * @return  OrderListInfoOutput 订单
+	 * @return  OrderListInfoVo 订单
 	 */
-	public OrderListInfoOutput filterMainOrderGoods(OrderListInfoOutput order , List<OrderGoods> goods) {
-		List<? extends OrderListInfoOutput> cOrders = order.getChildOrders();
+	public OrderListInfoVo filterMainOrderGoods(OrderListInfoVo order , List<OrderGoodsVo> goods) {
+		List<? extends OrderListInfoVo> cOrders = order.getChildOrders();
 		//构造Map<Integer(子订单规格号), Integer(数量)>
 		Map<Integer, Integer> childGoodsCount = new HashMap<>(goods.size());
-		for (OrderListInfoOutput oneOrder : cOrders) {
-			for (OrderGoods tempGoods : oneOrder.getGoods()) {
+		for (OrderListInfoVo oneOrder : cOrders) {
+			for (OrderGoodsVo tempGoods : oneOrder.getGoods()) {
 				Integer tempCount = childGoodsCount.get(tempGoods.getProductId());
 				if(tempCount == null) {
 					//第一次goodsNumber
@@ -250,9 +264,9 @@ public class OrderService extends BaseService {
 			}
 		}
 		//主订单减去子订单相应商品(数量为0不展示)
-		Iterator<OrderGoods> iter = goods.iterator();
+		Iterator<OrderGoodsVo> iter = goods.iterator();
 		while(iter.hasNext()) {
-			OrderGoods orderOoods = iter.next();
+			OrderGoodsVo orderOoods = iter.next();
 			Integer count = childGoodsCount.get(orderOoods.getProductId());
 			if(count != null){
 				int finalCount = orderOoods.getGoodsNumber().intValue() - count;
@@ -265,6 +279,60 @@ public class OrderService extends BaseService {
 		}
 		order.setGoods(goods);
 		return order;
-		
 	}
+	
+	/**
+	 * 退货、款订单
+	 * @return
+	 */
+	public PageResult<OrderReturnListVo> getReturnPageList(OrderPageListQueryParam param) {
+		SelectJoinStep<Record> select = db().select().from(RETURN_ORDER);
+		buildOptionsReturn(select,param);
+		PageResult<OrderReturnListVo> result = getPageResult(select,param.getPage().getCurrentPage(),param.getPage().getPageRows(),OrderReturnListVo.class);
+		List<String> collect;
+		List<OrderReturnListVo> dataList = result.dataList;
+		if(dataList != null && dataList.size() > 0 ) {
+			collect = dataList.stream().map(OrderReturnListVo::getOrderSn).collect(Collectors.toList());
+		}else {
+			return result;
+		}
+		Map<String, List<OrderReturnGoodsVo>> goods = db().select(RETURN_ORDER_GOODS.asterisk()).from(RETURN_ORDER_GOODS)
+				.where(RETURN_ORDER_GOODS.ORDER_SN.in(collect))
+				.fetchGroups(RETURN_ORDER_GOODS.ORDER_SN,OrderReturnGoodsVo.class);
+		for (OrderReturnListVo order : dataList) {
+			order.setGoods(goods.get(order.getOrderSn()));
+		}
+		return result;
+	}
+	
+	/**
+	  * 构造退货、款查询条件
+	  * @param select
+	  * @param param
+	  * @return
+	  */
+	 public SelectWhereStep<?> buildOptionsReturn(SelectJoinStep<?> select, OrderPageListQueryParam param) {
+		//自增id排序
+		select.orderBy(RETURN_ORDER.RET_ID);
+		
+		if(!StringUtils.isEmpty(param.getOrderSn())) {
+			select.where(RETURN_ORDER.ORDER_SN.eq(param.getOrderSn()));
+		}
+		if(!StringUtils.isEmpty(param.getReturnOrderSn())) {
+			select.where(RETURN_ORDER.RETURN_ORDER_SN.eq(param.getReturnOrderSn()));
+		}
+		if(param.getRefundStatus() != null ) {
+			select.where(RETURN_ORDER.REFUND_STATUS.in(param.getRefundStatus()));
+		}
+		if(param.getReturnType() != null ) {
+			select.where(RETURN_ORDER.RETURN_TYPE.in(param.getReturnType()));
+		}
+		if(param.getReturnStart() != null ) {
+			select.where(RETURN_ORDER.APPLY_TIME.ge(param.getReturnStart()));
+		}
+		if(param.getReturnEnd() != null ) {
+			select.where(RETURN_ORDER.APPLY_TIME.le(param.getReturnStart()));
+		}
+		return select; 
+	 }
 }
