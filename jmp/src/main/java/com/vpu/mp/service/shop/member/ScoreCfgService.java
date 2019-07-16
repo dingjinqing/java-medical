@@ -1,12 +1,18 @@
 package com.vpu.mp.service.shop.member;
 
 import static com.vpu.mp.db.shop.tables.UserScoreSet.USER_SCORE_SET;
+import java.lang.reflect.Field;
+import static com.vpu.mp.db.shop.tables.ShopCfg.SHOP_CFG;
+
 import org.jooq.InsertValuesStep3;
+
 import org.jooq.Record1;
+import org.jooq.Record2;
 import org.jooq.Result;
 
 import com.vpu.mp.db.shop.tables.records.UserScoreSetRecord;
 import com.vpu.mp.service.foundation.Util;
+import com.vpu.mp.service.pojo.shop.member.ScoreCfgVo;
 import com.vpu.mp.service.pojo.shop.member.ShopCfgParam;
 import com.vpu.mp.service.shop.config.BaseShopConfigService;
 import com.vpu.mp.service.pojo.shop.member.UserScoreSetValue;
@@ -45,6 +51,7 @@ public class ScoreCfgService extends BaseShopConfigService {
 	final public static String LOGIN_SCORE = "login_score";
 	final public static String SCORE_LOGIN = "score_login";
 	final public static String SIGN_IN_SCORE = "sign_in_score";
+	
 
 	public int setShopCfg(ShopCfgParam param) {
 
@@ -164,6 +171,10 @@ public class ScoreCfgService extends BaseShopConfigService {
 						.from(USER_SCORE_SET)
 						.where(USER_SCORE_SET.SCORE_NAME.eq(scoreName))
 						.fetch();
+		
+		if(record.get(0) == null) {
+			return null;
+		}
 		return (String) record.get(0).get(0);
 	}
 	/**
@@ -224,5 +235,57 @@ public class ScoreCfgService extends BaseShopConfigService {
 			insert.execute();
 		
 	}
+
+	/**
+	 * 获取积分配置信息
+	 * @return
+	 * @throws IllegalAccessException 
+	 * @throws IllegalArgumentException 
+	 */
+	public ScoreCfgVo getShopScoreCfg() {
+		String[] fieldsStr = ScoreCfgVo.getFields();
+		Field[] fields = ScoreCfgVo.class.getFields();
+		ScoreCfgVo vo = new ScoreCfgVo();
+		
+		for(int i=0;i<fieldsStr.length;i++) {
+			String value = db().select(SHOP_CFG.V).from(SHOP_CFG).where(SHOP_CFG.K.eq(fieldsStr[i])).fetchOne().get(SHOP_CFG.V);
+			try {
+				fields[i].set(vo, value);
+			} catch (IllegalArgumentException e) {
+				e.printStackTrace();
+			} catch (IllegalAccessException e) {
+				e.printStackTrace();
+			}
+		}
+		
 	
+		
+		//查询buy
+		Result<Record2<String, String>> result = getValFromUserScoreSet(BUY);
+		for(int i=0;i<result.size();i++) {
+			Record2<String, String> record = result.get(i);
+			vo.getBuy().add((String) record.get(0));
+			vo.getBuyScore().add((String)record.get(1));
+		}
+		
+		//查询buyEach
+		Result<Record2<String, String>> resultEach = getValFromUserScoreSet(BUY_EACH);
+		for(int i=0;i<resultEach.size();i++) {
+			Record2<String, String> record = resultEach.get(i);
+			vo.getBuyEach().add((String) record.get(0));
+			vo.getBuyEachScore().add((String)record.get(1));
+		}
+		return vo;
+	}
+
+	/**
+	 * 获取数据
+	 * @return
+	 */
+	private Result<Record2<String, String>> getValFromUserScoreSet(String value) {
+		Result<Record2<String, String>> result = db().select(USER_SCORE_SET.SET_VAL,USER_SCORE_SET.SET_VAL2)
+													.from(USER_SCORE_SET)
+													.where(USER_SCORE_SET.SCORE_NAME.eq(value)).fetch();
+		return result;
+	}
 }
