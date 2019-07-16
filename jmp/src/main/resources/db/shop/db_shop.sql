@@ -652,6 +652,7 @@ create table `b2c_mrking_voucher` (
   `end_time`             timestamp              default '0000-00-00 00:00:00',
   `denomination`         decimal(10, 2)         not null default '0' comment '面额',
   `total_amount`         int(11)                not null default '0' comment '发行量',
+  `type`                 tinyint(1)             default 0 comment '优惠券类型，0普通优惠券；1分裂优惠券',
   `surplus`              int(11)                not null default '0',
   `remain_amount`        int(11)                not null default '0',
   `use_consume_restrict` tinyint(1)             not null default '0' comment '使用限制',

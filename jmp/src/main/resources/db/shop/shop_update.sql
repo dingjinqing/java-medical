@@ -233,7 +233,6 @@ alter table `b2c_service_category` rename to `b2c_store_service_category`;
 alter table `b2c_store_service_category` modify  column `cat_id` int(11) NOT NULL AUTO_INCREMENT;
 
 --常乐  7月16日 重新设计优惠券表结构
--- -- 优惠券列表
 -- drop table if exists `b2c_mrking_voucher`;
 create table `b2c_mrking_voucher` (
   `id`                   int(11)                not null auto_increment,
@@ -244,6 +243,7 @@ create table `b2c_mrking_voucher` (
   `end_time`             timestamp              default '0000-00-00 00:00:00',
   `denomination`         decimal(10, 2)         not null default '0' comment '面额',
   `total_amount`         int(11)                not null default '0' comment '发行量',
+  `type`                 tinyint(1)             default 0 comment '优惠券类型，0普通优惠券；1分裂优惠券',
   `surplus`              int(11)                not null default '0',
   `remain_amount`        int(11)                not null default '0',
   `use_consume_restrict` tinyint(1)             not null default '0' comment '使用限制',
