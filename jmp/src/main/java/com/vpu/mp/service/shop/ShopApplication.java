@@ -17,6 +17,7 @@ import com.vpu.mp.service.shop.member.MemberService;
 import com.vpu.mp.service.shop.member.ScoreCfgService;
 import com.vpu.mp.service.shop.member.TagService;
 import com.vpu.mp.service.shop.order.OrderService;
+import com.vpu.mp.service.shop.overview.OverviewService;
 import com.vpu.mp.service.shop.overview.MallOverviewService;
 import com.vpu.mp.service.shop.store.store.StoreService;
 import com.vpu.mp.service.shop.summary.visit.AmountService;
@@ -43,6 +44,7 @@ public class ShopApplication extends ServiceContainer {
 	public TradeService trade;
 	public GoodsRecommendService goodsRecommend;
 	public AmountService amount;
+	public OverviewService overview;
 	public DistributionService distribution;
 	public BrandService brand;
 	public AppletsJumpService appletsJump;
