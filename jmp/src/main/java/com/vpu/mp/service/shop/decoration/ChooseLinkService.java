@@ -239,26 +239,17 @@ public class ChooseLinkService extends BaseService {
 		return packList;
 	}
 	
-//	商品分类
-	public Boolean goodsCategory() {
-		return false;
-	}
-	
 	/**
 	 * 创建跳转网页内容
 	 * @param info
 	 * @return
 	 */
-	public Boolean saveWebLink(XcxLinkListVo info) {
+	public int saveWebLink(XcxLinkListVo info) {
 		DecorateLinkRecord record = db().newRecord(DECORATE_LINK,info);
 		record.setShopId(shopId);
 		record.setLinkAction((byte) 1);
 		int res = db().executeInsert(record);
-		if(res > 0) {
-			return true;
-		}else {
-			return false;
-		}
+		return res;
 	}
 	
 	/**

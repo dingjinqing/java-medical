@@ -64,22 +64,14 @@ public class AdminChooseLinkController extends AdminBaseController{
 	}
 	
 	/**
-	 * 营销活动
-	 * @return
-	 */
-	public Boolean activityList () {
-		return false;
-	}
-	
-	/**
 	 * 创建网页跳转内容
 	 * @param param
 	 * @return
 	 */
 	@PostMapping(value = "/admin/decorate/web/save")
 	public JsonResult saveWebLink(@RequestBody XcxLinkListVo param) {
-		Boolean result = shop().chooselink.saveWebLink(param);
-		if(result) {
+		int result = shop().chooselink.saveWebLink(param);
+		if(result > 0) {
 			return this.success(result);
 		}else {
 			return this.fail();
