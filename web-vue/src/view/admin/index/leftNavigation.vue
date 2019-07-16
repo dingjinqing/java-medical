@@ -469,6 +469,11 @@ export default {
               name: 'freight_template'
             })
             break
+          case 3:
+            this.$router.push({
+              name: 'shopStyle'
+            })
+            break
         }
       }
     },

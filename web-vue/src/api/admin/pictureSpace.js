@@ -46,6 +46,7 @@ export function imgsdeleteRequest (riid) {
 
 // 图片分页查询接口
 export function queryImgsRequest (riid) {
+  localStorage.setItem('contentType', 'application/json;charset=UTF-8')
   return service({
     url: '/api/admin/image/list',
     method: 'post',
@@ -57,6 +58,16 @@ export function queryImgsRequest (riid) {
 export function moveImgsRequest (riid) {
   return service({
     url: '/api/admin/image/batch/move',
+    method: 'post',
+    data: riid
+  })
+}
+
+// 上传图片接口
+export function upmoreImgsRequest (riid) {
+  localStorage.setItem('contentType', 'application/x-www-form-urlencoded;charset=UTF-8')
+  return service({
+    url: '/api/admin/image/uploadOneImgae',
     method: 'post',
     data: riid
   })

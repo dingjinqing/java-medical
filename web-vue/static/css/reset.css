@@ -27,6 +27,8 @@ footer, header, hgroup, menu, nav, section {
 }
 body {
 	line-height: 1;
+	font-family: Helvetica Neue, Helvetica, PingFang SC, \5fae\8f6f\96c5\9ed1,
+    Tahoma, Arial, sans-serif;
 }
 ol, ul {
 	list-style: none;

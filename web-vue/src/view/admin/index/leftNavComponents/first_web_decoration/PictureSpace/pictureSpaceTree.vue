@@ -5,13 +5,12 @@
       <div class="dialog_top">
         <el-upload
           class="upload-demo"
-          action="https://jsonplaceholder.typicode.com/posts/"
-          :on-success="handleSuccess"
           :before-upload="beforeUpLoad"
           multiple
           :limit="5"
           :on-exceed="handleExceed"
           :show-file-list="false"
+          action=""
         >
           <el-button
             size="small"
@@ -84,13 +83,15 @@
                 <li
                   @mouseenter="enter(index)"
                   @mouseleave="leave(index)"
-                  @click="handleChecked(index)"
                   v-for="(item,index) in img_list"
                   :key="index"
                 >
                   <div style="position:relative">
                     <a :title="item.imgName">
-                      <img :src="item.imgUrl">
+                      <img
+                        :src="item.imgUrl"
+                        @click="handleChecked(index)"
+                      >
                     </a>
                     <div
                       v-show="item.checked"
@@ -115,6 +116,7 @@
                         img_height="52"
                         img_path="upload/4748160/image/20190708/crop_aeZqHE9BhNhWub8j.jpeg"
                         title="删除图片"
+                        @click="delMaskImg(item.imgId)"
                       >{{$t('imgageDalog.delImg')}}</a>
                     </p>
                   </div>
@@ -219,7 +221,7 @@
 <script>
 import { mapGetters } from 'vuex'
 import Tree from '@/components/admin/tree'
-import { imgsdeleteRequest, queryImgsRequest, moveImgsRequest } from '@/api/admin/pictureSpace.js'
+import { imgsdeleteRequest, queryImgsRequest, moveImgsRequest, upmoreImgsRequest } from '@/api/admin/pictureSpace.js'
 export default {
   components: { Tree },
   data () {
@@ -233,7 +235,7 @@ export default {
       value: '',
       imgNameInput: '',
       checked: false,
-      currentPage3: 5,
+      currentPage3: 1,
       pagination_b: true,
       c_imgUrl: this.$imageHost + '/upload/0/image/20180528/i561Ez0lgWDeUOHe.jpeg!middle',
       dim_flag: 'dim_flag',
@@ -257,7 +259,10 @@ export default {
       currentPage: '',
       pageCount: '',
       right_content_hidden: true,
-      checkArr: ''
+      checkArr: '',
+      upImgWidth: '',
+      upImgHeight: ''
+
     }
   },
   computed: {
@@ -347,12 +352,19 @@ export default {
       queryImgsRequest(obj).then((res) => {
         console.log(res)
         console.log(res.content.dataList)
+
         if (res.error === 0) {
           console.log(res.content.dataList.length)
           if (res.content.dataList.length === 0) {
             this.right_content_hidden = false
             return
           }
+
+          res.content.dataList.map((item, index) => {
+            // item.imgUrl = item.imgUrl.split("/")
+            console.log(item.imgUrl.split('cn')[1])
+          })
+
           console.log(res.content.page.totalRows)
           this.totalRows = res.content.page.totalRows
           this.currentPage = res.content.page.currentPage
@@ -369,17 +381,60 @@ export default {
         }
       })
     },
-    // 文件上传成功后的钩子
-    handleSuccess () {
-
+    // 遮罩层删除点击
+    delMaskImg (data) {
+      console.log(data)
+      let obj = {
+        imageIds: [data]
+      }
+      imgsdeleteRequest(obj).then((res) => {
+        console.log(res)
+        if (res.error === 0) {
+          this.detailImgsSearch()
+        }
+      })
     },
+
     // 图片上传前的钩子
     beforeUpLoad (file) {
       console.log(file)
+      let that = this
+      console.log(this.firstNodeId)
+      let is1M = file.size / 1024 / 1024 < 5 // 限制小于1M
+      console.log(is1M)
+      if (!is1M) this.$message.error('请上传小于5M的图片')
+
+      // let width = 654 // 限制图片尺寸为654X270
+      // let height = 270
+      let _URL = window.URL || window.webkitURL
+      let img = new Image()
+
+      img.onload = function () {
+        console.log(img.width, img.height)
+        // this.upImgWidth = img.width
+        // this.upImgHeight = img.height
+        console.log(that.firstNodeId)
+        let fd = new FormData()
+        // console.log(fd)
+        fd.append('file', file)
+        fd.append('needImgWidth', img.width)
+        fd.append('needImgHeight', img.height)
+        fd.append('imgCatId', that.firstNodeId)
+        upmoreImgsRequest(fd).then((res) => {
+          console.log(res)
+          if (res.error === 0) {
+            that.detailImgsSearch()
+          }
+        })
+        // let valid = img.width === width && img.height === height
+      }
+      img.src = _URL.createObjectURL(file)
+
+      return false
     },
     // 文件数量超出限制钩子
     handleExceed () {
-
+      this.$message.error('单次上传图片数量不能超过5张')
     },
     // pageSize 改变时会触发
     handleSizeChange () {
@@ -398,6 +453,9 @@ export default {
         'uploadSortId': this.value
       }
       queryImgsRequest(obj).then((res) => {
+        if (res.error === 0) {
+          this.detailImgsSearch(this.currentPage3)
+        }
         console.log(res)
       })
     },
@@ -459,6 +517,7 @@ export default {
       imgsdeleteRequest(obj).then((res) => {
         console.log(res)
         if (res.error === 0) {
+          this.b_checked = false
           this.detailImgsSearch()
         }
       })
@@ -509,9 +568,14 @@ export default {
       //   console.log(item.label)
       //   return item.label === this.value
       // })
-
+      let pageIndex = ''
+      if (this.currentPage3 !== 1) {
+        pageIndex = this.currentPage3
+      } else {
+        pageIndex = 1
+      }
       let obj = {
-        'page': 1,
+        'page': pageIndex,
         'imgCatId': this.firstNodeId,
         'keywords': this.imgNameInput,
         'searchNeed': 0,

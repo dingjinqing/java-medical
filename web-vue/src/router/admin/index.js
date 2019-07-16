@@ -46,6 +46,12 @@ const routes = [
             meta: 'first_web_decoration',
             component: r => require.ensure([], () => r(require('@/view/admin/index/leftNavComponents/first_web_decoration/PictureSpace/freight_template')), 'freight_template')
           },
+          {
+            path: '/admin/home/main/shopStyle',
+            name: 'shopStyle',
+            meta: 'first_web_decoration',
+            component: r => require.ensure([], () => r(require('@/view/admin/index/leftNavComponents/first_web_decoration/shopStyle/shopStyle')), 'shopStyle')
+          },
           // 商品管理系列子路由
           {
             path: '/admin/home/main/goods_manage',

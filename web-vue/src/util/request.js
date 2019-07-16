@@ -24,6 +24,7 @@ const service = axios.create({
 // request拦截器
 service.interceptors.request.use(
   config => {
+    console.log(config)
     console.log(localStorage.getItem('contentType'), localStorage.getItem('WEPUBAO_LANGUAGE'))
     config.headers['Content-Type'] = localStorage.getItem('contentType')
     console.log(Cookies.get('V-Token'))
