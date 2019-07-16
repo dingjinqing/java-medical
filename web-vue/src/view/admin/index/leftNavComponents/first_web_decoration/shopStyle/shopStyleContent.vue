@@ -104,7 +104,11 @@
           >提交订单</div>
         </div>
       </div>
+      <div class="footer">
+        <div class="save">保存</div>
+      </div>
     </div>
+
   </div>
 </template>
 <script>
@@ -205,9 +209,12 @@ export default {
   padding: 10px;
   min-width: 1400px;
   font-size: 14px;
+  height: 100%;
 }
 .shopStyleContent_main {
+  position: relative;
   background-color: #fff;
+  height: 100%;
 }
 .color_title {
   width: 1120px;
@@ -439,5 +446,24 @@ export default {
   /* background-color: red; */
   text-align: center;
   color: #fff;
+}
+.footer {
+  background: #f8f8fa;
+  border-top: 1px solid #f2f2f2;
+  text-align: center;
+  position: absolute;
+  z-index: 2;
+  bottom: 45px;
+  width: 100%;
+}
+.save {
+  width: 70px;
+  height: 30px;
+  line-height: 30px;
+  border: none;
+  background: #5a8bff;
+  color: #fff;
+  margin: auto;
+  cursor: pointer;
 }
 </style>

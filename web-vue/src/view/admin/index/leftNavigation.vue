@@ -423,6 +423,13 @@ export default {
             this.click_nav_index = 2
           }
           break
+        case 'shopStyle':
+          if (flag === 'first_web_decoration') {
+            this.nav_index = 3
+            this.click_nav_index = 3
+          }
+          break
+        // 概况
         case 'overviewStatistics':
           console.log('sun==' + flag)
           if (flag === 'first_web_manage') {
