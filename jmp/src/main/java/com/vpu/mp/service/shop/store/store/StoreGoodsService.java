@@ -36,7 +36,7 @@ public class StoreGoodsService extends BaseService{
 				leftJoin(GOODS_SPEC_PRODUCT).on(STORE_GOODS.PRD_ID.eq(GOODS_SPEC_PRODUCT.PRD_ID)).
 				leftJoin(GOODS).on(GOODS.GOODS_ID.eq(GOODS_SPEC_PRODUCT.GOODS_ID));
 		select = this.buildOptions(select, param);
-		select.orderBy(STORE_GOODS.CREATE_TIME);
+		select.where(STORE_GOODS.STORE_ID.eq(param.getStoreId())).orderBy(STORE_GOODS.CREATE_TIME);
 		return getPageResult(select,param.getCurrentPage(),param.getPageRows(),StoreGoodsListQueryVo.class);
 	}
 	

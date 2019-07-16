@@ -3,6 +3,8 @@ package com.vpu.mp.service.shop.store.service;
 import static com.vpu.mp.db.shop.tables.StoreService.STORE_SERVICE;
 import static com.vpu.mp.db.shop.tables.StoreServiceCategory.STORE_SERVICE_CATEGORY;
 
+import java.util.List;
+
 import org.jooq.Record;
 import org.jooq.SelectWhereStep;
 import org.jooq.tools.StringUtils;
@@ -37,7 +39,7 @@ public class StoreServiceService extends BaseService{
 		SelectWhereStep<? extends Record> select = 
 		db().select(STORE_SERVICE_CATEGORY.CAT_NAME,STORE_SERVICE_CATEGORY.CREATE_TIME).from(STORE_SERVICE_CATEGORY);
 		select = this.buildCateOptions(select, param);
-		select.orderBy(STORE_SERVICE_CATEGORY.CREATE_TIME.desc());
+		select.where(STORE_SERVICE_CATEGORY.STORE_ID.eq(param.getStoreId())).orderBy(STORE_SERVICE_CATEGORY.CREATE_TIME.desc());
 		return getPageResult(select,param.getCurrentPage(),param.getPageRows(),StoreServiceCategoryListQueryVo.class);
 	}
 	
@@ -60,7 +62,16 @@ public class StoreServiceService extends BaseService{
 	}
 	
 	/**
-	 * 门店服务分类列表分页查询
+	 * 门店全部服务分类列表查询
+	 * @param StoreListQueryParam
+	 * @return StorePageListVo
+	 */
+	public List<StoreServiceCategoryListQueryVo> getAllStoreServiceCategory(StoreServiceCategoryListQueryParam param) { 
+		return db().select(STORE_SERVICE_CATEGORY.CAT_ID,STORE_SERVICE_CATEGORY.CAT_NAME,STORE_SERVICE_CATEGORY.CREATE_TIME).from(STORE_SERVICE_CATEGORY).where(STORE_SERVICE_CATEGORY.STORE_ID.eq(param.getStoreId())).fetchInto(StoreServiceCategoryListQueryVo.class);
+	}
+	
+	/**
+	 * 门店服务列表分页查询
 	 * @param StoreListQueryParam
 	 * @return StorePageListVo
 	 */
@@ -70,7 +81,7 @@ public class StoreServiceService extends BaseService{
 		from(STORE_SERVICE).
 		leftJoin(STORE_SERVICE_CATEGORY).on(STORE_SERVICE_CATEGORY.CAT_ID.eq(STORE_SERVICE.CAT_ID));
 		select = this.buildServiceOptions(select, param);
-		select.orderBy(STORE_SERVICE.CREATE_TIME.desc());
+		select.where(STORE_SERVICE.STORE_ID.eq(param.getStoreId())).orderBy(STORE_SERVICE.CREATE_TIME.desc());
 		return getPageResult(select,param.getCurrentPage(),param.getPageRows(),StoreServiceListQueryVo.class);
 	}
 	
@@ -93,6 +104,14 @@ public class StoreServiceService extends BaseService{
 			select.where(STORE_SERVICE.SERVICE_NAME.contains(param.getServiceName()));
 		}
 		return select;
+	}
+	
+	/**
+	 * 门店服务编码生成
+	 * @return String
+	 */
+	public String createServiceSn(){
+		return null;
 	}
 	
 	/**

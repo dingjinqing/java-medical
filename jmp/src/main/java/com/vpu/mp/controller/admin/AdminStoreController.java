@@ -233,6 +233,15 @@ public class AdminStoreController extends AdminBaseController{
     }
     
     /**
+     * 获取全部门店服务分类列表
+     * @return
+     */
+    @PostMapping(value = "/api/admin/store/service/category/all")
+    public JsonResult getStoreServiceAllCategory(@RequestBody(required = false) @Valid StoreServiceCategoryListQueryParam param) {
+    	return success(shop().store.storeService.getAllStoreServiceCategory(param));
+    }
+    
+    /**
      * 门店服务分类-添加
      * @return
      */

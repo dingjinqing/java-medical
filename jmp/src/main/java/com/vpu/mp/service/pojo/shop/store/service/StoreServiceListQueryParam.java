@@ -1,5 +1,7 @@
 package com.vpu.mp.service.pojo.shop.store.service;
 
+import javax.validation.constraints.NotNull;
+
 import com.vpu.mp.service.foundation.Page;
 
 import lombok.Data;
@@ -20,6 +22,9 @@ public class StoreServiceListQueryParam {
 	 *  服务分类
 	 */
 	private Integer catId;
+	
+	@NotNull
+	private Integer storeId;
 	
 	/**
      * 	分页信息

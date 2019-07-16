@@ -11,6 +11,9 @@ import lombok.Data;
  */
 @Data
 public class StoreServiceCategoryListQueryVo {
+	
+	private Integer cat_id;
+	
 	/**
 	 *  分类名称
 	 */

@@ -1,5 +1,7 @@
 package com.vpu.mp.service.pojo.shop.store.goods;
 
+import javax.validation.constraints.NotNull;
+
 import com.vpu.mp.service.foundation.Page;
 
 import lombok.Data;
@@ -17,11 +19,14 @@ public class StoreGoodsListQueryParam {
 	private Byte isOnSale;
 	
 	/**
-     * 	分页信息是否同步pos  0未同步，1同步
+     * 是否同步pos  0未同步，1同步
      */
 	private Byte isSync;
 	
 	private String keywords;
+	
+	@NotNull
+	private Integer storeId;
 	/**
      * 	分页信息
      */
