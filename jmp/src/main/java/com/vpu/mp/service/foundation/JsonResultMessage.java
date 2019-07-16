@@ -41,6 +41,7 @@ public class JsonResultMessage {
 	public static final String MSG_CODE_ACCOUNT_SHOP_ROLE_OCCUPY = "account.shop.role.occupy";
 	public static final String MSG_CODE_ACCOUNT_ASSIGNED_ROLE="account.assigned.role";
 	public static final String MSG_CODE_ACCOUNT_SELECT_SHOP="account.select.shop";
+	public static final String MSG_CODE_NEED_PRIVILEGEPASS ="account.need.privilegePass";
 	
 	// 图片
 	
