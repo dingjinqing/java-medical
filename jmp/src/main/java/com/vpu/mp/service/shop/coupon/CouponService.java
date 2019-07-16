@@ -1,17 +1,21 @@
 package com.vpu.mp.service.shop.coupon;
 
+import static com.vpu.mp.db.shop.Tables.CUSTOMER_AVAIL_COUPONS;
 import static com.vpu.mp.db.shop.Tables.MRKING_VOUCHER;
+import static com.vpu.mp.db.shop.Tables.USER;
 
 import java.util.List;
 
 import org.jooq.Record;
 import org.jooq.SelectConditionStep;
 import org.jooq.SelectJoinStep;
-import org.jooq.UpdateSetFirstStep;
+import org.jooq.SelectSelectStep;
 
 import com.vpu.mp.db.shop.tables.records.MrkingVoucherRecord;
 import com.vpu.mp.service.foundation.BaseService;
 import com.vpu.mp.service.foundation.PageResult;
+import com.vpu.mp.service.pojo.shop.coupon.CouponGetDetailParam;
+import com.vpu.mp.service.pojo.shop.coupon.CouponGetDetailVo;
 import com.vpu.mp.service.pojo.shop.coupon.CouponListParam;
 import com.vpu.mp.service.pojo.shop.coupon.CouponListVo;
 import com.vpu.mp.service.pojo.shop.coupon.CouponParam;
@@ -94,5 +98,57 @@ public class CouponService extends BaseService{
 				.where(MRKING_VOUCHER.ID.eq(couponId))
 				.execute();
 		return result > 0 ? true : false;
+	}
+	
+	/**
+	 * 删除优惠券（假删除）
+	 * @param couponId
+	 * @return
+	 */
+	public boolean couponDel(Integer couponId) {
+		int result = db().update(MRKING_VOUCHER)
+				.set(MRKING_VOUCHER.DEL_FLAG,(byte) 1)
+				.where(MRKING_VOUCHER.ID.eq(couponId))
+				.execute();
+		return result > 0 ? true : false;
+	}
+	
+	/**
+	 * 优惠券领取明细分页列表
+	 * @param param
+	 * @return
+	 */
+	public PageResult<CouponGetDetailVo> getDetail(CouponGetDetailParam param) {
+		SelectJoinStep<Record> select = db().select()
+				.from(CUSTOMER_AVAIL_COUPONS 
+						.leftJoin(MRKING_VOUCHER) 
+						.on(CUSTOMER_AVAIL_COUPONS.ACT_ID .eq(MRKING_VOUCHER.ID))
+						.leftJoin(USER) 
+						.on(CUSTOMER_AVAIL_COUPONS.USER_ID.eq(USER.USER_ID)));
+		SelectConditionStep<Record> sql = detailBuildOptions(select,param);
+		sql.orderBy(CUSTOMER_AVAIL_COUPONS.USED_TIME);
+		PageResult<CouponGetDetailVo> detailList = this.getPageResult(sql,param.getCurrentPage(),param.getPageRows(),CouponGetDetailVo.class);
+		return detailList;		
+	}
+	
+	/**
+	 * 按条件查询领取明细
+	 * @param select
+	 * @param param
+	 * @return
+	 */
+	public SelectConditionStep<Record> detailBuildOptions(SelectJoinStep<Record> select,CouponGetDetailParam param) {
+		SelectConditionStep<Record> sql = select.where(CUSTOMER_AVAIL_COUPONS.ACT_ID .eq(param.getId()));
+		if(param.getMobile() != null) {
+			sql.and(USER.MOBILE.eq(param.getMobile()));
+		}
+		if(param.getUserName() != null) {
+			sql.and(USER.USERNAME.eq(param.getUserName()));
+		}
+		if(param.getIsUsed() != null) {
+			sql.and(CUSTOMER_AVAIL_COUPONS.IS_USED.eq(param.getIsUsed()));
+		}
+		return sql;
+		
 	}
 }
