@@ -42,7 +42,7 @@ public class AdminImageController extends AdminBaseController {
 	 * @throws Exception
 	 */
 	@PostMapping(value = "/admin/image/upload")
-	public JsonResult imageUpload(@RequestBody UploadImageParam param) throws IOException, Exception {
+	public JsonResult imageUpload( UploadImageParam param) throws IOException, Exception {
 		List<UploadedImageVo> uploadImages = new ArrayList<UploadedImageVo>();
 		JsonResult result = null;
 		List<Part> files = Util.getFilePart(request, param.uploadFileId);
@@ -72,7 +72,7 @@ public class AdminImageController extends AdminBaseController {
 	 * @throws Exception
 	 */
 	@PostMapping(value = "/admin/image/uploadOneImgae")
-	protected JsonResult uploadOneFile(@RequestBody UploadImageParam param, Part file) throws IOException, Exception {
+	protected JsonResult uploadOneFile( UploadImageParam param, Part file) throws IOException, Exception {
 		ShopApplication shop = shop();
 		Integer maxSize = 5 * 1024 * 1024;
 		if (file.getSize() > maxSize) {
