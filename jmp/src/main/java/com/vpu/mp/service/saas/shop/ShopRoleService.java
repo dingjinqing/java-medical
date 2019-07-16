@@ -148,4 +148,27 @@ public class ShopRoleService extends BaseService {
 		return outParam;
 	}
 
+	protected String[] getPrivilegePass(Integer roleId) {
+		ShopRoleRecord role = getRoleById(roleId);
+		if (role == null) {
+			return null;
+		}
+		return Util.parseJson(role.getPrivilegePass(), String[].class);
+	}
+
+	/**
+	 * 密码校验
+	 * @param passwd
+	 * @param roleId
+	 * @return
+	 */
+	public Boolean veryPasswd(String passwd, Integer roleId) {
+		ShopRoleRecord record = db().selectFrom(SHOP_ROLE)
+				.where(SHOP_ROLE.ROLE_ID.eq(roleId).and(SHOP_ROLE.ROLE_PASS.eq(Util.md5(passwd)))).fetchAny();
+		if (record != null) {
+			return true;
+		}
+		return false;
+	}
+
 }
