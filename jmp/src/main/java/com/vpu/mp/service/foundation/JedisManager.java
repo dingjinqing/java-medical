@@ -1,8 +1,14 @@
 package com.vpu.mp.service.foundation;
 
+import org.apache.commons.lang3.StringUtils;
+import org.jooq.*;
 import redis.clients.jedis.Jedis;
 import redis.clients.jedis.JedisPool;
 import redis.clients.jedis.JedisPoolConfig;
+
+import java.util.function.Consumer;
+import java.util.function.Function;
+import java.util.function.Predicate;
 
 /**
  * 
@@ -115,6 +121,22 @@ public class JedisManager {
 		try (Jedis jedis = getJedisPool().getResource()){
 			jedis.expire(key, seconds);
 		}
+	}
+
+	public String commonGet(String key, Integer timeOut, JedisGetProcess function){
+		String value;
+		try (Jedis jedis = getJedisPool().getResource()){
+			value = jedis.get(key);
+			if( value != null ){
+				return value;
+			}else {
+				value = function.getByRedis();
+				jedis.set(key,value.toString());
+				jedis.expire(key,timeOut);
+				return value;
+			}
+		}
+
 	}
 
 }

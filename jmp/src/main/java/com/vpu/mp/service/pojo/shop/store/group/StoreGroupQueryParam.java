@@ -2,19 +2,19 @@ package com.vpu.mp.service.pojo.shop.store.group;
 
 import com.vpu.mp.service.foundation.Page;
 
+import com.vpu.mp.service.pojo.shop.base.BasePageParam;
 import lombok.Data;
 
 /**
- * @author luguangyao
- */
+ * 
+ * @author: 卢光耀
+ * @date: 2019-07-11 09:49
+ *
+*/
 @Data
-public class StoreGroupQueryParam {
+public class StoreGroupQueryParam extends BasePageParam {
 
     private String groupName;
-
-    private Integer currentPage;
-
-    private Integer pageRows = Page.DEFAULT_PAGE_ROWS;
 
     private boolean needAccurateQuery = Boolean.FALSE;
 

@@ -1,5 +1,7 @@
 package com.vpu.mp.service.shop.config;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+
 /**
  * 服务承诺-开关全局设置
  * @author: 卢光耀
@@ -15,12 +17,12 @@ public class PledgeConfigService extends BaseShopConfigService{
     /**
      * 服务承诺value:0关闭 1打开
      */
-    final public static String V_PLEDGE_COLSE = "0";
+    final public static String V_PLEDGE_CLOSE = "0";
 
     final public static String V_PLEDGE_OPEN = "1";
 
     public String getPledgeConfig(){
-        return this.get(K_PLEDGE,V_PLEDGE_COLSE);
+        return this.get(K_PLEDGE,V_PLEDGE_CLOSE);
     }
 
     public int setPledgeConfig(String v){

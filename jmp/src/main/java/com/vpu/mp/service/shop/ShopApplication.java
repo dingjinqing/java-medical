@@ -17,6 +17,7 @@ import com.vpu.mp.service.shop.image.ImageService;
 import com.vpu.mp.service.shop.member.MemberService;
 import com.vpu.mp.service.shop.member.ScoreCfgService;
 import com.vpu.mp.service.shop.member.TagService;
+import com.vpu.mp.service.shop.operation.RecordAdminActionService;
 import com.vpu.mp.service.shop.order.OrderService;
 import com.vpu.mp.service.shop.overview.OverviewService;
 import com.vpu.mp.service.shop.overview.MallOverviewService;
@@ -55,7 +56,7 @@ public class ShopApplication extends ServiceContainer {
 	public CouponService coupon;	//优惠券管理
 	public RetainService retain;
 	public PageService page;
-
+	public RecordAdminActionService record;
 	/**
 	 * 会员
 	 */

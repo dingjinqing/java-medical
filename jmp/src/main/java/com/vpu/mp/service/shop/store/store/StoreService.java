@@ -155,7 +155,7 @@ public class StoreService extends BaseService {
 				.leftJoin(STORE).on(STORE.GROUP.eq(STORE_GROUP.GROUP_ID));
 		buildParams(select,param);
 		select.groupBy(STORE_GROUP.GROUP_ID).orderBy(STORE_GROUP.CREATE_TIME.asc());
-		if(null != param.getPageRows()) {
+		if(null != param.getCurrentPage()) {
 			return getPageResult(select,param.getCurrentPage(),param.getPageRows(),StoreGroup.class);
 		}else {
 			return getPageResult(select,param.getPageRows(),StoreGroup.class);

@@ -12,6 +12,9 @@ import lombok.Data;
 @Data
 public class JsonResult {
 
+	private static final String LANGUAGE_TYPE_MSG = "message";
+
+
 	/**
 	 * 错误码：非0为错误
 	 */
@@ -45,7 +48,7 @@ public class JsonResult {
 		this.language = language = StringUtils.isBlank(language) ? "zh_CN" : language;
 		this.error = resultCode.getCode();
 		this.content = content;
-		this.message = String.format(Util.translateMessage(language, resultCode.getMessage()),args);
+		this.message = String.format(Util.translateMessage(language, resultCode.getMessage(),LANGUAGE_TYPE_MSG),args);
 		return this;
 	}
 

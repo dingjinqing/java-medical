@@ -4,6 +4,8 @@
 package com.vpu.mp.db.shop;
 
 
+import com.vpu.mp.db.shop.tables.*;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -611,7 +613,7 @@ public class MiniShop_471752 extends SchemaImpl {
      * The table <code>mini_shop_471752.b2c_pledge</code>.
      */
     public final Pledge PLEDGE = com.vpu.mp.db.shop.tables.Pledge.PLEDGE;
-    
+
     /**
      * The table <code>mini_shop_471752.b2c_presale</code>.
      */

@@ -2,15 +2,15 @@ package com.vpu.mp.controller.admin;
 
 import java.util.List;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 
+import com.vpu.mp.service.foundation.PageResult;
+import com.vpu.mp.service.pojo.shop.operation.RecordAdminActionInfo;
+import com.vpu.mp.service.pojo.shop.operation.RecordAdminActionParam;
 import org.springframework.util.StringUtils;
 import org.springframework.validation.annotation.Validated;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import com.vpu.mp.db.main.tables.records.ShopAccountRecord;
 import com.vpu.mp.db.main.tables.records.ShopChildAccountRecord;
@@ -118,6 +118,12 @@ public class AdminBasicConfigController extends AdminBaseController{
         shop().config.pledgeCfg.setPledgeConfig(state);
         return success();
     }
+    @PostMapping(value = "/record/getPage")
+    public JsonResult getRecordAccountActionPage(@RequestParam RecordAdminActionParam param, HttpServletRequest request){
+		String language = StringUtils.isEmpty(request.getHeader("V-Lang"))?"":request.getHeader("V-Lang");
+        PageResult<RecordAdminActionInfo> storeGroupPageResult = shop().record.getRecordPage(param,language);
+        return success(storeGroupPageResult);
+	}
     
     
     
