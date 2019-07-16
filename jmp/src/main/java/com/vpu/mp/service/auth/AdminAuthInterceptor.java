@@ -56,6 +56,11 @@ public class AdminAuthInterceptor extends HandlerInterceptorAdapter {
 			throws Exception {
 		String path = request.getRequestURI();
 		String language = request.getHeader(LANG);
+		String eName=request.getHeader("enName");
+		//按钮的权限时候传
+		String prName=request.getHeader("prName");
+		//需要密码的请求验证密码
+		String passwd=request.getHeader("rolePass");
 
 		// 如果为账户登录例外URL，直接通过
 		if (match(this.accountLoginExcept, path)) {
@@ -79,9 +84,17 @@ public class AdminAuthInterceptor extends HandlerInterceptorAdapter {
 			} else {
 				// 账号和店铺都登录，判断路径权限
 				Integer roleId = saas.shop.getShopAccessRoleId(user.getSysId(), user.getLoginShopId(), user.getSubAccountId());
-				if (!saas.shop.menu.isRoleAccess(roleId, path)) {
+				
+				JsonResultCode jsoCode=	saas.shop.menu.passwdAccess(roleId, path, prName,passwd);
+				
+				if(!saas.shop.menu.apiAccess(roleId, path, eName)) {
 					errorResponse(request, response, URL_NO_AUTH,
 							(new JsonResult()).fail(language, JsonResultCode.CODE_ACCOUNT_ROLE__AUTH_INSUFFICIENT));
+					return false;
+				}
+				if(!jsoCode.equals(JsonResultCode.CODE_SUCCESS)) {
+					errorResponse(request, response, URL_NO_AUTH,
+							(new JsonResult()).fail(language, jsoCode));
 					return false;
 				}
 			}
