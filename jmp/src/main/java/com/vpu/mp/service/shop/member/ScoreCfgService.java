@@ -2,11 +2,14 @@ package com.vpu.mp.service.shop.member;
 
 import static com.vpu.mp.db.shop.tables.UserScoreSet.USER_SCORE_SET;
 import org.jooq.InsertValuesStep3;
+import org.jooq.Record1;
+import org.jooq.Result;
 
 import com.vpu.mp.db.shop.tables.records.UserScoreSetRecord;
+import com.vpu.mp.service.foundation.Util;
 import com.vpu.mp.service.pojo.shop.member.ShopCfgParam;
 import com.vpu.mp.service.shop.config.BaseShopConfigService;
-
+import com.vpu.mp.service.pojo.shop.member.UserScoreSetValue;
 /**
  * 积分配置Service
  * 
@@ -38,6 +41,10 @@ public class ScoreCfgService extends BaseShopConfigService {
 	final public static String SCORE_PAY_NUM = "score_pay_num";
 	final public static String SHOPPING_SCORE ="shopping_score";
 	final public static String SCORE_TYPE = "score_type";
+	final public static String STORE_SCORE = "store_score";
+	final public static String LOGIN_SCORE = "login_score";
+	final public static String SCORE_LOGIN = "score_login";
+	final public static String SIGN_IN_SCORE = "sign_in_score";
 
 	public int setShopCfg(ShopCfgParam param) {
 
@@ -96,15 +103,80 @@ public class ScoreCfgService extends BaseShopConfigService {
 			}
 			
 			if(ONE.equals(scoreType)) {
+				//更新每满多少送多少积分
 				updateRecord(param,BUY_EACH);
 			}
 		}
-
 		
+		//门店买单返送积分开关 on 1 
+		String storeScore = BUTTON_ON.equals(param.getStoreScore()) ? ONE:ZERO;
+		this.set(STORE_SCORE, storeScore);
+		
+		//登录送给积分
+		String loginScore = BUTTON_ON.equals(param.getLoginScore())? ONE:ZERO;
+		this.set(LOGIN_SCORE,loginScore);
+		if(ONE.equals(loginScore)) {
+			//登录送积分开关on
+			this.set(SCORE_LOGIN, param.getScoreLogin());
+		}
+		
+		
+		//签到送积分
+		String signInScore = BUTTON_ON.equals(param.getSignInScore()) ? ONE:ZERO;
+		this.set(SIGN_IN_SCORE, signInScore);
+		setSignScore(signInScore,param.getSignScore());
+	
+
 		return result;
 	}
 
-	
+	/**
+	 * 更新设置签到积分
+	 * @param enable
+	 * @param signScore
+	 */
+	private void setSignScore(String signInScore,String[] signScore) {
+		String enable = signInScore;
+		Byte status = Byte.parseByte(enable);
+		String value=null;
+		if(ONE.equals(signInScore)) {
+			//积分开关打开
+			value = Util.toJson(new UserScoreSetValue(enable,signScore));
+		}else {
+			//从数据库中获取json值
+			String json = getValue("sign_in_score");
+			UserScoreSetValue userScore = Util.parseJson(json,UserScoreSetValue.class);
+			userScore.setEnable(enable);
+			value = Util.toJson(userScore);
+		}
+		deleteRecord(SIGN_IN_SCORE);
+		this.setJsonObject(SIGN_IN_SCORE,status,value);
+	}
+
+	/**
+	 * 获取数据库中set_val3的值
+	 * @param scoreName
+	 * @return
+	 */
+	private String getValue(String scoreName) {
+		Result<Record1<String>>  record = this.db()
+						.select(USER_SCORE_SET.SET_VAL3)
+						.from(USER_SCORE_SET)
+						.where(USER_SCORE_SET.SCORE_NAME.eq(scoreName))
+						.fetch();
+		return (String) record.get(0).get(0);
+	}
+	/**
+	 * 插入到数据库
+	 * @param scoreName
+	 * @param status
+	 * @param value
+	 */
+	private void setJsonObject(String scoreName,Byte status,String value) {
+		this.db().insertInto(USER_SCORE_SET,USER_SCORE_SET.SCORE_NAME,USER_SCORE_SET.STATUS,USER_SCORE_SET.SET_VAL3)
+				.values(scoreName, status,value).execute();
+	}
+
 	/**
 	 * 清空之前的记录
 	 * @param name
