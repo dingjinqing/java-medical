@@ -136,7 +136,7 @@ public class GoodsService extends BaseService {
 
         // 默认显示在售商品
         if (goodsPageListParam.getIsOnSale() == null) {
-            goodsPageListParam.setIsOnSale(IS_ON_SALE_DEFAULT);
+            goodsPageListParam.setIsOnSale(GoodsPageListParam.IS_ON_SALE_DEFAULT);
         }
 
         scs = scs.and(GOODS.IS_ON_SALE.eq(goodsPageListParam.getIsOnSale()));
@@ -186,6 +186,7 @@ public class GoodsService extends BaseService {
                 // 标签是针对平台分类的类型
                 scs = scs.and(GOODS.CAT_ID.in(gatIds));
             } else if (GoodsLabelCoupleTypeEnum.SORTTYPE.getCode().equals(goodsPageListParam.getLabelType())) {
+                // 标签是针对商家分类的类型
                 scs = scs.and(GOODS.SORT_ID.in(gatIds));
             } else {
                 //全部商品情况不用添加过滤条件
@@ -338,10 +339,9 @@ public class GoodsService extends BaseService {
         List<GoodsLabelCouple> list = new ArrayList<>(goodsLabels.size());
 
         for (Integer labelId : goodsLabels) {
-            list.add(new GoodsLabelCouple(null, labelId, goodsId, GoodsLabelCouple.GOODS_LABEL_CODE));
+            list.add(new GoodsLabelCouple(null, labelId, goodsId, GoodsLabelCoupleTypeEnum.GOODSTYPE.getCode()));
         }
         goodsLabelCouple.batchInsert(db, list);
-
     }
 
     /**
@@ -403,7 +403,7 @@ public class GoodsService extends BaseService {
      */
     private SelectConditionStep<?> buildGoodsColumnExistOption(SelectJoinStep<?> select,
                                                                GoodsColumnCheckExistParam goodsColumnExistParam) {
-        SelectConditionStep<?> scs = select.where(GOODS.DEL_FLAG.eq(DelFlag.NORMAL_VALUE));
+        SelectConditionStep<?> scs = select.where(GOODS.DEL_FLAG.eq(DelFlag.NORMAL.getCode()));
 
         if (goodsColumnExistParam.getGoodsName() != null) {
             scs = scs.and(GOODS.GOODS_NAME.eq(goodsColumnExistParam.getGoodsName()));
@@ -429,7 +429,8 @@ public class GoodsService extends BaseService {
      */
     private SelectConditionStep<?> buildGoodsSpecPrdColumnExistOption(SelectJoinStep<?> select,
                                                                       GoodsColumnCheckExistParam goodsColumnExistParam) {
-        SelectConditionStep<?> scs = select.where(GOODS_SPEC_PRODUCT.DEL_FLAG.eq(DelFlag.NORMAL_VALUE));
+        //判断del_flag应该可以去掉，目前删除商品的时候会把sku备份到bak里面，prd表内是真删除
+        SelectConditionStep<?> scs = select.where(GOODS_SPEC_PRODUCT.DEL_FLAG.eq(DelFlag.NORMAL.getCode()));
 
         if (goodsColumnExistParam.getPrdSn() != null) {
             scs = scs.and(GOODS_SPEC_PRODUCT.PRD_SN.eq(goodsColumnExistParam.getPrdSn()));
@@ -490,7 +491,7 @@ public class GoodsService extends BaseService {
                 GoodsLabelCoupleRecord gl = new GoodsLabelCoupleRecord();
                 gl.setLabelId(labelId);
                 gl.setGtaId(goodsId);
-                gl.setType(GoodsLabelCouple.CATEGORY_LABEL_CODE);
+                gl.setType(GoodsLabelCoupleTypeEnum.GOODSTYPE.getCode());
                 records.add(gl);
             }
         }
@@ -622,7 +623,7 @@ public class GoodsService extends BaseService {
 
         goodsSpecProductService.deleteByGoodsIds(db, Arrays.asList(goods.getGoodsId()));
 
-        goods.getGoodsSpecProducts().forEach(goodsSpecProduct -> goodsSpecProduct.setGoodsId(null));
+        goods.getGoodsSpecProducts().forEach(goodsSpecProduct -> goodsSpecProduct.setPrdId(null));
 
         // 用户使用默认的规格数据，则sku只有一条，对应的规格列表为空
         if (goods.getGoodsSpecs() == null || goods.getGoodsSpecs().size() == 0) {

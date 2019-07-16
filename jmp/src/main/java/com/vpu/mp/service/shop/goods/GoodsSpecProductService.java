@@ -84,34 +84,32 @@ public class GoodsSpecProductService {
         for (GoodsSpecProduct goodsSpecProduct : goodsSpecProducts) {
             goodsSpecProduct.setGoodsId(goodsId);
 
-            if (goodsSpecProduct.getPrdSn() == null) {
-                goodsSpecProduct.setPrdSn(Util.randomId());
-            }
+//            if (goodsSpecProduct.getPrdSn() == null) {
+//                goodsSpecProduct.setPrdSn(Util.randomId());
+//            }
 
             String prdDescs = goodsSpecProduct.getPrdDesc();
 
-            if (prdDescs != null && prdDescs.length() > 0) {
+            StringBuilder sb = new StringBuilder();
 
-                StringBuilder sb = new StringBuilder();
+            for (String prdDesc : prdDescs.split(PRD_DESC_DELIMITER)) {
+                String[] s = prdDesc.split(PRD_VAL_DELIMITER);
 
-                for (String prdDesc : prdDescs.split(PRD_DESC_DELIMITER)) {
-                    String[] s = prdDesc.split(PRD_VAL_DELIMITER);
-
-                    //安全检查，防止出现空指针，主要针对他人恶意接口调用。
-                    if (s == null || s.length < 2) {
-                        continue;
-                    }
-                    String spec = s[0], specVal = s[1];
-                    if (sb.length() != 0) {
-                        sb.append(PRD_SPEC_DELIMITER);
-                    }
-
-                    Map<String, Integer> nameIdMap = goodsSpecsMap.get(spec);
-                    sb.append(nameIdMap.get(PRD_SPEC_ID_KEY)).append(PRD_VAL_DELIMITER).append(nameIdMap.get(specVal));
+                //安全检查，防止出现空指针，主要针对他人恶意接口调用。
+                if (s == null || s.length < 2) {
+                    continue;
+                }
+                String spec = s[0], specVal = s[1];
+                if (sb.length() != 0) {
+                    sb.append(PRD_SPEC_DELIMITER);
                 }
 
-                goodsSpecProduct.setPrdSpecs(sb.toString());
+                Map<String, Integer> nameIdMap = goodsSpecsMap.get(spec);
+                sb.append(nameIdMap.get(PRD_SPEC_ID_KEY)).append(PRD_VAL_DELIMITER).append(nameIdMap.get(specVal));
             }
+
+            goodsSpecProduct.setPrdSpecs(sb.toString());
+
 
             insert(db, goodsSpecProduct);
         }

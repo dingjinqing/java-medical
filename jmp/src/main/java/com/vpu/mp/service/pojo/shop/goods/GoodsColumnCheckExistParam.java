@@ -9,7 +9,7 @@ import lombok.Data;
 @Data
 public class GoodsColumnCheckExistParam {
 
-    private ColumnCheckFor columnCheckFor;
+    private ColumnCheckForEnum columnCheckFor;
 
     private Integer goodsId;
     private String goodsName;
@@ -18,7 +18,7 @@ public class GoodsColumnCheckExistParam {
     private Integer prdId;
     private String prdSn;
 
-    public static enum ColumnCheckFor {
+    public static enum ColumnCheckForEnum {
     	//商品信息重复判断
         E_GOODS,
         //商品SKU信息重复判断

@@ -39,6 +39,7 @@ public class AdminGoodsController extends AdminBaseController {
 
     /**
      * 商品新增
+     * 如果商品使用默认的规格形式，也需要根据默认形式设置一个GoodsspecProducts参数
      * @param goods
      * @return
      */
@@ -47,6 +48,10 @@ public class AdminGoodsController extends AdminBaseController {
 
         if (goods.getGoodsSpecProducts() == null || goods.getGoodsSpecProducts().size() == 0) {
             return fail(JsonResultCode.CODE_PARAM_ERROR);
+        }
+
+        if (goods.getGoodsName()==null) {
+            return fail(JsonResultCode.GOODS_SORT_NAME_IS_NULL);
         }
 
         //存在重复值则直接返回
@@ -69,7 +74,7 @@ public class AdminGoodsController extends AdminBaseController {
         GoodsService goodsService = shop().goods;
 
         GoodsColumnCheckExistParam gcep = new GoodsColumnCheckExistParam();
-        gcep.setColumnCheckFor(GoodsColumnCheckExistParam.ColumnCheckFor.E_GOODS);
+        gcep.setColumnCheckFor(GoodsColumnCheckExistParam.ColumnCheckForEnum.E_GOODS);
 
         //检查商品名称是否重复
         gcep.setGoodsName(goods.getGoodsName());
@@ -87,7 +92,7 @@ public class AdminGoodsController extends AdminBaseController {
             gcep.setGoodsSn(null);
         }
 
-        gcep.setColumnCheckFor(GoodsColumnCheckExistParam.ColumnCheckFor.E_GOODS_SPEC_PRODUCTION);
+        gcep.setColumnCheckFor(GoodsColumnCheckExistParam.ColumnCheckForEnum.E_GOODS_SPEC_PRODUCTION);
 
         //检查sku sn是否重复
         for (GoodsSpecProduct goodsSpecProduct : goods.getGoodsSpecProducts()) {
@@ -100,35 +105,9 @@ public class AdminGoodsController extends AdminBaseController {
         }
 
         //检查规格名称是否存在重复
-        List<GoodsSpec> specs = goods.getGoodsSpecs();
-        if (specs == null) {
-            return success();
-        }
-
-        Map<String, Object> specNameRepeatMap = new HashMap<>(specs.size());
-
-        for (GoodsSpec goodsSpec : specs) {
-
-            specNameRepeatMap.put(goodsSpec.getSpecName(), null);
-            //检查同一规格下规格值是否重复
-            List<GoodsSpecVal> goodsSpecVals = goodsSpec.getGoodsSpecVals();
-            if (goodsSpecVals == null) {
-                continue;
-            }
-            Map<String, Object> specValRepeatMap = new HashMap<>(goodsSpecVals.size());
-            for (GoodsSpecVal goodsSpecVal : goodsSpecVals) {
-                specValRepeatMap.put(goodsSpecVal.getSpecValName(), null);
-            }
-            if (specValRepeatMap.size() != goodsSpecVals.size()) {
-                return fail(JsonResultCode.GOODS_SPEC_VAL_REPETITION);
-            }
-        }
-        if (specs.size() != specNameRepeatMap.size()) {
-            return fail(JsonResultCode.GOODS_SPEC_NAME_REPETITION);
-        }
-
-        return success();
+        return isSpecNameOrValueRepeat(goods.getGoodsSpecs());
     }
+
 
     @PostMapping("/api/admin/goods/columns/exist")
     public JsonResult isColumnValueExist(@RequestBody GoodsColumnCheckExistParam goodsColumnCheckExistParam) {
@@ -177,7 +156,7 @@ public class AdminGoodsController extends AdminBaseController {
         GoodsService goodsService = shop().goods;
 
         GoodsColumnCheckExistParam gcep = new GoodsColumnCheckExistParam();
-        gcep.setColumnCheckFor(GoodsColumnCheckExistParam.ColumnCheckFor.E_GOODS);
+        gcep.setColumnCheckFor(GoodsColumnCheckExistParam.ColumnCheckForEnum.E_GOODS);
 
         //检查商品名称是否重复
         gcep.setGoodsName(goods.getGoodsName());
@@ -199,7 +178,7 @@ public class AdminGoodsController extends AdminBaseController {
             gcep.setGoodsId(null);
         }
 
-        gcep.setColumnCheckFor(GoodsColumnCheckExistParam.ColumnCheckFor.E_GOODS_SPEC_PRODUCTION);
+        gcep.setColumnCheckFor(GoodsColumnCheckExistParam.ColumnCheckForEnum.E_GOODS_SPEC_PRODUCTION);
         //检查sku sn是否重复
         for (GoodsSpecProduct goodsSpecProduct : goods.getGoodsSpecProducts()) {
             if (!StringUtils.isBlank(goodsSpecProduct.getPrdSn())) {
@@ -213,7 +192,15 @@ public class AdminGoodsController extends AdminBaseController {
         }
 
         //检查规格名称是否存在重复
-        List<GoodsSpec> specs = goods.getGoodsSpecs();
+       return isSpecNameOrValueRepeat(goods.getGoodsSpecs());
+    }
+
+    /**
+     *  判断商品规格名和规格值是否内部自重复
+     * @param specs
+     * @return
+     */
+    private JsonResult isSpecNameOrValueRepeat(List<GoodsSpec> specs){
         if (specs == null) {
             return success();
         }

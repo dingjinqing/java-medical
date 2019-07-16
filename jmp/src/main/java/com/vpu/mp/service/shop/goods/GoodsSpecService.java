@@ -76,7 +76,7 @@ public class GoodsSpecService {
         Map<String, Map<String, Integer>> goodsSpecsMap = new HashMap<>(goodsSpecs.size());
         for (GoodsSpec goodsSpec : goodsSpecs) {
 
-            Map<String, Integer> goodsSpecsValMap = new HashMap<>(goodsSpec.getGoodsSpecVals().size());
+            Map<String, Integer> goodsSpecsValMap = new HashMap<>(goodsSpec.getGoodsSpecVals().size()+1);
             goodsSpecsValMap.put(PRD_SPEC_ID_KEY, goodsSpec.getSpecId());
 
             for (GoodsSpecVal goodsSpecVal : goodsSpec.getGoodsSpecVals()) {
@@ -96,7 +96,7 @@ public class GoodsSpecService {
      * @param goodsIds
      */
     public void deleteByGoodsIds(DSLContext db, List<Integer> goodsIds) {
-        db.update(SPEC).set(SPEC.DEL_FLAG, DelFlag.DISABLE_VALUE)
+        db.update(SPEC).set(SPEC.DEL_FLAG, DelFlag.DISABLE.getCode())
                 .set(SPEC.SPEC_NAME, DSL.concat(DelFlag.DEL_ITEM_PREFIX)
                         .concat(SPEC.SPEC_ID)
                         .concat(DelFlag.DEL_ITEM_SPLITER)
@@ -104,7 +104,7 @@ public class GoodsSpecService {
                 .where(SPEC.GOODS_ID.in(goodsIds))
                 .execute();
 
-        db.update(SPEC_VALS).set(SPEC_VALS.DEL_FLAG,DelFlag.DISABLE_VALUE)
+        db.update(SPEC_VALS).set(SPEC_VALS.DEL_FLAG,DelFlag.DISABLE.getCode())
                 .set(SPEC_VALS.SPEC_VAL_NAME,DSL.concat(DelFlag.DEL_ITEM_PREFIX)
                         .concat(SPEC_VALS.SPEC_ID)
                         .concat(DelFlag.DEL_ITEM_SPLITER)
