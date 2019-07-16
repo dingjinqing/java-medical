@@ -58,8 +58,8 @@ public class AdminChooseLinkController extends AdminBaseController{
 	 * @return
 	 */
 	@PostMapping(value = "/admin/decorate/page/custom")
-	public JsonResult customPage(ChooseLinkParam param) {
-		PageResult<XcxCustomerPageVo> pageList = shop().chooselink.customPage(param.getPage());
+	public JsonResult customPage(@RequestBody ChooseLinkParam param) {
+		PageResult<XcxCustomerPageVo> pageList = shop().chooselink.customPage(param);
 		return success(pageList);
 	}
 	

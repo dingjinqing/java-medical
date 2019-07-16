@@ -35,6 +35,7 @@ import com.vpu.mp.service.foundation.DelFlag;
 import com.vpu.mp.service.foundation.PageResult;
 import com.vpu.mp.service.pojo.saas.category.SysCatevo;
 import com.vpu.mp.service.pojo.shop.decoration.ActivityVo;
+import com.vpu.mp.service.pojo.shop.decoration.ChooseLinkParam;
 import com.vpu.mp.service.pojo.shop.decoration.GoodsLinkVo;
 import com.vpu.mp.service.pojo.shop.decoration.StoreVo;
 import com.vpu.mp.service.pojo.shop.decoration.XcxCustomerPageVo;
@@ -84,12 +85,13 @@ public class ChooseLinkService extends BaseService {
 		
 	/**
 	 * 自定义页面
-	 * @param page
+	 * @param param
 	 * @return
 	 */
-	public PageResult<XcxCustomerPageVo> customPage(Integer page) {
+	public PageResult<XcxCustomerPageVo> customPage(ChooseLinkParam param) {
 		XcxCustomerPageVo xcx = new XcxCustomerPageVo();
-		xcx.setPageId(page);
+		xcx.setPageId(param.getCurrentPage());
+		xcx.setPageName(param.getPageName());
 		PageResult<XcxCustomerPageVo> list = saas().getShopApp(shopId).mpDecoration.getPageList(xcx);
 		return list;
 	}
@@ -361,6 +363,7 @@ public class ChooseLinkService extends BaseService {
 				.from(SORT)
 				.where(SORT.LEVEL.eq((short) 0))
 				.fetch().into(SortVo.class);
+		
 		//遍历每级分类下子分类
 		for(SortVo level1 : levelList) {
 			List<SortVo> level2List = db().select(SORT.SORT_ID,SORT.SORT_NAME)

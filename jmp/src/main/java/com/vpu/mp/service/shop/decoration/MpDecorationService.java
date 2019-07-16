@@ -60,7 +60,6 @@ public class MpDecorationService extends BaseService {
 	public SelectWhereStep<Record5<Integer, String, Timestamp, Byte, String>> buildOptions(SelectWhereStep<Record5<Integer, String, Timestamp, Byte, String>> select, XcxCustomerPageVo param) {
 		Byte enabled = 1;
 		select.where(XCX_CUSTOMER_PAGE.PAGE_ENABLED.eq(enabled));
-
 		//页面内容
 		if (param.getPageName() != null) {
 			select.where(XCX_CUSTOMER_PAGE.PAGE_NAME.eq(param.getPageName()));
