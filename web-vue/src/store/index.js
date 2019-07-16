@@ -3,11 +3,13 @@ import Vuex from 'vuex'
 import getters from './getters'
 
 import leftnav from './modules/admin/leftNav'
+import leftsysnav from './modules/system/leftsysNav'
 import smallProcedures from './modules/admin/smallProcedures'
 Vue.use(Vuex)
 export default new Vuex.Store({
   modules: {
     leftnav,
+    leftsysnav,
     smallProcedures
   },
   getters

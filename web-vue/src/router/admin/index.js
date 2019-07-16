@@ -10,7 +10,7 @@ const routes = [
         component: r => require.ensure([], () => r(require('@/view/admin/shop_main')), 'shopMain')
       },
       {
-        path: '/admin/home/mian',
+        path: '/admin/home/main',
         name: 'adminMain',
         component: r => require.ensure([], () => r(require('@/view/admin/index/main')), 'adminMain'),
         children: [

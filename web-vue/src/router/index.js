@@ -4,6 +4,7 @@ import Cookies from 'js-cookie'
 // 引入其他路由文件
 import indexRoutes from '@/router/index/index'
 import adminRoutes from '@/router/admin/index'
+import systemRouters from '@/router/system/index'
 Vue.use(Router)
 
 const indexlogin = r => require.ensure([], () => r(require('@/components/index/login')), 'indexLogin')
@@ -24,7 +25,7 @@ const baseRoutes = [
     component: systemlogin
   }
 ]
-const routes = baseRoutes.concat(baseRoutes, indexRoutes, adminRoutes)
+const routes = baseRoutes.concat(baseRoutes, indexRoutes, adminRoutes, systemRouters)
 
 const router = new Router({
   routes

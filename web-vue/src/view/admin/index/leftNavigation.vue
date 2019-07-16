@@ -375,7 +375,6 @@ export default {
       this.flag = this.admin_leftVav_flag
       switch (this.flag) {
         case 'first_web_manage':
-          console.log(123213)
           this.handleLeftNav(this.first_web_manage, false, this.flag)
           break
         case 'first_web_decoration':
