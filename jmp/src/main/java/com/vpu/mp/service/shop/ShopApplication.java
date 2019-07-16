@@ -22,6 +22,7 @@ import com.vpu.mp.service.shop.overview.MallOverviewService;
 import com.vpu.mp.service.shop.store.store.StoreService;
 import com.vpu.mp.service.shop.summary.visit.AmountService;
 import com.vpu.mp.service.shop.summary.visit.DistributionService;
+import com.vpu.mp.service.shop.summary.visit.PageService;
 import com.vpu.mp.service.shop.summary.visit.RetainService;
 import com.vpu.mp.service.shop.version.VersionService;
 
@@ -51,6 +52,7 @@ public class ShopApplication extends ServiceContainer {
 	public AppletsJumpService appletsJump;
 	public MallOverviewService mallOverview;
 	public RetainService retain;
+	public PageService page;
 	/**
 	 * 会员
 	 */
