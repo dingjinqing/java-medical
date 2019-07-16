@@ -1,0 +1,24 @@
+package com.vpu.mp.service.pojo.shop.goods.spec;
+
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.vpu.mp.service.pojo.shop.goods.Goods;
+import com.vpu.mp.service.pojo.shop.goods.label.GoodsLabelListVo;
+import lombok.Getter;
+import lombok.Setter;
+
+import java.util.List;
+
+/**
+ * @author 李晓冰
+ * @date 2019年07月16日
+ */
+@Getter
+@Setter
+public class GoodsVo extends Goods {
+
+    @JsonIgnore
+    private List<Integer> goodsLabels;
+    private List<GoodsLabelListVo> goodsLabelListVos;
+    private String brandName;
+    private String sortName;
+}

@@ -112,4 +112,26 @@ public class GoodsSpecService {
                 .where(SPEC_VALS.GOODS_ID.in(goodsIds))
                 .execute();
     }
+
+    /**
+     *  根据商品Id查找规格
+     * @param db
+     * @param goodsId
+     * @return
+     */
+    public List<GoodsSpec> selectByGoodsId(DSLContext db,Integer goodsId) {
+        List<GoodsSpec> goodsSpecs = db.selectFrom(SPEC)
+                .where(SPEC.GOODS_ID.eq(goodsId)).and(SPEC.DEL_FLAG.eq(DelFlag.NORMAL.getCode()))
+                .fetch().into(GoodsSpec.class);
+
+        Map<Integer, List<GoodsSpecVal>> specIdValMap = db.selectFrom(SPEC_VALS)
+                .where(SPEC_VALS.GOODS_ID.eq(goodsId)).and(SPEC_VALS.DEL_FLAG.eq(DelFlag.NORMAL.getCode()))
+                .fetch().intoGroups(SPEC_VALS.SPEC_ID, GoodsSpecVal.class);
+
+        for (GoodsSpec goodsSpec : goodsSpecs) {
+            goodsSpec.setGoodsSpecVals(specIdValMap.get(goodsSpec.getSpecId()));
+        }
+
+        return goodsSpecs;
+    }
 }

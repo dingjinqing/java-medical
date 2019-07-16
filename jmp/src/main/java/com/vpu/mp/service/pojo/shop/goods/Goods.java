@@ -1,5 +1,7 @@
 package com.vpu.mp.service.pojo.shop.goods;
 
+import com.vpu.mp.service.pojo.shop.goods.label.GoodsLabelListVo;
+import com.vpu.mp.service.pojo.shop.goods.label.GoodsLabelVo;
 import com.vpu.mp.service.pojo.shop.goods.spec.GoodsSpec;
 import com.vpu.mp.service.pojo.shop.goods.spec.GoodsSpecProduct;
 import lombok.Data;

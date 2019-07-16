@@ -14,6 +14,7 @@ import com.vpu.mp.service.pojo.shop.goods.label.GoodsLabelListVo;
 import com.vpu.mp.service.pojo.shop.goods.spec.GoodsSpec;
 import com.vpu.mp.service.pojo.shop.goods.spec.GoodsSpecProduct;
 import com.vpu.mp.service.pojo.shop.goods.spec.GoodsSpecVal;
+import com.vpu.mp.service.pojo.shop.goods.spec.GoodsVo;
 import org.jooq.*;
 import org.jooq.impl.DSL;
 import org.jooq.tools.StringUtils;
@@ -44,7 +45,7 @@ public class GoodsService extends BaseService {
     public GoodsLabelCoupleService goodsLabelCouple;
     public GoodsDeliverTamplateService goodsDeliver;
 
-    private GoodsSpecProductService goodsSpecProductService = new GoodsSpecProductService();
+    protected GoodsSpecProductService goodsSpecProductService;
 
     /**
      * 商品分页查询
@@ -643,5 +644,37 @@ public class GoodsService extends BaseService {
             goodsSpecProductService.insert(db, goods.getGoodsSpecProducts(), goods.getGoodsSpecs(), goods.getGoodsId());
         }
 
+    }
+
+    public GoodsVo select(Integer goodsId) {
+        GoodsVo goodsVo = db().select()
+                .from(GOODS).leftJoin(GOODS_BRAND).on(GOODS.BRAND_ID.eq(GOODS_BRAND.ID))
+                .leftJoin(SORT).on(GOODS.SORT_ID.eq(SORT.SORT_ID))
+                .where(GOODS.GOODS_ID.eq(goodsId)).fetchOne().into(GoodsVo.class);
+        //设置图片
+        List<String> imgs=selectImg(goodsId);
+        goodsVo.setGoodsImgs(imgs);
+        //设置标签
+        Map<Integer, List<GoodsLabelListVo>> gtaLabelMap = goodsLabel.getGtaLabelMap(Arrays.asList(goodsId), GoodsLabelCoupleTypeEnum.GOODSTYPE);
+        goodsVo.setGoodsLabelListVos(gtaLabelMap.get(goodsId));
+
+        //设置sku
+        List<GoodsSpecProduct> goodsSpecProducts = goodsSpecProductService.selectByGoodsId(goodsId);
+        goodsVo.setGoodsSpecProducts(goodsSpecProducts);
+
+        List<GoodsSpec> goodsSpecs = goodsSpecProductService.selectSpecByGoodsId(goodsId);
+        goodsVo.setGoodsSpecs(goodsSpecs);
+
+        return goodsVo;
+    }
+
+    /**
+     *  查找图片
+     * @param goodsId
+     * @return
+     */
+    private List<String> selectImg(Integer goodsId){
+        List<String> fetch = db().select(GOODS_IMG.IMG_URL).from(GOODS_IMG).where(GOODS_IMG.GOODS_ID.eq(goodsId)).fetch(GOODS_IMG.IMG_URL);
+        return fetch;
     }
 }

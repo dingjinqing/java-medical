@@ -1,8 +1,10 @@
 package com.vpu.mp.service.shop.goods;
 
 import com.vpu.mp.db.shop.tables.records.GoodsSpecProductRecord;
+import com.vpu.mp.service.foundation.BaseService;
 import com.vpu.mp.service.foundation.DelFlag;
 import com.vpu.mp.service.foundation.Util;
+import com.vpu.mp.service.pojo.shop.goods.Goods;
 import com.vpu.mp.service.pojo.shop.goods.spec.GoodsSpec;
 import com.vpu.mp.service.pojo.shop.goods.spec.GoodsSpecProduct;
 import org.jooq.DSLContext;
@@ -15,12 +17,13 @@ import java.util.Map;
 
 import static com.vpu.mp.db.shop.Tables.GOODS_SPEC_PRODUCT;
 import static com.vpu.mp.db.shop.Tables.GOODS_SPEC_PRODUCT_BAK;
+import static com.vpu.mp.db.shop.Tables.SPEC;
 
 /**
  * @author 李晓冰
  * @date 2019年07月05日
  */
-public class GoodsSpecProductService {
+public class GoodsSpecProductService extends BaseService {
 
     private GoodsSpecService goodsSpecService = new GoodsSpecService();
     /**
@@ -168,5 +171,20 @@ public class GoodsSpecProductService {
         goodsSpecService.deleteByGoodsIds(db, goodsIds);
     }
 
+    /**
+     * 根据商品id查找对应sku
+     * @param goodsId
+     * @return
+     */
+    public List<GoodsSpecProduct> selectByGoodsId(Integer goodsId) {
+        List<GoodsSpecProduct> goodsSpecProducts = db().selectFrom(GOODS_SPEC_PRODUCT)
+                .where(GOODS_SPEC_PRODUCT.GOODS_ID.eq(goodsId)).fetch().into(GoodsSpecProduct.class);
 
+        return goodsSpecProducts;
+    }
+
+    public List<GoodsSpec> selectSpecByGoodsId(Integer goodsId) {
+        List<GoodsSpec> goodsSpecs = goodsSpecService.selectByGoodsId(db(), goodsId);
+        return goodsSpecs;
+    }
 }
