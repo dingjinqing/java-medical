@@ -2,12 +2,9 @@ package com.vpu.mp.service.shop.summary.visit;
 
 import com.vpu.mp.db.shop.tables.records.MpVisitPageRecord;
 import com.vpu.mp.service.pojo.shop.summary.PageVisitVo;
-import com.vpu.mp.service.pojo.shop.summary.VisitDistributionParam;
 import com.vpu.mp.service.pojo.shop.summary.VisitPageParam;
 import org.jooq.Result;
 import org.jooq.impl.DSL;
-
-import javax.validation.constraints.NotBlank;
 
 import static com.vpu.mp.db.shop.tables.MpVisitPage.MP_VISIT_PAGE;
 
