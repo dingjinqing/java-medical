@@ -245,3 +245,9 @@ alter table `b2c_store_service_category` modify  column `cat_id` int(11) NOT NUL
 ALTER TABLE b2c_service_technician MODIFY COLUMN group_id int(11) DEFAULT 0  COMMENT '技师分组';
 ALTER TABLE b2c_service_technician_group MODIFY COLUMN group_id int(11) NOT NULL AUTO_INCREMENT COMMENT '技师分组';
 
+
+
+-- 黄壮壮 7月16
+-- 修改字段in_time与up_time
+alter table b2c_user_score_set CHANGE COLUMN in_time create_time TIMESTAMP not null DEFAULT CURRENT_TIMESTAMP
+alter table b2c_user_score_set CHANGE COLUMN up_time update_time TIMESTAMP not null DEFAULT CURRENT_TIMESTAMP
