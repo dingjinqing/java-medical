@@ -1,7 +1,7 @@
 package com.vpu.mp.service.pojo.shop.store.service;
 
 import java.math.BigDecimal;
-import java.util.Date;
+import java.sql.Date;
 import java.sql.Timestamp;
 
 import lombok.Data;

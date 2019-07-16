@@ -12,7 +12,7 @@ import lombok.Data;
 @Data
 public class StoreServiceCategoryListQueryVo {
 	
-	private Integer cat_id;
+	private Integer catId;
 	
 	/**
 	 *  分类名称

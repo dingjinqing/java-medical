@@ -4,6 +4,7 @@ import static com.vpu.mp.db.shop.tables.StoreService.STORE_SERVICE;
 import static com.vpu.mp.db.shop.tables.StoreServiceCategory.STORE_SERVICE_CATEGORY;
 
 import java.util.List;
+import java.util.Random;
 
 import org.jooq.Record;
 import org.jooq.SelectWhereStep;
@@ -111,7 +112,30 @@ public class StoreServiceService extends BaseService{
 	 * @return String
 	 */
 	public String createServiceSn(){
-		return null;
+		String serviceSn = "";
+		do {
+            Integer id = db().select(STORE_SERVICE.ID).from(STORE_SERVICE).orderBy(STORE_SERVICE.ID.desc()).limit(1).fetchOne().into(Integer.class);
+            Random random = new Random();
+            int s = random.nextInt(999)%(900) + 100;
+            serviceSn = String.valueOf(id+1) + String.valueOf(s);
+            serviceSn = StringUtils.leftPad(serviceSn, 9, "10");
+            serviceSn = "G" + serviceSn;
+        } while (this.hasServiceSn(serviceSn));
+		return serviceSn;
+	}
+	
+	/**
+	 * 判断该serviceSn是否已存在
+	 * @param serviceSn
+	 * @return
+	 */
+	public Boolean hasServiceSn(String serviceSn) {
+		List<Integer> ids = db().select(STORE_SERVICE.ID).from(STORE_SERVICE).where(STORE_SERVICE.SERVICE_SN.eq(serviceSn)).fetch().into(Integer.class);
+		if(ids.size() > 0) {
+			return true;
+		}else {
+			return false;
+		}
 	}
 	
 	/**
@@ -155,6 +179,7 @@ public class StoreServiceService extends BaseService{
 	 * @return
 	 */
 	public Boolean addStoreService(StoreServiceParam storeService) {
+		storeService.setServiceSn(this.createServiceSn());
 		StoreServiceRecord record = new StoreServiceRecord();
 		this.assign(storeService,record);
 		return db().executeInsert(record) > 0 ? true : false;
