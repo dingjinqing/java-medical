@@ -2,9 +2,9 @@ package com.vpu.mp.service.shop.summary.visit;
 
 import com.vpu.mp.db.shop.tables.records.MpDailyVisitRecord;
 import com.vpu.mp.service.pojo.shop.summary.RefDateRecord;
-import com.vpu.mp.service.pojo.shop.summary.VisitStatisticsParam;
-import com.vpu.mp.service.pojo.shop.summary.VisitStatisticsUnit;
-import com.vpu.mp.service.pojo.shop.summary.VisitStatisticsVo;
+import com.vpu.mp.service.pojo.shop.summary.visit.VisitStatisticsParam;
+import com.vpu.mp.service.pojo.shop.summary.visit.VisitStatisticsUnit;
+import com.vpu.mp.service.pojo.shop.summary.visit.VisitStatisticsVo;
 import org.jooq.Result;
 
 import java.time.LocalDate;
@@ -12,7 +12,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import static com.vpu.mp.db.shop.tables.MpDailyVisit.MP_DAILY_VISIT;
-import static com.vpu.mp.service.pojo.shop.summary.VisitStatisticsParam.*;
+import static com.vpu.mp.service.pojo.shop.summary.visit.VisitStatisticsParam.*;
 
 /**
  * 折线图

@@ -1,4 +1,4 @@
-package com.vpu.mp.service.pojo.shop.summary;
+package com.vpu.mp.service.pojo.shop.summary.visit;
 
 import lombok.Data;
 

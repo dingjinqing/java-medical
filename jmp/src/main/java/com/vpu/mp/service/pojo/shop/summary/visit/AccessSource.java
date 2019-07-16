@@ -1,4 +1,6 @@
-package com.vpu.mp.service.pojo.shop.summary;
+package com.vpu.mp.service.pojo.shop.summary.visit;
+
+import com.vpu.mp.service.pojo.shop.summary.ChartInfo;
 
 /**
  * 访问来源 key 对应关系

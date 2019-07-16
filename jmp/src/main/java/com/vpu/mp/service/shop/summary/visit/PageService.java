@@ -1,9 +1,9 @@
 package com.vpu.mp.service.shop.summary.visit;
 
 import com.vpu.mp.db.shop.tables.records.MpVisitPageRecord;
-import com.vpu.mp.service.pojo.shop.summary.PageVisitVo;
-import com.vpu.mp.service.pojo.shop.summary.PageVisitVoItem;
-import com.vpu.mp.service.pojo.shop.summary.VisitPageParam;
+import com.vpu.mp.service.pojo.shop.summary.visit.PageVisitVo;
+import com.vpu.mp.service.pojo.shop.summary.visit.PageVisitVoItem;
+import com.vpu.mp.service.pojo.shop.summary.visit.VisitPageParam;
 import org.jooq.Result;
 import org.jooq.SortField;
 import org.jooq.impl.DSL;
