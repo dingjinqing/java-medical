@@ -6,7 +6,6 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.vpu.mp.service.foundation.JsonResult;
 import com.vpu.mp.service.pojo.shop.member.ShopCfgParam;
-import com.vpu.mp.service.shop.ShopApplication;
 
 /**
  * 积分管理controller
@@ -19,7 +18,6 @@ public class AdminScoreCfgController extends AdminBaseController {
 	@PostMapping(value="/api/admin/user/score/update")
 	public JsonResult userScoreConfig(@RequestBody ShopCfgParam param) {
 		
-		System.out.println("userScoreConfig method: "+param);
 		//判断积分有效期类型
 		int r = this.shop().score.setShopCfg(param);
 		if(r == -1) {
