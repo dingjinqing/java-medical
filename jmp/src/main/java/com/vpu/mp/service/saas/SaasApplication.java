@@ -6,6 +6,7 @@ import com.vpu.mp.service.foundation.ServiceContainer;
 import com.vpu.mp.service.saas.article.ArticleCategoryService;
 import com.vpu.mp.service.saas.article.ArticleService;
 import com.vpu.mp.service.saas.categroy.SysCateService;
+import com.vpu.mp.service.saas.db.RepairDatabaseService;
 import com.vpu.mp.service.saas.official.OfficialService;
 import com.vpu.mp.service.saas.overview.OverviewService;
 import com.vpu.mp.service.saas.privilege.ChildAccountService;
@@ -37,6 +38,7 @@ public class SaasApplication extends ServiceContainer {
 	public OfficialService official;
 	public SysCateService sysCate;
 	public WechatService wechat;
+	public RepairDatabaseService repairDb;
 	public OverviewService overviewService;
 	
 	protected CityService city;

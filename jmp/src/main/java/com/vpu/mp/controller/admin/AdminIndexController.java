@@ -61,4 +61,19 @@ public class AdminIndexController extends AdminBaseController {
 		}
 	}
 
-}
+@RequestMapping(value = "/admin/test")
+	@ResponseBody
+	public JsonResult test() throws InterruptedException {
+		if("main".equals(this.input("db"))) {
+			saas.repairDb.repairMainDb();
+		}else if("shop_all".equals(this.input("db"))) {
+			saas.repairDb.repairAllShopDb();
+		}
+		else if("shop".equals(this.input("db"))) {
+			Integer shopId = Integer.valueOf(this.input("shop_id"));
+			saas.repairDb.repairShopDb(shopId);
+		}else {
+			return fail();
+		}
+		return success( );
+	}}

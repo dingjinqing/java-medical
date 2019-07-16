@@ -146,7 +146,19 @@ public class ShopService extends BaseService {
 		}
 		return true;
 	}
+	
+	/**
+	 * 得到所有店铺
+	 * @return
+	 */
+	public Result<ShopRecord> getAll() {
+		return db().fetch(SHOP);
+	}
 
+	/**
+	 * 得到可用店铺ID
+	 * @return
+	 */
 	public Integer getCanUseShopId() {
 		int maxNumber = 1000;
 		for (int i = 0; i < maxNumber; i++) {
