@@ -5,6 +5,7 @@ import java.util.List;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 
+import com.vpu.mp.service.foundation.JsonResultMessage;
 import lombok.Data;
 
 /**
@@ -19,8 +20,7 @@ public class BatchMoveImageParam {
      */
     @NotNull
     Integer imageCatId;
-    @NotBlank()
-    List<Integer> imageIds;
+    List<@NotNull Integer> imageIds;
 
 
 }
