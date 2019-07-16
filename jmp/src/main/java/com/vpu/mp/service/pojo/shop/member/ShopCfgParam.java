@@ -66,18 +66,37 @@ public class ShopCfgParam {
 	/**
 	 * 购物满多少送多少
 	 */
-	private String buy[];
-	private String score[];
+	private String[] buy;
+	private String[] score;
 	
 	/**
 	 * 购物每满多少送多少
 	 */
-	private String buyEach[];
-	private String scoreEach[];
+	private String[] buyEach;
+	private String[] scoreEach;
 	
-
+	/**
+	 * 门店买单送积分开关 on
+	 */
+	private String storeScore;
 	
 	
+	/**
+	 * 登录送积分开关 on
+	 */
+	private String loginScore;
+	/**
+	 * 登录送积分，积分额。
+	 */
+	private String scoreLogin;
 	
+	/**
+	 * 签到送积分开关 on
+	 */
+	private String signInScore;
+	/**
+	 * 签到积分
+	 */
+	private String[] signScore;
 	
 }
