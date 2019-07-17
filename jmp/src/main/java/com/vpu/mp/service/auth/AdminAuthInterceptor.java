@@ -53,7 +53,7 @@ public class AdminAuthInterceptor extends HandlerInterceptorAdapter {
 	
 	
 	/**
-	 * 一些特殊的IP，不校验
+	 * 一些特殊的api，不校验
 	 */
 	protected String[] specialExcept= {"/api/admin/checkMenu"};
 
@@ -91,13 +91,15 @@ public class AdminAuthInterceptor extends HandlerInterceptorAdapter {
 				if(match(specialExcept, path)) {
 					return true;
 				}
-				// 账号和店铺都登录，判断路径权限
+				// 账号和店铺都登录，判断权限
 				Integer roleId = saas.shop.getShopAccessRoleId(user.getSysId(), user.getLoginShopId(), user.getSubAccountId());
-				JsonResultCode jsoCode=	saas.shop.menu.passwdAccess(roleId, path, prName,passwd);
+				//判断页面对应api权限
 				if(!saas.shop.menu.apiAccess(roleId, path, eName)) {
 					errorResponse(request, response, URL_NO_AUTH,(new JsonResult()).fail(language, JsonResultCode.CODE_ACCOUNT_ROLE__AUTH_INSUFFICIENT));
 					return false;
 				}
+				//判断功能权限对应（按钮可否点击可对应的密码）
+				JsonResultCode jsoCode=	saas.shop.menu.passwdAccess(roleId, path, prName,passwd);
 				if(!jsoCode.equals(JsonResultCode.CODE_SUCCESS)) {
 					errorResponse(request, response, URL_NO_AUTH,(new JsonResult()).fail(language, jsoCode));
 					return false;
