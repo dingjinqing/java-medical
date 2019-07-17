@@ -14,6 +14,8 @@ import 'swiper/dist/css/swiper.css'
 import 'element-ui/lib/theme-chalk/index.css'
 import 'font-awesome/css/font-awesome.min.css'
 import myMixins from '@/components/mixins.js'
+import VueCropper from 'vue-cropper'
+Vue.use(VueCropper)
 Vue.component('v-distpicker', Distpicker)
 Vue.prototype.$http = new Vue()
 Vue.prototype.$imageHost = localStorage.getItem('V-ImageHost')

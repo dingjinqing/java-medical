@@ -70,7 +70,6 @@
               <el-button
                 type="info"
                 plain
-                size="mini"
                 @click="detailImgsSearch()"
               >{{$t('imgageDalog.search')}}</el-button>
 
@@ -667,6 +666,7 @@ export default {
 }
 .pic_container {
   padding: 10px;
+  padding-right: 23px;
   min-width: 1400px;
 }
 .imageDalog_p_height {
@@ -833,5 +833,10 @@ ul {
 
 .pic_container .el-checkbox {
   margin: 0 10px !important;
+}
+.pic_container .right_top .el-button--info {
+  padding: 7px 15px !important;
+  font-size: 12px !important;
+  border-radius: 3px !important;
 }
 </style>

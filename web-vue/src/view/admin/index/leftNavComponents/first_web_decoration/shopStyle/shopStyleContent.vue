@@ -34,7 +34,7 @@
           v-model="colorRight"
           :defaultColor="defaultColorright"
           v-on:change="headleChangeColorRight"
-          style="right:283px;"
+          style="right:271px;"
         />
       </div>
 
@@ -343,6 +343,7 @@ export default {
 <style scoped>
 .shopStyleContent {
   padding: 10px;
+  padding-right: 23px;
   min-width: 1400px;
   font-size: 14px;
   height: 100%;
@@ -597,6 +598,7 @@ export default {
   z-index: 2;
   bottom: 45px;
   width: 100%;
+  padding: 10px 0;
 }
 .save {
   width: 70px;
@@ -615,7 +617,7 @@ export default {
 <style>
 .m-colorPicker {
   position: absolute !important;
-  right: 307px;
+  right: 294px;
   top: 18px;
   width: 24px !important;
   height: 24px !important;

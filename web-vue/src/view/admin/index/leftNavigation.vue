@@ -429,6 +429,12 @@ export default {
             this.click_nav_index = 3
           }
           break
+        case 'bottomNavigation':
+          if (flag === 'first_web_decoration') {
+            this.nav_index = 4
+            this.click_nav_index = 4
+          }
+          break
         // 概况
         case 'overviewStatistics':
           console.log('sun==' + flag)
@@ -479,6 +485,11 @@ export default {
           case 3:
             this.$router.push({
               name: 'shopStyle'
+            })
+            break
+          case 4:
+            this.$router.push({
+              name: 'bottomNavigation'
             })
             break
         }

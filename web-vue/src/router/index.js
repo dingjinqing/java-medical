@@ -9,6 +9,7 @@ Vue.use(Router)
 
 const indexlogin = r => require.ensure([], () => r(require('@/components/index/login')), 'indexLogin')
 const systemlogin = r => require.ensure([], () => r(require('@/components/system/login')), 'systemLogin')
+const cropperDome = r => require.ensure([], () => r(require('@/components/admin/cropperDome')), 'cropperDome')
 const baseRoutes = [
   {
     path: '/',
@@ -23,6 +24,11 @@ const baseRoutes = [
     path: '/system/login',
     name: 'systemLogin',
     component: systemlogin
+  },
+  {
+    path: '/admin/cropperDome',
+    name: 'cropperDome',
+    component: cropperDome
   }
 ]
 const routes = baseRoutes.concat(baseRoutes, indexRoutes, adminRoutes, systemRouters)
