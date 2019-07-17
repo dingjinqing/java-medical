@@ -42,7 +42,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class PinIntegrationDefine extends TableImpl<PinIntegrationDefineRecord> {
 
-    private static final long serialVersionUID = 605922917;
+    private static final long serialVersionUID = -1523112014;
 
     /**
      * The reference instance of <code>mini_shop_471752.b2c_pin_integration_define</code>
@@ -100,12 +100,12 @@ public class PinIntegrationDefine extends TableImpl<PinIntegrationDefineRecord> 
     /**
      * The column <code>mini_shop_471752.b2c_pin_integration_define.start_time</code>. 开始时间
      */
-    public final TableField<PinIntegrationDefineRecord, Timestamp> START_TIME = createField("start_time", org.jooq.impl.SQLDataType.TIMESTAMP.nullable(false).defaultValue(org.jooq.impl.DSL.inline("0000-00-00 00:00:00", org.jooq.impl.SQLDataType.TIMESTAMP)), this, "开始时间");
+    public final TableField<PinIntegrationDefineRecord, Timestamp> START_TIME = createField("start_time", org.jooq.impl.SQLDataType.TIMESTAMP, this, "开始时间");
 
     /**
      * The column <code>mini_shop_471752.b2c_pin_integration_define.end_time</code>. 结束时间
      */
-    public final TableField<PinIntegrationDefineRecord, Timestamp> END_TIME = createField("end_time", org.jooq.impl.SQLDataType.TIMESTAMP.nullable(false).defaultValue(org.jooq.impl.DSL.inline("0000-00-00 00:00:00", org.jooq.impl.SQLDataType.TIMESTAMP)), this, "结束时间");
+    public final TableField<PinIntegrationDefineRecord, Timestamp> END_TIME = createField("end_time", org.jooq.impl.SQLDataType.TIMESTAMP, this, "结束时间");
 
     /**
      * The column <code>mini_shop_471752.b2c_pin_integration_define.status</code>. 状态： 1：启用  0： 禁用
@@ -120,7 +120,7 @@ public class PinIntegrationDefine extends TableImpl<PinIntegrationDefineRecord> 
     /**
      * The column <code>mini_shop_471752.b2c_pin_integration_define.del_time</code>. 删除时间
      */
-    public final TableField<PinIntegrationDefineRecord, Timestamp> DEL_TIME = createField("del_time", org.jooq.impl.SQLDataType.TIMESTAMP.nullable(false).defaultValue(org.jooq.impl.DSL.inline("0000-00-00 00:00:00", org.jooq.impl.SQLDataType.TIMESTAMP)), this, "删除时间");
+    public final TableField<PinIntegrationDefineRecord, Timestamp> DEL_TIME = createField("del_time", org.jooq.impl.SQLDataType.TIMESTAMP, this, "删除时间");
 
     /**
      * The column <code>mini_shop_471752.b2c_pin_integration_define.inte_remain</code>. 剩余积分

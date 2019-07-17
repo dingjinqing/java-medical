@@ -42,7 +42,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class JoinGroupList extends TableImpl<JoinGroupListRecord> {
 
-    private static final long serialVersionUID = -591480199;
+    private static final long serialVersionUID = -555062642;
 
     /**
      * The reference instance of <code>mini_shop_471752.b2c_join_group_list</code>
@@ -115,17 +115,17 @@ public class JoinGroupList extends TableImpl<JoinGroupListRecord> {
     /**
      * The column <code>mini_shop_471752.b2c_join_group_list.open_time</code>. 开团时间
      */
-    public final TableField<JoinGroupListRecord, Timestamp> OPEN_TIME = createField("open_time", org.jooq.impl.SQLDataType.TIMESTAMP.nullable(false).defaultValue(org.jooq.impl.DSL.inline("0000-00-00 00:00:00", org.jooq.impl.SQLDataType.TIMESTAMP)), this, "开团时间");
+    public final TableField<JoinGroupListRecord, Timestamp> OPEN_TIME = createField("open_time", org.jooq.impl.SQLDataType.TIMESTAMP, this, "开团时间");
 
     /**
      * The column <code>mini_shop_471752.b2c_join_group_list.end_time</code>. 成团时间(达到最小成团数量就记录)
      */
-    public final TableField<JoinGroupListRecord, Timestamp> END_TIME = createField("end_time", org.jooq.impl.SQLDataType.TIMESTAMP.nullable(false).defaultValue(org.jooq.impl.DSL.inline("0000-00-00 00:00:00", org.jooq.impl.SQLDataType.TIMESTAMP)), this, "成团时间(达到最小成团数量就记录)");
+    public final TableField<JoinGroupListRecord, Timestamp> END_TIME = createField("end_time", org.jooq.impl.SQLDataType.TIMESTAMP, this, "成团时间(达到最小成团数量就记录)");
 
     /**
      * The column <code>mini_shop_471752.b2c_join_group_list.draw_time</code>. 开奖时间
      */
-    public final TableField<JoinGroupListRecord, Timestamp> DRAW_TIME = createField("draw_time", org.jooq.impl.SQLDataType.TIMESTAMP.nullable(false).defaultValue(org.jooq.impl.DSL.inline("0000-00-00 00:00:00", org.jooq.impl.SQLDataType.TIMESTAMP)), this, "开奖时间");
+    public final TableField<JoinGroupListRecord, Timestamp> DRAW_TIME = createField("draw_time", org.jooq.impl.SQLDataType.TIMESTAMP, this, "开奖时间");
 
     /**
      * The column <code>mini_shop_471752.b2c_join_group_list.invite_user_num</code>. 邀请用户数

@@ -43,7 +43,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class OrderInfo extends TableImpl<OrderInfoRecord> {
 
-    private static final long serialVersionUID = 1937658505;
+    private static final long serialVersionUID = -1108108056;
 
     /**
      * The reference instance of <code>mini_shop_471752.b2c_order_info</code>
@@ -281,52 +281,52 @@ public class OrderInfo extends TableImpl<OrderInfoRecord> {
     /**
      * The column <code>mini_shop_471752.b2c_order_info.confirm_time</code>. 订单确收收货时间
      */
-    public final TableField<OrderInfoRecord, Timestamp> CONFIRM_TIME = createField("confirm_time", org.jooq.impl.SQLDataType.TIMESTAMP.nullable(false).defaultValue(org.jooq.impl.DSL.inline("0000-00-00 00:00:00", org.jooq.impl.SQLDataType.TIMESTAMP)), this, "订单确收收货时间");
+    public final TableField<OrderInfoRecord, Timestamp> CONFIRM_TIME = createField("confirm_time", org.jooq.impl.SQLDataType.TIMESTAMP, this, "订单确收收货时间");
 
     /**
      * The column <code>mini_shop_471752.b2c_order_info.pay_time</code>. 支付时间
      */
-    public final TableField<OrderInfoRecord, Timestamp> PAY_TIME = createField("pay_time", org.jooq.impl.SQLDataType.TIMESTAMP.nullable(false).defaultValue(org.jooq.impl.DSL.inline("0000-00-00 00:00:00", org.jooq.impl.SQLDataType.TIMESTAMP)), this, "支付时间");
+    public final TableField<OrderInfoRecord, Timestamp> PAY_TIME = createField("pay_time", org.jooq.impl.SQLDataType.TIMESTAMP, this, "支付时间");
 
     /**
      * The column <code>mini_shop_471752.b2c_order_info.shipping_time</code>. 发货时间
      */
-    public final TableField<OrderInfoRecord, Timestamp> SHIPPING_TIME = createField("shipping_time", org.jooq.impl.SQLDataType.TIMESTAMP.nullable(false).defaultValue(org.jooq.impl.DSL.inline("0000-00-00 00:00:00", org.jooq.impl.SQLDataType.TIMESTAMP)), this, "发货时间");
+    public final TableField<OrderInfoRecord, Timestamp> SHIPPING_TIME = createField("shipping_time", org.jooq.impl.SQLDataType.TIMESTAMP, this, "发货时间");
 
     /**
      * The column <code>mini_shop_471752.b2c_order_info.closed_time</code>. 关闭时间
      */
-    public final TableField<OrderInfoRecord, Timestamp> CLOSED_TIME = createField("closed_time", org.jooq.impl.SQLDataType.TIMESTAMP.nullable(false).defaultValue(org.jooq.impl.DSL.inline("0000-00-00 00:00:00", org.jooq.impl.SQLDataType.TIMESTAMP)), this, "关闭时间");
+    public final TableField<OrderInfoRecord, Timestamp> CLOSED_TIME = createField("closed_time", org.jooq.impl.SQLDataType.TIMESTAMP, this, "关闭时间");
 
     /**
      * The column <code>mini_shop_471752.b2c_order_info.cancelled_time</code>. 取消时间
      */
-    public final TableField<OrderInfoRecord, Timestamp> CANCELLED_TIME = createField("cancelled_time", org.jooq.impl.SQLDataType.TIMESTAMP.nullable(false).defaultValue(org.jooq.impl.DSL.inline("0000-00-00 00:00:00", org.jooq.impl.SQLDataType.TIMESTAMP)), this, "取消时间");
+    public final TableField<OrderInfoRecord, Timestamp> CANCELLED_TIME = createField("cancelled_time", org.jooq.impl.SQLDataType.TIMESTAMP, this, "取消时间");
 
     /**
      * The column <code>mini_shop_471752.b2c_order_info.finished_time</code>. 订单完成时间
      */
-    public final TableField<OrderInfoRecord, Timestamp> FINISHED_TIME = createField("finished_time", org.jooq.impl.SQLDataType.TIMESTAMP.nullable(false).defaultValue(org.jooq.impl.DSL.inline("0000-00-00 00:00:00", org.jooq.impl.SQLDataType.TIMESTAMP)), this, "订单完成时间");
+    public final TableField<OrderInfoRecord, Timestamp> FINISHED_TIME = createField("finished_time", org.jooq.impl.SQLDataType.TIMESTAMP, this, "订单完成时间");
 
     /**
      * The column <code>mini_shop_471752.b2c_order_info.return_time</code>. 订单申请退货时间
      */
-    public final TableField<OrderInfoRecord, Timestamp> RETURN_TIME = createField("return_time", org.jooq.impl.SQLDataType.TIMESTAMP.nullable(false).defaultValue(org.jooq.impl.DSL.inline("0000-00-00 00:00:00", org.jooq.impl.SQLDataType.TIMESTAMP)), this, "订单申请退货时间");
+    public final TableField<OrderInfoRecord, Timestamp> RETURN_TIME = createField("return_time", org.jooq.impl.SQLDataType.TIMESTAMP, this, "订单申请退货时间");
 
     /**
      * The column <code>mini_shop_471752.b2c_order_info.return_finish_time</code>. 订单退货完成时间
      */
-    public final TableField<OrderInfoRecord, Timestamp> RETURN_FINISH_TIME = createField("return_finish_time", org.jooq.impl.SQLDataType.TIMESTAMP.nullable(false).defaultValue(org.jooq.impl.DSL.inline("0000-00-00 00:00:00", org.jooq.impl.SQLDataType.TIMESTAMP)), this, "订单退货完成时间");
+    public final TableField<OrderInfoRecord, Timestamp> RETURN_FINISH_TIME = createField("return_finish_time", org.jooq.impl.SQLDataType.TIMESTAMP, this, "订单退货完成时间");
 
     /**
      * The column <code>mini_shop_471752.b2c_order_info.refund_time</code>. 订单申请退款时间
      */
-    public final TableField<OrderInfoRecord, Timestamp> REFUND_TIME = createField("refund_time", org.jooq.impl.SQLDataType.TIMESTAMP.nullable(false).defaultValue(org.jooq.impl.DSL.inline("0000-00-00 00:00:00", org.jooq.impl.SQLDataType.TIMESTAMP)), this, "订单申请退款时间");
+    public final TableField<OrderInfoRecord, Timestamp> REFUND_TIME = createField("refund_time", org.jooq.impl.SQLDataType.TIMESTAMP, this, "订单申请退款时间");
 
     /**
      * The column <code>mini_shop_471752.b2c_order_info.refund_finish_time</code>. 订单退款完成时间
      */
-    public final TableField<OrderInfoRecord, Timestamp> REFUND_FINISH_TIME = createField("refund_finish_time", org.jooq.impl.SQLDataType.TIMESTAMP.nullable(false).defaultValue(org.jooq.impl.DSL.inline("0000-00-00 00:00:00", org.jooq.impl.SQLDataType.TIMESTAMP)), this, "订单退款完成时间");
+    public final TableField<OrderInfoRecord, Timestamp> REFUND_FINISH_TIME = createField("refund_finish_time", org.jooq.impl.SQLDataType.TIMESTAMP, this, "订单退款完成时间");
 
     /**
      * The column <code>mini_shop_471752.b2c_order_info.shipping_no</code>. 快递单号
@@ -546,12 +546,12 @@ public class OrderInfo extends TableImpl<OrderInfoRecord> {
     /**
      * The column <code>mini_shop_471752.b2c_order_info.expire_time</code>. 订单支付过期时间
      */
-    public final TableField<OrderInfoRecord, Timestamp> EXPIRE_TIME = createField("expire_time", org.jooq.impl.SQLDataType.TIMESTAMP.nullable(false).defaultValue(org.jooq.impl.DSL.inline("0000-00-00 00:00:00", org.jooq.impl.SQLDataType.TIMESTAMP)), this, "订单支付过期时间");
+    public final TableField<OrderInfoRecord, Timestamp> EXPIRE_TIME = createField("expire_time", org.jooq.impl.SQLDataType.TIMESTAMP, this, "订单支付过期时间");
 
     /**
      * The column <code>mini_shop_471752.b2c_order_info.del_time</code>. 删除时间
      */
-    public final TableField<OrderInfoRecord, Timestamp> DEL_TIME = createField("del_time", org.jooq.impl.SQLDataType.TIMESTAMP.nullable(false).defaultValue(org.jooq.impl.DSL.inline("0000-00-00 00:00:00", org.jooq.impl.SQLDataType.TIMESTAMP)), this, "删除时间");
+    public final TableField<OrderInfoRecord, Timestamp> DEL_TIME = createField("del_time", org.jooq.impl.SQLDataType.TIMESTAMP, this, "删除时间");
 
     /**
      * The column <code>mini_shop_471752.b2c_order_info.prepay_id</code>. 微信支付id，用于发送模板消息
@@ -621,7 +621,7 @@ public class OrderInfo extends TableImpl<OrderInfoRecord> {
     /**
      * The column <code>mini_shop_471752.b2c_order_info.bk_shipping_time</code>. 定金预计发货时间
      */
-    public final TableField<OrderInfoRecord, Timestamp> BK_SHIPPING_TIME = createField("bk_shipping_time", org.jooq.impl.SQLDataType.TIMESTAMP.nullable(false).defaultValue(org.jooq.impl.DSL.inline("0000-00-00 00:00:00", org.jooq.impl.SQLDataType.TIMESTAMP)), this, "定金预计发货时间");
+    public final TableField<OrderInfoRecord, Timestamp> BK_SHIPPING_TIME = createField("bk_shipping_time", org.jooq.impl.SQLDataType.TIMESTAMP, this, "定金预计发货时间");
 
     /**
      * The column <code>mini_shop_471752.b2c_order_info.bk_return_type</code>. 定金退款状态

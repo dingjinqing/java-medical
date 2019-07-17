@@ -43,7 +43,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class PurchasePriceRule extends TableImpl<PurchasePriceRuleRecord> {
 
-    private static final long serialVersionUID = -1623768275;
+    private static final long serialVersionUID = -2080027450;
 
     /**
      * The reference instance of <code>mini_shop_471752.b2c_purchase_price_rule</code>
@@ -91,7 +91,7 @@ public class PurchasePriceRule extends TableImpl<PurchasePriceRuleRecord> {
     /**
      * The column <code>mini_shop_471752.b2c_purchase_price_rule.del_time</code>. 删除时间
      */
-    public final TableField<PurchasePriceRuleRecord, Timestamp> DEL_TIME = createField("del_time", org.jooq.impl.SQLDataType.TIMESTAMP.nullable(false).defaultValue(org.jooq.impl.DSL.inline("0000-00-00 00:00:00", org.jooq.impl.SQLDataType.TIMESTAMP)), this, "删除时间");
+    public final TableField<PurchasePriceRuleRecord, Timestamp> DEL_TIME = createField("del_time", org.jooq.impl.SQLDataType.TIMESTAMP, this, "删除时间");
 
     /**
      * The column <code>mini_shop_471752.b2c_purchase_price_rule.create_time</code>.

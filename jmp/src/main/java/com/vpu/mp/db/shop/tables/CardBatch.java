@@ -42,7 +42,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class CardBatch extends TableImpl<CardBatchRecord> {
 
-    private static final long serialVersionUID = -122412009;
+    private static final long serialVersionUID = -2043868474;
 
     /**
      * The reference instance of <code>mini_shop_471752.b2c_card_batch</code>
@@ -115,7 +115,7 @@ public class CardBatch extends TableImpl<CardBatchRecord> {
     /**
      * The column <code>mini_shop_471752.b2c_card_batch.del_time</code>. 删除时间
      */
-    public final TableField<CardBatchRecord, Timestamp> DEL_TIME = createField("del_time", org.jooq.impl.SQLDataType.TIMESTAMP.nullable(false).defaultValue(org.jooq.impl.DSL.inline("0000-00-00 00:00:00", org.jooq.impl.SQLDataType.TIMESTAMP)), this, "删除时间");
+    public final TableField<CardBatchRecord, Timestamp> DEL_TIME = createField("del_time", org.jooq.impl.SQLDataType.TIMESTAMP, this, "删除时间");
 
     /**
      * The column <code>mini_shop_471752.b2c_card_batch.create_time</code>.

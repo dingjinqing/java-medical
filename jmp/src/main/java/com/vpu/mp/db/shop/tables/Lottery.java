@@ -42,7 +42,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class Lottery extends TableImpl<LotteryRecord> {
 
-    private static final long serialVersionUID = -2096099052;
+    private static final long serialVersionUID = 2138410180;
 
     /**
      * The reference instance of <code>mini_shop_471752.b2c_lottery</code>
@@ -70,12 +70,12 @@ public class Lottery extends TableImpl<LotteryRecord> {
     /**
      * The column <code>mini_shop_471752.b2c_lottery.start_time</code>. 开始时间
      */
-    public final TableField<LotteryRecord, Timestamp> START_TIME = createField("start_time", org.jooq.impl.SQLDataType.TIMESTAMP.nullable(false).defaultValue(org.jooq.impl.DSL.inline("0000-00-00 00:00:00", org.jooq.impl.SQLDataType.TIMESTAMP)), this, "开始时间");
+    public final TableField<LotteryRecord, Timestamp> START_TIME = createField("start_time", org.jooq.impl.SQLDataType.TIMESTAMP, this, "开始时间");
 
     /**
      * The column <code>mini_shop_471752.b2c_lottery.end_time</code>. 结束时间
      */
-    public final TableField<LotteryRecord, Timestamp> END_TIME = createField("end_time", org.jooq.impl.SQLDataType.TIMESTAMP.nullable(false).defaultValue(org.jooq.impl.DSL.inline("0000-00-00 00:00:00", org.jooq.impl.SQLDataType.TIMESTAMP)), this, "结束时间");
+    public final TableField<LotteryRecord, Timestamp> END_TIME = createField("end_time", org.jooq.impl.SQLDataType.TIMESTAMP, this, "结束时间");
 
     /**
      * The column <code>mini_shop_471752.b2c_lottery.lottery_explain</code>. 抽奖说明

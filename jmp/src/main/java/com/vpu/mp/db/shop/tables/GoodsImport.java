@@ -42,7 +42,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class GoodsImport extends TableImpl<GoodsImportRecord> {
 
-    private static final long serialVersionUID = 227498282;
+    private static final long serialVersionUID = -800756141;
 
     /**
      * The reference instance of <code>mini_shop_471752.b2c_goods_import</code>
@@ -80,7 +80,7 @@ public class GoodsImport extends TableImpl<GoodsImportRecord> {
     /**
      * The column <code>mini_shop_471752.b2c_goods_import.del_time</code>. 删除时间
      */
-    public final TableField<GoodsImportRecord, Timestamp> DEL_TIME = createField("del_time", org.jooq.impl.SQLDataType.TIMESTAMP.nullable(false).defaultValue(org.jooq.impl.DSL.inline("0000-00-00 00:00:00", org.jooq.impl.SQLDataType.TIMESTAMP)), this, "删除时间");
+    public final TableField<GoodsImportRecord, Timestamp> DEL_TIME = createField("del_time", org.jooq.impl.SQLDataType.TIMESTAMP, this, "删除时间");
 
     /**
      * The column <code>mini_shop_471752.b2c_goods_import.import_file_path</code>. 导入源文件地址

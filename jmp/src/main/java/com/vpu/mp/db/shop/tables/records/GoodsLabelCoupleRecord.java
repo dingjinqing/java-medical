@@ -30,7 +30,7 @@ import org.jooq.impl.UpdatableRecordImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class GoodsLabelCoupleRecord extends UpdatableRecordImpl<GoodsLabelCoupleRecord> implements Record6<Integer, Integer, Integer, Byte, Timestamp, Timestamp> {
 
-    private static final long serialVersionUID = 75537091;
+    private static final long serialVersionUID = 704583095;
 
     /**
      * Setter for <code>mini_shop_471752.b2c_goods_label_couple.id</code>. 标签id
@@ -47,14 +47,14 @@ public class GoodsLabelCoupleRecord extends UpdatableRecordImpl<GoodsLabelCouple
     }
 
     /**
-     * Setter for <code>mini_shop_471752.b2c_goods_label_couple.label_id</code>.
+     * Setter for <code>mini_shop_471752.b2c_goods_label_couple.label_id</code>. 标签id
      */
     public void setLabelId(Integer value) {
         set(1, value);
     }
 
     /**
-     * Getter for <code>mini_shop_471752.b2c_goods_label_couple.label_id</code>.
+     * Getter for <code>mini_shop_471752.b2c_goods_label_couple.label_id</code>. 标签id
      */
     public Integer getLabelId() {
         return (Integer) get(1);

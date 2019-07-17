@@ -39,7 +39,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class ServiceMessageRecord extends TableImpl<ServiceMessageRecordRecord> {
 
-    private static final long serialVersionUID = -1090023653;
+    private static final long serialVersionUID = -743706804;
 
     /**
      * The reference instance of <code>mini_shop_471752.b2c_service_message_record</code>
@@ -117,7 +117,7 @@ public class ServiceMessageRecord extends TableImpl<ServiceMessageRecordRecord> 
     /**
      * The column <code>mini_shop_471752.b2c_service_message_record.visit_time</code>. 访问时间
      */
-    public final TableField<ServiceMessageRecordRecord, Timestamp> VISIT_TIME = createField("visit_time", org.jooq.impl.SQLDataType.TIMESTAMP.nullable(false).defaultValue(org.jooq.impl.DSL.inline("0000-00-00 00:00:00", org.jooq.impl.SQLDataType.TIMESTAMP)), this, "访问时间");
+    public final TableField<ServiceMessageRecordRecord, Timestamp> VISIT_TIME = createField("visit_time", org.jooq.impl.SQLDataType.TIMESTAMP, this, "访问时间");
 
     /**
      * The column <code>mini_shop_471752.b2c_service_message_record.template_type</code>. 模板类型 7：商家自定义

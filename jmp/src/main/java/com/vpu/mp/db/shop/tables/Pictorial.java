@@ -42,7 +42,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class Pictorial extends TableImpl<PictorialRecord> {
 
-    private static final long serialVersionUID = -1190216675;
+    private static final long serialVersionUID = -880783278;
 
     /**
      * The reference instance of <code>mini_shop_471752.b2c_pictorial</code>
@@ -95,7 +95,7 @@ public class Pictorial extends TableImpl<PictorialRecord> {
     /**
      * The column <code>mini_shop_471752.b2c_pictorial.del_time</code>.
      */
-    public final TableField<PictorialRecord, Timestamp> DEL_TIME = createField("del_time", org.jooq.impl.SQLDataType.TIMESTAMP.nullable(false).defaultValue(org.jooq.impl.DSL.inline("0000-00-00 00:00:00", org.jooq.impl.SQLDataType.TIMESTAMP)), this, "");
+    public final TableField<PictorialRecord, Timestamp> DEL_TIME = createField("del_time", org.jooq.impl.SQLDataType.TIMESTAMP, this, "");
 
     /**
      * The column <code>mini_shop_471752.b2c_pictorial.create_time</code>.

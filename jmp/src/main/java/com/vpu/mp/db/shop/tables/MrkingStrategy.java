@@ -42,7 +42,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class MrkingStrategy extends TableImpl<MrkingStrategyRecord> {
 
-    private static final long serialVersionUID = -1006354220;
+    private static final long serialVersionUID = 1749842944;
 
     /**
      * The reference instance of <code>mini_shop_471752.b2c_mrking_strategy</code>
@@ -80,12 +80,12 @@ public class MrkingStrategy extends TableImpl<MrkingStrategyRecord> {
     /**
      * The column <code>mini_shop_471752.b2c_mrking_strategy.start_time</code>.
      */
-    public final TableField<MrkingStrategyRecord, Timestamp> START_TIME = createField("start_time", org.jooq.impl.SQLDataType.TIMESTAMP.nullable(false).defaultValue(org.jooq.impl.DSL.inline("0000-00-00 00:00:00", org.jooq.impl.SQLDataType.TIMESTAMP)), this, "");
+    public final TableField<MrkingStrategyRecord, Timestamp> START_TIME = createField("start_time", org.jooq.impl.SQLDataType.TIMESTAMP, this, "");
 
     /**
      * The column <code>mini_shop_471752.b2c_mrking_strategy.end_time</code>.
      */
-    public final TableField<MrkingStrategyRecord, Timestamp> END_TIME = createField("end_time", org.jooq.impl.SQLDataType.TIMESTAMP.nullable(false).defaultValue(org.jooq.impl.DSL.inline("0000-00-00 00:00:00", org.jooq.impl.SQLDataType.TIMESTAMP)), this, "");
+    public final TableField<MrkingStrategyRecord, Timestamp> END_TIME = createField("end_time", org.jooq.impl.SQLDataType.TIMESTAMP, this, "");
 
     /**
      * The column <code>mini_shop_471752.b2c_mrking_strategy.recommend_goods_id</code>. 指定商品可用

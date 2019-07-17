@@ -42,7 +42,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class WxpUnlimitCode extends TableImpl<WxpUnlimitCodeRecord> {
 
-    private static final long serialVersionUID = 2018374801;
+    private static final long serialVersionUID = -1426099658;
 
     /**
      * The reference instance of <code>mini_shop_471752.b2c_wxp_unlimit_code</code>
@@ -100,7 +100,7 @@ public class WxpUnlimitCode extends TableImpl<WxpUnlimitCodeRecord> {
     /**
      * The column <code>mini_shop_471752.b2c_wxp_unlimit_code.del_time</code>. 删除时间
      */
-    public final TableField<WxpUnlimitCodeRecord, Timestamp> DEL_TIME = createField("del_time", org.jooq.impl.SQLDataType.TIMESTAMP.nullable(false).defaultValue(org.jooq.impl.DSL.inline("0000-00-00 00:00:00", org.jooq.impl.SQLDataType.TIMESTAMP)), this, "删除时间");
+    public final TableField<WxpUnlimitCodeRecord, Timestamp> DEL_TIME = createField("del_time", org.jooq.impl.SQLDataType.TIMESTAMP, this, "删除时间");
 
     /**
      * Create a <code>mini_shop_471752.b2c_wxp_unlimit_code</code> table reference

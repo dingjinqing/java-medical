@@ -43,7 +43,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class FriendPromoteActivity extends TableImpl<FriendPromoteActivityRecord> {
 
-    private static final long serialVersionUID = -970129861;
+    private static final long serialVersionUID = -1286700823;
 
     /**
      * The reference instance of <code>mini_shop_471752.b2c_friend_promote_activity</code>
@@ -81,12 +81,12 @@ public class FriendPromoteActivity extends TableImpl<FriendPromoteActivityRecord
     /**
      * The column <code>mini_shop_471752.b2c_friend_promote_activity.start_time</code>. 活动起始时间
      */
-    public final TableField<FriendPromoteActivityRecord, Timestamp> START_TIME = createField("start_time", org.jooq.impl.SQLDataType.TIMESTAMP.nullable(false).defaultValue(org.jooq.impl.DSL.inline("0000-00-00 00:00:00", org.jooq.impl.SQLDataType.TIMESTAMP)), this, "活动起始时间");
+    public final TableField<FriendPromoteActivityRecord, Timestamp> START_TIME = createField("start_time", org.jooq.impl.SQLDataType.TIMESTAMP, this, "活动起始时间");
 
     /**
      * The column <code>mini_shop_471752.b2c_friend_promote_activity.end_time</code>. 活动截止时间
      */
-    public final TableField<FriendPromoteActivityRecord, Timestamp> END_TIME = createField("end_time", org.jooq.impl.SQLDataType.TIMESTAMP.nullable(false).defaultValue(org.jooq.impl.DSL.inline("0000-00-00 00:00:00", org.jooq.impl.SQLDataType.TIMESTAMP)), this, "活动截止时间");
+    public final TableField<FriendPromoteActivityRecord, Timestamp> END_TIME = createField("end_time", org.jooq.impl.SQLDataType.TIMESTAMP, this, "活动截止时间");
 
     /**
      * The column <code>mini_shop_471752.b2c_friend_promote_activity.reward_type</code>. 奖励类型：0赠送商品，1折扣商品，2赠送优惠券

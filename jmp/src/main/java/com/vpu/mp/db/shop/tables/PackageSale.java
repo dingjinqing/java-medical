@@ -43,7 +43,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class PackageSale extends TableImpl<PackageSaleRecord> {
 
-    private static final long serialVersionUID = 50778817;
+    private static final long serialVersionUID = -1763790359;
 
     /**
      * The reference instance of <code>mini_shop_471752.b2c_package_sale</code>
@@ -71,12 +71,12 @@ public class PackageSale extends TableImpl<PackageSaleRecord> {
     /**
      * The column <code>mini_shop_471752.b2c_package_sale.start_time</code>. 开始时间
      */
-    public final TableField<PackageSaleRecord, Timestamp> START_TIME = createField("start_time", org.jooq.impl.SQLDataType.TIMESTAMP.nullable(false).defaultValue(org.jooq.impl.DSL.inline("0000-00-00 00:00:00", org.jooq.impl.SQLDataType.TIMESTAMP)), this, "开始时间");
+    public final TableField<PackageSaleRecord, Timestamp> START_TIME = createField("start_time", org.jooq.impl.SQLDataType.TIMESTAMP, this, "开始时间");
 
     /**
      * The column <code>mini_shop_471752.b2c_package_sale.end_time</code>. 结束时间
      */
-    public final TableField<PackageSaleRecord, Timestamp> END_TIME = createField("end_time", org.jooq.impl.SQLDataType.TIMESTAMP.nullable(false).defaultValue(org.jooq.impl.DSL.inline("0000-00-00 00:00:00", org.jooq.impl.SQLDataType.TIMESTAMP)), this, "结束时间");
+    public final TableField<PackageSaleRecord, Timestamp> END_TIME = createField("end_time", org.jooq.impl.SQLDataType.TIMESTAMP, this, "结束时间");
 
     /**
      * The column <code>mini_shop_471752.b2c_package_sale.total_money</code>. 结算总价格

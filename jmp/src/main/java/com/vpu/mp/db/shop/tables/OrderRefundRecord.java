@@ -43,7 +43,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class OrderRefundRecord extends TableImpl<OrderRefundRecordRecord> {
 
-    private static final long serialVersionUID = 1011836654;
+    private static final long serialVersionUID = 497857614;
 
     /**
      * The reference instance of <code>mini_shop_471752.b2c_order_refund_record</code>
@@ -106,7 +106,7 @@ public class OrderRefundRecord extends TableImpl<OrderRefundRecordRecord> {
     /**
      * The column <code>mini_shop_471752.b2c_order_refund_record.refund_time</code>. 退款时间
      */
-    public final TableField<OrderRefundRecordRecord, Timestamp> REFUND_TIME = createField("refund_time", org.jooq.impl.SQLDataType.TIMESTAMP.nullable(false).defaultValue(org.jooq.impl.DSL.inline("0000-00-00 00:00:00", org.jooq.impl.SQLDataType.TIMESTAMP)), this, "退款时间");
+    public final TableField<OrderRefundRecordRecord, Timestamp> REFUND_TIME = createField("refund_time", org.jooq.impl.SQLDataType.TIMESTAMP, this, "退款时间");
 
     /**
      * The column <code>mini_shop_471752.b2c_order_refund_record.mobile</code>.
@@ -146,7 +146,7 @@ public class OrderRefundRecord extends TableImpl<OrderRefundRecordRecord> {
     /**
      * The column <code>mini_shop_471752.b2c_order_refund_record.finished_time</code>. 出账操作时间
      */
-    public final TableField<OrderRefundRecordRecord, Timestamp> FINISHED_TIME = createField("finished_time", org.jooq.impl.SQLDataType.TIMESTAMP.nullable(false).defaultValue(org.jooq.impl.DSL.inline("0000-00-00 00:00:00", org.jooq.impl.SQLDataType.TIMESTAMP)), this, "出账操作时间");
+    public final TableField<OrderRefundRecordRecord, Timestamp> FINISHED_TIME = createField("finished_time", org.jooq.impl.SQLDataType.TIMESTAMP, this, "出账操作时间");
 
     /**
      * The column <code>mini_shop_471752.b2c_order_refund_record.create_time</code>.

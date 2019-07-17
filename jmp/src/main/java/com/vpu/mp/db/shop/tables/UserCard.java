@@ -42,7 +42,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class UserCard extends TableImpl<UserCardRecord> {
 
-    private static final long serialVersionUID = 1182058374;
+    private static final long serialVersionUID = -1391015012;
 
     /**
      * The reference instance of <code>mini_shop_471752.b2c_user_card</code>
@@ -80,7 +80,7 @@ public class UserCard extends TableImpl<UserCardRecord> {
     /**
      * The column <code>mini_shop_471752.b2c_user_card.expire_time</code>.
      */
-    public final TableField<UserCardRecord, Timestamp> EXPIRE_TIME = createField("expire_time", org.jooq.impl.SQLDataType.TIMESTAMP.nullable(false).defaultValue(org.jooq.impl.DSL.inline("0000-00-00 00:00:00", org.jooq.impl.SQLDataType.TIMESTAMP)), this, "");
+    public final TableField<UserCardRecord, Timestamp> EXPIRE_TIME = createField("expire_time", org.jooq.impl.SQLDataType.TIMESTAMP, this, "");
 
     /**
      * The column <code>mini_shop_471752.b2c_user_card.is_default</code>. 1:默认会员卡
@@ -100,7 +100,7 @@ public class UserCard extends TableImpl<UserCardRecord> {
     /**
      * The column <code>mini_shop_471752.b2c_user_card.activation_time</code>. 激活时间
      */
-    public final TableField<UserCardRecord, Timestamp> ACTIVATION_TIME = createField("activation_time", org.jooq.impl.SQLDataType.TIMESTAMP.nullable(false).defaultValue(org.jooq.impl.DSL.inline("0000-00-00 00:00:00", org.jooq.impl.SQLDataType.TIMESTAMP)), this, "激活时间");
+    public final TableField<UserCardRecord, Timestamp> ACTIVATION_TIME = createField("activation_time", org.jooq.impl.SQLDataType.TIMESTAMP, this, "激活时间");
 
     /**
      * The column <code>mini_shop_471752.b2c_user_card.exchang_surplus</code>. 卡剩余兑换次数

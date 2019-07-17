@@ -43,7 +43,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class MemberCard extends TableImpl<MemberCardRecord> {
 
-    private static final long serialVersionUID = 1162487279;
+    private static final long serialVersionUID = -938146085;
 
     /**
      * The reference instance of <code>mini_shop_471752.b2c_member_card</code>
@@ -111,12 +111,12 @@ public class MemberCard extends TableImpl<MemberCardRecord> {
     /**
      * The column <code>mini_shop_471752.b2c_member_card.start_time</code>. 开始日期
      */
-    public final TableField<MemberCardRecord, Timestamp> START_TIME = createField("start_time", org.jooq.impl.SQLDataType.TIMESTAMP.nullable(false).defaultValue(org.jooq.impl.DSL.inline("0000-00-00 00:00:00", org.jooq.impl.SQLDataType.TIMESTAMP)), this, "开始日期");
+    public final TableField<MemberCardRecord, Timestamp> START_TIME = createField("start_time", org.jooq.impl.SQLDataType.TIMESTAMP, this, "开始日期");
 
     /**
      * The column <code>mini_shop_471752.b2c_member_card.end_time</code>. 结束日期
      */
-    public final TableField<MemberCardRecord, Timestamp> END_TIME = createField("end_time", org.jooq.impl.SQLDataType.TIMESTAMP.nullable(false).defaultValue(org.jooq.impl.DSL.inline("0000-00-00 00:00:00", org.jooq.impl.SQLDataType.TIMESTAMP)), this, "结束日期");
+    public final TableField<MemberCardRecord, Timestamp> END_TIME = createField("end_time", org.jooq.impl.SQLDataType.TIMESTAMP, this, "结束日期");
 
     /**
      * The column <code>mini_shop_471752.b2c_member_card.receive_day</code>. 领取之日起n
@@ -151,12 +151,12 @@ public class MemberCard extends TableImpl<MemberCardRecord> {
     /**
      * The column <code>mini_shop_471752.b2c_member_card.create_time</code>. 添加时间
      */
-    public final TableField<MemberCardRecord, Timestamp> CREATE_TIME = createField("create_time", org.jooq.impl.SQLDataType.TIMESTAMP.nullable(false).defaultValue(org.jooq.impl.DSL.field("CURRENT_TIMESTAMP", org.jooq.impl.SQLDataType.TIMESTAMP)), this, "添加时间");
+    public final TableField<MemberCardRecord, Timestamp> CREATE_TIME = createField("create_time", org.jooq.impl.SQLDataType.TIMESTAMP.defaultValue(org.jooq.impl.DSL.field("CURRENT_TIMESTAMP", org.jooq.impl.SQLDataType.TIMESTAMP)), this, "添加时间");
 
     /**
      * The column <code>mini_shop_471752.b2c_member_card.update_time</code>. 最后修改时间
      */
-    public final TableField<MemberCardRecord, Timestamp> UPDATE_TIME = createField("update_time", org.jooq.impl.SQLDataType.TIMESTAMP.nullable(false).defaultValue(org.jooq.impl.DSL.field("CURRENT_TIMESTAMP", org.jooq.impl.SQLDataType.TIMESTAMP)), this, "最后修改时间");
+    public final TableField<MemberCardRecord, Timestamp> UPDATE_TIME = createField("update_time", org.jooq.impl.SQLDataType.TIMESTAMP.defaultValue(org.jooq.impl.DSL.field("CURRENT_TIMESTAMP", org.jooq.impl.SQLDataType.TIMESTAMP)), this, "最后修改时间");
 
     /**
      * The column <code>mini_shop_471752.b2c_member_card.flag</code>. 1:使用中，2:停止使用

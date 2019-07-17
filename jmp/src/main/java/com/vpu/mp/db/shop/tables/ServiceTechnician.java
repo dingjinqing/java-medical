@@ -42,7 +42,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class ServiceTechnician extends TableImpl<ServiceTechnicianRecord> {
 
-    private static final long serialVersionUID = -81611076;
+    private static final long serialVersionUID = -1267950243;
 
     /**
      * The reference instance of <code>mini_shop_471752.b2c_service_technician</code>
@@ -90,7 +90,7 @@ public class ServiceTechnician extends TableImpl<ServiceTechnicianRecord> {
     /**
      * The column <code>mini_shop_471752.b2c_service_technician.group_id</code>. 技师分组
      */
-    public final TableField<ServiceTechnicianRecord, Integer> GROUP_ID = createField("group_id", org.jooq.impl.SQLDataType.INTEGER.defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.INTEGER)), this, "技师分组");
+    public final TableField<ServiceTechnicianRecord, Integer> GROUP_ID = createField("group_id", org.jooq.impl.SQLDataType.INTEGER.nullable(false).defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.INTEGER)), this, "技师分组");
 
     /**
      * The column <code>mini_shop_471752.b2c_service_technician.service_type</code>. 技师服务项目：0所有，1部分

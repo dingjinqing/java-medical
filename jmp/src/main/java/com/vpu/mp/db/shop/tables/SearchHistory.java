@@ -39,7 +39,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class SearchHistory extends TableImpl<SearchHistoryRecord> {
 
-    private static final long serialVersionUID = 1355778898;
+    private static final long serialVersionUID = -1235334347;
 
     /**
      * The reference instance of <code>mini_shop_471752.b2c_search_history</code>
@@ -82,7 +82,7 @@ public class SearchHistory extends TableImpl<SearchHistoryRecord> {
     /**
      * The column <code>mini_shop_471752.b2c_search_history.del_time</code>. 过期时间
      */
-    public final TableField<SearchHistoryRecord, Timestamp> DEL_TIME = createField("del_time", org.jooq.impl.SQLDataType.TIMESTAMP.nullable(false).defaultValue(org.jooq.impl.DSL.inline("0000-00-00 00:00:00", org.jooq.impl.SQLDataType.TIMESTAMP)), this, "过期时间");
+    public final TableField<SearchHistoryRecord, Timestamp> DEL_TIME = createField("del_time", org.jooq.impl.SQLDataType.TIMESTAMP, this, "过期时间");
 
     /**
      * The column <code>mini_shop_471752.b2c_search_history.create_time</code>.

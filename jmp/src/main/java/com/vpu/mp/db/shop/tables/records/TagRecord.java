@@ -30,73 +30,73 @@ import org.jooq.impl.UpdatableRecordImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class TagRecord extends UpdatableRecordImpl<TagRecord> implements Record5<Integer, String, Timestamp, Timestamp, Byte> {
 
-    private static final long serialVersionUID = 1486420899;
+    private static final long serialVersionUID = 1696919495;
 
     /**
-     * Setter for <code>mini_shop_4891645.b2c_tag.tag_id</code>.
+     * Setter for <code>mini_shop_471752.b2c_tag.tag_id</code>.
      */
     public void setTagId(Integer value) {
         set(0, value);
     }
 
     /**
-     * Getter for <code>mini_shop_4891645.b2c_tag.tag_id</code>.
+     * Getter for <code>mini_shop_471752.b2c_tag.tag_id</code>.
      */
     public Integer getTagId() {
         return (Integer) get(0);
     }
 
     /**
-     * Setter for <code>mini_shop_4891645.b2c_tag.tag_name</code>.
+     * Setter for <code>mini_shop_471752.b2c_tag.tag_name</code>.
      */
     public void setTagName(String value) {
         set(1, value);
     }
 
     /**
-     * Getter for <code>mini_shop_4891645.b2c_tag.tag_name</code>.
+     * Getter for <code>mini_shop_471752.b2c_tag.tag_name</code>.
      */
     public String getTagName() {
         return (String) get(1);
     }
 
     /**
-     * Setter for <code>mini_shop_4891645.b2c_tag.create_time</code>.
+     * Setter for <code>mini_shop_471752.b2c_tag.create_time</code>.
      */
     public void setCreateTime(Timestamp value) {
         set(2, value);
     }
 
     /**
-     * Getter for <code>mini_shop_4891645.b2c_tag.create_time</code>.
+     * Getter for <code>mini_shop_471752.b2c_tag.create_time</code>.
      */
     public Timestamp getCreateTime() {
         return (Timestamp) get(2);
     }
 
     /**
-     * Setter for <code>mini_shop_4891645.b2c_tag.update_time</code>. 记录修改时间
+     * Setter for <code>mini_shop_471752.b2c_tag.update_time</code>. 最后修改时间
      */
     public void setUpdateTime(Timestamp value) {
         set(3, value);
     }
 
     /**
-     * Getter for <code>mini_shop_4891645.b2c_tag.update_time</code>. 记录修改时间
+     * Getter for <code>mini_shop_471752.b2c_tag.update_time</code>. 最后修改时间
      */
     public Timestamp getUpdateTime() {
         return (Timestamp) get(3);
     }
 
     /**
-     * Setter for <code>mini_shop_4891645.b2c_tag.is_delete</code>. 0未删除，1已删除
+     * Setter for <code>mini_shop_471752.b2c_tag.is_delete</code>. 0未删除，1已删除
      */
     public void setIsDelete(Byte value) {
         set(4, value);
     }
 
     /**
-     * Getter for <code>mini_shop_4891645.b2c_tag.is_delete</code>. 0未删除，1已删除
+     * Getter for <code>mini_shop_471752.b2c_tag.is_delete</code>. 0未删除，1已删除
      */
     public Byte getIsDelete() {
         return (Byte) get(4);

@@ -42,7 +42,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class FormPage extends TableImpl<FormPageRecord> {
 
-    private static final long serialVersionUID = -260290122;
+    private static final long serialVersionUID = -1589440686;
 
     /**
      * The reference instance of <code>mini_shop_471752.b2c_form_page</code>
@@ -90,12 +90,12 @@ public class FormPage extends TableImpl<FormPageRecord> {
     /**
      * The column <code>mini_shop_471752.b2c_form_page.start_time</code>. 开始时间
      */
-    public final TableField<FormPageRecord, Timestamp> START_TIME = createField("start_time", org.jooq.impl.SQLDataType.TIMESTAMP.nullable(false).defaultValue(org.jooq.impl.DSL.inline("0000-00-00 00:00:00", org.jooq.impl.SQLDataType.TIMESTAMP)), this, "开始时间");
+    public final TableField<FormPageRecord, Timestamp> START_TIME = createField("start_time", org.jooq.impl.SQLDataType.TIMESTAMP, this, "开始时间");
 
     /**
      * The column <code>mini_shop_471752.b2c_form_page.end_time</code>. 结束时间
      */
-    public final TableField<FormPageRecord, Timestamp> END_TIME = createField("end_time", org.jooq.impl.SQLDataType.TIMESTAMP.nullable(false).defaultValue(org.jooq.impl.DSL.inline("0000-00-00 00:00:00", org.jooq.impl.SQLDataType.TIMESTAMP)), this, "结束时间");
+    public final TableField<FormPageRecord, Timestamp> END_TIME = createField("end_time", org.jooq.impl.SQLDataType.TIMESTAMP, this, "结束时间");
 
     /**
      * The column <code>mini_shop_471752.b2c_form_page.is_forever_valid</code>. 1永久有效，0期限内有效

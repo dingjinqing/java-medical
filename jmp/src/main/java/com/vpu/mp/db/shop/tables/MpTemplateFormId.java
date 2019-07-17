@@ -42,7 +42,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class MpTemplateFormId extends TableImpl<MpTemplateFormIdRecord> {
 
-    private static final long serialVersionUID = -1056846570;
+    private static final long serialVersionUID = -1033775226;
 
     /**
      * The reference instance of <code>mini_shop_471752.b2c_mp_template_form_id</code>
@@ -115,12 +115,12 @@ public class MpTemplateFormId extends TableImpl<MpTemplateFormIdRecord> {
     /**
      * The column <code>mini_shop_471752.b2c_mp_template_form_id.user_visit_time</code>. 用户点击访问时间
      */
-    public final TableField<MpTemplateFormIdRecord, Timestamp> USER_VISIT_TIME = createField("user_visit_time", org.jooq.impl.SQLDataType.TIMESTAMP.nullable(false).defaultValue(org.jooq.impl.DSL.inline("0000-00-00 00:00:00", org.jooq.impl.SQLDataType.TIMESTAMP)), this, "用户点击访问时间");
+    public final TableField<MpTemplateFormIdRecord, Timestamp> USER_VISIT_TIME = createField("user_visit_time", org.jooq.impl.SQLDataType.TIMESTAMP, this, "用户点击访问时间");
 
     /**
      * The column <code>mini_shop_471752.b2c_mp_template_form_id.use_time</code>. 使用时间
      */
-    public final TableField<MpTemplateFormIdRecord, Timestamp> USE_TIME = createField("use_time", org.jooq.impl.SQLDataType.TIMESTAMP.nullable(false).defaultValue(org.jooq.impl.DSL.inline("0000-00-00 00:00:00", org.jooq.impl.SQLDataType.TIMESTAMP)), this, "使用时间");
+    public final TableField<MpTemplateFormIdRecord, Timestamp> USE_TIME = createField("use_time", org.jooq.impl.SQLDataType.TIMESTAMP, this, "使用时间");
 
     /**
      * The column <code>mini_shop_471752.b2c_mp_template_form_id.create_time</code>.

@@ -42,7 +42,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class Gift extends TableImpl<GiftRecord> {
 
-    private static final long serialVersionUID = 38795140;
+    private static final long serialVersionUID = -743757135;
 
     /**
      * The reference instance of <code>mini_shop_471752.b2c_gift</code>
@@ -75,12 +75,12 @@ public class Gift extends TableImpl<GiftRecord> {
     /**
      * The column <code>mini_shop_471752.b2c_gift.start_time</code>. 开始时间
      */
-    public final TableField<GiftRecord, Timestamp> START_TIME = createField("start_time", org.jooq.impl.SQLDataType.TIMESTAMP.nullable(false).defaultValue(org.jooq.impl.DSL.inline("0000-00-00 00:00:00", org.jooq.impl.SQLDataType.TIMESTAMP)), this, "开始时间");
+    public final TableField<GiftRecord, Timestamp> START_TIME = createField("start_time", org.jooq.impl.SQLDataType.TIMESTAMP, this, "开始时间");
 
     /**
      * The column <code>mini_shop_471752.b2c_gift.end_time</code>. 结束时间
      */
-    public final TableField<GiftRecord, Timestamp> END_TIME = createField("end_time", org.jooq.impl.SQLDataType.TIMESTAMP.nullable(false).defaultValue(org.jooq.impl.DSL.inline("0000-00-00 00:00:00", org.jooq.impl.SQLDataType.TIMESTAMP)), this, "结束时间");
+    public final TableField<GiftRecord, Timestamp> END_TIME = createField("end_time", org.jooq.impl.SQLDataType.TIMESTAMP, this, "结束时间");
 
     /**
      * The column <code>mini_shop_471752.b2c_gift.goods_id</code>. 活动商品
@@ -110,7 +110,7 @@ public class Gift extends TableImpl<GiftRecord> {
     /**
      * The column <code>mini_shop_471752.b2c_gift.del_time</code>. 删除时间
      */
-    public final TableField<GiftRecord, Timestamp> DEL_TIME = createField("del_time", org.jooq.impl.SQLDataType.TIMESTAMP.nullable(false).defaultValue(org.jooq.impl.DSL.inline("0000-00-00 00:00:00", org.jooq.impl.SQLDataType.TIMESTAMP)), this, "删除时间");
+    public final TableField<GiftRecord, Timestamp> DEL_TIME = createField("del_time", org.jooq.impl.SQLDataType.TIMESTAMP, this, "删除时间");
 
     /**
      * The column <code>mini_shop_471752.b2c_gift.create_time</code>.

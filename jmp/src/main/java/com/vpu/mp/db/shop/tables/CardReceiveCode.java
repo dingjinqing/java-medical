@@ -42,7 +42,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class CardReceiveCode extends TableImpl<CardReceiveCodeRecord> {
 
-    private static final long serialVersionUID = -153224731;
+    private static final long serialVersionUID = -250226137;
 
     /**
      * The reference instance of <code>mini_shop_471752.b2c_card_receive_code</code>
@@ -100,7 +100,7 @@ public class CardReceiveCode extends TableImpl<CardReceiveCodeRecord> {
     /**
      * The column <code>mini_shop_471752.b2c_card_receive_code.receive_time</code>. 领取时间
      */
-    public final TableField<CardReceiveCodeRecord, Timestamp> RECEIVE_TIME = createField("receive_time", org.jooq.impl.SQLDataType.TIMESTAMP.nullable(false).defaultValue(org.jooq.impl.DSL.inline("0000-00-00 00:00:00", org.jooq.impl.SQLDataType.TIMESTAMP)), this, "领取时间");
+    public final TableField<CardReceiveCodeRecord, Timestamp> RECEIVE_TIME = createField("receive_time", org.jooq.impl.SQLDataType.TIMESTAMP, this, "领取时间");
 
     /**
      * The column <code>mini_shop_471752.b2c_card_receive_code.error_msg</code>. 错误说明
@@ -115,7 +115,7 @@ public class CardReceiveCode extends TableImpl<CardReceiveCodeRecord> {
     /**
      * The column <code>mini_shop_471752.b2c_card_receive_code.del_time</code>. 删除时间
      */
-    public final TableField<CardReceiveCodeRecord, Timestamp> DEL_TIME = createField("del_time", org.jooq.impl.SQLDataType.TIMESTAMP.nullable(false).defaultValue(org.jooq.impl.DSL.inline("0000-00-00 00:00:00", org.jooq.impl.SQLDataType.TIMESTAMP)), this, "删除时间");
+    public final TableField<CardReceiveCodeRecord, Timestamp> DEL_TIME = createField("del_time", org.jooq.impl.SQLDataType.TIMESTAMP, this, "删除时间");
 
     /**
      * The column <code>mini_shop_471752.b2c_card_receive_code.create_time</code>.

@@ -42,7 +42,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class PinGroupDefine extends TableImpl<PinGroupDefineRecord> {
 
-    private static final long serialVersionUID = 1403828823;
+    private static final long serialVersionUID = 1638177231;
 
     /**
      * The reference instance of <code>mini_shop_471752.b2c_pin_group_define</code>
@@ -100,12 +100,12 @@ public class PinGroupDefine extends TableImpl<PinGroupDefineRecord> {
     /**
      * The column <code>mini_shop_471752.b2c_pin_group_define.start_time</code>. 开始时间
      */
-    public final TableField<PinGroupDefineRecord, Timestamp> START_TIME = createField("start_time", org.jooq.impl.SQLDataType.TIMESTAMP.nullable(false).defaultValue(org.jooq.impl.DSL.inline("0000-00-00 00:00:00", org.jooq.impl.SQLDataType.TIMESTAMP)), this, "开始时间");
+    public final TableField<PinGroupDefineRecord, Timestamp> START_TIME = createField("start_time", org.jooq.impl.SQLDataType.TIMESTAMP, this, "开始时间");
 
     /**
      * The column <code>mini_shop_471752.b2c_pin_group_define.end_time</code>. 结束时间
      */
-    public final TableField<PinGroupDefineRecord, Timestamp> END_TIME = createField("end_time", org.jooq.impl.SQLDataType.TIMESTAMP.nullable(false).defaultValue(org.jooq.impl.DSL.inline("0000-00-00 00:00:00", org.jooq.impl.SQLDataType.TIMESTAMP)), this, "结束时间");
+    public final TableField<PinGroupDefineRecord, Timestamp> END_TIME = createField("end_time", org.jooq.impl.SQLDataType.TIMESTAMP, this, "结束时间");
 
     /**
      * The column <code>mini_shop_471752.b2c_pin_group_define.stock</code>. 总库存

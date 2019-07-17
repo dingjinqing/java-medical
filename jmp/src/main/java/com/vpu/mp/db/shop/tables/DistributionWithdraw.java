@@ -43,7 +43,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class DistributionWithdraw extends TableImpl<DistributionWithdrawRecord> {
 
-    private static final long serialVersionUID = 1591212718;
+    private static final long serialVersionUID = -346134206;
 
     /**
      * The reference instance of <code>mini_shop_471752.b2c_distribution_withdraw</code>
@@ -116,27 +116,27 @@ public class DistributionWithdraw extends TableImpl<DistributionWithdrawRecord> 
     /**
      * The column <code>mini_shop_471752.b2c_distribution_withdraw.check_time</code>. 审核时间
      */
-    public final TableField<DistributionWithdrawRecord, Timestamp> CHECK_TIME = createField("check_time", org.jooq.impl.SQLDataType.TIMESTAMP.nullable(false).defaultValue(org.jooq.impl.DSL.inline("0000-00-00 00:00:00", org.jooq.impl.SQLDataType.TIMESTAMP)), this, "审核时间");
+    public final TableField<DistributionWithdrawRecord, Timestamp> CHECK_TIME = createField("check_time", org.jooq.impl.SQLDataType.TIMESTAMP, this, "审核时间");
 
     /**
      * The column <code>mini_shop_471752.b2c_distribution_withdraw.refuse_time</code>. 驳回时间
      */
-    public final TableField<DistributionWithdrawRecord, Timestamp> REFUSE_TIME = createField("refuse_time", org.jooq.impl.SQLDataType.TIMESTAMP.nullable(false).defaultValue(org.jooq.impl.DSL.inline("0000-00-00 00:00:00", org.jooq.impl.SQLDataType.TIMESTAMP)), this, "驳回时间");
+    public final TableField<DistributionWithdrawRecord, Timestamp> REFUSE_TIME = createField("refuse_time", org.jooq.impl.SQLDataType.TIMESTAMP, this, "驳回时间");
 
     /**
      * The column <code>mini_shop_471752.b2c_distribution_withdraw.billing_time</code>. 出账时间
      */
-    public final TableField<DistributionWithdrawRecord, Timestamp> BILLING_TIME = createField("billing_time", org.jooq.impl.SQLDataType.TIMESTAMP.nullable(false).defaultValue(org.jooq.impl.DSL.inline("0000-00-00 00:00:00", org.jooq.impl.SQLDataType.TIMESTAMP)), this, "出账时间");
+    public final TableField<DistributionWithdrawRecord, Timestamp> BILLING_TIME = createField("billing_time", org.jooq.impl.SQLDataType.TIMESTAMP, this, "出账时间");
 
     /**
      * The column <code>mini_shop_471752.b2c_distribution_withdraw.fail_time</code>. 失败时间
      */
-    public final TableField<DistributionWithdrawRecord, Timestamp> FAIL_TIME = createField("fail_time", org.jooq.impl.SQLDataType.TIMESTAMP.nullable(false).defaultValue(org.jooq.impl.DSL.inline("0000-00-00 00:00:00", org.jooq.impl.SQLDataType.TIMESTAMP)), this, "失败时间");
+    public final TableField<DistributionWithdrawRecord, Timestamp> FAIL_TIME = createField("fail_time", org.jooq.impl.SQLDataType.TIMESTAMP, this, "失败时间");
 
     /**
      * The column <code>mini_shop_471752.b2c_distribution_withdraw.desc_time</code>. 备注时间
      */
-    public final TableField<DistributionWithdrawRecord, Timestamp> DESC_TIME = createField("desc_time", org.jooq.impl.SQLDataType.TIMESTAMP.nullable(false).defaultValue(org.jooq.impl.DSL.inline("0000-00-00 00:00:00", org.jooq.impl.SQLDataType.TIMESTAMP)), this, "备注时间");
+    public final TableField<DistributionWithdrawRecord, Timestamp> DESC_TIME = createField("desc_time", org.jooq.impl.SQLDataType.TIMESTAMP, this, "备注时间");
 
     /**
      * The column <code>mini_shop_471752.b2c_distribution_withdraw.del_flag</code>.
@@ -146,7 +146,7 @@ public class DistributionWithdraw extends TableImpl<DistributionWithdrawRecord> 
     /**
      * The column <code>mini_shop_471752.b2c_distribution_withdraw.del_time</code>. 删除时间
      */
-    public final TableField<DistributionWithdrawRecord, Timestamp> DEL_TIME = createField("del_time", org.jooq.impl.SQLDataType.TIMESTAMP.nullable(false).defaultValue(org.jooq.impl.DSL.inline("0000-00-00 00:00:00", org.jooq.impl.SQLDataType.TIMESTAMP)), this, "删除时间");
+    public final TableField<DistributionWithdrawRecord, Timestamp> DEL_TIME = createField("del_time", org.jooq.impl.SQLDataType.TIMESTAMP, this, "删除时间");
 
     /**
      * The column <code>mini_shop_471752.b2c_distribution_withdraw.withdraw_source</code>. 申请时提现配置

@@ -43,7 +43,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class IncomeOutcomeDetail extends TableImpl<IncomeOutcomeDetailRecord> {
 
-    private static final long serialVersionUID = -441559420;
+    private static final long serialVersionUID = 369946442;
 
     /**
      * The reference instance of <code>mini_shop_471752.b2c_income_outcome_detail</code>
@@ -96,7 +96,7 @@ public class IncomeOutcomeDetail extends TableImpl<IncomeOutcomeDetailRecord> {
     /**
      * The column <code>mini_shop_471752.b2c_income_outcome_detail.pay_act_time</code>. 交易付款时间
      */
-    public final TableField<IncomeOutcomeDetailRecord, Timestamp> PAY_ACT_TIME = createField("pay_act_time", org.jooq.impl.SQLDataType.TIMESTAMP.nullable(false).defaultValue(org.jooq.impl.DSL.inline("0000-00-00 00:00:00", org.jooq.impl.SQLDataType.TIMESTAMP)), this, "交易付款时间");
+    public final TableField<IncomeOutcomeDetailRecord, Timestamp> PAY_ACT_TIME = createField("pay_act_time", org.jooq.impl.SQLDataType.TIMESTAMP, this, "交易付款时间");
 
     /**
      * The column <code>mini_shop_471752.b2c_income_outcome_detail.income_amount</code>. 收入金额
@@ -136,7 +136,7 @@ public class IncomeOutcomeDetail extends TableImpl<IncomeOutcomeDetailRecord> {
     /**
      * The column <code>mini_shop_471752.b2c_income_outcome_detail.update_order_status_time</code>. 更新订单状态时间
      */
-    public final TableField<IncomeOutcomeDetailRecord, Timestamp> UPDATE_ORDER_STATUS_TIME = createField("update_order_status_time", org.jooq.impl.SQLDataType.TIMESTAMP.nullable(false).defaultValue(org.jooq.impl.DSL.inline("0000-00-00 00:00:00", org.jooq.impl.SQLDataType.TIMESTAMP)), this, "更新订单状态时间");
+    public final TableField<IncomeOutcomeDetailRecord, Timestamp> UPDATE_ORDER_STATUS_TIME = createField("update_order_status_time", org.jooq.impl.SQLDataType.TIMESTAMP, this, "更新订单状态时间");
 
     /**
      * The column <code>mini_shop_471752.b2c_income_outcome_detail.pay_type</code>. 支付类型 1:收入，2：支出

@@ -43,7 +43,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class UserRebatePrice extends TableImpl<UserRebatePriceRecord> {
 
-    private static final long serialVersionUID = -1844236330;
+    private static final long serialVersionUID = 972660153;
 
     /**
      * The reference instance of <code>mini_shop_471752.b2c_user_rebate_price</code>
@@ -86,7 +86,7 @@ public class UserRebatePrice extends TableImpl<UserRebatePriceRecord> {
     /**
      * The column <code>mini_shop_471752.b2c_user_rebate_price.expire_time</code>. 过期时间
      */
-    public final TableField<UserRebatePriceRecord, Timestamp> EXPIRE_TIME = createField("expire_time", org.jooq.impl.SQLDataType.TIMESTAMP.nullable(false).defaultValue(org.jooq.impl.DSL.inline("0000-00-00 00:00:00", org.jooq.impl.SQLDataType.TIMESTAMP)), this, "过期时间");
+    public final TableField<UserRebatePriceRecord, Timestamp> EXPIRE_TIME = createField("expire_time", org.jooq.impl.SQLDataType.TIMESTAMP, this, "过期时间");
 
     /**
      * The column <code>mini_shop_471752.b2c_user_rebate_price.create_time</code>.

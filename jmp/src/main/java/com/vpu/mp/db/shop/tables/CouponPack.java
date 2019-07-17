@@ -43,7 +43,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class CouponPack extends TableImpl<CouponPackRecord> {
 
-    private static final long serialVersionUID = -1006726316;
+    private static final long serialVersionUID = 1507543310;
 
     /**
      * The reference instance of <code>mini_shop_471752.b2c_coupon_pack</code>
@@ -136,7 +136,7 @@ public class CouponPack extends TableImpl<CouponPackRecord> {
     /**
      * The column <code>mini_shop_471752.b2c_coupon_pack.del_time</code>.
      */
-    public final TableField<CouponPackRecord, Timestamp> DEL_TIME = createField("del_time", org.jooq.impl.SQLDataType.TIMESTAMP.nullable(false).defaultValue(org.jooq.impl.DSL.field("CURRENT_TIMESTAMP", org.jooq.impl.SQLDataType.TIMESTAMP)), this, "");
+    public final TableField<CouponPackRecord, Timestamp> DEL_TIME = createField("del_time", org.jooq.impl.SQLDataType.TIMESTAMP, this, "");
 
     /**
      * Create a <code>mini_shop_471752.b2c_coupon_pack</code> table reference

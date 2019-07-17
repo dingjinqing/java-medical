@@ -42,7 +42,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class DistributorGroup extends TableImpl<DistributorGroupRecord> {
 
-    private static final long serialVersionUID = 879775312;
+    private static final long serialVersionUID = 1399201875;
 
     /**
      * The reference instance of <code>mini_shop_471752.b2c_distributor_group</code>
@@ -80,7 +80,7 @@ public class DistributorGroup extends TableImpl<DistributorGroupRecord> {
     /**
      * The column <code>mini_shop_471752.b2c_distributor_group.del_time</code>. 删除时间
      */
-    public final TableField<DistributorGroupRecord, Timestamp> DEL_TIME = createField("del_time", org.jooq.impl.SQLDataType.TIMESTAMP.nullable(false).defaultValue(org.jooq.impl.DSL.inline("0000-00-00 00:00:00", org.jooq.impl.SQLDataType.TIMESTAMP)), this, "删除时间");
+    public final TableField<DistributorGroupRecord, Timestamp> DEL_TIME = createField("del_time", org.jooq.impl.SQLDataType.TIMESTAMP, this, "删除时间");
 
     /**
      * The column <code>mini_shop_471752.b2c_distributor_group.create_time</code>.

@@ -42,7 +42,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class CouponActivityRecord extends TableImpl<CouponActivityRecordRecord> {
 
-    private static final long serialVersionUID = 681652311;
+    private static final long serialVersionUID = 899724268;
 
     /**
      * The reference instance of <code>mini_shop_471752.b2c_coupon_activity_record</code>
@@ -75,7 +75,7 @@ public class CouponActivityRecord extends TableImpl<CouponActivityRecordRecord> 
     /**
      * The column <code>mini_shop_471752.b2c_coupon_activity_record.receive_time</code>. 领取时间
      */
-    public final TableField<CouponActivityRecordRecord, Timestamp> RECEIVE_TIME = createField("receive_time", org.jooq.impl.SQLDataType.TIMESTAMP.nullable(false).defaultValue(org.jooq.impl.DSL.inline("0000-00-00 00:00:00", org.jooq.impl.SQLDataType.TIMESTAMP)), this, "领取时间");
+    public final TableField<CouponActivityRecordRecord, Timestamp> RECEIVE_TIME = createField("receive_time", org.jooq.impl.SQLDataType.TIMESTAMP, this, "领取时间");
 
     /**
      * The column <code>mini_shop_471752.b2c_coupon_activity_record.mrking_voucher_id</code>. 已领取的优惠券

@@ -42,7 +42,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class IntegralMallDefine extends TableImpl<IntegralMallDefineRecord> {
 
-    private static final long serialVersionUID = -1609722728;
+    private static final long serialVersionUID = 1192206907;
 
     /**
      * The reference instance of <code>mini_shop_471752.b2c_integral_mall_define</code>
@@ -75,12 +75,12 @@ public class IntegralMallDefine extends TableImpl<IntegralMallDefineRecord> {
     /**
      * The column <code>mini_shop_471752.b2c_integral_mall_define.start_time</code>. 活动起始时间
      */
-    public final TableField<IntegralMallDefineRecord, Timestamp> START_TIME = createField("start_time", org.jooq.impl.SQLDataType.TIMESTAMP.nullable(false).defaultValue(org.jooq.impl.DSL.inline("0000-00-00 00:00:00", org.jooq.impl.SQLDataType.TIMESTAMP)), this, "活动起始时间");
+    public final TableField<IntegralMallDefineRecord, Timestamp> START_TIME = createField("start_time", org.jooq.impl.SQLDataType.TIMESTAMP, this, "活动起始时间");
 
     /**
      * The column <code>mini_shop_471752.b2c_integral_mall_define.end_time</code>. 活动终止时间
      */
-    public final TableField<IntegralMallDefineRecord, Timestamp> END_TIME = createField("end_time", org.jooq.impl.SQLDataType.TIMESTAMP.nullable(false).defaultValue(org.jooq.impl.DSL.inline("0000-00-00 00:00:00", org.jooq.impl.SQLDataType.TIMESTAMP)), this, "活动终止时间");
+    public final TableField<IntegralMallDefineRecord, Timestamp> END_TIME = createField("end_time", org.jooq.impl.SQLDataType.TIMESTAMP, this, "活动终止时间");
 
     /**
      * The column <code>mini_shop_471752.b2c_integral_mall_define.status</code>. 1: 正常 0：禁用
@@ -95,7 +95,7 @@ public class IntegralMallDefine extends TableImpl<IntegralMallDefineRecord> {
     /**
      * The column <code>mini_shop_471752.b2c_integral_mall_define.del_time</code>.
      */
-    public final TableField<IntegralMallDefineRecord, Timestamp> DEL_TIME = createField("del_time", org.jooq.impl.SQLDataType.TIMESTAMP.nullable(false).defaultValue(org.jooq.impl.DSL.inline("0000-00-00 00:00:00", org.jooq.impl.SQLDataType.TIMESTAMP)), this, "");
+    public final TableField<IntegralMallDefineRecord, Timestamp> DEL_TIME = createField("del_time", org.jooq.impl.SQLDataType.TIMESTAMP, this, "");
 
     /**
      * The column <code>mini_shop_471752.b2c_integral_mall_define.create_time</code>.

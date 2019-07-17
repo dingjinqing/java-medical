@@ -42,7 +42,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class Presale extends TableImpl<PresaleRecord> {
 
-    private static final long serialVersionUID = -1564011590;
+    private static final long serialVersionUID = 1352743405;
 
     /**
      * The reference instance of <code>mini_shop_471752.b2c_presale</code>
@@ -80,32 +80,32 @@ public class Presale extends TableImpl<PresaleRecord> {
     /**
      * The column <code>mini_shop_471752.b2c_presale.pre_start_time</code>. 定金一期支付开始时间
      */
-    public final TableField<PresaleRecord, Timestamp> PRE_START_TIME = createField("pre_start_time", org.jooq.impl.SQLDataType.TIMESTAMP.nullable(false).defaultValue(org.jooq.impl.DSL.inline("0000-00-00 00:00:00", org.jooq.impl.SQLDataType.TIMESTAMP)), this, "定金一期支付开始时间");
+    public final TableField<PresaleRecord, Timestamp> PRE_START_TIME = createField("pre_start_time", org.jooq.impl.SQLDataType.TIMESTAMP, this, "定金一期支付开始时间");
 
     /**
      * The column <code>mini_shop_471752.b2c_presale.pre_end_time</code>. 定金一期支付结束时间
      */
-    public final TableField<PresaleRecord, Timestamp> PRE_END_TIME = createField("pre_end_time", org.jooq.impl.SQLDataType.TIMESTAMP.nullable(false).defaultValue(org.jooq.impl.DSL.inline("0000-00-00 00:00:00", org.jooq.impl.SQLDataType.TIMESTAMP)), this, "定金一期支付结束时间");
+    public final TableField<PresaleRecord, Timestamp> PRE_END_TIME = createField("pre_end_time", org.jooq.impl.SQLDataType.TIMESTAMP, this, "定金一期支付结束时间");
 
     /**
      * The column <code>mini_shop_471752.b2c_presale.pre_start_time_2</code>. 定金二期支付开始时间
      */
-    public final TableField<PresaleRecord, Timestamp> PRE_START_TIME_2 = createField("pre_start_time_2", org.jooq.impl.SQLDataType.TIMESTAMP.nullable(false).defaultValue(org.jooq.impl.DSL.inline("0000-00-00 00:00:00", org.jooq.impl.SQLDataType.TIMESTAMP)), this, "定金二期支付开始时间");
+    public final TableField<PresaleRecord, Timestamp> PRE_START_TIME_2 = createField("pre_start_time_2", org.jooq.impl.SQLDataType.TIMESTAMP, this, "定金二期支付开始时间");
 
     /**
      * The column <code>mini_shop_471752.b2c_presale.pre_end_time_2</code>. 定金二期支付结束时间
      */
-    public final TableField<PresaleRecord, Timestamp> PRE_END_TIME_2 = createField("pre_end_time_2", org.jooq.impl.SQLDataType.TIMESTAMP.nullable(false).defaultValue(org.jooq.impl.DSL.inline("0000-00-00 00:00:00", org.jooq.impl.SQLDataType.TIMESTAMP)), this, "定金二期支付结束时间");
+    public final TableField<PresaleRecord, Timestamp> PRE_END_TIME_2 = createField("pre_end_time_2", org.jooq.impl.SQLDataType.TIMESTAMP, this, "定金二期支付结束时间");
 
     /**
      * The column <code>mini_shop_471752.b2c_presale.start_time</code>. 尾款支付开始时间
      */
-    public final TableField<PresaleRecord, Timestamp> START_TIME = createField("start_time", org.jooq.impl.SQLDataType.TIMESTAMP.nullable(false).defaultValue(org.jooq.impl.DSL.inline("0000-00-00 00:00:00", org.jooq.impl.SQLDataType.TIMESTAMP)), this, "尾款支付开始时间");
+    public final TableField<PresaleRecord, Timestamp> START_TIME = createField("start_time", org.jooq.impl.SQLDataType.TIMESTAMP, this, "尾款支付开始时间");
 
     /**
      * The column <code>mini_shop_471752.b2c_presale.end_time</code>. 尾款支付结束时间
      */
-    public final TableField<PresaleRecord, Timestamp> END_TIME = createField("end_time", org.jooq.impl.SQLDataType.TIMESTAMP.nullable(false).defaultValue(org.jooq.impl.DSL.inline("0000-00-00 00:00:00", org.jooq.impl.SQLDataType.TIMESTAMP)), this, "尾款支付结束时间");
+    public final TableField<PresaleRecord, Timestamp> END_TIME = createField("end_time", org.jooq.impl.SQLDataType.TIMESTAMP, this, "尾款支付结束时间");
 
     /**
      * The column <code>mini_shop_471752.b2c_presale.goods_id</code>. 商品id
@@ -120,7 +120,7 @@ public class Presale extends TableImpl<PresaleRecord> {
     /**
      * The column <code>mini_shop_471752.b2c_presale.deliver_time</code>. 发货日期
      */
-    public final TableField<PresaleRecord, Timestamp> DELIVER_TIME = createField("deliver_time", org.jooq.impl.SQLDataType.TIMESTAMP.nullable(false).defaultValue(org.jooq.impl.DSL.inline("0000-00-00 00:00:00", org.jooq.impl.SQLDataType.TIMESTAMP)), this, "发货日期");
+    public final TableField<PresaleRecord, Timestamp> DELIVER_TIME = createField("deliver_time", org.jooq.impl.SQLDataType.TIMESTAMP, this, "发货日期");
 
     /**
      * The column <code>mini_shop_471752.b2c_presale.deliver_days</code>. 下单后几日发货

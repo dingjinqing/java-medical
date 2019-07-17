@@ -42,7 +42,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class Channel extends TableImpl<ChannelRecord> {
 
-    private static final long serialVersionUID = 1597265209;
+    private static final long serialVersionUID = 1407217690;
 
     /**
      * The reference instance of <code>mini_shop_471752.b2c_channel</code>
@@ -95,7 +95,7 @@ public class Channel extends TableImpl<ChannelRecord> {
     /**
      * The column <code>mini_shop_471752.b2c_channel.del_time</code>. 删除时间
      */
-    public final TableField<ChannelRecord, Timestamp> DEL_TIME = createField("del_time", org.jooq.impl.SQLDataType.TIMESTAMP.nullable(false).defaultValue(org.jooq.impl.DSL.inline("0000-00-00 00:00:00", org.jooq.impl.SQLDataType.TIMESTAMP)), this, "删除时间");
+    public final TableField<ChannelRecord, Timestamp> DEL_TIME = createField("del_time", org.jooq.impl.SQLDataType.TIMESTAMP, this, "删除时间");
 
     /**
      * The column <code>mini_shop_471752.b2c_channel.create_time</code>.

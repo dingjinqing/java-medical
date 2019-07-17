@@ -42,7 +42,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class PinIntegrationList extends TableImpl<PinIntegrationListRecord> {
 
-    private static final long serialVersionUID = 1398644114;
+    private static final long serialVersionUID = 1553075848;
 
     /**
      * The reference instance of <code>mini_shop_471752.b2c_pin_integration_list</code>
@@ -90,12 +90,12 @@ public class PinIntegrationList extends TableImpl<PinIntegrationListRecord> {
     /**
      * The column <code>mini_shop_471752.b2c_pin_integration_list.start_time</code>. 参团时间
      */
-    public final TableField<PinIntegrationListRecord, Timestamp> START_TIME = createField("start_time", org.jooq.impl.SQLDataType.TIMESTAMP.nullable(false).defaultValue(org.jooq.impl.DSL.inline("0000-00-00 00:00:00", org.jooq.impl.SQLDataType.TIMESTAMP)), this, "参团时间");
+    public final TableField<PinIntegrationListRecord, Timestamp> START_TIME = createField("start_time", org.jooq.impl.SQLDataType.TIMESTAMP, this, "参团时间");
 
     /**
      * The column <code>mini_shop_471752.b2c_pin_integration_list.end_time</code>. 成团时间
      */
-    public final TableField<PinIntegrationListRecord, Timestamp> END_TIME = createField("end_time", org.jooq.impl.SQLDataType.TIMESTAMP.nullable(false).defaultValue(org.jooq.impl.DSL.inline("0000-00-00 00:00:00", org.jooq.impl.SQLDataType.TIMESTAMP)), this, "成团时间");
+    public final TableField<PinIntegrationListRecord, Timestamp> END_TIME = createField("end_time", org.jooq.impl.SQLDataType.TIMESTAMP, this, "成团时间");
 
     /**
      * The column <code>mini_shop_471752.b2c_pin_integration_list.integration</code>. 瓜分到的积分

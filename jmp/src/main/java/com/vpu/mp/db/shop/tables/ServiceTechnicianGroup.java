@@ -42,7 +42,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class ServiceTechnicianGroup extends TableImpl<ServiceTechnicianGroupRecord> {
 
-    private static final long serialVersionUID = 77465801;
+    private static final long serialVersionUID = -356157919;
 
     /**
      * The reference instance of <code>mini_shop_471752.b2c_service_technician_group</code>
@@ -58,9 +58,9 @@ public class ServiceTechnicianGroup extends TableImpl<ServiceTechnicianGroupReco
     }
 
     /**
-     * The column <code>mini_shop_471752.b2c_service_technician_group.group_id</code>. 技师分组
+     * The column <code>mini_shop_471752.b2c_service_technician_group.group_id</code>. 分组id
      */
-    public final TableField<ServiceTechnicianGroupRecord, Integer> GROUP_ID = createField("group_id", org.jooq.impl.SQLDataType.INTEGER.nullable(false).identity(true), this, "技师分组");
+    public final TableField<ServiceTechnicianGroupRecord, Integer> GROUP_ID = createField("group_id", org.jooq.impl.SQLDataType.INTEGER.nullable(false).identity(true), this, "分组id");
 
     /**
      * The column <code>mini_shop_471752.b2c_service_technician_group.group_name</code>. 分组名称

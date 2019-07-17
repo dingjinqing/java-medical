@@ -42,7 +42,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class LotteryRecord extends TableImpl<LotteryRecordRecord> {
 
-    private static final long serialVersionUID = -2096470285;
+    private static final long serialVersionUID = -1510159698;
 
     /**
      * The reference instance of <code>mini_shop_471752.b2c_lottery_record</code>
@@ -130,7 +130,7 @@ public class LotteryRecord extends TableImpl<LotteryRecordRecord> {
     /**
      * The column <code>mini_shop_471752.b2c_lottery_record.lottery_expired_time</code>. 赠品过期时间
      */
-    public final TableField<LotteryRecordRecord, Timestamp> LOTTERY_EXPIRED_TIME = createField("lottery_expired_time", org.jooq.impl.SQLDataType.TIMESTAMP.nullable(false).defaultValue(org.jooq.impl.DSL.inline("0000-00-00 00:00:00", org.jooq.impl.SQLDataType.TIMESTAMP)), this, "赠品过期时间");
+    public final TableField<LotteryRecordRecord, Timestamp> LOTTERY_EXPIRED_TIME = createField("lottery_expired_time", org.jooq.impl.SQLDataType.TIMESTAMP, this, "赠品过期时间");
 
     /**
      * The column <code>mini_shop_471752.b2c_lottery_record.create_time</code>.

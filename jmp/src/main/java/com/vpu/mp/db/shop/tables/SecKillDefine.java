@@ -42,7 +42,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class SecKillDefine extends TableImpl<SecKillDefineRecord> {
 
-    private static final long serialVersionUID = -1902748844;
+    private static final long serialVersionUID = -2052569315;
 
     /**
      * The reference instance of <code>mini_shop_471752.b2c_sec_kill_define</code>
@@ -90,12 +90,12 @@ public class SecKillDefine extends TableImpl<SecKillDefineRecord> {
     /**
      * The column <code>mini_shop_471752.b2c_sec_kill_define.start_time</code>. 开始时间
      */
-    public final TableField<SecKillDefineRecord, Timestamp> START_TIME = createField("start_time", org.jooq.impl.SQLDataType.TIMESTAMP.nullable(false).defaultValue(org.jooq.impl.DSL.inline("0000-00-00 00:00:00", org.jooq.impl.SQLDataType.TIMESTAMP)), this, "开始时间");
+    public final TableField<SecKillDefineRecord, Timestamp> START_TIME = createField("start_time", org.jooq.impl.SQLDataType.TIMESTAMP, this, "开始时间");
 
     /**
      * The column <code>mini_shop_471752.b2c_sec_kill_define.end_time</code>. 结束时间
      */
-    public final TableField<SecKillDefineRecord, Timestamp> END_TIME = createField("end_time", org.jooq.impl.SQLDataType.TIMESTAMP.nullable(false).defaultValue(org.jooq.impl.DSL.inline("0000-00-00 00:00:00", org.jooq.impl.SQLDataType.TIMESTAMP)), this, "结束时间");
+    public final TableField<SecKillDefineRecord, Timestamp> END_TIME = createField("end_time", org.jooq.impl.SQLDataType.TIMESTAMP, this, "结束时间");
 
     /**
      * The column <code>mini_shop_471752.b2c_sec_kill_define.stock</code>. 总库存
@@ -125,7 +125,7 @@ public class SecKillDefine extends TableImpl<SecKillDefineRecord> {
     /**
      * The column <code>mini_shop_471752.b2c_sec_kill_define.del_time</code>. 删除时间
      */
-    public final TableField<SecKillDefineRecord, Timestamp> DEL_TIME = createField("del_time", org.jooq.impl.SQLDataType.TIMESTAMP.nullable(false).defaultValue(org.jooq.impl.DSL.inline("0000-00-00 00:00:00", org.jooq.impl.SQLDataType.TIMESTAMP)), this, "删除时间");
+    public final TableField<SecKillDefineRecord, Timestamp> DEL_TIME = createField("del_time", org.jooq.impl.SQLDataType.TIMESTAMP, this, "删除时间");
 
     /**
      * The column <code>mini_shop_471752.b2c_sec_kill_define.create_time</code>.

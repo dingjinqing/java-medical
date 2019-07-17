@@ -42,7 +42,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class PartOrderGoodsShip extends TableImpl<PartOrderGoodsShipRecord> {
 
-    private static final long serialVersionUID = 787894123;
+    private static final long serialVersionUID = -569702157;
 
     /**
      * The reference instance of <code>mini_shop_471752.b2c_part_order_goods_ship</code>
@@ -125,12 +125,12 @@ public class PartOrderGoodsShip extends TableImpl<PartOrderGoodsShipRecord> {
     /**
      * The column <code>mini_shop_471752.b2c_part_order_goods_ship.shipping_time</code>. 部分发货时间
      */
-    public final TableField<PartOrderGoodsShipRecord, Timestamp> SHIPPING_TIME = createField("shipping_time", org.jooq.impl.SQLDataType.TIMESTAMP.nullable(false).defaultValue(org.jooq.impl.DSL.field("CURRENT_TIMESTAMP", org.jooq.impl.SQLDataType.TIMESTAMP)), this, "部分发货时间");
+    public final TableField<PartOrderGoodsShipRecord, Timestamp> SHIPPING_TIME = createField("shipping_time", org.jooq.impl.SQLDataType.TIMESTAMP.defaultValue(org.jooq.impl.DSL.field("CURRENT_TIMESTAMP", org.jooq.impl.SQLDataType.TIMESTAMP)), this, "部分发货时间");
 
     /**
      * The column <code>mini_shop_471752.b2c_part_order_goods_ship.confirm_time</code>. 订单确收收货时间
      */
-    public final TableField<PartOrderGoodsShipRecord, Timestamp> CONFIRM_TIME = createField("confirm_time", org.jooq.impl.SQLDataType.TIMESTAMP.nullable(false).defaultValue(org.jooq.impl.DSL.inline("0000-00-00 00:00:00", org.jooq.impl.SQLDataType.TIMESTAMP)), this, "订单确收收货时间");
+    public final TableField<PartOrderGoodsShipRecord, Timestamp> CONFIRM_TIME = createField("confirm_time", org.jooq.impl.SQLDataType.TIMESTAMP, this, "订单确收收货时间");
 
     /**
      * The column <code>mini_shop_471752.b2c_part_order_goods_ship.create_time</code>.

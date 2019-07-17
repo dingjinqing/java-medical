@@ -42,7 +42,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class FriendPromoteLaunch extends TableImpl<FriendPromoteLaunchRecord> {
 
-    private static final long serialVersionUID = -1008106041;
+    private static final long serialVersionUID = -2114412371;
 
     /**
      * The reference instance of <code>mini_shop_471752.b2c_friend_promote_launch</code>
@@ -90,7 +90,7 @@ public class FriendPromoteLaunch extends TableImpl<FriendPromoteLaunchRecord> {
     /**
      * The column <code>mini_shop_471752.b2c_friend_promote_launch.success_time</code>. 助力成功时间
      */
-    public final TableField<FriendPromoteLaunchRecord, Timestamp> SUCCESS_TIME = createField("success_time", org.jooq.impl.SQLDataType.TIMESTAMP.nullable(false).defaultValue(org.jooq.impl.DSL.inline("0000-00-00 00:00:00", org.jooq.impl.SQLDataType.TIMESTAMP)), this, "助力成功时间");
+    public final TableField<FriendPromoteLaunchRecord, Timestamp> SUCCESS_TIME = createField("success_time", org.jooq.impl.SQLDataType.TIMESTAMP, this, "助力成功时间");
 
     /**
      * The column <code>mini_shop_471752.b2c_friend_promote_launch.del_flag</code>. 删除标识：0未删除，1已删除
@@ -100,7 +100,7 @@ public class FriendPromoteLaunch extends TableImpl<FriendPromoteLaunchRecord> {
     /**
      * The column <code>mini_shop_471752.b2c_friend_promote_launch.del_time</code>. 过期时间
      */
-    public final TableField<FriendPromoteLaunchRecord, Timestamp> DEL_TIME = createField("del_time", org.jooq.impl.SQLDataType.TIMESTAMP.nullable(false).defaultValue(org.jooq.impl.DSL.inline("0000-00-00 00:00:00", org.jooq.impl.SQLDataType.TIMESTAMP)), this, "过期时间");
+    public final TableField<FriendPromoteLaunchRecord, Timestamp> DEL_TIME = createField("del_time", org.jooq.impl.SQLDataType.TIMESTAMP, this, "过期时间");
 
     /**
      * The column <code>mini_shop_471752.b2c_friend_promote_launch.create_time</code>.

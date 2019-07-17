@@ -43,7 +43,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class CustomerAvailCoupons extends TableImpl<CustomerAvailCouponsRecord> {
 
-    private static final long serialVersionUID = -1847453868;
+    private static final long serialVersionUID = 1340422448;
 
     /**
      * The reference instance of <code>mini_shop_471752.b2c_customer_avail_coupons</code>
@@ -86,12 +86,12 @@ public class CustomerAvailCoupons extends TableImpl<CustomerAvailCouponsRecord> 
     /**
      * The column <code>mini_shop_471752.b2c_customer_avail_coupons.start_time</code>.
      */
-    public final TableField<CustomerAvailCouponsRecord, Timestamp> START_TIME = createField("start_time", org.jooq.impl.SQLDataType.TIMESTAMP.nullable(false).defaultValue(org.jooq.impl.DSL.inline("0000-00-00 00:00:00", org.jooq.impl.SQLDataType.TIMESTAMP)), this, "");
+    public final TableField<CustomerAvailCouponsRecord, Timestamp> START_TIME = createField("start_time", org.jooq.impl.SQLDataType.TIMESTAMP, this, "");
 
     /**
      * The column <code>mini_shop_471752.b2c_customer_avail_coupons.end_time</code>.
      */
-    public final TableField<CustomerAvailCouponsRecord, Timestamp> END_TIME = createField("end_time", org.jooq.impl.SQLDataType.TIMESTAMP.nullable(false).defaultValue(org.jooq.impl.DSL.inline("0000-00-00 00:00:00", org.jooq.impl.SQLDataType.TIMESTAMP)), this, "");
+    public final TableField<CustomerAvailCouponsRecord, Timestamp> END_TIME = createField("end_time", org.jooq.impl.SQLDataType.TIMESTAMP, this, "");
 
     /**
      * The column <code>mini_shop_471752.b2c_customer_avail_coupons.type</code>. 1为减价，2为打折
@@ -121,7 +121,7 @@ public class CustomerAvailCoupons extends TableImpl<CustomerAvailCouponsRecord> 
     /**
      * The column <code>mini_shop_471752.b2c_customer_avail_coupons.used_time</code>.
      */
-    public final TableField<CustomerAvailCouponsRecord, Timestamp> USED_TIME = createField("used_time", org.jooq.impl.SQLDataType.TIMESTAMP.nullable(false).defaultValue(org.jooq.impl.DSL.inline("0000-00-00 00:00:00", org.jooq.impl.SQLDataType.TIMESTAMP)), this, "");
+    public final TableField<CustomerAvailCouponsRecord, Timestamp> USED_TIME = createField("used_time", org.jooq.impl.SQLDataType.TIMESTAMP, this, "");
 
     /**
      * The column <code>mini_shop_471752.b2c_customer_avail_coupons.access_mode</code>. 获取方式，0：发放，1：领取
@@ -136,7 +136,7 @@ public class CustomerAvailCoupons extends TableImpl<CustomerAvailCouponsRecord> 
     /**
      * The column <code>mini_shop_471752.b2c_customer_avail_coupons.notify_time</code>. 通知时间
      */
-    public final TableField<CustomerAvailCouponsRecord, Timestamp> NOTIFY_TIME = createField("notify_time", org.jooq.impl.SQLDataType.TIMESTAMP.nullable(false).defaultValue(org.jooq.impl.DSL.inline("0000-00-00 00:00:00", org.jooq.impl.SQLDataType.TIMESTAMP)), this, "通知时间");
+    public final TableField<CustomerAvailCouponsRecord, Timestamp> NOTIFY_TIME = createField("notify_time", org.jooq.impl.SQLDataType.TIMESTAMP, this, "通知时间");
 
     /**
      * The column <code>mini_shop_471752.b2c_customer_avail_coupons.order_sn</code>. 优惠订单编号

@@ -43,7 +43,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class GiveVoucher extends TableImpl<GiveVoucherRecord> {
 
-    private static final long serialVersionUID = -520081287;
+    private static final long serialVersionUID = -58744338;
 
     /**
      * The reference instance of <code>mini_shop_471752.b2c_give_voucher</code>
@@ -141,7 +141,7 @@ public class GiveVoucher extends TableImpl<GiveVoucherRecord> {
     /**
      * The column <code>mini_shop_471752.b2c_give_voucher.start_time</code>. 发放开始时间
      */
-    public final TableField<GiveVoucherRecord, Timestamp> START_TIME = createField("start_time", org.jooq.impl.SQLDataType.TIMESTAMP.nullable(false).defaultValue(org.jooq.impl.DSL.inline("0000-00-00 00:00:00", org.jooq.impl.SQLDataType.TIMESTAMP)), this, "发放开始时间");
+    public final TableField<GiveVoucherRecord, Timestamp> START_TIME = createField("start_time", org.jooq.impl.SQLDataType.TIMESTAMP, this, "发放开始时间");
 
     /**
      * The column <code>mini_shop_471752.b2c_give_voucher.create_time</code>.

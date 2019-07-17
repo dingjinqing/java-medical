@@ -42,7 +42,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class TemplateConfig extends TableImpl<TemplateConfigRecord> {
 
-    private static final long serialVersionUID = -1408278453;
+    private static final long serialVersionUID = 2019514366;
 
     /**
      * The reference instance of <code>mini_shop_471752.b2c_template_config</code>
@@ -115,12 +115,12 @@ public class TemplateConfig extends TableImpl<TemplateConfigRecord> {
     /**
      * The column <code>mini_shop_471752.b2c_template_config.start_time</code>. 发送起始时间
      */
-    public final TableField<TemplateConfigRecord, Timestamp> START_TIME = createField("start_time", org.jooq.impl.SQLDataType.TIMESTAMP.nullable(false).defaultValue(org.jooq.impl.DSL.inline("0000-00-00 00:00:00", org.jooq.impl.SQLDataType.TIMESTAMP)), this, "发送起始时间");
+    public final TableField<TemplateConfigRecord, Timestamp> START_TIME = createField("start_time", org.jooq.impl.SQLDataType.TIMESTAMP, this, "发送起始时间");
 
     /**
      * The column <code>mini_shop_471752.b2c_template_config.end_time</code>. 发送终止时间
      */
-    public final TableField<TemplateConfigRecord, Timestamp> END_TIME = createField("end_time", org.jooq.impl.SQLDataType.TIMESTAMP.nullable(false).defaultValue(org.jooq.impl.DSL.inline("0000-00-00 00:00:00", org.jooq.impl.SQLDataType.TIMESTAMP)), this, "发送终止时间");
+    public final TableField<TemplateConfigRecord, Timestamp> END_TIME = createField("end_time", org.jooq.impl.SQLDataType.TIMESTAMP, this, "发送终止时间");
 
     /**
      * The column <code>mini_shop_471752.b2c_template_config.del_flag</code>. 删除标识
@@ -130,7 +130,7 @@ public class TemplateConfig extends TableImpl<TemplateConfigRecord> {
     /**
      * The column <code>mini_shop_471752.b2c_template_config.del_time</code>.
      */
-    public final TableField<TemplateConfigRecord, Timestamp> DEL_TIME = createField("del_time", org.jooq.impl.SQLDataType.TIMESTAMP.nullable(false).defaultValue(org.jooq.impl.DSL.inline("0000-00-00 00:00:00", org.jooq.impl.SQLDataType.TIMESTAMP)), this, "");
+    public final TableField<TemplateConfigRecord, Timestamp> DEL_TIME = createField("del_time", org.jooq.impl.SQLDataType.TIMESTAMP, this, "");
 
     /**
      * The column <code>mini_shop_471752.b2c_template_config.create_time</code>.

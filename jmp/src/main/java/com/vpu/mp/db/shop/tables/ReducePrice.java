@@ -43,7 +43,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class ReducePrice extends TableImpl<ReducePriceRecord> {
 
-    private static final long serialVersionUID = 1416217377;
+    private static final long serialVersionUID = -32586000;
 
     /**
      * The reference instance of <code>mini_shop_471752.b2c_reduce_price</code>
@@ -71,12 +71,12 @@ public class ReducePrice extends TableImpl<ReducePriceRecord> {
     /**
      * The column <code>mini_shop_471752.b2c_reduce_price.start_time</code>. 开始时间
      */
-    public final TableField<ReducePriceRecord, Timestamp> START_TIME = createField("start_time", org.jooq.impl.SQLDataType.TIMESTAMP.nullable(false).defaultValue(org.jooq.impl.DSL.inline("0000-00-00 00:00:00", org.jooq.impl.SQLDataType.TIMESTAMP)), this, "开始时间");
+    public final TableField<ReducePriceRecord, Timestamp> START_TIME = createField("start_time", org.jooq.impl.SQLDataType.TIMESTAMP, this, "开始时间");
 
     /**
      * The column <code>mini_shop_471752.b2c_reduce_price.end_time</code>. 结束日期
      */
-    public final TableField<ReducePriceRecord, Timestamp> END_TIME = createField("end_time", org.jooq.impl.SQLDataType.TIMESTAMP.nullable(false).defaultValue(org.jooq.impl.DSL.inline("0000-00-00 00:00:00", org.jooq.impl.SQLDataType.TIMESTAMP)), this, "结束日期");
+    public final TableField<ReducePriceRecord, Timestamp> END_TIME = createField("end_time", org.jooq.impl.SQLDataType.TIMESTAMP, this, "结束日期");
 
     /**
      * The column <code>mini_shop_471752.b2c_reduce_price.period_action</code>. 周期类型：1:每天 2:每月 3:每周
@@ -126,7 +126,7 @@ public class ReducePrice extends TableImpl<ReducePriceRecord> {
     /**
      * The column <code>mini_shop_471752.b2c_reduce_price.del_time</code>. 删除时间
      */
-    public final TableField<ReducePriceRecord, Timestamp> DEL_TIME = createField("del_time", org.jooq.impl.SQLDataType.TIMESTAMP.nullable(false).defaultValue(org.jooq.impl.DSL.inline("0000-00-00 00:00:00", org.jooq.impl.SQLDataType.TIMESTAMP)), this, "删除时间");
+    public final TableField<ReducePriceRecord, Timestamp> DEL_TIME = createField("del_time", org.jooq.impl.SQLDataType.TIMESTAMP, this, "删除时间");
 
     /**
      * The column <code>mini_shop_471752.b2c_reduce_price.limit_amount</code>.

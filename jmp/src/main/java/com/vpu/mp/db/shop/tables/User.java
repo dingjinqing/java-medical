@@ -44,7 +44,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class User extends TableImpl<UserRecord> {
 
-    private static final long serialVersionUID = -1348471395;
+    private static final long serialVersionUID = 1186636461;
 
     /**
      * The reference instance of <code>mini_shop_471752.b2c_user</code>
@@ -167,7 +167,7 @@ public class User extends TableImpl<UserRecord> {
     /**
      * The column <code>mini_shop_471752.b2c_user.del_time</code>. 删除时间
      */
-    public final TableField<UserRecord, Timestamp> DEL_TIME = createField("del_time", org.jooq.impl.SQLDataType.TIMESTAMP.nullable(false).defaultValue(org.jooq.impl.DSL.inline("0000-00-00 00:00:00", org.jooq.impl.SQLDataType.TIMESTAMP)), this, "删除时间");
+    public final TableField<UserRecord, Timestamp> DEL_TIME = createField("del_time", org.jooq.impl.SQLDataType.TIMESTAMP, this, "删除时间");
 
     /**
      * The column <code>mini_shop_471752.b2c_user.growth</code>. 成长值
@@ -232,7 +232,7 @@ public class User extends TableImpl<UserRecord> {
     /**
      * The column <code>mini_shop_471752.b2c_user.look_collect_time</code>. 最近看见收藏有礼图标时间
      */
-    public final TableField<UserRecord, Timestamp> LOOK_COLLECT_TIME = createField("look_collect_time", org.jooq.impl.SQLDataType.TIMESTAMP.nullable(false).defaultValue(org.jooq.impl.DSL.inline("0000-00-00 00:00:00", org.jooq.impl.SQLDataType.TIMESTAMP)), this, "最近看见收藏有礼图标时间");
+    public final TableField<UserRecord, Timestamp> LOOK_COLLECT_TIME = createField("look_collect_time", org.jooq.impl.SQLDataType.TIMESTAMP, this, "最近看见收藏有礼图标时间");
 
     /**
      * The column <code>mini_shop_471752.b2c_user.get_collect_gift</code>. 是否获得收藏好礼：0未获得，1已获得

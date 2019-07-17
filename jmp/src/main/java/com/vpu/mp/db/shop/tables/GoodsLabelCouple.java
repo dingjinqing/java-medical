@@ -42,7 +42,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class GoodsLabelCouple extends TableImpl<GoodsLabelCoupleRecord> {
 
-    private static final long serialVersionUID = -29055486;
+    private static final long serialVersionUID = 644023642;
 
     /**
      * The reference instance of <code>mini_shop_471752.b2c_goods_label_couple</code>
@@ -63,9 +63,9 @@ public class GoodsLabelCouple extends TableImpl<GoodsLabelCoupleRecord> {
     public final TableField<GoodsLabelCoupleRecord, Integer> ID = createField("id", org.jooq.impl.SQLDataType.INTEGER.nullable(false).identity(true), this, "标签id");
 
     /**
-     * The column <code>mini_shop_471752.b2c_goods_label_couple.label_id</code>.
+     * The column <code>mini_shop_471752.b2c_goods_label_couple.label_id</code>. 标签id
      */
-    public final TableField<GoodsLabelCoupleRecord, Integer> LABEL_ID = createField("label_id", org.jooq.impl.SQLDataType.INTEGER.nullable(false), this, "");
+    public final TableField<GoodsLabelCoupleRecord, Integer> LABEL_ID = createField("label_id", org.jooq.impl.SQLDataType.INTEGER.nullable(false), this, "标签id");
 
     /**
      * The column <code>mini_shop_471752.b2c_goods_label_couple.gta_id</code>. 商品或类型id

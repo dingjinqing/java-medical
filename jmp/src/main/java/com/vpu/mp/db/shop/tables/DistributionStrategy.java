@@ -42,7 +42,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class DistributionStrategy extends TableImpl<DistributionStrategyRecord> {
 
-    private static final long serialVersionUID = 1069201293;
+    private static final long serialVersionUID = -1982034126;
 
     /**
      * The reference instance of <code>mini_shop_471752.b2c_distribution_strategy</code>
@@ -75,12 +75,12 @@ public class DistributionStrategy extends TableImpl<DistributionStrategyRecord> 
     /**
      * The column <code>mini_shop_471752.b2c_distribution_strategy.start_time</code>. 开始时间
      */
-    public final TableField<DistributionStrategyRecord, Timestamp> START_TIME = createField("start_time", org.jooq.impl.SQLDataType.TIMESTAMP.nullable(false).defaultValue(org.jooq.impl.DSL.inline("0000-00-00 00:00:00", org.jooq.impl.SQLDataType.TIMESTAMP)), this, "开始时间");
+    public final TableField<DistributionStrategyRecord, Timestamp> START_TIME = createField("start_time", org.jooq.impl.SQLDataType.TIMESTAMP, this, "开始时间");
 
     /**
      * The column <code>mini_shop_471752.b2c_distribution_strategy.end_time</code>. 结束时间
      */
-    public final TableField<DistributionStrategyRecord, Timestamp> END_TIME = createField("end_time", org.jooq.impl.SQLDataType.TIMESTAMP.nullable(false).defaultValue(org.jooq.impl.DSL.inline("0000-00-00 00:00:00", org.jooq.impl.SQLDataType.TIMESTAMP)), this, "结束时间");
+    public final TableField<DistributionStrategyRecord, Timestamp> END_TIME = createField("end_time", org.jooq.impl.SQLDataType.TIMESTAMP, this, "结束时间");
 
     /**
      * The column <code>mini_shop_471752.b2c_distribution_strategy.self_purchase</code>. 自购返利
@@ -170,7 +170,7 @@ public class DistributionStrategy extends TableImpl<DistributionStrategyRecord> 
     /**
      * The column <code>mini_shop_471752.b2c_distribution_strategy.del_time</code>. 删除时间
      */
-    public final TableField<DistributionStrategyRecord, Timestamp> DEL_TIME = createField("del_time", org.jooq.impl.SQLDataType.TIMESTAMP.nullable(false).defaultValue(org.jooq.impl.DSL.inline("0000-00-00 00:00:00", org.jooq.impl.SQLDataType.TIMESTAMP)), this, "删除时间");
+    public final TableField<DistributionStrategyRecord, Timestamp> DEL_TIME = createField("del_time", org.jooq.impl.SQLDataType.TIMESTAMP, this, "删除时间");
 
     /**
      * The column <code>mini_shop_471752.b2c_distribution_strategy.recommend_sort_id</code>. 返利商家分类ids

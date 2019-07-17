@@ -43,7 +43,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class GroupDraw extends TableImpl<GroupDrawRecord> {
 
-    private static final long serialVersionUID = -1891716157;
+    private static final long serialVersionUID = 1566144682;
 
     /**
      * The reference instance of <code>mini_shop_471752.b2c_group_draw</code>
@@ -71,12 +71,12 @@ public class GroupDraw extends TableImpl<GroupDrawRecord> {
     /**
      * The column <code>mini_shop_471752.b2c_group_draw.start_time</code>. 开始时间
      */
-    public final TableField<GroupDrawRecord, Timestamp> START_TIME = createField("start_time", org.jooq.impl.SQLDataType.TIMESTAMP.nullable(false).defaultValue(org.jooq.impl.DSL.inline("0000-00-00 00:00:00", org.jooq.impl.SQLDataType.TIMESTAMP)), this, "开始时间");
+    public final TableField<GroupDrawRecord, Timestamp> START_TIME = createField("start_time", org.jooq.impl.SQLDataType.TIMESTAMP, this, "开始时间");
 
     /**
      * The column <code>mini_shop_471752.b2c_group_draw.end_time</code>. 结束时间
      */
-    public final TableField<GroupDrawRecord, Timestamp> END_TIME = createField("end_time", org.jooq.impl.SQLDataType.TIMESTAMP.nullable(false).defaultValue(org.jooq.impl.DSL.inline("0000-00-00 00:00:00", org.jooq.impl.SQLDataType.TIMESTAMP)), this, "结束时间");
+    public final TableField<GroupDrawRecord, Timestamp> END_TIME = createField("end_time", org.jooq.impl.SQLDataType.TIMESTAMP, this, "结束时间");
 
     /**
      * The column <code>mini_shop_471752.b2c_group_draw.goods_id</code>. 参与抽奖的商品id
@@ -141,7 +141,7 @@ public class GroupDraw extends TableImpl<GroupDrawRecord> {
     /**
      * The column <code>mini_shop_471752.b2c_group_draw.del_time</code>. 删除时间
      */
-    public final TableField<GroupDrawRecord, Timestamp> DEL_TIME = createField("del_time", org.jooq.impl.SQLDataType.TIMESTAMP.nullable(false).defaultValue(org.jooq.impl.DSL.inline("0000-00-00 00:00:00", org.jooq.impl.SQLDataType.TIMESTAMP)), this, "删除时间");
+    public final TableField<GroupDrawRecord, Timestamp> DEL_TIME = createField("del_time", org.jooq.impl.SQLDataType.TIMESTAMP, this, "删除时间");
 
     /**
      * The column <code>mini_shop_471752.b2c_group_draw.reward_coupon_id</code>. 拼团失败发放优惠券

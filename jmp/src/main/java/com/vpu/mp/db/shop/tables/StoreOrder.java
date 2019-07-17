@@ -43,7 +43,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class StoreOrder extends TableImpl<StoreOrderRecord> {
 
-    private static final long serialVersionUID = -507192430;
+    private static final long serialVersionUID = -1902984063;
 
     /**
      * The reference instance of <code>mini_shop_471752.b2c_store_order</code>
@@ -161,7 +161,7 @@ public class StoreOrder extends TableImpl<StoreOrderRecord> {
     /**
      * The column <code>mini_shop_471752.b2c_store_order.pay_time</code>. 支付时间
      */
-    public final TableField<StoreOrderRecord, Timestamp> PAY_TIME = createField("pay_time", org.jooq.impl.SQLDataType.TIMESTAMP.nullable(false).defaultValue(org.jooq.impl.DSL.inline("0000-00-00 00:00:00", org.jooq.impl.SQLDataType.TIMESTAMP)), this, "支付时间");
+    public final TableField<StoreOrderRecord, Timestamp> PAY_TIME = createField("pay_time", org.jooq.impl.SQLDataType.TIMESTAMP, this, "支付时间");
 
     /**
      * The column <code>mini_shop_471752.b2c_store_order.seller_remark</code>. 卖家备注

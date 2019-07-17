@@ -42,7 +42,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class SecKillList extends TableImpl<SecKillListRecord> {
 
-    private static final long serialVersionUID = 185699098;
+    private static final long serialVersionUID = 1372916865;
 
     /**
      * The reference instance of <code>mini_shop_471752.b2c_sec_kill_list</code>
@@ -90,7 +90,7 @@ public class SecKillList extends TableImpl<SecKillListRecord> {
     /**
      * The column <code>mini_shop_471752.b2c_sec_kill_list.del_time</code>. 删除时间
      */
-    public final TableField<SecKillListRecord, Timestamp> DEL_TIME = createField("del_time", org.jooq.impl.SQLDataType.TIMESTAMP.nullable(false).defaultValue(org.jooq.impl.DSL.inline("0000-00-00 00:00:00", org.jooq.impl.SQLDataType.TIMESTAMP)), this, "删除时间");
+    public final TableField<SecKillListRecord, Timestamp> DEL_TIME = createField("del_time", org.jooq.impl.SQLDataType.TIMESTAMP, this, "删除时间");
 
     /**
      * The column <code>mini_shop_471752.b2c_sec_kill_list.create_time</code>.

@@ -43,7 +43,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class BargainRecord extends TableImpl<BargainRecordRecord> {
 
-    private static final long serialVersionUID = -941671224;
+    private static final long serialVersionUID = -938661661;
 
     /**
      * The reference instance of <code>mini_shop_471752.b2c_bargain_record</code>
@@ -131,7 +131,7 @@ public class BargainRecord extends TableImpl<BargainRecordRecord> {
     /**
      * The column <code>mini_shop_471752.b2c_bargain_record.del_time</code>.
      */
-    public final TableField<BargainRecordRecord, Timestamp> DEL_TIME = createField("del_time", org.jooq.impl.SQLDataType.TIMESTAMP.nullable(false).defaultValue(org.jooq.impl.DSL.inline("0000-00-00 00:00:00", org.jooq.impl.SQLDataType.TIMESTAMP)), this, "");
+    public final TableField<BargainRecordRecord, Timestamp> DEL_TIME = createField("del_time", org.jooq.impl.SQLDataType.TIMESTAMP, this, "");
 
     /**
      * Create a <code>mini_shop_471752.b2c_bargain_record</code> table reference

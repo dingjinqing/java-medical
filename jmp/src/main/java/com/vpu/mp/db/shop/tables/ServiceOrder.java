@@ -43,7 +43,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class ServiceOrder extends TableImpl<ServiceOrderRecord> {
 
-    private static final long serialVersionUID = -712332494;
+    private static final long serialVersionUID = -1306533475;
 
     /**
      * The reference instance of <code>mini_shop_471752.b2c_service_order</code>
@@ -181,17 +181,17 @@ public class ServiceOrder extends TableImpl<ServiceOrderRecord> {
     /**
      * The column <code>mini_shop_471752.b2c_service_order.pay_time</code>. 支付时间
      */
-    public final TableField<ServiceOrderRecord, Timestamp> PAY_TIME = createField("pay_time", org.jooq.impl.SQLDataType.TIMESTAMP.nullable(false).defaultValue(org.jooq.impl.DSL.inline("0000-00-00 00:00:00", org.jooq.impl.SQLDataType.TIMESTAMP)), this, "支付时间");
+    public final TableField<ServiceOrderRecord, Timestamp> PAY_TIME = createField("pay_time", org.jooq.impl.SQLDataType.TIMESTAMP, this, "支付时间");
 
     /**
      * The column <code>mini_shop_471752.b2c_service_order.cancelled_time</code>. 取消时间
      */
-    public final TableField<ServiceOrderRecord, Timestamp> CANCELLED_TIME = createField("cancelled_time", org.jooq.impl.SQLDataType.TIMESTAMP.nullable(false).defaultValue(org.jooq.impl.DSL.inline("0000-00-00 00:00:00", org.jooq.impl.SQLDataType.TIMESTAMP)), this, "取消时间");
+    public final TableField<ServiceOrderRecord, Timestamp> CANCELLED_TIME = createField("cancelled_time", org.jooq.impl.SQLDataType.TIMESTAMP, this, "取消时间");
 
     /**
      * The column <code>mini_shop_471752.b2c_service_order.finished_time</code>. 订单完成时间
      */
-    public final TableField<ServiceOrderRecord, Timestamp> FINISHED_TIME = createField("finished_time", org.jooq.impl.SQLDataType.TIMESTAMP.nullable(false).defaultValue(org.jooq.impl.DSL.inline("0000-00-00 00:00:00", org.jooq.impl.SQLDataType.TIMESTAMP)), this, "订单完成时间");
+    public final TableField<ServiceOrderRecord, Timestamp> FINISHED_TIME = createField("finished_time", org.jooq.impl.SQLDataType.TIMESTAMP, this, "订单完成时间");
 
     /**
      * The column <code>mini_shop_471752.b2c_service_order.prepay_id</code>. 微信支付id，用于发送模板消息

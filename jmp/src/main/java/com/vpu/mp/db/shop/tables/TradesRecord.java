@@ -43,7 +43,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class TradesRecord extends TableImpl<TradesRecordRecord> {
 
-    private static final long serialVersionUID = -856503435;
+    private static final long serialVersionUID = -838059816;
 
     /**
      * The reference instance of <code>mini_shop_471752.b2c_trades_record</code>
@@ -66,7 +66,7 @@ public class TradesRecord extends TableImpl<TradesRecordRecord> {
     /**
      * The column <code>mini_shop_471752.b2c_trades_record.trade_time</code>. 交易时间
      */
-    public final TableField<TradesRecordRecord, Timestamp> TRADE_TIME = createField("trade_time", org.jooq.impl.SQLDataType.TIMESTAMP.nullable(false).defaultValue(org.jooq.impl.DSL.inline("0000-00-00 00:00:00", org.jooq.impl.SQLDataType.TIMESTAMP)), this, "交易时间");
+    public final TableField<TradesRecordRecord, Timestamp> TRADE_TIME = createField("trade_time", org.jooq.impl.SQLDataType.TIMESTAMP, this, "交易时间");
 
     /**
      * The column <code>mini_shop_471752.b2c_trades_record.trade_num</code>. 交易额

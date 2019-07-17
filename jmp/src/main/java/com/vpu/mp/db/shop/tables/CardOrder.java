@@ -43,7 +43,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class CardOrder extends TableImpl<CardOrderRecord> {
 
-    private static final long serialVersionUID = 1880920045;
+    private static final long serialVersionUID = 1862252094;
 
     /**
      * The reference instance of <code>mini_shop_471752.b2c_card_order</code>
@@ -151,7 +151,7 @@ public class CardOrder extends TableImpl<CardOrderRecord> {
     /**
      * The column <code>mini_shop_471752.b2c_card_order.pay_time</code>. 支付时间
      */
-    public final TableField<CardOrderRecord, Timestamp> PAY_TIME = createField("pay_time", org.jooq.impl.SQLDataType.TIMESTAMP.nullable(false).defaultValue(org.jooq.impl.DSL.inline("0000-00-00 00:00:00", org.jooq.impl.SQLDataType.TIMESTAMP)), this, "支付时间");
+    public final TableField<CardOrderRecord, Timestamp> PAY_TIME = createField("pay_time", org.jooq.impl.SQLDataType.TIMESTAMP, this, "支付时间");
 
     /**
      * The column <code>mini_shop_471752.b2c_card_order.seller_remark</code>. 卖家备注
@@ -196,12 +196,12 @@ public class CardOrder extends TableImpl<CardOrderRecord> {
     /**
      * The column <code>mini_shop_471752.b2c_card_order.return_time</code>. 退款时间
      */
-    public final TableField<CardOrderRecord, Timestamp> RETURN_TIME = createField("return_time", org.jooq.impl.SQLDataType.TIMESTAMP.nullable(false).defaultValue(org.jooq.impl.DSL.inline("0000-00-00 00:00:00", org.jooq.impl.SQLDataType.TIMESTAMP)), this, "退款时间");
+    public final TableField<CardOrderRecord, Timestamp> RETURN_TIME = createField("return_time", org.jooq.impl.SQLDataType.TIMESTAMP, this, "退款时间");
 
     /**
      * The column <code>mini_shop_471752.b2c_card_order.del_time</code>. 退款时间
      */
-    public final TableField<CardOrderRecord, Timestamp> DEL_TIME = createField("del_time", org.jooq.impl.SQLDataType.TIMESTAMP.nullable(false).defaultValue(org.jooq.impl.DSL.inline("0000-00-00 00:00:00", org.jooq.impl.SQLDataType.TIMESTAMP)), this, "退款时间");
+    public final TableField<CardOrderRecord, Timestamp> DEL_TIME = createField("del_time", org.jooq.impl.SQLDataType.TIMESTAMP, this, "退款时间");
 
     /**
      * The column <code>mini_shop_471752.b2c_card_order.create_time</code>.

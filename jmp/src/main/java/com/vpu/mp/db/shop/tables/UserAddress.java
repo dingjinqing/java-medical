@@ -42,7 +42,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class UserAddress extends TableImpl<UserAddressRecord> {
 
-    private static final long serialVersionUID = 745157889;
+    private static final long serialVersionUID = -800512314;
 
     /**
      * The reference instance of <code>mini_shop_471752.b2c_user_address</code>
@@ -165,7 +165,7 @@ public class UserAddress extends TableImpl<UserAddressRecord> {
     /**
      * The column <code>mini_shop_471752.b2c_user_address.last_used_time</code>.
      */
-    public final TableField<UserAddressRecord, Timestamp> LAST_USED_TIME = createField("last_used_time", org.jooq.impl.SQLDataType.TIMESTAMP.nullable(false).defaultValue(org.jooq.impl.DSL.inline("0000-00-00 00:00:00", org.jooq.impl.SQLDataType.TIMESTAMP)), this, "");
+    public final TableField<UserAddressRecord, Timestamp> LAST_USED_TIME = createField("last_used_time", org.jooq.impl.SQLDataType.TIMESTAMP, this, "");
 
     /**
      * The column <code>mini_shop_471752.b2c_user_address.create_time</code>.

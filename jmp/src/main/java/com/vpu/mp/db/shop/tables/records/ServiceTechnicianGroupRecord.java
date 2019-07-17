@@ -30,17 +30,17 @@ import org.jooq.impl.UpdatableRecordImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class ServiceTechnicianGroupRecord extends UpdatableRecordImpl<ServiceTechnicianGroupRecord> implements Record6<Integer, String, Integer, Timestamp, Timestamp, Short> {
 
-    private static final long serialVersionUID = 845956043;
+    private static final long serialVersionUID = -1803709647;
 
     /**
-     * Setter for <code>mini_shop_471752.b2c_service_technician_group.group_id</code>. 技师分组
+     * Setter for <code>mini_shop_471752.b2c_service_technician_group.group_id</code>. 分组id
      */
     public void setGroupId(Integer value) {
         set(0, value);
     }
 
     /**
-     * Getter for <code>mini_shop_471752.b2c_service_technician_group.group_id</code>. 技师分组
+     * Getter for <code>mini_shop_471752.b2c_service_technician_group.group_id</code>. 分组id
      */
     public Integer getGroupId() {
         return (Integer) get(0);

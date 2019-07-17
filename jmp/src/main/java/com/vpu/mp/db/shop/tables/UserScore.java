@@ -42,7 +42,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class UserScore extends TableImpl<UserScoreRecord> {
 
-    private static final long serialVersionUID = 533410453;
+    private static final long serialVersionUID = -2126045296;
 
     /**
      * The reference instance of <code>mini_shop_471752.b2c_user_score</code>
@@ -125,7 +125,7 @@ public class UserScore extends TableImpl<UserScoreRecord> {
     /**
      * The column <code>mini_shop_471752.b2c_user_score.expire_time</code>.
      */
-    public final TableField<UserScoreRecord, Timestamp> EXPIRE_TIME = createField("expire_time", org.jooq.impl.SQLDataType.TIMESTAMP.nullable(false).defaultValue(org.jooq.impl.DSL.inline("0000-00-00 00:00:00", org.jooq.impl.SQLDataType.TIMESTAMP)), this, "");
+    public final TableField<UserScoreRecord, Timestamp> EXPIRE_TIME = createField("expire_time", org.jooq.impl.SQLDataType.TIMESTAMP, this, "");
 
     /**
      * The column <code>mini_shop_471752.b2c_user_score.admin_user</code>. 操作员

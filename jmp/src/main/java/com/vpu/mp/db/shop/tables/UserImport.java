@@ -42,7 +42,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class UserImport extends TableImpl<UserImportRecord> {
 
-    private static final long serialVersionUID = -1408664075;
+    private static final long serialVersionUID = 250671234;
 
     /**
      * The reference instance of <code>mini_shop_471752.b2c_user_import</code>
@@ -85,7 +85,7 @@ public class UserImport extends TableImpl<UserImportRecord> {
     /**
      * The column <code>mini_shop_471752.b2c_user_import.del_time</code>. 删除时间
      */
-    public final TableField<UserImportRecord, Timestamp> DEL_TIME = createField("del_time", org.jooq.impl.SQLDataType.TIMESTAMP.nullable(false).defaultValue(org.jooq.impl.DSL.inline("0000-00-00 00:00:00", org.jooq.impl.SQLDataType.TIMESTAMP)), this, "删除时间");
+    public final TableField<UserImportRecord, Timestamp> DEL_TIME = createField("del_time", org.jooq.impl.SQLDataType.TIMESTAMP, this, "删除时间");
 
     /**
      * The column <code>mini_shop_471752.b2c_user_import.create_time</code>.

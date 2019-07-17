@@ -42,7 +42,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class RecommendGoods extends TableImpl<RecommendGoodsRecord> {
 
-    private static final long serialVersionUID = -886645004;
+    private static final long serialVersionUID = -1096821947;
 
     /**
      * The reference instance of <code>mini_shop_471752.b2c_recommend_goods</code>
@@ -100,7 +100,7 @@ public class RecommendGoods extends TableImpl<RecommendGoodsRecord> {
     /**
      * The column <code>mini_shop_471752.b2c_recommend_goods.del_time</code>. 删除时间
      */
-    public final TableField<RecommendGoodsRecord, Timestamp> DEL_TIME = createField("del_time", org.jooq.impl.SQLDataType.TIMESTAMP.nullable(false).defaultValue(org.jooq.impl.DSL.inline("0000-00-00 00:00:00", org.jooq.impl.SQLDataType.TIMESTAMP)), this, "删除时间");
+    public final TableField<RecommendGoodsRecord, Timestamp> DEL_TIME = createField("del_time", org.jooq.impl.SQLDataType.TIMESTAMP, this, "删除时间");
 
     /**
      * The column <code>mini_shop_471752.b2c_recommend_goods.recommend_sort_id</code>. 推荐商家分类id
