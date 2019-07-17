@@ -33,7 +33,10 @@ public class AdminIndexController extends AdminBaseController {
 	 * 
 	 * @return
 	 */
-	//@RequestMapping(value = "/admin/showMenu")
+	/**
+	 * @RequestMapping(value = "/admin/showMenu")
+	 * 
+	 */
 	public JsonResult showMenu() {
 		String json = Util.loadResource(menuJsonPath);
 		String json2 = Util.loadResource(privilegeJsonPath);
