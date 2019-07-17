@@ -39,7 +39,7 @@ public class AdminStoreController extends AdminBaseController{
      */
     @PostMapping(value = "/api/admin/store/group/list")
     public JsonResult getStoreGroupByPage(@RequestBody StoreGroupQueryParam param) {
-        PageResult<StoreGroup> storeGroupPageResult = shop().store.getStoreGroupPageList(param);
+        PageResult<StoreGroup> storeGroupPageResult = shop().store.storeGroup.getStoreGroupPageList(param);
         return success(storeGroupPageResult);
     }
     
@@ -127,9 +127,9 @@ public class AdminStoreController extends AdminBaseController{
      */
     @PostMapping(value = "/api/admin/store/group/add")
     public JsonResult addStoreGroup(@RequestBody StoreGroupQueryParam param) {
-        boolean isExist = shop().store.isStoreGroupExist(param);
+        boolean isExist = shop().store.storeGroup.isStoreGroupExist(param);
         if ( isExist ){
-            int count = shop().store.insertStoreGroup(param);
+            int count = shop().store.storeGroup.insertStoreGroup(param);
             if (count > 0){
                 return success();
             }else{
@@ -146,9 +146,9 @@ public class AdminStoreController extends AdminBaseController{
      */
     @PostMapping(value = "/api/admin/store/group/update")
     public JsonResult updateStoreGroup(@RequestBody StoreGroupQueryParam param) {
-        boolean isExist = shop().store.isStoreGroupExist(param);
+        boolean isExist = shop().store.storeGroup.isStoreGroupExist(param);
         if ( isExist ){
-            int count = shop().store.updateStoreGroup(param);
+            int count = shop().store.storeGroup.updateStoreGroup(param);
             if (count > 0){
                 return success();
             }else{
@@ -165,7 +165,7 @@ public class AdminStoreController extends AdminBaseController{
      */
     @PostMapping(value = "/api/admin/store/group/del")
     public JsonResult delStoreGroup(@RequestBody StoreGroupQueryParam param) {
-        shop().store.deleteStoreGroup(param);
+        shop().store.storeGroup.deleteStoreGroup(param);
         return success();
 
     }
