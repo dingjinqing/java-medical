@@ -2,8 +2,8 @@
   <div class="content">
     <div class="name">
       <span>系统管理后台</span>
-      <span class="line">/</span>
-      <span class="shoper">商家账号添加</span>
+      <span>/</span>
+      <span>商家账号添加</span>
     </div>
     <div class="account-info">
       <div class="account-list">商家账号列表</div>
@@ -180,10 +180,13 @@ export default {
   }
   .name span {
     margin-right: 5px;
+    font-size: 14px;
+    line-height: 24px;
+    height: 24px;
+    color: #999;
   }
-  .line,
-  .shoper {
-    color: #ccc;
+  .name span:nth-child(1) {
+    color: #333;
   }
   .account-info {
     display: flex;

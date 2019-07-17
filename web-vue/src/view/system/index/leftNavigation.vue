@@ -15,9 +15,12 @@
             :src="nav_index==index||click_nav_index==index?item.imgUrl_h:item.imgUrl"
             :class="nav_s_class_index&&index==0?'nav_s_class':''"
           >
-          <span class="title">{{item.span}}</span>
+          <span
+            :class="nav_index==index||click_nav_index==index?'active_bg':''"
+          >{{item.span}}</span>
         </li>
       </ul>
+      <!-- <div>尾部图片</div> -->
     </div>
   </div>
 </template>
@@ -454,11 +457,11 @@ ul li span {
   font-size: 14px;
   height: 45px;
   line-height: 45px;
-  opacity: 0.7;
+  opacity: 1;
 }
 .active_bg {
-  color: #86a7cb ;
-  background: #e7f1ff !important;
+  background: #e7f1ff;
+  color: #86a7cb;
 }
 .nav_s_class {
   width: 66px;
@@ -467,7 +470,4 @@ ul li span {
   left: -11px;
   bottom: -9px;
 }
-/* .title {
-  color: #86a7cb;
-} */
 </style>

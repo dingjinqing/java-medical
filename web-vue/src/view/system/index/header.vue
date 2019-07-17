@@ -13,7 +13,10 @@
         @mouseleave="header_nav_leave(index)"
         class="wrapper"
       >
-        <span class="title">{{item.title}}</span>
+        <img :src="item.img" alt="">
+        <span
+          :class="nav_index==index||click_nav_index==index?'active_bg':''"
+        >{{item.title}}</span>
       </div>
     </div>
 
@@ -29,7 +32,7 @@
               <label>
                 {{this.username}}system
               </label>
-              <img :src="imageUrl[7].img_7">
+              <img :src="imageUrl[1].img_2">
             </span>
           </div>
         </div>
@@ -49,7 +52,7 @@
         >
           {{item}}
         </div>
-        <img :src="imageUrl[8].img_8">
+        <img :src="imageUrl[2].img_3">
       </div>
     </div>
 
@@ -64,14 +67,8 @@ export default {
     return {
       imageUrl: [
         { img_1: this.$imageHost + '/image/system/b2c_logo.png' },
-        { img_0: this.$imageHost + '/image/system/first_1.png' },
-        { img_2: this.$imageHost + '/image/system/first_2.png' },
-        { img_3: this.$imageHost + '/image/system/first_3.png' },
-        { img_4: this.$imageHost + '/image/system/first_4.png' },
-        { img_5: this.$imageHost + '/image/system/get_user.png' },
-        { img_6: this.$imageHost + '/image/system/first_5.png' },
-        { img_7: this.$imageHost + '/image/admin/img1.png' },
-        { img_8: this.$imageHost + '/image/admin/menu_top_1.png' }
+        { img_2: this.$imageHost + '/image/admin/img1.png' },
+        { img_3: this.$imageHost + '/image/admin/menu_top_1.png' }
       ],
       log_menu_show: false,
       // hiddle_menu_list: [this.$t('shopData.set'), this.$t('shopData.administration_J'), this.$t('shopData.public'), this.$t('shopData.choice'), this.$t('shopData.loginOut')],
@@ -80,13 +77,13 @@ export default {
       username: '',
       menu_width: '',
       header_navData: [
-        { title: '概览', index: '' },
-        { title: '店铺管理', index: '' },
-        { title: '数据统计', index: '' },
-        { title: '商品管理', index: '' },
-        { title: '会员管理', index: '' },
-        { title: '订单管理', index: '' },
-        { title: '设置', index: '' }
+        { title: '概览', index: '', img: this.$imageHost + '/image/system/first_1.png' },
+        { title: '店铺管理', index: '', img: this.$imageHost + '/image/system/first_2.png' },
+        { title: '数据统计', index: '', img: this.$imageHost + '/image/system/first_3.png' },
+        { title: '商品管理', index: '', img: this.$imageHost + '/image/system/first_3.png' },
+        { title: '会员管理', index: '', img: this.$imageHost + '/image/system/get_user.png' },
+        { title: '订单管理', index: '', img: this.$imageHost + '/image/system/first_4.png' },
+        { title: '设置', index: '', img: this.$imageHost + '/image/system/first_4.png' }
       ],
       active_bg: 'active_bg',
       nav_index: '',
@@ -317,6 +314,7 @@ label {
   cursor: pointer;
   display: inline-block;
   max-width: 100%;
+  margin-bottom: 5px;
   font-weight: 700;
   font-size: 14px;
 }
@@ -359,18 +357,30 @@ label {
 .header_nav > div {
   height: 85px;
   display: flex;
-  padding: 15px 25px;
+  padding: 10px 25px;
   cursor: pointer;
+}
+.header_nav > div > img {
+  position: absolute;
+  width: 26px;
+  height: 24px;
 }
 .header_nav > div > span {
   display: block;
-  margin: auto;
   height: 52px;
-  line-height: 52px;
   font-size: 14px;
   color: #fff;
+  padding: 8px 0;
 }
 .wrapper {
-  border: 1px solid #fff;
+  border-left: 1px solid #749dc9;
+}
+.wrapper:nth-last-child(1) {
+  border-right: 1px solid #749dc9;
+}
+.active_bg {
+  background-color: #e7f1ff;
+  border-color: #e7f1ff;
+  color: #749dc9 !important;
 }
 </style>

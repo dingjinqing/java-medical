@@ -54,7 +54,13 @@
     <el-input v-model="form.salesman"></el-input>
   </el-form-item>
   <el-form-item label="地理位置">
-    <el-switch on-text="" off-text=""></el-switch>
+    <div>
+      <v-distpicker
+        province="北京市"
+        city="北京城区"
+        area="东城区"
+      ></v-distpicker>
+    </div>
   </el-form-item>
   <el-form-item label="详细地址">
     <el-input v-model="form.address"></el-input>
@@ -86,7 +92,9 @@
 </template>
 
 <script>
+import VDistpicker from 'v-distpicker'
 export default {
+  component: { VDistpicker },
   data () {
     return {
       form: {
