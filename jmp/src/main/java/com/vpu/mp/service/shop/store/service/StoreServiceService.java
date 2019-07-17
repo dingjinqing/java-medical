@@ -112,14 +112,15 @@ public class StoreServiceService extends BaseService{
 	 * @return String
 	 */
 	public String createServiceSn(){
-		String serviceSn = "";
+		String serviceSn;
 		do {
+			serviceSn = "";
             Integer id = db().select(STORE_SERVICE.ID).from(STORE_SERVICE).orderBy(STORE_SERVICE.ID.desc()).limit(1).fetchOne().into(Integer.class);
             Random random = new Random();
             int s = random.nextInt(999)%(900) + 100;
             serviceSn = String.valueOf(id+1) + String.valueOf(s);
             serviceSn = StringUtils.leftPad(serviceSn, 9, "10");
-            serviceSn = "G" + serviceSn;
+            serviceSn = "G".concat(serviceSn);
         } while (this.hasServiceSn(serviceSn));
 		return serviceSn;
 	}
