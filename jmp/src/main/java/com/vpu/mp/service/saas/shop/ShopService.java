@@ -47,6 +47,7 @@ public class ShopService extends BaseService {
 	public ShopMenuService menu;
 	public MpDecorationService decoration;
 	public MpAuthShopService mp;
+	public ShopImageManageService image;
 
 	public PageResult<ShopListQueryResp> getPageList(ShopListQueryParam param) {
 		SelectWhereStep<Record> select = db()

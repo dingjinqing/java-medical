@@ -212,7 +212,6 @@ public class Keys {
     public static final Identity<ShopRenewRecord, Integer> IDENTITY_SHOP_RENEW = Identities0.IDENTITY_SHOP_RENEW;
     public static final Identity<ShopRoleRecord, Integer> IDENTITY_SHOP_ROLE = Identities0.IDENTITY_SHOP_ROLE;
     public static final Identity<ShopUploadedImageRecord, Integer> IDENTITY_SHOP_UPLOADED_IMAGE = Identities0.IDENTITY_SHOP_UPLOADED_IMAGE;
-    public static final Identity<ShopUploadedImageCategoryRecord, Integer> IDENTITY_SHOP_UPLOADED_IMAGE_CATEGORY = Identities0.IDENTITY_SHOP_UPLOADED_IMAGE_CATEGORY;
     public static final Identity<ShopVersionRecord, Integer> IDENTITY_SHOP_VERSION = Identities0.IDENTITY_SHOP_VERSION;
     public static final Identity<SmsRecord, Integer> IDENTITY_SMS = Identities0.IDENTITY_SMS;
     public static final Identity<SortRecord, Integer> IDENTITY_SORT = Identities0.IDENTITY_SORT;
@@ -230,6 +229,7 @@ public class Keys {
     public static final Identity<UserDetailRecord, Integer> IDENTITY_USER_DETAIL = Identities0.IDENTITY_USER_DETAIL;
     public static final Identity<UserLoginRecordRecord, Integer> IDENTITY_USER_LOGIN_RECORD = Identities0.IDENTITY_USER_LOGIN_RECORD;
     public static final Identity<UserSummaryTrendRecord, Integer> IDENTITY_USER_SUMMARY_TREND = Identities0.IDENTITY_USER_SUMMARY_TREND;
+    public static final Identity<ShopUploadedImageCategoryRecord, Integer> IDENTITY_SHOP_UPLOADED_IMAGE_CATEGORY = Identities0.IDENTITY_SHOP_UPLOADED_IMAGE_CATEGORY;
 
     // -------------------------------------------------------------------------
     // UNIQUE and PRIMARY KEY definitions
@@ -306,7 +306,6 @@ public class Keys {
     public static final UniqueKey<ShopRenewRecord> KEY_B2C_SHOP_RENEW_PRIMARY = UniqueKeys0.KEY_B2C_SHOP_RENEW_PRIMARY;
     public static final UniqueKey<ShopRoleRecord> KEY_B2C_SHOP_ROLE_PRIMARY = UniqueKeys0.KEY_B2C_SHOP_ROLE_PRIMARY;
     public static final UniqueKey<ShopUploadedImageRecord> KEY_B2C_SHOP_UPLOADED_IMAGE_PRIMARY = UniqueKeys0.KEY_B2C_SHOP_UPLOADED_IMAGE_PRIMARY;
-    public static final UniqueKey<ShopUploadedImageCategoryRecord> KEY_B2C_SHOP_UPLOADED_IMAGE_CATEGORY_PRIMARY = UniqueKeys0.KEY_B2C_SHOP_UPLOADED_IMAGE_CATEGORY_PRIMARY;
     public static final UniqueKey<ShopVersionRecord> KEY_B2C_SHOP_VERSION_PRIMARY = UniqueKeys0.KEY_B2C_SHOP_VERSION_PRIMARY;
     public static final UniqueKey<ShopVersionRecord> KEY_B2C_SHOP_VERSION_LEVEL = UniqueKeys0.KEY_B2C_SHOP_VERSION_LEVEL;
     public static final UniqueKey<SmsRecord> KEY_B2C_SMS_PRIMARY = UniqueKeys0.KEY_B2C_SMS_PRIMARY;
@@ -327,6 +326,7 @@ public class Keys {
     public static final UniqueKey<UserDetailRecord> KEY_B2C_USER_DETAIL_PRIMARY = UniqueKeys0.KEY_B2C_USER_DETAIL_PRIMARY;
     public static final UniqueKey<UserLoginRecordRecord> KEY_B2C_USER_LOGIN_RECORD_PRIMARY = UniqueKeys0.KEY_B2C_USER_LOGIN_RECORD_PRIMARY;
     public static final UniqueKey<UserSummaryTrendRecord> KEY_B2C_USER_SUMMARY_TREND_PRIMARY = UniqueKeys0.KEY_B2C_USER_SUMMARY_TREND_PRIMARY;
+    public static final UniqueKey<ShopUploadedImageCategoryRecord> KEY_B2C_SHOP_UPLOADED_IMAGE_CATEGORY_PRIMARY = UniqueKeys0.KEY_B2C_SHOP_UPLOADED_IMAGE_CATEGORY_PRIMARY;
 
     // -------------------------------------------------------------------------
     // FOREIGN KEY definitions
@@ -338,6 +338,7 @@ public class Keys {
     // -------------------------------------------------------------------------
 
     private static class Identities0 {
+        public static Identity<ShopUploadedImageCategoryRecord, Integer> IDENTITY_SHOP_UPLOADED_IMAGE_CATEGORY = Internal.createIdentity(ShopUploadedImageCategory.SHOP_UPLOADED_IMAGE_CATEGORY, ShopUploadedImageCategory.SHOP_UPLOADED_IMAGE_CATEGORY.IMG_CAT_ID);
         public static Identity<ActivityStatisticsRecord, Integer> IDENTITY_ACTIVITY_STATISTICS = Internal.createIdentity(ActivityStatistics.ACTIVITY_STATISTICS, ActivityStatistics.ACTIVITY_STATISTICS.ID);
         public static Identity<AliMiniAgentRecord, Integer> IDENTITY_ALI_MINI_AGENT = Internal.createIdentity(AliMiniAgent.ALI_MINI_AGENT, AliMiniAgent.ALI_MINI_AGENT.REC_ID);
         public static Identity<AliMiniAppVersionRecord, Integer> IDENTITY_ALI_MINI_APP_VERSION = Internal.createIdentity(AliMiniAppVersion.ALI_MINI_APP_VERSION, AliMiniAppVersion.ALI_MINI_APP_VERSION.REC_ID);
@@ -381,7 +382,6 @@ public class Keys {
         public static Identity<ShopRenewRecord, Integer> IDENTITY_SHOP_RENEW = Internal.createIdentity(ShopRenew.SHOP_RENEW, ShopRenew.SHOP_RENEW.ID);
         public static Identity<ShopRoleRecord, Integer> IDENTITY_SHOP_ROLE = Internal.createIdentity(ShopRole.SHOP_ROLE, ShopRole.SHOP_ROLE.ROLE_ID);
         public static Identity<ShopUploadedImageRecord, Integer> IDENTITY_SHOP_UPLOADED_IMAGE = Internal.createIdentity(ShopUploadedImage.SHOP_UPLOADED_IMAGE, ShopUploadedImage.SHOP_UPLOADED_IMAGE.IMG_ID);
-        public static Identity<ShopUploadedImageCategoryRecord, Integer> IDENTITY_SHOP_UPLOADED_IMAGE_CATEGORY = Internal.createIdentity(ShopUploadedImageCategory.SHOP_UPLOADED_IMAGE_CATEGORY, ShopUploadedImageCategory.SHOP_UPLOADED_IMAGE_CATEGORY.IMG_CAT_ID);
         public static Identity<ShopVersionRecord, Integer> IDENTITY_SHOP_VERSION = Internal.createIdentity(ShopVersion.SHOP_VERSION, ShopVersion.SHOP_VERSION.ID);
         public static Identity<SmsRecord, Integer> IDENTITY_SMS = Internal.createIdentity(Sms.SMS, Sms.SMS.ID);
         public static Identity<SortRecord, Integer> IDENTITY_SORT = Internal.createIdentity(Sort.SORT, Sort.SORT.SORT_ID);
@@ -402,6 +402,7 @@ public class Keys {
     }
 
     private static class UniqueKeys0 {
+        public static final UniqueKey<ShopUploadedImageCategoryRecord> KEY_B2C_SHOP_UPLOADED_IMAGE_CATEGORY_PRIMARY = Internal.createUniqueKey(ShopUploadedImageCategory.SHOP_UPLOADED_IMAGE_CATEGORY, "KEY_b2c_shop_uploaded_image_category_PRIMARY", ShopUploadedImageCategory.SHOP_UPLOADED_IMAGE_CATEGORY.IMG_CAT_ID);
         public static final UniqueKey<ActivityStatisticsRecord> KEY_B2C_ACTIVITY_STATISTICS_PRIMARY = Internal.createUniqueKey(ActivityStatistics.ACTIVITY_STATISTICS, "KEY_b2c_activity_statistics_PRIMARY", ActivityStatistics.ACTIVITY_STATISTICS.ID);
         public static final UniqueKey<AliMiniAgentRecord> KEY_B2C_ALI_MINI_AGENT_PRIMARY = Internal.createUniqueKey(AliMiniAgent.ALI_MINI_AGENT, "KEY_b2c_ali_mini_agent_PRIMARY", AliMiniAgent.ALI_MINI_AGENT.REC_ID);
         public static final UniqueKey<AliMiniAgentRecord> KEY_B2C_ALI_MINI_AGENT_SHOP_ID = Internal.createUniqueKey(AliMiniAgent.ALI_MINI_AGENT, "KEY_b2c_ali_mini_agent_shop_id", AliMiniAgent.ALI_MINI_AGENT.SHOP_ID);
@@ -473,7 +474,6 @@ public class Keys {
         public static final UniqueKey<ShopRenewRecord> KEY_B2C_SHOP_RENEW_PRIMARY = Internal.createUniqueKey(ShopRenew.SHOP_RENEW, "KEY_b2c_shop_renew_PRIMARY", ShopRenew.SHOP_RENEW.ID);
         public static final UniqueKey<ShopRoleRecord> KEY_B2C_SHOP_ROLE_PRIMARY = Internal.createUniqueKey(ShopRole.SHOP_ROLE, "KEY_b2c_shop_role_PRIMARY", ShopRole.SHOP_ROLE.ROLE_ID);
         public static final UniqueKey<ShopUploadedImageRecord> KEY_B2C_SHOP_UPLOADED_IMAGE_PRIMARY = Internal.createUniqueKey(ShopUploadedImage.SHOP_UPLOADED_IMAGE, "KEY_b2c_shop_uploaded_image_PRIMARY", ShopUploadedImage.SHOP_UPLOADED_IMAGE.IMG_ID);
-        public static final UniqueKey<ShopUploadedImageCategoryRecord> KEY_B2C_SHOP_UPLOADED_IMAGE_CATEGORY_PRIMARY = Internal.createUniqueKey(ShopUploadedImageCategory.SHOP_UPLOADED_IMAGE_CATEGORY, "KEY_b2c_shop_uploaded_image_category_PRIMARY", ShopUploadedImageCategory.SHOP_UPLOADED_IMAGE_CATEGORY.IMG_CAT_ID);
         public static final UniqueKey<ShopVersionRecord> KEY_B2C_SHOP_VERSION_PRIMARY = Internal.createUniqueKey(ShopVersion.SHOP_VERSION, "KEY_b2c_shop_version_PRIMARY", ShopVersion.SHOP_VERSION.ID);
         public static final UniqueKey<ShopVersionRecord> KEY_B2C_SHOP_VERSION_LEVEL = Internal.createUniqueKey(ShopVersion.SHOP_VERSION, "KEY_b2c_shop_version_level", ShopVersion.SHOP_VERSION.LEVEL);
         public static final UniqueKey<SmsRecord> KEY_B2C_SMS_PRIMARY = Internal.createUniqueKey(Sms.SMS, "KEY_b2c_sms_PRIMARY", Sms.SMS.ID);

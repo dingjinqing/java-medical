@@ -247,6 +247,7 @@ create table `b2c_uploaded_image_category` (
   `cat_ids`           varchar(191) not null default '0' comment '层级ID串,逗号分隔',
   `level`             tinyint(4)            default 0 comment '层级，0开始',
   `sort`              int(11)               default 1 comment '排序优先级',
+  `update_time`       timestamp             default now() ON UPDATE CURRENT_TIMESTAMP() COMMENT '更新时间',
   primary key (`img_cat_id`),
   key (`shop_id`)
 );
@@ -632,10 +633,11 @@ create table `b2c_shop_uploaded_image` (
   `img_width`      int(10)                                 not null default '0',
   `img_height`     int(10)                                 not null default '0',
   `is_refer`       tinyint(4)                                       default '0' comment '是否引用',
-  `upload_time`    timestamp                               null     default CURRENT_TIMESTAMP,
+  `upload_time`    timestamp() NULL DEFAULT CURRENT_TIMESTAMP() ON UPDATE CURRENT_TIMESTAMP(),
   `sys_id`         int(11)                                 not null default '0' comment '账户ID',
   `shop_id`        int(11)                                 not null default '0' comment '店铺ID',
   `del_flag`       tinyint(1)                              not null default '0',
+  `create_time`    timestamp() NULL DEFAULT CURRENT_TIMESTAMP() COMMENT '创建时间',
   primary key (`img_id`),
   key `shop_id` (`shop_id`),
   key `img_orig_fname` (`img_orig_fname`)

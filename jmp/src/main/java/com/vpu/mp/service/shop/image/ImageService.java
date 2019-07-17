@@ -98,7 +98,6 @@ public class ImageService extends BaseService {
      */
     public int setCatId(Integer[] imageIds, Integer catId) {
         return db().update(UPLOADED_IMAGE)
-                .set(UPLOADED_IMAGE.CREATE_TIME, Timestamp.valueOf(LocalDateTime.now()))
                 .set(UPLOADED_IMAGE.IMG_CAT_ID, catId)
                 .where(UPLOADED_IMAGE.IMG_ID.in((imageIds)))
                 .execute();
@@ -121,7 +120,7 @@ public class ImageService extends BaseService {
     }
 
 
-    protected List<Integer> convertIntegerArray(List<Integer> array) {
+    public List<Integer> convertIntegerArray(List<Integer> array) {
         List<Integer> result = new ArrayList<Integer>();
         for (Integer i : array) {
             result.add(i.intValue());
@@ -145,7 +144,7 @@ public class ImageService extends BaseService {
                 .and(UPLOADED_IMAGE.IMG_HEIGHT.gt(0));
 
         if (param.imgCatId != null && param.imgCatId > 0) {
-            List<Integer> imgCatIds = convertIntegerArray(category.getChildCategoryIds(param.imgCatId, true, true));
+            List<Integer> imgCatIds = convertIntegerArray(category.getChildCategoryIds(param.imgCatId));
             select.where(UPLOADED_IMAGE.IMG_CAT_ID.in(imgCatIds.toArray(new Integer[0])));
         }
         if (!StringUtils.isBlank(param.keywords)) {
@@ -264,7 +263,7 @@ public class ImageService extends BaseService {
         if (getImageFromOriginName(imageUrl) == null) {
             String extension = this.getImageExension(imageUrl);
             String filename = randomFilename();
-            UploadPath uploadPath = this.getWritableUploadPath("image", filename, extension);
+            UploadPath uploadPath = this.getWritableUploadPath("image", filename, extension,null);
             try {
                 FileUtils.copyURLToFile(new URL(imageUrl), new File(uploadPath.fullPath), 30, 30);
                 deleteFile(uploadPath.getFullPath());
@@ -316,8 +315,12 @@ public class ImageService extends BaseService {
      * @param type
      * @return
      */
-    public String getRelativePathDirectory(String type) {
+    public String getRelativePathDirectory(String type,Integer sysId) {
         Calendar cal = Calendar.getInstance();
+        if (sysId!=null&&!sysId.equals(0)){
+            return String.format("upload/%d/%s/%04d%02d%02d/", sysId, type, cal.get(Calendar.YEAR),
+                    cal.get(Calendar.MONTH) + 1, cal.get(Calendar.DATE));
+        }
         return String.format("upload/%d/%s/%04d%02d%02d/", this.shopId, type, cal.get(Calendar.YEAR),
                 cal.get(Calendar.MONTH) + 1, cal.get(Calendar.DATE));
     }
@@ -330,11 +333,11 @@ public class ImageService extends BaseService {
      * @param extension
      * @return
      */
-    public UploadPath getWritableUploadPath(String type, String filename, String extension) {
+    public UploadPath getWritableUploadPath(String type, String filename, String extension,Integer sysId) {
         UploadPath uploadPath = new UploadPath();
         uploadPath.filname = filename;
         uploadPath.extension = extension;
-        uploadPath.relativeDirectory = getRelativePathDirectory(type);
+        uploadPath.relativeDirectory = getRelativePathDirectory(type,sysId);
         uploadPath.relativeFilePath = uploadPath.relativeDirectory + filename + "." + extension;
         uploadPath.type = type;
         uploadPath.fullPath = fullPath(uploadPath.relativeFilePath);
@@ -453,7 +456,7 @@ public class ImageService extends BaseService {
     }
 
     public UploadPath getImageWritableUploadPath(String contentType) {
-        return this.getWritableUploadPath("image", randomFilename(), getImageExtension(contentType));
+        return this.getWritableUploadPath("image", randomFilename(), getImageExtension(contentType),null);
     }
 
     public String baseFilename(String filename) {
@@ -481,7 +484,7 @@ public class ImageService extends BaseService {
             param.cropWidth = param.w;
             param.cropHeight = param.h;
         }
-        UploadPath uploadPath = getWritableUploadPath("image", randomFilename(), extension);
+        UploadPath uploadPath = getWritableUploadPath("image", randomFilename(), extension,null);
         Thumbnails.of(fullPath)
                 .sourceRegion(param.x, param.y, param.w, param.h)
                 .size(param.cropWidth, param.cropHeight)

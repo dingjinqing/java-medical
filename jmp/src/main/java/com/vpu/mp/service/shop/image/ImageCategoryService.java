@@ -35,6 +35,7 @@ public class ImageCategoryService extends BaseService {
         UploadedImageCategoryRecord record = db().newRecord(UPLOADED_IMAGE_CATEGORY, cat);
         record.setShopId(shopId);
         record.insert();
+//        record.refresh();
         //父节点不是顶节点，查询父节点的ids
         if (!cat.getImgCatParentId().equals(0)) {
             UploadedImageCategoryRecord parent = this.getCategoryById(cat.getImgCatParentId());
@@ -60,7 +61,7 @@ public class ImageCategoryService extends BaseService {
         if (catId == 0) {
             return 0;
         }
-        List<Integer> ids = this.getChildCategoryIds(catId, true, true);
+        List<Integer> ids = this.getChildCategoryIds(catId);
         return db()
                 .delete(UPLOADED_IMAGE_CATEGORY)
                 .where(UPLOADED_IMAGE_CATEGORY.IMG_CAT_ID.in(ids.toArray(new Integer[0])))
@@ -71,13 +72,26 @@ public class ImageCategoryService extends BaseService {
      * 得到子分类ID列表
      *
      * @param parentId
-     * @param includeParentId
-     * @param includeDecent
      * @return
      */
-    public List<Integer> getChildCategoryIds(Integer parentId, boolean includeParentId, boolean includeDecent) {
-        Result<UploadedImageCategoryRecord> records = getChildCategory(parentId, includeParentId, includeDecent);
-        return records.getValues(UPLOADED_IMAGE_CATEGORY.IMG_CAT_ID);
+    public List<Integer> getChildCategoryIds(Integer parentId) {
+       Result<UploadedImageCategoryRecord> result= getChildCategory(parentId);
+        return result==null? new ArrayList<Integer>(): result.getValues(UPLOADED_IMAGE_CATEGORY.IMG_CAT_ID);
+    }
+
+    /**
+     * 获取子分类列表
+     * @param parentId
+     * @return
+     */
+    private Result<UploadedImageCategoryRecord> getChildCategory(Integer parentId) {
+        UploadedImageCategoryRecord record = this.getCategoryById(parentId);
+        if (record==null){
+            return null;
+        }
+        return db().selectFrom(UPLOADED_IMAGE_CATEGORY)
+                .where(UPLOADED_IMAGE_CATEGORY.CAT_IDS.like(this.prefixLikeValue(record.getCatIds()+",")))
+                .fetch();
     }
 
     /**

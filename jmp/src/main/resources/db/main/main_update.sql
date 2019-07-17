@@ -23,3 +23,13 @@ alter table b2c_shop drop column shop_style;
 --07-05王兵兵 shop表缺少的字段
 alter table b2c_shop ADD COLUMN   `expire_time` date DEFAULT NULL COMMENT '到期时间';
 
+-- 07-16 孔德成 b2c_shop_uploaded_image_category表结构修改
+
+ALTER TABLE `b2c_shop_uploaded_image_category`
+ADD COLUMN `update_time` timestamp NULL DEFAULT CURRENT_TIMESTAMP() ON UPDATE CURRENT_TIMESTAMP() COMMENT '更新时间';
+
+-- 07-16 孔德成 b2c_uploaded_image表结构修改
+ALTER TABLE `b2c_shop_uploaded_image`
+    MODIFY COLUMN `upload_time` timestamp(0) NULL DEFAULT CURRENT_TIMESTAMP(0) ON UPDATE CURRENT_TIMESTAMP(0),
+    ADD COLUMN `create_time` timestamp(0) NULL DEFAULT CURRENT_TIMESTAMP(0) COMMENT '创建时间';
+

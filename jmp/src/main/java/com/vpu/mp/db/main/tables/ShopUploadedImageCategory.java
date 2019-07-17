@@ -42,7 +42,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class ShopUploadedImageCategory extends TableImpl<ShopUploadedImageCategoryRecord> {
 
-    private static final long serialVersionUID = 2066241176;
+    private static final long serialVersionUID = -1756000560;
 
     /**
      * The reference instance of <code>mini_main.b2c_shop_uploaded_image_category</code>
@@ -65,42 +65,47 @@ public class ShopUploadedImageCategory extends TableImpl<ShopUploadedImageCatego
     /**
      * The column <code>mini_main.b2c_shop_uploaded_image_category.shop_id</code>. 店铺ID
      */
-    public final TableField<ShopUploadedImageCategoryRecord, Integer> SHOP_ID = createField("shop_id", org.jooq.impl.SQLDataType.INTEGER.nullable(false).defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.INTEGER)), this, "店铺ID");
+    public final TableField<ShopUploadedImageCategoryRecord, Integer> SHOP_ID = createField("shop_id", org.jooq.impl.SQLDataType.INTEGER.nullable(false).defaultValue(DSL.inline("0", org.jooq.impl.SQLDataType.INTEGER)), this, "店铺ID");
 
     /**
      * The column <code>mini_main.b2c_shop_uploaded_image_category.img_cat_name</code>.
      */
-    public final TableField<ShopUploadedImageCategoryRecord, String> IMG_CAT_NAME = createField("img_cat_name", org.jooq.impl.SQLDataType.VARCHAR(60).nullable(false).defaultValue(org.jooq.impl.DSL.inline("", org.jooq.impl.SQLDataType.VARCHAR)), this, "");
+    public final TableField<ShopUploadedImageCategoryRecord, String> IMG_CAT_NAME = createField("img_cat_name", org.jooq.impl.SQLDataType.VARCHAR(60).nullable(false).defaultValue(DSL.inline("", org.jooq.impl.SQLDataType.VARCHAR)), this, "");
 
     /**
      * The column <code>mini_main.b2c_shop_uploaded_image_category.img_cat_parent_id</code>.
      */
-    public final TableField<ShopUploadedImageCategoryRecord, Integer> IMG_CAT_PARENT_ID = createField("img_cat_parent_id", org.jooq.impl.SQLDataType.INTEGER.nullable(false).defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.INTEGER)), this, "");
-
-    /**
-     * The column <code>mini_main.b2c_shop_uploaded_image_category.create_time</code>.
-     */
-    public final TableField<ShopUploadedImageCategoryRecord, Timestamp> CREATE_TIME = createField("create_time", org.jooq.impl.SQLDataType.TIMESTAMP.defaultValue(org.jooq.impl.DSL.field("CURRENT_TIMESTAMP", org.jooq.impl.SQLDataType.TIMESTAMP)), this, "");
+    public final TableField<ShopUploadedImageCategoryRecord, Integer> IMG_CAT_PARENT_ID = createField("img_cat_parent_id", org.jooq.impl.SQLDataType.INTEGER.nullable(false).defaultValue(DSL.inline("0", org.jooq.impl.SQLDataType.INTEGER)), this, "");
 
     /**
      * The column <code>mini_main.b2c_shop_uploaded_image_category.cat_ids</code>. 层级ID串,逗号分隔
      */
-    public final TableField<ShopUploadedImageCategoryRecord, String> CAT_IDS = createField("cat_ids", org.jooq.impl.SQLDataType.VARCHAR(191).nullable(false).defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.VARCHAR)), this, "层级ID串,逗号分隔");
+    public final TableField<ShopUploadedImageCategoryRecord, String> CAT_IDS = createField("cat_ids", org.jooq.impl.SQLDataType.VARCHAR(191).nullable(false).defaultValue(DSL.inline("0", org.jooq.impl.SQLDataType.VARCHAR)), this, "层级ID串,逗号分隔");
 
     /**
      * The column <code>mini_main.b2c_shop_uploaded_image_category.level</code>. 层级，0开始
      */
-    public final TableField<ShopUploadedImageCategoryRecord, Byte> LEVEL = createField("level", org.jooq.impl.SQLDataType.TINYINT.defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.TINYINT)), this, "层级，0开始");
+    public final TableField<ShopUploadedImageCategoryRecord, Byte> LEVEL = createField("level", org.jooq.impl.SQLDataType.TINYINT.defaultValue(DSL.inline("0", org.jooq.impl.SQLDataType.TINYINT)), this, "层级，0开始");
 
     /**
      * The column <code>mini_main.b2c_shop_uploaded_image_category.sort</code>. 排序优先级
      */
-    public final TableField<ShopUploadedImageCategoryRecord, Integer> SORT = createField("sort", org.jooq.impl.SQLDataType.INTEGER.defaultValue(org.jooq.impl.DSL.inline("1", org.jooq.impl.SQLDataType.INTEGER)), this, "排序优先级");
+    public final TableField<ShopUploadedImageCategoryRecord, Integer> SORT = createField("sort", org.jooq.impl.SQLDataType.INTEGER.defaultValue(DSL.inline("1", org.jooq.impl.SQLDataType.INTEGER)), this, "排序优先级");
 
     /**
      * The column <code>mini_main.b2c_shop_uploaded_image_category.sys_id</code>. 账户ID
      */
-    public final TableField<ShopUploadedImageCategoryRecord, Integer> SYS_ID = createField("sys_id", org.jooq.impl.SQLDataType.INTEGER.nullable(false).defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.INTEGER)), this, "账户ID");
+    public final TableField<ShopUploadedImageCategoryRecord, Integer> SYS_ID = createField("sys_id", org.jooq.impl.SQLDataType.INTEGER.nullable(false).defaultValue(DSL.inline("0", org.jooq.impl.SQLDataType.INTEGER)), this, "账户ID");
+
+    /**
+     * The column <code>mini_main.b2c_shop_uploaded_image_category.update_time</code>. 更新时间
+     */
+    public final TableField<ShopUploadedImageCategoryRecord, Timestamp> UPDATE_TIME = createField("update_time", org.jooq.impl.SQLDataType.TIMESTAMP.defaultValue(DSL.field("CURRENT_TIMESTAMP", org.jooq.impl.SQLDataType.TIMESTAMP)), this, "更新时间");
+
+    /**
+     * The column <code>mini_main.b2c_shop_uploaded_image_category.create_time</code>.
+     */
+    public final TableField<ShopUploadedImageCategoryRecord, Timestamp> CREATE_TIME = createField("create_time", org.jooq.impl.SQLDataType.TIMESTAMP.defaultValue(DSL.field("CURRENT_TIMESTAMP", org.jooq.impl.SQLDataType.TIMESTAMP)), this, "");
 
     /**
      * Create a <code>mini_main.b2c_shop_uploaded_image_category</code> table reference
