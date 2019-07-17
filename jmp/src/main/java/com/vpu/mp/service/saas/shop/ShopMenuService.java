@@ -31,6 +31,7 @@ public class ShopMenuService extends BaseService {
 	
 	private static final String enNameList="enNameList";
 
+	private static final String childConfig="child_config";
 	public List<Menu> getMenu() {
 		return getRoleMenu(0);
 	}
@@ -135,6 +136,9 @@ public class ShopMenuService extends BaseService {
 	 * @return
 	 */
 	public Boolean apiAccess(Integer roleId, String path, String reqeName) {
+		if(StringUtils.isEmpty(reqeName)) {
+			return false;
+		}
 		String[] privilegeList = roleId == 0 ? null : saas().shop.role.getPrivilegeList(roleId);
 		if (privilegeList == null) {
 			// 主账户登录，暂时不校验权限。
@@ -152,6 +156,11 @@ public class ShopMenuService extends BaseService {
 				// 请求不在所有定义的权限里
 				return false;
 			}
+		}
+		
+		//单独处理：子账户不能操作店铺权限菜单
+		if(reqeName.equals(childConfig)) {
+			return false;
 		}
 
 		if (!include(privilegeList, reqeName)) {
