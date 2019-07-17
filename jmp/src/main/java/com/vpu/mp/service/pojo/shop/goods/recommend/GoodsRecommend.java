@@ -55,7 +55,6 @@ public class GoodsRecommend {
 	
 	private Timestamp updateTime;
 	
-	private Timestamp delTime;
 	
 	
 	

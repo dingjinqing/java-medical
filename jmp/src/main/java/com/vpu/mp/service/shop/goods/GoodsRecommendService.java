@@ -283,7 +283,6 @@ public class GoodsRecommendService extends BaseService {
 		recommend.setRecommendType(record.getRecommendType());
 		recommend.setStatus(record.getStatus());
 		recommend.setDelFlag(record.getDelFlag());
-		recommend.setDelTime(record.getDelTime());
 		recommend.setUpdateTime(record.getUpdateTime());
 		recommend.setCreateTime(record.getCreateTime());
 		String usePageJson = record.getRecommendUsePage();
