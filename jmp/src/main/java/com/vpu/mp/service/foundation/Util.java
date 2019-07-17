@@ -9,6 +9,7 @@ import java.sql.Timestamp;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.*;
+import java.util.stream.Collectors;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
@@ -391,4 +392,17 @@ public class Util {
 		date=calendar.getTime();
 		return new Timestamp(date.getTime());
 	}
+	
+	/**
+	 * 将map 以String方式返回
+	 * @param map
+	 * @return
+	 */
+	public static String convertMapToString(Map<?,?> map) {
+		return map.keySet().stream()
+					.map(key-> key+" = "+map.get(key))
+					.collect(Collectors.joining(", ","{","}"));
+	}
+	
+	
 }
