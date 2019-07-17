@@ -13,6 +13,7 @@ import org.springframework.stereotype.Component;
 import com.vpu.mp.db.main.tables.records.ShopAccountRecord;
 import com.vpu.mp.db.main.tables.records.ShopChildAccountRecord;
 import com.vpu.mp.db.main.tables.records.ShopRecord;
+import com.vpu.mp.db.main.tables.records.UserLoginRecordRecord;
 import com.vpu.mp.service.foundation.JedisManager;
 import com.vpu.mp.service.foundation.Util;
 import com.vpu.mp.service.pojo.shop.auth.AdminTokenAuthInfo;
@@ -165,6 +166,7 @@ public class AdminAuth {
 		info.setLoginShopId(shopId);
 		info.setShopLogin(true);
 		this.saveTokenInfo(info);
+		insert(info, shop);
 		return true;
 	}
 
@@ -195,4 +197,47 @@ public class AdminAuth {
 			this.saveTokenInfo(info);
 		}
 	}
+
+	/**
+	 * 登录时间表更新
+	 * @param info
+	 * @param shop
+	 * @return
+	 */
+	public int insert(AdminTokenAuthInfo info, ShopRecord shop) {
+		UserLoginRecordRecord record = new UserLoginRecordRecord();
+		record.setUserName(info.getUserName());
+		record.setUserId(info.getSysId());
+		if (info.isSubLogin()) {
+			record.setUserName(info.getSubUserName());
+			record.setUserId(info.getSubAccountId());
+			
+		}
+		record.setSysId(info.getSysId());
+		record.setShopName(shop.getShopName());
+		record.setShopId(shop.getShopId());
+		record.setUserIp(getIpAddress(request));
+		return saas.shop.insertUserLoginRecord(record);
+	}
+
+	public static String getIpAddress(HttpServletRequest request) {
+		String ip = request.getHeader("x-forwarded-for");
+		if (ip == null || ip.length() == 0 || "unknown".equalsIgnoreCase(ip)) {
+			ip = request.getHeader("Proxy-Client-IP");
+		}
+		if (ip == null || ip.length() == 0 || "unknown".equalsIgnoreCase(ip)) {
+			ip = request.getHeader("WL-Proxy-Client-IP");
+		}
+		if (ip == null || ip.length() == 0 || "unknown".equalsIgnoreCase(ip)) {
+			ip = request.getHeader("HTTP_CLIENT_IP");
+		}
+		if (ip == null || ip.length() == 0 || "unknown".equalsIgnoreCase(ip)) {
+			ip = request.getHeader("HTTP_X_FORWARDED_FOR");
+		}
+		if (ip == null || ip.length() == 0 || "unknown".equalsIgnoreCase(ip)) {
+			ip = request.getRemoteAddr();
+		}
+		return ip;
+	}
+
 }
