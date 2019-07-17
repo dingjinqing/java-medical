@@ -20,6 +20,7 @@ import org.jooq.impl.DSL;
 import org.jooq.tools.StringUtils;
 
 import com.vpu.mp.db.main.tables.records.ShopRecord;
+import com.vpu.mp.db.main.tables.records.UserLoginRecordRecord;
 import com.vpu.mp.service.foundation.BaseService;
 import com.vpu.mp.service.foundation.DbConfig;
 import com.vpu.mp.service.foundation.FieldsUtil;
@@ -57,7 +58,7 @@ public class ShopService extends BaseService {
 				.on(SHOP.SHOP_ID.eq(DSL.cast(MP_AUTH_SHOP.SHOP_ID, Integer.class)));
 		select = this.buildOptions(select, param);
 		select.orderBy(SHOP.CREATED.desc());
-		PageResult<ShopListQueryResp> result = accout.getPageResult(select, param.page.currentPage, param.page.pageRows,
+		PageResult<ShopListQueryResp> result = accout.getPageResult(select, param.currentPage, param.pageRows,
 				ShopListQueryResp.class);
 		for (ShopListQueryResp shopList : result.dataList) {
 			shopList.setRenewMoney(this.renew.getShopRenewTotal(shopList.getShopId()));
@@ -308,6 +309,10 @@ public class ShopService extends BaseService {
 			}
 		}
 		return true;
+	}
+	
+	public int insertUserLoginRecord(UserLoginRecordRecord record) {
+		return db().executeInsert(record);
 	}
 
 }

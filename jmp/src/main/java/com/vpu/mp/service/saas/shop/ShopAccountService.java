@@ -18,6 +18,7 @@ import com.vpu.mp.db.main.tables.records.ShopAccountRecord;
 import com.vpu.mp.service.foundation.BaseService;
 import com.vpu.mp.service.foundation.FieldsUtil;
 import com.vpu.mp.service.foundation.JedisManager;
+import com.vpu.mp.service.foundation.JsonResultCode;
 import com.vpu.mp.service.foundation.PageResult;
 import com.vpu.mp.service.foundation.Util;
 import com.vpu.mp.service.pojo.saas.shop.ShopAccountListQueryParam;
@@ -38,7 +39,7 @@ public class ShopAccountService extends BaseService {
 				.from(SHOP_ACCOUNT);
 		select = this.buildOptions(select, param);
 		select.orderBy(SHOP_ACCOUNT.SYS_ID.desc());
-		return this.getPageResult(select, param.page.currentPage, param.page.pageRows, ShopAccountPojo.class);
+		return this.getPageResult(select, param.currentPage, param.pageRows, ShopAccountPojo.class);
 	}
 
 	public SelectWhereStep<? extends Record> buildOptions(SelectWhereStep<? extends Record> select,
@@ -137,6 +138,11 @@ public class ShopAccountService extends BaseService {
 		db().executeUpdate(record);
 		return record;
 	}
+	
+	public int updateAccountInfo(ShopAccountRecord updateAccountInfo) {
+		return db().executeUpdate(updateAccountInfo);
+		
+	}
 	public int updateById(ShopAccountRecord record) {
 		return db().executeUpdate(record);
 	}
@@ -161,6 +167,27 @@ public class ShopAccountService extends BaseService {
 		this.addAccountInfo(shop2);
 		return true;
 
+	}
+	
+	public JsonResultCode editShopAccountService(ShopAccountPojo account) {
+		if (StringUtils.isEmpty(account.getUserName()) || account.getSysId() == null) {
+			//用户名或者sysid为空
+			return JsonResultCode.CODE_ACCOUNT_USERNAME_NOT_NULL;
+		}
+		ShopAccountRecord shop = this.getAccountInfoForId(account.getSysId());
+		if (shop == null) {
+			//sysId不存在
+			return JsonResultCode.CODE_ACCOUNT_SYSID_IS_NULL;
+		}
+		if(!StringUtils.isEmpty(account.getPassword())) {
+			account.setPassword(Util.md5(account.getPassword()));
+		}
+		ShopAccountRecord shop2 = new ShopAccountRecord();
+		FieldsUtil.assignNotNull(account, shop2);
+		if(this.updateAccountInfo(shop2)==1) {
+			return JsonResultCode.CODE_SUCCESS;
+		}
+		return JsonResultCode.CODE_FAIL;
 	}
 
 }
