@@ -87,10 +87,6 @@ public class GoodsSpecProductService extends BaseService {
         for (GoodsSpecProduct goodsSpecProduct : goodsSpecProducts) {
             goodsSpecProduct.setGoodsId(goodsId);
 
-//            if (goodsSpecProduct.getPrdSn() == null) {
-//                goodsSpecProduct.setPrdSn(Util.randomId());
-//            }
-
             String prdDescs = goodsSpecProduct.getPrdDesc();
 
             StringBuilder sb = new StringBuilder();

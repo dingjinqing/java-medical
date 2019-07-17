@@ -56,11 +56,11 @@ public class JacksonConfig {
     class CustomerTimestampSerilizer extends JsonSerializer<Timestamp>{
         @Override
         public void serialize(Timestamp value, JsonGenerator gen, SerializerProvider serializers) throws IOException {
-            if (value==null)
+            if (value == null) {
                 gen.writeNull();
-            else {
-                SimpleDateFormat simpleDateFormat=new SimpleDateFormat(dateFormat);
-                String text=simpleDateFormat.format(value);
+            } else {
+                SimpleDateFormat simpleDateFormat = new SimpleDateFormat(dateFormat);
+                String text = simpleDateFormat.format(value);
                 gen.writeString(text);
             }
         }
