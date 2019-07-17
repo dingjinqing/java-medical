@@ -55,5 +55,22 @@ public class SystemShopAccountController extends SystemBaseController {
 		shopAccountResp.setPage(result.page);
 		return success(shopAccountResp);
 	}
+	
+	
+	/**
+	 * 修改添加商家账户
+	 * @param account
+	 * @return
+	 */
+	@PostMapping("/system/shop/account/edit")
+	public JsonResult editShopAccount(@RequestBody ShopAccountPojo account) {
+		JsonResultCode code=saas.shop.accout.editShopAccountService(account);
+		if (code.equals(JsonResultCode.CODE_SUCCESS)) {
+			return success(JsonResultCode.CODE_SUCCESS);
+		} else {
+			return fail(code);
+		}
+	}
+	
 
 }
