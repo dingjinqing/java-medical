@@ -51,7 +51,7 @@ public class SystemShopController extends SystemBaseController {
 	 */
 	@PostMapping("/system/shop/add")
 	public JsonResult shopAdd(@RequestBody ShopReq shopReq) {
-		ShopAccountRecord accountInfo = saas.shop.accout.getAccountInfoForID(shopReq.getSysId());
+		ShopAccountRecord accountInfo = saas.shop.accout.getAccountInfoForId(shopReq.getSysId());
 		if (accountInfo == null) {
 			return fail();
 		}

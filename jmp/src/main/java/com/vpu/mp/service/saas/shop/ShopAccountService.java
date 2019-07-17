@@ -112,11 +112,11 @@ public class ShopAccountService extends BaseService {
 				.on(SHOP.SHOP_ID.eq(DSL.cast(MP_AUTH_SHOP.SHOP_ID, Integer.class))).fetch(MP_AUTH_SHOP.PRINCIPAL_NAME);
 	}
 
-	public ShopAccountRecord getAccountInfoForID(Integer sysId) {
+	public ShopAccountRecord getAccountInfoForId(Integer sysId) {
 		return db().selectFrom(SHOP_ACCOUNT).where(SHOP_ACCOUNT.SYS_ID.eq(sysId)).fetchAny();
 	}
 
-	public ShopAccountRecord getAccountInfoForID(String nameOrMobile) {
+	public ShopAccountRecord getAccountInfoForId(String nameOrMobile) {
 		return db().selectFrom(SHOP_ACCOUNT)
 				.where(SHOP_ACCOUNT.USER_NAME.eq(nameOrMobile).or(SHOP_ACCOUNT.MOBILE.eq(nameOrMobile))).fetchAny();
 	}
@@ -151,7 +151,7 @@ public class ShopAccountService extends BaseService {
 		if (account.getUserName() == null || account.getPassword() == null) {
 			return false;
 		}
-		ShopAccountRecord shop = this.getAccountInfoForID(account.getUserName());
+		ShopAccountRecord shop = this.getAccountInfoForId(account.getUserName());
 		if (shop != null) {
 			return false;
 		}

@@ -5,7 +5,11 @@ import java.util.List;
 
 import lombok.Data;
 
-
+/**
+ * 
+ * @author lixinguo
+ *
+ */
 @Data
 public class Table {
 	public String tableName;

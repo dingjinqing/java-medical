@@ -7,6 +7,11 @@ import org.apache.commons.lang3.StringUtils;
 
 import lombok.Data;
 
+/**
+ * 
+ * @author lixinguo
+ *
+ */
 @Data
 public class Index {
 	/**
@@ -55,20 +60,4 @@ public class Index {
 		return result;
 	}
 
-	/**
-	 * 添加索引的SQL
-	 * @param index
-	 * @param tableName
-	 * @return
-	 */
-	static public String indexSql(Index index, String tableName) {
-		String cols = StringUtils.join(index.getColumnNames(), ",");
-		if (index.getKeyName().equals("PRIMARY")) {
-			return String.format("alter table %s add primary key %s", tableName, cols);
-		} else if (index.getNonUnique().equals("0")) {
-			return String.format("alter table %s add unique key %s", tableName, cols);
-		} else {
-			return String.format("alter table %s add key %s", tableName, cols);
-		}
-	}
 }

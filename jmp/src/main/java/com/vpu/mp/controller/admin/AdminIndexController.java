@@ -3,9 +3,8 @@ package com.vpu.mp.controller.admin;
 import java.util.Arrays;
 
 import org.springframework.util.StringUtils;
-import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.vpu.mp.service.foundation.JedisManager;
@@ -64,21 +63,10 @@ public class AdminIndexController extends AdminBaseController {
 		}
 	}
 
-	@RequestMapping(value = "/admin/test")
-	@ResponseBody
-	public JsonResult test() throws InterruptedException {
-		if("main".equals(this.input("db"))) {
-			saas.repairDb.repairMainDb();
-		}else if("shop_all".equals(this.input("db"))) {
-			saas.repairDb.repairAllShopDb();
-		}
-		else if("shop".equals(this.input("db"))) {
-			Integer shopId = Integer.valueOf(this.input("shop_id"));
-			saas.repairDb.repairShopDb(shopId);
-		}else {
-			return fail();
-		}
-		return success( );
+	@RequestMapping(value = "/admin/db/main/repair")
+	public JsonResult repairMain(@RequestParam(value="password") String password ) {
+		saas.repairDb.repairMainDb();
+		return success();
 	}
 	
 	/**

@@ -26,18 +26,28 @@ import com.vpu.mp.service.pojo.saas.db.Table;
  */
 public class RepairDatabaseService extends BaseService {
 
+	/**
+	 * 修复主库
+	 */
 	public void repairMainDb() {
 		String sql = Util.loadResource("db/main/db_main.sql");
 		List<Table> tables = this.parseSql(sql);
 		repairDb(tables, this.mainDb());
 	}
 
+	/**
+	 * 修复店铺库
+	 * @param shopId
+	 */
 	public void repairShopDb(Integer shopId) {
 		String sql = Util.loadResource("db/main/db_shop.sql");
 		List<Table> tables = this.parseSql(sql);
 		repairDb(tables, this.shopDb(shopId));
 	}
 
+	/**
+	 * 修复所有店铺库
+	 */
 	public void repairAllShopDb() {
 		String sql = Util.loadResource("db/main/db_shop.sql");
 		List<Table> tables = this.parseSql(sql);
@@ -107,36 +117,36 @@ public class RepairDatabaseService extends BaseService {
 			if (StringUtils.equalsIgnoreCase(r.get("Field").toString(), col.getField())) {
 				found = true;
 				String type = r.get("Type").toString();
-				Column colR = new Column();
-				colR.setField(col.getField());
-				colR.setNullType(r.get("Null").toString());
-				colR.setDefaultValue(r.get("Default") == null ? null : r.get("Default").toString());
+				Column colFromDb = new Column();
+				colFromDb.setField(col.getField());
+				colFromDb.setNullType(r.get("Null").toString());
+				colFromDb.setDefaultValue(r.get("Default") == null ? null : r.get("Default").toString());
 				Matcher m;
 				if ((m = Pattern.compile(regex0, Pattern.CASE_INSENSITIVE).matcher(type)).find()) {
-					colR.setType(m.group(1));
-					colR.setTypeRange1(m.group(2));
-					colR.setTypeRange2(m.group(3));
-					colR.setTypeUnsigned("unsigned");
+					colFromDb.setType(m.group(1));
+					colFromDb.setTypeRange1(m.group(2));
+					colFromDb.setTypeRange2(m.group(3));
+					colFromDb.setTypeUnsigned("unsigned");
 				} else if ((m = Pattern.compile(regex1, Pattern.CASE_INSENSITIVE).matcher(type)).find()) {
-					colR.setType(m.group(1));
-					colR.setTypeRange1(m.group(2));
-					colR.setTypeRange2(m.group(3));
+					colFromDb.setType(m.group(1));
+					colFromDb.setTypeRange1(m.group(2));
+					colFromDb.setTypeRange2(m.group(3));
 				} else if ((m = Pattern.compile(regex2, Pattern.CASE_INSENSITIVE).matcher(type)).find()) {
-					colR.setType(m.group(1));
-					colR.setTypeRange1(m.group(2));
+					colFromDb.setType(m.group(1));
+					colFromDb.setTypeRange1(m.group(2));
 				} else if ((m = Pattern.compile(regex3, Pattern.CASE_INSENSITIVE).matcher(type)).find()) {
-					colR.setType(m.group(1));
+					colFromDb.setType(m.group(1));
 				}
 
 				// 默认精度处理
-				if (!StringUtils.isBlank(colR.getTypeRange1()) && StringUtils.isBlank(col.getTypeRange1())) {
-					col.setTypeRange1(colR.getTypeRange1());
+				if (!StringUtils.isBlank(colFromDb.getTypeRange1()) && StringUtils.isBlank(col.getTypeRange1())) {
+					col.setTypeRange1(colFromDb.getTypeRange1());
 				}
-				if (!StringUtils.isBlank(colR.getTypeRange2()) && StringUtils.isBlank(col.getTypeRange2())) {
-					col.setTypeRange2(colR.getTypeRange2());
+				if (!StringUtils.isBlank(colFromDb.getTypeRange2()) && StringUtils.isBlank(col.getTypeRange2())) {
+					col.setTypeRange2(colFromDb.getTypeRange2());
 				}
 
-				if (!Column.isEquals(col, colR)) {
+				if (!Column.isEquals(col, colFromDb)) {
 					// 列不同,则进行字段修改
 					sql = "alter table " + table.getTableName() + " modify column " + col.getCreateSql();
 				}
@@ -201,22 +211,29 @@ public class RepairDatabaseService extends BaseService {
 	 * @return
 	 */
 	protected String indexSql(Index index, String tableName, boolean modify) {
+		String format = "alter table %s %s add %s key %s";
+		String keyProp = "";
+		String primary = "PRIMARY";
+		String unique = "0";
 		String dropKey = "";
+		String cols = StringUtils.join(index.getColumnNames(), ",");
+		
 		if (modify) {
-			if (index.getKeyName().equals("PRIMARY")) {
+			if (primary.equals(index.getKeyName())) {
 				dropKey = "drop primary key,";
 			} else {
 				dropKey = "drop index `" + index.getKeyName() + "`,";
 			}
 		}
-		String cols = StringUtils.join(index.getColumnNames(), ",");
-		if (index.getKeyName().equals("PRIMARY")) {
-			return String.format("alter table %s %s add primary key %s", tableName, dropKey, cols);
-		} else if (index.getNonUnique().equals("0")) {
-			return String.format("alter table %s %s add unique key %s", tableName, dropKey, cols);
-		} else {
-			return String.format("alter table %s %s add key %s", tableName, dropKey, cols);
-		}
+		
+		
+		if (primary.equals(index.getKeyName())) {
+			keyProp = "primary";
+		} else if (unique.equals(index.getNonUnique())) {
+			keyProp = "unique";
+		} 
+		
+		return String.format(format,tableName,dropKey,keyProp,cols);
 	}
 
 	/**
@@ -227,8 +244,8 @@ public class RepairDatabaseService extends BaseService {
 	 * @return
 	 */
 	public boolean isTableExists(String tableName, DefaultDSLContext db) {
-		Result<Record> tablesR = db.fetch("show tables like '" + tableName + "'");
-		return tablesR.size() > 0;
+		Result<Record> tables = db.fetch("show tables like '" + tableName + "'");
+		return tables.size() > 0;
 	}
 
 	/**
@@ -240,7 +257,8 @@ public class RepairDatabaseService extends BaseService {
 	public List<Table> parseSql(String sql) {
 		List<Table> tables = new ArrayList<Table>();
 		sql = sql.replaceAll("`", "");
-		Pattern pattern = Pattern.compile("create\\s+table\\s+(.*?)\\s*\\((.*?)\\)[^\\)]*?;",
+		String createTableRegex = "create\\s+table\\s+(.*?)\\s*\\((.*?)\\)[^\\)]*?;";
+		Pattern pattern = Pattern.compile(createTableRegex,
 				Pattern.MULTILINE | Pattern.CASE_INSENSITIVE | Pattern.DOTALL);
 		Matcher matcher = pattern.matcher(sql);
 		while (matcher.find()) {

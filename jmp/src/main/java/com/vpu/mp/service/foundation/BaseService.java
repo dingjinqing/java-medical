@@ -26,7 +26,7 @@ public class BaseService extends ServiceContainer {
 	private static ThreadLocal< HashMap<Integer, Configuration> > transactionDbConfigration = new ThreadLocal< HashMap<Integer, Configuration> >() {
 		@Override
 		protected  HashMap<Integer, Configuration>  initialValue() {
-			return new  HashMap<Integer, Configuration> ();
+			return new  HashMap<Integer, Configuration> (0);
 		}
 	};
 	
