@@ -136,7 +136,17 @@ public class GoodsRecommendService extends BaseService {
 		recommend.setRecommendName(param.getRecommendName());
 		recommend.setRecommendType(param.getRecommendType());
 		recommend.setRecommendCatIds(param.getRecommendCatIds());
-		recommend.setRecommendGoods(param.getRecommendGoods());
+		List<GoodsView> goodsList = null;
+		List<Integer> recommendGoods = param.getRecommendGoods();
+		if(recommendGoods != null) {
+			goodsList = new ArrayList<GoodsView>(recommendGoods.size());
+			for (Integer goodsId : recommendGoods) {
+				GoodsView goodsView = new GoodsView();
+				goodsView.setGoodsId(goodsId);
+				goodsList.add(goodsView);
+			}
+		}
+		recommend.setRecommendGoods(goodsList);
 		recommend.setRecommendSortIds(param.getRecommendSortIds());
 		recommend.setStatus(param.getStatus());
 		recommend.setRecommendUsePage(param.getRecommendUsePage());
@@ -234,7 +244,17 @@ public class GoodsRecommendService extends BaseService {
 		recommend.setRecommendName(param.getRecommendName());
 		recommend.setRecommendType(param.getRecommendType());
 		recommend.setRecommendCatIds(param.getRecommendCatIds());
-		recommend.setRecommendGoods(param.getRecommendGoods());
+		List<GoodsView> goodsList = null;
+		List<Integer> recommendGoods = param.getRecommendGoods();
+		if(recommendGoods != null) {
+			goodsList = new ArrayList<GoodsView>(recommendGoods.size());
+			for (Integer goodsId : recommendGoods) {
+				GoodsView goodsView = new GoodsView();
+				goodsView.setGoodsId(goodsId);
+				goodsList.add(goodsView);
+			}
+		}
+		recommend.setRecommendGoods(goodsList);
 		recommend.setRecommendSortIds(param.getRecommendSortIds());
 		recommend.setStatus(param.getStatus());
 		recommend.setRecommendUsePage(param.getRecommendUsePage());

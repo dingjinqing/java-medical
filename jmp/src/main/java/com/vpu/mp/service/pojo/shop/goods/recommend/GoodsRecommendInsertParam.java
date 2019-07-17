@@ -28,7 +28,7 @@ public class GoodsRecommendInsertParam {
 	private Byte status = GoodsRecommend.STATUS_ACTIVE;
 	
 	/** 当类型为指定商品时 选择的商品列表集合 */
-	private List<GoodsView> recommendGoods;
+	private List<Integer> recommendGoods;
 	/** 当类型为指定商品时 选择的商家分类列表ID集合 */
 	private List<Integer> recommendSortIds;
 	/** 当类型为指定商品时 选择的平台分类列表ID集合 */
