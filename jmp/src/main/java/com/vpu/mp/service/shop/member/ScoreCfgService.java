@@ -2,6 +2,8 @@ package com.vpu.mp.service.shop.member;
 
 import static com.vpu.mp.db.shop.tables.UserScoreSet.USER_SCORE_SET;
 import java.lang.reflect.Field;
+import java.util.Map;
+
 import static com.vpu.mp.db.shop.tables.ShopCfg.SHOP_CFG;
 
 import org.jooq.InsertValuesStep3;
@@ -10,6 +12,7 @@ import org.jooq.Record1;
 import org.jooq.Record2;
 import org.jooq.Result;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.vpu.mp.db.shop.tables.records.UserScoreSetRecord;
 import com.vpu.mp.service.foundation.Util;
 import com.vpu.mp.service.pojo.shop.member.ScoreCfgVo;
@@ -247,18 +250,13 @@ public class ScoreCfgService extends BaseShopConfigService {
 		Field[] fields = ScoreCfgVo.class.getFields();
 		ScoreCfgVo vo = new ScoreCfgVo();
 		
-		for(int i=0;i<fieldsStr.length;i++) {
-			String value = db().select(SHOP_CFG.V).from(SHOP_CFG).where(SHOP_CFG.K.eq(fieldsStr[i])).fetchOne().get(SHOP_CFG.V);
-			try {
-				fields[i].set(vo, value);
-			} catch (IllegalArgumentException e) {
-				e.printStackTrace();
-			} catch (IllegalAccessException e) {
-				e.printStackTrace();
-			}
-		}
-		
-	
+		//代码优化
+		//查询配置文件的key-value
+		Map<String, String> intoMap = db().select(SHOP_CFG.K,SHOP_CFG.V).from(SHOP_CFG).fetch().intoMap(SHOP_CFG.K, SHOP_CFG.V);
+		ObjectMapper objectMapper = new ObjectMapper();
+		//将查询的结果赋值到pojo
+		vo = objectMapper.convertValue(intoMap, ScoreCfgVo.class);
+
 		
 		//查询buy
 		Result<Record2<String, String>> result = getValFromUserScoreSet(BUY);
@@ -288,4 +286,5 @@ public class ScoreCfgService extends BaseShopConfigService {
 													.where(USER_SCORE_SET.SCORE_NAME.eq(value)).fetch();
 		return result;
 	}
+	
 }
