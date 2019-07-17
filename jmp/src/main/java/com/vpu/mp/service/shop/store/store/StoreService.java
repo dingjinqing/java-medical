@@ -18,6 +18,7 @@ import com.vpu.mp.service.pojo.shop.store.store.StorePageListVo;
 import com.vpu.mp.service.pojo.shop.store.store.StorePojo;
 import com.vpu.mp.service.shop.store.group.StoreGroupService;
 import com.vpu.mp.service.shop.store.postsale.ServiceTechnicianService;
+import com.vpu.mp.service.shop.store.service.ServiceOrderService;
 import com.vpu.mp.service.shop.store.service.StoreServiceService;
 import com.vpu.mp.service.shop.store.verify.StoreVerifierService;
 
@@ -52,6 +53,11 @@ public class StoreService extends BaseService {
 	 * 技师管理
 	 */
 	public ServiceTechnicianService serviceTechnician;
+	
+	/**
+	 * 服务预约（serviceOrder）
+	 */
+	public ServiceOrderService serviceOrder;
 	
 	/**
 	 * 门店列表分页查询

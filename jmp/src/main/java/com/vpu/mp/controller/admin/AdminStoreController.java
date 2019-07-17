@@ -14,6 +14,7 @@ import com.vpu.mp.service.pojo.shop.config.store.StoreServiceConfig;
 import com.vpu.mp.service.pojo.shop.store.goods.StoreGoodsListQueryParam;
 import com.vpu.mp.service.pojo.shop.store.group.StoreGroup;
 import com.vpu.mp.service.pojo.shop.store.group.StoreGroupQueryParam;
+import com.vpu.mp.service.pojo.shop.store.service.ServiceOrderListQueryParam;
 import com.vpu.mp.service.pojo.shop.store.service.StoreServiceCategoryListQueryParam;
 import com.vpu.mp.service.pojo.shop.store.service.StoreServiceCategoryParam;
 import com.vpu.mp.service.pojo.shop.store.service.StoreServiceListQueryParam;
@@ -354,5 +355,23 @@ public class AdminStoreController extends AdminBaseController{
        }else {
     	   return fail();
        }
+    }
+    
+    /**
+     * 获取门店服务预约分页列表
+     * @return
+     */
+    @PostMapping(value = "/api/admin/store/service/reserve/list")
+    public JsonResult getServiceOrderList(@RequestBody(required = true) @Valid ServiceOrderListQueryParam param) {
+    	return success(shop().store.serviceOrder.getPageList(param));
+    }
+    
+    /**
+     * 获取服务预约订单详情
+     * @return
+     */
+    @GetMapping(value = "/api/admin/store/service/reserve/detail")
+    public JsonResult getServiceOrderDetail(@Valid String orderSn) {
+    	return success(shop().store.serviceOrder.getServiceOrderDetail(orderSn));
     }
 }
