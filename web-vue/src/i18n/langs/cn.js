@@ -243,6 +243,31 @@ const cn = {
     noneImgsText: '当前文件夹未找到符合要求的图片'
 
   },
+  // 店铺风格模块数据
+  shopStyle: {
+    title: '店铺配色方案：',
+    exampleTitle: '当前配色方案示例：',
+    left_title_1: '满200减10',
+    left_title_2: '满300减20',
+    addCarText: '加入购物车',
+    buyText: '立即购买',
+    middle_Text_1: '黑色',
+    right_time: '0天0时29分35',
+    right_kd: '快递',
+    right_count_1: '减10元',
+    right_count_2: '应付总额：0元',
+    right_submit: '提交订单',
+    saveText: '保存',
+    topTitleList: [
+      { title: '配色1', colorLeft: 'background: #ff6666;', colorRight: 'background: #fee7e7', id: '', choiseId: '' },
+      { title: '配色2', colorLeft: 'background: #e53e24;', colorRight: 'background: #f2ad3c', id: '', choiseId: '' },
+      { title: '配色3', colorLeft: 'background: #7e56c5;', colorRight: 'background: #333333', id: '', choiseId: '' },
+      { title: '配色4', colorLeft: 'background: #09bb07;', colorRight: 'background: #333333', id: '', choiseId: '' },
+      { title: '配色5', colorLeft: 'background: #4a90e2;', colorRight: 'background: #dbe9f9', id: '', choiseId: '' },
+      { title: '配色6', colorLeft: 'background: #feb609;', colorRight: 'background: #333333', id: '', choiseId: '' },
+      { title: '自定义', colorLeft: 'background: #fff;', colorRight: 'background: #fff', id: 6, choiseId: '' }
+    ]
+  },
   ...zhLocale
 
 }

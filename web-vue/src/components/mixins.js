@@ -36,6 +36,10 @@ const myMixin = {
 
         // admin imageDalog totle适配
         this.admin_imageDalog_totle = 'admin_imageDalog_totle'
+
+        // admin shopStyle
+        this.en_ch_title_width_one = 'en_ch_title_width_one'
+        this.en_ch_title_width_two = 'en_ch_title_width_two'
       } else {
         this.$i18n.locale = 'cn'
         this.Recommend_class = ''
@@ -68,6 +72,10 @@ const myMixin = {
 
         // admin imageDalog totle适配
         this.admin_imageDalog_totle = ''
+
+        // admin shopStyle
+        this.en_ch_title_width_one = ''
+        this.en_ch_title_width_two = ''
       }
     }
   }

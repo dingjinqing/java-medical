@@ -2,7 +2,10 @@
   <div class="shopStyleContent">
     <div class="shopStyleContent_main">
       <div class="color_title">
-        <div style="padding-left: 20px;">店铺配色方案：</div>
+        <div
+          style="padding-left: 20px;"
+          :class="en_ch_title_width_one"
+        >{{$t('shopStyle.title')}}</div>
         <div
           class="shop_color"
           v-for="(item,index) in colorDataList"
@@ -22,9 +25,24 @@
             :class="item.id===index?'choiseColor':''"
           ></span>
         </div>
+        <colorPicker
+          v-model="colorLeft_"
+          :defaultColor="defaultColorleft"
+          v-on:change="headleChangeColorLeft"
+        />
+        <colorPicker
+          v-model="colorRight"
+          :defaultColor="defaultColorright"
+          v-on:change="headleChangeColorRight"
+          style="right:283px;"
+        />
       </div>
+
       <div class="color_content">
-        <div style="padding-left: 22px">当前配色方案示例：</div>
+        <div
+          style="padding-left: 22px"
+          :class="en_ch_title_width_two"
+        >{{$t('shopStyle.exampleTitle')}}</div>
         <div class="shop_img">
           <div
             class="starClass fa fa-star"
@@ -37,19 +55,19 @@
           <div
             class="couponLeft"
             :style="colorLeft"
-          >满200减10</div>
+          >{{$t('shopStyle.left_title_1')}}</div>
           <div
             class="couponLeft c_right"
             :style="colorLeft"
-          >满300减20</div>
+          >{{$t('shopStyle.left_title_2')}}</div>
           <div
             class="addCatClass"
             :style="btnLeft_background"
-          >加入购物车</div>
+          >{{$t('shopStyle.addCarText')}}</div>
           <div
             class="addCatClass buyClass"
             :style="btnRight_background"
-          >立即购买</div>
+          >{{$t('shopStyle.buyText')}}</div>
         </div>
         <div class="shop_img">
           <div
@@ -59,7 +77,7 @@
           <div
             class="middle_color"
             :style="middleLeft"
-          >黑色</div>
+          >{{$t('shopStyle.middle_Text_1')}}</div>
           <div
             class="middle_size"
             :style="middleLeft"
@@ -67,21 +85,21 @@
           <div
             class="middle_addCar"
             :style="btnLeft_background"
-          >加入购物车</div>
+          >{{$t('shopStyle.addCarText')}}</div>
           <div
             class="middle_buy"
             :style="btnRight_background"
-          >立即购买</div>
+          >{{$t('shopStyle.buyText')}}</div>
         </div>
         <div class="shop_img">
           <div
             class="right_time"
             :style="colorLeft_color"
-          >0天0时29分35</div>
+          >{{$t('shopStyle.right_time')}}</div>
           <div
             class="right_kd"
             :style="rightBorder"
-          >快递</div>
+          >{{$t('shopStyle.right_kd')}}</div>
           <div
             class="right_count"
             :style="colorLeft_color"
@@ -93,47 +111,93 @@
           <div
             class="bottom_count"
             :style="colorLeft_color"
-          >减10元</div>
+          >{{$t('shopStyle.right_count_1')}}</div>
           <div
             class="bottom_left_count"
             :style="colorLeft_color"
-          >应付总额：0元</div>
+          >{{$t('shopStyle.right_count_2')}}</div>
           <div
             class="bottom_submit"
             :style="btnRight_background"
-          >提交订单</div>
+          >{{$t('shopStyle.right_submit')}}</div>
         </div>
       </div>
       <div class="footer">
-        <div class="save">保存</div>
+        <div
+          class="save"
+          @click="saveShopStyle()"
+        >{{$t('shopStyle.saveText')}}</div>
       </div>
     </div>
 
   </div>
 </template>
 <script>
+import { shopStyleGetRequest, shopStyleModifyRequest } from '@/api/admin/shopStyle.js'
 export default {
   data () {
     return {
-      colorDataList: [
-        { title: '配色1', colorLeft: 'background: #ff6666;', colorRight: 'background: #fee7e7', id: '', choiseId: '' },
-        { title: '配色2', colorLeft: 'background: #e53e24;', colorRight: 'background: #f2ad3c', id: '', choiseId: '' },
-        { title: '配色3', colorLeft: 'background: #7e56c5;', colorRight: 'background: #333333', id: '', choiseId: '' },
-        { title: '配色4', colorLeft: 'background: #09bb07;', colorRight: 'background: #333333', id: '', choiseId: '' },
-        { title: '配色5', colorLeft: 'background: #4a90e2;', colorRight: 'background: #dbe9f9', id: '', choiseId: '' },
-        { title: '配色6', colorLeft: 'background: #feb609;', colorRight: 'background: #333333', id: '', choiseId: '' },
-        { title: '自定义', colorLeft: 'background: #fff;', colorRight: 'background: #fff', id: 6, choiseId: '' }
-      ],
+      colorLeft_: '',
+      colorRight: '',
+      colorDataList: this.$t('shopStyle.topTitleList'),
       choiseId: '',
       colorLeft_color: 'color: rgb(255, 102, 102)',
       colorLeft: 'background:rgba(255, 102, 102, 0.2);color: rgb(255, 102, 102);border: 1px solid rgba(255, 102, 102, 0.4)',
       middleLeft: 'color: rgb(255, 102, 102);border: 1px solid rgba(255, 102, 102, 0.4)',
       rightBorder: 'border-bottom: 1px solid rgba(255, 102, 102, 0.4); color: rgb(255, 102, 102)',
       btnLeft_background: 'background: rgb(255, 209, 209)',
-      btnRight_background: 'background: rgb(255, 102, 102)'
+      btnRight_background: 'background: rgb(255, 102, 102)',
+      // 自定义颜色
+      custom_colorLeft_color: '',
+      custom_colorLeft: '',
+      custom_middleLeft: '',
+      custom_rightBorder: '',
+      custom_btnLeft_background: '',
+      custom_btnRight_background: '',
+      defaultColorleft: '',
+      defaultColorright: '',
+      en_ch_title_width_one: '',
+      en_ch_title_width_two: ''
     }
   },
+  mounted () {
+    // 初始化颜色查询
+    this.getShopStyle()
+    // 初始化语言
+    this.langDefault()
+  },
   methods: {
+    // 初始化颜色查询
+    getShopStyle () {
+      shopStyleGetRequest().then((res) => {
+        if (res.content.shopStyleId) {
+          this.choiseId = res.content.shopStyleId
+          if (res.content.shopStyleId === 6) {
+            this.choiseId = res.content.shopStyleId
+            let leftColor = res.content.shopStyleValue.split(',')[0]
+            let RightColor = res.content.shopStyleValue.split(',')[1]
+            // 配色选项初始化
+            this.defaultColorleft = leftColor
+            this.defaultColorright = RightColor
+            this.colorLeft_color = 'color:' + leftColor
+            this.colorLeft = 'background:' + this.ToRgba(leftColor, 0.2) + ';color:' + leftColor + ';border:1px solid ' + this.ToRgba(leftColor, 0.4)
+            this.middleLeft = 'color:' + leftColor + ';border: 1px solid' + this.ToRgba(leftColor, 0.4)
+            this.rightBorder = 'border-bottom: 1px solid' + this.ToRgba(leftColor, 0.4) + '; color:' + leftColor
+            this.btnRight_background = 'background:' + leftColor
+            this.btnLeft_background = 'background:' + RightColor
+            // 自定义颜色存储
+            this.custom_colorLeft_color = this.colorLeft_color
+            this.custom_colorLeft = this.colorLeft
+            this.custom_middleLeft = this.middleLeft
+            this.custom_rightBorder = this.rightBorder
+            this.custom_btnRight_background = this.btnRight_background
+          } else {
+            this.changeColor(res.content.shopStyleId)
+          }
+        }
+        console.log(res.content)
+      })
+    },
     // 选择配色方案
     clickColor (index) {
       this.choiseId = index
@@ -192,14 +256,86 @@ export default {
           this.rightBorder = 'border-bottom: 1px solid rgba(254, 182, 9, 0.4); color: rgb(254, 182, 9)'
           break
         case 6:
-          this.colorLeft_color = 'color: rgb(255, 102, 102)'
-          this.colorLeft = 'background:rgba(255, 102, 102, 0.2);color: rgb(255, 102, 102);border: 1px solid rgba(255, 102, 102, 0.4)'
-          this.middleLeft = 'color: rgb(255, 102, 102);border: 1px solid rgba(255, 102, 102, 0.4)'
-          this.btnLeft_background = 'background: rgb(255, 209, 209)'
-          this.btnRight_background = 'background: rgb(255, 102, 102)'
-          this.rightBorder = 'border-bottom: 1px solid rgba(255, 102, 102, 0.4); color: rgb(255, 102, 102)'
+          this.colorLeft_color = this.custom_colorLeft_color
+          this.colorLeft = this.custom_colorLeft
+          this.middleLeft = this.custom_middleLeft
+          this.btnLeft_background = this.custom_btnLeft_background
+          this.btnRight_background = this.custom_btnRight_background
+          this.rightBorder = this.custom_rightBorder
           break
       }
+    },
+    // 自定义颜色改Left
+    headleChangeColorLeft () {
+      console.log(this.colorLeft_)
+      console.log(this.colorLeft_color)
+      this.ToRgba(this.colorLeft_, 0.2)
+      this.colorLeft_color = 'color:' + this.colorLeft_
+      this.colorLeft = 'background:' + this.ToRgba(this.colorLeft_, 0.2) + ';color:' + this.colorLeft_ + ';border:1px solid ' + this.ToRgba(this.colorLeft_, 0.4)
+      this.middleLeft = 'color:' + this.colorLeft_ + ';border: 1px solid' + this.ToRgba(this.colorLeft_, 0.4)
+      this.rightBorder = 'border-bottom: 1px solid' + this.ToRgba(this.colorLeft_, 0.4) + '; color:' + this.colorLeft_
+      this.btnRight_background = 'background:' + this.colorLeft_
+      // 自定义颜色存储
+      this.custom_colorLeft_color = this.colorLeft_color
+      this.custom_colorLeft = this.colorLeft
+      this.custom_middleLeft = this.middleLeft
+      this.custom_rightBorder = this.rightBorder
+
+      this.custom_btnRight_background = this.btnRight_background
+
+      this.choiseId = 6
+    },
+    // 自定义颜色改Right
+    headleChangeColorRight () {
+      console.log(this.colorRight)
+      this.btnLeft_background = 'background:' + this.colorRight
+      this.custom_btnLeft_background = this.btnLeft_background
+      this.choiseId = 6
+    },
+    // 16进制转换rgba
+    ToRgba (str, n) {
+      // 十六进制颜色值的正则表达式
+      var reg = /^#([0-9a-fA-f]{3}|[0-9a-fA-f]{6})$/
+      var sColor = str.toLowerCase()
+      // 十六进制颜色转换为RGB格式
+      if (sColor && reg.test(sColor)) {
+        if (sColor.length === 4) {
+          var sColorNew = '#'
+          for (let i = 1; i < 4; i += 1) { // 例如：#eee,#fff等
+            sColorNew += sColor.slice(i, i + 1).concat(sColor.slice(i, i + 1))
+          }
+          sColor = sColorNew
+        }
+        // 处理六位颜色值
+        var sColorChange = []
+        for (let i = 1; i < 7; i += 2) {
+          sColorChange.push(parseInt('0x' + sColor.slice(i, i + 2)))
+        }
+        return 'rgba(' + sColorChange.join(',') + ',' + n + ')'
+      } else {
+        return sColor
+      }
+    },
+    // 保存
+    saveShopStyle () {
+      let saveLeftColor = this.btnLeft_background.split(':')[1]
+      let saveRightColor = this.btnRight_background.split(':')[1]
+      let obj = {
+        'shopStyleId': this.choiseId,
+        'shopStyleValue': saveLeftColor + ',' + saveRightColor
+      }
+      console.log(obj)
+      shopStyleModifyRequest(obj).then((res) => {
+        if (res.error === 0) {
+          this.$message({
+            message: '保存成功',
+            type: 'success'
+          })
+        }
+        console.log(res)
+      }).catch(() => {
+        this.$message.error('保存失败')
+      })
     }
   }
 }
@@ -447,6 +583,12 @@ export default {
   text-align: center;
   color: #fff;
 }
+.en_ch_title_width_one {
+  width: 150px !important;
+}
+.en_ch_title_width_two {
+  width: 235px !important;
+}
 .footer {
   background: #f8f8fa;
   border-top: 1px solid #f2f2f2;
@@ -465,5 +607,29 @@ export default {
   color: #fff;
   margin: auto;
   cursor: pointer;
+}
+/* .rightColor {
+  right: 235px !important;
+} */
+</style>
+<style>
+.m-colorPicker {
+  position: absolute !important;
+  right: 307px;
+  top: 18px;
+  width: 24px !important;
+  height: 24px !important;
+}
+.colorBtn {
+  /* width: 100% !important;
+  height: 100% !important;
+  opacity: 0; */
+  width: 24px !important;
+  height: 24px !important;
+  z-index: 10;
+  border: 1px dashed #cccccc;
+}
+.box.open {
+  z-index: 1000;
 }
 </style>

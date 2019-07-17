@@ -243,6 +243,32 @@ const en = {
     noneImgsText: 'The current folder did not find the required picture'
 
   },
+  // 店铺风格模块数据
+  shopStyle: {
+    title: 'Shop color scheme:',
+    exampleTitle: 'Current color scheme example:',
+    left_title_1: 'Full 200 minus 10',
+    left_title_2: 'Full 300 minus 20',
+    addCarText: 'Add to cart',
+    buyText: 'Buy immediately',
+    middle_Text_1: 'black',
+    right_time: '0 days 0:29:35',
+    right_kd: 'express',
+    right_count_1: '10 yuan less',
+    right_count_2: 'Total payable: $0',
+    right_submit: 'place order',
+    saveText: 'Preservation',
+    topTitleList: [
+      { title: 'Colour Matching 1', colorLeft: 'background: #ff6666;', colorRight: 'background: #fee7e7', id: '', choiseId: '' },
+      { title: 'Colour Matching 2', colorLeft: 'background: #e53e24;', colorRight: 'background: #f2ad3c', id: '', choiseId: '' },
+      { title: 'Colour Matching 3', colorLeft: 'background: #7e56c5;', colorRight: 'background: #333333', id: '', choiseId: '' },
+      { title: 'Colour Matching 4', colorLeft: 'background: #09bb07;', colorRight: 'background: #333333', id: '', choiseId: '' },
+      { title: 'Colour Matching 5', colorLeft: 'background: #4a90e2;', colorRight: 'background: #dbe9f9', id: '', choiseId: '' },
+      { title: 'Colour Matching 6', colorLeft: 'background: #feb609;', colorRight: 'background: #333333', id: '', choiseId: '' },
+      { title: 'custom', colorLeft: 'background: #fff;', colorRight: 'background: #fff', id: 6, choiseId: '' }
+    ]
+
+  },
   ...enLocale
 }
 
