@@ -4,6 +4,7 @@ import java.util.List;
 
 import javax.validation.Valid;
 
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -30,7 +31,7 @@ public class AdminServiceScheduleController extends AdminBaseController {
 	 * @param storeId
 	 * @return
 	 */
-	@RequestMapping("/services/schedule/list/{storeId}")
+	@GetMapping("/services/schedule/list/{storeId}")
 	public JsonResult getScheduleList(@PathVariable Integer storeId){
 		List<SchedulePojo> scheduleList = shop().store.serviceTechnician.scheduleService.getScheduleList(storeId);
 		return success(scheduleList);
