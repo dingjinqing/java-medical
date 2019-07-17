@@ -23,7 +23,7 @@ import static com.vpu.mp.db.shop.tables.MpVisitPage.MP_VISIT_PAGE;
  */
 public class PageService extends BaseVisitService {
 
-    public static final String PAGE_OTHER = "page.other";
+    private static final String PAGE_OTHER = "page.other";
 
     public PageVisitVo getPageVisit(VisitPageParam param) {
         String startDate = param.getStartDate();

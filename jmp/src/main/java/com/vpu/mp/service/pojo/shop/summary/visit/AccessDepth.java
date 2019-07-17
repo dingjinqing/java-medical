@@ -1,12 +1,14 @@
 package com.vpu.mp.service.pojo.shop.summary.visit;
 
 import com.vpu.mp.service.pojo.shop.summary.ChartInfo;
+import lombok.Getter;
 
 /**
  * 平均访问深度 key 对应关系
  *
  * @author 郑保乐
  */
+@Getter
 public enum AccessDepth implements ChartInfo {
 
     L1(1, "1 页"),
@@ -27,11 +29,11 @@ public enum AccessDepth implements ChartInfo {
 
     @Override
     public String getName() {
-        return duration;
+        return getDuration();
     }
 
     @Override
     public Integer getKey() {
-        return index;
+        return getIndex();
     }
 }
