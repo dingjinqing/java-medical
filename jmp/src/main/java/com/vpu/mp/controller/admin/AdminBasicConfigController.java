@@ -293,7 +293,6 @@ public class AdminBasicConfigController extends AdminBaseController{
 	 */
 	@PostMapping(value = "/shop/common/update")
 	public JsonResult updateShopCommonInfo(@RequestBody @Valid ShopCommonCfgInfo commonCfg) {
-		System.out.println(commonCfg);
 		if(shop().config.shopCommonConfigService.updateShopCommonInfo(commonCfg)) {
 			return this.success();
 		}else {
