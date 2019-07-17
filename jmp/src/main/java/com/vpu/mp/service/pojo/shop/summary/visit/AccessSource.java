@@ -3,6 +3,8 @@ package com.vpu.mp.service.pojo.shop.summary.visit;
 import com.vpu.mp.service.pojo.shop.summary.ChartInfo;
 import lombok.Getter;
 
+import java.util.Arrays;
+
 /**
  * 访问来源 key 对应关系
  *
@@ -61,5 +63,10 @@ public enum AccessSource implements ChartInfo {
     @Override
     public Integer getKey() {
         return getIndex();
+    }
+
+    public static AccessSource findByIndex(Integer index) {
+        return Arrays.stream(values())
+                .filter(i -> i.getIndex().equals(index)).findFirst().orElseThrow(IllegalStateException::new);
     }
 }

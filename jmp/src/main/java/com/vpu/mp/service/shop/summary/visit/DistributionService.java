@@ -30,6 +30,7 @@ public class DistributionService extends BaseVisitService {
         Map<String, Integer> depthMap = new TreeMap<>();
         String startDate = param.getStartDate();
         String endDate = param.getEndDate();
+        List<Integer> cancelSources = param.getCancelBtn();
         Result<MpDistributionVisitRecord> result = getDistributionRecord(startDate, endDate);
         for (MpDistributionVisitRecord record : result) {
             String list = record.getList();
@@ -50,6 +51,8 @@ public class DistributionService extends BaseVisitService {
                 }
             }
         }
+        /* 移除参数中忽略的访问来源 */
+        cancelSources.forEach(s -> sourceMap.remove(AccessSource.findByIndex(s).getSource()));
         vo.setVisitSource(xKeyYValueVo(sourceMap));
         vo.setVisitDepth(yKeyXValueVo(depthMap));
         vo.setVisitStayTime(yKeyXValueVo(stayTimeMap));

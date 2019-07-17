@@ -51,3 +51,4 @@ public class AdminSummaryController extends AdminBaseController {
         return success(shop().portrait.getPortrait(param));
     }
 }
+
