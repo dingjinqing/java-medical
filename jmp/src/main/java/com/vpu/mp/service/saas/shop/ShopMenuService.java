@@ -136,14 +136,14 @@ public class ShopMenuService extends BaseService {
 	 * @return
 	 */
 	public Boolean apiAccess(Integer roleId, String path, String reqeName) {
-		if(StringUtils.isEmpty(reqeName)) {
-			return false;
-		}
 		String[] privilegeList = roleId == 0 ? null : saas().shop.role.getPrivilegeList(roleId);
 		if (privilegeList == null) {
 			// 主账户登录，暂时不校验权限。
 			// TODO 加不加权限看以后
 			return true;
+		}
+		if(StringUtils.isEmpty(reqeName)) {
+			return false;
 		}
 		String json = Util.loadResource(menuJson);
 
