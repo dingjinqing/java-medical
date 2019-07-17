@@ -51,7 +51,7 @@ public class AdminOrderController extends AdminBaseController{
 	/**
 	 * 买单订单列表查询
 	 */
-	//TODO
+	@PostMapping("/store/list")
 	public JsonResult storyOrderList(@RequestBody StoreOrderPageListQueryParam param) {
 		PageResult<StoreOrderListInfoVo> result = shop().order.getPageList(param);
 		return success(result);

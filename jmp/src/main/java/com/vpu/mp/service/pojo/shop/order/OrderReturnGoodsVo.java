@@ -2,7 +2,10 @@ package com.vpu.mp.service.pojo.shop.order;
 
 import lombok.Getter;
 import lombok.Setter;
-
+/**
+ * 
+ * @author wangshuai
+ */
 @Getter
 @Setter
 public class OrderReturnGoodsVo extends OrderGoodsVo{
