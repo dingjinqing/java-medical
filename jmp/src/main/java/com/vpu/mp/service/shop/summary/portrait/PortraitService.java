@@ -21,7 +21,7 @@ import static com.vpu.mp.db.shop.tables.MpUserPortrait.MP_USER_PORTRAIT;
  */
 public class PortraitService extends BaseService {
 
-    private PortraitVo getPortrait(PortraitParam param) {
+    public PortraitVo getPortrait(PortraitParam param) {
         Integer type = param.getType();
         MpUserPortraitRecord portraitResult = getPortraitResult(type);
         Portrait visitUv = parseVisitJson(portraitResult.getVisitUv());

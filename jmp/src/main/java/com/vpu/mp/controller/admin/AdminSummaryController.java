@@ -1,6 +1,7 @@
 package com.vpu.mp.controller.admin;
 
 import com.vpu.mp.service.foundation.JsonResult;
+import com.vpu.mp.service.pojo.shop.summary.portrait.PortraitParam;
 import com.vpu.mp.service.pojo.shop.summary.visit.VisitDistributionParam;
 import com.vpu.mp.service.pojo.shop.summary.visit.VisitPageParam;
 import com.vpu.mp.service.pojo.shop.summary.visit.VisitStatisticsParam;
@@ -43,5 +44,10 @@ public class AdminSummaryController extends AdminBaseController {
     @PostMapping("/api/admin/summary/visit/page")
     public JsonResult getVisitPage(@Valid @RequestBody VisitPageParam param) {
         return success(shop().page.getPageVisit(param));
+    }
+
+    @PostMapping("/api/admin/summary/portrait/portrait")
+    public JsonResult getUserPortrait(@Valid @RequestBody PortraitParam param) {
+        return success(shop().portrait.getPortrait(param));
     }
 }
