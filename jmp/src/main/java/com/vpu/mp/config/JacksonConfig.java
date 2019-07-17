@@ -35,16 +35,16 @@ public class JacksonConfig {
 
         logger.debug("customer-timestamp-module begin init");
         SimpleModule simpleModule=new SimpleModule("customer-timestamp-module");
-        simpleModule.addDeserializer(Timestamp.class,new CustomerTimestampDeserilizer());
-        simpleModule.addSerializer(Timestamp.class,new CustomerTimestampSerilizer());
+        simpleModule.addDeserializer(Timestamp.class,new CustomerTimestampDeserializer());
+        simpleModule.addSerializer(Timestamp.class,new CustomerTimestampSerializer());
         logger.debug("customer-timestamp-module end init");
         return simpleModule;
     }
 
-     class CustomerTimestampDeserilizer extends JsonDeserializer<Timestamp> {
+     class CustomerTimestampDeserializer extends JsonDeserializer<Timestamp> {
 
         @Override
-        public Timestamp deserialize(JsonParser p, DeserializationContext ctxt) throws IOException, JsonProcessingException {
+        public Timestamp deserialize(JsonParser p, DeserializationContext deserializationContext) throws IOException{
             String text=p.getText();
             if(text!=null&&text.length()!=0){
                 return Timestamp.valueOf(text);
@@ -53,7 +53,7 @@ public class JacksonConfig {
         }
     }
 
-    class CustomerTimestampSerilizer extends JsonSerializer<Timestamp>{
+    class CustomerTimestampSerializer extends JsonSerializer<Timestamp>{
         @Override
         public void serialize(Timestamp value, JsonGenerator gen, SerializerProvider serializers) throws IOException {
             if (value == null) {
