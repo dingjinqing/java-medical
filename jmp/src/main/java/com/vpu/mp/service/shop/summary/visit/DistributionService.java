@@ -4,13 +4,14 @@ import com.fasterxml.jackson.core.type.TypeReference;
 import com.vpu.mp.db.shop.tables.records.MpDistributionVisitRecord;
 import com.vpu.mp.service.foundation.Util;
 import com.vpu.mp.service.pojo.shop.summary.*;
+import com.vpu.mp.service.pojo.shop.summary.visit.*;
 import org.jooq.Result;
 
 import java.util.*;
 import java.util.stream.Collectors;
 
 import static com.vpu.mp.db.shop.tables.MpDistributionVisit.MP_DISTRIBUTION_VISIT;
-import static com.vpu.mp.service.pojo.shop.summary.DistributionIndex.*;
+import static com.vpu.mp.service.pojo.shop.summary.visit.DistributionIndex.*;
 
 /**
  * 访问分布

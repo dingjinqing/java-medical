@@ -1,7 +1,9 @@
 package com.vpu.mp.controller.admin;
 
 import com.vpu.mp.service.foundation.JsonResult;
-import com.vpu.mp.service.pojo.shop.summary.*;
+import com.vpu.mp.service.pojo.shop.summary.visit.VisitDistributionParam;
+import com.vpu.mp.service.pojo.shop.summary.visit.VisitPageParam;
+import com.vpu.mp.service.pojo.shop.summary.visit.VisitStatisticsParam;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;

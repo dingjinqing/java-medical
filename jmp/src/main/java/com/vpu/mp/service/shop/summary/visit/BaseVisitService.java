@@ -2,7 +2,7 @@ package com.vpu.mp.service.shop.summary.visit;
 
 import com.vpu.mp.service.foundation.BaseService;
 import com.vpu.mp.service.pojo.shop.summary.RefDateRecord;
-import com.vpu.mp.service.pojo.shop.summary.RefDateRecordHolder;
+import com.vpu.mp.service.pojo.shop.summary.visit.RefDateRecordHolder;
 
 import java.util.Collections;
 import java.util.LinkedList;

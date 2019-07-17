@@ -5,7 +5,10 @@ import com.vpu.mp.db.shop.tables.records.MpDailyRetainRecord;
 import com.vpu.mp.db.shop.tables.records.MpMonthlyRetainRecord;
 import com.vpu.mp.db.shop.tables.records.MpWeeklyRetainRecord;
 import com.vpu.mp.service.foundation.Util;
-import com.vpu.mp.service.pojo.shop.summary.*;
+import com.vpu.mp.service.pojo.shop.summary.visit.AccessRetain;
+import com.vpu.mp.service.pojo.shop.summary.visit.AccessRetainVo;
+import com.vpu.mp.service.pojo.shop.summary.visit.RetainItem;
+import com.vpu.mp.service.pojo.shop.summary.visit.VisitStatisticsParam;
 import org.jooq.Result;
 import org.jooq.TableField;
 
@@ -16,8 +19,8 @@ import java.util.Objects;
 import static com.vpu.mp.db.shop.tables.MpDailyRetain.MP_DAILY_RETAIN;
 import static com.vpu.mp.db.shop.tables.MpMonthlyRetain.MP_MONTHLY_RETAIN;
 import static com.vpu.mp.db.shop.tables.MpWeeklyRetain.MP_WEEKLY_RETAIN;
-import static com.vpu.mp.service.pojo.shop.summary.AccessRetainVo.ACTION_NEW_RETAIN;
-import static com.vpu.mp.service.pojo.shop.summary.AccessRetainVo.ACTION_RETAIN;
+import static com.vpu.mp.service.pojo.shop.summary.visit.AccessRetainVo.ACTION_NEW_RETAIN;
+import static com.vpu.mp.service.pojo.shop.summary.visit.AccessRetainVo.ACTION_RETAIN;
 
 /**
  * 留存统计

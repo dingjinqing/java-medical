@@ -1,12 +1,14 @@
 package com.vpu.mp.service.pojo.shop.summary.visit;
 
 import com.vpu.mp.service.pojo.shop.summary.ChartInfo;
+import lombok.Getter;
 
 /**
  * 访问来源 key 对应关系
  *
  * @author 郑保乐
  */
+@Getter
 public enum AccessSource implements ChartInfo {
 
     MP_HISTORY_LIST(1, "小程序历史列表"),
@@ -51,14 +53,6 @@ public enum AccessSource implements ChartInfo {
         this.source = source;
     }
 
-    public Integer getIndex() {
-        return index;
-    }
-
-    public String getSource() {
-        return source;
-    }
-
     @Override
     public String getName() {
         return getSource();
@@ -66,6 +60,6 @@ public enum AccessSource implements ChartInfo {
 
     @Override
     public Integer getKey() {
-        return index;
+        return getIndex();
     }
 }
