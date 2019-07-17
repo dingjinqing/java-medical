@@ -5,6 +5,7 @@ import java.util.List;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.vpu.mp.service.foundation.JsonResult;
@@ -21,7 +22,6 @@ import com.vpu.mp.service.pojo.shop.goods.brand.BrandVo;
 import com.vpu.mp.service.pojo.shop.goods.label.GoodsLabelVo;
 import com.vpu.mp.service.pojo.shop.sort.SortVo;
 import com.vpu.mp.service.pojo.shop.store.store.StoreListQueryParam;
-import com.vpu.mp.service.shop.ShopApplication;
 
 /**
  * 装修通用弹窗-选择链接
@@ -29,12 +29,8 @@ import com.vpu.mp.service.shop.ShopApplication;
  * 2019年7月9日
  */
 @RestController
-//@RequestMapping("/api")
+@RequestMapping("/api")
 public class AdminChooseLinkController extends AdminBaseController{
-	@Override
-    protected ShopApplication shop() {
-        return saas.getShopApp(471752);
-    }
 	/**
 	 * 常用链接
 	 */

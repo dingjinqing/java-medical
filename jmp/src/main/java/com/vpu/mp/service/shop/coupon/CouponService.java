@@ -4,12 +4,12 @@ import static com.vpu.mp.db.shop.Tables.CUSTOMER_AVAIL_COUPONS;
 import static com.vpu.mp.db.shop.Tables.MRKING_VOUCHER;
 import static com.vpu.mp.db.shop.Tables.USER;
 
+import java.sql.Timestamp;
 import java.util.List;
 
 import org.jooq.Record;
 import org.jooq.SelectConditionStep;
 import org.jooq.SelectJoinStep;
-import org.jooq.SelectSelectStep;
 
 import com.vpu.mp.db.shop.tables.records.MrkingVoucherRecord;
 import com.vpu.mp.service.foundation.BaseService;
@@ -60,6 +60,25 @@ public class CouponService extends BaseService{
 		SelectConditionStep<Record> sql = select.where(MRKING_VOUCHER.DEL_FLAG.eq((byte) 0));
 		if(param.getActName() != null) {
 			sql = sql.and(MRKING_VOUCHER.ACT_NAME.eq(param.getActName()));
+		}
+		
+		Timestamp nowDate = new Timestamp(System.currentTimeMillis());
+
+		if(param.getNav() != null) {
+			switch(param.getNav()) {
+			//进行中
+			case 1:
+				sql = sql.and(MRKING_VOUCHER.START_TIME.le(nowDate)).and(MRKING_VOUCHER.END_TIME.ge(nowDate));
+			//未开始
+			case 2:
+				sql = sql.and(MRKING_VOUCHER.START_TIME.ge(nowDate));
+			//已过期
+			case 3:
+				sql = sql.and(MRKING_VOUCHER.END_TIME.le(nowDate));
+			//已停用
+			case 4:
+				sql = sql.and(MRKING_VOUCHER.ENABLED.eq((byte) 0));
+			}
 		}
 		return sql;
 	}

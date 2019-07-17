@@ -2,10 +2,11 @@ package com.vpu.mp.controller.admin;
 
 import java.util.List;
 
+import javax.validation.constraints.NotNull;
+
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.vpu.mp.service.foundation.JsonResult;
@@ -15,6 +16,7 @@ import com.vpu.mp.service.pojo.shop.coupon.CouponGetDetailVo;
 import com.vpu.mp.service.pojo.shop.coupon.CouponListParam;
 import com.vpu.mp.service.pojo.shop.coupon.CouponListVo;
 import com.vpu.mp.service.pojo.shop.coupon.CouponParam;
+import com.vpu.mp.service.shop.ShopApplication;
 
 /**
  * 优惠券管理
@@ -22,9 +24,12 @@ import com.vpu.mp.service.pojo.shop.coupon.CouponParam;
  * 2019年7月16日
  */
 @RestController
-@RequestMapping("/api")
+//@RequestMapping("/api")
 public class AdminCouponController extends AdminBaseController{
-	
+	@Override
+    protected ShopApplication shop() {
+        return saas.getShopApp(471752);
+    }
 	/**
 	 * 创建优惠券
 	 * @param couponInfo
@@ -47,8 +52,8 @@ public class AdminCouponController extends AdminBaseController{
 	 * @return
 	 */
 	@PostMapping("/admin/coupon/list")
-	public JsonResult couponList(CouponListParam parma) {
-		PageResult<CouponListVo> couponList = shop().coupon.getCouponList(parma);
+	public JsonResult couponList(@RequestBody CouponListParam param) {
+		PageResult<CouponListVo> couponList = shop().coupon.getCouponList(param);
 		return this.success(couponList);
 	}
 	
@@ -58,7 +63,7 @@ public class AdminCouponController extends AdminBaseController{
 	 * @return
 	 */
 	@GetMapping("/admin/coupon/update/info")
-	public JsonResult oneCouponInfo(Integer couponId) {
+	public JsonResult oneCouponInfo(@RequestBody Integer couponId) {
 		List<CouponParam> couponInfo = shop().coupon.getOneCouponInfo(couponId);
 		return this.success(couponInfo);
 	}
@@ -69,7 +74,7 @@ public class AdminCouponController extends AdminBaseController{
 	 * @return
 	 */
 	@PostMapping("/admin/coupon/update/save")
-	public JsonResult couponInfoSave(CouponParam param) {
+	public JsonResult couponInfoSave(@RequestBody CouponParam param) {
 		Boolean result = shop().coupon.saveCouponInfo(param);
 		return this.success(result);
 	}
@@ -79,8 +84,9 @@ public class AdminCouponController extends AdminBaseController{
 	 * @param couponId
 	 * @return
 	 */
-	@PostMapping("/admin/coupon/pause")
-	public JsonResult couponPause(Integer couponId) {
+	@GetMapping("/admin/coupon/pause")
+	public JsonResult couponPause(@NotNull Integer couponId) {
+		System.out.println(111);
 		boolean result = shop().coupon.couponPause(couponId);
 		if(result) {
 			return this.success(result);
@@ -95,7 +101,7 @@ public class AdminCouponController extends AdminBaseController{
 	 * @return
 	 */
 	@GetMapping("/admin/coupon/delete")
-	public JsonResult couponDel(Integer couponId) {
+	public JsonResult couponDel(@RequestBody Integer couponId) {
 		boolean result = shop().coupon.couponDel(couponId);
 		if(result) {
 			return this.success(result);
@@ -110,7 +116,7 @@ public class AdminCouponController extends AdminBaseController{
 	 * @return
 	 */
 	@PostMapping("/admin/coupon/get/detail")
-	public JsonResult couponGetDetail(CouponGetDetailParam param) {
+	public JsonResult couponGetDetail(@RequestBody CouponGetDetailParam param) {
 		PageResult<CouponGetDetailVo> detail = shop().coupon.getDetail(param);
 		return this.success(detail);
 	}

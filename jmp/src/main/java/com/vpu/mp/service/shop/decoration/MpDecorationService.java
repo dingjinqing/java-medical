@@ -9,13 +9,10 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.jooq.DSLContext;
 import org.jooq.Record5;
 import org.jooq.SelectWhereStep;
-import org.jooq.impl.DSL;
 
 import com.vpu.mp.db.main.tables.records.DecorationTemplateRecord;
-import com.vpu.mp.db.shop.tables.records.StoreGroupRecord;
 import com.vpu.mp.db.shop.tables.records.XcxCustomerPageRecord;
 import com.vpu.mp.service.foundation.BaseService;
 import com.vpu.mp.service.foundation.PageResult;

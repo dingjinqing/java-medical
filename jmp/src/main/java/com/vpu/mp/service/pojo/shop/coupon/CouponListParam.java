@@ -9,6 +9,7 @@ import lombok.Data;
  */
 @Data
 public class CouponListParam {
+	private Integer nav;
 	private String actName;
 	
 	/**
