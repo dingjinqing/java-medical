@@ -23,6 +23,8 @@ import static com.vpu.mp.db.shop.tables.MpVisitPage.MP_VISIT_PAGE;
  */
 public class PageService extends BaseVisitService {
 
+    public static final String PAGE_OTHER = "page.other";
+
     public PageVisitVo getPageVisit(VisitPageParam param) {
         String startDate = param.getStartDate();
         String endDate = param.getEndDate();
@@ -68,7 +70,7 @@ public class PageService extends BaseVisitService {
      * 获取路径对应的页面名称
      */
     private String pageNameOf(String pagePath) {
-        return Optional.ofNullable(pageMap().get(pagePath)).orElse("未知");
+        return Optional.ofNullable(pageMap().get(pagePath)).orElse(PAGE_OTHER);
     }
 
     /**
@@ -76,86 +78,86 @@ public class PageService extends BaseVisitService {
      */
     private Map<String, String> pageMap() {
         return new HashMap<String, String>() {{
-            put("pages/index/index", "首页");
-            put("pages/storeinfo/storeinfo", "门店");
-            put("pages/usercenter/usercenter", "个人中心");
-            put("pages/bottom/bottom", "底部导航");
-            put("pages/item/item", "商品详情");
-            put("pages/cartOld/cartOld", "购物车");
-            put("pages/cart/cart", "购物车");
-            put("pages/groupbuyitem/groupbuyitem", "拼团详情");
-            put("pages/appointment/appointment", "预约详情");
-            put("pages/checkout/checkout", "订单结算");
-            put("pages/storelist/storelist", "门店列表");
-            put("pages/groupbuyinfo/groupbuyinfo", "成团详情");
-            put("pages/searchs/search", "商品搜索");
-            put("pages/orderinfo/orderinfo", "订单详情");
-            put("pages/orderlist/orderlist", "订单列表");
-            put("pages/usercardinfo/usercardinfo", "会员卡详情");
-            put("pages/splitcoupon/splitcoupon", "分裂优惠券详情");
-            put("pages/usercardlist/usercardlist", "会员卡列表");
-            put("pages/appointorder/appointorder", "预约结算");
-            put("pages/form/form", "表单");
-            put("pages/appointinfo/appointinfo", "预约订单详情");
-            put("pages/couponlist/couponlist", "优惠券列表");
-            put("pages/splitinfo/splitinfo", "分裂优惠券领取详情");
-            put("pages/appointlist/appointlist", "预约订单列表");
-            put("pages/userinfo/userinfo", "账户设置");
-            put("pages/getcoupon/getcoupon", "优惠券详情");
-            put("pages/shopcheckout/shopcheckout", "门店买单");
-            put("pages/groupbuyrule/groupbuyrule", "拼团规则");
-            put("pages/cardpay/cardpay", "会员卡充值");
-            put("pages/servicecomment/servicecomment", "服务评价");
-            put("pages/goodscomment/goodscomment", "商品评价列表");
-            put("pages/returnorder/returnorder", "申请退货/退款");
-            put("pages/return_order_list/return_order_list", "退货中心");
-            put("pages/appointcomment/appointcomment", "预约评价");
-            put("pages/account/account", "我的余额");
-            put("pages/comment/comment", "商品评价");
-            put("pages/agreement/agreement", "充值活动协议");
-            put("pages/shoporderinfo/shoporderinfo", "买单订单详情");
-            put("pages/integral/integral", "我的积分");
-            put("pages/collect/collect", "我的收藏");
-            put("pages/distribution/distribution", "分销员中心");
-            put("pages/inviteduser/inviteduser", "邀请用户列表");
-            put("pages/distributionorder/distributionorder", "返利订单明细");
-            put("pages/brokeragerank/brokeragerank", "佣金排行榜");
-            put("pages/distributionrule/distributionrule", "分销说明");
-            put("pages/signrule/signrule", "积分签到说明");
-            put("pages/bargainitem/bargainitem", "砍价商品详情");
-            put("pages/bargaininfo/bargaininfo", "砍价详情");
-            put("pages/bargainlist/bargainlist", "我的砍价");
-            put("pages/distributionspread/distributionspread", "申请分销员");
-            put("pages/lottery/lottery", "幸运大抽奖");
-            put("pages/lotteryrule/lotteryrule", "抽奖记录");
-            put("pages/integralitem/integralitem", "积分商品详情");
-            put("pages/sort/sort", "分类");
-            put("pages/bargainrule/bargainrule", "砍价记录");
-            put("pages/usercardup/usercardup", "会员卡升级记录");
-            put("pages/auth/auth", "微信全链路授权页");
-            put("pages/seckillitem/seckillitem", "秒杀详情页");
-            put("pages/scancode/scancode", "扫码购");
-            put("pages/goodsCheckout/goodsCheckout", "结算页");
-            put("pages/balance/balance", "我的余额");
-            put("pages/pinlotteryinfo/pinlotteryinfo", "拼团抽奖详情页");
-            put("pages/payment/payment", "订单支付成功页");
-            put("pages/webview/webview", "H5页");
-            put("pages/maingoodslist/maingoodslist", "加价购主商品页");
-            put("pages/fullprice/fullprice", "满折满减页");
-            put("pages/userqrcode/userqrcode", "我的-二维码页	");
-            put("pages/pinlotteryitem/pinlotteryitem", "拼团抽奖商品详情");
-            put("pages/pinintegration/pinintegration", "瓜分积分页");
-            put("pages/cartplus/cartplus", "购物车");
-            put("pages/pinintegrationdetail/pinintegrationdetail", "瓜分积分详情页");
-            put("pages/distrigrade/distrigrade", "分销员待审核页");
-            put("pages/appearancecode/appearancecode", "出厂码");
-            put("pages/pinlotterylist/pinlotterylist", "拼团抽奖列表");
-            put("pages/widthdrawrecord/widthdrawrecord", "提现记录");
-            put("pages/distrirecord/distrirecord", "分销员审核记录");
-            put("pages/widthdraw/widthdraw", "提现页");
-            put("pages/express/express", "物流详情页");
-            put("pages/pinintegrationrule/pinintegrationrule", "瓜分积分活动规则");
-            put("pages/pinlotteryrule/pinlotteryrule", "拼团抽奖活动详情");
+            put("pages/index/index", "page.index");
+            put("pages/storeinfo/storeinfo", "page.storeInfo");
+            put("pages/usercenter/usercenter", "page.userCenter");
+            put("pages/bottom/bottom", "page.bottom");
+            put("pages/item/item", "page.item");
+            put("pages/cartOld/cartOld", "page.cartOld");
+            put("pages/cart/cart", "page.cart");
+            put("pages/groupbuyitem/groupbuyitem", "page.groupBuyItem");
+            put("pages/appointment/appointment", "page.appointment");
+            put("pages/checkout/checkout", "page.checkout");
+            put("pages/storelist/storelist", "page.storeList");
+            put("pages/groupbuyinfo/groupbuyinfo", "page.groupBuyInfo");
+            put("pages/searchs/search", "page.search");
+            put("pages/orderinfo/orderinfo", "page.orderInfo");
+            put("pages/orderlist/orderlist", "page.orderList");
+            put("pages/usercardinfo/usercardinfo", "page.userCardInfo");
+            put("pages/splitcoupon/splitcoupon", "page.splitCoupon");
+            put("pages/usercardlist/usercardlist", "page.userCardList");
+            put("pages/appointorder/appointorder", "page.appointOrder");
+            put("pages/form/form", "page.form");
+            put("pages/appointinfo/appointinfo", "page.appointInfo");
+            put("pages/couponlist/couponlist", "page.couponList");
+            put("pages/splitinfo/splitinfo", "page.splitInfo");
+            put("pages/appointlist/appointlist", "page.appointList");
+            put("pages/userinfo/userinfo", "page.userInfo");
+            put("pages/getcoupon/getcoupon", "page.getCoupon");
+            put("pages/shopcheckout/shopcheckout", "page.shopCheckout");
+            put("pages/groupbuyrule/groupbuyrule", "page.groupBuyRule");
+            put("pages/cardpay/cardpay", "page.cardPay");
+            put("pages/servicecomment/servicecomment", "page.serviceComment");
+            put("pages/goodscomment/goodscomment", "page.goodsComment");
+            put("pages/returnorder/returnorder", "page.returnOrder");
+            put("pages/return_order_list/return_order_list", "page.returnOrderList");
+            put("pages/appointcomment/appointcomment", "page.appointComment");
+            put("pages/account/account", "page.account");
+            put("pages/comment/comment", "page.comment");
+            put("pages/agreement/agreement", "page.agreement");
+            put("pages/shoporderinfo/shoporderinfo", "page.shopOrderInfo");
+            put("pages/integral/integral", "page.integral");
+            put("pages/collect/collect", "page.collect");
+            put("pages/distribution/distribution", "page.distribution");
+            put("pages/inviteduser/inviteduser", "page.invitedUser");
+            put("pages/distributionorder/distributionorder", "page.distributionOrder");
+            put("pages/brokeragerank/brokeragerank", "page.brokerAgeRank");
+            put("pages/distributionrule/distributionrule", "page.distributionRule");
+            put("pages/signrule/signrule", "page.signRule");
+            put("pages/bargainitem/bargainitem", "page.bargainItem");
+            put("pages/bargaininfo/bargaininfo", "page.bargainInfo");
+            put("pages/bargainlist/bargainlist", "page.bargainList");
+            put("pages/distributionspread/distributionspread", "page.distributionSpread");
+            put("pages/lottery/lottery", "page.lottery");
+            put("pages/lotteryrule/lotteryrule", "page.lotteryRule");
+            put("pages/integralitem/integralitem", "page.integralItem");
+            put("pages/sort/sort", "page.sort");
+            put("pages/bargainrule/bargainrule", "page.bargainRule");
+            put("pages/usercardup/usercardup", "page.userCardUp");
+            put("pages/auth/auth", "page.auth");
+            put("pages/seckillitem/seckillitem", "page.seckillItem");
+            put("pages/scancode/scancode", "page.scanCode");
+            put("pages/goodsCheckout/goodsCheckout", "page.goodsCheckout");
+            put("pages/balance/balance", "page.balance");
+            put("pages/pinlotteryinfo/pinlotteryinfo", "page.pinLotteryInfo");
+            put("pages/payment/payment", "page.payment");
+            put("pages/webview/webview", "page.webview");
+            put("pages/maingoodslist/maingoodslist", "page.mainGoodsList");
+            put("pages/fullprice/fullprice", "page.fullPrice");
+            put("pages/userqrcode/userqrcode", "page.userQRCode");
+            put("pages/pinlotteryitem/pinlotteryitem", "page.pinLotteryItem");
+            put("pages/pinintegration/pinintegration", "page.pinIntegration");
+            put("pages/cartplus/cartplus", "page.cartPlus");
+            put("pages/pinintegrationdetail/pinintegrationdetail", "page.pinIntegrationDetail");
+            put("pages/distrigrade/distrigrade", "page.distrigrade");
+            put("pages/appearancecode/appearancecode", "page.appearanceCode");
+            put("pages/pinlotterylist/pinlotterylist", "page.pinLotteryList");
+            put("pages/widthdrawrecord/widthdrawrecord", "page.widthdrawRecord");
+            put("pages/distrirecord/distrirecord", "page.distriRecord");
+            put("pages/widthdraw/widthdraw", "page.widthdraw");
+            put("pages/express/express", "page.express");
+            put("pages/pinintegrationrule/pinintegrationrule", "page.pinIntegrationRule");
+            put("pages/pinlotteryrule/pinlotteryrule", "page.pinLotteryRule");
         }};
     }
 }
