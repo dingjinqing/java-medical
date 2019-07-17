@@ -112,7 +112,7 @@ public class GoodsLabelService extends BaseService {
 		if(labelCoupleList != null) {
 			for (GoodsLabelCouple couple : labelCoupleList) {
 				if(GoodsLabelCoupleTypeEnum.GOODSTYPE.getCode().equals(couple.getType())) {
-					goodsIdList.add(couple.getLabelId());
+					goodsIdList.add(couple.getGtaId());
 				}else if(GoodsLabelCoupleTypeEnum.CATTYPE.getCode().equals(couple.getType())) {
 					catIdList.add(couple.getGtaId());
 				}else if(GoodsLabelCoupleTypeEnum.SORTTYPE.getCode().equals(couple.getType())){
