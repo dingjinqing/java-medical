@@ -12,7 +12,7 @@ import lombok.Data;
 @Data
 public class JsonResult {
 
-	private static final String LANGUAGE_TYPE_MSG = "message";
+	private static final String LANGUAGE_TYPE_MSG = "messages";
 
 
 	/**
