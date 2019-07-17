@@ -34,7 +34,8 @@ create table `b2c_shop_account` (
   `add_comment_switch` tinyint(1)                     default '0' comment '商户自己添加评论开关：0关闭，1开启',
   `official_open_id`   varchar(128)          null comment '公众号openid',
   `is_bind`            tinyint(1) default 0  null comment '是否已绑定',
-  primary key (`sys_id`)
+  primary key (`sys_id`),
+  unique key (`user_name`)
 );
 
 ##店铺角色表
@@ -1070,9 +1071,9 @@ create table `b2c_user_login_record` (
   `shop_id`   int(11)      not null default 0 comment '店铺ID',
   `shop_name` varchar(100) not null default '' comment '店铺名称',
   `sys_id`    int(11)      not null default 0 comment '主账户ID',
-  `user_id`   smallint(3)  not null default '0' comment '登陆用户id',
+  `user_id`   int(11)      not null default '0' comment '登陆用户id',
   `user_name` varchar(64)  not null default '' comment '登陆用户名',
-  `add_time`  timestamp    null     default null comment '每日登陆时间',
+  `add_time`  timestamp    null     default CURRENT_TIMESTAMP comment '每日登陆时间',
   `user_ip`   varchar(64)  null     default null comment '用户登录ip',
   `count`     smallint(3)  null     default '0' comment '每日登陆次数',
   primary key (`id`)
