@@ -21,4 +21,14 @@ public class GoodsVo extends Goods {
     private List<GoodsLabelListVo> goodsLabelListVos;
     private String brandName;
     private String sortName;
+
+    @Override
+    public List<Integer> getGoodsLabels() {
+        return goodsLabels;
+    }
+
+    @Override
+    public void setGoodsLabels(List<Integer> goodsLabels) {
+        this.goodsLabels = goodsLabels;
+    }
 }
