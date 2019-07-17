@@ -5,6 +5,7 @@ package com.vpu.mp.db.shop.tables.pojos;
 
 
 import java.io.Serializable;
+import java.sql.Timestamp;
 
 import javax.annotation.Generated;
 
@@ -22,32 +23,36 @@ import javax.annotation.Generated;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class ShopCfg implements Serializable {
 
-    private static final long serialVersionUID = 1439919373;
+    private static final long serialVersionUID = -260741963;
 
-    private Short   recId;
-    private Integer shopId;
-    private String  k;
-    private String  v;
+    private Short     recId;
+    private String    k;
+    private String    v;
+    private Timestamp createTime;
+    private Timestamp updateTime;
 
     public ShopCfg() {}
 
     public ShopCfg(ShopCfg value) {
         this.recId = value.recId;
-        this.shopId = value.shopId;
         this.k = value.k;
         this.v = value.v;
+        this.createTime = value.createTime;
+        this.updateTime = value.updateTime;
     }
 
     public ShopCfg(
-        Short   recId,
-        Integer shopId,
-        String  k,
-        String  v
+        Short     recId,
+        String    k,
+        String    v,
+        Timestamp createTime,
+        Timestamp updateTime
     ) {
         this.recId = recId;
-        this.shopId = shopId;
         this.k = k;
         this.v = v;
+        this.createTime = createTime;
+        this.updateTime = updateTime;
     }
 
     public Short getRecId() {
@@ -56,14 +61,6 @@ public class ShopCfg implements Serializable {
 
     public void setRecId(Short recId) {
         this.recId = recId;
-    }
-
-    public Integer getShopId() {
-        return this.shopId;
-    }
-
-    public void setShopId(Integer shopId) {
-        this.shopId = shopId;
     }
 
     public String getK() {
@@ -82,14 +79,31 @@ public class ShopCfg implements Serializable {
         this.v = v;
     }
 
+    public Timestamp getCreateTime() {
+        return this.createTime;
+    }
+
+    public void setCreateTime(Timestamp createTime) {
+        this.createTime = createTime;
+    }
+
+    public Timestamp getUpdateTime() {
+        return this.updateTime;
+    }
+
+    public void setUpdateTime(Timestamp updateTime) {
+        this.updateTime = updateTime;
+    }
+
     @Override
     public String toString() {
         StringBuilder sb = new StringBuilder("ShopCfg (");
 
         sb.append(recId);
-        sb.append(", ").append(shopId);
         sb.append(", ").append(k);
         sb.append(", ").append(v);
+        sb.append(", ").append(createTime);
+        sb.append(", ").append(updateTime);
 
         sb.append(")");
         return sb.toString();

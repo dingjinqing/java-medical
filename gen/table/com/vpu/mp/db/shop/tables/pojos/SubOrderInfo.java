@@ -24,7 +24,7 @@ import javax.annotation.Generated;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class SubOrderInfo implements Serializable {
 
-    private static final long serialVersionUID = 115323342;
+    private static final long serialVersionUID = -1451359259;
 
     private Integer    id;
     private String     subOrderSn;
@@ -40,10 +40,11 @@ public class SubOrderInfo implements Serializable {
     private String     prepayId;
     private String     message;
     private Timestamp  payTime;
-    private Timestamp  addTime;
     private Timestamp  refundTime;
     private Byte       delFlag;
     private Timestamp  delTime;
+    private Timestamp  createTime;
+    private Timestamp  updateTime;
 
     public SubOrderInfo() {}
 
@@ -62,10 +63,11 @@ public class SubOrderInfo implements Serializable {
         this.prepayId = value.prepayId;
         this.message = value.message;
         this.payTime = value.payTime;
-        this.addTime = value.addTime;
         this.refundTime = value.refundTime;
         this.delFlag = value.delFlag;
         this.delTime = value.delTime;
+        this.createTime = value.createTime;
+        this.updateTime = value.updateTime;
     }
 
     public SubOrderInfo(
@@ -83,10 +85,11 @@ public class SubOrderInfo implements Serializable {
         String     prepayId,
         String     message,
         Timestamp  payTime,
-        Timestamp  addTime,
         Timestamp  refundTime,
         Byte       delFlag,
-        Timestamp  delTime
+        Timestamp  delTime,
+        Timestamp  createTime,
+        Timestamp  updateTime
     ) {
         this.id = id;
         this.subOrderSn = subOrderSn;
@@ -102,10 +105,11 @@ public class SubOrderInfo implements Serializable {
         this.prepayId = prepayId;
         this.message = message;
         this.payTime = payTime;
-        this.addTime = addTime;
         this.refundTime = refundTime;
         this.delFlag = delFlag;
         this.delTime = delTime;
+        this.createTime = createTime;
+        this.updateTime = updateTime;
     }
 
     public Integer getId() {
@@ -220,14 +224,6 @@ public class SubOrderInfo implements Serializable {
         this.payTime = payTime;
     }
 
-    public Timestamp getAddTime() {
-        return this.addTime;
-    }
-
-    public void setAddTime(Timestamp addTime) {
-        this.addTime = addTime;
-    }
-
     public Timestamp getRefundTime() {
         return this.refundTime;
     }
@@ -252,6 +248,22 @@ public class SubOrderInfo implements Serializable {
         this.delTime = delTime;
     }
 
+    public Timestamp getCreateTime() {
+        return this.createTime;
+    }
+
+    public void setCreateTime(Timestamp createTime) {
+        this.createTime = createTime;
+    }
+
+    public Timestamp getUpdateTime() {
+        return this.updateTime;
+    }
+
+    public void setUpdateTime(Timestamp updateTime) {
+        this.updateTime = updateTime;
+    }
+
     @Override
     public String toString() {
         StringBuilder sb = new StringBuilder("SubOrderInfo (");
@@ -270,10 +282,11 @@ public class SubOrderInfo implements Serializable {
         sb.append(", ").append(prepayId);
         sb.append(", ").append(message);
         sb.append(", ").append(payTime);
-        sb.append(", ").append(addTime);
         sb.append(", ").append(refundTime);
         sb.append(", ").append(delFlag);
         sb.append(", ").append(delTime);
+        sb.append(", ").append(createTime);
+        sb.append(", ").append(updateTime);
 
         sb.append(")");
         return sb.toString();

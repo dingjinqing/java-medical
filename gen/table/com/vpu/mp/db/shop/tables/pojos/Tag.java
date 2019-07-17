@@ -23,28 +23,36 @@ import javax.annotation.Generated;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class Tag implements Serializable {
 
-    private static final long serialVersionUID = -2037677810;
+    private static final long serialVersionUID = -407152522;
 
     private Integer   tagId;
     private String    tagName;
-    private Timestamp inTime;
+    private Timestamp createTime;
+    private Timestamp updateTime;
+    private Byte      isDelete;
 
     public Tag() {}
 
     public Tag(Tag value) {
         this.tagId = value.tagId;
         this.tagName = value.tagName;
-        this.inTime = value.inTime;
+        this.createTime = value.createTime;
+        this.updateTime = value.updateTime;
+        this.isDelete = value.isDelete;
     }
 
     public Tag(
         Integer   tagId,
         String    tagName,
-        Timestamp inTime
+        Timestamp createTime,
+        Timestamp updateTime,
+        Byte      isDelete
     ) {
         this.tagId = tagId;
         this.tagName = tagName;
-        this.inTime = inTime;
+        this.createTime = createTime;
+        this.updateTime = updateTime;
+        this.isDelete = isDelete;
     }
 
     public Integer getTagId() {
@@ -63,12 +71,28 @@ public class Tag implements Serializable {
         this.tagName = tagName;
     }
 
-    public Timestamp getInTime() {
-        return this.inTime;
+    public Timestamp getCreateTime() {
+        return this.createTime;
     }
 
-    public void setInTime(Timestamp inTime) {
-        this.inTime = inTime;
+    public void setCreateTime(Timestamp createTime) {
+        this.createTime = createTime;
+    }
+
+    public Timestamp getUpdateTime() {
+        return this.updateTime;
+    }
+
+    public void setUpdateTime(Timestamp updateTime) {
+        this.updateTime = updateTime;
+    }
+
+    public Byte getIsDelete() {
+        return this.isDelete;
+    }
+
+    public void setIsDelete(Byte isDelete) {
+        this.isDelete = isDelete;
     }
 
     @Override
@@ -77,7 +101,9 @@ public class Tag implements Serializable {
 
         sb.append(tagId);
         sb.append(", ").append(tagName);
-        sb.append(", ").append(inTime);
+        sb.append(", ").append(createTime);
+        sb.append(", ").append(updateTime);
+        sb.append(", ").append(isDelete);
 
         sb.append(")");
         return sb.toString();

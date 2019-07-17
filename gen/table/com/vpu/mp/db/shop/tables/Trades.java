@@ -41,7 +41,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class Trades extends TableImpl<TradesRecord> {
 
-    private static final long serialVersionUID = 653581202;
+    private static final long serialVersionUID = -2048790677;
 
     /**
      * The reference instance of <code>mini_shop_471752.b2c_trades</code>
@@ -107,9 +107,14 @@ public class Trades extends TableImpl<TradesRecord> {
     public final TableField<TradesRecord, BigDecimal> UV_PAY_RATIO = createField("uv_pay_ratio", org.jooq.impl.SQLDataType.DECIMAL(4, 2), this, "转化率");
 
     /**
-     * The column <code>mini_shop_471752.b2c_trades.add_time</code>. 添加时间
+     * The column <code>mini_shop_471752.b2c_trades.create_time</code>.
      */
-    public final TableField<TradesRecord, Timestamp> ADD_TIME = createField("add_time", org.jooq.impl.SQLDataType.TIMESTAMP, this, "添加时间");
+    public final TableField<TradesRecord, Timestamp> CREATE_TIME = createField("create_time", org.jooq.impl.SQLDataType.TIMESTAMP.nullable(false).defaultValue(org.jooq.impl.DSL.field("CURRENT_TIMESTAMP", org.jooq.impl.SQLDataType.TIMESTAMP)), this, "");
+
+    /**
+     * The column <code>mini_shop_471752.b2c_trades.update_time</code>. 最后修改时间
+     */
+    public final TableField<TradesRecord, Timestamp> UPDATE_TIME = createField("update_time", org.jooq.impl.SQLDataType.TIMESTAMP.nullable(false).defaultValue(org.jooq.impl.DSL.field("CURRENT_TIMESTAMP", org.jooq.impl.SQLDataType.TIMESTAMP)), this, "最后修改时间");
 
     /**
      * Create a <code>mini_shop_471752.b2c_trades</code> table reference

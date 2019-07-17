@@ -5,6 +5,7 @@ package com.vpu.mp.db.shop.tables.pojos;
 
 
 import java.io.Serializable;
+import java.sql.Timestamp;
 
 import javax.annotation.Generated;
 
@@ -22,18 +23,20 @@ import javax.annotation.Generated;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class Shipping implements Serializable {
 
-    private static final long serialVersionUID = -911921877;
+    private static final long serialVersionUID = -1134063142;
 
-    private Byte   shippingId;
-    private String shippingCode;
-    private String shippingName;
-    private String shippingDesc;
-    private String insure;
-    private Byte   supportCod;
-    private Byte   enabled;
-    private String shippingPrint;
-    private Byte   printModel;
-    private Byte   shippingOrder;
+    private Byte      shippingId;
+    private String    shippingCode;
+    private String    shippingName;
+    private String    shippingDesc;
+    private String    insure;
+    private Byte      supportCod;
+    private Byte      enabled;
+    private String    shippingPrint;
+    private Byte      printModel;
+    private Byte      shippingOrder;
+    private Timestamp createTime;
+    private Timestamp updateTime;
 
     public Shipping() {}
 
@@ -48,19 +51,23 @@ public class Shipping implements Serializable {
         this.shippingPrint = value.shippingPrint;
         this.printModel = value.printModel;
         this.shippingOrder = value.shippingOrder;
+        this.createTime = value.createTime;
+        this.updateTime = value.updateTime;
     }
 
     public Shipping(
-        Byte   shippingId,
-        String shippingCode,
-        String shippingName,
-        String shippingDesc,
-        String insure,
-        Byte   supportCod,
-        Byte   enabled,
-        String shippingPrint,
-        Byte   printModel,
-        Byte   shippingOrder
+        Byte      shippingId,
+        String    shippingCode,
+        String    shippingName,
+        String    shippingDesc,
+        String    insure,
+        Byte      supportCod,
+        Byte      enabled,
+        String    shippingPrint,
+        Byte      printModel,
+        Byte      shippingOrder,
+        Timestamp createTime,
+        Timestamp updateTime
     ) {
         this.shippingId = shippingId;
         this.shippingCode = shippingCode;
@@ -72,6 +79,8 @@ public class Shipping implements Serializable {
         this.shippingPrint = shippingPrint;
         this.printModel = printModel;
         this.shippingOrder = shippingOrder;
+        this.createTime = createTime;
+        this.updateTime = updateTime;
     }
 
     public Byte getShippingId() {
@@ -154,6 +163,22 @@ public class Shipping implements Serializable {
         this.shippingOrder = shippingOrder;
     }
 
+    public Timestamp getCreateTime() {
+        return this.createTime;
+    }
+
+    public void setCreateTime(Timestamp createTime) {
+        this.createTime = createTime;
+    }
+
+    public Timestamp getUpdateTime() {
+        return this.updateTime;
+    }
+
+    public void setUpdateTime(Timestamp updateTime) {
+        this.updateTime = updateTime;
+    }
+
     @Override
     public String toString() {
         StringBuilder sb = new StringBuilder("Shipping (");
@@ -168,6 +193,8 @@ public class Shipping implements Serializable {
         sb.append(", ").append(shippingPrint);
         sb.append(", ").append(printModel);
         sb.append(", ").append(shippingOrder);
+        sb.append(", ").append(createTime);
+        sb.append(", ").append(updateTime);
 
         sb.append(")");
         return sb.toString();

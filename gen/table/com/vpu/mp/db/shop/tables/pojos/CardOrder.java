@@ -24,7 +24,7 @@ import javax.annotation.Generated;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class CardOrder implements Serializable {
 
-    private static final long serialVersionUID = 1247885984;
+    private static final long serialVersionUID = 1414192307;
 
     private Integer    orderId;
     private Integer    cardId;
@@ -44,7 +44,6 @@ public class CardOrder implements Serializable {
     private BigDecimal useAccount;
     private BigDecimal useScore;
     private BigDecimal orderAmount;
-    private Timestamp  addTime;
     private Timestamp  payTime;
     private String     sellerRemark;
     private Byte       starFlag;
@@ -55,6 +54,9 @@ public class CardOrder implements Serializable {
     private BigDecimal returnAccount;
     private BigDecimal returnMoney;
     private Timestamp  returnTime;
+    private Timestamp  delTime;
+    private Timestamp  createTime;
+    private Timestamp  updateTime;
 
     public CardOrder() {}
 
@@ -77,7 +79,6 @@ public class CardOrder implements Serializable {
         this.useAccount = value.useAccount;
         this.useScore = value.useScore;
         this.orderAmount = value.orderAmount;
-        this.addTime = value.addTime;
         this.payTime = value.payTime;
         this.sellerRemark = value.sellerRemark;
         this.starFlag = value.starFlag;
@@ -88,6 +89,9 @@ public class CardOrder implements Serializable {
         this.returnAccount = value.returnAccount;
         this.returnMoney = value.returnMoney;
         this.returnTime = value.returnTime;
+        this.delTime = value.delTime;
+        this.createTime = value.createTime;
+        this.updateTime = value.updateTime;
     }
 
     public CardOrder(
@@ -109,7 +113,6 @@ public class CardOrder implements Serializable {
         BigDecimal useAccount,
         BigDecimal useScore,
         BigDecimal orderAmount,
-        Timestamp  addTime,
         Timestamp  payTime,
         String     sellerRemark,
         Byte       starFlag,
@@ -119,7 +122,10 @@ public class CardOrder implements Serializable {
         BigDecimal returnScore,
         BigDecimal returnAccount,
         BigDecimal returnMoney,
-        Timestamp  returnTime
+        Timestamp  returnTime,
+        Timestamp  delTime,
+        Timestamp  createTime,
+        Timestamp  updateTime
     ) {
         this.orderId = orderId;
         this.cardId = cardId;
@@ -139,7 +145,6 @@ public class CardOrder implements Serializable {
         this.useAccount = useAccount;
         this.useScore = useScore;
         this.orderAmount = orderAmount;
-        this.addTime = addTime;
         this.payTime = payTime;
         this.sellerRemark = sellerRemark;
         this.starFlag = starFlag;
@@ -150,6 +155,9 @@ public class CardOrder implements Serializable {
         this.returnAccount = returnAccount;
         this.returnMoney = returnMoney;
         this.returnTime = returnTime;
+        this.delTime = delTime;
+        this.createTime = createTime;
+        this.updateTime = updateTime;
     }
 
     public Integer getOrderId() {
@@ -296,14 +304,6 @@ public class CardOrder implements Serializable {
         this.orderAmount = orderAmount;
     }
 
-    public Timestamp getAddTime() {
-        return this.addTime;
-    }
-
-    public void setAddTime(Timestamp addTime) {
-        this.addTime = addTime;
-    }
-
     public Timestamp getPayTime() {
         return this.payTime;
     }
@@ -384,6 +384,30 @@ public class CardOrder implements Serializable {
         this.returnTime = returnTime;
     }
 
+    public Timestamp getDelTime() {
+        return this.delTime;
+    }
+
+    public void setDelTime(Timestamp delTime) {
+        this.delTime = delTime;
+    }
+
+    public Timestamp getCreateTime() {
+        return this.createTime;
+    }
+
+    public void setCreateTime(Timestamp createTime) {
+        this.createTime = createTime;
+    }
+
+    public Timestamp getUpdateTime() {
+        return this.updateTime;
+    }
+
+    public void setUpdateTime(Timestamp updateTime) {
+        this.updateTime = updateTime;
+    }
+
     @Override
     public String toString() {
         StringBuilder sb = new StringBuilder("CardOrder (");
@@ -406,7 +430,6 @@ public class CardOrder implements Serializable {
         sb.append(", ").append(useAccount);
         sb.append(", ").append(useScore);
         sb.append(", ").append(orderAmount);
-        sb.append(", ").append(addTime);
         sb.append(", ").append(payTime);
         sb.append(", ").append(sellerRemark);
         sb.append(", ").append(starFlag);
@@ -417,6 +440,9 @@ public class CardOrder implements Serializable {
         sb.append(", ").append(returnAccount);
         sb.append(", ").append(returnMoney);
         sb.append(", ").append(returnTime);
+        sb.append(", ").append(delTime);
+        sb.append(", ").append(createTime);
+        sb.append(", ").append(updateTime);
 
         sb.append(")");
         return sb.toString();

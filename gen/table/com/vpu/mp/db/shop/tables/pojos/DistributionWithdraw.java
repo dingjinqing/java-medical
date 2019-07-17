@@ -24,11 +24,10 @@ import javax.annotation.Generated;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class DistributionWithdraw implements Serializable {
 
-    private static final long serialVersionUID = 960178731;
+    private static final long serialVersionUID = -812201298;
 
     private Integer    id;
     private Integer    userId;
-    private Timestamp  addTime;
     private Byte       type;
     private Byte       status;
     private String     orderSn;
@@ -36,7 +35,6 @@ public class DistributionWithdraw implements Serializable {
     private String     withdrawNum;
     private BigDecimal withdrawCash;
     private BigDecimal withdraw;
-    private Timestamp  updateTime;
     private String     desc;
     private String     refuseDesc;
     private Timestamp  checkTime;
@@ -45,16 +43,17 @@ public class DistributionWithdraw implements Serializable {
     private Timestamp  failTime;
     private Timestamp  descTime;
     private Byte       delFlag;
-    private Integer    delTime;
+    private Timestamp  delTime;
     private String     withdrawSource;
     private String     realName;
+    private Timestamp  createTime;
+    private Timestamp  updateTime;
 
     public DistributionWithdraw() {}
 
     public DistributionWithdraw(DistributionWithdraw value) {
         this.id = value.id;
         this.userId = value.userId;
-        this.addTime = value.addTime;
         this.type = value.type;
         this.status = value.status;
         this.orderSn = value.orderSn;
@@ -62,7 +61,6 @@ public class DistributionWithdraw implements Serializable {
         this.withdrawNum = value.withdrawNum;
         this.withdrawCash = value.withdrawCash;
         this.withdraw = value.withdraw;
-        this.updateTime = value.updateTime;
         this.desc = value.desc;
         this.refuseDesc = value.refuseDesc;
         this.checkTime = value.checkTime;
@@ -74,12 +72,13 @@ public class DistributionWithdraw implements Serializable {
         this.delTime = value.delTime;
         this.withdrawSource = value.withdrawSource;
         this.realName = value.realName;
+        this.createTime = value.createTime;
+        this.updateTime = value.updateTime;
     }
 
     public DistributionWithdraw(
         Integer    id,
         Integer    userId,
-        Timestamp  addTime,
         Byte       type,
         Byte       status,
         String     orderSn,
@@ -87,7 +86,6 @@ public class DistributionWithdraw implements Serializable {
         String     withdrawNum,
         BigDecimal withdrawCash,
         BigDecimal withdraw,
-        Timestamp  updateTime,
         String     desc,
         String     refuseDesc,
         Timestamp  checkTime,
@@ -96,13 +94,14 @@ public class DistributionWithdraw implements Serializable {
         Timestamp  failTime,
         Timestamp  descTime,
         Byte       delFlag,
-        Integer    delTime,
+        Timestamp  delTime,
         String     withdrawSource,
-        String     realName
+        String     realName,
+        Timestamp  createTime,
+        Timestamp  updateTime
     ) {
         this.id = id;
         this.userId = userId;
-        this.addTime = addTime;
         this.type = type;
         this.status = status;
         this.orderSn = orderSn;
@@ -110,7 +109,6 @@ public class DistributionWithdraw implements Serializable {
         this.withdrawNum = withdrawNum;
         this.withdrawCash = withdrawCash;
         this.withdraw = withdraw;
-        this.updateTime = updateTime;
         this.desc = desc;
         this.refuseDesc = refuseDesc;
         this.checkTime = checkTime;
@@ -122,6 +120,8 @@ public class DistributionWithdraw implements Serializable {
         this.delTime = delTime;
         this.withdrawSource = withdrawSource;
         this.realName = realName;
+        this.createTime = createTime;
+        this.updateTime = updateTime;
     }
 
     public Integer getId() {
@@ -138,14 +138,6 @@ public class DistributionWithdraw implements Serializable {
 
     public void setUserId(Integer userId) {
         this.userId = userId;
-    }
-
-    public Timestamp getAddTime() {
-        return this.addTime;
-    }
-
-    public void setAddTime(Timestamp addTime) {
-        this.addTime = addTime;
     }
 
     public Byte getType() {
@@ -202,14 +194,6 @@ public class DistributionWithdraw implements Serializable {
 
     public void setWithdraw(BigDecimal withdraw) {
         this.withdraw = withdraw;
-    }
-
-    public Timestamp getUpdateTime() {
-        return this.updateTime;
-    }
-
-    public void setUpdateTime(Timestamp updateTime) {
-        this.updateTime = updateTime;
     }
 
     public String getDesc() {
@@ -276,11 +260,11 @@ public class DistributionWithdraw implements Serializable {
         this.delFlag = delFlag;
     }
 
-    public Integer getDelTime() {
+    public Timestamp getDelTime() {
         return this.delTime;
     }
 
-    public void setDelTime(Integer delTime) {
+    public void setDelTime(Timestamp delTime) {
         this.delTime = delTime;
     }
 
@@ -300,13 +284,28 @@ public class DistributionWithdraw implements Serializable {
         this.realName = realName;
     }
 
+    public Timestamp getCreateTime() {
+        return this.createTime;
+    }
+
+    public void setCreateTime(Timestamp createTime) {
+        this.createTime = createTime;
+    }
+
+    public Timestamp getUpdateTime() {
+        return this.updateTime;
+    }
+
+    public void setUpdateTime(Timestamp updateTime) {
+        this.updateTime = updateTime;
+    }
+
     @Override
     public String toString() {
         StringBuilder sb = new StringBuilder("DistributionWithdraw (");
 
         sb.append(id);
         sb.append(", ").append(userId);
-        sb.append(", ").append(addTime);
         sb.append(", ").append(type);
         sb.append(", ").append(status);
         sb.append(", ").append(orderSn);
@@ -314,7 +313,6 @@ public class DistributionWithdraw implements Serializable {
         sb.append(", ").append(withdrawNum);
         sb.append(", ").append(withdrawCash);
         sb.append(", ").append(withdraw);
-        sb.append(", ").append(updateTime);
         sb.append(", ").append(desc);
         sb.append(", ").append(refuseDesc);
         sb.append(", ").append(checkTime);
@@ -326,6 +324,8 @@ public class DistributionWithdraw implements Serializable {
         sb.append(", ").append(delTime);
         sb.append(", ").append(withdrawSource);
         sb.append(", ").append(realName);
+        sb.append(", ").append(createTime);
+        sb.append(", ").append(updateTime);
 
         sb.append(")");
         return sb.toString();

@@ -42,7 +42,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class Pictorial extends TableImpl<PictorialRecord> {
 
-    private static final long serialVersionUID = -82981862;
+    private static final long serialVersionUID = -880783278;
 
     /**
      * The reference instance of <code>mini_shop_471752.b2c_pictorial</code>
@@ -83,19 +83,9 @@ public class Pictorial extends TableImpl<PictorialRecord> {
     public final TableField<PictorialRecord, Integer> USER_ID = createField("user_id", org.jooq.impl.SQLDataType.INTEGER.nullable(false).defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.INTEGER)), this, "");
 
     /**
-     * The column <code>mini_shop_471752.b2c_pictorial.identity_id</code>. 关联ID： 例如：goods_id, page_id
+     * The column <code>mini_shop_471752.b2c_pictorial.identity_id</code>. 关联id： 例如：goods_id, page_id
      */
-    public final TableField<PictorialRecord, Integer> IDENTITY_ID = createField("identity_id", org.jooq.impl.SQLDataType.INTEGER.nullable(false), this, "关联ID： 例如：goods_id, page_id");
-
-    /**
-     * The column <code>mini_shop_471752.b2c_pictorial.add_time</code>. 生成时间
-     */
-    public final TableField<PictorialRecord, Timestamp> ADD_TIME = createField("add_time", org.jooq.impl.SQLDataType.TIMESTAMP.nullable(false), this, "生成时间");
-
-    /**
-     * The column <code>mini_shop_471752.b2c_pictorial.update_time</code>. 更新时间
-     */
-    public final TableField<PictorialRecord, Timestamp> UPDATE_TIME = createField("update_time", org.jooq.impl.SQLDataType.TIMESTAMP.nullable(false).defaultValue(org.jooq.impl.DSL.field("CURRENT_TIMESTAMP", org.jooq.impl.SQLDataType.TIMESTAMP)), this, "更新时间");
+    public final TableField<PictorialRecord, Integer> IDENTITY_ID = createField("identity_id", org.jooq.impl.SQLDataType.INTEGER.nullable(false), this, "关联id： 例如：goods_id, page_id");
 
     /**
      * The column <code>mini_shop_471752.b2c_pictorial.del_flag</code>. 删除标记： 1：删除
@@ -105,7 +95,17 @@ public class Pictorial extends TableImpl<PictorialRecord> {
     /**
      * The column <code>mini_shop_471752.b2c_pictorial.del_time</code>.
      */
-    public final TableField<PictorialRecord, Integer> DEL_TIME = createField("del_time", org.jooq.impl.SQLDataType.INTEGER.defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.INTEGER)), this, "");
+    public final TableField<PictorialRecord, Timestamp> DEL_TIME = createField("del_time", org.jooq.impl.SQLDataType.TIMESTAMP, this, "");
+
+    /**
+     * The column <code>mini_shop_471752.b2c_pictorial.create_time</code>.
+     */
+    public final TableField<PictorialRecord, Timestamp> CREATE_TIME = createField("create_time", org.jooq.impl.SQLDataType.TIMESTAMP.nullable(false).defaultValue(org.jooq.impl.DSL.field("CURRENT_TIMESTAMP", org.jooq.impl.SQLDataType.TIMESTAMP)), this, "");
+
+    /**
+     * The column <code>mini_shop_471752.b2c_pictorial.update_time</code>. 最后修改时间
+     */
+    public final TableField<PictorialRecord, Timestamp> UPDATE_TIME = createField("update_time", org.jooq.impl.SQLDataType.TIMESTAMP.nullable(false).defaultValue(org.jooq.impl.DSL.field("CURRENT_TIMESTAMP", org.jooq.impl.SQLDataType.TIMESTAMP)), this, "最后修改时间");
 
     /**
      * Create a <code>mini_shop_471752.b2c_pictorial</code> table reference

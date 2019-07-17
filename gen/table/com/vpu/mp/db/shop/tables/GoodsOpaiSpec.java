@@ -43,7 +43,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class GoodsOpaiSpec extends TableImpl<GoodsOpaiSpecRecord> {
 
-    private static final long serialVersionUID = 550874549;
+    private static final long serialVersionUID = -1109998440;
 
     /**
      * The reference instance of <code>mini_shop_471752.b2c_goods_opai_spec</code>
@@ -84,14 +84,19 @@ public class GoodsOpaiSpec extends TableImpl<GoodsOpaiSpecRecord> {
     public final TableField<GoodsOpaiSpecRecord, Byte> IS_ON_SALE = createField("is_on_sale", org.jooq.impl.SQLDataType.TINYINT.defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.TINYINT)), this, "1:上架，0:下架");
 
     /**
-     * The column <code>mini_shop_471752.b2c_goods_opai_spec.is_delete</code>. 1:删除
+     * The column <code>mini_shop_471752.b2c_goods_opai_spec.del_flag</code>. 1:删除
      */
-    public final TableField<GoodsOpaiSpecRecord, Byte> IS_DELETE = createField("is_delete", org.jooq.impl.SQLDataType.TINYINT.defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.TINYINT)), this, "1:删除");
+    public final TableField<GoodsOpaiSpecRecord, Byte> DEL_FLAG = createField("del_flag", org.jooq.impl.SQLDataType.TINYINT.defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.TINYINT)), this, "1:删除");
 
     /**
-     * The column <code>mini_shop_471752.b2c_goods_opai_spec.add_time</code>.
+     * The column <code>mini_shop_471752.b2c_goods_opai_spec.create_time</code>.
      */
-    public final TableField<GoodsOpaiSpecRecord, Timestamp> ADD_TIME = createField("add_time", org.jooq.impl.SQLDataType.TIMESTAMP, this, "");
+    public final TableField<GoodsOpaiSpecRecord, Timestamp> CREATE_TIME = createField("create_time", org.jooq.impl.SQLDataType.TIMESTAMP.nullable(false).defaultValue(org.jooq.impl.DSL.field("CURRENT_TIMESTAMP", org.jooq.impl.SQLDataType.TIMESTAMP)), this, "");
+
+    /**
+     * The column <code>mini_shop_471752.b2c_goods_opai_spec.update_time</code>. 最后修改时间
+     */
+    public final TableField<GoodsOpaiSpecRecord, Timestamp> UPDATE_TIME = createField("update_time", org.jooq.impl.SQLDataType.TIMESTAMP.nullable(false).defaultValue(org.jooq.impl.DSL.field("CURRENT_TIMESTAMP", org.jooq.impl.SQLDataType.TIMESTAMP)), this, "最后修改时间");
 
     /**
      * Create a <code>mini_shop_471752.b2c_goods_opai_spec</code> table reference

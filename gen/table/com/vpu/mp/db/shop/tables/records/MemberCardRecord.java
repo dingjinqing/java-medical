@@ -28,7 +28,7 @@ import org.jooq.impl.UpdatableRecordImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class MemberCardRecord extends UpdatableRecordImpl<MemberCardRecord> {
 
-    private static final long serialVersionUID = -1649457104;
+    private static final long serialVersionUID = -1208225026;
 
     /**
      * Setter for <code>mini_shop_471752.b2c_member_card.id</code>.
@@ -199,14 +199,14 @@ public class MemberCardRecord extends UpdatableRecordImpl<MemberCardRecord> {
     }
 
     /**
-     * Setter for <code>mini_shop_471752.b2c_member_card.receive_day</code>. 领取之日起N
+     * Setter for <code>mini_shop_471752.b2c_member_card.receive_day</code>. 领取之日起n
      */
     public void setReceiveDay(Integer value) {
         set(12, value);
     }
 
     /**
-     * Getter for <code>mini_shop_471752.b2c_member_card.receive_day</code>. 领取之日起N
+     * Getter for <code>mini_shop_471752.b2c_member_card.receive_day</code>. 领取之日起n
      */
     public Integer getReceiveDay() {
         return (Integer) get(12);
@@ -283,30 +283,30 @@ public class MemberCardRecord extends UpdatableRecordImpl<MemberCardRecord> {
     }
 
     /**
-     * Setter for <code>mini_shop_471752.b2c_member_card.add_time</code>. 添加时间
+     * Setter for <code>mini_shop_471752.b2c_member_card.create_time</code>. 添加时间
      */
-    public void setAddTime(Timestamp value) {
+    public void setCreateTime(Timestamp value) {
         set(18, value);
     }
 
     /**
-     * Getter for <code>mini_shop_471752.b2c_member_card.add_time</code>. 添加时间
+     * Getter for <code>mini_shop_471752.b2c_member_card.create_time</code>. 添加时间
      */
-    public Timestamp getAddTime() {
+    public Timestamp getCreateTime() {
         return (Timestamp) get(18);
     }
 
     /**
-     * Setter for <code>mini_shop_471752.b2c_member_card.up_time</code>. 更新时间
+     * Setter for <code>mini_shop_471752.b2c_member_card.update_time</code>. 最后修改时间
      */
-    public void setUpTime(Timestamp value) {
+    public void setUpdateTime(Timestamp value) {
         set(19, value);
     }
 
     /**
-     * Getter for <code>mini_shop_471752.b2c_member_card.up_time</code>. 更新时间
+     * Getter for <code>mini_shop_471752.b2c_member_card.update_time</code>. 最后修改时间
      */
-    public Timestamp getUpTime() {
+    public Timestamp getUpdateTime() {
         return (Timestamp) get(19);
     }
 
@@ -395,16 +395,16 @@ public class MemberCardRecord extends UpdatableRecordImpl<MemberCardRecord> {
     }
 
     /**
-     * Setter for <code>mini_shop_471752.b2c_member_card.is_delete</code>. 1为删除状态
+     * Setter for <code>mini_shop_471752.b2c_member_card.del_flag</code>. 1为删除状态
      */
-    public void setIsDelete(Byte value) {
+    public void setDelFlag(Byte value) {
         set(26, value);
     }
 
     /**
-     * Getter for <code>mini_shop_471752.b2c_member_card.is_delete</code>. 1为删除状态
+     * Getter for <code>mini_shop_471752.b2c_member_card.del_flag</code>. 1为删除状态
      */
-    public Byte getIsDelete() {
+    public Byte getDelFlag() {
         return (Byte) get(26);
     }
 
@@ -465,42 +465,42 @@ public class MemberCardRecord extends UpdatableRecordImpl<MemberCardRecord> {
     }
 
     /**
-     * Setter for <code>mini_shop_471752.b2c_member_card.discount_goods_id</code>. 折扣商品ID
+     * Setter for <code>mini_shop_471752.b2c_member_card.discount_goods_id</code>. 折扣商品id
      */
     public void setDiscountGoodsId(String value) {
         set(31, value);
     }
 
     /**
-     * Getter for <code>mini_shop_471752.b2c_member_card.discount_goods_id</code>. 折扣商品ID
+     * Getter for <code>mini_shop_471752.b2c_member_card.discount_goods_id</code>. 折扣商品id
      */
     public String getDiscountGoodsId() {
         return (String) get(31);
     }
 
     /**
-     * Setter for <code>mini_shop_471752.b2c_member_card.discount_cat_id</code>. 折扣平台分类ID
+     * Setter for <code>mini_shop_471752.b2c_member_card.discount_cat_id</code>. 折扣平台分类id
      */
     public void setDiscountCatId(String value) {
         set(32, value);
     }
 
     /**
-     * Getter for <code>mini_shop_471752.b2c_member_card.discount_cat_id</code>. 折扣平台分类ID
+     * Getter for <code>mini_shop_471752.b2c_member_card.discount_cat_id</code>. 折扣平台分类id
      */
     public String getDiscountCatId() {
         return (String) get(32);
     }
 
     /**
-     * Setter for <code>mini_shop_471752.b2c_member_card.discount_sort_id</code>. 折扣商家分类ID
+     * Setter for <code>mini_shop_471752.b2c_member_card.discount_sort_id</code>. 折扣商家分类id
      */
     public void setDiscountSortId(String value) {
         set(33, value);
     }
 
     /**
-     * Getter for <code>mini_shop_471752.b2c_member_card.discount_sort_id</code>. 折扣商家分类ID
+     * Getter for <code>mini_shop_471752.b2c_member_card.discount_sort_id</code>. 折扣商家分类id
      */
     public String getDiscountSortId() {
         return (String) get(33);
@@ -686,7 +686,7 @@ public class MemberCardRecord extends UpdatableRecordImpl<MemberCardRecord> {
     /**
      * Create a detached, initialised MemberCardRecord
      */
-    public MemberCardRecord(Integer id, String cardName, Byte cardType, Byte bgType, String bgColor, String bgImg, BigDecimal discount, Integer sorce, String buyScore, Byte expireType, Timestamp startTime, Timestamp endTime, Integer receiveDay, Byte dateType, Byte activation, String receiveCode, String desc, String mobile, Timestamp addTime, Timestamp upTime, Byte flag, Integer sendMoney, String chargeMoney, Integer useTime, String storeList, Integer count, Byte isDelete, String grade, String gradeCondition, String activationCfg, Byte examine, String discountGoodsId, String discountCatId, String discountSortId, Byte discountIsAll, Byte isPay, Byte payType, BigDecimal payFee, Byte payOwnGood, Byte receiveAction, Byte isExchang, Byte storeUseSwitch, String exchangGoods, Byte exchangFreight, Integer exchangCount) {
+    public MemberCardRecord(Integer id, String cardName, Byte cardType, Byte bgType, String bgColor, String bgImg, BigDecimal discount, Integer sorce, String buyScore, Byte expireType, Timestamp startTime, Timestamp endTime, Integer receiveDay, Byte dateType, Byte activation, String receiveCode, String desc, String mobile, Timestamp createTime, Timestamp updateTime, Byte flag, Integer sendMoney, String chargeMoney, Integer useTime, String storeList, Integer count, Byte delFlag, String grade, String gradeCondition, String activationCfg, Byte examine, String discountGoodsId, String discountCatId, String discountSortId, Byte discountIsAll, Byte isPay, Byte payType, BigDecimal payFee, Byte payOwnGood, Byte receiveAction, Byte isExchang, Byte storeUseSwitch, String exchangGoods, Byte exchangFreight, Integer exchangCount) {
         super(MemberCard.MEMBER_CARD);
 
         set(0, id);
@@ -707,15 +707,15 @@ public class MemberCardRecord extends UpdatableRecordImpl<MemberCardRecord> {
         set(15, receiveCode);
         set(16, desc);
         set(17, mobile);
-        set(18, addTime);
-        set(19, upTime);
+        set(18, createTime);
+        set(19, updateTime);
         set(20, flag);
         set(21, sendMoney);
         set(22, chargeMoney);
         set(23, useTime);
         set(24, storeList);
         set(25, count);
-        set(26, isDelete);
+        set(26, delFlag);
         set(27, grade);
         set(28, gradeCondition);
         set(29, activationCfg);

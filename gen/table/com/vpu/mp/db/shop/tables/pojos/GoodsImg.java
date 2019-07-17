@@ -5,6 +5,7 @@ package com.vpu.mp.db.shop.tables.pojos;
 
 
 import java.io.Serializable;
+import java.sql.Timestamp;
 
 import javax.annotation.Generated;
 
@@ -22,12 +23,14 @@ import javax.annotation.Generated;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class GoodsImg implements Serializable {
 
-    private static final long serialVersionUID = 2030119477;
+    private static final long serialVersionUID = 463621256;
 
-    private Integer imgId;
-    private Integer goodsId;
-    private String  imgUrl;
-    private String  imgDesc;
+    private Integer   imgId;
+    private Integer   goodsId;
+    private String    imgUrl;
+    private String    imgDesc;
+    private Timestamp createTime;
+    private Timestamp updateTime;
 
     public GoodsImg() {}
 
@@ -36,18 +39,24 @@ public class GoodsImg implements Serializable {
         this.goodsId = value.goodsId;
         this.imgUrl = value.imgUrl;
         this.imgDesc = value.imgDesc;
+        this.createTime = value.createTime;
+        this.updateTime = value.updateTime;
     }
 
     public GoodsImg(
-        Integer imgId,
-        Integer goodsId,
-        String  imgUrl,
-        String  imgDesc
+        Integer   imgId,
+        Integer   goodsId,
+        String    imgUrl,
+        String    imgDesc,
+        Timestamp createTime,
+        Timestamp updateTime
     ) {
         this.imgId = imgId;
         this.goodsId = goodsId;
         this.imgUrl = imgUrl;
         this.imgDesc = imgDesc;
+        this.createTime = createTime;
+        this.updateTime = updateTime;
     }
 
     public Integer getImgId() {
@@ -82,6 +91,22 @@ public class GoodsImg implements Serializable {
         this.imgDesc = imgDesc;
     }
 
+    public Timestamp getCreateTime() {
+        return this.createTime;
+    }
+
+    public void setCreateTime(Timestamp createTime) {
+        this.createTime = createTime;
+    }
+
+    public Timestamp getUpdateTime() {
+        return this.updateTime;
+    }
+
+    public void setUpdateTime(Timestamp updateTime) {
+        this.updateTime = updateTime;
+    }
+
     @Override
     public String toString() {
         StringBuilder sb = new StringBuilder("GoodsImg (");
@@ -90,6 +115,8 @@ public class GoodsImg implements Serializable {
         sb.append(", ").append(goodsId);
         sb.append(", ").append(imgUrl);
         sb.append(", ").append(imgDesc);
+        sb.append(", ").append(createTime);
+        sb.append(", ").append(updateTime);
 
         sb.append(")");
         return sb.toString();

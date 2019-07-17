@@ -23,7 +23,7 @@ import javax.annotation.Generated;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class CommentGoods implements Serializable {
 
-    private static final long serialVersionUID = -1433016344;
+    private static final long serialVersionUID = -1931434540;
 
     private Integer   id;
     private Integer   shopId;
@@ -36,10 +36,13 @@ public class CommentGoods implements Serializable {
     private String    orderSn;
     private String    commNote;
     private String    commImg;
-    private Timestamp inTime;
-    private Timestamp upTime;
+    private Timestamp createTime;
+    private Timestamp updateTime;
     private Byte      flag;
     private Byte      delFlag;
+    private Byte      isShopAdd;
+    private String    bogusUsername;
+    private String    bogusUserAvatar;
 
     public CommentGoods() {}
 
@@ -55,10 +58,13 @@ public class CommentGoods implements Serializable {
         this.orderSn = value.orderSn;
         this.commNote = value.commNote;
         this.commImg = value.commImg;
-        this.inTime = value.inTime;
-        this.upTime = value.upTime;
+        this.createTime = value.createTime;
+        this.updateTime = value.updateTime;
         this.flag = value.flag;
         this.delFlag = value.delFlag;
+        this.isShopAdd = value.isShopAdd;
+        this.bogusUsername = value.bogusUsername;
+        this.bogusUserAvatar = value.bogusUserAvatar;
     }
 
     public CommentGoods(
@@ -73,10 +79,13 @@ public class CommentGoods implements Serializable {
         String    orderSn,
         String    commNote,
         String    commImg,
-        Timestamp inTime,
-        Timestamp upTime,
+        Timestamp createTime,
+        Timestamp updateTime,
         Byte      flag,
-        Byte      delFlag
+        Byte      delFlag,
+        Byte      isShopAdd,
+        String    bogusUsername,
+        String    bogusUserAvatar
     ) {
         this.id = id;
         this.shopId = shopId;
@@ -89,10 +98,13 @@ public class CommentGoods implements Serializable {
         this.orderSn = orderSn;
         this.commNote = commNote;
         this.commImg = commImg;
-        this.inTime = inTime;
-        this.upTime = upTime;
+        this.createTime = createTime;
+        this.updateTime = updateTime;
         this.flag = flag;
         this.delFlag = delFlag;
+        this.isShopAdd = isShopAdd;
+        this.bogusUsername = bogusUsername;
+        this.bogusUserAvatar = bogusUserAvatar;
     }
 
     public Integer getId() {
@@ -183,20 +195,20 @@ public class CommentGoods implements Serializable {
         this.commImg = commImg;
     }
 
-    public Timestamp getInTime() {
-        return this.inTime;
+    public Timestamp getCreateTime() {
+        return this.createTime;
     }
 
-    public void setInTime(Timestamp inTime) {
-        this.inTime = inTime;
+    public void setCreateTime(Timestamp createTime) {
+        this.createTime = createTime;
     }
 
-    public Timestamp getUpTime() {
-        return this.upTime;
+    public Timestamp getUpdateTime() {
+        return this.updateTime;
     }
 
-    public void setUpTime(Timestamp upTime) {
-        this.upTime = upTime;
+    public void setUpdateTime(Timestamp updateTime) {
+        this.updateTime = updateTime;
     }
 
     public Byte getFlag() {
@@ -215,6 +227,30 @@ public class CommentGoods implements Serializable {
         this.delFlag = delFlag;
     }
 
+    public Byte getIsShopAdd() {
+        return this.isShopAdd;
+    }
+
+    public void setIsShopAdd(Byte isShopAdd) {
+        this.isShopAdd = isShopAdd;
+    }
+
+    public String getBogusUsername() {
+        return this.bogusUsername;
+    }
+
+    public void setBogusUsername(String bogusUsername) {
+        this.bogusUsername = bogusUsername;
+    }
+
+    public String getBogusUserAvatar() {
+        return this.bogusUserAvatar;
+    }
+
+    public void setBogusUserAvatar(String bogusUserAvatar) {
+        this.bogusUserAvatar = bogusUserAvatar;
+    }
+
     @Override
     public String toString() {
         StringBuilder sb = new StringBuilder("CommentGoods (");
@@ -230,10 +266,13 @@ public class CommentGoods implements Serializable {
         sb.append(", ").append(orderSn);
         sb.append(", ").append(commNote);
         sb.append(", ").append(commImg);
-        sb.append(", ").append(inTime);
-        sb.append(", ").append(upTime);
+        sb.append(", ").append(createTime);
+        sb.append(", ").append(updateTime);
         sb.append(", ").append(flag);
         sb.append(", ").append(delFlag);
+        sb.append(", ").append(isShopAdd);
+        sb.append(", ").append(bogusUsername);
+        sb.append(", ").append(bogusUserAvatar);
 
         sb.append(")");
         return sb.toString();

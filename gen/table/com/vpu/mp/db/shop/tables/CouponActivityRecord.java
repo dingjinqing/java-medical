@@ -42,7 +42,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class CouponActivityRecord extends TableImpl<CouponActivityRecordRecord> {
 
-    private static final long serialVersionUID = -1618559816;
+    private static final long serialVersionUID = 899724268;
 
     /**
      * The reference instance of <code>mini_shop_471752.b2c_coupon_activity_record</code>
@@ -63,9 +63,9 @@ public class CouponActivityRecord extends TableImpl<CouponActivityRecordRecord> 
     public final TableField<CouponActivityRecordRecord, Integer> ID = createField("id", org.jooq.impl.SQLDataType.INTEGER.nullable(false).identity(true), this, "");
 
     /**
-     * The column <code>mini_shop_471752.b2c_coupon_activity_record.activity_id</code>. 活动ID
+     * The column <code>mini_shop_471752.b2c_coupon_activity_record.activity_id</code>. 活动id
      */
-    public final TableField<CouponActivityRecordRecord, Integer> ACTIVITY_ID = createField("activity_id", org.jooq.impl.SQLDataType.INTEGER.nullable(false), this, "活动ID");
+    public final TableField<CouponActivityRecordRecord, Integer> ACTIVITY_ID = createField("activity_id", org.jooq.impl.SQLDataType.INTEGER.nullable(false), this, "活动id");
 
     /**
      * The column <code>mini_shop_471752.b2c_coupon_activity_record.user_id</code>.
@@ -75,12 +75,22 @@ public class CouponActivityRecord extends TableImpl<CouponActivityRecordRecord> 
     /**
      * The column <code>mini_shop_471752.b2c_coupon_activity_record.receive_time</code>. 领取时间
      */
-    public final TableField<CouponActivityRecordRecord, Timestamp> RECEIVE_TIME = createField("receive_time", org.jooq.impl.SQLDataType.TIMESTAMP.nullable(false), this, "领取时间");
+    public final TableField<CouponActivityRecordRecord, Timestamp> RECEIVE_TIME = createField("receive_time", org.jooq.impl.SQLDataType.TIMESTAMP, this, "领取时间");
 
     /**
      * The column <code>mini_shop_471752.b2c_coupon_activity_record.mrking_voucher_id</code>. 已领取的优惠券
      */
     public final TableField<CouponActivityRecordRecord, String> MRKING_VOUCHER_ID = createField("mrking_voucher_id", org.jooq.impl.SQLDataType.VARCHAR(500), this, "已领取的优惠券");
+
+    /**
+     * The column <code>mini_shop_471752.b2c_coupon_activity_record.create_time</code>.
+     */
+    public final TableField<CouponActivityRecordRecord, Timestamp> CREATE_TIME = createField("create_time", org.jooq.impl.SQLDataType.TIMESTAMP.nullable(false).defaultValue(org.jooq.impl.DSL.field("CURRENT_TIMESTAMP", org.jooq.impl.SQLDataType.TIMESTAMP)), this, "");
+
+    /**
+     * The column <code>mini_shop_471752.b2c_coupon_activity_record.update_time</code>. 最后修改时间
+     */
+    public final TableField<CouponActivityRecordRecord, Timestamp> UPDATE_TIME = createField("update_time", org.jooq.impl.SQLDataType.TIMESTAMP.nullable(false).defaultValue(org.jooq.impl.DSL.field("CURRENT_TIMESTAMP", org.jooq.impl.SQLDataType.TIMESTAMP)), this, "最后修改时间");
 
     /**
      * Create a <code>mini_shop_471752.b2c_coupon_activity_record</code> table reference

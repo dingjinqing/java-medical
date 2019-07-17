@@ -23,44 +23,56 @@ import javax.annotation.Generated;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class RecordAdminAction implements Serializable {
 
-    private static final long serialVersionUID = 355057189;
+    private static final long serialVersionUID = -1351606197;
 
     private Integer   id;
-    private Integer   shopId;
     private Integer   sysId;
     private Integer   accountId;
     private Byte      actionType;
-    private String    actionDesc;
-    private Timestamp addTime;
+    private String    templateId;
+    private String    templateData;
+    private String    userName;
+    private String    mobile;
+    private Timestamp createTime;
+    private Timestamp updateTime;
 
     public RecordAdminAction() {}
 
     public RecordAdminAction(RecordAdminAction value) {
         this.id = value.id;
-        this.shopId = value.shopId;
         this.sysId = value.sysId;
         this.accountId = value.accountId;
         this.actionType = value.actionType;
-        this.actionDesc = value.actionDesc;
-        this.addTime = value.addTime;
+        this.templateId = value.templateId;
+        this.templateData = value.templateData;
+        this.userName = value.userName;
+        this.mobile = value.mobile;
+        this.createTime = value.createTime;
+        this.updateTime = value.updateTime;
     }
 
     public RecordAdminAction(
         Integer   id,
-        Integer   shopId,
         Integer   sysId,
         Integer   accountId,
         Byte      actionType,
-        String    actionDesc,
-        Timestamp addTime
+        String    templateId,
+        String    templateData,
+        String    userName,
+        String    mobile,
+        Timestamp createTime,
+        Timestamp updateTime
     ) {
         this.id = id;
-        this.shopId = shopId;
         this.sysId = sysId;
         this.accountId = accountId;
         this.actionType = actionType;
-        this.actionDesc = actionDesc;
-        this.addTime = addTime;
+        this.templateId = templateId;
+        this.templateData = templateData;
+        this.userName = userName;
+        this.mobile = mobile;
+        this.createTime = createTime;
+        this.updateTime = updateTime;
     }
 
     public Integer getId() {
@@ -69,14 +81,6 @@ public class RecordAdminAction implements Serializable {
 
     public void setId(Integer id) {
         this.id = id;
-    }
-
-    public Integer getShopId() {
-        return this.shopId;
-    }
-
-    public void setShopId(Integer shopId) {
-        this.shopId = shopId;
     }
 
     public Integer getSysId() {
@@ -103,20 +107,52 @@ public class RecordAdminAction implements Serializable {
         this.actionType = actionType;
     }
 
-    public String getActionDesc() {
-        return this.actionDesc;
+    public String getTemplateId() {
+        return this.templateId;
     }
 
-    public void setActionDesc(String actionDesc) {
-        this.actionDesc = actionDesc;
+    public void setTemplateId(String templateId) {
+        this.templateId = templateId;
     }
 
-    public Timestamp getAddTime() {
-        return this.addTime;
+    public String getTemplateData() {
+        return this.templateData;
     }
 
-    public void setAddTime(Timestamp addTime) {
-        this.addTime = addTime;
+    public void setTemplateData(String templateData) {
+        this.templateData = templateData;
+    }
+
+    public String getUserName() {
+        return this.userName;
+    }
+
+    public void setUserName(String userName) {
+        this.userName = userName;
+    }
+
+    public String getMobile() {
+        return this.mobile;
+    }
+
+    public void setMobile(String mobile) {
+        this.mobile = mobile;
+    }
+
+    public Timestamp getCreateTime() {
+        return this.createTime;
+    }
+
+    public void setCreateTime(Timestamp createTime) {
+        this.createTime = createTime;
+    }
+
+    public Timestamp getUpdateTime() {
+        return this.updateTime;
+    }
+
+    public void setUpdateTime(Timestamp updateTime) {
+        this.updateTime = updateTime;
     }
 
     @Override
@@ -124,12 +160,15 @@ public class RecordAdminAction implements Serializable {
         StringBuilder sb = new StringBuilder("RecordAdminAction (");
 
         sb.append(id);
-        sb.append(", ").append(shopId);
         sb.append(", ").append(sysId);
         sb.append(", ").append(accountId);
         sb.append(", ").append(actionType);
-        sb.append(", ").append(actionDesc);
-        sb.append(", ").append(addTime);
+        sb.append(", ").append(templateId);
+        sb.append(", ").append(templateData);
+        sb.append(", ").append(userName);
+        sb.append(", ").append(mobile);
+        sb.append(", ").append(createTime);
+        sb.append(", ").append(updateTime);
 
         sb.append(")");
         return sb.toString();

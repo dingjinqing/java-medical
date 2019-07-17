@@ -23,7 +23,7 @@ import javax.annotation.Generated;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class PinGroupDefine implements Serializable {
 
-    private static final long serialVersionUID = -1121687856;
+    private static final long serialVersionUID = 866874853;
 
     private Integer   id;
     private Integer   shopId;
@@ -39,13 +39,13 @@ public class PinGroupDefine implements Serializable {
     private Short     saleNum;
     private Byte      delFlag;
     private Byte      status;
-    private Timestamp addTime;
-    private Timestamp updateTime;
     private Integer   delTime;
     private Byte      activityType;
     private Byte      isGrouperCheap;
     private String    rewardCouponId;
     private String    shareConfig;
+    private Timestamp createTime;
+    private Timestamp updateTime;
 
     public PinGroupDefine() {}
 
@@ -64,13 +64,13 @@ public class PinGroupDefine implements Serializable {
         this.saleNum = value.saleNum;
         this.delFlag = value.delFlag;
         this.status = value.status;
-        this.addTime = value.addTime;
-        this.updateTime = value.updateTime;
         this.delTime = value.delTime;
         this.activityType = value.activityType;
         this.isGrouperCheap = value.isGrouperCheap;
         this.rewardCouponId = value.rewardCouponId;
         this.shareConfig = value.shareConfig;
+        this.createTime = value.createTime;
+        this.updateTime = value.updateTime;
     }
 
     public PinGroupDefine(
@@ -88,13 +88,13 @@ public class PinGroupDefine implements Serializable {
         Short     saleNum,
         Byte      delFlag,
         Byte      status,
-        Timestamp addTime,
-        Timestamp updateTime,
         Integer   delTime,
         Byte      activityType,
         Byte      isGrouperCheap,
         String    rewardCouponId,
-        String    shareConfig
+        String    shareConfig,
+        Timestamp createTime,
+        Timestamp updateTime
     ) {
         this.id = id;
         this.shopId = shopId;
@@ -110,13 +110,13 @@ public class PinGroupDefine implements Serializable {
         this.saleNum = saleNum;
         this.delFlag = delFlag;
         this.status = status;
-        this.addTime = addTime;
-        this.updateTime = updateTime;
         this.delTime = delTime;
         this.activityType = activityType;
         this.isGrouperCheap = isGrouperCheap;
         this.rewardCouponId = rewardCouponId;
         this.shareConfig = shareConfig;
+        this.createTime = createTime;
+        this.updateTime = updateTime;
     }
 
     public Integer getId() {
@@ -231,22 +231,6 @@ public class PinGroupDefine implements Serializable {
         this.status = status;
     }
 
-    public Timestamp getAddTime() {
-        return this.addTime;
-    }
-
-    public void setAddTime(Timestamp addTime) {
-        this.addTime = addTime;
-    }
-
-    public Timestamp getUpdateTime() {
-        return this.updateTime;
-    }
-
-    public void setUpdateTime(Timestamp updateTime) {
-        this.updateTime = updateTime;
-    }
-
     public Integer getDelTime() {
         return this.delTime;
     }
@@ -287,6 +271,22 @@ public class PinGroupDefine implements Serializable {
         this.shareConfig = shareConfig;
     }
 
+    public Timestamp getCreateTime() {
+        return this.createTime;
+    }
+
+    public void setCreateTime(Timestamp createTime) {
+        this.createTime = createTime;
+    }
+
+    public Timestamp getUpdateTime() {
+        return this.updateTime;
+    }
+
+    public void setUpdateTime(Timestamp updateTime) {
+        this.updateTime = updateTime;
+    }
+
     @Override
     public String toString() {
         StringBuilder sb = new StringBuilder("PinGroupDefine (");
@@ -305,13 +305,13 @@ public class PinGroupDefine implements Serializable {
         sb.append(", ").append(saleNum);
         sb.append(", ").append(delFlag);
         sb.append(", ").append(status);
-        sb.append(", ").append(addTime);
-        sb.append(", ").append(updateTime);
         sb.append(", ").append(delTime);
         sb.append(", ").append(activityType);
         sb.append(", ").append(isGrouperCheap);
         sb.append(", ").append(rewardCouponId);
         sb.append(", ").append(shareConfig);
+        sb.append(", ").append(createTime);
+        sb.append(", ").append(updateTime);
 
         sb.append(")");
         return sb.toString();

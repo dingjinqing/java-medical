@@ -9,6 +9,7 @@ import com.vpu.mp.db.shop.Keys;
 import com.vpu.mp.db.shop.MiniShop_471752;
 import com.vpu.mp.db.shop.tables.records.MessageTemplateRecord;
 
+import java.sql.Timestamp;
 import java.util.Arrays;
 import java.util.List;
 
@@ -41,7 +42,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class MessageTemplate extends TableImpl<MessageTemplateRecord> {
 
-    private static final long serialVersionUID = -274583763;
+    private static final long serialVersionUID = 1115728085;
 
     /**
      * The reference instance of <code>mini_shop_471752.b2c_message_template</code>
@@ -69,7 +70,17 @@ public class MessageTemplate extends TableImpl<MessageTemplateRecord> {
     /**
      * The column <code>mini_shop_471752.b2c_message_template.content</code>.
      */
-    public final TableField<MessageTemplateRecord, String> CONTENT = createField("content", org.jooq.impl.SQLDataType.CLOB.nullable(false), this, "");
+    public final TableField<MessageTemplateRecord, String> CONTENT = createField("content", org.jooq.impl.SQLDataType.CLOB, this, "");
+
+    /**
+     * The column <code>mini_shop_471752.b2c_message_template.create_time</code>.
+     */
+    public final TableField<MessageTemplateRecord, Timestamp> CREATE_TIME = createField("create_time", org.jooq.impl.SQLDataType.TIMESTAMP.nullable(false).defaultValue(org.jooq.impl.DSL.field("CURRENT_TIMESTAMP", org.jooq.impl.SQLDataType.TIMESTAMP)), this, "");
+
+    /**
+     * The column <code>mini_shop_471752.b2c_message_template.update_time</code>. 最后修改时间
+     */
+    public final TableField<MessageTemplateRecord, Timestamp> UPDATE_TIME = createField("update_time", org.jooq.impl.SQLDataType.TIMESTAMP.nullable(false).defaultValue(org.jooq.impl.DSL.field("CURRENT_TIMESTAMP", org.jooq.impl.SQLDataType.TIMESTAMP)), this, "最后修改时间");
 
     /**
      * Create a <code>mini_shop_471752.b2c_message_template</code> table reference

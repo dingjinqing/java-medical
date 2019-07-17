@@ -6,6 +6,7 @@ package com.vpu.mp.db.shop.tables.pojos;
 
 import java.io.Serializable;
 import java.math.BigDecimal;
+import java.sql.Timestamp;
 
 import javax.annotation.Generated;
 
@@ -23,7 +24,7 @@ import javax.annotation.Generated;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class MrkingStrategyCondition implements Serializable {
 
-    private static final long serialVersionUID = 543131002;
+    private static final long serialVersionUID = 881741559;
 
     private Integer    id;
     private Integer    shopId;
@@ -34,6 +35,8 @@ public class MrkingStrategyCondition implements Serializable {
     private BigDecimal discount;
     private String     gift;
     private String     giftLeft;
+    private Timestamp  createTime;
+    private Timestamp  updateTime;
 
     public MrkingStrategyCondition() {}
 
@@ -47,6 +50,8 @@ public class MrkingStrategyCondition implements Serializable {
         this.discount = value.discount;
         this.gift = value.gift;
         this.giftLeft = value.giftLeft;
+        this.createTime = value.createTime;
+        this.updateTime = value.updateTime;
     }
 
     public MrkingStrategyCondition(
@@ -58,7 +63,9 @@ public class MrkingStrategyCondition implements Serializable {
         Integer    amount,
         BigDecimal discount,
         String     gift,
-        String     giftLeft
+        String     giftLeft,
+        Timestamp  createTime,
+        Timestamp  updateTime
     ) {
         this.id = id;
         this.shopId = shopId;
@@ -69,6 +76,8 @@ public class MrkingStrategyCondition implements Serializable {
         this.discount = discount;
         this.gift = gift;
         this.giftLeft = giftLeft;
+        this.createTime = createTime;
+        this.updateTime = updateTime;
     }
 
     public Integer getId() {
@@ -143,6 +152,22 @@ public class MrkingStrategyCondition implements Serializable {
         this.giftLeft = giftLeft;
     }
 
+    public Timestamp getCreateTime() {
+        return this.createTime;
+    }
+
+    public void setCreateTime(Timestamp createTime) {
+        this.createTime = createTime;
+    }
+
+    public Timestamp getUpdateTime() {
+        return this.updateTime;
+    }
+
+    public void setUpdateTime(Timestamp updateTime) {
+        this.updateTime = updateTime;
+    }
+
     @Override
     public String toString() {
         StringBuilder sb = new StringBuilder("MrkingStrategyCondition (");
@@ -156,6 +181,8 @@ public class MrkingStrategyCondition implements Serializable {
         sb.append(", ").append(discount);
         sb.append(", ").append(gift);
         sb.append(", ").append(giftLeft);
+        sb.append(", ").append(createTime);
+        sb.append(", ").append(updateTime);
 
         sb.append(")");
         return sb.toString();

@@ -9,6 +9,7 @@ import com.vpu.mp.db.shop.Keys;
 import com.vpu.mp.db.shop.MiniShop_471752;
 import com.vpu.mp.db.shop.tables.records.ShopCfgRecord;
 
+import java.sql.Timestamp;
 import java.util.Arrays;
 import java.util.List;
 
@@ -41,7 +42,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class ShopCfg extends TableImpl<ShopCfgRecord> {
 
-    private static final long serialVersionUID = 1524704038;
+    private static final long serialVersionUID = 1111616694;
 
     /**
      * The reference instance of <code>mini_shop_471752.b2c_shop_cfg</code>
@@ -62,11 +63,6 @@ public class ShopCfg extends TableImpl<ShopCfgRecord> {
     public final TableField<ShopCfgRecord, Short> REC_ID = createField("rec_id", org.jooq.impl.SQLDataType.SMALLINT.nullable(false).identity(true), this, "");
 
     /**
-     * The column <code>mini_shop_471752.b2c_shop_cfg.shop_id</code>. 店铺id
-     */
-    public final TableField<ShopCfgRecord, Integer> SHOP_ID = createField("shop_id", org.jooq.impl.SQLDataType.INTEGER.nullable(false).defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.INTEGER)), this, "店铺id");
-
-    /**
      * The column <code>mini_shop_471752.b2c_shop_cfg.k</code>.
      */
     public final TableField<ShopCfgRecord, String> K = createField("k", org.jooq.impl.SQLDataType.VARCHAR(191).defaultValue(org.jooq.impl.DSL.inline("", org.jooq.impl.SQLDataType.VARCHAR)), this, "");
@@ -75,6 +71,16 @@ public class ShopCfg extends TableImpl<ShopCfgRecord> {
      * The column <code>mini_shop_471752.b2c_shop_cfg.v</code>.
      */
     public final TableField<ShopCfgRecord, String> V = createField("v", org.jooq.impl.SQLDataType.CLOB, this, "");
+
+    /**
+     * The column <code>mini_shop_471752.b2c_shop_cfg.create_time</code>.
+     */
+    public final TableField<ShopCfgRecord, Timestamp> CREATE_TIME = createField("create_time", org.jooq.impl.SQLDataType.TIMESTAMP.nullable(false).defaultValue(org.jooq.impl.DSL.field("CURRENT_TIMESTAMP", org.jooq.impl.SQLDataType.TIMESTAMP)), this, "");
+
+    /**
+     * The column <code>mini_shop_471752.b2c_shop_cfg.update_time</code>. 最后修改时间
+     */
+    public final TableField<ShopCfgRecord, Timestamp> UPDATE_TIME = createField("update_time", org.jooq.impl.SQLDataType.TIMESTAMP.nullable(false).defaultValue(org.jooq.impl.DSL.field("CURRENT_TIMESTAMP", org.jooq.impl.SQLDataType.TIMESTAMP)), this, "最后修改时间");
 
     /**
      * Create a <code>mini_shop_471752.b2c_shop_cfg</code> table reference
@@ -122,7 +128,7 @@ public class ShopCfg extends TableImpl<ShopCfgRecord> {
      */
     @Override
     public List<Index> getIndexes() {
-        return Arrays.<Index>asList(Indexes.SHOP_CFG_PRIMARY, Indexes.SHOP_CFG_SHOP_ID_K);
+        return Arrays.<Index>asList(Indexes.SHOP_CFG_PRIMARY);
     }
 
     /**
@@ -146,7 +152,7 @@ public class ShopCfg extends TableImpl<ShopCfgRecord> {
      */
     @Override
     public List<UniqueKey<ShopCfgRecord>> getKeys() {
-        return Arrays.<UniqueKey<ShopCfgRecord>>asList(Keys.KEY_B2C_SHOP_CFG_PRIMARY, Keys.KEY_B2C_SHOP_CFG_SHOP_ID_K);
+        return Arrays.<UniqueKey<ShopCfgRecord>>asList(Keys.KEY_B2C_SHOP_CFG_PRIMARY);
     }
 
     /**

@@ -23,13 +23,14 @@ import javax.annotation.Generated;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class MpSummaryTrend implements Serializable {
 
-    private static final long serialVersionUID = -916570265;
+    private static final long serialVersionUID = -137453576;
 
     private String    refDate;
     private Integer   visitTotal;
     private Integer   sharePv;
     private Integer   shareUv;
-    private Timestamp addTime;
+    private Timestamp createTime;
+    private Timestamp updateTime;
 
     public MpSummaryTrend() {}
 
@@ -38,7 +39,8 @@ public class MpSummaryTrend implements Serializable {
         this.visitTotal = value.visitTotal;
         this.sharePv = value.sharePv;
         this.shareUv = value.shareUv;
-        this.addTime = value.addTime;
+        this.createTime = value.createTime;
+        this.updateTime = value.updateTime;
     }
 
     public MpSummaryTrend(
@@ -46,13 +48,15 @@ public class MpSummaryTrend implements Serializable {
         Integer   visitTotal,
         Integer   sharePv,
         Integer   shareUv,
-        Timestamp addTime
+        Timestamp createTime,
+        Timestamp updateTime
     ) {
         this.refDate = refDate;
         this.visitTotal = visitTotal;
         this.sharePv = sharePv;
         this.shareUv = shareUv;
-        this.addTime = addTime;
+        this.createTime = createTime;
+        this.updateTime = updateTime;
     }
 
     public String getRefDate() {
@@ -87,12 +91,20 @@ public class MpSummaryTrend implements Serializable {
         this.shareUv = shareUv;
     }
 
-    public Timestamp getAddTime() {
-        return this.addTime;
+    public Timestamp getCreateTime() {
+        return this.createTime;
     }
 
-    public void setAddTime(Timestamp addTime) {
-        this.addTime = addTime;
+    public void setCreateTime(Timestamp createTime) {
+        this.createTime = createTime;
+    }
+
+    public Timestamp getUpdateTime() {
+        return this.updateTime;
+    }
+
+    public void setUpdateTime(Timestamp updateTime) {
+        this.updateTime = updateTime;
     }
 
     @Override
@@ -103,7 +115,8 @@ public class MpSummaryTrend implements Serializable {
         sb.append(", ").append(visitTotal);
         sb.append(", ").append(sharePv);
         sb.append(", ").append(shareUv);
-        sb.append(", ").append(addTime);
+        sb.append(", ").append(createTime);
+        sb.append(", ").append(updateTime);
 
         sb.append(")");
         return sb.toString();

@@ -6,6 +6,7 @@ package com.vpu.mp.db.shop.tables.pojos;
 
 import java.io.Serializable;
 import java.sql.Date;
+import java.sql.Timestamp;
 
 import javax.annotation.Generated;
 
@@ -23,26 +24,28 @@ import javax.annotation.Generated;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class ChannelStatistical implements Serializable {
 
-    private static final long serialVersionUID = 168930232;
+    private static final long serialVersionUID = -1685170915;
 
-    private Integer id;
-    private Integer pageId;
-    private Integer goodsId;
-    private String  channelId;
-    private String  channelAllPv;
-    private String  channelAllUv;
-    private String  channelNewPv;
-    private String  channelNewUv;
-    private String  channelOldPv;
-    private String  channelOldUv;
-    private String  allPv;
-    private String  allUv;
-    private String  newPv;
-    private String  newUv;
-    private String  oldPv;
-    private String  oldUv;
-    private Date    refDate;
-    private Byte    refType;
+    private Integer   id;
+    private Integer   pageId;
+    private Integer   goodsId;
+    private String    channelId;
+    private String    channelAllPv;
+    private String    channelAllUv;
+    private String    channelNewPv;
+    private String    channelNewUv;
+    private String    channelOldPv;
+    private String    channelOldUv;
+    private String    allPv;
+    private String    allUv;
+    private String    newPv;
+    private String    newUv;
+    private String    oldPv;
+    private String    oldUv;
+    private Date      refDate;
+    private Byte      refType;
+    private Timestamp createTime;
+    private Timestamp updateTime;
 
     public ChannelStatistical() {}
 
@@ -65,27 +68,31 @@ public class ChannelStatistical implements Serializable {
         this.oldUv = value.oldUv;
         this.refDate = value.refDate;
         this.refType = value.refType;
+        this.createTime = value.createTime;
+        this.updateTime = value.updateTime;
     }
 
     public ChannelStatistical(
-        Integer id,
-        Integer pageId,
-        Integer goodsId,
-        String  channelId,
-        String  channelAllPv,
-        String  channelAllUv,
-        String  channelNewPv,
-        String  channelNewUv,
-        String  channelOldPv,
-        String  channelOldUv,
-        String  allPv,
-        String  allUv,
-        String  newPv,
-        String  newUv,
-        String  oldPv,
-        String  oldUv,
-        Date    refDate,
-        Byte    refType
+        Integer   id,
+        Integer   pageId,
+        Integer   goodsId,
+        String    channelId,
+        String    channelAllPv,
+        String    channelAllUv,
+        String    channelNewPv,
+        String    channelNewUv,
+        String    channelOldPv,
+        String    channelOldUv,
+        String    allPv,
+        String    allUv,
+        String    newPv,
+        String    newUv,
+        String    oldPv,
+        String    oldUv,
+        Date      refDate,
+        Byte      refType,
+        Timestamp createTime,
+        Timestamp updateTime
     ) {
         this.id = id;
         this.pageId = pageId;
@@ -105,6 +112,8 @@ public class ChannelStatistical implements Serializable {
         this.oldUv = oldUv;
         this.refDate = refDate;
         this.refType = refType;
+        this.createTime = createTime;
+        this.updateTime = updateTime;
     }
 
     public Integer getId() {
@@ -251,6 +260,22 @@ public class ChannelStatistical implements Serializable {
         this.refType = refType;
     }
 
+    public Timestamp getCreateTime() {
+        return this.createTime;
+    }
+
+    public void setCreateTime(Timestamp createTime) {
+        this.createTime = createTime;
+    }
+
+    public Timestamp getUpdateTime() {
+        return this.updateTime;
+    }
+
+    public void setUpdateTime(Timestamp updateTime) {
+        this.updateTime = updateTime;
+    }
+
     @Override
     public String toString() {
         StringBuilder sb = new StringBuilder("ChannelStatistical (");
@@ -273,6 +298,8 @@ public class ChannelStatistical implements Serializable {
         sb.append(", ").append(oldUv);
         sb.append(", ").append(refDate);
         sb.append(", ").append(refType);
+        sb.append(", ").append(createTime);
+        sb.append(", ").append(updateTime);
 
         sb.append(")");
         return sb.toString();

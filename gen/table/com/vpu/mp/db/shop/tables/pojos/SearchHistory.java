@@ -23,15 +23,16 @@ import javax.annotation.Generated;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class SearchHistory implements Serializable {
 
-    private static final long serialVersionUID = -1931779088;
+    private static final long serialVersionUID = -647414117;
 
     private Integer   userId;
     private String    hotWords;
     private Integer   searchCount;
     private Byte      isHotWords;
-    private Timestamp addTime;
-    private Timestamp updateTime;
     private Byte      delFlag;
+    private Timestamp delTime;
+    private Timestamp createTime;
+    private Timestamp updateTime;
 
     public SearchHistory() {}
 
@@ -40,9 +41,10 @@ public class SearchHistory implements Serializable {
         this.hotWords = value.hotWords;
         this.searchCount = value.searchCount;
         this.isHotWords = value.isHotWords;
-        this.addTime = value.addTime;
-        this.updateTime = value.updateTime;
         this.delFlag = value.delFlag;
+        this.delTime = value.delTime;
+        this.createTime = value.createTime;
+        this.updateTime = value.updateTime;
     }
 
     public SearchHistory(
@@ -50,17 +52,19 @@ public class SearchHistory implements Serializable {
         String    hotWords,
         Integer   searchCount,
         Byte      isHotWords,
-        Timestamp addTime,
-        Timestamp updateTime,
-        Byte      delFlag
+        Byte      delFlag,
+        Timestamp delTime,
+        Timestamp createTime,
+        Timestamp updateTime
     ) {
         this.userId = userId;
         this.hotWords = hotWords;
         this.searchCount = searchCount;
         this.isHotWords = isHotWords;
-        this.addTime = addTime;
-        this.updateTime = updateTime;
         this.delFlag = delFlag;
+        this.delTime = delTime;
+        this.createTime = createTime;
+        this.updateTime = updateTime;
     }
 
     public Integer getUserId() {
@@ -95,12 +99,28 @@ public class SearchHistory implements Serializable {
         this.isHotWords = isHotWords;
     }
 
-    public Timestamp getAddTime() {
-        return this.addTime;
+    public Byte getDelFlag() {
+        return this.delFlag;
     }
 
-    public void setAddTime(Timestamp addTime) {
-        this.addTime = addTime;
+    public void setDelFlag(Byte delFlag) {
+        this.delFlag = delFlag;
+    }
+
+    public Timestamp getDelTime() {
+        return this.delTime;
+    }
+
+    public void setDelTime(Timestamp delTime) {
+        this.delTime = delTime;
+    }
+
+    public Timestamp getCreateTime() {
+        return this.createTime;
+    }
+
+    public void setCreateTime(Timestamp createTime) {
+        this.createTime = createTime;
     }
 
     public Timestamp getUpdateTime() {
@@ -111,14 +131,6 @@ public class SearchHistory implements Serializable {
         this.updateTime = updateTime;
     }
 
-    public Byte getDelFlag() {
-        return this.delFlag;
-    }
-
-    public void setDelFlag(Byte delFlag) {
-        this.delFlag = delFlag;
-    }
-
     @Override
     public String toString() {
         StringBuilder sb = new StringBuilder("SearchHistory (");
@@ -127,9 +139,10 @@ public class SearchHistory implements Serializable {
         sb.append(", ").append(hotWords);
         sb.append(", ").append(searchCount);
         sb.append(", ").append(isHotWords);
-        sb.append(", ").append(addTime);
-        sb.append(", ").append(updateTime);
         sb.append(", ").append(delFlag);
+        sb.append(", ").append(delTime);
+        sb.append(", ").append(createTime);
+        sb.append(", ").append(updateTime);
 
         sb.append(")");
         return sb.toString();

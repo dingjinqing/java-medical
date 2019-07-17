@@ -23,7 +23,7 @@ import javax.annotation.Generated;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class PinGroupList implements Serializable {
 
-    private static final long serialVersionUID = 531851283;
+    private static final long serialVersionUID = -1335223386;
 
     private Integer   id;
     private Integer   pinActivityId;
@@ -35,6 +35,8 @@ public class PinGroupList implements Serializable {
     private Byte      status;
     private Timestamp startTime;
     private Timestamp endTime;
+    private Timestamp createTime;
+    private Timestamp updateTime;
 
     public PinGroupList() {}
 
@@ -49,6 +51,8 @@ public class PinGroupList implements Serializable {
         this.status = value.status;
         this.startTime = value.startTime;
         this.endTime = value.endTime;
+        this.createTime = value.createTime;
+        this.updateTime = value.updateTime;
     }
 
     public PinGroupList(
@@ -61,7 +65,9 @@ public class PinGroupList implements Serializable {
         String    orderSn,
         Byte      status,
         Timestamp startTime,
-        Timestamp endTime
+        Timestamp endTime,
+        Timestamp createTime,
+        Timestamp updateTime
     ) {
         this.id = id;
         this.pinActivityId = pinActivityId;
@@ -73,6 +79,8 @@ public class PinGroupList implements Serializable {
         this.status = status;
         this.startTime = startTime;
         this.endTime = endTime;
+        this.createTime = createTime;
+        this.updateTime = updateTime;
     }
 
     public Integer getId() {
@@ -155,6 +163,22 @@ public class PinGroupList implements Serializable {
         this.endTime = endTime;
     }
 
+    public Timestamp getCreateTime() {
+        return this.createTime;
+    }
+
+    public void setCreateTime(Timestamp createTime) {
+        this.createTime = createTime;
+    }
+
+    public Timestamp getUpdateTime() {
+        return this.updateTime;
+    }
+
+    public void setUpdateTime(Timestamp updateTime) {
+        this.updateTime = updateTime;
+    }
+
     @Override
     public String toString() {
         StringBuilder sb = new StringBuilder("PinGroupList (");
@@ -169,6 +193,8 @@ public class PinGroupList implements Serializable {
         sb.append(", ").append(status);
         sb.append(", ").append(startTime);
         sb.append(", ").append(endTime);
+        sb.append(", ").append(createTime);
+        sb.append(", ").append(updateTime);
 
         sb.append(")");
         return sb.toString();

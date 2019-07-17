@@ -23,16 +23,16 @@ import javax.annotation.Generated;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class FriendPromoteTimes implements Serializable {
 
-    private static final long serialVersionUID = -1417167796;
+    private static final long serialVersionUID = -124925017;
 
     private Integer   id;
     private Integer   launchId;
     private Integer   userId;
     private Integer   shareTimes;
     private Integer   ownPromoteTimes;
-    private Timestamp inTime;
-    private Timestamp upTime;
     private Byte      isAuth;
+    private Timestamp createTime;
+    private Timestamp updateTime;
 
     public FriendPromoteTimes() {}
 
@@ -42,9 +42,9 @@ public class FriendPromoteTimes implements Serializable {
         this.userId = value.userId;
         this.shareTimes = value.shareTimes;
         this.ownPromoteTimes = value.ownPromoteTimes;
-        this.inTime = value.inTime;
-        this.upTime = value.upTime;
         this.isAuth = value.isAuth;
+        this.createTime = value.createTime;
+        this.updateTime = value.updateTime;
     }
 
     public FriendPromoteTimes(
@@ -53,18 +53,18 @@ public class FriendPromoteTimes implements Serializable {
         Integer   userId,
         Integer   shareTimes,
         Integer   ownPromoteTimes,
-        Timestamp inTime,
-        Timestamp upTime,
-        Byte      isAuth
+        Byte      isAuth,
+        Timestamp createTime,
+        Timestamp updateTime
     ) {
         this.id = id;
         this.launchId = launchId;
         this.userId = userId;
         this.shareTimes = shareTimes;
         this.ownPromoteTimes = ownPromoteTimes;
-        this.inTime = inTime;
-        this.upTime = upTime;
         this.isAuth = isAuth;
+        this.createTime = createTime;
+        this.updateTime = updateTime;
     }
 
     public Integer getId() {
@@ -107,28 +107,28 @@ public class FriendPromoteTimes implements Serializable {
         this.ownPromoteTimes = ownPromoteTimes;
     }
 
-    public Timestamp getInTime() {
-        return this.inTime;
-    }
-
-    public void setInTime(Timestamp inTime) {
-        this.inTime = inTime;
-    }
-
-    public Timestamp getUpTime() {
-        return this.upTime;
-    }
-
-    public void setUpTime(Timestamp upTime) {
-        this.upTime = upTime;
-    }
-
     public Byte getIsAuth() {
         return this.isAuth;
     }
 
     public void setIsAuth(Byte isAuth) {
         this.isAuth = isAuth;
+    }
+
+    public Timestamp getCreateTime() {
+        return this.createTime;
+    }
+
+    public void setCreateTime(Timestamp createTime) {
+        this.createTime = createTime;
+    }
+
+    public Timestamp getUpdateTime() {
+        return this.updateTime;
+    }
+
+    public void setUpdateTime(Timestamp updateTime) {
+        this.updateTime = updateTime;
     }
 
     @Override
@@ -140,9 +140,9 @@ public class FriendPromoteTimes implements Serializable {
         sb.append(", ").append(userId);
         sb.append(", ").append(shareTimes);
         sb.append(", ").append(ownPromoteTimes);
-        sb.append(", ").append(inTime);
-        sb.append(", ").append(upTime);
         sb.append(", ").append(isAuth);
+        sb.append(", ").append(createTime);
+        sb.append(", ").append(updateTime);
 
         sb.append(")");
         return sb.toString();

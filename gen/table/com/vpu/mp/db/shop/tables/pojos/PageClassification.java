@@ -23,12 +23,13 @@ import javax.annotation.Generated;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class PageClassification implements Serializable {
 
-    private static final long serialVersionUID = 1174538240;
+    private static final long serialVersionUID = -526438454;
 
     private Integer   id;
     private Integer   shopId;
     private String    name;
     private Timestamp createTime;
+    private Timestamp updateTime;
 
     public PageClassification() {}
 
@@ -37,18 +38,21 @@ public class PageClassification implements Serializable {
         this.shopId = value.shopId;
         this.name = value.name;
         this.createTime = value.createTime;
+        this.updateTime = value.updateTime;
     }
 
     public PageClassification(
         Integer   id,
         Integer   shopId,
         String    name,
-        Timestamp createTime
+        Timestamp createTime,
+        Timestamp updateTime
     ) {
         this.id = id;
         this.shopId = shopId;
         this.name = name;
         this.createTime = createTime;
+        this.updateTime = updateTime;
     }
 
     public Integer getId() {
@@ -83,6 +87,14 @@ public class PageClassification implements Serializable {
         this.createTime = createTime;
     }
 
+    public Timestamp getUpdateTime() {
+        return this.updateTime;
+    }
+
+    public void setUpdateTime(Timestamp updateTime) {
+        this.updateTime = updateTime;
+    }
+
     @Override
     public String toString() {
         StringBuilder sb = new StringBuilder("PageClassification (");
@@ -91,6 +103,7 @@ public class PageClassification implements Serializable {
         sb.append(", ").append(shopId);
         sb.append(", ").append(name);
         sb.append(", ").append(createTime);
+        sb.append(", ").append(updateTime);
 
         sb.append(")");
         return sb.toString();

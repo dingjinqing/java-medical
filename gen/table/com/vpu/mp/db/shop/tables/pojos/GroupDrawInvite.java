@@ -23,7 +23,7 @@ import javax.annotation.Generated;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class GroupDrawInvite implements Serializable {
 
-    private static final long serialVersionUID = 851028008;
+    private static final long serialVersionUID = -935588501;
 
     private Integer   id;
     private Integer   action;
@@ -35,7 +35,8 @@ public class GroupDrawInvite implements Serializable {
     private Integer   userId;
     private Byte      isNew;
     private Byte      isUsed;
-    private Timestamp addTime;
+    private Timestamp createTime;
+    private Timestamp updateTime;
 
     public GroupDrawInvite() {}
 
@@ -50,7 +51,8 @@ public class GroupDrawInvite implements Serializable {
         this.userId = value.userId;
         this.isNew = value.isNew;
         this.isUsed = value.isUsed;
-        this.addTime = value.addTime;
+        this.createTime = value.createTime;
+        this.updateTime = value.updateTime;
     }
 
     public GroupDrawInvite(
@@ -64,7 +66,8 @@ public class GroupDrawInvite implements Serializable {
         Integer   userId,
         Byte      isNew,
         Byte      isUsed,
-        Timestamp addTime
+        Timestamp createTime,
+        Timestamp updateTime
     ) {
         this.id = id;
         this.action = action;
@@ -76,7 +79,8 @@ public class GroupDrawInvite implements Serializable {
         this.userId = userId;
         this.isNew = isNew;
         this.isUsed = isUsed;
-        this.addTime = addTime;
+        this.createTime = createTime;
+        this.updateTime = updateTime;
     }
 
     public Integer getId() {
@@ -159,12 +163,20 @@ public class GroupDrawInvite implements Serializable {
         this.isUsed = isUsed;
     }
 
-    public Timestamp getAddTime() {
-        return this.addTime;
+    public Timestamp getCreateTime() {
+        return this.createTime;
     }
 
-    public void setAddTime(Timestamp addTime) {
-        this.addTime = addTime;
+    public void setCreateTime(Timestamp createTime) {
+        this.createTime = createTime;
+    }
+
+    public Timestamp getUpdateTime() {
+        return this.updateTime;
+    }
+
+    public void setUpdateTime(Timestamp updateTime) {
+        this.updateTime = updateTime;
     }
 
     @Override
@@ -181,7 +193,8 @@ public class GroupDrawInvite implements Serializable {
         sb.append(", ").append(userId);
         sb.append(", ").append(isNew);
         sb.append(", ").append(isUsed);
-        sb.append(", ").append(addTime);
+        sb.append(", ").append(createTime);
+        sb.append(", ").append(updateTime);
 
         sb.append(")");
         return sb.toString();

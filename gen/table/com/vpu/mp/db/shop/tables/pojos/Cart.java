@@ -24,7 +24,7 @@ import javax.annotation.Generated;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class Cart implements Serializable {
 
-    private static final long serialVersionUID = 1432916425;
+    private static final long serialVersionUID = -1572483417;
 
     private Long       recId;
     private Integer    shopId;
@@ -43,7 +43,6 @@ public class Cart implements Serializable {
     private Byte       recType;
     private Short      isGift;
     private Byte       isBuynow;
-    private Timestamp  createTime;
     private String     strategy;
     private Byte       action;
     private Integer    identityId;
@@ -51,6 +50,8 @@ public class Cart implements Serializable {
     private Byte       isChecked;
     private String     platform;
     private String     extendInfo;
+    private Timestamp  createTime;
+    private Timestamp  updateTime;
 
     public Cart() {}
 
@@ -72,7 +73,6 @@ public class Cart implements Serializable {
         this.recType = value.recType;
         this.isGift = value.isGift;
         this.isBuynow = value.isBuynow;
-        this.createTime = value.createTime;
         this.strategy = value.strategy;
         this.action = value.action;
         this.identityId = value.identityId;
@@ -80,6 +80,8 @@ public class Cart implements Serializable {
         this.isChecked = value.isChecked;
         this.platform = value.platform;
         this.extendInfo = value.extendInfo;
+        this.createTime = value.createTime;
+        this.updateTime = value.updateTime;
     }
 
     public Cart(
@@ -100,14 +102,15 @@ public class Cart implements Serializable {
         Byte       recType,
         Short      isGift,
         Byte       isBuynow,
-        Timestamp  createTime,
         String     strategy,
         Byte       action,
         Integer    identityId,
         Integer    extendId,
         Byte       isChecked,
         String     platform,
-        String     extendInfo
+        String     extendInfo,
+        Timestamp  createTime,
+        Timestamp  updateTime
     ) {
         this.recId = recId;
         this.shopId = shopId;
@@ -126,7 +129,6 @@ public class Cart implements Serializable {
         this.recType = recType;
         this.isGift = isGift;
         this.isBuynow = isBuynow;
-        this.createTime = createTime;
         this.strategy = strategy;
         this.action = action;
         this.identityId = identityId;
@@ -134,6 +136,8 @@ public class Cart implements Serializable {
         this.isChecked = isChecked;
         this.platform = platform;
         this.extendInfo = extendInfo;
+        this.createTime = createTime;
+        this.updateTime = updateTime;
     }
 
     public Long getRecId() {
@@ -272,14 +276,6 @@ public class Cart implements Serializable {
         this.isBuynow = isBuynow;
     }
 
-    public Timestamp getCreateTime() {
-        return this.createTime;
-    }
-
-    public void setCreateTime(Timestamp createTime) {
-        this.createTime = createTime;
-    }
-
     public String getStrategy() {
         return this.strategy;
     }
@@ -336,6 +332,22 @@ public class Cart implements Serializable {
         this.extendInfo = extendInfo;
     }
 
+    public Timestamp getCreateTime() {
+        return this.createTime;
+    }
+
+    public void setCreateTime(Timestamp createTime) {
+        this.createTime = createTime;
+    }
+
+    public Timestamp getUpdateTime() {
+        return this.updateTime;
+    }
+
+    public void setUpdateTime(Timestamp updateTime) {
+        this.updateTime = updateTime;
+    }
+
     @Override
     public String toString() {
         StringBuilder sb = new StringBuilder("Cart (");
@@ -357,7 +369,6 @@ public class Cart implements Serializable {
         sb.append(", ").append(recType);
         sb.append(", ").append(isGift);
         sb.append(", ").append(isBuynow);
-        sb.append(", ").append(createTime);
         sb.append(", ").append(strategy);
         sb.append(", ").append(action);
         sb.append(", ").append(identityId);
@@ -365,6 +376,8 @@ public class Cart implements Serializable {
         sb.append(", ").append(isChecked);
         sb.append(", ").append(platform);
         sb.append(", ").append(extendInfo);
+        sb.append(", ").append(createTime);
+        sb.append(", ").append(updateTime);
 
         sb.append(")");
         return sb.toString();

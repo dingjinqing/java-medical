@@ -23,19 +23,19 @@ import javax.annotation.Generated;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class GoodsBrand implements Serializable {
 
-    private static final long serialVersionUID = 150707347;
+    private static final long serialVersionUID = 1157898968;
 
     private Integer   id;
     private String    brandName;
     private String    eName;
     private String    logo;
     private Byte      first;
-    private Timestamp addTime;
-    private Timestamp updateTime;
-    private Byte      isDelete;
+    private Byte      delFlag;
     private String    desc;
     private Byte      isRecommend;
     private Integer   classifyId;
+    private Timestamp createTime;
+    private Timestamp updateTime;
 
     public GoodsBrand() {}
 
@@ -45,12 +45,12 @@ public class GoodsBrand implements Serializable {
         this.eName = value.eName;
         this.logo = value.logo;
         this.first = value.first;
-        this.addTime = value.addTime;
-        this.updateTime = value.updateTime;
-        this.isDelete = value.isDelete;
+        this.delFlag = value.delFlag;
         this.desc = value.desc;
         this.isRecommend = value.isRecommend;
         this.classifyId = value.classifyId;
+        this.createTime = value.createTime;
+        this.updateTime = value.updateTime;
     }
 
     public GoodsBrand(
@@ -59,24 +59,24 @@ public class GoodsBrand implements Serializable {
         String    eName,
         String    logo,
         Byte      first,
-        Timestamp addTime,
-        Timestamp updateTime,
-        Byte      isDelete,
+        Byte      delFlag,
         String    desc,
         Byte      isRecommend,
-        Integer   classifyId
+        Integer   classifyId,
+        Timestamp createTime,
+        Timestamp updateTime
     ) {
         this.id = id;
         this.brandName = brandName;
         this.eName = eName;
         this.logo = logo;
         this.first = first;
-        this.addTime = addTime;
-        this.updateTime = updateTime;
-        this.isDelete = isDelete;
+        this.delFlag = delFlag;
         this.desc = desc;
         this.isRecommend = isRecommend;
         this.classifyId = classifyId;
+        this.createTime = createTime;
+        this.updateTime = updateTime;
     }
 
     public Integer getId() {
@@ -119,28 +119,12 @@ public class GoodsBrand implements Serializable {
         this.first = first;
     }
 
-    public Timestamp getAddTime() {
-        return this.addTime;
+    public Byte getDelFlag() {
+        return this.delFlag;
     }
 
-    public void setAddTime(Timestamp addTime) {
-        this.addTime = addTime;
-    }
-
-    public Timestamp getUpdateTime() {
-        return this.updateTime;
-    }
-
-    public void setUpdateTime(Timestamp updateTime) {
-        this.updateTime = updateTime;
-    }
-
-    public Byte getIsDelete() {
-        return this.isDelete;
-    }
-
-    public void setIsDelete(Byte isDelete) {
-        this.isDelete = isDelete;
+    public void setDelFlag(Byte delFlag) {
+        this.delFlag = delFlag;
     }
 
     public String getDesc() {
@@ -167,6 +151,22 @@ public class GoodsBrand implements Serializable {
         this.classifyId = classifyId;
     }
 
+    public Timestamp getCreateTime() {
+        return this.createTime;
+    }
+
+    public void setCreateTime(Timestamp createTime) {
+        this.createTime = createTime;
+    }
+
+    public Timestamp getUpdateTime() {
+        return this.updateTime;
+    }
+
+    public void setUpdateTime(Timestamp updateTime) {
+        this.updateTime = updateTime;
+    }
+
     @Override
     public String toString() {
         StringBuilder sb = new StringBuilder("GoodsBrand (");
@@ -176,12 +176,12 @@ public class GoodsBrand implements Serializable {
         sb.append(", ").append(eName);
         sb.append(", ").append(logo);
         sb.append(", ").append(first);
-        sb.append(", ").append(addTime);
-        sb.append(", ").append(updateTime);
-        sb.append(", ").append(isDelete);
+        sb.append(", ").append(delFlag);
         sb.append(", ").append(desc);
         sb.append(", ").append(isRecommend);
         sb.append(", ").append(classifyId);
+        sb.append(", ").append(createTime);
+        sb.append(", ").append(updateTime);
 
         sb.append(")");
         return sb.toString();

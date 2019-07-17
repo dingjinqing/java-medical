@@ -30,7 +30,7 @@ import org.jooq.impl.TableRecordImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class UserFanliStatisticsRecord extends TableRecordImpl<UserFanliStatisticsRecord> implements Record7<Integer, Integer, Integer, BigDecimal, BigDecimal, Timestamp, Timestamp> {
 
-    private static final long serialVersionUID = -1780349761;
+    private static final long serialVersionUID = -1297625805;
 
     /**
      * Setter for <code>mini_shop_471752.b2c_user_fanli_statistics.user_id</code>.
@@ -47,14 +47,14 @@ public class UserFanliStatisticsRecord extends TableRecordImpl<UserFanliStatisti
     }
 
     /**
-     * Setter for <code>mini_shop_471752.b2c_user_fanli_statistics.fanli_user_id</code>. 邀请人ID
+     * Setter for <code>mini_shop_471752.b2c_user_fanli_statistics.fanli_user_id</code>. 邀请人id
      */
     public void setFanliUserId(Integer value) {
         set(1, value);
     }
 
     /**
-     * Getter for <code>mini_shop_471752.b2c_user_fanli_statistics.fanli_user_id</code>. 邀请人ID
+     * Getter for <code>mini_shop_471752.b2c_user_fanli_statistics.fanli_user_id</code>. 邀请人id
      */
     public Integer getFanliUserId() {
         return (Integer) get(1);
@@ -103,28 +103,28 @@ public class UserFanliStatisticsRecord extends TableRecordImpl<UserFanliStatisti
     }
 
     /**
-     * Setter for <code>mini_shop_471752.b2c_user_fanli_statistics.add_time</code>.
+     * Setter for <code>mini_shop_471752.b2c_user_fanli_statistics.create_time</code>.
      */
-    public void setAddTime(Timestamp value) {
+    public void setCreateTime(Timestamp value) {
         set(5, value);
     }
 
     /**
-     * Getter for <code>mini_shop_471752.b2c_user_fanli_statistics.add_time</code>.
+     * Getter for <code>mini_shop_471752.b2c_user_fanli_statistics.create_time</code>.
      */
-    public Timestamp getAddTime() {
+    public Timestamp getCreateTime() {
         return (Timestamp) get(5);
     }
 
     /**
-     * Setter for <code>mini_shop_471752.b2c_user_fanli_statistics.update_time</code>.
+     * Setter for <code>mini_shop_471752.b2c_user_fanli_statistics.update_time</code>. 最后修改时间
      */
     public void setUpdateTime(Timestamp value) {
         set(6, value);
     }
 
     /**
-     * Getter for <code>mini_shop_471752.b2c_user_fanli_statistics.update_time</code>.
+     * Getter for <code>mini_shop_471752.b2c_user_fanli_statistics.update_time</code>. 最后修改时间
      */
     public Timestamp getUpdateTime() {
         return (Timestamp) get(6);
@@ -195,7 +195,7 @@ public class UserFanliStatisticsRecord extends TableRecordImpl<UserFanliStatisti
      */
     @Override
     public Field<Timestamp> field6() {
-        return UserFanliStatistics.USER_FANLI_STATISTICS.ADD_TIME;
+        return UserFanliStatistics.USER_FANLI_STATISTICS.CREATE_TIME;
     }
 
     /**
@@ -251,7 +251,7 @@ public class UserFanliStatisticsRecord extends TableRecordImpl<UserFanliStatisti
      */
     @Override
     public Timestamp component6() {
-        return getAddTime();
+        return getCreateTime();
     }
 
     /**
@@ -307,7 +307,7 @@ public class UserFanliStatisticsRecord extends TableRecordImpl<UserFanliStatisti
      */
     @Override
     public Timestamp value6() {
-        return getAddTime();
+        return getCreateTime();
     }
 
     /**
@@ -368,7 +368,7 @@ public class UserFanliStatisticsRecord extends TableRecordImpl<UserFanliStatisti
      */
     @Override
     public UserFanliStatisticsRecord value6(Timestamp value) {
-        setAddTime(value);
+        setCreateTime(value);
         return this;
     }
 
@@ -410,7 +410,7 @@ public class UserFanliStatisticsRecord extends TableRecordImpl<UserFanliStatisti
     /**
      * Create a detached, initialised UserFanliStatisticsRecord
      */
-    public UserFanliStatisticsRecord(Integer userId, Integer fanliUserId, Integer orderNumber, BigDecimal totalCanFanliMoney, BigDecimal totalFanliMoney, Timestamp addTime, Timestamp updateTime) {
+    public UserFanliStatisticsRecord(Integer userId, Integer fanliUserId, Integer orderNumber, BigDecimal totalCanFanliMoney, BigDecimal totalFanliMoney, Timestamp createTime, Timestamp updateTime) {
         super(UserFanliStatistics.USER_FANLI_STATISTICS);
 
         set(0, userId);
@@ -418,7 +418,7 @@ public class UserFanliStatisticsRecord extends TableRecordImpl<UserFanliStatisti
         set(2, orderNumber);
         set(3, totalCanFanliMoney);
         set(4, totalFanliMoney);
-        set(5, addTime);
+        set(5, createTime);
         set(6, updateTime);
     }
 }

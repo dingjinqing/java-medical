@@ -23,7 +23,7 @@ import javax.annotation.Generated;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class SmsSendRecord implements Serializable {
 
-    private static final long serialVersionUID = 1528288139;
+    private static final long serialVersionUID = -142673314;
 
     private Integer   id;
     private String    accountName;
@@ -34,7 +34,8 @@ public class SmsSendRecord implements Serializable {
     private String    responseMsg;
     private String    ext;
     private String    sms;
-    private Timestamp addTime;
+    private Timestamp createTime;
+    private Timestamp updateTime;
 
     public SmsSendRecord() {}
 
@@ -48,7 +49,8 @@ public class SmsSendRecord implements Serializable {
         this.responseMsg = value.responseMsg;
         this.ext = value.ext;
         this.sms = value.sms;
-        this.addTime = value.addTime;
+        this.createTime = value.createTime;
+        this.updateTime = value.updateTime;
     }
 
     public SmsSendRecord(
@@ -61,7 +63,8 @@ public class SmsSendRecord implements Serializable {
         String    responseMsg,
         String    ext,
         String    sms,
-        Timestamp addTime
+        Timestamp createTime,
+        Timestamp updateTime
     ) {
         this.id = id;
         this.accountName = accountName;
@@ -72,7 +75,8 @@ public class SmsSendRecord implements Serializable {
         this.responseMsg = responseMsg;
         this.ext = ext;
         this.sms = sms;
-        this.addTime = addTime;
+        this.createTime = createTime;
+        this.updateTime = updateTime;
     }
 
     public Integer getId() {
@@ -147,12 +151,20 @@ public class SmsSendRecord implements Serializable {
         this.sms = sms;
     }
 
-    public Timestamp getAddTime() {
-        return this.addTime;
+    public Timestamp getCreateTime() {
+        return this.createTime;
     }
 
-    public void setAddTime(Timestamp addTime) {
-        this.addTime = addTime;
+    public void setCreateTime(Timestamp createTime) {
+        this.createTime = createTime;
+    }
+
+    public Timestamp getUpdateTime() {
+        return this.updateTime;
+    }
+
+    public void setUpdateTime(Timestamp updateTime) {
+        this.updateTime = updateTime;
     }
 
     @Override
@@ -168,7 +180,8 @@ public class SmsSendRecord implements Serializable {
         sb.append(", ").append(responseMsg);
         sb.append(", ").append(ext);
         sb.append(", ").append(sms);
-        sb.append(", ").append(addTime);
+        sb.append(", ").append(createTime);
+        sb.append(", ").append(updateTime);
 
         sb.append(")");
         return sb.toString();

@@ -24,7 +24,7 @@ import javax.annotation.Generated;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class OrderGoodsRebate implements Serializable {
 
-    private static final long serialVersionUID = 357074753;
+    private static final long serialVersionUID = 1935657478;
 
     private Integer    rebateId;
     private String     orderSn;
@@ -35,7 +35,7 @@ public class OrderGoodsRebate implements Serializable {
     private BigDecimal rebatePercent;
     private BigDecimal rebateMoney;
     private BigDecimal totalRebateMoney;
-    private Timestamp  addTime;
+    private Timestamp  createTime;
     private Timestamp  updateTime;
 
     public OrderGoodsRebate() {}
@@ -50,7 +50,7 @@ public class OrderGoodsRebate implements Serializable {
         this.rebatePercent = value.rebatePercent;
         this.rebateMoney = value.rebateMoney;
         this.totalRebateMoney = value.totalRebateMoney;
-        this.addTime = value.addTime;
+        this.createTime = value.createTime;
         this.updateTime = value.updateTime;
     }
 
@@ -64,7 +64,7 @@ public class OrderGoodsRebate implements Serializable {
         BigDecimal rebatePercent,
         BigDecimal rebateMoney,
         BigDecimal totalRebateMoney,
-        Timestamp  addTime,
+        Timestamp  createTime,
         Timestamp  updateTime
     ) {
         this.rebateId = rebateId;
@@ -76,7 +76,7 @@ public class OrderGoodsRebate implements Serializable {
         this.rebatePercent = rebatePercent;
         this.rebateMoney = rebateMoney;
         this.totalRebateMoney = totalRebateMoney;
-        this.addTime = addTime;
+        this.createTime = createTime;
         this.updateTime = updateTime;
     }
 
@@ -152,12 +152,12 @@ public class OrderGoodsRebate implements Serializable {
         this.totalRebateMoney = totalRebateMoney;
     }
 
-    public Timestamp getAddTime() {
-        return this.addTime;
+    public Timestamp getCreateTime() {
+        return this.createTime;
     }
 
-    public void setAddTime(Timestamp addTime) {
-        this.addTime = addTime;
+    public void setCreateTime(Timestamp createTime) {
+        this.createTime = createTime;
     }
 
     public Timestamp getUpdateTime() {
@@ -181,7 +181,7 @@ public class OrderGoodsRebate implements Serializable {
         sb.append(", ").append(rebatePercent);
         sb.append(", ").append(rebateMoney);
         sb.append(", ").append(totalRebateMoney);
-        sb.append(", ").append(addTime);
+        sb.append(", ").append(createTime);
         sb.append(", ").append(updateTime);
 
         sb.append(")");

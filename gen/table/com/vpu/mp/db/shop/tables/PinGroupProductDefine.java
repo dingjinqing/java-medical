@@ -10,6 +10,7 @@ import com.vpu.mp.db.shop.MiniShop_471752;
 import com.vpu.mp.db.shop.tables.records.PinGroupProductDefineRecord;
 
 import java.math.BigDecimal;
+import java.sql.Timestamp;
 import java.util.Arrays;
 import java.util.List;
 
@@ -42,7 +43,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class PinGroupProductDefine extends TableImpl<PinGroupProductDefineRecord> {
 
-    private static final long serialVersionUID = 1496467435;
+    private static final long serialVersionUID = 1275195280;
 
     /**
      * The reference instance of <code>mini_shop_471752.b2c_pin_group_product_define</code>
@@ -63,14 +64,14 @@ public class PinGroupProductDefine extends TableImpl<PinGroupProductDefineRecord
     public final TableField<PinGroupProductDefineRecord, Integer> ID = createField("id", org.jooq.impl.SQLDataType.INTEGER.nullable(false).identity(true), this, "");
 
     /**
-     * The column <code>mini_shop_471752.b2c_pin_group_product_define.pin_activity_id</code>. 拼团定义ID
+     * The column <code>mini_shop_471752.b2c_pin_group_product_define.pin_activity_id</code>. 拼团定义id
      */
-    public final TableField<PinGroupProductDefineRecord, Integer> PIN_ACTIVITY_ID = createField("pin_activity_id", org.jooq.impl.SQLDataType.INTEGER.nullable(false), this, "拼团定义ID");
+    public final TableField<PinGroupProductDefineRecord, Integer> PIN_ACTIVITY_ID = createField("pin_activity_id", org.jooq.impl.SQLDataType.INTEGER.nullable(false), this, "拼团定义id");
 
     /**
-     * The column <code>mini_shop_471752.b2c_pin_group_product_define.product_id</code>. 商品规格ID
+     * The column <code>mini_shop_471752.b2c_pin_group_product_define.product_id</code>. 商品规格id
      */
-    public final TableField<PinGroupProductDefineRecord, Integer> PRODUCT_ID = createField("product_id", org.jooq.impl.SQLDataType.INTEGER.nullable(false), this, "商品规格ID");
+    public final TableField<PinGroupProductDefineRecord, Integer> PRODUCT_ID = createField("product_id", org.jooq.impl.SQLDataType.INTEGER.nullable(false), this, "商品规格id");
 
     /**
      * The column <code>mini_shop_471752.b2c_pin_group_product_define.pin_group_price</code>. 拼团价
@@ -91,6 +92,16 @@ public class PinGroupProductDefine extends TableImpl<PinGroupProductDefineRecord
      * The column <code>mini_shop_471752.b2c_pin_group_product_define.grouper_price</code>. 团长优惠价
      */
     public final TableField<PinGroupProductDefineRecord, BigDecimal> GROUPER_PRICE = createField("grouper_price", org.jooq.impl.SQLDataType.DECIMAL(10, 2).nullable(false).defaultValue(org.jooq.impl.DSL.inline("0.00", org.jooq.impl.SQLDataType.DECIMAL)), this, "团长优惠价");
+
+    /**
+     * The column <code>mini_shop_471752.b2c_pin_group_product_define.create_time</code>.
+     */
+    public final TableField<PinGroupProductDefineRecord, Timestamp> CREATE_TIME = createField("create_time", org.jooq.impl.SQLDataType.TIMESTAMP.nullable(false).defaultValue(org.jooq.impl.DSL.field("CURRENT_TIMESTAMP", org.jooq.impl.SQLDataType.TIMESTAMP)), this, "");
+
+    /**
+     * The column <code>mini_shop_471752.b2c_pin_group_product_define.update_time</code>. 最后修改时间
+     */
+    public final TableField<PinGroupProductDefineRecord, Timestamp> UPDATE_TIME = createField("update_time", org.jooq.impl.SQLDataType.TIMESTAMP.nullable(false).defaultValue(org.jooq.impl.DSL.field("CURRENT_TIMESTAMP", org.jooq.impl.SQLDataType.TIMESTAMP)), this, "最后修改时间");
 
     /**
      * Create a <code>mini_shop_471752.b2c_pin_group_product_define</code> table reference

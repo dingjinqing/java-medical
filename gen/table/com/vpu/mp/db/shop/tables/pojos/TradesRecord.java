@@ -24,7 +24,7 @@ import javax.annotation.Generated;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class TradesRecord implements Serializable {
 
-    private static final long serialVersionUID = 1347113595;
+    private static final long serialVersionUID = 774777824;
 
     private Integer    id;
     private Timestamp  tradeTime;
@@ -35,6 +35,8 @@ public class TradesRecord implements Serializable {
     private Byte       tradeFlow;
     private Byte       tradeStatus;
     private String     tradeSn;
+    private Timestamp  createTime;
+    private Timestamp  updateTime;
 
     public TradesRecord() {}
 
@@ -48,6 +50,8 @@ public class TradesRecord implements Serializable {
         this.tradeFlow = value.tradeFlow;
         this.tradeStatus = value.tradeStatus;
         this.tradeSn = value.tradeSn;
+        this.createTime = value.createTime;
+        this.updateTime = value.updateTime;
     }
 
     public TradesRecord(
@@ -59,7 +63,9 @@ public class TradesRecord implements Serializable {
         Byte       tradeType,
         Byte       tradeFlow,
         Byte       tradeStatus,
-        String     tradeSn
+        String     tradeSn,
+        Timestamp  createTime,
+        Timestamp  updateTime
     ) {
         this.id = id;
         this.tradeTime = tradeTime;
@@ -70,6 +76,8 @@ public class TradesRecord implements Serializable {
         this.tradeFlow = tradeFlow;
         this.tradeStatus = tradeStatus;
         this.tradeSn = tradeSn;
+        this.createTime = createTime;
+        this.updateTime = updateTime;
     }
 
     public Integer getId() {
@@ -144,6 +152,22 @@ public class TradesRecord implements Serializable {
         this.tradeSn = tradeSn;
     }
 
+    public Timestamp getCreateTime() {
+        return this.createTime;
+    }
+
+    public void setCreateTime(Timestamp createTime) {
+        this.createTime = createTime;
+    }
+
+    public Timestamp getUpdateTime() {
+        return this.updateTime;
+    }
+
+    public void setUpdateTime(Timestamp updateTime) {
+        this.updateTime = updateTime;
+    }
+
     @Override
     public String toString() {
         StringBuilder sb = new StringBuilder("TradesRecord (");
@@ -157,6 +181,8 @@ public class TradesRecord implements Serializable {
         sb.append(", ").append(tradeFlow);
         sb.append(", ").append(tradeStatus);
         sb.append(", ").append(tradeSn);
+        sb.append(", ").append(createTime);
+        sb.append(", ").append(updateTime);
 
         sb.append(")");
         return sb.toString();

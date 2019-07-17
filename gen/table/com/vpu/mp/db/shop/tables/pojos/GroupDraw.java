@@ -24,7 +24,7 @@ import javax.annotation.Generated;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class GroupDraw implements Serializable {
 
-    private static final long serialVersionUID = 1931132083;
+    private static final long serialVersionUID = 1537715684;
 
     private Integer    id;
     private String     name;
@@ -39,10 +39,10 @@ public class GroupDraw implements Serializable {
     private Short      toNumShow;
     private Byte       status;
     private Byte       isDraw;
-    private Timestamp  addTime;
+    private Timestamp  createTime;
     private Timestamp  updateTime;
     private Byte       delFlag;
-    private Integer    delTime;
+    private Timestamp  delTime;
     private String     rewardCouponId;
 
     public GroupDraw() {}
@@ -61,7 +61,7 @@ public class GroupDraw implements Serializable {
         this.toNumShow = value.toNumShow;
         this.status = value.status;
         this.isDraw = value.isDraw;
-        this.addTime = value.addTime;
+        this.createTime = value.createTime;
         this.updateTime = value.updateTime;
         this.delFlag = value.delFlag;
         this.delTime = value.delTime;
@@ -82,10 +82,10 @@ public class GroupDraw implements Serializable {
         Short      toNumShow,
         Byte       status,
         Byte       isDraw,
-        Timestamp  addTime,
+        Timestamp  createTime,
         Timestamp  updateTime,
         Byte       delFlag,
-        Integer    delTime,
+        Timestamp  delTime,
         String     rewardCouponId
     ) {
         this.id = id;
@@ -101,7 +101,7 @@ public class GroupDraw implements Serializable {
         this.toNumShow = toNumShow;
         this.status = status;
         this.isDraw = isDraw;
-        this.addTime = addTime;
+        this.createTime = createTime;
         this.updateTime = updateTime;
         this.delFlag = delFlag;
         this.delTime = delTime;
@@ -212,12 +212,12 @@ public class GroupDraw implements Serializable {
         this.isDraw = isDraw;
     }
 
-    public Timestamp getAddTime() {
-        return this.addTime;
+    public Timestamp getCreateTime() {
+        return this.createTime;
     }
 
-    public void setAddTime(Timestamp addTime) {
-        this.addTime = addTime;
+    public void setCreateTime(Timestamp createTime) {
+        this.createTime = createTime;
     }
 
     public Timestamp getUpdateTime() {
@@ -236,11 +236,11 @@ public class GroupDraw implements Serializable {
         this.delFlag = delFlag;
     }
 
-    public Integer getDelTime() {
+    public Timestamp getDelTime() {
         return this.delTime;
     }
 
-    public void setDelTime(Integer delTime) {
+    public void setDelTime(Timestamp delTime) {
         this.delTime = delTime;
     }
 
@@ -269,7 +269,7 @@ public class GroupDraw implements Serializable {
         sb.append(", ").append(toNumShow);
         sb.append(", ").append(status);
         sb.append(", ").append(isDraw);
-        sb.append(", ").append(addTime);
+        sb.append(", ").append(createTime);
         sb.append(", ").append(updateTime);
         sb.append(", ").append(delFlag);
         sb.append(", ").append(delTime);

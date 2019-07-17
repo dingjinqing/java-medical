@@ -28,31 +28,31 @@ import org.jooq.impl.UpdatableRecordImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class OrderInfoRecord extends UpdatableRecordImpl<OrderInfoRecord> {
 
-    private static final long serialVersionUID = -981291874;
+    private static final long serialVersionUID = 131818510;
 
     /**
-     * Setter for <code>mini_shop_471752.b2c_order_info.order_id</code>. 订单ID
+     * Setter for <code>mini_shop_471752.b2c_order_info.order_id</code>. 订单id
      */
     public void setOrderId(Integer value) {
         set(0, value);
     }
 
     /**
-     * Getter for <code>mini_shop_471752.b2c_order_info.order_id</code>. 订单ID
+     * Getter for <code>mini_shop_471752.b2c_order_info.order_id</code>. 订单id
      */
     public Integer getOrderId() {
         return (Integer) get(0);
     }
 
     /**
-     * Setter for <code>mini_shop_471752.b2c_order_info.shop_id</code>. 店铺ID
+     * Setter for <code>mini_shop_471752.b2c_order_info.shop_id</code>. 店铺id
      */
     public void setShopId(Integer value) {
         set(1, value);
     }
 
     /**
-     * Getter for <code>mini_shop_471752.b2c_order_info.shop_id</code>. 店铺ID
+     * Getter for <code>mini_shop_471752.b2c_order_info.shop_id</code>. 店铺id
      */
     public Integer getShopId() {
         return (Integer) get(1);
@@ -87,14 +87,14 @@ public class OrderInfoRecord extends UpdatableRecordImpl<OrderInfoRecord> {
     }
 
     /**
-     * Setter for <code>mini_shop_471752.b2c_order_info.user_id</code>. 用户ID
+     * Setter for <code>mini_shop_471752.b2c_order_info.user_id</code>. 用户id
      */
     public void setUserId(Integer value) {
         set(4, value);
     }
 
     /**
-     * Getter for <code>mini_shop_471752.b2c_order_info.user_id</code>. 用户ID
+     * Getter for <code>mini_shop_471752.b2c_order_info.user_id</code>. 用户id
      */
     public Integer getUserId() {
         return (Integer) get(4);
@@ -157,14 +157,14 @@ public class OrderInfoRecord extends UpdatableRecordImpl<OrderInfoRecord> {
     }
 
     /**
-     * Setter for <code>mini_shop_471752.b2c_order_info.address_id</code>. 地址ID
+     * Setter for <code>mini_shop_471752.b2c_order_info.address_id</code>. 地址id
      */
     public void setAddressId(Integer value) {
         set(9, value);
     }
 
     /**
-     * Getter for <code>mini_shop_471752.b2c_order_info.address_id</code>. 地址ID
+     * Getter for <code>mini_shop_471752.b2c_order_info.address_id</code>. 地址id
      */
     public Integer getAddressId() {
         return (Integer) get(9);
@@ -353,14 +353,14 @@ public class OrderInfoRecord extends UpdatableRecordImpl<OrderInfoRecord> {
     }
 
     /**
-     * Setter for <code>mini_shop_471752.b2c_order_info.shipping_id</code>. 快递ID
+     * Setter for <code>mini_shop_471752.b2c_order_info.shipping_id</code>. 快递id
      */
     public void setShippingId(Byte value) {
         set(23, value);
     }
 
     /**
-     * Getter for <code>mini_shop_471752.b2c_order_info.shipping_id</code>. 快递ID
+     * Getter for <code>mini_shop_471752.b2c_order_info.shipping_id</code>. 快递id
      */
     public Byte getShippingId() {
         return (Byte) get(23);
@@ -605,184 +605,184 @@ public class OrderInfoRecord extends UpdatableRecordImpl<OrderInfoRecord> {
     }
 
     /**
-     * Setter for <code>mini_shop_471752.b2c_order_info.dapei_id</code>. 搭配ID来源
+     * Setter for <code>mini_shop_471752.b2c_order_info.dapei_id</code>. 搭配id来源
      */
     public void setDapeiId(Integer value) {
         set(41, value);
     }
 
     /**
-     * Getter for <code>mini_shop_471752.b2c_order_info.dapei_id</code>. 搭配ID来源
+     * Getter for <code>mini_shop_471752.b2c_order_info.dapei_id</code>. 搭配id来源
      */
     public Integer getDapeiId() {
         return (Integer) get(41);
     }
 
     /**
-     * Setter for <code>mini_shop_471752.b2c_order_info.add_time</code>. 订单提交时间
+     * Setter for <code>mini_shop_471752.b2c_order_info.create_time</code>.
      */
-    public void setAddTime(Timestamp value) {
+    public void setCreateTime(Timestamp value) {
         set(42, value);
     }
 
     /**
-     * Getter for <code>mini_shop_471752.b2c_order_info.add_time</code>. 订单提交时间
+     * Getter for <code>mini_shop_471752.b2c_order_info.create_time</code>.
      */
-    public Timestamp getAddTime() {
+    public Timestamp getCreateTime() {
         return (Timestamp) get(42);
+    }
+
+    /**
+     * Setter for <code>mini_shop_471752.b2c_order_info.update_time</code>. 最后修改时间
+     */
+    public void setUpdateTime(Timestamp value) {
+        set(43, value);
+    }
+
+    /**
+     * Getter for <code>mini_shop_471752.b2c_order_info.update_time</code>. 最后修改时间
+     */
+    public Timestamp getUpdateTime() {
+        return (Timestamp) get(43);
     }
 
     /**
      * Setter for <code>mini_shop_471752.b2c_order_info.confirm_time</code>. 订单确收收货时间
      */
     public void setConfirmTime(Timestamp value) {
-        set(43, value);
+        set(44, value);
     }
 
     /**
      * Getter for <code>mini_shop_471752.b2c_order_info.confirm_time</code>. 订单确收收货时间
      */
     public Timestamp getConfirmTime() {
-        return (Timestamp) get(43);
+        return (Timestamp) get(44);
     }
 
     /**
      * Setter for <code>mini_shop_471752.b2c_order_info.pay_time</code>. 支付时间
      */
     public void setPayTime(Timestamp value) {
-        set(44, value);
+        set(45, value);
     }
 
     /**
      * Getter for <code>mini_shop_471752.b2c_order_info.pay_time</code>. 支付时间
      */
     public Timestamp getPayTime() {
-        return (Timestamp) get(44);
+        return (Timestamp) get(45);
     }
 
     /**
      * Setter for <code>mini_shop_471752.b2c_order_info.shipping_time</code>. 发货时间
      */
     public void setShippingTime(Timestamp value) {
-        set(45, value);
+        set(46, value);
     }
 
     /**
      * Getter for <code>mini_shop_471752.b2c_order_info.shipping_time</code>. 发货时间
      */
     public Timestamp getShippingTime() {
-        return (Timestamp) get(45);
+        return (Timestamp) get(46);
     }
 
     /**
      * Setter for <code>mini_shop_471752.b2c_order_info.closed_time</code>. 关闭时间
      */
     public void setClosedTime(Timestamp value) {
-        set(46, value);
+        set(47, value);
     }
 
     /**
      * Getter for <code>mini_shop_471752.b2c_order_info.closed_time</code>. 关闭时间
      */
     public Timestamp getClosedTime() {
-        return (Timestamp) get(46);
+        return (Timestamp) get(47);
     }
 
     /**
      * Setter for <code>mini_shop_471752.b2c_order_info.cancelled_time</code>. 取消时间
      */
     public void setCancelledTime(Timestamp value) {
-        set(47, value);
+        set(48, value);
     }
 
     /**
      * Getter for <code>mini_shop_471752.b2c_order_info.cancelled_time</code>. 取消时间
      */
     public Timestamp getCancelledTime() {
-        return (Timestamp) get(47);
+        return (Timestamp) get(48);
     }
 
     /**
      * Setter for <code>mini_shop_471752.b2c_order_info.finished_time</code>. 订单完成时间
      */
     public void setFinishedTime(Timestamp value) {
-        set(48, value);
+        set(49, value);
     }
 
     /**
      * Getter for <code>mini_shop_471752.b2c_order_info.finished_time</code>. 订单完成时间
      */
     public Timestamp getFinishedTime() {
-        return (Timestamp) get(48);
+        return (Timestamp) get(49);
     }
 
     /**
      * Setter for <code>mini_shop_471752.b2c_order_info.return_time</code>. 订单申请退货时间
      */
     public void setReturnTime(Timestamp value) {
-        set(49, value);
+        set(50, value);
     }
 
     /**
      * Getter for <code>mini_shop_471752.b2c_order_info.return_time</code>. 订单申请退货时间
      */
     public Timestamp getReturnTime() {
-        return (Timestamp) get(49);
+        return (Timestamp) get(50);
     }
 
     /**
      * Setter for <code>mini_shop_471752.b2c_order_info.return_finish_time</code>. 订单退货完成时间
      */
     public void setReturnFinishTime(Timestamp value) {
-        set(50, value);
+        set(51, value);
     }
 
     /**
      * Getter for <code>mini_shop_471752.b2c_order_info.return_finish_time</code>. 订单退货完成时间
      */
     public Timestamp getReturnFinishTime() {
-        return (Timestamp) get(50);
+        return (Timestamp) get(51);
     }
 
     /**
      * Setter for <code>mini_shop_471752.b2c_order_info.refund_time</code>. 订单申请退款时间
      */
     public void setRefundTime(Timestamp value) {
-        set(51, value);
+        set(52, value);
     }
 
     /**
      * Getter for <code>mini_shop_471752.b2c_order_info.refund_time</code>. 订单申请退款时间
      */
     public Timestamp getRefundTime() {
-        return (Timestamp) get(51);
+        return (Timestamp) get(52);
     }
 
     /**
      * Setter for <code>mini_shop_471752.b2c_order_info.refund_finish_time</code>. 订单退款完成时间
      */
     public void setRefundFinishTime(Timestamp value) {
-        set(52, value);
+        set(53, value);
     }
 
     /**
      * Getter for <code>mini_shop_471752.b2c_order_info.refund_finish_time</code>. 订单退款完成时间
      */
     public Timestamp getRefundFinishTime() {
-        return (Timestamp) get(52);
-    }
-
-    /**
-     * Setter for <code>mini_shop_471752.b2c_order_info.update_time</code>. 订单更新时间
-     */
-    public void setUpdateTime(Timestamp value) {
-        set(53, value);
-    }
-
-    /**
-     * Getter for <code>mini_shop_471752.b2c_order_info.update_time</code>. 订单更新时间
-     */
-    public Timestamp getUpdateTime() {
         return (Timestamp) get(53);
     }
 
@@ -885,14 +885,14 @@ public class OrderInfoRecord extends UpdatableRecordImpl<OrderInfoRecord> {
     }
 
     /**
-     * Setter for <code>mini_shop_471752.b2c_order_info.erpordercode</code>. ERP中订单代码
+     * Setter for <code>mini_shop_471752.b2c_order_info.erpordercode</code>. erp中订单代码
      */
     public void setErpordercode(String value) {
         set(61, value);
     }
 
     /**
-     * Getter for <code>mini_shop_471752.b2c_order_info.erpordercode</code>. ERP中订单代码
+     * Getter for <code>mini_shop_471752.b2c_order_info.erpordercode</code>. erp中订单代码
      */
     public String getErpordercode() {
         return (String) get(61);
@@ -969,14 +969,14 @@ public class OrderInfoRecord extends UpdatableRecordImpl<OrderInfoRecord> {
     }
 
     /**
-     * Setter for <code>mini_shop_471752.b2c_order_info.invoice_id</code>. 发票Id
+     * Setter for <code>mini_shop_471752.b2c_order_info.invoice_id</code>. 发票id
      */
     public void setInvoiceId(Integer value) {
         set(67, value);
     }
 
     /**
-     * Getter for <code>mini_shop_471752.b2c_order_info.invoice_id</code>. 发票Id
+     * Getter for <code>mini_shop_471752.b2c_order_info.invoice_id</code>. 发票id
      */
     public Integer getInvoiceId() {
         return (Integer) get(67);
@@ -1053,28 +1053,28 @@ public class OrderInfoRecord extends UpdatableRecordImpl<OrderInfoRecord> {
     }
 
     /**
-     * Setter for <code>mini_shop_471752.b2c_order_info.order_source</code>. 订单来源，0pc，1wap，2app
+     * Setter for <code>mini_shop_471752.b2c_order_info.order_source</code>. 订单来源，0：小程序，1wap，2app
      */
     public void setOrderSource(Byte value) {
         set(73, value);
     }
 
     /**
-     * Getter for <code>mini_shop_471752.b2c_order_info.order_source</code>. 订单来源，0pc，1wap，2app
+     * Getter for <code>mini_shop_471752.b2c_order_info.order_source</code>. 订单来源，0：小程序，1wap，2app
      */
     public Byte getOrderSource() {
         return (Byte) get(73);
     }
 
     /**
-     * Setter for <code>mini_shop_471752.b2c_order_info.fanli_type</code>. 返利类型，0普通订单，1三级分销返利订单，2返利会员返利订单
+     * Setter for <code>mini_shop_471752.b2c_order_info.fanli_type</code>. 返利类型，0：普通订单，1：分销返利订单，2：返利会员返利订单
      */
     public void setFanliType(Byte value) {
         set(74, value);
     }
 
     /**
-     * Getter for <code>mini_shop_471752.b2c_order_info.fanli_type</code>. 返利类型，0普通订单，1三级分销返利订单，2返利会员返利订单
+     * Getter for <code>mini_shop_471752.b2c_order_info.fanli_type</code>. 返利类型，0：普通订单，1：分销返利订单，2：返利会员返利订单
      */
     public Byte getFanliType() {
         return (Byte) get(74);
@@ -1179,14 +1179,14 @@ public class OrderInfoRecord extends UpdatableRecordImpl<OrderInfoRecord> {
     }
 
     /**
-     * Setter for <code>mini_shop_471752.b2c_order_info.pin_group_id</code>. 拼团ID
+     * Setter for <code>mini_shop_471752.b2c_order_info.pin_group_id</code>. 拼团id
      */
     public void setPinGroupId(Integer value) {
         set(82, value);
     }
 
     /**
-     * Getter for <code>mini_shop_471752.b2c_order_info.pin_group_id</code>. 拼团ID
+     * Getter for <code>mini_shop_471752.b2c_order_info.pin_group_id</code>. 拼团id
      */
     public Integer getPinGroupId() {
         return (Integer) get(82);
@@ -1235,14 +1235,14 @@ public class OrderInfoRecord extends UpdatableRecordImpl<OrderInfoRecord> {
     }
 
     /**
-     * Setter for <code>mini_shop_471752.b2c_order_info.promotion_id</code>. 促销活动Id
+     * Setter for <code>mini_shop_471752.b2c_order_info.promotion_id</code>. 促销活动id
      */
     public void setPromotionId(Integer value) {
         set(86, value);
     }
 
     /**
-     * Getter for <code>mini_shop_471752.b2c_order_info.promotion_id</code>. 促销活动Id
+     * Getter for <code>mini_shop_471752.b2c_order_info.promotion_id</code>. 促销活动id
      */
     public Integer getPromotionId() {
         return (Integer) get(86);
@@ -1319,14 +1319,14 @@ public class OrderInfoRecord extends UpdatableRecordImpl<OrderInfoRecord> {
     }
 
     /**
-     * Setter for <code>mini_shop_471752.b2c_order_info.store_id</code>. 门店ID
+     * Setter for <code>mini_shop_471752.b2c_order_info.store_id</code>. 门店id
      */
     public void setStoreId(Integer value) {
         set(92, value);
     }
 
     /**
-     * Getter for <code>mini_shop_471752.b2c_order_info.store_id</code>. 门店ID
+     * Getter for <code>mini_shop_471752.b2c_order_info.store_id</code>. 门店id
      */
     public Integer getStoreId() {
         return (Integer) get(92);
@@ -1347,14 +1347,14 @@ public class OrderInfoRecord extends UpdatableRecordImpl<OrderInfoRecord> {
     }
 
     /**
-     * Setter for <code>mini_shop_471752.b2c_order_info.member_card_id</code>. 会员卡ID
+     * Setter for <code>mini_shop_471752.b2c_order_info.member_card_id</code>. 会员卡id
      */
     public void setMemberCardId(Integer value) {
         set(94, value);
     }
 
     /**
-     * Getter for <code>mini_shop_471752.b2c_order_info.member_card_id</code>. 会员卡ID
+     * Getter for <code>mini_shop_471752.b2c_order_info.member_card_id</code>. 会员卡id
      */
     public Integer getMemberCardId() {
         return (Integer) get(94);
@@ -1403,28 +1403,28 @@ public class OrderInfoRecord extends UpdatableRecordImpl<OrderInfoRecord> {
     }
 
     /**
-     * Setter for <code>mini_shop_471752.b2c_order_info.del_time</code>. 订单删除时间
+     * Setter for <code>mini_shop_471752.b2c_order_info.del_time</code>. 删除时间
      */
     public void setDelTime(Timestamp value) {
         set(98, value);
     }
 
     /**
-     * Getter for <code>mini_shop_471752.b2c_order_info.del_time</code>. 订单删除时间
+     * Getter for <code>mini_shop_471752.b2c_order_info.del_time</code>. 删除时间
      */
     public Timestamp getDelTime() {
         return (Timestamp) get(98);
     }
 
     /**
-     * Setter for <code>mini_shop_471752.b2c_order_info.prepay_id</code>. 微信支付Id，用于发送模板消息
+     * Setter for <code>mini_shop_471752.b2c_order_info.prepay_id</code>. 微信支付id，用于发送模板消息
      */
     public void setPrepayId(String value) {
         set(99, value);
     }
 
     /**
-     * Getter for <code>mini_shop_471752.b2c_order_info.prepay_id</code>. 微信支付Id，用于发送模板消息
+     * Getter for <code>mini_shop_471752.b2c_order_info.prepay_id</code>. 微信支付id，用于发送模板消息
      */
     public String getPrepayId() {
         return (String) get(99);
@@ -1459,16 +1459,16 @@ public class OrderInfoRecord extends UpdatableRecordImpl<OrderInfoRecord> {
     }
 
     /**
-     * Setter for <code>mini_shop_471752.b2c_order_info.pickup_time</code>. 自提时间
+     * Setter for <code>mini_shop_471752.b2c_order_info.pickupdate_time</code>. 自提时间
      */
-    public void setPickupTime(String value) {
+    public void setPickupdateTime(String value) {
         set(102, value);
     }
 
     /**
-     * Getter for <code>mini_shop_471752.b2c_order_info.pickup_time</code>. 自提时间
+     * Getter for <code>mini_shop_471752.b2c_order_info.pickupdate_time</code>. 自提时间
      */
-    public String getPickupTime() {
+    public String getPickupdateTime() {
         return (String) get(102);
     }
 
@@ -1627,14 +1627,14 @@ public class OrderInfoRecord extends UpdatableRecordImpl<OrderInfoRecord> {
     }
 
     /**
-     * Setter for <code>mini_shop_471752.b2c_order_info.bk_prepay_id</code>. 微信支付Id，用于发送模板消息
+     * Setter for <code>mini_shop_471752.b2c_order_info.bk_prepay_id</code>. 微信支付id，用于发送模板消息
      */
     public void setBkPrepayId(String value) {
         set(114, value);
     }
 
     /**
-     * Getter for <code>mini_shop_471752.b2c_order_info.bk_prepay_id</code>. 微信支付Id，用于发送模板消息
+     * Getter for <code>mini_shop_471752.b2c_order_info.bk_prepay_id</code>. 微信支付id，用于发送模板消息
      */
     public String getBkPrepayId() {
         return (String) get(114);
@@ -1725,14 +1725,14 @@ public class OrderInfoRecord extends UpdatableRecordImpl<OrderInfoRecord> {
     }
 
     /**
-     * Setter for <code>mini_shop_471752.b2c_order_info.verifier_id</code>. 核销员ID
+     * Setter for <code>mini_shop_471752.b2c_order_info.verifier_id</code>. 核销员id
      */
     public void setVerifierId(Integer value) {
         set(121, value);
     }
 
     /**
-     * Getter for <code>mini_shop_471752.b2c_order_info.verifier_id</code>. 核销员ID
+     * Getter for <code>mini_shop_471752.b2c_order_info.verifier_id</code>. 核销员id
      */
     public Integer getVerifierId() {
         return (Integer) get(121);
@@ -1778,7 +1778,7 @@ public class OrderInfoRecord extends UpdatableRecordImpl<OrderInfoRecord> {
     /**
      * Create a detached, initialised OrderInfoRecord
      */
-    public OrderInfoRecord(Integer orderId, Integer shopId, String orderSn, String mainOrderSn, Integer userId, String userOpenid, Byte orderStatus, String orderStatusName, String consignee, Integer addressId, Integer countryCode, String countryName, Integer provinceCode, String provinceName, Integer cityCode, String cityName, Integer districtCode, String districtName, String address, String completeAddress, String zipcode, String mobile, String addMessage, Byte shippingId, String shippingName, String payCode, String payName, String paySn, Short goodsAmount, BigDecimal shippingFee, BigDecimal moneyPaid, BigDecimal shoperReduceAmount, BigDecimal subOrderAmount, BigDecimal discount, BigDecimal scoreDiscount, BigDecimal useAccount, BigDecimal orderAmount, BigDecimal gradePercent, BigDecimal discountPrice, BigDecimal dapeiReduceAmount, BigDecimal packageDiscount, Integer dapeiId, Timestamp addTime, Timestamp confirmTime, Timestamp payTime, Timestamp shippingTime, Timestamp closedTime, Timestamp cancelledTime, Timestamp finishedTime, Timestamp returnTime, Timestamp returnFinishTime, Timestamp refundTime, Timestamp refundFinishTime, Timestamp updateTime, String shippingNo, String shippingType, Byte isCod, Byte returnTypeCfg, Byte returnDaysCfg, Short orderTimeoutDays, String sellerRemark, String erpordercode, Byte commentFlag, Integer fanliUserId, String fanliGrade, BigDecimal fanliPercent, Byte settlementFlag, Integer invoiceId, Integer invoiceContent, String invoiceTitle, Byte refundStatus, String payOrderSn, String goodsType, Byte orderSource, Byte fanliType, Byte manualRefund, Byte orderPayWay, String bkOrderSn, BigDecimal bkOrderMoney, Byte bkOrderPaid, BigDecimal pinGoodsMoney, BigDecimal pinYjMoney, Integer pinGroupId, Byte delFlag, String source, Byte partShipFlag, Integer promotionId, BigDecimal promotionReduce, Byte pushType, String pushDesc, Byte posFlag, String posShopName, Integer storeId, String storeName, Integer memberCardId, BigDecimal memberCardReduce, BigDecimal memberCardBalance, Timestamp expireTime, Timestamp delTime, String prepayId, Byte deliverType, String deliverTypeName, String pickupTime, Byte starFlag, String verifyCode, Integer split, String cardNo, BigDecimal fanliMoney, String trueName, String idCard, String aliTradeNo, BigDecimal grouperCheapReduce, Timestamp bkShippingTime, Byte bkReturnType, String bkPrepayId, BigDecimal preSaleDiscount, BigDecimal insteadPayMoney, String orderUserMessage, String insteadPay, Short insteadPayNum, Byte isPromote, Integer verifierId, Byte exchang) {
+    public OrderInfoRecord(Integer orderId, Integer shopId, String orderSn, String mainOrderSn, Integer userId, String userOpenid, Byte orderStatus, String orderStatusName, String consignee, Integer addressId, Integer countryCode, String countryName, Integer provinceCode, String provinceName, Integer cityCode, String cityName, Integer districtCode, String districtName, String address, String completeAddress, String zipcode, String mobile, String addMessage, Byte shippingId, String shippingName, String payCode, String payName, String paySn, Short goodsAmount, BigDecimal shippingFee, BigDecimal moneyPaid, BigDecimal shoperReduceAmount, BigDecimal subOrderAmount, BigDecimal discount, BigDecimal scoreDiscount, BigDecimal useAccount, BigDecimal orderAmount, BigDecimal gradePercent, BigDecimal discountPrice, BigDecimal dapeiReduceAmount, BigDecimal packageDiscount, Integer dapeiId, Timestamp createTime, Timestamp updateTime, Timestamp confirmTime, Timestamp payTime, Timestamp shippingTime, Timestamp closedTime, Timestamp cancelledTime, Timestamp finishedTime, Timestamp returnTime, Timestamp returnFinishTime, Timestamp refundTime, Timestamp refundFinishTime, String shippingNo, String shippingType, Byte isCod, Byte returnTypeCfg, Byte returnDaysCfg, Short orderTimeoutDays, String sellerRemark, String erpordercode, Byte commentFlag, Integer fanliUserId, String fanliGrade, BigDecimal fanliPercent, Byte settlementFlag, Integer invoiceId, Integer invoiceContent, String invoiceTitle, Byte refundStatus, String payOrderSn, String goodsType, Byte orderSource, Byte fanliType, Byte manualRefund, Byte orderPayWay, String bkOrderSn, BigDecimal bkOrderMoney, Byte bkOrderPaid, BigDecimal pinGoodsMoney, BigDecimal pinYjMoney, Integer pinGroupId, Byte delFlag, String source, Byte partShipFlag, Integer promotionId, BigDecimal promotionReduce, Byte pushType, String pushDesc, Byte posFlag, String posShopName, Integer storeId, String storeName, Integer memberCardId, BigDecimal memberCardReduce, BigDecimal memberCardBalance, Timestamp expireTime, Timestamp delTime, String prepayId, Byte deliverType, String deliverTypeName, String pickupdateTime, Byte starFlag, String verifyCode, Integer split, String cardNo, BigDecimal fanliMoney, String trueName, String idCard, String aliTradeNo, BigDecimal grouperCheapReduce, Timestamp bkShippingTime, Byte bkReturnType, String bkPrepayId, BigDecimal preSaleDiscount, BigDecimal insteadPayMoney, String orderUserMessage, String insteadPay, Short insteadPayNum, Byte isPromote, Integer verifierId, Byte exchang) {
         super(OrderInfo.ORDER_INFO);
 
         set(0, orderId);
@@ -1823,18 +1823,18 @@ public class OrderInfoRecord extends UpdatableRecordImpl<OrderInfoRecord> {
         set(39, dapeiReduceAmount);
         set(40, packageDiscount);
         set(41, dapeiId);
-        set(42, addTime);
-        set(43, confirmTime);
-        set(44, payTime);
-        set(45, shippingTime);
-        set(46, closedTime);
-        set(47, cancelledTime);
-        set(48, finishedTime);
-        set(49, returnTime);
-        set(50, returnFinishTime);
-        set(51, refundTime);
-        set(52, refundFinishTime);
-        set(53, updateTime);
+        set(42, createTime);
+        set(43, updateTime);
+        set(44, confirmTime);
+        set(45, payTime);
+        set(46, shippingTime);
+        set(47, closedTime);
+        set(48, cancelledTime);
+        set(49, finishedTime);
+        set(50, returnTime);
+        set(51, returnFinishTime);
+        set(52, refundTime);
+        set(53, refundFinishTime);
         set(54, shippingNo);
         set(55, shippingType);
         set(56, isCod);
@@ -1883,7 +1883,7 @@ public class OrderInfoRecord extends UpdatableRecordImpl<OrderInfoRecord> {
         set(99, prepayId);
         set(100, deliverType);
         set(101, deliverTypeName);
-        set(102, pickupTime);
+        set(102, pickupdateTime);
         set(103, starFlag);
         set(104, verifyCode);
         set(105, split);

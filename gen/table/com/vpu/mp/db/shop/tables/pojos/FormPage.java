@@ -23,7 +23,7 @@ import javax.annotation.Generated;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class FormPage implements Serializable {
 
-    private static final long serialVersionUID = -891989901;
+    private static final long serialVersionUID = 2016981445;
 
     private Integer   pageId;
     private Integer   shopId;
@@ -31,11 +31,12 @@ public class FormPage implements Serializable {
     private Byte      state;
     private String    pageContent;
     private String    formCfg;
-    private Timestamp createTime;
     private Timestamp startTime;
     private Timestamp endTime;
     private Byte      isForeverValid;
     private Integer   submitNum;
+    private Timestamp createTime;
+    private Timestamp updateTime;
 
     public FormPage() {}
 
@@ -46,11 +47,12 @@ public class FormPage implements Serializable {
         this.state = value.state;
         this.pageContent = value.pageContent;
         this.formCfg = value.formCfg;
-        this.createTime = value.createTime;
         this.startTime = value.startTime;
         this.endTime = value.endTime;
         this.isForeverValid = value.isForeverValid;
         this.submitNum = value.submitNum;
+        this.createTime = value.createTime;
+        this.updateTime = value.updateTime;
     }
 
     public FormPage(
@@ -60,11 +62,12 @@ public class FormPage implements Serializable {
         Byte      state,
         String    pageContent,
         String    formCfg,
-        Timestamp createTime,
         Timestamp startTime,
         Timestamp endTime,
         Byte      isForeverValid,
-        Integer   submitNum
+        Integer   submitNum,
+        Timestamp createTime,
+        Timestamp updateTime
     ) {
         this.pageId = pageId;
         this.shopId = shopId;
@@ -72,11 +75,12 @@ public class FormPage implements Serializable {
         this.state = state;
         this.pageContent = pageContent;
         this.formCfg = formCfg;
-        this.createTime = createTime;
         this.startTime = startTime;
         this.endTime = endTime;
         this.isForeverValid = isForeverValid;
         this.submitNum = submitNum;
+        this.createTime = createTime;
+        this.updateTime = updateTime;
     }
 
     public Integer getPageId() {
@@ -127,14 +131,6 @@ public class FormPage implements Serializable {
         this.formCfg = formCfg;
     }
 
-    public Timestamp getCreateTime() {
-        return this.createTime;
-    }
-
-    public void setCreateTime(Timestamp createTime) {
-        this.createTime = createTime;
-    }
-
     public Timestamp getStartTime() {
         return this.startTime;
     }
@@ -167,6 +163,22 @@ public class FormPage implements Serializable {
         this.submitNum = submitNum;
     }
 
+    public Timestamp getCreateTime() {
+        return this.createTime;
+    }
+
+    public void setCreateTime(Timestamp createTime) {
+        this.createTime = createTime;
+    }
+
+    public Timestamp getUpdateTime() {
+        return this.updateTime;
+    }
+
+    public void setUpdateTime(Timestamp updateTime) {
+        this.updateTime = updateTime;
+    }
+
     @Override
     public String toString() {
         StringBuilder sb = new StringBuilder("FormPage (");
@@ -177,11 +189,12 @@ public class FormPage implements Serializable {
         sb.append(", ").append(state);
         sb.append(", ").append(pageContent);
         sb.append(", ").append(formCfg);
-        sb.append(", ").append(createTime);
         sb.append(", ").append(startTime);
         sb.append(", ").append(endTime);
         sb.append(", ").append(isForeverValid);
         sb.append(", ").append(submitNum);
+        sb.append(", ").append(createTime);
+        sb.append(", ").append(updateTime);
 
         sb.append(")");
         return sb.toString();

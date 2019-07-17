@@ -30,7 +30,7 @@ import org.jooq.impl.UpdatableRecordImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class MpJumpRecord extends UpdatableRecordImpl<MpJumpRecord> implements Record7<Integer, String, String, Byte, Byte, Timestamp, Timestamp> {
 
-    private static final long serialVersionUID = 76177289;
+    private static final long serialVersionUID = -1124532133;
 
     /**
      * Setter for <code>mini_shop_471752.b2c_mp_jump.id</code>.
@@ -89,42 +89,42 @@ public class MpJumpRecord extends UpdatableRecordImpl<MpJumpRecord> implements R
     }
 
     /**
-     * Setter for <code>mini_shop_471752.b2c_mp_jump.is_delete</code>. 0:未删除，1:已删除
+     * Setter for <code>mini_shop_471752.b2c_mp_jump.del_flag</code>. 0:未删除，1:已删除
      */
-    public void setIsDelete(Byte value) {
+    public void setDelFlag(Byte value) {
         set(4, value);
     }
 
     /**
-     * Getter for <code>mini_shop_471752.b2c_mp_jump.is_delete</code>. 0:未删除，1:已删除
+     * Getter for <code>mini_shop_471752.b2c_mp_jump.del_flag</code>. 0:未删除，1:已删除
      */
-    public Byte getIsDelete() {
+    public Byte getDelFlag() {
         return (Byte) get(4);
     }
 
     /**
-     * Setter for <code>mini_shop_471752.b2c_mp_jump.add_time</code>.
+     * Setter for <code>mini_shop_471752.b2c_mp_jump.create_time</code>.
      */
-    public void setAddTime(Timestamp value) {
+    public void setCreateTime(Timestamp value) {
         set(5, value);
     }
 
     /**
-     * Getter for <code>mini_shop_471752.b2c_mp_jump.add_time</code>.
+     * Getter for <code>mini_shop_471752.b2c_mp_jump.create_time</code>.
      */
-    public Timestamp getAddTime() {
+    public Timestamp getCreateTime() {
         return (Timestamp) get(5);
     }
 
     /**
-     * Setter for <code>mini_shop_471752.b2c_mp_jump.update_time</code>.
+     * Setter for <code>mini_shop_471752.b2c_mp_jump.update_time</code>. 最后修改时间
      */
     public void setUpdateTime(Timestamp value) {
         set(6, value);
     }
 
     /**
-     * Getter for <code>mini_shop_471752.b2c_mp_jump.update_time</code>.
+     * Getter for <code>mini_shop_471752.b2c_mp_jump.update_time</code>. 最后修改时间
      */
     public Timestamp getUpdateTime() {
         return (Timestamp) get(6);
@@ -199,7 +199,7 @@ public class MpJumpRecord extends UpdatableRecordImpl<MpJumpRecord> implements R
      */
     @Override
     public Field<Byte> field5() {
-        return MpJump.MP_JUMP.IS_DELETE;
+        return MpJump.MP_JUMP.DEL_FLAG;
     }
 
     /**
@@ -207,7 +207,7 @@ public class MpJumpRecord extends UpdatableRecordImpl<MpJumpRecord> implements R
      */
     @Override
     public Field<Timestamp> field6() {
-        return MpJump.MP_JUMP.ADD_TIME;
+        return MpJump.MP_JUMP.CREATE_TIME;
     }
 
     /**
@@ -255,7 +255,7 @@ public class MpJumpRecord extends UpdatableRecordImpl<MpJumpRecord> implements R
      */
     @Override
     public Byte component5() {
-        return getIsDelete();
+        return getDelFlag();
     }
 
     /**
@@ -263,7 +263,7 @@ public class MpJumpRecord extends UpdatableRecordImpl<MpJumpRecord> implements R
      */
     @Override
     public Timestamp component6() {
-        return getAddTime();
+        return getCreateTime();
     }
 
     /**
@@ -311,7 +311,7 @@ public class MpJumpRecord extends UpdatableRecordImpl<MpJumpRecord> implements R
      */
     @Override
     public Byte value5() {
-        return getIsDelete();
+        return getDelFlag();
     }
 
     /**
@@ -319,7 +319,7 @@ public class MpJumpRecord extends UpdatableRecordImpl<MpJumpRecord> implements R
      */
     @Override
     public Timestamp value6() {
-        return getAddTime();
+        return getCreateTime();
     }
 
     /**
@@ -371,7 +371,7 @@ public class MpJumpRecord extends UpdatableRecordImpl<MpJumpRecord> implements R
      */
     @Override
     public MpJumpRecord value5(Byte value) {
-        setIsDelete(value);
+        setDelFlag(value);
         return this;
     }
 
@@ -380,7 +380,7 @@ public class MpJumpRecord extends UpdatableRecordImpl<MpJumpRecord> implements R
      */
     @Override
     public MpJumpRecord value6(Timestamp value) {
-        setAddTime(value);
+        setCreateTime(value);
         return this;
     }
 
@@ -422,15 +422,15 @@ public class MpJumpRecord extends UpdatableRecordImpl<MpJumpRecord> implements R
     /**
      * Create a detached, initialised MpJumpRecord
      */
-    public MpJumpRecord(Integer id, String appId, String appName, Byte flag, Byte isDelete, Timestamp addTime, Timestamp updateTime) {
+    public MpJumpRecord(Integer id, String appId, String appName, Byte flag, Byte delFlag, Timestamp createTime, Timestamp updateTime) {
         super(MpJump.MP_JUMP);
 
         set(0, id);
         set(1, appId);
         set(2, appName);
         set(3, flag);
-        set(4, isDelete);
-        set(5, addTime);
+        set(4, delFlag);
+        set(5, createTime);
         set(6, updateTime);
     }
 }

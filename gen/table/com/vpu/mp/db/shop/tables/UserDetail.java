@@ -9,6 +9,7 @@ import com.vpu.mp.db.shop.Keys;
 import com.vpu.mp.db.shop.MiniShop_471752;
 import com.vpu.mp.db.shop.tables.records.UserDetailRecord;
 
+import java.sql.Timestamp;
 import java.util.Arrays;
 import java.util.List;
 
@@ -41,7 +42,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class UserDetail extends TableImpl<UserDetailRecord> {
 
-    private static final long serialVersionUID = -1509118709;
+    private static final long serialVersionUID = 1425600177;
 
     /**
      * The reference instance of <code>mini_shop_471752.b2c_user_detail</code>
@@ -67,9 +68,9 @@ public class UserDetail extends TableImpl<UserDetailRecord> {
     public final TableField<UserDetailRecord, Integer> USER_ID = createField("user_id", org.jooq.impl.SQLDataType.INTEGER.nullable(false), this, "");
 
     /**
-     * The column <code>mini_shop_471752.b2c_user_detail.shop_id</code>. 店铺ID
+     * The column <code>mini_shop_471752.b2c_user_detail.shop_id</code>. 店铺id
      */
-    public final TableField<UserDetailRecord, Integer> SHOP_ID = createField("shop_id", org.jooq.impl.SQLDataType.INTEGER.nullable(false).defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.INTEGER)), this, "店铺ID");
+    public final TableField<UserDetailRecord, Integer> SHOP_ID = createField("shop_id", org.jooq.impl.SQLDataType.INTEGER.nullable(false).defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.INTEGER)), this, "店铺id");
 
     /**
      * The column <code>mini_shop_471752.b2c_user_detail.username</code>. 昵称
@@ -179,7 +180,17 @@ public class UserDetail extends TableImpl<UserDetailRecord> {
     /**
      * The column <code>mini_shop_471752.b2c_user_detail.user_avatar</code>. 用户头像
      */
-    public final TableField<UserDetailRecord, String> USER_AVATAR = createField("user_avatar", org.jooq.impl.SQLDataType.VARCHAR(191).defaultValue(org.jooq.impl.DSL.inline("/image/admin/head_icon.png", org.jooq.impl.SQLDataType.VARCHAR)), this, "用户头像");
+    public final TableField<UserDetailRecord, String> USER_AVATAR = createField("user_avatar", org.jooq.impl.SQLDataType.VARCHAR(191).nullable(false).defaultValue(org.jooq.impl.DSL.inline("/image/admin/head_icon.png", org.jooq.impl.SQLDataType.VARCHAR)), this, "用户头像");
+
+    /**
+     * The column <code>mini_shop_471752.b2c_user_detail.create_time</code>.
+     */
+    public final TableField<UserDetailRecord, Timestamp> CREATE_TIME = createField("create_time", org.jooq.impl.SQLDataType.TIMESTAMP.nullable(false).defaultValue(org.jooq.impl.DSL.field("CURRENT_TIMESTAMP", org.jooq.impl.SQLDataType.TIMESTAMP)), this, "");
+
+    /**
+     * The column <code>mini_shop_471752.b2c_user_detail.update_time</code>. 最后修改时间
+     */
+    public final TableField<UserDetailRecord, Timestamp> UPDATE_TIME = createField("update_time", org.jooq.impl.SQLDataType.TIMESTAMP.nullable(false).defaultValue(org.jooq.impl.DSL.field("CURRENT_TIMESTAMP", org.jooq.impl.SQLDataType.TIMESTAMP)), this, "最后修改时间");
 
     /**
      * Create a <code>mini_shop_471752.b2c_user_detail</code> table reference

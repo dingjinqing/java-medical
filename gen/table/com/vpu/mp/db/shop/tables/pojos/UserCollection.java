@@ -23,48 +23,40 @@ import javax.annotation.Generated;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class UserCollection implements Serializable {
 
-    private static final long serialVersionUID = 611685227;
+    private static final long serialVersionUID = 491236074;
 
     private Integer   id;
     private Integer   userId;
-    private String    username;
     private Integer   goodsId;
-    private String    goodsName;
-    private String    goodsImg;
-    private Timestamp inTime;
     private Integer   shopId;
+    private Timestamp createTime;
+    private Timestamp updateTime;
 
     public UserCollection() {}
 
     public UserCollection(UserCollection value) {
         this.id = value.id;
         this.userId = value.userId;
-        this.username = value.username;
         this.goodsId = value.goodsId;
-        this.goodsName = value.goodsName;
-        this.goodsImg = value.goodsImg;
-        this.inTime = value.inTime;
         this.shopId = value.shopId;
+        this.createTime = value.createTime;
+        this.updateTime = value.updateTime;
     }
 
     public UserCollection(
         Integer   id,
         Integer   userId,
-        String    username,
         Integer   goodsId,
-        String    goodsName,
-        String    goodsImg,
-        Timestamp inTime,
-        Integer   shopId
+        Integer   shopId,
+        Timestamp createTime,
+        Timestamp updateTime
     ) {
         this.id = id;
         this.userId = userId;
-        this.username = username;
         this.goodsId = goodsId;
-        this.goodsName = goodsName;
-        this.goodsImg = goodsImg;
-        this.inTime = inTime;
         this.shopId = shopId;
+        this.createTime = createTime;
+        this.updateTime = updateTime;
     }
 
     public Integer getId() {
@@ -83,44 +75,12 @@ public class UserCollection implements Serializable {
         this.userId = userId;
     }
 
-    public String getUsername() {
-        return this.username;
-    }
-
-    public void setUsername(String username) {
-        this.username = username;
-    }
-
     public Integer getGoodsId() {
         return this.goodsId;
     }
 
     public void setGoodsId(Integer goodsId) {
         this.goodsId = goodsId;
-    }
-
-    public String getGoodsName() {
-        return this.goodsName;
-    }
-
-    public void setGoodsName(String goodsName) {
-        this.goodsName = goodsName;
-    }
-
-    public String getGoodsImg() {
-        return this.goodsImg;
-    }
-
-    public void setGoodsImg(String goodsImg) {
-        this.goodsImg = goodsImg;
-    }
-
-    public Timestamp getInTime() {
-        return this.inTime;
-    }
-
-    public void setInTime(Timestamp inTime) {
-        this.inTime = inTime;
     }
 
     public Integer getShopId() {
@@ -131,18 +91,32 @@ public class UserCollection implements Serializable {
         this.shopId = shopId;
     }
 
+    public Timestamp getCreateTime() {
+        return this.createTime;
+    }
+
+    public void setCreateTime(Timestamp createTime) {
+        this.createTime = createTime;
+    }
+
+    public Timestamp getUpdateTime() {
+        return this.updateTime;
+    }
+
+    public void setUpdateTime(Timestamp updateTime) {
+        this.updateTime = updateTime;
+    }
+
     @Override
     public String toString() {
         StringBuilder sb = new StringBuilder("UserCollection (");
 
         sb.append(id);
         sb.append(", ").append(userId);
-        sb.append(", ").append(username);
         sb.append(", ").append(goodsId);
-        sb.append(", ").append(goodsName);
-        sb.append(", ").append(goodsImg);
-        sb.append(", ").append(inTime);
         sb.append(", ").append(shopId);
+        sb.append(", ").append(createTime);
+        sb.append(", ").append(updateTime);
 
         sb.append(")");
         return sb.toString();

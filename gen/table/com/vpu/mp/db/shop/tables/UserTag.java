@@ -41,7 +41,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class UserTag extends TableImpl<UserTagRecord> {
 
-    private static final long serialVersionUID = 787829844;
+    private static final long serialVersionUID = -446560778;
 
     /**
      * The reference instance of <code>mini_shop_471752.b2c_user_tag</code>
@@ -67,9 +67,19 @@ public class UserTag extends TableImpl<UserTagRecord> {
     public final TableField<UserTagRecord, Integer> TAG_ID = createField("tag_id", org.jooq.impl.SQLDataType.INTEGER.nullable(false), this, "");
 
     /**
-     * The column <code>mini_shop_471752.b2c_user_tag.add_time</code>.
+     * The column <code>mini_shop_471752.b2c_user_tag.create_time</code>.
      */
-    public final TableField<UserTagRecord, Timestamp> ADD_TIME = createField("add_time", org.jooq.impl.SQLDataType.TIMESTAMP.defaultValue(org.jooq.impl.DSL.field("CURRENT_TIMESTAMP", org.jooq.impl.SQLDataType.TIMESTAMP)), this, "");
+    public final TableField<UserTagRecord, Timestamp> CREATE_TIME = createField("create_time", org.jooq.impl.SQLDataType.TIMESTAMP.nullable(false).defaultValue(org.jooq.impl.DSL.field("CURRENT_TIMESTAMP", org.jooq.impl.SQLDataType.TIMESTAMP)), this, "");
+
+    /**
+     * The column <code>mini_shop_471752.b2c_user_tag.update_time</code>. 最后修改时间
+     */
+    public final TableField<UserTagRecord, Timestamp> UPDATE_TIME = createField("update_time", org.jooq.impl.SQLDataType.TIMESTAMP.nullable(false).defaultValue(org.jooq.impl.DSL.field("CURRENT_TIMESTAMP", org.jooq.impl.SQLDataType.TIMESTAMP)), this, "最后修改时间");
+
+    /**
+     * The column <code>mini_shop_471752.b2c_user_tag.is_delete</code>. 0未删除，1已删除
+     */
+    public final TableField<UserTagRecord, Byte> IS_DELETE = createField("is_delete", org.jooq.impl.SQLDataType.TINYINT.nullable(false).defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.TINYINT)), this, "0未删除，1已删除");
 
     /**
      * Create a <code>mini_shop_471752.b2c_user_tag</code> table reference

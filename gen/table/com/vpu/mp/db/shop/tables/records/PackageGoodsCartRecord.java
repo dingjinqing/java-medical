@@ -30,7 +30,7 @@ import org.jooq.impl.UpdatableRecordImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class PackageGoodsCartRecord extends UpdatableRecordImpl<PackageGoodsCartRecord> implements Record9<Integer, Integer, Integer, Byte, Integer, Integer, Integer, Timestamp, Timestamp> {
 
-    private static final long serialVersionUID = 655386916;
+    private static final long serialVersionUID = 1425091186;
 
     /**
      * Setter for <code>mini_shop_471752.b2c_package_goods_cart.id</code>.
@@ -61,56 +61,56 @@ public class PackageGoodsCartRecord extends UpdatableRecordImpl<PackageGoodsCart
     }
 
     /**
-     * Setter for <code>mini_shop_471752.b2c_package_goods_cart.package_id</code>. 一口价活动ID
+     * Setter for <code>mini_shop_471752.b2c_package_goods_cart.package_id</code>. 一口价活动id
      */
     public void setPackageId(Integer value) {
         set(2, value);
     }
 
     /**
-     * Getter for <code>mini_shop_471752.b2c_package_goods_cart.package_id</code>. 一口价活动ID
+     * Getter for <code>mini_shop_471752.b2c_package_goods_cart.package_id</code>. 一口价活动id
      */
     public Integer getPackageId() {
         return (Integer) get(2);
     }
 
     /**
-     * Setter for <code>mini_shop_471752.b2c_package_goods_cart.group_id</code>. 商品组ID
+     * Setter for <code>mini_shop_471752.b2c_package_goods_cart.group_id</code>. 商品组id
      */
     public void setGroupId(Byte value) {
         set(3, value);
     }
 
     /**
-     * Getter for <code>mini_shop_471752.b2c_package_goods_cart.group_id</code>. 商品组ID
+     * Getter for <code>mini_shop_471752.b2c_package_goods_cart.group_id</code>. 商品组id
      */
     public Byte getGroupId() {
         return (Byte) get(3);
     }
 
     /**
-     * Setter for <code>mini_shop_471752.b2c_package_goods_cart.goods_id</code>. 商品ID
+     * Setter for <code>mini_shop_471752.b2c_package_goods_cart.goods_id</code>. 商品id
      */
     public void setGoodsId(Integer value) {
         set(4, value);
     }
 
     /**
-     * Getter for <code>mini_shop_471752.b2c_package_goods_cart.goods_id</code>. 商品ID
+     * Getter for <code>mini_shop_471752.b2c_package_goods_cart.goods_id</code>. 商品id
      */
     public Integer getGoodsId() {
         return (Integer) get(4);
     }
 
     /**
-     * Setter for <code>mini_shop_471752.b2c_package_goods_cart.product_id</code>. 产品ID
+     * Setter for <code>mini_shop_471752.b2c_package_goods_cart.product_id</code>. 产品id
      */
     public void setProductId(Integer value) {
         set(5, value);
     }
 
     /**
-     * Getter for <code>mini_shop_471752.b2c_package_goods_cart.product_id</code>. 产品ID
+     * Getter for <code>mini_shop_471752.b2c_package_goods_cart.product_id</code>. 产品id
      */
     public Integer getProductId() {
         return (Integer) get(5);
@@ -131,28 +131,28 @@ public class PackageGoodsCartRecord extends UpdatableRecordImpl<PackageGoodsCart
     }
 
     /**
-     * Setter for <code>mini_shop_471752.b2c_package_goods_cart.add_time</code>.
+     * Setter for <code>mini_shop_471752.b2c_package_goods_cart.create_time</code>.
      */
-    public void setAddTime(Timestamp value) {
+    public void setCreateTime(Timestamp value) {
         set(7, value);
     }
 
     /**
-     * Getter for <code>mini_shop_471752.b2c_package_goods_cart.add_time</code>.
+     * Getter for <code>mini_shop_471752.b2c_package_goods_cart.create_time</code>.
      */
-    public Timestamp getAddTime() {
+    public Timestamp getCreateTime() {
         return (Timestamp) get(7);
     }
 
     /**
-     * Setter for <code>mini_shop_471752.b2c_package_goods_cart.update_time</code>.
+     * Setter for <code>mini_shop_471752.b2c_package_goods_cart.update_time</code>. 最后修改时间
      */
     public void setUpdateTime(Timestamp value) {
         set(8, value);
     }
 
     /**
-     * Getter for <code>mini_shop_471752.b2c_package_goods_cart.update_time</code>.
+     * Getter for <code>mini_shop_471752.b2c_package_goods_cart.update_time</code>. 最后修改时间
      */
     public Timestamp getUpdateTime() {
         return (Timestamp) get(8);
@@ -251,7 +251,7 @@ public class PackageGoodsCartRecord extends UpdatableRecordImpl<PackageGoodsCart
      */
     @Override
     public Field<Timestamp> field8() {
-        return PackageGoodsCart.PACKAGE_GOODS_CART.ADD_TIME;
+        return PackageGoodsCart.PACKAGE_GOODS_CART.CREATE_TIME;
     }
 
     /**
@@ -323,7 +323,7 @@ public class PackageGoodsCartRecord extends UpdatableRecordImpl<PackageGoodsCart
      */
     @Override
     public Timestamp component8() {
-        return getAddTime();
+        return getCreateTime();
     }
 
     /**
@@ -395,7 +395,7 @@ public class PackageGoodsCartRecord extends UpdatableRecordImpl<PackageGoodsCart
      */
     @Override
     public Timestamp value8() {
-        return getAddTime();
+        return getCreateTime();
     }
 
     /**
@@ -474,7 +474,7 @@ public class PackageGoodsCartRecord extends UpdatableRecordImpl<PackageGoodsCart
      */
     @Override
     public PackageGoodsCartRecord value8(Timestamp value) {
-        setAddTime(value);
+        setCreateTime(value);
         return this;
     }
 
@@ -518,7 +518,7 @@ public class PackageGoodsCartRecord extends UpdatableRecordImpl<PackageGoodsCart
     /**
      * Create a detached, initialised PackageGoodsCartRecord
      */
-    public PackageGoodsCartRecord(Integer id, Integer userId, Integer packageId, Byte groupId, Integer goodsId, Integer productId, Integer goodsNumber, Timestamp addTime, Timestamp updateTime) {
+    public PackageGoodsCartRecord(Integer id, Integer userId, Integer packageId, Byte groupId, Integer goodsId, Integer productId, Integer goodsNumber, Timestamp createTime, Timestamp updateTime) {
         super(PackageGoodsCart.PACKAGE_GOODS_CART);
 
         set(0, id);
@@ -528,7 +528,7 @@ public class PackageGoodsCartRecord extends UpdatableRecordImpl<PackageGoodsCart
         set(4, goodsId);
         set(5, productId);
         set(6, goodsNumber);
-        set(7, addTime);
+        set(7, createTime);
         set(8, updateTime);
     }
 }

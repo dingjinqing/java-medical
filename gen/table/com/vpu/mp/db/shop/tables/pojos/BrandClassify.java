@@ -23,40 +23,40 @@ import javax.annotation.Generated;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class BrandClassify implements Serializable {
 
-    private static final long serialVersionUID = -2094536512;
+    private static final long serialVersionUID = 499579884;
 
     private Integer   classifyId;
     private String    classifyName;
-    private Timestamp createTime;
     private Short     first;
+    private Byte      delFlag;
+    private Timestamp createTime;
     private Timestamp updateTime;
-    private Byte      isDelete;
 
     public BrandClassify() {}
 
     public BrandClassify(BrandClassify value) {
         this.classifyId = value.classifyId;
         this.classifyName = value.classifyName;
-        this.createTime = value.createTime;
         this.first = value.first;
+        this.delFlag = value.delFlag;
+        this.createTime = value.createTime;
         this.updateTime = value.updateTime;
-        this.isDelete = value.isDelete;
     }
 
     public BrandClassify(
         Integer   classifyId,
         String    classifyName,
-        Timestamp createTime,
         Short     first,
-        Timestamp updateTime,
-        Byte      isDelete
+        Byte      delFlag,
+        Timestamp createTime,
+        Timestamp updateTime
     ) {
         this.classifyId = classifyId;
         this.classifyName = classifyName;
-        this.createTime = createTime;
         this.first = first;
+        this.delFlag = delFlag;
+        this.createTime = createTime;
         this.updateTime = updateTime;
-        this.isDelete = isDelete;
     }
 
     public Integer getClassifyId() {
@@ -75,20 +75,28 @@ public class BrandClassify implements Serializable {
         this.classifyName = classifyName;
     }
 
-    public Timestamp getCreateTime() {
-        return this.createTime;
-    }
-
-    public void setCreateTime(Timestamp createTime) {
-        this.createTime = createTime;
-    }
-
     public Short getFirst() {
         return this.first;
     }
 
     public void setFirst(Short first) {
         this.first = first;
+    }
+
+    public Byte getDelFlag() {
+        return this.delFlag;
+    }
+
+    public void setDelFlag(Byte delFlag) {
+        this.delFlag = delFlag;
+    }
+
+    public Timestamp getCreateTime() {
+        return this.createTime;
+    }
+
+    public void setCreateTime(Timestamp createTime) {
+        this.createTime = createTime;
     }
 
     public Timestamp getUpdateTime() {
@@ -99,24 +107,16 @@ public class BrandClassify implements Serializable {
         this.updateTime = updateTime;
     }
 
-    public Byte getIsDelete() {
-        return this.isDelete;
-    }
-
-    public void setIsDelete(Byte isDelete) {
-        this.isDelete = isDelete;
-    }
-
     @Override
     public String toString() {
         StringBuilder sb = new StringBuilder("BrandClassify (");
 
         sb.append(classifyId);
         sb.append(", ").append(classifyName);
-        sb.append(", ").append(createTime);
         sb.append(", ").append(first);
+        sb.append(", ").append(delFlag);
+        sb.append(", ").append(createTime);
         sb.append(", ").append(updateTime);
-        sb.append(", ").append(isDelete);
 
         sb.append(")");
         return sb.toString();

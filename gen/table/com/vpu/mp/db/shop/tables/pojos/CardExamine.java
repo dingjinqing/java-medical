@@ -23,7 +23,7 @@ import javax.annotation.Generated;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class CardExamine implements Serializable {
 
-    private static final long serialVersionUID = 866053032;
+    private static final long serialVersionUID = -2090350355;
 
     private Integer   id;
     private Integer   cardId;
@@ -43,12 +43,13 @@ public class CardExamine implements Serializable {
     private Byte      maritalStatus;
     private Byte      education;
     private Byte      industryInfo;
-    private Timestamp addTime;
     private Timestamp passTime;
     private Timestamp refuseTime;
     private String    refuseDesc;
     private Byte      delFlag;
     private Timestamp defTime;
+    private Timestamp createTime;
+    private Timestamp updateTime;
 
     public CardExamine() {}
 
@@ -71,12 +72,13 @@ public class CardExamine implements Serializable {
         this.maritalStatus = value.maritalStatus;
         this.education = value.education;
         this.industryInfo = value.industryInfo;
-        this.addTime = value.addTime;
         this.passTime = value.passTime;
         this.refuseTime = value.refuseTime;
         this.refuseDesc = value.refuseDesc;
         this.delFlag = value.delFlag;
         this.defTime = value.defTime;
+        this.createTime = value.createTime;
+        this.updateTime = value.updateTime;
     }
 
     public CardExamine(
@@ -98,12 +100,13 @@ public class CardExamine implements Serializable {
         Byte      maritalStatus,
         Byte      education,
         Byte      industryInfo,
-        Timestamp addTime,
         Timestamp passTime,
         Timestamp refuseTime,
         String    refuseDesc,
         Byte      delFlag,
-        Timestamp defTime
+        Timestamp defTime,
+        Timestamp createTime,
+        Timestamp updateTime
     ) {
         this.id = id;
         this.cardId = cardId;
@@ -123,12 +126,13 @@ public class CardExamine implements Serializable {
         this.maritalStatus = maritalStatus;
         this.education = education;
         this.industryInfo = industryInfo;
-        this.addTime = addTime;
         this.passTime = passTime;
         this.refuseTime = refuseTime;
         this.refuseDesc = refuseDesc;
         this.delFlag = delFlag;
         this.defTime = defTime;
+        this.createTime = createTime;
+        this.updateTime = updateTime;
     }
 
     public Integer getId() {
@@ -275,14 +279,6 @@ public class CardExamine implements Serializable {
         this.industryInfo = industryInfo;
     }
 
-    public Timestamp getAddTime() {
-        return this.addTime;
-    }
-
-    public void setAddTime(Timestamp addTime) {
-        this.addTime = addTime;
-    }
-
     public Timestamp getPassTime() {
         return this.passTime;
     }
@@ -323,6 +319,22 @@ public class CardExamine implements Serializable {
         this.defTime = defTime;
     }
 
+    public Timestamp getCreateTime() {
+        return this.createTime;
+    }
+
+    public void setCreateTime(Timestamp createTime) {
+        this.createTime = createTime;
+    }
+
+    public Timestamp getUpdateTime() {
+        return this.updateTime;
+    }
+
+    public void setUpdateTime(Timestamp updateTime) {
+        this.updateTime = updateTime;
+    }
+
     @Override
     public String toString() {
         StringBuilder sb = new StringBuilder("CardExamine (");
@@ -345,12 +357,13 @@ public class CardExamine implements Serializable {
         sb.append(", ").append(maritalStatus);
         sb.append(", ").append(education);
         sb.append(", ").append(industryInfo);
-        sb.append(", ").append(addTime);
         sb.append(", ").append(passTime);
         sb.append(", ").append(refuseTime);
         sb.append(", ").append(refuseDesc);
         sb.append(", ").append(delFlag);
         sb.append(", ").append(defTime);
+        sb.append(", ").append(createTime);
+        sb.append(", ").append(updateTime);
 
         sb.append(")");
         return sb.toString();

@@ -42,7 +42,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class FormPage extends TableImpl<FormPageRecord> {
 
-    private static final long serialVersionUID = 790952545;
+    private static final long serialVersionUID = -1589440686;
 
     /**
      * The reference instance of <code>mini_shop_471752.b2c_form_page</code>
@@ -58,14 +58,14 @@ public class FormPage extends TableImpl<FormPageRecord> {
     }
 
     /**
-     * The column <code>mini_shop_471752.b2c_form_page.page_id</code>. 表单页ID
+     * The column <code>mini_shop_471752.b2c_form_page.page_id</code>. 表单页id
      */
-    public final TableField<FormPageRecord, Integer> PAGE_ID = createField("page_id", org.jooq.impl.SQLDataType.INTEGER.nullable(false).identity(true), this, "表单页ID");
+    public final TableField<FormPageRecord, Integer> PAGE_ID = createField("page_id", org.jooq.impl.SQLDataType.INTEGER.nullable(false).identity(true), this, "表单页id");
 
     /**
-     * The column <code>mini_shop_471752.b2c_form_page.shop_id</code>. 店铺ID
+     * The column <code>mini_shop_471752.b2c_form_page.shop_id</code>. 店铺id
      */
-    public final TableField<FormPageRecord, Integer> SHOP_ID = createField("shop_id", org.jooq.impl.SQLDataType.INTEGER.nullable(false).defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.INTEGER)), this, "店铺ID");
+    public final TableField<FormPageRecord, Integer> SHOP_ID = createField("shop_id", org.jooq.impl.SQLDataType.INTEGER.nullable(false).defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.INTEGER)), this, "店铺id");
 
     /**
      * The column <code>mini_shop_471752.b2c_form_page.page_name</code>.
@@ -88,11 +88,6 @@ public class FormPage extends TableImpl<FormPageRecord> {
     public final TableField<FormPageRecord, String> FORM_CFG = createField("form_cfg", org.jooq.impl.SQLDataType.CLOB, this, "表单配置，json格式存储");
 
     /**
-     * The column <code>mini_shop_471752.b2c_form_page.create_time</code>.
-     */
-    public final TableField<FormPageRecord, Timestamp> CREATE_TIME = createField("create_time", org.jooq.impl.SQLDataType.TIMESTAMP.nullable(false).defaultValue(org.jooq.impl.DSL.field("CURRENT_TIMESTAMP", org.jooq.impl.SQLDataType.TIMESTAMP)), this, "");
-
-    /**
      * The column <code>mini_shop_471752.b2c_form_page.start_time</code>. 开始时间
      */
     public final TableField<FormPageRecord, Timestamp> START_TIME = createField("start_time", org.jooq.impl.SQLDataType.TIMESTAMP, this, "开始时间");
@@ -111,6 +106,16 @@ public class FormPage extends TableImpl<FormPageRecord> {
      * The column <code>mini_shop_471752.b2c_form_page.submit_num</code>. 反馈数量
      */
     public final TableField<FormPageRecord, Integer> SUBMIT_NUM = createField("submit_num", org.jooq.impl.SQLDataType.INTEGER.nullable(false).defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.INTEGER)), this, "反馈数量");
+
+    /**
+     * The column <code>mini_shop_471752.b2c_form_page.create_time</code>.
+     */
+    public final TableField<FormPageRecord, Timestamp> CREATE_TIME = createField("create_time", org.jooq.impl.SQLDataType.TIMESTAMP.nullable(false).defaultValue(org.jooq.impl.DSL.field("CURRENT_TIMESTAMP", org.jooq.impl.SQLDataType.TIMESTAMP)), this, "");
+
+    /**
+     * The column <code>mini_shop_471752.b2c_form_page.update_time</code>. 最后修改时间
+     */
+    public final TableField<FormPageRecord, Timestamp> UPDATE_TIME = createField("update_time", org.jooq.impl.SQLDataType.TIMESTAMP.nullable(false).defaultValue(org.jooq.impl.DSL.field("CURRENT_TIMESTAMP", org.jooq.impl.SQLDataType.TIMESTAMP)), this, "最后修改时间");
 
     /**
      * Create a <code>mini_shop_471752.b2c_form_page</code> table reference

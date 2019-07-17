@@ -39,7 +39,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class SearchHistory extends TableImpl<SearchHistoryRecord> {
 
-    private static final long serialVersionUID = 866827702;
+    private static final long serialVersionUID = -1235334347;
 
     /**
      * The reference instance of <code>mini_shop_471752.b2c_search_history</code>
@@ -67,27 +67,32 @@ public class SearchHistory extends TableImpl<SearchHistoryRecord> {
     /**
      * The column <code>mini_shop_471752.b2c_search_history.search_count</code>. 搜索次数
      */
-    public final TableField<SearchHistoryRecord, Integer> SEARCH_COUNT = createField("search_count", org.jooq.impl.SQLDataType.INTEGER.defaultValue(org.jooq.impl.DSL.inline("1", org.jooq.impl.SQLDataType.INTEGER)), this, "搜索次数");
+    public final TableField<SearchHistoryRecord, Integer> SEARCH_COUNT = createField("search_count", org.jooq.impl.SQLDataType.INTEGER.nullable(false).defaultValue(org.jooq.impl.DSL.inline("1", org.jooq.impl.SQLDataType.INTEGER)), this, "搜索次数");
 
     /**
      * The column <code>mini_shop_471752.b2c_search_history.is_hot_words</code>. 是否是热词搜索
      */
-    public final TableField<SearchHistoryRecord, Byte> IS_HOT_WORDS = createField("is_hot_words", org.jooq.impl.SQLDataType.TINYINT.defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.TINYINT)), this, "是否是热词搜索");
-
-    /**
-     * The column <code>mini_shop_471752.b2c_search_history.add_time</code>.
-     */
-    public final TableField<SearchHistoryRecord, Timestamp> ADD_TIME = createField("add_time", org.jooq.impl.SQLDataType.TIMESTAMP.nullable(false), this, "");
-
-    /**
-     * The column <code>mini_shop_471752.b2c_search_history.update_time</code>.
-     */
-    public final TableField<SearchHistoryRecord, Timestamp> UPDATE_TIME = createField("update_time", org.jooq.impl.SQLDataType.TIMESTAMP.nullable(false).defaultValue(org.jooq.impl.DSL.inline("0000-00-00 00:00:00", org.jooq.impl.SQLDataType.TIMESTAMP)), this, "");
+    public final TableField<SearchHistoryRecord, Byte> IS_HOT_WORDS = createField("is_hot_words", org.jooq.impl.SQLDataType.TINYINT.nullable(false).defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.TINYINT)), this, "是否是热词搜索");
 
     /**
      * The column <code>mini_shop_471752.b2c_search_history.del_flag</code>.
      */
-    public final TableField<SearchHistoryRecord, Byte> DEL_FLAG = createField("del_flag", org.jooq.impl.SQLDataType.TINYINT.defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.TINYINT)), this, "");
+    public final TableField<SearchHistoryRecord, Byte> DEL_FLAG = createField("del_flag", org.jooq.impl.SQLDataType.TINYINT.nullable(false).defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.TINYINT)), this, "");
+
+    /**
+     * The column <code>mini_shop_471752.b2c_search_history.del_time</code>. 过期时间
+     */
+    public final TableField<SearchHistoryRecord, Timestamp> DEL_TIME = createField("del_time", org.jooq.impl.SQLDataType.TIMESTAMP, this, "过期时间");
+
+    /**
+     * The column <code>mini_shop_471752.b2c_search_history.create_time</code>.
+     */
+    public final TableField<SearchHistoryRecord, Timestamp> CREATE_TIME = createField("create_time", org.jooq.impl.SQLDataType.TIMESTAMP.nullable(false).defaultValue(org.jooq.impl.DSL.field("CURRENT_TIMESTAMP", org.jooq.impl.SQLDataType.TIMESTAMP)), this, "");
+
+    /**
+     * The column <code>mini_shop_471752.b2c_search_history.update_time</code>. 最后修改时间
+     */
+    public final TableField<SearchHistoryRecord, Timestamp> UPDATE_TIME = createField("update_time", org.jooq.impl.SQLDataType.TIMESTAMP.nullable(false).defaultValue(org.jooq.impl.DSL.field("CURRENT_TIMESTAMP", org.jooq.impl.SQLDataType.TIMESTAMP)), this, "最后修改时间");
 
     /**
      * Create a <code>mini_shop_471752.b2c_search_history</code> table reference

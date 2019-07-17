@@ -23,7 +23,7 @@ import javax.annotation.Generated;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class DecorateLink implements Serializable {
 
-    private static final long serialVersionUID = 786349186;
+    private static final long serialVersionUID = -1597772097;
 
     private Integer   id;
     private Integer   shopId;
@@ -32,10 +32,10 @@ public class DecorateLink implements Serializable {
     private String    pathName;
     private String    linkPath;
     private String    appid;
-    private Timestamp addTime;
-    private Timestamp upTime;
     private Byte      delFlag;
     private Integer   delTime;
+    private Timestamp createTime;
+    private Timestamp updateTime;
 
     public DecorateLink() {}
 
@@ -47,10 +47,10 @@ public class DecorateLink implements Serializable {
         this.pathName = value.pathName;
         this.linkPath = value.linkPath;
         this.appid = value.appid;
-        this.addTime = value.addTime;
-        this.upTime = value.upTime;
         this.delFlag = value.delFlag;
         this.delTime = value.delTime;
+        this.createTime = value.createTime;
+        this.updateTime = value.updateTime;
     }
 
     public DecorateLink(
@@ -61,10 +61,10 @@ public class DecorateLink implements Serializable {
         String    pathName,
         String    linkPath,
         String    appid,
-        Timestamp addTime,
-        Timestamp upTime,
         Byte      delFlag,
-        Integer   delTime
+        Integer   delTime,
+        Timestamp createTime,
+        Timestamp updateTime
     ) {
         this.id = id;
         this.shopId = shopId;
@@ -73,10 +73,10 @@ public class DecorateLink implements Serializable {
         this.pathName = pathName;
         this.linkPath = linkPath;
         this.appid = appid;
-        this.addTime = addTime;
-        this.upTime = upTime;
         this.delFlag = delFlag;
         this.delTime = delTime;
+        this.createTime = createTime;
+        this.updateTime = updateTime;
     }
 
     public Integer getId() {
@@ -135,22 +135,6 @@ public class DecorateLink implements Serializable {
         this.appid = appid;
     }
 
-    public Timestamp getAddTime() {
-        return this.addTime;
-    }
-
-    public void setAddTime(Timestamp addTime) {
-        this.addTime = addTime;
-    }
-
-    public Timestamp getUpTime() {
-        return this.upTime;
-    }
-
-    public void setUpTime(Timestamp upTime) {
-        this.upTime = upTime;
-    }
-
     public Byte getDelFlag() {
         return this.delFlag;
     }
@@ -167,6 +151,22 @@ public class DecorateLink implements Serializable {
         this.delTime = delTime;
     }
 
+    public Timestamp getCreateTime() {
+        return this.createTime;
+    }
+
+    public void setCreateTime(Timestamp createTime) {
+        this.createTime = createTime;
+    }
+
+    public Timestamp getUpdateTime() {
+        return this.updateTime;
+    }
+
+    public void setUpdateTime(Timestamp updateTime) {
+        this.updateTime = updateTime;
+    }
+
     @Override
     public String toString() {
         StringBuilder sb = new StringBuilder("DecorateLink (");
@@ -178,10 +178,10 @@ public class DecorateLink implements Serializable {
         sb.append(", ").append(pathName);
         sb.append(", ").append(linkPath);
         sb.append(", ").append(appid);
-        sb.append(", ").append(addTime);
-        sb.append(", ").append(upTime);
         sb.append(", ").append(delFlag);
         sb.append(", ").append(delTime);
+        sb.append(", ").append(createTime);
+        sb.append(", ").append(updateTime);
 
         sb.append(")");
         return sb.toString();

@@ -25,7 +25,7 @@ import javax.annotation.Generated;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class Trades implements Serializable {
 
-    private static final long serialVersionUID = -1387124666;
+    private static final long serialVersionUID = 301160429;
 
     private Date       refDate;
     private Byte       hour;
@@ -37,7 +37,8 @@ public class Trades implements Serializable {
     private Integer    payGoodsNumber;
     private BigDecimal pct;
     private BigDecimal uvPayRatio;
-    private Timestamp  addTime;
+    private Timestamp  createTime;
+    private Timestamp  updateTime;
 
     public Trades() {}
 
@@ -52,7 +53,8 @@ public class Trades implements Serializable {
         this.payGoodsNumber = value.payGoodsNumber;
         this.pct = value.pct;
         this.uvPayRatio = value.uvPayRatio;
-        this.addTime = value.addTime;
+        this.createTime = value.createTime;
+        this.updateTime = value.updateTime;
     }
 
     public Trades(
@@ -66,7 +68,8 @@ public class Trades implements Serializable {
         Integer    payGoodsNumber,
         BigDecimal pct,
         BigDecimal uvPayRatio,
-        Timestamp  addTime
+        Timestamp  createTime,
+        Timestamp  updateTime
     ) {
         this.refDate = refDate;
         this.hour = hour;
@@ -78,7 +81,8 @@ public class Trades implements Serializable {
         this.payGoodsNumber = payGoodsNumber;
         this.pct = pct;
         this.uvPayRatio = uvPayRatio;
-        this.addTime = addTime;
+        this.createTime = createTime;
+        this.updateTime = updateTime;
     }
 
     public Date getRefDate() {
@@ -161,12 +165,20 @@ public class Trades implements Serializable {
         this.uvPayRatio = uvPayRatio;
     }
 
-    public Timestamp getAddTime() {
-        return this.addTime;
+    public Timestamp getCreateTime() {
+        return this.createTime;
     }
 
-    public void setAddTime(Timestamp addTime) {
-        this.addTime = addTime;
+    public void setCreateTime(Timestamp createTime) {
+        this.createTime = createTime;
+    }
+
+    public Timestamp getUpdateTime() {
+        return this.updateTime;
+    }
+
+    public void setUpdateTime(Timestamp updateTime) {
+        this.updateTime = updateTime;
     }
 
     @Override
@@ -183,7 +195,8 @@ public class Trades implements Serializable {
         sb.append(", ").append(payGoodsNumber);
         sb.append(", ").append(pct);
         sb.append(", ").append(uvPayRatio);
-        sb.append(", ").append(addTime);
+        sb.append(", ").append(createTime);
+        sb.append(", ").append(updateTime);
 
         sb.append(")");
         return sb.toString();

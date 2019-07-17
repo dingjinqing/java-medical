@@ -28,7 +28,7 @@ import org.jooq.impl.UpdatableRecordImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class FriendPromoteActivityRecord extends UpdatableRecordImpl<FriendPromoteActivityRecord> {
 
-    private static final long serialVersionUID = 1902135815;
+    private static final long serialVersionUID = 1921612933;
 
     /**
      * Setter for <code>mini_shop_471752.b2c_friend_promote_activity.id</code>.
@@ -45,14 +45,14 @@ public class FriendPromoteActivityRecord extends UpdatableRecordImpl<FriendPromo
     }
 
     /**
-     * Setter for <code>mini_shop_471752.b2c_friend_promote_activity.shop_id</code>. 店铺ID
+     * Setter for <code>mini_shop_471752.b2c_friend_promote_activity.shop_id</code>. 店铺id
      */
     public void setShopId(Integer value) {
         set(1, value);
     }
 
     /**
-     * Getter for <code>mini_shop_471752.b2c_friend_promote_activity.shop_id</code>. 店铺ID
+     * Getter for <code>mini_shop_471752.b2c_friend_promote_activity.shop_id</code>. 店铺id
      */
     public Integer getShopId() {
         return (Integer) get(1);
@@ -241,16 +241,16 @@ public class FriendPromoteActivityRecord extends UpdatableRecordImpl<FriendPromo
     }
 
     /**
-     * Setter for <code>mini_shop_471752.b2c_friend_promote_activity.share_add_times</code>. 好友分享可获得助力次数
+     * Setter for <code>mini_shop_471752.b2c_friend_promote_activity.share_create_times</code>. 好友分享可获得助力次数
      */
-    public void setShareAddTimes(Byte value) {
+    public void setShareCreateTimes(Byte value) {
         set(15, value);
     }
 
     /**
-     * Getter for <code>mini_shop_471752.b2c_friend_promote_activity.share_add_times</code>. 好友分享可获得助力次数
+     * Getter for <code>mini_shop_471752.b2c_friend_promote_activity.share_create_times</code>. 好友分享可获得助力次数
      */
-    public Byte getShareAddTimes() {
+    public Byte getShareCreateTimes() {
         return (Byte) get(15);
     }
 
@@ -395,59 +395,59 @@ public class FriendPromoteActivityRecord extends UpdatableRecordImpl<FriendPromo
     }
 
     /**
-     * Setter for <code>mini_shop_471752.b2c_friend_promote_activity.in_time</code>. 添加时间
-     */
-    public void setInTime(Timestamp value) {
-        set(26, value);
-    }
-
-    /**
-     * Getter for <code>mini_shop_471752.b2c_friend_promote_activity.in_time</code>. 添加时间
-     */
-    public Timestamp getInTime() {
-        return (Timestamp) get(26);
-    }
-
-    /**
-     * Setter for <code>mini_shop_471752.b2c_friend_promote_activity.up_time</code>. 更新时间
-     */
-    public void setUpTime(Timestamp value) {
-        set(27, value);
-    }
-
-    /**
-     * Getter for <code>mini_shop_471752.b2c_friend_promote_activity.up_time</code>. 更新时间
-     */
-    public Timestamp getUpTime() {
-        return (Timestamp) get(27);
-    }
-
-    /**
      * Setter for <code>mini_shop_471752.b2c_friend_promote_activity.use_discount</code>. 是否可与会员卡折扣、优惠券叠加使用：0不可叠加，1可叠加
      */
     public void setUseDiscount(Byte value) {
-        set(28, value);
+        set(26, value);
     }
 
     /**
      * Getter for <code>mini_shop_471752.b2c_friend_promote_activity.use_discount</code>. 是否可与会员卡折扣、优惠券叠加使用：0不可叠加，1可叠加
      */
     public Byte getUseDiscount() {
-        return (Byte) get(28);
+        return (Byte) get(26);
     }
 
     /**
      * Setter for <code>mini_shop_471752.b2c_friend_promote_activity.use_score</code>. 是否可使用积分抵扣部分金额：0不可抵扣，1可抵扣
      */
     public void setUseScore(Byte value) {
-        set(29, value);
+        set(27, value);
     }
 
     /**
      * Getter for <code>mini_shop_471752.b2c_friend_promote_activity.use_score</code>. 是否可使用积分抵扣部分金额：0不可抵扣，1可抵扣
      */
     public Byte getUseScore() {
-        return (Byte) get(29);
+        return (Byte) get(27);
+    }
+
+    /**
+     * Setter for <code>mini_shop_471752.b2c_friend_promote_activity.create_time</code>.
+     */
+    public void setCreateTime(Timestamp value) {
+        set(28, value);
+    }
+
+    /**
+     * Getter for <code>mini_shop_471752.b2c_friend_promote_activity.create_time</code>.
+     */
+    public Timestamp getCreateTime() {
+        return (Timestamp) get(28);
+    }
+
+    /**
+     * Setter for <code>mini_shop_471752.b2c_friend_promote_activity.update_time</code>. 最后修改时间
+     */
+    public void setUpdateTime(Timestamp value) {
+        set(29, value);
+    }
+
+    /**
+     * Getter for <code>mini_shop_471752.b2c_friend_promote_activity.update_time</code>. 最后修改时间
+     */
+    public Timestamp getUpdateTime() {
+        return (Timestamp) get(29);
     }
 
     // -------------------------------------------------------------------------
@@ -476,7 +476,7 @@ public class FriendPromoteActivityRecord extends UpdatableRecordImpl<FriendPromo
     /**
      * Create a detached, initialised FriendPromoteActivityRecord
      */
-    public FriendPromoteActivityRecord(Integer id, Integer shopId, String actCode, String actName, Timestamp startTime, Timestamp endTime, Byte rewardType, String rewardContent, Integer rewardDuration, Byte rewardDurationUnit, BigDecimal promoteAmount, Integer promoteTimes, Integer launchLimitDuration, Byte launchLimitUnit, Byte launchLimitTimes, Byte shareAddTimes, Byte promoteType, Byte promoteCondition, Byte failedSendType, Integer failedSendContent, Byte activityShareType, String customShareWord, Byte shareImgType, String customImgPath, Byte isBlock, Byte delFlag, Timestamp inTime, Timestamp upTime, Byte useDiscount, Byte useScore) {
+    public FriendPromoteActivityRecord(Integer id, Integer shopId, String actCode, String actName, Timestamp startTime, Timestamp endTime, Byte rewardType, String rewardContent, Integer rewardDuration, Byte rewardDurationUnit, BigDecimal promoteAmount, Integer promoteTimes, Integer launchLimitDuration, Byte launchLimitUnit, Byte launchLimitTimes, Byte shareCreateTimes, Byte promoteType, Byte promoteCondition, Byte failedSendType, Integer failedSendContent, Byte activityShareType, String customShareWord, Byte shareImgType, String customImgPath, Byte isBlock, Byte delFlag, Byte useDiscount, Byte useScore, Timestamp createTime, Timestamp updateTime) {
         super(FriendPromoteActivity.FRIEND_PROMOTE_ACTIVITY);
 
         set(0, id);
@@ -494,7 +494,7 @@ public class FriendPromoteActivityRecord extends UpdatableRecordImpl<FriendPromo
         set(12, launchLimitDuration);
         set(13, launchLimitUnit);
         set(14, launchLimitTimes);
-        set(15, shareAddTimes);
+        set(15, shareCreateTimes);
         set(16, promoteType);
         set(17, promoteCondition);
         set(18, failedSendType);
@@ -505,9 +505,9 @@ public class FriendPromoteActivityRecord extends UpdatableRecordImpl<FriendPromo
         set(23, customImgPath);
         set(24, isBlock);
         set(25, delFlag);
-        set(26, inTime);
-        set(27, upTime);
-        set(28, useDiscount);
-        set(29, useScore);
+        set(26, useDiscount);
+        set(27, useScore);
+        set(28, createTime);
+        set(29, updateTime);
     }
 }

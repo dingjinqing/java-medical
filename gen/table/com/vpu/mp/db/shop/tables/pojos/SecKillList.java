@@ -23,7 +23,7 @@ import javax.annotation.Generated;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class SecKillList implements Serializable {
 
-    private static final long serialVersionUID = -1312121949;
+    private static final long serialVersionUID = -757567300;
 
     private Integer   sklogId;
     private Integer   skId;
@@ -31,7 +31,9 @@ public class SecKillList implements Serializable {
     private Integer   userId;
     private String    orderSn;
     private Byte      delFlag;
-    private Timestamp addTime;
+    private Timestamp delTime;
+    private Timestamp createTime;
+    private Timestamp updateTime;
 
     public SecKillList() {}
 
@@ -42,7 +44,9 @@ public class SecKillList implements Serializable {
         this.userId = value.userId;
         this.orderSn = value.orderSn;
         this.delFlag = value.delFlag;
-        this.addTime = value.addTime;
+        this.delTime = value.delTime;
+        this.createTime = value.createTime;
+        this.updateTime = value.updateTime;
     }
 
     public SecKillList(
@@ -52,7 +56,9 @@ public class SecKillList implements Serializable {
         Integer   userId,
         String    orderSn,
         Byte      delFlag,
-        Timestamp addTime
+        Timestamp delTime,
+        Timestamp createTime,
+        Timestamp updateTime
     ) {
         this.sklogId = sklogId;
         this.skId = skId;
@@ -60,7 +66,9 @@ public class SecKillList implements Serializable {
         this.userId = userId;
         this.orderSn = orderSn;
         this.delFlag = delFlag;
-        this.addTime = addTime;
+        this.delTime = delTime;
+        this.createTime = createTime;
+        this.updateTime = updateTime;
     }
 
     public Integer getSklogId() {
@@ -111,12 +119,28 @@ public class SecKillList implements Serializable {
         this.delFlag = delFlag;
     }
 
-    public Timestamp getAddTime() {
-        return this.addTime;
+    public Timestamp getDelTime() {
+        return this.delTime;
     }
 
-    public void setAddTime(Timestamp addTime) {
-        this.addTime = addTime;
+    public void setDelTime(Timestamp delTime) {
+        this.delTime = delTime;
+    }
+
+    public Timestamp getCreateTime() {
+        return this.createTime;
+    }
+
+    public void setCreateTime(Timestamp createTime) {
+        this.createTime = createTime;
+    }
+
+    public Timestamp getUpdateTime() {
+        return this.updateTime;
+    }
+
+    public void setUpdateTime(Timestamp updateTime) {
+        this.updateTime = updateTime;
     }
 
     @Override
@@ -129,7 +153,9 @@ public class SecKillList implements Serializable {
         sb.append(", ").append(userId);
         sb.append(", ").append(orderSn);
         sb.append(", ").append(delFlag);
-        sb.append(", ").append(addTime);
+        sb.append(", ").append(delTime);
+        sb.append(", ").append(createTime);
+        sb.append(", ").append(updateTime);
 
         sb.append(")");
         return sb.toString();

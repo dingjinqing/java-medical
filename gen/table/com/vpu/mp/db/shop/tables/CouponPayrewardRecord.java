@@ -42,7 +42,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class CouponPayrewardRecord extends TableImpl<CouponPayrewardRecordRecord> {
 
-    private static final long serialVersionUID = -1074080786;
+    private static final long serialVersionUID = 490983434;
 
     /**
      * The reference instance of <code>mini_shop_471752.b2c_coupon_payreward_record</code>
@@ -63,9 +63,9 @@ public class CouponPayrewardRecord extends TableImpl<CouponPayrewardRecordRecord
     public final TableField<CouponPayrewardRecordRecord, Integer> ID = createField("id", org.jooq.impl.SQLDataType.INTEGER.nullable(false).identity(true), this, "");
 
     /**
-     * The column <code>mini_shop_471752.b2c_coupon_payreward_record.activity_id</code>. 活动ID
+     * The column <code>mini_shop_471752.b2c_coupon_payreward_record.activity_id</code>. 活动id
      */
-    public final TableField<CouponPayrewardRecordRecord, Integer> ACTIVITY_ID = createField("activity_id", org.jooq.impl.SQLDataType.INTEGER.nullable(false), this, "活动ID");
+    public final TableField<CouponPayrewardRecordRecord, Integer> ACTIVITY_ID = createField("activity_id", org.jooq.impl.SQLDataType.INTEGER.nullable(false), this, "活动id");
 
     /**
      * The column <code>mini_shop_471752.b2c_coupon_payreward_record.user_id</code>.
@@ -75,7 +75,7 @@ public class CouponPayrewardRecord extends TableImpl<CouponPayrewardRecordRecord
     /**
      * The column <code>mini_shop_471752.b2c_coupon_payreward_record.receive_time</code>. 领取时间
      */
-    public final TableField<CouponPayrewardRecordRecord, Timestamp> RECEIVE_TIME = createField("receive_time", org.jooq.impl.SQLDataType.TIMESTAMP.nullable(false), this, "领取时间");
+    public final TableField<CouponPayrewardRecordRecord, Timestamp> RECEIVE_TIME = createField("receive_time", org.jooq.impl.SQLDataType.TIMESTAMP, this, "领取时间");
 
     /**
      * The column <code>mini_shop_471752.b2c_coupon_payreward_record.mrking_voucher_id</code>. 已领取的优惠券
@@ -86,6 +86,16 @@ public class CouponPayrewardRecord extends TableImpl<CouponPayrewardRecordRecord
      * The column <code>mini_shop_471752.b2c_coupon_payreward_record.order_sn</code>. 订单编号
      */
     public final TableField<CouponPayrewardRecordRecord, String> ORDER_SN = createField("order_sn", org.jooq.impl.SQLDataType.VARCHAR(20).nullable(false).defaultValue(org.jooq.impl.DSL.inline("", org.jooq.impl.SQLDataType.VARCHAR)), this, "订单编号");
+
+    /**
+     * The column <code>mini_shop_471752.b2c_coupon_payreward_record.create_time</code>.
+     */
+    public final TableField<CouponPayrewardRecordRecord, Timestamp> CREATE_TIME = createField("create_time", org.jooq.impl.SQLDataType.TIMESTAMP.nullable(false).defaultValue(org.jooq.impl.DSL.field("CURRENT_TIMESTAMP", org.jooq.impl.SQLDataType.TIMESTAMP)), this, "");
+
+    /**
+     * The column <code>mini_shop_471752.b2c_coupon_payreward_record.update_time</code>. 最后修改时间
+     */
+    public final TableField<CouponPayrewardRecordRecord, Timestamp> UPDATE_TIME = createField("update_time", org.jooq.impl.SQLDataType.TIMESTAMP.nullable(false).defaultValue(org.jooq.impl.DSL.field("CURRENT_TIMESTAMP", org.jooq.impl.SQLDataType.TIMESTAMP)), this, "最后修改时间");
 
     /**
      * Create a <code>mini_shop_471752.b2c_coupon_payreward_record</code> table reference

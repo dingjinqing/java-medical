@@ -24,7 +24,7 @@ import javax.annotation.Generated;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class OrderRefundRecord implements Serializable {
 
-    private static final long serialVersionUID = 1247694168;
+    private static final long serialVersionUID = -1555447629;
 
     private Integer    id;
     private Integer    retId;
@@ -44,7 +44,8 @@ public class OrderRefundRecord implements Serializable {
     private String     dealRemark;
     private String     transSn;
     private Timestamp  finishedTime;
-    private Timestamp  created;
+    private Timestamp  createTime;
+    private Timestamp  updateTime;
     private String     remark1;
     private Byte       isOffline;
 
@@ -69,7 +70,8 @@ public class OrderRefundRecord implements Serializable {
         this.dealRemark = value.dealRemark;
         this.transSn = value.transSn;
         this.finishedTime = value.finishedTime;
-        this.created = value.created;
+        this.createTime = value.createTime;
+        this.updateTime = value.updateTime;
         this.remark1 = value.remark1;
         this.isOffline = value.isOffline;
     }
@@ -93,7 +95,8 @@ public class OrderRefundRecord implements Serializable {
         String     dealRemark,
         String     transSn,
         Timestamp  finishedTime,
-        Timestamp  created,
+        Timestamp  createTime,
+        Timestamp  updateTime,
         String     remark1,
         Byte       isOffline
     ) {
@@ -115,7 +118,8 @@ public class OrderRefundRecord implements Serializable {
         this.dealRemark = dealRemark;
         this.transSn = transSn;
         this.finishedTime = finishedTime;
-        this.created = created;
+        this.createTime = createTime;
+        this.updateTime = updateTime;
         this.remark1 = remark1;
         this.isOffline = isOffline;
     }
@@ -264,12 +268,20 @@ public class OrderRefundRecord implements Serializable {
         this.finishedTime = finishedTime;
     }
 
-    public Timestamp getCreated() {
-        return this.created;
+    public Timestamp getCreateTime() {
+        return this.createTime;
     }
 
-    public void setCreated(Timestamp created) {
-        this.created = created;
+    public void setCreateTime(Timestamp createTime) {
+        this.createTime = createTime;
+    }
+
+    public Timestamp getUpdateTime() {
+        return this.updateTime;
+    }
+
+    public void setUpdateTime(Timestamp updateTime) {
+        this.updateTime = updateTime;
     }
 
     public String getRemark1() {
@@ -310,7 +322,8 @@ public class OrderRefundRecord implements Serializable {
         sb.append(", ").append(dealRemark);
         sb.append(", ").append(transSn);
         sb.append(", ").append(finishedTime);
-        sb.append(", ").append(created);
+        sb.append(", ").append(createTime);
+        sb.append(", ").append(updateTime);
         sb.append(", ").append(remark1);
         sb.append(", ").append(isOffline);
 

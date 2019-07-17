@@ -23,7 +23,7 @@ import javax.annotation.Generated;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class LotteryRecord implements Serializable {
 
-    private static final long serialVersionUID = 1376102046;
+    private static final long serialVersionUID = 1037501707;
 
     private Integer   id;
     private Integer   userId;
@@ -36,11 +36,12 @@ public class LotteryRecord implements Serializable {
     private Byte      lotteryType;
     private String    lotteryAward;
     private String    awardInfo;
-    private Timestamp addTime;
     private Integer   prdId;
     private Byte      presentStatus;
     private String    orderSn;
     private Timestamp lotteryExpiredTime;
+    private Timestamp createTime;
+    private Timestamp updateTime;
 
     public LotteryRecord() {}
 
@@ -56,11 +57,12 @@ public class LotteryRecord implements Serializable {
         this.lotteryType = value.lotteryType;
         this.lotteryAward = value.lotteryAward;
         this.awardInfo = value.awardInfo;
-        this.addTime = value.addTime;
         this.prdId = value.prdId;
         this.presentStatus = value.presentStatus;
         this.orderSn = value.orderSn;
         this.lotteryExpiredTime = value.lotteryExpiredTime;
+        this.createTime = value.createTime;
+        this.updateTime = value.updateTime;
     }
 
     public LotteryRecord(
@@ -75,11 +77,12 @@ public class LotteryRecord implements Serializable {
         Byte      lotteryType,
         String    lotteryAward,
         String    awardInfo,
-        Timestamp addTime,
         Integer   prdId,
         Byte      presentStatus,
         String    orderSn,
-        Timestamp lotteryExpiredTime
+        Timestamp lotteryExpiredTime,
+        Timestamp createTime,
+        Timestamp updateTime
     ) {
         this.id = id;
         this.userId = userId;
@@ -92,11 +95,12 @@ public class LotteryRecord implements Serializable {
         this.lotteryType = lotteryType;
         this.lotteryAward = lotteryAward;
         this.awardInfo = awardInfo;
-        this.addTime = addTime;
         this.prdId = prdId;
         this.presentStatus = presentStatus;
         this.orderSn = orderSn;
         this.lotteryExpiredTime = lotteryExpiredTime;
+        this.createTime = createTime;
+        this.updateTime = updateTime;
     }
 
     public Integer getId() {
@@ -187,14 +191,6 @@ public class LotteryRecord implements Serializable {
         this.awardInfo = awardInfo;
     }
 
-    public Timestamp getAddTime() {
-        return this.addTime;
-    }
-
-    public void setAddTime(Timestamp addTime) {
-        this.addTime = addTime;
-    }
-
     public Integer getPrdId() {
         return this.prdId;
     }
@@ -227,6 +223,22 @@ public class LotteryRecord implements Serializable {
         this.lotteryExpiredTime = lotteryExpiredTime;
     }
 
+    public Timestamp getCreateTime() {
+        return this.createTime;
+    }
+
+    public void setCreateTime(Timestamp createTime) {
+        this.createTime = createTime;
+    }
+
+    public Timestamp getUpdateTime() {
+        return this.updateTime;
+    }
+
+    public void setUpdateTime(Timestamp updateTime) {
+        this.updateTime = updateTime;
+    }
+
     @Override
     public String toString() {
         StringBuilder sb = new StringBuilder("LotteryRecord (");
@@ -242,11 +254,12 @@ public class LotteryRecord implements Serializable {
         sb.append(", ").append(lotteryType);
         sb.append(", ").append(lotteryAward);
         sb.append(", ").append(awardInfo);
-        sb.append(", ").append(addTime);
         sb.append(", ").append(prdId);
         sb.append(", ").append(presentStatus);
         sb.append(", ").append(orderSn);
         sb.append(", ").append(lotteryExpiredTime);
+        sb.append(", ").append(createTime);
+        sb.append(", ").append(updateTime);
 
         sb.append(")");
         return sb.toString();

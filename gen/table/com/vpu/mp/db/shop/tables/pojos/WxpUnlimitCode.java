@@ -23,14 +23,15 @@ import javax.annotation.Generated;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class WxpUnlimitCode implements Serializable {
 
-    private static final long serialVersionUID = -781547464;
+    private static final long serialVersionUID = -2020924455;
 
     private Integer   codeId;
     private String    sceneId;
     private String    codePage;
     private String    codeUrl;
     private String    codePath;
-    private Timestamp addTime;
+    private Timestamp createTime;
+    private Timestamp updateTime;
     private Byte      delFlag;
     private Timestamp delTime;
 
@@ -42,7 +43,8 @@ public class WxpUnlimitCode implements Serializable {
         this.codePage = value.codePage;
         this.codeUrl = value.codeUrl;
         this.codePath = value.codePath;
-        this.addTime = value.addTime;
+        this.createTime = value.createTime;
+        this.updateTime = value.updateTime;
         this.delFlag = value.delFlag;
         this.delTime = value.delTime;
     }
@@ -53,7 +55,8 @@ public class WxpUnlimitCode implements Serializable {
         String    codePage,
         String    codeUrl,
         String    codePath,
-        Timestamp addTime,
+        Timestamp createTime,
+        Timestamp updateTime,
         Byte      delFlag,
         Timestamp delTime
     ) {
@@ -62,7 +65,8 @@ public class WxpUnlimitCode implements Serializable {
         this.codePage = codePage;
         this.codeUrl = codeUrl;
         this.codePath = codePath;
-        this.addTime = addTime;
+        this.createTime = createTime;
+        this.updateTime = updateTime;
         this.delFlag = delFlag;
         this.delTime = delTime;
     }
@@ -107,12 +111,20 @@ public class WxpUnlimitCode implements Serializable {
         this.codePath = codePath;
     }
 
-    public Timestamp getAddTime() {
-        return this.addTime;
+    public Timestamp getCreateTime() {
+        return this.createTime;
     }
 
-    public void setAddTime(Timestamp addTime) {
-        this.addTime = addTime;
+    public void setCreateTime(Timestamp createTime) {
+        this.createTime = createTime;
+    }
+
+    public Timestamp getUpdateTime() {
+        return this.updateTime;
+    }
+
+    public void setUpdateTime(Timestamp updateTime) {
+        this.updateTime = updateTime;
     }
 
     public Byte getDelFlag() {
@@ -140,7 +152,8 @@ public class WxpUnlimitCode implements Serializable {
         sb.append(", ").append(codePage);
         sb.append(", ").append(codeUrl);
         sb.append(", ").append(codePath);
-        sb.append(", ").append(addTime);
+        sb.append(", ").append(createTime);
+        sb.append(", ").append(updateTime);
         sb.append(", ").append(delFlag);
         sb.append(", ").append(delTime);
 

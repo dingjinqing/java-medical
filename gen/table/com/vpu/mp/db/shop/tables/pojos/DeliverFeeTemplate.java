@@ -23,15 +23,15 @@ import javax.annotation.Generated;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class DeliverFeeTemplate implements Serializable {
 
-    private static final long serialVersionUID = -775288339;
+    private static final long serialVersionUID = 419765622;
 
     private Integer   deliverTemplateId;
     private String    templateName;
     private String    templateContent;
-    private Timestamp updateTime;
-    private Timestamp created;
     private Integer   shopId;
     private Byte      flag;
+    private Timestamp createTime;
+    private Timestamp updateTime;
 
     public DeliverFeeTemplate() {}
 
@@ -39,28 +39,28 @@ public class DeliverFeeTemplate implements Serializable {
         this.deliverTemplateId = value.deliverTemplateId;
         this.templateName = value.templateName;
         this.templateContent = value.templateContent;
-        this.updateTime = value.updateTime;
-        this.created = value.created;
         this.shopId = value.shopId;
         this.flag = value.flag;
+        this.createTime = value.createTime;
+        this.updateTime = value.updateTime;
     }
 
     public DeliverFeeTemplate(
         Integer   deliverTemplateId,
         String    templateName,
         String    templateContent,
-        Timestamp updateTime,
-        Timestamp created,
         Integer   shopId,
-        Byte      flag
+        Byte      flag,
+        Timestamp createTime,
+        Timestamp updateTime
     ) {
         this.deliverTemplateId = deliverTemplateId;
         this.templateName = templateName;
         this.templateContent = templateContent;
-        this.updateTime = updateTime;
-        this.created = created;
         this.shopId = shopId;
         this.flag = flag;
+        this.createTime = createTime;
+        this.updateTime = updateTime;
     }
 
     public Integer getDeliverTemplateId() {
@@ -87,22 +87,6 @@ public class DeliverFeeTemplate implements Serializable {
         this.templateContent = templateContent;
     }
 
-    public Timestamp getUpdateTime() {
-        return this.updateTime;
-    }
-
-    public void setUpdateTime(Timestamp updateTime) {
-        this.updateTime = updateTime;
-    }
-
-    public Timestamp getCreated() {
-        return this.created;
-    }
-
-    public void setCreated(Timestamp created) {
-        this.created = created;
-    }
-
     public Integer getShopId() {
         return this.shopId;
     }
@@ -119,6 +103,22 @@ public class DeliverFeeTemplate implements Serializable {
         this.flag = flag;
     }
 
+    public Timestamp getCreateTime() {
+        return this.createTime;
+    }
+
+    public void setCreateTime(Timestamp createTime) {
+        this.createTime = createTime;
+    }
+
+    public Timestamp getUpdateTime() {
+        return this.updateTime;
+    }
+
+    public void setUpdateTime(Timestamp updateTime) {
+        this.updateTime = updateTime;
+    }
+
     @Override
     public String toString() {
         StringBuilder sb = new StringBuilder("DeliverFeeTemplate (");
@@ -126,10 +126,10 @@ public class DeliverFeeTemplate implements Serializable {
         sb.append(deliverTemplateId);
         sb.append(", ").append(templateName);
         sb.append(", ").append(templateContent);
-        sb.append(", ").append(updateTime);
-        sb.append(", ").append(created);
         sb.append(", ").append(shopId);
         sb.append(", ").append(flag);
+        sb.append(", ").append(createTime);
+        sb.append(", ").append(updateTime);
 
         sb.append(")");
         return sb.toString();

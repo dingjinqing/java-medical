@@ -24,12 +24,11 @@ import javax.annotation.Generated;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class ChargeMoney implements Serializable {
 
-    private static final long serialVersionUID = -1424616847;
+    private static final long serialVersionUID = -251747744;
 
     private Integer    id;
     private Integer    userId;
     private Integer    cardId;
-    private Timestamp  addTime;
     private BigDecimal charge;
     private Short      count;
     private String     payment;
@@ -44,6 +43,8 @@ public class ChargeMoney implements Serializable {
     private String     cardNo;
     private String     aliTradeNo;
     private Short      exchangCount;
+    private Timestamp  createTime;
+    private Timestamp  updateTime;
 
     public ChargeMoney() {}
 
@@ -51,7 +52,6 @@ public class ChargeMoney implements Serializable {
         this.id = value.id;
         this.userId = value.userId;
         this.cardId = value.cardId;
-        this.addTime = value.addTime;
         this.charge = value.charge;
         this.count = value.count;
         this.payment = value.payment;
@@ -66,13 +66,14 @@ public class ChargeMoney implements Serializable {
         this.cardNo = value.cardNo;
         this.aliTradeNo = value.aliTradeNo;
         this.exchangCount = value.exchangCount;
+        this.createTime = value.createTime;
+        this.updateTime = value.updateTime;
     }
 
     public ChargeMoney(
         Integer    id,
         Integer    userId,
         Integer    cardId,
-        Timestamp  addTime,
         BigDecimal charge,
         Short      count,
         String     payment,
@@ -86,12 +87,13 @@ public class ChargeMoney implements Serializable {
         Byte       chargeType,
         String     cardNo,
         String     aliTradeNo,
-        Short      exchangCount
+        Short      exchangCount,
+        Timestamp  createTime,
+        Timestamp  updateTime
     ) {
         this.id = id;
         this.userId = userId;
         this.cardId = cardId;
-        this.addTime = addTime;
         this.charge = charge;
         this.count = count;
         this.payment = payment;
@@ -106,6 +108,8 @@ public class ChargeMoney implements Serializable {
         this.cardNo = cardNo;
         this.aliTradeNo = aliTradeNo;
         this.exchangCount = exchangCount;
+        this.createTime = createTime;
+        this.updateTime = updateTime;
     }
 
     public Integer getId() {
@@ -130,14 +134,6 @@ public class ChargeMoney implements Serializable {
 
     public void setCardId(Integer cardId) {
         this.cardId = cardId;
-    }
-
-    public Timestamp getAddTime() {
-        return this.addTime;
-    }
-
-    public void setAddTime(Timestamp addTime) {
-        this.addTime = addTime;
     }
 
     public BigDecimal getCharge() {
@@ -252,6 +248,22 @@ public class ChargeMoney implements Serializable {
         this.exchangCount = exchangCount;
     }
 
+    public Timestamp getCreateTime() {
+        return this.createTime;
+    }
+
+    public void setCreateTime(Timestamp createTime) {
+        this.createTime = createTime;
+    }
+
+    public Timestamp getUpdateTime() {
+        return this.updateTime;
+    }
+
+    public void setUpdateTime(Timestamp updateTime) {
+        this.updateTime = updateTime;
+    }
+
     @Override
     public String toString() {
         StringBuilder sb = new StringBuilder("ChargeMoney (");
@@ -259,7 +271,6 @@ public class ChargeMoney implements Serializable {
         sb.append(id);
         sb.append(", ").append(userId);
         sb.append(", ").append(cardId);
-        sb.append(", ").append(addTime);
         sb.append(", ").append(charge);
         sb.append(", ").append(count);
         sb.append(", ").append(payment);
@@ -274,6 +285,8 @@ public class ChargeMoney implements Serializable {
         sb.append(", ").append(cardNo);
         sb.append(", ").append(aliTradeNo);
         sb.append(", ").append(exchangCount);
+        sb.append(", ").append(createTime);
+        sb.append(", ").append(updateTime);
 
         sb.append(")");
         return sb.toString();

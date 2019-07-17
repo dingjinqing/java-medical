@@ -23,7 +23,7 @@ import javax.annotation.Generated;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class DistributorLevelRecord implements Serializable {
 
-    private static final long serialVersionUID = 1221882843;
+    private static final long serialVersionUID = -1562279400;
 
     private Integer   id;
     private Integer   userId;
@@ -33,6 +33,7 @@ public class DistributorLevelRecord implements Serializable {
     private Byte      newLevel;
     private String    newLevelName;
     private String    updateNote;
+    private Timestamp createTime;
     private Timestamp updateTime;
 
     public DistributorLevelRecord() {}
@@ -46,6 +47,7 @@ public class DistributorLevelRecord implements Serializable {
         this.newLevel = value.newLevel;
         this.newLevelName = value.newLevelName;
         this.updateNote = value.updateNote;
+        this.createTime = value.createTime;
         this.updateTime = value.updateTime;
     }
 
@@ -58,6 +60,7 @@ public class DistributorLevelRecord implements Serializable {
         Byte      newLevel,
         String    newLevelName,
         String    updateNote,
+        Timestamp createTime,
         Timestamp updateTime
     ) {
         this.id = id;
@@ -68,6 +71,7 @@ public class DistributorLevelRecord implements Serializable {
         this.newLevel = newLevel;
         this.newLevelName = newLevelName;
         this.updateNote = updateNote;
+        this.createTime = createTime;
         this.updateTime = updateTime;
     }
 
@@ -135,6 +139,14 @@ public class DistributorLevelRecord implements Serializable {
         this.updateNote = updateNote;
     }
 
+    public Timestamp getCreateTime() {
+        return this.createTime;
+    }
+
+    public void setCreateTime(Timestamp createTime) {
+        this.createTime = createTime;
+    }
+
     public Timestamp getUpdateTime() {
         return this.updateTime;
     }
@@ -155,6 +167,7 @@ public class DistributorLevelRecord implements Serializable {
         sb.append(", ").append(newLevel);
         sb.append(", ").append(newLevelName);
         sb.append(", ").append(updateNote);
+        sb.append(", ").append(createTime);
         sb.append(", ").append(updateTime);
 
         sb.append(")");

@@ -24,7 +24,7 @@ import javax.annotation.Generated;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class BargainRecord implements Serializable {
 
-    private static final long serialVersionUID = 1147075411;
+    private static final long serialVersionUID = 1647508778;
 
     private Integer    id;
     private Integer    userId;
@@ -37,7 +37,7 @@ public class BargainRecord implements Serializable {
     private Byte       status;
     private Integer    isOrdered;
     private String     orderSn;
-    private Timestamp  addTime;
+    private Timestamp  createTime;
     private Timestamp  updateTime;
     private Byte       delFlag;
     private Timestamp  delTime;
@@ -56,7 +56,7 @@ public class BargainRecord implements Serializable {
         this.status = value.status;
         this.isOrdered = value.isOrdered;
         this.orderSn = value.orderSn;
-        this.addTime = value.addTime;
+        this.createTime = value.createTime;
         this.updateTime = value.updateTime;
         this.delFlag = value.delFlag;
         this.delTime = value.delTime;
@@ -74,7 +74,7 @@ public class BargainRecord implements Serializable {
         Byte       status,
         Integer    isOrdered,
         String     orderSn,
-        Timestamp  addTime,
+        Timestamp  createTime,
         Timestamp  updateTime,
         Byte       delFlag,
         Timestamp  delTime
@@ -90,7 +90,7 @@ public class BargainRecord implements Serializable {
         this.status = status;
         this.isOrdered = isOrdered;
         this.orderSn = orderSn;
-        this.addTime = addTime;
+        this.createTime = createTime;
         this.updateTime = updateTime;
         this.delFlag = delFlag;
         this.delTime = delTime;
@@ -184,12 +184,12 @@ public class BargainRecord implements Serializable {
         this.orderSn = orderSn;
     }
 
-    public Timestamp getAddTime() {
-        return this.addTime;
+    public Timestamp getCreateTime() {
+        return this.createTime;
     }
 
-    public void setAddTime(Timestamp addTime) {
-        this.addTime = addTime;
+    public void setCreateTime(Timestamp createTime) {
+        this.createTime = createTime;
     }
 
     public Timestamp getUpdateTime() {
@@ -231,7 +231,7 @@ public class BargainRecord implements Serializable {
         sb.append(", ").append(status);
         sb.append(", ").append(isOrdered);
         sb.append(", ").append(orderSn);
-        sb.append(", ").append(addTime);
+        sb.append(", ").append(createTime);
         sb.append(", ").append(updateTime);
         sb.append(", ").append(delFlag);
         sb.append(", ").append(delTime);

@@ -24,7 +24,7 @@ import javax.annotation.Generated;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class IncomeOutcomeDetail implements Serializable {
 
-    private static final long serialVersionUID = -108259222;
+    private static final long serialVersionUID = -436339577;
 
     private Integer    id;
     private Integer    reqId;
@@ -45,8 +45,9 @@ public class IncomeOutcomeDetail implements Serializable {
     private Byte       payType;
     private String     payTypeName;
     private String     remark;
-    private Timestamp  created;
     private Byte       noSettleFlag;
+    private Timestamp  createTime;
+    private Timestamp  updateTime;
 
     public IncomeOutcomeDetail() {}
 
@@ -70,8 +71,9 @@ public class IncomeOutcomeDetail implements Serializable {
         this.payType = value.payType;
         this.payTypeName = value.payTypeName;
         this.remark = value.remark;
-        this.created = value.created;
         this.noSettleFlag = value.noSettleFlag;
+        this.createTime = value.createTime;
+        this.updateTime = value.updateTime;
     }
 
     public IncomeOutcomeDetail(
@@ -94,8 +96,9 @@ public class IncomeOutcomeDetail implements Serializable {
         Byte       payType,
         String     payTypeName,
         String     remark,
-        Timestamp  created,
-        Byte       noSettleFlag
+        Byte       noSettleFlag,
+        Timestamp  createTime,
+        Timestamp  updateTime
     ) {
         this.id = id;
         this.reqId = reqId;
@@ -116,8 +119,9 @@ public class IncomeOutcomeDetail implements Serializable {
         this.payType = payType;
         this.payTypeName = payTypeName;
         this.remark = remark;
-        this.created = created;
         this.noSettleFlag = noSettleFlag;
+        this.createTime = createTime;
+        this.updateTime = updateTime;
     }
 
     public Integer getId() {
@@ -272,20 +276,28 @@ public class IncomeOutcomeDetail implements Serializable {
         this.remark = remark;
     }
 
-    public Timestamp getCreated() {
-        return this.created;
-    }
-
-    public void setCreated(Timestamp created) {
-        this.created = created;
-    }
-
     public Byte getNoSettleFlag() {
         return this.noSettleFlag;
     }
 
     public void setNoSettleFlag(Byte noSettleFlag) {
         this.noSettleFlag = noSettleFlag;
+    }
+
+    public Timestamp getCreateTime() {
+        return this.createTime;
+    }
+
+    public void setCreateTime(Timestamp createTime) {
+        this.createTime = createTime;
+    }
+
+    public Timestamp getUpdateTime() {
+        return this.updateTime;
+    }
+
+    public void setUpdateTime(Timestamp updateTime) {
+        this.updateTime = updateTime;
     }
 
     @Override
@@ -311,8 +323,9 @@ public class IncomeOutcomeDetail implements Serializable {
         sb.append(", ").append(payType);
         sb.append(", ").append(payTypeName);
         sb.append(", ").append(remark);
-        sb.append(", ").append(created);
         sb.append(", ").append(noSettleFlag);
+        sb.append(", ").append(createTime);
+        sb.append(", ").append(updateTime);
 
         sb.append(")");
         return sb.toString();

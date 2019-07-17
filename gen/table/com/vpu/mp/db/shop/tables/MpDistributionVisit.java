@@ -39,7 +39,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class MpDistributionVisit extends TableImpl<MpDistributionVisitRecord> {
 
-    private static final long serialVersionUID = -897170211;
+    private static final long serialVersionUID = 1463645610;
 
     /**
      * The reference instance of <code>mini_shop_471752.b2c_mp_distribution_visit</code>
@@ -65,9 +65,14 @@ public class MpDistributionVisit extends TableImpl<MpDistributionVisitRecord> {
     public final TableField<MpDistributionVisitRecord, String> LIST = createField("list", org.jooq.impl.SQLDataType.CLOB, this, "存入所有类型的指标情况");
 
     /**
-     * The column <code>mini_shop_471752.b2c_mp_distribution_visit.add_time</code>. 添加时间
+     * The column <code>mini_shop_471752.b2c_mp_distribution_visit.create_time</code>.
      */
-    public final TableField<MpDistributionVisitRecord, Timestamp> ADD_TIME = createField("add_time", org.jooq.impl.SQLDataType.TIMESTAMP.nullable(false).defaultValue(org.jooq.impl.DSL.field("CURRENT_TIMESTAMP", org.jooq.impl.SQLDataType.TIMESTAMP)), this, "添加时间");
+    public final TableField<MpDistributionVisitRecord, Timestamp> CREATE_TIME = createField("create_time", org.jooq.impl.SQLDataType.TIMESTAMP.nullable(false).defaultValue(org.jooq.impl.DSL.field("CURRENT_TIMESTAMP", org.jooq.impl.SQLDataType.TIMESTAMP)), this, "");
+
+    /**
+     * The column <code>mini_shop_471752.b2c_mp_distribution_visit.update_time</code>. 最后修改时间
+     */
+    public final TableField<MpDistributionVisitRecord, Timestamp> UPDATE_TIME = createField("update_time", org.jooq.impl.SQLDataType.TIMESTAMP.nullable(false).defaultValue(org.jooq.impl.DSL.field("CURRENT_TIMESTAMP", org.jooq.impl.SQLDataType.TIMESTAMP)), this, "最后修改时间");
 
     /**
      * Create a <code>mini_shop_471752.b2c_mp_distribution_visit</code> table reference

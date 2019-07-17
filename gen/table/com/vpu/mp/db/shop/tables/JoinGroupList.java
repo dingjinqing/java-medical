@@ -42,7 +42,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class JoinGroupList extends TableImpl<JoinGroupListRecord> {
 
-    private static final long serialVersionUID = 1411132393;
+    private static final long serialVersionUID = -555062642;
 
     /**
      * The reference instance of <code>mini_shop_471752.b2c_join_group_list</code>
@@ -63,24 +63,24 @@ public class JoinGroupList extends TableImpl<JoinGroupListRecord> {
     public final TableField<JoinGroupListRecord, Integer> ID = createField("id", org.jooq.impl.SQLDataType.INTEGER.nullable(false).identity(true), this, "");
 
     /**
-     * The column <code>mini_shop_471752.b2c_join_group_list.group_draw_id</code>. 拼团抽奖ID
+     * The column <code>mini_shop_471752.b2c_join_group_list.group_draw_id</code>. 拼团抽奖id
      */
-    public final TableField<JoinGroupListRecord, Integer> GROUP_DRAW_ID = createField("group_draw_id", org.jooq.impl.SQLDataType.INTEGER.nullable(false), this, "拼团抽奖ID");
+    public final TableField<JoinGroupListRecord, Integer> GROUP_DRAW_ID = createField("group_draw_id", org.jooq.impl.SQLDataType.INTEGER.nullable(false), this, "拼团抽奖id");
 
     /**
-     * The column <code>mini_shop_471752.b2c_join_group_list.goods_id</code>. 商品ID
+     * The column <code>mini_shop_471752.b2c_join_group_list.goods_id</code>. 商品id
      */
-    public final TableField<JoinGroupListRecord, Integer> GOODS_ID = createField("goods_id", org.jooq.impl.SQLDataType.INTEGER.nullable(false), this, "商品ID");
+    public final TableField<JoinGroupListRecord, Integer> GOODS_ID = createField("goods_id", org.jooq.impl.SQLDataType.INTEGER.nullable(false), this, "商品id");
 
     /**
-     * The column <code>mini_shop_471752.b2c_join_group_list.group_id</code>. 拼团ID
+     * The column <code>mini_shop_471752.b2c_join_group_list.group_id</code>. 拼团id
      */
-    public final TableField<JoinGroupListRecord, Integer> GROUP_ID = createField("group_id", org.jooq.impl.SQLDataType.INTEGER, this, "拼团ID");
+    public final TableField<JoinGroupListRecord, Integer> GROUP_ID = createField("group_id", org.jooq.impl.SQLDataType.INTEGER, this, "拼团id");
 
     /**
-     * The column <code>mini_shop_471752.b2c_join_group_list.user_id</code>. 用户ID
+     * The column <code>mini_shop_471752.b2c_join_group_list.user_id</code>. 用户id
      */
-    public final TableField<JoinGroupListRecord, Integer> USER_ID = createField("user_id", org.jooq.impl.SQLDataType.INTEGER, this, "用户ID");
+    public final TableField<JoinGroupListRecord, Integer> USER_ID = createField("user_id", org.jooq.impl.SQLDataType.INTEGER, this, "用户id");
 
     /**
      * The column <code>mini_shop_471752.b2c_join_group_list.is_grouper</code>. 是否是团长 1是 0不是
@@ -100,17 +100,17 @@ public class JoinGroupList extends TableImpl<JoinGroupListRecord> {
     /**
      * The column <code>mini_shop_471752.b2c_join_group_list.status</code>. 0:拼团中 1：已成团 2：未成团
      */
-    public final TableField<JoinGroupListRecord, Byte> STATUS = createField("status", org.jooq.impl.SQLDataType.TINYINT.defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.TINYINT)), this, "0:拼团中 1：已成团 2：未成团");
+    public final TableField<JoinGroupListRecord, Byte> STATUS = createField("status", org.jooq.impl.SQLDataType.TINYINT.nullable(false).defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.TINYINT)), this, "0:拼团中 1：已成团 2：未成团");
 
     /**
      * The column <code>mini_shop_471752.b2c_join_group_list.draw_status</code>. 0:未开奖 1：已开奖
      */
-    public final TableField<JoinGroupListRecord, Byte> DRAW_STATUS = createField("draw_status", org.jooq.impl.SQLDataType.TINYINT.defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.TINYINT)), this, "0:未开奖 1：已开奖");
+    public final TableField<JoinGroupListRecord, Byte> DRAW_STATUS = createField("draw_status", org.jooq.impl.SQLDataType.TINYINT.nullable(false).defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.TINYINT)), this, "0:未开奖 1：已开奖");
 
     /**
      * The column <code>mini_shop_471752.b2c_join_group_list.is_win_draw</code>. 是否已中奖 1：已中奖
      */
-    public final TableField<JoinGroupListRecord, Byte> IS_WIN_DRAW = createField("is_win_draw", org.jooq.impl.SQLDataType.TINYINT.defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.TINYINT)), this, "是否已中奖 1：已中奖");
+    public final TableField<JoinGroupListRecord, Byte> IS_WIN_DRAW = createField("is_win_draw", org.jooq.impl.SQLDataType.TINYINT.nullable(false).defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.TINYINT)), this, "是否已中奖 1：已中奖");
 
     /**
      * The column <code>mini_shop_471752.b2c_join_group_list.open_time</code>. 开团时间
@@ -130,7 +130,17 @@ public class JoinGroupList extends TableImpl<JoinGroupListRecord> {
     /**
      * The column <code>mini_shop_471752.b2c_join_group_list.invite_user_num</code>. 邀请用户数
      */
-    public final TableField<JoinGroupListRecord, Integer> INVITE_USER_NUM = createField("invite_user_num", org.jooq.impl.SQLDataType.INTEGER.defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.INTEGER)), this, "邀请用户数");
+    public final TableField<JoinGroupListRecord, Integer> INVITE_USER_NUM = createField("invite_user_num", org.jooq.impl.SQLDataType.INTEGER.nullable(false).defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.INTEGER)), this, "邀请用户数");
+
+    /**
+     * The column <code>mini_shop_471752.b2c_join_group_list.create_time</code>.
+     */
+    public final TableField<JoinGroupListRecord, Timestamp> CREATE_TIME = createField("create_time", org.jooq.impl.SQLDataType.TIMESTAMP.nullable(false).defaultValue(org.jooq.impl.DSL.field("CURRENT_TIMESTAMP", org.jooq.impl.SQLDataType.TIMESTAMP)), this, "");
+
+    /**
+     * The column <code>mini_shop_471752.b2c_join_group_list.update_time</code>. 最后修改时间
+     */
+    public final TableField<JoinGroupListRecord, Timestamp> UPDATE_TIME = createField("update_time", org.jooq.impl.SQLDataType.TIMESTAMP.nullable(false).defaultValue(org.jooq.impl.DSL.field("CURRENT_TIMESTAMP", org.jooq.impl.SQLDataType.TIMESTAMP)), this, "最后修改时间");
 
     /**
      * Create a <code>mini_shop_471752.b2c_join_group_list</code> table reference

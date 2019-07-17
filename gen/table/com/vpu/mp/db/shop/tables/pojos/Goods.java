@@ -24,7 +24,7 @@ import javax.annotation.Generated;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class Goods implements Serializable {
 
-    private static final long serialVersionUID = -921856166;
+    private static final long serialVersionUID = 1778325631;
 
     private Integer    goodsId;
     private Integer    shopId;
@@ -41,12 +41,12 @@ public class Goods implements Serializable {
     private String     goodsDesc;
     private String     goodsImg;
     private Byte       isOnSale;
-    private Byte       isDelete;
+    private Byte       delFlag;
     private Byte       goodsType;
     private Integer    deliverTemplateId;
     private Integer    goodsSaleNum;
     private Integer    goodsCollectNum;
-    private Timestamp  addTime;
+    private Timestamp  createTime;
     private Timestamp  updateTime;
     private Byte       state;
     private String     reason;
@@ -88,12 +88,12 @@ public class Goods implements Serializable {
         this.goodsDesc = value.goodsDesc;
         this.goodsImg = value.goodsImg;
         this.isOnSale = value.isOnSale;
-        this.isDelete = value.isDelete;
+        this.delFlag = value.delFlag;
         this.goodsType = value.goodsType;
         this.deliverTemplateId = value.deliverTemplateId;
         this.goodsSaleNum = value.goodsSaleNum;
         this.goodsCollectNum = value.goodsCollectNum;
-        this.addTime = value.addTime;
+        this.createTime = value.createTime;
         this.updateTime = value.updateTime;
         this.state = value.state;
         this.reason = value.reason;
@@ -134,12 +134,12 @@ public class Goods implements Serializable {
         String     goodsDesc,
         String     goodsImg,
         Byte       isOnSale,
-        Byte       isDelete,
+        Byte       delFlag,
         Byte       goodsType,
         Integer    deliverTemplateId,
         Integer    goodsSaleNum,
         Integer    goodsCollectNum,
-        Timestamp  addTime,
+        Timestamp  createTime,
         Timestamp  updateTime,
         Byte       state,
         String     reason,
@@ -178,12 +178,12 @@ public class Goods implements Serializable {
         this.goodsDesc = goodsDesc;
         this.goodsImg = goodsImg;
         this.isOnSale = isOnSale;
-        this.isDelete = isDelete;
+        this.delFlag = delFlag;
         this.goodsType = goodsType;
         this.deliverTemplateId = deliverTemplateId;
         this.goodsSaleNum = goodsSaleNum;
         this.goodsCollectNum = goodsCollectNum;
-        this.addTime = addTime;
+        this.createTime = createTime;
         this.updateTime = updateTime;
         this.state = state;
         this.reason = reason;
@@ -328,12 +328,12 @@ public class Goods implements Serializable {
         this.isOnSale = isOnSale;
     }
 
-    public Byte getIsDelete() {
-        return this.isDelete;
+    public Byte getDelFlag() {
+        return this.delFlag;
     }
 
-    public void setIsDelete(Byte isDelete) {
-        this.isDelete = isDelete;
+    public void setDelFlag(Byte delFlag) {
+        this.delFlag = delFlag;
     }
 
     public Byte getGoodsType() {
@@ -368,12 +368,12 @@ public class Goods implements Serializable {
         this.goodsCollectNum = goodsCollectNum;
     }
 
-    public Timestamp getAddTime() {
-        return this.addTime;
+    public Timestamp getCreateTime() {
+        return this.createTime;
     }
 
-    public void setAddTime(Timestamp addTime) {
-        this.addTime = addTime;
+    public void setCreateTime(Timestamp createTime) {
+        this.createTime = createTime;
     }
 
     public Timestamp getUpdateTime() {
@@ -571,12 +571,12 @@ public class Goods implements Serializable {
         sb.append(", ").append(goodsDesc);
         sb.append(", ").append(goodsImg);
         sb.append(", ").append(isOnSale);
-        sb.append(", ").append(isDelete);
+        sb.append(", ").append(delFlag);
         sb.append(", ").append(goodsType);
         sb.append(", ").append(deliverTemplateId);
         sb.append(", ").append(goodsSaleNum);
         sb.append(", ").append(goodsCollectNum);
-        sb.append(", ").append(addTime);
+        sb.append(", ").append(createTime);
         sb.append(", ").append(updateTime);
         sb.append(", ").append(state);
         sb.append(", ").append(reason);

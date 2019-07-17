@@ -24,7 +24,7 @@ import javax.annotation.Generated;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class OrderInfo implements Serializable {
 
-    private static final long serialVersionUID = 835980230;
+    private static final long serialVersionUID = 270622599;
 
     private Integer    orderId;
     private Integer    shopId;
@@ -68,7 +68,8 @@ public class OrderInfo implements Serializable {
     private BigDecimal dapeiReduceAmount;
     private BigDecimal packageDiscount;
     private Integer    dapeiId;
-    private Timestamp  addTime;
+    private Timestamp  createTime;
+    private Timestamp  updateTime;
     private Timestamp  confirmTime;
     private Timestamp  payTime;
     private Timestamp  shippingTime;
@@ -79,7 +80,6 @@ public class OrderInfo implements Serializable {
     private Timestamp  returnFinishTime;
     private Timestamp  refundTime;
     private Timestamp  refundFinishTime;
-    private Timestamp  updateTime;
     private String     shippingNo;
     private String     shippingType;
     private Byte       isCod;
@@ -128,7 +128,7 @@ public class OrderInfo implements Serializable {
     private String     prepayId;
     private Byte       deliverType;
     private String     deliverTypeName;
-    private String     pickupTime;
+    private String     pickupdateTime;
     private Byte       starFlag;
     private String     verifyCode;
     private Integer    split;
@@ -195,7 +195,8 @@ public class OrderInfo implements Serializable {
         this.dapeiReduceAmount = value.dapeiReduceAmount;
         this.packageDiscount = value.packageDiscount;
         this.dapeiId = value.dapeiId;
-        this.addTime = value.addTime;
+        this.createTime = value.createTime;
+        this.updateTime = value.updateTime;
         this.confirmTime = value.confirmTime;
         this.payTime = value.payTime;
         this.shippingTime = value.shippingTime;
@@ -206,7 +207,6 @@ public class OrderInfo implements Serializable {
         this.returnFinishTime = value.returnFinishTime;
         this.refundTime = value.refundTime;
         this.refundFinishTime = value.refundFinishTime;
-        this.updateTime = value.updateTime;
         this.shippingNo = value.shippingNo;
         this.shippingType = value.shippingType;
         this.isCod = value.isCod;
@@ -255,7 +255,7 @@ public class OrderInfo implements Serializable {
         this.prepayId = value.prepayId;
         this.deliverType = value.deliverType;
         this.deliverTypeName = value.deliverTypeName;
-        this.pickupTime = value.pickupTime;
+        this.pickupdateTime = value.pickupdateTime;
         this.starFlag = value.starFlag;
         this.verifyCode = value.verifyCode;
         this.split = value.split;
@@ -321,7 +321,8 @@ public class OrderInfo implements Serializable {
         BigDecimal dapeiReduceAmount,
         BigDecimal packageDiscount,
         Integer    dapeiId,
-        Timestamp  addTime,
+        Timestamp  createTime,
+        Timestamp  updateTime,
         Timestamp  confirmTime,
         Timestamp  payTime,
         Timestamp  shippingTime,
@@ -332,7 +333,6 @@ public class OrderInfo implements Serializable {
         Timestamp  returnFinishTime,
         Timestamp  refundTime,
         Timestamp  refundFinishTime,
-        Timestamp  updateTime,
         String     shippingNo,
         String     shippingType,
         Byte       isCod,
@@ -381,7 +381,7 @@ public class OrderInfo implements Serializable {
         String     prepayId,
         Byte       deliverType,
         String     deliverTypeName,
-        String     pickupTime,
+        String     pickupdateTime,
         Byte       starFlag,
         String     verifyCode,
         Integer    split,
@@ -445,7 +445,8 @@ public class OrderInfo implements Serializable {
         this.dapeiReduceAmount = dapeiReduceAmount;
         this.packageDiscount = packageDiscount;
         this.dapeiId = dapeiId;
-        this.addTime = addTime;
+        this.createTime = createTime;
+        this.updateTime = updateTime;
         this.confirmTime = confirmTime;
         this.payTime = payTime;
         this.shippingTime = shippingTime;
@@ -456,7 +457,6 @@ public class OrderInfo implements Serializable {
         this.returnFinishTime = returnFinishTime;
         this.refundTime = refundTime;
         this.refundFinishTime = refundFinishTime;
-        this.updateTime = updateTime;
         this.shippingNo = shippingNo;
         this.shippingType = shippingType;
         this.isCod = isCod;
@@ -505,7 +505,7 @@ public class OrderInfo implements Serializable {
         this.prepayId = prepayId;
         this.deliverType = deliverType;
         this.deliverTypeName = deliverTypeName;
-        this.pickupTime = pickupTime;
+        this.pickupdateTime = pickupdateTime;
         this.starFlag = starFlag;
         this.verifyCode = verifyCode;
         this.split = split;
@@ -864,12 +864,20 @@ public class OrderInfo implements Serializable {
         this.dapeiId = dapeiId;
     }
 
-    public Timestamp getAddTime() {
-        return this.addTime;
+    public Timestamp getCreateTime() {
+        return this.createTime;
     }
 
-    public void setAddTime(Timestamp addTime) {
-        this.addTime = addTime;
+    public void setCreateTime(Timestamp createTime) {
+        this.createTime = createTime;
+    }
+
+    public Timestamp getUpdateTime() {
+        return this.updateTime;
+    }
+
+    public void setUpdateTime(Timestamp updateTime) {
+        this.updateTime = updateTime;
     }
 
     public Timestamp getConfirmTime() {
@@ -950,14 +958,6 @@ public class OrderInfo implements Serializable {
 
     public void setRefundFinishTime(Timestamp refundFinishTime) {
         this.refundFinishTime = refundFinishTime;
-    }
-
-    public Timestamp getUpdateTime() {
-        return this.updateTime;
-    }
-
-    public void setUpdateTime(Timestamp updateTime) {
-        this.updateTime = updateTime;
     }
 
     public String getShippingNo() {
@@ -1344,12 +1344,12 @@ public class OrderInfo implements Serializable {
         this.deliverTypeName = deliverTypeName;
     }
 
-    public String getPickupTime() {
-        return this.pickupTime;
+    public String getPickupdateTime() {
+        return this.pickupdateTime;
     }
 
-    public void setPickupTime(String pickupTime) {
-        this.pickupTime = pickupTime;
+    public void setPickupdateTime(String pickupdateTime) {
+        this.pickupdateTime = pickupdateTime;
     }
 
     public Byte getStarFlag() {
@@ -1558,7 +1558,8 @@ public class OrderInfo implements Serializable {
         sb.append(", ").append(dapeiReduceAmount);
         sb.append(", ").append(packageDiscount);
         sb.append(", ").append(dapeiId);
-        sb.append(", ").append(addTime);
+        sb.append(", ").append(createTime);
+        sb.append(", ").append(updateTime);
         sb.append(", ").append(confirmTime);
         sb.append(", ").append(payTime);
         sb.append(", ").append(shippingTime);
@@ -1569,7 +1570,6 @@ public class OrderInfo implements Serializable {
         sb.append(", ").append(returnFinishTime);
         sb.append(", ").append(refundTime);
         sb.append(", ").append(refundFinishTime);
-        sb.append(", ").append(updateTime);
         sb.append(", ").append(shippingNo);
         sb.append(", ").append(shippingType);
         sb.append(", ").append(isCod);
@@ -1618,7 +1618,7 @@ public class OrderInfo implements Serializable {
         sb.append(", ").append(prepayId);
         sb.append(", ").append(deliverType);
         sb.append(", ").append(deliverTypeName);
-        sb.append(", ").append(pickupTime);
+        sb.append(", ").append(pickupdateTime);
         sb.append(", ").append(starFlag);
         sb.append(", ").append(verifyCode);
         sb.append(", ").append(split);

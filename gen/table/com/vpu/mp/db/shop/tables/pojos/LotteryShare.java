@@ -23,7 +23,7 @@ import javax.annotation.Generated;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class LotteryShare implements Serializable {
 
-    private static final long serialVersionUID = 1107522163;
+    private static final long serialVersionUID = 1016653544;
 
     private Integer   id;
     private Integer   userId;
@@ -31,7 +31,7 @@ public class LotteryShare implements Serializable {
     private Integer   shareTimes;
     private Integer   useShareTimes;
     private Integer   useScoreTimes;
-    private Timestamp addTime;
+    private Timestamp createTime;
     private Timestamp updateTime;
 
     public LotteryShare() {}
@@ -43,7 +43,7 @@ public class LotteryShare implements Serializable {
         this.shareTimes = value.shareTimes;
         this.useShareTimes = value.useShareTimes;
         this.useScoreTimes = value.useScoreTimes;
-        this.addTime = value.addTime;
+        this.createTime = value.createTime;
         this.updateTime = value.updateTime;
     }
 
@@ -54,7 +54,7 @@ public class LotteryShare implements Serializable {
         Integer   shareTimes,
         Integer   useShareTimes,
         Integer   useScoreTimes,
-        Timestamp addTime,
+        Timestamp createTime,
         Timestamp updateTime
     ) {
         this.id = id;
@@ -63,7 +63,7 @@ public class LotteryShare implements Serializable {
         this.shareTimes = shareTimes;
         this.useShareTimes = useShareTimes;
         this.useScoreTimes = useScoreTimes;
-        this.addTime = addTime;
+        this.createTime = createTime;
         this.updateTime = updateTime;
     }
 
@@ -115,12 +115,12 @@ public class LotteryShare implements Serializable {
         this.useScoreTimes = useScoreTimes;
     }
 
-    public Timestamp getAddTime() {
-        return this.addTime;
+    public Timestamp getCreateTime() {
+        return this.createTime;
     }
 
-    public void setAddTime(Timestamp addTime) {
-        this.addTime = addTime;
+    public void setCreateTime(Timestamp createTime) {
+        this.createTime = createTime;
     }
 
     public Timestamp getUpdateTime() {
@@ -141,7 +141,7 @@ public class LotteryShare implements Serializable {
         sb.append(", ").append(shareTimes);
         sb.append(", ").append(useShareTimes);
         sb.append(", ").append(useScoreTimes);
-        sb.append(", ").append(addTime);
+        sb.append(", ").append(createTime);
         sb.append(", ").append(updateTime);
 
         sb.append(")");

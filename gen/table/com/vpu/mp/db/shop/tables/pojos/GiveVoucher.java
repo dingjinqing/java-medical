@@ -24,7 +24,7 @@ import javax.annotation.Generated;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class GiveVoucher implements Serializable {
 
-    private static final long serialVersionUID = 1982778151;
+    private static final long serialVersionUID = -1082798218;
 
     private Integer    id;
     private String     actName;
@@ -36,15 +36,15 @@ public class GiveVoucher implements Serializable {
     private String     cardId;
     private String     tagId;
     private Integer    actId;
-    private Timestamp  inTime;
     private BigDecimal maxAvePrice;
     private BigDecimal minAvePrice;
-    private Timestamp  updateTime;
     private String     user;
     private String     sendCondition;
     private Byte       sendStatus;
     private Byte       sendAction;
     private Timestamp  startTime;
+    private Timestamp  createTime;
+    private Timestamp  updateTime;
 
     public GiveVoucher() {}
 
@@ -59,15 +59,15 @@ public class GiveVoucher implements Serializable {
         this.cardId = value.cardId;
         this.tagId = value.tagId;
         this.actId = value.actId;
-        this.inTime = value.inTime;
         this.maxAvePrice = value.maxAvePrice;
         this.minAvePrice = value.minAvePrice;
-        this.updateTime = value.updateTime;
         this.user = value.user;
         this.sendCondition = value.sendCondition;
         this.sendStatus = value.sendStatus;
         this.sendAction = value.sendAction;
         this.startTime = value.startTime;
+        this.createTime = value.createTime;
+        this.updateTime = value.updateTime;
     }
 
     public GiveVoucher(
@@ -81,15 +81,15 @@ public class GiveVoucher implements Serializable {
         String     cardId,
         String     tagId,
         Integer    actId,
-        Timestamp  inTime,
         BigDecimal maxAvePrice,
         BigDecimal minAvePrice,
-        Timestamp  updateTime,
         String     user,
         String     sendCondition,
         Byte       sendStatus,
         Byte       sendAction,
-        Timestamp  startTime
+        Timestamp  startTime,
+        Timestamp  createTime,
+        Timestamp  updateTime
     ) {
         this.id = id;
         this.actName = actName;
@@ -101,15 +101,15 @@ public class GiveVoucher implements Serializable {
         this.cardId = cardId;
         this.tagId = tagId;
         this.actId = actId;
-        this.inTime = inTime;
         this.maxAvePrice = maxAvePrice;
         this.minAvePrice = minAvePrice;
-        this.updateTime = updateTime;
         this.user = user;
         this.sendCondition = sendCondition;
         this.sendStatus = sendStatus;
         this.sendAction = sendAction;
         this.startTime = startTime;
+        this.createTime = createTime;
+        this.updateTime = updateTime;
     }
 
     public Integer getId() {
@@ -192,14 +192,6 @@ public class GiveVoucher implements Serializable {
         this.actId = actId;
     }
 
-    public Timestamp getInTime() {
-        return this.inTime;
-    }
-
-    public void setInTime(Timestamp inTime) {
-        this.inTime = inTime;
-    }
-
     public BigDecimal getMaxAvePrice() {
         return this.maxAvePrice;
     }
@@ -214,14 +206,6 @@ public class GiveVoucher implements Serializable {
 
     public void setMinAvePrice(BigDecimal minAvePrice) {
         this.minAvePrice = minAvePrice;
-    }
-
-    public Timestamp getUpdateTime() {
-        return this.updateTime;
-    }
-
-    public void setUpdateTime(Timestamp updateTime) {
-        this.updateTime = updateTime;
     }
 
     public String getUser() {
@@ -264,6 +248,22 @@ public class GiveVoucher implements Serializable {
         this.startTime = startTime;
     }
 
+    public Timestamp getCreateTime() {
+        return this.createTime;
+    }
+
+    public void setCreateTime(Timestamp createTime) {
+        this.createTime = createTime;
+    }
+
+    public Timestamp getUpdateTime() {
+        return this.updateTime;
+    }
+
+    public void setUpdateTime(Timestamp updateTime) {
+        this.updateTime = updateTime;
+    }
+
     @Override
     public String toString() {
         StringBuilder sb = new StringBuilder("GiveVoucher (");
@@ -278,15 +278,15 @@ public class GiveVoucher implements Serializable {
         sb.append(", ").append(cardId);
         sb.append(", ").append(tagId);
         sb.append(", ").append(actId);
-        sb.append(", ").append(inTime);
         sb.append(", ").append(maxAvePrice);
         sb.append(", ").append(minAvePrice);
-        sb.append(", ").append(updateTime);
         sb.append(", ").append(user);
         sb.append(", ").append(sendCondition);
         sb.append(", ").append(sendStatus);
         sb.append(", ").append(sendAction);
         sb.append(", ").append(startTime);
+        sb.append(", ").append(createTime);
+        sb.append(", ").append(updateTime);
 
         sb.append(")");
         return sb.toString();

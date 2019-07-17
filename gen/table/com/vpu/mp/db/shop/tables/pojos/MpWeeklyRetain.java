@@ -23,12 +23,13 @@ import javax.annotation.Generated;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class MpWeeklyRetain implements Serializable {
 
-    private static final long serialVersionUID = -521317015;
+    private static final long serialVersionUID = 659216248;
 
     private String    refDate;
     private String    visitUvNew;
     private String    visitUv;
-    private Timestamp addTime;
+    private Timestamp createTime;
+    private Timestamp updateTime;
 
     public MpWeeklyRetain() {}
 
@@ -36,19 +37,22 @@ public class MpWeeklyRetain implements Serializable {
         this.refDate = value.refDate;
         this.visitUvNew = value.visitUvNew;
         this.visitUv = value.visitUv;
-        this.addTime = value.addTime;
+        this.createTime = value.createTime;
+        this.updateTime = value.updateTime;
     }
 
     public MpWeeklyRetain(
         String    refDate,
         String    visitUvNew,
         String    visitUv,
-        Timestamp addTime
+        Timestamp createTime,
+        Timestamp updateTime
     ) {
         this.refDate = refDate;
         this.visitUvNew = visitUvNew;
         this.visitUv = visitUv;
-        this.addTime = addTime;
+        this.createTime = createTime;
+        this.updateTime = updateTime;
     }
 
     public String getRefDate() {
@@ -75,12 +79,20 @@ public class MpWeeklyRetain implements Serializable {
         this.visitUv = visitUv;
     }
 
-    public Timestamp getAddTime() {
-        return this.addTime;
+    public Timestamp getCreateTime() {
+        return this.createTime;
     }
 
-    public void setAddTime(Timestamp addTime) {
-        this.addTime = addTime;
+    public void setCreateTime(Timestamp createTime) {
+        this.createTime = createTime;
+    }
+
+    public Timestamp getUpdateTime() {
+        return this.updateTime;
+    }
+
+    public void setUpdateTime(Timestamp updateTime) {
+        this.updateTime = updateTime;
     }
 
     @Override
@@ -90,7 +102,8 @@ public class MpWeeklyRetain implements Serializable {
         sb.append(refDate);
         sb.append(", ").append(visitUvNew);
         sb.append(", ").append(visitUv);
-        sb.append(", ").append(addTime);
+        sb.append(", ").append(createTime);
+        sb.append(", ").append(updateTime);
 
         sb.append(")");
         return sb.toString();

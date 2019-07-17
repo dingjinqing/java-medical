@@ -23,7 +23,7 @@ import javax.annotation.Generated;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class ServiceRequest implements Serializable {
 
-    private static final long serialVersionUID = -507924416;
+    private static final long serialVersionUID = 690487433;
 
     private Long      id;
     private String    requestId;
@@ -33,6 +33,8 @@ public class ServiceRequest implements Serializable {
     private Timestamp responseTime;
     private String    responseContent;
     private String    ip;
+    private Timestamp createTime;
+    private Timestamp updateTime;
 
     public ServiceRequest() {}
 
@@ -45,6 +47,8 @@ public class ServiceRequest implements Serializable {
         this.responseTime = value.responseTime;
         this.responseContent = value.responseContent;
         this.ip = value.ip;
+        this.createTime = value.createTime;
+        this.updateTime = value.updateTime;
     }
 
     public ServiceRequest(
@@ -55,7 +59,9 @@ public class ServiceRequest implements Serializable {
         Timestamp requestTime,
         Timestamp responseTime,
         String    responseContent,
-        String    ip
+        String    ip,
+        Timestamp createTime,
+        Timestamp updateTime
     ) {
         this.id = id;
         this.requestId = requestId;
@@ -65,6 +71,8 @@ public class ServiceRequest implements Serializable {
         this.responseTime = responseTime;
         this.responseContent = responseContent;
         this.ip = ip;
+        this.createTime = createTime;
+        this.updateTime = updateTime;
     }
 
     public Long getId() {
@@ -131,6 +139,22 @@ public class ServiceRequest implements Serializable {
         this.ip = ip;
     }
 
+    public Timestamp getCreateTime() {
+        return this.createTime;
+    }
+
+    public void setCreateTime(Timestamp createTime) {
+        this.createTime = createTime;
+    }
+
+    public Timestamp getUpdateTime() {
+        return this.updateTime;
+    }
+
+    public void setUpdateTime(Timestamp updateTime) {
+        this.updateTime = updateTime;
+    }
+
     @Override
     public String toString() {
         StringBuilder sb = new StringBuilder("ServiceRequest (");
@@ -143,6 +167,8 @@ public class ServiceRequest implements Serializable {
         sb.append(", ").append(responseTime);
         sb.append(", ").append(responseContent);
         sb.append(", ").append(ip);
+        sb.append(", ").append(createTime);
+        sb.append(", ").append(updateTime);
 
         sb.append(")");
         return sb.toString();

@@ -23,7 +23,7 @@ import javax.annotation.Generated;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class MpTemplateFormId implements Serializable {
 
-    private static final long serialVersionUID = 789786923;
+    private static final long serialVersionUID = 1704703155;
 
     private Integer   recId;
     private String    formId;
@@ -37,8 +37,9 @@ public class MpTemplateFormId implements Serializable {
     private String    mpTemplateNo;
     private String    mpTemplateContent;
     private Timestamp userVisitTime;
-    private Timestamp createTime;
     private Timestamp useTime;
+    private Timestamp createTime;
+    private Timestamp updateTime;
 
     public MpTemplateFormId() {}
 
@@ -55,8 +56,9 @@ public class MpTemplateFormId implements Serializable {
         this.mpTemplateNo = value.mpTemplateNo;
         this.mpTemplateContent = value.mpTemplateContent;
         this.userVisitTime = value.userVisitTime;
-        this.createTime = value.createTime;
         this.useTime = value.useTime;
+        this.createTime = value.createTime;
+        this.updateTime = value.updateTime;
     }
 
     public MpTemplateFormId(
@@ -72,8 +74,9 @@ public class MpTemplateFormId implements Serializable {
         String    mpTemplateNo,
         String    mpTemplateContent,
         Timestamp userVisitTime,
+        Timestamp useTime,
         Timestamp createTime,
-        Timestamp useTime
+        Timestamp updateTime
     ) {
         this.recId = recId;
         this.formId = formId;
@@ -87,8 +90,9 @@ public class MpTemplateFormId implements Serializable {
         this.mpTemplateNo = mpTemplateNo;
         this.mpTemplateContent = mpTemplateContent;
         this.userVisitTime = userVisitTime;
-        this.createTime = createTime;
         this.useTime = useTime;
+        this.createTime = createTime;
+        this.updateTime = updateTime;
     }
 
     public Integer getRecId() {
@@ -187,6 +191,14 @@ public class MpTemplateFormId implements Serializable {
         this.userVisitTime = userVisitTime;
     }
 
+    public Timestamp getUseTime() {
+        return this.useTime;
+    }
+
+    public void setUseTime(Timestamp useTime) {
+        this.useTime = useTime;
+    }
+
     public Timestamp getCreateTime() {
         return this.createTime;
     }
@@ -195,12 +207,12 @@ public class MpTemplateFormId implements Serializable {
         this.createTime = createTime;
     }
 
-    public Timestamp getUseTime() {
-        return this.useTime;
+    public Timestamp getUpdateTime() {
+        return this.updateTime;
     }
 
-    public void setUseTime(Timestamp useTime) {
-        this.useTime = useTime;
+    public void setUpdateTime(Timestamp updateTime) {
+        this.updateTime = updateTime;
     }
 
     @Override
@@ -219,8 +231,9 @@ public class MpTemplateFormId implements Serializable {
         sb.append(", ").append(mpTemplateNo);
         sb.append(", ").append(mpTemplateContent);
         sb.append(", ").append(userVisitTime);
-        sb.append(", ").append(createTime);
         sb.append(", ").append(useTime);
+        sb.append(", ").append(createTime);
+        sb.append(", ").append(updateTime);
 
         sb.append(")");
         return sb.toString();

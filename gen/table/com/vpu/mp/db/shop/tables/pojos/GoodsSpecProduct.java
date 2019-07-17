@@ -6,6 +6,7 @@ package com.vpu.mp.db.shop.tables.pojos;
 
 import java.io.Serializable;
 import java.math.BigDecimal;
+import java.sql.Timestamp;
 
 import javax.annotation.Generated;
 
@@ -23,7 +24,7 @@ import javax.annotation.Generated;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class GoodsSpecProduct implements Serializable {
 
-    private static final long serialVersionUID = -1138199155;
+    private static final long serialVersionUID = 1710413918;
 
     private Integer    prdId;
     private Integer    shopId;
@@ -41,6 +42,8 @@ public class GoodsSpecProduct implements Serializable {
     private String     lowShopPrice;
     private String     prdImg;
     private Byte       priceFlag;
+    private Timestamp  createTime;
+    private Timestamp  updateTime;
 
     public GoodsSpecProduct() {}
 
@@ -61,6 +64,8 @@ public class GoodsSpecProduct implements Serializable {
         this.lowShopPrice = value.lowShopPrice;
         this.prdImg = value.prdImg;
         this.priceFlag = value.priceFlag;
+        this.createTime = value.createTime;
+        this.updateTime = value.updateTime;
     }
 
     public GoodsSpecProduct(
@@ -79,7 +84,9 @@ public class GoodsSpecProduct implements Serializable {
         Byte       selfFlag,
         String     lowShopPrice,
         String     prdImg,
-        Byte       priceFlag
+        Byte       priceFlag,
+        Timestamp  createTime,
+        Timestamp  updateTime
     ) {
         this.prdId = prdId;
         this.shopId = shopId;
@@ -97,6 +104,8 @@ public class GoodsSpecProduct implements Serializable {
         this.lowShopPrice = lowShopPrice;
         this.prdImg = prdImg;
         this.priceFlag = priceFlag;
+        this.createTime = createTime;
+        this.updateTime = updateTime;
     }
 
     public Integer getPrdId() {
@@ -227,6 +236,22 @@ public class GoodsSpecProduct implements Serializable {
         this.priceFlag = priceFlag;
     }
 
+    public Timestamp getCreateTime() {
+        return this.createTime;
+    }
+
+    public void setCreateTime(Timestamp createTime) {
+        this.createTime = createTime;
+    }
+
+    public Timestamp getUpdateTime() {
+        return this.updateTime;
+    }
+
+    public void setUpdateTime(Timestamp updateTime) {
+        this.updateTime = updateTime;
+    }
+
     @Override
     public String toString() {
         StringBuilder sb = new StringBuilder("GoodsSpecProduct (");
@@ -247,6 +272,8 @@ public class GoodsSpecProduct implements Serializable {
         sb.append(", ").append(lowShopPrice);
         sb.append(", ").append(prdImg);
         sb.append(", ").append(priceFlag);
+        sb.append(", ").append(createTime);
+        sb.append(", ").append(updateTime);
 
         sb.append(")");
         return sb.toString();

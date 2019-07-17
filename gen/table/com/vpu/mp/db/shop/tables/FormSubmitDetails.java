@@ -42,7 +42,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class FormSubmitDetails extends TableImpl<FormSubmitDetailsRecord> {
 
-    private static final long serialVersionUID = -486840348;
+    private static final long serialVersionUID = -1306141036;
 
     /**
      * The reference instance of <code>mini_shop_471752.b2c_form_submit_details</code>
@@ -68,9 +68,9 @@ public class FormSubmitDetails extends TableImpl<FormSubmitDetailsRecord> {
     public final TableField<FormSubmitDetailsRecord, Integer> PAGE_ID = createField("page_id", org.jooq.impl.SQLDataType.INTEGER.nullable(false), this, "");
 
     /**
-     * The column <code>mini_shop_471752.b2c_form_submit_details.submit_id</code>. 表单提交ID，对应b2c_form_submit_list的submit_id
+     * The column <code>mini_shop_471752.b2c_form_submit_details.submit_id</code>. 表单提交id，对应b2c_form_submit_list的submit_id
      */
-    public final TableField<FormSubmitDetailsRecord, Integer> SUBMIT_ID = createField("submit_id", org.jooq.impl.SQLDataType.INTEGER.nullable(false), this, "表单提交ID，对应b2c_form_submit_list的submit_id");
+    public final TableField<FormSubmitDetailsRecord, Integer> SUBMIT_ID = createField("submit_id", org.jooq.impl.SQLDataType.INTEGER.nullable(false), this, "表单提交id，对应b2c_form_submit_list的submit_id");
 
     /**
      * The column <code>mini_shop_471752.b2c_form_submit_details.user_id</code>.
@@ -93,14 +93,19 @@ public class FormSubmitDetails extends TableImpl<FormSubmitDetailsRecord> {
     public final TableField<FormSubmitDetailsRecord, String> MODULE_VALUE = createField("module_value", org.jooq.impl.SQLDataType.CLOB, this, "模块的值");
 
     /**
-     * The column <code>mini_shop_471752.b2c_form_submit_details.create_time</code>. 提交时间
-     */
-    public final TableField<FormSubmitDetailsRecord, Timestamp> CREATE_TIME = createField("create_time", org.jooq.impl.SQLDataType.TIMESTAMP.nullable(false).defaultValue(org.jooq.impl.DSL.field("CURRENT_TIMESTAMP", org.jooq.impl.SQLDataType.TIMESTAMP)), this, "提交时间");
-
-    /**
      * The column <code>mini_shop_471752.b2c_form_submit_details.cur_idx</code>. 装修模块保存id
      */
     public final TableField<FormSubmitDetailsRecord, String> CUR_IDX = createField("cur_idx", org.jooq.impl.SQLDataType.VARCHAR(32).nullable(false), this, "装修模块保存id");
+
+    /**
+     * The column <code>mini_shop_471752.b2c_form_submit_details.create_time</code>.
+     */
+    public final TableField<FormSubmitDetailsRecord, Timestamp> CREATE_TIME = createField("create_time", org.jooq.impl.SQLDataType.TIMESTAMP.nullable(false).defaultValue(org.jooq.impl.DSL.field("CURRENT_TIMESTAMP", org.jooq.impl.SQLDataType.TIMESTAMP)), this, "");
+
+    /**
+     * The column <code>mini_shop_471752.b2c_form_submit_details.update_time</code>. 最后修改时间
+     */
+    public final TableField<FormSubmitDetailsRecord, Timestamp> UPDATE_TIME = createField("update_time", org.jooq.impl.SQLDataType.TIMESTAMP.nullable(false).defaultValue(org.jooq.impl.DSL.field("CURRENT_TIMESTAMP", org.jooq.impl.SQLDataType.TIMESTAMP)), this, "最后修改时间");
 
     /**
      * Create a <code>mini_shop_471752.b2c_form_submit_details</code> table reference

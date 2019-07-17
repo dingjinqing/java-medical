@@ -42,7 +42,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class PurchasePriceDefine extends TableImpl<PurchasePriceDefineRecord> {
 
-    private static final long serialVersionUID = 354998498;
+    private static final long serialVersionUID = 695150695;
 
     /**
      * The reference instance of <code>mini_shop_471752.b2c_purchase_price_define</code>
@@ -98,24 +98,24 @@ public class PurchasePriceDefine extends TableImpl<PurchasePriceDefineRecord> {
     public final TableField<PurchasePriceDefineRecord, Byte> STATUS = createField("status", org.jooq.impl.SQLDataType.TINYINT.defaultValue(org.jooq.impl.DSL.inline("1", org.jooq.impl.SQLDataType.TINYINT)), this, "状态 1: 启用 0:禁用");
 
     /**
-     * The column <code>mini_shop_471752.b2c_purchase_price_define.add_time</code>.
-     */
-    public final TableField<PurchasePriceDefineRecord, Timestamp> ADD_TIME = createField("add_time", org.jooq.impl.SQLDataType.TIMESTAMP, this, "");
-
-    /**
-     * The column <code>mini_shop_471752.b2c_purchase_price_define.update_time</code>.
-     */
-    public final TableField<PurchasePriceDefineRecord, Timestamp> UPDATE_TIME = createField("update_time", org.jooq.impl.SQLDataType.TIMESTAMP, this, "");
-
-    /**
      * The column <code>mini_shop_471752.b2c_purchase_price_define.del_flag</code>.
      */
     public final TableField<PurchasePriceDefineRecord, Byte> DEL_FLAG = createField("del_flag", org.jooq.impl.SQLDataType.TINYINT.defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.TINYINT)), this, "");
 
     /**
-     * The column <code>mini_shop_471752.b2c_purchase_price_define.del_time</code>.
+     * The column <code>mini_shop_471752.b2c_purchase_price_define.del_time</code>. 删除时间
      */
-    public final TableField<PurchasePriceDefineRecord, Integer> DEL_TIME = createField("del_time", org.jooq.impl.SQLDataType.INTEGER.defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.INTEGER)), this, "");
+    public final TableField<PurchasePriceDefineRecord, Timestamp> DEL_TIME = createField("del_time", org.jooq.impl.SQLDataType.TIMESTAMP, this, "删除时间");
+
+    /**
+     * The column <code>mini_shop_471752.b2c_purchase_price_define.create_time</code>.
+     */
+    public final TableField<PurchasePriceDefineRecord, Timestamp> CREATE_TIME = createField("create_time", org.jooq.impl.SQLDataType.TIMESTAMP.nullable(false).defaultValue(org.jooq.impl.DSL.field("CURRENT_TIMESTAMP", org.jooq.impl.SQLDataType.TIMESTAMP)), this, "");
+
+    /**
+     * The column <code>mini_shop_471752.b2c_purchase_price_define.update_time</code>. 最后修改时间
+     */
+    public final TableField<PurchasePriceDefineRecord, Timestamp> UPDATE_TIME = createField("update_time", org.jooq.impl.SQLDataType.TIMESTAMP.nullable(false).defaultValue(org.jooq.impl.DSL.field("CURRENT_TIMESTAMP", org.jooq.impl.SQLDataType.TIMESTAMP)), this, "最后修改时间");
 
     /**
      * Create a <code>mini_shop_471752.b2c_purchase_price_define</code> table reference

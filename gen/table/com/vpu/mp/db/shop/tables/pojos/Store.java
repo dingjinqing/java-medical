@@ -23,7 +23,7 @@ import javax.annotation.Generated;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class Store implements Serializable {
 
-    private static final long serialVersionUID = -141279761;
+    private static final long serialVersionUID = 1769691750;
 
     private Integer   storeId;
     private String    storeName;
@@ -44,10 +44,10 @@ public class Store implements Serializable {
     private String    service;
     private String    content;
     private Integer   posShopId;
-    private Timestamp addTime;
-    private Timestamp upTime;
+    private Timestamp createTime;
+    private Timestamp updateTime;
     private Short     autoPick;
-    private Byte      isDelete;
+    private Byte      delFlag;
 
     public Store() {}
 
@@ -71,10 +71,10 @@ public class Store implements Serializable {
         this.service = value.service;
         this.content = value.content;
         this.posShopId = value.posShopId;
-        this.addTime = value.addTime;
-        this.upTime = value.upTime;
+        this.createTime = value.createTime;
+        this.updateTime = value.updateTime;
         this.autoPick = value.autoPick;
-        this.isDelete = value.isDelete;
+        this.delFlag = value.delFlag;
     }
 
     public Store(
@@ -97,10 +97,10 @@ public class Store implements Serializable {
         String    service,
         String    content,
         Integer   posShopId,
-        Timestamp addTime,
-        Timestamp upTime,
+        Timestamp createTime,
+        Timestamp updateTime,
         Short     autoPick,
-        Byte      isDelete
+        Byte      delFlag
     ) {
         this.storeId = storeId;
         this.storeName = storeName;
@@ -121,10 +121,10 @@ public class Store implements Serializable {
         this.service = service;
         this.content = content;
         this.posShopId = posShopId;
-        this.addTime = addTime;
-        this.upTime = upTime;
+        this.createTime = createTime;
+        this.updateTime = updateTime;
         this.autoPick = autoPick;
-        this.isDelete = isDelete;
+        this.delFlag = delFlag;
     }
 
     public Integer getStoreId() {
@@ -279,20 +279,20 @@ public class Store implements Serializable {
         this.posShopId = posShopId;
     }
 
-    public Timestamp getAddTime() {
-        return this.addTime;
+    public Timestamp getCreateTime() {
+        return this.createTime;
     }
 
-    public void setAddTime(Timestamp addTime) {
-        this.addTime = addTime;
+    public void setCreateTime(Timestamp createTime) {
+        this.createTime = createTime;
     }
 
-    public Timestamp getUpTime() {
-        return this.upTime;
+    public Timestamp getUpdateTime() {
+        return this.updateTime;
     }
 
-    public void setUpTime(Timestamp upTime) {
-        this.upTime = upTime;
+    public void setUpdateTime(Timestamp updateTime) {
+        this.updateTime = updateTime;
     }
 
     public Short getAutoPick() {
@@ -303,12 +303,12 @@ public class Store implements Serializable {
         this.autoPick = autoPick;
     }
 
-    public Byte getIsDelete() {
-        return this.isDelete;
+    public Byte getDelFlag() {
+        return this.delFlag;
     }
 
-    public void setIsDelete(Byte isDelete) {
-        this.isDelete = isDelete;
+    public void setDelFlag(Byte delFlag) {
+        this.delFlag = delFlag;
     }
 
     @Override
@@ -334,10 +334,10 @@ public class Store implements Serializable {
         sb.append(", ").append(service);
         sb.append(", ").append(content);
         sb.append(", ").append(posShopId);
-        sb.append(", ").append(addTime);
-        sb.append(", ").append(upTime);
+        sb.append(", ").append(createTime);
+        sb.append(", ").append(updateTime);
         sb.append(", ").append(autoPick);
-        sb.append(", ").append(isDelete);
+        sb.append(", ").append(delFlag);
 
         sb.append(")");
         return sb.toString();

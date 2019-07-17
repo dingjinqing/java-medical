@@ -43,7 +43,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class BatchProfit extends TableImpl<BatchProfitRecord> {
 
-    private static final long serialVersionUID = 638644556;
+    private static final long serialVersionUID = -2010970026;
 
     /**
      * The reference instance of <code>mini_shop_471752.b2c_batch_profit</code>
@@ -64,14 +64,14 @@ public class BatchProfit extends TableImpl<BatchProfitRecord> {
     public final TableField<BatchProfitRecord, Integer> ID = createField("id", org.jooq.impl.SQLDataType.INTEGER.nullable(false).identity(true), this, "");
 
     /**
-     * The column <code>mini_shop_471752.b2c_batch_profit.brand_id</code>. 品牌ID
+     * The column <code>mini_shop_471752.b2c_batch_profit.brand_id</code>. 品牌id
      */
-    public final TableField<BatchProfitRecord, Integer> BRAND_ID = createField("brand_id", org.jooq.impl.SQLDataType.INTEGER.defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.INTEGER)), this, "品牌ID");
+    public final TableField<BatchProfitRecord, Integer> BRAND_ID = createField("brand_id", org.jooq.impl.SQLDataType.INTEGER.defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.INTEGER)), this, "品牌id");
 
     /**
-     * The column <code>mini_shop_471752.b2c_batch_profit.sort_id</code>. 分类ID
+     * The column <code>mini_shop_471752.b2c_batch_profit.sort_id</code>. 分类id
      */
-    public final TableField<BatchProfitRecord, Integer> SORT_ID = createField("sort_id", org.jooq.impl.SQLDataType.INTEGER.defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.INTEGER)), this, "分类ID");
+    public final TableField<BatchProfitRecord, Integer> SORT_ID = createField("sort_id", org.jooq.impl.SQLDataType.INTEGER.defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.INTEGER)), this, "分类id");
 
     /**
      * The column <code>mini_shop_471752.b2c_batch_profit.act_id</code>. 导入批次
@@ -81,12 +81,7 @@ public class BatchProfit extends TableImpl<BatchProfitRecord> {
     /**
      * The column <code>mini_shop_471752.b2c_batch_profit.profit_per</code>.
      */
-    public final TableField<BatchProfitRecord, BigDecimal> PROFIT_PER = createField("profit_per", org.jooq.impl.SQLDataType.DECIMAL(10, 2).defaultValue(org.jooq.impl.DSL.inline("0.00", org.jooq.impl.SQLDataType.DECIMAL)), this, "");
-
-    /**
-     * The column <code>mini_shop_471752.b2c_batch_profit.add_time</code>.
-     */
-    public final TableField<BatchProfitRecord, Timestamp> ADD_TIME = createField("add_time", org.jooq.impl.SQLDataType.TIMESTAMP.defaultValue(org.jooq.impl.DSL.field("CURRENT_TIMESTAMP", org.jooq.impl.SQLDataType.TIMESTAMP)), this, "");
+    public final TableField<BatchProfitRecord, BigDecimal> PROFIT_PER = createField("profit_per", org.jooq.impl.SQLDataType.DECIMAL(10, 2).nullable(false).defaultValue(org.jooq.impl.DSL.inline("0.00", org.jooq.impl.SQLDataType.DECIMAL)), this, "");
 
     /**
      * The column <code>mini_shop_471752.b2c_batch_profit.file_name</code>. 文件名称
@@ -94,9 +89,14 @@ public class BatchProfit extends TableImpl<BatchProfitRecord> {
     public final TableField<BatchProfitRecord, String> FILE_NAME = createField("file_name", org.jooq.impl.SQLDataType.VARCHAR(200).nullable(false).defaultValue(org.jooq.impl.DSL.inline("", org.jooq.impl.SQLDataType.VARCHAR)), this, "文件名称");
 
     /**
-     * The column <code>mini_shop_471752.b2c_batch_profit.update_time</code>.
+     * The column <code>mini_shop_471752.b2c_batch_profit.create_time</code>.
      */
-    public final TableField<BatchProfitRecord, Timestamp> UPDATE_TIME = createField("update_time", org.jooq.impl.SQLDataType.TIMESTAMP.defaultValue(org.jooq.impl.DSL.field("CURRENT_TIMESTAMP", org.jooq.impl.SQLDataType.TIMESTAMP)), this, "");
+    public final TableField<BatchProfitRecord, Timestamp> CREATE_TIME = createField("create_time", org.jooq.impl.SQLDataType.TIMESTAMP.nullable(false).defaultValue(org.jooq.impl.DSL.field("CURRENT_TIMESTAMP", org.jooq.impl.SQLDataType.TIMESTAMP)), this, "");
+
+    /**
+     * The column <code>mini_shop_471752.b2c_batch_profit.update_time</code>. 最后修改时间
+     */
+    public final TableField<BatchProfitRecord, Timestamp> UPDATE_TIME = createField("update_time", org.jooq.impl.SQLDataType.TIMESTAMP.nullable(false).defaultValue(org.jooq.impl.DSL.field("CURRENT_TIMESTAMP", org.jooq.impl.SQLDataType.TIMESTAMP)), this, "最后修改时间");
 
     /**
      * Create a <code>mini_shop_471752.b2c_batch_profit</code> table reference

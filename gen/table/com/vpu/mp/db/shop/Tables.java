@@ -4,6 +4,11 @@
 package com.vpu.mp.db.shop;
 
 
+import com.vpu.mp.db.shop.tables.AssessActivity;
+import com.vpu.mp.db.shop.tables.AssessRecord;
+import com.vpu.mp.db.shop.tables.AssessResult;
+import com.vpu.mp.db.shop.tables.AssessTopic;
+import com.vpu.mp.db.shop.tables.AssessTopicRecord;
 import com.vpu.mp.db.shop.tables.Bargain;
 import com.vpu.mp.db.shop.tables.BargainRecord;
 import com.vpu.mp.db.shop.tables.BargainUserList;
@@ -27,6 +32,7 @@ import com.vpu.mp.db.shop.tables.CommentGoodsAnswer;
 import com.vpu.mp.db.shop.tables.CommentService;
 import com.vpu.mp.db.shop.tables.CouponActivity;
 import com.vpu.mp.db.shop.tables.CouponActivityRecord;
+import com.vpu.mp.db.shop.tables.CouponPack;
 import com.vpu.mp.db.shop.tables.CouponPayrewardRecord;
 import com.vpu.mp.db.shop.tables.CustomerAvailCoupons;
 import com.vpu.mp.db.shop.tables.DecorateLink;
@@ -67,7 +73,6 @@ import com.vpu.mp.db.shop.tables.GoodsSpecProductBak;
 import com.vpu.mp.db.shop.tables.GoodsSummary;
 import com.vpu.mp.db.shop.tables.GoodsUserSummary;
 import com.vpu.mp.db.shop.tables.GradePrd;
-import com.vpu.mp.db.shop.tables.Group;
 import com.vpu.mp.db.shop.tables.GroupDraw;
 import com.vpu.mp.db.shop.tables.GroupDrawInvite;
 import com.vpu.mp.db.shop.tables.IncomeOutcomeDetail;
@@ -119,6 +124,7 @@ import com.vpu.mp.db.shop.tables.PinGroupList;
 import com.vpu.mp.db.shop.tables.PinGroupProductDefine;
 import com.vpu.mp.db.shop.tables.PinIntegrationDefine;
 import com.vpu.mp.db.shop.tables.PinIntegrationList;
+import com.vpu.mp.db.shop.tables.Pledge;
 import com.vpu.mp.db.shop.tables.Presale;
 import com.vpu.mp.db.shop.tables.PresaleProduct;
 import com.vpu.mp.db.shop.tables.PurchasePriceDefine;
@@ -138,7 +144,6 @@ import com.vpu.mp.db.shop.tables.SearchHistory;
 import com.vpu.mp.db.shop.tables.SecKillDefine;
 import com.vpu.mp.db.shop.tables.SecKillList;
 import com.vpu.mp.db.shop.tables.SecKillProductDefine;
-import com.vpu.mp.db.shop.tables.ServiceCategory;
 import com.vpu.mp.db.shop.tables.ServiceMessageRecord;
 import com.vpu.mp.db.shop.tables.ServiceOrder;
 import com.vpu.mp.db.shop.tables.ServiceRequest;
@@ -156,8 +161,10 @@ import com.vpu.mp.db.shop.tables.Spec;
 import com.vpu.mp.db.shop.tables.SpecVals;
 import com.vpu.mp.db.shop.tables.Store;
 import com.vpu.mp.db.shop.tables.StoreGoods;
+import com.vpu.mp.db.shop.tables.StoreGroup;
 import com.vpu.mp.db.shop.tables.StoreOrder;
 import com.vpu.mp.db.shop.tables.StoreService;
+import com.vpu.mp.db.shop.tables.StoreServiceCategory;
 import com.vpu.mp.db.shop.tables.SubOrderInfo;
 import com.vpu.mp.db.shop.tables.Tag;
 import com.vpu.mp.db.shop.tables.TemplateConfig;
@@ -206,6 +213,31 @@ import javax.annotation.Generated;
 )
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class Tables {
+
+    /**
+     * The table <code>mini_shop_471752.b2c_assess_activity</code>.
+     */
+    public static final AssessActivity ASSESS_ACTIVITY = com.vpu.mp.db.shop.tables.AssessActivity.ASSESS_ACTIVITY;
+
+    /**
+     * The table <code>mini_shop_471752.b2c_assess_record</code>.
+     */
+    public static final AssessRecord ASSESS_RECORD = com.vpu.mp.db.shop.tables.AssessRecord.ASSESS_RECORD;
+
+    /**
+     * The table <code>mini_shop_471752.b2c_assess_result</code>.
+     */
+    public static final AssessResult ASSESS_RESULT = com.vpu.mp.db.shop.tables.AssessResult.ASSESS_RESULT;
+
+    /**
+     * The table <code>mini_shop_471752.b2c_assess_topic</code>.
+     */
+    public static final AssessTopic ASSESS_TOPIC = com.vpu.mp.db.shop.tables.AssessTopic.ASSESS_TOPIC;
+
+    /**
+     * The table <code>mini_shop_471752.b2c_assess_topic_record</code>.
+     */
+    public static final AssessTopicRecord ASSESS_TOPIC_RECORD = com.vpu.mp.db.shop.tables.AssessTopicRecord.ASSESS_TOPIC_RECORD;
 
     /**
      * The table <code>mini_shop_471752.b2c_bargain</code>.
@@ -321,6 +353,11 @@ public class Tables {
      * The table <code>mini_shop_471752.b2c_coupon_activity_record</code>.
      */
     public static final CouponActivityRecord COUPON_ACTIVITY_RECORD = com.vpu.mp.db.shop.tables.CouponActivityRecord.COUPON_ACTIVITY_RECORD;
+
+    /**
+     * The table <code>mini_shop_471752.b2c_coupon_pack</code>.
+     */
+    public static final CouponPack COUPON_PACK = com.vpu.mp.db.shop.tables.CouponPack.COUPON_PACK;
 
     /**
      * The table <code>mini_shop_471752.b2c_coupon_payreward_record</code>.
@@ -521,11 +558,6 @@ public class Tables {
      * The table <code>mini_shop_471752.b2c_grade_prd</code>.
      */
     public static final GradePrd GRADE_PRD = com.vpu.mp.db.shop.tables.GradePrd.GRADE_PRD;
-
-    /**
-     * The table <code>mini_shop_471752.b2c_group</code>.
-     */
-    public static final Group GROUP = com.vpu.mp.db.shop.tables.Group.GROUP;
 
     /**
      * The table <code>mini_shop_471752.b2c_group_draw</code>.
@@ -783,6 +815,11 @@ public class Tables {
     public static final PinIntegrationList PIN_INTEGRATION_LIST = com.vpu.mp.db.shop.tables.PinIntegrationList.PIN_INTEGRATION_LIST;
 
     /**
+     * The table <code>mini_shop_471752.b2c_pledge</code>.
+     */
+    public static final Pledge PLEDGE = com.vpu.mp.db.shop.tables.Pledge.PLEDGE;
+
+    /**
      * The table <code>mini_shop_471752.b2c_presale</code>.
      */
     public static final Presale PRESALE = com.vpu.mp.db.shop.tables.Presale.PRESALE;
@@ -878,11 +915,6 @@ public class Tables {
     public static final SecKillProductDefine SEC_KILL_PRODUCT_DEFINE = com.vpu.mp.db.shop.tables.SecKillProductDefine.SEC_KILL_PRODUCT_DEFINE;
 
     /**
-     * The table <code>mini_shop_471752.b2c_service_category</code>.
-     */
-    public static final ServiceCategory SERVICE_CATEGORY = com.vpu.mp.db.shop.tables.ServiceCategory.SERVICE_CATEGORY;
-
-    /**
      * The table <code>mini_shop_471752.b2c_service_message_record</code>.
      */
     public static final ServiceMessageRecord SERVICE_MESSAGE_RECORD = com.vpu.mp.db.shop.tables.ServiceMessageRecord.SERVICE_MESSAGE_RECORD;
@@ -968,6 +1000,11 @@ public class Tables {
     public static final StoreGoods STORE_GOODS = com.vpu.mp.db.shop.tables.StoreGoods.STORE_GOODS;
 
     /**
+     * The table <code>mini_shop_471752.b2c_store_group</code>.
+     */
+    public static final StoreGroup STORE_GROUP = com.vpu.mp.db.shop.tables.StoreGroup.STORE_GROUP;
+
+    /**
      * The table <code>mini_shop_471752.b2c_store_order</code>.
      */
     public static final StoreOrder STORE_ORDER = com.vpu.mp.db.shop.tables.StoreOrder.STORE_ORDER;
@@ -976,6 +1013,11 @@ public class Tables {
      * The table <code>mini_shop_471752.b2c_store_service</code>.
      */
     public static final StoreService STORE_SERVICE = com.vpu.mp.db.shop.tables.StoreService.STORE_SERVICE;
+
+    /**
+     * The table <code>mini_shop_471752.b2c_store_service_category</code>.
+     */
+    public static final StoreServiceCategory STORE_SERVICE_CATEGORY = com.vpu.mp.db.shop.tables.StoreServiceCategory.STORE_SERVICE_CATEGORY;
 
     /**
      * The table <code>mini_shop_471752.b2c_sub_order_info</code>.

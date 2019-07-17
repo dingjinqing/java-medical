@@ -25,7 +25,7 @@ import javax.annotation.Generated;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class DistributionTag implements Serializable {
 
-    private static final long serialVersionUID = -1118270691;
+    private static final long serialVersionUID = 2057420956;
 
     private Date       refDate;
     private Byte       type;
@@ -36,7 +36,8 @@ public class DistributionTag implements Serializable {
     private Integer    payGoodsNumber;
     private Integer    hasMobileNum;
     private Integer    hasUserNum;
-    private Timestamp  addTime;
+    private Timestamp  createTime;
+    private Timestamp  updateTime;
 
     public DistributionTag() {}
 
@@ -50,7 +51,8 @@ public class DistributionTag implements Serializable {
         this.payGoodsNumber = value.payGoodsNumber;
         this.hasMobileNum = value.hasMobileNum;
         this.hasUserNum = value.hasUserNum;
-        this.addTime = value.addTime;
+        this.createTime = value.createTime;
+        this.updateTime = value.updateTime;
     }
 
     public DistributionTag(
@@ -63,7 +65,8 @@ public class DistributionTag implements Serializable {
         Integer    payGoodsNumber,
         Integer    hasMobileNum,
         Integer    hasUserNum,
-        Timestamp  addTime
+        Timestamp  createTime,
+        Timestamp  updateTime
     ) {
         this.refDate = refDate;
         this.type = type;
@@ -74,7 +77,8 @@ public class DistributionTag implements Serializable {
         this.payGoodsNumber = payGoodsNumber;
         this.hasMobileNum = hasMobileNum;
         this.hasUserNum = hasUserNum;
-        this.addTime = addTime;
+        this.createTime = createTime;
+        this.updateTime = updateTime;
     }
 
     public Date getRefDate() {
@@ -149,12 +153,20 @@ public class DistributionTag implements Serializable {
         this.hasUserNum = hasUserNum;
     }
 
-    public Timestamp getAddTime() {
-        return this.addTime;
+    public Timestamp getCreateTime() {
+        return this.createTime;
     }
 
-    public void setAddTime(Timestamp addTime) {
-        this.addTime = addTime;
+    public void setCreateTime(Timestamp createTime) {
+        this.createTime = createTime;
+    }
+
+    public Timestamp getUpdateTime() {
+        return this.updateTime;
+    }
+
+    public void setUpdateTime(Timestamp updateTime) {
+        this.updateTime = updateTime;
     }
 
     @Override
@@ -170,7 +182,8 @@ public class DistributionTag implements Serializable {
         sb.append(", ").append(payGoodsNumber);
         sb.append(", ").append(hasMobileNum);
         sb.append(", ").append(hasUserNum);
-        sb.append(", ").append(addTime);
+        sb.append(", ").append(createTime);
+        sb.append(", ").append(updateTime);
 
         sb.append(")");
         return sb.toString();

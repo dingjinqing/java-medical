@@ -23,17 +23,17 @@ import javax.annotation.Generated;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class GoodsImport implements Serializable {
 
-    private static final long serialVersionUID = 1514347488;
+    private static final long serialVersionUID = 1983322387;
 
     private Integer   id;
     private Integer   totalNum;
     private Integer   successNum;
-    private Timestamp addTime;
-    private Timestamp updateTime;
     private Byte      delFlag;
     private Timestamp delTime;
     private String    importFilePath;
     private Byte      isUpdate;
+    private Timestamp createTime;
+    private Timestamp updateTime;
 
     public GoodsImport() {}
 
@@ -41,34 +41,34 @@ public class GoodsImport implements Serializable {
         this.id = value.id;
         this.totalNum = value.totalNum;
         this.successNum = value.successNum;
-        this.addTime = value.addTime;
-        this.updateTime = value.updateTime;
         this.delFlag = value.delFlag;
         this.delTime = value.delTime;
         this.importFilePath = value.importFilePath;
         this.isUpdate = value.isUpdate;
+        this.createTime = value.createTime;
+        this.updateTime = value.updateTime;
     }
 
     public GoodsImport(
         Integer   id,
         Integer   totalNum,
         Integer   successNum,
-        Timestamp addTime,
-        Timestamp updateTime,
         Byte      delFlag,
         Timestamp delTime,
         String    importFilePath,
-        Byte      isUpdate
+        Byte      isUpdate,
+        Timestamp createTime,
+        Timestamp updateTime
     ) {
         this.id = id;
         this.totalNum = totalNum;
         this.successNum = successNum;
-        this.addTime = addTime;
-        this.updateTime = updateTime;
         this.delFlag = delFlag;
         this.delTime = delTime;
         this.importFilePath = importFilePath;
         this.isUpdate = isUpdate;
+        this.createTime = createTime;
+        this.updateTime = updateTime;
     }
 
     public Integer getId() {
@@ -93,22 +93,6 @@ public class GoodsImport implements Serializable {
 
     public void setSuccessNum(Integer successNum) {
         this.successNum = successNum;
-    }
-
-    public Timestamp getAddTime() {
-        return this.addTime;
-    }
-
-    public void setAddTime(Timestamp addTime) {
-        this.addTime = addTime;
-    }
-
-    public Timestamp getUpdateTime() {
-        return this.updateTime;
-    }
-
-    public void setUpdateTime(Timestamp updateTime) {
-        this.updateTime = updateTime;
     }
 
     public Byte getDelFlag() {
@@ -143,6 +127,22 @@ public class GoodsImport implements Serializable {
         this.isUpdate = isUpdate;
     }
 
+    public Timestamp getCreateTime() {
+        return this.createTime;
+    }
+
+    public void setCreateTime(Timestamp createTime) {
+        this.createTime = createTime;
+    }
+
+    public Timestamp getUpdateTime() {
+        return this.updateTime;
+    }
+
+    public void setUpdateTime(Timestamp updateTime) {
+        this.updateTime = updateTime;
+    }
+
     @Override
     public String toString() {
         StringBuilder sb = new StringBuilder("GoodsImport (");
@@ -150,12 +150,12 @@ public class GoodsImport implements Serializable {
         sb.append(id);
         sb.append(", ").append(totalNum);
         sb.append(", ").append(successNum);
-        sb.append(", ").append(addTime);
-        sb.append(", ").append(updateTime);
         sb.append(", ").append(delFlag);
         sb.append(", ").append(delTime);
         sb.append(", ").append(importFilePath);
         sb.append(", ").append(isUpdate);
+        sb.append(", ").append(createTime);
+        sb.append(", ").append(updateTime);
 
         sb.append(")");
         return sb.toString();

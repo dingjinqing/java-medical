@@ -27,7 +27,7 @@ import org.jooq.impl.UpdatableRecordImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class CardExamineRecord extends UpdatableRecordImpl<CardExamineRecord> {
 
-    private static final long serialVersionUID = -1036199895;
+    private static final long serialVersionUID = -1213704398;
 
     /**
      * Setter for <code>mini_shop_471752.b2c_card_examine.id</code>. 订单id
@@ -58,14 +58,14 @@ public class CardExamineRecord extends UpdatableRecordImpl<CardExamineRecord> {
     }
 
     /**
-     * Setter for <code>mini_shop_471752.b2c_card_examine.card_no</code>. 会员卡NO
+     * Setter for <code>mini_shop_471752.b2c_card_examine.card_no</code>. 会员卡no
      */
     public void setCardNo(String value) {
         set(2, value);
     }
 
     /**
-     * Getter for <code>mini_shop_471752.b2c_card_examine.card_no</code>. 会员卡NO
+     * Getter for <code>mini_shop_471752.b2c_card_examine.card_no</code>. 会员卡no
      */
     public String getCardNo() {
         return (String) get(2);
@@ -282,87 +282,101 @@ public class CardExamineRecord extends UpdatableRecordImpl<CardExamineRecord> {
     }
 
     /**
-     * Setter for <code>mini_shop_471752.b2c_card_examine.add_time</code>. 提交时间
-     */
-    public void setAddTime(Timestamp value) {
-        set(18, value);
-    }
-
-    /**
-     * Getter for <code>mini_shop_471752.b2c_card_examine.add_time</code>. 提交时间
-     */
-    public Timestamp getAddTime() {
-        return (Timestamp) get(18);
-    }
-
-    /**
      * Setter for <code>mini_shop_471752.b2c_card_examine.pass_time</code>. 通过时间
      */
     public void setPassTime(Timestamp value) {
-        set(19, value);
+        set(18, value);
     }
 
     /**
      * Getter for <code>mini_shop_471752.b2c_card_examine.pass_time</code>. 通过时间
      */
     public Timestamp getPassTime() {
-        return (Timestamp) get(19);
+        return (Timestamp) get(18);
     }
 
     /**
      * Setter for <code>mini_shop_471752.b2c_card_examine.refuse_time</code>. 拒绝时间
      */
     public void setRefuseTime(Timestamp value) {
-        set(20, value);
+        set(19, value);
     }
 
     /**
      * Getter for <code>mini_shop_471752.b2c_card_examine.refuse_time</code>. 拒绝时间
      */
     public Timestamp getRefuseTime() {
-        return (Timestamp) get(20);
+        return (Timestamp) get(19);
     }
 
     /**
      * Setter for <code>mini_shop_471752.b2c_card_examine.refuse_desc</code>. 拒绝理由
      */
     public void setRefuseDesc(String value) {
-        set(21, value);
+        set(20, value);
     }
 
     /**
      * Getter for <code>mini_shop_471752.b2c_card_examine.refuse_desc</code>. 拒绝理由
      */
     public String getRefuseDesc() {
-        return (String) get(21);
+        return (String) get(20);
     }
 
     /**
      * Setter for <code>mini_shop_471752.b2c_card_examine.del_flag</code>. 删除
      */
     public void setDelFlag(Byte value) {
-        set(22, value);
+        set(21, value);
     }
 
     /**
      * Getter for <code>mini_shop_471752.b2c_card_examine.del_flag</code>. 删除
      */
     public Byte getDelFlag() {
-        return (Byte) get(22);
+        return (Byte) get(21);
     }
 
     /**
      * Setter for <code>mini_shop_471752.b2c_card_examine.def_time</code>. 删除时间
      */
     public void setDefTime(Timestamp value) {
-        set(23, value);
+        set(22, value);
     }
 
     /**
      * Getter for <code>mini_shop_471752.b2c_card_examine.def_time</code>. 删除时间
      */
     public Timestamp getDefTime() {
+        return (Timestamp) get(22);
+    }
+
+    /**
+     * Setter for <code>mini_shop_471752.b2c_card_examine.create_time</code>.
+     */
+    public void setCreateTime(Timestamp value) {
+        set(23, value);
+    }
+
+    /**
+     * Getter for <code>mini_shop_471752.b2c_card_examine.create_time</code>.
+     */
+    public Timestamp getCreateTime() {
         return (Timestamp) get(23);
+    }
+
+    /**
+     * Setter for <code>mini_shop_471752.b2c_card_examine.update_time</code>. 最后修改时间
+     */
+    public void setUpdateTime(Timestamp value) {
+        set(24, value);
+    }
+
+    /**
+     * Getter for <code>mini_shop_471752.b2c_card_examine.update_time</code>. 最后修改时间
+     */
+    public Timestamp getUpdateTime() {
+        return (Timestamp) get(24);
     }
 
     // -------------------------------------------------------------------------
@@ -391,7 +405,7 @@ public class CardExamineRecord extends UpdatableRecordImpl<CardExamineRecord> {
     /**
      * Create a detached, initialised CardExamineRecord
      */
-    public CardExamineRecord(Integer id, Integer cardId, String cardNo, Integer userId, Byte status, String desc, String realName, String cid, Integer provinceCode, Integer cityCode, Integer districtCode, String sex, Integer birthdayYear, Integer birthdayMonth, Integer birthdayDay, Byte maritalStatus, Byte education, Byte industryInfo, Timestamp addTime, Timestamp passTime, Timestamp refuseTime, String refuseDesc, Byte delFlag, Timestamp defTime) {
+    public CardExamineRecord(Integer id, Integer cardId, String cardNo, Integer userId, Byte status, String desc, String realName, String cid, Integer provinceCode, Integer cityCode, Integer districtCode, String sex, Integer birthdayYear, Integer birthdayMonth, Integer birthdayDay, Byte maritalStatus, Byte education, Byte industryInfo, Timestamp passTime, Timestamp refuseTime, String refuseDesc, Byte delFlag, Timestamp defTime, Timestamp createTime, Timestamp updateTime) {
         super(CardExamine.CARD_EXAMINE);
 
         set(0, id);
@@ -412,11 +426,12 @@ public class CardExamineRecord extends UpdatableRecordImpl<CardExamineRecord> {
         set(15, maritalStatus);
         set(16, education);
         set(17, industryInfo);
-        set(18, addTime);
-        set(19, passTime);
-        set(20, refuseTime);
-        set(21, refuseDesc);
-        set(22, delFlag);
-        set(23, defTime);
+        set(18, passTime);
+        set(19, refuseTime);
+        set(20, refuseDesc);
+        set(21, delFlag);
+        set(22, defTime);
+        set(23, createTime);
+        set(24, updateTime);
     }
 }

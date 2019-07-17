@@ -24,15 +24,15 @@ import javax.annotation.Generated;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class UserRebatePrice implements Serializable {
 
-    private static final long serialVersionUID = -656428384;
+    private static final long serialVersionUID = 263780133;
 
     private Integer    id;
     private Integer    userId;
     private Integer    goodsId;
     private Integer    productId;
     private BigDecimal advicePrice;
-    private Timestamp  addTime;
     private Timestamp  expireTime;
+    private Timestamp  createTime;
     private Timestamp  updateTime;
 
     public UserRebatePrice() {}
@@ -43,8 +43,8 @@ public class UserRebatePrice implements Serializable {
         this.goodsId = value.goodsId;
         this.productId = value.productId;
         this.advicePrice = value.advicePrice;
-        this.addTime = value.addTime;
         this.expireTime = value.expireTime;
+        this.createTime = value.createTime;
         this.updateTime = value.updateTime;
     }
 
@@ -54,8 +54,8 @@ public class UserRebatePrice implements Serializable {
         Integer    goodsId,
         Integer    productId,
         BigDecimal advicePrice,
-        Timestamp  addTime,
         Timestamp  expireTime,
+        Timestamp  createTime,
         Timestamp  updateTime
     ) {
         this.id = id;
@@ -63,8 +63,8 @@ public class UserRebatePrice implements Serializable {
         this.goodsId = goodsId;
         this.productId = productId;
         this.advicePrice = advicePrice;
-        this.addTime = addTime;
         this.expireTime = expireTime;
+        this.createTime = createTime;
         this.updateTime = updateTime;
     }
 
@@ -108,20 +108,20 @@ public class UserRebatePrice implements Serializable {
         this.advicePrice = advicePrice;
     }
 
-    public Timestamp getAddTime() {
-        return this.addTime;
-    }
-
-    public void setAddTime(Timestamp addTime) {
-        this.addTime = addTime;
-    }
-
     public Timestamp getExpireTime() {
         return this.expireTime;
     }
 
     public void setExpireTime(Timestamp expireTime) {
         this.expireTime = expireTime;
+    }
+
+    public Timestamp getCreateTime() {
+        return this.createTime;
+    }
+
+    public void setCreateTime(Timestamp createTime) {
+        this.createTime = createTime;
     }
 
     public Timestamp getUpdateTime() {
@@ -141,8 +141,8 @@ public class UserRebatePrice implements Serializable {
         sb.append(", ").append(goodsId);
         sb.append(", ").append(productId);
         sb.append(", ").append(advicePrice);
-        sb.append(", ").append(addTime);
         sb.append(", ").append(expireTime);
+        sb.append(", ").append(createTime);
         sb.append(", ").append(updateTime);
 
         sb.append(")");

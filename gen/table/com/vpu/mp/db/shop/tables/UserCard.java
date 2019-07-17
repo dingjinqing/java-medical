@@ -42,7 +42,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class UserCard extends TableImpl<UserCardRecord> {
 
-    private static final long serialVersionUID = -1790392850;
+    private static final long serialVersionUID = -1391015012;
 
     /**
      * The reference instance of <code>mini_shop_471752.b2c_user_card</code>
@@ -58,19 +58,14 @@ public class UserCard extends TableImpl<UserCardRecord> {
     }
 
     /**
-     * The column <code>mini_shop_471752.b2c_user_card.user_id</code>. 会员ID
+     * The column <code>mini_shop_471752.b2c_user_card.user_id</code>. 会员id
      */
-    public final TableField<UserCardRecord, Integer> USER_ID = createField("user_id", org.jooq.impl.SQLDataType.INTEGER.nullable(false), this, "会员ID");
+    public final TableField<UserCardRecord, Integer> USER_ID = createField("user_id", org.jooq.impl.SQLDataType.INTEGER.nullable(false), this, "会员id");
 
     /**
-     * The column <code>mini_shop_471752.b2c_user_card.card_id</code>. 会员卡ID
+     * The column <code>mini_shop_471752.b2c_user_card.card_id</code>. 会员卡id
      */
-    public final TableField<UserCardRecord, Integer> CARD_ID = createField("card_id", org.jooq.impl.SQLDataType.INTEGER.nullable(false), this, "会员卡ID");
-
-    /**
-     * The column <code>mini_shop_471752.b2c_user_card.add_time</code>.
-     */
-    public final TableField<UserCardRecord, Timestamp> ADD_TIME = createField("add_time", org.jooq.impl.SQLDataType.TIMESTAMP, this, "");
+    public final TableField<UserCardRecord, Integer> CARD_ID = createField("card_id", org.jooq.impl.SQLDataType.INTEGER.nullable(false), this, "会员卡id");
 
     /**
      * The column <code>mini_shop_471752.b2c_user_card.flag</code>. 0:正常，1:删除
@@ -88,11 +83,6 @@ public class UserCard extends TableImpl<UserCardRecord> {
     public final TableField<UserCardRecord, Timestamp> EXPIRE_TIME = createField("expire_time", org.jooq.impl.SQLDataType.TIMESTAMP, this, "");
 
     /**
-     * The column <code>mini_shop_471752.b2c_user_card.update_time</code>. 更新时间
-     */
-    public final TableField<UserCardRecord, Timestamp> UPDATE_TIME = createField("update_time", org.jooq.impl.SQLDataType.TIMESTAMP, this, "更新时间");
-
-    /**
      * The column <code>mini_shop_471752.b2c_user_card.is_default</code>. 1:默认会员卡
      */
     public final TableField<UserCardRecord, Byte> IS_DEFAULT = createField("is_default", org.jooq.impl.SQLDataType.TINYINT.nullable(false).defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.TINYINT)), this, "1:默认会员卡");
@@ -100,12 +90,12 @@ public class UserCard extends TableImpl<UserCardRecord> {
     /**
      * The column <code>mini_shop_471752.b2c_user_card.money</code>. 卡余额
      */
-    public final TableField<UserCardRecord, BigDecimal> MONEY = createField("money", org.jooq.impl.SQLDataType.DECIMAL(10, 2).defaultValue(org.jooq.impl.DSL.inline("0.00", org.jooq.impl.SQLDataType.DECIMAL)), this, "卡余额");
+    public final TableField<UserCardRecord, BigDecimal> MONEY = createField("money", org.jooq.impl.SQLDataType.DECIMAL(10, 2).nullable(false).defaultValue(org.jooq.impl.DSL.inline("0.00", org.jooq.impl.SQLDataType.DECIMAL)), this, "卡余额");
 
     /**
      * The column <code>mini_shop_471752.b2c_user_card.surplus</code>. 卡剩余次数
      */
-    public final TableField<UserCardRecord, Integer> SURPLUS = createField("surplus", org.jooq.impl.SQLDataType.INTEGER, this, "卡剩余次数");
+    public final TableField<UserCardRecord, Integer> SURPLUS = createField("surplus", org.jooq.impl.SQLDataType.INTEGER.nullable(false).defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.INTEGER)), this, "卡剩余次数");
 
     /**
      * The column <code>mini_shop_471752.b2c_user_card.activation_time</code>. 激活时间
@@ -115,7 +105,17 @@ public class UserCard extends TableImpl<UserCardRecord> {
     /**
      * The column <code>mini_shop_471752.b2c_user_card.exchang_surplus</code>. 卡剩余兑换次数
      */
-    public final TableField<UserCardRecord, Integer> EXCHANG_SURPLUS = createField("exchang_surplus", org.jooq.impl.SQLDataType.INTEGER.defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.INTEGER)), this, "卡剩余兑换次数");
+    public final TableField<UserCardRecord, Integer> EXCHANG_SURPLUS = createField("exchang_surplus", org.jooq.impl.SQLDataType.INTEGER.nullable(false).defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.INTEGER)), this, "卡剩余兑换次数");
+
+    /**
+     * The column <code>mini_shop_471752.b2c_user_card.create_time</code>.
+     */
+    public final TableField<UserCardRecord, Timestamp> CREATE_TIME = createField("create_time", org.jooq.impl.SQLDataType.TIMESTAMP.nullable(false).defaultValue(org.jooq.impl.DSL.field("CURRENT_TIMESTAMP", org.jooq.impl.SQLDataType.TIMESTAMP)), this, "");
+
+    /**
+     * The column <code>mini_shop_471752.b2c_user_card.update_time</code>. 最后修改时间
+     */
+    public final TableField<UserCardRecord, Timestamp> UPDATE_TIME = createField("update_time", org.jooq.impl.SQLDataType.TIMESTAMP.nullable(false).defaultValue(org.jooq.impl.DSL.field("CURRENT_TIMESTAMP", org.jooq.impl.SQLDataType.TIMESTAMP)), this, "最后修改时间");
 
     /**
      * Create a <code>mini_shop_471752.b2c_user_card</code> table reference

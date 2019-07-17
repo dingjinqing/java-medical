@@ -42,7 +42,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class SmsSendRecord extends TableImpl<SmsSendRecordRecord> {
 
-    private static final long serialVersionUID = 434426233;
+    private static final long serialVersionUID = 848647311;
 
     /**
      * The reference instance of <code>mini_shop_471752.b2c_sms_send_record</code>
@@ -80,7 +80,7 @@ public class SmsSendRecord extends TableImpl<SmsSendRecordRecord> {
     /**
      * The column <code>mini_shop_471752.b2c_sms_send_record.request_msg</code>. 请求内容
      */
-    public final TableField<SmsSendRecordRecord, String> REQUEST_MSG = createField("request_msg", org.jooq.impl.SQLDataType.CLOB.nullable(false), this, "请求内容");
+    public final TableField<SmsSendRecordRecord, String> REQUEST_MSG = createField("request_msg", org.jooq.impl.SQLDataType.CLOB, this, "请求内容");
 
     /**
      * The column <code>mini_shop_471752.b2c_sms_send_record.response_code</code>. 响应码
@@ -103,9 +103,14 @@ public class SmsSendRecord extends TableImpl<SmsSendRecordRecord> {
     public final TableField<SmsSendRecordRecord, String> SMS = createField("sms", org.jooq.impl.SQLDataType.VARCHAR(20), this, "短信通道 默认短信策略:mxt");
 
     /**
-     * The column <code>mini_shop_471752.b2c_sms_send_record.add_time</code>.
+     * The column <code>mini_shop_471752.b2c_sms_send_record.create_time</code>.
      */
-    public final TableField<SmsSendRecordRecord, Timestamp> ADD_TIME = createField("add_time", org.jooq.impl.SQLDataType.TIMESTAMP, this, "");
+    public final TableField<SmsSendRecordRecord, Timestamp> CREATE_TIME = createField("create_time", org.jooq.impl.SQLDataType.TIMESTAMP.nullable(false).defaultValue(org.jooq.impl.DSL.field("CURRENT_TIMESTAMP", org.jooq.impl.SQLDataType.TIMESTAMP)), this, "");
+
+    /**
+     * The column <code>mini_shop_471752.b2c_sms_send_record.update_time</code>. 最后修改时间
+     */
+    public final TableField<SmsSendRecordRecord, Timestamp> UPDATE_TIME = createField("update_time", org.jooq.impl.SQLDataType.TIMESTAMP.nullable(false).defaultValue(org.jooq.impl.DSL.field("CURRENT_TIMESTAMP", org.jooq.impl.SQLDataType.TIMESTAMP)), this, "最后修改时间");
 
     /**
      * Create a <code>mini_shop_471752.b2c_sms_send_record</code> table reference

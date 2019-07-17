@@ -24,7 +24,7 @@ import javax.annotation.Generated;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class StoreGoods implements Serializable {
 
-    private static final long serialVersionUID = -473605273;
+    private static final long serialVersionUID = 367544202;
 
     private Integer    storeId;
     private Integer    goodsId;
@@ -34,7 +34,8 @@ public class StoreGoods implements Serializable {
     private BigDecimal productPrice;
     private Byte       isSync;
     private Byte       isOnSale;
-    private Timestamp  upTime;
+    private Timestamp  createTime;
+    private Timestamp  updateTime;
     private Byte       flag;
 
     public StoreGoods() {}
@@ -48,7 +49,8 @@ public class StoreGoods implements Serializable {
         this.productPrice = value.productPrice;
         this.isSync = value.isSync;
         this.isOnSale = value.isOnSale;
-        this.upTime = value.upTime;
+        this.createTime = value.createTime;
+        this.updateTime = value.updateTime;
         this.flag = value.flag;
     }
 
@@ -61,7 +63,8 @@ public class StoreGoods implements Serializable {
         BigDecimal productPrice,
         Byte       isSync,
         Byte       isOnSale,
-        Timestamp  upTime,
+        Timestamp  createTime,
+        Timestamp  updateTime,
         Byte       flag
     ) {
         this.storeId = storeId;
@@ -72,7 +75,8 @@ public class StoreGoods implements Serializable {
         this.productPrice = productPrice;
         this.isSync = isSync;
         this.isOnSale = isOnSale;
-        this.upTime = upTime;
+        this.createTime = createTime;
+        this.updateTime = updateTime;
         this.flag = flag;
     }
 
@@ -140,12 +144,20 @@ public class StoreGoods implements Serializable {
         this.isOnSale = isOnSale;
     }
 
-    public Timestamp getUpTime() {
-        return this.upTime;
+    public Timestamp getCreateTime() {
+        return this.createTime;
     }
 
-    public void setUpTime(Timestamp upTime) {
-        this.upTime = upTime;
+    public void setCreateTime(Timestamp createTime) {
+        this.createTime = createTime;
+    }
+
+    public Timestamp getUpdateTime() {
+        return this.updateTime;
+    }
+
+    public void setUpdateTime(Timestamp updateTime) {
+        this.updateTime = updateTime;
     }
 
     public Byte getFlag() {
@@ -168,7 +180,8 @@ public class StoreGoods implements Serializable {
         sb.append(", ").append(productPrice);
         sb.append(", ").append(isSync);
         sb.append(", ").append(isOnSale);
-        sb.append(", ").append(upTime);
+        sb.append(", ").append(createTime);
+        sb.append(", ").append(updateTime);
         sb.append(", ").append(flag);
 
         sb.append(")");

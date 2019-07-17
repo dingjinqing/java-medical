@@ -9,6 +9,7 @@ import com.vpu.mp.db.shop.Keys;
 import com.vpu.mp.db.shop.MiniShop_471752;
 import com.vpu.mp.db.shop.tables.records.PaymentRecord;
 
+import java.sql.Timestamp;
 import java.util.Arrays;
 import java.util.List;
 
@@ -41,7 +42,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class Payment extends TableImpl<PaymentRecord> {
 
-    private static final long serialVersionUID = -534920660;
+    private static final long serialVersionUID = 1589202240;
 
     /**
      * The reference instance of <code>mini_shop_471752.b2c_payment</code>
@@ -62,9 +63,9 @@ public class Payment extends TableImpl<PaymentRecord> {
     public final TableField<PaymentRecord, Byte> ID = createField("id", org.jooq.impl.SQLDataType.TINYINT.nullable(false).identity(true), this, "");
 
     /**
-     * The column <code>mini_shop_471752.b2c_payment.shop_id</code>. 店铺ID
+     * The column <code>mini_shop_471752.b2c_payment.shop_id</code>. 店铺id
      */
-    public final TableField<PaymentRecord, Integer> SHOP_ID = createField("shop_id", org.jooq.impl.SQLDataType.INTEGER.nullable(false).defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.INTEGER)), this, "店铺ID");
+    public final TableField<PaymentRecord, Integer> SHOP_ID = createField("shop_id", org.jooq.impl.SQLDataType.INTEGER.nullable(false).defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.INTEGER)), this, "店铺id");
 
     /**
      * The column <code>mini_shop_471752.b2c_payment.pay_name</code>.
@@ -84,7 +85,7 @@ public class Payment extends TableImpl<PaymentRecord> {
     /**
      * The column <code>mini_shop_471752.b2c_payment.pay_desc</code>.
      */
-    public final TableField<PaymentRecord, String> PAY_DESC = createField("pay_desc", org.jooq.impl.SQLDataType.CLOB.nullable(false), this, "");
+    public final TableField<PaymentRecord, String> PAY_DESC = createField("pay_desc", org.jooq.impl.SQLDataType.CLOB, this, "");
 
     /**
      * The column <code>mini_shop_471752.b2c_payment.enabled</code>.
@@ -100,6 +101,16 @@ public class Payment extends TableImpl<PaymentRecord> {
      * The column <code>mini_shop_471752.b2c_payment.is_online_pay</code>.
      */
     public final TableField<PaymentRecord, Byte> IS_ONLINE_PAY = createField("is_online_pay", org.jooq.impl.SQLDataType.TINYINT.nullable(false).defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.TINYINT)), this, "");
+
+    /**
+     * The column <code>mini_shop_471752.b2c_payment.create_time</code>.
+     */
+    public final TableField<PaymentRecord, Timestamp> CREATE_TIME = createField("create_time", org.jooq.impl.SQLDataType.TIMESTAMP.nullable(false).defaultValue(org.jooq.impl.DSL.field("CURRENT_TIMESTAMP", org.jooq.impl.SQLDataType.TIMESTAMP)), this, "");
+
+    /**
+     * The column <code>mini_shop_471752.b2c_payment.update_time</code>. 最后修改时间
+     */
+    public final TableField<PaymentRecord, Timestamp> UPDATE_TIME = createField("update_time", org.jooq.impl.SQLDataType.TIMESTAMP.nullable(false).defaultValue(org.jooq.impl.DSL.field("CURRENT_TIMESTAMP", org.jooq.impl.SQLDataType.TIMESTAMP)), this, "最后修改时间");
 
     /**
      * Create a <code>mini_shop_471752.b2c_payment</code> table reference

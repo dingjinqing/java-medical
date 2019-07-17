@@ -6,6 +6,7 @@ package com.vpu.mp.db.shop.tables.pojos;
 
 import java.io.Serializable;
 import java.math.BigDecimal;
+import java.sql.Timestamp;
 
 import javax.annotation.Generated;
 
@@ -23,7 +24,7 @@ import javax.annotation.Generated;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class PurchasePriceRule implements Serializable {
 
-    private static final long serialVersionUID = -512363120;
+    private static final long serialVersionUID = -1825570483;
 
     private Integer    id;
     private Integer    purchasePriceId;
@@ -31,7 +32,9 @@ public class PurchasePriceRule implements Serializable {
     private BigDecimal purchasePrice;
     private String     productId;
     private Byte       delFlag;
-    private Integer    delTime;
+    private Timestamp  delTime;
+    private Timestamp  createTime;
+    private Timestamp  updateTime;
 
     public PurchasePriceRule() {}
 
@@ -43,6 +46,8 @@ public class PurchasePriceRule implements Serializable {
         this.productId = value.productId;
         this.delFlag = value.delFlag;
         this.delTime = value.delTime;
+        this.createTime = value.createTime;
+        this.updateTime = value.updateTime;
     }
 
     public PurchasePriceRule(
@@ -52,7 +57,9 @@ public class PurchasePriceRule implements Serializable {
         BigDecimal purchasePrice,
         String     productId,
         Byte       delFlag,
-        Integer    delTime
+        Timestamp  delTime,
+        Timestamp  createTime,
+        Timestamp  updateTime
     ) {
         this.id = id;
         this.purchasePriceId = purchasePriceId;
@@ -61,6 +68,8 @@ public class PurchasePriceRule implements Serializable {
         this.productId = productId;
         this.delFlag = delFlag;
         this.delTime = delTime;
+        this.createTime = createTime;
+        this.updateTime = updateTime;
     }
 
     public Integer getId() {
@@ -111,12 +120,28 @@ public class PurchasePriceRule implements Serializable {
         this.delFlag = delFlag;
     }
 
-    public Integer getDelTime() {
+    public Timestamp getDelTime() {
         return this.delTime;
     }
 
-    public void setDelTime(Integer delTime) {
+    public void setDelTime(Timestamp delTime) {
         this.delTime = delTime;
+    }
+
+    public Timestamp getCreateTime() {
+        return this.createTime;
+    }
+
+    public void setCreateTime(Timestamp createTime) {
+        this.createTime = createTime;
+    }
+
+    public Timestamp getUpdateTime() {
+        return this.updateTime;
+    }
+
+    public void setUpdateTime(Timestamp updateTime) {
+        this.updateTime = updateTime;
     }
 
     @Override
@@ -130,6 +155,8 @@ public class PurchasePriceRule implements Serializable {
         sb.append(", ").append(productId);
         sb.append(", ").append(delFlag);
         sb.append(", ").append(delTime);
+        sb.append(", ").append(createTime);
+        sb.append(", ").append(updateTime);
 
         sb.append(")");
         return sb.toString();

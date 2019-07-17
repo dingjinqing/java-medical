@@ -5,6 +5,7 @@ package com.vpu.mp.db.shop.tables.pojos;
 
 
 import java.io.Serializable;
+import java.sql.Timestamp;
 
 import javax.annotation.Generated;
 
@@ -22,17 +23,19 @@ import javax.annotation.Generated;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class Payment implements Serializable {
 
-    private static final long serialVersionUID = 326238207;
+    private static final long serialVersionUID = 45940684;
 
-    private Byte    id;
-    private Integer shopId;
-    private String  payName;
-    private String  payCode;
-    private String  payFee;
-    private String  payDesc;
-    private Byte    enabled;
-    private Byte    isCod;
-    private Byte    isOnlinePay;
+    private Byte      id;
+    private Integer   shopId;
+    private String    payName;
+    private String    payCode;
+    private String    payFee;
+    private String    payDesc;
+    private Byte      enabled;
+    private Byte      isCod;
+    private Byte      isOnlinePay;
+    private Timestamp createTime;
+    private Timestamp updateTime;
 
     public Payment() {}
 
@@ -46,18 +49,22 @@ public class Payment implements Serializable {
         this.enabled = value.enabled;
         this.isCod = value.isCod;
         this.isOnlinePay = value.isOnlinePay;
+        this.createTime = value.createTime;
+        this.updateTime = value.updateTime;
     }
 
     public Payment(
-        Byte    id,
-        Integer shopId,
-        String  payName,
-        String  payCode,
-        String  payFee,
-        String  payDesc,
-        Byte    enabled,
-        Byte    isCod,
-        Byte    isOnlinePay
+        Byte      id,
+        Integer   shopId,
+        String    payName,
+        String    payCode,
+        String    payFee,
+        String    payDesc,
+        Byte      enabled,
+        Byte      isCod,
+        Byte      isOnlinePay,
+        Timestamp createTime,
+        Timestamp updateTime
     ) {
         this.id = id;
         this.shopId = shopId;
@@ -68,6 +75,8 @@ public class Payment implements Serializable {
         this.enabled = enabled;
         this.isCod = isCod;
         this.isOnlinePay = isOnlinePay;
+        this.createTime = createTime;
+        this.updateTime = updateTime;
     }
 
     public Byte getId() {
@@ -142,6 +151,22 @@ public class Payment implements Serializable {
         this.isOnlinePay = isOnlinePay;
     }
 
+    public Timestamp getCreateTime() {
+        return this.createTime;
+    }
+
+    public void setCreateTime(Timestamp createTime) {
+        this.createTime = createTime;
+    }
+
+    public Timestamp getUpdateTime() {
+        return this.updateTime;
+    }
+
+    public void setUpdateTime(Timestamp updateTime) {
+        this.updateTime = updateTime;
+    }
+
     @Override
     public String toString() {
         StringBuilder sb = new StringBuilder("Payment (");
@@ -155,6 +180,8 @@ public class Payment implements Serializable {
         sb.append(", ").append(enabled);
         sb.append(", ").append(isCod);
         sb.append(", ").append(isOnlinePay);
+        sb.append(", ").append(createTime);
+        sb.append(", ").append(updateTime);
 
         sb.append(")");
         return sb.toString();

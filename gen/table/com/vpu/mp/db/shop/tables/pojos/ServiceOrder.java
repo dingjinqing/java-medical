@@ -24,7 +24,7 @@ import javax.annotation.Generated;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class ServiceOrder implements Serializable {
 
-    private static final long serialVersionUID = -236602764;
+    private static final long serialVersionUID = 1744374103;
 
     private Integer    orderId;
     private Integer    storeId;
@@ -50,7 +50,6 @@ public class ServiceOrder implements Serializable {
     private BigDecimal discount;
     private Integer    couponId;
     private BigDecimal orderAmount;
-    private Timestamp  addTime;
     private Timestamp  payTime;
     private Timestamp  cancelledTime;
     private Timestamp  finishedTime;
@@ -61,6 +60,8 @@ public class ServiceOrder implements Serializable {
     private Byte       type;
     private Byte       verifyPay;
     private String     aliTradeNo;
+    private Timestamp  createTime;
+    private Timestamp  updateTime;
 
     public ServiceOrder() {}
 
@@ -89,7 +90,6 @@ public class ServiceOrder implements Serializable {
         this.discount = value.discount;
         this.couponId = value.couponId;
         this.orderAmount = value.orderAmount;
-        this.addTime = value.addTime;
         this.payTime = value.payTime;
         this.cancelledTime = value.cancelledTime;
         this.finishedTime = value.finishedTime;
@@ -100,6 +100,8 @@ public class ServiceOrder implements Serializable {
         this.type = value.type;
         this.verifyPay = value.verifyPay;
         this.aliTradeNo = value.aliTradeNo;
+        this.createTime = value.createTime;
+        this.updateTime = value.updateTime;
     }
 
     public ServiceOrder(
@@ -127,7 +129,6 @@ public class ServiceOrder implements Serializable {
         BigDecimal discount,
         Integer    couponId,
         BigDecimal orderAmount,
-        Timestamp  addTime,
         Timestamp  payTime,
         Timestamp  cancelledTime,
         Timestamp  finishedTime,
@@ -137,7 +138,9 @@ public class ServiceOrder implements Serializable {
         String     cancelReason,
         Byte       type,
         Byte       verifyPay,
-        String     aliTradeNo
+        String     aliTradeNo,
+        Timestamp  createTime,
+        Timestamp  updateTime
     ) {
         this.orderId = orderId;
         this.storeId = storeId;
@@ -163,7 +166,6 @@ public class ServiceOrder implements Serializable {
         this.discount = discount;
         this.couponId = couponId;
         this.orderAmount = orderAmount;
-        this.addTime = addTime;
         this.payTime = payTime;
         this.cancelledTime = cancelledTime;
         this.finishedTime = finishedTime;
@@ -174,6 +176,8 @@ public class ServiceOrder implements Serializable {
         this.type = type;
         this.verifyPay = verifyPay;
         this.aliTradeNo = aliTradeNo;
+        this.createTime = createTime;
+        this.updateTime = updateTime;
     }
 
     public Integer getOrderId() {
@@ -368,14 +372,6 @@ public class ServiceOrder implements Serializable {
         this.orderAmount = orderAmount;
     }
 
-    public Timestamp getAddTime() {
-        return this.addTime;
-    }
-
-    public void setAddTime(Timestamp addTime) {
-        this.addTime = addTime;
-    }
-
     public Timestamp getPayTime() {
         return this.payTime;
     }
@@ -456,6 +452,22 @@ public class ServiceOrder implements Serializable {
         this.aliTradeNo = aliTradeNo;
     }
 
+    public Timestamp getCreateTime() {
+        return this.createTime;
+    }
+
+    public void setCreateTime(Timestamp createTime) {
+        this.createTime = createTime;
+    }
+
+    public Timestamp getUpdateTime() {
+        return this.updateTime;
+    }
+
+    public void setUpdateTime(Timestamp updateTime) {
+        this.updateTime = updateTime;
+    }
+
     @Override
     public String toString() {
         StringBuilder sb = new StringBuilder("ServiceOrder (");
@@ -484,7 +496,6 @@ public class ServiceOrder implements Serializable {
         sb.append(", ").append(discount);
         sb.append(", ").append(couponId);
         sb.append(", ").append(orderAmount);
-        sb.append(", ").append(addTime);
         sb.append(", ").append(payTime);
         sb.append(", ").append(cancelledTime);
         sb.append(", ").append(finishedTime);
@@ -495,6 +506,8 @@ public class ServiceOrder implements Serializable {
         sb.append(", ").append(type);
         sb.append(", ").append(verifyPay);
         sb.append(", ").append(aliTradeNo);
+        sb.append(", ").append(createTime);
+        sb.append(", ").append(updateTime);
 
         sb.append(")");
         return sb.toString();

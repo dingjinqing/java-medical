@@ -23,7 +23,7 @@ import javax.annotation.Generated;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class UserScore implements Serializable {
 
-    private static final long serialVersionUID = 1691063089;
+    private static final long serialVersionUID = -1849718776;
 
     private Integer   id;
     private Integer   userId;
@@ -37,7 +37,7 @@ public class UserScore implements Serializable {
     private Integer   shopId;
     private String    desc;
     private String    remark;
-    private Timestamp inTime;
+    private Timestamp createTime;
     private Timestamp expireTime;
     private String    adminUser;
 
@@ -56,7 +56,7 @@ public class UserScore implements Serializable {
         this.shopId = value.shopId;
         this.desc = value.desc;
         this.remark = value.remark;
-        this.inTime = value.inTime;
+        this.createTime = value.createTime;
         this.expireTime = value.expireTime;
         this.adminUser = value.adminUser;
     }
@@ -74,7 +74,7 @@ public class UserScore implements Serializable {
         Integer   shopId,
         String    desc,
         String    remark,
-        Timestamp inTime,
+        Timestamp createTime,
         Timestamp expireTime,
         String    adminUser
     ) {
@@ -90,7 +90,7 @@ public class UserScore implements Serializable {
         this.shopId = shopId;
         this.desc = desc;
         this.remark = remark;
-        this.inTime = inTime;
+        this.createTime = createTime;
         this.expireTime = expireTime;
         this.adminUser = adminUser;
     }
@@ -191,12 +191,12 @@ public class UserScore implements Serializable {
         this.remark = remark;
     }
 
-    public Timestamp getInTime() {
-        return this.inTime;
+    public Timestamp getCreateTime() {
+        return this.createTime;
     }
 
-    public void setInTime(Timestamp inTime) {
-        this.inTime = inTime;
+    public void setCreateTime(Timestamp createTime) {
+        this.createTime = createTime;
     }
 
     public Timestamp getExpireTime() {
@@ -231,7 +231,7 @@ public class UserScore implements Serializable {
         sb.append(", ").append(shopId);
         sb.append(", ").append(desc);
         sb.append(", ").append(remark);
-        sb.append(", ").append(inTime);
+        sb.append(", ").append(createTime);
         sb.append(", ").append(expireTime);
         sb.append(", ").append(adminUser);
 

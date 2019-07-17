@@ -24,15 +24,16 @@ import javax.annotation.Generated;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class GoodsOpaiSpec implements Serializable {
 
-    private static final long serialVersionUID = 1526832994;
+    private static final long serialVersionUID = -446766857;
 
     private Long       id;
     private Integer    goodsId;
     private String     prdSn;
     private BigDecimal prdPrice;
     private Byte       isOnSale;
-    private Byte       isDelete;
-    private Timestamp  addTime;
+    private Byte       delFlag;
+    private Timestamp  createTime;
+    private Timestamp  updateTime;
 
     public GoodsOpaiSpec() {}
 
@@ -42,8 +43,9 @@ public class GoodsOpaiSpec implements Serializable {
         this.prdSn = value.prdSn;
         this.prdPrice = value.prdPrice;
         this.isOnSale = value.isOnSale;
-        this.isDelete = value.isDelete;
-        this.addTime = value.addTime;
+        this.delFlag = value.delFlag;
+        this.createTime = value.createTime;
+        this.updateTime = value.updateTime;
     }
 
     public GoodsOpaiSpec(
@@ -52,16 +54,18 @@ public class GoodsOpaiSpec implements Serializable {
         String     prdSn,
         BigDecimal prdPrice,
         Byte       isOnSale,
-        Byte       isDelete,
-        Timestamp  addTime
+        Byte       delFlag,
+        Timestamp  createTime,
+        Timestamp  updateTime
     ) {
         this.id = id;
         this.goodsId = goodsId;
         this.prdSn = prdSn;
         this.prdPrice = prdPrice;
         this.isOnSale = isOnSale;
-        this.isDelete = isDelete;
-        this.addTime = addTime;
+        this.delFlag = delFlag;
+        this.createTime = createTime;
+        this.updateTime = updateTime;
     }
 
     public Long getId() {
@@ -104,20 +108,28 @@ public class GoodsOpaiSpec implements Serializable {
         this.isOnSale = isOnSale;
     }
 
-    public Byte getIsDelete() {
-        return this.isDelete;
+    public Byte getDelFlag() {
+        return this.delFlag;
     }
 
-    public void setIsDelete(Byte isDelete) {
-        this.isDelete = isDelete;
+    public void setDelFlag(Byte delFlag) {
+        this.delFlag = delFlag;
     }
 
-    public Timestamp getAddTime() {
-        return this.addTime;
+    public Timestamp getCreateTime() {
+        return this.createTime;
     }
 
-    public void setAddTime(Timestamp addTime) {
-        this.addTime = addTime;
+    public void setCreateTime(Timestamp createTime) {
+        this.createTime = createTime;
+    }
+
+    public Timestamp getUpdateTime() {
+        return this.updateTime;
+    }
+
+    public void setUpdateTime(Timestamp updateTime) {
+        this.updateTime = updateTime;
     }
 
     @Override
@@ -129,8 +141,9 @@ public class GoodsOpaiSpec implements Serializable {
         sb.append(", ").append(prdSn);
         sb.append(", ").append(prdPrice);
         sb.append(", ").append(isOnSale);
-        sb.append(", ").append(isDelete);
-        sb.append(", ").append(addTime);
+        sb.append(", ").append(delFlag);
+        sb.append(", ").append(createTime);
+        sb.append(", ").append(updateTime);
 
         sb.append(")");
         return sb.toString();

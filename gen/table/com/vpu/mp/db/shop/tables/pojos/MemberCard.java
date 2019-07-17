@@ -24,7 +24,7 @@ import javax.annotation.Generated;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class MemberCard implements Serializable {
 
-    private static final long serialVersionUID = 1110903356;
+    private static final long serialVersionUID = -2078071065;
 
     private Integer    id;
     private String     cardName;
@@ -44,15 +44,15 @@ public class MemberCard implements Serializable {
     private String     receiveCode;
     private String     desc;
     private String     mobile;
-    private Timestamp  addTime;
-    private Timestamp  upTime;
+    private Timestamp  createTime;
+    private Timestamp  updateTime;
     private Byte       flag;
     private Integer    sendMoney;
     private String     chargeMoney;
     private Integer    useTime;
     private String     storeList;
     private Integer    count;
-    private Byte       isDelete;
+    private Byte       delFlag;
     private String     grade;
     private String     gradeCondition;
     private String     activationCfg;
@@ -93,15 +93,15 @@ public class MemberCard implements Serializable {
         this.receiveCode = value.receiveCode;
         this.desc = value.desc;
         this.mobile = value.mobile;
-        this.addTime = value.addTime;
-        this.upTime = value.upTime;
+        this.createTime = value.createTime;
+        this.updateTime = value.updateTime;
         this.flag = value.flag;
         this.sendMoney = value.sendMoney;
         this.chargeMoney = value.chargeMoney;
         this.useTime = value.useTime;
         this.storeList = value.storeList;
         this.count = value.count;
-        this.isDelete = value.isDelete;
+        this.delFlag = value.delFlag;
         this.grade = value.grade;
         this.gradeCondition = value.gradeCondition;
         this.activationCfg = value.activationCfg;
@@ -141,15 +141,15 @@ public class MemberCard implements Serializable {
         String     receiveCode,
         String     desc,
         String     mobile,
-        Timestamp  addTime,
-        Timestamp  upTime,
+        Timestamp  createTime,
+        Timestamp  updateTime,
         Byte       flag,
         Integer    sendMoney,
         String     chargeMoney,
         Integer    useTime,
         String     storeList,
         Integer    count,
-        Byte       isDelete,
+        Byte       delFlag,
         String     grade,
         String     gradeCondition,
         String     activationCfg,
@@ -187,15 +187,15 @@ public class MemberCard implements Serializable {
         this.receiveCode = receiveCode;
         this.desc = desc;
         this.mobile = mobile;
-        this.addTime = addTime;
-        this.upTime = upTime;
+        this.createTime = createTime;
+        this.updateTime = updateTime;
         this.flag = flag;
         this.sendMoney = sendMoney;
         this.chargeMoney = chargeMoney;
         this.useTime = useTime;
         this.storeList = storeList;
         this.count = count;
-        this.isDelete = isDelete;
+        this.delFlag = delFlag;
         this.grade = grade;
         this.gradeCondition = gradeCondition;
         this.activationCfg = activationCfg;
@@ -360,20 +360,20 @@ public class MemberCard implements Serializable {
         this.mobile = mobile;
     }
 
-    public Timestamp getAddTime() {
-        return this.addTime;
+    public Timestamp getCreateTime() {
+        return this.createTime;
     }
 
-    public void setAddTime(Timestamp addTime) {
-        this.addTime = addTime;
+    public void setCreateTime(Timestamp createTime) {
+        this.createTime = createTime;
     }
 
-    public Timestamp getUpTime() {
-        return this.upTime;
+    public Timestamp getUpdateTime() {
+        return this.updateTime;
     }
 
-    public void setUpTime(Timestamp upTime) {
-        this.upTime = upTime;
+    public void setUpdateTime(Timestamp updateTime) {
+        this.updateTime = updateTime;
     }
 
     public Byte getFlag() {
@@ -424,12 +424,12 @@ public class MemberCard implements Serializable {
         this.count = count;
     }
 
-    public Byte getIsDelete() {
-        return this.isDelete;
+    public Byte getDelFlag() {
+        return this.delFlag;
     }
 
-    public void setIsDelete(Byte isDelete) {
-        this.isDelete = isDelete;
+    public void setDelFlag(Byte delFlag) {
+        this.delFlag = delFlag;
     }
 
     public String getGrade() {
@@ -598,15 +598,15 @@ public class MemberCard implements Serializable {
         sb.append(", ").append(receiveCode);
         sb.append(", ").append(desc);
         sb.append(", ").append(mobile);
-        sb.append(", ").append(addTime);
-        sb.append(", ").append(upTime);
+        sb.append(", ").append(createTime);
+        sb.append(", ").append(updateTime);
         sb.append(", ").append(flag);
         sb.append(", ").append(sendMoney);
         sb.append(", ").append(chargeMoney);
         sb.append(", ").append(useTime);
         sb.append(", ").append(storeList);
         sb.append(", ").append(count);
-        sb.append(", ").append(isDelete);
+        sb.append(", ").append(delFlag);
         sb.append(", ").append(grade);
         sb.append(", ").append(gradeCondition);
         sb.append(", ").append(activationCfg);

@@ -43,7 +43,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class UserImportDetail extends TableImpl<UserImportDetailRecord> {
 
-    private static final long serialVersionUID = -1032077862;
+    private static final long serialVersionUID = 876905434;
 
     /**
      * The reference instance of <code>mini_shop_471752.b2c_user_import_detail</code>
@@ -64,9 +64,9 @@ public class UserImportDetail extends TableImpl<UserImportDetailRecord> {
     public final TableField<UserImportDetailRecord, Integer> ID = createField("id", org.jooq.impl.SQLDataType.INTEGER.nullable(false).identity(true), this, "");
 
     /**
-     * The column <code>mini_shop_471752.b2c_user_import_detail.batch_id</code>. 主表ID
+     * The column <code>mini_shop_471752.b2c_user_import_detail.batch_id</code>. 主表id
      */
-    public final TableField<UserImportDetailRecord, Integer> BATCH_ID = createField("batch_id", org.jooq.impl.SQLDataType.INTEGER.nullable(false), this, "主表ID");
+    public final TableField<UserImportDetailRecord, Integer> BATCH_ID = createField("batch_id", org.jooq.impl.SQLDataType.INTEGER.nullable(false), this, "主表id");
 
     /**
      * The column <code>mini_shop_471752.b2c_user_import_detail.mobile</code>. 手机号
@@ -149,19 +149,24 @@ public class UserImportDetail extends TableImpl<UserImportDetailRecord> {
     public final TableField<UserImportDetailRecord, String> ERROR_MSG = createField("error_msg", org.jooq.impl.SQLDataType.VARCHAR(100), this, "错误内容");
 
     /**
-     * The column <code>mini_shop_471752.b2c_user_import_detail.card_id</code>. 会员卡ID
+     * The column <code>mini_shop_471752.b2c_user_import_detail.card_id</code>. 会员卡id
      */
-    public final TableField<UserImportDetailRecord, String> CARD_ID = createField("card_id", org.jooq.impl.SQLDataType.VARCHAR(100), this, "会员卡ID");
+    public final TableField<UserImportDetailRecord, String> CARD_ID = createField("card_id", org.jooq.impl.SQLDataType.VARCHAR(100), this, "会员卡id");
 
     /**
      * The column <code>mini_shop_471752.b2c_user_import_detail.is_activate</code>. 是否已激活
      */
-    public final TableField<UserImportDetailRecord, Byte> IS_ACTIVATE = createField("is_activate", org.jooq.impl.SQLDataType.TINYINT.defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.TINYINT)), this, "是否已激活");
+    public final TableField<UserImportDetailRecord, Byte> IS_ACTIVATE = createField("is_activate", org.jooq.impl.SQLDataType.TINYINT.nullable(false).defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.TINYINT)), this, "是否已激活");
 
     /**
-     * The column <code>mini_shop_471752.b2c_user_import_detail.add_time</code>. 添加时间
+     * The column <code>mini_shop_471752.b2c_user_import_detail.create_time</code>.
      */
-    public final TableField<UserImportDetailRecord, Timestamp> ADD_TIME = createField("add_time", org.jooq.impl.SQLDataType.TIMESTAMP, this, "添加时间");
+    public final TableField<UserImportDetailRecord, Timestamp> CREATE_TIME = createField("create_time", org.jooq.impl.SQLDataType.TIMESTAMP.nullable(false).defaultValue(org.jooq.impl.DSL.field("CURRENT_TIMESTAMP", org.jooq.impl.SQLDataType.TIMESTAMP)), this, "");
+
+    /**
+     * The column <code>mini_shop_471752.b2c_user_import_detail.update_time</code>. 最后修改时间
+     */
+    public final TableField<UserImportDetailRecord, Timestamp> UPDATE_TIME = createField("update_time", org.jooq.impl.SQLDataType.TIMESTAMP.nullable(false).defaultValue(org.jooq.impl.DSL.field("CURRENT_TIMESTAMP", org.jooq.impl.SQLDataType.TIMESTAMP)), this, "最后修改时间");
 
     /**
      * Create a <code>mini_shop_471752.b2c_user_import_detail</code> table reference

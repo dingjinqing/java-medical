@@ -23,15 +23,15 @@ import javax.annotation.Generated;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class ServiceSchedule implements Serializable {
 
-    private static final long serialVersionUID = 306746905;
+    private static final long serialVersionUID = -435951911;
 
     private Byte      scheduleId;
     private Integer   storeId;
     private String    scheduleName;
-    private String    beginTime;
+    private String    begcreateTime;
     private String    endTime;
     private Byte      delFlag;
-    private Timestamp addTime;
+    private Timestamp createTime;
     private Timestamp updateTime;
 
     public ServiceSchedule() {}
@@ -40,10 +40,10 @@ public class ServiceSchedule implements Serializable {
         this.scheduleId = value.scheduleId;
         this.storeId = value.storeId;
         this.scheduleName = value.scheduleName;
-        this.beginTime = value.beginTime;
+        this.begcreateTime = value.begcreateTime;
         this.endTime = value.endTime;
         this.delFlag = value.delFlag;
-        this.addTime = value.addTime;
+        this.createTime = value.createTime;
         this.updateTime = value.updateTime;
     }
 
@@ -51,19 +51,19 @@ public class ServiceSchedule implements Serializable {
         Byte      scheduleId,
         Integer   storeId,
         String    scheduleName,
-        String    beginTime,
+        String    begcreateTime,
         String    endTime,
         Byte      delFlag,
-        Timestamp addTime,
+        Timestamp createTime,
         Timestamp updateTime
     ) {
         this.scheduleId = scheduleId;
         this.storeId = storeId;
         this.scheduleName = scheduleName;
-        this.beginTime = beginTime;
+        this.begcreateTime = begcreateTime;
         this.endTime = endTime;
         this.delFlag = delFlag;
-        this.addTime = addTime;
+        this.createTime = createTime;
         this.updateTime = updateTime;
     }
 
@@ -91,12 +91,12 @@ public class ServiceSchedule implements Serializable {
         this.scheduleName = scheduleName;
     }
 
-    public String getBeginTime() {
-        return this.beginTime;
+    public String getBegcreateTime() {
+        return this.begcreateTime;
     }
 
-    public void setBeginTime(String beginTime) {
-        this.beginTime = beginTime;
+    public void setBegcreateTime(String begcreateTime) {
+        this.begcreateTime = begcreateTime;
     }
 
     public String getEndTime() {
@@ -115,12 +115,12 @@ public class ServiceSchedule implements Serializable {
         this.delFlag = delFlag;
     }
 
-    public Timestamp getAddTime() {
-        return this.addTime;
+    public Timestamp getCreateTime() {
+        return this.createTime;
     }
 
-    public void setAddTime(Timestamp addTime) {
-        this.addTime = addTime;
+    public void setCreateTime(Timestamp createTime) {
+        this.createTime = createTime;
     }
 
     public Timestamp getUpdateTime() {
@@ -138,10 +138,10 @@ public class ServiceSchedule implements Serializable {
         sb.append(scheduleId);
         sb.append(", ").append(storeId);
         sb.append(", ").append(scheduleName);
-        sb.append(", ").append(beginTime);
+        sb.append(", ").append(begcreateTime);
         sb.append(", ").append(endTime);
         sb.append(", ").append(delFlag);
-        sb.append(", ").append(addTime);
+        sb.append(", ").append(createTime);
         sb.append(", ").append(updateTime);
 
         sb.append(")");

@@ -24,64 +24,64 @@ import javax.annotation.Generated;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class UserCard implements Serializable {
 
-    private static final long serialVersionUID = 832734415;
+    private static final long serialVersionUID = 1455711704;
 
     private Integer    userId;
     private Integer    cardId;
-    private Timestamp  addTime;
     private Byte       flag;
     private String     cardNo;
     private Timestamp  expireTime;
-    private Timestamp  updateTime;
     private Byte       isDefault;
     private BigDecimal money;
     private Integer    surplus;
     private Timestamp  activationTime;
     private Integer    exchangSurplus;
+    private Timestamp  createTime;
+    private Timestamp  updateTime;
 
     public UserCard() {}
 
     public UserCard(UserCard value) {
         this.userId = value.userId;
         this.cardId = value.cardId;
-        this.addTime = value.addTime;
         this.flag = value.flag;
         this.cardNo = value.cardNo;
         this.expireTime = value.expireTime;
-        this.updateTime = value.updateTime;
         this.isDefault = value.isDefault;
         this.money = value.money;
         this.surplus = value.surplus;
         this.activationTime = value.activationTime;
         this.exchangSurplus = value.exchangSurplus;
+        this.createTime = value.createTime;
+        this.updateTime = value.updateTime;
     }
 
     public UserCard(
         Integer    userId,
         Integer    cardId,
-        Timestamp  addTime,
         Byte       flag,
         String     cardNo,
         Timestamp  expireTime,
-        Timestamp  updateTime,
         Byte       isDefault,
         BigDecimal money,
         Integer    surplus,
         Timestamp  activationTime,
-        Integer    exchangSurplus
+        Integer    exchangSurplus,
+        Timestamp  createTime,
+        Timestamp  updateTime
     ) {
         this.userId = userId;
         this.cardId = cardId;
-        this.addTime = addTime;
         this.flag = flag;
         this.cardNo = cardNo;
         this.expireTime = expireTime;
-        this.updateTime = updateTime;
         this.isDefault = isDefault;
         this.money = money;
         this.surplus = surplus;
         this.activationTime = activationTime;
         this.exchangSurplus = exchangSurplus;
+        this.createTime = createTime;
+        this.updateTime = updateTime;
     }
 
     public Integer getUserId() {
@@ -98,14 +98,6 @@ public class UserCard implements Serializable {
 
     public void setCardId(Integer cardId) {
         this.cardId = cardId;
-    }
-
-    public Timestamp getAddTime() {
-        return this.addTime;
-    }
-
-    public void setAddTime(Timestamp addTime) {
-        this.addTime = addTime;
     }
 
     public Byte getFlag() {
@@ -130,14 +122,6 @@ public class UserCard implements Serializable {
 
     public void setExpireTime(Timestamp expireTime) {
         this.expireTime = expireTime;
-    }
-
-    public Timestamp getUpdateTime() {
-        return this.updateTime;
-    }
-
-    public void setUpdateTime(Timestamp updateTime) {
-        this.updateTime = updateTime;
     }
 
     public Byte getIsDefault() {
@@ -180,22 +164,38 @@ public class UserCard implements Serializable {
         this.exchangSurplus = exchangSurplus;
     }
 
+    public Timestamp getCreateTime() {
+        return this.createTime;
+    }
+
+    public void setCreateTime(Timestamp createTime) {
+        this.createTime = createTime;
+    }
+
+    public Timestamp getUpdateTime() {
+        return this.updateTime;
+    }
+
+    public void setUpdateTime(Timestamp updateTime) {
+        this.updateTime = updateTime;
+    }
+
     @Override
     public String toString() {
         StringBuilder sb = new StringBuilder("UserCard (");
 
         sb.append(userId);
         sb.append(", ").append(cardId);
-        sb.append(", ").append(addTime);
         sb.append(", ").append(flag);
         sb.append(", ").append(cardNo);
         sb.append(", ").append(expireTime);
-        sb.append(", ").append(updateTime);
         sb.append(", ").append(isDefault);
         sb.append(", ").append(money);
         sb.append(", ").append(surplus);
         sb.append(", ").append(activationTime);
         sb.append(", ").append(exchangSurplus);
+        sb.append(", ").append(createTime);
+        sb.append(", ").append(updateTime);
 
         sb.append(")");
         return sb.toString();

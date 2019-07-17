@@ -6,6 +6,7 @@ package com.vpu.mp.db.shop.tables.pojos;
 
 import java.io.Serializable;
 import java.math.BigDecimal;
+import java.sql.Timestamp;
 
 import javax.annotation.Generated;
 
@@ -23,7 +24,7 @@ import javax.annotation.Generated;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class GradePrd implements Serializable {
 
-    private static final long serialVersionUID = 1674225862;
+    private static final long serialVersionUID = -1533586281;
 
     private Integer    id;
     private Integer    prdId;
@@ -31,6 +32,8 @@ public class GradePrd implements Serializable {
     private Integer    shopId;
     private BigDecimal gradePrice;
     private String     grade;
+    private Timestamp  createTime;
+    private Timestamp  updateTime;
 
     public GradePrd() {}
 
@@ -41,6 +44,8 @@ public class GradePrd implements Serializable {
         this.shopId = value.shopId;
         this.gradePrice = value.gradePrice;
         this.grade = value.grade;
+        this.createTime = value.createTime;
+        this.updateTime = value.updateTime;
     }
 
     public GradePrd(
@@ -49,7 +54,9 @@ public class GradePrd implements Serializable {
         Integer    goodsId,
         Integer    shopId,
         BigDecimal gradePrice,
-        String     grade
+        String     grade,
+        Timestamp  createTime,
+        Timestamp  updateTime
     ) {
         this.id = id;
         this.prdId = prdId;
@@ -57,6 +64,8 @@ public class GradePrd implements Serializable {
         this.shopId = shopId;
         this.gradePrice = gradePrice;
         this.grade = grade;
+        this.createTime = createTime;
+        this.updateTime = updateTime;
     }
 
     public Integer getId() {
@@ -107,6 +116,22 @@ public class GradePrd implements Serializable {
         this.grade = grade;
     }
 
+    public Timestamp getCreateTime() {
+        return this.createTime;
+    }
+
+    public void setCreateTime(Timestamp createTime) {
+        this.createTime = createTime;
+    }
+
+    public Timestamp getUpdateTime() {
+        return this.updateTime;
+    }
+
+    public void setUpdateTime(Timestamp updateTime) {
+        this.updateTime = updateTime;
+    }
+
     @Override
     public String toString() {
         StringBuilder sb = new StringBuilder("GradePrd (");
@@ -117,6 +142,8 @@ public class GradePrd implements Serializable {
         sb.append(", ").append(shopId);
         sb.append(", ").append(gradePrice);
         sb.append(", ").append(grade);
+        sb.append(", ").append(createTime);
+        sb.append(", ").append(updateTime);
 
         sb.append(")");
         return sb.toString();

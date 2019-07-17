@@ -23,13 +23,13 @@ import javax.annotation.Generated;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class MpJumpUsable implements Serializable {
 
-    private static final long serialVersionUID = -2108206584;
+    private static final long serialVersionUID = -1368566293;
 
     private Integer   id;
     private Integer   templateId;
     private String    appId;
     private Byte      usable;
-    private Timestamp addTime;
+    private Timestamp createTime;
     private Timestamp updateTime;
 
     public MpJumpUsable() {}
@@ -39,7 +39,7 @@ public class MpJumpUsable implements Serializable {
         this.templateId = value.templateId;
         this.appId = value.appId;
         this.usable = value.usable;
-        this.addTime = value.addTime;
+        this.createTime = value.createTime;
         this.updateTime = value.updateTime;
     }
 
@@ -48,14 +48,14 @@ public class MpJumpUsable implements Serializable {
         Integer   templateId,
         String    appId,
         Byte      usable,
-        Timestamp addTime,
+        Timestamp createTime,
         Timestamp updateTime
     ) {
         this.id = id;
         this.templateId = templateId;
         this.appId = appId;
         this.usable = usable;
-        this.addTime = addTime;
+        this.createTime = createTime;
         this.updateTime = updateTime;
     }
 
@@ -91,12 +91,12 @@ public class MpJumpUsable implements Serializable {
         this.usable = usable;
     }
 
-    public Timestamp getAddTime() {
-        return this.addTime;
+    public Timestamp getCreateTime() {
+        return this.createTime;
     }
 
-    public void setAddTime(Timestamp addTime) {
-        this.addTime = addTime;
+    public void setCreateTime(Timestamp createTime) {
+        this.createTime = createTime;
     }
 
     public Timestamp getUpdateTime() {
@@ -115,7 +115,7 @@ public class MpJumpUsable implements Serializable {
         sb.append(", ").append(templateId);
         sb.append(", ").append(appId);
         sb.append(", ").append(usable);
-        sb.append(", ").append(addTime);
+        sb.append(", ").append(createTime);
         sb.append(", ").append(updateTime);
 
         sb.append(")");

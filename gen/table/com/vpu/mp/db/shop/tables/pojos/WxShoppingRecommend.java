@@ -23,14 +23,15 @@ import javax.annotation.Generated;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class WxShoppingRecommend implements Serializable {
 
-    private static final long serialVersionUID = 1191060661;
+    private static final long serialVersionUID = -1404173296;
 
     private Integer   id;
     private Integer   userId;
     private Integer   goodsId;
     private Integer   orderSn;
     private Integer   clickNum;
-    private Timestamp addTime;
+    private Timestamp createTime;
+    private Timestamp updateTime;
 
     public WxShoppingRecommend() {}
 
@@ -40,7 +41,8 @@ public class WxShoppingRecommend implements Serializable {
         this.goodsId = value.goodsId;
         this.orderSn = value.orderSn;
         this.clickNum = value.clickNum;
-        this.addTime = value.addTime;
+        this.createTime = value.createTime;
+        this.updateTime = value.updateTime;
     }
 
     public WxShoppingRecommend(
@@ -49,14 +51,16 @@ public class WxShoppingRecommend implements Serializable {
         Integer   goodsId,
         Integer   orderSn,
         Integer   clickNum,
-        Timestamp addTime
+        Timestamp createTime,
+        Timestamp updateTime
     ) {
         this.id = id;
         this.userId = userId;
         this.goodsId = goodsId;
         this.orderSn = orderSn;
         this.clickNum = clickNum;
-        this.addTime = addTime;
+        this.createTime = createTime;
+        this.updateTime = updateTime;
     }
 
     public Integer getId() {
@@ -99,12 +103,20 @@ public class WxShoppingRecommend implements Serializable {
         this.clickNum = clickNum;
     }
 
-    public Timestamp getAddTime() {
-        return this.addTime;
+    public Timestamp getCreateTime() {
+        return this.createTime;
     }
 
-    public void setAddTime(Timestamp addTime) {
-        this.addTime = addTime;
+    public void setCreateTime(Timestamp createTime) {
+        this.createTime = createTime;
+    }
+
+    public Timestamp getUpdateTime() {
+        return this.updateTime;
+    }
+
+    public void setUpdateTime(Timestamp updateTime) {
+        this.updateTime = updateTime;
     }
 
     @Override
@@ -116,7 +128,8 @@ public class WxShoppingRecommend implements Serializable {
         sb.append(", ").append(goodsId);
         sb.append(", ").append(orderSn);
         sb.append(", ").append(clickNum);
-        sb.append(", ").append(addTime);
+        sb.append(", ").append(createTime);
+        sb.append(", ").append(updateTime);
 
         sb.append(")");
         return sb.toString();

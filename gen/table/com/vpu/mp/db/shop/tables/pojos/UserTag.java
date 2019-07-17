@@ -23,28 +23,36 @@ import javax.annotation.Generated;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class UserTag implements Serializable {
 
-    private static final long serialVersionUID = 828432499;
+    private static final long serialVersionUID = -642863719;
 
     private Integer   userId;
     private Integer   tagId;
-    private Timestamp addTime;
+    private Timestamp createTime;
+    private Timestamp updateTime;
+    private Byte      isDelete;
 
     public UserTag() {}
 
     public UserTag(UserTag value) {
         this.userId = value.userId;
         this.tagId = value.tagId;
-        this.addTime = value.addTime;
+        this.createTime = value.createTime;
+        this.updateTime = value.updateTime;
+        this.isDelete = value.isDelete;
     }
 
     public UserTag(
         Integer   userId,
         Integer   tagId,
-        Timestamp addTime
+        Timestamp createTime,
+        Timestamp updateTime,
+        Byte      isDelete
     ) {
         this.userId = userId;
         this.tagId = tagId;
-        this.addTime = addTime;
+        this.createTime = createTime;
+        this.updateTime = updateTime;
+        this.isDelete = isDelete;
     }
 
     public Integer getUserId() {
@@ -63,12 +71,28 @@ public class UserTag implements Serializable {
         this.tagId = tagId;
     }
 
-    public Timestamp getAddTime() {
-        return this.addTime;
+    public Timestamp getCreateTime() {
+        return this.createTime;
     }
 
-    public void setAddTime(Timestamp addTime) {
-        this.addTime = addTime;
+    public void setCreateTime(Timestamp createTime) {
+        this.createTime = createTime;
+    }
+
+    public Timestamp getUpdateTime() {
+        return this.updateTime;
+    }
+
+    public void setUpdateTime(Timestamp updateTime) {
+        this.updateTime = updateTime;
+    }
+
+    public Byte getIsDelete() {
+        return this.isDelete;
+    }
+
+    public void setIsDelete(Byte isDelete) {
+        this.isDelete = isDelete;
     }
 
     @Override
@@ -77,7 +101,9 @@ public class UserTag implements Serializable {
 
         sb.append(userId);
         sb.append(", ").append(tagId);
-        sb.append(", ").append(addTime);
+        sb.append(", ").append(createTime);
+        sb.append(", ").append(updateTime);
+        sb.append(", ").append(isDelete);
 
         sb.append(")");
         return sb.toString();

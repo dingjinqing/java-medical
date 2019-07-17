@@ -23,13 +23,14 @@ import javax.annotation.Generated;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class CommentGoodsAnswer implements Serializable {
 
-    private static final long serialVersionUID = -1421345498;
+    private static final long serialVersionUID = 1729190172;
 
     private Integer   answerId;
     private Integer   commentId;
     private String    content;
-    private Timestamp answerTime;
     private Byte      delFlag;
+    private Timestamp createTime;
+    private Timestamp updateTime;
 
     public CommentGoodsAnswer() {}
 
@@ -37,22 +38,25 @@ public class CommentGoodsAnswer implements Serializable {
         this.answerId = value.answerId;
         this.commentId = value.commentId;
         this.content = value.content;
-        this.answerTime = value.answerTime;
         this.delFlag = value.delFlag;
+        this.createTime = value.createTime;
+        this.updateTime = value.updateTime;
     }
 
     public CommentGoodsAnswer(
         Integer   answerId,
         Integer   commentId,
         String    content,
-        Timestamp answerTime,
-        Byte      delFlag
+        Byte      delFlag,
+        Timestamp createTime,
+        Timestamp updateTime
     ) {
         this.answerId = answerId;
         this.commentId = commentId;
         this.content = content;
-        this.answerTime = answerTime;
         this.delFlag = delFlag;
+        this.createTime = createTime;
+        this.updateTime = updateTime;
     }
 
     public Integer getAnswerId() {
@@ -79,20 +83,28 @@ public class CommentGoodsAnswer implements Serializable {
         this.content = content;
     }
 
-    public Timestamp getAnswerTime() {
-        return this.answerTime;
-    }
-
-    public void setAnswerTime(Timestamp answerTime) {
-        this.answerTime = answerTime;
-    }
-
     public Byte getDelFlag() {
         return this.delFlag;
     }
 
     public void setDelFlag(Byte delFlag) {
         this.delFlag = delFlag;
+    }
+
+    public Timestamp getCreateTime() {
+        return this.createTime;
+    }
+
+    public void setCreateTime(Timestamp createTime) {
+        this.createTime = createTime;
+    }
+
+    public Timestamp getUpdateTime() {
+        return this.updateTime;
+    }
+
+    public void setUpdateTime(Timestamp updateTime) {
+        this.updateTime = updateTime;
     }
 
     @Override
@@ -102,8 +114,9 @@ public class CommentGoodsAnswer implements Serializable {
         sb.append(answerId);
         sb.append(", ").append(commentId);
         sb.append(", ").append(content);
-        sb.append(", ").append(answerTime);
         sb.append(", ").append(delFlag);
+        sb.append(", ").append(createTime);
+        sb.append(", ").append(updateTime);
 
         sb.append(")");
         return sb.toString();

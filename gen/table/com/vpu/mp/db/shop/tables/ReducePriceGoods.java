@@ -10,6 +10,7 @@ import com.vpu.mp.db.shop.MiniShop_471752;
 import com.vpu.mp.db.shop.tables.records.ReducePriceGoodsRecord;
 
 import java.math.BigDecimal;
+import java.sql.Timestamp;
 import java.util.Arrays;
 import java.util.List;
 
@@ -42,7 +43,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class ReducePriceGoods extends TableImpl<ReducePriceGoodsRecord> {
 
-    private static final long serialVersionUID = 704583231;
+    private static final long serialVersionUID = -1810712954;
 
     /**
      * The reference instance of <code>mini_shop_471752.b2c_reduce_price_goods</code>
@@ -63,14 +64,14 @@ public class ReducePriceGoods extends TableImpl<ReducePriceGoodsRecord> {
     public final TableField<ReducePriceGoodsRecord, Integer> ID = createField("id", org.jooq.impl.SQLDataType.INTEGER.nullable(false).identity(true), this, "");
 
     /**
-     * The column <code>mini_shop_471752.b2c_reduce_price_goods.reduce_price_id</code>. 限时减价活动ID
+     * The column <code>mini_shop_471752.b2c_reduce_price_goods.reduce_price_id</code>. 限时减价活动id
      */
-    public final TableField<ReducePriceGoodsRecord, Integer> REDUCE_PRICE_ID = createField("reduce_price_id", org.jooq.impl.SQLDataType.INTEGER.nullable(false), this, "限时减价活动ID");
+    public final TableField<ReducePriceGoodsRecord, Integer> REDUCE_PRICE_ID = createField("reduce_price_id", org.jooq.impl.SQLDataType.INTEGER.nullable(false), this, "限时减价活动id");
 
     /**
-     * The column <code>mini_shop_471752.b2c_reduce_price_goods.goods_id</code>. 商品ID
+     * The column <code>mini_shop_471752.b2c_reduce_price_goods.goods_id</code>. 商品id
      */
-    public final TableField<ReducePriceGoodsRecord, Integer> GOODS_ID = createField("goods_id", org.jooq.impl.SQLDataType.INTEGER.nullable(false), this, "商品ID");
+    public final TableField<ReducePriceGoodsRecord, Integer> GOODS_ID = createField("goods_id", org.jooq.impl.SQLDataType.INTEGER.nullable(false), this, "商品id");
 
     /**
      * The column <code>mini_shop_471752.b2c_reduce_price_goods.discount</code>. 打几折
@@ -91,6 +92,16 @@ public class ReducePriceGoods extends TableImpl<ReducePriceGoodsRecord> {
      * The column <code>mini_shop_471752.b2c_reduce_price_goods.is_checked</code>. 是否选中
      */
     public final TableField<ReducePriceGoodsRecord, Byte> IS_CHECKED = createField("is_checked", org.jooq.impl.SQLDataType.TINYINT, this, "是否选中");
+
+    /**
+     * The column <code>mini_shop_471752.b2c_reduce_price_goods.create_time</code>.
+     */
+    public final TableField<ReducePriceGoodsRecord, Timestamp> CREATE_TIME = createField("create_time", org.jooq.impl.SQLDataType.TIMESTAMP.nullable(false).defaultValue(org.jooq.impl.DSL.field("CURRENT_TIMESTAMP", org.jooq.impl.SQLDataType.TIMESTAMP)), this, "");
+
+    /**
+     * The column <code>mini_shop_471752.b2c_reduce_price_goods.update_time</code>. 最后修改时间
+     */
+    public final TableField<ReducePriceGoodsRecord, Timestamp> UPDATE_TIME = createField("update_time", org.jooq.impl.SQLDataType.TIMESTAMP.nullable(false).defaultValue(org.jooq.impl.DSL.field("CURRENT_TIMESTAMP", org.jooq.impl.SQLDataType.TIMESTAMP)), this, "最后修改时间");
 
     /**
      * Create a <code>mini_shop_471752.b2c_reduce_price_goods</code> table reference

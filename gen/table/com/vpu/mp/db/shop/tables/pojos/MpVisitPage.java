@@ -23,7 +23,7 @@ import javax.annotation.Generated;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class MpVisitPage implements Serializable {
 
-    private static final long serialVersionUID = -1779085836;
+    private static final long serialVersionUID = 394148701;
 
     private String    refDate;
     private String    pagePath;
@@ -34,7 +34,8 @@ public class MpVisitPage implements Serializable {
     private Integer   exitpagePv;
     private Integer   pageSharePv;
     private Integer   pageShareUv;
-    private Timestamp addTime;
+    private Timestamp createTime;
+    private Timestamp updateTime;
 
     public MpVisitPage() {}
 
@@ -48,7 +49,8 @@ public class MpVisitPage implements Serializable {
         this.exitpagePv = value.exitpagePv;
         this.pageSharePv = value.pageSharePv;
         this.pageShareUv = value.pageShareUv;
-        this.addTime = value.addTime;
+        this.createTime = value.createTime;
+        this.updateTime = value.updateTime;
     }
 
     public MpVisitPage(
@@ -61,7 +63,8 @@ public class MpVisitPage implements Serializable {
         Integer   exitpagePv,
         Integer   pageSharePv,
         Integer   pageShareUv,
-        Timestamp addTime
+        Timestamp createTime,
+        Timestamp updateTime
     ) {
         this.refDate = refDate;
         this.pagePath = pagePath;
@@ -72,7 +75,8 @@ public class MpVisitPage implements Serializable {
         this.exitpagePv = exitpagePv;
         this.pageSharePv = pageSharePv;
         this.pageShareUv = pageShareUv;
-        this.addTime = addTime;
+        this.createTime = createTime;
+        this.updateTime = updateTime;
     }
 
     public String getRefDate() {
@@ -147,12 +151,20 @@ public class MpVisitPage implements Serializable {
         this.pageShareUv = pageShareUv;
     }
 
-    public Timestamp getAddTime() {
-        return this.addTime;
+    public Timestamp getCreateTime() {
+        return this.createTime;
     }
 
-    public void setAddTime(Timestamp addTime) {
-        this.addTime = addTime;
+    public void setCreateTime(Timestamp createTime) {
+        this.createTime = createTime;
+    }
+
+    public Timestamp getUpdateTime() {
+        return this.updateTime;
+    }
+
+    public void setUpdateTime(Timestamp updateTime) {
+        this.updateTime = updateTime;
     }
 
     @Override
@@ -168,7 +180,8 @@ public class MpVisitPage implements Serializable {
         sb.append(", ").append(exitpagePv);
         sb.append(", ").append(pageSharePv);
         sb.append(", ").append(pageShareUv);
-        sb.append(", ").append(addTime);
+        sb.append(", ").append(createTime);
+        sb.append(", ").append(updateTime);
 
         sb.append(")");
         return sb.toString();

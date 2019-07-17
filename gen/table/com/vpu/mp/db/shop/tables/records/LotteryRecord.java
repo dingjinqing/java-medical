@@ -27,7 +27,7 @@ import org.jooq.impl.UpdatableRecordImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class LotteryRecord extends UpdatableRecordImpl<LotteryRecord> {
 
-    private static final long serialVersionUID = -1093982906;
+    private static final long serialVersionUID = -1364900884;
 
     /**
      * Setter for <code>mini_shop_471752.b2c_lottery.id</code>.
@@ -338,56 +338,56 @@ public class LotteryRecord extends UpdatableRecordImpl<LotteryRecord> {
     }
 
     /**
-     * Setter for <code>mini_shop_471752.b2c_lottery.add_time</code>. 添加时间
-     */
-    public void setAddTime(Timestamp value) {
-        set(22, value);
-    }
-
-    /**
-     * Getter for <code>mini_shop_471752.b2c_lottery.add_time</code>. 添加时间
-     */
-    public Timestamp getAddTime() {
-        return (Timestamp) get(22);
-    }
-
-    /**
      * Setter for <code>mini_shop_471752.b2c_lottery.status</code>. 状态：1停用
      */
     public void setStatus(Byte value) {
-        set(23, value);
+        set(22, value);
     }
 
     /**
      * Getter for <code>mini_shop_471752.b2c_lottery.status</code>. 状态：1停用
      */
     public Byte getStatus() {
-        return (Byte) get(23);
+        return (Byte) get(22);
     }
 
     /**
      * Setter for <code>mini_shop_471752.b2c_lottery.del_flag</code>. 1删除
      */
     public void setDelFlag(Byte value) {
-        set(24, value);
+        set(23, value);
     }
 
     /**
      * Getter for <code>mini_shop_471752.b2c_lottery.del_flag</code>. 1删除
      */
     public Byte getDelFlag() {
-        return (Byte) get(24);
+        return (Byte) get(23);
     }
 
     /**
-     * Setter for <code>mini_shop_471752.b2c_lottery.update_time</code>. 更新时间
+     * Setter for <code>mini_shop_471752.b2c_lottery.create_time</code>.
+     */
+    public void setCreateTime(Timestamp value) {
+        set(24, value);
+    }
+
+    /**
+     * Getter for <code>mini_shop_471752.b2c_lottery.create_time</code>.
+     */
+    public Timestamp getCreateTime() {
+        return (Timestamp) get(24);
+    }
+
+    /**
+     * Setter for <code>mini_shop_471752.b2c_lottery.update_time</code>. 最后修改时间
      */
     public void setUpdateTime(Timestamp value) {
         set(25, value);
     }
 
     /**
-     * Getter for <code>mini_shop_471752.b2c_lottery.update_time</code>. 更新时间
+     * Getter for <code>mini_shop_471752.b2c_lottery.update_time</code>. 最后修改时间
      */
     public Timestamp getUpdateTime() {
         return (Timestamp) get(25);
@@ -419,7 +419,7 @@ public class LotteryRecord extends UpdatableRecordImpl<LotteryRecord> {
     /**
      * Create a detached, initialised LotteryRecord
      */
-    public LotteryRecord(Integer id, String lotteryName, Timestamp startTime, Timestamp endTime, String lotteryExplain, Integer freeChances, Byte canShare, Integer shareChances, Byte canUseScore, Integer scorePerChance, Integer scoreChances, Integer noAwardScore, String noAwardImage, String noAwardIcon, String firstAward, Integer firstAwardTimes, String secondAward, Integer secondAwardTimes, String thirdAward, Integer thirdAwardTimes, String fourthAward, Integer fourthAwardTimes, Timestamp addTime, Byte status, Byte delFlag, Timestamp updateTime) {
+    public LotteryRecord(Integer id, String lotteryName, Timestamp startTime, Timestamp endTime, String lotteryExplain, Integer freeChances, Byte canShare, Integer shareChances, Byte canUseScore, Integer scorePerChance, Integer scoreChances, Integer noAwardScore, String noAwardImage, String noAwardIcon, String firstAward, Integer firstAwardTimes, String secondAward, Integer secondAwardTimes, String thirdAward, Integer thirdAwardTimes, String fourthAward, Integer fourthAwardTimes, Byte status, Byte delFlag, Timestamp createTime, Timestamp updateTime) {
         super(Lottery.LOTTERY);
 
         set(0, id);
@@ -444,9 +444,9 @@ public class LotteryRecord extends UpdatableRecordImpl<LotteryRecord> {
         set(19, thirdAwardTimes);
         set(20, fourthAward);
         set(21, fourthAwardTimes);
-        set(22, addTime);
-        set(23, status);
-        set(24, delFlag);
+        set(22, status);
+        set(23, delFlag);
+        set(24, createTime);
         set(25, updateTime);
     }
 }

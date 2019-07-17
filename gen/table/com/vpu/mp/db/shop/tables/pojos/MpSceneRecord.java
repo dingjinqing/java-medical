@@ -23,7 +23,7 @@ import javax.annotation.Generated;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class MpSceneRecord implements Serializable {
 
-    private static final long serialVersionUID = 1488712861;
+    private static final long serialVersionUID = -1482939614;
 
     private Integer   userId;
     private String    path;
@@ -32,7 +32,7 @@ public class MpSceneRecord implements Serializable {
     private String    shareTicket;
     private String    referrerInfo;
     private Integer   count;
-    private Timestamp addTime;
+    private Timestamp createTime;
     private Timestamp updateTime;
 
     public MpSceneRecord() {}
@@ -45,7 +45,7 @@ public class MpSceneRecord implements Serializable {
         this.shareTicket = value.shareTicket;
         this.referrerInfo = value.referrerInfo;
         this.count = value.count;
-        this.addTime = value.addTime;
+        this.createTime = value.createTime;
         this.updateTime = value.updateTime;
     }
 
@@ -57,7 +57,7 @@ public class MpSceneRecord implements Serializable {
         String    shareTicket,
         String    referrerInfo,
         Integer   count,
-        Timestamp addTime,
+        Timestamp createTime,
         Timestamp updateTime
     ) {
         this.userId = userId;
@@ -67,7 +67,7 @@ public class MpSceneRecord implements Serializable {
         this.shareTicket = shareTicket;
         this.referrerInfo = referrerInfo;
         this.count = count;
-        this.addTime = addTime;
+        this.createTime = createTime;
         this.updateTime = updateTime;
     }
 
@@ -127,12 +127,12 @@ public class MpSceneRecord implements Serializable {
         this.count = count;
     }
 
-    public Timestamp getAddTime() {
-        return this.addTime;
+    public Timestamp getCreateTime() {
+        return this.createTime;
     }
 
-    public void setAddTime(Timestamp addTime) {
-        this.addTime = addTime;
+    public void setCreateTime(Timestamp createTime) {
+        this.createTime = createTime;
     }
 
     public Timestamp getUpdateTime() {
@@ -154,7 +154,7 @@ public class MpSceneRecord implements Serializable {
         sb.append(", ").append(shareTicket);
         sb.append(", ").append(referrerInfo);
         sb.append(", ").append(count);
-        sb.append(", ").append(addTime);
+        sb.append(", ").append(createTime);
         sb.append(", ").append(updateTime);
 
         sb.append(")");

@@ -44,7 +44,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class User extends TableImpl<UserRecord> {
 
-    private static final long serialVersionUID = -1768352722;
+    private static final long serialVersionUID = 1186636461;
 
     /**
      * The reference instance of <code>mini_shop_471752.b2c_user</code>
@@ -77,7 +77,7 @@ public class User extends TableImpl<UserRecord> {
     /**
      * The column <code>mini_shop_471752.b2c_user.user_pwd</code>. 密码
      */
-    public final TableField<UserRecord, String> USER_PWD = createField("user_pwd", org.jooq.impl.SQLDataType.VARCHAR(60).nullable(false), this, "密码");
+    public final TableField<UserRecord, String> USER_PWD = createField("user_pwd", org.jooq.impl.SQLDataType.VARCHAR(60).nullable(false).defaultValue(org.jooq.impl.DSL.inline("", org.jooq.impl.SQLDataType.VARCHAR)), this, "密码");
 
     /**
      * The column <code>mini_shop_471752.b2c_user.user_cid</code>.
@@ -110,9 +110,14 @@ public class User extends TableImpl<UserRecord> {
     public final TableField<UserRecord, Timestamp> CREATE_TIME = createField("create_time", org.jooq.impl.SQLDataType.TIMESTAMP.nullable(false).defaultValue(org.jooq.impl.DSL.field("CURRENT_TIMESTAMP", org.jooq.impl.SQLDataType.TIMESTAMP)), this, "创建时间");
 
     /**
+     * The column <code>mini_shop_471752.b2c_user.update_time</code>. 最后修改时间
+     */
+    public final TableField<UserRecord, Timestamp> UPDATE_TIME = createField("update_time", org.jooq.impl.SQLDataType.TIMESTAMP.nullable(false).defaultValue(org.jooq.impl.DSL.field("CURRENT_TIMESTAMP", org.jooq.impl.SQLDataType.TIMESTAMP)), this, "最后修改时间");
+
+    /**
      * The column <code>mini_shop_471752.b2c_user.wechat</code>. 微信
      */
-    public final TableField<UserRecord, String> WECHAT = createField("wechat", org.jooq.impl.SQLDataType.VARCHAR(100).nullable(false), this, "微信");
+    public final TableField<UserRecord, String> WECHAT = createField("wechat", org.jooq.impl.SQLDataType.VARCHAR(100).nullable(false).defaultValue(org.jooq.impl.DSL.inline("", org.jooq.impl.SQLDataType.VARCHAR)), this, "微信");
 
     /**
      * The column <code>mini_shop_471752.b2c_user.fanli_grade</code>. 返利会员级别
@@ -127,7 +132,7 @@ public class User extends TableImpl<UserRecord> {
     /**
      * The column <code>mini_shop_471752.b2c_user.invite</code>.
      */
-    public final TableField<UserRecord, Integer> INVITE = createField("invite", org.jooq.impl.SQLDataType.INTEGER.defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.INTEGER)), this, "");
+    public final TableField<UserRecord, Integer> INVITE = createField("invite", org.jooq.impl.SQLDataType.INTEGER.nullable(false).defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.INTEGER)), this, "");
 
     /**
      * The column <code>mini_shop_471752.b2c_user.invite_source</code>. 邀请来源:groupbuy.拼团,bargain.砍价,integral.积分,seckill.秒杀,lottery.抽奖
@@ -155,34 +160,34 @@ public class User extends TableImpl<UserRecord> {
     public final TableField<UserRecord, Integer> DISCOUNT_GRADE = createField("discount_grade", org.jooq.impl.SQLDataType.INTEGER.nullable(false).defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.INTEGER)), this, "会员折扣等级");
 
     /**
-     * The column <code>mini_shop_471752.b2c_user.is_delete</code>.
+     * The column <code>mini_shop_471752.b2c_user.del_flag</code>.
      */
-    public final TableField<UserRecord, Byte> IS_DELETE = createField("is_delete", org.jooq.impl.SQLDataType.TINYINT.nullable(false).defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.TINYINT)), this, "");
+    public final TableField<UserRecord, Byte> DEL_FLAG = createField("del_flag", org.jooq.impl.SQLDataType.TINYINT.nullable(false).defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.TINYINT)), this, "");
 
     /**
-     * The column <code>mini_shop_471752.b2c_user.delete_time</code>. 删除时间
+     * The column <code>mini_shop_471752.b2c_user.del_time</code>. 删除时间
      */
-    public final TableField<UserRecord, Timestamp> DELETE_TIME = createField("delete_time", org.jooq.impl.SQLDataType.TIMESTAMP, this, "删除时间");
+    public final TableField<UserRecord, Timestamp> DEL_TIME = createField("del_time", org.jooq.impl.SQLDataType.TIMESTAMP, this, "删除时间");
 
     /**
      * The column <code>mini_shop_471752.b2c_user.growth</code>. 成长值
      */
-    public final TableField<UserRecord, Integer> GROWTH = createField("growth", org.jooq.impl.SQLDataType.INTEGER.defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.INTEGER)), this, "成长值");
+    public final TableField<UserRecord, Integer> GROWTH = createField("growth", org.jooq.impl.SQLDataType.INTEGER.nullable(false).defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.INTEGER)), this, "成长值");
 
     /**
      * The column <code>mini_shop_471752.b2c_user.score</code>. 积分
      */
-    public final TableField<UserRecord, Integer> SCORE = createField("score", org.jooq.impl.SQLDataType.INTEGER.defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.INTEGER)), this, "积分");
+    public final TableField<UserRecord, Integer> SCORE = createField("score", org.jooq.impl.SQLDataType.INTEGER.nullable(false).defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.INTEGER)), this, "积分");
 
     /**
      * The column <code>mini_shop_471752.b2c_user.source</code>. 门店来源-1未录入0后台&gt;0为门店
      */
-    public final TableField<UserRecord, Integer> SOURCE = createField("source", org.jooq.impl.SQLDataType.INTEGER.defaultValue(org.jooq.impl.DSL.inline("-1", org.jooq.impl.SQLDataType.INTEGER)), this, "门店来源-1未录入0后台>0为门店");
+    public final TableField<UserRecord, Integer> SOURCE = createField("source", org.jooq.impl.SQLDataType.INTEGER.nullable(false).defaultValue(org.jooq.impl.DSL.inline("-1", org.jooq.impl.SQLDataType.INTEGER)), this, "门店来源-1未录入0后台>0为门店");
 
     /**
-     * The column <code>mini_shop_471752.b2c_user.invite_id</code>. 邀请人ID
+     * The column <code>mini_shop_471752.b2c_user.invite_id</code>. 邀请人id
      */
-    public final TableField<UserRecord, Integer> INVITE_ID = createField("invite_id", org.jooq.impl.SQLDataType.INTEGER.defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.INTEGER)), this, "邀请人ID");
+    public final TableField<UserRecord, Integer> INVITE_ID = createField("invite_id", org.jooq.impl.SQLDataType.INTEGER.nullable(false).defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.INTEGER)), this, "邀请人id");
 
     /**
      * The column <code>mini_shop_471752.b2c_user.invite_expiry_date</code>. 邀请失效时间
@@ -192,32 +197,27 @@ public class User extends TableImpl<UserRecord> {
     /**
      * The column <code>mini_shop_471752.b2c_user.wx_union_id</code>. 小程序unionid
      */
-    public final TableField<UserRecord, String> WX_UNION_ID = createField("wx_union_id", org.jooq.impl.SQLDataType.VARCHAR(191).defaultValue(org.jooq.impl.DSL.inline("", org.jooq.impl.SQLDataType.VARCHAR)), this, "小程序unionid");
-
-    /**
-     * The column <code>mini_shop_471752.b2c_user.update_time</code>. 最后修改时间
-     */
-    public final TableField<UserRecord, Timestamp> UPDATE_TIME = createField("update_time", org.jooq.impl.SQLDataType.TIMESTAMP.defaultValue(org.jooq.impl.DSL.field("CURRENT_TIMESTAMP", org.jooq.impl.SQLDataType.TIMESTAMP)), this, "最后修改时间");
+    public final TableField<UserRecord, String> WX_UNION_ID = createField("wx_union_id", org.jooq.impl.SQLDataType.VARCHAR(191).nullable(false).defaultValue(org.jooq.impl.DSL.inline("", org.jooq.impl.SQLDataType.VARCHAR)), this, "小程序unionid");
 
     /**
      * The column <code>mini_shop_471752.b2c_user.is_distributor</code>. 是否是分销员
      */
-    public final TableField<UserRecord, Byte> IS_DISTRIBUTOR = createField("is_distributor", org.jooq.impl.SQLDataType.TINYINT.defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.TINYINT)), this, "是否是分销员");
+    public final TableField<UserRecord, Byte> IS_DISTRIBUTOR = createField("is_distributor", org.jooq.impl.SQLDataType.TINYINT.nullable(false).defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.TINYINT)), this, "是否是分销员");
 
     /**
-     * The column <code>mini_shop_471752.b2c_user.invite_act_id</code>. 邀请来源活动ID
+     * The column <code>mini_shop_471752.b2c_user.invite_act_id</code>. 邀请来源活动id
      */
-    public final TableField<UserRecord, Integer> INVITE_ACT_ID = createField("invite_act_id", org.jooq.impl.SQLDataType.INTEGER.defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.INTEGER)), this, "邀请来源活动ID");
+    public final TableField<UserRecord, Integer> INVITE_ACT_ID = createField("invite_act_id", org.jooq.impl.SQLDataType.INTEGER.nullable(false).defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.INTEGER)), this, "邀请来源活动id");
 
     /**
      * The column <code>mini_shop_471752.b2c_user.distributor_level</code>. 用户等级
      */
-    public final TableField<UserRecord, Byte> DISTRIBUTOR_LEVEL = createField("distributor_level", org.jooq.impl.SQLDataType.TINYINT.defaultValue(org.jooq.impl.DSL.inline("1", org.jooq.impl.SQLDataType.TINYINT)), this, "用户等级");
+    public final TableField<UserRecord, Byte> DISTRIBUTOR_LEVEL = createField("distributor_level", org.jooq.impl.SQLDataType.TINYINT.nullable(false).defaultValue(org.jooq.impl.DSL.inline("1", org.jooq.impl.SQLDataType.TINYINT)), this, "用户等级");
 
     /**
-     * The column <code>mini_shop_471752.b2c_user.ali_user_id</code>. 支付宝用户ID
+     * The column <code>mini_shop_471752.b2c_user.ali_user_id</code>. 支付宝用户id
      */
-    public final TableField<UserRecord, String> ALI_USER_ID = createField("ali_user_id", org.jooq.impl.SQLDataType.VARCHAR(191).nullable(false).defaultValue(org.jooq.impl.DSL.inline("", org.jooq.impl.SQLDataType.VARCHAR)), this, "支付宝用户ID");
+    public final TableField<UserRecord, String> ALI_USER_ID = createField("ali_user_id", org.jooq.impl.SQLDataType.VARCHAR(191).nullable(false).defaultValue(org.jooq.impl.DSL.inline("", org.jooq.impl.SQLDataType.VARCHAR)), this, "支付宝用户id");
 
     /**
      * The column <code>mini_shop_471752.b2c_user.device</code>. 登录设备
@@ -242,7 +242,7 @@ public class User extends TableImpl<UserRecord> {
     /**
      * The column <code>mini_shop_471752.b2c_user.invite_group</code>. 分销员分组
      */
-    public final TableField<UserRecord, Integer> INVITE_GROUP = createField("invite_group", org.jooq.impl.SQLDataType.INTEGER.defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.INTEGER)), this, "分销员分组");
+    public final TableField<UserRecord, Integer> INVITE_GROUP = createField("invite_group", org.jooq.impl.SQLDataType.INTEGER.nullable(false).defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.INTEGER)), this, "分销员分组");
 
     /**
      * The column <code>mini_shop_471752.b2c_user.unit_price</code>. 客单价

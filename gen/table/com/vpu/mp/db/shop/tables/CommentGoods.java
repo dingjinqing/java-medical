@@ -42,7 +42,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class CommentGoods extends TableImpl<CommentGoodsRecord> {
 
-    private static final long serialVersionUID = -375507384;
+    private static final long serialVersionUID = -982187135;
 
     /**
      * The reference instance of <code>mini_shop_471752.b2c_comment_goods</code>
@@ -63,14 +63,14 @@ public class CommentGoods extends TableImpl<CommentGoodsRecord> {
     public final TableField<CommentGoodsRecord, Integer> ID = createField("id", org.jooq.impl.SQLDataType.INTEGER.nullable(false).identity(true), this, "");
 
     /**
-     * The column <code>mini_shop_471752.b2c_comment_goods.shop_id</code>. 店铺ID
+     * The column <code>mini_shop_471752.b2c_comment_goods.shop_id</code>. 店铺id
      */
-    public final TableField<CommentGoodsRecord, Integer> SHOP_ID = createField("shop_id", org.jooq.impl.SQLDataType.INTEGER.nullable(false), this, "店铺ID");
+    public final TableField<CommentGoodsRecord, Integer> SHOP_ID = createField("shop_id", org.jooq.impl.SQLDataType.INTEGER.nullable(false), this, "店铺id");
 
     /**
-     * The column <code>mini_shop_471752.b2c_comment_goods.user_id</code>. 用户ID
+     * The column <code>mini_shop_471752.b2c_comment_goods.user_id</code>. 用户id
      */
-    public final TableField<CommentGoodsRecord, Integer> USER_ID = createField("user_id", org.jooq.impl.SQLDataType.INTEGER.nullable(false), this, "用户ID");
+    public final TableField<CommentGoodsRecord, Integer> USER_ID = createField("user_id", org.jooq.impl.SQLDataType.INTEGER.nullable(false), this, "用户id");
 
     /**
      * The column <code>mini_shop_471752.b2c_comment_goods.commstar</code>. 评价星级
@@ -90,7 +90,7 @@ public class CommentGoods extends TableImpl<CommentGoodsRecord> {
     /**
      * The column <code>mini_shop_471752.b2c_comment_goods.commtag</code>. 评价标签
      */
-    public final TableField<CommentGoodsRecord, String> COMMTAG = createField("commtag", org.jooq.impl.SQLDataType.VARCHAR(100).nullable(false).defaultValue(org.jooq.impl.DSL.inline("", org.jooq.impl.SQLDataType.VARCHAR)), this, "评价标签");
+    public final TableField<CommentGoodsRecord, String> COMMTAG = createField("commtag", org.jooq.impl.SQLDataType.VARCHAR(100).defaultValue(org.jooq.impl.DSL.inline("", org.jooq.impl.SQLDataType.VARCHAR)), this, "评价标签");
 
     /**
      * The column <code>mini_shop_471752.b2c_comment_goods.goods_id</code>. 商品id
@@ -113,24 +113,39 @@ public class CommentGoods extends TableImpl<CommentGoodsRecord> {
     public final TableField<CommentGoodsRecord, String> COMM_IMG = createField("comm_img", org.jooq.impl.SQLDataType.VARCHAR(1000), this, "评论图片");
 
     /**
-     * The column <code>mini_shop_471752.b2c_comment_goods.in_time</code>. 创建时间
+     * The column <code>mini_shop_471752.b2c_comment_goods.create_time</code>.
      */
-    public final TableField<CommentGoodsRecord, Timestamp> IN_TIME = createField("in_time", org.jooq.impl.SQLDataType.TIMESTAMP, this, "创建时间");
+    public final TableField<CommentGoodsRecord, Timestamp> CREATE_TIME = createField("create_time", org.jooq.impl.SQLDataType.TIMESTAMP.nullable(false).defaultValue(org.jooq.impl.DSL.field("CURRENT_TIMESTAMP", org.jooq.impl.SQLDataType.TIMESTAMP)), this, "");
 
     /**
-     * The column <code>mini_shop_471752.b2c_comment_goods.up_time</code>. 更新时间
+     * The column <code>mini_shop_471752.b2c_comment_goods.update_time</code>. 最后修改时间
      */
-    public final TableField<CommentGoodsRecord, Timestamp> UP_TIME = createField("up_time", org.jooq.impl.SQLDataType.TIMESTAMP, this, "更新时间");
+    public final TableField<CommentGoodsRecord, Timestamp> UPDATE_TIME = createField("update_time", org.jooq.impl.SQLDataType.TIMESTAMP.nullable(false).defaultValue(org.jooq.impl.DSL.field("CURRENT_TIMESTAMP", org.jooq.impl.SQLDataType.TIMESTAMP)), this, "最后修改时间");
 
     /**
      * The column <code>mini_shop_471752.b2c_comment_goods.flag</code>. 0:未审批,1:审批通过,2:审批未通过
      */
-    public final TableField<CommentGoodsRecord, Byte> FLAG = createField("flag", org.jooq.impl.SQLDataType.TINYINT.nullable(false).defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.TINYINT)), this, "0:未审批,1:审批通过,2:审批未通过");
+    public final TableField<CommentGoodsRecord, Byte> FLAG = createField("flag", org.jooq.impl.SQLDataType.TINYINT.defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.TINYINT)), this, "0:未审批,1:审批通过,2:审批未通过");
 
     /**
      * The column <code>mini_shop_471752.b2c_comment_goods.del_flag</code>. 1:删除
      */
-    public final TableField<CommentGoodsRecord, Byte> DEL_FLAG = createField("del_flag", org.jooq.impl.SQLDataType.TINYINT.nullable(false).defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.TINYINT)), this, "1:删除");
+    public final TableField<CommentGoodsRecord, Byte> DEL_FLAG = createField("del_flag", org.jooq.impl.SQLDataType.TINYINT.defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.TINYINT)), this, "1:删除");
+
+    /**
+     * The column <code>mini_shop_471752.b2c_comment_goods.is_shop_add</code>. 是否商家增加：0不是，1是
+     */
+    public final TableField<CommentGoodsRecord, Byte> IS_SHOP_ADD = createField("is_shop_add", org.jooq.impl.SQLDataType.TINYINT.nullable(false).defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.TINYINT)), this, "是否商家增加：0不是，1是");
+
+    /**
+     * The column <code>mini_shop_471752.b2c_comment_goods.bogus_username</code>. 用户名称：商家添加时使用
+     */
+    public final TableField<CommentGoodsRecord, String> BOGUS_USERNAME = createField("bogus_username", org.jooq.impl.SQLDataType.VARCHAR(32).nullable(false).defaultValue(org.jooq.impl.DSL.inline("", org.jooq.impl.SQLDataType.VARCHAR)), this, "用户名称：商家添加时使用");
+
+    /**
+     * The column <code>mini_shop_471752.b2c_comment_goods.bogus_user_avatar</code>. 用户头像：商家添加时使用
+     */
+    public final TableField<CommentGoodsRecord, String> BOGUS_USER_AVATAR = createField("bogus_user_avatar", org.jooq.impl.SQLDataType.VARCHAR(100).nullable(false).defaultValue(org.jooq.impl.DSL.inline("", org.jooq.impl.SQLDataType.VARCHAR)), this, "用户头像：商家添加时使用");
 
     /**
      * Create a <code>mini_shop_471752.b2c_comment_goods</code> table reference

@@ -9,6 +9,7 @@ import com.vpu.mp.db.shop.Keys;
 import com.vpu.mp.db.shop.MiniShop_471752;
 import com.vpu.mp.db.shop.tables.records.GoodsLabelCoupleRecord;
 
+import java.sql.Timestamp;
 import java.util.Arrays;
 import java.util.List;
 
@@ -41,7 +42,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class GoodsLabelCouple extends TableImpl<GoodsLabelCoupleRecord> {
 
-    private static final long serialVersionUID = -424941309;
+    private static final long serialVersionUID = 644023642;
 
     /**
      * The reference instance of <code>mini_shop_471752.b2c_goods_label_couple</code>
@@ -57,24 +58,34 @@ public class GoodsLabelCouple extends TableImpl<GoodsLabelCoupleRecord> {
     }
 
     /**
-     * The column <code>mini_shop_471752.b2c_goods_label_couple.id</code>. 标签ID
+     * The column <code>mini_shop_471752.b2c_goods_label_couple.id</code>. 标签id
      */
-    public final TableField<GoodsLabelCoupleRecord, Integer> ID = createField("id", org.jooq.impl.SQLDataType.INTEGER.nullable(false).identity(true), this, "标签ID");
+    public final TableField<GoodsLabelCoupleRecord, Integer> ID = createField("id", org.jooq.impl.SQLDataType.INTEGER.nullable(false).identity(true), this, "标签id");
 
     /**
-     * The column <code>mini_shop_471752.b2c_goods_label_couple.label_id</code>. 标签ID
+     * The column <code>mini_shop_471752.b2c_goods_label_couple.label_id</code>. 标签id
      */
-    public final TableField<GoodsLabelCoupleRecord, String> LABEL_ID = createField("label_id", org.jooq.impl.SQLDataType.VARCHAR(100).nullable(false), this, "标签ID");
+    public final TableField<GoodsLabelCoupleRecord, Integer> LABEL_ID = createField("label_id", org.jooq.impl.SQLDataType.INTEGER.nullable(false), this, "标签id");
 
     /**
-     * The column <code>mini_shop_471752.b2c_goods_label_couple.gta_id</code>. 商品或类型ID
+     * The column <code>mini_shop_471752.b2c_goods_label_couple.gta_id</code>. 商品或类型id
      */
-    public final TableField<GoodsLabelCoupleRecord, Integer> GTA_ID = createField("gta_id", org.jooq.impl.SQLDataType.INTEGER.defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.INTEGER)), this, "商品或类型ID");
+    public final TableField<GoodsLabelCoupleRecord, Integer> GTA_ID = createField("gta_id", org.jooq.impl.SQLDataType.INTEGER.nullable(false).defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.INTEGER)), this, "商品或类型id");
 
     /**
-     * The column <code>mini_shop_471752.b2c_goods_label_couple.type</code>. 标签关联类型： 1：关联商品 2：关联类型 3：全部商品
+     * The column <code>mini_shop_471752.b2c_goods_label_couple.type</code>. 标签关联类型： 1：关联商品 2：平台分类 3店鋪分類 4：全部商品
      */
-    public final TableField<GoodsLabelCoupleRecord, Byte> TYPE = createField("type", org.jooq.impl.SQLDataType.TINYINT.defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.TINYINT)), this, "标签关联类型： 1：关联商品 2：关联类型 3：全部商品");
+    public final TableField<GoodsLabelCoupleRecord, Byte> TYPE = createField("type", org.jooq.impl.SQLDataType.TINYINT.nullable(false).defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.TINYINT)), this, "标签关联类型： 1：关联商品 2：平台分类 3店鋪分類 4：全部商品");
+
+    /**
+     * The column <code>mini_shop_471752.b2c_goods_label_couple.create_time</code>.
+     */
+    public final TableField<GoodsLabelCoupleRecord, Timestamp> CREATE_TIME = createField("create_time", org.jooq.impl.SQLDataType.TIMESTAMP.nullable(false).defaultValue(org.jooq.impl.DSL.field("CURRENT_TIMESTAMP", org.jooq.impl.SQLDataType.TIMESTAMP)), this, "");
+
+    /**
+     * The column <code>mini_shop_471752.b2c_goods_label_couple.update_time</code>. 最后修改时间
+     */
+    public final TableField<GoodsLabelCoupleRecord, Timestamp> UPDATE_TIME = createField("update_time", org.jooq.impl.SQLDataType.TIMESTAMP.nullable(false).defaultValue(org.jooq.impl.DSL.field("CURRENT_TIMESTAMP", org.jooq.impl.SQLDataType.TIMESTAMP)), this, "最后修改时间");
 
     /**
      * Create a <code>mini_shop_471752.b2c_goods_label_couple</code> table reference

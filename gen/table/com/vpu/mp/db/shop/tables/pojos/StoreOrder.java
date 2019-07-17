@@ -24,7 +24,7 @@ import javax.annotation.Generated;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class StoreOrder implements Serializable {
 
-    private static final long serialVersionUID = 492560127;
+    private static final long serialVersionUID = -1278847010;
 
     private Integer    orderId;
     private Integer    storeId;
@@ -46,12 +46,13 @@ public class StoreOrder implements Serializable {
     private BigDecimal scoreDiscount;
     private BigDecimal useAccount;
     private BigDecimal orderAmount;
-    private Timestamp  addTime;
     private Timestamp  payTime;
     private String     sellerRemark;
     private Byte       starFlag;
     private Byte       delFlag;
     private String     aliTradeNo;
+    private Timestamp  createTime;
+    private Timestamp  updateTime;
 
     public StoreOrder() {}
 
@@ -76,12 +77,13 @@ public class StoreOrder implements Serializable {
         this.scoreDiscount = value.scoreDiscount;
         this.useAccount = value.useAccount;
         this.orderAmount = value.orderAmount;
-        this.addTime = value.addTime;
         this.payTime = value.payTime;
         this.sellerRemark = value.sellerRemark;
         this.starFlag = value.starFlag;
         this.delFlag = value.delFlag;
         this.aliTradeNo = value.aliTradeNo;
+        this.createTime = value.createTime;
+        this.updateTime = value.updateTime;
     }
 
     public StoreOrder(
@@ -105,12 +107,13 @@ public class StoreOrder implements Serializable {
         BigDecimal scoreDiscount,
         BigDecimal useAccount,
         BigDecimal orderAmount,
-        Timestamp  addTime,
         Timestamp  payTime,
         String     sellerRemark,
         Byte       starFlag,
         Byte       delFlag,
-        String     aliTradeNo
+        String     aliTradeNo,
+        Timestamp  createTime,
+        Timestamp  updateTime
     ) {
         this.orderId = orderId;
         this.storeId = storeId;
@@ -132,12 +135,13 @@ public class StoreOrder implements Serializable {
         this.scoreDiscount = scoreDiscount;
         this.useAccount = useAccount;
         this.orderAmount = orderAmount;
-        this.addTime = addTime;
         this.payTime = payTime;
         this.sellerRemark = sellerRemark;
         this.starFlag = starFlag;
         this.delFlag = delFlag;
         this.aliTradeNo = aliTradeNo;
+        this.createTime = createTime;
+        this.updateTime = updateTime;
     }
 
     public Integer getOrderId() {
@@ -300,14 +304,6 @@ public class StoreOrder implements Serializable {
         this.orderAmount = orderAmount;
     }
 
-    public Timestamp getAddTime() {
-        return this.addTime;
-    }
-
-    public void setAddTime(Timestamp addTime) {
-        this.addTime = addTime;
-    }
-
     public Timestamp getPayTime() {
         return this.payTime;
     }
@@ -348,6 +344,22 @@ public class StoreOrder implements Serializable {
         this.aliTradeNo = aliTradeNo;
     }
 
+    public Timestamp getCreateTime() {
+        return this.createTime;
+    }
+
+    public void setCreateTime(Timestamp createTime) {
+        this.createTime = createTime;
+    }
+
+    public Timestamp getUpdateTime() {
+        return this.updateTime;
+    }
+
+    public void setUpdateTime(Timestamp updateTime) {
+        this.updateTime = updateTime;
+    }
+
     @Override
     public String toString() {
         StringBuilder sb = new StringBuilder("StoreOrder (");
@@ -372,12 +384,13 @@ public class StoreOrder implements Serializable {
         sb.append(", ").append(scoreDiscount);
         sb.append(", ").append(useAccount);
         sb.append(", ").append(orderAmount);
-        sb.append(", ").append(addTime);
         sb.append(", ").append(payTime);
         sb.append(", ").append(sellerRemark);
         sb.append(", ").append(starFlag);
         sb.append(", ").append(delFlag);
         sb.append(", ").append(aliTradeNo);
+        sb.append(", ").append(createTime);
+        sb.append(", ").append(updateTime);
 
         sb.append(")");
         return sb.toString();

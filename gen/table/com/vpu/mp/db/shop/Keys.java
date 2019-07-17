@@ -4,6 +4,10 @@
 package com.vpu.mp.db.shop;
 
 
+import com.vpu.mp.db.shop.tables.AssessActivity;
+import com.vpu.mp.db.shop.tables.AssessRecord;
+import com.vpu.mp.db.shop.tables.AssessResult;
+import com.vpu.mp.db.shop.tables.AssessTopic;
 import com.vpu.mp.db.shop.tables.Bargain;
 import com.vpu.mp.db.shop.tables.BargainUserList;
 import com.vpu.mp.db.shop.tables.BatchPrice;
@@ -24,6 +28,7 @@ import com.vpu.mp.db.shop.tables.CommentGoods;
 import com.vpu.mp.db.shop.tables.CommentGoodsAnswer;
 import com.vpu.mp.db.shop.tables.CommentService;
 import com.vpu.mp.db.shop.tables.CouponActivity;
+import com.vpu.mp.db.shop.tables.CouponPack;
 import com.vpu.mp.db.shop.tables.CouponPayrewardRecord;
 import com.vpu.mp.db.shop.tables.CustomerAvailCoupons;
 import com.vpu.mp.db.shop.tables.DecorateLink;
@@ -60,7 +65,6 @@ import com.vpu.mp.db.shop.tables.GoodsSpecProductBak;
 import com.vpu.mp.db.shop.tables.GoodsSummary;
 import com.vpu.mp.db.shop.tables.GoodsUserSummary;
 import com.vpu.mp.db.shop.tables.GradePrd;
-import com.vpu.mp.db.shop.tables.Group;
 import com.vpu.mp.db.shop.tables.GroupDraw;
 import com.vpu.mp.db.shop.tables.GroupDrawInvite;
 import com.vpu.mp.db.shop.tables.IncomeOutcomeDetail;
@@ -99,6 +103,7 @@ import com.vpu.mp.db.shop.tables.PinGroupList;
 import com.vpu.mp.db.shop.tables.PinGroupProductDefine;
 import com.vpu.mp.db.shop.tables.PinIntegrationDefine;
 import com.vpu.mp.db.shop.tables.PinIntegrationList;
+import com.vpu.mp.db.shop.tables.Pledge;
 import com.vpu.mp.db.shop.tables.Presale;
 import com.vpu.mp.db.shop.tables.PresaleProduct;
 import com.vpu.mp.db.shop.tables.PurchasePriceDefine;
@@ -117,7 +122,6 @@ import com.vpu.mp.db.shop.tables.ReturnStatusChange;
 import com.vpu.mp.db.shop.tables.SecKillDefine;
 import com.vpu.mp.db.shop.tables.SecKillList;
 import com.vpu.mp.db.shop.tables.SecKillProductDefine;
-import com.vpu.mp.db.shop.tables.ServiceCategory;
 import com.vpu.mp.db.shop.tables.ServiceOrder;
 import com.vpu.mp.db.shop.tables.ServiceRequest;
 import com.vpu.mp.db.shop.tables.ServiceSchedule;
@@ -134,8 +138,10 @@ import com.vpu.mp.db.shop.tables.Spec;
 import com.vpu.mp.db.shop.tables.SpecVals;
 import com.vpu.mp.db.shop.tables.Store;
 import com.vpu.mp.db.shop.tables.StoreGoods;
+import com.vpu.mp.db.shop.tables.StoreGroup;
 import com.vpu.mp.db.shop.tables.StoreOrder;
 import com.vpu.mp.db.shop.tables.StoreService;
+import com.vpu.mp.db.shop.tables.StoreServiceCategory;
 import com.vpu.mp.db.shop.tables.SubOrderInfo;
 import com.vpu.mp.db.shop.tables.Tag;
 import com.vpu.mp.db.shop.tables.TemplateConfig;
@@ -166,6 +172,11 @@ import com.vpu.mp.db.shop.tables.WxShoppingRecommend;
 import com.vpu.mp.db.shop.tables.WxpUnlimitCode;
 import com.vpu.mp.db.shop.tables.WxpUnlimitScene;
 import com.vpu.mp.db.shop.tables.XcxCustomerPage;
+import com.vpu.mp.db.shop.tables.records.AssessActivityRecord;
+import com.vpu.mp.db.shop.tables.records.AssessRecordRecord;
+import com.vpu.mp.db.shop.tables.records.AssessResultRecord;
+import com.vpu.mp.db.shop.tables.records.AssessTopicRecord;
+import com.vpu.mp.db.shop.tables.records.AssessTopicRecordRecord;
 import com.vpu.mp.db.shop.tables.records.BargainRecord;
 import com.vpu.mp.db.shop.tables.records.BargainRecordRecord;
 import com.vpu.mp.db.shop.tables.records.BargainUserListRecord;
@@ -189,6 +200,7 @@ import com.vpu.mp.db.shop.tables.records.CommentGoodsRecord;
 import com.vpu.mp.db.shop.tables.records.CommentServiceRecord;
 import com.vpu.mp.db.shop.tables.records.CouponActivityRecord;
 import com.vpu.mp.db.shop.tables.records.CouponActivityRecordRecord;
+import com.vpu.mp.db.shop.tables.records.CouponPackRecord;
 import com.vpu.mp.db.shop.tables.records.CouponPayrewardRecordRecord;
 import com.vpu.mp.db.shop.tables.records.CustomerAvailCouponsRecord;
 import com.vpu.mp.db.shop.tables.records.DecorateLinkRecord;
@@ -228,7 +240,6 @@ import com.vpu.mp.db.shop.tables.records.GoodsUserSummaryRecord;
 import com.vpu.mp.db.shop.tables.records.GradePrdRecord;
 import com.vpu.mp.db.shop.tables.records.GroupDrawInviteRecord;
 import com.vpu.mp.db.shop.tables.records.GroupDrawRecord;
-import com.vpu.mp.db.shop.tables.records.GroupRecord;
 import com.vpu.mp.db.shop.tables.records.IncomeOutcomeDetailRecord;
 import com.vpu.mp.db.shop.tables.records.IndexFootRecordRecord;
 import com.vpu.mp.db.shop.tables.records.IntegralMallDefineRecord;
@@ -267,6 +278,7 @@ import com.vpu.mp.db.shop.tables.records.PinGroupListRecord;
 import com.vpu.mp.db.shop.tables.records.PinGroupProductDefineRecord;
 import com.vpu.mp.db.shop.tables.records.PinIntegrationDefineRecord;
 import com.vpu.mp.db.shop.tables.records.PinIntegrationListRecord;
+import com.vpu.mp.db.shop.tables.records.PledgeRecord;
 import com.vpu.mp.db.shop.tables.records.PresaleProductRecord;
 import com.vpu.mp.db.shop.tables.records.PresaleRecord;
 import com.vpu.mp.db.shop.tables.records.PurchasePriceDefineRecord;
@@ -285,7 +297,6 @@ import com.vpu.mp.db.shop.tables.records.ReturnStatusChangeRecord;
 import com.vpu.mp.db.shop.tables.records.SecKillDefineRecord;
 import com.vpu.mp.db.shop.tables.records.SecKillListRecord;
 import com.vpu.mp.db.shop.tables.records.SecKillProductDefineRecord;
-import com.vpu.mp.db.shop.tables.records.ServiceCategoryRecord;
 import com.vpu.mp.db.shop.tables.records.ServiceOrderRecord;
 import com.vpu.mp.db.shop.tables.records.ServiceRequestRecord;
 import com.vpu.mp.db.shop.tables.records.ServiceScheduleRecord;
@@ -301,8 +312,10 @@ import com.vpu.mp.db.shop.tables.records.SortRecord;
 import com.vpu.mp.db.shop.tables.records.SpecRecord;
 import com.vpu.mp.db.shop.tables.records.SpecValsRecord;
 import com.vpu.mp.db.shop.tables.records.StoreGoodsRecord;
+import com.vpu.mp.db.shop.tables.records.StoreGroupRecord;
 import com.vpu.mp.db.shop.tables.records.StoreOrderRecord;
 import com.vpu.mp.db.shop.tables.records.StoreRecord;
+import com.vpu.mp.db.shop.tables.records.StoreServiceCategoryRecord;
 import com.vpu.mp.db.shop.tables.records.StoreServiceRecord;
 import com.vpu.mp.db.shop.tables.records.SubOrderInfoRecord;
 import com.vpu.mp.db.shop.tables.records.TagRecord;
@@ -360,6 +373,11 @@ public class Keys {
     // IDENTITY definitions
     // -------------------------------------------------------------------------
 
+    public static final Identity<AssessActivityRecord, Integer> IDENTITY_ASSESS_ACTIVITY = Identities0.IDENTITY_ASSESS_ACTIVITY;
+    public static final Identity<AssessRecordRecord, Integer> IDENTITY_ASSESS_RECORD = Identities0.IDENTITY_ASSESS_RECORD;
+    public static final Identity<AssessResultRecord, Integer> IDENTITY_ASSESS_RESULT = Identities0.IDENTITY_ASSESS_RESULT;
+    public static final Identity<AssessTopicRecord, Integer> IDENTITY_ASSESS_TOPIC = Identities0.IDENTITY_ASSESS_TOPIC;
+    public static final Identity<AssessTopicRecordRecord, Integer> IDENTITY_ASSESS_TOPIC_RECORD = Identities0.IDENTITY_ASSESS_TOPIC_RECORD;
     public static final Identity<BargainRecord, Integer> IDENTITY_BARGAIN = Identities0.IDENTITY_BARGAIN;
     public static final Identity<BargainRecordRecord, Integer> IDENTITY_BARGAIN_RECORD = Identities0.IDENTITY_BARGAIN_RECORD;
     public static final Identity<BargainUserListRecord, Integer> IDENTITY_BARGAIN_USER_LIST = Identities0.IDENTITY_BARGAIN_USER_LIST;
@@ -383,6 +401,7 @@ public class Keys {
     public static final Identity<CommentServiceRecord, Integer> IDENTITY_COMMENT_SERVICE = Identities0.IDENTITY_COMMENT_SERVICE;
     public static final Identity<CouponActivityRecord, Integer> IDENTITY_COUPON_ACTIVITY = Identities0.IDENTITY_COUPON_ACTIVITY;
     public static final Identity<CouponActivityRecordRecord, Integer> IDENTITY_COUPON_ACTIVITY_RECORD = Identities0.IDENTITY_COUPON_ACTIVITY_RECORD;
+    public static final Identity<CouponPackRecord, Integer> IDENTITY_COUPON_PACK = Identities0.IDENTITY_COUPON_PACK;
     public static final Identity<CouponPayrewardRecordRecord, Integer> IDENTITY_COUPON_PAYREWARD_RECORD = Identities0.IDENTITY_COUPON_PAYREWARD_RECORD;
     public static final Identity<CustomerAvailCouponsRecord, Integer> IDENTITY_CUSTOMER_AVAIL_COUPONS = Identities0.IDENTITY_CUSTOMER_AVAIL_COUPONS;
     public static final Identity<DecorateLinkRecord, Integer> IDENTITY_DECORATE_LINK = Identities0.IDENTITY_DECORATE_LINK;
@@ -420,7 +439,6 @@ public class Keys {
     public static final Identity<GoodsSummaryRecord, Integer> IDENTITY_GOODS_SUMMARY = Identities0.IDENTITY_GOODS_SUMMARY;
     public static final Identity<GoodsUserSummaryRecord, Integer> IDENTITY_GOODS_USER_SUMMARY = Identities0.IDENTITY_GOODS_USER_SUMMARY;
     public static final Identity<GradePrdRecord, Integer> IDENTITY_GRADE_PRD = Identities0.IDENTITY_GRADE_PRD;
-    public static final Identity<GroupRecord, Integer> IDENTITY_GROUP = Identities0.IDENTITY_GROUP;
     public static final Identity<GroupDrawRecord, Integer> IDENTITY_GROUP_DRAW = Identities0.IDENTITY_GROUP_DRAW;
     public static final Identity<GroupDrawInviteRecord, Integer> IDENTITY_GROUP_DRAW_INVITE = Identities0.IDENTITY_GROUP_DRAW_INVITE;
     public static final Identity<IncomeOutcomeDetailRecord, Integer> IDENTITY_INCOME_OUTCOME_DETAIL = Identities0.IDENTITY_INCOME_OUTCOME_DETAIL;
@@ -461,6 +479,7 @@ public class Keys {
     public static final Identity<PinGroupProductDefineRecord, Integer> IDENTITY_PIN_GROUP_PRODUCT_DEFINE = Identities0.IDENTITY_PIN_GROUP_PRODUCT_DEFINE;
     public static final Identity<PinIntegrationDefineRecord, Integer> IDENTITY_PIN_INTEGRATION_DEFINE = Identities0.IDENTITY_PIN_INTEGRATION_DEFINE;
     public static final Identity<PinIntegrationListRecord, Integer> IDENTITY_PIN_INTEGRATION_LIST = Identities0.IDENTITY_PIN_INTEGRATION_LIST;
+    public static final Identity<PledgeRecord, Integer> IDENTITY_PLEDGE = Identities0.IDENTITY_PLEDGE;
     public static final Identity<PresaleRecord, Integer> IDENTITY_PRESALE = Identities0.IDENTITY_PRESALE;
     public static final Identity<PresaleProductRecord, Integer> IDENTITY_PRESALE_PRODUCT = Identities0.IDENTITY_PRESALE_PRODUCT;
     public static final Identity<PurchasePriceDefineRecord, Integer> IDENTITY_PURCHASE_PRICE_DEFINE = Identities0.IDENTITY_PURCHASE_PRICE_DEFINE;
@@ -479,12 +498,11 @@ public class Keys {
     public static final Identity<SecKillDefineRecord, Integer> IDENTITY_SEC_KILL_DEFINE = Identities0.IDENTITY_SEC_KILL_DEFINE;
     public static final Identity<SecKillListRecord, Integer> IDENTITY_SEC_KILL_LIST = Identities0.IDENTITY_SEC_KILL_LIST;
     public static final Identity<SecKillProductDefineRecord, Integer> IDENTITY_SEC_KILL_PRODUCT_DEFINE = Identities0.IDENTITY_SEC_KILL_PRODUCT_DEFINE;
-    public static final Identity<ServiceCategoryRecord, Short> IDENTITY_SERVICE_CATEGORY = Identities0.IDENTITY_SERVICE_CATEGORY;
     public static final Identity<ServiceOrderRecord, Integer> IDENTITY_SERVICE_ORDER = Identities0.IDENTITY_SERVICE_ORDER;
     public static final Identity<ServiceRequestRecord, Long> IDENTITY_SERVICE_REQUEST = Identities0.IDENTITY_SERVICE_REQUEST;
     public static final Identity<ServiceScheduleRecord, Byte> IDENTITY_SERVICE_SCHEDULE = Identities0.IDENTITY_SERVICE_SCHEDULE;
     public static final Identity<ServiceTechnicianRecord, Integer> IDENTITY_SERVICE_TECHNICIAN = Identities0.IDENTITY_SERVICE_TECHNICIAN;
-    public static final Identity<ServiceTechnicianGroupRecord, Short> IDENTITY_SERVICE_TECHNICIAN_GROUP = Identities0.IDENTITY_SERVICE_TECHNICIAN_GROUP;
+    public static final Identity<ServiceTechnicianGroupRecord, Integer> IDENTITY_SERVICE_TECHNICIAN_GROUP = Identities0.IDENTITY_SERVICE_TECHNICIAN_GROUP;
     public static final Identity<ServiceTechnicianScheduleRecord, Integer> IDENTITY_SERVICE_TECHNICIAN_SCHEDULE = Identities0.IDENTITY_SERVICE_TECHNICIAN_SCHEDULE;
     public static final Identity<ShareRecordRecord, Integer> IDENTITY_SHARE_RECORD = Identities0.IDENTITY_SHARE_RECORD;
     public static final Identity<ShareSplitRecord, Integer> IDENTITY_SHARE_SPLIT = Identities0.IDENTITY_SHARE_SPLIT;
@@ -495,8 +513,10 @@ public class Keys {
     public static final Identity<SpecRecord, Integer> IDENTITY_SPEC = Identities0.IDENTITY_SPEC;
     public static final Identity<SpecValsRecord, Integer> IDENTITY_SPEC_VALS = Identities0.IDENTITY_SPEC_VALS;
     public static final Identity<StoreRecord, Integer> IDENTITY_STORE = Identities0.IDENTITY_STORE;
+    public static final Identity<StoreGroupRecord, Integer> IDENTITY_STORE_GROUP = Identities0.IDENTITY_STORE_GROUP;
     public static final Identity<StoreOrderRecord, Integer> IDENTITY_STORE_ORDER = Identities0.IDENTITY_STORE_ORDER;
     public static final Identity<StoreServiceRecord, Integer> IDENTITY_STORE_SERVICE = Identities0.IDENTITY_STORE_SERVICE;
+    public static final Identity<StoreServiceCategoryRecord, Integer> IDENTITY_STORE_SERVICE_CATEGORY = Identities0.IDENTITY_STORE_SERVICE_CATEGORY;
     public static final Identity<SubOrderInfoRecord, Integer> IDENTITY_SUB_ORDER_INFO = Identities0.IDENTITY_SUB_ORDER_INFO;
     public static final Identity<TagRecord, Integer> IDENTITY_TAG = Identities0.IDENTITY_TAG;
     public static final Identity<TemplateConfigRecord, Integer> IDENTITY_TEMPLATE_CONFIG = Identities0.IDENTITY_TEMPLATE_CONFIG;
@@ -529,6 +549,11 @@ public class Keys {
     // UNIQUE and PRIMARY KEY definitions
     // -------------------------------------------------------------------------
 
+    public static final UniqueKey<AssessActivityRecord> KEY_B2C_ASSESS_ACTIVITY_PRIMARY = UniqueKeys0.KEY_B2C_ASSESS_ACTIVITY_PRIMARY;
+    public static final UniqueKey<AssessRecordRecord> KEY_B2C_ASSESS_RECORD_PRIMARY = UniqueKeys0.KEY_B2C_ASSESS_RECORD_PRIMARY;
+    public static final UniqueKey<AssessResultRecord> KEY_B2C_ASSESS_RESULT_PRIMARY = UniqueKeys0.KEY_B2C_ASSESS_RESULT_PRIMARY;
+    public static final UniqueKey<AssessTopicRecord> KEY_B2C_ASSESS_TOPIC_PRIMARY = UniqueKeys0.KEY_B2C_ASSESS_TOPIC_PRIMARY;
+    public static final UniqueKey<AssessTopicRecordRecord> KEY_B2C_ASSESS_TOPIC_RECORD_PRIMARY = UniqueKeys0.KEY_B2C_ASSESS_TOPIC_RECORD_PRIMARY;
     public static final UniqueKey<BargainRecord> KEY_B2C_BARGAIN_PRIMARY = UniqueKeys0.KEY_B2C_BARGAIN_PRIMARY;
     public static final UniqueKey<BargainRecordRecord> KEY_B2C_BARGAIN_RECORD_PRIMARY = UniqueKeys0.KEY_B2C_BARGAIN_RECORD_PRIMARY;
     public static final UniqueKey<BargainUserListRecord> KEY_B2C_BARGAIN_USER_LIST_PRIMARY = UniqueKeys0.KEY_B2C_BARGAIN_USER_LIST_PRIMARY;
@@ -552,6 +577,7 @@ public class Keys {
     public static final UniqueKey<CommentServiceRecord> KEY_B2C_COMMENT_SERVICE_PRIMARY = UniqueKeys0.KEY_B2C_COMMENT_SERVICE_PRIMARY;
     public static final UniqueKey<CouponActivityRecord> KEY_B2C_COUPON_ACTIVITY_PRIMARY = UniqueKeys0.KEY_B2C_COUPON_ACTIVITY_PRIMARY;
     public static final UniqueKey<CouponActivityRecordRecord> KEY_B2C_COUPON_ACTIVITY_RECORD_PRIMARY = UniqueKeys0.KEY_B2C_COUPON_ACTIVITY_RECORD_PRIMARY;
+    public static final UniqueKey<CouponPackRecord> KEY_B2C_COUPON_PACK_PRIMARY = UniqueKeys0.KEY_B2C_COUPON_PACK_PRIMARY;
     public static final UniqueKey<CouponPayrewardRecordRecord> KEY_B2C_COUPON_PAYREWARD_RECORD_PRIMARY = UniqueKeys0.KEY_B2C_COUPON_PAYREWARD_RECORD_PRIMARY;
     public static final UniqueKey<CustomerAvailCouponsRecord> KEY_B2C_CUSTOMER_AVAIL_COUPONS_PRIMARY = UniqueKeys0.KEY_B2C_CUSTOMER_AVAIL_COUPONS_PRIMARY;
     public static final UniqueKey<CustomerAvailCouponsRecord> KEY_B2C_CUSTOMER_AVAIL_COUPONS_COUPON_SN = UniqueKeys0.KEY_B2C_CUSTOMER_AVAIL_COUPONS_COUPON_SN;
@@ -577,6 +603,7 @@ public class Keys {
     public static final UniqueKey<GiftRecord> KEY_B2C_GIFT_PRIMARY = UniqueKeys0.KEY_B2C_GIFT_PRIMARY;
     public static final UniqueKey<GiftProductRecord> KEY_B2C_GIFT_PRODUCT_PRIMARY = UniqueKeys0.KEY_B2C_GIFT_PRODUCT_PRIMARY;
     public static final UniqueKey<GiveVoucherRecord> KEY_B2C_GIVE_VOUCHER_PRIMARY = UniqueKeys0.KEY_B2C_GIVE_VOUCHER_PRIMARY;
+    public static final UniqueKey<GoodsRecord> KEY_B2C_GOODS_PRIMARY = UniqueKeys0.KEY_B2C_GOODS_PRIMARY;
     public static final UniqueKey<GoodsRecord> KEY_B2C_GOODS_GOODS_ID = UniqueKeys0.KEY_B2C_GOODS_GOODS_ID;
     public static final UniqueKey<GoodsRecord> KEY_B2C_GOODS_GOODS_SN = UniqueKeys0.KEY_B2C_GOODS_GOODS_SN;
     public static final UniqueKey<GoodsBakRecord> KEY_B2C_GOODS_BAK_PRIMARY = UniqueKeys0.KEY_B2C_GOODS_BAK_PRIMARY;
@@ -594,8 +621,6 @@ public class Keys {
     public static final UniqueKey<GoodsSummaryRecord> KEY_B2C_GOODS_SUMMARY_PRIMARY = UniqueKeys0.KEY_B2C_GOODS_SUMMARY_PRIMARY;
     public static final UniqueKey<GoodsUserSummaryRecord> KEY_B2C_GOODS_USER_SUMMARY_PRIMARY = UniqueKeys0.KEY_B2C_GOODS_USER_SUMMARY_PRIMARY;
     public static final UniqueKey<GradePrdRecord> KEY_B2C_GRADE_PRD_PRIMARY = UniqueKeys0.KEY_B2C_GRADE_PRD_PRIMARY;
-    public static final UniqueKey<GroupRecord> KEY_B2C_GROUP_PRIMARY = UniqueKeys0.KEY_B2C_GROUP_PRIMARY;
-    public static final UniqueKey<GroupRecord> KEY_B2C_GROUP_GROUP_NAME = UniqueKeys0.KEY_B2C_GROUP_GROUP_NAME;
     public static final UniqueKey<GroupDrawRecord> KEY_B2C_GROUP_DRAW_PRIMARY = UniqueKeys0.KEY_B2C_GROUP_DRAW_PRIMARY;
     public static final UniqueKey<GroupDrawInviteRecord> KEY_B2C_GROUP_DRAW_INVITE_PRIMARY = UniqueKeys0.KEY_B2C_GROUP_DRAW_INVITE_PRIMARY;
     public static final UniqueKey<IncomeOutcomeDetailRecord> KEY_B2C_INCOME_OUTCOME_DETAIL_PRIMARY = UniqueKeys0.KEY_B2C_INCOME_OUTCOME_DETAIL_PRIMARY;
@@ -642,6 +667,7 @@ public class Keys {
     public static final UniqueKey<PinGroupProductDefineRecord> KEY_B2C_PIN_GROUP_PRODUCT_DEFINE_PRIMARY = UniqueKeys0.KEY_B2C_PIN_GROUP_PRODUCT_DEFINE_PRIMARY;
     public static final UniqueKey<PinIntegrationDefineRecord> KEY_B2C_PIN_INTEGRATION_DEFINE_PRIMARY = UniqueKeys0.KEY_B2C_PIN_INTEGRATION_DEFINE_PRIMARY;
     public static final UniqueKey<PinIntegrationListRecord> KEY_B2C_PIN_INTEGRATION_LIST_PRIMARY = UniqueKeys0.KEY_B2C_PIN_INTEGRATION_LIST_PRIMARY;
+    public static final UniqueKey<PledgeRecord> KEY_B2C_PLEDGE_PRIMARY = UniqueKeys0.KEY_B2C_PLEDGE_PRIMARY;
     public static final UniqueKey<PresaleRecord> KEY_B2C_PRESALE_PRIMARY = UniqueKeys0.KEY_B2C_PRESALE_PRIMARY;
     public static final UniqueKey<PresaleProductRecord> KEY_B2C_PRESALE_PRODUCT_PRIMARY = UniqueKeys0.KEY_B2C_PRESALE_PRODUCT_PRIMARY;
     public static final UniqueKey<PurchasePriceDefineRecord> KEY_B2C_PURCHASE_PRICE_DEFINE_PRIMARY = UniqueKeys0.KEY_B2C_PURCHASE_PRICE_DEFINE_PRIMARY;
@@ -663,8 +689,6 @@ public class Keys {
     public static final UniqueKey<SecKillDefineRecord> KEY_B2C_SEC_KILL_DEFINE_PRIMARY = UniqueKeys0.KEY_B2C_SEC_KILL_DEFINE_PRIMARY;
     public static final UniqueKey<SecKillListRecord> KEY_B2C_SEC_KILL_LIST_PRIMARY = UniqueKeys0.KEY_B2C_SEC_KILL_LIST_PRIMARY;
     public static final UniqueKey<SecKillProductDefineRecord> KEY_B2C_SEC_KILL_PRODUCT_DEFINE_PRIMARY = UniqueKeys0.KEY_B2C_SEC_KILL_PRODUCT_DEFINE_PRIMARY;
-    public static final UniqueKey<ServiceCategoryRecord> KEY_B2C_SERVICE_CATEGORY_PRIMARY = UniqueKeys0.KEY_B2C_SERVICE_CATEGORY_PRIMARY;
-    public static final UniqueKey<ServiceCategoryRecord> KEY_B2C_SERVICE_CATEGORY_CAT_NAME = UniqueKeys0.KEY_B2C_SERVICE_CATEGORY_CAT_NAME;
     public static final UniqueKey<ServiceOrderRecord> KEY_B2C_SERVICE_ORDER_PRIMARY = UniqueKeys0.KEY_B2C_SERVICE_ORDER_PRIMARY;
     public static final UniqueKey<ServiceRequestRecord> KEY_B2C_SERVICE_REQUEST_PRIMARY = UniqueKeys0.KEY_B2C_SERVICE_REQUEST_PRIMARY;
     public static final UniqueKey<ServiceScheduleRecord> KEY_B2C_SERVICE_SCHEDULE_PRIMARY = UniqueKeys0.KEY_B2C_SERVICE_SCHEDULE_PRIMARY;
@@ -675,15 +699,20 @@ public class Keys {
     public static final UniqueKey<ShareSplitRecord> KEY_B2C_SHARE_SPLIT_PRIMARY = UniqueKeys0.KEY_B2C_SHARE_SPLIT_PRIMARY;
     public static final UniqueKey<ShippingRecord> KEY_B2C_SHIPPING_PRIMARY = UniqueKeys0.KEY_B2C_SHIPPING_PRIMARY;
     public static final UniqueKey<ShopCfgRecord> KEY_B2C_SHOP_CFG_PRIMARY = UniqueKeys0.KEY_B2C_SHOP_CFG_PRIMARY;
-    public static final UniqueKey<ShopCfgRecord> KEY_B2C_SHOP_CFG_SHOP_ID_K = UniqueKeys0.KEY_B2C_SHOP_CFG_SHOP_ID_K;
     public static final UniqueKey<SmsSendRecordRecord> KEY_B2C_SMS_SEND_RECORD_PRIMARY = UniqueKeys0.KEY_B2C_SMS_SEND_RECORD_PRIMARY;
     public static final UniqueKey<SortRecord> KEY_B2C_SORT_PRIMARY = UniqueKeys0.KEY_B2C_SORT_PRIMARY;
     public static final UniqueKey<SpecRecord> KEY_B2C_SPEC_PRIMARY = UniqueKeys0.KEY_B2C_SPEC_PRIMARY;
+    public static final UniqueKey<SpecRecord> KEY_B2C_SPEC_UNIQUE_SPEC_NAME_GOODS_ID = UniqueKeys0.KEY_B2C_SPEC_UNIQUE_SPEC_NAME_GOODS_ID;
     public static final UniqueKey<SpecValsRecord> KEY_B2C_SPEC_VALS_PRIMARY = UniqueKeys0.KEY_B2C_SPEC_VALS_PRIMARY;
+    public static final UniqueKey<SpecValsRecord> KEY_B2C_SPEC_VALS_UNIQUE_SPEC_ID_SPEC_VAL_NAME = UniqueKeys0.KEY_B2C_SPEC_VALS_UNIQUE_SPEC_ID_SPEC_VAL_NAME;
     public static final UniqueKey<StoreRecord> KEY_B2C_STORE_PRIMARY = UniqueKeys0.KEY_B2C_STORE_PRIMARY;
     public static final UniqueKey<StoreGoodsRecord> KEY_B2C_STORE_GOODS_PRIMARY = UniqueKeys0.KEY_B2C_STORE_GOODS_PRIMARY;
+    public static final UniqueKey<StoreGroupRecord> KEY_B2C_STORE_GROUP_PRIMARY = UniqueKeys0.KEY_B2C_STORE_GROUP_PRIMARY;
+    public static final UniqueKey<StoreGroupRecord> KEY_B2C_STORE_GROUP_GROUP_NAME = UniqueKeys0.KEY_B2C_STORE_GROUP_GROUP_NAME;
     public static final UniqueKey<StoreOrderRecord> KEY_B2C_STORE_ORDER_PRIMARY = UniqueKeys0.KEY_B2C_STORE_ORDER_PRIMARY;
     public static final UniqueKey<StoreServiceRecord> KEY_B2C_STORE_SERVICE_PRIMARY = UniqueKeys0.KEY_B2C_STORE_SERVICE_PRIMARY;
+    public static final UniqueKey<StoreServiceCategoryRecord> KEY_B2C_STORE_SERVICE_CATEGORY_PRIMARY = UniqueKeys0.KEY_B2C_STORE_SERVICE_CATEGORY_PRIMARY;
+    public static final UniqueKey<StoreServiceCategoryRecord> KEY_B2C_STORE_SERVICE_CATEGORY_CAT_NAME = UniqueKeys0.KEY_B2C_STORE_SERVICE_CATEGORY_CAT_NAME;
     public static final UniqueKey<SubOrderInfoRecord> KEY_B2C_SUB_ORDER_INFO_PRIMARY = UniqueKeys0.KEY_B2C_SUB_ORDER_INFO_PRIMARY;
     public static final UniqueKey<SubOrderInfoRecord> KEY_B2C_SUB_ORDER_INFO_SUB_ORDER_SN = UniqueKeys0.KEY_B2C_SUB_ORDER_INFO_SUB_ORDER_SN;
     public static final UniqueKey<TagRecord> KEY_B2C_TAG_PRIMARY = UniqueKeys0.KEY_B2C_TAG_PRIMARY;
@@ -731,6 +760,11 @@ public class Keys {
     // -------------------------------------------------------------------------
 
     private static class Identities0 {
+        public static Identity<AssessActivityRecord, Integer> IDENTITY_ASSESS_ACTIVITY = Internal.createIdentity(AssessActivity.ASSESS_ACTIVITY, AssessActivity.ASSESS_ACTIVITY.ID);
+        public static Identity<AssessRecordRecord, Integer> IDENTITY_ASSESS_RECORD = Internal.createIdentity(AssessRecord.ASSESS_RECORD, AssessRecord.ASSESS_RECORD.ID);
+        public static Identity<AssessResultRecord, Integer> IDENTITY_ASSESS_RESULT = Internal.createIdentity(AssessResult.ASSESS_RESULT, AssessResult.ASSESS_RESULT.ID);
+        public static Identity<AssessTopicRecord, Integer> IDENTITY_ASSESS_TOPIC = Internal.createIdentity(AssessTopic.ASSESS_TOPIC, AssessTopic.ASSESS_TOPIC.ID);
+        public static Identity<AssessTopicRecordRecord, Integer> IDENTITY_ASSESS_TOPIC_RECORD = Internal.createIdentity(com.vpu.mp.db.shop.tables.AssessTopicRecord.ASSESS_TOPIC_RECORD, com.vpu.mp.db.shop.tables.AssessTopicRecord.ASSESS_TOPIC_RECORD.ID);
         public static Identity<BargainRecord, Integer> IDENTITY_BARGAIN = Internal.createIdentity(Bargain.BARGAIN, Bargain.BARGAIN.ID);
         public static Identity<BargainRecordRecord, Integer> IDENTITY_BARGAIN_RECORD = Internal.createIdentity(com.vpu.mp.db.shop.tables.BargainRecord.BARGAIN_RECORD, com.vpu.mp.db.shop.tables.BargainRecord.BARGAIN_RECORD.ID);
         public static Identity<BargainUserListRecord, Integer> IDENTITY_BARGAIN_USER_LIST = Internal.createIdentity(BargainUserList.BARGAIN_USER_LIST, BargainUserList.BARGAIN_USER_LIST.ID);
@@ -754,6 +788,7 @@ public class Keys {
         public static Identity<CommentServiceRecord, Integer> IDENTITY_COMMENT_SERVICE = Internal.createIdentity(CommentService.COMMENT_SERVICE, CommentService.COMMENT_SERVICE.ID);
         public static Identity<CouponActivityRecord, Integer> IDENTITY_COUPON_ACTIVITY = Internal.createIdentity(CouponActivity.COUPON_ACTIVITY, CouponActivity.COUPON_ACTIVITY.ID);
         public static Identity<CouponActivityRecordRecord, Integer> IDENTITY_COUPON_ACTIVITY_RECORD = Internal.createIdentity(com.vpu.mp.db.shop.tables.CouponActivityRecord.COUPON_ACTIVITY_RECORD, com.vpu.mp.db.shop.tables.CouponActivityRecord.COUPON_ACTIVITY_RECORD.ID);
+        public static Identity<CouponPackRecord, Integer> IDENTITY_COUPON_PACK = Internal.createIdentity(CouponPack.COUPON_PACK, CouponPack.COUPON_PACK.ID);
         public static Identity<CouponPayrewardRecordRecord, Integer> IDENTITY_COUPON_PAYREWARD_RECORD = Internal.createIdentity(CouponPayrewardRecord.COUPON_PAYREWARD_RECORD, CouponPayrewardRecord.COUPON_PAYREWARD_RECORD.ID);
         public static Identity<CustomerAvailCouponsRecord, Integer> IDENTITY_CUSTOMER_AVAIL_COUPONS = Internal.createIdentity(CustomerAvailCoupons.CUSTOMER_AVAIL_COUPONS, CustomerAvailCoupons.CUSTOMER_AVAIL_COUPONS.ID);
         public static Identity<DecorateLinkRecord, Integer> IDENTITY_DECORATE_LINK = Internal.createIdentity(DecorateLink.DECORATE_LINK, DecorateLink.DECORATE_LINK.ID);
@@ -787,11 +822,10 @@ public class Keys {
         public static Identity<GoodsOpaiSpecRecord, Long> IDENTITY_GOODS_OPAI_SPEC = Internal.createIdentity(GoodsOpaiSpec.GOODS_OPAI_SPEC, GoodsOpaiSpec.GOODS_OPAI_SPEC.ID);
         public static Identity<GoodsRebatePriceRecord, Integer> IDENTITY_GOODS_REBATE_PRICE = Internal.createIdentity(GoodsRebatePrice.GOODS_REBATE_PRICE, GoodsRebatePrice.GOODS_REBATE_PRICE.ID);
         public static Identity<GoodsSpecProductRecord, Integer> IDENTITY_GOODS_SPEC_PRODUCT = Internal.createIdentity(GoodsSpecProduct.GOODS_SPEC_PRODUCT, GoodsSpecProduct.GOODS_SPEC_PRODUCT.PRD_ID);
-        public static Identity<GoodsSpecProductBakRecord, Integer> IDENTITY_GOODS_SPEC_PRODUCT_BAK = Internal.createIdentity(GoodsSpecProductBak.GOODS_SPEC_PRODUCT_BAK, GoodsSpecProductBak.GOODS_SPEC_PRODUCT_BAK.ID);
+        public static Identity<GoodsSpecProductBakRecord, Integer> IDENTITY_GOODS_SPEC_PRODUCT_BAK = Internal.createIdentity(GoodsSpecProductBak.GOODS_SPEC_PRODUCT_BAK, GoodsSpecProductBak.GOODS_SPEC_PRODUCT_BAK.PRD_BAK_ID);
         public static Identity<GoodsSummaryRecord, Integer> IDENTITY_GOODS_SUMMARY = Internal.createIdentity(GoodsSummary.GOODS_SUMMARY, GoodsSummary.GOODS_SUMMARY.ID);
         public static Identity<GoodsUserSummaryRecord, Integer> IDENTITY_GOODS_USER_SUMMARY = Internal.createIdentity(GoodsUserSummary.GOODS_USER_SUMMARY, GoodsUserSummary.GOODS_USER_SUMMARY.ID);
         public static Identity<GradePrdRecord, Integer> IDENTITY_GRADE_PRD = Internal.createIdentity(GradePrd.GRADE_PRD, GradePrd.GRADE_PRD.ID);
-        public static Identity<GroupRecord, Integer> IDENTITY_GROUP = Internal.createIdentity(Group.GROUP, Group.GROUP.GROUP_ID);
         public static Identity<GroupDrawRecord, Integer> IDENTITY_GROUP_DRAW = Internal.createIdentity(GroupDraw.GROUP_DRAW, GroupDraw.GROUP_DRAW.ID);
         public static Identity<GroupDrawInviteRecord, Integer> IDENTITY_GROUP_DRAW_INVITE = Internal.createIdentity(GroupDrawInvite.GROUP_DRAW_INVITE, GroupDrawInvite.GROUP_DRAW_INVITE.ID);
         public static Identity<IncomeOutcomeDetailRecord, Integer> IDENTITY_INCOME_OUTCOME_DETAIL = Internal.createIdentity(IncomeOutcomeDetail.INCOME_OUTCOME_DETAIL, IncomeOutcomeDetail.INCOME_OUTCOME_DETAIL.ID);
@@ -832,6 +866,7 @@ public class Keys {
         public static Identity<PinGroupProductDefineRecord, Integer> IDENTITY_PIN_GROUP_PRODUCT_DEFINE = Internal.createIdentity(PinGroupProductDefine.PIN_GROUP_PRODUCT_DEFINE, PinGroupProductDefine.PIN_GROUP_PRODUCT_DEFINE.ID);
         public static Identity<PinIntegrationDefineRecord, Integer> IDENTITY_PIN_INTEGRATION_DEFINE = Internal.createIdentity(PinIntegrationDefine.PIN_INTEGRATION_DEFINE, PinIntegrationDefine.PIN_INTEGRATION_DEFINE.ID);
         public static Identity<PinIntegrationListRecord, Integer> IDENTITY_PIN_INTEGRATION_LIST = Internal.createIdentity(PinIntegrationList.PIN_INTEGRATION_LIST, PinIntegrationList.PIN_INTEGRATION_LIST.ID);
+        public static Identity<PledgeRecord, Integer> IDENTITY_PLEDGE = Internal.createIdentity(Pledge.PLEDGE, Pledge.PLEDGE.ID);
         public static Identity<PresaleRecord, Integer> IDENTITY_PRESALE = Internal.createIdentity(Presale.PRESALE, Presale.PRESALE.ID);
         public static Identity<PresaleProductRecord, Integer> IDENTITY_PRESALE_PRODUCT = Internal.createIdentity(PresaleProduct.PRESALE_PRODUCT, PresaleProduct.PRESALE_PRODUCT.ID);
         public static Identity<PurchasePriceDefineRecord, Integer> IDENTITY_PURCHASE_PRICE_DEFINE = Internal.createIdentity(PurchasePriceDefine.PURCHASE_PRICE_DEFINE, PurchasePriceDefine.PURCHASE_PRICE_DEFINE.ID);
@@ -850,12 +885,11 @@ public class Keys {
         public static Identity<SecKillDefineRecord, Integer> IDENTITY_SEC_KILL_DEFINE = Internal.createIdentity(SecKillDefine.SEC_KILL_DEFINE, SecKillDefine.SEC_KILL_DEFINE.SK_ID);
         public static Identity<SecKillListRecord, Integer> IDENTITY_SEC_KILL_LIST = Internal.createIdentity(SecKillList.SEC_KILL_LIST, SecKillList.SEC_KILL_LIST.SKLOG_ID);
         public static Identity<SecKillProductDefineRecord, Integer> IDENTITY_SEC_KILL_PRODUCT_DEFINE = Internal.createIdentity(SecKillProductDefine.SEC_KILL_PRODUCT_DEFINE, SecKillProductDefine.SEC_KILL_PRODUCT_DEFINE.SKPRO_ID);
-        public static Identity<ServiceCategoryRecord, Short> IDENTITY_SERVICE_CATEGORY = Internal.createIdentity(ServiceCategory.SERVICE_CATEGORY, ServiceCategory.SERVICE_CATEGORY.CAT_ID);
         public static Identity<ServiceOrderRecord, Integer> IDENTITY_SERVICE_ORDER = Internal.createIdentity(ServiceOrder.SERVICE_ORDER, ServiceOrder.SERVICE_ORDER.ORDER_ID);
         public static Identity<ServiceRequestRecord, Long> IDENTITY_SERVICE_REQUEST = Internal.createIdentity(ServiceRequest.SERVICE_REQUEST, ServiceRequest.SERVICE_REQUEST.ID);
         public static Identity<ServiceScheduleRecord, Byte> IDENTITY_SERVICE_SCHEDULE = Internal.createIdentity(ServiceSchedule.SERVICE_SCHEDULE, ServiceSchedule.SERVICE_SCHEDULE.SCHEDULE_ID);
         public static Identity<ServiceTechnicianRecord, Integer> IDENTITY_SERVICE_TECHNICIAN = Internal.createIdentity(ServiceTechnician.SERVICE_TECHNICIAN, ServiceTechnician.SERVICE_TECHNICIAN.ID);
-        public static Identity<ServiceTechnicianGroupRecord, Short> IDENTITY_SERVICE_TECHNICIAN_GROUP = Internal.createIdentity(ServiceTechnicianGroup.SERVICE_TECHNICIAN_GROUP, ServiceTechnicianGroup.SERVICE_TECHNICIAN_GROUP.GROUP_ID);
+        public static Identity<ServiceTechnicianGroupRecord, Integer> IDENTITY_SERVICE_TECHNICIAN_GROUP = Internal.createIdentity(ServiceTechnicianGroup.SERVICE_TECHNICIAN_GROUP, ServiceTechnicianGroup.SERVICE_TECHNICIAN_GROUP.GROUP_ID);
         public static Identity<ServiceTechnicianScheduleRecord, Integer> IDENTITY_SERVICE_TECHNICIAN_SCHEDULE = Internal.createIdentity(ServiceTechnicianSchedule.SERVICE_TECHNICIAN_SCHEDULE, ServiceTechnicianSchedule.SERVICE_TECHNICIAN_SCHEDULE.ID);
         public static Identity<ShareRecordRecord, Integer> IDENTITY_SHARE_RECORD = Internal.createIdentity(ShareRecord.SHARE_RECORD, ShareRecord.SHARE_RECORD.ID);
         public static Identity<ShareSplitRecord, Integer> IDENTITY_SHARE_SPLIT = Internal.createIdentity(ShareSplit.SHARE_SPLIT, ShareSplit.SHARE_SPLIT.ID);
@@ -864,10 +898,12 @@ public class Keys {
         public static Identity<SmsSendRecordRecord, Integer> IDENTITY_SMS_SEND_RECORD = Internal.createIdentity(SmsSendRecord.SMS_SEND_RECORD, SmsSendRecord.SMS_SEND_RECORD.ID);
         public static Identity<SortRecord, Integer> IDENTITY_SORT = Internal.createIdentity(Sort.SORT, Sort.SORT.SORT_ID);
         public static Identity<SpecRecord, Integer> IDENTITY_SPEC = Internal.createIdentity(Spec.SPEC, Spec.SPEC.SPEC_ID);
-        public static Identity<SpecValsRecord, Integer> IDENTITY_SPEC_VALS = Internal.createIdentity(SpecVals.SPEC_VALS, SpecVals.SPEC_VALS.SPECVALID);
+        public static Identity<SpecValsRecord, Integer> IDENTITY_SPEC_VALS = Internal.createIdentity(SpecVals.SPEC_VALS, SpecVals.SPEC_VALS.SPEC_VAL_ID);
         public static Identity<StoreRecord, Integer> IDENTITY_STORE = Internal.createIdentity(Store.STORE, Store.STORE.STORE_ID);
+        public static Identity<StoreGroupRecord, Integer> IDENTITY_STORE_GROUP = Internal.createIdentity(StoreGroup.STORE_GROUP, StoreGroup.STORE_GROUP.GROUP_ID);
         public static Identity<StoreOrderRecord, Integer> IDENTITY_STORE_ORDER = Internal.createIdentity(StoreOrder.STORE_ORDER, StoreOrder.STORE_ORDER.ORDER_ID);
         public static Identity<StoreServiceRecord, Integer> IDENTITY_STORE_SERVICE = Internal.createIdentity(StoreService.STORE_SERVICE, StoreService.STORE_SERVICE.ID);
+        public static Identity<StoreServiceCategoryRecord, Integer> IDENTITY_STORE_SERVICE_CATEGORY = Internal.createIdentity(StoreServiceCategory.STORE_SERVICE_CATEGORY, StoreServiceCategory.STORE_SERVICE_CATEGORY.CAT_ID);
         public static Identity<SubOrderInfoRecord, Integer> IDENTITY_SUB_ORDER_INFO = Internal.createIdentity(SubOrderInfo.SUB_ORDER_INFO, SubOrderInfo.SUB_ORDER_INFO.ID);
         public static Identity<TagRecord, Integer> IDENTITY_TAG = Internal.createIdentity(Tag.TAG, Tag.TAG.TAG_ID);
         public static Identity<TemplateConfigRecord, Integer> IDENTITY_TEMPLATE_CONFIG = Internal.createIdentity(TemplateConfig.TEMPLATE_CONFIG, TemplateConfig.TEMPLATE_CONFIG.ID);
@@ -898,6 +934,11 @@ public class Keys {
     }
 
     private static class UniqueKeys0 {
+        public static final UniqueKey<AssessActivityRecord> KEY_B2C_ASSESS_ACTIVITY_PRIMARY = Internal.createUniqueKey(AssessActivity.ASSESS_ACTIVITY, "KEY_b2c_assess_activity_PRIMARY", AssessActivity.ASSESS_ACTIVITY.ID);
+        public static final UniqueKey<AssessRecordRecord> KEY_B2C_ASSESS_RECORD_PRIMARY = Internal.createUniqueKey(AssessRecord.ASSESS_RECORD, "KEY_b2c_assess_record_PRIMARY", AssessRecord.ASSESS_RECORD.ID);
+        public static final UniqueKey<AssessResultRecord> KEY_B2C_ASSESS_RESULT_PRIMARY = Internal.createUniqueKey(AssessResult.ASSESS_RESULT, "KEY_b2c_assess_result_PRIMARY", AssessResult.ASSESS_RESULT.ID);
+        public static final UniqueKey<AssessTopicRecord> KEY_B2C_ASSESS_TOPIC_PRIMARY = Internal.createUniqueKey(AssessTopic.ASSESS_TOPIC, "KEY_b2c_assess_topic_PRIMARY", AssessTopic.ASSESS_TOPIC.ID);
+        public static final UniqueKey<AssessTopicRecordRecord> KEY_B2C_ASSESS_TOPIC_RECORD_PRIMARY = Internal.createUniqueKey(com.vpu.mp.db.shop.tables.AssessTopicRecord.ASSESS_TOPIC_RECORD, "KEY_b2c_assess_topic_record_PRIMARY", com.vpu.mp.db.shop.tables.AssessTopicRecord.ASSESS_TOPIC_RECORD.ID);
         public static final UniqueKey<BargainRecord> KEY_B2C_BARGAIN_PRIMARY = Internal.createUniqueKey(Bargain.BARGAIN, "KEY_b2c_bargain_PRIMARY", Bargain.BARGAIN.ID);
         public static final UniqueKey<BargainRecordRecord> KEY_B2C_BARGAIN_RECORD_PRIMARY = Internal.createUniqueKey(com.vpu.mp.db.shop.tables.BargainRecord.BARGAIN_RECORD, "KEY_b2c_bargain_record_PRIMARY", com.vpu.mp.db.shop.tables.BargainRecord.BARGAIN_RECORD.ID);
         public static final UniqueKey<BargainUserListRecord> KEY_B2C_BARGAIN_USER_LIST_PRIMARY = Internal.createUniqueKey(BargainUserList.BARGAIN_USER_LIST, "KEY_b2c_bargain_user_list_PRIMARY", BargainUserList.BARGAIN_USER_LIST.ID);
@@ -921,6 +962,7 @@ public class Keys {
         public static final UniqueKey<CommentServiceRecord> KEY_B2C_COMMENT_SERVICE_PRIMARY = Internal.createUniqueKey(CommentService.COMMENT_SERVICE, "KEY_b2c_comment_service_PRIMARY", CommentService.COMMENT_SERVICE.ID);
         public static final UniqueKey<CouponActivityRecord> KEY_B2C_COUPON_ACTIVITY_PRIMARY = Internal.createUniqueKey(CouponActivity.COUPON_ACTIVITY, "KEY_b2c_coupon_activity_PRIMARY", CouponActivity.COUPON_ACTIVITY.ID);
         public static final UniqueKey<CouponActivityRecordRecord> KEY_B2C_COUPON_ACTIVITY_RECORD_PRIMARY = Internal.createUniqueKey(com.vpu.mp.db.shop.tables.CouponActivityRecord.COUPON_ACTIVITY_RECORD, "KEY_b2c_coupon_activity_record_PRIMARY", com.vpu.mp.db.shop.tables.CouponActivityRecord.COUPON_ACTIVITY_RECORD.ID);
+        public static final UniqueKey<CouponPackRecord> KEY_B2C_COUPON_PACK_PRIMARY = Internal.createUniqueKey(CouponPack.COUPON_PACK, "KEY_b2c_coupon_pack_PRIMARY", CouponPack.COUPON_PACK.ID);
         public static final UniqueKey<CouponPayrewardRecordRecord> KEY_B2C_COUPON_PAYREWARD_RECORD_PRIMARY = Internal.createUniqueKey(CouponPayrewardRecord.COUPON_PAYREWARD_RECORD, "KEY_b2c_coupon_payreward_record_PRIMARY", CouponPayrewardRecord.COUPON_PAYREWARD_RECORD.ID);
         public static final UniqueKey<CustomerAvailCouponsRecord> KEY_B2C_CUSTOMER_AVAIL_COUPONS_PRIMARY = Internal.createUniqueKey(CustomerAvailCoupons.CUSTOMER_AVAIL_COUPONS, "KEY_b2c_customer_avail_coupons_PRIMARY", CustomerAvailCoupons.CUSTOMER_AVAIL_COUPONS.ID);
         public static final UniqueKey<CustomerAvailCouponsRecord> KEY_B2C_CUSTOMER_AVAIL_COUPONS_COUPON_SN = Internal.createUniqueKey(CustomerAvailCoupons.CUSTOMER_AVAIL_COUPONS, "KEY_b2c_customer_avail_coupons_coupon_sn", CustomerAvailCoupons.CUSTOMER_AVAIL_COUPONS.COUPON_SN);
@@ -946,6 +988,7 @@ public class Keys {
         public static final UniqueKey<GiftRecord> KEY_B2C_GIFT_PRIMARY = Internal.createUniqueKey(Gift.GIFT, "KEY_b2c_gift_PRIMARY", Gift.GIFT.ID);
         public static final UniqueKey<GiftProductRecord> KEY_B2C_GIFT_PRODUCT_PRIMARY = Internal.createUniqueKey(GiftProduct.GIFT_PRODUCT, "KEY_b2c_gift_product_PRIMARY", GiftProduct.GIFT_PRODUCT.ID);
         public static final UniqueKey<GiveVoucherRecord> KEY_B2C_GIVE_VOUCHER_PRIMARY = Internal.createUniqueKey(GiveVoucher.GIVE_VOUCHER, "KEY_b2c_give_voucher_PRIMARY", GiveVoucher.GIVE_VOUCHER.ID);
+        public static final UniqueKey<GoodsRecord> KEY_B2C_GOODS_PRIMARY = Internal.createUniqueKey(Goods.GOODS, "KEY_b2c_goods_PRIMARY", Goods.GOODS.GOODS_ID);
         public static final UniqueKey<GoodsRecord> KEY_B2C_GOODS_GOODS_ID = Internal.createUniqueKey(Goods.GOODS, "KEY_b2c_goods_goods_id", Goods.GOODS.GOODS_ID, Goods.GOODS.SHOP_ID);
         public static final UniqueKey<GoodsRecord> KEY_B2C_GOODS_GOODS_SN = Internal.createUniqueKey(Goods.GOODS, "KEY_b2c_goods_goods_sn", Goods.GOODS.GOODS_SN, Goods.GOODS.SHOP_ID);
         public static final UniqueKey<GoodsBakRecord> KEY_B2C_GOODS_BAK_PRIMARY = Internal.createUniqueKey(GoodsBak.GOODS_BAK, "KEY_b2c_goods_bak_PRIMARY", GoodsBak.GOODS_BAK.ID);
@@ -959,12 +1002,10 @@ public class Keys {
         public static final UniqueKey<GoodsOpaiSpecRecord> KEY_B2C_GOODS_OPAI_SPEC_PRIMARY = Internal.createUniqueKey(GoodsOpaiSpec.GOODS_OPAI_SPEC, "KEY_b2c_goods_opai_spec_PRIMARY", GoodsOpaiSpec.GOODS_OPAI_SPEC.ID);
         public static final UniqueKey<GoodsRebatePriceRecord> KEY_B2C_GOODS_REBATE_PRICE_PRIMARY = Internal.createUniqueKey(GoodsRebatePrice.GOODS_REBATE_PRICE, "KEY_b2c_goods_rebate_price_PRIMARY", GoodsRebatePrice.GOODS_REBATE_PRICE.ID);
         public static final UniqueKey<GoodsSpecProductRecord> KEY_B2C_GOODS_SPEC_PRODUCT_PRIMARY = Internal.createUniqueKey(GoodsSpecProduct.GOODS_SPEC_PRODUCT, "KEY_b2c_goods_spec_product_PRIMARY", GoodsSpecProduct.GOODS_SPEC_PRODUCT.PRD_ID);
-        public static final UniqueKey<GoodsSpecProductBakRecord> KEY_B2C_GOODS_SPEC_PRODUCT_BAK_PRIMARY = Internal.createUniqueKey(GoodsSpecProductBak.GOODS_SPEC_PRODUCT_BAK, "KEY_b2c_goods_spec_product_bak_PRIMARY", GoodsSpecProductBak.GOODS_SPEC_PRODUCT_BAK.ID);
+        public static final UniqueKey<GoodsSpecProductBakRecord> KEY_B2C_GOODS_SPEC_PRODUCT_BAK_PRIMARY = Internal.createUniqueKey(GoodsSpecProductBak.GOODS_SPEC_PRODUCT_BAK, "KEY_b2c_goods_spec_product_bak_PRIMARY", GoodsSpecProductBak.GOODS_SPEC_PRODUCT_BAK.PRD_BAK_ID);
         public static final UniqueKey<GoodsSummaryRecord> KEY_B2C_GOODS_SUMMARY_PRIMARY = Internal.createUniqueKey(GoodsSummary.GOODS_SUMMARY, "KEY_b2c_goods_summary_PRIMARY", GoodsSummary.GOODS_SUMMARY.ID);
         public static final UniqueKey<GoodsUserSummaryRecord> KEY_B2C_GOODS_USER_SUMMARY_PRIMARY = Internal.createUniqueKey(GoodsUserSummary.GOODS_USER_SUMMARY, "KEY_b2c_goods_user_summary_PRIMARY", GoodsUserSummary.GOODS_USER_SUMMARY.ID);
         public static final UniqueKey<GradePrdRecord> KEY_B2C_GRADE_PRD_PRIMARY = Internal.createUniqueKey(GradePrd.GRADE_PRD, "KEY_b2c_grade_prd_PRIMARY", GradePrd.GRADE_PRD.ID);
-        public static final UniqueKey<GroupRecord> KEY_B2C_GROUP_PRIMARY = Internal.createUniqueKey(Group.GROUP, "KEY_b2c_group_PRIMARY", Group.GROUP.GROUP_ID);
-        public static final UniqueKey<GroupRecord> KEY_B2C_GROUP_GROUP_NAME = Internal.createUniqueKey(Group.GROUP, "KEY_b2c_group_group_name", Group.GROUP.GROUP_NAME);
         public static final UniqueKey<GroupDrawRecord> KEY_B2C_GROUP_DRAW_PRIMARY = Internal.createUniqueKey(GroupDraw.GROUP_DRAW, "KEY_b2c_group_draw_PRIMARY", GroupDraw.GROUP_DRAW.ID);
         public static final UniqueKey<GroupDrawInviteRecord> KEY_B2C_GROUP_DRAW_INVITE_PRIMARY = Internal.createUniqueKey(GroupDrawInvite.GROUP_DRAW_INVITE, "KEY_b2c_group_draw_invite_PRIMARY", GroupDrawInvite.GROUP_DRAW_INVITE.ID);
         public static final UniqueKey<IncomeOutcomeDetailRecord> KEY_B2C_INCOME_OUTCOME_DETAIL_PRIMARY = Internal.createUniqueKey(IncomeOutcomeDetail.INCOME_OUTCOME_DETAIL, "KEY_b2c_income_outcome_detail_PRIMARY", IncomeOutcomeDetail.INCOME_OUTCOME_DETAIL.ID);
@@ -1011,6 +1052,7 @@ public class Keys {
         public static final UniqueKey<PinGroupProductDefineRecord> KEY_B2C_PIN_GROUP_PRODUCT_DEFINE_PRIMARY = Internal.createUniqueKey(PinGroupProductDefine.PIN_GROUP_PRODUCT_DEFINE, "KEY_b2c_pin_group_product_define_PRIMARY", PinGroupProductDefine.PIN_GROUP_PRODUCT_DEFINE.ID);
         public static final UniqueKey<PinIntegrationDefineRecord> KEY_B2C_PIN_INTEGRATION_DEFINE_PRIMARY = Internal.createUniqueKey(PinIntegrationDefine.PIN_INTEGRATION_DEFINE, "KEY_b2c_pin_integration_define_PRIMARY", PinIntegrationDefine.PIN_INTEGRATION_DEFINE.ID);
         public static final UniqueKey<PinIntegrationListRecord> KEY_B2C_PIN_INTEGRATION_LIST_PRIMARY = Internal.createUniqueKey(PinIntegrationList.PIN_INTEGRATION_LIST, "KEY_b2c_pin_integration_list_PRIMARY", PinIntegrationList.PIN_INTEGRATION_LIST.ID);
+        public static final UniqueKey<PledgeRecord> KEY_B2C_PLEDGE_PRIMARY = Internal.createUniqueKey(Pledge.PLEDGE, "KEY_b2c_pledge_PRIMARY", Pledge.PLEDGE.ID);
         public static final UniqueKey<PresaleRecord> KEY_B2C_PRESALE_PRIMARY = Internal.createUniqueKey(Presale.PRESALE, "KEY_b2c_presale_PRIMARY", Presale.PRESALE.ID);
         public static final UniqueKey<PresaleProductRecord> KEY_B2C_PRESALE_PRODUCT_PRIMARY = Internal.createUniqueKey(PresaleProduct.PRESALE_PRODUCT, "KEY_b2c_presale_product_PRIMARY", PresaleProduct.PRESALE_PRODUCT.ID);
         public static final UniqueKey<PurchasePriceDefineRecord> KEY_B2C_PURCHASE_PRICE_DEFINE_PRIMARY = Internal.createUniqueKey(PurchasePriceDefine.PURCHASE_PRICE_DEFINE, "KEY_b2c_purchase_price_define_PRIMARY", PurchasePriceDefine.PURCHASE_PRICE_DEFINE.ID);
@@ -1032,8 +1074,6 @@ public class Keys {
         public static final UniqueKey<SecKillDefineRecord> KEY_B2C_SEC_KILL_DEFINE_PRIMARY = Internal.createUniqueKey(SecKillDefine.SEC_KILL_DEFINE, "KEY_b2c_sec_kill_define_PRIMARY", SecKillDefine.SEC_KILL_DEFINE.SK_ID);
         public static final UniqueKey<SecKillListRecord> KEY_B2C_SEC_KILL_LIST_PRIMARY = Internal.createUniqueKey(SecKillList.SEC_KILL_LIST, "KEY_b2c_sec_kill_list_PRIMARY", SecKillList.SEC_KILL_LIST.SKLOG_ID);
         public static final UniqueKey<SecKillProductDefineRecord> KEY_B2C_SEC_KILL_PRODUCT_DEFINE_PRIMARY = Internal.createUniqueKey(SecKillProductDefine.SEC_KILL_PRODUCT_DEFINE, "KEY_b2c_sec_kill_product_define_PRIMARY", SecKillProductDefine.SEC_KILL_PRODUCT_DEFINE.SKPRO_ID);
-        public static final UniqueKey<ServiceCategoryRecord> KEY_B2C_SERVICE_CATEGORY_PRIMARY = Internal.createUniqueKey(ServiceCategory.SERVICE_CATEGORY, "KEY_b2c_service_category_PRIMARY", ServiceCategory.SERVICE_CATEGORY.CAT_ID);
-        public static final UniqueKey<ServiceCategoryRecord> KEY_B2C_SERVICE_CATEGORY_CAT_NAME = Internal.createUniqueKey(ServiceCategory.SERVICE_CATEGORY, "KEY_b2c_service_category_cat_name", ServiceCategory.SERVICE_CATEGORY.CAT_NAME, ServiceCategory.SERVICE_CATEGORY.STORE_ID);
         public static final UniqueKey<ServiceOrderRecord> KEY_B2C_SERVICE_ORDER_PRIMARY = Internal.createUniqueKey(ServiceOrder.SERVICE_ORDER, "KEY_b2c_service_order_PRIMARY", ServiceOrder.SERVICE_ORDER.ORDER_ID);
         public static final UniqueKey<ServiceRequestRecord> KEY_B2C_SERVICE_REQUEST_PRIMARY = Internal.createUniqueKey(ServiceRequest.SERVICE_REQUEST, "KEY_b2c_service_request_PRIMARY", ServiceRequest.SERVICE_REQUEST.ID);
         public static final UniqueKey<ServiceScheduleRecord> KEY_B2C_SERVICE_SCHEDULE_PRIMARY = Internal.createUniqueKey(ServiceSchedule.SERVICE_SCHEDULE, "KEY_b2c_service_schedule_PRIMARY", ServiceSchedule.SERVICE_SCHEDULE.SCHEDULE_ID);
@@ -1044,15 +1084,20 @@ public class Keys {
         public static final UniqueKey<ShareSplitRecord> KEY_B2C_SHARE_SPLIT_PRIMARY = Internal.createUniqueKey(ShareSplit.SHARE_SPLIT, "KEY_b2c_share_split_PRIMARY", ShareSplit.SHARE_SPLIT.ID);
         public static final UniqueKey<ShippingRecord> KEY_B2C_SHIPPING_PRIMARY = Internal.createUniqueKey(Shipping.SHIPPING, "KEY_b2c_shipping_PRIMARY", Shipping.SHIPPING.SHIPPING_ID);
         public static final UniqueKey<ShopCfgRecord> KEY_B2C_SHOP_CFG_PRIMARY = Internal.createUniqueKey(ShopCfg.SHOP_CFG, "KEY_b2c_shop_cfg_PRIMARY", ShopCfg.SHOP_CFG.REC_ID);
-        public static final UniqueKey<ShopCfgRecord> KEY_B2C_SHOP_CFG_SHOP_ID_K = Internal.createUniqueKey(ShopCfg.SHOP_CFG, "KEY_b2c_shop_cfg_shop_id_k", ShopCfg.SHOP_CFG.K, ShopCfg.SHOP_CFG.SHOP_ID);
         public static final UniqueKey<SmsSendRecordRecord> KEY_B2C_SMS_SEND_RECORD_PRIMARY = Internal.createUniqueKey(SmsSendRecord.SMS_SEND_RECORD, "KEY_b2c_sms_send_record_PRIMARY", SmsSendRecord.SMS_SEND_RECORD.ID);
         public static final UniqueKey<SortRecord> KEY_B2C_SORT_PRIMARY = Internal.createUniqueKey(Sort.SORT, "KEY_b2c_sort_PRIMARY", Sort.SORT.SORT_ID);
         public static final UniqueKey<SpecRecord> KEY_B2C_SPEC_PRIMARY = Internal.createUniqueKey(Spec.SPEC, "KEY_b2c_spec_PRIMARY", Spec.SPEC.SPEC_ID);
-        public static final UniqueKey<SpecValsRecord> KEY_B2C_SPEC_VALS_PRIMARY = Internal.createUniqueKey(SpecVals.SPEC_VALS, "KEY_b2c_spec_vals_PRIMARY", SpecVals.SPEC_VALS.SPECVALID);
+        public static final UniqueKey<SpecRecord> KEY_B2C_SPEC_UNIQUE_SPEC_NAME_GOODS_ID = Internal.createUniqueKey(Spec.SPEC, "KEY_b2c_spec_unique_spec_name_goods_id", Spec.SPEC.SPEC_NAME, Spec.SPEC.GOODS_ID);
+        public static final UniqueKey<SpecValsRecord> KEY_B2C_SPEC_VALS_PRIMARY = Internal.createUniqueKey(SpecVals.SPEC_VALS, "KEY_b2c_spec_vals_PRIMARY", SpecVals.SPEC_VALS.SPEC_VAL_ID);
+        public static final UniqueKey<SpecValsRecord> KEY_B2C_SPEC_VALS_UNIQUE_SPEC_ID_SPEC_VAL_NAME = Internal.createUniqueKey(SpecVals.SPEC_VALS, "KEY_b2c_spec_vals_unique_spec_id_spec_val_name", SpecVals.SPEC_VALS.SPEC_ID, SpecVals.SPEC_VALS.SPEC_VAL_NAME);
         public static final UniqueKey<StoreRecord> KEY_B2C_STORE_PRIMARY = Internal.createUniqueKey(Store.STORE, "KEY_b2c_store_PRIMARY", Store.STORE.STORE_ID);
         public static final UniqueKey<StoreGoodsRecord> KEY_B2C_STORE_GOODS_PRIMARY = Internal.createUniqueKey(StoreGoods.STORE_GOODS, "KEY_b2c_store_goods_PRIMARY", StoreGoods.STORE_GOODS.STORE_ID, StoreGoods.STORE_GOODS.GOODS_ID, StoreGoods.STORE_GOODS.PRD_ID, StoreGoods.STORE_GOODS.IS_ON_SALE);
+        public static final UniqueKey<StoreGroupRecord> KEY_B2C_STORE_GROUP_PRIMARY = Internal.createUniqueKey(StoreGroup.STORE_GROUP, "KEY_b2c_store_group_PRIMARY", StoreGroup.STORE_GROUP.GROUP_ID);
+        public static final UniqueKey<StoreGroupRecord> KEY_B2C_STORE_GROUP_GROUP_NAME = Internal.createUniqueKey(StoreGroup.STORE_GROUP, "KEY_b2c_store_group_group_name", StoreGroup.STORE_GROUP.GROUP_NAME);
         public static final UniqueKey<StoreOrderRecord> KEY_B2C_STORE_ORDER_PRIMARY = Internal.createUniqueKey(StoreOrder.STORE_ORDER, "KEY_b2c_store_order_PRIMARY", StoreOrder.STORE_ORDER.ORDER_ID);
         public static final UniqueKey<StoreServiceRecord> KEY_B2C_STORE_SERVICE_PRIMARY = Internal.createUniqueKey(StoreService.STORE_SERVICE, "KEY_b2c_store_service_PRIMARY", StoreService.STORE_SERVICE.ID);
+        public static final UniqueKey<StoreServiceCategoryRecord> KEY_B2C_STORE_SERVICE_CATEGORY_PRIMARY = Internal.createUniqueKey(StoreServiceCategory.STORE_SERVICE_CATEGORY, "KEY_b2c_store_service_category_PRIMARY", StoreServiceCategory.STORE_SERVICE_CATEGORY.CAT_ID);
+        public static final UniqueKey<StoreServiceCategoryRecord> KEY_B2C_STORE_SERVICE_CATEGORY_CAT_NAME = Internal.createUniqueKey(StoreServiceCategory.STORE_SERVICE_CATEGORY, "KEY_b2c_store_service_category_cat_name", StoreServiceCategory.STORE_SERVICE_CATEGORY.CAT_NAME, StoreServiceCategory.STORE_SERVICE_CATEGORY.STORE_ID);
         public static final UniqueKey<SubOrderInfoRecord> KEY_B2C_SUB_ORDER_INFO_PRIMARY = Internal.createUniqueKey(SubOrderInfo.SUB_ORDER_INFO, "KEY_b2c_sub_order_info_PRIMARY", SubOrderInfo.SUB_ORDER_INFO.ID);
         public static final UniqueKey<SubOrderInfoRecord> KEY_B2C_SUB_ORDER_INFO_SUB_ORDER_SN = Internal.createUniqueKey(SubOrderInfo.SUB_ORDER_INFO, "KEY_b2c_sub_order_info_sub_order_sn", SubOrderInfo.SUB_ORDER_INFO.SUB_ORDER_SN);
         public static final UniqueKey<TagRecord> KEY_B2C_TAG_PRIMARY = Internal.createUniqueKey(Tag.TAG, "KEY_b2c_tag_PRIMARY", Tag.TAG.TAG_ID);

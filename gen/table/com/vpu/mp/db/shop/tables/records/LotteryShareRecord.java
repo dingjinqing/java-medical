@@ -30,7 +30,7 @@ import org.jooq.impl.UpdatableRecordImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class LotteryShareRecord extends UpdatableRecordImpl<LotteryShareRecord> implements Record8<Integer, Integer, Integer, Integer, Integer, Integer, Timestamp, Timestamp> {
 
-    private static final long serialVersionUID = -912473704;
+    private static final long serialVersionUID = 115665972;
 
     /**
      * Setter for <code>mini_shop_471752.b2c_lottery_share.id</code>.
@@ -117,28 +117,28 @@ public class LotteryShareRecord extends UpdatableRecordImpl<LotteryShareRecord> 
     }
 
     /**
-     * Setter for <code>mini_shop_471752.b2c_lottery_share.add_time</code>. 添加时间
+     * Setter for <code>mini_shop_471752.b2c_lottery_share.create_time</code>.
      */
-    public void setAddTime(Timestamp value) {
+    public void setCreateTime(Timestamp value) {
         set(6, value);
     }
 
     /**
-     * Getter for <code>mini_shop_471752.b2c_lottery_share.add_time</code>. 添加时间
+     * Getter for <code>mini_shop_471752.b2c_lottery_share.create_time</code>.
      */
-    public Timestamp getAddTime() {
+    public Timestamp getCreateTime() {
         return (Timestamp) get(6);
     }
 
     /**
-     * Setter for <code>mini_shop_471752.b2c_lottery_share.update_time</code>. 更新时间
+     * Setter for <code>mini_shop_471752.b2c_lottery_share.update_time</code>. 最后修改时间
      */
     public void setUpdateTime(Timestamp value) {
         set(7, value);
     }
 
     /**
-     * Getter for <code>mini_shop_471752.b2c_lottery_share.update_time</code>. 更新时间
+     * Getter for <code>mini_shop_471752.b2c_lottery_share.update_time</code>. 最后修改时间
      */
     public Timestamp getUpdateTime() {
         return (Timestamp) get(7);
@@ -229,7 +229,7 @@ public class LotteryShareRecord extends UpdatableRecordImpl<LotteryShareRecord> 
      */
     @Override
     public Field<Timestamp> field7() {
-        return LotteryShare.LOTTERY_SHARE.ADD_TIME;
+        return LotteryShare.LOTTERY_SHARE.CREATE_TIME;
     }
 
     /**
@@ -293,7 +293,7 @@ public class LotteryShareRecord extends UpdatableRecordImpl<LotteryShareRecord> 
      */
     @Override
     public Timestamp component7() {
-        return getAddTime();
+        return getCreateTime();
     }
 
     /**
@@ -357,7 +357,7 @@ public class LotteryShareRecord extends UpdatableRecordImpl<LotteryShareRecord> 
      */
     @Override
     public Timestamp value7() {
-        return getAddTime();
+        return getCreateTime();
     }
 
     /**
@@ -427,7 +427,7 @@ public class LotteryShareRecord extends UpdatableRecordImpl<LotteryShareRecord> 
      */
     @Override
     public LotteryShareRecord value7(Timestamp value) {
-        setAddTime(value);
+        setCreateTime(value);
         return this;
     }
 
@@ -470,7 +470,7 @@ public class LotteryShareRecord extends UpdatableRecordImpl<LotteryShareRecord> 
     /**
      * Create a detached, initialised LotteryShareRecord
      */
-    public LotteryShareRecord(Integer id, Integer userId, Integer lotteryId, Integer shareTimes, Integer useShareTimes, Integer useScoreTimes, Timestamp addTime, Timestamp updateTime) {
+    public LotteryShareRecord(Integer id, Integer userId, Integer lotteryId, Integer shareTimes, Integer useShareTimes, Integer useScoreTimes, Timestamp createTime, Timestamp updateTime) {
         super(LotteryShare.LOTTERY_SHARE);
 
         set(0, id);
@@ -479,7 +479,7 @@ public class LotteryShareRecord extends UpdatableRecordImpl<LotteryShareRecord> 
         set(3, shareTimes);
         set(4, useShareTimes);
         set(5, useScoreTimes);
-        set(6, addTime);
+        set(6, createTime);
         set(7, updateTime);
     }
 }

@@ -23,52 +23,52 @@ import javax.annotation.Generated;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class DistributorApply implements Serializable {
 
-    private static final long serialVersionUID = -966160645;
+    private static final long serialVersionUID = 1084516542;
 
     private Integer   id;
     private Integer   userId;
-    private Timestamp addTime;
     private Byte      status;
     private String    msg;
-    private Timestamp updateTime;
     private Byte      delFlag;
     private String    activationFields;
     private String    configFields;
+    private Timestamp createTime;
+    private Timestamp updateTime;
 
     public DistributorApply() {}
 
     public DistributorApply(DistributorApply value) {
         this.id = value.id;
         this.userId = value.userId;
-        this.addTime = value.addTime;
         this.status = value.status;
         this.msg = value.msg;
-        this.updateTime = value.updateTime;
         this.delFlag = value.delFlag;
         this.activationFields = value.activationFields;
         this.configFields = value.configFields;
+        this.createTime = value.createTime;
+        this.updateTime = value.updateTime;
     }
 
     public DistributorApply(
         Integer   id,
         Integer   userId,
-        Timestamp addTime,
         Byte      status,
         String    msg,
-        Timestamp updateTime,
         Byte      delFlag,
         String    activationFields,
-        String    configFields
+        String    configFields,
+        Timestamp createTime,
+        Timestamp updateTime
     ) {
         this.id = id;
         this.userId = userId;
-        this.addTime = addTime;
         this.status = status;
         this.msg = msg;
-        this.updateTime = updateTime;
         this.delFlag = delFlag;
         this.activationFields = activationFields;
         this.configFields = configFields;
+        this.createTime = createTime;
+        this.updateTime = updateTime;
     }
 
     public Integer getId() {
@@ -87,14 +87,6 @@ public class DistributorApply implements Serializable {
         this.userId = userId;
     }
 
-    public Timestamp getAddTime() {
-        return this.addTime;
-    }
-
-    public void setAddTime(Timestamp addTime) {
-        this.addTime = addTime;
-    }
-
     public Byte getStatus() {
         return this.status;
     }
@@ -109,14 +101,6 @@ public class DistributorApply implements Serializable {
 
     public void setMsg(String msg) {
         this.msg = msg;
-    }
-
-    public Timestamp getUpdateTime() {
-        return this.updateTime;
-    }
-
-    public void setUpdateTime(Timestamp updateTime) {
-        this.updateTime = updateTime;
     }
 
     public Byte getDelFlag() {
@@ -143,19 +127,35 @@ public class DistributorApply implements Serializable {
         this.configFields = configFields;
     }
 
+    public Timestamp getCreateTime() {
+        return this.createTime;
+    }
+
+    public void setCreateTime(Timestamp createTime) {
+        this.createTime = createTime;
+    }
+
+    public Timestamp getUpdateTime() {
+        return this.updateTime;
+    }
+
+    public void setUpdateTime(Timestamp updateTime) {
+        this.updateTime = updateTime;
+    }
+
     @Override
     public String toString() {
         StringBuilder sb = new StringBuilder("DistributorApply (");
 
         sb.append(id);
         sb.append(", ").append(userId);
-        sb.append(", ").append(addTime);
         sb.append(", ").append(status);
         sb.append(", ").append(msg);
-        sb.append(", ").append(updateTime);
         sb.append(", ").append(delFlag);
         sb.append(", ").append(activationFields);
         sb.append(", ").append(configFields);
+        sb.append(", ").append(createTime);
+        sb.append(", ").append(updateTime);
 
         sb.append(")");
         return sb.toString();

@@ -23,7 +23,7 @@ import javax.annotation.Generated;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class UserAddress implements Serializable {
 
-    private static final long serialVersionUID = 1243745981;
+    private static final long serialVersionUID = -1667297924;
 
     private Integer   addressId;
     private String    addressName;
@@ -47,6 +47,8 @@ public class UserAddress implements Serializable {
     private String    bestTime;
     private Byte      isDefault;
     private Timestamp lastUsedTime;
+    private Timestamp createTime;
+    private Timestamp updateTime;
 
     public UserAddress() {}
 
@@ -73,6 +75,8 @@ public class UserAddress implements Serializable {
         this.bestTime = value.bestTime;
         this.isDefault = value.isDefault;
         this.lastUsedTime = value.lastUsedTime;
+        this.createTime = value.createTime;
+        this.updateTime = value.updateTime;
     }
 
     public UserAddress(
@@ -97,7 +101,9 @@ public class UserAddress implements Serializable {
         String    mobile,
         String    bestTime,
         Byte      isDefault,
-        Timestamp lastUsedTime
+        Timestamp lastUsedTime,
+        Timestamp createTime,
+        Timestamp updateTime
     ) {
         this.addressId = addressId;
         this.addressName = addressName;
@@ -121,6 +127,8 @@ public class UserAddress implements Serializable {
         this.bestTime = bestTime;
         this.isDefault = isDefault;
         this.lastUsedTime = lastUsedTime;
+        this.createTime = createTime;
+        this.updateTime = updateTime;
     }
 
     public Integer getAddressId() {
@@ -299,6 +307,22 @@ public class UserAddress implements Serializable {
         this.lastUsedTime = lastUsedTime;
     }
 
+    public Timestamp getCreateTime() {
+        return this.createTime;
+    }
+
+    public void setCreateTime(Timestamp createTime) {
+        this.createTime = createTime;
+    }
+
+    public Timestamp getUpdateTime() {
+        return this.updateTime;
+    }
+
+    public void setUpdateTime(Timestamp updateTime) {
+        this.updateTime = updateTime;
+    }
+
     @Override
     public String toString() {
         StringBuilder sb = new StringBuilder("UserAddress (");
@@ -325,6 +349,8 @@ public class UserAddress implements Serializable {
         sb.append(", ").append(bestTime);
         sb.append(", ").append(isDefault);
         sb.append(", ").append(lastUsedTime);
+        sb.append(", ").append(createTime);
+        sb.append(", ").append(updateTime);
 
         sb.append(")");
         return sb.toString();

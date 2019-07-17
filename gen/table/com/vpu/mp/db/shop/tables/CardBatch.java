@@ -42,7 +42,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class CardBatch extends TableImpl<CardBatchRecord> {
 
-    private static final long serialVersionUID = -1492049031;
+    private static final long serialVersionUID = -2043868474;
 
     /**
      * The reference instance of <code>mini_shop_471752.b2c_card_batch</code>
@@ -63,9 +63,9 @@ public class CardBatch extends TableImpl<CardBatchRecord> {
     public final TableField<CardBatchRecord, Integer> ID = createField("id", org.jooq.impl.SQLDataType.INTEGER.nullable(false).identity(true), this, "");
 
     /**
-     * The column <code>mini_shop_471752.b2c_card_batch.card_id</code>. 卡号ID
+     * The column <code>mini_shop_471752.b2c_card_batch.card_id</code>. 卡号id
      */
-    public final TableField<CardBatchRecord, Integer> CARD_ID = createField("card_id", org.jooq.impl.SQLDataType.INTEGER.defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.INTEGER)), this, "卡号ID");
+    public final TableField<CardBatchRecord, Integer> CARD_ID = createField("card_id", org.jooq.impl.SQLDataType.INTEGER.defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.INTEGER)), this, "卡号id");
 
     /**
      * The column <code>mini_shop_471752.b2c_card_batch.action</code>. 领取码获得方式 1：自动生成 2：导入
@@ -108,24 +108,24 @@ public class CardBatch extends TableImpl<CardBatchRecord> {
     public final TableField<CardBatchRecord, String> CARD_PREFIX = createField("card_prefix", org.jooq.impl.SQLDataType.VARCHAR(10), this, "卡前缀");
 
     /**
-     * The column <code>mini_shop_471752.b2c_card_batch.add_time</code>.
-     */
-    public final TableField<CardBatchRecord, Timestamp> ADD_TIME = createField("add_time", org.jooq.impl.SQLDataType.TIMESTAMP, this, "");
-
-    /**
-     * The column <code>mini_shop_471752.b2c_card_batch.update_time</code>.
-     */
-    public final TableField<CardBatchRecord, Timestamp> UPDATE_TIME = createField("update_time", org.jooq.impl.SQLDataType.TIMESTAMP, this, "");
-
-    /**
      * The column <code>mini_shop_471752.b2c_card_batch.del_flag</code>.
      */
     public final TableField<CardBatchRecord, Byte> DEL_FLAG = createField("del_flag", org.jooq.impl.SQLDataType.TINYINT.defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.TINYINT)), this, "");
 
     /**
-     * The column <code>mini_shop_471752.b2c_card_batch.del_time</code>.
+     * The column <code>mini_shop_471752.b2c_card_batch.del_time</code>. 删除时间
      */
-    public final TableField<CardBatchRecord, Timestamp> DEL_TIME = createField("del_time", org.jooq.impl.SQLDataType.TIMESTAMP, this, "");
+    public final TableField<CardBatchRecord, Timestamp> DEL_TIME = createField("del_time", org.jooq.impl.SQLDataType.TIMESTAMP, this, "删除时间");
+
+    /**
+     * The column <code>mini_shop_471752.b2c_card_batch.create_time</code>.
+     */
+    public final TableField<CardBatchRecord, Timestamp> CREATE_TIME = createField("create_time", org.jooq.impl.SQLDataType.TIMESTAMP.nullable(false).defaultValue(org.jooq.impl.DSL.field("CURRENT_TIMESTAMP", org.jooq.impl.SQLDataType.TIMESTAMP)), this, "");
+
+    /**
+     * The column <code>mini_shop_471752.b2c_card_batch.update_time</code>. 最后修改时间
+     */
+    public final TableField<CardBatchRecord, Timestamp> UPDATE_TIME = createField("update_time", org.jooq.impl.SQLDataType.TIMESTAMP.nullable(false).defaultValue(org.jooq.impl.DSL.field("CURRENT_TIMESTAMP", org.jooq.impl.SQLDataType.TIMESTAMP)), this, "最后修改时间");
 
     /**
      * Create a <code>mini_shop_471752.b2c_card_batch</code> table reference

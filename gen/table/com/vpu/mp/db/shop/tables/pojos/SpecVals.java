@@ -5,6 +5,7 @@ package com.vpu.mp.db.shop.tables.pojos;
 
 
 import java.io.Serializable;
+import java.sql.Timestamp;
 
 import javax.annotation.Generated;
 
@@ -22,44 +23,52 @@ import javax.annotation.Generated;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class SpecVals implements Serializable {
 
-    private static final long serialVersionUID = -193817246;
+    private static final long serialVersionUID = -1419127609;
 
-    private Integer specvalid;
-    private Integer specId;
-    private String  specvalname;
-    private Byte    delFlag;
-    private Integer shopId;
+    private Integer   specValId;
+    private Integer   specId;
+    private String    specValName;
+    private Byte      delFlag;
+    private Integer   goodsId;
+    private Timestamp createTime;
+    private Timestamp updateTime;
 
     public SpecVals() {}
 
     public SpecVals(SpecVals value) {
-        this.specvalid = value.specvalid;
+        this.specValId = value.specValId;
         this.specId = value.specId;
-        this.specvalname = value.specvalname;
+        this.specValName = value.specValName;
         this.delFlag = value.delFlag;
-        this.shopId = value.shopId;
+        this.goodsId = value.goodsId;
+        this.createTime = value.createTime;
+        this.updateTime = value.updateTime;
     }
 
     public SpecVals(
-        Integer specvalid,
-        Integer specId,
-        String  specvalname,
-        Byte    delFlag,
-        Integer shopId
+        Integer   specValId,
+        Integer   specId,
+        String    specValName,
+        Byte      delFlag,
+        Integer   goodsId,
+        Timestamp createTime,
+        Timestamp updateTime
     ) {
-        this.specvalid = specvalid;
+        this.specValId = specValId;
         this.specId = specId;
-        this.specvalname = specvalname;
+        this.specValName = specValName;
         this.delFlag = delFlag;
-        this.shopId = shopId;
+        this.goodsId = goodsId;
+        this.createTime = createTime;
+        this.updateTime = updateTime;
     }
 
-    public Integer getSpecvalid() {
-        return this.specvalid;
+    public Integer getSpecValId() {
+        return this.specValId;
     }
 
-    public void setSpecvalid(Integer specvalid) {
-        this.specvalid = specvalid;
+    public void setSpecValId(Integer specValId) {
+        this.specValId = specValId;
     }
 
     public Integer getSpecId() {
@@ -70,12 +79,12 @@ public class SpecVals implements Serializable {
         this.specId = specId;
     }
 
-    public String getSpecvalname() {
-        return this.specvalname;
+    public String getSpecValName() {
+        return this.specValName;
     }
 
-    public void setSpecvalname(String specvalname) {
-        this.specvalname = specvalname;
+    public void setSpecValName(String specValName) {
+        this.specValName = specValName;
     }
 
     public Byte getDelFlag() {
@@ -86,23 +95,41 @@ public class SpecVals implements Serializable {
         this.delFlag = delFlag;
     }
 
-    public Integer getShopId() {
-        return this.shopId;
+    public Integer getGoodsId() {
+        return this.goodsId;
     }
 
-    public void setShopId(Integer shopId) {
-        this.shopId = shopId;
+    public void setGoodsId(Integer goodsId) {
+        this.goodsId = goodsId;
+    }
+
+    public Timestamp getCreateTime() {
+        return this.createTime;
+    }
+
+    public void setCreateTime(Timestamp createTime) {
+        this.createTime = createTime;
+    }
+
+    public Timestamp getUpdateTime() {
+        return this.updateTime;
+    }
+
+    public void setUpdateTime(Timestamp updateTime) {
+        this.updateTime = updateTime;
     }
 
     @Override
     public String toString() {
         StringBuilder sb = new StringBuilder("SpecVals (");
 
-        sb.append(specvalid);
+        sb.append(specValId);
         sb.append(", ").append(specId);
-        sb.append(", ").append(specvalname);
+        sb.append(", ").append(specValName);
         sb.append(", ").append(delFlag);
-        sb.append(", ").append(shopId);
+        sb.append(", ").append(goodsId);
+        sb.append(", ").append(createTime);
+        sb.append(", ").append(updateTime);
 
         sb.append(")");
         return sb.toString();

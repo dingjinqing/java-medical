@@ -23,7 +23,7 @@ import javax.annotation.Generated;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class GoodsLabel implements Serializable {
 
-    private static final long serialVersionUID = 1018242535;
+    private static final long serialVersionUID = 304922414;
 
     private Integer   id;
     private String    name;
@@ -31,12 +31,12 @@ public class GoodsLabel implements Serializable {
     private Byte      goodsList;
     private Byte      isAll;
     private Short     level;
-    private Timestamp addTime;
-    private Timestamp updateTime;
     private Timestamp delTime;
     private Integer   delFlag;
     private Short     listPattern;
     private Byte      goodsSelect;
+    private Timestamp createTime;
+    private Timestamp updateTime;
 
     public GoodsLabel() {}
 
@@ -47,12 +47,12 @@ public class GoodsLabel implements Serializable {
         this.goodsList = value.goodsList;
         this.isAll = value.isAll;
         this.level = value.level;
-        this.addTime = value.addTime;
-        this.updateTime = value.updateTime;
         this.delTime = value.delTime;
         this.delFlag = value.delFlag;
         this.listPattern = value.listPattern;
         this.goodsSelect = value.goodsSelect;
+        this.createTime = value.createTime;
+        this.updateTime = value.updateTime;
     }
 
     public GoodsLabel(
@@ -62,12 +62,12 @@ public class GoodsLabel implements Serializable {
         Byte      goodsList,
         Byte      isAll,
         Short     level,
-        Timestamp addTime,
-        Timestamp updateTime,
         Timestamp delTime,
         Integer   delFlag,
         Short     listPattern,
-        Byte      goodsSelect
+        Byte      goodsSelect,
+        Timestamp createTime,
+        Timestamp updateTime
     ) {
         this.id = id;
         this.name = name;
@@ -75,12 +75,12 @@ public class GoodsLabel implements Serializable {
         this.goodsList = goodsList;
         this.isAll = isAll;
         this.level = level;
-        this.addTime = addTime;
-        this.updateTime = updateTime;
         this.delTime = delTime;
         this.delFlag = delFlag;
         this.listPattern = listPattern;
         this.goodsSelect = goodsSelect;
+        this.createTime = createTime;
+        this.updateTime = updateTime;
     }
 
     public Integer getId() {
@@ -131,22 +131,6 @@ public class GoodsLabel implements Serializable {
         this.level = level;
     }
 
-    public Timestamp getAddTime() {
-        return this.addTime;
-    }
-
-    public void setAddTime(Timestamp addTime) {
-        this.addTime = addTime;
-    }
-
-    public Timestamp getUpdateTime() {
-        return this.updateTime;
-    }
-
-    public void setUpdateTime(Timestamp updateTime) {
-        this.updateTime = updateTime;
-    }
-
     public Timestamp getDelTime() {
         return this.delTime;
     }
@@ -179,6 +163,22 @@ public class GoodsLabel implements Serializable {
         this.goodsSelect = goodsSelect;
     }
 
+    public Timestamp getCreateTime() {
+        return this.createTime;
+    }
+
+    public void setCreateTime(Timestamp createTime) {
+        this.createTime = createTime;
+    }
+
+    public Timestamp getUpdateTime() {
+        return this.updateTime;
+    }
+
+    public void setUpdateTime(Timestamp updateTime) {
+        this.updateTime = updateTime;
+    }
+
     @Override
     public String toString() {
         StringBuilder sb = new StringBuilder("GoodsLabel (");
@@ -189,12 +189,12 @@ public class GoodsLabel implements Serializable {
         sb.append(", ").append(goodsList);
         sb.append(", ").append(isAll);
         sb.append(", ").append(level);
-        sb.append(", ").append(addTime);
-        sb.append(", ").append(updateTime);
         sb.append(", ").append(delTime);
         sb.append(", ").append(delFlag);
         sb.append(", ").append(listPattern);
         sb.append(", ").append(goodsSelect);
+        sb.append(", ").append(createTime);
+        sb.append(", ").append(updateTime);
 
         sb.append(")");
         return sb.toString();

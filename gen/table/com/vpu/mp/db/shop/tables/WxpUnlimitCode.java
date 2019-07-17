@@ -42,7 +42,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class WxpUnlimitCode extends TableImpl<WxpUnlimitCodeRecord> {
 
-    private static final long serialVersionUID = 761831491;
+    private static final long serialVersionUID = -1426099658;
 
     /**
      * The reference instance of <code>mini_shop_471752.b2c_wxp_unlimit_code</code>
@@ -73,9 +73,9 @@ public class WxpUnlimitCode extends TableImpl<WxpUnlimitCodeRecord> {
     public final TableField<WxpUnlimitCodeRecord, String> CODE_PAGE = createField("code_page", org.jooq.impl.SQLDataType.VARCHAR(191), this, "必须是已经发布的小程序存在的页面（否则报错），例如 pages/index/index, 根路径前不要填加 /,不能携带参数（参数请放在scene字段里），如果不填写这个字段，默认跳主页面");
 
     /**
-     * The column <code>mini_shop_471752.b2c_wxp_unlimit_code.code_url</code>. 小程序码URL
+     * The column <code>mini_shop_471752.b2c_wxp_unlimit_code.code_url</code>. 小程序码url
      */
-    public final TableField<WxpUnlimitCodeRecord, String> CODE_URL = createField("code_url", org.jooq.impl.SQLDataType.VARCHAR(191), this, "小程序码URL");
+    public final TableField<WxpUnlimitCodeRecord, String> CODE_URL = createField("code_url", org.jooq.impl.SQLDataType.VARCHAR(191), this, "小程序码url");
 
     /**
      * The column <code>mini_shop_471752.b2c_wxp_unlimit_code.code_path</code>. 小程序码本地地址
@@ -83,9 +83,14 @@ public class WxpUnlimitCode extends TableImpl<WxpUnlimitCodeRecord> {
     public final TableField<WxpUnlimitCodeRecord, String> CODE_PATH = createField("code_path", org.jooq.impl.SQLDataType.VARCHAR(191), this, "小程序码本地地址");
 
     /**
-     * The column <code>mini_shop_471752.b2c_wxp_unlimit_code.add_time</code>.
+     * The column <code>mini_shop_471752.b2c_wxp_unlimit_code.create_time</code>.
      */
-    public final TableField<WxpUnlimitCodeRecord, Timestamp> ADD_TIME = createField("add_time", org.jooq.impl.SQLDataType.TIMESTAMP.nullable(false).defaultValue(org.jooq.impl.DSL.field("CURRENT_TIMESTAMP", org.jooq.impl.SQLDataType.TIMESTAMP)), this, "");
+    public final TableField<WxpUnlimitCodeRecord, Timestamp> CREATE_TIME = createField("create_time", org.jooq.impl.SQLDataType.TIMESTAMP.nullable(false).defaultValue(org.jooq.impl.DSL.field("CURRENT_TIMESTAMP", org.jooq.impl.SQLDataType.TIMESTAMP)), this, "");
+
+    /**
+     * The column <code>mini_shop_471752.b2c_wxp_unlimit_code.update_time</code>. 最后修改时间
+     */
+    public final TableField<WxpUnlimitCodeRecord, Timestamp> UPDATE_TIME = createField("update_time", org.jooq.impl.SQLDataType.TIMESTAMP.nullable(false).defaultValue(org.jooq.impl.DSL.field("CURRENT_TIMESTAMP", org.jooq.impl.SQLDataType.TIMESTAMP)), this, "最后修改时间");
 
     /**
      * The column <code>mini_shop_471752.b2c_wxp_unlimit_code.del_flag</code>.
@@ -93,9 +98,9 @@ public class WxpUnlimitCode extends TableImpl<WxpUnlimitCodeRecord> {
     public final TableField<WxpUnlimitCodeRecord, Byte> DEL_FLAG = createField("del_flag", org.jooq.impl.SQLDataType.TINYINT.defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.TINYINT)), this, "");
 
     /**
-     * The column <code>mini_shop_471752.b2c_wxp_unlimit_code.del_time</code>.
+     * The column <code>mini_shop_471752.b2c_wxp_unlimit_code.del_time</code>. 删除时间
      */
-    public final TableField<WxpUnlimitCodeRecord, Timestamp> DEL_TIME = createField("del_time", org.jooq.impl.SQLDataType.TIMESTAMP.defaultValue(org.jooq.impl.DSL.inline("0000-00-00 00:00:00", org.jooq.impl.SQLDataType.TIMESTAMP)), this, "");
+    public final TableField<WxpUnlimitCodeRecord, Timestamp> DEL_TIME = createField("del_time", org.jooq.impl.SQLDataType.TIMESTAMP, this, "删除时间");
 
     /**
      * Create a <code>mini_shop_471752.b2c_wxp_unlimit_code</code> table reference

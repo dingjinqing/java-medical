@@ -23,7 +23,7 @@ import javax.annotation.Generated;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class Channel implements Serializable {
 
-    private static final long serialVersionUID = 1467659579;
+    private static final long serialVersionUID = 238350244;
 
     private Integer   id;
     private Integer   pageId;
@@ -32,7 +32,9 @@ public class Channel implements Serializable {
     private Byte      sourceType;
     private String    share;
     private Byte      delFlag;
-    private Timestamp addTime;
+    private Timestamp delTime;
+    private Timestamp createTime;
+    private Timestamp updateTime;
 
     public Channel() {}
 
@@ -44,7 +46,9 @@ public class Channel implements Serializable {
         this.sourceType = value.sourceType;
         this.share = value.share;
         this.delFlag = value.delFlag;
-        this.addTime = value.addTime;
+        this.delTime = value.delTime;
+        this.createTime = value.createTime;
+        this.updateTime = value.updateTime;
     }
 
     public Channel(
@@ -55,7 +59,9 @@ public class Channel implements Serializable {
         Byte      sourceType,
         String    share,
         Byte      delFlag,
-        Timestamp addTime
+        Timestamp delTime,
+        Timestamp createTime,
+        Timestamp updateTime
     ) {
         this.id = id;
         this.pageId = pageId;
@@ -64,7 +70,9 @@ public class Channel implements Serializable {
         this.sourceType = sourceType;
         this.share = share;
         this.delFlag = delFlag;
-        this.addTime = addTime;
+        this.delTime = delTime;
+        this.createTime = createTime;
+        this.updateTime = updateTime;
     }
 
     public Integer getId() {
@@ -123,12 +131,28 @@ public class Channel implements Serializable {
         this.delFlag = delFlag;
     }
 
-    public Timestamp getAddTime() {
-        return this.addTime;
+    public Timestamp getDelTime() {
+        return this.delTime;
     }
 
-    public void setAddTime(Timestamp addTime) {
-        this.addTime = addTime;
+    public void setDelTime(Timestamp delTime) {
+        this.delTime = delTime;
+    }
+
+    public Timestamp getCreateTime() {
+        return this.createTime;
+    }
+
+    public void setCreateTime(Timestamp createTime) {
+        this.createTime = createTime;
+    }
+
+    public Timestamp getUpdateTime() {
+        return this.updateTime;
+    }
+
+    public void setUpdateTime(Timestamp updateTime) {
+        this.updateTime = updateTime;
     }
 
     @Override
@@ -142,7 +166,9 @@ public class Channel implements Serializable {
         sb.append(", ").append(sourceType);
         sb.append(", ").append(share);
         sb.append(", ").append(delFlag);
-        sb.append(", ").append(addTime);
+        sb.append(", ").append(delTime);
+        sb.append(", ").append(createTime);
+        sb.append(", ").append(updateTime);
 
         sb.append(")");
         return sb.toString();

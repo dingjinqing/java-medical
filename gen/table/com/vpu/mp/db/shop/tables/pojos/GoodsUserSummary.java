@@ -24,7 +24,7 @@ import javax.annotation.Generated;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class GoodsUserSummary implements Serializable {
 
-    private static final long serialVersionUID = 1002514373;
+    private static final long serialVersionUID = 1450161070;
 
     private Integer   id;
     private Date      refDate;
@@ -38,7 +38,8 @@ public class GoodsUserSummary implements Serializable {
     private Integer   cartGoodsNumber;
     private Integer   paidGoodsNumber;
     private Integer   paidUserNumber;
-    private Timestamp addTime;
+    private Timestamp createTime;
+    private Timestamp updateTime;
 
     public GoodsUserSummary() {}
 
@@ -55,7 +56,8 @@ public class GoodsUserSummary implements Serializable {
         this.cartGoodsNumber = value.cartGoodsNumber;
         this.paidGoodsNumber = value.paidGoodsNumber;
         this.paidUserNumber = value.paidUserNumber;
-        this.addTime = value.addTime;
+        this.createTime = value.createTime;
+        this.updateTime = value.updateTime;
     }
 
     public GoodsUserSummary(
@@ -71,7 +73,8 @@ public class GoodsUserSummary implements Serializable {
         Integer   cartGoodsNumber,
         Integer   paidGoodsNumber,
         Integer   paidUserNumber,
-        Timestamp addTime
+        Timestamp createTime,
+        Timestamp updateTime
     ) {
         this.id = id;
         this.refDate = refDate;
@@ -85,7 +88,8 @@ public class GoodsUserSummary implements Serializable {
         this.cartGoodsNumber = cartGoodsNumber;
         this.paidGoodsNumber = paidGoodsNumber;
         this.paidUserNumber = paidUserNumber;
-        this.addTime = addTime;
+        this.createTime = createTime;
+        this.updateTime = updateTime;
     }
 
     public Integer getId() {
@@ -184,12 +188,20 @@ public class GoodsUserSummary implements Serializable {
         this.paidUserNumber = paidUserNumber;
     }
 
-    public Timestamp getAddTime() {
-        return this.addTime;
+    public Timestamp getCreateTime() {
+        return this.createTime;
     }
 
-    public void setAddTime(Timestamp addTime) {
-        this.addTime = addTime;
+    public void setCreateTime(Timestamp createTime) {
+        this.createTime = createTime;
+    }
+
+    public Timestamp getUpdateTime() {
+        return this.updateTime;
+    }
+
+    public void setUpdateTime(Timestamp updateTime) {
+        this.updateTime = updateTime;
     }
 
     @Override
@@ -208,7 +220,8 @@ public class GoodsUserSummary implements Serializable {
         sb.append(", ").append(cartGoodsNumber);
         sb.append(", ").append(paidGoodsNumber);
         sb.append(", ").append(paidUserNumber);
-        sb.append(", ").append(addTime);
+        sb.append(", ").append(createTime);
+        sb.append(", ").append(updateTime);
 
         sb.append(")");
         return sb.toString();

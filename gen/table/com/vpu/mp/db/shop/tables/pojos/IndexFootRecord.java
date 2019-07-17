@@ -23,14 +23,15 @@ import javax.annotation.Generated;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class IndexFootRecord implements Serializable {
 
-    private static final long serialVersionUID = 1029926276;
+    private static final long serialVersionUID = 2118387203;
 
     private Integer   id;
     private Integer   pageId;
     private Integer   userId;
-    private Timestamp updateTime;
     private Integer   count;
     private Byte      type;
+    private Timestamp createTime;
+    private Timestamp updateTime;
 
     public IndexFootRecord() {}
 
@@ -38,25 +39,28 @@ public class IndexFootRecord implements Serializable {
         this.id = value.id;
         this.pageId = value.pageId;
         this.userId = value.userId;
-        this.updateTime = value.updateTime;
         this.count = value.count;
         this.type = value.type;
+        this.createTime = value.createTime;
+        this.updateTime = value.updateTime;
     }
 
     public IndexFootRecord(
         Integer   id,
         Integer   pageId,
         Integer   userId,
-        Timestamp updateTime,
         Integer   count,
-        Byte      type
+        Byte      type,
+        Timestamp createTime,
+        Timestamp updateTime
     ) {
         this.id = id;
         this.pageId = pageId;
         this.userId = userId;
-        this.updateTime = updateTime;
         this.count = count;
         this.type = type;
+        this.createTime = createTime;
+        this.updateTime = updateTime;
     }
 
     public Integer getId() {
@@ -83,14 +87,6 @@ public class IndexFootRecord implements Serializable {
         this.userId = userId;
     }
 
-    public Timestamp getUpdateTime() {
-        return this.updateTime;
-    }
-
-    public void setUpdateTime(Timestamp updateTime) {
-        this.updateTime = updateTime;
-    }
-
     public Integer getCount() {
         return this.count;
     }
@@ -107,6 +103,22 @@ public class IndexFootRecord implements Serializable {
         this.type = type;
     }
 
+    public Timestamp getCreateTime() {
+        return this.createTime;
+    }
+
+    public void setCreateTime(Timestamp createTime) {
+        this.createTime = createTime;
+    }
+
+    public Timestamp getUpdateTime() {
+        return this.updateTime;
+    }
+
+    public void setUpdateTime(Timestamp updateTime) {
+        this.updateTime = updateTime;
+    }
+
     @Override
     public String toString() {
         StringBuilder sb = new StringBuilder("IndexFootRecord (");
@@ -114,9 +126,10 @@ public class IndexFootRecord implements Serializable {
         sb.append(id);
         sb.append(", ").append(pageId);
         sb.append(", ").append(userId);
-        sb.append(", ").append(updateTime);
         sb.append(", ").append(count);
         sb.append(", ").append(type);
+        sb.append(", ").append(createTime);
+        sb.append(", ").append(updateTime);
 
         sb.append(")");
         return sb.toString();

@@ -23,14 +23,15 @@ import javax.annotation.Generated;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class ChannelRecord implements Serializable {
 
-    private static final long serialVersionUID = -261679678;
+    private static final long serialVersionUID = -600345145;
 
     private Integer   id;
     private Integer   channelId;
     private Integer   userId;
     private Byte      type;
     private Integer   count;
-    private Timestamp addTime;
+    private Timestamp createTime;
+    private Timestamp updateTime;
 
     public ChannelRecord() {}
 
@@ -40,7 +41,8 @@ public class ChannelRecord implements Serializable {
         this.userId = value.userId;
         this.type = value.type;
         this.count = value.count;
-        this.addTime = value.addTime;
+        this.createTime = value.createTime;
+        this.updateTime = value.updateTime;
     }
 
     public ChannelRecord(
@@ -49,14 +51,16 @@ public class ChannelRecord implements Serializable {
         Integer   userId,
         Byte      type,
         Integer   count,
-        Timestamp addTime
+        Timestamp createTime,
+        Timestamp updateTime
     ) {
         this.id = id;
         this.channelId = channelId;
         this.userId = userId;
         this.type = type;
         this.count = count;
-        this.addTime = addTime;
+        this.createTime = createTime;
+        this.updateTime = updateTime;
     }
 
     public Integer getId() {
@@ -99,12 +103,20 @@ public class ChannelRecord implements Serializable {
         this.count = count;
     }
 
-    public Timestamp getAddTime() {
-        return this.addTime;
+    public Timestamp getCreateTime() {
+        return this.createTime;
     }
 
-    public void setAddTime(Timestamp addTime) {
-        this.addTime = addTime;
+    public void setCreateTime(Timestamp createTime) {
+        this.createTime = createTime;
+    }
+
+    public Timestamp getUpdateTime() {
+        return this.updateTime;
+    }
+
+    public void setUpdateTime(Timestamp updateTime) {
+        this.updateTime = updateTime;
     }
 
     @Override
@@ -116,7 +128,8 @@ public class ChannelRecord implements Serializable {
         sb.append(", ").append(userId);
         sb.append(", ").append(type);
         sb.append(", ").append(count);
-        sb.append(", ").append(addTime);
+        sb.append(", ").append(createTime);
+        sb.append(", ").append(updateTime);
 
         sb.append(")");
         return sb.toString();

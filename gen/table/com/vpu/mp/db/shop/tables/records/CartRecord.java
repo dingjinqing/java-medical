@@ -28,7 +28,7 @@ import org.jooq.impl.UpdatableRecordImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class CartRecord extends UpdatableRecordImpl<CartRecord> {
 
-    private static final long serialVersionUID = -539286198;
+    private static final long serialVersionUID = 2127034478;
 
     /**
      * Setter for <code>mini_shop_471752.b2c_cart.rec_id</code>.
@@ -45,28 +45,28 @@ public class CartRecord extends UpdatableRecordImpl<CartRecord> {
     }
 
     /**
-     * Setter for <code>mini_shop_471752.b2c_cart.shop_id</code>. 店铺ID
+     * Setter for <code>mini_shop_471752.b2c_cart.shop_id</code>. 店铺id
      */
     public void setShopId(Integer value) {
         set(1, value);
     }
 
     /**
-     * Getter for <code>mini_shop_471752.b2c_cart.shop_id</code>. 店铺ID
+     * Getter for <code>mini_shop_471752.b2c_cart.shop_id</code>. 店铺id
      */
     public Integer getShopId() {
         return (Integer) get(1);
     }
 
     /**
-     * Setter for <code>mini_shop_471752.b2c_cart.store_id</code>. 门店ID
+     * Setter for <code>mini_shop_471752.b2c_cart.store_id</code>. 门店id
      */
     public void setStoreId(Integer value) {
         set(2, value);
     }
 
     /**
-     * Getter for <code>mini_shop_471752.b2c_cart.store_id</code>. 门店ID
+     * Getter for <code>mini_shop_471752.b2c_cart.store_id</code>. 门店id
      */
     public Integer getStoreId() {
         return (Integer) get(2);
@@ -269,115 +269,129 @@ public class CartRecord extends UpdatableRecordImpl<CartRecord> {
     }
 
     /**
-     * Setter for <code>mini_shop_471752.b2c_cart.create_time</code>.
-     */
-    public void setCreateTime(Timestamp value) {
-        set(17, value);
-    }
-
-    /**
-     * Getter for <code>mini_shop_471752.b2c_cart.create_time</code>.
-     */
-    public Timestamp getCreateTime() {
-        return (Timestamp) get(17);
-    }
-
-    /**
      * Setter for <code>mini_shop_471752.b2c_cart.strategy</code>. 参与的优惠活动,json格式
      */
     public void setStrategy(String value) {
-        set(18, value);
+        set(17, value);
     }
 
     /**
      * Getter for <code>mini_shop_471752.b2c_cart.strategy</code>. 参与的优惠活动,json格式
      */
     public String getStrategy() {
-        return (String) get(18);
+        return (String) get(17);
     }
 
     /**
      * Setter for <code>mini_shop_471752.b2c_cart.action</code>. 商品活动类型：1：加价购主商品， 2： 满折满减
      */
     public void setAction(Byte value) {
-        set(19, value);
+        set(18, value);
     }
 
     /**
      * Getter for <code>mini_shop_471752.b2c_cart.action</code>. 商品活动类型：1：加价购主商品， 2： 满折满减
      */
     public Byte getAction() {
-        return (Byte) get(19);
+        return (Byte) get(18);
     }
 
     /**
-     * Setter for <code>mini_shop_471752.b2c_cart.identity_id</code>. 关联ID: 如：加价购ID, 满折满减ID
+     * Setter for <code>mini_shop_471752.b2c_cart.identity_id</code>. 关联id: 如：加价购id, 满折满减id
      */
     public void setIdentityId(Integer value) {
+        set(19, value);
+    }
+
+    /**
+     * Getter for <code>mini_shop_471752.b2c_cart.identity_id</code>. 关联id: 如：加价购id, 满折满减id
+     */
+    public Integer getIdentityId() {
+        return (Integer) get(19);
+    }
+
+    /**
+     * Setter for <code>mini_shop_471752.b2c_cart.extend_id</code>. 扩展字段: 如：换购挡位id
+     */
+    public void setExtendId(Integer value) {
         set(20, value);
     }
 
     /**
-     * Getter for <code>mini_shop_471752.b2c_cart.identity_id</code>. 关联ID: 如：加价购ID, 满折满减ID
-     */
-    public Integer getIdentityId() {
-        return (Integer) get(20);
-    }
-
-    /**
-     * Setter for <code>mini_shop_471752.b2c_cart.extend_id</code>. 扩展字段: 如：换购挡位ID
-     */
-    public void setExtendId(Integer value) {
-        set(21, value);
-    }
-
-    /**
-     * Getter for <code>mini_shop_471752.b2c_cart.extend_id</code>. 扩展字段: 如：换购挡位ID
+     * Getter for <code>mini_shop_471752.b2c_cart.extend_id</code>. 扩展字段: 如：换购挡位id
      */
     public Integer getExtendId() {
-        return (Integer) get(21);
+        return (Integer) get(20);
     }
 
     /**
      * Setter for <code>mini_shop_471752.b2c_cart.is_checked</code>. 是否选中
      */
     public void setIsChecked(Byte value) {
-        set(22, value);
+        set(21, value);
     }
 
     /**
      * Getter for <code>mini_shop_471752.b2c_cart.is_checked</code>. 是否选中
      */
     public Byte getIsChecked() {
-        return (Byte) get(22);
+        return (Byte) get(21);
     }
 
     /**
      * Setter for <code>mini_shop_471752.b2c_cart.platform</code>. 平台：如 crm
      */
     public void setPlatform(String value) {
-        set(23, value);
+        set(22, value);
     }
 
     /**
      * Getter for <code>mini_shop_471752.b2c_cart.platform</code>. 平台：如 crm
      */
     public String getPlatform() {
-        return (String) get(23);
+        return (String) get(22);
     }
 
     /**
      * Setter for <code>mini_shop_471752.b2c_cart.extend_info</code>. 扩展内容：如crm的promote_info
      */
     public void setExtendInfo(String value) {
-        set(24, value);
+        set(23, value);
     }
 
     /**
      * Getter for <code>mini_shop_471752.b2c_cart.extend_info</code>. 扩展内容：如crm的promote_info
      */
     public String getExtendInfo() {
-        return (String) get(24);
+        return (String) get(23);
+    }
+
+    /**
+     * Setter for <code>mini_shop_471752.b2c_cart.create_time</code>.
+     */
+    public void setCreateTime(Timestamp value) {
+        set(24, value);
+    }
+
+    /**
+     * Getter for <code>mini_shop_471752.b2c_cart.create_time</code>.
+     */
+    public Timestamp getCreateTime() {
+        return (Timestamp) get(24);
+    }
+
+    /**
+     * Setter for <code>mini_shop_471752.b2c_cart.update_time</code>. 最后修改时间
+     */
+    public void setUpdateTime(Timestamp value) {
+        set(25, value);
+    }
+
+    /**
+     * Getter for <code>mini_shop_471752.b2c_cart.update_time</code>. 最后修改时间
+     */
+    public Timestamp getUpdateTime() {
+        return (Timestamp) get(25);
     }
 
     // -------------------------------------------------------------------------
@@ -406,7 +420,7 @@ public class CartRecord extends UpdatableRecordImpl<CartRecord> {
     /**
      * Create a detached, initialised CartRecord
      */
-    public CartRecord(Long recId, Integer shopId, Integer storeId, Integer userId, Integer goodsId, String goodsSn, Integer productId, String prdSn, String goodsName, BigDecimal marketPrice, BigDecimal goodsPrice, Short goodsNumber, String goodsSpecs, Integer parentId, Byte recType, Short isGift, Byte isBuynow, Timestamp createTime, String strategy, Byte action, Integer identityId, Integer extendId, Byte isChecked, String platform, String extendInfo) {
+    public CartRecord(Long recId, Integer shopId, Integer storeId, Integer userId, Integer goodsId, String goodsSn, Integer productId, String prdSn, String goodsName, BigDecimal marketPrice, BigDecimal goodsPrice, Short goodsNumber, String goodsSpecs, Integer parentId, Byte recType, Short isGift, Byte isBuynow, String strategy, Byte action, Integer identityId, Integer extendId, Byte isChecked, String platform, String extendInfo, Timestamp createTime, Timestamp updateTime) {
         super(Cart.CART);
 
         set(0, recId);
@@ -426,13 +440,14 @@ public class CartRecord extends UpdatableRecordImpl<CartRecord> {
         set(14, recType);
         set(15, isGift);
         set(16, isBuynow);
-        set(17, createTime);
-        set(18, strategy);
-        set(19, action);
-        set(20, identityId);
-        set(21, extendId);
-        set(22, isChecked);
-        set(23, platform);
-        set(24, extendInfo);
+        set(17, strategy);
+        set(18, action);
+        set(19, identityId);
+        set(20, extendId);
+        set(21, isChecked);
+        set(22, platform);
+        set(23, extendInfo);
+        set(24, createTime);
+        set(25, updateTime);
     }
 }

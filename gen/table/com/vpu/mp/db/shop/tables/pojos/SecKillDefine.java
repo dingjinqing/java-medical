@@ -23,7 +23,7 @@ import javax.annotation.Generated;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class SecKillDefine implements Serializable {
 
-    private static final long serialVersionUID = -724929239;
+    private static final long serialVersionUID = -366925556;
 
     private Integer   skId;
     private Integer   shopId;
@@ -38,9 +38,9 @@ public class SecKillDefine implements Serializable {
     private Byte      delFlag;
     private Byte      status;
     private Byte      freeFreight;
-    private Timestamp addTime;
+    private Timestamp delTime;
+    private Timestamp createTime;
     private Timestamp updateTime;
-    private Integer   delTime;
     private String    cardId;
     private String    shareConfig;
 
@@ -60,9 +60,9 @@ public class SecKillDefine implements Serializable {
         this.delFlag = value.delFlag;
         this.status = value.status;
         this.freeFreight = value.freeFreight;
-        this.addTime = value.addTime;
-        this.updateTime = value.updateTime;
         this.delTime = value.delTime;
+        this.createTime = value.createTime;
+        this.updateTime = value.updateTime;
         this.cardId = value.cardId;
         this.shareConfig = value.shareConfig;
     }
@@ -81,9 +81,9 @@ public class SecKillDefine implements Serializable {
         Byte      delFlag,
         Byte      status,
         Byte      freeFreight,
-        Timestamp addTime,
+        Timestamp delTime,
+        Timestamp createTime,
         Timestamp updateTime,
-        Integer   delTime,
         String    cardId,
         String    shareConfig
     ) {
@@ -100,9 +100,9 @@ public class SecKillDefine implements Serializable {
         this.delFlag = delFlag;
         this.status = status;
         this.freeFreight = freeFreight;
-        this.addTime = addTime;
-        this.updateTime = updateTime;
         this.delTime = delTime;
+        this.createTime = createTime;
+        this.updateTime = updateTime;
         this.cardId = cardId;
         this.shareConfig = shareConfig;
     }
@@ -211,12 +211,20 @@ public class SecKillDefine implements Serializable {
         this.freeFreight = freeFreight;
     }
 
-    public Timestamp getAddTime() {
-        return this.addTime;
+    public Timestamp getDelTime() {
+        return this.delTime;
     }
 
-    public void setAddTime(Timestamp addTime) {
-        this.addTime = addTime;
+    public void setDelTime(Timestamp delTime) {
+        this.delTime = delTime;
+    }
+
+    public Timestamp getCreateTime() {
+        return this.createTime;
+    }
+
+    public void setCreateTime(Timestamp createTime) {
+        this.createTime = createTime;
     }
 
     public Timestamp getUpdateTime() {
@@ -225,14 +233,6 @@ public class SecKillDefine implements Serializable {
 
     public void setUpdateTime(Timestamp updateTime) {
         this.updateTime = updateTime;
-    }
-
-    public Integer getDelTime() {
-        return this.delTime;
-    }
-
-    public void setDelTime(Integer delTime) {
-        this.delTime = delTime;
     }
 
     public String getCardId() {
@@ -268,9 +268,9 @@ public class SecKillDefine implements Serializable {
         sb.append(", ").append(delFlag);
         sb.append(", ").append(status);
         sb.append(", ").append(freeFreight);
-        sb.append(", ").append(addTime);
-        sb.append(", ").append(updateTime);
         sb.append(", ").append(delTime);
+        sb.append(", ").append(createTime);
+        sb.append(", ").append(updateTime);
         sb.append(", ").append(cardId);
         sb.append(", ").append(shareConfig);
 

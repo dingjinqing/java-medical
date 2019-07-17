@@ -23,14 +23,12 @@ import javax.annotation.Generated;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class UserLoginRecord implements Serializable {
 
-    private static final long serialVersionUID = 1819278349;
+    private static final long serialVersionUID = -92037304;
 
     private Long      id;
     private Integer   userId;
-    private Timestamp addTime;
     private String    userIp;
     private Integer   count;
-    private Timestamp updateTime;
     private String    provinceCode;
     private String    province;
     private String    cityCode;
@@ -39,16 +37,16 @@ public class UserLoginRecord implements Serializable {
     private String    district;
     private String    lat;
     private String    lng;
+    private Timestamp createTime;
+    private Timestamp updateTime;
 
     public UserLoginRecord() {}
 
     public UserLoginRecord(UserLoginRecord value) {
         this.id = value.id;
         this.userId = value.userId;
-        this.addTime = value.addTime;
         this.userIp = value.userIp;
         this.count = value.count;
-        this.updateTime = value.updateTime;
         this.provinceCode = value.provinceCode;
         this.province = value.province;
         this.cityCode = value.cityCode;
@@ -57,15 +55,15 @@ public class UserLoginRecord implements Serializable {
         this.district = value.district;
         this.lat = value.lat;
         this.lng = value.lng;
+        this.createTime = value.createTime;
+        this.updateTime = value.updateTime;
     }
 
     public UserLoginRecord(
         Long      id,
         Integer   userId,
-        Timestamp addTime,
         String    userIp,
         Integer   count,
-        Timestamp updateTime,
         String    provinceCode,
         String    province,
         String    cityCode,
@@ -73,14 +71,14 @@ public class UserLoginRecord implements Serializable {
         String    districtCode,
         String    district,
         String    lat,
-        String    lng
+        String    lng,
+        Timestamp createTime,
+        Timestamp updateTime
     ) {
         this.id = id;
         this.userId = userId;
-        this.addTime = addTime;
         this.userIp = userIp;
         this.count = count;
-        this.updateTime = updateTime;
         this.provinceCode = provinceCode;
         this.province = province;
         this.cityCode = cityCode;
@@ -89,6 +87,8 @@ public class UserLoginRecord implements Serializable {
         this.district = district;
         this.lat = lat;
         this.lng = lng;
+        this.createTime = createTime;
+        this.updateTime = updateTime;
     }
 
     public Long getId() {
@@ -107,14 +107,6 @@ public class UserLoginRecord implements Serializable {
         this.userId = userId;
     }
 
-    public Timestamp getAddTime() {
-        return this.addTime;
-    }
-
-    public void setAddTime(Timestamp addTime) {
-        this.addTime = addTime;
-    }
-
     public String getUserIp() {
         return this.userIp;
     }
@@ -129,14 +121,6 @@ public class UserLoginRecord implements Serializable {
 
     public void setCount(Integer count) {
         this.count = count;
-    }
-
-    public Timestamp getUpdateTime() {
-        return this.updateTime;
-    }
-
-    public void setUpdateTime(Timestamp updateTime) {
-        this.updateTime = updateTime;
     }
 
     public String getProvinceCode() {
@@ -203,16 +187,30 @@ public class UserLoginRecord implements Serializable {
         this.lng = lng;
     }
 
+    public Timestamp getCreateTime() {
+        return this.createTime;
+    }
+
+    public void setCreateTime(Timestamp createTime) {
+        this.createTime = createTime;
+    }
+
+    public Timestamp getUpdateTime() {
+        return this.updateTime;
+    }
+
+    public void setUpdateTime(Timestamp updateTime) {
+        this.updateTime = updateTime;
+    }
+
     @Override
     public String toString() {
         StringBuilder sb = new StringBuilder("UserLoginRecord (");
 
         sb.append(id);
         sb.append(", ").append(userId);
-        sb.append(", ").append(addTime);
         sb.append(", ").append(userIp);
         sb.append(", ").append(count);
-        sb.append(", ").append(updateTime);
         sb.append(", ").append(provinceCode);
         sb.append(", ").append(province);
         sb.append(", ").append(cityCode);
@@ -221,6 +219,8 @@ public class UserLoginRecord implements Serializable {
         sb.append(", ").append(district);
         sb.append(", ").append(lat);
         sb.append(", ").append(lng);
+        sb.append(", ").append(createTime);
+        sb.append(", ").append(updateTime);
 
         sb.append(")");
         return sb.toString();

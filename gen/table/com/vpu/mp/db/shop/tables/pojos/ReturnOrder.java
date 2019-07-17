@@ -24,7 +24,7 @@ import javax.annotation.Generated;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class ReturnOrder implements Serializable {
 
-    private static final long serialVersionUID = -1737771757;
+    private static final long serialVersionUID = -1447174166;
 
     private Integer    retId;
     private Integer    orderId;
@@ -57,7 +57,8 @@ public class ReturnOrder implements Serializable {
     private String     merchantTelephone;
     private String     consignee;
     private String     zipCode;
-    private Timestamp  addTime;
+    private Timestamp  createTime;
+    private Timestamp  updateTime;
 
     public ReturnOrder() {}
 
@@ -93,7 +94,8 @@ public class ReturnOrder implements Serializable {
         this.merchantTelephone = value.merchantTelephone;
         this.consignee = value.consignee;
         this.zipCode = value.zipCode;
-        this.addTime = value.addTime;
+        this.createTime = value.createTime;
+        this.updateTime = value.updateTime;
     }
 
     public ReturnOrder(
@@ -128,7 +130,8 @@ public class ReturnOrder implements Serializable {
         String     merchantTelephone,
         String     consignee,
         String     zipCode,
-        Timestamp  addTime
+        Timestamp  createTime,
+        Timestamp  updateTime
     ) {
         this.retId = retId;
         this.orderId = orderId;
@@ -161,7 +164,8 @@ public class ReturnOrder implements Serializable {
         this.merchantTelephone = merchantTelephone;
         this.consignee = consignee;
         this.zipCode = zipCode;
-        this.addTime = addTime;
+        this.createTime = createTime;
+        this.updateTime = updateTime;
     }
 
     public Integer getRetId() {
@@ -412,12 +416,20 @@ public class ReturnOrder implements Serializable {
         this.zipCode = zipCode;
     }
 
-    public Timestamp getAddTime() {
-        return this.addTime;
+    public Timestamp getCreateTime() {
+        return this.createTime;
     }
 
-    public void setAddTime(Timestamp addTime) {
-        this.addTime = addTime;
+    public void setCreateTime(Timestamp createTime) {
+        this.createTime = createTime;
+    }
+
+    public Timestamp getUpdateTime() {
+        return this.updateTime;
+    }
+
+    public void setUpdateTime(Timestamp updateTime) {
+        this.updateTime = updateTime;
     }
 
     @Override
@@ -455,7 +467,8 @@ public class ReturnOrder implements Serializable {
         sb.append(", ").append(merchantTelephone);
         sb.append(", ").append(consignee);
         sb.append(", ").append(zipCode);
-        sb.append(", ").append(addTime);
+        sb.append(", ").append(createTime);
+        sb.append(", ").append(updateTime);
 
         sb.append(")");
         return sb.toString();

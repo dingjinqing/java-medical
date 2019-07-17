@@ -23,7 +23,7 @@ import javax.annotation.Generated;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class Invoice implements Serializable {
 
-    private static final long serialVersionUID = -1196524714;
+    private static final long serialVersionUID = 1379340061;
 
     private Integer   id;
     private Integer   userId;
@@ -34,7 +34,8 @@ public class Invoice implements Serializable {
     private String    companyaddress;
     private String    bankname;
     private String    bankaccount;
-    private Timestamp addTime;
+    private Timestamp createTime;
+    private Timestamp updateTime;
 
     public Invoice() {}
 
@@ -48,7 +49,8 @@ public class Invoice implements Serializable {
         this.companyaddress = value.companyaddress;
         this.bankname = value.bankname;
         this.bankaccount = value.bankaccount;
-        this.addTime = value.addTime;
+        this.createTime = value.createTime;
+        this.updateTime = value.updateTime;
     }
 
     public Invoice(
@@ -61,7 +63,8 @@ public class Invoice implements Serializable {
         String    companyaddress,
         String    bankname,
         String    bankaccount,
-        Timestamp addTime
+        Timestamp createTime,
+        Timestamp updateTime
     ) {
         this.id = id;
         this.userId = userId;
@@ -72,7 +75,8 @@ public class Invoice implements Serializable {
         this.companyaddress = companyaddress;
         this.bankname = bankname;
         this.bankaccount = bankaccount;
-        this.addTime = addTime;
+        this.createTime = createTime;
+        this.updateTime = updateTime;
     }
 
     public Integer getId() {
@@ -147,12 +151,20 @@ public class Invoice implements Serializable {
         this.bankaccount = bankaccount;
     }
 
-    public Timestamp getAddTime() {
-        return this.addTime;
+    public Timestamp getCreateTime() {
+        return this.createTime;
     }
 
-    public void setAddTime(Timestamp addTime) {
-        this.addTime = addTime;
+    public void setCreateTime(Timestamp createTime) {
+        this.createTime = createTime;
+    }
+
+    public Timestamp getUpdateTime() {
+        return this.updateTime;
+    }
+
+    public void setUpdateTime(Timestamp updateTime) {
+        this.updateTime = updateTime;
     }
 
     @Override
@@ -168,7 +180,8 @@ public class Invoice implements Serializable {
         sb.append(", ").append(companyaddress);
         sb.append(", ").append(bankname);
         sb.append(", ").append(bankaccount);
-        sb.append(", ").append(addTime);
+        sb.append(", ").append(createTime);
+        sb.append(", ").append(updateTime);
 
         sb.append(")");
         return sb.toString();

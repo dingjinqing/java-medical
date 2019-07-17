@@ -42,7 +42,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class GroupDrawInvite extends TableImpl<GroupDrawInviteRecord> {
 
-    private static final long serialVersionUID = -1250729428;
+    private static final long serialVersionUID = 625619479;
 
     /**
      * The reference instance of <code>mini_shop_471752.b2c_group_draw_invite</code>
@@ -68,9 +68,9 @@ public class GroupDrawInvite extends TableImpl<GroupDrawInviteRecord> {
     public final TableField<GroupDrawInviteRecord, Integer> ACTION = createField("action", org.jooq.impl.SQLDataType.INTEGER.nullable(false).defaultValue(org.jooq.impl.DSL.inline("1", org.jooq.impl.SQLDataType.INTEGER)), this, "活动类型：1 拼团抽奖");
 
     /**
-     * The column <code>mini_shop_471752.b2c_group_draw_invite.identity_id</code>. 活动ID
+     * The column <code>mini_shop_471752.b2c_group_draw_invite.identity_id</code>. 活动id
      */
-    public final TableField<GroupDrawInviteRecord, Integer> IDENTITY_ID = createField("identity_id", org.jooq.impl.SQLDataType.INTEGER.nullable(false), this, "活动ID");
+    public final TableField<GroupDrawInviteRecord, Integer> IDENTITY_ID = createField("identity_id", org.jooq.impl.SQLDataType.INTEGER.nullable(false), this, "活动id");
 
     /**
      * The column <code>mini_shop_471752.b2c_group_draw_invite.path</code>. 页面路径
@@ -78,39 +78,44 @@ public class GroupDrawInvite extends TableImpl<GroupDrawInviteRecord> {
     public final TableField<GroupDrawInviteRecord, String> PATH = createField("path", org.jooq.impl.SQLDataType.VARCHAR(100).nullable(false), this, "页面路径");
 
     /**
-     * The column <code>mini_shop_471752.b2c_group_draw_invite.goods_id</code>. 商品ID
+     * The column <code>mini_shop_471752.b2c_group_draw_invite.goods_id</code>. 商品id
      */
-    public final TableField<GroupDrawInviteRecord, Integer> GOODS_ID = createField("goods_id", org.jooq.impl.SQLDataType.INTEGER.nullable(false), this, "商品ID");
+    public final TableField<GroupDrawInviteRecord, Integer> GOODS_ID = createField("goods_id", org.jooq.impl.SQLDataType.INTEGER.nullable(false), this, "商品id");
 
     /**
-     * The column <code>mini_shop_471752.b2c_group_draw_invite.group_id</code>. 团ID
+     * The column <code>mini_shop_471752.b2c_group_draw_invite.group_id</code>. 团id
      */
-    public final TableField<GroupDrawInviteRecord, Integer> GROUP_ID = createField("group_id", org.jooq.impl.SQLDataType.INTEGER, this, "团ID");
+    public final TableField<GroupDrawInviteRecord, Integer> GROUP_ID = createField("group_id", org.jooq.impl.SQLDataType.INTEGER, this, "团id");
 
     /**
-     * The column <code>mini_shop_471752.b2c_group_draw_invite.invite_user_id</code>. 邀请用户ID
+     * The column <code>mini_shop_471752.b2c_group_draw_invite.invite_user_id</code>. 邀请用户id
      */
-    public final TableField<GroupDrawInviteRecord, Integer> INVITE_USER_ID = createField("invite_user_id", org.jooq.impl.SQLDataType.INTEGER.nullable(false), this, "邀请用户ID");
+    public final TableField<GroupDrawInviteRecord, Integer> INVITE_USER_ID = createField("invite_user_id", org.jooq.impl.SQLDataType.INTEGER.nullable(false), this, "邀请用户id");
 
     /**
-     * The column <code>mini_shop_471752.b2c_group_draw_invite.user_id</code>. 用户ID
+     * The column <code>mini_shop_471752.b2c_group_draw_invite.user_id</code>. 用户id
      */
-    public final TableField<GroupDrawInviteRecord, Integer> USER_ID = createField("user_id", org.jooq.impl.SQLDataType.INTEGER.nullable(false), this, "用户ID");
+    public final TableField<GroupDrawInviteRecord, Integer> USER_ID = createField("user_id", org.jooq.impl.SQLDataType.INTEGER.nullable(false), this, "用户id");
 
     /**
      * The column <code>mini_shop_471752.b2c_group_draw_invite.is_new</code>. 是否是新用户
      */
-    public final TableField<GroupDrawInviteRecord, Byte> IS_NEW = createField("is_new", org.jooq.impl.SQLDataType.TINYINT.defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.TINYINT)), this, "是否是新用户");
+    public final TableField<GroupDrawInviteRecord, Byte> IS_NEW = createField("is_new", org.jooq.impl.SQLDataType.TINYINT.nullable(false).defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.TINYINT)), this, "是否是新用户");
 
     /**
      * The column <code>mini_shop_471752.b2c_group_draw_invite.is_used</code>. 记录是否已处理(已记录拼团信息)
      */
-    public final TableField<GroupDrawInviteRecord, Byte> IS_USED = createField("is_used", org.jooq.impl.SQLDataType.TINYINT.defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.TINYINT)), this, "记录是否已处理(已记录拼团信息)");
+    public final TableField<GroupDrawInviteRecord, Byte> IS_USED = createField("is_used", org.jooq.impl.SQLDataType.TINYINT.nullable(false).defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.TINYINT)), this, "记录是否已处理(已记录拼团信息)");
 
     /**
-     * The column <code>mini_shop_471752.b2c_group_draw_invite.add_time</code>.
+     * The column <code>mini_shop_471752.b2c_group_draw_invite.create_time</code>.
      */
-    public final TableField<GroupDrawInviteRecord, Timestamp> ADD_TIME = createField("add_time", org.jooq.impl.SQLDataType.TIMESTAMP, this, "");
+    public final TableField<GroupDrawInviteRecord, Timestamp> CREATE_TIME = createField("create_time", org.jooq.impl.SQLDataType.TIMESTAMP.nullable(false).defaultValue(org.jooq.impl.DSL.field("CURRENT_TIMESTAMP", org.jooq.impl.SQLDataType.TIMESTAMP)), this, "");
+
+    /**
+     * The column <code>mini_shop_471752.b2c_group_draw_invite.update_time</code>. 最后修改时间
+     */
+    public final TableField<GroupDrawInviteRecord, Timestamp> UPDATE_TIME = createField("update_time", org.jooq.impl.SQLDataType.TIMESTAMP.nullable(false).defaultValue(org.jooq.impl.DSL.field("CURRENT_TIMESTAMP", org.jooq.impl.SQLDataType.TIMESTAMP)), this, "最后修改时间");
 
     /**
      * Create a <code>mini_shop_471752.b2c_group_draw_invite</code> table reference

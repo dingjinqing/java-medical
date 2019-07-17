@@ -5,6 +5,7 @@ package com.vpu.mp.db.shop.tables.pojos;
 
 
 import java.io.Serializable;
+import java.sql.Timestamp;
 
 import javax.annotation.Generated;
 
@@ -22,24 +23,32 @@ import javax.annotation.Generated;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class WxpUnlimitScene implements Serializable {
 
-    private static final long serialVersionUID = -1827905638;
+    private static final long serialVersionUID = -449106983;
 
-    private Integer sceneId;
-    private String  sceneValue;
+    private Integer   sceneId;
+    private String    sceneValue;
+    private Timestamp createTime;
+    private Timestamp updateTime;
 
     public WxpUnlimitScene() {}
 
     public WxpUnlimitScene(WxpUnlimitScene value) {
         this.sceneId = value.sceneId;
         this.sceneValue = value.sceneValue;
+        this.createTime = value.createTime;
+        this.updateTime = value.updateTime;
     }
 
     public WxpUnlimitScene(
-        Integer sceneId,
-        String  sceneValue
+        Integer   sceneId,
+        String    sceneValue,
+        Timestamp createTime,
+        Timestamp updateTime
     ) {
         this.sceneId = sceneId;
         this.sceneValue = sceneValue;
+        this.createTime = createTime;
+        this.updateTime = updateTime;
     }
 
     public Integer getSceneId() {
@@ -58,12 +67,30 @@ public class WxpUnlimitScene implements Serializable {
         this.sceneValue = sceneValue;
     }
 
+    public Timestamp getCreateTime() {
+        return this.createTime;
+    }
+
+    public void setCreateTime(Timestamp createTime) {
+        this.createTime = createTime;
+    }
+
+    public Timestamp getUpdateTime() {
+        return this.updateTime;
+    }
+
+    public void setUpdateTime(Timestamp updateTime) {
+        this.updateTime = updateTime;
+    }
+
     @Override
     public String toString() {
         StringBuilder sb = new StringBuilder("WxpUnlimitScene (");
 
         sb.append(sceneId);
         sb.append(", ").append(sceneValue);
+        sb.append(", ").append(createTime);
+        sb.append(", ").append(updateTime);
 
         sb.append(")");
         return sb.toString();

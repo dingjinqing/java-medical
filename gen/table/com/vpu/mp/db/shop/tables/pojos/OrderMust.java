@@ -5,6 +5,7 @@ package com.vpu.mp.db.shop.tables.pojos;
 
 
 import java.io.Serializable;
+import java.sql.Timestamp;
 
 import javax.annotation.Generated;
 
@@ -22,17 +23,19 @@ import javax.annotation.Generated;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class OrderMust implements Serializable {
 
-    private static final long serialVersionUID = -1543785922;
+    private static final long serialVersionUID = 1074384213;
 
-    private Integer id;
-    private String  orderSn;
-    private String  mustContent;
-    private String  orderRealName;
-    private String  orderCid;
-    private String  consigneeRealName;
-    private String  consigneeCid;
-    private String  customTitle;
-    private String  custom;
+    private Integer   id;
+    private String    orderSn;
+    private String    mustContent;
+    private String    orderRealName;
+    private String    orderCid;
+    private String    consigneeRealName;
+    private String    consigneeCid;
+    private String    customTitle;
+    private String    custom;
+    private Timestamp createTime;
+    private Timestamp updateTime;
 
     public OrderMust() {}
 
@@ -46,18 +49,22 @@ public class OrderMust implements Serializable {
         this.consigneeCid = value.consigneeCid;
         this.customTitle = value.customTitle;
         this.custom = value.custom;
+        this.createTime = value.createTime;
+        this.updateTime = value.updateTime;
     }
 
     public OrderMust(
-        Integer id,
-        String  orderSn,
-        String  mustContent,
-        String  orderRealName,
-        String  orderCid,
-        String  consigneeRealName,
-        String  consigneeCid,
-        String  customTitle,
-        String  custom
+        Integer   id,
+        String    orderSn,
+        String    mustContent,
+        String    orderRealName,
+        String    orderCid,
+        String    consigneeRealName,
+        String    consigneeCid,
+        String    customTitle,
+        String    custom,
+        Timestamp createTime,
+        Timestamp updateTime
     ) {
         this.id = id;
         this.orderSn = orderSn;
@@ -68,6 +75,8 @@ public class OrderMust implements Serializable {
         this.consigneeCid = consigneeCid;
         this.customTitle = customTitle;
         this.custom = custom;
+        this.createTime = createTime;
+        this.updateTime = updateTime;
     }
 
     public Integer getId() {
@@ -142,6 +151,22 @@ public class OrderMust implements Serializable {
         this.custom = custom;
     }
 
+    public Timestamp getCreateTime() {
+        return this.createTime;
+    }
+
+    public void setCreateTime(Timestamp createTime) {
+        this.createTime = createTime;
+    }
+
+    public Timestamp getUpdateTime() {
+        return this.updateTime;
+    }
+
+    public void setUpdateTime(Timestamp updateTime) {
+        this.updateTime = updateTime;
+    }
+
     @Override
     public String toString() {
         StringBuilder sb = new StringBuilder("OrderMust (");
@@ -155,6 +180,8 @@ public class OrderMust implements Serializable {
         sb.append(", ").append(consigneeCid);
         sb.append(", ").append(customTitle);
         sb.append(", ").append(custom);
+        sb.append(", ").append(createTime);
+        sb.append(", ").append(updateTime);
 
         sb.append(")");
         return sb.toString();

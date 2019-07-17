@@ -23,13 +23,14 @@ import javax.annotation.Generated;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class RebatePriceRecord implements Serializable {
 
-    private static final long serialVersionUID = -1718691227;
+    private static final long serialVersionUID = -1872257780;
 
     private Integer   id;
     private Integer   userId;
     private String    dataSign;
     private String    rebateData;
-    private Timestamp addTime;
+    private Timestamp createTime;
+    private Timestamp updateTime;
 
     public RebatePriceRecord() {}
 
@@ -38,7 +39,8 @@ public class RebatePriceRecord implements Serializable {
         this.userId = value.userId;
         this.dataSign = value.dataSign;
         this.rebateData = value.rebateData;
-        this.addTime = value.addTime;
+        this.createTime = value.createTime;
+        this.updateTime = value.updateTime;
     }
 
     public RebatePriceRecord(
@@ -46,13 +48,15 @@ public class RebatePriceRecord implements Serializable {
         Integer   userId,
         String    dataSign,
         String    rebateData,
-        Timestamp addTime
+        Timestamp createTime,
+        Timestamp updateTime
     ) {
         this.id = id;
         this.userId = userId;
         this.dataSign = dataSign;
         this.rebateData = rebateData;
-        this.addTime = addTime;
+        this.createTime = createTime;
+        this.updateTime = updateTime;
     }
 
     public Integer getId() {
@@ -87,12 +91,20 @@ public class RebatePriceRecord implements Serializable {
         this.rebateData = rebateData;
     }
 
-    public Timestamp getAddTime() {
-        return this.addTime;
+    public Timestamp getCreateTime() {
+        return this.createTime;
     }
 
-    public void setAddTime(Timestamp addTime) {
-        this.addTime = addTime;
+    public void setCreateTime(Timestamp createTime) {
+        this.createTime = createTime;
+    }
+
+    public Timestamp getUpdateTime() {
+        return this.updateTime;
+    }
+
+    public void setUpdateTime(Timestamp updateTime) {
+        this.updateTime = updateTime;
     }
 
     @Override
@@ -103,7 +115,8 @@ public class RebatePriceRecord implements Serializable {
         sb.append(", ").append(userId);
         sb.append(", ").append(dataSign);
         sb.append(", ").append(rebateData);
-        sb.append(", ").append(addTime);
+        sb.append(", ").append(createTime);
+        sb.append(", ").append(updateTime);
 
         sb.append(")");
         return sb.toString();

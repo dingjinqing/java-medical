@@ -24,7 +24,7 @@ import javax.annotation.Generated;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class ReducePrice implements Serializable {
 
-    private static final long serialVersionUID = -1611715847;
+    private static final long serialVersionUID = 1571255160;
 
     private Integer    id;
     private String     name;
@@ -38,12 +38,12 @@ public class ReducePrice implements Serializable {
     private BigDecimal batchFinalPrice;
     private Byte       isBatchInteger;
     private Byte       status;
-    private Timestamp  addTime;
-    private Timestamp  updateTime;
     private Byte       delFlag;
-    private Integer    delTime;
+    private Timestamp  delTime;
     private Integer    limitAmount;
     private Byte       addType;
+    private Timestamp  createTime;
+    private Timestamp  updateTime;
     private String     shareConfig;
 
     public ReducePrice() {}
@@ -61,12 +61,12 @@ public class ReducePrice implements Serializable {
         this.batchFinalPrice = value.batchFinalPrice;
         this.isBatchInteger = value.isBatchInteger;
         this.status = value.status;
-        this.addTime = value.addTime;
-        this.updateTime = value.updateTime;
         this.delFlag = value.delFlag;
         this.delTime = value.delTime;
         this.limitAmount = value.limitAmount;
         this.addType = value.addType;
+        this.createTime = value.createTime;
+        this.updateTime = value.updateTime;
         this.shareConfig = value.shareConfig;
     }
 
@@ -83,12 +83,12 @@ public class ReducePrice implements Serializable {
         BigDecimal batchFinalPrice,
         Byte       isBatchInteger,
         Byte       status,
-        Timestamp  addTime,
-        Timestamp  updateTime,
         Byte       delFlag,
-        Integer    delTime,
+        Timestamp  delTime,
         Integer    limitAmount,
         Byte       addType,
+        Timestamp  createTime,
+        Timestamp  updateTime,
         String     shareConfig
     ) {
         this.id = id;
@@ -103,12 +103,12 @@ public class ReducePrice implements Serializable {
         this.batchFinalPrice = batchFinalPrice;
         this.isBatchInteger = isBatchInteger;
         this.status = status;
-        this.addTime = addTime;
-        this.updateTime = updateTime;
         this.delFlag = delFlag;
         this.delTime = delTime;
         this.limitAmount = limitAmount;
         this.addType = addType;
+        this.createTime = createTime;
+        this.updateTime = updateTime;
         this.shareConfig = shareConfig;
     }
 
@@ -208,22 +208,6 @@ public class ReducePrice implements Serializable {
         this.status = status;
     }
 
-    public Timestamp getAddTime() {
-        return this.addTime;
-    }
-
-    public void setAddTime(Timestamp addTime) {
-        this.addTime = addTime;
-    }
-
-    public Timestamp getUpdateTime() {
-        return this.updateTime;
-    }
-
-    public void setUpdateTime(Timestamp updateTime) {
-        this.updateTime = updateTime;
-    }
-
     public Byte getDelFlag() {
         return this.delFlag;
     }
@@ -232,11 +216,11 @@ public class ReducePrice implements Serializable {
         this.delFlag = delFlag;
     }
 
-    public Integer getDelTime() {
+    public Timestamp getDelTime() {
         return this.delTime;
     }
 
-    public void setDelTime(Integer delTime) {
+    public void setDelTime(Timestamp delTime) {
         this.delTime = delTime;
     }
 
@@ -254,6 +238,22 @@ public class ReducePrice implements Serializable {
 
     public void setAddType(Byte addType) {
         this.addType = addType;
+    }
+
+    public Timestamp getCreateTime() {
+        return this.createTime;
+    }
+
+    public void setCreateTime(Timestamp createTime) {
+        this.createTime = createTime;
+    }
+
+    public Timestamp getUpdateTime() {
+        return this.updateTime;
+    }
+
+    public void setUpdateTime(Timestamp updateTime) {
+        this.updateTime = updateTime;
     }
 
     public String getShareConfig() {
@@ -280,12 +280,12 @@ public class ReducePrice implements Serializable {
         sb.append(", ").append(batchFinalPrice);
         sb.append(", ").append(isBatchInteger);
         sb.append(", ").append(status);
-        sb.append(", ").append(addTime);
-        sb.append(", ").append(updateTime);
         sb.append(", ").append(delFlag);
         sb.append(", ").append(delTime);
         sb.append(", ").append(limitAmount);
         sb.append(", ").append(addType);
+        sb.append(", ").append(createTime);
+        sb.append(", ").append(updateTime);
         sb.append(", ").append(shareConfig);
 
         sb.append(")");

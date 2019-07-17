@@ -42,7 +42,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class IndexFootRecord extends TableImpl<IndexFootRecordRecord> {
 
-    private static final long serialVersionUID = 2125571919;
+    private static final long serialVersionUID = 1612589643;
 
     /**
      * The reference instance of <code>mini_shop_471752.b2c_index_foot_record</code>
@@ -63,19 +63,14 @@ public class IndexFootRecord extends TableImpl<IndexFootRecordRecord> {
     public final TableField<IndexFootRecordRecord, Integer> ID = createField("id", org.jooq.impl.SQLDataType.INTEGER.nullable(false).identity(true), this, "");
 
     /**
-     * The column <code>mini_shop_471752.b2c_index_foot_record.page_id</code>. 自定义页面ID
+     * The column <code>mini_shop_471752.b2c_index_foot_record.page_id</code>. 自定义页面id
      */
-    public final TableField<IndexFootRecordRecord, Integer> PAGE_ID = createField("page_id", org.jooq.impl.SQLDataType.INTEGER.nullable(false), this, "自定义页面ID");
+    public final TableField<IndexFootRecordRecord, Integer> PAGE_ID = createField("page_id", org.jooq.impl.SQLDataType.INTEGER.nullable(false), this, "自定义页面id");
 
     /**
      * The column <code>mini_shop_471752.b2c_index_foot_record.user_id</code>.
      */
     public final TableField<IndexFootRecordRecord, Integer> USER_ID = createField("user_id", org.jooq.impl.SQLDataType.INTEGER.nullable(false), this, "");
-
-    /**
-     * The column <code>mini_shop_471752.b2c_index_foot_record.update_time</code>. 浏览时间
-     */
-    public final TableField<IndexFootRecordRecord, Timestamp> UPDATE_TIME = createField("update_time", org.jooq.impl.SQLDataType.TIMESTAMP.nullable(false), this, "浏览时间");
 
     /**
      * The column <code>mini_shop_471752.b2c_index_foot_record.count</code>. 浏览次数
@@ -86,6 +81,16 @@ public class IndexFootRecord extends TableImpl<IndexFootRecordRecord> {
      * The column <code>mini_shop_471752.b2c_index_foot_record.type</code>. 0 老用户 1新用户
      */
     public final TableField<IndexFootRecordRecord, Byte> TYPE = createField("type", org.jooq.impl.SQLDataType.TINYINT.defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.TINYINT)), this, "0 老用户 1新用户");
+
+    /**
+     * The column <code>mini_shop_471752.b2c_index_foot_record.create_time</code>.
+     */
+    public final TableField<IndexFootRecordRecord, Timestamp> CREATE_TIME = createField("create_time", org.jooq.impl.SQLDataType.TIMESTAMP.nullable(false).defaultValue(org.jooq.impl.DSL.field("CURRENT_TIMESTAMP", org.jooq.impl.SQLDataType.TIMESTAMP)), this, "");
+
+    /**
+     * The column <code>mini_shop_471752.b2c_index_foot_record.update_time</code>. 最后修改时间
+     */
+    public final TableField<IndexFootRecordRecord, Timestamp> UPDATE_TIME = createField("update_time", org.jooq.impl.SQLDataType.TIMESTAMP.nullable(false).defaultValue(org.jooq.impl.DSL.field("CURRENT_TIMESTAMP", org.jooq.impl.SQLDataType.TIMESTAMP)), this, "最后修改时间");
 
     /**
      * Create a <code>mini_shop_471752.b2c_index_foot_record</code> table reference

@@ -5,6 +5,7 @@ package com.vpu.mp.db.shop.tables.pojos;
 
 
 import java.io.Serializable;
+import java.sql.Timestamp;
 
 import javax.annotation.Generated;
 
@@ -22,12 +23,14 @@ import javax.annotation.Generated;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class GoodsLabelCouple implements Serializable {
 
-    private static final long serialVersionUID = -255198973;
+    private static final long serialVersionUID = -1298224652;
 
-    private Integer id;
-    private String  labelId;
-    private Integer gtaId;
-    private Byte    type;
+    private Integer   id;
+    private Integer   labelId;
+    private Integer   gtaId;
+    private Byte      type;
+    private Timestamp createTime;
+    private Timestamp updateTime;
 
     public GoodsLabelCouple() {}
 
@@ -36,18 +39,24 @@ public class GoodsLabelCouple implements Serializable {
         this.labelId = value.labelId;
         this.gtaId = value.gtaId;
         this.type = value.type;
+        this.createTime = value.createTime;
+        this.updateTime = value.updateTime;
     }
 
     public GoodsLabelCouple(
-        Integer id,
-        String  labelId,
-        Integer gtaId,
-        Byte    type
+        Integer   id,
+        Integer   labelId,
+        Integer   gtaId,
+        Byte      type,
+        Timestamp createTime,
+        Timestamp updateTime
     ) {
         this.id = id;
         this.labelId = labelId;
         this.gtaId = gtaId;
         this.type = type;
+        this.createTime = createTime;
+        this.updateTime = updateTime;
     }
 
     public Integer getId() {
@@ -58,11 +67,11 @@ public class GoodsLabelCouple implements Serializable {
         this.id = id;
     }
 
-    public String getLabelId() {
+    public Integer getLabelId() {
         return this.labelId;
     }
 
-    public void setLabelId(String labelId) {
+    public void setLabelId(Integer labelId) {
         this.labelId = labelId;
     }
 
@@ -82,6 +91,22 @@ public class GoodsLabelCouple implements Serializable {
         this.type = type;
     }
 
+    public Timestamp getCreateTime() {
+        return this.createTime;
+    }
+
+    public void setCreateTime(Timestamp createTime) {
+        this.createTime = createTime;
+    }
+
+    public Timestamp getUpdateTime() {
+        return this.updateTime;
+    }
+
+    public void setUpdateTime(Timestamp updateTime) {
+        this.updateTime = updateTime;
+    }
+
     @Override
     public String toString() {
         StringBuilder sb = new StringBuilder("GoodsLabelCouple (");
@@ -90,6 +115,8 @@ public class GoodsLabelCouple implements Serializable {
         sb.append(", ").append(labelId);
         sb.append(", ").append(gtaId);
         sb.append(", ").append(type);
+        sb.append(", ").append(createTime);
+        sb.append(", ").append(updateTime);
 
         sb.append(")");
         return sb.toString();

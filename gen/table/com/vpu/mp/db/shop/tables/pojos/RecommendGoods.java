@@ -23,7 +23,7 @@ import javax.annotation.Generated;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class RecommendGoods implements Serializable {
 
-    private static final long serialVersionUID = 1959097816;
+    private static final long serialVersionUID = -2007849883;
 
     private Integer   id;
     private String    recommendName;
@@ -31,11 +31,12 @@ public class RecommendGoods implements Serializable {
     private String    recommendGoodsId;
     private String    recommendCatId;
     private String    recommendUsePage;
-    private Timestamp addTime;
     private Byte      status;
-    private Timestamp updateTime;
     private Byte      delFlag;
+    private Timestamp delTime;
     private String    recommendSortId;
+    private Timestamp createTime;
+    private Timestamp updateTime;
 
     public RecommendGoods() {}
 
@@ -46,11 +47,12 @@ public class RecommendGoods implements Serializable {
         this.recommendGoodsId = value.recommendGoodsId;
         this.recommendCatId = value.recommendCatId;
         this.recommendUsePage = value.recommendUsePage;
-        this.addTime = value.addTime;
         this.status = value.status;
-        this.updateTime = value.updateTime;
         this.delFlag = value.delFlag;
+        this.delTime = value.delTime;
         this.recommendSortId = value.recommendSortId;
+        this.createTime = value.createTime;
+        this.updateTime = value.updateTime;
     }
 
     public RecommendGoods(
@@ -60,11 +62,12 @@ public class RecommendGoods implements Serializable {
         String    recommendGoodsId,
         String    recommendCatId,
         String    recommendUsePage,
-        Timestamp addTime,
         Byte      status,
-        Timestamp updateTime,
         Byte      delFlag,
-        String    recommendSortId
+        Timestamp delTime,
+        String    recommendSortId,
+        Timestamp createTime,
+        Timestamp updateTime
     ) {
         this.id = id;
         this.recommendName = recommendName;
@@ -72,11 +75,12 @@ public class RecommendGoods implements Serializable {
         this.recommendGoodsId = recommendGoodsId;
         this.recommendCatId = recommendCatId;
         this.recommendUsePage = recommendUsePage;
-        this.addTime = addTime;
         this.status = status;
-        this.updateTime = updateTime;
         this.delFlag = delFlag;
+        this.delTime = delTime;
         this.recommendSortId = recommendSortId;
+        this.createTime = createTime;
+        this.updateTime = updateTime;
     }
 
     public Integer getId() {
@@ -127,28 +131,12 @@ public class RecommendGoods implements Serializable {
         this.recommendUsePage = recommendUsePage;
     }
 
-    public Timestamp getAddTime() {
-        return this.addTime;
-    }
-
-    public void setAddTime(Timestamp addTime) {
-        this.addTime = addTime;
-    }
-
     public Byte getStatus() {
         return this.status;
     }
 
     public void setStatus(Byte status) {
         this.status = status;
-    }
-
-    public Timestamp getUpdateTime() {
-        return this.updateTime;
-    }
-
-    public void setUpdateTime(Timestamp updateTime) {
-        this.updateTime = updateTime;
     }
 
     public Byte getDelFlag() {
@@ -159,12 +147,36 @@ public class RecommendGoods implements Serializable {
         this.delFlag = delFlag;
     }
 
+    public Timestamp getDelTime() {
+        return this.delTime;
+    }
+
+    public void setDelTime(Timestamp delTime) {
+        this.delTime = delTime;
+    }
+
     public String getRecommendSortId() {
         return this.recommendSortId;
     }
 
     public void setRecommendSortId(String recommendSortId) {
         this.recommendSortId = recommendSortId;
+    }
+
+    public Timestamp getCreateTime() {
+        return this.createTime;
+    }
+
+    public void setCreateTime(Timestamp createTime) {
+        this.createTime = createTime;
+    }
+
+    public Timestamp getUpdateTime() {
+        return this.updateTime;
+    }
+
+    public void setUpdateTime(Timestamp updateTime) {
+        this.updateTime = updateTime;
     }
 
     @Override
@@ -177,11 +189,12 @@ public class RecommendGoods implements Serializable {
         sb.append(", ").append(recommendGoodsId);
         sb.append(", ").append(recommendCatId);
         sb.append(", ").append(recommendUsePage);
-        sb.append(", ").append(addTime);
         sb.append(", ").append(status);
-        sb.append(", ").append(updateTime);
         sb.append(", ").append(delFlag);
+        sb.append(", ").append(delTime);
         sb.append(", ").append(recommendSortId);
+        sb.append(", ").append(createTime);
+        sb.append(", ").append(updateTime);
 
         sb.append(")");
         return sb.toString();

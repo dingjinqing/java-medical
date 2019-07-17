@@ -23,15 +23,16 @@ import javax.annotation.Generated;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class ShareSplit implements Serializable {
 
-    private static final long serialVersionUID = -681459585;
+    private static final long serialVersionUID = 596735401;
 
     private Integer   id;
     private Integer   user;
     private Integer   userId;
     private Integer   actId;
-    private Timestamp createTime;
     private String    orderSn;
     private Integer   shareLimit;
+    private Timestamp createTime;
+    private Timestamp updateTime;
 
     public ShareSplit() {}
 
@@ -40,9 +41,10 @@ public class ShareSplit implements Serializable {
         this.user = value.user;
         this.userId = value.userId;
         this.actId = value.actId;
-        this.createTime = value.createTime;
         this.orderSn = value.orderSn;
         this.shareLimit = value.shareLimit;
+        this.createTime = value.createTime;
+        this.updateTime = value.updateTime;
     }
 
     public ShareSplit(
@@ -50,17 +52,19 @@ public class ShareSplit implements Serializable {
         Integer   user,
         Integer   userId,
         Integer   actId,
-        Timestamp createTime,
         String    orderSn,
-        Integer   shareLimit
+        Integer   shareLimit,
+        Timestamp createTime,
+        Timestamp updateTime
     ) {
         this.id = id;
         this.user = user;
         this.userId = userId;
         this.actId = actId;
-        this.createTime = createTime;
         this.orderSn = orderSn;
         this.shareLimit = shareLimit;
+        this.createTime = createTime;
+        this.updateTime = updateTime;
     }
 
     public Integer getId() {
@@ -95,14 +99,6 @@ public class ShareSplit implements Serializable {
         this.actId = actId;
     }
 
-    public Timestamp getCreateTime() {
-        return this.createTime;
-    }
-
-    public void setCreateTime(Timestamp createTime) {
-        this.createTime = createTime;
-    }
-
     public String getOrderSn() {
         return this.orderSn;
     }
@@ -119,6 +115,22 @@ public class ShareSplit implements Serializable {
         this.shareLimit = shareLimit;
     }
 
+    public Timestamp getCreateTime() {
+        return this.createTime;
+    }
+
+    public void setCreateTime(Timestamp createTime) {
+        this.createTime = createTime;
+    }
+
+    public Timestamp getUpdateTime() {
+        return this.updateTime;
+    }
+
+    public void setUpdateTime(Timestamp updateTime) {
+        this.updateTime = updateTime;
+    }
+
     @Override
     public String toString() {
         StringBuilder sb = new StringBuilder("ShareSplit (");
@@ -127,9 +139,10 @@ public class ShareSplit implements Serializable {
         sb.append(", ").append(user);
         sb.append(", ").append(userId);
         sb.append(", ").append(actId);
-        sb.append(", ").append(createTime);
         sb.append(", ").append(orderSn);
         sb.append(", ").append(shareLimit);
+        sb.append(", ").append(createTime);
+        sb.append(", ").append(updateTime);
 
         sb.append(")");
         return sb.toString();

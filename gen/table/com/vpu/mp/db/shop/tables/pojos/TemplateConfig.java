@@ -23,7 +23,7 @@ import javax.annotation.Generated;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class TemplateConfig implements Serializable {
 
-    private static final long serialVersionUID = 1830298408;
+    private static final long serialVersionUID = 184224263;
 
     private Integer   id;
     private String    name;
@@ -39,9 +39,9 @@ public class TemplateConfig implements Serializable {
     private Timestamp startTime;
     private Timestamp endTime;
     private Byte      delFlag;
-    private Timestamp addTime;
+    private Timestamp delTime;
+    private Timestamp createTime;
     private Timestamp updateTime;
-    private Integer   delTime;
 
     public TemplateConfig() {}
 
@@ -60,9 +60,9 @@ public class TemplateConfig implements Serializable {
         this.startTime = value.startTime;
         this.endTime = value.endTime;
         this.delFlag = value.delFlag;
-        this.addTime = value.addTime;
-        this.updateTime = value.updateTime;
         this.delTime = value.delTime;
+        this.createTime = value.createTime;
+        this.updateTime = value.updateTime;
     }
 
     public TemplateConfig(
@@ -80,9 +80,9 @@ public class TemplateConfig implements Serializable {
         Timestamp startTime,
         Timestamp endTime,
         Byte      delFlag,
-        Timestamp addTime,
-        Timestamp updateTime,
-        Integer   delTime
+        Timestamp delTime,
+        Timestamp createTime,
+        Timestamp updateTime
     ) {
         this.id = id;
         this.name = name;
@@ -98,9 +98,9 @@ public class TemplateConfig implements Serializable {
         this.startTime = startTime;
         this.endTime = endTime;
         this.delFlag = delFlag;
-        this.addTime = addTime;
-        this.updateTime = updateTime;
         this.delTime = delTime;
+        this.createTime = createTime;
+        this.updateTime = updateTime;
     }
 
     public Integer getId() {
@@ -215,12 +215,20 @@ public class TemplateConfig implements Serializable {
         this.delFlag = delFlag;
     }
 
-    public Timestamp getAddTime() {
-        return this.addTime;
+    public Timestamp getDelTime() {
+        return this.delTime;
     }
 
-    public void setAddTime(Timestamp addTime) {
-        this.addTime = addTime;
+    public void setDelTime(Timestamp delTime) {
+        this.delTime = delTime;
+    }
+
+    public Timestamp getCreateTime() {
+        return this.createTime;
+    }
+
+    public void setCreateTime(Timestamp createTime) {
+        this.createTime = createTime;
     }
 
     public Timestamp getUpdateTime() {
@@ -229,14 +237,6 @@ public class TemplateConfig implements Serializable {
 
     public void setUpdateTime(Timestamp updateTime) {
         this.updateTime = updateTime;
-    }
-
-    public Integer getDelTime() {
-        return this.delTime;
-    }
-
-    public void setDelTime(Integer delTime) {
-        this.delTime = delTime;
     }
 
     @Override
@@ -257,9 +257,9 @@ public class TemplateConfig implements Serializable {
         sb.append(", ").append(startTime);
         sb.append(", ").append(endTime);
         sb.append(", ").append(delFlag);
-        sb.append(", ").append(addTime);
-        sb.append(", ").append(updateTime);
         sb.append(", ").append(delTime);
+        sb.append(", ").append(createTime);
+        sb.append(", ").append(updateTime);
 
         sb.append(")");
         return sb.toString();

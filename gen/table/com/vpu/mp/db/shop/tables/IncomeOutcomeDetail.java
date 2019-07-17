@@ -43,7 +43,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class IncomeOutcomeDetail extends TableImpl<IncomeOutcomeDetailRecord> {
 
-    private static final long serialVersionUID = -378430168;
+    private static final long serialVersionUID = 369946442;
 
     /**
      * The reference instance of <code>mini_shop_471752.b2c_income_outcome_detail</code>
@@ -69,9 +69,9 @@ public class IncomeOutcomeDetail extends TableImpl<IncomeOutcomeDetailRecord> {
     public final TableField<IncomeOutcomeDetailRecord, Integer> REQ_ID = createField("req_id", org.jooq.impl.SQLDataType.INTEGER.nullable(false).defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.INTEGER)), this, "");
 
     /**
-     * The column <code>mini_shop_471752.b2c_income_outcome_detail.shop_id</code>. 店铺ID
+     * The column <code>mini_shop_471752.b2c_income_outcome_detail.shop_id</code>. 店铺id
      */
-    public final TableField<IncomeOutcomeDetailRecord, Integer> SHOP_ID = createField("shop_id", org.jooq.impl.SQLDataType.INTEGER.nullable(false).defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.INTEGER)), this, "店铺ID");
+    public final TableField<IncomeOutcomeDetailRecord, Integer> SHOP_ID = createField("shop_id", org.jooq.impl.SQLDataType.INTEGER.nullable(false).defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.INTEGER)), this, "店铺id");
 
     /**
      * The column <code>mini_shop_471752.b2c_income_outcome_detail.pay_sn</code>. 支付流水号
@@ -154,14 +154,19 @@ public class IncomeOutcomeDetail extends TableImpl<IncomeOutcomeDetailRecord> {
     public final TableField<IncomeOutcomeDetailRecord, String> REMARK = createField("remark", org.jooq.impl.SQLDataType.CLOB, this, "自定义备注");
 
     /**
-     * The column <code>mini_shop_471752.b2c_income_outcome_detail.created</code>. 创建时间
-     */
-    public final TableField<IncomeOutcomeDetailRecord, Timestamp> CREATED = createField("created", org.jooq.impl.SQLDataType.TIMESTAMP.nullable(false).defaultValue(org.jooq.impl.DSL.field("CURRENT_TIMESTAMP", org.jooq.impl.SQLDataType.TIMESTAMP)), this, "创建时间");
-
-    /**
      * The column <code>mini_shop_471752.b2c_income_outcome_detail.no_settle_flag</code>. 是否参与结算 0:参入，1：不参与
      */
     public final TableField<IncomeOutcomeDetailRecord, Byte> NO_SETTLE_FLAG = createField("no_settle_flag", org.jooq.impl.SQLDataType.TINYINT.nullable(false).defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.TINYINT)), this, "是否参与结算 0:参入，1：不参与");
+
+    /**
+     * The column <code>mini_shop_471752.b2c_income_outcome_detail.create_time</code>.
+     */
+    public final TableField<IncomeOutcomeDetailRecord, Timestamp> CREATE_TIME = createField("create_time", org.jooq.impl.SQLDataType.TIMESTAMP.nullable(false).defaultValue(org.jooq.impl.DSL.field("CURRENT_TIMESTAMP", org.jooq.impl.SQLDataType.TIMESTAMP)), this, "");
+
+    /**
+     * The column <code>mini_shop_471752.b2c_income_outcome_detail.update_time</code>. 最后修改时间
+     */
+    public final TableField<IncomeOutcomeDetailRecord, Timestamp> UPDATE_TIME = createField("update_time", org.jooq.impl.SQLDataType.TIMESTAMP.nullable(false).defaultValue(org.jooq.impl.DSL.field("CURRENT_TIMESTAMP", org.jooq.impl.SQLDataType.TIMESTAMP)), this, "最后修改时间");
 
     /**
      * Create a <code>mini_shop_471752.b2c_income_outcome_detail</code> table reference

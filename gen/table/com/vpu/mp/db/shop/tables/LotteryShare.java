@@ -42,7 +42,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class LotteryShare extends TableImpl<LotteryShareRecord> {
 
-    private static final long serialVersionUID = 733320209;
+    private static final long serialVersionUID = -2097880051;
 
     /**
      * The reference instance of <code>mini_shop_471752.b2c_lottery_share</code>
@@ -75,27 +75,27 @@ public class LotteryShare extends TableImpl<LotteryShareRecord> {
     /**
      * The column <code>mini_shop_471752.b2c_lottery_share.share_times</code>. 分享次数
      */
-    public final TableField<LotteryShareRecord, Integer> SHARE_TIMES = createField("share_times", org.jooq.impl.SQLDataType.INTEGER.defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.INTEGER)), this, "分享次数");
+    public final TableField<LotteryShareRecord, Integer> SHARE_TIMES = createField("share_times", org.jooq.impl.SQLDataType.INTEGER.nullable(false).defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.INTEGER)), this, "分享次数");
 
     /**
      * The column <code>mini_shop_471752.b2c_lottery_share.use_share_times</code>. 抽奖次数
      */
-    public final TableField<LotteryShareRecord, Integer> USE_SHARE_TIMES = createField("use_share_times", org.jooq.impl.SQLDataType.INTEGER.defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.INTEGER)), this, "抽奖次数");
+    public final TableField<LotteryShareRecord, Integer> USE_SHARE_TIMES = createField("use_share_times", org.jooq.impl.SQLDataType.INTEGER.nullable(false).defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.INTEGER)), this, "抽奖次数");
 
     /**
      * The column <code>mini_shop_471752.b2c_lottery_share.use_score_times</code>.
      */
-    public final TableField<LotteryShareRecord, Integer> USE_SCORE_TIMES = createField("use_score_times", org.jooq.impl.SQLDataType.INTEGER.defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.INTEGER)), this, "");
+    public final TableField<LotteryShareRecord, Integer> USE_SCORE_TIMES = createField("use_score_times", org.jooq.impl.SQLDataType.INTEGER.nullable(false).defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.INTEGER)), this, "");
 
     /**
-     * The column <code>mini_shop_471752.b2c_lottery_share.add_time</code>. 添加时间
+     * The column <code>mini_shop_471752.b2c_lottery_share.create_time</code>.
      */
-    public final TableField<LotteryShareRecord, Timestamp> ADD_TIME = createField("add_time", org.jooq.impl.SQLDataType.TIMESTAMP.defaultValue(org.jooq.impl.DSL.inline("0000-00-00 00:00:00", org.jooq.impl.SQLDataType.TIMESTAMP)), this, "添加时间");
+    public final TableField<LotteryShareRecord, Timestamp> CREATE_TIME = createField("create_time", org.jooq.impl.SQLDataType.TIMESTAMP.nullable(false).defaultValue(org.jooq.impl.DSL.field("CURRENT_TIMESTAMP", org.jooq.impl.SQLDataType.TIMESTAMP)), this, "");
 
     /**
-     * The column <code>mini_shop_471752.b2c_lottery_share.update_time</code>. 更新时间
+     * The column <code>mini_shop_471752.b2c_lottery_share.update_time</code>. 最后修改时间
      */
-    public final TableField<LotteryShareRecord, Timestamp> UPDATE_TIME = createField("update_time", org.jooq.impl.SQLDataType.TIMESTAMP.nullable(false).defaultValue(org.jooq.impl.DSL.field("CURRENT_TIMESTAMP", org.jooq.impl.SQLDataType.TIMESTAMP)), this, "更新时间");
+    public final TableField<LotteryShareRecord, Timestamp> UPDATE_TIME = createField("update_time", org.jooq.impl.SQLDataType.TIMESTAMP.nullable(false).defaultValue(org.jooq.impl.DSL.field("CURRENT_TIMESTAMP", org.jooq.impl.SQLDataType.TIMESTAMP)), this, "最后修改时间");
 
     /**
      * Create a <code>mini_shop_471752.b2c_lottery_share</code> table reference

@@ -41,7 +41,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class DistributionTag extends TableImpl<DistributionTagRecord> {
 
-    private static final long serialVersionUID = -157414930;
+    private static final long serialVersionUID = 2011570198;
 
     /**
      * The reference instance of <code>mini_shop_471752.b2c_distribution_tag</code>
@@ -102,9 +102,14 @@ public class DistributionTag extends TableImpl<DistributionTagRecord> {
     public final TableField<DistributionTagRecord, Integer> HAS_USER_NUM = createField("has_user_num", org.jooq.impl.SQLDataType.INTEGER.defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.INTEGER)), this, "用户数");
 
     /**
-     * The column <code>mini_shop_471752.b2c_distribution_tag.add_time</code>. 添加时间
+     * The column <code>mini_shop_471752.b2c_distribution_tag.create_time</code>.
      */
-    public final TableField<DistributionTagRecord, Timestamp> ADD_TIME = createField("add_time", org.jooq.impl.SQLDataType.TIMESTAMP, this, "添加时间");
+    public final TableField<DistributionTagRecord, Timestamp> CREATE_TIME = createField("create_time", org.jooq.impl.SQLDataType.TIMESTAMP.nullable(false).defaultValue(org.jooq.impl.DSL.field("CURRENT_TIMESTAMP", org.jooq.impl.SQLDataType.TIMESTAMP)), this, "");
+
+    /**
+     * The column <code>mini_shop_471752.b2c_distribution_tag.update_time</code>. 最后修改时间
+     */
+    public final TableField<DistributionTagRecord, Timestamp> UPDATE_TIME = createField("update_time", org.jooq.impl.SQLDataType.TIMESTAMP.nullable(false).defaultValue(org.jooq.impl.DSL.field("CURRENT_TIMESTAMP", org.jooq.impl.SQLDataType.TIMESTAMP)), this, "最后修改时间");
 
     /**
      * Create a <code>mini_shop_471752.b2c_distribution_tag</code> table reference

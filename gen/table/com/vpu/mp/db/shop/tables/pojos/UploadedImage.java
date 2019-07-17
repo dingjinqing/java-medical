@@ -23,7 +23,7 @@ import javax.annotation.Generated;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class UploadedImage implements Serializable {
 
-    private static final long serialVersionUID = 2036059169;
+    private static final long serialVersionUID = -868890176;
 
     private Integer   imgId;
     private String    imgType;
@@ -36,9 +36,10 @@ public class UploadedImage implements Serializable {
     private Integer   imgWidth;
     private Integer   imgHeight;
     private Byte      isRefer;
-    private Timestamp uploadTime;
     private Integer   shopId;
     private Byte      delFlag;
+    private Timestamp createTime;
+    private Timestamp updateTime;
 
     public UploadedImage() {}
 
@@ -54,9 +55,10 @@ public class UploadedImage implements Serializable {
         this.imgWidth = value.imgWidth;
         this.imgHeight = value.imgHeight;
         this.isRefer = value.isRefer;
-        this.uploadTime = value.uploadTime;
         this.shopId = value.shopId;
         this.delFlag = value.delFlag;
+        this.createTime = value.createTime;
+        this.updateTime = value.updateTime;
     }
 
     public UploadedImage(
@@ -71,9 +73,10 @@ public class UploadedImage implements Serializable {
         Integer   imgWidth,
         Integer   imgHeight,
         Byte      isRefer,
-        Timestamp uploadTime,
         Integer   shopId,
-        Byte      delFlag
+        Byte      delFlag,
+        Timestamp createTime,
+        Timestamp updateTime
     ) {
         this.imgId = imgId;
         this.imgType = imgType;
@@ -86,9 +89,10 @@ public class UploadedImage implements Serializable {
         this.imgWidth = imgWidth;
         this.imgHeight = imgHeight;
         this.isRefer = isRefer;
-        this.uploadTime = uploadTime;
         this.shopId = shopId;
         this.delFlag = delFlag;
+        this.createTime = createTime;
+        this.updateTime = updateTime;
     }
 
     public Integer getImgId() {
@@ -179,14 +183,6 @@ public class UploadedImage implements Serializable {
         this.isRefer = isRefer;
     }
 
-    public Timestamp getUploadTime() {
-        return this.uploadTime;
-    }
-
-    public void setUploadTime(Timestamp uploadTime) {
-        this.uploadTime = uploadTime;
-    }
-
     public Integer getShopId() {
         return this.shopId;
     }
@@ -201,6 +197,22 @@ public class UploadedImage implements Serializable {
 
     public void setDelFlag(Byte delFlag) {
         this.delFlag = delFlag;
+    }
+
+    public Timestamp getCreateTime() {
+        return this.createTime;
+    }
+
+    public void setCreateTime(Timestamp createTime) {
+        this.createTime = createTime;
+    }
+
+    public Timestamp getUpdateTime() {
+        return this.updateTime;
+    }
+
+    public void setUpdateTime(Timestamp updateTime) {
+        this.updateTime = updateTime;
     }
 
     @Override
@@ -218,9 +230,10 @@ public class UploadedImage implements Serializable {
         sb.append(", ").append(imgWidth);
         sb.append(", ").append(imgHeight);
         sb.append(", ").append(isRefer);
-        sb.append(", ").append(uploadTime);
         sb.append(", ").append(shopId);
         sb.append(", ").append(delFlag);
+        sb.append(", ").append(createTime);
+        sb.append(", ").append(updateTime);
 
         sb.append(")");
         return sb.toString();

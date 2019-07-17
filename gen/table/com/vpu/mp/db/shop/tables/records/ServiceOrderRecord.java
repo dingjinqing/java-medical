@@ -28,31 +28,31 @@ import org.jooq.impl.UpdatableRecordImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class ServiceOrderRecord extends UpdatableRecordImpl<ServiceOrderRecord> {
 
-    private static final long serialVersionUID = 1204065553;
+    private static final long serialVersionUID = 421509062;
 
     /**
-     * Setter for <code>mini_shop_471752.b2c_service_order.order_id</code>. 订单ID
+     * Setter for <code>mini_shop_471752.b2c_service_order.order_id</code>. 订单id
      */
     public void setOrderId(Integer value) {
         set(0, value);
     }
 
     /**
-     * Getter for <code>mini_shop_471752.b2c_service_order.order_id</code>. 订单ID
+     * Getter for <code>mini_shop_471752.b2c_service_order.order_id</code>. 订单id
      */
     public Integer getOrderId() {
         return (Integer) get(0);
     }
 
     /**
-     * Setter for <code>mini_shop_471752.b2c_service_order.store_id</code>. 门店ID
+     * Setter for <code>mini_shop_471752.b2c_service_order.store_id</code>. 门店id
      */
     public void setStoreId(Integer value) {
         set(1, value);
     }
 
     /**
-     * Getter for <code>mini_shop_471752.b2c_service_order.store_id</code>. 门店ID
+     * Getter for <code>mini_shop_471752.b2c_service_order.store_id</code>. 门店id
      */
     public Integer getStoreId() {
         return (Integer) get(1);
@@ -73,14 +73,14 @@ public class ServiceOrderRecord extends UpdatableRecordImpl<ServiceOrderRecord> 
     }
 
     /**
-     * Setter for <code>mini_shop_471752.b2c_service_order.user_id</code>. 用户ID
+     * Setter for <code>mini_shop_471752.b2c_service_order.user_id</code>. 用户id
      */
     public void setUserId(Integer value) {
         set(3, value);
     }
 
     /**
-     * Getter for <code>mini_shop_471752.b2c_service_order.user_id</code>. 用户ID
+     * Getter for <code>mini_shop_471752.b2c_service_order.user_id</code>. 用户id
      */
     public Integer getUserId() {
         return (Integer) get(3);
@@ -143,28 +143,28 @@ public class ServiceOrderRecord extends UpdatableRecordImpl<ServiceOrderRecord> 
     }
 
     /**
-     * Setter for <code>mini_shop_471752.b2c_service_order.service_id</code>. 服务ID
+     * Setter for <code>mini_shop_471752.b2c_service_order.service_id</code>. 服务id
      */
     public void setServiceId(Integer value) {
         set(8, value);
     }
 
     /**
-     * Getter for <code>mini_shop_471752.b2c_service_order.service_id</code>. 服务ID
+     * Getter for <code>mini_shop_471752.b2c_service_order.service_id</code>. 服务id
      */
     public Integer getServiceId() {
         return (Integer) get(8);
     }
 
     /**
-     * Setter for <code>mini_shop_471752.b2c_service_order.technician_id</code>. 预约技师ID
+     * Setter for <code>mini_shop_471752.b2c_service_order.technician_id</code>. 预约技师id
      */
     public void setTechnicianId(Integer value) {
         set(9, value);
     }
 
     /**
-     * Getter for <code>mini_shop_471752.b2c_service_order.technician_id</code>. 预约技师ID
+     * Getter for <code>mini_shop_471752.b2c_service_order.technician_id</code>. 预约技师id
      */
     public Integer getTechnicianId() {
         return (Integer) get(9);
@@ -339,14 +339,14 @@ public class ServiceOrderRecord extends UpdatableRecordImpl<ServiceOrderRecord> 
     }
 
     /**
-     * Setter for <code>mini_shop_471752.b2c_service_order.coupon_id</code>. 优惠券ID
+     * Setter for <code>mini_shop_471752.b2c_service_order.coupon_id</code>. 优惠券id
      */
     public void setCouponId(Integer value) {
         set(22, value);
     }
 
     /**
-     * Getter for <code>mini_shop_471752.b2c_service_order.coupon_id</code>. 优惠券ID
+     * Getter for <code>mini_shop_471752.b2c_service_order.coupon_id</code>. 优惠券id
      */
     public Integer getCouponId() {
         return (Integer) get(22);
@@ -367,157 +367,171 @@ public class ServiceOrderRecord extends UpdatableRecordImpl<ServiceOrderRecord> 
     }
 
     /**
-     * Setter for <code>mini_shop_471752.b2c_service_order.add_time</code>. 订单提交时间
-     */
-    public void setAddTime(Timestamp value) {
-        set(24, value);
-    }
-
-    /**
-     * Getter for <code>mini_shop_471752.b2c_service_order.add_time</code>. 订单提交时间
-     */
-    public Timestamp getAddTime() {
-        return (Timestamp) get(24);
-    }
-
-    /**
      * Setter for <code>mini_shop_471752.b2c_service_order.pay_time</code>. 支付时间
      */
     public void setPayTime(Timestamp value) {
-        set(25, value);
+        set(24, value);
     }
 
     /**
      * Getter for <code>mini_shop_471752.b2c_service_order.pay_time</code>. 支付时间
      */
     public Timestamp getPayTime() {
-        return (Timestamp) get(25);
+        return (Timestamp) get(24);
     }
 
     /**
      * Setter for <code>mini_shop_471752.b2c_service_order.cancelled_time</code>. 取消时间
      */
     public void setCancelledTime(Timestamp value) {
-        set(26, value);
+        set(25, value);
     }
 
     /**
      * Getter for <code>mini_shop_471752.b2c_service_order.cancelled_time</code>. 取消时间
      */
     public Timestamp getCancelledTime() {
-        return (Timestamp) get(26);
+        return (Timestamp) get(25);
     }
 
     /**
      * Setter for <code>mini_shop_471752.b2c_service_order.finished_time</code>. 订单完成时间
      */
     public void setFinishedTime(Timestamp value) {
-        set(27, value);
+        set(26, value);
     }
 
     /**
      * Getter for <code>mini_shop_471752.b2c_service_order.finished_time</code>. 订单完成时间
      */
     public Timestamp getFinishedTime() {
-        return (Timestamp) get(27);
+        return (Timestamp) get(26);
     }
 
     /**
-     * Setter for <code>mini_shop_471752.b2c_service_order.prepay_id</code>. 微信支付Id，用于发送模板消息
+     * Setter for <code>mini_shop_471752.b2c_service_order.prepay_id</code>. 微信支付id，用于发送模板消息
      */
     public void setPrepayId(String value) {
-        set(28, value);
+        set(27, value);
     }
 
     /**
-     * Getter for <code>mini_shop_471752.b2c_service_order.prepay_id</code>. 微信支付Id，用于发送模板消息
+     * Getter for <code>mini_shop_471752.b2c_service_order.prepay_id</code>. 微信支付id，用于发送模板消息
      */
     public String getPrepayId() {
-        return (String) get(28);
+        return (String) get(27);
     }
 
     /**
      * Setter for <code>mini_shop_471752.b2c_service_order.del_flag</code>. 删除
      */
     public void setDelFlag(Byte value) {
-        set(29, value);
+        set(28, value);
     }
 
     /**
      * Getter for <code>mini_shop_471752.b2c_service_order.del_flag</code>. 删除
      */
     public Byte getDelFlag() {
-        return (Byte) get(29);
+        return (Byte) get(28);
     }
 
     /**
      * Setter for <code>mini_shop_471752.b2c_service_order.verify_type</code>. 核销方式 0是店家核销 1是用户
      */
     public void setVerifyType(Byte value) {
-        set(30, value);
+        set(29, value);
     }
 
     /**
      * Getter for <code>mini_shop_471752.b2c_service_order.verify_type</code>. 核销方式 0是店家核销 1是用户
      */
     public Byte getVerifyType() {
-        return (Byte) get(30);
+        return (Byte) get(29);
     }
 
     /**
      * Setter for <code>mini_shop_471752.b2c_service_order.cancel_reason</code>. 取消原因
      */
     public void setCancelReason(String value) {
-        set(31, value);
+        set(30, value);
     }
 
     /**
      * Getter for <code>mini_shop_471752.b2c_service_order.cancel_reason</code>. 取消原因
      */
     public String getCancelReason() {
-        return (String) get(31);
+        return (String) get(30);
     }
 
     /**
      * Setter for <code>mini_shop_471752.b2c_service_order.type</code>. 创建类型 0用户创建 1后台
      */
     public void setType(Byte value) {
-        set(32, value);
+        set(31, value);
     }
 
     /**
      * Getter for <code>mini_shop_471752.b2c_service_order.type</code>. 创建类型 0用户创建 1后台
      */
     public Byte getType() {
-        return (Byte) get(32);
+        return (Byte) get(31);
     }
 
     /**
      * Setter for <code>mini_shop_471752.b2c_service_order.verify_pay</code>. 核销支付方式 0门店买单 1会员卡 2余额
      */
     public void setVerifyPay(Byte value) {
-        set(33, value);
+        set(32, value);
     }
 
     /**
      * Getter for <code>mini_shop_471752.b2c_service_order.verify_pay</code>. 核销支付方式 0门店买单 1会员卡 2余额
      */
     public Byte getVerifyPay() {
-        return (Byte) get(33);
+        return (Byte) get(32);
     }
 
     /**
      * Setter for <code>mini_shop_471752.b2c_service_order.ali_trade_no</code>. 支付宝交易单号
      */
     public void setAliTradeNo(String value) {
-        set(34, value);
+        set(33, value);
     }
 
     /**
      * Getter for <code>mini_shop_471752.b2c_service_order.ali_trade_no</code>. 支付宝交易单号
      */
     public String getAliTradeNo() {
-        return (String) get(34);
+        return (String) get(33);
+    }
+
+    /**
+     * Setter for <code>mini_shop_471752.b2c_service_order.create_time</code>.
+     */
+    public void setCreateTime(Timestamp value) {
+        set(34, value);
+    }
+
+    /**
+     * Getter for <code>mini_shop_471752.b2c_service_order.create_time</code>.
+     */
+    public Timestamp getCreateTime() {
+        return (Timestamp) get(34);
+    }
+
+    /**
+     * Setter for <code>mini_shop_471752.b2c_service_order.update_time</code>. 最后修改时间
+     */
+    public void setUpdateTime(Timestamp value) {
+        set(35, value);
+    }
+
+    /**
+     * Getter for <code>mini_shop_471752.b2c_service_order.update_time</code>. 最后修改时间
+     */
+    public Timestamp getUpdateTime() {
+        return (Timestamp) get(35);
     }
 
     // -------------------------------------------------------------------------
@@ -546,7 +560,7 @@ public class ServiceOrderRecord extends UpdatableRecordImpl<ServiceOrderRecord> 
     /**
      * Create a detached, initialised ServiceOrderRecord
      */
-    public ServiceOrderRecord(Integer orderId, Integer storeId, String orderSn, Integer userId, Byte orderStatus, String orderStatusName, String subscriber, String mobile, Integer serviceId, Integer technicianId, String technicianName, String serviceDate, String servicePeriod, String addMessage, String adminMessage, String verifyCode, String verifyAdmin, String payCode, String payName, String paySn, BigDecimal moneyPaid, BigDecimal discount, Integer couponId, BigDecimal orderAmount, Timestamp addTime, Timestamp payTime, Timestamp cancelledTime, Timestamp finishedTime, String prepayId, Byte delFlag, Byte verifyType, String cancelReason, Byte type, Byte verifyPay, String aliTradeNo) {
+    public ServiceOrderRecord(Integer orderId, Integer storeId, String orderSn, Integer userId, Byte orderStatus, String orderStatusName, String subscriber, String mobile, Integer serviceId, Integer technicianId, String technicianName, String serviceDate, String servicePeriod, String addMessage, String adminMessage, String verifyCode, String verifyAdmin, String payCode, String payName, String paySn, BigDecimal moneyPaid, BigDecimal discount, Integer couponId, BigDecimal orderAmount, Timestamp payTime, Timestamp cancelledTime, Timestamp finishedTime, String prepayId, Byte delFlag, Byte verifyType, String cancelReason, Byte type, Byte verifyPay, String aliTradeNo, Timestamp createTime, Timestamp updateTime) {
         super(ServiceOrder.SERVICE_ORDER);
 
         set(0, orderId);
@@ -573,16 +587,17 @@ public class ServiceOrderRecord extends UpdatableRecordImpl<ServiceOrderRecord> 
         set(21, discount);
         set(22, couponId);
         set(23, orderAmount);
-        set(24, addTime);
-        set(25, payTime);
-        set(26, cancelledTime);
-        set(27, finishedTime);
-        set(28, prepayId);
-        set(29, delFlag);
-        set(30, verifyType);
-        set(31, cancelReason);
-        set(32, type);
-        set(33, verifyPay);
-        set(34, aliTradeNo);
+        set(24, payTime);
+        set(25, cancelledTime);
+        set(26, finishedTime);
+        set(27, prepayId);
+        set(28, delFlag);
+        set(29, verifyType);
+        set(30, cancelReason);
+        set(31, type);
+        set(32, verifyPay);
+        set(33, aliTradeNo);
+        set(34, createTime);
+        set(35, updateTime);
     }
 }

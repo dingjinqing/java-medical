@@ -24,7 +24,7 @@ import javax.annotation.Generated;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class RefundCardRecord implements Serializable {
 
-    private static final long serialVersionUID = 1628654994;
+    private static final long serialVersionUID = 691325367;
 
     private Integer    recId;
     private String     orderSn;
@@ -34,6 +34,8 @@ public class RefundCardRecord implements Serializable {
     private BigDecimal moneyPaid;
     private Timestamp  refundTime;
     private Byte       isSuccess;
+    private Timestamp  createTime;
+    private Timestamp  updateTime;
 
     public RefundCardRecord() {}
 
@@ -46,6 +48,8 @@ public class RefundCardRecord implements Serializable {
         this.moneyPaid = value.moneyPaid;
         this.refundTime = value.refundTime;
         this.isSuccess = value.isSuccess;
+        this.createTime = value.createTime;
+        this.updateTime = value.updateTime;
     }
 
     public RefundCardRecord(
@@ -56,7 +60,9 @@ public class RefundCardRecord implements Serializable {
         BigDecimal useAccount,
         BigDecimal moneyPaid,
         Timestamp  refundTime,
-        Byte       isSuccess
+        Byte       isSuccess,
+        Timestamp  createTime,
+        Timestamp  updateTime
     ) {
         this.recId = recId;
         this.orderSn = orderSn;
@@ -66,6 +72,8 @@ public class RefundCardRecord implements Serializable {
         this.moneyPaid = moneyPaid;
         this.refundTime = refundTime;
         this.isSuccess = isSuccess;
+        this.createTime = createTime;
+        this.updateTime = updateTime;
     }
 
     public Integer getRecId() {
@@ -132,6 +140,22 @@ public class RefundCardRecord implements Serializable {
         this.isSuccess = isSuccess;
     }
 
+    public Timestamp getCreateTime() {
+        return this.createTime;
+    }
+
+    public void setCreateTime(Timestamp createTime) {
+        this.createTime = createTime;
+    }
+
+    public Timestamp getUpdateTime() {
+        return this.updateTime;
+    }
+
+    public void setUpdateTime(Timestamp updateTime) {
+        this.updateTime = updateTime;
+    }
+
     @Override
     public String toString() {
         StringBuilder sb = new StringBuilder("RefundCardRecord (");
@@ -144,6 +168,8 @@ public class RefundCardRecord implements Serializable {
         sb.append(", ").append(moneyPaid);
         sb.append(", ").append(refundTime);
         sb.append(", ").append(isSuccess);
+        sb.append(", ").append(createTime);
+        sb.append(", ").append(updateTime);
 
         sb.append(")");
         return sb.toString();

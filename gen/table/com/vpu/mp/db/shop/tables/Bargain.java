@@ -43,7 +43,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class Bargain extends TableImpl<BargainRecord> {
 
-    private static final long serialVersionUID = -1768596879;
+    private static final long serialVersionUID = 205088437;
 
     /**
      * The reference instance of <code>mini_shop_471752.b2c_bargain</code>
@@ -69,19 +69,19 @@ public class Bargain extends TableImpl<BargainRecord> {
     public final TableField<BargainRecord, String> BARGAIN_NAME = createField("bargain_name", org.jooq.impl.SQLDataType.VARCHAR(120).nullable(false), this, "活动名称");
 
     /**
-     * The column <code>mini_shop_471752.b2c_bargain.goods_id</code>. 商品ID
+     * The column <code>mini_shop_471752.b2c_bargain.goods_id</code>. 商品id
      */
-    public final TableField<BargainRecord, Integer> GOODS_ID = createField("goods_id", org.jooq.impl.SQLDataType.INTEGER.nullable(false).defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.INTEGER)), this, "商品ID");
+    public final TableField<BargainRecord, Integer> GOODS_ID = createField("goods_id", org.jooq.impl.SQLDataType.INTEGER.nullable(false).defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.INTEGER)), this, "商品id");
 
     /**
      * The column <code>mini_shop_471752.b2c_bargain.start_time</code>. 开始时间
      */
-    public final TableField<BargainRecord, Timestamp> START_TIME = createField("start_time", org.jooq.impl.SQLDataType.TIMESTAMP.nullable(false).defaultValue(org.jooq.impl.DSL.inline("0000-00-00 00:00:00", org.jooq.impl.SQLDataType.TIMESTAMP)), this, "开始时间");
+    public final TableField<BargainRecord, Timestamp> START_TIME = createField("start_time", org.jooq.impl.SQLDataType.TIMESTAMP, this, "开始时间");
 
     /**
      * The column <code>mini_shop_471752.b2c_bargain.end_time</code>. 结束时间
      */
-    public final TableField<BargainRecord, Timestamp> END_TIME = createField("end_time", org.jooq.impl.SQLDataType.TIMESTAMP.nullable(false).defaultValue(org.jooq.impl.DSL.inline("0000-00-00 00:00:00", org.jooq.impl.SQLDataType.TIMESTAMP)), this, "结束时间");
+    public final TableField<BargainRecord, Timestamp> END_TIME = createField("end_time", org.jooq.impl.SQLDataType.TIMESTAMP, this, "结束时间");
 
     /**
      * The column <code>mini_shop_471752.b2c_bargain.expectation_number</code>. 砍价预期人数
@@ -91,7 +91,7 @@ public class Bargain extends TableImpl<BargainRecord> {
     /**
      * The column <code>mini_shop_471752.b2c_bargain.expectation_price</code>. 预期砍价最低金额
      */
-    public final TableField<BargainRecord, BigDecimal> EXPECTATION_PRICE = createField("expectation_price", org.jooq.impl.SQLDataType.DECIMAL(10, 2).defaultValue(org.jooq.impl.DSL.inline("0.00", org.jooq.impl.SQLDataType.DECIMAL)), this, "预期砍价最低金额");
+    public final TableField<BargainRecord, BigDecimal> EXPECTATION_PRICE = createField("expectation_price", org.jooq.impl.SQLDataType.DECIMAL(10, 2).nullable(false).defaultValue(org.jooq.impl.DSL.inline("0.00", org.jooq.impl.SQLDataType.DECIMAL)), this, "预期砍价最低金额");
 
     /**
      * The column <code>mini_shop_471752.b2c_bargain.bargain_min</code>. 首次返利比例小
@@ -106,12 +106,12 @@ public class Bargain extends TableImpl<BargainRecord> {
     /**
      * The column <code>mini_shop_471752.b2c_bargain.stock</code>. 库存
      */
-    public final TableField<BargainRecord, Integer> STOCK = createField("stock", org.jooq.impl.SQLDataType.INTEGER.defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.INTEGER)), this, "库存");
+    public final TableField<BargainRecord, Integer> STOCK = createField("stock", org.jooq.impl.SQLDataType.INTEGER.nullable(false).defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.INTEGER)), this, "库存");
 
     /**
      * The column <code>mini_shop_471752.b2c_bargain.sale_num</code>. 销售量
      */
-    public final TableField<BargainRecord, Integer> SALE_NUM = createField("sale_num", org.jooq.impl.SQLDataType.INTEGER.defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.INTEGER)), this, "销售量");
+    public final TableField<BargainRecord, Integer> SALE_NUM = createField("sale_num", org.jooq.impl.SQLDataType.INTEGER.nullable(false).defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.INTEGER)), this, "销售量");
 
     /**
      * The column <code>mini_shop_471752.b2c_bargain.mrking_voucher_id</code>.
@@ -121,27 +121,27 @@ public class Bargain extends TableImpl<BargainRecord> {
     /**
      * The column <code>mini_shop_471752.b2c_bargain.status</code>. 状态0可用1停用
      */
-    public final TableField<BargainRecord, Byte> STATUS = createField("status", org.jooq.impl.SQLDataType.TINYINT.defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.TINYINT)), this, "状态0可用1停用");
+    public final TableField<BargainRecord, Byte> STATUS = createField("status", org.jooq.impl.SQLDataType.TINYINT.nullable(false).defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.TINYINT)), this, "状态0可用1停用");
 
     /**
      * The column <code>mini_shop_471752.b2c_bargain.del_flag</code>. 1删除
      */
-    public final TableField<BargainRecord, Byte> DEL_FLAG = createField("del_flag", org.jooq.impl.SQLDataType.TINYINT.defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.TINYINT)), this, "1删除");
+    public final TableField<BargainRecord, Byte> DEL_FLAG = createField("del_flag", org.jooq.impl.SQLDataType.TINYINT.nullable(false).defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.TINYINT)), this, "1删除");
 
     /**
-     * The column <code>mini_shop_471752.b2c_bargain.add_time</code>.
+     * The column <code>mini_shop_471752.b2c_bargain.create_time</code>.
      */
-    public final TableField<BargainRecord, Timestamp> ADD_TIME = createField("add_time", org.jooq.impl.SQLDataType.TIMESTAMP.defaultValue(org.jooq.impl.DSL.inline("0000-00-00 00:00:00", org.jooq.impl.SQLDataType.TIMESTAMP)), this, "");
+    public final TableField<BargainRecord, Timestamp> CREATE_TIME = createField("create_time", org.jooq.impl.SQLDataType.TIMESTAMP.nullable(false).defaultValue(org.jooq.impl.DSL.field("CURRENT_TIMESTAMP", org.jooq.impl.SQLDataType.TIMESTAMP)), this, "");
 
     /**
-     * The column <code>mini_shop_471752.b2c_bargain.update_time</code>.
+     * The column <code>mini_shop_471752.b2c_bargain.update_time</code>. 最后修改时间
      */
-    public final TableField<BargainRecord, Timestamp> UPDATE_TIME = createField("update_time", org.jooq.impl.SQLDataType.TIMESTAMP.defaultValue(org.jooq.impl.DSL.inline("0000-00-00 00:00:00", org.jooq.impl.SQLDataType.TIMESTAMP)), this, "");
+    public final TableField<BargainRecord, Timestamp> UPDATE_TIME = createField("update_time", org.jooq.impl.SQLDataType.TIMESTAMP.nullable(false).defaultValue(org.jooq.impl.DSL.field("CURRENT_TIMESTAMP", org.jooq.impl.SQLDataType.TIMESTAMP)), this, "最后修改时间");
 
     /**
      * The column <code>mini_shop_471752.b2c_bargain.del_time</code>.
      */
-    public final TableField<BargainRecord, Timestamp> DEL_TIME = createField("del_time", org.jooq.impl.SQLDataType.TIMESTAMP.defaultValue(org.jooq.impl.DSL.inline("0000-00-00 00:00:00", org.jooq.impl.SQLDataType.TIMESTAMP)), this, "");
+    public final TableField<BargainRecord, Timestamp> DEL_TIME = createField("del_time", org.jooq.impl.SQLDataType.TIMESTAMP, this, "");
 
     /**
      * The column <code>mini_shop_471752.b2c_bargain.reward_coupon_id</code>. 砍价失败发放优惠券

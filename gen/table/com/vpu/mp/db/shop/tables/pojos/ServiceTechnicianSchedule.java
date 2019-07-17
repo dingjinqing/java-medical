@@ -23,14 +23,14 @@ import javax.annotation.Generated;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class ServiceTechnicianSchedule implements Serializable {
 
-    private static final long serialVersionUID = 774897923;
+    private static final long serialVersionUID = 797556084;
 
     private Integer   id;
     private Integer   storeId;
     private Integer   technicianId;
     private String    workDate;
     private Byte      scheduleId;
-    private Timestamp addTime;
+    private Timestamp createTime;
     private Timestamp updateTime;
 
     public ServiceTechnicianSchedule() {}
@@ -41,7 +41,7 @@ public class ServiceTechnicianSchedule implements Serializable {
         this.technicianId = value.technicianId;
         this.workDate = value.workDate;
         this.scheduleId = value.scheduleId;
-        this.addTime = value.addTime;
+        this.createTime = value.createTime;
         this.updateTime = value.updateTime;
     }
 
@@ -51,7 +51,7 @@ public class ServiceTechnicianSchedule implements Serializable {
         Integer   technicianId,
         String    workDate,
         Byte      scheduleId,
-        Timestamp addTime,
+        Timestamp createTime,
         Timestamp updateTime
     ) {
         this.id = id;
@@ -59,7 +59,7 @@ public class ServiceTechnicianSchedule implements Serializable {
         this.technicianId = technicianId;
         this.workDate = workDate;
         this.scheduleId = scheduleId;
-        this.addTime = addTime;
+        this.createTime = createTime;
         this.updateTime = updateTime;
     }
 
@@ -103,12 +103,12 @@ public class ServiceTechnicianSchedule implements Serializable {
         this.scheduleId = scheduleId;
     }
 
-    public Timestamp getAddTime() {
-        return this.addTime;
+    public Timestamp getCreateTime() {
+        return this.createTime;
     }
 
-    public void setAddTime(Timestamp addTime) {
-        this.addTime = addTime;
+    public void setCreateTime(Timestamp createTime) {
+        this.createTime = createTime;
     }
 
     public Timestamp getUpdateTime() {
@@ -128,7 +128,7 @@ public class ServiceTechnicianSchedule implements Serializable {
         sb.append(", ").append(technicianId);
         sb.append(", ").append(workDate);
         sb.append(", ").append(scheduleId);
-        sb.append(", ").append(addTime);
+        sb.append(", ").append(createTime);
         sb.append(", ").append(updateTime);
 
         sb.append(")");

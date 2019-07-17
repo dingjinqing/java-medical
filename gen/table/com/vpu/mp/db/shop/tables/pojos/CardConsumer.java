@@ -24,12 +24,11 @@ import javax.annotation.Generated;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class CardConsumer implements Serializable {
 
-    private static final long serialVersionUID = -1295058510;
+    private static final long serialVersionUID = -105648025;
 
     private Integer    id;
     private Integer    userId;
     private Integer    cardId;
-    private Timestamp  addTime;
     private BigDecimal money;
     private Short      count;
     private Byte       type;
@@ -38,6 +37,8 @@ public class CardConsumer implements Serializable {
     private String     cardNo;
     private Short      exchangCount;
     private String     orderSn;
+    private Timestamp  createTime;
+    private Timestamp  updateTime;
 
     public CardConsumer() {}
 
@@ -45,7 +46,6 @@ public class CardConsumer implements Serializable {
         this.id = value.id;
         this.userId = value.userId;
         this.cardId = value.cardId;
-        this.addTime = value.addTime;
         this.money = value.money;
         this.count = value.count;
         this.type = value.type;
@@ -54,13 +54,14 @@ public class CardConsumer implements Serializable {
         this.cardNo = value.cardNo;
         this.exchangCount = value.exchangCount;
         this.orderSn = value.orderSn;
+        this.createTime = value.createTime;
+        this.updateTime = value.updateTime;
     }
 
     public CardConsumer(
         Integer    id,
         Integer    userId,
         Integer    cardId,
-        Timestamp  addTime,
         BigDecimal money,
         Short      count,
         Byte       type,
@@ -68,12 +69,13 @@ public class CardConsumer implements Serializable {
         String     message,
         String     cardNo,
         Short      exchangCount,
-        String     orderSn
+        String     orderSn,
+        Timestamp  createTime,
+        Timestamp  updateTime
     ) {
         this.id = id;
         this.userId = userId;
         this.cardId = cardId;
-        this.addTime = addTime;
         this.money = money;
         this.count = count;
         this.type = type;
@@ -82,6 +84,8 @@ public class CardConsumer implements Serializable {
         this.cardNo = cardNo;
         this.exchangCount = exchangCount;
         this.orderSn = orderSn;
+        this.createTime = createTime;
+        this.updateTime = updateTime;
     }
 
     public Integer getId() {
@@ -106,14 +110,6 @@ public class CardConsumer implements Serializable {
 
     public void setCardId(Integer cardId) {
         this.cardId = cardId;
-    }
-
-    public Timestamp getAddTime() {
-        return this.addTime;
-    }
-
-    public void setAddTime(Timestamp addTime) {
-        this.addTime = addTime;
     }
 
     public BigDecimal getMoney() {
@@ -180,6 +176,22 @@ public class CardConsumer implements Serializable {
         this.orderSn = orderSn;
     }
 
+    public Timestamp getCreateTime() {
+        return this.createTime;
+    }
+
+    public void setCreateTime(Timestamp createTime) {
+        this.createTime = createTime;
+    }
+
+    public Timestamp getUpdateTime() {
+        return this.updateTime;
+    }
+
+    public void setUpdateTime(Timestamp updateTime) {
+        this.updateTime = updateTime;
+    }
+
     @Override
     public String toString() {
         StringBuilder sb = new StringBuilder("CardConsumer (");
@@ -187,7 +199,6 @@ public class CardConsumer implements Serializable {
         sb.append(id);
         sb.append(", ").append(userId);
         sb.append(", ").append(cardId);
-        sb.append(", ").append(addTime);
         sb.append(", ").append(money);
         sb.append(", ").append(count);
         sb.append(", ").append(type);
@@ -196,6 +207,8 @@ public class CardConsumer implements Serializable {
         sb.append(", ").append(cardNo);
         sb.append(", ").append(exchangCount);
         sb.append(", ").append(orderSn);
+        sb.append(", ").append(createTime);
+        sb.append(", ").append(updateTime);
 
         sb.append(")");
         return sb.toString();

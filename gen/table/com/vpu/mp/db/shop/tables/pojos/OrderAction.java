@@ -23,7 +23,7 @@ import javax.annotation.Generated;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class OrderAction implements Serializable {
 
-    private static final long serialVersionUID = -1604355083;
+    private static final long serialVersionUID = 66595165;
 
     private Integer   actionId;
     private Integer   shopId;
@@ -35,7 +35,8 @@ public class OrderAction implements Serializable {
     private String    userOpenid;
     private Byte      orderStatus;
     private String    actionNote;
-    private Timestamp logTime;
+    private Timestamp createTime;
+    private Timestamp updateTime;
 
     public OrderAction() {}
 
@@ -50,7 +51,8 @@ public class OrderAction implements Serializable {
         this.userOpenid = value.userOpenid;
         this.orderStatus = value.orderStatus;
         this.actionNote = value.actionNote;
-        this.logTime = value.logTime;
+        this.createTime = value.createTime;
+        this.updateTime = value.updateTime;
     }
 
     public OrderAction(
@@ -64,7 +66,8 @@ public class OrderAction implements Serializable {
         String    userOpenid,
         Byte      orderStatus,
         String    actionNote,
-        Timestamp logTime
+        Timestamp createTime,
+        Timestamp updateTime
     ) {
         this.actionId = actionId;
         this.shopId = shopId;
@@ -76,7 +79,8 @@ public class OrderAction implements Serializable {
         this.userOpenid = userOpenid;
         this.orderStatus = orderStatus;
         this.actionNote = actionNote;
-        this.logTime = logTime;
+        this.createTime = createTime;
+        this.updateTime = updateTime;
     }
 
     public Integer getActionId() {
@@ -159,12 +163,20 @@ public class OrderAction implements Serializable {
         this.actionNote = actionNote;
     }
 
-    public Timestamp getLogTime() {
-        return this.logTime;
+    public Timestamp getCreateTime() {
+        return this.createTime;
     }
 
-    public void setLogTime(Timestamp logTime) {
-        this.logTime = logTime;
+    public void setCreateTime(Timestamp createTime) {
+        this.createTime = createTime;
+    }
+
+    public Timestamp getUpdateTime() {
+        return this.updateTime;
+    }
+
+    public void setUpdateTime(Timestamp updateTime) {
+        this.updateTime = updateTime;
     }
 
     @Override
@@ -181,7 +193,8 @@ public class OrderAction implements Serializable {
         sb.append(", ").append(userOpenid);
         sb.append(", ").append(orderStatus);
         sb.append(", ").append(actionNote);
-        sb.append(", ").append(logTime);
+        sb.append(", ").append(createTime);
+        sb.append(", ").append(updateTime);
 
         sb.append(")");
         return sb.toString();

@@ -43,7 +43,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class MemberCard extends TableImpl<MemberCardRecord> {
 
-    private static final long serialVersionUID = -882342801;
+    private static final long serialVersionUID = -938146085;
 
     /**
      * The reference instance of <code>mini_shop_471752.b2c_member_card</code>
@@ -106,7 +106,7 @@ public class MemberCard extends TableImpl<MemberCardRecord> {
     /**
      * The column <code>mini_shop_471752.b2c_member_card.expire_type</code>. 0:固定日期 1：自领取之日起 2:不过期
      */
-    public final TableField<MemberCardRecord, Byte> EXPIRE_TYPE = createField("expire_type", org.jooq.impl.SQLDataType.TINYINT.defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.TINYINT)), this, "0:固定日期 1：自领取之日起 2:不过期");
+    public final TableField<MemberCardRecord, Byte> EXPIRE_TYPE = createField("expire_type", org.jooq.impl.SQLDataType.TINYINT.nullable(false).defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.TINYINT)), this, "0:固定日期 1：自领取之日起 2:不过期");
 
     /**
      * The column <code>mini_shop_471752.b2c_member_card.start_time</code>. 开始日期
@@ -119,9 +119,9 @@ public class MemberCard extends TableImpl<MemberCardRecord> {
     public final TableField<MemberCardRecord, Timestamp> END_TIME = createField("end_time", org.jooq.impl.SQLDataType.TIMESTAMP, this, "结束日期");
 
     /**
-     * The column <code>mini_shop_471752.b2c_member_card.receive_day</code>. 领取之日起N
+     * The column <code>mini_shop_471752.b2c_member_card.receive_day</code>. 领取之日起n
      */
-    public final TableField<MemberCardRecord, Integer> RECEIVE_DAY = createField("receive_day", org.jooq.impl.SQLDataType.INTEGER, this, "领取之日起N");
+    public final TableField<MemberCardRecord, Integer> RECEIVE_DAY = createField("receive_day", org.jooq.impl.SQLDataType.INTEGER, this, "领取之日起n");
 
     /**
      * The column <code>mini_shop_471752.b2c_member_card.date_type</code>. 0:日，1:周 2: 月
@@ -149,14 +149,14 @@ public class MemberCard extends TableImpl<MemberCardRecord> {
     public final TableField<MemberCardRecord, String> MOBILE = createField("mobile", org.jooq.impl.SQLDataType.CHAR(11), this, "联系电话");
 
     /**
-     * The column <code>mini_shop_471752.b2c_member_card.add_time</code>. 添加时间
+     * The column <code>mini_shop_471752.b2c_member_card.create_time</code>. 添加时间
      */
-    public final TableField<MemberCardRecord, Timestamp> ADD_TIME = createField("add_time", org.jooq.impl.SQLDataType.TIMESTAMP.defaultValue(org.jooq.impl.DSL.field("CURRENT_TIMESTAMP", org.jooq.impl.SQLDataType.TIMESTAMP)), this, "添加时间");
+    public final TableField<MemberCardRecord, Timestamp> CREATE_TIME = createField("create_time", org.jooq.impl.SQLDataType.TIMESTAMP.defaultValue(org.jooq.impl.DSL.field("CURRENT_TIMESTAMP", org.jooq.impl.SQLDataType.TIMESTAMP)), this, "添加时间");
 
     /**
-     * The column <code>mini_shop_471752.b2c_member_card.up_time</code>. 更新时间
+     * The column <code>mini_shop_471752.b2c_member_card.update_time</code>. 最后修改时间
      */
-    public final TableField<MemberCardRecord, Timestamp> UP_TIME = createField("up_time", org.jooq.impl.SQLDataType.TIMESTAMP, this, "更新时间");
+    public final TableField<MemberCardRecord, Timestamp> UPDATE_TIME = createField("update_time", org.jooq.impl.SQLDataType.TIMESTAMP.defaultValue(org.jooq.impl.DSL.field("CURRENT_TIMESTAMP", org.jooq.impl.SQLDataType.TIMESTAMP)), this, "最后修改时间");
 
     /**
      * The column <code>mini_shop_471752.b2c_member_card.flag</code>. 1:使用中，2:停止使用
@@ -189,19 +189,19 @@ public class MemberCard extends TableImpl<MemberCardRecord> {
     public final TableField<MemberCardRecord, Integer> COUNT = createField("count", org.jooq.impl.SQLDataType.INTEGER, this, "卡总次数");
 
     /**
-     * The column <code>mini_shop_471752.b2c_member_card.is_delete</code>. 1为删除状态
+     * The column <code>mini_shop_471752.b2c_member_card.del_flag</code>. 1为删除状态
      */
-    public final TableField<MemberCardRecord, Byte> IS_DELETE = createField("is_delete", org.jooq.impl.SQLDataType.TINYINT.defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.TINYINT)), this, "1为删除状态");
+    public final TableField<MemberCardRecord, Byte> DEL_FLAG = createField("del_flag", org.jooq.impl.SQLDataType.TINYINT.nullable(false).defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.TINYINT)), this, "1为删除状态");
 
     /**
      * The column <code>mini_shop_471752.b2c_member_card.grade</code>. 等级卡的等级
      */
-    public final TableField<MemberCardRecord, String> GRADE = createField("grade", org.jooq.impl.SQLDataType.CHAR(10).defaultValue(org.jooq.impl.DSL.inline("", org.jooq.impl.SQLDataType.CHAR)), this, "等级卡的等级");
+    public final TableField<MemberCardRecord, String> GRADE = createField("grade", org.jooq.impl.SQLDataType.CHAR(10).nullable(false).defaultValue(org.jooq.impl.DSL.inline("", org.jooq.impl.SQLDataType.CHAR)), this, "等级卡的等级");
 
     /**
      * The column <code>mini_shop_471752.b2c_member_card.grade_condition</code>. 等级卡的条件
      */
-    public final TableField<MemberCardRecord, String> GRADE_CONDITION = createField("grade_condition", org.jooq.impl.SQLDataType.VARCHAR(200).defaultValue(org.jooq.impl.DSL.inline("", org.jooq.impl.SQLDataType.VARCHAR)), this, "等级卡的条件");
+    public final TableField<MemberCardRecord, String> GRADE_CONDITION = createField("grade_condition", org.jooq.impl.SQLDataType.VARCHAR(200).nullable(false).defaultValue(org.jooq.impl.DSL.inline("", org.jooq.impl.SQLDataType.VARCHAR)), this, "等级卡的条件");
 
     /**
      * The column <code>mini_shop_471752.b2c_member_card.activation_cfg</code>. 激活信息配置
@@ -211,22 +211,22 @@ public class MemberCard extends TableImpl<MemberCardRecord> {
     /**
      * The column <code>mini_shop_471752.b2c_member_card.examine</code>. 是否审核 0不审核 1审核
      */
-    public final TableField<MemberCardRecord, Byte> EXAMINE = createField("examine", org.jooq.impl.SQLDataType.TINYINT.defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.TINYINT)), this, "是否审核 0不审核 1审核");
+    public final TableField<MemberCardRecord, Byte> EXAMINE = createField("examine", org.jooq.impl.SQLDataType.TINYINT.nullable(false).defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.TINYINT)), this, "是否审核 0不审核 1审核");
 
     /**
-     * The column <code>mini_shop_471752.b2c_member_card.discount_goods_id</code>. 折扣商品ID
+     * The column <code>mini_shop_471752.b2c_member_card.discount_goods_id</code>. 折扣商品id
      */
-    public final TableField<MemberCardRecord, String> DISCOUNT_GOODS_ID = createField("discount_goods_id", org.jooq.impl.SQLDataType.VARCHAR(299), this, "折扣商品ID");
+    public final TableField<MemberCardRecord, String> DISCOUNT_GOODS_ID = createField("discount_goods_id", org.jooq.impl.SQLDataType.VARCHAR(299), this, "折扣商品id");
 
     /**
-     * The column <code>mini_shop_471752.b2c_member_card.discount_cat_id</code>. 折扣平台分类ID
+     * The column <code>mini_shop_471752.b2c_member_card.discount_cat_id</code>. 折扣平台分类id
      */
-    public final TableField<MemberCardRecord, String> DISCOUNT_CAT_ID = createField("discount_cat_id", org.jooq.impl.SQLDataType.VARCHAR(299), this, "折扣平台分类ID");
+    public final TableField<MemberCardRecord, String> DISCOUNT_CAT_ID = createField("discount_cat_id", org.jooq.impl.SQLDataType.VARCHAR(299), this, "折扣平台分类id");
 
     /**
-     * The column <code>mini_shop_471752.b2c_member_card.discount_sort_id</code>. 折扣商家分类ID
+     * The column <code>mini_shop_471752.b2c_member_card.discount_sort_id</code>. 折扣商家分类id
      */
-    public final TableField<MemberCardRecord, String> DISCOUNT_SORT_ID = createField("discount_sort_id", org.jooq.impl.SQLDataType.VARCHAR(299), this, "折扣商家分类ID");
+    public final TableField<MemberCardRecord, String> DISCOUNT_SORT_ID = createField("discount_sort_id", org.jooq.impl.SQLDataType.VARCHAR(299), this, "折扣商家分类id");
 
     /**
      * The column <code>mini_shop_471752.b2c_member_card.discount_is_all</code>. 折扣商品范围： 0:部分商品，1:全部商品
@@ -246,27 +246,27 @@ public class MemberCard extends TableImpl<MemberCardRecord> {
     /**
      * The column <code>mini_shop_471752.b2c_member_card.pay_fee</code>. 购买资金
      */
-    public final TableField<MemberCardRecord, BigDecimal> PAY_FEE = createField("pay_fee", org.jooq.impl.SQLDataType.DECIMAL(10, 2).defaultValue(org.jooq.impl.DSL.inline("0.00", org.jooq.impl.SQLDataType.DECIMAL)), this, "购买资金");
+    public final TableField<MemberCardRecord, BigDecimal> PAY_FEE = createField("pay_fee", org.jooq.impl.SQLDataType.DECIMAL(10, 2).nullable(false).defaultValue(org.jooq.impl.DSL.inline("0.00", org.jooq.impl.SQLDataType.DECIMAL)), this, "购买资金");
 
     /**
      * The column <code>mini_shop_471752.b2c_member_card.pay_own_good</code>. 是否专属购买商品 0不是 1是
      */
-    public final TableField<MemberCardRecord, Byte> PAY_OWN_GOOD = createField("pay_own_good", org.jooq.impl.SQLDataType.TINYINT.defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.TINYINT)), this, "是否专属购买商品 0不是 1是");
+    public final TableField<MemberCardRecord, Byte> PAY_OWN_GOOD = createField("pay_own_good", org.jooq.impl.SQLDataType.TINYINT.nullable(false).defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.TINYINT)), this, "是否专属购买商品 0不是 1是");
 
     /**
      * The column <code>mini_shop_471752.b2c_member_card.receive_action</code>. 领取方式 1:领取码 2：卡号+密码
      */
-    public final TableField<MemberCardRecord, Byte> RECEIVE_ACTION = createField("receive_action", org.jooq.impl.SQLDataType.TINYINT.defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.TINYINT)), this, "领取方式 1:领取码 2：卡号+密码");
+    public final TableField<MemberCardRecord, Byte> RECEIVE_ACTION = createField("receive_action", org.jooq.impl.SQLDataType.TINYINT.nullable(false).defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.TINYINT)), this, "领取方式 1:领取码 2：卡号+密码");
 
     /**
      * The column <code>mini_shop_471752.b2c_member_card.is_exchang</code>. 0不可 1部分 2全部
      */
-    public final TableField<MemberCardRecord, Byte> IS_EXCHANG = createField("is_exchang", org.jooq.impl.SQLDataType.TINYINT.defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.TINYINT)), this, "0不可 1部分 2全部");
+    public final TableField<MemberCardRecord, Byte> IS_EXCHANG = createField("is_exchang", org.jooq.impl.SQLDataType.TINYINT.nullable(false).defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.TINYINT)), this, "0不可 1部分 2全部");
 
     /**
      * The column <code>mini_shop_471752.b2c_member_card.store_use_switch</code>. 可否在门店使用  0可以 1不可以
      */
-    public final TableField<MemberCardRecord, Byte> STORE_USE_SWITCH = createField("store_use_switch", org.jooq.impl.SQLDataType.TINYINT.defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.TINYINT)), this, "可否在门店使用  0可以 1不可以");
+    public final TableField<MemberCardRecord, Byte> STORE_USE_SWITCH = createField("store_use_switch", org.jooq.impl.SQLDataType.TINYINT.nullable(false).defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.TINYINT)), this, "可否在门店使用  0可以 1不可以");
 
     /**
      * The column <code>mini_shop_471752.b2c_member_card.exchang_goods</code>. 可兑换商品id

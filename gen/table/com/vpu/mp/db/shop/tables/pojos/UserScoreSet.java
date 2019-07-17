@@ -23,7 +23,7 @@ import javax.annotation.Generated;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class UserScoreSet implements Serializable {
 
-    private static final long serialVersionUID = -1753059042;
+    private static final long serialVersionUID = -409186311;
 
     private Integer   id;
     private Integer   shopId;
@@ -36,8 +36,8 @@ public class UserScoreSet implements Serializable {
     private Integer   signVal;
     private Byte      signDate;
     private String    desc;
-    private Timestamp inTime;
-    private Timestamp upTime;
+    private Timestamp createTime;
+    private Timestamp updateTime;
     private Byte      growthFlag;
 
     public UserScoreSet() {}
@@ -54,8 +54,8 @@ public class UserScoreSet implements Serializable {
         this.signVal = value.signVal;
         this.signDate = value.signDate;
         this.desc = value.desc;
-        this.inTime = value.inTime;
-        this.upTime = value.upTime;
+        this.createTime = value.createTime;
+        this.updateTime = value.updateTime;
         this.growthFlag = value.growthFlag;
     }
 
@@ -71,8 +71,8 @@ public class UserScoreSet implements Serializable {
         Integer   signVal,
         Byte      signDate,
         String    desc,
-        Timestamp inTime,
-        Timestamp upTime,
+        Timestamp createTime,
+        Timestamp updateTime,
         Byte      growthFlag
     ) {
         this.id = id;
@@ -86,8 +86,8 @@ public class UserScoreSet implements Serializable {
         this.signVal = signVal;
         this.signDate = signDate;
         this.desc = desc;
-        this.inTime = inTime;
-        this.upTime = upTime;
+        this.createTime = createTime;
+        this.updateTime = updateTime;
         this.growthFlag = growthFlag;
     }
 
@@ -179,20 +179,20 @@ public class UserScoreSet implements Serializable {
         this.desc = desc;
     }
 
-    public Timestamp getInTime() {
-        return this.inTime;
+    public Timestamp getCreateTime() {
+        return this.createTime;
     }
 
-    public void setInTime(Timestamp inTime) {
-        this.inTime = inTime;
+    public void setCreateTime(Timestamp createTime) {
+        this.createTime = createTime;
     }
 
-    public Timestamp getUpTime() {
-        return this.upTime;
+    public Timestamp getUpdateTime() {
+        return this.updateTime;
     }
 
-    public void setUpTime(Timestamp upTime) {
-        this.upTime = upTime;
+    public void setUpdateTime(Timestamp updateTime) {
+        this.updateTime = updateTime;
     }
 
     public Byte getGrowthFlag() {
@@ -218,8 +218,8 @@ public class UserScoreSet implements Serializable {
         sb.append(", ").append(signVal);
         sb.append(", ").append(signDate);
         sb.append(", ").append(desc);
-        sb.append(", ").append(inTime);
-        sb.append(", ").append(upTime);
+        sb.append(", ").append(createTime);
+        sb.append(", ").append(updateTime);
         sb.append(", ").append(growthFlag);
 
         sb.append(")");

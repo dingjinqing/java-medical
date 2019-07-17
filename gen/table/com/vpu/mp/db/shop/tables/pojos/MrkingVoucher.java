@@ -24,7 +24,7 @@ import javax.annotation.Generated;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class MrkingVoucher implements Serializable {
 
-    private static final long serialVersionUID = -1602582025;
+    private static final long serialVersionUID = 506742353;
 
     private Integer    id;
     private Integer    shopId;
@@ -34,15 +34,14 @@ public class MrkingVoucher implements Serializable {
     private Timestamp  endTime;
     private BigDecimal denomination;
     private Integer    totalAmount;
+    private Byte       type;
     private Integer    surplus;
     private Integer    remainAmount;
     private Byte       useConsumeRestrict;
     private Integer    leastConsume;
     private String     useExplain;
     private Byte       enabled;
-    private Timestamp  created;
     private Byte       isRandom;
-    private Integer    mostDenomination;
     private Short      receivePerPerson;
     private Byte       suitGoods;
     private Byte       togetherUsed;
@@ -57,26 +56,17 @@ public class MrkingVoucher implements Serializable {
     private String     validationCode;
     private String     recommendGoodsId;
     private String     recommendCatId;
-    private Integer    validity;
-    private String     activityNames;
-    private Timestamp  actStartTime;
-    private Timestamp  actEndTime;
-    private Integer    couLimit;
-    private Integer    leastMoney;
-    private Byte       type;
-    private Byte       isDelete;
     private String     recommendSortId;
+    private Integer    validity;
+    private Byte       delFlag;
     private Byte       action;
     private String     identityId;
     private String     recommendProductId;
-    private String     couponIds;
     private Byte       useScore;
     private Integer    scoreNumber;
-    private Integer    lottery;
     private String     cardId;
-    private String     payRewardImgPath;
-    private String     payRewardUrl;
-    private Byte       recommendType;
+    private Timestamp  createTime;
+    private Timestamp  updateTime;
 
     public MrkingVoucher() {}
 
@@ -89,15 +79,14 @@ public class MrkingVoucher implements Serializable {
         this.endTime = value.endTime;
         this.denomination = value.denomination;
         this.totalAmount = value.totalAmount;
+        this.type = value.type;
         this.surplus = value.surplus;
         this.remainAmount = value.remainAmount;
         this.useConsumeRestrict = value.useConsumeRestrict;
         this.leastConsume = value.leastConsume;
         this.useExplain = value.useExplain;
         this.enabled = value.enabled;
-        this.created = value.created;
         this.isRandom = value.isRandom;
-        this.mostDenomination = value.mostDenomination;
         this.receivePerPerson = value.receivePerPerson;
         this.suitGoods = value.suitGoods;
         this.togetherUsed = value.togetherUsed;
@@ -112,26 +101,17 @@ public class MrkingVoucher implements Serializable {
         this.validationCode = value.validationCode;
         this.recommendGoodsId = value.recommendGoodsId;
         this.recommendCatId = value.recommendCatId;
-        this.validity = value.validity;
-        this.activityNames = value.activityNames;
-        this.actStartTime = value.actStartTime;
-        this.actEndTime = value.actEndTime;
-        this.couLimit = value.couLimit;
-        this.leastMoney = value.leastMoney;
-        this.type = value.type;
-        this.isDelete = value.isDelete;
         this.recommendSortId = value.recommendSortId;
+        this.validity = value.validity;
+        this.delFlag = value.delFlag;
         this.action = value.action;
         this.identityId = value.identityId;
         this.recommendProductId = value.recommendProductId;
-        this.couponIds = value.couponIds;
         this.useScore = value.useScore;
         this.scoreNumber = value.scoreNumber;
-        this.lottery = value.lottery;
         this.cardId = value.cardId;
-        this.payRewardImgPath = value.payRewardImgPath;
-        this.payRewardUrl = value.payRewardUrl;
-        this.recommendType = value.recommendType;
+        this.createTime = value.createTime;
+        this.updateTime = value.updateTime;
     }
 
     public MrkingVoucher(
@@ -143,15 +123,14 @@ public class MrkingVoucher implements Serializable {
         Timestamp  endTime,
         BigDecimal denomination,
         Integer    totalAmount,
+        Byte       type,
         Integer    surplus,
         Integer    remainAmount,
         Byte       useConsumeRestrict,
         Integer    leastConsume,
         String     useExplain,
         Byte       enabled,
-        Timestamp  created,
         Byte       isRandom,
-        Integer    mostDenomination,
         Short      receivePerPerson,
         Byte       suitGoods,
         Byte       togetherUsed,
@@ -166,26 +145,17 @@ public class MrkingVoucher implements Serializable {
         String     validationCode,
         String     recommendGoodsId,
         String     recommendCatId,
-        Integer    validity,
-        String     activityNames,
-        Timestamp  actStartTime,
-        Timestamp  actEndTime,
-        Integer    couLimit,
-        Integer    leastMoney,
-        Byte       type,
-        Byte       isDelete,
         String     recommendSortId,
+        Integer    validity,
+        Byte       delFlag,
         Byte       action,
         String     identityId,
         String     recommendProductId,
-        String     couponIds,
         Byte       useScore,
         Integer    scoreNumber,
-        Integer    lottery,
         String     cardId,
-        String     payRewardImgPath,
-        String     payRewardUrl,
-        Byte       recommendType
+        Timestamp  createTime,
+        Timestamp  updateTime
     ) {
         this.id = id;
         this.shopId = shopId;
@@ -195,15 +165,14 @@ public class MrkingVoucher implements Serializable {
         this.endTime = endTime;
         this.denomination = denomination;
         this.totalAmount = totalAmount;
+        this.type = type;
         this.surplus = surplus;
         this.remainAmount = remainAmount;
         this.useConsumeRestrict = useConsumeRestrict;
         this.leastConsume = leastConsume;
         this.useExplain = useExplain;
         this.enabled = enabled;
-        this.created = created;
         this.isRandom = isRandom;
-        this.mostDenomination = mostDenomination;
         this.receivePerPerson = receivePerPerson;
         this.suitGoods = suitGoods;
         this.togetherUsed = togetherUsed;
@@ -218,26 +187,17 @@ public class MrkingVoucher implements Serializable {
         this.validationCode = validationCode;
         this.recommendGoodsId = recommendGoodsId;
         this.recommendCatId = recommendCatId;
-        this.validity = validity;
-        this.activityNames = activityNames;
-        this.actStartTime = actStartTime;
-        this.actEndTime = actEndTime;
-        this.couLimit = couLimit;
-        this.leastMoney = leastMoney;
-        this.type = type;
-        this.isDelete = isDelete;
         this.recommendSortId = recommendSortId;
+        this.validity = validity;
+        this.delFlag = delFlag;
         this.action = action;
         this.identityId = identityId;
         this.recommendProductId = recommendProductId;
-        this.couponIds = couponIds;
         this.useScore = useScore;
         this.scoreNumber = scoreNumber;
-        this.lottery = lottery;
         this.cardId = cardId;
-        this.payRewardImgPath = payRewardImgPath;
-        this.payRewardUrl = payRewardUrl;
-        this.recommendType = recommendType;
+        this.createTime = createTime;
+        this.updateTime = updateTime;
     }
 
     public Integer getId() {
@@ -304,6 +264,14 @@ public class MrkingVoucher implements Serializable {
         this.totalAmount = totalAmount;
     }
 
+    public Byte getType() {
+        return this.type;
+    }
+
+    public void setType(Byte type) {
+        this.type = type;
+    }
+
     public Integer getSurplus() {
         return this.surplus;
     }
@@ -352,28 +320,12 @@ public class MrkingVoucher implements Serializable {
         this.enabled = enabled;
     }
 
-    public Timestamp getCreated() {
-        return this.created;
-    }
-
-    public void setCreated(Timestamp created) {
-        this.created = created;
-    }
-
     public Byte getIsRandom() {
         return this.isRandom;
     }
 
     public void setIsRandom(Byte isRandom) {
         this.isRandom = isRandom;
-    }
-
-    public Integer getMostDenomination() {
-        return this.mostDenomination;
-    }
-
-    public void setMostDenomination(Integer mostDenomination) {
-        this.mostDenomination = mostDenomination;
     }
 
     public Short getReceivePerPerson() {
@@ -488,6 +440,14 @@ public class MrkingVoucher implements Serializable {
         this.recommendCatId = recommendCatId;
     }
 
+    public String getRecommendSortId() {
+        return this.recommendSortId;
+    }
+
+    public void setRecommendSortId(String recommendSortId) {
+        this.recommendSortId = recommendSortId;
+    }
+
     public Integer getValidity() {
         return this.validity;
     }
@@ -496,68 +456,12 @@ public class MrkingVoucher implements Serializable {
         this.validity = validity;
     }
 
-    public String getActivityNames() {
-        return this.activityNames;
+    public Byte getDelFlag() {
+        return this.delFlag;
     }
 
-    public void setActivityNames(String activityNames) {
-        this.activityNames = activityNames;
-    }
-
-    public Timestamp getActStartTime() {
-        return this.actStartTime;
-    }
-
-    public void setActStartTime(Timestamp actStartTime) {
-        this.actStartTime = actStartTime;
-    }
-
-    public Timestamp getActEndTime() {
-        return this.actEndTime;
-    }
-
-    public void setActEndTime(Timestamp actEndTime) {
-        this.actEndTime = actEndTime;
-    }
-
-    public Integer getCouLimit() {
-        return this.couLimit;
-    }
-
-    public void setCouLimit(Integer couLimit) {
-        this.couLimit = couLimit;
-    }
-
-    public Integer getLeastMoney() {
-        return this.leastMoney;
-    }
-
-    public void setLeastMoney(Integer leastMoney) {
-        this.leastMoney = leastMoney;
-    }
-
-    public Byte getType() {
-        return this.type;
-    }
-
-    public void setType(Byte type) {
-        this.type = type;
-    }
-
-    public Byte getIsDelete() {
-        return this.isDelete;
-    }
-
-    public void setIsDelete(Byte isDelete) {
-        this.isDelete = isDelete;
-    }
-
-    public String getRecommendSortId() {
-        return this.recommendSortId;
-    }
-
-    public void setRecommendSortId(String recommendSortId) {
-        this.recommendSortId = recommendSortId;
+    public void setDelFlag(Byte delFlag) {
+        this.delFlag = delFlag;
     }
 
     public Byte getAction() {
@@ -584,14 +488,6 @@ public class MrkingVoucher implements Serializable {
         this.recommendProductId = recommendProductId;
     }
 
-    public String getCouponIds() {
-        return this.couponIds;
-    }
-
-    public void setCouponIds(String couponIds) {
-        this.couponIds = couponIds;
-    }
-
     public Byte getUseScore() {
         return this.useScore;
     }
@@ -608,14 +504,6 @@ public class MrkingVoucher implements Serializable {
         this.scoreNumber = scoreNumber;
     }
 
-    public Integer getLottery() {
-        return this.lottery;
-    }
-
-    public void setLottery(Integer lottery) {
-        this.lottery = lottery;
-    }
-
     public String getCardId() {
         return this.cardId;
     }
@@ -624,28 +512,20 @@ public class MrkingVoucher implements Serializable {
         this.cardId = cardId;
     }
 
-    public String getPayRewardImgPath() {
-        return this.payRewardImgPath;
+    public Timestamp getCreateTime() {
+        return this.createTime;
     }
 
-    public void setPayRewardImgPath(String payRewardImgPath) {
-        this.payRewardImgPath = payRewardImgPath;
+    public void setCreateTime(Timestamp createTime) {
+        this.createTime = createTime;
     }
 
-    public String getPayRewardUrl() {
-        return this.payRewardUrl;
+    public Timestamp getUpdateTime() {
+        return this.updateTime;
     }
 
-    public void setPayRewardUrl(String payRewardUrl) {
-        this.payRewardUrl = payRewardUrl;
-    }
-
-    public Byte getRecommendType() {
-        return this.recommendType;
-    }
-
-    public void setRecommendType(Byte recommendType) {
-        this.recommendType = recommendType;
+    public void setUpdateTime(Timestamp updateTime) {
+        this.updateTime = updateTime;
     }
 
     @Override
@@ -660,15 +540,14 @@ public class MrkingVoucher implements Serializable {
         sb.append(", ").append(endTime);
         sb.append(", ").append(denomination);
         sb.append(", ").append(totalAmount);
+        sb.append(", ").append(type);
         sb.append(", ").append(surplus);
         sb.append(", ").append(remainAmount);
         sb.append(", ").append(useConsumeRestrict);
         sb.append(", ").append(leastConsume);
         sb.append(", ").append(useExplain);
         sb.append(", ").append(enabled);
-        sb.append(", ").append(created);
         sb.append(", ").append(isRandom);
-        sb.append(", ").append(mostDenomination);
         sb.append(", ").append(receivePerPerson);
         sb.append(", ").append(suitGoods);
         sb.append(", ").append(togetherUsed);
@@ -683,26 +562,17 @@ public class MrkingVoucher implements Serializable {
         sb.append(", ").append(validationCode);
         sb.append(", ").append(recommendGoodsId);
         sb.append(", ").append(recommendCatId);
-        sb.append(", ").append(validity);
-        sb.append(", ").append(activityNames);
-        sb.append(", ").append(actStartTime);
-        sb.append(", ").append(actEndTime);
-        sb.append(", ").append(couLimit);
-        sb.append(", ").append(leastMoney);
-        sb.append(", ").append(type);
-        sb.append(", ").append(isDelete);
         sb.append(", ").append(recommendSortId);
+        sb.append(", ").append(validity);
+        sb.append(", ").append(delFlag);
         sb.append(", ").append(action);
         sb.append(", ").append(identityId);
         sb.append(", ").append(recommendProductId);
-        sb.append(", ").append(couponIds);
         sb.append(", ").append(useScore);
         sb.append(", ").append(scoreNumber);
-        sb.append(", ").append(lottery);
         sb.append(", ").append(cardId);
-        sb.append(", ").append(payRewardImgPath);
-        sb.append(", ").append(payRewardUrl);
-        sb.append(", ").append(recommendType);
+        sb.append(", ").append(createTime);
+        sb.append(", ").append(updateTime);
 
         sb.append(")");
         return sb.toString();

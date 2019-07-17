@@ -6,6 +6,7 @@ package com.vpu.mp.db.shop.tables.pojos;
 
 import java.io.Serializable;
 import java.math.BigDecimal;
+import java.sql.Timestamp;
 
 import javax.annotation.Generated;
 
@@ -23,7 +24,7 @@ import javax.annotation.Generated;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class IntegralMallProduct implements Serializable {
 
-    private static final long serialVersionUID = 1288702140;
+    private static final long serialVersionUID = 526477131;
 
     private Integer    id;
     private Integer    integralMallDefineId;
@@ -31,6 +32,8 @@ public class IntegralMallProduct implements Serializable {
     private Integer    score;
     private Short      stock;
     private BigDecimal money;
+    private Timestamp  createTime;
+    private Timestamp  updateTime;
 
     public IntegralMallProduct() {}
 
@@ -41,6 +44,8 @@ public class IntegralMallProduct implements Serializable {
         this.score = value.score;
         this.stock = value.stock;
         this.money = value.money;
+        this.createTime = value.createTime;
+        this.updateTime = value.updateTime;
     }
 
     public IntegralMallProduct(
@@ -49,7 +54,9 @@ public class IntegralMallProduct implements Serializable {
         Integer    productId,
         Integer    score,
         Short      stock,
-        BigDecimal money
+        BigDecimal money,
+        Timestamp  createTime,
+        Timestamp  updateTime
     ) {
         this.id = id;
         this.integralMallDefineId = integralMallDefineId;
@@ -57,6 +64,8 @@ public class IntegralMallProduct implements Serializable {
         this.score = score;
         this.stock = stock;
         this.money = money;
+        this.createTime = createTime;
+        this.updateTime = updateTime;
     }
 
     public Integer getId() {
@@ -107,6 +116,22 @@ public class IntegralMallProduct implements Serializable {
         this.money = money;
     }
 
+    public Timestamp getCreateTime() {
+        return this.createTime;
+    }
+
+    public void setCreateTime(Timestamp createTime) {
+        this.createTime = createTime;
+    }
+
+    public Timestamp getUpdateTime() {
+        return this.updateTime;
+    }
+
+    public void setUpdateTime(Timestamp updateTime) {
+        this.updateTime = updateTime;
+    }
+
     @Override
     public String toString() {
         StringBuilder sb = new StringBuilder("IntegralMallProduct (");
@@ -117,6 +142,8 @@ public class IntegralMallProduct implements Serializable {
         sb.append(", ").append(score);
         sb.append(", ").append(stock);
         sb.append(", ").append(money);
+        sb.append(", ").append(createTime);
+        sb.append(", ").append(updateTime);
 
         sb.append(")");
         return sb.toString();

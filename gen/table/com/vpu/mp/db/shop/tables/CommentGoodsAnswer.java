@@ -42,7 +42,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class CommentGoodsAnswer extends TableImpl<CommentGoodsAnswerRecord> {
 
-    private static final long serialVersionUID = -839811692;
+    private static final long serialVersionUID = 592282587;
 
     /**
      * The reference instance of <code>mini_shop_471752.b2c_comment_goods_answer</code>
@@ -63,9 +63,9 @@ public class CommentGoodsAnswer extends TableImpl<CommentGoodsAnswerRecord> {
     public final TableField<CommentGoodsAnswerRecord, Integer> ANSWER_ID = createField("answer_id", org.jooq.impl.SQLDataType.INTEGER.nullable(false).identity(true), this, "");
 
     /**
-     * The column <code>mini_shop_471752.b2c_comment_goods_answer.comment_id</code>. 回复的商品评论ID
+     * The column <code>mini_shop_471752.b2c_comment_goods_answer.comment_id</code>. 回复的商品评论id
      */
-    public final TableField<CommentGoodsAnswerRecord, Integer> COMMENT_ID = createField("comment_id", org.jooq.impl.SQLDataType.INTEGER.nullable(false), this, "回复的商品评论ID");
+    public final TableField<CommentGoodsAnswerRecord, Integer> COMMENT_ID = createField("comment_id", org.jooq.impl.SQLDataType.INTEGER.nullable(false), this, "回复的商品评论id");
 
     /**
      * The column <code>mini_shop_471752.b2c_comment_goods_answer.content</code>. 回复内容
@@ -73,14 +73,19 @@ public class CommentGoodsAnswer extends TableImpl<CommentGoodsAnswerRecord> {
     public final TableField<CommentGoodsAnswerRecord, String> CONTENT = createField("content", org.jooq.impl.SQLDataType.CLOB, this, "回复内容");
 
     /**
-     * The column <code>mini_shop_471752.b2c_comment_goods_answer.answer_time</code>. 回复时间
-     */
-    public final TableField<CommentGoodsAnswerRecord, Timestamp> ANSWER_TIME = createField("answer_time", org.jooq.impl.SQLDataType.TIMESTAMP.defaultValue(org.jooq.impl.DSL.field("CURRENT_TIMESTAMP", org.jooq.impl.SQLDataType.TIMESTAMP)), this, "回复时间");
-
-    /**
      * The column <code>mini_shop_471752.b2c_comment_goods_answer.del_flag</code>. 1:删除
      */
     public final TableField<CommentGoodsAnswerRecord, Byte> DEL_FLAG = createField("del_flag", org.jooq.impl.SQLDataType.TINYINT.nullable(false).defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.TINYINT)), this, "1:删除");
+
+    /**
+     * The column <code>mini_shop_471752.b2c_comment_goods_answer.create_time</code>.
+     */
+    public final TableField<CommentGoodsAnswerRecord, Timestamp> CREATE_TIME = createField("create_time", org.jooq.impl.SQLDataType.TIMESTAMP.nullable(false).defaultValue(org.jooq.impl.DSL.field("CURRENT_TIMESTAMP", org.jooq.impl.SQLDataType.TIMESTAMP)), this, "");
+
+    /**
+     * The column <code>mini_shop_471752.b2c_comment_goods_answer.update_time</code>. 最后修改时间
+     */
+    public final TableField<CommentGoodsAnswerRecord, Timestamp> UPDATE_TIME = createField("update_time", org.jooq.impl.SQLDataType.TIMESTAMP.nullable(false).defaultValue(org.jooq.impl.DSL.field("CURRENT_TIMESTAMP", org.jooq.impl.SQLDataType.TIMESTAMP)), this, "最后修改时间");
 
     /**
      * Create a <code>mini_shop_471752.b2c_comment_goods_answer</code> table reference

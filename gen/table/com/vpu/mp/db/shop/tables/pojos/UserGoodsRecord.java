@@ -23,14 +23,13 @@ import javax.annotation.Generated;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class UserGoodsRecord implements Serializable {
 
-    private static final long serialVersionUID = -1277384055;
+    private static final long serialVersionUID = -2039685312;
 
     private Long      id;
     private Integer   userId;
     private Integer   goodsId;
     private Integer   activeId;
     private Short     activeType;
-    private Timestamp addTime;
     private String    userIp;
     private String    provinceCode;
     private String    province;
@@ -41,6 +40,8 @@ public class UserGoodsRecord implements Serializable {
     private String    lat;
     private String    lng;
     private Short     count;
+    private Timestamp createTime;
+    private Timestamp updateTime;
 
     public UserGoodsRecord() {}
 
@@ -50,7 +51,6 @@ public class UserGoodsRecord implements Serializable {
         this.goodsId = value.goodsId;
         this.activeId = value.activeId;
         this.activeType = value.activeType;
-        this.addTime = value.addTime;
         this.userIp = value.userIp;
         this.provinceCode = value.provinceCode;
         this.province = value.province;
@@ -61,6 +61,8 @@ public class UserGoodsRecord implements Serializable {
         this.lat = value.lat;
         this.lng = value.lng;
         this.count = value.count;
+        this.createTime = value.createTime;
+        this.updateTime = value.updateTime;
     }
 
     public UserGoodsRecord(
@@ -69,7 +71,6 @@ public class UserGoodsRecord implements Serializable {
         Integer   goodsId,
         Integer   activeId,
         Short     activeType,
-        Timestamp addTime,
         String    userIp,
         String    provinceCode,
         String    province,
@@ -79,14 +80,15 @@ public class UserGoodsRecord implements Serializable {
         String    district,
         String    lat,
         String    lng,
-        Short     count
+        Short     count,
+        Timestamp createTime,
+        Timestamp updateTime
     ) {
         this.id = id;
         this.userId = userId;
         this.goodsId = goodsId;
         this.activeId = activeId;
         this.activeType = activeType;
-        this.addTime = addTime;
         this.userIp = userIp;
         this.provinceCode = provinceCode;
         this.province = province;
@@ -97,6 +99,8 @@ public class UserGoodsRecord implements Serializable {
         this.lat = lat;
         this.lng = lng;
         this.count = count;
+        this.createTime = createTime;
+        this.updateTime = updateTime;
     }
 
     public Long getId() {
@@ -137,14 +141,6 @@ public class UserGoodsRecord implements Serializable {
 
     public void setActiveType(Short activeType) {
         this.activeType = activeType;
-    }
-
-    public Timestamp getAddTime() {
-        return this.addTime;
-    }
-
-    public void setAddTime(Timestamp addTime) {
-        this.addTime = addTime;
     }
 
     public String getUserIp() {
@@ -227,6 +223,22 @@ public class UserGoodsRecord implements Serializable {
         this.count = count;
     }
 
+    public Timestamp getCreateTime() {
+        return this.createTime;
+    }
+
+    public void setCreateTime(Timestamp createTime) {
+        this.createTime = createTime;
+    }
+
+    public Timestamp getUpdateTime() {
+        return this.updateTime;
+    }
+
+    public void setUpdateTime(Timestamp updateTime) {
+        this.updateTime = updateTime;
+    }
+
     @Override
     public String toString() {
         StringBuilder sb = new StringBuilder("UserGoodsRecord (");
@@ -236,7 +248,6 @@ public class UserGoodsRecord implements Serializable {
         sb.append(", ").append(goodsId);
         sb.append(", ").append(activeId);
         sb.append(", ").append(activeType);
-        sb.append(", ").append(addTime);
         sb.append(", ").append(userIp);
         sb.append(", ").append(provinceCode);
         sb.append(", ").append(province);
@@ -247,6 +258,8 @@ public class UserGoodsRecord implements Serializable {
         sb.append(", ").append(lat);
         sb.append(", ").append(lng);
         sb.append(", ").append(count);
+        sb.append(", ").append(createTime);
+        sb.append(", ").append(updateTime);
 
         sb.append(")");
         return sb.toString();

@@ -6,6 +6,7 @@ package com.vpu.mp.db.shop.tables.pojos;
 
 import java.io.Serializable;
 import java.math.BigDecimal;
+import java.sql.Timestamp;
 
 import javax.annotation.Generated;
 
@@ -23,7 +24,7 @@ import javax.annotation.Generated;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class PinGroupProductDefine implements Serializable {
 
-    private static final long serialVersionUID = 1929830088;
+    private static final long serialVersionUID = 385596759;
 
     private Integer    id;
     private Integer    pinActivityId;
@@ -32,6 +33,8 @@ public class PinGroupProductDefine implements Serializable {
     private Short      stock;
     private Short      saleNum;
     private BigDecimal grouperPrice;
+    private Timestamp  createTime;
+    private Timestamp  updateTime;
 
     public PinGroupProductDefine() {}
 
@@ -43,6 +46,8 @@ public class PinGroupProductDefine implements Serializable {
         this.stock = value.stock;
         this.saleNum = value.saleNum;
         this.grouperPrice = value.grouperPrice;
+        this.createTime = value.createTime;
+        this.updateTime = value.updateTime;
     }
 
     public PinGroupProductDefine(
@@ -52,7 +57,9 @@ public class PinGroupProductDefine implements Serializable {
         BigDecimal pinGroupPrice,
         Short      stock,
         Short      saleNum,
-        BigDecimal grouperPrice
+        BigDecimal grouperPrice,
+        Timestamp  createTime,
+        Timestamp  updateTime
     ) {
         this.id = id;
         this.pinActivityId = pinActivityId;
@@ -61,6 +68,8 @@ public class PinGroupProductDefine implements Serializable {
         this.stock = stock;
         this.saleNum = saleNum;
         this.grouperPrice = grouperPrice;
+        this.createTime = createTime;
+        this.updateTime = updateTime;
     }
 
     public Integer getId() {
@@ -119,6 +128,22 @@ public class PinGroupProductDefine implements Serializable {
         this.grouperPrice = grouperPrice;
     }
 
+    public Timestamp getCreateTime() {
+        return this.createTime;
+    }
+
+    public void setCreateTime(Timestamp createTime) {
+        this.createTime = createTime;
+    }
+
+    public Timestamp getUpdateTime() {
+        return this.updateTime;
+    }
+
+    public void setUpdateTime(Timestamp updateTime) {
+        this.updateTime = updateTime;
+    }
+
     @Override
     public String toString() {
         StringBuilder sb = new StringBuilder("PinGroupProductDefine (");
@@ -130,6 +155,8 @@ public class PinGroupProductDefine implements Serializable {
         sb.append(", ").append(stock);
         sb.append(", ").append(saleNum);
         sb.append(", ").append(grouperPrice);
+        sb.append(", ").append(createTime);
+        sb.append(", ").append(updateTime);
 
         sb.append(")");
         return sb.toString();

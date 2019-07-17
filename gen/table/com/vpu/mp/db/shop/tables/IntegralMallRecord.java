@@ -43,7 +43,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class IntegralMallRecord extends TableImpl<IntegralMallRecordRecord> {
 
-    private static final long serialVersionUID = -1508654608;
+    private static final long serialVersionUID = -630160274;
 
     /**
      * The reference instance of <code>mini_shop_471752.b2c_integral_mall_record</code>
@@ -64,9 +64,9 @@ public class IntegralMallRecord extends TableImpl<IntegralMallRecordRecord> {
     public final TableField<IntegralMallRecordRecord, Integer> ID = createField("id", org.jooq.impl.SQLDataType.INTEGER.nullable(false).identity(true), this, "");
 
     /**
-     * The column <code>mini_shop_471752.b2c_integral_mall_record.integral_mall_define_id</code>. 积分商城活动定义表ID
+     * The column <code>mini_shop_471752.b2c_integral_mall_record.integral_mall_define_id</code>. 积分商城活动定义表id
      */
-    public final TableField<IntegralMallRecordRecord, Integer> INTEGRAL_MALL_DEFINE_ID = createField("integral_mall_define_id", org.jooq.impl.SQLDataType.INTEGER.nullable(false), this, "积分商城活动定义表ID");
+    public final TableField<IntegralMallRecordRecord, Integer> INTEGRAL_MALL_DEFINE_ID = createField("integral_mall_define_id", org.jooq.impl.SQLDataType.INTEGER.nullable(false), this, "积分商城活动定义表id");
 
     /**
      * The column <code>mini_shop_471752.b2c_integral_mall_record.order_sn</code>. 订单编号
@@ -74,19 +74,19 @@ public class IntegralMallRecord extends TableImpl<IntegralMallRecordRecord> {
     public final TableField<IntegralMallRecordRecord, String> ORDER_SN = createField("order_sn", org.jooq.impl.SQLDataType.VARCHAR(20), this, "订单编号");
 
     /**
-     * The column <code>mini_shop_471752.b2c_integral_mall_record.user_id</code>. 用户ID
+     * The column <code>mini_shop_471752.b2c_integral_mall_record.user_id</code>. 用户id
      */
-    public final TableField<IntegralMallRecordRecord, Integer> USER_ID = createField("user_id", org.jooq.impl.SQLDataType.INTEGER.nullable(false), this, "用户ID");
+    public final TableField<IntegralMallRecordRecord, Integer> USER_ID = createField("user_id", org.jooq.impl.SQLDataType.INTEGER.nullable(false), this, "用户id");
 
     /**
-     * The column <code>mini_shop_471752.b2c_integral_mall_record.goods_id</code>. 商品ID
+     * The column <code>mini_shop_471752.b2c_integral_mall_record.goods_id</code>. 商品id
      */
-    public final TableField<IntegralMallRecordRecord, Integer> GOODS_ID = createField("goods_id", org.jooq.impl.SQLDataType.INTEGER.nullable(false), this, "商品ID");
+    public final TableField<IntegralMallRecordRecord, Integer> GOODS_ID = createField("goods_id", org.jooq.impl.SQLDataType.INTEGER.nullable(false), this, "商品id");
 
     /**
-     * The column <code>mini_shop_471752.b2c_integral_mall_record.product_id</code>. 产品规格ID
+     * The column <code>mini_shop_471752.b2c_integral_mall_record.product_id</code>. 产品规格id
      */
-    public final TableField<IntegralMallRecordRecord, Integer> PRODUCT_ID = createField("product_id", org.jooq.impl.SQLDataType.INTEGER.nullable(false), this, "产品规格ID");
+    public final TableField<IntegralMallRecordRecord, Integer> PRODUCT_ID = createField("product_id", org.jooq.impl.SQLDataType.INTEGER.nullable(false), this, "产品规格id");
 
     /**
      * The column <code>mini_shop_471752.b2c_integral_mall_record.score</code>. 消费积分
@@ -99,14 +99,19 @@ public class IntegralMallRecord extends TableImpl<IntegralMallRecordRecord> {
     public final TableField<IntegralMallRecordRecord, Short> NUMBER = createField("number", org.jooq.impl.SQLDataType.SMALLINT.nullable(false), this, "兑换数量");
 
     /**
-     * The column <code>mini_shop_471752.b2c_integral_mall_record.add_time</code>. 兑换时间
-     */
-    public final TableField<IntegralMallRecordRecord, Timestamp> ADD_TIME = createField("add_time", org.jooq.impl.SQLDataType.TIMESTAMP.nullable(false), this, "兑换时间");
-
-    /**
      * The column <code>mini_shop_471752.b2c_integral_mall_record.money</code>. 消耗现金
      */
     public final TableField<IntegralMallRecordRecord, BigDecimal> MONEY = createField("money", org.jooq.impl.SQLDataType.DECIMAL(10, 2).nullable(false), this, "消耗现金");
+
+    /**
+     * The column <code>mini_shop_471752.b2c_integral_mall_record.create_time</code>.
+     */
+    public final TableField<IntegralMallRecordRecord, Timestamp> CREATE_TIME = createField("create_time", org.jooq.impl.SQLDataType.TIMESTAMP.nullable(false).defaultValue(org.jooq.impl.DSL.field("CURRENT_TIMESTAMP", org.jooq.impl.SQLDataType.TIMESTAMP)), this, "");
+
+    /**
+     * The column <code>mini_shop_471752.b2c_integral_mall_record.update_time</code>. 最后修改时间
+     */
+    public final TableField<IntegralMallRecordRecord, Timestamp> UPDATE_TIME = createField("update_time", org.jooq.impl.SQLDataType.TIMESTAMP.nullable(false).defaultValue(org.jooq.impl.DSL.field("CURRENT_TIMESTAMP", org.jooq.impl.SQLDataType.TIMESTAMP)), this, "最后修改时间");
 
     /**
      * Create a <code>mini_shop_471752.b2c_integral_mall_record</code> table reference

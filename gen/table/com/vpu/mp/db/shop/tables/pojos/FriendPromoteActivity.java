@@ -24,7 +24,7 @@ import javax.annotation.Generated;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class FriendPromoteActivity implements Serializable {
 
-    private static final long serialVersionUID = -1812685103;
+    private static final long serialVersionUID = 2055658713;
 
     private Integer    id;
     private Integer    shopId;
@@ -41,7 +41,7 @@ public class FriendPromoteActivity implements Serializable {
     private Integer    launchLimitDuration;
     private Byte       launchLimitUnit;
     private Byte       launchLimitTimes;
-    private Byte       shareAddTimes;
+    private Byte       shareCreateTimes;
     private Byte       promoteType;
     private Byte       promoteCondition;
     private Byte       failedSendType;
@@ -52,10 +52,10 @@ public class FriendPromoteActivity implements Serializable {
     private String     customImgPath;
     private Byte       isBlock;
     private Byte       delFlag;
-    private Timestamp  inTime;
-    private Timestamp  upTime;
     private Byte       useDiscount;
     private Byte       useScore;
+    private Timestamp  createTime;
+    private Timestamp  updateTime;
 
     public FriendPromoteActivity() {}
 
@@ -75,7 +75,7 @@ public class FriendPromoteActivity implements Serializable {
         this.launchLimitDuration = value.launchLimitDuration;
         this.launchLimitUnit = value.launchLimitUnit;
         this.launchLimitTimes = value.launchLimitTimes;
-        this.shareAddTimes = value.shareAddTimes;
+        this.shareCreateTimes = value.shareCreateTimes;
         this.promoteType = value.promoteType;
         this.promoteCondition = value.promoteCondition;
         this.failedSendType = value.failedSendType;
@@ -86,10 +86,10 @@ public class FriendPromoteActivity implements Serializable {
         this.customImgPath = value.customImgPath;
         this.isBlock = value.isBlock;
         this.delFlag = value.delFlag;
-        this.inTime = value.inTime;
-        this.upTime = value.upTime;
         this.useDiscount = value.useDiscount;
         this.useScore = value.useScore;
+        this.createTime = value.createTime;
+        this.updateTime = value.updateTime;
     }
 
     public FriendPromoteActivity(
@@ -108,7 +108,7 @@ public class FriendPromoteActivity implements Serializable {
         Integer    launchLimitDuration,
         Byte       launchLimitUnit,
         Byte       launchLimitTimes,
-        Byte       shareAddTimes,
+        Byte       shareCreateTimes,
         Byte       promoteType,
         Byte       promoteCondition,
         Byte       failedSendType,
@@ -119,10 +119,10 @@ public class FriendPromoteActivity implements Serializable {
         String     customImgPath,
         Byte       isBlock,
         Byte       delFlag,
-        Timestamp  inTime,
-        Timestamp  upTime,
         Byte       useDiscount,
-        Byte       useScore
+        Byte       useScore,
+        Timestamp  createTime,
+        Timestamp  updateTime
     ) {
         this.id = id;
         this.shopId = shopId;
@@ -139,7 +139,7 @@ public class FriendPromoteActivity implements Serializable {
         this.launchLimitDuration = launchLimitDuration;
         this.launchLimitUnit = launchLimitUnit;
         this.launchLimitTimes = launchLimitTimes;
-        this.shareAddTimes = shareAddTimes;
+        this.shareCreateTimes = shareCreateTimes;
         this.promoteType = promoteType;
         this.promoteCondition = promoteCondition;
         this.failedSendType = failedSendType;
@@ -150,10 +150,10 @@ public class FriendPromoteActivity implements Serializable {
         this.customImgPath = customImgPath;
         this.isBlock = isBlock;
         this.delFlag = delFlag;
-        this.inTime = inTime;
-        this.upTime = upTime;
         this.useDiscount = useDiscount;
         this.useScore = useScore;
+        this.createTime = createTime;
+        this.updateTime = updateTime;
     }
 
     public Integer getId() {
@@ -276,12 +276,12 @@ public class FriendPromoteActivity implements Serializable {
         this.launchLimitTimes = launchLimitTimes;
     }
 
-    public Byte getShareAddTimes() {
-        return this.shareAddTimes;
+    public Byte getShareCreateTimes() {
+        return this.shareCreateTimes;
     }
 
-    public void setShareAddTimes(Byte shareAddTimes) {
-        this.shareAddTimes = shareAddTimes;
+    public void setShareCreateTimes(Byte shareCreateTimes) {
+        this.shareCreateTimes = shareCreateTimes;
     }
 
     public Byte getPromoteType() {
@@ -364,22 +364,6 @@ public class FriendPromoteActivity implements Serializable {
         this.delFlag = delFlag;
     }
 
-    public Timestamp getInTime() {
-        return this.inTime;
-    }
-
-    public void setInTime(Timestamp inTime) {
-        this.inTime = inTime;
-    }
-
-    public Timestamp getUpTime() {
-        return this.upTime;
-    }
-
-    public void setUpTime(Timestamp upTime) {
-        this.upTime = upTime;
-    }
-
     public Byte getUseDiscount() {
         return this.useDiscount;
     }
@@ -394,6 +378,22 @@ public class FriendPromoteActivity implements Serializable {
 
     public void setUseScore(Byte useScore) {
         this.useScore = useScore;
+    }
+
+    public Timestamp getCreateTime() {
+        return this.createTime;
+    }
+
+    public void setCreateTime(Timestamp createTime) {
+        this.createTime = createTime;
+    }
+
+    public Timestamp getUpdateTime() {
+        return this.updateTime;
+    }
+
+    public void setUpdateTime(Timestamp updateTime) {
+        this.updateTime = updateTime;
     }
 
     @Override
@@ -415,7 +415,7 @@ public class FriendPromoteActivity implements Serializable {
         sb.append(", ").append(launchLimitDuration);
         sb.append(", ").append(launchLimitUnit);
         sb.append(", ").append(launchLimitTimes);
-        sb.append(", ").append(shareAddTimes);
+        sb.append(", ").append(shareCreateTimes);
         sb.append(", ").append(promoteType);
         sb.append(", ").append(promoteCondition);
         sb.append(", ").append(failedSendType);
@@ -426,10 +426,10 @@ public class FriendPromoteActivity implements Serializable {
         sb.append(", ").append(customImgPath);
         sb.append(", ").append(isBlock);
         sb.append(", ").append(delFlag);
-        sb.append(", ").append(inTime);
-        sb.append(", ").append(upTime);
         sb.append(", ").append(useDiscount);
         sb.append(", ").append(useScore);
+        sb.append(", ").append(createTime);
+        sb.append(", ").append(updateTime);
 
         sb.append(")");
         return sb.toString();

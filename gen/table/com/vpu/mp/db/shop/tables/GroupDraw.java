@@ -43,7 +43,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class GroupDraw extends TableImpl<GroupDrawRecord> {
 
-    private static final long serialVersionUID = 1372758879;
+    private static final long serialVersionUID = 1566144682;
 
     /**
      * The reference instance of <code>mini_shop_471752.b2c_group_draw</code>
@@ -71,17 +71,17 @@ public class GroupDraw extends TableImpl<GroupDrawRecord> {
     /**
      * The column <code>mini_shop_471752.b2c_group_draw.start_time</code>. 开始时间
      */
-    public final TableField<GroupDrawRecord, Timestamp> START_TIME = createField("start_time", org.jooq.impl.SQLDataType.TIMESTAMP.nullable(false), this, "开始时间");
+    public final TableField<GroupDrawRecord, Timestamp> START_TIME = createField("start_time", org.jooq.impl.SQLDataType.TIMESTAMP, this, "开始时间");
 
     /**
      * The column <code>mini_shop_471752.b2c_group_draw.end_time</code>. 结束时间
      */
-    public final TableField<GroupDrawRecord, Timestamp> END_TIME = createField("end_time", org.jooq.impl.SQLDataType.TIMESTAMP.nullable(false), this, "结束时间");
+    public final TableField<GroupDrawRecord, Timestamp> END_TIME = createField("end_time", org.jooq.impl.SQLDataType.TIMESTAMP, this, "结束时间");
 
     /**
-     * The column <code>mini_shop_471752.b2c_group_draw.goods_id</code>. 参与抽奖的商品ID
+     * The column <code>mini_shop_471752.b2c_group_draw.goods_id</code>. 参与抽奖的商品id
      */
-    public final TableField<GroupDrawRecord, String> GOODS_ID = createField("goods_id", org.jooq.impl.SQLDataType.CLOB.nullable(false), this, "参与抽奖的商品ID");
+    public final TableField<GroupDrawRecord, String> GOODS_ID = createField("goods_id", org.jooq.impl.SQLDataType.CLOB, this, "参与抽奖的商品id");
 
     /**
      * The column <code>mini_shop_471752.b2c_group_draw.min_join_num</code>. 开奖最小参与人数
@@ -121,17 +121,17 @@ public class GroupDraw extends TableImpl<GroupDrawRecord> {
     /**
      * The column <code>mini_shop_471752.b2c_group_draw.is_draw</code>. 是否已开奖
      */
-    public final TableField<GroupDrawRecord, Byte> IS_DRAW = createField("is_draw", org.jooq.impl.SQLDataType.TINYINT.defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.TINYINT)), this, "是否已开奖");
+    public final TableField<GroupDrawRecord, Byte> IS_DRAW = createField("is_draw", org.jooq.impl.SQLDataType.TINYINT.nullable(false).defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.TINYINT)), this, "是否已开奖");
 
     /**
-     * The column <code>mini_shop_471752.b2c_group_draw.add_time</code>.
+     * The column <code>mini_shop_471752.b2c_group_draw.create_time</code>.
      */
-    public final TableField<GroupDrawRecord, Timestamp> ADD_TIME = createField("add_time", org.jooq.impl.SQLDataType.TIMESTAMP, this, "");
+    public final TableField<GroupDrawRecord, Timestamp> CREATE_TIME = createField("create_time", org.jooq.impl.SQLDataType.TIMESTAMP.nullable(false).defaultValue(org.jooq.impl.DSL.field("CURRENT_TIMESTAMP", org.jooq.impl.SQLDataType.TIMESTAMP)), this, "");
 
     /**
-     * The column <code>mini_shop_471752.b2c_group_draw.update_time</code>.
+     * The column <code>mini_shop_471752.b2c_group_draw.update_time</code>. 最后修改时间
      */
-    public final TableField<GroupDrawRecord, Timestamp> UPDATE_TIME = createField("update_time", org.jooq.impl.SQLDataType.TIMESTAMP, this, "");
+    public final TableField<GroupDrawRecord, Timestamp> UPDATE_TIME = createField("update_time", org.jooq.impl.SQLDataType.TIMESTAMP.nullable(false).defaultValue(org.jooq.impl.DSL.field("CURRENT_TIMESTAMP", org.jooq.impl.SQLDataType.TIMESTAMP)), this, "最后修改时间");
 
     /**
      * The column <code>mini_shop_471752.b2c_group_draw.del_flag</code>.
@@ -139,9 +139,9 @@ public class GroupDraw extends TableImpl<GroupDrawRecord> {
     public final TableField<GroupDrawRecord, Byte> DEL_FLAG = createField("del_flag", org.jooq.impl.SQLDataType.TINYINT.defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.TINYINT)), this, "");
 
     /**
-     * The column <code>mini_shop_471752.b2c_group_draw.del_time</code>.
+     * The column <code>mini_shop_471752.b2c_group_draw.del_time</code>. 删除时间
      */
-    public final TableField<GroupDrawRecord, Integer> DEL_TIME = createField("del_time", org.jooq.impl.SQLDataType.INTEGER, this, "");
+    public final TableField<GroupDrawRecord, Timestamp> DEL_TIME = createField("del_time", org.jooq.impl.SQLDataType.TIMESTAMP, this, "删除时间");
 
     /**
      * The column <code>mini_shop_471752.b2c_group_draw.reward_coupon_id</code>. 拼团失败发放优惠券

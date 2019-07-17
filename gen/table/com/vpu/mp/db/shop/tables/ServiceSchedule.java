@@ -42,7 +42,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class ServiceSchedule extends TableImpl<ServiceScheduleRecord> {
 
-    private static final long serialVersionUID = -160811667;
+    private static final long serialVersionUID = -440633094;
 
     /**
      * The reference instance of <code>mini_shop_471752.b2c_service_schedule</code>
@@ -70,17 +70,17 @@ public class ServiceSchedule extends TableImpl<ServiceScheduleRecord> {
     /**
      * The column <code>mini_shop_471752.b2c_service_schedule.schedule_name</code>. 排班名称
      */
-    public final TableField<ServiceScheduleRecord, String> SCHEDULE_NAME = createField("schedule_name", org.jooq.impl.SQLDataType.VARCHAR(32).nullable(false).defaultValue(org.jooq.impl.DSL.inline("\"\"", org.jooq.impl.SQLDataType.VARCHAR)), this, "排班名称");
+    public final TableField<ServiceScheduleRecord, String> SCHEDULE_NAME = createField("schedule_name", org.jooq.impl.SQLDataType.VARCHAR(32).nullable(false).defaultValue(org.jooq.impl.DSL.inline("", org.jooq.impl.SQLDataType.VARCHAR)), this, "排班名称");
 
     /**
-     * The column <code>mini_shop_471752.b2c_service_schedule.begin_time</code>. 开始时间
+     * The column <code>mini_shop_471752.b2c_service_schedule.begcreate_time</code>. 开始时间
      */
-    public final TableField<ServiceScheduleRecord, String> BEGIN_TIME = createField("begin_time", org.jooq.impl.SQLDataType.VARCHAR(10).nullable(false).defaultValue(org.jooq.impl.DSL.inline("\"\"", org.jooq.impl.SQLDataType.VARCHAR)), this, "开始时间");
+    public final TableField<ServiceScheduleRecord, String> BEGCREATE_TIME = createField("begcreate_time", org.jooq.impl.SQLDataType.VARCHAR(10).nullable(false).defaultValue(org.jooq.impl.DSL.inline("", org.jooq.impl.SQLDataType.VARCHAR)), this, "开始时间");
 
     /**
      * The column <code>mini_shop_471752.b2c_service_schedule.end_time</code>. 结束时间
      */
-    public final TableField<ServiceScheduleRecord, String> END_TIME = createField("end_time", org.jooq.impl.SQLDataType.VARCHAR(10).nullable(false).defaultValue(org.jooq.impl.DSL.inline("\"\"", org.jooq.impl.SQLDataType.VARCHAR)), this, "结束时间");
+    public final TableField<ServiceScheduleRecord, String> END_TIME = createField("end_time", org.jooq.impl.SQLDataType.VARCHAR(10).nullable(false).defaultValue(org.jooq.impl.DSL.inline("", org.jooq.impl.SQLDataType.VARCHAR)), this, "结束时间");
 
     /**
      * The column <code>mini_shop_471752.b2c_service_schedule.del_flag</code>. 0正常，1删除
@@ -88,14 +88,14 @@ public class ServiceSchedule extends TableImpl<ServiceScheduleRecord> {
     public final TableField<ServiceScheduleRecord, Byte> DEL_FLAG = createField("del_flag", org.jooq.impl.SQLDataType.TINYINT.nullable(false).defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.TINYINT)), this, "0正常，1删除");
 
     /**
-     * The column <code>mini_shop_471752.b2c_service_schedule.add_time</code>. 添加时间
+     * The column <code>mini_shop_471752.b2c_service_schedule.create_time</code>.
      */
-    public final TableField<ServiceScheduleRecord, Timestamp> ADD_TIME = createField("add_time", org.jooq.impl.SQLDataType.TIMESTAMP.defaultValue(org.jooq.impl.DSL.field("CURRENT_TIMESTAMP", org.jooq.impl.SQLDataType.TIMESTAMP)), this, "添加时间");
+    public final TableField<ServiceScheduleRecord, Timestamp> CREATE_TIME = createField("create_time", org.jooq.impl.SQLDataType.TIMESTAMP.nullable(false).defaultValue(org.jooq.impl.DSL.field("CURRENT_TIMESTAMP", org.jooq.impl.SQLDataType.TIMESTAMP)), this, "");
 
     /**
-     * The column <code>mini_shop_471752.b2c_service_schedule.update_time</code>. 更改时间
+     * The column <code>mini_shop_471752.b2c_service_schedule.update_time</code>. 最后修改时间
      */
-    public final TableField<ServiceScheduleRecord, Timestamp> UPDATE_TIME = createField("update_time", org.jooq.impl.SQLDataType.TIMESTAMP.defaultValue(org.jooq.impl.DSL.inline("0000-00-00 00:00:00", org.jooq.impl.SQLDataType.TIMESTAMP)), this, "更改时间");
+    public final TableField<ServiceScheduleRecord, Timestamp> UPDATE_TIME = createField("update_time", org.jooq.impl.SQLDataType.TIMESTAMP.nullable(false).defaultValue(org.jooq.impl.DSL.field("CURRENT_TIMESTAMP", org.jooq.impl.SQLDataType.TIMESTAMP)), this, "最后修改时间");
 
     /**
      * Create a <code>mini_shop_471752.b2c_service_schedule</code> table reference

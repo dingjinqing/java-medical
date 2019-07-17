@@ -24,7 +24,7 @@ import javax.annotation.Generated;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class PresaleProduct implements Serializable {
 
-    private static final long serialVersionUID = 1266242995;
+    private static final long serialVersionUID = 358753516;
 
     private Integer    id;
     private Integer    presaleId;
@@ -36,7 +36,8 @@ public class PresaleProduct implements Serializable {
     private BigDecimal presaleMoney;
     private BigDecimal preDiscountMoney_1;
     private BigDecimal preDiscountMoney_2;
-    private Timestamp  addTime;
+    private Timestamp  createTime;
+    private Timestamp  updateTime;
 
     public PresaleProduct() {}
 
@@ -51,7 +52,8 @@ public class PresaleProduct implements Serializable {
         this.presaleMoney = value.presaleMoney;
         this.preDiscountMoney_1 = value.preDiscountMoney_1;
         this.preDiscountMoney_2 = value.preDiscountMoney_2;
-        this.addTime = value.addTime;
+        this.createTime = value.createTime;
+        this.updateTime = value.updateTime;
     }
 
     public PresaleProduct(
@@ -65,7 +67,8 @@ public class PresaleProduct implements Serializable {
         BigDecimal presaleMoney,
         BigDecimal preDiscountMoney_1,
         BigDecimal preDiscountMoney_2,
-        Timestamp  addTime
+        Timestamp  createTime,
+        Timestamp  updateTime
     ) {
         this.id = id;
         this.presaleId = presaleId;
@@ -77,7 +80,8 @@ public class PresaleProduct implements Serializable {
         this.presaleMoney = presaleMoney;
         this.preDiscountMoney_1 = preDiscountMoney_1;
         this.preDiscountMoney_2 = preDiscountMoney_2;
-        this.addTime = addTime;
+        this.createTime = createTime;
+        this.updateTime = updateTime;
     }
 
     public Integer getId() {
@@ -160,12 +164,20 @@ public class PresaleProduct implements Serializable {
         this.preDiscountMoney_2 = preDiscountMoney_2;
     }
 
-    public Timestamp getAddTime() {
-        return this.addTime;
+    public Timestamp getCreateTime() {
+        return this.createTime;
     }
 
-    public void setAddTime(Timestamp addTime) {
-        this.addTime = addTime;
+    public void setCreateTime(Timestamp createTime) {
+        this.createTime = createTime;
+    }
+
+    public Timestamp getUpdateTime() {
+        return this.updateTime;
+    }
+
+    public void setUpdateTime(Timestamp updateTime) {
+        this.updateTime = updateTime;
     }
 
     @Override
@@ -182,7 +194,8 @@ public class PresaleProduct implements Serializable {
         sb.append(", ").append(presaleMoney);
         sb.append(", ").append(preDiscountMoney_1);
         sb.append(", ").append(preDiscountMoney_2);
-        sb.append(", ").append(addTime);
+        sb.append(", ").append(createTime);
+        sb.append(", ").append(updateTime);
 
         sb.append(")");
         return sb.toString();

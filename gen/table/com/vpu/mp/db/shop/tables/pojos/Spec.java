@@ -5,6 +5,7 @@ package com.vpu.mp.db.shop.tables.pojos;
 
 
 import java.io.Serializable;
+import java.sql.Timestamp;
 
 import javax.annotation.Generated;
 
@@ -22,12 +23,14 @@ import javax.annotation.Generated;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class Spec implements Serializable {
 
-    private static final long serialVersionUID = 2012459542;
+    private static final long serialVersionUID = 578117241;
 
-    private Integer specId;
-    private String  specName;
-    private Byte    delFlag;
-    private Integer shopId;
+    private Integer   specId;
+    private String    specName;
+    private Byte      delFlag;
+    private Integer   goodsId;
+    private Timestamp createTime;
+    private Timestamp updateTime;
 
     public Spec() {}
 
@@ -35,19 +38,25 @@ public class Spec implements Serializable {
         this.specId = value.specId;
         this.specName = value.specName;
         this.delFlag = value.delFlag;
-        this.shopId = value.shopId;
+        this.goodsId = value.goodsId;
+        this.createTime = value.createTime;
+        this.updateTime = value.updateTime;
     }
 
     public Spec(
-        Integer specId,
-        String  specName,
-        Byte    delFlag,
-        Integer shopId
+        Integer   specId,
+        String    specName,
+        Byte      delFlag,
+        Integer   goodsId,
+        Timestamp createTime,
+        Timestamp updateTime
     ) {
         this.specId = specId;
         this.specName = specName;
         this.delFlag = delFlag;
-        this.shopId = shopId;
+        this.goodsId = goodsId;
+        this.createTime = createTime;
+        this.updateTime = updateTime;
     }
 
     public Integer getSpecId() {
@@ -74,12 +83,28 @@ public class Spec implements Serializable {
         this.delFlag = delFlag;
     }
 
-    public Integer getShopId() {
-        return this.shopId;
+    public Integer getGoodsId() {
+        return this.goodsId;
     }
 
-    public void setShopId(Integer shopId) {
-        this.shopId = shopId;
+    public void setGoodsId(Integer goodsId) {
+        this.goodsId = goodsId;
+    }
+
+    public Timestamp getCreateTime() {
+        return this.createTime;
+    }
+
+    public void setCreateTime(Timestamp createTime) {
+        this.createTime = createTime;
+    }
+
+    public Timestamp getUpdateTime() {
+        return this.updateTime;
+    }
+
+    public void setUpdateTime(Timestamp updateTime) {
+        this.updateTime = updateTime;
     }
 
     @Override
@@ -89,7 +114,9 @@ public class Spec implements Serializable {
         sb.append(specId);
         sb.append(", ").append(specName);
         sb.append(", ").append(delFlag);
-        sb.append(", ").append(shopId);
+        sb.append(", ").append(goodsId);
+        sb.append(", ").append(createTime);
+        sb.append(", ").append(updateTime);
 
         sb.append(")");
         return sb.toString();

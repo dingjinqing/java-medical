@@ -23,7 +23,7 @@ import javax.annotation.Generated;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class FormSubmitDetails implements Serializable {
 
-    private static final long serialVersionUID = -1036452870;
+    private static final long serialVersionUID = 1659496854;
 
     private Integer   recId;
     private Integer   pageId;
@@ -32,8 +32,9 @@ public class FormSubmitDetails implements Serializable {
     private String    moduleName;
     private String    moduleType;
     private String    moduleValue;
-    private Timestamp createTime;
     private String    curIdx;
+    private Timestamp createTime;
+    private Timestamp updateTime;
 
     public FormSubmitDetails() {}
 
@@ -45,8 +46,9 @@ public class FormSubmitDetails implements Serializable {
         this.moduleName = value.moduleName;
         this.moduleType = value.moduleType;
         this.moduleValue = value.moduleValue;
-        this.createTime = value.createTime;
         this.curIdx = value.curIdx;
+        this.createTime = value.createTime;
+        this.updateTime = value.updateTime;
     }
 
     public FormSubmitDetails(
@@ -57,8 +59,9 @@ public class FormSubmitDetails implements Serializable {
         String    moduleName,
         String    moduleType,
         String    moduleValue,
+        String    curIdx,
         Timestamp createTime,
-        String    curIdx
+        Timestamp updateTime
     ) {
         this.recId = recId;
         this.pageId = pageId;
@@ -67,8 +70,9 @@ public class FormSubmitDetails implements Serializable {
         this.moduleName = moduleName;
         this.moduleType = moduleType;
         this.moduleValue = moduleValue;
-        this.createTime = createTime;
         this.curIdx = curIdx;
+        this.createTime = createTime;
+        this.updateTime = updateTime;
     }
 
     public Integer getRecId() {
@@ -127,6 +131,14 @@ public class FormSubmitDetails implements Serializable {
         this.moduleValue = moduleValue;
     }
 
+    public String getCurIdx() {
+        return this.curIdx;
+    }
+
+    public void setCurIdx(String curIdx) {
+        this.curIdx = curIdx;
+    }
+
     public Timestamp getCreateTime() {
         return this.createTime;
     }
@@ -135,12 +147,12 @@ public class FormSubmitDetails implements Serializable {
         this.createTime = createTime;
     }
 
-    public String getCurIdx() {
-        return this.curIdx;
+    public Timestamp getUpdateTime() {
+        return this.updateTime;
     }
 
-    public void setCurIdx(String curIdx) {
-        this.curIdx = curIdx;
+    public void setUpdateTime(Timestamp updateTime) {
+        this.updateTime = updateTime;
     }
 
     @Override
@@ -154,8 +166,9 @@ public class FormSubmitDetails implements Serializable {
         sb.append(", ").append(moduleName);
         sb.append(", ").append(moduleType);
         sb.append(", ").append(moduleValue);
-        sb.append(", ").append(createTime);
         sb.append(", ").append(curIdx);
+        sb.append(", ").append(createTime);
+        sb.append(", ").append(updateTime);
 
         sb.append(")");
         return sb.toString();

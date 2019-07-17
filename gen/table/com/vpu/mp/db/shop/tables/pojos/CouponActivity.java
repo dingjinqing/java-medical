@@ -23,7 +23,7 @@ import javax.annotation.Generated;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class CouponActivity implements Serializable {
 
-    private static final long serialVersionUID = 1739136179;
+    private static final long serialVersionUID = 238824754;
 
     private Integer   id;
     private Byte      activityAction;
@@ -35,10 +35,10 @@ public class CouponActivity implements Serializable {
     private Timestamp endDate;
     private String    mrkingVoucherId;
     private Byte      status;
-    private Timestamp addTime;
-    private Timestamp updateTime;
     private Byte      delFlag;
-    private Integer   delTime;
+    private Timestamp delTime;
+    private Timestamp createTime;
+    private Timestamp updateTime;
 
     public CouponActivity() {}
 
@@ -53,10 +53,10 @@ public class CouponActivity implements Serializable {
         this.endDate = value.endDate;
         this.mrkingVoucherId = value.mrkingVoucherId;
         this.status = value.status;
-        this.addTime = value.addTime;
-        this.updateTime = value.updateTime;
         this.delFlag = value.delFlag;
         this.delTime = value.delTime;
+        this.createTime = value.createTime;
+        this.updateTime = value.updateTime;
     }
 
     public CouponActivity(
@@ -70,10 +70,10 @@ public class CouponActivity implements Serializable {
         Timestamp endDate,
         String    mrkingVoucherId,
         Byte      status,
-        Timestamp addTime,
-        Timestamp updateTime,
         Byte      delFlag,
-        Integer   delTime
+        Timestamp delTime,
+        Timestamp createTime,
+        Timestamp updateTime
     ) {
         this.id = id;
         this.activityAction = activityAction;
@@ -85,10 +85,10 @@ public class CouponActivity implements Serializable {
         this.endDate = endDate;
         this.mrkingVoucherId = mrkingVoucherId;
         this.status = status;
-        this.addTime = addTime;
-        this.updateTime = updateTime;
         this.delFlag = delFlag;
         this.delTime = delTime;
+        this.createTime = createTime;
+        this.updateTime = updateTime;
     }
 
     public Integer getId() {
@@ -171,22 +171,6 @@ public class CouponActivity implements Serializable {
         this.status = status;
     }
 
-    public Timestamp getAddTime() {
-        return this.addTime;
-    }
-
-    public void setAddTime(Timestamp addTime) {
-        this.addTime = addTime;
-    }
-
-    public Timestamp getUpdateTime() {
-        return this.updateTime;
-    }
-
-    public void setUpdateTime(Timestamp updateTime) {
-        this.updateTime = updateTime;
-    }
-
     public Byte getDelFlag() {
         return this.delFlag;
     }
@@ -195,12 +179,28 @@ public class CouponActivity implements Serializable {
         this.delFlag = delFlag;
     }
 
-    public Integer getDelTime() {
+    public Timestamp getDelTime() {
         return this.delTime;
     }
 
-    public void setDelTime(Integer delTime) {
+    public void setDelTime(Timestamp delTime) {
         this.delTime = delTime;
+    }
+
+    public Timestamp getCreateTime() {
+        return this.createTime;
+    }
+
+    public void setCreateTime(Timestamp createTime) {
+        this.createTime = createTime;
+    }
+
+    public Timestamp getUpdateTime() {
+        return this.updateTime;
+    }
+
+    public void setUpdateTime(Timestamp updateTime) {
+        this.updateTime = updateTime;
     }
 
     @Override
@@ -217,10 +217,10 @@ public class CouponActivity implements Serializable {
         sb.append(", ").append(endDate);
         sb.append(", ").append(mrkingVoucherId);
         sb.append(", ").append(status);
-        sb.append(", ").append(addTime);
-        sb.append(", ").append(updateTime);
         sb.append(", ").append(delFlag);
         sb.append(", ").append(delTime);
+        sb.append(", ").append(createTime);
+        sb.append(", ").append(updateTime);
 
         sb.append(")");
         return sb.toString();

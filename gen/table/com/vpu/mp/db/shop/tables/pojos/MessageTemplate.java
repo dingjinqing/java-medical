@@ -5,6 +5,7 @@ package com.vpu.mp.db.shop.tables.pojos;
 
 
 import java.io.Serializable;
+import java.sql.Timestamp;
 
 import javax.annotation.Generated;
 
@@ -22,11 +23,13 @@ import javax.annotation.Generated;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class MessageTemplate implements Serializable {
 
-    private static final long serialVersionUID = -649927650;
+    private static final long serialVersionUID = -255624459;
 
-    private Integer id;
-    private Byte    action;
-    private String  content;
+    private Integer   id;
+    private Byte      action;
+    private String    content;
+    private Timestamp createTime;
+    private Timestamp updateTime;
 
     public MessageTemplate() {}
 
@@ -34,16 +37,22 @@ public class MessageTemplate implements Serializable {
         this.id = value.id;
         this.action = value.action;
         this.content = value.content;
+        this.createTime = value.createTime;
+        this.updateTime = value.updateTime;
     }
 
     public MessageTemplate(
-        Integer id,
-        Byte    action,
-        String  content
+        Integer   id,
+        Byte      action,
+        String    content,
+        Timestamp createTime,
+        Timestamp updateTime
     ) {
         this.id = id;
         this.action = action;
         this.content = content;
+        this.createTime = createTime;
+        this.updateTime = updateTime;
     }
 
     public Integer getId() {
@@ -70,6 +79,22 @@ public class MessageTemplate implements Serializable {
         this.content = content;
     }
 
+    public Timestamp getCreateTime() {
+        return this.createTime;
+    }
+
+    public void setCreateTime(Timestamp createTime) {
+        this.createTime = createTime;
+    }
+
+    public Timestamp getUpdateTime() {
+        return this.updateTime;
+    }
+
+    public void setUpdateTime(Timestamp updateTime) {
+        this.updateTime = updateTime;
+    }
+
     @Override
     public String toString() {
         StringBuilder sb = new StringBuilder("MessageTemplate (");
@@ -77,6 +102,8 @@ public class MessageTemplate implements Serializable {
         sb.append(id);
         sb.append(", ").append(action);
         sb.append(", ").append(content);
+        sb.append(", ").append(createTime);
+        sb.append(", ").append(updateTime);
 
         sb.append(")");
         return sb.toString();

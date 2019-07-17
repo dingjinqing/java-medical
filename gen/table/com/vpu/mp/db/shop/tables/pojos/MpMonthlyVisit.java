@@ -23,7 +23,7 @@ import javax.annotation.Generated;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class MpMonthlyVisit implements Serializable {
 
-    private static final long serialVersionUID = -160124972;
+    private static final long serialVersionUID = 1444092585;
 
     private String    refDate;
     private Integer   sessionCnt;
@@ -33,7 +33,8 @@ public class MpMonthlyVisit implements Serializable {
     private Double    stayTimeUv;
     private Double    stayTimeSession;
     private Double    visitDepth;
-    private Timestamp addTime;
+    private Timestamp createTime;
+    private Timestamp updateTime;
 
     public MpMonthlyVisit() {}
 
@@ -46,7 +47,8 @@ public class MpMonthlyVisit implements Serializable {
         this.stayTimeUv = value.stayTimeUv;
         this.stayTimeSession = value.stayTimeSession;
         this.visitDepth = value.visitDepth;
-        this.addTime = value.addTime;
+        this.createTime = value.createTime;
+        this.updateTime = value.updateTime;
     }
 
     public MpMonthlyVisit(
@@ -58,7 +60,8 @@ public class MpMonthlyVisit implements Serializable {
         Double    stayTimeUv,
         Double    stayTimeSession,
         Double    visitDepth,
-        Timestamp addTime
+        Timestamp createTime,
+        Timestamp updateTime
     ) {
         this.refDate = refDate;
         this.sessionCnt = sessionCnt;
@@ -68,7 +71,8 @@ public class MpMonthlyVisit implements Serializable {
         this.stayTimeUv = stayTimeUv;
         this.stayTimeSession = stayTimeSession;
         this.visitDepth = visitDepth;
-        this.addTime = addTime;
+        this.createTime = createTime;
+        this.updateTime = updateTime;
     }
 
     public String getRefDate() {
@@ -135,12 +139,20 @@ public class MpMonthlyVisit implements Serializable {
         this.visitDepth = visitDepth;
     }
 
-    public Timestamp getAddTime() {
-        return this.addTime;
+    public Timestamp getCreateTime() {
+        return this.createTime;
     }
 
-    public void setAddTime(Timestamp addTime) {
-        this.addTime = addTime;
+    public void setCreateTime(Timestamp createTime) {
+        this.createTime = createTime;
+    }
+
+    public Timestamp getUpdateTime() {
+        return this.updateTime;
+    }
+
+    public void setUpdateTime(Timestamp updateTime) {
+        this.updateTime = updateTime;
     }
 
     @Override
@@ -155,7 +167,8 @@ public class MpMonthlyVisit implements Serializable {
         sb.append(", ").append(stayTimeUv);
         sb.append(", ").append(stayTimeSession);
         sb.append(", ").append(visitDepth);
-        sb.append(", ").append(addTime);
+        sb.append(", ").append(createTime);
+        sb.append(", ").append(updateTime);
 
         sb.append(")");
         return sb.toString();

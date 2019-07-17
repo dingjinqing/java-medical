@@ -23,15 +23,14 @@ import javax.annotation.Generated;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class UserCartRecord implements Serializable {
 
-    private static final long serialVersionUID = -1304113932;
+    private static final long serialVersionUID = -625228877;
 
     private Integer   id;
     private Integer   userId;
     private Integer   goodsId;
     private Integer   prdId;
     private Short     num;
-    private Short     isDelete;
-    private Timestamp addTime;
+    private Short     delFlag;
     private String    userIp;
     private String    provinceCode;
     private String    province;
@@ -42,6 +41,8 @@ public class UserCartRecord implements Serializable {
     private String    lat;
     private String    lng;
     private Short     count;
+    private Timestamp createTime;
+    private Timestamp updateTime;
 
     public UserCartRecord() {}
 
@@ -51,8 +52,7 @@ public class UserCartRecord implements Serializable {
         this.goodsId = value.goodsId;
         this.prdId = value.prdId;
         this.num = value.num;
-        this.isDelete = value.isDelete;
-        this.addTime = value.addTime;
+        this.delFlag = value.delFlag;
         this.userIp = value.userIp;
         this.provinceCode = value.provinceCode;
         this.province = value.province;
@@ -63,6 +63,8 @@ public class UserCartRecord implements Serializable {
         this.lat = value.lat;
         this.lng = value.lng;
         this.count = value.count;
+        this.createTime = value.createTime;
+        this.updateTime = value.updateTime;
     }
 
     public UserCartRecord(
@@ -71,8 +73,7 @@ public class UserCartRecord implements Serializable {
         Integer   goodsId,
         Integer   prdId,
         Short     num,
-        Short     isDelete,
-        Timestamp addTime,
+        Short     delFlag,
         String    userIp,
         String    provinceCode,
         String    province,
@@ -82,15 +83,16 @@ public class UserCartRecord implements Serializable {
         String    district,
         String    lat,
         String    lng,
-        Short     count
+        Short     count,
+        Timestamp createTime,
+        Timestamp updateTime
     ) {
         this.id = id;
         this.userId = userId;
         this.goodsId = goodsId;
         this.prdId = prdId;
         this.num = num;
-        this.isDelete = isDelete;
-        this.addTime = addTime;
+        this.delFlag = delFlag;
         this.userIp = userIp;
         this.provinceCode = provinceCode;
         this.province = province;
@@ -101,6 +103,8 @@ public class UserCartRecord implements Serializable {
         this.lat = lat;
         this.lng = lng;
         this.count = count;
+        this.createTime = createTime;
+        this.updateTime = updateTime;
     }
 
     public Integer getId() {
@@ -143,20 +147,12 @@ public class UserCartRecord implements Serializable {
         this.num = num;
     }
 
-    public Short getIsDelete() {
-        return this.isDelete;
+    public Short getDelFlag() {
+        return this.delFlag;
     }
 
-    public void setIsDelete(Short isDelete) {
-        this.isDelete = isDelete;
-    }
-
-    public Timestamp getAddTime() {
-        return this.addTime;
-    }
-
-    public void setAddTime(Timestamp addTime) {
-        this.addTime = addTime;
+    public void setDelFlag(Short delFlag) {
+        this.delFlag = delFlag;
     }
 
     public String getUserIp() {
@@ -239,6 +235,22 @@ public class UserCartRecord implements Serializable {
         this.count = count;
     }
 
+    public Timestamp getCreateTime() {
+        return this.createTime;
+    }
+
+    public void setCreateTime(Timestamp createTime) {
+        this.createTime = createTime;
+    }
+
+    public Timestamp getUpdateTime() {
+        return this.updateTime;
+    }
+
+    public void setUpdateTime(Timestamp updateTime) {
+        this.updateTime = updateTime;
+    }
+
     @Override
     public String toString() {
         StringBuilder sb = new StringBuilder("UserCartRecord (");
@@ -248,8 +260,7 @@ public class UserCartRecord implements Serializable {
         sb.append(", ").append(goodsId);
         sb.append(", ").append(prdId);
         sb.append(", ").append(num);
-        sb.append(", ").append(isDelete);
-        sb.append(", ").append(addTime);
+        sb.append(", ").append(delFlag);
         sb.append(", ").append(userIp);
         sb.append(", ").append(provinceCode);
         sb.append(", ").append(province);
@@ -260,6 +271,8 @@ public class UserCartRecord implements Serializable {
         sb.append(", ").append(lat);
         sb.append(", ").append(lng);
         sb.append(", ").append(count);
+        sb.append(", ").append(createTime);
+        sb.append(", ").append(updateTime);
 
         sb.append(")");
         return sb.toString();

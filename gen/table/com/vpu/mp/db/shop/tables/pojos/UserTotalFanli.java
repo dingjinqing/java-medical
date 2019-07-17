@@ -24,7 +24,7 @@ import javax.annotation.Generated;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class UserTotalFanli implements Serializable {
 
-    private static final long serialVersionUID = -1723314325;
+    private static final long serialVersionUID = 1930980414;
 
     private Integer    userId;
     private String     mobile;
@@ -32,7 +32,7 @@ public class UserTotalFanli implements Serializable {
     private BigDecimal totalMoney;
     private BigDecimal canMoney;
     private BigDecimal blocked;
-    private Timestamp  addTime;
+    private Timestamp  createTime;
     private Timestamp  updateTime;
 
     public UserTotalFanli() {}
@@ -44,7 +44,7 @@ public class UserTotalFanli implements Serializable {
         this.totalMoney = value.totalMoney;
         this.canMoney = value.canMoney;
         this.blocked = value.blocked;
-        this.addTime = value.addTime;
+        this.createTime = value.createTime;
         this.updateTime = value.updateTime;
     }
 
@@ -55,7 +55,7 @@ public class UserTotalFanli implements Serializable {
         BigDecimal totalMoney,
         BigDecimal canMoney,
         BigDecimal blocked,
-        Timestamp  addTime,
+        Timestamp  createTime,
         Timestamp  updateTime
     ) {
         this.userId = userId;
@@ -64,7 +64,7 @@ public class UserTotalFanli implements Serializable {
         this.totalMoney = totalMoney;
         this.canMoney = canMoney;
         this.blocked = blocked;
-        this.addTime = addTime;
+        this.createTime = createTime;
         this.updateTime = updateTime;
     }
 
@@ -116,12 +116,12 @@ public class UserTotalFanli implements Serializable {
         this.blocked = blocked;
     }
 
-    public Timestamp getAddTime() {
-        return this.addTime;
+    public Timestamp getCreateTime() {
+        return this.createTime;
     }
 
-    public void setAddTime(Timestamp addTime) {
-        this.addTime = addTime;
+    public void setCreateTime(Timestamp createTime) {
+        this.createTime = createTime;
     }
 
     public Timestamp getUpdateTime() {
@@ -142,7 +142,7 @@ public class UserTotalFanli implements Serializable {
         sb.append(", ").append(totalMoney);
         sb.append(", ").append(canMoney);
         sb.append(", ").append(blocked);
-        sb.append(", ").append(addTime);
+        sb.append(", ").append(createTime);
         sb.append(", ").append(updateTime);
 
         sb.append(")");

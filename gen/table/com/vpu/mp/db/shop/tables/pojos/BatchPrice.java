@@ -6,6 +6,7 @@ package com.vpu.mp.db.shop.tables.pojos;
 
 import java.io.Serializable;
 import java.math.BigDecimal;
+import java.sql.Timestamp;
 
 import javax.annotation.Generated;
 
@@ -23,12 +24,14 @@ import javax.annotation.Generated;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class BatchPrice implements Serializable {
 
-    private static final long serialVersionUID = 1133928871;
+    private static final long serialVersionUID = 1457256760;
 
     private Integer    id;
     private String     prdSn;
     private BigDecimal price;
     private Integer    actId;
+    private Timestamp  createTime;
+    private Timestamp  updateTime;
 
     public BatchPrice() {}
 
@@ -37,18 +40,24 @@ public class BatchPrice implements Serializable {
         this.prdSn = value.prdSn;
         this.price = value.price;
         this.actId = value.actId;
+        this.createTime = value.createTime;
+        this.updateTime = value.updateTime;
     }
 
     public BatchPrice(
         Integer    id,
         String     prdSn,
         BigDecimal price,
-        Integer    actId
+        Integer    actId,
+        Timestamp  createTime,
+        Timestamp  updateTime
     ) {
         this.id = id;
         this.prdSn = prdSn;
         this.price = price;
         this.actId = actId;
+        this.createTime = createTime;
+        this.updateTime = updateTime;
     }
 
     public Integer getId() {
@@ -83,6 +92,22 @@ public class BatchPrice implements Serializable {
         this.actId = actId;
     }
 
+    public Timestamp getCreateTime() {
+        return this.createTime;
+    }
+
+    public void setCreateTime(Timestamp createTime) {
+        this.createTime = createTime;
+    }
+
+    public Timestamp getUpdateTime() {
+        return this.updateTime;
+    }
+
+    public void setUpdateTime(Timestamp updateTime) {
+        this.updateTime = updateTime;
+    }
+
     @Override
     public String toString() {
         StringBuilder sb = new StringBuilder("BatchPrice (");
@@ -91,6 +116,8 @@ public class BatchPrice implements Serializable {
         sb.append(", ").append(prdSn);
         sb.append(", ").append(price);
         sb.append(", ").append(actId);
+        sb.append(", ").append(createTime);
+        sb.append(", ").append(updateTime);
 
         sb.append(")");
         return sb.toString();

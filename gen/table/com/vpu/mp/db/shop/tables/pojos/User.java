@@ -25,7 +25,7 @@ import javax.annotation.Generated;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class User implements Serializable {
 
-    private static final long serialVersionUID = 240198669;
+    private static final long serialVersionUID = -1125799537;
 
     private Integer    userId;
     private Integer    shopId;
@@ -37,6 +37,7 @@ public class User implements Serializable {
     private String     wxOpenid;
     private String     email;
     private Timestamp  createTime;
+    private Timestamp  updateTime;
     private String     wechat;
     private Integer    fanliGrade;
     private Integer    userGrade;
@@ -46,15 +47,14 @@ public class User implements Serializable {
     private BigDecimal account;
     private Integer    discount;
     private Integer    discountGrade;
-    private Byte       isDelete;
-    private Timestamp  deleteTime;
+    private Byte       delFlag;
+    private Timestamp  delTime;
     private Integer    growth;
     private Integer    score;
     private Integer    source;
     private Integer    inviteId;
     private Date       inviteExpiryDate;
     private String     wxUnionId;
-    private Timestamp  updateTime;
     private Byte       isDistributor;
     private Integer    inviteActId;
     private Byte       distributorLevel;
@@ -79,6 +79,7 @@ public class User implements Serializable {
         this.wxOpenid = value.wxOpenid;
         this.email = value.email;
         this.createTime = value.createTime;
+        this.updateTime = value.updateTime;
         this.wechat = value.wechat;
         this.fanliGrade = value.fanliGrade;
         this.userGrade = value.userGrade;
@@ -88,15 +89,14 @@ public class User implements Serializable {
         this.account = value.account;
         this.discount = value.discount;
         this.discountGrade = value.discountGrade;
-        this.isDelete = value.isDelete;
-        this.deleteTime = value.deleteTime;
+        this.delFlag = value.delFlag;
+        this.delTime = value.delTime;
         this.growth = value.growth;
         this.score = value.score;
         this.source = value.source;
         this.inviteId = value.inviteId;
         this.inviteExpiryDate = value.inviteExpiryDate;
         this.wxUnionId = value.wxUnionId;
-        this.updateTime = value.updateTime;
         this.isDistributor = value.isDistributor;
         this.inviteActId = value.inviteActId;
         this.distributorLevel = value.distributorLevel;
@@ -120,6 +120,7 @@ public class User implements Serializable {
         String     wxOpenid,
         String     email,
         Timestamp  createTime,
+        Timestamp  updateTime,
         String     wechat,
         Integer    fanliGrade,
         Integer    userGrade,
@@ -129,15 +130,14 @@ public class User implements Serializable {
         BigDecimal account,
         Integer    discount,
         Integer    discountGrade,
-        Byte       isDelete,
-        Timestamp  deleteTime,
+        Byte       delFlag,
+        Timestamp  delTime,
         Integer    growth,
         Integer    score,
         Integer    source,
         Integer    inviteId,
         Date       inviteExpiryDate,
         String     wxUnionId,
-        Timestamp  updateTime,
         Byte       isDistributor,
         Integer    inviteActId,
         Byte       distributorLevel,
@@ -159,6 +159,7 @@ public class User implements Serializable {
         this.wxOpenid = wxOpenid;
         this.email = email;
         this.createTime = createTime;
+        this.updateTime = updateTime;
         this.wechat = wechat;
         this.fanliGrade = fanliGrade;
         this.userGrade = userGrade;
@@ -168,15 +169,14 @@ public class User implements Serializable {
         this.account = account;
         this.discount = discount;
         this.discountGrade = discountGrade;
-        this.isDelete = isDelete;
-        this.deleteTime = deleteTime;
+        this.delFlag = delFlag;
+        this.delTime = delTime;
         this.growth = growth;
         this.score = score;
         this.source = source;
         this.inviteId = inviteId;
         this.inviteExpiryDate = inviteExpiryDate;
         this.wxUnionId = wxUnionId;
-        this.updateTime = updateTime;
         this.isDistributor = isDistributor;
         this.inviteActId = inviteActId;
         this.distributorLevel = distributorLevel;
@@ -269,6 +269,14 @@ public class User implements Serializable {
         this.createTime = createTime;
     }
 
+    public Timestamp getUpdateTime() {
+        return this.updateTime;
+    }
+
+    public void setUpdateTime(Timestamp updateTime) {
+        this.updateTime = updateTime;
+    }
+
     public String getWechat() {
         return this.wechat;
     }
@@ -341,20 +349,20 @@ public class User implements Serializable {
         this.discountGrade = discountGrade;
     }
 
-    public Byte getIsDelete() {
-        return this.isDelete;
+    public Byte getDelFlag() {
+        return this.delFlag;
     }
 
-    public void setIsDelete(Byte isDelete) {
-        this.isDelete = isDelete;
+    public void setDelFlag(Byte delFlag) {
+        this.delFlag = delFlag;
     }
 
-    public Timestamp getDeleteTime() {
-        return this.deleteTime;
+    public Timestamp getDelTime() {
+        return this.delTime;
     }
 
-    public void setDeleteTime(Timestamp deleteTime) {
-        this.deleteTime = deleteTime;
+    public void setDelTime(Timestamp delTime) {
+        this.delTime = delTime;
     }
 
     public Integer getGrowth() {
@@ -403,14 +411,6 @@ public class User implements Serializable {
 
     public void setWxUnionId(String wxUnionId) {
         this.wxUnionId = wxUnionId;
-    }
-
-    public Timestamp getUpdateTime() {
-        return this.updateTime;
-    }
-
-    public void setUpdateTime(Timestamp updateTime) {
-        this.updateTime = updateTime;
     }
 
     public Byte getIsDistributor() {
@@ -507,6 +507,7 @@ public class User implements Serializable {
         sb.append(", ").append(wxOpenid);
         sb.append(", ").append(email);
         sb.append(", ").append(createTime);
+        sb.append(", ").append(updateTime);
         sb.append(", ").append(wechat);
         sb.append(", ").append(fanliGrade);
         sb.append(", ").append(userGrade);
@@ -516,15 +517,14 @@ public class User implements Serializable {
         sb.append(", ").append(account);
         sb.append(", ").append(discount);
         sb.append(", ").append(discountGrade);
-        sb.append(", ").append(isDelete);
-        sb.append(", ").append(deleteTime);
+        sb.append(", ").append(delFlag);
+        sb.append(", ").append(delTime);
         sb.append(", ").append(growth);
         sb.append(", ").append(score);
         sb.append(", ").append(source);
         sb.append(", ").append(inviteId);
         sb.append(", ").append(inviteExpiryDate);
         sb.append(", ").append(wxUnionId);
-        sb.append(", ").append(updateTime);
         sb.append(", ").append(isDistributor);
         sb.append(", ").append(inviteActId);
         sb.append(", ").append(distributorLevel);

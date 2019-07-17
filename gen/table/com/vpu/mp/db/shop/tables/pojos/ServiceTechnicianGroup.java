@@ -23,12 +23,13 @@ import javax.annotation.Generated;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class ServiceTechnicianGroup implements Serializable {
 
-    private static final long serialVersionUID = -1395756567;
+    private static final long serialVersionUID = 1819828970;
 
-    private Short     groupId;
+    private Integer   groupId;
     private String    groupName;
     private Integer   storeId;
-    private Timestamp addTime;
+    private Timestamp createTime;
+    private Timestamp updateTime;
     private Short     delFlag;
 
     public ServiceTechnicianGroup() {}
@@ -37,29 +38,32 @@ public class ServiceTechnicianGroup implements Serializable {
         this.groupId = value.groupId;
         this.groupName = value.groupName;
         this.storeId = value.storeId;
-        this.addTime = value.addTime;
+        this.createTime = value.createTime;
+        this.updateTime = value.updateTime;
         this.delFlag = value.delFlag;
     }
 
     public ServiceTechnicianGroup(
-        Short     groupId,
+        Integer   groupId,
         String    groupName,
         Integer   storeId,
-        Timestamp addTime,
+        Timestamp createTime,
+        Timestamp updateTime,
         Short     delFlag
     ) {
         this.groupId = groupId;
         this.groupName = groupName;
         this.storeId = storeId;
-        this.addTime = addTime;
+        this.createTime = createTime;
+        this.updateTime = updateTime;
         this.delFlag = delFlag;
     }
 
-    public Short getGroupId() {
+    public Integer getGroupId() {
         return this.groupId;
     }
 
-    public void setGroupId(Short groupId) {
+    public void setGroupId(Integer groupId) {
         this.groupId = groupId;
     }
 
@@ -79,12 +83,20 @@ public class ServiceTechnicianGroup implements Serializable {
         this.storeId = storeId;
     }
 
-    public Timestamp getAddTime() {
-        return this.addTime;
+    public Timestamp getCreateTime() {
+        return this.createTime;
     }
 
-    public void setAddTime(Timestamp addTime) {
-        this.addTime = addTime;
+    public void setCreateTime(Timestamp createTime) {
+        this.createTime = createTime;
+    }
+
+    public Timestamp getUpdateTime() {
+        return this.updateTime;
+    }
+
+    public void setUpdateTime(Timestamp updateTime) {
+        this.updateTime = updateTime;
     }
 
     public Short getDelFlag() {
@@ -102,7 +114,8 @@ public class ServiceTechnicianGroup implements Serializable {
         sb.append(groupId);
         sb.append(", ").append(groupName);
         sb.append(", ").append(storeId);
-        sb.append(", ").append(addTime);
+        sb.append(", ").append(createTime);
+        sb.append(", ").append(updateTime);
         sb.append(", ").append(delFlag);
 
         sb.append(")");

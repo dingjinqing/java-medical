@@ -23,7 +23,7 @@ import javax.annotation.Generated;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class GoodsImportDetail implements Serializable {
 
-    private static final long serialVersionUID = -2038327012;
+    private static final long serialVersionUID = 740414473;
 
     private Integer   id;
     private Integer   batchId;
@@ -32,8 +32,9 @@ public class GoodsImportDetail implements Serializable {
     private String    goodsName;
     private String    prdDesc;
     private String    errorMsg;
-    private Timestamp addTime;
     private Byte      isSuccess;
+    private Timestamp createTime;
+    private Timestamp updateTime;
 
     public GoodsImportDetail() {}
 
@@ -45,8 +46,9 @@ public class GoodsImportDetail implements Serializable {
         this.goodsName = value.goodsName;
         this.prdDesc = value.prdDesc;
         this.errorMsg = value.errorMsg;
-        this.addTime = value.addTime;
         this.isSuccess = value.isSuccess;
+        this.createTime = value.createTime;
+        this.updateTime = value.updateTime;
     }
 
     public GoodsImportDetail(
@@ -57,8 +59,9 @@ public class GoodsImportDetail implements Serializable {
         String    goodsName,
         String    prdDesc,
         String    errorMsg,
-        Timestamp addTime,
-        Byte      isSuccess
+        Byte      isSuccess,
+        Timestamp createTime,
+        Timestamp updateTime
     ) {
         this.id = id;
         this.batchId = batchId;
@@ -67,8 +70,9 @@ public class GoodsImportDetail implements Serializable {
         this.goodsName = goodsName;
         this.prdDesc = prdDesc;
         this.errorMsg = errorMsg;
-        this.addTime = addTime;
         this.isSuccess = isSuccess;
+        this.createTime = createTime;
+        this.updateTime = updateTime;
     }
 
     public Integer getId() {
@@ -127,20 +131,28 @@ public class GoodsImportDetail implements Serializable {
         this.errorMsg = errorMsg;
     }
 
-    public Timestamp getAddTime() {
-        return this.addTime;
-    }
-
-    public void setAddTime(Timestamp addTime) {
-        this.addTime = addTime;
-    }
-
     public Byte getIsSuccess() {
         return this.isSuccess;
     }
 
     public void setIsSuccess(Byte isSuccess) {
         this.isSuccess = isSuccess;
+    }
+
+    public Timestamp getCreateTime() {
+        return this.createTime;
+    }
+
+    public void setCreateTime(Timestamp createTime) {
+        this.createTime = createTime;
+    }
+
+    public Timestamp getUpdateTime() {
+        return this.updateTime;
+    }
+
+    public void setUpdateTime(Timestamp updateTime) {
+        this.updateTime = updateTime;
     }
 
     @Override
@@ -154,8 +166,9 @@ public class GoodsImportDetail implements Serializable {
         sb.append(", ").append(goodsName);
         sb.append(", ").append(prdDesc);
         sb.append(", ").append(errorMsg);
-        sb.append(", ").append(addTime);
         sb.append(", ").append(isSuccess);
+        sb.append(", ").append(createTime);
+        sb.append(", ").append(updateTime);
 
         sb.append(")");
         return sb.toString();

@@ -23,7 +23,7 @@ import javax.annotation.Generated;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class PinIntegrationList implements Serializable {
 
-    private static final long serialVersionUID = -1948421224;
+    private static final long serialVersionUID = 208825515;
 
     private Integer   id;
     private Integer   inteActivityId;
@@ -39,6 +39,8 @@ public class PinIntegrationList implements Serializable {
     private Byte      isNew;
     private Byte      isLook;
     private Integer   canIntegration;
+    private Timestamp createTime;
+    private Timestamp updateTime;
 
     public PinIntegrationList() {}
 
@@ -57,6 +59,8 @@ public class PinIntegrationList implements Serializable {
         this.isNew = value.isNew;
         this.isLook = value.isLook;
         this.canIntegration = value.canIntegration;
+        this.createTime = value.createTime;
+        this.updateTime = value.updateTime;
     }
 
     public PinIntegrationList(
@@ -73,7 +77,9 @@ public class PinIntegrationList implements Serializable {
         Integer   inviteUser,
         Byte      isNew,
         Byte      isLook,
-        Integer   canIntegration
+        Integer   canIntegration,
+        Timestamp createTime,
+        Timestamp updateTime
     ) {
         this.id = id;
         this.inteActivityId = inteActivityId;
@@ -89,6 +95,8 @@ public class PinIntegrationList implements Serializable {
         this.isNew = isNew;
         this.isLook = isLook;
         this.canIntegration = canIntegration;
+        this.createTime = createTime;
+        this.updateTime = updateTime;
     }
 
     public Integer getId() {
@@ -203,6 +211,22 @@ public class PinIntegrationList implements Serializable {
         this.canIntegration = canIntegration;
     }
 
+    public Timestamp getCreateTime() {
+        return this.createTime;
+    }
+
+    public void setCreateTime(Timestamp createTime) {
+        this.createTime = createTime;
+    }
+
+    public Timestamp getUpdateTime() {
+        return this.updateTime;
+    }
+
+    public void setUpdateTime(Timestamp updateTime) {
+        this.updateTime = updateTime;
+    }
+
     @Override
     public String toString() {
         StringBuilder sb = new StringBuilder("PinIntegrationList (");
@@ -221,6 +245,8 @@ public class PinIntegrationList implements Serializable {
         sb.append(", ").append(isNew);
         sb.append(", ").append(isLook);
         sb.append(", ").append(canIntegration);
+        sb.append(", ").append(createTime);
+        sb.append(", ").append(updateTime);
 
         sb.append(")");
         return sb.toString();

@@ -23,7 +23,7 @@ import javax.annotation.Generated;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class CouponPayrewardRecord implements Serializable {
 
-    private static final long serialVersionUID = -927651729;
+    private static final long serialVersionUID = 1961410094;
 
     private Integer   id;
     private Integer   activityId;
@@ -31,6 +31,8 @@ public class CouponPayrewardRecord implements Serializable {
     private Timestamp receiveTime;
     private String    mrkingVoucherId;
     private String    orderSn;
+    private Timestamp createTime;
+    private Timestamp updateTime;
 
     public CouponPayrewardRecord() {}
 
@@ -41,6 +43,8 @@ public class CouponPayrewardRecord implements Serializable {
         this.receiveTime = value.receiveTime;
         this.mrkingVoucherId = value.mrkingVoucherId;
         this.orderSn = value.orderSn;
+        this.createTime = value.createTime;
+        this.updateTime = value.updateTime;
     }
 
     public CouponPayrewardRecord(
@@ -49,7 +53,9 @@ public class CouponPayrewardRecord implements Serializable {
         Integer   userId,
         Timestamp receiveTime,
         String    mrkingVoucherId,
-        String    orderSn
+        String    orderSn,
+        Timestamp createTime,
+        Timestamp updateTime
     ) {
         this.id = id;
         this.activityId = activityId;
@@ -57,6 +63,8 @@ public class CouponPayrewardRecord implements Serializable {
         this.receiveTime = receiveTime;
         this.mrkingVoucherId = mrkingVoucherId;
         this.orderSn = orderSn;
+        this.createTime = createTime;
+        this.updateTime = updateTime;
     }
 
     public Integer getId() {
@@ -107,6 +115,22 @@ public class CouponPayrewardRecord implements Serializable {
         this.orderSn = orderSn;
     }
 
+    public Timestamp getCreateTime() {
+        return this.createTime;
+    }
+
+    public void setCreateTime(Timestamp createTime) {
+        this.createTime = createTime;
+    }
+
+    public Timestamp getUpdateTime() {
+        return this.updateTime;
+    }
+
+    public void setUpdateTime(Timestamp updateTime) {
+        this.updateTime = updateTime;
+    }
+
     @Override
     public String toString() {
         StringBuilder sb = new StringBuilder("CouponPayrewardRecord (");
@@ -117,6 +141,8 @@ public class CouponPayrewardRecord implements Serializable {
         sb.append(", ").append(receiveTime);
         sb.append(", ").append(mrkingVoucherId);
         sb.append(", ").append(orderSn);
+        sb.append(", ").append(createTime);
+        sb.append(", ").append(updateTime);
 
         sb.append(")");
         return sb.toString();

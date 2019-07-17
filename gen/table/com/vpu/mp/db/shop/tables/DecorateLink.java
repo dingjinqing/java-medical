@@ -42,7 +42,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class DecorateLink extends TableImpl<DecorateLinkRecord> {
 
-    private static final long serialVersionUID = 1087931325;
+    private static final long serialVersionUID = -136740221;
 
     /**
      * The reference instance of <code>mini_shop_471752.b2c_decorate_link</code>
@@ -93,16 +93,6 @@ public class DecorateLink extends TableImpl<DecorateLinkRecord> {
     public final TableField<DecorateLinkRecord, String> APPID = createField("appid", org.jooq.impl.SQLDataType.VARCHAR(100), this, "小程序appid");
 
     /**
-     * The column <code>mini_shop_471752.b2c_decorate_link.add_time</code>.
-     */
-    public final TableField<DecorateLinkRecord, Timestamp> ADD_TIME = createField("add_time", org.jooq.impl.SQLDataType.TIMESTAMP.nullable(false), this, "");
-
-    /**
-     * The column <code>mini_shop_471752.b2c_decorate_link.up_time</code>.
-     */
-    public final TableField<DecorateLinkRecord, Timestamp> UP_TIME = createField("up_time", org.jooq.impl.SQLDataType.TIMESTAMP.nullable(false), this, "");
-
-    /**
      * The column <code>mini_shop_471752.b2c_decorate_link.del_flag</code>. 0:未删除，1:已删除
      */
     public final TableField<DecorateLinkRecord, Byte> DEL_FLAG = createField("del_flag", org.jooq.impl.SQLDataType.TINYINT.nullable(false).defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.TINYINT)), this, "0:未删除，1:已删除");
@@ -110,7 +100,17 @@ public class DecorateLink extends TableImpl<DecorateLinkRecord> {
     /**
      * The column <code>mini_shop_471752.b2c_decorate_link.del_time</code>.
      */
-    public final TableField<DecorateLinkRecord, Integer> DEL_TIME = createField("del_time", org.jooq.impl.SQLDataType.INTEGER.defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.INTEGER)), this, "");
+    public final TableField<DecorateLinkRecord, Integer> DEL_TIME = createField("del_time", org.jooq.impl.SQLDataType.INTEGER.nullable(false).defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.INTEGER)), this, "");
+
+    /**
+     * The column <code>mini_shop_471752.b2c_decorate_link.create_time</code>.
+     */
+    public final TableField<DecorateLinkRecord, Timestamp> CREATE_TIME = createField("create_time", org.jooq.impl.SQLDataType.TIMESTAMP.nullable(false).defaultValue(org.jooq.impl.DSL.field("CURRENT_TIMESTAMP", org.jooq.impl.SQLDataType.TIMESTAMP)), this, "");
+
+    /**
+     * The column <code>mini_shop_471752.b2c_decorate_link.update_time</code>. 最后修改时间
+     */
+    public final TableField<DecorateLinkRecord, Timestamp> UPDATE_TIME = createField("update_time", org.jooq.impl.SQLDataType.TIMESTAMP.nullable(false).defaultValue(org.jooq.impl.DSL.field("CURRENT_TIMESTAMP", org.jooq.impl.SQLDataType.TIMESTAMP)), this, "最后修改时间");
 
     /**
      * Create a <code>mini_shop_471752.b2c_decorate_link</code> table reference

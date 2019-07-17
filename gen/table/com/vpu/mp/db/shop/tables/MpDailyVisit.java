@@ -39,7 +39,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class MpDailyVisit extends TableImpl<MpDailyVisitRecord> {
 
-    private static final long serialVersionUID = 910042761;
+    private static final long serialVersionUID = -258660438;
 
     /**
      * The reference instance of <code>mini_shop_471752.b2c_mp_daily_visit</code>
@@ -95,9 +95,14 @@ public class MpDailyVisit extends TableImpl<MpDailyVisitRecord> {
     public final TableField<MpDailyVisitRecord, Double> VISIT_DEPTH = createField("visit_depth", org.jooq.impl.SQLDataType.FLOAT.nullable(false).defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.FLOAT)), this, "平均访问深度 (浮点型)");
 
     /**
-     * The column <code>mini_shop_471752.b2c_mp_daily_visit.add_time</code>. 添加时间
+     * The column <code>mini_shop_471752.b2c_mp_daily_visit.create_time</code>.
      */
-    public final TableField<MpDailyVisitRecord, Timestamp> ADD_TIME = createField("add_time", org.jooq.impl.SQLDataType.TIMESTAMP.nullable(false).defaultValue(org.jooq.impl.DSL.field("CURRENT_TIMESTAMP", org.jooq.impl.SQLDataType.TIMESTAMP)), this, "添加时间");
+    public final TableField<MpDailyVisitRecord, Timestamp> CREATE_TIME = createField("create_time", org.jooq.impl.SQLDataType.TIMESTAMP.nullable(false).defaultValue(org.jooq.impl.DSL.field("CURRENT_TIMESTAMP", org.jooq.impl.SQLDataType.TIMESTAMP)), this, "");
+
+    /**
+     * The column <code>mini_shop_471752.b2c_mp_daily_visit.update_time</code>. 最后修改时间
+     */
+    public final TableField<MpDailyVisitRecord, Timestamp> UPDATE_TIME = createField("update_time", org.jooq.impl.SQLDataType.TIMESTAMP.nullable(false).defaultValue(org.jooq.impl.DSL.field("CURRENT_TIMESTAMP", org.jooq.impl.SQLDataType.TIMESTAMP)), this, "最后修改时间");
 
     /**
      * Create a <code>mini_shop_471752.b2c_mp_daily_visit</code> table reference

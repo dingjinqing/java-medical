@@ -23,7 +23,7 @@ import javax.annotation.Generated;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class JoinGroupList implements Serializable {
 
-    private static final long serialVersionUID = -933224654;
+    private static final long serialVersionUID = 2024404479;
 
     private Integer   id;
     private Integer   groupDrawId;
@@ -40,6 +40,8 @@ public class JoinGroupList implements Serializable {
     private Timestamp endTime;
     private Timestamp drawTime;
     private Integer   inviteUserNum;
+    private Timestamp createTime;
+    private Timestamp updateTime;
 
     public JoinGroupList() {}
 
@@ -59,6 +61,8 @@ public class JoinGroupList implements Serializable {
         this.endTime = value.endTime;
         this.drawTime = value.drawTime;
         this.inviteUserNum = value.inviteUserNum;
+        this.createTime = value.createTime;
+        this.updateTime = value.updateTime;
     }
 
     public JoinGroupList(
@@ -76,7 +80,9 @@ public class JoinGroupList implements Serializable {
         Timestamp openTime,
         Timestamp endTime,
         Timestamp drawTime,
-        Integer   inviteUserNum
+        Integer   inviteUserNum,
+        Timestamp createTime,
+        Timestamp updateTime
     ) {
         this.id = id;
         this.groupDrawId = groupDrawId;
@@ -93,6 +99,8 @@ public class JoinGroupList implements Serializable {
         this.endTime = endTime;
         this.drawTime = drawTime;
         this.inviteUserNum = inviteUserNum;
+        this.createTime = createTime;
+        this.updateTime = updateTime;
     }
 
     public Integer getId() {
@@ -215,6 +223,22 @@ public class JoinGroupList implements Serializable {
         this.inviteUserNum = inviteUserNum;
     }
 
+    public Timestamp getCreateTime() {
+        return this.createTime;
+    }
+
+    public void setCreateTime(Timestamp createTime) {
+        this.createTime = createTime;
+    }
+
+    public Timestamp getUpdateTime() {
+        return this.updateTime;
+    }
+
+    public void setUpdateTime(Timestamp updateTime) {
+        this.updateTime = updateTime;
+    }
+
     @Override
     public String toString() {
         StringBuilder sb = new StringBuilder("JoinGroupList (");
@@ -234,6 +258,8 @@ public class JoinGroupList implements Serializable {
         sb.append(", ").append(endTime);
         sb.append(", ").append(drawTime);
         sb.append(", ").append(inviteUserNum);
+        sb.append(", ").append(createTime);
+        sb.append(", ").append(updateTime);
 
         sb.append(")");
         return sb.toString();

@@ -6,6 +6,7 @@ package com.vpu.mp.db.shop.tables.pojos;
 
 import java.io.Serializable;
 import java.math.BigDecimal;
+import java.sql.Timestamp;
 
 import javax.annotation.Generated;
 
@@ -23,7 +24,7 @@ import javax.annotation.Generated;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class SecKillProductDefine implements Serializable {
 
-    private static final long serialVersionUID = 1151167769;
+    private static final long serialVersionUID = 2125278314;
 
     private Integer    skproId;
     private Integer    skId;
@@ -32,6 +33,8 @@ public class SecKillProductDefine implements Serializable {
     private Short      stock;
     private Short      saleNum;
     private Short      totalStock;
+    private Timestamp  createTime;
+    private Timestamp  updateTime;
 
     public SecKillProductDefine() {}
 
@@ -43,6 +46,8 @@ public class SecKillProductDefine implements Serializable {
         this.stock = value.stock;
         this.saleNum = value.saleNum;
         this.totalStock = value.totalStock;
+        this.createTime = value.createTime;
+        this.updateTime = value.updateTime;
     }
 
     public SecKillProductDefine(
@@ -52,7 +57,9 @@ public class SecKillProductDefine implements Serializable {
         BigDecimal secKillPrice,
         Short      stock,
         Short      saleNum,
-        Short      totalStock
+        Short      totalStock,
+        Timestamp  createTime,
+        Timestamp  updateTime
     ) {
         this.skproId = skproId;
         this.skId = skId;
@@ -61,6 +68,8 @@ public class SecKillProductDefine implements Serializable {
         this.stock = stock;
         this.saleNum = saleNum;
         this.totalStock = totalStock;
+        this.createTime = createTime;
+        this.updateTime = updateTime;
     }
 
     public Integer getSkproId() {
@@ -119,6 +128,22 @@ public class SecKillProductDefine implements Serializable {
         this.totalStock = totalStock;
     }
 
+    public Timestamp getCreateTime() {
+        return this.createTime;
+    }
+
+    public void setCreateTime(Timestamp createTime) {
+        this.createTime = createTime;
+    }
+
+    public Timestamp getUpdateTime() {
+        return this.updateTime;
+    }
+
+    public void setUpdateTime(Timestamp updateTime) {
+        this.updateTime = updateTime;
+    }
+
     @Override
     public String toString() {
         StringBuilder sb = new StringBuilder("SecKillProductDefine (");
@@ -130,6 +155,8 @@ public class SecKillProductDefine implements Serializable {
         sb.append(", ").append(stock);
         sb.append(", ").append(saleNum);
         sb.append(", ").append(totalStock);
+        sb.append(", ").append(createTime);
+        sb.append(", ").append(updateTime);
 
         sb.append(")");
         return sb.toString();

@@ -23,7 +23,7 @@ import javax.annotation.Generated;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class FriendPromoteLaunch implements Serializable {
 
-    private static final long serialVersionUID = -1868356006;
+    private static final long serialVersionUID = 1974393949;
 
     private Integer   id;
     private Integer   userId;
@@ -31,9 +31,11 @@ public class FriendPromoteLaunch implements Serializable {
     private Byte      promoteStatus;
     private String    orderSn;
     private Timestamp launchTime;
-    private Timestamp updateTime;
     private Timestamp successTime;
     private Byte      delFlag;
+    private Timestamp delTime;
+    private Timestamp createTime;
+    private Timestamp updateTime;
 
     public FriendPromoteLaunch() {}
 
@@ -44,9 +46,11 @@ public class FriendPromoteLaunch implements Serializable {
         this.promoteStatus = value.promoteStatus;
         this.orderSn = value.orderSn;
         this.launchTime = value.launchTime;
-        this.updateTime = value.updateTime;
         this.successTime = value.successTime;
         this.delFlag = value.delFlag;
+        this.delTime = value.delTime;
+        this.createTime = value.createTime;
+        this.updateTime = value.updateTime;
     }
 
     public FriendPromoteLaunch(
@@ -56,9 +60,11 @@ public class FriendPromoteLaunch implements Serializable {
         Byte      promoteStatus,
         String    orderSn,
         Timestamp launchTime,
-        Timestamp updateTime,
         Timestamp successTime,
-        Byte      delFlag
+        Byte      delFlag,
+        Timestamp delTime,
+        Timestamp createTime,
+        Timestamp updateTime
     ) {
         this.id = id;
         this.userId = userId;
@@ -66,9 +72,11 @@ public class FriendPromoteLaunch implements Serializable {
         this.promoteStatus = promoteStatus;
         this.orderSn = orderSn;
         this.launchTime = launchTime;
-        this.updateTime = updateTime;
         this.successTime = successTime;
         this.delFlag = delFlag;
+        this.delTime = delTime;
+        this.createTime = createTime;
+        this.updateTime = updateTime;
     }
 
     public Integer getId() {
@@ -119,14 +127,6 @@ public class FriendPromoteLaunch implements Serializable {
         this.launchTime = launchTime;
     }
 
-    public Timestamp getUpdateTime() {
-        return this.updateTime;
-    }
-
-    public void setUpdateTime(Timestamp updateTime) {
-        this.updateTime = updateTime;
-    }
-
     public Timestamp getSuccessTime() {
         return this.successTime;
     }
@@ -143,6 +143,30 @@ public class FriendPromoteLaunch implements Serializable {
         this.delFlag = delFlag;
     }
 
+    public Timestamp getDelTime() {
+        return this.delTime;
+    }
+
+    public void setDelTime(Timestamp delTime) {
+        this.delTime = delTime;
+    }
+
+    public Timestamp getCreateTime() {
+        return this.createTime;
+    }
+
+    public void setCreateTime(Timestamp createTime) {
+        this.createTime = createTime;
+    }
+
+    public Timestamp getUpdateTime() {
+        return this.updateTime;
+    }
+
+    public void setUpdateTime(Timestamp updateTime) {
+        this.updateTime = updateTime;
+    }
+
     @Override
     public String toString() {
         StringBuilder sb = new StringBuilder("FriendPromoteLaunch (");
@@ -153,9 +177,11 @@ public class FriendPromoteLaunch implements Serializable {
         sb.append(", ").append(promoteStatus);
         sb.append(", ").append(orderSn);
         sb.append(", ").append(launchTime);
-        sb.append(", ").append(updateTime);
         sb.append(", ").append(successTime);
         sb.append(", ").append(delFlag);
+        sb.append(", ").append(delTime);
+        sb.append(", ").append(createTime);
+        sb.append(", ").append(updateTime);
 
         sb.append(")");
         return sb.toString();

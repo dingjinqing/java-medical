@@ -42,7 +42,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class SecKillList extends TableImpl<SecKillListRecord> {
 
-    private static final long serialVersionUID = -712099242;
+    private static final long serialVersionUID = 1372916865;
 
     /**
      * The reference instance of <code>mini_shop_471752.b2c_sec_kill_list</code>
@@ -58,14 +58,14 @@ public class SecKillList extends TableImpl<SecKillListRecord> {
     }
 
     /**
-     * The column <code>mini_shop_471752.b2c_sec_kill_list.sklog_id</code>. 秒杀活动商品购买记录ID
+     * The column <code>mini_shop_471752.b2c_sec_kill_list.sklog_id</code>. 秒杀活动商品购买记录id
      */
-    public final TableField<SecKillListRecord, Integer> SKLOG_ID = createField("sklog_id", org.jooq.impl.SQLDataType.INTEGER.nullable(false).identity(true), this, "秒杀活动商品购买记录ID");
+    public final TableField<SecKillListRecord, Integer> SKLOG_ID = createField("sklog_id", org.jooq.impl.SQLDataType.INTEGER.nullable(false).identity(true), this, "秒杀活动商品购买记录id");
 
     /**
-     * The column <code>mini_shop_471752.b2c_sec_kill_list.sk_id</code>. 秒杀活动定义ID
+     * The column <code>mini_shop_471752.b2c_sec_kill_list.sk_id</code>. 秒杀活动定义id
      */
-    public final TableField<SecKillListRecord, Integer> SK_ID = createField("sk_id", org.jooq.impl.SQLDataType.INTEGER.nullable(false), this, "秒杀活动定义ID");
+    public final TableField<SecKillListRecord, Integer> SK_ID = createField("sk_id", org.jooq.impl.SQLDataType.INTEGER.nullable(false), this, "秒杀活动定义id");
 
     /**
      * The column <code>mini_shop_471752.b2c_sec_kill_list.goods_id</code>.
@@ -73,9 +73,9 @@ public class SecKillList extends TableImpl<SecKillListRecord> {
     public final TableField<SecKillListRecord, Integer> GOODS_ID = createField("goods_id", org.jooq.impl.SQLDataType.INTEGER.nullable(false).defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.INTEGER)), this, "");
 
     /**
-     * The column <code>mini_shop_471752.b2c_sec_kill_list.user_id</code>. 参与秒杀活动用户ID
+     * The column <code>mini_shop_471752.b2c_sec_kill_list.user_id</code>. 参与秒杀活动用户id
      */
-    public final TableField<SecKillListRecord, Integer> USER_ID = createField("user_id", org.jooq.impl.SQLDataType.INTEGER.nullable(false), this, "参与秒杀活动用户ID");
+    public final TableField<SecKillListRecord, Integer> USER_ID = createField("user_id", org.jooq.impl.SQLDataType.INTEGER.nullable(false), this, "参与秒杀活动用户id");
 
     /**
      * The column <code>mini_shop_471752.b2c_sec_kill_list.order_sn</code>. 订单编号
@@ -88,9 +88,19 @@ public class SecKillList extends TableImpl<SecKillListRecord> {
     public final TableField<SecKillListRecord, Byte> DEL_FLAG = createField("del_flag", org.jooq.impl.SQLDataType.TINYINT.defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.TINYINT)), this, "");
 
     /**
-     * The column <code>mini_shop_471752.b2c_sec_kill_list.add_time</code>. 参与时间
+     * The column <code>mini_shop_471752.b2c_sec_kill_list.del_time</code>. 删除时间
      */
-    public final TableField<SecKillListRecord, Timestamp> ADD_TIME = createField("add_time", org.jooq.impl.SQLDataType.TIMESTAMP.nullable(false).defaultValue(org.jooq.impl.DSL.field("CURRENT_TIMESTAMP", org.jooq.impl.SQLDataType.TIMESTAMP)), this, "参与时间");
+    public final TableField<SecKillListRecord, Timestamp> DEL_TIME = createField("del_time", org.jooq.impl.SQLDataType.TIMESTAMP, this, "删除时间");
+
+    /**
+     * The column <code>mini_shop_471752.b2c_sec_kill_list.create_time</code>.
+     */
+    public final TableField<SecKillListRecord, Timestamp> CREATE_TIME = createField("create_time", org.jooq.impl.SQLDataType.TIMESTAMP.nullable(false).defaultValue(org.jooq.impl.DSL.field("CURRENT_TIMESTAMP", org.jooq.impl.SQLDataType.TIMESTAMP)), this, "");
+
+    /**
+     * The column <code>mini_shop_471752.b2c_sec_kill_list.update_time</code>. 最后修改时间
+     */
+    public final TableField<SecKillListRecord, Timestamp> UPDATE_TIME = createField("update_time", org.jooq.impl.SQLDataType.TIMESTAMP.nullable(false).defaultValue(org.jooq.impl.DSL.field("CURRENT_TIMESTAMP", org.jooq.impl.SQLDataType.TIMESTAMP)), this, "最后修改时间");
 
     /**
      * Create a <code>mini_shop_471752.b2c_sec_kill_list</code> table reference

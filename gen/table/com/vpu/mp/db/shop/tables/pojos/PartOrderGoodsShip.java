@@ -23,7 +23,7 @@ import javax.annotation.Generated;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class PartOrderGoodsShip implements Serializable {
 
-    private static final long serialVersionUID = 581046010;
+    private static final long serialVersionUID = 1928576327;
 
     private Integer   recId;
     private Integer   shopId;
@@ -40,6 +40,8 @@ public class PartOrderGoodsShip implements Serializable {
     private Byte      shippingId;
     private Timestamp shippingTime;
     private Timestamp confirmTime;
+    private Timestamp createTime;
+    private Timestamp updateTime;
 
     public PartOrderGoodsShip() {}
 
@@ -59,6 +61,8 @@ public class PartOrderGoodsShip implements Serializable {
         this.shippingId = value.shippingId;
         this.shippingTime = value.shippingTime;
         this.confirmTime = value.confirmTime;
+        this.createTime = value.createTime;
+        this.updateTime = value.updateTime;
     }
 
     public PartOrderGoodsShip(
@@ -76,7 +80,9 @@ public class PartOrderGoodsShip implements Serializable {
         String    shippingName,
         Byte      shippingId,
         Timestamp shippingTime,
-        Timestamp confirmTime
+        Timestamp confirmTime,
+        Timestamp createTime,
+        Timestamp updateTime
     ) {
         this.recId = recId;
         this.shopId = shopId;
@@ -93,6 +99,8 @@ public class PartOrderGoodsShip implements Serializable {
         this.shippingId = shippingId;
         this.shippingTime = shippingTime;
         this.confirmTime = confirmTime;
+        this.createTime = createTime;
+        this.updateTime = updateTime;
     }
 
     public Integer getRecId() {
@@ -215,6 +223,22 @@ public class PartOrderGoodsShip implements Serializable {
         this.confirmTime = confirmTime;
     }
 
+    public Timestamp getCreateTime() {
+        return this.createTime;
+    }
+
+    public void setCreateTime(Timestamp createTime) {
+        this.createTime = createTime;
+    }
+
+    public Timestamp getUpdateTime() {
+        return this.updateTime;
+    }
+
+    public void setUpdateTime(Timestamp updateTime) {
+        this.updateTime = updateTime;
+    }
+
     @Override
     public String toString() {
         StringBuilder sb = new StringBuilder("PartOrderGoodsShip (");
@@ -234,6 +258,8 @@ public class PartOrderGoodsShip implements Serializable {
         sb.append(", ").append(shippingId);
         sb.append(", ").append(shippingTime);
         sb.append(", ").append(confirmTime);
+        sb.append(", ").append(createTime);
+        sb.append(", ").append(updateTime);
 
         sb.append(")");
         return sb.toString();

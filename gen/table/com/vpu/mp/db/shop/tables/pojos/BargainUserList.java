@@ -24,13 +24,14 @@ import javax.annotation.Generated;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class BargainUserList implements Serializable {
 
-    private static final long serialVersionUID = 361958342;
+    private static final long serialVersionUID = -1621481461;
 
     private Integer    id;
     private Integer    recordId;
     private Integer    userId;
     private BigDecimal bargainMoney;
-    private Timestamp  addTime;
+    private Timestamp  createTime;
+    private Timestamp  updateTime;
 
     public BargainUserList() {}
 
@@ -39,7 +40,8 @@ public class BargainUserList implements Serializable {
         this.recordId = value.recordId;
         this.userId = value.userId;
         this.bargainMoney = value.bargainMoney;
-        this.addTime = value.addTime;
+        this.createTime = value.createTime;
+        this.updateTime = value.updateTime;
     }
 
     public BargainUserList(
@@ -47,13 +49,15 @@ public class BargainUserList implements Serializable {
         Integer    recordId,
         Integer    userId,
         BigDecimal bargainMoney,
-        Timestamp  addTime
+        Timestamp  createTime,
+        Timestamp  updateTime
     ) {
         this.id = id;
         this.recordId = recordId;
         this.userId = userId;
         this.bargainMoney = bargainMoney;
-        this.addTime = addTime;
+        this.createTime = createTime;
+        this.updateTime = updateTime;
     }
 
     public Integer getId() {
@@ -88,12 +92,20 @@ public class BargainUserList implements Serializable {
         this.bargainMoney = bargainMoney;
     }
 
-    public Timestamp getAddTime() {
-        return this.addTime;
+    public Timestamp getCreateTime() {
+        return this.createTime;
     }
 
-    public void setAddTime(Timestamp addTime) {
-        this.addTime = addTime;
+    public void setCreateTime(Timestamp createTime) {
+        this.createTime = createTime;
+    }
+
+    public Timestamp getUpdateTime() {
+        return this.updateTime;
+    }
+
+    public void setUpdateTime(Timestamp updateTime) {
+        this.updateTime = updateTime;
     }
 
     @Override
@@ -104,7 +116,8 @@ public class BargainUserList implements Serializable {
         sb.append(", ").append(recordId);
         sb.append(", ").append(userId);
         sb.append(", ").append(bargainMoney);
-        sb.append(", ").append(addTime);
+        sb.append(", ").append(createTime);
+        sb.append(", ").append(updateTime);
 
         sb.append(")");
         return sb.toString();

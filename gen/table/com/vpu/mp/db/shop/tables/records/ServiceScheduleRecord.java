@@ -30,7 +30,7 @@ import org.jooq.impl.UpdatableRecordImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class ServiceScheduleRecord extends UpdatableRecordImpl<ServiceScheduleRecord> implements Record8<Byte, Integer, String, String, String, Byte, Timestamp, Timestamp> {
 
-    private static final long serialVersionUID = 1391941527;
+    private static final long serialVersionUID = -484792553;
 
     /**
      * Setter for <code>mini_shop_471752.b2c_service_schedule.schedule_id</code>. 排班id
@@ -75,16 +75,16 @@ public class ServiceScheduleRecord extends UpdatableRecordImpl<ServiceScheduleRe
     }
 
     /**
-     * Setter for <code>mini_shop_471752.b2c_service_schedule.begin_time</code>. 开始时间
+     * Setter for <code>mini_shop_471752.b2c_service_schedule.begcreate_time</code>. 开始时间
      */
-    public void setBeginTime(String value) {
+    public void setBegcreateTime(String value) {
         set(3, value);
     }
 
     /**
-     * Getter for <code>mini_shop_471752.b2c_service_schedule.begin_time</code>. 开始时间
+     * Getter for <code>mini_shop_471752.b2c_service_schedule.begcreate_time</code>. 开始时间
      */
-    public String getBeginTime() {
+    public String getBegcreateTime() {
         return (String) get(3);
     }
 
@@ -117,28 +117,28 @@ public class ServiceScheduleRecord extends UpdatableRecordImpl<ServiceScheduleRe
     }
 
     /**
-     * Setter for <code>mini_shop_471752.b2c_service_schedule.add_time</code>. 添加时间
+     * Setter for <code>mini_shop_471752.b2c_service_schedule.create_time</code>.
      */
-    public void setAddTime(Timestamp value) {
+    public void setCreateTime(Timestamp value) {
         set(6, value);
     }
 
     /**
-     * Getter for <code>mini_shop_471752.b2c_service_schedule.add_time</code>. 添加时间
+     * Getter for <code>mini_shop_471752.b2c_service_schedule.create_time</code>.
      */
-    public Timestamp getAddTime() {
+    public Timestamp getCreateTime() {
         return (Timestamp) get(6);
     }
 
     /**
-     * Setter for <code>mini_shop_471752.b2c_service_schedule.update_time</code>. 更改时间
+     * Setter for <code>mini_shop_471752.b2c_service_schedule.update_time</code>. 最后修改时间
      */
     public void setUpdateTime(Timestamp value) {
         set(7, value);
     }
 
     /**
-     * Getter for <code>mini_shop_471752.b2c_service_schedule.update_time</code>. 更改时间
+     * Getter for <code>mini_shop_471752.b2c_service_schedule.update_time</code>. 最后修改时间
      */
     public Timestamp getUpdateTime() {
         return (Timestamp) get(7);
@@ -205,7 +205,7 @@ public class ServiceScheduleRecord extends UpdatableRecordImpl<ServiceScheduleRe
      */
     @Override
     public Field<String> field4() {
-        return ServiceSchedule.SERVICE_SCHEDULE.BEGIN_TIME;
+        return ServiceSchedule.SERVICE_SCHEDULE.BEGCREATE_TIME;
     }
 
     /**
@@ -229,7 +229,7 @@ public class ServiceScheduleRecord extends UpdatableRecordImpl<ServiceScheduleRe
      */
     @Override
     public Field<Timestamp> field7() {
-        return ServiceSchedule.SERVICE_SCHEDULE.ADD_TIME;
+        return ServiceSchedule.SERVICE_SCHEDULE.CREATE_TIME;
     }
 
     /**
@@ -269,7 +269,7 @@ public class ServiceScheduleRecord extends UpdatableRecordImpl<ServiceScheduleRe
      */
     @Override
     public String component4() {
-        return getBeginTime();
+        return getBegcreateTime();
     }
 
     /**
@@ -293,7 +293,7 @@ public class ServiceScheduleRecord extends UpdatableRecordImpl<ServiceScheduleRe
      */
     @Override
     public Timestamp component7() {
-        return getAddTime();
+        return getCreateTime();
     }
 
     /**
@@ -333,7 +333,7 @@ public class ServiceScheduleRecord extends UpdatableRecordImpl<ServiceScheduleRe
      */
     @Override
     public String value4() {
-        return getBeginTime();
+        return getBegcreateTime();
     }
 
     /**
@@ -357,7 +357,7 @@ public class ServiceScheduleRecord extends UpdatableRecordImpl<ServiceScheduleRe
      */
     @Override
     public Timestamp value7() {
-        return getAddTime();
+        return getCreateTime();
     }
 
     /**
@@ -400,7 +400,7 @@ public class ServiceScheduleRecord extends UpdatableRecordImpl<ServiceScheduleRe
      */
     @Override
     public ServiceScheduleRecord value4(String value) {
-        setBeginTime(value);
+        setBegcreateTime(value);
         return this;
     }
 
@@ -427,7 +427,7 @@ public class ServiceScheduleRecord extends UpdatableRecordImpl<ServiceScheduleRe
      */
     @Override
     public ServiceScheduleRecord value7(Timestamp value) {
-        setAddTime(value);
+        setCreateTime(value);
         return this;
     }
 
@@ -470,16 +470,16 @@ public class ServiceScheduleRecord extends UpdatableRecordImpl<ServiceScheduleRe
     /**
      * Create a detached, initialised ServiceScheduleRecord
      */
-    public ServiceScheduleRecord(Byte scheduleId, Integer storeId, String scheduleName, String beginTime, String endTime, Byte delFlag, Timestamp addTime, Timestamp updateTime) {
+    public ServiceScheduleRecord(Byte scheduleId, Integer storeId, String scheduleName, String begcreateTime, String endTime, Byte delFlag, Timestamp createTime, Timestamp updateTime) {
         super(ServiceSchedule.SERVICE_SCHEDULE);
 
         set(0, scheduleId);
         set(1, storeId);
         set(2, scheduleName);
-        set(3, beginTime);
+        set(3, begcreateTime);
         set(4, endTime);
         set(5, delFlag);
-        set(6, addTime);
+        set(6, createTime);
         set(7, updateTime);
     }
 }

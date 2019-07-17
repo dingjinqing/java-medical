@@ -25,7 +25,7 @@ import javax.annotation.Generated;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class TradesRecordSummary implements Serializable {
 
-    private static final long serialVersionUID = 228445601;
+    private static final long serialVersionUID = 652536206;
 
     private Integer    id;
     private Byte       type;
@@ -35,8 +35,9 @@ public class TradesRecordSummary implements Serializable {
     private BigDecimal incomeTotalScore;
     private BigDecimal outgoScore;
     private BigDecimal incomeRealScore;
-    private Timestamp  addTime;
     private Date       refDate;
+    private Timestamp  createTime;
+    private Timestamp  updateTime;
 
     public TradesRecordSummary() {}
 
@@ -49,8 +50,9 @@ public class TradesRecordSummary implements Serializable {
         this.incomeTotalScore = value.incomeTotalScore;
         this.outgoScore = value.outgoScore;
         this.incomeRealScore = value.incomeRealScore;
-        this.addTime = value.addTime;
         this.refDate = value.refDate;
+        this.createTime = value.createTime;
+        this.updateTime = value.updateTime;
     }
 
     public TradesRecordSummary(
@@ -62,8 +64,9 @@ public class TradesRecordSummary implements Serializable {
         BigDecimal incomeTotalScore,
         BigDecimal outgoScore,
         BigDecimal incomeRealScore,
-        Timestamp  addTime,
-        Date       refDate
+        Date       refDate,
+        Timestamp  createTime,
+        Timestamp  updateTime
     ) {
         this.id = id;
         this.type = type;
@@ -73,8 +76,9 @@ public class TradesRecordSummary implements Serializable {
         this.incomeTotalScore = incomeTotalScore;
         this.outgoScore = outgoScore;
         this.incomeRealScore = incomeRealScore;
-        this.addTime = addTime;
         this.refDate = refDate;
+        this.createTime = createTime;
+        this.updateTime = updateTime;
     }
 
     public Integer getId() {
@@ -141,20 +145,28 @@ public class TradesRecordSummary implements Serializable {
         this.incomeRealScore = incomeRealScore;
     }
 
-    public Timestamp getAddTime() {
-        return this.addTime;
-    }
-
-    public void setAddTime(Timestamp addTime) {
-        this.addTime = addTime;
-    }
-
     public Date getRefDate() {
         return this.refDate;
     }
 
     public void setRefDate(Date refDate) {
         this.refDate = refDate;
+    }
+
+    public Timestamp getCreateTime() {
+        return this.createTime;
+    }
+
+    public void setCreateTime(Timestamp createTime) {
+        this.createTime = createTime;
+    }
+
+    public Timestamp getUpdateTime() {
+        return this.updateTime;
+    }
+
+    public void setUpdateTime(Timestamp updateTime) {
+        this.updateTime = updateTime;
     }
 
     @Override
@@ -169,8 +181,9 @@ public class TradesRecordSummary implements Serializable {
         sb.append(", ").append(incomeTotalScore);
         sb.append(", ").append(outgoScore);
         sb.append(", ").append(incomeRealScore);
-        sb.append(", ").append(addTime);
         sb.append(", ").append(refDate);
+        sb.append(", ").append(createTime);
+        sb.append(", ").append(updateTime);
 
         sb.append(")");
         return sb.toString();

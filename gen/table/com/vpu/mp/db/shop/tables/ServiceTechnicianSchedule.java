@@ -42,7 +42,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class ServiceTechnicianSchedule extends TableImpl<ServiceTechnicianScheduleRecord> {
 
-    private static final long serialVersionUID = -1790697613;
+    private static final long serialVersionUID = -508964651;
 
     /**
      * The reference instance of <code>mini_shop_471752.b2c_service_technician_schedule</code>
@@ -83,14 +83,14 @@ public class ServiceTechnicianSchedule extends TableImpl<ServiceTechnicianSchedu
     public final TableField<ServiceTechnicianScheduleRecord, Byte> SCHEDULE_ID = createField("schedule_id", org.jooq.impl.SQLDataType.TINYINT.nullable(false).defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.TINYINT)), this, "排班id");
 
     /**
-     * The column <code>mini_shop_471752.b2c_service_technician_schedule.add_time</code>. 添加时间
+     * The column <code>mini_shop_471752.b2c_service_technician_schedule.create_time</code>.
      */
-    public final TableField<ServiceTechnicianScheduleRecord, Timestamp> ADD_TIME = createField("add_time", org.jooq.impl.SQLDataType.TIMESTAMP.defaultValue(org.jooq.impl.DSL.field("CURRENT_TIMESTAMP", org.jooq.impl.SQLDataType.TIMESTAMP)), this, "添加时间");
+    public final TableField<ServiceTechnicianScheduleRecord, Timestamp> CREATE_TIME = createField("create_time", org.jooq.impl.SQLDataType.TIMESTAMP.nullable(false).defaultValue(org.jooq.impl.DSL.field("CURRENT_TIMESTAMP", org.jooq.impl.SQLDataType.TIMESTAMP)), this, "");
 
     /**
-     * The column <code>mini_shop_471752.b2c_service_technician_schedule.update_time</code>. 修改时间
+     * The column <code>mini_shop_471752.b2c_service_technician_schedule.update_time</code>. 最后修改时间
      */
-    public final TableField<ServiceTechnicianScheduleRecord, Timestamp> UPDATE_TIME = createField("update_time", org.jooq.impl.SQLDataType.TIMESTAMP.defaultValue(org.jooq.impl.DSL.inline("0000-00-00 00:00:00", org.jooq.impl.SQLDataType.TIMESTAMP)), this, "修改时间");
+    public final TableField<ServiceTechnicianScheduleRecord, Timestamp> UPDATE_TIME = createField("update_time", org.jooq.impl.SQLDataType.TIMESTAMP.nullable(false).defaultValue(org.jooq.impl.DSL.field("CURRENT_TIMESTAMP", org.jooq.impl.SQLDataType.TIMESTAMP)), this, "最后修改时间");
 
     /**
      * Create a <code>mini_shop_471752.b2c_service_technician_schedule</code> table reference

@@ -24,7 +24,7 @@ import javax.annotation.Generated;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class CustomerAvailCoupons implements Serializable {
 
-    private static final long serialVersionUID = -2051450391;
+    private static final long serialVersionUID = -36993432;
 
     private Integer    id;
     private String     couponSn;
@@ -37,7 +37,6 @@ public class CustomerAvailCoupons implements Serializable {
     private BigDecimal amount;
     private String     actDesc;
     private Integer    limitOrderAmount;
-    private Timestamp  created;
     private Byte       isUsed;
     private Timestamp  usedTime;
     private Byte       accessMode;
@@ -46,6 +45,8 @@ public class CustomerAvailCoupons implements Serializable {
     private String     orderSn;
     private Byte       delFlag;
     private Byte       getSource;
+    private Timestamp  createTime;
+    private Timestamp  updateTime;
 
     public CustomerAvailCoupons() {}
 
@@ -61,7 +62,6 @@ public class CustomerAvailCoupons implements Serializable {
         this.amount = value.amount;
         this.actDesc = value.actDesc;
         this.limitOrderAmount = value.limitOrderAmount;
-        this.created = value.created;
         this.isUsed = value.isUsed;
         this.usedTime = value.usedTime;
         this.accessMode = value.accessMode;
@@ -70,6 +70,8 @@ public class CustomerAvailCoupons implements Serializable {
         this.orderSn = value.orderSn;
         this.delFlag = value.delFlag;
         this.getSource = value.getSource;
+        this.createTime = value.createTime;
+        this.updateTime = value.updateTime;
     }
 
     public CustomerAvailCoupons(
@@ -84,7 +86,6 @@ public class CustomerAvailCoupons implements Serializable {
         BigDecimal amount,
         String     actDesc,
         Integer    limitOrderAmount,
-        Timestamp  created,
         Byte       isUsed,
         Timestamp  usedTime,
         Byte       accessMode,
@@ -92,7 +93,9 @@ public class CustomerAvailCoupons implements Serializable {
         Timestamp  notifyTime,
         String     orderSn,
         Byte       delFlag,
-        Byte       getSource
+        Byte       getSource,
+        Timestamp  createTime,
+        Timestamp  updateTime
     ) {
         this.id = id;
         this.couponSn = couponSn;
@@ -105,7 +108,6 @@ public class CustomerAvailCoupons implements Serializable {
         this.amount = amount;
         this.actDesc = actDesc;
         this.limitOrderAmount = limitOrderAmount;
-        this.created = created;
         this.isUsed = isUsed;
         this.usedTime = usedTime;
         this.accessMode = accessMode;
@@ -114,6 +116,8 @@ public class CustomerAvailCoupons implements Serializable {
         this.orderSn = orderSn;
         this.delFlag = delFlag;
         this.getSource = getSource;
+        this.createTime = createTime;
+        this.updateTime = updateTime;
     }
 
     public Integer getId() {
@@ -204,14 +208,6 @@ public class CustomerAvailCoupons implements Serializable {
         this.limitOrderAmount = limitOrderAmount;
     }
 
-    public Timestamp getCreated() {
-        return this.created;
-    }
-
-    public void setCreated(Timestamp created) {
-        this.created = created;
-    }
-
     public Byte getIsUsed() {
         return this.isUsed;
     }
@@ -276,6 +272,22 @@ public class CustomerAvailCoupons implements Serializable {
         this.getSource = getSource;
     }
 
+    public Timestamp getCreateTime() {
+        return this.createTime;
+    }
+
+    public void setCreateTime(Timestamp createTime) {
+        this.createTime = createTime;
+    }
+
+    public Timestamp getUpdateTime() {
+        return this.updateTime;
+    }
+
+    public void setUpdateTime(Timestamp updateTime) {
+        this.updateTime = updateTime;
+    }
+
     @Override
     public String toString() {
         StringBuilder sb = new StringBuilder("CustomerAvailCoupons (");
@@ -291,7 +303,6 @@ public class CustomerAvailCoupons implements Serializable {
         sb.append(", ").append(amount);
         sb.append(", ").append(actDesc);
         sb.append(", ").append(limitOrderAmount);
-        sb.append(", ").append(created);
         sb.append(", ").append(isUsed);
         sb.append(", ").append(usedTime);
         sb.append(", ").append(accessMode);
@@ -300,6 +311,8 @@ public class CustomerAvailCoupons implements Serializable {
         sb.append(", ").append(orderSn);
         sb.append(", ").append(delFlag);
         sb.append(", ").append(getSource);
+        sb.append(", ").append(createTime);
+        sb.append(", ").append(updateTime);
 
         sb.append(")");
         return sb.toString();

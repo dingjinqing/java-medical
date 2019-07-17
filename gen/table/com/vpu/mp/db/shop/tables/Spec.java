@@ -9,6 +9,7 @@ import com.vpu.mp.db.shop.Keys;
 import com.vpu.mp.db.shop.MiniShop_471752;
 import com.vpu.mp.db.shop.tables.records.SpecRecord;
 
+import java.sql.Timestamp;
 import java.util.Arrays;
 import java.util.List;
 
@@ -41,7 +42,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class Spec extends TableImpl<SpecRecord> {
 
-    private static final long serialVersionUID = 697474009;
+    private static final long serialVersionUID = -1786380908;
 
     /**
      * The reference instance of <code>mini_shop_471752.b2c_spec</code>
@@ -72,9 +73,19 @@ public class Spec extends TableImpl<SpecRecord> {
     public final TableField<SpecRecord, Byte> DEL_FLAG = createField("del_flag", org.jooq.impl.SQLDataType.TINYINT.nullable(false).defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.TINYINT)), this, "");
 
     /**
-     * The column <code>mini_shop_471752.b2c_spec.shop_id</code>. 店铺ID
+     * The column <code>mini_shop_471752.b2c_spec.goods_id</code>. 店铺id
      */
-    public final TableField<SpecRecord, Integer> SHOP_ID = createField("shop_id", org.jooq.impl.SQLDataType.INTEGER.nullable(false).defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.INTEGER)), this, "店铺ID");
+    public final TableField<SpecRecord, Integer> GOODS_ID = createField("goods_id", org.jooq.impl.SQLDataType.INTEGER.nullable(false).defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.INTEGER)), this, "店铺id");
+
+    /**
+     * The column <code>mini_shop_471752.b2c_spec.create_time</code>.
+     */
+    public final TableField<SpecRecord, Timestamp> CREATE_TIME = createField("create_time", org.jooq.impl.SQLDataType.TIMESTAMP.nullable(false).defaultValue(org.jooq.impl.DSL.field("CURRENT_TIMESTAMP", org.jooq.impl.SQLDataType.TIMESTAMP)), this, "");
+
+    /**
+     * The column <code>mini_shop_471752.b2c_spec.update_time</code>. 最后修改时间
+     */
+    public final TableField<SpecRecord, Timestamp> UPDATE_TIME = createField("update_time", org.jooq.impl.SQLDataType.TIMESTAMP.nullable(false).defaultValue(org.jooq.impl.DSL.field("CURRENT_TIMESTAMP", org.jooq.impl.SQLDataType.TIMESTAMP)), this, "最后修改时间");
 
     /**
      * Create a <code>mini_shop_471752.b2c_spec</code> table reference
@@ -122,7 +133,7 @@ public class Spec extends TableImpl<SpecRecord> {
      */
     @Override
     public List<Index> getIndexes() {
-        return Arrays.<Index>asList(Indexes.SPEC_PRIMARY);
+        return Arrays.<Index>asList(Indexes.SPEC_PRIMARY, Indexes.SPEC_UNIQUE_SPEC_NAME_GOODS_ID);
     }
 
     /**
@@ -146,7 +157,7 @@ public class Spec extends TableImpl<SpecRecord> {
      */
     @Override
     public List<UniqueKey<SpecRecord>> getKeys() {
-        return Arrays.<UniqueKey<SpecRecord>>asList(Keys.KEY_B2C_SPEC_PRIMARY);
+        return Arrays.<UniqueKey<SpecRecord>>asList(Keys.KEY_B2C_SPEC_PRIMARY, Keys.KEY_B2C_SPEC_UNIQUE_SPEC_NAME_GOODS_ID);
     }
 
     /**

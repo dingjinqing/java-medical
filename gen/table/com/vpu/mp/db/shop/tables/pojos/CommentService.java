@@ -23,7 +23,7 @@ import javax.annotation.Generated;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class CommentService implements Serializable {
 
-    private static final long serialVersionUID = -1383160096;
+    private static final long serialVersionUID = 950280507;
 
     private Integer   id;
     private Integer   shopId;
@@ -38,8 +38,8 @@ public class CommentService implements Serializable {
     private String    orderSn;
     private String    commNote;
     private String    commImg;
-    private Timestamp inTime;
-    private Timestamp upTime;
+    private Timestamp createTime;
+    private Timestamp updateTime;
     private Byte      flag;
     private Byte      delFlag;
 
@@ -59,8 +59,8 @@ public class CommentService implements Serializable {
         this.orderSn = value.orderSn;
         this.commNote = value.commNote;
         this.commImg = value.commImg;
-        this.inTime = value.inTime;
-        this.upTime = value.upTime;
+        this.createTime = value.createTime;
+        this.updateTime = value.updateTime;
         this.flag = value.flag;
         this.delFlag = value.delFlag;
     }
@@ -79,8 +79,8 @@ public class CommentService implements Serializable {
         String    orderSn,
         String    commNote,
         String    commImg,
-        Timestamp inTime,
-        Timestamp upTime,
+        Timestamp createTime,
+        Timestamp updateTime,
         Byte      flag,
         Byte      delFlag
     ) {
@@ -97,8 +97,8 @@ public class CommentService implements Serializable {
         this.orderSn = orderSn;
         this.commNote = commNote;
         this.commImg = commImg;
-        this.inTime = inTime;
-        this.upTime = upTime;
+        this.createTime = createTime;
+        this.updateTime = updateTime;
         this.flag = flag;
         this.delFlag = delFlag;
     }
@@ -207,20 +207,20 @@ public class CommentService implements Serializable {
         this.commImg = commImg;
     }
 
-    public Timestamp getInTime() {
-        return this.inTime;
+    public Timestamp getCreateTime() {
+        return this.createTime;
     }
 
-    public void setInTime(Timestamp inTime) {
-        this.inTime = inTime;
+    public void setCreateTime(Timestamp createTime) {
+        this.createTime = createTime;
     }
 
-    public Timestamp getUpTime() {
-        return this.upTime;
+    public Timestamp getUpdateTime() {
+        return this.updateTime;
     }
 
-    public void setUpTime(Timestamp upTime) {
-        this.upTime = upTime;
+    public void setUpdateTime(Timestamp updateTime) {
+        this.updateTime = updateTime;
     }
 
     public Byte getFlag() {
@@ -256,8 +256,8 @@ public class CommentService implements Serializable {
         sb.append(", ").append(orderSn);
         sb.append(", ").append(commNote);
         sb.append(", ").append(commImg);
-        sb.append(", ").append(inTime);
-        sb.append(", ").append(upTime);
+        sb.append(", ").append(createTime);
+        sb.append(", ").append(updateTime);
         sb.append(", ").append(flag);
         sb.append(", ").append(delFlag);
 

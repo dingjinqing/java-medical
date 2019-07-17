@@ -23,14 +23,15 @@ import javax.annotation.Generated;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class FootprintRecord implements Serializable {
 
-    private static final long serialVersionUID = 1719110501;
+    private static final long serialVersionUID = -200671342;
 
     private Integer   id;
     private Integer   goodsId;
     private Integer   userId;
-    private Timestamp updateTime;
     private Integer   count;
     private Byte      type;
+    private Timestamp createTime;
+    private Timestamp updateTime;
 
     public FootprintRecord() {}
 
@@ -38,25 +39,28 @@ public class FootprintRecord implements Serializable {
         this.id = value.id;
         this.goodsId = value.goodsId;
         this.userId = value.userId;
-        this.updateTime = value.updateTime;
         this.count = value.count;
         this.type = value.type;
+        this.createTime = value.createTime;
+        this.updateTime = value.updateTime;
     }
 
     public FootprintRecord(
         Integer   id,
         Integer   goodsId,
         Integer   userId,
-        Timestamp updateTime,
         Integer   count,
-        Byte      type
+        Byte      type,
+        Timestamp createTime,
+        Timestamp updateTime
     ) {
         this.id = id;
         this.goodsId = goodsId;
         this.userId = userId;
-        this.updateTime = updateTime;
         this.count = count;
         this.type = type;
+        this.createTime = createTime;
+        this.updateTime = updateTime;
     }
 
     public Integer getId() {
@@ -83,14 +87,6 @@ public class FootprintRecord implements Serializable {
         this.userId = userId;
     }
 
-    public Timestamp getUpdateTime() {
-        return this.updateTime;
-    }
-
-    public void setUpdateTime(Timestamp updateTime) {
-        this.updateTime = updateTime;
-    }
-
     public Integer getCount() {
         return this.count;
     }
@@ -107,6 +103,22 @@ public class FootprintRecord implements Serializable {
         this.type = type;
     }
 
+    public Timestamp getCreateTime() {
+        return this.createTime;
+    }
+
+    public void setCreateTime(Timestamp createTime) {
+        this.createTime = createTime;
+    }
+
+    public Timestamp getUpdateTime() {
+        return this.updateTime;
+    }
+
+    public void setUpdateTime(Timestamp updateTime) {
+        this.updateTime = updateTime;
+    }
+
     @Override
     public String toString() {
         StringBuilder sb = new StringBuilder("FootprintRecord (");
@@ -114,9 +126,10 @@ public class FootprintRecord implements Serializable {
         sb.append(id);
         sb.append(", ").append(goodsId);
         sb.append(", ").append(userId);
-        sb.append(", ").append(updateTime);
         sb.append(", ").append(count);
         sb.append(", ").append(type);
+        sb.append(", ").append(createTime);
+        sb.append(", ").append(updateTime);
 
         sb.append(")");
         return sb.toString();

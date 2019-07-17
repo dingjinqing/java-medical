@@ -27,17 +27,17 @@ import org.jooq.impl.UpdatableRecordImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class PresaleRecord extends UpdatableRecordImpl<PresaleRecord> {
 
-    private static final long serialVersionUID = 1022235856;
+    private static final long serialVersionUID = 665377578;
 
     /**
-     * Setter for <code>mini_shop_471752.b2c_presale.id</code>. 活动ID
+     * Setter for <code>mini_shop_471752.b2c_presale.id</code>. 活动id
      */
     public void setId(Integer value) {
         set(0, value);
     }
 
     /**
-     * Getter for <code>mini_shop_471752.b2c_presale.id</code>. 活动ID
+     * Getter for <code>mini_shop_471752.b2c_presale.id</code>. 活动id
      */
     public Integer getId() {
         return (Integer) get(0);
@@ -170,14 +170,14 @@ public class PresaleRecord extends UpdatableRecordImpl<PresaleRecord> {
     }
 
     /**
-     * Setter for <code>mini_shop_471752.b2c_presale.goods_id</code>. 商品ID
+     * Setter for <code>mini_shop_471752.b2c_presale.goods_id</code>. 商品id
      */
     public void setGoodsId(Integer value) {
         set(10, value);
     }
 
     /**
-     * Getter for <code>mini_shop_471752.b2c_presale.goods_id</code>. 商品ID
+     * Getter for <code>mini_shop_471752.b2c_presale.goods_id</code>. 商品id
      */
     public Integer getGoodsId() {
         return (Integer) get(10);
@@ -324,28 +324,28 @@ public class PresaleRecord extends UpdatableRecordImpl<PresaleRecord> {
     }
 
     /**
-     * Setter for <code>mini_shop_471752.b2c_presale.add_time</code>.
+     * Setter for <code>mini_shop_471752.b2c_presale.create_time</code>.
      */
-    public void setAddTime(Timestamp value) {
+    public void setCreateTime(Timestamp value) {
         set(21, value);
     }
 
     /**
-     * Getter for <code>mini_shop_471752.b2c_presale.add_time</code>.
+     * Getter for <code>mini_shop_471752.b2c_presale.create_time</code>.
      */
-    public Timestamp getAddTime() {
+    public Timestamp getCreateTime() {
         return (Timestamp) get(21);
     }
 
     /**
-     * Setter for <code>mini_shop_471752.b2c_presale.update_time</code>.
+     * Setter for <code>mini_shop_471752.b2c_presale.update_time</code>. 最后修改时间
      */
     public void setUpdateTime(Timestamp value) {
         set(22, value);
     }
 
     /**
-     * Getter for <code>mini_shop_471752.b2c_presale.update_time</code>.
+     * Getter for <code>mini_shop_471752.b2c_presale.update_time</code>. 最后修改时间
      */
     public Timestamp getUpdateTime() {
         return (Timestamp) get(22);
@@ -391,7 +391,7 @@ public class PresaleRecord extends UpdatableRecordImpl<PresaleRecord> {
     /**
      * Create a detached, initialised PresaleRecord
      */
-    public PresaleRecord(Integer id, Byte presaleType, String presaleName, Byte prePayStep, Timestamp preStartTime, Timestamp preEndTime, Timestamp preStartTime_2, Timestamp preEndTime_2, Timestamp startTime, Timestamp endTime, Integer goodsId, Byte deliverType, Timestamp deliverTime, Integer deliverDays, Byte discountType, Byte returnType, Integer showSaleNumber, Byte buyType, Integer buyNumber, Byte status, Byte delFlag, Timestamp addTime, Timestamp updateTime, String shareConfig) {
+    public PresaleRecord(Integer id, Byte presaleType, String presaleName, Byte prePayStep, Timestamp preStartTime, Timestamp preEndTime, Timestamp preStartTime_2, Timestamp preEndTime_2, Timestamp startTime, Timestamp endTime, Integer goodsId, Byte deliverType, Timestamp deliverTime, Integer deliverDays, Byte discountType, Byte returnType, Integer showSaleNumber, Byte buyType, Integer buyNumber, Byte status, Byte delFlag, Timestamp createTime, Timestamp updateTime, String shareConfig) {
         super(Presale.PRESALE);
 
         set(0, id);
@@ -415,7 +415,7 @@ public class PresaleRecord extends UpdatableRecordImpl<PresaleRecord> {
         set(18, buyNumber);
         set(19, status);
         set(20, delFlag);
-        set(21, addTime);
+        set(21, createTime);
         set(22, updateTime);
         set(23, shareConfig);
     }

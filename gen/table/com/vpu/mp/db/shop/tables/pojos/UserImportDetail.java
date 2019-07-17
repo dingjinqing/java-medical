@@ -24,7 +24,7 @@ import javax.annotation.Generated;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class UserImportDetail implements Serializable {
 
-    private static final long serialVersionUID = -170628336;
+    private static final long serialVersionUID = 1501672587;
 
     private Integer    id;
     private Integer    batchId;
@@ -46,7 +46,8 @@ public class UserImportDetail implements Serializable {
     private String     errorMsg;
     private String     cardId;
     private Byte       isActivate;
-    private Timestamp  addTime;
+    private Timestamp  createTime;
+    private Timestamp  updateTime;
 
     public UserImportDetail() {}
 
@@ -71,7 +72,8 @@ public class UserImportDetail implements Serializable {
         this.errorMsg = value.errorMsg;
         this.cardId = value.cardId;
         this.isActivate = value.isActivate;
-        this.addTime = value.addTime;
+        this.createTime = value.createTime;
+        this.updateTime = value.updateTime;
     }
 
     public UserImportDetail(
@@ -95,7 +97,8 @@ public class UserImportDetail implements Serializable {
         String     errorMsg,
         String     cardId,
         Byte       isActivate,
-        Timestamp  addTime
+        Timestamp  createTime,
+        Timestamp  updateTime
     ) {
         this.id = id;
         this.batchId = batchId;
@@ -117,7 +120,8 @@ public class UserImportDetail implements Serializable {
         this.errorMsg = errorMsg;
         this.cardId = cardId;
         this.isActivate = isActivate;
-        this.addTime = addTime;
+        this.createTime = createTime;
+        this.updateTime = updateTime;
     }
 
     public Integer getId() {
@@ -280,12 +284,20 @@ public class UserImportDetail implements Serializable {
         this.isActivate = isActivate;
     }
 
-    public Timestamp getAddTime() {
-        return this.addTime;
+    public Timestamp getCreateTime() {
+        return this.createTime;
     }
 
-    public void setAddTime(Timestamp addTime) {
-        this.addTime = addTime;
+    public void setCreateTime(Timestamp createTime) {
+        this.createTime = createTime;
+    }
+
+    public Timestamp getUpdateTime() {
+        return this.updateTime;
+    }
+
+    public void setUpdateTime(Timestamp updateTime) {
+        this.updateTime = updateTime;
     }
 
     @Override
@@ -312,7 +324,8 @@ public class UserImportDetail implements Serializable {
         sb.append(", ").append(errorMsg);
         sb.append(", ").append(cardId);
         sb.append(", ").append(isActivate);
-        sb.append(", ").append(addTime);
+        sb.append(", ").append(createTime);
+        sb.append(", ").append(updateTime);
 
         sb.append(")");
         return sb.toString();

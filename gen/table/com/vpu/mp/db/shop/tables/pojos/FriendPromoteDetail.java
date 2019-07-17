@@ -23,14 +23,14 @@ import javax.annotation.Generated;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class FriendPromoteDetail implements Serializable {
 
-    private static final long serialVersionUID = -703387420;
+    private static final long serialVersionUID = -1650841074;
 
     private Integer   id;
     private Integer   launchId;
     private Integer   userId;
     private Integer   promoteId;
     private Integer   promoteValue;
-    private Timestamp promoteTime;
+    private Timestamp createTime;
     private Timestamp updateTime;
 
     public FriendPromoteDetail() {}
@@ -41,7 +41,7 @@ public class FriendPromoteDetail implements Serializable {
         this.userId = value.userId;
         this.promoteId = value.promoteId;
         this.promoteValue = value.promoteValue;
-        this.promoteTime = value.promoteTime;
+        this.createTime = value.createTime;
         this.updateTime = value.updateTime;
     }
 
@@ -51,7 +51,7 @@ public class FriendPromoteDetail implements Serializable {
         Integer   userId,
         Integer   promoteId,
         Integer   promoteValue,
-        Timestamp promoteTime,
+        Timestamp createTime,
         Timestamp updateTime
     ) {
         this.id = id;
@@ -59,7 +59,7 @@ public class FriendPromoteDetail implements Serializable {
         this.userId = userId;
         this.promoteId = promoteId;
         this.promoteValue = promoteValue;
-        this.promoteTime = promoteTime;
+        this.createTime = createTime;
         this.updateTime = updateTime;
     }
 
@@ -103,12 +103,12 @@ public class FriendPromoteDetail implements Serializable {
         this.promoteValue = promoteValue;
     }
 
-    public Timestamp getPromoteTime() {
-        return this.promoteTime;
+    public Timestamp getCreateTime() {
+        return this.createTime;
     }
 
-    public void setPromoteTime(Timestamp promoteTime) {
-        this.promoteTime = promoteTime;
+    public void setCreateTime(Timestamp createTime) {
+        this.createTime = createTime;
     }
 
     public Timestamp getUpdateTime() {
@@ -128,7 +128,7 @@ public class FriendPromoteDetail implements Serializable {
         sb.append(", ").append(userId);
         sb.append(", ").append(promoteId);
         sb.append(", ").append(promoteValue);
-        sb.append(", ").append(promoteTime);
+        sb.append(", ").append(createTime);
         sb.append(", ").append(updateTime);
 
         sb.append(")");

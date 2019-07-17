@@ -23,7 +23,7 @@ import javax.annotation.Generated;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class CardUpgrade implements Serializable {
 
-    private static final long serialVersionUID = -1904806428;
+    private static final long serialVersionUID = -608388013;
 
     private Integer   id;
     private Integer   userId;
@@ -35,7 +35,8 @@ public class CardUpgrade implements Serializable {
     private String    newCardName;
     private String    gradeCondition;
     private String    operate;
-    private Timestamp inTime;
+    private Timestamp createTime;
+    private Timestamp updateTime;
 
     public CardUpgrade() {}
 
@@ -50,7 +51,8 @@ public class CardUpgrade implements Serializable {
         this.newCardName = value.newCardName;
         this.gradeCondition = value.gradeCondition;
         this.operate = value.operate;
-        this.inTime = value.inTime;
+        this.createTime = value.createTime;
+        this.updateTime = value.updateTime;
     }
 
     public CardUpgrade(
@@ -64,7 +66,8 @@ public class CardUpgrade implements Serializable {
         String    newCardName,
         String    gradeCondition,
         String    operate,
-        Timestamp inTime
+        Timestamp createTime,
+        Timestamp updateTime
     ) {
         this.id = id;
         this.userId = userId;
@@ -76,7 +79,8 @@ public class CardUpgrade implements Serializable {
         this.newCardName = newCardName;
         this.gradeCondition = gradeCondition;
         this.operate = operate;
-        this.inTime = inTime;
+        this.createTime = createTime;
+        this.updateTime = updateTime;
     }
 
     public Integer getId() {
@@ -159,12 +163,20 @@ public class CardUpgrade implements Serializable {
         this.operate = operate;
     }
 
-    public Timestamp getInTime() {
-        return this.inTime;
+    public Timestamp getCreateTime() {
+        return this.createTime;
     }
 
-    public void setInTime(Timestamp inTime) {
-        this.inTime = inTime;
+    public void setCreateTime(Timestamp createTime) {
+        this.createTime = createTime;
+    }
+
+    public Timestamp getUpdateTime() {
+        return this.updateTime;
+    }
+
+    public void setUpdateTime(Timestamp updateTime) {
+        this.updateTime = updateTime;
     }
 
     @Override
@@ -181,7 +193,8 @@ public class CardUpgrade implements Serializable {
         sb.append(", ").append(newCardName);
         sb.append(", ").append(gradeCondition);
         sb.append(", ").append(operate);
-        sb.append(", ").append(inTime);
+        sb.append(", ").append(createTime);
+        sb.append(", ").append(updateTime);
 
         sb.append(")");
         return sb.toString();

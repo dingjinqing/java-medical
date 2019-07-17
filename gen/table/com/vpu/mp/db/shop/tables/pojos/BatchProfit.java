@@ -24,15 +24,15 @@ import javax.annotation.Generated;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class BatchProfit implements Serializable {
 
-    private static final long serialVersionUID = -684882060;
+    private static final long serialVersionUID = -429618187;
 
     private Integer    id;
     private Integer    brandId;
     private Integer    sortId;
     private Integer    actId;
     private BigDecimal profitPer;
-    private Timestamp  addTime;
     private String     fileName;
+    private Timestamp  createTime;
     private Timestamp  updateTime;
 
     public BatchProfit() {}
@@ -43,8 +43,8 @@ public class BatchProfit implements Serializable {
         this.sortId = value.sortId;
         this.actId = value.actId;
         this.profitPer = value.profitPer;
-        this.addTime = value.addTime;
         this.fileName = value.fileName;
+        this.createTime = value.createTime;
         this.updateTime = value.updateTime;
     }
 
@@ -54,8 +54,8 @@ public class BatchProfit implements Serializable {
         Integer    sortId,
         Integer    actId,
         BigDecimal profitPer,
-        Timestamp  addTime,
         String     fileName,
+        Timestamp  createTime,
         Timestamp  updateTime
     ) {
         this.id = id;
@@ -63,8 +63,8 @@ public class BatchProfit implements Serializable {
         this.sortId = sortId;
         this.actId = actId;
         this.profitPer = profitPer;
-        this.addTime = addTime;
         this.fileName = fileName;
+        this.createTime = createTime;
         this.updateTime = updateTime;
     }
 
@@ -108,20 +108,20 @@ public class BatchProfit implements Serializable {
         this.profitPer = profitPer;
     }
 
-    public Timestamp getAddTime() {
-        return this.addTime;
-    }
-
-    public void setAddTime(Timestamp addTime) {
-        this.addTime = addTime;
-    }
-
     public String getFileName() {
         return this.fileName;
     }
 
     public void setFileName(String fileName) {
         this.fileName = fileName;
+    }
+
+    public Timestamp getCreateTime() {
+        return this.createTime;
+    }
+
+    public void setCreateTime(Timestamp createTime) {
+        this.createTime = createTime;
     }
 
     public Timestamp getUpdateTime() {
@@ -141,8 +141,8 @@ public class BatchProfit implements Serializable {
         sb.append(", ").append(sortId);
         sb.append(", ").append(actId);
         sb.append(", ").append(profitPer);
-        sb.append(", ").append(addTime);
         sb.append(", ").append(fileName);
+        sb.append(", ").append(createTime);
         sb.append(", ").append(updateTime);
 
         sb.append(")");

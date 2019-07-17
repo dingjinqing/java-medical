@@ -39,7 +39,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class MpSummaryTrend extends TableImpl<MpSummaryTrendRecord> {
 
-    private static final long serialVersionUID = 1094808001;
+    private static final long serialVersionUID = 734343719;
 
     /**
      * The reference instance of <code>mini_shop_471752.b2c_mp_summary_trend</code>
@@ -75,9 +75,14 @@ public class MpSummaryTrend extends TableImpl<MpSummaryTrendRecord> {
     public final TableField<MpSummaryTrendRecord, Integer> SHARE_UV = createField("share_uv", org.jooq.impl.SQLDataType.INTEGER.nullable(false).defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.INTEGER)), this, "转发人数");
 
     /**
-     * The column <code>mini_shop_471752.b2c_mp_summary_trend.add_time</code>. 添加时间
+     * The column <code>mini_shop_471752.b2c_mp_summary_trend.create_time</code>.
      */
-    public final TableField<MpSummaryTrendRecord, Timestamp> ADD_TIME = createField("add_time", org.jooq.impl.SQLDataType.TIMESTAMP.defaultValue(org.jooq.impl.DSL.field("CURRENT_TIMESTAMP", org.jooq.impl.SQLDataType.TIMESTAMP)), this, "添加时间");
+    public final TableField<MpSummaryTrendRecord, Timestamp> CREATE_TIME = createField("create_time", org.jooq.impl.SQLDataType.TIMESTAMP.nullable(false).defaultValue(org.jooq.impl.DSL.field("CURRENT_TIMESTAMP", org.jooq.impl.SQLDataType.TIMESTAMP)), this, "");
+
+    /**
+     * The column <code>mini_shop_471752.b2c_mp_summary_trend.update_time</code>. 最后修改时间
+     */
+    public final TableField<MpSummaryTrendRecord, Timestamp> UPDATE_TIME = createField("update_time", org.jooq.impl.SQLDataType.TIMESTAMP.nullable(false).defaultValue(org.jooq.impl.DSL.field("CURRENT_TIMESTAMP", org.jooq.impl.SQLDataType.TIMESTAMP)), this, "最后修改时间");
 
     /**
      * Create a <code>mini_shop_471752.b2c_mp_summary_trend</code> table reference

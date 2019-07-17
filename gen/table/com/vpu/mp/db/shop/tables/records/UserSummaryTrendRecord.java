@@ -29,7 +29,7 @@ import org.jooq.impl.UpdatableRecordImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class UserSummaryTrendRecord extends UpdatableRecordImpl<UserSummaryTrendRecord> {
 
-    private static final long serialVersionUID = 1615591535;
+    private static final long serialVersionUID = 1704753622;
 
     /**
      * Setter for <code>mini_shop_471752.b2c_user_summary_trend.id</code>.
@@ -354,17 +354,31 @@ public class UserSummaryTrendRecord extends UpdatableRecordImpl<UserSummaryTrend
     }
 
     /**
-     * Setter for <code>mini_shop_471752.b2c_user_summary_trend.add_time</code>. 统计时间
+     * Setter for <code>mini_shop_471752.b2c_user_summary_trend.create_time</code>.
      */
-    public void setAddTime(Timestamp value) {
+    public void setCreateTime(Timestamp value) {
         set(23, value);
     }
 
     /**
-     * Getter for <code>mini_shop_471752.b2c_user_summary_trend.add_time</code>. 统计时间
+     * Getter for <code>mini_shop_471752.b2c_user_summary_trend.create_time</code>.
      */
-    public Timestamp getAddTime() {
+    public Timestamp getCreateTime() {
         return (Timestamp) get(23);
+    }
+
+    /**
+     * Setter for <code>mini_shop_471752.b2c_user_summary_trend.update_time</code>. 最后修改时间
+     */
+    public void setUpdateTime(Timestamp value) {
+        set(24, value);
+    }
+
+    /**
+     * Getter for <code>mini_shop_471752.b2c_user_summary_trend.update_time</code>. 最后修改时间
+     */
+    public Timestamp getUpdateTime() {
+        return (Timestamp) get(24);
     }
 
     // -------------------------------------------------------------------------
@@ -393,7 +407,7 @@ public class UserSummaryTrendRecord extends UpdatableRecordImpl<UserSummaryTrend
     /**
      * Create a detached, initialised UserSummaryTrendRecord
      */
-    public UserSummaryTrendRecord(Integer id, Date refDate, Byte type, Integer loginData, Integer userData, Integer couponData, Integer cartData, Integer regUserData, Integer upgradeUserData, Integer chargeUserData, Integer orderUserData, Integer newOrderUserData, Integer oldOrderUserData, Integer totalPaidMoney, BigDecimal newPaidMoney, Long oldPaidMoney, Integer payGoodsNumber, Integer newPayGoodsNumber, Integer oldPayGoodsNumber, Integer payOrderNum, Integer loginPv, Integer orderNum, Integer orderUserNum, Timestamp addTime) {
+    public UserSummaryTrendRecord(Integer id, Date refDate, Byte type, Integer loginData, Integer userData, Integer couponData, Integer cartData, Integer regUserData, Integer upgradeUserData, Integer chargeUserData, Integer orderUserData, Integer newOrderUserData, Integer oldOrderUserData, Integer totalPaidMoney, BigDecimal newPaidMoney, Long oldPaidMoney, Integer payGoodsNumber, Integer newPayGoodsNumber, Integer oldPayGoodsNumber, Integer payOrderNum, Integer loginPv, Integer orderNum, Integer orderUserNum, Timestamp createTime, Timestamp updateTime) {
         super(UserSummaryTrend.USER_SUMMARY_TREND);
 
         set(0, id);
@@ -419,6 +433,7 @@ public class UserSummaryTrendRecord extends UpdatableRecordImpl<UserSummaryTrend
         set(20, loginPv);
         set(21, orderNum);
         set(22, orderUserNum);
-        set(23, addTime);
+        set(23, createTime);
+        set(24, updateTime);
     }
 }

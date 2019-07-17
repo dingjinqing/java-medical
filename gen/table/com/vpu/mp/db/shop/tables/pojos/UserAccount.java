@@ -24,19 +24,20 @@ import javax.annotation.Generated;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class UserAccount implements Serializable {
 
-    private static final long serialVersionUID = -2002682475;
+    private static final long serialVersionUID = 408987158;
 
     private Integer    id;
     private Integer    userId;
     private String     adminUser;
     private String     orderSn;
     private BigDecimal amount;
-    private Timestamp  addTime;
     private String     adminNote;
     private String     payment;
     private Byte       isPaid;
     private String     remark;
     private Byte       source;
+    private Timestamp  createTime;
+    private Timestamp  updateTime;
 
     public UserAccount() {}
 
@@ -46,12 +47,13 @@ public class UserAccount implements Serializable {
         this.adminUser = value.adminUser;
         this.orderSn = value.orderSn;
         this.amount = value.amount;
-        this.addTime = value.addTime;
         this.adminNote = value.adminNote;
         this.payment = value.payment;
         this.isPaid = value.isPaid;
         this.remark = value.remark;
         this.source = value.source;
+        this.createTime = value.createTime;
+        this.updateTime = value.updateTime;
     }
 
     public UserAccount(
@@ -60,24 +62,26 @@ public class UserAccount implements Serializable {
         String     adminUser,
         String     orderSn,
         BigDecimal amount,
-        Timestamp  addTime,
         String     adminNote,
         String     payment,
         Byte       isPaid,
         String     remark,
-        Byte       source
+        Byte       source,
+        Timestamp  createTime,
+        Timestamp  updateTime
     ) {
         this.id = id;
         this.userId = userId;
         this.adminUser = adminUser;
         this.orderSn = orderSn;
         this.amount = amount;
-        this.addTime = addTime;
         this.adminNote = adminNote;
         this.payment = payment;
         this.isPaid = isPaid;
         this.remark = remark;
         this.source = source;
+        this.createTime = createTime;
+        this.updateTime = updateTime;
     }
 
     public Integer getId() {
@@ -120,14 +124,6 @@ public class UserAccount implements Serializable {
         this.amount = amount;
     }
 
-    public Timestamp getAddTime() {
-        return this.addTime;
-    }
-
-    public void setAddTime(Timestamp addTime) {
-        this.addTime = addTime;
-    }
-
     public String getAdminNote() {
         return this.adminNote;
     }
@@ -168,6 +164,22 @@ public class UserAccount implements Serializable {
         this.source = source;
     }
 
+    public Timestamp getCreateTime() {
+        return this.createTime;
+    }
+
+    public void setCreateTime(Timestamp createTime) {
+        this.createTime = createTime;
+    }
+
+    public Timestamp getUpdateTime() {
+        return this.updateTime;
+    }
+
+    public void setUpdateTime(Timestamp updateTime) {
+        this.updateTime = updateTime;
+    }
+
     @Override
     public String toString() {
         StringBuilder sb = new StringBuilder("UserAccount (");
@@ -177,12 +189,13 @@ public class UserAccount implements Serializable {
         sb.append(", ").append(adminUser);
         sb.append(", ").append(orderSn);
         sb.append(", ").append(amount);
-        sb.append(", ").append(addTime);
         sb.append(", ").append(adminNote);
         sb.append(", ").append(payment);
         sb.append(", ").append(isPaid);
         sb.append(", ").append(remark);
         sb.append(", ").append(source);
+        sb.append(", ").append(createTime);
+        sb.append(", ").append(updateTime);
 
         sb.append(")");
         return sb.toString();

@@ -24,7 +24,7 @@ import javax.annotation.Generated;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class DistributionOrder implements Serializable {
 
-    private static final long serialVersionUID = -1413809119;
+    private static final long serialVersionUID = 17681066;
 
     private String     refDate;
     private String     province;
@@ -38,7 +38,8 @@ public class DistributionOrder implements Serializable {
     private Integer    uv;
     private BigDecimal uvPayRatio;
     private Integer    orderNum;
-    private Timestamp  addTime;
+    private Timestamp  createTime;
+    private Timestamp  updateTime;
 
     public DistributionOrder() {}
 
@@ -55,7 +56,8 @@ public class DistributionOrder implements Serializable {
         this.uv = value.uv;
         this.uvPayRatio = value.uvPayRatio;
         this.orderNum = value.orderNum;
-        this.addTime = value.addTime;
+        this.createTime = value.createTime;
+        this.updateTime = value.updateTime;
     }
 
     public DistributionOrder(
@@ -71,7 +73,8 @@ public class DistributionOrder implements Serializable {
         Integer    uv,
         BigDecimal uvPayRatio,
         Integer    orderNum,
-        Timestamp  addTime
+        Timestamp  createTime,
+        Timestamp  updateTime
     ) {
         this.refDate = refDate;
         this.province = province;
@@ -85,7 +88,8 @@ public class DistributionOrder implements Serializable {
         this.uv = uv;
         this.uvPayRatio = uvPayRatio;
         this.orderNum = orderNum;
-        this.addTime = addTime;
+        this.createTime = createTime;
+        this.updateTime = updateTime;
     }
 
     public String getRefDate() {
@@ -184,12 +188,20 @@ public class DistributionOrder implements Serializable {
         this.orderNum = orderNum;
     }
 
-    public Timestamp getAddTime() {
-        return this.addTime;
+    public Timestamp getCreateTime() {
+        return this.createTime;
     }
 
-    public void setAddTime(Timestamp addTime) {
-        this.addTime = addTime;
+    public void setCreateTime(Timestamp createTime) {
+        this.createTime = createTime;
+    }
+
+    public Timestamp getUpdateTime() {
+        return this.updateTime;
+    }
+
+    public void setUpdateTime(Timestamp updateTime) {
+        this.updateTime = updateTime;
     }
 
     @Override
@@ -208,7 +220,8 @@ public class DistributionOrder implements Serializable {
         sb.append(", ").append(uv);
         sb.append(", ").append(uvPayRatio);
         sb.append(", ").append(orderNum);
-        sb.append(", ").append(addTime);
+        sb.append(", ").append(createTime);
+        sb.append(", ").append(updateTime);
 
         sb.append(")");
         return sb.toString();

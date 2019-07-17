@@ -23,16 +23,17 @@ import javax.annotation.Generated;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class UploadedImageCategory implements Serializable {
 
-    private static final long serialVersionUID = -1327973018;
+    private static final long serialVersionUID = 1473305238;
 
     private Integer   imgCatId;
     private Integer   shopId;
     private String    imgCatName;
     private Integer   imgCatParentId;
-    private Timestamp createTime;
     private String    catIds;
     private Byte      level;
     private Integer   sort;
+    private Timestamp createTime;
+    private Timestamp updateTime;
 
     public UploadedImageCategory() {}
 
@@ -41,10 +42,11 @@ public class UploadedImageCategory implements Serializable {
         this.shopId = value.shopId;
         this.imgCatName = value.imgCatName;
         this.imgCatParentId = value.imgCatParentId;
-        this.createTime = value.createTime;
         this.catIds = value.catIds;
         this.level = value.level;
         this.sort = value.sort;
+        this.createTime = value.createTime;
+        this.updateTime = value.updateTime;
     }
 
     public UploadedImageCategory(
@@ -52,19 +54,21 @@ public class UploadedImageCategory implements Serializable {
         Integer   shopId,
         String    imgCatName,
         Integer   imgCatParentId,
-        Timestamp createTime,
         String    catIds,
         Byte      level,
-        Integer   sort
+        Integer   sort,
+        Timestamp createTime,
+        Timestamp updateTime
     ) {
         this.imgCatId = imgCatId;
         this.shopId = shopId;
         this.imgCatName = imgCatName;
         this.imgCatParentId = imgCatParentId;
-        this.createTime = createTime;
         this.catIds = catIds;
         this.level = level;
         this.sort = sort;
+        this.createTime = createTime;
+        this.updateTime = updateTime;
     }
 
     public Integer getImgCatId() {
@@ -99,14 +103,6 @@ public class UploadedImageCategory implements Serializable {
         this.imgCatParentId = imgCatParentId;
     }
 
-    public Timestamp getCreateTime() {
-        return this.createTime;
-    }
-
-    public void setCreateTime(Timestamp createTime) {
-        this.createTime = createTime;
-    }
-
     public String getCatIds() {
         return this.catIds;
     }
@@ -131,6 +127,22 @@ public class UploadedImageCategory implements Serializable {
         this.sort = sort;
     }
 
+    public Timestamp getCreateTime() {
+        return this.createTime;
+    }
+
+    public void setCreateTime(Timestamp createTime) {
+        this.createTime = createTime;
+    }
+
+    public Timestamp getUpdateTime() {
+        return this.updateTime;
+    }
+
+    public void setUpdateTime(Timestamp updateTime) {
+        this.updateTime = updateTime;
+    }
+
     @Override
     public String toString() {
         StringBuilder sb = new StringBuilder("UploadedImageCategory (");
@@ -139,10 +151,11 @@ public class UploadedImageCategory implements Serializable {
         sb.append(", ").append(shopId);
         sb.append(", ").append(imgCatName);
         sb.append(", ").append(imgCatParentId);
-        sb.append(", ").append(createTime);
         sb.append(", ").append(catIds);
         sb.append(", ").append(level);
         sb.append(", ").append(sort);
+        sb.append(", ").append(createTime);
+        sb.append(", ").append(updateTime);
 
         sb.append(")");
         return sb.toString();

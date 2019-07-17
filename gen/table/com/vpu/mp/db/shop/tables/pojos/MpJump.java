@@ -23,14 +23,14 @@ import javax.annotation.Generated;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class MpJump implements Serializable {
 
-    private static final long serialVersionUID = 2010899464;
+    private static final long serialVersionUID = -999257057;
 
     private Integer   id;
     private String    appId;
     private String    appName;
     private Byte      flag;
-    private Byte      isDelete;
-    private Timestamp addTime;
+    private Byte      delFlag;
+    private Timestamp createTime;
     private Timestamp updateTime;
 
     public MpJump() {}
@@ -40,8 +40,8 @@ public class MpJump implements Serializable {
         this.appId = value.appId;
         this.appName = value.appName;
         this.flag = value.flag;
-        this.isDelete = value.isDelete;
-        this.addTime = value.addTime;
+        this.delFlag = value.delFlag;
+        this.createTime = value.createTime;
         this.updateTime = value.updateTime;
     }
 
@@ -50,16 +50,16 @@ public class MpJump implements Serializable {
         String    appId,
         String    appName,
         Byte      flag,
-        Byte      isDelete,
-        Timestamp addTime,
+        Byte      delFlag,
+        Timestamp createTime,
         Timestamp updateTime
     ) {
         this.id = id;
         this.appId = appId;
         this.appName = appName;
         this.flag = flag;
-        this.isDelete = isDelete;
-        this.addTime = addTime;
+        this.delFlag = delFlag;
+        this.createTime = createTime;
         this.updateTime = updateTime;
     }
 
@@ -95,20 +95,20 @@ public class MpJump implements Serializable {
         this.flag = flag;
     }
 
-    public Byte getIsDelete() {
-        return this.isDelete;
+    public Byte getDelFlag() {
+        return this.delFlag;
     }
 
-    public void setIsDelete(Byte isDelete) {
-        this.isDelete = isDelete;
+    public void setDelFlag(Byte delFlag) {
+        this.delFlag = delFlag;
     }
 
-    public Timestamp getAddTime() {
-        return this.addTime;
+    public Timestamp getCreateTime() {
+        return this.createTime;
     }
 
-    public void setAddTime(Timestamp addTime) {
-        this.addTime = addTime;
+    public void setCreateTime(Timestamp createTime) {
+        this.createTime = createTime;
     }
 
     public Timestamp getUpdateTime() {
@@ -127,8 +127,8 @@ public class MpJump implements Serializable {
         sb.append(", ").append(appId);
         sb.append(", ").append(appName);
         sb.append(", ").append(flag);
-        sb.append(", ").append(isDelete);
-        sb.append(", ").append(addTime);
+        sb.append(", ").append(delFlag);
+        sb.append(", ").append(createTime);
         sb.append(", ").append(updateTime);
 
         sb.append(")");

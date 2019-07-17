@@ -10,6 +10,7 @@ import com.vpu.mp.db.shop.MiniShop_471752;
 import com.vpu.mp.db.shop.tables.records.BatchPriceRecord;
 
 import java.math.BigDecimal;
+import java.sql.Timestamp;
 import java.util.Arrays;
 import java.util.List;
 
@@ -42,7 +43,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class BatchPrice extends TableImpl<BatchPriceRecord> {
 
-    private static final long serialVersionUID = -1184811212;
+    private static final long serialVersionUID = 1840017957;
 
     /**
      * The reference instance of <code>mini_shop_471752.b2c_batch_price</code>
@@ -70,12 +71,22 @@ public class BatchPrice extends TableImpl<BatchPriceRecord> {
     /**
      * The column <code>mini_shop_471752.b2c_batch_price.price</code>. 规格价格
      */
-    public final TableField<BatchPriceRecord, BigDecimal> PRICE = createField("price", org.jooq.impl.SQLDataType.DECIMAL(10, 2).defaultValue(org.jooq.impl.DSL.inline("0.00", org.jooq.impl.SQLDataType.DECIMAL)), this, "规格价格");
+    public final TableField<BatchPriceRecord, BigDecimal> PRICE = createField("price", org.jooq.impl.SQLDataType.DECIMAL(10, 2).nullable(false).defaultValue(org.jooq.impl.DSL.inline("0.00", org.jooq.impl.SQLDataType.DECIMAL)), this, "规格价格");
 
     /**
      * The column <code>mini_shop_471752.b2c_batch_price.act_id</code>. 导入批次
      */
-    public final TableField<BatchPriceRecord, Integer> ACT_ID = createField("act_id", org.jooq.impl.SQLDataType.INTEGER.defaultValue(org.jooq.impl.DSL.inline("1", org.jooq.impl.SQLDataType.INTEGER)), this, "导入批次");
+    public final TableField<BatchPriceRecord, Integer> ACT_ID = createField("act_id", org.jooq.impl.SQLDataType.INTEGER.nullable(false).defaultValue(org.jooq.impl.DSL.inline("1", org.jooq.impl.SQLDataType.INTEGER)), this, "导入批次");
+
+    /**
+     * The column <code>mini_shop_471752.b2c_batch_price.create_time</code>.
+     */
+    public final TableField<BatchPriceRecord, Timestamp> CREATE_TIME = createField("create_time", org.jooq.impl.SQLDataType.TIMESTAMP.nullable(false).defaultValue(org.jooq.impl.DSL.field("CURRENT_TIMESTAMP", org.jooq.impl.SQLDataType.TIMESTAMP)), this, "");
+
+    /**
+     * The column <code>mini_shop_471752.b2c_batch_price.update_time</code>. 最后修改时间
+     */
+    public final TableField<BatchPriceRecord, Timestamp> UPDATE_TIME = createField("update_time", org.jooq.impl.SQLDataType.TIMESTAMP.nullable(false).defaultValue(org.jooq.impl.DSL.field("CURRENT_TIMESTAMP", org.jooq.impl.SQLDataType.TIMESTAMP)), this, "最后修改时间");
 
     /**
      * Create a <code>mini_shop_471752.b2c_batch_price</code> table reference

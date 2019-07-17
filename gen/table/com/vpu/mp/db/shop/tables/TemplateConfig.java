@@ -42,7 +42,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class TemplateConfig extends TableImpl<TemplateConfigRecord> {
 
-    private static final long serialVersionUID = -387142052;
+    private static final long serialVersionUID = 2019514366;
 
     /**
      * The reference instance of <code>mini_shop_471752.b2c_template_config</code>
@@ -78,14 +78,14 @@ public class TemplateConfig extends TableImpl<TemplateConfigRecord> {
     public final TableField<TemplateConfigRecord, String> TITLE = createField("title", org.jooq.impl.SQLDataType.VARCHAR(50).nullable(false), this, "业务标题");
 
     /**
-     * The column <code>mini_shop_471752.b2c_template_config.template_id</code>. 选择的模板ID
+     * The column <code>mini_shop_471752.b2c_template_config.template_id</code>. 选择的模板id
      */
-    public final TableField<TemplateConfigRecord, Integer> TEMPLATE_ID = createField("template_id", org.jooq.impl.SQLDataType.INTEGER.defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.INTEGER)), this, "选择的模板ID");
+    public final TableField<TemplateConfigRecord, Integer> TEMPLATE_ID = createField("template_id", org.jooq.impl.SQLDataType.INTEGER.nullable(false).defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.INTEGER)), this, "选择的模板id");
 
     /**
      * The column <code>mini_shop_471752.b2c_template_config.content</code>. 业务内容
      */
-    public final TableField<TemplateConfigRecord, String> CONTENT = createField("content", org.jooq.impl.SQLDataType.CLOB.nullable(false), this, "业务内容");
+    public final TableField<TemplateConfigRecord, String> CONTENT = createField("content", org.jooq.impl.SQLDataType.CLOB, this, "业务内容");
 
     /**
      * The column <code>mini_shop_471752.b2c_template_config.page_link</code>. 页面链接
@@ -110,7 +110,7 @@ public class TemplateConfig extends TableImpl<TemplateConfigRecord> {
     /**
      * The column <code>mini_shop_471752.b2c_template_config.send_status</code>. 发送完成 1： 完成
      */
-    public final TableField<TemplateConfigRecord, Byte> SEND_STATUS = createField("send_status", org.jooq.impl.SQLDataType.TINYINT.defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.TINYINT)), this, "发送完成 1： 完成");
+    public final TableField<TemplateConfigRecord, Byte> SEND_STATUS = createField("send_status", org.jooq.impl.SQLDataType.TINYINT.nullable(false).defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.TINYINT)), this, "发送完成 1： 完成");
 
     /**
      * The column <code>mini_shop_471752.b2c_template_config.start_time</code>. 发送起始时间
@@ -128,19 +128,19 @@ public class TemplateConfig extends TableImpl<TemplateConfigRecord> {
     public final TableField<TemplateConfigRecord, Byte> DEL_FLAG = createField("del_flag", org.jooq.impl.SQLDataType.TINYINT.nullable(false).defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.TINYINT)), this, "删除标识");
 
     /**
-     * The column <code>mini_shop_471752.b2c_template_config.add_time</code>.
-     */
-    public final TableField<TemplateConfigRecord, Timestamp> ADD_TIME = createField("add_time", org.jooq.impl.SQLDataType.TIMESTAMP.nullable(false), this, "");
-
-    /**
-     * The column <code>mini_shop_471752.b2c_template_config.update_time</code>.
-     */
-    public final TableField<TemplateConfigRecord, Timestamp> UPDATE_TIME = createField("update_time", org.jooq.impl.SQLDataType.TIMESTAMP.nullable(false), this, "");
-
-    /**
      * The column <code>mini_shop_471752.b2c_template_config.del_time</code>.
      */
-    public final TableField<TemplateConfigRecord, Integer> DEL_TIME = createField("del_time", org.jooq.impl.SQLDataType.INTEGER.defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.INTEGER)), this, "");
+    public final TableField<TemplateConfigRecord, Timestamp> DEL_TIME = createField("del_time", org.jooq.impl.SQLDataType.TIMESTAMP, this, "");
+
+    /**
+     * The column <code>mini_shop_471752.b2c_template_config.create_time</code>.
+     */
+    public final TableField<TemplateConfigRecord, Timestamp> CREATE_TIME = createField("create_time", org.jooq.impl.SQLDataType.TIMESTAMP.nullable(false).defaultValue(org.jooq.impl.DSL.field("CURRENT_TIMESTAMP", org.jooq.impl.SQLDataType.TIMESTAMP)), this, "");
+
+    /**
+     * The column <code>mini_shop_471752.b2c_template_config.update_time</code>. 最后修改时间
+     */
+    public final TableField<TemplateConfigRecord, Timestamp> UPDATE_TIME = createField("update_time", org.jooq.impl.SQLDataType.TIMESTAMP.nullable(false).defaultValue(org.jooq.impl.DSL.field("CURRENT_TIMESTAMP", org.jooq.impl.SQLDataType.TIMESTAMP)), this, "最后修改时间");
 
     /**
      * Create a <code>mini_shop_471752.b2c_template_config</code> table reference

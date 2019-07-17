@@ -43,7 +43,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class OrderInfo extends TableImpl<OrderInfoRecord> {
 
-    private static final long serialVersionUID = -453334307;
+    private static final long serialVersionUID = -1108108056;
 
     /**
      * The reference instance of <code>mini_shop_471752.b2c_order_info</code>
@@ -59,14 +59,14 @@ public class OrderInfo extends TableImpl<OrderInfoRecord> {
     }
 
     /**
-     * The column <code>mini_shop_471752.b2c_order_info.order_id</code>. 订单ID
+     * The column <code>mini_shop_471752.b2c_order_info.order_id</code>. 订单id
      */
-    public final TableField<OrderInfoRecord, Integer> ORDER_ID = createField("order_id", org.jooq.impl.SQLDataType.INTEGER.nullable(false).identity(true), this, "订单ID");
+    public final TableField<OrderInfoRecord, Integer> ORDER_ID = createField("order_id", org.jooq.impl.SQLDataType.INTEGER.nullable(false).identity(true), this, "订单id");
 
     /**
-     * The column <code>mini_shop_471752.b2c_order_info.shop_id</code>. 店铺ID
+     * The column <code>mini_shop_471752.b2c_order_info.shop_id</code>. 店铺id
      */
-    public final TableField<OrderInfoRecord, Integer> SHOP_ID = createField("shop_id", org.jooq.impl.SQLDataType.INTEGER.nullable(false).defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.INTEGER)), this, "店铺ID");
+    public final TableField<OrderInfoRecord, Integer> SHOP_ID = createField("shop_id", org.jooq.impl.SQLDataType.INTEGER.nullable(false).defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.INTEGER)), this, "店铺id");
 
     /**
      * The column <code>mini_shop_471752.b2c_order_info.order_sn</code>. 订单编号
@@ -79,14 +79,14 @@ public class OrderInfo extends TableImpl<OrderInfoRecord> {
     public final TableField<OrderInfoRecord, String> MAIN_ORDER_SN = createField("main_order_sn", org.jooq.impl.SQLDataType.VARCHAR(20).nullable(false).defaultValue(org.jooq.impl.DSL.inline("", org.jooq.impl.SQLDataType.VARCHAR)), this, "主订单编号(拆单时用)");
 
     /**
-     * The column <code>mini_shop_471752.b2c_order_info.user_id</code>. 用户ID
+     * The column <code>mini_shop_471752.b2c_order_info.user_id</code>. 用户id
      */
-    public final TableField<OrderInfoRecord, Integer> USER_ID = createField("user_id", org.jooq.impl.SQLDataType.INTEGER.nullable(false).defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.INTEGER)), this, "用户ID");
+    public final TableField<OrderInfoRecord, Integer> USER_ID = createField("user_id", org.jooq.impl.SQLDataType.INTEGER.nullable(false).defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.INTEGER)), this, "用户id");
 
     /**
      * The column <code>mini_shop_471752.b2c_order_info.user_openid</code>. 用户openid
      */
-    public final TableField<OrderInfoRecord, String> USER_OPENID = createField("user_openid", org.jooq.impl.SQLDataType.VARCHAR(191).defaultValue(org.jooq.impl.DSL.inline("", org.jooq.impl.SQLDataType.VARCHAR)), this, "用户openid");
+    public final TableField<OrderInfoRecord, String> USER_OPENID = createField("user_openid", org.jooq.impl.SQLDataType.VARCHAR(191).nullable(false).defaultValue(org.jooq.impl.DSL.inline("", org.jooq.impl.SQLDataType.VARCHAR)), this, "用户openid");
 
     /**
      * The column <code>mini_shop_471752.b2c_order_info.order_status</code>. 订单状态
@@ -104,64 +104,64 @@ public class OrderInfo extends TableImpl<OrderInfoRecord> {
     public final TableField<OrderInfoRecord, String> CONSIGNEE = createField("consignee", org.jooq.impl.SQLDataType.VARCHAR(60).nullable(false).defaultValue(org.jooq.impl.DSL.inline("", org.jooq.impl.SQLDataType.VARCHAR)), this, "收件人姓名");
 
     /**
-     * The column <code>mini_shop_471752.b2c_order_info.address_id</code>. 地址ID
+     * The column <code>mini_shop_471752.b2c_order_info.address_id</code>. 地址id
      */
-    public final TableField<OrderInfoRecord, Integer> ADDRESS_ID = createField("address_id", org.jooq.impl.SQLDataType.INTEGER.defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.INTEGER)), this, "地址ID");
+    public final TableField<OrderInfoRecord, Integer> ADDRESS_ID = createField("address_id", org.jooq.impl.SQLDataType.INTEGER.nullable(false).defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.INTEGER)), this, "地址id");
 
     /**
      * The column <code>mini_shop_471752.b2c_order_info.country_code</code>. 国家编号
      */
-    public final TableField<OrderInfoRecord, Integer> COUNTRY_CODE = createField("country_code", org.jooq.impl.SQLDataType.INTEGER.defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.INTEGER)), this, "国家编号");
+    public final TableField<OrderInfoRecord, Integer> COUNTRY_CODE = createField("country_code", org.jooq.impl.SQLDataType.INTEGER.nullable(false).defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.INTEGER)), this, "国家编号");
 
     /**
      * The column <code>mini_shop_471752.b2c_order_info.country_name</code>. 国家名称
      */
-    public final TableField<OrderInfoRecord, String> COUNTRY_NAME = createField("country_name", org.jooq.impl.SQLDataType.VARCHAR(50).defaultValue(org.jooq.impl.DSL.inline("", org.jooq.impl.SQLDataType.VARCHAR)), this, "国家名称");
+    public final TableField<OrderInfoRecord, String> COUNTRY_NAME = createField("country_name", org.jooq.impl.SQLDataType.VARCHAR(50).nullable(false).defaultValue(org.jooq.impl.DSL.inline("", org.jooq.impl.SQLDataType.VARCHAR)), this, "国家名称");
 
     /**
      * The column <code>mini_shop_471752.b2c_order_info.province_code</code>. 省份编号
      */
-    public final TableField<OrderInfoRecord, Integer> PROVINCE_CODE = createField("province_code", org.jooq.impl.SQLDataType.INTEGER.defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.INTEGER)), this, "省份编号");
+    public final TableField<OrderInfoRecord, Integer> PROVINCE_CODE = createField("province_code", org.jooq.impl.SQLDataType.INTEGER.nullable(false).defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.INTEGER)), this, "省份编号");
 
     /**
      * The column <code>mini_shop_471752.b2c_order_info.province_name</code>. 省份名称
      */
-    public final TableField<OrderInfoRecord, String> PROVINCE_NAME = createField("province_name", org.jooq.impl.SQLDataType.VARCHAR(50).defaultValue(org.jooq.impl.DSL.inline("", org.jooq.impl.SQLDataType.VARCHAR)), this, "省份名称");
+    public final TableField<OrderInfoRecord, String> PROVINCE_NAME = createField("province_name", org.jooq.impl.SQLDataType.VARCHAR(50).nullable(false).defaultValue(org.jooq.impl.DSL.inline("", org.jooq.impl.SQLDataType.VARCHAR)), this, "省份名称");
 
     /**
      * The column <code>mini_shop_471752.b2c_order_info.city_code</code>. 城市编号
      */
-    public final TableField<OrderInfoRecord, Integer> CITY_CODE = createField("city_code", org.jooq.impl.SQLDataType.INTEGER.defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.INTEGER)), this, "城市编号");
+    public final TableField<OrderInfoRecord, Integer> CITY_CODE = createField("city_code", org.jooq.impl.SQLDataType.INTEGER.nullable(false).defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.INTEGER)), this, "城市编号");
 
     /**
      * The column <code>mini_shop_471752.b2c_order_info.city_name</code>. 城市名称
      */
-    public final TableField<OrderInfoRecord, String> CITY_NAME = createField("city_name", org.jooq.impl.SQLDataType.VARCHAR(120).defaultValue(org.jooq.impl.DSL.inline("", org.jooq.impl.SQLDataType.VARCHAR)), this, "城市名称");
+    public final TableField<OrderInfoRecord, String> CITY_NAME = createField("city_name", org.jooq.impl.SQLDataType.VARCHAR(120).nullable(false).defaultValue(org.jooq.impl.DSL.inline("", org.jooq.impl.SQLDataType.VARCHAR)), this, "城市名称");
 
     /**
      * The column <code>mini_shop_471752.b2c_order_info.district_code</code>. 区县编号
      */
-    public final TableField<OrderInfoRecord, Integer> DISTRICT_CODE = createField("district_code", org.jooq.impl.SQLDataType.INTEGER.defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.INTEGER)), this, "区县编号");
+    public final TableField<OrderInfoRecord, Integer> DISTRICT_CODE = createField("district_code", org.jooq.impl.SQLDataType.INTEGER.nullable(false).defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.INTEGER)), this, "区县编号");
 
     /**
      * The column <code>mini_shop_471752.b2c_order_info.district_name</code>. 区县名称
      */
-    public final TableField<OrderInfoRecord, String> DISTRICT_NAME = createField("district_name", org.jooq.impl.SQLDataType.VARCHAR(120).defaultValue(org.jooq.impl.DSL.inline("", org.jooq.impl.SQLDataType.VARCHAR)), this, "区县名称");
+    public final TableField<OrderInfoRecord, String> DISTRICT_NAME = createField("district_name", org.jooq.impl.SQLDataType.VARCHAR(120).nullable(false).defaultValue(org.jooq.impl.DSL.inline("", org.jooq.impl.SQLDataType.VARCHAR)), this, "区县名称");
 
     /**
      * The column <code>mini_shop_471752.b2c_order_info.address</code>. 更多详细地址
      */
-    public final TableField<OrderInfoRecord, String> ADDRESS = createField("address", org.jooq.impl.SQLDataType.VARCHAR(191).defaultValue(org.jooq.impl.DSL.inline("", org.jooq.impl.SQLDataType.VARCHAR)), this, "更多详细地址");
+    public final TableField<OrderInfoRecord, String> ADDRESS = createField("address", org.jooq.impl.SQLDataType.VARCHAR(191).nullable(false).defaultValue(org.jooq.impl.DSL.inline("", org.jooq.impl.SQLDataType.VARCHAR)), this, "更多详细地址");
 
     /**
      * The column <code>mini_shop_471752.b2c_order_info.complete_address</code>. 完整收件地址
      */
-    public final TableField<OrderInfoRecord, String> COMPLETE_ADDRESS = createField("complete_address", org.jooq.impl.SQLDataType.VARCHAR(512).defaultValue(org.jooq.impl.DSL.inline("", org.jooq.impl.SQLDataType.VARCHAR)), this, "完整收件地址");
+    public final TableField<OrderInfoRecord, String> COMPLETE_ADDRESS = createField("complete_address", org.jooq.impl.SQLDataType.VARCHAR(512).nullable(false).defaultValue(org.jooq.impl.DSL.inline("", org.jooq.impl.SQLDataType.VARCHAR)), this, "完整收件地址");
 
     /**
      * The column <code>mini_shop_471752.b2c_order_info.zipcode</code>. 邮编
      */
-    public final TableField<OrderInfoRecord, String> ZIPCODE = createField("zipcode", org.jooq.impl.SQLDataType.VARCHAR(60).defaultValue(org.jooq.impl.DSL.inline("", org.jooq.impl.SQLDataType.VARCHAR)), this, "邮编");
+    public final TableField<OrderInfoRecord, String> ZIPCODE = createField("zipcode", org.jooq.impl.SQLDataType.VARCHAR(60).nullable(false).defaultValue(org.jooq.impl.DSL.inline("", org.jooq.impl.SQLDataType.VARCHAR)), this, "邮编");
 
     /**
      * The column <code>mini_shop_471752.b2c_order_info.mobile</code>. 手机号
@@ -171,17 +171,17 @@ public class OrderInfo extends TableImpl<OrderInfoRecord> {
     /**
      * The column <code>mini_shop_471752.b2c_order_info.add_message</code>. 客户留言
      */
-    public final TableField<OrderInfoRecord, String> ADD_MESSAGE = createField("add_message", org.jooq.impl.SQLDataType.VARCHAR(191).defaultValue(org.jooq.impl.DSL.inline("", org.jooq.impl.SQLDataType.VARCHAR)), this, "客户留言");
+    public final TableField<OrderInfoRecord, String> ADD_MESSAGE = createField("add_message", org.jooq.impl.SQLDataType.VARCHAR(191).nullable(false).defaultValue(org.jooq.impl.DSL.inline("", org.jooq.impl.SQLDataType.VARCHAR)), this, "客户留言");
 
     /**
-     * The column <code>mini_shop_471752.b2c_order_info.shipping_id</code>. 快递ID
+     * The column <code>mini_shop_471752.b2c_order_info.shipping_id</code>. 快递id
      */
-    public final TableField<OrderInfoRecord, Byte> SHIPPING_ID = createField("shipping_id", org.jooq.impl.SQLDataType.TINYINT.defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.TINYINT)), this, "快递ID");
+    public final TableField<OrderInfoRecord, Byte> SHIPPING_ID = createField("shipping_id", org.jooq.impl.SQLDataType.TINYINT.nullable(false).defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.TINYINT)), this, "快递id");
 
     /**
      * The column <code>mini_shop_471752.b2c_order_info.shipping_name</code>. 快递名称
      */
-    public final TableField<OrderInfoRecord, String> SHIPPING_NAME = createField("shipping_name", org.jooq.impl.SQLDataType.VARCHAR(120).defaultValue(org.jooq.impl.DSL.inline("", org.jooq.impl.SQLDataType.VARCHAR)), this, "快递名称");
+    public final TableField<OrderInfoRecord, String> SHIPPING_NAME = createField("shipping_name", org.jooq.impl.SQLDataType.VARCHAR(120).nullable(false).defaultValue(org.jooq.impl.DSL.inline("", org.jooq.impl.SQLDataType.VARCHAR)), this, "快递名称");
 
     /**
      * The column <code>mini_shop_471752.b2c_order_info.pay_code</code>. 支付代号
@@ -196,7 +196,7 @@ public class OrderInfo extends TableImpl<OrderInfoRecord> {
     /**
      * The column <code>mini_shop_471752.b2c_order_info.pay_sn</code>. 支付流水号
      */
-    public final TableField<OrderInfoRecord, String> PAY_SN = createField("pay_sn", org.jooq.impl.SQLDataType.VARCHAR(32).defaultValue(org.jooq.impl.DSL.inline("", org.jooq.impl.SQLDataType.VARCHAR)), this, "支付流水号");
+    public final TableField<OrderInfoRecord, String> PAY_SN = createField("pay_sn", org.jooq.impl.SQLDataType.VARCHAR(32).nullable(false).defaultValue(org.jooq.impl.DSL.inline("", org.jooq.impl.SQLDataType.VARCHAR)), this, "支付流水号");
 
     /**
      * The column <code>mini_shop_471752.b2c_order_info.goods_amount</code>. 订单商品数量
@@ -261,17 +261,22 @@ public class OrderInfo extends TableImpl<OrderInfoRecord> {
     /**
      * The column <code>mini_shop_471752.b2c_order_info.package_discount</code>. 一口价抵扣金额
      */
-    public final TableField<OrderInfoRecord, BigDecimal> PACKAGE_DISCOUNT = createField("package_discount", org.jooq.impl.SQLDataType.DECIMAL(10, 2).defaultValue(org.jooq.impl.DSL.inline("0.00", org.jooq.impl.SQLDataType.DECIMAL)), this, "一口价抵扣金额");
+    public final TableField<OrderInfoRecord, BigDecimal> PACKAGE_DISCOUNT = createField("package_discount", org.jooq.impl.SQLDataType.DECIMAL(10, 2).nullable(false).defaultValue(org.jooq.impl.DSL.inline("0.00", org.jooq.impl.SQLDataType.DECIMAL)), this, "一口价抵扣金额");
 
     /**
-     * The column <code>mini_shop_471752.b2c_order_info.dapei_id</code>. 搭配ID来源
+     * The column <code>mini_shop_471752.b2c_order_info.dapei_id</code>. 搭配id来源
      */
-    public final TableField<OrderInfoRecord, Integer> DAPEI_ID = createField("dapei_id", org.jooq.impl.SQLDataType.INTEGER.nullable(false).defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.INTEGER)), this, "搭配ID来源");
+    public final TableField<OrderInfoRecord, Integer> DAPEI_ID = createField("dapei_id", org.jooq.impl.SQLDataType.INTEGER.nullable(false).defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.INTEGER)), this, "搭配id来源");
 
     /**
-     * The column <code>mini_shop_471752.b2c_order_info.add_time</code>. 订单提交时间
+     * The column <code>mini_shop_471752.b2c_order_info.create_time</code>.
      */
-    public final TableField<OrderInfoRecord, Timestamp> ADD_TIME = createField("add_time", org.jooq.impl.SQLDataType.TIMESTAMP, this, "订单提交时间");
+    public final TableField<OrderInfoRecord, Timestamp> CREATE_TIME = createField("create_time", org.jooq.impl.SQLDataType.TIMESTAMP.nullable(false).defaultValue(org.jooq.impl.DSL.field("CURRENT_TIMESTAMP", org.jooq.impl.SQLDataType.TIMESTAMP)), this, "");
+
+    /**
+     * The column <code>mini_shop_471752.b2c_order_info.update_time</code>. 最后修改时间
+     */
+    public final TableField<OrderInfoRecord, Timestamp> UPDATE_TIME = createField("update_time", org.jooq.impl.SQLDataType.TIMESTAMP.nullable(false).defaultValue(org.jooq.impl.DSL.field("CURRENT_TIMESTAMP", org.jooq.impl.SQLDataType.TIMESTAMP)), this, "最后修改时间");
 
     /**
      * The column <code>mini_shop_471752.b2c_order_info.confirm_time</code>. 订单确收收货时间
@@ -324,11 +329,6 @@ public class OrderInfo extends TableImpl<OrderInfoRecord> {
     public final TableField<OrderInfoRecord, Timestamp> REFUND_FINISH_TIME = createField("refund_finish_time", org.jooq.impl.SQLDataType.TIMESTAMP, this, "订单退款完成时间");
 
     /**
-     * The column <code>mini_shop_471752.b2c_order_info.update_time</code>. 订单更新时间
-     */
-    public final TableField<OrderInfoRecord, Timestamp> UPDATE_TIME = createField("update_time", org.jooq.impl.SQLDataType.TIMESTAMP.nullable(false).defaultValue(org.jooq.impl.DSL.field("CURRENT_TIMESTAMP", org.jooq.impl.SQLDataType.TIMESTAMP)), this, "订单更新时间");
-
-    /**
      * The column <code>mini_shop_471752.b2c_order_info.shipping_no</code>. 快递单号
      */
     public final TableField<OrderInfoRecord, String> SHIPPING_NO = createField("shipping_no", org.jooq.impl.SQLDataType.VARCHAR(191).nullable(false).defaultValue(org.jooq.impl.DSL.inline("", org.jooq.impl.SQLDataType.VARCHAR)), this, "快递单号");
@@ -364,9 +364,9 @@ public class OrderInfo extends TableImpl<OrderInfoRecord> {
     public final TableField<OrderInfoRecord, String> SELLER_REMARK = createField("seller_remark", org.jooq.impl.SQLDataType.VARCHAR(512).nullable(false).defaultValue(org.jooq.impl.DSL.inline("", org.jooq.impl.SQLDataType.VARCHAR)), this, "卖家备注");
 
     /**
-     * The column <code>mini_shop_471752.b2c_order_info.erpordercode</code>. ERP中订单代码
+     * The column <code>mini_shop_471752.b2c_order_info.erpordercode</code>. erp中订单代码
      */
-    public final TableField<OrderInfoRecord, String> ERPORDERCODE = createField("erpordercode", org.jooq.impl.SQLDataType.VARCHAR(32).nullable(false).defaultValue(org.jooq.impl.DSL.inline("", org.jooq.impl.SQLDataType.VARCHAR)), this, "ERP中订单代码");
+    public final TableField<OrderInfoRecord, String> ERPORDERCODE = createField("erpordercode", org.jooq.impl.SQLDataType.VARCHAR(32).nullable(false).defaultValue(org.jooq.impl.DSL.inline("", org.jooq.impl.SQLDataType.VARCHAR)), this, "erp中订单代码");
 
     /**
      * The column <code>mini_shop_471752.b2c_order_info.comment_flag</code>. 0:未评论，1:已评论，2：已晒单
@@ -394,14 +394,14 @@ public class OrderInfo extends TableImpl<OrderInfoRecord> {
     public final TableField<OrderInfoRecord, Byte> SETTLEMENT_FLAG = createField("settlement_flag", org.jooq.impl.SQLDataType.TINYINT.nullable(false).defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.TINYINT)), this, "结算标志：0：未结算，1：已结算");
 
     /**
-     * The column <code>mini_shop_471752.b2c_order_info.invoice_id</code>. 发票Id
+     * The column <code>mini_shop_471752.b2c_order_info.invoice_id</code>. 发票id
      */
-    public final TableField<OrderInfoRecord, Integer> INVOICE_ID = createField("invoice_id", org.jooq.impl.SQLDataType.INTEGER.nullable(false).defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.INTEGER)), this, "发票Id");
+    public final TableField<OrderInfoRecord, Integer> INVOICE_ID = createField("invoice_id", org.jooq.impl.SQLDataType.INTEGER.nullable(false).defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.INTEGER)), this, "发票id");
 
     /**
      * The column <code>mini_shop_471752.b2c_order_info.invoice_content</code>. 发票类型：0普通发票；1增值税专票
      */
-    public final TableField<OrderInfoRecord, Integer> INVOICE_CONTENT = createField("invoice_content", org.jooq.impl.SQLDataType.INTEGER.defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.INTEGER)), this, "发票类型：0普通发票；1增值税专票");
+    public final TableField<OrderInfoRecord, Integer> INVOICE_CONTENT = createField("invoice_content", org.jooq.impl.SQLDataType.INTEGER.nullable(false).defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.INTEGER)), this, "发票类型：0普通发票；1增值税专票");
 
     /**
      * The column <code>mini_shop_471752.b2c_order_info.invoice_title</code>. 发票内容：json存储
@@ -411,27 +411,27 @@ public class OrderInfo extends TableImpl<OrderInfoRecord> {
     /**
      * The column <code>mini_shop_471752.b2c_order_info.refund_status</code>. 1是审核中，2是通过审核，3退货没通过审核，4买家再次提交申请，5：退款退货成功，6是拒绝退款退货
      */
-    public final TableField<OrderInfoRecord, Byte> REFUND_STATUS = createField("refund_status", org.jooq.impl.SQLDataType.TINYINT.defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.TINYINT)), this, "1是审核中，2是通过审核，3退货没通过审核，4买家再次提交申请，5：退款退货成功，6是拒绝退款退货");
+    public final TableField<OrderInfoRecord, Byte> REFUND_STATUS = createField("refund_status", org.jooq.impl.SQLDataType.TINYINT.nullable(false).defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.TINYINT)), this, "1是审核中，2是通过审核，3退货没通过审核，4买家再次提交申请，5：退款退货成功，6是拒绝退款退货");
 
     /**
      * The column <code>mini_shop_471752.b2c_order_info.pay_order_sn</code>. 对账单号
      */
-    public final TableField<OrderInfoRecord, String> PAY_ORDER_SN = createField("pay_order_sn", org.jooq.impl.SQLDataType.VARCHAR(30).defaultValue(org.jooq.impl.DSL.inline("", org.jooq.impl.SQLDataType.VARCHAR)), this, "对账单号");
+    public final TableField<OrderInfoRecord, String> PAY_ORDER_SN = createField("pay_order_sn", org.jooq.impl.SQLDataType.VARCHAR(30).nullable(false).defaultValue(org.jooq.impl.DSL.inline("", org.jooq.impl.SQLDataType.VARCHAR)), this, "对账单号");
 
     /**
      * The column <code>mini_shop_471752.b2c_order_info.goods_type</code>. 商品类型，0普通商品，1拼团商品，2分销，3砍价商品 4积分商品 5秒杀商品 6限时降价 7加价购
      */
-    public final TableField<OrderInfoRecord, String> GOODS_TYPE = createField("goods_type", org.jooq.impl.SQLDataType.VARCHAR(50).defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.VARCHAR)), this, "商品类型，0普通商品，1拼团商品，2分销，3砍价商品 4积分商品 5秒杀商品 6限时降价 7加价购");
+    public final TableField<OrderInfoRecord, String> GOODS_TYPE = createField("goods_type", org.jooq.impl.SQLDataType.VARCHAR(50).nullable(false).defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.VARCHAR)), this, "商品类型，0普通商品，1拼团商品，2分销，3砍价商品 4积分商品 5秒杀商品 6限时降价 7加价购");
 
     /**
-     * The column <code>mini_shop_471752.b2c_order_info.order_source</code>. 订单来源，0pc，1wap，2app
+     * The column <code>mini_shop_471752.b2c_order_info.order_source</code>. 订单来源，0：小程序，1wap，2app
      */
-    public final TableField<OrderInfoRecord, Byte> ORDER_SOURCE = createField("order_source", org.jooq.impl.SQLDataType.TINYINT, this, "订单来源，0pc，1wap，2app");
+    public final TableField<OrderInfoRecord, Byte> ORDER_SOURCE = createField("order_source", org.jooq.impl.SQLDataType.TINYINT.nullable(false).defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.TINYINT)), this, "订单来源，0：小程序，1wap，2app");
 
     /**
-     * The column <code>mini_shop_471752.b2c_order_info.fanli_type</code>. 返利类型，0普通订单，1三级分销返利订单，2返利会员返利订单
+     * The column <code>mini_shop_471752.b2c_order_info.fanli_type</code>. 返利类型，0：普通订单，1：分销返利订单，2：返利会员返利订单
      */
-    public final TableField<OrderInfoRecord, Byte> FANLI_TYPE = createField("fanli_type", org.jooq.impl.SQLDataType.TINYINT, this, "返利类型，0普通订单，1三级分销返利订单，2返利会员返利订单");
+    public final TableField<OrderInfoRecord, Byte> FANLI_TYPE = createField("fanli_type", org.jooq.impl.SQLDataType.TINYINT.nullable(false).defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.TINYINT)), this, "返利类型，0：普通订单，1：分销返利订单，2：返利会员返利订单");
 
     /**
      * The column <code>mini_shop_471752.b2c_order_info.manual_refund</code>. 1代表手动退款，0代表非手动
@@ -441,12 +441,12 @@ public class OrderInfo extends TableImpl<OrderInfoRecord> {
     /**
      * The column <code>mini_shop_471752.b2c_order_info.order_pay_way</code>. 订单付款方式，0全款 1定金 2补款
      */
-    public final TableField<OrderInfoRecord, Byte> ORDER_PAY_WAY = createField("order_pay_way", org.jooq.impl.SQLDataType.TINYINT.defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.TINYINT)), this, "订单付款方式，0全款 1定金 2补款");
+    public final TableField<OrderInfoRecord, Byte> ORDER_PAY_WAY = createField("order_pay_way", org.jooq.impl.SQLDataType.TINYINT.nullable(false).defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.TINYINT)), this, "订单付款方式，0全款 1定金 2补款");
 
     /**
      * The column <code>mini_shop_471752.b2c_order_info.bk_order_sn</code>. 补款订单号 order_pay_way=1时有效
      */
-    public final TableField<OrderInfoRecord, String> BK_ORDER_SN = createField("bk_order_sn", org.jooq.impl.SQLDataType.VARCHAR(32).defaultValue(org.jooq.impl.DSL.inline("", org.jooq.impl.SQLDataType.VARCHAR)), this, "补款订单号 order_pay_way=1时有效");
+    public final TableField<OrderInfoRecord, String> BK_ORDER_SN = createField("bk_order_sn", org.jooq.impl.SQLDataType.VARCHAR(32).nullable(false).defaultValue(org.jooq.impl.DSL.inline("", org.jooq.impl.SQLDataType.VARCHAR)), this, "补款订单号 order_pay_way=1时有效");
 
     /**
      * The column <code>mini_shop_471752.b2c_order_info.bk_order_money</code>. 补款金额 order_pay_way=1时有效
@@ -469,9 +469,9 @@ public class OrderInfo extends TableImpl<OrderInfoRecord> {
     public final TableField<OrderInfoRecord, BigDecimal> PIN_YJ_MONEY = createField("pin_yj_money", org.jooq.impl.SQLDataType.DECIMAL(10, 2).nullable(false).defaultValue(org.jooq.impl.DSL.inline("0.00", org.jooq.impl.SQLDataType.DECIMAL)), this, "拼团支付佣金金额");
 
     /**
-     * The column <code>mini_shop_471752.b2c_order_info.pin_group_id</code>. 拼团ID
+     * The column <code>mini_shop_471752.b2c_order_info.pin_group_id</code>. 拼团id
      */
-    public final TableField<OrderInfoRecord, Integer> PIN_GROUP_ID = createField("pin_group_id", org.jooq.impl.SQLDataType.INTEGER.nullable(false).defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.INTEGER)), this, "拼团ID");
+    public final TableField<OrderInfoRecord, Integer> PIN_GROUP_ID = createField("pin_group_id", org.jooq.impl.SQLDataType.INTEGER.nullable(false).defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.INTEGER)), this, "拼团id");
 
     /**
      * The column <code>mini_shop_471752.b2c_order_info.del_flag</code>. 0:未删除，1:已删除
@@ -481,7 +481,7 @@ public class OrderInfo extends TableImpl<OrderInfoRecord> {
     /**
      * The column <code>mini_shop_471752.b2c_order_info.source</code>. 订单来源，记录app，wap，pc来源
      */
-    public final TableField<OrderInfoRecord, String> SOURCE = createField("source", org.jooq.impl.SQLDataType.VARCHAR(30).defaultValue(org.jooq.impl.DSL.inline("", org.jooq.impl.SQLDataType.VARCHAR)), this, "订单来源，记录app，wap，pc来源");
+    public final TableField<OrderInfoRecord, String> SOURCE = createField("source", org.jooq.impl.SQLDataType.VARCHAR(30).nullable(false).defaultValue(org.jooq.impl.DSL.inline("", org.jooq.impl.SQLDataType.VARCHAR)), this, "订单来源，记录app，wap，pc来源");
 
     /**
      * The column <code>mini_shop_471752.b2c_order_info.part_ship_flag</code>. 0:，1:部分发货
@@ -489,9 +489,9 @@ public class OrderInfo extends TableImpl<OrderInfoRecord> {
     public final TableField<OrderInfoRecord, Byte> PART_SHIP_FLAG = createField("part_ship_flag", org.jooq.impl.SQLDataType.TINYINT.nullable(false).defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.TINYINT)), this, "0:，1:部分发货");
 
     /**
-     * The column <code>mini_shop_471752.b2c_order_info.promotion_id</code>. 促销活动Id
+     * The column <code>mini_shop_471752.b2c_order_info.promotion_id</code>. 促销活动id
      */
-    public final TableField<OrderInfoRecord, Integer> PROMOTION_ID = createField("promotion_id", org.jooq.impl.SQLDataType.INTEGER.nullable(false).defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.INTEGER)), this, "促销活动Id");
+    public final TableField<OrderInfoRecord, Integer> PROMOTION_ID = createField("promotion_id", org.jooq.impl.SQLDataType.INTEGER.nullable(false).defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.INTEGER)), this, "促销活动id");
 
     /**
      * The column <code>mini_shop_471752.b2c_order_info.promotion_reduce</code>. 促销活动折扣金额,满折满减
@@ -519,29 +519,29 @@ public class OrderInfo extends TableImpl<OrderInfoRecord> {
     public final TableField<OrderInfoRecord, String> POS_SHOP_NAME = createField("pos_shop_name", org.jooq.impl.SQLDataType.VARCHAR(191).nullable(false).defaultValue(org.jooq.impl.DSL.inline("", org.jooq.impl.SQLDataType.VARCHAR)), this, "pos店铺名称");
 
     /**
-     * The column <code>mini_shop_471752.b2c_order_info.store_id</code>. 门店ID
+     * The column <code>mini_shop_471752.b2c_order_info.store_id</code>. 门店id
      */
-    public final TableField<OrderInfoRecord, Integer> STORE_ID = createField("store_id", org.jooq.impl.SQLDataType.INTEGER.defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.INTEGER)), this, "门店ID");
+    public final TableField<OrderInfoRecord, Integer> STORE_ID = createField("store_id", org.jooq.impl.SQLDataType.INTEGER.defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.INTEGER)), this, "门店id");
 
     /**
      * The column <code>mini_shop_471752.b2c_order_info.store_name</code>. 门店名称
      */
-    public final TableField<OrderInfoRecord, String> STORE_NAME = createField("store_name", org.jooq.impl.SQLDataType.VARCHAR(191).defaultValue(org.jooq.impl.DSL.inline("", org.jooq.impl.SQLDataType.VARCHAR)), this, "门店名称");
+    public final TableField<OrderInfoRecord, String> STORE_NAME = createField("store_name", org.jooq.impl.SQLDataType.VARCHAR(191).nullable(false).defaultValue(org.jooq.impl.DSL.inline("", org.jooq.impl.SQLDataType.VARCHAR)), this, "门店名称");
 
     /**
-     * The column <code>mini_shop_471752.b2c_order_info.member_card_id</code>. 会员卡ID
+     * The column <code>mini_shop_471752.b2c_order_info.member_card_id</code>. 会员卡id
      */
-    public final TableField<OrderInfoRecord, Integer> MEMBER_CARD_ID = createField("member_card_id", org.jooq.impl.SQLDataType.INTEGER.defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.INTEGER)), this, "会员卡ID");
+    public final TableField<OrderInfoRecord, Integer> MEMBER_CARD_ID = createField("member_card_id", org.jooq.impl.SQLDataType.INTEGER.nullable(false).defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.INTEGER)), this, "会员卡id");
 
     /**
      * The column <code>mini_shop_471752.b2c_order_info.member_card_reduce</code>. 会员卡优惠金额
      */
-    public final TableField<OrderInfoRecord, BigDecimal> MEMBER_CARD_REDUCE = createField("member_card_reduce", org.jooq.impl.SQLDataType.DECIMAL(10, 2).defaultValue(org.jooq.impl.DSL.inline("0.00", org.jooq.impl.SQLDataType.DECIMAL)), this, "会员卡优惠金额");
+    public final TableField<OrderInfoRecord, BigDecimal> MEMBER_CARD_REDUCE = createField("member_card_reduce", org.jooq.impl.SQLDataType.DECIMAL(10, 2).nullable(false).defaultValue(org.jooq.impl.DSL.inline("0.00", org.jooq.impl.SQLDataType.DECIMAL)), this, "会员卡优惠金额");
 
     /**
      * The column <code>mini_shop_471752.b2c_order_info.member_card_balance</code>. 会员卡消费金额
      */
-    public final TableField<OrderInfoRecord, BigDecimal> MEMBER_CARD_BALANCE = createField("member_card_balance", org.jooq.impl.SQLDataType.DECIMAL(10, 2).defaultValue(org.jooq.impl.DSL.inline("0.00", org.jooq.impl.SQLDataType.DECIMAL)), this, "会员卡消费金额");
+    public final TableField<OrderInfoRecord, BigDecimal> MEMBER_CARD_BALANCE = createField("member_card_balance", org.jooq.impl.SQLDataType.DECIMAL(10, 2).nullable(false).defaultValue(org.jooq.impl.DSL.inline("0.00", org.jooq.impl.SQLDataType.DECIMAL)), this, "会员卡消费金额");
 
     /**
      * The column <code>mini_shop_471752.b2c_order_info.expire_time</code>. 订单支付过期时间
@@ -549,19 +549,19 @@ public class OrderInfo extends TableImpl<OrderInfoRecord> {
     public final TableField<OrderInfoRecord, Timestamp> EXPIRE_TIME = createField("expire_time", org.jooq.impl.SQLDataType.TIMESTAMP, this, "订单支付过期时间");
 
     /**
-     * The column <code>mini_shop_471752.b2c_order_info.del_time</code>. 订单删除时间
+     * The column <code>mini_shop_471752.b2c_order_info.del_time</code>. 删除时间
      */
-    public final TableField<OrderInfoRecord, Timestamp> DEL_TIME = createField("del_time", org.jooq.impl.SQLDataType.TIMESTAMP, this, "订单删除时间");
+    public final TableField<OrderInfoRecord, Timestamp> DEL_TIME = createField("del_time", org.jooq.impl.SQLDataType.TIMESTAMP, this, "删除时间");
 
     /**
-     * The column <code>mini_shop_471752.b2c_order_info.prepay_id</code>. 微信支付Id，用于发送模板消息
+     * The column <code>mini_shop_471752.b2c_order_info.prepay_id</code>. 微信支付id，用于发送模板消息
      */
-    public final TableField<OrderInfoRecord, String> PREPAY_ID = createField("prepay_id", org.jooq.impl.SQLDataType.VARCHAR(191), this, "微信支付Id，用于发送模板消息");
+    public final TableField<OrderInfoRecord, String> PREPAY_ID = createField("prepay_id", org.jooq.impl.SQLDataType.VARCHAR(191), this, "微信支付id，用于发送模板消息");
 
     /**
      * The column <code>mini_shop_471752.b2c_order_info.deliver_type</code>. 配送类型：0 快递 1 自提
      */
-    public final TableField<OrderInfoRecord, Byte> DELIVER_TYPE = createField("deliver_type", org.jooq.impl.SQLDataType.TINYINT.defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.TINYINT)), this, "配送类型：0 快递 1 自提");
+    public final TableField<OrderInfoRecord, Byte> DELIVER_TYPE = createField("deliver_type", org.jooq.impl.SQLDataType.TINYINT.nullable(false).defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.TINYINT)), this, "配送类型：0 快递 1 自提");
 
     /**
      * The column <code>mini_shop_471752.b2c_order_info.deliver_type_name</code>. 配送类型名称
@@ -569,24 +569,24 @@ public class OrderInfo extends TableImpl<OrderInfoRecord> {
     public final TableField<OrderInfoRecord, String> DELIVER_TYPE_NAME = createField("deliver_type_name", org.jooq.impl.SQLDataType.VARCHAR(191), this, "配送类型名称");
 
     /**
-     * The column <code>mini_shop_471752.b2c_order_info.pickup_time</code>. 自提时间
+     * The column <code>mini_shop_471752.b2c_order_info.pickupdate_time</code>. 自提时间
      */
-    public final TableField<OrderInfoRecord, String> PICKUP_TIME = createField("pickup_time", org.jooq.impl.SQLDataType.VARCHAR(30), this, "自提时间");
+    public final TableField<OrderInfoRecord, String> PICKUPDATE_TIME = createField("pickupdate_time", org.jooq.impl.SQLDataType.VARCHAR(30), this, "自提时间");
 
     /**
      * The column <code>mini_shop_471752.b2c_order_info.star_flag</code>. 标星订单：0 未标星 1 标星
      */
-    public final TableField<OrderInfoRecord, Byte> STAR_FLAG = createField("star_flag", org.jooq.impl.SQLDataType.TINYINT.defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.TINYINT)), this, "标星订单：0 未标星 1 标星");
+    public final TableField<OrderInfoRecord, Byte> STAR_FLAG = createField("star_flag", org.jooq.impl.SQLDataType.TINYINT.nullable(false).defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.TINYINT)), this, "标星订单：0 未标星 1 标星");
 
     /**
      * The column <code>mini_shop_471752.b2c_order_info.verify_code</code>. 核销自提码
      */
-    public final TableField<OrderInfoRecord, String> VERIFY_CODE = createField("verify_code", org.jooq.impl.SQLDataType.VARCHAR(191).defaultValue(org.jooq.impl.DSL.inline("", org.jooq.impl.SQLDataType.VARCHAR)), this, "核销自提码");
+    public final TableField<OrderInfoRecord, String> VERIFY_CODE = createField("verify_code", org.jooq.impl.SQLDataType.VARCHAR(191).nullable(false).defaultValue(org.jooq.impl.DSL.inline("", org.jooq.impl.SQLDataType.VARCHAR)), this, "核销自提码");
 
     /**
      * The column <code>mini_shop_471752.b2c_order_info.split</code>. 分裂优惠券id
      */
-    public final TableField<OrderInfoRecord, Integer> SPLIT = createField("split", org.jooq.impl.SQLDataType.INTEGER.defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.INTEGER)), this, "分裂优惠券id");
+    public final TableField<OrderInfoRecord, Integer> SPLIT = createField("split", org.jooq.impl.SQLDataType.INTEGER.nullable(false).defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.INTEGER)), this, "分裂优惠券id");
 
     /**
      * The column <code>mini_shop_471752.b2c_order_info.card_no</code>. 会员卡号
@@ -596,7 +596,7 @@ public class OrderInfo extends TableImpl<OrderInfoRecord> {
     /**
      * The column <code>mini_shop_471752.b2c_order_info.fanli_money</code>. 单品返利金额
      */
-    public final TableField<OrderInfoRecord, BigDecimal> FANLI_MONEY = createField("fanli_money", org.jooq.impl.SQLDataType.DECIMAL(10, 2).defaultValue(org.jooq.impl.DSL.inline("0.00", org.jooq.impl.SQLDataType.DECIMAL)), this, "单品返利金额");
+    public final TableField<OrderInfoRecord, BigDecimal> FANLI_MONEY = createField("fanli_money", org.jooq.impl.SQLDataType.DECIMAL(10, 2).nullable(false).defaultValue(org.jooq.impl.DSL.inline("0.00", org.jooq.impl.SQLDataType.DECIMAL)), this, "单品返利金额");
 
     /**
      * The column <code>mini_shop_471752.b2c_order_info.true_name</code>. 真实姓名
@@ -611,12 +611,12 @@ public class OrderInfo extends TableImpl<OrderInfoRecord> {
     /**
      * The column <code>mini_shop_471752.b2c_order_info.ali_trade_no</code>. 支付宝交易单号
      */
-    public final TableField<OrderInfoRecord, String> ALI_TRADE_NO = createField("ali_trade_no", org.jooq.impl.SQLDataType.VARCHAR(60).defaultValue(org.jooq.impl.DSL.inline("", org.jooq.impl.SQLDataType.VARCHAR)), this, "支付宝交易单号");
+    public final TableField<OrderInfoRecord, String> ALI_TRADE_NO = createField("ali_trade_no", org.jooq.impl.SQLDataType.VARCHAR(60).nullable(false).defaultValue(org.jooq.impl.DSL.inline("", org.jooq.impl.SQLDataType.VARCHAR)), this, "支付宝交易单号");
 
     /**
      * The column <code>mini_shop_471752.b2c_order_info.grouper_cheap_reduce</code>. 团长优惠金额
      */
-    public final TableField<OrderInfoRecord, BigDecimal> GROUPER_CHEAP_REDUCE = createField("grouper_cheap_reduce", org.jooq.impl.SQLDataType.DECIMAL(10, 2).defaultValue(org.jooq.impl.DSL.inline("0.00", org.jooq.impl.SQLDataType.DECIMAL)), this, "团长优惠金额");
+    public final TableField<OrderInfoRecord, BigDecimal> GROUPER_CHEAP_REDUCE = createField("grouper_cheap_reduce", org.jooq.impl.SQLDataType.DECIMAL(10, 2).nullable(false).defaultValue(org.jooq.impl.DSL.inline("0.00", org.jooq.impl.SQLDataType.DECIMAL)), this, "团长优惠金额");
 
     /**
      * The column <code>mini_shop_471752.b2c_order_info.bk_shipping_time</code>. 定金预计发货时间
@@ -629,19 +629,19 @@ public class OrderInfo extends TableImpl<OrderInfoRecord> {
     public final TableField<OrderInfoRecord, Byte> BK_RETURN_TYPE = createField("bk_return_type", org.jooq.impl.SQLDataType.TINYINT, this, "定金退款状态");
 
     /**
-     * The column <code>mini_shop_471752.b2c_order_info.bk_prepay_id</code>. 微信支付Id，用于发送模板消息
+     * The column <code>mini_shop_471752.b2c_order_info.bk_prepay_id</code>. 微信支付id，用于发送模板消息
      */
-    public final TableField<OrderInfoRecord, String> BK_PREPAY_ID = createField("bk_prepay_id", org.jooq.impl.SQLDataType.VARCHAR(191), this, "微信支付Id，用于发送模板消息");
+    public final TableField<OrderInfoRecord, String> BK_PREPAY_ID = createField("bk_prepay_id", org.jooq.impl.SQLDataType.VARCHAR(191), this, "微信支付id，用于发送模板消息");
 
     /**
      * The column <code>mini_shop_471752.b2c_order_info.pre_sale_discount</code>. 定金膨胀优惠金额
      */
-    public final TableField<OrderInfoRecord, BigDecimal> PRE_SALE_DISCOUNT = createField("pre_sale_discount", org.jooq.impl.SQLDataType.DECIMAL(10, 2).defaultValue(org.jooq.impl.DSL.inline("0.00", org.jooq.impl.SQLDataType.DECIMAL)), this, "定金膨胀优惠金额");
+    public final TableField<OrderInfoRecord, BigDecimal> PRE_SALE_DISCOUNT = createField("pre_sale_discount", org.jooq.impl.SQLDataType.DECIMAL(10, 2).nullable(false).defaultValue(org.jooq.impl.DSL.inline("0.00", org.jooq.impl.SQLDataType.DECIMAL)), this, "定金膨胀优惠金额");
 
     /**
      * The column <code>mini_shop_471752.b2c_order_info.instead_pay_money</code>. 代付金额
      */
-    public final TableField<OrderInfoRecord, BigDecimal> INSTEAD_PAY_MONEY = createField("instead_pay_money", org.jooq.impl.SQLDataType.DECIMAL(10, 2).defaultValue(org.jooq.impl.DSL.inline("0.00", org.jooq.impl.SQLDataType.DECIMAL)), this, "代付金额");
+    public final TableField<OrderInfoRecord, BigDecimal> INSTEAD_PAY_MONEY = createField("instead_pay_money", org.jooq.impl.SQLDataType.DECIMAL(10, 2).nullable(false).defaultValue(org.jooq.impl.DSL.inline("0.00", org.jooq.impl.SQLDataType.DECIMAL)), this, "代付金额");
 
     /**
      * The column <code>mini_shop_471752.b2c_order_info.order_user_message</code>. 发起人留言
@@ -656,22 +656,22 @@ public class OrderInfo extends TableImpl<OrderInfoRecord> {
     /**
      * The column <code>mini_shop_471752.b2c_order_info.instead_pay_num</code>. 代付人数
      */
-    public final TableField<OrderInfoRecord, Short> INSTEAD_PAY_NUM = createField("instead_pay_num", org.jooq.impl.SQLDataType.SMALLINT.defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.SMALLINT)), this, "代付人数");
+    public final TableField<OrderInfoRecord, Short> INSTEAD_PAY_NUM = createField("instead_pay_num", org.jooq.impl.SQLDataType.SMALLINT.nullable(false).defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.SMALLINT)), this, "代付人数");
 
     /**
      * The column <code>mini_shop_471752.b2c_order_info.is_promote</code>. 是否是推广单
      */
-    public final TableField<OrderInfoRecord, Byte> IS_PROMOTE = createField("is_promote", org.jooq.impl.SQLDataType.TINYINT.defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.TINYINT)), this, "是否是推广单");
+    public final TableField<OrderInfoRecord, Byte> IS_PROMOTE = createField("is_promote", org.jooq.impl.SQLDataType.TINYINT.nullable(false).defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.TINYINT)), this, "是否是推广单");
 
     /**
-     * The column <code>mini_shop_471752.b2c_order_info.verifier_id</code>. 核销员ID
+     * The column <code>mini_shop_471752.b2c_order_info.verifier_id</code>. 核销员id
      */
-    public final TableField<OrderInfoRecord, Integer> VERIFIER_ID = createField("verifier_id", org.jooq.impl.SQLDataType.INTEGER.defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.INTEGER)), this, "核销员ID");
+    public final TableField<OrderInfoRecord, Integer> VERIFIER_ID = createField("verifier_id", org.jooq.impl.SQLDataType.INTEGER.nullable(false).defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.INTEGER)), this, "核销员id");
 
     /**
      * The column <code>mini_shop_471752.b2c_order_info.exchang</code>. 1 兑换 0否
      */
-    public final TableField<OrderInfoRecord, Byte> EXCHANG = createField("exchang", org.jooq.impl.SQLDataType.TINYINT.defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.TINYINT)), this, "1 兑换 0否");
+    public final TableField<OrderInfoRecord, Byte> EXCHANG = createField("exchang", org.jooq.impl.SQLDataType.TINYINT.nullable(false).defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.TINYINT)), this, "1 兑换 0否");
 
     /**
      * Create a <code>mini_shop_471752.b2c_order_info</code> table reference

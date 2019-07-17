@@ -23,7 +23,7 @@ import javax.annotation.Generated;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class ReturnStatusChange implements Serializable {
 
-    private static final long serialVersionUID = -251255925;
+    private static final long serialVersionUID = -115016968;
 
     private Integer   id;
     private Integer   retId;
@@ -31,7 +31,8 @@ public class ReturnStatusChange implements Serializable {
     private Byte      type;
     private Byte      status;
     private String    orderSn;
-    private Timestamp addTime;
+    private Timestamp createTime;
+    private Timestamp updateTime;
     private String    desc;
 
     public ReturnStatusChange() {}
@@ -43,7 +44,8 @@ public class ReturnStatusChange implements Serializable {
         this.type = value.type;
         this.status = value.status;
         this.orderSn = value.orderSn;
-        this.addTime = value.addTime;
+        this.createTime = value.createTime;
+        this.updateTime = value.updateTime;
         this.desc = value.desc;
     }
 
@@ -54,7 +56,8 @@ public class ReturnStatusChange implements Serializable {
         Byte      type,
         Byte      status,
         String    orderSn,
-        Timestamp addTime,
+        Timestamp createTime,
+        Timestamp updateTime,
         String    desc
     ) {
         this.id = id;
@@ -63,7 +66,8 @@ public class ReturnStatusChange implements Serializable {
         this.type = type;
         this.status = status;
         this.orderSn = orderSn;
-        this.addTime = addTime;
+        this.createTime = createTime;
+        this.updateTime = updateTime;
         this.desc = desc;
     }
 
@@ -115,12 +119,20 @@ public class ReturnStatusChange implements Serializable {
         this.orderSn = orderSn;
     }
 
-    public Timestamp getAddTime() {
-        return this.addTime;
+    public Timestamp getCreateTime() {
+        return this.createTime;
     }
 
-    public void setAddTime(Timestamp addTime) {
-        this.addTime = addTime;
+    public void setCreateTime(Timestamp createTime) {
+        this.createTime = createTime;
+    }
+
+    public Timestamp getUpdateTime() {
+        return this.updateTime;
+    }
+
+    public void setUpdateTime(Timestamp updateTime) {
+        this.updateTime = updateTime;
     }
 
     public String getDesc() {
@@ -141,7 +153,8 @@ public class ReturnStatusChange implements Serializable {
         sb.append(", ").append(type);
         sb.append(", ").append(status);
         sb.append(", ").append(orderSn);
-        sb.append(", ").append(addTime);
+        sb.append(", ").append(createTime);
+        sb.append(", ").append(updateTime);
         sb.append(", ").append(desc);
 
         sb.append(")");

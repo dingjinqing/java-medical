@@ -5,6 +5,7 @@ package com.vpu.mp.db.shop.tables.pojos;
 
 
 import java.io.Serializable;
+import java.sql.Timestamp;
 
 import javax.annotation.Generated;
 
@@ -22,33 +23,35 @@ import javax.annotation.Generated;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class UserDetail implements Serializable {
 
-    private static final long serialVersionUID = -1905809431;
+    private static final long serialVersionUID = -1436217940;
 
-    private Integer id;
-    private Integer userId;
-    private Integer shopId;
-    private String  username;
-    private String  sex;
-    private Integer birthdayYear;
-    private Integer birthdayMonth;
-    private Integer birthdayDay;
-    private String  email;
-    private String  realName;
-    private Integer provinceCode;
-    private Integer cityCode;
-    private Integer districtCode;
-    private String  address;
-    private Byte    maritalStatus;
-    private Byte    monthlyIncome;
-    private String  cid;
-    private Byte    education;
-    private Byte    industryInfo;
-    private String  bigImage;
-    private String  bankUserName;
-    private String  shopBank;
-    private String  bankNo;
-    private String  withdrawPasswd;
-    private String  userAvatar;
+    private Integer   id;
+    private Integer   userId;
+    private Integer   shopId;
+    private String    username;
+    private String    sex;
+    private Integer   birthdayYear;
+    private Integer   birthdayMonth;
+    private Integer   birthdayDay;
+    private String    email;
+    private String    realName;
+    private Integer   provinceCode;
+    private Integer   cityCode;
+    private Integer   districtCode;
+    private String    address;
+    private Byte      maritalStatus;
+    private Byte      monthlyIncome;
+    private String    cid;
+    private Byte      education;
+    private Byte      industryInfo;
+    private String    bigImage;
+    private String    bankUserName;
+    private String    shopBank;
+    private String    bankNo;
+    private String    withdrawPasswd;
+    private String    userAvatar;
+    private Timestamp createTime;
+    private Timestamp updateTime;
 
     public UserDetail() {}
 
@@ -78,34 +81,38 @@ public class UserDetail implements Serializable {
         this.bankNo = value.bankNo;
         this.withdrawPasswd = value.withdrawPasswd;
         this.userAvatar = value.userAvatar;
+        this.createTime = value.createTime;
+        this.updateTime = value.updateTime;
     }
 
     public UserDetail(
-        Integer id,
-        Integer userId,
-        Integer shopId,
-        String  username,
-        String  sex,
-        Integer birthdayYear,
-        Integer birthdayMonth,
-        Integer birthdayDay,
-        String  email,
-        String  realName,
-        Integer provinceCode,
-        Integer cityCode,
-        Integer districtCode,
-        String  address,
-        Byte    maritalStatus,
-        Byte    monthlyIncome,
-        String  cid,
-        Byte    education,
-        Byte    industryInfo,
-        String  bigImage,
-        String  bankUserName,
-        String  shopBank,
-        String  bankNo,
-        String  withdrawPasswd,
-        String  userAvatar
+        Integer   id,
+        Integer   userId,
+        Integer   shopId,
+        String    username,
+        String    sex,
+        Integer   birthdayYear,
+        Integer   birthdayMonth,
+        Integer   birthdayDay,
+        String    email,
+        String    realName,
+        Integer   provinceCode,
+        Integer   cityCode,
+        Integer   districtCode,
+        String    address,
+        Byte      maritalStatus,
+        Byte      monthlyIncome,
+        String    cid,
+        Byte      education,
+        Byte      industryInfo,
+        String    bigImage,
+        String    bankUserName,
+        String    shopBank,
+        String    bankNo,
+        String    withdrawPasswd,
+        String    userAvatar,
+        Timestamp createTime,
+        Timestamp updateTime
     ) {
         this.id = id;
         this.userId = userId;
@@ -132,6 +139,8 @@ public class UserDetail implements Serializable {
         this.bankNo = bankNo;
         this.withdrawPasswd = withdrawPasswd;
         this.userAvatar = userAvatar;
+        this.createTime = createTime;
+        this.updateTime = updateTime;
     }
 
     public Integer getId() {
@@ -334,6 +343,22 @@ public class UserDetail implements Serializable {
         this.userAvatar = userAvatar;
     }
 
+    public Timestamp getCreateTime() {
+        return this.createTime;
+    }
+
+    public void setCreateTime(Timestamp createTime) {
+        this.createTime = createTime;
+    }
+
+    public Timestamp getUpdateTime() {
+        return this.updateTime;
+    }
+
+    public void setUpdateTime(Timestamp updateTime) {
+        this.updateTime = updateTime;
+    }
+
     @Override
     public String toString() {
         StringBuilder sb = new StringBuilder("UserDetail (");
@@ -363,6 +388,8 @@ public class UserDetail implements Serializable {
         sb.append(", ").append(bankNo);
         sb.append(", ").append(withdrawPasswd);
         sb.append(", ").append(userAvatar);
+        sb.append(", ").append(createTime);
+        sb.append(", ").append(updateTime);
 
         sb.append(")");
         return sb.toString();

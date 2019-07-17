@@ -24,7 +24,7 @@ import javax.annotation.Generated;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class Bargain implements Serializable {
 
-    private static final long serialVersionUID = 751023501;
+    private static final long serialVersionUID = 1480193612;
 
     private Integer    id;
     private String     bargainName;
@@ -40,7 +40,7 @@ public class Bargain implements Serializable {
     private String     mrkingVoucherId;
     private Byte       status;
     private Byte       delFlag;
-    private Timestamp  addTime;
+    private Timestamp  createTime;
     private Timestamp  updateTime;
     private Timestamp  delTime;
     private String     rewardCouponId;
@@ -63,7 +63,7 @@ public class Bargain implements Serializable {
         this.mrkingVoucherId = value.mrkingVoucherId;
         this.status = value.status;
         this.delFlag = value.delFlag;
-        this.addTime = value.addTime;
+        this.createTime = value.createTime;
         this.updateTime = value.updateTime;
         this.delTime = value.delTime;
         this.rewardCouponId = value.rewardCouponId;
@@ -85,7 +85,7 @@ public class Bargain implements Serializable {
         String     mrkingVoucherId,
         Byte       status,
         Byte       delFlag,
-        Timestamp  addTime,
+        Timestamp  createTime,
         Timestamp  updateTime,
         Timestamp  delTime,
         String     rewardCouponId,
@@ -105,7 +105,7 @@ public class Bargain implements Serializable {
         this.mrkingVoucherId = mrkingVoucherId;
         this.status = status;
         this.delFlag = delFlag;
-        this.addTime = addTime;
+        this.createTime = createTime;
         this.updateTime = updateTime;
         this.delTime = delTime;
         this.rewardCouponId = rewardCouponId;
@@ -224,12 +224,12 @@ public class Bargain implements Serializable {
         this.delFlag = delFlag;
     }
 
-    public Timestamp getAddTime() {
-        return this.addTime;
+    public Timestamp getCreateTime() {
+        return this.createTime;
     }
 
-    public void setAddTime(Timestamp addTime) {
-        this.addTime = addTime;
+    public void setCreateTime(Timestamp createTime) {
+        this.createTime = createTime;
     }
 
     public Timestamp getUpdateTime() {
@@ -282,7 +282,7 @@ public class Bargain implements Serializable {
         sb.append(", ").append(mrkingVoucherId);
         sb.append(", ").append(status);
         sb.append(", ").append(delFlag);
-        sb.append(", ").append(addTime);
+        sb.append(", ").append(createTime);
         sb.append(", ").append(updateTime);
         sb.append(", ").append(delTime);
         sb.append(", ").append(rewardCouponId);

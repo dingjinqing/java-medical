@@ -23,14 +23,15 @@ import javax.annotation.Generated;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class DistributorGroup implements Serializable {
 
-    private static final long serialVersionUID = 1317691635;
+    private static final long serialVersionUID = 507438758;
 
     private Integer   id;
     private String    groupName;
     private Byte      isDefault;
-    private Timestamp addTime;
-    private Timestamp updateTime;
     private Byte      delFlag;
+    private Timestamp delTime;
+    private Timestamp createTime;
+    private Timestamp updateTime;
 
     public DistributorGroup() {}
 
@@ -38,25 +39,28 @@ public class DistributorGroup implements Serializable {
         this.id = value.id;
         this.groupName = value.groupName;
         this.isDefault = value.isDefault;
-        this.addTime = value.addTime;
-        this.updateTime = value.updateTime;
         this.delFlag = value.delFlag;
+        this.delTime = value.delTime;
+        this.createTime = value.createTime;
+        this.updateTime = value.updateTime;
     }
 
     public DistributorGroup(
         Integer   id,
         String    groupName,
         Byte      isDefault,
-        Timestamp addTime,
-        Timestamp updateTime,
-        Byte      delFlag
+        Byte      delFlag,
+        Timestamp delTime,
+        Timestamp createTime,
+        Timestamp updateTime
     ) {
         this.id = id;
         this.groupName = groupName;
         this.isDefault = isDefault;
-        this.addTime = addTime;
-        this.updateTime = updateTime;
         this.delFlag = delFlag;
+        this.delTime = delTime;
+        this.createTime = createTime;
+        this.updateTime = updateTime;
     }
 
     public Integer getId() {
@@ -83,12 +87,28 @@ public class DistributorGroup implements Serializable {
         this.isDefault = isDefault;
     }
 
-    public Timestamp getAddTime() {
-        return this.addTime;
+    public Byte getDelFlag() {
+        return this.delFlag;
     }
 
-    public void setAddTime(Timestamp addTime) {
-        this.addTime = addTime;
+    public void setDelFlag(Byte delFlag) {
+        this.delFlag = delFlag;
+    }
+
+    public Timestamp getDelTime() {
+        return this.delTime;
+    }
+
+    public void setDelTime(Timestamp delTime) {
+        this.delTime = delTime;
+    }
+
+    public Timestamp getCreateTime() {
+        return this.createTime;
+    }
+
+    public void setCreateTime(Timestamp createTime) {
+        this.createTime = createTime;
     }
 
     public Timestamp getUpdateTime() {
@@ -99,14 +119,6 @@ public class DistributorGroup implements Serializable {
         this.updateTime = updateTime;
     }
 
-    public Byte getDelFlag() {
-        return this.delFlag;
-    }
-
-    public void setDelFlag(Byte delFlag) {
-        this.delFlag = delFlag;
-    }
-
     @Override
     public String toString() {
         StringBuilder sb = new StringBuilder("DistributorGroup (");
@@ -114,9 +126,10 @@ public class DistributorGroup implements Serializable {
         sb.append(id);
         sb.append(", ").append(groupName);
         sb.append(", ").append(isDefault);
-        sb.append(", ").append(addTime);
-        sb.append(", ").append(updateTime);
         sb.append(", ").append(delFlag);
+        sb.append(", ").append(delTime);
+        sb.append(", ").append(createTime);
+        sb.append(", ").append(updateTime);
 
         sb.append(")");
         return sb.toString();

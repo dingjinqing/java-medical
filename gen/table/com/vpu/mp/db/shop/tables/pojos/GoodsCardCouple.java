@@ -5,6 +5,7 @@ package com.vpu.mp.db.shop.tables.pojos;
 
 
 import java.io.Serializable;
+import java.sql.Timestamp;
 
 import javax.annotation.Generated;
 
@@ -22,12 +23,14 @@ import javax.annotation.Generated;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class GoodsCardCouple implements Serializable {
 
-    private static final long serialVersionUID = -318108550;
+    private static final long serialVersionUID = -1915609021;
 
-    private Integer id;
-    private String  cardId;
-    private Integer gctaId;
-    private Byte    type;
+    private Integer   id;
+    private String    cardId;
+    private Integer   gctaId;
+    private Byte      type;
+    private Timestamp createTime;
+    private Timestamp updateTime;
 
     public GoodsCardCouple() {}
 
@@ -36,18 +39,24 @@ public class GoodsCardCouple implements Serializable {
         this.cardId = value.cardId;
         this.gctaId = value.gctaId;
         this.type = value.type;
+        this.createTime = value.createTime;
+        this.updateTime = value.updateTime;
     }
 
     public GoodsCardCouple(
-        Integer id,
-        String  cardId,
-        Integer gctaId,
-        Byte    type
+        Integer   id,
+        String    cardId,
+        Integer   gctaId,
+        Byte      type,
+        Timestamp createTime,
+        Timestamp updateTime
     ) {
         this.id = id;
         this.cardId = cardId;
         this.gctaId = gctaId;
         this.type = type;
+        this.createTime = createTime;
+        this.updateTime = updateTime;
     }
 
     public Integer getId() {
@@ -82,6 +91,22 @@ public class GoodsCardCouple implements Serializable {
         this.type = type;
     }
 
+    public Timestamp getCreateTime() {
+        return this.createTime;
+    }
+
+    public void setCreateTime(Timestamp createTime) {
+        this.createTime = createTime;
+    }
+
+    public Timestamp getUpdateTime() {
+        return this.updateTime;
+    }
+
+    public void setUpdateTime(Timestamp updateTime) {
+        this.updateTime = updateTime;
+    }
+
     @Override
     public String toString() {
         StringBuilder sb = new StringBuilder("GoodsCardCouple (");
@@ -90,6 +115,8 @@ public class GoodsCardCouple implements Serializable {
         sb.append(", ").append(cardId);
         sb.append(", ").append(gctaId);
         sb.append(", ").append(type);
+        sb.append(", ").append(createTime);
+        sb.append(", ").append(updateTime);
 
         sb.append(")");
         return sb.toString();

@@ -24,7 +24,7 @@ import javax.annotation.Generated;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class IntegralMallRecord implements Serializable {
 
-    private static final long serialVersionUID = 1450261841;
+    private static final long serialVersionUID = 424585188;
 
     private Integer    id;
     private Integer    integralMallDefineId;
@@ -34,8 +34,9 @@ public class IntegralMallRecord implements Serializable {
     private Integer    productId;
     private Integer    score;
     private Short      number;
-    private Timestamp  addTime;
     private BigDecimal money;
+    private Timestamp  createTime;
+    private Timestamp  updateTime;
 
     public IntegralMallRecord() {}
 
@@ -48,8 +49,9 @@ public class IntegralMallRecord implements Serializable {
         this.productId = value.productId;
         this.score = value.score;
         this.number = value.number;
-        this.addTime = value.addTime;
         this.money = value.money;
+        this.createTime = value.createTime;
+        this.updateTime = value.updateTime;
     }
 
     public IntegralMallRecord(
@@ -61,8 +63,9 @@ public class IntegralMallRecord implements Serializable {
         Integer    productId,
         Integer    score,
         Short      number,
-        Timestamp  addTime,
-        BigDecimal money
+        BigDecimal money,
+        Timestamp  createTime,
+        Timestamp  updateTime
     ) {
         this.id = id;
         this.integralMallDefineId = integralMallDefineId;
@@ -72,8 +75,9 @@ public class IntegralMallRecord implements Serializable {
         this.productId = productId;
         this.score = score;
         this.number = number;
-        this.addTime = addTime;
         this.money = money;
+        this.createTime = createTime;
+        this.updateTime = updateTime;
     }
 
     public Integer getId() {
@@ -140,20 +144,28 @@ public class IntegralMallRecord implements Serializable {
         this.number = number;
     }
 
-    public Timestamp getAddTime() {
-        return this.addTime;
-    }
-
-    public void setAddTime(Timestamp addTime) {
-        this.addTime = addTime;
-    }
-
     public BigDecimal getMoney() {
         return this.money;
     }
 
     public void setMoney(BigDecimal money) {
         this.money = money;
+    }
+
+    public Timestamp getCreateTime() {
+        return this.createTime;
+    }
+
+    public void setCreateTime(Timestamp createTime) {
+        this.createTime = createTime;
+    }
+
+    public Timestamp getUpdateTime() {
+        return this.updateTime;
+    }
+
+    public void setUpdateTime(Timestamp updateTime) {
+        this.updateTime = updateTime;
     }
 
     @Override
@@ -168,8 +180,9 @@ public class IntegralMallRecord implements Serializable {
         sb.append(", ").append(productId);
         sb.append(", ").append(score);
         sb.append(", ").append(number);
-        sb.append(", ").append(addTime);
         sb.append(", ").append(money);
+        sb.append(", ").append(createTime);
+        sb.append(", ").append(updateTime);
 
         sb.append(")");
         return sb.toString();

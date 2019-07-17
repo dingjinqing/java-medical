@@ -23,7 +23,7 @@ import javax.annotation.Generated;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class XcxCustomerPage implements Serializable {
 
-    private static final long serialVersionUID = -623202346;
+    private static final long serialVersionUID = 1522741730;
 
     private Integer   pageId;
     private Integer   shopId;
@@ -34,8 +34,9 @@ public class XcxCustomerPage implements Serializable {
     private String    pageContent;
     private String    pagePublishContent;
     private Byte      pageState;
-    private Timestamp createTime;
     private Integer   catId;
+    private Timestamp createTime;
+    private Timestamp updateTime;
 
     public XcxCustomerPage() {}
 
@@ -49,8 +50,9 @@ public class XcxCustomerPage implements Serializable {
         this.pageContent = value.pageContent;
         this.pagePublishContent = value.pagePublishContent;
         this.pageState = value.pageState;
-        this.createTime = value.createTime;
         this.catId = value.catId;
+        this.createTime = value.createTime;
+        this.updateTime = value.updateTime;
     }
 
     public XcxCustomerPage(
@@ -63,8 +65,9 @@ public class XcxCustomerPage implements Serializable {
         String    pageContent,
         String    pagePublishContent,
         Byte      pageState,
+        Integer   catId,
         Timestamp createTime,
-        Integer   catId
+        Timestamp updateTime
     ) {
         this.pageId = pageId;
         this.shopId = shopId;
@@ -75,8 +78,9 @@ public class XcxCustomerPage implements Serializable {
         this.pageContent = pageContent;
         this.pagePublishContent = pagePublishContent;
         this.pageState = pageState;
-        this.createTime = createTime;
         this.catId = catId;
+        this.createTime = createTime;
+        this.updateTime = updateTime;
     }
 
     public Integer getPageId() {
@@ -151,6 +155,14 @@ public class XcxCustomerPage implements Serializable {
         this.pageState = pageState;
     }
 
+    public Integer getCatId() {
+        return this.catId;
+    }
+
+    public void setCatId(Integer catId) {
+        this.catId = catId;
+    }
+
     public Timestamp getCreateTime() {
         return this.createTime;
     }
@@ -159,12 +171,12 @@ public class XcxCustomerPage implements Serializable {
         this.createTime = createTime;
     }
 
-    public Integer getCatId() {
-        return this.catId;
+    public Timestamp getUpdateTime() {
+        return this.updateTime;
     }
 
-    public void setCatId(Integer catId) {
-        this.catId = catId;
+    public void setUpdateTime(Timestamp updateTime) {
+        this.updateTime = updateTime;
     }
 
     @Override
@@ -180,8 +192,9 @@ public class XcxCustomerPage implements Serializable {
         sb.append(", ").append(pageContent);
         sb.append(", ").append(pagePublishContent);
         sb.append(", ").append(pageState);
-        sb.append(", ").append(createTime);
         sb.append(", ").append(catId);
+        sb.append(", ").append(createTime);
+        sb.append(", ").append(updateTime);
 
         sb.append(")");
         return sb.toString();

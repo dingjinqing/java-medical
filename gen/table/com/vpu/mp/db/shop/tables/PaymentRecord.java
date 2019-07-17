@@ -42,7 +42,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class PaymentRecord extends TableImpl<PaymentRecordRecord> {
 
-    private static final long serialVersionUID = 1275643775;
+    private static final long serialVersionUID = 1763788671;
 
     /**
      * The reference instance of <code>mini_shop_471752.b2c_payment_record</code>
@@ -63,9 +63,9 @@ public class PaymentRecord extends TableImpl<PaymentRecordRecord> {
     public final TableField<PaymentRecordRecord, Integer> ID = createField("id", org.jooq.impl.SQLDataType.INTEGER.nullable(false).identity(true), this, "");
 
     /**
-     * The column <code>mini_shop_471752.b2c_payment_record.shop_id</code>. 店铺ID
+     * The column <code>mini_shop_471752.b2c_payment_record.shop_id</code>. 店铺id
      */
-    public final TableField<PaymentRecordRecord, Integer> SHOP_ID = createField("shop_id", org.jooq.impl.SQLDataType.INTEGER.nullable(false).defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.INTEGER)), this, "店铺ID");
+    public final TableField<PaymentRecordRecord, Integer> SHOP_ID = createField("shop_id", org.jooq.impl.SQLDataType.INTEGER.nullable(false).defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.INTEGER)), this, "店铺id");
 
     /**
      * The column <code>mini_shop_471752.b2c_payment_record.pay_sn</code>. 支付流水号

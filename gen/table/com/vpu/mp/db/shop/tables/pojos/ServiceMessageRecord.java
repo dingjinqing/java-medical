@@ -23,7 +23,7 @@ import javax.annotation.Generated;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class ServiceMessageRecord implements Serializable {
 
-    private static final long serialVersionUID = -1981431633;
+    private static final long serialVersionUID = -213982028;
 
     private Integer   userId;
     private String    mobile;
@@ -40,7 +40,8 @@ public class ServiceMessageRecord implements Serializable {
     private Timestamp visitTime;
     private Byte      templateType;
     private String    linkIdentity;
-    private Timestamp addTime;
+    private Timestamp createTime;
+    private Timestamp updateTime;
 
     public ServiceMessageRecord() {}
 
@@ -60,7 +61,8 @@ public class ServiceMessageRecord implements Serializable {
         this.visitTime = value.visitTime;
         this.templateType = value.templateType;
         this.linkIdentity = value.linkIdentity;
-        this.addTime = value.addTime;
+        this.createTime = value.createTime;
+        this.updateTime = value.updateTime;
     }
 
     public ServiceMessageRecord(
@@ -79,7 +81,8 @@ public class ServiceMessageRecord implements Serializable {
         Timestamp visitTime,
         Byte      templateType,
         String    linkIdentity,
-        Timestamp addTime
+        Timestamp createTime,
+        Timestamp updateTime
     ) {
         this.userId = userId;
         this.mobile = mobile;
@@ -96,7 +99,8 @@ public class ServiceMessageRecord implements Serializable {
         this.visitTime = visitTime;
         this.templateType = templateType;
         this.linkIdentity = linkIdentity;
-        this.addTime = addTime;
+        this.createTime = createTime;
+        this.updateTime = updateTime;
     }
 
     public Integer getUserId() {
@@ -219,12 +223,20 @@ public class ServiceMessageRecord implements Serializable {
         this.linkIdentity = linkIdentity;
     }
 
-    public Timestamp getAddTime() {
-        return this.addTime;
+    public Timestamp getCreateTime() {
+        return this.createTime;
     }
 
-    public void setAddTime(Timestamp addTime) {
-        this.addTime = addTime;
+    public void setCreateTime(Timestamp createTime) {
+        this.createTime = createTime;
+    }
+
+    public Timestamp getUpdateTime() {
+        return this.updateTime;
+    }
+
+    public void setUpdateTime(Timestamp updateTime) {
+        this.updateTime = updateTime;
     }
 
     @Override
@@ -246,7 +258,8 @@ public class ServiceMessageRecord implements Serializable {
         sb.append(", ").append(visitTime);
         sb.append(", ").append(templateType);
         sb.append(", ").append(linkIdentity);
-        sb.append(", ").append(addTime);
+        sb.append(", ").append(createTime);
+        sb.append(", ").append(updateTime);
 
         sb.append(")");
         return sb.toString();

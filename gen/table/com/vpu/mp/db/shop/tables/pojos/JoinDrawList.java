@@ -23,7 +23,7 @@ import javax.annotation.Generated;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class JoinDrawList implements Serializable {
 
-    private static final long serialVersionUID = -878775485;
+    private static final long serialVersionUID = 1424825402;
 
     private Integer   id;
     private Integer   groupDrawId;
@@ -32,7 +32,8 @@ public class JoinDrawList implements Serializable {
     private Integer   userId;
     private Integer   drawId;
     private Byte      isWinDraw;
-    private Timestamp addTime;
+    private Timestamp createTime;
+    private Timestamp updateTime;
 
     public JoinDrawList() {}
 
@@ -44,7 +45,8 @@ public class JoinDrawList implements Serializable {
         this.userId = value.userId;
         this.drawId = value.drawId;
         this.isWinDraw = value.isWinDraw;
-        this.addTime = value.addTime;
+        this.createTime = value.createTime;
+        this.updateTime = value.updateTime;
     }
 
     public JoinDrawList(
@@ -55,7 +57,8 @@ public class JoinDrawList implements Serializable {
         Integer   userId,
         Integer   drawId,
         Byte      isWinDraw,
-        Timestamp addTime
+        Timestamp createTime,
+        Timestamp updateTime
     ) {
         this.id = id;
         this.groupDrawId = groupDrawId;
@@ -64,7 +67,8 @@ public class JoinDrawList implements Serializable {
         this.userId = userId;
         this.drawId = drawId;
         this.isWinDraw = isWinDraw;
-        this.addTime = addTime;
+        this.createTime = createTime;
+        this.updateTime = updateTime;
     }
 
     public Integer getId() {
@@ -123,12 +127,20 @@ public class JoinDrawList implements Serializable {
         this.isWinDraw = isWinDraw;
     }
 
-    public Timestamp getAddTime() {
-        return this.addTime;
+    public Timestamp getCreateTime() {
+        return this.createTime;
     }
 
-    public void setAddTime(Timestamp addTime) {
-        this.addTime = addTime;
+    public void setCreateTime(Timestamp createTime) {
+        this.createTime = createTime;
+    }
+
+    public Timestamp getUpdateTime() {
+        return this.updateTime;
+    }
+
+    public void setUpdateTime(Timestamp updateTime) {
+        this.updateTime = updateTime;
     }
 
     @Override
@@ -142,7 +154,8 @@ public class JoinDrawList implements Serializable {
         sb.append(", ").append(userId);
         sb.append(", ").append(drawId);
         sb.append(", ").append(isWinDraw);
-        sb.append(", ").append(addTime);
+        sb.append(", ").append(createTime);
+        sb.append(", ").append(updateTime);
 
         sb.append(")");
         return sb.toString();

@@ -23,7 +23,7 @@ import javax.annotation.Generated;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class Code implements Serializable {
 
-    private static final long serialVersionUID = -1400169479;
+    private static final long serialVersionUID = -403835292;
 
     private Integer   codeId;
     private Short     type;
@@ -31,8 +31,9 @@ public class Code implements Serializable {
     private String    typeUrl;
     private String    qrcodeImg;
     private Byte      flag;
-    private Timestamp addTime;
     private String    channel;
+    private Timestamp createTime;
+    private Timestamp updateTime;
 
     public Code() {}
 
@@ -43,8 +44,9 @@ public class Code implements Serializable {
         this.typeUrl = value.typeUrl;
         this.qrcodeImg = value.qrcodeImg;
         this.flag = value.flag;
-        this.addTime = value.addTime;
         this.channel = value.channel;
+        this.createTime = value.createTime;
+        this.updateTime = value.updateTime;
     }
 
     public Code(
@@ -54,8 +56,9 @@ public class Code implements Serializable {
         String    typeUrl,
         String    qrcodeImg,
         Byte      flag,
-        Timestamp addTime,
-        String    channel
+        String    channel,
+        Timestamp createTime,
+        Timestamp updateTime
     ) {
         this.codeId = codeId;
         this.type = type;
@@ -63,8 +66,9 @@ public class Code implements Serializable {
         this.typeUrl = typeUrl;
         this.qrcodeImg = qrcodeImg;
         this.flag = flag;
-        this.addTime = addTime;
         this.channel = channel;
+        this.createTime = createTime;
+        this.updateTime = updateTime;
     }
 
     public Integer getCodeId() {
@@ -115,20 +119,28 @@ public class Code implements Serializable {
         this.flag = flag;
     }
 
-    public Timestamp getAddTime() {
-        return this.addTime;
-    }
-
-    public void setAddTime(Timestamp addTime) {
-        this.addTime = addTime;
-    }
-
     public String getChannel() {
         return this.channel;
     }
 
     public void setChannel(String channel) {
         this.channel = channel;
+    }
+
+    public Timestamp getCreateTime() {
+        return this.createTime;
+    }
+
+    public void setCreateTime(Timestamp createTime) {
+        this.createTime = createTime;
+    }
+
+    public Timestamp getUpdateTime() {
+        return this.updateTime;
+    }
+
+    public void setUpdateTime(Timestamp updateTime) {
+        this.updateTime = updateTime;
     }
 
     @Override
@@ -141,8 +153,9 @@ public class Code implements Serializable {
         sb.append(", ").append(typeUrl);
         sb.append(", ").append(qrcodeImg);
         sb.append(", ").append(flag);
-        sb.append(", ").append(addTime);
         sb.append(", ").append(channel);
+        sb.append(", ").append(createTime);
+        sb.append(", ").append(updateTime);
 
         sb.append(")");
         return sb.toString();

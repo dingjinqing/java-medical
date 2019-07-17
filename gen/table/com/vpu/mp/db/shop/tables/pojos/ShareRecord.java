@@ -23,14 +23,15 @@ import javax.annotation.Generated;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class ShareRecord implements Serializable {
 
-    private static final long serialVersionUID = 676800339;
+    private static final long serialVersionUID = -32486014;
 
     private Integer   id;
     private Integer   activityId;
     private Integer   userId;
     private Integer   activityType;
-    private Timestamp addTime;
     private Integer   count;
+    private Timestamp createTime;
+    private Timestamp updateTime;
 
     public ShareRecord() {}
 
@@ -39,8 +40,9 @@ public class ShareRecord implements Serializable {
         this.activityId = value.activityId;
         this.userId = value.userId;
         this.activityType = value.activityType;
-        this.addTime = value.addTime;
         this.count = value.count;
+        this.createTime = value.createTime;
+        this.updateTime = value.updateTime;
     }
 
     public ShareRecord(
@@ -48,15 +50,17 @@ public class ShareRecord implements Serializable {
         Integer   activityId,
         Integer   userId,
         Integer   activityType,
-        Timestamp addTime,
-        Integer   count
+        Integer   count,
+        Timestamp createTime,
+        Timestamp updateTime
     ) {
         this.id = id;
         this.activityId = activityId;
         this.userId = userId;
         this.activityType = activityType;
-        this.addTime = addTime;
         this.count = count;
+        this.createTime = createTime;
+        this.updateTime = updateTime;
     }
 
     public Integer getId() {
@@ -91,20 +95,28 @@ public class ShareRecord implements Serializable {
         this.activityType = activityType;
     }
 
-    public Timestamp getAddTime() {
-        return this.addTime;
-    }
-
-    public void setAddTime(Timestamp addTime) {
-        this.addTime = addTime;
-    }
-
     public Integer getCount() {
         return this.count;
     }
 
     public void setCount(Integer count) {
         this.count = count;
+    }
+
+    public Timestamp getCreateTime() {
+        return this.createTime;
+    }
+
+    public void setCreateTime(Timestamp createTime) {
+        this.createTime = createTime;
+    }
+
+    public Timestamp getUpdateTime() {
+        return this.updateTime;
+    }
+
+    public void setUpdateTime(Timestamp updateTime) {
+        this.updateTime = updateTime;
     }
 
     @Override
@@ -115,8 +127,9 @@ public class ShareRecord implements Serializable {
         sb.append(", ").append(activityId);
         sb.append(", ").append(userId);
         sb.append(", ").append(activityType);
-        sb.append(", ").append(addTime);
         sb.append(", ").append(count);
+        sb.append(", ").append(createTime);
+        sb.append(", ").append(updateTime);
 
         sb.append(")");
         return sb.toString();

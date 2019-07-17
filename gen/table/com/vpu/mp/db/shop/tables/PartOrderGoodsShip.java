@@ -42,7 +42,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class PartOrderGoodsShip extends TableImpl<PartOrderGoodsShipRecord> {
 
-    private static final long serialVersionUID = -1786302054;
+    private static final long serialVersionUID = -569702157;
 
     /**
      * The reference instance of <code>mini_shop_471752.b2c_part_order_goods_ship</code>
@@ -63,9 +63,9 @@ public class PartOrderGoodsShip extends TableImpl<PartOrderGoodsShipRecord> {
     public final TableField<PartOrderGoodsShipRecord, Integer> REC_ID = createField("rec_id", org.jooq.impl.SQLDataType.INTEGER.nullable(false).identity(true), this, "");
 
     /**
-     * The column <code>mini_shop_471752.b2c_part_order_goods_ship.shop_id</code>. 店铺ID
+     * The column <code>mini_shop_471752.b2c_part_order_goods_ship.shop_id</code>. 店铺id
      */
-    public final TableField<PartOrderGoodsShipRecord, Integer> SHOP_ID = createField("shop_id", org.jooq.impl.SQLDataType.INTEGER.nullable(false).defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.INTEGER)), this, "店铺ID");
+    public final TableField<PartOrderGoodsShipRecord, Integer> SHOP_ID = createField("shop_id", org.jooq.impl.SQLDataType.INTEGER.nullable(false).defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.INTEGER)), this, "店铺id");
 
     /**
      * The column <code>mini_shop_471752.b2c_part_order_goods_ship.order_goods_id</code>. 订单商品表的id
@@ -105,7 +105,7 @@ public class PartOrderGoodsShip extends TableImpl<PartOrderGoodsShipRecord> {
     /**
      * The column <code>mini_shop_471752.b2c_part_order_goods_ship.goods_attr</code>.
      */
-    public final TableField<PartOrderGoodsShipRecord, String> GOODS_ATTR = createField("goods_attr", org.jooq.impl.SQLDataType.CLOB.nullable(false), this, "");
+    public final TableField<PartOrderGoodsShipRecord, String> GOODS_ATTR = createField("goods_attr", org.jooq.impl.SQLDataType.CLOB, this, "");
 
     /**
      * The column <code>mini_shop_471752.b2c_part_order_goods_ship.shipping_no</code>. 快递单号
@@ -118,19 +118,29 @@ public class PartOrderGoodsShip extends TableImpl<PartOrderGoodsShipRecord> {
     public final TableField<PartOrderGoodsShipRecord, String> SHIPPING_NAME = createField("shipping_name", org.jooq.impl.SQLDataType.VARCHAR(120).nullable(false).defaultValue(org.jooq.impl.DSL.inline("", org.jooq.impl.SQLDataType.VARCHAR)), this, "快递名称");
 
     /**
-     * The column <code>mini_shop_471752.b2c_part_order_goods_ship.shipping_id</code>. 快递ID
+     * The column <code>mini_shop_471752.b2c_part_order_goods_ship.shipping_id</code>. 快递id
      */
-    public final TableField<PartOrderGoodsShipRecord, Byte> SHIPPING_ID = createField("shipping_id", org.jooq.impl.SQLDataType.TINYINT.nullable(false).defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.TINYINT)), this, "快递ID");
+    public final TableField<PartOrderGoodsShipRecord, Byte> SHIPPING_ID = createField("shipping_id", org.jooq.impl.SQLDataType.TINYINT.nullable(false).defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.TINYINT)), this, "快递id");
 
     /**
      * The column <code>mini_shop_471752.b2c_part_order_goods_ship.shipping_time</code>. 部分发货时间
      */
-    public final TableField<PartOrderGoodsShipRecord, Timestamp> SHIPPING_TIME = createField("shipping_time", org.jooq.impl.SQLDataType.TIMESTAMP.nullable(false).defaultValue(org.jooq.impl.DSL.field("CURRENT_TIMESTAMP", org.jooq.impl.SQLDataType.TIMESTAMP)), this, "部分发货时间");
+    public final TableField<PartOrderGoodsShipRecord, Timestamp> SHIPPING_TIME = createField("shipping_time", org.jooq.impl.SQLDataType.TIMESTAMP.defaultValue(org.jooq.impl.DSL.field("CURRENT_TIMESTAMP", org.jooq.impl.SQLDataType.TIMESTAMP)), this, "部分发货时间");
 
     /**
      * The column <code>mini_shop_471752.b2c_part_order_goods_ship.confirm_time</code>. 订单确收收货时间
      */
     public final TableField<PartOrderGoodsShipRecord, Timestamp> CONFIRM_TIME = createField("confirm_time", org.jooq.impl.SQLDataType.TIMESTAMP, this, "订单确收收货时间");
+
+    /**
+     * The column <code>mini_shop_471752.b2c_part_order_goods_ship.create_time</code>.
+     */
+    public final TableField<PartOrderGoodsShipRecord, Timestamp> CREATE_TIME = createField("create_time", org.jooq.impl.SQLDataType.TIMESTAMP.nullable(false).defaultValue(org.jooq.impl.DSL.field("CURRENT_TIMESTAMP", org.jooq.impl.SQLDataType.TIMESTAMP)), this, "");
+
+    /**
+     * The column <code>mini_shop_471752.b2c_part_order_goods_ship.update_time</code>. 最后修改时间
+     */
+    public final TableField<PartOrderGoodsShipRecord, Timestamp> UPDATE_TIME = createField("update_time", org.jooq.impl.SQLDataType.TIMESTAMP.nullable(false).defaultValue(org.jooq.impl.DSL.field("CURRENT_TIMESTAMP", org.jooq.impl.SQLDataType.TIMESTAMP)), this, "最后修改时间");
 
     /**
      * Create a <code>mini_shop_471752.b2c_part_order_goods_ship</code> table reference

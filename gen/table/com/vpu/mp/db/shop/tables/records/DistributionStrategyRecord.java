@@ -27,7 +27,7 @@ import org.jooq.impl.UpdatableRecordImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class DistributionStrategyRecord extends UpdatableRecordImpl<DistributionStrategyRecord> {
 
-    private static final long serialVersionUID = -1274627168;
+    private static final long serialVersionUID = -1172619719;
 
     /**
      * Setter for <code>mini_shop_471752.b2c_distribution_strategy.id</code>.
@@ -324,73 +324,87 @@ public class DistributionStrategyRecord extends UpdatableRecordImpl<Distribution
     }
 
     /**
-     * Setter for <code>mini_shop_471752.b2c_distribution_strategy.add_time</code>. 添加时间
-     */
-    public void setAddTime(Timestamp value) {
-        set(21, value);
-    }
-
-    /**
-     * Getter for <code>mini_shop_471752.b2c_distribution_strategy.add_time</code>. 添加时间
-     */
-    public Timestamp getAddTime() {
-        return (Timestamp) get(21);
-    }
-
-    /**
      * Setter for <code>mini_shop_471752.b2c_distribution_strategy.del_flag</code>. 1删除
      */
     public void setDelFlag(Byte value) {
-        set(22, value);
+        set(21, value);
     }
 
     /**
      * Getter for <code>mini_shop_471752.b2c_distribution_strategy.del_flag</code>. 1删除
      */
     public Byte getDelFlag() {
-        return (Byte) get(22);
+        return (Byte) get(21);
     }
 
     /**
-     * Setter for <code>mini_shop_471752.b2c_distribution_strategy.update_time</code>. 最后修改时间
+     * Setter for <code>mini_shop_471752.b2c_distribution_strategy.del_time</code>. 删除时间
      */
-    public void setUpdateTime(Timestamp value) {
-        set(23, value);
+    public void setDelTime(Timestamp value) {
+        set(22, value);
     }
 
     /**
-     * Getter for <code>mini_shop_471752.b2c_distribution_strategy.update_time</code>. 最后修改时间
+     * Getter for <code>mini_shop_471752.b2c_distribution_strategy.del_time</code>. 删除时间
      */
-    public Timestamp getUpdateTime() {
-        return (Timestamp) get(23);
+    public Timestamp getDelTime() {
+        return (Timestamp) get(22);
     }
 
     /**
      * Setter for <code>mini_shop_471752.b2c_distribution_strategy.recommend_sort_id</code>. 返利商家分类ids
      */
     public void setRecommendSortId(String value) {
-        set(24, value);
+        set(23, value);
     }
 
     /**
      * Getter for <code>mini_shop_471752.b2c_distribution_strategy.recommend_sort_id</code>. 返利商家分类ids
      */
     public String getRecommendSortId() {
-        return (String) get(24);
+        return (String) get(23);
     }
 
     /**
      * Setter for <code>mini_shop_471752.b2c_distribution_strategy.send_coupon</code>. 赠送优惠券
      */
     public void setSendCoupon(Byte value) {
-        set(25, value);
+        set(24, value);
     }
 
     /**
      * Getter for <code>mini_shop_471752.b2c_distribution_strategy.send_coupon</code>. 赠送优惠券
      */
     public Byte getSendCoupon() {
-        return (Byte) get(25);
+        return (Byte) get(24);
+    }
+
+    /**
+     * Setter for <code>mini_shop_471752.b2c_distribution_strategy.create_time</code>.
+     */
+    public void setCreateTime(Timestamp value) {
+        set(25, value);
+    }
+
+    /**
+     * Getter for <code>mini_shop_471752.b2c_distribution_strategy.create_time</code>.
+     */
+    public Timestamp getCreateTime() {
+        return (Timestamp) get(25);
+    }
+
+    /**
+     * Setter for <code>mini_shop_471752.b2c_distribution_strategy.update_time</code>. 最后修改时间
+     */
+    public void setUpdateTime(Timestamp value) {
+        set(26, value);
+    }
+
+    /**
+     * Getter for <code>mini_shop_471752.b2c_distribution_strategy.update_time</code>. 最后修改时间
+     */
+    public Timestamp getUpdateTime() {
+        return (Timestamp) get(26);
     }
 
     // -------------------------------------------------------------------------
@@ -419,7 +433,7 @@ public class DistributionStrategyRecord extends UpdatableRecordImpl<Distribution
     /**
      * Create a detached, initialised DistributionStrategyRecord
      */
-    public DistributionStrategyRecord(Integer id, String strategyName, Byte strategyLevel, Timestamp startTime, Timestamp endTime, Byte selfPurchase, Byte costProtection, Double fanliRatio, Double rebateRatio, Double fanliRatio_2, Double rebateRatio_2, Double fanliRatio_3, Double rebateRatio_3, Double fanliRatio_4, Double rebateRatio_4, Double fanliRatio_5, Double rebateRatio_5, Byte recommendType, String recommendGoodsId, String recommendCatId, Byte status, Timestamp addTime, Byte delFlag, Timestamp updateTime, String recommendSortId, Byte sendCoupon) {
+    public DistributionStrategyRecord(Integer id, String strategyName, Byte strategyLevel, Timestamp startTime, Timestamp endTime, Byte selfPurchase, Byte costProtection, Double fanliRatio, Double rebateRatio, Double fanliRatio_2, Double rebateRatio_2, Double fanliRatio_3, Double rebateRatio_3, Double fanliRatio_4, Double rebateRatio_4, Double fanliRatio_5, Double rebateRatio_5, Byte recommendType, String recommendGoodsId, String recommendCatId, Byte status, Byte delFlag, Timestamp delTime, String recommendSortId, Byte sendCoupon, Timestamp createTime, Timestamp updateTime) {
         super(DistributionStrategy.DISTRIBUTION_STRATEGY);
 
         set(0, id);
@@ -443,10 +457,11 @@ public class DistributionStrategyRecord extends UpdatableRecordImpl<Distribution
         set(18, recommendGoodsId);
         set(19, recommendCatId);
         set(20, status);
-        set(21, addTime);
-        set(22, delFlag);
-        set(23, updateTime);
-        set(24, recommendSortId);
-        set(25, sendCoupon);
+        set(21, delFlag);
+        set(22, delTime);
+        set(23, recommendSortId);
+        set(24, sendCoupon);
+        set(25, createTime);
+        set(26, updateTime);
     }
 }

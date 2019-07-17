@@ -42,7 +42,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class MpJump extends TableImpl<MpJumpRecord> {
 
-    private static final long serialVersionUID = -22789716;
+    private static final long serialVersionUID = -1510854915;
 
     /**
      * The reference instance of <code>mini_shop_471752.b2c_mp_jump</code>
@@ -78,19 +78,19 @@ public class MpJump extends TableImpl<MpJumpRecord> {
     public final TableField<MpJumpRecord, Byte> FLAG = createField("flag", org.jooq.impl.SQLDataType.TINYINT.nullable(false).defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.TINYINT)), this, "0:可用，1:停用");
 
     /**
-     * The column <code>mini_shop_471752.b2c_mp_jump.is_delete</code>. 0:未删除，1:已删除
+     * The column <code>mini_shop_471752.b2c_mp_jump.del_flag</code>. 0:未删除，1:已删除
      */
-    public final TableField<MpJumpRecord, Byte> IS_DELETE = createField("is_delete", org.jooq.impl.SQLDataType.TINYINT.nullable(false).defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.TINYINT)), this, "0:未删除，1:已删除");
+    public final TableField<MpJumpRecord, Byte> DEL_FLAG = createField("del_flag", org.jooq.impl.SQLDataType.TINYINT.nullable(false).defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.TINYINT)), this, "0:未删除，1:已删除");
 
     /**
-     * The column <code>mini_shop_471752.b2c_mp_jump.add_time</code>.
+     * The column <code>mini_shop_471752.b2c_mp_jump.create_time</code>.
      */
-    public final TableField<MpJumpRecord, Timestamp> ADD_TIME = createField("add_time", org.jooq.impl.SQLDataType.TIMESTAMP, this, "");
+    public final TableField<MpJumpRecord, Timestamp> CREATE_TIME = createField("create_time", org.jooq.impl.SQLDataType.TIMESTAMP.nullable(false).defaultValue(org.jooq.impl.DSL.field("CURRENT_TIMESTAMP", org.jooq.impl.SQLDataType.TIMESTAMP)), this, "");
 
     /**
-     * The column <code>mini_shop_471752.b2c_mp_jump.update_time</code>.
+     * The column <code>mini_shop_471752.b2c_mp_jump.update_time</code>. 最后修改时间
      */
-    public final TableField<MpJumpRecord, Timestamp> UPDATE_TIME = createField("update_time", org.jooq.impl.SQLDataType.TIMESTAMP, this, "");
+    public final TableField<MpJumpRecord, Timestamp> UPDATE_TIME = createField("update_time", org.jooq.impl.SQLDataType.TIMESTAMP.nullable(false).defaultValue(org.jooq.impl.DSL.field("CURRENT_TIMESTAMP", org.jooq.impl.SQLDataType.TIMESTAMP)), this, "最后修改时间");
 
     /**
      * Create a <code>mini_shop_471752.b2c_mp_jump</code> table reference

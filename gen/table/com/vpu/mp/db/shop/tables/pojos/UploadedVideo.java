@@ -23,7 +23,7 @@ import javax.annotation.Generated;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class UploadedVideo implements Serializable {
 
-    private static final long serialVersionUID = -928293733;
+    private static final long serialVersionUID = -925286642;
 
     private Integer   videoId;
     private String    videoType;
@@ -38,9 +38,10 @@ public class UploadedVideo implements Serializable {
     private Integer   videoHeight;
     private String    videoMeta;
     private Byte      isRefer;
-    private Timestamp uploadTime;
     private Integer   shopId;
     private Byte      delFlag;
+    private Timestamp createTime;
+    private Timestamp updateTime;
 
     public UploadedVideo() {}
 
@@ -58,9 +59,10 @@ public class UploadedVideo implements Serializable {
         this.videoHeight = value.videoHeight;
         this.videoMeta = value.videoMeta;
         this.isRefer = value.isRefer;
-        this.uploadTime = value.uploadTime;
         this.shopId = value.shopId;
         this.delFlag = value.delFlag;
+        this.createTime = value.createTime;
+        this.updateTime = value.updateTime;
     }
 
     public UploadedVideo(
@@ -77,9 +79,10 @@ public class UploadedVideo implements Serializable {
         Integer   videoHeight,
         String    videoMeta,
         Byte      isRefer,
-        Timestamp uploadTime,
         Integer   shopId,
-        Byte      delFlag
+        Byte      delFlag,
+        Timestamp createTime,
+        Timestamp updateTime
     ) {
         this.videoId = videoId;
         this.videoType = videoType;
@@ -94,9 +97,10 @@ public class UploadedVideo implements Serializable {
         this.videoHeight = videoHeight;
         this.videoMeta = videoMeta;
         this.isRefer = isRefer;
-        this.uploadTime = uploadTime;
         this.shopId = shopId;
         this.delFlag = delFlag;
+        this.createTime = createTime;
+        this.updateTime = updateTime;
     }
 
     public Integer getVideoId() {
@@ -203,14 +207,6 @@ public class UploadedVideo implements Serializable {
         this.isRefer = isRefer;
     }
 
-    public Timestamp getUploadTime() {
-        return this.uploadTime;
-    }
-
-    public void setUploadTime(Timestamp uploadTime) {
-        this.uploadTime = uploadTime;
-    }
-
     public Integer getShopId() {
         return this.shopId;
     }
@@ -225,6 +221,22 @@ public class UploadedVideo implements Serializable {
 
     public void setDelFlag(Byte delFlag) {
         this.delFlag = delFlag;
+    }
+
+    public Timestamp getCreateTime() {
+        return this.createTime;
+    }
+
+    public void setCreateTime(Timestamp createTime) {
+        this.createTime = createTime;
+    }
+
+    public Timestamp getUpdateTime() {
+        return this.updateTime;
+    }
+
+    public void setUpdateTime(Timestamp updateTime) {
+        this.updateTime = updateTime;
     }
 
     @Override
@@ -244,9 +256,10 @@ public class UploadedVideo implements Serializable {
         sb.append(", ").append(videoHeight);
         sb.append(", ").append(videoMeta);
         sb.append(", ").append(isRefer);
-        sb.append(", ").append(uploadTime);
         sb.append(", ").append(shopId);
         sb.append(", ").append(delFlag);
+        sb.append(", ").append(createTime);
+        sb.append(", ").append(updateTime);
 
         sb.append(")");
         return sb.toString();

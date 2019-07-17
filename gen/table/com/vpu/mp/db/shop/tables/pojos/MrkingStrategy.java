@@ -23,7 +23,7 @@ import javax.annotation.Generated;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class MrkingStrategy implements Serializable {
 
-    private static final long serialVersionUID = -739243023;
+    private static final long serialVersionUID = -659750976;
 
     private Integer   id;
     private Integer   shopId;
@@ -31,7 +31,6 @@ public class MrkingStrategy implements Serializable {
     private Byte      type;
     private Timestamp startTime;
     private Timestamp endTime;
-    private Timestamp created;
     private String    recommendGoodsId;
     private String    recommendCatId;
     private String    recommendBrandId;
@@ -39,6 +38,8 @@ public class MrkingStrategy implements Serializable {
     private Integer   delFlag;
     private Integer   strategyPriority;
     private String    cardId;
+    private Timestamp createTime;
+    private Timestamp updateTime;
 
     public MrkingStrategy() {}
 
@@ -49,7 +50,6 @@ public class MrkingStrategy implements Serializable {
         this.type = value.type;
         this.startTime = value.startTime;
         this.endTime = value.endTime;
-        this.created = value.created;
         this.recommendGoodsId = value.recommendGoodsId;
         this.recommendCatId = value.recommendCatId;
         this.recommendBrandId = value.recommendBrandId;
@@ -57,6 +57,8 @@ public class MrkingStrategy implements Serializable {
         this.delFlag = value.delFlag;
         this.strategyPriority = value.strategyPriority;
         this.cardId = value.cardId;
+        this.createTime = value.createTime;
+        this.updateTime = value.updateTime;
     }
 
     public MrkingStrategy(
@@ -66,14 +68,15 @@ public class MrkingStrategy implements Serializable {
         Byte      type,
         Timestamp startTime,
         Timestamp endTime,
-        Timestamp created,
         String    recommendGoodsId,
         String    recommendCatId,
         String    recommendBrandId,
         Byte      actType,
         Integer   delFlag,
         Integer   strategyPriority,
-        String    cardId
+        String    cardId,
+        Timestamp createTime,
+        Timestamp updateTime
     ) {
         this.id = id;
         this.shopId = shopId;
@@ -81,7 +84,6 @@ public class MrkingStrategy implements Serializable {
         this.type = type;
         this.startTime = startTime;
         this.endTime = endTime;
-        this.created = created;
         this.recommendGoodsId = recommendGoodsId;
         this.recommendCatId = recommendCatId;
         this.recommendBrandId = recommendBrandId;
@@ -89,6 +91,8 @@ public class MrkingStrategy implements Serializable {
         this.delFlag = delFlag;
         this.strategyPriority = strategyPriority;
         this.cardId = cardId;
+        this.createTime = createTime;
+        this.updateTime = updateTime;
     }
 
     public Integer getId() {
@@ -137,14 +141,6 @@ public class MrkingStrategy implements Serializable {
 
     public void setEndTime(Timestamp endTime) {
         this.endTime = endTime;
-    }
-
-    public Timestamp getCreated() {
-        return this.created;
-    }
-
-    public void setCreated(Timestamp created) {
-        this.created = created;
     }
 
     public String getRecommendGoodsId() {
@@ -203,6 +199,22 @@ public class MrkingStrategy implements Serializable {
         this.cardId = cardId;
     }
 
+    public Timestamp getCreateTime() {
+        return this.createTime;
+    }
+
+    public void setCreateTime(Timestamp createTime) {
+        this.createTime = createTime;
+    }
+
+    public Timestamp getUpdateTime() {
+        return this.updateTime;
+    }
+
+    public void setUpdateTime(Timestamp updateTime) {
+        this.updateTime = updateTime;
+    }
+
     @Override
     public String toString() {
         StringBuilder sb = new StringBuilder("MrkingStrategy (");
@@ -213,7 +225,6 @@ public class MrkingStrategy implements Serializable {
         sb.append(", ").append(type);
         sb.append(", ").append(startTime);
         sb.append(", ").append(endTime);
-        sb.append(", ").append(created);
         sb.append(", ").append(recommendGoodsId);
         sb.append(", ").append(recommendCatId);
         sb.append(", ").append(recommendBrandId);
@@ -221,6 +232,8 @@ public class MrkingStrategy implements Serializable {
         sb.append(", ").append(delFlag);
         sb.append(", ").append(strategyPriority);
         sb.append(", ").append(cardId);
+        sb.append(", ").append(createTime);
+        sb.append(", ").append(updateTime);
 
         sb.append(")");
         return sb.toString();

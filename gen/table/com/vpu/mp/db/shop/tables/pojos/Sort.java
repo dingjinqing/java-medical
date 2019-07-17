@@ -23,20 +23,20 @@ import javax.annotation.Generated;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class Sort implements Serializable {
 
-    private static final long serialVersionUID = -2075290557;
+    private static final long serialVersionUID = -731443083;
 
     private Integer   sortId;
     private String    sortName;
-    private Short     parentId;
+    private Integer   parentId;
     private Short     level;
     private Byte      hasChild;
-    private Timestamp createTime;
     private String    sortImg;
     private String    imgLink;
     private Short     first;
     private Byte      type;
     private String    sortDesc;
-    private String    keywords;
+    private Timestamp createTime;
+    private Timestamp updateTime;
 
     public Sort() {}
 
@@ -46,41 +46,41 @@ public class Sort implements Serializable {
         this.parentId = value.parentId;
         this.level = value.level;
         this.hasChild = value.hasChild;
-        this.createTime = value.createTime;
         this.sortImg = value.sortImg;
         this.imgLink = value.imgLink;
         this.first = value.first;
         this.type = value.type;
         this.sortDesc = value.sortDesc;
-        this.keywords = value.keywords;
+        this.createTime = value.createTime;
+        this.updateTime = value.updateTime;
     }
 
     public Sort(
         Integer   sortId,
         String    sortName,
-        Short     parentId,
+        Integer   parentId,
         Short     level,
         Byte      hasChild,
-        Timestamp createTime,
         String    sortImg,
         String    imgLink,
         Short     first,
         Byte      type,
         String    sortDesc,
-        String    keywords
+        Timestamp createTime,
+        Timestamp updateTime
     ) {
         this.sortId = sortId;
         this.sortName = sortName;
         this.parentId = parentId;
         this.level = level;
         this.hasChild = hasChild;
-        this.createTime = createTime;
         this.sortImg = sortImg;
         this.imgLink = imgLink;
         this.first = first;
         this.type = type;
         this.sortDesc = sortDesc;
-        this.keywords = keywords;
+        this.createTime = createTime;
+        this.updateTime = updateTime;
     }
 
     public Integer getSortId() {
@@ -99,11 +99,11 @@ public class Sort implements Serializable {
         this.sortName = sortName;
     }
 
-    public Short getParentId() {
+    public Integer getParentId() {
         return this.parentId;
     }
 
-    public void setParentId(Short parentId) {
+    public void setParentId(Integer parentId) {
         this.parentId = parentId;
     }
 
@@ -121,14 +121,6 @@ public class Sort implements Serializable {
 
     public void setHasChild(Byte hasChild) {
         this.hasChild = hasChild;
-    }
-
-    public Timestamp getCreateTime() {
-        return this.createTime;
-    }
-
-    public void setCreateTime(Timestamp createTime) {
-        this.createTime = createTime;
     }
 
     public String getSortImg() {
@@ -171,12 +163,20 @@ public class Sort implements Serializable {
         this.sortDesc = sortDesc;
     }
 
-    public String getKeywords() {
-        return this.keywords;
+    public Timestamp getCreateTime() {
+        return this.createTime;
     }
 
-    public void setKeywords(String keywords) {
-        this.keywords = keywords;
+    public void setCreateTime(Timestamp createTime) {
+        this.createTime = createTime;
+    }
+
+    public Timestamp getUpdateTime() {
+        return this.updateTime;
+    }
+
+    public void setUpdateTime(Timestamp updateTime) {
+        this.updateTime = updateTime;
     }
 
     @Override
@@ -188,13 +188,13 @@ public class Sort implements Serializable {
         sb.append(", ").append(parentId);
         sb.append(", ").append(level);
         sb.append(", ").append(hasChild);
-        sb.append(", ").append(createTime);
         sb.append(", ").append(sortImg);
         sb.append(", ").append(imgLink);
         sb.append(", ").append(first);
         sb.append(", ").append(type);
         sb.append(", ").append(sortDesc);
-        sb.append(", ").append(keywords);
+        sb.append(", ").append(createTime);
+        sb.append(", ").append(updateTime);
 
         sb.append(")");
         return sb.toString();

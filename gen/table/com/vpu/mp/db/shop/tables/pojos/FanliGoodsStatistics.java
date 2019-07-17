@@ -24,7 +24,7 @@ import javax.annotation.Generated;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class FanliGoodsStatistics implements Serializable {
 
-    private static final long serialVersionUID = -852344069;
+    private static final long serialVersionUID = 673995226;
 
     private Integer    prdId;
     private String     prdSn;
@@ -32,7 +32,7 @@ public class FanliGoodsStatistics implements Serializable {
     private Integer    catId;
     private Integer    saleNumber;
     private BigDecimal prdTotalFanli;
-    private Timestamp  addTime;
+    private Timestamp  createTime;
     private Timestamp  updateTime;
 
     public FanliGoodsStatistics() {}
@@ -44,7 +44,7 @@ public class FanliGoodsStatistics implements Serializable {
         this.catId = value.catId;
         this.saleNumber = value.saleNumber;
         this.prdTotalFanli = value.prdTotalFanli;
-        this.addTime = value.addTime;
+        this.createTime = value.createTime;
         this.updateTime = value.updateTime;
     }
 
@@ -55,7 +55,7 @@ public class FanliGoodsStatistics implements Serializable {
         Integer    catId,
         Integer    saleNumber,
         BigDecimal prdTotalFanli,
-        Timestamp  addTime,
+        Timestamp  createTime,
         Timestamp  updateTime
     ) {
         this.prdId = prdId;
@@ -64,7 +64,7 @@ public class FanliGoodsStatistics implements Serializable {
         this.catId = catId;
         this.saleNumber = saleNumber;
         this.prdTotalFanli = prdTotalFanli;
-        this.addTime = addTime;
+        this.createTime = createTime;
         this.updateTime = updateTime;
     }
 
@@ -116,12 +116,12 @@ public class FanliGoodsStatistics implements Serializable {
         this.prdTotalFanli = prdTotalFanli;
     }
 
-    public Timestamp getAddTime() {
-        return this.addTime;
+    public Timestamp getCreateTime() {
+        return this.createTime;
     }
 
-    public void setAddTime(Timestamp addTime) {
-        this.addTime = addTime;
+    public void setCreateTime(Timestamp createTime) {
+        this.createTime = createTime;
     }
 
     public Timestamp getUpdateTime() {
@@ -142,7 +142,7 @@ public class FanliGoodsStatistics implements Serializable {
         sb.append(", ").append(catId);
         sb.append(", ").append(saleNumber);
         sb.append(", ").append(prdTotalFanli);
-        sb.append(", ").append(addTime);
+        sb.append(", ").append(createTime);
         sb.append(", ").append(updateTime);
 
         sb.append(")");

@@ -25,7 +25,7 @@ import javax.annotation.Generated;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class StoreService implements Serializable {
 
-    private static final long serialVersionUID = 180614663;
+    private static final long serialVersionUID = -1483664834;
 
     private Integer    id;
     private Integer    storeId;
@@ -46,10 +46,10 @@ public class StoreService implements Serializable {
     private Integer    servicesNumber;
     private Integer    techServicesNumber;
     private String     content;
-    private Timestamp  addTime;
-    private Timestamp  upTime;
+    private Timestamp  createTime;
+    private Timestamp  updateTime;
     private String     chargeResolve;
-    private Byte       isDelete;
+    private Byte       delFlag;
 
     public StoreService() {}
 
@@ -73,10 +73,10 @@ public class StoreService implements Serializable {
         this.servicesNumber = value.servicesNumber;
         this.techServicesNumber = value.techServicesNumber;
         this.content = value.content;
-        this.addTime = value.addTime;
-        this.upTime = value.upTime;
+        this.createTime = value.createTime;
+        this.updateTime = value.updateTime;
         this.chargeResolve = value.chargeResolve;
-        this.isDelete = value.isDelete;
+        this.delFlag = value.delFlag;
     }
 
     public StoreService(
@@ -99,10 +99,10 @@ public class StoreService implements Serializable {
         Integer    servicesNumber,
         Integer    techServicesNumber,
         String     content,
-        Timestamp  addTime,
-        Timestamp  upTime,
+        Timestamp  createTime,
+        Timestamp  updateTime,
         String     chargeResolve,
-        Byte       isDelete
+        Byte       delFlag
     ) {
         this.id = id;
         this.storeId = storeId;
@@ -123,10 +123,10 @@ public class StoreService implements Serializable {
         this.servicesNumber = servicesNumber;
         this.techServicesNumber = techServicesNumber;
         this.content = content;
-        this.addTime = addTime;
-        this.upTime = upTime;
+        this.createTime = createTime;
+        this.updateTime = updateTime;
         this.chargeResolve = chargeResolve;
-        this.isDelete = isDelete;
+        this.delFlag = delFlag;
     }
 
     public Integer getId() {
@@ -281,20 +281,20 @@ public class StoreService implements Serializable {
         this.content = content;
     }
 
-    public Timestamp getAddTime() {
-        return this.addTime;
+    public Timestamp getCreateTime() {
+        return this.createTime;
     }
 
-    public void setAddTime(Timestamp addTime) {
-        this.addTime = addTime;
+    public void setCreateTime(Timestamp createTime) {
+        this.createTime = createTime;
     }
 
-    public Timestamp getUpTime() {
-        return this.upTime;
+    public Timestamp getUpdateTime() {
+        return this.updateTime;
     }
 
-    public void setUpTime(Timestamp upTime) {
-        this.upTime = upTime;
+    public void setUpdateTime(Timestamp updateTime) {
+        this.updateTime = updateTime;
     }
 
     public String getChargeResolve() {
@@ -305,12 +305,12 @@ public class StoreService implements Serializable {
         this.chargeResolve = chargeResolve;
     }
 
-    public Byte getIsDelete() {
-        return this.isDelete;
+    public Byte getDelFlag() {
+        return this.delFlag;
     }
 
-    public void setIsDelete(Byte isDelete) {
-        this.isDelete = isDelete;
+    public void setDelFlag(Byte delFlag) {
+        this.delFlag = delFlag;
     }
 
     @Override
@@ -336,10 +336,10 @@ public class StoreService implements Serializable {
         sb.append(", ").append(servicesNumber);
         sb.append(", ").append(techServicesNumber);
         sb.append(", ").append(content);
-        sb.append(", ").append(addTime);
-        sb.append(", ").append(upTime);
+        sb.append(", ").append(createTime);
+        sb.append(", ").append(updateTime);
         sb.append(", ").append(chargeResolve);
-        sb.append(", ").append(isDelete);
+        sb.append(", ").append(delFlag);
 
         sb.append(")");
         return sb.toString();

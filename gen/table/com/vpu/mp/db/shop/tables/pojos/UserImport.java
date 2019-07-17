@@ -23,16 +23,16 @@ import javax.annotation.Generated;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class UserImport implements Serializable {
 
-    private static final long serialVersionUID = 647526600;
+    private static final long serialVersionUID = 1526560775;
 
     private Integer   id;
     private String    cardId;
     private Integer   totalNum;
     private Integer   successNum;
-    private Timestamp addTime;
-    private Timestamp updateTime;
     private Byte      delFlag;
     private Timestamp delTime;
+    private Timestamp createTime;
+    private Timestamp updateTime;
 
     public UserImport() {}
 
@@ -41,10 +41,10 @@ public class UserImport implements Serializable {
         this.cardId = value.cardId;
         this.totalNum = value.totalNum;
         this.successNum = value.successNum;
-        this.addTime = value.addTime;
-        this.updateTime = value.updateTime;
         this.delFlag = value.delFlag;
         this.delTime = value.delTime;
+        this.createTime = value.createTime;
+        this.updateTime = value.updateTime;
     }
 
     public UserImport(
@@ -52,19 +52,19 @@ public class UserImport implements Serializable {
         String    cardId,
         Integer   totalNum,
         Integer   successNum,
-        Timestamp addTime,
-        Timestamp updateTime,
         Byte      delFlag,
-        Timestamp delTime
+        Timestamp delTime,
+        Timestamp createTime,
+        Timestamp updateTime
     ) {
         this.id = id;
         this.cardId = cardId;
         this.totalNum = totalNum;
         this.successNum = successNum;
-        this.addTime = addTime;
-        this.updateTime = updateTime;
         this.delFlag = delFlag;
         this.delTime = delTime;
+        this.createTime = createTime;
+        this.updateTime = updateTime;
     }
 
     public Integer getId() {
@@ -99,22 +99,6 @@ public class UserImport implements Serializable {
         this.successNum = successNum;
     }
 
-    public Timestamp getAddTime() {
-        return this.addTime;
-    }
-
-    public void setAddTime(Timestamp addTime) {
-        this.addTime = addTime;
-    }
-
-    public Timestamp getUpdateTime() {
-        return this.updateTime;
-    }
-
-    public void setUpdateTime(Timestamp updateTime) {
-        this.updateTime = updateTime;
-    }
-
     public Byte getDelFlag() {
         return this.delFlag;
     }
@@ -131,6 +115,22 @@ public class UserImport implements Serializable {
         this.delTime = delTime;
     }
 
+    public Timestamp getCreateTime() {
+        return this.createTime;
+    }
+
+    public void setCreateTime(Timestamp createTime) {
+        this.createTime = createTime;
+    }
+
+    public Timestamp getUpdateTime() {
+        return this.updateTime;
+    }
+
+    public void setUpdateTime(Timestamp updateTime) {
+        this.updateTime = updateTime;
+    }
+
     @Override
     public String toString() {
         StringBuilder sb = new StringBuilder("UserImport (");
@@ -139,10 +139,10 @@ public class UserImport implements Serializable {
         sb.append(", ").append(cardId);
         sb.append(", ").append(totalNum);
         sb.append(", ").append(successNum);
-        sb.append(", ").append(addTime);
-        sb.append(", ").append(updateTime);
         sb.append(", ").append(delFlag);
         sb.append(", ").append(delTime);
+        sb.append(", ").append(createTime);
+        sb.append(", ").append(updateTime);
 
         sb.append(")");
         return sb.toString();

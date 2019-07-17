@@ -43,7 +43,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class DistributionWithdraw extends TableImpl<DistributionWithdrawRecord> {
 
-    private static final long serialVersionUID = -1959799453;
+    private static final long serialVersionUID = -346134206;
 
     /**
      * The reference instance of <code>mini_shop_471752.b2c_distribution_withdraw</code>
@@ -67,11 +67,6 @@ public class DistributionWithdraw extends TableImpl<DistributionWithdrawRecord> 
      * The column <code>mini_shop_471752.b2c_distribution_withdraw.user_id</code>. 用户id
      */
     public final TableField<DistributionWithdrawRecord, Integer> USER_ID = createField("user_id", org.jooq.impl.SQLDataType.INTEGER.nullable(false), this, "用户id");
-
-    /**
-     * The column <code>mini_shop_471752.b2c_distribution_withdraw.add_time</code>. 申请时间
-     */
-    public final TableField<DistributionWithdrawRecord, Timestamp> ADD_TIME = createField("add_time", org.jooq.impl.SQLDataType.TIMESTAMP.nullable(false), this, "申请时间");
 
     /**
      * The column <code>mini_shop_471752.b2c_distribution_withdraw.type</code>. 提现类型  1微信公众号钱包提现 2小程序
@@ -107,11 +102,6 @@ public class DistributionWithdraw extends TableImpl<DistributionWithdrawRecord> 
      * The column <code>mini_shop_471752.b2c_distribution_withdraw.withdraw</code>. 可提现金额
      */
     public final TableField<DistributionWithdrawRecord, BigDecimal> WITHDRAW = createField("withdraw", org.jooq.impl.SQLDataType.DECIMAL(10, 2).nullable(false), this, "可提现金额");
-
-    /**
-     * The column <code>mini_shop_471752.b2c_distribution_withdraw.update_time</code>.
-     */
-    public final TableField<DistributionWithdrawRecord, Timestamp> UPDATE_TIME = createField("update_time", org.jooq.impl.SQLDataType.TIMESTAMP, this, "");
 
     /**
      * The column <code>mini_shop_471752.b2c_distribution_withdraw.desc</code>. 备注
@@ -151,12 +141,12 @@ public class DistributionWithdraw extends TableImpl<DistributionWithdrawRecord> 
     /**
      * The column <code>mini_shop_471752.b2c_distribution_withdraw.del_flag</code>.
      */
-    public final TableField<DistributionWithdrawRecord, Byte> DEL_FLAG = createField("del_flag", org.jooq.impl.SQLDataType.TINYINT.defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.TINYINT)), this, "");
+    public final TableField<DistributionWithdrawRecord, Byte> DEL_FLAG = createField("del_flag", org.jooq.impl.SQLDataType.TINYINT.nullable(false).defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.TINYINT)), this, "");
 
     /**
-     * The column <code>mini_shop_471752.b2c_distribution_withdraw.del_time</code>.
+     * The column <code>mini_shop_471752.b2c_distribution_withdraw.del_time</code>. 删除时间
      */
-    public final TableField<DistributionWithdrawRecord, Integer> DEL_TIME = createField("del_time", org.jooq.impl.SQLDataType.INTEGER, this, "");
+    public final TableField<DistributionWithdrawRecord, Timestamp> DEL_TIME = createField("del_time", org.jooq.impl.SQLDataType.TIMESTAMP, this, "删除时间");
 
     /**
      * The column <code>mini_shop_471752.b2c_distribution_withdraw.withdraw_source</code>. 申请时提现配置
@@ -167,6 +157,16 @@ public class DistributionWithdraw extends TableImpl<DistributionWithdrawRecord> 
      * The column <code>mini_shop_471752.b2c_distribution_withdraw.real_name</code>. 真实姓名
      */
     public final TableField<DistributionWithdrawRecord, String> REAL_NAME = createField("real_name", org.jooq.impl.SQLDataType.VARCHAR(32), this, "真实姓名");
+
+    /**
+     * The column <code>mini_shop_471752.b2c_distribution_withdraw.create_time</code>.
+     */
+    public final TableField<DistributionWithdrawRecord, Timestamp> CREATE_TIME = createField("create_time", org.jooq.impl.SQLDataType.TIMESTAMP.nullable(false).defaultValue(org.jooq.impl.DSL.field("CURRENT_TIMESTAMP", org.jooq.impl.SQLDataType.TIMESTAMP)), this, "");
+
+    /**
+     * The column <code>mini_shop_471752.b2c_distribution_withdraw.update_time</code>. 最后修改时间
+     */
+    public final TableField<DistributionWithdrawRecord, Timestamp> UPDATE_TIME = createField("update_time", org.jooq.impl.SQLDataType.TIMESTAMP.nullable(false).defaultValue(org.jooq.impl.DSL.field("CURRENT_TIMESTAMP", org.jooq.impl.SQLDataType.TIMESTAMP)), this, "最后修改时间");
 
     /**
      * Create a <code>mini_shop_471752.b2c_distribution_withdraw</code> table reference

@@ -42,7 +42,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class RecordAdminAction extends TableImpl<RecordAdminActionRecord> {
 
-    private static final long serialVersionUID = -1087078583;
+    private static final long serialVersionUID = -1142941321;
 
     /**
      * The reference instance of <code>mini_shop_471752.b2c_record_admin_action</code>
@@ -58,39 +58,54 @@ public class RecordAdminAction extends TableImpl<RecordAdminActionRecord> {
     }
 
     /**
-     * The column <code>mini_shop_471752.b2c_record_admin_action.id</code>. ID
+     * The column <code>mini_shop_471752.b2c_record_admin_action.id</code>. id
      */
-    public final TableField<RecordAdminActionRecord, Integer> ID = createField("id", org.jooq.impl.SQLDataType.INTEGER.nullable(false).identity(true), this, "ID");
+    public final TableField<RecordAdminActionRecord, Integer> ID = createField("id", org.jooq.impl.SQLDataType.INTEGER.nullable(false).identity(true), this, "id");
 
     /**
-     * The column <code>mini_shop_471752.b2c_record_admin_action.shop_id</code>. 店铺ID
+     * The column <code>mini_shop_471752.b2c_record_admin_action.sys_id</code>. 操作员id
      */
-    public final TableField<RecordAdminActionRecord, Integer> SHOP_ID = createField("shop_id", org.jooq.impl.SQLDataType.INTEGER.defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.INTEGER)), this, "店铺ID");
+    public final TableField<RecordAdminActionRecord, Integer> SYS_ID = createField("sys_id", org.jooq.impl.SQLDataType.INTEGER.nullable(false).defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.INTEGER)), this, "操作员id");
 
     /**
-     * The column <code>mini_shop_471752.b2c_record_admin_action.sys_id</code>. 操作员ID
+     * The column <code>mini_shop_471752.b2c_record_admin_action.account_id</code>. sub操作员id
      */
-    public final TableField<RecordAdminActionRecord, Integer> SYS_ID = createField("sys_id", org.jooq.impl.SQLDataType.INTEGER, this, "操作员ID");
-
-    /**
-     * The column <code>mini_shop_471752.b2c_record_admin_action.account_id</code>. SUB操作员ID
-     */
-    public final TableField<RecordAdminActionRecord, Integer> ACCOUNT_ID = createField("account_id", org.jooq.impl.SQLDataType.INTEGER, this, "SUB操作员ID");
+    public final TableField<RecordAdminActionRecord, Integer> ACCOUNT_ID = createField("account_id", org.jooq.impl.SQLDataType.INTEGER.nullable(false).defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.INTEGER)), this, "sub操作员id");
 
     /**
      * The column <code>mini_shop_471752.b2c_record_admin_action.action_type</code>. 操作类型
      */
-    public final TableField<RecordAdminActionRecord, Byte> ACTION_TYPE = createField("action_type", org.jooq.impl.SQLDataType.TINYINT.defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.TINYINT)), this, "操作类型");
+    public final TableField<RecordAdminActionRecord, Byte> ACTION_TYPE = createField("action_type", org.jooq.impl.SQLDataType.TINYINT.nullable(false).defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.TINYINT)), this, "操作类型");
 
     /**
-     * The column <code>mini_shop_471752.b2c_record_admin_action.action_desc</code>. 操作日志
+     * The column <code>mini_shop_471752.b2c_record_admin_action.template_id</code>. 模版id
      */
-    public final TableField<RecordAdminActionRecord, String> ACTION_DESC = createField("action_desc", org.jooq.impl.SQLDataType.VARCHAR(3000), this, "操作日志");
+    public final TableField<RecordAdminActionRecord, String> TEMPLATE_ID = createField("template_id", org.jooq.impl.SQLDataType.VARCHAR(100).nullable(false), this, "模版id");
 
     /**
-     * The column <code>mini_shop_471752.b2c_record_admin_action.add_time</code>. 添加时间
+     * The column <code>mini_shop_471752.b2c_record_admin_action.template_data</code>. 模版数据
      */
-    public final TableField<RecordAdminActionRecord, Timestamp> ADD_TIME = createField("add_time", org.jooq.impl.SQLDataType.TIMESTAMP.nullable(false).defaultValue(org.jooq.impl.DSL.field("CURRENT_TIMESTAMP", org.jooq.impl.SQLDataType.TIMESTAMP)), this, "添加时间");
+    public final TableField<RecordAdminActionRecord, String> TEMPLATE_DATA = createField("template_data", org.jooq.impl.SQLDataType.VARCHAR(200).nullable(false), this, "模版数据");
+
+    /**
+     * The column <code>mini_shop_471752.b2c_record_admin_action.user_name</code>. 操作员名称
+     */
+    public final TableField<RecordAdminActionRecord, String> USER_NAME = createField("user_name", org.jooq.impl.SQLDataType.VARCHAR(60).nullable(false), this, "操作员名称");
+
+    /**
+     * The column <code>mini_shop_471752.b2c_record_admin_action.mobile</code>. 操作员手机号
+     */
+    public final TableField<RecordAdminActionRecord, String> MOBILE = createField("mobile", org.jooq.impl.SQLDataType.VARCHAR(32).nullable(false), this, "操作员手机号");
+
+    /**
+     * The column <code>mini_shop_471752.b2c_record_admin_action.create_time</code>. 助力时间
+     */
+    public final TableField<RecordAdminActionRecord, Timestamp> CREATE_TIME = createField("create_time", org.jooq.impl.SQLDataType.TIMESTAMP.nullable(false).defaultValue(org.jooq.impl.DSL.field("CURRENT_TIMESTAMP", org.jooq.impl.SQLDataType.TIMESTAMP)), this, "助力时间");
+
+    /**
+     * The column <code>mini_shop_471752.b2c_record_admin_action.update_time</code>. 更新时间
+     */
+    public final TableField<RecordAdminActionRecord, Timestamp> UPDATE_TIME = createField("update_time", org.jooq.impl.SQLDataType.TIMESTAMP.nullable(false).defaultValue(org.jooq.impl.DSL.field("CURRENT_TIMESTAMP", org.jooq.impl.SQLDataType.TIMESTAMP)), this, "更新时间");
 
     /**
      * Create a <code>mini_shop_471752.b2c_record_admin_action</code> table reference

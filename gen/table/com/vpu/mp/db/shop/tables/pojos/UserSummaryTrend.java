@@ -25,7 +25,7 @@ import javax.annotation.Generated;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class UserSummaryTrend implements Serializable {
 
-    private static final long serialVersionUID = -1456624525;
+    private static final long serialVersionUID = -782315420;
 
     private Integer    id;
     private Date       refDate;
@@ -50,7 +50,8 @@ public class UserSummaryTrend implements Serializable {
     private Integer    loginPv;
     private Integer    orderNum;
     private Integer    orderUserNum;
-    private Timestamp  addTime;
+    private Timestamp  createTime;
+    private Timestamp  updateTime;
 
     public UserSummaryTrend() {}
 
@@ -78,7 +79,8 @@ public class UserSummaryTrend implements Serializable {
         this.loginPv = value.loginPv;
         this.orderNum = value.orderNum;
         this.orderUserNum = value.orderUserNum;
-        this.addTime = value.addTime;
+        this.createTime = value.createTime;
+        this.updateTime = value.updateTime;
     }
 
     public UserSummaryTrend(
@@ -105,7 +107,8 @@ public class UserSummaryTrend implements Serializable {
         Integer    loginPv,
         Integer    orderNum,
         Integer    orderUserNum,
-        Timestamp  addTime
+        Timestamp  createTime,
+        Timestamp  updateTime
     ) {
         this.id = id;
         this.refDate = refDate;
@@ -130,7 +133,8 @@ public class UserSummaryTrend implements Serializable {
         this.loginPv = loginPv;
         this.orderNum = orderNum;
         this.orderUserNum = orderUserNum;
-        this.addTime = addTime;
+        this.createTime = createTime;
+        this.updateTime = updateTime;
     }
 
     public Integer getId() {
@@ -317,12 +321,20 @@ public class UserSummaryTrend implements Serializable {
         this.orderUserNum = orderUserNum;
     }
 
-    public Timestamp getAddTime() {
-        return this.addTime;
+    public Timestamp getCreateTime() {
+        return this.createTime;
     }
 
-    public void setAddTime(Timestamp addTime) {
-        this.addTime = addTime;
+    public void setCreateTime(Timestamp createTime) {
+        this.createTime = createTime;
+    }
+
+    public Timestamp getUpdateTime() {
+        return this.updateTime;
+    }
+
+    public void setUpdateTime(Timestamp updateTime) {
+        this.updateTime = updateTime;
     }
 
     @Override
@@ -352,7 +364,8 @@ public class UserSummaryTrend implements Serializable {
         sb.append(", ").append(loginPv);
         sb.append(", ").append(orderNum);
         sb.append(", ").append(orderUserNum);
-        sb.append(", ").append(addTime);
+        sb.append(", ").append(createTime);
+        sb.append(", ").append(updateTime);
 
         sb.append(")");
         return sb.toString();

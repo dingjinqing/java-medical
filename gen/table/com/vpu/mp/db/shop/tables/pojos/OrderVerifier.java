@@ -23,14 +23,14 @@ import javax.annotation.Generated;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class OrderVerifier implements Serializable {
 
-    private static final long serialVersionUID = 1995872506;
+    private static final long serialVersionUID = -2007104669;
 
     private Integer   id;
     private Integer   storeId;
     private Integer   userId;
     private Integer   verifyOrders;
     private Byte      delFlag;
-    private Timestamp addTime;
+    private Timestamp createTime;
     private Timestamp updateTime;
 
     public OrderVerifier() {}
@@ -41,7 +41,7 @@ public class OrderVerifier implements Serializable {
         this.userId = value.userId;
         this.verifyOrders = value.verifyOrders;
         this.delFlag = value.delFlag;
-        this.addTime = value.addTime;
+        this.createTime = value.createTime;
         this.updateTime = value.updateTime;
     }
 
@@ -51,7 +51,7 @@ public class OrderVerifier implements Serializable {
         Integer   userId,
         Integer   verifyOrders,
         Byte      delFlag,
-        Timestamp addTime,
+        Timestamp createTime,
         Timestamp updateTime
     ) {
         this.id = id;
@@ -59,7 +59,7 @@ public class OrderVerifier implements Serializable {
         this.userId = userId;
         this.verifyOrders = verifyOrders;
         this.delFlag = delFlag;
-        this.addTime = addTime;
+        this.createTime = createTime;
         this.updateTime = updateTime;
     }
 
@@ -103,12 +103,12 @@ public class OrderVerifier implements Serializable {
         this.delFlag = delFlag;
     }
 
-    public Timestamp getAddTime() {
-        return this.addTime;
+    public Timestamp getCreateTime() {
+        return this.createTime;
     }
 
-    public void setAddTime(Timestamp addTime) {
-        this.addTime = addTime;
+    public void setCreateTime(Timestamp createTime) {
+        this.createTime = createTime;
     }
 
     public Timestamp getUpdateTime() {
@@ -128,7 +128,7 @@ public class OrderVerifier implements Serializable {
         sb.append(", ").append(userId);
         sb.append(", ").append(verifyOrders);
         sb.append(", ").append(delFlag);
-        sb.append(", ").append(addTime);
+        sb.append(", ").append(createTime);
         sb.append(", ").append(updateTime);
 
         sb.append(")");

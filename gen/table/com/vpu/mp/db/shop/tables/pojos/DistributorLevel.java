@@ -6,6 +6,7 @@ package com.vpu.mp.db.shop.tables.pojos;
 
 import java.io.Serializable;
 import java.math.BigDecimal;
+import java.sql.Timestamp;
 
 import javax.annotation.Generated;
 
@@ -23,7 +24,7 @@ import javax.annotation.Generated;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class DistributorLevel implements Serializable {
 
-    private static final long serialVersionUID = -858101679;
+    private static final long serialVersionUID = 1501464802;
 
     private Integer    id;
     private Byte       levelId;
@@ -34,6 +35,8 @@ public class DistributorLevel implements Serializable {
     private BigDecimal totalBuyMoney;
     private String     levelUserIds;
     private Byte       levelStatus;
+    private Timestamp  createTime;
+    private Timestamp  updateTime;
 
     public DistributorLevel() {}
 
@@ -47,6 +50,8 @@ public class DistributorLevel implements Serializable {
         this.totalBuyMoney = value.totalBuyMoney;
         this.levelUserIds = value.levelUserIds;
         this.levelStatus = value.levelStatus;
+        this.createTime = value.createTime;
+        this.updateTime = value.updateTime;
     }
 
     public DistributorLevel(
@@ -58,7 +63,9 @@ public class DistributorLevel implements Serializable {
         BigDecimal totalDistributionMoney,
         BigDecimal totalBuyMoney,
         String     levelUserIds,
-        Byte       levelStatus
+        Byte       levelStatus,
+        Timestamp  createTime,
+        Timestamp  updateTime
     ) {
         this.id = id;
         this.levelId = levelId;
@@ -69,6 +76,8 @@ public class DistributorLevel implements Serializable {
         this.totalBuyMoney = totalBuyMoney;
         this.levelUserIds = levelUserIds;
         this.levelStatus = levelStatus;
+        this.createTime = createTime;
+        this.updateTime = updateTime;
     }
 
     public Integer getId() {
@@ -143,6 +152,22 @@ public class DistributorLevel implements Serializable {
         this.levelStatus = levelStatus;
     }
 
+    public Timestamp getCreateTime() {
+        return this.createTime;
+    }
+
+    public void setCreateTime(Timestamp createTime) {
+        this.createTime = createTime;
+    }
+
+    public Timestamp getUpdateTime() {
+        return this.updateTime;
+    }
+
+    public void setUpdateTime(Timestamp updateTime) {
+        this.updateTime = updateTime;
+    }
+
     @Override
     public String toString() {
         StringBuilder sb = new StringBuilder("DistributorLevel (");
@@ -156,6 +181,8 @@ public class DistributorLevel implements Serializable {
         sb.append(", ").append(totalBuyMoney);
         sb.append(", ").append(levelUserIds);
         sb.append(", ").append(levelStatus);
+        sb.append(", ").append(createTime);
+        sb.append(", ").append(updateTime);
 
         sb.append(")");
         return sb.toString();

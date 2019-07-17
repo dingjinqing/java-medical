@@ -23,7 +23,7 @@ import javax.annotation.Generated;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class FormSubmitList implements Serializable {
 
-    private static final long serialVersionUID = 1176317889;
+    private static final long serialVersionUID = -181899869;
 
     private Integer   submitId;
     private Integer   pageId;
@@ -31,9 +31,10 @@ public class FormSubmitList implements Serializable {
     private Integer   userId;
     private String    openId;
     private String    nickName;
-    private Timestamp createTime;
     private Integer   sendScore;
     private String    sendCoupons;
+    private Timestamp createTime;
+    private Timestamp updateTime;
 
     public FormSubmitList() {}
 
@@ -44,9 +45,10 @@ public class FormSubmitList implements Serializable {
         this.userId = value.userId;
         this.openId = value.openId;
         this.nickName = value.nickName;
-        this.createTime = value.createTime;
         this.sendScore = value.sendScore;
         this.sendCoupons = value.sendCoupons;
+        this.createTime = value.createTime;
+        this.updateTime = value.updateTime;
     }
 
     public FormSubmitList(
@@ -56,9 +58,10 @@ public class FormSubmitList implements Serializable {
         Integer   userId,
         String    openId,
         String    nickName,
-        Timestamp createTime,
         Integer   sendScore,
-        String    sendCoupons
+        String    sendCoupons,
+        Timestamp createTime,
+        Timestamp updateTime
     ) {
         this.submitId = submitId;
         this.pageId = pageId;
@@ -66,9 +69,10 @@ public class FormSubmitList implements Serializable {
         this.userId = userId;
         this.openId = openId;
         this.nickName = nickName;
-        this.createTime = createTime;
         this.sendScore = sendScore;
         this.sendCoupons = sendCoupons;
+        this.createTime = createTime;
+        this.updateTime = updateTime;
     }
 
     public Integer getSubmitId() {
@@ -119,14 +123,6 @@ public class FormSubmitList implements Serializable {
         this.nickName = nickName;
     }
 
-    public Timestamp getCreateTime() {
-        return this.createTime;
-    }
-
-    public void setCreateTime(Timestamp createTime) {
-        this.createTime = createTime;
-    }
-
     public Integer getSendScore() {
         return this.sendScore;
     }
@@ -143,6 +139,22 @@ public class FormSubmitList implements Serializable {
         this.sendCoupons = sendCoupons;
     }
 
+    public Timestamp getCreateTime() {
+        return this.createTime;
+    }
+
+    public void setCreateTime(Timestamp createTime) {
+        this.createTime = createTime;
+    }
+
+    public Timestamp getUpdateTime() {
+        return this.updateTime;
+    }
+
+    public void setUpdateTime(Timestamp updateTime) {
+        this.updateTime = updateTime;
+    }
+
     @Override
     public String toString() {
         StringBuilder sb = new StringBuilder("FormSubmitList (");
@@ -153,9 +165,10 @@ public class FormSubmitList implements Serializable {
         sb.append(", ").append(userId);
         sb.append(", ").append(openId);
         sb.append(", ").append(nickName);
-        sb.append(", ").append(createTime);
         sb.append(", ").append(sendScore);
         sb.append(", ").append(sendCoupons);
+        sb.append(", ").append(createTime);
+        sb.append(", ").append(updateTime);
 
         sb.append(")");
         return sb.toString();

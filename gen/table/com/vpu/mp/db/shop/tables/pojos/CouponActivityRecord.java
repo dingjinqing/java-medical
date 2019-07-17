@@ -23,13 +23,15 @@ import javax.annotation.Generated;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class CouponActivityRecord implements Serializable {
 
-    private static final long serialVersionUID = 953414508;
+    private static final long serialVersionUID = 1109181817;
 
     private Integer   id;
     private Integer   activityId;
     private Integer   userId;
     private Timestamp receiveTime;
     private String    mrkingVoucherId;
+    private Timestamp createTime;
+    private Timestamp updateTime;
 
     public CouponActivityRecord() {}
 
@@ -39,6 +41,8 @@ public class CouponActivityRecord implements Serializable {
         this.userId = value.userId;
         this.receiveTime = value.receiveTime;
         this.mrkingVoucherId = value.mrkingVoucherId;
+        this.createTime = value.createTime;
+        this.updateTime = value.updateTime;
     }
 
     public CouponActivityRecord(
@@ -46,13 +50,17 @@ public class CouponActivityRecord implements Serializable {
         Integer   activityId,
         Integer   userId,
         Timestamp receiveTime,
-        String    mrkingVoucherId
+        String    mrkingVoucherId,
+        Timestamp createTime,
+        Timestamp updateTime
     ) {
         this.id = id;
         this.activityId = activityId;
         this.userId = userId;
         this.receiveTime = receiveTime;
         this.mrkingVoucherId = mrkingVoucherId;
+        this.createTime = createTime;
+        this.updateTime = updateTime;
     }
 
     public Integer getId() {
@@ -95,6 +103,22 @@ public class CouponActivityRecord implements Serializable {
         this.mrkingVoucherId = mrkingVoucherId;
     }
 
+    public Timestamp getCreateTime() {
+        return this.createTime;
+    }
+
+    public void setCreateTime(Timestamp createTime) {
+        this.createTime = createTime;
+    }
+
+    public Timestamp getUpdateTime() {
+        return this.updateTime;
+    }
+
+    public void setUpdateTime(Timestamp updateTime) {
+        this.updateTime = updateTime;
+    }
+
     @Override
     public String toString() {
         StringBuilder sb = new StringBuilder("CouponActivityRecord (");
@@ -104,6 +128,8 @@ public class CouponActivityRecord implements Serializable {
         sb.append(", ").append(userId);
         sb.append(", ").append(receiveTime);
         sb.append(", ").append(mrkingVoucherId);
+        sb.append(", ").append(createTime);
+        sb.append(", ").append(updateTime);
 
         sb.append(")");
         return sb.toString();

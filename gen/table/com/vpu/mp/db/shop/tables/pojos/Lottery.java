@@ -23,7 +23,7 @@ import javax.annotation.Generated;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class Lottery implements Serializable {
 
-    private static final long serialVersionUID = -2021119198;
+    private static final long serialVersionUID = -300526487;
 
     private Integer   id;
     private String    lotteryName;
@@ -47,9 +47,9 @@ public class Lottery implements Serializable {
     private Integer   thirdAwardTimes;
     private String    fourthAward;
     private Integer   fourthAwardTimes;
-    private Timestamp addTime;
     private Byte      status;
     private Byte      delFlag;
+    private Timestamp createTime;
     private Timestamp updateTime;
 
     public Lottery() {}
@@ -77,9 +77,9 @@ public class Lottery implements Serializable {
         this.thirdAwardTimes = value.thirdAwardTimes;
         this.fourthAward = value.fourthAward;
         this.fourthAwardTimes = value.fourthAwardTimes;
-        this.addTime = value.addTime;
         this.status = value.status;
         this.delFlag = value.delFlag;
+        this.createTime = value.createTime;
         this.updateTime = value.updateTime;
     }
 
@@ -106,9 +106,9 @@ public class Lottery implements Serializable {
         Integer   thirdAwardTimes,
         String    fourthAward,
         Integer   fourthAwardTimes,
-        Timestamp addTime,
         Byte      status,
         Byte      delFlag,
+        Timestamp createTime,
         Timestamp updateTime
     ) {
         this.id = id;
@@ -133,9 +133,9 @@ public class Lottery implements Serializable {
         this.thirdAwardTimes = thirdAwardTimes;
         this.fourthAward = fourthAward;
         this.fourthAwardTimes = fourthAwardTimes;
-        this.addTime = addTime;
         this.status = status;
         this.delFlag = delFlag;
+        this.createTime = createTime;
         this.updateTime = updateTime;
     }
 
@@ -315,14 +315,6 @@ public class Lottery implements Serializable {
         this.fourthAwardTimes = fourthAwardTimes;
     }
 
-    public Timestamp getAddTime() {
-        return this.addTime;
-    }
-
-    public void setAddTime(Timestamp addTime) {
-        this.addTime = addTime;
-    }
-
     public Byte getStatus() {
         return this.status;
     }
@@ -337,6 +329,14 @@ public class Lottery implements Serializable {
 
     public void setDelFlag(Byte delFlag) {
         this.delFlag = delFlag;
+    }
+
+    public Timestamp getCreateTime() {
+        return this.createTime;
+    }
+
+    public void setCreateTime(Timestamp createTime) {
+        this.createTime = createTime;
     }
 
     public Timestamp getUpdateTime() {
@@ -373,9 +373,9 @@ public class Lottery implements Serializable {
         sb.append(", ").append(thirdAwardTimes);
         sb.append(", ").append(fourthAward);
         sb.append(", ").append(fourthAwardTimes);
-        sb.append(", ").append(addTime);
         sb.append(", ").append(status);
         sb.append(", ").append(delFlag);
+        sb.append(", ").append(createTime);
         sb.append(", ").append(updateTime);
 
         sb.append(")");

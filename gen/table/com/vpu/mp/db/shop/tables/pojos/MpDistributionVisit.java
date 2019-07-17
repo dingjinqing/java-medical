@@ -23,28 +23,32 @@ import javax.annotation.Generated;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class MpDistributionVisit implements Serializable {
 
-    private static final long serialVersionUID = 518178141;
+    private static final long serialVersionUID = 1871223842;
 
     private String    refDate;
     private String    list;
-    private Timestamp addTime;
+    private Timestamp createTime;
+    private Timestamp updateTime;
 
     public MpDistributionVisit() {}
 
     public MpDistributionVisit(MpDistributionVisit value) {
         this.refDate = value.refDate;
         this.list = value.list;
-        this.addTime = value.addTime;
+        this.createTime = value.createTime;
+        this.updateTime = value.updateTime;
     }
 
     public MpDistributionVisit(
         String    refDate,
         String    list,
-        Timestamp addTime
+        Timestamp createTime,
+        Timestamp updateTime
     ) {
         this.refDate = refDate;
         this.list = list;
-        this.addTime = addTime;
+        this.createTime = createTime;
+        this.updateTime = updateTime;
     }
 
     public String getRefDate() {
@@ -63,12 +67,20 @@ public class MpDistributionVisit implements Serializable {
         this.list = list;
     }
 
-    public Timestamp getAddTime() {
-        return this.addTime;
+    public Timestamp getCreateTime() {
+        return this.createTime;
     }
 
-    public void setAddTime(Timestamp addTime) {
-        this.addTime = addTime;
+    public void setCreateTime(Timestamp createTime) {
+        this.createTime = createTime;
+    }
+
+    public Timestamp getUpdateTime() {
+        return this.updateTime;
+    }
+
+    public void setUpdateTime(Timestamp updateTime) {
+        this.updateTime = updateTime;
     }
 
     @Override
@@ -77,7 +89,8 @@ public class MpDistributionVisit implements Serializable {
 
         sb.append(refDate);
         sb.append(", ").append(list);
-        sb.append(", ").append(addTime);
+        sb.append(", ").append(createTime);
+        sb.append(", ").append(updateTime);
 
         sb.append(")");
         return sb.toString();

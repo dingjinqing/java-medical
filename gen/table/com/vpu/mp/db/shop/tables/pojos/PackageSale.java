@@ -24,7 +24,7 @@ import javax.annotation.Generated;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class PackageSale implements Serializable {
 
-    private static final long serialVersionUID = 258275009;
+    private static final long serialVersionUID = -2079716476;
 
     private Integer    id;
     private String     packageName;
@@ -51,7 +51,7 @@ public class PackageSale implements Serializable {
     private String     sortIds_3;
     private Byte       status;
     private Byte       delFlag;
-    private Timestamp  addTime;
+    private Timestamp  createTime;
     private Timestamp  updateTime;
 
     public PackageSale() {}
@@ -82,7 +82,7 @@ public class PackageSale implements Serializable {
         this.sortIds_3 = value.sortIds_3;
         this.status = value.status;
         this.delFlag = value.delFlag;
-        this.addTime = value.addTime;
+        this.createTime = value.createTime;
         this.updateTime = value.updateTime;
     }
 
@@ -112,7 +112,7 @@ public class PackageSale implements Serializable {
         String     sortIds_3,
         Byte       status,
         Byte       delFlag,
-        Timestamp  addTime,
+        Timestamp  createTime,
         Timestamp  updateTime
     ) {
         this.id = id;
@@ -140,7 +140,7 @@ public class PackageSale implements Serializable {
         this.sortIds_3 = sortIds_3;
         this.status = status;
         this.delFlag = delFlag;
-        this.addTime = addTime;
+        this.createTime = createTime;
         this.updateTime = updateTime;
     }
 
@@ -344,12 +344,12 @@ public class PackageSale implements Serializable {
         this.delFlag = delFlag;
     }
 
-    public Timestamp getAddTime() {
-        return this.addTime;
+    public Timestamp getCreateTime() {
+        return this.createTime;
     }
 
-    public void setAddTime(Timestamp addTime) {
-        this.addTime = addTime;
+    public void setCreateTime(Timestamp createTime) {
+        this.createTime = createTime;
     }
 
     public Timestamp getUpdateTime() {
@@ -389,7 +389,7 @@ public class PackageSale implements Serializable {
         sb.append(", ").append(sortIds_3);
         sb.append(", ").append(status);
         sb.append(", ").append(delFlag);
-        sb.append(", ").append(addTime);
+        sb.append(", ").append(createTime);
         sb.append(", ").append(updateTime);
 
         sb.append(")");

@@ -23,7 +23,7 @@ import javax.annotation.Generated;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class PackageGoodsCart implements Serializable {
 
-    private static final long serialVersionUID = 131286606;
+    private static final long serialVersionUID = -1159330347;
 
     private Integer   id;
     private Integer   userId;
@@ -32,7 +32,7 @@ public class PackageGoodsCart implements Serializable {
     private Integer   goodsId;
     private Integer   productId;
     private Integer   goodsNumber;
-    private Timestamp addTime;
+    private Timestamp createTime;
     private Timestamp updateTime;
 
     public PackageGoodsCart() {}
@@ -45,7 +45,7 @@ public class PackageGoodsCart implements Serializable {
         this.goodsId = value.goodsId;
         this.productId = value.productId;
         this.goodsNumber = value.goodsNumber;
-        this.addTime = value.addTime;
+        this.createTime = value.createTime;
         this.updateTime = value.updateTime;
     }
 
@@ -57,7 +57,7 @@ public class PackageGoodsCart implements Serializable {
         Integer   goodsId,
         Integer   productId,
         Integer   goodsNumber,
-        Timestamp addTime,
+        Timestamp createTime,
         Timestamp updateTime
     ) {
         this.id = id;
@@ -67,7 +67,7 @@ public class PackageGoodsCart implements Serializable {
         this.goodsId = goodsId;
         this.productId = productId;
         this.goodsNumber = goodsNumber;
-        this.addTime = addTime;
+        this.createTime = createTime;
         this.updateTime = updateTime;
     }
 
@@ -127,12 +127,12 @@ public class PackageGoodsCart implements Serializable {
         this.goodsNumber = goodsNumber;
     }
 
-    public Timestamp getAddTime() {
-        return this.addTime;
+    public Timestamp getCreateTime() {
+        return this.createTime;
     }
 
-    public void setAddTime(Timestamp addTime) {
-        this.addTime = addTime;
+    public void setCreateTime(Timestamp createTime) {
+        this.createTime = createTime;
     }
 
     public Timestamp getUpdateTime() {
@@ -154,7 +154,7 @@ public class PackageGoodsCart implements Serializable {
         sb.append(", ").append(goodsId);
         sb.append(", ").append(productId);
         sb.append(", ").append(goodsNumber);
-        sb.append(", ").append(addTime);
+        sb.append(", ").append(createTime);
         sb.append(", ").append(updateTime);
 
         sb.append(")");

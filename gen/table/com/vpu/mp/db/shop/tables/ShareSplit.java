@@ -42,7 +42,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class ShareSplit extends TableImpl<ShareSplitRecord> {
 
-    private static final long serialVersionUID = 1890481300;
+    private static final long serialVersionUID = -2042193337;
 
     /**
      * The reference instance of <code>mini_shop_471752.b2c_share_split</code>
@@ -78,11 +78,6 @@ public class ShareSplit extends TableImpl<ShareSplitRecord> {
     public final TableField<ShareSplitRecord, Integer> ACT_ID = createField("act_id", org.jooq.impl.SQLDataType.INTEGER.nullable(false).defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.INTEGER)), this, "分裂优惠券id");
 
     /**
-     * The column <code>mini_shop_471752.b2c_share_split.create_time</code>. 领取时间
-     */
-    public final TableField<ShareSplitRecord, Timestamp> CREATE_TIME = createField("create_time", org.jooq.impl.SQLDataType.TIMESTAMP, this, "领取时间");
-
-    /**
      * The column <code>mini_shop_471752.b2c_share_split.order_sn</code>.
      */
     public final TableField<ShareSplitRecord, String> ORDER_SN = createField("order_sn", org.jooq.impl.SQLDataType.VARCHAR(20).nullable(false).defaultValue(org.jooq.impl.DSL.inline("", org.jooq.impl.SQLDataType.VARCHAR)), this, "");
@@ -91,6 +86,16 @@ public class ShareSplit extends TableImpl<ShareSplitRecord> {
      * The column <code>mini_shop_471752.b2c_share_split.share_limit</code>. 可分享个数
      */
     public final TableField<ShareSplitRecord, Integer> SHARE_LIMIT = createField("share_limit", org.jooq.impl.SQLDataType.INTEGER.nullable(false).defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.INTEGER)), this, "可分享个数");
+
+    /**
+     * The column <code>mini_shop_471752.b2c_share_split.create_time</code>.
+     */
+    public final TableField<ShareSplitRecord, Timestamp> CREATE_TIME = createField("create_time", org.jooq.impl.SQLDataType.TIMESTAMP.nullable(false).defaultValue(org.jooq.impl.DSL.field("CURRENT_TIMESTAMP", org.jooq.impl.SQLDataType.TIMESTAMP)), this, "");
+
+    /**
+     * The column <code>mini_shop_471752.b2c_share_split.update_time</code>. 最后修改时间
+     */
+    public final TableField<ShareSplitRecord, Timestamp> UPDATE_TIME = createField("update_time", org.jooq.impl.SQLDataType.TIMESTAMP.nullable(false).defaultValue(org.jooq.impl.DSL.field("CURRENT_TIMESTAMP", org.jooq.impl.SQLDataType.TIMESTAMP)), this, "最后修改时间");
 
     /**
      * Create a <code>mini_shop_471752.b2c_share_split</code> table reference

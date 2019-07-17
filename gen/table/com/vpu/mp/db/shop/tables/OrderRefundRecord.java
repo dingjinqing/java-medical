@@ -43,7 +43,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class OrderRefundRecord extends TableImpl<OrderRefundRecordRecord> {
 
-    private static final long serialVersionUID = -2015805759;
+    private static final long serialVersionUID = 497857614;
 
     /**
      * The reference instance of <code>mini_shop_471752.b2c_order_refund_record</code>
@@ -69,9 +69,9 @@ public class OrderRefundRecord extends TableImpl<OrderRefundRecordRecord> {
     public final TableField<OrderRefundRecordRecord, Integer> RET_ID = createField("ret_id", org.jooq.impl.SQLDataType.INTEGER.nullable(false).defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.INTEGER)), this, "订单退货请求id");
 
     /**
-     * The column <code>mini_shop_471752.b2c_order_refund_record.shop_id</code>. 店铺ID
+     * The column <code>mini_shop_471752.b2c_order_refund_record.shop_id</code>. 店铺id
      */
-    public final TableField<OrderRefundRecordRecord, Integer> SHOP_ID = createField("shop_id", org.jooq.impl.SQLDataType.INTEGER.nullable(false).defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.INTEGER)), this, "店铺ID");
+    public final TableField<OrderRefundRecordRecord, Integer> SHOP_ID = createField("shop_id", org.jooq.impl.SQLDataType.INTEGER.nullable(false).defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.INTEGER)), this, "店铺id");
 
     /**
      * The column <code>mini_shop_471752.b2c_order_refund_record.refund_sn</code>. 退款流水号
@@ -106,7 +106,7 @@ public class OrderRefundRecord extends TableImpl<OrderRefundRecordRecord> {
     /**
      * The column <code>mini_shop_471752.b2c_order_refund_record.refund_time</code>. 退款时间
      */
-    public final TableField<OrderRefundRecordRecord, Timestamp> REFUND_TIME = createField("refund_time", org.jooq.impl.SQLDataType.TIMESTAMP.nullable(false).defaultValue(org.jooq.impl.DSL.inline("0000-00-00 00:00:00", org.jooq.impl.SQLDataType.TIMESTAMP)), this, "退款时间");
+    public final TableField<OrderRefundRecordRecord, Timestamp> REFUND_TIME = createField("refund_time", org.jooq.impl.SQLDataType.TIMESTAMP, this, "退款时间");
 
     /**
      * The column <code>mini_shop_471752.b2c_order_refund_record.mobile</code>.
@@ -146,12 +146,17 @@ public class OrderRefundRecord extends TableImpl<OrderRefundRecordRecord> {
     /**
      * The column <code>mini_shop_471752.b2c_order_refund_record.finished_time</code>. 出账操作时间
      */
-    public final TableField<OrderRefundRecordRecord, Timestamp> FINISHED_TIME = createField("finished_time", org.jooq.impl.SQLDataType.TIMESTAMP.nullable(false).defaultValue(org.jooq.impl.DSL.inline("0000-00-00 00:00:00", org.jooq.impl.SQLDataType.TIMESTAMP)), this, "出账操作时间");
+    public final TableField<OrderRefundRecordRecord, Timestamp> FINISHED_TIME = createField("finished_time", org.jooq.impl.SQLDataType.TIMESTAMP, this, "出账操作时间");
 
     /**
-     * The column <code>mini_shop_471752.b2c_order_refund_record.created</code>. 创建时间
+     * The column <code>mini_shop_471752.b2c_order_refund_record.create_time</code>.
      */
-    public final TableField<OrderRefundRecordRecord, Timestamp> CREATED = createField("created", org.jooq.impl.SQLDataType.TIMESTAMP.nullable(false).defaultValue(org.jooq.impl.DSL.field("CURRENT_TIMESTAMP", org.jooq.impl.SQLDataType.TIMESTAMP)), this, "创建时间");
+    public final TableField<OrderRefundRecordRecord, Timestamp> CREATE_TIME = createField("create_time", org.jooq.impl.SQLDataType.TIMESTAMP.nullable(false).defaultValue(org.jooq.impl.DSL.field("CURRENT_TIMESTAMP", org.jooq.impl.SQLDataType.TIMESTAMP)), this, "");
+
+    /**
+     * The column <code>mini_shop_471752.b2c_order_refund_record.update_time</code>. 最后修改时间
+     */
+    public final TableField<OrderRefundRecordRecord, Timestamp> UPDATE_TIME = createField("update_time", org.jooq.impl.SQLDataType.TIMESTAMP.nullable(false).defaultValue(org.jooq.impl.DSL.field("CURRENT_TIMESTAMP", org.jooq.impl.SQLDataType.TIMESTAMP)), this, "最后修改时间");
 
     /**
      * The column <code>mini_shop_471752.b2c_order_refund_record.remark1</code>. 自定义备注  建议用于存储原始数据
@@ -161,7 +166,7 @@ public class OrderRefundRecord extends TableImpl<OrderRefundRecordRecord> {
     /**
      * The column <code>mini_shop_471752.b2c_order_refund_record.is_offline</code>. 是否线下处理
      */
-    public final TableField<OrderRefundRecordRecord, Byte> IS_OFFLINE = createField("is_offline", org.jooq.impl.SQLDataType.TINYINT.defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.TINYINT)), this, "是否线下处理");
+    public final TableField<OrderRefundRecordRecord, Byte> IS_OFFLINE = createField("is_offline", org.jooq.impl.SQLDataType.TINYINT.nullable(false).defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.TINYINT)), this, "是否线下处理");
 
     /**
      * Create a <code>mini_shop_471752.b2c_order_refund_record</code> table reference

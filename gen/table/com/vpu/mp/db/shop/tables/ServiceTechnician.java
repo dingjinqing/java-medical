@@ -42,7 +42,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class ServiceTechnician extends TableImpl<ServiceTechnicianRecord> {
 
-    private static final long serialVersionUID = 1428614992;
+    private static final long serialVersionUID = -1267950243;
 
     /**
      * The reference instance of <code>mini_shop_471752.b2c_service_technician</code>
@@ -85,7 +85,7 @@ public class ServiceTechnician extends TableImpl<ServiceTechnicianRecord> {
     /**
      * The column <code>mini_shop_471752.b2c_service_technician.technician_introduce</code>. 技师简介
      */
-    public final TableField<ServiceTechnicianRecord, String> TECHNICIAN_INTRODUCE = createField("technician_introduce", org.jooq.impl.SQLDataType.VARCHAR(200).defaultValue(org.jooq.impl.DSL.inline("", org.jooq.impl.SQLDataType.VARCHAR)), this, "技师简介");
+    public final TableField<ServiceTechnicianRecord, String> TECHNICIAN_INTRODUCE = createField("technician_introduce", org.jooq.impl.SQLDataType.VARCHAR(200).nullable(false).defaultValue(org.jooq.impl.DSL.inline("", org.jooq.impl.SQLDataType.VARCHAR)), this, "技师简介");
 
     /**
      * The column <code>mini_shop_471752.b2c_service_technician.group_id</code>. 技师分组
@@ -105,7 +105,7 @@ public class ServiceTechnician extends TableImpl<ServiceTechnicianRecord> {
     /**
      * The column <code>mini_shop_471752.b2c_service_technician.remarks</code>. 备注
      */
-    public final TableField<ServiceTechnicianRecord, String> REMARKS = createField("remarks", org.jooq.impl.SQLDataType.VARCHAR(1024).defaultValue(org.jooq.impl.DSL.inline("", org.jooq.impl.SQLDataType.VARCHAR)), this, "备注");
+    public final TableField<ServiceTechnicianRecord, String> REMARKS = createField("remarks", org.jooq.impl.SQLDataType.VARCHAR(1024).nullable(false).defaultValue(org.jooq.impl.DSL.inline("", org.jooq.impl.SQLDataType.VARCHAR)), this, "备注");
 
     /**
      * The column <code>mini_shop_471752.b2c_service_technician.del_flag</code>. 0正常，1删除
@@ -113,14 +113,14 @@ public class ServiceTechnician extends TableImpl<ServiceTechnicianRecord> {
     public final TableField<ServiceTechnicianRecord, Byte> DEL_FLAG = createField("del_flag", org.jooq.impl.SQLDataType.TINYINT.nullable(false).defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.TINYINT)), this, "0正常，1删除");
 
     /**
-     * The column <code>mini_shop_471752.b2c_service_technician.add_time</code>.
+     * The column <code>mini_shop_471752.b2c_service_technician.create_time</code>.
      */
-    public final TableField<ServiceTechnicianRecord, Timestamp> ADD_TIME = createField("add_time", org.jooq.impl.SQLDataType.TIMESTAMP, this, "");
+    public final TableField<ServiceTechnicianRecord, Timestamp> CREATE_TIME = createField("create_time", org.jooq.impl.SQLDataType.TIMESTAMP.nullable(false).defaultValue(org.jooq.impl.DSL.field("CURRENT_TIMESTAMP", org.jooq.impl.SQLDataType.TIMESTAMP)), this, "");
 
     /**
-     * The column <code>mini_shop_471752.b2c_service_technician.update_time</code>.
+     * The column <code>mini_shop_471752.b2c_service_technician.update_time</code>. 最后修改时间
      */
-    public final TableField<ServiceTechnicianRecord, Timestamp> UPDATE_TIME = createField("update_time", org.jooq.impl.SQLDataType.TIMESTAMP, this, "");
+    public final TableField<ServiceTechnicianRecord, Timestamp> UPDATE_TIME = createField("update_time", org.jooq.impl.SQLDataType.TIMESTAMP.nullable(false).defaultValue(org.jooq.impl.DSL.field("CURRENT_TIMESTAMP", org.jooq.impl.SQLDataType.TIMESTAMP)), this, "最后修改时间");
 
     /**
      * Create a <code>mini_shop_471752.b2c_service_technician</code> table reference

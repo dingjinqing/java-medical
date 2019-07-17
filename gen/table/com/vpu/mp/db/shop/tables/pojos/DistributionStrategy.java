@@ -23,7 +23,7 @@ import javax.annotation.Generated;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class DistributionStrategy implements Serializable {
 
-    private static final long serialVersionUID = -2136474133;
+    private static final long serialVersionUID = 202377132;
 
     private Integer   id;
     private String    strategyName;
@@ -46,11 +46,12 @@ public class DistributionStrategy implements Serializable {
     private String    recommendGoodsId;
     private String    recommendCatId;
     private Byte      status;
-    private Timestamp addTime;
     private Byte      delFlag;
-    private Timestamp updateTime;
+    private Timestamp delTime;
     private String    recommendSortId;
     private Byte      sendCoupon;
+    private Timestamp createTime;
+    private Timestamp updateTime;
 
     public DistributionStrategy() {}
 
@@ -76,11 +77,12 @@ public class DistributionStrategy implements Serializable {
         this.recommendGoodsId = value.recommendGoodsId;
         this.recommendCatId = value.recommendCatId;
         this.status = value.status;
-        this.addTime = value.addTime;
         this.delFlag = value.delFlag;
-        this.updateTime = value.updateTime;
+        this.delTime = value.delTime;
         this.recommendSortId = value.recommendSortId;
         this.sendCoupon = value.sendCoupon;
+        this.createTime = value.createTime;
+        this.updateTime = value.updateTime;
     }
 
     public DistributionStrategy(
@@ -105,11 +107,12 @@ public class DistributionStrategy implements Serializable {
         String    recommendGoodsId,
         String    recommendCatId,
         Byte      status,
-        Timestamp addTime,
         Byte      delFlag,
-        Timestamp updateTime,
+        Timestamp delTime,
         String    recommendSortId,
-        Byte      sendCoupon
+        Byte      sendCoupon,
+        Timestamp createTime,
+        Timestamp updateTime
     ) {
         this.id = id;
         this.strategyName = strategyName;
@@ -132,11 +135,12 @@ public class DistributionStrategy implements Serializable {
         this.recommendGoodsId = recommendGoodsId;
         this.recommendCatId = recommendCatId;
         this.status = status;
-        this.addTime = addTime;
         this.delFlag = delFlag;
-        this.updateTime = updateTime;
+        this.delTime = delTime;
         this.recommendSortId = recommendSortId;
         this.sendCoupon = sendCoupon;
+        this.createTime = createTime;
+        this.updateTime = updateTime;
     }
 
     public Integer getId() {
@@ -307,14 +311,6 @@ public class DistributionStrategy implements Serializable {
         this.status = status;
     }
 
-    public Timestamp getAddTime() {
-        return this.addTime;
-    }
-
-    public void setAddTime(Timestamp addTime) {
-        this.addTime = addTime;
-    }
-
     public Byte getDelFlag() {
         return this.delFlag;
     }
@@ -323,12 +319,12 @@ public class DistributionStrategy implements Serializable {
         this.delFlag = delFlag;
     }
 
-    public Timestamp getUpdateTime() {
-        return this.updateTime;
+    public Timestamp getDelTime() {
+        return this.delTime;
     }
 
-    public void setUpdateTime(Timestamp updateTime) {
-        this.updateTime = updateTime;
+    public void setDelTime(Timestamp delTime) {
+        this.delTime = delTime;
     }
 
     public String getRecommendSortId() {
@@ -345,6 +341,22 @@ public class DistributionStrategy implements Serializable {
 
     public void setSendCoupon(Byte sendCoupon) {
         this.sendCoupon = sendCoupon;
+    }
+
+    public Timestamp getCreateTime() {
+        return this.createTime;
+    }
+
+    public void setCreateTime(Timestamp createTime) {
+        this.createTime = createTime;
+    }
+
+    public Timestamp getUpdateTime() {
+        return this.updateTime;
+    }
+
+    public void setUpdateTime(Timestamp updateTime) {
+        this.updateTime = updateTime;
     }
 
     @Override
@@ -372,11 +384,12 @@ public class DistributionStrategy implements Serializable {
         sb.append(", ").append(recommendGoodsId);
         sb.append(", ").append(recommendCatId);
         sb.append(", ").append(status);
-        sb.append(", ").append(addTime);
         sb.append(", ").append(delFlag);
-        sb.append(", ").append(updateTime);
+        sb.append(", ").append(delTime);
         sb.append(", ").append(recommendSortId);
         sb.append(", ").append(sendCoupon);
+        sb.append(", ").append(createTime);
+        sb.append(", ").append(updateTime);
 
         sb.append(")");
         return sb.toString();

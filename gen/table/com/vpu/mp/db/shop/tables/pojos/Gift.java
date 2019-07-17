@@ -23,7 +23,7 @@ import javax.annotation.Generated;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class Gift implements Serializable {
 
-    private static final long serialVersionUID = -594230408;
+    private static final long serialVersionUID = -1225105043;
 
     private Integer   id;
     private String    name;
@@ -34,10 +34,10 @@ public class Gift implements Serializable {
     private String    rule;
     private String    explain;
     private Byte      status;
-    private Timestamp addTime;
-    private Timestamp updateTime;
     private Byte      delFlag;
     private Timestamp delTime;
+    private Timestamp createTime;
+    private Timestamp updateTime;
 
     public Gift() {}
 
@@ -51,10 +51,10 @@ public class Gift implements Serializable {
         this.rule = value.rule;
         this.explain = value.explain;
         this.status = value.status;
-        this.addTime = value.addTime;
-        this.updateTime = value.updateTime;
         this.delFlag = value.delFlag;
         this.delTime = value.delTime;
+        this.createTime = value.createTime;
+        this.updateTime = value.updateTime;
     }
 
     public Gift(
@@ -67,10 +67,10 @@ public class Gift implements Serializable {
         String    rule,
         String    explain,
         Byte      status,
-        Timestamp addTime,
-        Timestamp updateTime,
         Byte      delFlag,
-        Timestamp delTime
+        Timestamp delTime,
+        Timestamp createTime,
+        Timestamp updateTime
     ) {
         this.id = id;
         this.name = name;
@@ -81,10 +81,10 @@ public class Gift implements Serializable {
         this.rule = rule;
         this.explain = explain;
         this.status = status;
-        this.addTime = addTime;
-        this.updateTime = updateTime;
         this.delFlag = delFlag;
         this.delTime = delTime;
+        this.createTime = createTime;
+        this.updateTime = updateTime;
     }
 
     public Integer getId() {
@@ -159,22 +159,6 @@ public class Gift implements Serializable {
         this.status = status;
     }
 
-    public Timestamp getAddTime() {
-        return this.addTime;
-    }
-
-    public void setAddTime(Timestamp addTime) {
-        this.addTime = addTime;
-    }
-
-    public Timestamp getUpdateTime() {
-        return this.updateTime;
-    }
-
-    public void setUpdateTime(Timestamp updateTime) {
-        this.updateTime = updateTime;
-    }
-
     public Byte getDelFlag() {
         return this.delFlag;
     }
@@ -191,6 +175,22 @@ public class Gift implements Serializable {
         this.delTime = delTime;
     }
 
+    public Timestamp getCreateTime() {
+        return this.createTime;
+    }
+
+    public void setCreateTime(Timestamp createTime) {
+        this.createTime = createTime;
+    }
+
+    public Timestamp getUpdateTime() {
+        return this.updateTime;
+    }
+
+    public void setUpdateTime(Timestamp updateTime) {
+        this.updateTime = updateTime;
+    }
+
     @Override
     public String toString() {
         StringBuilder sb = new StringBuilder("Gift (");
@@ -204,10 +204,10 @@ public class Gift implements Serializable {
         sb.append(", ").append(rule);
         sb.append(", ").append(explain);
         sb.append(", ").append(status);
-        sb.append(", ").append(addTime);
-        sb.append(", ").append(updateTime);
         sb.append(", ").append(delFlag);
         sb.append(", ").append(delTime);
+        sb.append(", ").append(createTime);
+        sb.append(", ").append(updateTime);
 
         sb.append(")");
         return sb.toString();

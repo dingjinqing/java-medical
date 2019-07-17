@@ -42,7 +42,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class PageClassification extends TableImpl<PageClassificationRecord> {
 
-    private static final long serialVersionUID = 976458830;
+    private static final long serialVersionUID = -1304187637;
 
     /**
      * The reference instance of <code>mini_shop_471752.b2c_page_classification</code>
@@ -58,14 +58,14 @@ public class PageClassification extends TableImpl<PageClassificationRecord> {
     }
 
     /**
-     * The column <code>mini_shop_471752.b2c_page_classification.id</code>. ID
+     * The column <code>mini_shop_471752.b2c_page_classification.id</code>. id
      */
-    public final TableField<PageClassificationRecord, Integer> ID = createField("id", org.jooq.impl.SQLDataType.INTEGER.nullable(false).identity(true), this, "ID");
+    public final TableField<PageClassificationRecord, Integer> ID = createField("id", org.jooq.impl.SQLDataType.INTEGER.nullable(false).identity(true), this, "id");
 
     /**
-     * The column <code>mini_shop_471752.b2c_page_classification.shop_id</code>. 店铺ID
+     * The column <code>mini_shop_471752.b2c_page_classification.shop_id</code>. 店铺id
      */
-    public final TableField<PageClassificationRecord, Integer> SHOP_ID = createField("shop_id", org.jooq.impl.SQLDataType.INTEGER.nullable(false).defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.INTEGER)), this, "店铺ID");
+    public final TableField<PageClassificationRecord, Integer> SHOP_ID = createField("shop_id", org.jooq.impl.SQLDataType.INTEGER.nullable(false).defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.INTEGER)), this, "店铺id");
 
     /**
      * The column <code>mini_shop_471752.b2c_page_classification.name</code>. 分类名称
@@ -76,6 +76,11 @@ public class PageClassification extends TableImpl<PageClassificationRecord> {
      * The column <code>mini_shop_471752.b2c_page_classification.create_time</code>.
      */
     public final TableField<PageClassificationRecord, Timestamp> CREATE_TIME = createField("create_time", org.jooq.impl.SQLDataType.TIMESTAMP.nullable(false).defaultValue(org.jooq.impl.DSL.field("CURRENT_TIMESTAMP", org.jooq.impl.SQLDataType.TIMESTAMP)), this, "");
+
+    /**
+     * The column <code>mini_shop_471752.b2c_page_classification.update_time</code>. 最后修改时间
+     */
+    public final TableField<PageClassificationRecord, Timestamp> UPDATE_TIME = createField("update_time", org.jooq.impl.SQLDataType.TIMESTAMP.nullable(false).defaultValue(org.jooq.impl.DSL.field("CURRENT_TIMESTAMP", org.jooq.impl.SQLDataType.TIMESTAMP)), this, "最后修改时间");
 
     /**
      * Create a <code>mini_shop_471752.b2c_page_classification</code> table reference

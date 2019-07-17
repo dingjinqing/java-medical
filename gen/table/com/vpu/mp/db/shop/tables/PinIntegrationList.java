@@ -42,7 +42,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class PinIntegrationList extends TableImpl<PinIntegrationListRecord> {
 
-    private static final long serialVersionUID = -1847651877;
+    private static final long serialVersionUID = 1553075848;
 
     /**
      * The reference instance of <code>mini_shop_471752.b2c_pin_integration_list</code>
@@ -63,14 +63,14 @@ public class PinIntegrationList extends TableImpl<PinIntegrationListRecord> {
     public final TableField<PinIntegrationListRecord, Integer> ID = createField("id", org.jooq.impl.SQLDataType.INTEGER.nullable(false).identity(true), this, "");
 
     /**
-     * The column <code>mini_shop_471752.b2c_pin_integration_list.inte_activity_id</code>. 瓜分积分活动定义ID
+     * The column <code>mini_shop_471752.b2c_pin_integration_list.inte_activity_id</code>. 瓜分积分活动定义id
      */
-    public final TableField<PinIntegrationListRecord, Integer> INTE_ACTIVITY_ID = createField("inte_activity_id", org.jooq.impl.SQLDataType.INTEGER.nullable(false), this, "瓜分积分活动定义ID");
+    public final TableField<PinIntegrationListRecord, Integer> INTE_ACTIVITY_ID = createField("inte_activity_id", org.jooq.impl.SQLDataType.INTEGER.nullable(false), this, "瓜分积分活动定义id");
 
     /**
-     * The column <code>mini_shop_471752.b2c_pin_integration_list.group_id</code>. 拼团ID
+     * The column <code>mini_shop_471752.b2c_pin_integration_list.group_id</code>. 拼团id
      */
-    public final TableField<PinIntegrationListRecord, String> GROUP_ID = createField("group_id", org.jooq.impl.SQLDataType.VARCHAR(60).nullable(false).defaultValue(org.jooq.impl.DSL.inline("", org.jooq.impl.SQLDataType.VARCHAR)), this, "拼团ID");
+    public final TableField<PinIntegrationListRecord, String> GROUP_ID = createField("group_id", org.jooq.impl.SQLDataType.VARCHAR(60).nullable(false).defaultValue(org.jooq.impl.DSL.inline("", org.jooq.impl.SQLDataType.VARCHAR)), this, "拼团id");
 
     /**
      * The column <code>mini_shop_471752.b2c_pin_integration_list.user_id</code>.
@@ -90,12 +90,12 @@ public class PinIntegrationList extends TableImpl<PinIntegrationListRecord> {
     /**
      * The column <code>mini_shop_471752.b2c_pin_integration_list.start_time</code>. 参团时间
      */
-    public final TableField<PinIntegrationListRecord, Timestamp> START_TIME = createField("start_time", org.jooq.impl.SQLDataType.TIMESTAMP.nullable(false), this, "参团时间");
+    public final TableField<PinIntegrationListRecord, Timestamp> START_TIME = createField("start_time", org.jooq.impl.SQLDataType.TIMESTAMP, this, "参团时间");
 
     /**
      * The column <code>mini_shop_471752.b2c_pin_integration_list.end_time</code>. 成团时间
      */
-    public final TableField<PinIntegrationListRecord, Timestamp> END_TIME = createField("end_time", org.jooq.impl.SQLDataType.TIMESTAMP.nullable(false), this, "成团时间");
+    public final TableField<PinIntegrationListRecord, Timestamp> END_TIME = createField("end_time", org.jooq.impl.SQLDataType.TIMESTAMP, this, "成团时间");
 
     /**
      * The column <code>mini_shop_471752.b2c_pin_integration_list.integration</code>. 瓜分到的积分
@@ -126,6 +126,16 @@ public class PinIntegrationList extends TableImpl<PinIntegrationListRecord> {
      * The column <code>mini_shop_471752.b2c_pin_integration_list.can_integration</code>. 该团可瓜分积分池
      */
     public final TableField<PinIntegrationListRecord, Integer> CAN_INTEGRATION = createField("can_integration", org.jooq.impl.SQLDataType.INTEGER.nullable(false).defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.INTEGER)), this, "该团可瓜分积分池");
+
+    /**
+     * The column <code>mini_shop_471752.b2c_pin_integration_list.create_time</code>.
+     */
+    public final TableField<PinIntegrationListRecord, Timestamp> CREATE_TIME = createField("create_time", org.jooq.impl.SQLDataType.TIMESTAMP.nullable(false).defaultValue(org.jooq.impl.DSL.field("CURRENT_TIMESTAMP", org.jooq.impl.SQLDataType.TIMESTAMP)), this, "");
+
+    /**
+     * The column <code>mini_shop_471752.b2c_pin_integration_list.update_time</code>. 最后修改时间
+     */
+    public final TableField<PinIntegrationListRecord, Timestamp> UPDATE_TIME = createField("update_time", org.jooq.impl.SQLDataType.TIMESTAMP.nullable(false).defaultValue(org.jooq.impl.DSL.field("CURRENT_TIMESTAMP", org.jooq.impl.SQLDataType.TIMESTAMP)), this, "最后修改时间");
 
     /**
      * Create a <code>mini_shop_471752.b2c_pin_integration_list</code> table reference
