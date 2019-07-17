@@ -2,6 +2,8 @@ package com.vpu.mp.service.shop.goods;
 
 import static com.vpu.mp.db.shop.Tables.DELIVER_FEE_TEMPLATE;
 
+import java.util.List;
+
 import org.jooq.Record4;
 import org.jooq.SelectConditionStep;
 
@@ -71,23 +73,39 @@ public class GoodsDeliverTamplateService extends BaseService{
 		try {
 			//** 复用ObjectMapper对象 */
 			ObjectMapper objectMapper = new ObjectMapper();
-			
+			//* 外层模版类（不含包邮条件） */
 			String jsonLimit = objectMapper.writeValueAsString(param.getGoodsDeliverTemplateLimitParam());
 			JsonNode jsonNodeLimit = objectMapper.readTree(jsonLimit);
 			
 			String jsonArea = objectMapper.writeValueAsString(param.getGoodsDeliverTemplateAreaParam());
 			JsonNode jsonNodeArea = objectMapper.readTree(jsonArea);
 			
-			ArrayNode array = objectMapper.createArrayNode();
-			array.add(jsonNodeLimit);
-			array.add(jsonNodeArea);
+			ArrayNode arrayTemplate = objectMapper.createArrayNode();
+			arrayTemplate.add(jsonNodeLimit);
+			arrayTemplate.add(jsonNodeArea);
+			//* 包邮条件 */
+			String jsonFee = objectMapper.writeValueAsString(param.getGoodsDeliverTemplateFeeParam());
+			JsonNode jsonNodeFee = objectMapper.readTree(jsonFee);
 			
-			JsonNode jsonResult = objectMapper.createObjectNode().set("datalist", array);
+			String jsonFeeCon = objectMapper.writeValueAsString(param.getGoodsDeliverTemplateFeeConditionParam());
+			JsonNode jsonNodeFeeCon = objectMapper.readTree(jsonFeeCon);
+			ArrayNode arrayFeeCon = objectMapper.createArrayNode();
+			arrayFeeCon.add(jsonNodeFeeCon);
+			
+			JsonNode jsonResultTemplate = objectMapper.createObjectNode().set("datalist", arrayTemplate);
+			JsonNode jsonResultFeeCon = objectMapper.createObjectNode().set("fee_0_data_list", arrayFeeCon);
+			
+			ArrayNode arrayTotal = objectMapper.createArrayNode();
+			arrayTotal.add(jsonResultTemplate);
+			arrayTotal.add(jsonNodeFee);
+			arrayTotal.add(jsonResultFeeCon);
+			
+			
 			int result = db()
 	                .insertInto(DELIVER_FEE_TEMPLATE, DELIVER_FEE_TEMPLATE.TEMPLATE_NAME,DELIVER_FEE_TEMPLATE.FLAG,DELIVER_FEE_TEMPLATE.TEMPLATE_CONTENT)
-	                .values(param.getTemplateName(),(byte)0,jsonResult.toString())
+	                .values(param.getTemplateName(),(byte)0,arrayTotal.toString())
 	                .execute();
-			System.out.println(jsonResult.toString());
+			System.out.println("****存储字符串*****:"+arrayTotal.toString());
 	        return result;
 	        
 		} catch (Exception e) {
@@ -145,4 +163,23 @@ public class GoodsDeliverTamplateService extends BaseService{
         		.where(DELIVER_FEE_TEMPLATE.DELIVER_TEMPLATE_ID.eq(goodsDeliverIdParam.getDeliverTemplateId()))
                 .execute();
     }
+    /**
+	 * 修改模版前先查询单个模版的信息，将其参数作为修改时的默认值
+	 * 
+	 * @param param
+	 * @return List<GoodsDeliverTemplateVo>
+	 */
+	
+	public List<GoodsDeliverTemplateVo> selectOne(GoodsDeliverIdParam param) {
+
+		List<GoodsDeliverTemplateVo> goodsDeliverTemplateVos = 
+				db().select(DELIVER_FEE_TEMPLATE.DELIVER_TEMPLATE_ID,DELIVER_FEE_TEMPLATE.TEMPLATE_NAME,DELIVER_FEE_TEMPLATE.TEMPLATE_CONTENT,DELIVER_FEE_TEMPLATE.FLAG)
+				.from(DELIVER_FEE_TEMPLATE)
+				.where(DELIVER_FEE_TEMPLATE.DELIVER_TEMPLATE_ID.eq(param.getDeliverTemplateId()))
+				.fetchInto(GoodsDeliverTemplateVo.class);
+
+		return goodsDeliverTemplateVos;
+
+	}
+    
 }

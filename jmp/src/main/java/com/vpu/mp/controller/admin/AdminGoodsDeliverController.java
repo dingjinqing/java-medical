@@ -1,5 +1,7 @@
 package com.vpu.mp.controller.admin;
 
+import java.util.List;
+
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -33,56 +35,11 @@ public class AdminGoodsDeliverController extends AdminBaseController {
 
 		PageResult<GoodsDeliverTemplateVo> pageResult = shop().goods.goodsDeliver.getDeliverTemplateList(param);
 
-		/*try {
-			for (GoodsDeliverTemplateVo vo : pageResult.dataList) {
-				System.out.println("****************************");
-				System.out.println(vo);
-				ObjectMapper objectMapper = new ObjectMapper();
-				List<GoodsDeliverTemplateAreaVo> goodsDeliverTemplateAreaVo;
-				System.out.println("****************************");
-				System.out.println(vo.getTemplateContent());
-				
-				goodsDeliverTemplateAreaVo = objectMapper.readValue(vo.getTemplateContent(),
-						new TypeReference<List<GoodsDeliverTemplateAreaVo>>(){});
-				System.out.println("****************************");
-				System.out.println(goodsDeliverTemplateAreaVo);
-				
-				String jsonString = vo.getTemplateContent();
-				jsonString	= objectMapper.writeValueAsString(goodsDeliverTemplateAreaVo);
-				System.out.println("****************************");
-				System.out.println(jsonString);
-			}
-		} catch (JsonParseException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (JsonMappingException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}*/
-
 		return success(pageResult);
 
 	}
 
-	/*
-	 * public JsonResult inworker(JsonResult pageResult) {
-	 * for(GoodsDeliverTemplateVo vo : pageResult.dataList) {
-	 * System.out.println("****************************"); System.out.println(vo);
-	 * ObjectMapper objectMapper = new ObjectMapper(); GoodsDeliverTemplateAreaParam
-	 * goodsDeliverTemplateAreaParam;
-	 * 
-	 * goodsDeliverTemplateAreaParam =
-	 * objectMapper.readValue(vo.getTemplateContent(),GoodsDeliverTemplateAreaParam.
-	 * class);
-	 * 
-	 * System.out.println("****************************");
-	 * System.out.println(goodsDeliverTemplateAreaParam); }
-	 * 
-	 * }
-	 */
+
 	/**
 	 * 重量运费模版分页查询
 	 *
@@ -168,5 +125,21 @@ public class AdminGoodsDeliverController extends AdminBaseController {
 		shop().goods.goodsDeliver.deleteDeliverTemplate(goodsDeliverIdParam);
 
 		return success();
+	}
+	
+	/**
+	 * 修改模版前先查询单个模版的信息，将其参数作为修改时的默认值
+	 *
+	 * @param param
+	 * @return JsonResult
+	 */
+
+	@RequestMapping("/api/admin/goods/deliver/templateone")
+	public JsonResult selectOne(@RequestBody GoodsDeliverIdParam param) {
+
+		List<GoodsDeliverTemplateVo> goodsDeliverTemplateVos = shop().goods.goodsDeliver.selectOne(param);
+
+		return success(goodsDeliverTemplateVos);
+
 	}
 }

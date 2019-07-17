@@ -3,7 +3,10 @@ import java.math.BigDecimal;
 
 import lombok.Data;
 
-
+/**
+ * @author liangchen
+ * @date 2019年7月12日
+ */
 @Data
 public class GoodsDeliverTemplateLimitParam {
 	
