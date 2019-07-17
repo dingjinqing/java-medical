@@ -1,14 +1,8 @@
 package com.vpu.mp.service.foundation;
 
-import org.apache.commons.lang3.StringUtils;
-import org.jooq.*;
 import redis.clients.jedis.Jedis;
 import redis.clients.jedis.JedisPool;
 import redis.clients.jedis.JedisPoolConfig;
-
-import java.util.function.Consumer;
-import java.util.function.Function;
-import java.util.function.Predicate;
 
 /**
  * 
