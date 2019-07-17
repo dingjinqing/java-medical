@@ -12,7 +12,8 @@ import lombok.Data;
 @Data
 public class ShopAccountListQueryParam {
 	public Byte state;
-	public Page page;
 	public String keywords;
 	public String company;
+	public Integer currentPage;
+	public Integer pageRows;
 }

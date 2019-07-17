@@ -11,7 +11,6 @@ import lombok.Data;
  */
 @Data
 public class ShopListQueryParam {
-	public Page page;
 	public String accountKey;
 	public String keywords;
 	public Integer isUse;
@@ -19,4 +18,6 @@ public class ShopListQueryParam {
 	public Byte shopFlag;
 	public Byte isEnabled;
 	public Byte hidBottom;
+	public Integer currentPage;
+	public Integer pageRows;
 }
