@@ -111,6 +111,14 @@ public class JsonResultMessage {
 	 */
 	final public static String STORE_GROUP_NAME_EXIST="store.group.name.exist";
 	final public static String STORE_POS_SHOP_ID_EXIST="store.pos.shop.id.exist";
+	
+	/**
+	 * 售后管理
+	 */
+	final public static String STORE_STORE_ID_NULL="store.store.id.null";
+	final public static String STORE_TECHNICIAN_NAME_NULL="store.technician.name.null";
+	final public static String STORE_TECHNICIAN_TELEPHONE_ILLEGAL="store.tenchnician.telephone.illegal";
+	final public static String STORE_TECHNICIAN_TELEPHONE_NULL="store.tenchnician.telephone.null";
 
 	/**
 	 * 基础配置
