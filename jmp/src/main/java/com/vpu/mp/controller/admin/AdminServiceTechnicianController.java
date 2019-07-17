@@ -33,7 +33,7 @@ public class AdminServiceTechnicianController extends AdminBaseController {
 	 */
 	@PostMapping("/services/technician/list")
 	public JsonResult getList(@RequestBody @Valid ServiceTechnicianPageListParam param) {
-		PageResult<ServiceTechnicianPojo> list = shop().serviceTechnician.getPageList(param);
+		PageResult<ServiceTechnicianPojo> list = shop().store.serviceTechnician.getPageList(param);
 		return success(list);
 	}
 	/**
@@ -43,7 +43,7 @@ public class AdminServiceTechnicianController extends AdminBaseController {
 	 */
 	@GetMapping("/services/technician/select/{id}")
 	public JsonResult select(@PathVariable Integer id) {
-		ServiceTechnicianPojo pojo = shop().serviceTechnician.select(id);
+		ServiceTechnicianPojo pojo = shop().store.serviceTechnician.select(id);
 		if(pojo == null) {
 			return fail(JsonResultCode.CODE_FAIL);
 		}else {
@@ -57,7 +57,7 @@ public class AdminServiceTechnicianController extends AdminBaseController {
 	 */
 	@PostMapping("/services/technician/add")
 	public JsonResult insert(@RequestBody @Valid ServiceTechnicianParam param) {
-		int result = shop().serviceTechnician.insert(param);
+		int result = shop().store.serviceTechnician.insert(param);
 		if(result == 0) {
 			return fail(JsonResultCode.CODE_FAIL);
 		}
@@ -74,7 +74,7 @@ public class AdminServiceTechnicianController extends AdminBaseController {
 		if(param.getId()== null) {
 			return fail(JsonResultCode.STORE_STORE_ID_NULL,JsonResultMessage.STORE_STORE_ID_NULL);
 		}
-		int result = shop().serviceTechnician.update(param);
+		int result = shop().store.serviceTechnician.update(param);
 		if(result == 0) {
 			return fail(JsonResultCode.CODE_FAIL);
 		}
@@ -88,7 +88,7 @@ public class AdminServiceTechnicianController extends AdminBaseController {
 	 */
 	@PostMapping("/services/technician/delete/{id}")
 	public JsonResult delete(@PathVariable @NotNull Integer id) {
-		int result = shop().serviceTechnician.delete(id);
+		int result = shop().store.serviceTechnician.delete(id);
 		if(result>0) {
 			return success(JsonResultCode.CODE_SUCCESS);
 		}

@@ -19,9 +19,8 @@ import com.vpu.mp.service.shop.member.ScoreCfgService;
 import com.vpu.mp.service.shop.member.TagService;
 import com.vpu.mp.service.shop.operation.RecordAdminActionService;
 import com.vpu.mp.service.shop.order.OrderService;
-import com.vpu.mp.service.shop.overview.OverviewService;
 import com.vpu.mp.service.shop.overview.MallOverviewService;
-import com.vpu.mp.service.shop.store.postsale.ServiceTechnicianService;
+import com.vpu.mp.service.shop.overview.OverviewService;
 import com.vpu.mp.service.shop.store.store.StoreService;
 import com.vpu.mp.service.shop.summary.visit.AmountService;
 import com.vpu.mp.service.shop.summary.visit.DistributionService;
@@ -70,11 +69,6 @@ public class ShopApplication extends ServiceContainer {
 	 * 积分管理
 	 */
 	public ScoreCfgService score;
-	
-	/**
-	 * 售后管理
-	 */
-	public ServiceTechnicianService serviceTechnician;
 
 	public ShopBasicConfigService shopBasicConfig;
 

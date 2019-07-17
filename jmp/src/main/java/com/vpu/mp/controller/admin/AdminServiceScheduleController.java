@@ -32,7 +32,7 @@ public class AdminServiceScheduleController extends AdminBaseController {
 	 */
 	@RequestMapping("/services/schedule/list/{storeId}")
 	public JsonResult getScheduleList(@PathVariable Integer storeId){
-		List<SchedulePojo> scheduleList = shop().serviceTechnician.scheduleService.getScheduleList(storeId);
+		List<SchedulePojo> scheduleList = shop().store.serviceTechnician.scheduleService.getScheduleList(storeId);
 		return success(scheduleList);
 	}
 	/**
@@ -42,7 +42,7 @@ public class AdminServiceScheduleController extends AdminBaseController {
 	 */
 	@PostMapping("/services/schedule/add")
 	public JsonResult insertSchedule(@RequestBody @Valid SchedulePojo schedule) {
-		int result = shop().serviceTechnician.scheduleService.insertSchedule(schedule);
+		int result = shop().store.serviceTechnician.scheduleService.insertSchedule(schedule);
 		if(result == 0) {
 			return fail(JsonResultCode.CODE_FAIL);
 		}
@@ -55,7 +55,7 @@ public class AdminServiceScheduleController extends AdminBaseController {
 	 */
 	@PostMapping("/services/schedule/delete/{scheduleId}")
 	public JsonResult deleteSchedule(@PathVariable Byte scheduleId) {
-		int result = shop().serviceTechnician.scheduleService.deleteSchedule(scheduleId);
+		int result = shop().store.serviceTechnician.scheduleService.deleteSchedule(scheduleId);
 		if(result>0) {
 			return success(JsonResultCode.CODE_SUCCESS);
 		}else {
@@ -72,7 +72,7 @@ public class AdminServiceScheduleController extends AdminBaseController {
 		if(pojo.getScheduleId() == null) {
 			return fail(JsonResultCode.CODE_FAIL);
 		}
-		int result = shop().serviceTechnician.scheduleService.updateSchedule(pojo);
+		int result = shop().store.serviceTechnician.scheduleService.updateSchedule(pojo);
 		if(result>0) {
 			return success(JsonResultCode.CODE_SUCCESS);
 		}else {
@@ -81,12 +81,12 @@ public class AdminServiceScheduleController extends AdminBaseController {
 	}
 	@PostMapping("/services/technician/schedule/list")
 	public JsonResult selectTechnicianSchedule(@RequestBody @Valid TechnicianScheduleParam param) {
-		List<TechnicianScheduleVo> list = shop().serviceTechnician.scheduleService.selectTechnicianSchedule(param);
+		List<TechnicianScheduleVo> list = shop().store.serviceTechnician.scheduleService.selectTechnicianSchedule(param);
 		return success(list);
 	}
 	@PostMapping("/services/technician/schedule/save")
 	public JsonResult saveTechnicianSchedule(@RequestBody @Valid TechnicianScheduleSaveParam param) {
-		shop().serviceTechnician.scheduleService.saveTechnicianSchedule(param);
+		shop().store.serviceTechnician.scheduleService.saveTechnicianSchedule(param);
 		return success(JsonResultCode.CODE_SUCCESS);
 	}
 }
