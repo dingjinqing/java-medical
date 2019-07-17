@@ -280,7 +280,7 @@ public class Indexes {
     public static final Index USER_LOGIN_RECORD_PRIMARY = Indexes0.USER_LOGIN_RECORD_PRIMARY;
     public static final Index USER_SUMMARY_TREND_PRIMARY = Indexes0.USER_SUMMARY_TREND_PRIMARY;
     public static final Index USER_SUMMARY_TREND_REF_TYPE = Indexes0.USER_SUMMARY_TREND_REF_TYPE;
-
+    public static final Index SHOP_ACCOUNT_USER_NAME = Indexes0.SHOP_ACCOUNT_USER_NAME;
     // -------------------------------------------------------------------------
     // [#1459] distribute members to avoid static initialisers > 64kb
     // -------------------------------------------------------------------------
@@ -461,5 +461,6 @@ public class Indexes {
         public static Index USER_LOGIN_RECORD_PRIMARY = Internal.createIndex("PRIMARY", UserLoginRecord.USER_LOGIN_RECORD, new OrderField[] { UserLoginRecord.USER_LOGIN_RECORD.ID }, true);
         public static Index USER_SUMMARY_TREND_PRIMARY = Internal.createIndex("PRIMARY", UserSummaryTrend.USER_SUMMARY_TREND, new OrderField[] { UserSummaryTrend.USER_SUMMARY_TREND.ID }, true);
         public static Index USER_SUMMARY_TREND_REF_TYPE = Internal.createIndex("ref_type", UserSummaryTrend.USER_SUMMARY_TREND, new OrderField[] { UserSummaryTrend.USER_SUMMARY_TREND.REF_DATE, UserSummaryTrend.USER_SUMMARY_TREND.TYPE }, false);
+        public static Index SHOP_ACCOUNT_USER_NAME = Internal.createIndex("user_name", ShopAccount.SHOP_ACCOUNT, new OrderField[] { ShopAccount.SHOP_ACCOUNT.USER_NAME }, true);
     }
 }

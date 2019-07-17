@@ -42,7 +42,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class ShopAccount extends TableImpl<ShopAccountRecord> {
 
-    private static final long serialVersionUID = 1552112958;
+    private static final long serialVersionUID = 1343518054;
 
     /**
      * The reference instance of <code>mini_main.b2c_shop_account</code>
@@ -233,7 +233,7 @@ public class ShopAccount extends TableImpl<ShopAccountRecord> {
      */
     @Override
     public List<Index> getIndexes() {
-        return Arrays.<Index>asList(Indexes.SHOP_ACCOUNT_PRIMARY);
+        return Arrays.<Index>asList(Indexes.SHOP_ACCOUNT_PRIMARY, Indexes.SHOP_ACCOUNT_USER_NAME);
     }
 
     /**
@@ -257,7 +257,7 @@ public class ShopAccount extends TableImpl<ShopAccountRecord> {
      */
     @Override
     public List<UniqueKey<ShopAccountRecord>> getKeys() {
-        return Arrays.<UniqueKey<ShopAccountRecord>>asList(Keys.KEY_B2C_SHOP_ACCOUNT_PRIMARY);
+        return Arrays.<UniqueKey<ShopAccountRecord>>asList(Keys.KEY_B2C_SHOP_ACCOUNT_PRIMARY, Keys.KEY_B2C_SHOP_ACCOUNT_USER_NAME);
     }
 
     /**

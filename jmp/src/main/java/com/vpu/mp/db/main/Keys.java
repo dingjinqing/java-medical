@@ -230,6 +230,7 @@ public class Keys {
     public static final Identity<UserLoginRecordRecord, Integer> IDENTITY_USER_LOGIN_RECORD = Identities0.IDENTITY_USER_LOGIN_RECORD;
     public static final Identity<UserSummaryTrendRecord, Integer> IDENTITY_USER_SUMMARY_TREND = Identities0.IDENTITY_USER_SUMMARY_TREND;
     public static final Identity<ShopUploadedImageCategoryRecord, Integer> IDENTITY_SHOP_UPLOADED_IMAGE_CATEGORY = Identities0.IDENTITY_SHOP_UPLOADED_IMAGE_CATEGORY;
+    
 
     // -------------------------------------------------------------------------
     // UNIQUE and PRIMARY KEY definitions
@@ -327,7 +328,8 @@ public class Keys {
     public static final UniqueKey<UserLoginRecordRecord> KEY_B2C_USER_LOGIN_RECORD_PRIMARY = UniqueKeys0.KEY_B2C_USER_LOGIN_RECORD_PRIMARY;
     public static final UniqueKey<UserSummaryTrendRecord> KEY_B2C_USER_SUMMARY_TREND_PRIMARY = UniqueKeys0.KEY_B2C_USER_SUMMARY_TREND_PRIMARY;
     public static final UniqueKey<ShopUploadedImageCategoryRecord> KEY_B2C_SHOP_UPLOADED_IMAGE_CATEGORY_PRIMARY = UniqueKeys0.KEY_B2C_SHOP_UPLOADED_IMAGE_CATEGORY_PRIMARY;
-
+    public static final UniqueKey<ShopAccountRecord> KEY_B2C_SHOP_ACCOUNT_USER_NAME = UniqueKeys0.KEY_B2C_SHOP_ACCOUNT_USER_NAME;
+    
     // -------------------------------------------------------------------------
     // FOREIGN KEY definitions
     // -------------------------------------------------------------------------
@@ -494,5 +496,6 @@ public class Keys {
         public static final UniqueKey<UserDetailRecord> KEY_B2C_USER_DETAIL_PRIMARY = Internal.createUniqueKey(UserDetail.USER_DETAIL, "KEY_b2c_user_detail_PRIMARY", UserDetail.USER_DETAIL.ID);
         public static final UniqueKey<UserLoginRecordRecord> KEY_B2C_USER_LOGIN_RECORD_PRIMARY = Internal.createUniqueKey(UserLoginRecord.USER_LOGIN_RECORD, "KEY_b2c_user_login_record_PRIMARY", UserLoginRecord.USER_LOGIN_RECORD.ID);
         public static final UniqueKey<UserSummaryTrendRecord> KEY_B2C_USER_SUMMARY_TREND_PRIMARY = Internal.createUniqueKey(UserSummaryTrend.USER_SUMMARY_TREND, "KEY_b2c_user_summary_trend_PRIMARY", UserSummaryTrend.USER_SUMMARY_TREND.ID);
+        public static final UniqueKey<ShopAccountRecord> KEY_B2C_SHOP_ACCOUNT_USER_NAME = Internal.createUniqueKey(ShopAccount.SHOP_ACCOUNT, "KEY_b2c_shop_account_user_name", ShopAccount.SHOP_ACCOUNT.USER_NAME);
     }
 }
