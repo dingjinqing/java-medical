@@ -26,9 +26,9 @@ import static com.vpu.mp.db.shop.Tables.GOODS_LABEL_COUPLE;
  */
 public class GoodsLabelService extends BaseService {
 	
-	//未删除为0
+	/** 未删除为0 */
 	public static final Integer NORMAL = 0;
-	//已经删除为1
+	/** 已经删除为1 */
 	public static final Integer DISABLE = 1;
 	
 	public GoodsLabelCoupleService goodsLabelCoupleService;
