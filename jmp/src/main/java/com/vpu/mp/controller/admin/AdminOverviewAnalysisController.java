@@ -6,13 +6,14 @@ import java.util.Date;
 import java.util.List;
 
 import org.apache.commons.lang3.StringUtils;
-import org.apache.tools.ant.taskdefs.TempFile;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.vpu.mp.service.foundation.JsonResult;
 import com.vpu.mp.service.pojo.shop.overview.analysis.OverviewAnalysisDateParam;
+import com.vpu.mp.service.pojo.shop.overview.analysis.OverviewAnalysisPageParam;
+import com.vpu.mp.service.pojo.shop.overview.analysis.OverviewAnalysisPageVo;
 import com.vpu.mp.service.pojo.shop.overview.analysis.OverviewAnalysisSelectParam;
 import com.vpu.mp.service.pojo.shop.overview.analysis.OverviewAnalysisSelectVo;
 import com.vpu.mp.service.pojo.shop.overview.analysis.OverviewAnalysisYesterdayVo;
@@ -64,9 +65,9 @@ public class AdminOverviewAnalysisController extends AdminBaseController{
 		endTime = StringUtils.isEmpty(tempEndTime) ? dateNowStr : tempEndTime;
 		param.setEndTime(endTime);		
 		
-		List<OverviewAnalysisSelectVo> oASP = shop().overview.overviewAnalysisService.getSelect(param);
+		List<OverviewAnalysisSelectVo> overviewAnalysisSelectVos = shop().overview.overviewAnalysisService.getSelect(param);
 		
-		return success(oASP);
+		return success(overviewAnalysisSelectVos);
 	}
 	
 	public String getDate(String days) {
@@ -75,8 +76,36 @@ public class AdminOverviewAnalysisController extends AdminBaseController{
 	    c.add(Calendar.DATE, - Integer.valueOf(days));           
 	    Date time = c.getTime();         
 	    String preDay = sdf.format(time);
-	    System.out.println(preDay);
+	    System.out.println("preDay"+preDay);
 	    return preDay;
 	}
 	
+	/**
+	 *页面访问数量查询
+	 *@Param param
+	 *@return
+	 */
+	@PostMapping("/api/admin/overview/analysis/pagelist")
+	public JsonResult getPageInfo(@RequestBody OverviewAnalysisPageParam param) {
+		String startTime;
+		String endTime;
+		//**  获得今日时间（字符串格式精确到日）*/
+		SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyyMMdd");
+		Date now = new Date();
+		String dateNowStr = simpleDateFormat.format(now);
+		
+		startTime = param.getStartTime();
+		startTime = "07".equals(startTime) ? getDate(startTime) : startTime;
+		startTime = "30".equals(startTime) ? getDate(startTime) : startTime;
+		param.setStartTime(startTime);
+		System.out.println("开始时间："+startTime);
+		
+		String tempEndTime = param.getEndTime();
+		endTime = StringUtils.isEmpty(tempEndTime) ? dateNowStr : tempEndTime;
+		param.setEndTime(endTime);		
+		
+		List<OverviewAnalysisPageVo> overviewAnalysisPageVos = shop().overview.overviewAnalysisService.getPageInfo(param);
+		
+		return success(overviewAnalysisPageVos);
+	}
 }
