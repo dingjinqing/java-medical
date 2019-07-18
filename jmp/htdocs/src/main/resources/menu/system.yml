@@ -1,0 +1,61 @@
+<?php
+return [
+  [
+    'name'=>'概览',
+    'en_name'=>'first_web_manage',
+    'link'=>'/system/shop/shop_view',
+    'img_url'=>'/image/system/first_1.png',
+    'sub'=>require "sub/first_web_manage.php",
+        'check'=>false,
+  ],
+  [
+    'name'=>'店铺管理',
+    'en_name'=>'first_web_decoration',
+    'link'=>'/system/shop/account/list',
+    'img_url'=>'/image/system/first_2.png',
+    'sub'=>require "sub/first_web_decoration.php",
+        'check'=>false,
+  ],
+
+    [
+        'name'=>'数据统计',
+        'en_name'=>'goods_manage',
+        'link'=>'/system/analysis/basic/overview',
+        'img_url'=>'/image/system/first_3.png',
+        'sub'=>require "sub/data_manage.php",
+        'check'=>false,
+    ],
+  [
+    'name'=>'商品管理',
+    'en_name'=>'goods_manage',
+    'link'=>'/system/goods/analysis',
+    'img_url'=>'/image/system/first_3.png',
+    'sub'=>require "sub/goods_manage.php",
+        'check'=>false,
+  ],
+    [
+        'name'=>'会员管理',
+        'en_name'=>'user_manger',
+        'link'=>'/system/user/analysis',
+        'img_url'=>'/image/system/get_user.png',
+        'sub'=>require "sub/user_manage.php",
+        'check'=>false,
+    ],
+  [
+    'name'=>'订单管理',
+    'en_name'=>'first_trade_manage',
+    'link'=>'/system/order/analysis',
+    'img_url'=>'/image/system/first_4.png',
+    'sub'=>require "sub/first_trade_manage.php",
+        'check'=>false,
+  ],
+    [
+        'name'=>'设置',
+        'en_name'=>'first_trade_manage',
+        'link'=>'/system/decoration/template',
+        'img_url'=>'/image/system/first_4.png',
+        'sub'=>require "sub/set_manage.php",
+        'check'=>false,
+    ],
+
+];
