@@ -25,6 +25,9 @@ import com.vpu.mp.service.pojo.shop.store.group.StoreGroupQueryParam;
 import com.vpu.mp.service.pojo.shop.store.store.StoreListQueryParam;
 import com.vpu.mp.service.pojo.shop.store.store.StorePageListVo;
 import com.vpu.mp.service.pojo.shop.store.store.StorePojo;
+import com.vpu.mp.service.shop.store.comment.ServiceCommentService;
+import com.vpu.mp.service.shop.store.group.StoreGroupService;
+import com.vpu.mp.service.shop.store.postsale.ServiceTechnicianService;
 import com.vpu.mp.service.shop.store.service.ServiceOrderService;
 import com.vpu.mp.service.shop.store.service.StoreServiceService;
 import com.vpu.mp.service.shop.store.verify.StoreVerifierService;
@@ -69,6 +72,11 @@ public class StoreService extends BaseService {
 	 * 服务预约（serviceOrder）
 	 */
 	public ServiceOrderService serviceOrder;
+	
+	/**
+	 * 服务评价管理
+	 */
+	public ServiceCommentService serviceComment;
 	
 	/**
 	 * 门店列表分页查询
