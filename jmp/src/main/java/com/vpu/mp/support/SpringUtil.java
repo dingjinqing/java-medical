@@ -22,9 +22,18 @@ public class SpringUtil implements ApplicationContextAware {
 	}
 
 	public static <T> T getBean(Class<T> tClass) {
-		return applicationContext.getBean(tClass);
+		String name =tClass.getSimpleName();
+		String className = name.substring(0,1).toLowerCase()+name.substring(1,name.length());
+		if( applicationContext.containsBean(className) ){
+			return applicationContext.getBean(tClass);
+		}else {
+			System.out.println("#########################"+tClass.getName());
+		}
+		return null;
 	}
-	
+	public static boolean inited(){
+		return applicationContext != null;
+	}
 	public static Object getBean(String id) {
 		return applicationContext.getBean(id);
 	}
