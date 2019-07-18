@@ -40,7 +40,7 @@ public class RetainService extends BaseVisitService {
     public AccessRetainVo getAccessRetain(VisitStatisticsParam param) {
         String startDate = param.getStartDate();
         String endDate = param.getEndDate();
-        Integer action = param.getAction();
+        int action = param.getAction();
         Result<?> retainResult;
         AccessRetainVo vo = new AccessRetainVo();
         List<AccessRetain> retains;
@@ -129,8 +129,8 @@ public class RetainService extends BaseVisitService {
         return db().select(MP_WEEKLY_RETAIN.REF_DATE, field)
                 .from(MP_WEEKLY_RETAIN)
                 /* ref_date 中的开始日期 >= start 且 ref_date 中的结束日期 <= end */
-                .where(MP_WEEKLY_RETAIN.REF_DATE.substring(0, 8).greaterOrEqual(startDate)
-                        .and(MP_WEEKLY_RETAIN.REF_DATE.substring(9, 8).lessOrEqual(endDate)))
+                .where(MP_WEEKLY_RETAIN.REF_DATE.substring(1, 8).greaterOrEqual(startDate)
+                        .and(MP_WEEKLY_RETAIN.REF_DATE.substring(10, 8).lessOrEqual(endDate)))
                 .fetch().into(MP_WEEKLY_RETAIN);
     }
 
@@ -150,6 +150,6 @@ public class RetainService extends BaseVisitService {
      * 截取日期字符串获取年月
      */
     private String yearAndMonthOf(String rawDateString) {
-        return rawDateString.substring(0, 7);
+        return rawDateString.substring(0, 6);
     }
 }
