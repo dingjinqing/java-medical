@@ -51,6 +51,20 @@ public class ServiceOrderService extends BaseService{
 		return getPageResult(select,param.getCurrentPage(),param.getPageRows(),ServiceOrderListQueryVo.class);
 	}
 	
+	/**
+	 * 门店服务预约列表计数
+	 * @param StoreListQueryParam
+	 * @return Integer
+	 */
+	public Integer getCountData(ServiceOrderListQueryParam param) {
+		SelectWhereStep<? extends Record> select = 
+		db().selectCount().
+		from(SERVICE_ORDER).
+		leftJoin(STORE_SERVICE).on(SERVICE_ORDER.SERVICE_ID.eq(STORE_SERVICE.ID));
+		select = this.buildOptions(select, param);
+		select.where(SERVICE_ORDER.DEL_FLAG.eq(DelFlag.NORMAL.getCode())).and(SERVICE_ORDER.STORE_ID.eq(param.getStoreId()));
+		return select.fetchOne(0,Integer.class);
+	}
 
 	/**
 	 * 门店服务预约的条件查询

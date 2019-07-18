@@ -15,7 +15,9 @@ import com.vpu.mp.service.pojo.shop.store.goods.StoreGoodsListQueryParam;
 import com.vpu.mp.service.pojo.shop.store.group.StoreGroup;
 import com.vpu.mp.service.pojo.shop.store.group.StoreGroupQueryParam;
 import com.vpu.mp.service.pojo.shop.store.service.ServiceOrderAdminMessageParam;
+import com.vpu.mp.service.pojo.shop.store.service.ServiceOrderCountingDataVo;
 import com.vpu.mp.service.pojo.shop.store.service.ServiceOrderListQueryParam;
+import com.vpu.mp.service.pojo.shop.store.service.ServiceOrderPageListQueryVo;
 import com.vpu.mp.service.pojo.shop.store.service.ServiceOrderParam;
 import com.vpu.mp.service.pojo.shop.store.service.StoreServiceCategoryListQueryParam;
 import com.vpu.mp.service.pojo.shop.store.service.StoreServiceCategoryParam;
@@ -374,7 +376,26 @@ public class AdminStoreController extends AdminBaseController{
      */
     @PostMapping(value = "/api/admin/store/service/reserve/list")
     public JsonResult getServiceOrderList(@RequestBody(required = true) @Valid ServiceOrderListQueryParam param) {
-    	return success(shop().store.serviceOrder.getPageList(param));
+    	ServiceOrderPageListQueryVo vo = new ServiceOrderPageListQueryVo();
+    	vo.setPageList(shop().store.serviceOrder.getPageList(param));
+    	ServiceOrderCountingDataVo countingData = new ServiceOrderCountingDataVo();
+    	/**全部预约*/
+    	param.setOrderStatus((byte)-1);
+    	countingData.setAll(shop().store.serviceOrder.getCountData(param));
+    	/**待付款*/
+    	param.setOrderStatus((byte)3);
+    	countingData.setWaitPay(shop().store.serviceOrder.getCountData(param));
+    	/**待服务*/
+    	param.setOrderStatus((byte)0);
+    	countingData.setWaitService(shop().store.serviceOrder.getCountData(param));
+    	/**已取消*/
+    	param.setOrderStatus((byte)1);
+    	countingData.setCancelled(shop().store.serviceOrder.getCountData(param));
+    	/**已完成*/
+    	param.setOrderStatus((byte)2);
+    	countingData.setFinished(shop().store.serviceOrder.getCountData(param));
+    	vo.setCountingData(countingData);
+    	return success(vo);
     }
     
     /**
