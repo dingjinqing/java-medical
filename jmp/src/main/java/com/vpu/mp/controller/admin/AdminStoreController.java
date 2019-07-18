@@ -15,6 +15,7 @@ import com.vpu.mp.service.pojo.shop.store.goods.StoreGoodsListQueryParam;
 import com.vpu.mp.service.pojo.shop.store.group.StoreGroup;
 import com.vpu.mp.service.pojo.shop.store.group.StoreGroupQueryParam;
 import com.vpu.mp.service.pojo.shop.store.service.ServiceOrderListQueryParam;
+import com.vpu.mp.service.pojo.shop.store.service.ServiceOrderUpdateParam;
 import com.vpu.mp.service.pojo.shop.store.service.StoreServiceCategoryListQueryParam;
 import com.vpu.mp.service.pojo.shop.store.service.StoreServiceCategoryParam;
 import com.vpu.mp.service.pojo.shop.store.service.StoreServiceListQueryParam;
@@ -373,5 +374,19 @@ public class AdminStoreController extends AdminBaseController{
     @GetMapping(value = "/api/admin/store/service/reserve/detail")
     public JsonResult getServiceOrderDetail(@Valid String orderSn) {
     	return success(shop().store.serviceOrder.getServiceOrderDetail(orderSn));
+    }
+    
+    /**
+     * 获取服务预约订单详情
+     * @return
+     */
+    @PostMapping(value = "/api/admin/store/service/reserve/message/add")
+    public JsonResult addServiceOrderAdminMessage(@RequestBody(required = true) @Valid ServiceOrderUpdateParam param) {
+    	if(shop().store.serviceOrder.addServiceOrderAdminMessage(param)) {
+    		return success();
+    	}else {
+    		return fail();
+    	}
+    	
     }
 }

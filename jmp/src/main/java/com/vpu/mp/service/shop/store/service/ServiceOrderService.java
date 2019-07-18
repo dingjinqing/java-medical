@@ -13,6 +13,7 @@ import com.vpu.mp.service.foundation.PageResult;
 import com.vpu.mp.service.pojo.shop.store.service.ServiceOrderDetailVo;
 import com.vpu.mp.service.pojo.shop.store.service.ServiceOrderListQueryParam;
 import com.vpu.mp.service.pojo.shop.store.service.ServiceOrderListQueryVo;
+import com.vpu.mp.service.pojo.shop.store.service.ServiceOrderUpdateParam;
 
 /**
  * @author 王兵兵
@@ -86,12 +87,14 @@ public class ServiceOrderService extends BaseService{
 				).
 		from(SERVICE_ORDER).leftJoin(STORE_SERVICE).on(SERVICE_ORDER.SERVICE_ID.eq(STORE_SERVICE.ID)).
 		where(SERVICE_ORDER.ORDER_SN.eq(orderSn)).fetchOne();
-		System.out.println(vo);
 		if(vo == null) {
-			System.out.println("null  --");
+			return null;
 		}else {
 			return vo.into(ServiceOrderDetailVo.class);
 		}
-		return null;
+	}
+	
+	public Boolean addServiceOrderAdminMessage(ServiceOrderUpdateParam param) {
+		return db().update(SERVICE_ORDER).set(SERVICE_ORDER.ADMIN_MESSAGE,param.getAdminMessage()).where(SERVICE_ORDER.ORDER_SN.eq(param.getOrderSn())).execute() > 0 ? true : false;
 	}
 }
