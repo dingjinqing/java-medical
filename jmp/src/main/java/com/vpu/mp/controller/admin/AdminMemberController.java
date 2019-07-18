@@ -2,14 +2,21 @@ package com.vpu.mp.controller.admin;
 
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.vpu.mp.db.shop.tables.records.UserRecord;
 import com.vpu.mp.service.foundation.JsonResult;
+import com.vpu.mp.service.foundation.JsonResultMessage;
 import com.vpu.mp.service.foundation.PageResult;
+import com.vpu.mp.service.pojo.shop.auth.AdminTokenAuthInfo;
 import com.vpu.mp.service.pojo.shop.member.CommonMemberPageListQueryParam;
 import com.vpu.mp.service.pojo.shop.member.CommonMemberPageListQueryVo;
 import com.vpu.mp.service.pojo.shop.member.MemberInfoVo;
 import com.vpu.mp.service.pojo.shop.member.MemberPageListParam;
+import com.vpu.mp.service.pojo.shop.member.account.AccountParam;
+import com.vpu.mp.service.shop.member.MemberService;
+
 
 /**
  * 会员管理
@@ -17,13 +24,14 @@ import com.vpu.mp.service.pojo.shop.member.MemberPageListParam;
  * 2019-07-08 09:30
  */
 @RestController
+@RequestMapping(value="/api/admin/member")
 public class AdminMemberController extends AdminBaseController{
 
 	/**
 	 * 通用会员列表弹窗分页查询
 	 * @return
 	 */
-	@PostMapping("/api/admin/member/common/list")
+	@PostMapping("/common/list")
 	public JsonResult getCommonPageList(@RequestBody CommonMemberPageListQueryParam param) {
 		PageResult<CommonMemberPageListQueryVo> pageResult = this.shop().member.getCommonPageList(param);
 		return this.success(pageResult);
@@ -33,10 +41,31 @@ public class AdminMemberController extends AdminBaseController{
 	 * 会员列表
 	 * @return
 	 */
-	@PostMapping("api/admin/member/list")
+	@PostMapping("/list")
 	public JsonResult getPageList(@RequestBody MemberPageListParam param) {
 
 		PageResult<MemberInfoVo> pageResult = this.shop().member.getPageList(param);
 		return this.success(pageResult);
+	}
+	
+	
+	@PostMapping("/account/add")
+	public JsonResult updateMemberAccount(@RequestBody AccountParam param) {
+		int adminUser = 0;
+		Byte tradeType = 0;
+		Byte tradeFlow = 0;
+		MemberService member = shop().member;
+		int ret = member.account.addUserAccount(param,adminUser,tradeType,tradeFlow);
+		
+		if(ret == -1) {
+			return this.fail(JsonResultMessage.MSG_MEMBER_ACCOUNT_UPDATE_FAIL);
+		}else {
+			//添加操作记录信 该表java版于php版有很大的区别
+			AdminTokenAuthInfo adminTokenAuthInfo = this.adminAuth.user();
+			UserRecord user = member.getUserRecordById(param.getUserId());
+			member.account.addActionRecord(param,user,adminTokenAuthInfo);
+		}
+		
+		return success();
 	}
 }
