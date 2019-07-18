@@ -114,6 +114,7 @@ public class Util {
 		}
 	}
 
+
 	public static String md5(String string) {
 		return DigestUtils.md5DigestAsHex(string.getBytes());
 	}
@@ -262,12 +263,13 @@ public class Util {
 	 * @param language
 	 * @param message
 	 * @param defaultMessage
+	 * @param languageType
 	 * @return
 	 */
-	public static String translateMessage(String language, String message, String defaultMessage) {
+	public static String translateMessage(String language, String message, String defaultMessage,String languageType) {
 		language = StringUtils.isBlank(language) ? "zh_CN" : language;
 		ReloadableResourceBundleMessageSource source = new ReloadableResourceBundleMessageSource();
-		source.setBasename("static/i18n/messages");
+		source.setBasename("static/i18n/"+languageType);
 		source.setDefaultEncoding("UTF-8");
 		MessageSourceAccessor accessor = new MessageSourceAccessor(source);
 		String[] languages = language.split(UNDEER_LINE);
@@ -281,11 +283,10 @@ public class Util {
 	 * @param message
 	 * @return
 	 */
-	public static String translateMessage(String language, String message) {
-		return translateMessage( language, message, message);
+	public static String translateMessage(String language, String message,String languageType) {
+		return translateMessage( language, message, message,languageType);
 	}
-	
-	
+
 	
 	/***
 	 * 下划线命名转为驼峰命名
