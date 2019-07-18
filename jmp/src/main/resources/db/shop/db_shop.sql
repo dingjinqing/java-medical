@@ -2964,8 +2964,8 @@ create table `b2c_pin_integration_list` (
 -- drop table if exists `b2c_mp_jump`;
 create table `b2c_mp_jump` (
   `id`          int(11)                                 not null auto_increment,
-  `app_id`      varchar(64)   not null,
-  `app_name`    varchar(200)  not null,
+  `app_id`      varchar(64)                             not null comment '小程序AppID',
+  `app_name`    varchar(200)                            not null comment '小程序名称',
   `flag`        tinyint(1)                              not null default '0' comment '0:可用，1:停用',
   `del_flag`    tinyint(1)                              not null default '0' comment '0:未删除，1:已删除',
   `create_time`		timestamp      	default current_timestamp,
@@ -3103,8 +3103,7 @@ create table `b2c_wxp_unlimit_scene` (
   `scene_value` varchar(1200)  	default null,
   `create_time`		timestamp      	default current_timestamp,
   `update_time` 	timestamp      	default current_timestamp on update current_timestamp comment '最后修改时间',
-  primary key (`scene_id`),
-  key `scene_value` (`scene_value`)
+  primary key (`scene_id`)
 );
 
 -- 一口价活动
