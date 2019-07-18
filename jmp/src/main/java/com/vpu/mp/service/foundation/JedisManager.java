@@ -116,8 +116,13 @@ public class JedisManager {
 			jedis.expire(key, seconds);
 		}
 	}
-
-	public String commonGet(String key, Integer timeOut, JedisGetProcess function){
+	/**
+	 * 从redis读取数据，取不到从自定义的查询里取，并存到redis里
+	 * @author: 卢光耀
+	 * @date: 2019-07-17 14:13
+	 *
+	*/
+	public String getValueAndSave(String key, Integer timeOut, JedisGetProcess function){
 		String value;
 		try (Jedis jedis = getJedisPool().getResource()){
 			value = jedis.get(key);
@@ -125,12 +130,10 @@ public class JedisManager {
 				return value;
 			}else {
 				value = function.getByRedis();
-				jedis.set(key,value.toString());
+				jedis.set(key,value);
 				jedis.expire(key,timeOut);
 				return value;
 			}
 		}
-
 	}
-
 }
