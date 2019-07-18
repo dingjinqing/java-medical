@@ -10,6 +10,7 @@ import org.jooq.SelectWhereStep;
 import org.jooq.tools.StringUtils;
 
 import com.vpu.mp.db.shop.tables.User;
+import com.vpu.mp.db.shop.tables.records.UserRecord;
 import com.vpu.mp.service.foundation.BaseService;
 import com.vpu.mp.service.foundation.DelFlag;
 import com.vpu.mp.service.foundation.PageResult;
@@ -30,6 +31,7 @@ import org.springframework.stereotype.Service;
 @Scope("prototype")
 public class MemberService extends BaseService {
 
+	public AccountService account;
 	/**
 	 * 会员列表分页查询
 	 * @param param
@@ -78,8 +80,8 @@ public class MemberService extends BaseService {
 		}
 		//邀请人
 		if(!StringUtils.isEmpty(param.getInviteUserName())) {
-			Field<Integer> inviteID =  this.db().select(u.USER_ID).from(u).where(u.USERNAME.eq(param.getInviteUserName())).asField();
-			select.where(u.INVITE_ID.eq(inviteID));
+			Field<Integer> inviteId =  this.db().select(u.USER_ID).from(u).where(u.USERNAME.eq(param.getInviteUserName())).asField();
+			select.where(u.INVITE_ID.eq(inviteId));
 		}
 		
 		//注册时间
@@ -143,5 +145,10 @@ public class MemberService extends BaseService {
 		}
 		
 		return select;
+	}
+
+	public UserRecord getUserRecordById(Integer userId) {
+		UserRecord user = db().selectFrom(USER).where(USER.USER_ID.eq(userId)).fetchOne();
+		return user;
 	}
 }
