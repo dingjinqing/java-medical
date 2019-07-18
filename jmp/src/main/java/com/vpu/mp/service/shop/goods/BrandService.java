@@ -7,12 +7,16 @@ import java.util.List;
 import com.vpu.mp.service.foundation.BaseService;
 import com.vpu.mp.service.foundation.DelFlag;
 import com.vpu.mp.service.pojo.shop.goods.brand.BrandVo;
+import org.springframework.context.annotation.Scope;
+import org.springframework.stereotype.Service;
 
 /**
  * 品牌
  * @author 常乐
  * 2019年7月15日
  */
+@Service
+@Scope("prototype")
 public class BrandService extends BaseService{
 
 	/**

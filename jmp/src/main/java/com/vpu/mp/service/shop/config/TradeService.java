@@ -3,6 +3,8 @@ package com.vpu.mp.service.shop.config;
 import com.vpu.mp.db.shop.tables.Payment;
 import com.vpu.mp.service.pojo.shop.config.trade.OrderProcessParam;
 import com.vpu.mp.service.pojo.shop.config.trade.PaymentConfigVo;
+import org.springframework.context.annotation.Scope;
+import org.springframework.stereotype.Service;
 
 import java.util.List;
 
@@ -11,6 +13,8 @@ import java.util.List;
  * @Date:2019/7/8
  * @Description:
  */
+@Service
+@Scope("prototype")
 public class TradeService extends BaseShopConfigService {
 
     /** 是否启用快递 */

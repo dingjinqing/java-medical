@@ -6,6 +6,8 @@ import com.vpu.mp.service.pojo.shop.config.trade.ReturnBusinessAdressParam;
 import com.vpu.mp.service.pojo.shop.config.trade.ReturnPackageParam;
 import org.jooq.DSLContext;
 import org.jooq.impl.DSL;
+import org.springframework.context.annotation.Scope;
+import org.springframework.stereotype.Service;
 
 import java.sql.Timestamp;
 
@@ -14,6 +16,8 @@ import java.sql.Timestamp;
  * @Date:2019/7/10
  * @Description:
  */
+@Service
+@Scope("prototype")
 public class ShopReturnConfigService extends BaseShopConfigService {
 
     /**

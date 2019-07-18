@@ -30,8 +30,8 @@ public class AdminAuth {
 
 	@Autowired
 	protected HttpServletRequest request;
-
-	protected SaasApplication saas = SaasApplication.instance();
+	@Autowired
+	protected SaasApplication saas ;
 	protected JedisManager jedis = JedisManager.instance();
 	protected Logger log = LoggerFactory.getLogger(AdminAuth.class);
 

@@ -16,6 +16,8 @@ import com.vpu.mp.service.foundation.BaseService;
 import com.vpu.mp.service.foundation.PageResult;
 import com.vpu.mp.service.pojo.shop.decoration.PageCategoryListQueryParam;
 import com.vpu.mp.service.pojo.shop.decoration.PageClassificationPojo;
+import org.springframework.stereotype.Service;
+import org.springframework.context.annotation.Scope;
 
 
 /**
@@ -23,6 +25,8 @@ import com.vpu.mp.service.pojo.shop.decoration.PageClassificationPojo;
  * @author lixinguo
  *
  */
+@Service
+@Scope("prototype")
 public class PageClassificationService extends BaseService {
 
 	/**

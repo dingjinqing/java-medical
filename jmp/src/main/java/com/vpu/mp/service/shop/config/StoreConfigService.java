@@ -1,12 +1,16 @@
 package com.vpu.mp.service.shop.config;
 
 import com.vpu.mp.service.pojo.shop.config.store.StoreServiceConfig;
+import org.springframework.context.annotation.Scope;
+import org.springframework.stereotype.Service;
 
 /**
  * @author 王兵兵
  *
  * 2019年7月10日
  */
+@Service
+@Scope("prototype")
 public class StoreConfigService extends BaseShopConfigService{
 	
 	/**

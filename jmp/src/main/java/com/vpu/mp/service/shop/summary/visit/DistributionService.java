@@ -6,6 +6,8 @@ import com.vpu.mp.service.foundation.Util;
 import com.vpu.mp.service.pojo.shop.summary.*;
 import com.vpu.mp.service.pojo.shop.summary.visit.*;
 import org.jooq.Result;
+import org.springframework.context.annotation.Scope;
+import org.springframework.stereotype.Service;
 
 import java.util.*;
 import java.util.stream.Collectors;
@@ -18,6 +20,8 @@ import static com.vpu.mp.service.pojo.shop.summary.visit.DistributionIndex.*;
  *
  * @author 郑保乐
  */
+@Service
+@Scope("prototype")
 public class DistributionService extends BaseVisitService {
 
     public VisitDistributionVo getVisitDistribution(VisitDistributionParam param) {

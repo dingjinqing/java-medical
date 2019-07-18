@@ -18,12 +18,16 @@ import com.vpu.mp.service.pojo.shop.member.CommonMemberPageListQueryParam;
 import com.vpu.mp.service.pojo.shop.member.CommonMemberPageListQueryVo;
 import com.vpu.mp.service.pojo.shop.member.MemberInfoVo;
 import com.vpu.mp.service.pojo.shop.member.MemberPageListParam;
+import org.springframework.context.annotation.Scope;
+import org.springframework.stereotype.Service;
 
 /**
  * 
  * @author 黄壮壮
  * 2019-07-08 16:22
  */
+@Service
+@Scope("prototype")
 public class MemberService extends BaseService {
 
 	/**

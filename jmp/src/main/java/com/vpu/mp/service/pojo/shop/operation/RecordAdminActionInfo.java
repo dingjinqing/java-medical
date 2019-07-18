@@ -1,6 +1,7 @@
 package com.vpu.mp.service.pojo.shop.operation;
 
 import lombok.Builder;
+import lombok.Data;
 
 import java.sql.Timestamp;
 
@@ -11,6 +12,7 @@ import java.sql.Timestamp;
  *
 */
 @Builder
+@Data
 public class RecordAdminActionInfo {
     private String userName;
 
@@ -19,4 +21,6 @@ public class RecordAdminActionInfo {
     private Timestamp createTime;
 
     private String content;
+
+    private  int id;
 }

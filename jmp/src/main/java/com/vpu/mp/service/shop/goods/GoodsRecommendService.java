@@ -22,6 +22,8 @@ import com.vpu.mp.service.pojo.shop.goods.recommend.GoodsRecommend;
 import com.vpu.mp.service.pojo.shop.goods.recommend.GoodsRecommendInsertParam;
 import com.vpu.mp.service.pojo.shop.goods.recommend.GoodsRecommendPageListParam;
 import com.vpu.mp.service.pojo.shop.goods.recommend.GoodsRecommendUpdateParam;
+import org.springframework.context.annotation.Scope;
+import org.springframework.stereotype.Service;
 
 
 /**
@@ -29,6 +31,8 @@ import com.vpu.mp.service.pojo.shop.goods.recommend.GoodsRecommendUpdateParam;
  * @date 2019年7月9日
  *
  */
+@Service
+@Scope("prototype")
 public class GoodsRecommendService extends BaseService {
 
 	public GoodsService goodsService;

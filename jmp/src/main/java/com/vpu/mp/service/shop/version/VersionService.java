@@ -10,12 +10,16 @@ import com.vpu.mp.service.shop.image.ImageService;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.springframework.context.annotation.Scope;
+import org.springframework.stereotype.Service;
 
 /**
  * 
  * @author lixinguo
  *
  */
+@Service
+@Scope("prototype")
 public class VersionService extends BaseService {
 
 	protected ImageService image;

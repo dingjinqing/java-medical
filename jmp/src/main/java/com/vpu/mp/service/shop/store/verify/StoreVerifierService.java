@@ -14,12 +14,16 @@ import com.vpu.mp.service.foundation.PageResult;
 import com.vpu.mp.service.pojo.shop.store.verify.VerifierAddParam;
 import com.vpu.mp.service.pojo.shop.store.verify.VerifierListQueryParam;
 import com.vpu.mp.service.pojo.shop.store.verify.VerifierListVo;
+import org.springframework.context.annotation.Scope;
+import org.springframework.stereotype.Service;
 
 /**
  * @author 王兵兵
  *
  * 2019年7月11日
  */
+@Service
+@Scope("prototype")
 public class StoreVerifierService extends BaseService{
 	/**
 	 *	 门店核销员列表分页查询

@@ -9,6 +9,8 @@ import com.vpu.mp.service.pojo.shop.goods.spec.GoodsSpec;
 import com.vpu.mp.service.pojo.shop.goods.spec.GoodsSpecProduct;
 import org.jooq.DSLContext;
 import org.jooq.impl.DSL;
+import org.springframework.context.annotation.Scope;
+import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -23,6 +25,8 @@ import static com.vpu.mp.db.shop.Tables.SPEC;
  * @author 李晓冰
  * @date 2019年07月05日
  */
+@Service
+@Scope("prototype")
 public class GoodsSpecProductService extends BaseService {
 
     private GoodsSpecService goodsSpecService = new GoodsSpecService();

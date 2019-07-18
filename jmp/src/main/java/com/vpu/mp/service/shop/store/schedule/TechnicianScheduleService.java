@@ -24,11 +24,16 @@ import com.vpu.mp.service.pojo.shop.store.schedule.SchedulePojo;
 import com.vpu.mp.service.pojo.shop.store.schedule.TechnicianScheduleParam;
 import com.vpu.mp.service.pojo.shop.store.schedule.TechnicianScheduleSaveParam;
 import com.vpu.mp.service.pojo.shop.store.schedule.TechnicianScheduleVo;
+import org.springframework.context.annotation.Scope;
+import org.springframework.stereotype.Service;
+
 /**
  * @author 黄荣刚
  * @date 2019年7月16日
  *
  */
+@Service
+@Scope("prototype")
 public class TechnicianScheduleService extends BaseService {
 	
 	/**

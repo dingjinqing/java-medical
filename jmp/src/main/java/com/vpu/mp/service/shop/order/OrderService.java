@@ -39,11 +39,15 @@ import com.vpu.mp.service.pojo.shop.order.OrderReturnGoodsVo;
 import com.vpu.mp.service.pojo.shop.order.OrderReturnListVo;
 import com.vpu.mp.service.pojo.shop.order.StoreOrderListInfoVo;
 import com.vpu.mp.service.pojo.shop.order.StoreOrderPageListQueryParam;
+import org.springframework.context.annotation.Scope;
+import org.springframework.stereotype.Service;
 
 /**
  * 
  * @author 常乐 2019年6月27日;王帅 2019/7/10
  */
+@Service
+@Scope("prototype")
 public class OrderService extends BaseService {
 	
 	private final Logger logger = LoggerFactory.getLogger(this.getClass());

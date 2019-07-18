@@ -7,6 +7,8 @@ import com.vpu.mp.service.pojo.shop.goods.sort.Sort;
 import org.jooq.*;
 import org.jooq.impl.DSL;
 import org.jooq.tools.StringUtils;
+import org.springframework.stereotype.Service;
+import org.springframework.context.annotation.Scope;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -17,6 +19,8 @@ import static com.vpu.mp.db.shop.tables.Sort.SORT;
  * @author 李晓冰
  * @date 2019年06月27日
  */
+@Service
+@Scope("prototype")
 public class GoodsSortService extends BaseService {
 
     /**

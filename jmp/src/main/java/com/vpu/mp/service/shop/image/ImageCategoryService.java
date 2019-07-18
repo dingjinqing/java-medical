@@ -17,10 +17,14 @@ import org.jooq.impl.DSL;
 import com.vpu.mp.db.shop.tables.records.UploadedImageCategoryRecord;
 import com.vpu.mp.service.foundation.BaseService;
 import com.vpu.mp.service.foundation.Util;
+import org.springframework.context.annotation.Scope;
+import org.springframework.stereotype.Service;
 
 /**
  * @author 新国，孔德成
  */
+@Service
+@Scope("prototype")
 public class ImageCategoryService extends BaseService {
 
     private static final String ROOT_NAME = "我的图片";

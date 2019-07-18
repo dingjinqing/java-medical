@@ -21,6 +21,8 @@ import com.vpu.mp.service.pojo.shop.store.service.ServiceOrderAdminMessageParam;
 import com.vpu.mp.service.pojo.shop.store.service.ServiceOrderDetailVo;
 import com.vpu.mp.service.pojo.shop.store.service.ServiceOrderListQueryParam;
 import com.vpu.mp.service.pojo.shop.store.service.ServiceOrderListQueryVo;
+import org.springframework.context.annotation.Scope;
+import org.springframework.stereotype.Service;
 import com.vpu.mp.service.pojo.shop.store.service.ServiceOrderParam;
 import com.vpu.mp.service.pojo.shop.store.service.StoreServiceParam;
 
@@ -31,6 +33,8 @@ import com.vpu.mp.service.pojo.shop.store.service.StoreServiceParam;
  * 
  * 预约（门店服务订单）
  */
+@Service
+@Scope("prototype")
 public class ServiceOrderService extends BaseService{
 	/**
 	 * 门店服务预约列表分页查询
@@ -102,17 +106,17 @@ public class ServiceOrderService extends BaseService{
 			return vo.into(ServiceOrderDetailVo.class);
 		}
 	}
-	
+
 	public Boolean addServiceOrderAdminMessage(ServiceOrderAdminMessageParam param) {
 		return db().update(SERVICE_ORDER).set(SERVICE_ORDER.ADMIN_MESSAGE,param.getAdminMessage()).where(SERVICE_ORDER.ORDER_SN.eq(param.getOrderSn())).execute() > 0 ? true : false;
 	}
-	
+
 	/**
 	 *生成订单号
 	 */
 	public String generateOrderSn() {
 		Random random = new Random();
-        SimpleDateFormat sdf =   new SimpleDateFormat( "yyyyMMddHHmmss" ); 
+        SimpleDateFormat sdf =   new SimpleDateFormat( "yyyyMMddHHmmss" );
         String date = sdf.format(new Date());
         String orderSn;
         do {
@@ -122,7 +126,7 @@ public class ServiceOrderService extends BaseService{
         }while(hasOrderSn(orderSn));
         return orderSn;
 	}
-	
+
 	/**
 	 * 判断该orderSn是否已存在
 	 * @param orderSn
@@ -136,7 +140,7 @@ public class ServiceOrderService extends BaseService{
 			return false;
 		}
 	}
-	
+
 	public String generateVerifyCode() {
 		Random random = new Random(2);
 		List<Integer> ids;
@@ -148,12 +152,12 @@ public class ServiceOrderService extends BaseService{
 		}while(ids.size() > 0);
 		return verifyCode;
 	}
-	
+
 	public BigDecimal getServiceMoneyPaid(Integer serviceId) {
 		StoreServiceParam storeService = db().select(STORE_SERVICE.SERVICE_PRICE,STORE_SERVICE.SERVICE_SUBSIST).from(STORE_SERVICE).where(STORE_SERVICE.ID.eq(serviceId)).fetchOne().into(StoreServiceParam.class);
 		return storeService.getServicePrice().subtract(storeService.getServiceSubsist()) ;
 	}
-	
+
 	/**
 	 * @param 后台添加服务预约
 	 * @return

@@ -1,5 +1,10 @@
 package com.vpu.mp.service.shop.config;
 
+import org.springframework.context.annotation.Scope;
+import org.springframework.stereotype.Service;
+
+@Service
+@Scope("prototype")
 public class CommentConfigService extends BaseShopConfigService{
 	
 	final public static String K_COMMENT = "comment";

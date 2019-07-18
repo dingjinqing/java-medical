@@ -4,12 +4,16 @@ import static com.vpu.mp.db.main.tables.SystemUser.SYSTEM_USER;
 import com.vpu.mp.db.main.tables.records.SystemUserRecord;
 import com.vpu.mp.service.foundation.BaseService;
 import com.vpu.mp.service.foundation.Util;
+import org.springframework.context.annotation.Scope;
+import org.springframework.stereotype.Service;
 
 /**
  * 
  * @author 新国
  *
  */
+@Service
+@Scope("prototype")
 public class SystemUserService extends BaseService {
 
 	public SystemUserRecord verify(String username, String password) {

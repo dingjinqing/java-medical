@@ -28,7 +28,8 @@ public class SystemAuthInterceptor extends HandlerInterceptorAdapter {
 	@Autowired
 	protected SystemAuth systemAuth;
 
-	protected SaasApplication saas = SaasApplication.instance();
+	@Autowired
+	protected SaasApplication saas;
 
 	/**
 	 * 账号登录例外URL

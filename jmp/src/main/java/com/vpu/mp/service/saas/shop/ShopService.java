@@ -32,12 +32,16 @@ import com.vpu.mp.service.pojo.saas.shop.ShopPojo;
 import com.vpu.mp.service.pojo.shop.auth.AdminTokenAuthInfo;
 import com.vpu.mp.service.pojo.shop.auth.ShopReq;
 import com.vpu.mp.service.pojo.shop.auth.ShopSelectInnerResp;
+import org.springframework.context.annotation.Scope;
+import org.springframework.stereotype.Service;
 
 /**
  * 
  * @author 新国
  *
  */
+@Service
+@Scope("prototype")
 public class ShopService extends BaseService {
 
 	public ShopAccountService accout;

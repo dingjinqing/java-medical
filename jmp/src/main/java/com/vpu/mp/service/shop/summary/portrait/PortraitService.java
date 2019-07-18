@@ -6,6 +6,8 @@ import com.vpu.mp.service.foundation.BaseService;
 import com.vpu.mp.service.foundation.Util;
 import com.vpu.mp.service.pojo.shop.summary.ChartXKeyYValue;
 import com.vpu.mp.service.pojo.shop.summary.portrait.*;
+import org.springframework.context.annotation.Scope;
+import org.springframework.stereotype.Service;
 
 import java.sql.Timestamp;
 import java.time.Instant;
@@ -19,6 +21,8 @@ import static com.vpu.mp.db.shop.tables.MpUserPortrait.MP_USER_PORTRAIT;
  *
  * @author 郑保乐
  */
+@Service
+@Scope("prototype")
 public class PortraitService extends BaseService {
 
     public PortraitVo getPortrait(PortraitParam param) {

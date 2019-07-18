@@ -5,6 +5,7 @@ import java.lang.reflect.Field;
 import java.util.HashMap;
 import java.util.Map;
 
+import com.vpu.mp.support.SpringUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -60,11 +61,9 @@ public class ServiceContainer {
 
 		}
 	}
-
 	/**
 	 * 根据店铺ID和类名获取服务实例（单例模式）
 	 * 
-	 * @param shopId
 	 * @param serviceClassName
 	 * @return
 	 */
@@ -80,9 +79,17 @@ public class ServiceContainer {
 		logger().debug("instance service: " + serviceClassName + "(" + shopId + ")");
 
 		try {
-			Class<?> cls = Class.forName(serviceClassName);
-			Constructor<?> constructor = cls.getConstructor();
-			Object fieldInstance =  constructor.newInstance();
+			Object	fieldInstance;
+//			if( SpringUtil.inited() ){
+				Class<?> cls = Class.forName(serviceClassName);
+				fieldInstance = SpringUtil.getBean(cls);
+//			}else{
+//				Class<?> cls = Class.forName(serviceClassName);
+//				Constructor<?> constructor = cls.getConstructor();
+//				fieldInstance =  constructor.newInstance();
+//			}
+
+			System.out.println(fieldInstance);
 			ServiceContainer service = (ServiceContainer) fieldInstance;
 			service.setShopId(shopId);
 			services.put(key, fieldInstance);

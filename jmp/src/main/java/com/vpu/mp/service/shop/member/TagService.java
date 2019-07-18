@@ -20,11 +20,15 @@ import com.vpu.mp.service.foundation.PageResult;
 import com.vpu.mp.service.pojo.shop.member.TagInfoVo;
 import com.vpu.mp.service.pojo.shop.member.TagPageListParam;
 import com.vpu.mp.service.pojo.shop.member.UpdateTagParam;
+import org.springframework.context.annotation.Scope;
+import org.springframework.stereotype.Service;
 
 /**
  * 
  * @author 黄壮壮 2019-07-09 20:16
  */
+@Service
+@Scope("prototype")
 public class TagService extends BaseService {
 
 	public PageResult<TagInfoVo> getPageList(TagPageListParam param) {

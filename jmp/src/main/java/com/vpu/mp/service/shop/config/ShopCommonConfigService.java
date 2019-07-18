@@ -4,12 +4,16 @@ import com.vpu.mp.service.pojo.shop.config.ShopCommonCfgInfo;
 import com.vpu.mp.service.pojo.shop.config.ShopShareConfig;
 import com.vpu.mp.service.pojo.shop.config.ShopStyleConfig;
 import com.vpu.mp.service.pojo.shop.config.ShowCartConfig;
+import org.springframework.context.annotation.Scope;
+import org.springframework.stereotype.Service;
 
 /**
  * @author 王兵兵
  *
  * 2019年7月9日
  */
+@Service
+@Scope("prototype")
 public class ShopCommonConfigService extends BaseShopConfigService{
 	
 	/**

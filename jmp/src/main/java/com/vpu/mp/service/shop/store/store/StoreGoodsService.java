@@ -12,12 +12,16 @@ import com.vpu.mp.service.foundation.BaseService;
 import com.vpu.mp.service.foundation.PageResult;
 import com.vpu.mp.service.pojo.shop.store.goods.StoreGoodsListQueryParam;
 import com.vpu.mp.service.pojo.shop.store.goods.StoreGoodsListQueryVo;
+import org.springframework.context.annotation.Scope;
+import org.springframework.stereotype.Service;
 
 /**
  * @author 王兵兵
  *
  * 2019年7月12日
  */
+@Service
+@Scope("prototype")
 public class StoreGoodsService extends BaseService{
 	
 

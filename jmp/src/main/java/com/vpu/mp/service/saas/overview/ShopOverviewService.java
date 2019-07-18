@@ -4,13 +4,17 @@ import com.vpu.mp.db.main.tables.ShopAccount;
 import com.vpu.mp.db.main.tables.ShopChildAccount;
 import com.vpu.mp.service.foundation.BaseService;
 import com.vpu.mp.service.pojo.shop.overview.BindUnBindOfficialParam;
+import org.springframework.context.annotation.Scope;
+import org.springframework.stereotype.Service;
 
 /**
  * @Author:liufei
  * @Date:2019/7/15
  * @Description: 概览
  */
-public class OverviewService extends BaseService {
+@Service
+@Scope("prototype")
+public class ShopOverviewService extends BaseService {
     /**
      * 绑定解绑
      * @param param

@@ -6,6 +6,8 @@ import static com.vpu.mp.db.shop.tables.StoreGroup.STORE_GROUP;
 import java.sql.Timestamp;
 import java.util.List;
 
+import com.vpu.mp.service.pojo.shop.operation.RecordContentTemplate;
+import com.vpu.mp.service.shop.operation.aop.RecordAction;
 import org.jooq.Record;
 import org.jooq.SelectWhereStep;
 import org.jooq.impl.DSL;
@@ -15,18 +17,23 @@ import com.vpu.mp.service.foundation.BaseService;
 import com.vpu.mp.service.foundation.PageResult;
 import com.vpu.mp.service.pojo.shop.store.group.StoreGroup;
 import com.vpu.mp.service.pojo.shop.store.group.StoreGroupQueryParam;
+import org.springframework.context.annotation.Scope;
+import org.springframework.stereotype.Service;
 
 /**
  * @author 王兵兵
  *
  * 2019年7月17日
  */
+@Service
+@Scope("prototype")
 public class StoreGroupService extends BaseService{
 	/**
 	 * 门店分组列表-查询
 	 * @param param
 	 * @return
 	 */
+	@RecordAction(templateId = {RecordContentTemplate.GOODS_CONTENT_ADD},templateData = {"#{param.groupId}"})
 	public PageResult<StoreGroup> getStoreGroupPageList(StoreGroupQueryParam param){
 		SelectWhereStep<? extends Record> select = db().select(STORE_GROUP.GROUP_ID,STORE_GROUP.GROUP_NAME,
 				STORE_GROUP.CREATE_TIME, DSL.count(STORE.GROUP).as("numbers"))

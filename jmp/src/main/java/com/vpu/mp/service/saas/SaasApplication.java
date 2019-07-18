@@ -8,7 +8,7 @@ import com.vpu.mp.service.saas.article.ArticleService;
 import com.vpu.mp.service.saas.categroy.SysCateService;
 import com.vpu.mp.service.saas.db.RepairDatabaseService;
 import com.vpu.mp.service.saas.official.OfficialService;
-import com.vpu.mp.service.saas.overview.OverviewService;
+import com.vpu.mp.service.saas.overview.ShopOverviewService;
 import com.vpu.mp.service.saas.privilege.ChildAccountService;
 import com.vpu.mp.service.saas.privilege.MenuService;
 import com.vpu.mp.service.saas.privilege.RoleService;
@@ -18,6 +18,7 @@ import com.vpu.mp.service.saas.region.RegionService;
 import com.vpu.mp.service.saas.shop.ShopService;
 import com.vpu.mp.service.saas.wechat.WechatService;
 import com.vpu.mp.service.shop.ShopApplication;
+import org.springframework.stereotype.Service;
 
 
 /**
@@ -25,6 +26,7 @@ import com.vpu.mp.service.shop.ShopApplication;
  * @author 新国
  *
  */
+@Service
 public class SaasApplication extends ServiceContainer {
 
 	public SystemUserService sysUser;
@@ -39,7 +41,7 @@ public class SaasApplication extends ServiceContainer {
 	public SysCateService sysCate;
 	public WechatService wechat;
 	public RepairDatabaseService repairDb;
-	public OverviewService overviewService;
+	public ShopOverviewService overviewService;
 	
 	protected CityService city;
 
@@ -67,7 +69,8 @@ public class SaasApplication extends ServiceContainer {
 	public ShopApplication  getShopApp(Integer shopId) {
 		
 		if (!shopList.containsKey(shopId)) {
-			ShopApplication app  = new ShopApplication(shopId);
+			ShopApplication app  = new ShopApplication();
+			app.setShopId(shopId);
 			app.initServices();
 			shopList.put(shopId, app);
 		}

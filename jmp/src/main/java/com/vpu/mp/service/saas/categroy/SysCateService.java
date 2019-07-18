@@ -6,6 +6,8 @@ import java.util.List;
 
 import com.vpu.mp.service.foundation.BaseService;
 import com.vpu.mp.service.pojo.saas.category.SysCatevo;
+import org.springframework.context.annotation.Scope;
+import org.springframework.stereotype.Service;
 
 
 /**
@@ -13,6 +15,8 @@ import com.vpu.mp.service.pojo.saas.category.SysCatevo;
  * @author 常乐
  * 2019年7月15日
  */
+@Service
+@Scope("prototype")
 public class SysCateService extends BaseService{
 	
 	/**

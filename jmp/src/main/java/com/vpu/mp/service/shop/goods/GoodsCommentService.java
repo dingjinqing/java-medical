@@ -27,6 +27,8 @@ import com.vpu.mp.service.pojo.shop.goods.comment.GoodsCommentCheckListVo;
 import com.vpu.mp.service.pojo.shop.goods.comment.GoodsCommentIdParam;
 import com.vpu.mp.service.pojo.shop.goods.comment.GoodsCommentPageListParam;
 import com.vpu.mp.service.pojo.shop.goods.comment.GoodsCommentVo;
+import org.springframework.context.annotation.Scope;
+import org.springframework.stereotype.Service;
 
 /**
  * 商品评价
@@ -34,6 +36,8 @@ import com.vpu.mp.service.pojo.shop.goods.comment.GoodsCommentVo;
  * @author liangchen
  * @date 2019年7月7日
  */
+@Service
+@Scope("prototype")
 public class GoodsCommentService extends BaseService {
 
     /**

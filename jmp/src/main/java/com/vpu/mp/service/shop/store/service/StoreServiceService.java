@@ -21,6 +21,8 @@ import com.vpu.mp.service.pojo.shop.store.service.StoreServiceCategoryParam;
 import com.vpu.mp.service.pojo.shop.store.service.StoreServiceListQueryParam;
 import com.vpu.mp.service.pojo.shop.store.service.StoreServiceListQueryVo;
 import com.vpu.mp.service.pojo.shop.store.service.StoreServiceParam;
+import org.springframework.context.annotation.Scope;
+import org.springframework.stereotype.Service;
 
 /**
  * @author 王兵兵
@@ -29,6 +31,8 @@ import com.vpu.mp.service.pojo.shop.store.service.StoreServiceParam;
  * 
  * 门店服务
  */
+@Service
+@Scope("prototype")
 public class StoreServiceService extends BaseService{
 
 	/**

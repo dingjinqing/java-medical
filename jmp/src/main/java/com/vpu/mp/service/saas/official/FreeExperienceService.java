@@ -14,6 +14,8 @@ import com.vpu.mp.db.main.tables.records.ShopFreeExperienceRecord;
 import com.vpu.mp.service.foundation.BaseService;
 import com.vpu.mp.service.foundation.PageResult;
 import com.vpu.mp.service.foundation.Util;
+import org.springframework.context.annotation.Scope;
+import org.springframework.stereotype.Service;
 
 import static com.vpu.mp.db.main.tables.ShopFreeExperience.SHOP_FREE_EXPERIENCE;
 
@@ -23,6 +25,8 @@ import static com.vpu.mp.db.main.tables.ShopFreeExperience.SHOP_FREE_EXPERIENCE;
  * @author 黄壮壮
  * 2019-06-27 15:45
  */
+@Service
+@Scope("prototype")
 public class FreeExperienceService extends BaseService{
 	/**
 	 * 分页查询

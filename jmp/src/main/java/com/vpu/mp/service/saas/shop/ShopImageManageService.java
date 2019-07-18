@@ -16,6 +16,8 @@ import org.jooq.SelectWhereStep;
 import org.jooq.SortField;
 import org.jooq.impl.DSL;
 import org.jooq.tools.StringUtils;
+import org.springframework.context.annotation.Scope;
+import org.springframework.stereotype.Service;
 
 import java.awt.image.BufferedImage;
 import java.io.File;
@@ -36,7 +38,8 @@ import static com.vpu.mp.db.shop.tables.UploadedImageCategory.UPLOADED_IMAGE_CAT
  * @author 孔德成
  * @date 2019/7/16 15:40
  */
-
+@Service
+@Scope("prototype")
 public class ShopImageManageService  extends BaseService {
 
 

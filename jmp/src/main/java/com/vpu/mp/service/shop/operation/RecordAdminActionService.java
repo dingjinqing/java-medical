@@ -18,7 +18,9 @@ import org.jooq.Record2;
 import org.jooq.SelectField;
 import org.jooq.SelectWhereStep;
 import org.springframework.beans.BeanUtils;
+import org.springframework.context.annotation.Scope;
 import org.springframework.scheduling.annotation.Async;
+import org.springframework.stereotype.Service;
 import org.springframework.web.context.request.RequestAttributes;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
@@ -33,7 +35,6 @@ import static com.vpu.mp.db.main.tables.Shop.SHOP;
 import static com.vpu.mp.db.main.tables.ShopAccount.SHOP_ACCOUNT;
 import static com.vpu.mp.db.main.tables.ShopChildAccount.SHOP_CHILD_ACCOUNT;
 import static com.vpu.mp.db.shop.tables.RecordAdminAction.RECORD_ADMIN_ACTION;
-import static com.vpu.mp.db.shop.tables.StoreGroup.STORE_GROUP;
 
 /**
  * 操作记录的实现逻辑
@@ -41,6 +42,8 @@ import static com.vpu.mp.db.shop.tables.StoreGroup.STORE_GROUP;
  * @date: 2019-07-12 10:21
  *
  */
+@Service
+@Scope("prototype")
 public class RecordAdminActionService extends BaseService {
 
     protected static final String REDIS_PACKAGE="record.user.";
@@ -133,17 +136,12 @@ public class RecordAdminActionService extends BaseService {
                 ,LANGUAGE_TYPE_RECORD)
                 ,datas.split(","));
     }
-//    private String splicingContent(List<Integer> templateId){
-//        StringBuilder sb = new StringBuilder();
-//        templateId.stream().forEach((x)->{
-//            sb.append(Util.translateMessage(RecordContentTemplate.GOODS_CONTENT_ADD))
-//        });
-//    }
+
     private RecordAdminActionRecord getAdminRecord(){
         RequestAttributes requestAttributes = RequestContextHolder.getRequestAttributes();
         Boolean isRequest = true;
         RecordAdminActionRecord record = new RecordAdminActionRecord();
-        List<String> resultAccount = null;
+        List<String> resultAccount;
         if( requestAttributes != null ){
             AdminAuth adminAuth = SpringUtil.getBean(AdminAuth.class);
             AdminTokenAuthInfo info  = adminAuth.user();
@@ -198,7 +196,7 @@ public class RecordAdminActionService extends BaseService {
         String key = REDIS_PACKAGE+id;
         Integer timeout = Util.getInteger(Util.getProperty(REDIS_TIMEOUT));
         List<String> resultList = new ArrayList<String>(2);
-        String result = jedis.commonGet(key,timeout,()-> {
+        String result = jedis.getValueAndSave(key,timeout,()-> {
             switch (type) {
                 case REQUEST_TYPE_ACCOUNT:
                     return this.getAccountNameAndMobile(id, resultList);

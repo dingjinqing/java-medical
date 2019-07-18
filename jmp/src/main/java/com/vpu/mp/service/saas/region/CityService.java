@@ -5,12 +5,16 @@ import org.jooq.Result;
 import static com.vpu.mp.db.main.tables.DictCity.DICT_CITY;
 import com.vpu.mp.db.main.tables.records.DictCityRecord;
 import com.vpu.mp.service.foundation.BaseService;
+import org.springframework.context.annotation.Scope;
+import org.springframework.stereotype.Service;
 
 /**
  * 
  * @author 新国
  *
  */
+@Service
+@Scope("prototype")
 public class CityService extends BaseService {
 
 	/**

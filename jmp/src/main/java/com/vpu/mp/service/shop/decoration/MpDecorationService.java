@@ -190,11 +190,11 @@ public class MpDecorationService extends BaseService {
 	 * @param param
 	 * @return
 	 */
-//	public Result<Record> getMpList(PageListQueryParam param) {
+//	public Result<RecordAction> getMpList(PageListQueryParam param) {
 //		if (getPageCount() == 0) {
 //			this.addDefaultPage();
 //		}
-//		SelectWhereStep<Record> select = db().select().from(XCX_CUSTOMER_PAGE);
+//		SelectWhereStep<RecordAction> select = db().select().from(XCX_CUSTOMER_PAGE);
 //		select = this.buildOptions(select, param);
 //		select.orderBy(XCX_CUSTOMER_PAGE.PAGE_TYPE.desc(), XCX_CUSTOMER_PAGE.CREATE_TIME.desc());
 //		return select.fetch();

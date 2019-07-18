@@ -9,6 +9,9 @@ import com.vpu.mp.service.pojo.shop.overview.DataDemonstrationParam;
 import com.vpu.mp.service.pojo.shop.overview.DataDemonstrationVo;
 import org.jooq.Comparator;
 import org.jooq.Condition;
+import org.springframework.context.annotation.Scope;
+import org.springframework.stereotype.Service;
+
 import java.util.Date;
 import static org.jooq.impl.DSL.count;
 import static org.jooq.impl.DSL.sum;
@@ -18,6 +21,8 @@ import static org.jooq.impl.DSL.sum;
  * @Date:2019/7/15
  * @Description: 商城概览service
  */
+@Service
+@Scope("prototype")
 public class MallOverviewService extends BaseService {
 
     /**

@@ -44,12 +44,16 @@ import com.vpu.mp.service.pojo.shop.decoration.XcxNameListVo;
 import com.vpu.mp.service.pojo.shop.goods.label.GoodsLabelVo;
 import com.vpu.mp.service.pojo.shop.sort.SortVo;
 import com.vpu.mp.service.pojo.shop.store.store.StoreListQueryParam;
+import org.springframework.context.annotation.Scope;
+import org.springframework.stereotype.Service;
 
 /**
  * 
  * @author 常乐
  * 2019年7月9日
  */
+@Service
+@Scope("prototype")
 public class ChooseLinkService extends BaseService {
 //	常用链接
 	public Boolean commonLink() {

@@ -38,10 +38,14 @@ import org.jooq.SelectWhereStep;
 import org.jooq.SortField;
 import org.jooq.impl.DSL;
 import org.jooq.tools.StringUtils;
+import org.springframework.context.annotation.Scope;
+import org.springframework.stereotype.Service;
 
 /**
  * @author 新国
  */
+@Service
+@Scope("prototype")
 public class ImageService extends BaseService {
 
     public ImageCategoryService category;

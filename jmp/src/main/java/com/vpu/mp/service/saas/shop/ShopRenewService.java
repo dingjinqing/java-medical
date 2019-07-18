@@ -15,12 +15,16 @@ import com.vpu.mp.service.foundation.BaseService;
 import com.vpu.mp.service.foundation.FieldsUtil;
 import com.vpu.mp.service.pojo.saas.auth.SystemTokenAuthInfo;
 import com.vpu.mp.service.pojo.shop.auth.ShopRenewReq;
+import org.springframework.context.annotation.Scope;
+import org.springframework.stereotype.Service;
 
 /**
  * 
  * @author 新国
  *
  */
+@Service
+@Scope("prototype")
 public class ShopRenewService extends BaseService {
 
 	public void insertRenewDate() {

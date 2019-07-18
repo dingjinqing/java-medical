@@ -19,11 +19,16 @@ import com.vpu.mp.service.pojo.shop.member.ScoreCfgVo;
 import com.vpu.mp.service.pojo.shop.member.ShopCfgParam;
 import com.vpu.mp.service.shop.config.BaseShopConfigService;
 import com.vpu.mp.service.pojo.shop.member.UserScoreSetValue;
+import org.springframework.context.annotation.Scope;
+import org.springframework.stereotype.Service;
+
 /**
  * 积分配置Service
  * 
  * @author 黄壮壮 2019-07-15 14:13
  */
+@Service
+@Scope("prototype")
 public class ScoreCfgService extends BaseShopConfigService {
 
 	final public static String ZERO = "0";

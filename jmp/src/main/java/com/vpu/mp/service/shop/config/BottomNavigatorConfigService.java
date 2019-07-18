@@ -6,12 +6,16 @@ import java.util.List;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.vpu.mp.service.pojo.shop.config.BottomNavigatorConfig;
+import org.springframework.context.annotation.Scope;
+import org.springframework.stereotype.Service;
 
 /**
  * 
  * @author 新国
  *
  */
+@Service
+@Scope("prototype")
 public class BottomNavigatorConfigService extends BaseShopConfigService {
 
 	/**

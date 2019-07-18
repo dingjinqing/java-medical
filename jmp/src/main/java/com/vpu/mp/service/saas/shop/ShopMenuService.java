@@ -5,6 +5,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.springframework.context.annotation.Scope;
+import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 
 import com.vpu.mp.service.foundation.BaseService;
@@ -18,6 +20,8 @@ import com.vpu.mp.service.foundation.MenuUtil.Menu;
  * @author 新国
  *
  */
+@Service
+@Scope("prototype")
 public class ShopMenuService extends BaseService {
 
 	final protected String menuJsonPath = "admin.menu.json";

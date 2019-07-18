@@ -14,6 +14,8 @@ import org.jooq.Record;
 import org.jooq.SelectWhereStep;
 import org.jooq.UpdateSetFirstStep;
 import org.jooq.UpdateSetStep;
+import org.springframework.context.annotation.Scope;
+import org.springframework.stereotype.Service;
 
 import java.sql.Timestamp;
 import java.util.List;
@@ -26,6 +28,8 @@ import static com.vpu.mp.db.shop.tables.Pledge.PLEDGE;
  * @date: 2019-07-09 15:05
  *
 */
+@Service
+@Scope("prototype")
 public class ShopPledgeService extends BaseService {
 
 
@@ -42,7 +46,7 @@ public class ShopPledgeService extends BaseService {
                 .fetch()
                 .into(PledgeInfo.class);
 
-        actionService.insertRecord(null,"");
+       // actionService.insertRecord(null,"");
 
         return list;
 

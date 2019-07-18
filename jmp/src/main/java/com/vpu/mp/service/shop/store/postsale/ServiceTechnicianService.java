@@ -22,12 +22,16 @@ import com.vpu.mp.service.pojo.shop.store.postsale.ServiceTechnicianParam;
 import com.vpu.mp.service.pojo.shop.store.postsale.ServiceTechnicianPojo;
 import com.vpu.mp.service.pojo.shop.store.postsale.TechnicianService;
 import com.vpu.mp.service.shop.store.schedule.TechnicianScheduleService;
+import org.springframework.context.annotation.Scope;
+import org.springframework.stereotype.Service;
 
 /**
  * @author 黄荣刚
  * @date 2019年7月15日
  *
  */
+@Service
+@Scope("prototype")
 public class ServiceTechnicianService extends BaseService {
 	
 	public final static Byte SERVICE_TYPE_ALL=0;

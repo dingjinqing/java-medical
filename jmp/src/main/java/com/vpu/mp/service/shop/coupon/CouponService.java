@@ -19,12 +19,16 @@ import com.vpu.mp.service.pojo.shop.coupon.CouponGetDetailVo;
 import com.vpu.mp.service.pojo.shop.coupon.CouponListParam;
 import com.vpu.mp.service.pojo.shop.coupon.CouponListVo;
 import com.vpu.mp.service.pojo.shop.coupon.CouponParam;
+import org.springframework.context.annotation.Scope;
+import org.springframework.stereotype.Service;
 
 /**
  * 优惠券管理
  * @author 常乐
  * 2019年7月16日
  */
+@Service
+@Scope("prototype")
 public class CouponService extends BaseService{
 	/**
 	 * 创建优惠券

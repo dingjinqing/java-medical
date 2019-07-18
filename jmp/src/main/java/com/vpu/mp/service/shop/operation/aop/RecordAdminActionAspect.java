@@ -3,11 +3,16 @@ package com.vpu.mp.service.shop.operation.aop;
 import org.aspectj.lang.JoinPoint;
 import org.aspectj.lang.annotation.AfterReturning;
 import org.aspectj.lang.annotation.Aspect;
+import org.aspectj.lang.annotation.Pointcut;
+import org.aspectj.lang.reflect.MethodSignature;
+import org.springframework.context.annotation.Configuration;
 import org.springframework.stereotype.Component;
+import org.springframework.web.context.request.RequestAttributes;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
 
 import javax.servlet.http.HttpServletRequest;
+import java.lang.reflect.Method;
 
 /**
  * 操作记录切面
@@ -16,13 +21,31 @@ import javax.servlet.http.HttpServletRequest;
  *
 */
 @Aspect
-@Component
+@Configuration
 public class RecordAdminActionAspect {
+    @Pointcut("@annotation(com.vpu.mp.service.shop.operation.aop.RecordAction)")
+    public void recordAspect(){
 
+    }
 
+    @AfterReturning(value = "recordAspect()")
+    public void returnRunning(JoinPoint point){
+        RequestAttributes attributes = RequestContextHolder.getRequestAttributes();
+        MethodSignature methodSignature = (MethodSignature) point.getSignature();
+        Method method = methodSignature.getMethod();
 
-    @AfterReturning("@annotation(com.vpu.mp.service.shop.operation.aop.Record)")
-    public void returnRuning(JoinPoint point){
-        HttpServletRequest request = ((ServletRequestAttributes) RequestContextHolder.getRequestAttributes()).getRequest();//获取request
+        RecordAction recordAction = method.getAnnotation(RecordAction.class);
+
+        System.out.println(recordAction);
+        System.out.println(recordAction.templateId());
+        if ( attributes != null){
+            HttpServletRequest request = ((ServletRequestAttributes) RequestContextHolder
+                    .getRequestAttributes()).getRequest();
+        }else {
+
+        }
+        HttpServletRequest request = ((ServletRequestAttributes) RequestContextHolder
+                .getRequestAttributes()).getRequest();
+
     }
 }

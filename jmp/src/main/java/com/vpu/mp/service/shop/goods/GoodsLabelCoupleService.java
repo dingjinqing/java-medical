@@ -12,12 +12,16 @@ import com.vpu.mp.service.foundation.BaseService;
 import com.vpu.mp.service.pojo.shop.goods.label.GoodsLabel;
 import com.vpu.mp.service.pojo.shop.goods.label.GoodsLabelCouple;
 import com.vpu.mp.service.pojo.shop.goods.label.GoodsLabelCoupleTypeEnum;
+import org.springframework.context.annotation.Scope;
+import org.springframework.stereotype.Service;
 
 /**
  * @author 黄荣刚
  * @date 2019年7月5日
  *
  */
+@Service
+@Scope("prototype")
 public class GoodsLabelCoupleService extends BaseService {
 
 	/**

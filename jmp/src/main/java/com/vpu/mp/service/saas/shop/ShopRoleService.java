@@ -13,6 +13,8 @@ import org.jooq.Record1;
 import org.jooq.Record2;
 import org.jooq.Record3;
 import org.jooq.SelectConditionStep;
+import org.springframework.context.annotation.Scope;
+import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 
 import com.vpu.mp.db.main.tables.records.ShopRoleRecord;
@@ -30,6 +32,8 @@ import com.vpu.mp.service.pojo.shop.config.group.ShopRoleVo;
  * @author 新国
  *
  */
+@Service
+@Scope("prototype")
 public class ShopRoleService extends BaseService {
 
 	public ShopRoleRecord getRoleById(Integer roleId) {

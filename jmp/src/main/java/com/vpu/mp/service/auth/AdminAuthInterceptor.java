@@ -28,8 +28,8 @@ public class AdminAuthInterceptor extends HandlerInterceptorAdapter {
 
 	@Autowired
 	protected AdminAuth adminAuth;
-
-	protected SaasApplication saas = SaasApplication.instance();
+	@Autowired
+	protected SaasApplication saas;
 	
 	final String LANG = "V-Lang";
 

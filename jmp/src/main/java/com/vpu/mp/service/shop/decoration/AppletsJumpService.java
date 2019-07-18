@@ -6,6 +6,8 @@ import com.vpu.mp.service.pojo.shop.applets.AppletsJumpUpdatePrarm;
 import com.vpu.mp.service.pojo.shop.applets.AppletsJumpUsable;
 import com.vpu.mp.service.pojo.shop.applets.AppletsJumpVo;
 import org.jooq.Record1;
+import org.springframework.context.annotation.Scope;
+import org.springframework.stereotype.Service;
 
 import java.util.List;
 
@@ -20,7 +22,8 @@ import static org.jooq.impl.DSL.*;
  * @author 孔德成
  * @date 2019/7/11 18:21
  */
-
+@Service
+@Scope("prototype")
 public class AppletsJumpService extends BaseService {
 
 

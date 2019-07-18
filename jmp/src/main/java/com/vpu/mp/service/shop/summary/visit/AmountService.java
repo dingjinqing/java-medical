@@ -6,6 +6,8 @@ import com.vpu.mp.service.pojo.shop.summary.visit.VisitStatisticsParam;
 import com.vpu.mp.service.pojo.shop.summary.visit.VisitStatisticsUnit;
 import com.vpu.mp.service.pojo.shop.summary.visit.VisitStatisticsVo;
 import org.jooq.Result;
+import org.springframework.context.annotation.Scope;
+import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
 import java.util.List;
@@ -20,6 +22,8 @@ import static com.vpu.mp.service.pojo.shop.summary.visit.VisitStatisticsParam.*;
  * @author 郑保乐
  * @date 2019年7月11日
  */
+@Service
+@Scope("prototype")
 public class AmountService extends BaseVisitService {
 
     public void addTestDailyVisit() {

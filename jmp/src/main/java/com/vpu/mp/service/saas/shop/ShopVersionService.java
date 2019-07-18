@@ -23,12 +23,16 @@ import com.vpu.mp.service.pojo.saas.shop.VersionListQueryParam;
 import com.vpu.mp.service.pojo.saas.shop.version.VersionConfig;
 import com.vpu.mp.service.pojo.saas.shop.version.VersionMainConfig;
 import com.vpu.mp.service.pojo.saas.shop.version.VersionNumberConfig;
+import org.springframework.context.annotation.Scope;
+import org.springframework.stereotype.Service;
 
 /**
  * 
  * @author 新国
  *
  */
+@Service
+@Scope("prototype")
 public class ShopVersionService extends BaseService {
 
 	public PageResult<ShopVersionPojo> getPageList(VersionListQueryParam param) {

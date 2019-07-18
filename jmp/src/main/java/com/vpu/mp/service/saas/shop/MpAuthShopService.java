@@ -16,12 +16,16 @@ import me.chanjar.weixin.open.api.WxOpenMaService;
 import me.chanjar.weixin.open.bean.auth.WxOpenAuthorizationInfo;
 import me.chanjar.weixin.open.bean.auth.WxOpenAuthorizerInfo;
 import me.chanjar.weixin.open.bean.result.WxOpenAuthorizerInfoResult;
+import org.springframework.context.annotation.Scope;
+import org.springframework.stereotype.Service;
 
 /**
  * 
  * @author 新国
  *
  */
+@Service
+@Scope("prototype")
 public class MpAuthShopService extends BaseService {
 
 	public MpAuthShopRecord addMpAuthAccountInfo(String appId, Integer shopId) throws WxErrorException {

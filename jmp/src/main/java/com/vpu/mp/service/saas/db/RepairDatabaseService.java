@@ -18,12 +18,16 @@ import com.vpu.mp.service.pojo.saas.db.Column;
 import com.vpu.mp.service.pojo.saas.db.ConnectStr;
 import com.vpu.mp.service.pojo.saas.db.Index;
 import com.vpu.mp.service.pojo.saas.db.Table;
+import org.springframework.context.annotation.Scope;
+import org.springframework.stereotype.Service;
 
 /**
  * 
  * @author lixinguo
  *
  */
+@Service
+@Scope("prototype")
 public class RepairDatabaseService extends BaseService {
 
 	/**

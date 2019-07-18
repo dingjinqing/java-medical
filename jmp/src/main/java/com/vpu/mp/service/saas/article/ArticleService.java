@@ -22,12 +22,16 @@ import com.vpu.mp.service.pojo.saas.article.ArticleParam;
 import com.vpu.mp.service.pojo.saas.article.ArticleListQueryParam;
 import com.vpu.mp.service.pojo.saas.article.ArticleVo;
 import com.vpu.mp.service.saas.region.CityService;
+import org.springframework.context.annotation.Scope;
+import org.springframework.stereotype.Service;
 
 /**
  * 
  * @author 新国
  *
  */
+@Service
+@Scope("prototype")
 public class ArticleService extends BaseService {
 	
 	public CityService city;

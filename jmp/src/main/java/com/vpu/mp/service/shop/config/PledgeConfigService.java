@@ -1,6 +1,8 @@
 package com.vpu.mp.service.shop.config;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
+import org.springframework.context.annotation.Scope;
+import org.springframework.stereotype.Service;
 
 /**
  * 服务承诺-开关全局设置
@@ -8,6 +10,8 @@ import com.fasterxml.jackson.annotation.JsonBackReference;
  * @date: 2019-07-09 15:17
  *
 */
+@Service
+@Scope("prototype")
 public class PledgeConfigService extends BaseShopConfigService{
     /**
      * 服务承诺键值

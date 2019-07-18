@@ -1,12 +1,16 @@
 package com.vpu.mp.service.shop.config;
 
 import com.vpu.mp.service.pojo.shop.config.SearchConfig;
+import org.springframework.context.annotation.Scope;
+import org.springframework.stereotype.Service;
 
 /**
  * 
  * @author 新国
  *
  */
+@Service
+@Scope("prototype")
 public class SearchConfigService extends BaseShopConfigService {
 
 	final public static String K_SEARCH_CONFIG = "search_config";

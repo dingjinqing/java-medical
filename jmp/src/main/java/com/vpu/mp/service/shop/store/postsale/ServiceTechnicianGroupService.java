@@ -8,6 +8,10 @@ import com.vpu.mp.service.foundation.BaseService;
 import com.vpu.mp.service.foundation.DelFlag;
 import com.vpu.mp.service.foundation.PageResult;
 import com.vpu.mp.service.pojo.shop.store.postsale.ServiceTechnicianGroup;
+import org.springframework.context.annotation.Scope;
+import org.springframework.stereotype.Service;
+
+import static com.vpu.mp.db.shop.Tables.SERVICE_TECHNICIAN_GROUP;
 import com.vpu.mp.service.pojo.shop.store.postsale.ServiceTechnicianGroupParam;
 import com.vpu.mp.service.pojo.shop.store.postsale.TechnicianGroupPageListParam;
 
@@ -17,12 +21,14 @@ import com.vpu.mp.service.pojo.shop.store.postsale.TechnicianGroupPageListParam;
  * @date 2019年7月15日
  *
  */
+@Service
+@Scope("prototype")
 public class ServiceTechnicianGroupService extends BaseService {
 	/** 没有被删除的 */
 	public final static short NORMAL =0 ;
 	/** 已经被删除的 */
 	public final static short DISABLE = 1;
-	
+
 	public ServiceTechnicianGroup select(Integer id) {
 		return db().select(SERVICE_TECHNICIAN_GROUP.GROUP_ID, SERVICE_TECHNICIAN_GROUP.GROUP_NAME, SERVICE_TECHNICIAN_GROUP.STORE_ID, SERVICE_TECHNICIAN_GROUP.CREATE_TIME)
 		.from(SERVICE_TECHNICIAN_GROUP).where(SERVICE_TECHNICIAN_GROUP.GROUP_ID.eq(id))
@@ -40,14 +46,14 @@ public class ServiceTechnicianGroupService extends BaseService {
 		PageResult<ServiceTechnicianGroup> pageResult = getPageResult(selectFrom, ServiceTechnicianGroup.class);
 		return pageResult;
 	}
-	
+
 	public int insert(ServiceTechnicianGroupParam param) {
 		int result = db().insertInto(SERVICE_TECHNICIAN_GROUP, SERVICE_TECHNICIAN_GROUP.STORE_ID, SERVICE_TECHNICIAN_GROUP.GROUP_NAME)
 			.values(param.getStoreId(),param.getGroupName())
 			.execute();
 		return result;
 	}
-	
+
 	public int update(ServiceTechnicianGroupParam param) {
 		int result = db().update(SERVICE_TECHNICIAN_GROUP)
 				.set(SERVICE_TECHNICIAN_GROUP.GROUP_NAME, param.getGroupName())
@@ -66,5 +72,5 @@ public class ServiceTechnicianGroupService extends BaseService {
 		return result;
 	}
 
-	
+
 }

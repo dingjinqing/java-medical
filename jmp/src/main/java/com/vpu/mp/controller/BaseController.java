@@ -21,8 +21,8 @@ import com.vpu.mp.service.saas.SaasApplication;
  */
 
 public class BaseController {
-
-	protected SaasApplication saas = SaasApplication.instance();
+	@Autowired
+	protected SaasApplication saas ;
 
 	@Autowired
 	protected HttpServletRequest request;

@@ -1,6 +1,8 @@
 package com.vpu.mp.service.shop.config;
 
 import com.vpu.mp.service.foundation.BaseService;
+import org.springframework.context.annotation.Scope;
+import org.springframework.stereotype.Service;
 
 
 /**
@@ -8,6 +10,8 @@ import com.vpu.mp.service.foundation.BaseService;
  * @author 新国
  *
  */
+@Service
+@Scope("prototype")
 public class ConfigService extends BaseService {
 	public BottomNavigatorConfigService bottomCfg;
 	public SearchConfigService searchCfg;

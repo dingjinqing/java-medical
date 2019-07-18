@@ -10,6 +10,8 @@ import org.jooq.Record1;
 import org.jooq.SelectConditionStep;
 import org.jooq.SelectWhereStep;
 import org.jooq.tools.StringUtils;
+import org.springframework.context.annotation.Scope;
+import org.springframework.stereotype.Service;
 
 import java.sql.Timestamp;
 import java.util.ArrayList;
@@ -24,6 +26,8 @@ import static com.vpu.mp.db.shop.Tables.GOODS_LABEL_COUPLE;
  * @date 2019年7月4日
  *
  */
+@Service
+@Scope("prototype")
 public class GoodsLabelService extends BaseService {
 	
 	/** 未删除为0 */

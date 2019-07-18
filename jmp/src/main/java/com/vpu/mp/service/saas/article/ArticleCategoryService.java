@@ -14,12 +14,16 @@ import com.vpu.mp.service.foundation.PageResult;
 import com.vpu.mp.service.pojo.saas.article.category.ArtCategoryListQuertParam;
 import com.vpu.mp.service.pojo.saas.article.category.ArticleCategoryParam;
 import com.vpu.mp.service.pojo.saas.article.category.ArticleCategoryVo;
+import org.springframework.context.annotation.Scope;
+import org.springframework.stereotype.Service;
 
 /**
  * 文章分类业务逻辑
  * @author 新国、wangshuai
  *
  */
+@Service
+@Scope("prototype")
 public class ArticleCategoryService extends BaseService {
 	
 	/**

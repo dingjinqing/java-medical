@@ -8,12 +8,16 @@ import static com.vpu.mp.db.main.tables.DictDistrict.DICT_DISTRICT;
 import static com.vpu.mp.db.main.tables.DictProvince.DICT_PROVINCE;
 import com.vpu.mp.db.main.tables.records.DictDistrictRecord;
 import com.vpu.mp.service.foundation.BaseService;
+import org.springframework.context.annotation.Scope;
+import org.springframework.stereotype.Service;
 
 /**
  * 
  * @author 新国
  *
  */
+@Service
+@Scope("prototype")
 public class DistrictService extends BaseService {
 
 	/**

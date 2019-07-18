@@ -7,6 +7,8 @@ import org.jooq.DSLContext;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.vpu.mp.service.foundation.BaseService;
 import com.vpu.mp.service.foundation.Util;
+import org.springframework.context.annotation.Scope;
+import org.springframework.stereotype.Service;
 
 /**
  * @author 王兵兵
@@ -14,6 +16,8 @@ import com.vpu.mp.service.foundation.Util;
  *         2019年6月26日
  * 
  */
+@Service
+@Scope("prototype")
 public class BaseShopConfigService extends BaseService {
 
 	

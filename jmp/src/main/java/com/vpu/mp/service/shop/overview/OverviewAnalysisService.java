@@ -19,6 +19,8 @@ import java.util.Optional;
 
 import org.jooq.TableField;
 import org.jooq.impl.DSL;
+import org.springframework.context.annotation.Scope;
+import org.springframework.stereotype.Service;
 
 
 /**
@@ -27,6 +29,8 @@ import org.jooq.impl.DSL;
  * @author liangchen
  * @date 2019年7月15日
  */
+@Service
+@Scope("prototype")
 public class OverviewAnalysisService extends BaseService {
 
 	/**

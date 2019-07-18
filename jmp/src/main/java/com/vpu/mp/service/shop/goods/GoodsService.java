@@ -18,6 +18,8 @@ import com.vpu.mp.service.pojo.shop.goods.spec.GoodsVo;
 import org.jooq.*;
 import org.jooq.impl.DSL;
 import org.jooq.tools.StringUtils;
+import org.springframework.context.annotation.Scope;
+import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
@@ -36,6 +38,8 @@ import static com.vpu.mp.service.pojo.shop.goods.GoodsPageListParam.IS_ON_SALE_D
  * @author 李晓冰
  * @date 2019年6月25日
  */
+@Service
+@Scope("prototype")
 public class GoodsService extends BaseService {
 
     public GoodsBrandService goodsBrand;

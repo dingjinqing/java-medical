@@ -28,8 +28,8 @@ public class SystemAuth {
 
 	@Autowired
 	protected HttpServletRequest request;
-
-	protected SaasApplication saas = SaasApplication.instance();
+	@Autowired
+	protected SaasApplication saas;
 	protected JedisManager jedis = JedisManager.instance();
 	protected Logger log = LoggerFactory.getLogger(SystemAuth.class);
 
