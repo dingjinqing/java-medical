@@ -44,11 +44,14 @@ public class AdminSummaryController extends AdminBaseController {
     }
 
     @PostMapping("/api/admin/summary/visit/page")
-    public JsonResult getVisitPage(@Valid @RequestBody VisitPageParam param, @RequestHeader(HEAD_LANG) String lang) {
+    public JsonResult getVisitPage(
+            @Valid @RequestBody VisitPageParam param,
+            @RequestHeader(value = HEAD_LANG, required = false) String lang) {
         PageVisitVo vo = shop().page.getPageVisit(param);
         List<PageVisitVoItem> list = vo.getList();
-        list.forEach(i-> i.setPageName(translatePage(lang, i.getPageName(), i.getPageName())));
-        return success();
+        list.forEach(i -> i.setPageName(translatePage(lang, i.getPageName(), i.getPageName())));
+        vo.setList(list);
+        return success(vo);
     }
 
     @PostMapping("/api/admin/summary/portrait/portrait")

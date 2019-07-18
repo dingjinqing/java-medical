@@ -3,12 +3,15 @@ package com.vpu.mp.service.pojo.shop.summary.visit;
 import com.vpu.mp.db.shop.tables.records.MpVisitPageRecord;
 import com.vpu.mp.service.foundation.JsonResultMessage;
 import lombok.Data;
+import org.jooq.Field;
 import org.jooq.SortField;
 import org.jooq.TableField;
+import org.jooq.impl.DSL;
 
 import javax.validation.constraints.Max;
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
 
 import static com.vpu.mp.db.shop.tables.MpVisitPage.MP_VISIT_PAGE;
 
@@ -31,7 +34,7 @@ public class VisitPageParam {
     /**
      * 按第几个字段排序
      */
-    @NotBlank(message = JsonResultMessage.MSG_PARAM_ERROR)
+    @NotNull(message = JsonResultMessage.MSG_PARAM_ERROR)
     @Min(1)
     @Max(7)
     private Integer action;
@@ -39,7 +42,7 @@ public class VisitPageParam {
     /**
      * 排序方式（1: ASC 2: DESC）
      */
-    @NotBlank(message = JsonResultMessage.MSG_PARAM_ERROR)
+    @NotNull(message = JsonResultMessage.MSG_PARAM_ERROR)
     @Min(1)
     @Max(2)
     private Integer asc;
@@ -57,13 +60,13 @@ public class VisitPageParam {
         SHARE_PV(MP_VISIT_PAGE.PAGE_SHARE_PV),
         SHARE_UV(MP_VISIT_PAGE.PAGE_SHARE_UV);
 
-        private TableField<MpVisitPageRecord, ?> field;
+        private TableField<MpVisitPageRecord, ? extends Number> field;
 
-        Actions(TableField<MpVisitPageRecord, ?> field) {
+        Actions(TableField<MpVisitPageRecord, ? extends Number> field) {
             this.field = field;
         }
 
-        public TableField<MpVisitPageRecord, ?> getField() {
+        public TableField<MpVisitPageRecord, ? extends Number> getField() {
             return field;
         }
     }
@@ -72,21 +75,24 @@ public class VisitPageParam {
      * 取字段及排序方式
      */
     public SortField<?> getSortField() {
+        Field<? extends Number> field = getField();
+        switch (getAsc()) {
+            case ASC:
+                return DSL.sum(field).asc();
+            case DESC:
+                return DSL.sum(field).desc();
+            default:
+                throw new IllegalStateException("Unexpected asc: " + getAsc());
+        }
+    }
+
+    public Field<? extends Number> getField() {
         Integer action = getAction();
-        Integer asc = getAsc();
         Actions[] fields = Actions.values();
         int length = fields.length;
         if (0 > action || length < action) {
             throw new IllegalStateException("Unexpected action: " + action);
         }
-        TableField<MpVisitPageRecord, ?> field = fields[action - 1].getField();
-        switch (asc) {
-            case ASC:
-                return field.asc();
-            case DESC:
-                return field.desc();
-            default:
-                throw new IllegalStateException("Unexpected asc: " + asc);
-        }
+        return fields[action - 1].getField();
     }
 }
