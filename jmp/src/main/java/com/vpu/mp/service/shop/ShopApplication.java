@@ -29,7 +29,6 @@ import com.vpu.mp.service.shop.summary.visit.DistributionService;
 import com.vpu.mp.service.shop.summary.visit.PageService;
 import com.vpu.mp.service.shop.summary.visit.RetainService;
 import com.vpu.mp.service.shop.version.VersionService;
-import javafx.application.Application;
 import org.springframework.stereotype.Service;
 
 /**
