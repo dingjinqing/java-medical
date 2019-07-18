@@ -14,9 +14,12 @@ import com.vpu.mp.service.foundation.JsonResult;
 import com.vpu.mp.service.foundation.JsonResultCode;
 import com.vpu.mp.service.foundation.JsonResultMessage;
 import com.vpu.mp.service.foundation.PageResult;
+import com.vpu.mp.service.pojo.shop.store.postsale.ServiceTechnicianGroup;
+import com.vpu.mp.service.pojo.shop.store.postsale.ServiceTechnicianGroupParam;
 import com.vpu.mp.service.pojo.shop.store.postsale.ServiceTechnicianPageListParam;
 import com.vpu.mp.service.pojo.shop.store.postsale.ServiceTechnicianParam;
 import com.vpu.mp.service.pojo.shop.store.postsale.ServiceTechnicianPojo;
+import com.vpu.mp.service.pojo.shop.store.postsale.TechnicianGroupPageListParam;
 
 /**
  * @author 黄荣刚
@@ -89,6 +92,54 @@ public class AdminServiceTechnicianController extends AdminBaseController {
 	@PostMapping("/services/technician/delete/{id}")
 	public JsonResult delete(@PathVariable @NotNull Integer id) {
 		int result = shop().store.serviceTechnician.delete(id);
+		if(result>0) {
+			return success(JsonResultCode.CODE_SUCCESS);
+		}
+		return fail(JsonResultCode.CODE_FAIL);
+	}
+	
+	/*
+	 * 
+	   * 以下为售后分组功能接口
+	 * 
+	 * 
+	 */
+	
+	/**
+	 * 分页查询售后分组列表
+	 * @param param 包含门店ID、分页信息
+	 * @return 
+	 */
+	@PostMapping("/services/technician/group/list")
+	public JsonResult getTechnicianGroupList(@RequestBody @Valid TechnicianGroupPageListParam param) {
+		PageResult<ServiceTechnicianGroup> result = shop().store.serviceTechnician.groupService.getPageList(param);
+		return success(result);
+	}
+	
+	@PostMapping("/services/technician/group/add")
+	public JsonResult addTechnicianGroup(@RequestBody @Valid ServiceTechnicianGroupParam param) {
+		int result = shop().store.serviceTechnician.groupService.insert(param);
+		if(result>0) {
+			return success(JsonResultCode.CODE_SUCCESS);
+		}
+		return fail(JsonResultCode.CODE_FAIL);
+	}
+	
+	@PostMapping("/services/technician/group/delete/{groupId}")
+	public JsonResult deleteTechnicianGroup(@PathVariable Integer  groupId) {
+		int result = shop().store.serviceTechnician.groupService.delete(groupId);
+		if(result>0) {
+			return success(JsonResultCode.CODE_SUCCESS);
+		}
+		return fail(JsonResultCode.CODE_FAIL);
+	}
+	
+	@PostMapping("/services/technician/group/update")
+	public JsonResult updateTechnicianGroup(@RequestBody @Valid ServiceTechnicianGroupParam param) {
+		if(param.getGroupId() == null) {
+			return fail(JsonResultCode.CODE_FAIL);
+		}
+		int result = shop().store.serviceTechnician.groupService.update(param);
 		if(result>0) {
 			return success(JsonResultCode.CODE_SUCCESS);
 		}
