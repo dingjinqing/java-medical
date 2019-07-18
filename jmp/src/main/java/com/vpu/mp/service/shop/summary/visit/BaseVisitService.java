@@ -46,12 +46,16 @@ class BaseVisitService extends BaseService {
             int endI;
             int i = records.size() - 1;
             do {
-                if (0 > i) break;
+                if (0 > i) {
+                    break;
+                }
                 /* 一个粒度区间 */
                 start = records.get(i).getRefDate();
                 endI = i;
                 i -= grading;
-                if (i < 0) i = 0;
+                if (i < 0) {
+                    i = 0;
+                }
                 end = records.get(i).getRefDate();
                 startI = i;
                 /* 总和 */
