@@ -9,6 +9,7 @@ import com.vpu.mp.service.shop.decoration.AppletsJumpService;
 import com.vpu.mp.service.shop.decoration.ChooseLinkService;
 import com.vpu.mp.service.shop.decoration.MpDecorationService;
 import com.vpu.mp.service.shop.decoration.PageClassificationService;
+import com.vpu.mp.service.shop.distribution.RebateStrategyService;
 import com.vpu.mp.service.shop.goods.BrandService;
 import com.vpu.mp.service.shop.goods.GoodsRecommendService;
 import com.vpu.mp.service.shop.goods.GoodsService;
@@ -62,6 +63,7 @@ public class ShopApplication extends ServiceContainer {
 	public PageService page;
 	public RecordAdminActionService record;
 	public PortraitService portrait;
+	public RebateStrategyService rebateStrategy;
 	/**
 	 * 会员
 	 */
