@@ -155,5 +155,6 @@ public class JsonResultMessage {
 	 */
 	final public static String OVERVIEW_MALL_DATADEMONSTRATION_GET_FAILED = "overview.mall.datademonstration.get.failed";
 	final public static String OVERVIEW_MALL_BING_UNBING_FAILED = "overview.mall.bind.unbind.failed";
+	final public static String OVERVIEW_MALL_TODOITEM_GET_FAILED = "overview.mall.todoitem.get.failed";
 
 }

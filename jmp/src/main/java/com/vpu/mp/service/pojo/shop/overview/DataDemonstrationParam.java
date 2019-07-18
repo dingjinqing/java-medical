@@ -1,6 +1,7 @@
 package com.vpu.mp.service.pojo.shop.overview;
 
 import lombok.Data;
+import org.springframework.stereotype.Component;
 
 /**
  * @Author:liufei
@@ -8,6 +9,7 @@ import lombok.Data;
  * @Description: 商城概览-数据展示-入参
  */
 @Data
+@Component
 public class DataDemonstrationParam {
     /**
      * 数据展示筛选时间

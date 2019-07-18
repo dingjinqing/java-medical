@@ -6,6 +6,8 @@ import com.vpu.mp.service.pojo.shop.config.trade.WxpayConfigParam;
 import com.vpu.mp.service.pojo.shop.config.trade.WxpaySearchParam;
 import org.jooq.Condition;
 
+import java.util.List;
+
 /**
  * @Author:liufei
  * @Date:2019/7/9
@@ -43,15 +45,15 @@ public class WechatService extends BaseService {
      * @return
      */
     public WxpayConfigParam getWxpayConfig (WxpaySearchParam wxpaySearchParam){
-        return db().select(MpAuthShop.MP_AUTH_SHOP.APP_ID,
+        List<WxpayConfigParam> wxpayConfigParams = db().select(MpAuthShop.MP_AUTH_SHOP.APP_ID,
                 MpAuthShop.MP_AUTH_SHOP.PAY_MCH_ID,
                 MpAuthShop.MP_AUTH_SHOP.PAY_KEY,
                 MpAuthShop.MP_AUTH_SHOP.PAY_CERT_CONTENT,
                 MpAuthShop.MP_AUTH_SHOP.PAY_KEY_CONTENT)
                 .from(MpAuthShop.MP_AUTH_SHOP)
                 .where(MpAuthShop.MP_AUTH_SHOP.APP_ID.eq(wxpaySearchParam.getAppId()))
-                .fetchInto(WxpayConfigParam.class).get(0);
-
+                .fetchInto(WxpayConfigParam.class);
+        return wxpayConfigParams!=null&&!wxpayConfigParams.isEmpty() ? wxpayConfigParams.get(0) : null;
     }
 
 
