@@ -297,3 +297,6 @@
 
 
 -- 2019-07-17 重新建表 --
+
+-- 王兵兵 201-07-18
+alter table `b2c_service_order` add index order_sn(order_sn);

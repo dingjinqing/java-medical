@@ -11,7 +11,6 @@ import org.jooq.tools.StringUtils;
 import com.vpu.mp.db.shop.tables.records.StoreRecord;
 import com.vpu.mp.service.foundation.BaseService;
 import com.vpu.mp.service.foundation.DelFlag;
-import com.vpu.mp.service.foundation.FieldsUtil;
 import com.vpu.mp.service.foundation.PageResult;
 import com.vpu.mp.service.pojo.shop.store.store.StoreListQueryParam;
 import com.vpu.mp.service.pojo.shop.store.store.StorePageListVo;
@@ -106,7 +105,7 @@ public class StoreService extends BaseService {
 	 */
 	public Boolean addStore(StorePojo store) {
 		StoreRecord record = new StoreRecord();
-		FieldsUtil.assignNotNull(store,record);
+		this.assign(store,record);
 		return db().executeInsert(record) > 0 ? true : false;
 	}
 	

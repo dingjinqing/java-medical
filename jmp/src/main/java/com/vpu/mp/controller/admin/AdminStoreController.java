@@ -14,8 +14,9 @@ import com.vpu.mp.service.pojo.shop.config.store.StoreServiceConfig;
 import com.vpu.mp.service.pojo.shop.store.goods.StoreGoodsListQueryParam;
 import com.vpu.mp.service.pojo.shop.store.group.StoreGroup;
 import com.vpu.mp.service.pojo.shop.store.group.StoreGroupQueryParam;
+import com.vpu.mp.service.pojo.shop.store.service.ServiceOrderAdminMessageParam;
 import com.vpu.mp.service.pojo.shop.store.service.ServiceOrderListQueryParam;
-import com.vpu.mp.service.pojo.shop.store.service.ServiceOrderUpdateParam;
+import com.vpu.mp.service.pojo.shop.store.service.ServiceOrderParam;
 import com.vpu.mp.service.pojo.shop.store.service.StoreServiceCategoryListQueryParam;
 import com.vpu.mp.service.pojo.shop.store.service.StoreServiceCategoryParam;
 import com.vpu.mp.service.pojo.shop.store.service.StoreServiceListQueryParam;
@@ -381,12 +382,25 @@ public class AdminStoreController extends AdminBaseController{
      * @return
      */
     @PostMapping(value = "/api/admin/store/service/reserve/message/add")
-    public JsonResult addServiceOrderAdminMessage(@RequestBody(required = true) @Valid ServiceOrderUpdateParam param) {
+    public JsonResult addServiceOrderAdminMessage(@RequestBody(required = true) @Valid ServiceOrderAdminMessageParam param) {
     	if(shop().store.serviceOrder.addServiceOrderAdminMessage(param)) {
     		return success();
     	}else {
     		return fail();
     	}
-    	
+    }
+    
+    /**
+     * 后台添加服务预约
+     * @return
+     */
+    @PostMapping(value = "/api/admin/store/service/reserve/add")
+    public JsonResult addServiceOrder(@RequestBody(required = true) @Valid ServiceOrderParam param) {
+    	System.out.println(param);
+    	if(shop().store.serviceOrder.addServiceOrder(param)) {
+    		return success();
+    	}else {
+    		return fail();
+    	}
     }
 }

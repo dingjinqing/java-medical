@@ -10,6 +10,8 @@ import lombok.Data;
 @Data
 public class ServiceOrderListQueryVo {
 	
+	private Integer storeId;
+	
 	private String order_sn;
 	
 	/**

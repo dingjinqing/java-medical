@@ -1336,7 +1336,8 @@ create table `b2c_service_order` (
   `ali_trade_no`      varchar(60)             not null     default '' comment '支付宝交易单号',
   `create_time`		 timestamp      default current_timestamp,
   `update_time` 	 timestamp     	default current_timestamp on update current_timestamp comment '最后修改时间',
-  primary key (`order_id`)
+  primary key (`order_id`),
+  key `order_sn` (`order_sn`)
 );
 
 -- -- 二维码存储表
