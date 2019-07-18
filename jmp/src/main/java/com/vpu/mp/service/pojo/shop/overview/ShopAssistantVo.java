@@ -20,7 +20,7 @@ public class ShopAssistantVo {
     private AssiDataOrder dataOrder;
     @Autowired
     private AssiDataMarket dataMarket;
-    //待处理项总数
+    /** 待处理项总数 */
     private int totalPending;
 
     public void totalPendingIncr(){

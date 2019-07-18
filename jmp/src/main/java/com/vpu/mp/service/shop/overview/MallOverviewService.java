@@ -58,10 +58,10 @@ public class MallOverviewService extends BaseService {
         DataDemonstrationVo vo = new DataDemonstrationVo();
         Condition orderInfoTime = OrderInfo.ORDER_INFO.CREATE_TIME.
                 compare(Comparator.GREATER_OR_EQUAL,Util.getBeforeOrAfterDay(new Date(),(-screeningTime+1)));
-        Condition UserLoginRecordTime = UserLoginRecord.USER_LOGIN_RECORD.CREATE_TIME.
+        Condition userLoginRecordTime = UserLoginRecord.USER_LOGIN_RECORD.CREATE_TIME.
                 compare(Comparator.GREATER_OR_EQUAL,Util.getBeforeOrAfterDay(new Date(),(-screeningTime+1)));
         Condition payOrderCon = OrderInfo.ORDER_INFO.ORDER_STATUS.compare(Comparator.GREATER_OR_EQUAL,(byte)3);
-        vo.setUserVisitNum(db().fetchCount(UserLoginRecord.USER_LOGIN_RECORD,UserLoginRecordTime));
+        vo.setUserVisitNum(db().fetchCount(UserLoginRecord.USER_LOGIN_RECORD,userLoginRecordTime));
         vo.setPaidOrderNum(db().fetchCount(OrderInfo.ORDER_INFO,orderInfoTime.and(payOrderCon)));
         vo.setOrderUserNum(db().selectDistinct(count(OrderInfo.ORDER_INFO.USER_ID))
                 .from(OrderInfo.ORDER_INFO).where(orderInfoTime).execute());
@@ -134,9 +134,9 @@ public class MallOverviewService extends BaseService {
                 .fetchInto(XcxCustomerPage.class);
         if(xcxCustomerPage!=null&&!xcxCustomerPage.isEmpty()){
             XcxCustomerPageRecord record = new XcxCustomerPageRecord();
-            boolean $1 = StringUtils.isNotEmpty(xcxCustomerPage.get(0).PAGE_CONTENT.get(record));
-            boolean $2 = StringUtils.isNotEmpty(xcxCustomerPage.get(0).PAGE_PUBLISH_CONTENT.get(record));
-            vo.getDataShop().setHomePageConf($1 || $2 ? (byte)0 : (byte)-1);
+            boolean condi1 = StringUtils.isNotEmpty(xcxCustomerPage.get(0).PAGE_CONTENT.get(record));
+            boolean condi2 = StringUtils.isNotEmpty(xcxCustomerPage.get(0).PAGE_PUBLISH_CONTENT.get(record));
+            vo.getDataShop().setHomePageConf(condi1 || condi2 ? (byte)0 : (byte)-1);
         }else{
             vo.getDataShop().setHomePageConf((byte)-1);
         }
@@ -204,7 +204,7 @@ public class MallOverviewService extends BaseService {
                 DistributorApply.DISTRIBUTOR_APPLY.CREATE_TIME.lessThan(Util.getBeforeOrAfterDay(new Date(),-param.getApplyOver())));
         vo.getDataMarket().setExamine(disCount);
         //会员卡激活审核
-        Map<String,String> memberMap = new HashMap<>();
+        Map<String,String> memberMap = new HashMap<>(4);
         CardExamineRecord cardExamineRecord = new CardExamineRecord();
         List<CardExamine> cardExamineList = db().select(CardExamine.CARD_EXAMINE.CARD_ID)
                     .from(CardExamine.CARD_EXAMINE)

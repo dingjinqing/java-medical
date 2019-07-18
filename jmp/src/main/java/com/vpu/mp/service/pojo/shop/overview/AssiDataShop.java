@@ -34,15 +34,15 @@ public class AssiDataShop {
      *      已配置微信支付
      */
     public Byte wxPayConfigInfo;
-    //子账号设置 0：已完成子账号设置，否未完成
+    /** 子账号设置 0：已完成子账号设置，否未完成 */
     public Byte childAccountConf;
-    //公众号 0：已授权公众号，否未授权公众号
+    /** 公众号 0：已授权公众号，否未授权公众号 */
     public Byte officialAccountConf;
-    //店铺首页 0：已已完成店铺首页装修，否未装修店铺首页
+    /** 店铺首页 0：已已完成店铺首页装修，否未装修店铺首页 */
     public Byte homePageConf;
-    //好物圈 0: 已开启好物圈，否未开启
+    /** 好物圈 0: 已开启好物圈，否未开启 */
     public Byte shopRecommendConf;
     public String shopRecommendLink;
-    //客服 0: 已开启客服，否未开启
+    /** 客服 0: 已开启客服，否未开启 */
     public Byte customServiceConf;
 }

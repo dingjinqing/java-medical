@@ -13,7 +13,7 @@ import java.util.Map;
 @Data
 @Component
 public class AssiDataMarket {
-    //分销审核超时 0: 分销员审核进度良好 否有examine个分销员申请超过3天未处理
+    /** 分销审核超时 0: 分销员审核进度良好 否有examine个分销员申请超过3天未处理 */
     public int examine;
     /**
      * 会员卡激活审核，主要取决于card_num的数量
