@@ -1533,7 +1533,7 @@ create table `b2c_service_technician` (
 -- -- 服务技师分组表
 -- drop table if exists `b2c_service_technician_group`;
 create table `b2c_service_technician_group` (
-  `group_id`   smallint(6)  not null auto_increment comment '分组id',
+  `group_id`   int(11)  not null auto_increment comment '分组id',
   `group_name` varchar(90)          not null default '' comment '分组名称',
   `store_id`   int(11)         not null comment '门店id',
   `create_time`		timestamp      default current_timestamp,
@@ -3847,12 +3847,14 @@ create table `b2c_friend_promote_times` (
 -- -- 操作记录表
 -- drop table if exists `b2c_record_admin_action`;
 create table `b2c_record_admin_action` (
-  `id` 				int(11)  	not null auto_increment comment 'id',
-  `shop_id` 		int(11)  	not null default '0' comment '店铺id',
-  `sys_id` 			int(11)  	not null default '0' comment '操作员id',
-  `account_id` 		int(11)  	not null default '0' comment 'sub操作员id',
-  `action_type` 	tinyint(2)  not null default '0' comment '操作类型',
-  `action_desc` 	text   		comment '操作日志',
+  `id`        int(11)   not null auto_increment comment 'id',
+  `sys_id`      int(11)   not null default '0' comment '操作员id',
+  `account_id`    int(11)   not null default '0' comment 'sub操作员id',
+  `action_type`   tinyint(2)  not null default '0' comment '操作类型',
+  `template_id`     varchar(100)    not null  comment '模版id',
+  `template_data`   varchar(200)    not null  comment '模版数据',
+  `user_name`       varchar(60)   not null  comment '操作员名称',
+  `mobile`          varchar(32)   not null  comment '操作员手机号',
   `create_time`     timestamp   default current_timestamp comment '助力时间',
   `update_time`     timestamp   default current_timestamp on update current_timestamp comment '更新时间',
   primary key (`id`)
