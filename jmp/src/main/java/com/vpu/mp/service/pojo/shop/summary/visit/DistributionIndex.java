@@ -28,10 +28,10 @@ public class DistributionIndex {
     /**
      * 统计数据名称
      */
-    private String name;
+    private String index;
 
     /**
      * 统计数据项
      */
-    private List<DistributionIndexItem> items;
+    private List<DistributionIndexItem> item_list;
 }

@@ -26,6 +26,7 @@ public class ChartXValueYKey extends AbstractChart {
 
     @Override
     public void setValues(List<Integer> values) {
+        super.setValues(values);
         xAxis = values;
     }
 }

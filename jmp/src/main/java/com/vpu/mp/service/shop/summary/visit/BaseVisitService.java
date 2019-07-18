@@ -19,7 +19,7 @@ class BaseVisitService extends BaseService {
      * 按粒度分组
      *
      * @param records 日单元
-     * @param grading    粒度
+     * @param grading 粒度
      */
     @SuppressWarnings("unchecked")
     <T extends Number> List<RefDateRecord<T>> getGroupedValue(List<RefDateRecord<T>> records, Integer grading) {
@@ -42,12 +42,13 @@ class BaseVisitService extends BaseService {
             int endI;
             int i = records.size() - 1;
             do {
+                if (0 > i) break;
                 /* 一个粒度区间 */
-                end = records.get(i).getRefDate();
+                start = records.get(i).getRefDate();
                 endI = i;
                 i -= grading;
                 if (i < 0) i = 0;
-                start = records.get(i).getRefDate();
+                end = records.get(i).getRefDate();
                 startI = i;
                 /* 总和 */
                 Double sum = records.subList(startI, endI).stream().mapToDouble(r -> (Double) r.getValue()).sum();
@@ -59,8 +60,6 @@ class BaseVisitService extends BaseService {
                 i--;
             } while (i > 0);
         }
-        /* 按时间升序排序 */
-        Collections.reverse(groupedRecords);
         return groupedRecords;
     }
 }

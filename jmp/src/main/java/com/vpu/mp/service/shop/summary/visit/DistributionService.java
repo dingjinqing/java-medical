@@ -35,24 +35,25 @@ public class DistributionService extends BaseVisitService {
         for (MpDistributionVisitRecord record : result) {
             String list = record.getList();
             /* 转换统计 JSON */
-            List<DistributionIndex> indexes = Util.parseJson(list, new TypeReference<List<DistributionIndex>>() {});
+            List<DistributionIndex> indexes = Util.parseJson(list, new TypeReference<List<DistributionIndex>>() {
+            });
             for (DistributionIndex index : Objects.requireNonNull(indexes)) {
-                String indexName = index.getName();
+                String indexName = index.getIndex();
                 switch (indexName) {
                     case ACCESS_SOURCE:
-                        groupingIndex(sourceMap, index);
+                        groupingIndex(sourceMap, index, AccessSource.values());
                         break;
                     case VISIT_DURATION:
-                        groupingIndex(stayTimeMap, index);
+                        groupingIndex(stayTimeMap, index, VisitDuration.values());
                         break;
                     case VISIT_DEPTH:
-                        groupingIndex(depthMap, index);
+                        groupingIndex(depthMap, index, AccessDepth.values());
                         break;
                 }
             }
         }
         /* 移除参数中忽略的访问来源 */
-        cancelSources.forEach(s -> sourceMap.remove(AccessSource.findByIndex(s).getSource()));
+//        cancelSources.forEach(s -> sourceMap.remove(AccessSource.findByIndex(s).getSource()));
         vo.setVisitSource(xKeyYValueVo(sourceMap));
         vo.setVisitDepth(yKeyXValueVo(depthMap));
         vo.setVisitStayTime(yKeyXValueVo(stayTimeMap));
@@ -86,7 +87,7 @@ public class DistributionService extends BaseVisitService {
     private void fillChart(Map<String, Integer> map, ChartData chart) {
         List<String> keys = new ArrayList<>();
         List<Integer> values = new ArrayList<>();
-        map.forEach((k,v) -> {
+        map.forEach((k, v) -> {
             keys.add(k);
             values.add(v);
         });
@@ -97,23 +98,23 @@ public class DistributionService extends BaseVisitService {
     /**
      * 将统计数据分组
      */
-    private void groupingIndex(Map<String, Integer> map, DistributionIndex index) {
-        List<DistributionIndexItem> items = index.getItems();
+    private void groupingIndex(Map<String, Integer> map, DistributionIndex index, ChartInfo[] info) {
+        List<DistributionIndexItem> items = index.getItem_list();
         items.forEach(i -> {
             Integer key = i.getKey();
-            AccessSource kv = Arrays.stream(AccessSource.values())
-                    .filter(k -> k.getIndex().equals(key)).findFirst().orElseThrow(RuntimeException::new);
-            String sourceName = kv.getSource();
-            map.computeIfPresent(sourceName, (k, ov) -> ov + i.getValue());
+            ChartInfo kv = Arrays.stream(info)
+                    .filter(k -> k.getKey().equals(key)).findFirst().orElseThrow(RuntimeException::new);
+            String sourceName = kv.getName();
+            map.compute(sourceName, (k, ov) -> null == ov ? i.getValue() : ov + i.getValue());
         });
     }
 
     /**
      * 生成同时包含 name、index 和 value 的统计数据
      *
-     * @param map 存放 name 和 value 的统计数据
+     * @param map       存放 name 和 value 的统计数据
      * @param chartInfo 图表图例
-     * @param <T> 具体的枚举类
+     * @param <T>       具体的枚举类
      */
     private <T extends ChartInfo> List<VisitInfoItem> getInfoDict(Map<String, Integer> map, T[] chartInfo) {
         return Arrays.stream(chartInfo)
@@ -123,7 +124,7 @@ public class DistributionService extends BaseVisitService {
                     item.setKey(s.getKey());
                     item.setValue(map.get(s.getName()));
                     return item;
-                }).collect(Collectors.toList());
+                }).filter(i -> null != i.getValue()).collect(Collectors.toList());
     }
 
     private Result<MpDistributionVisitRecord> getDistributionRecord(String startDate, String endDate) {
