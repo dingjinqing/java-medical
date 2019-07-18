@@ -57,7 +57,7 @@ public class DistributionService extends BaseVisitService {
             }
         }
         /* 移除参数中忽略的访问来源 */
-//        cancelSources.forEach(s -> sourceMap.remove(AccessSource.findByIndex(s).getSource()));
+        cancelSources.forEach(s -> sourceMap.remove(AccessSource.findByIndex(s).getSource()));
         vo.setVisitSource(xKeyYValueVo(sourceMap));
         vo.setVisitDepth(yKeyXValueVo(depthMap));
         vo.setVisitStayTime(yKeyXValueVo(stayTimeMap));
