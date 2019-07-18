@@ -8,6 +8,8 @@ import java.nio.charset.StandardCharsets;
 import java.sql.Timestamp;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -387,7 +389,7 @@ public class Util {
 		date = getStartToday(date);
 		Calendar calendar = new GregorianCalendar();
 		calendar.setTime(date);
-		/** 把日期往后推或者往前移；正数往后推,负数往前移 */
+		/** 把日期往后推或者往前移；正数往后推,负数往前移 */	
 		calendar.add(Calendar.DATE,days);
 		/** 这个时间就是变动后的结果 */
 		date=calendar.getTime();
@@ -404,6 +406,14 @@ public class Util {
 					.map(key-> key+" = "+map.get(key))
 					.collect(Collectors.joining(", ","{","}"));
 	}
-	
+	/**
+	 * 获取本地的时间
+	 * @return
+	 */
+	public static Timestamp getLocalDateTime() {
+		return Timestamp
+					.valueOf((LocalDateTime.now()
+								.format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"))));
+	}
 	
 }

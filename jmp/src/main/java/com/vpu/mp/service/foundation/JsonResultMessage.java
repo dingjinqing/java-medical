@@ -151,6 +151,11 @@ public class JsonResultMessage {
 	final public static String MSG_MEMBER_TAG_ID_NOT_NULL = "member.tag.id.notnull";
 
 	/**
+	 * 会员余额
+	 */
+	final public static String MSG_MEMBER_ACCOUNT_UPDATE_FAIL="member.account.update.fail";
+	
+	/**
 	 *  概览
 	 */
 	final public static String OVERVIEW_MALL_DATADEMONSTRATION_GET_FAILED = "overview.mall.datademonstration.get.failed";
