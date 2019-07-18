@@ -28,15 +28,13 @@ public class PortraitService extends BaseService {
         Portrait visitUvNew = parseVisitJson(portraitResult.getVisitUvNew());
         ChartXKeyYValue activeUser = getChart(visitUv);
         ChartXKeyYValue activeUserNew = getChart(visitUvNew);
-        Portrait portrait = new Portrait();
-        Portrait portraitNew = new Portrait();
-        portrait.setAgesFirst(activeUser);
-        portraitNew.setAgesFirst(activeUserNew);
+        visitUv.setAgesFirst(activeUser);
+        visitUvNew.setAgesFirst(activeUserNew);
         PortraitVo vo = new PortraitVo();
-        vo.setActiveUser(portrait);
-        vo.setNewAddUser(portraitNew);
-        PortraitSum activeUserSum = portraitSumObject(portrait);
-        PortraitSum newAddUserSum = portraitSumObject(portraitNew);
+        vo.setActiveUser(visitUv);
+        vo.setNewAddUser(visitUvNew);
+        PortraitSum activeUserSum = portraitSumObject(visitUv);
+        PortraitSum newAddUserSum = portraitSumObject(visitUvNew);
         vo.setActiveUserSum(activeUserSum);
         vo.setNewAddUserSum(newAddUserSum);
         return vo;
@@ -46,7 +44,8 @@ public class PortraitService extends BaseService {
      * 将字段存储的 json 转换成 Portrait 对象
      */
     private Portrait parseVisitJson(String json) {
-        return Util.parseJson(json, new TypeReference<Portrait>() {});
+        return Util.parseJson(json, new TypeReference<Portrait>() {
+        });
     }
 
     /**
@@ -70,6 +69,13 @@ public class PortraitService extends BaseService {
     }
 
     /**
+     * 计算各个指标的总和（设备）
+     */
+    private Integer portraitDeivceSum(List<PortraitDeviceItem> items) {
+        return items.parallelStream().mapToInt(PortraitDeviceItem::getValue).sum();
+    }
+
+    /**
      * 生成总和对象
      */
     private PortraitSum portraitSumObject(Portrait portrait) {
@@ -77,7 +83,7 @@ public class PortraitService extends BaseService {
         sum.setProvince(portraitSum(portrait.getProvince()));
         sum.setAges(portraitSum(portrait.getAges()));
         sum.setCity(portraitSum(portrait.getCity()));
-        sum.setDevices(portraitSum(portrait.getDevices()));
+        sum.setDevices(portraitDeivceSum(portrait.getDevices()));
         sum.setGenders(portraitSum(portrait.getGenders()));
         sum.setPlatforms(portraitSum(portrait.getPlatforms()));
         return sum;
@@ -88,6 +94,7 @@ public class PortraitService extends BaseService {
                 .from(MP_USER_PORTRAIT)
                 .where(MP_USER_PORTRAIT.CREATE_TIME.lessOrEqual(Timestamp.from(Instant.now()))
                         .and(MP_USER_PORTRAIT.TYPE.equal(type.byteValue())))
+                .limit(1)
                 .fetchOne()
                 .into(MP_USER_PORTRAIT);
     }

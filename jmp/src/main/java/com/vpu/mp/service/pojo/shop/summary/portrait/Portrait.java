@@ -16,7 +16,7 @@ public class Portrait {
     private List<PortraitItem> ages;
     private ChartXKeyYValue agesFirst;
     private List<PortraitItem> city;
-    private List<PortraitItem> devices;
+    private List<PortraitDeviceItem> devices;
     private List<PortraitItem> genders;
     private List<PortraitItem> platforms;
     private List<PortraitItem> province;
