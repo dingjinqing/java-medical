@@ -289,8 +289,17 @@ public class AdminStoreController extends AdminBaseController{
      * @return
      */
     @PostMapping(value = "/api/admin/store/service/list")
-    public JsonResult getStoreServiceList(@RequestBody(required = false) @Valid StoreServiceListQueryParam param) {
+    public JsonResult getStoreServicePageList(@RequestBody(required = false) @Valid StoreServiceListQueryParam param) {
     	return success(shop().store.storeService.getServicePageList(param));
+    }
+    
+    /**
+     * 获取所有门店服务
+     * @return
+     */
+    @PostMapping(value = "/api/admin/store/service/all")
+    public JsonResult getAllStoreServiceList(@RequestBody(required = false) @Valid StoreServiceListQueryParam param) {
+    	return success(shop().store.storeService.getAllStoreServiceByStoreId(param.getStoreId()));
     }
     
     /**
@@ -378,7 +387,7 @@ public class AdminStoreController extends AdminBaseController{
     }
     
     /**
-     * 获取服务预约订单详情
+     * 预约添加卖家留言
      * @return
      */
     @PostMapping(value = "/api/admin/store/service/reserve/message/add")

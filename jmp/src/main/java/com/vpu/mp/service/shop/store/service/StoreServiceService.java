@@ -107,6 +107,11 @@ public class StoreServiceService extends BaseService{
 		return select;
 	}
 	
+	public List<StoreServiceListQueryVo> getAllStoreServiceByStoreId(Integer storeId){
+		return db().select(STORE_SERVICE.ID,STORE_SERVICE.SERVICE_NAME).from(STORE_SERVICE).where(STORE_SERVICE.STORE_ID.eq(storeId)).and(STORE_SERVICE.DEL_FLAG.eq(DelFlag.NORMAL.getCode())).fetchInto(StoreServiceListQueryVo.class);
+	}
+	
+	
 	/**
 	 * 门店服务编码生成
 	 * @return String
