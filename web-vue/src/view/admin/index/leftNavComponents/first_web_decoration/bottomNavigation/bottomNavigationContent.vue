@@ -30,7 +30,32 @@
             </div>
             <div class="mp_list moDifyImg">
               <div class="nav_title">图片：<span style="color:#5a8bff">修改</span></div>
-              <div class="nav_icon"></div>
+              <div class="nav_icon">
+                <div class="icon_box">
+                  <img :src="iconImgs[0].img">
+                  <span>更换图标</span>
+                </div>
+                <div class="tip">点击状态</div>
+              </div>
+              <div class="nav_icon">
+                <div class="icon_box">
+                  <img :src="iconImgs[1].img">
+                  <span>更换图标</span>
+                </div>
+                <div class="tip">未点击状态</div>
+              </div>
+            </div>
+            <div class="linkContainer">
+              <span>添加链接：</span>
+              <el-input
+                v-model="linkInput"
+                placeholder="请输入内容"
+                size="mini"
+              ></el-input>
+              <el-button
+                size="mini"
+                @click="handleSelectLinks"
+              >选择链接</el-button>
             </div>
           </div>
         </div>
@@ -44,11 +69,14 @@
         >{{$t('shopStyle.saveText')}}</div>
       </div>
     </div>
-
+    <!--选择链接弹窗-->
+    <SelectLinks />
   </div>
 </template>
 <script>
+import SelectLinks from '@/components/admin/selectLinks'
 export default {
+  components: { SelectLinks },
   data () {
     return {
       ulDataList: [
@@ -59,14 +87,23 @@ export default {
         { title: '个人中心', img: this.$imageHost + '/image/admin/icon_mps/icon_no_4.png', imgActive: this.$imageHost + '/image/admin/icon_mps/icon_yes_4.png' }
       ],
       ulClickIndex: 0,
-      input: ''
-
+      input: '首页',
+      iconImgs: [
+        { img: this.$imageHost + '/image/admin/icon_mps/icon_yes_2.png' },
+        { img: this.$imageHost + '/image/admin/icon_mps/icon_yes_2.png' }
+      ],
+      linkInput: 'pages/index/index',
+      linkFlag: true
     }
   },
   mounted () {
 
   },
   methods: {
+    // 点击选择链接
+    handleSelectLinks () {
+      this.$http.$emit('linkDialogFlag', this.linkFlag)
+    },
     // 点击底部li
     hanleFooterLi (index) {
       this.ulClickIndex = index
@@ -79,6 +116,10 @@ export default {
 }
 </script>
 <style scoped>
+.linkContainer {
+  margin-top: 36px;
+  padding-left: 40px;
+}
 .mp_nav {
   width: 100%;
   border: 1px solid #e5e5e5;
@@ -86,6 +127,10 @@ export default {
   background: #fff;
   margin-bottom: 15px;
   margin-top: 13px;
+}
+.nav_icon img {
+  width: 40px;
+  height: 40px;
 }
 .nav_icon {
   margin-top: -5px;
@@ -97,6 +142,34 @@ export default {
   line-height: 70px;
   position: relative;
   margin-left: 20px;
+}
+.icon_box {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100%;
+}
+.tip {
+  position: absolute;
+  left: 0;
+  bottom: -27px;
+  width: 100%;
+  height: 30px;
+  line-height: 30px;
+  font-size: 12px;
+}
+.icon_box span {
+  display: block;
+  position: absolute;
+  bottom: 0px;
+  left: 0;
+  width: 100%;
+  height: 20px;
+  line-height: 20px;
+  font-size: 12px;
+  color: #fff;
+  background: rgba(0, 0, 0, 0.5);
+  cursor: pointer;
 }
 .nav_title {
   display: inline-block;
@@ -201,5 +274,10 @@ export default {
 <style>
 .bottomNavigationContent .el-input {
   width: auto !important;
+}
+.bottomNavigationContent .linkContainer .el-button {
+  padding: 7px 15px !important;
+  font-size: 12px !important;
+  border-radius: 3px !important;
 }
 </style>

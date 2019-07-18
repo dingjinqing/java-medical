@@ -4,7 +4,7 @@
     <el-dialog
       title="选择链接"
       :visible.sync="dialogVisible"
-      width="30%"
+      width="70%"
       :before-close="handleClose"
       :lock-scroll='true'
       :fullscreen='true'
@@ -23,7 +23,7 @@
               <span :class="bottom_line_flagindex==index?'click_active':''">{{item.title}}</span>
               <div
                 class="three-circle"
-                v-if="index==3||index==4?true:false"
+                v-if="index==2||index==3?true:false"
               >
                 <span></span>
                 <span></span>
@@ -34,8 +34,8 @@
           <ul
             class="hiddlen"
             v-if="threeTofour_flag_1"
-            @mouseover="ul_one_over()"
-            @mouseleave="ul_one_leave()"
+            @mouseover="en_over(1)"
+            @mouseleave="en_leave(1)"
           >
             <li
               @mouseover="enter_in_one(index)"
@@ -56,8 +56,8 @@
           <ul
             class="hiddlen"
             v-if="threeTofour_flag_2"
-            @mouseover="ul_two_over()"
-            @mouseleave="ul_otwo_leave()"
+            @mouseover="en_over(2)"
+            @mouseleave="en_leave(2)"
           >
             <li
               @mouseover="enter_in_two(index)"
@@ -77,7 +77,7 @@
           </ul>
         </div>
         <div class="right_box">
-
+          <router-view></router-view>
         </div>
       </div>
       <span
@@ -97,15 +97,12 @@
 export default {
   data () {
     return {
-      dialogVisible: true,
+      dialogVisible: false,
       click_active: 'click_active',
       bg_class: 'bg_class',
       level_one_DataList: [
         {
           flagindex: null, title: '常用链接'
-        },
-        {
-          flagindex: '', title: '商品链接'
         },
         {
           flagindex: '', title: '自定义页面'
@@ -187,6 +184,16 @@ export default {
       threeTofour_flag_2: ''
     }
   },
+  mounted () {
+    this.$http.$on('linkDialogFlag', (flag) => {
+      console.log(flag)
+      this.dialogVisible = flag
+    })
+    // 初始化弹窗子组件
+    this.$router.push({
+      name: 'commonLinks'
+    })
+  },
   methods: {
     handleClose (done) {
 
@@ -194,12 +201,12 @@ export default {
     // 一级列表移入
     enter_out (index) {
       this.level_one_DataList[index].flagindex = index
-      if (index === 3) {
+      if (index === 2) {
         this.threeTofour_flag_1 = true
       } else {
         this.threeTofour_flag_1 = false
       }
-      if (index === 4) {
+      if (index === 3) {
         this.threeTofour_flag_2 = true
       } else {
         this.threeTofour_flag_2 = false
@@ -212,8 +219,12 @@ export default {
     enter_in_two (index) {
       this.level_two_DataList_two[index].flagindex = index
     },
-    ul_one_over () {
-
+    en_over (index) {
+      if (index === 1) {
+        this.threeTofour_flag_1 = true
+      } else {
+        this.threeTofour_flag_2 = true
+      }
     },
     // 一级列表移出
     leave_out (index) {
@@ -223,6 +234,13 @@ export default {
     leave_in_one (index) {
       this.level_two_DataList_one[index].flagindex = null
       //   this.threeTofour_flag_1 = false
+    },
+    en_leave (index) {
+      if (index === 1) {
+        this.threeTofour_flag_1 = false
+      } else {
+        this.threeTofour_flag_2 = false
+      }
     },
     leave_in_two (index) {
       this.level_two_DataList_two[index].flagindex = null
@@ -237,17 +255,49 @@ export default {
     // 一级列表点击
     level_one_click (index) {
       console.log(12321321)
-      if (index === 3 || index === 4) return
+      if (index === 2 || index === 3) return
       this.bottom_line_flagindex = index
+      this.bottom_level_line_one = null
+      this.bottom_level_line_two = null
+      switch (index) {
+        case 0:
+          this.$router.push({
+            name: 'commonLinks'
+          })
+          break
+        case 1:
+          this.$router.push({
+            name: 'customPage'
+          })
+          break
+        case 2:
+          this.$router.push({
+            name: 'groupDrawing'
+          })
+          break
+      }
     },
     // 二级列表点击
     level_two_click (index) {
       if (this.threeTofour_flag_1) {
-        this.bottom_line_flagindex = 3
+        let obj = {
+          navText: this.level_two_DataList_one[index].title,
+          index: index
+        }
+        this.$http.$emit('groupDrawing', obj)
+        this.$router.push({
+          name: 'groupDrawing'
+        })
+
+        this.bottom_line_flagindex = 2
         this.bottom_level_line_two = null
         this.bottom_level_line_one = index
       } else {
-        this.bottom_line_flagindex = 4
+        this.$http.$emit('classificationOfCommodities', index)
+        this.$router.push({
+          name: 'classificationOfCommodities'
+        })
+        this.bottom_line_flagindex = 3
         this.bottom_level_line_one = null
         this.bottom_level_line_two = index
       }
@@ -261,12 +311,12 @@ export default {
   width: 100%;
   height: 100%;
   overflow: hidden;
+  display: flex;
 }
 .left_box {
-  float: left;
   width: 110px;
   border: 1px solid #eee;
-  height: 674px;
+  height: 657px;
   position: relative;
 }
 .ul_out li {
@@ -319,6 +369,8 @@ export default {
   border-top: 1px solid #eee;
   border-right: 1px solid #eee;
   border-bottom: 1px solid #eee !important;
+  z-index: 100;
+  background-color: #fff;
 }
 .level_two_li {
   line-height: 35px;
@@ -335,10 +387,18 @@ export default {
   height: 35px;
   cursor: pointer;
 }
+.right_box {
+  flex: 1;
+  width: 100%;
+  height: 657px;
+  overflow-y: auto;
+  padding: 8px;
+  border-bottom: 1px solid #eee;
+}
 </style>
 <style>
 .links .el-dialog.is-fullscreen {
-  width: 45% !important;
+  width: 52% !important;
 }
 .links .el-dialog__footer {
   position: absolute;
@@ -347,6 +407,7 @@ export default {
 }
 .links .el-dialog__header {
   text-align: center;
+  padding-top: 10px !important;
 }
 .links .el-dialog__title {
   font-size: 14px !important;
@@ -363,13 +424,10 @@ export default {
 .links .el-dialog__body {
   padding-left: 0 !important;
 }
-
-.right_box {
-  float: left;
-  width: 670px;
-  height: 100%;
-  overflow-y: auto;
-  padding: 8px;
-  border-bottom: 1px solid #eee;
+.links .el-dialog__headerbtn {
+  top: 14px !important;
+}
+.links .el-dialog__footer {
+  padding: 10px 20px 10px !important;
 }
 </style>

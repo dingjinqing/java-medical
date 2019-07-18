@@ -56,7 +56,38 @@ const routes = [
             path: '/admin/home/main/bottomNavigation',
             name: 'bottomNavigation',
             meta: 'first_web_decoration',
-            component: r => require.ensure([], () => r(require('@/view/admin/index/leftNavComponents/first_web_decoration/bottomNavigation/bottomNavigation')), 'bottomNavigation')
+            component: r => require.ensure([], () => r(require('@/view/admin/index/leftNavComponents/first_web_decoration/bottomNavigation/bottomNavigation')), 'bottomNavigation'),
+            // 选择链接弹窗子组件路由
+            children: [
+              // 常用链接
+              {
+                path: '/admin/home/main/bottomNavigation/commonLinks',
+                name: 'commonLinks',
+                meta: 'first_web_decoration',
+                component: r => require.ensure([], () => r(require('@/components/admin/selectLinksComponents/commonLinks')), 'commonLinks')
+              },
+              // 自定义页面
+              {
+                path: '/admin/home/main/bottomNavigation/customPage',
+                name: 'customPage',
+                meta: 'first_web_decoration',
+                component: r => require.ensure([], () => r(require('@/components/admin/selectLinksComponents/customPage')), 'customPage')
+              },
+              // 营销活动
+              {
+                path: '/admin/home/main/bottomNavigation/groupDrawing',
+                name: 'groupDrawing',
+                meta: 'first_web_decoration',
+                component: r => require.ensure([], () => r(require('@/components/admin/selectLinksComponents/groupDrawing')), 'groupDrawing')
+              },
+              // 商品分类
+              {
+                path: '/admin/home/main/bottomNavigation/classificationOfCommodities',
+                name: 'classificationOfCommodities',
+                meta: 'first_web_decoration',
+                component: r => require.ensure([], () => r(require('@/components/admin/selectLinksComponents/classificationOfCommodities')), 'classificationOfCommodities')
+              }
+            ]
           },
           // 商品管理系列子路由
           {

@@ -170,19 +170,22 @@ export default {
     // 初始化颜色查询
     getShopStyle () {
       shopStyleGetRequest().then((res) => {
+        console.log(res)
         if (res.content.shopStyleId) {
           this.choiseId = res.content.shopStyleId
           if (res.content.shopStyleId === 6) {
             this.choiseId = res.content.shopStyleId
             let leftColor = res.content.shopStyleValue.split(',')[0]
             let RightColor = res.content.shopStyleValue.split(',')[1]
+            console.log(leftColor, RightColor)
             // 配色选项初始化
             this.defaultColorleft = leftColor
             this.defaultColorright = RightColor
             this.colorLeft_color = 'color:' + leftColor
             this.colorLeft = 'background:' + this.ToRgba(leftColor, 0.2) + ';color:' + leftColor + ';border:1px solid ' + this.ToRgba(leftColor, 0.4)
             this.middleLeft = 'color:' + leftColor + ';border: 1px solid' + this.ToRgba(leftColor, 0.4)
-            this.rightBorder = 'border-bottom: 1px solid' + this.ToRgba(leftColor, 0.4) + '; color:' + leftColor
+            this.rightBorder = 'border-bottom: 1px solid ' + this.ToRgba(leftColor, 0.4) + '; color:' + leftColor
+            console.log(this.rightBorder)
             this.btnRight_background = 'background:' + leftColor
             this.btnLeft_background = 'background:' + RightColor
             // 自定义颜色存储
@@ -273,7 +276,7 @@ export default {
       this.colorLeft_color = 'color:' + this.colorLeft_
       this.colorLeft = 'background:' + this.ToRgba(this.colorLeft_, 0.2) + ';color:' + this.colorLeft_ + ';border:1px solid ' + this.ToRgba(this.colorLeft_, 0.4)
       this.middleLeft = 'color:' + this.colorLeft_ + ';border: 1px solid' + this.ToRgba(this.colorLeft_, 0.4)
-      this.rightBorder = 'border-bottom: 1px solid' + this.ToRgba(this.colorLeft_, 0.4) + '; color:' + this.colorLeft_
+      this.rightBorder = 'border-bottom: 1px solid ' + this.ToRgba(this.colorLeft_, 0.4) + '; color:' + this.colorLeft_
       this.btnRight_background = 'background:' + this.colorLeft_
       // 自定义颜色存储
       this.custom_colorLeft_color = this.colorLeft_color
