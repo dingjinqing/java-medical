@@ -6,7 +6,9 @@ import org.springframework.context.annotation.Configuration;
 
 @Configuration
 public class SaasApplicationConfig {
-    public SaasApplication intance(){
+	
+	@Bean
+    public SaasApplication saas(){
         return SaasApplication.instance();
     }
 }
