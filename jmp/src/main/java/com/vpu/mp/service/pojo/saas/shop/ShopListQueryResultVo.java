@@ -13,7 +13,7 @@ import lombok.Data;
  *
  */
 @Data
-public class ShopListQueryResp {
+public class ShopListQueryResultVo {
 	public Page page;
 	public Integer sysId;
 	public Integer shopId;

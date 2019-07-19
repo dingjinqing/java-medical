@@ -31,7 +31,7 @@ import com.vpu.mp.service.foundation.PageResult;
 import com.vpu.mp.service.foundation.Util;
 import com.vpu.mp.service.pojo.saas.auth.SystemTokenAuthInfo;
 import com.vpu.mp.service.pojo.saas.shop.ShopListQueryParam;
-import com.vpu.mp.service.pojo.saas.shop.ShopListQueryResp;
+import com.vpu.mp.service.pojo.saas.shop.ShopListQueryResultVo;
 import com.vpu.mp.service.pojo.saas.shop.ShopPojo;
 import com.vpu.mp.service.pojo.saas.shop.version.VersionConfig;
 import com.vpu.mp.service.pojo.saas.shop.version.VersionMainConfig;
@@ -60,7 +60,7 @@ public class ShopService extends BaseService {
 	public MpAuthShopService mp;
 	public ShopImageManageService image;
 
-	public PageResult<ShopListQueryResp> getPageList(ShopListQueryParam param) {
+	public PageResult<ShopListQueryResultVo> getPageList(ShopListQueryParam param) {
 		SelectWhereStep<Record> select = db()
 				.select(SHOP.asterisk(), MP_AUTH_SHOP.APP_ID, MP_AUTH_SHOP.IS_AUTH_OK, MP_AUTH_SHOP.NICK_NAME,
 						MP_AUTH_SHOP.PRINCIPAL_NAME)
@@ -68,9 +68,9 @@ public class ShopService extends BaseService {
 				.on(SHOP.SHOP_ID.eq(DSL.cast(MP_AUTH_SHOP.SHOP_ID, Integer.class)));
 		select = this.buildOptions(select, param);
 		select.orderBy(SHOP.CREATED.desc());
-		PageResult<ShopListQueryResp> result = accout.getPageResult(select, param.currentPage, param.pageRows,
-				ShopListQueryResp.class);
-		for (ShopListQueryResp shopList : result.dataList) {
+		PageResult<ShopListQueryResultVo> result = accout.getPageResult(select, param.currentPage, param.pageRows,
+				ShopListQueryResultVo.class);
+		for (ShopListQueryResultVo shopList : result.dataList) {
 			shopList.setRenewMoney(this.renew.getShopRenewTotal(shopList.getShopId()));
 			shopList.setExpireTime(this.renew.getShopRenewExpireTime(shopList.getShopId()));
 
