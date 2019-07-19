@@ -11,6 +11,7 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import com.vpu.mp.MpApplication;
 import com.vpu.mp.controller.BaseControllerTest;
 import com.vpu.mp.service.foundation.JsonResultCode;
+import com.vpu.mp.service.foundation.Util;
 import com.vpu.mp.service.pojo.shop.auth.ShopLoginParam;
 
 /**
@@ -34,12 +35,12 @@ public class AdminLoginControllerTest extends AdminBaseControllerTest {
 
 		// 测试主账号正确登陆
 		ShopLoginParam loginParam = new ShopLoginParam();
-		loginParam.setUsername("user001");
-		loginParam.setPassword("123456");
+		loginParam.setUsername(Util.getProperty("test.admin.session.username"));
+		loginParam.setPassword(Util.getProperty("test.admin.session.password"));
 		this.expectSuccess(post("/api/admin/login", loginParam)).andReturn();
 
 		// 测试错误账号密码登陆
-		loginParam.setPassword("334343");
+		loginParam.setPassword("wrongpassword");
 		this.expectFail(JsonResultCode.CODE_ACCOUNT_OR_PASSWORD_INCRRECT.getCode(),
 				post("/api/admin/login", loginParam)).andReturn();
 
