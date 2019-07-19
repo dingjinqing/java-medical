@@ -128,8 +128,6 @@ public class PortraitService extends BaseService {
                 .into(MP_USER_PORTRAIT);
     }
 
-    // select * from mini_shop_4748160.b2c_user_detail user left join mini_main.b2c_dict_province province on user.province_code = province.province_id where province.name = '北京市';
-
     /**
      * 按省份统计人数查询
      *
