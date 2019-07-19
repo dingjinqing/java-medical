@@ -11,6 +11,8 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
 
+import javax.servlet.http.HttpServletRequest;
+
 import org.jooq.Record;
 import org.jooq.Record1;
 import org.jooq.Record9;
@@ -19,6 +21,7 @@ import org.jooq.SelectWhereStep;
 import org.jooq.impl.DSL;
 import org.jooq.tools.StringUtils;
 
+import com.vpu.mp.db.main.tables.records.ShopOperationRecord;
 import com.vpu.mp.db.main.tables.records.ShopRecord;
 import com.vpu.mp.db.main.tables.records.UserLoginRecordRecord;
 import com.vpu.mp.service.foundation.BaseService;
@@ -26,9 +29,12 @@ import com.vpu.mp.service.foundation.DbConfig;
 import com.vpu.mp.service.foundation.FieldsUtil;
 import com.vpu.mp.service.foundation.PageResult;
 import com.vpu.mp.service.foundation.Util;
+import com.vpu.mp.service.pojo.saas.auth.SystemTokenAuthInfo;
 import com.vpu.mp.service.pojo.saas.shop.ShopListQueryParam;
 import com.vpu.mp.service.pojo.saas.shop.ShopListQueryResp;
 import com.vpu.mp.service.pojo.saas.shop.ShopPojo;
+import com.vpu.mp.service.pojo.saas.shop.version.VersionConfig;
+import com.vpu.mp.service.pojo.saas.shop.version.VersionMainConfig;
 import com.vpu.mp.service.pojo.shop.auth.AdminTokenAuthInfo;
 import com.vpu.mp.service.pojo.shop.auth.ShopReq;
 import com.vpu.mp.service.pojo.shop.auth.ShopSelectInnerResp;
@@ -137,19 +143,27 @@ public class ShopService extends BaseService {
 	 * @param shopReq
 	 * @return
 	 */
-	public Boolean addShop(ShopReq shopReq) {
+	public Boolean addShop(ShopReq shopReq, SystemTokenAuthInfo user, HttpServletRequest request) {
 		shopReq.setShopId(getCanUseShopId());
 		DbConfig dbConfig = dm.getInstallShopDbConfig(shopReq.getShopId());
 		shopReq.setDbConfig(Util.toJson(dbConfig));
-		if(!dm.installShopDb(dbConfig)) {
+		if (!dm.installShopDb(dbConfig)) {
 			return false;
 		}
 		logger().info("数据库创建成功");
-		ShopRecord record =new ShopRecord();
+		ShopRecord record = new ShopRecord();
 		FieldsUtil.assignNotNull(shopReq, record);
-		if(db().executeInsert(record)!=1) {
+		if (db().executeInsert(record) != 1) {
 			return false;
 		}
+		logger().info("插入数据成功");
+
+		// 更新version_config
+		if (updateConfig(shopReq) == 1)
+			logger().info("更新version_config成功");
+		// 更新记录表
+		if (updateOperation(record, user, request) == 1)
+			logger().info("更新ShopOperation记录表成功");
 		return true;
 	}
 	
@@ -318,5 +332,71 @@ public class ShopService extends BaseService {
 	public int insertUserLoginRecord(UserLoginRecordRecord record) {
 		return db().executeInsert(record);
 	}
+
+	/**
+	 * 更新version_config
+	 * 
+	 * @param shopReq
+	 * @param shopId
+	 * @return
+	 */
+	public Integer updateConfig(ShopReq shopReq) {
+		VersionConfig versionConfig = version.getVersionConfig(shopReq.getShopType());
+		// 把mainConfig置空，用户的菜单权限为自己mainConfig+shop_version中的权限，这样当增减shop_version中权限时候，当前表不用进行权限增删
+		versionConfig.mainConfig = new VersionMainConfig();
+		return db().update(SHOP).set(SHOP.VERSION_CONFIG, Util.toJson(versionConfig))
+				.where(SHOP.SHOP_ID.eq(shopReq.getShopId())).execute();
+	}
+
+	public Integer updateOperation(ShopRecord shopRecord, SystemTokenAuthInfo user, HttpServletRequest request) {
+		ShopOperationRecord sRecord = new ShopOperationRecord();
+		sRecord.setShopId(shopRecord.getShopId());
+		if (user.isSubLogin()) {
+			sRecord.setOperatorId(user.subAccountId);
+			sRecord.setOperator(user.getSubUserName());
+		}
+		sRecord.setOperator(user.getUserName());
+		sRecord.setOperatorId(user.getSystemUserId());
+		sRecord.setDesc(diffEdit(shopRecord, new ShopRecord()));
+		sRecord.setIp(Util.getCleintIp(request));
+		return db().executeInsert(sRecord);
+	}
+
+	/**
+	 * 根据id查询ShopRecord，diffEdit里用
+	 * 
+	 * @param shopId
+	 * @return
+	 */
+	public ShopRecord queryOldRcord(Integer shopId) {
+		ShopRecord oldShop = db().selectFrom(SHOP).where(SHOP.SHOP_ID.eq(shopId)).fetchOne();
+		return oldShop;
+	}
+
+	// 更新b2c_shop_operation
+	public String diffEdit(ShopRecord newShop, ShopRecord oldShop) {
+		StringBuffer sbf = new StringBuffer("新建或者更新");
+		if (!newShop.getMobile().equals(oldShop.getMobile()))
+			sbf.append("电话:" + newShop.getMobile() + ",");
+		if (!newShop.getShopName().equals(oldShop.getShopName()))
+			sbf.append("店铺名称:" + newShop.getShopName() + ",");
+		if (!newShop.getShopPhone().equals(oldShop.getShopPhone()))
+			sbf.append("店铺客服电话:" + newShop.getShopPhone() + ",");
+		if (!newShop.getShopNotice().equals(oldShop.getShopNotice()))
+			sbf.append("店铺公告:" + newShop.getShopNotice() + ",");
+		if (!newShop.getShopWx().equals(oldShop.getShopWx()))
+			sbf.append("店铺微信:" + newShop.getShopWx() + ",");
+		if (!newShop.getShopEmail().equals(oldShop.getShopEmail()))
+			sbf.append("店铺邮箱:" + newShop.getShopEmail() + ",");
+		if (!newShop.getIsEnabled().equals(oldShop.getIsEnabled()))
+			sbf.append("店铺禁用:" + newShop.getIsEnabled() + ",");
+		if (!newShop.getShopQq().equals(oldShop.getShopQq()))
+			sbf.append("店铺客服QQ:" + newShop.getShopQq() + ",");
+		if (!newShop.getShopType().equals(oldShop.getShopType()))
+			sbf.append("店铺类型:" + version.getVersionNameByLevel(newShop.getShopType()));
+		return sbf.toString();
+
+	}
+	
 
 }

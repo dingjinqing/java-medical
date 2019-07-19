@@ -163,7 +163,7 @@ public class ShopMenuService extends BaseService {
 		}
 		
 		//单独处理：子账户不能操作店铺权限菜单
-		if(reqeName.equals(childConfig)) {
+		if(childConfig.equals(reqeName)) {
 			return false;
 		}
 
