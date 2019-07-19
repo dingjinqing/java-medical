@@ -3,6 +3,7 @@ package com.vpu.mp.controller.admin;
 import com.vpu.mp.service.foundation.JsonResult;
 import com.vpu.mp.service.pojo.shop.summary.KeyValueChart;
 import com.vpu.mp.service.pojo.shop.summary.portrait.PortraitParam;
+import com.vpu.mp.service.pojo.shop.summary.portrait.ProvinceParam;
 import com.vpu.mp.service.pojo.shop.summary.visit.*;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.context.support.MessageSourceAccessor;
@@ -71,6 +72,11 @@ public class AdminSummaryController extends AdminBaseController {
     @PostMapping("/api/admin/summary/portrait/portrait")
     public JsonResult getUserPortrait(@Valid @RequestBody PortraitParam param) {
         return success(shop().portrait.getPortrait(param));
+    }
+
+    @PostMapping("/api/admin/summary/portrait/province")
+    public JsonResult getProvincePortrait(@Valid @RequestBody ProvinceParam param) {
+        return success(shop().portrait.getProvincePortrait(param));
     }
 
     /**

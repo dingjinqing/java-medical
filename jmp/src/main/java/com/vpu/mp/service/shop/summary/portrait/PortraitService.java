@@ -1,20 +1,28 @@
 package com.vpu.mp.service.shop.summary.portrait;
 
 import com.fasterxml.jackson.core.type.TypeReference;
+import com.vpu.mp.db.main.tables.DictCity;
 import com.vpu.mp.db.shop.tables.records.MpUserPortraitRecord;
 import com.vpu.mp.service.foundation.BaseService;
 import com.vpu.mp.service.foundation.Util;
 import com.vpu.mp.service.pojo.shop.summary.KeyValueChart;
 import com.vpu.mp.service.pojo.shop.summary.portrait.*;
+import org.jooq.Record2;
+import org.jooq.Result;
+import org.jooq.impl.DSL;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Service;
 
 import java.sql.Timestamp;
 import java.time.Instant;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
+import static com.vpu.mp.db.main.tables.DictCity.DICT_CITY;
+import static com.vpu.mp.db.main.tables.DictProvince.DICT_PROVINCE;
 import static com.vpu.mp.db.shop.tables.MpUserPortrait.MP_USER_PORTRAIT;
+import static com.vpu.mp.db.shop.tables.UserDetail.USER_DETAIL;
 
 /**
  * 用户画像
@@ -41,6 +49,23 @@ public class PortraitService extends BaseService {
         PortraitSum newAddUserSum = portraitSumObject(visitUvNew);
         vo.setActiveUserSum(activeUserSum);
         vo.setNewAddUserSum(newAddUserSum);
+        return vo;
+    }
+
+    public ProvinceVo getProvincePortrait(ProvinceParam param) {
+        String province = param.getProvince();
+        Result<Record2<Integer, Integer>> result = getProvinceSumResult(province);
+        Map<Integer, String> cityMap = cityMap(province);
+        List<PortraitItem> items = result.map(r -> {
+            PortraitItem item = new PortraitItem();
+            Integer cityId = (Integer) r.get(0);
+            item.setId(cityId);
+            item.setName(cityMap.get(cityId));
+            item.setValue((Integer) r.getValue(1));
+            return item;
+        });
+        ProvinceVo vo = new ProvinceVo();
+        vo.setList(items);
         return vo;
     }
 
@@ -101,5 +126,43 @@ public class PortraitService extends BaseService {
                 .limit(1)
                 .fetchOne()
                 .into(MP_USER_PORTRAIT);
+    }
+
+    // select * from mini_shop_4748160.b2c_user_detail user left join mini_main.b2c_dict_province province on user.province_code = province.province_id where province.name = '北京市';
+
+    /**
+     * 按省份统计人数查询
+     *
+     * @param provinceName 省份名称
+     *
+     * @return province_id count
+     */
+    private Result<Record2<Integer, Integer>> getProvinceSumResult(String provinceName) {
+        Integer provinceId = mainDb().select(DICT_PROVINCE.PROVINCE_ID)
+                .from(DICT_PROVINCE)
+                .where(DICT_PROVINCE.NAME.equal(provinceName)).fetchOne().into(Integer.class);
+        return db().select(USER_DETAIL.CITY_CODE, DSL.count(USER_DETAIL.ID))
+                .from(USER_DETAIL)
+                .where(USER_DETAIL.PROVINCE_CODE.equal(provinceId))
+                .and(USER_DETAIL.CITY_CODE.notEqual(0))
+                .groupBy(USER_DETAIL.CITY_CODE)
+                .fetch();
+    }
+
+    /**
+     * 获取城市 id 名称 map
+     *
+     * @param provinceName 省份名称
+     */
+    private Map<Integer, String> cityMap(String provinceName) {
+        Integer provinceId = mainDb().select(DICT_PROVINCE.PROVINCE_ID)
+                .from(DICT_PROVINCE)
+                .where(DICT_PROVINCE.NAME.equal(provinceName)).fetchOne().into(Integer.class);
+        Result<Record2<Integer, String>> cityIdName =
+                mainDb().select(DICT_CITY.CITY_ID, DICT_CITY.NAME)
+                        .from(DICT_CITY)
+                        .where(DICT_CITY.PROVINCE_ID.equal(provinceId))
+                        .fetch();
+        return cityIdName.intoMap(DICT_CITY.CITY_ID, DICT_CITY.NAME);
     }
 }
