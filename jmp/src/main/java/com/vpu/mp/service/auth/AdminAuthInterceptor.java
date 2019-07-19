@@ -55,7 +55,7 @@ public class AdminAuthInterceptor extends HandlerInterceptorAdapter {
 	/**
 	 * 一些特殊的api，不校验
 	 */
-	protected String[] specialExcept= {"/api/admin/checkMenu"};
+	protected String[] specialExcept= {"/api/admin/checkMenu","/admin/showMenu"};
 
 	@Override
 	public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler)
