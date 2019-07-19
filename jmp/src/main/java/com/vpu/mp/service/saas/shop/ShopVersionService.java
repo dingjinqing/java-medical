@@ -2,6 +2,9 @@ package com.vpu.mp.service.saas.shop;
 
 import static com.vpu.mp.db.main.tables.ShopVersion.SHOP_VERSION;
 
+import java.beans.PropertyDescriptor;
+import java.lang.reflect.Field;
+import java.lang.reflect.Method;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
@@ -19,6 +22,7 @@ import com.vpu.mp.service.foundation.BaseService;
 import com.vpu.mp.service.foundation.PageResult;
 import com.vpu.mp.service.foundation.Util;
 import com.vpu.mp.service.pojo.saas.shop.ShopVersionPojo;
+import com.vpu.mp.service.pojo.saas.shop.VersionEditParam;
 import com.vpu.mp.service.pojo.saas.shop.VersionListQueryParam;
 import com.vpu.mp.service.pojo.saas.shop.version.VersionConfig;
 import com.vpu.mp.service.pojo.saas.shop.version.VersionMainConfig;
@@ -40,8 +44,9 @@ public class ShopVersionService extends BaseService {
 		if (!StringUtils.isEmpty(param.versionName)) {
 			select.where(SHOP_VERSION.VERSION_NAME.like(this.likeValue(param.versionName)));
 		}
+		select.where(SHOP_VERSION.FLAG.eq((byte) 0));
 		select.orderBy(SHOP_VERSION.ID.desc());
-		return this.getPageResult(select, param.page,ShopVersionPojo.class);
+		return this.getPageResult(select, param.currentPage, param.pageRows, ShopVersionPojo.class);
 	}
 
 	public Result<ShopVersionRecord> getAllVersion() {
@@ -61,6 +66,11 @@ public class ShopVersionService extends BaseService {
 
 	public ShopVersionRecord getVersionByLevel(String level) {
 		return db().selectFrom(SHOP_VERSION).where(SHOP_VERSION.LEVEL.eq(level)).fetchAny();
+	}
+
+	public String getVersionNameByLevel(String level) {
+		return db().selectFrom(SHOP_VERSION).where(SHOP_VERSION.LEVEL.eq(level)).fetchAny()
+				.get(SHOP_VERSION.VERSION_NAME);
 	}
 
 	/**
@@ -99,13 +109,20 @@ public class ShopVersionService extends BaseService {
 
 		VersionNumberConfig num1 = versionConfig.numConfig;
 		VersionNumberConfig num2 = levelVersionConfig.numConfig;
-		num1.decorateNum = (num1.decorateNum == -1 || num2.decorateNum == -1) ? -1
+		// 下面的值
+		// 装修页面数量
+		num1.decorateNum = (num1.decorateNum == -1 && num2.decorateNum == -1) ? -1
 				: num2.decorateNum + num2.decorateNumPlus;
-		num1.formNum = (num1.formNum == -1 || num2.formNum == -1) ? -1 : num2.formNum + num2.formNumPlus;
-		num1.goodsNum = (num1.goodsNum == -1 || num2.goodsNum == -1) ? -1 : num2.goodsNum + num2.goodsNumPlus;
-		num1.pictureNum = (num1.pictureNum == -1 || num2.pictureNum == -1) ? -1 : num2.pictureNum + num2.pictureNumPlus;
-		num1.storeNum = (num1.storeNum == -1 || num2.storeNum == -1) ? -1 : num2.storeNum + num2.storeNumPlus;
-		num1.videoNum = (num1.videoNum == -1 || num2.videoNum == -1) ? -1 : num2.videoNum + num2.videoNumPlus;
+		// 表单数量
+		num1.formNum = (num1.formNum == -1 && num2.formNum == -1) ? -1 : num2.formNum + num2.formNumPlus;
+		// 商品数量
+		num1.goodsNum = (num1.goodsNum == -1 && num2.goodsNum == -1) ? -1 : num2.goodsNum + num2.goodsNumPlus;
+		// 图片空间大小
+		num1.pictureNum = (num1.pictureNum == -1 && num2.pictureNum == -1) ? -1 : num2.pictureNum + num2.pictureNumPlus;
+		// 门店数量
+		num1.storeNum = (num1.storeNum == -1 && num2.storeNum == -1) ? -1 : num2.storeNum + num2.storeNumPlus;
+		// 视频空间大小
+		num1.videoNum = (num1.videoNum == -1 && num2.videoNum == -1) ? -1 : num2.videoNum + num2.videoNumPlus;
 
 		return versionConfig;
 	}
@@ -225,6 +242,56 @@ public class ShopVersionService extends BaseService {
 			number = (Integer) modObjects[index];
 		}
 		return number;
+	}
+
+	public Integer editVersion(VersionEditParam vParam) {
+		ShopRecord shop = saas().shop.getShopById(vParam.getShopId());
+		if (shop == null || StringUtils.isEmpty(shop.getShopType())) {
+			return null;
+		}
+
+		// TODO 判断传入的字符是不是符合要求
+		VersionMainConfig mainConfig = vParam.getMainConfig();
+		VersionNumberConfig numConfig = vParam.getNumConfig();
+
+		VersionConfig versionConfig = new VersionConfig();
+		versionConfig.setMainConfig(mainConfig);
+		versionConfig.setNumConfig(numConfig);
+
+		ShopRecord record = new ShopRecord();
+		record.setShopId(vParam.getShopId());
+		record.setVersionConfig(Util.toJson(versionConfig));
+		return db().executeUpdate(record);
+	}
+
+	/**
+	 * 校验是否在version
+	 * @param mainConfig
+	 * @param enName
+	 * @return
+	 */
+	public Boolean checkMainConfig(VersionMainConfig mainConfig, String enName) {
+		Class clazz = mainConfig.getClass();
+		Field[] fields = clazz.getDeclaredFields();
+		for (Field field : fields) {
+			field.setAccessible(true);
+			try {
+				PropertyDescriptor pd = new PropertyDescriptor(field.getName(), clazz);
+				// 获得读方法
+				Method rm = pd.getReadMethod();
+				List<String> list = (List<String>) rm.invoke(mainConfig);
+				for (String string : list) {
+					if (enName.equals(string)) {
+						return true;
+					}
+				}
+
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+
+		}
+		return false;
 	}
 
 }
