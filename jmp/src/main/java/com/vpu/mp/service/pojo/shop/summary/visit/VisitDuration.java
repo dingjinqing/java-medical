@@ -9,6 +9,7 @@ import com.vpu.mp.service.pojo.shop.summary.ChartInfo;
  */
 public enum VisitDuration implements ChartInfo {
 
+    /** 访问时常 */
     L1(1, "0-2s"),
     L2(2, "3-5s"),
     L3(3, "6-10s"),

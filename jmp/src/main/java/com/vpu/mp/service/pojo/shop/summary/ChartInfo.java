@@ -7,7 +7,17 @@ package com.vpu.mp.service.pojo.shop.summary;
  */
 public interface ChartInfo {
 
+    /**
+     * 获取名称
+     *
+     * @return 名称
+     */
     String getName();
 
+    /**
+     * 获取对应的 key
+     *
+     * @return key
+     */
     Integer getKey();
 }

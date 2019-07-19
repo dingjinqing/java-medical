@@ -16,10 +16,12 @@ public class DistributionIndex {
      * 访问来源
      */
     public static final String ACCESS_SOURCE = "access_source_session_cnt";
+
     /**
      * 停留时间
      */
     public static final String VISIT_DURATION = "access_staytime_info";
+
     /**
      * 平均访问深度
      */
@@ -32,6 +34,7 @@ public class DistributionIndex {
 
     /**
      * 统计数据项
+     * 数据库字段存储的是下划线格式，如果用驼峰会导致反序列化失败
      */
     private List<DistributionIndexItem> item_list;
 }

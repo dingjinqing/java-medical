@@ -1,6 +1,6 @@
 package com.vpu.mp.service.pojo.shop.summary.portrait;
 
-import com.vpu.mp.service.pojo.shop.summary.ChartXKeyYValue;
+import com.vpu.mp.service.pojo.shop.summary.KeyValueChart;
 import lombok.Data;
 
 import java.util.List;
@@ -14,7 +14,7 @@ import java.util.List;
 public class Portrait {
 
     private List<PortraitItem> ages;
-    private ChartXKeyYValue agesFirst;
+    private KeyValueChart agesFirst;
     private List<PortraitItem> city;
     private List<PortraitDeviceItem> devices;
     private List<PortraitItem> genders;

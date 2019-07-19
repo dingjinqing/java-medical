@@ -29,7 +29,8 @@ public class AmountService extends BaseVisitService {
     public void addTestDailyVisit() {
         LocalDate dateToday = LocalDate.now();
         LocalDate i;
-        for (int j = 0; j < 100; j++) {
+        int count = 100;
+        for (int j = 0; j < count; j++) {
             i = dateToday.minusDays(1);
             String dateString = formatDate(i);
             db().insertInto(MP_DAILY_VISIT, MP_DAILY_VISIT.REF_DATE, MP_DAILY_VISIT.SESSION_CNT, MP_DAILY_VISIT.VISIT_PV,

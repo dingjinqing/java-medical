@@ -1,7 +1,7 @@
 package com.vpu.mp.service.pojo.shop.summary.visit;
 
-import com.vpu.mp.service.pojo.shop.summary.ChartXKeyYValue;
-import com.vpu.mp.service.pojo.shop.summary.ChartXValueYKey;
+import com.vpu.mp.service.pojo.shop.summary.KeyValueChart;
+import com.vpu.mp.service.pojo.shop.summary.ValueKeyChart;
 import lombok.Data;
 
 import java.util.List;
@@ -29,13 +29,13 @@ public class VisitDistributionVo {
     /**
      * 平均访问深度
      */
-    private ChartXValueYKey visitDepth;
+    private ValueKeyChart visitDepth;
     /**
      * 访问来源
      */
-    private ChartXKeyYValue visitSource;
+    private KeyValueChart visitSource;
     /**
      * 停留时长
      */
-    private ChartXValueYKey visitStayTime;
+    private ValueKeyChart visitStayTime;
 }

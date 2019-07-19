@@ -42,8 +42,8 @@ class BaseVisitService extends BaseService {
             /* 按 n 天统计 */
             String start;
             String end;
-            int startI;
-            int endI;
+            int startPos;
+            int endPosition;
             int i = records.size() - 1;
             do {
                 if (0 > i) {
@@ -51,15 +51,15 @@ class BaseVisitService extends BaseService {
                 }
                 /* 一个粒度区间 */
                 start = records.get(i).getRefDate();
-                endI = i;
+                endPosition = i;
                 i -= grading;
                 if (i < 0) {
                     i = 0;
                 }
                 end = records.get(i).getRefDate();
-                startI = i;
+                startPos = i;
                 /* 总和 */
-                Double sum = records.subList(startI, endI).stream().mapToDouble(r -> (Double) r.getValue()).sum();
+                Double sum = records.subList(startPos, endPosition).stream().mapToDouble(r -> (Double) r.getValue()).sum();
                 String dateResult = start + "-" + end;
                 RefDateRecordHolder<Double> holder = new RefDateRecordHolder<>();
                 holder.setRefDate(dateResult);

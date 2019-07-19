@@ -53,14 +53,15 @@ public class DistributionService extends BaseVisitService {
                     case VISIT_DEPTH:
                         groupingIndex(depthMap, index, AccessDepth.values());
                         break;
+                    default:
                 }
             }
         }
         /* 移除参数中忽略的访问来源 */
         cancelSources.forEach(s -> sourceMap.remove(AccessSource.findByIndex(s).getSource()));
-        vo.setVisitSource(xKeyYValueVo(sourceMap));
-        vo.setVisitDepth(yKeyXValueVo(depthMap));
-        vo.setVisitStayTime(yKeyXValueVo(stayTimeMap));
+        vo.setVisitSource(keyValueChart(sourceMap));
+        vo.setVisitDepth(valueKeyChart(depthMap));
+        vo.setVisitStayTime(valueKeyChart(stayTimeMap));
         vo.setAccessSourceSessionCnt(getInfoDict(sourceMap, AccessSource.values()));
         vo.setAccessDepthInfo(getInfoDict(depthMap, AccessDepth.values()));
         vo.setAccessStayTimeInfo(getInfoDict(stayTimeMap, VisitDuration.values()));
@@ -70,8 +71,8 @@ public class DistributionService extends BaseVisitService {
     /**
      * 由 map 转换到 chart (x: key, y: value)
      */
-    private ChartXKeyYValue xKeyYValueVo(Map<String, Integer> map) {
-        ChartXKeyYValue chart = new ChartXKeyYValue();
+    private KeyValueChart keyValueChart(Map<String, Integer> map) {
+        KeyValueChart chart = new KeyValueChart();
         fillChart(map, chart);
         return chart;
     }
@@ -79,8 +80,8 @@ public class DistributionService extends BaseVisitService {
     /**
      * 由 map 转换到 chart (y: key, x: value)
      */
-    private ChartXValueYKey yKeyXValueVo(Map<String, Integer> map) {
-        ChartXValueYKey chart = new ChartXValueYKey();
+    private ValueKeyChart valueKeyChart(Map<String, Integer> map) {
+        ValueKeyChart chart = new ValueKeyChart();
         fillChart(map, chart);
         return chart;
     }

@@ -52,6 +52,7 @@ public class VisitPageParam {
      */
     public enum Actions {
 
+        /** action **/
         PV(MP_VISIT_PAGE.PAGE_VISIT_PV),
         UV(MP_VISIT_PAGE.PAGE_VISIT_UV),
         STAY_TIME(MP_VISIT_PAGE.PAGE_STAYTIME_PV),

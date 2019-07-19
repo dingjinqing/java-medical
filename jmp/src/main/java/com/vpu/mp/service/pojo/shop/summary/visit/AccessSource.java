@@ -13,6 +13,7 @@ import java.util.Arrays;
 @Getter
 public enum AccessSource implements ChartInfo {
 
+    /** 访问来源 **/
     MP_HISTORY_LIST(1, "source.mp_history_list"),
     SEARCH(2, "source.search"),
     SESSION(3, "source.session"),

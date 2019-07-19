@@ -4,7 +4,7 @@ import com.fasterxml.jackson.core.type.TypeReference;
 import com.vpu.mp.db.shop.tables.records.MpUserPortraitRecord;
 import com.vpu.mp.service.foundation.BaseService;
 import com.vpu.mp.service.foundation.Util;
-import com.vpu.mp.service.pojo.shop.summary.ChartXKeyYValue;
+import com.vpu.mp.service.pojo.shop.summary.KeyValueChart;
 import com.vpu.mp.service.pojo.shop.summary.portrait.*;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Service;
@@ -30,8 +30,8 @@ public class PortraitService extends BaseService {
         MpUserPortraitRecord portraitResult = getPortraitResult(type);
         Portrait visitUv = parseVisitJson(portraitResult.getVisitUv());
         Portrait visitUvNew = parseVisitJson(portraitResult.getVisitUvNew());
-        ChartXKeyYValue activeUser = getChart(visitUv);
-        ChartXKeyYValue activeUserNew = getChart(visitUvNew);
+        KeyValueChart activeUser = getChart(visitUv);
+        KeyValueChart activeUserNew = getChart(visitUvNew);
         visitUv.setAgesFirst(activeUser);
         visitUvNew.setAgesFirst(activeUserNew);
         PortraitVo vo = new PortraitVo();
@@ -55,11 +55,11 @@ public class PortraitService extends BaseService {
     /**
      * 生成图表对象
      */
-    private ChartXKeyYValue getChart(Portrait portrait) {
+    private KeyValueChart getChart(Portrait portrait) {
         List<PortraitItem> ages = portrait.getAges();
         List<String> names = ages.stream().map(PortraitItem::getName).collect(Collectors.toList());
         List<Integer> values = ages.stream().map(PortraitItem::getValue).collect(Collectors.toList());
-        ChartXKeyYValue chart = new ChartXKeyYValue();
+        KeyValueChart chart = new KeyValueChart();
         chart.setKeys(names);
         chart.setValues(values);
         return chart;

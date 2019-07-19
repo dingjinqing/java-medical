@@ -1,7 +1,7 @@
 package com.vpu.mp.controller.admin;
 
 import com.vpu.mp.service.foundation.JsonResult;
-import com.vpu.mp.service.pojo.shop.summary.ChartXKeyYValue;
+import com.vpu.mp.service.pojo.shop.summary.KeyValueChart;
 import com.vpu.mp.service.pojo.shop.summary.portrait.PortraitParam;
 import com.vpu.mp.service.pojo.shop.summary.visit.*;
 import org.apache.commons.lang3.StringUtils;
@@ -44,7 +44,7 @@ public class AdminSummaryController extends AdminBaseController {
         List<VisitInfoItem> sessionCntVo = vo.getAccessSourceSessionCnt();
         sessionCntVo.forEach(i -> i.setName(translatePage(prefix, lang, i.getName(), i.getName())));
         vo.setAccessSourceSessionCnt(sessionCntVo);
-        ChartXKeyYValue visitSourceVo = vo.getVisitSource();
+        KeyValueChart visitSourceVo = vo.getVisitSource();
         List<String> keys = visitSourceVo.getXAxis();
         List<String> realKeys = keys.stream().map(i -> translatePage(prefix, lang, i, i)).collect(Collectors.toList());
         visitSourceVo.setKeys(realKeys);
