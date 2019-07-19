@@ -81,6 +81,6 @@ public class PageService extends BaseVisitService {
      * 路径和页面名称对应关系
      */
     private Map<String, String> pageMap() {
-        return PropertiesUtil.toMap("page/pages.properties");
+        return PropertiesUtil.toMap("visit/pages.properties");
     }
 }
