@@ -32,6 +32,7 @@ import org.springframework.stereotype.Service;
 public class MemberService extends BaseService {
 
 	public AccountService account;
+	public ScoreService score;
 	/**
 	 * 会员列表分页查询
 	 * @param param

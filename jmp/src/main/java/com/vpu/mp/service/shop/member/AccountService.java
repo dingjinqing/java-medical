@@ -5,14 +5,14 @@ import com.vpu.mp.service.foundation.BaseService;
 import com.vpu.mp.service.foundation.Util;
 import com.vpu.mp.service.pojo.shop.auth.AdminTokenAuthInfo;
 import com.vpu.mp.service.pojo.shop.member.account.AccountParam;
-import com.vpu.mp.service.shop.ShopApplication;
 import static com.vpu.mp.db.shop.tables.UserAccount.USER_ACCOUNT;
 import static com.vpu.mp.db.shop.tables.TradesRecord.TRADES_RECORD;
 import static com.vpu.mp.db.shop.tables.RecordAdminAction.RECORD_ADMIN_ACTION;
 
 import java.math.BigDecimal;
 
-
+import org.springframework.context.annotation.Scope;
+import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 
 import static com.vpu.mp.db.shop.tables.User.USER;
@@ -20,6 +20,8 @@ import static com.vpu.mp.db.shop.tables.User.USER;
 /**
  * @author 黄壮壮 2019-07-18 16:47
  */
+@Service
+@Scope("prototype")
 public class AccountService extends BaseService {
 	MemberService memberService;
 	/**
@@ -50,7 +52,7 @@ public class AccountService extends BaseService {
 		if (StringUtils.isEmpty(param.getRemark())) {
 			param.setRemark("管理员操作");
 		}
-
+		//TODO 加事务
 		try {
 			// 插入要更新的数据
 			addRow(param, adminUser);
