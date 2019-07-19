@@ -11,6 +11,8 @@ import java.util.Optional;
 import org.jooq.SelectConditionStep;
 import org.jooq.SelectOnConditionStep;
 import org.jooq.tools.StringUtils;
+import org.springframework.context.annotation.Scope;
+import org.springframework.stereotype.Service;
 
 import com.vpu.mp.service.foundation.BaseService;
 import com.vpu.mp.service.foundation.DelFlag;
@@ -23,6 +25,8 @@ import com.vpu.mp.service.pojo.shop.store.comment.ServiceCommentVo;
  * @date 2019年7月18日
  *服务评价相关方法
  */
+@Service
+@Scope("prototype")
 public class ServiceCommentService extends BaseService {
 	
 	/**
