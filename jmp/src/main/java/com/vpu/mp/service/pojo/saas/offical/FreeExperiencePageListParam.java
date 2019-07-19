@@ -4,6 +4,10 @@ import com.vpu.mp.service.foundation.Page;
 
 import lombok.Data;
 
+/**
+ * @author 黄壮壮
+ * 2019-07-19 09:42
+ */
 @Data
 public class FreeExperiencePageListParam {
 	static final Page DEFAULTPAGE = new Page();
