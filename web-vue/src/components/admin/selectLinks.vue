@@ -87,13 +87,14 @@
         <el-button @click="dialogVisible = false">取 消</el-button>
         <el-button
           type="primary"
-          @click="dialogVisible = false"
+          @click="handleSure()"
         >确 定</el-button>
       </span>
     </el-dialog>
   </div>
 </template>
 <script>
+import { mapActions, mapGetters } from 'vuex'
 export default {
   data () {
     return {
@@ -181,7 +182,19 @@ export default {
       bottom_level_line_two: null,
       level_two_show_flag: false,
       threeTofour_flag_1: '',
-      threeTofour_flag_2: ''
+      threeTofour_flag_2: '',
+      suerPath: ''
+    }
+  },
+  computed: {
+    ...mapGetters(['choisePath']),
+    choisePath_ () {
+      return this.choisePath
+    }
+  },
+  watch: {
+    choisePath_ (newData, oldData) {
+      this.suerPath = newData
     }
   },
   mounted () {
@@ -195,8 +208,15 @@ export default {
     })
   },
   methods: {
+    ...mapActions(['changeSelectlink', 'changeSelectLinkLeft', 'afferentPathToPage']),
+    // 确定按钮
+    handleSure () {
+      this.afferentPathToPage(this.suerPath)
+      this.dialogVisible = false
+      console.log(this.suerPath)
+    },
     handleClose (done) {
-
+      this.dialogVisible = false
     },
     // 一级列表移入
     enter_out (index) {
@@ -275,16 +295,39 @@ export default {
             name: 'groupDrawing'
           })
           break
+        case 4:
+          this.$router.push({
+            name: 'pageJump'
+          })
+          break
+        case 5:
+          this.$router.push({
+            name: 'smallProgramJump'
+          })
+          break
+        case 6:
+          this.changeSelectLinkLeft(6)
+          this.$router.push({
+            name: 'formPage'
+          })
+          break
+        case 7:
+          this.changeSelectLinkLeft(7)
+          this.$router.push({
+            name: 'formPage'
+          })
+          break
       }
     },
     // 二级列表点击
     level_two_click (index) {
       if (this.threeTofour_flag_1) {
         let obj = {
+          levelIndex: 1,
           navText: this.level_two_DataList_one[index].title,
           index: index
         }
-        this.$http.$emit('groupDrawing', obj)
+        this.changeSelectlink(obj)
         this.$router.push({
           name: 'groupDrawing'
         })
@@ -293,7 +336,11 @@ export default {
         this.bottom_level_line_two = null
         this.bottom_level_line_one = index
       } else {
-        this.$http.$emit('classificationOfCommodities', index)
+        let obj = {
+          levelIndex: 2,
+          index: index
+        }
+        this.changeSelectlink(obj)
         this.$router.push({
           name: 'classificationOfCommodities'
         })
@@ -304,9 +351,9 @@ export default {
     }
   }
 }
+
 </script>
 <style scoped>
-/* e4ecff */
 .body {
   width: 100%;
   height: 100%;

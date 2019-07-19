@@ -78,12 +78,14 @@ import {
   groupDelRequest,
   renameRequest
 } from '@/api/admin/pictureSpace.js'
+import { getHeadTreeListRequest } from '@/api/admin/tree.js'
 import {
   getEditContent,
   getDefaultContent
 } from '@/util/tree.utils.js'
 import { mapActions } from 'vuex'
 export default {
+  props: ['pageIndex'],
   name: 'ly-tree',
   data () {
     return {
@@ -111,7 +113,7 @@ export default {
     this.refresh()
   },
   mounted () {
-
+    console.log(this.pageIndex)
   },
   methods: {
     ...mapActions(['changeTreeNode', 'allNodes']),
@@ -157,12 +159,22 @@ export default {
     },
     refresh () {
       // let res = getServiceTree()
-      getTreeListRequest().then((res) => {
-        console.log(res.content[0].id)
-        this.changeTreeNode(res.content[0])
-        this.allNodes(res)
-        this.treeData = res.content
-      })
+      if (this.pageIndex === 'pictureSpace') {
+        getTreeListRequest().then((res) => {
+          console.log(res.content[0].id)
+          this.changeTreeNode(res.content[0])
+          this.allNodes(res)
+          this.treeData = res.content
+        })
+      } else {
+        getHeadTreeListRequest().then((res) => {
+          console.log(res.content[0].id)
+          this.changeTreeNode(res.content[0])
+          this.allNodes(res)
+          this.treeData = res.content
+        })
+      }
+
       // console.log(res)
     },
     append (node, data, e) {

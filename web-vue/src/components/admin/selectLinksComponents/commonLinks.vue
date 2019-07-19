@@ -65,6 +65,7 @@
   </div>
 </template>
 <script>
+import { mapActions } from 'vuex'
 export default {
   data () {
     return {
@@ -142,9 +143,11 @@ export default {
     }
   },
   methods: {
+    ...mapActions(['choisePagePath']),
     // 行选中高亮
     handleClick (index) {
       this.clickIindex = index
+      this.choisePagePath(this.trList[index].path)
     },
     // 鼠标移入
     handleOver (index) {

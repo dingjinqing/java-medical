@@ -86,6 +86,27 @@ const routes = [
                 name: 'classificationOfCommodities',
                 meta: 'first_web_decoration',
                 component: r => require.ensure([], () => r(require('@/components/admin/selectLinksComponents/classificationOfCommodities')), 'classificationOfCommodities')
+              },
+              // 网页跳转
+              {
+                path: '/admin/home/main/bottomNavigation/pageJump',
+                name: 'pageJump',
+                meta: 'first_web_decoration',
+                component: r => require.ensure([], () => r(require('@/components/admin/selectLinksComponents/pageJump')), 'pageJump')
+              },
+              // 小程序跳转
+              {
+                path: '/admin/home/main/bottomNavigation/smallProgramJump',
+                name: 'smallProgramJump',
+                meta: 'first_web_decoration',
+                component: r => require.ensure([], () => r(require('@/components/admin/selectLinksComponents/smallProgramJump')), 'smallProgramJump')
+              },
+              // 表单页面&&门店
+              {
+                path: '/admin/home/main/bottomNavigation/formPage',
+                name: 'formPage',
+                meta: 'first_web_decoration',
+                component: r => require.ensure([], () => r(require('@/components/admin/selectLinksComponents/formPage')), 'formPage')
               }
             ]
           },

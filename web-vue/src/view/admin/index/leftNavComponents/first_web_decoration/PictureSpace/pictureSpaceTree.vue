@@ -45,7 +45,7 @@
       </div>
       <div class="dialog_middle">
         <div class="dialog_middle_top">
-          <Tree />
+          <Tree pageIndex='pictureSpace' />
           <div class="dialog_middle_right_box">
             <div class="right_top">
               <el-select
@@ -279,7 +279,6 @@ export default {
     },
     allNodes_ (newData, oldData) {
       console.log(newData)
-
       // 初始化图片查询数据
       if (newData.content) {
         this.Initialization_allTree(newData)

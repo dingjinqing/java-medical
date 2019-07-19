@@ -31,7 +31,7 @@
       </div>
       <div class="dialog_middle">
         <div class="dialog_middle_top">
-          <Tree />
+          <Tree pageIndex='imageDalog' />
           <div class="dialog_middle_right_box">
             <div class="right_top">
               <el-select

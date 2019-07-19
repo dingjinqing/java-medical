@@ -1,11 +1,11 @@
 <template>
-  <div class="customPage_Container">
-    <div class="top_container">
+  <div>
+    <div class="pageJump_container">
       <div class="top_left">
         <div>页面名称：</div>
         <el-input
           v-model="pageName"
-          placeholder="请输入名称"
+          placeholder="请输入链接名称"
           size="mini"
         ></el-input>
         <div></div>
@@ -14,7 +14,7 @@
         <div>页面分类：</div>
         <el-select
           v-model="value"
-          placeholder="请选择分类"
+          placeholder="请输入要跳转的网页链接"
           size="mini"
         >
           <el-option
@@ -34,13 +34,14 @@
         >搜索</el-button>
       </div>
     </div>
+    <div class="alerm">注意：由于微信限制，目前仅支持小程序关联的公众号文章链接</div>
     <div class="content">
       <table width='100%'>
         <thead>
           <tr>
             <td>名称</td>
-            <td>分类</td>
             <td>链接</td>
+            <td>操作</td>
           </tr>
         </thead>
         <tbody v-if="tbodyFlag">
@@ -52,8 +53,11 @@
           >
             <td>{{item.title}}</td>
             <td class="link">{{item.path}}</td>
-            <td class="tb_decorate_a">
-              {{item.path}}
+            <td
+              class="tb_decorate_a"
+              @click="deleRr(index)"
+            >
+              删除
             </td>
           </tr>
         </tbody>
@@ -75,23 +79,9 @@ export default {
   data () {
     return {
       pageName: '',
-      options: [{
-        value: '测试页面1',
-        label: ''
-      }, {
-        value: '测试页面2',
-        label: ''
-      }, {
-        value: '测试页面3',
-        label: ''
-      }, {
-        value: '测试页面4',
-        label: ''
-      }, {
-        value: '测试页面5',
-        label: ''
-      }],
-      value: '',
+      pagePath: '',
+      tbodyFlag: true,
+      noImg: 'http://mpimg2.weipubao.cn/image/admin/no_data.png',
       trList: [
         {
           title: '111',
@@ -172,9 +162,23 @@ export default {
           spanId: ''
         }
       ],
-      clickIindex: null,
-      tbodyFlag: true,
-      noImg: 'http://mpimg2.weipubao.cn/image/admin/no_data.png'
+      options: [{
+        value: '测试页面1',
+        label: ''
+      }, {
+        value: '测试页面2',
+        label: ''
+      }, {
+        value: '测试页面3',
+        label: ''
+      }, {
+        value: '测试页面4',
+        label: ''
+      }, {
+        value: '测试页面5',
+        label: ''
+      }],
+      clickIindex: null
     }
   },
   methods: {
@@ -186,12 +190,21 @@ export default {
     },
     // 搜索
     handleSearch () {
-      console.log(this.pageName, this.value)
+      console.log(1)
+    },
+    // 删除
+    deleRr (index) {
+      console.log(index)
+      this.trList.splice(index, 1)
     }
   }
 }
 </script>
 <style scoped>
+.tb_decorate_a {
+  color: #0000ee;
+  cursor: pointer;
+}
 .noData {
   height: 100px;
   display: flex;
@@ -205,26 +218,14 @@ export default {
 .noData span {
   margin: 10px;
 }
-.top_container {
-  display: flex;
-  justify-content: space-around;
-  padding-bottom: 10px;
-}
-.top_left {
-  display: flex;
-  align-items: center;
-  /* margin-left: 7px; */
-}
-.top_middle {
-  display: flex;
-  align-items: center;
-}
-
 .clickClass {
   background-color: #eee !important;
 }
-.spanClass {
-  display: block !important;
+.pageJump_container {
+  display: flex;
+  justify-content: space-around;
+  padding-bottom: 10px;
+  margin: 10px 0 0 10px;
 }
 table {
   border: 1px solid #eff1f5;
@@ -245,10 +246,10 @@ thead td {
   vertical-align: middle !important;
 }
 thead td:nth-of-type(1) {
-  width: 254px;
+  width: 120px;
 }
 thead td:nth-of-type(2) {
-  width: 105px;
+  width: 460px;
 }
 tbody td {
   text-align: center;
@@ -260,9 +261,35 @@ td {
   vertical-align: middle !important;
   text-align: center;
 }
+.top_left {
+  display: flex;
+  align-items: center;
+  /* margin-left: 7px; */
+}
+.top_middle {
+  display: flex;
+  align-items: center;
+}
+.noData {
+  height: 100px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  /* width: 650px; */
+  flex-direction: column;
+  border: 1px solid #eee;
+  margin-top: 10px;
+}
+.alerm {
+  margin-bottom: 10px;
+  padding-left: 28px;
+  margin-top: 10px;
+  font-size: 14px;
+  color: red;
+}
 </style>
 <style>
-.top_container .el-input {
-  width: 140px !important;
+.pageJump_container .el-input {
+  width: 170px !important;
 }
 </style>

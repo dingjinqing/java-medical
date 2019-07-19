@@ -74,6 +74,7 @@
   </div>
 </template>
 <script>
+import { mapGetters } from 'vuex'
 import SelectLinks from '@/components/admin/selectLinks'
 export default {
   components: { SelectLinks },
@@ -94,6 +95,17 @@ export default {
       ],
       linkInput: 'pages/index/index',
       linkFlag: true
+    }
+  },
+  computed: {
+    ...mapGetters(['afferentPath']),
+    afferentPath_ () {
+      return this.afferentPath
+    }
+  },
+  watch: {
+    afferentPath_ (newData, oldData) {
+      this.linkInput = newData
     }
   },
   mounted () {
