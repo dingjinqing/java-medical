@@ -1,7 +1,5 @@
 package com.vpu.mp.service.pojo.shop.store.group;
 
-import com.vpu.mp.service.foundation.Page;
-
 import com.vpu.mp.service.pojo.shop.base.BasePageParam;
 import lombok.Data;
 

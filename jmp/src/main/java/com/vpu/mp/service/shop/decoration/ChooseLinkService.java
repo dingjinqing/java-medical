@@ -15,7 +15,7 @@ import static com.vpu.mp.db.shop.Tables.MP_JUMP_USABLE;
 import static com.vpu.mp.db.shop.Tables.MRKING_STRATEGY;
 import static com.vpu.mp.db.shop.Tables.MRKING_VOUCHER;
 import static com.vpu.mp.db.shop.Tables.PACKAGE_SALE;
-import static com.vpu.mp.db.shop.Tables.PIN_INTEGRATION_DEFINE;
+import static com.vpu.mp.db.shop.Tables.GROUP_INTEGRATION_DEFINE;
 import static com.vpu.mp.db.shop.Tables.PURCHASE_PRICE_DEFINE;
 import static com.vpu.mp.db.shop.Tables.SORT;
 import static com.vpu.mp.db.shop.Tables.STORE;
@@ -118,9 +118,9 @@ public class ChooseLinkService extends BaseService {
 	 * @return
 	 */
 	public List<ActivityVo> getIntegrationList() {
-		List<ActivityVo> list = db().select(PIN_INTEGRATION_DEFINE.ID,PIN_INTEGRATION_DEFINE.NAME.as("actName"),PIN_INTEGRATION_DEFINE.START_TIME,PIN_INTEGRATION_DEFINE.END_TIME)
-				.from(PIN_INTEGRATION_DEFINE)
-				.where(PIN_INTEGRATION_DEFINE.END_TIME.ge(new Timestamp(System.currentTimeMillis())))
+		List<ActivityVo> list = db().select(GROUP_INTEGRATION_DEFINE.ID,GROUP_INTEGRATION_DEFINE.NAME.as("actName"),GROUP_INTEGRATION_DEFINE.START_TIME,GROUP_INTEGRATION_DEFINE.END_TIME)
+				.from(GROUP_INTEGRATION_DEFINE)
+				.where(GROUP_INTEGRATION_DEFINE.END_TIME.ge(new Timestamp(System.currentTimeMillis())))
 				.fetch().into(ActivityVo.class);
 		return list;
 	}

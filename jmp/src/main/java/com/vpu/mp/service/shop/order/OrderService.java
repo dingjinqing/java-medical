@@ -2,7 +2,7 @@ package com.vpu.mp.service.shop.order;
 
 import static com.vpu.mp.db.shop.tables.OrderGoods.ORDER_GOODS;
 import static com.vpu.mp.db.shop.tables.OrderInfo.ORDER_INFO;
-import static com.vpu.mp.db.shop.tables.PinGroupList.PIN_GROUP_LIST;
+import static com.vpu.mp.db.shop.tables.GroupBuyList.GROUP_BUY_LIST;
 import static com.vpu.mp.db.shop.tables.ReturnOrder.RETURN_ORDER;
 import static com.vpu.mp.db.shop.tables.ReturnOrderGoods.RETURN_ORDER_GOODS;
 import static com.vpu.mp.db.shop.tables.StoreOrder.STORE_ORDER;
@@ -203,8 +203,8 @@ public class OrderService extends BaseService {
 		}
 		//拼团退款失败订单
 		if(param.pinStatus != null){
-			select.innerJoin(PIN_GROUP_LIST).on(ORDER_INFO.ORDER_SN.eq(PIN_GROUP_LIST.ORDER_SN));
-			select.where(PIN_GROUP_LIST.STATUS.in(param.pinStatus));
+			select.innerJoin(GROUP_BUY_LIST).on(ORDER_INFO.ORDER_SN.eq(GROUP_BUY_LIST.ORDER_SN));
+			select.where(GROUP_BUY_LIST.STATUS.in(param.pinStatus));
 		}
 		return select;
 	 }

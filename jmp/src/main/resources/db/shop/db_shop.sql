@@ -1685,63 +1685,66 @@ create table `b2c_mp_template_form_id` (
 );
 
 -- --  拼团活动定义表
--- drop table if exists `b2c_pin_group_define`;
-create table `b2c_pin_group_define` (
-  `id`               int(11)      not null  auto_increment,
-  `shop_id`          int(11)      not null comment '店铺id',
-  `goods_id`         int(11)      not null comment '商品id',
-  `name`             varchar(100) not null comment '活动名称',
-  `limit_amount`     smallint(6)  not null comment '成团人数',
-  `join_limit`       smallint(6)  not null comment '参团限制',
-  `open_limit`       smallint(6)  not null comment '开团限制',
-  `is_default`       tinyint(1)   not null  default 0 comment '默认成团',
-  `start_time`       timestamp null default null comment '开始时间',
-  `end_time`         timestamp null default null comment '结束时间',
-  `stock`            smallint(6)  not null  default 0 comment '总库存',
-  `sale_num`         smallint(6)  not null  default 0 comment '销量',
-  `del_flag`         tinyint(1)   not null  default 0,
-  `status`           tinyint(1)   not null  default 1 comment '状态： 1：启用  0： 禁用',
-  `del_time`         int(11)      not null  default 0,
-  `activity_type`    tinyint(1)   not null  default '1' comment '活动类型：1：普通拼团，2：老带新团',
-  `is_grouper_cheap` tinyint(1)   not null  default '0' comment '是否开启团长优惠：0：不开启，1：开启',
-  `reward_coupon_id` varchar(200) null   comment '拼团失败发放优惠券',
-  `share_config`     text    comment '分享设置',
-  `create_time`			timestamp      default current_timestamp,
-  `update_time` 		timestamp      default current_timestamp on update current_timestamp comment '最后修改时间',
-  primary key (`id`)
+-- drop table if exists `b2c_group_buy__define`;
+create table `b2c_group_buy__define`
+(
+    `id`               int(11)      not null auto_increment,
+    `shop_id`          int(11)      not null comment '店铺id',
+    `goods_id`         int(11)      not null comment '商品id',
+    `name`             varchar(100) not null comment '活动名称',
+    `limit_amount`     smallint(6)  not null comment '成团人数',
+    `join_limit`       smallint(6)  not null comment '参团限制',
+    `open_limit`       smallint(6)  not null comment '开团限制',
+    `is_default`       tinyint(1)   not null default 0 comment '默认成团',
+    `start_time`       timestamp    null     default null comment '开始时间',
+    `end_time`         timestamp    null     default null comment '结束时间',
+    `stock`            smallint(6)  not null default 0 comment '总库存',
+    `sale_num`         smallint(6)  not null default 0 comment '销量',
+    `del_flag`         tinyint(1)   not null default 0,
+    `status`           tinyint(1)   not null default 1 comment '状态： 1：启用  0： 禁用',
+    `del_time`         int(11)      not null default 0,
+    `activity_type`    tinyint(1)   not null default '1' comment '活动类型：1：普通拼团，2：老带新团',
+    `is_grouper_cheap` tinyint(1)   not null default '0' comment '是否开启团长优惠：0：不开启，1：开启',
+    `reward_coupon_id` varchar(200) null comment '拼团失败发放优惠券',
+    `share_config`     text comment '分享设置',
+    `create_time`      timestamp             default current_timestamp,
+    `update_time`      timestamp             default current_timestamp on update current_timestamp comment '最后修改时间',
+    primary key (`id`)
 );
 
 -- --  拼团活动产品规格定义表
--- drop table if exists `b2c_pin_group_product_define`;
-create table `b2c_pin_group_product_define` (
-  `id`              int(11)        not null auto_increment,
-  `pin_activity_id` int(11)        not null comment '拼团定义id',
-  `product_id`      int(11)        not null comment '商品规格id',
-  `pin_group_price` decimal(10, 2) not null default 0.00 comment '拼团价',
-  `stock`           smallint(6)    not null default 0 comment '库存',
-  `sale_num`        smallint(6)    not null default 0 comment '销量',
-  `grouper_price`   decimal(10, 2) not null default '0.00' comment '团长优惠价',
-  `create_time`			timestamp      default current_timestamp,
-  `update_time` 		timestamp      default current_timestamp on update current_timestamp comment '最后修改时间',
-  primary key (`id`)
+-- drop table if exists `b2c_group_buy_product_define`;
+create table `b2c_group_buy_product_define`
+(
+    `id`              int(11)        not null auto_increment,
+    `activity_id` int(11)        not null comment '拼团定义id',
+    `product_id`      int(11)        not null comment '商品规格id',
+    `group_price` decimal(10, 2) not null default 0.00 comment '拼团价',
+    `stock`           smallint(6)    not null default 0 comment '库存',
+    `sale_num`        smallint(6)    not null default 0 comment '销量',
+    `grouper_price`   decimal(10, 2) not null default '0.00' comment '团长优惠价',
+    `create_time`     timestamp               default current_timestamp,
+    `update_time`     timestamp               default current_timestamp on update current_timestamp comment '最后修改时间',
+    primary key (`id`)
 );
 
 -- --  拼团活动参团明细表
--- drop table if exists `b2c_pin_group_list`;
-create table `b2c_pin_group_list` (
-  `id`              int(11)     not null auto_increment,
-  `pin_activity_id` int(11)     not null comment '拼团活动定义id',
-  `goods_id`        int(11)     not null default 0,
-  `group_id`        int(11)     not null default 0 comment '拼团id',
-  `user_id`         int(11)     not null,
-  `is_grouper`      tinyint(1)  not null default 0 comment '是否为团长 1：是 0：否',
-  `order_sn`        varchar(20) not null comment '订单编号',
-  `status`          tinyint(1)  not null default 0 comment '0: 拼团中 1:拼团成功 2:拼团失败',
-  `start_time`      timestamp null default null comment '开团时间',
-  `end_time`        timestamp null default null comment '成团时间',
-  `create_time`			timestamp      default current_timestamp,
-  `update_time` 		timestamp      default current_timestamp on update current_timestamp comment '最后修改时间',
-  primary key (`id`)
+-- drop table if exists `b2c_group_buy_list`;
+create table `b2c_group_buy_list`
+(
+    `id`              int(11)     not null auto_increment,
+    `activity_id` int(11)     not null comment '拼团活动定义id',
+    `goods_id`        int(11)     not null default 0,
+    `group_id`        int(11)     not null default 0 comment '拼团id',
+    `user_id`         int(11)     not null,
+    `is_grouper`      tinyint(1)  not null default 0 comment '是否为团长 1：是 0：否',
+    `order_sn`        varchar(20) not null comment '订单编号',
+    `status`          tinyint(1)  not null default 0 comment '0: 拼团中 1:拼团成功 2:拼团失败',
+    `start_time`      timestamp   null     default null comment '开团时间',
+    `end_time`        timestamp   null     default null comment '成团时间',
+    `create_time`     timestamp            default current_timestamp,
+    `update_time`     timestamp            default current_timestamp on update current_timestamp comment '最后修改时间',
+    primary key (`id`)
 );
 
 -- -- 用户充值记录表
@@ -2914,8 +2917,8 @@ create table `b2c_join_group_list` (
 );
 
 --  瓜分积分活动配置
--- drop table if exists `b2c_pin_integration_define`;
-create table `b2c_pin_integration_define` (
+-- drop table if exists `b2c_group_integration_define`;
+create table `b2c_group_integration_define` (
   `id`            int(11)                                 not null auto_increment,
   `shop_id`       int(11)                                 not null comment '店铺id',
   `name`          varchar(100)  						  not null comment '活动名称',
@@ -2940,8 +2943,8 @@ create table `b2c_pin_integration_define` (
 );
 
 --  参团列表
--- drop table if exists `b2c_pin_integration_list`;
-create table `b2c_pin_integration_list` (
+-- drop table if exists `b2c_group_integration_list`;
+create table `b2c_group_integration_list` (
   `id`               int(11)                                not null auto_increment,
   `inte_activity_id` int(11)                                not null comment '瓜分积分活动定义id',
   `group_id`         varchar(60)  							not null default '' comment '拼团id',

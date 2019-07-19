@@ -15,6 +15,7 @@ import com.vpu.mp.service.shop.goods.GoodsRecommendService;
 import com.vpu.mp.service.shop.goods.GoodsService;
 import com.vpu.mp.service.shop.image.ImageCategoryService;
 import com.vpu.mp.service.shop.image.ImageService;
+import com.vpu.mp.service.shop.market.goupbuy.GroupBuyService;
 import com.vpu.mp.service.shop.member.MemberService;
 import com.vpu.mp.service.shop.member.ScoreCfgService;
 import com.vpu.mp.service.shop.member.TagService;
@@ -63,6 +64,10 @@ public class ShopApplication extends ServiceContainer {
 	public RecordAdminActionService record;
 	public PortraitService portrait;
 	public RebateStrategyService rebateStrategy;
+	/**
+	 * 组团购
+	 */
+	public GroupBuyService groupBuy;
 	/**
 	 * 会员
 	 */

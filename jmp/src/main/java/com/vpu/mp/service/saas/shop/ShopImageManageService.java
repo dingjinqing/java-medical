@@ -2,12 +2,12 @@ package com.vpu.mp.service.saas.shop;
 
 import com.vpu.mp.db.main.tables.records.ShopUploadedImageCategoryRecord;
 import com.vpu.mp.db.main.tables.records.ShopUploadedImageRecord;
-import com.vpu.mp.db.shop.tables.records.UploadedImageCategoryRecord;
 import com.vpu.mp.service.foundation.BaseService;
 import com.vpu.mp.service.foundation.PageResult;
 import com.vpu.mp.service.foundation.Util;
 import com.vpu.mp.service.pojo.saas.shop.image.*;
-import com.vpu.mp.service.pojo.shop.image.*;
+import com.vpu.mp.service.pojo.shop.image.ImageDim;
+import com.vpu.mp.service.pojo.shop.image.UploadPath;
 import com.vpu.mp.service.shop.image.ImageService;
 import net.coobird.thumbnailator.Thumbnails;
 import org.jooq.Record;
@@ -22,15 +22,11 @@ import org.springframework.stereotype.Service;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
-import java.sql.Timestamp;
-import java.time.LocalDateTime;
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.List;
 
 import static com.vpu.mp.db.main.tables.ShopUploadedImage.SHOP_UPLOADED_IMAGE;
 import static com.vpu.mp.db.main.tables.ShopUploadedImageCategory.SHOP_UPLOADED_IMAGE_CATEGORY;
-import static com.vpu.mp.db.shop.tables.UploadedImageCategory.UPLOADED_IMAGE_CATEGORY;
 
 
 /**
@@ -58,7 +54,6 @@ public class ShopImageManageService  extends BaseService {
         ShopUploadedImageCategoryRecord record = mainDb().newRecord(SHOP_UPLOADED_IMAGE_CATEGORY, cat);
         record.setSysId(sysId);
         record.insert();
-
         if (cat.getImgCatParentId().equals(0)) {
             record.setCatIds(String.valueOf(record.getImgCatId()));
             record.setLevel((byte) 1);
