@@ -8,6 +8,8 @@ import java.util.List;
 import org.jooq.Record8;
 import org.jooq.SelectConditionStep;
 import org.jooq.SelectJoinStep;
+import org.springframework.context.annotation.Scope;
+import org.springframework.stereotype.Service;
 
 import com.vpu.mp.db.shop.tables.records.DistributionStrategyRecord;
 import com.vpu.mp.service.foundation.BaseService;
@@ -20,6 +22,8 @@ import com.vpu.mp.service.pojo.shop.distribution.DistributionStrategyVo;
  * @author 常乐
  * 2019年7月18日
  */
+@Service
+@Scope("prototype")
 public class RebateStrategyService extends BaseService{
 	
 	/**
@@ -102,5 +106,31 @@ public class RebateStrategyService extends BaseService{
 		DistributionStrategyRecord record = new DistributionStrategyRecord();
 		this.assign(param,record);
 		return db().executeUpdate(record) > 0 ? true : false;
+	}
+	
+	/**
+	 * 返利策略停用
+	 * @param id
+	 * @return
+	 */
+	public boolean pauseRebate(Integer id) {
+		int res = db().update(DISTRIBUTION_STRATEGY)
+				.set(DISTRIBUTION_STRATEGY.STATUS,(byte) 1)
+				.where(DISTRIBUTION_STRATEGY.ID.eq(id))
+				.execute();
+		return res > 0 ? true : false;
+	}
+	
+	/**
+	 * 返利策略删除
+	 * @param id
+	 * @return
+	 */
+	public boolean deleteRebate(Integer id) {
+		int res = db().update(DISTRIBUTION_STRATEGY)
+				.set(DISTRIBUTION_STRATEGY.DEL_FLAG,(byte) 1)
+				.where(DISTRIBUTION_STRATEGY.ID.eq(id))
+				.execute();
+		return res > 0 ? true : false;
 	}
 }

@@ -4,6 +4,7 @@ import java.util.List;
 
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -37,7 +38,7 @@ public class AdminDistributionController extends AdminBaseController{
 	 * @return
 	 */
 	@PostMapping("/admin/distribution/set")
-	public JsonResult setDistributionCfg(DistributionParam param) {
+	public JsonResult setDistributionCfg(@RequestBody DistributionParam param) {
 		int result = shop().config.distributioncfg.setDistributionCfg(param);
 		return this.success(result);
 	}
@@ -45,10 +46,10 @@ public class AdminDistributionController extends AdminBaseController{
 	/**
 	 * 添加返利策略
 	 * @param info
-	 * 
 	 * @return
 	 */
-	public JsonResult setRebateStrategy(DistributionStrategyParam info) {
+	@PostMapping("/admin/distribution/rebate/set")
+	public JsonResult setRebateStrategy(@RequestBody DistributionStrategyParam info) {
 		boolean result = shop().rebateStrategy.setRebateStrategy(info);
 		if(result) {
 			return this.success(result);
@@ -62,6 +63,7 @@ public class AdminDistributionController extends AdminBaseController{
 	 * @param param
 	 * @return
 	 */
+	@PostMapping("/admin/distribution/rebate/list")
 	public JsonResult rebateStrategyList(DistributionStrategyParam param) {
 		PageResult<DistributionStrategyVo> list = shop().rebateStrategy.getStrategyList(param);
 		return this.success(list);
@@ -72,7 +74,8 @@ public class AdminDistributionController extends AdminBaseController{
 	 * @param id
 	 * @return
 	 */
-	public JsonResult oneRebateStrategyInfo(Integer id) {
+	@GetMapping("/admin/distribution/rebate/edit")
+	public JsonResult oneRebateStrategyInfo(@RequestBody Integer id) {
 		List<DistributionStrategyParam> result = shop().rebateStrategy.getOneInfo(id);
 		return this.success(result);
 	}
@@ -82,8 +85,39 @@ public class AdminDistributionController extends AdminBaseController{
 	 * @param param
 	 * @return
 	 */
-	public JsonResult saveRebateStrategy(DistributionStrategyParam param) {
+	@PostMapping("/admin/distribution/rebate/save")
+	public JsonResult saveRebateStrategy(@RequestBody DistributionStrategyParam param) {
 		boolean result = shop().rebateStrategy.saveRebateStrategy(param);
 		return this.success(result);
+	}
+	
+	/**
+	 * 返利策略停用
+	 * @param id
+	 * @return
+	 */
+	@GetMapping("/admin/distribution/rebate/pause")
+	public JsonResult pauseRebateStrategy(@RequestBody Integer id) {
+		boolean result = shop().rebateStrategy.pauseRebate(id);
+		if(result) {
+			return this.success(result);
+		}else {
+			return this.fail();
+		}
+	}
+	
+	/**
+	 * 返利策略删除
+	 * @param id
+	 * @return
+	 */
+	@GetMapping("/admin/distribution/rebate/delete")
+	public JsonResult deleteRebateStrategy(@RequestBody Integer id) {
+		boolean result = shop().rebateStrategy.deleteRebate(id);
+		if(result) {
+			return this.success(result);
+		}else {
+			return this.fail();
+		}
 	}
 }
