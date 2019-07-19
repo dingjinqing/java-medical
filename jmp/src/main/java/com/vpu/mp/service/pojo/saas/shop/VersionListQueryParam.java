@@ -8,6 +8,7 @@ import lombok.Data;
  */
 @Data
 public class VersionListQueryParam {
-	public Integer page;
+	public Integer currentPage;
+	public Integer pageRows;
 	public String versionName;
 }
