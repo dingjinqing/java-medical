@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div class="admin_top_swiper">
     <el-carousel
       arrow="never"
       height="494px"
@@ -71,5 +71,10 @@ export default {
 }
 .is-active {
   background-color: #fff;
+}
+
+.admin_top_swiper .el-carousel--horizontal {
+  /* overflow-x: visible !important; */
+  overflow-y: hidden !important;
 }
 </style>

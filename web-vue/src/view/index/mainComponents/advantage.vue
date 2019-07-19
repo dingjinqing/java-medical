@@ -331,8 +331,8 @@ export default {
   color: #fff;
   display: inline-block;
   flex: 1;
-  height: auto;
-  line-height: auto;
+  height: 100%;
+  line-height: 100%;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -353,7 +353,7 @@ export default {
   opacity: 1;
 }
 .swiper-pagination {
-  margin-top: -50px;
+  /* margin-top: -50px; */
   width: 631px;
   margin: 0px auto 0px;
   border: 1px solid #fff;
