@@ -11,6 +11,8 @@ import com.vpu.mp.service.foundation.JedisManager;
 import com.vpu.mp.service.foundation.JsonResult;
 import com.vpu.mp.service.foundation.JsonResultCode;
 import com.vpu.mp.service.foundation.Util;
+import com.vpu.mp.service.pojo.saas.shop.version.VersionConfig;
+import com.vpu.mp.service.pojo.saas.shop.version.VersionMainConfig;
 import com.vpu.mp.service.pojo.shop.auth.MenuParam;
 import com.vpu.mp.service.pojo.shop.auth.MenuReturnParam;
 import com.vpu.mp.service.pojo.shop.auth.PrivilegeAndPassParam;
@@ -28,15 +30,14 @@ public class AdminIndexController extends AdminBaseController {
 	JedisManager jedis = JedisManager.instance();
 	final protected String menuJsonPath = "admin.privilegeList.json";
 	final protected String privilegeJsonPath = "admin.privilegePass.json";
+
 	/**
 	 * 返回店铺菜单
 	 * 
 	 * @return
 	 */
-	/**
-	 * @RequestMapping(value = "/admin/showMenu")
-	 * 
-	 */
+
+	@RequestMapping(value = "/admin/showMenu")
 	public JsonResult showMenu() {
 		String json = Util.loadResource(menuJsonPath);
 		String json2 = Util.loadResource(privilegeJsonPath);
@@ -51,10 +52,10 @@ public class AdminIndexController extends AdminBaseController {
 			// 加个非空判断
 			MenuParam outParam = saas.shop.role.outParam(menuParam, menuReturnParam.getPrivilegeList());
 			PrivilegeAndPassParam privilParam2 = new PrivilegeAndPassParam();
-			
+
 			privilParam2.setPrivilegeLlist(Arrays.asList(menuReturnParam.getPrivilegePass().get(0)));
 			privilParam2.setPassList((Arrays.asList(menuReturnParam.getPrivilegePass().get(1))));
-			
+
 			privilegeVo.setMenuParam(outParam);
 			privilegeVo.setPassParam(privilParam2);
 			return success(privilegeVo);
@@ -67,35 +68,55 @@ public class AdminIndexController extends AdminBaseController {
 	}
 
 	@RequestMapping(value = "/admin/db/main/repair")
-	public JsonResult repairMain(@RequestParam(value="password") String password ) {
+	public JsonResult repairMain(@RequestParam(value = "password") String password) {
 		saas.repairDb.repairMainDb();
 		return success();
 	}
-	
+
 	/**
 	 * 点击的菜单或者功能有没有权限
+	 * 
 	 * @return
 	 */
 	@RequestMapping(value = "/admin/checkMenu")
 	public JsonResult checkMenu() {
-		if(StringUtils.isEmpty(adminAuth.user().loginShopId)) {
+		if (StringUtils.isEmpty(adminAuth.user().loginShopId)) {
 			return fail(JsonResultCode.CODE_ACCOUNT_ROLE__SHOP_SELECT);
 		}
+		judgeVersion();
 		Integer roleId = saas.shop.getShopAccessRoleId(adminAuth.user().sysId, adminAuth.user().loginShopId,
 				adminAuth.user().subAccountId);
-		if(roleId==-1) {
-			//错误
+		if (roleId == -1) {
+			// 错误
 			return fail(JsonResultCode.CODE_FAIL);
 		}
 		if (roleId == 0) {
 			// 不是子账户,返回有权限
 			return success(JsonResultCode.CODE_SUCCESS);
 		}
-		//子账户，判断是否可以点击
-		if(saas.shop.role.checkPrivilegeList(roleId, request.getHeader("enName"))) {
+		// 子账户，判断是否可以点击
+		if (saas.shop.role.checkPrivilegeList(roleId, request.getHeader("enName"))) {
 			return success(JsonResultCode.CODE_SUCCESS);
 		}
 		return fail(JsonResultCode.CODE_FAIL);
+	}
+
+	public JsonResultCode judgeVersion() {
+		VersionConfig vConfig = saas.shop.version.mergeVersion(adminAuth.user().loginShopId);
+		if (vConfig == null) {
+			// 版本存在问题，请联系管理员
+			return JsonResultCode.CODE_FAIL;
+		}
+		VersionMainConfig mainConfig = vConfig.getMainConfig();
+		String enName = request.getHeader("enName");
+		String uri = request.getRequestURI();
+
+		if (saas.shop.version.checkMainConfig(mainConfig, enName)) {
+			//为true则请求在version版本里
+			return JsonResultCode.CODE_SUCCESS;
+		}
+		//此功能需要更高版本才可使用。如需了解详情我们的产品顾问将尽快与您联系！！！
+		return JsonResultCode.CODE_ACCOUNT_VERSIN_NO_POWER;
 	}
 
 }
