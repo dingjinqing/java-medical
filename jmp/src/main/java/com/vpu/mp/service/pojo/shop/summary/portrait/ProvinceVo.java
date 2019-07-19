@@ -13,10 +13,10 @@ import java.util.List;
 public class ProvinceVo {
 
     private List<PortraitItem> list;
-    private String sum;
+    private Integer sum;
 
     public void setList(List<PortraitItem> list) {
         this.list = list;
-        setSum(String.valueOf(list.parallelStream().mapToInt(PortraitItem::getValue).sum()));
+        setSum(list.parallelStream().mapToInt(PortraitItem::getValue).sum());
     }
 }
