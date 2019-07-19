@@ -2,11 +2,14 @@ package com.vpu.mp.service.pojo.saas.shop.version;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 
+import lombok.Data;
+
 /**
  * 
  * @author 新国
  *
  */
+@Data
 public class VersionConfig {
 	@JsonProperty(value = "main_config")
 	public VersionMainConfig mainConfig = new VersionMainConfig();

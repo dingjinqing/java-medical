@@ -5,11 +5,14 @@ import java.util.List;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 
+import lombok.Data;
+
 /**
  * 
  * @author 新国
  *
  */
+@Data
 public class VersionMainConfig {
 	@JsonProperty(value = "sub_0")
 	public List<String> sub0 = new ArrayList<String>();
