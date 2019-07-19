@@ -1,5 +1,6 @@
 package com.vpu.mp.service.pojo.shop.summary;
 
+import com.vpu.mp.controller.I18N;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -16,6 +17,7 @@ import java.util.List;
 @NoArgsConstructor
 public class KeyValueChart extends AbstractChart {
 
+    @I18N(propertiesFileName = "source")
     private List<String> xAxis;
     private List<Integer> yAxis;
 

@@ -1,11 +1,18 @@
 package com.vpu.mp.controller;
 
-import java.util.HashMap;
-import java.util.Map;
+import java.lang.reflect.Field;
+import java.lang.reflect.ParameterizedType;
+import java.lang.reflect.Type;
+import java.util.*;
+import java.util.stream.Collectors;
 
 import javax.servlet.http.HttpServletRequest;
 
+import com.vpu.mp.service.pojo.shop.summary.visit.VisitPageParam;
+import org.jooq.meta.firebird.FirebirdDatabase;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.support.MessageSourceAccessor;
+import org.springframework.context.support.ReloadableResourceBundleMessageSource;
 import org.springframework.core.env.Environment;
 import org.springframework.util.StringUtils;
 
@@ -132,5 +139,120 @@ public class BaseController {
 	 */
 	public String imageUrl(String path) {
 		return Util.imageUrl(path, request.getScheme());
+	}
+
+
+	/**
+	 * 返回带有国际化的 json 响应
+	 *
+	 * 使用方法：在入参或出参对象及其中嵌套对象中需要翻译的字段中添加 {@link I18N} 注解并指定对应的
+	 * properties 文件名，确保这些字段的值均为 properties 中的某个 key，调用此方法后会通过
+	 * {@link BaseController#translateFields(Object)} 方法自动对所有这些字段进行翻译
+	 *
+	 * 使用示例：{@link com.vpu.mp.controller.admin.AdminSummaryController#getVisitPage(VisitPageParam)}
+	 *
+	 * @param content 出参对象
+	 * @author 郑保乐
+	 */
+	protected JsonResult i18nSuccess(Object content) {
+		translateFields(content);
+		return result(JsonResultCode.CODE_SUCCESS, content);
+	}
+
+	/**
+	 * 递归查找对象中需要翻译的字段并进行翻译
+	 *
+	 * @param object 出参对象
+	 */
+	@SuppressWarnings("unchecked")
+	private void translateFields(Object object) {
+		if (isRawType(object)) {
+			return;
+		}
+		String lang = request.getHeader("V-Lang");
+		if(StringUtils.isEmpty(lang)) {
+			lang = "zh_CN";
+		}
+		Class<?> clz = object.getClass();
+		Field[] fields = clz.getDeclaredFields();
+		for (Field field : fields) {
+			field.setAccessible(true);
+			I18N annotation = getI18nAnnotation(field);
+			if (field.getType().equals(String.class) && null != annotation) {
+				try {
+					String value = (String) field.get(object);
+					String fileName = annotation.propertiesFileName();
+					String realValue = translate(fileName, lang, value, value);
+					field.set(object, realValue);
+				} catch (IllegalAccessException e) {
+					e.printStackTrace();
+				}
+			}
+			if (field.getType().isAssignableFrom(List.class)) {
+				ParameterizedType type = (ParameterizedType) field.getGenericType();
+				Class<?> realType = (Class<?>) type.getActualTypeArguments()[0];
+				if (null != annotation && realType.equals(String.class)) {
+					String fileName = annotation.propertiesFileName();
+					List<String> list = null;
+					try {
+						list = (List<String>) field.get(object);
+					} catch (IllegalAccessException e) {
+						e.printStackTrace();
+					}
+					String finalLang = lang;
+					List<String> translated = Objects.requireNonNull(list).parallelStream()
+							.map(i -> translate(fileName, finalLang, i, i))
+							.collect(Collectors.toList());
+					try {
+						field.set(object, translated);
+					} catch (IllegalAccessException e) {
+						e.printStackTrace();
+					}
+				} else {
+					try {
+						List<?> o = (List<?>) field.get(object);
+						o.forEach(this::translateFields);
+					} catch (IllegalAccessException e) {
+						e.printStackTrace();
+					}
+				}
+			}
+			else {
+				try {
+					Object o = field.get(object);
+					translateFields(o);
+				} catch (IllegalAccessException e) {
+					e.printStackTrace();
+				}
+			}
+		}
+	}
+
+	/**
+	 * 判断对象是否原生类型（不可再递归翻译）
+	 */
+	private boolean isRawType(Object object) {
+		return object instanceof String || object instanceof Integer || object instanceof Double;
+	}
+
+	/**
+	 * 获取国际化注解
+	 */
+	private I18N getI18nAnnotation(Field field) {
+		return field.getDeclaredAnnotation(I18N.class);
+	}
+
+	/**
+	 * 转换语言
+	 */
+	private String translate(String prefix, String language, String message, String defaultMessage) {
+		language = org.apache.commons.lang3.StringUtils.isBlank(language) ? "zh_CN" : language;
+		ReloadableResourceBundleMessageSource source = new ReloadableResourceBundleMessageSource();
+		source.setDefaultEncoding("UTF-8");
+		source.setBasename("static/i18n/" + prefix);
+		MessageSourceAccessor accessor = new MessageSourceAccessor(source);
+		String[] languages = language.split("_");
+		Locale locale = new Locale(languages[0], languages[1]);
+		return accessor.getMessage(message, defaultMessage, locale);
 	}
 }

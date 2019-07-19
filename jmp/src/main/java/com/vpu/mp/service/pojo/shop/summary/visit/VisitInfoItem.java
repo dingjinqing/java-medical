@@ -1,5 +1,6 @@
 package com.vpu.mp.service.pojo.shop.summary.visit;
 
+import com.vpu.mp.controller.I18N;
 import lombok.Data;
 
 /**
@@ -13,6 +14,7 @@ public class VisitInfoItem {
     /**
      * 统计项名称
      */
+    @I18N(propertiesFileName = "source")
     private String name;
     /**
      * 统计项序号
