@@ -9,6 +9,9 @@ import org.jooq.Result;
 import org.jooq.SelectLimitStep;
 import org.jooq.impl.DSL;
 import org.jooq.impl.DefaultDSLContext;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Scope;
+import org.springframework.stereotype.Service;
 
 import com.vpu.mp.service.saas.SaasApplication;
 import com.vpu.mp.service.wechat.OpenPlatform;
@@ -18,7 +21,12 @@ import com.vpu.mp.service.wechat.OpenPlatform;
  * @author 新国
  *
  */
+@Service 
+@Scope("prototype")
 public class BaseService extends ServiceContainer {
+
+	@Autowired
+	protected SaasApplication saas ;
 
 	/**
 	 * DB连接事务配置，线程内单例
@@ -38,7 +46,7 @@ public class BaseService extends ServiceContainer {
 	 * @return
 	 */
 	public SaasApplication saas() {
-		return SaasApplication.instance();
+		return saas;
 	}
 
 	/**

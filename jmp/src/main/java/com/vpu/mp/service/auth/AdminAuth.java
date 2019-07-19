@@ -53,7 +53,7 @@ public class AdminAuth {
 	}
 
 	protected String getToken() {
-		return request.getHeader(TOKEN);
+		return request != null ? request.getHeader(TOKEN) : null;
 	}
 
 	/**
@@ -112,7 +112,7 @@ public class AdminAuth {
 	 * 
 	 * @param info
 	 */
-	protected void saveTokenInfo(AdminTokenAuthInfo info) {
+	public void saveTokenInfo(AdminTokenAuthInfo info) {
 		if (StringUtils.isBlank(info.getToken())) {
 			String loginToken = TOKEN_PREFIX
 					+ Util.md5(String.format("admin_login_%d_%d_%s_%d", info.getSysId(), info.getSubAccountId(),
@@ -128,7 +128,7 @@ public class AdminAuth {
 	 * 
 	 * @param info
 	 */
-	protected void deleteTokenInfo(AdminTokenAuthInfo info) {
+	public void deleteTokenInfo(AdminTokenAuthInfo info) {
 		jedis.delete(info.token);
 	}
 

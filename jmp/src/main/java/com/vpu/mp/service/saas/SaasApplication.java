@@ -18,6 +18,9 @@ import com.vpu.mp.service.saas.region.RegionService;
 import com.vpu.mp.service.saas.shop.ShopService;
 import com.vpu.mp.service.saas.wechat.WechatService;
 import com.vpu.mp.service.shop.ShopApplication;
+import com.vpu.mp.support.SpringUtil;
+
+import org.springframework.boot.autoconfigure.condition.ConditionalOnBean;
 import org.springframework.stereotype.Service;
 
 

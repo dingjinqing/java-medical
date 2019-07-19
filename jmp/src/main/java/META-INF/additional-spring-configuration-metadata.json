@@ -113,6 +113,26 @@
     "name": "uyun.image.op.pwd",
     "type": "java.lang.String",
     "description": "A description for 'script.path'"
+  },
+   {
+    "name": "test.admin.session.token",
+    "type": "java.lang.String",
+    "description": "A description for 'script.path'"
+  },
+   {
+    "name": "test.admin.session.sys_id",
+    "type": "java.lang.Integer",
+    "description": "A description for 'script.path'"
+  },
+   {
+    "name": "test.admin.session.sub_account_id",
+    "type": "java.lang.Integer",
+    "description": "A description for 'script.path'"
+  },
+   {
+    "name": "test.admin.session.shop_id",
+    "type": "java.lang.Integer",
+    "description": "A description for 'script.path'"
   }
   
 ]}

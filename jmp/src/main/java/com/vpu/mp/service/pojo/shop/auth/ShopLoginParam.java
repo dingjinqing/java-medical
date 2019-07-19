@@ -22,5 +22,5 @@ public class ShopLoginParam {
 	public String password;
 
 	@NotNull(message = JsonResultMessage.MSG_ACCOUNT_ISSUBLOGIN_NOT_NULL)
-	public Boolean isSubLogin;
+	public Boolean isSubLogin = false;
 }

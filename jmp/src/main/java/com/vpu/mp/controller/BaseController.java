@@ -29,6 +29,7 @@ public class BaseController {
 
 	@Autowired
 	protected Environment env;
+	
 
 	/**
 	 * Json输出

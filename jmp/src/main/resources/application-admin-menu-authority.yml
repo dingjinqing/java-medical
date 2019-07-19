@@ -1,0 +1,17 @@
+admin: 
+  menu : 
+    authority :
+      -
+        enName : enNameList
+        name : 所有的enName
+        linkUrl :
+        includeApi :
+          - shop_view
+          - analysis_basic
+      -
+        enName : enNameList2
+        name : 所有的enName2
+        linkUrl : /admin/hello
+        includeApi :
+          - shop_view2
+          - analysis_basic2

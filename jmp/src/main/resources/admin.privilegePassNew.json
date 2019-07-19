@@ -1,7 +1,7 @@
 [
 	{
 		"prName": "prNameList",
-		"name": "È«²¿µÄÃû×Ö",
+		"name": "å…¨éƒ¨çš„åå­—",
 		"includeApi": [
 			"user_export",
 			"return_order",
@@ -20,74 +20,74 @@
 	},
 	{
 		"prName": "user_export",
-		"name": "»áÔ±µ¼³ö",
+		"name": "ä¼šå‘˜å¯¼å‡º",
 		"includeApi": [
 			"/api/admin/user/list/export"
 		]
 	},
 	{
 		"prName": "return_order",
-		"name": "ÍË¿îÍË»õÉóºË",
+		"name": "é€€æ¬¾é€€è´§å®¡æ ¸",
 		"includeApi": []
 	},
 	{
 		"prName": "distribution_withdraw",
-		"name": "·ÖÏú·µÀûÌáÏÖ",
+		"name": "åˆ†é”€è¿”åˆ©æç°",
 		"includeApi": []
 	},
 	{
 		"prName": "scan_code_purchase",
-		"name": "É¨Âë¹º¶©µ¥Ç¿ÖÆºËÏú",
+		"name": "æ‰«ç è´­è®¢å•å¼ºåˆ¶æ ¸é”€",
 		"includeApi": []
 	},
 	{
 		"prName": "card_order_return",
-		"name": "»áÔ±¿¨¶©µ¥ÍË¿î",
+		"name": "ä¼šå‘˜å¡è®¢å•é€€æ¬¾",
 		"includeApi": []
 	},
 	{
 		"prName": "batch_score",
-		"name": "ĞŞ¸Ä»ı·Ö",
+		"name": "ä¿®æ”¹ç§¯åˆ†",
 		"includeApi": []
 	},
 	{
 		"prName": "batch_account",
-		"name": "ĞŞ¸ÄÓà¶î",
+		"name": "ä¿®æ”¹ä½™é¢",
 		"includeApi": []
 	},
 	{
 		"prName": "batch_card",
-		"name": "·¢·Å»áÔ±¿¨",
+		"name": "å‘æ”¾ä¼šå‘˜å¡",
 		"includeApi": []
 	},
 	{
 		"prName": "batch_score",
-		"name": "ĞŞ¸Ä»ı·Ö",
+		"name": "ä¿®æ”¹ç§¯åˆ†",
 		"includeApi": []
 	},
 	{
 		"prName": "batch_delete",
-		"name": "½ûÖ¹µÇÂ¼",
+		"name": "ç¦æ­¢ç™»å½•",
 		"includeApi": []
 	},
 	{
 		"prName": "batch_tag",
-		"name": "´ò±êÇ©",
+		"name": "æ‰“æ ‡ç­¾",
 		"includeApi": []
 	},
 	{
 		"prName": "change_invite",
-		"name": "ĞŞ¸ÄÑûÇëÈË",
+		"name": "ä¿®æ”¹é‚€è¯·äºº",
 		"includeApi": []
 	},
 	{
 		"prName": "goods_export",
-		"name": "ÉÌÆ·µ¼³ö",
+		"name": "å•†å“å¯¼å‡º",
 		"includeApi": []
 	},
 	{
 		"prName": "order_export",
-		"name": "¶©µ¥µ¼³ö",
+		"name": "è®¢å•å¯¼å‡º",
 		"includeApi": []
 	}
 ]

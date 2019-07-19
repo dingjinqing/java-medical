@@ -80,14 +80,16 @@ public class ServiceContainer {
 
 		try {
 			Object	fieldInstance;
-			if( SpringUtil.inited() ){
-				Class<?> cls = Class.forName(serviceClassName);
-				fieldInstance = SpringUtil.getBean(cls);
-			}else{
-				Class<?> cls = Class.forName(serviceClassName);
-				Constructor<?> constructor = cls.getConstructor();
-				fieldInstance =  constructor.newInstance();
-			}
+			Class<?> cls = Class.forName(serviceClassName);
+			fieldInstance = SpringUtil.getBean(cls);
+//			if( SpringUtil.inited() ){
+//				Class<?> cls = Class.forName(serviceClassName);
+//				fieldInstance = SpringUtil.getBean(cls);
+//			}else{
+//				Class<?> cls = Class.forName(serviceClassName);
+//				Constructor<?> constructor = cls.getConstructor();
+//				fieldInstance =  constructor.newInstance();
+//			}
 
 			System.out.println(fieldInstance);
 			ServiceContainer service = (ServiceContainer) fieldInstance;

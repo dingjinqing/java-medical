@@ -1,5 +1,6 @@
 package com.vpu.mp.controller.admin;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -8,6 +9,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.vpu.mp.db.main.tables.records.MpAuthShopRecord;
+import com.vpu.mp.service.pojo.shop.auth.MenuAuthority;
 import com.vpu.mp.service.wechat.OpenPlatform;
 
 import me.chanjar.weixin.common.error.WxErrorException;
@@ -21,11 +23,15 @@ import me.chanjar.weixin.open.bean.result.WxOpenQueryAuthResult;
 @Controller
 public class AdminWechatController extends AdminBaseController {
 
+	@Autowired
+	protected MenuAuthority authority;
+	
 	protected OpenPlatform open = OpenPlatform.instance();
 
-	@RequestMapping(value = "/wechat/proxy/test/create/shoo")
+	@RequestMapping(value = "/wechat/proxy/test")
 	@ResponseBody
 	public String noAuthorization() {
+		System.out.println(authority);
 		return "hell";
 	}
 
