@@ -1,15 +1,19 @@
 package com.vpu.mp.service.saas.shop;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.fail;
 
-import org.junit.Assert;
 import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.context.ContextConfiguration;
+import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
+import com.vpu.mp.MpApplication;
 import com.vpu.mp.service.foundation.BaseServiceTest;
-import com.vpu.mp.service.foundation.PageResult;
-import com.vpu.mp.service.pojo.saas.shop.ShopListQueryParam;
-import com.vpu.mp.service.pojo.saas.shop.ShopListQueryResultVo;
 
+@RunWith(SpringJUnit4ClassRunner.class)
+@SpringBootTest(classes = MpApplication.class, webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
+@ContextConfiguration(loader = BaseServiceTest.CustomerLoader.class)
 public class ShopServiceTest extends BaseServiceTest {
 
 	/**
