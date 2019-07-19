@@ -43,6 +43,7 @@ public class JsonResultMessage {
 	public static final String MSG_CODE_ACCOUNT_SELECT_SHOP="account.select.shop";
 	public static final String MSG_CODE_NEED_PRIVILEGEPASS ="account.need.privilegePass";
 	public static final String MSG_CODE_ACCOUNT_SYSID_IS_NULL = "account.sysId.is.null";
+	public static final String MSG_CODE_ACCOUNT_VERSIN_NO_POWER = "account.version.no.power";
 	
 	// 图片
 	
