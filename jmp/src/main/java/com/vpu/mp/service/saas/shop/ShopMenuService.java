@@ -11,9 +11,9 @@ import org.springframework.util.StringUtils;
 
 import com.vpu.mp.service.foundation.BaseService;
 import com.vpu.mp.service.foundation.JsonResultCode;
-import com.vpu.mp.service.foundation.MenuUtil;
 import com.vpu.mp.service.foundation.Util;
-import com.vpu.mp.service.foundation.MenuUtil.Menu;
+import com.vpu.mp.service.pojo.saas.shop.version.VersionConfig;
+import com.vpu.mp.service.pojo.saas.shop.version.VersionMainConfig;
 
 /**
  * 
@@ -24,8 +24,6 @@ import com.vpu.mp.service.foundation.MenuUtil.Menu;
 @Scope("prototype")
 public class ShopMenuService extends BaseService {
 
-	final protected String menuJsonPath = "admin.menu.json";
-	final protected String authorityJsonPath = "admin.authority.json";
 
 	final protected String menuJson = "admin.authorityNew.json";
 	final protected String authorityJson = "admin.privilegePassNew.json";
@@ -36,22 +34,6 @@ public class ShopMenuService extends BaseService {
 	private static final String enNameList="enNameList";
 
 	private static final String childConfig="child_config";
-	public List<Menu> getMenu() {
-		return getRoleMenu(0);
-	}
-
-	public List<Menu> getRoleMenu(Integer roleId) {
-		String[] privilegeList = roleId == 0 ? null : saas().shop.role.getPrivilegeList(roleId);
-		return MenuUtil.getRoleMenu(menuJsonPath, authorityJsonPath, privilegeList);
-	}
-
-	public Boolean isRoleAccess(List<Menu> menuList, String path) {
-		return MenuUtil.isRoleAccess(menuList, path);
-	}
-
-	public Boolean isRoleAccess(Integer roleId, String path) {
-		return MenuUtil.isRoleAccess(getRoleMenu(roleId), path);
-	}
 
 	/**
 	 * 子账户对应展示按钮和输入密码的权限校验
@@ -139,7 +121,7 @@ public class ShopMenuService extends BaseService {
 	 * @param reqeName
 	 * @return
 	 */
-	public Boolean apiAccess(Integer roleId, String path, String reqeName) {
+	public Boolean apiAccess(Integer roleId, String path, String reqeName) {		
 		String[] privilegeList = roleId == 0 ? null : saas().shop.role.getPrivilegeList(roleId);
 		if (privilegeList == null) {
 			// 主账户登录，暂时不校验权限。
@@ -211,4 +193,28 @@ public class ShopMenuService extends BaseService {
 		return false;
 	}
 	
+	
+	/**
+	 * 版本权限的校验
+	 * 按照接口校验
+	 * @param shopId 店铺id
+	 * @param path   api
+	 * @param reqeName 
+	 * @return
+	 */
+	public JsonResultCode versionAccess(Integer shopId, String path, String reqenName) {
+		//获得店铺的版本和设置的店铺版本的合集
+		//获得版本里字段对应的eName（建个json对应）并和reqenName校验
+		//enName包含的api。（建个json）和path判断
+		VersionConfig vConfig = saas().shop.version.mergeVersion(shopId);
+		if (vConfig == null) {
+			// 版本存在问题，请联系管理员
+			return JsonResultCode.CODE_FAIL;
+		}
+		VersionMainConfig mainConfig = vConfig.getMainConfig();
+		
+		
+		return null;	
+		
+	}
 }
