@@ -22,6 +22,13 @@ import static com.vpu.mp.db.shop.tables.User.USER;
  */
 public class AccountService extends BaseService {
 	MemberService memberService;
+	/**
+	 * @param param
+	 * @param adminUser
+	 * @param tradeType
+	 * @param tradeFlow
+	 * @return
+	 */
 	public int addUserAccount(AccountParam param, int adminUser, Byte tradeType, Byte tradeFlow) {
 
 		if (param.getUserId() == null || param.getAmount() == null) {
@@ -55,7 +62,7 @@ public class AccountService extends BaseService {
 			return -1;
 		}
 
-		return 0;
+		return 1;
 	}
 
 	private void addTradeRecord(AccountParam param, Byte tradeType, Byte tradeFlow) {
@@ -115,8 +122,15 @@ public class AccountService extends BaseService {
 							,RECORD_ADMIN_ACTION.ACTION_TYPE,RECORD_ADMIN_ACTION.TEMPLATE_DATA,RECORD_ADMIN_ACTION.USER_NAME)
 			.values(admin.getSysId(),subAccountId,actionType,actionDesc,userName)
 			.execute();
-		
-		
+	}
+	
+	public BigDecimal getUserAccount(Integer userId) {
+		UserRecord user = memberService.getUserRecordById(userId);
+		if (user == null || user.getAccount() == null) {
+			return BigDecimal.ZERO;
+		}else {
+			return user.getAccount();
+		}
 	}
 
 }

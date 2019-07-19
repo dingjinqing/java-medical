@@ -1,4 +1,4 @@
-package com.vpu.mp.service.pojo.shop.store.service;
+package com.vpu.mp.service.pojo.shop.store.service.order;
 
 import java.math.BigDecimal;
 import java.sql.Timestamp;

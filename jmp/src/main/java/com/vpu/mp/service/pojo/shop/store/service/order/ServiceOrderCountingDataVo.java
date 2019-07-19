@@ -1,4 +1,4 @@
-package com.vpu.mp.service.pojo.shop.store.service;
+package com.vpu.mp.service.pojo.shop.store.service.order;
 
 import lombok.Data;
 
@@ -12,6 +12,6 @@ public class ServiceOrderCountingDataVo {
 	private Integer all;
 	private Integer waitPay;
 	private Integer waitService;
-	private Integer cancelled;
+	private Integer canceled;
 	private Integer finished;
 }

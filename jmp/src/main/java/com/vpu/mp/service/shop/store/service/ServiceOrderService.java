@@ -12,19 +12,22 @@ import java.util.Random;
 import org.jooq.Record;
 import org.jooq.SelectWhereStep;
 import org.jooq.tools.StringUtils;
+import org.springframework.context.annotation.Scope;
+import org.springframework.stereotype.Service;
 
 import com.vpu.mp.db.shop.tables.records.ServiceOrderRecord;
 import com.vpu.mp.service.foundation.BaseService;
 import com.vpu.mp.service.foundation.DelFlag;
 import com.vpu.mp.service.foundation.PageResult;
-import com.vpu.mp.service.pojo.shop.store.service.ServiceOrderAdminMessageParam;
-import com.vpu.mp.service.pojo.shop.store.service.ServiceOrderDetailVo;
-import com.vpu.mp.service.pojo.shop.store.service.ServiceOrderListQueryParam;
-import com.vpu.mp.service.pojo.shop.store.service.ServiceOrderListQueryVo;
-import org.springframework.context.annotation.Scope;
-import org.springframework.stereotype.Service;
-import com.vpu.mp.service.pojo.shop.store.service.ServiceOrderParam;
 import com.vpu.mp.service.pojo.shop.store.service.StoreServiceParam;
+import com.vpu.mp.service.pojo.shop.store.service.order.ServiceOrderAddParam;
+import com.vpu.mp.service.pojo.shop.store.service.order.ServiceOrderAdminMessageParam;
+import com.vpu.mp.service.pojo.shop.store.service.order.ServiceOrderDetailVo;
+import com.vpu.mp.service.pojo.shop.store.service.order.ServiceOrderListQueryParam;
+import com.vpu.mp.service.pojo.shop.store.service.order.ServiceOrderListQueryVo;
+import com.vpu.mp.service.pojo.shop.store.service.order.ServiceOrderUpdateParam;
+
+import io.netty.util.internal.StringUtil;
 
 /**
  * @author 王兵兵
@@ -36,6 +39,34 @@ import com.vpu.mp.service.pojo.shop.store.service.StoreServiceParam;
 @Service
 @Scope("prototype")
 public class ServiceOrderService extends BaseService{
+	
+	/**
+	 * 订单状态 0：待服务，1：已取消，2：已完成，3：待付款
+	 */
+	public static final Byte ORDER_STATUS_WAIT_SERVICE = 0;
+	public static final Byte ORDER_STATUS_CANCELED = 1;
+	public static final Byte ORDER_STATUS_FINISHED = 2;
+	public static final Byte ORDER_STATUS_WAIT_PAY = 3;
+	
+	/**
+	 * 预约订单创建创建类型 0用户创建 1后台
+	 */
+	public static final Byte ORDER_TYPE_USER_CREATE = 0;
+	public static final Byte ORDER_TYPE_ADMIN_CREATE = 1;
+	
+	/**
+	 * 核销方式 0是店家核销 1是用户
+	 */
+	public static final Byte VERIFY_TYPE_ADMIN = 0;
+	public static final Byte VERIFY_TYPE_USER = 1;
+	
+	/**
+	 * 核销支付方式 0门店买单 1会员卡 2余额
+	 */
+	public static final Byte VERIFY_PAY_TYPE_STORE = 0;
+	public static final Byte VERIFY_PAY_TYPE_MEMBER_CARD = 1;
+	public static final Byte VERIFY_PAY_TYPE_ACCOUNT = 2;
+	
 	/**
 	 * 门店服务预约列表分页查询
 	 * @param StoreListQueryParam
@@ -176,13 +207,38 @@ public class ServiceOrderService extends BaseService{
 	 * @param 后台添加服务预约
 	 * @return
 	 */
-	public Boolean addServiceOrder(ServiceOrderParam param) {
+	public Boolean addServiceOrder(ServiceOrderAddParam param) {
 		param.setOrderSn(generateOrderSn());
 		param.setVerifyCode(generateVerifyCode());
-		param.setType((byte)1);
+		param.setType(ORDER_TYPE_ADMIN_CREATE);
 		param.setMoneyPaid(getServiceMoneyPaid(param.getServiceId()));
 		ServiceOrderRecord record = new ServiceOrderRecord();
 		this.assign(param, record);
 		return db().executeInsert(record) > 0 ? true : false;
+	}
+	
+	/**
+	 * 校验核销码
+	 * @param orderSn
+	 * @param verifyCode
+	 * @return
+	 */
+	public Boolean checkVerifyCode(String orderSn,String verifyCode) {
+		if(!StringUtil.isNullOrEmpty(orderSn) && !StringUtil.isNullOrEmpty(verifyCode)) {
+			String trueCode = db().select(SERVICE_ORDER.VERIFY_CODE).from(SERVICE_ORDER).where(SERVICE_ORDER.ORDER_SN.eq(orderSn)).fetchOne().into(String.class);
+			return verifyCode.equals(trueCode);
+		}
+		return false;
+	}
+	
+	/**
+	 * 服务预约核销
+	 * @param param
+	 * @return
+	 */
+	public Boolean serviceOrderCharge(ServiceOrderUpdateParam param) {
+		ServiceOrderRecord record = new ServiceOrderRecord();
+	    assign(param, record);
+	    return db().executeUpdate(record) > 0 ? true : false;
 	}
 }

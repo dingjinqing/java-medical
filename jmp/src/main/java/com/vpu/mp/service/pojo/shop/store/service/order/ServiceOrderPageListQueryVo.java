@@ -1,4 +1,4 @@
-package com.vpu.mp.service.pojo.shop.store.service;
+package com.vpu.mp.service.pojo.shop.store.service.order;
 
 import com.vpu.mp.service.foundation.PageResult;
 

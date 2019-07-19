@@ -6,14 +6,14 @@ import static com.vpu.mp.db.shop.tables.StoreGroup.STORE_GROUP;
 import java.sql.Timestamp;
 import java.util.List;
 
-import com.vpu.mp.service.shop.store.group.StoreGroupService;
-import com.vpu.mp.service.shop.store.postsale.ServiceTechnicianService;
 import org.jooq.Condition;
 import org.jooq.DSLContext;
 import org.jooq.Record;
 import org.jooq.SelectWhereStep;
 import org.jooq.impl.DSL;
 import org.jooq.tools.StringUtils;
+import org.springframework.context.annotation.Scope;
+import org.springframework.stereotype.Service;
 
 import com.vpu.mp.db.shop.tables.records.StoreGroupRecord;
 import com.vpu.mp.db.shop.tables.records.StoreRecord;
@@ -31,8 +31,6 @@ import com.vpu.mp.service.shop.store.postsale.ServiceTechnicianService;
 import com.vpu.mp.service.shop.store.service.ServiceOrderService;
 import com.vpu.mp.service.shop.store.service.StoreServiceService;
 import com.vpu.mp.service.shop.store.verify.StoreVerifierService;
-import org.springframework.context.annotation.Scope;
-import org.springframework.stereotype.Service;
 
 /**
  * @author 王兵兵

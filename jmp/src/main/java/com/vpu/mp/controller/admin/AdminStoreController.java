@@ -7,28 +7,34 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.vpu.mp.service.foundation.FieldsUtil;
 import com.vpu.mp.service.foundation.JsonResult;
 import com.vpu.mp.service.foundation.JsonResultCode;
 import com.vpu.mp.service.foundation.PageResult;
+import com.vpu.mp.service.foundation.Util;
 import com.vpu.mp.service.pojo.shop.config.store.StoreServiceConfig;
+import com.vpu.mp.service.pojo.shop.member.account.AccountParam;
 import com.vpu.mp.service.pojo.shop.store.goods.StoreGoodsListQueryParam;
 import com.vpu.mp.service.pojo.shop.store.group.StoreGroup;
 import com.vpu.mp.service.pojo.shop.store.group.StoreGroupQueryParam;
-import com.vpu.mp.service.pojo.shop.store.service.ServiceOrderAdminMessageParam;
-import com.vpu.mp.service.pojo.shop.store.service.ServiceOrderCountingDataVo;
-import com.vpu.mp.service.pojo.shop.store.service.ServiceOrderListQueryParam;
-import com.vpu.mp.service.pojo.shop.store.service.ServiceOrderPageListQueryVo;
-import com.vpu.mp.service.pojo.shop.store.service.ServiceOrderParam;
 import com.vpu.mp.service.pojo.shop.store.service.StoreServiceCategoryListQueryParam;
 import com.vpu.mp.service.pojo.shop.store.service.StoreServiceCategoryParam;
 import com.vpu.mp.service.pojo.shop.store.service.StoreServiceListQueryParam;
 import com.vpu.mp.service.pojo.shop.store.service.StoreServiceParam;
+import com.vpu.mp.service.pojo.shop.store.service.order.ServiceOrderAddParam;
+import com.vpu.mp.service.pojo.shop.store.service.order.ServiceOrderAdminMessageParam;
+import com.vpu.mp.service.pojo.shop.store.service.order.ServiceOrderChargeParam;
+import com.vpu.mp.service.pojo.shop.store.service.order.ServiceOrderCountingDataVo;
+import com.vpu.mp.service.pojo.shop.store.service.order.ServiceOrderListQueryParam;
+import com.vpu.mp.service.pojo.shop.store.service.order.ServiceOrderPageListQueryVo;
+import com.vpu.mp.service.pojo.shop.store.service.order.ServiceOrderUpdateParam;
 import com.vpu.mp.service.pojo.shop.store.store.StoreListQueryParam;
 import com.vpu.mp.service.pojo.shop.store.store.StorePageListVo;
 import com.vpu.mp.service.pojo.shop.store.store.StoreParam;
 import com.vpu.mp.service.pojo.shop.store.store.StorePojo;
 import com.vpu.mp.service.pojo.shop.store.verify.VerifierAddParam;
 import com.vpu.mp.service.pojo.shop.store.verify.VerifierListQueryParam;
+import com.vpu.mp.service.shop.store.service.ServiceOrderService;
 
 /**
  * 门店管理
@@ -383,16 +389,16 @@ public class AdminStoreController extends AdminBaseController{
     	param.setOrderStatus((byte)-1);
     	countingData.setAll(shop().store.serviceOrder.getCountData(param));
     	/**待付款*/
-    	param.setOrderStatus((byte)3);
+    	param.setOrderStatus(ServiceOrderService.ORDER_STATUS_WAIT_PAY);
     	countingData.setWaitPay(shop().store.serviceOrder.getCountData(param));
     	/**待服务*/
-    	param.setOrderStatus((byte)0);
+    	param.setOrderStatus(ServiceOrderService.ORDER_STATUS_WAIT_SERVICE);
     	countingData.setWaitService(shop().store.serviceOrder.getCountData(param));
     	/**已取消*/
-    	param.setOrderStatus((byte)1);
-    	countingData.setCancelled(shop().store.serviceOrder.getCountData(param));
+    	param.setOrderStatus(ServiceOrderService.ORDER_STATUS_CANCELED);
+    	countingData.setCanceled(shop().store.serviceOrder.getCountData(param));
     	/**已完成*/
-    	param.setOrderStatus((byte)2);
+    	param.setOrderStatus(ServiceOrderService.ORDER_STATUS_FINISHED);
     	countingData.setFinished(shop().store.serviceOrder.getCountData(param));
     	vo.setCountingData(countingData);
     	return success(vo);
@@ -425,10 +431,83 @@ public class AdminStoreController extends AdminBaseController{
      * @return
      */
     @PostMapping(value = "/api/admin/store/service/reserve/add")
-    public JsonResult addServiceOrder(@RequestBody(required = true) @Valid ServiceOrderParam param) {
-    	System.out.println(param);
+    public JsonResult addServiceOrder(@RequestBody(required = true) @Valid ServiceOrderAddParam param) {
     	if(shop().store.serviceOrder.addServiceOrder(param)) {
     		return success();
+    	}else {
+    		return fail();
+    	}
+    }
+    
+    /**
+     * 服务预约核销
+     * @return
+     */
+    @PostMapping(value = "/api/admin/store/service/reserve/charge")
+    public JsonResult serviceOrderCharge(@RequestBody(required = true) @Valid ServiceOrderChargeParam param) {
+    	if(!shop().store.serviceOrder.checkVerifyCode(param.getOrderSn(), param.getVerifyCode())) {
+    		return fail(JsonResultCode.CODE_SERVICE_ORDER_VERIFY_CODE_ERROR);
+    	}
+    	boolean tradeFlag = false;
+    	switch (param.getVerifyPay()) {
+	    	/** 会员卡核销 */
+			case 1:
+				/** TODO : 会员卡余额扣费逻辑 */
+				break;
+			/** 用户余额核销 */
+			case 2:
+				if(param.getAccount() == null) {
+					return fail(JsonResultCode.CODE_PARAM_ERROR);
+				}
+				/** 校验账户余额 */
+				if(shop().member.account.getUserAccount(param.getUserId()).compareTo(param.getBalance()) == -1) {
+					return fail(JsonResultCode.CODE_SERVICE_ORDER_VERIFY_INSUFFICIENT_BALANCEL);
+				}
+				if(param.getBalance() == null) {
+					return fail(JsonResultCode.CODE_SERVICE_ORDER_VERIFY_BALANCE_IS_NULL);
+				}
+				if(param.getReason() == null) {
+					return fail(JsonResultCode.CODE_SERVICE_ORDER_VERIFY_REASON_IS_NULL);
+				}
+				AccountParam accountData = new AccountParam();
+				accountData.setAccount(param.getAccount());
+				accountData.setAmount(param.getBalance().negate());
+				accountData.setUserId(param.getUserId());
+				accountData.setRemark(param.getReason());
+				accountData.setOrderSn(param.getOrderSn());
+				
+				/** TODO : 以下三个参数需要确认 */
+				int adminUser = 0;
+				Byte tradeType = 0;
+				Byte tradeFlow = 1;
+				tradeFlag = shop().member.account.addUserAccount(accountData,adminUser,tradeType,tradeFlow) > 0 ? true : false;
+				System.out.println(tradeFlag);
+				break;
+			/** 门店买单 */
+			case 0:
+				tradeFlag = true;
+				break;
+			default:
+				return fail();
+		}
+    	if(tradeFlag) {
+    		ServiceOrderUpdateParam updateParam = new ServiceOrderUpdateParam();
+    		updateParam.setFinishedTime(Util.getLocalDateTime());
+    		updateParam.setVerifyAdmin(adminAuth.user().getUserName());
+    		updateParam.setOrderStatus(ServiceOrderService.ORDER_STATUS_FINISHED);
+    		
+    		/** TODO : OrderStatusName状态名称国际化
+    		 * updateParam.setOrderStatusName();
+    		 *   */
+    		
+    		updateParam.setVerifyType(ServiceOrderService.VERIFY_TYPE_ADMIN);
+    		FieldsUtil.assignNotNull(param, updateParam);
+    		
+    		if(shop().store.serviceOrder.serviceOrderCharge(updateParam)) {
+        		return success();
+        	}else {
+        		return fail();
+        	}
     	}else {
     		return fail();
     	}

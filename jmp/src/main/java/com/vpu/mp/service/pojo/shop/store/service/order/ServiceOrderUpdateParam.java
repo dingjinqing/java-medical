@@ -1,4 +1,4 @@
-package com.vpu.mp.service.pojo.shop.store.service;
+package com.vpu.mp.service.pojo.shop.store.service.order;
 
 import java.math.BigDecimal;
 import java.sql.Timestamp;
@@ -13,26 +13,20 @@ import lombok.Data;
  * 2019年7月18日
  */
 @Data
-public class ServiceOrderParam {
+public class ServiceOrderUpdateParam {
+	private Integer    orderId;
     private Integer    storeId;
-    private String     orderSn;
     @NotNull
+    private String     orderSn;
     private Integer    userId;
     private Byte       orderStatus;
     private String     orderStatusName;
-    @NotNull
     private String     subscriber;
-    @NotNull
     private String     mobile;
-    @NotNull
     private Integer    serviceId;
-    @NotNull
     private Integer    technicianId;
-    @NotNull
     private String     technicianName;
-    @NotNull
     private String     serviceDate;
-    @NotNull
     private String     servicePeriod;
     private String     addMessage;
     private String     adminMessage;
@@ -55,5 +49,4 @@ public class ServiceOrderParam {
     private Byte       type;
     private Byte       verifyPay;
     private String     aliTradeNo;
-
 }

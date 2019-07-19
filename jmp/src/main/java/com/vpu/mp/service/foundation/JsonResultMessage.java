@@ -121,6 +121,14 @@ public class JsonResultMessage {
 	final public static String STORE_TECHNICIAN_NAME_NULL="store.technician.name.null";
 	final public static String STORE_TECHNICIAN_TELEPHONE_ILLEGAL="store.tenchnician.telephone.illegal";
 	final public static String STORE_TECHNICIAN_TELEPHONE_NULL="store.tenchnician.telephone.null";
+	
+	/**
+	 * 	门店预约
+	 */
+	final public static String SERVICE_ORDER_VERIFY_CODE_ERROR="store.service.order.verify.code.error";
+	final public static String SERVICE_ORDER_VERIFY_BALANCE_IS_NULL="store.service.order.verify.balance.is.null";
+	final public static String SERVICE_ORDER_VERIFY_REASON_IS_NULL="store.service.order.verify.reason.is.null";
+	final public static String SERVICE_ORDER_VERIFY_INSUFFICIENT_BALANCE="store.service.order.verify.insufficient.balance";
 
 	/**
 	 * 基础配置
