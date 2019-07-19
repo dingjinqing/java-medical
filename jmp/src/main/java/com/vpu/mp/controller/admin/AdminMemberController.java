@@ -15,6 +15,7 @@ import com.vpu.mp.service.pojo.shop.member.CommonMemberPageListQueryVo;
 import com.vpu.mp.service.pojo.shop.member.MemberInfoVo;
 import com.vpu.mp.service.pojo.shop.member.MemberPageListParam;
 import com.vpu.mp.service.pojo.shop.member.account.AccountParam;
+import com.vpu.mp.service.pojo.shop.member.account.ScoreParam;
 import com.vpu.mp.service.shop.member.MemberService;
 
 
@@ -57,6 +58,7 @@ public class AdminMemberController extends AdminBaseController{
 		MemberService member = shop().member;
 		int ret = member.account.addUserAccount(param,adminUser,tradeType,tradeFlow);
 		
+		//TODO ret应该返回的是错误码error code
 		if(ret == -1) {
 			return this.fail(JsonResultMessage.MSG_MEMBER_ACCOUNT_UPDATE_FAIL);
 		}else {
@@ -68,4 +70,35 @@ public class AdminMemberController extends AdminBaseController{
 		
 		return success();
 	}
+	
+	
+	/**
+	 * 会员列表更新积分
+	 * @param param
+	 * @return
+	 */
+	@PostMapping(value="/score/update")
+	public JsonResult updateMemberScore(@RequestBody ScoreParam param) {
+		Integer subAccountId = this.adminAuth.user().getSubAccountId();
+		
+		if(param.getUserId()!=null) {
+			Integer[] arrayUserId = param.getUserId();
+			int userNumber = arrayUserId.length;
+			Byte tradeType = 4;
+			Byte tradeFlow = 1;
+			for(int i=0;i<userNumber;i++) {
+				Integer userId = arrayUserId[i];
+				shop().member.score.updateMemberScore(param,subAccountId,userId,tradeType,tradeFlow);
+			}
+		}else {
+			return fail(JsonResultMessage.MSG_MEMBER_NOT_EXIST);
+		}
+		return success(param.toString());
+	}
+	
+	
+	
+	
+	
+	
 }
