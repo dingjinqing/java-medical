@@ -1,7 +1,6 @@
 package com.vpu.mp.service.shop.summary.portrait;
 
 import com.fasterxml.jackson.core.type.TypeReference;
-import com.vpu.mp.db.main.tables.DictCity;
 import com.vpu.mp.db.shop.tables.records.MpUserPortraitRecord;
 import com.vpu.mp.service.foundation.BaseService;
 import com.vpu.mp.service.foundation.Util;
