@@ -2,6 +2,8 @@ package com.vpu.mp.controller.admin;
 
 import java.util.List;
 
+import javax.validation.Valid;
+
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -65,7 +67,7 @@ public class AdminChooseLinkController extends AdminBaseController{
 	 * @return
 	 */
 	@PostMapping(value = "/admin/decorate/web/save")
-	public JsonResult saveWebLink(@RequestBody XcxLinkListVo param) {
+	public JsonResult saveWebLink(@RequestBody @Valid XcxLinkListVo param) {
 		int result = shop().chooselink.saveWebLink(param);
 		if(result > 0) {
 			return this.success(result);
@@ -78,7 +80,7 @@ public class AdminChooseLinkController extends AdminBaseController{
 	 * 网页跳转列表
 	 * @return
 	 */
-	@PostMapping(value = "/admin/decorate/web/list")
+	@GetMapping(value = "/admin/decorate/web/list")
 	public JsonResult webLink() {
 		List<XcxLinkListVo> list = shop().chooselink.getWebLink();
 		return this.success(list);
@@ -98,7 +100,7 @@ public class AdminChooseLinkController extends AdminBaseController{
 	 * @param param
 	 * @return
 	 */
-	@PostMapping(value = "/admin/decorate/store")
+	@PostMapping(value = "/admin/decorate/store/list")
 	public JsonResult store(StoreListQueryParam param) {
 		PageResult<StoreVo> storeList = shop().chooselink.store(param);
 		return this.success(storeList);
@@ -130,7 +132,7 @@ public class AdminChooseLinkController extends AdminBaseController{
 	 * @return
 	 */
 	@PostMapping(value = "/admin/decorate/link/save")
-	public JsonResult xcxLinkSave(XcxLinkListVo param) {
+	public JsonResult xcxLinkSave(@RequestBody XcxLinkListVo param) {
 		Boolean res = shop().chooselink.saveXcxLink(param);
 		if(res) {
 			return this.success();

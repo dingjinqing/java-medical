@@ -8,6 +8,7 @@ import static com.vpu.mp.db.shop.Tables.FRIEND_PROMOTE_ACTIVITY;
 import static com.vpu.mp.db.shop.Tables.GOODS;
 import static com.vpu.mp.db.shop.Tables.GOODS_LABEL;
 import static com.vpu.mp.db.shop.Tables.GROUP_DRAW;
+import static com.vpu.mp.db.shop.Tables.GROUP_INTEGRATION_DEFINE;
 import static com.vpu.mp.db.shop.Tables.LOTTERY;
 import static com.vpu.mp.db.shop.Tables.MEMBER_CARD;
 import static com.vpu.mp.db.shop.Tables.MP_JUMP;
@@ -15,11 +16,9 @@ import static com.vpu.mp.db.shop.Tables.MP_JUMP_USABLE;
 import static com.vpu.mp.db.shop.Tables.MRKING_STRATEGY;
 import static com.vpu.mp.db.shop.Tables.MRKING_VOUCHER;
 import static com.vpu.mp.db.shop.Tables.PACKAGE_SALE;
-import static com.vpu.mp.db.shop.Tables.GROUP_INTEGRATION_DEFINE;
 import static com.vpu.mp.db.shop.Tables.PURCHASE_PRICE_DEFINE;
 import static com.vpu.mp.db.shop.Tables.SORT;
 import static com.vpu.mp.db.shop.Tables.STORE;
-import static com.vpu.mp.db.shop.tables.XcxCustomerPage.XCX_CUSTOMER_PAGE;
 
 import java.sql.Timestamp;
 import java.util.List;
@@ -27,9 +26,10 @@ import java.util.List;
 import org.jooq.Record3;
 import org.jooq.Record4;
 import org.jooq.SelectJoinStep;
+import org.springframework.context.annotation.Scope;
+import org.springframework.stereotype.Service;
 
 import com.vpu.mp.db.shop.tables.records.DecorateLinkRecord;
-import com.vpu.mp.db.shop.tables.records.XcxCustomerPageRecord;
 import com.vpu.mp.service.foundation.BaseService;
 import com.vpu.mp.service.foundation.DelFlag;
 import com.vpu.mp.service.foundation.PageResult;
@@ -44,8 +44,6 @@ import com.vpu.mp.service.pojo.shop.decoration.XcxNameListVo;
 import com.vpu.mp.service.pojo.shop.goods.label.GoodsLabelVo;
 import com.vpu.mp.service.pojo.shop.sort.SortVo;
 import com.vpu.mp.service.pojo.shop.store.store.StoreListQueryParam;
-import org.springframework.context.annotation.Scope;
-import org.springframework.stereotype.Service;
 
 /**
  * 
@@ -285,7 +283,7 @@ public class ChooseLinkService extends BaseService {
 		PageResult<StoreVo> pageResult = this.getPageResult(select, param.getCurrentPage(), param.getPageRows(), StoreVo.class);
 		return pageResult;
 	}
-	
+	                        
 	/**
 	 * 获取小程序名称
 	 * @return
@@ -303,9 +301,10 @@ public class ChooseLinkService extends BaseService {
 	 * @return
 	 */
 	public  List<XcxLinkListVo> getXcxLinkList() {
-		 List<XcxLinkListVo> linkList = db().select(DECORATE_LINK.APPID,DECORATE_LINK.TITLE,DECORATE_LINK.PATH_NAME,DECORATE_LINK.LINK_PATH)
+		 List<XcxLinkListVo> linkList = db().select()
 				 .from(DECORATE_LINK)
 				.where(DECORATE_LINK.DEL_FLAG.eq(DelFlag.NORMAL.getCode()))
+				.and(DECORATE_LINK.LINK_ACTION.eq((byte) 2))
 				.orderBy(DECORATE_LINK.ID.desc())
 				.fetch().into(XcxLinkListVo.class);
 		return linkList;
@@ -317,7 +316,9 @@ public class ChooseLinkService extends BaseService {
 	 * @return
 	 */
 	public Boolean saveXcxLink(XcxLinkListVo info) {
-		XcxCustomerPageRecord record = db().newRecord(XCX_CUSTOMER_PAGE, info);
+		DecorateLinkRecord record = db().newRecord(DECORATE_LINK,info);
+		record.setShopId(shopId);
+		record.setLinkAction((byte) 2);
 		int res = db().executeInsert(record);
 		if(res > 0) {
 			return true;
