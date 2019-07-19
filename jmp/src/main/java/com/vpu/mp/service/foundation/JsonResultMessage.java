@@ -158,7 +158,8 @@ public class JsonResultMessage {
 	final public static String MSG_MEMBER_TAG_NAME_EXIST="member.tag.name.exists";
 	final public static String MSG_MEMBER_TAG_ADD_SUCCESS = "member.tag.add.success";
 	final public static String MSG_MEMBER_TAG_ID_NOT_NULL = "member.tag.id.notnull";
-	final public static String MSG_MEMBER_NOT_EXIST="member.not.exist";
+
+	final public static String MSG_MEMBER_NOT_EXIST = "member.not.exist";
 	final public static String MSG_SCORE_NOT_SAME = "member.score.not.same";
 
 	/**
@@ -172,5 +173,7 @@ public class JsonResultMessage {
 	final public static String OVERVIEW_MALL_DATADEMONSTRATION_GET_FAILED = "overview.mall.datademonstration.get.failed";
 	final public static String OVERVIEW_MALL_BING_UNBING_FAILED = "overview.mall.bind.unbind.failed";
 	final public static String OVERVIEW_MALL_TODOITEM_GET_FAILED = "overview.mall.todoitem.get.failed";
+	
+	
 
 }
