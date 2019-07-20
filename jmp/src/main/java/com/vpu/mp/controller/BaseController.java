@@ -148,6 +148,9 @@ public class BaseController {
 	 * 使用方法：在入参或出参对象及其中嵌套对象中需要翻译的字段中添加 {@link I18N} 注解并指定对应的
 	 * properties 文件名，确保这些字段的值均为 properties 中的某个 key，调用此方法后会通过
 	 * {@link BaseController#translateFields(Object)} 方法自动对所有这些字段进行翻译
+	 * 
+	 * 目前支持的属性类型：{@code Class<String>, Class<? extends Object> Class<List<? extends Object>>, Class<List<String>>}
+	 * 分别对应 json 中的 字符串（string）、对象（object）以及字符串数组（array）
 	 *
 	 * 使用示例：{@link com.vpu.mp.controller.admin.AdminSummaryController#getVisitPage(VisitPageParam)}
 	 *
@@ -170,60 +173,43 @@ public class BaseController {
 			return;
 		}
 		String lang = request.getHeader("V-Lang");
-		if(StringUtils.isEmpty(lang)) {
+		if (StringUtils.isEmpty(lang)) {
 			lang = "zh_CN";
 		}
 		Class<?> clz = object.getClass();
 		Field[] fields = clz.getDeclaredFields();
 		for (Field field : fields) {
-			field.setAccessible(true);
-			I18N annotation = getI18nAnnotation(field);
-			if (field.getType().equals(String.class) && null != annotation) {
-				try {
+			try {
+				field.setAccessible(true);
+				I18N annotation = getI18nAnnotation(field);
+				if (field.getType().equals(String.class) && null != annotation) {
 					String value = (String) field.get(object);
 					String fileName = annotation.propertiesFileName();
 					String realValue = translate(fileName, lang, value, value);
 					field.set(object, realValue);
-				} catch (IllegalAccessException e) {
-					e.printStackTrace();
 				}
-			}
-			if (field.getType().isAssignableFrom(List.class)) {
-				ParameterizedType type = (ParameterizedType) field.getGenericType();
-				Class<?> realType = (Class<?>) type.getActualTypeArguments()[0];
-				if (null != annotation && realType.equals(String.class)) {
-					String fileName = annotation.propertiesFileName();
-					List<String> list = null;
-					try {
+				if (field.getType().isAssignableFrom(List.class)) {
+					ParameterizedType type = (ParameterizedType) field.getGenericType();
+					Class<?> realType = (Class<?>) type.getActualTypeArguments()[0];
+					if (null != annotation && realType.equals(String.class)) {
+						String fileName = annotation.propertiesFileName();
+						List<String> list = null;
 						list = (List<String>) field.get(object);
-					} catch (IllegalAccessException e) {
-						e.printStackTrace();
-					}
-					String finalLang = lang;
-					List<String> translated = Objects.requireNonNull(list).parallelStream()
-							.map(i -> translate(fileName, finalLang, i, i))
-							.collect(Collectors.toList());
-					try {
+						String finalLang = lang;
+						List<String> translated = Objects.requireNonNull(list).parallelStream()
+								.map(i -> translate(fileName, finalLang, i, i))
+								.collect(Collectors.toList());
 						field.set(object, translated);
-					} catch (IllegalAccessException e) {
-						e.printStackTrace();
-					}
-				} else {
-					try {
+					} else {
 						List<?> o = (List<?>) field.get(object);
 						o.forEach(this::translateFields);
-					} catch (IllegalAccessException e) {
-						e.printStackTrace();
 					}
-				}
-			}
-			else {
-				try {
+				} else {
 					Object o = field.get(object);
 					translateFields(o);
-				} catch (IllegalAccessException e) {
-					e.printStackTrace();
 				}
+			} catch (IllegalAccessException e) {
+				e.printStackTrace();
 			}
 		}
 	}
