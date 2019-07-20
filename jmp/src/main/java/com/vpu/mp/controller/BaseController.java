@@ -148,7 +148,7 @@ public class BaseController {
 	 * 使用方法：在入参或出参对象及其中嵌套对象中需要翻译的字段中添加 {@link I18N} 注解并指定对应的
 	 * properties 文件名，确保这些字段的值均为 properties 中的某个 key，调用此方法后会通过
 	 * {@link BaseController#translateFields(Object)} 方法自动对所有这些字段进行翻译
-	 * 
+	 *
 	 * 目前支持的属性类型：{@code Class<String>, Class<? extends Object> Class<List<? extends Object>>, Class<List<String>>}
 	 * 分别对应 json 中的 字符串（string）、对象（object）以及字符串数组（array）
 	 *
