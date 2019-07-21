@@ -8,12 +8,11 @@
       <div class="dialog_top">
         <el-upload
           class="upload-demo"
-          action="https://jsonplaceholder.typicode.com/posts/"
-          :on-remove="handleRemove"
-          :on-success="handleSuccess"
-          :before-remove="beforeRemove"
+          action=""
+          :before-upload="beforeUpLoad"
           multiple
-          :limit="3"
+          :limit="5"
+          :show-file-list="false"
           :on-exceed="handleExceed"
         >
           <el-button
@@ -68,8 +67,17 @@
                   :key="index"
                 >
 
-                  <div>
-                    <img :src="item.imgUrl">
+                  <div style="position:relative">
+                    <a :title="item.imgName">
+                      <img
+                        :src="item.imgUrl"
+                        @click="handleChecked(index)"
+                      >
+                    </a>
+                    <div
+                      v-show="item.checked"
+                      class="img_sel"
+                    ></div>
                   </div>
                   <div
                     class="img_mask"
@@ -106,16 +114,16 @@
                   class="totle"
                   :class="admin_imageDalog_totle"
                 >
-                  <span>{{$t('imgageDalog.currentPage')}}1/2,</span>
-                  <span>{{$t('imgageDalog.totalPage')}}12{{$t('imgageDalog.strip')}}</span>
+                  <span>{{$t('imgageDalog.currentPage')}}{{this.currentPage}}/{{this.pageCount}},</span>
+                  <span>{{$t('imgageDalog.totalPage')}}{{this.totalRows}}{{$t('imgageDalog.strip')}}</span>
                 </div>
                 <el-pagination
                   @size-change="handleSizeChange"
                   @current-change="handleCurrentChange"
                   :current-page.sync="currentPage3"
-                  :page-size="100"
+                  :page-size="20"
                   layout="prev, pager, next, jumper"
-                  :total="1000"
+                  :total="totalRows"
                   :small="pagination_b"
                 >
                 </el-pagination>
@@ -140,7 +148,9 @@
   </div>
 </template>
 <script>
+import { mapGetters } from 'vuex'
 import Tree from '@/components/admin/tree'
+import { queryHeadImgsRequest, upmoreHeadImgsRequest } from '@/api/admin/tree.js'
 export default {
   components: { Tree },
   data () {
@@ -155,18 +165,41 @@ export default {
       value: '',
       imgNameInput: '',
       checked: false,
-      currentPage3: 5,
+      currentPage3: 1,
       pagination_b: true,
       c_imgUrl: this.$imageHost + '/upload/0/image/20180528/i561Ez0lgWDeUOHe.jpeg!middle',
       dim_flag: 'dim_flag',
       mask_flag: 'mask_flag',
       img_list: [
-        { imgIndex: '', imgUrl: this.$imageHost + '/upload/0/image/20180528/i561Ez0lgWDeUOHe.jpeg!middle', size: '52x52' },
-        { imgIndex: '', imgUrl: this.$imageHost + '/upload/0/image/20180528/i561Ez0lgWDeUOHe.jpeg!middle', size: '72x72' }
+        { imgName: 'test1', checked: false, imgIndex: '', imgUrl: this.$imageHost + '/upload/0/image/20180528/i561Ez0lgWDeUOHe.jpeg!middle', size: '52x52' },
+        { imgName: 'test2', checked: false, imgIndex: '', imgUrl: this.$imageHost + '/upload/0/image/20180528/i561Ez0lgWDeUOHe.jpeg!middle', size: '72x72' }
       ],
       imageDalogTip_lineHeight: '',
       imageDalog_p_height: '',
-      admin_imageDalog_totle: ''
+      admin_imageDalog_totle: '',
+      firstNodeId: '',
+      totalRows: null,
+      currentPage: '',
+      pageCount: ''
+    }
+  },
+  computed: {
+    ...mapGetters(['allNodes']),
+    allNodes_ () {
+      return this.allNodes
+    }
+  },
+  watch: {
+    allNodes_ (newData, oldData) {
+      console.log(newData)
+      // 初始化图片查询数据
+      if (newData.content) {
+        this.firstNodeId = newData.content[0].id
+      } else {
+        this.firstNodeId = newData.id
+      }
+
+      this.queryImgs()
     }
   },
   mounted () {
@@ -174,35 +207,92 @@ export default {
     this.$http.$on('dtVisible', () => {
       this.dialogTableVisible = true
     })
-    this.value = this.options[0].label
+    this.value = this.options[0].value
     // 初始化语言
     this.langDefault()
   },
   methods: {
+    // 图片上传前的钩子
+    beforeUpLoad (file) {
+      console.log(file)
+      let that = this
+      console.log(this.firstNodeId)
+      let is1M = file.size / 1024 / 1024 < 5 // 限制小于1M
+      console.log(is1M)
+      if (!is1M) this.$message.error('请上传小于5M的图片')
 
-    // 文件上传成功后的钩子
-    handleSuccess () {
+      // let width = 654 // 限制图片尺寸为654X270
+      // let height = 270
+      let _URL = window.URL || window.webkitURL
+      let img = new Image()
 
-    },
-    // 删除前的钩子
-    beforeRemove () {
+      img.onload = function () {
+        console.log(img.width, img.height)
+        // this.upImgWidth = img.width
+        // this.upImgHeight = img.height
+        console.log(that.firstNodeId)
+        let fd = new FormData()
+        // console.log(fd)
+        fd.append('file', file)
+        fd.append('needImgWidth', img.width)
+        fd.append('needImgHeight', img.height)
+        fd.append('imgCatId', that.firstNodeId)
+        upmoreHeadImgsRequest(fd).then((res) => {
+          console.log(res)
+          if (res.error === 0) {
+            that.detailImgsSearch()
+          }
+        })
+        // let valid = img.width === width && img.height === height
+      }
+      img.src = _URL.createObjectURL(file)
 
-    },
-    // 图片删除钩子
-    handleRemove () {
-
+      return false
     },
     // 文件数量超出限制钩子
     handleExceed () {
-
-    },
-    // pageSize 改变时会触发
-    handleSizeChange () {
-
+      this.$message.error('单次上传图片数量不能超过5张')
     },
     // currentPage 改变时会触发
     handleCurrentChange () {
+      this.queryImgs(this.currentPage3)
+    },
+    // 图片分组查询
+    queryImgs (currentPage3) {
+      console.log(this.firstNodeId)
+      console.log(this.value)
+      console.log(this.checked)
+      let width = '52'
+      let height = '52'
+      if (this.checked === true) {
+        width = '52'
+        height = '52'
+      } else {
+        width = ''
+        height = ''
+      }
 
+      let obj = {
+        'page': currentPage3,
+        'imgCatId': this.firstNodeId,
+        'keywords': this.imgNameInput,
+        'searchNeed': 0,
+        'needImgWidth': width,
+        'needImgHeight': height,
+        'uploadSortId': this.value
+      }
+
+      queryHeadImgsRequest(obj).then((res) => {
+        if (res === 0) {
+          this.totalRows = res.content.page.totalRows
+          this.currentPage = res.content.page.currentPage
+          this.pageCount = res.content.page.pageCount
+        }
+      })
+    },
+    // 单图片选中
+    handleChecked (index) {
+      this.img_list[index].checked = !this.img_list[index].checked
     },
     // 鼠标划入
     enter (index) {
@@ -223,6 +313,14 @@ export default {
 }
 </script>
 <style scoped>
+.img_sel {
+  width: 18px;
+  height: 18px;
+  background: url(../../assets/adminImg/img_sel.png) no-repeat;
+  position: absolute;
+  right: -9px;
+  top: -9px;
+}
 .imageDalog_p_height {
   display: flex;
   flex-direction: column;
@@ -367,6 +465,11 @@ ul {
 .imageDalog .right_content .el-pagination {
   margin-top: 23px;
   width: 400px !important;
+}
+.imageDalog .el-button {
+  padding: 7px 15px !important;
+  font-size: 12px !important;
+  border-radius: 3px !important;
 }
 /* .el-popper[x-placement^="bottom"] {
   margin-top: 10px !important;

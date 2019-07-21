@@ -1,15 +1,12 @@
 <template>
   <div>
     <div class="content">
-      <div
-        class="top_container"
-        v-if="topHiddenFlag"
-      >
+      <div class="top_container">
         <div class="top_left">
-          <div>{{topName}}：</div>
+          <div>关键词：</div>
           <el-input
             v-model="pageName"
-            placeholder="请输入品牌名称"
+            placeholder="请输入关键词"
             size="mini"
           ></el-input>
           <div class="top_right">
@@ -24,35 +21,25 @@
       <table width='100%'>
         <thead>
           <tr>
-            <td>{{classificationName}}</td>
-
+            <td>商品信息</td>
+            <td>商品货号</td>
             <td>链接</td>
           </tr>
         </thead>
-        <tbody v-if="tbodyFlag">
+        <tbody>
           <tr
             v-for="(item,index) in trList"
             :key="index"
             :class="clickIindex===index?'clickClass':''"
             @click="handleClick(index,item)"
           >
-            <td v-if="!topHiddenFlag">{{item.title}}<img
-                v-if="item.children?true:false"
-                :src="imgIndex===index&&imgFlag?leftImg[1].img:leftImg[0].img"
-                @click="handleImg(index)"
-              ></td>
-            <td
-              v-else
-              class="isLeft"
-              :class="isCenterFlag?'tdCenter':''"
-            >
-              <img
-                v-if="!isCenterFlag"
-                :src="tdHiddenImg"
-              >
+
+            <td class="isLeft">
+              <img :src="tdHiddenImg">
               <span>范思哲</span>
 
             </td>
+            <td>{{item.title}}</td>
             <td class="tb_decorate_a">
               {{item.path}}
             </td>
@@ -288,10 +275,10 @@ thead td {
   vertical-align: middle !important;
 }
 thead td:nth-of-type(1) {
-  width: 120px;
+  width: 258px;
 }
 thead td:nth-of-type(2) {
-  width: 175px;
+  width: 106px;
 }
 tbody td {
   text-align: center;

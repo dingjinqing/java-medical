@@ -39,7 +39,10 @@
       :modal='false'
     >
       <div class="shareDialog">
-        <div class="shareDialog_content"><img :src="shareImg"></div>
+        <div class="shareDialog_content"><img
+            style="height:160px"
+            :src="shareImg"
+          ></div>
         <div
           class="shareDialog_bottom"
           @click="downs()"

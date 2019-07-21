@@ -78,7 +78,8 @@ import {
   groupDelRequest,
   renameRequest
 } from '@/api/admin/pictureSpace.js'
-import { getHeadTreeListRequest } from '@/api/admin/tree.js'
+// getHeadTreeListRequest
+import { renameHeadRequest, groupHeadAddRequest, groupHeadDelRequest } from '@/api/admin/tree.js'
 import {
   getEditContent,
   getDefaultContent
@@ -161,13 +162,15 @@ export default {
       // let res = getServiceTree()
       if (this.pageIndex === 'pictureSpace') {
         getTreeListRequest().then((res) => {
+          console.log(res)
           console.log(res.content[0].id)
           this.changeTreeNode(res.content[0])
           this.allNodes(res)
           this.treeData = res.content
         })
       } else {
-        getHeadTreeListRequest().then((res) => {
+        console.log('tree!')
+        getTreeListRequest().then((res) => {
           console.log(res.content[0].id)
           this.changeTreeNode(res.content[0])
           this.allNodes(res)
@@ -228,19 +231,35 @@ export default {
       let obj = {
         imgCatId: this.select_node.data.id
       }
-      groupDelRequest(obj).then((res) => {
-        if (res.error === 0) {
-          this.delDialogVisible = false
-          this.refresh()
-          this.$notify({
-            type: 'success',
-            title: '操作提示',
-            message: '删除成功!',
-            duration: 2000
-          })
-        }
-        console.log(res)
-      })
+      if (this.pageIndex === 'pictureSpace') {
+        groupDelRequest(obj).then((res) => {
+          if (res.error === 0) {
+            this.delDialogVisible = false
+            this.refresh()
+            this.$notify({
+              type: 'success',
+              title: '操作提示',
+              message: '删除成功!',
+              duration: 2000
+            })
+          }
+          console.log(res)
+        })
+      } else {
+        groupHeadDelRequest(obj).then((res) => {
+          if (res.error === 0) {
+            this.delDialogVisible = false
+            this.refresh()
+            this.$notify({
+              type: 'success',
+              title: '操作提示',
+              message: '删除成功!',
+              duration: 2000
+            })
+          }
+          console.log(res)
+        })
+      }
     },
 
     update (node, data, e) {
@@ -277,25 +296,48 @@ export default {
           }
           console.log(virtualNode)
           //   let addChild = addItem(this.treeData, params)
-          groupAddRequest(params).then((res) => {
-            if (res.error === 0) {
-              virtualNode.data.child.forEach((item, i) => {
-                if (!item.id) {
-                  virtualNode.data.child.splice(i, 1)
-                }
-              })
-              this.isEdit = false
-              this.select_id = null
-              this.select_level = null
-              this.$notify({
-                type: 'success',
-                title: '操作提示',
-                message: '添加成功！',
-                duration: 2000
-              })
-              this.refresh()
-            }
-          })
+          if (this.pageIndex === 'pictureSpace') {
+            groupAddRequest(params).then((res) => {
+              if (res.error === 0) {
+                virtualNode.data.child.forEach((item, i) => {
+                  if (!item.id) {
+                    virtualNode.data.child.splice(i, 1)
+                  }
+                })
+                this.isEdit = false
+                this.select_id = null
+                this.select_level = null
+                this.$notify({
+                  type: 'success',
+                  title: '操作提示',
+                  message: '添加成功！',
+                  duration: 2000
+                })
+                this.refresh()
+              }
+            })
+          } else {
+            groupHeadAddRequest(params).then((res) => {
+              if (res.error === 0) {
+                virtualNode.data.child.forEach((item, i) => {
+                  if (!item.id) {
+                    virtualNode.data.child.splice(i, 1)
+                  }
+                })
+                this.isEdit = false
+                this.select_id = null
+                this.select_level = null
+                this.$notify({
+                  type: 'success',
+                  title: '操作提示',
+                  message: '添加成功！',
+                  duration: 2000
+                })
+                this.refresh()
+              }
+            })
+          }
+
           // 如果是用的真api,需要在添加的接口返回添加的节点
           // 添加成功后，将返回的节点加入数据中，然后删除掉没有id的假节点
           return
@@ -305,21 +347,40 @@ export default {
           imgCatName: this.edit_name,
           imgCatId: data.id
         }
-        renameRequest(params).then((res) => {
-          console.log(res)
-          if (res.error === 0) {
-            this.isEdit = false
-            this.select_id = null
-            this.select_level = null
-            this.$notify({
-              type: 'success',
-              title: '操作提示',
-              message: '编辑成功！',
-              duration: 2000
-            })
-            this.refresh()
-          }
-        })
+        if (this.pageIndex === 'pictureSpace') {
+          renameRequest(params).then((res) => {
+            console.log(res)
+            if (res.error === 0) {
+              this.isEdit = false
+              this.select_id = null
+              this.select_level = null
+              this.$notify({
+                type: 'success',
+                title: '操作提示',
+                message: '编辑成功！',
+                duration: 2000
+              })
+              this.refresh()
+            }
+          })
+        } else {
+          console.log(params)
+          renameHeadRequest(params).then((res) => {
+            console.log(res)
+            if (res.error === 0) {
+              this.isEdit = false
+              this.select_id = null
+              this.select_level = null
+              this.$notify({
+                type: 'success',
+                title: '操作提示',
+                message: '编辑成功！',
+                duration: 2000
+              })
+              this.refresh()
+            }
+          })
+        }
       }
     },
 

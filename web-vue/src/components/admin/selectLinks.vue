@@ -23,7 +23,7 @@
               <span :class="bottom_line_flagindex==index?'click_active':''">{{item.title}}</span>
               <div
                 class="three-circle"
-                v-if="index==2||index==3?true:false"
+                v-if="index==3||index==4?true:false"
               >
                 <span></span>
                 <span></span>
@@ -104,6 +104,9 @@ export default {
       level_one_DataList: [
         {
           flagindex: null, title: '常用链接'
+        },
+        {
+          flagindex: null, title: '商品链接'
         },
         {
           flagindex: '', title: '自定义页面'
@@ -221,12 +224,12 @@ export default {
     // 一级列表移入
     enter_out (index) {
       this.level_one_DataList[index].flagindex = index
-      if (index === 2) {
+      if (index === 3) {
         this.threeTofour_flag_1 = true
       } else {
         this.threeTofour_flag_1 = false
       }
-      if (index === 3) {
+      if (index === 4) {
         this.threeTofour_flag_2 = true
       } else {
         this.threeTofour_flag_2 = false
@@ -275,7 +278,7 @@ export default {
     // 一级列表点击
     level_one_click (index) {
       console.log(12321321)
-      if (index === 2 || index === 3) return
+      if (index === 3 || index === 4) return
       this.bottom_line_flagindex = index
       this.bottom_level_line_one = null
       this.bottom_level_line_two = null
@@ -287,31 +290,31 @@ export default {
           break
         case 1:
           this.$router.push({
-            name: 'customPage'
+            name: 'commodityLinks'
           })
           break
         case 2:
           this.$router.push({
-            name: 'groupDrawing'
-          })
-          break
-        case 4:
-          this.$router.push({
-            name: 'pageJump'
+            name: 'customPage'
           })
           break
         case 5:
           this.$router.push({
-            name: 'smallProgramJump'
+            name: 'pageJump'
           })
           break
         case 6:
+          this.$router.push({
+            name: 'smallProgramJump'
+          })
+          break
+        case 7:
           this.changeSelectLinkLeft(6)
           this.$router.push({
             name: 'formPage'
           })
           break
-        case 7:
+        case 8:
           this.changeSelectLinkLeft(7)
           this.$router.push({
             name: 'formPage'
@@ -332,7 +335,7 @@ export default {
           name: 'groupDrawing'
         })
 
-        this.bottom_line_flagindex = 2
+        this.bottom_line_flagindex = 3
         this.bottom_level_line_two = null
         this.bottom_level_line_one = index
       } else {
@@ -344,7 +347,7 @@ export default {
         this.$router.push({
           name: 'classificationOfCommodities'
         })
-        this.bottom_line_flagindex = 3
+        this.bottom_line_flagindex = 4
         this.bottom_level_line_one = null
         this.bottom_level_line_two = index
       }

@@ -66,6 +66,13 @@ const routes = [
                 meta: 'first_web_decoration',
                 component: r => require.ensure([], () => r(require('@/components/admin/selectLinksComponents/commonLinks')), 'commonLinks')
               },
+              // 商品链接
+              {
+                path: '/admin/home/main/bottomNavigation/commodityLinks',
+                name: 'commodityLinks',
+                meta: 'first_web_decoration',
+                component: r => require.ensure([], () => r(require('@/components/admin/selectLinksComponents/commodityLinks')), 'commodityLinks')
+              },
               // 自定义页面
               {
                 path: '/admin/home/main/bottomNavigation/customPage',

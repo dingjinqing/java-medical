@@ -24,18 +24,22 @@
             :style="item.colorRight"
             :class="item.id===index?'choiseColor':''"
           ></span>
+
+          <colorPicker
+            v-model="colorLeft_"
+            :defaultColor="defaultColorleft"
+            v-on:change="headleChangeColorLeft"
+            v-if="index===6?true:false"
+          />
+          <colorPicker
+            v-if="index===6?true:false"
+            v-model="colorRight"
+            :defaultColor="defaultColorright"
+            v-on:change="headleChangeColorRight"
+            style="right:13px;"
+          />
         </div>
-        <colorPicker
-          v-model="colorLeft_"
-          :defaultColor="defaultColorleft"
-          v-on:change="headleChangeColorLeft"
-        />
-        <colorPicker
-          v-model="colorRight"
-          :defaultColor="defaultColorright"
-          v-on:change="headleChangeColorRight"
-          style="right:271px;"
-        />
+
       </div>
 
       <div class="color_content">
@@ -378,6 +382,7 @@ export default {
   color: #666;
   border-radius: 4px;
   cursor: pointer;
+  position: relative;
 }
 .ps_color {
   width: 24px;
@@ -620,8 +625,8 @@ export default {
 <style>
 .m-colorPicker {
   position: absolute !important;
-  right: 294px;
-  top: 18px;
+  right: 36px;
+  top: 6px;
   width: 24px !important;
   height: 24px !important;
 }
