@@ -1,4 +1,4 @@
-package com.vpu.mp.service.pojo.shop.order;
+package com.vpu.mp.service.pojo.shop.order.goods;
 
 import java.math.BigDecimal;
 
@@ -30,5 +30,4 @@ public class OrderGoodsVo {
 	/**SKU*/
 	private Integer productId;
 	private String goodsImg;
-	
 }

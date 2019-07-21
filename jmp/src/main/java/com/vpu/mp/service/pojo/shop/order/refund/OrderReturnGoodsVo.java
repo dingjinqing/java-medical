@@ -1,4 +1,6 @@
-package com.vpu.mp.service.pojo.shop.order;
+package com.vpu.mp.service.pojo.shop.order.refund;
+
+import com.vpu.mp.service.pojo.shop.order.goods.OrderGoodsVo;
 
 import lombok.Getter;
 import lombok.Setter;

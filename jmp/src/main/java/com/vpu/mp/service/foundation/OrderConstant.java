@@ -76,6 +76,17 @@ public class OrderConstant {
 	public static int GOODS_TYPE_GIVE_GIFT = 17;
 	/** 首单特惠 */
 	public static int GOODS_TYPE_FIRST_SPECIAL = 18;
+	
+	/**
+	 * 配送方式
+	 * 
+	 */
+	/**快递*/
+	public static int DELIVER_TYPE_COURIER = 0;
+	/**自提*/
+	public static int DELIVER_TYPE_SELF = 1;
+	
+
 	private String[] orderStatus = {
 			// ORDER_WAIT_PAY
 			"待付款",

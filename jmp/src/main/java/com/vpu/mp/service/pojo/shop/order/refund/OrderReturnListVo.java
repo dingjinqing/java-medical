@@ -1,7 +1,9 @@
-package com.vpu.mp.service.pojo.shop.order;
+package com.vpu.mp.service.pojo.shop.order.refund;
 
 import java.math.BigDecimal;
 import java.sql.Timestamp;
+
+import com.vpu.mp.service.pojo.shop.order.OrderListInfoVo;
 
 import lombok.Getter;
 import lombok.Setter;

@@ -20,7 +20,7 @@ import com.vpu.mp.service.shop.member.MemberService;
 import com.vpu.mp.service.shop.member.ScoreCfgService;
 import com.vpu.mp.service.shop.member.TagService;
 import com.vpu.mp.service.shop.operation.RecordAdminActionService;
-import com.vpu.mp.service.shop.order.OrderService;
+import com.vpu.mp.service.shop.order.OrderReadService;
 import com.vpu.mp.service.shop.overview.MallOverviewService;
 import com.vpu.mp.service.shop.overview.OverviewService;
 import com.vpu.mp.service.shop.store.store.StoreService;
@@ -44,7 +44,7 @@ public class ShopApplication extends ServiceContainer {
 	public ImageService image;
 	public ImageCategoryService imageCatgory;
 	public MpDecorationService mpDecoration;	//装修模块
-	public OrderService order;
+	public OrderReadService order;
 	public PageClassificationService pageClassification;
 	public VersionService version;
 	public ConfigService config;

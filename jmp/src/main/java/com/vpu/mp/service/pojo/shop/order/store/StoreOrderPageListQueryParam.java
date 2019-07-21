@@ -1,4 +1,4 @@
-package com.vpu.mp.service.pojo.shop.order;
+package com.vpu.mp.service.pojo.shop.order.store;
 
 import java.sql.Timestamp;
 
