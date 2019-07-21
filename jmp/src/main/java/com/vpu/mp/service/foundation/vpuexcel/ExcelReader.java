@@ -20,7 +20,7 @@ import java.util.Map;
  * @author 李晓冰
  * @date 2019年07月18日
  */
-public class ExcelReader extends ExcelDisposer {
+public class ExcelReader extends AbstractExcelDisposer {
 
     private Workbook workbook;
 

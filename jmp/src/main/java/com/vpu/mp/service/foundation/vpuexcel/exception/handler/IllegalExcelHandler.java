@@ -6,5 +6,9 @@ package com.vpu.mp.service.foundation.vpuexcel.exception.handler;
  */
 public interface IllegalExcelHandler {
 
+    /**
+     *  excel解析错误回调方法
+     * @param binder
+     */
     void handleIllegalParse(IllegalExcelBinder binder);
 }

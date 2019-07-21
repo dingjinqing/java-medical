@@ -15,7 +15,7 @@ import java.util.Map;
  * @author 李晓冰
  * @date 2019年07月19日
  */
-public class ExcelWriter extends ExcelDisposer {
+public class ExcelWriter extends AbstractExcelDisposer {
     private Workbook workbook;
     private String sheetName;
 
@@ -46,8 +46,8 @@ public class ExcelWriter extends ExcelDisposer {
         createExcelTemplate(clazz, sheetBean, sheet);
 
 
-        Map<Integer,CellStyle> styleMap=new HashMap<>();
-        Map<Integer,CellType> typeMap=new HashMap<>();
+        Map<Integer,CellStyle> styleMap=new HashMap<>(sheetBean.columnMap.size());
+        Map<Integer,CellType> typeMap=new HashMap<>(sheetBean.columnMap.size());
         //设置单元格样式和类型缓存
         for (Map.Entry<String, ExcelColumnBean> entry : sheetBean.columnMap.entrySet()) {
             ExcelColumnBean columnBean = entry.getValue();

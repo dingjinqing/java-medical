@@ -246,7 +246,7 @@ public class ExcelUtil {
      * @return
      */
     public static boolean isDecimalPointOfManyZero(String str) {
-        if (str.equals("") || str == null) {
+        if (str == null||"".equals(str)) {
             return false;
         }
 

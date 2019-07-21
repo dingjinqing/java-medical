@@ -17,7 +17,7 @@ import java.lang.reflect.Field;
  * @author 李晓冰
  * @date 2019年07月20日
  */
-public abstract class ExcelDisposer {
+public abstract class AbstractExcelDisposer {
 
     /**
      *  初始化ExcelSheetBean，映射model类和excel
