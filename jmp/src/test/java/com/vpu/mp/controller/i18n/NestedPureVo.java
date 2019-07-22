@@ -1,6 +1,5 @@
 package com.vpu.mp.controller.i18n;
 
-import com.vpu.mp.controller.I18N;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 
@@ -9,8 +8,7 @@ import lombok.Data;
  */
 @Data
 @AllArgsConstructor
-public class CategoryVo {
+class NestedPureVo {
 
-    @I18N(propertiesFileName = "category")
-    private String name;
+    private PureVo nestedVo;
 }

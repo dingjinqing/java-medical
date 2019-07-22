@@ -34,6 +34,9 @@ public class VoTranslator {
      */
     @SuppressWarnings("unchecked")
     public void translateFields(Object object) {
+        if (null == object) {
+            return;
+        }
         if (isRawType(object)) {
             return;
         }
@@ -53,7 +56,7 @@ public class VoTranslator {
                     String realValue = translate(fileName, lang, value, value);
                     field.set(object, realValue);
                 }
-                if (field.getType().isAssignableFrom(List.class)) {
+                if (List.class.isAssignableFrom(field.getType())) {
                     ParameterizedType type = (ParameterizedType) field.getGenericType();
                     Class<?> realType = (Class<?>) type.getActualTypeArguments()[0];
                     if (null != annotation && realType.equals(String.class)) {
@@ -61,10 +64,12 @@ public class VoTranslator {
                         List<String> list;
                         list = (List<String>) field.get(object);
                         String finalLang = lang;
-                        List<String> translated = Objects.requireNonNull(list).parallelStream()
-                                .map(i -> translate(fileName, finalLang, i, i))
-                                .collect(Collectors.toList());
-                        field.set(object, translated);
+                        if (null != list) {
+                            List<String> translated = list.parallelStream()
+                                    .map(i -> translate(fileName, finalLang, i, i))
+                                    .collect(Collectors.toList());
+                            field.set(object, translated);
+                        }
                     } else {
                         List<?> o = (List<?>) field.get(object);
                         o.forEach(this::translateFields);
@@ -83,7 +88,7 @@ public class VoTranslator {
      * 判断对象是否原生类型（不可再递归翻译）
      */
     private boolean isRawType(Object object) {
-        return object instanceof String || object instanceof Integer || object instanceof Double;
+        return object instanceof String || object instanceof Number;
     }
 
     /**

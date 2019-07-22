@@ -5,7 +5,7 @@ import org.junit.Before;
 import org.junit.Test;
 
 import javax.servlet.http.HttpServletRequest;
-
+import java.util.ArrayList;
 import java.util.Arrays;
 
 import static org.junit.Assert.assertEquals;
@@ -19,9 +19,9 @@ import static org.mockito.Mockito.when;
  */
 public class VoTranslatorTest {
 
-    private CategoryVo[] voes = new CategoryVo[5];
+    private PureVo[] voes = new PureVo[5];
 
-    private CategoryListVo listVo = new CategoryListVo();
+    private ListVo listVo = new ListVo();
 
     private VoTranslator translator;
 
@@ -32,11 +32,11 @@ public class VoTranslatorTest {
     @Before
     public void setUp() {
 
-        voes[0] = new CategoryVo("food");
-        voes[1] = new CategoryVo("digital");
-        voes[2] = new CategoryVo("clean");
-        voes[3] = new CategoryVo("cook");
-        voes[4] = new CategoryVo("drink");
+        voes[0] = new PureVo("food");
+        voes[1] = new PureVo("digital");
+        voes[2] = new PureVo("clean");
+        voes[3] = new PureVo("cook");
+        voes[4] = new PureVo("drink");
         reqMock = mock(HttpServletRequest.class);
         when(reqMock.getHeader(HEADER_LANG)).thenReturn("zh_CN");
         translator = new VoTranslator(reqMock);
@@ -64,7 +64,7 @@ public class VoTranslatorTest {
      */
     private void translateCategoryArray() {
 
-        for (CategoryVo vo : voes) {
+        for (PureVo vo : voes) {
             translator.translateFields(vo);
         }
         assertEquals(voes[0].getName(), "食品");
@@ -86,5 +86,28 @@ public class VoTranslatorTest {
         assertEquals(listVo.getList().get(2), "厨具");
         assertEquals(listVo.getList().get(3), "数码");
         assertEquals(listVo.getList().get(4), "饮品");
+    }
+
+    /**
+     * 测试 List 的子类型属性以及 List 为 null
+     */
+    @Test
+    public void assertSubClassOfListPropertyTranslated() {
+        ArrayList<String> arrayList = new ArrayList<>();
+        arrayList.add("food");
+        listVo.setArrayList(arrayList);
+        translator.translateFields(listVo);
+        assertEquals(listVo.getArrayList().get(0), "食品");
+    }
+
+    /**
+     * 测试嵌套对象
+     */
+    @Test
+    public void assertNestedObjectPropertyTranslated() {
+        NestedPureVo nestedPureVo = new NestedPureVo(voes[0]);
+        translator.translateFields(nestedPureVo);
+        PureVo nestedVo = nestedPureVo.getNestedVo();
+        assertEquals(nestedVo.getName(), "食品");
     }
 }
