@@ -112,17 +112,17 @@ public class ShopVersionService extends BaseService {
 		// 下面的值
 		// 装修页面数量
 		num1.decorateNum = (num1.decorateNum == -1 && num2.decorateNum == -1) ? -1
-				: num2.decorateNum + num2.decorateNumPlus;
+				: num2.decorateNum + num1.decorateNumPlus;
 		// 表单数量
-		num1.formNum = (num1.formNum == -1 && num2.formNum == -1) ? -1 : num2.formNum + num2.formNumPlus;
+		num1.formNum = (num1.formNum == -1 && num2.formNum == -1) ? -1 : num2.formNum + num1.formNumPlus;
 		// 商品数量
-		num1.goodsNum = (num1.goodsNum == -1 && num2.goodsNum == -1) ? -1 : num2.goodsNum + num2.goodsNumPlus;
+		num1.goodsNum = (num1.goodsNum == -1 && num2.goodsNum == -1) ? -1 : num2.goodsNum + num1.goodsNumPlus;
 		// 图片空间大小
-		num1.pictureNum = (num1.pictureNum == -1 && num2.pictureNum == -1) ? -1 : num2.pictureNum + num2.pictureNumPlus;
+		num1.pictureNum = (num1.pictureNum == -1 && num2.pictureNum == -1) ? -1 : num2.pictureNum + num1.pictureNumPlus;
 		// 门店数量
-		num1.storeNum = (num1.storeNum == -1 && num2.storeNum == -1) ? -1 : num2.storeNum + num2.storeNumPlus;
+		num1.storeNum = (num1.storeNum == -1 && num2.storeNum == -1) ? -1 : num2.storeNum + num1.storeNumPlus;
 		// 视频空间大小
-		num1.videoNum = (num1.videoNum == -1 && num2.videoNum == -1) ? -1 : num2.videoNum + num2.videoNumPlus;
+		num1.videoNum = (num1.videoNum == -1 && num2.videoNum == -1) ? -1 : num2.videoNum + num1.videoNumPlus;
 
 		return versionConfig;
 	}
@@ -292,6 +292,53 @@ public class ShopVersionService extends BaseService {
 
 		}
 		return false;
+	}
+
+	/**
+	 * 校验是否需要判断权限。
+	 * 为true表示客户有权限，为false表示没有权限，此时要返回JsonResultCode.CODE_ACCOUNT_VERSIN_NO_POWER;
+	 * saas.shop.version.verifyVerPurview
+	 * @param shopId
+	 * @param vsNames
+	 * @return
+	 */
+	public String[] verifyVerPurview(Integer shopId, String[] vsNames) {
+		String[] result = new String[vsNames.length];
+		for(int i=0;i<result.length;i++) {
+			result[i]="false";
+		}
+		VersionConfig vConfig = saas().shop.version.mergeVersion(shopId);
+		if (vConfig == null) {
+			// 版本存在问题
+			result[0] = "erro";
+			return result;
+		}
+		VersionMainConfig mainConfig = vConfig.getMainConfig();
+
+		Class clazz = mainConfig.getClass();
+		Field[] fields = clazz.getDeclaredFields();
+		for (Field field : fields) {
+			field.setAccessible(true);
+			try {
+				PropertyDescriptor pd = new PropertyDescriptor(field.getName(), clazz);
+				// 获得读方法
+				Method rm = pd.getReadMethod();
+				List<String> list = (List<String>) rm.invoke(mainConfig);
+				// for (String string : list) {
+				for (int i = 0; i < vsNames.length; i++) {
+					for (String string : list) {
+						if (vsNames[i].equals(string)) {
+							result[i] = "true";
+						}
+					}
+				}
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+
+		}
+
+		return result;
 	}
 
 }
