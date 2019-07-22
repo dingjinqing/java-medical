@@ -7,7 +7,7 @@ import com.vpu.mp.service.pojo.shop.goods.*;
 import com.vpu.mp.service.pojo.shop.goods.spec.GoodsSpec;
 import com.vpu.mp.service.pojo.shop.goods.spec.GoodsSpecProduct;
 import com.vpu.mp.service.pojo.shop.goods.spec.GoodsSpecVal;
-import com.vpu.mp.service.shop.ShopApplication;
+import com.vpu.mp.service.pojo.shop.goods.GoodsVo;
 import com.vpu.mp.service.shop.goods.GoodsService;
 import org.jooq.tools.StringUtils;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -171,7 +171,8 @@ public class AdminGoodsController extends AdminBaseController {
             return fail(JsonResultCode.GOODS_ID_IS_NULL);
         }
 
-        Goods goodsVo = shop().goods.select(goods.getGoodsId());
+        GoodsVo goodsVo = shop().goods.select(goods.getGoodsId());
+
 
         return success(goodsVo);
     }

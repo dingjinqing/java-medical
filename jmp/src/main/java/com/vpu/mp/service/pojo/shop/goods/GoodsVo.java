@@ -1,7 +1,6 @@
-package com.vpu.mp.service.pojo.shop.goods.spec;
+package com.vpu.mp.service.pojo.shop.goods;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.vpu.mp.service.pojo.shop.goods.Goods;
 import com.vpu.mp.service.pojo.shop.goods.label.GoodsLabelListVo;
 import lombok.Getter;
 import lombok.Setter;

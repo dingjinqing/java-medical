@@ -14,7 +14,7 @@ import com.vpu.mp.service.pojo.shop.goods.label.GoodsLabelListVo;
 import com.vpu.mp.service.pojo.shop.goods.spec.GoodsSpec;
 import com.vpu.mp.service.pojo.shop.goods.spec.GoodsSpecProduct;
 import com.vpu.mp.service.pojo.shop.goods.spec.GoodsSpecVal;
-import com.vpu.mp.service.pojo.shop.goods.spec.GoodsVo;
+import com.vpu.mp.service.pojo.shop.goods.GoodsVo;
 import org.jooq.*;
 import org.jooq.impl.DSL;
 import org.jooq.tools.StringUtils;
@@ -30,7 +30,6 @@ import java.util.Map;
 import static com.vpu.mp.db.main.Tables.CATEGORY;
 import static com.vpu.mp.db.shop.Tables.*;
 import static com.vpu.mp.service.pojo.shop.goods.GoodsPageListParam.ASC;
-import static com.vpu.mp.service.pojo.shop.goods.GoodsPageListParam.IS_ON_SALE_DEFAULT;
 
 /**
  * 商品品牌
