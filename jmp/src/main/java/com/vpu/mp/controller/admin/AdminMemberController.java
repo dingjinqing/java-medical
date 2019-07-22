@@ -1,5 +1,7 @@
 package com.vpu.mp.controller.admin;
 
+import javax.validation.Valid;
+
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -78,7 +80,17 @@ public class AdminMemberController extends AdminBaseController{
 	 * @return
 	 */
 	@PostMapping(value="/score/update")
-	public JsonResult updateMemberScore(@RequestBody ScoreParam param) {
+	public JsonResult updateMemberScore(@RequestBody @Valid ScoreParam param) {
+		
+		// 判断修改后的值不能小于零、
+		Integer score = param.getScore();
+		//最小值
+		Integer scoreDis = param.getScoreDis();
+		if((score+scoreDis)<0) {
+			return fail(JsonResultMessage.MSG_MEMBER_SCORE_NOT_ENOUGH);
+		}
+		
+		
 		Integer subAccountId = this.adminAuth.user().getSubAccountId();
 		
 		if(param.getUserId()!=null) {
@@ -95,10 +107,4 @@ public class AdminMemberController extends AdminBaseController{
 		}
 		return success(param.toString());
 	}
-	
-	
-	
-	
-	
-	
 }
