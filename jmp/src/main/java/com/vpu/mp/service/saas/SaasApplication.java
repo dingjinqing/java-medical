@@ -16,11 +16,8 @@ import com.vpu.mp.service.saas.privilege.SystemUserService;
 import com.vpu.mp.service.saas.region.CityService;
 import com.vpu.mp.service.saas.region.RegionService;
 import com.vpu.mp.service.saas.shop.ShopService;
-import com.vpu.mp.service.saas.wechat.WechatService;
 import com.vpu.mp.service.shop.ShopApplication;
-import com.vpu.mp.support.SpringUtil;
 
-import org.springframework.boot.autoconfigure.condition.ConditionalOnBean;
 import org.springframework.stereotype.Service;
 
 
@@ -42,7 +39,6 @@ public class SaasApplication extends ServiceContainer {
 	public ArticleCategoryService articleCategory;
 	public OfficialService official;
 	public SysCateService sysCate;
-	public WechatService wechat;
 	public RepairDatabaseService repairDb;
 	public ShopOverviewService overviewService;
 	

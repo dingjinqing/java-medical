@@ -78,11 +78,11 @@ public class AdminTradeController extends AdminBaseController {
      */
     @PostMapping("/api/admin/config/trade/wxpayConfig")
     public JsonResult wxpayConfig(@RequestBody @Validated WxpayConfigParam wxpayConfigParam){
-        if(!saas.wechat.checkAuthShopExist(wxpayConfigParam.getAppId())){
+        if(!saas.shop.mp.checkAuthShopExist(wxpayConfigParam.getAppId())){
             return fail(JsonResultMessage.AUTH_SHOP_NOT_EXIST);
         }
 
-        return saas.wechat.udpateWxpayConfig(wxpayConfigParam) > 0 ? success() : fail(JsonResultMessage.WECAHT_PAY_CONFIG_UPDATE_DAILED);
+        return saas.shop.mp.udpateWxpayConfig(wxpayConfigParam) > 0 ? success() : fail(JsonResultMessage.WECAHT_PAY_CONFIG_UPDATE_DAILED);
     }
 
     /**
@@ -92,8 +92,8 @@ public class AdminTradeController extends AdminBaseController {
     @PostMapping("/api/admin/config/trade/getWxpayConfig")
     public JsonResult getWxpayConfig(@RequestBody @Validated WxpaySearchParam wxpaySearchParam){
         WxpayConfigParam wxpayConfigParam = null;
-        if(saas.wechat.checkAuthShopExist(wxpaySearchParam.getAppId())){
-            wxpayConfigParam = saas.wechat.getWxpayConfig(wxpaySearchParam);
+        if(saas.shop.mp.checkAuthShopExist(wxpaySearchParam.getAppId())){
+            wxpayConfigParam = saas.shop.mp.getWxpayConfig(wxpaySearchParam);
             return success(wxpayConfigParam);
         }else{
             return success(wxpayConfigParam);
