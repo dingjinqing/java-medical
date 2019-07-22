@@ -60,8 +60,7 @@ public class VoTranslator {
                     Class<?> realType = (Class<?>) type.getActualTypeArguments()[0];
                     if (null != annotation && realType.equals(String.class)) {
                         String fileName = annotation.propertiesFileName();
-                        List<String> list;
-                        list = (List<String>) field.get(object);
+                        List<String> list = (List<String>) field.get(object);
                         String finalLang = lang;
                         if (null != list) {
                             List<String> translated = list.parallelStream()
