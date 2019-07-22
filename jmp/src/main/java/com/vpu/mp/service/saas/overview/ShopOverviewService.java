@@ -43,6 +43,31 @@ public class ShopOverviewService extends BaseService {
     }
 
     /**
+     * 获取绑定/解绑状态
+     * @param param
+     * @return
+     */
+    public byte getbindUnBindStatus(BindUnBindOfficialParam param){
+        /** 主账户 */
+        if(param.getIsSubAccount() == 0){
+            List<Byte> bindStatus =  db().select(ShopAccount.SHOP_ACCOUNT.IS_BIND)
+                    .from(ShopAccount.SHOP_ACCOUNT)
+                    .where(ShopAccount.SHOP_ACCOUNT.SYS_ID.eq(param.getSysId()))
+                    .fetchInto(Byte.class);
+            return Util.isEmpty(bindStatus) ? bindStatus.get(0) : -1;
+            /** 子账户 */
+        }else if(param.getIsSubAccount() == 1){
+            List<Byte> bindStatus = db().select(ShopChildAccount.SHOP_CHILD_ACCOUNT.IS_BIND)
+                    .from(ShopChildAccount.SHOP_CHILD_ACCOUNT)
+                    .where(ShopChildAccount.SHOP_CHILD_ACCOUNT.ACCOUNT_ID.eq(param.getAccountId()))
+                    .fetchInto(Byte.class);
+            return Util.isEmpty(bindStatus) ? bindStatus.get(0) : -1;
+        }else {
+            return -1;
+        }
+    }
+
+    /**
      * 获取店铺基本信息
      * @param param
      * @return
@@ -63,13 +88,8 @@ public class ShopOverviewService extends BaseService {
                 .fetchInto(ShopBaseInfoVo.class);
         shopBaseInfoVo.setVersionName(infoVos!=null&&!infoVos.isEmpty() ? infoVos.get(0).getVersionName() : null);
         //当前绑定解绑状态
-        List<Byte> bindStatus =  db().select(ShopAccount.SHOP_ACCOUNT.IS_BIND)
-                .from(ShopAccount.SHOP_ACCOUNT)
-                .where(ShopAccount.SHOP_ACCOUNT.SYS_ID.eq(param.getSysId()))
-                .fetchInto(Byte.class);
-        if(!Util.isEmpty(bindStatus)){
-            shopBaseInfoVo.setBindStatus(bindStatus.get(0));
-        }
+
+        shopBaseInfoVo.setBindStatus(getbindUnBindStatus(param.getOfficialParam()));
         return shopBaseInfoVo;
     }
 

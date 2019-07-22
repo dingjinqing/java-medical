@@ -18,4 +18,6 @@ public class ShopBaseInfoParam {
     private int shopId;
     @JsonProperty(value = "sys_id")
     private int sysId;
+    /** 获取绑定/解绑信息参数 */
+    private BindUnBindOfficialParam officialParam;
 }

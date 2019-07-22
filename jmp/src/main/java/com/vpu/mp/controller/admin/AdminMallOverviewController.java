@@ -46,6 +46,16 @@ public class AdminMallOverviewController extends AdminBaseController {
     }
 
     /**
+     * 获取绑定/解绑状态
+     * @param param
+     * @return
+     */
+    @PostMapping("/api/admin/malloverview/getbindUnBindStatus")
+    public JsonResult getbindUnBindStatus(@RequestBody @Validated BindUnBindOfficialParam param){
+        return saas.overviewService.bindUnBindOfficial(param) > 0 ? success() : fail(JsonResultMessage.OVERVIEW_MALL_BING_UNBING_FAILED);
+    }
+
+    /**
      * 代办事项
      * @return
      */
