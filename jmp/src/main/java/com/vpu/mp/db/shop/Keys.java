@@ -38,7 +38,7 @@ public class Keys {
     // -------------------------------------------------------------------------
     // IDENTITY definitions
     // -------------------------------------------------------------------------
-    public static final Identity<GroupBuy_DefineRecord, Integer> IDENTITY_GROUP_BUY__DEFINE = Identities0.IDENTITY_GROUP_BUY__DEFINE;
+    public static final Identity<GroupBuyDefineRecord, Integer> IDENTITY_GROUP_BUY_DEFINE = Identities0.IDENTITY_GROUP_BUY_DEFINE;
     public static final Identity<GroupBuyListRecord, Integer> IDENTITY_GROUP_BUY_LIST = Identities0.IDENTITY_GROUP_BUY_LIST;
     public static final Identity<GroupIntegrationDefineRecord, Integer> IDENTITY_GROUP_INTEGRATION_DEFINE = Identities0.IDENTITY_GROUP_INTEGRATION_DEFINE;
     public static final Identity<GroupBuyProductDefineRecord, Integer> IDENTITY_GROUP_BUY_PRODUCT_DEFINE = Identities0.IDENTITY_GROUP_BUY_PRODUCT_DEFINE;
@@ -213,7 +213,7 @@ public class Keys {
     // -------------------------------------------------------------------------
     // UNIQUE and PRIMARY KEY definitions
     // -------------------------------------------------------------------------
-    public static final UniqueKey<GroupBuy_DefineRecord> KEY_B2C_GROUP_BUY__DEFINE_PRIMARY = UniqueKeys0.KEY_B2C_GROUP_BUY__DEFINE_PRIMARY;
+    public static final UniqueKey<GroupBuyDefineRecord> KEY_B2C_GROUP_BUY_DEFINE_PRIMARY = UniqueKeys0.KEY_B2C_GROUP_BUY_DEFINE_PRIMARY;
     public static final UniqueKey<GroupBuyListRecord> KEY_B2C_GROUP_BUY_LIST_PRIMARY = UniqueKeys0.KEY_B2C_GROUP_BUY_LIST_PRIMARY;
     public static final UniqueKey<GroupIntegrationDefineRecord> KEY_B2C_GROUP_INTEGRATION_DEFINE_PRIMARY = UniqueKeys0.KEY_B2C_GROUP_INTEGRATION_DEFINE_PRIMARY;
     public static final UniqueKey<GroupBuyProductDefineRecord> KEY_B2C_GROUP_BUY_PRODUCT_DEFINE_PRIMARY = UniqueKeys0.KEY_B2C_GROUP_BUY_PRODUCT_DEFINE_PRIMARY;
@@ -425,7 +425,7 @@ public class Keys {
     // -------------------------------------------------------------------------
 
     private static class Identities0 {
-        public static Identity<GroupBuy_DefineRecord, Integer> IDENTITY_GROUP_BUY__DEFINE = Internal.createIdentity(GroupBuy_Define.GROUP_BUY__DEFINE, GroupBuy_Define.GROUP_BUY__DEFINE.ID);
+        public static Identity<GroupBuyDefineRecord, Integer> IDENTITY_GROUP_BUY_DEFINE = Internal.createIdentity(GroupBuyDefine.GROUP_BUY_DEFINE, GroupBuyDefine.GROUP_BUY_DEFINE.ID);
         public static Identity<GroupBuyListRecord, Integer> IDENTITY_GROUP_BUY_LIST = Internal.createIdentity(GroupBuyList.GROUP_BUY_LIST, GroupBuyList.GROUP_BUY_LIST.ID);
         public static Identity<GroupIntegrationDefineRecord, Integer> IDENTITY_GROUP_INTEGRATION_DEFINE = Internal.createIdentity(GroupIntegrationDefine.GROUP_INTEGRATION_DEFINE, GroupIntegrationDefine.GROUP_INTEGRATION_DEFINE.ID);
         public static Identity<GroupBuyProductDefineRecord, Integer> IDENTITY_GROUP_BUY_PRODUCT_DEFINE = Internal.createIdentity(GroupBuyProductDefine.GROUP_BUY_PRODUCT_DEFINE, GroupBuyProductDefine.GROUP_BUY_PRODUCT_DEFINE.ID);
@@ -599,7 +599,7 @@ public class Keys {
     }
 
     private static class UniqueKeys0 {
-        public static final UniqueKey<GroupBuy_DefineRecord> KEY_B2C_GROUP_BUY__DEFINE_PRIMARY = Internal.createUniqueKey(GroupBuy_Define.GROUP_BUY__DEFINE, "KEY_b2c_group_buy__define_PRIMARY", GroupBuy_Define.GROUP_BUY__DEFINE.ID);
+        public static final UniqueKey<GroupBuyDefineRecord> KEY_B2C_GROUP_BUY_DEFINE_PRIMARY = Internal.createUniqueKey(GroupBuyDefine.GROUP_BUY_DEFINE, "KEY_b2c_group_buy_define_PRIMARY", GroupBuyDefine.GROUP_BUY_DEFINE.ID);
         public static final UniqueKey<GroupBuyListRecord> KEY_B2C_GROUP_BUY_LIST_PRIMARY = Internal.createUniqueKey(GroupBuyList.GROUP_BUY_LIST, "KEY_b2c_group_buy_list_PRIMARY", GroupBuyList.GROUP_BUY_LIST.ID);
         public static final UniqueKey<GroupIntegrationDefineRecord> KEY_B2C_GROUP_INTEGRATION_DEFINE_PRIMARY = Internal.createUniqueKey(GroupIntegrationDefine.GROUP_INTEGRATION_DEFINE, "KEY_b2c_group_integration_define_PRIMARY", GroupIntegrationDefine.GROUP_INTEGRATION_DEFINE.ID);
         public static final UniqueKey<GroupBuyProductDefineRecord> KEY_B2C_GROUP_BUY_PRODUCT_DEFINE_PRIMARY = Internal.createUniqueKey(GroupBuyProductDefine.GROUP_BUY_PRODUCT_DEFINE, "KEY_b2c_group_buy_product_define_PRIMARY", GroupBuyProductDefine.GROUP_BUY_PRODUCT_DEFINE.ID);

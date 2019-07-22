@@ -41,7 +41,7 @@ public class MiniShop_471752 extends SchemaImpl {
     /**
      * The table <code>mini_shop_4748160.b2c_group_buy__define</code>.
      */
-    public final GroupBuy_Define GROUP_BUY__DEFINE = com.vpu.mp.db.shop.tables.GroupBuy_Define.GROUP_BUY__DEFINE;
+    public final GroupBuyDefine GROUP_BUY_DEFINE = com.vpu.mp.db.shop.tables.GroupBuyDefine.GROUP_BUY_DEFINE;
 
     /**
      * The table <code>mini_shop_471752.b2c_assess_activity</code>.
@@ -1078,6 +1078,11 @@ public class MiniShop_471752 extends SchemaImpl {
             GoodsSummary.GOODS_SUMMARY,
             GoodsUserSummary.GOODS_USER_SUMMARY,
             GradePrd.GRADE_PRD,
+            GroupBuyDefine.GROUP_BUY_DEFINE,
+            GroupBuyProductDefine.GROUP_BUY_PRODUCT_DEFINE,
+            GroupBuyList.GROUP_BUY_LIST,
+            GroupIntegrationDefine.GROUP_INTEGRATION_DEFINE,
+            GroupIntegrationList.GROUP_INTEGRATION_LIST,
             GroupDraw.GROUP_DRAW,
             GroupDrawInvite.GROUP_DRAW_INVITE,
             IncomeOutcomeDetail.INCOME_OUTCOME_DETAIL,

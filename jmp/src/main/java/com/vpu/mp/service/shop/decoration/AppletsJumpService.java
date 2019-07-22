@@ -1,6 +1,7 @@
 package com.vpu.mp.service.shop.decoration;
 
 import com.vpu.mp.service.foundation.BaseService;
+import com.vpu.mp.service.foundation.DelFlag;
 import com.vpu.mp.service.pojo.shop.applets.AppletsJumpAddPrarm;
 import com.vpu.mp.service.pojo.shop.applets.AppletsJumpUpdatePrarm;
 import com.vpu.mp.service.pojo.shop.applets.AppletsJumpUsable;
@@ -47,7 +48,7 @@ public class AppletsJumpService extends BaseService {
      * @return
      */
     public int deleteAppletsJump(AppletsJumpUpdatePrarm param) {
-        return db().update(MP_JUMP).set(MP_JUMP.DEL_FLAG, (byte)0).where(MP_JUMP.ID.eq(param.getId())).execute();
+        return db().update(MP_JUMP).set(MP_JUMP.DEL_FLAG, DelFlag.DISABLE.getCode()).where(MP_JUMP.ID.eq(param.getId())).execute();
     }
 
     /**

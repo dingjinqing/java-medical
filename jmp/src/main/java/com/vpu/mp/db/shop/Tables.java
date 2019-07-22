@@ -28,7 +28,7 @@ public class Tables {
     /**
      * The table <code>mini_shop_4748160.b2c_group_buy__define</code>.
      */
-    public static final GroupBuy_Define GROUP_BUY__DEFINE = com.vpu.mp.db.shop.tables.GroupBuy_Define.GROUP_BUY__DEFINE;
+    public static final GroupBuyDefine GROUP_BUY_DEFINE = com.vpu.mp.db.shop.tables.GroupBuyDefine.GROUP_BUY_DEFINE;
     /**
      * The table <code>mini_shop_471752.b2c_assess_activity</code>.
      */

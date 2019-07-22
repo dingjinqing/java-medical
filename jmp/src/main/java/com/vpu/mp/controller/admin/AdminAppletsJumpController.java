@@ -4,10 +4,7 @@ import com.vpu.mp.service.foundation.JsonResult;
 import com.vpu.mp.service.pojo.shop.applets.AppletsJumpAddPrarm;
 import com.vpu.mp.service.pojo.shop.applets.AppletsJumpUpdatePrarm;
 import com.vpu.mp.service.pojo.shop.applets.AppletsJumpVo;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 import java.util.List;
@@ -18,6 +15,7 @@ import java.util.List;
  * @date 2019/7/11 16:51
  */
 @RestController
+@RequestMapping("/api")
 public class AdminAppletsJumpController  extends AdminBaseController {
 
     /**

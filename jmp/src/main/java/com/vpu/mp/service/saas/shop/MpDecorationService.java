@@ -20,7 +20,7 @@ import org.springframework.stereotype.Service;
  * @author lixinguo
  *
  */
-@Service
+@Service("SaasMpDecorationService")
 @Scope("prototype")
 public class MpDecorationService extends BaseService {
 

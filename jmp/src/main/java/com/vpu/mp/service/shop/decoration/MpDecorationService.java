@@ -21,12 +21,16 @@ import com.vpu.mp.service.pojo.saas.shop.version.VersionConfig;
 import com.vpu.mp.service.pojo.shop.decoration.PageClassificationVo;
 import com.vpu.mp.service.pojo.shop.decoration.PageStoreParam;
 import com.vpu.mp.service.pojo.shop.decoration.XcxCustomerPageVo;
+import org.springframework.context.annotation.Scope;
+import org.springframework.stereotype.Service;
 
 /**
  * 
  * @author lixinguo
  *
  */
+@Service
+@Scope("prototype")
 public class MpDecorationService extends BaseService {
 	/**
 	 * 装修页面列表

@@ -33,7 +33,7 @@ public class Indexes {
     public static final Index GROUP_INTEGRATION_DEFINE_PRIMARY = Indexes0.GROUP_INTEGRATION_DEFINE_PRIMARY;
     public static final Index GROUP_BUY_PRODUCT_DEFINE_PRIMARY = Indexes0.GROUP_BUY_PRODUCT_DEFINE_PRIMARY;
     public static final Index GROUP_INTEGRATION_LIST_PRIMARY = Indexes0.GROUP_INTEGRATION_LIST_PRIMARY;
-    public static final Index GROUP_BUY__DEFINE_PRIMARY = Indexes0.GROUP_BUY__DEFINE_PRIMARY;
+    public static final Index GROUP_BUY_DEFINE_PRIMARY = Indexes0.GROUP_BUY_DEFINE_PRIMARY;
     public static final Index ASSESS_ACTIVITY_ACT_NAME = Indexes0.ASSESS_ACTIVITY_ACT_NAME;
     public static final Index ASSESS_ACTIVITY_PRIMARY = Indexes0.ASSESS_ACTIVITY_PRIMARY;
     public static final Index ASSESS_ACTIVITY_SHOP_ID = Indexes0.ASSESS_ACTIVITY_SHOP_ID;
@@ -412,7 +412,7 @@ public class Indexes {
         public static Index GROUP_INTEGRATION_DEFINE_PRIMARY = Internal.createIndex("PRIMARY", GroupIntegrationDefine.GROUP_INTEGRATION_DEFINE, new OrderField[] { GroupIntegrationDefine.GROUP_INTEGRATION_DEFINE.ID }, true);
         public static Index GROUP_BUY_PRODUCT_DEFINE_PRIMARY = Internal.createIndex("PRIMARY", GroupBuyProductDefine.GROUP_BUY_PRODUCT_DEFINE, new OrderField[] { GroupBuyProductDefine.GROUP_BUY_PRODUCT_DEFINE.ID }, true);
         public static Index GROUP_INTEGRATION_LIST_PRIMARY = Internal.createIndex("PRIMARY", GroupIntegrationList.GROUP_INTEGRATION_LIST, new OrderField[] { GroupIntegrationList.GROUP_INTEGRATION_LIST.ID }, true);
-        public static Index GROUP_BUY__DEFINE_PRIMARY = Internal.createIndex("PRIMARY", GroupBuy_Define.GROUP_BUY__DEFINE, new OrderField[] { GroupBuy_Define.GROUP_BUY__DEFINE.ID }, true);
+        public static Index GROUP_BUY_DEFINE_PRIMARY = Internal.createIndex("PRIMARY", GroupBuyDefine.GROUP_BUY_DEFINE, new OrderField[] { GroupBuyDefine.GROUP_BUY_DEFINE.ID }, true);
         public static Index ASSESS_ACTIVITY_ACT_NAME = Internal.createIndex("act_name", AssessActivity.ASSESS_ACTIVITY, new OrderField[] { AssessActivity.ASSESS_ACTIVITY.ACT_NAME }, false);
         public static Index ASSESS_ACTIVITY_PRIMARY = Internal.createIndex("PRIMARY", AssessActivity.ASSESS_ACTIVITY, new OrderField[] { AssessActivity.ASSESS_ACTIVITY.ID }, true);
         public static Index ASSESS_ACTIVITY_SHOP_ID = Internal.createIndex("shop_id", AssessActivity.ASSESS_ACTIVITY, new OrderField[] { AssessActivity.ASSESS_ACTIVITY.SHOP_ID }, false);

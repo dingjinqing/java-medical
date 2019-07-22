@@ -1,20 +1,16 @@
 package com.vpu.mp.service.pojo.shop.market.groupbuy;
 
 import lombok.Data;
-import lombok.NoArgsConstructor;
 
 import java.sql.Timestamp;
 import java.util.List;
 
 /**
  * @author 孔德成
- * @date 2019/7/18 18:12
+ * @date 2019/7/19 17:40
  */
 @Data
-@NoArgsConstructor
-public class GroupBuyParam {
-
-
+public class GroupBuyDetailVo {
 
     private String name;
     private Integer shopId;
@@ -72,12 +68,10 @@ public class GroupBuyParam {
     /**
      * 分享设置
      */
-    private GroupBuyShareConfigParam share;
+    private GroupBuyShareConfigVo share;
     private String shareConfig;
     /**
      * 产品规格配置
      */
-    private List<GroupBuyProductParam> product;
-
-
+    private List<GroupBuyProductVo> product;
 }
