@@ -48,7 +48,7 @@ public class AdminOverviewAnalysisController extends AdminBaseController{
 	 */
 	@PostMapping("/api/admin/overview/analysis/select")
 	public JsonResult getSelect(@RequestBody OverviewAnalysisSelectParam param) {
-		String startTime;
+		String startTime="7";
 		String endTime;
 		//**  获得今日时间（字符串格式精确到日）*/
 		SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyyMMdd");
@@ -56,8 +56,10 @@ public class AdminOverviewAnalysisController extends AdminBaseController{
 		String dateNowStr = simpleDateFormat.format(now);
 		
 		String tempStartTime = param.getStartTime();
-		startTime = "07".equals(tempStartTime) ? getDate(tempStartTime) : tempStartTime;
-		startTime = "30".equals(tempStartTime) ? getDate(tempStartTime) : tempStartTime;
+		startTime = tempStartTime!=null ? tempStartTime: getDate(startTime);
+		startTime = "7".equals(tempStartTime) ? getDate(startTime) : startTime;
+		startTime = "30".equals(tempStartTime) ? getDate(startTime) : startTime;
+		
 		param.setStartTime(startTime);
 		System.out.println(startTime);
 		
@@ -87,18 +89,20 @@ public class AdminOverviewAnalysisController extends AdminBaseController{
 	 */
 	@PostMapping("/api/admin/overview/analysis/pagelist")
 	public JsonResult getPageInfo(@RequestBody OverviewAnalysisPageParam param) {
-		String startTime;
+		String startTime="7";
 		String endTime;
 		//**  获得今日时间（字符串格式精确到日）*/
 		SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyyMMdd");
 		Date now = new Date();
 		String dateNowStr = simpleDateFormat.format(now);
 		
-		startTime = param.getStartTime();
-		startTime = "07".equals(startTime) ? getDate(startTime) : startTime;
-		startTime = "30".equals(startTime) ? getDate(startTime) : startTime;
+		String tempStartTime = param.getStartTime();
+		startTime = tempStartTime!=null ? tempStartTime: getDate(startTime);
+		startTime = "7".equals(tempStartTime) ? getDate(startTime) : startTime;
+		startTime = "30".equals(tempStartTime) ? getDate(startTime) : startTime;
+		
 		param.setStartTime(startTime);
-		System.out.println("开始时间："+startTime);
+		System.out.println(startTime);
 		
 		String tempEndTime = param.getEndTime();
 		endTime = StringUtils.isEmpty(tempEndTime) ? dateNowStr : tempEndTime;
@@ -106,6 +110,8 @@ public class AdminOverviewAnalysisController extends AdminBaseController{
 		
 		List<OverviewAnalysisPageVo> overviewAnalysisPageVos = shop().overview.overviewAnalysisService.getPageInfo(param);
 		
-		return success(overviewAnalysisPageVos);
+		overviewAnalysisPageVos.forEach((e) -> System.out.println(e));
+		
+		return i18nSuccess(overviewAnalysisPageVos);
 	}
 }

@@ -13,7 +13,6 @@ import static com.vpu.mp.db.shop.Tables.MP_DAILY_VISIT;
 import static com.vpu.mp.db.shop.Tables.MP_SUMMARY_TREND;
 import static com.vpu.mp.db.shop.Tables.MP_VISIT_PAGE;
 
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -105,6 +104,7 @@ public class OverviewAnalysisService extends BaseService {
 	 *@Param param
 	 *@return
 	 */
+	private static final String PAGE_OTHER = "page.other";
 	public List<OverviewAnalysisPageVo> getPageInfo(OverviewAnalysisPageParam param) {
 		
 		List<OverviewAnalysisPageVo> overviewAnalysisPageVos;
@@ -125,8 +125,8 @@ public class OverviewAnalysisService extends BaseService {
 			overviewAnalysisPageVo.setPageName(pageNameOf(overviewAnalysisPageVo.getPagePath()));
 			overviewAnalysisPageVo.setRate(((double)overviewAnalysisPageVo.getPageVisitPv()/(double)total));
 		}
-		
-		
+		System.out.println("*********************************************");
+		overviewAnalysisPageVos.forEach((e) -> System.out.println(e));
 		return overviewAnalysisPageVos;
 	}
 
@@ -135,14 +135,13 @@ public class OverviewAnalysisService extends BaseService {
      * 获取路径对应的页面名称
      */
     private String pageNameOf(String pagePath) {
-        return Optional.ofNullable(pageMap().get(pagePath)).orElse("未知");
+        return Optional.ofNullable(pageMap().get(pagePath)).orElse(PAGE_OTHER);
     }
 
     /**
      * 路径和页面名称对应关系
      */
     private Map<String, String> pageMap() {
-    	return PropertiesUtil.toMap("visit/pages.properties");
+        return PropertiesUtil.toMap("visit/pages.properties");
     }
-	
 }
