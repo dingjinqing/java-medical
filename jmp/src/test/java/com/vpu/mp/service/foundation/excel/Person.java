@@ -1,9 +1,9 @@
-package com.vpu.mp.service.foundation.vpuexcel;
+package com.vpu.mp.service.foundation.excel;
 
-import com.vpu.mp.service.foundation.vpuexcel.annotation.ExcelColumn;
-import com.vpu.mp.service.foundation.vpuexcel.annotation.ExcelColumnNotNull;
-import com.vpu.mp.service.foundation.vpuexcel.annotation.ExcelIgnore;
-import com.vpu.mp.service.foundation.vpuexcel.annotation.ExcelSheet;
+import com.vpu.mp.service.foundation.excel.annotation.ExcelColumn;
+import com.vpu.mp.service.foundation.excel.annotation.ExcelColumnNotNull;
+import com.vpu.mp.service.foundation.excel.annotation.ExcelIgnore;
+import com.vpu.mp.service.foundation.excel.annotation.ExcelSheet;
 import lombok.Data;
 
 import java.math.BigDecimal;

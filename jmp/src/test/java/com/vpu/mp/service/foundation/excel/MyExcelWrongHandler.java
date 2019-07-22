@@ -1,7 +1,7 @@
-package com.vpu.mp.service.foundation.vpuexcel;
+package com.vpu.mp.service.foundation.excel;
 
-import com.vpu.mp.service.foundation.vpuexcel.exception.handler.IllegalExcelBinder;
-import com.vpu.mp.service.foundation.vpuexcel.exception.handler.IllegalExcelHandler;
+import com.vpu.mp.service.foundation.excel.exception.handler.IllegalExcelBinder;
+import com.vpu.mp.service.foundation.excel.exception.handler.IllegalExcelHandler;
 import org.apache.poi.ss.usermodel.Row;
 
 import java.util.ArrayList;
