@@ -32,7 +32,6 @@ public class VoTranslatorTest {
 
     @Before
     public void setUp() {
-
         voes[0] = new PureVo("food");
         voes[1] = new PureVo("digital");
         voes[2] = new PureVo("clean");
@@ -64,7 +63,6 @@ public class VoTranslatorTest {
      * 翻译数组中的对象
      */
     private void translateCategoryArray() {
-
         for (PureVo vo : voes) {
             translator.translateFields(vo);
         }
