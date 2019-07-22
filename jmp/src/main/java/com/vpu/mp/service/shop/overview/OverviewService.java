@@ -12,4 +12,5 @@ import org.springframework.stereotype.Service;
 @Scope("prototype")
 public class OverviewService extends BaseService{
 	public OverviewAnalysisService overviewAnalysisService;
+	public OverviewUserAnalysisService overviewUserAnalysisService;
 }

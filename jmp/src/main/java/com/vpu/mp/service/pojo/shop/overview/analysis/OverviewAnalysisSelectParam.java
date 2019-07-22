@@ -9,7 +9,7 @@ import lombok.Data;
 @Data
 public class OverviewAnalysisSelectParam {
 
-	private Integer totalSessionCnt;
+	private Integer visitTotal;
 	private Integer sessionCnt;
 	private Integer visitPv;
 	private Integer visitUv;
