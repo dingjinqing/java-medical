@@ -26,6 +26,7 @@ import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
 
 import javax.servlet.http.HttpServletRequest;
+import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -132,15 +133,14 @@ public class RecordAdminActionService extends BaseService {
         Arrays.stream(templateIds.split(",")).forEach((id)->{
             sb.append(RecordContentTemplate.GOODS_CONTENT_ADD).append(",");
         });
-        return String.format(Util.translateMessage(language,RecordContentTemplate.GOODS_CONTENT_ADD.getMessage()
+        return MessageFormat.format(Util.translateMessage(language,RecordContentTemplate.GOODS_CONTENT_ADD.getMessage()
                 ,LANGUAGE_TYPE_RECORD)
                 ,datas.split(","));
     }
 
     private RecordAdminActionRecord getAdminRecord(){
         RequestAttributes requestAttributes = RequestContextHolder.getRequestAttributes();
-        Boolean isRequest = true;
-        RecordAdminActionRecord record = new RecordAdminActionRecord();
+        RecordAdminActionRecord record = db().newRecord(RECORD_ADMIN_ACTION);
         List<String> resultAccount;
         if( requestAttributes != null ){
             AdminAuth adminAuth = SpringUtil.getBean(AdminAuth.class);

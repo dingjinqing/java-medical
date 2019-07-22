@@ -119,7 +119,7 @@ public class AdminBasicConfigController extends AdminBaseController{
         return success();
     }
     @PostMapping(value = "/record/getPage")
-    public JsonResult getRecordAccountActionPage(@RequestParam RecordAdminActionParam param, HttpServletRequest request){
+    public JsonResult getRecordAccountActionPage(@RequestBody RecordAdminActionParam param, HttpServletRequest request){
 		String language = StringUtils.isEmpty(request.getHeader("V-Lang"))?"":request.getHeader("V-Lang");
         PageResult<RecordAdminActionInfo> storeGroupPageResult = shop().record.getRecordPage(param,language);
         return success(storeGroupPageResult);
