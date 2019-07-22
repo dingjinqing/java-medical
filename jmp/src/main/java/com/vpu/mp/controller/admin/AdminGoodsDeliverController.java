@@ -93,7 +93,7 @@ public class AdminGoodsDeliverController extends AdminBaseController {
 	@RequestMapping("/api/admin/goods/deliver/updatetemplate")
 	public JsonResult updataDeliverTemplate(@RequestBody GoodsDeliverTemplateParam goodsDeliverTemplateParam) {
 
-		shop().goods.goodsDeliver.addDeliverTemplate(goodsDeliverTemplateParam);
+		shop().goods.goodsDeliver.updateDeliverTemplate(goodsDeliverTemplateParam);
 
 		return success();
 	}
@@ -108,7 +108,7 @@ public class AdminGoodsDeliverController extends AdminBaseController {
 	@RequestMapping("/api/admin/goods/deliver/updateweighttemplate")
 	public JsonResult updateDeliverWeightTemplate(@RequestBody GoodsDeliverTemplateParam goodsDeliverTemplateParam) {
 
-		shop().goods.goodsDeliver.addDeliverWeightTemplate(goodsDeliverTemplateParam);
+		shop().goods.goodsDeliver.updateDeliverWeightTemplate(goodsDeliverTemplateParam);
 
 		return success();
 	}

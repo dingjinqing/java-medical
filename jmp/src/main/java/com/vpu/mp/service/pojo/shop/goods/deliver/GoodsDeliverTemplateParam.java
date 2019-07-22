@@ -11,6 +11,7 @@ import lombok.Data;
 @Data
 public class GoodsDeliverTemplateParam {
 	
+	private Integer deliverTemplateId;
 	private String templateName;
 	private Byte flag;
 	GoodsDeliverTemplateLimitParam goodsDeliverTemplateLimitParam;

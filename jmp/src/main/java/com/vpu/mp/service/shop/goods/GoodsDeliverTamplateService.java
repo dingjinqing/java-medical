@@ -107,7 +107,6 @@ public class GoodsDeliverTamplateService extends BaseService{
 	                .insertInto(DELIVER_FEE_TEMPLATE, DELIVER_FEE_TEMPLATE.TEMPLATE_NAME,DELIVER_FEE_TEMPLATE.FLAG,DELIVER_FEE_TEMPLATE.TEMPLATE_CONTENT)
 	                .values(param.getTemplateName(),(byte)0,arrayTotal.toString())
 	                .execute();
-			System.out.println("****存储字符串*****:"+arrayTotal.toString());
 	        return result;
 	        
 		} catch (Exception e) {
@@ -126,25 +125,40 @@ public class GoodsDeliverTamplateService extends BaseService{
 	public int addDeliverWeightTemplate(GoodsDeliverTemplateParam param) {
 				
 		try {
+			//** 复用ObjectMapper对象 */
 			ObjectMapper objectMapper = new ObjectMapper();
+			//* 外层模版类（不含包邮条件） */
 			String jsonLimit = objectMapper.writeValueAsString(param.getGoodsDeliverTemplateLimitParam());
 			JsonNode jsonNodeLimit = objectMapper.readTree(jsonLimit);
 			
 			String jsonArea = objectMapper.writeValueAsString(param.getGoodsDeliverTemplateAreaParam());
 			JsonNode jsonNodeArea = objectMapper.readTree(jsonArea);
 			
-			ArrayNode array = objectMapper.createArrayNode();
-			array.add(jsonNodeLimit);
-			array.add(jsonNodeArea);
-			System.out.println(array.toString());
+			ArrayNode arrayTemplate = objectMapper.createArrayNode();
+			arrayTemplate.add(jsonNodeLimit);
+			arrayTemplate.add(jsonNodeArea);
+			//* 包邮条件 */
+			String jsonFee = objectMapper.writeValueAsString(param.getGoodsDeliverTemplateFeeParam());
+			JsonNode jsonNodeFee = objectMapper.readTree(jsonFee);
+			
+			String jsonFeeCon = objectMapper.writeValueAsString(param.getGoodsDeliverTemplateFeeConditionParam());
+			JsonNode jsonNodeFeeCon = objectMapper.readTree(jsonFeeCon);
+			ArrayNode arrayFeeCon = objectMapper.createArrayNode();
+			arrayFeeCon.add(jsonNodeFeeCon);
+			
+			JsonNode jsonResultTemplate = objectMapper.createObjectNode().set("datalist", arrayTemplate);
+			JsonNode jsonResultFeeCon = objectMapper.createObjectNode().set("fee_0_data_list", arrayFeeCon);
+			
+			ArrayNode arrayTotal = objectMapper.createArrayNode();
+			arrayTotal.add(jsonResultTemplate);
+			arrayTotal.add(jsonNodeFee);
+			arrayTotal.add(jsonResultFeeCon);
 			
 			
-			JsonNode jsonResult = objectMapper.createObjectNode().set("datalist", array);
 			int result = db()
 	                .insertInto(DELIVER_FEE_TEMPLATE, DELIVER_FEE_TEMPLATE.TEMPLATE_NAME,DELIVER_FEE_TEMPLATE.FLAG,DELIVER_FEE_TEMPLATE.TEMPLATE_CONTENT)
-	                .values(param.getTemplateName(),(byte)1,jsonResult.toString())
+	                .values(param.getTemplateName(),(byte)1,arrayTotal.toString())
 	                .execute();
-			System.out.println(jsonResult.toString());
 	        return result;
 	        
 		} catch (Exception e) {
@@ -183,5 +197,110 @@ public class GoodsDeliverTamplateService extends BaseService{
 		return goodsDeliverTemplateVos;
 
 	}
-    
+	/**
+     *修改运费模版
+     *
+     * @param param
+     * @return 
+     */
+	public int updateDeliverTemplate(GoodsDeliverTemplateParam param) {
+				
+		try {
+			//** 复用ObjectMapper对象 */
+			ObjectMapper objectMapper = new ObjectMapper();
+			//* 外层模版类（不含包邮条件） */
+			String jsonLimit = objectMapper.writeValueAsString(param.getGoodsDeliverTemplateLimitParam());
+			JsonNode jsonNodeLimit = objectMapper.readTree(jsonLimit);
+			
+			String jsonArea = objectMapper.writeValueAsString(param.getGoodsDeliverTemplateAreaParam());
+			JsonNode jsonNodeArea = objectMapper.readTree(jsonArea);
+			
+			ArrayNode arrayTemplate = objectMapper.createArrayNode();
+			arrayTemplate.add(jsonNodeLimit);
+			arrayTemplate.add(jsonNodeArea);
+			//* 包邮条件 */
+			String jsonFee = objectMapper.writeValueAsString(param.getGoodsDeliverTemplateFeeParam());
+			JsonNode jsonNodeFee = objectMapper.readTree(jsonFee);
+			
+			String jsonFeeCon = objectMapper.writeValueAsString(param.getGoodsDeliverTemplateFeeConditionParam());
+			JsonNode jsonNodeFeeCon = objectMapper.readTree(jsonFeeCon);
+			ArrayNode arrayFeeCon = objectMapper.createArrayNode();
+			arrayFeeCon.add(jsonNodeFeeCon);
+			
+			JsonNode jsonResultTemplate = objectMapper.createObjectNode().set("datalist", arrayTemplate);
+			JsonNode jsonResultFeeCon = objectMapper.createObjectNode().set("fee_0_data_list", arrayFeeCon);
+			
+			ArrayNode arrayTotal = objectMapper.createArrayNode();
+			arrayTotal.add(jsonResultTemplate);
+			arrayTotal.add(jsonNodeFee);
+			arrayTotal.add(jsonResultFeeCon);
+			
+			int result = db()
+					.update(DELIVER_FEE_TEMPLATE)
+					.set(DELIVER_FEE_TEMPLATE.TEMPLATE_NAME,param.getTemplateName())
+	                .set(DELIVER_FEE_TEMPLATE.TEMPLATE_CONTENT,arrayTotal.toString())
+	                .where(DELIVER_FEE_TEMPLATE.DELIVER_TEMPLATE_ID.eq(param.getDeliverTemplateId()))
+	                .execute();
+	                		
+	        return result;
+	        
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return 0;
+	}
+	/**
+     *修改运费模版
+     *
+     * @param param
+     * @return 
+     */
+	public int updateDeliverWeightTemplate(GoodsDeliverTemplateParam param) {
+				
+		try {
+			//** 复用ObjectMapper对象 */
+			ObjectMapper objectMapper = new ObjectMapper();
+			//* 外层模版类（不含包邮条件） */
+			String jsonLimit = objectMapper.writeValueAsString(param.getGoodsDeliverTemplateLimitParam());
+			JsonNode jsonNodeLimit = objectMapper.readTree(jsonLimit);
+			
+			String jsonArea = objectMapper.writeValueAsString(param.getGoodsDeliverTemplateAreaParam());
+			JsonNode jsonNodeArea = objectMapper.readTree(jsonArea);
+			
+			ArrayNode arrayTemplate = objectMapper.createArrayNode();
+			arrayTemplate.add(jsonNodeLimit);
+			arrayTemplate.add(jsonNodeArea);
+			//* 包邮条件 */
+			String jsonFee = objectMapper.writeValueAsString(param.getGoodsDeliverTemplateFeeParam());
+			JsonNode jsonNodeFee = objectMapper.readTree(jsonFee);
+			
+			String jsonFeeCon = objectMapper.writeValueAsString(param.getGoodsDeliverTemplateFeeConditionParam());
+			JsonNode jsonNodeFeeCon = objectMapper.readTree(jsonFeeCon);
+			ArrayNode arrayFeeCon = objectMapper.createArrayNode();
+			arrayFeeCon.add(jsonNodeFeeCon);
+			
+			JsonNode jsonResultTemplate = objectMapper.createObjectNode().set("datalist", arrayTemplate);
+			JsonNode jsonResultFeeCon = objectMapper.createObjectNode().set("fee_0_data_list", arrayFeeCon);
+			
+			ArrayNode arrayTotal = objectMapper.createArrayNode();
+			arrayTotal.add(jsonResultTemplate);
+			arrayTotal.add(jsonNodeFee);
+			arrayTotal.add(jsonResultFeeCon);
+			
+			int result = db()
+					.update(DELIVER_FEE_TEMPLATE)
+					.set(DELIVER_FEE_TEMPLATE.TEMPLATE_NAME,param.getTemplateName())
+	                .set(DELIVER_FEE_TEMPLATE.TEMPLATE_CONTENT,arrayTotal.toString())
+	                .where(DELIVER_FEE_TEMPLATE.DELIVER_TEMPLATE_ID.eq(param.getDeliverTemplateId()))
+	                .execute();
+	                		
+	        return result;
+	        
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return 0;
+	}
 }
