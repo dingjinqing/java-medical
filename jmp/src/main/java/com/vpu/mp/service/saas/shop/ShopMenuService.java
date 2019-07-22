@@ -5,6 +5,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
@@ -24,17 +25,16 @@ import com.vpu.mp.service.pojo.saas.shop.version.VersionMainConfig;
 @Scope("prototype")
 public class ShopMenuService extends BaseService {
 
-
 	final protected String menuJson = "admin.authorityNew.json";
 	final protected String authorityJson = "admin.privilegePassNew.json";
+	final protected String versionJson = "admin.versionNew.json";
+
+	private static final String PRNAMELIST = "prNameList";
+
+	private static final String ENNAMELIST = "enNameList";
+
+	private static final String CHILDCONFIG = "child_config";
 	
-
-	private static final String prNameList="prNameList";
-	
-	private static final String enNameList="enNameList";
-
-	private static final String childConfig="child_config";
-
 	/**
 	 * 子账户对应展示按钮和输入密码的权限校验
 	 * 
@@ -62,14 +62,14 @@ public class ShopMenuService extends BaseService {
 		ArrayList<?> list = Util.parseJson(json, ArrayList.class);
 		Map<String, ?> map = (HashMap) list.get(0);
 		String preName = (String) map.get("prName");
-		if (prNameList.equals(preName)) {
+		if (PRNAMELIST.equals(preName)) {
 			List<?> prNameList = (List<?>) map.get("includeApi");
 			if (!includeEname(prNameList, reqeName)) {
 				// 请求不在所有定义的权限里
 				return JsonResultCode.CODE_ACCOUNT_ROLE__AUTH_INSUFFICIENT;
 			}
 		}
-		
+
 		String[] pShow = privilegePass[0].split(",");
 		String[] pPass = privilegePass[1].split(",");
 
@@ -121,14 +121,14 @@ public class ShopMenuService extends BaseService {
 	 * @param reqeName
 	 * @return
 	 */
-	public Boolean apiAccess(Integer roleId, String path, String reqeName) {		
+	public Boolean apiAccess(Integer roleId, String path, String reqeName) {
 		String[] privilegeList = roleId == 0 ? null : saas().shop.role.getPrivilegeList(roleId);
 		if (privilegeList == null) {
 			// 主账户登录，暂时不校验权限。
 			// TODO 加不加权限看以后
 			return true;
 		}
-		if(StringUtils.isEmpty(reqeName)) {
+		if (StringUtils.isEmpty(reqeName)) {
 			return false;
 		}
 		String json = Util.loadResource(menuJson);
@@ -136,16 +136,16 @@ public class ShopMenuService extends BaseService {
 		ArrayList<?> list = Util.parseJson(json, ArrayList.class);
 		Map<String, ?> map = (HashMap) list.get(0);
 		String eName = (String) map.get("enName");
-		if (enNameList.equals(eName)) {
+		if (ENNAMELIST.equals(eName)) {
 			List<?> eNameList = (List<?>) map.get("includeApi");
 			if (!includeEname(eNameList, reqeName)) {
 				// 请求不在所有定义的权限里
 				return false;
 			}
 		}
-		
-		//单独处理：子账户不能操作店铺权限菜单
-		if(childConfig.equals(reqeName)) {
+
+		// 单独处理：子账户不能操作店铺权限菜单
+		if (CHILDCONFIG.equals(reqeName)) {
 			return false;
 		}
 
@@ -192,29 +192,58 @@ public class ShopMenuService extends BaseService {
 		}
 		return false;
 	}
-	
-	
+
 	/**
-	 * 版本权限的校验
-	 * 按照接口校验
-	 * @param shopId 店铺id
-	 * @param path   api
-	 * @param reqeName 
+	 * 版本权限的校验 按照接口校验
+	 * 
+	 * @param shopId
+	 * @param path
+	 * @param reqEnName
+	 * @param reqVsName
 	 * @return
 	 */
-	public JsonResultCode versionAccess(Integer shopId, String path, String reqenName) {
-		//获得店铺的版本和设置的店铺版本的合集
-		//获得版本里字段对应的eName（建个json对应）并和reqenName校验
-		//enName包含的api。（建个json）和path判断
+	public JsonResultCode versionAccess(Integer shopId, String path, String reqEnName, String reqVsName) {
 		VersionConfig vConfig = saas().shop.version.mergeVersion(shopId);
 		if (vConfig == null) {
 			// 版本存在问题，请联系管理员
 			return JsonResultCode.CODE_FAIL;
 		}
 		VersionMainConfig mainConfig = vConfig.getMainConfig();
-		
-		
-		return null;	
-		
+
+		String json = Util.loadResource(versionJson);
+		ArrayList<HashMap> list = Util.parseJson(json, ArrayList.class);
+		List<String> versionJson = (List<String>) list.get(0).get("includeApi");
+
+		if (!includeEname(versionJson, reqVsName)) {
+			// 请求不在所有定义的权限里
+			return JsonResultCode.CODE_ACCOUNT_ROLE__AUTH_INSUFFICIENT;
+		}
+
+		if (!saas().shop.version.checkMainConfig(mainConfig, reqVsName)) {
+			// 此功能需要更高版本才可使用。如需了解详情我们的产品顾问将尽快与您联系！！
+			return JsonResultCode.CODE_ACCOUNT_VERSIN_NO_POWER;
+		}
+		// 查询对应的api
+		for (int i = 1; i < list.size(); i++) {
+			Map hashMap = list.get(i);
+			if (reqVsName.equals(hashMap.get("vsName")) && reqEnName.equals(hashMap.get("enName"))) {
+				versionJson = (List<String>) hashMap.get("includeApi");
+				// 有些特殊的功能在对应的api方法里校验。规定这些特殊的IncludeApi为空
+				// 以后请往后添加-》》》目前包括： 小程序管理中的十个，门店买单送积分，签到送积分，门店买单 ，技师管理，服务管理
+				if (versionJson.size() == 0) {
+					return JsonResultCode.CODE_SUCCESS;
+				}
+				// 请求包含在api里
+				if (includeEname(versionJson, reqVsName)) {
+					// 和用户自己的权限进行校验
+					return JsonResultCode.CODE_SUCCESS;
+				}
+				//
+				return JsonResultCode.CODE_ACCOUNT_ROLE__AUTH_INSUFFICIENT;
+			}
+
+		}
+		// 此功能需要更高版本才可使用。如需了解详情我们的产品顾问将尽快与您联系！！
+		return JsonResultCode.CODE_ACCOUNT_VERSIN_NO_POWER;
 	}
 }
