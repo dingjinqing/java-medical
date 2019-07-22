@@ -30,6 +30,8 @@ public class AdminIndexController extends AdminBaseController {
 	JedisManager jedis = JedisManager.instance();
 	final protected String menuJsonPath = "admin.privilegeList.json";
 	final protected String privilegeJsonPath = "admin.privilegePass.json";
+	
+	private static final String ENNAME="enName";
 
 	/**
 	 * 返回店铺菜单
@@ -46,6 +48,14 @@ public class AdminIndexController extends AdminBaseController {
 		Integer roleId = saas.shop.getShopAccessRoleId(adminAuth.user().sysId, adminAuth.user().loginShopId,
 				adminAuth.user().subAccountId);
 		PrivilegeVo privilegeVo = new PrivilegeVo();
+		//版本权限
+		VersionConfig vConfig = saas.shop.version.mergeVersion(adminAuth.user().loginShopId);
+		if (vConfig == null) {
+			// 版本存在问题，请联系管理员
+			return fail(JsonResultCode.CODE_FAIL);
+		}
+		VersionMainConfig mainConfig = vConfig.getMainConfig();
+		privilegeVo.setVMainConfig(mainConfig);
 		if (roleId != 0) {
 			// 是子账户
 			MenuReturnParam menuReturnParam = saas.shop.role.getPrivilegeListPublic(roleId);
@@ -74,11 +84,14 @@ public class AdminIndexController extends AdminBaseController {
 	}
 
 	/**
-	 * 点击的菜单或者功能有没有权限
+	 * 点击的菜单或者功能有没有权限，暂时取消，都通过发的uri校验
 	 * 
 	 * @return
 	 */
-	@RequestMapping(value = "/admin/checkMenu")
+	/**
+	 *  @RequestMapping(value = "/admin/checkMenu")
+	 * @return
+	 */
 	public JsonResult checkMenu() {
 		if (StringUtils.isEmpty(adminAuth.user().loginShopId)) {
 			return fail(JsonResultCode.CODE_ACCOUNT_ROLE__SHOP_SELECT);
@@ -95,7 +108,7 @@ public class AdminIndexController extends AdminBaseController {
 			return success(JsonResultCode.CODE_SUCCESS);
 		}
 		// 子账户，判断是否可以点击
-		if (saas.shop.role.checkPrivilegeList(roleId, request.getHeader("enName"))) {
+		if (saas.shop.role.checkPrivilegeList(roleId, request.getHeader(ENNAME))) {
 			return success(JsonResultCode.CODE_SUCCESS);
 		}
 		return fail(JsonResultCode.CODE_FAIL);
@@ -108,7 +121,7 @@ public class AdminIndexController extends AdminBaseController {
 			return JsonResultCode.CODE_FAIL;
 		}
 		VersionMainConfig mainConfig = vConfig.getMainConfig();
-		String enName = request.getHeader("enName");
+		String enName = request.getHeader(ENNAME);
 		String uri = request.getRequestURI();
 
 		if (saas.shop.version.checkMainConfig(mainConfig, enName)) {
