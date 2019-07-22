@@ -33,7 +33,7 @@ public class VoTranslator {
      * @param object 出参对象
      */
     @SuppressWarnings("unchecked")
-    void translateFields(Object object) {
+    public void translateFields(Object object) {
         if (isRawType(object)) {
             return;
         }
