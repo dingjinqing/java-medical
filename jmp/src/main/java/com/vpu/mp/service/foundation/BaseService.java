@@ -25,7 +25,6 @@ import com.vpu.mp.service.wechat.OpenPlatform;
 @Scope("prototype")
 public class BaseService extends ServiceContainer {
 
-	@Autowired
 	protected SaasApplication saas ;
 
 	/**
@@ -46,7 +45,7 @@ public class BaseService extends ServiceContainer {
 	 * @return
 	 */
 	public SaasApplication saas() {
-		return saas;
+		return saas=SaasApplication.instance();
 	}
 
 	/**
