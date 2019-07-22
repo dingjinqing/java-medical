@@ -61,6 +61,17 @@ public class VoTranslatorTest {
     }
 
     /**
+     * 测试多语言 - 英语
+     */
+    @Test
+    public void assertPropertyTranslatedEnUS() {
+        when(reqMock.getHeader(HEADER_LANG)).thenReturn("en_US");
+        PureVo vo = new PureVo("food");
+        translator.translateFields(vo);
+        assertEquals("FOOD", vo.getName());
+    }
+
+    /**
      * 翻译数组中的对象
      */
     private void translateCategoryArray() {
