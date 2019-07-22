@@ -1,0 +1,360 @@
+[
+	{
+		"vsName": "vsNameList",
+		"name": "所有的版本功能",
+		"enName": "",
+		"includeApi": [
+			"basic_yesterday",
+			"portrait_user",
+			"second_view",
+			"visit_source",
+			"trades_summary",
+			"analysis_visit_source",
+			"sort",
+			"m_member_card",
+			"m_voucher",
+			"m_bargain",
+			"m_video",
+			"m_integral_goods",
+			"m_seckill_goods",
+			"authorization",
+			"m_group_draw",
+			"m_pin_integration",
+			"m_nav",
+			"charge_card",
+			"count_card",
+			"grade_card",
+			"tag",
+			"sign_score",
+			"pay_score",
+			"full_cut",
+			"pin_group",
+			"bargain",
+			"form_decoration",
+			"distribution",
+			"message_template",
+			"pay_reward",
+			"coupon_grant",
+			"activity_reward",
+			"integral_goods",
+			"seckill_goods",
+			"lottery",
+			"purchase_price",
+			"reduce_price",
+			"group_draw",
+			"pin_integration",
+			"package_sale",
+			"pre_sale",
+			"insteadpay",
+			"gift",
+			"promote",
+			"assess",
+			"free_ship",
+			"reduce_price",
+			"coupon_package",
+			"comment_gift",
+			"store_pay",
+			"technician",
+			"service"
+		]
+	},
+	{
+		"vsName": "basic_yesterday",
+		"name": "概况统计",
+		"enName": "shop_view",
+		"includeApi": []
+	},
+	{
+		"vsName": "portrait_user",
+		"name": "用户画像",
+		"enName": "analysis_portrait",
+		"includeApi": []
+	},
+	{
+		"vsName": "second_view",
+		"name": "访问分析",
+		"enName": "analysis_visit",
+		"includeApi": []
+	},
+	{
+		"vsName": "visit_source",
+		"name": "来源分析",
+		"enName": "analysis_visit_source",
+		"includeApi": []
+	},
+	{
+		"vsName": "analysis_visit_source",
+		"name": "交易统计",
+		"enName": "trades_summary",
+		"includeApi": []
+	},
+	{
+		"vsName": "sort",
+		"name": "商家分类",
+		"enName": "sort",
+		"includeApi": []
+	},
+	{
+		"vsName": "m_member_card",
+		"name": "会员卡模块",
+		"enName": "picture_setting",
+		"includeApi": []
+	},
+	{
+		"vsName": "m_voucher",
+		"name": "优惠券模块",
+		"enName": "picture_setting",
+		"includeApi": []
+	},
+	{
+		"vsName": "m_bargain",
+		"name": "砍价模块",
+		"enName": "picture_setting",
+		"includeApi": []
+	},
+	{
+		"vsName": "m_video",
+		"name": "视频模块",
+		"enName": "picture_setting",
+		"includeApi": []
+	},
+	{
+		"vsName": "m_integral_goods",
+		"name": "积分商品模块",
+		"enName": "picture_setting",
+		"includeApi": []
+	},
+	{
+		"vsName": "m_seckill_goods",
+		"name": "秒杀模块",
+		"enName": "picture_setting",
+		"includeApi": []
+	},
+	{
+		"vsName": "authorization",
+		"name": "微信公众号授权",
+		"enName": "picture_setting",
+		"includeApi": []
+	},
+	{
+		"vsName": "m_group_draw",
+		"name": "拼团抽奖",
+		"enName": "picture_setting",
+		"includeApi": []
+	},
+	{
+		"vsName": "m_pin_integration",
+		"name": "瓜分积分",
+		"enName": "picture_setting",
+		"includeApi": []
+	},
+	{
+		"vsName": "m_nav",
+		"name": "顶部导航模板",
+		"enName": "picture_setting",
+		"includeApi": []
+	},
+	{
+		"vsName": "charge_card",
+		"name": "充值会员卡",
+		"enName": "user_card",
+		"includeApi": []
+	},
+	{
+		"vsName": "count_card",
+		"name": "限次会员卡",
+		"enName": "user_card",
+		"includeApi": []
+	},
+	{
+		"vsName": "grade_card",
+		"name": "等级会员卡",
+		"enName": "user_card",
+		"includeApi": []
+	},
+	{
+		"vsName": "tag",
+		"name": "会员标签",
+		"enName": "user_tag",
+		"includeApi": [
+			"/api/admin/tag/list",
+			"/api/admin/tag/update",
+			"/api/admin/tag/delete",
+			"/api/admin/tag/add"
+		]
+	},
+	{
+		"vsName": "sign_score",
+		"name": "签到送积分",
+		"enName": "score",
+		"includeApi": []
+	},
+	{
+		"vsName": "pay_score",
+		"name": "买单送积分",
+		"enName": "score",
+		"includeApi": []
+	},
+	{
+		"vsName": "full_cut",
+		"name": "满折满减",
+		"enName": "full_cut",
+		"includeApi": []
+	},
+	{
+		"vsName": "pin_group",
+		"name": "拼团",
+		"enName": "pin_group",
+		"includeApi": []
+	},
+	{
+		"vsName": "bargain",
+		"name": "砍价",
+		"enName": "kanjia",
+		"includeApi": []
+	},
+	{
+		"vsName": "form_decoration",
+		"name": "表单统计",
+		"enName": "form_decoration",
+		"includeApi": []
+	},
+	{
+		"vsName": "distribution",
+		"name": "分销",
+		"enName": "distribution_info",
+		"includeApi": []
+	},
+	{
+		"vsName": "message_template",
+		"name": "消息推送",
+		"enName": "business_template_message",
+		"includeApi": []
+	},
+	{
+		"vsName": "pay_reward",
+		"name": "支付有礼",
+		"enName": "payreward",
+		"includeApi": []
+	},
+	{
+		"vsName": "coupon_grant",
+		"name": "定向发券",
+		"enName": "market_act_give",
+		"includeApi": []
+	},
+	{
+		"vsName": "activity_reward",
+		"name": "活动有礼",
+		"enName": "market_gifted",
+		"includeApi": []
+	},
+	{
+		"vsName": "integral_goods",
+		"name": "积分商品",
+		"enName": "integral_convert",
+		"includeApi": []
+	},
+	{
+		"vsName": "reduce_price",
+		"name": "限时降价",
+		"enName": "reduce_price",
+		"includeApi": []
+	},
+	{
+		"vsName": "seckill_goods",
+		"name": "秒杀",
+		"enName": "sec_kill",
+		"includeApi": []
+	},
+	{
+		"vsName": "lottery",
+		"name": "抽奖",
+		"enName": "lottery_activity",
+		"includeApi": []
+	},
+	{
+		"vsName": "purchase_price",
+		"name": "加价购",
+		"enName": "purchase_price",
+		"includeApi": []
+	},
+	{
+		"vsName": "group_draw",
+		"name": "拼团抽奖",
+		"enName": "group_draw",
+		"includeApi": []
+	},
+	{
+		"vsName": "pin_integration",
+		"name": "组队瓜分积分",
+		"enName": "pin_integration",
+		"includeApi": []
+	},
+	{
+		"vsName": "package_sale",
+		"name": "打包一口价",
+		"enName": "package",
+		"includeApi": []
+	},
+	{
+		"vsName": "pre_sale",
+		"name": "定金膨胀",
+		"enName": "presale",
+		"includeApi": []
+	},
+	{
+		"vsName": "insteadpay",
+		"name": "好友代付",
+		"enName": "insteadpay",
+		"includeApi": []
+	},
+	{
+		"vsName": "gift",
+		"name": "赠品策略",
+		"enName": "gift",
+		"includeApi": []
+	},
+	{
+		"vsName": "promote",
+		"name": "好友助力",
+		"enName": "promote",
+		"includeApi": []
+	},
+	{
+		"vsName": "assess",
+		"name": "测评",
+		"enName": "assess",
+		"includeApi": []
+	},
+	{
+		"vsName": "free_ship",
+		"name": "满包邮",
+		"enName": "free_ship",
+		"includeApi": []
+	},
+	{
+		"vsName": "coupon_package",
+		"name": "优惠券包",
+		"enName": "coupon_package",
+		"includeApi": []
+	},
+	{
+		"vsName": "store_pay",
+		"name": "门店买单",
+		"enName": "store_service_config",
+		"includeApi": []
+	},
+	{
+		"vsName": "technician",
+		"name": "技师管理",
+		"enName": "store_service_config",
+		"includeApi": []
+	},
+	{
+		"vsName": "service",
+		"name": "服务管理 ",
+		"enName": "store_service_config",
+		"includeApi": []
+	}
+]
