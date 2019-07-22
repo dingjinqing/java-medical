@@ -120,7 +120,7 @@ public class ImageService extends BaseService {
                 .on(UPLOADED_IMAGE.IMG_CAT_ID.eq(DSL.cast(UPLOADED_IMAGE_CATEGORY.IMG_CAT_ID, Integer.class)));
         select = this.buildOptions(select, param);
         select.orderBy(UPLOADED_IMAGE.IMG_ID.desc());
-        return this.getPageResult(select, param.page, UploadImageCatNameVo.class);
+        return this.getPageResult(select, param.page,param.pageRows, UploadImageCatNameVo.class);
     }
 
 

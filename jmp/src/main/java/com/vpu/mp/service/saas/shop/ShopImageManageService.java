@@ -244,7 +244,7 @@ public class ShopImageManageService  extends BaseService {
                 .on(SHOP_UPLOADED_IMAGE.IMG_CAT_ID.eq(SHOP_UPLOADED_IMAGE_CATEGORY.IMG_CAT_ID));
         select = this.buildOptions(select, param,sysId);
         select.orderBy(SHOP_UPLOADED_IMAGE.IMG_ID.desc());
-        return this.getPageResult(select, param.page, ShopUploadImageCatNameVo.class);
+        return this.getPageResult(select, param.page,param.pageRows, ShopUploadImageCatNameVo.class);
     }
 
     /**

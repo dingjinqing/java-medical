@@ -19,6 +19,10 @@ public class ShopImageListQueryParam {
      */
     public String keywords;
     /**
+     * 每页显示的记录数
+     */
+    public Integer pageRows;
+    /**
      * 更多需求 1.开启 0关闭
      */
     public Integer searchNeed;

@@ -25,6 +25,10 @@ public class ImageListQueryParam {
 	 */
 	public String keywords;
 	/**
+	 * 每页显示的个数
+	 */
+	public  Integer pageRows;
+	/**
 	 * 更多需求 1.开启 0关闭
 	 */
 	public Integer searchNeed;
