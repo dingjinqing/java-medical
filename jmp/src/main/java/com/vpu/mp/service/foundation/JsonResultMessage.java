@@ -162,6 +162,10 @@ public class JsonResultMessage {
 
 	final public static String MSG_MEMBER_NOT_EXIST = "member.not.exist";
 	final public static String MSG_SCORE_NOT_SAME = "member.score.not.same";
+	final public static String MSG_MEMBER_SCORE_ERROR = "member.score.error";
+	final public static String MSG_MEMBER_SCORE_NOT_ENOUGH = "member.score.not.enough";
+	final public static String MSG_MEMBER_SCORE_NOT_NULL = "member.score.not.null";
+	final public static String MSG_MEMBER_SCORE_NOT_BE_NEGATIVE="member.score.not.be.negative";
 
 	/**
 	 * 会员余额
