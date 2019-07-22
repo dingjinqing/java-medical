@@ -11,12 +11,13 @@ import java.util.Map;
 
 import org.jooq.Record5;
 import org.jooq.SelectWhereStep;
+import org.springframework.stereotype.Service;
 
 import com.vpu.mp.db.main.tables.records.DecorationTemplateRecord;
 import com.vpu.mp.db.shop.tables.records.XcxCustomerPageRecord;
-import com.vpu.mp.service.foundation.BaseService;
-import com.vpu.mp.service.foundation.PageResult;
-import com.vpu.mp.service.foundation.Util;
+import com.vpu.mp.service.foundation.service.ShopBaseService;
+import com.vpu.mp.service.foundation.util.PageResult;
+import com.vpu.mp.service.foundation.util.Util;
 import com.vpu.mp.service.pojo.saas.shop.version.VersionConfig;
 import com.vpu.mp.service.pojo.shop.decoration.PageClassificationVo;
 import com.vpu.mp.service.pojo.shop.decoration.PageStoreParam;
@@ -29,9 +30,9 @@ import org.springframework.stereotype.Service;
  * @author lixinguo
  *
  */
+
 @Service
-@Scope("prototype")
-public class MpDecorationService extends BaseService {
+public class ShopMpDecorationService extends ShopBaseService {
 	/**
 	 * 装修页面列表
 	 * 
@@ -167,7 +168,7 @@ public class MpDecorationService extends BaseService {
 	 * @return
 	 */
 	public Map<String, Integer> getVersionModules() {
-		VersionConfig config = saas().shop.version.mergeVersion(this.shopId);
+		VersionConfig config = saas().shop.version.mergeVersion(this.getShopId());
 		List<String> sub2 = config.mainConfig.sub2;
 		Map<String, Integer> moduleMap = new HashMap<String, Integer>(8);
 		String[] modules = { "m_member_card", "m_voucher", "m_bargain", "m_video",

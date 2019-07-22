@@ -28,11 +28,12 @@ import org.jooq.tools.StringUtils;
 import org.jooq.types.UShort;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.stereotype.Service;
 
-import com.vpu.mp.service.foundation.BaseService;
-import com.vpu.mp.service.foundation.OrderConstant;
-import com.vpu.mp.service.foundation.Page;
-import com.vpu.mp.service.foundation.PageResult;
+import com.vpu.mp.service.foundation.data.OrderConstant;
+import com.vpu.mp.service.foundation.service.ShopBaseService;
+import com.vpu.mp.service.foundation.util.Page;
+import com.vpu.mp.service.foundation.util.PageResult;
 import com.vpu.mp.service.pojo.shop.order.OrderInfoVo;
 import com.vpu.mp.service.pojo.shop.order.OrderListInfoVo;
 import com.vpu.mp.service.pojo.shop.order.OrderPageListQueryParam;
@@ -49,7 +50,8 @@ import com.vpu.mp.service.pojo.shop.order.store.StoreOrderPageListQueryParam;
  * 	订单模块查询service
  * @author 常乐 2019年6月27日;王帅 2019/7/10
  */
-public class OrderReadService extends BaseService {
+@Service
+public class OrderReadService extends ShopBaseService {
 	
 	private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
@@ -216,7 +218,6 @@ public class OrderReadService extends BaseService {
 	 */
 	public OrderInfoVo get(String mainOrderSn) {
 		//TODO 删除
-		shopId=6797286;
 		List<OrderInfoVo> orders = db().select(ORDER_INFO.asterisk())
 			.from(ORDER_INFO)
 			.where(ORDER_INFO.MAIN_ORDER_SN.eq(mainOrderSn))

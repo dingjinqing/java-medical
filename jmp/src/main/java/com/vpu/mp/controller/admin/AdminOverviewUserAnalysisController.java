@@ -10,7 +10,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.vpu.mp.service.foundation.JsonResult;
+import com.vpu.mp.service.foundation.data.JsonResult;
 import com.vpu.mp.service.pojo.shop.overview.useranalysis.OverviewUserAnalysisActiveVo;
 import com.vpu.mp.service.pojo.shop.overview.useranalysis.OverviewUserAnalysisDateParam;
 import com.vpu.mp.service.pojo.shop.overview.useranalysis.OverviewUserAnalysisOrderVo;
@@ -174,7 +174,7 @@ public class AdminOverviewUserAnalysisController extends AdminBaseController {
 		List<OverviewUserAnalysisOrderVo> overviewUserAnalysisOrderVos = shop().overview.overviewUserAnalysisService
 				.getOrder(param);
 
-		return success(overviewUserAnalysisOrderVos);
+		return success((Object)overviewUserAnalysisOrderVos);
 
 	}
 

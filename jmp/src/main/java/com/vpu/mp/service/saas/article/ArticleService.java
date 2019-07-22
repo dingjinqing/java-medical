@@ -11,19 +11,19 @@ import org.jooq.Record;
 import org.jooq.Record13;
 import org.jooq.SelectWhereStep;
 import org.jooq.tools.StringUtils;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
 import com.vpu.mp.db.main.tables.records.ArticleRecord;
 import com.vpu.mp.db.main.tables.records.ArticleRecordRecord;
-import com.vpu.mp.service.foundation.BaseService;
-import com.vpu.mp.service.foundation.FieldsUtil;
-import com.vpu.mp.service.foundation.JedisManager;
-import com.vpu.mp.service.foundation.PageResult;
-import com.vpu.mp.service.pojo.saas.article.ArticleParam;
+import com.vpu.mp.service.foundation.jedis.JedisManager;
+import com.vpu.mp.service.foundation.service.MainBaseService;
+import com.vpu.mp.service.foundation.util.FieldsUtil;
+import com.vpu.mp.service.foundation.util.PageResult;
 import com.vpu.mp.service.pojo.saas.article.ArticleListQueryParam;
+import com.vpu.mp.service.pojo.saas.article.ArticleParam;
 import com.vpu.mp.service.pojo.saas.article.ArticleVo;
 import com.vpu.mp.service.saas.region.CityService;
-import org.springframework.context.annotation.Scope;
-import org.springframework.stereotype.Service;
 
 /**
  * 
@@ -31,10 +31,10 @@ import org.springframework.stereotype.Service;
  *
  */
 @Service
-@Scope("prototype")
-public class ArticleService extends BaseService {
+
+public class ArticleService extends MainBaseService {
 	
-	public CityService city;
+	@Autowired public CityService city;
 	protected JedisManager jedis = JedisManager.instance();
 	/**
 	 * 多条件查询文章

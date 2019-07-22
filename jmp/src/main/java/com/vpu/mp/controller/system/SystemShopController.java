@@ -8,8 +8,8 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.vpu.mp.db.main.tables.records.ShopAccountRecord;
 import com.vpu.mp.db.main.tables.records.ShopRecord;
-import com.vpu.mp.service.foundation.JsonResult;
-import com.vpu.mp.service.foundation.JsonResultCode;
+import com.vpu.mp.service.foundation.data.JsonResult;
+import com.vpu.mp.service.foundation.data.JsonResultCode;
 import com.vpu.mp.service.pojo.saas.shop.ShopListQueryParam;
 import com.vpu.mp.service.pojo.saas.shop.VersionEditParam;
 import com.vpu.mp.service.pojo.saas.shop.VersionListQueryParam;
@@ -55,7 +55,7 @@ public class SystemShopController extends SystemBaseController {
 	 */
 	@PostMapping("/system/shop/add")
 	public JsonResult shopAdd(@RequestBody ShopReq shopReq) {
-		ShopAccountRecord accountInfo = saas.shop.accout.getAccountInfoForId(shopReq.getSysId());
+		ShopAccountRecord accountInfo = saas.shop.account.getAccountInfoForId(shopReq.getSysId());
 		if (accountInfo == null) {
 			return fail();
 		}

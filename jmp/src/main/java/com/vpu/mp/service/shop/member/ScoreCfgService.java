@@ -14,7 +14,7 @@ import org.jooq.Result;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.vpu.mp.db.shop.tables.records.UserScoreSetRecord;
-import com.vpu.mp.service.foundation.Util;
+import com.vpu.mp.service.foundation.util.Util;
 import com.vpu.mp.service.pojo.shop.member.ScoreCfgVo;
 import com.vpu.mp.service.pojo.shop.member.ShopCfgParam;
 import com.vpu.mp.service.shop.config.BaseShopConfigService;
@@ -28,7 +28,7 @@ import org.springframework.stereotype.Service;
  * @author 黄壮壮 2019-07-15 14:13
  */
 @Service
-@Scope("prototype")
+
 public class ScoreCfgService extends BaseShopConfigService {
 
 	final public static String ZERO = "0";

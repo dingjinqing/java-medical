@@ -1,9 +1,8 @@
 package com.vpu.mp.service.shop.config;
 
-import com.vpu.mp.service.pojo.shop.config.distribution.DistributionParam;
-import com.vpu.mp.service.shop.ShopApplication;
-import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Service;
+
+import com.vpu.mp.service.pojo.shop.config.distribution.DistributionParam;
 
 /**
  * 分销配置
@@ -11,7 +10,7 @@ import org.springframework.stereotype.Service;
  * 2019年7月17日
  */
 @Service
-@Scope("prototype")
+
 public class DistributionConfigService extends BaseShopConfigService{
 	/**
 	 * 分销开关

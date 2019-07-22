@@ -1,6 +1,6 @@
 package com.vpu.mp.controller.admin;
 
-import com.vpu.mp.service.foundation.JsonResult;
+import com.vpu.mp.service.foundation.data.JsonResult;
 import com.vpu.mp.service.pojo.shop.applets.AppletsJumpAddPrarm;
 import com.vpu.mp.service.pojo.shop.applets.AppletsJumpUpdatePrarm;
 import com.vpu.mp.service.pojo.shop.applets.AppletsJumpVo;

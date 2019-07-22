@@ -12,12 +12,15 @@ import org.jooq.Result;
 import org.jooq.impl.DefaultDSLContext;
 
 import com.vpu.mp.db.main.tables.records.ShopRecord;
-import com.vpu.mp.service.foundation.BaseService;
-import com.vpu.mp.service.foundation.Util;
+import com.vpu.mp.service.foundation.database.DatabaseManager;
+import com.vpu.mp.service.foundation.service.MainBaseService;
+import com.vpu.mp.service.foundation.util.Util;
 import com.vpu.mp.service.pojo.saas.db.Column;
 import com.vpu.mp.service.pojo.saas.db.ConnectStr;
 import com.vpu.mp.service.pojo.saas.db.Index;
 import com.vpu.mp.service.pojo.saas.db.Table;
+
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Service;
 
@@ -27,9 +30,11 @@ import org.springframework.stereotype.Service;
  *
  */
 @Service
-@Scope("prototype")
-public class RepairDatabaseService extends BaseService {
+public class RepairDatabaseService extends MainBaseService {
 
+	@Autowired
+	DatabaseManager databaseManager;
+	
 	/**
 	 * 修复主库
 	 */
@@ -46,7 +51,9 @@ public class RepairDatabaseService extends BaseService {
 	public void repairShopDb(Integer shopId) {
 		String sql = Util.loadResource("db/main/db_shop.sql");
 		List<Table> tables = this.parseSql(sql);
-		repairDb(tables, this.shopDb(shopId));
+		databaseManager.switchShopDb(shopId);
+		repairDb(tables, this.shopDb());
+		databaseManager.restoreLastShopDb();
 	}
 
 	/**
@@ -57,7 +64,9 @@ public class RepairDatabaseService extends BaseService {
 		List<Table> tables = this.parseSql(sql);
 		Result<ShopRecord> shops = saas().shop.getAll();
 		for (ShopRecord shop : shops) {
-			repairDb(tables, this.shopDb(shop.getShopId()));
+			databaseManager.switchShopDb(shop.getShopId());
+			repairDb(tables, this.shopDb());
+			databaseManager.restoreLastShopDb();
 		}
 	}
 

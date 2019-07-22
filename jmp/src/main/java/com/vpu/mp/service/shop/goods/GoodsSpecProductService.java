@@ -1,35 +1,30 @@
 package com.vpu.mp.service.shop.goods;
 
-import com.vpu.mp.db.shop.tables.records.GoodsSpecProductRecord;
-import com.vpu.mp.service.foundation.BaseService;
-import com.vpu.mp.service.foundation.DelFlag;
-import com.vpu.mp.service.foundation.Util;
-import com.vpu.mp.service.pojo.shop.goods.Goods;
-import com.vpu.mp.service.pojo.shop.goods.spec.GoodsSpec;
-import com.vpu.mp.service.pojo.shop.goods.spec.GoodsSpecProduct;
-import org.jooq.DSLContext;
-import org.jooq.impl.DSL;
-import org.springframework.context.annotation.Scope;
-import org.springframework.stereotype.Service;
+import static com.vpu.mp.db.shop.Tables.GOODS_SPEC_PRODUCT;
+import static com.vpu.mp.db.shop.Tables.GOODS_SPEC_PRODUCT_BAK;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import static com.vpu.mp.db.shop.Tables.GOODS_SPEC_PRODUCT;
-import static com.vpu.mp.db.shop.Tables.GOODS_SPEC_PRODUCT_BAK;
-import static com.vpu.mp.db.shop.Tables.SPEC;
+import org.jooq.DSLContext;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import com.vpu.mp.db.shop.tables.records.GoodsSpecProductRecord;
+import com.vpu.mp.service.foundation.service.ShopBaseService;
+import com.vpu.mp.service.pojo.shop.goods.spec.GoodsSpec;
+import com.vpu.mp.service.pojo.shop.goods.spec.GoodsSpecProduct;
 
 /**
  * @author 李晓冰
  * @date 2019年07月05日
  */
 @Service
-@Scope("prototype")
-public class GoodsSpecProductService extends BaseService {
 
-    private GoodsSpecService goodsSpecService = new GoodsSpecService();
+public class GoodsSpecProductService extends ShopBaseService {
+
+    @Autowired private GoodsSpecService goodsSpecService;
     /**
      * 规格名值描述分割符
      */

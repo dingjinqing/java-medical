@@ -1,12 +1,12 @@
 package com.vpu.mp.service.saas.region;
 
-import org.jooq.Result;
-
 import static com.vpu.mp.db.main.tables.DictCity.DICT_CITY;
-import com.vpu.mp.db.main.tables.records.DictCityRecord;
-import com.vpu.mp.service.foundation.BaseService;
-import org.springframework.context.annotation.Scope;
+
+import org.jooq.Result;
 import org.springframework.stereotype.Service;
+
+import com.vpu.mp.db.main.tables.records.DictCityRecord;
+import com.vpu.mp.service.foundation.service.MainBaseService;
 
 /**
  * 
@@ -14,8 +14,8 @@ import org.springframework.stereotype.Service;
  *
  */
 @Service
-@Scope("prototype")
-public class CityService extends BaseService {
+
+public class CityService extends MainBaseService {
 
 	/**
 	 * 得到省的城市列表

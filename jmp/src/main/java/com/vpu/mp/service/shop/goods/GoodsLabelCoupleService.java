@@ -8,7 +8,7 @@ import java.util.List;
 import org.jooq.DSLContext;
 
 import com.vpu.mp.db.shop.tables.records.GoodsLabelCoupleRecord;
-import com.vpu.mp.service.foundation.BaseService;
+import com.vpu.mp.service.foundation.service.ShopBaseService;
 import com.vpu.mp.service.pojo.shop.goods.label.GoodsLabel;
 import com.vpu.mp.service.pojo.shop.goods.label.GoodsLabelCouple;
 import com.vpu.mp.service.pojo.shop.goods.label.GoodsLabelCoupleTypeEnum;
@@ -21,8 +21,8 @@ import org.springframework.stereotype.Service;
  *
  */
 @Service
-@Scope("prototype")
-public class GoodsLabelCoupleService extends BaseService {
+
+public class GoodsLabelCoupleService extends ShopBaseService {
 
 	/**
 	 * 根据标签Id，查询标签的关联信息

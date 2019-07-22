@@ -1,8 +1,10 @@
 package com.vpu.mp.service.saas.region;
 
-import com.vpu.mp.service.foundation.BaseService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Service;
+
+import com.vpu.mp.service.foundation.service.MainBaseService;
 
 /**
  * 
@@ -10,9 +12,9 @@ import org.springframework.stereotype.Service;
  *
  */
 @Service
-@Scope("prototype")
-public class RegionService extends BaseService {
-	public ProvinceService province;
-	public DistrictService district;
-	public CityService city;
+
+public class RegionService extends MainBaseService {
+	@Autowired public ProvinceService province;
+	@Autowired public DistrictService district;
+	@Autowired public CityService city;
 }

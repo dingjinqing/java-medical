@@ -2,7 +2,7 @@ package com.vpu.mp.service.shop.goods;
 
 import com.vpu.mp.db.shop.tables.records.SpecRecord;
 import com.vpu.mp.db.shop.tables.records.SpecValsRecord;
-import com.vpu.mp.service.foundation.DelFlag;
+import com.vpu.mp.service.foundation.data.DelFlag;
 import com.vpu.mp.service.pojo.shop.goods.spec.GoodsSpec;
 import com.vpu.mp.service.pojo.shop.goods.spec.GoodsSpecVal;
 import org.jooq.DSLContext;
@@ -22,7 +22,7 @@ import static com.vpu.mp.db.shop.Tables.SPEC_VALS;
  * @date 2019年07月05日
  */
 @Service
-@Scope("prototype")
+
 public class GoodsSpecService {
 
     /**

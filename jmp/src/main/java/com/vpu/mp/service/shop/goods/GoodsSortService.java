@@ -1,7 +1,7 @@
 package com.vpu.mp.service.shop.goods;
 
 import com.vpu.mp.db.shop.tables.records.SortRecord;
-import com.vpu.mp.service.foundation.BaseService;
+import com.vpu.mp.service.foundation.service.ShopBaseService;
 import com.vpu.mp.service.pojo.shop.goods.sort.GoodsSortListParam;
 import com.vpu.mp.service.pojo.shop.goods.sort.Sort;
 import org.jooq.*;
@@ -20,8 +20,8 @@ import static com.vpu.mp.db.shop.tables.Sort.SORT;
  * @date 2019年06月27日
  */
 @Service
-@Scope("prototype")
-public class GoodsSortService extends BaseService {
+
+public class GoodsSortService extends ShopBaseService {
 
     /**
      * 根据父分类和分类类型查询

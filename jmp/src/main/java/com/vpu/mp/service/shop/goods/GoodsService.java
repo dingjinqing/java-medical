@@ -3,10 +3,10 @@ package com.vpu.mp.service.shop.goods;
 import com.vpu.mp.db.shop.tables.records.GoodsImgRecord;
 import com.vpu.mp.db.shop.tables.records.GoodsLabelCoupleRecord;
 import com.vpu.mp.db.shop.tables.records.GoodsRecord;
-import com.vpu.mp.service.foundation.BaseService;
-import com.vpu.mp.service.foundation.DelFlag;
-import com.vpu.mp.service.foundation.PageResult;
-import com.vpu.mp.service.foundation.Util;
+import com.vpu.mp.service.foundation.data.DelFlag;
+import com.vpu.mp.service.foundation.service.ShopBaseService;
+import com.vpu.mp.service.foundation.util.PageResult;
+import com.vpu.mp.service.foundation.util.Util;
 import com.vpu.mp.service.pojo.shop.goods.*;
 import com.vpu.mp.service.pojo.shop.goods.label.GoodsLabelCouple;
 import com.vpu.mp.service.pojo.shop.goods.label.GoodsLabelCoupleTypeEnum;
@@ -18,6 +18,7 @@ import com.vpu.mp.service.pojo.shop.goods.GoodsVo;
 import org.jooq.*;
 import org.jooq.impl.DSL;
 import org.jooq.tools.StringUtils;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Service;
 
@@ -38,17 +39,17 @@ import static com.vpu.mp.service.pojo.shop.goods.GoodsPageListParam.ASC;
  * @date 2019年6月25日
  */
 @Service
-@Scope("prototype")
-public class GoodsService extends BaseService {
 
-    public GoodsBrandService goodsBrand;
-    public GoodsSortService goodsSort;
-    public GoodsCommentService goodsComment;
-    public GoodsLabelService goodsLabel;
-    public GoodsLabelCoupleService goodsLabelCouple;
-    public GoodsDeliverTamplateService goodsDeliver;
+public class GoodsService extends ShopBaseService {
 
-    protected GoodsSpecProductService goodsSpecProductService;
+    @Autowired public GoodsBrandService goodsBrand;
+    @Autowired public GoodsSortService goodsSort;
+    @Autowired public GoodsCommentService goodsComment;
+    @Autowired public GoodsLabelService goodsLabel;
+    @Autowired public GoodsLabelCoupleService goodsLabelCouple;
+    @Autowired public GoodsDeliverTamplateService goodsDeliver;
+
+    @Autowired protected GoodsSpecProductService goodsSpecProductService;
 
     /**
      * 商品分页查询

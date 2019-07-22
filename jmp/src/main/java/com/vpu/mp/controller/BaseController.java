@@ -1,17 +1,19 @@
 package com.vpu.mp.controller;
 
-import com.vpu.mp.service.foundation.JsonResult;
-import com.vpu.mp.service.foundation.JsonResultCode;
-import com.vpu.mp.service.foundation.Util;
-import com.vpu.mp.service.pojo.shop.summary.visit.VisitPageParam;
-import com.vpu.mp.service.saas.SaasApplication;
+import java.util.HashMap;
+import java.util.Map;
+
+import javax.servlet.http.HttpServletRequest;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.env.Environment;
 import org.springframework.util.StringUtils;
 
-import javax.servlet.http.HttpServletRequest;
-import java.util.HashMap;
-import java.util.Map;
+import com.vpu.mp.service.foundation.data.JsonResult;
+import com.vpu.mp.service.foundation.data.JsonResultCode;
+import com.vpu.mp.service.foundation.util.Util;
+import com.vpu.mp.service.pojo.shop.summary.visit.VisitPageParam;
+import com.vpu.mp.service.saas.SaasApplication;
 
 /**
  * 

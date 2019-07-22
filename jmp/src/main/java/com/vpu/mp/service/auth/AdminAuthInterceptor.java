@@ -1,6 +1,7 @@
 package com.vpu.mp.service.auth;
 
 import java.io.PrintWriter;
+
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
@@ -8,9 +9,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.web.servlet.handler.HandlerInterceptorAdapter;
 
-import com.vpu.mp.service.foundation.JsonResult;
-import com.vpu.mp.service.foundation.JsonResultCode;
-import com.vpu.mp.service.foundation.Util;
+import com.vpu.mp.service.foundation.data.JsonResult;
+import com.vpu.mp.service.foundation.data.JsonResultCode;
+import com.vpu.mp.service.foundation.util.Util;
 import com.vpu.mp.service.pojo.shop.auth.AdminTokenAuthInfo;
 import com.vpu.mp.service.saas.SaasApplication;
 
@@ -28,6 +29,7 @@ public class AdminAuthInterceptor extends HandlerInterceptorAdapter {
 
 	@Autowired
 	protected AdminAuth adminAuth;
+	
 	@Autowired
 	protected SaasApplication saas;
 	

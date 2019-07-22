@@ -1,21 +1,21 @@
 package com.vpu.mp.service.saas.article;
 
+import static com.vpu.mp.db.main.tables.Article.ARTICLE;
+import static com.vpu.mp.db.main.tables.ArticleCategory.ARTICLE_CATEGORY;
+
 import org.jooq.DSLContext;
 import org.jooq.Record2;
 import org.jooq.SelectWhereStep;
 import org.jooq.impl.DSL;
+import org.springframework.stereotype.Service;
 
-import static com.vpu.mp.db.main.tables.Article.ARTICLE;
-import static com.vpu.mp.db.main.tables.ArticleCategory.ARTICLE_CATEGORY;
-import com.vpu.mp.service.foundation.BaseService;
-import com.vpu.mp.service.foundation.DelFlag;
-import com.vpu.mp.service.foundation.Page;
-import com.vpu.mp.service.foundation.PageResult;
+import com.vpu.mp.service.foundation.data.DelFlag;
+import com.vpu.mp.service.foundation.service.MainBaseService;
+import com.vpu.mp.service.foundation.util.Page;
+import com.vpu.mp.service.foundation.util.PageResult;
 import com.vpu.mp.service.pojo.saas.article.category.ArtCategoryListQuertParam;
 import com.vpu.mp.service.pojo.saas.article.category.ArticleCategoryParam;
 import com.vpu.mp.service.pojo.saas.article.category.ArticleCategoryVo;
-import org.springframework.context.annotation.Scope;
-import org.springframework.stereotype.Service;
 
 /**
  * 文章分类业务逻辑
@@ -23,8 +23,8 @@ import org.springframework.stereotype.Service;
  *
  */
 @Service
-@Scope("prototype")
-public class ArticleCategoryService extends BaseService {
+
+public class ArticleCategoryService extends MainBaseService {
 	
 	/**
 	 * 分页查询文章分类

@@ -2,8 +2,7 @@ package com.vpu.mp.service.pojo.saas.article.category;
 
 import javax.validation.constraints.NotBlank;
 
-import com.vpu.mp.service.foundation.JsonResultCode;
-import com.vpu.mp.service.foundation.JsonResultMessage;
+import com.vpu.mp.service.foundation.data.JsonResultMessage;
 
 import lombok.Data;
 import lombok.NoArgsConstructor;

@@ -1,11 +1,8 @@
 package com.vpu.mp.service.pojo.shop.operation;
 
 
-import lombok.Data;
-
 import java.io.Serializable;
 import java.sql.Timestamp;
-import java.util.stream.Stream;
 
 /**
  * 操作记录的POJO

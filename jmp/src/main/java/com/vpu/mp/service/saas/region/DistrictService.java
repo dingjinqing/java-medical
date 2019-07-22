@@ -7,7 +7,8 @@ import static com.vpu.mp.db.main.tables.DictCity.DICT_CITY;
 import static com.vpu.mp.db.main.tables.DictDistrict.DICT_DISTRICT;
 import static com.vpu.mp.db.main.tables.DictProvince.DICT_PROVINCE;
 import com.vpu.mp.db.main.tables.records.DictDistrictRecord;
-import com.vpu.mp.service.foundation.BaseService;
+import com.vpu.mp.service.foundation.service.MainBaseService;
+
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Service;
 
@@ -17,8 +18,8 @@ import org.springframework.stereotype.Service;
  *
  */
 @Service
-@Scope("prototype")
-public class DistrictService extends BaseService {
+
+public class DistrictService extends MainBaseService {
 
 	/**
 	 * 得到城市的区县列表

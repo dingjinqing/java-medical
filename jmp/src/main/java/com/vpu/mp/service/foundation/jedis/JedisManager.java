@@ -1,4 +1,6 @@
-package com.vpu.mp.service.foundation;
+package com.vpu.mp.service.foundation.jedis;
+
+import com.vpu.mp.service.foundation.util.Util;
 
 import redis.clients.jedis.Jedis;
 import redis.clients.jedis.JedisPool;

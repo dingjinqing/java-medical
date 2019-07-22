@@ -4,10 +4,10 @@ import static com.vpu.mp.db.shop.tables.ShopCfg.SHOP_CFG;
 
 import java.util.List;
 
+import org.springframework.stereotype.Service;
+
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.vpu.mp.service.pojo.shop.config.BottomNavigatorConfig;
-import org.springframework.context.annotation.Scope;
-import org.springframework.stereotype.Service;
 
 /**
  * 
@@ -15,7 +15,7 @@ import org.springframework.stereotype.Service;
  *
  */
 @Service
-@Scope("prototype")
+
 public class BottomNavigatorConfigService extends BaseShopConfigService {
 
 	/**

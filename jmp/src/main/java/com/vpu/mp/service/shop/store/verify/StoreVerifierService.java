@@ -7,16 +7,14 @@ import org.jooq.InsertValuesStep3;
 import org.jooq.Record;
 import org.jooq.SelectWhereStep;
 import org.jooq.tools.StringUtils;
+import org.springframework.stereotype.Service;
 
-import com.vpu.mp.service.foundation.BaseService;
-import com.vpu.mp.service.foundation.DelFlag;
-import com.vpu.mp.service.foundation.PageResult;
+import com.vpu.mp.service.foundation.data.DelFlag;
+import com.vpu.mp.service.foundation.service.ShopBaseService;
+import com.vpu.mp.service.foundation.util.PageResult;
 import com.vpu.mp.service.pojo.shop.store.verifier.VerifierAddParam;
 import com.vpu.mp.service.pojo.shop.store.verifier.VerifierListQueryParam;
 import com.vpu.mp.service.pojo.shop.store.verifier.VerifierListVo;
-
-import org.springframework.context.annotation.Scope;
-import org.springframework.stereotype.Service;
 
 /**
  * @author 王兵兵
@@ -24,8 +22,9 @@ import org.springframework.stereotype.Service;
  * 2019年7月11日
  */
 @Service
-@Scope("prototype")
-public class StoreVerifierService extends BaseService{
+
+
+public class StoreVerifierService extends ShopBaseService{
 	/**
 	 *	 门店核销员列表分页查询
 	 * @param VerifierListQueryParam

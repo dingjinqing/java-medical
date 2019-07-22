@@ -1,15 +1,12 @@
 package com.vpu.mp.service.shop.config;
 
-import com.vpu.mp.service.pojo.shop.config.ShopCommonCfgInfo;
+import java.sql.Timestamp;
+
+import org.springframework.stereotype.Service;
+
 import com.vpu.mp.service.pojo.shop.config.trade.RetrunConfigParam;
 import com.vpu.mp.service.pojo.shop.config.trade.ReturnBusinessAdressParam;
 import com.vpu.mp.service.pojo.shop.config.trade.ReturnPackageParam;
-import org.jooq.DSLContext;
-import org.jooq.impl.DSL;
-import org.springframework.context.annotation.Scope;
-import org.springframework.stereotype.Service;
-
-import java.sql.Timestamp;
 
 /**
  * @Author:liufei
@@ -17,7 +14,7 @@ import java.sql.Timestamp;
  * @Description:
  */
 @Service
-@Scope("prototype")
+
 public class ShopReturnConfigService extends BaseShopConfigService {
 
     /**

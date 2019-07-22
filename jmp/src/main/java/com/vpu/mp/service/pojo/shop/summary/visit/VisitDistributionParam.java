@@ -1,9 +1,11 @@
 package com.vpu.mp.service.pojo.shop.summary.visit;
 
-import com.vpu.mp.service.foundation.JsonResultMessage;
 import lombok.Data;
 
 import javax.validation.constraints.NotBlank;
+
+import com.vpu.mp.service.foundation.data.JsonResultMessage;
+
 import java.util.List;
 
 /**

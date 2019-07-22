@@ -1,7 +1,5 @@
 package com.vpu.mp.service.pojo.shop.config.group;
 
-import java.util.List;
-
 import lombok.Data;
 import lombok.NoArgsConstructor;
 

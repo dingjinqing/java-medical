@@ -14,8 +14,8 @@ import com.vpu.mp.db.main.tables.records.ShopAccountRecord;
 import com.vpu.mp.db.main.tables.records.ShopChildAccountRecord;
 import com.vpu.mp.db.main.tables.records.ShopRecord;
 import com.vpu.mp.db.main.tables.records.UserLoginRecordRecord;
-import com.vpu.mp.service.foundation.JedisManager;
-import com.vpu.mp.service.foundation.Util;
+import com.vpu.mp.service.foundation.jedis.JedisManager;
+import com.vpu.mp.service.foundation.util.Util;
 import com.vpu.mp.service.pojo.shop.auth.AdminTokenAuthInfo;
 import com.vpu.mp.service.pojo.shop.auth.ShopLoginParam;
 import com.vpu.mp.service.saas.SaasApplication;
@@ -30,6 +30,7 @@ public class AdminAuth {
 
 	@Autowired
 	protected HttpServletRequest request;
+	
 	@Autowired
 	protected SaasApplication saas ;
 	protected JedisManager jedis = JedisManager.instance();
@@ -73,7 +74,7 @@ public class AdminAuth {
 	 * @return
 	 */
 	public AdminTokenAuthInfo login(ShopLoginParam param) {
-		ShopAccountRecord account = saas.shop.accout.getAccountInfo(param.username);
+		ShopAccountRecord account = saas.shop.account.getAccountInfo(param.username);
 		if (account == null) {
 			return null;
 		}

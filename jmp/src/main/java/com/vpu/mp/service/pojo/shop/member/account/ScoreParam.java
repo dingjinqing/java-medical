@@ -3,7 +3,7 @@ package com.vpu.mp.service.pojo.shop.member.account;
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotNull;
 
-import com.vpu.mp.service.foundation.JsonResultMessage;
+import com.vpu.mp.service.foundation.data.JsonResultMessage;
 
 import lombok.Data;
 

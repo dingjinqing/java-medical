@@ -1,5 +1,7 @@
 package com.vpu.mp.service.shop.overview;
 
+import static com.vpu.mp.db.shop.Tables.USER_SUMMARY_TREND;
+
 import java.sql.Date;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -9,7 +11,7 @@ import java.util.List;
 
 import org.jooq.impl.DSL;
 
-import com.vpu.mp.service.foundation.BaseService;
+import com.vpu.mp.service.foundation.service.ShopBaseService;
 import com.vpu.mp.service.pojo.shop.overview.useranalysis.OverviewUserAnalysisActiveTotalVo;
 import com.vpu.mp.service.pojo.shop.overview.useranalysis.OverviewUserAnalysisActiveVo;
 import com.vpu.mp.service.pojo.shop.overview.useranalysis.OverviewUserAnalysisDateParam;
@@ -28,15 +30,13 @@ import com.vpu.mp.service.pojo.shop.overview.useranalysis.OverviewUserAnalysisTr
 import com.vpu.mp.service.pojo.shop.overview.useranalysis.OverviewUserAnalysisVipBeforeVo;
 import com.vpu.mp.service.pojo.shop.overview.useranalysis.OverviewUserAnalysisVipVo;
 
-import static com.vpu.mp.db.shop.Tables.USER_SUMMARY_TREND;
-
 /**
  * 用户统计模块
  * 
  * @author liangchen
  * @date 2019年7月18日
  */
-public class OverviewUserAnalysisService extends BaseService {
+public class OverviewUserAnalysisService extends ShopBaseService {
 
 	/**
 	 * 查询客户概况及趋势

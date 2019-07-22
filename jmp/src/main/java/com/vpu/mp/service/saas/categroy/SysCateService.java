@@ -5,10 +5,9 @@ import static com.vpu.mp.db.main.Tables.CATEGORY;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Service;
 
-import com.vpu.mp.service.foundation.BaseService;
+import com.vpu.mp.service.foundation.service.MainBaseService;
 import com.vpu.mp.service.pojo.saas.category.SysCatevo;
 
 
@@ -18,8 +17,9 @@ import com.vpu.mp.service.pojo.saas.category.SysCatevo;
  * 2019年7月15日
  */
 @Service
-@Scope("prototype")
-public class SysCateService extends BaseService{
+
+
+public class SysCateService extends MainBaseService{
 	
 	/**
 	 * 选择平台分分类列表

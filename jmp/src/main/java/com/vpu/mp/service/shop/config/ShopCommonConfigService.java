@@ -13,7 +13,7 @@ import org.springframework.stereotype.Service;
  * 2019年7月9日
  */
 @Service
-@Scope("prototype")
+
 public class ShopCommonConfigService extends BaseShopConfigService{
 	
 	/**

@@ -2,12 +2,13 @@ package com.vpu.mp.service.saas.overview;
 
 import com.vpu.mp.db.main.tables.*;
 import com.vpu.mp.db.main.tables.records.MpAuthShopRecord;
-import com.vpu.mp.service.foundation.BaseService;
-import com.vpu.mp.service.foundation.Util;
+import com.vpu.mp.service.foundation.service.MainBaseService;
+import com.vpu.mp.service.foundation.util.Util;
 import com.vpu.mp.service.pojo.shop.overview.*;
 import org.apache.commons.lang3.StringUtils;
 import org.jooq.Select;
 import org.jooq.SortField;
+import org.springframework.stereotype.Service;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -18,7 +19,8 @@ import java.util.List;
  * @Date:2019/7/15
  * @Description: 概览
  */
-public class ShopOverviewService extends BaseService {
+@Service
+public class ShopOverviewService extends MainBaseService {
     /**
      * 绑定解绑
      * @param param

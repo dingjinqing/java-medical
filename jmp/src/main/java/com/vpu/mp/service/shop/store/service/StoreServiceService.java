@@ -12,9 +12,9 @@ import org.jooq.tools.StringUtils;
 
 import com.vpu.mp.db.shop.tables.records.StoreServiceCategoryRecord;
 import com.vpu.mp.db.shop.tables.records.StoreServiceRecord;
-import com.vpu.mp.service.foundation.BaseService;
-import com.vpu.mp.service.foundation.DelFlag;
-import com.vpu.mp.service.foundation.PageResult;
+import com.vpu.mp.service.foundation.data.DelFlag;
+import com.vpu.mp.service.foundation.service.ShopBaseService;
+import com.vpu.mp.service.foundation.util.PageResult;
 import com.vpu.mp.service.pojo.shop.store.service.StoreServiceCategoryListQueryParam;
 import com.vpu.mp.service.pojo.shop.store.service.StoreServiceCategoryListQueryVo;
 import com.vpu.mp.service.pojo.shop.store.service.StoreServiceCategoryParam;
@@ -32,8 +32,8 @@ import org.springframework.stereotype.Service;
  * 门店服务
  */
 @Service
-@Scope("prototype")
-public class StoreServiceService extends BaseService{
+
+public class StoreServiceService extends ShopBaseService{
 
 	/**
 	 * 门店服务分类列表分页查询

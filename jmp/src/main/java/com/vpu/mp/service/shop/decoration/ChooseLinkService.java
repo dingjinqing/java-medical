@@ -26,13 +26,13 @@ import java.util.List;
 import org.jooq.Record3;
 import org.jooq.Record4;
 import org.jooq.SelectJoinStep;
-import org.springframework.context.annotation.Scope;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.vpu.mp.db.shop.tables.records.DecorateLinkRecord;
-import com.vpu.mp.service.foundation.BaseService;
-import com.vpu.mp.service.foundation.DelFlag;
-import com.vpu.mp.service.foundation.PageResult;
+import com.vpu.mp.service.foundation.data.DelFlag;
+import com.vpu.mp.service.foundation.service.ShopBaseService;
+import com.vpu.mp.service.foundation.util.PageResult;
 import com.vpu.mp.service.pojo.saas.category.SysCatevo;
 import com.vpu.mp.service.pojo.shop.decoration.ActivityVo;
 import com.vpu.mp.service.pojo.shop.decoration.ChooseLinkParam;
@@ -51,8 +51,11 @@ import com.vpu.mp.service.pojo.shop.store.store.StoreListQueryParam;
  * 2019年7月9日
  */
 @Service
-@Scope("prototype")
-public class ChooseLinkService extends BaseService {
+public class ChooseLinkService extends ShopBaseService {
+	
+	@Autowired
+	public ShopMpDecorationService mpDecoration;
+	
 //	常用链接
 	public Boolean commonLink() {
 		return false;
@@ -94,7 +97,7 @@ public class ChooseLinkService extends BaseService {
 		XcxCustomerPageVo xcx = new XcxCustomerPageVo();
 		xcx.setPageId(param.getCurrentPage());
 		xcx.setPageName(param.getPageName());
-		PageResult<XcxCustomerPageVo> list = saas().getShopApp(shopId).mpDecoration.getPageList(xcx);
+		PageResult<XcxCustomerPageVo> list = mpDecoration.getPageList(xcx);
 		return list;
 	}
 	
@@ -248,7 +251,7 @@ public class ChooseLinkService extends BaseService {
 	 */
 	public int saveWebLink(XcxLinkListVo info) {
 		DecorateLinkRecord record = db().newRecord(DECORATE_LINK,info);
-		record.setShopId(shopId);
+		record.setShopId(getShopId());
 		record.setLinkAction((byte) 1);
 		int res = db().executeInsert(record);
 		return res;
@@ -317,7 +320,7 @@ public class ChooseLinkService extends BaseService {
 	 */
 	public Boolean saveXcxLink(XcxLinkListVo info) {
 		DecorateLinkRecord record = db().newRecord(DECORATE_LINK,info);
-		record.setShopId(shopId);
+		record.setShopId(getShopId());
 		record.setLinkAction((byte) 2);
 		int res = db().executeInsert(record);
 		if(res > 0) {

@@ -1,6 +1,6 @@
 package com.vpu.mp.controller.admin;
 
-import com.vpu.mp.service.foundation.JsonResult;
+import com.vpu.mp.service.foundation.data.JsonResult;
 import com.vpu.mp.service.pojo.shop.summary.portrait.PortraitParam;
 import com.vpu.mp.service.pojo.shop.summary.portrait.ProvinceParam;
 import com.vpu.mp.service.pojo.shop.summary.visit.VisitDistributionParam;

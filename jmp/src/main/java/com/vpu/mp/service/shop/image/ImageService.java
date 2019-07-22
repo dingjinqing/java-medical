@@ -2,9 +2,9 @@ package com.vpu.mp.service.shop.image;
 
 import com.UpYun;
 import com.vpu.mp.db.shop.tables.records.UploadedImageRecord;
-import com.vpu.mp.service.foundation.BaseService;
-import com.vpu.mp.service.foundation.PageResult;
-import com.vpu.mp.service.foundation.Util;
+import com.vpu.mp.service.foundation.service.ShopBaseService;
+import com.vpu.mp.service.foundation.util.PageResult;
+import com.vpu.mp.service.foundation.util.Util;
 import com.vpu.mp.service.pojo.shop.image.*;
 
 import net.coobird.thumbnailator.Thumbnails;
@@ -38,6 +38,7 @@ import org.jooq.SelectWhereStep;
 import org.jooq.SortField;
 import org.jooq.impl.DSL;
 import org.jooq.tools.StringUtils;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Service;
 
@@ -45,10 +46,10 @@ import org.springframework.stereotype.Service;
  * @author 新国
  */
 @Service
-@Scope("prototype")
-public class ImageService extends BaseService {
 
-    public ImageCategoryService category;
+public class ImageService extends ShopBaseService {
+
+    @Autowired public ImageCategoryService category;
 
     protected UpYun upYun = null;
 
@@ -325,7 +326,7 @@ public class ImageService extends BaseService {
             return String.format("upload/%d/%s/%04d%02d%02d/", sysId, type, cal.get(Calendar.YEAR),
                     cal.get(Calendar.MONTH) + 1, cal.get(Calendar.DATE));
         }
-        return String.format("upload/%d/%s/%04d%02d%02d/", this.shopId, type, cal.get(Calendar.YEAR),
+        return String.format("upload/%d/%s/%04d%02d%02d/", this.getShopId(), type, cal.get(Calendar.YEAR),
                 cal.get(Calendar.MONTH) + 1, cal.get(Calendar.DATE));
     }
 

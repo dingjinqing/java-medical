@@ -1,12 +1,11 @@
 package com.vpu.mp.service.pojo.shop.image.category;
 
-import com.vpu.mp.service.foundation.JsonResultMessage;
+import javax.validation.constraints.NotNull;
+
+import com.vpu.mp.service.foundation.data.JsonResultMessage;
+
 import lombok.Data;
 import lombok.NoArgsConstructor;
-
-import javax.validation.Valid;
-import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.NotNull;
 
 /**
  * @author 孔德成

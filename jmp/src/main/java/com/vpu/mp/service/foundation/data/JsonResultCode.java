@@ -1,4 +1,4 @@
-package com.vpu.mp.service.foundation;
+package com.vpu.mp.service.foundation.data;
 
 import lombok.Getter;
 import lombok.ToString;

@@ -1,8 +1,10 @@
 package com.vpu.mp.service.saas.privilege;
 
-import com.vpu.mp.service.foundation.BaseService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Service;
+
+import com.vpu.mp.service.foundation.service.MainBaseService;
 
 /**
  * 
@@ -10,9 +12,9 @@ import org.springframework.stereotype.Service;
  *
  */
 @Service
-@Scope("prototype")
-public class MenuService extends BaseService {
 
-	protected RoleService role;
+public class MenuService extends MainBaseService {
+
+	@Autowired public RoleService role;
 
 }

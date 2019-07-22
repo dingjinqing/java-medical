@@ -1,21 +1,7 @@
 package com.vpu.mp.service.shop.overview;
 
-import com.vpu.mp.db.shop.tables.*;
-import com.vpu.mp.db.shop.tables.records.CardExamineRecord;
-import com.vpu.mp.db.shop.tables.records.MemberCardRecord;
-import com.vpu.mp.db.shop.tables.records.MrkingVoucherRecord;
-import com.vpu.mp.db.shop.tables.records.XcxCustomerPageRecord;
-import com.vpu.mp.service.foundation.BaseService;
-import com.vpu.mp.service.foundation.Util;
-import com.vpu.mp.service.pojo.shop.overview.*;
-import org.apache.commons.lang3.StringUtils;
-import org.jooq.Comparator;
-import org.jooq.Condition;
-import org.springframework.context.annotation.Scope;
-import org.springframework.stereotype.Service;
-
-import org.jooq.Select;
-import org.springframework.beans.factory.annotation.Autowired;
+import static org.jooq.impl.DSL.count;
+import static org.jooq.impl.DSL.sum;
 
 import java.sql.Timestamp;
 import java.util.Date;
@@ -23,8 +9,41 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import static org.jooq.impl.DSL.count;
-import static org.jooq.impl.DSL.sum;
+import org.apache.commons.lang3.StringUtils;
+import org.jooq.Comparator;
+import org.jooq.Condition;
+import org.jooq.Select;
+import org.springframework.stereotype.Service;
+
+import com.vpu.mp.db.shop.tables.CardExamine;
+import com.vpu.mp.db.shop.tables.CommentGoods;
+import com.vpu.mp.db.shop.tables.CommentService;
+import com.vpu.mp.db.shop.tables.DeliverFeeTemplate;
+import com.vpu.mp.db.shop.tables.DistributionWithdraw;
+import com.vpu.mp.db.shop.tables.DistributorApply;
+import com.vpu.mp.db.shop.tables.Goods;
+import com.vpu.mp.db.shop.tables.GoodsSpecProduct;
+import com.vpu.mp.db.shop.tables.MemberCard;
+import com.vpu.mp.db.shop.tables.MrkingVoucher;
+import com.vpu.mp.db.shop.tables.OrderGoods;
+import com.vpu.mp.db.shop.tables.OrderInfo;
+import com.vpu.mp.db.shop.tables.RecommendGoods;
+import com.vpu.mp.db.shop.tables.ReturnOrder;
+import com.vpu.mp.db.shop.tables.ShopCfg;
+import com.vpu.mp.db.shop.tables.Sort;
+import com.vpu.mp.db.shop.tables.UserLoginRecord;
+import com.vpu.mp.db.shop.tables.XcxCustomerPage;
+import com.vpu.mp.db.shop.tables.records.CardExamineRecord;
+import com.vpu.mp.db.shop.tables.records.MemberCardRecord;
+import com.vpu.mp.db.shop.tables.records.MrkingVoucherRecord;
+import com.vpu.mp.db.shop.tables.records.XcxCustomerPageRecord;
+import com.vpu.mp.service.foundation.service.ShopBaseService;
+import com.vpu.mp.service.foundation.util.Util;
+import com.vpu.mp.service.pojo.shop.overview.DataDemonstrationParam;
+import com.vpu.mp.service.pojo.shop.overview.DataDemonstrationVo;
+import com.vpu.mp.service.pojo.shop.overview.ShopAssistantParam;
+import com.vpu.mp.service.pojo.shop.overview.ShopAssistantVo;
+import com.vpu.mp.service.pojo.shop.overview.ToDoItemVo;
 
 /**
  * @Author:liufei
@@ -32,8 +51,8 @@ import static org.jooq.impl.DSL.sum;
  * @Description: 商城概览service
  */
 @Service
-@Scope("prototype")
-public class MallOverviewService extends BaseService {
+
+public class MallOverviewService extends ShopBaseService {
 
     /**
      * 获取数据展示数据，

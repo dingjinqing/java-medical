@@ -5,7 +5,10 @@ import java.util.List;
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 
-import com.vpu.mp.service.foundation.PageResult;
+import com.vpu.mp.service.foundation.data.JsonResult;
+import com.vpu.mp.service.foundation.data.JsonResultCode;
+import com.vpu.mp.service.foundation.util.PageResult;
+import com.vpu.mp.service.foundation.util.Util;
 import com.vpu.mp.service.pojo.shop.operation.RecordAdminActionInfo;
 import com.vpu.mp.service.pojo.shop.operation.RecordAdminActionParam;
 import org.springframework.util.StringUtils;
@@ -16,9 +19,6 @@ import com.vpu.mp.db.main.tables.records.ShopAccountRecord;
 import com.vpu.mp.db.main.tables.records.ShopChildAccountRecord;
 import com.vpu.mp.db.main.tables.records.ShopChildRoleRecord;
 import com.vpu.mp.db.main.tables.records.ShopRoleRecord;
-import com.vpu.mp.service.foundation.JsonResult;
-import com.vpu.mp.service.foundation.JsonResultCode;
-import com.vpu.mp.service.foundation.Util;
 import com.vpu.mp.service.pojo.saas.shop.ShopPojo;
 import com.vpu.mp.service.pojo.shop.config.ShopBaseConfig;
 import com.vpu.mp.service.pojo.shop.config.ShopCommonCfgInfo;
@@ -140,7 +140,7 @@ public class AdminBasicConfigController extends AdminBaseController{
 				return fail(JsonResultCode.CODE_MSG_ACCOUNT_PASSWD_NOT_NULL);
 			}
 			// 验证登陆密码
-			ShopAccountRecord shopRecord = saas.shop.accout.verify(adminAuth.user().getUserName(),
+			ShopAccountRecord shopRecord = saas.shop.account.verify(adminAuth.user().getUserName(),
 					param.getLoginPass());
 			if (shopRecord == null) {
 				// 管理员登陆密码错误
@@ -227,7 +227,7 @@ public class AdminBasicConfigController extends AdminBaseController{
 				return fail(JsonResultCode.CODE_MSG_ACCOUNT_PASSWD_NOT_NULL);
 			}
 			// 验证登陆密码
-			ShopAccountRecord shopRecord = saas.shop.accout.verify(adminAuth.user().getUserName(),
+			ShopAccountRecord shopRecord = saas.shop.account.verify(adminAuth.user().getUserName(),
 					upParam.getLoginPass());
 			if (shopRecord == null) {
 				// 管理员登陆密码错误

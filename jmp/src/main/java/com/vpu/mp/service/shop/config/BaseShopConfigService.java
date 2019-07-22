@@ -3,12 +3,11 @@ package com.vpu.mp.service.shop.config;
 import static com.vpu.mp.db.shop.tables.ShopCfg.SHOP_CFG;
 
 import org.jooq.DSLContext;
+import org.springframework.stereotype.Service;
 
 import com.fasterxml.jackson.core.type.TypeReference;
-import com.vpu.mp.service.foundation.BaseService;
-import com.vpu.mp.service.foundation.Util;
-import org.springframework.context.annotation.Scope;
-import org.springframework.stereotype.Service;
+import com.vpu.mp.service.foundation.service.ShopBaseService;
+import com.vpu.mp.service.foundation.util.Util;
 
 /**
  * @author 王兵兵
@@ -17,8 +16,8 @@ import org.springframework.stereotype.Service;
  * 
  */
 @Service
-@Scope("prototype")
-public class BaseShopConfigService extends BaseService {
+
+public class BaseShopConfigService extends ShopBaseService {
 
 	
 	/**

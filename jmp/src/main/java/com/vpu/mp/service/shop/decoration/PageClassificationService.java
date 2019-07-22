@@ -12,8 +12,8 @@ import org.jooq.impl.DSL;
 import org.jooq.tools.StringUtils;
 
 import com.vpu.mp.db.shop.tables.records.PageClassificationRecord;
-import com.vpu.mp.service.foundation.BaseService;
-import com.vpu.mp.service.foundation.PageResult;
+import com.vpu.mp.service.foundation.service.ShopBaseService;
+import com.vpu.mp.service.foundation.util.PageResult;
 import com.vpu.mp.service.pojo.shop.decoration.PageCategoryListQueryParam;
 import com.vpu.mp.service.pojo.shop.decoration.PageClassificationPojo;
 import org.springframework.stereotype.Service;
@@ -26,8 +26,8 @@ import org.springframework.context.annotation.Scope;
  *
  */
 @Service
-@Scope("prototype")
-public class PageClassificationService extends BaseService {
+
+public class PageClassificationService extends ShopBaseService {
 
 	/**
 	 * 装修页面列表

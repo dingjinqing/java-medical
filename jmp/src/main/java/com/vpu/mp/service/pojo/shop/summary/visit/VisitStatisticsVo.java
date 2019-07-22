@@ -1,9 +1,8 @@
 package com.vpu.mp.service.pojo.shop.summary.visit;
 
-import lombok.Data;
-
-import java.time.LocalDate;
 import java.util.List;
+
+import lombok.Data;
 
 /**
  * 访问统计

@@ -2,8 +2,8 @@ package com.vpu.mp.service.shop.summary.portrait;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.vpu.mp.db.shop.tables.records.MpUserPortraitRecord;
-import com.vpu.mp.service.foundation.BaseService;
-import com.vpu.mp.service.foundation.Util;
+import com.vpu.mp.service.foundation.service.ShopBaseService;
+import com.vpu.mp.service.foundation.util.Util;
 import com.vpu.mp.service.pojo.shop.summary.KeyValueChart;
 import com.vpu.mp.service.pojo.shop.summary.portrait.*;
 import org.jooq.Record2;
@@ -29,8 +29,8 @@ import static com.vpu.mp.db.shop.tables.UserDetail.USER_DETAIL;
  * @author 郑保乐
  */
 @Service
-@Scope("prototype")
-public class PortraitService extends BaseService {
+
+public class PortraitService extends ShopBaseService {
 
     public PortraitVo getPortrait(PortraitParam param) {
         Integer type = param.getType();

@@ -13,15 +13,17 @@ import org.jooq.tools.StringUtils;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.vpu.mp.db.shop.tables.records.RecommendGoodsRecord;
-import com.vpu.mp.service.foundation.BaseService;
-import com.vpu.mp.service.foundation.DelFlag;
-import com.vpu.mp.service.foundation.PageResult;
-import com.vpu.mp.service.foundation.Util;
+import com.vpu.mp.service.foundation.data.DelFlag;
+import com.vpu.mp.service.foundation.service.ShopBaseService;
+import com.vpu.mp.service.foundation.util.PageResult;
+import com.vpu.mp.service.foundation.util.Util;
 import com.vpu.mp.service.pojo.shop.goods.GoodsView;
 import com.vpu.mp.service.pojo.shop.goods.recommend.GoodsRecommend;
 import com.vpu.mp.service.pojo.shop.goods.recommend.GoodsRecommendInsertParam;
 import com.vpu.mp.service.pojo.shop.goods.recommend.GoodsRecommendPageListParam;
 import com.vpu.mp.service.pojo.shop.goods.recommend.GoodsRecommendUpdateParam;
+
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Service;
 
@@ -32,10 +34,10 @@ import org.springframework.stereotype.Service;
  *
  */
 @Service
-@Scope("prototype")
-public class GoodsRecommendService extends BaseService {
 
-	public GoodsService goodsService;
+public class GoodsRecommendService extends ShopBaseService {
+
+	@Autowired public GoodsService goodsService;
 	
 	/**
 	 * 分页查询商品推荐 数据库记录

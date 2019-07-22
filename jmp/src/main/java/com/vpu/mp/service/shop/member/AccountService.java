@@ -1,29 +1,29 @@
 package com.vpu.mp.service.shop.member;
 
-import com.vpu.mp.db.shop.tables.records.UserRecord;
-import com.vpu.mp.service.foundation.BaseService;
-import com.vpu.mp.service.foundation.Util;
-import com.vpu.mp.service.pojo.shop.auth.AdminTokenAuthInfo;
-import com.vpu.mp.service.pojo.shop.member.account.AccountParam;
-import static com.vpu.mp.db.shop.tables.UserAccount.USER_ACCOUNT;
-import static com.vpu.mp.db.shop.tables.TradesRecord.TRADES_RECORD;
 import static com.vpu.mp.db.shop.tables.RecordAdminAction.RECORD_ADMIN_ACTION;
+import static com.vpu.mp.db.shop.tables.TradesRecord.TRADES_RECORD;
+import static com.vpu.mp.db.shop.tables.User.USER;
+import static com.vpu.mp.db.shop.tables.UserAccount.USER_ACCOUNT;
 
 import java.math.BigDecimal;
 
-import org.springframework.context.annotation.Scope;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 
-import static com.vpu.mp.db.shop.tables.User.USER;
+import com.vpu.mp.db.shop.tables.records.UserRecord;
+import com.vpu.mp.service.foundation.service.ShopBaseService;
+import com.vpu.mp.service.foundation.util.Util;
+import com.vpu.mp.service.pojo.shop.auth.AdminTokenAuthInfo;
+import com.vpu.mp.service.pojo.shop.member.account.AccountParam;
 
 /**
  * @author 黄壮壮 2019-07-18 16:47
  */
 @Service
-@Scope("prototype")
-public class AccountService extends BaseService {
-	MemberService memberService;
+
+public class AccountService extends ShopBaseService {
+	@Autowired MemberService memberService;
 	/**
 	 * @param param
 	 * @param adminUser

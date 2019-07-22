@@ -1,9 +1,8 @@
 package com.vpu.mp.service.shop.store.schedule;
 
 import static com.vpu.mp.db.shop.Tables.SERVICE_SCHEDULE;
-import static  com.vpu.mp.db.shop.Tables.SERVICE_TECHNICIAN_SCHEDULE;
 import static  com.vpu.mp.db.shop.Tables.SERVICE_TECHNICIAN;
-
+import static  com.vpu.mp.db.shop.Tables.SERVICE_TECHNICIAN_SCHEDULE;
 
 import java.text.DateFormat;
 import java.text.ParseException;
@@ -15,17 +14,15 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import javax.validation.Valid;
+import org.springframework.stereotype.Service;
 
 import com.vpu.mp.db.shop.tables.records.ServiceTechnicianScheduleRecord;
-import com.vpu.mp.service.foundation.BaseService;
-import com.vpu.mp.service.foundation.DelFlag;
+import com.vpu.mp.service.foundation.data.DelFlag;
+import com.vpu.mp.service.foundation.service.ShopBaseService;
 import com.vpu.mp.service.pojo.shop.store.schedule.SchedulePojo;
 import com.vpu.mp.service.pojo.shop.store.schedule.TechnicianScheduleParam;
 import com.vpu.mp.service.pojo.shop.store.schedule.TechnicianScheduleSaveParam;
 import com.vpu.mp.service.pojo.shop.store.schedule.TechnicianScheduleVo;
-import org.springframework.context.annotation.Scope;
-import org.springframework.stereotype.Service;
 
 /**
  * @author 黄荣刚
@@ -33,8 +30,8 @@ import org.springframework.stereotype.Service;
  *
  */
 @Service
-@Scope("prototype")
-public class TechnicianScheduleService extends BaseService {
+
+public class TechnicianScheduleService extends ShopBaseService {
 	
 	/**
 	 * 根据店铺ID查全部班次表

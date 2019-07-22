@@ -14,7 +14,7 @@ import java.util.List;
  * @Description:
  */
 @Service
-@Scope("prototype")
+
 public class TradeService extends BaseShopConfigService {
 
     /** 是否启用快递 */

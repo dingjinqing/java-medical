@@ -3,15 +3,11 @@ package com.vpu.mp.service.shop.store.postsale;
 import static com.vpu.mp.db.shop.Tables.SERVICE_TECHNICIAN_GROUP;
 
 import org.jooq.SelectConditionStep;
-
-import com.vpu.mp.service.foundation.BaseService;
-import com.vpu.mp.service.foundation.DelFlag;
-import com.vpu.mp.service.foundation.PageResult;
-import com.vpu.mp.service.pojo.shop.store.postsale.ServiceTechnicianGroup;
-import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Service;
 
-import static com.vpu.mp.db.shop.Tables.SERVICE_TECHNICIAN_GROUP;
+import com.vpu.mp.service.foundation.service.ShopBaseService;
+import com.vpu.mp.service.foundation.util.PageResult;
+import com.vpu.mp.service.pojo.shop.store.postsale.ServiceTechnicianGroup;
 import com.vpu.mp.service.pojo.shop.store.postsale.ServiceTechnicianGroupParam;
 import com.vpu.mp.service.pojo.shop.store.postsale.TechnicianGroupPageListParam;
 
@@ -22,8 +18,8 @@ import com.vpu.mp.service.pojo.shop.store.postsale.TechnicianGroupPageListParam;
  *
  */
 @Service
-@Scope("prototype")
-public class ServiceTechnicianGroupService extends BaseService {
+
+public class ServiceTechnicianGroupService extends ShopBaseService {
 	/** 没有被删除的 */
 	public final static short NORMAL =0 ;
 	/** 已经被删除的 */

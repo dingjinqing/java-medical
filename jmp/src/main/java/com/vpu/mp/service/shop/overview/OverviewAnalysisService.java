@@ -1,7 +1,7 @@
 package com.vpu.mp.service.shop.overview;
 
-import com.vpu.mp.service.foundation.BaseService;
-import com.vpu.mp.service.foundation.PropertiesUtil;
+import com.vpu.mp.service.foundation.service.ShopBaseService;
+import com.vpu.mp.service.foundation.util.PropertiesUtil;
 import com.vpu.mp.service.pojo.shop.overview.analysis.OverviewAnalysisDateParam;
 import com.vpu.mp.service.pojo.shop.overview.analysis.OverviewAnalysisPageParam;
 import com.vpu.mp.service.pojo.shop.overview.analysis.OverviewAnalysisPageVo;
@@ -30,8 +30,8 @@ import org.springframework.stereotype.Service;
  * @date 2019年7月15日
  */
 @Service
-@Scope("prototype")
-public class OverviewAnalysisService extends BaseService {
+
+public class OverviewAnalysisService extends ShopBaseService {
 
 	/**
 	 * 查询昨日概况

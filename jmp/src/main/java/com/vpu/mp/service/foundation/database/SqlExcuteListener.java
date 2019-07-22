@@ -1,4 +1,4 @@
-package com.vpu.mp.service.foundation;
+package com.vpu.mp.service.foundation.database;
 
 import static java.lang.Boolean.TRUE;
 import static org.jooq.impl.DSL.val;

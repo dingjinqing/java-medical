@@ -1,26 +1,21 @@
 package com.vpu.mp.service.shop.config.pledge;
 
-import com.vpu.mp.db.shop.tables.Pledge;
+import static com.vpu.mp.db.shop.tables.Pledge.PLEDGE;
+
+import java.util.List;
+
+import org.jooq.Record;
+import org.jooq.SelectWhereStep;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
 import com.vpu.mp.db.shop.tables.records.PledgeRecord;
-import com.vpu.mp.service.foundation.BaseService;
-import com.vpu.mp.service.foundation.JsonResultCode;
+import com.vpu.mp.service.foundation.service.ShopBaseService;
 import com.vpu.mp.service.pojo.shop.config.pledge.PledgeInfo;
 import com.vpu.mp.service.pojo.shop.config.pledge.PledgeParam;
 import com.vpu.mp.service.pojo.shop.config.pledge.PledgePojo;
 import com.vpu.mp.service.pojo.shop.config.pledge.PledgeStateUpdateParam;
 import com.vpu.mp.service.shop.operation.RecordAdminActionService;
-import org.apache.commons.lang3.StringUtils;
-import org.jooq.Record;
-import org.jooq.SelectWhereStep;
-import org.jooq.UpdateSetFirstStep;
-import org.jooq.UpdateSetStep;
-import org.springframework.context.annotation.Scope;
-import org.springframework.stereotype.Service;
-
-import java.sql.Timestamp;
-import java.util.List;
-
-import static com.vpu.mp.db.shop.tables.Pledge.PLEDGE;
 
 /**
  * PledgeService
@@ -29,11 +24,11 @@ import static com.vpu.mp.db.shop.tables.Pledge.PLEDGE;
  *
 */
 @Service
-@Scope("prototype")
-public class ShopPledgeService extends BaseService {
+
+public class ShopPledgeService extends ShopBaseService {
 
 
-    private RecordAdminActionService actionService;
+    @Autowired private RecordAdminActionService actionService;
 
     private static final int MAX_INSERT_NUMBERS = 20;
 

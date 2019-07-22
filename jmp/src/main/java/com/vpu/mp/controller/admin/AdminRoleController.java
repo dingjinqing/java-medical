@@ -14,9 +14,9 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.vpu.mp.db.main.tables.records.ShopAccountRecord;
-import com.vpu.mp.service.foundation.JsonResult;
-import com.vpu.mp.service.foundation.JsonResultCode;
-import com.vpu.mp.service.foundation.Util;
+import com.vpu.mp.service.foundation.data.JsonResult;
+import com.vpu.mp.service.foundation.data.JsonResultCode;
+import com.vpu.mp.service.foundation.util.Util;
 import com.vpu.mp.service.pojo.shop.auth.AdminTokenAuthInfo;
 import com.vpu.mp.service.pojo.shop.auth.ShopManageParam;
 import com.vpu.mp.service.pojo.shop.auth.ShopManagePwdParam;
@@ -85,7 +85,7 @@ public class AdminRoleController extends AdminBaseController {
 			// 权限不足
 			return fail(JsonResultCode.CODE_ACCOUNT_ROLE__AUTH_INSUFFICIENT);
 		}
-		ShopAccountRecord shopRecord = saas.shop.accout.checkByIdAndNameOnMain(info.getUserName(), info.getSysId());
+		ShopAccountRecord shopRecord = saas.shop.account.checkByIdAndNameOnMain(info.getUserName(), info.getSysId());
 		if (shopRecord == null) {
 			return fail();
 		}
@@ -116,7 +116,7 @@ public class AdminRoleController extends AdminBaseController {
 		pojo.setSysId(info.getSysId());
 		pojo.setAccountName(shopManageParam.getAccountName());
 		pojo.setShopAvatar(shopManageParam.getShopAvatar());
-		if (saas.shop.accout.updateById(pojo) < 0) {
+		if (saas.shop.account.updateById(pojo) < 0) {
 			return fail(JsonResultCode.CODE_FAIL);
 		}
 		return success(JsonResultCode.CODE_SUCCESS);
@@ -139,7 +139,7 @@ public class AdminRoleController extends AdminBaseController {
 		if (!sParam.getNewPasswd().equals(sParam.confNewPasswd)) {
 			return fail(JsonResultCode.CODE_ACCOUNT_PASSWD_NO_SAME);
 		}
-		ShopAccountRecord oldRecode = saas.shop.accout.verify(info.getUserName(), sParam.getPasswd());
+		ShopAccountRecord oldRecode = saas.shop.account.verify(info.getUserName(), sParam.getPasswd());
 		if(oldRecode==null) {
 			return fail(JsonResultCode.CODE_ACCOUNT_OLD_PASSWD_ERROR);
 		}
@@ -150,7 +150,7 @@ public class AdminRoleController extends AdminBaseController {
 		pojo.setSysId(info.getSysId());
 		pojo.setPassword(Util.md5(sParam.newPasswd));
 		
-		if (saas.shop.accout.updateById(pojo) < 0) {
+		if (saas.shop.account.updateById(pojo) < 0) {
 			return fail(JsonResultCode.CODE_FAIL);
 		}
 		return success(JsonResultCode.CODE_SUCCESS);

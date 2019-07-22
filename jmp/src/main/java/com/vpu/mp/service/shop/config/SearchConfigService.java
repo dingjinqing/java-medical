@@ -10,7 +10,7 @@ import org.springframework.stereotype.Service;
  *
  */
 @Service
-@Scope("prototype")
+
 public class SearchConfigService extends BaseShopConfigService {
 
 	final public static String K_SEARCH_CONFIG = "search_config";

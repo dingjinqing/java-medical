@@ -15,8 +15,9 @@ import org.jooq.SelectWhereStep;
 import org.jooq.impl.DSL;
 
 import com.vpu.mp.db.shop.tables.records.UploadedImageCategoryRecord;
-import com.vpu.mp.service.foundation.BaseService;
-import com.vpu.mp.service.foundation.Util;
+import com.vpu.mp.service.foundation.service.ShopBaseService;
+import com.vpu.mp.service.foundation.util.Util;
+
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Service;
 
@@ -24,8 +25,8 @@ import org.springframework.stereotype.Service;
  * @author 新国，孔德成
  */
 @Service
-@Scope("prototype")
-public class ImageCategoryService extends BaseService {
+
+public class ImageCategoryService extends ShopBaseService {
 
     private static final String ROOT_NAME = "我的图片";
 
@@ -37,7 +38,7 @@ public class ImageCategoryService extends BaseService {
      */
     public Boolean addCategory(ImageCategoryParam cat) {
         UploadedImageCategoryRecord record = db().newRecord(UPLOADED_IMAGE_CATEGORY, cat);
-        record.setShopId(shopId);
+        record.setShopId(getShopId());
         record.insert();
 //        record.refresh();
         //父节点不是顶节点，查询父节点的ids

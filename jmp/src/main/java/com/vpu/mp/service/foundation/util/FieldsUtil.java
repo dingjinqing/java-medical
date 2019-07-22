@@ -1,4 +1,4 @@
-package com.vpu.mp.service.foundation;
+package com.vpu.mp.service.foundation.util;
 
 import java.beans.PropertyDescriptor;
 import java.lang.reflect.Field;

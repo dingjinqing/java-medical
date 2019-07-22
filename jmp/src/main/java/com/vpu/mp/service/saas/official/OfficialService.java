@@ -1,8 +1,9 @@
 package com.vpu.mp.service.saas.official;
 
-import com.vpu.mp.service.foundation.BaseService;
-import org.springframework.context.annotation.Scope;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
+import com.vpu.mp.service.foundation.service.MainBaseService;
 
 /**
  * 
@@ -10,7 +11,7 @@ import org.springframework.stereotype.Service;
  * 2019-07-01 09:09
  */
 @Service
-@Scope("prototype")
-public class OfficialService extends BaseService{
-	public FreeExperienceService freeExperienceService;
+
+public class OfficialService extends MainBaseService{
+	@Autowired public FreeExperienceService freeExperienceService;
 }

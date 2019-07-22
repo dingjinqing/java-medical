@@ -10,7 +10,7 @@ import org.springframework.stereotype.Service;
  * 2019年7月10日
  */
 @Service
-@Scope("prototype")
+
 public class StoreConfigService extends BaseShopConfigService{
 	
 	/**

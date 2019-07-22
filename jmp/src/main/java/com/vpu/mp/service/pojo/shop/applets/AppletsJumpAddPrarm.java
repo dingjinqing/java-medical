@@ -1,9 +1,8 @@
 package com.vpu.mp.service.pojo.shop.applets;
 
-import lombok.Data;
-
 import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.NotNull;
+
+import lombok.Data;
 
 /**
  * 小程序跳转

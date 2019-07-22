@@ -12,16 +12,18 @@ import org.jooq.tools.StringUtils;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.vpu.mp.db.shop.tables.records.ServiceTechnicianRecord;
-import com.vpu.mp.service.foundation.BaseService;
-import com.vpu.mp.service.foundation.DelFlag;
-import com.vpu.mp.service.foundation.PageResult;
-import com.vpu.mp.service.foundation.Util;
+import com.vpu.mp.service.foundation.data.DelFlag;
+import com.vpu.mp.service.foundation.service.ShopBaseService;
+import com.vpu.mp.service.foundation.util.PageResult;
+import com.vpu.mp.service.foundation.util.Util;
 import com.vpu.mp.service.pojo.shop.store.postsale.ServiceTechnicianGroup;
 import com.vpu.mp.service.pojo.shop.store.postsale.ServiceTechnicianPageListParam;
 import com.vpu.mp.service.pojo.shop.store.postsale.ServiceTechnicianParam;
 import com.vpu.mp.service.pojo.shop.store.postsale.ServiceTechnicianPojo;
 import com.vpu.mp.service.pojo.shop.store.postsale.TechnicianService;
 import com.vpu.mp.service.shop.store.schedule.TechnicianScheduleService;
+
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Service;
 
@@ -31,14 +33,14 @@ import org.springframework.stereotype.Service;
  *
  */
 @Service
-@Scope("prototype")
-public class ServiceTechnicianService extends BaseService {
+
+public class ServiceTechnicianService extends ShopBaseService {
 	
 	public final static Byte SERVICE_TYPE_ALL=0;
 	public final static Byte SERVICE_TYPE_PART=1;
 
-	public ServiceTechnicianGroupService groupService;
-	public TechnicianScheduleService scheduleService;
+	@Autowired public ServiceTechnicianGroupService groupService;
+	@Autowired public TechnicianScheduleService scheduleService;
 	
 	/**
 	 * 根据ID查数据库一条记录

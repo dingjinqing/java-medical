@@ -11,14 +11,16 @@ import org.jooq.tools.StringUtils;
 
 import com.vpu.mp.db.shop.tables.User;
 import com.vpu.mp.db.shop.tables.records.UserRecord;
-import com.vpu.mp.service.foundation.BaseService;
-import com.vpu.mp.service.foundation.DelFlag;
-import com.vpu.mp.service.foundation.PageResult;
-import com.vpu.mp.service.foundation.Util;
+import com.vpu.mp.service.foundation.data.DelFlag;
+import com.vpu.mp.service.foundation.service.ShopBaseService;
+import com.vpu.mp.service.foundation.util.PageResult;
+import com.vpu.mp.service.foundation.util.Util;
 import com.vpu.mp.service.pojo.shop.member.CommonMemberPageListQueryParam;
 import com.vpu.mp.service.pojo.shop.member.CommonMemberPageListQueryVo;
 import com.vpu.mp.service.pojo.shop.member.MemberInfoVo;
 import com.vpu.mp.service.pojo.shop.member.MemberPageListParam;
+
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Service;
 
@@ -28,11 +30,11 @@ import org.springframework.stereotype.Service;
  * 2019-07-08 16:22
  */
 @Service
-@Scope("prototype")
-public class MemberService extends BaseService {
 
-	public AccountService account;
-	public ScoreService score;
+public class MemberService extends ShopBaseService {
+
+	@Autowired public AccountService account;
+	@Autowired public ScoreService score;
 	/**
 	 * 会员列表分页查询
 	 * @param param

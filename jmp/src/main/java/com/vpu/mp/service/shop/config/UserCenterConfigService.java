@@ -15,7 +15,7 @@ import java.util.List;
  * @date 2019/7/11 9:52
  */
 @Service
-@Scope("prototype")
+
 public class UserCenterConfigService extends BaseShopConfigService {
 
     /**

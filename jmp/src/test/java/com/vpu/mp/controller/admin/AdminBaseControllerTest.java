@@ -3,18 +3,14 @@ package com.vpu.mp.controller.admin;
 import static org.junit.Assert.fail;
 
 import org.apache.commons.lang3.StringUtils;
-import org.junit.Before;
 import org.mockito.MockitoAnnotations;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.mock.web.MockHttpServletRequest;
 import org.springframework.test.web.servlet.request.MockHttpServletRequestBuilder;
-import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
 import com.vpu.mp.controller.BaseControllerTest;
 import com.vpu.mp.service.auth.AdminAuth;
-import com.vpu.mp.service.foundation.JedisManager;
-import com.vpu.mp.service.foundation.Util;
+import com.vpu.mp.service.foundation.jedis.JedisManager;
+import com.vpu.mp.service.foundation.util.Util;
 import com.vpu.mp.service.pojo.shop.auth.AdminTokenAuthInfo;
 
 import lombok.Getter;

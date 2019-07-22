@@ -1,8 +1,9 @@
 package com.vpu.mp.controller.admin;
 
-import com.vpu.mp.service.foundation.JsonResult;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RestController;
+
+import com.vpu.mp.service.foundation.data.JsonResult;
 
 /**
  * @Author:liufei

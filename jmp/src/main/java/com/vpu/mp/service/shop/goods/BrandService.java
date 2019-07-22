@@ -4,11 +4,11 @@ import static com.vpu.mp.db.shop.Tables.BRAND_CLASSIFY;
 
 import java.util.List;
 
-import com.vpu.mp.service.foundation.BaseService;
-import com.vpu.mp.service.foundation.DelFlag;
-import com.vpu.mp.service.pojo.shop.goods.brand.BrandVo;
-import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Service;
+
+import com.vpu.mp.service.foundation.data.DelFlag;
+import com.vpu.mp.service.foundation.service.ShopBaseService;
+import com.vpu.mp.service.pojo.shop.goods.brand.BrandVo;
 
 /**
  * 品牌
@@ -16,8 +16,8 @@ import org.springframework.stereotype.Service;
  * 2019年7月15日
  */
 @Service
-@Scope("prototype")
-public class BrandService extends BaseService{
+
+public class BrandService extends ShopBaseService{
 
 	/**
 	 * 品牌分类列表

@@ -2,14 +2,16 @@ package com.vpu.mp.service.shop.version;
 
 import java.util.Map;
 
-import com.vpu.mp.service.foundation.BaseService;
+import com.vpu.mp.service.foundation.service.ShopBaseService;
 import com.vpu.mp.service.pojo.saas.shop.version.VersionConfig;
-import com.vpu.mp.service.shop.decoration.MpDecorationService;
+import com.vpu.mp.service.shop.decoration.ShopMpDecorationService;
 import com.vpu.mp.service.shop.image.ImageService;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Service;
 
@@ -19,11 +21,11 @@ import org.springframework.stereotype.Service;
  *
  */
 @Service
-@Scope("prototype")
-public class VersionService extends BaseService {
 
-	protected ImageService image;
-	protected MpDecorationService mpDecoration;
+public class VersionService extends ShopBaseService {
+
+	@Autowired protected ImageService image;
+	@Autowired protected ShopMpDecorationService mpDecoration;
 
 	String mainConfig = "main_config";
 	String numConfig = "num_config";

@@ -12,8 +12,8 @@ import org.springframework.stereotype.Component;
 
 import com.vpu.mp.db.main.tables.records.SystemChildAccountRecord;
 import com.vpu.mp.db.main.tables.records.SystemUserRecord;
-import com.vpu.mp.service.foundation.JedisManager;
-import com.vpu.mp.service.foundation.Util;
+import com.vpu.mp.service.foundation.jedis.JedisManager;
+import com.vpu.mp.service.foundation.util.Util;
 import com.vpu.mp.service.pojo.saas.auth.SystemLoginParam;
 import com.vpu.mp.service.pojo.saas.auth.SystemTokenAuthInfo;
 import com.vpu.mp.service.saas.SaasApplication;
@@ -28,6 +28,7 @@ public class SystemAuth {
 
 	@Autowired
 	protected HttpServletRequest request;
+	
 	@Autowired
 	protected SaasApplication saas;
 	protected JedisManager jedis = JedisManager.instance();

@@ -16,9 +16,9 @@ import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Service;
 
 import com.vpu.mp.db.shop.tables.records.ServiceOrderRecord;
-import com.vpu.mp.service.foundation.BaseService;
-import com.vpu.mp.service.foundation.DelFlag;
-import com.vpu.mp.service.foundation.PageResult;
+import com.vpu.mp.service.foundation.data.DelFlag;
+import com.vpu.mp.service.foundation.service.ShopBaseService;
+import com.vpu.mp.service.foundation.util.PageResult;
 import com.vpu.mp.service.pojo.shop.store.service.StoreServiceParam;
 import com.vpu.mp.service.pojo.shop.store.service.order.ServiceOrderAddParam;
 import com.vpu.mp.service.pojo.shop.store.service.order.ServiceOrderAdminMessageParam;
@@ -37,8 +37,8 @@ import io.netty.util.internal.StringUtil;
  * 预约（门店服务订单）
  */
 @Service
-@Scope("prototype")
-public class ServiceOrderService extends BaseService{
+
+public class ServiceOrderService extends ShopBaseService{
 	
 	/**
 	 * 订单状态 0：待服务，1：已取消，2：已完成，3：待付款

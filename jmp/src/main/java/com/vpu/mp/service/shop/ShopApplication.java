@@ -1,14 +1,16 @@
 package com.vpu.mp.service.shop;
 
-import com.vpu.mp.service.foundation.ServiceContainer;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
 import com.vpu.mp.service.shop.config.ConfigService;
 import com.vpu.mp.service.shop.config.ShopBasicConfigService;
 import com.vpu.mp.service.shop.config.TradeService;
 import com.vpu.mp.service.shop.coupon.CouponService;
 import com.vpu.mp.service.shop.decoration.AppletsJumpService;
 import com.vpu.mp.service.shop.decoration.ChooseLinkService;
-import com.vpu.mp.service.shop.decoration.MpDecorationService;
 import com.vpu.mp.service.shop.decoration.PageClassificationService;
+import com.vpu.mp.service.shop.decoration.ShopMpDecorationService;
 import com.vpu.mp.service.shop.distribution.RebateStrategyService;
 import com.vpu.mp.service.shop.goods.BrandService;
 import com.vpu.mp.service.shop.goods.GoodsRecommendService;
@@ -31,7 +33,6 @@ import com.vpu.mp.service.shop.summary.visit.DistributionService;
 import com.vpu.mp.service.shop.summary.visit.PageService;
 import com.vpu.mp.service.shop.summary.visit.RetainService;
 import com.vpu.mp.service.shop.version.VersionService;
-import org.springframework.stereotype.Service;
 
 /**
  * 
@@ -39,55 +40,51 @@ import org.springframework.stereotype.Service;
  *
  */
 @Service
-public class ShopApplication extends ServiceContainer {
+public class ShopApplication  {
 
-	public GoodsService goods;
-	public ImageService image;
-	public ImageCategoryService imageCatgory;
-	public MpDecorationService mpDecoration;	//装修模块
-	public OrderReadService order;
-	public PageClassificationService pageClassification;
-	public VersionService version;
-	public ConfigService config;
-	public StoreService store;
-	public ChooseLinkService chooselink;	//选择链接通用弹窗
-	public TradeService trade;
-	public GoodsRecommendService goodsRecommend;
-	public AmountService amount;
-	public OverviewService overview;
-	public DistributionService distribution;
-	public BrandService brand;	//品牌管理
-	public AppletsJumpService appletsJump;
-	public MallOverviewService mallOverview;
-	public CouponService coupon;	//优惠券管理
-	public RetainService retain;
-	public PageService page;
-	public RecordAdminActionService record;
-	public PortraitService portrait;
-	public RebateStrategyService rebateStrategy;
-	public RealTimeOverviewService realTimeOverview;
+	@Autowired public GoodsService goods;
+	@Autowired public ImageService image;
+	@Autowired public ImageCategoryService imageCatgory;
+	@Autowired public ShopMpDecorationService mpDecoration;	//装修模块
+	@Autowired public OrderReadService order;
+	@Autowired public PageClassificationService pageClassification;
+	@Autowired public VersionService version;
+	@Autowired public ConfigService config;
+	@Autowired public StoreService store;
+	@Autowired public ChooseLinkService chooselink;	//选择链接通用弹窗
+	@Autowired public TradeService trade;
+	@Autowired public GoodsRecommendService goodsRecommend;
+	@Autowired public AmountService amount;
+	@Autowired public OverviewService overview;
+	@Autowired public DistributionService distribution;
+	@Autowired public BrandService brand;	//品牌管理
+	@Autowired public AppletsJumpService appletsJump;
+	@Autowired public MallOverviewService mallOverview;
+	@Autowired public CouponService coupon;	//优惠券管理
+	@Autowired public RetainService retain;
+	@Autowired public PageService page;
+	@Autowired public RecordAdminActionService record;
+	@Autowired public PortraitService portrait;
+	@Autowired public RebateStrategyService rebateStrategy;
+	@Autowired public RealTimeOverviewService realTimeOverview;
 	/**
 	 * 组团购
 	 */
-	public GroupBuyService groupBuy;
+	@Autowired public GroupBuyService groupBuy;
 	/**
 	 * 会员
 	 */
-	public MemberService member;
+	@Autowired public MemberService member;
 	/**
 	 * 会员标签
 	 */
-	public TagService tag;
+	@Autowired public TagService tag;
 	/**
 	 * 积分管理
 	 */
-	public ScoreCfgService score;
+	@Autowired public ScoreCfgService score;
 
-	public ShopBasicConfigService shopBasicConfig;
+	@Autowired public ShopBasicConfigService shopBasicConfig;
 
-	@Override
-	public void setShopId(Integer shopId){
-		this.shopId = shopId;
-	}
 
 }

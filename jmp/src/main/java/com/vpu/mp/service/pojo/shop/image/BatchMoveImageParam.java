@@ -2,10 +2,8 @@ package com.vpu.mp.service.pojo.shop.image;
 
 import java.util.List;
 
-import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 
-import com.vpu.mp.service.foundation.JsonResultMessage;
 import lombok.Data;
 
 /**

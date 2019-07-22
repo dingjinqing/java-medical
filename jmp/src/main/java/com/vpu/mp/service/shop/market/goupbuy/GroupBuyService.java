@@ -1,27 +1,36 @@
 package com.vpu.mp.service.shop.market.goupbuy;
 
-import com.vpu.mp.db.shop.tables.records.GroupBuyDefineRecord;
-import com.vpu.mp.db.shop.tables.records.GroupBuyProductDefineRecord;
-import com.vpu.mp.service.foundation.BaseService;
-import com.vpu.mp.service.foundation.DelFlag;
-import com.vpu.mp.service.foundation.Util;
-import com.vpu.mp.service.pojo.shop.market.groupbuy.*;
-import org.jooq.DSLContext;
-import org.jooq.impl.DSL;
-import org.springframework.context.annotation.Scope;
-import org.springframework.stereotype.Service;
+
+import static com.vpu.mp.db.shop.Tables.GROUP_BUY_DEFINE;
+import static com.vpu.mp.db.shop.Tables.GROUP_BUY_PRODUCT_DEFINE;
 
 import java.util.List;
 
-import static com.vpu.mp.db.shop.Tables.*;
+import org.jooq.DSLContext;
+import org.jooq.impl.DSL;
+import org.springframework.stereotype.Service;
+
+import com.vpu.mp.db.shop.tables.records.GroupBuyDefineRecord;
+import com.vpu.mp.db.shop.tables.records.GroupBuyProductDefineRecord;
+import com.vpu.mp.service.foundation.data.DelFlag;
+import com.vpu.mp.service.foundation.service.ShopBaseService;
+import com.vpu.mp.service.foundation.util.Util;
+import com.vpu.mp.service.pojo.shop.market.groupbuy.GroupBuyDetailVo;
+import com.vpu.mp.service.pojo.shop.market.groupbuy.GroupBuyEditParam;
+import com.vpu.mp.service.pojo.shop.market.groupbuy.GroupBuyIdParam;
+import com.vpu.mp.service.pojo.shop.market.groupbuy.GroupBuyParam;
+import com.vpu.mp.service.pojo.shop.market.groupbuy.GroupBuyProductParam;
+import com.vpu.mp.service.pojo.shop.market.groupbuy.GroupBuyProductVo;
+import com.vpu.mp.service.pojo.shop.market.groupbuy.GroupBuyShareConfigParam;
+import com.vpu.mp.service.pojo.shop.market.groupbuy.GroupBuyShareConfigVo;
 
 /**
  * @author 孔德成
  * @date 2019/7/18 15:55
  */
+
 @Service
-@Scope("prototype")
-public class GroupBuyService extends BaseService {
+public class GroupBuyService extends ShopBaseService {
 
 
     private static final byte USE_STATUS=1;
@@ -33,6 +42,7 @@ public class GroupBuyService extends BaseService {
      *
      * @param groupBuy
      */
+
     public int addGroupBuy(GroupBuyParam groupBuy) {
         db().transaction((configuration)->{
             DSLContext db = DSL.using(configuration);
@@ -60,6 +70,7 @@ public class GroupBuyService extends BaseService {
 
 
     }
+
 
     /**
      * 删除
@@ -89,6 +100,7 @@ public class GroupBuyService extends BaseService {
     public void shareGroupBuy() {
     }
 
+
     /**
      * 停用或者启用
      * @param param
@@ -109,6 +121,7 @@ public class GroupBuyService extends BaseService {
         }
 
     }
+
 
 
     public GroupBuyDetailVo detailGroupBuy(Integer id) {

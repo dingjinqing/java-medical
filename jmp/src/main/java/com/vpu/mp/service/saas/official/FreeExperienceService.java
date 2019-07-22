@@ -11,9 +11,10 @@ import com.vpu.mp.service.pojo.saas.offical.FreeExperiencePageListParam;
 import com.vpu.mp.service.pojo.saas.offical.ShopFreeExperience;
 import com.vpu.mp.service.pojo.saas.offical.ShopFreeExperienceOutPut;
 import com.vpu.mp.db.main.tables.records.ShopFreeExperienceRecord;
-import com.vpu.mp.service.foundation.BaseService;
-import com.vpu.mp.service.foundation.PageResult;
-import com.vpu.mp.service.foundation.Util;
+import com.vpu.mp.service.foundation.service.MainBaseService;
+import com.vpu.mp.service.foundation.util.PageResult;
+import com.vpu.mp.service.foundation.util.Util;
+
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Service;
 
@@ -26,8 +27,8 @@ import static com.vpu.mp.db.main.tables.ShopFreeExperience.SHOP_FREE_EXPERIENCE;
  * 2019-06-27 15:45
  */
 @Service
-@Scope("prototype")
-public class FreeExperienceService extends BaseService{
+
+public class FreeExperienceService extends MainBaseService{
 	/**
 	 * 分页查询
 	 * @param param

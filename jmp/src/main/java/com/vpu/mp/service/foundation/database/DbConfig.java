@@ -1,4 +1,4 @@
-package com.vpu.mp.service.foundation;
+package com.vpu.mp.service.foundation.database;
 /**
  * 
  * @author 新国
@@ -7,7 +7,7 @@ package com.vpu.mp.service.foundation;
 public class DbConfig {
 	public String driver;
 	public String host;
-	public String port;
+	public Integer port;
 	public String database;
 	public String username;
 	public String password;

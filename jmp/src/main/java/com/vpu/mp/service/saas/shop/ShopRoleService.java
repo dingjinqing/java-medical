@@ -18,8 +18,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 
 import com.vpu.mp.db.main.tables.records.ShopRoleRecord;
-import com.vpu.mp.service.foundation.BaseService;
-import com.vpu.mp.service.foundation.Util;
+import com.vpu.mp.service.foundation.service.MainBaseService;
+import com.vpu.mp.service.foundation.util.Util;
 import com.vpu.mp.service.pojo.shop.auth.AdminTokenAuthInfo;
 import com.vpu.mp.service.pojo.shop.auth.MenuParam;
 import com.vpu.mp.service.pojo.shop.auth.MenuReturnParam;
@@ -33,8 +33,8 @@ import com.vpu.mp.service.pojo.shop.config.group.ShopRoleVo;
  *
  */
 @Service
-@Scope("prototype")
-public class ShopRoleService extends BaseService {
+
+public class ShopRoleService extends MainBaseService {
 
 	public ShopRoleRecord getRoleById(Integer roleId) {
 		return db().selectFrom(SHOP_ROLE).where(SHOP_ROLE.ROLE_ID.eq(roleId)).fetchAny();

@@ -12,14 +12,15 @@ import org.jooq.Record;
 import org.jooq.SelectWhereStep;
 import org.jooq.impl.DSL;
 import org.jooq.tools.StringUtils;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Service;
 
 import com.vpu.mp.db.shop.tables.records.StoreGroupRecord;
 import com.vpu.mp.db.shop.tables.records.StoreRecord;
-import com.vpu.mp.service.foundation.BaseService;
-import com.vpu.mp.service.foundation.DelFlag;
-import com.vpu.mp.service.foundation.PageResult;
+import com.vpu.mp.service.foundation.data.DelFlag;
+import com.vpu.mp.service.foundation.service.ShopBaseService;
+import com.vpu.mp.service.foundation.util.PageResult;
 import com.vpu.mp.service.pojo.shop.store.group.StoreGroup;
 import com.vpu.mp.service.pojo.shop.store.group.StoreGroupQueryParam;
 import com.vpu.mp.service.pojo.shop.store.store.StoreListQueryParam;
@@ -38,43 +39,43 @@ import com.vpu.mp.service.shop.store.verify.StoreVerifierService;
  * 2019年7月4日
  */
 @Service
-@Scope("prototype")
-public class StoreService extends BaseService {
+
+public class StoreService extends ShopBaseService {
 	
 	/**
 	 * 核销员
 	 */
-	public StoreVerifierService storeVerifier;
+	@Autowired public StoreVerifierService storeVerifier;
 	
 	/**
 	 * 门店商品
 	 */
-	public StoreGoodsService storeGoods;
+	@Autowired public StoreGoodsService storeGoods;
 	
 	/**
 	 * 门店服务
 	 */
-	public StoreServiceService storeService;
+	@Autowired public StoreServiceService storeService;
 	
 	/**
 	 * 门店分组
 	 */
-	public StoreGroupService storeGroup;
+	@Autowired public StoreGroupService storeGroup;
 
 	/**
 	 * 技师管理
 	 */
-	public ServiceTechnicianService serviceTechnician;
+	@Autowired public ServiceTechnicianService serviceTechnician;
 
 	/**
 	 * 服务预约（serviceOrder）
 	 */
-	public ServiceOrderService serviceOrder;
+	@Autowired public ServiceOrderService serviceOrder;
 	
 	/**
 	 * 服务评价管理
 	 */
-	public ServiceCommentService serviceComment;
+	@Autowired public ServiceCommentService serviceComment;
 	
 	/**
 	 * 门店列表分页查询

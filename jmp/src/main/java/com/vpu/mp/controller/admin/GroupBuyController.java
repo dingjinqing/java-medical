@@ -1,7 +1,7 @@
 package com.vpu.mp.controller.admin;
 
-import com.vpu.mp.service.foundation.JsonResult;
-import com.vpu.mp.service.foundation.JsonResultCode;
+import com.vpu.mp.service.foundation.data.JsonResult;
+import com.vpu.mp.service.foundation.data.JsonResultCode;
 import com.vpu.mp.service.pojo.shop.market.groupbuy.GroupBuyDetailVo;
 import com.vpu.mp.service.pojo.shop.market.groupbuy.GroupBuyEditParam;
 import com.vpu.mp.service.pojo.shop.market.groupbuy.GroupBuyIdParam;

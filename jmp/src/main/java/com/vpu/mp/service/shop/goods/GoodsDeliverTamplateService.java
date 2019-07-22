@@ -10,8 +10,8 @@ import org.jooq.SelectConditionStep;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ArrayNode;
-import com.vpu.mp.service.foundation.BaseService;
-import com.vpu.mp.service.foundation.PageResult;
+import com.vpu.mp.service.foundation.service.ShopBaseService;
+import com.vpu.mp.service.foundation.util.PageResult;
 import com.vpu.mp.service.pojo.shop.goods.deliver.GoodsDeliverIdParam;
 import com.vpu.mp.service.pojo.shop.goods.deliver.GoodsDeliverPageListParam;
 import com.vpu.mp.service.pojo.shop.goods.deliver.GoodsDeliverTemplateParam;
@@ -28,8 +28,8 @@ import org.springframework.stereotype.Service;
  * @date   2019年7月11日
  */
 @Service
-@Scope("prototype")
-public class GoodsDeliverTamplateService extends BaseService{
+
+public class GoodsDeliverTamplateService extends ShopBaseService{
 	/**
 	 * 运费模版列表
 	 * 

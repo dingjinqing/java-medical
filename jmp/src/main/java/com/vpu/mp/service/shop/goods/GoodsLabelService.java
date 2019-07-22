@@ -2,14 +2,15 @@ package com.vpu.mp.service.shop.goods;
 
 
 import com.vpu.mp.db.shop.tables.records.GoodsLabelRecord;
-import com.vpu.mp.service.foundation.BaseService;
-import com.vpu.mp.service.foundation.PageResult;
+import com.vpu.mp.service.foundation.service.ShopBaseService;
+import com.vpu.mp.service.foundation.util.PageResult;
 import com.vpu.mp.service.pojo.shop.goods.GoodsView;
 import com.vpu.mp.service.pojo.shop.goods.label.*;
 import org.jooq.Record1;
 import org.jooq.SelectConditionStep;
 import org.jooq.SelectWhereStep;
 import org.jooq.tools.StringUtils;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Service;
 
@@ -27,17 +28,17 @@ import static com.vpu.mp.db.shop.Tables.GOODS_LABEL_COUPLE;
  *
  */
 @Service
-@Scope("prototype")
-public class GoodsLabelService extends BaseService {
+
+public class GoodsLabelService extends ShopBaseService {
 	
 	/** 未删除为0 */
 	public static final Integer NORMAL = 0;
 	/** 已经删除为1 */
 	public static final Integer DISABLE = 1;
 	
-	public GoodsLabelCoupleService goodsLabelCoupleService;
+	@Autowired public GoodsLabelCoupleService goodsLabelCoupleService;
 	
-	public GoodsService goodsService;
+	@Autowired public GoodsService goodsService;
 	 /**
      * 分页获取商品标签信息
      *

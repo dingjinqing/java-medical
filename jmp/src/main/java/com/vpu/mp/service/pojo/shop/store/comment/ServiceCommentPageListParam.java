@@ -1,6 +1,6 @@
 package com.vpu.mp.service.pojo.shop.store.comment;
 
-import com.vpu.mp.service.foundation.Page;
+import com.vpu.mp.service.foundation.util.Page;
 
 import lombok.Data;
 import lombok.NoArgsConstructor;

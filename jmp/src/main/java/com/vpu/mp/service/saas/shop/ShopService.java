@@ -24,11 +24,12 @@ import org.jooq.tools.StringUtils;
 import com.vpu.mp.db.main.tables.records.ShopOperationRecord;
 import com.vpu.mp.db.main.tables.records.ShopRecord;
 import com.vpu.mp.db.main.tables.records.UserLoginRecordRecord;
-import com.vpu.mp.service.foundation.BaseService;
-import com.vpu.mp.service.foundation.DbConfig;
-import com.vpu.mp.service.foundation.FieldsUtil;
-import com.vpu.mp.service.foundation.PageResult;
-import com.vpu.mp.service.foundation.Util;
+import com.vpu.mp.service.foundation.database.DatasourceManager;
+import com.vpu.mp.service.foundation.database.DbConfig;
+import com.vpu.mp.service.foundation.service.MainBaseService;
+import com.vpu.mp.service.foundation.util.FieldsUtil;
+import com.vpu.mp.service.foundation.util.PageResult;
+import com.vpu.mp.service.foundation.util.Util;
 import com.vpu.mp.service.pojo.saas.auth.SystemTokenAuthInfo;
 import com.vpu.mp.service.pojo.saas.shop.ShopListQueryParam;
 import com.vpu.mp.service.pojo.saas.shop.ShopListQueryResultVo;
@@ -38,6 +39,8 @@ import com.vpu.mp.service.pojo.saas.shop.version.VersionMainConfig;
 import com.vpu.mp.service.pojo.shop.auth.AdminTokenAuthInfo;
 import com.vpu.mp.service.pojo.shop.auth.ShopReq;
 import com.vpu.mp.service.pojo.shop.auth.ShopSelectInnerResp;
+
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Service;
 
@@ -47,18 +50,28 @@ import org.springframework.stereotype.Service;
  *
  */
 @Service
-@Scope("prototype")
-public class ShopService extends BaseService {
+public class ShopService extends MainBaseService {
 
-	public ShopAccountService accout;
-	public ShopRenewService renew;
-	public ShopVersionService version;
-	public ShopChildAccountService subAccount;
-	public ShopRoleService role;
-	public ShopMenuService menu;
-	public MpDecorationService decoration;
-	public MpAuthShopService mp;
+	@Autowired
+	protected DatasourceManager datasourceManager;
+	@Autowired
+	public ShopAccountService account;
+	@Autowired
 	public ShopImageManageService image;
+	@Autowired
+	public ShopRenewService renew;
+	@Autowired
+	public ShopVersionService version;
+	@Autowired
+	public ShopChildAccountService subAccount;
+	@Autowired
+	public ShopRoleService role;
+	@Autowired
+	public ShopMenuService menu;
+	@Autowired
+	public MpDecorationService decoration;
+	@Autowired
+	public MpAuthShopService mp;
 
 	public PageResult<ShopListQueryResultVo> getPageList(ShopListQueryParam param) {
 		SelectWhereStep<Record> select = db()
@@ -68,7 +81,7 @@ public class ShopService extends BaseService {
 				.on(SHOP.SHOP_ID.eq(DSL.cast(MP_AUTH_SHOP.SHOP_ID, Integer.class)));
 		select = this.buildOptions(select, param);
 		select.orderBy(SHOP.CREATED.desc());
-		PageResult<ShopListQueryResultVo> result = accout.getPageResult(select, param.currentPage, param.pageRows,
+		PageResult<ShopListQueryResultVo> result = account.getPageResult(select, param.currentPage, param.pageRows,
 				ShopListQueryResultVo.class);
 		for (ShopListQueryResultVo shopList : result.dataList) {
 			shopList.setRenewMoney(this.renew.getShopRenewTotal(shopList.getShopId()));
@@ -85,29 +98,23 @@ public class ShopService extends BaseService {
 		if (!StringUtils.isEmpty(param.keywords)) {
 			Integer shopId = Util.convert(param.keywords, Integer.class, 0);
 			String keywords = likeValue(param.keywords);
-			select.where(SHOP.SHOP_NAME.like(keywords)
-					.or(SHOP.MOBILE.like(keywords))
-					.or(MP_AUTH_SHOP.NICK_NAME.like(keywords))
-					.or(SHOP.SHOP_ID.eq(shopId)));
+			select.where(SHOP.SHOP_NAME.like(keywords).or(SHOP.MOBILE.like(keywords))
+					.or(MP_AUTH_SHOP.NICK_NAME.like(keywords)).or(SHOP.SHOP_ID.eq(shopId)));
 		}
 
 		Integer shopUsingStatus = 1;
 		Integer shopExpiredStatus = 2;
 		if (param.isUse != null && param.isUse.equals(shopUsingStatus)) {
 			// 店铺在使用中
-			select.where(SHOP.SHOP_ID.in(db().selectDistinct(SHOP_RENEW.SHOP_ID)
-					.from(SHOP_RENEW)
-					.where(SHOP_RENEW.SHOP_ID.eq(SHOP.SHOP_ID)
-							.and(SHOP_RENEW.EXPIRE_TIME.ge(DSL.currentTimestamp())))));
+			select.where(SHOP.SHOP_ID.in(db().selectDistinct(SHOP_RENEW.SHOP_ID).from(SHOP_RENEW).where(
+					SHOP_RENEW.SHOP_ID.eq(SHOP.SHOP_ID).and(SHOP_RENEW.EXPIRE_TIME.ge(DSL.currentTimestamp())))));
 		}
 
 		if (param.isUse != null && param.isUse.equals(shopExpiredStatus)) {
 			// 店铺已过期
-			select.where(SHOP.SHOP_ID.in(db().selectDistinct(SHOP_RENEW.SHOP_ID)
-					.from(SHOP_RENEW)
+			select.where(SHOP.SHOP_ID.in(db().selectDistinct(SHOP_RENEW.SHOP_ID).from(SHOP_RENEW)
 					.where(SHOP_RENEW.SHOP_ID.eq(SHOP.SHOP_ID))
-					.and(SHOP_RENEW.EXPIRE_TIME.lt(DSL.currentTimestamp())
-							.or(SHOP_RENEW.EXPIRE_TIME.isNull()))));
+					.and(SHOP_RENEW.EXPIRE_TIME.lt(DSL.currentTimestamp()).or(SHOP_RENEW.EXPIRE_TIME.isNull()))));
 		}
 
 		if (!StringUtils.isEmpty(param.shopType)) {
@@ -123,8 +130,7 @@ public class ShopService extends BaseService {
 
 		if (!StringUtils.isEmpty(param.accountKey)) {
 			String key = this.likeValue(param.accountKey);
-			select.where(SHOP_ACCOUNT.COMPANY.like(key)
-					.or(MP_AUTH_SHOP.PRINCIPAL_NAME.like(key))
+			select.where(SHOP_ACCOUNT.COMPANY.like(key).or(MP_AUTH_SHOP.PRINCIPAL_NAME.like(key))
 					.or(SHOP.SHOP_ID.like(key)));
 		}
 
@@ -136,18 +142,18 @@ public class ShopService extends BaseService {
 		}
 		return select;
 	}
-	
-	
+
 	/**
 	 * TODO 加个事务
+	 * 
 	 * @param shopReq
 	 * @return
 	 */
 	public Boolean addShop(ShopReq shopReq, SystemTokenAuthInfo user, HttpServletRequest request) {
 		shopReq.setShopId(getCanUseShopId());
-		DbConfig dbConfig = dm.getInstallShopDbConfig(shopReq.getShopId());
+		DbConfig dbConfig = datasourceManager.getInstallShopDbConfig(shopReq.getShopId());
 		shopReq.setDbConfig(Util.toJson(dbConfig));
-		if (!dm.installShopDb(dbConfig)) {
+		if (!databaseManager.installShopDb(dbConfig)) {
 			return false;
 		}
 		logger().info("数据库创建成功");
@@ -168,9 +174,10 @@ public class ShopService extends BaseService {
 		}
 		return true;
 	}
-	
+
 	/**
 	 * 得到所有店铺
+	 * 
 	 * @return
 	 */
 	public Result<ShopRecord> getAll() {
@@ -179,6 +186,7 @@ public class ShopService extends BaseService {
 
 	/**
 	 * 得到可用店铺ID
+	 * 
 	 * @return
 	 */
 	public Integer getCanUseShopId() {
@@ -220,13 +228,9 @@ public class ShopService extends BaseService {
 			}
 			return -1;
 		}
-		Record1<Integer> role = db().select(SHOP_CHILD_ROLE.ROLE_ID)
-				.from(SHOP)
-				.leftJoin(SHOP_CHILD_ROLE).on(SHOP.SHOP_ID.eq(SHOP_CHILD_ROLE.SHOP_ID))
-				.where(SHOP.SHOP_ID.eq(shopId))
-				.and(SHOP.SYS_ID.eq(sysId))
-				.and(SHOP_CHILD_ROLE.ACCOUNT_ID.eq(subAccountId))
-				.fetchAny();
+		Record1<Integer> role = db().select(SHOP_CHILD_ROLE.ROLE_ID).from(SHOP).leftJoin(SHOP_CHILD_ROLE)
+				.on(SHOP.SHOP_ID.eq(SHOP_CHILD_ROLE.SHOP_ID)).where(SHOP.SHOP_ID.eq(shopId)).and(SHOP.SYS_ID.eq(sysId))
+				.and(SHOP_CHILD_ROLE.ACCOUNT_ID.eq(subAccountId)).fetchAny();
 		if (role != null) {
 			return role.value1();
 		}
@@ -244,41 +248,29 @@ public class ShopService extends BaseService {
 	public Result<Record9<Integer, Integer, String, String, Timestamp, Byte, Byte, Byte, String>> getRoleShopList(
 			Integer sysId, Integer subAccountId) {
 		SelectWhereStep<Record9<Integer, Integer, String, String, Timestamp, Byte, Byte, Byte, String>> select = db()
-				.selectDistinct(
-						SHOP.SHOP_ID,
-						SHOP.SYS_ID,
-						SHOP.SHOP_NAME,
-						SHOP.SHOP_AVATAR,
-						SHOP.CREATED,
-						SHOP.STATE,
-						SHOP.BUSINESS_STATE,
-						SHOP.IS_ENABLED,
-						SHOP.SHOP_TYPE)
-				.from(SHOP)
-				.leftJoin(SHOP_CHILD_ROLE).on(SHOP.SHOP_ID.eq(SHOP_CHILD_ROLE.SHOP_ID));
+				.selectDistinct(SHOP.SHOP_ID, SHOP.SYS_ID, SHOP.SHOP_NAME, SHOP.SHOP_AVATAR, SHOP.CREATED, SHOP.STATE,
+						SHOP.BUSINESS_STATE, SHOP.IS_ENABLED, SHOP.SHOP_TYPE)
+				.from(SHOP).leftJoin(SHOP_CHILD_ROLE).on(SHOP.SHOP_ID.eq(SHOP_CHILD_ROLE.SHOP_ID));
 		select.where(SHOP.SYS_ID.eq(sysId));
 		if (subAccountId > 0) {
 			select.where(SHOP_CHILD_ROLE.ACCOUNT_ID.eq(subAccountId));
 		}
-		return select.orderBy(SHOP.CREATED.desc())
-				.fetch();
+		return select.orderBy(SHOP.CREATED.desc()).fetch();
 	}
-	
+
 	public ShopPojo getShopBaseInfoById(Integer shopId) {
-		return db().select(SHOP.SHOP_AVATAR,SHOP.SHOP_NAME,SHOP.BUSINESS_STATE,SHOP.CREATED,SHOP.BUSINESS_STATE).from(SHOP).where(SHOP.SHOP_ID.eq(shopId)).fetchOne().into(ShopPojo.class);
+		return db().select(SHOP.SHOP_AVATAR, SHOP.SHOP_NAME, SHOP.BUSINESS_STATE, SHOP.CREATED, SHOP.BUSINESS_STATE)
+				.from(SHOP).where(SHOP.SHOP_ID.eq(shopId)).fetchOne().into(ShopPojo.class);
 	}
-	
+
 	public Integer updateShopBaseInfo(ShopPojo shop) {
-		return db().update(SHOP)
-				.set(SHOP.SHOP_NAME, shop.getShopName())
-				.set(SHOP.SHOP_AVATAR, shop.getShopAvatar())
-                .set(SHOP.BUSINESS_STATE, shop.getBusinessState())
-                .where(SHOP.SHOP_ID.eq(shop.getShopId()))
-				.execute();
+		return db().update(SHOP).set(SHOP.SHOP_NAME, shop.getShopName()).set(SHOP.SHOP_AVATAR, shop.getShopAvatar())
+				.set(SHOP.BUSINESS_STATE, shop.getBusinessState()).where(SHOP.SHOP_ID.eq(shop.getShopId())).execute();
 	}
+
 	public List<ShopSelectInnerResp> getShopList(AdminTokenAuthInfo info,
 			List<Record9<Integer, Integer, String, String, Timestamp, Byte, Byte, Byte, String>> shopList) {
-		List<ShopSelectInnerResp> dataList=new ArrayList<>(shopList.size());
+		List<ShopSelectInnerResp> dataList = new ArrayList<>(shopList.size());
 		for (Record9<Integer, Integer, String, String, Timestamp, Byte, Byte, Byte, String> record : shopList) {
 			ShopSelectInnerResp shopInner = new ShopSelectInnerResp();
 			Timestamp expireTime = renew.getShopRenewExpireTime(Util.getInteger(record.get(SHOP.SHOP_ID)));
@@ -308,14 +300,15 @@ public class ShopService extends BaseService {
 		}
 		return dataList;
 	}
-	
+
 	/**
 	 * 判断店铺是否过期,true为过期，false没过期
+	 * 
 	 * @return
 	 */
 	public Boolean checkExpire(Integer shopId) {
 		Timestamp expireTime = renew.getShopRenewExpireTime(shopId);
-		if(expireTime==null) {
+		if (expireTime == null) {
 			return true;
 		}
 		if (expireTime != null) {
@@ -330,7 +323,7 @@ public class ShopService extends BaseService {
 		}
 		return true;
 	}
-	
+
 	public int insertUserLoginRecord(UserLoginRecordRecord record) {
 		return db().executeInsert(record);
 	}
@@ -413,6 +406,5 @@ public class ShopService extends BaseService {
 		return sbf.toString();
 
 	}
-	
 
 }

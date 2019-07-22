@@ -18,8 +18,8 @@ import org.jooq.Record13;
 import org.jooq.SelectConditionStep;
 import org.jooq.tools.StringUtils;
 
-import com.vpu.mp.service.foundation.BaseService;
-import com.vpu.mp.service.foundation.PageResult;
+import com.vpu.mp.service.foundation.service.ShopBaseService;
+import com.vpu.mp.service.foundation.util.PageResult;
 import com.vpu.mp.service.pojo.shop.goods.comment.GoodsCommentAddCommParam;
 import com.vpu.mp.service.pojo.shop.goods.comment.GoodsCommentAddListVo;
 import com.vpu.mp.service.pojo.shop.goods.comment.GoodsCommentAnswerParam;
@@ -37,8 +37,8 @@ import org.springframework.stereotype.Service;
  * @date 2019年7月7日
  */
 @Service
-@Scope("prototype")
-public class GoodsCommentService extends BaseService {
+
+public class GoodsCommentService extends ShopBaseService {
 
     /**
      * 分页获取评价信息

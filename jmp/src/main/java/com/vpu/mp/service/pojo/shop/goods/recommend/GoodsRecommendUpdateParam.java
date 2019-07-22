@@ -5,8 +5,7 @@ import java.util.List;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 
-import com.vpu.mp.service.foundation.JsonResultMessage;
-import com.vpu.mp.service.pojo.shop.goods.GoodsView;
+import com.vpu.mp.service.foundation.data.JsonResultMessage;
 
 import lombok.Data;
 

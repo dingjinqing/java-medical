@@ -4,7 +4,8 @@ import org.jooq.Result;
 
 import static com.vpu.mp.db.main.tables.DictProvince.DICT_PROVINCE;
 import com.vpu.mp.db.main.tables.records.DictProvinceRecord;
-import com.vpu.mp.service.foundation.BaseService;
+import com.vpu.mp.service.foundation.service.MainBaseService;
+
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Service;
 
@@ -14,8 +15,8 @@ import org.springframework.stereotype.Service;
  *
  */
 @Service
-@Scope("prototype")
-public class ProvinceService extends BaseService {
+
+public class ProvinceService extends MainBaseService {
 
 	public Result<DictProvinceRecord> getAll() {
 		return db().fetch(DICT_PROVINCE);

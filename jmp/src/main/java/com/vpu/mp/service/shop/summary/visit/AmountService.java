@@ -1,20 +1,26 @@
 package com.vpu.mp.service.shop.summary.visit;
 
-import com.vpu.mp.db.shop.tables.records.MpDailyVisitRecord;
-import com.vpu.mp.service.pojo.shop.summary.RefDateRecord;
-import com.vpu.mp.service.pojo.shop.summary.visit.VisitStatisticsParam;
-import com.vpu.mp.service.pojo.shop.summary.visit.VisitStatisticsUnit;
-import com.vpu.mp.service.pojo.shop.summary.visit.VisitStatisticsVo;
-import org.jooq.Result;
-import org.springframework.context.annotation.Scope;
-import org.springframework.stereotype.Service;
+import static com.vpu.mp.db.shop.tables.MpDailyVisit.MP_DAILY_VISIT;
+import static com.vpu.mp.service.pojo.shop.summary.visit.VisitStatisticsParam.PV;
+import static com.vpu.mp.service.pojo.shop.summary.visit.VisitStatisticsParam.SESSION_COUNT;
+import static com.vpu.mp.service.pojo.shop.summary.visit.VisitStatisticsParam.STAY_TIME_SESSION;
+import static com.vpu.mp.service.pojo.shop.summary.visit.VisitStatisticsParam.STAY_TIME_UV;
+import static com.vpu.mp.service.pojo.shop.summary.visit.VisitStatisticsParam.UV;
+import static com.vpu.mp.service.pojo.shop.summary.visit.VisitStatisticsParam.UV_NEW;
+import static com.vpu.mp.service.pojo.shop.summary.visit.VisitStatisticsParam.VISIT_DEPTH;
 
 import java.time.LocalDate;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import static com.vpu.mp.db.shop.tables.MpDailyVisit.MP_DAILY_VISIT;
-import static com.vpu.mp.service.pojo.shop.summary.visit.VisitStatisticsParam.*;
+import org.jooq.Result;
+import org.springframework.stereotype.Service;
+
+import com.vpu.mp.db.shop.tables.records.MpDailyVisitRecord;
+import com.vpu.mp.service.pojo.shop.summary.RefDateRecord;
+import com.vpu.mp.service.pojo.shop.summary.visit.VisitStatisticsParam;
+import com.vpu.mp.service.pojo.shop.summary.visit.VisitStatisticsUnit;
+import com.vpu.mp.service.pojo.shop.summary.visit.VisitStatisticsVo;
 
 /**
  * 折线图
@@ -23,7 +29,7 @@ import static com.vpu.mp.service.pojo.shop.summary.visit.VisitStatisticsParam.*;
  * @date 2019年7月11日
  */
 @Service
-@Scope("prototype")
+
 public class AmountService extends BaseVisitService {
 
     public void addTestDailyVisit() {

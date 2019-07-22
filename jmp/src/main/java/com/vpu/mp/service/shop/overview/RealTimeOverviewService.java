@@ -2,8 +2,8 @@ package com.vpu.mp.service.shop.overview;
 
 import com.vpu.mp.db.shop.tables.OrderInfo;
 import com.vpu.mp.db.shop.tables.Trades;
-import com.vpu.mp.service.foundation.BaseService;
-import com.vpu.mp.service.foundation.Util;
+import com.vpu.mp.service.foundation.service.ShopBaseService;
+import com.vpu.mp.service.foundation.util.Util;
 import com.vpu.mp.service.pojo.shop.overview.RealTimeVo;
 import com.vpu.mp.service.pojo.shop.overview.Tuple2;
 import org.jooq.impl.DSL;
@@ -23,8 +23,8 @@ import static com.vpu.mp.db.shop.tables.UserSummaryTrend.USER_SUMMARY_TREND;
  * @Description:
  */
 @Service
-@Scope("prototype")
-public class RealTimeOverviewService extends BaseService {
+
+public class RealTimeOverviewService extends ShopBaseService {
 
     /**
      * 实时概况

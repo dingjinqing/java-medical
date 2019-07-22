@@ -1,9 +1,10 @@
 package com.vpu.mp.service.shop.config;
 
-import com.vpu.mp.service.foundation.BaseService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Service;
 
+import com.vpu.mp.service.foundation.service.ShopBaseService;
 
 /**
  * 
@@ -11,16 +12,26 @@ import org.springframework.stereotype.Service;
  *
  */
 @Service
-@Scope("prototype")
-public class ConfigService extends BaseService {
+
+public class ConfigService extends ShopBaseService {
+	@Autowired
 	public BottomNavigatorConfigService bottomCfg;
+	@Autowired
 	public SearchConfigService searchCfg;
+	@Autowired
 	public ShopStyleConfigService shopStyleCfg;
+	@Autowired
 	public CommentConfigService commentConfigService;
+	@Autowired
 	public PledgeConfigService pledgeCfg;
+	@Autowired
 	public ShopCommonConfigService shopCommonConfigService;
+	@Autowired
 	public ShopReturnConfigService returnConfigService;
-	public UserCenterConfigService  userCenterConfigService;
+	@Autowired
+	public UserCenterConfigService userCenterConfigService;
+	@Autowired
 	public StoreConfigService storeConfigService;
+	@Autowired
 	public DistributionConfigService distributioncfg;
 }

@@ -2,7 +2,8 @@ package com.vpu.mp.service.saas.privilege;
 
 import static com.vpu.mp.db.main.tables.SystemRole.SYSTEM_ROLE;
 import com.vpu.mp.db.main.tables.records.SystemRoleRecord;
-import com.vpu.mp.service.foundation.BaseService;
+import com.vpu.mp.service.foundation.service.MainBaseService;
+
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Service;
 
@@ -12,8 +13,8 @@ import org.springframework.stereotype.Service;
  *
  */
 @Service
-@Scope("prototype")
-public class RoleService extends BaseService {
+
+public class RoleService extends MainBaseService {
 
 
 	public SystemRoleRecord getRole(Integer roleId) {

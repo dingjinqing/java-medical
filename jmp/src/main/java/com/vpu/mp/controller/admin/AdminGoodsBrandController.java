@@ -1,17 +1,17 @@
 package com.vpu.mp.controller.admin;
 
-import com.vpu.mp.service.foundation.JsonResult;
-import com.vpu.mp.service.foundation.JsonResultCode;
-import com.vpu.mp.service.foundation.PageResult;
-import com.vpu.mp.service.pojo.shop.goods.brand.GoodsBrand;
-import com.vpu.mp.service.pojo.shop.goods.brand.GoodsBrandPageListParam;
-import com.vpu.mp.service.pojo.shop.goods.brand.GoodsBrandVo;
-import com.vpu.mp.service.shop.ShopApplication;
+import java.util.List;
+
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.util.List;
+import com.vpu.mp.service.foundation.data.JsonResult;
+import com.vpu.mp.service.foundation.data.JsonResultCode;
+import com.vpu.mp.service.foundation.util.PageResult;
+import com.vpu.mp.service.pojo.shop.goods.brand.GoodsBrand;
+import com.vpu.mp.service.pojo.shop.goods.brand.GoodsBrandPageListParam;
+import com.vpu.mp.service.pojo.shop.goods.brand.GoodsBrandVo;
 
 /**
  * 商品品牌控制器

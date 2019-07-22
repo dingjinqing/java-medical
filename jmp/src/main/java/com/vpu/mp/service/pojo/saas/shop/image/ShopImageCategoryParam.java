@@ -1,11 +1,12 @@
 package com.vpu.mp.service.pojo.saas.shop.image;
 
-import com.vpu.mp.service.foundation.JsonResultMessage;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
+
+import com.vpu.mp.service.foundation.data.JsonResultMessage;
 
 /**
  * @author 孔德成

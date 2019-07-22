@@ -17,9 +17,9 @@ import com.vpu.mp.service.shop.member.MemberService;
 import com.vpu.mp.db.shop.tables.records.TradesRecordRecord;
 import com.vpu.mp.db.shop.tables.records.UserRecord;
 import com.vpu.mp.db.shop.tables.records.UserScoreRecord;
-import com.vpu.mp.service.foundation.BaseService;
-import com.vpu.mp.service.foundation.JsonResultCode;
-import com.vpu.mp.service.foundation.Util;
+import com.vpu.mp.service.foundation.data.JsonResultCode;
+import com.vpu.mp.service.foundation.service.ShopBaseService;
+import com.vpu.mp.service.foundation.util.Util;
 import com.vpu.mp.service.pojo.shop.member.account.ScoreParam;
 import static com.vpu.mp.db.shop.Tables.USER_SCORE;
 import static com.vpu.mp.db.shop.Tables.USER;
@@ -29,8 +29,7 @@ import static com.vpu.mp.db.shop.Tables.TRADES_RECORD;
  * @author 黄壮壮 2019-07-19 15:03
  */
 @Service
-@Scope("prototype")
-public class ScoreService extends BaseService {
+public class ScoreService extends ShopBaseService {
 	/**
 	 * 未使用
 	 */

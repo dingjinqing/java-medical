@@ -1,7 +1,5 @@
 package com.vpu.mp.service.shop.config;
 
-import com.fasterxml.jackson.annotation.JsonBackReference;
-import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Service;
 
 /**
@@ -11,7 +9,7 @@ import org.springframework.stereotype.Service;
  *
 */
 @Service
-@Scope("prototype")
+
 public class PledgeConfigService extends BaseShopConfigService{
     /**
      * 服务承诺键值

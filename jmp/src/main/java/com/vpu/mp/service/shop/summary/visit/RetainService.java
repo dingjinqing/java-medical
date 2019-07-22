@@ -4,7 +4,7 @@ import com.fasterxml.jackson.core.type.TypeReference;
 import com.vpu.mp.db.shop.tables.records.MpDailyRetainRecord;
 import com.vpu.mp.db.shop.tables.records.MpMonthlyRetainRecord;
 import com.vpu.mp.db.shop.tables.records.MpWeeklyRetainRecord;
-import com.vpu.mp.service.foundation.Util;
+import com.vpu.mp.service.foundation.util.Util;
 import com.vpu.mp.service.pojo.shop.summary.visit.AccessRetain;
 import com.vpu.mp.service.pojo.shop.summary.visit.AccessRetainVo;
 import com.vpu.mp.service.pojo.shop.summary.visit.RetainItem;
@@ -30,7 +30,7 @@ import static com.vpu.mp.service.pojo.shop.summary.visit.AccessRetainVo.ACTION_R
  * @author 郑保乐
  */
 @Service
-@Scope("prototype")
+
 public class RetainService extends BaseVisitService {
 
     private static final int GRADING_DAY = 1;

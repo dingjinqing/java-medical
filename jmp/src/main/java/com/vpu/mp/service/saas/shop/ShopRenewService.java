@@ -11,8 +11,8 @@ import org.jooq.impl.DSL;
 import org.jooq.tools.Convert;
 
 import com.vpu.mp.db.main.tables.records.ShopRenewRecord;
-import com.vpu.mp.service.foundation.BaseService;
-import com.vpu.mp.service.foundation.FieldsUtil;
+import com.vpu.mp.service.foundation.service.MainBaseService;
+import com.vpu.mp.service.foundation.util.FieldsUtil;
 import com.vpu.mp.service.pojo.saas.auth.SystemTokenAuthInfo;
 import com.vpu.mp.service.pojo.shop.auth.ShopRenewReq;
 import org.springframework.context.annotation.Scope;
@@ -24,8 +24,8 @@ import org.springframework.stereotype.Service;
  *
  */
 @Service
-@Scope("prototype")
-public class ShopRenewService extends BaseService {
+
+public class ShopRenewService extends MainBaseService {
 
 	public void insertRenewDate() {
 

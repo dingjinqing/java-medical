@@ -2,7 +2,7 @@ package com.vpu.mp.service.shop.summary.visit;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.vpu.mp.db.shop.tables.records.MpDistributionVisitRecord;
-import com.vpu.mp.service.foundation.Util;
+import com.vpu.mp.service.foundation.util.Util;
 import com.vpu.mp.service.pojo.shop.summary.*;
 import com.vpu.mp.service.pojo.shop.summary.visit.*;
 import org.jooq.Result;
@@ -21,7 +21,7 @@ import static com.vpu.mp.service.pojo.shop.summary.visit.DistributionIndex.*;
  * @author 郑保乐
  */
 @Service
-@Scope("prototype")
+
 public class DistributionService extends BaseVisitService {
 
     public VisitDistributionVo getVisitDistribution(VisitDistributionParam param) {

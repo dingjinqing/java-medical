@@ -1,14 +1,14 @@
 package com.vpu.mp.service.shop.summary.visit;
 
-import com.vpu.mp.service.foundation.BaseService;
-import com.vpu.mp.service.pojo.shop.summary.RefDateRecord;
-import com.vpu.mp.service.pojo.shop.summary.visit.RefDateRecordHolder;
-import org.springframework.context.annotation.Scope;
-import org.springframework.stereotype.Service;
-
 import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
+
+import org.springframework.stereotype.Service;
+
+import com.vpu.mp.service.foundation.service.ShopBaseService;
+import com.vpu.mp.service.pojo.shop.summary.RefDateRecord;
+import com.vpu.mp.service.pojo.shop.summary.visit.RefDateRecordHolder;
 
 /**
  * 访问分析通用逻辑
@@ -16,8 +16,8 @@ import java.util.List;
  * @author 郑保乐
  */
 @Service
-@Scope("prototype")
-class BaseVisitService extends BaseService {
+
+class BaseVisitService extends ShopBaseService {
 
     /**
      * 按粒度分组

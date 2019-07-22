@@ -8,8 +8,8 @@ import org.jooq.SelectWhereStep;
 import org.jooq.tools.StringUtils;
 
 import com.vpu.mp.db.main.tables.records.DecorationTemplateRecord;
-import com.vpu.mp.service.foundation.BaseService;
-import com.vpu.mp.service.foundation.PageResult;
+import com.vpu.mp.service.foundation.service.MainBaseService;
+import com.vpu.mp.service.foundation.util.PageResult;
 import com.vpu.mp.service.pojo.saas.decorate.DecorationTemplatePojo;
 import com.vpu.mp.service.pojo.saas.shop.MpDecorationListQueryParam;
 import org.springframework.context.annotation.Scope;
@@ -21,8 +21,8 @@ import org.springframework.stereotype.Service;
  *
  */
 @Service("SaasMpDecorationService")
-@Scope("prototype")
-public class MpDecorationService extends BaseService {
+
+public class MpDecorationService extends MainBaseService {
 
 	public PageResult<DecorationTemplatePojo> getPageList(MpDecorationListQueryParam param) {
 		SelectWhereStep<Record> select = db().select().from(DECORATION_TEMPLATE);

@@ -1,6 +1,8 @@
-package com.vpu.mp.service.foundation;
+package com.vpu.mp.service.foundation.data;
 
 import org.apache.commons.lang3.StringUtils;
+
+import com.vpu.mp.service.foundation.util.Util;
 
 import lombok.Data;
 

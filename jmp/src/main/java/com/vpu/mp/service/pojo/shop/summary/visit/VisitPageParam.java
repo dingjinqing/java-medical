@@ -1,7 +1,8 @@
 package com.vpu.mp.service.pojo.shop.summary.visit;
 
 import com.vpu.mp.db.shop.tables.records.MpVisitPageRecord;
-import com.vpu.mp.service.foundation.JsonResultMessage;
+import com.vpu.mp.service.foundation.data.JsonResultMessage;
+
 import lombok.Data;
 import org.jooq.Field;
 import org.jooq.SortField;

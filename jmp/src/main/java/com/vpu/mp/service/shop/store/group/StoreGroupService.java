@@ -13,8 +13,8 @@ import org.jooq.SelectWhereStep;
 import org.jooq.impl.DSL;
 
 import com.vpu.mp.db.shop.tables.records.StoreGroupRecord;
-import com.vpu.mp.service.foundation.BaseService;
-import com.vpu.mp.service.foundation.PageResult;
+import com.vpu.mp.service.foundation.service.ShopBaseService;
+import com.vpu.mp.service.foundation.util.PageResult;
 import com.vpu.mp.service.pojo.shop.store.group.StoreGroup;
 import com.vpu.mp.service.pojo.shop.store.group.StoreGroupQueryParam;
 import org.springframework.context.annotation.Scope;
@@ -26,8 +26,8 @@ import org.springframework.stereotype.Service;
  * 2019年7月17日
  */
 @Service
-@Scope("prototype")
-public class StoreGroupService extends BaseService{
+
+public class StoreGroupService extends ShopBaseService{
 	/**
 	 * 门店分组列表-查询
 	 * @param param

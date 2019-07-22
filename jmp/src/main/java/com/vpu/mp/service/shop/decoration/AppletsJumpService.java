@@ -1,21 +1,22 @@
 package com.vpu.mp.service.shop.decoration;
 
-import com.vpu.mp.service.foundation.BaseService;
-import com.vpu.mp.service.foundation.DelFlag;
+import static com.vpu.mp.db.main.tables.MpJumpVersion.MP_JUMP_VERSION;
+import static com.vpu.mp.db.shop.tables.MpJump.MP_JUMP;
+import static com.vpu.mp.db.shop.tables.MpJumpUsable.MP_JUMP_USABLE;
+import static org.jooq.impl.DSL.count;
+import static org.jooq.impl.DSL.sum;
+
+import java.util.List;
+
+import org.jooq.Record1;
+import org.springframework.stereotype.Service;
+
+import com.vpu.mp.service.foundation.data.DelFlag;
+import com.vpu.mp.service.foundation.service.ShopBaseService;
 import com.vpu.mp.service.pojo.shop.applets.AppletsJumpAddPrarm;
 import com.vpu.mp.service.pojo.shop.applets.AppletsJumpUpdatePrarm;
 import com.vpu.mp.service.pojo.shop.applets.AppletsJumpUsable;
 import com.vpu.mp.service.pojo.shop.applets.AppletsJumpVo;
-import org.jooq.Record1;
-import org.springframework.context.annotation.Scope;
-import org.springframework.stereotype.Service;
-
-import java.util.List;
-
-import static com.vpu.mp.db.main.tables.MpJumpVersion.MP_JUMP_VERSION;
-import static com.vpu.mp.db.shop.tables.MpJump.MP_JUMP;
-import static com.vpu.mp.db.shop.tables.MpJumpUsable.MP_JUMP_USABLE;
-import static org.jooq.impl.DSL.*;
 
 /**
  * 小程序跳转
@@ -24,8 +25,8 @@ import static org.jooq.impl.DSL.*;
  * @date 2019/7/11 18:21
  */
 @Service
-@Scope("prototype")
-public class AppletsJumpService extends BaseService {
+
+public class AppletsJumpService extends ShopBaseService {
 
 
     /**
@@ -72,7 +73,7 @@ public class AppletsJumpService extends BaseService {
      */
     public Boolean appletsJumpAddVersion() {
         //申请成功，审核即将提交，请等待
-        int execute = mainDb().insertInto(MP_JUMP_VERSION, MP_JUMP_VERSION.SHOP_ID).values(String.valueOf(shopId)).execute();
+        int execute = mainDb().insertInto(MP_JUMP_VERSION, MP_JUMP_VERSION.SHOP_ID).values(String.valueOf(getShopId())).execute();
         if (execute == 1) {
             return true;
         }
@@ -86,7 +87,7 @@ public class AppletsJumpService extends BaseService {
     public int getAppletsJumpAddVersion() {
         Record1<Integer> result = mainDb().selectCount()
                 .from(MP_JUMP_VERSION)
-                .where(MP_JUMP_VERSION.SHOP_ID.eq(String.valueOf(shopId)))
+                .where(MP_JUMP_VERSION.SHOP_ID.eq(String.valueOf(getShopId())))
                 .and(MP_JUMP_VERSION.FLAG.eq((byte) 0))
                 .orderBy(MP_JUMP_VERSION.ID.desc()).fetchAny();
         return result.value1();

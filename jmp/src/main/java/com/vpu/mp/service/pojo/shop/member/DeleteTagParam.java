@@ -2,7 +2,7 @@ package com.vpu.mp.service.pojo.shop.member;
 
 import javax.validation.constraints.NotNull;
 
-import com.vpu.mp.service.foundation.JsonResultMessage;
+import com.vpu.mp.service.foundation.data.JsonResultMessage;
 
 import lombok.Getter;
 import lombok.Setter;

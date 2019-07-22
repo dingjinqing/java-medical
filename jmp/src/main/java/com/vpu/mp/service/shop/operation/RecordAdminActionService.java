@@ -1,41 +1,38 @@
 package com.vpu.mp.service.shop.operation;
 
-import com.vpu.mp.db.shop.tables.records.RecordAdminActionRecord;
-import com.vpu.mp.service.auth.AdminAuth;
-import com.vpu.mp.service.foundation.BaseService;
-import com.vpu.mp.service.foundation.JedisManager;
-import com.vpu.mp.service.foundation.PageResult;
-import com.vpu.mp.service.foundation.Util;
-import com.vpu.mp.service.pojo.shop.auth.AdminTokenAuthInfo;
-import com.vpu.mp.service.pojo.shop.operation.RecordAdminActionInfo;
-import com.vpu.mp.service.pojo.shop.operation.RecordAdminActionParam;
-import com.vpu.mp.service.pojo.shop.operation.RecordAdminActionPojo;
-import com.vpu.mp.service.pojo.shop.operation.RecordContentTemplate;
-import com.vpu.mp.support.SpringUtil;
-import org.apache.commons.lang3.StringUtils;
-import org.jooq.Record;
-import org.jooq.Record2;
-import org.jooq.SelectField;
-import org.jooq.SelectWhereStep;
-import org.springframework.beans.BeanUtils;
-import org.springframework.context.annotation.Scope;
-import org.springframework.scheduling.annotation.Async;
-import org.springframework.stereotype.Service;
-import org.springframework.web.context.request.RequestAttributes;
-import org.springframework.web.context.request.RequestContextHolder;
-import org.springframework.web.context.request.ServletRequestAttributes;
+import static com.vpu.mp.db.main.tables.Shop.SHOP;
+import static com.vpu.mp.db.main.tables.ShopAccount.SHOP_ACCOUNT;
+import static com.vpu.mp.db.main.tables.ShopChildAccount.SHOP_CHILD_ACCOUNT;
+import static com.vpu.mp.db.shop.tables.RecordAdminAction.RECORD_ADMIN_ACTION;
 
-import javax.servlet.http.HttpServletRequest;
 import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 
-import static com.vpu.mp.db.main.tables.Shop.SHOP;
-import static com.vpu.mp.db.main.tables.ShopAccount.SHOP_ACCOUNT;
-import static com.vpu.mp.db.main.tables.ShopChildAccount.SHOP_CHILD_ACCOUNT;
-import static com.vpu.mp.db.shop.tables.RecordAdminAction.RECORD_ADMIN_ACTION;
+import org.apache.commons.lang3.StringUtils;
+import org.jooq.Record;
+import org.jooq.Record2;
+import org.jooq.SelectWhereStep;
+import org.springframework.beans.BeanUtils;
+import org.springframework.scheduling.annotation.Async;
+import org.springframework.stereotype.Service;
+import org.springframework.web.context.request.RequestAttributes;
+import org.springframework.web.context.request.RequestContextHolder;
+
+import com.vpu.mp.db.shop.tables.records.RecordAdminActionRecord;
+import com.vpu.mp.service.auth.AdminAuth;
+import com.vpu.mp.service.foundation.jedis.JedisManager;
+import com.vpu.mp.service.foundation.service.ShopBaseService;
+import com.vpu.mp.service.foundation.util.PageResult;
+import com.vpu.mp.service.foundation.util.Util;
+import com.vpu.mp.service.pojo.shop.auth.AdminTokenAuthInfo;
+import com.vpu.mp.service.pojo.shop.operation.RecordAdminActionInfo;
+import com.vpu.mp.service.pojo.shop.operation.RecordAdminActionParam;
+import com.vpu.mp.service.pojo.shop.operation.RecordAdminActionPojo;
+import com.vpu.mp.service.pojo.shop.operation.RecordContentTemplate;
+import com.vpu.mp.support.SpringUtil;
 
 /**
  * 操作记录的实现逻辑
@@ -44,8 +41,8 @@ import static com.vpu.mp.db.shop.tables.RecordAdminAction.RECORD_ADMIN_ACTION;
  *
  */
 @Service
-@Scope("prototype")
-public class RecordAdminActionService extends BaseService {
+
+public class RecordAdminActionService extends ShopBaseService {
 
     protected static final String REDIS_PACKAGE="record.user.";
 

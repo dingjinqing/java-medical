@@ -1,7 +1,5 @@
 package com.vpu.mp.service.pojo.saas.shop;
 
-import com.vpu.mp.service.foundation.Page;
-
 import lombok.Data;
 
 /**

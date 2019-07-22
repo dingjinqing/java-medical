@@ -18,9 +18,9 @@ import org.jooq.tools.StringUtils;
 
 import com.vpu.mp.db.main.tables.records.ShopRecord;
 import com.vpu.mp.db.main.tables.records.ShopVersionRecord;
-import com.vpu.mp.service.foundation.BaseService;
-import com.vpu.mp.service.foundation.PageResult;
-import com.vpu.mp.service.foundation.Util;
+import com.vpu.mp.service.foundation.service.MainBaseService;
+import com.vpu.mp.service.foundation.util.PageResult;
+import com.vpu.mp.service.foundation.util.Util;
 import com.vpu.mp.service.pojo.saas.shop.ShopVersionPojo;
 import com.vpu.mp.service.pojo.saas.shop.VersionEditParam;
 import com.vpu.mp.service.pojo.saas.shop.VersionListQueryParam;
@@ -36,8 +36,8 @@ import org.springframework.stereotype.Service;
  *
  */
 @Service
-@Scope("prototype")
-public class ShopVersionService extends BaseService {
+
+public class ShopVersionService extends MainBaseService {
 
 	public PageResult<ShopVersionPojo> getPageList(VersionListQueryParam param) {
 		SelectWhereStep<Record> select = db().select().from(SHOP_VERSION);

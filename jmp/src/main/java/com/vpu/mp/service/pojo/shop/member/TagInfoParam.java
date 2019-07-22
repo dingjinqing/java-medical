@@ -3,7 +3,7 @@ package com.vpu.mp.service.pojo.shop.member;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Size;
 
-import com.vpu.mp.service.foundation.JsonResultMessage;
+import com.vpu.mp.service.foundation.data.JsonResultMessage;
 
 import lombok.Getter;
 import lombok.Setter;

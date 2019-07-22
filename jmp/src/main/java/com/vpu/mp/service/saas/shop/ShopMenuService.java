@@ -5,14 +5,12 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 
-import com.vpu.mp.service.foundation.BaseService;
-import com.vpu.mp.service.foundation.JsonResultCode;
-import com.vpu.mp.service.foundation.Util;
+import com.vpu.mp.service.foundation.data.JsonResultCode;
+import com.vpu.mp.service.foundation.service.MainBaseService;
+import com.vpu.mp.service.foundation.util.Util;
 import com.vpu.mp.service.pojo.saas.shop.version.VersionConfig;
 import com.vpu.mp.service.pojo.saas.shop.version.VersionMainConfig;
 
@@ -22,8 +20,10 @@ import com.vpu.mp.service.pojo.saas.shop.version.VersionMainConfig;
  *
  */
 @Service
-@Scope("prototype")
-public class ShopMenuService extends BaseService {
+
+
+public class ShopMenuService extends MainBaseService {
+
 
 	final protected String menuJson = "admin.authorityNew.json";
 	final protected String authorityJson = "admin.privilegePassNew.json";

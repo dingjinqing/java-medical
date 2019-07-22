@@ -2,9 +2,9 @@ package com.vpu.mp.service.saas.shop;
 
 import com.vpu.mp.db.main.tables.records.ShopUploadedImageCategoryRecord;
 import com.vpu.mp.db.main.tables.records.ShopUploadedImageRecord;
-import com.vpu.mp.service.foundation.BaseService;
-import com.vpu.mp.service.foundation.PageResult;
-import com.vpu.mp.service.foundation.Util;
+import com.vpu.mp.service.foundation.service.MainBaseService;
+import com.vpu.mp.service.foundation.util.PageResult;
+import com.vpu.mp.service.foundation.util.Util;
 import com.vpu.mp.service.pojo.saas.shop.image.*;
 import com.vpu.mp.service.pojo.shop.image.ImageDim;
 import com.vpu.mp.service.pojo.shop.image.UploadPath;
@@ -36,8 +36,8 @@ import static com.vpu.mp.db.main.tables.ShopUploadedImageCategory.SHOP_UPLOADED_
  * @date 2019/7/16 15:40
  */
 @Service
-@Scope("prototype")
-public class ShopImageManageService  extends BaseService {
+
+public class ShopImageManageService  extends MainBaseService {
 
 
     private static final String ROOT_NAME = "我的图片";
@@ -227,7 +227,7 @@ public class ShopImageManageService  extends BaseService {
             image.setImgWidth(imageInfo.getWidth());
             image.setImgHeight(imageInfo.getHeight());
             image.setImgCatId(imgCatId == null ? 0 : imgCatId);
-            image.setShopId(this.getShopId());
+//            image.setShopId(this.getShopId());
             image.setSysId(sysId);
             image.insert();
             image.refresh();
@@ -241,9 +241,11 @@ public class ShopImageManageService  extends BaseService {
         SelectWhereStep<Record> select = mainDb().select(SHOP_UPLOADED_IMAGE.asterisk(), SHOP_UPLOADED_IMAGE_CATEGORY.IMG_CAT_NAME)
                 .from(SHOP_UPLOADED_IMAGE)
                 .leftJoin(SHOP_UPLOADED_IMAGE_CATEGORY)
+
                 .on(SHOP_UPLOADED_IMAGE.IMG_CAT_ID.eq(SHOP_UPLOADED_IMAGE_CATEGORY.IMG_CAT_ID));
         select = this.buildOptions(select, param,sysId);
         select.orderBy(SHOP_UPLOADED_IMAGE.IMG_ID.desc());
+
         return this.getPageResult(select, param.page,param.pageRows, ShopUploadImageCatNameVo.class);
     }
 

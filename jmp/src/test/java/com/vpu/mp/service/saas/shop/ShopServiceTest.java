@@ -16,13 +16,6 @@ import com.vpu.mp.service.foundation.BaseServiceTest;
 @ContextConfiguration(loader = BaseServiceTest.CustomerLoader.class)
 public class ShopServiceTest extends BaseServiceTest {
 
-	/**
-	 * 
-	 * @return
-	 */
-	protected ShopService getService() {
-		return this.getService(ShopService.class);
-	}
 
 	@Test
 	public void testGetPageList() {

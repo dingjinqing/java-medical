@@ -15,8 +15,8 @@ import org.jooq.tools.StringUtils;
 
 import com.vpu.mp.db.shop.tables.Tag;
 import com.vpu.mp.db.shop.tables.UserTag;
-import com.vpu.mp.service.foundation.BaseService;
-import com.vpu.mp.service.foundation.PageResult;
+import com.vpu.mp.service.foundation.service.ShopBaseService;
+import com.vpu.mp.service.foundation.util.PageResult;
 import com.vpu.mp.service.pojo.shop.member.TagInfoVo;
 import com.vpu.mp.service.pojo.shop.member.TagPageListParam;
 import com.vpu.mp.service.pojo.shop.member.UpdateTagParam;
@@ -28,8 +28,8 @@ import org.springframework.stereotype.Service;
  * @author 黄壮壮 2019-07-09 20:16
  */
 @Service
-@Scope("prototype")
-public class TagService extends BaseService {
+
+public class TagService extends ShopBaseService {
 
 	public PageResult<TagInfoVo> getPageList(TagPageListParam param) {
 

@@ -12,8 +12,8 @@ import org.jooq.SelectConditionStep;
 import org.jooq.SelectJoinStep;
 
 import com.vpu.mp.db.shop.tables.records.MrkingVoucherRecord;
-import com.vpu.mp.service.foundation.BaseService;
-import com.vpu.mp.service.foundation.PageResult;
+import com.vpu.mp.service.foundation.service.ShopBaseService;
+import com.vpu.mp.service.foundation.util.PageResult;
 import com.vpu.mp.service.pojo.shop.coupon.CouponGetDetailParam;
 import com.vpu.mp.service.pojo.shop.coupon.CouponGetDetailVo;
 import com.vpu.mp.service.pojo.shop.coupon.CouponListParam;
@@ -28,8 +28,8 @@ import org.springframework.stereotype.Service;
  * 2019年7月16日
  */
 @Service
-@Scope("prototype")
-public class CouponService extends BaseService{
+
+public class CouponService extends ShopBaseService{
 	/**
 	 * 创建优惠券
 	 * @param couponInfo

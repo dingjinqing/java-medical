@@ -12,8 +12,8 @@ import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Service;
 
 import com.vpu.mp.db.shop.tables.records.DistributionStrategyRecord;
-import com.vpu.mp.service.foundation.BaseService;
-import com.vpu.mp.service.foundation.PageResult;
+import com.vpu.mp.service.foundation.service.ShopBaseService;
+import com.vpu.mp.service.foundation.util.PageResult;
 import com.vpu.mp.service.pojo.shop.distribution.DistributionStrategyParam;
 import com.vpu.mp.service.pojo.shop.distribution.DistributionStrategyVo;
 import org.springframework.context.annotation.Scope;
@@ -25,8 +25,8 @@ import org.springframework.stereotype.Service;
  * 2019年7月18日
  */
 @Service
-@Scope("prototype")
-public class RebateStrategyService extends BaseService{
+
+public class RebateStrategyService extends ShopBaseService{
 	
 	/**
 	 * 添加返利策略

@@ -5,12 +5,11 @@ import static com.vpu.mp.db.main.tables.SystemRole.SYSTEM_ROLE;
 
 import org.jooq.Record;
 import org.jooq.Result;
+import org.springframework.stereotype.Service;
 
 import com.vpu.mp.db.main.tables.records.SystemChildAccountRecord;
-import com.vpu.mp.service.foundation.BaseService;
-import com.vpu.mp.service.foundation.Util;
-import org.springframework.context.annotation.Scope;
-import org.springframework.stereotype.Service;
+import com.vpu.mp.service.foundation.service.MainBaseService;
+import com.vpu.mp.service.foundation.util.Util;
 
 /**
  * 
@@ -18,8 +17,8 @@ import org.springframework.stereotype.Service;
  *
  */
 @Service
-@Scope("prototype")
-public class ChildAccountService extends BaseService {
+
+public class ChildAccountService extends MainBaseService {
 
 	public SystemChildAccountRecord verify(String username, String password) {
 		SystemChildAccountRecord user = db().selectFrom(SYSTEM_CHILD_ACCOUNT)

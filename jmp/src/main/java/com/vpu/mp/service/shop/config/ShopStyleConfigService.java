@@ -10,7 +10,7 @@ import org.springframework.stereotype.Service;
  *
  */
 @Service
-@Scope("prototype")
+
 public class ShopStyleConfigService extends BaseShopConfigService {
 	
 	final public static String K_SHOP_STYLE = "shop_style";

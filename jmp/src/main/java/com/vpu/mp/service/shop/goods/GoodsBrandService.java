@@ -1,9 +1,9 @@
 package com.vpu.mp.service.shop.goods;
 
 import com.vpu.mp.db.shop.tables.records.GoodsBrandRecord;
-import com.vpu.mp.service.foundation.BaseService;
-import com.vpu.mp.service.foundation.DelFlag;
-import com.vpu.mp.service.foundation.PageResult;
+import com.vpu.mp.service.foundation.data.DelFlag;
+import com.vpu.mp.service.foundation.service.ShopBaseService;
+import com.vpu.mp.service.foundation.util.PageResult;
 import com.vpu.mp.service.pojo.shop.goods.brand.GoodsBrandVo;
 import com.vpu.mp.service.pojo.shop.goods.brand.GoodsBrandPageListParam;
 import com.vpu.mp.service.pojo.shop.goods.brand.GoodsBrand;
@@ -25,8 +25,8 @@ import static com.vpu.mp.db.shop.Tables.GOODS_BRAND;
  * @date 2019年6月25日
  */
 @Service
-@Scope("prototype")
-public class GoodsBrandService extends BaseService {
+
+public class GoodsBrandService extends ShopBaseService {
 
     /**
      * 分页获取品牌信息

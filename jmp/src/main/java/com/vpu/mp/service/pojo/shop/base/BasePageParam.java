@@ -1,6 +1,7 @@
 package com.vpu.mp.service.pojo.shop.base;
 
-import com.vpu.mp.service.foundation.Page;
+import com.vpu.mp.service.foundation.util.Page;
+
 import lombok.Data;
 
 /**

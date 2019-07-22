@@ -1,7 +1,7 @@
 package com.vpu.mp.service.shop.summary.visit;
 
 import com.vpu.mp.db.shop.tables.records.MpVisitPageRecord;
-import com.vpu.mp.service.foundation.PropertiesUtil;
+import com.vpu.mp.service.foundation.util.PropertiesUtil;
 import com.vpu.mp.service.pojo.shop.summary.visit.PageVisitVo;
 import com.vpu.mp.service.pojo.shop.summary.visit.PageVisitVoItem;
 import com.vpu.mp.service.pojo.shop.summary.visit.VisitPageParam;
@@ -23,7 +23,7 @@ import static com.vpu.mp.db.shop.tables.MpVisitPage.MP_VISIT_PAGE;
  * @author 郑保乐
  */
 @Service
-@Scope("prototype")
+
 public class PageService extends BaseVisitService {
 
     private static final String PAGE_OTHER = "page.other";

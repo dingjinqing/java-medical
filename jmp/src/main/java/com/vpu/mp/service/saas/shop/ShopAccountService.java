@@ -15,12 +15,12 @@ import org.jooq.impl.DSL;
 import org.jooq.tools.StringUtils;
 
 import com.vpu.mp.db.main.tables.records.ShopAccountRecord;
-import com.vpu.mp.service.foundation.BaseService;
-import com.vpu.mp.service.foundation.FieldsUtil;
-import com.vpu.mp.service.foundation.JedisManager;
-import com.vpu.mp.service.foundation.JsonResultCode;
-import com.vpu.mp.service.foundation.PageResult;
-import com.vpu.mp.service.foundation.Util;
+import com.vpu.mp.service.foundation.data.JsonResultCode;
+import com.vpu.mp.service.foundation.jedis.JedisManager;
+import com.vpu.mp.service.foundation.service.MainBaseService;
+import com.vpu.mp.service.foundation.util.FieldsUtil;
+import com.vpu.mp.service.foundation.util.PageResult;
+import com.vpu.mp.service.foundation.util.Util;
 import com.vpu.mp.service.pojo.saas.shop.ShopAccountListQueryParam;
 import com.vpu.mp.service.pojo.saas.shop.ShopAccountPojo;
 import org.springframework.context.annotation.Scope;
@@ -32,8 +32,8 @@ import org.springframework.stereotype.Service;
  *
  */
 @Service
-@Scope("prototype")
-public class ShopAccountService extends BaseService {
+
+public class ShopAccountService extends MainBaseService {
 	protected JedisManager jedis = JedisManager.instance();
 
 	public PageResult<ShopAccountPojo> getPageList(ShopAccountListQueryParam param) {
