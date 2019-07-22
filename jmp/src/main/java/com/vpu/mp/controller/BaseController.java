@@ -144,7 +144,7 @@ public class BaseController {
 	 * {@link VoTranslator#translateFields(Object)} (Object)} 自动对所有这些字段进行翻译
 	 *
 	 * 目前支持的属性类型：{@code Class<String>, Class<? extends Object> Class<List<? extends Object>>, Class<List<String>>}
-	 * 分别对应 json 中的 字符串（string）、对象（object）以及字符串数组（array）
+	 * 分别对应 json 中的 字符串（string）、对象（object）、对象数组及字符串数组（array）
 	 *
 	 * 使用示例：{@link com.vpu.mp.controller.admin.AdminSummaryController#getVisitPage(VisitPageParam)}
 	 *
