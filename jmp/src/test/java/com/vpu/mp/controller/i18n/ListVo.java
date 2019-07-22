@@ -16,6 +16,7 @@ class ListVo {
     private List<String> list;
     @I18N(propertiesFileName = "category")
     private ArrayList<String> arrayList;
+    private List<PureVo> pureVos;
 
     /** 以下为测试递归用到的字段 **/
     private Integer integerValue = 100;

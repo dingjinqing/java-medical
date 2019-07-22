@@ -7,6 +7,7 @@ import org.junit.Test;
 import javax.servlet.http.HttpServletRequest;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 
 import static org.junit.Assert.assertEquals;
 import static org.mockito.Mockito.mock;
@@ -109,5 +110,20 @@ public class VoTranslatorTest {
         translator.translateFields(nestedPureVo);
         PureVo nestedVo = nestedPureVo.getNestedVo();
         assertEquals(nestedVo.getName(), "食品");
+    }
+
+    /**
+     * 测试通过 List 嵌套对象
+     */
+    @Test
+    public void assertListOfObjectPropertyTranslated() {
+        List<PureVo> pureVos = Arrays.asList(
+                new PureVo("food"),
+                new PureVo("clean")
+        );
+        listVo.setPureVos(pureVos);
+        translator.translateFields(listVo);
+        assertEquals(listVo.getPureVos().get(0).getName(), "食品");
+        assertEquals(listVo.getPureVos().get(1).getName(), "清洁");
     }
 }

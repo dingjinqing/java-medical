@@ -72,7 +72,9 @@ public class VoTranslator {
                         }
                     } else {
                         List<?> o = (List<?>) field.get(object);
-                        o.forEach(this::translateFields);
+                        if (null != o) {
+                            o.forEach(this::translateFields);
+                        }
                     }
                 } else {
                     Object o = field.get(object);
