@@ -159,11 +159,13 @@ public class ShopService extends BaseService {
 		logger().info("插入数据成功");
 
 		// 更新version_config
-		if (updateConfig(shopReq) == 1)
-			logger().info("更新version_config成功");
+		if (updateConfig(shopReq) == 1) {
+			logger().info("更新version_config成功");			
+		}
 		// 更新记录表
-		if (updateOperation(record, user, request) == 1)
+		if (updateOperation(record, user, request) == 1) {			
 			logger().info("更新ShopOperation记录表成功");
+		}
 		return true;
 	}
 	
@@ -373,27 +375,41 @@ public class ShopService extends BaseService {
 		return oldShop;
 	}
 
-	// 更新b2c_shop_operation
+	/**
+	 * 更新b2c_shop_operation
+	 * @param newShop
+	 * @param oldShop
+	 * @return
+	 */
 	public String diffEdit(ShopRecord newShop, ShopRecord oldShop) {
 		StringBuffer sbf = new StringBuffer("新建或者更新");
-		if (!newShop.getMobile().equals(oldShop.getMobile()))
-			sbf.append("电话:" + newShop.getMobile() + ",");
-		if (!newShop.getShopName().equals(oldShop.getShopName()))
-			sbf.append("店铺名称:" + newShop.getShopName() + ",");
-		if (!newShop.getShopPhone().equals(oldShop.getShopPhone()))
-			sbf.append("店铺客服电话:" + newShop.getShopPhone() + ",");
-		if (!newShop.getShopNotice().equals(oldShop.getShopNotice()))
-			sbf.append("店铺公告:" + newShop.getShopNotice() + ",");
-		if (!newShop.getShopWx().equals(oldShop.getShopWx()))
-			sbf.append("店铺微信:" + newShop.getShopWx() + ",");
-		if (!newShop.getShopEmail().equals(oldShop.getShopEmail()))
-			sbf.append("店铺邮箱:" + newShop.getShopEmail() + ",");
-		if (!newShop.getIsEnabled().equals(oldShop.getIsEnabled()))
-			sbf.append("店铺禁用:" + newShop.getIsEnabled() + ",");
-		if (!newShop.getShopQq().equals(oldShop.getShopQq()))
-			sbf.append("店铺客服QQ:" + newShop.getShopQq() + ",");
-		if (!newShop.getShopType().equals(oldShop.getShopType()))
-			sbf.append("店铺类型:" + version.getVersionNameByLevel(newShop.getShopType()));
+		if (!newShop.getMobile().equals(oldShop.getMobile())) {
+			sbf.append("电话:" + newShop.getMobile() + ",");			
+		}
+		if (!newShop.getShopName().equals(oldShop.getShopName())) {
+			sbf.append("店铺名称:" + newShop.getShopName() + ",");			
+		}
+		if (!newShop.getShopPhone().equals(oldShop.getShopPhone())) {
+			sbf.append("店铺客服电话:" + newShop.getShopPhone() + ",");			
+		}
+		if (!newShop.getShopNotice().equals(oldShop.getShopNotice())) {
+			sbf.append("店铺公告:" + newShop.getShopNotice() + ",");			
+		}
+		if (!newShop.getShopWx().equals(oldShop.getShopWx())) {
+			sbf.append("店铺微信:" + newShop.getShopWx() + ",");			
+		}
+		if (!newShop.getShopEmail().equals(oldShop.getShopEmail())) {
+			sbf.append("店铺邮箱:" + newShop.getShopEmail() + ",");			
+		}
+		if (!newShop.getIsEnabled().equals(oldShop.getIsEnabled())) {
+			sbf.append("店铺禁用:" + newShop.getIsEnabled() + ",");			
+		}
+		if (!newShop.getShopQq().equals(oldShop.getShopQq())) {
+			sbf.append("店铺客服QQ:" + newShop.getShopQq() + ",");			
+		}
+		if (!newShop.getShopType().equals(oldShop.getShopType())) {
+			sbf.append("店铺类型:" + version.getVersionNameByLevel(newShop.getShopType()));			
+		}
 		return sbf.toString();
 
 	}
