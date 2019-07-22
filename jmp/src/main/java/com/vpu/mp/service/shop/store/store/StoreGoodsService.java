@@ -4,6 +4,8 @@ import static com.vpu.mp.db.shop.tables.Goods.GOODS;
 import static com.vpu.mp.db.shop.tables.GoodsSpecProduct.GOODS_SPEC_PRODUCT;
 import static com.vpu.mp.db.shop.tables.StoreGoods.STORE_GOODS;
 
+import java.util.List;
+
 import org.jooq.Record;
 import org.jooq.SelectWhereStep;
 import org.jooq.tools.StringUtils;
@@ -61,10 +63,8 @@ public class StoreGoodsService extends BaseService{
 			select.where(STORE_GOODS.IS_SYNC.eq(param.getIsSync()));
 		}
 		if (param.getCatId() != null && param.getCatId() > 0) {
-			/**
-			 * TODO: 根据分类ID查询商品，包含该分类及其子分类
-			 * 
-			 */
+			List<Short> allCatId = saas().sysCate.findChildrenByParentId(param.getCatId());
+			select.where(GOODS.CAT_ID.in(allCatId));
 		}
 		if (!StringUtils.isEmpty(param.getKeywords())) {
 			select.where(GOODS.GOODS_NAME.contains(param.getKeywords()).or(GOODS_SPEC_PRODUCT.PRD_CODES.eq(param.getKeywords())));

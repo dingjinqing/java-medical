@@ -15,7 +15,7 @@ import lombok.Data;
 @Data
 public class StoreGoodsListQueryParam {
 	
-	private Integer catId;
+	private Short catId;
 	private Byte isOnSale;
 	
 	/**
