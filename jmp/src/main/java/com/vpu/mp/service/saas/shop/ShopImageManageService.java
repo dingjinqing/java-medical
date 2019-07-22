@@ -16,6 +16,7 @@ import org.jooq.SelectWhereStep;
 import org.jooq.SortField;
 import org.jooq.impl.DSL;
 import org.jooq.tools.StringUtils;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Service;
 
@@ -41,6 +42,7 @@ public class ShopImageManageService  extends BaseService {
 
     private static final String ROOT_NAME = "我的图片";
 
+    @Autowired
     private ImageService imageService;
 
     /**
