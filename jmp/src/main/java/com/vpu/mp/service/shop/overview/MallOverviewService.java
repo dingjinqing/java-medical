@@ -57,9 +57,9 @@ public class MallOverviewService extends BaseService {
     public DataDemonstrationVo getDataDemonstration(byte screeningTime){
         DataDemonstrationVo vo = new DataDemonstrationVo();
         Condition orderInfoTime = OrderInfo.ORDER_INFO.CREATE_TIME.
-                compare(Comparator.GREATER_OR_EQUAL,Util.getBeforeOrAfterDay(new Date(),(-screeningTime+1)));
+                compare(Comparator.GREATER_OR_EQUAL,Util.getEarlyTimeStamp(new Date(),(-screeningTime+1)));
         Condition userLoginRecordTime = UserLoginRecord.USER_LOGIN_RECORD.CREATE_TIME.
-                compare(Comparator.GREATER_OR_EQUAL,Util.getBeforeOrAfterDay(new Date(),(-screeningTime+1)));
+                compare(Comparator.GREATER_OR_EQUAL,Util.getEarlyTimeStamp(new Date(),(-screeningTime+1)));
         Condition payOrderCon = OrderInfo.ORDER_INFO.ORDER_STATUS.compare(Comparator.GREATER_OR_EQUAL,(byte)3);
         vo.setUserVisitNum(db().fetchCount(UserLoginRecord.USER_LOGIN_RECORD,userLoginRecordTime));
         vo.setPaidOrderNum(db().fetchCount(OrderInfo.ORDER_INFO,orderInfoTime.and(payOrderCon)));
@@ -168,14 +168,14 @@ public class MallOverviewService extends BaseService {
         OrderGoods og = OrderGoods.ORDER_GOODS.as("og");
         Select select  = db().select(og.GOODS_ID).from(og).leftJoin(oi)
                 .on(og.ORDER_ID.eq(oi.ORDER_ID))
-                .where(oi.CREATE_TIME.lessOrEqual(Util.getBeforeOrAfterDay(new Date(),-30)))
-                .and(og.UPDATE_TIME.greaterOrEqual(Util.getBeforeOrAfterDay(new Date(),-30)));
+                .where(oi.CREATE_TIME.lessOrEqual(Util.getEarlyTimeStamp(new Date(),-30)))
+                .and(og.UPDATE_TIME.greaterOrEqual(Util.getEarlyTimeStamp(new Date(),-30)));
         int unsalableCount = db().fetchCount(Goods.GOODS,Goods.GOODS.DEL_FLAG.eq((byte)0).and(Goods.GOODS.GOODS_ID.notIn(select)));
         vo.getDataGoods().setGoodsUnsalableConf(unsalableCount);
         //商品评价审核逾期
         int commCount = db().fetchCount(CommentGoods.COMMENT_GOODS,CommentGoods.COMMENT_GOODS.DEL_FLAG.eq((byte)0)
                 .and(CommentGoods.COMMENT_GOODS.FLAG.eq((byte)0))
-                .and(CommentGoods.COMMENT_GOODS.CREATE_TIME.lessThan(Util.getBeforeOrAfterDay(new Date(),-param.getCommentOver()))));
+                .and(CommentGoods.COMMENT_GOODS.CREATE_TIME.lessThan(Util.getEarlyTimeStamp(new Date(),-param.getCommentOver()))));
         vo.getDataGoods().setGoodsComment(commCount);
         //推荐商品
         int recommCount = db().fetchCount(RecommendGoods.RECOMMEND_GOODS);
@@ -189,11 +189,11 @@ public class MallOverviewService extends BaseService {
     public ShopAssistantVo orderNav(ShopAssistantParam param, ShopAssistantVo vo){
         //发货逾期
         int deliverCount = db().fetchCount(OrderInfo.ORDER_INFO,OrderInfo.ORDER_INFO.ORDER_STATUS.eq((byte)3)
-                .and(OrderInfo.ORDER_INFO.CREATE_TIME.lessThan(Util.getBeforeOrAfterDay(new Date(),-param.getDeliverOver()))));
+                .and(OrderInfo.ORDER_INFO.CREATE_TIME.lessThan(Util.getEarlyTimeStamp(new Date(),-param.getDeliverOver()))));
         vo.getDataOrder().setDeliver(deliverCount);
         //退款申请逾期
         int refundCount = db().fetchCount(OrderInfo.ORDER_INFO,OrderInfo.ORDER_INFO.REFUND_STATUS.in((byte)1,(byte)2,(byte)4)
-                .and(OrderInfo.ORDER_INFO.CREATE_TIME.lessThan(Util.getBeforeOrAfterDay(new Date(),-param.getRefundOver()))));
+                .and(OrderInfo.ORDER_INFO.CREATE_TIME.lessThan(Util.getEarlyTimeStamp(new Date(),-param.getRefundOver()))));
         vo.getDataOrder().setRefund(refundCount);
         return vo;
     }
@@ -201,7 +201,7 @@ public class MallOverviewService extends BaseService {
     public ShopAssistantVo marketNav(ShopAssistantParam param, ShopAssistantVo vo){
         //分销审核超时
         int disCount = db().fetchCount(DistributorApply.DISTRIBUTOR_APPLY,
-                DistributorApply.DISTRIBUTOR_APPLY.CREATE_TIME.lessThan(Util.getBeforeOrAfterDay(new Date(),-param.getApplyOver())));
+                DistributorApply.DISTRIBUTOR_APPLY.CREATE_TIME.lessThan(Util.getEarlyTimeStamp(new Date(),-param.getApplyOver())));
         vo.getDataMarket().setExamine(disCount);
         //会员卡激活审核
         Map<String,String> memberMap = new HashMap<>(4);
@@ -210,7 +210,7 @@ public class MallOverviewService extends BaseService {
                     .from(CardExamine.CARD_EXAMINE)
                     .where(CardExamine.CARD_EXAMINE.STATUS.eq((byte)1))
                     .and(CardExamine.CARD_EXAMINE.DEL_FLAG.eq((byte)0))
-                    .and(CardExamine.CARD_EXAMINE.CREATE_TIME.lessThan(Util.getBeforeOrAfterDay(new Date(),-param.getExamineOver())))
+                    .and(CardExamine.CARD_EXAMINE.CREATE_TIME.lessThan(Util.getEarlyTimeStamp(new Date(),-param.getExamineOver())))
                     .orderBy(CardExamine.CARD_EXAMINE.CREATE_TIME.asc())
                     .fetchInto(CardExamine.class);
         if(cardExamineList!=null&&!cardExamineList.isEmpty()){

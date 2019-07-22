@@ -15,4 +15,5 @@ import java.sql.Timestamp;
 public class ShopBaseInfoVo {
     private Timestamp expireTime;
     private String versionName;
+    private Byte bindStatus;
 }

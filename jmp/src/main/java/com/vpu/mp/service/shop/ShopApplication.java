@@ -23,6 +23,7 @@ import com.vpu.mp.service.shop.operation.RecordAdminActionService;
 import com.vpu.mp.service.shop.order.OrderReadService;
 import com.vpu.mp.service.shop.overview.MallOverviewService;
 import com.vpu.mp.service.shop.overview.OverviewService;
+import com.vpu.mp.service.shop.overview.RealTimeOverviewService;
 import com.vpu.mp.service.shop.store.store.StoreService;
 import com.vpu.mp.service.shop.summary.portrait.PortraitService;
 import com.vpu.mp.service.shop.summary.visit.AmountService;
@@ -64,6 +65,7 @@ public class ShopApplication extends ServiceContainer {
 	public RecordAdminActionService record;
 	public PortraitService portrait;
 	public RebateStrategyService rebateStrategy;
+	public RealTimeOverviewService realTimeOverview;
 	/**
 	 * 组团购
 	 */

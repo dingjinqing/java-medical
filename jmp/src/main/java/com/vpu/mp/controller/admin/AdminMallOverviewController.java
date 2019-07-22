@@ -64,7 +64,7 @@ public class AdminMallOverviewController extends AdminBaseController {
     public ShopBaseInfoVo shopBaseInfoVo;
     @PostMapping("/api/admin/malloverview/getShopBaseInfo")
     public JsonResult getShopBaseInfo(@RequestBody @Validated ShopBaseInfoParam param){
-        shopBaseInfoVo = saas.overviewService.getShopBaseInfo(param.getShopId());
+        shopBaseInfoVo = saas.overviewService.getShopBaseInfo(param);
         return shopBaseInfoVo !=null ? success(shopBaseInfoVo) : fail();
     }
 
@@ -129,7 +129,7 @@ public class AdminMallOverviewController extends AdminBaseController {
     @PostMapping("/api/admin/malloverview/allOverview")
     public JsonResult allOverview(@RequestBody @Validated OverviewParam param){
         //基本信息
-        overviewVo.setShopBaseInfoVo(saas.overviewService.getShopBaseInfo(param.getShopBaseInfoParam().getShopId()));
+        overviewVo.setShopBaseInfoVo(saas.overviewService.getShopBaseInfo(param.getShopBaseInfoParam()));
         //公告信息
         overviewVo.setAnnouncementVoList(saas.overviewService.getFixedAnnouncement(param.getFixedAnnouncementParam()));
         //数据展示

@@ -385,15 +385,18 @@ public class Util {
 	 * @param days 指定多少天之前/之后
 	 * @return 返回的是后推或者前移后的日期的开始时间
 	 */
-	public static Timestamp getBeforeOrAfterDay(Date date,int days){
+	public static Timestamp getEarlyTimeStamp(Date date,int days){
+		return new Timestamp(getEarlyDate(date,days).getTime());
+	}
+	public static Date getEarlyDate(Date date,int days){
 		date = getStartToday(date);
 		Calendar calendar = new GregorianCalendar();
 		calendar.setTime(date);
-		/** 把日期往后推或者往前移；正数往后推,负数往前移 */	
+		/** 把日期往后推或者往前移；正数往后推,负数往前移 */
 		calendar.add(Calendar.DATE,days);
 		/** 这个时间就是变动后的结果 */
 		date=calendar.getTime();
-		return new Timestamp(date.getTime());
+		return date;
 	}
 	
 	/**
@@ -414,6 +417,10 @@ public class Util {
 		return Timestamp
 					.valueOf((LocalDateTime.now()
 								.format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"))));
+	}
+
+	public static <T extends Collection<?>> boolean isEmpty(T t){
+		return t ==null || t.isEmpty();
 	}
 	
 }

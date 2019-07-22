@@ -3,6 +3,7 @@ package com.vpu.mp.service.saas.overview;
 import com.vpu.mp.db.main.tables.*;
 import com.vpu.mp.db.main.tables.records.MpAuthShopRecord;
 import com.vpu.mp.service.foundation.BaseService;
+import com.vpu.mp.service.foundation.Util;
 import com.vpu.mp.service.pojo.shop.overview.*;
 import org.apache.commons.lang3.StringUtils;
 import org.jooq.Select;
@@ -43,25 +44,32 @@ public class ShopOverviewService extends BaseService {
 
     /**
      * 获取店铺基本信息
-     * @param shopId
+     * @param param
      * @return
      */
-    public ShopBaseInfoVo getShopBaseInfo(int shopId){
+    public ShopBaseInfoVo getShopBaseInfo(ShopBaseInfoParam param){
         ShopBaseInfoVo shopBaseInfoVo = new ShopBaseInfoVo();
         //店铺到期时间
         List<ShopBaseInfoVo> baseInfoVos = db().select(ShopRenew.SHOP_RENEW.EXPIRE_TIME)
                 .from(ShopRenew.SHOP_RENEW)
-                .where(ShopRenew.SHOP_RENEW.SHOP_ID.eq(shopId))
+                .where(ShopRenew.SHOP_RENEW.SHOP_ID.eq(param.getShopId()))
                 .fetchInto(ShopBaseInfoVo.class);
         shopBaseInfoVo.setExpireTime(baseInfoVos!=null&&!baseInfoVos.isEmpty() ? baseInfoVos.get(0).getExpireTime() : null);
         //店铺版本
         Shop shop = Shop.SHOP.as("shop");
         ShopVersion sv = ShopVersion.SHOP_VERSION.as("sv");
-        Select select = db().select(shop.SHOP_TYPE).from(shop).where(shop.SHOP_ID.eq(shopId));
+        Select select = db().select(shop.SHOP_TYPE).from(shop).where(shop.SHOP_ID.eq(param.getShopId()));
         List<ShopBaseInfoVo> infoVos = db().select(sv.VERSION_NAME).from(sv).where(sv.LEVEL.eq(select))
                 .fetchInto(ShopBaseInfoVo.class);
         shopBaseInfoVo.setVersionName(infoVos!=null&&!infoVos.isEmpty() ? infoVos.get(0).getVersionName() : null);
-        //TODO 当前绑定解绑状态
+        //当前绑定解绑状态
+        List<Byte> bindStatus =  db().select(ShopAccount.SHOP_ACCOUNT.IS_BIND)
+                .from(ShopAccount.SHOP_ACCOUNT)
+                .where(ShopAccount.SHOP_ACCOUNT.SYS_ID.eq(param.getSysId()))
+                .fetchInto(Byte.class);
+        if(!Util.isEmpty(bindStatus)){
+            shopBaseInfoVo.setBindStatus(bindStatus.get(0));
+        }
         return shopBaseInfoVo;
     }
 
