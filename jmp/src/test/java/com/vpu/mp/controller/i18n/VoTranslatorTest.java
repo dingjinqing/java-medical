@@ -10,6 +10,7 @@ import java.util.Arrays;
 import java.util.List;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
@@ -66,11 +67,11 @@ public class VoTranslatorTest {
         for (PureVo vo : voes) {
             translator.translateFields(vo);
         }
-        assertEquals(voes[0].getName(), "食品");
-        assertEquals(voes[1].getName(), "数码");
-        assertEquals(voes[2].getName(), "清洁");
-        assertEquals(voes[3].getName(), "厨具");
-        assertEquals(voes[4].getName(), "饮品");
+        assertEquals("食品", voes[0].getName());
+        assertEquals("数码", voes[1].getName());
+        assertEquals("清洁", voes[2].getName());
+        assertEquals("厨具", voes[3].getName());
+        assertEquals("饮品", voes[4].getName());
     }
 
     /**
@@ -80,11 +81,11 @@ public class VoTranslatorTest {
     public void assertListPropertyTranslated() {
         listVo.setList(Arrays.asList("food", "clean", "cook", "digital", "drink"));
         translator.translateFields(listVo);
-        assertEquals(listVo.getList().get(0), "食品");
-        assertEquals(listVo.getList().get(1), "清洁");
-        assertEquals(listVo.getList().get(2), "厨具");
-        assertEquals(listVo.getList().get(3), "数码");
-        assertEquals(listVo.getList().get(4), "饮品");
+        assertEquals("食品", listVo.getList().get(0));
+        assertEquals("清洁", listVo.getList().get(1));
+        assertEquals("厨具", listVo.getList().get(2));
+        assertEquals("数码", listVo.getList().get(3));
+        assertEquals("饮品", listVo.getList().get(4));
     }
 
     /**
@@ -96,7 +97,7 @@ public class VoTranslatorTest {
         arrayList.add("food");
         listVo.setArrayList(arrayList);
         translator.translateFields(listVo);
-        assertEquals(listVo.getArrayList().get(0), "食品");
+        assertEquals("食品", listVo.getArrayList().get(0));
     }
 
     /**
@@ -107,7 +108,7 @@ public class VoTranslatorTest {
         NestedPureVo nestedPureVo = new NestedPureVo(voes[0]);
         translator.translateFields(nestedPureVo);
         PureVo nestedVo = nestedPureVo.getNestedVo();
-        assertEquals(nestedVo.getName(), "食品");
+        assertEquals("食品", nestedVo.getName());
     }
 
     /**
@@ -121,8 +122,8 @@ public class VoTranslatorTest {
         );
         listVo.setPureVos(pureVos);
         translator.translateFields(listVo);
-        assertEquals(listVo.getPureVos().get(0).getName(), "食品");
-        assertEquals(listVo.getPureVos().get(1).getName(), "清洁");
+        assertEquals("食品", listVo.getPureVos().get(0).getName());
+        assertEquals("清洁", listVo.getPureVos().get(1).getName());
     }
 
     /**
@@ -132,7 +133,7 @@ public class VoTranslatorTest {
     public void assertUnknownPropertyNotTranslated() {
         PureVo vo = new PureVo("unknown");
         translator.translateFields(vo);
-        assertEquals(vo.getName(), "unknown");
+        assertEquals("unknown", vo.getName());
     }
 
     /**
@@ -146,8 +147,20 @@ public class VoTranslatorTest {
                 new PureVo("clean")
         ));
         translator.translateFields(listVo);
-        assertEquals(listVo.getPureVos().get(0).getName(), "食品");
-        assertEquals(listVo.getPureVos().get(1).getName(), "unknown");
-        assertEquals(listVo.getPureVos().get(2).getName(), "清洁");
+        assertEquals("食品", listVo.getPureVos().get(0).getName());
+        assertEquals("unknown", listVo.getPureVos().get(1).getName());
+        assertEquals("清洁", listVo.getPureVos().get(2).getName());
+    }
+
+    /**
+     * 测试 List 中某个元素为 null
+     */
+    @Test
+    public void assertPropertyTranslatedWhenNullInList() {
+        listVo.setList(Arrays.asList("food", null, "clean"));
+        translator.translateFields(listVo);
+        assertEquals("食品", listVo.getList().get(0));
+        assertNotNull(listVo.getList().get(1));
+        assertEquals("清洁", listVo.getList().get(2));
     }
 }
