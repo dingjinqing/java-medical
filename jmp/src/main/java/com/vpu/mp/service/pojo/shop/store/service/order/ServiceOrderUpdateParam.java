@@ -14,6 +14,7 @@ import lombok.Data;
  */
 @Data
 public class ServiceOrderUpdateParam {
+	@NotNull
 	private Integer    orderId;
     private Integer    storeId;
     @NotNull

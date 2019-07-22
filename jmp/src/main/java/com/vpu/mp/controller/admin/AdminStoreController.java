@@ -32,8 +32,8 @@ import com.vpu.mp.service.pojo.shop.store.store.StoreListQueryParam;
 import com.vpu.mp.service.pojo.shop.store.store.StorePageListVo;
 import com.vpu.mp.service.pojo.shop.store.store.StoreParam;
 import com.vpu.mp.service.pojo.shop.store.store.StorePojo;
-import com.vpu.mp.service.pojo.shop.store.verify.VerifierAddParam;
-import com.vpu.mp.service.pojo.shop.store.verify.VerifierListQueryParam;
+import com.vpu.mp.service.pojo.shop.store.verifier.VerifierAddParam;
+import com.vpu.mp.service.pojo.shop.store.verifier.VerifierListQueryParam;
 import com.vpu.mp.service.shop.store.service.ServiceOrderService;
 
 /**
@@ -481,7 +481,6 @@ public class AdminStoreController extends AdminBaseController{
 				Byte tradeType = 0;
 				Byte tradeFlow = 1;
 				tradeFlag = shop().member.account.addUserAccount(accountData,adminUser,tradeType,tradeFlow) > 0 ? true : false;
-				System.out.println(tradeFlag);
 				break;
 			/** 门店买单 */
 			case 0:
@@ -503,7 +502,7 @@ public class AdminStoreController extends AdminBaseController{
     		updateParam.setVerifyType(ServiceOrderService.VERIFY_TYPE_ADMIN);
     		FieldsUtil.assignNotNull(param, updateParam);
     		
-    		if(shop().store.serviceOrder.serviceOrderCharge(updateParam)) {
+    		if(shop().store.serviceOrder.serviceOrderUpdate(updateParam)) {
         		return success();
         	}else {
         		return fail();
@@ -511,5 +510,29 @@ public class AdminStoreController extends AdminBaseController{
     	}else {
     		return fail();
     	}
+    }
+    
+
+    /**
+     * 服务预约订单后台取消
+     * @return
+     */
+    @PostMapping(value = "/api/admin/store/service/reserve/cancel")
+    public JsonResult serviceOrderCancel(@RequestBody(required = true) @Valid ServiceOrderUpdateParam param) {
+    	if(param.getCancelReason() == null) {
+    		return fail(JsonResultCode.CODE_SERVICE_ORDER_CANCEL_REASON_IS_NULL);
+    	}
+    	ServiceOrderUpdateParam updateParam = new ServiceOrderUpdateParam();
+		updateParam.setCancelledTime(Util.getLocalDateTime());
+		FieldsUtil.assignNotNull(param, updateParam);
+		if(shop().store.serviceOrder.serviceOrderUpdate(updateParam)) {
+			
+			/** TODO:队列发送模板消息，通知用户预约取消 */
+			
+    		return success();
+    	}else {
+    		return fail();
+    	}
+    	
     }
 }

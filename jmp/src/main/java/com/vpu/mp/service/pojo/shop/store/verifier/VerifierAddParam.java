@@ -1,4 +1,4 @@
-package com.vpu.mp.service.pojo.shop.store.verify;
+package com.vpu.mp.service.pojo.shop.store.verifier;
 
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotNull;

@@ -1,4 +1,4 @@
-package com.vpu.mp.service.pojo.shop.store.verify;
+package com.vpu.mp.service.pojo.shop.store.verifier;
 
 import lombok.Data;
 import lombok.NoArgsConstructor;

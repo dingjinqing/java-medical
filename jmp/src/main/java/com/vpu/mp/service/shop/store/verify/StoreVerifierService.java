@@ -11,9 +11,10 @@ import org.jooq.tools.StringUtils;
 import com.vpu.mp.service.foundation.BaseService;
 import com.vpu.mp.service.foundation.DelFlag;
 import com.vpu.mp.service.foundation.PageResult;
-import com.vpu.mp.service.pojo.shop.store.verify.VerifierAddParam;
-import com.vpu.mp.service.pojo.shop.store.verify.VerifierListQueryParam;
-import com.vpu.mp.service.pojo.shop.store.verify.VerifierListVo;
+import com.vpu.mp.service.pojo.shop.store.verifier.VerifierAddParam;
+import com.vpu.mp.service.pojo.shop.store.verifier.VerifierListQueryParam;
+import com.vpu.mp.service.pojo.shop.store.verifier.VerifierListVo;
+
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Service;
 

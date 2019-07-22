@@ -129,6 +129,7 @@ public class JsonResultMessage {
 	final public static String SERVICE_ORDER_VERIFY_BALANCE_IS_NULL="store.service.order.verify.balance.is.null";
 	final public static String SERVICE_ORDER_VERIFY_REASON_IS_NULL="store.service.order.verify.reason.is.null";
 	final public static String SERVICE_ORDER_VERIFY_INSUFFICIENT_BALANCE="store.service.order.verify.insufficient.balance";
+	final public static String SERVICE_ORDER_CANCEL_REASON_IS_NULL="store.service.order.verify.cancel_reason.is.null";
 
 	/**
 	 * 基础配置

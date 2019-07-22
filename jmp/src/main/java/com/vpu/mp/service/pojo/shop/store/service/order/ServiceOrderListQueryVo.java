@@ -15,6 +15,11 @@ public class ServiceOrderListQueryVo {
 	private String order_sn;
 	
 	/**
+	 *预约人ID 
+	 */
+	private String userId;
+	
+	/**
 	 *预约人姓名 
 	 */
 	private String subscriber;

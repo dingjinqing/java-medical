@@ -16,7 +16,6 @@ import lombok.Data;
 @Data
 public class ServiceOrderChargeParam {
 	
-	private Integer storeId;
 	@NotNull
 	private String orderSn;
 	@NotNull
@@ -47,7 +46,7 @@ public class ServiceOrderChargeParam {
 	private BigDecimal reduce;
 	
 	/**
-	 *会员卡使用金额 
+	 *账户余额使用金额 
 	 */
 	private BigDecimal balance;
 	
