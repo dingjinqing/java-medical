@@ -134,4 +134,20 @@ public class VoTranslatorTest {
         translator.translateFields(vo);
         assertEquals(vo.getName(), "unknown");
     }
+
+    /**
+     * 测试 List 中某个对象的属性值在 properties 中找不到
+     */
+    @Test
+    public void assertUnknownPropertyInListNotTranslated() {
+        listVo.setPureVos(Arrays.asList(
+                new PureVo("food"),
+                new PureVo("unknown"),
+                new PureVo("clean")
+        ));
+        translator.translateFields(listVo);
+        assertEquals(listVo.getPureVos().get(0).getName(), "食品");
+        assertEquals(listVo.getPureVos().get(1).getName(), "unknown");
+        assertEquals(listVo.getPureVos().get(2).getName(), "清洁");
+    }
 }
