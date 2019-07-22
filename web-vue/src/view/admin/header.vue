@@ -17,7 +17,10 @@
         <div class="menu">
           <div class="menu_main">
             <span>
-              <img :src="imageUrl[1].img_2">
+              <img
+                class="shopAvatar"
+                :src="shopAvatar"
+              >
             </span>
             <span>
               <label>
@@ -50,6 +53,7 @@
   </div>
 </template>
 <script>
+import { queryShopRequest } from '@/api/admin/shopsPages.js'
 import Cookies from 'js-cookie'
 import { loginRequestOut } from '@/api/index/login.js'
 export default {
@@ -73,7 +77,8 @@ export default {
       hiddle_menu_list: [this.$t('shopData.set'), this.$t('shopData.administration'), this.$t('shopData.public'), this.$t('shopData.choice'), this.$t('shopData.loginOut')],
       changeColorIndex: '',
       username: '',
-      menu_width: ''
+      menu_width: '',
+      shopAvatar: ''
     }
   },
   mounted () {
@@ -90,6 +95,10 @@ export default {
         this.user_flag = true
         this.username = localStorage.getItem('V-Username')
         // console.log(Cookies.get('V-Token'), '----', localStorage.getItem('V-Username'))
+        queryShopRequest().then((res) => {
+          this.shopAvatar = res.content.shopAvatar
+          console.log(res)
+        })
       } else {
         this.user_flag = false
       }
@@ -187,6 +196,10 @@ export default {
 }
 .menu_main span:nth-of-type(1) img {
   border-radius: 100%;
+}
+.shopAvatar {
+  width: 52px;
+  height: 52px;
 }
 label {
   margin-right: 10px;

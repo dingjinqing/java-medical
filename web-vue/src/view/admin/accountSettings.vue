@@ -126,11 +126,11 @@
       </div>
     </div>
     <!--选择图片弹窗 -->
-    <ImageDalog />
+    <ImageDalog @handleSelectImg='handleSelectImg' />
   </div>
 </template>
 <script>
-import { accountManageRequest, modifyPasswordRequest } from '@/api/admin/shopsPages.js'
+import { accountManageRequest, modifyPasswordRequest, queryShopRequest } from '@/api/admin/shopsPages.js'
 import ImageDalog from '@/components/admin/imageDalog'
 export default {
   components: { ImageDalog },
@@ -155,21 +155,42 @@ export default {
     // 初始化语言
     this.langDefault()
     this.username = localStorage.getItem('V-Username')
+    // 初始化账户设置
+    this.queryAccount()
   },
   methods: {
     // 主动调起图片弹窗
     handleChangeHead () {
       this.$http.$emit('dtVisible')
     },
+    queryAccount () {
+      queryShopRequest().then((res) => {
+        this.username = res.content.accountName
+        localStorage.setItem('V-Username', res.content.accountName)
+        this.imageUrl[0].img_1 = res.content.shopAvatar
+        console.log(res)
+      })
+    },
     // 确认修改
     handleSave () {
       let obj = {
-        shopAvatar: null,
+        shopAvatar: this.imageUrl[0].img_1,
         accountName: this.username
       }
       accountManageRequest(obj).then((res) => {
+        if (res.error === 0) {
+          this.$message({
+            message: '保存成功',
+            type: 'success'
+          })
+        }
         console.log(res)
       })
+    },
+    // 弹框确定选中
+    handleSelectImg (res) {
+      this.imageUrl[0].img_1 = res
+      console.log(res)
     },
     // 跳转修改登录密码页面
     change_modifyPassword () {

@@ -55,6 +55,7 @@
                 type="info"
                 plain
                 size="mini"
+                @click="handleSearch()"
               >{{$t('imgageDalog.search')}}</el-button>
               <el-checkbox v-model="checked">52px x 52px</el-checkbox>
             </div>
@@ -92,12 +93,8 @@
                       >{{$t('imgageDalog.OriginalImg')}}</a>
                       <a
                         class="remove_image"
-                        url="http://mpdevimg2.weipubao.cn/upload/4748160/image/20190708/crop_aeZqHE9BhNhWub8j.jpeg"
-                        img_id="17"
-                        img_width="52"
-                        img_height="52"
-                        img_path="upload/4748160/image/20190708/crop_aeZqHE9BhNhWub8j.jpeg"
                         title="删除图片"
+                        @click="delImg(item.imgId)"
                       >{{$t('imgageDalog.delImg')}}</a>
                     </p>
                   </div>
@@ -149,7 +146,7 @@
 <script>
 import { mapGetters } from 'vuex'
 import Tree from '@/components/admin/tree'
-import { queryHeadImgsRequest, upmoreHeadImgsRequest } from '@/api/admin/tree.js'
+import { queryHeadImgsRequest, upmoreHeadImgsRequest, imgsHeaddeleteRequest } from '@/api/admin/tree.js'
 export default {
   components: { Tree },
   data () {
@@ -257,6 +254,10 @@ export default {
     handleCurrentChange () {
       this.queryImgs(this.currentPage3)
     },
+    // 点击搜索
+    handleSearch () {
+      this.queryImgs(1)
+    },
     // 图片分组查询
     queryImgs (currentPage3) {
       console.log(this.firstNodeId)
@@ -301,9 +302,24 @@ export default {
         }
       })
     },
+    // 单张图片删除
+    delImg (data) {
+      console.log(data)
+      let obj = {
+        imageIds: [data]
+      }
+      imgsHeaddeleteRequest(obj).then((res) => {
+        console.log(res)
+        if (res.error === 0) {
+          this.queryImgs(this.currentPage3)
+        }
+      })
+    },
     // 单图片选中
     handleChecked (index) {
       this.img_list[index].checked = !this.img_list[index].checked
+      this.$emit('handleSelectImg', this.img_list[index].imgUrl)
+      this.dialogTableVisible = false
     },
     // 鼠标划入
     enter (index) {

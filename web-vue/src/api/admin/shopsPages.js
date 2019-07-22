@@ -37,3 +37,12 @@ export function changeShopRequest (riid) {
     data: riid
   })
 }
+
+// 账户设置的查询接口
+export function queryShopRequest (riid) {
+  return service({
+    url: '/api/admin/account/manage/query',
+    method: 'post',
+    data: riid
+  })
+}
