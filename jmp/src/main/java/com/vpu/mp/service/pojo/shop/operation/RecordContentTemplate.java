@@ -17,15 +17,16 @@ public enum   RecordContentTemplate {
     /**
      * 得到返回码
 	 */
-    private int code;
+    public int code;
 
     /**
      * 返回信息
      */
     private String message;
 
-    private RecordContentTemplate(int code, String message) {
+     RecordContentTemplate(int code, String message) {
         this.code = code;
         this.message = message;
     }
+
 }
