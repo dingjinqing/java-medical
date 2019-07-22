@@ -124,4 +124,14 @@ public class VoTranslatorTest {
         assertEquals(listVo.getPureVos().get(0).getName(), "食品");
         assertEquals(listVo.getPureVos().get(1).getName(), "清洁");
     }
+
+    /**
+     * 测试 properties 中找不到标识
+     */
+    @Test
+    public void assertUnknownPropertyNotTranslated() {
+        PureVo vo = new PureVo("unknown");
+        translator.translateFields(vo);
+        assertEquals(vo.getName(), "unknown");
+    }
 }
