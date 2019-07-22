@@ -22,5 +22,4 @@ public class RecordAdminActionInfo {
 
     private String content;
 
-    private  int id;
 }
