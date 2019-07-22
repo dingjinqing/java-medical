@@ -44,6 +44,7 @@ public class ServiceCommentService extends BaseService {
 			.leftJoin(SERVICE_TECHNICIAN)
 			.on(COMMENT_SERVICE.TECHNICIAN_ID.eq(SERVICE_TECHNICIAN.ID));
 		SelectConditionStep<?> select = buildOptions(selectFrom,param);
+		select.orderBy(COMMENT_SERVICE.CREATE_TIME);
 		return getPageResult(select, param.getCurrentPage(), param.getPageRows(), ServiceCommentVo.class);
 	}
 
