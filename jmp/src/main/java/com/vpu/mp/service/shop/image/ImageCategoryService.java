@@ -93,9 +93,12 @@ public class ImageCategoryService extends BaseService {
         if (record==null){
             return null;
         }
-        return db().selectFrom(UPLOADED_IMAGE_CATEGORY)
-                .where(UPLOADED_IMAGE_CATEGORY.CAT_IDS.like(this.prefixLikeValue(record.getCatIds()+",")))
+
+        Result<UploadedImageCategoryRecord> records = db().selectFrom(UPLOADED_IMAGE_CATEGORY)
+                .where(UPLOADED_IMAGE_CATEGORY.CAT_IDS.like(this.prefixLikeValue(record.getCatIds() + ",")))
                 .fetch();
+        records.add(record);
+        return records;
     }
 
     /**

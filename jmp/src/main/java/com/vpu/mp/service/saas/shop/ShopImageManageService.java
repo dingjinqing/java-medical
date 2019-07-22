@@ -118,11 +118,13 @@ public class ShopImageManageService  extends BaseService {
         if (record==null){
             return null;
         }
-        return mainDb()
+        Result<ShopUploadedImageCategoryRecord> record1 = mainDb()
                 .selectFrom(SHOP_UPLOADED_IMAGE_CATEGORY)
-                .where(SHOP_UPLOADED_IMAGE_CATEGORY.CAT_IDS.like(this.prefixLikeValue(record.getCatIds()+",")))
+                .where(SHOP_UPLOADED_IMAGE_CATEGORY.CAT_IDS.like(this.prefixLikeValue(record.getCatIds() + ",")))
                 .fetch();
-    }
+        record1.add(record);
+        return record1;
+     }
 
     /**
      * 移动分组
@@ -239,7 +241,7 @@ public class ShopImageManageService  extends BaseService {
         SelectWhereStep<Record> select = mainDb().select(SHOP_UPLOADED_IMAGE.asterisk(), SHOP_UPLOADED_IMAGE_CATEGORY.IMG_CAT_NAME)
                 .from(SHOP_UPLOADED_IMAGE)
                 .leftJoin(SHOP_UPLOADED_IMAGE_CATEGORY)
-                .on(SHOP_UPLOADED_IMAGE.IMG_CAT_ID.eq(DSL.cast(SHOP_UPLOADED_IMAGE_CATEGORY.IMG_CAT_ID, Integer.class)));
+                .on(SHOP_UPLOADED_IMAGE.IMG_CAT_ID.eq(SHOP_UPLOADED_IMAGE_CATEGORY.IMG_CAT_ID));
         select = this.buildOptions(select, param,sysId);
         select.orderBy(SHOP_UPLOADED_IMAGE.IMG_ID.desc());
         return this.getPageResult(select, param.page, ShopUploadImageCatNameVo.class);
