@@ -41,8 +41,12 @@ public class ExceptionControllerHandler extends BaseController {
      * @throws IOException
      */
      @ExceptionHandler(HttpMessageNotReadableException.class)
-    public JsonResult request1(Exception e) throws IOException {
-        logger.debug("valid msg:"+e.getCause().getMessage());
+    public JsonResult request1(HttpMessageNotReadableException e) throws IOException {
+         if (e.getCause()==null){
+             logger.debug("valid msg:"+e.getMessage());
+             return fail(JsonResultMessage.MSG_PARAM_ERROR);
+         }
+         logger.debug("valid msg:"+e.getCause().getMessage());
         return fail(JsonResultMessage.MSG_PARAM_ERROR);
     }
 
