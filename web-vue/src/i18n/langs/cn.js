@@ -214,22 +214,22 @@ const cn = {
   },
   // admin 浏览图片弹窗 selectoptions数据
   options: [{
-    value: '0',
+    value: 0,
     label: '按上传时间从晚到早'
   }, {
-    value: '1',
+    value: 1,
     label: '按上传时间从早到晚'
   }, {
-    value: '2',
+    value: 2,
     label: '按图片从大到小'
   }, {
-    value: '3',
+    value: 3,
     label: '按图片从小到大'
   }, {
-    value: '4',
+    value: 4,
     label: '按图片名降序'
   }, {
-    value: '5',
+    value: 5,
     label: '按图片名升序'
   }],
   // 图片空间数据

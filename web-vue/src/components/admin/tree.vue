@@ -79,7 +79,7 @@ import {
   renameRequest
 } from '@/api/admin/pictureSpace.js'
 // getHeadTreeListRequest
-import { renameHeadRequest, groupHeadAddRequest, groupHeadDelRequest } from '@/api/admin/tree.js'
+import { renameHeadRequest, groupHeadAddRequest, groupHeadDelRequest, getHeadTreeListRequest } from '@/api/admin/tree.js'
 import {
   getEditContent,
   getDefaultContent
@@ -159,6 +159,7 @@ export default {
       this.menuVisible = false
     },
     refresh () {
+      console.log(12312312312)
       // let res = getServiceTree()
       if (this.pageIndex === 'pictureSpace') {
         getTreeListRequest().then((res) => {
@@ -170,7 +171,8 @@ export default {
         })
       } else {
         console.log('tree!')
-        getTreeListRequest().then((res) => {
+        getHeadTreeListRequest().then((res) => {
+          console.log(res)
           console.log(res.content[0].id)
           this.changeTreeNode(res.content[0])
           this.allNodes(res)

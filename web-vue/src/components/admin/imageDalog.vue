@@ -118,10 +118,9 @@
                   <span>{{$t('imgageDalog.totalPage')}}{{this.totalRows}}{{$t('imgageDalog.strip')}}</span>
                 </div>
                 <el-pagination
-                  @size-change="handleSizeChange"
                   @current-change="handleCurrentChange"
                   :current-page.sync="currentPage3"
-                  :page-size="20"
+                  :page-size="10"
                   layout="prev, pager, next, jumper"
                   :total="totalRows"
                   :small="pagination_b"
@@ -171,8 +170,8 @@ export default {
       dim_flag: 'dim_flag',
       mask_flag: 'mask_flag',
       img_list: [
-        { imgName: 'test1', checked: false, imgIndex: '', imgUrl: this.$imageHost + '/upload/0/image/20180528/i561Ez0lgWDeUOHe.jpeg!middle', size: '52x52' },
-        { imgName: 'test2', checked: false, imgIndex: '', imgUrl: this.$imageHost + '/upload/0/image/20180528/i561Ez0lgWDeUOHe.jpeg!middle', size: '72x72' }
+        // { imgName: 'test1', checked: false, imgIndex: '', imgUrl: this.$imageHost + '/upload/0/image/20180528/i561Ez0lgWDeUOHe.jpeg!middle', size: '52x52' },
+        // { imgName: 'test2', checked: false, imgIndex: '', imgUrl: this.$imageHost + '/upload/0/image/20180528/i561Ez0lgWDeUOHe.jpeg!middle', size: '72x72' }
       ],
       imageDalogTip_lineHeight: '',
       imageDalog_p_height: '',
@@ -233,6 +232,7 @@ export default {
         console.log(that.firstNodeId)
         let fd = new FormData()
         // console.log(fd)
+
         fd.append('file', file)
         fd.append('needImgWidth', img.width)
         fd.append('needImgHeight', img.height)
@@ -240,7 +240,7 @@ export default {
         upmoreHeadImgsRequest(fd).then((res) => {
           console.log(res)
           if (res.error === 0) {
-            that.detailImgsSearch()
+            that.queryImgs()
           }
         })
         // let valid = img.width === width && img.height === height
@@ -277,16 +277,27 @@ export default {
         'imgCatId': this.firstNodeId,
         'keywords': this.imgNameInput,
         'searchNeed': 0,
+        'pageRows': 8,
         'needImgWidth': width,
         'needImgHeight': height,
         'uploadSortId': this.value
       }
 
       queryHeadImgsRequest(obj).then((res) => {
-        if (res === 0) {
+        console.log(res)
+        if (res.error === 0) {
           this.totalRows = res.content.page.totalRows
           this.currentPage = res.content.page.currentPage
           this.pageCount = res.content.page.pageCount
+          res.content.dataList.map((item, index) => {
+            item.checked = false
+            item.imgIndex = ''
+
+            // item.imgUrl = item.imgUrl.split('cn')[1]
+            // console.log(item.imgUrl)
+          })
+          this.img_list = res.content.dataList
+          console.log(this.img_list, 1)
         }
       })
     },

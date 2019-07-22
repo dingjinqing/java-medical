@@ -381,22 +381,22 @@ export default {
           this.handleLeftNav(this.first_web_decoration, false, this.flag)
           break
         case 'goods_manage':
-          this.handleLeftNav(this.goods_manage, false)
+          this.handleLeftNav(this.goods_manage, false, this.flag)
           break
         case 'first_trade_manageL':
-          this.handleLeftNav(this.first_trade_manageL, false)
+          this.handleLeftNav(this.first_trade_manageL, false, this.flag)
           break
         case 'first_market_manage':
-          this.handleLeftNav(this.first_market_manage, true)
+          this.handleLeftNav(this.first_market_manage, true, this.flag)
           break
         case 'user_manger':
-          this.handleLeftNav(this.user_manger, false)
+          this.handleLeftNav(this.user_manger, false, this.flag)
           break
         case 'store_manage':
-          this.handleLeftNav(this.store_manage, false)
+          this.handleLeftNav(this.store_manage, false, this.flag)
           break
         case 'base_manger':
-          this.handleLeftNav(this.base_manger, false)
+          this.handleLeftNav(this.base_manger, false, this.flag)
           break
       }
     },
@@ -442,6 +442,14 @@ export default {
             this.nav_index = 1
             this.click_nav_index = 1
           }
+          break
+        // 商品管理
+        case 'brandManagement':
+          if (flag === 'goods_manage') {
+            this.nav_index = 5
+            this.click_nav_index = 5
+          }
+          break
       }
     },
     // 左侧菜单栏点击事件
@@ -490,6 +498,21 @@ export default {
           case 4:
             this.$router.push({
               name: 'bottomNavigation'
+            })
+            break
+        }
+      }
+      // 商品管理模块左侧点击
+      if (this.flag === 'goods_manage') {
+        switch (index) {
+          case 0:
+            this.$router.push({
+              name: 'goods_manage'
+            })
+            break
+          case 4:
+            this.$router.push({
+              name: 'brandManagement'
             })
             break
         }
