@@ -1,6 +1,5 @@
 package com.vpu.mp.controller;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.support.MessageSourceAccessor;
 import org.springframework.context.support.ReloadableResourceBundleMessageSource;
 import org.springframework.stereotype.Component;
@@ -8,9 +7,9 @@ import org.springframework.stereotype.Component;
 import javax.servlet.http.HttpServletRequest;
 import java.lang.reflect.Field;
 import java.lang.reflect.ParameterizedType;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Locale;
-import java.util.stream.Collectors;
 
 import static org.springframework.util.StringUtils.isEmpty;
 
@@ -25,7 +24,6 @@ public class VoTranslator {
     private static final String HEADER_LANG = "V-Lang";
     private static final String DEFAULT_LANG = "zh_CN";
 
-    @Autowired
     public VoTranslator(HttpServletRequest request) {
         this.request = request;
     }
@@ -83,9 +81,11 @@ public class VoTranslator {
                 String fileName = annotation.propertiesFileName();
                 List<String> list = (List<String>) field.get(object);
                 if (null != list) {
-                    List<String> translated = list.parallelStream()
-                            .map(i -> translate(fileName, i, i))
-                            .collect(Collectors.toList());
+                    List<String> translated = new LinkedList<>();
+                    for (String s : list) {
+                        String translate = translate(fileName, s, s);
+                        translated.add(translate);
+                    }
                     field.set(object, translated);
                 }
             } else {
