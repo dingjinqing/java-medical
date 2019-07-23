@@ -1,6 +1,5 @@
 package com.vpu.mp.service.pojo.shop.overview.useranalysis;
 
-import java.util.Date;
 
 import lombok.Data;
 
