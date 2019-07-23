@@ -8,7 +8,6 @@ import com.vpu.mp.service.pojo.shop.summary.visit.VisitPageParam;
 import org.jooq.Result;
 import org.jooq.SortField;
 import org.jooq.impl.DSL;
-import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Service;
 
 import java.util.List;

@@ -4,7 +4,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.support.MessageSourceAccessor;
 import org.springframework.context.support.ReloadableResourceBundleMessageSource;
 import org.springframework.stereotype.Component;
-import org.springframework.util.StringUtils;
 
 import javax.servlet.http.HttpServletRequest;
 import java.lang.reflect.Field;
@@ -13,6 +12,8 @@ import java.util.List;
 import java.util.Locale;
 import java.util.stream.Collectors;
 
+import static org.springframework.util.StringUtils.isEmpty;
+
 /**
  * @author 郑保乐
  */
@@ -20,6 +21,9 @@ import java.util.stream.Collectors;
 public class VoTranslator {
 
     private HttpServletRequest request;
+
+    private static final String HEADER_LANG = "V-Lang";
+    private static final String DEFAULT_LANG = "zh_CN";
 
     @Autowired
     public VoTranslator(HttpServletRequest request) {
@@ -39,45 +43,17 @@ public class VoTranslator {
         if (isRawType(object)) {
             return;
         }
-        String lang = request.getHeader("V-Lang");
-        if (StringUtils.isEmpty(lang)) {
-            lang = "zh_CN";
+        String language = getLanguage();
+        if (isEmpty(language)) {
+            language = DEFAULT_LANG;
         }
         Class<?> clz = object.getClass();
         Field[] fields = clz.getDeclaredFields();
         for (Field field : fields) {
             try {
                 field.setAccessible(true);
-                I18N annotation = getI18nAnnotation(field);
-                if (field.getType().equals(String.class) && null != annotation) {
-                    String value = (String) field.get(object);
-                    String fileName = annotation.propertiesFileName();
-                    String realValue = translate(fileName, lang, value, value);
-                    field.set(object, realValue);
-                }
-                if (List.class.isAssignableFrom(field.getType())) {
-                    ParameterizedType type = (ParameterizedType) field.getGenericType();
-                    Class<?> realType = (Class<?>) type.getActualTypeArguments()[0];
-                    if (null != annotation && realType.equals(String.class)) {
-                        String fileName = annotation.propertiesFileName();
-                        List<String> list = (List<String>) field.get(object);
-                        String finalLang = lang;
-                        if (null != list) {
-                            List<String> translated = list.parallelStream()
-                                    .map(i -> translate(fileName, finalLang, i, i))
-                                    .collect(Collectors.toList());
-                            field.set(object, translated);
-                        }
-                    } else {
-                        List<?> o = (List<?>) field.get(object);
-                        if (null != o) {
-                            o.forEach(this::translateFields);
-                        }
-                    }
-                } else {
-                    Object o = field.get(object);
-                    translateFields(o);
-                }
+                transLateStringValue(field, object, language);
+                transLateListValue(field, object, language);
             } catch (IllegalAccessException e) {
                 e.printStackTrace();
             }
@@ -110,5 +86,52 @@ public class VoTranslator {
         String[] languages = language.split("_");
         Locale locale = new Locale(languages[0], languages[1]);
         return accessor.getMessage(message, defaultMessage, locale);
+    }
+
+    private String getLanguage() {
+        return request.getHeader(HEADER_LANG);
+    }
+
+    /**
+     * 翻译 List 类型
+     */
+    @SuppressWarnings("unchecked")
+    private void transLateListValue(Field field, Object object, String language) throws IllegalAccessException {
+        I18N annotation = getI18nAnnotation(field);
+        if (List.class.isAssignableFrom(field.getType())) {
+            ParameterizedType type = (ParameterizedType) field.getGenericType();
+            Class<?> realType = (Class<?>) type.getActualTypeArguments()[0];
+            if (null != annotation && realType.equals(String.class)) {
+                String fileName = annotation.propertiesFileName();
+                List<String> list = (List<String>) field.get(object);
+                if (null != list) {
+                    List<String> translated = list.parallelStream()
+                            .map(i -> translate(fileName, language, i, i))
+                            .collect(Collectors.toList());
+                    field.set(object, translated);
+                }
+            } else {
+                List<?> o = (List<?>) field.get(object);
+                if (null != o) {
+                    o.forEach(this::translateFields);
+                }
+            }
+        } else {
+            Object o = field.get(object);
+            translateFields(o);
+        }
+    }
+
+    /**
+     * 翻译 String 类型
+     */
+    private void transLateStringValue(Field field, Object object, String language) throws IllegalAccessException {
+        I18N annotation = getI18nAnnotation(field);
+        if (field.getType().equals(String.class) && null != annotation) {
+            String value = (String) field.get(object);
+            String fileName = annotation.propertiesFileName();
+            String realValue = translate(fileName, language, value, value);
+            field.set(object, realValue);
+        }
     }
 }
