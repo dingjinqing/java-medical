@@ -1,7 +1,5 @@
 package com.vpu.mp.service.pojo.shop.decoration;
 
-import org.hibernate.validator.constraints.URL;
-
 import lombok.Data;
 
 /**
@@ -15,7 +13,6 @@ public class XcxLinkListVo {
 	public String shopId;
 	public String title;
 	public String pathName;
-	@URL 
 	public String linkPath; 
 	public Integer linkAction;
 }

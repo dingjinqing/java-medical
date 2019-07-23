@@ -4,6 +4,7 @@ import static com.vpu.mp.db.main.Tables.CATEGORY;
 import static com.vpu.mp.db.shop.Tables.ASSESS_ACTIVITY;
 import static com.vpu.mp.db.shop.Tables.COUPON_PACK;
 import static com.vpu.mp.db.shop.Tables.DECORATE_LINK;
+import static com.vpu.mp.db.shop.Tables.FORM_PAGE;
 import static com.vpu.mp.db.shop.Tables.FRIEND_PROMOTE_ACTIVITY;
 import static com.vpu.mp.db.shop.Tables.GOODS;
 import static com.vpu.mp.db.shop.Tables.GOODS_LABEL;
@@ -37,6 +38,7 @@ import com.vpu.mp.service.pojo.saas.category.SysCatevo;
 import com.vpu.mp.service.pojo.shop.decoration.ActivityVo;
 import com.vpu.mp.service.pojo.shop.decoration.ChooseLinkParam;
 import com.vpu.mp.service.pojo.shop.decoration.GoodsLinkVo;
+import com.vpu.mp.service.pojo.shop.decoration.PageFormVo;
 import com.vpu.mp.service.pojo.shop.decoration.StoreVo;
 import com.vpu.mp.service.pojo.shop.decoration.XcxCustomerPageVo;
 import com.vpu.mp.service.pojo.shop.decoration.XcxLinkListVo;
@@ -72,7 +74,7 @@ public class ChooseLinkService extends ShopBaseService {
 				.from(GOODS);
 		select = buildOptions(select, param);
 		select.orderBy(GOODS.GOODS_ID.desc());
-		return this.getPageResult(select, GoodsLinkVo.page,GoodsLinkVo.class);
+		return this.getPageResult(select, param.currentPage,param.pageRows,GoodsLinkVo.class);
 	}
 	
 	/**
@@ -82,7 +84,8 @@ public class ChooseLinkService extends ShopBaseService {
 	 * @return
 	 */
 	public SelectJoinStep<Record4<Integer, String, String, String>> buildOptions(SelectJoinStep<Record4<Integer, String, String, String>> select, GoodsLinkVo param) {
-		if(param.getGoodsName() != null) {
+		System.out.println(111);
+		if(param.getKeyWords() != null) {
 			select.where(GOODS.GOODS_NAME.contains(param.getKeyWords()).or(GOODS.GOODS_SN.contains(param.getKeyWords())));
 		}
 		return select;
@@ -268,9 +271,16 @@ public class ChooseLinkService extends ShopBaseService {
 		return list;
 	}
 	
-//	表单页面
-	public Boolean fromPage() {
-		return false;
+	/**
+	 * 表单页面链接
+	 * @return
+	 */
+	public List<PageFormVo> getFromPage() {
+		List<PageFormVo> list = db().select(FORM_PAGE.PAGE_ID,FORM_PAGE.PAGE_NAME)
+				.from(FORM_PAGE)
+				.where(FORM_PAGE.STATE.eq((byte) 1))
+				.fetch().into(PageFormVo.class);
+		return list;
 	}
 	
 	/**

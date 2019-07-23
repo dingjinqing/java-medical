@@ -106,6 +106,7 @@ public class JsonResultMessage {
 	final public static String DECORATE_STYLE_ISNOTJSON="applets.style.is_not_json";
 	final public static String DECORATE_STYLE_PARAM_UPDATE_ID_NULL="applets.style.param_update_id_null";
 	final public static String DECORATE_STYLE_PARAM_UPDATE_VALUE_NULL="applets.style.param_update_value_null";
+	final public static String DECORATE_URL_ILLEGAL="applets.url.illegal";
 
 
 	/**

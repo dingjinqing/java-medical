@@ -2,8 +2,6 @@ package com.vpu.mp.controller.admin;
 
 import java.util.List;
 
-import javax.validation.Valid;
-
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -11,11 +9,13 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.vpu.mp.service.foundation.data.JsonResult;
+import com.vpu.mp.service.foundation.data.JsonResultMessage;
 import com.vpu.mp.service.foundation.util.PageResult;
 import com.vpu.mp.service.pojo.saas.category.SysCatevo;
 import com.vpu.mp.service.pojo.shop.decoration.ActivityVo;
 import com.vpu.mp.service.pojo.shop.decoration.ChooseLinkParam;
 import com.vpu.mp.service.pojo.shop.decoration.GoodsLinkVo;
+import com.vpu.mp.service.pojo.shop.decoration.PageFormVo;
 import com.vpu.mp.service.pojo.shop.decoration.StoreVo;
 import com.vpu.mp.service.pojo.shop.decoration.XcxCustomerPageVo;
 import com.vpu.mp.service.pojo.shop.decoration.XcxLinkListVo;
@@ -33,6 +33,7 @@ import com.vpu.mp.service.pojo.shop.store.store.StoreListQueryParam;
 @RestController
 @RequestMapping("/api")
 public class AdminChooseLinkController extends AdminBaseController{
+	
 	/**
 	 * 常用链接
 	 */
@@ -67,7 +68,14 @@ public class AdminChooseLinkController extends AdminBaseController{
 	 * @return
 	 */
 	@PostMapping(value = "/admin/decorate/web/save")
-	public JsonResult saveWebLink(@RequestBody @Valid XcxLinkListVo param) {
+	public JsonResult saveWebLink(@RequestBody XcxLinkListVo param) {
+		//正则校验URL合法性
+		String pattern = "/^https:\\/\\/[\\w-_.]+(\\/[\\w-_]+)*\\/?$/";
+		String linkPath = param.getLinkPath();
+		if(!linkPath.matches(pattern)) {
+			return this.fail(JsonResultMessage.DECORATE_URL_ILLEGAL);
+		}
+		
 		int result = shop().chooselink.saveWebLink(param);
 		if(result > 0) {
 			return this.success(result);
@@ -88,11 +96,13 @@ public class AdminChooseLinkController extends AdminBaseController{
 	}
 	
 	/**
-	 * 表单页面
+	 * 表单页面链接
 	 * @return
 	 */
-	public Boolean fromPage() {
-		return false;
+	@GetMapping(value = "/admin/decorate/form/list")
+	public JsonResult fromPage() {
+		List<PageFormVo> list = shop().chooselink.getFromPage();
+		return this.success(list);
 	}
 	
 	/**
