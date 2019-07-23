@@ -42,12 +42,22 @@ public class DatabaseManager {
 	/**
 	 * 当前操作的店铺ID
 	 */
-	protected static Integer currentShopId = 0;
+	private static ThreadLocal<Integer> currentShopId = new ThreadLocal<Integer>() {
+		@Override
+		public Integer initialValue() {
+			return 0;
+		}
+	};
 
 	/**
 	 * 上一次操作店铺ID
 	 */
-	protected static Integer lastShopId = 0;
+	private static ThreadLocal<Integer> lastShopId = new ThreadLocal<Integer>() {
+		@Override
+		public Integer initialValue() {
+			return 0;
+		}
+	};
 
 	Logger loger = LoggerFactory.getLogger(DatabaseManager.class);
 
@@ -68,10 +78,7 @@ public class DatabaseManager {
 		DefaultDSLContext db = mainDsl.get();
 		if (db == null) {
 			BasicDataSource ds = datasourceManager.getMainDbDatasource();
-			db = new DefaultDSLContext(configuration(ds));
-			db.setSchema(datasourceManager.getDatabase()).execute();
-			db.execute("SET NAMES utf8mb4");
-			db.execute("Set sql_mode='ONLY_FULL_GROUP_BY'");
+			db = this.getDsl(ds, datasourceManager.getDatabase());
 		}
 		mainDsl.set(db);
 		return mainDsl.get();
@@ -84,7 +91,7 @@ public class DatabaseManager {
 	 * @return
 	 */
 	public DatabaseManager switchShopDb(Integer shopId) {
-		if (shopId == DatabaseManager.currentShopId) {
+		if (shopId == DatabaseManager.currentShopId.get()) {
 			return this;
 		}
 		DefaultDSLContext db = shopDsl.get();
@@ -104,8 +111,8 @@ public class DatabaseManager {
 			}
 		}
 		shopDsl.set(db);
-		DatabaseManager.lastShopId = DatabaseManager.currentShopId;
-		DatabaseManager.currentShopId = shopId;
+		DatabaseManager.lastShopId.set(DatabaseManager.currentShopId.get());
+		DatabaseManager.currentShopId.set(shopId);
 		return this;
 	}
 
@@ -113,7 +120,7 @@ public class DatabaseManager {
 	 * 恢复上次切换的DB
 	 */
 	public void restoreLastShopDb() {
-		this.switchShopDb(DatabaseManager.lastShopId);
+		this.switchShopDb(DatabaseManager.lastShopId.get());
 	}
 
 	/**
@@ -122,7 +129,7 @@ public class DatabaseManager {
 	 * @return
 	 */
 	public static Integer getCurrentShopId() {
-		return DatabaseManager.currentShopId;
+		return DatabaseManager.currentShopId.get();
 	}
 
 	/**
@@ -136,7 +143,7 @@ public class DatabaseManager {
 
 	/**
 	 * 从数据源获取一个连接
-	 */ 
+	 */
 	protected DefaultDSLContext getDsl(BasicDataSource ds, String database) {
 		DefaultDSLContext db = new DefaultDSLContext(configuration(ds));
 		if (!StringUtils.isBlank(database)) {
@@ -149,7 +156,7 @@ public class DatabaseManager {
 
 	/**
 	 * 安装店铺数据库
-	 */ 
+	 */
 	public boolean installShopDb(DbConfig dbConfig) {
 		try {
 			String sql = "create database " + dbConfig.database + " default charset utf8mb4 collate utf8mb4_unicode_ci";
@@ -160,14 +167,12 @@ public class DatabaseManager {
 			return false;
 		}
 
-		boolean ret = execScript(dbConfig.host, dbConfig.port, dbConfig.database, dbConfig.username, dbConfig.password,
-				"db/shop/db_shop.sql");
+		boolean ret = execScript(dbConfig, "db/shop/db_shop.sql");
 		// 测试用，测完删log
 		loger.info("db_shop.sql执行结果" + ret);
 		if (ret) {
 			loger.info("准备执行db_shop.sql的dbConfig" + dbConfig);
-			ret = execScript(dbConfig.host, dbConfig.port, dbConfig.database, dbConfig.username, dbConfig.password,
-					"db/shop/db_shop_data.sql");
+			ret = execScript(dbConfig, "db/shop/db_shop_data.sql");
 			loger.info("db_shop_data.sql执行结果" + ret);
 		}
 		return ret;
@@ -175,9 +180,8 @@ public class DatabaseManager {
 
 	/**
 	 * 执行SQL脚本
-	 */ 
-	public boolean execScript(String host, Integer port, String database, String username, String password,
-			String sqlPath) {
+	 */
+	public boolean execScript(DbConfig dbConfig, String sqlPath) {
 		ClassPathResource cpr = new ClassPathResource(sqlPath);
 		String sql = "";
 		try {
@@ -205,9 +209,9 @@ public class DatabaseManager {
 		SqlExecuter executer = new SqlExecuter();
 		executer.addText(sql);
 		executer.setDriver(datasourceManager.getDriver());
-		executer.setPassword(password);
-		executer.setUserid(username);
-		executer.setUrl(datasourceManager.getJdbcUrl(host, port, database));
+		executer.setPassword(dbConfig.password);
+		executer.setUserid(dbConfig.username);
+		executer.setUrl(datasourceManager.getJdbcUrl(dbConfig.host, dbConfig.port, dbConfig.database));
 		try {
 			executer.execute();
 		} catch (BuildException e) {
@@ -219,7 +223,7 @@ public class DatabaseManager {
 
 	/**
 	 * 过滤SQL注释
-	 */ 
+	 */
 	public String filterSql(String sql) {
 		String[] lines = sql.split("\n");
 		StringBuffer sqlBuffer = new StringBuffer();
