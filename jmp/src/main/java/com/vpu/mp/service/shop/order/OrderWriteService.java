@@ -2,6 +2,7 @@ package com.vpu.mp.service.shop.order;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.stereotype.Service;
 
 import com.vpu.mp.service.foundation.service.ShopBaseService;
 import com.vpu.mp.service.pojo.shop.order.write.star.StarParam;
@@ -11,6 +12,7 @@ import com.vpu.mp.service.pojo.shop.order.write.star.StarParam;
  * @author 王帅
  * 2019/7/22
  */
+@Service
 public class OrderWriteService extends ShopBaseService{
 	
 	private final Logger logger = LoggerFactory.getLogger(this.getClass());
