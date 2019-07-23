@@ -43,17 +43,13 @@ public class VoTranslator {
         if (isRawType(object)) {
             return;
         }
-        String language = getLanguage();
-        if (isEmpty(language)) {
-            language = DEFAULT_LANG;
-        }
         Class<?> clz = object.getClass();
         Field[] fields = clz.getDeclaredFields();
         for (Field field : fields) {
             try {
                 field.setAccessible(true);
-                transLateStringValue(field, object, language);
-                transLateListValue(field, object, language);
+                translateStringValue(field, object);
+                translateListValue(field, object);
             } catch (IllegalAccessException e) {
                 e.printStackTrace();
             }
@@ -77,8 +73,8 @@ public class VoTranslator {
     /**
      * 转换语言
      */
-    private String translate(String prefix, String language, String message, String defaultMessage) {
-        language = org.apache.commons.lang3.StringUtils.isBlank(language) ? "zh_CN" : language;
+    private String translate(String prefix, String message, String defaultMessage) {
+        String language = getLanguage();
         ReloadableResourceBundleMessageSource source = new ReloadableResourceBundleMessageSource();
         source.setDefaultEncoding("UTF-8");
         source.setBasename("static/i18n/" + prefix);
@@ -89,14 +85,18 @@ public class VoTranslator {
     }
 
     private String getLanguage() {
-        return request.getHeader(HEADER_LANG);
+        String language = request.getHeader(HEADER_LANG);
+        if (isEmpty(language)) {
+            return DEFAULT_LANG;
+        }
+        return language;
     }
 
     /**
      * 翻译 List 类型
      */
     @SuppressWarnings("unchecked")
-    private void transLateListValue(Field field, Object object, String language) throws IllegalAccessException {
+    private void translateListValue(Field field, Object object) throws IllegalAccessException {
         I18N annotation = getI18nAnnotation(field);
         if (List.class.isAssignableFrom(field.getType())) {
             ParameterizedType type = (ParameterizedType) field.getGenericType();
@@ -106,7 +106,7 @@ public class VoTranslator {
                 List<String> list = (List<String>) field.get(object);
                 if (null != list) {
                     List<String> translated = list.parallelStream()
-                            .map(i -> translate(fileName, language, i, i))
+                            .map(i -> translate(fileName, i, i))
                             .collect(Collectors.toList());
                     field.set(object, translated);
                 }
@@ -125,12 +125,12 @@ public class VoTranslator {
     /**
      * 翻译 String 类型
      */
-    private void transLateStringValue(Field field, Object object, String language) throws IllegalAccessException {
+    private void translateStringValue(Field field, Object object) throws IllegalAccessException {
         I18N annotation = getI18nAnnotation(field);
         if (field.getType().equals(String.class) && null != annotation) {
             String value = (String) field.get(object);
             String fileName = annotation.propertiesFileName();
-            String realValue = translate(fileName, language, value, value);
+            String realValue = translate(fileName, value, value);
             field.set(object, realValue);
         }
     }
