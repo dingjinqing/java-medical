@@ -4,6 +4,9 @@ import static com.vpu.mp.db.main.tables.Shop.SHOP;
 
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.Map;
 
 import org.apache.commons.dbcp2.BasicDataSource;
 import org.apache.commons.lang3.StringUtils;
@@ -64,23 +67,25 @@ public class DatabaseManager {
 	/**
 	 * 主库连接，每个线程一个连接
 	 */
-	private ThreadLocal<DefaultDSLContext> mainDsl = new ThreadLocal<DefaultDSLContext>();
+	private ThreadLocal<MpDefaultDSLContext> mainDsl = new ThreadLocal<MpDefaultDSLContext>();
 
 	/**
 	 * 店铺库连接，每个线程有一个正用的数据库连接，可以随时切换
 	 */
-	private ThreadLocal<DefaultDSLContext> shopDsl = new ThreadLocal<DefaultDSLContext>();
+	private ThreadLocal<MpDefaultDSLContext> shopDsl = new ThreadLocal<MpDefaultDSLContext>();
 
+
+	
 	/**
 	 * 主库连接
 	 */
 	public DefaultDSLContext mainDb() {
-		DefaultDSLContext db = mainDsl.get();
+		MpDefaultDSLContext db = mainDsl.get();
 		if (db == null) {
 			BasicDataSource ds = datasourceManager.getMainDbDatasource();
-			db = this.getDsl(ds, datasourceManager.getDatabase());
+			db = this.getDsl(ds, datasourceManager.getMainDbConfig());
 		}else {
-			db.setSchema(datasourceManager.getDatabase()).execute();
+			db.setSchema(db.getDbConfig().getDatabase()).execute();
 		}
 		mainDsl.set(db);
 		return mainDsl.get();
@@ -96,11 +101,11 @@ public class DatabaseManager {
 	 */
 	public DatabaseManager switchShopDb(Integer shopId) {
 		if (shopId == currentShopId.get()) {
-			DefaultDSLContext db = shopDsl.get();
-			db.setSchema(datasourceManager.getDatabase()).execute();
+			MpDefaultDSLContext db = shopDsl.get();
+			db.setSchema(db.getDbConfig().getDatabase()).execute();
 			return this;
 		}
-		DefaultDSLContext db = shopDsl.get();
+		MpDefaultDSLContext db = shopDsl.get();
 		if (db == null) {
 			ShopRecord shop = mainDb().selectFrom(SHOP).where(SHOP.SHOP_ID.eq(shopId)).fetchAny();
 			if (shop != null) {
@@ -109,13 +114,13 @@ public class DatabaseManager {
 					throw new RuntimeException();
 				}
 
-				BasicDataSource ds = datasourceManager.getShopDbDatasource(dbConfig.host, dbConfig.port,
-						dbConfig.username, dbConfig.password);
-				db = getDsl(ds, dbConfig.database);
+				BasicDataSource ds = datasourceManager.getDatasource(dbConfig);
+				db = getDsl(ds, dbConfig);
 			} else {
 				throw new RuntimeException();
 			}
 		} else {
+			db.setSchema(db.getDbConfig().getDatabase()).execute();
 		}
 	
 		shopDsl.set(db);
@@ -143,8 +148,8 @@ public class DatabaseManager {
 	/**
 	 * 当前店铺库连接
 	 */
-	public DefaultDSLContext currentShopDb() {
-		DefaultDSLContext db = shopDsl.get();
+	public MpDefaultDSLContext currentShopDb() {
+		MpDefaultDSLContext db = shopDsl.get();
 		assert (db != null);
 		return shopDsl.get();
 	}
@@ -152,11 +157,12 @@ public class DatabaseManager {
 	/**
 	 * 从数据源获取一个连接
 	 */
-	protected DefaultDSLContext getDsl(BasicDataSource ds, String database) {
-		DefaultDSLContext db = new DefaultDSLContext(configuration(ds));
-		if (!StringUtils.isBlank(database)) {
-			db.setSchema(database).execute();
-		}
+	protected MpDefaultDSLContext getDsl(BasicDataSource ds, DbConfig dbConfig) {
+		MpDefaultDSLContext db = new MpDefaultDSLContext(configuration(ds));
+		db.setDbConfig(dbConfig);
+		if (!StringUtils.isBlank(dbConfig.getDatabase())) {
+			db.setSchema(dbConfig.getDatabase()).execute();
+		}		
 		db.execute("SET NAMES utf8mb4");
 		db.execute("Set sql_mode='ONLY_FULL_GROUP_BY'");
 		return db;
@@ -169,7 +175,8 @@ public class DatabaseManager {
 		try {
 			String sql = "create database " + dbConfig.database + " default charset utf8mb4 collate utf8mb4_unicode_ci";
 			BasicDataSource ds = datasourceManager.getToCreateShopDbDatasource();
-			getDsl(ds, "").execute(sql);
+			dbConfig.setDatabase("");
+			getDsl(ds, dbConfig).execute(sql);
 		} catch (DataAccessException e) {
 			e.printStackTrace();
 			return false;
@@ -306,7 +313,7 @@ public class DatabaseManager {
 	
 	@Override
 	protected void finalize() {
-		DefaultDSLContext db = mainDsl.get();
+		MpDefaultDSLContext db = mainDsl.get();
 		if(db != null) {
 			mainDsl.remove();
 			db = null;

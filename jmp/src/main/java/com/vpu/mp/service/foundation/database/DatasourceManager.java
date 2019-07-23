@@ -1,7 +1,9 @@
 package com.vpu.mp.service.foundation.database;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import org.apache.commons.dbcp2.BasicDataSource;
@@ -62,38 +64,39 @@ public class DatasourceManager {
 			.synchronizedMap(new HashMap<String, BasicDataSource>());
 
 	/**
-	 * 得到主库数据源
+	 * 得到主数据库配置
+	 * 
+	 * @return
 	 */
-	public BasicDataSource getMainDbDatasource() {
-		return this.getDatasource(this.host, this.port, this.username, this.password);
+	public DbConfig getMainDbConfig() {
+		return new DbConfig(host, port, database, username, password);
 	}
 
 	/**
-	 * 得到店铺库数据源
+	 * 得到主库数据源
 	 */
-	public BasicDataSource getShopDbDatasource(String host, Integer port, String username, String password) {
-		return this.getDatasource(host, port, username, password);
+	public BasicDataSource getMainDbDatasource() {
+		return this.getDatasource(getMainDbConfig());
 	}
 
 	/**
 	 * 得到即将创建店铺库的数据源
 	 */
 	public BasicDataSource getToCreateShopDbDatasource() {
-		return this.getDatasource(this.shopHost, this.shopPort, this.shopUsername, this.shopPassword);
+		return this.getDatasource(new DbConfig(shopHost, shopPort, "", shopUsername, shopPassword));
 	}
 
 	/**
 	 * 得到数据源
 	 */
-	protected BasicDataSource getDatasource(String host, Integer port, String username, String password) {
-		String key = String.format("%s:port_%s_%s_%s", host, port, username, password);
+	protected BasicDataSource getDatasource(DbConfig dbConfig) {
+		String key = dbConfig.getDatasourceKey();
 		if (!datasources.containsKey(key)) {
-			datasources.put(key, dataSource(getJdbcUrl(host, port, ""), username, password));
+			datasources.put(key,
+					dataSource(getJdbcUrl(dbConfig.host, dbConfig.port, ""), dbConfig.username, dbConfig.password));
 		}
 		return datasources.get(key);
 	}
-
-	
 
 	/**
 	 * 得到配置好的数据源
@@ -113,7 +116,7 @@ public class DatasourceManager {
 		// TODO：设置数据源其他参数，可以在配置里读取
 		return dataSource;
 	}
-	
+
 	/**
 	 * 得到JDBC串
 	 * 
@@ -126,18 +129,14 @@ public class DatasourceManager {
 		return "jdbc:mysql://" + host + ":" + port + "/" + database
 				+ "?serverTimezone=Hongkong&useSSL=false&useUnicode=true&characterEncoding=UTF-8";
 	}
-	
+
 	/**
 	 * 得到安装数据库配置
+	 * 
 	 * @param shopId
 	 * @return
 	 */
 	public DbConfig getInstallShopDbConfig(Integer shopId) {
-		DbConfig dbConfig = new DbConfig();
-		dbConfig.host = shopHost;
-		dbConfig.database = shopDbPrefix + shopId.toString();
-		dbConfig.username = shopUsername;
-		dbConfig.password = shopPassword;
-		return dbConfig;
+		return new DbConfig(host, port, shopDbPrefix + shopId.toString(), username, password);
 	}
 }

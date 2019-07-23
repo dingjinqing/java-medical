@@ -33,8 +33,10 @@ public class ScheduleTask {
 	@Scheduled(cron = "0/1 * * * * ?")
 	public void taskPerMinute() {
 		// TODO: 加入每分钟执行的任务
-		// saas.article.getArticleIdRows(1);
-		// saas.getShopApp(471752).image.getAllSize();
+		 saas.article.getArticleIdRows(1);
+		 saas.getShopApp(471752).image.getAllSize();
+		 saas.article.getArticleIdRows(1);
+		 saas.getShopApp(471752).image.getAllSize();
 		System.out.println("@Scheduled id:"+Thread.currentThread().getId());
 	}
 
