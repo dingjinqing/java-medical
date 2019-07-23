@@ -3,7 +3,12 @@ package com.vpu.mp.service.foundation.service;
 import org.jooq.ContextTransactionalRunnable;
 import org.jooq.impl.DefaultDSLContext;
 
-public class MainBaseService extends CommonBaseService {
+/**
+ * 
+ * @author lixinguo
+ *
+ */
+public class MainBaseService extends AbstractCommonBaseService {
 
 	@Override
 	protected DefaultDSLContext db() {

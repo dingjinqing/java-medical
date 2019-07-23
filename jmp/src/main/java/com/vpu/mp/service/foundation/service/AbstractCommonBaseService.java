@@ -20,7 +20,12 @@ import com.vpu.mp.service.saas.SaasApplication;
 import com.vpu.mp.service.wechat.OpenPlatform;
 import com.vpu.mp.support.SpringUtil;
 
-abstract public class CommonBaseService {
+/**
+ * 
+ * @author lixinguo
+ *
+ */
+abstract public class AbstractCommonBaseService {
 
 	@Autowired
 	protected DatabaseManager databaseManager;

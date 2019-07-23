@@ -1,9 +1,11 @@
 package com.vpu.mp.service.pojo.shop.operation;
 
-import com.vpu.mp.service.pojo.shop.base.BasePageParam;
-import lombok.Data;
-
 import java.sql.Timestamp;
+
+import com.vpu.mp.service.pojo.shop.base.BasePageParam;
+
+import lombok.Getter;
+import lombok.Setter;
 
 /**
  * RecordAdminAction入参
@@ -11,7 +13,8 @@ import java.sql.Timestamp;
  * @date: 2019-07-16 14:19
  *
 */
-@Data
+@Getter
+@Setter
 public class RecordAdminActionParam extends BasePageParam {
     private String    userName;
     private Byte      actionType;

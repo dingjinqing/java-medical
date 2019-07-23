@@ -14,6 +14,7 @@ import com.vpu.mp.service.foundation.jedis.JedisManager;
 import com.vpu.mp.service.foundation.util.Util;
 
 import me.chanjar.weixin.common.error.WxErrorException;
+import me.chanjar.weixin.mp.api.WxMpService;
 import me.chanjar.weixin.mp.bean.kefu.WxMpKefuMessage;
 import me.chanjar.weixin.mp.bean.message.WxMpXmlMessage;
 import me.chanjar.weixin.mp.bean.message.WxMpXmlOutMessage;
@@ -208,4 +209,5 @@ public class OpenPlatform extends WxOpenServiceImpl {
 	protected boolean isGlobalTestAppId(String appId) {
 		return (StringUtils.equalsAnyIgnoreCase(appId, "wxd101a85aa106f53e", "wx570bc396a51b8ff8"));
 	}
+	
 }

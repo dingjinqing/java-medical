@@ -3,11 +3,13 @@ package com.vpu.mp.service.foundation.service;
 import org.jooq.ContextTransactionalRunnable;
 import org.jooq.impl.DefaultDSLContext;
 
-import com.vpu.mp.service.foundation.database.DatabaseManager;
 
-
-
-public class ShopBaseService extends CommonBaseService {
+/**
+ * 
+ * @author lixinguo
+ *
+ */
+public class ShopBaseService extends AbstractCommonBaseService {
 
 
 	@Override
@@ -35,6 +37,6 @@ public class ShopBaseService extends CommonBaseService {
 	 * @return
 	 */
 	public Integer getShopId() {
-		return DatabaseManager.getCurrentShopId();
+		return databaseManager.getCurrentShopId();
 	}
 }

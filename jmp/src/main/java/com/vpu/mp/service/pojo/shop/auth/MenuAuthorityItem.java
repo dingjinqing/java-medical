@@ -6,6 +6,11 @@ import org.springframework.stereotype.Component;
 
 import lombok.Data;
 
+/**
+ * 
+ * @author lixinguo
+ *
+ */
 @Component
 @Data
 public class MenuAuthorityItem {

@@ -8,20 +8,21 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
+import org.jooq.Condition;
+import org.springframework.stereotype.Service;
+
 import com.vpu.mp.db.main.tables.MpAuthShop;
 import com.vpu.mp.db.main.tables.records.MpAuthShopRecord;
 import com.vpu.mp.service.foundation.service.MainBaseService;
 import com.vpu.mp.service.foundation.util.Util;
 import com.vpu.mp.service.pojo.shop.config.trade.WxpayConfigParam;
 import com.vpu.mp.service.pojo.shop.config.trade.WxpaySearchParam;
+
 import me.chanjar.weixin.common.error.WxErrorException;
 import me.chanjar.weixin.open.api.WxOpenMaService;
 import me.chanjar.weixin.open.bean.auth.WxOpenAuthorizationInfo;
 import me.chanjar.weixin.open.bean.auth.WxOpenAuthorizerInfo;
 import me.chanjar.weixin.open.bean.result.WxOpenAuthorizerInfoResult;
-import org.jooq.Condition;
-import org.springframework.context.annotation.Scope;
-import org.springframework.stereotype.Service;
 
 /**
  * 

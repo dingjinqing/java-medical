@@ -1,7 +1,9 @@
 package com.vpu.mp.service.pojo.shop.store.group;
 
 import com.vpu.mp.service.pojo.shop.base.BasePageParam;
-import lombok.Data;
+
+import lombok.Getter;
+import lombok.Setter;
 
 /**
  * 
@@ -9,7 +11,8 @@ import lombok.Data;
  * @date: 2019-07-11 09:49
  *
 */
-@Data
+@Getter
+@Setter
 public class StoreGroupQueryParam extends BasePageParam {
 
     private String groupName;

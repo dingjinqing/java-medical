@@ -42,7 +42,7 @@ public class DatabaseManager {
 	/**
 	 * 当前操作的店铺ID
 	 */
-	private static ThreadLocal<Integer> currentShopId = new ThreadLocal<Integer>() {
+	private ThreadLocal<Integer> currentShopId = new ThreadLocal<Integer>() {
 		@Override
 		public Integer initialValue() {
 			return 0;
@@ -52,7 +52,7 @@ public class DatabaseManager {
 	/**
 	 * 上一次操作店铺ID
 	 */
-	private static ThreadLocal<Integer> lastShopId = new ThreadLocal<Integer>() {
+	private ThreadLocal<Integer> lastShopId = new ThreadLocal<Integer>() {
 		@Override
 		public Integer initialValue() {
 			return 0;
@@ -64,12 +64,12 @@ public class DatabaseManager {
 	/**
 	 * 主库连接，每个线程一个连接
 	 */
-	private static ThreadLocal<DefaultDSLContext> mainDsl = new ThreadLocal<DefaultDSLContext>();
+	private ThreadLocal<DefaultDSLContext> mainDsl = new ThreadLocal<DefaultDSLContext>();
 
 	/**
 	 * 店铺库连接，每个线程有一个正用的数据库连接，可以随时切换
 	 */
-	private static ThreadLocal<DefaultDSLContext> shopDsl = new ThreadLocal<DefaultDSLContext>();
+	private ThreadLocal<DefaultDSLContext> shopDsl = new ThreadLocal<DefaultDSLContext>();
 
 	/**
 	 * 主库连接
@@ -79,10 +79,14 @@ public class DatabaseManager {
 		if (db == null) {
 			BasicDataSource ds = datasourceManager.getMainDbDatasource();
 			db = this.getDsl(ds, datasourceManager.getDatabase());
+		}else {
+			db.setSchema(datasourceManager.getDatabase()).execute();
 		}
 		mainDsl.set(db);
 		return mainDsl.get();
 	}
+	
+	
 
 	/**
 	 * 切换当前数据库连接
@@ -91,7 +95,9 @@ public class DatabaseManager {
 	 * @return
 	 */
 	public DatabaseManager switchShopDb(Integer shopId) {
-		if (shopId == DatabaseManager.currentShopId.get()) {
+		if (shopId == currentShopId.get()) {
+			DefaultDSLContext db = shopDsl.get();
+			db.setSchema(datasourceManager.getDatabase()).execute();
 			return this;
 		}
 		DefaultDSLContext db = shopDsl.get();
@@ -109,10 +115,12 @@ public class DatabaseManager {
 			} else {
 				throw new RuntimeException();
 			}
+		} else {
 		}
+	
 		shopDsl.set(db);
-		DatabaseManager.lastShopId.set(DatabaseManager.currentShopId.get());
-		DatabaseManager.currentShopId.set(shopId);
+		lastShopId.set(currentShopId.get());
+		currentShopId.set(shopId);
 		return this;
 	}
 
@@ -120,7 +128,7 @@ public class DatabaseManager {
 	 * 恢复上次切换的DB
 	 */
 	public void restoreLastShopDb() {
-		this.switchShopDb(DatabaseManager.lastShopId.get());
+		this.switchShopDb(lastShopId.get());
 	}
 
 	/**
@@ -128,8 +136,8 @@ public class DatabaseManager {
 	 * 
 	 * @return
 	 */
-	public static Integer getCurrentShopId() {
-		return DatabaseManager.currentShopId.get();
+	public  Integer getCurrentShopId() {
+		return currentShopId.get();
 	}
 
 	/**
@@ -294,5 +302,26 @@ public class DatabaseManager {
 		settings.withRenderCatalog(false).withRenderSchema(false);
 		jooqConfiguration.setSettings(settings);
 		return jooqConfiguration;
+	}
+	
+	@Override
+	protected void finalize() {
+		DefaultDSLContext db = mainDsl.get();
+		if(db != null) {
+			mainDsl.remove();
+			db = null;
+		}
+		
+		db = shopDsl.get();
+		if(db != null) {
+			shopDsl.remove();
+			db = null;
+		}
+		if(currentShopId.get() != null) {
+			currentShopId.remove();
+		}
+		if(lastShopId.get() != null) {
+			lastShopId.remove();
+		}
 	}
 }

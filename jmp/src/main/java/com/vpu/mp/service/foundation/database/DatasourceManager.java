@@ -10,6 +10,11 @@ import org.springframework.stereotype.Service;
 
 import lombok.Data;
 
+/**
+ * 
+ * @author lixinguo
+ *
+ */
 @Service
 @Data
 public class DatasourceManager {
@@ -81,7 +86,7 @@ public class DatasourceManager {
 	 * 得到数据源
 	 */
 	protected BasicDataSource getDatasource(String host, Integer port, String username, String password) {
-		String key = String.format("%s:port_%s_%s", host, port, username, password);
+		String key = String.format("%s:port_%s_%s_%s", host, port, username, password);
 		if (!datasources.containsKey(key)) {
 			datasources.put(key, dataSource(getJdbcUrl(host, port, ""), username, password));
 		}
