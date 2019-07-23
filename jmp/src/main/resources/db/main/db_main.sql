@@ -634,11 +634,11 @@ create table `b2c_shop_uploaded_image` (
   `img_width`      int(10)                                 not null default '0',
   `img_height`     int(10)                                 not null default '0',
   `is_refer`       tinyint(4)                                       default '0' comment '是否引用',
-  `upload_time`    timestamp() NULL DEFAULT CURRENT_TIMESTAMP() ON UPDATE CURRENT_TIMESTAMP(),
+  `upload_time`    timestamp NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   `sys_id`         int(11)                                 not null default '0' comment '账户ID',
   `shop_id`        int(11)                                 not null default '0' comment '店铺ID',
   `del_flag`       tinyint(1)                              not null default '0',
-  `create_time`    timestamp() NULL DEFAULT CURRENT_TIMESTAMP() COMMENT '创建时间',
+  `create_time`    timestamp NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
   primary key (`img_id`),
   key `shop_id` (`shop_id`),
   key `img_orig_fname` (`img_orig_fname`)
