@@ -135,14 +135,17 @@ public class SqlExcuteListener extends DefaultExecuteListener {
 			}
 		}
 
+		// 替换店铺库的Schema
+		final String defaultShopDbSchema ="mini_shop_471752";
 		String currentSql = ctx.sql();
-		if (currentSql != null) {
+		if (currentSql != null && currentSql.contains(defaultShopDbSchema)) {
 			DatabaseManager databaseManager = (DatabaseManager) SpringUtil.getBean("databaseManager");
-			currentSql = ctx.sql().replaceAll("mini\\_shop\\_471752", databaseManager.getCurrentShopDbSchema());
+			currentSql = ctx.sql().replaceAll(defaultShopDbSchema, databaseManager.getCurrentShopDbSchema());
 			System.out.println(currentSql);
 			ctx.sql(currentSql);
 		}
 	}
+
 
 	/**
 	 * Add a {@link VisitListener} that transforms all bind variables by
