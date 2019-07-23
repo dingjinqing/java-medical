@@ -49,6 +49,8 @@ import com.vpu.mp.service.pojo.shop.config.pledge.group.UpdateGroup;
 @RestController
 @RequestMapping(value = "/api/admin/config")
 public class AdminBasicConfigController extends AdminBaseController{
+	private static int TWENTYFIVE=25;
+	
     /**
      * 服务承诺--列表
      * @return JsonResult
@@ -441,13 +443,13 @@ public class AdminBasicConfigController extends AdminBaseController{
 	 */
 	@RequestMapping("/message/template/basic/update")
 	public JsonResult updateTemplate(@RequestBody ShopMsgTempConfig sConfig) {
-		if (sConfig.getA().length > 25) {
+		if (sConfig.getA().length > TWENTYFIVE) {
 			// 小程序消息不能大于25条
-			return fail(JsonResultCode.CODE_FAIL);
+			return fail(JsonResultCode.CODE_CONFIG_A_NUM_GREATER);
 		}
-		if (sConfig.getB().length > 25) {
+		if (sConfig.getB().length > TWENTYFIVE) {
 			// 公众号消息不能大于25条
-			return fail();
+			return fail(JsonResultCode.CODE_CONFIG_B_NUM_GREATER);
 		}
 
 		int setNum = shop().config.shopMsgTemplateService.setShopTempConfig(sConfig);
