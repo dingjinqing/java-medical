@@ -20,7 +20,7 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 import org.jooq.Record;
-import org.jooq.Record1;
+import org.jooq.Record2;
 import org.jooq.SelectJoinStep;
 import org.jooq.SelectWhereStep;
 import org.jooq.impl.DSL;
@@ -70,25 +70,20 @@ public class OrderReadService extends ShopBaseService {
 		}
 		PageResult<OrderListInfoVo> pageResult = new PageResult<>();
 		Page page = param.getPage();
-		SelectJoinStep<Record1<String>> mainOrder = db().select(ORDER_INFO.MAIN_ORDER_SN).from(ORDER_INFO);
+		SelectJoinStep<Record2<String, Integer>> mainOrder = db().select(ORDER_INFO.MAIN_ORDER_SN,DSL.min(ORDER_INFO.ORDER_ID).as("orderId")).from(ORDER_INFO);
 		//分组聚合主订单
 		mainOrder.groupBy(ORDER_INFO.MAIN_ORDER_SN);
 		buildOptions(mainOrder, param);
-		@Data
-		class MainOrderResult {
-			String orderSn;
-			Integer orderId;
-		}
 		//得到主订单号
 		PageResult<MainOrderResult> mainOrderResult = getPageResult(mainOrder,page.getCurrentPage(),page.getPageRows(),MainOrderResult.class);
 		pageResult.setPage(mainOrderResult.getPage());
 		if(mainOrderResult.getDataList().size() < 1) {
 			return pageResult;
 		}
-		List<String> collect = mainOrderResult.getDataList().stream().map(MainOrderResult::getOrderSn).collect(Collectors.toList());
+		List<String> collect = mainOrderResult.getDataList().stream().map(MainOrderResult::getMainOrderSn).collect(Collectors.toList());
 		//查询出全部订单按照MAIN_ORDER_SN分组
 		Map<String, List<OrderListInfoVo>> allOrder = db().selectDistinct(ORDER_INFO.ORDER_ID.as("Id") , ORDER_INFO.asterisk())
-				.from(ORDER_INFO).where(ORDER_INFO.MAIN_ORDER_SN.in(mainOrderResult.getDataList()))
+				.from(ORDER_INFO).where(ORDER_INFO.MAIN_ORDER_SN.in(collect))
 				.orderBy(ORDER_INFO.ORDER_ID)
 				.fetchGroups(ORDER_INFO.MAIN_ORDER_SN,OrderListInfoVo.class);
 		//构造展示商品的订单:MainOrderCount.count=1的可能为正常订单或处于未子订单未被拆分,>1的为已经拆分
@@ -137,7 +132,13 @@ public class OrderReadService extends ShopBaseService {
 		logger.info("订单综合查询结束");
 		return pageResult;
 	}
-
+	
+	@Data
+	static class MainOrderResult {
+		String mainOrderSn;
+		Integer orderId;
+	}
+	
 	/**
 	  * 构造综合查询条件
 	  * @param select
@@ -145,7 +146,7 @@ public class OrderReadService extends ShopBaseService {
 	  * @return
 	  */
 	 public SelectWhereStep<?> buildOptions(SelectJoinStep<?> select, OrderPageListQueryParam param) {
-		select.orderBy(ORDER_INFO.ORDER_ID.desc());
+		select.orderBy(ORDER_INFO.ORDER_ID.as("orderId").desc());
 		//输入商品名称需要join order_goods表
 		if(!StringUtils.isEmpty(param.goodsName)){
 			select.innerJoin(ORDER_GOODS).on(ORDER_INFO.ORDER_ID.eq(ORDER_GOODS.ORDER_ID));
@@ -154,7 +155,7 @@ public class OrderReadService extends ShopBaseService {
 		if(!StringUtils.isEmpty(param.orderSn)){
 			 select.where(ORDER_INFO.ORDER_SN.eq(param.orderSn));
 		}
-		if(param.orderStatus != null){
+		if(param.orderStatus != null && param.orderStatus.length != 0){
 			 select.where(ORDER_INFO.ORDER_STATUS.in(param.orderStatus));
 		}
 		if(param.goodsType != null) {
@@ -172,7 +173,7 @@ public class OrderReadService extends ShopBaseService {
 			select.where(ORDER_INFO.SOURCE.eq(param.source));
 		}
 		//会员标签tag
-		if(param.tagIds != null){
+		if(param.tagIds != null && param.tagIds.length != 0){
 			if(StringUtils.isEmpty(param.userName)) {
 				select.innerJoin(USER).on(ORDER_INFO.USER_ID.eq(USER.USER_ID));
 			}
@@ -213,7 +214,7 @@ public class OrderReadService extends ShopBaseService {
 			select.where(ORDER_INFO.FINISHED_TIME.le(param.finishedTimeEnd));
 		}
 		//拼团退款失败订单
-		if(param.pinStatus.length != 0){
+		if(param.pinStatus != null && param.pinStatus.length != 0){
 			select.innerJoin(GROUP_BUY_LIST).on(ORDER_INFO.ORDER_SN.eq(GROUP_BUY_LIST.ORDER_SN));
 			select.where(GROUP_BUY_LIST.STATUS.in(param.pinStatus));
 		}
@@ -428,10 +429,10 @@ public class OrderReadService extends ShopBaseService {
 		if(!StringUtils.isEmpty(param.getReturnOrderSn())) {
 			select.where(RETURN_ORDER.RETURN_ORDER_SN.eq(param.getReturnOrderSn()));
 		}
-		if(param.getRefundStatus() != null ) {
+		if(param.getRefundStatus() != null && param.getRefundStatus().length != 0) {
 			select.where(RETURN_ORDER.REFUND_STATUS.in(param.getRefundStatus()));
 		}
-		if(param.getReturnType() != null ) {
+		if(param.getReturnType() != null && param.getReturnType().length != 0) {
 			select.where(RETURN_ORDER.RETURN_TYPE.in(param.getReturnType()));
 		}
 		if(param.getReturnStart() != null ) {
@@ -450,7 +451,7 @@ public class OrderReadService extends ShopBaseService {
 	  */
 	 public PageResult<StoreOrderListInfoVo> getPageList(StoreOrderPageListQueryParam param) {
 		SelectWhereStep<? extends Record> select = db().select(STORE_ORDER.ORDER_ID,STORE_ORDER.ORDER_SN,STORE_ORDER.ORDER_STATUS,STORE_ORDER.STORE_ID,STORE_ORDER.PAY_TIME,STORE_ORDER.MONEY_PAID,STORE_ORDER.PAY_CODE,STORE_ORDER.PAY_NAME,USER.USERNAME)
-				.from(STORE_ORDER).innerJoin(USER)
+				.from(STORE_ORDER).leftJoin(USER)
 				.on(USER.USER_ID.eq(STORE_ORDER.USER_ID));
 		buildOptionsStore(select,param);
 		PageResult<StoreOrderListInfoVo> result = getPageResult(select,param.getPage().getCurrentPage(),param.getPage().getPageRows(),StoreOrderListInfoVo.class);
@@ -482,7 +483,7 @@ public class OrderReadService extends ShopBaseService {
 		if(param.getStoreId() != null ) {
 			select.where(STORE_ORDER.STORE_ID.eq(param.getStoreId()));
 		}
-		if(param.getOrderStatus()!= null ) {
+		if(param.getOrderStatus()!= null && param.getOrderStatus().length != 0) {
 			select.where(STORE_ORDER.ORDER_STATUS.in(param.getOrderStatus()));
 		}
 		return select; 
