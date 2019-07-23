@@ -14,12 +14,10 @@ import com.vpu.mp.service.pojo.shop.goods.label.GoodsLabelListVo;
 import com.vpu.mp.service.pojo.shop.goods.spec.GoodsSpec;
 import com.vpu.mp.service.pojo.shop.goods.spec.GoodsSpecProduct;
 import com.vpu.mp.service.pojo.shop.goods.spec.GoodsSpecVal;
-import com.vpu.mp.service.pojo.shop.goods.GoodsVo;
 import org.jooq.*;
 import org.jooq.impl.DSL;
 import org.jooq.tools.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
@@ -322,7 +320,7 @@ public class GoodsService extends ShopBaseService {
      */
     private void insertGoodsImgs(DSLContext db, List<String> goodsImgs, Integer goodsId) {
 
-        InsertValuesStep2<GoodsImgRecord, Integer, String> insertInto = db().insertInto(GOODS_IMG, GOODS_IMG.GOODS_ID,
+        InsertValuesStep2<GoodsImgRecord, Integer, String> insertInto = db.insertInto(GOODS_IMG, GOODS_IMG.GOODS_ID,
                 GOODS_IMG.IMG_URL);
 
         for (String imgUrl : goodsImgs) {
@@ -623,6 +621,7 @@ public class GoodsService extends ShopBaseService {
         boolean isChange = goodsSpecProductService.isChange(db, goods.getGoodsSpecProducts(), goods.getGoodsId());
 
         if (!isChange) {
+            goodsSpecProductService.updateSpec(db,goods.getGoodsSpecProducts());
             return;
         }
 

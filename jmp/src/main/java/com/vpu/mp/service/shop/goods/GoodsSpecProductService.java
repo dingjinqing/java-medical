@@ -1,20 +1,20 @@
 package com.vpu.mp.service.shop.goods;
 
-import static com.vpu.mp.db.shop.Tables.GOODS_SPEC_PRODUCT;
-import static com.vpu.mp.db.shop.Tables.GOODS_SPEC_PRODUCT_BAK;
-
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
-import org.jooq.DSLContext;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
-
 import com.vpu.mp.db.shop.tables.records.GoodsSpecProductRecord;
 import com.vpu.mp.service.foundation.service.ShopBaseService;
 import com.vpu.mp.service.pojo.shop.goods.spec.GoodsSpec;
 import com.vpu.mp.service.pojo.shop.goods.spec.GoodsSpecProduct;
+import org.jooq.DSLContext;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
+
+import static com.vpu.mp.db.shop.Tables.GOODS_SPEC_PRODUCT;
+import static com.vpu.mp.db.shop.Tables.GOODS_SPEC_PRODUCT_BAK;
 
 /**
  * @author 李晓冰
@@ -24,7 +24,8 @@ import com.vpu.mp.service.pojo.shop.goods.spec.GoodsSpecProduct;
 
 public class GoodsSpecProductService extends ShopBaseService {
 
-    @Autowired private GoodsSpecService goodsSpecService;
+    @Autowired
+    private GoodsSpecService goodsSpecService;
     /**
      * 规格名值描述分割符
      */
@@ -168,6 +169,7 @@ public class GoodsSpecProductService extends ShopBaseService {
 
     /**
      * 根据商品id查找对应sku
+     *
      * @param goodsId
      * @return
      */
@@ -181,5 +183,21 @@ public class GoodsSpecProductService extends ShopBaseService {
     public List<GoodsSpec> selectSpecByGoodsId(Integer goodsId) {
         List<GoodsSpec> goodsSpecs = goodsSpecService.selectByGoodsId(db(), goodsId);
         return goodsSpecs;
+    }
+
+    public void updateSpec(DSLContext db, List<GoodsSpecProduct> goodsSpecProducts) {
+        List<Integer> ids = goodsSpecProducts.stream().map(r -> r.getPrdId()).collect(Collectors.toList());
+
+        List<GoodsSpecProductRecord> recordList = db.selectFrom(GOODS_SPEC_PRODUCT).where(GOODS_SPEC_PRODUCT.PRD_ID.in(ids)).fetch().into(GoodsSpecProductRecord.class);
+
+        Map<Integer, GoodsSpecProduct> goodsSpecMap = goodsSpecProducts.stream().collect(Collectors.toMap(r -> r.getPrdId(), r -> r));
+
+        for (GoodsSpecProductRecord record : recordList) {
+            GoodsSpecProduct goodsSpecProduct = goodsSpecMap.get(record.getPrdId());
+            record.setPrdCostPrice(goodsSpecProduct.getPrdCostPrice());
+            record.setPrdPrice(goodsSpecProduct.getPrdPrice());
+            record.setPrdNumber(goodsSpecProduct.getPrdNumber());
+        }
+        db.batchUpdate(recordList).execute();
     }
 }
