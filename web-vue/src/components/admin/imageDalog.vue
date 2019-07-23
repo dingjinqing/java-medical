@@ -560,7 +560,7 @@ ul {
 }
 .imageDalog .right_content .el-pagination {
   margin-top: 23px;
-  width: 400px !important;
+  width: 300px !important;
 }
 .imageDalog .el-button {
   padding: 7px 15px !important;

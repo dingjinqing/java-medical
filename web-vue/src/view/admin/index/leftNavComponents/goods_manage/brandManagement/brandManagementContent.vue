@@ -126,6 +126,7 @@
             <el-button
               type="primary"
               size="small"
+              @click="handleBrandDialog()"
             >添加品牌分类</el-button>
           </div>
         </el-tab-pane>
@@ -240,6 +241,40 @@
         </el-pagination>
       </div>
     </div>
+    <!--添加品牌分类弹窗-->
+    <el-dialog
+      title="添加品牌分类"
+      :visible.sync="dialogVisibleAddBrand"
+      width="30%"
+      :center='true'
+    >
+      <div class="dialogMain">
+        <p>品牌分类名称：<el-input
+            v-model="brandName"
+            placeholder="请输入内容"
+            size="mini"
+          ></el-input>
+        </p>
+        <p style="margin-top:10px"><span style="margin-right:11px">分类优先级：</span>
+          <el-input
+            v-model="classificationName"
+            placeholder="请输入内容"
+            size="mini"
+          ></el-input>
+        </p>
+        <p>请填写正整数，数值越大，优先级越高，在小程序前端展示位置越靠前</p>
+      </div>
+      <span
+        slot="footer"
+        class="dialog-footer"
+      >
+        <el-button @click="dialogVisibleAddBrand = false">取 消</el-button>
+        <el-button
+          type="primary"
+          @click="dialogVisibleAddBrand = false"
+        >确 定</el-button>
+      </span>
+    </el-dialog>
   </div>
 </template>
 <script>
@@ -324,7 +359,10 @@ export default {
       switchValue: '',
       showHiddleImgUrl: this.$imageHost + '/image/admin/brand_show2.jpg',
       showFlag: false,
-      switchValueBottom: false
+      switchValueBottom: false,
+      dialogVisibleAddBrand: false,
+      brandName: '',
+      classificationName: ''
     }
   },
   props: ['turnIndex'],
@@ -401,6 +439,10 @@ export default {
         turnIndex: null
       }
       this.$emit('turnComponents', obj)
+    },
+    // 调用添加品牌分类弹窗
+    handleBrandDialog () {
+      this.dialogVisibleAddBrand = true
     }
   }
 }
@@ -592,6 +634,15 @@ tbody img {
   height: 355.74px;
   border: 1px solid #eee;
 }
+.dialogMain {
+  margin: 30px 30px 0 30px;
+}
+.dialogMain p:nth-of-type(3) {
+  margin-left: 97px;
+  margin-top: 10px;
+  line-height: 30px;
+  color: #999;
+}
 </style>
 <style>
 .brandManagementContent .el-input {
@@ -605,5 +656,9 @@ tbody img {
 }
 .is-active {
   background-color: null !important;
+}
+.brandManagementContent_main .el-dialog__header {
+  background-color: #f3f3f3 !important;
+  text-align: center !important;
 }
 </style>
