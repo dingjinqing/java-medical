@@ -22,66 +22,71 @@ import org.jooq.impl.DefaultVisitListener;
 import org.jooq.impl.DefaultVisitListenerProvider;
 import org.jooq.tools.JooqLogger;
 import org.jooq.tools.StringUtils;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import com.vpu.mp.support.SpringUtil;
 
 /**
  * 
  * @author 新国
  *
  */
+
 public class SqlExcuteListener extends DefaultExecuteListener {
 
-	private static final JooqLogger LOGGER   = JooqLogger.getLogger(SqlExcuteListener.class);
+	private static final JooqLogger LOGGER = JooqLogger.getLogger(SqlExcuteListener.class);
 
 	/**
 	 * 
 	 */
 	private static final long serialVersionUID = 1L;
 
-	@Override
-	public void executeStart(ExecuteContext ctx) {
-		String ignoreSql = "SET ";
-		String sql = ctx.sql();
-		if (ctx.query() != null) {
-			List<Object> binds = ctx.query().getBindValues();
-			StringBuffer buf = new StringBuffer();
-			int p;
-			int i = 0;
-			while (true) {
-				p = sql.indexOf('?');
-				if (p == -1) {
-					buf.append(sql);
-					break;
-				} else {
-					buf.append(sql.substring(0, p)).append(binds.get(i));
-					sql = sql.substring(p + 1);
-					i++;
-				}
-			}
-			sql = buf.toString();
-		}
-		if (sql.startsWith(ignoreSql)) {
-			return;
-		}
-		String schema = "";
-		try {
-			schema = ctx.connection().getSchema();
-		} catch (SQLException e) {
-		}
-		String message = "SQL DB: " + schema + " -- " + sql;
-//		logger.debug(message);
-	}
-
+//	@Override
+//	public void executeStart(ExecuteContext ctx) {
+//		String ignoreSql = "SET ";
+//		String sql = ctx.sql();
+//		if (ctx.query() != null) {
+//			List<Object> binds = ctx.query().getBindValues();
+//			StringBuffer buf = new StringBuffer();
+//			int p;
+//			int i = 0;
+//			while (true) {
+//				p = sql.indexOf('?');
+//				if (p == -1) {
+//					buf.append(sql);
+//					break;
+//				} else {
+//					buf.append(sql.substring(0, p)).append(binds.get(i));
+//					sql = sql.substring(p + 1);
+//					i++;
+//				}
+//			}
+//			sql = buf.toString();
+//		}
+//		if (sql.startsWith(ignoreSql)) {
+//			return;
+//		}
+//		String schema = "";
+//		try {
+//			schema = ctx.connection().getSchema();
+//		} catch (SQLException e) {
+//		}
+//		String message = "SQL DB: " + schema + " -- " + sql;
+////		logger.debug(message);
+//	}
 
 	private static final int BIND_PARAM_MAX_LENGTH = 2000;
 
-
 	@Override
 	public void renderEnd(ExecuteContext ctx) {
+
 		if (LOGGER.isDebugEnabled()) {
 			Configuration configuration = ctx.configuration();
 			String newline = TRUE.equals(configuration.settings().isRenderFormatted()) ? "\n" : "";
 
-			// [#2939] Prevent excessive logging of bind variables only in DEBUG mode, not in TRACE mode.
+			// [#2939] Prevent excessive logging of bind variables only in DEBUG mode, not
+			// in TRACE mode.
 			if (!LOGGER.isTraceEnabled()) {
 				configuration = abbreviateBindVariables(configuration);
 			}
@@ -103,8 +108,7 @@ public class SqlExcuteListener extends DefaultExecuteListener {
 			else if (ctx.routine() != null) {
 				LOGGER.debug("Calling routine", newline + ctx.sql());
 
-				String inlined = DSL.using(configuration)
-						.renderInlined(ctx.routine());
+				String inlined = DSL.using(configuration).renderInlined(ctx.routine());
 
 				if (!ctx.sql().equals(inlined)) {
 					LOGGER.debug("-> with bind values", newline + inlined);
@@ -116,8 +120,7 @@ public class SqlExcuteListener extends DefaultExecuteListener {
 				// [#1529] Batch queries should be logged specially
 				if (ctx.type() == ExecuteType.BATCH) {
 					LOGGER.debug("Executing batch query", newline + ctx.sql());
-				}
-				else {
+				} else {
 					LOGGER.debug("Executing query", newline + ctx.sql());
 				}
 			}
@@ -131,9 +134,19 @@ public class SqlExcuteListener extends DefaultExecuteListener {
 				}
 			}
 		}
+
+		String currentSql = ctx.sql();
+		if (currentSql != null) {
+			DatabaseManager databaseManager = (DatabaseManager) SpringUtil.getBean("databaseManager");
+			currentSql = ctx.sql().replaceAll("mini\\_shop\\_471752", databaseManager.getCurrentShopDbSchema());
+			System.out.println(currentSql);
+			ctx.sql(currentSql);
+		}
 	}
+
 	/**
-	 * Add a {@link VisitListener} that transforms all bind variables by abbreviating them.
+	 * Add a {@link VisitListener} that transforms all bind variables by
+	 * abbreviating them.
 	 */
 	private final Configuration abbreviateBindVariables(Configuration configuration) {
 		VisitListenerProvider[] oldProviders = configuration.visitListenerProviders();
@@ -160,8 +173,7 @@ public class SqlExcuteListener extends DefaultExecuteListener {
 					if (value instanceof String && ((String) value).length() > BIND_PARAM_MAX_LENGTH) {
 						anyAbbreviations = true;
 						context.queryPart(val(abbreviate((String) value, BIND_PARAM_MAX_LENGTH)));
-					}
-					else if (value instanceof byte[] && ((byte[]) value).length > BIND_PARAM_MAX_LENGTH) {
+					} else if (value instanceof byte[] && ((byte[]) value).length > BIND_PARAM_MAX_LENGTH) {
 						anyAbbreviations = true;
 						context.queryPart(val(Arrays.copyOf((byte[]) value, BIND_PARAM_MAX_LENGTH)));
 					}
@@ -173,7 +185,8 @@ public class SqlExcuteListener extends DefaultExecuteListener {
 		public void visitEnd(VisitContext context) {
 			if (anyAbbreviations) {
 				if (context.queryPartsLength() == 1) {
-					context.renderContext().sql(" -- Bind values may have been abbreviated for DEBUG logging. Use TRACE logging for very large bind variables.");
+					context.renderContext().sql(
+							" -- Bind values may have been abbreviated for DEBUG logging. Use TRACE logging for very large bind variables.");
 				}
 			}
 		}

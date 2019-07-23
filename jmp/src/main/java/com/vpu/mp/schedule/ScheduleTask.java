@@ -1,5 +1,6 @@
 package com.vpu.mp.schedule;
 
+import org.jooq.Result;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.scheduling.annotation.Async;
@@ -8,6 +9,8 @@ import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
+import com.vpu.mp.db.main.tables.records.ShopRecord;
+import com.vpu.mp.service.pojo.shop.image.ImageListQueryParam;
 import com.vpu.mp.service.saas.SaasApplication;
 
 /**
@@ -34,9 +37,14 @@ public class ScheduleTask {
 	public void taskPerMinute() {
 		// TODO: 加入每分钟执行的任务
 		 saas.article.getArticleIdRows(1);
-		 saas.getShopApp(471752).image.getAllSize();
+//		 Result<ShopRecord> shops = saas.shop.getAll();
+//		 for(ShopRecord shop:shops) {
+//			 saas.getShopApp(shop.getShopId()).image.getAllSize();
+//		 }
+		 ImageListQueryParam param = new ImageListQueryParam();
+		 saas.getShopApp(123456).image.getPageList(param);
 		 saas.article.getArticleIdRows(1);
-		 saas.getShopApp(471752).image.getAllSize();
+		 saas.getShopApp(123456).image.getAllSize();
 		System.out.println("@Scheduled id:"+Thread.currentThread().getId());
 	}
 

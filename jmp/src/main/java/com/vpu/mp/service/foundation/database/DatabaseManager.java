@@ -75,7 +75,6 @@ public class DatabaseManager {
 	private ThreadLocal<MpDefaultDSLContext> shopDsl = new ThreadLocal<MpDefaultDSLContext>();
 
 
-	
 	/**
 	 * 主库连接
 	 */
@@ -84,8 +83,6 @@ public class DatabaseManager {
 		if (db == null) {
 			BasicDataSource ds = datasourceManager.getMainDbDatasource();
 			db = this.getDsl(ds, datasourceManager.getMainDbConfig());
-		}else {
-			db.setSchema(db.getDbConfig().getDatabase()).execute();
 		}
 		mainDsl.set(db);
 		return mainDsl.get();
@@ -101,8 +98,6 @@ public class DatabaseManager {
 	 */
 	public DatabaseManager switchShopDb(Integer shopId) {
 		if (shopId == currentShopId.get()) {
-			MpDefaultDSLContext db = shopDsl.get();
-			db.setSchema(db.getDbConfig().getDatabase()).execute();
 			return this;
 		}
 		MpDefaultDSLContext db = shopDsl.get();
@@ -119,10 +114,7 @@ public class DatabaseManager {
 			} else {
 				throw new RuntimeException();
 			}
-		} else {
-			db.setSchema(db.getDbConfig().getDatabase()).execute();
-		}
-	
+		} 
 		shopDsl.set(db);
 		lastShopId.set(currentShopId.get());
 		currentShopId.set(shopId);
@@ -160,9 +152,6 @@ public class DatabaseManager {
 	protected MpDefaultDSLContext getDsl(BasicDataSource ds, DbConfig dbConfig) {
 		MpDefaultDSLContext db = new MpDefaultDSLContext(configuration(ds));
 		db.setDbConfig(dbConfig);
-		if (!StringUtils.isBlank(dbConfig.getDatabase())) {
-			db.setSchema(dbConfig.getDatabase()).execute();
-		}		
 		db.execute("SET NAMES utf8mb4");
 		db.execute("Set sql_mode='ONLY_FULL_GROUP_BY'");
 		return db;
@@ -306,9 +295,17 @@ public class DatabaseManager {
 		jooqConfiguration.set(dialect);
 
 		Settings settings = new Settings();
-		settings.withRenderCatalog(false).withRenderSchema(false);
+		settings.withRenderCatalog(false);//.withRenderSchema(false);
 		jooqConfiguration.setSettings(settings);
 		return jooqConfiguration;
+	}
+	
+	/**
+	 * 得到当前线程店铺Db名称
+	 * @return
+	 */
+	public String getCurrentShopDbSchema() {
+		return shopDsl.get() != null ? shopDsl.get().getDbConfig().getDatabase() : "";
 	}
 	
 	@Override
