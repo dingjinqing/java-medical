@@ -23,6 +23,7 @@ import com.vpu.mp.service.shop.member.ScoreCfgService;
 import com.vpu.mp.service.shop.member.TagService;
 import com.vpu.mp.service.shop.operation.RecordAdminActionService;
 import com.vpu.mp.service.shop.order.OrderReadService;
+import com.vpu.mp.service.shop.order.OrderWriteService;
 import com.vpu.mp.service.shop.overview.MallOverviewService;
 import com.vpu.mp.service.shop.overview.OverviewService;
 import com.vpu.mp.service.shop.overview.RealTimeOverviewService;
@@ -46,7 +47,8 @@ public class ShopApplication  {
 	@Autowired public ImageService image;
 	@Autowired public ImageCategoryService imageCatgory;
 	@Autowired public ShopMpDecorationService mpDecoration;	//装修模块
-	@Autowired public OrderReadService order;
+	@Autowired public OrderReadService readOrder;	//订单读操作
+	@Autowired public OrderWriteService writeOrder;	//订单写操作
 	@Autowired public PageClassificationService pageClassification;
 	@Autowired public VersionService version;
 	@Autowired public ConfigService config;

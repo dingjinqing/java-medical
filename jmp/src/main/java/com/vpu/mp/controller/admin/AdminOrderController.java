@@ -13,6 +13,7 @@ import com.vpu.mp.service.pojo.shop.order.OrderPageListQueryParam;
 import com.vpu.mp.service.pojo.shop.order.OrderParam;
 import com.vpu.mp.service.pojo.shop.order.store.StoreOrderListInfoVo;
 import com.vpu.mp.service.pojo.shop.order.store.StoreOrderPageListQueryParam;
+import com.vpu.mp.service.pojo.shop.order.write.star.StarParam;
 
 /**
  * 订单模块
@@ -30,7 +31,7 @@ public class AdminOrderController extends AdminBaseController{
 	 */
 	@PostMapping("/list")
 	public JsonResult orderList(@RequestBody OrderPageListQueryParam param) {
-		PageResult<? extends OrderListInfoVo> result = shop().order.getPageList(param);
+		PageResult<? extends OrderListInfoVo> result = shop().readOrder.getPageList(param);
 		return success(result);
 	}
 	
@@ -45,7 +46,7 @@ public class AdminOrderController extends AdminBaseController{
 			//TODO 
 			return fail();
 		}
-		return success(shop().order.get(order.getMainOrderSn()));
+		return success(shop().readOrder.get(order.getMainOrderSn()));
 	}
 	
 	/**
@@ -53,8 +54,17 @@ public class AdminOrderController extends AdminBaseController{
 	 */
 	@PostMapping("/store/list")
 	public JsonResult storyOrderList(@RequestBody StoreOrderPageListQueryParam param) {
-		PageResult<StoreOrderListInfoVo> result = shop().order.getPageList(param);
+		PageResult<StoreOrderListInfoVo> result = shop().readOrder.getPageList(param);
 		return success(result);
+	}
+	
+	/**
+	   *  订单标星切换
+	 */
+	@PostMapping("/star")
+	public JsonResult switchStar(@RequestBody StarParam param) {
+		shop().writeOrder.switchStar(param);
+		return success();
 	}
 }
 
