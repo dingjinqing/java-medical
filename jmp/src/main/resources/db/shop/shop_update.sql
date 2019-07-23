@@ -332,3 +332,5 @@ alter table b2c_mp_visit_page
 
 alter table b2c_mp_distribution_visit
     add id int auto_increment primary key first;
+
+-- --
