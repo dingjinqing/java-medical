@@ -149,6 +149,8 @@ public class JsonResultMessage {
 	final public static String ORDER_PROCESS_CONFIG_IS_NULL = "order.process.config.is.null";
 	final public static String RETURN_CONFIG_IS_NULL = "return.config.is.null";
 	final public static String WXPAY_CONFIG_IS_NULL = "wxpay.config.is.null";
+	final public static String CONFIG_A_NUM_GREATER = "config.a.num.greater";
+	final public static String CONFIG_B_NUM_GREATER = "config.b.num.greater";
 
 
 	/**
