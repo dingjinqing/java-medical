@@ -57,20 +57,6 @@ public class VoTranslator {
     }
 
     /**
-     * 判断对象是否原生类型（不可再递归翻译）
-     */
-    private boolean isRawType(Object object) {
-        return object instanceof String || object instanceof Number;
-    }
-
-    /**
-     * 获取国际化注解
-     */
-    private I18N getI18nAnnotation(Field field) {
-        return field.getDeclaredAnnotation(I18N.class);
-    }
-
-    /**
      * 转换语言
      */
     private String translate(String prefix, String message, String defaultMessage) {
@@ -82,14 +68,6 @@ public class VoTranslator {
         String[] languages = language.split("_");
         Locale locale = new Locale(languages[0], languages[1]);
         return accessor.getMessage(message, defaultMessage, locale);
-    }
-
-    private String getLanguage() {
-        String language = request.getHeader(HEADER_LANG);
-        if (isEmpty(language)) {
-            return DEFAULT_LANG;
-        }
-        return language;
     }
 
     /**
@@ -133,5 +111,30 @@ public class VoTranslator {
             String realValue = translate(fileName, value, value);
             field.set(object, realValue);
         }
+    }
+
+    /**
+     * 取当前语言，默认中文
+     */
+    private String getLanguage() {
+        String language = request.getHeader(HEADER_LANG);
+        if (isEmpty(language)) {
+            return DEFAULT_LANG;
+        }
+        return language;
+    }
+
+    /**
+     * 判断对象是否原生类型（不可再递归翻译）
+     */
+    private boolean isRawType(Object object) {
+        return object instanceof String || object instanceof Number;
+    }
+
+    /**
+     * 获取国际化注解
+     */
+    private I18N getI18nAnnotation(Field field) {
+        return field.getDeclaredAnnotation(I18N.class);
     }
 }
