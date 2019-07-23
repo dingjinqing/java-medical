@@ -303,3 +303,34 @@ alter table `b2c_service_order` add index order_sn(order_sn);
 
 /* liufei 2019-07-19 */
 alter table b2c_trades drop index ref_date;
+
+-- 2019-07-23 统计相关表添加 int 主键 --
+-- 郑保乐 2019-07-23
+alter table b2c_mp_daily_visit
+    add id int auto_increment primary key first;
+
+alter table b2c_mp_daily_retain
+    add id int auto_increment primary key first ;
+
+alter table b2c_mp_weekly_visit
+    add id int auto_increment primary key first;
+
+alter table b2c_mp_weekly_retain
+    add id int auto_increment primary key first ;
+
+alter table b2c_mp_monthly_visit
+    add id int auto_increment primary key first;
+
+alter table b2c_mp_monthly_retain
+    add id int auto_increment primary key first;
+
+alter table b2c_mp_user_portrait
+    add id int auto_increment primary key first;
+
+alter table b2c_mp_visit_page
+    add id int auto_increment primary key first;
+
+alter table b2c_mp_distribution_visit
+    add id int auto_increment primary key first;
+
+--
