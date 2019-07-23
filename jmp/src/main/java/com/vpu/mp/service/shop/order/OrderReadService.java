@@ -1,9 +1,9 @@
 package com.vpu.mp.service.shop.order;
 
+import static com.vpu.mp.db.shop.tables.GroupBuyList.GROUP_BUY_LIST;
 import static com.vpu.mp.db.shop.tables.OrderGoods.ORDER_GOODS;
 import static com.vpu.mp.db.shop.tables.OrderInfo.ORDER_INFO;
 import static com.vpu.mp.db.shop.tables.PartOrderGoodsShip.PART_ORDER_GOODS_SHIP;
-import static com.vpu.mp.db.shop.tables.GroupBuyList.GROUP_BUY_LIST;
 import static com.vpu.mp.db.shop.tables.ReturnOrder.RETURN_ORDER;
 import static com.vpu.mp.db.shop.tables.ReturnOrderGoods.RETURN_ORDER_GOODS;
 import static com.vpu.mp.db.shop.tables.StoreOrder.STORE_ORDER;
@@ -46,6 +46,8 @@ import com.vpu.mp.service.pojo.shop.order.shipping.ShippingInfoVo.Goods;
 import com.vpu.mp.service.pojo.shop.order.store.StoreOrderListInfoVo;
 import com.vpu.mp.service.pojo.shop.order.store.StoreOrderPageListQueryParam;
 
+import lombok.Data;
+
 /**
  * 	订单模块查询service
  * @author 常乐 2019年6月27日;王帅 2019/7/10
@@ -72,12 +74,18 @@ public class OrderReadService extends ShopBaseService {
 		//分组聚合主订单
 		mainOrder.groupBy(ORDER_INFO.MAIN_ORDER_SN);
 		buildOptions(mainOrder, param);
+		@Data
+		class MainOrderResult {
+			String orderSn;
+			Integer orderId;
+		}
 		//得到主订单号
-		PageResult<String> mainOrderResult = getPageResult(mainOrder,page.getCurrentPage(),page.getPageRows(),String.class);
+		PageResult<MainOrderResult> mainOrderResult = getPageResult(mainOrder,page.getCurrentPage(),page.getPageRows(),MainOrderResult.class);
 		pageResult.setPage(mainOrderResult.getPage());
 		if(mainOrderResult.getDataList().size() < 1) {
 			return pageResult;
 		}
+		List<String> collect = mainOrderResult.getDataList().stream().map(MainOrderResult::getOrderSn).collect(Collectors.toList());
 		//查询出全部订单按照MAIN_ORDER_SN分组
 		Map<String, List<OrderListInfoVo>> allOrder = db().selectDistinct(ORDER_INFO.ORDER_ID.as("Id") , ORDER_INFO.asterisk())
 				.from(ORDER_INFO).where(ORDER_INFO.MAIN_ORDER_SN.in(mainOrderResult.getDataList()))
@@ -89,7 +97,7 @@ public class OrderReadService extends ShopBaseService {
 		ArrayList<OrderListInfoVo> mainOrderList = new ArrayList<OrderListInfoVo>(mainOrderResult.getDataList().size());
 		//现子订单数>0的主订单
 		ArrayList<Integer> orderCountMoreZero = new ArrayList<Integer>();
-		for (String moc : mainOrderResult.getDataList()) {
+		for (String moc : collect) {
 			List<OrderListInfoVo> list = allOrder.get(moc);
 			int size = list.size();
 			OrderListInfoVo mOrder = null;
@@ -205,7 +213,7 @@ public class OrderReadService extends ShopBaseService {
 			select.where(ORDER_INFO.FINISHED_TIME.le(param.finishedTimeEnd));
 		}
 		//拼团退款失败订单
-		if(param.pinStatus != null){
+		if(param.pinStatus.length != 0){
 			select.innerJoin(GROUP_BUY_LIST).on(ORDER_INFO.ORDER_SN.eq(GROUP_BUY_LIST.ORDER_SN));
 			select.where(GROUP_BUY_LIST.STATUS.in(param.pinStatus));
 		}
