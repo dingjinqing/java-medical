@@ -169,6 +169,12 @@
               <span>已关闭</span>
               <span style="color:#999">开启后，将在商品分类页展示全部品牌列表</span>
             </div>
+            <div class="showBtn">
+              <el-button
+                type="primary"
+                style="margin:30px 0 0 75px"
+              >主要按钮</el-button>
+            </div>
           </div>
         </el-tab-pane>
       </el-tabs>
@@ -594,10 +600,10 @@ tbody img {
 .tapOneblock .el-pagination__editor {
   width: 70px !important;
 }
-.brandManagementContent .is-active {
-  background-color: null !important;
-}
 .brandManagementContent .el-tabs__content {
   overflow: visible !important;
+}
+.is-active {
+  background-color: null !important;
 }
 </style>

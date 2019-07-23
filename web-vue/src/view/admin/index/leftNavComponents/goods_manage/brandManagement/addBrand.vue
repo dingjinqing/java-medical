@@ -146,15 +146,122 @@
       width="70%"
     >
       <div class="choiseDialog">
-        <div></div>
+        <div>
+          <ul>
+            <li>平台分类：
+              <el-select
+                v-model="bottomDialogSelectOne"
+                placeholder="请选择平台分类"
+                size="small"
+              >
+                <el-option
+                  v-for="item in bottomOptionsOne"
+                  :key="item.value"
+                  :label="item.label"
+                  :value="item.value"
+                >
+                </el-option>
+              </el-select>
+            </li>
+            <li>商家分类：
+              <el-select
+                v-model="bottomDialogSelectTwo"
+                placeholder="请选择商家分类"
+                size="small"
+              >
+                <el-option
+                  v-for="item in bottomOptionsTwo"
+                  :key="item.value"
+                  :label="item.label"
+                  :value="item.value"
+                >
+                </el-option>
+              </el-select>
+            </li>
+            <li>商品标签：
+              <el-select
+                v-model="bottomDialogSelectThree"
+                placeholder="请选择商品标签"
+                size="small"
+              >
+                <el-option
+                  v-for="item in bottomOptionsThree"
+                  :key="item.value"
+                  :label="item.label"
+                  :value="item.value"
+                >
+                </el-option>
+              </el-select>
+            </li>
+            <li class="rangeLi">商品价格范围:
+              <el-input
+                v-model="inputBottomRange"
+                placeholder="请输入内容"
+                size="small"
+              ></el-input>&nbsp;元至&nbsp;
+              <el-input
+                v-model="inputBottomRangeRight"
+                placeholder="请输入内容"
+                size="small"
+              ></el-input>
+            </li>
+          </ul>
+          <ul>
+            <li>商品名称：
+              <el-input
+                v-model="goodsName"
+                placeholder="请输入商品名称"
+                size="small"
+              ></el-input>
+            </li>
+            <li>商品货号：
+              <el-input
+                v-model="goodsNum"
+                placeholder="请输入商品货号"
+                size="small"
+              ></el-input>
+            </li>
+            <li>商品品牌：
+              <el-select
+                v-model="goodsGrandVal"
+                placeholder="请选择商品品牌"
+                size="small"
+              >
+                <el-option
+                  v-for="item in goodsGrandOptions"
+                  :key="item.value"
+                  :label="item.label"
+                  :value="item.value"
+                >
+                </el-option>
+              </el-select>
+            </li>
+          </ul>
+          <div class="middleBbtnDiv">
+            <el-button
+              type="primary"
+              size="small"
+              style="margin-right:10px"
+            >筛选</el-button>
+            <el-button
+              type="info"
+              plain
+              size="small"
+            >重置筛选条件</el-button>
+          </div>
+        </div>
       </div>
       <span
         slot="footer"
         class="dialog-footer"
       >
-        <el-button @click="choiseGooddialogVisible = false">取 消</el-button>
+        <el-button
+          size="small"
+          @click="choiseGooddialogVisible = false"
+        >取 消</el-button>
         <el-button
           type="primary"
+          size="small"
           @click="choiseGooddialogVisible = false"
         >确 定</el-button>
       </span>
@@ -183,7 +290,54 @@ export default {
       dialogVisible: false,
       choiseGooddialogVisible: false,
       brandName: '',
-      classificationName: ''
+      classificationName: '',
+      bottomDialogSelectOne: '',
+      bottomOptionsOne: [{
+        value: '选项1',
+        label: '黄金糕'
+      }, {
+        value: '选项2',
+        label: '双皮奶'
+      }, {
+        value: '选项3',
+        label: '蚵仔煎'
+      }],
+      bottomDialogSelectTwo: '',
+      bottomOptionsTwo: [{
+        value: '选项1',
+        label: '黄金糕'
+      }, {
+        value: '选项2',
+        label: '双皮奶'
+      }, {
+        value: '选项3',
+        label: '蚵仔煎'
+      }],
+      bottomDialogSelectThree: '',
+      bottomOptionsThree: [{
+        value: '选项1',
+        label: '黄金糕'
+      }, {
+        value: '选项2',
+        label: '双皮奶'
+      }, {
+        value: '选项3',
+        label: '蚵仔煎'
+      }],
+      inputBottomRangeRight: '',
+      goodsName: '',
+      goodsNum: '',
+      goodsGrandOptions: [{
+        value: '选项1',
+        label: '黄金糕'
+      }, {
+        value: '选项2',
+        label: '双皮奶'
+      }, {
+        value: '选项3',
+        label: '蚵仔煎'
+      }],
+      goodsGrandVal: ''
     }
   },
   methods: {
@@ -292,11 +446,30 @@ ul li:nth-of-type(1) {
   cursor: pointer;
   display: inline-block;
 }
+.dialogMain {
+  margin: 30px 30px 0 30px;
+}
 .dialogMain p:nth-of-type(3) {
   margin-left: 97px;
   margin-top: 10px;
   line-height: 30px;
   color: #999;
+}
+.choiseDialog ul {
+  display: flex;
+  margin-top: 10px;
+}
+.choiseDialog ul li {
+  margin-top: 0;
+}
+.choiseDialog ul li:nth-of-type(2) {
+  margin: 0 30px;
+}
+.choiseDialog ul li:nth-of-type(3) {
+  margin-right: 30px;
+}
+.middleBbtnDiv {
+  padding: 10px 30px;
 }
 </style>
 <style>
@@ -319,5 +492,8 @@ ul li:nth-of-type(1) {
 }
 .addBrand .el-dialog__body {
   padding: 0 !important;
+}
+.rangeLi .el-input__inner {
+  width: 70px !important;
 }
 </style>

@@ -126,7 +126,10 @@
       </div>
     </div>
     <!--选择图片弹窗 -->
-    <ImageDalog @handleSelectImg='handleSelectImg' />
+    <ImageDalog
+      pageIndex='imageDalog'
+      @handleSelectImg='handleSelectImg'
+    />
   </div>
 </template>
 <script>

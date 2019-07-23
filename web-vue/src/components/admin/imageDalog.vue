@@ -30,7 +30,7 @@
       </div>
       <div class="dialog_middle">
         <div class="dialog_middle_top">
-          <Tree pageIndex='imageDalog' />
+          <Tree :pageIndex='pageIndex' />
           <div class="dialog_middle_right_box">
             <div class="right_top">
               <el-select
@@ -57,7 +57,7 @@
                 size="mini"
                 @click="handleSearch()"
               >{{$t('imgageDalog.search')}}</el-button>
-              <el-checkbox v-model="checked">52px x 52px</el-checkbox>
+              <el-checkbox v-model="checked">{{this.size}}px x {{this.size}}px</el-checkbox>
             </div>
             <div class="right_content">
               <ul>
@@ -117,7 +117,7 @@
                 <el-pagination
                   @current-change="handleCurrentChange"
                   :current-page.sync="currentPage3"
-                  :page-size="10"
+                  :page-size="8"
                   layout="prev, pager, next, jumper"
                   :total="totalRows"
                   :small="pagination_b"
@@ -147,8 +147,10 @@
 import { mapGetters } from 'vuex'
 import Tree from '@/components/admin/tree'
 import { queryHeadImgsRequest, upmoreHeadImgsRequest, imgsHeaddeleteRequest } from '@/api/admin/tree.js'
+import { upmoreImgsRequest, queryImgsRequest, imgsdeleteRequest } from '@/api/admin/pictureSpace.js'
 export default {
   components: { Tree },
+  props: ['pageIndex'],
   data () {
     return {
       dialogTableVisible: false,
@@ -176,7 +178,8 @@ export default {
       firstNodeId: '',
       totalRows: null,
       currentPage: '',
-      pageCount: ''
+      pageCount: '',
+      size: ''
     }
   },
   computed: {
@@ -201,6 +204,7 @@ export default {
   mounted () {
     // accountSettings组件控制本组件弹窗
     this.$http.$on('dtVisible', () => {
+      console.log(123)
       this.dialogTableVisible = true
     })
     this.value = this.options[0].value
@@ -234,12 +238,25 @@ export default {
         fd.append('needImgWidth', img.width)
         fd.append('needImgHeight', img.height)
         fd.append('imgCatId', that.firstNodeId)
-        upmoreHeadImgsRequest(fd).then((res) => {
-          console.log(res)
-          if (res.error === 0) {
-            that.queryImgs()
-          }
-        })
+        switch (that.pageIndex) {
+          case 'pictureSpace':
+            upmoreImgsRequest(fd).then((res) => {
+              console.log(res)
+              if (res.error === 0) {
+                that.queryImgs()
+              }
+            })
+            break
+          case 'imageDalog':
+            upmoreHeadImgsRequest(fd).then((res) => {
+              console.log(res)
+              if (res.error === 0) {
+                that.queryImgs()
+              }
+            })
+            break
+        }
+
         // let valid = img.width === width && img.height === height
       }
       img.src = _URL.createObjectURL(file)
@@ -263,44 +280,85 @@ export default {
       console.log(this.firstNodeId)
       console.log(this.value)
       console.log(this.checked)
-      let width = '52'
-      let height = '52'
-      if (this.checked === true) {
-        width = '52'
-        height = '52'
-      } else {
-        width = ''
-        height = ''
-      }
 
-      let obj = {
-        'page': currentPage3,
-        'imgCatId': this.firstNodeId,
-        'keywords': this.imgNameInput,
-        'searchNeed': 0,
-        'pageRows': 8,
-        'needImgWidth': width,
-        'needImgHeight': height,
-        'uploadSortId': this.value
-      }
+      let width = ''
+      let height = ''
+      let obj = ''
+      switch (this.pageIndex) {
+        case 'pictureSpace':
+          this.size = 80
+          if (this.checked === true) {
+            width = 80
+            height = 80
+          } else {
+            width = ''
+            height = ''
+          }
+          obj = {
+            'page': currentPage3,
+            'imgCatId': this.firstNodeId,
+            'keywords': this.imgNameInput,
+            'searchNeed': 1,
+            'pageRows': 8,
+            'needImgWidth': width,
+            'needImgHeight': height,
+            'uploadSortId': this.value
+          }
+          queryImgsRequest(obj).then((res) => {
+            console.log(res)
+            if (res.error === 0) {
+              this.totalRows = res.content.page.totalRows
+              this.currentPage = res.content.page.currentPage
+              this.pageCount = res.content.page.pageCount
+              res.content.dataList.map((item, index) => {
+                item.checked = false
+                item.imgIndex = ''
 
-      queryHeadImgsRequest(obj).then((res) => {
-        console.log(res)
-        if (res.error === 0) {
-          this.totalRows = res.content.page.totalRows
-          this.currentPage = res.content.page.currentPage
-          this.pageCount = res.content.page.pageCount
-          res.content.dataList.map((item, index) => {
-            item.checked = false
-            item.imgIndex = ''
-
-            // item.imgUrl = item.imgUrl.split('cn')[1]
-            // console.log(item.imgUrl)
+                // item.imgUrl = item.imgUrl.split('cn')[1]
+                // console.log(item.imgUrl)
+              })
+              this.img_list = res.content.dataList
+              console.log(this.img_list, 1)
+            }
           })
-          this.img_list = res.content.dataList
-          console.log(this.img_list, 1)
-        }
-      })
+          break
+        case 'imageDalog':
+          this.size = 52
+          if (this.checked === true) {
+            width = 52
+            height = 52
+          } else {
+            width = ''
+            height = ''
+          }
+          obj = {
+            'page': currentPage3,
+            'imgCatId': this.firstNodeId,
+            'keywords': this.imgNameInput,
+            'searchNeed': 1,
+            'pageRows': 8,
+            'needImgWidth': width,
+            'needImgHeight': height,
+            'uploadSortId': this.value
+          }
+          queryHeadImgsRequest(obj).then((res) => {
+            console.log(res)
+            if (res.error === 0) {
+              this.totalRows = res.content.page.totalRows
+              this.currentPage = res.content.page.currentPage
+              this.pageCount = res.content.page.pageCount
+              res.content.dataList.map((item, index) => {
+                item.checked = false
+                item.imgIndex = ''
+
+                // item.imgUrl = item.imgUrl.split('cn')[1]
+                // console.log(item.imgUrl)
+              })
+              this.img_list = res.content.dataList
+              console.log(this.img_list, 1)
+            }
+          })
+      }
     },
     // 单张图片删除
     delImg (data) {
@@ -308,12 +366,23 @@ export default {
       let obj = {
         imageIds: [data]
       }
-      imgsHeaddeleteRequest(obj).then((res) => {
-        console.log(res)
-        if (res.error === 0) {
-          this.queryImgs(this.currentPage3)
-        }
-      })
+      switch (this.pageIndex) {
+        case 'pictureSpace':
+          imgsdeleteRequest(obj).then((res) => {
+            console.log(res)
+            if (res.error === 0) {
+              this.queryImgs(this.currentPage3)
+            }
+          })
+          break
+        case 'imageDalog':
+          imgsHeaddeleteRequest(obj).then((res) => {
+            console.log(res)
+            if (res.error === 0) {
+              this.queryImgs(this.currentPage3)
+            }
+          })
+      }
     },
     // 单图片选中
     handleChecked (index) {

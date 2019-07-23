@@ -6,41 +6,54 @@
         <div class="cententLleft_bottom">
           <ul>
             <li
-              v-for="(item,index) in ulDataList"
+              v-for="(item,index) in contentList"
               :key="index"
               @click="hanleFooterLi(index)"
             >
-              <img :src="ulClickIndex === index?item.imgActive:item.img">
-              <p :class="ulClickIndex === index?'textActive':''">{{item.title}}</p>
+              <img :src="ulClickIndex === index?item.hover:item.normal">
+              <p :class="ulClickIndex === index?'textActive':''">{{item.text}}</p>
             </li>
           </ul>
         </div>
       </div>
       <div class="cententLRight">
         <div class="cententLRight_title">导航设置：<span style="color:#999">最少需要使用三个导航设置，最多五个。图标大小80*80。</span></div>
-        <div class="cententLRight_content_container">
+        <div
+          class="cententLRight_content_container"
+          v-for="(item,index) in contentList"
+          :key="index"
+        >
           <div class="mp_nav">
+            <div
+              v-if="index===0||index===1||index===2?false:true"
+              class="rightIcon"
+              @click="handleDel(index)"
+            ><img :src="
+              dele_icon"></div>
             <div class="mp_list">
               <span>导航文字：</span>
               <el-input
-                v-model="input"
                 placeholder="请输入内容"
                 size="mini"
+                v-model="item.text"
               ></el-input>
             </div>
             <div class="mp_list moDifyImg">
-              <div class="nav_title">图片：<span style="color:#5a8bff">修改</span></div>
+              <div class="nav_title">图片：<span
+                  @click="handleModifyDialog(index)"
+                  style="color:#5a8bff;cursor:pointer"
+                >修改</span></div>
               <div class="nav_icon">
                 <div class="icon_box">
-                  <img :src="iconImgs[0].img">
-                  <span>更换图标</span>
+                  <img :src="item.normal">
+                  <span @click="handleChangeIcon(index,0)">更换图标</span>
                 </div>
                 <div class="tip">点击状态</div>
               </div>
               <div class="nav_icon">
                 <div class="icon_box">
-                  <img :src="iconImgs[1].img">
-                  <span>更换图标</span>
+                  <img :src="item.hover">
+                  <span @click="handleChangeIcon(index,1)">更换图标</span>
                 </div>
                 <div class="tip">未点击状态</div>
               </div>
@@ -48,7 +61,7 @@
             <div class="linkContainer">
               <span>添加链接：</span>
               <el-input
-                v-model="linkInput"
+                v-model="item.page"
                 placeholder="请输入内容"
                 size="mini"
               ></el-input>
@@ -71,30 +84,115 @@
     </div>
     <!--选择链接弹窗-->
     <SelectLinks />
+    <!--选择图片弹窗 -->
+    <ImageDalog
+      pageIndex='pictureSpace'
+      @handleSelectImg='handleSelectImg'
+    />
+    <!--修改icon弹窗-->
+    <el-dialog
+      title="提示"
+      :visible.sync="modifyDialog"
+      width="48%"
+    >
+      <div class="modifyDialogDiv">
+        <ul class="modifyDialogUl">
+          <li
+            v-for="(item,index) in modifyDialogList"
+            :key="index"
+            @click="handleSelectIcon(item,index)"
+          >
+            <span>{{item.text}}</span>
+            <img
+              :src="item.img_one"
+              style="margin-right:5px"
+            >
+            <img :src="item.img_two">
+          </li>
+        </ul>
+      </div>
+      <span
+        slot="footer"
+        class="dialog-footer"
+      >
+
+      </span>
+    </el-dialog>
   </div>
 </template>
 <script>
 import { mapGetters } from 'vuex'
+import ImageDalog from '@/components/admin/imageDalog'
 import SelectLinks from '@/components/admin/selectLinks'
+import { bottomGetRequest, bottomUpdateRequest } from '@/api/admin/bottomNavigation'
 export default {
-  components: { SelectLinks },
+  components: { SelectLinks, ImageDalog },
   data () {
     return {
-      ulDataList: [
-        { title: '首页', img: this.$imageHost + '/image/admin/icon_mps/icon_no_2.png', imgActive: this.$imageHost + '/image/admin/icon_mps/icon_yes_2.png' },
-        { title: '门店', img: this.$imageHost + '/image/admin/icon_mps/icon_no_1.png', imgActive: this.$imageHost + '/image/admin/icon_mps/icon_yes_1.png' },
-        { title: '购物车', img: this.$imageHost + '/image/admin/icon_mps/icon_no_1.png', imgActive: this.$imageHost + '/image/admin/icon_mps/icon_no_1.png' },
-        { title: '商品分类', img: this.$imageHost + '/image/admin/icon_mps/icon_no_5.png', imgActive: this.$imageHost + '/image/admin/icon_mps/icon_yes_5.png' },
-        { title: '个人中心', img: this.$imageHost + '/image/admin/icon_mps/icon_no_4.png', imgActive: this.$imageHost + '/image/admin/icon_mps/icon_yes_4.png' }
-      ],
       ulClickIndex: 0,
-      input: '首页',
-      iconImgs: [
-        { img: this.$imageHost + '/image/admin/icon_mps/icon_yes_2.png' },
-        { img: this.$imageHost + '/image/admin/icon_mps/icon_yes_2.png' }
+      inputValArr: [
+        {
+          input: '1'
+        },
+        {
+          input: '2'
+        },
+        {
+          input: '3'
+        },
+        {
+          input: '4'
+        },
+        {
+          input: '5'
+        }
       ],
-      linkInput: 'pages/index/index',
-      linkFlag: true
+      linkInput: '',
+      linkFlag: true,
+      firstNavIndex: '',
+      secondNavIndex: '',
+      contentList: [
+      ],
+      dele_icon: '../../../../../../static/image/admin/icon_delete.png',
+      modifyDialog: false,
+      modifyDialogList: [
+        {
+          img_one: 'http://mpdevimg2.weipubao.cn/image/admin/icon_mps/icon_yes_2.png',
+          img_two: 'http://mpdevimg2.weipubao.cn/image/admin/icon_mps/icon_no_2.png',
+          text: '首页'
+        },
+        {
+          img_one: 'http://mpdevimg2.weipubao.cn/image/admin/icon_mps/icon_yes_1.png',
+          img_two: 'http://mpdevimg2.weipubao.cn/image/admin/icon_mps/icon_no_1.png',
+          text: '门店'
+        },
+        {
+          img_one: 'http://mpdevimg2.weipubao.cn/image/admin/icon_mps/icon_yes_3.png',
+          img_two: 'http://mpdevimg2.weipubao.cn/image/admin/icon_mps/icon_no_3.png',
+          text: '购物车'
+        },
+        {
+          img_one: 'http://mpdevimg2.weipubao.cn/image/admin/icon_mps/icon_yes_4.png',
+          img_two: 'http://mpdevimg2.weipubao.cn/image/admin/icon_mps/icon_no_4.png',
+          text: '我的'
+        },
+        {
+          img_one: 'http://mpdevimg2.weipubao.cn/image/admin/icon_mps/icon_yes_5.png',
+          img_two: 'http://mpdevimg2.weipubao.cn/image/admin/icon_mps/icon_no_5.png',
+          text: '分类'
+        },
+        {
+          img_one: 'http://mpdevimg2.weipubao.cn/image/admin/icon_mps/icon_yes_6.png',
+          img_two: 'http://mpdevimg2.weipubao.cn/image/admin/icon_mps/icon_no_6.png',
+          text: '活动'
+        },
+        {
+          img_one: 'http://mpdevimg2.weipubao.cn/image/admin/icon_mps/icon_yes_7.png',
+          img_two: 'http://mpdevimg2.weipubao.cn/image/admin/icon_mps/icon_no_7.png',
+          text: '订单'
+        }
+      ],
+      iconindex: ''
     }
   },
   computed: {
@@ -109,9 +207,25 @@ export default {
     }
   },
   mounted () {
-
+    // 初始化查询
+    this.queryBottom()
   },
   methods: {
+    queryBottom () {
+      bottomGetRequest().then((res) => {
+        if (res.error === 0) {
+          console.log(res.error)
+          // res.content.map((item, index) => {
+          //   item.normal = this.$imageHost + item.normal
+          //   console.log(item.normal)
+
+          //   item.hover = this.$imageHost + item.hover
+          // })
+          console.log(res)
+          this.contentList = res.content
+        }
+      })
+    },
     // 点击选择链接
     handleSelectLinks () {
       this.$http.$emit('linkDialogFlag', this.linkFlag)
@@ -120,9 +234,56 @@ export default {
     hanleFooterLi (index) {
       this.ulClickIndex = index
     },
+    // 点击修改
+    handleModifyDialog (index) {
+      this.iconindex = index
+      this.modifyDialog = true
+    },
     // 保存
     saveShopStyle () {
-
+      let obj = this.contentList
+      bottomUpdateRequest(obj).then((res) => {
+        if (res.error === 0) {
+          this.$message({
+            message: '保存成功',
+            type: 'success'
+          })
+        }
+        console.log(res)
+      })
+    },
+    // 删除某项
+    handleDel (index) {
+      this.contentList.splice(index, 1)
+    },
+    // 更换图标
+    handleChangeIcon (first, second) {
+      console.log(first, second)
+      this.firstNavIndex = first
+      this.secondNavIndex = second
+      this.$http.$emit('dtVisible')
+    },
+    // 弹框确定选中
+    handleSelectImg (res) {
+      // this.imageUrl[0].img_1 = res
+      console.log(res)
+      let first = this.firstNavIndex
+      let second = this.secondNavIndex
+      if (second === 0) {
+        this.ulDataList[first].img = res
+        this.contentList[first].normal = res
+      } else {
+        this.ulDataList[first].imgActive = res
+        this.contentList[first].hover = res
+      }
+      this.$forceUpdate()
+    },
+    // 修改icon弹窗li点击事件
+    handleSelectIcon (data, index) {
+      this.contentList[this.iconindex].text = data.text
+      this.contentList[this.iconindex].normal = data.img_one
+      this.contentList[this.iconindex].hover = data.img_two
+      this.modifyDialog = false
     }
   }
 }
@@ -139,6 +300,7 @@ export default {
   background: #fff;
   margin-bottom: 15px;
   margin-top: 13px;
+  position: relative;
 }
 .nav_icon img {
   width: 40px;
@@ -282,6 +444,47 @@ export default {
   padding-top: 9px;
   color: #fff;
 }
+.rightIcon {
+  position: absolute;
+  right: -8px;
+  top: -7px;
+  cursor: pointer;
+}
+.cententLleft_bottom li img {
+  width: 20px;
+  height: 20px;
+}
+.modifyDialogUl {
+  overflow: hidden;
+}
+.modifyDialogUl li {
+  float: left;
+  width: 145px;
+  height: 42px;
+  line-height: 42px;
+  text-align: center;
+  margin-right: 12px;
+  color: #666;
+  margin-bottom: 10px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+}
+.modifyDialogDiv {
+  padding: 0 20px;
+}
+.modifyDialogUl li span {
+  display: inline-block;
+  margin-right: 10px;
+  width: 42px;
+  text-align: left;
+}
+.modifyDialogUl li img {
+  display: inline-block;
+  width: 20px;
+  height: 20px;
+  max-width: 23px;
+}
 </style>
 <style>
 .bottomNavigationContent .el-input {
@@ -291,5 +494,11 @@ export default {
   padding: 7px 15px !important;
   font-size: 12px !important;
   border-radius: 3px !important;
+}
+.el-dialog__header {
+  text-align: center;
+}
+.el-dialog__header {
+  background-color: #f3f3f3;
 }
 </style>
