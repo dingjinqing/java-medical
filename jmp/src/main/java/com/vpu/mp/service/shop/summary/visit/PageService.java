@@ -22,7 +22,6 @@ import static com.vpu.mp.db.shop.tables.MpVisitPage.MP_VISIT_PAGE;
  * @author 郑保乐
  */
 @Service
-
 public class PageService extends BaseVisitService {
 
     private static final String PAGE_OTHER = "page.other";

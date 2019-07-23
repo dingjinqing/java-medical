@@ -209,6 +209,15 @@ public class Keys {
     public static final Identity<WxpUnlimitSceneRecord, Integer> IDENTITY_WXP_UNLIMIT_SCENE = Identities0.IDENTITY_WXP_UNLIMIT_SCENE;
     public static final Identity<WxShoppingRecommendRecord, Integer> IDENTITY_WX_SHOPPING_RECOMMEND = Identities0.IDENTITY_WX_SHOPPING_RECOMMEND;
     public static final Identity<XcxCustomerPageRecord, Integer> IDENTITY_XCX_CUSTOMER_PAGE = Identities0.IDENTITY_XCX_CUSTOMER_PAGE;
+    public static final Identity<MpDailyRetainRecord, Integer> IDENTITY_MP_DAILY_RETAIN = Identities0.IDENTITY_MP_DAILY_RETAIN;
+    public static final Identity<MpDailyVisitRecord, Integer> IDENTITY_MP_DAILY_VISIT = Identities0.IDENTITY_MP_DAILY_VISIT;
+    public static final Identity<MpDistributionVisitRecord, Integer> IDENTITY_MP_DISTRIBUTION_VISIT = Identities0.IDENTITY_MP_DISTRIBUTION_VISIT;
+    public static final Identity<MpMonthlyRetainRecord, Integer> IDENTITY_MP_MONTHLY_RETAIN = Identities0.IDENTITY_MP_MONTHLY_RETAIN;
+    public static final Identity<MpMonthlyVisitRecord, Integer> IDENTITY_MP_MONTHLY_VISIT = Identities0.IDENTITY_MP_MONTHLY_VISIT;
+    public static final Identity<MpUserPortraitRecord, Integer> IDENTITY_MP_USER_PORTRAIT = Identities0.IDENTITY_MP_USER_PORTRAIT;
+    public static final Identity<MpVisitPageRecord, Integer> IDENTITY_MP_VISIT_PAGE = Identities0.IDENTITY_MP_VISIT_PAGE;
+    public static final Identity<MpWeeklyRetainRecord, Integer> IDENTITY_MP_WEEKLY_RETAIN = Identities0.IDENTITY_MP_WEEKLY_RETAIN;
+    public static final Identity<MpWeeklyVisitRecord, Integer> IDENTITY_MP_WEEKLY_VISIT = Identities0.IDENTITY_MP_WEEKLY_VISIT;
 
     // -------------------------------------------------------------------------
     // UNIQUE and PRIMARY KEY definitions
@@ -413,6 +422,15 @@ public class Keys {
     public static final UniqueKey<WxpUnlimitSceneRecord> KEY_B2C_WXP_UNLIMIT_SCENE_PRIMARY = UniqueKeys0.KEY_B2C_WXP_UNLIMIT_SCENE_PRIMARY;
     public static final UniqueKey<WxShoppingRecommendRecord> KEY_B2C_WX_SHOPPING_RECOMMEND_PRIMARY = UniqueKeys0.KEY_B2C_WX_SHOPPING_RECOMMEND_PRIMARY;
     public static final UniqueKey<XcxCustomerPageRecord> KEY_B2C_XCX_CUSTOMER_PAGE_PRIMARY = UniqueKeys0.KEY_B2C_XCX_CUSTOMER_PAGE_PRIMARY;
+    public static final UniqueKey<MpDailyRetainRecord> KEY_B2C_MP_DAILY_RETAIN_PRIMARY = UniqueKeys0.KEY_B2C_MP_DAILY_RETAIN_PRIMARY;
+    public static final UniqueKey<MpDailyVisitRecord> KEY_B2C_MP_DAILY_VISIT_PRIMARY = UniqueKeys0.KEY_B2C_MP_DAILY_VISIT_PRIMARY;
+    public static final UniqueKey<MpDistributionVisitRecord> KEY_B2C_MP_DISTRIBUTION_VISIT_PRIMARY = UniqueKeys0.KEY_B2C_MP_DISTRIBUTION_VISIT_PRIMARY;
+    public static final UniqueKey<MpMonthlyRetainRecord> KEY_B2C_MP_MONTHLY_RETAIN_PRIMARY = UniqueKeys0.KEY_B2C_MP_MONTHLY_RETAIN_PRIMARY;
+    public static final UniqueKey<MpMonthlyVisitRecord> KEY_B2C_MP_MONTHLY_VISIT_PRIMARY = UniqueKeys0.KEY_B2C_MP_MONTHLY_VISIT_PRIMARY;
+    public static final UniqueKey<MpUserPortraitRecord> KEY_B2C_MP_USER_PORTRAIT_PRIMARY = UniqueKeys0.KEY_B2C_MP_USER_PORTRAIT_PRIMARY;
+    public static final UniqueKey<MpVisitPageRecord> KEY_B2C_MP_VISIT_PAGE_PRIMARY = UniqueKeys0.KEY_B2C_MP_VISIT_PAGE_PRIMARY;
+    public static final UniqueKey<MpWeeklyRetainRecord> KEY_B2C_MP_WEEKLY_RETAIN_PRIMARY = UniqueKeys0.KEY_B2C_MP_WEEKLY_RETAIN_PRIMARY;
+    public static final UniqueKey<MpWeeklyVisitRecord> KEY_B2C_MP_WEEKLY_VISIT_PRIMARY = UniqueKeys0.KEY_B2C_MP_WEEKLY_VISIT_PRIMARY;
 
 
     // -------------------------------------------------------------------------
@@ -596,6 +614,15 @@ public class Keys {
         public static Identity<WxpUnlimitSceneRecord, Integer> IDENTITY_WXP_UNLIMIT_SCENE = Internal.createIdentity(WxpUnlimitScene.WXP_UNLIMIT_SCENE, WxpUnlimitScene.WXP_UNLIMIT_SCENE.SCENE_ID);
         public static Identity<WxShoppingRecommendRecord, Integer> IDENTITY_WX_SHOPPING_RECOMMEND = Internal.createIdentity(WxShoppingRecommend.WX_SHOPPING_RECOMMEND, WxShoppingRecommend.WX_SHOPPING_RECOMMEND.ID);
         public static Identity<XcxCustomerPageRecord, Integer> IDENTITY_XCX_CUSTOMER_PAGE = Internal.createIdentity(XcxCustomerPage.XCX_CUSTOMER_PAGE, XcxCustomerPage.XCX_CUSTOMER_PAGE.PAGE_ID);
+        public static Identity<MpDailyRetainRecord, Integer> IDENTITY_MP_DAILY_RETAIN = Internal.createIdentity(MpDailyRetain.MP_DAILY_RETAIN, MpDailyRetain.MP_DAILY_RETAIN.ID);
+        public static Identity<MpDailyVisitRecord, Integer> IDENTITY_MP_DAILY_VISIT = Internal.createIdentity(MpDailyVisit.MP_DAILY_VISIT, MpDailyVisit.MP_DAILY_VISIT.ID);
+        public static Identity<MpDistributionVisitRecord, Integer> IDENTITY_MP_DISTRIBUTION_VISIT = Internal.createIdentity(MpDistributionVisit.MP_DISTRIBUTION_VISIT, MpDistributionVisit.MP_DISTRIBUTION_VISIT.ID);
+        public static Identity<MpMonthlyRetainRecord, Integer> IDENTITY_MP_MONTHLY_RETAIN = Internal.createIdentity(MpMonthlyRetain.MP_MONTHLY_RETAIN, MpMonthlyRetain.MP_MONTHLY_RETAIN.ID);
+        public static Identity<MpMonthlyVisitRecord, Integer> IDENTITY_MP_MONTHLY_VISIT = Internal.createIdentity(MpMonthlyVisit.MP_MONTHLY_VISIT, MpMonthlyVisit.MP_MONTHLY_VISIT.ID);
+        public static Identity<MpUserPortraitRecord, Integer> IDENTITY_MP_USER_PORTRAIT = Internal.createIdentity(MpUserPortrait.MP_USER_PORTRAIT, MpUserPortrait.MP_USER_PORTRAIT.ID);
+        public static Identity<MpVisitPageRecord, Integer> IDENTITY_MP_VISIT_PAGE = Internal.createIdentity(MpVisitPage.MP_VISIT_PAGE, MpVisitPage.MP_VISIT_PAGE.ID);
+        public static Identity<MpWeeklyRetainRecord, Integer> IDENTITY_MP_WEEKLY_RETAIN = Internal.createIdentity(MpWeeklyRetain.MP_WEEKLY_RETAIN, MpWeeklyRetain.MP_WEEKLY_RETAIN.ID);
+        public static Identity<MpWeeklyVisitRecord, Integer> IDENTITY_MP_WEEKLY_VISIT = Internal.createIdentity(MpWeeklyVisit.MP_WEEKLY_VISIT, MpWeeklyVisit.MP_WEEKLY_VISIT.ID);
     }
 
     private static class UniqueKeys0 {
@@ -799,5 +826,14 @@ public class Keys {
         public static final UniqueKey<WxpUnlimitSceneRecord> KEY_B2C_WXP_UNLIMIT_SCENE_PRIMARY = Internal.createUniqueKey(WxpUnlimitScene.WXP_UNLIMIT_SCENE, "KEY_b2c_wxp_unlimit_scene_PRIMARY", WxpUnlimitScene.WXP_UNLIMIT_SCENE.SCENE_ID);
         public static final UniqueKey<WxShoppingRecommendRecord> KEY_B2C_WX_SHOPPING_RECOMMEND_PRIMARY = Internal.createUniqueKey(WxShoppingRecommend.WX_SHOPPING_RECOMMEND, "KEY_b2c_wx_shopping_recommend_PRIMARY", WxShoppingRecommend.WX_SHOPPING_RECOMMEND.ID);
         public static final UniqueKey<XcxCustomerPageRecord> KEY_B2C_XCX_CUSTOMER_PAGE_PRIMARY = Internal.createUniqueKey(XcxCustomerPage.XCX_CUSTOMER_PAGE, "KEY_b2c_xcx_customer_page_PRIMARY", XcxCustomerPage.XCX_CUSTOMER_PAGE.PAGE_ID);
+        public static final UniqueKey<MpDailyRetainRecord> KEY_B2C_MP_DAILY_RETAIN_PRIMARY = UniqueKeys0.KEY_B2C_MP_DAILY_RETAIN_PRIMARY;
+        public static final UniqueKey<MpDailyVisitRecord> KEY_B2C_MP_DAILY_VISIT_PRIMARY = UniqueKeys0.KEY_B2C_MP_DAILY_VISIT_PRIMARY;
+        public static final UniqueKey<MpDistributionVisitRecord> KEY_B2C_MP_DISTRIBUTION_VISIT_PRIMARY = UniqueKeys0.KEY_B2C_MP_DISTRIBUTION_VISIT_PRIMARY;
+        public static final UniqueKey<MpMonthlyRetainRecord> KEY_B2C_MP_MONTHLY_RETAIN_PRIMARY = UniqueKeys0.KEY_B2C_MP_MONTHLY_RETAIN_PRIMARY;
+        public static final UniqueKey<MpMonthlyVisitRecord> KEY_B2C_MP_MONTHLY_VISIT_PRIMARY = UniqueKeys0.KEY_B2C_MP_MONTHLY_VISIT_PRIMARY;
+        public static final UniqueKey<MpUserPortraitRecord> KEY_B2C_MP_USER_PORTRAIT_PRIMARY = UniqueKeys0.KEY_B2C_MP_USER_PORTRAIT_PRIMARY;
+        public static final UniqueKey<MpVisitPageRecord> KEY_B2C_MP_VISIT_PAGE_PRIMARY = UniqueKeys0.KEY_B2C_MP_VISIT_PAGE_PRIMARY;
+        public static final UniqueKey<MpWeeklyRetainRecord> KEY_B2C_MP_WEEKLY_RETAIN_PRIMARY = UniqueKeys0.KEY_B2C_MP_WEEKLY_RETAIN_PRIMARY;
+        public static final UniqueKey<MpWeeklyVisitRecord> KEY_B2C_MP_WEEKLY_VISIT_PRIMARY = UniqueKeys0.KEY_B2C_MP_WEEKLY_VISIT_PRIMARY;
     }
 }

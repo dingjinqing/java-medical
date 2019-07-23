@@ -5,25 +5,17 @@ package com.vpu.mp.db.shop.tables;
 
 
 import com.vpu.mp.db.shop.Indexes;
+import com.vpu.mp.db.shop.Keys;
 import com.vpu.mp.db.shop.MiniShop_471752;
 import com.vpu.mp.db.shop.tables.records.MpDistributionVisitRecord;
+import org.jooq.*;
+import org.jooq.impl.DSL;
+import org.jooq.impl.TableImpl;
 
+import javax.annotation.Generated;
 import java.sql.Timestamp;
 import java.util.Arrays;
 import java.util.List;
-
-import javax.annotation.Generated;
-
-import org.jooq.Field;
-import org.jooq.ForeignKey;
-import org.jooq.Index;
-import org.jooq.Name;
-import org.jooq.Record;
-import org.jooq.Schema;
-import org.jooq.Table;
-import org.jooq.TableField;
-import org.jooq.impl.DSL;
-import org.jooq.impl.TableImpl;
 
 
 /**
@@ -39,10 +31,10 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class MpDistributionVisit extends TableImpl<MpDistributionVisitRecord> {
 
-    private static final long serialVersionUID = 1463645610;
+    private static final long serialVersionUID = 623548519;
 
     /**
-     * The reference instance of <code>mini_shop_471752.b2c_mp_distribution_visit</code>
+     * The reference instance of <code>jmini_shop_4748160.b2c_mp_distribution_visit</code>
      */
     public static final MpDistributionVisit MP_DISTRIBUTION_VISIT = new MpDistributionVisit();
 
@@ -55,41 +47,46 @@ public class MpDistributionVisit extends TableImpl<MpDistributionVisitRecord> {
     }
 
     /**
-     * The column <code>mini_shop_471752.b2c_mp_distribution_visit.ref_date</code>. 时间，如："20180313"
+     * The column <code>jmini_shop_4748160.b2c_mp_distribution_visit.id</code>.
+     */
+    public final TableField<MpDistributionVisitRecord, Integer> ID = createField("id", org.jooq.impl.SQLDataType.INTEGER.nullable(false).identity(true), this, "");
+
+    /**
+     * The column <code>jmini_shop_4748160.b2c_mp_distribution_visit.ref_date</code>. 时间，如："20180313"
      */
     public final TableField<MpDistributionVisitRecord, String> REF_DATE = createField("ref_date", org.jooq.impl.SQLDataType.CHAR(8).nullable(false), this, "时间，如：\"20180313\"");
 
     /**
-     * The column <code>mini_shop_471752.b2c_mp_distribution_visit.list</code>. 存入所有类型的指标情况
+     * The column <code>jmini_shop_4748160.b2c_mp_distribution_visit.list</code>. 存入所有类型的指标情况
      */
     public final TableField<MpDistributionVisitRecord, String> LIST = createField("list", org.jooq.impl.SQLDataType.CLOB, this, "存入所有类型的指标情况");
 
     /**
-     * The column <code>mini_shop_471752.b2c_mp_distribution_visit.create_time</code>.
+     * The column <code>jmini_shop_4748160.b2c_mp_distribution_visit.create_time</code>.
      */
-    public final TableField<MpDistributionVisitRecord, Timestamp> CREATE_TIME = createField("create_time", org.jooq.impl.SQLDataType.TIMESTAMP.nullable(false).defaultValue(org.jooq.impl.DSL.field("CURRENT_TIMESTAMP", org.jooq.impl.SQLDataType.TIMESTAMP)), this, "");
+    public final TableField<MpDistributionVisitRecord, Timestamp> CREATE_TIME = createField("create_time", org.jooq.impl.SQLDataType.TIMESTAMP.nullable(false).defaultValue(DSL.field("CURRENT_TIMESTAMP", org.jooq.impl.SQLDataType.TIMESTAMP)), this, "");
 
     /**
-     * The column <code>mini_shop_471752.b2c_mp_distribution_visit.update_time</code>. 最后修改时间
+     * The column <code>jmini_shop_4748160.b2c_mp_distribution_visit.update_time</code>. 最后修改时间
      */
-    public final TableField<MpDistributionVisitRecord, Timestamp> UPDATE_TIME = createField("update_time", org.jooq.impl.SQLDataType.TIMESTAMP.nullable(false).defaultValue(org.jooq.impl.DSL.field("CURRENT_TIMESTAMP", org.jooq.impl.SQLDataType.TIMESTAMP)), this, "最后修改时间");
+    public final TableField<MpDistributionVisitRecord, Timestamp> UPDATE_TIME = createField("update_time", org.jooq.impl.SQLDataType.TIMESTAMP.nullable(false).defaultValue(DSL.field("CURRENT_TIMESTAMP", org.jooq.impl.SQLDataType.TIMESTAMP)), this, "最后修改时间");
 
     /**
-     * Create a <code>mini_shop_471752.b2c_mp_distribution_visit</code> table reference
+     * Create a <code>jmini_shop_4748160.b2c_mp_distribution_visit</code> table reference
      */
     public MpDistributionVisit() {
         this(DSL.name("b2c_mp_distribution_visit"), null);
     }
 
     /**
-     * Create an aliased <code>mini_shop_471752.b2c_mp_distribution_visit</code> table reference
+     * Create an aliased <code>jmini_shop_4748160.b2c_mp_distribution_visit</code> table reference
      */
     public MpDistributionVisit(String alias) {
         this(DSL.name(alias), MP_DISTRIBUTION_VISIT);
     }
 
     /**
-     * Create an aliased <code>mini_shop_471752.b2c_mp_distribution_visit</code> table reference
+     * Create an aliased <code>jmini_shop_4748160.b2c_mp_distribution_visit</code> table reference
      */
     public MpDistributionVisit(Name alias) {
         this(alias, MP_DISTRIBUTION_VISIT);
@@ -120,7 +117,31 @@ public class MpDistributionVisit extends TableImpl<MpDistributionVisitRecord> {
      */
     @Override
     public List<Index> getIndexes() {
-        return Arrays.<Index>asList(Indexes.MP_DISTRIBUTION_VISIT_REF_DATE);
+        return Arrays.<Index>asList(Indexes.MP_DISTRIBUTION_VISIT_PRIMARY, Indexes.MP_DISTRIBUTION_VISIT_REF_DATE);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public Identity<MpDistributionVisitRecord, Integer> getIdentity() {
+        return Keys.IDENTITY_MP_DISTRIBUTION_VISIT;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public UniqueKey<MpDistributionVisitRecord> getPrimaryKey() {
+        return Keys.KEY_B2C_MP_DISTRIBUTION_VISIT_PRIMARY;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public List<UniqueKey<MpDistributionVisitRecord>> getKeys() {
+        return Arrays.<UniqueKey<MpDistributionVisitRecord>>asList(Keys.KEY_B2C_MP_DISTRIBUTION_VISIT_PRIMARY);
     }
 
     /**

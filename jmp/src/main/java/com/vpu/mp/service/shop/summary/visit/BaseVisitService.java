@@ -1,14 +1,13 @@
 package com.vpu.mp.service.shop.summary.visit;
 
-import java.util.Collections;
-import java.util.LinkedList;
-import java.util.List;
-
-import org.springframework.stereotype.Service;
-
 import com.vpu.mp.service.foundation.service.ShopBaseService;
 import com.vpu.mp.service.pojo.shop.summary.RefDateRecord;
 import com.vpu.mp.service.pojo.shop.summary.visit.RefDateRecordHolder;
+import org.springframework.stereotype.Service;
+
+import java.util.Collections;
+import java.util.LinkedList;
+import java.util.List;
 
 /**
  * 访问分析通用逻辑
@@ -16,7 +15,6 @@ import com.vpu.mp.service.pojo.shop.summary.visit.RefDateRecordHolder;
  * @author 郑保乐
  */
 @Service
-
 class BaseVisitService extends ShopBaseService {
 
     /**

@@ -4,22 +4,18 @@
 package com.vpu.mp.db.shop.tables;
 
 
+import com.vpu.mp.db.shop.Indexes;
+import com.vpu.mp.db.shop.Keys;
 import com.vpu.mp.db.shop.MiniShop_471752;
 import com.vpu.mp.db.shop.tables.records.MpMonthlyRetainRecord;
-
-import java.sql.Timestamp;
-
-import javax.annotation.Generated;
-
-import org.jooq.Field;
-import org.jooq.ForeignKey;
-import org.jooq.Name;
-import org.jooq.Record;
-import org.jooq.Schema;
-import org.jooq.Table;
-import org.jooq.TableField;
+import org.jooq.*;
 import org.jooq.impl.DSL;
 import org.jooq.impl.TableImpl;
+
+import javax.annotation.Generated;
+import java.sql.Timestamp;
+import java.util.Arrays;
+import java.util.List;
 
 
 /**
@@ -35,10 +31,10 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class MpMonthlyRetain extends TableImpl<MpMonthlyRetainRecord> {
 
-    private static final long serialVersionUID = 1052668384;
+    private static final long serialVersionUID = -1432278862;
 
     /**
-     * The reference instance of <code>mini_shop_471752.b2c_mp_monthly_retain</code>
+     * The reference instance of <code>jmini_shop_4748160.b2c_mp_monthly_retain</code>
      */
     public static final MpMonthlyRetain MP_MONTHLY_RETAIN = new MpMonthlyRetain();
 
@@ -51,46 +47,51 @@ public class MpMonthlyRetain extends TableImpl<MpMonthlyRetainRecord> {
     }
 
     /**
-     * The column <code>mini_shop_471752.b2c_mp_monthly_retain.ref_date</code>. 时间，如："201803"
+     * The column <code>jmini_shop_4748160.b2c_mp_monthly_retain.id</code>.
+     */
+    public final TableField<MpMonthlyRetainRecord, Integer> ID = createField("id", org.jooq.impl.SQLDataType.INTEGER.nullable(false).identity(true), this, "");
+
+    /**
+     * The column <code>jmini_shop_4748160.b2c_mp_monthly_retain.ref_date</code>. 时间，如："201803"
      */
     public final TableField<MpMonthlyRetainRecord, String> REF_DATE = createField("ref_date", org.jooq.impl.SQLDataType.CHAR(6).nullable(false), this, "时间，如：\"201803\"");
 
     /**
-     * The column <code>mini_shop_471752.b2c_mp_monthly_retain.visit_uv_new</code>. 新增用户留存
+     * The column <code>jmini_shop_4748160.b2c_mp_monthly_retain.visit_uv_new</code>. 新增用户留存
      */
     public final TableField<MpMonthlyRetainRecord, String> VISIT_UV_NEW = createField("visit_uv_new", org.jooq.impl.SQLDataType.CLOB, this, "新增用户留存");
 
     /**
-     * The column <code>mini_shop_471752.b2c_mp_monthly_retain.visit_uv</code>. 活跃用户留存
+     * The column <code>jmini_shop_4748160.b2c_mp_monthly_retain.visit_uv</code>. 活跃用户留存
      */
     public final TableField<MpMonthlyRetainRecord, String> VISIT_UV = createField("visit_uv", org.jooq.impl.SQLDataType.CLOB, this, "活跃用户留存");
 
     /**
-     * The column <code>mini_shop_471752.b2c_mp_monthly_retain.create_time</code>.
+     * The column <code>jmini_shop_4748160.b2c_mp_monthly_retain.create_time</code>.
      */
-    public final TableField<MpMonthlyRetainRecord, Timestamp> CREATE_TIME = createField("create_time", org.jooq.impl.SQLDataType.TIMESTAMP.nullable(false).defaultValue(org.jooq.impl.DSL.field("CURRENT_TIMESTAMP", org.jooq.impl.SQLDataType.TIMESTAMP)), this, "");
+    public final TableField<MpMonthlyRetainRecord, Timestamp> CREATE_TIME = createField("create_time", org.jooq.impl.SQLDataType.TIMESTAMP.nullable(false).defaultValue(DSL.field("CURRENT_TIMESTAMP", org.jooq.impl.SQLDataType.TIMESTAMP)), this, "");
 
     /**
-     * The column <code>mini_shop_471752.b2c_mp_monthly_retain.update_time</code>. 最后修改时间
+     * The column <code>jmini_shop_4748160.b2c_mp_monthly_retain.update_time</code>. 最后修改时间
      */
-    public final TableField<MpMonthlyRetainRecord, Timestamp> UPDATE_TIME = createField("update_time", org.jooq.impl.SQLDataType.TIMESTAMP.nullable(false).defaultValue(org.jooq.impl.DSL.field("CURRENT_TIMESTAMP", org.jooq.impl.SQLDataType.TIMESTAMP)), this, "最后修改时间");
+    public final TableField<MpMonthlyRetainRecord, Timestamp> UPDATE_TIME = createField("update_time", org.jooq.impl.SQLDataType.TIMESTAMP.nullable(false).defaultValue(DSL.field("CURRENT_TIMESTAMP", org.jooq.impl.SQLDataType.TIMESTAMP)), this, "最后修改时间");
 
     /**
-     * Create a <code>mini_shop_471752.b2c_mp_monthly_retain</code> table reference
+     * Create a <code>jmini_shop_4748160.b2c_mp_monthly_retain</code> table reference
      */
     public MpMonthlyRetain() {
         this(DSL.name("b2c_mp_monthly_retain"), null);
     }
 
     /**
-     * Create an aliased <code>mini_shop_471752.b2c_mp_monthly_retain</code> table reference
+     * Create an aliased <code>jmini_shop_4748160.b2c_mp_monthly_retain</code> table reference
      */
     public MpMonthlyRetain(String alias) {
         this(DSL.name(alias), MP_MONTHLY_RETAIN);
     }
 
     /**
-     * Create an aliased <code>mini_shop_471752.b2c_mp_monthly_retain</code> table reference
+     * Create an aliased <code>jmini_shop_4748160.b2c_mp_monthly_retain</code> table reference
      */
     public MpMonthlyRetain(Name alias) {
         this(alias, MP_MONTHLY_RETAIN);
@@ -114,6 +115,38 @@ public class MpMonthlyRetain extends TableImpl<MpMonthlyRetainRecord> {
     @Override
     public Schema getSchema() {
         return MiniShop_471752.MINI_SHOP_471752;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public List<Index> getIndexes() {
+        return Arrays.<Index>asList(Indexes.MP_MONTHLY_RETAIN_PRIMARY);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public Identity<MpMonthlyRetainRecord, Integer> getIdentity() {
+        return Keys.IDENTITY_MP_MONTHLY_RETAIN;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public UniqueKey<MpMonthlyRetainRecord> getPrimaryKey() {
+        return Keys.KEY_B2C_MP_MONTHLY_RETAIN_PRIMARY;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public List<UniqueKey<MpMonthlyRetainRecord>> getKeys() {
+        return Arrays.<UniqueKey<MpMonthlyRetainRecord>>asList(Keys.KEY_B2C_MP_MONTHLY_RETAIN_PRIMARY);
     }
 
     /**

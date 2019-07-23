@@ -402,7 +402,15 @@ public class Indexes {
     public static final Index WX_SHOPPING_RECOMMEND_PRIMARY = Indexes0.WX_SHOPPING_RECOMMEND_PRIMARY;
     public static final Index WX_SHOPPING_RECOMMEND_USER_ID = Indexes0.WX_SHOPPING_RECOMMEND_USER_ID;
     public static final Index XCX_CUSTOMER_PAGE_PRIMARY = Indexes0.XCX_CUSTOMER_PAGE_PRIMARY;
-
+    public static final Index MP_DAILY_VISIT_PRIMARY = Indexes0.MP_DAILY_VISIT_PRIMARY;
+    public static final Index MP_DAILY_RETAIN_PRIMARY = Indexes0.MP_DAILY_RETAIN_PRIMARY;
+    public static final Index MP_DISTRIBUTION_VISIT_PRIMARY = Indexes0.MP_DISTRIBUTION_VISIT_PRIMARY;
+    public static final Index MP_MONTHLY_RETAIN_PRIMARY = Indexes0.MP_MONTHLY_RETAIN_PRIMARY;
+    public static final Index MP_MONTHLY_VISIT_PRIMARY = Indexes0.MP_MONTHLY_VISIT_PRIMARY;
+    public static final Index MP_USER_PORTRAIT_PRIMARY = Indexes0.MP_USER_PORTRAIT_PRIMARY;
+    public static final Index MP_VISIT_PAGE_PRIMARY = Indexes0.MP_VISIT_PAGE_PRIMARY;
+    public static final Index MP_WEEKLY_VISIT_PRIMARY = Indexes0.MP_WEEKLY_VISIT_PRIMARY;
+    public static final Index MP_WEEKLY_RETAIN_PRIMARY = Indexes0.MP_WEEKLY_RETAIN_PRIMARY;
     // -------------------------------------------------------------------------
     // [#1459] distribute members to avoid static initialisers > 64kb
     // -------------------------------------------------------------------------
@@ -781,5 +789,14 @@ public class Indexes {
         public static Index WX_SHOPPING_RECOMMEND_PRIMARY = Internal.createIndex("PRIMARY", WxShoppingRecommend.WX_SHOPPING_RECOMMEND, new OrderField[] { WxShoppingRecommend.WX_SHOPPING_RECOMMEND.ID }, true);
         public static Index WX_SHOPPING_RECOMMEND_USER_ID = Internal.createIndex("user_id", WxShoppingRecommend.WX_SHOPPING_RECOMMEND, new OrderField[] { WxShoppingRecommend.WX_SHOPPING_RECOMMEND.USER_ID }, false);
         public static Index XCX_CUSTOMER_PAGE_PRIMARY = Internal.createIndex("PRIMARY", XcxCustomerPage.XCX_CUSTOMER_PAGE, new OrderField[] { XcxCustomerPage.XCX_CUSTOMER_PAGE.PAGE_ID }, true);
+        public static Index MP_DAILY_RETAIN_PRIMARY = Internal.createIndex("PRIMARY", MpDailyRetain.MP_DAILY_RETAIN, new OrderField[] { MpDailyRetain.MP_DAILY_RETAIN.ID }, true);
+        public static Index MP_DAILY_VISIT_PRIMARY = Internal.createIndex("PRIMARY", MpDailyVisit.MP_DAILY_VISIT, new OrderField[] { MpDailyVisit.MP_DAILY_VISIT.ID }, true);
+        public static Index MP_DISTRIBUTION_VISIT_PRIMARY = Internal.createIndex("PRIMARY", MpDistributionVisit.MP_DISTRIBUTION_VISIT, new OrderField[] { MpDistributionVisit.MP_DISTRIBUTION_VISIT.ID }, true);
+        public static Index MP_MONTHLY_RETAIN_PRIMARY = Internal.createIndex("PRIMARY", MpMonthlyRetain.MP_MONTHLY_RETAIN, new OrderField[] { MpMonthlyRetain.MP_MONTHLY_RETAIN.ID }, true);
+        public static Index MP_MONTHLY_VISIT_PRIMARY = Internal.createIndex("PRIMARY", MpMonthlyVisit.MP_MONTHLY_VISIT, new OrderField[] { MpMonthlyVisit.MP_MONTHLY_VISIT.ID }, true);
+        public static Index MP_USER_PORTRAIT_PRIMARY = Internal.createIndex("PRIMARY", MpUserPortrait.MP_USER_PORTRAIT, new OrderField[] { MpUserPortrait.MP_USER_PORTRAIT.ID }, true);
+        public static Index MP_VISIT_PAGE_PRIMARY = Internal.createIndex("PRIMARY", MpVisitPage.MP_VISIT_PAGE, new OrderField[] { MpVisitPage.MP_VISIT_PAGE.ID }, true);
+        public static Index MP_WEEKLY_RETAIN_PRIMARY = Internal.createIndex("PRIMARY", MpWeeklyRetain.MP_WEEKLY_RETAIN, new OrderField[] { MpWeeklyRetain.MP_WEEKLY_RETAIN.ID }, true);
+        public static Index MP_WEEKLY_VISIT_PRIMARY = Internal.createIndex("PRIMARY", MpWeeklyVisit.MP_WEEKLY_VISIT, new OrderField[] { MpWeeklyVisit.MP_WEEKLY_VISIT.ID }, true);
     }
 }

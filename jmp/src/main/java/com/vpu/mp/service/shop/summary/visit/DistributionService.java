@@ -3,10 +3,12 @@ package com.vpu.mp.service.shop.summary.visit;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.vpu.mp.db.shop.tables.records.MpDistributionVisitRecord;
 import com.vpu.mp.service.foundation.util.Util;
-import com.vpu.mp.service.pojo.shop.summary.*;
+import com.vpu.mp.service.pojo.shop.summary.ChartData;
+import com.vpu.mp.service.pojo.shop.summary.ChartInfo;
+import com.vpu.mp.service.pojo.shop.summary.KeyValueChart;
+import com.vpu.mp.service.pojo.shop.summary.ValueKeyChart;
 import com.vpu.mp.service.pojo.shop.summary.visit.*;
 import org.jooq.Result;
-import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Service;
 
 import java.util.*;
@@ -21,7 +23,6 @@ import static com.vpu.mp.service.pojo.shop.summary.visit.DistributionIndex.*;
  * @author 郑保乐
  */
 @Service
-
 public class DistributionService extends BaseVisitService {
 
     public VisitDistributionVo getVisitDistribution(VisitDistributionParam param) {

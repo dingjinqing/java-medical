@@ -11,7 +11,6 @@ import com.vpu.mp.service.pojo.shop.summary.visit.RetainItem;
 import com.vpu.mp.service.pojo.shop.summary.visit.VisitStatisticsParam;
 import org.jooq.Result;
 import org.jooq.TableField;
-import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Service;
 
 import java.util.LinkedList;
@@ -30,7 +29,6 @@ import static com.vpu.mp.service.pojo.shop.summary.visit.AccessRetainVo.ACTION_R
  * @author 郑保乐
  */
 @Service
-
 public class RetainService extends BaseVisitService {
 
     private static final int GRADING_DAY = 1;

@@ -9,7 +9,6 @@ import com.vpu.mp.service.pojo.shop.summary.portrait.*;
 import org.jooq.Record2;
 import org.jooq.Result;
 import org.jooq.impl.DSL;
-import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Service;
 
 import java.sql.Timestamp;
@@ -29,7 +28,6 @@ import static com.vpu.mp.db.shop.tables.UserDetail.USER_DETAIL;
  * @author 郑保乐
  */
 @Service
-
 public class PortraitService extends ShopBaseService {
 
     public PortraitVo getPortrait(PortraitParam param) {

@@ -5,25 +5,17 @@ package com.vpu.mp.db.shop.tables;
 
 
 import com.vpu.mp.db.shop.Indexes;
+import com.vpu.mp.db.shop.Keys;
 import com.vpu.mp.db.shop.MiniShop_471752;
 import com.vpu.mp.db.shop.tables.records.MpDailyRetainRecord;
+import org.jooq.*;
+import org.jooq.impl.DSL;
+import org.jooq.impl.TableImpl;
 
+import javax.annotation.Generated;
 import java.sql.Timestamp;
 import java.util.Arrays;
 import java.util.List;
-
-import javax.annotation.Generated;
-
-import org.jooq.Field;
-import org.jooq.ForeignKey;
-import org.jooq.Index;
-import org.jooq.Name;
-import org.jooq.Record;
-import org.jooq.Schema;
-import org.jooq.Table;
-import org.jooq.TableField;
-import org.jooq.impl.DSL;
-import org.jooq.impl.TableImpl;
 
 
 /**
@@ -39,10 +31,10 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class MpDailyRetain extends TableImpl<MpDailyRetainRecord> {
 
-    private static final long serialVersionUID = 1673563753;
+    private static final long serialVersionUID = -242458720;
 
     /**
-     * The reference instance of <code>mini_shop_471752.b2c_mp_daily_retain</code>
+     * The reference instance of <code>jmini_shop_4748160.b2c_mp_daily_retain</code>
      */
     public static final MpDailyRetain MP_DAILY_RETAIN = new MpDailyRetain();
 
@@ -55,46 +47,51 @@ public class MpDailyRetain extends TableImpl<MpDailyRetainRecord> {
     }
 
     /**
-     * The column <code>mini_shop_471752.b2c_mp_daily_retain.ref_date</code>. 时间，如："20180313"
+     * The column <code>jmini_shop_4748160.b2c_mp_daily_retain.id</code>.
+     */
+    public final TableField<MpDailyRetainRecord, Integer> ID = createField("id", org.jooq.impl.SQLDataType.INTEGER.nullable(false).identity(true), this, "");
+
+    /**
+     * The column <code>jmini_shop_4748160.b2c_mp_daily_retain.ref_date</code>. 时间，如："20180313"
      */
     public final TableField<MpDailyRetainRecord, String> REF_DATE = createField("ref_date", org.jooq.impl.SQLDataType.CHAR(8).nullable(false), this, "时间，如：\"20180313\"");
 
     /**
-     * The column <code>mini_shop_471752.b2c_mp_daily_retain.visit_uv_new</code>. 新增用户留存
+     * The column <code>jmini_shop_4748160.b2c_mp_daily_retain.visit_uv_new</code>. 新增用户留存
      */
     public final TableField<MpDailyRetainRecord, String> VISIT_UV_NEW = createField("visit_uv_new", org.jooq.impl.SQLDataType.CLOB, this, "新增用户留存");
 
     /**
-     * The column <code>mini_shop_471752.b2c_mp_daily_retain.visit_uv</code>. 活跃用户留存
+     * The column <code>jmini_shop_4748160.b2c_mp_daily_retain.visit_uv</code>. 活跃用户留存
      */
     public final TableField<MpDailyRetainRecord, String> VISIT_UV = createField("visit_uv", org.jooq.impl.SQLDataType.CLOB, this, "活跃用户留存");
 
     /**
-     * The column <code>mini_shop_471752.b2c_mp_daily_retain.create_time</code>.
+     * The column <code>jmini_shop_4748160.b2c_mp_daily_retain.create_time</code>.
      */
-    public final TableField<MpDailyRetainRecord, Timestamp> CREATE_TIME = createField("create_time", org.jooq.impl.SQLDataType.TIMESTAMP.nullable(false).defaultValue(org.jooq.impl.DSL.field("CURRENT_TIMESTAMP", org.jooq.impl.SQLDataType.TIMESTAMP)), this, "");
+    public final TableField<MpDailyRetainRecord, Timestamp> CREATE_TIME = createField("create_time", org.jooq.impl.SQLDataType.TIMESTAMP.nullable(false).defaultValue(DSL.field("CURRENT_TIMESTAMP", org.jooq.impl.SQLDataType.TIMESTAMP)), this, "");
 
     /**
-     * The column <code>mini_shop_471752.b2c_mp_daily_retain.update_time</code>. 最后修改时间
+     * The column <code>jmini_shop_4748160.b2c_mp_daily_retain.update_time</code>. 最后修改时间
      */
-    public final TableField<MpDailyRetainRecord, Timestamp> UPDATE_TIME = createField("update_time", org.jooq.impl.SQLDataType.TIMESTAMP.nullable(false).defaultValue(org.jooq.impl.DSL.field("CURRENT_TIMESTAMP", org.jooq.impl.SQLDataType.TIMESTAMP)), this, "最后修改时间");
+    public final TableField<MpDailyRetainRecord, Timestamp> UPDATE_TIME = createField("update_time", org.jooq.impl.SQLDataType.TIMESTAMP.nullable(false).defaultValue(DSL.field("CURRENT_TIMESTAMP", org.jooq.impl.SQLDataType.TIMESTAMP)), this, "最后修改时间");
 
     /**
-     * Create a <code>mini_shop_471752.b2c_mp_daily_retain</code> table reference
+     * Create a <code>jmini_shop_4748160.b2c_mp_daily_retain</code> table reference
      */
     public MpDailyRetain() {
         this(DSL.name("b2c_mp_daily_retain"), null);
     }
 
     /**
-     * Create an aliased <code>mini_shop_471752.b2c_mp_daily_retain</code> table reference
+     * Create an aliased <code>jmini_shop_4748160.b2c_mp_daily_retain</code> table reference
      */
     public MpDailyRetain(String alias) {
         this(DSL.name(alias), MP_DAILY_RETAIN);
     }
 
     /**
-     * Create an aliased <code>mini_shop_471752.b2c_mp_daily_retain</code> table reference
+     * Create an aliased <code>jmini_shop_4748160.b2c_mp_daily_retain</code> table reference
      */
     public MpDailyRetain(Name alias) {
         this(alias, MP_DAILY_RETAIN);
@@ -125,7 +122,31 @@ public class MpDailyRetain extends TableImpl<MpDailyRetainRecord> {
      */
     @Override
     public List<Index> getIndexes() {
-        return Arrays.<Index>asList(Indexes.MP_DAILY_RETAIN_REF_DATE);
+        return Arrays.<Index>asList(Indexes.MP_DAILY_RETAIN_PRIMARY, Indexes.MP_DAILY_RETAIN_REF_DATE);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public Identity<MpDailyRetainRecord, Integer> getIdentity() {
+        return Keys.IDENTITY_MP_DAILY_RETAIN;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public UniqueKey<MpDailyRetainRecord> getPrimaryKey() {
+        return Keys.KEY_B2C_MP_DAILY_RETAIN_PRIMARY;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public List<UniqueKey<MpDailyRetainRecord>> getKeys() {
+        return Arrays.<UniqueKey<MpDailyRetainRecord>>asList(Keys.KEY_B2C_MP_DAILY_RETAIN_PRIMARY);
     }
 
     /**

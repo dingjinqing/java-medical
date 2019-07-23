@@ -4,22 +4,18 @@
 package com.vpu.mp.db.shop.tables;
 
 
+import com.vpu.mp.db.shop.Indexes;
+import com.vpu.mp.db.shop.Keys;
 import com.vpu.mp.db.shop.MiniShop_471752;
 import com.vpu.mp.db.shop.tables.records.MpMonthlyVisitRecord;
-
-import java.sql.Timestamp;
-
-import javax.annotation.Generated;
-
-import org.jooq.Field;
-import org.jooq.ForeignKey;
-import org.jooq.Name;
-import org.jooq.Record;
-import org.jooq.Schema;
-import org.jooq.Table;
-import org.jooq.TableField;
+import org.jooq.*;
 import org.jooq.impl.DSL;
 import org.jooq.impl.TableImpl;
+
+import javax.annotation.Generated;
+import java.sql.Timestamp;
+import java.util.Arrays;
+import java.util.List;
 
 
 /**
@@ -35,10 +31,10 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class MpMonthlyVisit extends TableImpl<MpMonthlyVisitRecord> {
 
-    private static final long serialVersionUID = -481813921;
+    private static final long serialVersionUID = -1256976899;
 
     /**
-     * The reference instance of <code>mini_shop_471752.b2c_mp_monthly_visit</code>
+     * The reference instance of <code>jmini_shop_4748160.b2c_mp_monthly_visit</code>
      */
     public static final MpMonthlyVisit MP_MONTHLY_VISIT = new MpMonthlyVisit();
 
@@ -51,71 +47,76 @@ public class MpMonthlyVisit extends TableImpl<MpMonthlyVisitRecord> {
     }
 
     /**
-     * The column <code>mini_shop_471752.b2c_mp_monthly_visit.ref_date</code>. 时间，如："201803"
+     * The column <code>jmini_shop_4748160.b2c_mp_monthly_visit.id</code>.
+     */
+    public final TableField<MpMonthlyVisitRecord, Integer> ID = createField("id", org.jooq.impl.SQLDataType.INTEGER.nullable(false).identity(true), this, "");
+
+    /**
+     * The column <code>jmini_shop_4748160.b2c_mp_monthly_visit.ref_date</code>. 时间，如："201803"
      */
     public final TableField<MpMonthlyVisitRecord, String> REF_DATE = createField("ref_date", org.jooq.impl.SQLDataType.CHAR(6).nullable(false), this, "时间，如：\"201803\"");
 
     /**
-     * The column <code>mini_shop_471752.b2c_mp_monthly_visit.session_cnt</code>. 打开次数
+     * The column <code>jmini_shop_4748160.b2c_mp_monthly_visit.session_cnt</code>. 打开次数
      */
-    public final TableField<MpMonthlyVisitRecord, Integer> SESSION_CNT = createField("session_cnt", org.jooq.impl.SQLDataType.INTEGER.nullable(false).defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.INTEGER)), this, "打开次数");
+    public final TableField<MpMonthlyVisitRecord, Integer> SESSION_CNT = createField("session_cnt", org.jooq.impl.SQLDataType.INTEGER.nullable(false).defaultValue(DSL.inline("0", org.jooq.impl.SQLDataType.INTEGER)), this, "打开次数");
 
     /**
-     * The column <code>mini_shop_471752.b2c_mp_monthly_visit.visit_pv</code>. 访问次数
+     * The column <code>jmini_shop_4748160.b2c_mp_monthly_visit.visit_pv</code>. 访问次数
      */
-    public final TableField<MpMonthlyVisitRecord, Integer> VISIT_PV = createField("visit_pv", org.jooq.impl.SQLDataType.INTEGER.nullable(false).defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.INTEGER)), this, "访问次数");
+    public final TableField<MpMonthlyVisitRecord, Integer> VISIT_PV = createField("visit_pv", org.jooq.impl.SQLDataType.INTEGER.nullable(false).defaultValue(DSL.inline("0", org.jooq.impl.SQLDataType.INTEGER)), this, "访问次数");
 
     /**
-     * The column <code>mini_shop_471752.b2c_mp_monthly_visit.visit_uv</code>. 访问人数
+     * The column <code>jmini_shop_4748160.b2c_mp_monthly_visit.visit_uv</code>. 访问人数
      */
-    public final TableField<MpMonthlyVisitRecord, Integer> VISIT_UV = createField("visit_uv", org.jooq.impl.SQLDataType.INTEGER.nullable(false).defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.INTEGER)), this, "访问人数");
+    public final TableField<MpMonthlyVisitRecord, Integer> VISIT_UV = createField("visit_uv", org.jooq.impl.SQLDataType.INTEGER.nullable(false).defaultValue(DSL.inline("0", org.jooq.impl.SQLDataType.INTEGER)), this, "访问人数");
 
     /**
-     * The column <code>mini_shop_471752.b2c_mp_monthly_visit.visit_uv_new</code>. 新用户数
+     * The column <code>jmini_shop_4748160.b2c_mp_monthly_visit.visit_uv_new</code>. 新用户数
      */
-    public final TableField<MpMonthlyVisitRecord, Integer> VISIT_UV_NEW = createField("visit_uv_new", org.jooq.impl.SQLDataType.INTEGER.nullable(false).defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.INTEGER)), this, "新用户数");
+    public final TableField<MpMonthlyVisitRecord, Integer> VISIT_UV_NEW = createField("visit_uv_new", org.jooq.impl.SQLDataType.INTEGER.nullable(false).defaultValue(DSL.inline("0", org.jooq.impl.SQLDataType.INTEGER)), this, "新用户数");
 
     /**
-     * The column <code>mini_shop_471752.b2c_mp_monthly_visit.stay_time_uv</code>. 人均停留时长 (浮点型，单位：秒)
+     * The column <code>jmini_shop_4748160.b2c_mp_monthly_visit.stay_time_uv</code>. 人均停留时长 (浮点型，单位：秒)
      */
-    public final TableField<MpMonthlyVisitRecord, Double> STAY_TIME_UV = createField("stay_time_uv", org.jooq.impl.SQLDataType.FLOAT.nullable(false).defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.FLOAT)), this, "人均停留时长 (浮点型，单位：秒)");
+    public final TableField<MpMonthlyVisitRecord, Double> STAY_TIME_UV = createField("stay_time_uv", org.jooq.impl.SQLDataType.FLOAT.nullable(false).defaultValue(DSL.inline("0", org.jooq.impl.SQLDataType.FLOAT)), this, "人均停留时长 (浮点型，单位：秒)");
 
     /**
-     * The column <code>mini_shop_471752.b2c_mp_monthly_visit.stay_time_session</code>. 次均停留时长 (浮点型，单位：秒)
+     * The column <code>jmini_shop_4748160.b2c_mp_monthly_visit.stay_time_session</code>. 次均停留时长 (浮点型，单位：秒)
      */
-    public final TableField<MpMonthlyVisitRecord, Double> STAY_TIME_SESSION = createField("stay_time_session", org.jooq.impl.SQLDataType.FLOAT.nullable(false).defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.FLOAT)), this, "次均停留时长 (浮点型，单位：秒)");
+    public final TableField<MpMonthlyVisitRecord, Double> STAY_TIME_SESSION = createField("stay_time_session", org.jooq.impl.SQLDataType.FLOAT.nullable(false).defaultValue(DSL.inline("0", org.jooq.impl.SQLDataType.FLOAT)), this, "次均停留时长 (浮点型，单位：秒)");
 
     /**
-     * The column <code>mini_shop_471752.b2c_mp_monthly_visit.visit_depth</code>. 平均访问深度 (浮点型)
+     * The column <code>jmini_shop_4748160.b2c_mp_monthly_visit.visit_depth</code>. 平均访问深度 (浮点型)
      */
-    public final TableField<MpMonthlyVisitRecord, Double> VISIT_DEPTH = createField("visit_depth", org.jooq.impl.SQLDataType.FLOAT.nullable(false).defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.FLOAT)), this, "平均访问深度 (浮点型)");
+    public final TableField<MpMonthlyVisitRecord, Double> VISIT_DEPTH = createField("visit_depth", org.jooq.impl.SQLDataType.FLOAT.nullable(false).defaultValue(DSL.inline("0", org.jooq.impl.SQLDataType.FLOAT)), this, "平均访问深度 (浮点型)");
 
     /**
-     * The column <code>mini_shop_471752.b2c_mp_monthly_visit.create_time</code>.
+     * The column <code>jmini_shop_4748160.b2c_mp_monthly_visit.create_time</code>.
      */
-    public final TableField<MpMonthlyVisitRecord, Timestamp> CREATE_TIME = createField("create_time", org.jooq.impl.SQLDataType.TIMESTAMP.nullable(false).defaultValue(org.jooq.impl.DSL.field("CURRENT_TIMESTAMP", org.jooq.impl.SQLDataType.TIMESTAMP)), this, "");
+    public final TableField<MpMonthlyVisitRecord, Timestamp> CREATE_TIME = createField("create_time", org.jooq.impl.SQLDataType.TIMESTAMP.nullable(false).defaultValue(DSL.field("CURRENT_TIMESTAMP", org.jooq.impl.SQLDataType.TIMESTAMP)), this, "");
 
     /**
-     * The column <code>mini_shop_471752.b2c_mp_monthly_visit.update_time</code>. 最后修改时间
+     * The column <code>jmini_shop_4748160.b2c_mp_monthly_visit.update_time</code>. 最后修改时间
      */
-    public final TableField<MpMonthlyVisitRecord, Timestamp> UPDATE_TIME = createField("update_time", org.jooq.impl.SQLDataType.TIMESTAMP.nullable(false).defaultValue(org.jooq.impl.DSL.field("CURRENT_TIMESTAMP", org.jooq.impl.SQLDataType.TIMESTAMP)), this, "最后修改时间");
+    public final TableField<MpMonthlyVisitRecord, Timestamp> UPDATE_TIME = createField("update_time", org.jooq.impl.SQLDataType.TIMESTAMP.nullable(false).defaultValue(DSL.field("CURRENT_TIMESTAMP", org.jooq.impl.SQLDataType.TIMESTAMP)), this, "最后修改时间");
 
     /**
-     * Create a <code>mini_shop_471752.b2c_mp_monthly_visit</code> table reference
+     * Create a <code>jmini_shop_4748160.b2c_mp_monthly_visit</code> table reference
      */
     public MpMonthlyVisit() {
         this(DSL.name("b2c_mp_monthly_visit"), null);
     }
 
     /**
-     * Create an aliased <code>mini_shop_471752.b2c_mp_monthly_visit</code> table reference
+     * Create an aliased <code>jmini_shop_4748160.b2c_mp_monthly_visit</code> table reference
      */
     public MpMonthlyVisit(String alias) {
         this(DSL.name(alias), MP_MONTHLY_VISIT);
     }
 
     /**
-     * Create an aliased <code>mini_shop_471752.b2c_mp_monthly_visit</code> table reference
+     * Create an aliased <code>jmini_shop_4748160.b2c_mp_monthly_visit</code> table reference
      */
     public MpMonthlyVisit(Name alias) {
         this(alias, MP_MONTHLY_VISIT);
@@ -139,6 +140,38 @@ public class MpMonthlyVisit extends TableImpl<MpMonthlyVisitRecord> {
     @Override
     public Schema getSchema() {
         return MiniShop_471752.MINI_SHOP_471752;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public List<Index> getIndexes() {
+        return Arrays.<Index>asList(Indexes.MP_MONTHLY_VISIT_PRIMARY);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public Identity<MpMonthlyVisitRecord, Integer> getIdentity() {
+        return Keys.IDENTITY_MP_MONTHLY_VISIT;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public UniqueKey<MpMonthlyVisitRecord> getPrimaryKey() {
+        return Keys.KEY_B2C_MP_MONTHLY_VISIT_PRIMARY;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public List<UniqueKey<MpMonthlyVisitRecord>> getKeys() {
+        return Arrays.<UniqueKey<MpMonthlyVisitRecord>>asList(Keys.KEY_B2C_MP_MONTHLY_VISIT_PRIMARY);
     }
 
     /**
