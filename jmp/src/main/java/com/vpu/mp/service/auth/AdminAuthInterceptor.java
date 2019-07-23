@@ -64,13 +64,13 @@ public class AdminAuthInterceptor extends HandlerInterceptorAdapter {
 			throws Exception {
 		String path = request.getRequestURI();
 		String language = request.getHeader(LANG);
-		String enName = request.getHeader("enName");
+		String enName = request.getHeader("V-EnName");
 		// 按钮的权限时候传
-		String prName = request.getHeader("prName");
+		String prName = request.getHeader("V-PrName");
 		// 需要密码的请求验证密码
-		String passwd = request.getHeader("rolePass");
+		String passwd = request.getHeader("V-RolePass");
 		// 版本控制传的值
-		String vsName = request.getHeader("vsName");
+		String vsName = request.getHeader("V-VsName");
 
 		// 如果为账户登录例外URL，直接通过
 		if (match(this.accountLoginExcept, path)) {
