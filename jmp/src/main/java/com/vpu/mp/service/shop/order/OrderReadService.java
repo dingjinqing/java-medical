@@ -218,8 +218,21 @@ public class OrderReadService extends ShopBaseService {
 			select.innerJoin(GROUP_BUY_LIST).on(ORDER_INFO.ORDER_SN.eq(GROUP_BUY_LIST.ORDER_SN));
 			select.where(GROUP_BUY_LIST.STATUS.in(param.pinStatus));
 		}
+		//构造营销活动查询条件
+		activeBuildOptions(select, param);
 		return select;
 	 }
+	 
+	 /**
+	  * 构造营销货订查询条件
+	  * @param select
+	  * @param param
+	  * @return
+	  */
+	 public SelectWhereStep<?> activeBuildOptions(SelectJoinStep<?> select, OrderPageListQueryParam param) {
+		return select;
+	 }
+	 
 	/**
 	 * 订单详情
 	 * @param mainOrderSn
