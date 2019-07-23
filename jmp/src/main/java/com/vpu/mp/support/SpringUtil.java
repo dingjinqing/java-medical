@@ -25,7 +25,6 @@ public class SpringUtil implements ApplicationContextAware {
 	public static <T> T getBean(Class<T> tClass) {
 		String name = tClass.getSimpleName();
 		String className = name.substring(0, 1).toLowerCase() + name.substring(1, name.length());
-		System.out.println(name);
 		if(applicationContext !=null && applicationContext.containsBean(className)) {
 			return applicationContext.getBean(tClass);
 		}

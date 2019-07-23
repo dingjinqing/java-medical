@@ -4,9 +4,7 @@ import static java.lang.Boolean.TRUE;
 import static org.jooq.impl.DSL.val;
 import static org.jooq.tools.StringUtils.abbreviate;
 
-import java.sql.SQLException;
 import java.util.Arrays;
-import java.util.List;
 
 import org.jooq.Configuration;
 import org.jooq.ExecuteContext;
@@ -22,8 +20,6 @@ import org.jooq.impl.DefaultVisitListener;
 import org.jooq.impl.DefaultVisitListenerProvider;
 import org.jooq.tools.JooqLogger;
 import org.jooq.tools.StringUtils;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
 
 import com.vpu.mp.support.SpringUtil;
 
@@ -43,6 +39,17 @@ public class SqlExcuteListener extends DefaultExecuteListener {
 
 	@Override
 	public void renderEnd(ExecuteContext ctx) {
+
+		// 替换数据库的Schema
+		final String defaultShopDbName = "`mini_shop_471752`";
+		final String defaultMainDbName = "`mini_main`";
+		String currentSql = ctx.sql();
+		if (currentSql != null) {
+			DatabaseManager dm = SpringUtil.getBean(DatabaseManager.class);
+			currentSql = StringUtils.replace(currentSql, defaultShopDbName, "`" + dm.getCurrentShopDbSchema() + "`");
+			currentSql = StringUtils.replace(currentSql, defaultMainDbName, "`" + dm.getMainDbSchema() + "`");
+			ctx.sql(currentSql);
+		}
 
 		if (LOGGER.isDebugEnabled()) {
 			Configuration configuration = ctx.configuration();
@@ -98,17 +105,6 @@ public class SqlExcuteListener extends DefaultExecuteListener {
 			}
 		}
 
-		// 替换数据库的Schema
-		final String defaultShopDbSchema = "mini_shop_471752";
-		final String defaultMainDbSchema = "mini_main";
-		String currentSql = ctx.sql();
-		if (currentSql != null) {
-			DatabaseManager databaseManager = (DatabaseManager) SpringUtil.getBean("databaseManager");
-			currentSql = currentSql.replaceAll(defaultShopDbSchema, databaseManager.getCurrentShopDbSchema());
-			currentSql = currentSql.replaceAll(defaultMainDbSchema, databaseManager.getMainDbSchema());
-			LOGGER.debug("Replaced query: ", currentSql);
-			ctx.sql(currentSql);
-		}
 	}
 
 	/**
