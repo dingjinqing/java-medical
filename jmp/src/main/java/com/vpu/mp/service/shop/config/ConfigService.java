@@ -34,4 +34,6 @@ public class ConfigService extends ShopBaseService {
 	public StoreConfigService storeConfigService;
 	@Autowired
 	public DistributionConfigService distributioncfg;
+	@Autowired
+	public ShopMsgTemplateConfigService shopMsgTemplateService;
 }
