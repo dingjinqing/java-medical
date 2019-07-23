@@ -3,7 +3,8 @@ package com.vpu.mp.service.foundation.util;
 import java.beans.PropertyDescriptor;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
-
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * 将object1类中的非null值赋值到object2,可以自己赋值自己，或者类赋值到相应的Record类，两个类里字段相同
@@ -13,6 +14,8 @@ import java.lang.reflect.Method;
  *
  */
 public class FieldsUtil {
+	private static Logger log = LoggerFactory.getLogger(FieldsUtil.class);
+
 	/**
 	 * 
 	 * @param object1
@@ -40,7 +43,7 @@ public class FieldsUtil {
 					}
 				}
 			} catch (Exception e) {
-				e.printStackTrace();
+				log.debug(e.getMessage());
 			}
 		}
 		return object2;
