@@ -101,14 +101,18 @@ public class VoTranslatorTest {
 
     /**
      * 测试 List 的子类型属性以及 List 为 null
+     *
+     * 不再支持声明 List 的子类型
      */
     @Test
     public void assertSubClassOfListPropertyTranslated() {
         ArrayList<String> arrayList = new ArrayList<>();
         arrayList.add("food");
         listVo.setArrayList(arrayList);
-        translator.translateFields(listVo);
-        assertEquals("食品", listVo.getArrayList().get(0));
+        try {
+            translator.translateFields(listVo);
+        } catch (Exception ignore) {}
+        assertEquals("food", listVo.getArrayList().get(0));
     }
 
     /**
