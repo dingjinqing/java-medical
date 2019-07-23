@@ -164,7 +164,6 @@ public class DatabaseManager {
 		try {
 			String sql = "create database " + dbConfig.database + " default charset utf8mb4 collate utf8mb4_unicode_ci";
 			BasicDataSource ds = datasourceManager.getToCreateShopDbDatasource();
-			dbConfig.setDatabase("");
 			getDsl(ds, dbConfig).execute(sql);
 		} catch (DataAccessException e) {
 			e.printStackTrace();
@@ -305,7 +304,7 @@ public class DatabaseManager {
 	 * @return
 	 */
 	public String getCurrentShopDbSchema() {
-		return shopDsl.get() != null ? shopDsl.get().getDbConfig().getDatabase() : "";
+		return shopDsl.get() != null ? shopDsl.get().getDbConfig().getDatabase(): "";
 	}
 	
 	/**
