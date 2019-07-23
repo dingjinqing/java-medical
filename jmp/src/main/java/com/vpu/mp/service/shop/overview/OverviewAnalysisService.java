@@ -4,10 +4,11 @@ import com.vpu.mp.service.foundation.service.ShopBaseService;
 import com.vpu.mp.service.foundation.util.PropertiesUtil;
 import com.vpu.mp.service.pojo.shop.overview.analysis.OverviewAnalysisDateParam;
 import com.vpu.mp.service.pojo.shop.overview.analysis.OverviewAnalysisPageParam;
-import com.vpu.mp.service.pojo.shop.overview.analysis.OverviewAnalysisPageVo;
+import com.vpu.mp.service.pojo.shop.overview.analysis.OverviewAnalysisPageListVo;
 import com.vpu.mp.service.pojo.shop.overview.analysis.OverviewAnalysisSelectParam;
 import com.vpu.mp.service.pojo.shop.overview.analysis.OverviewAnalysisSelectVo;
 import com.vpu.mp.service.pojo.shop.overview.analysis.OverviewAnalysisYesterdayVo;
+import com.vpu.mp.service.pojo.shop.overview.analysis.OverviewAnalysisPageVo;
 
 import static com.vpu.mp.db.shop.Tables.MP_DAILY_VISIT;
 import static com.vpu.mp.db.shop.Tables.MP_SUMMARY_TREND;
@@ -105,29 +106,29 @@ public class OverviewAnalysisService extends ShopBaseService {
 	 *@return
 	 */
 	private static final String PAGE_OTHER = "page.other";
-	public List<OverviewAnalysisPageVo> getPageInfo(OverviewAnalysisPageParam param) {
+	public OverviewAnalysisPageVo getPageInfo(OverviewAnalysisPageParam param) {
 		
-		List<OverviewAnalysisPageVo> overviewAnalysisPageVos;
+		List<OverviewAnalysisPageListVo> overviewAnalysisPageVos;
 		overviewAnalysisPageVos = 
 				db().select(MP_VISIT_PAGE.PAGE_PATH,
 						DSL.sum(MP_VISIT_PAGE.PAGE_VISIT_PV).as("pageVisitPv"))
 				.from(MP_VISIT_PAGE)
 				.where(MP_VISIT_PAGE.REF_DATE.between(param.getStartTime(), param.getEndTime()))
 				.groupBy(MP_VISIT_PAGE.PAGE_PATH)
-				.fetchInto(OverviewAnalysisPageVo.class);
+				.fetchInto(OverviewAnalysisPageListVo.class);
 		int total = 
 				db().select(
 						DSL.sum(MP_VISIT_PAGE.PAGE_VISIT_PV).as("total"))
 				.from(MP_VISIT_PAGE)
 				.where(MP_VISIT_PAGE.REF_DATE.between(param.getStartTime(), param.getEndTime()))
 				.fetchInto(Integer.class).get(0);
-		for(OverviewAnalysisPageVo overviewAnalysisPageVo:overviewAnalysisPageVos) {
+		for(OverviewAnalysisPageListVo overviewAnalysisPageVo:overviewAnalysisPageVos) {
 			overviewAnalysisPageVo.setPageName(pageNameOf(overviewAnalysisPageVo.getPagePath()));
 			overviewAnalysisPageVo.setRate(((double)overviewAnalysisPageVo.getPageVisitPv()/(double)total));
 		}
-		System.out.println("*********************************************");
-		overviewAnalysisPageVos.forEach((e) -> System.out.println(e));
-		return overviewAnalysisPageVos;
+		OverviewAnalysisPageVo vo = new OverviewAnalysisPageVo();
+		vo.setList(overviewAnalysisPageVos);
+		return vo;
 	}
 
 	

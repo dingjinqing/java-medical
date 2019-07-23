@@ -13,10 +13,10 @@ import org.springframework.web.bind.annotation.RestController;
 import com.vpu.mp.service.foundation.data.JsonResult;
 import com.vpu.mp.service.pojo.shop.overview.analysis.OverviewAnalysisDateParam;
 import com.vpu.mp.service.pojo.shop.overview.analysis.OverviewAnalysisPageParam;
-import com.vpu.mp.service.pojo.shop.overview.analysis.OverviewAnalysisPageVo;
 import com.vpu.mp.service.pojo.shop.overview.analysis.OverviewAnalysisSelectParam;
 import com.vpu.mp.service.pojo.shop.overview.analysis.OverviewAnalysisSelectVo;
 import com.vpu.mp.service.pojo.shop.overview.analysis.OverviewAnalysisYesterdayVo;
+import com.vpu.mp.service.pojo.shop.overview.analysis.OverviewAnalysisPageVo;
 
 /**
  * 概况统计控制器
@@ -108,9 +108,7 @@ public class AdminOverviewAnalysisController extends AdminBaseController{
 		endTime = StringUtils.isEmpty(tempEndTime) ? dateNowStr : tempEndTime;
 		param.setEndTime(endTime);		
 		
-		List<OverviewAnalysisPageVo> overviewAnalysisPageVos = shop().overview.overviewAnalysisService.getPageInfo(param);
-		
-		overviewAnalysisPageVos.forEach((e) -> System.out.println(e));
+		OverviewAnalysisPageVo overviewAnalysisPageVos = shop().overview.overviewAnalysisService.getPageInfo(param);
 		
 		return i18nSuccess(overviewAnalysisPageVos);
 	}

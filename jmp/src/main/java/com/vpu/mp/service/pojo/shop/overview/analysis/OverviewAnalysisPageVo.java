@@ -1,6 +1,6 @@
 package com.vpu.mp.service.pojo.shop.overview.analysis;
 
-import com.vpu.mp.controller.I18N;
+import java.util.List;
 
 import lombok.Data;
 
@@ -12,10 +12,6 @@ import lombok.Data;
 @Data
 public class OverviewAnalysisPageVo {
 	
-	private String pagePath;
-	 @I18N(propertiesFileName = "page")
-	private String pageName;
-	private Integer pageVisitPv;
-	private double rate;
+	private List<OverviewAnalysisPageListVo> list;
 	
 }
