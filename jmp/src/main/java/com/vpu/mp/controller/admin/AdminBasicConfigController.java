@@ -22,6 +22,8 @@ import com.vpu.mp.db.main.tables.records.ShopRoleRecord;
 import com.vpu.mp.service.pojo.saas.shop.ShopPojo;
 import com.vpu.mp.service.pojo.shop.config.ShopBaseConfig;
 import com.vpu.mp.service.pojo.shop.config.ShopCommonCfgInfo;
+import com.vpu.mp.service.pojo.shop.config.ShopMsgTempConfig;
+import com.vpu.mp.service.pojo.shop.config.ShopMsgTempJsonConfig;
 import com.vpu.mp.service.pojo.shop.config.group.ShopChildAccountListVo;
 import com.vpu.mp.service.pojo.shop.config.group.ShopChildAccountVo;
 import com.vpu.mp.service.pojo.shop.config.group.ShopRoleAddListVo;
@@ -412,6 +414,47 @@ public class AdminBasicConfigController extends AdminBaseController{
 			return JsonResultCode.CODE_ACCOUNT_SHOP_ROLE_INSUFFICIENT;
 		}
 		return JsonResultCode.CODE_SUCCESS;
+	}
+
+	
+	/**
+	 * 模板消息查询
+	 * @return
+	 */
+	@RequestMapping("/message/template/basic/query")
+	public JsonResult queryTemplate() {
+		ShopMsgTempConfig shopTempConfig = shop().config.shopMsgTemplateService.getShopTempConfig();
+		if (shopTempConfig == null) {
+			// 插入
+			String json = ShopMsgTempJsonConfig.JSON;
+			shopTempConfig = Util.parseJson(json, ShopMsgTempConfig.class);
+			shop().config.shopMsgTemplateService.setShopTempConfig(json);
+		}
+		return success(shopTempConfig);
+	}
+
+	
+	/**
+	 * 模板消息更新
+	 * @param sConfig
+	 * @return
+	 */
+	@RequestMapping("/message/template/basic/update")
+	public JsonResult updateTemplate(@RequestBody ShopMsgTempConfig sConfig) {
+		if (sConfig.getA().length > 25) {
+			// 小程序消息不能大于25条
+			return fail(JsonResultCode.CODE_FAIL);
+		}
+		if (sConfig.getB().length > 25) {
+			// 公众号消息不能大于25条
+			return fail();
+		}
+
+		int setNum = shop().config.shopMsgTemplateService.setShopTempConfig(sConfig);
+		if (setNum != 1) {
+			return fail();
+		}
+		return success(sConfig);
 	}
 
 }
