@@ -10,6 +10,7 @@ import java.util.Calendar;
 import java.util.List;
 
 import org.jooq.impl.DSL;
+import org.springframework.stereotype.Service;
 
 import com.vpu.mp.service.foundation.service.ShopBaseService;
 import com.vpu.mp.service.pojo.shop.overview.useranalysis.OverviewUserAnalysisActiveTotalVo;
@@ -36,6 +37,7 @@ import com.vpu.mp.service.pojo.shop.overview.useranalysis.OverviewUserAnalysisVi
  * @author liangchen
  * @date 2019年7月18日
  */
+@Service
 public class OverviewUserAnalysisService extends ShopBaseService {
 
 	/**
@@ -107,8 +109,8 @@ public class OverviewUserAnalysisService extends ShopBaseService {
 				overviewUserAnalysisTrendVos.get(i).setLoginDataTotoal(afterVo.get(0).getLoginDataTotoal());
 				overviewUserAnalysisTrendVos.get(i).setUserDataTotoal(afterVo.get(0).getUserDataTotoal());
 				overviewUserAnalysisTrendVos.get(i).setOrderUserDataTotoal(afterVo.get(0).getOrderUserDataTotoal());
+				
 			}
-
 			return overviewUserAnalysisTrendVos;
 		} catch (ParseException e) {
 			e.printStackTrace();

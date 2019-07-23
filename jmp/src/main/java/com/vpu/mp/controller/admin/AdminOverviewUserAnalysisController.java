@@ -56,8 +56,7 @@ public class AdminOverviewUserAnalysisController extends AdminBaseController {
 		} catch (ParseException e) {
 			e.printStackTrace();
 		}
-		List<OverviewUserAnalysisTrendVo> overviewUserAnalysisTrendVos = shop().overview.overviewUserAnalysisService
-				.getTrend(param);
+		List<OverviewUserAnalysisTrendVo> overviewUserAnalysisTrendVos = shop().overview.overviewUserAnalysisService.getTrend(param);
 
 		return success(overviewUserAnalysisTrendVos);
 
