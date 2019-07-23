@@ -37,44 +37,7 @@ public class SqlExcuteListener extends DefaultExecuteListener {
 
 	private static final JooqLogger LOGGER = JooqLogger.getLogger(SqlExcuteListener.class);
 
-	/**
-	 * 
-	 */
 	private static final long serialVersionUID = 1L;
-
-//	@Override
-//	public void executeStart(ExecuteContext ctx) {
-//		String ignoreSql = "SET ";
-//		String sql = ctx.sql();
-//		if (ctx.query() != null) {
-//			List<Object> binds = ctx.query().getBindValues();
-//			StringBuffer buf = new StringBuffer();
-//			int p;
-//			int i = 0;
-//			while (true) {
-//				p = sql.indexOf('?');
-//				if (p == -1) {
-//					buf.append(sql);
-//					break;
-//				} else {
-//					buf.append(sql.substring(0, p)).append(binds.get(i));
-//					sql = sql.substring(p + 1);
-//					i++;
-//				}
-//			}
-//			sql = buf.toString();
-//		}
-//		if (sql.startsWith(ignoreSql)) {
-//			return;
-//		}
-//		String schema = "";
-//		try {
-//			schema = ctx.connection().getSchema();
-//		} catch (SQLException e) {
-//		}
-//		String message = "SQL DB: " + schema + " -- " + sql;
-////		logger.debug(message);
-//	}
 
 	private static final int BIND_PARAM_MAX_LENGTH = 2000;
 
@@ -135,17 +98,18 @@ public class SqlExcuteListener extends DefaultExecuteListener {
 			}
 		}
 
-		// 替换店铺库的Schema
-		final String defaultShopDbSchema ="mini_shop_471752";
+		// 替换数据库的Schema
+		final String defaultShopDbSchema = "mini_shop_471752";
+		final String defaultMainDbSchema = "mini_main";
 		String currentSql = ctx.sql();
-		if (currentSql != null && currentSql.contains(defaultShopDbSchema)) {
+		if (currentSql != null) {
 			DatabaseManager databaseManager = (DatabaseManager) SpringUtil.getBean("databaseManager");
-			currentSql = ctx.sql().replaceAll(defaultShopDbSchema, databaseManager.getCurrentShopDbSchema());
-			System.out.println(currentSql);
+			currentSql = currentSql.replaceAll(defaultShopDbSchema, databaseManager.getCurrentShopDbSchema());
+			currentSql = currentSql.replaceAll(defaultMainDbSchema, databaseManager.getMainDbSchema());
+			LOGGER.debug("Replaced query: ", currentSql);
 			ctx.sql(currentSql);
 		}
 	}
-
 
 	/**
 	 * Add a {@link VisitListener} that transforms all bind variables by

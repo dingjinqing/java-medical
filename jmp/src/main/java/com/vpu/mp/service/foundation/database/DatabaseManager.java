@@ -308,6 +308,14 @@ public class DatabaseManager {
 		return shopDsl.get() != null ? shopDsl.get().getDbConfig().getDatabase() : "";
 	}
 	
+	/**
+	 * 得到当前线程店铺Db名称
+	 * @return
+	 */
+	public String getMainDbSchema() {
+		return datasourceManager.getDatabase();
+	}
+	
 	@Override
 	protected void finalize() {
 		MpDefaultDSLContext db = mainDsl.get();
