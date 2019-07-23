@@ -26,7 +26,8 @@ public class AdminWechatController extends AdminBaseController {
 	@Autowired
 	protected MenuAuthority authority;
 	
-	protected OpenPlatform open = OpenPlatform.instance();
+	@Autowired
+	protected OpenPlatform open;
 
 	@RequestMapping(value = "/wechat/proxy/test")
 	@ResponseBody

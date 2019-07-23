@@ -1,8 +1,14 @@
 package com.vpu.mp.service.wechat;
 
+import javax.annotation.PostConstruct;
+
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.boot.autoconfigure.data.redis.RedisProperties.Jedis;
+import org.springframework.stereotype.Service;
 
 import com.vpu.mp.service.foundation.jedis.JedisManager;
 import com.vpu.mp.service.foundation.util.Util;
@@ -22,36 +28,40 @@ import me.chanjar.weixin.open.bean.message.WxOpenXmlMessage;
  * @author 新国
  *
  */
+@Service
 public class OpenPlatform extends WxOpenServiceImpl {
+	
+	@Value(value = "${wx.open.app_id}")
+	protected String appId;
+	
+	@Value(value = "${wx.open.app_secret}")
+	protected String appSecret;
+	
+	@Value(value = "${wx.open.token}")
+	protected String token;
+	
+	@Value(value = "${wx.open.aes_key}")
+	protected String aesKey;
+	
 	final String AES = "aes";
+	
 	private Logger logger = LoggerFactory.getLogger(getClass());
+	
 	private WxOpenMessageRouter wxOpenMessageRouter;
 	
-	private static ThreadLocal<OpenPlatform> openThreadLocal = new ThreadLocal<OpenPlatform>() {
-		@Override
-		protected OpenPlatform initialValue() {
-			OpenPlatform open = new OpenPlatform();
-			open.init();
-			return open;
-		}
-	};
-
-	/**
-	 * 线程内单例
-	 */
-	public static OpenPlatform instance() {
-		return openThreadLocal.get();
-	}
+	@Autowired
+	protected JedisManager jedis;
 
 	/**
 	 * 初始化
 	 */
+	@PostConstruct
 	public void init() {
-		WxOpenInRedisConfigStorage inRedisConfigStorage = new WxOpenInRedisConfigStorage(JedisManager.instance().getJedisPool());
-		inRedisConfigStorage.setComponentAppId(Util.getProperty("wx.open.app_id"));
-		inRedisConfigStorage.setComponentAppSecret(Util.getProperty("wx.open.app_secret"));
-		inRedisConfigStorage.setComponentToken(Util.getProperty("wx.open.token"));
-		inRedisConfigStorage.setComponentAesKey(Util.getProperty("wx.open.aes_key"));
+		WxOpenInRedisConfigStorage inRedisConfigStorage = new WxOpenInRedisConfigStorage(jedis.getJedisPool());
+		inRedisConfigStorage.setComponentAppId(appId);
+		inRedisConfigStorage.setComponentAppSecret(appSecret);
+		inRedisConfigStorage.setComponentToken(token);
+		inRedisConfigStorage.setComponentAesKey(aesKey);
 		setWxOpenConfigStorage(inRedisConfigStorage);
 		this.wxOpenMessageRouter = new WxOpenMessageRouter(this);
 		messageRouter();

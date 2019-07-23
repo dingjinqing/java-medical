@@ -16,6 +16,7 @@ import org.jooq.Record;
 import org.jooq.Record2;
 import org.jooq.SelectWhereStep;
 import org.springframework.beans.BeanUtils;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 import org.springframework.web.context.request.RequestAttributes;
@@ -56,7 +57,8 @@ public class RecordAdminActionService extends ShopBaseService {
 
     protected static final String LANGUAGE_TYPE_RECORD = "record";
 
-    protected JedisManager jedis = JedisManager.instance();
+    @Autowired
+	protected JedisManager jedis;
 
     /**
      *

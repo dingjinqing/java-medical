@@ -11,7 +11,8 @@ import com.vpu.mp.service.wechat.OpenPlatform;
  *
  */
 public class BaseHandler {
-	protected OpenPlatform open = OpenPlatform.instance();
+	@Autowired
+	protected OpenPlatform open;
 	
 	@Autowired
 	protected SaasApplication saas ;

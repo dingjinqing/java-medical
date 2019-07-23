@@ -2,6 +2,7 @@ package com.vpu.mp.controller.admin;
 
 import java.util.Arrays;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -27,7 +28,9 @@ import com.vpu.mp.service.pojo.shop.auth.PrivilegeVo;
 @RequestMapping("/api")
 public class AdminIndexController extends AdminBaseController {
 
-	JedisManager jedis = JedisManager.instance();
+	@Autowired
+	protected JedisManager jedis;
+	
 	final protected String menuJsonPath = "admin.privilegeList.json";
 	final protected String privilegeJsonPath = "admin.privilegePass.json";
 	

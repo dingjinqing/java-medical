@@ -33,7 +33,10 @@ public class AdminAuth {
 	
 	@Autowired
 	protected SaasApplication saas ;
-	protected JedisManager jedis = JedisManager.instance();
+	
+	@Autowired
+	protected JedisManager jedis;
+	
 	protected Logger log = LoggerFactory.getLogger(AdminAuth.class);
 
 	final String TOKEN = "V-Token";

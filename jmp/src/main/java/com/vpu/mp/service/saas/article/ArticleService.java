@@ -35,7 +35,9 @@ import com.vpu.mp.service.saas.region.CityService;
 public class ArticleService extends MainBaseService {
 	
 	@Autowired public CityService city;
-	protected JedisManager jedis = JedisManager.instance();
+	@Autowired
+	protected JedisManager jedis;
+	
 	/**
 	 * 多条件查询文章
 	 * @param ArticleListQueryParam

@@ -31,7 +31,10 @@ public class SystemAuth {
 	
 	@Autowired
 	protected SaasApplication saas;
-	protected JedisManager jedis = JedisManager.instance();
+	
+	@Autowired
+	protected JedisManager jedis;
+	
 	protected Logger log = LoggerFactory.getLogger(SystemAuth.class);
 
 	final String TOKEN = "V-Token";

@@ -1,5 +1,7 @@
 package com.vpu.mp.service.foundation.jedis;
 
+import org.springframework.stereotype.Service;
+
 import com.vpu.mp.service.foundation.util.Util;
 
 import redis.clients.jedis.Jedis;
@@ -13,16 +15,8 @@ import redis.clients.jedis.JedisPoolConfig;
  * @author 新国
  *
  */
+@Service
 public class JedisManager {
-
-	private static JedisManager jedisManager = new JedisManager();
-
-	/**
-	 * 单例
-	 */
-	public static JedisManager instance() {
-		return jedisManager;
-	}
 
 	/**
 	 * redis缓存池

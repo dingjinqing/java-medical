@@ -24,6 +24,9 @@ abstract public class CommonBaseService {
 
 	@Autowired
 	protected DatabaseManager databaseManager;
+	
+	@Autowired
+	protected OpenPlatform open;
 
 	/**
 	 * Shop DB连接事务配置，线程内单例
@@ -167,7 +170,7 @@ abstract public class CommonBaseService {
 	}
 	
 	protected OpenPlatform open() {
-		return OpenPlatform.instance();
+		return open;
 	}
 	protected SaasApplication saas() {
 		return (SaasApplication) SpringUtil.getBean("saasApplication");

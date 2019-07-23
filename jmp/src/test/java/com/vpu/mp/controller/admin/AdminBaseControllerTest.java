@@ -34,7 +34,8 @@ public class AdminBaseControllerTest extends BaseControllerTest {
 	@Getter @Setter protected String moduleName;
 		
 	
-	protected JedisManager jedis = JedisManager.instance();
+	@Autowired
+	protected JedisManager jedis;
 
 	
 	@Override
