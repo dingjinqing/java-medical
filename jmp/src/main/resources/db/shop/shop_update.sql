@@ -333,4 +333,12 @@ alter table b2c_mp_visit_page
 alter table b2c_mp_distribution_visit
     add id int auto_increment primary key first;
 
--- --
+-- 王兵兵 201-07-24 补全砍价活动表字段
+
+ALTER TABLE `b2c_bargain` ADD COLUMN `bargain_type` TINYINT(1) DEFAULT 0  NULL   COMMENT '砍价类型0定人1任意价';
+ALTER TABLE `b2c_bargain` ADD COLUMN `floor_price` DECIMAL(10,2) DEFAULT 0.00  NULL   COMMENT '任意低价';
+ALTER TABLE `b2c_bargain` ADD COLUMN `bargain_money_type` TINYINT(1) DEFAULT 0  NULL   COMMENT '砍价计算模式';
+ALTER TABLE `b2c_bargain` ADD COLUMN `bargain_fixed_money` DECIMAL(10,2) DEFAULT 0.00  NULL   COMMENT '固定金额';
+ALTER TABLE `b2c_bargain` ADD COLUMN `bargain_min_money` DECIMAL(10,2) DEFAULT 0.00  NULL   COMMENT '最低价';
+ALTER TABLE `b2c_bargain` ADD COLUMN `bargain_max_money` DECIMAL(10,2) DEFAULT 0.00  NULL   COMMENT '最高价';
+ALTER TABLE `b2c_bargain` ADD COLUMN `free_freight` TINYINT(1) DEFAULT '0' COMMENT '0不免运费，使用原商品运费模板   1免运费';

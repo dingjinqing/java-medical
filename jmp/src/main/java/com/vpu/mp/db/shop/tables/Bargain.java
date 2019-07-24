@@ -43,7 +43,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class Bargain extends TableImpl<BargainRecord> {
 
-    private static final long serialVersionUID = 205088437;
+    private static final long serialVersionUID = 1140676405;
 
     /**
      * The reference instance of <code>mini_shop_471752.b2c_bargain</code>
@@ -152,6 +152,41 @@ public class Bargain extends TableImpl<BargainRecord> {
      * The column <code>mini_shop_471752.b2c_bargain.share_config</code>. 分享设置
      */
     public final TableField<BargainRecord, String> SHARE_CONFIG = createField("share_config", org.jooq.impl.SQLDataType.CLOB, this, "分享设置");
+
+    /**
+     * The column <code>mini_shop_471752.b2c_bargain.bargain_type</code>. 砍价类型0定人1任意价
+     */
+    public final TableField<BargainRecord, Byte> BARGAIN_TYPE = createField("bargain_type", org.jooq.impl.SQLDataType.TINYINT.defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.TINYINT)), this, "砍价类型0定人1任意价");
+
+    /**
+     * The column <code>mini_shop_471752.b2c_bargain.floor_price</code>. 任意低价
+     */
+    public final TableField<BargainRecord, BigDecimal> FLOOR_PRICE = createField("floor_price", org.jooq.impl.SQLDataType.DECIMAL(10, 2).defaultValue(org.jooq.impl.DSL.inline("0.00", org.jooq.impl.SQLDataType.DECIMAL)), this, "任意低价");
+
+    /**
+     * The column <code>mini_shop_471752.b2c_bargain.bargain_money_type</code>. 砍价计算模式
+     */
+    public final TableField<BargainRecord, Byte> BARGAIN_MONEY_TYPE = createField("bargain_money_type", org.jooq.impl.SQLDataType.TINYINT.defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.TINYINT)), this, "砍价计算模式");
+
+    /**
+     * The column <code>mini_shop_471752.b2c_bargain.bargain_fixed_money</code>. 固定金额
+     */
+    public final TableField<BargainRecord, BigDecimal> BARGAIN_FIXED_MONEY = createField("bargain_fixed_money", org.jooq.impl.SQLDataType.DECIMAL(10, 2).defaultValue(org.jooq.impl.DSL.inline("0.00", org.jooq.impl.SQLDataType.DECIMAL)), this, "固定金额");
+
+    /**
+     * The column <code>mini_shop_471752.b2c_bargain.bargain_min_money</code>. 最低价
+     */
+    public final TableField<BargainRecord, BigDecimal> BARGAIN_MIN_MONEY = createField("bargain_min_money", org.jooq.impl.SQLDataType.DECIMAL(10, 2).defaultValue(org.jooq.impl.DSL.inline("0.00", org.jooq.impl.SQLDataType.DECIMAL)), this, "最低价");
+
+    /**
+     * The column <code>mini_shop_471752.b2c_bargain.bargain_max_money</code>. 最高价
+     */
+    public final TableField<BargainRecord, BigDecimal> BARGAIN_MAX_MONEY = createField("bargain_max_money", org.jooq.impl.SQLDataType.DECIMAL(10, 2).defaultValue(org.jooq.impl.DSL.inline("0.00", org.jooq.impl.SQLDataType.DECIMAL)), this, "最高价");
+
+    /**
+     * The column <code>mini_shop_471752.b2c_bargain.free_freight</code>. 0不免运费，使用原商品运费模板   1免运费
+     */
+    public final TableField<BargainRecord, Byte> FREE_FREIGHT = createField("free_freight", org.jooq.impl.SQLDataType.TINYINT.defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.TINYINT)), this, "0不免运费，使用原商品运费模板   1免运费");
 
     /**
      * Create a <code>mini_shop_471752.b2c_bargain</code> table reference

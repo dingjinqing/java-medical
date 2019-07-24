@@ -1975,6 +1975,13 @@ create table `b2c_bargain` (
   `del_time`        	timestamp null default null,
   `reward_coupon_id` 	varchar(200) null   comment '砍价失败发放优惠券',
   `share_config`      	text    comment '分享设置',
+  `bargain_type`        tinyint(1) default 0         null comment '砍价类型0定人1任意价',
+  `floor_price`         decimal(10, 2) default 0.00  null comment '任意低价',
+  `bargain_money_type`  tinyint(1) default 0         null comment '砍价计算模式',
+  `bargain_fixed_money` decimal(10, 2) default 0.00  null comment '固定金额',
+  `bargain_min_money`   decimal(10, 2) default 0.00  null comment '最低价',
+  `bargain_max_money`   decimal(10, 2) default 0.00  null comment '最高价',
+  `free_freight` tinyint(1) DEFAULT '0' COMMENT '0不免运费，使用原商品运费模板   1免运费',
   primary key (`id`),
   key `goods_id` (`goods_id`)
 );
