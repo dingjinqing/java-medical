@@ -89,7 +89,7 @@ public class StoreService extends ShopBaseService {
 				.leftJoin(STORE_GROUP).on(STORE.GROUP.eq(STORE_GROUP.GROUP_ID));
 				
 		select = this.buildOptions(select, param);
-		select.where(STORE.DEL_FLAG.eq(DelFlag.NORMAL.getCode())).orderBy(STORE.CREATE_TIME);
+		select.where(STORE.DEL_FLAG.eq(DelFlag.NORMAL.getCode())).orderBy(STORE.CREATE_TIME.desc());
 		return getPageResult(select,param.getCurrentPage(),param.getPageRows(),StorePageListVo.class);
 	}
 
