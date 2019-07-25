@@ -2,6 +2,7 @@ package com.vpu.mp.controller.admin;
 
 import javax.validation.Valid;
 
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
@@ -56,6 +57,28 @@ public class AdminBargainController extends AdminBaseController {
 	@PostMapping(value = "/api/admin/market/bargain/update")
 	public JsonResult updateBargain(@RequestBody @Valid BargainUpdateParam param) {
 		if(shop().bargain.updateBargain(param)) {
+			return success();
+		}else {
+			return fail();
+		}
+	}
+	
+	/**
+	 *取砍价取单日可帮助砍价的次数
+	 * @return
+	 */
+	@GetMapping(value = "/api/admin/market/bargain/cut/times/get")
+	public JsonResult getDailyCutTimes() {
+		return success(shop().config.bargainCfg.getDailyCutTimes());
+	}
+	
+	/**
+	 *取砍价取单日可帮助砍价的次数
+	 * @return
+	 */
+	@GetMapping(value = "/api/admin/market/bargain/cut/times/set")
+	public JsonResult setDailyCutTimes(Integer dailyCutTimes) {
+		if(shop().config.bargainCfg.setDailyCutTimes(dailyCutTimes) > 0) {
 			return success();
 		}else {
 			return fail();
