@@ -12,6 +12,11 @@ import lombok.Data;
 @Data
 public class BargainPageListQueryVo {
 
+	/**
+	 * 砍价活动主键 
+	 */
+	private int id;
+	
 	private String bargainName;
 	private byte bargainType;
 	private String bargainTypeName;

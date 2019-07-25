@@ -7,6 +7,7 @@ import java.sql.Timestamp;
 
 import org.jooq.Record;
 import org.jooq.SelectWhereStep;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.vpu.mp.service.foundation.data.DelFlag;
@@ -25,6 +26,11 @@ import com.vpu.mp.service.pojo.shop.market.bargain.BargainPageListQueryVo;
 public class BargainService extends ShopBaseService  {
 	
 	/**
+	 *  砍价发起记录
+	 */
+	@Autowired public BargainRecordService bargainRecord;
+	
+	/**
 	 * 启用状态 
 	 */
 	public static final byte STATUS_NORMAL = 1;
@@ -40,7 +46,8 @@ public class BargainService extends ShopBaseService  {
 	 */
 	public PageResult<BargainPageListQueryVo> getPageList(BargainPageListQueryParam param) {
 		SelectWhereStep<? extends Record> select = db().select(
-				BARGAIN.BARGAIN_NAME,BARGAIN.BARGAIN_TYPE,BARGAIN.START_TIME,BARGAIN.END_TIME,BARGAIN.STATUS,BARGAIN.GOODS_ID,BARGAIN.STOCK,
+				BARGAIN.ID,BARGAIN.BARGAIN_NAME,BARGAIN.BARGAIN_TYPE,BARGAIN.START_TIME,BARGAIN.END_TIME,BARGAIN.STATUS,
+				BARGAIN.GOODS_ID,BARGAIN.STOCK,
 				GOODS.GOODS_NAME,GOODS.GOODS_NUMBER
 				).
 				from(BARGAIN).

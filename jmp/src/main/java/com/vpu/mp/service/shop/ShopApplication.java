@@ -92,7 +92,7 @@ public class ShopApplication  {
 	/**
 	 * 砍价 
 	 */
-	@Autowired public BargainService bargainService;
+	@Autowired public BargainService bargain;
 
 
 }

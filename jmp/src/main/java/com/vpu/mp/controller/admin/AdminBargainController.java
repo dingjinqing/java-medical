@@ -7,7 +7,10 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.vpu.mp.service.foundation.data.JsonResult;
+import com.vpu.mp.service.foundation.util.PageResult;
 import com.vpu.mp.service.pojo.shop.market.bargain.BargainPageListQueryParam;
+import com.vpu.mp.service.pojo.shop.market.bargain.BargainPageListQueryVo;
+import com.vpu.mp.service.shop.market.bargain.BargainRecordService;
 
 /**
  * @author 王兵兵
@@ -23,6 +26,11 @@ public class AdminBargainController extends AdminBaseController {
 	 */
 	@PostMapping(value = "/api/admin/market/bargain/list")
 	public JsonResult getBargainPageList(@RequestBody @Valid BargainPageListQueryParam param) {
-		return success(shop().bargainService.getPageList(param));
+		PageResult<BargainPageListQueryVo>  res = shop().bargain.getPageList(param);
+		for(BargainPageListQueryVo vo : res.dataList) {
+			vo.setSuccessNumber(shop().bargain.bargainRecord.getBargainRecordNumberByStatus(vo.getId(), BargainRecordService.STATUS_SUCCESS));
+			vo.setBargainUserNumber(shop().bargain.bargainRecord.getBargainRecordNumber(vo.getId()));
+		}
+		return success(res);
 	}
 }
