@@ -12,6 +12,7 @@ import com.vpu.mp.service.foundation.util.PageResult;
 import com.vpu.mp.service.pojo.shop.market.bargain.BargainAddParam;
 import com.vpu.mp.service.pojo.shop.market.bargain.BargainPageListQueryParam;
 import com.vpu.mp.service.pojo.shop.market.bargain.BargainPageListQueryVo;
+import com.vpu.mp.service.pojo.shop.market.bargain.BargainRecordPageListQueryParam;
 import com.vpu.mp.service.pojo.shop.market.bargain.BargainUpdateParam;
 import com.vpu.mp.service.shop.market.bargain.BargainRecordService;
 
@@ -83,5 +84,14 @@ public class AdminBargainController extends AdminBaseController {
 		}else {
 			return fail();
 		}
+	}
+	
+	/**
+	 * 发起砍价的用户列表
+	 * @return
+	 */
+	@PostMapping(value = "/api/admin/market/bargain/record/list")
+	public JsonResult getRecordPageList(@RequestBody @Valid BargainRecordPageListQueryParam param) {
+		return success(shop().bargain.bargainRecord.getRecordPageList(param));
 	}
 }
