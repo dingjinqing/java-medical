@@ -14,6 +14,8 @@ import org.apache.tools.ant.BuildException;
 import org.apache.tools.ant.Project;
 import org.apache.tools.ant.taskdefs.SQLExec;
 import org.jooq.SQLDialect;
+import org.jooq.conf.MappedSchema;
+import org.jooq.conf.RenderMapping;
 import org.jooq.conf.Settings;
 import org.jooq.exception.DataAccessException;
 import org.jooq.impl.DataSourceConnectionProvider;
@@ -74,7 +76,6 @@ public class DatabaseManager {
 	 */
 	private ThreadLocal<MpDefaultDSLContext> shopDsl = new ThreadLocal<MpDefaultDSLContext>();
 
-
 	/**
 	 * 主库连接
 	 */
@@ -87,8 +88,6 @@ public class DatabaseManager {
 		mainDsl.set(db);
 		return mainDsl.get();
 	}
-	
-	
 
 	/**
 	 * 切换当前数据库连接
@@ -114,7 +113,7 @@ public class DatabaseManager {
 			} else {
 				throw new RuntimeException();
 			}
-		} 
+		}
 		shopDsl.set(db);
 		lastShopId.set(currentShopId.get());
 		currentShopId.set(shopId);
@@ -133,7 +132,7 @@ public class DatabaseManager {
 	 * 
 	 * @return
 	 */
-	public  Integer getCurrentShopId() {
+	public Integer getCurrentShopId() {
 		return currentShopId.get();
 	}
 
@@ -150,7 +149,7 @@ public class DatabaseManager {
 	 * 从数据源获取一个连接
 	 */
 	protected MpDefaultDSLContext getDsl(BasicDataSource ds, DbConfig dbConfig) {
-		MpDefaultDSLContext db = new MpDefaultDSLContext(configuration(ds));
+		MpDefaultDSLContext db = new MpDefaultDSLContext(configuration(ds, dbConfig.getDatabase()));
 		db.setDbConfig(dbConfig);
 		db.execute("SET NAMES utf8mb4");
 		db.execute("Set sql_mode='ONLY_FULL_GROUP_BY'");
@@ -286,7 +285,11 @@ public class DatabaseManager {
 	 * @param dataSource
 	 * @return
 	 */
-	protected DefaultConfiguration configuration(BasicDataSource dataSource) {
+	protected DefaultConfiguration configuration(BasicDataSource dataSource, String databaseName) {
+
+		String jooqMainSchema = "mini_main";
+		String jooqShopSchema = "mini_shop_471752";
+
 		DefaultConfiguration jooqConfiguration = new DefaultConfiguration();
 		jooqConfiguration.set(new DataSourceConnectionProvider(dataSource));
 		jooqConfiguration.set(new DefaultExecuteListenerProvider(new SqlExcuteListener()));
@@ -294,44 +297,54 @@ public class DatabaseManager {
 		jooqConfiguration.set(dialect);
 
 		Settings settings = new Settings();
-		settings.withRenderCatalog(false);//.withRenderSchema(false);
+
+		// 设置schema映射
+		if (!StringUtils.isBlank(databaseName)) {
+			String inputSchema = datasourceManager.getDatabase().equals(databaseName) ? jooqMainSchema : jooqShopSchema;
+			settings.withRenderMapping(new RenderMapping()
+					.withSchemata(new MappedSchema().withInput(inputSchema).withOutput(databaseName)));
+		}
+
+		settings.withRenderCatalog(false);
 		jooqConfiguration.setSettings(settings);
 		return jooqConfiguration;
 	}
-	
+
 	/**
 	 * 得到当前线程店铺Db名称
+	 * 
 	 * @return
 	 */
 	public String getCurrentShopDbSchema() {
-		return shopDsl.get() != null ? shopDsl.get().getDbConfig().getDatabase(): "";
+		return shopDsl.get() != null ? shopDsl.get().getDbConfig().getDatabase() : "";
 	}
-	
+
 	/**
 	 * 得到当前线程店铺Db名称
+	 * 
 	 * @return
 	 */
 	public String getMainDbSchema() {
 		return datasourceManager.getDatabase();
 	}
-	
+
 	@Override
 	protected void finalize() {
 		MpDefaultDSLContext db = mainDsl.get();
-		if(db != null) {
+		if (db != null) {
 			mainDsl.remove();
 			db = null;
 		}
-		
+
 		db = shopDsl.get();
-		if(db != null) {
+		if (db != null) {
 			shopDsl.remove();
 			db = null;
 		}
-		if(currentShopId.get() != null) {
+		if (currentShopId.get() != null) {
 			currentShopId.remove();
 		}
-		if(lastShopId.get() != null) {
+		if (lastShopId.get() != null) {
 			lastShopId.remove();
 		}
 	}

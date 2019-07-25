@@ -18,7 +18,7 @@ import javax.validation.Valid;
  */
 @RestController
 @RequestMapping("/api")
-public class GroupBuyController extends AdminBaseController {
+public class AdminGroupBuyController extends AdminBaseController {
 
 
     /**

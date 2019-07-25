@@ -40,17 +40,6 @@ public class SqlExcuteListener extends DefaultExecuteListener {
 	@Override
 	public void renderEnd(ExecuteContext ctx) {
 
-		// 替换数据库的Schema
-		final String defaultShopDbName = "`mini_shop_471752`";
-		final String defaultMainDbName = "`mini_main`";
-		String currentSql = ctx.sql();
-		if (currentSql != null) {
-			DatabaseManager dm = SpringUtil.getBean(DatabaseManager.class);
-			currentSql = StringUtils.replace(currentSql, defaultShopDbName, "`" + dm.getCurrentShopDbSchema() + "`");
-			currentSql = StringUtils.replace(currentSql, defaultMainDbName, "`" + dm.getMainDbSchema() + "`");
-			ctx.sql(currentSql);
-		}
-
 		if (LOGGER.isDebugEnabled()) {
 			Configuration configuration = ctx.configuration();
 			String newline = TRUE.equals(configuration.settings().isRenderFormatted()) ? "\n" : "";
