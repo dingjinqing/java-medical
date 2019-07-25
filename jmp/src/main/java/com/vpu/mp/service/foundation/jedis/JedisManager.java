@@ -28,14 +28,14 @@ public class JedisManager {
 	@Value(value = "${spring.redis.timeout}")
 	protected Integer timeout;
 
-	@Value(value = "${spring.redis.password}")
+	@Value(value = "${spring.redis.password:''}")
 	protected String password;
-
-	@Value(value = "${spring.redis.lettuce.pool.max-idle")
-	protected Integer maxIdle;
 
 	@Value(value = "${spring.redis.lettuce.pool.max-wait}")
 	protected Integer maxWaitMillis;
+	
+	@Value(value = "${spring.redis.lettuce.pool.max-idle}")
+	protected Integer maxIdle;
 	
 	/**
 	 * redis缓存池
@@ -55,6 +55,7 @@ public class JedisManager {
 			synchronized (JedisManager.class) {
 				if (pool == null) {
 					JedisPoolConfig poolConfig = new JedisPoolConfig();
+
 					poolConfig.setMaxIdle(maxIdle);
 					poolConfig.setMaxWaitMillis(maxWaitMillis);
 					pool = new JedisPool(poolConfig, host, port, timeout, password);
