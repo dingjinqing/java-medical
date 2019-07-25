@@ -28,7 +28,7 @@ public class JedisManager {
 	@Value(value = "${spring.redis.timeout}")
 	protected Integer timeout;
 
-	@Value(value = "${spring.redis.password:''}")
+	@Value(value = "${spring.redis.password:}")
 	protected String password;
 
 	@Value(value = "${spring.redis.lettuce.pool.max-wait}")
