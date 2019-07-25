@@ -1,5 +1,6 @@
 package com.vpu.mp.service.foundation.jedis;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.vpu.mp.service.foundation.util.Util;
@@ -18,9 +19,7 @@ import redis.clients.jedis.JedisPoolConfig;
 @Service
 public class JedisManager {
 
-	/**
-	 * redis缓存池
-	 */
+	@Autowired
 	private JedisPool pool;
 
 	private JedisManager() {
@@ -32,23 +31,6 @@ public class JedisManager {
 	 * @return
 	 */
 	public JedisPool getJedisPool() {
-		if (pool == null) {
-			synchronized (JedisManager.class) {
-				if (pool == null) {
-					JedisPoolConfig poolConfig = new JedisPoolConfig();
-					String host = Util.getProperty("spring.redis.host");
-					int port = Util.getInteger(Util.getProperty("spring.redis.port")).intValue();
-					int timeout = Util.getInteger(Util.getProperty("spring.redis.timeout")).intValue();
-					String password = Util.getProperty("spring.redis.password");
-					int maxIdle = Util.getInteger(Util.getProperty("spring.redis.lettuce.pool.max-idle")).intValue();
-					int maxWaitMillis = Util.getInteger(Util.getProperty("spring.redis.lettuce.pool.max-wait"))
-							.intValue();
-					poolConfig.setMaxIdle(maxIdle);
-					poolConfig.setMaxWaitMillis(maxWaitMillis);
-					pool = new JedisPool(poolConfig, host, port, timeout, password);
-				}
-			}
-		}
 		return pool;
 	}
 
