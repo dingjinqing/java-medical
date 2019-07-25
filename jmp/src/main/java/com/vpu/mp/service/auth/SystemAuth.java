@@ -8,6 +8,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 import com.vpu.mp.db.main.tables.records.SystemChildAccountRecord;
@@ -26,6 +27,9 @@ import com.vpu.mp.service.saas.SaasApplication;
 @Component
 public class SystemAuth {
 
+	@Value(value = "${auth.timeout}")
+	protected Integer timeout;
+	
 	@Autowired
 	protected HttpServletRequest request;
 	
@@ -108,10 +112,9 @@ public class SystemAuth {
 		if (StringUtils.isBlank(info.getToken())) {
 			String loginToken = TOKEN_PREFIX
 					+ Util.md5(String.format("system_login_%d_%d_%s_%d", info.getSystemUserId(), info.getSubAccountId(),
-							Util.getProperty(AUTH_SECRET), Calendar.getInstance().getTimeInMillis()));
+							Util.randomId(), Calendar.getInstance().getTimeInMillis()));
 			info.setToken(loginToken);
 		}
-		Integer timeout = Util.getInteger(Util.getProperty(AUTH_TIMEOUT));
 		jedis.set(info.token, Util.toJson(info), timeout);
 	}
 

@@ -33,19 +33,11 @@ public class ScheduleTask {
 	 * 每一分钟执行一次
 	 */
 	@Async
-	@Scheduled(cron = "0/1 * * * * ?")
+	@Scheduled(cron = "0/5 * * * * ?")
 	public void taskPerMinute() {
-		// TODO: 加入每分钟执行的任务
-		 saas.article.getArticleIdRows(1);
-//		 Result<ShopRecord> shops = saas.shop.getAll();
-//		 for(ShopRecord shop:shops) {
-//			 saas.getShopApp(shop.getShopId()).image.getAllSize();
-//		 }
-		 ImageListQueryParam param = new ImageListQueryParam();
-		 saas.getShopApp(123456).image.getPageList(param);
-		 saas.article.getArticleIdRows(1);
-		 saas.getShopApp(123456).image.getAllSize();
-		System.out.println("@Scheduled id:"+Thread.currentThread().getId());
+
+//		saas.getShopApp(123456).config.bottomCfg.test();
+//		System.out.println("@Scheduled id:"+Thread.currentThread().getId());
 	}
 
 	// TODO:加入其它定时器
