@@ -1,0 +1,98 @@
+package com.vpu.mp.service.pojo.shop.market.bargain;
+
+import java.math.BigDecimal;
+import java.sql.Timestamp;
+
+import javax.validation.constraints.Min;
+import javax.validation.constraints.NotNull;
+
+import lombok.Data;
+
+/**
+ * @author 王兵兵
+ *
+ * 2019年7月24日
+ */
+@Data
+public class BargainAddParam {
+
+	/**
+	 *  活动类型：0砍到指定金额结算，1砍到任意金额结算
+	 */
+	@NotNull
+	private byte bargainType;
+	
+	@NotNull
+	private String bargainName;
+	@NotNull
+	private Timestamp startTime;
+	@NotNull
+	private Timestamp endTime;
+	
+	/**
+	 *  活动商品的ID
+	 */
+	@NotNull
+	private int goodsId;
+	
+	/**
+	 *  运费设置：1免运费，0使用原商品运费模板
+	 */
+	@NotNull
+	private byte freeFreight;
+	
+	/**
+	 * 砍价预期人数
+	 */
+	private int expectationNumber;
+	
+	/**
+	 * 商品首次砍价可砍价比例区间 百分比
+	 */
+	private double bargainMin;
+	private double bargainMax;
+	
+	/**
+	 * 向帮忙砍价的用户赠送优惠券，ID串，逗号分隔
+	 */
+	private String mrkingVoucherId;
+	
+	/**
+	 * 砍价失败后向买家赠送优惠券，ID串，逗号分隔
+	 */
+	private String rewardCouponId;
+	
+	/**
+	 * 分享设置 
+	 */
+	private String shareConfig;
+	
+	/**
+	 * 任意金额结算模式的结算金额底价 
+	 */
+	private double floorPrice;
+	
+	@NotNull
+	@Min(1)
+	private int stock;
+	
+	/**
+	 *  任意金额结算模式的单次帮砍金额模式：0固定金额，1区间随机金额
+	 */
+	private byte bargainMoneyType;
+	
+	/**
+	 * 任意金额结算模式的，单次帮砍金额模式的固定金额模式的，固定金额数值
+	 */
+	private BigDecimal bargainFixedMoney;
+	
+	/**
+	 * 任意金额结算模式的，单次帮砍金额模式的随机金额模式的，随机金额数值下限
+	 */
+	private BigDecimal bargainMinMoney;
+	
+	/**
+	 * 任意金额结算模式的，单次帮砍金额模式的固定金额模式的，随机金额数值上限
+	 */
+	private BigDecimal bargainMaxMoney;
+}

@@ -28,7 +28,7 @@ import org.jooq.impl.UpdatableRecordImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class BargainRecord extends UpdatableRecordImpl<BargainRecord> {
 
-    private static final long serialVersionUID = 2043002434;
+    private static final long serialVersionUID = -373066966;
 
     /**
      * Setter for <code>mini_shop_471752.b2c_bargain.id</code>.
@@ -199,14 +199,14 @@ public class BargainRecord extends UpdatableRecordImpl<BargainRecord> {
     }
 
     /**
-     * Setter for <code>mini_shop_471752.b2c_bargain.status</code>. 状态0可用1停用
+     * Setter for <code>mini_shop_471752.b2c_bargain.status</code>. 状态：1可用，0停用
      */
     public void setStatus(Byte value) {
         set(12, value);
     }
 
     /**
-     * Getter for <code>mini_shop_471752.b2c_bargain.status</code>. 状态0可用1停用
+     * Getter for <code>mini_shop_471752.b2c_bargain.status</code>. 状态：1可用，0停用
      */
     public Byte getStatus() {
         return (Byte) get(12);

@@ -10,12 +10,15 @@ import org.jooq.SelectWhereStep;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.vpu.mp.db.shop.tables.records.BargainRecord;
 import com.vpu.mp.service.foundation.data.DelFlag;
 import com.vpu.mp.service.foundation.service.ShopBaseService;
 import com.vpu.mp.service.foundation.util.PageResult;
 import com.vpu.mp.service.foundation.util.Util;
+import com.vpu.mp.service.pojo.shop.market.bargain.BargainAddParam;
 import com.vpu.mp.service.pojo.shop.market.bargain.BargainPageListQueryParam;
 import com.vpu.mp.service.pojo.shop.market.bargain.BargainPageListQueryVo;
+import com.vpu.mp.service.pojo.shop.market.bargain.BargainUpdateParam;
 
 /**
  * @author 王兵兵
@@ -72,5 +75,27 @@ public class BargainService extends ShopBaseService  {
 		}
 		select.where(BARGAIN.DEL_FLAG.eq(DelFlag.NORMAL.getCode())).orderBy(BARGAIN.CREATE_TIME.desc());
 		return getPageResult(select,param.getCurrentPage(),param.getPageRows(),BargainPageListQueryVo.class);
+	}
+	
+	/**
+	 * 新建砍价活动
+	 * @param param
+	 * @return
+	 */
+	public boolean addBargain(BargainAddParam param) {
+		BargainRecord record = new BargainRecord();
+		assign(param,record);
+		return db().executeInsert(record) > 0 ? true : false;
+	}
+	
+	/**
+	 * 更新砍价活动
+	 * @param param
+	 * @return
+	 */
+	public boolean updateBargain(BargainUpdateParam param) {
+		BargainRecord record = new BargainRecord();
+		assign(param,record);
+		return db().executeUpdate(record) > 0 ? true : false;
 	}
 }

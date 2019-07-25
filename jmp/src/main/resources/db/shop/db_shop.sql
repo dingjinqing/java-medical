@@ -1968,7 +1968,7 @@ create table `b2c_bargain` (
   `stock`              int(6)                       not null default '0' comment '库存',
   `sale_num`           int(6)                       not null default '0' comment '销售量',
   `mrking_voucher_id`  varchar(200)                 null,
-  `status`             tinyint(1)                   not null default '0' comment '状态0可用1停用',
+  `status`             tinyint(1)                   not null default '1' comment '状态：1可用，0停用',
   `del_flag`           tinyint(1)                   not null default '0' comment '1删除',
   `create_time`			timestamp      default current_timestamp,
   `update_time` 		timestamp      default current_timestamp on update current_timestamp comment '最后修改时间',

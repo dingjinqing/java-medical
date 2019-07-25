@@ -43,7 +43,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class Bargain extends TableImpl<BargainRecord> {
 
-    private static final long serialVersionUID = 1140676405;
+    private static final long serialVersionUID = 712129324;
 
     /**
      * The reference instance of <code>mini_shop_471752.b2c_bargain</code>
@@ -119,9 +119,9 @@ public class Bargain extends TableImpl<BargainRecord> {
     public final TableField<BargainRecord, String> MRKING_VOUCHER_ID = createField("mrking_voucher_id", org.jooq.impl.SQLDataType.VARCHAR(200), this, "");
 
     /**
-     * The column <code>mini_shop_471752.b2c_bargain.status</code>. 状态0可用1停用
+     * The column <code>mini_shop_471752.b2c_bargain.status</code>. 状态：1可用，0停用
      */
-    public final TableField<BargainRecord, Byte> STATUS = createField("status", org.jooq.impl.SQLDataType.TINYINT.nullable(false).defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.TINYINT)), this, "状态0可用1停用");
+    public final TableField<BargainRecord, Byte> STATUS = createField("status", org.jooq.impl.SQLDataType.TINYINT.nullable(false).defaultValue(org.jooq.impl.DSL.inline("1", org.jooq.impl.SQLDataType.TINYINT)), this, "状态：1可用，0停用");
 
     /**
      * The column <code>mini_shop_471752.b2c_bargain.del_flag</code>. 1删除
