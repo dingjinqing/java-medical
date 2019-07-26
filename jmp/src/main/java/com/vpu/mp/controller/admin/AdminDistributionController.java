@@ -120,4 +120,9 @@ public class AdminDistributionController extends AdminBaseController{
 			return this.fail();
 		}
 	}
+	
+//	public JsonResult distrobutorGroupList(DistributorGroupListParam param) {
+//		list = shop().distributorGroup.getDistributorGroupList(param);
+//		return this.success(list);
+//	}
 }

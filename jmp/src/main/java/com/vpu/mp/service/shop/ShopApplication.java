@@ -11,8 +11,8 @@ import com.vpu.mp.service.shop.decoration.AppletsJumpService;
 import com.vpu.mp.service.shop.decoration.ChooseLinkService;
 import com.vpu.mp.service.shop.decoration.PageClassificationService;
 import com.vpu.mp.service.shop.decoration.ShopMpDecorationService;
+import com.vpu.mp.service.shop.distribution.DistributorGroupService;
 import com.vpu.mp.service.shop.distribution.RebateStrategyService;
-import com.vpu.mp.service.shop.goods.BrandService;
 import com.vpu.mp.service.shop.goods.GoodsRecommendService;
 import com.vpu.mp.service.shop.goods.GoodsService;
 import com.vpu.mp.service.shop.image.ImageCategoryService;
@@ -60,7 +60,6 @@ public class ShopApplication  {
 	@Autowired public AmountService amount;
 	@Autowired public OverviewService overview;
 	@Autowired public DistributionService distribution;
-	@Autowired public BrandService brand;	//品牌管理
 	@Autowired public AppletsJumpService appletsJump;
 	@Autowired public MallOverviewService mallOverview;
 	@Autowired public CouponService coupon;	//优惠券管理
@@ -70,6 +69,8 @@ public class ShopApplication  {
 	@Autowired public PortraitService portrait;
 	@Autowired public RebateStrategyService rebateStrategy;
 	@Autowired public RealTimeOverviewService realTimeOverview;
+	@Autowired public DistributorGroupService distributorGroup;
+	
 	/**
 	 * 组团购
 	 */

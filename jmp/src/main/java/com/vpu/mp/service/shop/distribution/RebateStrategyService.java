@@ -8,7 +8,6 @@ import java.util.List;
 import org.jooq.Record8;
 import org.jooq.SelectConditionStep;
 import org.jooq.SelectJoinStep;
-import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Service;
 
 import com.vpu.mp.db.shop.tables.records.DistributionStrategyRecord;
@@ -16,8 +15,6 @@ import com.vpu.mp.service.foundation.service.ShopBaseService;
 import com.vpu.mp.service.foundation.util.PageResult;
 import com.vpu.mp.service.pojo.shop.distribution.DistributionStrategyParam;
 import com.vpu.mp.service.pojo.shop.distribution.DistributionStrategyVo;
-import org.springframework.context.annotation.Scope;
-import org.springframework.stereotype.Service;
 
 /**
  *返利策略配置

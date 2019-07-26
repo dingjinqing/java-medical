@@ -20,7 +20,7 @@ import com.vpu.mp.service.pojo.shop.decoration.StoreVo;
 import com.vpu.mp.service.pojo.shop.decoration.XcxCustomerPageVo;
 import com.vpu.mp.service.pojo.shop.decoration.XcxLinkListVo;
 import com.vpu.mp.service.pojo.shop.decoration.XcxNameListVo;
-import com.vpu.mp.service.pojo.shop.goods.brand.BrandVo;
+import com.vpu.mp.service.pojo.shop.goods.brand.GoodsBrandClassifyVo;
 import com.vpu.mp.service.pojo.shop.goods.label.GoodsLabelVo;
 import com.vpu.mp.service.pojo.shop.sort.SortVo;
 import com.vpu.mp.service.pojo.shop.store.store.StoreListQueryParam;
@@ -277,7 +277,7 @@ public class AdminChooseLinkController extends AdminBaseController{
 	 */
 	@GetMapping("/admin/decorate/brand/list")
 	public JsonResult brandClassifyList() {
-		List<BrandVo> chooseBrandList = shop().brand.getBrandClassifyList();
+		List<GoodsBrandClassifyVo> chooseBrandList = shop().goods.goodsBrand.getBrandClassifyList();
 		return this.success(chooseBrandList);
     }
 	
