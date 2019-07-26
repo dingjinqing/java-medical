@@ -64,6 +64,9 @@ public class JsonResultMessage {
     final public static String GOODS_BRAND_NAME_EXIST="goods.brand.name.exist";
     final public static String GOODS_BRAND_NAME_IS_NULL="goods.brand.name.is.null";
     final public static String GOODS_BRAND_ID_IS_NULL="goods.brand.id.is.null";
+    final public static String GOODS_BRAND_CALSSIFY_NAME_EXIST="goods.brand.classify.name.exist";
+    final public static String GOODS_BRAND_ALSSIFY_NAME_IS_NULL="goods.brand.classify.name.is.null";
+    final public static String GOODS_BRAND_ALSSIFY_ID_IS_NULL="goods.brand.classify.id.is.null";
         //商品分类
     final public static String GOODS_SORT_NAME_EXIST="goods.sort.name.exist";
     final public static String GOODS_SORT_NAME_IS_NULL="goods.sort.name.is.null";

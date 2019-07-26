@@ -1,5 +1,6 @@
 package com.vpu.mp.service.shop.goods;
 
+import com.vpu.mp.db.shop.tables.records.BrandClassifyRecord;
 import com.vpu.mp.db.shop.tables.records.GoodsBrandRecord;
 import com.vpu.mp.service.foundation.data.DelFlag;
 import com.vpu.mp.service.foundation.service.ShopBaseService;
@@ -257,4 +258,63 @@ public class GoodsBrandService extends ShopBaseService {
         return scs;
     }
 
+
+    /**
+     * 新增品牌分类
+     * @param param
+     */
+    public void insertBrandClassify(GoodsBrandClassifyParam param){
+        db().insertInto(BRAND_CLASSIFY,BRAND_CLASSIFY.CLASSIFY_NAME,BRAND_CLASSIFY.FIRST)
+                .values(param.getClassifyName(),param.getFirst()).execute();
+    }
+
+    /**
+     * 根据classifyId查询品牌分类
+     * @param param
+     * @return
+     */
+    public GoodsBrandClassifyVo selectBrandClassify(GoodsBrandClassifyParam param){
+        GoodsBrandClassifyVo vo = db().select(BRAND_CLASSIFY.CLASSIFY_ID, BRAND_CLASSIFY.CLASSIFY_NAME, BRAND_CLASSIFY.FIRST)
+                .from(BRAND_CLASSIFY)
+                .where(BRAND_CLASSIFY.CLASSIFY_ID.eq(param.getClassifyId()))
+                .fetchOne().into(GoodsBrandClassifyVo.class);
+
+        return vo;
+    }
+
+    /**
+     * 修改分类
+     * @param param
+     */
+    public void  updateBrandClassify(GoodsBrandClassifyParam param){
+        BrandClassifyRecord brandClassifyRecord = new BrandClassifyRecord();
+
+        brandClassifyRecord.setClassifyId(param.getClassifyId());
+
+        if (param.getClassifyName() != null) {
+            brandClassifyRecord.setClassifyName(param.getClassifyName());
+        }
+        if (param.getFirst() != null) {
+            brandClassifyRecord.setFirst(param.getFirst());
+        }
+
+        db().executeUpdate(brandClassifyRecord);
+    }
+
+    public boolean isClassifyNameExist(GoodsBrandClassifyParam param){
+        Integer count = db().selectCount().from(BRAND_CLASSIFY)
+                .where(BRAND_CLASSIFY.CLASSIFY_NAME.eq(param.getClassifyName()))
+                .fetchOne().into(Integer.class);
+
+        return count>0;
+    }
+
+    public boolean isClassifyOtherNameExist(GoodsBrandClassifyParam param){
+        Integer count = db().selectCount().from(BRAND_CLASSIFY)
+                .where(BRAND_CLASSIFY.CLASSIFY_NAME.eq(param.getClassifyName()))
+                .and(BRAND_CLASSIFY.CLASSIFY_ID.ne(param.getClassifyId()))
+                .fetchOne().into(Integer.class);
+
+        return count>0;
+    }
 }

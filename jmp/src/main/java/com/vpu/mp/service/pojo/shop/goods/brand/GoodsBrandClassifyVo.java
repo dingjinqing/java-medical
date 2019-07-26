@@ -12,6 +12,7 @@ import java.sql.Timestamp;
 public class GoodsBrandClassifyVo {
     private Integer classifyId;
     private String classifyName;
+    private Short first;
     private Integer brandNum;
     private Timestamp createTime;
 }
