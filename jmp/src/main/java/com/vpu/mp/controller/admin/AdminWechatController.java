@@ -53,7 +53,7 @@ public class AdminWechatController extends AdminBaseController {
 		try {
 			String authType = "2";
 			String bizAppId = null;
-			MpAuthShopRecord mp = saas.shop.mp.getAuthShopByShopId(shopId());
+			MpAuthShopRecord mp = saas.shop.mp.getAuthShopByShopId(shopId);
 			if (mp != null) {
 				bizAppId = mp.getAppId();
 			}
