@@ -142,13 +142,13 @@ public class JsonResultMessage {
     final public static String CONFIG_PLEDGE_CONTENT_LENGTH = "config.pledge.content.length";
     final public static String CONFIG_PLEDGE_LOGO_NULL = "config.pledge.logo.null";
 
-	final public static String AUTH_SHOP_NOT_EXIST = "auth.shop.appId.not.exist";
-	final public static String ORDER_PROCESS_CONFIG_UDPATE_FAILED = "order.process.config.update.failed";
-	final public static String WECAHT_PAY_CONFIG_UPDATE_DAILED = "wechat.pay.config.update.failed";
-	final public static String RETURN_CONFIG_UPDATE_FAILED = "return.config.update.failed";
-	final public static String PAYMENT_CONFIG_IS_NULL = "payment.config.is.null";
-	final public static String ORDER_PROCESS_CONFIG_IS_NULL = "order.process.config.is.null";
-	final public static String RETURN_CONFIG_IS_NULL = "return.config.is.null";
+	final public static String AUTH_SHOP_NOT_EXIST = "config.auth.shop.appId.not.exist";
+	final public static String ORDER_PROCESS_CONFIG_UDPATE_FAILED = "config.order.process.config.update.failed";
+	final public static String WECAHT_PAY_CONFIG_UPDATE_DAILED = "config.wechat.pay.config.update.failed";
+	final public static String RETURN_CONFIG_UPDATE_FAILED = "config.return.config.update.failed";
+	final public static String PAYMENT_CONFIG_IS_NULL = "config.payment.config.is.null";
+	final public static String ORDER_PROCESS_CONFIG_IS_NULL = "config.order.process.config.is.null";
+	final public static String RETURN_CONFIG_IS_NULL = "config.return.config.is.null";
 	final public static String WXPAY_CONFIG_IS_NULL = "wxpay.config.is.null";
 	final public static String CONFIG_A_NUM_GREATER = "config.a.num.greater";
 	final public static String CONFIG_B_NUM_GREATER = "config.b.num.greater";

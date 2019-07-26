@@ -42,7 +42,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class UploadedImageCategory extends TableImpl<UploadedImageCategoryRecord> {
 
-    private static final long serialVersionUID = 271144965;
+    private static final long serialVersionUID = -415538455;
 
     /**
      * The reference instance of <code>mini_main.b2c_uploaded_image_category</code>
@@ -70,7 +70,7 @@ public class UploadedImageCategory extends TableImpl<UploadedImageCategoryRecord
     /**
      * The column <code>mini_main.b2c_uploaded_image_category.img_cat_name</code>.
      */
-    public final TableField<UploadedImageCategoryRecord, String> IMG_CAT_NAME = createField("img_cat_name", org.jooq.impl.SQLDataType.VARCHAR(60).nullable(false).defaultValue(org.jooq.impl.DSL.inline("", org.jooq.impl.SQLDataType.VARCHAR)), this, "");
+    public final TableField<UploadedImageCategoryRecord, String> IMG_CAT_NAME = createField("img_cat_name", org.jooq.impl.SQLDataType.VARCHAR(60).nullable(false).defaultValue(org.jooq.impl.DSL.inline("''", org.jooq.impl.SQLDataType.VARCHAR)), this, "");
 
     /**
      * The column <code>mini_main.b2c_uploaded_image_category.img_cat_parent_id</code>.
@@ -78,14 +78,9 @@ public class UploadedImageCategory extends TableImpl<UploadedImageCategoryRecord
     public final TableField<UploadedImageCategoryRecord, Integer> IMG_CAT_PARENT_ID = createField("img_cat_parent_id", org.jooq.impl.SQLDataType.INTEGER.nullable(false).defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.INTEGER)), this, "");
 
     /**
-     * The column <code>mini_main.b2c_uploaded_image_category.create_time</code>.
-     */
-    public final TableField<UploadedImageCategoryRecord, Timestamp> CREATE_TIME = createField("create_time", org.jooq.impl.SQLDataType.TIMESTAMP.nullable(false).defaultValue(org.jooq.impl.DSL.field("CURRENT_TIMESTAMP", org.jooq.impl.SQLDataType.TIMESTAMP)), this, "");
-
-    /**
      * The column <code>mini_main.b2c_uploaded_image_category.cat_ids</code>. 层级ID串,逗号分隔
      */
-    public final TableField<UploadedImageCategoryRecord, String> CAT_IDS = createField("cat_ids", org.jooq.impl.SQLDataType.VARCHAR(191).nullable(false).defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.VARCHAR)), this, "层级ID串,逗号分隔");
+    public final TableField<UploadedImageCategoryRecord, String> CAT_IDS = createField("cat_ids", org.jooq.impl.SQLDataType.VARCHAR(191).nullable(false).defaultValue(org.jooq.impl.DSL.inline("'0'", org.jooq.impl.SQLDataType.VARCHAR)), this, "层级ID串,逗号分隔");
 
     /**
      * The column <code>mini_main.b2c_uploaded_image_category.level</code>. 层级，0开始
@@ -96,6 +91,16 @@ public class UploadedImageCategory extends TableImpl<UploadedImageCategoryRecord
      * The column <code>mini_main.b2c_uploaded_image_category.sort</code>. 排序优先级
      */
     public final TableField<UploadedImageCategoryRecord, Integer> SORT = createField("sort", org.jooq.impl.SQLDataType.INTEGER.defaultValue(org.jooq.impl.DSL.inline("1", org.jooq.impl.SQLDataType.INTEGER)), this, "排序优先级");
+
+    /**
+     * The column <code>mini_main.b2c_uploaded_image_category.create_time</code>.
+     */
+    public final TableField<UploadedImageCategoryRecord, Timestamp> CREATE_TIME = createField("create_time", org.jooq.impl.SQLDataType.TIMESTAMP.nullable(false).defaultValue(org.jooq.impl.DSL.field("current_timestamp()", org.jooq.impl.SQLDataType.TIMESTAMP)), this, "");
+
+    /**
+     * The column <code>mini_main.b2c_uploaded_image_category.update_time</code>. 最后修改时间
+     */
+    public final TableField<UploadedImageCategoryRecord, Timestamp> UPDATE_TIME = createField("update_time", org.jooq.impl.SQLDataType.TIMESTAMP.nullable(false).defaultValue(org.jooq.impl.DSL.field("current_timestamp()", org.jooq.impl.SQLDataType.TIMESTAMP)), this, "最后修改时间");
 
     /**
      * Create a <code>mini_main.b2c_uploaded_image_category</code> table reference

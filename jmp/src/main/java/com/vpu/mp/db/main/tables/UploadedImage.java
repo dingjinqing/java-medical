@@ -42,7 +42,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class UploadedImage extends TableImpl<UploadedImageRecord> {
 
-    private static final long serialVersionUID = 1761092848;
+    private static final long serialVersionUID = 369386558;
 
     /**
      * The reference instance of <code>mini_main.b2c_uploaded_image</code>
@@ -65,7 +65,7 @@ public class UploadedImage extends TableImpl<UploadedImageRecord> {
     /**
      * The column <code>mini_main.b2c_uploaded_image.img_type</code>.
      */
-    public final TableField<UploadedImageRecord, String> IMG_TYPE = createField("img_type", org.jooq.impl.SQLDataType.VARCHAR(60).nullable(false).defaultValue(org.jooq.impl.DSL.inline("", org.jooq.impl.SQLDataType.VARCHAR)), this, "");
+    public final TableField<UploadedImageRecord, String> IMG_TYPE = createField("img_type", org.jooq.impl.SQLDataType.VARCHAR(60).nullable(false).defaultValue(org.jooq.impl.DSL.inline("''", org.jooq.impl.SQLDataType.VARCHAR)), this, "");
 
     /**
      * The column <code>mini_main.b2c_uploaded_image.img_size</code>.
@@ -75,22 +75,22 @@ public class UploadedImage extends TableImpl<UploadedImageRecord> {
     /**
      * The column <code>mini_main.b2c_uploaded_image.img_name</code>. 图片名称，用于前端显示
      */
-    public final TableField<UploadedImageRecord, String> IMG_NAME = createField("img_name", org.jooq.impl.SQLDataType.VARCHAR(500).nullable(false).defaultValue(org.jooq.impl.DSL.inline("", org.jooq.impl.SQLDataType.VARCHAR)), this, "图片名称，用于前端显示");
+    public final TableField<UploadedImageRecord, String> IMG_NAME = createField("img_name", org.jooq.impl.SQLDataType.VARCHAR(500).nullable(false).defaultValue(org.jooq.impl.DSL.inline("''", org.jooq.impl.SQLDataType.VARCHAR)), this, "图片名称，用于前端显示");
 
     /**
      * The column <code>mini_main.b2c_uploaded_image.img_orig_fname</code>.
      */
-    public final TableField<UploadedImageRecord, String> IMG_ORIG_FNAME = createField("img_orig_fname", org.jooq.impl.SQLDataType.VARCHAR(500).nullable(false).defaultValue(org.jooq.impl.DSL.inline("", org.jooq.impl.SQLDataType.VARCHAR)), this, "");
+    public final TableField<UploadedImageRecord, String> IMG_ORIG_FNAME = createField("img_orig_fname", org.jooq.impl.SQLDataType.VARCHAR(500).nullable(false).defaultValue(org.jooq.impl.DSL.inline("''", org.jooq.impl.SQLDataType.VARCHAR)), this, "");
 
     /**
      * The column <code>mini_main.b2c_uploaded_image.img_path</code>.
      */
-    public final TableField<UploadedImageRecord, String> IMG_PATH = createField("img_path", org.jooq.impl.SQLDataType.VARCHAR(500).nullable(false).defaultValue(org.jooq.impl.DSL.inline("", org.jooq.impl.SQLDataType.VARCHAR)), this, "");
+    public final TableField<UploadedImageRecord, String> IMG_PATH = createField("img_path", org.jooq.impl.SQLDataType.VARCHAR(500).nullable(false).defaultValue(org.jooq.impl.DSL.inline("''", org.jooq.impl.SQLDataType.VARCHAR)), this, "");
 
     /**
      * The column <code>mini_main.b2c_uploaded_image.img_url</code>.
      */
-    public final TableField<UploadedImageRecord, String> IMG_URL = createField("img_url", org.jooq.impl.SQLDataType.VARCHAR(500).nullable(false).defaultValue(org.jooq.impl.DSL.inline("", org.jooq.impl.SQLDataType.VARCHAR)), this, "");
+    public final TableField<UploadedImageRecord, String> IMG_URL = createField("img_url", org.jooq.impl.SQLDataType.VARCHAR(500).nullable(false).defaultValue(org.jooq.impl.DSL.inline("''", org.jooq.impl.SQLDataType.VARCHAR)), this, "");
 
     /**
      * The column <code>mini_main.b2c_uploaded_image.img_cat_id</code>. 图片分类
@@ -115,7 +115,7 @@ public class UploadedImage extends TableImpl<UploadedImageRecord> {
     /**
      * The column <code>mini_main.b2c_uploaded_image.upload_time</code>.
      */
-    public final TableField<UploadedImageRecord, Timestamp> UPLOAD_TIME = createField("upload_time", org.jooq.impl.SQLDataType.TIMESTAMP.nullable(false).defaultValue(org.jooq.impl.DSL.field("CURRENT_TIMESTAMP", org.jooq.impl.SQLDataType.TIMESTAMP)), this, "");
+    public final TableField<UploadedImageRecord, Timestamp> UPLOAD_TIME = createField("upload_time", org.jooq.impl.SQLDataType.TIMESTAMP.nullable(false).defaultValue(org.jooq.impl.DSL.field("current_timestamp()", org.jooq.impl.SQLDataType.TIMESTAMP)), this, "");
 
     /**
      * The column <code>mini_main.b2c_uploaded_image.shop_id</code>. 店铺ID
@@ -131,6 +131,16 @@ public class UploadedImage extends TableImpl<UploadedImageRecord> {
      * The column <code>mini_main.b2c_uploaded_image.sys_id</code>. 账户ID
      */
     public final TableField<UploadedImageRecord, Integer> SYS_ID = createField("sys_id", org.jooq.impl.SQLDataType.INTEGER.nullable(false).defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.INTEGER)), this, "账户ID");
+
+    /**
+     * The column <code>mini_main.b2c_uploaded_image.create_time</code>.
+     */
+    public final TableField<UploadedImageRecord, Timestamp> CREATE_TIME = createField("create_time", org.jooq.impl.SQLDataType.TIMESTAMP.nullable(false).defaultValue(org.jooq.impl.DSL.field("current_timestamp()", org.jooq.impl.SQLDataType.TIMESTAMP)), this, "");
+
+    /**
+     * The column <code>mini_main.b2c_uploaded_image.update_time</code>. 最后修改时间
+     */
+    public final TableField<UploadedImageRecord, Timestamp> UPDATE_TIME = createField("update_time", org.jooq.impl.SQLDataType.TIMESTAMP.nullable(false).defaultValue(org.jooq.impl.DSL.field("current_timestamp()", org.jooq.impl.SQLDataType.TIMESTAMP)), this, "最后修改时间");
 
     /**
      * Create a <code>mini_main.b2c_uploaded_image</code> table reference

@@ -232,6 +232,8 @@ create table `b2c_uploaded_image` (
   `shop_id`        int(11)      not null default 0 comment '店铺ID',
   `del_flag`       tinyint(1)   not null default 0,
   `sys_id`         int(11)      not null default 0 comment '账户ID',
+  `create_time`      timestamp    	default current_timestamp,
+  `update_time`      timestamp     	default current_timestamp on update current_timestamp comment '最后修改时间',
   primary key (`img_id`),
   key (`shop_id`),
   key (img_orig_fname)
@@ -244,11 +246,11 @@ create table `b2c_uploaded_image_category` (
   `shop_id`           int(11)      not null default 0 comment '店铺ID',
   `img_cat_name`      varchar(60)  not null default '',
   `img_cat_parent_id` int(10)      not null default 0,
-  `create_time`       timestamp             default now(),
   `cat_ids`           varchar(191) not null default '0' comment '层级ID串,逗号分隔',
   `level`             tinyint(4)            default 0 comment '层级，0开始',
   `sort`              int(11)               default 1 comment '排序优先级',
-  `update_time`       timestamp             default now() ON UPDATE CURRENT_TIMESTAMP() COMMENT '更新时间',
+  `create_time`      timestamp    	default current_timestamp,
+  `update_time`      timestamp     	default current_timestamp on update current_timestamp comment '最后修改时间',
   primary key (`img_cat_id`),
   key (`shop_id`)
 );

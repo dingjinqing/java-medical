@@ -70,7 +70,7 @@ public class MpAuthShopService extends MainBaseService {
 	 * @param shopId
 	 * @return
 	 */
-	public WxOpenMaService getMpPayClientByShopId(Integer shopId) {
+	public WxOpenMaService getMaServiceByShopId(Integer shopId) {
 		MpAuthShopRecord mp = getAuthShopByShopId(shopId);
 		if (mp == null || mp.getIsAuthOk() == (byte) 1) {
 			return null;
@@ -84,7 +84,7 @@ public class MpAuthShopService extends MainBaseService {
 	 * @param appId
 	 * @return
 	 */
-	public WxOpenMaService getMpPayClientByAppId(String appId) {
+	public WxOpenMaService getMaServiceByAppId(String appId) {
 		MpAuthShopRecord mp = getAuthShopByAppId(appId);
 		if (mp == null || mp.getIsAuthOk() == (byte) 1) {
 			return null;
@@ -138,53 +138,89 @@ public class MpAuthShopService extends MainBaseService {
 	 * @return
 	 */
 	public int setPaymentInfo(String appId, String mchId, String key, String certContent, String keyContent) {
-		return db().update(MP_AUTH_SHOP)
-				.set(MP_AUTH_SHOP.PAY_MCH_ID, mchId)
-				.set(MP_AUTH_SHOP.PAY_KEY, key)
-				.set(MP_AUTH_SHOP.PAY_CERT_CONTENT, certContent)
-				.set(MP_AUTH_SHOP.PAY_KEY_CONTENT, keyContent)
-				.where(MP_AUTH_SHOP.APP_ID.eq(appId))
-				.execute();
+		return db().update(MP_AUTH_SHOP).set(MP_AUTH_SHOP.PAY_MCH_ID, mchId).set(MP_AUTH_SHOP.PAY_KEY, key)
+				.set(MP_AUTH_SHOP.PAY_CERT_CONTENT, certContent).set(MP_AUTH_SHOP.PAY_KEY_CONTENT, keyContent)
+				.where(MP_AUTH_SHOP.APP_ID.eq(appId)).execute();
 	}
 
 	/**
 	 * 更新微信支付配置
+	 * 
 	 * @param wxpayConfigParam
 	 * @return
 	 */
-	public int udpateWxpayConfig (WxpayConfigParam wxpayConfigParam){
+	public int udpateWxpayConfig(WxpayConfigParam wxpayConfigParam) {
 		return db().update(MpAuthShop.MP_AUTH_SHOP)
 				.set(MpAuthShop.MP_AUTH_SHOP.PAY_MCH_ID, wxpayConfigParam.getPayMchId())
 				.set(MpAuthShop.MP_AUTH_SHOP.PAY_KEY, wxpayConfigParam.getPayKey())
 				.set(MpAuthShop.MP_AUTH_SHOP.PAY_CERT_CONTENT, wxpayConfigParam.getPayCertContent())
 				.set(MpAuthShop.MP_AUTH_SHOP.PAY_KEY_CONTENT, wxpayConfigParam.getPayKeyContent())
-				.where(MpAuthShop.MP_AUTH_SHOP.APP_ID.eq(wxpayConfigParam.getAppId()))
-				.execute();
+				.where(MpAuthShop.MP_AUTH_SHOP.APP_ID.eq(wxpayConfigParam.getAppId())).execute();
 	}
 
 	/**
 	 * 根据appid检测MpAuthShop表中数据存在性
+	 * 
 	 * @param appId
 	 * @return true存在，false不存在
 	 */
-	public boolean checkAuthShopExist(String appId){
+	public boolean checkAuthShopExist(String appId) {
 		Condition conditionAuthShop = MpAuthShop.MP_AUTH_SHOP.APP_ID.eq(appId);
-		return db().fetchCount(MpAuthShop.MP_AUTH_SHOP,conditionAuthShop) > 0;
+		return db().fetchCount(MpAuthShop.MP_AUTH_SHOP, conditionAuthShop) > 0;
 	}
 
 	/**
 	 * 查询微信支付配置
+	 * 
 	 * @return
 	 */
-	public WxpayConfigParam getWxpayConfig (WxpaySearchParam wxpaySearchParam){
-		List<WxpayConfigParam> wxpayConfigParams = db().select(MpAuthShop.MP_AUTH_SHOP.APP_ID,
-				MpAuthShop.MP_AUTH_SHOP.PAY_MCH_ID,
-				MpAuthShop.MP_AUTH_SHOP.PAY_KEY,
-				MpAuthShop.MP_AUTH_SHOP.PAY_CERT_CONTENT,
-				MpAuthShop.MP_AUTH_SHOP.PAY_KEY_CONTENT)
-				.from(MpAuthShop.MP_AUTH_SHOP)
-				.where(MpAuthShop.MP_AUTH_SHOP.APP_ID.eq(wxpaySearchParam.getAppId()))
+	public WxpayConfigParam getWxpayConfig(WxpaySearchParam wxpaySearchParam) {
+		List<WxpayConfigParam> wxpayConfigParams = db()
+				.select(MpAuthShop.MP_AUTH_SHOP.APP_ID, MpAuthShop.MP_AUTH_SHOP.PAY_MCH_ID,
+						MpAuthShop.MP_AUTH_SHOP.PAY_KEY, MpAuthShop.MP_AUTH_SHOP.PAY_CERT_CONTENT,
+						MpAuthShop.MP_AUTH_SHOP.PAY_KEY_CONTENT)
+				.from(MpAuthShop.MP_AUTH_SHOP).where(MpAuthShop.MP_AUTH_SHOP.APP_ID.eq(wxpaySearchParam.getAppId()))
 				.fetchInto(WxpayConfigParam.class);
-		return wxpayConfigParams!=null&&!wxpayConfigParams.isEmpty() ? wxpayConfigParams.get(0) : null;
+		return wxpayConfigParams != null && !wxpayConfigParams.isEmpty() ? wxpayConfigParams.get(0) : null;
 	}
+
+	public void onCancelMpAuthorization() {
+
+	}
+
+	public String getMpQrCode(String appId) {
+		String path = "pages/bottom/bottom";
+		String filename = appId + "_" +Util.md5(path) +".jpg";
+		String relativePath = "upload/saas/mp/app_code/"+filename;
+		
+		MpAuthShopRecord mp = this.getAuthShopByAppId(appId);
+		WxOpenMaService maService = this.getMaServiceByAppId(appId);
+//		maService.getQrcodeService().createQrcode(path);
+		return null;
+//		$mp = $this->getRow($appId);
+//        if ($mp) {
+//            $path = "pages/bottom/bottom";
+//            $filename = "{$appId}_" . md5($path) . ".jpg";
+//            $relativePath = "upload/saas/mp/app_code/{$filename}";
+//            if (file_exists(public_path($relativePath))) return $relativePath;
+//            $dir = dirname(public_path($relativePath));
+//            if (!is_dir($dir)) mkdir($dir, 0777, true);
+//            $response = open_platform()->getAccount($appId)->app_code->get($path);
+//            if (!$response) {
+//                $message = "getMpQrCode app_code->get($path) failed appId:{$appId}";
+//                $this->logger->error($message);
+//                return false;
+//            }
+//            $response->saveAs($dir, $filename);
+//            if (file_exists(public_path($relativePath))) {
+//                $data = ['qrcode_url' => $relativePath];
+//                $this->updateRow($appId, $data);
+//            }
+//            return $relativePath;
+//        } else {
+//            $message = "getMpQrCode getRow failed appId:{$appId}";
+//            $this->logger->error($message);
+//        }
+	}
+
 }
