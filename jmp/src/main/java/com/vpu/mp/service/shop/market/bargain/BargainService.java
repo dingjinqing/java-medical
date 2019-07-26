@@ -34,6 +34,11 @@ public class BargainService extends ShopBaseService  {
 	@Autowired public BargainRecordService bargainRecord;
 	
 	/**
+	 *  帮忙砍价的用户
+	 */
+	@Autowired public BargainUserService bargainUser;
+	
+	/**
 	 * 启用状态 
 	 */
 	public static final byte STATUS_NORMAL = 1;

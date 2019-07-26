@@ -19,6 +19,7 @@ import com.vpu.mp.service.pojo.shop.market.bargain.BargainPageListQueryVo;
 import com.vpu.mp.service.pojo.shop.market.bargain.BargainRecordPageListQueryParam;
 import com.vpu.mp.service.pojo.shop.market.bargain.BargainRecordPageListQueryVo;
 import com.vpu.mp.service.pojo.shop.market.bargain.BargainUpdateParam;
+import com.vpu.mp.service.pojo.shop.market.bargain.BargainUserListQueryParam;
 import com.vpu.mp.service.shop.market.bargain.BargainRecordService;
 
 /**
@@ -105,7 +106,7 @@ public class AdminBargainController extends AdminBaseController {
 	}
 	
 	/**
-	 * 发起砍价的用户列表导出
+	 * 导出发起砍价的用户列表
 	 * @return
 	 */
 	@PostMapping(value = "/api/admin/market/bargain/record/list/export")
@@ -114,5 +115,14 @@ public class AdminBargainController extends AdminBaseController {
 		response.setContentType("application/vnd.ms-excel;charset=UTF-8");
 	    response.setHeader("Content-Disposition", "attachment;filename="+ new String("fileName" + ".xlsx"));
 		workbook.write(response.getOutputStream());
+	}
+	
+	/**
+	 * 帮忙砍价的用户列表
+	 * @return
+	 */
+	@PostMapping(value = "/api/admin/market/bargain/record/detail")
+	public JsonResult getBargainUserPageList(@RequestBody @Valid BargainUserListQueryParam param) {
+		return success(shop().bargain.bargainUser.getPageList(param));
 	}
 }
