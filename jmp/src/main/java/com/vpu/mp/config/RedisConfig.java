@@ -24,7 +24,7 @@ public class RedisConfig {
     @Value("${spring.redis.pool.max-wait:-1}")
     private long maxWaitMillis;
  
-    @Value("${spring.redis.password:}")
+    @Value("${spring.redis.password:#{null}}")
     private String password;
 
  
