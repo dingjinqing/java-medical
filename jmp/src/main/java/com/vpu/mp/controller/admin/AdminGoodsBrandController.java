@@ -121,5 +121,4 @@ public class AdminGoodsBrandController extends AdminBaseController {
         return success(goodsBrands);
     }
 
-
 }

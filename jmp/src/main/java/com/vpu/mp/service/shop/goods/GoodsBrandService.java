@@ -5,6 +5,7 @@ import com.vpu.mp.service.foundation.data.DelFlag;
 import com.vpu.mp.service.foundation.service.ShopBaseService;
 import com.vpu.mp.service.foundation.util.PageResult;
 import com.vpu.mp.service.pojo.shop.goods.brand.GoodsBrand;
+import com.vpu.mp.service.pojo.shop.goods.brand.GoodsBrandClassifyVo;
 import com.vpu.mp.service.pojo.shop.goods.brand.GoodsBrandPageListParam;
 import com.vpu.mp.service.pojo.shop.goods.brand.GoodsBrandVo;
 import org.jooq.*;
@@ -186,5 +187,11 @@ public class GoodsBrandService extends ShopBaseService {
     }
 
 
-
+    /**
+     * 品牌分类列表
+     * @return
+     */
+    public List<GoodsBrandClassifyVo> getBrandClassifyList() {
+       return null;
+    }
 }
