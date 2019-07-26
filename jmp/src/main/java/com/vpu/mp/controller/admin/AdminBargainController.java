@@ -13,6 +13,7 @@ import com.vpu.mp.service.pojo.shop.market.bargain.BargainAddParam;
 import com.vpu.mp.service.pojo.shop.market.bargain.BargainPageListQueryParam;
 import com.vpu.mp.service.pojo.shop.market.bargain.BargainPageListQueryVo;
 import com.vpu.mp.service.pojo.shop.market.bargain.BargainRecordPageListQueryParam;
+import com.vpu.mp.service.pojo.shop.market.bargain.BargainRecordPageListQueryVo;
 import com.vpu.mp.service.pojo.shop.market.bargain.BargainUpdateParam;
 import com.vpu.mp.service.shop.market.bargain.BargainRecordService;
 
@@ -92,6 +93,10 @@ public class AdminBargainController extends AdminBaseController {
 	 */
 	@PostMapping(value = "/api/admin/market/bargain/record/list")
 	public JsonResult getRecordPageList(@RequestBody @Valid BargainRecordPageListQueryParam param) {
-		return success(shop().bargain.bargainRecord.getRecordPageList(param));
+		PageResult<BargainRecordPageListQueryVo> res = shop().bargain.bargainRecord.getRecordPageList(param);
+		for(BargainRecordPageListQueryVo vo : res.dataList) {
+			vo.setSurplusMoney(shop().bargain.bargainRecord.getBargainRecordSurplusMoney(vo));
+		}
+		return success(res);
 	}
 }

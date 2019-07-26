@@ -18,14 +18,20 @@ public class BargainPageListQueryVo {
 	private int id;
 	
 	private String bargainName;
+	
+	/**
+	 * 砍价类型0定人1任意价
+	 */
 	private byte bargainType;
-	private String bargainTypeName;
+	
 	private Timestamp startTime;
 	private Timestamp endTime;
+	
 	/**
 	 * 停用启用的状态：1可用，0停用 
 	 */
 	private byte status;
+	
 	private String goodsName;
 	/**
 	 * 商品库存 

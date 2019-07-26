@@ -5,6 +5,8 @@ import static com.vpu.mp.db.shop.tables.BargainRecord.BARGAIN_RECORD;
 import static com.vpu.mp.db.shop.tables.Goods.GOODS;
 import static com.vpu.mp.db.shop.tables.User.USER;
 
+import java.math.BigDecimal;
+
 import org.jooq.Record;
 import org.jooq.SelectWhereStep;
 import org.springframework.stereotype.Service;
@@ -64,8 +66,8 @@ public class BargainRecordService extends ShopBaseService {
 	 */
 	public PageResult<BargainRecordPageListQueryVo> getRecordPageList(BargainRecordPageListQueryParam param){
 		SelectWhereStep<? extends Record> select = db().select(
-				BARGAIN_RECORD.ID,GOODS.GOODS_NAME,USER.USERNAME,USER.MOBILE,BARGAIN_RECORD.CREATE_TIME,BARGAIN_RECORD.BARGAIN_MONEY,
-				BARGAIN_RECORD.USER_NUMBER,BARGAIN_RECORD.STATUS ,BARGAIN.EXPECTATION_PRICE			
+				BARGAIN_RECORD.ID,GOODS.GOODS_NAME,BARGAIN_RECORD.GOODS_PRICE,USER.USERNAME,USER.MOBILE,BARGAIN_RECORD.CREATE_TIME,BARGAIN_RECORD.BARGAIN_MONEY,
+				BARGAIN_RECORD.USER_NUMBER,BARGAIN_RECORD.STATUS ,BARGAIN.EXPECTATION_PRICE,BARGAIN.BARGAIN_TYPE,BARGAIN.FLOOR_PRICE			
 				).
 				from(BARGAIN_RECORD).
 				leftJoin(GOODS).on(BARGAIN_RECORD.GOODS_ID.eq(GOODS.GOODS_ID)).
@@ -96,5 +98,23 @@ public class BargainRecordService extends ShopBaseService {
 			select.where(BARGAIN_RECORD.CREATE_TIME.lt(param.getEndTime()));
 		}
 		return select;
+	}
+	
+	/**
+	 * 算出待砍金额
+	 * @param record
+	 * @return
+	 */
+	public BigDecimal getBargainRecordSurplusMoney(BargainRecordPageListQueryVo record) {
+		if(record.getBargainType() == BargainService.BARGAIN_TYPE_FIXED) {
+			return record.getGoodsPrice().subtract(record.getExpectationPrice()).subtract(record.getBargainMoney());
+		}else if(record.getBargainType() == BargainService.BARGAIN_TYPE_RANDOM) {
+			return record.getGoodsPrice().subtract(record.getFloorPrice()).subtract(record.getBargainMoney());
+		}
+		return BigDecimal.ZERO;
+	}
+	
+	public void exportBargainRecordList(BargainRecordPageListQueryParam param) {
+		
 	}
 }

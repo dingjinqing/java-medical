@@ -19,6 +19,7 @@ public class BargainRecordPageListQueryVo {
 	private int id;
 	
 	private String goodsName;
+	private BigDecimal goodsPrice;
 	private String username;
 	private String mobile;
 	private Timestamp createTime;
@@ -42,4 +43,20 @@ public class BargainRecordPageListQueryVo {
 	 *  状态 0砍价中，1成功，2失败
 	 */
 	private byte status;
+	
+	/**
+	 * 砍价类型0定人1任意价 
+	 */
+	private byte bargainType;
+	
+	/**
+	 * 任意金额结算模式的结算金额底价  
+	 */
+	private BigDecimal floorPrice;
+	
+	/**
+	 *固定人数模式， 预期砍价最低金额
+	 */
+	private BigDecimal expectationPrice;
+	
 }

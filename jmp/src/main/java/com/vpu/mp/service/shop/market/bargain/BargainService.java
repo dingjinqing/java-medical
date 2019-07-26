@@ -43,6 +43,15 @@ public class BargainService extends ShopBaseService  {
 	public static final byte STATUS_DISABLED = 0;
 	
 	/**
+	 * 活动类型 固定人数
+	 */
+	public static final byte BARGAIN_TYPE_FIXED = 0;
+	/**
+	 * 活动类型 砍到区间内结算 
+	 */
+	public static final byte BARGAIN_TYPE_RANDOM = 1;
+	
+	/**
 	 * 砍价活动列表分页查询
 	 * @param StoreListQueryParam
 	 * @return StorePageListVo
