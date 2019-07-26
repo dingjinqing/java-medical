@@ -10,11 +10,9 @@
           name="first"
         >
           <ul class="topUl">
-            <li>分类名称：
-              <el-autocomplete
-                popper-class="my-autocomplete"
+            <li>品牌名称：
+              <el-input
                 v-model="state3"
-                :fetch-suggestions="querySearch"
                 placeholder="请输入内容"
                 @select="handleSelect"
                 size="small"
@@ -22,7 +20,7 @@
                 <template slot-scope="props">
                   <div class="name">{{ props.item.value }}</div>
                 </template>
-              </el-autocomplete>
+              </el-input>
             </li>
             <li>
               <div class="block">
@@ -32,7 +30,8 @@
                   type="daterange"
                   start-placeholder="开始日期"
                   end-placeholder="结束日期"
-                  default-value="2010-10-01"
+                  default-value="2019-10-01"
+                  value-format="yyyy-MM-dd"
                   size="small"
                 >
                 </el-date-picker>
@@ -46,9 +45,10 @@
               >
                 <el-option
                   v-for="item in optionsClss"
-                  :key="item.value"
-                  :label="item.label"
-                  :value="item.value"
+                  :key="item.classifyName"
+                  :label="item.classifyName"
+                  :value="item.classifyId"
+                  :class="item.classifyId===1?'grandSelectClass':''"
                 >
                 </el-option>
               </el-select>
@@ -78,6 +78,7 @@
             <el-button
               type="primary"
               size="small"
+              @click="handleSXevent()"
             >筛选</el-button>
           </div>
         </el-tab-pane>
@@ -279,7 +280,7 @@
 </template>
 <script>
 import { mapActions } from 'vuex'
-import { brandAllGetRequest, brandDeleteGetRequest } from '@/api/admin/brandManagement.js'
+import { brandAllGetRequest, brandDeleteGetRequest, classificationSelectRequest } from '@/api/admin/brandManagement.js'
 export default {
   data () {
     return {
@@ -287,38 +288,14 @@ export default {
       restaurants: [],
       state3: '',
       value9: '',
-      optionsClss: [{
-        value: '选项1',
-        label: '黄金糕'
-      }, {
-        value: '选项2',
-        label: '双皮奶'
-      }, {
-        value: '选项3',
-        label: '蚵仔煎'
-      }, {
-        value: '选项4',
-        label: '龙须面'
-      }, {
-        value: '选项5',
-        label: '北京烤鸭'
-      }],
+      optionsClss: [],
       valueClss: '',
       optionsIsClss: [{
-        value: '选项1',
-        label: '黄金糕'
+        value: '1',
+        label: '是'
       }, {
-        value: '选项2',
-        label: '双皮奶'
-      }, {
-        value: '选项3',
-        label: '蚵仔煎'
-      }, {
-        value: '选项4',
-        label: '龙须面'
-      }, {
-        value: '选项5',
-        label: '北京烤鸭'
+        value: '0',
+        label: '否'
       }],
       valueIsClss: '',
       trList: [
@@ -365,7 +342,7 @@ export default {
       dialogVisibleAddBrand: false,
       brandName: '',
       classificationName: '',
-      totalRows: ''
+      totalRows: null
     }
   },
   props: ['turnIndex'],
@@ -385,11 +362,18 @@ export default {
         'currentPage': 1,
         'pageRows': 20
       }
+      // 初始化全部品牌表格数据
       brandAllGetRequest(obj).then((res) => {
         this.trList = res.content.dataList
         this.totalRows = res.content.page.totalRows
         console.log(res)
       })
+      // 品牌分类下拉框数据请求
+      classificationSelectRequest().then((res) => {
+        this.optionsClss = res.content
+        console.log(res)
+      })
+
       let arr = ['商品管理', '品牌管理']
       this.changeCrumbstitle(arr)
     },
@@ -482,11 +466,58 @@ export default {
           this.handleCurrentChange()
         }
       })
+    },
+    // 筛选
+    handleSXevent () {
+      // console.log(this.valueClss)
+      let obj = {
+        'brandName': this.state3,
+        'startAddTime': this.value9[0],
+        'endAddTime': this.value9[1],
+        'classifyId': this.valueClss,
+        'isRecommend': this.valueIsClss,
+        'currentPage': 1,
+        'pageRows': 20
+      }
+      brandAllGetRequest(obj).then((res) => {
+        console.log(res)
+        if (res.content.page.totalRows === 0) {
+          console.log(1)
+          this.tbodyFlag = false
+        }
+      })
+      // let obj = {
+      //   'bargainId': '2'
+      // }
+      // test(obj).then((res) => {
+      //   console.log(res)
+      // })
     }
+
   }
 }
 </script>
 <style scoped lang='scss'>
+.noData {
+  height: 100px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  /* width: 650px; */
+  flex-direction: column;
+  border: 1px solid #eee;
+  margin-top: 10px;
+}
+.noData span {
+  margin: 10px;
+}
+.grandSelectClass {
+  padding-left: 30px;
+}
+.zwiclass {
+  height: 1px;
+  width: 10px;
+}
 .brandManagementContent {
   padding: 10px;
   padding-right: 23px;

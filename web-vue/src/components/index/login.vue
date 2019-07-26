@@ -364,7 +364,7 @@ input::-webkit-input-placeholder {
 }
 </style>
 <style>
-.el-button{
-      padding: 12px 20px!important;
+.el-button {
+  padding: 12px 20px !important;
 }
 </style>

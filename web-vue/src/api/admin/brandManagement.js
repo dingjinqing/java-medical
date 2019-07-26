@@ -44,3 +44,28 @@ export function brandSelectGetRequest (data) {
     data: data
   })
 }
+
+// 品牌分类下拉框数据获取
+export function classificationSelectRequest () {
+  return service({
+    url: '/api/admin/goods/brand/classify/name/list',
+    method: 'get'
+  })
+}
+
+// 修改品牌分类
+export function modifyGrandRequest (data) {
+  return service({
+    url: '/api/admin/goods/brand/classify/update',
+    method: 'post',
+    data: data
+  })
+}
+
+export function test (data) {
+  return service({
+    url: '/api/admin/market/bargain/record/list/export',
+    method: 'post',
+    data: data
+  })
+}
