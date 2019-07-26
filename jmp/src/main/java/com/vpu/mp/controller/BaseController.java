@@ -125,7 +125,7 @@ public class BaseController {
 	 * @return
 	 */
 	public String mainUrl(String path) {
-		return Util.imageUrl(path, request.getScheme());
+		return Util.mainUrl(path, request.getScheme());
 	}
 
 	/**
