@@ -1,7 +1,11 @@
 package com.vpu.mp.controller.admin;
 
+import java.io.IOException;
+
+import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
 
+import org.apache.poi.ss.usermodel.Workbook;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -98,5 +102,17 @@ public class AdminBargainController extends AdminBaseController {
 			vo.setSurplusMoney(shop().bargain.bargainRecord.getBargainRecordSurplusMoney(vo));
 		}
 		return success(res);
+	}
+	
+	/**
+	 * 发起砍价的用户列表导出
+	 * @return
+	 */
+	@PostMapping(value = "/api/admin/market/bargain/record/list/export")
+	public void exportBargainRecordList(@RequestBody @Valid BargainRecordPageListQueryParam param, HttpServletResponse response) throws IOException {
+		Workbook workbook=shop().bargain.bargainRecord.exportBargainRecordList(param);
+		response.setContentType("application/vnd.ms-excel;charset=UTF-8");
+	    response.setHeader("Content-Disposition", "attachment;filename="+ new String("fileName" + ".xlsx"));
+		workbook.write(response.getOutputStream());
 	}
 }

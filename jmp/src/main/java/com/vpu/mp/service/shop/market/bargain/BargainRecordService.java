@@ -5,15 +5,23 @@ import static com.vpu.mp.db.shop.tables.BargainRecord.BARGAIN_RECORD;
 import static com.vpu.mp.db.shop.tables.Goods.GOODS;
 import static com.vpu.mp.db.shop.tables.User.USER;
 
+import java.io.IOException;
 import java.math.BigDecimal;
+import java.util.List;
 
+import org.apache.poi.hssf.usermodel.HSSFWorkbook;
+import org.apache.poi.ss.usermodel.Workbook;
 import org.jooq.Record;
 import org.jooq.SelectWhereStep;
 import org.springframework.stereotype.Service;
 
 import com.vpu.mp.service.foundation.data.DelFlag;
+import com.vpu.mp.service.foundation.excel.ExcelFactory;
+import com.vpu.mp.service.foundation.excel.ExcelTypeEnum;
+import com.vpu.mp.service.foundation.excel.ExcelWriter;
 import com.vpu.mp.service.foundation.service.ShopBaseService;
 import com.vpu.mp.service.foundation.util.PageResult;
+import com.vpu.mp.service.pojo.shop.market.bargain.BargainRecordExportVo;
 import com.vpu.mp.service.pojo.shop.market.bargain.BargainRecordPageListQueryParam;
 import com.vpu.mp.service.pojo.shop.market.bargain.BargainRecordPageListQueryVo;
 
@@ -114,7 +122,24 @@ public class BargainRecordService extends ShopBaseService {
 		return BigDecimal.ZERO;
 	}
 	
-	public void exportBargainRecordList(BargainRecordPageListQueryParam param) {
+	public Workbook exportBargainRecordList(BargainRecordPageListQueryParam param) throws IOException {
 		
+		SelectWhereStep<? extends Record> select = db().select(
+				BARGAIN_RECORD.ID,GOODS.GOODS_NAME,BARGAIN_RECORD.GOODS_PRICE,USER.USERNAME,USER.MOBILE,BARGAIN_RECORD.CREATE_TIME,BARGAIN_RECORD.BARGAIN_MONEY,
+				BARGAIN_RECORD.USER_NUMBER,BARGAIN_RECORD.STATUS ,BARGAIN.EXPECTATION_PRICE,BARGAIN.BARGAIN_TYPE,BARGAIN.FLOOR_PRICE			
+				).
+				from(BARGAIN_RECORD).
+				leftJoin(GOODS).on(BARGAIN_RECORD.GOODS_ID.eq(GOODS.GOODS_ID)).
+				leftJoin(USER).on(BARGAIN_RECORD.USER_ID.eq(USER.USER_ID)).
+				leftJoin(BARGAIN).on(BARGAIN_RECORD.BARGAIN_ID.eq(BARGAIN.ID));
+		select = this.buildOptions(select, param);
+		select.where(BARGAIN_RECORD.BARGAIN_ID.eq(param.getBargainId())).and(BARGAIN_RECORD.DEL_FLAG.eq(DelFlag.NORMAL.getCode()));
+		List<BargainRecordExportVo> bargainRecordList =  select.fetchInto(BargainRecordExportVo.class);
+
+        Workbook workbook=ExcelFactory.createWorkbook(ExcelTypeEnum.XLSX);
+        ExcelWriter excelWriter = new ExcelWriter(workbook);
+        excelWriter.writeModelList(bargainRecordList,BargainRecordExportVo.class);
+
+        return workbook;
 	}
 }
