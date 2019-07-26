@@ -9,11 +9,24 @@
   </div>
 </template>
 <script>
+import { mapGetters } from 'vuex'
 export default {
   props: ['mTitle'],
   data () {
     return {
       title: ''
+    }
+  },
+  computed: {
+    ...mapGetters(['crumbsTitle']),
+    crumbsTitle_ () {
+      return this.crumbsTitle
+    }
+  },
+  watch: {
+    crumbsTitle_ (newData, oldData) {
+      console.log(newData)
+      this.handleTitle(newData)
     }
   },
   mounted () {
@@ -23,6 +36,15 @@ export default {
     })
     console.log(arr)
     this.title = arr
+  },
+  methods: {
+    // vuextitle
+    handleTitle (data) {
+      let arr = data.filter((item, index) => {
+        return index !== 0
+      })
+      this.title = arr
+    }
   }
 }
 </script>

@@ -27,6 +27,9 @@ export default {
       turnIndex: null
     }
   },
+  mounted () {
+
+  },
   methods: {
     // 切换组件
     handleTurnComponents ({ index, turnIndex }) {

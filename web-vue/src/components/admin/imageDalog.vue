@@ -1,146 +1,148 @@
 <template>
   <div class="imageDalog">
-    <el-dialog
-      :title="$t('imgageDalog.title')"
-      :visible.sync="dialogTableVisible"
-      width="825px"
-    >
-      <div class="dialog_top">
-        <el-upload
-          class="upload-demo"
-          action=""
-          :before-upload="beforeUpLoad"
-          multiple
-          :limit="5"
-          :show-file-list="false"
-          :on-exceed="handleExceed"
-        >
-          <el-button
-            size="small"
-            type="primary"
-          >{{$t('imgageDalog.upload')}}</el-button>
-          <div
-            slot="tip"
-            class="tips"
-            :class="imageDalogTip_lineHeight"
+    <div class="imageDalogMain">
+      <el-dialog
+        :title="$t('imgageDalog.title')"
+        :visible.sync="dialogTableVisible"
+        width="825px"
+      >
+        <div class="dialog_top">
+          <el-upload
+            class="upload-demo"
+            action=""
+            :before-upload="beforeUpLoad"
+            multiple
+            :limit="5"
+            :show-file-list="false"
+            :on-exceed="handleExceed"
           >
-            <img :src="imgUrl[0].img_1">
-            {{$t('imgageDalog.tip')}}</div>
-        </el-upload>
-      </div>
-      <div class="dialog_middle">
-        <div class="dialog_middle_top">
-          <Tree :pageIndex='pageIndex' />
-          <div class="dialog_middle_right_box">
-            <div class="right_top">
-              <el-select
-                v-model="value"
-                placeholder="请选择"
-                size='mini'
-              >
-                <el-option
-                  v-for="item in options"
-                  :key="item.value"
-                  :label="item.label"
-                  :value="item.value"
+            <el-button
+              size="small"
+              type="primary"
+            >{{$t('imgageDalog.upload')}}</el-button>
+            <div
+              slot="tip"
+              class="tips"
+              :class="imageDalogTip_lineHeight"
+            >
+              <img :src="imgUrl[0].img_1">
+              {{$t('imgageDalog.tip')}}</div>
+          </el-upload>
+        </div>
+        <div class="dialog_middle">
+          <div class="dialog_middle_top">
+            <Tree :pageIndex='pageIndex' />
+            <div class="dialog_middle_right_box">
+              <div class="right_top">
+                <el-select
+                  v-model="value"
+                  placeholder="请选择"
+                  size='mini'
                 >
-                </el-option>
-              </el-select>
-              <el-input
-                v-model="imgNameInput"
-                :placeholder="$t('imgageDalog.imagePlaceholder')"
-                size='mini'
-              ></el-input>
-              <el-button
-                type="info"
-                plain
-                size="mini"
-                @click="handleSearch()"
-              >{{$t('imgageDalog.search')}}</el-button>
-              <el-checkbox v-model="checked">{{this.size}}px x {{this.size}}px</el-checkbox>
-            </div>
-            <div class="right_content">
-              <ul>
-                <li
-                  @mouseenter="enter(index)"
-                  @mouseleave="leave(index)"
-                  v-for="(item,index) in img_list"
-                  :key="index"
-                >
+                  <el-option
+                    v-for="item in options"
+                    :key="item.value"
+                    :label="item.label"
+                    :value="item.value"
+                  >
+                  </el-option>
+                </el-select>
+                <el-input
+                  v-model="imgNameInput"
+                  :placeholder="$t('imgageDalog.imagePlaceholder')"
+                  size='mini'
+                ></el-input>
+                <el-button
+                  type="info"
+                  plain
+                  size="mini"
+                  @click="handleSearch()"
+                >{{$t('imgageDalog.search')}}</el-button>
+                <el-checkbox v-model="checked">{{this.size}}px x {{this.size}}px</el-checkbox>
+              </div>
+              <div class="right_content">
+                <ul>
+                  <li
+                    @mouseenter="enter(index)"
+                    @mouseleave="leave(index)"
+                    v-for="(item,index) in img_list"
+                    :key="index"
+                  >
 
-                  <div style="position:relative">
-                    <a :title="item.imgName">
-                      <img
-                        :src="item.imgUrl"
-                        @click="handleChecked(index)"
-                      >
-                    </a>
+                    <div style="position:relative">
+                      <a :title="item.imgName">
+                        <img
+                          :src="item.imgUrl"
+                          @click="handleChecked(index)"
+                        >
+                      </a>
+                      <div
+                        v-show="item.checked"
+                        class="img_sel"
+                      ></div>
+                    </div>
                     <div
-                      v-show="item.checked"
-                      class="img_sel"
-                    ></div>
-                  </div>
+                      class="img_mask"
+                      :class="item.imgIndex === index?'mask_flag':''"
+                    >
+                      <p :class="imageDalog_p_height">
+                        <a
+                          class="old_pic"
+                          href="http://mpdevimg2.weipubao.cn/upload/4748160/image/20190708/crop_aeZqHE9BhNhWub8j.jpeg"
+                          target="_blank"
+                          title="显示原图"
+                        >{{$t('imgageDalog.OriginalImg')}}</a>
+                        <a
+                          class="remove_image"
+                          title="删除图片"
+                          @click="delImg(item.imgId)"
+                        >{{$t('imgageDalog.delImg')}}</a>
+                      </p>
+                    </div>
+                    <div
+                      class="img_dim"
+                      :class="item.imgIndex === index?'dim_flag':''"
+                    >
+                      <p style="text-align:center">{{item.size}}</p>
+                    </div>
+                  </li>
+                </ul>
+                <div class="bottom">
                   <div
-                    class="img_mask"
-                    :class="item.imgIndex === index?'mask_flag':''"
+                    class="totle"
+                    :class="admin_imageDalog_totle"
                   >
-                    <p :class="imageDalog_p_height">
-                      <a
-                        class="old_pic"
-                        href="http://mpdevimg2.weipubao.cn/upload/4748160/image/20190708/crop_aeZqHE9BhNhWub8j.jpeg"
-                        target="_blank"
-                        title="显示原图"
-                      >{{$t('imgageDalog.OriginalImg')}}</a>
-                      <a
-                        class="remove_image"
-                        title="删除图片"
-                        @click="delImg(item.imgId)"
-                      >{{$t('imgageDalog.delImg')}}</a>
-                    </p>
+                    <span>{{$t('imgageDalog.currentPage')}}{{this.currentPage}}/{{this.pageCount}},</span>
+                    <span>{{$t('imgageDalog.totalPage')}}{{this.totalRows}}{{$t('imgageDalog.strip')}}</span>
                   </div>
-                  <div
-                    class="img_dim"
-                    :class="item.imgIndex === index?'dim_flag':''"
+                  <el-pagination
+                    @current-change="handleCurrentChange"
+                    :current-page.sync="currentPage3"
+                    :page-size="8"
+                    layout="prev, pager, next, jumper"
+                    :total="totalRows"
+                    :small="pagination_b"
                   >
-                    <p style="text-align:center">{{item.size}}</p>
-                  </div>
-                </li>
-              </ul>
-              <div class="bottom">
-                <div
-                  class="totle"
-                  :class="admin_imageDalog_totle"
-                >
-                  <span>{{$t('imgageDalog.currentPage')}}{{this.currentPage}}/{{this.pageCount}},</span>
-                  <span>{{$t('imgageDalog.totalPage')}}{{this.totalRows}}{{$t('imgageDalog.strip')}}</span>
+                  </el-pagination>
                 </div>
-                <el-pagination
-                  @current-change="handleCurrentChange"
-                  :current-page.sync="currentPage3"
-                  :page-size="8"
-                  layout="prev, pager, next, jumper"
-                  :total="totalRows"
-                  :small="pagination_b"
-                >
-                </el-pagination>
               </div>
             </div>
           </div>
+
         </div>
+        <span
+          slot="footer"
+          class="dialog-footer"
+        >
+          <el-button @click="dialogTableVisible = false">{{$t('imgageDalog.cancel')}}</el-button>
+          <el-button
+            type="primary"
+            @click="dialogTableVisible = false"
+          >{{$t('imgageDalog.Determine')}}</el-button>
+        </span>
+      </el-dialog>
 
-      </div>
-      <span
-        slot="footer"
-        class="dialog-footer"
-      >
-        <el-button @click="dialogTableVisible = false">{{$t('imgageDalog.cancel')}}</el-button>
-        <el-button
-          type="primary"
-          @click="dialogTableVisible = false"
-        >{{$t('imgageDalog.Determine')}}</el-button>
-      </span>
-    </el-dialog>
-
+    </div>
   </div>
 </template>
 <script>
@@ -430,6 +432,7 @@ export default {
   display: none !important;
 }
 .tips {
+  margin-top: 10px;
   height: 30px;
   line-height: 30px;
   padding: 0 20px;
@@ -567,6 +570,16 @@ ul {
   font-size: 12px !important;
   border-radius: 3px !important;
 }
+.imageDalog .imageDalogMain .el-input__inner {
+  width: 155px !important;
+}
+.imageDalog .imageDalogMain .el-dialog__body {
+  padding: 20px 20px !important;
+}
+.imageDalog .imageDalogMain .el-pagination__editor .el-input__inner {
+  width: 40px !important;
+}
+
 /* .el-popper[x-placement^="bottom"] {
   margin-top: 10px !important;
 } */

@@ -354,6 +354,8 @@
   </div>
 </template>
 <script>
+import { brandAddGetRequest } from '@/api/admin/brandManagement.js'
+import { mapActions } from 'vuex'
 import ImageDalog from '@/components/admin/imageDalog'
 export default {
   components: { ImageDalog },
@@ -528,7 +530,13 @@ export default {
       }
     }
   },
+  mounted () {
+    // 传递crumbsTitle
+    let arr = ['商品管理', '品牌管理', '添加品牌']
+    this.changeCrumbstitle(arr)
+  },
   methods: {
+    ...mapActions(['changeCrumbstitle']),
     // 新建品牌分类弹窗
     handleNewBuild () {
       this.dialogVisible = true
@@ -559,6 +567,18 @@ export default {
     // 图片弹窗选中
     handleSelectImg (res) {
       console.log(res)
+    },
+    // 保存
+    saveShopStyle () {
+      let obj = {
+        'brandName': this.NameInput,
+        'ename': '',
+        'logo': 'afasdfasdf',
+        'first': 1,
+        'desc': '描述',
+        'isRecommend': 1,
+        'classifyId': 0
+      }
     }
   }
 }
@@ -786,9 +806,6 @@ img {
 }
 </style>
 <style>
-.addBrand .el-input__inner {
-  width: 140px !important;
-}
 .addBrand .el-input {
   width: auto !important;
 }

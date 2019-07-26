@@ -278,6 +278,8 @@
   </div>
 </template>
 <script>
+import { mapActions } from 'vuex'
+import { brandAllGetRequest } from '@/api/admin/brandManagement.js'
 export default {
   data () {
     return {
@@ -367,6 +369,8 @@ export default {
   },
   props: ['turnIndex'],
   mounted () {
+    // 初始化全部商品数据
+    this.defaultAllBrandData()
     console.log(this.turnIndex)
     if (this.turnIndex === 1) {
       this.activeName = 'second'
@@ -374,10 +378,21 @@ export default {
     this.restaurants = this.loadAll()
   },
   methods: {
+    ...mapActions(['changeCrumbstitle']),
+    defaultAllBrandData () {
+      let obj = {
+        'currentPage': 1,
+        'pageRows': 20
+      }
+      brandAllGetRequest(obj).then((res) => {
+        console.log(res)
+      })
+      let arr = ['商品管理', '品牌管理']
+      this.changeCrumbstitle(arr)
+    },
     // tap切换
     handleClick (tab, event) {
       console.log(tab, event)
-
       switch (tab.index) {
         case '0':
           this.hiddle_1 = true

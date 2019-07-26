@@ -6,7 +6,8 @@ const getters = {
   selectlinksIndex: state => state.smallProgramManagement.selectlinksIndex,
   selectlinksLevelOneBottom: state => state.smallProgramManagement.selectlinksLevelOneBottom,
   choisePath: state => state.smallProgramManagement.choisePath,
-  afferentPath: state => state.smallProgramManagement.afferentPath
+  afferentPath: state => state.smallProgramManagement.afferentPath,
+  crumbsTitle: state => state.crumbs.crumbsTitle
 }
 
 export default getters
