@@ -4,10 +4,7 @@ import com.vpu.mp.db.shop.tables.records.GoodsBrandRecord;
 import com.vpu.mp.service.foundation.data.DelFlag;
 import com.vpu.mp.service.foundation.service.ShopBaseService;
 import com.vpu.mp.service.foundation.util.PageResult;
-import com.vpu.mp.service.pojo.shop.goods.brand.GoodsBrand;
-import com.vpu.mp.service.pojo.shop.goods.brand.GoodsBrandClassifyVo;
-import com.vpu.mp.service.pojo.shop.goods.brand.GoodsBrandPageListParam;
-import com.vpu.mp.service.pojo.shop.goods.brand.GoodsBrandVo;
+import com.vpu.mp.service.pojo.shop.goods.brand.*;
 import org.jooq.*;
 import org.jooq.impl.DSL;
 import org.jooq.tools.StringUtils;
@@ -16,6 +13,7 @@ import org.springframework.stereotype.Service;
 import java.sql.Timestamp;
 import java.util.List;
 
+import static com.vpu.mp.db.shop.Tables.BRAND_CLASSIFY;
 import static com.vpu.mp.db.shop.Tables.GOODS_BRAND;
 
 /**
@@ -25,7 +23,6 @@ import static com.vpu.mp.db.shop.Tables.GOODS_BRAND;
  * @date 2019年6月25日
  */
 @Service
-
 public class GoodsBrandService extends ShopBaseService {
 
     /**
@@ -192,6 +189,52 @@ public class GoodsBrandService extends ShopBaseService {
      * @return
      */
     public List<GoodsBrandClassifyVo> getBrandClassifyList() {
-       return null;
+        List<GoodsBrandClassifyVo> voList = db().select(BRAND_CLASSIFY.CLASSIFY_ID, BRAND_CLASSIFY.CLASSIFY_NAME)
+                .from(BRAND_CLASSIFY)
+                .where(BRAND_CLASSIFY.DEL_FLAG.eq(DelFlag.NORMAL.getCode()))
+                .fetch().into(GoodsBrandClassifyVo.class);
+        
+        return voList;
     }
+
+    private final static String BRAND_NUM="brand_num";
+
+    /**
+     * 品牌分类分页查询
+     * @param param
+     * @return
+     */
+    public PageResult<GoodsBrandClassifyVo> getBrandClassifyList(GoodsBrandClassifyParam param){
+        SelectOnConditionStep<Record4<Integer, String, Timestamp, Integer>> selectFrom =
+                db().select(BRAND_CLASSIFY.CLASSIFY_ID, BRAND_CLASSIFY.CLASSIFY_NAME, BRAND_CLASSIFY.CREATE_TIME,
+                DSL.count(GOODS_BRAND.ID).as(BRAND_NUM))
+                .from(BRAND_CLASSIFY).leftJoin(GOODS_BRAND).on(BRAND_CLASSIFY.CLASSIFY_ID.eq(GOODS_BRAND.CLASSIFY_ID));
+
+        SelectConditionStep<?> select = this.buildBrandClassifyCondition(selectFrom, param);
+
+        select.groupBy(BRAND_CLASSIFY.CLASSIFY_ID,BRAND_CLASSIFY.CLASSIFY_NAME,BRAND_CLASSIFY.CREATE_TIME);
+        select.orderBy(BRAND_CLASSIFY.FIRST.desc(), BRAND_CLASSIFY.CREATE_TIME.desc());
+
+        PageResult<GoodsBrandClassifyVo> pageResult = this.getPageResult(select, param.getCurrentPage(), param.getPageRows(), GoodsBrandClassifyVo.class);
+
+        return pageResult;
+    }
+
+    private SelectConditionStep<?> buildBrandClassifyCondition(SelectOnConditionStep<?> selectFrom,GoodsBrandClassifyParam param){
+        SelectConditionStep<?> scs = selectFrom.where(BRAND_CLASSIFY.DEL_FLAG.eq(DelFlag.NORMAL.getCode()));
+
+        if (!StringUtils.isBlank(param.getClassifyName())) {
+            scs=scs.and(BRAND_CLASSIFY.CLASSIFY_NAME.like(this.likeValue(param.getClassifyName())));
+        }
+
+        if (param.getStartCreateTime()!=null) {
+            scs=scs.and(BRAND_CLASSIFY.CREATE_TIME.ge(param.getStartCreateTime()));
+        }
+
+        if (param.getEndCreateTime()!=null) {
+            scs=scs.and(BRAND_CLASSIFY.CREATE_TIME.le(param.getStartCreateTime()));
+        }
+        return scs;
+    }
+
 }
