@@ -12,6 +12,7 @@ import org.jooq.tools.StringUtils;
 import org.springframework.stereotype.Service;
 
 import java.sql.Timestamp;
+import java.util.Arrays;
 import java.util.List;
 
 import static com.vpu.mp.db.shop.Tables.BRAND_CLASSIFY;
@@ -28,7 +29,9 @@ import static com.vpu.mp.db.shop.Tables.GOODS_BRAND;
 public class GoodsBrandService extends ShopBaseService {
 
     private final static String BRAND_NUM = "brand_num";
-    private final static String GOODS_NUM="goods_num";
+    private final static String GOODS_NUM = "goods_num";
+    private final static int DEFAULT_GOODS_BRAND_ID = 0;
+
     /**
      * 分页获取品牌信息
      *
@@ -115,12 +118,22 @@ public class GoodsBrandService extends ShopBaseService {
      * @param goodsBrand
      * @return 数据库受影响行数
      */
-    public int delete(GoodsBrand goodsBrand) {
-        return db().update(GOODS_BRAND)
+    public void delete(GoodsBrand goodsBrand) {
+        transaction(() -> deleteGoodsBrand(Arrays.asList(goodsBrand.getId())));
+    }
+
+    private void deleteGoodsBrand(List<Integer> brandIds) {
+        db().update(GOODS_BRAND)
                 .set(GOODS_BRAND.DEL_FLAG, DelFlag.DISABLE.getCode())
-                .set(GOODS_BRAND.BRAND_NAME, DSL.concat(getDelPrefix(goodsBrand.getId()))
+                .set(GOODS_BRAND.BRAND_NAME, DSL.concat(DelFlag.DEL_ITEM_PREFIX)
+                        .concat(GOODS_BRAND.ID)
+                        .concat(DelFlag.DEL_ITEM_SPLITER)
                         .concat(GOODS_BRAND.BRAND_NAME))
-                .where(GOODS_BRAND.ID.eq(goodsBrand.getId()))
+                .where(GOODS_BRAND.ID.in(brandIds))
+                .execute();
+
+        db().update(GOODS).set(GOODS.BRAND_ID, DEFAULT_GOODS_BRAND_ID)
+                .where(GOODS.BRAND_ID.in(brandIds))
                 .execute();
     }
 
@@ -261,19 +274,21 @@ public class GoodsBrandService extends ShopBaseService {
 
     /**
      * 新增品牌分类
+     *
      * @param param
      */
-    public void insertBrandClassify(GoodsBrandClassifyParam param){
-        db().insertInto(BRAND_CLASSIFY,BRAND_CLASSIFY.CLASSIFY_NAME,BRAND_CLASSIFY.FIRST)
-                .values(param.getClassifyName(),param.getFirst()).execute();
+    public void insertBrandClassify(GoodsBrandClassifyParam param) {
+        db().insertInto(BRAND_CLASSIFY, BRAND_CLASSIFY.CLASSIFY_NAME, BRAND_CLASSIFY.FIRST)
+                .values(param.getClassifyName(), param.getFirst()).execute();
     }
 
     /**
      * 根据classifyId查询品牌分类
+     *
      * @param param
      * @return
      */
-    public GoodsBrandClassifyVo selectBrandClassify(GoodsBrandClassifyParam param){
+    public GoodsBrandClassifyVo selectBrandClassify(GoodsBrandClassifyParam param) {
         GoodsBrandClassifyVo vo = db().select(BRAND_CLASSIFY.CLASSIFY_ID, BRAND_CLASSIFY.CLASSIFY_NAME, BRAND_CLASSIFY.FIRST)
                 .from(BRAND_CLASSIFY)
                 .where(BRAND_CLASSIFY.CLASSIFY_ID.eq(param.getClassifyId()))
@@ -284,9 +299,10 @@ public class GoodsBrandService extends ShopBaseService {
 
     /**
      * 修改分类
+     *
      * @param param
      */
-    public void  updateBrandClassify(GoodsBrandClassifyParam param){
+    public void updateBrandClassify(GoodsBrandClassifyParam param) {
         BrandClassifyRecord brandClassifyRecord = new BrandClassifyRecord();
 
         brandClassifyRecord.setClassifyId(param.getClassifyId());
@@ -301,20 +317,44 @@ public class GoodsBrandService extends ShopBaseService {
         db().executeUpdate(brandClassifyRecord);
     }
 
-    public boolean isClassifyNameExist(GoodsBrandClassifyParam param){
+    public void deleteBrandClassify(GoodsBrandClassifyParam param) {
+        transaction(()->{
+            db().update(BRAND_CLASSIFY)
+                    .set(BRAND_CLASSIFY.DEL_FLAG,DelFlag.DISABLE.getCode())
+                    .set(BRAND_CLASSIFY.CLASSIFY_NAME,DSL.concat(getDelPrefix(param.getClassifyId()))
+                    .concat(BRAND_CLASSIFY.CLASSIFY_NAME))
+                    .where(BRAND_CLASSIFY.CLASSIFY_ID.eq(param.getClassifyId())).execute();
+
+            List<Integer> brandIds = db().select(GOODS_BRAND.ID)
+                    .from(GOODS_BRAND)
+                    .where(GOODS_BRAND.CLASSIFY_ID.eq(param.getClassifyId()))
+                    .fetch().into(Integer.class);
+
+
+            deleteGoodsBrand(brandIds);
+        });
+    }
+
+    public void batchUpdateBrand(GoodsBrandBatchParam param) {
+        db().update(GOODS_BRAND).set(GOODS_BRAND.CLASSIFY_ID, param.getClassifyId())
+                .where(GOODS_BRAND.ID.in(param.getIds()))
+                .execute();
+    }
+
+    public boolean isClassifyNameExist(GoodsBrandClassifyParam param) {
         Integer count = db().selectCount().from(BRAND_CLASSIFY)
                 .where(BRAND_CLASSIFY.CLASSIFY_NAME.eq(param.getClassifyName()))
                 .fetchOne().into(Integer.class);
 
-        return count>0;
+        return count > 0;
     }
 
-    public boolean isClassifyOtherNameExist(GoodsBrandClassifyParam param){
+    public boolean isOtherClassifyNameExist(GoodsBrandClassifyParam param) {
         Integer count = db().selectCount().from(BRAND_CLASSIFY)
                 .where(BRAND_CLASSIFY.CLASSIFY_NAME.eq(param.getClassifyName()))
                 .and(BRAND_CLASSIFY.CLASSIFY_ID.ne(param.getClassifyId()))
                 .fetchOne().into(Integer.class);
 
-        return count>0;
+        return count > 0;
     }
 }
