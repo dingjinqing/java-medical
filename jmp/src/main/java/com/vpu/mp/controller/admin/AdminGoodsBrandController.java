@@ -3,11 +3,9 @@ package com.vpu.mp.controller.admin;
 import com.vpu.mp.service.foundation.data.JsonResult;
 import com.vpu.mp.service.foundation.data.JsonResultCode;
 import com.vpu.mp.service.foundation.util.PageResult;
-import com.vpu.mp.service.pojo.shop.goods.brand.BrandVo;
 import com.vpu.mp.service.pojo.shop.goods.brand.GoodsBrand;
 import com.vpu.mp.service.pojo.shop.goods.brand.GoodsBrandPageListParam;
 import com.vpu.mp.service.pojo.shop.goods.brand.GoodsBrandVo;
-import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
@@ -123,13 +121,5 @@ public class AdminGoodsBrandController extends AdminBaseController {
         return success(goodsBrands);
     }
 
-    /**
-     * 品牌分类列表
-     * @return
-     */
-    @GetMapping("/api/admin/brand/list")
-    public JsonResult brandClassifyList() {
-        List<BrandVo> chooseBrandList = shop().goods.goodsBrand.getBrandClassifyList();
-        return this.success(chooseBrandList);
-    }
+
 }
