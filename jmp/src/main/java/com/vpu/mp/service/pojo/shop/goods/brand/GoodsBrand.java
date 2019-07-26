@@ -1,8 +1,9 @@
 package com.vpu.mp.service.pojo.shop.goods.brand;
 
-import java.sql.Timestamp;
-
 import lombok.Data;
+
+import java.sql.Timestamp;
+import java.util.List;
 
 /**
  * @author 李晓冰
@@ -20,4 +21,8 @@ public class GoodsBrand {
     private String desc;
     private Byte isRecommend;
     private Integer classifyId;
+
+    List<Integer> goodsIds;
+    Integer goodsNum;
+
 }
