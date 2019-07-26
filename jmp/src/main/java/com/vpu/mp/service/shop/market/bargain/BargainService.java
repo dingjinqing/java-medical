@@ -85,6 +85,8 @@ public class BargainService extends ShopBaseService  {
 			case (byte)4:
 				select.where(BARGAIN.STATUS.eq(STATUS_DISABLED));
 			break;
+			default:
+				
 			}
 		}
 		select.where(BARGAIN.DEL_FLAG.eq(DelFlag.NORMAL.getCode())).orderBy(BARGAIN.CREATE_TIME.desc());
