@@ -346,3 +346,7 @@ ALTER TABLE `b2c_bargain` ADD COLUMN `free_freight` TINYINT(1) DEFAULT '0' COMME
 -- 王兵兵 201-07-25 砍价活动默认状态可用
 
 alter table `b2c_bargain` modify column `status` tinyint(1) not null default '1' comment '状态：1可用，0停用';
+
+-- liufei 2019-07-26 商品备份表添加品牌id字段
+
+alter table b2c_goods_bak add column `brand_id` int(11) not null default 0 comment '品牌id';

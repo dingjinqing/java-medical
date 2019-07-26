@@ -4,7 +4,7 @@ import com.vpu.mp.db.shop.tables.OrderInfo;
 import com.vpu.mp.db.shop.tables.Trades;
 import com.vpu.mp.service.foundation.service.ShopBaseService;
 import com.vpu.mp.service.foundation.util.Util;
-import com.vpu.mp.service.pojo.shop.overview.RealTimeVo;
+import com.vpu.mp.service.pojo.shop.overview.realtime.RealTimeVo;
 import com.vpu.mp.service.pojo.shop.overview.Tuple2;
 import org.jooq.impl.DSL;
 import org.springframework.context.annotation.Scope;

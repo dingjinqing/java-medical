@@ -1,5 +1,6 @@
-package com.vpu.mp.service.pojo.shop.overview;
+package com.vpu.mp.service.pojo.shop.overview.realtime;
 
+import com.vpu.mp.service.pojo.shop.overview.Tuple2;
 import lombok.Data;
 import org.springframework.stereotype.Component;
 

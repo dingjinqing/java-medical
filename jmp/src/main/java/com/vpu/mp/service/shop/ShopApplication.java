@@ -1,5 +1,6 @@
 package com.vpu.mp.service.shop;
 
+import com.vpu.mp.service.shop.overview.CommodityStatisticsService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -94,6 +95,7 @@ public class ShopApplication  {
 	 * 砍价 
 	 */
 	@Autowired public BargainService bargain;
+	@Autowired public CommodityStatisticsService statisticsService;
 
 
 }
