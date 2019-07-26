@@ -203,16 +203,16 @@
               v-for="(item,index) in trList"
               :key="index"
             >
-              <td>{{item.title}}</td>
-              <td v-if="hiddle_1"><img :src="item.logoImg"></td>
-              <td v-if="hiddle_1">{{item.priority}}</td>
-              <td v-if="hiddle_1">{{item.classification}}</td>
-              <td>{{item.num}}</td>
-              <td>{{item.Recommend}}</td>
-              <td>{{item.date}}</td>
+              <td>{{item.brandName}}</td>
+              <td v-if="hiddle_1"><img :src="item.logo"></td>
+              <td v-if="hiddle_1">{{item.first}}</td>
+              <td v-if="hiddle_1">{{item.classifyId}}</td>
+              <td>{{item.goodsNum}}</td>
+              <td>{{item.isRecommend}}</td>
+              <td>{{item.createTime}}</td>
               <td class="lastSpan">
                 <span>编辑</span>
-                <span>删除</span>
+                <span @click="deleGrand(item.id)">删除</span>
               </td>
             </tr>
           </tbody>
@@ -236,7 +236,7 @@
           :current-page.sync="currentPage1"
           :page-size="20"
           layout="prev, pager, next, jumper"
-          :total="100"
+          :total="totalRows"
         >
         </el-pagination>
       </div>
@@ -279,7 +279,7 @@
 </template>
 <script>
 import { mapActions } from 'vuex'
-import { brandAllGetRequest } from '@/api/admin/brandManagement.js'
+import { brandAllGetRequest, brandDeleteGetRequest } from '@/api/admin/brandManagement.js'
 export default {
   data () {
     return {
@@ -364,7 +364,8 @@ export default {
       switchValueBottom: false,
       dialogVisibleAddBrand: false,
       brandName: '',
-      classificationName: ''
+      classificationName: '',
+      totalRows: ''
     }
   },
   props: ['turnIndex'],
@@ -385,6 +386,8 @@ export default {
         'pageRows': 20
       }
       brandAllGetRequest(obj).then((res) => {
+        this.trList = res.content.dataList
+        this.totalRows = res.content.page.totalRows
         console.log(res)
       })
       let arr = ['商品管理', '品牌管理']
@@ -437,7 +440,16 @@ export default {
     },
     // 当前页发生变化
     handleCurrentChange () {
-
+      console.log(this.currentPage1)
+      let obj = {
+        'currentPage': this.currentPage1,
+        'pageRows': 20
+      }
+      brandAllGetRequest(obj).then((res) => {
+        this.trList = res.content.dataList
+        this.totalRows = res.content.page.totalRows
+        console.log(res)
+      })
     },
     // 鼠标划入查看案例
     showOver () {
@@ -458,6 +470,18 @@ export default {
     // 调用添加品牌分类弹窗
     handleBrandDialog () {
       this.dialogVisibleAddBrand = true
+    },
+    // 删除品牌
+    deleGrand (id) {
+      let obj = {
+        id: id
+      }
+      brandDeleteGetRequest(obj).then((res) => {
+        console.log(res)
+        if (res.error === 0) {
+          this.handleCurrentChange()
+        }
+      })
     }
   }
 }

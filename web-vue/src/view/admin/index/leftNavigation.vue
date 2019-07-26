@@ -446,6 +446,12 @@ export default {
         // 商品管理
         case 'brandManagement':
           if (flag === 'goods_manage') {
+            this.nav_index = 4
+            this.click_nav_index = 4
+          }
+          break
+        case 'evaluationManagement':
+          if (flag === 'goods_manage') {
             this.nav_index = 5
             this.click_nav_index = 5
           }
@@ -513,6 +519,11 @@ export default {
           case 4:
             this.$router.push({
               name: 'brandManagement'
+            })
+            break
+          case 5:
+            this.$router.push({
+              name: 'evaluationManagement'
             })
             break
         }

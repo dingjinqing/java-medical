@@ -130,6 +130,12 @@ const routes = [
             meta: 'goods_manage',
             component: r => require.ensure([], () => r(require('@/view/admin/index/leftNavComponents/goods_manage/brandManagement/brandManagement')), 'brandManagement')
           },
+          {
+            path: '/admin/home/main/evaluationManagement',
+            name: 'evaluationManagement',
+            meta: 'goods_manage',
+            component: r => require.ensure([], () => r(require('@/view/admin/index/leftNavComponents/goods_manage/evaluationManagement/evaluationManagement')), 'evaluationManagement')
+          },
           // 订单管理系列子路由
           {
             path: '/admin/home/main/first_trade_manageL',

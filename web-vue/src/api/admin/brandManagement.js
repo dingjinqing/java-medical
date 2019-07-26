@@ -17,3 +17,30 @@ export function brandAddGetRequest (data) {
     data: data
   })
 }
+
+// 商品品牌删除
+export function brandDeleteGetRequest (data) {
+  return service({
+    url: '/api/admin/goods/brand/delete',
+    method: 'post',
+    data: data
+  })
+}
+
+// 商品品牌修改
+export function brandUpdateGetRequest (data) {
+  return service({
+    url: '/api/admin/goods/brand/update',
+    method: 'post',
+    data: data
+  })
+}
+
+// 根据ID查询品牌
+export function brandSelectGetRequest (data) {
+  return service({
+    url: '/api/admin/goods/brand/select',
+    method: 'post',
+    data: data
+  })
+}

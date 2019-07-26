@@ -15,13 +15,34 @@
             </div>
           </li>
           <li>
+            <div
+              class="brand_title"
+              style="margin-left:-27px"
+            >
+              <span style="color:red">*</span>
+              <span class="nameClass">品牌英文名称：</span>
+              <el-input
+                v-model="NameEnlishInput"
+                placeholder="请输入内容"
+                size="mini"
+              ></el-input>
+            </div>
+          </li>
+          <li>
             <div class="brand_title">
               <span style="color:red">*</span>
               <span class="nameClass">品牌Logo：</span>
               <span
                 @click="handleImgDailog()"
                 class="addImgClass"
+                v-if="logoImgUrl?false:true"
               ></span>
+              <img
+                v-else
+                :src="logoImgUrl"
+                @click="handleImgDailog()"
+                class="addImgClass"
+              >
             </div>
           </li>
           <li>
@@ -196,7 +217,7 @@
                 </el-option>
               </el-select>
             </li>
-            <li class="rangeLi">商品价格范围:
+            <li class="rangeLi">商品价格范围：
               <el-input
                 v-model="inputBottomRange"
                 placeholder="请输入内容"
@@ -354,7 +375,7 @@
   </div>
 </template>
 <script>
-import { brandAddGetRequest } from '@/api/admin/brandManagement.js'
+// import { brandAddGetRequest } from '@/api/admin/brandManagement.js'
 import { mapActions } from 'vuex'
 import ImageDalog from '@/components/admin/imageDalog'
 export default {
@@ -514,7 +535,9 @@ export default {
       tdHiddenImg: this.$imageHost + '/upload/7467397/image/20190507/crop_N7Fu7EaKRtaZri18.gif',
       inputBottomRange: '',
       clickIindex: '',
-      checkedAll: false
+      checkedAll: false,
+      logoImgUrl: '',
+      NameEnlishInput: ''
     }
   },
   watch: {
@@ -567,18 +590,19 @@ export default {
     // 图片弹窗选中
     handleSelectImg (res) {
       console.log(res)
+      this.logoImgUrl = res
     },
     // 保存
     saveShopStyle () {
-      let obj = {
-        'brandName': this.NameInput,
-        'ename': '',
-        'logo': 'afasdfasdf',
-        'first': 1,
-        'desc': '描述',
-        'isRecommend': 1,
-        'classifyId': 0
-      }
+      // let obj = {
+      //   'brandName': this.NameInput,
+      //   'ename': this.NameEnlishInput,
+      //   'logo': this.logoImgUrl,
+      //   'first': this.firstInput,
+      //   'desc': '',
+      //   'isRecommend': this.radio,
+      //   'classifyId': 0
+      // }
     }
   }
 }
@@ -629,8 +653,8 @@ ul {
 }
 ul li {
   line-height: 30px;
-}
-ul li {
+  display: flex;
+  white-space: nowrap;
   margin-top: 30px;
 }
 ul li:nth-of-type(1) {
@@ -649,8 +673,6 @@ ul li:nth-of-type(1) {
   height: 70px;
   background: url(../../../../../../assets/adminImg/btn_add.png) no-repeat;
   box-shadow: 0 0 0 #fff;
-  padding-top: 40px;
-  padding-left: 8px;
   color: #9a9a9a;
   border: none;
   margin-right: 10px;
@@ -823,9 +845,6 @@ img {
 .addBrand .el-dialog__body {
   padding: 0 !important;
 }
-.rangeLi .el-input__inner {
-  width: 70px !important;
-}
 .table_container .el-checkbox {
   width: 14px !important;
   float: left !important;
@@ -833,5 +852,18 @@ img {
 }
 .specialDialog .el-input__inner {
   width: 40px !important;
+}
+.choiseDialog .el-input__inner {
+  width: 140px !important;
+}
+.choiseDialog .rangeLi .el-input__inner {
+  width: 70px !important;
+}
+.brand_title .el-input__inner {
+  width: 140px !important;
+}
+.brand_title .el-radio {
+  display: flex;
+  align-items: center;
 }
 </style>
