@@ -10,8 +10,8 @@ import com.vpu.mp.service.foundation.service.ShopBaseService;
  * @date  2019年7月15日
  */
 @Service
-
 public class OverviewService extends ShopBaseService{
 	@Autowired public OverviewAnalysisService overviewAnalysisService;
 	@Autowired public OverviewUserAnalysisService overviewUserAnalysisService;
+	@Autowired public OverviewSearchAnalysisService overviewSearchAnalysisService;
 }

@@ -20,7 +20,6 @@ import java.util.Optional;
 
 import org.jooq.TableField;
 import org.jooq.impl.DSL;
-import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Service;
 
 
