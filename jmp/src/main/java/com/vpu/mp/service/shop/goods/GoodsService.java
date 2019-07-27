@@ -1,7 +1,6 @@
 package com.vpu.mp.service.shop.goods;
 
 import com.vpu.mp.db.shop.tables.records.GoodsImgRecord;
-import com.vpu.mp.db.shop.tables.records.GoodsLabelCoupleRecord;
 import com.vpu.mp.db.shop.tables.records.GoodsRecord;
 import com.vpu.mp.service.foundation.data.DelFlag;
 import com.vpu.mp.service.foundation.service.ShopBaseService;
@@ -453,34 +452,28 @@ public class GoodsService extends ShopBaseService {
      * @param operateParam
      */
     public void batchOperate(GoodsBatchOperateParam operateParam) {
-        db().transaction(configuration -> {
-            DSLContext db = DSL.using(configuration);
-            batchGoodsOprerate(db, operateParam);
-            batchLabelOperate(db, operateParam);
+        transaction(()->{
+            batchGoodsOprerate(operateParam);
+            batchLabelOperate(operateParam);
         });
     }
 
     /**
      * 批量处理中处理商品表
      *
-     * @param db
      * @param operateParam
      */
-    private void batchGoodsOprerate(DSLContext db, GoodsBatchOperateParam operateParam) {
-        String[] updateSql = operateParam.toUpdateSql();
-        if (updateSql == null) {
-            return;
-        }
-        db.batch(updateSql).execute();
+    private void batchGoodsOprerate(GoodsBatchOperateParam operateParam) {
+        List<GoodsRecord> goodsRecords = operateParam.toUpdateGoodsRecord();
+        db().batchUpdate(goodsRecords).execute();
     }
 
     /**
      * 批量处理中处理商品标签
      *
-     * @param db
      * @param operateParam
      */
-    private void batchLabelOperate(DSLContext db, GoodsBatchOperateParam operateParam) {
+    private void batchLabelOperate(GoodsBatchOperateParam operateParam) {
         List<Integer> goodsLabels = operateParam.getGoodsLabels();
 
         if (goodsLabels == null && goodsLabels.size() == 0) {
@@ -488,18 +481,9 @@ public class GoodsService extends ShopBaseService {
         }
         List<Integer> goodsIds = operateParam.getGoodsIds();
 
-        List<GoodsLabelCoupleRecord> records = new ArrayList<>();
-        for (Integer labelId : goodsLabels) {
-            for (Integer goodsId : goodsIds) {
-                GoodsLabelCoupleRecord gl = new GoodsLabelCoupleRecord();
-                gl.setLabelId(labelId);
-                gl.setGtaId(goodsId);
-                gl.setType(GoodsLabelCoupleTypeEnum.GOODSTYPE.getCode());
-                records.add(gl);
-            }
-        }
+        List<GoodsLabelCouple> goodsLabelCouples = goodsLabelCouple.calculateGtaLabelDiffer(goodsIds, goodsLabels, GoodsLabelCoupleTypeEnum.GOODSTYPE);
 
-        db.batchInsert(records);
+        goodsLabelCouple.batchInsert(db(),goodsLabelCouples);
     }
 
     /**

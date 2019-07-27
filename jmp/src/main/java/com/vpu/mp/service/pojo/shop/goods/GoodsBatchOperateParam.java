@@ -1,11 +1,14 @@
 package com.vpu.mp.service.pojo.shop.goods;
 
+import com.vpu.mp.db.shop.tables.records.GoodsRecord;
 import lombok.Data;
 
 import java.math.BigDecimal;
 import java.sql.Timestamp;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 /**
  * @author 李晓冰
@@ -54,72 +57,46 @@ public class GoodsBatchOperateParam {
      */
     private Byte isCardExclusive;
 
-    public String[] toUpdateSql() {
+    /**
+     * 未处理goodsLabel
+     * @return
+     */
+    public List<GoodsRecord> toUpdateGoodsRecord(){
         if (goodsIds == null || goodsIds.size() == 0) {
-            return null;
+            return new ArrayList<>(0);
         }
+        List<GoodsRecord> list=new ArrayList<>(goodsIds.size());
 
-        String[] updateSql = new String[goodsIds.size()];
-        for (int i=0;i<goodsIds.size();i++) {
-            Integer goodsId =goodsIds.get(i);
+        Optional<Byte> isOnSaleO = Optional.ofNullable(isOnSale);
+        Optional<Timestamp> saleTimeO = Optional.ofNullable(saleTime);
+        Optional<Map<Integer, BigDecimal>> shopPricesO = Optional.ofNullable(shopPrices);
+        Optional<Integer> catIdO = Optional.ofNullable(catId);
+        Optional<Integer> deliverTemplateIdO = Optional.ofNullable(deliverTemplateId);
+        Optional<Integer> limitBuyNumO = Optional.ofNullable(limitBuyNum);
+        Optional<Integer> limitMaxNumO = Optional.ofNullable(limitMaxNum);
+        Optional<Byte> isPageUpO = Optional.ofNullable(isPageUp);
+        Optional<Integer> goodsPageIdO = Optional.ofNullable(goodsPageId);
+        Optional<Integer> brandIdO = Optional.ofNullable(brandId);
 
-            StringBuilder sb = new StringBuilder();
+        goodsIds.forEach(goodsId->{
+            GoodsRecord goodsRecord=new GoodsRecord();
+            goodsRecord.setGoodsId(goodsId);
 
-            if (isOnSale != null) {
-                sb.append(",is_on_sale=").append(isOnSale);
-            }
+            isOnSaleO.ifPresent(goodsRecord::setIsOnSale);
+            saleTimeO.ifPresent(goodsRecord::setSaleTime);
+            shopPricesO.ifPresent(v->goodsRecord.setShopPrice(shopPrices.get(goodsId)));
+            catIdO.ifPresent(goodsRecord::setCatId);
+            deliverTemplateIdO.ifPresent(goodsRecord::setDeliverTemplateId);
+            limitBuyNumO.ifPresent(goodsRecord::setLimitBuyNum);
+            limitMaxNumO.ifPresent(goodsRecord::setLimitMaxNum);
+            isPageUpO.ifPresent(goodsRecord::setIsPageUp);
+            goodsPageIdO.ifPresent(goodsRecord::setGoodsPageId);
+            brandIdO.ifPresent(goodsRecord::setBrandId);
 
-            if (saleTime != null) {
-                sb.append(",sale_time='").append(saleTime).append("'");
-            }
+            list.add(goodsRecord);
+        });
 
-            if (shopPrices != null) {
-                BigDecimal bigDecimal = shopPrices.get(goodsId);
-                if (bigDecimal != null) {
-                    sb.append(",shop_price=").append(bigDecimal.toString());
-                }
-            }
-
-            if (catId != null) {
-                sb.append(",cat_id=").append(catId);
-            }
-
-            if (deliverTemplateId != null) {
-                sb.append(",deliver_template_id=").append(deliverTemplateId);
-            }
-
-            if (limitBuyNum != null) {
-                sb.append(",limit_buy_num=").append(limitBuyNum);
-            }
-
-            if (limitMaxNum != null) {
-                sb.append(",limit_max_num=").append(limitMaxNum);
-            }
-
-            if (isPageUp != null) {
-                sb.append(",is_page_up=").append(isPageUp);
-            }
-
-            if (goodsPageId != null) {
-                sb.append(",goods_page_id=").append(goodsPageId);
-            }
-
-            if (brandId != null) {
-                sb.append(",brand_id=").append(brandId);
-            }
-
-            if (sb.length()==0){
-                return null;
-            }
-
-            sb.append(" where goods_id=").append(goodsId);
-            sb.deleteCharAt(0);
-
-            sb.insert(0,"update b2c_goods set ");
-
-            updateSql[i]=sb.toString();
-        }
-
-        return updateSql;
+        return list;
     }
+
 }
