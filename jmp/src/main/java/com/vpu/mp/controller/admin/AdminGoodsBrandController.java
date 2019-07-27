@@ -215,4 +215,18 @@ public class AdminGoodsBrandController extends AdminBaseController {
         return success();
     }
 
+
+    @PostMapping("/api/admin/goods/brand/config/set")
+    public JsonResult setBrandConfig(@RequestBody GoodsBrandConfig config){
+        shop().config.goodsBrandConfigService.setGoodsBrandConfig(config);
+        return success();
+    }
+
+    @PostMapping("/api/admin/goods/brand/config/get")
+    public JsonResult getBrandConfig(){
+        GoodsBrandConfig goodsBrandConfig = shop().config.goodsBrandConfigService.getGoodsBrandConfig();
+        return success(goodsBrandConfig);
+    }
+
 }
+
