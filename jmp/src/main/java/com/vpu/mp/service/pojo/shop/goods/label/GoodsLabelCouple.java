@@ -4,6 +4,7 @@ import com.vpu.mp.db.shop.tables.records.GoodsLabelCoupleRecord;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 /**
  * @author 黄荣刚
@@ -12,6 +13,7 @@ import lombok.Data;
  */
 @Data
 @AllArgsConstructor
+@NoArgsConstructor
 public class GoodsLabelCouple {
 	
 	/**
