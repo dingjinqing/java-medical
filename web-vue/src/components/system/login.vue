@@ -1,5 +1,5 @@
 <template>
-  <div class="container">
+  <div class="sys_container">
     <div class="head_logo">
       <img
         src="/static/image/admin/shop_logoswe.png"
@@ -130,7 +130,7 @@ export default {
 }
 </script>
 
-<style>
+<style scoped>
 .fr a {
   color: #5a8bff;
 }
@@ -141,12 +141,7 @@ export default {
   color: #5a8bff;
 }
 
-* {
-  margin: 0;
-  padding: 0;
-}
-
-.container {
+.sys_container {
   width: 810px;
   padding: 5% 0;
   margin: 0 auto !important;
@@ -158,7 +153,7 @@ export default {
   clear: both;
 }
 
-.main {
+.sys_container .main {
   width: 100%;
   height: 480px;
   background: white;
@@ -167,7 +162,7 @@ export default {
   margin-top: 8px;
 }
 
-.main-left {
+.sys_container .main-left {
   float: left;
   width: 43%;
   height: 100%;
@@ -178,23 +173,23 @@ export default {
   line-height: 480px;
 }
 
-.main-right {
+.sys_container .main-right {
   float: left;
   width: 57%;
   height: 100%;
   padding: 50px 40px;
   box-sizing: border-box;
 }
-.well {
+.sys_container .well {
   border: 1px solid #ddd;
   min-height: 20px;
   margin-bottom: 20px;
 }
-.smart-form {
+.sys_container .smart-form {
   color: #666;
   position: relative;
 }
-.title {
+.sys_container .title {
   padding: 15px 13px;
   margin: 0;
   background: rgba(248, 248, 248, 0.9);
@@ -203,15 +198,15 @@ export default {
   font-weight: 300;
   color: #232323;
 }
-.fildset {
+.sys_container .fildset {
   padding: 25px 14px 5px;
   position: relative;
 }
-.section_1 {
+.sys_container .section_1 {
   margin-bottom: 15px;
   position: relative;
 }
-.label {
+.sys_container .label {
   margin-bottom: 6px;
   line-height: 19px;
   font-weight: 400;
@@ -219,23 +214,23 @@ export default {
   color: #333;
   text-align: left;
 }
-.footer {
+.sys_container .footer {
   padding: 14px 14px 15px;
   border-top: 1px solid rgba(0, 0, 0, 0.1);
   background: rgba(248, 248, 248, 0.9);
   overflow: hidden;
 }
 
-.username_class {
+.sys_container .username_class {
   border-color: #5d98cc;
 }
-.password_class {
+.sys_container .password_class {
   border-color: #5d98cc;
 }
-.password {
+.sys_container .password {
   cursor: pointer;
 }
-.button {
+.sys_container .button {
   float: right;
 }
 </style>

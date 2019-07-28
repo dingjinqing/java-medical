@@ -252,13 +252,11 @@ export default {
   clear: both;
 }
 
-.main {
+.container .main {
   width: 100%;
-  /* height: 480px; */
   background: white;
   color: #333;
   font-size: 16px;
-  /* margin-top: 8px; */
 }
 
 .main-left {
