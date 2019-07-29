@@ -8,11 +8,14 @@ import com.vpu.mp.service.pojo.shop.overview.commodity.ProductEffectParam;
 import com.vpu.mp.service.pojo.shop.overview.commodity.ProductEffectVo;
 import com.vpu.mp.service.pojo.shop.overview.commodity.ProductOverviewParam;
 import com.vpu.mp.service.pojo.shop.overview.commodity.ProductOverviewVo;
+import org.apache.poi.ss.usermodel.Workbook;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
+import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
 import java.util.Date;
 
 /**
@@ -88,6 +91,24 @@ public class AdminCommodityStatisticsController extends AdminBaseController{
     @PostMapping("/api/admin/commoditystatistics/defaultOverview")
     public JsonResult defaultOverview(@RequestBody @Validated ProductEffectParam param){
         return success(new Tuple2<>(productOverview(param).getContent(),productEffect(param).getContent()));
+    }
+
+    /**
+     * 商品效果导出excel
+     * @param param
+     * @return
+     */
+    @PostMapping("/api/admin/commoditystatistics/export2Excel")
+    public void export2Excel(@RequestBody @Validated ProductEffectParam param,HttpServletResponse response){
+        try {
+            Workbook workbook=shop().statisticsService.export2Excel(param);
+            response.setContentType("application/vnd.ms-excel;charset=UTF-8");
+            String fileName = "商品效果" + System.currentTimeMillis() + ".xlsx";
+            response.setHeader("Content-Disposition", "attachment;filename="+ fileName);
+            workbook.write(response.getOutputStream());
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
 }

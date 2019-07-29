@@ -1,13 +1,15 @@
 package com.vpu.mp.service.shop.overview;
 
 import com.vpu.mp.db.shop.tables.*;
+import com.vpu.mp.service.foundation.excel.ExcelFactory;
+import com.vpu.mp.service.foundation.excel.ExcelTypeEnum;
+import com.vpu.mp.service.foundation.excel.ExcelWriter;
 import com.vpu.mp.service.foundation.service.ShopBaseService;
 import com.vpu.mp.service.foundation.util.PageResult;
 import com.vpu.mp.service.foundation.util.Util;
-import com.vpu.mp.service.pojo.shop.overview.commodity.ProductEffectParam;
-import com.vpu.mp.service.pojo.shop.overview.commodity.ProductEffectVo;
-import com.vpu.mp.service.pojo.shop.overview.commodity.ProductOverviewParam;
-import com.vpu.mp.service.pojo.shop.overview.commodity.ProductOverviewVo;
+import com.vpu.mp.service.pojo.shop.market.bargain.BargainRecordExportVo;
+import com.vpu.mp.service.pojo.shop.overview.commodity.*;
+import org.apache.poi.ss.usermodel.Workbook;
 import org.jooq.*;
 import org.jooq.impl.DSL;
 import org.springframework.context.annotation.Scope;
@@ -326,32 +328,10 @@ public class CommodityStatisticsService extends ShopBaseService {
 
     //查询指定时间段商品效果，例如最近一天，七天，一个月
     public PageResult<ProductEffectVo> fixedDayEffect(ProductEffectParam param){
-        Optional<String> field = Optional.ofNullable(param.getOrderByField());
-        Optional<String> sortType = Optional.ofNullable(param.getOrderByType());
-        //动态排序字段，规则
-        SortField sortField = getSortField(field,sortType);
-
-        //查询筛选条件，商品品牌，商家分类
-        Condition brandCondition = GOODS.BRAND_ID.eq(param.getBrandId());
-        Condition sortCondition = GOODS.SORT_ID.eq(param.getSortId());
-
-        //标签条件
-        Condition labelCondtion = GOODS_LABEL_COUPLE.ID.eq(param.getLabelId()).and(GOODS_LABEL_COUPLE.TYPE.eq((byte)1));
-
         //必要筛选条件
         Condition baseCondition = (GOODS_SUMMARY.REF_DATE.eq(new Date(Util.getEarlyTimeStamp(new java.util.Date(),-1).getTime())))
                 .and(GOODS_SUMMARY.TYPE.eq(param.getDynamicDate()));
-        if (param.getBrandId() > 0)
-            baseCondition = baseCondition.and(brandCondition);
-        if (param.getSortId() > 0)
-            baseCondition = baseCondition.and(sortCondition);
-
-        //条件连表查询，根据不同的条件构造出不同阶段的select
-        SelectJoinStep joinStep;//构造连表条件，不同的条件连接不同的表
-        SelectConditionStep conditionStep;//构造筛选条件
-        SelectLimitStep limitStep;//完善筛选条件
-
-        joinStep = db().select(GOODS_SUMMARY.GOODS_ID
+        SelectJoinStep joinStep = db().select(GOODS_SUMMARY.GOODS_ID
                 ,GOODS.GOODS_NAME
                 ,GOODS.GOODS_IMG
                 ,GOODS.SHOP_PRICE
@@ -366,16 +346,7 @@ public class CommodityStatisticsService extends ShopBaseService {
                 .leftJoin(GOODS)
                 .on(GOODS.GOODS_ID.eq(GOODS_SUMMARY.GOODS_ID));
 
-        if (param.getLabelId() > 0){
-            conditionStep = joinStep.leftJoin(GOODS_LABEL_COUPLE)
-                    .on(GOODS_LABEL_COUPLE.GTA_ID.eq(GOODS_SUMMARY.GOODS_ID))
-                    .where(labelCondtion);
-        }else{
-            conditionStep = joinStep.where(true);
-        }
-        limitStep = conditionStep.and(baseCondition).orderBy(sortField);
-
-        PageResult<ProductEffectVo> pageResult = this.getPageResult(limitStep,param.getCurrentPage(), param.getPageRows(),ProductEffectVo.class);
+        PageResult<ProductEffectVo> pageResult = this.getPageResult(createEffectSelect(param,joinStep,baseCondition,true),param.getCurrentPage(), param.getPageRows(),ProductEffectVo.class);
 
         for(ProductEffectVo vo : pageResult.dataList) {
             vo.setNewUserPercentage(vo.getNewUserNumber() / Double.valueOf(vo.getPaidUv()));
@@ -394,6 +365,42 @@ public class CommodityStatisticsService extends ShopBaseService {
 
     //查询自定义时间段商品效果
     public PageResult<ProductEffectVo> customizeDayEffect(ProductEffectParam param){
+        //必要筛选条件
+        Condition baseCondition = (GOODS_SUMMARY.REF_DATE.greaterOrEqual(new Date(param.getStartTime().getTime())))
+                .and(GOODS_SUMMARY.REF_DATE.lessThan(new Date(param.getEndTime().getTime())))
+                .and(GOODS_SUMMARY.TYPE.eq((byte)1));
+        SelectJoinStep joinStep = db().select(max(GOODS_SUMMARY.GOODS_ID).as("goodsId")
+                ,max(GOODS.GOODS_NAME).as("goodsName")
+                ,max(GOODS.GOODS_IMG).as("goodsImg")
+                ,max(GOODS.SHOP_PRICE).as("shopPrice")
+                ,sum(GOODS_SUMMARY.NEW_USER_NUMBER).as("newUserNumber")
+                ,sum(GOODS_SUMMARY.OLD_USER_NUMBER).as("oldUserNumber")
+                ,sum(GOODS_SUMMARY.PV).as("pv")
+                ,sum(GOODS_SUMMARY.UV).as("uv")
+                ,sum(GOODS_SUMMARY.CART_UV).as("cartUv")
+                ,sum(GOODS_SUMMARY.PAID_UV).as("paidUv")
+                ,sum(GOODS_SUMMARY.PAID_GOODS_NUMBER).as("paidGoodsNumber"))
+                .from(GOODS_SUMMARY)
+                .leftJoin(GOODS)
+                .on(GOODS.GOODS_ID.eq(GOODS_SUMMARY.GOODS_ID));
+        PageResult<ProductEffectVo> pageResult = this.getPageResult(createEffectSelect(param,joinStep,baseCondition,false),param.getCurrentPage(), param.getPageRows(),ProductEffectVo.class);
+        for(ProductEffectVo vo : pageResult.dataList) {
+            vo.setNewUserPercentage(vo.getNewUserNumber() / Double.valueOf(vo.getPaidUv()));
+            vo.setOldUserPercentage(vo.getOldUserNumber() / Double.valueOf(vo.getPaidUv()));
+            vo.setUv2paidGoods(vo.getPaidGoodsNumber() / Double.valueOf(vo.getUv()));
+        }
+        return pageResult;
+    }
+
+    /**
+     * 创建商品效果查询select
+     * @param param
+     * @param joinStep
+     * @param baseCondition
+     * @param isFixedDay true为指定时间，false为自定义时间
+     * @return
+     */
+    public SelectLimitStep createEffectSelect(ProductEffectParam param,SelectJoinStep joinStep,Condition baseCondition,boolean isFixedDay){
         //按照goods_id分组求和各个字段的值
 
         Optional<String> field = Optional.ofNullable(param.getOrderByField());
@@ -408,34 +415,14 @@ public class CommodityStatisticsService extends ShopBaseService {
         //标签条件
         Condition labelCondtion = GOODS_LABEL_COUPLE.ID.eq(param.getLabelId()).and(GOODS_LABEL_COUPLE.TYPE.eq((byte)1));
 
-        //必要筛选条件
-        Condition baseCondition = (GOODS_SUMMARY.REF_DATE.greaterOrEqual(new Date(param.getStartTime().getTime())))
-                .and(GOODS_SUMMARY.REF_DATE.lessThan(new Date(param.getEndTime().getTime())))
-                .and(GOODS_SUMMARY.TYPE.eq((byte)1));
         if (param.getBrandId() > 0)
             baseCondition = baseCondition.and(brandCondition);
         if (param.getSortId() > 0)
             baseCondition = baseCondition.and(sortCondition);
 
         //条件连表查询，根据不同的条件构造出不同阶段的select
-        SelectJoinStep joinStep;//构造连表条件，不同的条件连接不同的表
         SelectConditionStep conditionStep;//构造筛选条件
         SelectLimitStep limitStep;//完善筛选条件
-
-        joinStep = db().select(max(GOODS_SUMMARY.GOODS_ID).as("goodsId")
-                ,max(GOODS.GOODS_NAME).as("goodsName")
-                ,max(GOODS.GOODS_IMG).as("goodsImg")
-                ,max(GOODS.SHOP_PRICE).as("shopPrice")
-                ,sum(GOODS_SUMMARY.NEW_USER_NUMBER).as("newUserNumber")
-                ,sum(GOODS_SUMMARY.OLD_USER_NUMBER).as("oldUserNumber")
-                ,sum(GOODS_SUMMARY.PV).as("pv")
-                ,sum(GOODS_SUMMARY.UV).as("uv")
-                ,sum(GOODS_SUMMARY.CART_UV).as("cartUv")
-                ,sum(GOODS_SUMMARY.PAID_UV).as("paidUv")
-                ,sum(GOODS_SUMMARY.PAID_GOODS_NUMBER).as("paidGoodsNumber"))
-                .from(GOODS_SUMMARY)
-                .leftJoin(GOODS)
-                .on(GOODS.GOODS_ID.eq(GOODS_SUMMARY.GOODS_ID));
 
         if (param.getLabelId() > 0){
             conditionStep = joinStep.leftJoin(GOODS_LABEL_COUPLE)
@@ -444,17 +431,54 @@ public class CommodityStatisticsService extends ShopBaseService {
         }else{
             conditionStep = joinStep.where(true);
         }
-        limitStep = conditionStep.and(baseCondition).groupBy(GOODS_SUMMARY.GOODS_ID)
-                .orderBy(sortField);
+        limitStep = isFixedDay ? conditionStep.and(baseCondition).orderBy(sortField) : conditionStep.and(baseCondition).groupBy(GOODS_SUMMARY.GOODS_ID).orderBy(sortField);
+        return limitStep;
+    }
 
-        PageResult<ProductEffectVo> pageResult = this.getPageResult(limitStep,param.getCurrentPage(), param.getPageRows(),ProductEffectVo.class);
+    public Workbook export2Excel(ProductEffectParam param){
+        SelectLimitStep limitStep = createEffectSelect(param,db().select(GOODS_SUMMARY.GOODS_ID
+                ,GOODS.GOODS_NAME
+                ,GOODS.GOODS_IMG
+                ,GOODS.SHOP_PRICE
+                ,GOODS_SUMMARY.NEW_USER_NUMBER
+                ,GOODS_SUMMARY.OLD_USER_NUMBER
+                ,GOODS_SUMMARY.PV
+                ,GOODS_SUMMARY.UV
+                ,GOODS_SUMMARY.CART_UV
+                ,GOODS_SUMMARY.PAID_UV
+                ,GOODS_SUMMARY.PAID_GOODS_NUMBER)
+                        .from(GOODS_SUMMARY)
+                        .leftJoin(GOODS)
+                        .on(GOODS.GOODS_ID.eq(GOODS_SUMMARY.GOODS_ID))
+                ,(GOODS_SUMMARY.REF_DATE.eq(new Date(Util.getEarlyTimeStamp(new java.util.Date(),-1).getTime())))
+                        .and(GOODS_SUMMARY.TYPE.eq(param.getDynamicDate())),true);
+        if(param.getDynamicDate() <= 0) {
+            //自定义时间
+            limitStep = createEffectSelect(param, db().select(max(GOODS_SUMMARY.GOODS_ID).as("goodsId")
+                    , max(GOODS.GOODS_NAME).as("goodsName")
+                    , max(GOODS.GOODS_IMG).as("goodsImg")
+                    , max(GOODS.SHOP_PRICE).as("shopPrice")
+                    , sum(GOODS_SUMMARY.NEW_USER_NUMBER).as("newUserNumber")
+                    , sum(GOODS_SUMMARY.OLD_USER_NUMBER).as("oldUserNumber")
+                    , sum(GOODS_SUMMARY.PV).as("pv")
+                    , sum(GOODS_SUMMARY.UV).as("uv")
+                    , sum(GOODS_SUMMARY.CART_UV).as("cartUv")
+                    , sum(GOODS_SUMMARY.PAID_UV).as("paidUv")
+                    , sum(GOODS_SUMMARY.PAID_GOODS_NUMBER).as("paidGoodsNumber"))
+                    .from(GOODS_SUMMARY)
+                    .leftJoin(GOODS)
+                    .on(GOODS.GOODS_ID.eq(GOODS_SUMMARY.GOODS_ID)), (GOODS_SUMMARY.REF_DATE.greaterOrEqual(new Date(param.getStartTime().getTime())))
+                    .and(GOODS_SUMMARY.REF_DATE.lessThan(new Date(param.getEndTime().getTime())))
+                    .and(GOODS_SUMMARY.TYPE.eq((byte) 1)),false);
 
-        for(ProductEffectVo vo : pageResult.dataList) {
-            vo.setNewUserPercentage(vo.getNewUserNumber() / Double.valueOf(vo.getPaidUv()));
-            vo.setOldUserPercentage(vo.getOldUserNumber() / Double.valueOf(vo.getPaidUv()));
-            vo.setUv2paidGoods(vo.getPaidGoodsNumber() / Double.valueOf(vo.getUv()));
         }
-        return pageResult;
-
+        List<ProductEffectExportVo> exportVos =  limitStep.fetchInto(ProductEffectExportVo.class);
+        for (ProductEffectExportVo vo : exportVos){
+            vo.setGoodsInfo(vo.getGoodsName() + "  " + vo.getShopPrice());
+        }
+        Workbook workbook=ExcelFactory.createWorkbook(ExcelTypeEnum.XLSX);
+        ExcelWriter excelWriter = new ExcelWriter(workbook);
+        excelWriter.writeModelList(exportVos,ProductEffectExportVo.class);
+        return workbook;
     }
 }
