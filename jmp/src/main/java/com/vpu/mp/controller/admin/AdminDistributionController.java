@@ -25,13 +25,14 @@ import com.vpu.mp.service.pojo.shop.distribution.DistributorGroupListVo;
 @RestController
 @RequestMapping("/api")
 public class AdminDistributionController extends AdminBaseController{
+	//分销配置
 	/**
 	 * 获取分销配置
 	 * @return
 	 */
 	@GetMapping("/admin/distribution/get")
 	public JsonResult distributionCfg() {
-		DistributionParam result = shop().config.distributioncfg.getDistributionCfg();
+		DistributionParam result = shop().config.distributionCfg.getDistributionCfg();
 		return this.success(result);
 	}
 	
@@ -42,10 +43,11 @@ public class AdminDistributionController extends AdminBaseController{
 	 */
 	@PostMapping("/admin/distribution/set")
 	public JsonResult setDistributionCfg(@RequestBody DistributionParam param) {
-		int result = shop().config.distributioncfg.setDistributionCfg(param);
+		int result = shop().config.distributionCfg.setDistributionCfg(param);
 		return this.success(result);
 	}
 	
+	//返利策略配置
 	/**
 	 * 添加返利策略
 	 * @param info
@@ -124,6 +126,7 @@ public class AdminDistributionController extends AdminBaseController{
 		}
 	}
 	
+	//分销员分组
 	/**
 	 * 分销员分组列表
 	 * @param param
@@ -207,4 +210,12 @@ public class AdminDistributionController extends AdminBaseController{
 			return this.fail();
 		}
 	}
+	
+	//分销员等级配置
+	@GetMapping("/admin/distribution/level/config")
+	public JsonResult distributorLevelConfig() {
+		shop().distributorLevel.levelConfig();
+		return null;
+	}
+	
 }

@@ -9,6 +9,7 @@ public class SysCatevo {
 	public Short catId;
 	public String catName;
 	public List<? extends SysCatevo> childCate;
+	public List<? extends SysCatevo> childCate1;
 	
 	
 }

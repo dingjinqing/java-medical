@@ -33,7 +33,6 @@ import com.vpu.mp.service.pojo.shop.store.store.StoreListQueryParam;
 @RestController
 @RequestMapping("/api")
 public class AdminChooseLinkController extends AdminBaseController{
-	
 	/**
 	 * 常用链接
 	 */

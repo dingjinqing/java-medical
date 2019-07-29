@@ -68,7 +68,7 @@ public class AdminShopDecorateController extends AdminBaseController {
 	 * 页面分类信息
 	 * @return
 	 */
-	@PostMapping(value = "/admin/decorate/cate/list")
+	@PostMapping(value = "/admin/decorate/cate/page")
 	public JsonResult pageCate() {
 		List<PageClassificationVo> pageCateList = shop().mpDecoration.getPageCate();
 		return this.success(pageCateList);

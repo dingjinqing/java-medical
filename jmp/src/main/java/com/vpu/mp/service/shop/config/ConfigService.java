@@ -32,7 +32,7 @@ public class ConfigService extends ShopBaseService {
 	@Autowired
 	public StoreConfigService storeConfigService;
 	@Autowired
-	public DistributionConfigService distributioncfg;
+	public DistributionConfigService distributionCfg;
 	@Autowired
 	public ShopMsgTemplateConfigService shopMsgTemplateService;
 	@Autowired

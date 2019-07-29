@@ -1,6 +1,5 @@
 package com.vpu.mp.service.shop;
 
-import com.vpu.mp.service.shop.overview.CommodityStatisticsService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -13,6 +12,7 @@ import com.vpu.mp.service.shop.decoration.ChooseLinkService;
 import com.vpu.mp.service.shop.decoration.PageClassificationService;
 import com.vpu.mp.service.shop.decoration.ShopMpDecorationService;
 import com.vpu.mp.service.shop.distribution.DistributorGroupService;
+import com.vpu.mp.service.shop.distribution.DistributorLevelService;
 import com.vpu.mp.service.shop.distribution.RebateStrategyService;
 import com.vpu.mp.service.shop.goods.GoodsRecommendService;
 import com.vpu.mp.service.shop.goods.GoodsService;
@@ -26,6 +26,7 @@ import com.vpu.mp.service.shop.member.TagService;
 import com.vpu.mp.service.shop.operation.RecordAdminActionService;
 import com.vpu.mp.service.shop.order.OrderReadService;
 import com.vpu.mp.service.shop.order.OrderWriteService;
+import com.vpu.mp.service.shop.overview.CommodityStatisticsService;
 import com.vpu.mp.service.shop.overview.MallOverviewService;
 import com.vpu.mp.service.shop.overview.OverviewService;
 import com.vpu.mp.service.shop.overview.RealTimeOverviewService;
@@ -70,7 +71,8 @@ public class ShopApplication  {
 	@Autowired public PortraitService portrait;
 	@Autowired public RebateStrategyService rebateStrategy;
 	@Autowired public RealTimeOverviewService realTimeOverview;
-	@Autowired public DistributorGroupService distributorGroup;
+	@Autowired public DistributorGroupService distributorGroup; //分销员分组
+	@Autowired public DistributorLevelService distributorLevel; //分销员等级配置
 	
 	/**
 	 * 组团购

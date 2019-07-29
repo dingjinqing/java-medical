@@ -358,6 +358,15 @@ public class ChooseLinkService extends ShopBaseService {
 					.where(CATEGORY.PARENT_ID.eq(list.getCatId()))
 					.fetchInto(SysCatevo.class);
 			list.setChildCate(childList);
+			
+			//查询三级分类
+			for(SysCatevo childList1 : childList) {
+				List<SysCatevo> childList2 = mainDb().select(CATEGORY.CAT_ID,CATEGORY.CAT_NAME,CATEGORY.PARENT_ID)
+						.from(CATEGORY)
+						.where(CATEGORY.PARENT_ID.eq(childList1.getCatId()))
+						.fetchInto(SysCatevo.class);
+				childList1.setChildCate1(childList2);
+			}
 		}
 		return parentList;
 	}
