@@ -18,4 +18,9 @@ public class ShopListQueryParam {
 	public Byte hidBottom;
 	public Integer currentPage;
 	public Integer pageRows;
+	/**
+	 * 区分体验版还是付费版
+	 * 1为体验版，2为付费版
+	 */
+	public String shopTypes;
 }
