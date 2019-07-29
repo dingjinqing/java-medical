@@ -6,6 +6,7 @@ import leftsysnav from './modules/system/leftsysNav'
 import smallProcedures from './modules/admin/smallProcedures'
 import smallProgramManagement from './modules/admin/smallProgramManagement'
 import crumbs from './modules/admin/crumbs'
+import goodsManagement from './modules/admin/goodsManagement'
 Vue.use(Vuex)
 export default new Vuex.Store({
   modules: {
@@ -13,7 +14,8 @@ export default new Vuex.Store({
     leftsysnav,
     smallProcedures,
     smallProgramManagement,
-    crumbs
+    crumbs,
+    goodsManagement
   },
   getters
 })

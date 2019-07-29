@@ -260,7 +260,7 @@ export default {
           break
         case 5:
           this.$router.push({
-            name: 'user_manger'
+            name: 'membershipList'
           })
           this.changeNavLeft('user_manger')
           break

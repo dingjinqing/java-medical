@@ -152,10 +152,10 @@ const routes = [
           },
           // 会员管理系列子路由
           {
-            path: '/admin/home/main/user_manger',
-            name: 'user_manger',
+            path: '/admin/home/main/membershipList',
+            name: 'membershipList',
             meta: 'user_manger',
-            component: r => require.ensure([], () => r(require('@/view/admin/index/leftNavComponents/user_manger/user_manger')), 'user_manger')
+            component: r => require.ensure([], () => r(require('@/view/admin/index/leftNavComponents/user_manger/membershipList/membershipList')), 'membershipList')
           },
           // 门店管理系列子路由
           {

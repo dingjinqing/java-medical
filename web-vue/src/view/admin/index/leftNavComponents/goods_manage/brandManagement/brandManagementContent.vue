@@ -1,5 +1,8 @@
 <template>
-  <div class="brandManagementContent">
+  <div
+    class="brandManagementContent"
+    :class="hiddenOverFlag?'hiddenOverFlag':''"
+  >
     <div class="brandManagementContent_main">
       <el-tabs
         v-model="activeName"
@@ -84,7 +87,7 @@
         </el-tab-pane>
 
         <el-tab-pane
-          label="品牌分类"
+          label="分类名称"
           name="second"
         >
           <ul class="topUl">
@@ -143,7 +146,7 @@
                 inactive-color="#DDDDDD"
               >
               </el-switch>
-              <span>已关闭</span>
+              <span>{{this.switchTextOne}}</span>
               <span style="color:#999">开启后，将在商品分类页展示全部品牌列表</span>
               <div
                 class="example"
@@ -168,14 +171,77 @@
                 inactive-color="#DDDDDD"
               >
               </el-switch>
-              <span>已关闭</span>
+              <span>{{this.switchTextSecond}}</span>
               <span style="color:#999">开启后，将在商品分类页展示全部品牌列表</span>
+            </div>
+            <!--隐藏模块-->
+            <div v-if="hiddle_containerFlag">
+
+              <div style="margin-top:20px;margin-left:75px">
+                <div class="hiddleTitle">推荐标题：
+                  <el-input
+                    v-model="hiddleValTop"
+                    placeholder="请输入内容"
+                    size="small"
+                  ></el-input>
+                </div>
+                <div class="hiddleStyle"></div>
+              </div>
+              <div style="margin-top:20px;margin-left:75px">
+                <div class="hiddleTitle specialDiv">
+                  <div>展示样式：&nbsp;</div>
+                  <div class="showDiv">
+                    <div class="ra_div">
+                      <el-radio
+                        v-model="showRadio"
+                        label="按品牌展示"
+                        text-color="#000"
+                      ></el-radio>
+                      <span style="color:#999"></span>
+                      <div
+                        class="example"
+                        @mouseover="showOver(1)"
+                        @mouseleave="showLeave(1)"
+                      >查看实例
+                        <div
+                          class="hover_show"
+                          v-if="showFlag_one"
+                        >
+                          <img :src="showHiddleImgUrl_one">
+                        </div>
+                      </div>
+                    </div>
+                    <div class="ra_div">
+                      <el-radio
+                        v-model="showRadio"
+                        label="按品牌分类展示"
+                        text-color="#000"
+                      ></el-radio>
+                      <span style="color:#999"></span>
+                      <div
+                        class="example"
+                        @mouseover="showOver(2)"
+                        @mouseleave="showLeave(2)"
+                      >查看实例
+                        <div
+                          class="hover_show"
+                          v-if="showFlag_two"
+                        >
+                          <img :src="showHiddleImgUrl_two">
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <div class="hiddleStyle"></div>
+              </div>
             </div>
             <div class="showBtn">
               <el-button
                 type="primary"
                 style="margin:30px 0 0 75px"
-              >主要按钮</el-button>
+                @click="handleSaveTapThree()"
+              >保存</el-button>
             </div>
           </div>
         </el-tab-pane>
@@ -189,12 +255,12 @@
         <table width='100%'>
           <thead>
             <tr class="brandTr">
-              <td :class="hiddle_1?'':'firstNameClass'">品牌名称</td>
+              <td :class="hiddle_1?'':'firstNameClass'">{{secondGrandName}}</td>
               <td v-if="hiddle_1">品牌logo</td>
               <td v-if="hiddle_1">优先级</td>
               <td v-if="hiddle_1">品牌分类</td>
               <td :class="hiddle_1?'':'secondNameClass'">包含商品数量</td>
-              <td :class="hiddle_1?'':'threeNameClass'">推荐品牌</td>
+              <td :class="hiddle_1?'':'threeNameClass'">分类优先级</td>
               <td :class="hiddle_1?'':'fourNameClass'">创建时间</td>
               <td>操作</td>
             </tr>
@@ -204,16 +270,28 @@
               v-for="(item,index) in trList"
               :key="index"
             >
-              <td>{{item.brandName}}</td>
+              <td v-if="!hiddle_1">{{item.classifyName}}</td>
+              <td v-if="hiddle_1">{{item.brandName}}</td>
               <td v-if="hiddle_1"><img :src="item.logo"></td>
               <td v-if="hiddle_1">{{item.first}}</td>
               <td v-if="hiddle_1">{{item.classifyId}}</td>
-              <td>{{item.goodsNum}}</td>
-              <td>{{item.isRecommend}}</td>
+              <td v-if="hiddle_1">{{item.goodsNum}}</td>
+              <td v-if="!hiddle_1">{{item.brandNum}}</td>
+              <td>{{item.first}}</td>
               <td>{{item.createTime}}</td>
-              <td class="lastSpan">
-                <span>编辑</span>
+              <td
+                class="lastSpan"
+                v-if="hiddle_1"
+              >
+                <span @click="handleEditGoods(item.id)">编辑</span>
                 <span @click="deleGrand(item.id)">删除</span>
+              </td>
+              <td
+                class="lastSpan"
+                v-if="!hiddle_1"
+              >
+                <span @click="handlePagingEditGoods(item)">编辑</span>
+                <span @click="delePagingGrand(item.classifyId)">删除</span>
               </td>
             </tr>
           </tbody>
@@ -244,7 +322,7 @@
     </div>
     <!--添加品牌分类弹窗-->
     <el-dialog
-      title="添加品牌分类"
+      :title="grandTitle"
       :visible.sync="dialogVisibleAddBrand"
       width="30%"
       :center='true'
@@ -272,7 +350,7 @@
         <el-button @click="dialogVisibleAddBrand = false">取 消</el-button>
         <el-button
           type="primary"
-          @click="dialogVisibleAddBrand = false"
+          @click="handleUpdateGrandClass()"
         >确 定</el-button>
       </span>
     </el-dialog>
@@ -280,10 +358,11 @@
 </template>
 <script>
 import { mapActions } from 'vuex'
-import { brandAllGetRequest, brandDeleteGetRequest, classificationSelectRequest } from '@/api/admin/brandManagement.js'
+import { saveShowBrandgetRequest, showBrandgetRequest, pagingBrandUpdateRequest, pagingBrandDelRequest, pagingBrandQueryRequest, brandAllGetRequest, brandDeleteGetRequest, classificationSelectRequest } from '@/api/admin/brandManagement.js'
 export default {
   data () {
     return {
+      upDateClassifyId: '',
       activeName: 'first',
       restaurants: [],
       state3: '',
@@ -335,28 +414,69 @@ export default {
       currentPage1: 1,
       hiddle_1: true,
       bottomDivFlag: true,
-      switchValue: '',
+      switchValue: false,
       showHiddleImgUrl: this.$imageHost + '/image/admin/brand_show2.jpg',
+      showHiddleImgUrl_one: this.$imageHost + '/image/admin/brand_show1.jpg',
+      showHiddleImgUrl_two: this.$imageHost + '/image/admin/brand_show3.jpg',
       showFlag: false,
       switchValueBottom: false,
       dialogVisibleAddBrand: false,
       brandName: '',
       classificationName: '',
-      totalRows: null
+      totalRows: null,
+      secondGrandName: '品牌名称',
+      switchTextOne: '',
+      switchTextSecond: '',
+      hiddleValTop: '推荐标题',
+      showRadio: '按品牌展示',
+      showFlag_one: false,
+      showFlag_two: false,
+      hiddenOverFlag: false,
+      hiddle_containerFlag: false,
+      grandTitle: ''
     }
   },
   props: ['turnIndex'],
+  watch: {
+    switchValue (newData) {
+      switch (newData) {
+        case true:
+          this.switchTextOne = '已开启'
+          break
+        case false:
+          this.switchTextOne = '已关闭'
+          break
+      }
+    },
+    switchValueBottom (newData) {
+      switch (newData) {
+        case true:
+          this.switchTextSecond = '已开启'
+          this.hiddle_containerFlag = true
+          break
+        case false:
+          this.switchTextSecond = '已关闭'
+          this.hiddle_containerFlag = false
+          break
+      }
+    }
+  },
   mounted () {
     // 初始化全部商品数据
     this.defaultAllBrandData()
     console.log(this.turnIndex)
     if (this.turnIndex === 1) {
       this.activeName = 'second'
+      this.hiddle_1 = false
+      this.bottomDivFlag = true
+      this.secondGrandName = '分类名称'
+      // 初始化品牌分类页数据
+      this.defaultPageingGrand()
     }
     this.restaurants = this.loadAll()
   },
   methods: {
-    ...mapActions(['changeCrumbstitle']),
+    ...mapActions(['changeCrumbstitle', 'transmitEditGoodsId']),
     defaultAllBrandData () {
       let obj = {
         'currentPage': 1,
@@ -364,8 +484,14 @@ export default {
       }
       // 初始化全部品牌表格数据
       brandAllGetRequest(obj).then((res) => {
-        this.trList = res.content.dataList
-        this.totalRows = res.content.page.totalRows
+        if (res.error === 0) {
+          this.trList = res.content.dataList
+          this.totalRows = res.content.page.totalRows
+          this.tbodyFlag = true
+        }
+        if (res.content.page.totalRows === 0) {
+          this.tbodyFlag = false
+        }
         console.log(res)
       })
       // 品牌分类下拉框数据请求
@@ -384,15 +510,137 @@ export default {
         case '0':
           this.hiddle_1 = true
           this.bottomDivFlag = true
+          this.secondGrandName = '品牌名称'
+          this.defaultAllBrandData()
+          this.hiddenOverFlag = false
           break
         case '1':
           this.hiddle_1 = false
           this.bottomDivFlag = true
+          this.secondGrandName = '分类名称'
+          // 初始化品牌分类页数据
+          this.defaultPageingGrand()
+          this.hiddenOverFlag = false
           break
         case '2':
           this.bottomDivFlag = false
+          this.hiddenOverFlag = true
+          // 初始化tap3数据
+          this.defaulttapThreeData()
           break
       }
+    },
+    defaultPageingGrand () {
+      let obj = {
+        classifyName: '',
+        startCreateTime: '',
+        endCreateTime: '',
+        currentPge: 1,
+        pageRows: 20
+      }
+      pagingBrandQueryRequest(obj).then((res) => {
+        if (res.error === 0) {
+          this.trList = res.content.dataList
+          this.totalRows = res.content.page.totalRows
+          this.tbodyFlag = true
+        }
+        if (res.content.page.totalRows === 0) {
+          console.log(1)
+          this.tbodyFlag = false
+        }
+        console.log(res.content.dataList)
+      })
+    },
+    // 品牌分类展示设置
+    defaulttapThreeData () {
+      let obj = {
+
+      }
+      showBrandgetRequest(obj).then((res) => {
+        if (res.error === 0) {
+          this.hiddleValTop = res.content.recomTitle
+          this.switchValue = res.content.showAllBrand
+          switch (res.content.showRcommendBrandType) {
+            case 0:
+              this.switchValueBottom = false
+              break
+            case 2:
+              this.switchValueBottom = true
+              this.showRadio = '按品牌展示'
+              break
+            case 3:
+              this.switchValueBottom = true
+              this.showRadio = '按品牌分类展示'
+          }
+        }
+        console.log(res.content)
+      })
+    },
+    // 品牌分类tap页品牌分类编辑
+    handlePagingEditGoods (data) {
+      console.log(data)
+      this.upDateClassifyId = data.classifyId
+      this.brandName = data.classifyName
+      this.classificationName = data.first
+
+      this.dialogVisibleAddBrand = true
+      this.grandTitle = '修改品牌分类'
+    },
+    // 品牌分类tap页品牌分类删除
+    delePagingGrand (classifyId) {
+      let obj = {
+        classifyId: classifyId
+      }
+      pagingBrandDelRequest(obj).then((res) => {
+        console.log(res)
+        if (res.error === 0) {
+          this.defaultPageingGrand()
+        }
+      })
+      console.log(classifyId)
+    },
+    // 品牌分类弹窗确定事件
+    handleUpdateGrandClass () {
+      let obj = {
+        clssifyId: this.upDateClassifyId,
+        classifyName: this.brandName,
+        first: Number(this.classificationName)
+      }
+      pagingBrandUpdateRequest(obj).then((res) => {
+        console.log(res)
+      })
+    },
+    // tap3保存事件
+    handleSaveTapThree () {
+      let showAllBrand = ''
+      let showRcommendBrandType = ''
+      if (this.switchValue === true) {
+        showAllBrand = '1'
+      } else {
+        showAllBrand = '0'
+      }
+      if (this.switchValueBottom === false) {
+        showRcommendBrandType = '0'
+      } else if (this.showRadio === '按品牌展示') {
+        showRcommendBrandType = '2'
+      } else if (this.showRadio === '按品牌分类展示') {
+        showRcommendBrandType = '3'
+      }
+
+      let obj = {
+        recomTitle: this.hiddleValTop,
+        showAllBrand: showAllBrand,
+        showRcommendBrandType: showRcommendBrandType
+      }
+      saveShowBrandgetRequest(obj).then((res) => {
+        if (res.error === 0) {
+          this.$message({
+            message: '保存成功',
+            type: 'success'
+          })
+        }
+        console.log(res)
+      })
     },
     // 返回输入建议 参数queryString用户主动输入的内容
     querySearch (queryString, cb) {
@@ -422,7 +670,7 @@ export default {
     handleSelect (item) {
       console.log(item)
     },
-    // 当前页发生变化
+    // 当前页发生变化defaultPageingGrand
     handleCurrentChange () {
       console.log(this.currentPage1)
       let obj = {
@@ -436,15 +684,32 @@ export default {
       })
     },
     // 鼠标划入查看案例
-    showOver () {
-      this.showFlag = true
+    showOver (index) {
+      switch (index) {
+        case 1:
+          this.showFlag_one = true
+          break
+        case 2:
+          this.showFlag_two = true
+          break
+      }
+      if (index !== 1 && index !== 2) this.showFlag = true
     },
     // 鼠标划出查看案例
-    showLeave () {
-      this.showFlag = false
+    showLeave (index) {
+      switch (index) {
+        case 1:
+          this.showFlag_one = false
+          break
+        case 2:
+          this.showFlag_two = false
+          break
+      }
+      if (index !== 1 || index !== 2) this.showFlag = false
     },
     // 添加品牌按钮
     handleAddBrand () {
+      this.transmitEditGoodsId('add')
       let obj = {
         index: 2,
         turnIndex: null
@@ -453,6 +718,9 @@ export default {
     },
     // 调用添加品牌分类弹窗
     handleBrandDialog () {
+      this.grandTitle = '添加品牌分类'
+      this.brandName = ''
+      this.classificationName = ''
       this.dialogVisibleAddBrand = true
     },
     // 删除品牌
@@ -480,6 +748,11 @@ export default {
         'pageRows': 20
       }
       brandAllGetRequest(obj).then((res) => {
+        if (res.error === 0) {
+          this.trList = res.content.dataList
+          this.totalRows = res.content.page.totalRows
+          this.tbodyFlag = true
+        }
         console.log(res)
         if (res.content.page.totalRows === 0) {
           console.log(1)
@@ -492,12 +765,37 @@ export default {
       // test(obj).then((res) => {
       //   console.log(res)
       // })
+    },
+    // 点击编辑
+    handleEditGoods (id) {
+      console.log(id, 11111)
+      this.transmitEditGoodsId(id)
+      let obj = {
+        index: 2,
+        turnIndex: null
+      }
+      this.$emit('turnComponents', obj)
+      // let obj = {
+      //   'id': id
+      // }
+      // queryGoodsIdRequest(obj).then((res) => {
+      //   console.log(res)
+      // })
     }
 
   }
 }
 </script>
 <style scoped lang='scss'>
+.showDiv {
+  display: flex;
+  flex-direction: column;
+  height: 50px;
+  justify-content: space-between;
+}
+.specialDiv {
+  display: flex;
+}
 .noData {
   height: 100px;
   display: flex;
@@ -523,14 +821,14 @@ export default {
   padding-right: 23px;
   min-width: 1400px;
   font-size: 14px;
-  height: 100%;
+  // height: 100%;
   position: relative;
 }
 .brandManagementContent_main,
 .firstTab {
   position: relative;
   background-color: #fff;
-  /* height: 100%; */
+  height: 100%;
   overflow: hidden;
   overflow-y: auto;
   padding-bottom: 96px;
@@ -713,6 +1011,9 @@ tbody img {
   line-height: 30px;
   color: #999;
 }
+.hiddenOverFlag {
+  height: 100%;
+}
 </style>
 <style>
 .brandManagementContent .el-input {
@@ -730,5 +1031,8 @@ tbody img {
 .brandManagementContent_main .el-dialog__header {
   background-color: #f3f3f3 !important;
   text-align: center !important;
+}
+.ra_div .el-radio {
+  margin-right: 0 !important;
 }
 </style>

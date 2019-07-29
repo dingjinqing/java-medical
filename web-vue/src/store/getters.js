@@ -7,7 +7,9 @@ const getters = {
   selectlinksLevelOneBottom: state => state.smallProgramManagement.selectlinksLevelOneBottom,
   choisePath: state => state.smallProgramManagement.choisePath,
   afferentPath: state => state.smallProgramManagement.afferentPath,
-  crumbsTitle: state => state.crumbs.crumbsTitle
+  crumbsTitle: state => state.crumbs.crumbsTitle,
+  goodsIds: state => state.goodsManagement.goodsIds,
+  editGoodsId: state => state.goodsManagement.editGoodsId
 }
 
 export default getters

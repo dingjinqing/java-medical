@@ -58,14 +58,14 @@
               >
                 <el-option
                   v-for="item in options"
-                  :key="item.value"
-                  :label="item.label"
-                  :value="item.value"
+                  :key="item.classifyId"
+                  :label="item.classifyName"
+                  :value="item.classifyId"
                 >
                 </el-option>
               </el-select>
               <div class="classDiv">
-                <span>&nbsp;刷新</span> &nbsp;|&nbsp;
+                <span @click="handleRefresh()">&nbsp;刷新</span> &nbsp;|&nbsp;
                 <span @click="handleNewBuild()">新建品牌分类</span>&nbsp;|&nbsp;
                 <span @click="handleTurnManClassPage()">管理品牌分类</span>
               </div>
@@ -116,7 +116,7 @@
                 <img :src="choiseGoodImgUrl">
                 选择商品
               </div>
-              <span style="color:#5a8bff;margin-left:20px">已选择商品数量：0</span>
+              <span style="color:#5a8bff;margin-left:20px">已选择商品数量：{{selectgoodsNum}}</span>
             </div>
           </li>
         </ul>
@@ -159,7 +159,7 @@
         <el-button @click="dialogVisible = false">取 消</el-button>
         <el-button
           type="primary"
-          @click="dialogVisible = false"
+          @click="handleAddGrandClass()"
         >确 定</el-button>
       </span>
     </el-dialog>
@@ -195,9 +195,10 @@
               >
                 <el-option
                   v-for="item in bottomOptionsTwo"
-                  :key="item.value"
-                  :label="item.label"
-                  :value="item.value"
+                  :key="item.sortId"
+                  :label="item.sortName"
+                  :value="item.sortId"
+                  :class="[item.level ===1?'level_1':'',item.level ===2?'level_2':'']"
                 >
                 </el-option>
               </el-select>
@@ -253,9 +254,9 @@
               >
                 <el-option
                   v-for="item in goodsGrandOptions"
-                  :key="item.value"
-                  :label="item.label"
-                  :value="item.value"
+                  :key="item.id"
+                  :label="item.brandName"
+                  :value="item.id"
                 >
                 </el-option>
               </el-select>
@@ -311,31 +312,35 @@
                 >
                   <img
                     v-if="!isCenterFlag"
-                    :src="tdHiddenImg"
+                    :src="item.goodsImg"
                   >
-                  <span>{{item.title}}</span>
+                  <span>{{item.goodsName}}</span>
 
                 </td>
                 <td class="tb_decorate_a">
-                  {{item.path}}
+                  {{item.goodsSn}}
                 </td>
                 <td class="tb_decorate_a">
-                  {{item.path}}
+                  {{item.shopPrice}}
                 </td>
                 <td class="tb_decorate_a">
-                  {{item.path}}
+                  {{item.goodsNumber}}
                 </td>
                 <td class="tb_decorate_a">
-                  {{item.path}}
+                  {{item.catName}}
                 </td>
                 <td class="tb_decorate_a">
-                  {{item.path}}
+                  {{item.sortName}}
                 </td>
                 <td class="tb_decorate_a">
-                  {{item.path}}
+                  <span
+                    v-for="(childrenItem,childrenIndex) in item.goodsLabels"
+                    :key='childrenIndex'
+                  >{{childrenItem.name}}</span>
+
                 </td>
                 <td class="tb_decorate_a">
-                  {{item.path}}
+                  {{item.brandName}}
                 </td>
               </tr>
             </tbody>
@@ -361,7 +366,7 @@
         <el-button
           type="primary"
           size="small"
-          @click="choiseGooddialogVisible = false"
+          @click="handleChoiseGooddialog()"
         >确 定</el-button>
       </span>
     </el-dialog>
@@ -375,8 +380,8 @@
   </div>
 </template>
 <script>
-// import { brandAddGetRequest } from '@/api/admin/brandManagement.js'
-import { mapActions } from 'vuex'
+import { initGrandgetRequest, queryGoodsIdRequest, classificationSelectRequest, addGrandClassRequest, allGoodsQueryRequest, brandAddRequest } from '@/api/admin/brandManagement.js'
+import { mapActions, mapGetters } from 'vuex'
 import ImageDalog from '@/components/admin/imageDalog'
 export default {
   components: { ImageDalog },
@@ -537,8 +542,14 @@ export default {
       clickIindex: '',
       checkedAll: false,
       logoImgUrl: '',
-      NameEnlishInput: ''
+      NameEnlishInput: '',
+      goodsIdsArr: [],
+      selectgoodsNum: 0,
+      hxgoodsIds: []
     }
+  },
+  computed: {
+    ...mapGetters(['goodsIds', 'editGoodsId'])
   },
   watch: {
     checkedAll (newData, oldData) {
@@ -551,18 +562,72 @@ export default {
           item.ischecked = false
         })
       }
+    },
+    goodsIds_: {
+      handler (newData, oldData) {
+        this.goodsIdsArr = [...new Set(newData)]
+        this.selectgoodsNum = this.goodsIdsArr.length
+        console.log(this.goodsIdsArr)
+      },
+      immediate: true
     }
   },
   mounted () {
     // 传递crumbsTitle
     let arr = ['商品管理', '品牌管理', '添加品牌']
     this.changeCrumbstitle(arr)
+
+    // 品牌分类初始化获取及页编辑回显
+    this.defaultGrandClass()
   },
   methods: {
-    ...mapActions(['changeCrumbstitle']),
+    ...mapActions(['changeCrumbstitle', 'transmitGoodsIds']),
+    defaultGrandClass () {
+      console.log(this.editGoodsId)
+      if (this.editGoodsId !== 'add') {
+        let obj = {
+          'id': this.editGoodsId
+        }
+        queryGoodsIdRequest(obj).then((res) => {
+          console.log(res.content)
+          this.NameInput = res.content.brandName
+          this.NameEnlishInput = res.content.ename
+          this.logoImgUrl = res.content.logo
+          this.classSelectValue = res.content.classifyId
+          this.firstInput = res.content.first
+          console.log(res.content.isRecommend)
+          this.radio = res.content.isRecommend.toString()
+          this.hxgoodsIds = res.content.goodsIds
+          this.selectgoodsNum = res.content.goodsIds.length
+        })
+      }
+      classificationSelectRequest().then((res) => {
+        this.options = res.content
+        console.log(res)
+      })
+    },
     // 新建品牌分类弹窗
     handleNewBuild () {
       this.dialogVisible = true
+    },
+    // 添加品牌分类
+    handleAddGrandClass () {
+      let obj = {
+        'classifyName': this.brandName,
+        'first': this.classificationName
+      }
+      addGrandClassRequest(obj).then((res) => {
+        if (res.error === 0) {
+          this.$message({
+            message: '添加品牌分类成功',
+            type: 'success'
+          })
+          this.defaultGrandClass()
+        }
+        console.log(res)
+      })
+
+      this.dialogVisible = false
     },
     // 跳转到品牌分类
     handleTurnManClassPage () {
@@ -572,8 +637,53 @@ export default {
       }
       this.$emit('turnComponents', obj)
     },
-    // 点击添加商品按钮
+    // 点击选择商品按钮
     handleClickChoiseGood () {
+      let obj = {
+        goodsName: this.goodsName,
+        catId: this.bottomDialogSelectOne,
+        sortId: this.bottomDialogSelectTwo,
+        labelId: this.bottomDialogSelectThree,
+        brandId: this.goodsGrandVal,
+        lowShopPrice: this.inputBottomRange,
+        highShopPrice: this.inputBottomRangeRight,
+        currentPage: 1,
+        pageRows: 20
+      }
+      // 弹窗上方下拉框统一数据获取
+      initGrandgetRequest().then((res) => {
+        // this.bottomOptionsOne = res.content.sysCates
+        this.bottomOptionsTwo = res.content.goodsSorts
+        this.bottomOptionsThree = res.content.goodsLabels
+        this.goodsGrandOptions = res.content.goodsBrands
+        console.log(res)
+      })
+      // 弹窗下方表格数据获取
+      allGoodsQueryRequest(obj).then((res) => {
+        if (res.error === 0) {
+          // res.content.dataList.catName = res.content.dataList.catName.replace(',', '、')
+          console.log(res.content.dataList)
+          res.content.dataList.catName = res.content.dataList.map((item, index) => {
+            console.log(item.catName)
+            item.catName = item.catName.replace('，', '、')
+            item.ischecked = false
+            this.hxgoodsIds.map((childrenItem, childrenIndex) => {
+              if (childrenItem === item.goodsId) {
+                item.ischecked = true
+              }
+            })
+          })
+          let flag = res.content.dataList.filter((item, index) => {
+            return item.ischecked === false
+          })
+          console.log(flag)
+          if (flag.length === 0) {
+            this.checkedAll = true
+          }
+          this.trList = res.content.dataList
+        }
+        console.log(res)
+      })
       this.choiseGooddialogVisible = true
     },
     // 行选中高亮
@@ -581,7 +691,24 @@ export default {
       this.clickIindex = index
       // console.log(this.trList[index].ischecked)
       this.trList[index].ischecked = !this.trList[index].ischecked
+      let flag = this.trList.filter((item, index) => {
+        return item.ischecked === false
+      })
+      console.log(flag)
+      if (flag.length === 0) {
+        this.checkedAll = true
+      } else {
+        this.checkedAll = false
+      }
+      // let arr = []
+      this.goodsIdsArr.push(item.goodsId)
+
       console.log('选中', index, item)
+    },
+    // 选择商品弹窗确定
+    handleChoiseGooddialog () {
+      this.transmitGoodsIds(this.goodsIdsArr)
+      this.choiseGooddialogVisible = false
     },
     // 调用图片弹窗
     handleImgDailog () {
@@ -592,17 +719,26 @@ export default {
       console.log(res)
       this.logoImgUrl = res
     },
+    // 刷新
+    handleRefresh () {
+      // 品牌分类初始化获取
+      this.defaultGrandClass()
+    },
     // 保存
     saveShopStyle () {
-      // let obj = {
-      //   'brandName': this.NameInput,
-      //   'ename': this.NameEnlishInput,
-      //   'logo': this.logoImgUrl,
-      //   'first': this.firstInput,
-      //   'desc': '',
-      //   'isRecommend': this.radio,
-      //   'classifyId': 0
-      // }
+      let obj = {
+        'brandName': this.NameInput,
+        'ename': this.NameEnlishInput,
+        'logo': this.logoImgUrl,
+        'first': this.firstInput,
+        'desc': '',
+        'isRecommend': this.radio,
+        'classifyId': this.classSelectValue,
+        'goodsIds': this.goodsIdsArr
+      }
+      brandAddRequest(obj).then((res) => {
+        console.log(res)
+      })
     }
   }
 }
@@ -760,10 +896,10 @@ thead td:nth-of-type(4) {
   width: 71px;
 }
 thead td:nth-of-type(5) {
-  width: 63px;
+  width: 65px;
 }
 thead td:nth-of-type(6) {
-  width: 73px;
+  width: 80px;
 }
 thead td:nth-of-type(7) {
   width: 106px;
@@ -777,7 +913,7 @@ tbody td {
   color: #666;
 }
 td {
-  padding: 8px 10px;
+  padding: 8px 7px;
   vertical-align: middle !important;
   text-align: center;
 }
@@ -826,6 +962,12 @@ img {
   display: flex;
   justify-content: center;
 }
+.level_1 {
+  margin-left: 10px;
+}
+.level_2 {
+  margin-left: 15px;
+}
 </style>
 <style>
 .addBrand .el-input {
@@ -865,5 +1007,8 @@ img {
 .brand_title .el-radio {
   display: flex;
   align-items: center;
+}
+.el-select-dropdown__item {
+  margin-top: 0 !important;
 }
 </style>

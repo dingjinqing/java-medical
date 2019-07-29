@@ -10,7 +10,7 @@ export function brandAllGetRequest (data) {
 }
 
 // 添加品牌
-export function brandAddGetRequest (data) {
+export function brandAddRequest (data) {
   return service({
     url: '/api/admin/goods/brand/add',
     method: 'post',
@@ -59,6 +59,86 @@ export function modifyGrandRequest (data) {
     url: '/api/admin/goods/brand/classify/update',
     method: 'post',
     data: data
+  })
+}
+
+// 新增品牌分类
+export function addGrandClassRequest (data) {
+  return service({
+    url: '/api/admin/goods/brand/classify/add',
+    method: 'post',
+    data: data
+  })
+}
+
+// 商品分页查询
+export function allGoodsQueryRequest (data) {
+  return service({
+    url: '/api/admin/goods/list',
+    method: 'post',
+    data: data
+  })
+}
+
+// 根据id查询品牌
+export function queryGoodsIdRequest (data) {
+  return service({
+    url: '/api/admin/goods/brand/select',
+    method: 'post',
+    data: data
+  })
+}
+
+// 分页查询品牌分类
+export function pagingBrandQueryRequest (data) {
+  return service({
+    url: '/api/admin/goods/brand/classify/list',
+    method: 'post',
+    data: data
+  })
+}
+
+// 品牌分类页品牌删除接口
+export function pagingBrandDelRequest (data) {
+  return service({
+    url: '/api/admin/goods/brand/classify/delete',
+    method: 'post',
+    data: data
+  })
+}
+
+// 品牌分类页品牌修改接口
+export function pagingBrandUpdateRequest (data) {
+  return service({
+    url: '/api/admin/goods/brand/classify/update',
+    method: 'post',
+    data: data
+  })
+}
+
+// 品牌展示设置回显
+export function showBrandgetRequest (data) {
+  return service({
+    url: '/api/admin/goods/brand/config/get',
+    method: 'post',
+    data: data
+  })
+}
+
+// 品牌展示设置保存
+export function saveShowBrandgetRequest (data) {
+  return service({
+    url: '/api/admin/goods/brand/config/set',
+    method: 'post',
+    data: data
+  })
+}
+
+// 选择商品弹窗顶部下拉框统一接口
+export function initGrandgetRequest () {
+  return service({
+    url: '/api/admin/goods/page/init',
+    method: 'get'
   })
 }
 
