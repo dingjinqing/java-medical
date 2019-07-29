@@ -6,6 +6,8 @@ import java.sql.Timestamp;
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotNull;
 
+import com.vpu.mp.service.pojo.shop.config.ShopShareConfig;
+
 import lombok.Data;
 
 /**
@@ -65,13 +67,16 @@ public class BargainAddParam {
 	/**
 	 * 分享设置 
 	 */
-	private String shareConfig;
+	private ShopShareConfig shareConfig;
 	
 	/**
 	 * 任意金额结算模式的结算金额底价 
 	 */
 	private double floorPrice;
 	
+	/**
+	 * 活动商品库存 
+	 */
 	@NotNull
 	@Min(1)
 	private int stock;

@@ -101,6 +101,9 @@ public class BargainService extends ShopBaseService  {
 	public boolean addBargain(BargainAddParam param) {
 		BargainRecord record = new BargainRecord();
 		assign(param,record);
+		if(param.getShareConfig() != null) {
+			record.setShareConfig(Util.toJson(param.getShareConfig()));
+		}
 		return db().executeInsert(record) > 0 ? true : false;
 	}
 	

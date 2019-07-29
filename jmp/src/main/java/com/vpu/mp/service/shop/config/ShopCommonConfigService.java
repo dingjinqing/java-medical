@@ -1,11 +1,11 @@
 package com.vpu.mp.service.shop.config;
 
+import org.springframework.stereotype.Service;
+
 import com.vpu.mp.service.pojo.shop.config.ShopCommonCfgInfo;
 import com.vpu.mp.service.pojo.shop.config.ShopShareConfig;
 import com.vpu.mp.service.pojo.shop.config.ShopStyleConfig;
 import com.vpu.mp.service.pojo.shop.config.ShowCartConfig;
-import org.springframework.context.annotation.Scope;
-import org.springframework.stereotype.Service;
 
 /**
  * @author 王兵兵
