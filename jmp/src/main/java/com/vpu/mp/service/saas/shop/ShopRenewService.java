@@ -1,22 +1,29 @@
 package com.vpu.mp.service.saas.shop;
 
 import static com.vpu.mp.db.main.tables.ShopRenew.SHOP_RENEW;
-
+import static com.vpu.mp.db.main.tables.ShopAccount.SHOP_ACCOUNT;
+import static com.vpu.mp.db.main.tables.SystemChildAccount.SYSTEM_CHILD_ACCOUNT;
 import java.math.BigDecimal;
 import java.sql.Timestamp;
 
 import org.jooq.Record;
+import org.jooq.Record1;
 import org.jooq.Result;
+import org.jooq.SelectWhereStep;
 import org.jooq.impl.DSL;
 import org.jooq.tools.Convert;
+import org.springframework.stereotype.Service;
 
+import com.vpu.mp.db.main.tables.ShopAccount;
+import com.vpu.mp.db.main.tables.ShopRenew;
 import com.vpu.mp.db.main.tables.records.ShopRenewRecord;
 import com.vpu.mp.service.foundation.service.MainBaseService;
 import com.vpu.mp.service.foundation.util.FieldsUtil;
+import com.vpu.mp.service.foundation.util.PageResult;
 import com.vpu.mp.service.pojo.saas.auth.SystemTokenAuthInfo;
+import com.vpu.mp.service.pojo.shop.auth.ShopRenewListParam;
 import com.vpu.mp.service.pojo.shop.auth.ShopRenewReq;
-import org.springframework.context.annotation.Scope;
-import org.springframework.stereotype.Service;
+import com.vpu.mp.service.pojo.shop.auth.ShopRenewVo;
 
 /**
  * 
@@ -41,9 +48,27 @@ public class ShopRenewService extends MainBaseService {
 				.fetch();
 	}
 
-	public Result<Record> getShopRenewList(Integer shopId) {
-		return db().select().from(SHOP_RENEW).where(SHOP_RENEW.SHOP_ID.eq(shopId))
-				.orderBy(SHOP_RENEW.EXPIRE_TIME.desc()).fetch();
+	public PageResult<ShopRenewVo> getShopRenewList(ShopRenewListParam sParam) {
+		ShopRenew a = SHOP_RENEW.as("a");
+		ShopAccount b = SHOP_ACCOUNT.as("b");
+		SelectWhereStep<? extends Record> select = db().select(a.ID,a.SHOP_ID,a.SYS_ID,a.MOBILE,a.RENEW_MONEY,a.RENEW_DATE,a.EXPIRE_TIME,
+				a.OPERATOR,a.RENEW_DESC,a.RENEW_TYPE,a.RENEW_DURATION,a.SEND_TYPE,a.SEND_CONTENT,b.ACCOUNT_NAME).from(a, b);
+		select.where(a.SHOP_ID.eq(sParam.getShopId()).and(a.SYS_ID.eq(b.SYS_ID)));
+		select.orderBy(a.ID.desc());
+		
+		PageResult<ShopRenewVo> pageResult = this.getPageResult(select, sParam.getCurrentPage(), sParam.getPageRows(),
+				ShopRenewVo.class);
+		for(ShopRenewVo sRenewVo:pageResult.dataList) {
+			if(sRenewVo.getOperator().equals(0)) {
+				sRenewVo.setOperatorName("system");
+			} else {
+				Record1<String> record1 = db().select(SYSTEM_CHILD_ACCOUNT.ACCOUNT_NAME).from(SYSTEM_CHILD_ACCOUNT)
+						.where(SYSTEM_CHILD_ACCOUNT.ACCOUNT_ID.eq(sRenewVo.getOperator())).fetchAny();
+				sRenewVo.setOperatorName(record1.getValue(SYSTEM_CHILD_ACCOUNT.ACCOUNT_NAME));
+			}
+			
+		}
+		return pageResult;
 	}
 
 	public BigDecimal getRenewTotal(Integer sysId) {
@@ -68,6 +93,8 @@ public class ShopRenewService extends MainBaseService {
 	public int insertShopRenew(ShopRenewReq sReq,SystemTokenAuthInfo info) {
 		ShopRenewRecord sRecord=new ShopRenewRecord();
 		FieldsUtil.assignNotNull(sReq, sRecord);
+		sRecord.setRenewDuration(sReq.getYear()+","+sReq.getMonth());
+		sRecord.setSendContent(sReq.getSendYear()+","+sReq.getSendMonth());
 		if(info.isSubLogin()) {
 			//子账户登录
 			sRecord.setOperator(info.getSubAccountId());
