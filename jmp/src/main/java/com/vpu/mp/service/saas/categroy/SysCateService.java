@@ -26,20 +26,9 @@ public class SysCateService extends MainBaseService{
 	 * @return
 	 */
 	public List<SysCatevo> getSysCate() {
-		//获取平台一级分类
-		List<SysCatevo>	parentList = db().select(CATEGORY.CAT_ID,CATEGORY.CAT_NAME)
+		List<SysCatevo>	parentList = mainDb().select()
 				 .from(CATEGORY)
-				 .where(CATEGORY.PARENT_ID.eq((short) 0 ))
 				 .fetchInto(SysCatevo.class);
-		
-		//查询每级分类下的二级分类
-		for(SysCatevo list : parentList ){
-			List<SysCatevo> childList = db().select(CATEGORY.CAT_ID,CATEGORY.CAT_NAME,CATEGORY.PARENT_ID)
-					.from(CATEGORY)
-					.where(CATEGORY.PARENT_ID.eq(list.getCatId()))
-					.fetchInto(SysCatevo.class);
-			list.setChildCate(childList);
-		}
 		return parentList;
 	}
 	

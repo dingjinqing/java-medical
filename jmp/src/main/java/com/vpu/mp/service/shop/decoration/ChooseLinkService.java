@@ -345,29 +345,9 @@ public class ChooseLinkService extends ShopBaseService {
 	 * @return
 	 */
 	public List<SysCatevo> getSysCate() {
-		//获取平台一级分类
-		List<SysCatevo>	parentList = mainDb().select(CATEGORY.CAT_ID,CATEGORY.CAT_NAME)
+		List<SysCatevo>	parentList = mainDb().select()
 				 .from(CATEGORY)
-				 .where(CATEGORY.PARENT_ID.eq((short) 0 ))
 				 .fetchInto(SysCatevo.class);
-		
-		//查询每级分类下的二级分类
-		for(SysCatevo list : parentList ){
-			List<SysCatevo> childList = mainDb().select(CATEGORY.CAT_ID,CATEGORY.CAT_NAME,CATEGORY.PARENT_ID)
-					.from(CATEGORY)
-					.where(CATEGORY.PARENT_ID.eq(list.getCatId()))
-					.fetchInto(SysCatevo.class);
-			list.setChildCate(childList);
-			
-			//查询三级分类
-			for(SysCatevo childList1 : childList) {
-				List<SysCatevo> childList2 = mainDb().select(CATEGORY.CAT_ID,CATEGORY.CAT_NAME,CATEGORY.PARENT_ID)
-						.from(CATEGORY)
-						.where(CATEGORY.PARENT_ID.eq(childList1.getCatId()))
-						.fetchInto(SysCatevo.class);
-				childList1.setChildCate1(childList2);
-			}
-		}
 		return parentList;
 	}
 	
