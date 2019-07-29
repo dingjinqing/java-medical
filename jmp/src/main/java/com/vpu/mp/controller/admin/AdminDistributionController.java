@@ -16,6 +16,7 @@ import com.vpu.mp.service.pojo.shop.distribution.DistributionStrategyParam;
 import com.vpu.mp.service.pojo.shop.distribution.DistributionStrategyVo;
 import com.vpu.mp.service.pojo.shop.distribution.DistributorGroupListParam;
 import com.vpu.mp.service.pojo.shop.distribution.DistributorGroupListVo;
+import com.vpu.mp.service.pojo.shop.distribution.DistributorLevelCfgVo;
 
 /**
  * 分销模块
@@ -212,10 +213,14 @@ public class AdminDistributionController extends AdminBaseController{
 	}
 	
 	//分销员等级配置
+	/**
+	 * 分销员等级配置列表
+	 * @return
+	 */
 	@GetMapping("/admin/distribution/level/config")
 	public JsonResult distributorLevelConfig() {
-		shop().distributorLevel.levelConfig();
-		return null;
+		DistributorLevelCfgVo levelCfg = shop().distributorLevel.levelConfig();
+		return this.success(levelCfg);
 	}
 	
 }

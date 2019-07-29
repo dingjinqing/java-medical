@@ -1,7 +1,6 @@
 package com.vpu.mp.service.pojo.shop.distribution;
 
 import java.math.BigDecimal;
-import java.sql.Timestamp;
 
 import lombok.Data;
 
@@ -16,6 +15,4 @@ public class DistributorLevelVo {
 	public BigDecimal totalBuyMoney;
 	public String     levelUserIds;
 	public Byte       levelStatus;
-	public Timestamp  createTime;
-	public Timestamp  updateTime;
 }
