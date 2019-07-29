@@ -37,3 +37,10 @@ ALTER TABLE `b2c_shop_uploaded_image`
 --把b2c_user_login_record字段更改
 ALTER TABLE `mini_main`.`b2c_user_login_record` MODIFY COLUMN user_id INT( 11 );
 ALTER TABLE `mini_main`.`b2c_user_login_record` CHANGE COLUMN `add_time` `add_time` TIMESTAMP  NULL DEFAULT CURRENT_TIMESTAMP COMMENT '每日登陆时间' ;
+
+
+--b2c_shop_renew新增字段
+ALTER TABLE `b2c_shop_renew` ADD COLUMN `renew_type` tinyint(1) NOT NULL DEFAULT 0 COMMENT '续费类型：1续费，2试用，3赠送，4退款';
+ALTER TABLE `b2c_shop_renew` ADD COLUMN `renew_duration` varchar(32) NOT NULL DEFAULT '0' COMMENT '时长：字符串逗号隔开';
+ALTER TABLE `b2c_shop_renew` ADD COLUMN `send_type` tinyint(1) NOT NULL DEFAULT 0 COMMENT '赠送类型：0无，1时间，2功能';
+ALTER TABLE `b2c_shop_renew` ADD COLUMN `send_content` varchar(32)  NOT NULL DEFAULT '0' COMMENT '赠送内容：字符串逗号隔开';
