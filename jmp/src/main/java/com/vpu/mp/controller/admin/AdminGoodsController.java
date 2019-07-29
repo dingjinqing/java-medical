@@ -9,6 +9,7 @@ import com.vpu.mp.service.pojo.shop.goods.spec.GoodsSpecProduct;
 import com.vpu.mp.service.pojo.shop.goods.spec.GoodsSpecVal;
 import com.vpu.mp.service.shop.goods.GoodsService;
 import org.jooq.tools.StringUtils;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
@@ -24,6 +25,12 @@ import java.util.Map;
 @RestController
 public class AdminGoodsController extends AdminBaseController {
 
+
+    @GetMapping("/api/admin/goods/page/init")
+    public JsonResult getPageInitValue(){
+
+        return success();
+    }
     /**
      * 商品分页查询
      *

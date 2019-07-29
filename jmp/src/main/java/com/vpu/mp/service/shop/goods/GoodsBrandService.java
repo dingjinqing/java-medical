@@ -146,7 +146,14 @@ public class GoodsBrandService extends ShopBaseService {
     public void update(GoodsBrand goodsBrand) {
         GoodsBrandRecord goodsBrandRecord = new GoodsBrandRecord();
         assign(goodsBrand, goodsBrandRecord);
-        db().executeUpdate(goodsBrandRecord);
+        transaction(()->{
+            db().executeUpdate(goodsBrandRecord);
+            if (goodsBrand.getGoodsIds() != null && goodsBrand.getGoodsIds().size() > 0) {
+                db().update(GOODS).set(GOODS.BRAND_ID, goodsBrandRecord.getId())
+                        .where(GOODS.GOODS_ID.in(goodsBrand.getGoodsIds()))
+                        .execute();
+            }
+        });
     }
 
     /**
@@ -156,11 +163,18 @@ public class GoodsBrandService extends ShopBaseService {
      * @return
      */
     public GoodsBrand select(GoodsBrand goodsBrand) {
-        return db().select(GOODS_BRAND.ID,
+
+        GoodsBrand gb= db().select(GOODS_BRAND.ID,
                 GOODS_BRAND.BRAND_NAME, GOODS_BRAND.E_NAME, GOODS_BRAND.LOGO, GOODS_BRAND.FIRST, GOODS_BRAND.CREATE_TIME, GOODS_BRAND.DESC, GOODS_BRAND.IS_RECOMMEND, GOODS_BRAND.CLASSIFY_ID)
                 .from(GOODS_BRAND).where(GOODS_BRAND.ID.eq(goodsBrand.getId()))
                 .fetchOne().into(GoodsBrand.class);
 
+        List<Integer> goodsIds = db().select(GOODS.GOODS_ID).from(GOODS).where(GOODS.BRAND_ID.eq(goodsBrand.getId()))
+                .fetch().into(Integer.class);
+
+        goodsBrand.setGoodsIds(goodsIds);
+
+        return gb;
     }
 
     /**

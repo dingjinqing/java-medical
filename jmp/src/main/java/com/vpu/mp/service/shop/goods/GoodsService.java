@@ -143,8 +143,12 @@ public class GoodsService extends ShopBaseService {
 
         scs = scs.and(GOODS.IS_ON_SALE.eq(goodsPageListParam.getIsOnSale()));
 
-        if (goodsPageListParam.getGoodsName() != null) {
+        if (!StringUtils.isBlank(goodsPageListParam.getGoodsName())) {
             scs = scs.and(GOODS.GOODS_NAME.like(likeValue(goodsPageListParam.getGoodsName())));
+        }
+
+        if (!StringUtils.isBlank(goodsPageListParam.getGoodsSn())) {
+            scs=scs.and(GOODS.GOODS_SN.like(likeValue(goodsPageListParam.getGoodsSn())));
         }
 
         if (goodsPageListParam.getCatId() != null) {

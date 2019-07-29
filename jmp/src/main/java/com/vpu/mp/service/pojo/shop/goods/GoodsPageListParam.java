@@ -1,8 +1,8 @@
 package com.vpu.mp.service.pojo.shop.goods;
 
-import java.math.BigDecimal;
-
 import lombok.Data;
+
+import java.math.BigDecimal;
 
 /**
  * @author 李晓冰
@@ -30,6 +30,7 @@ public class GoodsPageListParam {
     private Integer goodsId;
 
     private String goodsName;
+    private String goodsSn;
     private Integer catId;
     private Integer sortId;
     private Integer labelId;
