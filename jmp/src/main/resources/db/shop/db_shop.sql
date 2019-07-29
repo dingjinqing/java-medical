@@ -1701,7 +1701,7 @@ create table `b2c_group_buy__define`
     `stock`            smallint(6)  not null default 0 comment '总库存',
     `sale_num`         smallint(6)  not null default 0 comment '销量',
     `del_flag`         tinyint(1)   not null default 0,
-    `status`           tinyint(1)   not null default 1 comment '状态： 1：启用  0： 禁用',
+    `status`           tinyint(1)   not null default 1 comment '状态： 1：启用  0： 禁用 2 代表已无库存',
     `del_time`         int(11)      not null default 0,
     `activity_type`    tinyint(1)   not null default '1' comment '活动类型：1：普通拼团，2：老带新团',
     `is_grouper_cheap` tinyint(1)   not null default '0' comment '是否开启团长优惠：0：不开启，1：开启',

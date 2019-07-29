@@ -3,10 +3,7 @@ package com.vpu.mp.service.shop.member;
 import static com.vpu.mp.db.shop.Tables.ORDER_VERIFIER;
 import static com.vpu.mp.db.shop.Tables.USER;
 
-import org.jooq.Field;
-import org.jooq.Record;
-import org.jooq.SelectJoinStep;
-import org.jooq.SelectWhereStep;
+import org.jooq.*;
 import org.jooq.tools.StringUtils;
 
 import com.vpu.mp.db.shop.tables.User;
@@ -24,6 +21,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Service;
 
+import java.sql.Timestamp;
+
 /**
  * 
  * @author 黄壮壮
@@ -32,6 +31,9 @@ import org.springframework.stereotype.Service;
 @Service
 
 public class MemberService extends ShopBaseService {
+
+	private static final String INVITE_USERNAME="inviteUserName";
+	private static final String USER_NAME="userName";
 
 	@Autowired public AccountService account;
 	@Autowired public ScoreService score;
@@ -46,9 +48,9 @@ public class MemberService extends ShopBaseService {
 		User n = USER.as("n");
 		
 		//自查寻
-		Field<?> inviteUserName =  this.db().select(n.USERNAME).from(n).where(n.INVITE_ID.eq(u.USER_ID)).asField("inviteUserName");
+		Field<?> inviteUserName =  this.db().select(n.USERNAME).from(n).where(n.INVITE_ID.eq(u.USER_ID)).asField(INVITE_USERNAME);
 		SelectWhereStep<? extends Record> select =(SelectWhereStep<? extends Record>) this.db()
-											.select(u.USER_ID,u.USERNAME.as("userName"),inviteUserName,u.MOBILE,u.ACCOUNT,u.SCORE,u.SOURCE,u.CREATE_TIME)
+											.select(u.USER_ID,u.USERNAME.as(USER_NAME),inviteUserName,u.MOBILE,u.ACCOUNT,u.SCORE,u.SOURCE,u.CREATE_TIME)
 											.from(u);
 		
 	    select = this.buildOptions(select,u, param);
@@ -153,5 +155,29 @@ public class MemberService extends ShopBaseService {
 	public UserRecord getUserRecordById(Integer userId) {
 		UserRecord user = db().selectFrom(USER).where(USER.USER_ID.eq(userId)).fetchOne();
 		return user;
+	}
+
+
+	/**
+	 *  通过活动新增用户
+	 *
+	 * @param param
+	 * @param source
+	 * @param actId
+	 * @return
+	 */
+	public PageResult<MemberInfoVo> getSourceActList(MemberPageListParam param,String source,int actId ) {
+		User a = USER.as("a");
+		User b = USER.as("b");
+		SelectWhereStep<? extends Record> select = (SelectWhereStep<? extends Record>) db()
+				.select(a.USER_ID, a.USERNAME.as(USER_NAME), a.MOBILE, a.CREATE_TIME, a.INVITE_ID, b.USERNAME.as(INVITE_USERNAME))
+				.from(a)
+				.leftJoin(b).on(a.INVITE_ID.eq(b.USER_ID))
+				.where(a.INVITE_SOURCE.eq(source))
+				.and(a.INVITE_ACT_ID.eq(actId))
+				.orderBy(a.CREATE_TIME.desc());
+		select = this.buildOptions(select,a, param);
+
+		return this.getPageResult(select,param.getPage().getCurrentPage(),param.getPage().getPageRows() , MemberInfoVo.class);
 	}
 }

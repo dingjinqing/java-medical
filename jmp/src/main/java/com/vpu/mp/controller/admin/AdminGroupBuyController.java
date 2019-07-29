@@ -2,11 +2,14 @@ package com.vpu.mp.controller.admin;
 
 import com.vpu.mp.service.foundation.data.JsonResult;
 import com.vpu.mp.service.foundation.data.JsonResultCode;
-import com.vpu.mp.service.pojo.shop.market.groupbuy.GroupBuyDetailVo;
-import com.vpu.mp.service.pojo.shop.market.groupbuy.GroupBuyEditParam;
-import com.vpu.mp.service.pojo.shop.market.groupbuy.GroupBuyIdParam;
-import com.vpu.mp.service.pojo.shop.market.groupbuy.GroupBuyParam;
-import org.springframework.web.bind.annotation.*;
+import com.vpu.mp.service.foundation.util.PageResult;
+import com.vpu.mp.service.pojo.shop.market.groupbuy.*;
+import com.vpu.mp.service.pojo.shop.member.MemberInfoVo;
+import com.vpu.mp.service.pojo.shop.order.OrderListInfoVo;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
 import javax.validation.Valid;
 
@@ -28,33 +31,32 @@ public class AdminGroupBuyController extends AdminBaseController {
      * @return
      */
     @PostMapping("/admin/market/groupbuy/list")
-    public JsonResult getListGroupBuy(@RequestBody GroupBuyParam param) {
-        shop().groupBuy.getListGroupBuy(param);
-        return success();
+    public JsonResult getListGroupBuy(@RequestBody GroupBuyListParam param) {
+        return success(shop().groupBuy.getListGroupBuy(param));
     }
 
 
     /**
      * 增加拼团活动
      *
-     * @param parm
+     * @param param
      * @return
      */
     @PostMapping("/admin/market/groupbuy/add")
-    public JsonResult addGroupBuy(@RequestBody @Valid GroupBuyParam parm) {
+    public JsonResult addGroupBuy(@RequestBody @Valid GroupBuyParam param) {
 
         //校验参数
-        if (parm==null||parm.getProduct()==null
-                ||parm.getProduct().size()==0||parm.getGoodsId()==null){
+        if (param==null||param.getProduct()==null
+                ||param.getProduct().size()==0||param.getGoodsId()==null){
             return fail(JsonResultCode.CODE_PARAM_ERROR);
         }
         //校验商品是否叠加 (并发不安全)
-        Boolean falg=  shop().groupBuy.validGroupGoods(parm);
+        Boolean falg=  shop().groupBuy.validGroupGoods(param);
         if (!falg){
             return fail(JsonResultCode.CODE_PARAM_ERROR);
         }
         //插入数据
-        shop().groupBuy.addGroupBuy(parm);
+        shop().groupBuy.addGroupBuy(param);
         return success();
     }
 
@@ -86,6 +88,18 @@ public class AdminGroupBuyController extends AdminBaseController {
 
 
     /**
+     * 参团明细
+     * @param param
+     * @return
+     */
+    @PostMapping("/admin/market/groupbuy/detail")
+    public JsonResult detailGroupBuy(@RequestBody GroupBuyIdParam param){
+        GroupBuyDetailVo vo = shop().groupBuy.detailGroupBuy(param.getId());
+        return success(vo);
+    }
+
+
+    /**
      * 分享拼团
      * @param param
      * @return
@@ -97,11 +111,11 @@ public class AdminGroupBuyController extends AdminBaseController {
     }
 
     /**
-     * 停用拼团
+     * 停用,启用拼团
      * @param param
      * @return
      */
-    @PostMapping("/admin/market/groupbuy/stop")
+    @PostMapping("/admin/market/groupbuy/update")
     public JsonResult stopGroupBuy(@RequestBody GroupBuyIdParam param){
         if (param.getStatus()!=null){
             shop().groupBuy.stopGroupBuy(param);
@@ -110,16 +124,36 @@ public class AdminGroupBuyController extends AdminBaseController {
     }
 
     /**
-     * 参团明细
+     * 参团明细列表
      * @param param
      * @return
      */
-    @PostMapping("/admin/market/groupbuy/detail")
-    public JsonResult detailGroupBuy(@RequestBody GroupBuyIdParam param){
-        GroupBuyDetailVo vo = shop().groupBuy.detailGroupBuy(param.getId());
+    @PostMapping("/admin/market/groupbuy/detaillist")
+    public JsonResult detailGroupBuyList(@RequestBody GroupBuyDetailParam param){
+        PageResult<GroupBuyDetailListVo> vo = shop().groupBuy.detailGroupBuyList(param);
         return success(vo);
     }
 
+
+    /**
+     *- 拼团订单
+     * @return
+     */
+    @PostMapping("/admin/market/groupbuy/order/list")
+    public JsonResult groupBuyOrderList(@RequestBody GroupBuyOrderListParam param){
+        PageResult<OrderListInfoVo> pageList = shop().groupBuy.groupBuyOrderList(param);
+        return success(pageList);
+    }
+
+    /**
+     * 用户列表
+     * @return
+     */
+    @PostMapping("/admin/market/groupbuy/user/list")
+    public JsonResult groupBuyNewUaerList(@RequestBody GroupBuyMenberParam param){
+        PageResult<MemberInfoVo> pageResult = shop().groupBuy.groupBuyNewUaerList(param);
+        return success(pageResult);
+    }
 
 
 

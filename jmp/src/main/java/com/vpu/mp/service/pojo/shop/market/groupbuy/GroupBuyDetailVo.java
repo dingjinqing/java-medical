@@ -1,6 +1,8 @@
 package com.vpu.mp.service.pojo.shop.market.groupbuy;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import java.sql.Timestamp;
 import java.util.List;
@@ -10,6 +12,7 @@ import java.util.List;
  * @date 2019/7/19 17:40
  */
 @Data
+@NoArgsConstructor
 public class GroupBuyDetailVo {
 
     private String name;
@@ -69,6 +72,8 @@ public class GroupBuyDetailVo {
      * 分享设置
      */
     private GroupBuyShareConfigVo share;
+
+    @JsonIgnore
     private String shareConfig;
     /**
      * 产品规格配置

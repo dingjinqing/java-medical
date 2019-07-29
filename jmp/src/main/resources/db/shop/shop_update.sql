@@ -350,3 +350,114 @@ alter table `b2c_bargain` modify column `status` tinyint(1) not null default '1'
 -- liufei 2019-07-26 商品备份表添加品牌id字段
 
 alter table b2c_goods_bak add column `brand_id` int(11) not null default 0 comment '品牌id';
+
+-- 孔德成 2019-7-29  修改多人拼团表
+-- --  拼团活动定义表
+-- drop table if exists `b2c_group_buy__define`;
+create table `b2c_group_buy__define`
+(
+    `id`               int(11)      not null auto_increment,
+    `shop_id`          int(11)      not null comment '店铺id',
+    `goods_id`         int(11)      not null comment '商品id',
+    `name`             varchar(100) not null comment '活动名称',
+    `limit_amount`     smallint(6)  not null comment '成团人数',
+    `join_limit`       smallint(6)  not null comment '参团限制',
+    `open_limit`       smallint(6)  not null comment '开团限制',
+    `is_default`       tinyint(1)   not null default 0 comment '默认成团',
+    `start_time`       timestamp    null     default null comment '开始时间',
+    `end_time`         timestamp    null     default null comment '结束时间',
+    `stock`            smallint(6)  not null default 0 comment '总库存',
+    `sale_num`         smallint(6)  not null default 0 comment '销量',
+    `del_flag`         tinyint(1)   not null default 0,
+    `status`           tinyint(1)   not null default 1 comment '状态： 1：启用  0： 禁用 2 代表已无库存',
+    `del_time`         int(11)      not null default 0,
+    `activity_type`    tinyint(1)   not null default '1' comment '活动类型：1：普通拼团，2：老带新团',
+    `is_grouper_cheap` tinyint(1)   not null default '0' comment '是否开启团长优惠：0：不开启，1：开启',
+    `reward_coupon_id` varchar(200) null comment '拼团失败发放优惠券',
+    `share_config`     text comment '分享设置',
+    `create_time`      timestamp             default current_timestamp,
+    `update_time`      timestamp             default current_timestamp on update current_timestamp comment '最后修改时间',
+    primary key (`id`)
+);
+
+-- --  拼团活动产品规格定义表
+-- drop table if exists `b2c_group_buy_product_define`;
+create table `b2c_group_buy_product_define`
+(
+    `id`              int(11)        not null auto_increment,
+    `activity_id` int(11)        not null comment '拼团定义id',
+    `product_id`      int(11)        not null comment '商品规格id',
+    `group_price` decimal(10, 2) not null default 0.00 comment '拼团价',
+    `stock`           smallint(6)    not null default 0 comment '库存',
+    `sale_num`        smallint(6)    not null default 0 comment '销量',
+    `grouper_price`   decimal(10, 2) not null default '0.00' comment '团长优惠价',
+    `create_time`     timestamp               default current_timestamp,
+    `update_time`     timestamp               default current_timestamp on update current_timestamp comment '最后修改时间',
+    primary key (`id`)
+);
+
+-- --  拼团活动参团明细表
+-- drop table if exists `b2c_group_buy_list`;
+create table `b2c_group_buy_list`
+(
+    `id`              int(11)     not null auto_increment,
+    `activity_id` int(11)     not null comment '拼团活动定义id',
+    `goods_id`        int(11)     not null default 0,
+    `group_id`        int(11)     not null default 0 comment '拼团id',
+    `user_id`         int(11)     not null,
+    `is_grouper`      tinyint(1)  not null default 0 comment '是否为团长 1：是 0：否',
+    `order_sn`        varchar(20) not null comment '订单编号',
+    `status`          tinyint(1)  not null default 0 comment '0: 拼团中 1:拼团成功 2:拼团失败',
+    `start_time`      timestamp   null     default null comment '开团时间',
+    `end_time`        timestamp   null     default null comment '成团时间',
+    `create_time`     timestamp            default current_timestamp,
+    `update_time`     timestamp            default current_timestamp on update current_timestamp comment '最后修改时间',
+    primary key (`id`)
+);
+--  瓜分积分活动配置
+-- drop table if exists `b2c_group_integration_define`;
+create table `b2c_group_integration_define` (
+  `id`            int(11)                                 not null auto_increment,
+  `shop_id`       int(11)                                 not null comment '店铺id',
+  `name`          varchar(100)  						  not null comment '活动名称',
+  `inte_total`    int(11)                                 not null default '0' comment '总抽奖积分',
+  `inte_group`    int(11)                                 not null default '0' comment '每个团总积分',
+  `limit_amount`  smallint(6)                             not null comment '成团人数',
+  `join_limit`    smallint(6)                             not null comment '参团限制',
+  `divide_type`   tinyint(1)                              not null default '0' comment '瓜分方式：0：按邀请好友数量瓜分，1：好友均分，2：随机瓜分',
+  `start_time`    timestamp null default null comment '开始时间',
+  `end_time`      timestamp null default null comment '结束时间',
+  `status`        tinyint(1)                               not null default '1' comment '状态： 1：启用  0： 禁用',
+  `del_flag`      tinyint(1)                               not null default '0',
+  `del_time`	  timestamp      null	default null comment '删除时间',
+  `inte_remain`   int(11)                                 not null default '0' comment '剩余积分',
+  `is_day_divide` tinyint(1)                              not null comment '是否开团24小时自动开奖',
+  `param_n`       float                                   not null default '0' comment '常数n',
+  `is_continue`   tinyint(1)                              not null default '1' comment '继续： 1：继续  0： 结束',
+  `advertise`     varchar(100)  						  not null comment '活动宣传语',
+  `create_time`		timestamp      	default current_timestamp,
+  `update_time` 	timestamp      	default current_timestamp on update current_timestamp comment '最后修改时间',
+  primary key (`id`)
+);
+
+--  参团列表
+-- drop table if exists `b2c_group_integration_list`;
+create table `b2c_group_integration_list` (
+  `id`               int(11)                                not null auto_increment,
+  `inte_activity_id` int(11)                                not null comment '瓜分积分活动定义id',
+  `group_id`         varchar(60)  							not null default '' comment '拼团id',
+  `user_id`          int(11)                                not null,
+  `is_grouper`       tinyint(1)                             not null default '0' comment '是否为团长 1：是 0：否',
+  `status`           tinyint(1)                             not null default '0' comment '0: 拼团中 1:拼团成功 2:拼团失败',
+  `start_time`       timestamp null default null comment '参团时间',
+  `end_time`         timestamp null default null comment '成团时间',
+  `integration`      int(11)                                not null default '0' comment '瓜分到的积分',
+  `invite_num`       smallint(6)                            not null default '0' comment '邀请人的数量',
+  `invite_user`      int(11)                                not null default '0' comment '邀请人（被谁邀请）',
+  `is_new`           tinyint(1)                             not null default '0' comment '是否是新用户：0：不是，1：是',
+  `is_look`          tinyint(1)                             not null default '0' comment '是否看过开奖结果',
+  `can_integration`  int(11)                                not null default '0' comment '该团可瓜分积分池',
+  `create_time`		timestamp      	default current_timestamp,
+  `update_time` 	timestamp      	default current_timestamp on update current_timestamp comment '最后修改时间',
+  primary key (`id`)
+);

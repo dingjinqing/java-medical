@@ -1,5 +1,6 @@
 package com.vpu.mp.service.pojo.shop.market.groupbuy;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
@@ -17,7 +18,6 @@ public class GroupBuyParam {
 
 
     private String name;
-    private Integer shopId;
     /**
      * 商品id
      */
@@ -44,13 +44,11 @@ public class GroupBuyParam {
     private Timestamp startTime;
     private Timestamp endTime;
     /**
-     * 总库存
+     * 总库存——不需要前端传
      */
+    @JsonIgnore
     private Short stock;
-    /**
-     * 销量
-     */
-    private Short saleNum;
+
     /**
      * 状态： 1：启用  0： 禁用
      */
@@ -73,6 +71,7 @@ public class GroupBuyParam {
      * 分享设置
      */
     private GroupBuyShareConfigParam share;
+
     private String shareConfig;
     /**
      * 产品规格配置
