@@ -20,11 +20,21 @@ public class ExcelWriter extends AbstractExcelDisposer {
     private String sheetName;
 
     public ExcelWriter(Workbook workbook, String sheetName) {
+        this(AbstractExcelDisposer.DEFAULT_LANGUAGE,workbook,sheetName);
+    }
+
+    public ExcelWriter(Workbook workbook) {
+        this(AbstractExcelDisposer.DEFAULT_LANGUAGE,workbook);
+    }
+
+    public ExcelWriter(String language, Workbook workbook, String sheetName) {
+        super(language);
         this.workbook = workbook;
         this.sheetName = sheetName;
     }
 
-    public ExcelWriter(Workbook workbook) {
+    public ExcelWriter(String language, Workbook workbook) {
+        super(language);
         this.workbook = workbook;
     }
 
@@ -38,7 +48,7 @@ public class ExcelWriter extends AbstractExcelDisposer {
      * @throws IllegalSheetPositionException
      * @throws IllegalExcelDataException
      */
-    public <T> void writeModelList(List<T> dataArray, Class<T> clazz){
+    public <T> void writeModelList(List<T> dataArray, Class<T> clazz) {
         ExcelSheetBean sheetBean = initSheet(clazz);
 
         Sheet sheet = creatTargetSheet(sheetBean);
@@ -46,8 +56,8 @@ public class ExcelWriter extends AbstractExcelDisposer {
         createExcelTemplate(clazz, sheetBean, sheet);
 
 
-        Map<Integer,CellStyle> styleMap=new HashMap<>(sheetBean.columnMap.size());
-        Map<Integer,CellType> typeMap=new HashMap<>(sheetBean.columnMap.size());
+        Map<Integer, CellStyle> styleMap = new HashMap<>(sheetBean.columnMap.size());
+        Map<Integer, CellType> typeMap = new HashMap<>(sheetBean.columnMap.size());
         //设置单元格样式和类型缓存
         for (Map.Entry<String, ExcelColumnBean> entry : sheetBean.columnMap.entrySet()) {
             ExcelColumnBean columnBean = entry.getValue();
@@ -55,35 +65,35 @@ public class ExcelWriter extends AbstractExcelDisposer {
             CellStyle cellStyle = ExcelUtil.getCellStyle(columnBean.fieldClazz, workbook);
             CellType cellType = ExcelUtil.convertJavaType2CellType(columnBean.fieldClazz);
 
-            styleMap.put(columnBean.columnIndex,cellStyle);
-            typeMap.put(columnBean.columnIndex,cellType);
+            styleMap.put(columnBean.columnIndex, cellStyle);
+            typeMap.put(columnBean.columnIndex, cellType);
         }
 
-        int beginDataIndex=sheetBean.beginDataNum;
+        int beginDataIndex = sheetBean.beginDataNum;
         //将model数据转换为对应的row
         for (int i = 0; i < dataArray.size(); i++) {
-            int rowIndex=beginDataIndex+i;
+            int rowIndex = beginDataIndex + i;
             Row row = sheet.createRow(rowIndex);
             for (Map.Entry<String, ExcelColumnBean> entry : sheetBean.columnMap.entrySet()) {
                 ExcelColumnBean columnBean = entry.getValue();
-                String fieldName=entry.getKey();
+                String fieldName = entry.getKey();
 
                 Cell cell = row.createCell(columnBean.columnIndex);
                 cell.setCellType(typeMap.get(columnBean.columnIndex));
                 cell.setCellStyle(styleMap.get(columnBean.columnIndex));
 
-                Object value= null;
+                Object value = null;
                 try {
-                    value = ExcelUtil.getFieldValue(fieldName,dataArray.get(i));
+                    value = ExcelUtil.getFieldValue(fieldName, dataArray.get(i));
                 } catch (NoSuchFieldException | IllegalAccessException e) {
                     e.printStackTrace();
                 }
-                ExcelUtil.setCellValue(cell,value);
+                ExcelUtil.setCellValue(cell, value);
             }
         }
 
         //设置列宽自适应
-        for (Map.Entry<String, ExcelColumnBean> entry : sheetBean.columnMap.entrySet()){
+        for (Map.Entry<String, ExcelColumnBean> entry : sheetBean.columnMap.entrySet()) {
             ExcelColumnBean columnBean = entry.getValue();
             sheet.autoSizeColumn(columnBean.columnIndex);
         }

@@ -7,6 +7,7 @@ import com.vpu.mp.service.foundation.excel.exception.IllegalExcelHeaderException
 import com.vpu.mp.service.foundation.excel.exception.IllegalSheetPositionException;
 import com.vpu.mp.service.foundation.excel.exception.handler.IllegalExcelBinder;
 import com.vpu.mp.service.foundation.excel.exception.handler.IllegalExcelHandler;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
@@ -27,6 +28,11 @@ public class ExcelReader extends AbstractExcelDisposer {
     private IllegalExcelHandler illegalHandler;
 
     public ExcelReader(Workbook workbook, IllegalExcelHandler illegalHandler) {
+        this(AbstractExcelDisposer.DEFAULT_LANGUAGE, workbook, illegalHandler);
+    }
+
+    public ExcelReader(String language, Workbook workbook, IllegalExcelHandler illegalHandler) {
+        super(language);
         this.workbook = workbook;
         this.illegalHandler = illegalHandler;
     }

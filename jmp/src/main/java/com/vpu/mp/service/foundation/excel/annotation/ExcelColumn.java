@@ -24,4 +24,10 @@ public @interface ExcelColumn {
      * @return
      */
     String columnName() default "";
+
+    /**
+     * 模板信息填充值
+     * @return
+     */
+    String[] args() default {};
 }

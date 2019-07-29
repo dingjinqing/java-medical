@@ -10,6 +10,8 @@ import com.vpu.mp.service.foundation.excel.exception.IllegalExcelDataException;
 import com.vpu.mp.service.foundation.excel.exception.IllegalExcelHeaderException;
 import com.vpu.mp.service.foundation.excel.exception.IllegalSheetPositionException;
 import com.vpu.mp.service.foundation.excel.exception.NotExcelModelException;
+import com.vpu.mp.service.foundation.util.Util;
+import org.apache.commons.lang3.StringUtils;
 
 import java.lang.reflect.Field;
 
@@ -18,6 +20,19 @@ import java.lang.reflect.Field;
  * @date 2019年07月20日
  */
 public abstract class AbstractExcelDisposer {
+
+    public static final String LANGUAGE_TYPE_EXCEL="excel";
+
+    public static final String DEFAULT_LANGUAGE="zh_CN";
+
+    public String language;
+
+    public AbstractExcelDisposer() {
+    }
+
+    public AbstractExcelDisposer(String language) {
+        this.language = StringUtils.isBlank(language) ?AbstractExcelDisposer.DEFAULT_LANGUAGE: language;
+    }
 
     /**
      *  初始化ExcelSheetBean，映射model类和excel
@@ -62,9 +77,15 @@ public abstract class AbstractExcelDisposer {
             if (field.isAnnotationPresent(ExcelColumn.class)) {
                 ExcelColumn columnAnnotation = field.getAnnotation(ExcelColumn.class);
 
+                if (columnAnnotation.args().length > 0) {
+                    columnBean.args=columnAnnotation.args();
+                }
+
                 if (columnAnnotation.columnName().length() > 0) {
                     columnBean.columnName = columnAnnotation.columnName();
                 }
+
+                columnBean.columnName = String.format(Util.translateMessage(language, columnBean.columnName, LANGUAGE_TYPE_EXCEL), columnBean.args);
 
                 if (columnAnnotation.columnIndex() != -1) {
                     columnBean.columnIndex = columnAnnotation.columnIndex();
