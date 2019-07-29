@@ -136,6 +136,8 @@ public class BargainRecordService extends ShopBaseService {
 		select = this.buildOptions(select, param);
 		select.where(BARGAIN_RECORD.BARGAIN_ID.eq(param.getBargainId())).and(BARGAIN_RECORD.DEL_FLAG.eq(DelFlag.NORMAL.getCode()));
 		List<BargainRecordExportVo> bargainRecordList =  select.fetchInto(BargainRecordExportVo.class);
+		
+		/**循环处理状态和待砍金额列*/
 		for(BargainRecordExportVo vo : bargainRecordList) {
 			switch(vo.getStatus()) {
 				case 0:

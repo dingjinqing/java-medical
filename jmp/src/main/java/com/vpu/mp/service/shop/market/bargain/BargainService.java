@@ -15,6 +15,8 @@ import com.vpu.mp.service.foundation.data.DelFlag;
 import com.vpu.mp.service.foundation.service.ShopBaseService;
 import com.vpu.mp.service.foundation.util.PageResult;
 import com.vpu.mp.service.foundation.util.Util;
+import com.vpu.mp.service.pojo.shop.goods.GoodsView;
+import com.vpu.mp.service.pojo.shop.market.bargain.Bargain;
 import com.vpu.mp.service.pojo.shop.market.bargain.BargainAddParam;
 import com.vpu.mp.service.pojo.shop.market.bargain.BargainPageListQueryParam;
 import com.vpu.mp.service.pojo.shop.market.bargain.BargainPageListQueryVo;
@@ -115,6 +117,25 @@ public class BargainService extends ShopBaseService  {
 	public boolean updateBargain(BargainUpdateParam param) {
 		BargainRecord record = new BargainRecord();
 		assign(param,record);
+		if(param.getShareConfig() != null) {
+			record.setShareConfig(Util.toJson(param.getShareConfig()));
+		}
 		return db().executeUpdate(record) > 0 ? true : false;
+	}
+	
+	/**
+	 * 取单个砍价活动信息
+	 * @param param
+	 * @return
+	 */
+	public Bargain getBargainByIsd(Integer bargainId) {
+		Bargain bargain = db().select(BARGAIN.fields()).from(BARGAIN).where(BARGAIN.ID.eq(bargainId)).fetchOne().into(Bargain.class);
+		if(bargain != null) {
+			GoodsView goods = db().select(GOODS.GOODS_ID,GOODS.GOODS_NAME,GOODS.GOODS_IMG,GOODS.GOODS_NUMBER,GOODS.SHOP_PRICE).from(GOODS).where(GOODS.GOODS_ID.eq(bargain.getGoodsId())).fetchOne().into(GoodsView.class	);
+			bargain.setGoods(goods);
+			return bargain;
+		}else {
+			return null;
+		}
 	}
 }

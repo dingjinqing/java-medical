@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.vpu.mp.service.foundation.data.JsonResult;
 import com.vpu.mp.service.foundation.util.PageResult;
+import com.vpu.mp.service.pojo.shop.market.bargain.Bargain;
 import com.vpu.mp.service.pojo.shop.market.bargain.BargainAddParam;
 import com.vpu.mp.service.pojo.shop.market.bargain.BargainPageListQueryParam;
 import com.vpu.mp.service.pojo.shop.market.bargain.BargainPageListQueryVo;
@@ -65,6 +66,20 @@ public class AdminBargainController extends AdminBaseController {
 	public JsonResult updateBargain(@RequestBody @Valid BargainUpdateParam param) {
 		if(shop().bargain.updateBargain(param)) {
 			return success();
+		}else {
+			return fail();
+		}
+	}
+	
+	/**
+	 *取单个砍价活动信息
+	 * @return
+	 */
+	@PostMapping(value = "/api/admin/market/bargain/get")
+	public JsonResult getBargainByIsd(@RequestBody @Valid Bargain param) {
+		Bargain bargain = shop().bargain.getBargainByIsd(param.getId());
+		if(bargain != null) {
+			return success(bargain);
 		}else {
 			return fail();
 		}
