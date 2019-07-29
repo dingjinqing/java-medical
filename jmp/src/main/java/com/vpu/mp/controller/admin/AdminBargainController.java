@@ -111,9 +111,9 @@ public class AdminBargainController extends AdminBaseController {
 	 */
 	@PostMapping(value = "/api/admin/market/bargain/record/list/export")
 	public void exportBargainRecordList(@RequestBody @Valid BargainRecordPageListQueryParam param, HttpServletResponse response) throws IOException {
-		Workbook workbook=shop().bargain.bargainRecord.exportBargainRecordList(param);
+		Workbook workbook =shop().bargain.bargainRecord.exportBargainRecordList(param,getLang());
 		response.setContentType("application/vnd.ms-excel;charset=UTF-8");
-	    response.setHeader("Content-Disposition", "attachment;filename="+ new String("fileName" + ".xlsx"));
+	    response.setHeader("Content-Disposition", "attachment;filename=xxx.xls");
 		workbook.write(response.getOutputStream());
 	}
 	

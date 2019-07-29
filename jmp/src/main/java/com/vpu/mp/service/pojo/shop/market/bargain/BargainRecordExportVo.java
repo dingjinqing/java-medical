@@ -4,7 +4,7 @@ import java.math.BigDecimal;
 import java.sql.Timestamp;
 
 import com.vpu.mp.service.foundation.excel.annotation.ExcelColumn;
-import com.vpu.mp.service.foundation.excel.annotation.ExcelColumnNotNull;
+import com.vpu.mp.service.foundation.excel.annotation.ExcelIgnore;
 import com.vpu.mp.service.foundation.excel.annotation.ExcelSheet;
 
 import lombok.Data;
@@ -21,51 +21,69 @@ public class BargainRecordExportVo {
 	/**
 	 * 主键 
 	 */
-	@ExcelColumn(columnName = "id")
-    @ExcelColumnNotNull
+	@ExcelColumn(columnName = "bargain.record.list.id",columnIndex = 0)
 	private int id;
 	
-	@ExcelColumn(columnName = "goods_name")
-    @ExcelColumnNotNull
+	@ExcelColumn(columnName = "bargain.record.list.goods_name",columnIndex = 1)
 	private String goodsName;
 	
-	@ExcelColumn(columnName = "username")
-    @ExcelColumnNotNull
+	@ExcelColumn(columnName = "bargain.record.list.username",columnIndex = 2)
 	private String username;
 	
-	@ExcelColumn(columnName = "mobile")
-    @ExcelColumnNotNull
+	@ExcelColumn(columnName = "bargain.record.list.mobile",columnIndex = 3)
 	private String mobile;
 	
-	@ExcelColumn(columnName = "create_time")
-    @ExcelColumnNotNull
+	@ExcelColumn(columnName = "bargain.record.list.create_time",columnIndex = 4)
 	private Timestamp createTime;
 	
 	/**
 	 * 已砍金额 
 	 */
-	@ExcelColumn(columnName = "bargain_money")
-    @ExcelColumnNotNull
+	@ExcelColumn(columnName = "bargain.record.list.bargain_money",columnIndex = 5)
 	private BigDecimal bargainMoney;
 	
 	/**
 	 * 待砍金额 
 	 */
-	@ExcelColumn(columnName = "surplus_money")
-    @ExcelColumnNotNull
+	@ExcelColumn(columnName = "bargain.record.list.surplus_money",columnIndex = 6)
 	private BigDecimal surplusMoney;
 	
 	/**
 	 * 参与砍价人数 
 	 */
-	@ExcelColumn(columnName = "user_name")
-    @ExcelColumnNotNull
+	@ExcelColumn(columnName = "bargain.record.list.user_number",columnIndex = 7)
 	private int userNumber;
 	
 	/**
 	 *  状态 0砍价中，1成功，2失败
 	 */
-	@ExcelColumn(columnName = "status")
-    @ExcelColumnNotNull
+	@ExcelColumn(columnName = "bargain.record.list.status",columnIndex = 8)
+	private String statusName;
+	
+	/**
+	 *  状态 0砍价中，1成功，2失败
+	 */
+	@ExcelIgnore
 	private byte status;
+	
+	/**
+	 * 砍价类型0定人1任意价
+	 */
+	@ExcelIgnore
+	private byte bargainType;
+	
+	/**
+	 *  任意低价
+	 */
+	@ExcelIgnore
+	private BigDecimal floorPrice;
+	
+	@ExcelIgnore
+	private BigDecimal goodsPrice;
+	
+	/**
+	 * 固定人数模式， 预期砍价最低金额
+	 */
+	@ExcelIgnore
+	private BigDecimal expectationPrice;
 }

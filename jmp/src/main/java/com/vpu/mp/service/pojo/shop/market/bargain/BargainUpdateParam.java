@@ -3,6 +3,8 @@ package com.vpu.mp.service.pojo.shop.market.bargain;
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotNull;
 
+import com.vpu.mp.service.pojo.shop.config.ShopShareConfig;
+
 import lombok.Data;
 
 /**
@@ -27,5 +29,5 @@ public class BargainUpdateParam {
 	
 	private String bargainName;
 	
-	private String shareConfig;
+	private ShopShareConfig shareConfig;
 }

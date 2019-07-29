@@ -20,6 +20,7 @@ import com.vpu.mp.service.foundation.excel.ExcelTypeEnum;
 import com.vpu.mp.service.foundation.excel.ExcelWriter;
 import com.vpu.mp.service.foundation.service.ShopBaseService;
 import com.vpu.mp.service.foundation.util.PageResult;
+import com.vpu.mp.service.foundation.util.Util;
 import com.vpu.mp.service.pojo.shop.market.bargain.BargainRecordExportVo;
 import com.vpu.mp.service.pojo.shop.market.bargain.BargainRecordPageListQueryParam;
 import com.vpu.mp.service.pojo.shop.market.bargain.BargainRecordPageListQueryVo;
@@ -46,6 +47,8 @@ public class BargainRecordService extends ShopBaseService {
 	 *  状态：砍价失败 
 	 */
 	public static final byte STATUS_FAILED = 2;
+	
+	private static final String LANGUAGE_TYPE_EXCEL= "excel";
 
 	/**
 	 * 根据状态取发起砍价的数量
@@ -121,11 +124,10 @@ public class BargainRecordService extends ShopBaseService {
 		return BigDecimal.ZERO;
 	}
 	
-	public Workbook exportBargainRecordList(BargainRecordPageListQueryParam param) throws IOException {
-		
+	public Workbook exportBargainRecordList(BargainRecordPageListQueryParam param, String lang) throws IOException {
 		SelectWhereStep<? extends Record> select = db().select(
 				BARGAIN_RECORD.ID,GOODS.GOODS_NAME,BARGAIN_RECORD.GOODS_PRICE,USER.USERNAME,USER.MOBILE,BARGAIN_RECORD.CREATE_TIME,BARGAIN_RECORD.BARGAIN_MONEY,
-				BARGAIN_RECORD.USER_NUMBER,BARGAIN_RECORD.STATUS ,BARGAIN.EXPECTATION_PRICE,BARGAIN.BARGAIN_TYPE,BARGAIN.FLOOR_PRICE			
+				BARGAIN_RECORD.USER_NUMBER,BARGAIN_RECORD.STATUS,BARGAIN.EXPECTATION_PRICE,BARGAIN.BARGAIN_TYPE,BARGAIN.FLOOR_PRICE			
 				).
 				from(BARGAIN_RECORD).
 				leftJoin(GOODS).on(BARGAIN_RECORD.GOODS_ID.eq(GOODS.GOODS_ID)).
@@ -134,11 +136,29 @@ public class BargainRecordService extends ShopBaseService {
 		select = this.buildOptions(select, param);
 		select.where(BARGAIN_RECORD.BARGAIN_ID.eq(param.getBargainId())).and(BARGAIN_RECORD.DEL_FLAG.eq(DelFlag.NORMAL.getCode()));
 		List<BargainRecordExportVo> bargainRecordList =  select.fetchInto(BargainRecordExportVo.class);
-
-        Workbook workbook=ExcelFactory.createWorkbook(ExcelTypeEnum.XLSX);
-        ExcelWriter excelWriter = new ExcelWriter(workbook);
+		for(BargainRecordExportVo vo : bargainRecordList) {
+			switch(vo.getStatus()) {
+				case 0:
+					vo.setStatusName(Util.translateMessage(lang, "status.in_process",LANGUAGE_TYPE_EXCEL));
+					break;
+				case 1:
+					vo.setStatusName(Util.translateMessage(lang, "status.success",LANGUAGE_TYPE_EXCEL));
+					break;
+				case 2:
+					vo.setStatusName(Util.translateMessage(lang, "status.fail",LANGUAGE_TYPE_EXCEL));
+					break;
+				default:
+			}
+			if(vo.getBargainType() == BargainService.BARGAIN_TYPE_FIXED) {
+				vo.setSurplusMoney(vo.getGoodsPrice().subtract(vo.getExpectationPrice()).subtract(vo.getBargainMoney()));
+			}else if(vo.getBargainType() == BargainService.BARGAIN_TYPE_RANDOM) {
+				vo.setSurplusMoney(vo.getGoodsPrice().subtract(vo.getFloorPrice()).subtract(vo.getBargainMoney()));
+			}
+		}
+		
+		Workbook workbook=ExcelFactory.createWorkbook(ExcelTypeEnum.XLSX);
+        ExcelWriter excelWriter = new ExcelWriter(lang,workbook);
         excelWriter.writeModelList(bargainRecordList,BargainRecordExportVo.class);
-
         return workbook;
 	}
 }
