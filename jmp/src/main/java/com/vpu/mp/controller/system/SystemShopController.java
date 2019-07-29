@@ -1,5 +1,7 @@
 package com.vpu.mp.controller.system;
 
+import java.sql.Timestamp;
+
 import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -10,13 +12,16 @@ import com.vpu.mp.db.main.tables.records.ShopAccountRecord;
 import com.vpu.mp.db.main.tables.records.ShopRecord;
 import com.vpu.mp.service.foundation.data.JsonResult;
 import com.vpu.mp.service.foundation.data.JsonResultCode;
+import com.vpu.mp.service.foundation.util.PageResult;
 import com.vpu.mp.service.pojo.saas.shop.ShopListQueryParam;
 import com.vpu.mp.service.pojo.saas.shop.VersionEditParam;
 import com.vpu.mp.service.pojo.saas.shop.VersionListQueryParam;
 import com.vpu.mp.service.pojo.saas.shop.VersionShowParam;
 import com.vpu.mp.service.pojo.saas.shop.version.VersionConfig;
 import com.vpu.mp.service.pojo.shop.auth.ShopMobileReq;
+import com.vpu.mp.service.pojo.shop.auth.ShopRenewListParam;
 import com.vpu.mp.service.pojo.shop.auth.ShopRenewReq;
+import com.vpu.mp.service.pojo.shop.auth.ShopRenewVo;
 import com.vpu.mp.service.pojo.shop.auth.ShopReq;
 
 /**
@@ -73,11 +78,49 @@ public class SystemShopController extends SystemBaseController {
 	 */
 	@PostMapping("/system/shop/renew")
 	public JsonResult shopRenew(@RequestBody ShopRenewReq sReq) {
+		ShopRecord checkShop = saas.shop.checkShop(sReq.getShopId(), sReq.getSysId());
+		if(checkShop==null) {
+			//店铺id或sysid错误
+			return fail(JsonResultCode.CODE_FAIL);
+		}
 		int num = saas.shop.renew.insertShopRenew(sReq, sysAuth.user());
 		if (num < 1) {
 			return fail(JsonResultCode.CODE_FAIL);
 		}
 		return success(JsonResultCode.CODE_SUCCESS);
+	}
+	
+	/**
+	 * 续费前查询上次续费到期时间
+	 * @param sReq
+	 * @return
+	 */
+	@PostMapping("/system/shop/renew/query")
+	public JsonResult shopRenewQuery(@RequestBody ShopRenewReq sReq) {
+		ShopRecord checkShop = saas.shop.checkShop(sReq.getShopId(), sReq.getSysId());
+		if(checkShop==null) {
+			//店铺id或sysid错误
+			return fail(JsonResultCode.CODE_FAIL);
+		}
+		Timestamp shopRenewExpireTime = saas.shop.renew.getShopRenewExpireTime(sReq.getShopId());
+		return success(shopRenewExpireTime);
+	}
+	
+	
+	/**
+	 * 续费列表
+	 * @param sReq
+	 * @return
+	 */
+	@PostMapping("/system/shop/renew/queryList")
+	public JsonResult shopRenewQueryList(@RequestBody ShopRenewListParam sReq) {
+		ShopRecord checkShop = saas.shop.checkShop(sReq.getShopId(), sReq.getSysId());
+		if(checkShop==null) {
+			//店铺id或sysid错误
+			return fail(JsonResultCode.CODE_FAIL);
+		}
+		PageResult<ShopRenewVo> shopRenewVoResult = saas.shop.renew.getShopRenewList(sReq);
+		return success(shopRenewVoResult);
 	}
 
 	@PostMapping(value = "/system/shop/list")
