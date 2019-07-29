@@ -49,6 +49,11 @@ public class BargainAddParam {
 	private int expectationNumber;
 	
 	/**
+	 *  指定金额结算模式的砍价底价
+	 */
+	private BigDecimal expectationPrice;
+	
+	/**
 	 * 商品首次砍价可砍价比例区间 百分比
 	 */
 	private double bargainMin;
@@ -97,7 +102,7 @@ public class BargainAddParam {
 	private BigDecimal bargainMinMoney;
 	
 	/**
-	 * 任意金额结算模式的，单次帮砍金额模式的固定金额模式的，随机金额数值上限
+	 * 任意金额结算模式的，单次帮砍金额模式的随机金额模式的，随机金额数值上限
 	 */
 	private BigDecimal bargainMaxMoney;
 }

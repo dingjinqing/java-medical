@@ -20,13 +20,9 @@ public class Bargain {
     private Double     bargainMin;
     private Double     bargainMax;
     private Integer    stock;
-    private Integer    saleNum;
     private String     mrkingVoucherId;
     private Byte       status;
-    private Byte       delFlag;
     private Timestamp  createTime;
-    private Timestamp  updateTime;
-    private Timestamp  delTime;
     private String     rewardCouponId;
     private String     shareConfig;
     private Byte       bargainType;
