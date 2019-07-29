@@ -43,7 +43,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class ShopRenew extends TableImpl<ShopRenewRecord> {
 
-    private static final long serialVersionUID = 1465675114;
+    private static final long serialVersionUID = -1636508035;
 
     /**
      * The reference instance of <code>mini_main.b2c_shop_renew</code>
@@ -102,6 +102,26 @@ public class ShopRenew extends TableImpl<ShopRenewRecord> {
      * The column <code>mini_main.b2c_shop_renew.renew_desc</code>. 说明
      */
     public final TableField<ShopRenewRecord, String> RENEW_DESC = createField("renew_desc", org.jooq.impl.SQLDataType.VARCHAR(255).defaultValue(org.jooq.impl.DSL.inline("", org.jooq.impl.SQLDataType.VARCHAR)), this, "说明");
+
+    /**
+     * The column <code>mini_main.b2c_shop_renew.renew_type</code>. 续费类型：1续费，2试用，3赠送，4退款
+     */
+    public final TableField<ShopRenewRecord, Byte> RENEW_TYPE = createField("renew_type", org.jooq.impl.SQLDataType.TINYINT.nullable(false).defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.TINYINT)), this, "续费类型：1续费，2试用，3赠送，4退款");
+
+    /**
+     * The column <code>mini_main.b2c_shop_renew.renew_duration</code>. 时长：字符串逗号隔开
+     */
+    public final TableField<ShopRenewRecord, String> RENEW_DURATION = createField("renew_duration", org.jooq.impl.SQLDataType.VARCHAR(32).nullable(false).defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.VARCHAR)), this, "时长：字符串逗号隔开");
+
+    /**
+     * The column <code>mini_main.b2c_shop_renew.send_type</code>. 赠送类型：0无，1时间，2功能
+     */
+    public final TableField<ShopRenewRecord, Byte> SEND_TYPE = createField("send_type", org.jooq.impl.SQLDataType.TINYINT.nullable(false).defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.TINYINT)), this, "赠送类型：0无，1时间，2功能");
+
+    /**
+     * The column <code>mini_main.b2c_shop_renew.send_content</code>. 赠送内容：字符串逗号隔开
+     */
+    public final TableField<ShopRenewRecord, String> SEND_CONTENT = createField("send_content", org.jooq.impl.SQLDataType.VARCHAR(32).nullable(false).defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.VARCHAR)), this, "赠送内容：字符串逗号隔开");
 
     /**
      * Create a <code>mini_main.b2c_shop_renew</code> table reference
