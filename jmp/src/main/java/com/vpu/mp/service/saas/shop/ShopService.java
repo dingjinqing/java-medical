@@ -20,6 +20,8 @@ import org.jooq.Result;
 import org.jooq.SelectWhereStep;
 import org.jooq.impl.DSL;
 import org.jooq.tools.StringUtils;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
 import com.vpu.mp.db.main.tables.records.ShopOperationRecord;
 import com.vpu.mp.db.main.tables.records.ShopRecord;
@@ -31,6 +33,7 @@ import com.vpu.mp.service.foundation.util.FieldsUtil;
 import com.vpu.mp.service.foundation.util.PageResult;
 import com.vpu.mp.service.foundation.util.Util;
 import com.vpu.mp.service.pojo.saas.auth.SystemTokenAuthInfo;
+import com.vpu.mp.service.pojo.saas.shop.ShopConst;
 import com.vpu.mp.service.pojo.saas.shop.ShopListQueryParam;
 import com.vpu.mp.service.pojo.saas.shop.ShopListQueryResultVo;
 import com.vpu.mp.service.pojo.saas.shop.ShopPojo;
@@ -39,10 +42,6 @@ import com.vpu.mp.service.pojo.saas.shop.version.VersionMainConfig;
 import com.vpu.mp.service.pojo.shop.auth.AdminTokenAuthInfo;
 import com.vpu.mp.service.pojo.shop.auth.ShopReq;
 import com.vpu.mp.service.pojo.shop.auth.ShopSelectInnerResp;
-
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Scope;
-import org.springframework.stereotype.Service;
 
 /**
  * 
@@ -119,6 +118,19 @@ public class ShopService extends MainBaseService {
 
 		if (!StringUtils.isEmpty(param.shopType)) {
 			select.where(SHOP.SHOP_TYPE.eq(param.shopType));
+		}
+
+		if (StringUtils.isEmpty(param.shopType) && !StringUtils.isEmpty(param.shopTypes)) {
+			// 区分体验版和付费版
+			if (param.shopTypes.equals(ShopConst.shopTypes.TRIAL_VERSION)) {
+				// 体验版
+				select.where(SHOP.SHOP_TYPE.eq(ShopConst.shopType.v1));
+			}
+			if (param.shopTypes.equals(ShopConst.shopTypes.PAID_VERSION)) {
+				// 付费版
+				select.where(SHOP.SHOP_TYPE.in(ShopConst.shopType.v2, ShopConst.shopType.v3, ShopConst.shopType.v4));
+			}
+
 		}
 		if (param.shopFlag != null) {
 			if (param.shopFlag == 0) {
@@ -405,6 +417,9 @@ public class ShopService extends MainBaseService {
 		}
 		return sbf.toString();
 
+	}
+	public ShopRecord checkShop(Integer shopId,Integer sysId) {
+		 return db().selectFrom(SHOP).where(SHOP.SHOP_ID.eq(shopId).and(SHOP.SYS_ID.eq(sysId))).fetchOne();
 	}
 
 }
