@@ -9,10 +9,13 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.vpu.mp.service.foundation.data.JsonResult;
+import com.vpu.mp.service.foundation.data.JsonResultCode;
 import com.vpu.mp.service.foundation.util.PageResult;
 import com.vpu.mp.service.pojo.shop.config.distribution.DistributionParam;
 import com.vpu.mp.service.pojo.shop.distribution.DistributionStrategyParam;
 import com.vpu.mp.service.pojo.shop.distribution.DistributionStrategyVo;
+import com.vpu.mp.service.pojo.shop.distribution.DistributorGroupListParam;
+import com.vpu.mp.service.pojo.shop.distribution.DistributorGroupListVo;
 
 /**
  * 分销模块
@@ -121,8 +124,87 @@ public class AdminDistributionController extends AdminBaseController{
 		}
 	}
 	
-//	public JsonResult distrobutorGroupList(DistributorGroupListParam param) {
-//		list = shop().distributorGroup.getDistributorGroupList(param);
-//		return this.success(list);
-//	}
+	/**
+	 * 分销员分组列表
+	 * @param param
+	 */
+	@PostMapping("/admin/distribution/group/list")
+	public JsonResult distributorGroupList(@RequestBody DistributorGroupListParam param) {
+		PageResult<DistributorGroupListVo> groupList = shop().distributorGroup.getDistributorGroupList(param);
+		return this.success(groupList);
+	}
+	
+	/**
+	 * 添加分销员分组
+	 * @param param
+	 * @return
+	 */
+	@PostMapping("/admin/distribution/group/add")
+	public JsonResult distributorGroupAdd(DistributorGroupListParam param) {
+		//判断是否存在该分组
+		boolean isExists = shop().distributorGroup.isExistGroup(param);
+		if(isExists) {
+			return this.fail(JsonResultCode.DISTRIBUTOR_GROUP_NAME_EXIST);
+		}
+		
+		boolean result = shop().distributorGroup.adddistributorGroup(param);
+		if(result) {
+			return this.success(result);
+		}else {
+			return this.fail();
+		}
+	}
+	
+	
+	/**
+	 * 设置默认分组
+	 * @param id
+	 * @return
+	 */
+	@GetMapping("/admin/distribution/group/default")
+	public JsonResult setDefaultGroup(Integer id) {
+		boolean result = shop().distributorGroup.setDefault(id);
+		if(result) {
+			return this.success(result);
+		}else {
+			return this.fail();
+		}
+	}
+	
+	/**
+	 * 取消默认分组
+	 * @param id
+	 * @return
+	 */
+	@GetMapping("/admin/distribution/group/cancle")
+	public JsonResult cancleDefaultGroup(Integer id) {
+		boolean result = shop().distributorGroup.cancleDefault(id);
+		return this.success(result);
+	}
+	
+	/**
+	 * 编辑分组，获取单条信息
+	 * @param id
+	 * @return
+	 */
+	@GetMapping("/admin/distribution/group/edit")
+	public JsonResult distributorGroupEdit(Integer id) {
+		List<DistributorGroupListVo> info = shop().distributorGroup.getOneInfo(id);
+		return this.success(info);
+	}
+	
+	/**
+	 * 删除分组
+	 * @param id
+	 * @return
+	 */
+	@GetMapping("/admin/distribution/group/del")
+	public JsonResult distributorGroupDel(Integer id) {
+		boolean result = shop().distributorGroup.delGroup(id);
+		if(result) {
+			return this.success(result);
+		}else {
+			return this.fail();
+		}
+	}
 }

@@ -15,6 +15,7 @@ public class DistributorGroupListVo {
 	public String groupName;
 	public Integer isDefault;
 	public Integer delFlag;
+	public Integer distributorAmount;
 	
 	 /**
      * 	分页信息
