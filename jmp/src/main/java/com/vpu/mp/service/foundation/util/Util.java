@@ -399,6 +399,9 @@ public class Util {
 	public static Timestamp getEarlyTimeStamp(Date date,int days){
 		return new Timestamp(getEarlyDate(date,days).getTime());
 	}
+	public static java.sql.Date getEarlySqlDate(Date date,int days){
+		return new java.sql.Date(getEarlyDate(date,days).getTime());
+	}
 	public static Date getEarlyDate(Date date,int days){
 		date = getStartToday(date);
 		Calendar calendar = new GregorianCalendar();

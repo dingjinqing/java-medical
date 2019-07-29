@@ -2,20 +2,25 @@ package com.vpu.mp.service.shop.overview;
 
 import com.vpu.mp.db.shop.tables.OrderInfo;
 import com.vpu.mp.db.shop.tables.Trades;
+import com.vpu.mp.db.shop.tables.UserSummaryTrend;
 import com.vpu.mp.service.foundation.service.ShopBaseService;
 import com.vpu.mp.service.foundation.util.Util;
-import com.vpu.mp.service.pojo.shop.overview.realtime.RealTimeVo;
 import com.vpu.mp.service.pojo.shop.overview.Tuple2;
+import com.vpu.mp.service.pojo.shop.overview.realtime.CoreIndicatorParam;
+import com.vpu.mp.service.pojo.shop.overview.realtime.CoreIndicatorVo;
+import com.vpu.mp.service.pojo.shop.overview.realtime.LineChartVo;
+import com.vpu.mp.service.pojo.shop.overview.realtime.RealTimeVo;
+import org.jooq.Condition;
+import org.jooq.SelectConditionStep;
 import org.jooq.impl.DSL;
-import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
+import java.math.BigDecimal;
+import java.util.*;
 
 import static com.vpu.mp.db.shop.tables.UserLoginRecord.USER_LOGIN_RECORD;
 import static com.vpu.mp.db.shop.tables.UserSummaryTrend.USER_SUMMARY_TREND;
+import static org.jooq.impl.DSL.cast;
 
 /**
  * @Author:liufei
@@ -110,9 +115,54 @@ public class RealTimeOverviewService extends ShopBaseService {
 
     /**
      * 核心指标
-     * TODO 页面展示不合理，待定
      */
-    public void coreIndicator(){
+    public CoreIndicatorVo coreIndicator(CoreIndicatorParam param){
+        UserSummaryTrend us = UserSummaryTrend.USER_SUMMARY_TREND.as("us");
 
+        Condition one = us.REF_DATE.eq(Util.getEarlySqlDate(new Date(),-1)).and(us.TYPE.eq(param.getScreeningTime()));
+        Condition preOne = us.REF_DATE.eq(Util.getEarlySqlDate(new Date(),-(param.getScreeningTime()+1))).and(us.TYPE.eq(param.getScreeningTime()));
+
+        Optional<CoreIndicatorVo> optional = getConditonSelect(param).and(one).fetchOptionalInto(CoreIndicatorVo.class);
+        CoreIndicatorVo indicatorVo = optional.isPresent() ? optional.get() : new CoreIndicatorVo();
+        Optional<LineChartVo> optionalTemp = getConditonSelect(param).and(preOne).fetchOptionalInto(LineChartVo.class);
+        LineChartVo temp = optionalTemp.isPresent() ? optionalTemp.get() : new LineChartVo();
+        //计算较上一周期的增长率
+        indicatorVo.setPvIncr(div(temp.getPv(),indicatorVo.getPv()-temp.getPv()));
+        indicatorVo.setUvIncr(div(temp.getUv(),indicatorVo.getUv()-temp.getUv()));
+        indicatorVo.setPayOrderNumIncr(div(temp.getPayOrderNum(),indicatorVo.getPayOrderNum()-temp.getPayOrderNum()));
+        indicatorVo.setPayUserNumIncr(div(temp.getPayUserNum(),indicatorVo.getPayUserNum()-temp.getPayUserNum()));
+        indicatorVo.setTotalPaidMoneyIncr(div(temp.getTotalPaidMoney(),indicatorVo.getTotalPaidMoney()-temp.getTotalPaidMoney()));
+        indicatorVo.setUv2PaidIncr(div(temp.getUv2Paid(),indicatorVo.getUv2Paid()-temp.getUv2Paid()));
+        indicatorVo.setPctIncr(div(temp.getPct(),indicatorVo.getPct()-temp.getPct()));
+        //获取折线图数据
+        indicatorVo.setLineChartVos(getConditonSelect(param).and(us.REF_DATE.lessThan(Util.getEarlySqlDate(new Date(),0)))
+                .and(us.REF_DATE.greaterOrEqual(Util.getEarlySqlDate(new Date(),-param.getScreeningTime())))
+                .and(us.TYPE.eq((byte)1)).fetchInto(LineChartVo.class));
+        return indicatorVo;
+    }
+    public SelectConditionStep getConditonSelect(CoreIndicatorParam param){
+        UserSummaryTrend us = UserSummaryTrend.USER_SUMMARY_TREND.as("us");
+        //select cast(order_user_data/login_data as decimal(4,2)) as uv_pay_ratio from b2c_user_summary_trend limit 10
+        SelectConditionStep conditionStep = db().select(us.REF_DATE.as("date")
+                ,us.LOGIN_DATA.as("uv")
+                ,us.LOGIN_PV.as("pv")
+                ,us.ORDER_USER_DATA.as("payUserNum")
+                ,us.TOTAL_PAID_MONEY.as("totalPaidMoney")
+                ,us.PAY_ORDER_NUM.as("payOrderNum")
+                ,cast(us.ORDER_USER_DATA.div(us.LOGIN_DATA),Double.class).as("uv2Paid")
+                ,cast(us.TOTAL_PAID_MONEY.div(us.ORDER_USER_DATA),Double.class).as("pct"))
+                .from(us)
+                .where(true);
+        return conditionStep;
+    }
+    public double div(Object divisor,Object divided){
+        if(Objects.isNull(divisor)||Objects.isNull(divided)){
+            return 0.0;
+        }
+        if(Double.valueOf(divisor.toString())==0.0||Double.valueOf(divided.toString())==0.0){
+            return 0.0;
+        }
+        double result = Double.valueOf(divided.toString())/Double.valueOf(divisor.toString());
+        return new BigDecimal(result).setScale(2,BigDecimal.ROUND_UP).doubleValue();
     }
 }
