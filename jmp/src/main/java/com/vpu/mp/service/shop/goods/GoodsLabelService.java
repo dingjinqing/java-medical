@@ -2,6 +2,7 @@ package com.vpu.mp.service.shop.goods;
 
 
 import com.vpu.mp.db.shop.tables.records.GoodsLabelRecord;
+import com.vpu.mp.service.foundation.data.DelFlag;
 import com.vpu.mp.service.foundation.service.ShopBaseService;
 import com.vpu.mp.service.foundation.util.PageResult;
 import com.vpu.mp.service.pojo.shop.goods.GoodsView;
@@ -318,5 +319,13 @@ public class GoodsLabelService extends ShopBaseService {
                 .fetch()
                 .intoGroups(GOODS_LABEL_COUPLE.GTA_ID,GoodsLabelListVo.class);
     }
-	
+
+    public List<GoodsLabel> listGoodsLabelName(){
+	    return db().select(GOODS_LABEL.ID,GOODS_LABEL.NAME)
+                .from(GOODS_LABEL)
+                .where(GOODS_LABEL.DEL_FLAG.eq((int) DelFlag.NORMAL.getCode()))
+                .fetch().into(GoodsLabel.class);
+
+    }
+
 }

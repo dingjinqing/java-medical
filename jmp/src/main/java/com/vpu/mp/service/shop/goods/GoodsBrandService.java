@@ -172,7 +172,7 @@ public class GoodsBrandService extends ShopBaseService {
         List<Integer> goodsIds = db().select(GOODS.GOODS_ID).from(GOODS).where(GOODS.BRAND_ID.eq(goodsBrand.getId()))
                 .fetch().into(Integer.class);
 
-        goodsBrand.setGoodsIds(goodsIds);
+        gb.setGoodsIds(goodsIds);
 
         return gb;
     }

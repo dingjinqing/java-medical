@@ -10,9 +10,11 @@ import com.vpu.mp.service.pojo.shop.goods.*;
 import com.vpu.mp.service.pojo.shop.goods.label.GoodsLabelCouple;
 import com.vpu.mp.service.pojo.shop.goods.label.GoodsLabelCoupleTypeEnum;
 import com.vpu.mp.service.pojo.shop.goods.label.GoodsLabelListVo;
+import com.vpu.mp.service.pojo.shop.goods.sort.GoodsSortListParam;
 import com.vpu.mp.service.pojo.shop.goods.spec.GoodsSpec;
 import com.vpu.mp.service.pojo.shop.goods.spec.GoodsSpecProduct;
 import com.vpu.mp.service.pojo.shop.goods.spec.GoodsSpecVal;
+import com.vpu.mp.service.shop.decoration.ChooseLinkService;
 import org.jooq.*;
 import org.jooq.impl.DSL;
 import org.jooq.tools.StringUtils;
@@ -45,9 +47,24 @@ public class GoodsService extends ShopBaseService {
     @Autowired public GoodsLabelService goodsLabel;
     @Autowired public GoodsLabelCoupleService goodsLabelCouple;
     @Autowired public GoodsDeliverTamplateService goodsDeliver;
+    @Autowired public ChooseLinkService chooseLink;
 
     @Autowired protected GoodsSpecProductService goodsSpecProductService;
 
+
+    public GoodsInitialVo pageInitValue(){
+        GoodsInitialVo goodsInitialVo = new GoodsInitialVo();
+
+        goodsInitialVo.setGoodsBrands(goodsBrand.listGoodsBrandName());
+
+        goodsInitialVo.setGoodsLabels(goodsLabel.listGoodsLabelName());
+
+        goodsInitialVo.setGoodsSorts(goodsSort.getList(new GoodsSortListParam()));
+
+        goodsInitialVo.setSysCates(chooseLink.getSysCate());
+
+        return goodsInitialVo;
+    }
     /**
      * 商品分页查询
      *

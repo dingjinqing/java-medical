@@ -3,6 +3,7 @@ package com.vpu.mp.service.pojo.shop.goods.sort;
 import lombok.Data;
 
 import java.sql.Timestamp;
+import java.util.List;
 
 /**
  * @author 李晓冰
@@ -28,4 +29,5 @@ public class Sort {
     private Short first;
     private Byte type;
     private String sortDesc;
+    private List<? extends Sort> children;
 }

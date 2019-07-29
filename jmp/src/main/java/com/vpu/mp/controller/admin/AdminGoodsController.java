@@ -28,8 +28,8 @@ public class AdminGoodsController extends AdminBaseController {
 
     @GetMapping("/api/admin/goods/page/init")
     public JsonResult getPageInitValue(){
-
-        return success();
+        GoodsInitialVo goodsInitialVo = shop().goods.pageInitValue();
+        return success(goodsInitialVo);
     }
     /**
      * 商品分页查询
