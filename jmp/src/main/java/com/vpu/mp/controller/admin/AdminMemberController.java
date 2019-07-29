@@ -46,10 +46,11 @@ public class AdminMemberController extends AdminBaseController{
 	 */
 	@PostMapping("/list")
 	public JsonResult getPageList(@RequestBody MemberPageListParam param) {
-
 		PageResult<MemberInfoVo> pageResult = this.shop().member.getPageList(param);
 		return this.success(pageResult);
 	}
+	
+	
 	
 	
 	@PostMapping("/account/add")
@@ -89,7 +90,6 @@ public class AdminMemberController extends AdminBaseController{
 		if((score+scoreDis)<0) {
 			return fail(JsonResultMessage.MSG_MEMBER_SCORE_NOT_ENOUGH);
 		}
-		
 		
 		Integer subAccountId = this.adminAuth.user().getSubAccountId();
 		
