@@ -176,7 +176,7 @@ public class ScoreService extends ShopBaseService {
 	 * @param userScoreRecord
 	 */
 	private void addUserScoreRecord(UserScoreRecord record) {
-
+		
 		db().insertInto(USER_SCORE, USER_SCORE.SCORE, USER_SCORE.USER_ID, USER_SCORE.REMARK, USER_SCORE.ADMIN_USER,
 				USER_SCORE.ORDER_SN, USER_SCORE.FLOW_NO, USER_SCORE.USABLE_SCORE)
 				.values(record.getScore(), record.getUserId(), record.getRemark(), record.getAdminUser(),
