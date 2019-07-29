@@ -13,39 +13,20 @@ import lombok.NoArgsConstructor;
  */
 @Data
 @NoArgsConstructor
-public class ShopRenewReq {
+public class ShopRenewVo {
+	private Integer id;
 	private Integer shopId;
 	private Integer sysId;
 	private String mobile;
 	private BigDecimal renewMoney;
+	private Timestamp renewDate;
 	private Timestamp expireTime;
+	private Integer operator;
+	private String operatorName;
 	private String renewDesc;
-	/**
-	 * 续费类型
-	 */
 	private Byte renewType;
-	/**
-	 * 续费时长的年
-	 */
-	private Integer year;
-	/**
-	 * 续费时长的月
-	 */
-	private Integer month;
-	/**
-	 * 赠送类型
-	 */
+	private String renewDuration;
 	private Byte sendType;
-	/**
-	 * 续费时长的年
-	 */
-	private Integer sendYear;
-	/**
-	 * 续费时长的月
-	 */
-	private Integer sendMonth;
-	
-	
-	
-
+	private String sendContent;
+	private String accountName;
 }
