@@ -29,7 +29,6 @@ import java.sql.Timestamp;
  * 2019-07-08 16:22
  */
 @Service
-
 public class MemberService extends ShopBaseService {
 
 	private static final String INVITE_USERNAME="inviteUserName";
@@ -37,6 +36,7 @@ public class MemberService extends ShopBaseService {
 
 	@Autowired public AccountService account;
 	@Autowired public ScoreService score;
+	@Autowired public MemberCardService card;
 	/**
 	 * 会员列表分页查询
 	 * @param param
