@@ -1,4 +1,4 @@
-package com.vpu.mp.controller;
+package com.vpu.mp.service.foundation.util;
 
 import java.lang.annotation.*;
 

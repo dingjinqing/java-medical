@@ -50,9 +50,7 @@ public interface ImageDefault {
 	 * @param relativePath
 	 * @return
 	 */
-	public default String imageUrl(String relativePath) {
-		return String.format("http://%s/%s", Util.getProperty("domain.image"), relativePath);
-	}
+	public  String imageUrl(String relativePath);
 
 	/**
 	 * 本地全路径
@@ -60,9 +58,7 @@ public interface ImageDefault {
 	 * @param relativePath
 	 * @return
 	 */
-	public default String fullPath(String relativePath) {
-		return String.format("%s/%s", Util.getProperty("web.storage-path"), relativePath);
-	}
+	public  String fullPath(String relativePath);
 
 	/**
 	 * 当前店铺Id
@@ -152,12 +148,7 @@ public interface ImageDefault {
 	 *
 	 * @return
 	 */
-	public default UpYun getUpYunClient() {
-		return new UpYun(Util.getProperty("uyun.image.sv"),
-				Util.getProperty("uyun.image.op.name"),
-				Util.getProperty("uyun.image.op.pwd"));
-
-	}
+	public  UpYun getUpYunClient();
 
 	/**
 	 * 上传到又拍云

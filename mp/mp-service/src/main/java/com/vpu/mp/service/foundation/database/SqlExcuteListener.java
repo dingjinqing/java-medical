@@ -21,8 +21,6 @@ import org.jooq.impl.DefaultVisitListenerProvider;
 import org.jooq.tools.JooqLogger;
 import org.jooq.tools.StringUtils;
 
-import com.vpu.mp.support.SpringUtil;
-
 /**
  * 
  * @author 新国

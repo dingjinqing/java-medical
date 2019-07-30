@@ -9,6 +9,7 @@ import java.io.IOException;
 import java.math.BigDecimal;
 import java.util.List;
 
+import org.apache.commons.lang3.StringUtils;
 import org.apache.poi.ss.usermodel.Workbook;
 import org.jooq.Record;
 import org.jooq.SelectWhereStep;
@@ -24,8 +25,6 @@ import com.vpu.mp.service.foundation.util.Util;
 import com.vpu.mp.service.pojo.shop.market.bargain.BargainRecordExportVo;
 import com.vpu.mp.service.pojo.shop.market.bargain.BargainRecordPageListQueryParam;
 import com.vpu.mp.service.pojo.shop.market.bargain.BargainRecordPageListQueryVo;
-
-import io.netty.util.internal.StringUtil;
 
 /**
  * @author 王兵兵
@@ -92,10 +91,10 @@ public class BargainRecordService extends ShopBaseService {
 		if (param == null) {
 			return select;
 		}
-		if(!StringUtil.isNullOrEmpty(param.getUsername())) {
+		if(!StringUtils.isBlank(param.getUsername())) {
 			select.where(USER.USERNAME.contains(param.getUsername()));
 		}
-		if(!StringUtil.isNullOrEmpty(param.getMobile())) {
+		if(!StringUtils.isBlank(param.getMobile())) {
 			select.where(USER.MOBILE.contains(param.getMobile()));
 		}
 		if(param.getStatus() > -1) {

@@ -12,7 +12,6 @@ import java.util.Random;
 import org.jooq.Record;
 import org.jooq.SelectWhereStep;
 import org.jooq.tools.StringUtils;
-import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Service;
 
 import com.vpu.mp.db.shop.tables.records.ServiceOrderRecord;
@@ -26,8 +25,6 @@ import com.vpu.mp.service.pojo.shop.store.service.order.ServiceOrderDetailVo;
 import com.vpu.mp.service.pojo.shop.store.service.order.ServiceOrderListQueryParam;
 import com.vpu.mp.service.pojo.shop.store.service.order.ServiceOrderListQueryVo;
 import com.vpu.mp.service.pojo.shop.store.service.order.ServiceOrderUpdateParam;
-
-import io.netty.util.internal.StringUtil;
 
 /**
  * @author 王兵兵
@@ -224,7 +221,7 @@ public class ServiceOrderService extends ShopBaseService{
 	 * @return
 	 */
 	public Boolean checkVerifyCode(String orderSn,String verifyCode) {
-		if(!StringUtil.isNullOrEmpty(orderSn) && !StringUtil.isNullOrEmpty(verifyCode)) {
+		if(!StringUtils.isBlank(orderSn) && !StringUtils.isBlank(verifyCode)) {
 			String trueCode = db().select(SERVICE_ORDER.VERIFY_CODE).from(SERVICE_ORDER).where(SERVICE_ORDER.ORDER_SN.eq(orderSn)).fetchOne().into(String.class);
 			return verifyCode.equals(trueCode);
 		}

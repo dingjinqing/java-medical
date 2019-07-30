@@ -11,7 +11,8 @@ import org.springframework.util.StringUtils;
 
 import com.vpu.mp.service.foundation.data.JsonResult;
 import com.vpu.mp.service.foundation.data.JsonResultCode;
-import com.vpu.mp.service.foundation.util.Util;
+import com.vpu.mp.service.foundation.util.I18N;
+import com.vpu.mp.service.foundation.util.VoTranslator;
 import com.vpu.mp.service.pojo.shop.summary.visit.VisitPageParam;
 import com.vpu.mp.service.saas.SaasApplication;
 
@@ -119,23 +120,6 @@ public class BaseController {
 		return inputMap(",");
 	}
 
-	/**
-	 * 主站路径URL
-	 * @param path
-	 * @return
-	 */
-	public String mainUrl(String path) {
-		return Util.mainUrl(path, request.getScheme());
-	}
-
-	/**
-	 * 图片路径URL
-	 * @param path
-	 * @return
-	 */
-	public String imageUrl(String path) {
-		return Util.imageUrl(path, request.getScheme());
-	}
 
 
 	/**

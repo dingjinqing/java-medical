@@ -18,7 +18,6 @@ import com.vpu.mp.service.foundation.util.Page;
 import com.vpu.mp.service.foundation.util.PageResult;
 import com.vpu.mp.service.saas.SaasApplication;
 import com.vpu.mp.service.wechat.OpenPlatform;
-import com.vpu.mp.support.SpringUtil;
 
 /**
  * 
@@ -32,6 +31,9 @@ abstract public class AbstractCommonBaseService {
 	
 	@Autowired
 	protected OpenPlatform open;
+	
+	@Autowired
+	protected SaasApplication saas;
 
 	/**
 	 * Shop DB连接事务配置，线程内单例
@@ -178,6 +180,6 @@ abstract public class AbstractCommonBaseService {
 		return open;
 	}
 	protected SaasApplication saas() {
-		return (SaasApplication) SpringUtil.getBean("saasApplication");
+		return saas;
 	}
 }

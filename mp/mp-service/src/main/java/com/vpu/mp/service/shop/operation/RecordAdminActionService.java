@@ -22,6 +22,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.context.request.RequestAttributes;
 import org.springframework.web.context.request.RequestContextHolder;
 
+import com.vpu.mp.config.AuthConfig;
 import com.vpu.mp.db.shop.tables.records.RecordAdminActionRecord;
 import com.vpu.mp.service.auth.AdminAuth;
 import com.vpu.mp.service.foundation.jedis.JedisManager;
@@ -33,7 +34,6 @@ import com.vpu.mp.service.pojo.shop.operation.RecordAdminActionInfo;
 import com.vpu.mp.service.pojo.shop.operation.RecordAdminActionParam;
 import com.vpu.mp.service.pojo.shop.operation.RecordAdminActionPojo;
 import com.vpu.mp.service.pojo.shop.operation.RecordContentTemplate;
-import com.vpu.mp.support.SpringUtil;
 
 /**
  * 操作记录的实现逻辑
@@ -60,6 +60,12 @@ public class RecordAdminActionService extends ShopBaseService {
     @Autowired
 	protected JedisManager jedis;
 
+    @Autowired
+	protected AdminAuth adminAuth;
+    
+    @Autowired
+   	protected AuthConfig authConfig;
+    
     /**
      *
      * @param templateIds 模版id
@@ -142,7 +148,6 @@ public class RecordAdminActionService extends ShopBaseService {
         RecordAdminActionRecord record = db().newRecord(RECORD_ADMIN_ACTION);
         List<String> resultAccount;
         if( requestAttributes != null ){
-            AdminAuth adminAuth = SpringUtil.getBean(AdminAuth.class);
             AdminTokenAuthInfo info  = adminAuth.user();
             Integer accountId = adminAuth.user().getSubAccountId();
             if ( info.isSubLogin() ){
@@ -193,7 +198,7 @@ public class RecordAdminActionService extends ShopBaseService {
 
     private List<String> getCommonNameAndMobile(Integer id,String type){
         String key = REDIS_PACKAGE+id;
-        Integer timeout = Util.getInteger(Util.getProperty(REDIS_TIMEOUT));
+        Integer timeout = authConfig.getTimeout();
         List<String> resultList = new ArrayList<String>(2);
         String result = jedis.getValueAndSave(key,timeout,()-> {
             switch (type) {

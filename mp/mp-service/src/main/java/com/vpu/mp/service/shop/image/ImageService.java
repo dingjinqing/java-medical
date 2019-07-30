@@ -20,6 +20,9 @@ import org.jooq.tools.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.UpYun;
+import com.vpu.mp.config.DomainConfig;
+import com.vpu.mp.config.UpYunConfig;
 import com.vpu.mp.db.shop.tables.records.UploadedImageRecord;
 import com.vpu.mp.service.foundation.image.ImageDefault;
 import com.vpu.mp.service.foundation.service.ShopBaseService;
@@ -37,6 +40,12 @@ import com.vpu.mp.service.pojo.shop.image.UploadPath;
 public class ImageService extends ShopBaseService implements ImageDefault {
 
     @Autowired public ImageCategoryService category;
+    
+    @Autowired
+    protected DomainConfig domainConfig;
+    
+    @Autowired
+    protected UpYunConfig upYunConfig;
 
 
     /**
@@ -265,4 +274,19 @@ public class ImageService extends ShopBaseService implements ImageDefault {
     public Integer currentShopId() {
     	return this.getShopId();
     }
+    
+    @Override
+	public String imageUrl(String relativePath) {
+		return domainConfig.imageUrl(relativePath);
+	}
+
+	@Override
+	public String fullPath(String relativePath) {
+		return domainConfig.mainUrl(relativePath);
+	}
+
+	@Override
+	public UpYun getUpYunClient() {
+		return new UpYun(upYunConfig.getServer(), upYunConfig.getName(), upYunConfig.getPassword());
+	}
 }

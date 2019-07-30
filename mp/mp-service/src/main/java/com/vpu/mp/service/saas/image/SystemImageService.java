@@ -20,10 +20,12 @@ import org.jooq.tools.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.UpYun;
+import com.vpu.mp.config.DomainConfig;
+import com.vpu.mp.config.UpYunConfig;
 import com.vpu.mp.db.main.tables.records.UploadedImageRecord;
 import com.vpu.mp.service.foundation.image.ImageDefault;
 import com.vpu.mp.service.foundation.service.MainBaseService;
-import com.vpu.mp.service.foundation.service.ShopBaseService;
 import com.vpu.mp.service.foundation.util.PageResult;
 import com.vpu.mp.service.foundation.util.Util;
 import com.vpu.mp.service.pojo.shop.image.ImageListQueryParam;
@@ -38,7 +40,29 @@ import com.vpu.mp.service.pojo.shop.image.UploadPath;
 public class SystemImageService extends MainBaseService implements ImageDefault {
 
 	@Autowired public SystemImageCategoryService category;
+	
+	@Autowired
+    protected DomainConfig domainConfig;
+    
+    @Autowired
+    protected UpYunConfig upYunConfig;
+    
 
+	@Override
+	public String imageUrl(String relativePath) {
+		return domainConfig.imageUrl(relativePath);
+	}
+
+	@Override
+	public String fullPath(String relativePath) {
+		return domainConfig.mainUrl(relativePath);
+	}
+
+	@Override
+	public UpYun getUpYunClient() {
+		return new UpYun(upYunConfig.getServer(), upYunConfig.getName(), upYunConfig.getPassword());
+	}
+	
     /**
      * 删除单张图片
      *

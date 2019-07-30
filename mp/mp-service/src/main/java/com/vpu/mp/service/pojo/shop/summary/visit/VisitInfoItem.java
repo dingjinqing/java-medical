@@ -1,6 +1,7 @@
 package com.vpu.mp.service.pojo.shop.summary.visit;
 
-import com.vpu.mp.controller.I18N;
+import com.vpu.mp.service.foundation.util.I18N;
+
 import lombok.Data;
 
 /**

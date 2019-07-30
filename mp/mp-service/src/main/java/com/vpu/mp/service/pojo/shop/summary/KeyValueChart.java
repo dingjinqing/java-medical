@@ -1,11 +1,12 @@
 package com.vpu.mp.service.pojo.shop.summary;
 
-import com.vpu.mp.controller.I18N;
+import java.util.List;
+
+import com.vpu.mp.service.foundation.util.I18N;
+
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-
-import java.util.List;
 
 /**
  * 图表数据出参（x轴为 key，y轴为 value）

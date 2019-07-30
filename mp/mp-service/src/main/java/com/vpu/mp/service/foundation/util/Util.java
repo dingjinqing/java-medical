@@ -43,7 +43,6 @@ import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.vpu.mp.MpRunListener;
 
 /**
  * 
@@ -217,9 +216,6 @@ public class Util {
 		return null;
 	}
 
-	public static String getProperty(String key) {
-		return MpRunListener.getProperty(key);
-	}
 
 	public static final <T> T convert(Object from, Class<? extends T> toClass, T defaultValue) {
 		try {
@@ -252,23 +248,7 @@ public class Util {
 		return result;
 	}
 
-	public static String mainUrl(String path) {
-		return mainUrl(path, null);
-	}
-
-	public static String mainUrl(String path, String schema) {
-		return (StringUtils.isBlank(schema) ? "http://" : schema + "://") + Util.getProperty("domain.main")
-				+ (path.startsWith("/") ? "" : "/") + path;
-	}
-
-	public static String imageUrl(String path, String schema) {
-		return (StringUtils.isBlank(schema) ? "http://" : schema + "://") + Util.getProperty("domain.image")
-				+ (path.startsWith("/") ? "" : "/") + path;
-	}
-
-	public static String imageUrl(String path) {
-		return imageUrl(path, null);
-	}
+	
 
 	/**
 	 * 转换语言

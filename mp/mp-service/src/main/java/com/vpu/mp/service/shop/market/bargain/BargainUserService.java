@@ -3,6 +3,7 @@ package com.vpu.mp.service.shop.market.bargain;
 import static com.vpu.mp.db.shop.tables.BargainUserList.BARGAIN_USER_LIST;
 import static com.vpu.mp.db.shop.tables.User.USER;
 
+import org.apache.commons.lang3.StringUtils;
 import org.jooq.Record;
 import org.jooq.SelectWhereStep;
 import org.springframework.stereotype.Service;
@@ -11,8 +12,6 @@ import com.vpu.mp.service.foundation.service.ShopBaseService;
 import com.vpu.mp.service.foundation.util.PageResult;
 import com.vpu.mp.service.pojo.shop.market.bargain.BargainUserListQueryParam;
 import com.vpu.mp.service.pojo.shop.market.bargain.BargainUserListQueryVo;
-
-import io.netty.util.internal.StringUtil;
 
 /**
  * @author 王兵兵
@@ -37,10 +36,10 @@ public class BargainUserService extends ShopBaseService{
 		if (param == null) {
 			return select;
 		}
-		if(!StringUtil.isNullOrEmpty(param.getUsername())) {
+		if(!StringUtils.isBlank(param.getUsername())) {
 			select.where(USER.USERNAME.contains(param.getUsername()));
 		}
-		if(!StringUtil.isNullOrEmpty(param.getMobile())) {
+		if(!StringUtils.isBlank(param.getMobile())) {
 			select.where(USER.MOBILE.contains(param.getMobile()));
 		}
 		return select;

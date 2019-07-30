@@ -8,6 +8,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import com.vpu.mp.config.DomainConfig;
 import com.vpu.mp.db.main.tables.records.MpAuthShopRecord;
 import com.vpu.mp.service.pojo.shop.auth.MenuAuthority;
 import com.vpu.mp.service.wechat.OpenPlatform;
@@ -28,6 +29,9 @@ public class AdminWechatController extends AdminBaseController {
 	
 	@Autowired
 	protected OpenPlatform open;
+	
+	@Autowired
+	protected DomainConfig domainConfig;
 
 	@RequestMapping(value = "/wechat/proxy/test")
 	@ResponseBody
@@ -49,7 +53,7 @@ public class AdminWechatController extends AdminBaseController {
 	 */
 	@RequestMapping(value = "/wechat/proxy/start/auth")
 	public String startAuthorization(@RequestParam(name = "shop_id", required = true) Integer shopId) {
-		String url = this.mainUrl("/wechat/proxy/authorization/callback?shop_id=" + shopId);
+		String url = domainConfig.mainUrl("/wechat/proxy/authorization/callback?shop_id=" + shopId);
 		try {
 			String authType = "2";
 			String bizAppId = null;
@@ -73,7 +77,7 @@ public class AdminWechatController extends AdminBaseController {
 	 */
 	@RequestMapping(value = "/wechat/proxy/official/account/authorization")
 	public String startOfficialAccountAuthorization() {
-		String url = this.mainUrl("/wechat/proxy/authorization/callback?sys_id="+this.adminAuth.user().getSysId());
+		String url = domainConfig.mainUrl("/wechat/proxy/authorization/callback?sys_id="+this.adminAuth.user().getSysId());
 		try {
 			String authType = "1";
 			String bizAppid = null;

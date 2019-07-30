@@ -1,4 +1,4 @@
-package com.vpu.mp.controller;
+package com.vpu.mp.service.foundation.util;
 
 import org.springframework.context.support.MessageSourceAccessor;
 import org.springframework.context.support.ReloadableResourceBundleMessageSource;
