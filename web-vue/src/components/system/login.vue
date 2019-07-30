@@ -36,6 +36,7 @@
                 <div class="label">{{$t('systemLogin.password')}}</div>
                 <div>
                   <el-input
+                    type="password"
                     suffix-icon="fa fa-lock"
                     v-model="mainData.password"
                     :placeholder="placeholder_password"
@@ -61,6 +62,7 @@
 </template>
 <script>
 import { loginRequest } from '@/api/system/login.js'
+import Cookies from 'js-cookie'
 export default {
   data () {
     return {
@@ -79,8 +81,10 @@ export default {
   methods: {
     // 表单校验
     JudgementForm (index) {
+      let userNameReg = /^[^\u4e00-\u9fa5][\S+$]{0,}$/
+      let passwordReg = /^[^\u4e00-\u9fa5][\S+$]{5,16}$/
       if (localStorage.getItem('WEPUBAO_LANGUAGE') === 'en_US') {
-        if (!this.mainData.username) {
+        if (!userNameReg.test(this.mainData.username)) {
           this.$message({
             showClose: true,
             message: 'Please enter your username or mobile phone number',
@@ -89,7 +93,7 @@ export default {
           this.flag = false
           return
         }
-        if (!this.mainData.password) {
+        if (!passwordReg.test(this.mainData.password)) {
           this.$message({
             showClose: true,
             message: 'Please input a password',
@@ -99,7 +103,7 @@ export default {
         }
         return
       }
-      if (!this.mainData.username) {
+      if (!userNameReg.test(this.mainData.username)) {
         this.$message({
           showClose: true,
           message: '请输入用户名或者手机号',
@@ -108,7 +112,7 @@ export default {
         this.flag = false
         return
       }
-      if (!this.mainData.password) {
+      if (!passwordReg.test(this.mainData.password)) {
         this.$message({
           showClose: true,
           message: '请输入密码',
@@ -123,7 +127,24 @@ export default {
       if (this.flag === false) return
       localStorage.setItem('contentType', 'application/json;charset=UTF-8')
       loginRequest(this.mainData).then((res) => {
-        console.log(res)
+        if (res.error !== 0) {
+          this.$message({
+            showClose: true,
+            message: res.message,
+            type: 'error'
+          })
+        } else {
+          Cookies.set('V-Token', res.content.token, { expires: 1 / 48 })
+          localStorage.setItem('V-Username', res.content.userName)
+          this.$message({
+            showClose: true,
+            message: res.message,
+            type: 'success'
+          })
+          this.$router.push({
+            name: 'systemMain'
+          })
+        }
       })
     }
   }

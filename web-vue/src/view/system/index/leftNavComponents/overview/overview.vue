@@ -1,15 +1,13 @@
 <template>
-  <div class="">
-    概览
-  </div>
+  <div></div>
 </template>
 
 <script>
 export default {
-
+  data () {
+    return {}
+  }
 }
 </script>
-
 <style scoped>
-
 </style>

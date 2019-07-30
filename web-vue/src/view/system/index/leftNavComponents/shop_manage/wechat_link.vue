@@ -1,6 +1,6 @@
 <template>
-  <div>
-微信全链路
+  <div class="wrapper">
+    <div class="content">商家店铺</div>
   </div>
 </template>
 
@@ -10,6 +10,12 @@ export default {
 }
 </script>
 
-<style lang="scss" scoped>
-
+<style scoped>
+  .wrapper {
+    height: 40px;
+    line-height: 40px;
+  }
+  .content {
+    padding: 10px;
+  }
 </style>

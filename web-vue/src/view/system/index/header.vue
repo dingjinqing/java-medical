@@ -30,7 +30,7 @@
           <div class="menu_main">
             <span>
               <label>
-                {{this.username}}system
+                {{this.username}}
               </label>
               <img :src="imageUrl[1].img_2">
             </span>
@@ -103,7 +103,7 @@ export default {
     ...Vuex.mapActions(['changesysNavLeft']),
     // 初始化顶部导航 通过传入的路由的meta值来进行对应的匹配
     judgeHeader () {
-      console.log(this.$route)
+      // console.log(this.$route)
       this.changesysNavLeft(this.$route.meta)
       let meta = this.$route.meta
       switch (meta) {
@@ -170,7 +170,7 @@ export default {
           break
         case 4:
           loginRequestOut().then((res) => {
-            console.log(res)
+            // console.log(res)
             if (res.error === 0) {
               Cookies.remove('V-Token')
               localStorage.removeItem('V-Username')

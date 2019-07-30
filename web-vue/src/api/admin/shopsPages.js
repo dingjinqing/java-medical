@@ -10,7 +10,6 @@ export function accountManageRequest (riid) {
 }
 
 // 获取店铺列表接口
-
 export function shopListRequest (riid) {
   return service({
     url: '/api/admin/account/shop/select',
