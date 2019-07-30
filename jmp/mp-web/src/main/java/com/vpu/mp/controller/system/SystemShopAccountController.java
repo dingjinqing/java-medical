@@ -44,7 +44,7 @@ public class SystemShopAccountController extends SystemBaseController {
 	 * @return
 	 */
 	@PostMapping("/system/shop/account/list")
-	public JsonResult getShopAccountList(@RequestBody @Valid ShopAccountListQueryParam param) {
+	public JsonResult getShopAccountList(@RequestBody ShopAccountListQueryParam param) {
 		PageResult<ShopAccountPojo> result = saas.shop.account.getPageList(param);
 		// TODO 空的判断
 		for (ShopAccountPojo sap : result.dataList) {
