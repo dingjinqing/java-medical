@@ -9,7 +9,8 @@ const getters = {
   afferentPath: state => state.smallProgramManagement.afferentPath,
   crumbsTitle: state => state.crumbs.crumbsTitle,
   goodsIds: state => state.goodsManagement.goodsIds,
-  editGoodsId: state => state.goodsManagement.editGoodsId
+  editGoodsId: state => state.goodsManagement.editGoodsId,
+  proAndUrData: state => state.crumbs.proAndUrData
 }
 
 export default getters

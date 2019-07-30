@@ -539,6 +539,7 @@ export default {
         pageRows: 20
       }
       pagingBrandQueryRequest(obj).then((res) => {
+        console.log(res)
         if (res.error === 0) {
           this.trList = res.content.dataList
           this.totalRows = res.content.page.totalRows
@@ -601,12 +602,21 @@ export default {
     },
     // 品牌分类弹窗确定事件
     handleUpdateGrandClass () {
+      console.log(this.classificationName)
       let obj = {
-        clssifyId: this.upDateClassifyId,
+        classifyId: this.upDateClassifyId,
         classifyName: this.brandName,
         first: Number(this.classificationName)
       }
       pagingBrandUpdateRequest(obj).then((res) => {
+        if (res.error === 0) {
+          this.defaultPageingGrand()
+          this.$message({
+            message: '修改成功',
+            type: 'success'
+          })
+          this.dialogVisibleAddBrand = false
+        }
         console.log(res)
       })
     },
