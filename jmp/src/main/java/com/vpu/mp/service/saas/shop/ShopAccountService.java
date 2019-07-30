@@ -40,10 +40,7 @@ public class ShopAccountService extends MainBaseService {
 	protected JedisManager jedis;
 
 	public PageResult<ShopAccountPojo> getPageList(ShopAccountListQueryParam param) {
-		SelectWhereStep<? extends Record> select = db()
-				.select(SHOP_ACCOUNT.SYS_ID, SHOP_ACCOUNT.USER_NAME, SHOP_ACCOUNT.STATE, SHOP_ACCOUNT.BUSINESS_STATE,
-						SHOP_ACCOUNT.ADD_TIME, SHOP_ACCOUNT.BUY_TIME, SHOP_ACCOUNT.END_TIME, SHOP_ACCOUNT.MOBILE)
-				.from(SHOP_ACCOUNT);
+		SelectWhereStep<? extends Record> select = db().selectFrom(SHOP_ACCOUNT);
 		select = this.buildOptions(select, param);
 		select.orderBy(SHOP_ACCOUNT.SYS_ID.desc());
 		return this.getPageResult(select, param.currentPage, param.pageRows, ShopAccountPojo.class);
