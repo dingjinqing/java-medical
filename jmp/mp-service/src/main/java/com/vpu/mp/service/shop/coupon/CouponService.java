@@ -21,6 +21,9 @@ import com.vpu.mp.service.pojo.shop.coupon.CouponListParam;
 import com.vpu.mp.service.pojo.shop.coupon.CouponListVo;
 import com.vpu.mp.service.pojo.shop.coupon.CouponParam;
 
+import org.springframework.beans.factory.annotation.Autowired;
+
+
 /**
  * 优惠券管理
  * @author 常乐
@@ -29,6 +32,7 @@ import com.vpu.mp.service.pojo.shop.coupon.CouponParam;
 @Service
 
 public class CouponService extends ShopBaseService{
+	@Autowired public CouponGiveService couponGiveService;
 	/**
 	 * 创建优惠券
 	 * @param couponInfo

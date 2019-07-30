@@ -36,7 +36,6 @@ import com.vpu.mp.service.pojo.shop.goods.comment.GoodsCommentVo;
  * @date 2019年7月7日
  */
 @Service
-
 public class GoodsCommentService extends ShopBaseService {
 
     /**
