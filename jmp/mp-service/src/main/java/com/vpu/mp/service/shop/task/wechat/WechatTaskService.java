@@ -308,18 +308,4 @@ public class WechatTaskService extends ShopBaseService {
         int count =db().selectCount().from(table).where(table.field("ref_date").eq(date)).execute();
         return count > 0;
     }
-
-    public static void main(String[] args) {
-        Map<Integer,Integer> map = new HashMap<Integer,Integer>();
-        map.put(1,2);
-        map.put(2,3);
-        map.put(3,4);
-        LocalDate localDate = LocalDate.of(2019,6,30);
-        System.out.println(localDate.minusDays(1));
-        System.out.println(localDate.withDayOfMonth(1));
-        System.out.println(java.sql.Date.valueOf(LocalDate.now()));
-        System.out.println(DateUtil.dateFormat(DateUtil.pattern_one,java.sql.Date.valueOf(LocalDate.now())));
-        System.out.println(Util.toJson(map));
-    }
-
 }
