@@ -7,7 +7,12 @@ package com.vpu.mp.service.pojo.saas.shop;
 import java.math.BigDecimal;
 import java.sql.Timestamp;
 
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.Pattern;
+
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonProperty;
+import com.vpu.mp.service.foundation.data.JsonResultMessage;
 
 import lombok.Data;
 
@@ -18,9 +23,13 @@ import lombok.Data;
  */
 @Data
 public class ShopAccountPojo {
+
     private Integer   sysId;
+    @NotBlank(message = JsonResultMessage.MSG_ACCOUNT_USERNAME_NOT_NULL)
     private String    userName;
-    @JsonIgnore
+    
+	@NotBlank(message = JsonResultMessage.MSG_ACCOUNT_PASSWD_NOT_NULL)
+	@Pattern(regexp = "^[^\\u4e00-\\u9fa5]{6,16}$",message = JsonResultMessage.MSG_ACCOUNT_PASSWD_LENGTH_LIMIT)
     private String    password;
     private Byte      state;
     private Byte      businessState;
@@ -48,5 +57,15 @@ public class ShopAccountPojo {
     
     private BigDecimal renewMoney;
     private Integer shopNumber;
+    
+    
+    @JsonIgnore
+	public String getPassword() {
+		return password;
+	}
+    @JsonProperty
+	public void setPassword(String password) {
+		this.password = password;
+	}
 
 }
