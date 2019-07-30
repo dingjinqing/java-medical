@@ -1,0 +1,93 @@
+[
+	{
+		"prName": "prNameList",
+		"name": "全部的名字",
+		"includeApi": [
+			"user_export",
+			"return_order",
+			"distribution_withdraw",
+			"scan_code_purchase",
+			"card_order_return",
+			"batch_score",
+			"batch_account",
+			"batch_card",
+			"batch_delete",
+			"batch_tag",
+			"change_invite",
+			"goods_export",
+			"order_export"
+		]
+	},
+	{
+		"prName": "user_export",
+		"name": "会员导出",
+		"includeApi": [
+			"/api/admin/user/list/export"
+		]
+	},
+	{
+		"prName": "return_order",
+		"name": "退款退货审核",
+		"includeApi": []
+	},
+	{
+		"prName": "distribution_withdraw",
+		"name": "分销返利提现",
+		"includeApi": []
+	},
+	{
+		"prName": "scan_code_purchase",
+		"name": "扫码购订单强制核销",
+		"includeApi": []
+	},
+	{
+		"prName": "card_order_return",
+		"name": "会员卡订单退款",
+		"includeApi": []
+	},
+	{
+		"prName": "batch_score",
+		"name": "修改积分",
+		"includeApi": []
+	},
+	{
+		"prName": "batch_account",
+		"name": "修改余额",
+		"includeApi": []
+	},
+	{
+		"prName": "batch_card",
+		"name": "发放会员卡",
+		"includeApi": []
+	},
+	{
+		"prName": "batch_score",
+		"name": "修改积分",
+		"includeApi": []
+	},
+	{
+		"prName": "batch_delete",
+		"name": "禁止登录",
+		"includeApi": []
+	},
+	{
+		"prName": "batch_tag",
+		"name": "打标签",
+		"includeApi": []
+	},
+	{
+		"prName": "change_invite",
+		"name": "修改邀请人",
+		"includeApi": []
+	},
+	{
+		"prName": "goods_export",
+		"name": "商品导出",
+		"includeApi": []
+	},
+	{
+		"prName": "order_export",
+		"name": "订单导出",
+		"includeApi": []
+	}
+]

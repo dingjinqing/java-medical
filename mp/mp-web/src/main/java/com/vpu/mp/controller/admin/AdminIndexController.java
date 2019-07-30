@@ -31,8 +31,8 @@ public class AdminIndexController extends AdminBaseController {
 	@Autowired
 	protected JedisManager jedis;
 	
-	final protected String menuJsonPath = "admin.privilegeList.json";
-	final protected String privilegeJsonPath = "admin.privilegePass.json";
+	final protected String menuJsonPath = "menu/admin/admin.privilegeList.json";
+	final protected String privilegeJsonPath = "menu/admin/admin.privilegePass.json";
 	
 	private static final String ENNAME="enName";
 
