@@ -38,6 +38,8 @@ public class Keys {
     // -------------------------------------------------------------------------
     // IDENTITY definitions
     // -------------------------------------------------------------------------
+    public static final Identity<FreeShippingRecord, Integer> IDENTITY_FREE_SHIPPING = Identities0.IDENTITY_FREE_SHIPPING;
+    public static final Identity<FreeShippingRuleRecord, Integer> IDENTITY_FREE_SHIPPING_RULE = Identities0.IDENTITY_FREE_SHIPPING_RULE;
     public static final Identity<GroupBuyDefineRecord, Integer> IDENTITY_GROUP_BUY_DEFINE = Identities0.IDENTITY_GROUP_BUY_DEFINE;
     public static final Identity<GroupBuyListRecord, Integer> IDENTITY_GROUP_BUY_LIST = Identities0.IDENTITY_GROUP_BUY_LIST;
     public static final Identity<GroupIntegrationDefineRecord, Integer> IDENTITY_GROUP_INTEGRATION_DEFINE = Identities0.IDENTITY_GROUP_INTEGRATION_DEFINE;
@@ -222,6 +224,8 @@ public class Keys {
     // -------------------------------------------------------------------------
     // UNIQUE and PRIMARY KEY definitions
     // -------------------------------------------------------------------------
+    public static final UniqueKey<FreeShippingRecord> KEY_B2C_FREE_SHIPPING_PRIMARY = UniqueKeys0.KEY_B2C_FREE_SHIPPING_PRIMARY;
+    public static final UniqueKey<FreeShippingRuleRecord> KEY_B2C_FREE_SHIPPING_RULE_PRIMARY = UniqueKeys0.KEY_B2C_FREE_SHIPPING_RULE_PRIMARY;
     public static final UniqueKey<GroupBuyDefineRecord> KEY_B2C_GROUP_BUY_DEFINE_PRIMARY = UniqueKeys0.KEY_B2C_GROUP_BUY_DEFINE_PRIMARY;
     public static final UniqueKey<GroupBuyListRecord> KEY_B2C_GROUP_BUY_LIST_PRIMARY = UniqueKeys0.KEY_B2C_GROUP_BUY_LIST_PRIMARY;
     public static final UniqueKey<GroupIntegrationDefineRecord> KEY_B2C_GROUP_INTEGRATION_DEFINE_PRIMARY = UniqueKeys0.KEY_B2C_GROUP_INTEGRATION_DEFINE_PRIMARY;
@@ -443,6 +447,9 @@ public class Keys {
     // -------------------------------------------------------------------------
 
     private static class Identities0 {
+
+        public static Identity<FreeShippingRecord, Integer> IDENTITY_FREE_SHIPPING = Internal.createIdentity(FreeShipping.FREE_SHIPPING, FreeShipping.FREE_SHIPPING.ID);
+        public static Identity<FreeShippingRuleRecord, Integer> IDENTITY_FREE_SHIPPING_RULE = Internal.createIdentity(FreeShippingRule.FREE_SHIPPING_RULE, FreeShippingRule.FREE_SHIPPING_RULE.ID);
         public static Identity<GroupBuyDefineRecord, Integer> IDENTITY_GROUP_BUY_DEFINE = Internal.createIdentity(GroupBuyDefine.GROUP_BUY_DEFINE, GroupBuyDefine.GROUP_BUY_DEFINE.ID);
         public static Identity<GroupBuyListRecord, Integer> IDENTITY_GROUP_BUY_LIST = Internal.createIdentity(GroupBuyList.GROUP_BUY_LIST, GroupBuyList.GROUP_BUY_LIST.ID);
         public static Identity<GroupIntegrationDefineRecord, Integer> IDENTITY_GROUP_INTEGRATION_DEFINE = Internal.createIdentity(GroupIntegrationDefine.GROUP_INTEGRATION_DEFINE, GroupIntegrationDefine.GROUP_INTEGRATION_DEFINE.ID);
@@ -626,6 +633,7 @@ public class Keys {
     }
 
     private static class UniqueKeys0 {
+        public static final UniqueKey<FreeShippingRecord> KEY_B2C_FREE_SHIPPING_PRIMARY = Internal.createUniqueKey(FreeShipping.FREE_SHIPPING, "KEY_b2c_free_shipping_PRIMARY", FreeShipping.FREE_SHIPPING.ID);
         public static final UniqueKey<GroupBuyDefineRecord> KEY_B2C_GROUP_BUY_DEFINE_PRIMARY = Internal.createUniqueKey(GroupBuyDefine.GROUP_BUY_DEFINE, "KEY_b2c_group_buy_define_PRIMARY", GroupBuyDefine.GROUP_BUY_DEFINE.ID);
         public static final UniqueKey<GroupBuyListRecord> KEY_B2C_GROUP_BUY_LIST_PRIMARY = Internal.createUniqueKey(GroupBuyList.GROUP_BUY_LIST, "KEY_b2c_group_buy_list_PRIMARY", GroupBuyList.GROUP_BUY_LIST.ID);
         public static final UniqueKey<GroupIntegrationDefineRecord> KEY_B2C_GROUP_INTEGRATION_DEFINE_PRIMARY = Internal.createUniqueKey(GroupIntegrationDefine.GROUP_INTEGRATION_DEFINE, "KEY_b2c_group_integration_define_PRIMARY", GroupIntegrationDefine.GROUP_INTEGRATION_DEFINE.ID);
@@ -835,5 +843,7 @@ public class Keys {
         public static final UniqueKey<MpVisitPageRecord> KEY_B2C_MP_VISIT_PAGE_PRIMARY = UniqueKeys0.KEY_B2C_MP_VISIT_PAGE_PRIMARY;
         public static final UniqueKey<MpWeeklyRetainRecord> KEY_B2C_MP_WEEKLY_RETAIN_PRIMARY = UniqueKeys0.KEY_B2C_MP_WEEKLY_RETAIN_PRIMARY;
         public static final UniqueKey<MpWeeklyVisitRecord> KEY_B2C_MP_WEEKLY_VISIT_PRIMARY = UniqueKeys0.KEY_B2C_MP_WEEKLY_VISIT_PRIMARY;
+        public static final UniqueKey<FreeShippingRuleRecord> KEY_B2C_FREE_SHIPPING_RULE_PRIMARY = Internal.createUniqueKey(FreeShippingRule.FREE_SHIPPING_RULE, "KEY_b2c_free_shipping_rule_PRIMARY", FreeShippingRule.FREE_SHIPPING_RULE.ID);
+
     }
 }

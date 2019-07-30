@@ -29,6 +29,9 @@ public class Indexes {
     // -------------------------------------------------------------------------
     // INDEX definitions
     // -------------------------------------------------------------------------
+    public static final Index FREE_SHIPPING_PRIMARY = Indexes0.FREE_SHIPPING_PRIMARY;
+    public static final Index FREE_SHIPPING_RULE_PRIMARY = Indexes0.FREE_SHIPPING_RULE_PRIMARY;
+    public static final Index FREE_SHIPPING_RULE_SHIPPING_ID = Indexes0.FREE_SHIPPING_RULE_SHIPPING_ID;
     public static final Index GROUP_BUY_LIST_PRIMARY = Indexes0.GROUP_BUY_LIST_PRIMARY;
     public static final Index GROUP_INTEGRATION_DEFINE_PRIMARY = Indexes0.GROUP_INTEGRATION_DEFINE_PRIMARY;
     public static final Index GROUP_BUY_PRODUCT_DEFINE_PRIMARY = Indexes0.GROUP_BUY_PRODUCT_DEFINE_PRIMARY;
@@ -798,5 +801,9 @@ public class Indexes {
         public static Index MP_VISIT_PAGE_PRIMARY = Internal.createIndex("PRIMARY", MpVisitPage.MP_VISIT_PAGE, new OrderField[] { MpVisitPage.MP_VISIT_PAGE.ID }, true);
         public static Index MP_WEEKLY_RETAIN_PRIMARY = Internal.createIndex("PRIMARY", MpWeeklyRetain.MP_WEEKLY_RETAIN, new OrderField[] { MpWeeklyRetain.MP_WEEKLY_RETAIN.ID }, true);
         public static Index MP_WEEKLY_VISIT_PRIMARY = Internal.createIndex("PRIMARY", MpWeeklyVisit.MP_WEEKLY_VISIT, new OrderField[] { MpWeeklyVisit.MP_WEEKLY_VISIT.ID }, true);
+        public static Index FREE_SHIPPING_RULE_PRIMARY = Internal.createIndex("PRIMARY", FreeShippingRule.FREE_SHIPPING_RULE, new OrderField[] { FreeShippingRule.FREE_SHIPPING_RULE.ID }, true);
+        public static Index FREE_SHIPPING_RULE_SHIPPING_ID = Internal.createIndex("shipping_id", FreeShippingRule.FREE_SHIPPING_RULE, new OrderField[] { FreeShippingRule.FREE_SHIPPING_RULE.SHIPPING_ID }, false);
+        public static Index FREE_SHIPPING_PRIMARY = Internal.createIndex("PRIMARY", FreeShipping.FREE_SHIPPING, new OrderField[] { FreeShipping.FREE_SHIPPING.ID }, true);
+
     }
 }

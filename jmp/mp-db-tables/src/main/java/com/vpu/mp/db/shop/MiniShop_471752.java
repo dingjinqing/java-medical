@@ -36,953 +36,958 @@ public class MiniShop_471752 extends SchemaImpl {
     public static final MiniShop_471752 MINI_SHOP_471752 = new MiniShop_471752();
 
 
-    public final GroupBuyList GROUP_BUY_LIST = com.vpu.mp.db.shop.tables.GroupBuyList.GROUP_BUY_LIST;
+
+    public final FreeShipping FREE_SHIPPING = FreeShipping.FREE_SHIPPING;
+
+    public final FreeShippingRule FREE_SHIPPING_RULE = FreeShippingRule.FREE_SHIPPING_RULE;
+
+    public final GroupBuyList GROUP_BUY_LIST = GroupBuyList.GROUP_BUY_LIST;
 
     /**
      * The table <code>mini_shop_4748160.b2c_group_buy__define</code>.
      */
-    public final GroupBuyDefine GROUP_BUY_DEFINE = com.vpu.mp.db.shop.tables.GroupBuyDefine.GROUP_BUY_DEFINE;
+    public final GroupBuyDefine GROUP_BUY_DEFINE = GroupBuyDefine.GROUP_BUY_DEFINE;
 
     /**
      * The table <code>mini_shop_471752.b2c_assess_activity</code>.
      */
-    public final AssessActivity ASSESS_ACTIVITY = com.vpu.mp.db.shop.tables.AssessActivity.ASSESS_ACTIVITY;
+    public final AssessActivity ASSESS_ACTIVITY = AssessActivity.ASSESS_ACTIVITY;
 
     /**
      * The table <code>mini_shop_471752.b2c_assess_record</code>.
      */
-    public final AssessRecord ASSESS_RECORD = com.vpu.mp.db.shop.tables.AssessRecord.ASSESS_RECORD;
+    public final AssessRecord ASSESS_RECORD = AssessRecord.ASSESS_RECORD;
 
     /**
      * The table <code>mini_shop_471752.b2c_assess_result</code>.
      */
-    public final AssessResult ASSESS_RESULT = com.vpu.mp.db.shop.tables.AssessResult.ASSESS_RESULT;
+    public final AssessResult ASSESS_RESULT = AssessResult.ASSESS_RESULT;
 
     /**
      * The table <code>mini_shop_471752.b2c_assess_topic</code>.
      */
-    public final AssessTopic ASSESS_TOPIC = com.vpu.mp.db.shop.tables.AssessTopic.ASSESS_TOPIC;
+    public final AssessTopic ASSESS_TOPIC = AssessTopic.ASSESS_TOPIC;
 
     /**
      * The table <code>mini_shop_471752.b2c_assess_topic_record</code>.
      */
-    public final AssessTopicRecord ASSESS_TOPIC_RECORD = com.vpu.mp.db.shop.tables.AssessTopicRecord.ASSESS_TOPIC_RECORD;
+    public final AssessTopicRecord ASSESS_TOPIC_RECORD = AssessTopicRecord.ASSESS_TOPIC_RECORD;
 
     /**
      * The table <code>mini_shop_471752.b2c_bargain</code>.
      */
-    public final Bargain BARGAIN = com.vpu.mp.db.shop.tables.Bargain.BARGAIN;
+    public final Bargain BARGAIN = Bargain.BARGAIN;
 
     /**
      * The table <code>mini_shop_471752.b2c_bargain_record</code>.
      */
-    public final BargainRecord BARGAIN_RECORD = com.vpu.mp.db.shop.tables.BargainRecord.BARGAIN_RECORD;
+    public final BargainRecord BARGAIN_RECORD = BargainRecord.BARGAIN_RECORD;
 
     /**
      * The table <code>mini_shop_471752.b2c_bargain_user_list</code>.
      */
-    public final BargainUserList BARGAIN_USER_LIST = com.vpu.mp.db.shop.tables.BargainUserList.BARGAIN_USER_LIST;
+    public final BargainUserList BARGAIN_USER_LIST = BargainUserList.BARGAIN_USER_LIST;
 
     /**
      * The table <code>mini_shop_471752.b2c_batch_price</code>.
      */
-    public final BatchPrice BATCH_PRICE = com.vpu.mp.db.shop.tables.BatchPrice.BATCH_PRICE;
+    public final BatchPrice BATCH_PRICE = BatchPrice.BATCH_PRICE;
 
     /**
      * The table <code>mini_shop_471752.b2c_batch_profit</code>.
      */
-    public final BatchProfit BATCH_PROFIT = com.vpu.mp.db.shop.tables.BatchProfit.BATCH_PROFIT;
+    public final BatchProfit BATCH_PROFIT = BatchProfit.BATCH_PROFIT;
 
     /**
      * The table <code>mini_shop_471752.b2c_brand_classify</code>.
      */
-    public final BrandClassify BRAND_CLASSIFY = com.vpu.mp.db.shop.tables.BrandClassify.BRAND_CLASSIFY;
+    public final BrandClassify BRAND_CLASSIFY = BrandClassify.BRAND_CLASSIFY;
 
     /**
      * The table <code>mini_shop_471752.b2c_card_batch</code>.
      */
-    public final CardBatch CARD_BATCH = com.vpu.mp.db.shop.tables.CardBatch.CARD_BATCH;
+    public final CardBatch CARD_BATCH = CardBatch.CARD_BATCH;
 
     /**
      * The table <code>mini_shop_471752.b2c_card_consumer</code>.
      */
-    public final CardConsumer CARD_CONSUMER = com.vpu.mp.db.shop.tables.CardConsumer.CARD_CONSUMER;
+    public final CardConsumer CARD_CONSUMER = CardConsumer.CARD_CONSUMER;
 
     /**
      * The table <code>mini_shop_471752.b2c_card_examine</code>.
      */
-    public final CardExamine CARD_EXAMINE = com.vpu.mp.db.shop.tables.CardExamine.CARD_EXAMINE;
+    public final CardExamine CARD_EXAMINE = CardExamine.CARD_EXAMINE;
 
     /**
      * The table <code>mini_shop_471752.b2c_card_order</code>.
      */
-    public final CardOrder CARD_ORDER = com.vpu.mp.db.shop.tables.CardOrder.CARD_ORDER;
+    public final CardOrder CARD_ORDER = CardOrder.CARD_ORDER;
 
     /**
      * The table <code>mini_shop_471752.b2c_card_receive_code</code>.
      */
-    public final CardReceiveCode CARD_RECEIVE_CODE = com.vpu.mp.db.shop.tables.CardReceiveCode.CARD_RECEIVE_CODE;
+    public final CardReceiveCode CARD_RECEIVE_CODE = CardReceiveCode.CARD_RECEIVE_CODE;
 
     /**
      * The table <code>mini_shop_471752.b2c_card_upgrade</code>.
      */
-    public final CardUpgrade CARD_UPGRADE = com.vpu.mp.db.shop.tables.CardUpgrade.CARD_UPGRADE;
+    public final CardUpgrade CARD_UPGRADE = CardUpgrade.CARD_UPGRADE;
 
     /**
      * The table <code>mini_shop_471752.b2c_cart</code>.
      */
-    public final Cart CART = com.vpu.mp.db.shop.tables.Cart.CART;
+    public final Cart CART = Cart.CART;
 
     /**
      * The table <code>mini_shop_471752.b2c_channel</code>.
      */
-    public final Channel CHANNEL = com.vpu.mp.db.shop.tables.Channel.CHANNEL;
+    public final Channel CHANNEL = Channel.CHANNEL;
 
     /**
      * The table <code>mini_shop_471752.b2c_channel_record</code>.
      */
-    public final ChannelRecord CHANNEL_RECORD = com.vpu.mp.db.shop.tables.ChannelRecord.CHANNEL_RECORD;
+    public final ChannelRecord CHANNEL_RECORD = ChannelRecord.CHANNEL_RECORD;
 
     /**
      * The table <code>mini_shop_471752.b2c_channel_statistical</code>.
      */
-    public final ChannelStatistical CHANNEL_STATISTICAL = com.vpu.mp.db.shop.tables.ChannelStatistical.CHANNEL_STATISTICAL;
+    public final ChannelStatistical CHANNEL_STATISTICAL = ChannelStatistical.CHANNEL_STATISTICAL;
 
     /**
      * The table <code>mini_shop_471752.b2c_charge_money</code>.
      */
-    public final ChargeMoney CHARGE_MONEY = com.vpu.mp.db.shop.tables.ChargeMoney.CHARGE_MONEY;
+    public final ChargeMoney CHARGE_MONEY = ChargeMoney.CHARGE_MONEY;
 
     /**
      * The table <code>mini_shop_471752.b2c_code</code>.
      */
-    public final Code CODE = com.vpu.mp.db.shop.tables.Code.CODE;
+    public final Code CODE = Code.CODE;
 
     /**
      * The table <code>mini_shop_471752.b2c_comment_goods</code>.
      */
-    public final CommentGoods COMMENT_GOODS = com.vpu.mp.db.shop.tables.CommentGoods.COMMENT_GOODS;
+    public final CommentGoods COMMENT_GOODS = CommentGoods.COMMENT_GOODS;
 
     /**
      * The table <code>mini_shop_471752.b2c_comment_goods_answer</code>.
      */
-    public final CommentGoodsAnswer COMMENT_GOODS_ANSWER = com.vpu.mp.db.shop.tables.CommentGoodsAnswer.COMMENT_GOODS_ANSWER;
+    public final CommentGoodsAnswer COMMENT_GOODS_ANSWER = CommentGoodsAnswer.COMMENT_GOODS_ANSWER;
 
     /**
      * The table <code>mini_shop_471752.b2c_comment_service</code>.
      */
-    public final CommentService COMMENT_SERVICE = com.vpu.mp.db.shop.tables.CommentService.COMMENT_SERVICE;
+    public final CommentService COMMENT_SERVICE = CommentService.COMMENT_SERVICE;
 
     /**
      * The table <code>mini_shop_471752.b2c_coupon_activity</code>.
      */
-    public final CouponActivity COUPON_ACTIVITY = com.vpu.mp.db.shop.tables.CouponActivity.COUPON_ACTIVITY;
+    public final CouponActivity COUPON_ACTIVITY = CouponActivity.COUPON_ACTIVITY;
 
     /**
      * The table <code>mini_shop_471752.b2c_coupon_activity_record</code>.
      */
-    public final CouponActivityRecord COUPON_ACTIVITY_RECORD = com.vpu.mp.db.shop.tables.CouponActivityRecord.COUPON_ACTIVITY_RECORD;
+    public final CouponActivityRecord COUPON_ACTIVITY_RECORD = CouponActivityRecord.COUPON_ACTIVITY_RECORD;
 
     /**
      * The table <code>mini_shop_471752.b2c_coupon_pack</code>.
      */
-    public final CouponPack COUPON_PACK = com.vpu.mp.db.shop.tables.CouponPack.COUPON_PACK;
+    public final CouponPack COUPON_PACK = CouponPack.COUPON_PACK;
 
     /**
      * The table <code>mini_shop_471752.b2c_coupon_payreward_record</code>.
      */
-    public final CouponPayrewardRecord COUPON_PAYREWARD_RECORD = com.vpu.mp.db.shop.tables.CouponPayrewardRecord.COUPON_PAYREWARD_RECORD;
+    public final CouponPayrewardRecord COUPON_PAYREWARD_RECORD = CouponPayrewardRecord.COUPON_PAYREWARD_RECORD;
 
     /**
      * The table <code>mini_shop_471752.b2c_customer_avail_coupons</code>.
      */
-    public final CustomerAvailCoupons CUSTOMER_AVAIL_COUPONS = com.vpu.mp.db.shop.tables.CustomerAvailCoupons.CUSTOMER_AVAIL_COUPONS;
+    public final CustomerAvailCoupons CUSTOMER_AVAIL_COUPONS = CustomerAvailCoupons.CUSTOMER_AVAIL_COUPONS;
 
     /**
      * The table <code>mini_shop_471752.b2c_decorate_link</code>.
      */
-    public final DecorateLink DECORATE_LINK = com.vpu.mp.db.shop.tables.DecorateLink.DECORATE_LINK;
+    public final DecorateLink DECORATE_LINK = DecorateLink.DECORATE_LINK;
 
     /**
      * The table <code>mini_shop_471752.b2c_deliver_fee_template</code>.
      */
-    public final DeliverFeeTemplate DELIVER_FEE_TEMPLATE = com.vpu.mp.db.shop.tables.DeliverFeeTemplate.DELIVER_FEE_TEMPLATE;
+    public final DeliverFeeTemplate DELIVER_FEE_TEMPLATE = DeliverFeeTemplate.DELIVER_FEE_TEMPLATE;
 
     /**
      * The table <code>mini_shop_471752.b2c_distribution_order</code>.
      */
-    public final DistributionOrder DISTRIBUTION_ORDER = com.vpu.mp.db.shop.tables.DistributionOrder.DISTRIBUTION_ORDER;
+    public final DistributionOrder DISTRIBUTION_ORDER = DistributionOrder.DISTRIBUTION_ORDER;
 
     /**
      * The table <code>mini_shop_471752.b2c_distribution_strategy</code>.
      */
-    public final DistributionStrategy DISTRIBUTION_STRATEGY = com.vpu.mp.db.shop.tables.DistributionStrategy.DISTRIBUTION_STRATEGY;
+    public final DistributionStrategy DISTRIBUTION_STRATEGY = DistributionStrategy.DISTRIBUTION_STRATEGY;
 
     /**
      * The table <code>mini_shop_471752.b2c_distribution_tag</code>.
      */
-    public final DistributionTag DISTRIBUTION_TAG = com.vpu.mp.db.shop.tables.DistributionTag.DISTRIBUTION_TAG;
+    public final DistributionTag DISTRIBUTION_TAG = DistributionTag.DISTRIBUTION_TAG;
 
     /**
      * The table <code>mini_shop_471752.b2c_distribution_withdraw</code>.
      */
-    public final DistributionWithdraw DISTRIBUTION_WITHDRAW = com.vpu.mp.db.shop.tables.DistributionWithdraw.DISTRIBUTION_WITHDRAW;
+    public final DistributionWithdraw DISTRIBUTION_WITHDRAW = DistributionWithdraw.DISTRIBUTION_WITHDRAW;
 
     /**
      * The table <code>mini_shop_471752.b2c_distributor_apply</code>.
      */
-    public final DistributorApply DISTRIBUTOR_APPLY = com.vpu.mp.db.shop.tables.DistributorApply.DISTRIBUTOR_APPLY;
+    public final DistributorApply DISTRIBUTOR_APPLY = DistributorApply.DISTRIBUTOR_APPLY;
 
     /**
      * The table <code>mini_shop_471752.b2c_distributor_group</code>.
      */
-    public final DistributorGroup DISTRIBUTOR_GROUP = com.vpu.mp.db.shop.tables.DistributorGroup.DISTRIBUTOR_GROUP;
+    public final DistributorGroup DISTRIBUTOR_GROUP = DistributorGroup.DISTRIBUTOR_GROUP;
 
     /**
      * The table <code>mini_shop_471752.b2c_distributor_level</code>.
      */
-    public final DistributorLevel DISTRIBUTOR_LEVEL = com.vpu.mp.db.shop.tables.DistributorLevel.DISTRIBUTOR_LEVEL;
+    public final DistributorLevel DISTRIBUTOR_LEVEL = DistributorLevel.DISTRIBUTOR_LEVEL;
 
     /**
      * The table <code>mini_shop_471752.b2c_distributor_level_record</code>.
      */
-    public final DistributorLevelRecord DISTRIBUTOR_LEVEL_RECORD = com.vpu.mp.db.shop.tables.DistributorLevelRecord.DISTRIBUTOR_LEVEL_RECORD;
+    public final DistributorLevelRecord DISTRIBUTOR_LEVEL_RECORD = DistributorLevelRecord.DISTRIBUTOR_LEVEL_RECORD;
 
     /**
      * The table <code>mini_shop_471752.b2c_fanli_goods_statistics</code>.
      */
-    public final FanliGoodsStatistics FANLI_GOODS_STATISTICS = com.vpu.mp.db.shop.tables.FanliGoodsStatistics.FANLI_GOODS_STATISTICS;
+    public final FanliGoodsStatistics FANLI_GOODS_STATISTICS = FanliGoodsStatistics.FANLI_GOODS_STATISTICS;
 
     /**
      * The table <code>mini_shop_471752.b2c_footprint_record</code>.
      */
-    public final FootprintRecord FOOTPRINT_RECORD = com.vpu.mp.db.shop.tables.FootprintRecord.FOOTPRINT_RECORD;
+    public final FootprintRecord FOOTPRINT_RECORD = FootprintRecord.FOOTPRINT_RECORD;
 
     /**
      * The table <code>mini_shop_471752.b2c_form_page</code>.
      */
-    public final FormPage FORM_PAGE = com.vpu.mp.db.shop.tables.FormPage.FORM_PAGE;
+    public final FormPage FORM_PAGE = FormPage.FORM_PAGE;
 
     /**
      * The table <code>mini_shop_471752.b2c_form_submit_details</code>.
      */
-    public final FormSubmitDetails FORM_SUBMIT_DETAILS = com.vpu.mp.db.shop.tables.FormSubmitDetails.FORM_SUBMIT_DETAILS;
+    public final FormSubmitDetails FORM_SUBMIT_DETAILS = FormSubmitDetails.FORM_SUBMIT_DETAILS;
 
     /**
      * The table <code>mini_shop_471752.b2c_form_submit_list</code>.
      */
-    public final FormSubmitList FORM_SUBMIT_LIST = com.vpu.mp.db.shop.tables.FormSubmitList.FORM_SUBMIT_LIST;
+    public final FormSubmitList FORM_SUBMIT_LIST = FormSubmitList.FORM_SUBMIT_LIST;
 
     /**
      * The table <code>mini_shop_471752.b2c_friend_promote_activity</code>.
      */
-    public final FriendPromoteActivity FRIEND_PROMOTE_ACTIVITY = com.vpu.mp.db.shop.tables.FriendPromoteActivity.FRIEND_PROMOTE_ACTIVITY;
+    public final FriendPromoteActivity FRIEND_PROMOTE_ACTIVITY = FriendPromoteActivity.FRIEND_PROMOTE_ACTIVITY;
 
     /**
      * The table <code>mini_shop_471752.b2c_friend_promote_detail</code>.
      */
-    public final FriendPromoteDetail FRIEND_PROMOTE_DETAIL = com.vpu.mp.db.shop.tables.FriendPromoteDetail.FRIEND_PROMOTE_DETAIL;
+    public final FriendPromoteDetail FRIEND_PROMOTE_DETAIL = FriendPromoteDetail.FRIEND_PROMOTE_DETAIL;
 
     /**
      * The table <code>mini_shop_471752.b2c_friend_promote_launch</code>.
      */
-    public final FriendPromoteLaunch FRIEND_PROMOTE_LAUNCH = com.vpu.mp.db.shop.tables.FriendPromoteLaunch.FRIEND_PROMOTE_LAUNCH;
+    public final FriendPromoteLaunch FRIEND_PROMOTE_LAUNCH = FriendPromoteLaunch.FRIEND_PROMOTE_LAUNCH;
 
     /**
      * The table <code>mini_shop_471752.b2c_friend_promote_times</code>.
      */
-    public final FriendPromoteTimes FRIEND_PROMOTE_TIMES = com.vpu.mp.db.shop.tables.FriendPromoteTimes.FRIEND_PROMOTE_TIMES;
+    public final FriendPromoteTimes FRIEND_PROMOTE_TIMES = FriendPromoteTimes.FRIEND_PROMOTE_TIMES;
 
     /**
      * The table <code>mini_shop_471752.b2c_gift</code>.
      */
-    public final Gift GIFT = com.vpu.mp.db.shop.tables.Gift.GIFT;
+    public final Gift GIFT = Gift.GIFT;
 
     /**
      * The table <code>mini_shop_471752.b2c_gift_product</code>.
      */
-    public final GiftProduct GIFT_PRODUCT = com.vpu.mp.db.shop.tables.GiftProduct.GIFT_PRODUCT;
+    public final GiftProduct GIFT_PRODUCT = GiftProduct.GIFT_PRODUCT;
 
     /**
      * The table <code>mini_shop_471752.b2c_give_voucher</code>.
      */
-    public final GiveVoucher GIVE_VOUCHER = com.vpu.mp.db.shop.tables.GiveVoucher.GIVE_VOUCHER;
+    public final GiveVoucher GIVE_VOUCHER = GiveVoucher.GIVE_VOUCHER;
 
     /**
      * The table <code>mini_shop_471752.b2c_goods</code>.
      */
-    public final Goods GOODS = com.vpu.mp.db.shop.tables.Goods.GOODS;
+    public final Goods GOODS = Goods.GOODS;
 
     /**
      * The table <code>mini_shop_471752.b2c_goods_bak</code>.
      */
-    public final GoodsBak GOODS_BAK = com.vpu.mp.db.shop.tables.GoodsBak.GOODS_BAK;
+    public final GoodsBak GOODS_BAK = GoodsBak.GOODS_BAK;
 
     /**
      * The table <code>mini_shop_471752.b2c_goods_brand</code>.
      */
-    public final GoodsBrand GOODS_BRAND = com.vpu.mp.db.shop.tables.GoodsBrand.GOODS_BRAND;
+    public final GoodsBrand GOODS_BRAND = GoodsBrand.GOODS_BRAND;
 
     /**
      * The table <code>mini_shop_471752.b2c_goods_card_couple</code>.
      */
-    public final GoodsCardCouple GOODS_CARD_COUPLE = com.vpu.mp.db.shop.tables.GoodsCardCouple.GOODS_CARD_COUPLE;
+    public final GoodsCardCouple GOODS_CARD_COUPLE = GoodsCardCouple.GOODS_CARD_COUPLE;
 
     /**
      * The table <code>mini_shop_471752.b2c_goods_img</code>.
      */
-    public final GoodsImg GOODS_IMG = com.vpu.mp.db.shop.tables.GoodsImg.GOODS_IMG;
+    public final GoodsImg GOODS_IMG = GoodsImg.GOODS_IMG;
 
     /**
      * The table <code>mini_shop_471752.b2c_goods_import</code>.
      */
-    public final GoodsImport GOODS_IMPORT = com.vpu.mp.db.shop.tables.GoodsImport.GOODS_IMPORT;
+    public final GoodsImport GOODS_IMPORT = GoodsImport.GOODS_IMPORT;
 
     /**
      * The table <code>mini_shop_471752.b2c_goods_import_detail</code>.
      */
-    public final GoodsImportDetail GOODS_IMPORT_DETAIL = com.vpu.mp.db.shop.tables.GoodsImportDetail.GOODS_IMPORT_DETAIL;
+    public final GoodsImportDetail GOODS_IMPORT_DETAIL = GoodsImportDetail.GOODS_IMPORT_DETAIL;
 
     /**
      * The table <code>mini_shop_471752.b2c_goods_label</code>.
      */
-    public final GoodsLabel GOODS_LABEL = com.vpu.mp.db.shop.tables.GoodsLabel.GOODS_LABEL;
+    public final GoodsLabel GOODS_LABEL = GoodsLabel.GOODS_LABEL;
 
     /**
      * The table <code>mini_shop_471752.b2c_goods_label_couple</code>.
      */
-    public final GoodsLabelCouple GOODS_LABEL_COUPLE = com.vpu.mp.db.shop.tables.GoodsLabelCouple.GOODS_LABEL_COUPLE;
+    public final GoodsLabelCouple GOODS_LABEL_COUPLE = GoodsLabelCouple.GOODS_LABEL_COUPLE;
 
     /**
      * The table <code>mini_shop_471752.b2c_goods_opai_spec</code>.
      */
-    public final GoodsOpaiSpec GOODS_OPAI_SPEC = com.vpu.mp.db.shop.tables.GoodsOpaiSpec.GOODS_OPAI_SPEC;
+    public final GoodsOpaiSpec GOODS_OPAI_SPEC = GoodsOpaiSpec.GOODS_OPAI_SPEC;
 
     /**
      * The table <code>mini_shop_471752.b2c_goods_rebate_price</code>.
      */
-    public final GoodsRebatePrice GOODS_REBATE_PRICE = com.vpu.mp.db.shop.tables.GoodsRebatePrice.GOODS_REBATE_PRICE;
+    public final GoodsRebatePrice GOODS_REBATE_PRICE = GoodsRebatePrice.GOODS_REBATE_PRICE;
 
     /**
      * The table <code>mini_shop_471752.b2c_goods_spec_product</code>.
      */
-    public final GoodsSpecProduct GOODS_SPEC_PRODUCT = com.vpu.mp.db.shop.tables.GoodsSpecProduct.GOODS_SPEC_PRODUCT;
+    public final GoodsSpecProduct GOODS_SPEC_PRODUCT = GoodsSpecProduct.GOODS_SPEC_PRODUCT;
 
     /**
      * The table <code>mini_shop_471752.b2c_goods_spec_product_bak</code>.
      */
-    public final GoodsSpecProductBak GOODS_SPEC_PRODUCT_BAK = com.vpu.mp.db.shop.tables.GoodsSpecProductBak.GOODS_SPEC_PRODUCT_BAK;
+    public final GoodsSpecProductBak GOODS_SPEC_PRODUCT_BAK = GoodsSpecProductBak.GOODS_SPEC_PRODUCT_BAK;
 
     /**
      * The table <code>mini_shop_471752.b2c_goods_summary</code>.
      */
-    public final GoodsSummary GOODS_SUMMARY = com.vpu.mp.db.shop.tables.GoodsSummary.GOODS_SUMMARY;
+    public final GoodsSummary GOODS_SUMMARY = GoodsSummary.GOODS_SUMMARY;
 
     /**
      * The table <code>mini_shop_471752.b2c_goods_user_summary</code>.
      */
-    public final GoodsUserSummary GOODS_USER_SUMMARY = com.vpu.mp.db.shop.tables.GoodsUserSummary.GOODS_USER_SUMMARY;
+    public final GoodsUserSummary GOODS_USER_SUMMARY = GoodsUserSummary.GOODS_USER_SUMMARY;
 
     /**
      * The table <code>mini_shop_471752.b2c_grade_prd</code>.
      */
-    public final GradePrd GRADE_PRD = com.vpu.mp.db.shop.tables.GradePrd.GRADE_PRD;
+    public final GradePrd GRADE_PRD = GradePrd.GRADE_PRD;
 
     /**
      * The table <code>mini_shop_471752.b2c_group_draw</code>.
      */
-    public final GroupDraw GROUP_DRAW = com.vpu.mp.db.shop.tables.GroupDraw.GROUP_DRAW;
+    public final GroupDraw GROUP_DRAW = GroupDraw.GROUP_DRAW;
 
     /**
      * The table <code>mini_shop_471752.b2c_group_draw_invite</code>.
      */
-    public final GroupDrawInvite GROUP_DRAW_INVITE = com.vpu.mp.db.shop.tables.GroupDrawInvite.GROUP_DRAW_INVITE;
+    public final GroupDrawInvite GROUP_DRAW_INVITE = GroupDrawInvite.GROUP_DRAW_INVITE;
 
     /**
      * The table <code>mini_shop_471752.b2c_income_outcome_detail</code>.
      */
-    public final IncomeOutcomeDetail INCOME_OUTCOME_DETAIL = com.vpu.mp.db.shop.tables.IncomeOutcomeDetail.INCOME_OUTCOME_DETAIL;
+    public final IncomeOutcomeDetail INCOME_OUTCOME_DETAIL = IncomeOutcomeDetail.INCOME_OUTCOME_DETAIL;
 
     /**
      * The table <code>mini_shop_471752.b2c_index_foot_record</code>.
      */
-    public final IndexFootRecord INDEX_FOOT_RECORD = com.vpu.mp.db.shop.tables.IndexFootRecord.INDEX_FOOT_RECORD;
+    public final IndexFootRecord INDEX_FOOT_RECORD = IndexFootRecord.INDEX_FOOT_RECORD;
 
     /**
      * The table <code>mini_shop_471752.b2c_integral_mall_define</code>.
      */
-    public final IntegralMallDefine INTEGRAL_MALL_DEFINE = com.vpu.mp.db.shop.tables.IntegralMallDefine.INTEGRAL_MALL_DEFINE;
+    public final IntegralMallDefine INTEGRAL_MALL_DEFINE = IntegralMallDefine.INTEGRAL_MALL_DEFINE;
 
     /**
      * The table <code>mini_shop_471752.b2c_integral_mall_product</code>.
      */
-    public final IntegralMallProduct INTEGRAL_MALL_PRODUCT = com.vpu.mp.db.shop.tables.IntegralMallProduct.INTEGRAL_MALL_PRODUCT;
+    public final IntegralMallProduct INTEGRAL_MALL_PRODUCT = IntegralMallProduct.INTEGRAL_MALL_PRODUCT;
 
     /**
      * The table <code>mini_shop_471752.b2c_integral_mall_record</code>.
      */
-    public final IntegralMallRecord INTEGRAL_MALL_RECORD = com.vpu.mp.db.shop.tables.IntegralMallRecord.INTEGRAL_MALL_RECORD;
+    public final IntegralMallRecord INTEGRAL_MALL_RECORD = IntegralMallRecord.INTEGRAL_MALL_RECORD;
 
     /**
      * The table <code>mini_shop_471752.b2c_invoice</code>.
      */
-    public final Invoice INVOICE = com.vpu.mp.db.shop.tables.Invoice.INVOICE;
+    public final Invoice INVOICE = Invoice.INVOICE;
 
     /**
      * The table <code>mini_shop_471752.b2c_join_draw_list</code>.
      */
-    public final JoinDrawList JOIN_DRAW_LIST = com.vpu.mp.db.shop.tables.JoinDrawList.JOIN_DRAW_LIST;
+    public final JoinDrawList JOIN_DRAW_LIST = JoinDrawList.JOIN_DRAW_LIST;
 
     /**
      * The table <code>mini_shop_471752.b2c_join_group_list</code>.
      */
-    public final JoinGroupList JOIN_GROUP_LIST = com.vpu.mp.db.shop.tables.JoinGroupList.JOIN_GROUP_LIST;
+    public final JoinGroupList JOIN_GROUP_LIST = JoinGroupList.JOIN_GROUP_LIST;
 
     /**
      * The table <code>mini_shop_471752.b2c_lottery</code>.
      */
-    public final Lottery LOTTERY = com.vpu.mp.db.shop.tables.Lottery.LOTTERY;
+    public final Lottery LOTTERY = Lottery.LOTTERY;
 
     /**
      * The table <code>mini_shop_471752.b2c_lottery_record</code>.
      */
-    public final LotteryRecord LOTTERY_RECORD = com.vpu.mp.db.shop.tables.LotteryRecord.LOTTERY_RECORD;
+    public final LotteryRecord LOTTERY_RECORD = LotteryRecord.LOTTERY_RECORD;
 
     /**
      * The table <code>mini_shop_471752.b2c_lottery_share</code>.
      */
-    public final LotteryShare LOTTERY_SHARE = com.vpu.mp.db.shop.tables.LotteryShare.LOTTERY_SHARE;
+    public final LotteryShare LOTTERY_SHARE = LotteryShare.LOTTERY_SHARE;
 
     /**
      * The table <code>mini_shop_471752.b2c_member_card</code>.
      */
-    public final MemberCard MEMBER_CARD = com.vpu.mp.db.shop.tables.MemberCard.MEMBER_CARD;
+    public final MemberCard MEMBER_CARD = MemberCard.MEMBER_CARD;
 
     /**
      * The table <code>mini_shop_471752.b2c_message_template</code>.
      */
-    public final MessageTemplate MESSAGE_TEMPLATE = com.vpu.mp.db.shop.tables.MessageTemplate.MESSAGE_TEMPLATE;
+    public final MessageTemplate MESSAGE_TEMPLATE = MessageTemplate.MESSAGE_TEMPLATE;
 
     /**
      * The table <code>mini_shop_471752.b2c_mp_daily_retain</code>.
      */
-    public final MpDailyRetain MP_DAILY_RETAIN = com.vpu.mp.db.shop.tables.MpDailyRetain.MP_DAILY_RETAIN;
+    public final MpDailyRetain MP_DAILY_RETAIN = MpDailyRetain.MP_DAILY_RETAIN;
 
     /**
      * The table <code>mini_shop_471752.b2c_mp_daily_visit</code>.
      */
-    public final MpDailyVisit MP_DAILY_VISIT = com.vpu.mp.db.shop.tables.MpDailyVisit.MP_DAILY_VISIT;
+    public final MpDailyVisit MP_DAILY_VISIT = MpDailyVisit.MP_DAILY_VISIT;
 
     /**
      * The table <code>mini_shop_471752.b2c_mp_distribution_visit</code>.
      */
-    public final MpDistributionVisit MP_DISTRIBUTION_VISIT = com.vpu.mp.db.shop.tables.MpDistributionVisit.MP_DISTRIBUTION_VISIT;
+    public final MpDistributionVisit MP_DISTRIBUTION_VISIT = MpDistributionVisit.MP_DISTRIBUTION_VISIT;
 
     /**
      * The table <code>mini_shop_471752.b2c_mp_jump</code>.
      */
-    public final MpJump MP_JUMP = com.vpu.mp.db.shop.tables.MpJump.MP_JUMP;
+    public final MpJump MP_JUMP = MpJump.MP_JUMP;
 
     /**
      * The table <code>mini_shop_471752.b2c_mp_jump_usable</code>.
      */
-    public final MpJumpUsable MP_JUMP_USABLE = com.vpu.mp.db.shop.tables.MpJumpUsable.MP_JUMP_USABLE;
+    public final MpJumpUsable MP_JUMP_USABLE = MpJumpUsable.MP_JUMP_USABLE;
 
     /**
      * The table <code>mini_shop_471752.b2c_mp_monthly_retain</code>.
      */
-    public final MpMonthlyRetain MP_MONTHLY_RETAIN = com.vpu.mp.db.shop.tables.MpMonthlyRetain.MP_MONTHLY_RETAIN;
+    public final MpMonthlyRetain MP_MONTHLY_RETAIN = MpMonthlyRetain.MP_MONTHLY_RETAIN;
 
     /**
      * The table <code>mini_shop_471752.b2c_mp_monthly_visit</code>.
      */
-    public final MpMonthlyVisit MP_MONTHLY_VISIT = com.vpu.mp.db.shop.tables.MpMonthlyVisit.MP_MONTHLY_VISIT;
+    public final MpMonthlyVisit MP_MONTHLY_VISIT = MpMonthlyVisit.MP_MONTHLY_VISIT;
 
     /**
      * The table <code>mini_shop_471752.b2c_mp_scene_record</code>.
      */
-    public final MpSceneRecord MP_SCENE_RECORD = com.vpu.mp.db.shop.tables.MpSceneRecord.MP_SCENE_RECORD;
+    public final MpSceneRecord MP_SCENE_RECORD = MpSceneRecord.MP_SCENE_RECORD;
 
     /**
      * The table <code>mini_shop_471752.b2c_mp_summary_trend</code>.
      */
-    public final MpSummaryTrend MP_SUMMARY_TREND = com.vpu.mp.db.shop.tables.MpSummaryTrend.MP_SUMMARY_TREND;
+    public final MpSummaryTrend MP_SUMMARY_TREND = MpSummaryTrend.MP_SUMMARY_TREND;
 
     /**
      * The table <code>mini_shop_471752.b2c_mp_template_form_id</code>.
      */
-    public final MpTemplateFormId MP_TEMPLATE_FORM_ID = com.vpu.mp.db.shop.tables.MpTemplateFormId.MP_TEMPLATE_FORM_ID;
+    public final MpTemplateFormId MP_TEMPLATE_FORM_ID = MpTemplateFormId.MP_TEMPLATE_FORM_ID;
 
     /**
      * The table <code>mini_shop_471752.b2c_mp_user_portrait</code>.
      */
-    public final MpUserPortrait MP_USER_PORTRAIT = com.vpu.mp.db.shop.tables.MpUserPortrait.MP_USER_PORTRAIT;
+    public final MpUserPortrait MP_USER_PORTRAIT = MpUserPortrait.MP_USER_PORTRAIT;
 
     /**
      * The table <code>mini_shop_471752.b2c_mp_visit_page</code>.
      */
-    public final MpVisitPage MP_VISIT_PAGE = com.vpu.mp.db.shop.tables.MpVisitPage.MP_VISIT_PAGE;
+    public final MpVisitPage MP_VISIT_PAGE = MpVisitPage.MP_VISIT_PAGE;
 
     /**
      * The table <code>mini_shop_471752.b2c_mp_weekly_retain</code>.
      */
-    public final MpWeeklyRetain MP_WEEKLY_RETAIN = com.vpu.mp.db.shop.tables.MpWeeklyRetain.MP_WEEKLY_RETAIN;
+    public final MpWeeklyRetain MP_WEEKLY_RETAIN = MpWeeklyRetain.MP_WEEKLY_RETAIN;
 
     /**
      * The table <code>mini_shop_471752.b2c_mp_weekly_visit</code>.
      */
-    public final MpWeeklyVisit MP_WEEKLY_VISIT = com.vpu.mp.db.shop.tables.MpWeeklyVisit.MP_WEEKLY_VISIT;
+    public final MpWeeklyVisit MP_WEEKLY_VISIT = MpWeeklyVisit.MP_WEEKLY_VISIT;
 
     /**
      * The table <code>mini_shop_471752.b2c_mrking_strategy</code>.
      */
-    public final MrkingStrategy MRKING_STRATEGY = com.vpu.mp.db.shop.tables.MrkingStrategy.MRKING_STRATEGY;
+    public final MrkingStrategy MRKING_STRATEGY = MrkingStrategy.MRKING_STRATEGY;
 
     /**
      * The table <code>mini_shop_471752.b2c_mrking_strategy_condition</code>.
      */
-    public final MrkingStrategyCondition MRKING_STRATEGY_CONDITION = com.vpu.mp.db.shop.tables.MrkingStrategyCondition.MRKING_STRATEGY_CONDITION;
+    public final MrkingStrategyCondition MRKING_STRATEGY_CONDITION = MrkingStrategyCondition.MRKING_STRATEGY_CONDITION;
 
     /**
      * The table <code>mini_shop_471752.b2c_mrking_voucher</code>.
      */
-    public final MrkingVoucher MRKING_VOUCHER = com.vpu.mp.db.shop.tables.MrkingVoucher.MRKING_VOUCHER;
+    public final MrkingVoucher MRKING_VOUCHER = MrkingVoucher.MRKING_VOUCHER;
 
     /**
      * The table <code>mini_shop_471752.b2c_order_action</code>.
      */
-    public final OrderAction ORDER_ACTION = com.vpu.mp.db.shop.tables.OrderAction.ORDER_ACTION;
+    public final OrderAction ORDER_ACTION = OrderAction.ORDER_ACTION;
 
     /**
      * The table <code>mini_shop_471752.b2c_order_goods</code>.
      */
-    public final OrderGoods ORDER_GOODS = com.vpu.mp.db.shop.tables.OrderGoods.ORDER_GOODS;
+    public final OrderGoods ORDER_GOODS = OrderGoods.ORDER_GOODS;
 
     /**
      * The table <code>mini_shop_471752.b2c_order_goods_rebate</code>.
      */
-    public final OrderGoodsRebate ORDER_GOODS_REBATE = com.vpu.mp.db.shop.tables.OrderGoodsRebate.ORDER_GOODS_REBATE;
+    public final OrderGoodsRebate ORDER_GOODS_REBATE = OrderGoodsRebate.ORDER_GOODS_REBATE;
 
     /**
      * The table <code>mini_shop_471752.b2c_order_info</code>.
      */
-    public final OrderInfo ORDER_INFO = com.vpu.mp.db.shop.tables.OrderInfo.ORDER_INFO;
+    public final OrderInfo ORDER_INFO = OrderInfo.ORDER_INFO;
 
     /**
      * The table <code>mini_shop_471752.b2c_order_must</code>.
      */
-    public final OrderMust ORDER_MUST = com.vpu.mp.db.shop.tables.OrderMust.ORDER_MUST;
+    public final OrderMust ORDER_MUST = OrderMust.ORDER_MUST;
 
     /**
      * The table <code>mini_shop_471752.b2c_order_refund_record</code>.
      */
-    public final OrderRefundRecord ORDER_REFUND_RECORD = com.vpu.mp.db.shop.tables.OrderRefundRecord.ORDER_REFUND_RECORD;
+    public final OrderRefundRecord ORDER_REFUND_RECORD = OrderRefundRecord.ORDER_REFUND_RECORD;
 
     /**
      * The table <code>mini_shop_471752.b2c_order_verifier</code>.
      */
-    public final OrderVerifier ORDER_VERIFIER = com.vpu.mp.db.shop.tables.OrderVerifier.ORDER_VERIFIER;
+    public final OrderVerifier ORDER_VERIFIER = OrderVerifier.ORDER_VERIFIER;
 
     /**
      * The table <code>mini_shop_471752.b2c_package_goods_cart</code>.
      */
-    public final PackageGoodsCart PACKAGE_GOODS_CART = com.vpu.mp.db.shop.tables.PackageGoodsCart.PACKAGE_GOODS_CART;
+    public final PackageGoodsCart PACKAGE_GOODS_CART = PackageGoodsCart.PACKAGE_GOODS_CART;
 
     /**
      * The table <code>mini_shop_471752.b2c_package_sale</code>.
      */
-    public final PackageSale PACKAGE_SALE = com.vpu.mp.db.shop.tables.PackageSale.PACKAGE_SALE;
+    public final PackageSale PACKAGE_SALE = PackageSale.PACKAGE_SALE;
 
     /**
      * The table <code>mini_shop_471752.b2c_page_classification</code>.
      */
-    public final PageClassification PAGE_CLASSIFICATION = com.vpu.mp.db.shop.tables.PageClassification.PAGE_CLASSIFICATION;
+    public final PageClassification PAGE_CLASSIFICATION = PageClassification.PAGE_CLASSIFICATION;
 
     /**
      * The table <code>mini_shop_471752.b2c_part_order_goods_ship</code>.
      */
-    public final PartOrderGoodsShip PART_ORDER_GOODS_SHIP = com.vpu.mp.db.shop.tables.PartOrderGoodsShip.PART_ORDER_GOODS_SHIP;
+    public final PartOrderGoodsShip PART_ORDER_GOODS_SHIP = PartOrderGoodsShip.PART_ORDER_GOODS_SHIP;
 
     /**
      * The table <code>mini_shop_471752.b2c_payment</code>.
      */
-    public final Payment PAYMENT = com.vpu.mp.db.shop.tables.Payment.PAYMENT;
+    public final Payment PAYMENT = Payment.PAYMENT;
 
     /**
      * The table <code>mini_shop_471752.b2c_payment_record</code>.
      */
-    public final PaymentRecord PAYMENT_RECORD = com.vpu.mp.db.shop.tables.PaymentRecord.PAYMENT_RECORD;
+    public final PaymentRecord PAYMENT_RECORD = PaymentRecord.PAYMENT_RECORD;
 
     /**
      * The table <code>mini_shop_471752.b2c_pictorial</code>.
      */
-    public final Pictorial PICTORIAL = com.vpu.mp.db.shop.tables.Pictorial.PICTORIAL;
+    public final Pictorial PICTORIAL = Pictorial.PICTORIAL;
 
 
     /**
      * The table <code>mini_shop_471752.b2c_pledge</code>.
      */
-    public final Pledge PLEDGE = com.vpu.mp.db.shop.tables.Pledge.PLEDGE;
+    public final Pledge PLEDGE = Pledge.PLEDGE;
 
     /**
      * The table <code>mini_shop_471752.b2c_presale</code>.
      */
-    public final Presale PRESALE = com.vpu.mp.db.shop.tables.Presale.PRESALE;
+    public final Presale PRESALE = Presale.PRESALE;
 
     /**
      * The table <code>mini_shop_471752.b2c_presale_product</code>.
      */
-    public final PresaleProduct PRESALE_PRODUCT = com.vpu.mp.db.shop.tables.PresaleProduct.PRESALE_PRODUCT;
+    public final PresaleProduct PRESALE_PRODUCT = PresaleProduct.PRESALE_PRODUCT;
 
     /**
      * The table <code>mini_shop_471752.b2c_purchase_price_define</code>.
      */
-    public final PurchasePriceDefine PURCHASE_PRICE_DEFINE = com.vpu.mp.db.shop.tables.PurchasePriceDefine.PURCHASE_PRICE_DEFINE;
+    public final PurchasePriceDefine PURCHASE_PRICE_DEFINE = PurchasePriceDefine.PURCHASE_PRICE_DEFINE;
 
     /**
      * The table <code>mini_shop_471752.b2c_purchase_price_rule</code>.
      */
-    public final PurchasePriceRule PURCHASE_PRICE_RULE = com.vpu.mp.db.shop.tables.PurchasePriceRule.PURCHASE_PRICE_RULE;
+    public final PurchasePriceRule PURCHASE_PRICE_RULE = PurchasePriceRule.PURCHASE_PRICE_RULE;
 
     /**
      * The table <code>mini_shop_471752.b2c_rebate_price_record</code>.
      */
-    public final RebatePriceRecord REBATE_PRICE_RECORD = com.vpu.mp.db.shop.tables.RebatePriceRecord.REBATE_PRICE_RECORD;
+    public final RebatePriceRecord REBATE_PRICE_RECORD = RebatePriceRecord.REBATE_PRICE_RECORD;
 
     /**
      * The table <code>mini_shop_471752.b2c_recommend_goods</code>.
      */
-    public final RecommendGoods RECOMMEND_GOODS = com.vpu.mp.db.shop.tables.RecommendGoods.RECOMMEND_GOODS;
+    public final RecommendGoods RECOMMEND_GOODS = RecommendGoods.RECOMMEND_GOODS;
 
     /**
      * The table <code>mini_shop_471752.b2c_record_admin_action</code>.
      */
-    public final RecordAdminAction RECORD_ADMIN_ACTION = com.vpu.mp.db.shop.tables.RecordAdminAction.RECORD_ADMIN_ACTION;
+    public final RecordAdminAction RECORD_ADMIN_ACTION = RecordAdminAction.RECORD_ADMIN_ACTION;
 
     /**
      * The table <code>mini_shop_471752.b2c_reduce_price</code>.
      */
-    public final ReducePrice REDUCE_PRICE = com.vpu.mp.db.shop.tables.ReducePrice.REDUCE_PRICE;
+    public final ReducePrice REDUCE_PRICE = ReducePrice.REDUCE_PRICE;
 
     /**
      * The table <code>mini_shop_471752.b2c_reduce_price_goods</code>.
      */
-    public final ReducePriceGoods REDUCE_PRICE_GOODS = com.vpu.mp.db.shop.tables.ReducePriceGoods.REDUCE_PRICE_GOODS;
+    public final ReducePriceGoods REDUCE_PRICE_GOODS = ReducePriceGoods.REDUCE_PRICE_GOODS;
 
     /**
      * The table <code>mini_shop_471752.b2c_reduce_price_product</code>.
      */
-    public final ReducePriceProduct REDUCE_PRICE_PRODUCT = com.vpu.mp.db.shop.tables.ReducePriceProduct.REDUCE_PRICE_PRODUCT;
+    public final ReducePriceProduct REDUCE_PRICE_PRODUCT = ReducePriceProduct.REDUCE_PRICE_PRODUCT;
 
     /**
      * The table <code>mini_shop_471752.b2c_refund_amount_record</code>.
      */
-    public final RefundAmountRecord REFUND_AMOUNT_RECORD = com.vpu.mp.db.shop.tables.RefundAmountRecord.REFUND_AMOUNT_RECORD;
+    public final RefundAmountRecord REFUND_AMOUNT_RECORD = RefundAmountRecord.REFUND_AMOUNT_RECORD;
 
     /**
      * The table <code>mini_shop_471752.b2c_refund_card_record</code>.
      */
-    public final RefundCardRecord REFUND_CARD_RECORD = com.vpu.mp.db.shop.tables.RefundCardRecord.REFUND_CARD_RECORD;
+    public final RefundCardRecord REFUND_CARD_RECORD = RefundCardRecord.REFUND_CARD_RECORD;
 
     /**
      * The table <code>mini_shop_471752.b2c_return_order</code>.
      */
-    public final ReturnOrder RETURN_ORDER = com.vpu.mp.db.shop.tables.ReturnOrder.RETURN_ORDER;
+    public final ReturnOrder RETURN_ORDER = ReturnOrder.RETURN_ORDER;
 
     /**
      * The table <code>mini_shop_471752.b2c_return_order_goods</code>.
      */
-    public final ReturnOrderGoods RETURN_ORDER_GOODS = com.vpu.mp.db.shop.tables.ReturnOrderGoods.RETURN_ORDER_GOODS;
+    public final ReturnOrderGoods RETURN_ORDER_GOODS = ReturnOrderGoods.RETURN_ORDER_GOODS;
 
     /**
      * The table <code>mini_shop_471752.b2c_return_status_change</code>.
      */
-    public final ReturnStatusChange RETURN_STATUS_CHANGE = com.vpu.mp.db.shop.tables.ReturnStatusChange.RETURN_STATUS_CHANGE;
+    public final ReturnStatusChange RETURN_STATUS_CHANGE = ReturnStatusChange.RETURN_STATUS_CHANGE;
 
     /**
      * The table <code>mini_shop_471752.b2c_search_history</code>.
      */
-    public final SearchHistory SEARCH_HISTORY = com.vpu.mp.db.shop.tables.SearchHistory.SEARCH_HISTORY;
+    public final SearchHistory SEARCH_HISTORY = SearchHistory.SEARCH_HISTORY;
 
     /**
      * The table <code>mini_shop_471752.b2c_sec_kill_define</code>.
      */
-    public final SecKillDefine SEC_KILL_DEFINE = com.vpu.mp.db.shop.tables.SecKillDefine.SEC_KILL_DEFINE;
+    public final SecKillDefine SEC_KILL_DEFINE = SecKillDefine.SEC_KILL_DEFINE;
 
     /**
      * The table <code>mini_shop_471752.b2c_sec_kill_list</code>.
      */
-    public final SecKillList SEC_KILL_LIST = com.vpu.mp.db.shop.tables.SecKillList.SEC_KILL_LIST;
+    public final SecKillList SEC_KILL_LIST = SecKillList.SEC_KILL_LIST;
 
     /**
      * The table <code>mini_shop_471752.b2c_sec_kill_product_define</code>.
      */
-    public final SecKillProductDefine SEC_KILL_PRODUCT_DEFINE = com.vpu.mp.db.shop.tables.SecKillProductDefine.SEC_KILL_PRODUCT_DEFINE;
+    public final SecKillProductDefine SEC_KILL_PRODUCT_DEFINE = SecKillProductDefine.SEC_KILL_PRODUCT_DEFINE;
 
     /**
      * The table <code>mini_shop_471752.b2c_service_message_record</code>.
      */
-    public final ServiceMessageRecord SERVICE_MESSAGE_RECORD = com.vpu.mp.db.shop.tables.ServiceMessageRecord.SERVICE_MESSAGE_RECORD;
+    public final ServiceMessageRecord SERVICE_MESSAGE_RECORD = ServiceMessageRecord.SERVICE_MESSAGE_RECORD;
 
     /**
      * The table <code>mini_shop_471752.b2c_service_order</code>.
      */
-    public final ServiceOrder SERVICE_ORDER = com.vpu.mp.db.shop.tables.ServiceOrder.SERVICE_ORDER;
+    public final ServiceOrder SERVICE_ORDER = ServiceOrder.SERVICE_ORDER;
 
     /**
      * The table <code>mini_shop_471752.b2c_service_request</code>.
      */
-    public final ServiceRequest SERVICE_REQUEST = com.vpu.mp.db.shop.tables.ServiceRequest.SERVICE_REQUEST;
+    public final ServiceRequest SERVICE_REQUEST = ServiceRequest.SERVICE_REQUEST;
 
     /**
      * The table <code>mini_shop_471752.b2c_service_schedule</code>.
      */
-    public final ServiceSchedule SERVICE_SCHEDULE = com.vpu.mp.db.shop.tables.ServiceSchedule.SERVICE_SCHEDULE;
+    public final ServiceSchedule SERVICE_SCHEDULE = ServiceSchedule.SERVICE_SCHEDULE;
 
     /**
      * The table <code>mini_shop_471752.b2c_service_technician</code>.
      */
-    public final ServiceTechnician SERVICE_TECHNICIAN = com.vpu.mp.db.shop.tables.ServiceTechnician.SERVICE_TECHNICIAN;
+    public final ServiceTechnician SERVICE_TECHNICIAN = ServiceTechnician.SERVICE_TECHNICIAN;
 
     /**
      * The table <code>mini_shop_471752.b2c_service_technician_group</code>.
      */
-    public final ServiceTechnicianGroup SERVICE_TECHNICIAN_GROUP = com.vpu.mp.db.shop.tables.ServiceTechnicianGroup.SERVICE_TECHNICIAN_GROUP;
+    public final ServiceTechnicianGroup SERVICE_TECHNICIAN_GROUP = ServiceTechnicianGroup.SERVICE_TECHNICIAN_GROUP;
 
     /**
      * The table <code>mini_shop_471752.b2c_service_technician_schedule</code>.
      */
-    public final ServiceTechnicianSchedule SERVICE_TECHNICIAN_SCHEDULE = com.vpu.mp.db.shop.tables.ServiceTechnicianSchedule.SERVICE_TECHNICIAN_SCHEDULE;
+    public final ServiceTechnicianSchedule SERVICE_TECHNICIAN_SCHEDULE = ServiceTechnicianSchedule.SERVICE_TECHNICIAN_SCHEDULE;
 
     /**
      * The table <code>mini_shop_471752.b2c_share_record</code>.
      */
-    public final ShareRecord SHARE_RECORD = com.vpu.mp.db.shop.tables.ShareRecord.SHARE_RECORD;
+    public final ShareRecord SHARE_RECORD = ShareRecord.SHARE_RECORD;
 
     /**
      * The table <code>mini_shop_471752.b2c_share_split</code>.
      */
-    public final ShareSplit SHARE_SPLIT = com.vpu.mp.db.shop.tables.ShareSplit.SHARE_SPLIT;
+    public final ShareSplit SHARE_SPLIT = ShareSplit.SHARE_SPLIT;
 
     /**
      * The table <code>mini_shop_471752.b2c_shipping</code>.
      */
-    public final Shipping SHIPPING = com.vpu.mp.db.shop.tables.Shipping.SHIPPING;
+    public final Shipping SHIPPING = Shipping.SHIPPING;
 
     /**
      * The table <code>mini_shop_471752.b2c_shop_cfg</code>.
      */
-    public final ShopCfg SHOP_CFG = com.vpu.mp.db.shop.tables.ShopCfg.SHOP_CFG;
+    public final ShopCfg SHOP_CFG = ShopCfg.SHOP_CFG;
 
     /**
      * The table <code>mini_shop_471752.b2c_sms_send_record</code>.
      */
-    public final SmsSendRecord SMS_SEND_RECORD = com.vpu.mp.db.shop.tables.SmsSendRecord.SMS_SEND_RECORD;
+    public final SmsSendRecord SMS_SEND_RECORD = SmsSendRecord.SMS_SEND_RECORD;
 
     /**
      * The table <code>mini_shop_471752.b2c_sort</code>.
      */
-    public final Sort SORT = com.vpu.mp.db.shop.tables.Sort.SORT;
+    public final Sort SORT = Sort.SORT;
 
     /**
      * The table <code>mini_shop_471752.b2c_spec</code>.
      */
-    public final Spec SPEC = com.vpu.mp.db.shop.tables.Spec.SPEC;
+    public final Spec SPEC = Spec.SPEC;
 
     /**
      * The table <code>mini_shop_471752.b2c_spec_vals</code>.
      */
-    public final SpecVals SPEC_VALS = com.vpu.mp.db.shop.tables.SpecVals.SPEC_VALS;
+    public final SpecVals SPEC_VALS = SpecVals.SPEC_VALS;
 
     /**
      * The table <code>mini_shop_471752.b2c_store</code>.
      */
-    public final Store STORE = com.vpu.mp.db.shop.tables.Store.STORE;
+    public final Store STORE = Store.STORE;
 
     /**
      * The table <code>mini_shop_471752.b2c_store_goods</code>.
      */
-    public final StoreGoods STORE_GOODS = com.vpu.mp.db.shop.tables.StoreGoods.STORE_GOODS;
+    public final StoreGoods STORE_GOODS = StoreGoods.STORE_GOODS;
 
     /**
      * The table <code>mini_shop_471752.b2c_store_group</code>.
      */
-    public final StoreGroup STORE_GROUP = com.vpu.mp.db.shop.tables.StoreGroup.STORE_GROUP;
+    public final StoreGroup STORE_GROUP = StoreGroup.STORE_GROUP;
 
     /**
      * The table <code>mini_shop_471752.b2c_store_order</code>.
      */
-    public final StoreOrder STORE_ORDER = com.vpu.mp.db.shop.tables.StoreOrder.STORE_ORDER;
+    public final StoreOrder STORE_ORDER = StoreOrder.STORE_ORDER;
 
     /**
      * The table <code>mini_shop_471752.b2c_store_service</code>.
      */
-    public final StoreService STORE_SERVICE = com.vpu.mp.db.shop.tables.StoreService.STORE_SERVICE;
+    public final StoreService STORE_SERVICE = StoreService.STORE_SERVICE;
 
     /**
      * The table <code>mini_shop_471752.b2c_store_service_category</code>.
      */
-    public final StoreServiceCategory STORE_SERVICE_CATEGORY = com.vpu.mp.db.shop.tables.StoreServiceCategory.STORE_SERVICE_CATEGORY;
+    public final StoreServiceCategory STORE_SERVICE_CATEGORY = StoreServiceCategory.STORE_SERVICE_CATEGORY;
 
     /**
      * The table <code>mini_shop_471752.b2c_sub_order_info</code>.
      */
-    public final SubOrderInfo SUB_ORDER_INFO = com.vpu.mp.db.shop.tables.SubOrderInfo.SUB_ORDER_INFO;
+    public final SubOrderInfo SUB_ORDER_INFO = SubOrderInfo.SUB_ORDER_INFO;
 
     /**
      * The table <code>mini_shop_471752.b2c_tag</code>.
      */
-    public final Tag TAG = com.vpu.mp.db.shop.tables.Tag.TAG;
+    public final Tag TAG = Tag.TAG;
 
     /**
      * The table <code>mini_shop_471752.b2c_template_config</code>.
      */
-    public final TemplateConfig TEMPLATE_CONFIG = com.vpu.mp.db.shop.tables.TemplateConfig.TEMPLATE_CONFIG;
+    public final TemplateConfig TEMPLATE_CONFIG = TemplateConfig.TEMPLATE_CONFIG;
 
     /**
      * The table <code>mini_shop_471752.b2c_trades</code>.
      */
-    public final Trades TRADES = com.vpu.mp.db.shop.tables.Trades.TRADES;
+    public final Trades TRADES = Trades.TRADES;
 
     /**
      * The table <code>mini_shop_471752.b2c_trades_record</code>.
      */
-    public final TradesRecord TRADES_RECORD = com.vpu.mp.db.shop.tables.TradesRecord.TRADES_RECORD;
+    public final TradesRecord TRADES_RECORD = TradesRecord.TRADES_RECORD;
 
     /**
      * The table <code>mini_shop_471752.b2c_trades_record_summary</code>.
      */
-    public final TradesRecordSummary TRADES_RECORD_SUMMARY = com.vpu.mp.db.shop.tables.TradesRecordSummary.TRADES_RECORD_SUMMARY;
+    public final TradesRecordSummary TRADES_RECORD_SUMMARY = TradesRecordSummary.TRADES_RECORD_SUMMARY;
 
     /**
      * The table <code>mini_shop_471752.b2c_uploaded_image</code>.
      */
-    public final UploadedImage UPLOADED_IMAGE = com.vpu.mp.db.shop.tables.UploadedImage.UPLOADED_IMAGE;
+    public final UploadedImage UPLOADED_IMAGE = UploadedImage.UPLOADED_IMAGE;
 
     /**
      * The table <code>mini_shop_471752.b2c_uploaded_image_category</code>.
      */
-    public final UploadedImageCategory UPLOADED_IMAGE_CATEGORY = com.vpu.mp.db.shop.tables.UploadedImageCategory.UPLOADED_IMAGE_CATEGORY;
+    public final UploadedImageCategory UPLOADED_IMAGE_CATEGORY = UploadedImageCategory.UPLOADED_IMAGE_CATEGORY;
 
     /**
      * The table <code>mini_shop_471752.b2c_uploaded_video</code>.
      */
-    public final UploadedVideo UPLOADED_VIDEO = com.vpu.mp.db.shop.tables.UploadedVideo.UPLOADED_VIDEO;
+    public final UploadedVideo UPLOADED_VIDEO = UploadedVideo.UPLOADED_VIDEO;
 
     /**
      * The table <code>mini_shop_471752.b2c_user</code>.
      */
-    public final User USER = com.vpu.mp.db.shop.tables.User.USER;
+    public final User USER = User.USER;
 
     /**
      * The table <code>mini_shop_471752.b2c_user_account</code>.
      */
-    public final UserAccount USER_ACCOUNT = com.vpu.mp.db.shop.tables.UserAccount.USER_ACCOUNT;
+    public final UserAccount USER_ACCOUNT = UserAccount.USER_ACCOUNT;
 
     /**
      * The table <code>mini_shop_471752.b2c_user_address</code>.
      */
-    public final UserAddress USER_ADDRESS = com.vpu.mp.db.shop.tables.UserAddress.USER_ADDRESS;
+    public final UserAddress USER_ADDRESS = UserAddress.USER_ADDRESS;
 
     /**
      * The table <code>mini_shop_471752.b2c_user_card</code>.
      */
-    public final UserCard USER_CARD = com.vpu.mp.db.shop.tables.UserCard.USER_CARD;
+    public final UserCard USER_CARD = UserCard.USER_CARD;
 
     /**
      * The table <code>mini_shop_471752.b2c_user_cart_record</code>.
      */
-    public final UserCartRecord USER_CART_RECORD = com.vpu.mp.db.shop.tables.UserCartRecord.USER_CART_RECORD;
+    public final UserCartRecord USER_CART_RECORD = UserCartRecord.USER_CART_RECORD;
 
     /**
      * The table <code>mini_shop_471752.b2c_user_collection</code>.
      */
-    public final UserCollection USER_COLLECTION = com.vpu.mp.db.shop.tables.UserCollection.USER_COLLECTION;
+    public final UserCollection USER_COLLECTION = UserCollection.USER_COLLECTION;
 
     /**
      * The table <code>mini_shop_471752.b2c_user_detail</code>.
      */
-    public final UserDetail USER_DETAIL = com.vpu.mp.db.shop.tables.UserDetail.USER_DETAIL;
+    public final UserDetail USER_DETAIL = UserDetail.USER_DETAIL;
 
     /**
      * The table <code>mini_shop_471752.b2c_user_explain</code>.
      */
-    public final UserExplain USER_EXPLAIN = com.vpu.mp.db.shop.tables.UserExplain.USER_EXPLAIN;
+    public final UserExplain USER_EXPLAIN = UserExplain.USER_EXPLAIN;
 
     /**
      * The table <code>mini_shop_471752.b2c_user_fanli_statistics</code>.
      */
-    public final UserFanliStatistics USER_FANLI_STATISTICS = com.vpu.mp.db.shop.tables.UserFanliStatistics.USER_FANLI_STATISTICS;
+    public final UserFanliStatistics USER_FANLI_STATISTICS = UserFanliStatistics.USER_FANLI_STATISTICS;
 
     /**
      * The table <code>mini_shop_471752.b2c_user_goods_record</code>.
      */
-    public final UserGoodsRecord USER_GOODS_RECORD = com.vpu.mp.db.shop.tables.UserGoodsRecord.USER_GOODS_RECORD;
+    public final UserGoodsRecord USER_GOODS_RECORD = UserGoodsRecord.USER_GOODS_RECORD;
 
     /**
      * The table <code>mini_shop_471752.b2c_user_import</code>.
      */
-    public final UserImport USER_IMPORT = com.vpu.mp.db.shop.tables.UserImport.USER_IMPORT;
+    public final UserImport USER_IMPORT = UserImport.USER_IMPORT;
 
     /**
      * The table <code>mini_shop_471752.b2c_user_import_detail</code>.
      */
-    public final UserImportDetail USER_IMPORT_DETAIL = com.vpu.mp.db.shop.tables.UserImportDetail.USER_IMPORT_DETAIL;
+    public final UserImportDetail USER_IMPORT_DETAIL = UserImportDetail.USER_IMPORT_DETAIL;
 
     /**
      * The table <code>mini_shop_471752.b2c_user_login_record</code>.
      */
-    public final UserLoginRecord USER_LOGIN_RECORD = com.vpu.mp.db.shop.tables.UserLoginRecord.USER_LOGIN_RECORD;
+    public final UserLoginRecord USER_LOGIN_RECORD = UserLoginRecord.USER_LOGIN_RECORD;
 
     /**
      * The table <code>mini_shop_471752.b2c_user_rebate_price</code>.
      */
-    public final UserRebatePrice USER_REBATE_PRICE = com.vpu.mp.db.shop.tables.UserRebatePrice.USER_REBATE_PRICE;
+    public final UserRebatePrice USER_REBATE_PRICE = UserRebatePrice.USER_REBATE_PRICE;
 
     /**
      * The table <code>mini_shop_471752.b2c_user_score</code>.
      */
-    public final UserScore USER_SCORE = com.vpu.mp.db.shop.tables.UserScore.USER_SCORE;
+    public final UserScore USER_SCORE = UserScore.USER_SCORE;
 
     /**
      * The table <code>mini_shop_471752.b2c_user_score_set</code>.
      */
-    public final UserScoreSet USER_SCORE_SET = com.vpu.mp.db.shop.tables.UserScoreSet.USER_SCORE_SET;
+    public final UserScoreSet USER_SCORE_SET = UserScoreSet.USER_SCORE_SET;
 
     /**
      * The table <code>mini_shop_471752.b2c_user_summary_trend</code>.
      */
-    public final UserSummaryTrend USER_SUMMARY_TREND = com.vpu.mp.db.shop.tables.UserSummaryTrend.USER_SUMMARY_TREND;
+    public final UserSummaryTrend USER_SUMMARY_TREND = UserSummaryTrend.USER_SUMMARY_TREND;
 
     /**
      * The table <code>mini_shop_471752.b2c_user_tag</code>.
      */
-    public final UserTag USER_TAG = com.vpu.mp.db.shop.tables.UserTag.USER_TAG;
+    public final UserTag USER_TAG = UserTag.USER_TAG;
 
     /**
      * The table <code>mini_shop_471752.b2c_user_total_fanli</code>.
      */
-    public final UserTotalFanli USER_TOTAL_FANLI = com.vpu.mp.db.shop.tables.UserTotalFanli.USER_TOTAL_FANLI;
+    public final UserTotalFanli USER_TOTAL_FANLI = UserTotalFanli.USER_TOTAL_FANLI;
 
     /**
      * The table <code>mini_shop_471752.b2c_wxp_unlimit_code</code>.
      */
-    public final WxpUnlimitCode WXP_UNLIMIT_CODE = com.vpu.mp.db.shop.tables.WxpUnlimitCode.WXP_UNLIMIT_CODE;
+    public final WxpUnlimitCode WXP_UNLIMIT_CODE = WxpUnlimitCode.WXP_UNLIMIT_CODE;
 
     /**
      * The table <code>mini_shop_471752.b2c_wxp_unlimit_scene</code>.
      */
-    public final WxpUnlimitScene WXP_UNLIMIT_SCENE = com.vpu.mp.db.shop.tables.WxpUnlimitScene.WXP_UNLIMIT_SCENE;
+    public final WxpUnlimitScene WXP_UNLIMIT_SCENE = WxpUnlimitScene.WXP_UNLIMIT_SCENE;
 
     /**
      * The table <code>mini_shop_471752.b2c_wx_shopping_recommend</code>.
      */
-    public final WxShoppingRecommend WX_SHOPPING_RECOMMEND = com.vpu.mp.db.shop.tables.WxShoppingRecommend.WX_SHOPPING_RECOMMEND;
+    public final WxShoppingRecommend WX_SHOPPING_RECOMMEND = WxShoppingRecommend.WX_SHOPPING_RECOMMEND;
 
     /**
      * The table <code>mini_shop_471752.b2c_xcx_customer_page</code>.
      */
-    public final XcxCustomerPage XCX_CUSTOMER_PAGE = com.vpu.mp.db.shop.tables.XcxCustomerPage.XCX_CUSTOMER_PAGE;
+    public final XcxCustomerPage XCX_CUSTOMER_PAGE = XcxCustomerPage.XCX_CUSTOMER_PAGE;
 
     /**
      * No further instances allowed
