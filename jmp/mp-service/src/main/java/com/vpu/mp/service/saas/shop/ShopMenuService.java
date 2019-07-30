@@ -43,6 +43,7 @@ public class ShopMenuService extends MainBaseService {
 	 * @param reqeName
 	 * @return
 	 */
+	@SuppressWarnings("unchecked")
 	public JsonResultCode passwdAccess(Integer roleId, String path, String reqeName, String passwd) {
 		String[] privilegePass = roleId == 0 ? null : saas().shop.role.getPrivilegePass(roleId);
 		if (privilegePass == null) {
@@ -60,7 +61,6 @@ public class ShopMenuService extends MainBaseService {
 		String json = Util.loadResource(authorityJson);
 
 		ArrayList<?> list = Util.parseJson(json, ArrayList.class);
-		@SuppressWarnings("unchecked")
 		Map<String, ?> map = (Map<String, ?>) list.get(0);
 		String preName = (String) map.get("prName");
 		if (PRNAMELIST.equals(preName)) {
@@ -136,7 +136,6 @@ public class ShopMenuService extends MainBaseService {
 		String json = Util.loadResource(menuJson);
 
 		ArrayList<?> list = Util.parseJson(json, ArrayList.class);
-		@SuppressWarnings("unchecked")
 		Map<String, ?> map = (Map<String, ?>) list.get(0);
 		String eName = (String) map.get("enName");
 		if (ENNAMELIST.equals(eName)) {
