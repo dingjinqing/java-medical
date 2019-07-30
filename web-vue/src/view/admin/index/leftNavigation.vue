@@ -444,6 +444,13 @@ export default {
           }
           break
         // 商品管理
+        // 商品管理之添加商品
+        case 'addingGoods':
+          if (flag === 'goods_manage') {
+            this.nav_index = 1
+            this.click_nav_index = 1
+          }
+          break
         case 'brandManagement':
           if (flag === 'goods_manage') {
             this.nav_index = 4
@@ -514,6 +521,12 @@ export default {
           case 0:
             this.$router.push({
               name: 'goods_manage'
+            })
+            break
+          // 商品管理之添加商品
+          case 1:
+            this.$router.push({
+              name: 'addingGoods'
             })
             break
           case 4:
