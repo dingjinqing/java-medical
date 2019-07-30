@@ -17,9 +17,9 @@ public class StoreOrderListInfoVo {
 	private String orderSn;
 	private Byte orderStatus;
 	private Integer storeId;
-	private String userName;
+	private String username;
 	private Timestamp payTime;
 	private BigDecimal moneyPaid;
 	private String payCode;
-	private String payName;
+	//private String payName;
 }

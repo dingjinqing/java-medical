@@ -9,6 +9,11 @@ package com.vpu.mp.service.pojo.shop.operation;
 public class RecordContentMessage {
 
     public static final String GOODS_CONTENT_ADD = "goods.content.add";
-
+    
+    /**
+     * 	订单
+     */
+    /**发货*/
+    public static final String ORDER_SHIP = "order_ship";
 
 }

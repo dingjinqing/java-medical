@@ -18,5 +18,6 @@ public class StoreOrderPageListQueryParam {
 	private Timestamp payTimeEnd;
 	private String userName;
 	private Integer storeId;
+	/**订单状态:0未支付,1已支付,2已退款*/
 	private Byte[] orderStatus;
 }

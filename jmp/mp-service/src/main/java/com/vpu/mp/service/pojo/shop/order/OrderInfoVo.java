@@ -3,6 +3,7 @@ package com.vpu.mp.service.pojo.shop.order;
 import java.sql.Timestamp;
 import java.util.List;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.vpu.mp.service.pojo.shop.order.refund.OrderConciseRefundInfoVo;
 import com.vpu.mp.service.pojo.shop.order.shipping.ShippingInfoVo;
 
@@ -29,14 +30,15 @@ public class OrderInfoVo extends OrderListInfoVo {
 	/**确认收货时间*/
 	private Timestamp confirmTime;
 	/**下单人昵称*/
-	private String userName;
+	private String username;
 	/**下单人手机号*/
-	private String userMobile;
+	private String mobile;
 	/**完整收货地址*/
 	private String completeAddress;
 	/**买家留言*/
 	private String addMessage;
 	/**快递单号:后台判断是否查询配送信息依据之一*/
+	@JsonIgnore
 	private String shippingNo;
 	/**快递信息*/
 	private List<ShippingInfoVo> shippingList;

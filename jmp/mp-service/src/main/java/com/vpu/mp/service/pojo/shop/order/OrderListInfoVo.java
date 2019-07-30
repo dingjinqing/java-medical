@@ -24,7 +24,7 @@ public class OrderListInfoVo {
 	private List<? extends OrderListInfoVo> childOrders;
 	private List<? extends OrderGoodsVo> goods;
 	private Byte orderStatus;
-	private String orderStatusName;
+	//private String orderStatusName;
 	/** 收件人姓名 */
 	private String consignee;
 	/** 收件人手机 */
@@ -32,11 +32,11 @@ public class OrderListInfoVo {
 	/** 支付方式 */
 	private String payCode;
 	/** 支付名称 */
-	private String payName;
+	//private String payName;
 	/** 配送方式:0 快递 1 自提 */
 	private Byte deliverType;
 	/** 配送类型名称 */
-	private String deliverTypeName;
+	//private String deliverTypeName;
 	/** 下单时间 */
 	private Timestamp createTime;
 	/** 快递费金额 */
@@ -44,5 +44,5 @@ public class OrderListInfoVo {
 	/** 支付金额 */
 	private BigDecimal moneyPaid;
 	/**是否部分发货:0否，1是*/
-	private Byte part_ship_flag;
+	private Byte partShipFlag;
 }

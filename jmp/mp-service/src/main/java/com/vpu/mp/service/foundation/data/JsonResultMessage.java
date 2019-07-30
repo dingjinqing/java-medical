@@ -188,6 +188,12 @@ public class JsonResultMessage {
 	final public static String OVERVIEW_MALL_BING_UNBING_FAILED = "overview.mall.bind.unbind.failed";
 	final public static String OVERVIEW_MALL_TODOITEM_GET_FAILED = "overview.mall.todoitem.get.failed";
 	
-	
+	/**
+	 * 订单
+	 */
+	final public static String MSG_ORDER = "order";
+	final public static String MSG_ORDER_REMARK_ORDERSN_NOT_NULL = "order_remark_ordersn_not_null";
+	final public static String MSG_ORDER_REMARK_NOT_NULL = "order_remark_not_null";
+	final public static String MSG_ORDER_REMARK_TYPE_NOT_NULL = "order_remark_type_not_null";
 
 }

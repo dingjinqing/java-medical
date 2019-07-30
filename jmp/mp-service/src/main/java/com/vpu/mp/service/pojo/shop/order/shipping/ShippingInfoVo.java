@@ -50,64 +50,7 @@ public class ShippingInfoVo {
 	private String sendNumber;
 	@Override
 	public boolean equals(Object obj) {
-		if (this == obj)
-			return true;
-		if (obj == null)
-			return false;
-		if (getClass() != obj.getClass())
-			return false;
-		ShippingInfoVo other = (ShippingInfoVo) obj;
-		if (Goods == null) {
-			if (other.Goods != null)
-				return false;
-		} else if (!Goods.equals(other.Goods))
-			return false;
-		if (confirmTime == null) {
-			if (other.confirmTime != null)
-				return false;
-		} else if (!confirmTime.equals(other.confirmTime))
-			return false;
-		if (goodsAttr == null) {
-			if (other.goodsAttr != null)
-				return false;
-		} else if (!goodsAttr.equals(other.goodsAttr))
-			return false;
-		if (goodsName == null) {
-			if (other.goodsName != null)
-				return false;
-		} else if (!goodsName.equals(other.goodsName))
-			return false;
-		if (orderSn == null) {
-			if (other.orderSn != null)
-				return false;
-		} else if (!orderSn.equals(other.orderSn))
-			return false;
-		if (recId == null) {
-			if (other.recId != null)
-				return false;
-		} else if (!recId.equals(other.recId))
-			return false;
-		if (sendNumber == null) {
-			if (other.sendNumber != null)
-				return false;
-		} else if (!sendNumber.equals(other.sendNumber))
-			return false;
-		if (shippingName == null) {
-			if (other.shippingName != null)
-				return false;
-		} else if (!shippingName.equals(other.shippingName))
-			return false;
-		if (shippingNo == null) {
-			if (other.shippingNo != null)
-				return false;
-		} else if (!shippingNo.equals(other.shippingNo))
-			return false;
-		if (shippingTime == null) {
-			if (other.shippingTime != null)
-				return false;
-		} else if (!shippingTime.equals(other.shippingTime))
-			return false;
-		return true;
+		return ((ShippingInfoVo)obj).getShippingNo().equals(shippingNo) ? true : false;
 	}
 
 	@Override

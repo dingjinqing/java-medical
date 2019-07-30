@@ -25,7 +25,6 @@ import org.jooq.SelectJoinStep;
 import org.jooq.SelectWhereStep;
 import org.jooq.impl.DSL;
 import org.jooq.tools.StringUtils;
-import org.jooq.types.UShort;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
@@ -230,6 +229,7 @@ public class OrderReadService extends ShopBaseService {
 	  * @return
 	  */
 	 public SelectWhereStep<?> activeBuildOptions(SelectJoinStep<?> select, OrderPageListQueryParam param) {
+
 		return select;
 	 }
 	 
@@ -392,7 +392,7 @@ public class OrderReadService extends ShopBaseService {
 			if(count != null){
 				int finalCount = orderOoods.getGoodsNumber().intValue() - count;
 				if(finalCount > 0 ) {
-					orderOoods.setGoodsNumber(UShort.valueOf(finalCount));
+					orderOoods.setGoodsNumber(finalCount);
 				}else {
 					iter.remove();
 				}

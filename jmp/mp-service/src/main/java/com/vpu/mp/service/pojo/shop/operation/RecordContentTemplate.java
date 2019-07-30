@@ -12,8 +12,11 @@ import lombok.Getter;
 @Getter
 public enum   RecordContentTemplate {
 
-    GOODS_CONTENT_ADD(2001,RecordContentMessage.GOODS_CONTENT_ADD);
-
+    GOODS_CONTENT_ADD(2001,RecordContentMessage.GOODS_CONTENT_ADD),
+	
+	/**订单*/
+	ORDER_SHIP(3001,RecordContentMessage.ORDER_SHIP);
+	
     /**
      * 得到返回码
 	 */
