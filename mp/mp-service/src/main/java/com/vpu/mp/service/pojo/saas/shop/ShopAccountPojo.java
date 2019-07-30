@@ -7,6 +7,7 @@ package com.vpu.mp.service.pojo.saas.shop;
 import java.math.BigDecimal;
 import java.sql.Timestamp;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import lombok.Data;
 
@@ -19,6 +20,7 @@ import lombok.Data;
 public class ShopAccountPojo {
     private Integer   sysId;
     private String    userName;
+    @JsonIgnore
     private String    password;
     private Byte      state;
     private Byte      businessState;

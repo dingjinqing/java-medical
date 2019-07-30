@@ -50,10 +50,7 @@ public class SystemShopAccountController extends SystemBaseController {
 			sap.setShopNumber(saas.shop.renew.getShopNumber((Integer) sap.getSysId()));
 			sap.setRenewMoney(saas.shop.renew.getRenewTotal((Integer) sap.getSysId()));
 		}
-		ShopAccountResp shopAccountResp = new ShopAccountResp();
-		shopAccountResp.setDataList(result.dataList);
-		shopAccountResp.setPage(result.page);
-		return success(shopAccountResp);
+		return success(result);
 	}
 	
 	

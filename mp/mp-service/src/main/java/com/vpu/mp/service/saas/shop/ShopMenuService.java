@@ -25,9 +25,9 @@ import com.vpu.mp.service.pojo.saas.shop.version.VersionMainConfig;
 public class ShopMenuService extends MainBaseService {
 
 
-	final protected String menuJson = "menu/admin/admin.authorityNew.json";
-	final protected String authorityJson = "menu/admin/admin.privilegePassNew.json";
-	final protected String versionJson = "menu/admin/admin.versionNew.json";
+	final protected String menuJson = "admin.authorityNew.json";
+	final protected String authorityJson = "admin.privilegePassNew.json";
+	final protected String versionJson = "admin.versionNew.json";
 
 	private static final String PRNAMELIST = "prNameList";
 

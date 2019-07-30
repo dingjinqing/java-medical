@@ -6,12 +6,13 @@ import com.vpu.mp.service.foundation.service.MainBaseService;
 import com.vpu.mp.service.foundation.util.Util;
 import com.vpu.mp.service.pojo.shop.overview.*;
 import org.apache.commons.lang3.StringUtils;
+import org.jooq.Record1;
 import org.jooq.Select;
 import org.jooq.SortField;
 import org.springframework.stereotype.Service;
 
+import java.sql.Timestamp;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -85,7 +86,7 @@ public class ShopOverviewService extends MainBaseService {
         //店铺版本
         Shop shop = Shop.SHOP.as("shop");
         ShopVersion sv = ShopVersion.SHOP_VERSION.as("sv");
-        Select select = db().select(shop.SHOP_TYPE).from(shop).where(shop.SHOP_ID.eq(param.getShopId()));
+        Select<Record1<String>> select = db().select(shop.SHOP_TYPE).from(shop).where(shop.SHOP_ID.eq(param.getShopId()));
         List<ShopBaseInfoVo> infoVos = db().select(sv.VERSION_NAME).from(sv).where(sv.LEVEL.eq(select))
                 .fetchInto(ShopBaseInfoVo.class);
         shopBaseInfoVo.setVersionName(infoVos!=null&&!infoVos.isEmpty() ? infoVos.get(0).getVersionName() : null);
@@ -100,9 +101,8 @@ public class ShopOverviewService extends MainBaseService {
      * @param param
      */
     public List<FixedAnnouncementVo> getFixedAnnouncement(FixedAnnouncementParam param){
-        SortField orderBy = "asc".equals(param.getOrderBy()) ? Article.ARTICLE.CREATE_TIME.asc() : Article.ARTICLE.CREATE_TIME.desc();
-        List<FixedAnnouncementVo> listVo = new ArrayList<>();
-        listVo = db().select(Article.ARTICLE.TITLE,Article.ARTICLE.CREATE_TIME)
+        SortField<Timestamp> orderBy = "asc".equals(param.getOrderBy()) ? Article.ARTICLE.CREATE_TIME.asc() : Article.ARTICLE.CREATE_TIME.desc();
+        List<FixedAnnouncementVo> listVo = db().select(Article.ARTICLE.TITLE,Article.ARTICLE.CREATE_TIME)
                 .from(Article.ARTICLE)
                 .where(Article.ARTICLE.STATUS.eq((byte)1))
                 .and(Article.ARTICLE.CATEGORY_ID.eq(param.getCategoryId()))

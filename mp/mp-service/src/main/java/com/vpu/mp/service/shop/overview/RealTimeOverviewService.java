@@ -106,7 +106,7 @@ public class RealTimeOverviewService extends ShopBaseService {
                 .having(Trades.TRADES.REF_DATE.eq(new java.sql.Date(Util.getEarlyDate(new Date(),0).getTime()))
                         .or(Trades.TRADES.REF_DATE.eq(new java.sql.Date(Util.getEarlyDate(new Date(),-1).getTime()))))
                 .fetchInto(Tuple2.class);
-        if(!Util.isEmpty(tuple2s) && tuple2s.size() == 2){
+        if(!Util.isEmpty(tuple2s)){
             realTimeVo.setPageViews(new Tuple2<>(Long.valueOf(tuple2s.get(1).getE1().toString()),Long.valueOf(tuple2s.get(0).getE1().toString())));
             realTimeVo.setPayOrderNum(new Tuple2<>(Integer.valueOf(tuple2s.get(1).getE2().toString()),Integer.valueOf(tuple2s.get(0).getE2().toString())));
         }
@@ -152,10 +152,10 @@ public class RealTimeOverviewService extends ShopBaseService {
                 ,cast(us.ORDER_USER_DATA.div(us.LOGIN_DATA),Double.class).as("uv2Paid")
                 ,cast(us.TOTAL_PAID_MONEY.div(us.ORDER_USER_DATA),Double.class).as("pct"))
                 .from(us)
-                .where(true);
+                .where();
         return conditionStep;
     }
-    public double div(Object divisor,Object divided){
+    public static double div(Object divisor,Object divided){
         if(Objects.isNull(divisor)||Objects.isNull(divided)){
             return 0.0;
         }

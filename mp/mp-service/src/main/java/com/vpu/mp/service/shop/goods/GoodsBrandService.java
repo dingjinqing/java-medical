@@ -253,14 +253,15 @@ public class GoodsBrandService extends ShopBaseService {
      * @return
      */
     public PageResult<GoodsBrandClassifyVo> getBrandClassifyList(GoodsBrandClassifyParam param) {
-        SelectOnConditionStep<Record4<Integer, String, Timestamp, Integer>> selectFrom =
-                db().select(BRAND_CLASSIFY.CLASSIFY_ID, BRAND_CLASSIFY.CLASSIFY_NAME, BRAND_CLASSIFY.CREATE_TIME,
-                        DSL.count(GOODS_BRAND.ID).as(BRAND_NUM))
-                        .from(BRAND_CLASSIFY).leftJoin(GOODS_BRAND).on(BRAND_CLASSIFY.CLASSIFY_ID.eq(GOODS_BRAND.CLASSIFY_ID));
+
+        SelectOnConditionStep<Record5<Integer, String, Timestamp, Short, Integer>> selectFrom = db().select(BRAND_CLASSIFY.CLASSIFY_ID, BRAND_CLASSIFY.CLASSIFY_NAME, BRAND_CLASSIFY.CREATE_TIME,
+                BRAND_CLASSIFY.FIRST,
+                DSL.count(GOODS_BRAND.ID).as(BRAND_NUM))
+                .from(BRAND_CLASSIFY).leftJoin(GOODS_BRAND).on(BRAND_CLASSIFY.CLASSIFY_ID.eq(GOODS_BRAND.CLASSIFY_ID));
 
         SelectConditionStep<?> select = this.buildBrandClassifyCondition(selectFrom, param);
 
-        select.groupBy(BRAND_CLASSIFY.CLASSIFY_ID, BRAND_CLASSIFY.CLASSIFY_NAME, BRAND_CLASSIFY.CREATE_TIME);
+        select.groupBy(BRAND_CLASSIFY.CLASSIFY_ID, BRAND_CLASSIFY.CLASSIFY_NAME,BRAND_CLASSIFY.FIRST, BRAND_CLASSIFY.CREATE_TIME);
         select.orderBy(BRAND_CLASSIFY.FIRST.desc(), BRAND_CLASSIFY.CREATE_TIME.desc());
 
         PageResult<GoodsBrandClassifyVo> pageResult = this.getPageResult(select, param.getCurrentPage(), param.getPageRows(), GoodsBrandClassifyVo.class);

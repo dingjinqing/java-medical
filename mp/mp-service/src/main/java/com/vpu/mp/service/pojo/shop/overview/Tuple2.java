@@ -38,8 +38,12 @@ public class Tuple2<E1,E2> implements Iterable<Object>, Serializable {
 
     @Override
     public boolean equals(Object o) {
-        if (this == o) return true;
-        if (!(o instanceof Tuple2)) return false;
+        if (this == o) {
+            return true;
+        }
+        if (!(o instanceof Tuple2)){
+            return false;
+        }
         Tuple2<?, ?> tuple2 = (Tuple2<?, ?>) o;
         return Objects.equals(getE1(), tuple2.getE1()) &&
                 Objects.equals(getE2(), tuple2.getE2());
