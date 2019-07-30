@@ -193,12 +193,12 @@
           <el-button
             type="primary"
             size="small"
-          >主要按钮</el-button>
+          >筛选</el-button>
           <el-button
             type="info"
             size="small"
             plain
-          >信息按钮</el-button>
+          >会员导出</el-button>
         </li>
       </ul>
 
@@ -216,7 +216,6 @@
           </div>
         </li>
       </ul>
-      <proAndUrbA />
     </div>
 
     <!--底部表格-->
@@ -253,7 +252,7 @@
 
               </td>
               <td :class="isCenterFlag?'tdCenter':''">
-                <span>{{item.name}}</span>
+                <span style="color: #5A8BFF;cursor:pointer">{{item.name}}</span>
 
               </td>
               <td class="tb_decorate_a">
@@ -263,13 +262,21 @@
                 {{item.person}}
               </td>
               <td class="tb_decorate_a">
-                {{item.balance}}
+                <span class="plusSpan">{{item.balance}}</span>
+                <img :src="plusImg">
               </td>
               <td class="tb_decorate_a">
-                {{item.integral}}
+                <span class="plusSpan">{{item.integral}}</span>
+                <img :src="plusImg">
               </td>
               <td class="tb_decorate_a">
-                {{item.membershipCard}}
+                <div class="member">
+                  <span>{{item.membershipCard}}</span>
+                  <div>
+                    <span>设置</span>
+                    <span style="margin-top:8px">更多</span>
+                  </div>
+                </div>
               </td>
               <td class="tb_decorate_a">
                 {{item.from}}
@@ -279,6 +286,18 @@
 
               </td>
               <td class="tb_decorate_a">
+                <div class="lastDiv">
+                  <span>余额明细</span>
+                  <span>积分明细</span>
+                  <span>禁止登陆</span>
+                </div>
+                <div
+                  class="lastDiv"
+                  style="margin-top:5px"
+                >
+                  <span>打标签</span>
+                  <span>查看详情</span>
+                </div>
               </td>
             </tr>
           </tbody>
@@ -291,7 +310,7 @@
             <el-checkbox v-model="allChecked">全选</el-checkbox>
             <div style="margin-left:50px">
               <el-select
-                v-model="value"
+                v-model="value_one"
                 placeholder="请选择"
                 size="small"
               >
@@ -306,7 +325,7 @@
             </div>
             <div style="margin:0 10px">
               <el-select
-                v-model="value"
+                v-model="value_two"
                 placeholder="请选择"
                 size="small"
               >
@@ -321,7 +340,7 @@
             </div>
             <div style="margin:0 10px">
               <el-select
-                v-model="value"
+                v-model="value_three"
                 placeholder="请选择"
                 size="small"
               >
@@ -336,7 +355,7 @@
             </div>
             <div style="margin:0 10px">
               <el-select
-                v-model="value"
+                v-model="value_four"
                 placeholder="请选择"
                 size="small"
               >
@@ -351,7 +370,7 @@
             </div>
             <div style="margin:0 10px">
               <el-select
-                v-model="value"
+                v-model="value_five"
                 placeholder="请选择"
                 size="small"
               >
@@ -383,10 +402,9 @@
   </div>
 </template>
 <script>
-import proAndUrbA from '@/components/system/proAndUrbA'
 import ChoosingGoods from '@/components/admin/choosingGoods'
 export default {
-  components: { ChoosingGoods, proAndUrbA },
+  components: { ChoosingGoods },
   data () {
     return {
       phoneNum: '',
@@ -447,7 +465,7 @@ export default {
           person: '帅飞',
           balance: '1.00',
           integral: '1000',
-          membershipCard: '',
+          membershipCard: '限次卡核销服务',
           from: '后台',
           date: '2019-07-30 10:41:31',
           ischecked: false
@@ -662,7 +680,26 @@ export default {
         value: '选项3',
         label: '蚵仔煎'
       }],
-      currentPage3: 1
+      currentPage3: 1,
+      value_one: '',
+      value_two: '',
+      value_three: '',
+      value_four: '',
+      value_five: '',
+      plusImg: this.$imageHost + '/image/admin/add_some.png'
+    }
+  },
+  watch: {
+    allChecked (newData) {
+      if (newData === true) {
+        this.trList.map((item, index) => {
+          item.ischecked = true
+        })
+      } else {
+        this.trList.map((item, index) => {
+          item.ischecked = false
+        })
+      }
     }
   },
   mounted () {
@@ -933,6 +970,12 @@ td {
   text-align: center;
   font-size: 12px;
 }
+.plusSpan {
+  /* display: inline-block;
+  margin-top: -3px; */
+  position: relative;
+  top: -3px;
+}
 img {
   margin-left: 10px;
 }
@@ -984,6 +1027,31 @@ img {
   display: flex;
   justify-content: flex-end;
   align-items: center;
+}
+.tb_decorate_a img {
+  margin-left: 15px;
+  cursor: pointer;
+}
+.member {
+  display: flex;
+  justify-content: space-between;
+}
+.member > div {
+  display: flex;
+  flex-direction: column;
+  color: #5a8bff;
+}
+.member > div > span {
+  cursor: pointer;
+}
+.lastDiv {
+  padding: 5px 0 5px 50px;
+  text-align: left;
+  color: #5a8bff;
+}
+.lastDiv span {
+  cursor: pointer;
+  margin-right: 10px;
 }
 </style>
 <style>
