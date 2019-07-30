@@ -3,7 +3,7 @@ package com.vpu.mp.service.shop.config;
 import com.vpu.mp.db.shop.tables.Payment;
 import com.vpu.mp.service.pojo.shop.config.trade.OrderProcessParam;
 import com.vpu.mp.service.pojo.shop.config.trade.PaymentConfigVo;
-import org.springframework.context.annotation.Scope;
+
 import org.springframework.stereotype.Service;
 
 import java.util.List;

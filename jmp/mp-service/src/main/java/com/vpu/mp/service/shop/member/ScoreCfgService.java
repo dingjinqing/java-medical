@@ -19,7 +19,7 @@ import com.vpu.mp.service.pojo.shop.member.ScoreCfgVo;
 import com.vpu.mp.service.pojo.shop.member.ShopCfgParam;
 import com.vpu.mp.service.shop.config.BaseShopConfigService;
 import com.vpu.mp.service.pojo.shop.member.UserScoreSetValue;
-import org.springframework.context.annotation.Scope;
+
 import org.springframework.stereotype.Service;
 
 /**

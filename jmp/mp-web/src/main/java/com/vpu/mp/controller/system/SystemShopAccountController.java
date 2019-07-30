@@ -12,7 +12,6 @@ import com.vpu.mp.service.foundation.data.JsonResultCode;
 import com.vpu.mp.service.foundation.util.PageResult;
 import com.vpu.mp.service.pojo.saas.shop.ShopAccountListQueryParam;
 import com.vpu.mp.service.pojo.saas.shop.ShopAccountPojo;
-import com.vpu.mp.service.pojo.shop.auth.ShopAccountResp;
 
 /**
  * 

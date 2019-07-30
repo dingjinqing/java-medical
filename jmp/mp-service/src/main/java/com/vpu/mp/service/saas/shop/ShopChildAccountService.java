@@ -31,7 +31,7 @@ import com.vpu.mp.service.pojo.shop.config.group.ShopChildAccountVo;
 import com.vpu.mp.service.pojo.shop.config.group.ShopRoleAddListVo;
 import com.vpu.mp.service.pojo.shop.config.group.ShopRoleAddParam;
 import com.vpu.mp.service.pojo.shop.config.group.ShopRoleUpdateParam;
-import org.springframework.context.annotation.Scope;
+
 import org.springframework.stereotype.Service;
 
 /**

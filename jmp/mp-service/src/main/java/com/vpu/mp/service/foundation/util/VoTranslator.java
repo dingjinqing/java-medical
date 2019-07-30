@@ -33,7 +33,6 @@ public class VoTranslator {
      *
      * @param object 出参对象
      */
-    @SuppressWarnings("unchecked")
     public void translateFields(Object object) {
         if (null == object) {
             return;

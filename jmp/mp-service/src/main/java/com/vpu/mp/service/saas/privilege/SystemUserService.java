@@ -5,7 +5,7 @@ import com.vpu.mp.db.main.tables.records.SystemUserRecord;
 import com.vpu.mp.service.foundation.service.MainBaseService;
 import com.vpu.mp.service.foundation.util.Util;
 
-import org.springframework.context.annotation.Scope;
+
 import org.springframework.stereotype.Service;
 
 /**

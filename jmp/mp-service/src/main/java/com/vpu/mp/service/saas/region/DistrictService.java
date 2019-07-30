@@ -1,16 +1,15 @@
 package com.vpu.mp.service.saas.region;
 
-import org.jooq.Record;
-import org.jooq.Result;
-
 import static com.vpu.mp.db.main.tables.DictCity.DICT_CITY;
 import static com.vpu.mp.db.main.tables.DictDistrict.DICT_DISTRICT;
 import static com.vpu.mp.db.main.tables.DictProvince.DICT_PROVINCE;
+
+import org.jooq.Record;
+import org.jooq.Result;
+import org.springframework.stereotype.Service;
+
 import com.vpu.mp.db.main.tables.records.DictDistrictRecord;
 import com.vpu.mp.service.foundation.service.MainBaseService;
-
-import org.springframework.context.annotation.Scope;
-import org.springframework.stereotype.Service;
 
 /**
  * 

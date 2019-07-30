@@ -120,8 +120,8 @@ public class CommodityStatisticsService extends ShopBaseService {
         }
 
         /** 条件连表查询，根据不同的条件构造出不同阶段的select */
-        SelectJoinStep joinStep;/** 构造连表条件，不同的条件连接不同的表 */
-        SelectConditionStep conditionStep;/** 构造筛选条件 */
+        SelectJoinStep<?> joinStep;/** 构造连表条件，不同的条件连接不同的表 */
+        SelectConditionStep<?> conditionStep;/** 构造筛选条件 */
 
         if (param.getLabelId() > 0){
             joinStep = db().select(countDistinct(gb.GOODS_ID)).from(gb).leftJoin(glc).on(gb.GOODS_ID.eq(glc.GTA_ID));
@@ -138,8 +138,8 @@ public class CommodityStatisticsService extends ShopBaseService {
         Goods g = Goods.GOODS.as("g");
         GoodsLabelCouple glc = GoodsLabelCouple.GOODS_LABEL_COUPLE.as("glc");
         /** 条件连表查询，根据不同的条件构造出不同阶段的select */
-        SelectJoinStep joinStep;/** 构造连表条件，不同的条件连接不同的表 */
-        SelectConditionStep conditionStep;/** 构造筛选条件 */
+        SelectJoinStep<?> joinStep;/** 构造连表条件，不同的条件连接不同的表 */
+        SelectConditionStep<?> conditionStep;/** 构造筛选条件 */
 
         /** 基本筛选条件 */
         Condition baseCondition = ugr.CREATE_TIME.greaterOrEqual(new Timestamp(param.getStartTime().getTime()))
@@ -179,8 +179,8 @@ public class CommodityStatisticsService extends ShopBaseService {
         Goods g = Goods.GOODS.as("g");
         GoodsLabelCouple glc = GoodsLabelCouple.GOODS_LABEL_COUPLE.as("glc");
         /** 条件连表查询，根据不同的条件构造出不同阶段的select */
-        SelectJoinStep joinStep;/** 构造连表条件，不同的条件连接不同的表 */
-        SelectConditionStep conditionStep;/** 构造筛选条件 */
+        SelectJoinStep<?> joinStep;/** 构造连表条件，不同的条件连接不同的表 */
+        SelectConditionStep<?> conditionStep;/** 构造筛选条件 */
 
         /** 基本筛选条件 */
         Condition baseCondition = ugr.CREATE_TIME.greaterOrEqual(new Timestamp(param.getStartTime().getTime()))
@@ -220,8 +220,8 @@ public class CommodityStatisticsService extends ShopBaseService {
         Goods g = Goods.GOODS.as("g");
         GoodsLabelCouple glc = GoodsLabelCouple.GOODS_LABEL_COUPLE.as("glc");
         /** 条件连表查询，根据不同的条件构造出不同阶段的select */
-        SelectJoinStep joinStep;/** 构造连表条件，不同的条件连接不同的表 */
-        SelectConditionStep conditionStep;/** 构造筛选条件 */
+        SelectJoinStep<?> joinStep;/** 构造连表条件，不同的条件连接不同的表 */
+        SelectConditionStep<?> conditionStep;/** 构造筛选条件 */
 
         /** 基本筛选条件 */
         Condition baseCondition = ugr.CREATE_TIME.greaterOrEqual(new Timestamp(param.getStartTime().getTime()))
@@ -261,8 +261,8 @@ public class CommodityStatisticsService extends ShopBaseService {
         Goods g = Goods.GOODS.as("g");
         GoodsLabelCouple glc = GoodsLabelCouple.GOODS_LABEL_COUPLE.as("glc");
         /** 条件连表查询，根据不同的条件构造出不同阶段的select */
-        SelectJoinStep joinStep;/** 构造连表条件，不同的条件连接不同的表 */
-        SelectConditionStep conditionStep;/** 构造筛选条件 */
+        SelectJoinStep<?> joinStep;/** 构造连表条件，不同的条件连接不同的表 */
+        SelectConditionStep<?> conditionStep;/** 构造筛选条件 */
 
         /** 基本筛选条件 */
         Condition baseCondition = ucr.CREATE_TIME.greaterOrEqual(new Timestamp(param.getStartTime().getTime()))
@@ -302,8 +302,8 @@ public class CommodityStatisticsService extends ShopBaseService {
         Goods g = Goods.GOODS.as("g");
         GoodsLabelCouple glc = GoodsLabelCouple.GOODS_LABEL_COUPLE.as("glc");
         /** 条件连表查询，根据不同的条件构造出不同阶段的select */
-        SelectJoinStep joinStep;/** 构造连表条件，不同的条件连接不同的表 */
-        SelectConditionStep conditionStep;/** 构造筛选条件 */
+        SelectJoinStep<?> joinStep;/** 构造连表条件，不同的条件连接不同的表 */
+        SelectConditionStep<?> conditionStep;/** 构造筛选条件 */
 
         /** 基本筛选条件 */
         Condition baseCondition = ucr.CREATE_TIME.greaterOrEqual(new Timestamp(param.getStartTime().getTime()))
@@ -348,7 +348,7 @@ public class CommodityStatisticsService extends ShopBaseService {
         /** 必要筛选条件 */
         Condition baseCondition = (GOODS_SUMMARY.REF_DATE.eq(new Date(Util.getEarlyTimeStamp(new java.util.Date(),-1).getTime())))
                 .and(GOODS_SUMMARY.TYPE.eq(param.getDynamicDate()));
-        SelectJoinStep joinStep = db().select(GOODS_SUMMARY.GOODS_ID
+        SelectJoinStep<?> joinStep = db().select(GOODS_SUMMARY.GOODS_ID
                 ,GOODS.GOODS_NAME
                 ,GOODS.GOODS_IMG
                 ,GOODS.SHOP_PRICE
@@ -386,7 +386,7 @@ public class CommodityStatisticsService extends ShopBaseService {
         Condition baseCondition = (GOODS_SUMMARY.REF_DATE.greaterOrEqual(new Date(param.getStartTime().getTime())))
                 .and(GOODS_SUMMARY.REF_DATE.lessThan(new Date(param.getEndTime().getTime())))
                 .and(GOODS_SUMMARY.TYPE.eq((byte)1));
-        SelectJoinStep joinStep = db().select(max(GOODS_SUMMARY.GOODS_ID).as("goodsId")
+        SelectJoinStep<?> joinStep = db().select(max(GOODS_SUMMARY.GOODS_ID).as("goodsId")
                 ,max(GOODS.GOODS_NAME).as("goodsName")
                 ,max(GOODS.GOODS_IMG).as("goodsImg")
                 ,max(GOODS.SHOP_PRICE).as("shopPrice")
@@ -417,13 +417,13 @@ public class CommodityStatisticsService extends ShopBaseService {
      * @param isFixedDay true为指定时间，false为自定义时间
      * @return
      */
-    public SelectLimitStep createEffectSelect(ProductEffectParam param,SelectJoinStep joinStep,Condition baseCondition,boolean isFixedDay){
+    public SelectLimitStep<?> createEffectSelect(ProductEffectParam param,SelectJoinStep<?> joinStep,Condition baseCondition,boolean isFixedDay){
         /** 按照goods_id分组求和各个字段的值 */
 
         Optional<String> field = Optional.ofNullable(param.getOrderByField());
         Optional<String> sortType = Optional.ofNullable(param.getOrderByType());
         /** 动态排序字段，规则 */
-        SortField sortField = getSortField(field,sortType);
+        SortField<?> sortField = getSortField(field,sortType);
 
         /** 查询筛选条件，商品品牌，商家分类 */
         Condition brandCondition = GOODS.BRAND_ID.eq(param.getBrandId());
@@ -440,8 +440,8 @@ public class CommodityStatisticsService extends ShopBaseService {
         }
 
         /** 条件连表查询，根据不同的条件构造出不同阶段的select */
-        SelectConditionStep conditionStep;/** 构造筛选条件 */
-        SelectLimitStep limitStep;/** 完善筛选条件 */
+        SelectConditionStep<?> conditionStep;/** 构造筛选条件 */
+        SelectLimitStep<?> limitStep;/** 完善筛选条件 */
 
         if (param.getLabelId() > 0){
             conditionStep = joinStep.leftJoin(GOODS_LABEL_COUPLE)
@@ -455,7 +455,7 @@ public class CommodityStatisticsService extends ShopBaseService {
     }
 
     public Workbook export2Excel(ProductEffectParam param){
-        SelectLimitStep limitStep = createEffectSelect(param,db().select(GOODS_SUMMARY.GOODS_ID
+        SelectLimitStep<?> limitStep = createEffectSelect(param,db().select(GOODS_SUMMARY.GOODS_ID
                 ,GOODS.GOODS_NAME
                 ,GOODS.GOODS_IMG
                 ,GOODS.SHOP_PRICE

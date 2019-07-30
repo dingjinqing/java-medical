@@ -60,7 +60,8 @@ public class ShopMenuService extends MainBaseService {
 		String json = Util.loadResource(authorityJson);
 
 		ArrayList<?> list = Util.parseJson(json, ArrayList.class);
-		Map<String, ?> map = (HashMap) list.get(0);
+		@SuppressWarnings("unchecked")
+		Map<String, ?> map = (Map<String, ?>) list.get(0);
 		String preName = (String) map.get("prName");
 		if (PRNAMELIST.equals(preName)) {
 			List<?> prNameList = (List<?>) map.get("includeApi");
@@ -121,6 +122,7 @@ public class ShopMenuService extends MainBaseService {
 	 * @param reqeName
 	 * @return
 	 */
+	@SuppressWarnings("unchecked")
 	public Boolean apiAccess(Integer roleId, String path, String reqeName) {
 		String[] privilegeList = roleId == 0 ? null : saas().shop.role.getPrivilegeList(roleId);
 		if (privilegeList == null) {
@@ -134,7 +136,8 @@ public class ShopMenuService extends MainBaseService {
 		String json = Util.loadResource(menuJson);
 
 		ArrayList<?> list = Util.parseJson(json, ArrayList.class);
-		Map<String, ?> map = (HashMap) list.get(0);
+		@SuppressWarnings("unchecked")
+		Map<String, ?> map = (Map<String, ?>) list.get(0);
 		String eName = (String) map.get("enName");
 		if (ENNAMELIST.equals(eName)) {
 			List<?> eNameList = (List<?>) map.get("includeApi");
@@ -202,6 +205,7 @@ public class ShopMenuService extends MainBaseService {
 	 * @param reqVsName
 	 * @return
 	 */
+	@SuppressWarnings({ "unchecked", "rawtypes" })
 	public JsonResultCode versionAccess(Integer shopId, String path, String reqEnName, String reqVsName) {
 		VersionConfig vConfig = saas().shop.version.mergeVersion(shopId);
 		if (vConfig == null) {
@@ -225,7 +229,7 @@ public class ShopMenuService extends MainBaseService {
 		}
 		// 查询对应的api
 		for (int i = 1; i < list.size(); i++) {
-			Map hashMap = list.get(i);
+			Map<String,Object> hashMap = (Map<String,Object>)list.get(i);
 			if (reqVsName.equals(hashMap.get("vsName")) && reqEnName.equals(hashMap.get("enName"))) {
 				versionJson = (List<String>) hashMap.get("includeApi");
 				// 有些特殊的功能在对应的api方法里校验。规定这些特殊的IncludeApi为空

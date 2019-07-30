@@ -7,14 +7,11 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.boot.autoconfigure.data.redis.RedisProperties.Jedis;
 import org.springframework.stereotype.Service;
 
 import com.vpu.mp.service.foundation.jedis.JedisManager;
-import com.vpu.mp.service.foundation.util.Util;
 
 import me.chanjar.weixin.common.error.WxErrorException;
-import me.chanjar.weixin.mp.api.WxMpService;
 import me.chanjar.weixin.mp.bean.kefu.WxMpKefuMessage;
 import me.chanjar.weixin.mp.bean.message.WxMpXmlMessage;
 import me.chanjar.weixin.mp.bean.message.WxMpXmlOutMessage;

@@ -1,24 +1,7 @@
 package com.vpu.mp.service.saas.shop;
 
-import com.vpu.mp.db.main.tables.records.ShopUploadedImageCategoryRecord;
-import com.vpu.mp.db.main.tables.records.ShopUploadedImageRecord;
-import com.vpu.mp.service.foundation.service.MainBaseService;
-import com.vpu.mp.service.foundation.util.PageResult;
-import com.vpu.mp.service.foundation.util.Util;
-import com.vpu.mp.service.pojo.saas.shop.image.*;
-import com.vpu.mp.service.pojo.shop.image.ImageDim;
-import com.vpu.mp.service.pojo.shop.image.UploadPath;
-import com.vpu.mp.service.shop.image.ImageService;
-import net.coobird.thumbnailator.Thumbnails;
-import org.jooq.Record;
-import org.jooq.Result;
-import org.jooq.SelectWhereStep;
-import org.jooq.SortField;
-import org.jooq.impl.DSL;
-import org.jooq.tools.StringUtils;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Scope;
-import org.springframework.stereotype.Service;
+import static com.vpu.mp.db.main.tables.ShopUploadedImage.SHOP_UPLOADED_IMAGE;
+import static com.vpu.mp.db.main.tables.ShopUploadedImageCategory.SHOP_UPLOADED_IMAGE_CATEGORY;
 
 import java.awt.image.BufferedImage;
 import java.io.File;
@@ -26,8 +9,30 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
-import static com.vpu.mp.db.main.tables.ShopUploadedImage.SHOP_UPLOADED_IMAGE;
-import static com.vpu.mp.db.main.tables.ShopUploadedImageCategory.SHOP_UPLOADED_IMAGE_CATEGORY;
+import org.jooq.Record;
+import org.jooq.Result;
+import org.jooq.SelectWhereStep;
+import org.jooq.SortField;
+import org.jooq.impl.DSL;
+import org.jooq.tools.StringUtils;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import com.vpu.mp.db.main.tables.records.ShopUploadedImageCategoryRecord;
+import com.vpu.mp.db.main.tables.records.ShopUploadedImageRecord;
+import com.vpu.mp.service.foundation.service.MainBaseService;
+import com.vpu.mp.service.foundation.util.PageResult;
+import com.vpu.mp.service.foundation.util.Util;
+import com.vpu.mp.service.pojo.saas.shop.image.ShopCategoryTreeItemVo;
+import com.vpu.mp.service.pojo.saas.shop.image.ShopCropImageParam;
+import com.vpu.mp.service.pojo.saas.shop.image.ShopImageCategoryParam;
+import com.vpu.mp.service.pojo.saas.shop.image.ShopImageListQueryParam;
+import com.vpu.mp.service.pojo.saas.shop.image.ShopUploadImageCatNameVo;
+import com.vpu.mp.service.pojo.shop.image.ImageDim;
+import com.vpu.mp.service.pojo.shop.image.UploadPath;
+import com.vpu.mp.service.shop.image.ImageService;
+
+import net.coobird.thumbnailator.Thumbnails;
 
 
 /**

@@ -17,7 +17,7 @@ import com.vpu.mp.service.foundation.util.PageResult;
 import com.vpu.mp.service.pojo.shop.decoration.PageCategoryListQueryParam;
 import com.vpu.mp.service.pojo.shop.decoration.PageClassificationPojo;
 import org.springframework.stereotype.Service;
-import org.springframework.context.annotation.Scope;
+
 
 
 /**

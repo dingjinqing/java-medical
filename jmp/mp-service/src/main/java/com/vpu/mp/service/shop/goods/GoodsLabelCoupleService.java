@@ -13,7 +13,7 @@ import com.vpu.mp.service.foundation.service.ShopBaseService;
 import com.vpu.mp.service.pojo.shop.goods.label.GoodsLabel;
 import com.vpu.mp.service.pojo.shop.goods.label.GoodsLabelCouple;
 import com.vpu.mp.service.pojo.shop.goods.label.GoodsLabelCoupleTypeEnum;
-import org.springframework.context.annotation.Scope;
+
 import org.springframework.stereotype.Service;
 
 /**

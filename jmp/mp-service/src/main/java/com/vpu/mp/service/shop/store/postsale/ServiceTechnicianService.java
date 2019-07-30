@@ -24,7 +24,7 @@ import com.vpu.mp.service.pojo.shop.store.postsale.TechnicianService;
 import com.vpu.mp.service.shop.store.schedule.TechnicianScheduleService;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Scope;
+
 import org.springframework.stereotype.Service;
 
 /**

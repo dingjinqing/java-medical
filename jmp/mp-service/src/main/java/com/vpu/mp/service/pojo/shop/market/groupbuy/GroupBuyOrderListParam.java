@@ -1,10 +1,10 @@
 package com.vpu.mp.service.pojo.shop.market.groupbuy;
 
-import com.vpu.mp.service.foundation.util.Page;
-import com.vpu.mp.service.pojo.shop.order.OrderListInfoVo;
-import lombok.Data;
-
 import java.sql.Timestamp;
+
+import com.vpu.mp.service.foundation.util.Page;
+
+import lombok.Data;
 
 /**
  * @author 孔德成

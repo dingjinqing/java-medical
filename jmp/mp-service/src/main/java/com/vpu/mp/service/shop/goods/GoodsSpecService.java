@@ -7,7 +7,7 @@ import com.vpu.mp.service.pojo.shop.goods.spec.GoodsSpec;
 import com.vpu.mp.service.pojo.shop.goods.spec.GoodsSpecVal;
 import org.jooq.DSLContext;
 import org.jooq.impl.DSL;
-import org.springframework.context.annotation.Scope;
+
 import org.springframework.stereotype.Service;
 
 import java.util.HashMap;

@@ -140,10 +140,10 @@ public class RealTimeOverviewService extends ShopBaseService {
                 .and(us.TYPE.eq((byte)1)).fetchInto(LineChartVo.class));
         return indicatorVo;
     }
-    public SelectConditionStep getConditonSelect(CoreIndicatorParam param){
+    public SelectConditionStep<?> getConditonSelect(CoreIndicatorParam param){
         UserSummaryTrend us = UserSummaryTrend.USER_SUMMARY_TREND.as("us");
         //select cast(order_user_data/login_data as decimal(4,2)) as uv_pay_ratio from b2c_user_summary_trend limit 10
-        SelectConditionStep conditionStep = db().select(us.REF_DATE.as("date")
+        SelectConditionStep<?> conditionStep = db().select(us.REF_DATE.as("date")
                 ,us.LOGIN_DATA.as("uv")
                 ,us.LOGIN_PV.as("pv")
                 ,us.ORDER_USER_DATA.as("payUserNum")

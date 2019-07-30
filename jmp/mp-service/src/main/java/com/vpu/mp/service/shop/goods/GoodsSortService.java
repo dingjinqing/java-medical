@@ -8,7 +8,7 @@ import org.jooq.*;
 import org.jooq.impl.DSL;
 import org.jooq.tools.StringUtils;
 import org.springframework.stereotype.Service;
-import org.springframework.context.annotation.Scope;
+
 
 import java.util.ArrayList;
 import java.util.List;

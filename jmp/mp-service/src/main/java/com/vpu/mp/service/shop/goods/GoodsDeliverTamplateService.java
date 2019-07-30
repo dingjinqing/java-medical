@@ -6,6 +6,7 @@ import java.util.List;
 
 import org.jooq.Record4;
 import org.jooq.SelectConditionStep;
+import org.springframework.stereotype.Service;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -16,8 +17,6 @@ import com.vpu.mp.service.pojo.shop.goods.deliver.GoodsDeliverIdParam;
 import com.vpu.mp.service.pojo.shop.goods.deliver.GoodsDeliverPageListParam;
 import com.vpu.mp.service.pojo.shop.goods.deliver.GoodsDeliverTemplateParam;
 import com.vpu.mp.service.pojo.shop.goods.deliver.GoodsDeliverTemplateVo;
-import org.springframework.context.annotation.Scope;
-import org.springframework.stereotype.Service;
 
 
 /**

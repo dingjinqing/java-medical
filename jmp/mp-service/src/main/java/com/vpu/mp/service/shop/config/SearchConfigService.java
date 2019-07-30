@@ -1,7 +1,7 @@
 package com.vpu.mp.service.shop.config;
 
 import com.vpu.mp.service.pojo.shop.config.SearchConfig;
-import org.springframework.context.annotation.Scope;
+
 import org.springframework.stereotype.Service;
 
 /**

@@ -17,6 +17,7 @@ import org.jooq.Record12;
 import org.jooq.Record13;
 import org.jooq.SelectConditionStep;
 import org.jooq.tools.StringUtils;
+import org.springframework.stereotype.Service;
 
 import com.vpu.mp.service.foundation.service.ShopBaseService;
 import com.vpu.mp.service.foundation.util.PageResult;
@@ -27,8 +28,6 @@ import com.vpu.mp.service.pojo.shop.goods.comment.GoodsCommentCheckListVo;
 import com.vpu.mp.service.pojo.shop.goods.comment.GoodsCommentIdParam;
 import com.vpu.mp.service.pojo.shop.goods.comment.GoodsCommentPageListParam;
 import com.vpu.mp.service.pojo.shop.goods.comment.GoodsCommentVo;
-import org.springframework.context.annotation.Scope;
-import org.springframework.stereotype.Service;
 
 /**
  * 商品评价

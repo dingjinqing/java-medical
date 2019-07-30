@@ -141,7 +141,7 @@ public class ExcelUtil {
      * @param clazz
      * @return
      */
-    public static CellType convertJavaType2CellType(Class clazz) {
+    public static CellType convertJavaType2CellType(Class<?> clazz) {
 
         CellType cellType = null;
 
@@ -173,7 +173,7 @@ public class ExcelUtil {
         return cellType;
     }
 
-    public static CellStyle getCellStyle(Class clazz,Workbook workbook){
+    public static CellStyle getCellStyle(Class<?> clazz,Workbook workbook){
         CellStyle cellStyle = null;
 
         if (Byte.class.equals(clazz) || byte.class.equals(clazz)) {

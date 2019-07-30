@@ -3,8 +3,13 @@ package com.vpu.mp.service.shop.member;
 import static com.vpu.mp.db.shop.Tables.ORDER_VERIFIER;
 import static com.vpu.mp.db.shop.Tables.USER;
 
-import org.jooq.*;
+import org.jooq.Field;
+import org.jooq.Record;
+import org.jooq.SelectJoinStep;
+import org.jooq.SelectWhereStep;
 import org.jooq.tools.StringUtils;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
 import com.vpu.mp.db.shop.tables.User;
 import com.vpu.mp.db.shop.tables.records.UserRecord;
@@ -16,12 +21,6 @@ import com.vpu.mp.service.pojo.shop.member.CommonMemberPageListQueryParam;
 import com.vpu.mp.service.pojo.shop.member.CommonMemberPageListQueryVo;
 import com.vpu.mp.service.pojo.shop.member.MemberInfoVo;
 import com.vpu.mp.service.pojo.shop.member.MemberPageListParam;
-
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Scope;
-import org.springframework.stereotype.Service;
-
-import java.sql.Timestamp;
 
 /**
  * 

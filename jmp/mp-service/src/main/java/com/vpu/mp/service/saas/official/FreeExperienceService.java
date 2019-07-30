@@ -1,24 +1,22 @@
 package com.vpu.mp.service.saas.official;
 
+import static com.vpu.mp.db.main.tables.ShopFreeExperience.SHOP_FREE_EXPERIENCE;
+
 import org.apache.commons.lang3.StringUtils;
 import org.jooq.Record;
 import org.jooq.SelectWhereStep;
 import org.jooq.UpdateSetFirstStep;
 import org.jooq.UpdateSetMoreStep;
+import org.springframework.stereotype.Service;
 
-import com.vpu.mp.service.pojo.saas.offical.FreeExperienceInfo;
-import com.vpu.mp.service.pojo.saas.offical.FreeExperiencePageListParam;
-import com.vpu.mp.service.pojo.saas.offical.ShopFreeExperience;
-import com.vpu.mp.service.pojo.saas.offical.ShopFreeExperienceOutPut;
 import com.vpu.mp.db.main.tables.records.ShopFreeExperienceRecord;
 import com.vpu.mp.service.foundation.service.MainBaseService;
 import com.vpu.mp.service.foundation.util.PageResult;
 import com.vpu.mp.service.foundation.util.Util;
-
-import org.springframework.context.annotation.Scope;
-import org.springframework.stereotype.Service;
-
-import static com.vpu.mp.db.main.tables.ShopFreeExperience.SHOP_FREE_EXPERIENCE;
+import com.vpu.mp.service.pojo.saas.offical.FreeExperienceInfo;
+import com.vpu.mp.service.pojo.saas.offical.FreeExperiencePageListParam;
+import com.vpu.mp.service.pojo.saas.offical.ShopFreeExperience;
+import com.vpu.mp.service.pojo.saas.offical.ShopFreeExperienceOutPut;
 
 /**
  * 

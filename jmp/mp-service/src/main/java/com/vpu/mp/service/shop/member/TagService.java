@@ -20,7 +20,7 @@ import com.vpu.mp.service.foundation.util.PageResult;
 import com.vpu.mp.service.pojo.shop.member.TagInfoVo;
 import com.vpu.mp.service.pojo.shop.member.TagPageListParam;
 import com.vpu.mp.service.pojo.shop.member.UpdateTagParam;
-import org.springframework.context.annotation.Scope;
+
 import org.springframework.stereotype.Service;
 
 /**

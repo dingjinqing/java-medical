@@ -3,11 +3,8 @@ package com.vpu.mp.service.foundation.jedis;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.vpu.mp.service.foundation.util.Util;
-
 import redis.clients.jedis.Jedis;
 import redis.clients.jedis.JedisPool;
-import redis.clients.jedis.JedisPoolConfig;
 
 /**
  * 

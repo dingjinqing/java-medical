@@ -189,38 +189,15 @@ public class MpAuthShopService extends MainBaseService {
 	}
 
 	public String getMpQrCode(String appId) {
-		String path = "pages/bottom/bottom";
-		String filename = appId + "_" +Util.md5(path) +".jpg";
-		String relativePath = "upload/saas/mp/app_code/"+filename;
-		
-		MpAuthShopRecord mp = this.getAuthShopByAppId(appId);
-		WxOpenMaService maService = this.getMaServiceByAppId(appId);
-//		maService.getQrcodeService().createQrcode(path);
+//		String path = "pages/bottom/bottom";
+//		String filename = appId + "_" +Util.md5(path) +".jpg";
+//		String relativePath = "upload/saas/mp/app_code/"+filename;
+//		
+//		MpAuthShopRecord mp = this.getAuthShopByAppId(appId);
+//		WxOpenMaService maService = this.getMaServiceByAppId(appId);
+////		maService.getQrcodeService().createQrcode(path);
 		return null;
-//		$mp = $this->getRow($appId);
-//        if ($mp) {
-//            $path = "pages/bottom/bottom";
-//            $filename = "{$appId}_" . md5($path) . ".jpg";
-//            $relativePath = "upload/saas/mp/app_code/{$filename}";
-//            if (file_exists(public_path($relativePath))) return $relativePath;
-//            $dir = dirname(public_path($relativePath));
-//            if (!is_dir($dir)) mkdir($dir, 0777, true);
-//            $response = open_platform()->getAccount($appId)->app_code->get($path);
-//            if (!$response) {
-//                $message = "getMpQrCode app_code->get($path) failed appId:{$appId}";
-//                $this->logger->error($message);
-//                return false;
-//            }
-//            $response->saveAs($dir, $filename);
-//            if (file_exists(public_path($relativePath))) {
-//                $data = ['qrcode_url' => $relativePath];
-//                $this->updateRow($appId, $data);
-//            }
-//            return $relativePath;
-//        } else {
-//            $message = "getMpQrCode getRow failed appId:{$appId}";
-//            $this->logger->error($message);
-//        }
+
 	}
 
 }

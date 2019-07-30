@@ -13,7 +13,7 @@ import org.jooq.Record1;
 import org.jooq.Record2;
 import org.jooq.Record3;
 import org.jooq.SelectConditionStep;
-import org.springframework.context.annotation.Scope;
+
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 

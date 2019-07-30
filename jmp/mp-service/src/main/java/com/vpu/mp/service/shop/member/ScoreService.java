@@ -1,5 +1,8 @@
 package com.vpu.mp.service.shop.member;
 
+import static com.vpu.mp.db.shop.Tables.USER;
+import static com.vpu.mp.db.shop.Tables.USER_SCORE;
+
 import java.math.BigDecimal;
 import java.sql.Timestamp;
 import java.time.LocalDateTime;
@@ -9,11 +12,9 @@ import java.util.List;
 import java.util.Random;
 
 import org.jooq.impl.DSL;
-import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 
-import com.vpu.mp.service.shop.member.MemberService;
 import com.vpu.mp.db.shop.tables.records.TradesRecordRecord;
 import com.vpu.mp.db.shop.tables.records.UserRecord;
 import com.vpu.mp.db.shop.tables.records.UserScoreRecord;
@@ -21,9 +22,6 @@ import com.vpu.mp.service.foundation.data.JsonResultCode;
 import com.vpu.mp.service.foundation.service.ShopBaseService;
 import com.vpu.mp.service.foundation.util.Util;
 import com.vpu.mp.service.pojo.shop.member.account.ScoreParam;
-import static com.vpu.mp.db.shop.Tables.USER_SCORE;
-import static com.vpu.mp.db.shop.Tables.USER;
-import static com.vpu.mp.db.shop.Tables.TRADES_RECORD;
 
 /**
  * @author 黄壮壮 2019-07-19 15:03

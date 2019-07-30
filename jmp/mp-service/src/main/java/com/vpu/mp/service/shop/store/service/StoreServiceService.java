@@ -21,7 +21,7 @@ import com.vpu.mp.service.pojo.shop.store.service.StoreServiceCategoryParam;
 import com.vpu.mp.service.pojo.shop.store.service.StoreServiceListQueryParam;
 import com.vpu.mp.service.pojo.shop.store.service.StoreServiceListQueryVo;
 import com.vpu.mp.service.pojo.shop.store.service.StoreServiceParam;
-import org.springframework.context.annotation.Scope;
+
 import org.springframework.stereotype.Service;
 
 /**

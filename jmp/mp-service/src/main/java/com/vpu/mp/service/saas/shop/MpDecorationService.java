@@ -12,7 +12,7 @@ import com.vpu.mp.service.foundation.service.MainBaseService;
 import com.vpu.mp.service.foundation.util.PageResult;
 import com.vpu.mp.service.pojo.saas.decorate.DecorationTemplatePojo;
 import com.vpu.mp.service.pojo.saas.shop.MpDecorationListQueryParam;
-import org.springframework.context.annotation.Scope;
+
 import org.springframework.stereotype.Service;
 
 /**

@@ -18,7 +18,7 @@ import com.vpu.mp.db.shop.tables.records.UploadedImageCategoryRecord;
 import com.vpu.mp.service.foundation.service.ShopBaseService;
 import com.vpu.mp.service.foundation.util.Util;
 
-import org.springframework.context.annotation.Scope;
+
 import org.springframework.stereotype.Service;
 
 /**

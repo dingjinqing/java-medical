@@ -12,7 +12,7 @@ import org.jooq.SelectConditionStep;
 import org.jooq.SelectWhereStep;
 import org.jooq.tools.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Scope;
+
 import org.springframework.stereotype.Service;
 
 import java.sql.Timestamp;
