@@ -1,5 +1,7 @@
 package com.vpu.mp.service.shop;
 
+
+import com.vpu.mp.service.shop.task.ShopTaskService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -73,6 +75,8 @@ public class ShopApplication  {
 	@Autowired public RealTimeOverviewService realTimeOverview;
 	@Autowired public DistributorGroupService distributorGroup; //分销员分组
 	@Autowired public DistributorLevelService distributorLevel; //分销员等级配置
+
+	@Autowired public ShopTaskService shopTaskService;
 	
 	/**
 	 * 组团购
