@@ -29,7 +29,7 @@ public class SystemShopAccountController extends SystemBaseController {
 	 * @return
 	 */
 	@PostMapping(value = "/system/shop/account/add")
-	public JsonResult addShopAccount(@RequestBody ShopAccountPojo account) {
+	public JsonResult addShopAccount(@RequestBody  @Valid ShopAccountPojo account) {
 		if (saas.shop.account.addShopAccountService(account)) {
 			return success(JsonResultCode.CODE_SUCCESS);
 		} else {
