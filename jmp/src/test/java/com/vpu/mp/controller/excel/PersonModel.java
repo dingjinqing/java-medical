@@ -5,6 +5,7 @@ import com.vpu.mp.service.foundation.excel.annotation.ExcelSheet;
 import lombok.Data;
 
 import java.math.BigDecimal;
+import java.sql.Timestamp;
 
 /**
  * 每一个Model对象对应一个excel中的sheet
@@ -37,6 +38,9 @@ public class PersonModel {
      */
     @ExcelColumn(columnName = "excel.person.name",columnIndex = 0)
     private String personName;
+
+    @ExcelColumn(columnName = "excel.person.birth",columnIndex = 4)
+    private Timestamp birth;
 
     @ExcelColumn(columnName = "excel.person.age",columnIndex = 1)
     private int personAge;

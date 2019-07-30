@@ -16,6 +16,8 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.*;
 import java.math.BigDecimal;
 import java.net.URL;
+import java.sql.Timestamp;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -126,6 +128,7 @@ public class ExcelTest {
         personModel.setPersonAge(22);
         personModel.setPersonAddress("address");
         personModel.setPersonSalary(BigDecimal.valueOf(125.5));
+        personModel.setBirth(Timestamp.valueOf(LocalDateTime.now()));
         models.add(personModel);
 
         return models;
