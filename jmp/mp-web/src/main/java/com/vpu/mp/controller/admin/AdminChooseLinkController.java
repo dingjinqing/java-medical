@@ -13,6 +13,7 @@ import com.vpu.mp.service.foundation.data.JsonResultMessage;
 import com.vpu.mp.service.foundation.util.PageResult;
 import com.vpu.mp.service.pojo.saas.category.SysCatevo;
 import com.vpu.mp.service.pojo.shop.decoration.ActivityVo;
+import com.vpu.mp.service.pojo.shop.decoration.ChildCateVo;
 import com.vpu.mp.service.pojo.shop.decoration.ChooseLinkParam;
 import com.vpu.mp.service.pojo.shop.decoration.GoodsLinkVo;
 import com.vpu.mp.service.pojo.shop.decoration.PageFormVo;
@@ -267,6 +268,16 @@ public class AdminChooseLinkController extends AdminBaseController{
 	@GetMapping(value = "/admin/decorate/cate/list")
 	public JsonResult sysCate() {
 		List<SysCatevo> parentList = shop().chooselink.getSysCate();
+		return this.success(parentList);
+	}
+	
+	/**
+	 * 选择平台分类,根据父id获取下级分类
+	 * @return
+	 */
+	@GetMapping(value = "/admin/decorate/cate/child")
+	public JsonResult sysCate(Short parentId) {
+		List<ChildCateVo> parentList = shop().chooselink.getSysCateChild(parentId);
 		return this.success(parentList);
 	}
 	

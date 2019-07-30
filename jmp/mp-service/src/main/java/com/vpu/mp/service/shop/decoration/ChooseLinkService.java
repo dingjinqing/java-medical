@@ -36,6 +36,7 @@ import com.vpu.mp.service.foundation.service.ShopBaseService;
 import com.vpu.mp.service.foundation.util.PageResult;
 import com.vpu.mp.service.pojo.saas.category.SysCatevo;
 import com.vpu.mp.service.pojo.shop.decoration.ActivityVo;
+import com.vpu.mp.service.pojo.shop.decoration.ChildCateVo;
 import com.vpu.mp.service.pojo.shop.decoration.ChooseLinkParam;
 import com.vpu.mp.service.pojo.shop.decoration.GoodsLinkVo;
 import com.vpu.mp.service.pojo.shop.decoration.PageFormVo;
@@ -349,6 +350,16 @@ public class ChooseLinkService extends ShopBaseService {
 				 .from(CATEGORY)
 				 .fetchInto(SysCatevo.class);
 		return parentList;
+	}
+	
+	/**
+	 * 根据父id获取子分类
+	 * @param parentId
+	 * @return
+	 */
+	public List<ChildCateVo> getSysCateChild(Short parentId) {
+		List<ChildCateVo> child = mainDb().select().from(CATEGORY).where(CATEGORY.PARENT_ID.eq(parentId)).fetch().into(ChildCateVo.class);
+		return child;
 	}
 	
 	/**
