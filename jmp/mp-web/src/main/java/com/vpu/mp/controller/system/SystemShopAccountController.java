@@ -1,5 +1,7 @@
 package com.vpu.mp.controller.system;
 
+import javax.validation.Valid;
+
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -42,7 +44,7 @@ public class SystemShopAccountController extends SystemBaseController {
 	 * @return
 	 */
 	@PostMapping("/system/shop/account/list")
-	public JsonResult getShopAccountList(@RequestBody ShopAccountListQueryParam param) {
+	public JsonResult getShopAccountList(@RequestBody @Valid ShopAccountListQueryParam param) {
 		PageResult<ShopAccountPojo> result = saas.shop.account.getPageList(param);
 		// TODO 空的判断
 		for (ShopAccountPojo sap : result.dataList) {
