@@ -15,6 +15,7 @@ import org.jooq.Result;
 import org.jooq.SelectWhereStep;
 import org.jooq.impl.DSL;
 import org.jooq.tools.StringUtils;
+import org.springframework.stereotype.Service;
 
 import com.vpu.mp.db.main.tables.records.ShopRecord;
 import com.vpu.mp.db.main.tables.records.ShopVersionRecord;
@@ -27,8 +28,6 @@ import com.vpu.mp.service.pojo.saas.shop.VersionListQueryParam;
 import com.vpu.mp.service.pojo.saas.shop.version.VersionConfig;
 import com.vpu.mp.service.pojo.saas.shop.version.VersionMainConfig;
 import com.vpu.mp.service.pojo.saas.shop.version.VersionNumberConfig;
-import org.springframework.context.annotation.Scope;
-import org.springframework.stereotype.Service;
 
 /**
  * 
@@ -271,7 +270,7 @@ public class ShopVersionService extends MainBaseService {
 	 * @return
 	 */
 	public Boolean checkMainConfig(VersionMainConfig mainConfig, String enName) {
-		Class clazz = mainConfig.getClass();
+		Class<?> clazz = mainConfig.getClass();
 		Field[] fields = clazz.getDeclaredFields();
 		for (Field field : fields) {
 			field.setAccessible(true);
@@ -279,6 +278,7 @@ public class ShopVersionService extends MainBaseService {
 				PropertyDescriptor pd = new PropertyDescriptor(field.getName(), clazz);
 				// 获得读方法
 				Method rm = pd.getReadMethod();
+				@SuppressWarnings("unchecked")
 				List<String> list = (List<String>) rm.invoke(mainConfig);
 				for (String string : list) {
 					if (enName.equals(string)) {
@@ -315,7 +315,7 @@ public class ShopVersionService extends MainBaseService {
 		}
 		VersionMainConfig mainConfig = vConfig.getMainConfig();
 
-		Class clazz = mainConfig.getClass();
+		Class<?> clazz = mainConfig.getClass();
 		Field[] fields = clazz.getDeclaredFields();
 		for (Field field : fields) {
 			field.setAccessible(true);
@@ -323,6 +323,7 @@ public class ShopVersionService extends MainBaseService {
 				PropertyDescriptor pd = new PropertyDescriptor(field.getName(), clazz);
 				// 获得读方法
 				Method rm = pd.getReadMethod();
+				@SuppressWarnings("unchecked")
 				List<String> list = (List<String>) rm.invoke(mainConfig);
 				// for (String string : list) {
 				for (int i = 0; i < vsNames.length; i++) {
