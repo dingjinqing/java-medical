@@ -465,3 +465,47 @@ create table `b2c_group_integration_list` (
 alter table b2c_return_order_goods
 add COLUMN return_money decimal(10, 2)	not null default '0.00' comment '实际退款金额',
 add COLUMN discounted_goods_price decimal(10, 2)	not null default '0.00' comment '实际退款金额';
+
+
+-- 虚拟商品主订单
+-- drop table if exists `b2c_virtual_goods_order`;
+create table b2c_virtual_goods_order
+(
+    order_id          mediumint unsigned auto_increment comment '虚拟订单id'
+        primary key,
+    order_sn          varchar(20)        default ''                not null comment '订单编号',
+    user_id           mediumint unsigned default 0                 not null comment '用户id',
+    order_status      tinyint(1)         default 0                 not null comment '订单状态',
+    invoice_id        int                default 0                 null comment '发票id',
+    invoice_detail    text                                         null comment '发票内容：json存储',
+    add_message       varchar(191)       default ''                null comment '客户留言',
+    pay_code          varchar(30)                                  null comment '支付代号',
+    pay_name          varchar(120)                                 null comment '支付名称',
+    prepay_id         varchar(191)                                 null comment '微信支付Id，用于发送模板消息',
+    pay_sn            varchar(32)                                  null comment '支付流水号',
+    money_paid        decimal(10, 2)     default 0.00              null comment '订单应付金额',
+    use_account       decimal(10, 2)     default 0.00              null comment '用户消费余额',
+    use_score         decimal(10, 2)     default 0.00              null comment '用户消费积分',
+    order_amount      decimal(10, 2)     default 0.00              null comment '订单总金额',
+    add_time          timestamp          default CURRENT_TIMESTAMP null comment '订单提交时间',
+    pay_time          timestamp                                    null comment '支付时间',
+    seller_remark     varchar(512)       default ''                null comment '卖家备注',
+    star_flag         tinyint(1)         default 0                 null comment '标星订单：0 未标星 1 标星',
+    del_flag          tinyint(1)         default 0                 null comment '删除',
+    ali_trade_no      varchar(60)        default ''                null comment '支付宝交易单号',
+    order_status_name varchar(32)        default ''                not null comment '订单状态名称',
+    return_flag       tinyint(1)         default 0                 null comment '退款状态：0：未申请退款，1：退款失败，2：部分已退，3：全部已退',
+    goods_type        tinyint(1)                                   not null comment '虚拟商品类别：0：会员卡，1：优惠券'
+)
+    collate = utf8mb4_unicode_ci;
+
+-- 会员卡订单
+-- drop table if exists `b2c_virtual_card_order`;
+create table b2c_virtual_card_order
+(
+    card_order_id mediumint unsigned auto_increment comment '会员卡订单id' primary key,
+    order_id      mediumint unsigned comment '主虚拟商品订单id',
+    card_id       int         default 0   not null comment '会员卡id',
+    card_no       varchar(32) default '0' null comment '会员卡 No'
+)
+    collate = utf8mb4_unicode_ci;
