@@ -1,83 +1,85 @@
 <template>
-  <div class="content">
-    <div class="name">
-      <span>系统管理后台</span>
-      <span>/</span>
-      <span>店铺列表</span>
-    </div>
-
-    <div class="nav">
-      <div
-        class="nav_left"
-        :class="{'title-active':!isSubLogin}"
-        @click="switchTab(false)"
-      >
-        {{title[0]}}
+  <div class="outside">
+    <div class="content">
+      <div class="name">
+        <span>系统管理后台</span>
+        <span>/</span>
+        <span>店铺列表</span>
       </div>
-      <div
-        class="nav_right"
-        :class="{'title-active':isSubLogin}"
-        @click="switchTab(true)"
-      >
-        {{title[1]}}
-      </div>
-    </div>
 
-    <div class="wrapper">
-      <div
-        class="nav_content"
-        v-show="!isSubLogin"
-      >
-        <div class="nav_content_panel">
-          <input
-            type="text"
-            placeholder="账号ID、公司"
-          >
-          <input
-            type="text"
-            placeholder="店铺ID、账户名称、手机号、小程序名"
-          >
-          <select class="select_first">
-            <option value="input">选择店铺状态</option>
-            <option value="input">使用中</option>
-            <option value="input">即将过期</option>
-            <option value="input">已过期</option>
-          </select>
-          <select class="select_second">
-            <option value="input">选择店铺类型</option>
-            <option value="input">基础版</option>
-            <option value="input">高级版</option>
-            <option value="input">旗舰版</option>
-          </select>
-          <select class="select_third">
-            <option value="input">选择店铺标识</option>
-            <option value="input">店+</option>
-            <option value="input">欧派</option>
-            <option value="input">寺库</option>
-          </select>
+      <div class="nav">
+        <div
+          class="nav_left"
+          :class="{'title-active':!isSubLogin}"
+          @click="switchTab(false)"
+        >
+          {{title[0]}}
         </div>
-        <div class="nav_content_panel ">
-          <select class="select_first">
-            <option value="input">选择禁用状态</option>
-            <option value="input">已禁用</option>
-            <option value="input">未禁用</option>
-          </select>
-          <select class="select_second">
-            <option value="input">底部导航</option>
-            <option value="input">隐藏</option>
-            <option value="input">显示</option>
-          </select>
-          <div class="time_limit">
-            <div class="start_time">店铺到期时间</div>
-            <input type="text">
-            <div class="end_time">至</div>
-            <input type="text">
+        <div
+          class="nav_right"
+          :class="{'title-active':isSubLogin}"
+          @click="switchTab(true)"
+        >
+          {{title[1]}}
+        </div>
+      </div>
+
+      <div class="wrapper">
+        <div
+          class="nav_content"
+          v-show="!isSubLogin"
+        >
+          <div class="nav_content_panel">
+            <input
+              type="text"
+              placeholder="账号ID、公司"
+            >
+            <input
+              type="text"
+              placeholder="店铺ID、账户名称、手机号、小程序名"
+            >
+            <select class="select_first">
+              <option value="input">选择店铺状态</option>
+              <option value="input">使用中</option>
+              <option value="input">即将过期</option>
+              <option value="input">已过期</option>
+            </select>
+            <select class="select_second">
+              <option value="input">选择店铺类型</option>
+              <option value="input">基础版</option>
+              <option value="input">高级版</option>
+              <option value="input">旗舰版</option>
+            </select>
+            <select class="select_third">
+              <option value="input">选择店铺标识</option>
+              <option value="input">店+</option>
+              <option value="input">欧派</option>
+              <option value="input">寺库</option>
+            </select>
           </div>
-          <button>搜索</button>
+          <div class="nav_content_panel ">
+            <select class="select_first">
+              <option value="input">选择禁用状态</option>
+              <option value="input">已禁用</option>
+              <option value="input">未禁用</option>
+            </select>
+            <select class="select_second">
+              <option value="input">底部导航</option>
+              <option value="input">隐藏</option>
+              <option value="input">显示</option>
+            </select>
+            <div class="time_limit">
+              <div class="start_time">店铺到期时间</div>
+              <input type="text">
+              <div class="end_time">至</div>
+              <input type="text">
+            </div>
+            <button>搜索</button>
+          </div>
         </div>
-      </div>
 
-      <div v-show="isSubLogin">我是付费版页面内容</div>
+        <div v-show="isSubLogin">我是付费版页面内容</div>
+      </div>
     </div>
   </div>
 </template>
@@ -98,6 +100,11 @@ export default {
 }
 </script>
 <style scoped>
+.outside {
+  background: #e6e9f0;
+  overflow-y: scroll;
+  overflow-x: scroll;
+}
 .content {
   width: 1120px;
   margin: 10px 5px;

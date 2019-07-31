@@ -15,9 +15,7 @@
             :src="nav_index==index||click_nav_index==index?item.imgUrl_h:item.imgUrl"
             :class="nav_s_class_index&&index==0?'nav_s_class':''"
           >
-          <span
-            :class="nav_index==index||click_nav_index==index?'active_bg':''"
-          >{{item.span}}</span>
+          <span>{{item.span}}</span>
         </li>
       </ul>
       <!-- <div>尾部图片</div> -->
@@ -247,19 +245,19 @@ export default {
           this.handlesysLeftNav(this.shop_manage, false, this.flag)
           break
         case 'data_statistics':
-          this.handlesysLeftNav(this.data_statistics, false)
+          this.handlesysLeftNav(this.data_statistics, false, this.flag)
           break
         case 'goods_manage':
-          this.handlesysLeftNav(this.goods_manage, false)
+          this.handlesysLeftNav(this.goods_manage, false, this.flag)
           break
         case 'member_manage':
-          this.handlesysLeftNav(this.member_manage, false)
+          this.handlesysLeftNav(this.member_manage, false, this.flag)
           break
         case 'order_manage':
-          this.handlesysLeftNav(this.order_manage, false)
+          this.handlesysLeftNav(this.order_manage, false, this.flag)
           break
         case 'setting':
-          this.handlesysLeftNav(this.setting, false)
+          this.handlesysLeftNav(this.setting, false, this.flag)
           break
       }
     },
@@ -280,48 +278,19 @@ export default {
             this.click_nav_index = 0
           }
           break
-        // case 'upgrade_renewal':
-        //   if (flag === 'overview') {
-        //     this.nav_index = 1
-        //     this.click_nav_index = 1
-        //   }
-        //   break
-        // case 'web_apply':
-        //   if (flag === 'overview') {
-        //     this.nav_index = 2
-        //     this.click_nav_index = 2
-        //   }
-        //   break
-        // case 'problem_feedback':
-        //   if (flag === 'overview') {
-        //     this.nav_index = 3
-        //     this.click_nav_index = 3
-        //   }
-        //   break
-        // case 'login_log':
-        //   if (flag === 'overview') {
-        //     this.nav_index = 4
-        //     this.click_nav_index = 4
-        //   }
-        //   break
-        // case 'log_manage':
-        //   if (flag === 'overview') {
-        //     this.nav_index = 5
-        //     this.click_nav_index = 5
-        //   }
-        //   break
-        // case 'article_manage':
-        //   if (flag === 'overview') {
-        //     this.nav_index = 6
-        //     this.click_nav_index = 6
-        //   }
-        //   break
-        // case 'picture_space':
-        //   if (flag === 'overview') {
-        //     this.nav_index = 7
-        //     this.click_nav_index = 7
-        //   }
-        //   break
+        // 店铺管理
+        case 'account_list':
+          if (flag === 'shop_manage') {
+            this.nav_index = 0
+            this.click_nav_index = 0
+          }
+          break
+        case 'shop_lists':
+          if (flag === 'shop_manage') {
+            this.nav_index = 1
+            this.click_nav_index = 1
+          }
+          break
       }
     },
     // 左侧菜单栏点击事件
@@ -372,6 +341,7 @@ export default {
             break
         }
       }
+      // 店铺管理模块左侧点击
       if (this.flag === 'shop_manage') {
         switch (index) {
           case 0:

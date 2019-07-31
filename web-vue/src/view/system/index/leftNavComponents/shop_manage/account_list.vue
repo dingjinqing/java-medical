@@ -32,8 +32,11 @@
         >
           <div class="addInfo">
             <div class="info_wrapper">
-              <select>
-                <option value="0">选择审核状态</option>
+              <select v-model="mainData.state">
+                <option
+                  disabled
+                  value=""
+                >选择审核状态</option>
                 <option value="1">审核中</option>
                 <option value="2">审核通过</option>
                 <option value="3">审核不通过</option>
@@ -135,7 +138,7 @@
               ></el-table-column>
             </el-table>
             <div class="footer">
-              <span>每页10行记录，当前页面：1，总页数：1，总记录数为：</span>
+              <span>每页{{this.pageRows}}行记录，当前页面：{{this.currentPage}}，总页数：{{this.pageCount}}，总记录数为：{{this.totalRows}}</span>
               <!-- <el-pagination
               style='display: inline'
               @current-change="handleCurrentChange"
@@ -150,7 +153,6 @@
               <el-pagination
                 @current-change="handleCurrentChange"
                 :current-page.sync="currentPage3"
-                :page-size="8"
                 layout="prev, pager, next, jumper"
                 :total="totalRows"
                 :small="pagination_b"
@@ -338,6 +340,7 @@
 </template>
 
 <script>
+import { mapGetters } from 'vuex'
 import { addCoountRequest, searchAccountRequest } from '@/api/system/accountList.js'
 import VDistpicker from 'v-distpicker'
 export default {
@@ -382,6 +385,7 @@ export default {
         }]
       },
       mainData: {
+        state: '',
         keywords: '',
         company: ''
       },
@@ -394,6 +398,10 @@ export default {
       ],
       value: '',
       totalRows: null,
+      pageRows: '',
+      currentPage: '',
+      currentPage3: 1,
+      pageCount: '',
       pagination_b: true,
       formTable: [{
         usreName: '',
@@ -412,6 +420,17 @@ export default {
   created () {
     this.searchAccount()
   },
+  computed: {
+    ...mapGetters(['proAndUrData']),
+    proAndUrData_ () {
+      return this.proAndUrData
+    }
+  },
+  watch: {
+    proAndUrData_ (newData, oldData) {
+      console.log(newData)
+    }
+  },
   methods: {
     // 切换对应的两个tab
     switchTab (subLogin) {
@@ -420,7 +439,7 @@ export default {
     // 添加商家账户
     save () {
       let obj = {
-        '"userName': '',
+        'userName': '',
         'password': '',
         'state': '1',
         'shopGrade': '1',
@@ -433,7 +452,6 @@ export default {
       // console.log(this.formData)
       let params = Object.assign(obj, this.formData)
       console.log(params)
-      // addCoountRequest(params).then(res => { console.log(res) }).catch(err => { console.log(err) })
       addCoountRequest(params).then(res => {
         console.log(res)
         if (res.error === 0) {
@@ -451,25 +469,35 @@ export default {
         this.$message.error('保存失败')
       })
     },
-
+    // currnentPage 改变时会触发
+    handleCurrentChange (currentPage) {
+      currentPage = this.nextPage
+    },
     // 商家账号列表查询
     searchAccount () {
       let obj1 = {
         'currentPage': '1',
-        'pageRows': '10',
+        'pageRows': '20',
         'state': '',
         'keywords': '',
         'company': ''
       }
-      searchAccountRequest(obj1).then((res) => {
+      let parameter = Object.assign(obj1, this.mainData)
+      searchAccountRequest(parameter).then((res) => {
         console.log(res)
         const { error, content } = res
         if (error === 0) {
           let formList = content.dataList
           let pageObj = content.page
           this.totalRows = pageObj.totalRows
-          // console.log(this.pageObj)
-          console.log(res.content.page.firstPage)
+          this.currentPage = pageObj.currentPage
+          this.firstPage = pageObj.firstPage
+          this.lastPage = pageObj.lastPage
+          this.nextPage = pageObj.nextPage
+          this.pageCount = pageObj.pageCount
+          this.pageRows = pageObj.pageRows
+          console.log(pageObj)
+          // console.log(res.content.page.firstPage)
 
           this.formTable = formList
           console.log(this.formTable) // formTable是一个里面包含10个对象的数组
