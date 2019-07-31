@@ -1,27 +1,23 @@
 package com.vpu.mp.controller.admin;
 
-import java.io.IOException;
-
-import javax.servlet.http.HttpServletResponse;
-import javax.validation.Valid;
-
+import com.vpu.mp.service.foundation.data.JsonResult;
+import com.vpu.mp.service.foundation.util.PageResult;
+import com.vpu.mp.service.pojo.shop.market.bargain.*;
+import com.vpu.mp.service.pojo.shop.market.bargain.analysis.BargainAnalysisParam;
+import com.vpu.mp.service.pojo.shop.market.bargain.analysis.BargainAnalysisVo;
+import com.vpu.mp.service.shop.market.bargain.BargainRecordService;
 import org.apache.poi.ss.usermodel.Workbook;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.vpu.mp.service.foundation.data.JsonResult;
-import com.vpu.mp.service.foundation.util.PageResult;
-import com.vpu.mp.service.pojo.shop.market.bargain.Bargain;
-import com.vpu.mp.service.pojo.shop.market.bargain.BargainAddParam;
-import com.vpu.mp.service.pojo.shop.market.bargain.BargainPageListQueryParam;
-import com.vpu.mp.service.pojo.shop.market.bargain.BargainPageListQueryVo;
-import com.vpu.mp.service.pojo.shop.market.bargain.BargainRecordPageListQueryParam;
-import com.vpu.mp.service.pojo.shop.market.bargain.BargainRecordPageListQueryVo;
-import com.vpu.mp.service.pojo.shop.market.bargain.BargainUpdateParam;
-import com.vpu.mp.service.pojo.shop.market.bargain.BargainUserListQueryParam;
-import com.vpu.mp.service.shop.market.bargain.BargainRecordService;
+import javax.servlet.http.HttpServletResponse;
+import javax.validation.Valid;
+import java.io.IOException;
+import java.sql.Date;
+import java.util.Calendar;
+import java.util.Map;
 
 /**
  * @author 王兵兵
@@ -139,5 +135,72 @@ public class AdminBargainController extends AdminBaseController {
 	@PostMapping(value = "/api/admin/market/bargain/record/detail")
 	public JsonResult getBargainUserPageList(@RequestBody @Valid BargainUserListQueryParam param) {
 		return success(shop().bargain.bargainUser.getPageList(param));
+	}
+
+	/**
+	 * 帮忙砍价的用户列表
+	 * @return
+	 */
+	@PostMapping(value = "/api/admin/market/bargain/analysis")
+	public JsonResult getRecordAnalysis(@RequestBody @Valid BargainAnalysisParam param) {
+		Map<Date,Integer> recordMap = shop().bargain.bargainRecord.getRecordAnalysis(param);
+		Map<Date,Integer> userMap = shop().bargain.bargainRecord.getBargainUserAnalysis(param);
+		Map<Date,Integer> orderMap = shop().readOrder.getBargainOrderAnalysis(param);
+		Map<Date,Integer> sourceMap = shop().member.getBargainUserAnalysis(param);
+
+		Date temDate = new Date(param.getStartTime().getTime());
+		Date endTime = new Date(param.getEndTime().getTime());
+		endTime = getNextDay(endTime);
+
+		BargainAnalysisVo bargainAnalysisVo = new BargainAnalysisVo();
+
+		/** 组装输出数据格式 */
+		while(temDate.before(endTime)){
+			/**发起砍价用户数*/
+			if(recordMap.get(temDate) != null && recordMap.get(temDate) > 0){
+				bargainAnalysisVo.getRecordNumber().add(recordMap.get(temDate));
+			}else{
+				bargainAnalysisVo.getRecordNumber().add(0);
+			}
+
+			/**帮砍价用户数*/
+			if(userMap.get(temDate) != null && userMap.get(temDate) > 0){
+				bargainAnalysisVo.getUserNumber().add(userMap.get(temDate));
+			}else{
+				bargainAnalysisVo.getUserNumber().add(0);
+			}
+
+			/**活动订单数*/
+			if(orderMap.get(temDate) != null && orderMap.get(temDate) > 0){
+				bargainAnalysisVo.getOrderNumber().add(orderMap.get(temDate));
+			}else{
+				bargainAnalysisVo.getOrderNumber().add(0);
+			}
+
+			/**活动拉新用户数*/
+			if(sourceMap.get(temDate) != null && sourceMap.get(temDate) > 0){
+				bargainAnalysisVo.getSourceNumber().add(orderMap.get(temDate));
+			}else{
+				bargainAnalysisVo.getSourceNumber().add(0);
+			}
+
+			/**日期列表*/
+			bargainAnalysisVo.getDateList().add(temDate);
+
+			temDate = getNextDay(temDate);
+		}
+		return success(bargainAnalysisVo);
+	}
+
+	/**
+	 * 取holdDate的一下天
+	 * @param holdDate java.sql.Date类型
+	 * @return java.sql.Date
+	 */
+	protected Date getNextDay(Date holdDate) {
+		Calendar calendar = Calendar.getInstance();
+		calendar.setTime(holdDate);
+		calendar.add(calendar.DATE, 1);
+		return new Date(calendar.getTime().getTime());
 	}
 }

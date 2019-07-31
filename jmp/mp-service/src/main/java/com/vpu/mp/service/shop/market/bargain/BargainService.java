@@ -60,7 +60,7 @@ public class BargainService extends ShopBaseService  {
 	
 	/**
 	 * 砍价活动列表分页查询
-	 * @param StoreListQueryParam
+	 * @param param
 	 * @return StorePageListVo
 	 */
 	public PageResult<BargainPageListQueryVo> getPageList(BargainPageListQueryParam param) {
@@ -125,7 +125,7 @@ public class BargainService extends ShopBaseService  {
 	
 	/**
 	 * 取单个砍价活动信息
-	 * @param param
+	 * @param bargainId
 	 * @return
 	 */
 	public Bargain getBargainByIsd(Integer bargainId) {

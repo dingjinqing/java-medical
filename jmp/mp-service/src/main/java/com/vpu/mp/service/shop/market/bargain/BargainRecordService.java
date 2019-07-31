@@ -2,13 +2,19 @@ package com.vpu.mp.service.shop.market.bargain;
 
 import static com.vpu.mp.db.shop.tables.Bargain.BARGAIN;
 import static com.vpu.mp.db.shop.tables.BargainRecord.BARGAIN_RECORD;
+import static com.vpu.mp.db.shop.tables.BargainUserList.BARGAIN_USER_LIST;
 import static com.vpu.mp.db.shop.tables.Goods.GOODS;
 import static com.vpu.mp.db.shop.tables.User.USER;
 
+import static org.jooq.impl.DSL.*;
+
 import java.io.IOException;
 import java.math.BigDecimal;
+import java.sql.Date;
 import java.util.List;
+import java.util.Map;
 
+import com.vpu.mp.service.pojo.shop.market.bargain.analysis.BargainAnalysisParam;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.poi.ss.usermodel.Workbook;
 import org.jooq.Record;
@@ -161,5 +167,32 @@ public class BargainRecordService extends ShopBaseService {
         ExcelWriter excelWriter = new ExcelWriter(lang,workbook);
         excelWriter.writeModelList(bargainRecordList,BargainRecordExportVo.class);
         return workbook;
+	}
+
+	/**
+	 * 发起砍价的人次数据分析
+	 * @param param
+	 * @return
+	 */
+	public Map<Date,Integer> getRecordAnalysis(BargainAnalysisParam param){
+		Map<Date,Integer> map =  db().select(date(BARGAIN_RECORD.CREATE_TIME).as("date"),count().as("number")).from(BARGAIN_RECORD).
+				where(BARGAIN_RECORD.BARGAIN_ID.eq(param.getBargainId())).
+				and(BARGAIN_RECORD.CREATE_TIME.between(param.getStartTime(),param.getEndTime())).
+				groupBy(date(BARGAIN_RECORD.CREATE_TIME)).fetch().intoMap(date(BARGAIN_RECORD.CREATE_TIME).as("date"),count().as("number"));
+		return map;
+	}
+
+	/**
+	 * 帮砍价的用户数据分析
+	 * @param param
+	 * @return
+	 */
+	public Map<Date,Integer> getBargainUserAnalysis(BargainAnalysisParam param){
+		Map<Date,Integer> map =  db().select(date(BARGAIN_USER_LIST.CREATE_TIME).as("date"),count().as("number")).from(BARGAIN_USER_LIST).
+				leftJoin(BARGAIN_RECORD).on(BARGAIN_USER_LIST.RECORD_ID.eq(BARGAIN_RECORD.ID)).
+				where(BARGAIN_RECORD.BARGAIN_ID.eq(param.getBargainId())).
+				and(BARGAIN_RECORD.CREATE_TIME.between(param.getStartTime(),param.getEndTime())).
+				groupBy(date(BARGAIN_USER_LIST.CREATE_TIME)).fetch().intoMap(date(BARGAIN_USER_LIST.CREATE_TIME).as("date"),count().as("number"));
+		return map;
 	}
 }

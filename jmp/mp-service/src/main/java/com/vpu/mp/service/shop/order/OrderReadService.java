@@ -9,7 +9,10 @@ import static com.vpu.mp.db.shop.tables.ReturnOrderGoods.RETURN_ORDER_GOODS;
 import static com.vpu.mp.db.shop.tables.StoreOrder.STORE_ORDER;
 import static com.vpu.mp.db.shop.tables.User.USER;
 import static com.vpu.mp.db.shop.tables.UserTag.USER_TAG;
+import static org.jooq.impl.DSL.*;
 
+
+import java.sql.Date;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -19,6 +22,7 @@ import java.util.Map.Entry;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+import com.vpu.mp.service.pojo.shop.market.bargain.analysis.BargainAnalysisParam;
 import org.jooq.Record;
 import org.jooq.Record2;
 import org.jooq.SelectJoinStep;
@@ -500,5 +504,20 @@ public class OrderReadService extends ShopBaseService {
 			select.where(STORE_ORDER.ORDER_STATUS.in(param.getOrderStatus()));
 		}
 		return select; 
+	 }
+
+	/**
+	 * 砍价活动数据分析的订单部分数据
+	 * @param param
+	 * @return
+	 */
+	 public Map<Date,Integer> getBargainOrderAnalysis(BargainAnalysisParam param){
+		 Map<Date,Integer> map =  db().select(date(ORDER_INFO.CREATE_TIME).as("date"),count().as("number")).from(ORDER_INFO).
+				 where(ORDER_INFO.PIN_GROUP_ID.eq(param.getBargainId())).
+				 and(ORDER_INFO.CREATE_TIME.between(param.getStartTime(),param.getEndTime())).
+				 and(ORDER_INFO.ORDER_STATUS.gt(OrderConstant.ORDER_CLOSED)).
+				 and(sql("FIND_IN_SET("+OrderConstant.GOODS_TYPE_BARGAIN+", "+ORDER_INFO.getName() +"."+ ORDER_INFO.GOODS_TYPE.getName()+")")).
+				 groupBy(date(ORDER_INFO.CREATE_TIME)).fetch().intoMap(date(ORDER_INFO.CREATE_TIME).as("date"),count().as("number"));
+		 return map;
 	 }
 }

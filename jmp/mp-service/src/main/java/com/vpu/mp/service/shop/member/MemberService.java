@@ -2,7 +2,10 @@ package com.vpu.mp.service.shop.member;
 
 import static com.vpu.mp.db.shop.Tables.ORDER_VERIFIER;
 import static com.vpu.mp.db.shop.Tables.USER;
+import static org.jooq.impl.DSL.count;
+import static org.jooq.impl.DSL.date;
 
+import com.vpu.mp.service.pojo.shop.market.bargain.analysis.BargainAnalysisParam;
 import org.jooq.Field;
 import org.jooq.Record;
 import org.jooq.SelectJoinStep;
@@ -22,6 +25,9 @@ import com.vpu.mp.service.pojo.shop.member.CommonMemberPageListQueryVo;
 import com.vpu.mp.service.pojo.shop.member.MemberInfoVo;
 import com.vpu.mp.service.pojo.shop.member.MemberPageListParam;
 
+import java.sql.Date;
+import java.util.Map;
+
 /**
  * 
  * @author 黄壮壮
@@ -32,6 +38,16 @@ public class MemberService extends ShopBaseService {
 
 	private static final String INVITE_USERNAME="inviteUserName";
 	private static final String USER_NAME="userName";
+
+	public static final String INVITE_SOURCE_GROUPBUY="groupbuy";
+	public static final String INVITE_SOURCE_BARGAIN="bargain";
+	public static final String INVITE_SOURCE_INTEGRAL="integral";
+	public static final String INVITE_SOURCE_SECKILL="seckill";
+	public static final String INVITE_SOURCE_LOTTERY="lottery";
+	public static final String INVITE_SOURCE_GOODS="goods";
+	public static final String INVITE_SOURCE_MEMBERCARD="membercard";
+	public static final String INVITE_SOURCE_SCANQRCODE="scanqrcode";
+	public static final String INVITE_SOURCE_CHANNEL="channel";
 
 	@Autowired public AccountService account;
 	@Autowired public ScoreService score;
@@ -178,5 +194,18 @@ public class MemberService extends ShopBaseService {
 		select = this.buildOptions(select,a, param);
 
 		return this.getPageResult(select,param.getPage().getCurrentPage(),param.getPage().getPageRows() , MemberInfoVo.class);
+	}
+
+	/**
+	 * 砍价拉新用户数据分析
+	 * @param param
+	 * @return
+	 */
+	public Map<Date,Integer> getBargainUserAnalysis(BargainAnalysisParam param){
+		Map<Date,Integer> map =  db().select(date(USER.CREATE_TIME).as("date"),count().as("number")).from(USER).
+				where(USER.INVITE_ACT_ID.eq(param.getBargainId())).
+				and(USER.CREATE_TIME.between(param.getStartTime(),param.getEndTime())).
+				groupBy(date(USER.CREATE_TIME)).fetch().intoMap(date(USER.CREATE_TIME).as("date"),count().as("number"));
+		return map;
 	}
 }
