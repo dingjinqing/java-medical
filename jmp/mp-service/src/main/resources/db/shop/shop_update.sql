@@ -461,3 +461,7 @@ create table `b2c_group_integration_list` (
   `update_time` 	timestamp      	default current_timestamp on update current_timestamp comment '最后修改时间',
   primary key (`id`)
 );
+--  退款商品行增加列
+alter table b2c_return_order_goods
+add COLUMN return_money decimal(10, 2)	not null default '0.00' comment '实际退款金额',
+add COLUMN discounted_goods_price decimal(10, 2)	not null default '0.00' comment '实际退款金额';
