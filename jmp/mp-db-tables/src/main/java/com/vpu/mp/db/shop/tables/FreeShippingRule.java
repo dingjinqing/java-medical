@@ -6,7 +6,7 @@ package com.vpu.mp.db.shop.tables;
 
 import com.vpu.mp.db.shop.Indexes;
 import com.vpu.mp.db.shop.Keys;
-import com.vpu.mp.db.shop.MiniShop_4748160;
+import com.vpu.mp.db.shop.MiniShop_471752;
 import com.vpu.mp.db.shop.tables.records.FreeShippingRuleRecord;
 
 import java.sql.Timestamp;
@@ -135,7 +135,7 @@ public class FreeShippingRule extends TableImpl<FreeShippingRuleRecord> {
      */
     @Override
     public Schema getSchema() {
-        return MiniShop_4748160.MINI_SHOP_4748160;
+        return MiniShop_471752.MINI_SHOP_471752;
     }
 
     /**
