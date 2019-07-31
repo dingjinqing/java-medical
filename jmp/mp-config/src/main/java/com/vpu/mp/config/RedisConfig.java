@@ -7,6 +7,11 @@ import org.springframework.context.annotation.Configuration;
 import redis.clients.jedis.JedisPool;
 import redis.clients.jedis.JedisPoolConfig;
 
+/**
+ * 
+ * @author lixinguo
+ *
+ */
 @Configuration
 public class RedisConfig {
 	@Value("${spring.redis.host:127.0.0.1}")

@@ -107,7 +107,8 @@ public class GroupBuyListService  extends ShopBaseService {
      *
      * @return
      */
-    public PageResult<OrderListInfoVo> groupBuyOrderList(GroupBuyOrderListParam param ) {
+    @SuppressWarnings("unchecked")
+	public PageResult<OrderListInfoVo> groupBuyOrderList(GroupBuyOrderListParam param ) {
         OrderPageListQueryParam orderParam =new OrderPageListQueryParam();
         orderParam.setPage(param.getPage());
 

@@ -35,9 +35,9 @@ public class ScheduleTask {
 	@Scheduled(cron = "0/5 * * * * ?")
 	public void taskPerMinute() {
 		
-		System.out.println("@ShopId :"+saas.getShopApp(123456).image.getShopId());
+//		System.out.println("@ShopId :"+saas.getShopApp(123456).image.getShopId());
 
-		System.out.println("@Scheduled id:"+Thread.currentThread().getId());
+//		System.out.println("@Scheduled id:"+Thread.currentThread().getId());
 
 //		saas.getShopApp(123456).config.bottomCfg.test();
 //		System.out.println("@Scheduled id:"+Thread.currentThread().getId());
@@ -73,5 +73,4 @@ public class ScheduleTask {
 				shopTaskService.wechatTaskService.beginMonthlyTask();});
 	}
 
-	// TODO:加入其它定时器
 }

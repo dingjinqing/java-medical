@@ -5,6 +5,11 @@ import org.springframework.context.annotation.Configuration;
 
 import lombok.Data;
 
+/**
+ * 
+ * @author lixinguo
+ *
+ */
 @Configuration
 @Data
 public class AuthConfig {
