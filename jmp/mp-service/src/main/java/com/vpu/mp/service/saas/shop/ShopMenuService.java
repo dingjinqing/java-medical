@@ -8,11 +8,15 @@ import java.util.Map;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 
+import com.fasterxml.jackson.core.type.TypeReference;
 import com.vpu.mp.service.foundation.data.JsonResultCode;
 import com.vpu.mp.service.foundation.service.MainBaseService;
 import com.vpu.mp.service.foundation.util.Util;
 import com.vpu.mp.service.pojo.saas.shop.version.VersionConfig;
 import com.vpu.mp.service.pojo.saas.shop.version.VersionMainConfig;
+import com.vpu.mp.service.pojo.shop.auth.ShopMenuParam;
+import com.vpu.mp.service.pojo.shop.auth.ShopPriPassParam;
+import com.vpu.mp.service.pojo.shop.auth.ShopVersionParam;
 
 /**
  * 
@@ -21,9 +25,7 @@ import com.vpu.mp.service.pojo.saas.shop.version.VersionMainConfig;
  */
 @Service
 
-
 public class ShopMenuService extends MainBaseService {
-
 
 	final protected String menuJson = "admin.authorityNew.json";
 	final protected String authorityJson = "admin.privilegePassNew.json";
@@ -60,11 +62,12 @@ public class ShopMenuService extends MainBaseService {
 
 		String json = Util.loadResource(authorityJson);
 
-		ArrayList<?> list = Util.parseJson(json, ArrayList.class);
-		Map<String, ?> map = (Map<String, ?>) list.get(0);
-		String preName = (String) map.get("prName");
+		ArrayList<ShopPriPassParam> list = Util.parseJson(json, new TypeReference<List<ShopPriPassParam>>() {
+		});
+		ShopPriPassParam sPassParam = list.get(0);
+		String preName = sPassParam.getPrName();
 		if (PRNAMELIST.equals(preName)) {
-			List<?> prNameList = (List<?>) map.get("includeApi");
+			List<String> prNameList = sPassParam.getIncludeApi();
 			if (!includeEname(prNameList, reqeName)) {
 				// 请求不在所有定义的权限里
 				return JsonResultCode.CODE_ACCOUNT_ROLE__AUTH_INSUFFICIENT;
@@ -80,10 +83,10 @@ public class ShopMenuService extends MainBaseService {
 		}
 
 		for (int i = 1; i < list.size(); i++) {
-			Map<String, ?> map2 = (HashMap<String, ?>) list.get(i);
-			String prName2 = (String) map2.get("prName");
+			ShopPriPassParam sParam = list.get(i);
+			String prName2 = sParam.getPrName();
 			if (prName2.equals(reqeName)) {
-				if (includeEname((List<?>) map2.get("includeApi"), path)) {
+				if (includeEname(sParam.getIncludeApi(), path)) {
 					// 请求api在json对应的api里面
 					//
 					if (include(pShow, reqeName)) {
@@ -135,11 +138,13 @@ public class ShopMenuService extends MainBaseService {
 		}
 		String json = Util.loadResource(menuJson);
 
-		ArrayList<?> list = Util.parseJson(json, ArrayList.class);
-		Map<String, ?> map = (Map<String, ?>) list.get(0);
-		String eName = (String) map.get("enName");
+		ArrayList<ShopMenuParam> list = Util.parseJson(json, new TypeReference<List<ShopMenuParam>>() {
+		});
+
+		ShopMenuParam sParam = list.get(0);
+		String eName = sParam.getEnName();
 		if (ENNAMELIST.equals(eName)) {
-			List<?> eNameList = (List<?>) map.get("includeApi");
+			List<String> eNameList = sParam.getIncludeApi();
 			if (!includeEname(eNameList, reqeName)) {
 				// 请求不在所有定义的权限里
 				return false;
@@ -158,11 +163,11 @@ public class ShopMenuService extends MainBaseService {
 
 		// 去json查询这个权限对应的api
 		for (int i = 1; i < list.size(); i++) {
-			Map<String, ?> map2 = (HashMap<String, ?>) list.get(i);
-			String eName2 = (String) map2.get("enName");
+			ShopMenuParam shopMenuParam = list.get(i);
+			String eName2 = shopMenuParam.getEnName();
 			if (eName2.equals(reqeName)) {
 				// 请求api在权限对应的api里面
-				if (includeEname((List<?>) map2.get("includeApi"), path)) {
+				if (includeEname(shopMenuParam.getIncludeApi(), path)) {
 					return true;
 				}
 			}
@@ -214,8 +219,9 @@ public class ShopMenuService extends MainBaseService {
 		VersionMainConfig mainConfig = vConfig.getMainConfig();
 
 		String json = Util.loadResource(versionJson);
-		ArrayList<HashMap> list = Util.parseJson(json, ArrayList.class);
-		List<String> versionJson = (List<String>) list.get(0).get("includeApi");
+		ArrayList<ShopVersionParam> list = Util.parseJson(json, new TypeReference<List<ShopVersionParam>>() {
+		});
+		List<String> versionJson = (List<String>) list.get(0).getIncludeApi();
 
 		if (!includeEname(versionJson, reqVsName)) {
 			// 请求不在所有定义的权限里
@@ -228,9 +234,9 @@ public class ShopMenuService extends MainBaseService {
 		}
 		// 查询对应的api
 		for (int i = 1; i < list.size(); i++) {
-			Map<String,Object> hashMap = (Map<String,Object>)list.get(i);
-			if (reqVsName.equals(hashMap.get("vsName")) && reqEnName.equals(hashMap.get("enName"))) {
-				versionJson = (List<String>) hashMap.get("includeApi");
+			ShopVersionParam sParam = list.get(i);
+			if (reqVsName.equals(sParam.getVsName()) && reqEnName.equals(sParam.getEnName())) {
+				versionJson = (List<String>) sParam.getIncludeApi();
 				// 有些特殊的功能在对应的api方法里校验。规定这些特殊的IncludeApi为空
 				// 以后请往后添加-》》》目前包括： 小程序管理中的十个，门店买单送积分，签到送积分，门店买单 ，技师管理，服务管理
 				if (versionJson.size() == 0) {
