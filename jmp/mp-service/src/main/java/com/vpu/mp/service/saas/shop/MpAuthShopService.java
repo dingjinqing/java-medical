@@ -54,6 +54,7 @@ public class MpAuthShopService extends MainBaseService {
 		record.setAuthorizerInfo(Util.toJson(authorizerInfo));
 		record.setLastUploadTime(Timestamp.valueOf(LocalDateTime.now()));
 		record.setPrincipalName(authorizerInfo.getPrincipalName());
+		record.setQrcodeUrl(getMpQrCode(appId, authorizerInfo));
 		if (this.getAuthShopByAppId(appId) == null) {
 			record.insert();
 			// TODO: log operation
@@ -188,16 +189,14 @@ public class MpAuthShopService extends MainBaseService {
 
 	}
 
-	public String getMpQrCode(String appId) {
-//		String path = "pages/bottom/bottom";
-//		String filename = appId + "_" +Util.md5(path) +".jpg";
-//		String relativePath = "upload/saas/mp/app_code/"+filename;
-//		
-//		MpAuthShopRecord mp = this.getAuthShopByAppId(appId);
-//		WxOpenMaService maService = this.getMaServiceByAppId(appId);
-////		maService.getQrcodeService().createQrcode(path);
-		return null;
-
+	public String getMpQrCode(String appId, WxOpenAuthorizerInfo authorizerInfo) {
+		String qrcodeUrl = authorizerInfo.getQrcodeUrl();
+		String path = "pages/bottom/bottom";
+		String filename = appId + "_" + Util.md5(path) + ".jpg";
+		String relativePath = "upload/saas/mp/app_code/" + filename;
+		Boolean addImgeToUp = saas.sysImage.addImgeToUp(qrcodeUrl, relativePath);
+		logger().debug("appId"+appId+"头像上传又拍云"+addImgeToUp);
+		return relativePath;
 	}
 
 }
