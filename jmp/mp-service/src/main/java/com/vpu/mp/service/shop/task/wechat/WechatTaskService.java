@@ -7,7 +7,9 @@ import com.vpu.mp.service.foundation.service.ShopBaseService;
 import com.vpu.mp.service.foundation.util.DateUtil;
 import com.vpu.mp.service.foundation.util.Util;
 import me.chanjar.weixin.common.error.WxErrorException;
+import org.jooq.Field;
 import org.jooq.Table;
+import org.jooq.impl.DSL;
 import org.springframework.stereotype.Service;
 
 import java.text.SimpleDateFormat;
@@ -37,11 +39,14 @@ import static com.vpu.mp.db.shop.tables.MpWeeklyVisit.MP_WEEKLY_VISIT;
 @Service
 public class WechatTaskService extends ShopBaseService {
 
-    private static ThreadLocal<String> local = ThreadLocal.withInitial(() -> {
+
+    private static final String CONTENT = "wechat-context";
+    private static final ThreadLocal<String> local = ThreadLocal.withInitial(() -> {
         LocalDate date = LocalDate.now();
         return new SimpleDateFormat(DateUtil.pattern_one).
                 format(date.minusDays(1));
     });
+
     private WxMaAnalysisService getServiceByShopId(Integer shopId) {
         return saas().shop.mp.getMaServiceByShopId(shopId).getAnalysisService();
     }
@@ -90,7 +95,7 @@ public class WechatTaskService extends ShopBaseService {
     private void getVisitDistribution(WxMaAnalysisService service,Date date){
         try {
             WxMaVisitDistribution result = service.getVisitDistribution(date,date);
-            if(!validationData(result,MP_DISTRIBUTION_VISIT)){
+            if(validationData(result, MP_DISTRIBUTION_VISIT)){
                 return ;
             }
             MpDistributionVisitRecord record = shopDb().newRecord(MP_DISTRIBUTION_VISIT);
@@ -98,7 +103,7 @@ public class WechatTaskService extends ShopBaseService {
             record.setList(Util.toJson(result.getList()));
             record.insert();
         } catch (WxErrorException e) {
-            e.printStackTrace();
+            logger().error(CONTENT,e);
         }
     }
     /**
@@ -109,14 +114,14 @@ public class WechatTaskService extends ShopBaseService {
     private void getDailySummaryTrend(WxMaAnalysisService service,Date date){
         try {
             List<WxMaSummaryTrend> result = service.getDailySummaryTrend(date,date);
-            if(!validationData(result,MP_SUMMARY_TREND)){
+            if(validationData(result, MP_SUMMARY_TREND)){
                 return ;
             }
-            List<MpSummaryTrendRecord> list = new ArrayList<MpSummaryTrendRecord>(result.size());
-            result.forEach((v)->list.add(shopDb().newRecord(MP_SUMMARY_TREND,v)));
+            List<MpSummaryTrendRecord> list = new ArrayList<>(result.size());
+            result.forEach(v->list.add(shopDb().newRecord(MP_SUMMARY_TREND,v)));
             shopDb().batchInsert(list);
         } catch (WxErrorException e) {
-            e.printStackTrace();
+            logger().error(CONTENT,e);
         }
     }
     /**
@@ -127,14 +132,14 @@ public class WechatTaskService extends ShopBaseService {
     private void getVisitPage(WxMaAnalysisService service,Date date){
         try {
             List<WxMaVisitPage> result = service.getVisitPage(date,date);
-            if(!validationData(result,MP_VISIT_PAGE)){
+            if(validationData(result, MP_VISIT_PAGE)){
                 return ;
             }
-            List<MpVisitPageRecord> list = new ArrayList<MpVisitPageRecord>(result.size());
-            result.forEach((v)->list.add(shopDb().newRecord(MP_VISIT_PAGE,v)));
+            List<MpVisitPageRecord> list = new ArrayList<>(result.size());
+            result.forEach(v->list.add(shopDb().newRecord(MP_VISIT_PAGE,v)));
             shopDb().batchInsert(list);
         } catch (WxErrorException e) {
-            e.printStackTrace();
+            logger().error(CONTENT,e);
         }
     }
 
@@ -146,7 +151,7 @@ public class WechatTaskService extends ShopBaseService {
     private void getUserPortrait(WxMaAnalysisService service,Date date){
         try {
             WxMaUserPortrait info = service.getUserPortrait(date,date);
-            if(!validationData(info,MP_USER_PORTRAIT)){
+            if(validationData(info, MP_USER_PORTRAIT)){
                 return ;
             }
             MpUserPortraitRecord record = shopDb().newRecord(MP_USER_PORTRAIT);
@@ -155,7 +160,7 @@ public class WechatTaskService extends ShopBaseService {
             record.setVisitUv(Util.toJson(info.getVisitUv()));
             record.insert();
         } catch (WxErrorException e) {
-            e.printStackTrace();
+            logger().error(CONTENT,e);
         }
     }
 
@@ -167,17 +172,17 @@ public class WechatTaskService extends ShopBaseService {
     private void getDailyVisitTrend(WxMaAnalysisService service, Date date) {
         try {
             List<WxMaVisitTrend> result = service.getDailyVisitTrend(date,date);
-            if( !validationData(result,MP_DAILY_VISIT)){
+            if(validationData(result, MP_DAILY_VISIT)){
                 return;
             }
-            List<MpDailyVisitRecord> list = new ArrayList<MpDailyVisitRecord>(result.size());
-            result.forEach((v)->{
+            List<MpDailyVisitRecord> list = new ArrayList<>(result.size());
+            result.forEach(v->{
                 MpDailyVisitRecord record = shopDb().newRecord(MP_DAILY_VISIT,v);
                 list.add(record);
             });
             shopDb().batchInsert(list);
         } catch (WxErrorException e) {
-            e.printStackTrace();
+            logger().error(CONTENT,e);
         }
     }
     /**
@@ -191,17 +196,17 @@ public class WechatTaskService extends ShopBaseService {
                     DateTimeFormatter.ofPattern(DateUtil.pattern_one)).minusDays(6);
             List<WxMaVisitTrend> result = service.getWeeklyVisitTrend(
                     Date.from(startDate.atStartOfDay(ZoneId.systemDefault()).toInstant()),date);
-            if( !validationData(result,MP_WEEKLY_VISIT)){
+            if(validationData(result, MP_WEEKLY_VISIT)){
                 return;
             }
             List<MpWeeklyVisitRecord> list = new ArrayList<>(result.size());
-            result.forEach((v)->{
+            result.forEach(v->{
                 MpWeeklyVisitRecord record = shopDb().newRecord(MP_WEEKLY_VISIT,v);
                 list.add(record);
             });
             shopDb().batchInsert(list);
         } catch (WxErrorException e) {
-            e.printStackTrace();
+            logger().error(CONTENT,e);
         }
     }
     /**
@@ -215,17 +220,17 @@ public class WechatTaskService extends ShopBaseService {
                     DateTimeFormatter.ofPattern(DateUtil.pattern_one)).withDayOfMonth(1);
             List<WxMaVisitTrend> result = service.getMonthlyVisitTrend(
                     Date.from(startDate.atStartOfDay(ZoneId.systemDefault()).toInstant()),date);
-            if( !validationData(result,MP_MONTHLY_VISIT)){
+            if(validationData(result, MP_MONTHLY_VISIT)){
                 return;
             }
-            List<MpMonthlyVisitRecord> list = new ArrayList<MpMonthlyVisitRecord>(result.size());
-            result.forEach((v)->{
+            List<MpMonthlyVisitRecord> list = new ArrayList<>(result.size());
+            result.forEach(v->{
                 MpMonthlyVisitRecord record = shopDb().newRecord(MP_MONTHLY_VISIT,v);
                 list.add(record);
             });
             shopDb().batchInsert(list);
         } catch (WxErrorException e) {
-            e.printStackTrace();
+            logger().error(CONTENT,e);
         }
     }
 
@@ -237,7 +242,7 @@ public class WechatTaskService extends ShopBaseService {
     private void getDailyRetainInfo(WxMaAnalysisService service,Date date){
         try {
             WxMaRetainInfo info = service.getDailyRetainInfo(date,date);
-            if(!validationData(info,MP_DAILY_RETAIN)){
+            if(validationData(info, MP_DAILY_RETAIN)){
                 return ;
             }
             MpDailyRetainRecord record = shopDb().newRecord(MP_DAILY_RETAIN);
@@ -246,7 +251,7 @@ public class WechatTaskService extends ShopBaseService {
             record.setVisitUv(Util.toJson(info.getVisitUv()));
             record.insert();
         } catch (WxErrorException e) {
-            e.printStackTrace();
+            logger().error(CONTENT,e);
         }
     }
     /**
@@ -260,7 +265,7 @@ public class WechatTaskService extends ShopBaseService {
                     DateTimeFormatter.ofPattern(DateUtil.pattern_one)).minusDays(6);
             WxMaRetainInfo info = service.getWeeklyRetainInfo(
                     java.sql.Date.valueOf(startDate),date);
-            if(!validationData(info,MP_WEEKLY_RETAIN)){
+            if(validationData(info, MP_WEEKLY_RETAIN)){
                 return ;
             }
             MpWeeklyRetainRecord record = shopDb().newRecord(MP_WEEKLY_RETAIN);
@@ -269,7 +274,7 @@ public class WechatTaskService extends ShopBaseService {
             record.setVisitUv(Util.toJson(info.getVisitUv()));
             record.insert();
         } catch (WxErrorException e) {
-            e.printStackTrace();
+            logger().error(CONTENT,e);
         }
     }
     /**
@@ -280,10 +285,10 @@ public class WechatTaskService extends ShopBaseService {
     private void getMonthlyRetainInfo(WxMaAnalysisService service,Date date){
         try {
             LocalDate startDate = LocalDate.parse(local.get(),
-                    DateTimeFormatter.ofPattern(DateUtil.pattern_one)).withDayOfMonth(1);;
+                    DateTimeFormatter.ofPattern(DateUtil.pattern_one)).withDayOfMonth(1);
             WxMaRetainInfo info = service.getWeeklyRetainInfo(
                     java.sql.Date.valueOf(startDate),date);
-            if(!validationData(info,MP_MONTHLY_RETAIN)){
+            if(validationData(info, MP_MONTHLY_RETAIN)){
                 return ;
             }
             MpMonthlyRetainRecord record = shopDb().newRecord(MP_MONTHLY_RETAIN);
@@ -292,20 +297,18 @@ public class WechatTaskService extends ShopBaseService {
             record.setVisitUv(Util.toJson(info.getVisitUv()));
             record.insert();
         } catch (WxErrorException e) {
-            e.printStackTrace();
+            logger().error(CONTENT,e);
         }
     }
     private boolean validationData(Object o,Table table){
         if( o == null ){
-            return false;
+            return true;
         }
-        if (isHavingData(table,local.get())){
-            return false;
-        }
-        return true;
+        Field<String> data = DSL.val(local.get());
+        return isHavingData(table, data);
     }
-    private boolean isHavingData(Table table,String date){
-        int count =db().selectCount().from(table).where(table.field("ref_date").eq(date)).execute();
+    private boolean isHavingData(Table<?> table,Field<String> date){
+        int count =db().selectCount().from(table).where(table.field("ref_date",String.class).eq(date)).execute();
         return count > 0;
     }
 }
