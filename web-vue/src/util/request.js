@@ -74,6 +74,7 @@ service.interceptors.response.use(
     return res
   },
   error => {
+    let flag = localStorage.getItem('V-overallFlag')
     if (error && error.response) {
       switch (error.response.status) {
         case 401:
@@ -88,10 +89,16 @@ service.interceptors.response.use(
     } else {
       error.message = '服务正在处理，请稍后。'
     }
+    console.log(flag)
+    if (flag === 'false') return
     Message.error({
       message: error.message,
       showClose: true
     })
+    localStorage.setItem('V-overallFlag', false)
+    setTimeout(() => {
+      localStorage.setItem('V-overallFlag', true)
+    }, 1000)
     return Promise.reject(error)
   }
 )

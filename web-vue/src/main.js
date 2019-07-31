@@ -15,6 +15,8 @@ import 'element-ui/lib/theme-chalk/index.css'
 import 'font-awesome/css/font-awesome.min.css'
 import myMixins from '@/components/mixins.js'
 import VueCropper from 'vue-cropper'
+// 全局flag
+localStorage.setItem('overallFlag', true)
 Vue.use(VueCropper)
 Vue.component('v-distpicker', Distpicker)
 Vue.prototype.$http = new Vue()

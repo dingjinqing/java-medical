@@ -571,6 +571,9 @@ img {
 }
 </style>
 <style>
+.choosingGoods_Container .rangeLi .el-input {
+  width: 70px !important;
+}
 .table_container .el-checkbox {
   width: 14px !important;
   float: left !important;

@@ -378,34 +378,6 @@ export default {
       }],
       valueIsClss: '',
       trList: [
-        {
-          title: '香奈儿',
-          logoImg: this.$imageHost + '/upload/7467397/image/20190507/crop_N7Fu7EaKRtaZri18.gif',
-          priority: '100',
-          classification: '奢侈品',
-          num: '12',
-          Recommend: '是',
-          date: '2019-06-05 14:33:01'
-        },
-        {
-          title: '耐克',
-          logoImg: this.$imageHost + '/upload/7467397/image/20190507/crop_N7Fu7EaKRtaZri18.gif',
-          num: '15',
-          priority: '90',
-          classification: '运动系列',
-          Recommend: '否',
-          date: '2019-06-06 14:33:01'
-        },
-        {
-          title: '李宁',
-          logoImg: this.$imageHost + '/upload/7467397/image/20190507/crop_FMNIeOeRfzwSURLz.png',
-          priority: '70',
-          num: '18',
-          classification: '运动系列',
-          Recommend: '是',
-          date: '2019-06-07 14:33:01'
-        }
-
       ],
       clickIindex: null,
       tbodyFlag: true,
@@ -769,12 +741,6 @@ export default {
           this.tbodyFlag = false
         }
       })
-      // let obj = {
-      //   'bargainId': '2'
-      // }
-      // test(obj).then((res) => {
-      //   console.log(res)
-      // })
     },
     // 点击编辑
     handleEditGoods (id) {
@@ -785,12 +751,6 @@ export default {
         turnIndex: null
       }
       this.$emit('turnComponents', obj)
-      // let obj = {
-      //   'id': id
-      // }
-      // queryGoodsIdRequest(obj).then((res) => {
-      //   console.log(res)
-      // })
     }
 
   }
