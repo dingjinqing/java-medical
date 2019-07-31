@@ -97,7 +97,7 @@ public class PortraitService extends ShopBaseService {
     /**
      * 计算各个指标的总和（设备）
      */
-    private Integer portraitDeivceSum(List<PortraitDeviceItem> items) {
+    private Integer portraitDeviceSum(List<PortraitDeviceItem> items) {
         return items.parallelStream().mapToInt(PortraitDeviceItem::getValue).sum();
     }
 
@@ -109,7 +109,7 @@ public class PortraitService extends ShopBaseService {
         sum.setProvince(portraitSum(portrait.getProvince()));
         sum.setAges(portraitSum(portrait.getAges()));
         sum.setCity(portraitSum(portrait.getCity()));
-        sum.setDevices(portraitDeivceSum(portrait.getDevices()));
+        sum.setDevices(portraitDeviceSum(portrait.getDevices()));
         sum.setGenders(portraitSum(portrait.getGenders()));
         sum.setPlatforms(portraitSum(portrait.getPlatforms()));
         return sum;
