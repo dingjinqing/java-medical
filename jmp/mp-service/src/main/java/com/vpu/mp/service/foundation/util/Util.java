@@ -50,9 +50,9 @@ import com.fasterxml.jackson.databind.ObjectMapper;
  *
  */
 public class Util {
-	
+
 	final protected static String UNDEER_LINE = "_";
-	
+
 	public static String toJson(Object o) {
 		ObjectMapper mapper = new ObjectMapper();
 		try {
@@ -84,7 +84,7 @@ public class Util {
 		}
 		return null;
 	}
-	
+
 	@SuppressWarnings("rawtypes")
 	public static <T> T parseJson(String json, TypeReference valueTypeRef) {
 		ObjectMapper mapper = new ObjectMapper();
@@ -104,6 +104,14 @@ public class Util {
 		return null;
 	}
 
+	public static <T> T parseResourceJson(String path, Class<T> valueType) {
+		return parseJson(Util.loadResource(path), valueType);
+	}
+
+	@SuppressWarnings("rawtypes")
+	public static <T> T parseResourceJson(String path, TypeReference valueTypeRef) {
+		return parseJson(Util.loadResource(path), valueTypeRef);
+	}
 
 	public static String[] mergeArray(String[] array1, String[] array2) {
 		Map<String, Integer> map = new HashMap<String, Integer>(0);
@@ -125,7 +133,6 @@ public class Util {
 			}
 		}
 	}
-
 
 	public static String md5(String string) {
 		return DigestUtils.md5DigestAsHex(string.getBytes());
@@ -216,7 +223,6 @@ public class Util {
 		return null;
 	}
 
-
 	public static final <T> T convert(Object from, Class<? extends T> toClass, T defaultValue) {
 		try {
 			T t = Convert.convert(from, toClass);
@@ -248,8 +254,6 @@ public class Util {
 		return result;
 	}
 
-	
-
 	/**
 	 * 转换语言
 	 * 
@@ -259,10 +263,10 @@ public class Util {
 	 * @param languageType
 	 * @return
 	 */
-	public static String translateMessage(String language, String message, String defaultMessage,String languageType) {
+	public static String translateMessage(String language, String message, String defaultMessage, String languageType) {
 		language = StringUtils.isBlank(language) ? "zh_CN" : language;
 		ReloadableResourceBundleMessageSource source = new ReloadableResourceBundleMessageSource();
-		source.setBasename("static/i18n/"+languageType);
+		source.setBasename("static/i18n/" + languageType);
 		source.setDefaultEncoding("UTF-8");
 		MessageSourceAccessor accessor = new MessageSourceAccessor(source);
 		String[] languages = language.split(UNDEER_LINE);
@@ -272,82 +276,84 @@ public class Util {
 
 	/**
 	 * 转换语言
+	 * 
 	 * @param language
 	 * @param message
 	 * @return
 	 */
-	public static String translateMessage(String language, String message,String languageType) {
-		return translateMessage( language, message, message,languageType);
+	public static String translateMessage(String language, String message, String languageType) {
+		return translateMessage(language, message, message, languageType);
 	}
 
-	
 	/***
 	 * 下划线命名转为驼峰命名
 	 * 
 	 * @param para
-	 *   
+	 * 
 	 */
-	public static String underlineToHump(String para){
-		StringBuilder result=new StringBuilder();
-		String[] a=para.split(UNDEER_LINE);
-		for(String s:a){
+	public static String underlineToHump(String para) {
+		StringBuilder result = new StringBuilder();
+		String[] a = para.split(UNDEER_LINE);
+		for (String s : a) {
 			if (!para.contains(UNDEER_LINE)) {
-                result.append(s);
-                continue;
-            }
-			if(result.length()==0){
+				result.append(s);
+				continue;
+			}
+			if (result.length() == 0) {
 				result.append(s.toLowerCase());
-			}else{
+			} else {
 				result.append(s.substring(0, 1).toUpperCase());
 				result.append(s.substring(1).toLowerCase());
 			}
 		}
 		return result.toString();
 	}
-	
+
 	/***
-	* 驼峰命名转为下划线命名
+	 * 驼峰命名转为下划线命名
 	 * 
 	 * @param para
 	 * 
 	 */
-	public static String humpToUnderline(String para){
-        StringBuilder sb=new StringBuilder(para);
-        int temp=0;
-        if (!para.contains(UNDEER_LINE)) {
-            for(int i=0;i<para.length();i++){
-                if(Character.isUpperCase(para.charAt(i))){
-                    sb.insert(i+temp, UNDEER_LINE);
-                    temp+=1;
-                }
-            }
-        }
-        return sb.toString().toLowerCase();
-    }
+	public static String humpToUnderline(String para) {
+		StringBuilder sb = new StringBuilder(para);
+		int temp = 0;
+		if (!para.contains(UNDEER_LINE)) {
+			for (int i = 0; i < para.length(); i++) {
+				if (Character.isUpperCase(para.charAt(i))) {
+					sb.insert(i + temp, UNDEER_LINE);
+					temp += 1;
+				}
+			}
+		}
+		return sb.toString().toLowerCase();
+	}
 
-    /**
-     * 产生uuid
-     * @return
-     */
-    public static String randomId(){
-	    UUID uuid=UUID.randomUUID();
-	    return uuid.toString();
-    }
-    
-    /**
-     * 将字符串数组中的每一个 元素 转换为 Integer类型，转换失败直接跳过，不会抛异常
-     * @param from
-     * @return
-     */
-    public static List<Integer> valueOf(String[] from){
-		if(from == null || from.length == 0) {
+	/**
+	 * 产生uuid
+	 * 
+	 * @return
+	 */
+	public static String randomId() {
+		UUID uuid = UUID.randomUUID();
+		return uuid.toString();
+	}
+
+	/**
+	 * 将字符串数组中的每一个 元素 转换为 Integer类型，转换失败直接跳过，不会抛异常
+	 * 
+	 * @param from
+	 * @return
+	 */
+	public static List<Integer> valueOf(String[] from) {
+		if (from == null || from.length == 0) {
 			return new ArrayList<Integer>(0);
 		}
 		ArrayList<Integer> list = new ArrayList<Integer>(from.length);
-		for(int i=0;i<from.length;i++) {
+		for (int i = 0; i < from.length; i++) {
 			try {
 				list.add(Integer.valueOf(from[i]));
-			}catch (Exception e) {
+			} catch (Exception e) {
 				e.printStackTrace();
 			}
 		}
@@ -356,9 +362,10 @@ public class Util {
 
 	/**
 	 * 获取某一天的开始时间
+	 * 
 	 * @return
 	 */
-	public static Timestamp getStartToday(Date date){
+	public static Timestamp getStartToday(Date date) {
 		try {
 			SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
 			date = formatter.parse(formatter.format(date));
@@ -372,49 +379,51 @@ public class Util {
 
 	/**
 	 * 获取给定日期之前/之后多少天的日期
+	 * 
 	 * @param date 给定日期
 	 * @param days 指定多少天之前/之后
 	 * @return 返回的是后推或者前移后的日期的开始时间
 	 */
-	public static Timestamp getEarlyTimeStamp(Date date,int days){
-		return new Timestamp(getEarlyDate(date,days).getTime());
+	public static Timestamp getEarlyTimeStamp(Date date, int days) {
+		return new Timestamp(getEarlyDate(date, days).getTime());
 	}
-	public static java.sql.Date getEarlySqlDate(Date date,int days){
-		return new java.sql.Date(getEarlyDate(date,days).getTime());
+
+	public static java.sql.Date getEarlySqlDate(Date date, int days) {
+		return new java.sql.Date(getEarlyDate(date, days).getTime());
 	}
-	public static Date getEarlyDate(Date date,int days){
+
+	public static Date getEarlyDate(Date date, int days) {
 		date = getStartToday(date);
 		Calendar calendar = new GregorianCalendar();
 		calendar.setTime(date);
 		/** 把日期往后推或者往前移；正数往后推,负数往前移 */
-		calendar.add(Calendar.DATE,days);
+		calendar.add(Calendar.DATE, days);
 		/** 这个时间就是变动后的结果 */
-		date=calendar.getTime();
+		date = calendar.getTime();
 		return date;
 	}
-	
+
 	/**
 	 * 将map 以String方式返回
+	 * 
 	 * @param map
 	 * @return
 	 */
-	public static String convertMapToString(Map<?,?> map) {
-		return map.keySet().stream()
-					.map(key-> key+" = "+map.get(key))
-					.collect(Collectors.joining(", ","{","}"));
+	public static String convertMapToString(Map<?, ?> map) {
+		return map.keySet().stream().map(key -> key + " = " + map.get(key)).collect(Collectors.joining(", ", "{", "}"));
 	}
+
 	/**
 	 * 获取本地的时间
+	 * 
 	 * @return
 	 */
 	public static Timestamp getLocalDateTime() {
-		return Timestamp
-					.valueOf((LocalDateTime.now()
-								.format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"))));
+		return Timestamp.valueOf((LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"))));
 	}
 
-	public static <T extends Collection<?>> boolean isEmpty(T t){
-		return t ==null || t.isEmpty();
+	public static <T extends Collection<?>> boolean isEmpty(T t) {
+		return t == null || t.isEmpty();
 	}
-	
+
 }
