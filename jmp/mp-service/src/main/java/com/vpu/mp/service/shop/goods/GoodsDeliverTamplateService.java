@@ -109,7 +109,6 @@ public class GoodsDeliverTamplateService extends ShopBaseService{
 	        return result;
 	        
 		} catch (Exception e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		return 0;
@@ -161,7 +160,6 @@ public class GoodsDeliverTamplateService extends ShopBaseService{
 	        return result;
 	        
 		} catch (Exception e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		return 0;
@@ -244,7 +242,6 @@ public class GoodsDeliverTamplateService extends ShopBaseService{
 	        return result;
 	        
 		} catch (Exception e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		return 0;
@@ -297,7 +294,6 @@ public class GoodsDeliverTamplateService extends ShopBaseService{
 	        return result;
 	        
 		} catch (Exception e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		return 0;
