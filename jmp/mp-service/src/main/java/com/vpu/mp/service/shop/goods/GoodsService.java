@@ -497,7 +497,7 @@ public class GoodsService extends ShopBaseService {
     private void batchLabelOperate(GoodsBatchOperateParam operateParam) {
         List<Integer> goodsLabels = operateParam.getGoodsLabels();
 
-        if (goodsLabels == null && goodsLabels.size() == 0) {
+        if (goodsLabels == null || goodsLabels.size() == 0) {
             return;
         }
         List<Integer> goodsIds = operateParam.getGoodsIds();

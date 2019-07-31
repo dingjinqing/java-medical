@@ -12,6 +12,7 @@ import java.util.Map;
 import org.apache.commons.lang3.StringUtils;
 import org.jooq.Comparator;
 import org.jooq.Condition;
+import org.jooq.Record1;
 import org.jooq.Select;
 import org.springframework.stereotype.Service;
 
@@ -191,7 +192,7 @@ public class MallOverviewService extends ShopBaseService {
         /**  滞销商品 */
         OrderInfo oi = OrderInfo.ORDER_INFO.as("oi");
         OrderGoods og = OrderGoods.ORDER_GOODS.as("og");
-        Select select  = db().select(og.GOODS_ID).from(og).leftJoin(oi)
+        Select<? extends Record1<Integer>> select  = db().select(og.GOODS_ID).from(og).leftJoin(oi)
                 .on(og.ORDER_ID.eq(oi.ORDER_ID))
                 .where(oi.CREATE_TIME.lessOrEqual(Util.getEarlyTimeStamp(new Date(),-30)))
                 .and(og.UPDATE_TIME.greaterOrEqual(Util.getEarlyTimeStamp(new Date(),-30)));
