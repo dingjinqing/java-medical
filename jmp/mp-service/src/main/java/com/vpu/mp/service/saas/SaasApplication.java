@@ -8,6 +8,7 @@ import com.vpu.mp.service.saas.article.ArticleCategoryService;
 import com.vpu.mp.service.saas.article.ArticleService;
 import com.vpu.mp.service.saas.categroy.SysCateService;
 import com.vpu.mp.service.saas.db.RepairDatabaseService;
+import com.vpu.mp.service.saas.image.SystemImageService;
 import com.vpu.mp.service.saas.official.OfficialService;
 import com.vpu.mp.service.saas.overview.ShopOverviewService;
 import com.vpu.mp.service.saas.privilege.ChildAccountService;
@@ -52,6 +53,8 @@ public class SaasApplication {
 	public ShopOverviewService overviewService;
 	@Autowired
 	public CityService city;
+	@Autowired
+	public SystemImageService sysImage;
 
 	@Autowired
 	DatabaseManager databaseManager;
