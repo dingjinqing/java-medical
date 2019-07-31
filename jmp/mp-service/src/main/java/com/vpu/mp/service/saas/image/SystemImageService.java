@@ -5,6 +5,9 @@ import static com.vpu.mp.db.main.tables.UploadedImageCategory.UPLOADED_IMAGE_CAT
 
 import java.awt.image.BufferedImage;
 import java.io.File;
+import java.io.IOException;
+import java.io.InputStream;
+import java.net.HttpURLConnection;
 import java.net.URL;
 import java.sql.Timestamp;
 import java.time.LocalDateTime;
@@ -289,4 +292,43 @@ public class SystemImageService extends MainBaseService implements ImageDefault 
     public Integer currentShopId() {
     	return this.getShopId();
     }
+    
+	 /**
+	  * 添加外链图片到又拍云
+     * @param iamgeUrl
+     * @param relativePath
+     * @return
+     */
+	public Boolean addImgeToUp(String iamgeUrl, String relativePath) {
+		if(StringUtils.isEmpty(iamgeUrl)||StringUtils.isEmpty(relativePath)) {
+			return false;
+		}
+		InputStream inStream = null;
+		HttpURLConnection httpUrl = null;
+		URL url = null;
+		boolean steam = false;
+		try {
+			url = new URL(iamgeUrl);
+			httpUrl = (HttpURLConnection) url.openConnection();
+			httpUrl.connect();
+			inStream = httpUrl.getInputStream();
+			steam = this.uploadToUpYunBySteam(relativePath, inStream);
+		} catch (Exception e) {
+			e.printStackTrace();
+		} finally {
+			if (inStream != null) {
+				try {
+					inStream.close();
+				} catch (IOException e) {
+					e.printStackTrace();
+				}
+			}
+			if (httpUrl != null) {
+				httpUrl.disconnect();
+				httpUrl = null;
+			}
+		}
+		return steam;
+	}
+	
 }
