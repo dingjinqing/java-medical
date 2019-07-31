@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.RestController;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.util.Date;
+import java.util.Locale;
 
 /**
  * @Author:liufei
@@ -105,6 +106,7 @@ public class AdminCommodityStatisticsController extends AdminBaseController{
             response.setContentType("application/vnd.ms-excel;charset=UTF-8");
             String fileName = "商品效果" + System.currentTimeMillis() + ".xlsx";
             response.setHeader("Content-Disposition", "attachment;filename="+ fileName);
+            response.setLocale(Locale.ENGLISH);
             workbook.write(response.getOutputStream());
         } catch (IOException e) {
             e.printStackTrace();

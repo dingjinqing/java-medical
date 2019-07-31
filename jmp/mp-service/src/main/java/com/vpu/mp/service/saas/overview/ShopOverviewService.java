@@ -77,20 +77,20 @@ public class ShopOverviewService extends MainBaseService {
      */
     public ShopBaseInfoVo getShopBaseInfo(ShopBaseInfoParam param){
         ShopBaseInfoVo shopBaseInfoVo = new ShopBaseInfoVo();
-        //店铺到期时间
+        /** 店铺到期时间 */
         List<ShopBaseInfoVo> baseInfoVos = db().select(ShopRenew.SHOP_RENEW.EXPIRE_TIME)
                 .from(ShopRenew.SHOP_RENEW)
                 .where(ShopRenew.SHOP_RENEW.SHOP_ID.eq(param.getShopId()))
                 .fetchInto(ShopBaseInfoVo.class);
         shopBaseInfoVo.setExpireTime(baseInfoVos!=null&&!baseInfoVos.isEmpty() ? baseInfoVos.get(0).getExpireTime() : null);
-        //店铺版本
+        /** 店铺版本 */
         Shop shop = Shop.SHOP.as("shop");
         ShopVersion sv = ShopVersion.SHOP_VERSION.as("sv");
         Select<Record1<String>> select = db().select(shop.SHOP_TYPE).from(shop).where(shop.SHOP_ID.eq(param.getShopId()));
         List<ShopBaseInfoVo> infoVos = db().select(sv.VERSION_NAME).from(sv).where(sv.LEVEL.eq(select))
                 .fetchInto(ShopBaseInfoVo.class);
         shopBaseInfoVo.setVersionName(infoVos!=null&&!infoVos.isEmpty() ? infoVos.get(0).getVersionName() : null);
-        //当前绑定解绑状态
+        /** 当前绑定解绑状态 */
 
         shopBaseInfoVo.setBindStatus(getbindUnBindStatus(param.getOfficialParam()));
         return shopBaseInfoVo;
@@ -125,7 +125,7 @@ public class ShopOverviewService extends MainBaseService {
         shopNav(param,vo);
     }
     public ShopAssistantVo shopNav(ShopAssistantParam param,ShopAssistantVo vo){
-        //微信配置（授权和支付）
+        /** 微信配置（授权和支付） */
         List<MpAuthShop> authShopList = db().selectFrom(MpAuthShop.MP_AUTH_SHOP)
                 .where(MpAuthShop.MP_AUTH_SHOP.SHOP_ID.eq(param.getShopId()))
                 .fetchInto(MpAuthShop.class);
@@ -147,15 +147,17 @@ public class ShopOverviewService extends MainBaseService {
             vo.getDataShop().setWxPayConfigInfo((byte)2);
             vo.totalPendingIncr();
         }
-        //子账号配置
+        /** 子账号配置 */
         int subCount = db().fetchCount(ShopChildAccount.SHOP_CHILD_ACCOUNT,
                 ShopChildAccount.SHOP_CHILD_ACCOUNT.SYS_ID.eq(param.getSysId()));
         vo.getDataShop().setChildAccountConf(subCount > 0 ? (byte)0 : (byte)-1);
-        //公众号
+        if(subCount <= 0){vo.totalPendingIncr();}
+        /** 公众号 */
         int officialCount = db().fetchCount(MpOfficialAccount.MP_OFFICIAL_ACCOUNT,
                 MpOfficialAccount.MP_OFFICIAL_ACCOUNT.SYS_ID.eq(param.getSysId())
                         .and(MpOfficialAccount.MP_OFFICIAL_ACCOUNT.IS_AUTH_OK.eq(param.getIsAuthOk())));
         vo.getDataShop().setOfficialAccountConf(officialCount > 0 ? (byte)0 : (byte)-1);
+        if(officialCount <= 0){vo.totalPendingIncr();}
         return vo;
     }
 

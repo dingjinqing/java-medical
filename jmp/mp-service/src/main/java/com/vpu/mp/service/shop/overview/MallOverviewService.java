@@ -147,7 +147,7 @@ public class MallOverviewService extends ShopBaseService {
         return vo;
     }
     public ShopAssistantVo shopNav(ShopAssistantParam param, ShopAssistantVo vo){
-        //店铺首页
+        /**  店铺首页 */
         List<XcxCustomerPage> xcxCustomerPage = db().selectFrom(XcxCustomerPage.XCX_CUSTOMER_PAGE)
                 .where(XcxCustomerPage.XCX_CUSTOMER_PAGE.PAGE_TYPE.eq((byte)1))
                 .fetchInto(XcxCustomerPage.class);
@@ -158,31 +158,37 @@ public class MallOverviewService extends ShopBaseService {
             vo.getDataShop().setHomePageConf(condi1 || condi2 ? (byte)0 : (byte)-1);
         }else{
             vo.getDataShop().setHomePageConf((byte)-1);
+            vo.totalPendingIncr();
         }
-        //好物圈
+        /**  好物圈 */
         int cfgCount = db().fetchCount(ShopCfg.SHOP_CFG,ShopCfg.SHOP_CFG.K.eq("wx_shopping_list_enbaled"));
         vo.getDataShop().setShopRecommendConf(cfgCount > 0 ? (byte)0 : (byte)-1);
         vo.getDataShop().setShopRecommendLink(cfgCount > 0 ? "/admin/config/shop?act=auth" : "/wechat/no/authorization");
-        //客服
+        if(cfgCount <= 0){vo.totalPendingIncr();}
+        /**  客服 */
         int serviceCount = db().fetchCount(ShopCfg.SHOP_CFG,ShopCfg.SHOP_CFG.K.eq("custom_service")
                                     .or(ShopCfg.SHOP_CFG.K.eq("return_service")));
         vo.getDataShop().setCustomServiceConf(serviceCount > 0 ? (byte)0 : (byte)-1);
+        if(serviceCount <= 0){vo.totalPendingIncr();}
         return vo;
     }
 
     public ShopAssistantVo goodsNav(ShopAssistantParam param, ShopAssistantVo vo){
-        //运费模板设置
+        /**  运费模板设置 */
         int deliverCount = db().fetchCount(DeliverFeeTemplate.DELIVER_FEE_TEMPLATE);
         vo.getDataGoods().setShipTemplateConf(deliverCount > 0 ? (byte)0 : (byte)-1);
-        //商品添加
+        if(deliverCount <= 0){vo.totalPendingIncr();}
+        /**  商品添加 */
         int goodsCount = db().fetchCount(Goods.GOODS,Goods.GOODS.DEL_FLAG.eq((byte)0));
         vo.getDataGoods().setGoodsConf(goodsCount > 0 ? (byte)0 : (byte)-1);
-        //商品库存偏小
+        if(goodsCount <= 0){vo.totalPendingIncr();}
+        /**  商品库存偏小 */
         int goodsNum = db().fetchCount(Goods.GOODS,Goods.GOODS.DEL_FLAG.eq((byte)0)
                 .and(Goods.GOODS.GOODS_NUMBER
                         .lessThan(param.getStoreSizeNum())));
         vo.getDataGoods().setGoodsStoreConf(goodsNum);
-        //滞销商品
+        if(goodsNum > 0){vo.totalPendingIncr();}
+        /**  滞销商品 */
         OrderInfo oi = OrderInfo.ORDER_INFO.as("oi");
         OrderGoods og = OrderGoods.ORDER_GOODS.as("og");
         Select select  = db().select(og.GOODS_ID).from(og).leftJoin(oi)
@@ -191,38 +197,45 @@ public class MallOverviewService extends ShopBaseService {
                 .and(og.UPDATE_TIME.greaterOrEqual(Util.getEarlyTimeStamp(new Date(),-30)));
         int unsalableCount = db().fetchCount(Goods.GOODS,Goods.GOODS.DEL_FLAG.eq((byte)0).and(Goods.GOODS.GOODS_ID.notIn(select)));
         vo.getDataGoods().setGoodsUnsalableConf(unsalableCount);
-        //商品评价审核逾期
+        if(unsalableCount > 0){vo.totalPendingIncr();}
+        /**  商品评价审核逾期 */
         int commCount = db().fetchCount(CommentGoods.COMMENT_GOODS,CommentGoods.COMMENT_GOODS.DEL_FLAG.eq((byte)0)
                 .and(CommentGoods.COMMENT_GOODS.FLAG.eq((byte)0))
                 .and(CommentGoods.COMMENT_GOODS.CREATE_TIME.lessThan(Util.getEarlyTimeStamp(new Date(),-param.getCommentOver()))));
         vo.getDataGoods().setGoodsComment(commCount);
-        //推荐商品
+        if(commCount > 0){vo.totalPendingIncr();}
+        /**  推荐商品 */
         int recommCount = db().fetchCount(RecommendGoods.RECOMMEND_GOODS);
         vo.getDataGoods().setGoodsRecommend(recommCount);
-        //商家分类
+        if(recommCount <= 0){vo.totalPendingIncr();}
+        /**  商家分类 */
         int sortCount = db().fetchCount(Sort.SORT);
         vo.getDataGoods().setShopSort(sortCount);
+        if(sortCount <= 0){vo.totalPendingIncr();}
         return vo;
     }
 
     public ShopAssistantVo orderNav(ShopAssistantParam param, ShopAssistantVo vo){
-        //发货逾期
+        /**  发货逾期 */
         int deliverCount = db().fetchCount(OrderInfo.ORDER_INFO,OrderInfo.ORDER_INFO.ORDER_STATUS.eq((byte)3)
                 .and(OrderInfo.ORDER_INFO.CREATE_TIME.lessThan(Util.getEarlyTimeStamp(new Date(),-param.getDeliverOver()))));
         vo.getDataOrder().setDeliver(deliverCount);
-        //退款申请逾期
+        if(deliverCount > 0){vo.totalPendingIncr();}
+        /**  退款申请逾期 */
         int refundCount = db().fetchCount(OrderInfo.ORDER_INFO,OrderInfo.ORDER_INFO.REFUND_STATUS.in((byte)1,(byte)2,(byte)4)
                 .and(OrderInfo.ORDER_INFO.CREATE_TIME.lessThan(Util.getEarlyTimeStamp(new Date(),-param.getRefundOver()))));
         vo.getDataOrder().setRefund(refundCount);
+        if(refundCount > 0){vo.totalPendingIncr();}
         return vo;
     }
 
     public ShopAssistantVo marketNav(ShopAssistantParam param, ShopAssistantVo vo){
-        //分销审核超时
+        /**  分销审核超时 */
         int disCount = db().fetchCount(DistributorApply.DISTRIBUTOR_APPLY,
                 DistributorApply.DISTRIBUTOR_APPLY.CREATE_TIME.lessThan(Util.getEarlyTimeStamp(new Date(),-param.getApplyOver())));
         vo.getDataMarket().setExamine(disCount);
-        //会员卡激活审核
+        if(disCount > 0){vo.totalPendingIncr();}
+        /**  会员卡激活审核 */
         Map<String,String> memberMap = new HashMap<>(4);
         CardExamineRecord cardExamineRecord = new CardExamineRecord();
         List<CardExamine> cardExamineList = db().select(CardExamine.CARD_EXAMINE.CARD_ID)
@@ -245,11 +258,12 @@ public class MallOverviewService extends ShopBaseService {
             memberMap.put("card_name",cardName);
             memberMap.put("card_num",String.valueOf(cardNum));
             vo.getDataMarket().setMember(memberMap);
+            vo.totalPendingIncr();
         }else{
             memberMap.put("card_num","0");
             vo.getDataMarket().setMember(memberMap);
         }
-        //优惠券
+        /**  优惠券 */
         MrkingVoucherRecord voucherRecord = new MrkingVoucherRecord();
         Map<Integer,String> voucher = new HashMap<>(8);
         List<MrkingVoucher> voucherList = db().select(MrkingVoucher.MRKING_VOUCHER.ID,MrkingVoucher.MRKING_VOUCHER.ACT_NAME)
@@ -263,6 +277,7 @@ public class MallOverviewService extends ShopBaseService {
                 .fetchInto(MrkingVoucher.class);
         voucherList.forEach(e -> voucher.put(e.ID.get(voucherRecord),e.ACT_NAME.get(voucherRecord)));
         vo.getDataMarket().setVoucher(voucher);
+        if(!voucher.isEmpty()){vo.totalPendingIncr();}
         return vo;
     }
 }

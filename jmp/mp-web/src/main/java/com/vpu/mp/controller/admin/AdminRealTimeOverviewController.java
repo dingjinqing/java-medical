@@ -1,6 +1,7 @@
 package com.vpu.mp.controller.admin;
 
 import com.vpu.mp.service.foundation.data.JsonResult;
+import com.vpu.mp.service.pojo.shop.overview.Tuple2;
 import com.vpu.mp.service.pojo.shop.overview.realtime.CoreIndicatorParam;
 import com.vpu.mp.service.pojo.shop.overview.realtime.CoreIndicatorVo;
 import com.vpu.mp.service.pojo.shop.overview.realtime.RealTimeVo;
@@ -22,9 +23,11 @@ public class AdminRealTimeOverviewController extends AdminBaseController {
      * @return
      */
     @PostMapping("/api/admin/realtimeoverview/realTime")
-    public JsonResult realTime(){
+    public JsonResult realTime(@RequestBody @Validated CoreIndicatorParam param){
         RealTimeVo realTimeVo = shop().realTimeOverview.realTime();
-        return realTimeVo != null ? success(realTimeVo) : fail();
+        CoreIndicatorVo vo = shop().realTimeOverview.coreIndicator(param);
+        Tuple2<RealTimeVo,CoreIndicatorVo> tuple = new Tuple2<>(realTimeVo,vo);
+        return success(tuple);
     }
 
     /**
