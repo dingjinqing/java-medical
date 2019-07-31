@@ -5,6 +5,7 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.io.InputStream;
 import java.net.URL;
 import java.net.URLConnection;
 import java.util.Arrays;
@@ -264,5 +265,18 @@ public interface ImageDefault {
 		Thumbnails.of(fullPath).sourceRegion(param.x, param.y, param.w, param.h).size(param.cropWidth, param.cropHeight)
 				.toFile(uploadPath.fullPath);
 		return uploadPath;
+	}
+	
+	public default boolean uploadToUpYunBySteam(String upYunPath, InputStream inStream) throws IOException, Exception {
+		File file=new File(upYunPath);
+		if(!file.isDirectory()) {
+			//不是目录
+			return false;
+		}
+		if(!file.exists()) {
+			//目录不存在，创建目录
+			return this.getUpYunClient().writeFile(upYunPath, inStream,true,null);
+		}
+		return this.getUpYunClient().writeFile(upYunPath, inStream,false,null);
 	}
 }
