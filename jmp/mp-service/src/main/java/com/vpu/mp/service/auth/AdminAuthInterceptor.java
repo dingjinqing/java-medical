@@ -14,6 +14,9 @@ import com.vpu.mp.service.foundation.data.JsonResultCode;
 import com.vpu.mp.service.foundation.util.Util;
 import com.vpu.mp.service.pojo.shop.auth.AdminTokenAuthInfo;
 import com.vpu.mp.service.saas.SaasApplication;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 
 /****
  ** 
@@ -27,6 +30,8 @@ public class AdminAuthInterceptor extends HandlerInterceptorAdapter {
 	private static final String URL_SELECT_SHOP = "/api/admin/account/shop/select";
 	private static final String URL_LOGIN = "/api/admin/login";
 
+	Logger log=LoggerFactory.getLogger(AdminAuthInterceptor.class);
+	
 	@Autowired
 	protected AdminAuth adminAuth;
 	
@@ -91,6 +96,7 @@ public class AdminAuthInterceptor extends HandlerInterceptorAdapter {
 				}
 				errorResponse(request, response, URL_SELECT_SHOP,
 						(new JsonResult()).fail(language, JsonResultCode.CODE_ACCOUNT_ROLE__SHOP_SELECT));
+				log.debug("请求"+path+"选择店铺后操作");
 				return false;
 			} else {
 				if(match(specialExcept, path)) {
