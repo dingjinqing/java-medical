@@ -4,7 +4,7 @@
       <ul>
         <li class="li">
           <div class="liNav">
-            <span>手机号</span>
+            <div class="phoneClass">手机号</div>
             <el-input
               v-model="phoneNum"
               placeholder="请输入手机号"
@@ -55,11 +55,8 @@
       </ul>
       <ul class="uls">
         <li>
-          <div
-            class="liNav"
-            style="margin-left:25px"
-          >
-            <span>标签</span>
+          <div class="liNav">
+            <span class="labelClass">标签</span>
             <el-autocomplete
               v-model="labelVal"
               placeholder="请输入标签"
@@ -228,14 +225,14 @@
         <table width='100%'>
           <thead>
             <tr>
-              <td>ID</td>
-              <td>昵称</td>
-              <td>手机号</td>
+              <td style="width:8%">ID</td>
+              <td style="width:10%">昵称</td>
+              <td style="width:8%">手机号</td>
               <td>邀请人</td>
-              <td>余额</td>
-              <td>积分</td>
-              <td>会员卡</td>
-              <td>来源</td>
+              <td style="width:11%">余额</td>
+              <td style="width:11%">积分</td>
+              <td style="width:11%">会员卡</td>
+              <td style="width:10%">来源</td>
               <td>注册时间</td>
               <td>操作</td>
             </tr>
@@ -256,7 +253,10 @@
 
               </td>
               <td :class="isCenterFlag?'tdCenter':''">
-                <span style="color: #5A8BFF;cursor:pointer">{{item.name}}</span>
+                <span
+                  @click="hanldeToDetail()"
+                  style="color: #5A8BFF;cursor:pointer"
+                >{{item.name}}</span>
 
               </td>
               <td class="tb_decorate_a">
@@ -284,7 +284,10 @@
                   <span>{{item.membershipCard}}</span>
                   <div>
                     <span @click="handleSetUp()">设置</span>
-                    <span style="margin-top:8px">更多</span>
+                    <span
+                      @click="handleToTurnMore('receiveDetail')"
+                      style="margin-top:8px"
+                    >更多</span>
                   </div>
                 </div>
               </td>
@@ -297,16 +300,16 @@
               </td>
               <td class="tb_decorate_a">
                 <div class="lastDiv">
-                  <span>余额明细</span>
-                  <span>积分明细</span>
-                  <span>禁止登陆</span>
+                  <span @click="handleToTurnMore('balanceDetail')">余额明细</span>
+                  <span @click="handleToTurnMore('integralDetail')">积分明细</span>
+                  <span @click="handleNoLanding()">禁止登陆</span>
                 </div>
                 <div
                   class="lastDiv"
                   style="margin-top:5px"
                 >
-                  <span>打标签</span>
-                  <span>查看详情</span>
+                  <span @click="handleToLabel()">打标签</span>
+                  <span @click="hanldeToDetail()">查看详情</span>
                 </div>
               </td>
             </tr>
@@ -656,9 +659,69 @@
       </el-dialog>
     </div>
     <!--禁止登陆弹窗-->
+    <div class="balanceDialo">
+      <el-dialog
+        title="禁止登陆"
+        :visible.sync="noLandingDialogVisible"
+        width="40%"
+        :modal-append-to-body="false"
+      >
+        <div
+          class="balanceDialogDiv"
+          style="margin-bottom:30px"
+        >
+          <span style="color:#f66">提示：</span>
+          <span>禁止登陆后会员将不能登陆了，确定禁止登陆吗?</span>
+        </div>
+        <span
+          slot="footer"
+          class="dialog-footer"
+        >
+          <el-button @click="noLandingDialogVisible = false">取 消</el-button>
+          <el-button
+            type="primary"
+            @click="noLandingDialogVisible = false"
+          >确 定</el-button>
+        </span>
+      </el-dialog>
+    </div>
+    <!--打标签-->
+    <div class="balanceDialo">
+      <el-dialog
+        title="标签"
+        :visible.sync="labelDialogVisible"
+        width="25%"
+        :modal-append-to-body="false"
+      >
+        <div
+          class="balanceDialogDiv labelDialogDiv"
+          style="margin-bottom:30px"
+        >
+          <span style="line-height:15px;font-size:12px;color:#a3a3a3;display:block;margin-bottom:10px">一个用户最多可以打5个标签，超过数量的标签将不再被添加给该用户</span>
+          <el-autocomplete
+            v-model="labelDialogInput"
+            :fetch-suggestions="labelQuerySearch"
+            @select="handleLabelSelect"
+            placeholder="请输入内容"
+            size="small"
+          ></el-autocomplete>
+        </div>
+        <span
+          slot="footer"
+          class="dialog-footer"
+        >
+          <el-button @click="labelDialogVisible = false">取 消</el-button>
+          <el-button
+            type="primary"
+            @click="labelDialogVisible = false"
+          >确 定</el-button>
+        </span>
+      </el-dialog>
+    </div>
   </div>
 </template>
 <script>
+import { mapActions } from 'vuex'
 import ChoosingGoods from '@/components/admin/choosingGoods'
 export default {
   components: { ChoosingGoods },
@@ -1008,7 +1071,10 @@ export default {
       }],
       setUpSelectVal_one: [],
       setUpSelectVal_two: [],
-      setUpSelectVal_three: []
+      setUpSelectVal_three: [],
+      noLandingDialogVisible: false,
+      labelDialogVisible: false,
+      labelDialogInput: ''
     }
   },
   watch: {
@@ -1028,9 +1094,10 @@ export default {
   },
   mounted () {
     this.restaurants = this.loadAll()
+    this.restaurantsLebel = this.loadLabelAll()
   },
   methods: {
-    //
+    ...mapActions(['ToTurnMemberShipDetail']),
     querySearch (queryString, cb) {
       var restaurants = this.restaurants
       var results = queryString ? restaurants.filter(this.createFilter(queryString)) : restaurants
@@ -1159,6 +1226,44 @@ export default {
           this.setUpFalg_3 = true
           this.setUpSelectVal_three.push({ text: this.setUpValThree })
       }
+    },
+    // 禁止登陆点击
+    handleNoLanding () {
+      this.noLandingDialogVisible = true
+    },
+    // 打标签点击
+    handleToLabel () {
+      this.labelDialogVisible = true
+    },
+    // 打标签弹窗内的输入框建议处理事件
+    labelQuerySearch (queryString, cb) {
+      var restaurants = this.restaurantsLebel
+      var results = queryString ? restaurants.filter(this.createLabelFilter(queryString)) : restaurants
+      // 调用 callback 返回建议列表的数据
+      cb(results)
+    },
+    createLabelFilter (queryString) {
+      return (restaurant) => {
+        return (restaurant.value.toLowerCase().indexOf(queryString.toLowerCase()) === 0)
+      }
+    },
+    loadLabelAll () {
+      return [
+        { 'value': '1三全鲜食（北新泾店）', 'address': '长宁区新渔路144号' },
+        { 'value': '1Hot honey 首尔炸鸡（仙霞路）', 'address': '上海市长宁区淞虹路661号' },
+        { 'value': '1新旺角茶餐厅', 'address': '上海市普陀区真北路988号创邑金沙谷6号楼113' }
+      ]
+    },
+    handleLabelSelect () {
+
+    },
+    // 跳转到会员详情
+    hanldeToDetail () {
+      this.ToTurnMemberShipDetail('memberDetail')
+    },
+    // 点击表格中更多&&余额明细&&积分明细
+    handleToTurnMore (params) {
+      this.ToTurnMemberShipDetail(params)
     }
   }
 }
@@ -1173,7 +1278,6 @@ export default {
   height: 100%;
   position: relative;
   overflow-y: auto;
-  z-index: 10;
 }
 .brandManagementContent_main {
   position: relative;
@@ -1330,7 +1434,6 @@ thead td {
 }
 
 thead td:nth-of-type(1) {
-  width: 105px;
   clear: both;
   overflow: hidden;
   /* display: flex;
@@ -1340,36 +1443,12 @@ thead td:nth-of-type(1) .tdTopText {
   float: left;
   margin-left: 3px;
 }
-thead td:nth-of-type(2) {
-  width: 132px;
-}
-thead td:nth-of-type(3) {
-  width: 104px;
-}
 .sp_ {
   display: flex;
   justify-content: center;
 }
 .sp_ span {
   margin-left: 10px;
-}
-thead td:nth-of-type(4) {
-  width: 71px;
-}
-thead td:nth-of-type(5) {
-  width: 145px;
-}
-thead td:nth-of-type(6) {
-  width: 145px;
-}
-thead td:nth-of-type(7) {
-  width: 145px;
-}
-thead td:nth-of-type(8) {
-  width: 132px;
-}
-thead td:nth-of-type(9) {
-  width: 72px;
 }
 tbody td {
   text-align: center;
@@ -1522,6 +1601,16 @@ img {
 .selectDataClass img {
   height: 15px;
 }
+.phoneClass {
+  line-height: 30px;
+  height: 30px;
+  text-align: right;
+  color: #333;
+  margin-right: 25px;
+}
+.labelClass {
+  width: 42px !important;
+}
 </style>
 <style>
 .liNav .el-input__inner {
@@ -1562,5 +1651,8 @@ img {
 }
 .hy_common .el-input__inner {
   width: 168px !important;
+}
+.labelDialogDiv .el-input__inner {
+  width: 340px !important;
 }
 </style>

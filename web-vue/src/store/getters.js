@@ -10,7 +10,8 @@ const getters = {
   crumbsTitle: state => state.crumbs.crumbsTitle,
   goodsIds: state => state.goodsManagement.goodsIds,
   editGoodsId: state => state.goodsManagement.editGoodsId,
-  proAndUrData: state => state.crumbs.proAndUrData
+  proAndUrData: state => state.crumbs.proAndUrData,
+  membershipdetailflag: state => state.membershipList.membershipdetailflag
 }
 
 export default getters

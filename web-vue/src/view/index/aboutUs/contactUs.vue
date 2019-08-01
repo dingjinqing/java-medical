@@ -158,8 +158,8 @@ export default {
 }
 .pulse {
   position: absolute;
-  top: 1px;
-  left: -254px;
+  top: 8px;
+  left: -213px;
   height: 88px;
   width: 88px;
   border: 2px solid #2d79ff;

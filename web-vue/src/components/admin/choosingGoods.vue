@@ -333,8 +333,11 @@ export default {
         })
       }
       classificationSelectRequest().then((res) => {
-        this.options = res.content
         console.log(res)
+        if (!res) return
+        if (res.error === 0) {
+          this.options = res.content
+        }
       })
       this.handleClickChoiseGood()
     },
@@ -354,13 +357,18 @@ export default {
       // 弹窗上方下拉框统一数据获取
       initGrandgetRequest().then((res) => {
         // this.bottomOptionsOne = res.content.sysCates
-        this.bottomOptionsTwo = res.content.goodsSorts
-        this.bottomOptionsThree = res.content.goodsLabels
-        this.goodsGrandOptions = res.content.goodsBrands
+        if (!res) return
+        if (res.error === 0) {
+          this.bottomOptionsTwo = res.content.goodsSorts
+          this.bottomOptionsThree = res.content.goodsLabels
+          this.goodsGrandOptions = res.content.goodsBrands
+        }
+
         console.log(res)
       })
       // 弹窗下方表格数据获取
       allGoodsQueryRequest(obj).then((res) => {
+        if (!res) return
         if (res.error === 0) {
           // res.content.dataList.catName = res.content.dataList.catName.replace(',', '、')
           console.log(res.content.dataList)

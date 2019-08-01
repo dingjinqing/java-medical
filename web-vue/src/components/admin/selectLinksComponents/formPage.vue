@@ -142,6 +142,19 @@ export default {
 }
 </script>
 <style scoped>
+.noData {
+  height: 100px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  /* width: 650px; */
+  flex-direction: column;
+  border: 1px solid #eee;
+  margin-top: 10px;
+}
+.noData span {
+  margin: 10px;
+}
 table {
   border: 1px solid #eff1f5;
   border-collapse: collapse;

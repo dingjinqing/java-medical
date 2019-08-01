@@ -7,6 +7,7 @@ import smallProcedures from './modules/admin/smallProcedures'
 import smallProgramManagement from './modules/admin/smallProgramManagement'
 import crumbs from './modules/admin/crumbs'
 import goodsManagement from './modules/admin/goodsManagement'
+import membershipList from './modules/admin/membershipList'
 Vue.use(Vuex)
 export default new Vuex.Store({
   modules: {
@@ -15,7 +16,8 @@ export default new Vuex.Store({
     smallProcedures,
     smallProgramManagement,
     crumbs,
-    goodsManagement
+    goodsManagement,
+    membershipList
   },
   getters
 })
