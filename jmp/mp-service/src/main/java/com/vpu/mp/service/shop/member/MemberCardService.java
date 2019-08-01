@@ -6,39 +6,15 @@ import com.vpu.mp.db.shop.tables.records.MemberCardRecord;
 import com.vpu.mp.service.foundation.service.ShopBaseService;
 import com.vpu.mp.service.foundation.util.FieldsUtil;
 import com.vpu.mp.service.foundation.util.Util;
-import com.vpu.mp.service.pojo.shop.member.card.NormalMemberCardParam;
+import com.vpu.mp.service.pojo.shop.member.card.CardParam;
 import com.vpu.mp.service.pojo.shop.member.card.PowerCardJson;
 import com.vpu.mp.service.pojo.shop.member.card.ScoreJson;
 
 
 @Service
 public class MemberCardService extends ShopBaseService {
-	private final Byte NORMAL_TYPE = 0;
-	private final Byte LIMIT_NUM_TYPE = 1;
-	private final Byte RANK_TYPE = 2;
-	private final Byte NEED_BUY = 1;
-	private final Byte PICK_UP_CODE = 2;
-	private final String BUTTON_ON = "on";
-	private final Byte FIX_DATETIME = 0;
-	private final Byte DURING_TIME = 1;
-	private final Byte FOREVER = 2;
-//	private final String FINAL_TIME=" 23:59:59";
-	private final Byte BG_COLOR_TYPE = 0;
-	private final Byte BG_IMG_TYPE = 1;
-	private final Byte CHECKED = 1;
-	private final Byte DISCOUNT_ALL_GOODS = 1;
-	private final Byte DISCOUNT_PART_GOODS = 0;
-	private final String ALL_SHOP = "0";
-	private final String PART_SHOP = "1";
-	private final String PROHIBITED = "-1";
-	private final Byte GET_DIRECTLY = 0;
-	private final Byte NEED_CODE = 2;
-	private final Byte BUY_BY_CRASH = 0;
-	private final Byte BUY_BY_SCORE = 1;
-	private final Byte ACTIVE_NO = 0;
-	private final Byte ACTIVE_YES = 1;
-
-	public void addMemberCard(NormalMemberCardParam card) {
+	
+	public void addMemberCard(CardParam card) {
 		MemberCardRecord cardRecord = new MemberCardRecord();
 
 		Byte cardType = card.getCardType();
@@ -51,7 +27,7 @@ public class MemberCardService extends ShopBaseService {
 			//判断领取类型
 			Byte isPay = card.getIsPay();
 			
-			//TODO
+			//TODO 0的情况呢？直接领取
 			if(isPay == NEED_BUY) {
 				
 			}else if(isPay == PICK_UP_CODE) {
