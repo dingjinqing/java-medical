@@ -471,3 +471,41 @@ alter table b2c_card_order
     add goods_type tinyint(2) not null comment '虚拟商品类别：0：会员卡，1：优惠券';
 alter table b2c_card_order
     add voucher_id int(11) null comment '优惠券 ID' after card_no;
+
+
+--  孔德成 2019-7-29 16:05:51  增加表 满包邮
+--  满包邮详情
+-- DROP TABLE IF EXISTS `b2c_free_shipping`;
+CREATE TABLE `b2c_free_shipping` (
+`id` INT ( 11 ) NOT NULL AUTO_INCREMENT,
+`name` VARCHAR ( 100 ) COLLATE utf8mb4_unicode_ci NOT NULL COMMENT '活动名称',
+`expire_type` TINYINT ( 1 ) DEFAULT '0' COMMENT '0:固定日期 1：永久有效',
+`start_time` datetime DEFAULT NULL COMMENT '开始时间',
+`end_time` datetime DEFAULT NULL COMMENT '结束时间',
+`type` INT ( 11 ) NOT NULL COMMENT '条件 0全部 1部分',
+`recommend_goods_id` text COLLATE utf8mb4_unicode_ci COMMENT '指定商品可用',
+`recommend_cat_id` text COLLATE utf8mb4_unicode_ci COMMENT '指定分类可用',
+`recommend_sort_id` text COLLATE utf8mb4_unicode_ci COMMENT '指定商家分类可用',
+`status` TINYINT ( 1 ) DEFAULT '0' COMMENT '1停用',
+`create_time` TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+`update_time` TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '最后修改时间',
+`del_flag` TINYINT ( 1 ) DEFAULT '0' COMMENT '1删除',
+`del_time` datetime DEFAULT NULL,
+`level` TINYINT ( 2 ) DEFAULT '0' COMMENT '优先级 默认0',
+PRIMARY KEY ( `id` )
+) ENGINE = INNODB AUTO_INCREMENT = 22 DEFAULT CHARSET = utf8mb4 COLLATE = utf8mb4_unicode_ci;
+
+-- 满包邮规则
+-- DROP TABLE IF EXISTS `b2c_free_shipping_rule`;
+CREATE TABLE `b2c_free_shipping_rule` (
+`id` INT ( 11 ) NOT NULL AUTO_INCREMENT,
+`shipping_id` INT ( 11 ) NOT NULL COMMENT '包邮活动ID',
+`con_type` INT ( 11 ) NOT NULL COMMENT '包邮条件 0满金额 1满件数',
+`money` DECIMAL ( 10, 2 ) NOT NULL COMMENT '满金额',
+`num` INT ( 11 ) NOT NULL COMMENT '满件数',
+`area` text COLLATE utf8mb4_unicode_ci COMMENT '包邮地区',
+`create_time` TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+`update_time` TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '最后修改时间',
+PRIMARY KEY ( `id` ),
+KEY `shipping_id` ( `shipping_id` )
+) ENGINE = INNODB AUTO_INCREMENT = 39 DEFAULT CHARSET = utf8mb4 COLLATE = utf8mb4_unicode_ci;

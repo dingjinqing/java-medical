@@ -23,6 +23,7 @@ import com.vpu.mp.service.shop.goods.GoodsService;
 import com.vpu.mp.service.shop.image.ImageCategoryService;
 import com.vpu.mp.service.shop.image.ImageService;
 import com.vpu.mp.service.shop.market.bargain.BargainService;
+import com.vpu.mp.service.shop.market.freeshipping.FreeShippingService;
 import com.vpu.mp.service.shop.market.goupbuy.GroupBuyService;
 import com.vpu.mp.service.shop.member.MemberService;
 import com.vpu.mp.service.shop.member.ScoreCfgService;
@@ -30,13 +31,20 @@ import com.vpu.mp.service.shop.member.TagService;
 import com.vpu.mp.service.shop.operation.RecordAdminActionService;
 import com.vpu.mp.service.shop.order.OrderReadService;
 import com.vpu.mp.service.shop.order.OrderWriteService;
+import com.vpu.mp.service.shop.overview.CommodityStatisticsService;
+import com.vpu.mp.service.shop.overview.MallOverviewService;
+import com.vpu.mp.service.shop.overview.OverviewService;
+import com.vpu.mp.service.shop.overview.RealTimeOverviewService;
 import com.vpu.mp.service.shop.store.store.StoreService;
 import com.vpu.mp.service.shop.summary.portrait.PortraitService;
 import com.vpu.mp.service.shop.summary.visit.AmountService;
 import com.vpu.mp.service.shop.summary.visit.DistributionService;
 import com.vpu.mp.service.shop.summary.visit.PageService;
 import com.vpu.mp.service.shop.summary.visit.RetainService;
+import com.vpu.mp.service.shop.task.ShopTaskService;
 import com.vpu.mp.service.shop.version.VersionService;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
 /**
  * 
@@ -75,6 +83,10 @@ public class ShopApplication  {
 	@Autowired public DistributorLevelService distributorLevel; //分销员等级配置
 	@Autowired public MemberCardOrderService memberCardOrder;
 	@Autowired public TransactionStatisticsService transactionService;
+	/**
+	 * 满免包邮
+	 */
+	@Autowired public FreeShippingService freeShipping;
 
 	@Autowired public ShopTaskService shopTaskService;
 	
