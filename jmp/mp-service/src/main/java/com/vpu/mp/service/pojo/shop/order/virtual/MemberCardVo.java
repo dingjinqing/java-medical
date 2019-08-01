@@ -35,4 +35,6 @@ public class MemberCardVo {
     private String mobile;
     /** 退款状态 **/
     private Byte returnFlag;
+    /** 退款时间 **/
+    private Timestamp returnTime;
 }

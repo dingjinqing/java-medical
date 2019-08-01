@@ -5,6 +5,7 @@ import com.vpu.mp.service.foundation.util.PageResult;
 import com.vpu.mp.service.pojo.shop.order.virtual.MemberCardParam;
 import com.vpu.mp.service.pojo.shop.order.virtual.MemberCardVo;
 import org.jooq.Record13;
+import org.jooq.Record14;
 import org.jooq.SelectOnConditionStep;
 import org.springframework.stereotype.Service;
 
@@ -26,10 +27,12 @@ import static org.apache.commons.lang3.StringUtils.isNotEmpty;
 public class MemberCardOrderService extends ShopBaseService {
 
     public PageResult<MemberCardVo> getMemberCardOrderList(MemberCardParam param) {
-        SelectOnConditionStep<Record13<Integer, String, Integer, Byte, Timestamp, BigDecimal, String, String, String,
-            String, Byte, BigDecimal, Byte>> select = shopDb().select(CARD_ORDER.ORDER_ID, CARD_ORDER.ORDER_SN,
+        SelectOnConditionStep<Record14<Integer, String, Integer, Byte, Timestamp, BigDecimal, String, Timestamp, String,
+            String, String, Byte, BigDecimal, Byte>> select = shopDb().select(CARD_ORDER.ORDER_ID, CARD_ORDER.ORDER_SN,
             CARD_ORDER.CARD_ID, CARD_ORDER.RETURN_FLAG, CARD_ORDER.PAY_TIME, CARD_ORDER.MONEY_PAID, CARD_ORDER.CARD_NO,
-            USER.USERNAME, USER.MOBILE, MEMBER_CARD.CARD_NAME, MEMBER_CARD.CARD_TYPE, MEMBER_CARD.PAY_FEE, MEMBER_CARD.PAY_TYPE)
+            CARD_ORDER.RETURN_TIME, USER.USERNAME, USER.MOBILE, MEMBER_CARD.CARD_NAME, MEMBER_CARD.CARD_TYPE,
+            MEMBER_CARD.PAY_FEE,
+            MEMBER_CARD.PAY_TYPE)
             .from(CARD_ORDER)
             .leftJoin(MEMBER_CARD).on(MEMBER_CARD.ID.eq(CARD_ORDER.CARD_ID))
             .leftJoin(USER).on(CARD_ORDER.USER_ID.eq(USER.USER_ID));
@@ -37,8 +40,8 @@ public class MemberCardOrderService extends ShopBaseService {
         return getPageResult(select, param, MemberCardVo.class);
     }
 
-    private void buildOptions(SelectOnConditionStep<Record13<Integer, String, Integer, Byte, Timestamp, BigDecimal,
-        String, String, String, String, Byte, BigDecimal, Byte>> select, MemberCardParam param) {
+    private void buildOptions(SelectOnConditionStep<Record14<Integer, String, Integer, Byte, Timestamp, BigDecimal,
+        String, Timestamp, String, String, String, Byte, BigDecimal, Byte>> select, MemberCardParam param) {
         String orderSn = param.getOrderSn();
         String cardNo = param.getCardNo();
         Byte cardType = param.getCardType();
