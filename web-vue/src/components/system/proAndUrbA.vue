@@ -17,7 +17,7 @@ export default {
       temp: {
         address__province: '北京市',
         address__city: '北京城区',
-        address__dist: '北京城区'
+        address__dist: '东城区'
       }
     }
   },

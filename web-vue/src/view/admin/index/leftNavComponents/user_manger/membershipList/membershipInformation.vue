@@ -2,7 +2,7 @@
   <div class="membersDetailContent">
     <div class="membersDetailContentMain">
       <div class="topContainer">
-        <div class="titleEdit"><span>基本信息</span><span>编辑</span></div>
+        <div class="titleEdit"><span>基本信息</span><span @click="handleBaseInfo()">编辑</span></div>
         <div class="topMain">
           <div class="headDiv">
             <img :src="headeImgUrl">
@@ -14,7 +14,10 @@
               </li>
               <li>
                 <div>真实姓名：未知</div>
-                <div>邀请人：暂无<span class="modifyLinkPerson">修改联系人</span></div>
+                <div>邀请人：暂无<span
+                    class="modifyLinkPerson"
+                    @click="hanldeModifyPerson()"
+                  >修改联系人</span></div>
                 <div>成为客户：2019-08-01(1天内)</div>
               </li>
               <li>
@@ -64,9 +67,13 @@
 
     </div>
     <div class="topContainer">
-      <div class="titleEdit"><span>标签信息</span><span>编辑</span></div>
+      <div class="titleEdit"><span>标签信息</span><span @click="handleLabelEditOpen()">编辑</span></div>
       <div class="labelList">
-        <span></span>
+        <span
+          v-for="(item,index) in lebalDataList"
+          :key="index"
+          class="lebalSpan"
+        >{{item}}</span>
       </div>
     </div>
     <div class="topContainer">
@@ -119,10 +126,328 @@
         </div>
       </div>
     </div>
+    <!--基本信息编辑弹窗-->
+    <div class="baseInfo">
+      <el-dialog
+        title="编辑"
+        :visible.sync="baseInfoDialogVisible"
+        width="30%"
+        :modal-append-to-body="false"
+      >
+        <div
+          class="balanceDialogDiv"
+          style="margin-bottom:30px"
+        >
+          <div>
+            <span>性别</span>
+            <el-select
+              v-model="GenderValue"
+              placeholder="请选择"
+              size="small"
+            >
+              <el-option
+                v-for="item in GenderValueOptions"
+                :key="item.value"
+                :label="item.label"
+                :value="item.value"
+              >
+              </el-option>
+            </el-select>
+          </div>
+          <div style="margin-top:10px">
+            <span>生日</span>
+            <el-date-picker
+              v-model="birthdayVal"
+              type="date"
+              placeholder="选择日期"
+              default-value="2010-10-01"
+              size="small"
+            >
+            </el-date-picker>
+          </div>
+          <div
+            class="name"
+            style="margin-top:10px"
+          >
+            <span>真实姓名</span>
+            <el-input
+              size="small"
+              v-model="nameInput"
+              placeholder="请输入内容"
+            ></el-input>
+          </div>
+          <div style="margin-top:10px">
+            <span>所在地</span>
+            <ProAndUrbA />
+          </div>
+          <div style="margin-top:10px">
+            <span>婚姻状况</span>
+            <el-select
+              v-model="MarriageValue"
+              placeholder="请选择"
+              size="small"
+            >
+              <el-option
+                v-for="item in MarriageValueOptions"
+                :key="item.value"
+                :label="item.label"
+                :value="item.value"
+              >
+              </el-option>
+            </el-select>
+          </div>
+          <div style="margin-top:10px">
+            <span>月收入</span>
+            <el-select
+              v-model="incomeValue"
+              placeholder="请选择"
+              size="small"
+            >
+              <el-option
+                v-for="item in incomeValueOptions"
+                :key="item.value"
+                :label="item.label"
+                :value="item.value"
+              >
+              </el-option>
+            </el-select>
+          </div>
+          <div
+            style="margin-top:10px"
+            class="name"
+          >
+            <span>身份证</span>
+            <el-input
+              size="small"
+              v-model="IDInput"
+              placeholder="请输入内容"
+            ></el-input>
+          </div>
+          <div style="margin-top:10px">
+            <span>教育程度</span>
+            <el-select
+              v-model="educationValue"
+              placeholder="请选择"
+              size="small"
+            >
+              <el-option
+                v-for="item in educationValueOptions"
+                :key="item.value"
+                :label="item.label"
+                :value="item.value"
+              >
+              </el-option>
+            </el-select>
+          </div>
+          <div style="margin-top:10px">
+            <span>所在行业</span>
+            <el-select
+              v-model="industryValue"
+              placeholder="请选择"
+              size="small"
+            >
+              <el-option
+                v-for="item in industryValueOptions"
+                :key="item.value"
+                :label="item.label"
+                :value="item.value"
+              >
+              </el-option>
+            </el-select>
+          </div>
+        </div>
+        <span
+          slot="footer"
+          class="dialog-footer"
+        >
+          <el-button @click="baseInfoDialogVisible = false">取 消</el-button>
+          <el-button
+            type="primary"
+            @click="baseInfoDialogVisible = false"
+          >确 定</el-button>
+        </span>
+      </el-dialog>
+    </div>
+    <!--修改邀请人弹窗-->
+    <div class="baseInfo">
+      <el-dialog
+        title="编辑"
+        :visible.sync="modifypersonDialogVisible"
+        width="50%"
+        :modal-append-to-body="false"
+      >
+        <div
+          class="modifypersonDiv"
+          style="margin-bottom:30px"
+        >
+          <div class="modifypersonDivTop">
+            <div>
+              <span>昵称</span>
+              <el-input
+                size="small"
+                v-model="nameInput"
+                placeholder="请输入内容"
+              ></el-input>
+            </div>
+            <div>
+              <span style="width:80px">手机号</span>
+              <el-input
+                size="small"
+                v-model="nameInput"
+                placeholder="请输入内容"
+              ></el-input>
+            </div>
+            <div>
+              <span style="width:90px">真实姓名</span>
+              <el-input
+                size="small"
+                v-model="nameInput"
+                placeholder="请输入内容"
+              ></el-input>
+            </div>
+            <el-button
+              type="primary"
+              size="small"
+            >搜索</el-button>
+          </div>
+          <!--底部表格-->
+          <div
+            class="content"
+            v-if="page_one"
+          >
+            <table width='100%'>
+              <thead>
+                <tr>
+                  <td>用户ID</td>
+                  <td>昵称</td>
+                  <td>手机号</td>
+                  <td>真实姓名</td>
+
+                </tr>
+              </thead>
+              <tbody v-if="tbodyFlag">
+                <tr
+                  v-for="(item,index) in trList"
+                  :key="index"
+                  :class="clickIindex===index?'clickClass':''"
+                  @click="handleClick(index)"
+                >
+
+                  <td>{{item.title}}</td>
+                  <td>{{item.title}}</td>
+                  <td>{{item.title}}</td>
+                  <td>{{item.title}}</td>
+                  <td class="link">{{item.status}}</td>
+                  <td class="tb_decorate_a">
+                    {{item.path}}
+                  </td>
+                </tr>
+              </tbody>
+
+            </table>
+            <div
+              class="noData"
+              v-if="!tbodyFlag"
+            >
+              <img :src="noImg">
+              <span>暂无相关数据</span>
+            </div>
+          </div>
+          <div
+            class="content_two"
+            v-else
+          >
+            <table width='100%'>
+              <thead>
+                <tr>
+                  <td>名称</td>
+
+                  <td>链接</td>
+                </tr>
+              </thead>
+              <tbody v-if="tbodyFlag">
+                <tr
+                  v-for="(item,index) in trList"
+                  :key="index"
+                  :class="clickIindex===index?'clickClass':''"
+                  @click="handleClick(index)"
+                >
+                  <td>{{item.title}}</td>
+
+                  <td class="tb_decorate_a">
+                    {{item.path}}
+                  </td>
+                </tr>
+              </tbody>
+
+            </table>
+            <div
+              class="noData"
+              v-if="!tbodyFlag"
+            >
+              <img :src="noImg">
+              <span>暂无相关数据</span>
+            </div>
+          </div>
+        </div>
+        <span
+          slot="footer"
+          class="dialog-footer"
+        >
+          <el-button @click="modifypersonDialogVisible = false">取 消</el-button>
+          <el-button
+            type="primary"
+            @click="modifypersonDialogVisible = false"
+          >确 定</el-button>
+        </span>
+      </el-dialog>
+    </div>
+    <!--标签信息编辑弹窗-->
+    <div class="balanceDialo">
+      <el-dialog
+        title="标签"
+        :visible.sync="labelEditDialogVisible"
+        width="25%"
+        :modal-append-to-body="false"
+      >
+        <div
+          class="labelEditDialogDiv"
+          style="margin-bottom:30px"
+        >
+          <div>请选择标签</div>
+          <el-select
+            v-model="labelEditValue"
+            placeholder="请选择"
+            size="small"
+            @change="handleLebelEdit()"
+          >
+            <el-option
+              v-for="item in labelEditValueOptions"
+              :key="item.label"
+              :label="item.label"
+              :value="item.label"
+            >
+            </el-option>
+          </el-select>
+        </div>
+        <span
+          slot="footer"
+          class="dialog-footer"
+        >
+          <el-button @click="labelEditDialogVisible = false">取 消</el-button>
+          <el-button
+            type="primary"
+            @click="labelEditDialogVisible = false"
+          >确 定</el-button>
+        </span>
+      </el-dialog>
+    </div>
   </div>
 </template>
 <script>
+import ProAndUrbA from '@/components/system/proAndUrbA'
 export default {
+  components: { ProAndUrbA },
   data () {
     return {
       headeImgUrl: this.$imageHost + '/image/admin/head_icon.png',
@@ -228,7 +553,148 @@ export default {
         }
       ],
       hiddenUlFlag: false,
-      checkMoreText: '查看更多'
+      checkMoreText: '查看更多',
+      baseInfoDialogVisible: false,
+      GenderValue: '',
+      GenderValueOptions: [
+        {
+          value: '选项1',
+          label: '男'
+        }, {
+          value: '选项2',
+          label: '女'
+        }
+      ],
+      birthdayVal: '',
+      nameInput: '',
+      MarriageValue: '',
+      MarriageValueOptions: [
+        {
+          value: '选项1',
+          label: '已婚'
+        }, {
+          value: '选项2',
+          label: '未婚'
+        },
+        {
+          value: '选项3',
+          label: '保密'
+        }
+      ],
+      incomeValue: '',
+      incomeValueOptions: [
+        {
+          value: '选项1',
+          label: '2000元以下'
+        }, {
+          value: '选项2',
+          label: '2000-3999元'
+        },
+        {
+          value: '选项3',
+          label: '4000-5999'
+        },
+        {
+          value: '选项1',
+          label: '6000-7999'
+        }, {
+          value: '选项2',
+          label: '8000元以上'
+        }
+      ],
+      IDInput: '',
+      educationValue: '',
+      educationValueOptions: [
+        {
+          value: '选项1',
+          label: '初中'
+        }, {
+          value: '选项2',
+          label: '高中'
+        },
+        {
+          value: '选项3',
+          label: '中专'
+        },
+        {
+          value: '选项1',
+          label: '大专'
+        }, {
+          value: '选项2',
+          label: '本科'
+        },
+        {
+          value: '选项3',
+          label: '硕士'
+        },
+        {
+          value: '选项1',
+          label: '博士'
+        }, {
+          value: '选项2',
+          label: '其它'
+        }
+      ],
+      industryValue: '',
+      industryValueOptions: [
+        {
+          value: '选项1',
+          label: '计算机硬件及网络设备'
+        }, {
+          value: '选项2',
+          label: '计算机软件'
+        },
+        {
+          value: '选项3',
+          label: 'IT服务(系统/数据/维护/多领域经营)'
+        }
+
+      ],
+      modifypersonDialogVisible: false,
+      page_one: true,
+      tbodyFlag: false,
+      trList: [
+        {
+          title: '111',
+          path: 'pages/index/index',
+          classification: '分类1',
+          status: '营业中',
+          spanId: ''
+        },
+        {
+          title: '门店列表页',
+          path: 'pages/storelist/storelist',
+          spanId: '',
+          classification: '分类2',
+          status: '歇业中'
+        },
+        {
+          title: '购物车页',
+          path: 'pages/cart/cart',
+          classification: '分类3',
+          spanId: '',
+          status: '营业中'
+        }
+
+      ],
+      clickIindex: null,
+      noImg: 'http://mpimg2.weipubao.cn/image/admin/no_data.png',
+      labelEditDialogVisible: false,
+      labelEditValue: '',
+      labelEditValueOptions: [
+        {
+          value: '选项1',
+          label: '计算机硬件及网络设备'
+        }, {
+          value: '选项2',
+          label: '计算机软件'
+        },
+        {
+          value: '选项3',
+          label: 'IT服务(系统/数据/维护/多领域经营)'
+        }
+      ],
+      lebalDataList: []
     }
   },
   methods: {
@@ -241,12 +707,46 @@ export default {
         this.checkMoreText = '查看更多'
       }
       console.log(this.hiddenUlFlag)
+    },
+    // 基本信息编辑弹窗
+    handleBaseInfo () {
+      this.baseInfoDialogVisible = true
+    },
+    // 行点击
+    handleClick (index) {
+      this.clickIindex = index
+    },
+    // 点击修改联系人
+    hanldeModifyPerson () {
+      this.modifypersonDialogVisible = true
+    },
+    // 点击标签信息编辑
+    handleLabelEditOpen () {
+      this.labelEditDialogVisible = true
+    },
+    // 标签信息编辑弹窗选中值
+    handleLebelEdit () {
+      this.lebalDataList.push(this.labelEditValue)
+      this.labelEditDialogVisible = false
     }
   }
 
 }
 </script>
 <style scoped>
+.lebalSpan {
+  display: inline-block;
+  min-width: 60px;
+  padding: 0 3px;
+  text-align: center;
+  height: 20px;
+  line-height: 20px;
+  border: 1px solid #999;
+  border-radius: 2px;
+  font-size: 12px;
+  color: #444;
+  margin-right: 15px;
+}
 .membersDetailContent {
   padding: 10px;
   padding-bottom: 68px;
@@ -367,5 +867,110 @@ export default {
 }
 .hiddenUl li div {
   width: 195px !important;
+}
+.balanceDialogDiv > div {
+  display: flex;
+}
+.balanceDialogDiv > div > span {
+  line-height: 32px;
+  height: 32px;
+  display: block;
+  width: 56px;
+  text-align: right;
+  margin-right: 5px;
+}
+.name > span {
+  width: 65px !important;
+}
+.modifypersonDivTop,
+.modifypersonDivTop > div {
+  display: flex;
+}
+.modifypersonDivTop > div > span {
+  line-height: 32px;
+  height: 32px;
+  display: block;
+  width: 56px;
+}
+.noData {
+  height: 100px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  /* width: 650px; */
+  flex-direction: column;
+  border: 1px solid #eee;
+  margin-top: 10px;
+}
+.noData span {
+  margin: 10px;
+}
+table {
+  border: 1px solid #eff1f5;
+  border-collapse: collapse;
+  font-size: 14px;
+  border-spacing: 0 0;
+}
+.clickClass {
+  background-color: #eee !important;
+}
+thead {
+  display: table-header-group;
+  vertical-align: middle;
+  border-color: inherit;
+}
+thead td {
+  background: #faf9f8;
+  text-align: center;
+  color: #333;
+  padding: 8px 10px;
+  vertical-align: middle !important;
+}
+/* thead td:nth-of-type(1) {
+  width: 220px;
+}
+thead td:nth-of-type(2) {
+  width: 104px;
+} */
+
+tbody td {
+  text-align: center;
+  border: 1px solid #eff1f5;
+  color: #666;
+}
+td {
+  padding: 8px 10px;
+  vertical-align: middle !important;
+  text-align: center;
+}
+.content_two td:nth-of-type(2) {
+  width: 490px !important;
+}
+.content {
+  margin-top: 10px;
+}
+.labelEditDialogDiv > div:nth-of-type(1) {
+  color: #a3a3a3;
+  font-size: 12px;
+  margin-bottom: 10px;
+}
+</style>
+<style>
+.baseInfo .el-dialog__body {
+  padding-bottom: 0 !important;
+}
+.baseInfo .el-dialog__footer {
+  border-top: 1px solid #eee;
+}
+.name .el-input__inner {
+  width: 185px !important;
+}
+.modifypersonDivTop .el-input__inner {
+  width: 140px !important;
+}
+.baseInfo .distpicker-address-wrapper select {
+  height: 30px !important;
+  padding: 0 10px !important;
+  font-size: 12px !important;
 }
 </style>

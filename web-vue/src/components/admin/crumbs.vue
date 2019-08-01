@@ -33,24 +33,29 @@ export default {
     },
     membershipdetailflag_ (newData, name) {
       switch (newData) {
+        case '0':
+          this.title = [
+            '会员列表'
+          ]
+          break
         case 'memberDetail':
           this.title = [
-            '会员管理', '会员编辑信息'
+            '会员编辑信息'
           ]
           break
         case 'receiveDetail':
           this.title = [
-            '会员管理', '会员列表', name + '-会员卡领取明细'
+            '会员列表', name + '-会员卡领取明细'
           ]
           break
         case 'balanceDetail':
           this.title = [
-            '会员管理', '会员列表', name + '-会员卡余额明细'
+            '会员列表', name + '-会员卡余额明细'
           ]
           break
         case 'integralDetail':
           this.title = [
-            '会员管理', '会员列表', name + '-积分明细'
+            '会员列表', name + '-积分明细'
           ]
           break
       }

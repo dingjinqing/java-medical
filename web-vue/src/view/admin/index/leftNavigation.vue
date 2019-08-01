@@ -5,8 +5,8 @@
         <li
           v-for="(item,index) in navLeftData"
           :key="index"
-          :class="nav_index==index||click_nav_index==index?'active_bg':''"
-          @click="leftNavClick(index)"
+          :class="$route.name == item.name||click_nav_index===index?'active_bg':''"
+          @click="leftNavClick(index,item.name)"
           @mouseover="left_nav_over(index)"
           @mouseleave="left_nav_leave(index)"
           style="cursor:pointer"
@@ -22,7 +22,6 @@
   </div>
 </template>
 <script>
-import { mapGetters } from 'vuex'
 export default {
   data () {
     return {
@@ -31,524 +30,449 @@ export default {
         {
           imgUrl: '/static/image/admin/icon_left/shop_look.png',
           imgUrl_h: '/static/image/admin/icon_left/shop_look_h.png',
-          span: '商城概览'
+          span: '商城概览',
+          name: 'overviewOfMall'
         },
         {
           imgUrl: '/static/image/admin/icon_left/analysis_basic.png',
           imgUrl_h: '/static/image/admin/icon_left/analysis_basic_h.png',
-          span: '概况统计'
+          span: '概况统计',
+          name: 'overviewStatistics'
         },
         {
           imgUrl: '/static/image/admin/icon_left/situation.png',
           imgUrl_h: '/static/image/admin/icon_left/situation_h.png',
-          span: '实时概况'
+          span: '实时概况',
+          name: 'realtimeoverview'
         },
         {
           imgUrl: '/static/image/admin/icon_left/new_analysis_portrait.png',
           imgUrl_h: '/static/image/admin/icon_left/new_analtsis_portrait_h.png',
-          span: '用户画像'
+          span: '用户画像',
+          name: 'userportrait'
         },
         {
           imgUrl: '/static/image/admin/icon_left/analysis_visit.png',
           imgUrl_h: '/static/image/admin/icon_left/analysis_visit_h.png',
-          span: '访问分析'
+          span: '访问分析',
+          name: ''
         },
         {
           imgUrl: '/static/image/admin/icon_left/laiyuan.png',
           imgUrl_h: '/static/image/admin/icon_left/laiyuan_h.png',
-          span: '来源分析'
+          span: '来源分析',
+          name: ''
         },
         {
           imgUrl: '/static/image/admin/icon_left/new_yonghu.png',
           imgUrl_h: '/static/image/admin/icon_left/new_yonghu_h.png',
-          span: '用户统计'
+          span: '用户统计',
+          name: ''
         },
         {
           imgUrl: '/static/image/admin/icon_left/goods_new_ana.png',
           imgUrl_h: '/static/image/admin/icon_left/goods_new_ana_h.png',
-          span: '商品统计'
+          span: '商品统计',
+          name: ''
         },
         {
           imgUrl: '/static/image/admin/icon_left/jiaoyi.png',
           imgUrl_h: '/static/image/admin/icon_left/jiaoyi_h.png',
-          span: '交易统计'
+          span: '交易统计',
+          name: ''
         },
         {
           imgUrl: '/static/image/admin/icon_left/asset_manage.png',
           imgUrl_h: '/static/image/admin/icon_left/asset_manage_h.png',
-          span: '资产管理'
+          span: '资产管理',
+          name: ''
         },
         {
           imgUrl: '/static/image/admin/icon_left/search_config.png',
           imgUrl_h: '/static/image/admin/icon_left/search_config_h.png',
-          span: '搜索统计'
+          span: '搜索统计',
+          name: ''
         }
       ],
       first_web_decoration: [
         {
           imgUrl: '/static/image/admin/icon_left/page_decoration.png',
           imgUrl_h: '/static/image/admin/icon_left/page_decoration_h.png',
-          span: '页面装修'
+          span: '页面装修',
+          name: 'first_web_decoration'
         },
         {
           imgUrl: '/static/image/admin/icon_left/picture_setting.png',
           imgUrl_h: '/static/image/admin/icon_left/picture_setting_h.png',
-          span: '页面分类'
+          span: '页面分类',
+          name: 'page_classification'
         },
         {
           imgUrl: '/static/image/admin/icon_left/image_list.png',
           imgUrl_h: '/static/image/admin/icon_left/image_list_h.png',
-          span: '图片空间'
+          span: '图片空间',
+          name: 'freight_template'
         },
         {
           imgUrl: '/static/image/admin/icon_left/shop_style.png',
           imgUrl_h: '/static/image/admin/icon_left/shop_style_h.png',
-          span: '店铺风格'
+          span: '店铺风格',
+          name: 'shopStyle'
         },
         {
           imgUrl: '/static/image/admin/icon_left/picture_space.png',
           imgUrl_h: '/static/image/admin/icon_left/picture_space_h.png',
-          span: '底部导航'
+          span: '底部导航',
+          name: 'bottomNavigation'
         },
         {
           imgUrl: '/static/image/admin/icon_left/user_config.png',
           imgUrl_h: '/static/image/admin/icon_left/user_config_h.png',
-          span: '个人中心'
+          span: '个人中心',
+          name: ''
         },
         {
           imgUrl: '/static/image/admin/icon_left/search_config.png',
           imgUrl_h: '/static/image/admin/icon_left/search_config_h.png',
-          span: '搜索配置'
+          span: '搜索配置',
+          name: ''
         },
         {
           imgUrl: '/static/image/admin/icon_left/mobile_deco.png',
           imgUrl_h: '/static/image/admin/icon_left/mobile_deco_h.png',
-          span: '小程序跳转'
+          span: '小程序跳转',
+          name: ''
         }
       ],
       goods_manage: [
         {
           imgUrl: '/static/image/admin/icon_left/product_in.png',
           imgUrl_h: '/static/image/admin/icon_left/product_in_h.png',
-          span: '全部商品'
+          span: '全部商品',
+          name: 'goods_manage'
         },
         {
           imgUrl: '/static/image/admin/icon_left/picture_add.png',
           imgUrl_h: '/static/image/admin/icon_left/picture_add_h.png',
-          span: '添加商品'
+          span: '添加商品',
+          name: 'addingGoods'
         },
         {
           imgUrl: '/static/image/admin/icon_left/deliver_tmpl.png',
           imgUrl_h: '/static/image/admin/icon_left/deliver_tmpl_h.png',
-          span: '运费模板'
+          span: '运费模板',
+          name: ''
         },
         {
           imgUrl: '/static/image/admin/icon_left/img_sort.png',
           imgUrl_h: '/static/image/admin/icon_left/img_sort_h.png',
-          span: '商家分类管理'
+          span: '商家分类管理',
+          name: ''
         },
         {
           imgUrl: '/static/image/admin/icon_left/brand_icon.png',
           imgUrl_h: '/static/image/admin/icon_left/brand_icon_h.png',
-          span: '品牌管理'
+          span: '品牌管理',
+          name: 'brandManagement'
         },
         {
           imgUrl: '/static/image/admin/icon_left/comment_man.png',
           imgUrl_h: '/static/image/admin/icon_left/comment_man_h.png',
-          span: '评价管理'
+          span: '评价管理',
+          name: 'evaluationManagement'
         },
         {
           imgUrl: '/static/image/admin/icon_left/recommend_icon.png',
           imgUrl_h: '/static/image/admin/icon_left/recommend_icon_h.png',
-          span: '商品推荐'
+          span: '商品推荐',
+          name: ''
         },
         {
           imgUrl: '/static/image/admin/icon_left/goods_label1.png',
           imgUrl_h: '/static/image/admin/icon_left/goods_label1_h.png',
-          span: '商品标签'
+          span: '商品标签',
+          name: ''
         },
         {
           imgUrl: '/static/image/admin/icon_left/user_import.png',
           imgUrl_h: '/static/image/admin/icon_left/user_import_h.png',
-          span: '商品导入'
+          span: '商品导入',
+          name: ''
         }
       ],
       first_trade_manageL: [
         {
           imgUrl: '/static/image/admin/icon_left/all_order.png',
           imgUrl_h: '/static/image/admin/icon_left/all_order_h.png',
-          span: '全部订单'
+          span: '全部订单',
+          name: 'first_trade_manageL'
         },
         {
           imgUrl: '/static/image/admin/icon_left/wait_order.png',
           imgUrl_h: '/static/image/admin/icon_left/wait_order_h.png',
-          span: '待发货订单'
+          span: '待发货订单',
+          name: ''
         },
         {
           imgUrl: '/static/image/admin/icon_left/return_order.png',
           imgUrl_h: '/static/image/admin/icon_left/return_order_h.png',
-          span: '退货退款订单'
+          span: '退货退款订单',
+          name: ''
         },
         {
           imgUrl: '/static/image/admin/icon_left/self_order.png',
           imgUrl_h: '/static/image/admin/icon_left/self_order_h.png',
-          span: '自提订单'
+          span: '自提订单',
+          name: ''
         },
         {
           imgUrl: '/static/image/admin/icon_left/pin_group_fail.png',
           imgUrl_h: '/static/image/admin/icon_left/pin_group_fail_h.png',
-          span: '拼团退款失败单'
+          span: '拼团退款失败单',
+          name: ''
         },
         {
           imgUrl: '/static/image/admin/icon_left/checkout.png',
           imgUrl_h: '/static/image/admin/icon_left/checkout_h.png',
-          span: '买单订单'
+          span: '买单订单',
+          name: ''
         },
         {
           imgUrl: '/static/image/admin/icon_left/fake_icon.png',
           imgUrl_h: '/static/image/admin/icon_left/fake_icon_h.png',
-          span: '虚拟商品订单'
+          span: '虚拟商品订单',
+          name: ''
         }
       ],
       first_market_manage: [
         {
           imgUrl: '/static/image/admin/new_market/tj.png',
           imgUrl_h: '/static/image/admin/new_market/tj.png',
-          span: ''
+          span: '',
+          name: 'first_market_manage'
         },
         {
           imgUrl: '/static/image/admin/icon_left/bargain.png',
           imgUrl_h: '/static/image/admin/icon_left/bargain_h.png',
-          span: '砍价'
+          span: '砍价',
+          name: ''
         },
         {
           imgUrl: '/static/image/admin/icon_left/icon_group.png',
           imgUrl_h: '/static/image/admin/icon_left/icon_group_h.png',
-          span: '多人拼团'
+          span: '多人拼团',
+          name: ''
         },
         {
           imgUrl: '/static/image/admin/icon_left/img_distribution.png',
           imgUrl_h: '/static/image/admin/icon_left/img_distribution_h.png',
-          span: '分销'
+          span: '分销',
+          name: ''
         },
         {
           imgUrl: '/static/image/admin/icon_left/groupdraw.png',
           imgUrl_h: '/static/image/admin/icon_left/groupdraw_h.png',
-          span: '拼团抽奖'
+          span: '拼团抽奖',
+          name: ''
         },
         {
           imgUrl: '/static/image/admin/icon_left/pinintegration.png',
           imgUrl_h: '/static/image/admin/icon_left/pinintegration_h.png',
-          span: '瓜分积分'
+          span: '瓜分积分',
+          name: ''
         },
         {
           imgUrl: '/static/image/admin/icon_left/friend_promote.png',
           imgUrl_h: '/static/image/admin/icon_left/friend_promote_h.png',
-          span: '好友助力'
+          span: '好友助力',
+          name: ''
         },
         {
           imgUrl: '/static/image/admin/icon_left/icon_lottery.png',
           imgUrl_h: '/static/image/admin/icon_left/icon_lottery_h.png',
-          span: '幸运大抽奖'
+          span: '幸运大抽奖',
+          name: ''
         },
         {
           imgUrl: '/static/image/admin/icon_left/icon_gifted.png',
           imgUrl_h: '/static/image/admin/icon_left/icon_gifted_h.png',
-          span: '活动有礼'
+          span: '活动有礼',
+          name: ''
         },
         {
           imgUrl: '/static/image/admin/icon_left/icon_payreward.png',
           imgUrl_h: '/static/image/admin/icon_left/icon_payreward_h.png',
-          span: '支付有礼'
+          span: '支付有礼',
+          name: ''
         }
       ],
       user_manger: [
         {
           imgUrl: '/static/image/admin/icon_left/card.png',
           imgUrl_h: '/static/image/admin/icon_left/card_h.png',
-          span: '会员列表'
+          span: '会员列表',
+          name: 'membershipList'
         },
         {
           imgUrl: '/static/image/admin/icon_left/user_import.png',
           imgUrl_h: '/static/image/admin/icon_left/user_import_h.png',
-          span: '会员导入'
+          span: '会员导入',
+          name: ''
         },
         {
           imgUrl: '/static/image/admin/icon_left/user_code.png',
           imgUrl_h: '/static/image/admin/icon_left/user_code_h.png',
-          span: '会员卡'
+          span: '会员卡',
+          name: ''
         },
         {
           imgUrl: '/static/image/admin/icon_left/label_man.png',
           imgUrl_h: '/static/image/admin/icon_left/label_man_h.png',
-          span: '标签管理'
+          span: '标签管理',
+          name: ''
         },
         {
           imgUrl: '/static/image/admin/icon_left/essay_admin.png',
           imgUrl_h: '/static/image/admin/icon_left/essay_admin_h.png',
-          span: '积分管理'
+          span: '积分管理',
+          name: ''
         }
       ],
       store_manage: [
         {
           imgUrl: '/static/image/admin/icon_left/store_list.png',
           imgUrl_h: '/static/image/admin/icon_left/store_list_h.png',
-          span: '门店列表'
+          span: '门店列表',
+          name: 'store_manage'
         },
         {
           imgUrl: '/static/image/admin/icon_left/store_add.png',
           imgUrl_h: '/static/image/admin/icon_left/store_add_h.png',
-          span: '新增门店'
+          span: '新增门店',
+          name: ''
         },
         {
           imgUrl: '/static/image/admin/icon_left/store_group.png',
           imgUrl_h: '/static/image/admin/icon_left/store_group_h.png',
-          span: '分组管理'
+          span: '分组管理',
+          name: ''
         },
         {
           imgUrl: '/static/image/admin/icon_left/service_config.png',
           imgUrl_h: '/static/image/admin/icon_left/service_config_h.png',
-          span: '门店服务配置'
+          span: '门店服务配置',
+          name: ''
         }
       ],
       base_manger: [
         {
           imgUrl: '/static/image/admin/icon_left/config_list.png',
           imgUrl_h: '/static/image/admin/icon_left/config_list_h.png',
-          span: '店铺基础配置'
+          span: '店铺基础配置',
+          name: 'base_manger'
         },
         {
           imgUrl: '/static/image/admin/icon_left/pay_config.png',
           imgUrl_h: '/static/image/admin/icon_left/pay_config_h.png',
-          span: '交易配置'
+          span: '交易配置',
+          name: ''
         },
         {
           imgUrl: '/static/image/admin/icon_left/child_config.png',
           imgUrl_h: '/static/image/admin/icon_left/child_config_h.png',
-          span: '店铺权限'
+          span: '店铺权限',
+          name: ''
         },
         {
           imgUrl: '/static/image/admin/icon_left/message_config.png',
           imgUrl_h: '/static/image/admin/icon_left/message_config_h.png',
-          span: '模版消息'
+          span: '模版消息',
+          name: ''
         },
         {
           imgUrl: '/static/image/admin/icon_left/third_party_config.png',
           imgUrl_h: '/static/image/admin/icon_left/third_party_config_h.png',
-          span: '第三方对接'
+          span: '第三方对接',
+          name: ''
         },
         {
           imgUrl: '/static/image/admin/icon_left/action_record.png',
           imgUrl_h: '/static/image/admin/icon_left/action_record_h.png',
-          span: '操作记录'
+          span: '操作记录',
+          name: ''
         },
         {
           imgUrl: '/static/image/admin/icon_left/pledge_config.png',
           imgUrl_h: '/static/image/admin/icon_left/pledge_config_h.png',
-          span: '服务承诺'
+          span: '服务承诺',
+          name: ''
         }
       ],
       nav_index: '',
-      click_nav_index: '',
-      nav_s_class_index: false,
-      flag: ''
-    }
-  },
-  computed: {
-    ...mapGetters(['admin_leftVav_flag']),
-    admin_leftVav_flag1 () {
-      return this.admin_leftVav_flag
+      click_nav_index: null,
+      nav_s_class_index: false
     }
   },
   watch: {
-    admin_leftVav_flag1 (newData, oldData) {
-      this.judgeNav()
+    $route (to, from) {
+      console.log(to.meta)
+      this.defaultNav(to.meta)
     }
   },
   mounted () {
     // 初始化左侧菜单及顶部点击左侧菜单显示
-    this.judgeNav()
+    this.defaultNav(this.$route.meta)
   },
   methods: {
-    judgeNav () {
-      console.log(this.admin_leftVav_flag)
-      this.flag = this.admin_leftVav_flag
-      switch (this.flag) {
+    defaultNav (meta) {
+      switch (meta) {
         case 'first_web_manage':
-          this.handleLeftNav(this.first_web_manage, false, this.flag)
+          this.navLeftData = this.first_web_manage
           break
         case 'first_web_decoration':
-          this.handleLeftNav(this.first_web_decoration, false, this.flag)
+          this.navLeftData = this.first_web_decoration
           break
         case 'goods_manage':
-          this.handleLeftNav(this.goods_manage, false, this.flag)
+          this.navLeftData = this.goods_manage
           break
         case 'first_trade_manageL':
-          this.handleLeftNav(this.first_trade_manageL, false, this.flag)
+          this.navLeftData = this.first_trade_manageL
           break
         case 'first_market_manage':
-          this.handleLeftNav(this.first_market_manage, true, this.flag)
+          this.navLeftData = this.first_market_manage
           break
         case 'user_manger':
-          this.handleLeftNav(this.user_manger, false, this.flag)
+          this.navLeftData = this.user_manger
           break
         case 'store_manage':
-          this.handleLeftNav(this.store_manage, false, this.flag)
+          this.navLeftData = this.store_manage
           break
         case 'base_manger':
-          this.handleLeftNav(this.base_manger, false, this.flag)
+          this.navLeftData = this.base_manger
           break
       }
-    },
-    // 页面主动刷新初始化函数
-    handleLeftNav (show, boolean, flag) {
-      this.navLeftData = show
-      this.nav_s_class_index = boolean
-      this.nav_index = ''
-      this.click_nav_index = ''
-      let name = this.$route.name
-      console.log(name, flag)
-
-      switch (name) {
-        // 小程序管理
-        case 'page_classification':
-          if (flag === 'first_web_decoration') {
-            this.nav_index = 1
-            this.click_nav_index = 1
-          }
-          break
-        case 'freight_template':
-          if (flag === 'first_web_decoration') {
-            this.nav_index = 2
-            this.click_nav_index = 2
-          }
-          break
-        case 'shopStyle':
-          if (flag === 'first_web_decoration') {
-            this.nav_index = 3
-            this.click_nav_index = 3
-          }
-          break
-        case 'bottomNavigation':
-          if (flag === 'first_web_decoration') {
-            this.nav_index = 4
-            this.click_nav_index = 4
-          }
-          break
-        // 概况
-        case 'overviewStatistics':
-          console.log('sun==' + flag)
-          if (flag === 'first_web_manage') {
-            this.nav_index = 1
-            this.click_nav_index = 1
-          }
-          break
-        // 商品管理
-        // 商品管理之添加商品
-        case 'addingGoods':
-          if (flag === 'goods_manage') {
-            this.nav_index = 1
-            this.click_nav_index = 1
-          }
-          break
-        case 'brandManagement':
-          if (flag === 'goods_manage') {
-            this.nav_index = 4
-            this.click_nav_index = 4
-          }
-          break
-        case 'evaluationManagement':
-          if (flag === 'goods_manage') {
-            this.nav_index = 5
-            this.click_nav_index = 5
-          }
-          break
+      if (this.$route.name === 'first_market_manage') {
+        this.nav_s_class_index = true
+      } else {
+        this.nav_s_class_index = false
       }
     },
     // 左侧菜单栏点击事件
-    leftNavClick (index) {
+    leftNavClick (index, name) {
+      console.log(name)
+      if (name === 'first_market_manage') this.nav_s_class_index = true
       this.click_nav_index = index
-      console.log(this.flag)
-      // 概况模块左侧点击
-      if (this.flag === 'first_web_manage') {
-        switch (index) {
-          case 0:
-            this.$router.push({
-              name: 'overviewOfMall'
-            })
-            break
-          case 1:
-            this.$router.push({
-              name: 'overviewStatistics'
-            })
-            break
-        }
-      }
-      // 小程序管理模块左侧点击
-      if (this.flag === 'first_web_decoration') {
-        switch (index) {
-          case 0:
-            this.$router.push({
-              name: 'first_web_decoration'
-            })
-            break
-          case 1:
-            console.log('qqq')
-            this.$router.push({
-              name: 'page_classification'
-            })
-            break
-          case 2:
-            this.$router.push({
-              name: 'freight_template'
-            })
-            break
-          case 3:
-            this.$router.push({
-              name: 'shopStyle'
-            })
-            break
-          case 4:
-            this.$router.push({
-              name: 'bottomNavigation'
-            })
-            break
-        }
-      }
-      // 商品管理模块左侧点击
-      if (this.flag === 'goods_manage') {
-        switch (index) {
-          case 0:
-            this.$router.push({
-              name: 'goods_manage'
-            })
-            break
-          // 商品管理之添加商品
-          case 1:
-            this.$router.push({
-              name: 'addingGoods'
-            })
-            break
-          case 4:
-            this.$router.push({
-              name: 'brandManagement'
-            })
-            break
-          case 5:
-            this.$router.push({
-              name: 'evaluationManagement'
-            })
-            break
-        }
-      }
+      this.$router.push({
+        name: name
+      })
     },
     // 左侧菜单栏划入事件
     left_nav_over (index) {
-      this.nav_index = index
+      this.click_nav_index = index
     },
     // 左侧菜单栏划出事件
     left_nav_leave (index) {
-      this.nav_index = null
+      this.click_nav_index = null
     }
   }
 }

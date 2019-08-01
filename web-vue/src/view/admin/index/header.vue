@@ -7,8 +7,8 @@
       <div
         v-for="(item,index) in header_navData"
         :key="index"
-        :class="nav_index==index||click_nav_index==index?'active_bg':''"
-        @click="headerNavClick(index)"
+        :class="$route.meta == item.meta||click_nav_index==index?'active_bg':''"
+        @click="headerNavClick(index,item.name)"
         @mouseover="header_nav_over(index)"
         @mouseleave="header_nav_leave(index)"
       >
@@ -64,7 +64,7 @@
   </div>
 </template>
 <script>
-import Vuex from 'vuex'
+import { mapActions } from 'vuex'
 import Cookies from 'js-cookie'
 import { loginRequestOut } from '@/api/index/login.js'
 export default {
@@ -90,71 +90,29 @@ export default {
       username: '',
       menu_width: '',
       header_navData: [
-        { title: '概况', index: '' },
-        { title: '小程序管理', index: '' },
-        { title: '商品管理', index: '' },
-        { title: '订单管理', index: '' },
-        { title: '营销管理', index: '' },
-        { title: '会员管理', index: '' },
-        { title: '门店管理', index: '' },
-        { title: '基础配置', index: '' }
+        { title: '概况', index: '', meta: 'first_web_manage', name: 'overviewOfMall' },
+        { title: '小程序管理', index: '', meta: 'first_web_decoration', name: 'first_web_decoration' },
+        { title: '商品管理', index: '', meta: 'goods_manage', name: 'goods_manage' },
+        { title: '订单管理', index: '', meta: 'first_trade_manageL', name: 'first_trade_manageL' },
+        { title: '营销管理', index: '', meta: 'first_market_manage', name: 'first_market_manage' },
+        { title: '会员管理', index: '', meta: 'user_manger', name: 'membershipList' },
+        { title: '门店管理', index: '', meta: 'store_manage', name: 'store_manage' },
+        { title: '基础配置', index: '', meta: 'base_manger', name: 'base_manger' }
       ],
       active_bg: 'active_bg',
       nav_index: '',
-      click_nav_index: ''
+      click_nav_index: null
     }
   },
   mounted () {
+    console.log(this.$route)
     // 初始化登录
     this.judgeuserinfo()
     // 初始化语言
     this.langDefault()
-    // 初始化顶部导航
-    this.judgeHeader()
   },
-
   methods: {
-    ...Vuex.mapActions(['changeNavLeft']),
-    // 初始化顶部导航
-    judgeHeader () {
-      console.log(this.$route)
-      this.changeNavLeft(this.$route.meta)
-      let meta = this.$route.meta
-      switch (meta) {
-        case 'first_web_manage':
-          this.nav_index = 0
-          this.click_nav_index = 0
-          break
-        case 'first_web_decoration':
-          this.nav_index = 1
-          this.click_nav_index = 1
-          break
-        case 'goods_manage':
-          this.nav_index = 2
-          this.click_nav_index = 2
-          break
-        case 'first_trade_manageL':
-          this.nav_index = 3
-          this.click_nav_index = 3
-          break
-        case 'first_market_manage':
-          this.nav_index = 4
-          this.click_nav_index = 4
-          break
-        case 'user_manger':
-          this.nav_index = 5
-          this.click_nav_index = 5
-          break
-        case 'store_manage':
-          this.nav_index = 6
-          this.click_nav_index = 6
-          break
-        case 'base_manger':
-          this.nav_index = 7
-          this.click_nav_index = 7
-          break
-      }
-    },
+    ...mapActions(['ToTurnMemberShipDetail']),
     // 初始化登录
     judgeuserinfo () {
       if (Cookies.get('V-Token')) {
@@ -213,7 +171,7 @@ export default {
       this.changeColorIndex = index
     },
     header_nav_over (index) {
-      this.nav_index = index
+      this.click_nav_index = index
     },
     // 鼠标划出
     user_leave (index) {
@@ -222,60 +180,17 @@ export default {
       this.changeColorIndex = ''
     },
     header_nav_leave (index) {
-      this.nav_index = null
+      this.click_nav_index = null
     },
     // 顶部导航点击
-    headerNavClick (index) {
+    headerNavClick (index, name) {
       this.click_nav_index = index
-      switch (index) {
-        case 0:
-          this.$router.push({
-            name: 'overviewOfMall'
-          })
-          this.changeNavLeft('first_web_manage')
-          break
-        case 1:
-          this.$router.push({
-            name: 'first_web_decoration'
-          })
-          this.changeNavLeft('first_web_decoration')
-          break
-        case 2:
-          this.$router.push({
-            name: 'goods_manage'
-          })
-          this.changeNavLeft('goods_manage')
-          break
-        case 3:
-          this.$router.push({
-            name: 'first_trade_manageL'
-          })
-          this.changeNavLeft('first_trade_manageL')
-          break
-        case 4:
-          this.$router.push({
-            name: 'first_market_manage'
-          })
-          this.changeNavLeft('first_market_manage')
-          break
-        case 5:
-          this.$router.push({
-            name: 'membershipList'
-          })
-          this.changeNavLeft('user_manger')
-          break
-        case 6:
-          this.$router.push({
-            name: 'store_manage'
-          })
-          this.changeNavLeft('store_manage')
-          break
-        case 7:
-          this.$router.push({
-            name: 'base_manger'
-          })
-          this.changeNavLeft('base_manger')
-          break
+      this.$router.push({
+        name: name
+      })
+      console.log(name)
+      if (name === 'membershipList') {
+        this.ToTurnMemberShipDetail('0')
       }
     }
   }

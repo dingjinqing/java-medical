@@ -54,6 +54,34 @@ const routes = [
                 'overviewStatistics'
               )
           },
+          {
+            path: '/admin/home/main/realtimeoverview',
+            name: 'realtimeoverview',
+            meta: 'first_web_manage',
+            component: r =>
+              require.ensure(
+                [],
+                () =>
+                  r(
+                    require('@/view/admin/index/leftNavComponents/first_web_manage/overviewStatistics')
+                  ),
+                'realtimeoverview'
+              )
+          },
+          {
+            path: '/admin/home/main/userportrait',
+            name: 'userportrait',
+            meta: 'first_web_manage',
+            component: r =>
+              require.ensure(
+                [],
+                () =>
+                  r(
+                    require('@/view/admin/index/leftNavComponents/first_web_manage/overviewStatistics')
+                  ),
+                'userportrait'
+              )
+          },
           // 小程序管理系列子路由
           {
             path: '/admin/home/main/first_web_decoration',
