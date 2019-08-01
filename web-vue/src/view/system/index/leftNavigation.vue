@@ -235,7 +235,7 @@ export default {
   },
   methods: {
     judgeNav () {
-      console.log(this.system_leftVav_flag)
+      // console.log(this.system_leftVav_flag)
       this.flag = this.system_leftVav_flag
       switch (this.flag) {
         case 'overview':
@@ -268,7 +268,6 @@ export default {
       this.nav_index = ''
       this.click_nav_index = ''
       let name = this.$route.name
-      console.log(name, flag)
 
       switch (name) {
         // 概览

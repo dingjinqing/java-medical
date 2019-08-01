@@ -61,100 +61,89 @@
               :data="formTable"
               style="width: 100%"
               height="400"
-              align="center"
               border
             >
               <el-table-column
                 prop="userName"
                 label="用户名"
-                width="90"
+                fit
                 align="center"
               ></el-table-column>
               <el-table-column
                 prop="keywords"
                 label="昵称"
-                width="90"
+                fit
                 align="center"
               ></el-table-column>
               <el-table-column
                 prop="company"
                 label="公司名称"
-                width="90"
+                fit
                 align="center"
               ></el-table-column>
               <el-table-column
                 prop="state"
                 label="审核状态"
-                width="90"
+                :formatter="ifendcase"
+                fit
                 align="center"
               ></el-table-column>
               <el-table-column
                 prop="shopGrade"
                 label="店铺等级"
-                width="90"
+                fit
                 align="center"
               ></el-table-column>
               <el-table-column
                 prop="shopNumber"
                 label="店铺总数"
-                width="90"
+                fit
                 align="center"
               ></el-table-column>
               <el-table-column
                 prop="addTime"
                 label="添加时间"
-                width="90"
+                fit
                 align="center"
               ></el-table-column>
               <el-table-column
                 prop="buyTime"
                 label="首次续费"
-                width="90"
+                fit
                 align="center"
               ></el-table-column>
               <el-table-column
                 prop="endTime"
                 label="到期时间"
-                width="90"
+                fit
                 align="center"
               ></el-table-column>
               <el-table-column
                 prop="renewMoney"
                 label="续费总额"
-                width="90"
+                fit
                 align="center"
               ></el-table-column>
               <el-table-column
                 prop="mobile"
                 label="手机号"
-                width="90"
+                fit
                 align="center"
               ></el-table-column>
               <el-table-column
                 prop="operation"
                 label="操作"
-                width="90"
+                fit
                 align="center"
               ></el-table-column>
             </el-table>
             <div class="footer">
               <span>每页{{this.pageRows}}行记录，当前页面：{{this.currentPage}}，总页数：{{this.pageCount}}，总记录数为：{{this.totalRows}}</span>
-              <!-- <el-pagination
-              style='display: inline'
-              @current-change="handleCurrentChange"
-              :page-size="20"
-              :pager-count="11"
-              layout="prev, pager, next"
-              prev-text="上一页"
-              next-text="下一页"
-              :total="totalRows"
-            >
-            </el-pagination> -->
               <el-pagination
                 @current-change="handleCurrentChange"
                 :current-page.sync="currentPage3"
                 layout="prev, pager, next, jumper"
-                :total="totalRows"
+                :page-count="pageCount"
                 :small="pagination_b"
               >
               </el-pagination>
@@ -290,12 +279,15 @@
                 <el-form-item label="地理位置">
                   <div style="display: flex; width: 800px;">
                     <v-distpicker
+                      @selected="onSelected"
                       style="height:30px"
                       class="inputHeight"
-                      v-model="formData.provinceCode"
-                      province="北京市"
-                      city="北京城区"
-                      area="东城区"
+                      :province="formData.provinceCode"
+                      :city="formData.cityCode"
+                      :area="formData.districtCode"
+                      @province="getProvinceCode"
+                      @city="getCityCode"
+                      @area="getDistrictCode"
                     ></v-distpicker>
                   </div>
                 </el-form-item>
@@ -359,6 +351,9 @@ export default {
         company: '',
         salesperson: '',
         address: '',
+        provinc: '',
+        city: '',
+        area: '',
         addCommentSwitch: false,
         baseSale: false
       },
@@ -385,23 +380,24 @@ export default {
         }]
       },
       mainData: {
+        currentPage3: 1,
         state: '',
         keywords: '',
         company: ''
       },
       isSubLogin: false,
-      options: [
-        { value: '选项1', label: '申请中' },
-        { value: '选项2', label: '审核通过' },
-        { value: '选项3', label: '审核不通过' },
-        { value: '选项4', label: '已禁用' }
-      ],
-      value: '',
+      // options: [
+      //   { value: '选项1' },
+      //   { value: '选项2' },
+      //   { value: '选项3' },
+      //   { value: '选项4' }
+      // ],
+      // value: '',
       totalRows: null,
       pageRows: '',
       currentPage: '',
       currentPage3: 1,
-      pageCount: '',
+      pageCount: null,
       pagination_b: true,
       formTable: [{
         usreName: '',
@@ -429,9 +425,30 @@ export default {
   watch: {
     proAndUrData_ (newData, oldData) {
       console.log(newData)
+      this.query()
     }
   },
   methods: {
+    onSelected (data) {
+      this.formData.provinceCode = data.province.code
+      this.formData.cityCode = data.city.code
+      this.formData.districtCode = data.area.code
+      console.log(data)
+      // console.log(this.formData.districtCode)
+    },
+    getProvinceCode (data) {
+      this.formData.provinceCode = data.code
+      // console.log(this.formData.provinceCode)
+    },
+    getCityCode (data) {
+      this.formData.cityCode = data.code
+      // console.log(this.formData.cityCode)
+    },
+    getDistrictCode (data) {
+      this.formData.districtCode = data.code
+      // console.log(this.formData.districtCode)
+    },
+
     // 切换对应的两个tab
     switchTab (subLogin) {
       this.isSubLogin = subLogin
@@ -449,7 +466,6 @@ export default {
         'cityCode': '110100',
         'districtCode': '110101'
       }
-      // console.log(this.formData)
       let params = Object.assign(obj, this.formData)
       console.log(params)
       addCoountRequest(params).then(res => {
@@ -470,13 +486,16 @@ export default {
       })
     },
     // currnentPage 改变时会触发
-    handleCurrentChange (currentPage) {
-      currentPage = this.nextPage
+    handleCurrentChange () {
+      this.searchAccount()
     },
+    // ifendcase (state) {
+    //   if (state = 1) { return '哈哈哈' } else if (state == '2') { return '嗯嗯嗯' } else { return '进行中' }
+    // },
     // 商家账号列表查询
     searchAccount () {
       let obj1 = {
-        'currentPage': '1',
+        'currentPage': this.currentPage3,
         'pageRows': '20',
         'state': '',
         'keywords': '',
@@ -496,11 +515,9 @@ export default {
           this.nextPage = pageObj.nextPage
           this.pageCount = pageObj.pageCount
           this.pageRows = pageObj.pageRows
-          console.log(pageObj)
-          // console.log(res.content.page.firstPage)
 
           this.formTable = formList
-          console.log(this.formTable) // formTable是一个里面包含10个对象的数组
+          // console.log(this.formTable) // formTable是一个里面包含10个对象的数组
         }
       }).catch(() => {
         this.$message.error('保存失败')
@@ -512,13 +529,14 @@ export default {
 
 <style scoped>
 .outside {
+  width: 100%;
   background: #e6e9f0;
   overflow-y: scroll;
   overflow-x: scroll;
 }
 .content {
-  width: 1120px;
-  margin: 10px 5px;
+  width: 100%;
+  margin: 10px 10px;
 }
 .name {
   background: #f5f5f5;
@@ -546,6 +564,7 @@ export default {
   text-align: center;
   font-size: 14px;
   background: #eef1f6;
+  cursor: default;
 }
 .nav_left {
   width: 106px;
@@ -610,7 +629,6 @@ export default {
   padding: 15px;
   margin-top: 8px;
   margin-bottom: 8px;
-  /* border: 1px solid #000; */
   border-radius: 2px;
   background: #fff;
 }
@@ -619,7 +637,6 @@ export default {
 }
 .el-form-item {
   font-size: 14px;
-  /* border-top: 1px solid #ccc; */
   min-width: 400px;
   margin: 7px 0;
 }
