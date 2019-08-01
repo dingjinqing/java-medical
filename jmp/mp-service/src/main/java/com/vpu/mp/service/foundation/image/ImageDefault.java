@@ -12,6 +12,7 @@ import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Iterator;
 
+import javax.activation.MimetypesFileTypeMap;
 import javax.imageio.ImageIO;
 import javax.imageio.ImageReader;
 import javax.imageio.spi.ImageReaderSpi;
@@ -51,7 +52,7 @@ public interface ImageDefault {
 	 * @param relativePath
 	 * @return
 	 */
-	public  String imageUrl(String relativePath);
+	public String imageUrl(String relativePath);
 
 	/**
 	 * 本地全路径
@@ -59,7 +60,7 @@ public interface ImageDefault {
 	 * @param relativePath
 	 * @return
 	 */
-	public  String fullPath(String relativePath);
+	public String fullPath(String relativePath);
 
 	/**
 	 * 当前店铺Id
@@ -149,7 +150,7 @@ public interface ImageDefault {
 	 *
 	 * @return
 	 */
-	public  UpYun getUpYunClient();
+	public UpYun getUpYunClient();
 
 	/**
 	 * 上传到又拍云
@@ -234,6 +235,19 @@ public interface ImageDefault {
 
 	public default UploadPath getImageWritableUploadPath(String contentType) {
 		return this.getWritableUploadPath("image", randomFilename(), getImageExtension(contentType), null);
+	}
+
+	public default String getContentType(String fileUrl) {
+		return getContentType(new File(fileUrl));
+	}
+
+	public default String getContentType(File file) {
+		String contentType = null;
+		try {
+			contentType = new MimetypesFileTypeMap().getContentType(file);
+		} catch (Exception e) {
+		}
+		return contentType;
 	}
 
 	public default String baseFilename(String filename) {

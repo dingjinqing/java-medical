@@ -300,7 +300,7 @@ public class WechatTaskService extends ShopBaseService {
             logger().error(CONTENT,e);
         }
     }
-    private boolean validationData(Object o,Table table){
+    private boolean validationData(Object o,Table<?> table){
         if( o == null ){
             return true;
         }
