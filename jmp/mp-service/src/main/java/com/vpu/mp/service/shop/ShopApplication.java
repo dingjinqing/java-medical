@@ -1,6 +1,7 @@
 package com.vpu.mp.service.shop;
 
 
+import com.vpu.mp.service.shop.order.MemberCardOrderService;
 import com.vpu.mp.service.shop.overview.*;
 import com.vpu.mp.service.shop.task.ShopTaskService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -72,6 +73,7 @@ public class ShopApplication  {
 	@Autowired public RealTimeOverviewService realTimeOverview;
 	@Autowired public DistributorGroupService distributorGroup; //分销员分组
 	@Autowired public DistributorLevelService distributorLevel; //分销员等级配置
+	@Autowired public MemberCardOrderService memberCardOrder;
 	@Autowired public TransactionStatisticsService transactionService;
 
 	@Autowired public ShopTaskService shopTaskService;

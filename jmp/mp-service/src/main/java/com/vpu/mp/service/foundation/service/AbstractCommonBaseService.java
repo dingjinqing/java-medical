@@ -1,5 +1,6 @@
 package com.vpu.mp.service.foundation.service;
 
+import com.vpu.mp.service.pojo.shop.base.BasePageParam;
 import org.jooq.Configuration;
 import org.jooq.ContextTransactionalRunnable;
 import org.jooq.Record;
@@ -128,6 +129,10 @@ abstract public class AbstractCommonBaseService {
 				.limit((pageResult.page.currentPage - 1) * pageResult.page.pageRows, pageResult.page.pageRows).fetch();
 		pageResult.dataList = result.into(clazz);
 		return pageResult;
+	}
+
+	public <T> PageResult<T> getPageResult(SelectLimitStep<?> select, BasePageParam param, Class<T> clazz) {
+		return getPageResult(select, param.getCurrentPage(), param.getPageRows(), clazz);
 	}
 
 	public <T> PageResult<T> getPageResult(SelectLimitStep<?> select, Integer currentPage, Class<T> clazz) {
