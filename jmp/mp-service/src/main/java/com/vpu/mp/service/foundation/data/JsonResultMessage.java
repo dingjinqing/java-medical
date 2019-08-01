@@ -182,6 +182,13 @@ public class JsonResultMessage {
 	final public static String MSG_MEMBER_ACCOUNT_UPDATE_FAIL="member.account.update.fail";
 	
 	/**
+	 * 会员卡
+	 */
+	
+	final public static String MSG_MEMBER_CARD_RIGHTS_EMPTY = "member.card.rights.empty";
+	
+
+	/**
 	 *  概览
 	 */
 	final public static String OVERVIEW_MALL_DATADEMONSTRATION_GET_FAILED = "overview.mall.datademonstration.get.failed";
