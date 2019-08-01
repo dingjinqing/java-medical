@@ -522,4 +522,24 @@ CREATE TABLE `b2c_free_shipping_rule` (
 `update_time` TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '最后修改时间',
 PRIMARY KEY ( `id` ),
 KEY `shipping_id` ( `shipping_id` )
-) ENGINE = INNODB AUTO_INCREMENT = 39 DEFAULT CHARSET = utf8mb4 COLLATE = utf8mb4_unicode_ci;>>>>>>> .r1141
+) ENGINE = INNODB AUTO_INCREMENT = 39 DEFAULT CHARSET = utf8mb4 COLLATE = utf8mb4_unicode_ci;
+
+
+
+--优惠券礼包_礼包内容(优惠券)
+--DROP TABLE IF EXISTS `b2c_coupon_pack_voucher`;
+create table `b2c_coupon_pack_voucher` (
+  `id`                       int(11)               not null auto_increment,
+  `voucher_id`               int(11)               not null default 0 comment '优惠券id',
+  `act_id`                   int(11)               not null default 0 comment '所属优惠券礼包id',
+  `total_amount`             int(11)  unsigned not null default '0' comment '总数量',
+  `immediately_grant_amount` int(11)  unsigned not null default '0' comment '立即发放数量',
+  `timing_every`             int(11)  unsigned null     default '0' comment '每个时间单位间隔（1为无间隔）',
+  `timing_unit`              tinyint(1)        null     default '0' comment '定时发放的时间单位，0：自然天，1：自然周，2自然月',
+  `timing_time`              int(11)           null     default '0' comment '定时发放的时间,周1-7，月1-31，自然天不填',
+  `timing_amount`            int(11)  unsigned null     default '0' comment '定时发放的数量',
+  `del_flag`                 tinyint(1)                 default 0,
+  primary key (`id`),
+  index `voucher_id` (`voucher_id`),
+  index `act_id` (`act_id`)
+) ENGINE = INNODB AUTO_INCREMENT = 39 DEFAULT CHARSET = utf8mb4 COLLATE = utf8mb4_unicode_ci;
