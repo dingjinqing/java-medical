@@ -2,6 +2,9 @@ package com.vpu.mp.service.pojo.shop.member.card;
 
 import java.math.BigDecimal;
 import java.sql.Timestamp;
+
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
@@ -15,6 +18,8 @@ import lombok.NoArgsConstructor;
 @Data
 @NoArgsConstructor
 public class CardParam {
+	/** 会员卡id */
+	private Integer id;
 	/** 会员卡类型，名称 */
 	private Byte cardType;
 	private String cardName;
@@ -57,18 +62,8 @@ public class CardParam {
 	private Byte powerCard;
 	/** 开卡送多少元 */
 	private Integer sendMoney;
-	/**
-	 * 充值类型 0：充值满多少送多少 ；1: 充值每满多少送多少；2：仅充值；
-	 */
-	private Byte offsetMoney;
-	/** 充值满多少元 */
-	private BigDecimal[] money;
-	/** 充值满送多少元 */
-	private BigDecimal[] getMoney;
-	/** 每充值多少元 */
-	private BigDecimal perMoney;
-	/** 每充值送多少元 */
-	private BigDecimal perGetMoney;
+	/** 卡充值送积分策略json数据*/
+	private PowerCardJson powerCardJson;
 
 	/**
 	 * 会员有效期类型 0：固定日期；1：自领取多少内有效；2：永久有效
@@ -104,8 +99,11 @@ public class CardParam {
 	private BigDecimal payScore;
 
 	/** 使用须知 */
+
+	@JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
 	private String desc;
 	/** 联系电话 */
+	@JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
 	private String mobile;
 
 	/**
