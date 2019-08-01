@@ -125,11 +125,17 @@ public class MemberCardOrderService extends ShopBaseService {
                 if (0 == account && 0 == score) {
                     throw new IllegalArgumentException("Invalid refund amount");
                 }
-                if (0 != useAccount.doubleValue() && account > availableReturnAccount.doubleValue()) {
-                    throw new IllegalArgumentException("Refund account cannot larger than used account");
+                if (0 != useAccount.doubleValue()) {
+                    if (account > availableReturnAccount.doubleValue()) {
+                        throw new IllegalArgumentException("Refund account cannot larger than used account");
+                    }
+                    // todo 退余额
                 }
-                if (0 != useScore.doubleValue() && score > availableReturnScore.doubleValue()) {
-                    throw new IllegalArgumentException("Refund score cannot larger than used score");
+                if (0 != useScore.doubleValue()) {
+                    if (score > availableReturnScore.doubleValue()) {
+                        throw new IllegalArgumentException("Refund score cannot larger than used score");
+                    }
+                    // todo 退积分
                 }
                 break;
             default:
