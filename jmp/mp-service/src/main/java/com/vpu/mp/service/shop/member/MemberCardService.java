@@ -139,9 +139,9 @@ public class MemberCardService extends ShopBaseService {
 				flag = true;
 				/** 积分 */
 				cardRecord.setSorce(card.getScore());
-				ScoreJson scoreJson = new ScoreJson();
-				FieldsUtil.assignNotNull(card, scoreJson);
+				
 				/** 购物送积分策略json数据 */
+				ScoreJson scoreJson = card.getScoreJson();
 				cardRecord.setBuyScore(Util.toJson(scoreJson));
 			}
 
