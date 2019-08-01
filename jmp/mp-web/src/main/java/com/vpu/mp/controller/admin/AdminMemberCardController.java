@@ -7,7 +7,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.vpu.mp.service.foundation.data.JsonResult;
-import com.vpu.mp.service.pojo.shop.member.card.NormalMemberCardParam;
+import com.vpu.mp.service.pojo.shop.member.card.CardParam;
 
 /**
  * 
@@ -26,7 +26,7 @@ public class AdminMemberCardController extends AdminBaseController {
 	 * @return
 	 */
 	@PostMapping("/add")
-	public JsonResult createMemberCard(@RequestBody NormalMemberCardParam card) {
+	public JsonResult createMemberCard(@RequestBody CardParam card) {
 		//TODO
 		System.out.println(card);
 		
