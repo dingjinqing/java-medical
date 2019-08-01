@@ -10,6 +10,7 @@ import com.vpu.mp.service.pojo.shop.member.card.CardParam;
 import com.vpu.mp.service.pojo.shop.member.card.PowerCardJson;
 import com.vpu.mp.service.pojo.shop.member.card.ScoreJson;
 
+import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.*;
 
 @Service
 public class MemberCardService extends ShopBaseService {
