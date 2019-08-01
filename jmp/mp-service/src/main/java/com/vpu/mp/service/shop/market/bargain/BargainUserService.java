@@ -3,7 +3,12 @@ package com.vpu.mp.service.shop.market.bargain;
 import static com.vpu.mp.db.shop.tables.BargainUserList.BARGAIN_USER_LIST;
 import static com.vpu.mp.db.shop.tables.User.USER;
 
+import com.vpu.mp.service.foundation.excel.ExcelFactory;
+import com.vpu.mp.service.foundation.excel.ExcelTypeEnum;
+import com.vpu.mp.service.foundation.excel.ExcelWriter;
+import com.vpu.mp.service.pojo.shop.market.bargain.BargainUserExportVo;
 import org.apache.commons.lang3.StringUtils;
+import org.apache.poi.ss.usermodel.Workbook;
 import org.jooq.Record;
 import org.jooq.SelectWhereStep;
 import org.springframework.stereotype.Service;
@@ -13,7 +18,10 @@ import com.vpu.mp.service.foundation.util.PageResult;
 import com.vpu.mp.service.pojo.shop.market.bargain.BargainUserListQueryParam;
 import com.vpu.mp.service.pojo.shop.market.bargain.BargainUserListQueryVo;
 
+import java.util.List;
+
 /**
+ * 帮砍价用户
  * @author 王兵兵
  *
  * 2019年7月26日
@@ -43,5 +51,20 @@ public class BargainUserService extends ShopBaseService{
 			select.where(USER.MOBILE.contains(param.getMobile()));
 		}
 		return select;
+	}
+
+	public Workbook exportBargainUserList(BargainUserListQueryParam param, String lang){
+		SelectWhereStep<? extends Record> select = db().select(
+				BARGAIN_USER_LIST.ID,USER.USERNAME,USER.MOBILE,BARGAIN_USER_LIST.CREATE_TIME,BARGAIN_USER_LIST.BARGAIN_MONEY
+		).
+				from(BARGAIN_USER_LIST).
+				leftJoin(USER).on(BARGAIN_USER_LIST.USER_ID.eq(USER.USER_ID));
+		select = this.buildOptions(select, param);
+		select.where(BARGAIN_USER_LIST.RECORD_ID.eq(param.getRecordId())).orderBy(BARGAIN_USER_LIST.CREATE_TIME.desc());
+		List<BargainUserExportVo> voList = select.fetchInto(BargainUserExportVo.class);
+		Workbook workbook= ExcelFactory.createWorkbook(ExcelTypeEnum.XLSX);
+		ExcelWriter excelWriter = new ExcelWriter(lang,workbook);
+		excelWriter.writeModelList(voList,BargainUserExportVo.class);
+		return workbook;
 	}
 }

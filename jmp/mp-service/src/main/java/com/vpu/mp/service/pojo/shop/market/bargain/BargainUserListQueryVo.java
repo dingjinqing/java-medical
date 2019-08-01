@@ -6,6 +6,7 @@ import java.sql.Timestamp;
 import lombok.Data;
 
 /**
+ * 帮砍价用户
  * @author 王兵兵
  *
  * 2019年7月26日

@@ -57,9 +57,7 @@ public class BargainRecordService extends ShopBaseService {
 
 	/**
 	 * 根据状态取发起砍价的数量
-	 * @param bargainId
-	 * @param status
-	 * @return
+	 *
 	 */
 	public Integer getBargainRecordNumberByStatus(int bargainId,byte status) {
 		return db().selectCount().from(BARGAIN_RECORD).where(BARGAIN_RECORD.STATUS.eq(status)).and(BARGAIN_RECORD.BARGAIN_ID.eq(bargainId)).and(BARGAIN_RECORD.DEL_FLAG.eq(DelFlag.NORMAL.getCode())).fetchOne().into(Integer.class);
@@ -67,8 +65,8 @@ public class BargainRecordService extends ShopBaseService {
 	
 	/**
 	 * 某活动的发起砍价数量
-	 * @param bargainId
-	 * @return
+	 *
+	 *
 	 */
 	public Integer getBargainRecordNumber(int bargainId) {
 		return db().selectCount().from(BARGAIN_RECORD).where(BARGAIN_RECORD.BARGAIN_ID.eq(bargainId)).and(BARGAIN_RECORD.DEL_FLAG.eq(DelFlag.NORMAL.getCode())).fetchOne().into(Integer.class);
@@ -76,8 +74,8 @@ public class BargainRecordService extends ShopBaseService {
 	
 	/**
 	 * 发起记录的分页列表
-	 * @param param
-	 * @return
+	 *
+	 *
 	 */
 	public PageResult<BargainRecordPageListQueryVo> getRecordPageList(BargainRecordPageListQueryParam param){
 		SelectWhereStep<? extends Record> select = db().select(
@@ -117,8 +115,7 @@ public class BargainRecordService extends ShopBaseService {
 	
 	/**
 	 * 算出待砍金额
-	 * @param record
-	 * @return
+	 *
 	 */
 	public BigDecimal getBargainRecordSurplusMoney(BargainRecordPageListQueryVo record) {
 		if(record.getBargainType() == BargainService.BARGAIN_TYPE_FIXED) {
@@ -129,7 +126,7 @@ public class BargainRecordService extends ShopBaseService {
 		return BigDecimal.ZERO;
 	}
 	
-	public Workbook exportBargainRecordList(BargainRecordPageListQueryParam param, String lang) throws IOException {
+	public Workbook exportBargainRecordList(BargainRecordPageListQueryParam param, String lang) {
 		SelectWhereStep<? extends Record> select = db().select(
 				BARGAIN_RECORD.ID,GOODS.GOODS_NAME,BARGAIN_RECORD.GOODS_PRICE,USER.USERNAME,USER.MOBILE,BARGAIN_RECORD.CREATE_TIME,BARGAIN_RECORD.BARGAIN_MONEY,
 				BARGAIN_RECORD.USER_NUMBER,BARGAIN_RECORD.STATUS,BARGAIN.EXPECTATION_PRICE,BARGAIN.BARGAIN_TYPE,BARGAIN.FLOOR_PRICE			
@@ -171,8 +168,7 @@ public class BargainRecordService extends ShopBaseService {
 
 	/**
 	 * 发起砍价的人次数据分析
-	 * @param param
-	 * @return
+	 *
 	 */
 	public Map<Date,Integer> getRecordAnalysis(BargainAnalysisParam param){
 		Map<Date,Integer> map =  db().select(date(BARGAIN_RECORD.CREATE_TIME).as("date"),count().as("number")).from(BARGAIN_RECORD).
@@ -184,8 +180,7 @@ public class BargainRecordService extends ShopBaseService {
 
 	/**
 	 * 帮砍价的用户数据分析
-	 * @param param
-	 * @return
+	 *
 	 */
 	public Map<Date,Integer> getBargainUserAnalysis(BargainAnalysisParam param){
 		Map<Date,Integer> map =  db().select(date(BARGAIN_USER_LIST.CREATE_TIME).as("date"),count().as("number")).from(BARGAIN_USER_LIST).

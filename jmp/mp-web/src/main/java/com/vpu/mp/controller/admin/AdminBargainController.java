@@ -2,6 +2,7 @@ package com.vpu.mp.controller.admin;
 
 import com.vpu.mp.service.foundation.data.JsonResult;
 import com.vpu.mp.service.foundation.util.PageResult;
+import com.vpu.mp.service.foundation.util.Util;
 import com.vpu.mp.service.pojo.shop.market.bargain.*;
 import com.vpu.mp.service.pojo.shop.market.bargain.analysis.BargainAnalysisParam;
 import com.vpu.mp.service.shop.market.bargain.BargainRecordService;
@@ -22,6 +23,8 @@ import java.io.IOException;
  */
 @RestController
 public class AdminBargainController extends AdminBaseController {
+
+    private static final String LANGUAGE_TYPE_EXCEL= "excel";
 
 	/**
 	 * 砍价活动分页查询列表
@@ -120,9 +123,23 @@ public class AdminBargainController extends AdminBaseController {
 	public void exportBargainRecordList(@RequestBody @Valid BargainRecordPageListQueryParam param, HttpServletResponse response) throws IOException {
 		Workbook workbook =shop().bargain.bargainRecord.exportBargainRecordList(param,getLang());
 		response.setContentType("application/vnd.ms-excel;charset=UTF-8");
-	    response.setHeader("Content-Disposition", "attachment;filename=xxx.xls");
+        String fileName = Util.translateMessage(getLang(), "bargain.record.list.filename",LANGUAGE_TYPE_EXCEL) + Util.getLocalDateTime().toString();
+        response.setHeader("Content-Disposition", "attachment;filename=" + fileName + ".xls");
 		workbook.write(response.getOutputStream());
 	}
+
+    /**
+     * 导出帮忙砍价的用户列表
+     *
+     */
+    @PostMapping(value = "/api/admin/market/bargain/user/list/export")
+    public void exportBargainUserList(@RequestBody @Valid BargainUserListQueryParam param, HttpServletResponse response) throws IOException {
+        Workbook workbook =shop().bargain.bargainUser.exportBargainUserList(param,getLang());
+        response.setContentType("application/vnd.ms-excel;charset=UTF-8");
+        String fileName = Util.translateMessage(getLang(), "bargain.user.list.filename",LANGUAGE_TYPE_EXCEL) + Util.getLocalDateTime().toString();
+        response.setHeader("Content-Disposition", "attachment;filename=" + fileName + ".xls");
+        workbook.write(response.getOutputStream());
+    }
 	
 	/**
 	 * 帮忙砍价的用户列表
