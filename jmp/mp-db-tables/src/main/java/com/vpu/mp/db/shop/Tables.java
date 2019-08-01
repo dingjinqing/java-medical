@@ -4,9 +4,9 @@
 package com.vpu.mp.db.shop;
 
 
-import com.vpu.mp.db.shop.tables.*;
-
 import javax.annotation.Generated;
+
+import com.vpu.mp.db.shop.tables.*;
 
 
 /**

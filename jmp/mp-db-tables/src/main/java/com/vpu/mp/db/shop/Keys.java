@@ -4,8 +4,15 @@
 package com.vpu.mp.db.shop;
 
 
-import com.vpu.mp.db.shop.tables.TradesRecord;
+import javax.annotation.Generated;
+
+import org.jooq.Identity;
+import org.jooq.UniqueKey;
+import org.jooq.impl.Internal;
+
 import com.vpu.mp.db.shop.tables.*;
+import com.vpu.mp.db.shop.tables.TradesRecord;
+import com.vpu.mp.db.shop.tables.records.*;
 import com.vpu.mp.db.shop.tables.records.AssessTopicRecord;
 import com.vpu.mp.db.shop.tables.records.BargainRecord;
 import com.vpu.mp.db.shop.tables.records.ChannelRecord;
@@ -13,12 +20,6 @@ import com.vpu.mp.db.shop.tables.records.CouponActivityRecord;
 import com.vpu.mp.db.shop.tables.records.DistributorLevelRecord;
 import com.vpu.mp.db.shop.tables.records.LotteryRecord;
 import com.vpu.mp.db.shop.tables.records.PaymentRecord;
-import com.vpu.mp.db.shop.tables.records.*;
-import org.jooq.Identity;
-import org.jooq.UniqueKey;
-import org.jooq.impl.Internal;
-
-import javax.annotation.Generated;
 
 
 /**
@@ -220,7 +221,7 @@ public class Keys {
     public static final Identity<MpVisitPageRecord, Integer> IDENTITY_MP_VISIT_PAGE = Identities0.IDENTITY_MP_VISIT_PAGE;
     public static final Identity<MpWeeklyRetainRecord, Integer> IDENTITY_MP_WEEKLY_RETAIN = Identities0.IDENTITY_MP_WEEKLY_RETAIN;
     public static final Identity<MpWeeklyVisitRecord, Integer> IDENTITY_MP_WEEKLY_VISIT = Identities0.IDENTITY_MP_WEEKLY_VISIT;
-
+    public static final UniqueKey<UserFanliStatisticsRecord> KEY_B2C_USER_FANLI_STATISTICS_PRIMARY = UniqueKeys0.KEY_B2C_USER_FANLI_STATISTICS_PRIMARY;
     // -------------------------------------------------------------------------
     // UNIQUE and PRIMARY KEY definitions
     // -------------------------------------------------------------------------
@@ -844,6 +845,6 @@ public class Keys {
         public static final UniqueKey<MpWeeklyRetainRecord> KEY_B2C_MP_WEEKLY_RETAIN_PRIMARY = UniqueKeys0.KEY_B2C_MP_WEEKLY_RETAIN_PRIMARY;
         public static final UniqueKey<MpWeeklyVisitRecord> KEY_B2C_MP_WEEKLY_VISIT_PRIMARY = UniqueKeys0.KEY_B2C_MP_WEEKLY_VISIT_PRIMARY;
         public static final UniqueKey<FreeShippingRuleRecord> KEY_B2C_FREE_SHIPPING_RULE_PRIMARY = Internal.createUniqueKey(FreeShippingRule.FREE_SHIPPING_RULE, "KEY_b2c_free_shipping_rule_PRIMARY", FreeShippingRule.FREE_SHIPPING_RULE.ID);
-
+        public static final UniqueKey<UserFanliStatisticsRecord> KEY_B2C_USER_FANLI_STATISTICS_PRIMARY = Internal.createUniqueKey(UserFanliStatistics.USER_FANLI_STATISTICS, "KEY_b2c_user_fanli_statistics_PRIMARY", UserFanliStatistics.USER_FANLI_STATISTICS.USER_ID);
     }
 }

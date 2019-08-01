@@ -417,6 +417,7 @@ public class Indexes {
     // -------------------------------------------------------------------------
     // [#1459] distribute members to avoid static initialisers > 64kb
     // -------------------------------------------------------------------------
+	public static final Index USER_FANLI_STATISTICS_PRIMARY = null;
 
     private static class Indexes0 {
         public static Index GROUP_BUY_LIST_PRIMARY = Internal.createIndex("PRIMARY", GroupBuyList.GROUP_BUY_LIST, new OrderField[] { GroupBuyList.GROUP_BUY_LIST.ID }, true);

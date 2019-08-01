@@ -48,7 +48,6 @@ public class DistributorGroupService extends ShopBaseService{
 	 */
 	public SelectConditionStep<Record4<Integer, String, Byte, Byte>> buildOptions(SelectJoinStep<Record4<Integer, String, Byte, Byte>> select,DistributorGroupListParam param) {
 		SelectConditionStep<Record4<Integer, String, Byte, Byte>> sql = select.where(DISTRIBUTOR_GROUP.DEL_FLAG.eq((byte) 0));
-		System.out.println(param.getGroupName());
 		if(param.getGroupName() != null) {
 			sql = sql.and(DISTRIBUTOR_GROUP.GROUP_NAME.eq(param.getGroupName()));
 		}

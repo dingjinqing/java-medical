@@ -472,6 +472,20 @@ alter table b2c_card_order
 alter table b2c_card_order
     add voucher_id int(11) null comment '优惠券 ID' after card_no;
 
+-- 会员卡订单
+-- drop table if exists `b2c_virtual_card_order`;
+create table b2c_virtual_card_order
+(
+    card_order_id mediumint unsigned auto_increment comment '会员卡订单id' primary key,
+    order_id      mediumint unsigned comment '主虚拟商品订单id',
+    card_id       int         default 0   not null comment '会员卡id',
+    card_no       varchar(32) default '0' null comment '会员卡 No'
+)
+    collate = utf8mb4_unicode_ci;
+
+--分销员数据汇总 常乐 20190801
+ALTER TABLE `b2c_user_fanli_statistics` DROP PRIMARY KEY;
+ALTER TABLE `b2c_user_fanli_statistics` ADD COLUMN `rebate_level` TINYINT(2) DEFAULT 1  NULL   COMMENT '返利等级0自购1直返2间返' AFTER `fanli_user_id`;
 
 --  孔德成 2019-7-29 16:05:51  增加表 满包邮
 --  满包邮详情
@@ -508,4 +522,4 @@ CREATE TABLE `b2c_free_shipping_rule` (
 `update_time` TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '最后修改时间',
 PRIMARY KEY ( `id` ),
 KEY `shipping_id` ( `shipping_id` )
-) ENGINE = INNODB AUTO_INCREMENT = 39 DEFAULT CHARSET = utf8mb4 COLLATE = utf8mb4_unicode_ci;
+) ENGINE = INNODB AUTO_INCREMENT = 39 DEFAULT CHARSET = utf8mb4 COLLATE = utf8mb4_unicode_ci;>>>>>>> .r1141

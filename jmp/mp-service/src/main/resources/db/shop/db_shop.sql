@@ -1917,8 +1917,10 @@ create table `b2c_user_fanli_statistics` (
   `order_number`          int(11) comment '累积订单数量',
   `total_can_fanli_money` decimal(10, 2) default '0.00' comment '累计返利订单可计算返利总金额',
   `total_fanli_money`     decimal(10, 2) default '0.00' comment '用户累计返利佣金',
-  `create_time`		timestamp      default current_timestamp,
-  `update_time` 	timestamp      default current_timestamp on update current_timestamp comment '最后修改时间'
+  `rebate_level`  tinyint(2)     default 1 comment '返利等级 0自购；1直接；2间接',
+  `create_time`   timestamp      default current_timestamp,
+  `update_time`   timestamp      default current_timestamp on update current_timestamp comment '最后修改时间',
+  primary key (`user_id`)
 );
 
 -- -- 商品返利统计
