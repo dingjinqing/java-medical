@@ -268,15 +268,6 @@ public interface ImageDefault {
 	}
 	
 	public default boolean uploadToUpYunBySteam(String upYunPath, InputStream inStream) throws IOException, Exception {
-		File file=new File(upYunPath);
-		if(!file.isDirectory()) {
-			//不是目录
-			return false;
-		}
-		if(!file.exists()) {
-			//目录不存在，创建目录
-			return this.getUpYunClient().writeFile(upYunPath, inStream,true,null);
-		}
-		return this.getUpYunClient().writeFile(upYunPath, inStream,false,null);
+		return this.getUpYunClient().writeFile(upYunPath, inStream, true, null);
 	}
 }
