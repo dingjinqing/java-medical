@@ -6,8 +6,8 @@ import com.vpu.mp.service.pojo.shop.order.virtual.MemberCardParam;
 import com.vpu.mp.service.pojo.shop.order.virtual.MemberCardRefundParam;
 import com.vpu.mp.service.pojo.shop.order.virtual.MemberCardVo;
 import lombok.extern.slf4j.Slf4j;
+import org.jooq.Record10;
 import org.jooq.Record16;
-import org.jooq.Record6;
 import org.jooq.SelectOnConditionStep;
 import org.springframework.stereotype.Service;
 
@@ -19,6 +19,7 @@ import static com.vpu.mp.db.shop.tables.CardOrder.CARD_ORDER;
 import static com.vpu.mp.db.shop.tables.MemberCard.MEMBER_CARD;
 import static com.vpu.mp.db.shop.tables.RefundCardRecord.REFUND_CARD_RECORD;
 import static com.vpu.mp.db.shop.tables.User.USER;
+import static com.vpu.mp.service.pojo.shop.order.virtual.MemberCardParam.SUCCESS;
 import static java.lang.String.format;
 import static org.apache.commons.lang3.StringUtils.isNotEmpty;
 
@@ -30,6 +31,8 @@ import static org.apache.commons.lang3.StringUtils.isNotEmpty;
 @Service
 @Slf4j
 public class MemberCardOrderService extends ShopBaseService {
+
+    private static final Byte GOODS_MEMBER_CARD = 0;
 
     /**
      * 订单列表
@@ -60,6 +63,7 @@ public class MemberCardOrderService extends ShopBaseService {
         Timestamp startTime = param.getStartTime();
         Timestamp endTime = param.getEndTime();
         Boolean isRefund = param.getRefund();
+        select.where(CARD_ORDER.GOODS_TYPE.eq(GOODS_MEMBER_CARD));
         if (isNotEmpty(orderSn)) {
             select.where(CARD_ORDER.ORDER_SN.like(format("%s%%", orderSn)));
         }
@@ -80,8 +84,8 @@ public class MemberCardOrderService extends ShopBaseService {
             select.where(CARD_ORDER.PAY_TIME.le(endTime));
         }
         if (null != isRefund && isRefund) {
-            select.where(CARD_ORDER.RETURN_FLAG.eq(MemberCardParam.PART_REFUND))
-                .or(CARD_ORDER.RETURN_FLAG.eq(MemberCardParam.TOTAL_REFUND));
+            select.where(CARD_ORDER.RETURN_FLAG.eq(SUCCESS))
+                .or(CARD_ORDER.RETURN_FLAG.eq(MemberCardParam.FAILED));
         }
     }
 
@@ -93,17 +97,24 @@ public class MemberCardOrderService extends ShopBaseService {
         Double money = param.getMoney();
         Double score = param.getScore();
         Integer orderId = param.getOrderId();
-        Record6<String, BigDecimal, BigDecimal, BigDecimal, String, Integer> payInfo = getPayInfo(orderId);
+        Record10<String, BigDecimal, BigDecimal, BigDecimal, String, Integer, Byte, BigDecimal, BigDecimal, BigDecimal>
+            payInfo = getPayInfo(orderId);
         String payCode = payInfo.get(CARD_ORDER.PAY_CODE);
-        Double useAccount = payInfo.get(CARD_ORDER.USE_ACCOUNT).doubleValue();
-        Double useMoney = payInfo.get(CARD_ORDER.MONEY_PAID).doubleValue();
-        Double useScore = payInfo.get(CARD_ORDER.USE_SCORE).doubleValue();
+        BigDecimal useAccount = payInfo.get(CARD_ORDER.USE_ACCOUNT);
+        BigDecimal useMoney = payInfo.get(CARD_ORDER.MONEY_PAID);
+        BigDecimal useScore = payInfo.get(CARD_ORDER.USE_SCORE);
         String orderSn = payInfo.get(CARD_ORDER.ORDER_SN);
         Integer userId = payInfo.get(CARD_ORDER.USER_ID);
-        boolean partRefund = false;
+        BigDecimal returnAccount = payInfo.get(CARD_ORDER.RETURN_ACCOUNT);
+        BigDecimal returnMoney = payInfo.get(CARD_ORDER.RETURN_MONEY);
+        BigDecimal returnScore = payInfo.get(CARD_ORDER.RETURN_SCORE);
+        BigDecimal availableReturnMoney = useMoney.subtract(returnMoney);
+        BigDecimal availableReturnAccount = useAccount.subtract(returnAccount);
+        BigDecimal availableReturnScore = useScore.subtract(returnScore);
         switch (payCode) {
             case MemberCardParam.PAY_WX:
-                if (null == money || 0 > money || money > useMoney) {
+                // todo 微信支付退款
+                if (null == money || 0 > money || money > availableReturnMoney.doubleValue()) {
                     throw new IllegalArgumentException("Invalid money amount: " + money);
                 }
                 break;
@@ -111,43 +122,43 @@ public class MemberCardOrderService extends ShopBaseService {
                 if (null == account || null == score) {
                     throw new IllegalArgumentException("Invalid account or money");
                 }
-                if (account > useAccount) {
+                if (0 == account && 0 == score) {
+                    throw new IllegalArgumentException("Invalid refund amount");
+                }
+                if (0 != useAccount.doubleValue() && account > availableReturnAccount.doubleValue()) {
                     throw new IllegalArgumentException("Refund account cannot larger than used account");
                 }
-                if (score > useScore) {
+                if (0 != useScore.doubleValue() && score > availableReturnScore.doubleValue()) {
                     throw new IllegalArgumentException("Refund score cannot larger than used score");
-                }
-                if (0 < useAccount) {
-                    // todo 退余额
-                    partRefund = useAccount > account;
-                }
-                if (0 < useMoney) {
-                    // todo 退现金
-                    partRefund = useMoney > money;
                 }
                 break;
             default:
                 throw new IllegalStateException("Invalid pay code: " + payCode);
         }
+        BigDecimal finalReturnMoney = returnMoney.add(new BigDecimal(money));
+        BigDecimal finalReturnAccount = returnAccount.add(new BigDecimal(account));
+        BigDecimal finalReturnScore = returnScore.add(new BigDecimal(score));
         log.info("Member card refund -> userId: {}, return account: {}, return money: {}, return score: {}",
             userId, account, money, score);
         // 记录退款信息
         shopDb().insertInto(REFUND_CARD_RECORD, REFUND_CARD_RECORD.ORDER_SN, REFUND_CARD_RECORD.USER_ID,
             REFUND_CARD_RECORD.MONEY_PAID, REFUND_CARD_RECORD.USE_ACCOUNT, REFUND_CARD_RECORD.USE_SCORE,
             REFUND_CARD_RECORD.IS_SUCCESS)
-            .values(Arrays.asList(orderSn, userId, money, useAccount, useScore, 1));
+            .values(Arrays.asList(orderSn, userId, money, account, score, 1)).execute();
         // 更新订单状态
-        Byte returnFlag = partRefund ? MemberCardParam.PART_REFUND : MemberCardParam.TOTAL_REFUND;
-        shopDb().update(CARD_ORDER).set(CARD_ORDER.RETURN_FLAG, returnFlag).execute();
+        shopDb().update(CARD_ORDER).set(CARD_ORDER.RETURN_FLAG, SUCCESS).set(CARD_ORDER.RETURN_MONEY,
+            finalReturnMoney).set(CARD_ORDER.RETURN_ACCOUNT, finalReturnAccount)
+            .set(CARD_ORDER.RETURN_SCORE, finalReturnScore).execute();
     }
 
     /**
      * 订单信息
      */
-    private Record6<String, BigDecimal, BigDecimal, BigDecimal, String, Integer> getPayInfo(Integer orderId) {
-        Record6<String, BigDecimal, BigDecimal, BigDecimal, String, Integer> order =
+    private Record10<String, BigDecimal, BigDecimal, BigDecimal, String, Integer, Byte, BigDecimal, BigDecimal, BigDecimal> getPayInfo(Integer orderId) {
+        Record10<String, BigDecimal, BigDecimal, BigDecimal, String, Integer, Byte, BigDecimal, BigDecimal, BigDecimal> order =
             shopDb().select(CARD_ORDER.PAY_CODE, CARD_ORDER.MONEY_PAID, CARD_ORDER.USE_SCORE, CARD_ORDER.USE_ACCOUNT,
-                CARD_ORDER.ORDER_SN, CARD_ORDER.USER_ID)
+                CARD_ORDER.ORDER_SN, CARD_ORDER.USER_ID, CARD_ORDER.RETURN_FLAG, CARD_ORDER.RETURN_MONEY,
+                CARD_ORDER.RETURN_ACCOUNT, CARD_ORDER.RETURN_SCORE)
                 .from(CARD_ORDER)
                 .where(CARD_ORDER.ORDER_ID.eq(orderId)).fetchOne();
         if (null == order) {

@@ -22,10 +22,10 @@ public class MemberCardParam extends BasePageParam {
 
     /** 未退款 **/
     public static final byte NOT_REFUND = 0;
-    /** 部分退款 **/
-    public static final byte PART_REFUND = 1;
-    /** 完整退款 **/
-    public static final byte TOTAL_REFUND = 2;
+    /** 成功退款 **/
+    public static final byte SUCCESS = 1;
+    /** 退款失败 **/
+    public static final byte FAILED = 2;
 
     /** 余额支付 **/
     public static final String PAY_ACCOUNT = "balance";
