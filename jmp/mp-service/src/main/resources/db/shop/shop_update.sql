@@ -466,4 +466,8 @@ alter table b2c_return_order_goods
 add COLUMN return_money decimal(10, 2)	not null default '0.00' comment '实际退款金额',
 add COLUMN discounted_goods_price decimal(10, 2)	not null default '0.00' comment '实际退款金额';
 
-
+-- 修改虚拟商品订单表
+alter table b2c_card_order
+    add goods_type tinyint(2) not null comment '虚拟商品类别：0：会员卡，1：优惠券';
+alter table b2c_card_order
+    add voucher_id int(11) null comment '优惠券 ID' after card_no;
