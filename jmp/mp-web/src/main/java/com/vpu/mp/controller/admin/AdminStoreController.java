@@ -2,6 +2,10 @@ package com.vpu.mp.controller.admin;
 
 import javax.validation.Valid;
 
+import com.vpu.mp.service.pojo.shop.store.validated.AddValidatedGroup;
+import com.vpu.mp.service.pojo.shop.store.validated.CodingCheckValidatedGroup;
+import com.vpu.mp.service.pojo.shop.store.validated.UpdateValidatedGroup;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -69,7 +73,7 @@ public class AdminStoreController extends AdminBaseController{
      * @return
      */
     @PostMapping(value = "/api/admin/store/add")
-    public JsonResult addStore(@RequestBody(required = true) @Valid StorePojo store) {
+    public JsonResult addStore(@RequestBody(required = true) @Validated({AddValidatedGroup.class}) StorePojo store) {
        if(shop().store.addStore(store)) {
     	   return success();
        }else {
@@ -82,7 +86,7 @@ public class AdminStoreController extends AdminBaseController{
      * @return
      */
     @PostMapping(value = "/api/admin/store/update")
-    public JsonResult updateStore(@RequestBody(required = true) @Valid StorePojo store) {
+    public JsonResult updateStore(@RequestBody(required = true) @Validated({UpdateValidatedGroup.class}) StorePojo store) {
        if(shop().store.updateStore(store)) {
     	   return success();
        }else {
@@ -123,7 +127,7 @@ public class AdminStoreController extends AdminBaseController{
      * @return
      */
     @PostMapping(value = "/api/admin/store/coding/check")
-    public JsonResult checkStoreCoding(@RequestBody(required = true) @Valid StorePojo store) {
+    public JsonResult checkStoreCoding(@RequestBody(required = true) @Validated({CodingCheckValidatedGroup.class}) StorePojo store) {
        if(shop().store.checkStoreCoding(store.getPosShopId())) {
     	   return success();
        }else {

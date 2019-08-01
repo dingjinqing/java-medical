@@ -7,6 +7,7 @@ import com.vpu.mp.service.pojo.shop.market.bargain.*;
 import com.vpu.mp.service.pojo.shop.market.bargain.analysis.BargainAnalysisParam;
 import com.vpu.mp.service.shop.market.bargain.BargainRecordService;
 import org.apache.poi.ss.usermodel.Workbook;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -155,7 +156,7 @@ public class AdminBargainController extends AdminBaseController {
 	 *
 	 */
 	@PostMapping(value = "/api/admin/market/bargain/analysis")
-	public JsonResult getRecordAnalysisData(@RequestBody @Valid BargainAnalysisParam param) {
+	public JsonResult getRecordAnalysisData(@RequestBody @Validated BargainAnalysisParam param) {
 		return success(shop().bargain.getBargainAnalysisData(param));
 	}
 }
