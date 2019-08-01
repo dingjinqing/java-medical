@@ -1,6 +1,7 @@
 package com.vpu.mp.service.shop;
 
 
+import com.vpu.mp.service.shop.overview.*;
 import com.vpu.mp.service.shop.task.ShopTaskService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -28,10 +29,6 @@ import com.vpu.mp.service.shop.member.TagService;
 import com.vpu.mp.service.shop.operation.RecordAdminActionService;
 import com.vpu.mp.service.shop.order.OrderReadService;
 import com.vpu.mp.service.shop.order.OrderWriteService;
-import com.vpu.mp.service.shop.overview.CommodityStatisticsService;
-import com.vpu.mp.service.shop.overview.MallOverviewService;
-import com.vpu.mp.service.shop.overview.OverviewService;
-import com.vpu.mp.service.shop.overview.RealTimeOverviewService;
 import com.vpu.mp.service.shop.store.store.StoreService;
 import com.vpu.mp.service.shop.summary.portrait.PortraitService;
 import com.vpu.mp.service.shop.summary.visit.AmountService;
@@ -75,6 +72,7 @@ public class ShopApplication  {
 	@Autowired public RealTimeOverviewService realTimeOverview;
 	@Autowired public DistributorGroupService distributorGroup; //分销员分组
 	@Autowired public DistributorLevelService distributorLevel; //分销员等级配置
+	@Autowired public TransactionStatisticsService transactionService;
 
 	@Autowired public ShopTaskService shopTaskService;
 	

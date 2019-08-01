@@ -54,9 +54,7 @@ public class AdminTradeController extends AdminBaseController {
             if(enabled!=null){
                 shop().trade.updatePayment(paycode,(byte)enabled);
             }
-        }catch(IllegalAccessException e){
-            e.printStackTrace();
-        }catch(InvocationTargetException e){
+        }catch(IllegalAccessException | InvocationTargetException e){
             e.printStackTrace();
         }
     }

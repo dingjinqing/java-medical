@@ -92,11 +92,7 @@ public class AdminPageClassificationController extends AdminBaseController {
                 int subPageCount = shop().pageClassification.getPageCountByCategory(pageId);
                 PropertyDescriptor desSubPageCount = new PropertyDescriptor("subPageCount",pojo.getClass());
                 desSubPageCount.getWriteMethod().invoke(pojo,subPageCount);
-            }catch(IntrospectionException e ){
-                e.printStackTrace();
-            }catch(IllegalAccessException e){
-                e.printStackTrace();
-            }catch (InvocationTargetException e){
+            }catch(IntrospectionException | IllegalAccessException | InvocationTargetException e ){
                 e.printStackTrace();
             }
         }
