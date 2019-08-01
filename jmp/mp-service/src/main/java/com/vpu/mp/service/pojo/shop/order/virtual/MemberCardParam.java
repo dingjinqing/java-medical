@@ -27,6 +27,11 @@ public class MemberCardParam extends BasePageParam {
     /** 完整退款 **/
     public static final byte TOTAL_REFUND = 2;
 
+    /** 余额支付 **/
+    public static final String PAY_ACCOUNT = "balance";
+    /** 微信支付 **/
+    public static final String PAY_WX = "wxpay";
+
     /** 下单用户信息（下单用户姓名或手机号）**/
     private String userInfo;
     /** 订单编号 **/

@@ -21,8 +21,12 @@ public class MemberCardVo {
     private String cardNo;
     /** 卡名 **/
     private String cardName;
-    /** 支付数额 **/
+    /** 支付金额 **/
     private Double moneyPaid;
+    /** 支付余额 **/
+    private Double useAccount;
+    /** 支付积分 **/
+    private Double useScore;
     /** 单价 **/
     private Double payFee;
     /** 支付时间 **/
