@@ -20,11 +20,11 @@ public class BargainPageListQueryParam {
 	 */
 	@Max(4)
 	@Min(0)
-	private byte state = (byte)1;
+	private Byte state = (byte)1;
 	
 	/**
      * 	分页信息
      */
-    private int currentPage = Page.DEFAULT_CURRENT_PAGE;
-    private int pageRows = Page.DEFAULT_PAGE_ROWS;
+    private Integer currentPage = Page.DEFAULT_CURRENT_PAGE;
+    private Integer pageRows = Page.DEFAULT_PAGE_ROWS;
 }

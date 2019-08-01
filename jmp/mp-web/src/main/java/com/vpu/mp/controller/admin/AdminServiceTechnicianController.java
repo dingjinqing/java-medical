@@ -14,12 +14,12 @@ import com.vpu.mp.service.foundation.data.JsonResult;
 import com.vpu.mp.service.foundation.data.JsonResultCode;
 import com.vpu.mp.service.foundation.data.JsonResultMessage;
 import com.vpu.mp.service.foundation.util.PageResult;
-import com.vpu.mp.service.pojo.shop.store.postsale.ServiceTechnicianGroup;
-import com.vpu.mp.service.pojo.shop.store.postsale.ServiceTechnicianGroupParam;
-import com.vpu.mp.service.pojo.shop.store.postsale.ServiceTechnicianPageListParam;
-import com.vpu.mp.service.pojo.shop.store.postsale.ServiceTechnicianParam;
-import com.vpu.mp.service.pojo.shop.store.postsale.ServiceTechnicianPojo;
-import com.vpu.mp.service.pojo.shop.store.postsale.TechnicianGroupPageListParam;
+import com.vpu.mp.service.pojo.shop.store.technician.ServiceTechnicianGroup;
+import com.vpu.mp.service.pojo.shop.store.technician.ServiceTechnicianGroupParam;
+import com.vpu.mp.service.pojo.shop.store.technician.ServiceTechnicianPageListParam;
+import com.vpu.mp.service.pojo.shop.store.technician.ServiceTechnicianParam;
+import com.vpu.mp.service.pojo.shop.store.technician.ServiceTechnicianPojo;
+import com.vpu.mp.service.pojo.shop.store.technician.TechnicianGroupPageListParam;
 
 /**
  * @author 黄荣刚

@@ -20,12 +20,12 @@ public class BargainUpdateParam {
 	 */
 	@NotNull
 	@Min(1)
-	private int id;
+	private Integer id;
 	
 	/**
 	 *  状态：1可用，0停用
 	 */
-	private byte status;
+	private Byte status;
 	
 	private String bargainName;
 	

@@ -20,7 +20,7 @@ public class BargainUserExportVo {
      * 主键
      */
     @ExcelColumn(columnName = "bargain.user.list.id",columnIndex = 0)
-    private int id;
+    private Integer id;
 
     @ExcelColumn(columnName = "bargain.user.list.username",columnIndex = 1)
     private String username;

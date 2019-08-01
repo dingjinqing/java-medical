@@ -16,11 +16,11 @@ import com.vpu.mp.service.foundation.data.DelFlag;
 import com.vpu.mp.service.foundation.service.ShopBaseService;
 import com.vpu.mp.service.foundation.util.PageResult;
 import com.vpu.mp.service.foundation.util.Util;
-import com.vpu.mp.service.pojo.shop.store.postsale.ServiceTechnicianGroup;
-import com.vpu.mp.service.pojo.shop.store.postsale.ServiceTechnicianPageListParam;
-import com.vpu.mp.service.pojo.shop.store.postsale.ServiceTechnicianParam;
-import com.vpu.mp.service.pojo.shop.store.postsale.ServiceTechnicianPojo;
-import com.vpu.mp.service.pojo.shop.store.postsale.TechnicianService;
+import com.vpu.mp.service.pojo.shop.store.technician.ServiceTechnicianGroup;
+import com.vpu.mp.service.pojo.shop.store.technician.ServiceTechnicianPageListParam;
+import com.vpu.mp.service.pojo.shop.store.technician.ServiceTechnicianParam;
+import com.vpu.mp.service.pojo.shop.store.technician.ServiceTechnicianPojo;
+import com.vpu.mp.service.pojo.shop.store.technician.TechnicianService;
 import com.vpu.mp.service.shop.store.schedule.TechnicianScheduleService;
 
 import org.springframework.beans.factory.annotation.Autowired;

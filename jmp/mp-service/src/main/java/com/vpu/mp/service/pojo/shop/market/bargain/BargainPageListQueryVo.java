@@ -15,14 +15,14 @@ public class BargainPageListQueryVo {
 	/**
 	 * 砍价活动主键 
 	 */
-	private int id;
+	private Integer id;
 	
 	private String bargainName;
 	
 	/**
 	 * 砍价类型0定人1任意价
 	 */
-	private byte bargainType;
+	private Byte bargainType;
 	
 	private Timestamp startTime;
 	private Timestamp endTime;
@@ -30,23 +30,23 @@ public class BargainPageListQueryVo {
 	/**
 	 * 停用启用的状态：1可用，0停用 
 	 */
-	private byte status;
+	private Byte status;
 	
 	private String goodsName;
 	/**
 	 * 商品库存 
 	 */
-	private int goodsNumber;
+	private Integer goodsNumber;
 	/**
 	 * 砍价活动库存 
 	 */
-	private int stock;
+	private Integer stock;
 	/**
 	 * 成功数量 
 	 */
-	private int successNumber;
+	private Integer successNumber;
 	/**
 	 * 发起砍价人数 
 	 */
-	private int bargainUserNumber;
+	private Integer bargainUserNumber;
 }

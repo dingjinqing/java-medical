@@ -17,7 +17,7 @@ import lombok.Data;
 public class BargainRecordPageListQueryParam {
 	
 	@NotNull
-	private int bargainId;
+	private Integer bargainId;
 	
 	private String username;
 	private String mobile;
@@ -25,7 +25,7 @@ public class BargainRecordPageListQueryParam {
 	/**
 	 * 状态过滤 0砍价中，1成功，2失败，-1全部 
 	 */
-	private byte status = -1;
+	private Byte status = -1;
 	
 	/**
 	 * 发起时间过滤 
@@ -36,6 +36,6 @@ public class BargainRecordPageListQueryParam {
 	/**
      * 	分页信息
      */
-    private int currentPage = Page.DEFAULT_CURRENT_PAGE;
-    private int pageRows = Page.DEFAULT_PAGE_ROWS;
+    private Integer currentPage = Page.DEFAULT_CURRENT_PAGE;
+    private Integer pageRows = Page.DEFAULT_PAGE_ROWS;
 }

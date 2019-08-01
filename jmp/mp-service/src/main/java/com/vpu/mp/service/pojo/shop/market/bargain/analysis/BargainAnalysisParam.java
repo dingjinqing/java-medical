@@ -15,7 +15,7 @@ import lombok.Data;
 public class BargainAnalysisParam {
 
     @NotNull
-    private int bargainId;
+    private Integer bargainId;
 
     @NotNull
     private Timestamp startTime;

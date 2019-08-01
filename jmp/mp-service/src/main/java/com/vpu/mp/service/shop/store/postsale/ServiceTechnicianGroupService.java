@@ -7,9 +7,9 @@ import org.springframework.stereotype.Service;
 
 import com.vpu.mp.service.foundation.service.ShopBaseService;
 import com.vpu.mp.service.foundation.util.PageResult;
-import com.vpu.mp.service.pojo.shop.store.postsale.ServiceTechnicianGroup;
-import com.vpu.mp.service.pojo.shop.store.postsale.ServiceTechnicianGroupParam;
-import com.vpu.mp.service.pojo.shop.store.postsale.TechnicianGroupPageListParam;
+import com.vpu.mp.service.pojo.shop.store.technician.ServiceTechnicianGroup;
+import com.vpu.mp.service.pojo.shop.store.technician.ServiceTechnicianGroupParam;
+import com.vpu.mp.service.pojo.shop.store.technician.TechnicianGroupPageListParam;
 
 
 /**

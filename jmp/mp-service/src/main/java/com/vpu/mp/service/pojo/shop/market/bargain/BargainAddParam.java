@@ -22,7 +22,7 @@ public class BargainAddParam {
 	 *  活动类型：0砍到指定金额结算，1砍到任意金额结算
 	 */
 	@NotNull
-	private byte bargainType;
+	private Byte bargainType;
 	
 	@NotNull
 	private String bargainName;
@@ -35,18 +35,18 @@ public class BargainAddParam {
 	 *  活动商品的ID
 	 */
 	@NotNull
-	private int goodsId;
+	private Integer goodsId;
 	
 	/**
 	 *  运费设置：1免运费，0使用原商品运费模板
 	 */
 	@NotNull
-	private byte freeFreight;
+	private Byte freeFreight;
 	
 	/**
 	 * 砍价预期人数
 	 */
-	private int expectationNumber;
+	private Integer expectationNumber;
 	
 	/**
 	 *  指定金额结算模式的砍价底价
@@ -56,8 +56,8 @@ public class BargainAddParam {
 	/**
 	 * 商品首次砍价可砍价比例区间 百分比
 	 */
-	private double bargainMin;
-	private double bargainMax;
+	private Double bargainMin;
+	private Double bargainMax;
 	
 	/**
 	 * 向帮忙砍价的用户赠送优惠券，ID串，逗号分隔
@@ -77,19 +77,19 @@ public class BargainAddParam {
 	/**
 	 * 任意金额结算模式的结算金额底价 
 	 */
-	private double floorPrice;
+	private Double floorPrice;
 	
 	/**
 	 * 活动商品库存 
 	 */
 	@NotNull
 	@Min(1)
-	private int stock;
+	private Integer stock;
 	
 	/**
 	 *  任意金额结算模式的单次帮砍金额模式：0固定金额，1区间随机金额
 	 */
-	private byte bargainMoneyType;
+	private Integer bargainMoneyType;
 	
 	/**
 	 * 任意金额结算模式的，单次帮砍金额模式的固定金额模式的，固定金额数值

@@ -91,7 +91,7 @@ public class AdminBargainController extends AdminBaseController {
 	}
 	
 	/**
-	 *取砍价取单日可帮助砍价的次数
+	 *设置砍价取单日可帮助砍价的次数
 	 *
 	 */
 	@GetMapping(value = "/api/admin/market/bargain/cut/times/set")

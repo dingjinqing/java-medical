@@ -14,7 +14,7 @@ import lombok.Data;
 @Data
 public class BargainUserListQueryVo {
 
-	private int id;
+	private Integer id;
 	private String username;
 	private String mobile;
 	private Timestamp createTime;

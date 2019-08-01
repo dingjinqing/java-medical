@@ -15,7 +15,7 @@ import lombok.Data;
 public class BargainUserListQueryParam {
 
 	@NotNull
-	private int recordId;
+	private Integer recordId;
 	
 	private String username;
 	
@@ -24,6 +24,6 @@ public class BargainUserListQueryParam {
 	/**
      * 	分页信息
      */
-    private int currentPage = Page.DEFAULT_CURRENT_PAGE;
-    private int pageRows = Page.DEFAULT_PAGE_ROWS;
+    private Integer currentPage = Page.DEFAULT_CURRENT_PAGE;
+    private Integer pageRows = Page.DEFAULT_PAGE_ROWS;
 }

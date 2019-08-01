@@ -22,7 +22,7 @@ public class BargainRecordExportVo {
 	 * 主键 
 	 */
 	@ExcelColumn(columnName = "bargain.record.list.id",columnIndex = 0)
-	private int id;
+	private Integer id;
 	
 	@ExcelColumn(columnName = "bargain.record.list.goods_name",columnIndex = 1)
 	private String goodsName;
@@ -52,7 +52,7 @@ public class BargainRecordExportVo {
 	 * 参与砍价人数 
 	 */
 	@ExcelColumn(columnName = "bargain.record.list.user_number",columnIndex = 7)
-	private int userNumber;
+	private Integer userNumber;
 	
 	/**
 	 *  状态 0砍价中，1成功，2失败
@@ -64,13 +64,13 @@ public class BargainRecordExportVo {
 	 *  状态 0砍价中，1成功，2失败
 	 */
 	@ExcelIgnore
-	private byte status;
+	private Byte status;
 	
 	/**
 	 * 砍价类型0定人1任意价
 	 */
 	@ExcelIgnore
-	private byte bargainType;
+	private Byte bargainType;
 	
 	/**
 	 *  任意低价

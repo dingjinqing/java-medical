@@ -16,7 +16,7 @@ public class BargainRecordPageListQueryVo {
 	/**
 	 * 主键 
 	 */
-	private int id;
+	private Integer id;
 	
 	private String goodsName;
 	private BigDecimal goodsPrice;
@@ -37,17 +37,17 @@ public class BargainRecordPageListQueryVo {
 	/**
 	 * 参与砍价人数 
 	 */
-	private int userNumber;
+	private Integer userNumber;
 	
 	/**
 	 *  状态 0砍价中，1成功，2失败
 	 */
-	private byte status;
+	private Byte status;
 	
 	/**
 	 * 砍价类型0定人1任意价 
 	 */
-	private byte bargainType;
+	private Byte bargainType;
 	
 	/**
 	 * 任意金额结算模式的结算金额底价  
