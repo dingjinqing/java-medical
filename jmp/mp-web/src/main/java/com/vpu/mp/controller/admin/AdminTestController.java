@@ -6,7 +6,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 public class AdminTestController extends AdminBaseController {
 
-	@RequestMapping(value = "/admin/test")
+	@RequestMapping(value = "/test/test")
 	public String test() {
 		saas.getShopApp(123456).config.bottomCfg.test();
 		return "OK";
