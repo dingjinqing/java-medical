@@ -3,8 +3,15 @@ package com.vpu.mp.service.shop.market.bargain;
 import static com.vpu.mp.db.shop.tables.Bargain.BARGAIN;
 import static com.vpu.mp.db.shop.tables.Goods.GOODS;
 
+import java.sql.Date;
 import java.sql.Timestamp;
+import java.util.Calendar;
+import java.util.Map;
+import java.util.stream.IntStream;
 
+import com.vpu.mp.service.pojo.shop.market.bargain.analysis.BargainAnalysisDataVo;
+import com.vpu.mp.service.pojo.shop.market.bargain.analysis.BargainAnalysisParam;
+import com.vpu.mp.service.pojo.shop.market.bargain.analysis.BargainAnalysisTotalVo;
 import org.jooq.Record;
 import org.jooq.SelectWhereStep;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -60,8 +67,7 @@ public class BargainService extends ShopBaseService  {
 	
 	/**
 	 * 砍价活动列表分页查询
-	 * @param param
-	 * @return StorePageListVo
+	 *
 	 */
 	public PageResult<BargainPageListQueryVo> getPageList(BargainPageListQueryParam param) {
 		SelectWhereStep<? extends Record> select = db().select(
@@ -97,8 +103,7 @@ public class BargainService extends ShopBaseService  {
 	
 	/**
 	 * 新建砍价活动
-	 * @param param
-	 * @return
+	 *
 	 */
 	public boolean addBargain(BargainAddParam param) {
 		BargainRecord record = new BargainRecord();
@@ -111,8 +116,7 @@ public class BargainService extends ShopBaseService  {
 	
 	/**
 	 * 更新砍价活动
-	 * @param param
-	 * @return
+	 *
 	 */
 	public boolean updateBargain(BargainUpdateParam param) {
 		BargainRecord record = new BargainRecord();
@@ -125,8 +129,8 @@ public class BargainService extends ShopBaseService  {
 	
 	/**
 	 * 取单个砍价活动信息
-	 * @param bargainId
-	 * @return
+	 *
+	 *
 	 */
 	public Bargain getBargainByIsd(Integer bargainId) {
 		Bargain bargain = db().select(BARGAIN.fields()).from(BARGAIN).where(BARGAIN.ID.eq(bargainId)).fetchOne().into(Bargain.class);
@@ -137,5 +141,78 @@ public class BargainService extends ShopBaseService  {
 		}else {
 			return null;
 		}
+	}
+
+	/**
+	 * 砍价效果分析的echarts图表数据
+	 *
+	 *
+	 */
+	public BargainAnalysisDataVo getBargainAnalysisData(BargainAnalysisParam param){
+		Map<Date,Integer> recordMap = saas().getShopApp(getShopId()).bargain.bargainRecord.getRecordAnalysis(param);
+		Map<Date,Integer> userMap = saas().getShopApp(getShopId()).bargain.bargainRecord.getBargainUserAnalysis(param);
+		Map<Date,Integer> orderMap = saas().getShopApp(getShopId()).readOrder.getBargainOrderAnalysis(param);
+		Map<Date,Integer> sourceMap = saas().getShopApp(getShopId()).member.getBargainUserAnalysis(param);
+
+		Date temDate = new Date(param.getStartTime().getTime());
+		Date endTime = new Date(param.getEndTime().getTime());
+		endTime = getNextDay(endTime);
+
+		BargainAnalysisDataVo bargainAnalysisDataVo = new BargainAnalysisDataVo();
+
+		/** 组装输出数据格式 */
+		while(temDate.before(endTime)){
+			/**发起砍价用户数*/
+			if(recordMap.get(temDate) != null && recordMap.get(temDate) > 0){
+				bargainAnalysisDataVo.getRecordNumber().add(recordMap.get(temDate));
+			}else{
+				bargainAnalysisDataVo.getRecordNumber().add(0);
+			}
+
+			/**帮砍价用户数*/
+			if(userMap.get(temDate) != null && userMap.get(temDate) > 0){
+				bargainAnalysisDataVo.getUserNumber().add(userMap.get(temDate));
+			}else{
+				bargainAnalysisDataVo.getUserNumber().add(0);
+			}
+
+			/**活动订单数*/
+			if(orderMap.get(temDate) != null && orderMap.get(temDate) > 0){
+				bargainAnalysisDataVo.getOrderNumber().add(orderMap.get(temDate));
+			}else{
+				bargainAnalysisDataVo.getOrderNumber().add(0);
+			}
+
+			/**活动拉新用户数*/
+			if(sourceMap.get(temDate) != null && sourceMap.get(temDate) > 0){
+				bargainAnalysisDataVo.getSourceNumber().add(orderMap.get(temDate));
+			}else{
+				bargainAnalysisDataVo.getSourceNumber().add(0);
+			}
+
+			/**日期列表*/
+			bargainAnalysisDataVo.getDateList().add(temDate);
+
+			temDate = getNextDay(temDate);
+		}
+		BargainAnalysisTotalVo total = new BargainAnalysisTotalVo();
+		total.setRecordTotal(bargainAnalysisDataVo.getRecordNumber().stream().mapToInt(Integer::intValue).sum());
+		total.setUserTotal(bargainAnalysisDataVo.getUserNumber().stream().mapToInt(Integer::intValue).sum());
+		total.setOrderTotal(bargainAnalysisDataVo.getOrderNumber().stream().mapToInt(Integer::intValue).sum());
+		total.setSourceTotal(bargainAnalysisDataVo.getSourceNumber().stream().mapToInt(Integer::intValue).sum());
+		bargainAnalysisDataVo.setTotal(total);
+		return bargainAnalysisDataVo;
+	}
+
+	/**
+	 * 取holdDate的一下天
+	 * @param holdDate java.sql.Date类型
+	 * @return java.sql.Date
+	 */
+	private Date getNextDay(Date holdDate) {
+		Calendar calendar = Calendar.getInstance();
+		calendar.setTime(holdDate);
+		calendar.add(Calendar.DATE, 1);
+		return new Date(calendar.getTime().getTime());
 	}
 }
