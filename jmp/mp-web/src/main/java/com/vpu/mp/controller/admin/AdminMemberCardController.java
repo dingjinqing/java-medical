@@ -1,12 +1,15 @@
 package com.vpu.mp.controller.admin;
 
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.vpu.mp.service.foundation.data.JsonResult;
+import com.vpu.mp.service.foundation.util.Util;
 import com.vpu.mp.service.pojo.shop.member.card.CardParam;
 
 /**
@@ -18,7 +21,7 @@ import com.vpu.mp.service.pojo.shop.member.card.CardParam;
 @RestController
 @RequestMapping(value="/api/admin/member/card")
 public class AdminMemberCardController extends AdminBaseController {
-	
+	private Logger logger = LoggerFactory.getLogger(getClass());
 	
 	/**
 	 * 创建一张会员卡
@@ -27,9 +30,8 @@ public class AdminMemberCardController extends AdminBaseController {
 	 */
 	@PostMapping("/add")
 	public JsonResult createMemberCard(@RequestBody CardParam card) {
-		//TODO
-		System.out.println(card);
-		
+		/** logger info*/
+		logger.info(Util.toJson(card));
 		this.shop().member.card.addMemberCard(card);
 		return this.success();
 	}
