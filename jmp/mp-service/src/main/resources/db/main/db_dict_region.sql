@@ -94,6 +94,6 @@ insert  into `b2c_dict_province`(`province_id`,`name`,`country_id`,`area_id`,`sh
 
 /*!40101 SET SQL_MODE=@OLD_SQL_MODE */;
 /*!40014 SET FOREIGN_KEY_CHECKS=@OLD_FOREIGN_KEY_CHECKS */;
-alter table `mini_main`.`b2c_dict_city` change `postcode` `postcode` varchar(20) CHARACTER SET utf8 COLLATE utf8_general_ci DEFAULT '' NULL , change `short_name` `short_name` varchar(32) CHARACTER SET utf8 COLLATE utf8_general_ci DEFAULT '' NULL , change `pinyin` `pinyin` varchar(128) CHARACTER SET utf8 COLLATE utf8_general_ci DEFAULT '' NULL ;
-alter table `mini_main`.`b2c_dict_district` change `postcode` `postcode` varchar(20) CHARACTER SET utf8 COLLATE utf8_general_ci DEFAULT '' NULL , change `pinyin` `pinyin` varchar(60) CHARACTER SET utf8 COLLATE utf8_general_ci DEFAULT '' NULL ;
-alter table `mini_main`.`b2c_dict_province` change `country_id` `country_id` int(11) DEFAULT '0' NOT NULL, change `short_name` `short_name` varchar(45) CHARACTER SET utf8 COLLATE utf8_general_ci DEFAULT '' NULL , change `pinyin` `pinyin` varchar(64) CHARACTER SET utf8 COLLATE utf8_general_ci DEFAULT '' NULL ;
+alter table `b2c_dict_city` change `postcode` `postcode` varchar(20) CHARACTER SET utf8 COLLATE utf8_general_ci DEFAULT '' NULL , change `short_name` `short_name` varchar(32) CHARACTER SET utf8 COLLATE utf8_general_ci DEFAULT '' NULL , change `pinyin` `pinyin` varchar(128) CHARACTER SET utf8 COLLATE utf8_general_ci DEFAULT '' NULL ;
+alter table `b2c_dict_district` change `postcode` `postcode` varchar(20) CHARACTER SET utf8 COLLATE utf8_general_ci DEFAULT '' NULL , change `pinyin` `pinyin` varchar(60) CHARACTER SET utf8 COLLATE utf8_general_ci DEFAULT '' NULL ;
+alter table `b2c_dict_province` change `country_id` `country_id` int(11) DEFAULT '0' NOT NULL, change `short_name` `short_name` varchar(45) CHARACTER SET utf8 COLLATE utf8_general_ci DEFAULT '' NULL , change `pinyin` `pinyin` varchar(64) CHARACTER SET utf8 COLLATE utf8_general_ci DEFAULT '' NULL ;
