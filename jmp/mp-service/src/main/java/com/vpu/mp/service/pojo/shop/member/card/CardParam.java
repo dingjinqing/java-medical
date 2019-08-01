@@ -49,20 +49,8 @@ public class CardParam {
 
 	/** 开卡送多少积分 */
 	private Integer score;
-	/** 购物满多少 */
-	private BigDecimal[] goodsMoney;
-	/** 购物满多少送多少积分 */
-	private BigDecimal[] getScores;
-
-	/**
-	 * 购物送积分 0：购物满多少送多少积分；1：购物每满多少送多少积分
-	 */
-	private Byte offset;
-	/** 购物每满多少 */
-	private BigDecimal perGoodsMoney;
-	/** 购物每满多少送多少积分 */
-	private BigDecimal perGetScores;
-
+	/** 购物送积分策略json序列化对象 */
+	private ScoreJson scoreJson;
 	/**
 	 * 卡充值开关 0关闭；1开启
 	 */
@@ -146,10 +134,8 @@ public class CardParam {
 	 * 会员卡是否启用 1:使用中，2:停止使用
 	 */
 	private Byte flag;
-	/** 累积积分达到多少 */
-	private BigDecimal gradeScore;
-	/** 累积消费总额达到多少 */
-	private BigDecimal gradeMoney;
+	/** 会员卡升级策略json对象 */
+	private GradeConditionJson gradeConditionJson;
 	/** 等级 */
 	private String grade;
 

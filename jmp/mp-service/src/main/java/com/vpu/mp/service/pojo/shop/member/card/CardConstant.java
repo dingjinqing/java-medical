@@ -56,4 +56,13 @@ public class CardConstant {
 	 */
 	public static final Byte ACTIVE_NO = 0;
 	public static final Byte ACTIVE_YES = 1;
+	
+	/**
+	 * 限次会员卡适用商品
+	 * 0： 不可兑换商品 ；1 ：部分商品；2：全部商品
+	 */
+	public static final Byte NONE_GOODS = 0;
+	public static final Byte PART_GOODS = 1;
+	public static final Byte ALL_GOODS = 2;
+	
 }
