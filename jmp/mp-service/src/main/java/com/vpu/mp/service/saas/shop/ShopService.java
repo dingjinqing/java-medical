@@ -71,7 +71,17 @@ public class ShopService extends MainBaseService {
 	public MpDecorationService decoration;
 	@Autowired
 	public MpAuthShopService mp;
+	
+	@Autowired
+	public MpVersionService mpVersion;
+	
+	@Autowired
+	public MpOperateLogService mpOperateLog;
+	
+	@Autowired
+	public MpDeployHistoryService mpDeploy;
 
+	
 	public PageResult<ShopListQueryResultVo> getPageList(ShopListQueryParam param) {
 		SelectWhereStep<Record> select = db()
 				.select(SHOP.asterisk(), MP_AUTH_SHOP.APP_ID, MP_AUTH_SHOP.IS_AUTH_OK, MP_AUTH_SHOP.NICK_NAME,

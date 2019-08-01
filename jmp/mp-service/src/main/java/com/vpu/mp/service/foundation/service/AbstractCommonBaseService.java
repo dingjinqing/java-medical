@@ -1,6 +1,9 @@
 package com.vpu.mp.service.foundation.service;
 
 import com.vpu.mp.service.pojo.shop.base.BasePageParam;
+
+import java.util.Arrays;
+
 import org.jooq.Configuration;
 import org.jooq.ContextTransactionalRunnable;
 import org.jooq.Record;
@@ -151,6 +154,17 @@ abstract public class AbstractCommonBaseService {
 	 */
 	public void assign(Object from, Record to) {
 		FieldsUtil.assignNotNull(from, to);
+	}
+	
+	/**
+	 * 复制from到jooq的记录对象中，不含值为null的字段
+	 * 
+	 * @param from
+	 * @param to
+	 * @param onlyFields
+	 */
+	public void assign(Object from, Record to,String[] onlyFields) {
+		FieldsUtil.assignNotNull(from, to,Arrays.asList(onlyFields));
 	}
 
 	public String likeValue(String val) {

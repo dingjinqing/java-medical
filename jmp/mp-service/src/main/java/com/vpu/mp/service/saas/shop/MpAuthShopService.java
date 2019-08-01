@@ -11,14 +11,13 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 
-import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.jooq.Condition;
+import org.jooq.Result;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.fasterxml.jackson.core.type.TypeReference;
-import com.google.common.io.Files;
 import com.google.gson.JsonObject;
 import com.vpu.mp.config.DomainConfig;
 import com.vpu.mp.db.main.tables.MpAuthShop;
@@ -27,20 +26,23 @@ import com.vpu.mp.service.foundation.service.MainBaseService;
 import com.vpu.mp.service.foundation.util.Util;
 import com.vpu.mp.service.pojo.shop.config.trade.WxpayConfigParam;
 import com.vpu.mp.service.pojo.shop.config.trade.WxpaySearchParam;
-import com.vpu.mp.service.pojo.shop.image.UploadPath;
 import com.vpu.mp.service.saas.image.SystemImageService;
 import com.vpu.mp.service.wechat.ma.bean.MpWxMaOpenCommitExtInfo;
 
 import cn.binarywang.wx.miniapp.util.json.WxMaGsonBuilder;
-import me.chanjar.weixin.common.error.WxError;
 import me.chanjar.weixin.common.error.WxErrorException;
 import me.chanjar.weixin.open.api.WxOpenMaService;
 import me.chanjar.weixin.open.bean.auth.WxOpenAuthorizationInfo;
 import me.chanjar.weixin.open.bean.auth.WxOpenAuthorizerInfo;
+import me.chanjar.weixin.open.bean.ma.WxOpenMaCategory;
+import me.chanjar.weixin.open.bean.ma.WxOpenMaSubmitAudit;
+import me.chanjar.weixin.open.bean.message.WxOpenMaSubmitAuditMessage;
 import me.chanjar.weixin.open.bean.result.WxOpenAuthorizerInfoResult;
 import me.chanjar.weixin.open.bean.result.WxOpenMaCategoryListResult;
 import me.chanjar.weixin.open.bean.result.WxOpenMaDomainResult;
 import me.chanjar.weixin.open.bean.result.WxOpenMaPageListResult;
+import me.chanjar.weixin.open.bean.result.WxOpenMaQueryAuditResult;
+import me.chanjar.weixin.open.bean.result.WxOpenMaSubmitAuditResult;
 import me.chanjar.weixin.open.bean.result.WxOpenResult;
 
 /**
@@ -57,6 +59,7 @@ public class MpAuthShopService extends MainBaseService {
 
 	@Autowired
 	protected SystemImageService image;
+	
 
 	public MpAuthShopRecord addMpAuthAccountInfo(String appId, Integer shopId) throws WxErrorException {
 
@@ -376,7 +379,7 @@ public class MpAuthShopService extends MainBaseService {
 		WxOpenMaService maService = this.getMaServiceByAppId(appId);
 		WxOpenMaCategoryListResult result = maService.getCategoryList();
 		MpAuthShopRecord mp = this.getAuthShopByAppId(appId);
-		mp.setCategory(Util.toJson(result));
+		mp.setCategory(Util.toJson(result.getCategoryList()));
 		mp.update();
 		return result;
 	}
@@ -391,9 +394,107 @@ public class MpAuthShopService extends MainBaseService {
 		WxOpenMaService maService = this.getMaServiceByAppId(appId);
 		WxOpenMaPageListResult result = maService.getPageList();
 		MpAuthShopRecord mp = this.getAuthShopByAppId(appId);
-		mp.setCategory(Util.toJson(result));
+		mp.setCategory(Util.toJson(result.getPageList()));
 		mp.update();
 		return result;
 	}
 	
+	/**
+	 * 提交审核
+	 * @param appId
+	 * @return
+	 * @throws WxErrorException
+	 */
+	public WxOpenMaSubmitAuditResult submitAudit(String appId) throws WxErrorException {
+		MpAuthShopRecord mp = this.getAuthShopByAppId(appId);
+		WxOpenMaService maService = this.getMaServiceByAppId(appId);
+		
+		WxOpenMaSubmitAudit audit = new WxOpenMaSubmitAudit();
+		List<WxOpenMaCategory> categoryList = null;
+		if(StringUtils.isBlank(mp.getCategory())){
+			categoryList = Util.parseJson(mp.getCategory(), new TypeReference<List<WxOpenMaCategory>>() {});
+		}else {
+			WxOpenMaCategoryListResult category  = this.getCategory(appId);
+			categoryList = category.getCategoryList();
+		}
+
+		String pagePath = "pages/bottom/bottom";
+		audit.setPagePath(pagePath);
+		audit.setFirstClass(categoryList.get(0).getFirstClass());
+		audit.setTag(categoryList.get(0).getFirstClass());
+		WxOpenMaSubmitAuditMessage submitAuditMessage = new WxOpenMaSubmitAuditMessage();
+		List<WxOpenMaSubmitAudit> itemList = new ArrayList<>();
+		itemList.add(audit);
+		submitAuditMessage.setItemList(itemList);
+		WxOpenMaSubmitAuditResult result = maService.submitAudit(submitAuditMessage);
+		return result;
+	}
+	
+	/**
+	 * 发布审核成功代码
+	 * @param appId
+	 * @return
+	 * @throws WxErrorException 
+	 */
+	public WxOpenResult publishAuditSuccessCode(String appId) throws WxErrorException {
+		MpAuthShopRecord mp = this.getAuthShopByAppId(appId);
+		WxOpenMaService maService = this.getMaServiceByAppId(appId);
+		WxOpenResult result = maService.releaesAudited();
+		return result;
+	}
+	
+	/**
+	 * 上传代码并提交审核
+	 * @param appId
+	 * @param templateId
+	 * @param userVersion
+	 * @param userDesc
+	 * @throws WxErrorException
+	 */
+	public void uploadCodeAndApplyAudit(String appId, Long templateId,String userVersion,String userDesc) throws WxErrorException {
+		this.modifyDomain(appId);
+		this.uploadCode(appId, templateId, userVersion, userDesc);
+		this.submitAudit(appId);
+	}
+	
+	/**
+	 * 批量上传代码并提交审核
+	 * @param templateId
+	 * @param userVersion
+	 * @param userDesc
+	 * @throws WxErrorException
+	 */
+	public void batchUploadCodeAndApplyAudit(Long templateId,String userVersion,String userDesc) throws WxErrorException {
+		Result<MpAuthShopRecord> records = db().fetch(MP_AUTH_SHOP,MP_AUTH_SHOP.IS_AUTH_OK.eq((byte)1));
+		for( MpAuthShopRecord record : records) {
+			this.uploadCodeAndApplyAudit(record.getAppId(), templateId, null, null);
+		}
+	}
+	
+	/**
+	 * 更新小程序审核状态,只有审核中，才可以获取最后审核状态
+	 * @param appId
+	 * @return
+	 * @throws WxErrorException
+	 */
+	public WxOpenMaQueryAuditResult refreshAppInfo(String appId) throws WxErrorException {
+		MpAuthShopRecord mp = this.getAuthShopByAppId(appId);
+		if(mp.getAuditId() != null && mp.getAuditState() == (byte)1) {
+			WxOpenMaService maService = this.getMaServiceByAppId(appId);
+			WxOpenMaQueryAuditResult result = maService.getAuditStatus(mp.getAuditId().longValue());
+			if(result.isSuccess()) {
+				if(result.getStatus() == 0) {
+					mp.setAuditState((byte)2);
+					mp.setAuditOkTime(Timestamp.valueOf(LocalDateTime.now()));
+					mp.update();
+				}else if(result.getStatus() == 1) {
+					mp.setAuditState((byte)3);
+					mp.setAuditFailReason(result.getReason());
+					mp.update();
+				}
+			}
+			return result;
+		}
+		return null;
+	}
 }
