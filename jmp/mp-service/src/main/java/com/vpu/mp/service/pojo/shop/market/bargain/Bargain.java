@@ -7,6 +7,10 @@ import com.vpu.mp.service.pojo.shop.goods.GoodsView;
 
 import lombok.Data;
 
+/**
+ * @author 王兵兵
+ *
+ */
 @Data
 public class Bargain {
 

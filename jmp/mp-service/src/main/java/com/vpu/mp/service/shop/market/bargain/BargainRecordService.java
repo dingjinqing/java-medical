@@ -5,16 +5,14 @@ import static com.vpu.mp.db.shop.tables.BargainRecord.BARGAIN_RECORD;
 import static com.vpu.mp.db.shop.tables.BargainUserList.BARGAIN_USER_LIST;
 import static com.vpu.mp.db.shop.tables.Goods.GOODS;
 import static com.vpu.mp.db.shop.tables.User.USER;
+import static org.jooq.impl.DSL.count;
+import static org.jooq.impl.DSL.date;
 
-import static org.jooq.impl.DSL.*;
-
-import java.io.IOException;
 import java.math.BigDecimal;
 import java.sql.Date;
 import java.util.List;
 import java.util.Map;
 
-import com.vpu.mp.service.pojo.shop.market.bargain.analysis.BargainAnalysisParam;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.poi.ss.usermodel.Workbook;
 import org.jooq.Record;
@@ -31,6 +29,7 @@ import com.vpu.mp.service.foundation.util.Util;
 import com.vpu.mp.service.pojo.shop.market.bargain.BargainRecordExportVo;
 import com.vpu.mp.service.pojo.shop.market.bargain.BargainRecordPageListQueryParam;
 import com.vpu.mp.service.pojo.shop.market.bargain.BargainRecordPageListQueryVo;
+import com.vpu.mp.service.pojo.shop.market.bargain.analysis.BargainAnalysisParam;
 
 /**
  * @author 王兵兵

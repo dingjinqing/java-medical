@@ -7,11 +7,7 @@ import java.sql.Date;
 import java.sql.Timestamp;
 import java.util.Calendar;
 import java.util.Map;
-import java.util.stream.IntStream;
 
-import com.vpu.mp.service.pojo.shop.market.bargain.analysis.BargainAnalysisDataVo;
-import com.vpu.mp.service.pojo.shop.market.bargain.analysis.BargainAnalysisParam;
-import com.vpu.mp.service.pojo.shop.market.bargain.analysis.BargainAnalysisTotalVo;
 import org.jooq.Record;
 import org.jooq.SelectWhereStep;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -28,6 +24,9 @@ import com.vpu.mp.service.pojo.shop.market.bargain.BargainAddParam;
 import com.vpu.mp.service.pojo.shop.market.bargain.BargainPageListQueryParam;
 import com.vpu.mp.service.pojo.shop.market.bargain.BargainPageListQueryVo;
 import com.vpu.mp.service.pojo.shop.market.bargain.BargainUpdateParam;
+import com.vpu.mp.service.pojo.shop.market.bargain.analysis.BargainAnalysisDataVo;
+import com.vpu.mp.service.pojo.shop.market.bargain.analysis.BargainAnalysisParam;
+import com.vpu.mp.service.pojo.shop.market.bargain.analysis.BargainAnalysisTotalVo;
 
 /**
  * @author 王兵兵
