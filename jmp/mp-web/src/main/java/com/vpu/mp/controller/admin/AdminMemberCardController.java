@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.vpu.mp.service.foundation.data.JsonResult;
 import com.vpu.mp.service.foundation.util.Util;
 import com.vpu.mp.service.pojo.shop.member.card.CardParam;
+import com.vpu.mp.service.pojo.shop.member.card.SearchCardParam;
 
 /**
  * 
@@ -19,7 +20,7 @@ import com.vpu.mp.service.pojo.shop.member.card.CardParam;
  * @Description: 会员卡管理
  */
 @RestController
-@RequestMapping(value="/api/admin/member/card")
+@RequestMapping(value="/api/admin/member")
 public class AdminMemberCardController extends AdminBaseController {
 	private Logger logger = LoggerFactory.getLogger(getClass());
 	
@@ -28,12 +29,27 @@ public class AdminMemberCardController extends AdminBaseController {
 	 * @param card
 	 * @return
 	 */
-	@PostMapping("/add")
+	@PostMapping("/card/add")
 	public JsonResult createMemberCard(@RequestBody CardParam card) {
 		/** logger info*/
+		logger.info(card.getDesc());
 		logger.info(Util.toJson(card));
 		this.shop().member.card.addMemberCard(card);
 		return this.success();
+	
 	}
+	
+	/**
+	 * 返回相应的会员卡列表
+	 * @return
+	 */
+	@PostMapping("/card/list")
+	public JsonResult getCardList(@RequestBody SearchCardParam param) {
+		
+		logger.info(param.toString());
+		
+		return success();
+	}
+	
 	
 }
