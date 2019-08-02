@@ -14,7 +14,12 @@ import org.jooq.impl.DefaultDSLContext;
 import lombok.Getter;
 import lombok.Setter;
 
-public class MpDefaultDSLContext extends DefaultDSLContext {
+/**
+ * 
+ * @author lixinguo
+ *
+ */
+public class MpDefaultDslContext extends DefaultDSLContext {
 
 	@Getter @Setter protected DbConfig dbConfig;
 	@Getter @Setter protected Integer shopId = 0;
@@ -26,39 +31,39 @@ public class MpDefaultDSLContext extends DefaultDSLContext {
 	 */
 	private static final long serialVersionUID = 2971649046754906812L;
 
-	public MpDefaultDSLContext(SQLDialect dialect) {
+	public MpDefaultDslContext(SQLDialect dialect) {
 		super(dialect);
 	}
 
-	public MpDefaultDSLContext(Configuration configuration) {
+	public MpDefaultDslContext(Configuration configuration) {
 		super(configuration);
 	}
 
-	public MpDefaultDSLContext(SQLDialect dialect, Settings settings) {
+	public MpDefaultDslContext(SQLDialect dialect, Settings settings) {
 		super(dialect, settings);
 	}
 
-	public MpDefaultDSLContext(Connection connection, SQLDialect dialect) {
+	public MpDefaultDslContext(Connection connection, SQLDialect dialect) {
 		super(connection, dialect);
 	}
 
-	public MpDefaultDSLContext(DataSource datasource, SQLDialect dialect) {
+	public MpDefaultDslContext(DataSource datasource, SQLDialect dialect) {
 		super(datasource, dialect);
 	}
 
-	public MpDefaultDSLContext(ConnectionProvider connectionProvider, SQLDialect dialect) {
+	public MpDefaultDslContext(ConnectionProvider connectionProvider, SQLDialect dialect) {
 		super(connectionProvider, dialect);
 	}
 
-	public MpDefaultDSLContext(Connection connection, SQLDialect dialect, Settings settings) {
+	public MpDefaultDslContext(Connection connection, SQLDialect dialect, Settings settings) {
 		super(connection, dialect, settings);
 	}
 
-	public MpDefaultDSLContext(DataSource datasource, SQLDialect dialect, Settings settings) {
+	public MpDefaultDslContext(DataSource datasource, SQLDialect dialect, Settings settings) {
 		super(datasource, dialect, settings);
 	}
 
-	public MpDefaultDSLContext(ConnectionProvider connectionProvider, SQLDialect dialect, Settings settings) {
+	public MpDefaultDslContext(ConnectionProvider connectionProvider, SQLDialect dialect, Settings settings) {
 		super(connectionProvider, dialect, settings);
 	}
 

@@ -14,6 +14,11 @@ import com.vpu.mp.service.foundation.service.MainBaseService;
 import me.chanjar.weixin.common.error.WxErrorException;
 import me.chanjar.weixin.open.bean.WxOpenMaCodeTemplate;
 
+/**
+ * 
+ * @author lixinguo
+ *
+ */
 @Service
 public class MpVersionService extends MainBaseService {
 

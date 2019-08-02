@@ -16,6 +16,11 @@ import me.chanjar.weixin.open.bean.ma.WxMaOpenSubpackage;
 import me.chanjar.weixin.open.bean.ma.WxMaOpenTabBar;
 import me.chanjar.weixin.open.bean.ma.WxMaOpenWindow;
 
+/**
+ * 
+ * @author lixinguo
+ *
+ */
 @Data
 public class MpWxMaOpenCommitExtInfo {
 	/**
@@ -73,10 +78,12 @@ public class MpWxMaOpenCommitExtInfo {
 	   * @param value
 	   */
 	  public void addExt(String key, String value) {
-	    if (extMap == null)
-	      extMap = new HashMap<>();
-	    if (StringUtils.isNoneBlank(key, value))
+	    if (extMap == null) {
+	      extMap = new HashMap<>(0);
+	    }
+	    if (StringUtils.isNoneBlank(key, value)) {
 	      extMap.put(key, value);
+	    }
 	  }
 
 	  /**
@@ -86,10 +93,12 @@ public class MpWxMaOpenCommitExtInfo {
 	   * @param page
 	   */
 	  public void addExtPage(String pagePath, WxMaOpenPage page) {
-	    if (extPages == null)
-	      extPages = new HashMap<>();
-	    if (StringUtils.isNotBlank(pagePath) && page != null)
+	    if (extPages == null) {
+	      extPages = new HashMap<>(0);
+	    }
+	    if (StringUtils.isNotBlank(pagePath) && page != null) {
 	      extPages.put(pagePath, page);
+	    }
 	  }
 
 	  /**
@@ -98,10 +107,12 @@ public class MpWxMaOpenCommitExtInfo {
 	   * @param pagePath
 	   */
 	  public void addPage(String pagePath) {
-	    if (pageList == null)
+	    if (pageList == null) {
 	      pageList = new ArrayList<>();
-	    if (StringUtils.isNotBlank(pagePath))
+	    }
+	    if (StringUtils.isNotBlank(pagePath)) {
 	      pageList.add(pagePath);
+	    }
 	  }
 
 

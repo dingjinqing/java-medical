@@ -61,16 +61,16 @@ public class DistributorLevelService extends ShopBaseService{
 		}
 		
 		//获取全部等级信息
-		List<DistributorLevelVo> all_level = db().select().from(DISTRIBUTOR_LEVEL).fetch().into(DistributorLevelVo.class);
+		List<DistributorLevelVo> allLevel = db().select().from(DISTRIBUTOR_LEVEL).fetch().into(DistributorLevelVo.class);
 		HashMap<Byte, DistributorLevelVo> levelData = new HashMap<Byte, DistributorLevelVo>();
-		for(DistributorLevelVo level : all_level) {
+		for(DistributorLevelVo level : allLevel) {
 			levelData.put(level.getLevelId(),level);
 		}
 		//等级用户数量
 		List<DistributorLevelUserNumVo> levelUserNum = this.getUserDistributorLevel();
 
 		DistributorLevelCfgVo distributorLevelCfg = new DistributorLevelCfgVo();
-		distributorLevelCfg.setLavelData(all_level);
+		distributorLevelCfg.setLavelData(allLevel);
 		distributorLevelCfg.setLevelUserNum(levelUserNum);
 		return distributorLevelCfg;
 	}

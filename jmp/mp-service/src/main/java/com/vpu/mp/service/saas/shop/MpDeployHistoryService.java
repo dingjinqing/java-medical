@@ -1,16 +1,20 @@
 package com.vpu.mp.service.saas.shop;
 
-import org.jooq.Result;
-import org.springframework.stereotype.Service;
-
 import static com.vpu.mp.db.main.tables.MpDeployHistory.MP_DEPLOY_HISTORY;
 
 import java.sql.Timestamp;
 import java.time.LocalDateTime;
 
+import org.springframework.stereotype.Service;
+
 import com.vpu.mp.db.main.tables.records.MpDeployHistoryRecord;
 import com.vpu.mp.service.foundation.service.MainBaseService;
 
+/**
+ * 
+ * @author lixinguo
+ *
+ */
 @Service
 public class MpDeployHistoryService extends MainBaseService {
 

@@ -3,7 +3,6 @@ package com.vpu.mp.service.pojo.shop.order.write.remark;
 import javax.validation.constraints.Max;
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.NotNull;
 
 import com.vpu.mp.service.foundation.data.JsonResultMessage;
 

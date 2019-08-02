@@ -1,9 +1,6 @@
 package com.vpu.mp.service.shop;
 
 
-import com.vpu.mp.service.shop.order.MemberCardOrderService;
-import com.vpu.mp.service.shop.overview.*;
-import com.vpu.mp.service.shop.task.ShopTaskService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -29,12 +26,14 @@ import com.vpu.mp.service.shop.member.MemberService;
 import com.vpu.mp.service.shop.member.ScoreCfgService;
 import com.vpu.mp.service.shop.member.TagService;
 import com.vpu.mp.service.shop.operation.RecordAdminActionService;
+import com.vpu.mp.service.shop.order.MemberCardOrderService;
 import com.vpu.mp.service.shop.order.OrderReadService;
 import com.vpu.mp.service.shop.order.OrderWriteService;
 import com.vpu.mp.service.shop.overview.CommodityStatisticsService;
 import com.vpu.mp.service.shop.overview.MallOverviewService;
 import com.vpu.mp.service.shop.overview.OverviewService;
 import com.vpu.mp.service.shop.overview.RealTimeOverviewService;
+import com.vpu.mp.service.shop.overview.TransactionStatisticsService;
 import com.vpu.mp.service.shop.store.store.StoreService;
 import com.vpu.mp.service.shop.summary.portrait.PortraitService;
 import com.vpu.mp.service.shop.summary.visit.AmountService;
@@ -43,8 +42,6 @@ import com.vpu.mp.service.shop.summary.visit.PageService;
 import com.vpu.mp.service.shop.summary.visit.RetainService;
 import com.vpu.mp.service.shop.task.ShopTaskService;
 import com.vpu.mp.service.shop.version.VersionService;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
 
 /**
  * 
@@ -57,14 +54,14 @@ public class ShopApplication  {
 	@Autowired public GoodsService goods;
 	@Autowired public ImageService image;
 	@Autowired public ImageCategoryService imageCatgory;
-	@Autowired public ShopMpDecorationService mpDecoration;	//装修模块
-	@Autowired public OrderReadService readOrder;	//订单读操作
-	@Autowired public OrderWriteService writeOrder;	//订单写操作
+	@Autowired public ShopMpDecorationService mpDecoration;	
+	@Autowired public OrderReadService readOrder;	
+	@Autowired public OrderWriteService writeOrder;	
 	@Autowired public PageClassificationService pageClassification;
 	@Autowired public VersionService version;
 	@Autowired public ConfigService config;
 	@Autowired public StoreService store;
-	@Autowired public ChooseLinkService chooselink;	//选择链接通用弹窗
+	@Autowired public ChooseLinkService chooselink;	
 	@Autowired public TradeService trade;
 	@Autowired public GoodsRecommendService goodsRecommend;
 	@Autowired public AmountService amount;

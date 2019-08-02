@@ -64,18 +64,18 @@ public class DatabaseManager {
 	/**
 	 * 主库连接，每个线程一个连接
 	 */
-	private ThreadLocal<MpDefaultDSLContext> mainDsl = new ThreadLocal<MpDefaultDSLContext>();
+	private ThreadLocal<MpDefaultDslContext> mainDsl = new ThreadLocal<MpDefaultDslContext>();
 
 	/**
 	 * 店铺库连接，每个线程有一个正用的数据库连接，可以随时切换
 	 */
-	private ThreadLocal<MpDefaultDSLContext> shopDsl = new ThreadLocal<MpDefaultDSLContext>();
+	private ThreadLocal<MpDefaultDslContext> shopDsl = new ThreadLocal<MpDefaultDslContext>();
 
 	/**
 	 * 主库连接
 	 */
 	public DefaultDSLContext mainDb() {
-		MpDefaultDSLContext db = mainDsl.get();
+		MpDefaultDslContext db = mainDsl.get();
 		if (db == null) {
 			BasicDataSource ds = datasourceManager.getMainDbDatasource();
 			db = this.getDsl(ds, datasourceManager.getMainDbConfig());
@@ -95,7 +95,7 @@ public class DatabaseManager {
 		if (shopId == currentShopId.get()) {
 			return this;
 		}
-		MpDefaultDSLContext db = shopDsl.get();
+		MpDefaultDslContext db = shopDsl.get();
 		if (db == null) {
 			ShopRecord shop = mainDb().selectFrom(SHOP).where(SHOP.SHOP_ID.eq(shopId)).fetchAny();
 			if (shop != null) {
@@ -135,8 +135,8 @@ public class DatabaseManager {
 	/**
 	 * 当前店铺库连接
 	 */
-	public MpDefaultDSLContext currentShopDb() {
-		MpDefaultDSLContext db = shopDsl.get();
+	public MpDefaultDslContext currentShopDb() {
+		MpDefaultDslContext db = shopDsl.get();
 		assert (db != null);
 		return shopDsl.get();
 	}
@@ -144,8 +144,8 @@ public class DatabaseManager {
 	/**
 	 * 从数据源获取一个连接
 	 */
-	protected MpDefaultDSLContext getDsl(BasicDataSource ds, DbConfig dbConfig) {
-		MpDefaultDSLContext db = new MpDefaultDSLContext(configuration(ds, dbConfig.getDatabase()));
+	protected MpDefaultDslContext getDsl(BasicDataSource ds, DbConfig dbConfig) {
+		MpDefaultDslContext db = new MpDefaultDslContext(configuration(ds, dbConfig.getDatabase()));
 		db.setDbConfig(dbConfig);
 		db.execute("SET NAMES utf8mb4");
 		db.execute("Set sql_mode='ONLY_FULL_GROUP_BY'");
@@ -329,7 +329,7 @@ public class DatabaseManager {
 
 	@Override
 	protected void finalize() {
-		MpDefaultDSLContext db = mainDsl.get();
+		MpDefaultDslContext db = mainDsl.get();
 		if (db != null) {
 			mainDsl.remove();
 			db = null;

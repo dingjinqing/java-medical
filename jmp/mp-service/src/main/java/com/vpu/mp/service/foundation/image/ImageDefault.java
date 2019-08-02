@@ -39,8 +39,8 @@ public interface ImageDefault {
 
 	/**
 	 * 删除文件
-	 *
 	 * @param path
+	 * @return
 	 */
 	public default boolean deleteFile(String path) {
 		return FileUtils.deleteQuietly(new File(path));
@@ -84,6 +84,7 @@ public interface ImageDefault {
 	 * 得到相对路径
 	 *
 	 * @param type
+	 * @param sysId
 	 * @return
 	 */
 	public default String getRelativePathDirectory(String type, Integer sysId) {
@@ -102,6 +103,7 @@ public interface ImageDefault {
 	 * @param type
 	 * @param filename
 	 * @param extension
+	 * @param sysId
 	 * @return
 	 */
 	public default UploadPath getWritableUploadPath(String type, String filename, String extension, Integer sysId) {
@@ -200,11 +202,24 @@ public interface ImageDefault {
 		return StringUtils.defaultIfNull(suffix, "");
 	}
 
+	/**
+	 * 得到图片宽高
+	 * @param path
+	 * @return
+	 * @throws FileNotFoundException
+	 * @throws IOException
+	 */
 	public default ImageDim getImageDim(String path) throws FileNotFoundException, IOException {
 		BufferedImage img = ImageIO.read(new FileInputStream(path));
 		return new ImageDim(img.getWidth(), img.getHeight());
 	}
 
+	/**
+	 * 得到图片buffer对象
+	 * 
+	 * @param path
+	 * @return
+	 */
 	public default BufferedImage getImageInfo(String path) {
 		try {
 			return ImageIO.read(new FileInputStream(path));
@@ -214,6 +229,11 @@ public interface ImageDefault {
 		return null;
 	}
 
+	/**
+	 * 得到图片buffer对象
+	 * @param imageUrl
+	 * @return
+	 */
 	public default BufferedImage getRemoteImageInfo(String imageUrl) {
 		try {
 			return ImageIO.read(new URL(imageUrl).openStream());
@@ -223,24 +243,49 @@ public interface ImageDefault {
 		return null;
 	}
 
+	/**
+	 * 校验图片合法性
+	 * @param contentType
+	 * @return
+	 */
 	public default boolean validImageType(String contentType) {
 		String[] types = { "image/jpeg", "image/gif", "image/png", "image/bmp" };
 		return Arrays.asList(types).contains(contentType);
 	}
 
+	/**
+	 * 校验图片合法性
+	 * @param contentType
+	 * @return
+	 */
 	public default String getImageExtension(String contentType) {
 		String[] types = { "image/jpeg", "image/gif", "image/png", "image/bmp" };
 		return Arrays.asList(types).contains(contentType) ? contentType.split("/")[1] : "unkown";
 	}
 
+	/**
+	 * 得到图片可写上传路径
+	 * @param contentType
+	 * @return
+	 */
 	public default UploadPath getImageWritableUploadPath(String contentType) {
 		return this.getWritableUploadPath("image", randomFilename(), getImageExtension(contentType), null);
 	}
 
+	/**
+	 * 得到图片ContentType可写上传路径
+	 * @param fileUrl
+	 * @return
+	 */
 	public default String getContentType(String fileUrl) {
 		return getContentType(new File(fileUrl));
 	}
 
+	/**
+	 * 得到图片ContentType可写上传路径
+	 * @param  file
+	 * @return
+	 */
 	public default String getContentType(File file) {
 		String contentType = null;
 		try {
@@ -250,11 +295,22 @@ public interface ImageDefault {
 		return contentType;
 	}
 
+	/**
+	 * 得到图片basename
+	 * @param  filename
+	 * @return
+	 */
 	public default String baseFilename(String filename) {
 		int p = filename.lastIndexOf('.');
 		return p == -1 ? filename : filename.substring(0, p);
 	}
 
+	/**
+	 * 裁剪图片
+	 * @param  param
+	 * @return
+	 * @throws Exception
+	 */
 	public default UploadPath makeCrop(CropImageParam param) throws Exception {
 		String fullPath = fullPath(param.remoteImgPath);
 		String extension = this.getImageExension(fullPath);
@@ -281,6 +337,14 @@ public interface ImageDefault {
 		return uploadPath;
 	}
 	
+	/**
+	 * 上传图片到又拍云
+	 * @param  upYunPath
+	 * @param  inStream
+	 * @return
+	 * @throws IOException
+	 * @throws Exception
+	 */
 	public default boolean uploadToUpYunBySteam(String upYunPath, InputStream inStream) throws IOException, Exception {
 		return this.getUpYunClient().writeFile(upYunPath, inStream, true, null);
 	}

@@ -6,6 +6,11 @@ import org.springframework.stereotype.Service;
 
 import com.vpu.mp.service.foundation.service.MainBaseService;
 
+/**
+ * 
+ * @author lixinguo
+ *
+ */
 @Service
 public class MpOperateLogService extends MainBaseService {
 

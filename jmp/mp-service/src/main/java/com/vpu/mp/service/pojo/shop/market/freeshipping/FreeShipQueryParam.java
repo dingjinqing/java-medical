@@ -1,6 +1,5 @@
 package com.vpu.mp.service.pojo.shop.market.freeshipping;
 
-import com.vpu.mp.service.foundation.util.Page;
 import lombok.Data;
 
 /**
