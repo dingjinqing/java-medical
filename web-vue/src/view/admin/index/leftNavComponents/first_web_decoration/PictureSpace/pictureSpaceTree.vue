@@ -738,6 +738,7 @@ ul {
 }
 .totle span {
   display: block;
+  white-space: nowrap;
 }
 .right_content li {
   position: relative;
@@ -827,7 +828,8 @@ ul {
 }
 .right_content .el-pagination {
   margin-top: none !important;
-  width: 400px !important;
+  /* width: 400px !important; */
+  padding: none !important;
 }
 
 .pic_container .el-checkbox {

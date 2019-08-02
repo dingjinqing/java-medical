@@ -442,6 +442,53 @@
         </span>
       </el-dialog>
     </div>
+    <!--设置会员卡弹窗类别一-->
+    <div class="balanceDialo">
+      <el-dialog
+        title="设置会员卡"
+        :visible.sync="memberCardT1DialogVisible"
+        width="25%"
+        :modal-append-to-body="false"
+      >
+        <div
+          class="labelEditDialogDiv"
+          style="margin-bottom:30px"
+        >
+          <div class="memberCardT1DialogTop">
+            <span>可以在这里编辑该会员的会员卡信息，添加会员卡，注意需要激活的会员卡将直接发放到用户。</span>
+          </div>
+          <div class="cardName">
+            <i>1</i>
+            普通会员卡
+          </div>
+          <div class="memberCardT1Main">
+            <div>已选：</div>
+            <div class="memberCardT1MainCardsMiddle">
+              <div
+                class="memberCardT1MainCards"
+                v-for="(item,index) in cardLlabelsdATa"
+                :key="index"
+              >
+                <span>{{item}}<i class="fa fa-remove"></i></span>
+              </div>
+            </div>
+            <div class="memberCardT1MainRight">
+              <span>添加新卡</span><i></i>
+            </div>
+          </div>
+        </div>
+        <span
+          slot="footer"
+          class="dialog-footer"
+        >
+          <el-button @click="memberCardT1DialogVisible = false">取 消</el-button>
+          <el-button
+            type="primary"
+            @click="memberCardT1DialogVisible = false"
+          >确 定</el-button>
+        </span>
+      </el-dialog>
+    </div>
   </div>
 </template>
 <script>
@@ -694,7 +741,9 @@ export default {
           label: 'IT服务(系统/数据/维护/多领域经营)'
         }
       ],
-      lebalDataList: []
+      lebalDataList: [],
+      memberCardT1DialogVisible: true,
+      cardLlabelsdATa: ['省钱月卡', '省钱月卡', '省钱月卡', '省钱月卡', '省钱月卡', '省钱月卡', '省钱月卡']
     }
   },
   methods: {
@@ -953,6 +1002,71 @@ td {
   color: #a3a3a3;
   font-size: 12px;
   margin-bottom: 10px;
+}
+.memberCardT1DialogTop {
+  border-radius: 3px;
+  padding: 12px 24px;
+  background-color: #ebf1ff;
+}
+.memberCardT1DialogTop span {
+  font-size: 14px;
+  line-height: 24px;
+  color: #5a8bff;
+}
+.cardName i {
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  background-color: #5a8bff;
+  text-align: center;
+  line-height: 20px;
+  color: #fff;
+  font-style: normal;
+  display: inline-block;
+}
+.memberCardT1Main {
+  display: flex;
+  padding: 5px 0 0 25px;
+}
+.memberCardT1MainCardsMiddle {
+  flex: 1;
+}
+.memberCardT1MainCards {
+  padding: 0 8px;
+  border-radius: 2px;
+  background-color: #f5f5f5;
+  margin-left: 4px;
+  margin-bottom: 10px;
+  line-height: 24px;
+  position: relative;
+  white-space: nowrap;
+  float: left;
+  margin-right: 7px;
+}
+.memberCardT1MainCards i {
+  position: absolute;
+  right: -7px;
+  top: -7px;
+  font-size: 15px;
+  color: #999;
+  cursor: pointer;
+}
+.memberCardT1MainRight {
+  color: #5a8bff;
+  cursor: pointer;
+}
+.memberCardT1MainRight i {
+  width: 7px;
+  height: 7px;
+  border-top: 1px solid #5a8bff;
+  border-right: 1px solid #5a8bff;
+  transform: rotate(135deg);
+  display: inline-block;
+  vertical-align: super;
+  cursor: pointer;
+  position: relative;
+  top: 2px;
+  margin-left: 4px;
 }
 </style>
 <style>
