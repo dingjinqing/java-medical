@@ -3,6 +3,7 @@ package com.vpu.mp.controller.admin;
 import com.vpu.mp.service.foundation.data.JsonResult;
 import com.vpu.mp.service.foundation.data.JsonResultCode;
 import com.vpu.mp.service.foundation.util.PageResult;
+import com.vpu.mp.service.pojo.shop.market.MarketSourceUserListParam;
 import com.vpu.mp.service.pojo.shop.market.groupbuy.param.*;
 import com.vpu.mp.service.pojo.shop.market.groupbuy.vo.GroupBuyDetailListVo;
 import com.vpu.mp.service.pojo.shop.market.groupbuy.vo.GroupBuyDetailVo;
@@ -160,7 +161,7 @@ public class AdminGroupBuyController extends AdminBaseController {
      * @return
      */
     @PostMapping("/admin/market/groupbuy/user/list")
-    public JsonResult groupBuyNewUaerList(@RequestBody GroupBuyMenberParam param) {
+    public JsonResult groupBuyNewUaerList(@RequestBody MarketSourceUserListParam param) {
         PageResult<MemberInfoVo> pageResult = shop().groupBuy.groupBuyNewUaerList(param);
         return success(pageResult);
     }

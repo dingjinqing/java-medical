@@ -137,8 +137,6 @@ public class MemberService extends ShopBaseService {
 	
 	/**
 	 * 通用会员选择弹窗的指定规则过滤条件构造
-	 * @param SelectJoinStep
-	 * @param CommonMemberPageListQueryParam
 	 * @return 
 	 */
 	private SelectJoinStep<? extends Record> buildCommonPageListQueryOptions(SelectJoinStep<? extends Record> select, CommonMemberPageListQueryParam param) {

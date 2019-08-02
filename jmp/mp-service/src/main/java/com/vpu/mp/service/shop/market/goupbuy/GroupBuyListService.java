@@ -4,9 +4,9 @@ import com.vpu.mp.service.foundation.data.DelFlag;
 import com.vpu.mp.service.foundation.data.OrderConstant;
 import com.vpu.mp.service.foundation.service.ShopBaseService;
 import com.vpu.mp.service.foundation.util.PageResult;
+import com.vpu.mp.service.pojo.shop.market.MarketSourceUserListParam;
 import com.vpu.mp.service.pojo.shop.market.groupbuy.param.GroupBuyDetailParam;
 import com.vpu.mp.service.pojo.shop.market.groupbuy.param.GroupBuyListParam;
-import com.vpu.mp.service.pojo.shop.market.groupbuy.param.GroupBuyMenberParam;
 import com.vpu.mp.service.pojo.shop.market.groupbuy.param.GroupBuyOrderListParam;
 import com.vpu.mp.service.pojo.shop.market.groupbuy.vo.GroupBuyDetailListVo;
 import com.vpu.mp.service.pojo.shop.market.groupbuy.vo.GroupBuyListVo;
@@ -149,7 +149,7 @@ public class GroupBuyListService  extends ShopBaseService {
      *
      * @param param
      */
-    public PageResult<MemberInfoVo> groupBuyNewUaerList(GroupBuyMenberParam param) {
+    public PageResult<MemberInfoVo> groupBuyNewUaerList(MarketSourceUserListParam param) {
         MemberPageListParam pageListParam = new MemberPageListParam();
         pageListParam.setCurrentPage(pageListParam.getCurrentPage());
         pageListParam.setPageRows(pageListParam.getPageRows());

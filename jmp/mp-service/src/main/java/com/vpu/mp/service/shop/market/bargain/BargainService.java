@@ -9,6 +9,9 @@ import java.util.Calendar;
 import java.util.Map;
 
 import com.vpu.mp.service.pojo.shop.market.MarketAnalysisParam;
+import com.vpu.mp.service.pojo.shop.market.MarketSourceUserListParam;
+import com.vpu.mp.service.pojo.shop.member.MemberInfoVo;
+import com.vpu.mp.service.pojo.shop.member.MemberPageListParam;
 import com.vpu.mp.service.shop.member.MemberService;
 import org.jooq.Record;
 import org.jooq.SelectWhereStep;
@@ -222,4 +225,20 @@ public class BargainService extends ShopBaseService  {
 		calendar.add(Calendar.DATE, 1);
 		return new Date(calendar.getTime().getTime());
 	}
+
+    /**
+     * 活动新增用户
+     *
+     * @param param
+     */
+    public PageResult<MemberInfoVo> getBargainSourceUserList(MarketSourceUserListParam param) {
+        MemberPageListParam pageListParam = new MemberPageListParam();
+        pageListParam.setCurrentPage(pageListParam.getCurrentPage());
+        pageListParam.setPageRows(pageListParam.getPageRows());
+        pageListParam.setMobile(param.getMobile());
+        pageListParam.setUsername(param.getUserName());
+        pageListParam.setInviteUserName(param.getInviteUserName());
+
+        return saas().getShopApp(getShopId()).member.getSourceActList(pageListParam, MemberService.INVITE_SOURCE_BARGAIN, param.getActivityId());
+    }
 }

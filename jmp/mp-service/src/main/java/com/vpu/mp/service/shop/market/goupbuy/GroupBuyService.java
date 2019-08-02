@@ -6,6 +6,7 @@ import static com.vpu.mp.db.shop.Tables.GROUP_BUY_PRODUCT_DEFINE;
 
 import java.util.List;
 
+import com.vpu.mp.service.pojo.shop.market.MarketSourceUserListParam;
 import com.vpu.mp.service.pojo.shop.market.groupbuy.param.*;
 import com.vpu.mp.service.pojo.shop.market.groupbuy.vo.*;
 import com.vpu.mp.service.shop.order.OrderReadService;
@@ -182,7 +183,7 @@ public class GroupBuyService extends ShopBaseService {
      *
      * @param param
      */
-    public PageResult<MemberInfoVo> groupBuyNewUaerList(GroupBuyMenberParam param) {
+    public PageResult<MemberInfoVo> groupBuyNewUaerList(MarketSourceUserListParam param) {
         return groupBuyListService.groupBuyNewUaerList(param);
     }
 
