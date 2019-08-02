@@ -71,7 +71,7 @@ public class MemberService extends ShopBaseService {
 	    select = this.buildOptions(select,u, param);
 		
 		
-		return this.getPageResult(select,param.getPage().getCurrentPage(),param.getPage().getPageRows() , MemberInfoVo.class);
+		return this.getPageResult(select,param.getCurrentPage(),param.getPageRows() , MemberInfoVo.class);
 	}
 
 	/**
@@ -193,7 +193,7 @@ public class MemberService extends ShopBaseService {
 				.orderBy(a.CREATE_TIME.desc());
 		select = this.buildOptions(select,a, param);
 
-		return this.getPageResult(select,param.getPage().getCurrentPage(),param.getPage().getPageRows() , MemberInfoVo.class);
+		return this.getPageResult(select,param.getCurrentPage(),param.getPageRows() , MemberInfoVo.class);
 	}
 
 	/**

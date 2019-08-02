@@ -54,8 +54,8 @@ public class TagService extends ShopBaseService {
 		select = buildOptions(select, param, t);
 
 		select.orderBy(t.CREATE_TIME.desc());
-		PageResult<TagInfoVo> pageResult = this.getPageResult(select, param.getPage().getCurrentPage(),
-				param.getPage().getPageRows(), TagInfoVo.class);
+		PageResult<TagInfoVo> pageResult = this.getPageResult(select, param.getCurrentPage(),
+				param.getPageRows(), TagInfoVo.class);
 		for (TagInfoVo tag : pageResult.dataList) {
 			if (tag.getCount() == null) {
 				tag.setCount(0);
