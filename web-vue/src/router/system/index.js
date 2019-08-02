@@ -187,7 +187,7 @@ const routes = [
     children: [
       {
         path: 'account_list',
-        component: () => import('@/view/system_new/views/store_management/accountList'),
+        component: () => import('@/view/system_new/views/store_management/account_list/accountList'),
         name: 'accountList',
         meta: {
           title: '店铺账户列表'
@@ -195,7 +195,7 @@ const routes = [
       },
       {
         path: 'program_manage',
-        component: () => import('@/view/system_new/views/store_management/programManage'),
+        component: () => import('@/view/system_new/views/store_management/program_management/programManage'),
         name: 'programManage',
         meta: {
           title: '小程序版本'
