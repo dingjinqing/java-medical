@@ -8,15 +8,26 @@ import com.vpu.mp.db.shop.Indexes;
 import com.vpu.mp.db.shop.Keys;
 import com.vpu.mp.db.shop.MiniShop_471752;
 import com.vpu.mp.db.shop.tables.records.CardOrderRecord;
-import org.jooq.*;
-import org.jooq.impl.DSL;
-import org.jooq.impl.TableImpl;
 
-import javax.annotation.Generated;
 import java.math.BigDecimal;
 import java.sql.Timestamp;
 import java.util.Arrays;
 import java.util.List;
+
+import javax.annotation.Generated;
+
+import org.jooq.Field;
+import org.jooq.ForeignKey;
+import org.jooq.Identity;
+import org.jooq.Index;
+import org.jooq.Name;
+import org.jooq.Record;
+import org.jooq.Schema;
+import org.jooq.Table;
+import org.jooq.TableField;
+import org.jooq.UniqueKey;
+import org.jooq.impl.DSL;
+import org.jooq.impl.TableImpl;
 
 
 /**
@@ -32,7 +43,7 @@ import java.util.List;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class CardOrder extends TableImpl<CardOrderRecord> {
 
-    private static final long serialVersionUID = -1084679901;
+    private static final long serialVersionUID = -2117926204;
 
     /**
      * The reference instance of <code>mini_shop_471752.b2c_card_order</code>
@@ -53,34 +64,29 @@ public class CardOrder extends TableImpl<CardOrderRecord> {
     public final TableField<CardOrderRecord, Integer> ORDER_ID = createField("order_id", org.jooq.impl.SQLDataType.INTEGER.nullable(false).identity(true), this, "订单id");
 
     /**
-     * The column <code>mini_shop_471752.b2c_card_order.voucher_id</code>. 优惠券 ID
-     */
-    public final TableField<CardOrderRecord, Integer> VOUCHER_ID = createField("voucher_id", org.jooq.impl.SQLDataType.INTEGER, this, "优惠券 ID");
-
-    /**
      * The column <code>mini_shop_471752.b2c_card_order.order_sn</code>. 订单编号
      */
-    public final TableField<CardOrderRecord, String> ORDER_SN = createField("order_sn", org.jooq.impl.SQLDataType.VARCHAR(20).nullable(false).defaultValue(DSL.inline("", org.jooq.impl.SQLDataType.VARCHAR)), this, "订单编号");
+    public final TableField<CardOrderRecord, String> ORDER_SN = createField("order_sn", org.jooq.impl.SQLDataType.VARCHAR(20).nullable(false).defaultValue(org.jooq.impl.DSL.inline("", org.jooq.impl.SQLDataType.VARCHAR)), this, "订单编号");
 
     /**
      * The column <code>mini_shop_471752.b2c_card_order.user_id</code>. 用户id
      */
-    public final TableField<CardOrderRecord, Integer> USER_ID = createField("user_id", org.jooq.impl.SQLDataType.INTEGER.nullable(false).defaultValue(DSL.inline("0", org.jooq.impl.SQLDataType.INTEGER)), this, "用户id");
+    public final TableField<CardOrderRecord, Integer> USER_ID = createField("user_id", org.jooq.impl.SQLDataType.INTEGER.nullable(false).defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.INTEGER)), this, "用户id");
 
     /**
      * The column <code>mini_shop_471752.b2c_card_order.order_status</code>. 订单状态
      */
-    public final TableField<CardOrderRecord, Byte> ORDER_STATUS = createField("order_status", org.jooq.impl.SQLDataType.TINYINT.nullable(false).defaultValue(DSL.inline("0", org.jooq.impl.SQLDataType.TINYINT)), this, "订单状态");
+    public final TableField<CardOrderRecord, Byte> ORDER_STATUS = createField("order_status", org.jooq.impl.SQLDataType.TINYINT.nullable(false).defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.TINYINT)), this, "订单状态");
 
     /**
      * The column <code>mini_shop_471752.b2c_card_order.order_status_name</code>. 订单状态名称
      */
-    public final TableField<CardOrderRecord, String> ORDER_STATUS_NAME = createField("order_status_name", org.jooq.impl.SQLDataType.VARCHAR(32).nullable(false).defaultValue(DSL.inline("", org.jooq.impl.SQLDataType.VARCHAR)), this, "订单状态名称");
+    public final TableField<CardOrderRecord, String> ORDER_STATUS_NAME = createField("order_status_name", org.jooq.impl.SQLDataType.VARCHAR(32).nullable(false).defaultValue(org.jooq.impl.DSL.inline("", org.jooq.impl.SQLDataType.VARCHAR)), this, "订单状态名称");
 
     /**
      * The column <code>mini_shop_471752.b2c_card_order.invoice_id</code>. 发票id
      */
-    public final TableField<CardOrderRecord, Integer> INVOICE_ID = createField("invoice_id", org.jooq.impl.SQLDataType.INTEGER.nullable(false).defaultValue(DSL.inline("0", org.jooq.impl.SQLDataType.INTEGER)), this, "发票id");
+    public final TableField<CardOrderRecord, Integer> INVOICE_ID = createField("invoice_id", org.jooq.impl.SQLDataType.INTEGER.nullable(false).defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.INTEGER)), this, "发票id");
 
     /**
      * The column <code>mini_shop_471752.b2c_card_order.invoice_detail</code>. 发票内容：json存储
@@ -90,7 +96,7 @@ public class CardOrder extends TableImpl<CardOrderRecord> {
     /**
      * The column <code>mini_shop_471752.b2c_card_order.add_message</code>. 客户留言
      */
-    public final TableField<CardOrderRecord, String> ADD_MESSAGE = createField("add_message", org.jooq.impl.SQLDataType.VARCHAR(191).nullable(false).defaultValue(DSL.inline("", org.jooq.impl.SQLDataType.VARCHAR)), this, "客户留言");
+    public final TableField<CardOrderRecord, String> ADD_MESSAGE = createField("add_message", org.jooq.impl.SQLDataType.VARCHAR(191).nullable(false).defaultValue(org.jooq.impl.DSL.inline("", org.jooq.impl.SQLDataType.VARCHAR)), this, "客户留言");
 
     /**
      * The column <code>mini_shop_471752.b2c_card_order.pay_code</code>. 支付代号
@@ -113,99 +119,104 @@ public class CardOrder extends TableImpl<CardOrderRecord> {
     public final TableField<CardOrderRecord, String> PAY_SN = createField("pay_sn", org.jooq.impl.SQLDataType.VARCHAR(32), this, "支付流水号");
 
     /**
+     * The column <code>mini_shop_471752.b2c_card_order.card_no</code>. 会员卡号
+     */
+    public final TableField<CardOrderRecord, String> CARD_NO = createField("card_no", org.jooq.impl.SQLDataType.VARCHAR(32), this, "会员卡号");
+
+    /**
      * The column <code>mini_shop_471752.b2c_card_order.money_paid</code>. 订单应付金额
      */
-    public final TableField<CardOrderRecord, BigDecimal> MONEY_PAID = createField("money_paid", org.jooq.impl.SQLDataType.DECIMAL(10, 2).nullable(false).defaultValue(DSL.inline("0.00", org.jooq.impl.SQLDataType.DECIMAL)), this, "订单应付金额");
+    public final TableField<CardOrderRecord, BigDecimal> MONEY_PAID = createField("money_paid", org.jooq.impl.SQLDataType.DECIMAL(10, 2).nullable(false).defaultValue(org.jooq.impl.DSL.inline("0.00", org.jooq.impl.SQLDataType.DECIMAL)), this, "订单应付金额");
 
     /**
      * The column <code>mini_shop_471752.b2c_card_order.use_account</code>. 用户消费余额
      */
-    public final TableField<CardOrderRecord, BigDecimal> USE_ACCOUNT = createField("use_account", org.jooq.impl.SQLDataType.DECIMAL(10, 2).nullable(false).defaultValue(DSL.inline("0.00", org.jooq.impl.SQLDataType.DECIMAL)), this, "用户消费余额");
-
-    /**
-     * The column <code>jmini_shop_4748160.b2c_card_order.member_card_balance</code>. 会员卡消费
-     */
-    public final TableField<CardOrderRecord, BigDecimal> MEMBER_CARD_BALANCE = createField("member_card_balance", org.jooq.impl.SQLDataType.DECIMAL(10, 2).nullable(false).defaultValue(org.jooq.impl.DSL.inline("0.00", org.jooq.impl.SQLDataType.DECIMAL)), this, "会员卡消费");
+    public final TableField<CardOrderRecord, BigDecimal> USE_ACCOUNT = createField("use_account", org.jooq.impl.SQLDataType.DECIMAL(10, 2).nullable(false).defaultValue(org.jooq.impl.DSL.inline("0.00", org.jooq.impl.SQLDataType.DECIMAL)), this, "用户消费余额");
 
     /**
      * The column <code>mini_shop_471752.b2c_card_order.use_score</code>. 用户消费余额
      */
-    public final TableField<CardOrderRecord, BigDecimal> USE_SCORE = createField("use_score", org.jooq.impl.SQLDataType.DECIMAL(10, 2).nullable(false).defaultValue(DSL.inline("0.00", org.jooq.impl.SQLDataType.DECIMAL)), this, "用户消费余额");
+    public final TableField<CardOrderRecord, BigDecimal> USE_SCORE = createField("use_score", org.jooq.impl.SQLDataType.DECIMAL(10, 2).nullable(false).defaultValue(org.jooq.impl.DSL.inline("0.00", org.jooq.impl.SQLDataType.DECIMAL)), this, "用户消费余额");
+
+    /**
+     * The column <code>mini_shop_471752.b2c_card_order.member_card_balance</code>. 会员卡消费
+     */
+    public final TableField<CardOrderRecord, BigDecimal> MEMBER_CARD_BALANCE = createField("member_card_balance", org.jooq.impl.SQLDataType.DECIMAL(10, 2).nullable(false).defaultValue(org.jooq.impl.DSL.inline("0.00", org.jooq.impl.SQLDataType.DECIMAL)), this, "会员卡消费");
 
     /**
      * The column <code>mini_shop_471752.b2c_card_order.order_amount</code>. 订单总金额
      */
-    public final TableField<CardOrderRecord, BigDecimal> ORDER_AMOUNT = createField("order_amount", org.jooq.impl.SQLDataType.DECIMAL(10, 2).nullable(false).defaultValue(DSL.inline("0.00", org.jooq.impl.SQLDataType.DECIMAL)), this, "订单总金额");
+    public final TableField<CardOrderRecord, BigDecimal> ORDER_AMOUNT = createField("order_amount", org.jooq.impl.SQLDataType.DECIMAL(10, 2).nullable(false).defaultValue(org.jooq.impl.DSL.inline("0.00", org.jooq.impl.SQLDataType.DECIMAL)), this, "订单总金额");
 
     /**
      * The column <code>mini_shop_471752.b2c_card_order.pay_time</code>. 支付时间
      */
-    public final TableField<CardOrderRecord, Timestamp> PAY_TIME = createField("pay_time", org.jooq.impl.SQLDataType.TIMESTAMP.nullable(false).defaultValue(DSL.field("CURRENT_TIMESTAMP", org.jooq.impl.SQLDataType.TIMESTAMP)), this, "支付时间");
+    public final TableField<CardOrderRecord, Timestamp> PAY_TIME = createField("pay_time", org.jooq.impl.SQLDataType.TIMESTAMP, this, "支付时间");
 
     /**
      * The column <code>mini_shop_471752.b2c_card_order.seller_remark</code>. 卖家备注
      */
-    public final TableField<CardOrderRecord, String> SELLER_REMARK = createField("seller_remark", org.jooq.impl.SQLDataType.VARCHAR(512).nullable(false).defaultValue(DSL.inline("", org.jooq.impl.SQLDataType.VARCHAR)), this, "卖家备注");
+    public final TableField<CardOrderRecord, String> SELLER_REMARK = createField("seller_remark", org.jooq.impl.SQLDataType.VARCHAR(512).nullable(false).defaultValue(org.jooq.impl.DSL.inline("", org.jooq.impl.SQLDataType.VARCHAR)), this, "卖家备注");
 
     /**
      * The column <code>mini_shop_471752.b2c_card_order.star_flag</code>. 标星订单：0 未标星 1 标星
      */
-    public final TableField<CardOrderRecord, Byte> STAR_FLAG = createField("star_flag", org.jooq.impl.SQLDataType.TINYINT.nullable(false).defaultValue(DSL.inline("0", org.jooq.impl.SQLDataType.TINYINT)), this, "标星订单：0 未标星 1 标星");
+    public final TableField<CardOrderRecord, Byte> STAR_FLAG = createField("star_flag", org.jooq.impl.SQLDataType.TINYINT.nullable(false).defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.TINYINT)), this, "标星订单：0 未标星 1 标星");
 
     /**
      * The column <code>mini_shop_471752.b2c_card_order.del_flag</code>. 删除
      */
-    public final TableField<CardOrderRecord, Byte> DEL_FLAG = createField("del_flag", org.jooq.impl.SQLDataType.TINYINT.nullable(false).defaultValue(DSL.inline("0", org.jooq.impl.SQLDataType.TINYINT)), this, "删除");
+    public final TableField<CardOrderRecord, Byte> DEL_FLAG = createField("del_flag", org.jooq.impl.SQLDataType.TINYINT.nullable(false).defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.TINYINT)), this, "删除");
 
     /**
      * The column <code>mini_shop_471752.b2c_card_order.ali_trade_no</code>. 支付宝交易单号
      */
-    public final TableField<CardOrderRecord, String> ALI_TRADE_NO = createField("ali_trade_no", org.jooq.impl.SQLDataType.VARCHAR(60).nullable(false).defaultValue(DSL.inline("", org.jooq.impl.SQLDataType.VARCHAR)), this, "支付宝交易单号");
+    public final TableField<CardOrderRecord, String> ALI_TRADE_NO = createField("ali_trade_no", org.jooq.impl.SQLDataType.VARCHAR(60).nullable(false).defaultValue(org.jooq.impl.DSL.inline("", org.jooq.impl.SQLDataType.VARCHAR)), this, "支付宝交易单号");
 
     /**
      * The column <code>mini_shop_471752.b2c_card_order.return_flag</code>. 0:未申请退款，1：退款失败，2：退款成功
      */
-    public final TableField<CardOrderRecord, Byte> RETURN_FLAG = createField("return_flag", org.jooq.impl.SQLDataType.TINYINT.nullable(false).defaultValue(DSL.inline("0", org.jooq.impl.SQLDataType.TINYINT)), this, "0:未申请退款，1：退款失败，2：退款成功");
+    public final TableField<CardOrderRecord, Byte> RETURN_FLAG = createField("return_flag", org.jooq.impl.SQLDataType.TINYINT.nullable(false).defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.TINYINT)), this, "0:未申请退款，1：退款失败，2：退款成功");
 
     /**
      * The column <code>mini_shop_471752.b2c_card_order.return_score</code>. 退款积分
      */
-    public final TableField<CardOrderRecord, BigDecimal> RETURN_SCORE = createField("return_score", org.jooq.impl.SQLDataType.DECIMAL(10, 2).nullable(false).defaultValue(DSL.inline("0.00", org.jooq.impl.SQLDataType.DECIMAL)), this, "退款积分");
+    public final TableField<CardOrderRecord, BigDecimal> RETURN_SCORE = createField("return_score", org.jooq.impl.SQLDataType.DECIMAL(10, 2).nullable(false).defaultValue(org.jooq.impl.DSL.inline("0.00", org.jooq.impl.SQLDataType.DECIMAL)), this, "退款积分");
 
     /**
      * The column <code>mini_shop_471752.b2c_card_order.return_account</code>. 退款余额
      */
-    public final TableField<CardOrderRecord, BigDecimal> RETURN_ACCOUNT = createField("return_account", org.jooq.impl.SQLDataType.DECIMAL(10, 2).nullable(false).defaultValue(DSL.inline("0.00", org.jooq.impl.SQLDataType.DECIMAL)), this, "退款余额");
+    public final TableField<CardOrderRecord, BigDecimal> RETURN_ACCOUNT = createField("return_account", org.jooq.impl.SQLDataType.DECIMAL(10, 2).nullable(false).defaultValue(org.jooq.impl.DSL.inline("0.00", org.jooq.impl.SQLDataType.DECIMAL)), this, "退款余额");
 
-    /**
-     * The column <code>jmini_shop_4748160.b2c_card_order.return_card_balance</code>. 会员卡退款
-     */
-
-    public final TableField<CardOrderRecord, BigDecimal> RETURN_CARD_BALANCE = createField("return_card_balance", org.jooq.impl.SQLDataType.DECIMAL(10, 2).nullable(false).defaultValue(org.jooq.impl.DSL.inline("0.00", org.jooq.impl.SQLDataType.DECIMAL)), this, "会员卡退款");
     /**
      * The column <code>mini_shop_471752.b2c_card_order.return_money</code>. 退款余额
      */
-    public final TableField<CardOrderRecord, BigDecimal> RETURN_MONEY = createField("return_money", org.jooq.impl.SQLDataType.DECIMAL(10, 2).nullable(false).defaultValue(DSL.inline("0.00", org.jooq.impl.SQLDataType.DECIMAL)), this, "退款余额");
+    public final TableField<CardOrderRecord, BigDecimal> RETURN_MONEY = createField("return_money", org.jooq.impl.SQLDataType.DECIMAL(10, 2).nullable(false).defaultValue(org.jooq.impl.DSL.inline("0.00", org.jooq.impl.SQLDataType.DECIMAL)), this, "退款余额");
+
+    /**
+     * The column <code>mini_shop_471752.b2c_card_order.return_card_balance</code>. 会员卡退款
+     */
+    public final TableField<CardOrderRecord, BigDecimal> RETURN_CARD_BALANCE = createField("return_card_balance", org.jooq.impl.SQLDataType.DECIMAL(10, 2).nullable(false).defaultValue(org.jooq.impl.DSL.inline("0.00", org.jooq.impl.SQLDataType.DECIMAL)), this, "会员卡退款");
 
     /**
      * The column <code>mini_shop_471752.b2c_card_order.return_time</code>. 退款时间
      */
-    public final TableField<CardOrderRecord, Timestamp> RETURN_TIME = createField("return_time", org.jooq.impl.SQLDataType.TIMESTAMP.nullable(false).defaultValue(DSL.field("CURRENT_TIMESTAMP", org.jooq.impl.SQLDataType.TIMESTAMP)), this, "退款时间");
+    public final TableField<CardOrderRecord, Timestamp> RETURN_TIME = createField("return_time", org.jooq.impl.SQLDataType.TIMESTAMP, this, "退款时间");
 
     /**
      * The column <code>mini_shop_471752.b2c_card_order.del_time</code>. 退款时间
      */
-    public final TableField<CardOrderRecord, Timestamp> DEL_TIME = createField("del_time", org.jooq.impl.SQLDataType.TIMESTAMP.nullable(false).defaultValue(DSL.field("CURRENT_TIMESTAMP", org.jooq.impl.SQLDataType.TIMESTAMP)), this, "退款时间");
+    public final TableField<CardOrderRecord, Timestamp> DEL_TIME = createField("del_time", org.jooq.impl.SQLDataType.TIMESTAMP, this, "退款时间");
 
     /**
      * The column <code>mini_shop_471752.b2c_card_order.create_time</code>.
      */
-    public final TableField<CardOrderRecord, Timestamp> CREATE_TIME = createField("create_time", org.jooq.impl.SQLDataType.TIMESTAMP.nullable(false).defaultValue(DSL.field("CURRENT_TIMESTAMP", org.jooq.impl.SQLDataType.TIMESTAMP)), this, "");
+    public final TableField<CardOrderRecord, Timestamp> CREATE_TIME = createField("create_time", org.jooq.impl.SQLDataType.TIMESTAMP.defaultValue(org.jooq.impl.DSL.field("CURRENT_TIMESTAMP", org.jooq.impl.SQLDataType.TIMESTAMP)), this, "");
 
     /**
      * The column <code>mini_shop_471752.b2c_card_order.update_time</code>. 最后修改时间
      */
-    public final TableField<CardOrderRecord, Timestamp> UPDATE_TIME = createField("update_time", org.jooq.impl.SQLDataType.TIMESTAMP.nullable(false).defaultValue(DSL.field("CURRENT_TIMESTAMP", org.jooq.impl.SQLDataType.TIMESTAMP)), this, "最后修改时间");
+    public final TableField<CardOrderRecord, Timestamp> UPDATE_TIME = createField("update_time", org.jooq.impl.SQLDataType.TIMESTAMP.defaultValue(org.jooq.impl.DSL.field("CURRENT_TIMESTAMP", org.jooq.impl.SQLDataType.TIMESTAMP)), this, "最后修改时间");
 
     /**
      * The column <code>mini_shop_471752.b2c_card_order.goods_type</code>. 虚拟商品类别：0：会员卡，1：优惠券
@@ -213,14 +224,14 @@ public class CardOrder extends TableImpl<CardOrderRecord> {
     public final TableField<CardOrderRecord, Byte> GOODS_TYPE = createField("goods_type", org.jooq.impl.SQLDataType.TINYINT.nullable(false), this, "虚拟商品类别：0：会员卡，1：优惠券");
 
     /**
-     * The column <code>jmini_shop_4748160.b2c_card_order.virtual_goods_id</code>. 虚拟商品id
+     * The column <code>mini_shop_471752.b2c_card_order.virtual_goods_id</code>. 虚拟商品id
      */
     public final TableField<CardOrderRecord, Integer> VIRTUAL_GOODS_ID = createField("virtual_goods_id", org.jooq.impl.SQLDataType.INTEGER.nullable(false), this, "虚拟商品id");
 
     /**
-     * The column <code>jmini_shop_4748160.b2c_card_order.card_no</code>. 会员卡号
+     * The column <code>mini_shop_471752.b2c_card_order.still_send_flag</code>. 退款后是否继续发放优惠劵，1：继续发放，0：停止发放
      */
-    public final TableField<CardOrderRecord, String> CARD_NO = createField("card_no", org.jooq.impl.SQLDataType.VARCHAR(32), this, "会员卡号");
+    public final TableField<CardOrderRecord, Byte> STILL_SEND_FLAG = createField("still_send_flag", org.jooq.impl.SQLDataType.TINYINT.nullable(false).defaultValue(org.jooq.impl.DSL.inline("1", org.jooq.impl.SQLDataType.TINYINT)), this, "退款后是否继续发放优惠劵，1：继续发放，0：停止发放");
 
     /**
      * Create a <code>mini_shop_471752.b2c_card_order</code> table reference
