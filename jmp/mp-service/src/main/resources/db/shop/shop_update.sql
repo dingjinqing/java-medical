@@ -563,3 +563,8 @@ alter table b2c_card_order
 
 alter table b2c_card_order
     add return_card_balance decimal(10, 2) not null default '0.00' comment '会员卡退款' after return_money;
+    
+alter table b2c_card_order
+	add still_send_flag tinyint(2) not null default '1' comment '退款后是否继续发放优惠劵，1：继续发放，0：停止发放' ;
+	
+	
