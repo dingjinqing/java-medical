@@ -11,11 +11,11 @@ import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
 import java.sql.Timestamp;
-import java.util.*;
 import java.util.Comparator;
-import java.util.stream.Collectors;
+import java.util.*;
 
 import static com.vpu.mp.service.shop.overview.RealTimeOverviewService.div;
+import static java.util.stream.Collectors.toList;
 import static org.jooq.impl.DSL.*;
 
 /**
@@ -25,6 +25,7 @@ import static org.jooq.impl.DSL.*;
  */
 @Service
 public class TransactionStatisticsService extends ShopBaseService {
+    private static final String DEFAULT_SORT_TYPE = "asc";
 
     private static OrderInfo oi = OrderInfo.ORDER_INFO.as("oi");
     private static OrderGoods og = OrderGoods.ORDER_GOODS.as("og");
@@ -62,9 +63,29 @@ public class TransactionStatisticsService extends ShopBaseService {
         double minMoney = voList.stream().min(Comparator.comparing(GeographicalVo::getTotalDealMoney)).orElse(new GeographicalVo()).getTotalDealMoney();
         collVo.setMaxTotalDealMoney(maxMoney);
         collVo.setMinTotalDealMoney(minMoney);
-        collVo.setVos(voList.stream().sorted(Comparator.comparing(GeographicalVo::getTotalDealMoney)).collect(Collectors.toList()));
-        //voList.stream().sorted(Comparator.comparing(GeographicalVo::getTotalDealMoney).reversed());
-
+        Comparator<GeographicalVo> comparator = Comparator.comparing(GeographicalVo::getTotalDealMoney);
+        switch(param.getOrderByField()){
+            case "total_deal_money" :
+                break;
+            case "paid_user_num" :
+                comparator = Comparator.comparing(GeographicalVo::getOrderUserNum);
+                break;
+            case "uv" :
+                comparator = Comparator.comparing(GeographicalVo::getUv);
+                break;
+            case "order_num" :
+                comparator = Comparator.comparing(GeographicalVo::getOrderNum);
+                break;
+            case "uv_2_paid" :
+                comparator = Comparator.comparing(GeographicalVo::getUv2paid);
+                break;
+            default :
+                break;
+        }
+        if(!DEFAULT_SORT_TYPE.equalsIgnoreCase(param.getOrderByType())){
+            comparator = comparator.reversed();
+        }
+        collVo.setVos(voList.stream().sorted(comparator).collect(toList()));
         return collVo;
     }
 
@@ -109,16 +130,43 @@ public class TransactionStatisticsService extends ShopBaseService {
      * 固定日期数据查询
      */
     private PageResult<LabelAnalysisVo> fixedLabelAnalysis(LabelAnalysisParam param){
-        SelectConditionStep<Record7<String, Integer, Integer, BigDecimal, Integer, Integer, Integer>> limitStep = db().select(dt.TAG.as("tagName")
+        SelectConditionStep<Record7<String, Integer, Integer, BigDecimal, Integer, Integer, Integer>> conditionStep = db().select(dt.TAG.as("tagName")
                 ,dt.PAY_USER_NUM.as("paidUserNum")
                 ,dt.PAY_ORDER_NUM.as("paidNum")
                 ,dt.PAY_ORDER_MONEY.as("paidMoney")
-                ,dt.PAY_GOODS_NUMBER.as("paidGoddsNum")
+                ,dt.PAY_GOODS_NUMBER.as("paidGoodsNum")
                 ,dt.HAS_MOBILE_NUM.as("userNumWithPhone")
                 ,dt.HAS_USER_NUM.as("userNum"))
                 .from(dt)
                 .where(dt.REF_DATE.eq(Util.getEarlySqlDate(new Date(),0)))
                 .and(dt.TYPE.eq(param.getScreeningTime()));
+
+        OrderField<?> field1 = dt.HAS_USER_NUM;
+        switch(param.getOrderByField()){
+            case "user_num" :
+                break;
+            case "user_num_with_phone" :
+                field1 = dt.HAS_MOBILE_NUM;
+                break;
+            case "paid_num" :
+                field1 = dt.PAY_ORDER_NUM;
+                break;
+            case "paid_money" :
+                field1 = dt.PAY_ORDER_MONEY;
+                break;
+            case "paid_user_num" :
+                field1 = dt.PAY_USER_NUM;
+                break;
+            case "paid_goods_num" :
+                field1 = dt.PAY_GOODS_NUMBER;
+                break;
+            default :
+                break;
+        }
+        if(!DEFAULT_SORT_TYPE.equalsIgnoreCase(param.getOrderByType())){
+            field1 = ((TableField) field1).desc();
+        }
+        SelectLimitStep<Record7<String, Integer, Integer, BigDecimal, Integer, Integer, Integer>> limitStep = conditionStep.orderBy(field1);
         return getPageResult(limitStep,param.getCurrentPage(),param.getPageRows(),LabelAnalysisVo.class);
 
     }
@@ -135,16 +183,16 @@ public class TransactionStatisticsService extends ShopBaseService {
         if (param.getStartTime() != null){
             startTime = new Timestamp(param.getStartTime().getTime());
         }
-        /** 先查用户数，放入分页集合中，然后循环设置其他数据 */
-        SelectHavingStep<Record3<Integer, String, Integer>> limitStep = db().select(min(ut.TAG_ID).as("tadId"),min(t.TAG_NAME).as("tagName"),count(ut.USER_ID).as("userNum"))
+        /* 先查用户数，放入分页集合中，然后循环设置其他数据 */
+        SelectHavingStep<Record3<Integer, String, Integer>> limitStep = db().select(min(ut.TAG_ID).as("tagId"),min(t.TAG_NAME).as("tagName"),count(ut.USER_ID).as("userNum"))
                 .from(ut).leftJoin(t).on(ut.TAG_ID.eq(t.TAG_ID))
                 .where(ut.CREATE_TIME.greaterOrEqual(startTime))
                 .and(ut.CREATE_TIME.lessThan(endTime))
                 .groupBy(ut.TAG_ID);
         PageResult<LabelAnalysisVo> result = getPageResult(limitStep,param.getCurrentPage(),param.getPageRows(),LabelAnalysisVo.class);
 
-        Map<Integer,Record4<BigDecimal,Integer,Integer,BigDecimal>> temp = db()
-                .select(sum(oi.MONEY_PAID.add(oi.SCORE_DISCOUNT).add(oi.USE_ACCOUNT).add(oi.MEMBER_CARD_BALANCE)).as("paidMoney")
+        Map<Integer,Record5<Integer,BigDecimal,Integer,Integer,BigDecimal>> temp = db()
+                .select(min(ut.TAG_ID).as("tag_id"),sum(oi.MONEY_PAID.add(oi.SCORE_DISCOUNT).add(oi.USE_ACCOUNT).add(oi.MEMBER_CARD_BALANCE)).as("paidMoney")
                 , countDistinct(oi.USER_ID).as("paidUserNum")
                 , count(oi.ORDER_ID).as("paidNum")
                 , sum(og.GOODS_NUMBER).as("paidGoodsNum"))
@@ -157,30 +205,56 @@ public class TransactionStatisticsService extends ShopBaseService {
                 .groupBy(ut.TAG_ID)
                 .fetchMap(ut.TAG_ID);
 
-        Map<Integer,Record1<Integer>> temp1 = db().select(countDistinct(u.USER_ID).as("userNumWithPhone")).from(ut)
+        Map<Integer,Record2<Integer,Integer>> temp1 = db().select(min(ut.TAG_ID).as("tag_id"),countDistinct(u.USER_ID).as("userNumWithPhone")).from(ut)
                 .leftJoin(u)
                 .on(ut.USER_ID.eq(u.USER_ID))
                 .where(u.CREATE_TIME.greaterOrEqual(startTime))
                 .and(u.CREATE_TIME.lessThan(endTime))
                 .and(u.MOBILE.isNotNull())
-                .groupBy(u.USER_ID)
+                .groupBy(ut.TAG_ID)
                 .fetchMap(ut.TAG_ID);
         for (LabelAnalysisVo vo : result.getDataList()){
             if (temp.containsKey(vo.getTagId())){
-                Record4<BigDecimal,Integer,Integer,BigDecimal> record4 = temp.get(vo.getTagId());
-                vo.setPaidMoney(record4.value1());
-                vo.setPaidUserNum(record4.value2());
-                vo.setPaidNum(record4.value3());
-                vo.setPaidGoodsNum(record4.value4().intValue());
+                Record5<Integer,BigDecimal,Integer,Integer,BigDecimal> record4 = temp.get(vo.getTagId());
+                vo.setPaidMoney(record4.value2());
+                vo.setPaidUserNum(record4.value3());
+                vo.setPaidNum(record4.value4());
+                vo.setPaidGoodsNum(record4.value5().intValue());
             }
             if (temp1.containsKey(vo.getTagId())){
-                Record1<Integer> record1 = temp1.get(vo.getTagId());
-                vo.setUserNumWithPhone(record1.value1());
+                Record2<Integer,Integer> record1 = temp1.get(vo.getTagId());
+                vo.setUserNumWithPhone(record1.value2());
             }
         }
+        result.setDataList(sortBy(param,result.getDataList()));
         return result;
     }
-    private void sortBy(LabelAnalysisParam param,PageResult<LabelAnalysisVo> result){
-
+    private List<LabelAnalysisVo> sortBy(LabelAnalysisParam param,List<LabelAnalysisVo> result){
+        Comparator<LabelAnalysisVo> comparator = Comparator.comparing(LabelAnalysisVo::getUserNum);
+        switch(param.getOrderByField()){
+            case "user_num" :
+                break;
+            case "user_num_with_phone" :
+                comparator = Comparator.comparing(LabelAnalysisVo::getUserNumWithPhone);
+                break;
+            case "paid_num" :
+                comparator = Comparator.comparing(LabelAnalysisVo::getPaidNum);
+                break;
+            case "paid_money" :
+                comparator = Comparator.comparing(LabelAnalysisVo::getPaidMoney);
+                break;
+            case "paid_user_num" :
+                comparator = Comparator.comparing(LabelAnalysisVo::getPaidUserNum);
+                break;
+            case "paid_goods_num" :
+                comparator = Comparator.comparing(LabelAnalysisVo::getPaidGoodsNum);
+                break;
+            default :
+                break;
+        }
+        if(!DEFAULT_SORT_TYPE.equalsIgnoreCase(param.getOrderByType())){
+            comparator = comparator.reversed();
+        }
+        return result.stream().sorted(comparator).collect(toList());
     }
 }

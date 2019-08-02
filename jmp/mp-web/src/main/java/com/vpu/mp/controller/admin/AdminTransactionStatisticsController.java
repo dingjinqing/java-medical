@@ -1,7 +1,6 @@
 package com.vpu.mp.controller.admin;
 
 import com.vpu.mp.service.foundation.data.JsonResult;
-import com.vpu.mp.service.pojo.shop.overview.realtime.CoreIndicatorParam;
 import com.vpu.mp.service.pojo.shop.overview.transaction.GeographicalParam;
 import com.vpu.mp.service.pojo.shop.overview.transaction.LabelAnalysisParam;
 import org.springframework.validation.annotation.Validated;
@@ -34,7 +33,7 @@ public class AdminTransactionStatisticsController extends AdminBaseController{
     }
 
     @PostMapping("/api/admin/transactionstatistics/defaultOverview")
-    public JsonResult defaultOverview(@RequestBody @Validated CoreIndicatorParam param){
+    public JsonResult defaultOverview(){
         return success();
     }
 

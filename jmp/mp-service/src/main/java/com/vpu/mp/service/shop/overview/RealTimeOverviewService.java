@@ -10,11 +10,16 @@ import com.vpu.mp.service.pojo.shop.overview.realtime.CoreIndicatorParam;
 import com.vpu.mp.service.pojo.shop.overview.realtime.CoreIndicatorVo;
 import com.vpu.mp.service.pojo.shop.overview.realtime.LineChartVo;
 import com.vpu.mp.service.pojo.shop.overview.realtime.RealTimeVo;
-import org.jooq.*;
+import org.jooq.Condition;
+import org.jooq.Record2;
+import org.jooq.Record8;
+import org.jooq.SelectConditionStep;
 import org.jooq.impl.DSL;
 import org.springframework.stereotype.Service;
+
 import java.math.BigDecimal;
 import java.util.*;
+
 import static com.vpu.mp.db.shop.tables.UserLoginRecord.USER_LOGIN_RECORD;
 import static com.vpu.mp.db.shop.tables.UserSummaryTrend.USER_SUMMARY_TREND;
 import static org.jooq.impl.DSL.cast;
@@ -33,7 +38,7 @@ public class RealTimeOverviewService extends ShopBaseService {
      */
     public RealTimeVo realTime(){
         RealTimeVo realTimeVo = new RealTimeVo();
-        /** 各个时间段的交易额累加和（当天和昨天） */
+        /* 各个时间段的交易额累加和（当天和昨天） */
         List<Record2<Byte,BigDecimal>> todayTrades = db().select(Trades.TRADES.HOUR,Trades.TRADES.PAY_ORDER_MONEY)
                 .from(Trades.TRADES)
                 .where(Trades.TRADES.REF_DATE.eq(new java.sql.Date(Util.getEarlyDate(new Date(),0).getTime())))
@@ -46,7 +51,7 @@ public class RealTimeOverviewService extends ShopBaseService {
                 .fetch();
         realTimeVo.setTodayPaidMoney(cumulativeSum(todayTrades));
         realTimeVo.setYesterdayPaidMoney(cumulativeSum(yesTrades));
-        /** pay_user_num */
+        /* pay_user_num */
         List<Integer> yesPayUserNum = db().select(USER_SUMMARY_TREND.ORDER_USER_DATA)
                 .from(USER_SUMMARY_TREND)
                 .where(USER_SUMMARY_TREND.REF_DATE.eq(new java.sql.Date(Util.getEarlyDate(new Date(),0).getTime())))
@@ -61,7 +66,7 @@ public class RealTimeOverviewService extends ShopBaseService {
                                 .and(OrderInfo.ORDER_INFO.SHIPPING_TIME.isNotNull())))
                 .fetchInto(Integer.class);
         realTimeVo.setPayUserNum(new Tuple2<>(Util.isEmpty(todayPayUserNum) ? 0 : todayPayUserNum.get(0),Util.isEmpty(yesPayUserNum) ? 0 : todayPayUserNum.get(0)));
-        /** uv */
+        /* uv */
         List<Integer> uvToday = db().select(DSL.countDistinct(USER_LOGIN_RECORD.USER_ID))
                 .from(USER_LOGIN_RECORD)
                 .where(USER_LOGIN_RECORD.CREATE_TIME.greaterOrEqual(Util.getStartToday(new Date())))
@@ -72,7 +77,7 @@ public class RealTimeOverviewService extends ShopBaseService {
                 .and(USER_LOGIN_RECORD.CREATE_TIME.lessThan(Util.getStartToday(new Date())))
                 .fetchInto(Integer.class);
         realTimeVo.setVisitUsers(new Tuple2<>(Util.isEmpty(uvToday) ? 0 : uvToday.get(0),Util.isEmpty(uvYesterday) ? 0 : uvYesterday.get(0)));
-        /** pv  pay_order_num  第一行昨天，第二行今天，按时间排序
+        /* pv  pay_order_num  第一行昨天，第二行今天，按时间排序
           * select sum(pv),SUM(pay_order_num) from b2c_trades GROUP BY ref_date HAVING ref_date = '2018-09-11' OR ref_date = '2018-09-12'
           */
         List<Record2<BigDecimal,BigDecimal>> record2 = db().select(DSL.sum(Trades.TRADES.PV),DSL.sum(Trades.TRADES.PAY_ORDER_NUM))
@@ -117,11 +122,11 @@ public class RealTimeOverviewService extends ShopBaseService {
         Condition one = us.REF_DATE.eq(Util.getEarlySqlDate(new Date(),-1)).and(us.TYPE.eq(param.getScreeningTime()));
         Condition preOne = us.REF_DATE.eq(Util.getEarlySqlDate(new Date(),-(param.getScreeningTime()+1))).and(us.TYPE.eq(param.getScreeningTime()));
 
-        Optional<CoreIndicatorVo> optional = getConditonSelect().and(one).fetchOptionalInto(CoreIndicatorVo.class);
+        Optional<CoreIndicatorVo> optional = getConditionSelect().and(one).fetchOptionalInto(CoreIndicatorVo.class);
         CoreIndicatorVo indicatorVo = optional.orElse(new CoreIndicatorVo());
-        Optional<LineChartVo> optionalTemp = getConditonSelect().and(preOne).fetchOptionalInto(LineChartVo.class);
+        Optional<LineChartVo> optionalTemp = getConditionSelect().and(preOne).fetchOptionalInto(LineChartVo.class);
         LineChartVo temp = optionalTemp.orElse(new LineChartVo());
-        /** 计算较上一周期的增长率 */
+        /* 计算较上一周期的增长率 */
         indicatorVo.setPvIncr(div(temp.getPv(),indicatorVo.getPv()-temp.getPv()));
         indicatorVo.setUvIncr(div(temp.getUv(),indicatorVo.getUv()-temp.getUv()));
         indicatorVo.setPayOrderNumIncr(div(temp.getPayOrderNum(),indicatorVo.getPayOrderNum()-temp.getPayOrderNum()));
@@ -129,14 +134,14 @@ public class RealTimeOverviewService extends ShopBaseService {
         indicatorVo.setTotalPaidMoneyIncr(div(temp.getTotalPaidMoney(),indicatorVo.getTotalPaidMoney()-temp.getTotalPaidMoney()));
         indicatorVo.setUv2PaidIncr(div(temp.getUv2Paid(),indicatorVo.getUv2Paid()-temp.getUv2Paid()));
         indicatorVo.setPctIncr(div(temp.getPct(),indicatorVo.getPct()-temp.getPct()));
-        /** 获取折线图数据 */
-        indicatorVo.setLineChartVos(getConditonSelect().and(us.REF_DATE.lessThan(Util.getEarlySqlDate(new Date(),0)))
+        /* 获取折线图数据 */
+        indicatorVo.setLineChartVos(getConditionSelect().and(us.REF_DATE.lessThan(Util.getEarlySqlDate(new Date(),0)))
                 .and(us.REF_DATE.greaterOrEqual(Util.getEarlySqlDate(new Date(),-param.getScreeningTime())))
                 .and(us.TYPE.eq((byte)1)).fetchInto(LineChartVo.class));
         return indicatorVo;
     }
 
-    private SelectConditionStep<Record8<java.sql.Date, Integer, Integer, Integer, Integer, Integer, Double, Double>> getConditonSelect(){
+    private SelectConditionStep<Record8<java.sql.Date, Integer, Integer, Integer, Integer, Integer, Double, Double>> getConditionSelect(){
         UserSummaryTrend us = UserSummaryTrend.USER_SUMMARY_TREND.as("us");
         return db().select(us.REF_DATE.as("date")
                 ,us.LOGIN_DATA.as("uv")
