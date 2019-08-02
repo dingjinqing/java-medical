@@ -78,6 +78,16 @@ public class MpOperateLogService extends MainBaseService {
 	 * 取消授权通知
 	 */
 	public static final Byte OP_TYPE_CANCEL_AUTH = 13;
+	
+	/**
+	 * 操作成功
+	 */
+	public static final Byte OP_STATE_SUCCESS = 1;
+	
+	/**
+	 * 操作失败
+	 */
+	public static final Byte OP_STATE_FAILED = 2;
 
 	/**
 	 * 记录小程序相关Log
@@ -85,13 +95,14 @@ public class MpOperateLogService extends MainBaseService {
 	 * @param appId       小程序appId
 	 * @param templateId  模板Id
 	 * @param operateType 操作类型
-	 * @param memo        备注
+	 * @param operateState 操作状态 1 成功 2 失败
+	 * @param memo        记录失败原因
 	 * @return
 	 */
-	public int log(String appId, Long templateId, Byte operateType, String memo) {
+	public int log(String appId, Integer templateId, Byte operateType, Byte operateState, String memo) {
 		return db()
 				.insertInto(MP_OPERATE_LOG, MP_OPERATE_LOG.APP_ID, MP_OPERATE_LOG.TEMPLATE_ID,
-						MP_OPERATE_LOG.OPERATE_TYPE, MP_OPERATE_LOG.MEMO)
-				.values(appId, templateId.intValue(), operateType, memo).execute();
+						MP_OPERATE_LOG.OPERATE_TYPE, MP_OPERATE_LOG.OPERATE_STATE,MP_OPERATE_LOG.MEMO)
+				.values(appId, templateId, operateType, operateState,memo).execute();
 	}
 }

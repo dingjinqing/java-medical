@@ -78,9 +78,6 @@ public class ShopService extends MainBaseService {
 	@Autowired
 	public MpOperateLogService mpOperateLog;
 	
-	@Autowired
-	public MpDeployHistoryService mpDeploy;
-
 	
 	public PageResult<ShopListQueryResultVo> getPageList(ShopListQueryParam param) {
 		SelectWhereStep<Record> select = db()

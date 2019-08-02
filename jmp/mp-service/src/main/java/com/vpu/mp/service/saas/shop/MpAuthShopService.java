@@ -61,17 +61,16 @@ public class MpAuthShopService extends MainBaseService {
 
 	public static final Byte AUTH_OK = 1;
 	public static final Byte AUTH_CANCEL = 0;
-	
+
 	public static final Byte AUDIT_STATE_NO_SUBMIT = 0;
 	public static final Byte AUDIT_STATE_AUDITING = 1;
 	public static final Byte AUDIT_STATE_AUDIT_SUCCESS = 2;
 	public static final Byte AUDIT_STATE_AUDIT_FAILED = 3;
-	
-	public static final Integer WX_AUTH_STATUS_PASSED =  0;
-	public static final Integer WX_AUTH_STATUS_AUDIT_FAILED= 1;
-	public static final Integer WX_AUTH_STATUS_AUDITING= 2;
-	
-	
+
+	public static final Integer WX_AUTH_STATUS_PASSED = 0;
+	public static final Integer WX_AUTH_STATUS_AUDIT_FAILED = 1;
+	public static final Integer WX_AUTH_STATUS_AUDITING = 2;
+
 	/**
 	 * 添加小程序信息
 	 * 
@@ -119,7 +118,7 @@ public class MpAuthShopService extends MainBaseService {
 	 */
 	public Boolean isAuthOk(String appId) {
 		MpAuthShopRecord mp = getAuthShopByAppId(appId);
-		return (mp != null && mp.getIsAuthOk().equals(AUTH_OK) );
+		return (mp != null && mp.getIsAuthOk().equals(AUTH_OK));
 	}
 
 	/**
@@ -130,7 +129,7 @@ public class MpAuthShopService extends MainBaseService {
 	 */
 	public Boolean isAuthOk(Integer shopId) {
 		MpAuthShopRecord mp = getAuthShopByShopId(shopId);
-		return (mp != null && mp.getIsAuthOk().equals(AUTH_OK) );
+		return (mp != null && mp.getIsAuthOk().equals(AUTH_OK));
 	}
 
 	/**
@@ -141,7 +140,7 @@ public class MpAuthShopService extends MainBaseService {
 	 */
 	public WxOpenMaService getMaServiceByShopId(Integer shopId) {
 		MpAuthShopRecord mp = getAuthShopByShopId(shopId);
-		assert (mp != null && mp.getIsAuthOk().equals(AUTH_OK) );
+		assert (mp != null && mp.getIsAuthOk().equals(AUTH_OK));
 		return open().getWxOpenComponentService().getWxMaServiceByAppid(mp.getAppId());
 	}
 
@@ -153,7 +152,20 @@ public class MpAuthShopService extends MainBaseService {
 	 */
 	public WxOpenMaService getMaServiceByAppId(String appId) {
 		MpAuthShopRecord mp = getAuthShopByAppId(appId);
-		assert (mp != null && mp.getIsAuthOk().equals(AUTH_OK) );
+		assert (mp != null && mp.getIsAuthOk().equals(AUTH_OK));
+		return open().getWxOpenComponentService().getWxMaServiceByAppid(mp.getAppId());
+	}
+
+	/**
+	 * 获取小程序服务
+	 * 
+	 * @param appId
+	 * @return
+	 */
+	public WxOpenMaService getMaServiceByMpAppId(MpAuthShopRecord mp) {
+		if (mp != null && mp.getIsAuthOk().equals(AUTH_OK)) {
+			throw new IllegalArgumentException("Miniprogram is not authed!");
+		}
 		return open().getWxOpenComponentService().getWxMaServiceByAppid(mp.getAppId());
 	}
 
@@ -242,17 +254,20 @@ public class MpAuthShopService extends MainBaseService {
 	 * @throws WxErrorException
 	 */
 	public WxOpenMaDomainResult modifyDomain(String appId) throws WxErrorException {
+		MpAuthShopRecord mp = this.getAuthShopByAppId(appId);
 		String action = "add";
 		String[] httpsDomains = { domainConfig.imageUrl("/", "https") };
 		String[] wssDomains = { domainConfig.imageUrl("/", "wss") };
 		WxOpenMaService maService = this.getMaServiceByAppId(appId);
 		WxOpenMaDomainResult result = maService.modifyDomain(action, Arrays.asList(httpsDomains),
 				Arrays.asList(wssDomains), Arrays.asList(httpsDomains), Arrays.asList(httpsDomains));
-		if(result.isSuccess() || result.getErrcode().equals("85017")) {
+		if (result.isSuccess() || result.getErrcode().equals("85017")) {
 			// 85017 : 没有新增域名，请确认小程序已经添加了域名或该域名是否没有在第三方平台添加
 			maService.setWebViewDomain(action, Arrays.asList(httpsDomains));
+			mp.setIsModifyDomain((byte) 1);
+			mp.update();
 		}
-		
+		operateLog(mp, MpOperateLogService.OP_TYPE_MODIFY_DOMAIN, result);
 		return result;
 	}
 
@@ -289,7 +304,23 @@ public class MpAuthShopService extends MainBaseService {
 		params.addProperty("user_desc", userDesc);
 		params.addProperty("ext_json", Util.toJson(extInfo));
 		String response = maService.post(WxOpenMaService.API_CODE_COMMIT, Util.toJson(params));
-		return WxMaGsonBuilder.create().fromJson(response, WxOpenResult.class);
+		WxOpenResult result = WxMaGsonBuilder.create().fromJson(response, WxOpenResult.class);
+		operateLog(mp, MpOperateLogService.OP_TYPE_UPLOAD_CODE, result);
+		return result;
+	}
+
+	/**
+	 * 记录操作日志
+	 * 
+	 * @param mp
+	 * @param operateType
+	 * @param result
+	 */
+	public void operateLog(MpAuthShopRecord mp, Byte operateType, WxOpenResult result) {
+		String message = result.isSuccess() ? "" : "code:" + result.getErrcode() + ", message:" + result.getErrmsg();
+		Byte operateState = result.isSuccess() ? MpOperateLogService.OP_STATE_SUCCESS
+				: MpOperateLogService.OP_STATE_FAILED;
+		saas.shop.mpOperateLog.log(mp.getAppId(), mp.getBindTemplateId(), operateType, operateState, message);
 	}
 
 	/**
@@ -312,6 +343,7 @@ public class MpAuthShopService extends MainBaseService {
 			mp.setTester(Util.toJson(testers));
 			mp.update();
 		}
+		operateLog(mp, MpOperateLogService.OP_TYPE_ADD_TESTER, result);
 		return result;
 	}
 
@@ -339,9 +371,7 @@ public class MpAuthShopService extends MainBaseService {
 				: Util.parseJson(mp.getTester(), new TypeReference<List<String>>() {
 				});
 		if (!testers.contains(wechatId)) {
-			WxOpenResult result = new WxOpenResult();
-			result.setErrcode("0");
-			return result;
+			return successResult();
 		}
 		WxOpenMaService maService = this.getMaServiceByAppId(appId);
 		WxOpenResult result = maService.unbindTester(wechatId);
@@ -350,6 +380,32 @@ public class MpAuthShopService extends MainBaseService {
 			mp.setTester(Util.toJson(testers));
 			mp.update();
 		}
+		operateLog(mp, MpOperateLogService.OP_TYPE_DEL_TESTER, result);
+		return result;
+	}
+
+	/**
+	 * 正确结果
+	 * 
+	 * @return
+	 */
+	public WxOpenResult successResult() {
+		WxOpenResult result = new WxOpenResult();
+		result.setErrcode("0");
+		result.setErrmsg("");
+		return result;
+	}
+
+	/**
+	 * 自定义错误消息
+	 * 
+	 * @param message
+	 * @return
+	 */
+	public WxOpenResult failResult(String message) {
+		WxOpenResult result = new WxOpenResult();
+		result.setErrcode("-2");
+		result.setErrmsg(message);
 		return result;
 	}
 
@@ -362,6 +418,7 @@ public class MpAuthShopService extends MainBaseService {
 	 * @throws Exception
 	 */
 	public String getTestQrCode(String appId) throws WxErrorException, IOException {
+		MpAuthShopRecord mp = this.getAuthShopByAppId(appId);
 		WxOpenMaService maService = this.getMaServiceByAppId(appId);
 		String pagePath = "pages/bottom/bottom";
 		File file = maService.getTestQrcode(pagePath, null);
@@ -369,11 +426,12 @@ public class MpAuthShopService extends MainBaseService {
 		try {
 			image.uploadToUpYun(relativePath, file);
 		} catch (Exception e) {
+			operateLog(mp, MpOperateLogService.OP_TYPE_GET_TESTER_QR, failResult(e.getMessage()));
 			return null;
 		}
-		MpAuthShopRecord mp = this.getAuthShopByAppId(appId);
 		mp.setTestQrPath(relativePath);
 		mp.update();
+		operateLog(mp, MpOperateLogService.OP_TYPE_GET_TESTER_QR, successResult());
 		return relativePath;
 	}
 
@@ -386,12 +444,13 @@ public class MpAuthShopService extends MainBaseService {
 	 */
 	public WxOpenMaCategoryListResult getCategory(String appId) throws WxErrorException {
 		WxOpenMaService maService = this.getMaServiceByAppId(appId);
+		MpAuthShopRecord mp = this.getAuthShopByAppId(appId);
 		WxOpenMaCategoryListResult result = maService.getCategoryList();
 		if (result.isSuccess()) {
-			MpAuthShopRecord mp = this.getAuthShopByAppId(appId);
 			mp.setCategory(Util.toJson(result.getCategoryList()));
 			mp.update();
 		}
+		operateLog(mp, MpOperateLogService.OP_TYPE_GET_CATEGORY, result);
 		return result;
 	}
 
@@ -403,13 +462,14 @@ public class MpAuthShopService extends MainBaseService {
 	 * @throws WxErrorException
 	 */
 	public WxOpenMaPageListResult getPage(String appId) throws WxErrorException {
+		MpAuthShopRecord mp = this.getAuthShopByAppId(appId);
 		WxOpenMaService maService = this.getMaServiceByAppId(appId);
 		WxOpenMaPageListResult result = maService.getPageList();
 		if (result.isSuccess()) {
-			MpAuthShopRecord mp = this.getAuthShopByAppId(appId);
 			mp.setCategory(Util.toJson(result.getPageList()));
 			mp.update();
 		}
+		operateLog(mp, MpOperateLogService.OP_TYPE_GET_PAGE_CFG, result);
 		return result;
 	}
 
@@ -443,6 +503,7 @@ public class MpAuthShopService extends MainBaseService {
 		itemList.add(audit);
 		submitAuditMessage.setItemList(itemList);
 		WxOpenMaSubmitAuditResult result = maService.submitAudit(submitAuditMessage);
+		operateLog(mp, MpOperateLogService.OP_TYPE_SUBMIT_AUDIT, result);
 		return result;
 	}
 
@@ -454,8 +515,10 @@ public class MpAuthShopService extends MainBaseService {
 	 * @throws WxErrorException
 	 */
 	public WxOpenResult publishAuditSuccessCode(String appId) throws WxErrorException {
+		MpAuthShopRecord mp = this.getAuthShopByAppId(appId);
 		WxOpenMaService maService = this.getMaServiceByAppId(appId);
 		WxOpenResult result = maService.releaesAudited();
+		operateLog(mp, MpOperateLogService.OP_TYPE_PUBLISH_CODE, result);
 		return result;
 	}
 
@@ -466,15 +529,15 @@ public class MpAuthShopService extends MainBaseService {
 	 * @param templateId
 	 * @param userVersion
 	 * @param userDesc
-	 * @return 
+	 * @return
 	 * @throws WxErrorException
 	 */
 	public WxOpenResult uploadCodeAndApplyAudit(String appId, Long templateId, String userVersion, String userDesc)
 			throws WxErrorException {
-		WxOpenResult result= this.modifyDomain(appId);
-		if(result.isSuccess()) {
+		WxOpenResult result = this.modifyDomain(appId);
+		if (result.isSuccess()) {
 			result = this.uploadCode(appId, templateId, userVersion, userDesc);
-			if(result.isSuccess()) {
+			if (result.isSuccess()) {
 				result = this.submitAudit(appId);
 			}
 		}

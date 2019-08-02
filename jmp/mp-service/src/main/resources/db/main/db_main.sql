@@ -579,13 +579,16 @@ create table `b2c_mp_operate_log` (
   `app_id`       varchar(191) not null  default '' comment '小程序app_id',
   `template_id`  int(11)      not null comment '小程序模板Id',
   `operate_type` tinyint      not null  default 1 comment '操作类型',
-  `memo`         text                   default '' comment '操作日志',
+  `operate_state` tinyint      not null  default 1 comment '操作状态:1成功 2失败',
+  `memo`         text                   default '' comment '失败原因',
   `create_time`  timestamp    not null  default now() comment '记录时间',
   primary key (`operate_id`),
   key (`app_id`),
   key (`operate_type`),
   key (`template_id`)
 );
+
+
 
 ## 后台进程执行信息表
 #drop table if exists `b2c_back_process`;

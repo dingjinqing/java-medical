@@ -44,3 +44,6 @@ ALTER TABLE `b2c_shop_renew` ADD COLUMN `renew_type` tinyint(1) NOT NULL DEFAULT
 ALTER TABLE `b2c_shop_renew` ADD COLUMN `renew_duration` varchar(32) NOT NULL DEFAULT '0' COMMENT '时长：字符串逗号隔开';
 ALTER TABLE `b2c_shop_renew` ADD COLUMN `send_type` tinyint(1) NOT NULL DEFAULT 0 COMMENT '赠送类型：0无，1时间，2功能';
 ALTER TABLE `b2c_shop_renew` ADD COLUMN `send_content` varchar(32)  NOT NULL DEFAULT '0' COMMENT '赠送内容：字符串逗号隔开';
+
+--b2c_mp_operate_log新增字段
+ALTER TABLE  b2c_mp_operate_log  ADD COLUMN `operate_state` tinyint      not null  default 1 comment '操作状态:1成功 2失败';

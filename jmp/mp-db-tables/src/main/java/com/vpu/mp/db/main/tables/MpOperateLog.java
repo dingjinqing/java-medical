@@ -42,7 +42,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class MpOperateLog extends TableImpl<MpOperateLogRecord> {
 
-    private static final long serialVersionUID = 1233753271;
+    private static final long serialVersionUID = -831477649;
 
     /**
      * The reference instance of <code>mini_main.b2c_mp_operate_log</code>
@@ -65,7 +65,7 @@ public class MpOperateLog extends TableImpl<MpOperateLogRecord> {
     /**
      * The column <code>mini_main.b2c_mp_operate_log.app_id</code>. 小程序app_id
      */
-    public final TableField<MpOperateLogRecord, String> APP_ID = createField("app_id", org.jooq.impl.SQLDataType.VARCHAR(191).nullable(false).defaultValue(org.jooq.impl.DSL.inline("", org.jooq.impl.SQLDataType.VARCHAR)), this, "小程序app_id");
+    public final TableField<MpOperateLogRecord, String> APP_ID = createField("app_id", org.jooq.impl.SQLDataType.VARCHAR(191).nullable(false).defaultValue(org.jooq.impl.DSL.inline("''", org.jooq.impl.SQLDataType.VARCHAR)), this, "小程序app_id");
 
     /**
      * The column <code>mini_main.b2c_mp_operate_log.template_id</code>. 小程序模板Id
@@ -78,14 +78,19 @@ public class MpOperateLog extends TableImpl<MpOperateLogRecord> {
     public final TableField<MpOperateLogRecord, Byte> OPERATE_TYPE = createField("operate_type", org.jooq.impl.SQLDataType.TINYINT.nullable(false).defaultValue(org.jooq.impl.DSL.inline("1", org.jooq.impl.SQLDataType.TINYINT)), this, "操作类型");
 
     /**
-     * The column <code>mini_main.b2c_mp_operate_log.memo</code>. 操作日志
+     * The column <code>mini_main.b2c_mp_operate_log.operate_state</code>. 操作状态:1成功 2失败
      */
-    public final TableField<MpOperateLogRecord, String> MEMO = createField("memo", org.jooq.impl.SQLDataType.CLOB, this, "操作日志");
+    public final TableField<MpOperateLogRecord, Byte> OPERATE_STATE = createField("operate_state", org.jooq.impl.SQLDataType.TINYINT.nullable(false).defaultValue(org.jooq.impl.DSL.inline("1", org.jooq.impl.SQLDataType.TINYINT)), this, "操作状态:1成功 2失败");
+
+    /**
+     * The column <code>mini_main.b2c_mp_operate_log.memo</code>. 失败原因
+     */
+    public final TableField<MpOperateLogRecord, String> MEMO = createField("memo", org.jooq.impl.SQLDataType.CLOB.defaultValue(org.jooq.impl.DSL.inline("''", org.jooq.impl.SQLDataType.CLOB)), this, "失败原因");
 
     /**
      * The column <code>mini_main.b2c_mp_operate_log.create_time</code>. 记录时间
      */
-    public final TableField<MpOperateLogRecord, Timestamp> CREATE_TIME = createField("create_time", org.jooq.impl.SQLDataType.TIMESTAMP.nullable(false).defaultValue(org.jooq.impl.DSL.field("CURRENT_TIMESTAMP", org.jooq.impl.SQLDataType.TIMESTAMP)), this, "记录时间");
+    public final TableField<MpOperateLogRecord, Timestamp> CREATE_TIME = createField("create_time", org.jooq.impl.SQLDataType.TIMESTAMP.nullable(false).defaultValue(org.jooq.impl.DSL.field("current_timestamp()", org.jooq.impl.SQLDataType.TIMESTAMP)), this, "记录时间");
 
     /**
      * Create a <code>mini_main.b2c_mp_operate_log</code> table reference
