@@ -39,6 +39,7 @@ public class AdminMemberCardController extends AdminBaseController {
 	
 	}
 	
+	
 	/**
 	 * 返回相应的会员卡列表
 	 * @return
@@ -47,6 +48,7 @@ public class AdminMemberCardController extends AdminBaseController {
 	public JsonResult getCardList(@RequestBody SearchCardParam param) {
 		
 		logger.info(param.toString());
+		this.shop().member.card.getCardList(param);
 		
 		return success();
 	}
