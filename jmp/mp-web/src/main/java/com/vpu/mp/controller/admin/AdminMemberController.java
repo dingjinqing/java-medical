@@ -68,7 +68,8 @@ public class AdminMemberController extends AdminBaseController{
 			//添加操作记录信 该表java版于php版有很大的区别
 			AdminTokenAuthInfo adminTokenAuthInfo = this.adminAuth.user();
 			UserRecord user = member.getUserRecordById(param.getUserId());
-			member.account.addActionRecord(param,user,adminTokenAuthInfo);
+			//TODO处理记录
+			//member.account.addActionRecord(param,user,adminTokenAuthInfo);
 		}
 		
 		return success();
