@@ -4,7 +4,12 @@ import com.vpu.mp.service.foundation.data.DelFlag;
 import com.vpu.mp.service.foundation.data.OrderConstant;
 import com.vpu.mp.service.foundation.service.ShopBaseService;
 import com.vpu.mp.service.foundation.util.PageResult;
-import com.vpu.mp.service.pojo.shop.market.groupbuy.*;
+import com.vpu.mp.service.pojo.shop.market.groupbuy.param.GroupBuyDetailParam;
+import com.vpu.mp.service.pojo.shop.market.groupbuy.param.GroupBuyListParam;
+import com.vpu.mp.service.pojo.shop.market.groupbuy.param.GroupBuyMenberParam;
+import com.vpu.mp.service.pojo.shop.market.groupbuy.param.GroupBuyOrderListParam;
+import com.vpu.mp.service.pojo.shop.market.groupbuy.vo.GroupBuyDetailListVo;
+import com.vpu.mp.service.pojo.shop.market.groupbuy.vo.GroupBuyListVo;
 import com.vpu.mp.service.pojo.shop.member.MemberInfoVo;
 import com.vpu.mp.service.pojo.shop.member.MemberPageListParam;
 import com.vpu.mp.service.pojo.shop.order.OrderListInfoVo;
@@ -146,8 +151,8 @@ public class GroupBuyListService  extends ShopBaseService {
      */
     public PageResult<MemberInfoVo> groupBuyNewUaerList(GroupBuyMenberParam param) {
         MemberPageListParam pageListParam = new MemberPageListParam();
-        pageListParam.setPage(param.getPage());
-
+        pageListParam.setPageRows(1);
+        pageListParam.setCurrentPage(2);
         pageListParam.setMobile(param.getMobile());
         pageListParam.setUsername(param.getUserName());
         pageListParam.setInviteUserName(param.getInviteUserName());
