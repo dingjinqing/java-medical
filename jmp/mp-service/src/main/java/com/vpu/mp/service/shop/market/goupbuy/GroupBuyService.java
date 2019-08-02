@@ -213,8 +213,9 @@ public class GroupBuyService extends ShopBaseService {
      */
     public void groupBuyAnalysis(GroupBuyAnalysisParam param) {
         GroupBuyDefineRecord record =db().selectFrom(GROUP_BUY_DEFINE).where(GROUP_BUY_DEFINE.ID.eq(param.getId())).fetchOne();
-        Record discountMoney = orderReadService.getActiveDiscountMoney(1, param.getId(), param);
-        orderReadService.getActiveOrderList();
+        //
+        Record discountMoney = orderReadService.getActiveDiscountMoney(1, param.getId(), param.getStartTime(),param.getEndTime());
+        orderReadService.getActiveOrderList(1,param.getId(),param.getStartTime(),param.getEndTime());
 
     }
 }
