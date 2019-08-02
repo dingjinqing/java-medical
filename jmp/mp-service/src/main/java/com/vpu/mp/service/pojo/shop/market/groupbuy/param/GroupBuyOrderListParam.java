@@ -1,16 +1,16 @@
 package com.vpu.mp.service.pojo.shop.market.groupbuy.param;
 
-import java.sql.Timestamp;
-
-import com.vpu.mp.service.foundation.util.Page;
-
 import lombok.Data;
+import lombok.EqualsAndHashCode;
+
+import java.sql.Timestamp;
 
 /**
  * @author 孔德成
  * @date 2019/7/23 15:38
  */
 @Data
+@EqualsAndHashCode(callSuper = false)
 public class GroupBuyOrderListParam   extends  BasePageGroupBuyParam{
 
 

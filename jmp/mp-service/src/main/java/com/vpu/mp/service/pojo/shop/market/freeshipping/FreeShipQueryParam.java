@@ -10,12 +10,13 @@ import lombok.Data;
 @Data
 public class FreeShipQueryParam {
 
+    private Integer currentPage;
 
-    private Page page;
+    private Integer pageRows;
 
-    private  Integer id;
+    private Integer id;
     /**
      * 活动状态
      */
-    private Integer  navType;
+    private Integer navType;
 }

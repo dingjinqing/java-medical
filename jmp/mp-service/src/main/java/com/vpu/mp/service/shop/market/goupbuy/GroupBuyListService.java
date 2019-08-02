@@ -35,8 +35,8 @@ import static com.vpu.mp.db.shop.Tables.GROUP_BUY_LIST;
 @Service
 public class GroupBuyListService  extends ShopBaseService {
 
-    private static final byte USE_STATUS = 1;
-    private static final byte STOP_STATUS = 0;
+    private static final Byte USE_STATUS = 1;
+    private static final Byte STOP_STATUS = 0;
     private static final String GROUP_ORDER_NUM = "groupOrderNum";
     private static final String GROUP_BUY = "groupbuy";
 
@@ -57,9 +57,9 @@ public class GroupBuyListService  extends ShopBaseService {
         TableLike<?> table = db()
                 .select(GROUP_BUY_LIST.ACTIVITY_ID, DSL.count(GROUP_BUY_LIST.ACTIVITY_ID).as(GROUP_ORDER_NUM))
                 .from(GROUP_BUY_LIST)
-                .where(GROUP_BUY_LIST.STATUS.eq((byte) 1))
+                .where(GROUP_BUY_LIST.STATUS.eq(USE_STATUS))
                 .groupBy(GROUP_BUY_LIST.ACTIVITY_ID)
-                .asTable();
+                .asTable("a");
         SelectConditionStep<? extends Record> records = db().select(GROUP_BUY_DEFINE.ID, GROUP_BUY_DEFINE.NAME, GOODS.GOODS_NAME, GROUP_BUY_DEFINE.ACTIVITY_TYPE,
                 GROUP_BUY_DEFINE.START_TIME, GROUP_BUY_DEFINE.END_TIME, GROUP_BUY_DEFINE.STATUS, GROUP_BUY_DEFINE.LIMIT_AMOUNT,
                 table.field(1))

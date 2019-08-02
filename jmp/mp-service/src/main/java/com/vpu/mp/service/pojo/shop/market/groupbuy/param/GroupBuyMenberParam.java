@@ -1,7 +1,7 @@
 package com.vpu.mp.service.pojo.shop.market.groupbuy.param;
 
-import com.vpu.mp.service.foundation.util.Page;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 import lombok.NonNull;
 
@@ -11,6 +11,7 @@ import lombok.NonNull;
  */
 @Data
 @NoArgsConstructor
+@EqualsAndHashCode(callSuper = false)
 public class GroupBuyMenberParam extends BasePageGroupBuyParam{
 
 

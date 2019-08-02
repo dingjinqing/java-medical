@@ -10,7 +10,7 @@ import lombok.Data;
  */
 @Data
 public class BasePageGroupBuyParam {
-    private int pageRows ;
-    private int currentPage ;
+    private Integer pageRows ;
+    private Integer currentPage ;
 
 }

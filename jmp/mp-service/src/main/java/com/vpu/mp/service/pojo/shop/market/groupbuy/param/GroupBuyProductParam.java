@@ -1,6 +1,7 @@
 package com.vpu.mp.service.pojo.shop.market.groupbuy.param;
 
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 
 import java.math.BigDecimal;
 
@@ -9,6 +10,7 @@ import java.math.BigDecimal;
  * @date 2019/7/19 10:50
  */
 @Data
+@EqualsAndHashCode(callSuper = false)
 public class GroupBuyProductParam extends BasePageGroupBuyParam{
 
 
