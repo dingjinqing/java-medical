@@ -35,7 +35,6 @@ import org.springframework.stereotype.Service;
 
 import com.vpu.mp.service.foundation.data.OrderConstant;
 import com.vpu.mp.service.foundation.service.ShopBaseService;
-import com.vpu.mp.service.foundation.util.Page;
 import com.vpu.mp.service.foundation.util.PageResult;
 import com.vpu.mp.service.pojo.shop.order.OrderInfoVo;
 import com.vpu.mp.service.pojo.shop.order.OrderListInfoVo;
@@ -48,6 +47,8 @@ import com.vpu.mp.service.pojo.shop.order.shipping.ShippingInfoVo;
 import com.vpu.mp.service.pojo.shop.order.shipping.ShippingInfoVo.Goods;
 import com.vpu.mp.service.pojo.shop.order.store.StoreOrderListInfoVo;
 import com.vpu.mp.service.pojo.shop.order.store.StoreOrderPageListQueryParam;
+import com.vpu.mp.service.pojo.shop.order.write.ship.ShipListParam;
+import com.vpu.mp.service.pojo.shop.order.write.ship.ShipVo;
 
 import lombok.Data;
 
@@ -67,18 +68,17 @@ public class OrderReadService extends ShopBaseService {
 	 */
 	public PageResult<? extends OrderListInfoVo> getPageList(OrderPageListQueryParam param) {
 		logger.info("订单综合查询开始");
-		//退款退货订单查询(其主表不同，所以走分支逻辑)
+		//退款退货订单查询(其主表不同,所以走分支逻辑)
 		if(param.searchType != null && param.searchType == 1) {
 			return getReturnPageList(param);
 		}
 		PageResult<OrderListInfoVo> pageResult = new PageResult<>();
-		Page page = param.getPage();
 		SelectJoinStep<Record2<String, Integer>> mainOrder = db().select(ORDER_INFO.MAIN_ORDER_SN,DSL.min(ORDER_INFO.ORDER_ID).as("orderId")).from(ORDER_INFO);
 		//分组聚合主订单
 		mainOrder.groupBy(ORDER_INFO.MAIN_ORDER_SN);
 		buildOptions(mainOrder, param);
 		//得到主订单号
-		PageResult<MainOrderResult> mainOrderResult = getPageResult(mainOrder,page.getCurrentPage(),page.getPageRows(),MainOrderResult.class);
+		PageResult<MainOrderResult> mainOrderResult = getPageResult(mainOrder,param.getCurrentPage(),param.getPageRows(),MainOrderResult.class);
 		pageResult.setPage(mainOrderResult.getPage());
 		if(mainOrderResult.getDataList().size() < 1) {
 			return pageResult;
@@ -338,10 +338,12 @@ public class OrderReadService extends ShopBaseService {
 				ShippingInfoVo next = iterator.next();
 				//如果物流单号相同则聚合
 				int indexOf = voList.indexOf(next);
-				if(voList.get(indexOf).getGoods() != null) {//该物流单号不是第一次出现的位置，将该记录信息合并到第一次出现的位置并删除
+				//该物流单号不是第一次出现的位置，将该记录信息合并到第一次出现的位置并删除
+				if(voList.get(indexOf).getGoods() != null) {
 					voList.get(indexOf).getGoods().add(new Goods(next.getRecId(), next.getGoodsName(), next.getGoodsAttr(), next.getSendNumber()));
 					iterator.remove();		
-				}else {//第一次出现的位置，初始化goodlist,并将该记录的商品行信息转移到Goods上
+				}else {
+					//第一次出现的位置，初始化goodlist,并将该记录的商品行信息转移到Goods上
 					ArrayList<Goods> firstGoodsList = new ArrayList<Goods>();
 					firstGoodsList.add(new Goods(next.getRecId(), next.getGoodsName(), next.getGoodsAttr(), next.getSendNumber()));
 					voList.get(indexOf).setGoods(firstGoodsList);
@@ -413,7 +415,7 @@ public class OrderReadService extends ShopBaseService {
 	public PageResult<OrderReturnListVo> getReturnPageList(OrderPageListQueryParam param) {
 		SelectJoinStep<Record> select = db().select().from(RETURN_ORDER);
 		buildOptionsReturn(select,param);	
-		PageResult<OrderReturnListVo> result = getPageResult(select,param.getPage().getCurrentPage(),param.getPage().getPageRows(),OrderReturnListVo.class);
+		PageResult<OrderReturnListVo> result = getPageResult(select,param.getCurrentPage(),param.getPageRows(),OrderReturnListVo.class);
 		List<String> collect;
 		List<OrderReturnListVo> dataList = result.dataList;
 		if(dataList != null && dataList.size() > 0 ) {
@@ -505,6 +507,55 @@ public class OrderReadService extends ShopBaseService {
 		}
 		return select; 
 	 }
+	 
+	 /**
+		 * 	发货查询
+		 * 
+		 * @param SellerRemarkParam
+		 * @return ShipVo :
+		 */
+		public ShipVo shipGoodsList(ShipListParam param) {
+			ShipVo shipVo = null;
+			logger.info("获取可发货信息参数为:" + param.toString());
+			// 订单信息
+			shipVo = db().select(ORDER_INFO.CONSIGNEE, ORDER_INFO.MOBILE, ORDER_INFO.COMPLETE_ADDRESS).from(ORDER_INFO)
+					.where(ORDER_INFO.ORDER_SN.eq(param.getOrderSn()).and(ORDER_INFO.ORDER_STATUS.eq(OrderConstant.ORDER_WAIT_DELIVERY))).fetchOneInto(ShipVo.class);
+			if(shipVo == null) {
+				return null;
+			}
+			// 设置可发货信息
+			shipVo.setOrderGoodsVo(canBeShipped(param.getOrderSn()));
+			logger.info("获取可发货信息完成");
+			return shipVo;
+		}
+
+		/**
+		 * 	获取该订单下可发货商品列表
+		 */
+		public List<OrderGoodsVo> canBeShipped(String orderSn) {
+			//TODO 修改select*
+			// 正常商品行
+			List<OrderGoodsVo> orderGoods = db().select(ORDER_GOODS.asterisk()).from(ORDER_GOODS).where(ORDER_GOODS.ORDER_SN.eq(orderSn))
+					.fetchInto(OrderGoodsVo.class);
+			// 退货信息
+			Map<Integer, List<OrderReturnGoodsVo>> returnOrderGoods = db().select(RETURN_ORDER_GOODS.asterisk()).select().from(RETURN_ORDER_GOODS)
+					.where(RETURN_ORDER_GOODS.ORDER_SN.eq(orderSn), RETURN_ORDER_GOODS.SUCCESS.eq(OrderConstant.SUCCESS_RETURNING))
+					.fetchGroups(RETURN_ORDER_GOODS.REC_ID, OrderReturnGoodsVo.class);
+			Iterator<OrderGoodsVo> iterator = orderGoods.iterator();
+			while (iterator.hasNext()) {
+				OrderGoodsVo vo = (OrderGoodsVo) iterator.next();
+				// 可发货数量=总数-退货(退货完成)-发货-退货(退货中)
+				int numTemp;
+				List<OrderReturnGoodsVo> orgTemp = returnOrderGoods.get(vo.getRecId());
+				int sum = orgTemp == null ? 0 : orgTemp.stream().mapToInt(OrderReturnGoodsVo::getGoodsNumber).sum();
+				if ((numTemp = vo.getGoodsNumber() - vo.getReturnNumber() - vo.getSendNumber() - sum) > 0) {
+					vo.setGoodsNumber(numTemp);
+				} else {
+					iterator.remove();
+				}
+			}
+			return orderGoods;
+		}
 
 	/**
 	 * 砍价活动数据分析的订单部分数据

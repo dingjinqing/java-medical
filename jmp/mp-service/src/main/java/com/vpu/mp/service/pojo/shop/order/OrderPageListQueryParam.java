@@ -2,8 +2,6 @@ package com.vpu.mp.service.pojo.shop.order;
 
 import java.sql.Timestamp;
 
-import com.vpu.mp.service.foundation.util.Page;
-
 import lombok.Data;
 
 /**
@@ -12,7 +10,8 @@ import lombok.Data;
  */
 @Data
 public class OrderPageListQueryParam {
-	public Page page;
+	public Integer currentPage;
+	public Integer pageRows;
 	/**查询类型:0综合查询,1退货退款订单*/
 	public Byte searchType;
 	public String goodsName;

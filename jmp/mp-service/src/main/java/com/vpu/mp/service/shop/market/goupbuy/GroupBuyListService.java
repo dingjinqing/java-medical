@@ -115,8 +115,7 @@ public class GroupBuyListService  extends ShopBaseService {
     @SuppressWarnings("unchecked")
 	public PageResult<OrderListInfoVo> groupBuyOrderList(GroupBuyOrderListParam param ) {
         OrderPageListQueryParam orderParam =new OrderPageListQueryParam();
-        orderParam.setPage(param.getPage());
-
+        //TODO
         orderParam.setGoodsType(OrderConstant.GOODS_TYPE_PIN_GROUP);
         orderParam.setGoodsName(param.getGoodsName());
         orderParam.setOrderSn(param.getOrderSn());

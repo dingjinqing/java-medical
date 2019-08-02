@@ -10,6 +10,6 @@ import lombok.Data;
  */
 @Data
 public class SellerRemarkVo {
-	private String OrderSn;
-	private String remark;
+	private String orderSn;
+	private String sellerRemark;
 }

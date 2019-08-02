@@ -932,6 +932,8 @@ create table `b2c_return_order_goods` (
   `goods_price`  decimal(10, 2)		not null default '0.00',
   `goods_attr`   text,
   `send_number`  smallint(5)   		not null default '0' comment '发货商品数量',
+  `return_money`  decimal(10, 2)		not null default '0.00' comment '实际退款金额',
+  `discounted_goods_price` decimal(10, 2)		not null default '0.00' '折后商品单价',
   `goods_img`    varchar(191)  		not null default '',
   `success`      tinyint(1)   		not null default 1 comment '0代表退货申请被拒绝，1代表正在退货中，2代表退货成功',
   `create_time`      timestamp    	default current_timestamp,

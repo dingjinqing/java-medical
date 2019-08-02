@@ -14,6 +14,6 @@ public class RecordContentMessage {
      * 	订单
      */
     /**发货*/
-    public static final String ORDER_SHIP = "order_ship";
+    public static final String ORDER_SHIP = "order.ship";
 
 }

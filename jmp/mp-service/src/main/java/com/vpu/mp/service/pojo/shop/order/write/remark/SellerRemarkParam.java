@@ -3,6 +3,7 @@ package com.vpu.mp.service.pojo.shop.order.write.remark;
 import javax.validation.constraints.Max;
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
 
 import com.vpu.mp.service.foundation.data.JsonResultMessage;
 
@@ -20,8 +21,8 @@ public class SellerRemarkParam {
 	public final static byte TYPE_QUERY= 0;
 	public final static byte TYPE_UPDATE= 1;
 	@NotBlank(message = JsonResultMessage.MSG_ORDER_REMARK_ORDERSN_NOT_NULL)
-	private String OrderSn;
-	@NotBlank(message = JsonResultMessage.MSG_ORDER_REMARK_TYPE_NOT_NULL)
+	private String orderSn;
+	//@NotNull(message = JsonResultMessage.MSG_ORDER_REMARK_TYPE_NOT_NULL)
 	@Min(0)
 	@Max(1)
 	private Byte type;

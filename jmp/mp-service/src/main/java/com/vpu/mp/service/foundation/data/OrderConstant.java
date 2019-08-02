@@ -88,13 +88,17 @@ public class OrderConstant {
 	
 	/**
 	 *	 是否部分发货
-	 * 
 	 */
 	/**否*/
 	public static byte NO_PART_SHIP = 0;
 	/**是*/
 	public static byte PART_SHIP = 1;
 	
+	/**
+	 *  return_order_goods表success字段
+	 */
+	/**退货中1*/
+	public final static byte SUCCESS_RETURNING = 1;
 	private String[] orderStatus = {
 			// ORDER_WAIT_PAY
 			"待付款",
