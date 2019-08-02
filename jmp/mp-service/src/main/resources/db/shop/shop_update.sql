@@ -553,3 +553,13 @@ alter table b2c_card_order drop column voucher_id;
 
 alter table b2c_card_order
     add virtual_goods_id int not null comment '虚拟商品id';
+
+-- 添加会员卡相关字段
+alter table b2c_card_order
+    add card_no varchar(32) null comment '会员卡号';
+
+alter table b2c_card_order
+    add member_card_balance decimal(10, 2)  not null default '0.00' comment '会员卡消费' AFTER use_score;
+
+alter table b2c_card_order
+    add return_card_balance decimal(10, 2) not null default '0.00' comment '会员卡退款' after return_money;
