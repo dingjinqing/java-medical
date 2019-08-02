@@ -151,8 +151,8 @@ public class MemberCardOrderService extends ShopBaseService {
         BigDecimal finalReturnMoney = returnMoney.add(new BigDecimal(money));
         BigDecimal finalReturnAccount = returnAccount.add(new BigDecimal(account));
         BigDecimal finalReturnScore = returnScore.add(new BigDecimal(score));
-        log.info("Member card refund -> userId: {}, return account: {}, return money: {}, return score: {}",
-            userId, account, money, score);
+        log.info("Member card refund -> orderId: {}, return account: {}, return money: {}, return score: {}",
+            orderId, account, money, score);
         // 记录退款信息
         shopDb().insertInto(REFUND_CARD_RECORD, REFUND_CARD_RECORD.ORDER_SN, REFUND_CARD_RECORD.USER_ID,
             REFUND_CARD_RECORD.MONEY_PAID, REFUND_CARD_RECORD.USE_ACCOUNT, REFUND_CARD_RECORD.USE_SCORE,
