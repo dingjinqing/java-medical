@@ -414,6 +414,9 @@ public class Indexes {
     public static final Index MP_VISIT_PAGE_PRIMARY = Indexes0.MP_VISIT_PAGE_PRIMARY;
     public static final Index MP_WEEKLY_VISIT_PRIMARY = Indexes0.MP_WEEKLY_VISIT_PRIMARY;
     public static final Index MP_WEEKLY_RETAIN_PRIMARY = Indexes0.MP_WEEKLY_RETAIN_PRIMARY;
+    public static final Index COUPON_PACK_VOUCHER_ACT_ID = Indexes0.COUPON_PACK_VOUCHER_ACT_ID;
+    public static final Index COUPON_PACK_VOUCHER_PRIMARY = Indexes0.COUPON_PACK_VOUCHER_PRIMARY;
+    public static final Index COUPON_PACK_VOUCHER_VOUCHER_ID = Indexes0.COUPON_PACK_VOUCHER_VOUCHER_ID;
     // -------------------------------------------------------------------------
     // [#1459] distribute members to avoid static initialisers > 64kb
     // -------------------------------------------------------------------------
@@ -805,6 +808,9 @@ public class Indexes {
         public static Index FREE_SHIPPING_RULE_PRIMARY = Internal.createIndex("PRIMARY", FreeShippingRule.FREE_SHIPPING_RULE, new OrderField[] { FreeShippingRule.FREE_SHIPPING_RULE.ID }, true);
         public static Index FREE_SHIPPING_RULE_SHIPPING_ID = Internal.createIndex("shipping_id", FreeShippingRule.FREE_SHIPPING_RULE, new OrderField[] { FreeShippingRule.FREE_SHIPPING_RULE.SHIPPING_ID }, false);
         public static Index FREE_SHIPPING_PRIMARY = Internal.createIndex("PRIMARY", FreeShipping.FREE_SHIPPING, new OrderField[] { FreeShipping.FREE_SHIPPING.ID }, true);
+        public static Index COUPON_PACK_VOUCHER_ACT_ID = Internal.createIndex("act_id", CouponPackVoucher.COUPON_PACK_VOUCHER, new OrderField[] { CouponPackVoucher.COUPON_PACK_VOUCHER.ACT_ID }, false);
+        public static Index COUPON_PACK_VOUCHER_PRIMARY = Internal.createIndex("PRIMARY", CouponPackVoucher.COUPON_PACK_VOUCHER, new OrderField[] { CouponPackVoucher.COUPON_PACK_VOUCHER.ID }, true);
+        public static Index COUPON_PACK_VOUCHER_VOUCHER_ID = Internal.createIndex("voucher_id", CouponPackVoucher.COUPON_PACK_VOUCHER, new OrderField[] { CouponPackVoucher.COUPON_PACK_VOUCHER.VOUCHER_ID }, false);
 
     }
 }

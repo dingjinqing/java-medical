@@ -222,6 +222,8 @@ public class Keys {
     public static final Identity<MpWeeklyRetainRecord, Integer> IDENTITY_MP_WEEKLY_RETAIN = Identities0.IDENTITY_MP_WEEKLY_RETAIN;
     public static final Identity<MpWeeklyVisitRecord, Integer> IDENTITY_MP_WEEKLY_VISIT = Identities0.IDENTITY_MP_WEEKLY_VISIT;
     public static final UniqueKey<UserFanliStatisticsRecord> KEY_B2C_USER_FANLI_STATISTICS_PRIMARY = UniqueKeys0.KEY_B2C_USER_FANLI_STATISTICS_PRIMARY;
+    public static final Identity<CouponPackVoucherRecord, Integer> IDENTITY_COUPON_PACK_VOUCHER = Identities0.IDENTITY_COUPON_PACK_VOUCHER;
+
     // -------------------------------------------------------------------------
     // UNIQUE and PRIMARY KEY definitions
     // -------------------------------------------------------------------------
@@ -436,7 +438,7 @@ public class Keys {
     public static final UniqueKey<MpVisitPageRecord> KEY_B2C_MP_VISIT_PAGE_PRIMARY = UniqueKeys0.KEY_B2C_MP_VISIT_PAGE_PRIMARY;
     public static final UniqueKey<MpWeeklyRetainRecord> KEY_B2C_MP_WEEKLY_RETAIN_PRIMARY = UniqueKeys0.KEY_B2C_MP_WEEKLY_RETAIN_PRIMARY;
     public static final UniqueKey<MpWeeklyVisitRecord> KEY_B2C_MP_WEEKLY_VISIT_PRIMARY = UniqueKeys0.KEY_B2C_MP_WEEKLY_VISIT_PRIMARY;
-
+    public static final UniqueKey<CouponPackVoucherRecord> KEY_B2C_COUPON_PACK_VOUCHER_PRIMARY = UniqueKeys0.KEY_B2C_COUPON_PACK_VOUCHER_PRIMARY;
 
     // -------------------------------------------------------------------------
     // FOREIGN KEY definitions
@@ -631,6 +633,8 @@ public class Keys {
         public static Identity<MpVisitPageRecord, Integer> IDENTITY_MP_VISIT_PAGE = Internal.createIdentity(MpVisitPage.MP_VISIT_PAGE, MpVisitPage.MP_VISIT_PAGE.ID);
         public static Identity<MpWeeklyRetainRecord, Integer> IDENTITY_MP_WEEKLY_RETAIN = Internal.createIdentity(MpWeeklyRetain.MP_WEEKLY_RETAIN, MpWeeklyRetain.MP_WEEKLY_RETAIN.ID);
         public static Identity<MpWeeklyVisitRecord, Integer> IDENTITY_MP_WEEKLY_VISIT = Internal.createIdentity(MpWeeklyVisit.MP_WEEKLY_VISIT, MpWeeklyVisit.MP_WEEKLY_VISIT.ID);
+        public static Identity<CouponPackVoucherRecord, Integer> IDENTITY_COUPON_PACK_VOUCHER = Internal.createIdentity(CouponPackVoucher.COUPON_PACK_VOUCHER, CouponPackVoucher.COUPON_PACK_VOUCHER.ID);
+
     }
 
     private static class UniqueKeys0 {
@@ -846,5 +850,7 @@ public class Keys {
         public static final UniqueKey<MpWeeklyVisitRecord> KEY_B2C_MP_WEEKLY_VISIT_PRIMARY = UniqueKeys0.KEY_B2C_MP_WEEKLY_VISIT_PRIMARY;
         public static final UniqueKey<FreeShippingRuleRecord> KEY_B2C_FREE_SHIPPING_RULE_PRIMARY = Internal.createUniqueKey(FreeShippingRule.FREE_SHIPPING_RULE, "KEY_b2c_free_shipping_rule_PRIMARY", FreeShippingRule.FREE_SHIPPING_RULE.ID);
         public static final UniqueKey<UserFanliStatisticsRecord> KEY_B2C_USER_FANLI_STATISTICS_PRIMARY = Internal.createUniqueKey(UserFanliStatistics.USER_FANLI_STATISTICS, "KEY_b2c_user_fanli_statistics_PRIMARY", UserFanliStatistics.USER_FANLI_STATISTICS.USER_ID);
+        public static final UniqueKey<CouponPackVoucherRecord> KEY_B2C_COUPON_PACK_VOUCHER_PRIMARY = Internal.createUniqueKey(CouponPackVoucher.COUPON_PACK_VOUCHER, "KEY_b2c_coupon_pack_voucher_PRIMARY", CouponPackVoucher.COUPON_PACK_VOUCHER.ID);
+
     }
 }

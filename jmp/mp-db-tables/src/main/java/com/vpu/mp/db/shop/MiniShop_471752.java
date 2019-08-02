@@ -4,15 +4,17 @@
 package com.vpu.mp.db.shop;
 
 
-import com.vpu.mp.db.shop.tables.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+
+import javax.annotation.Generated;
+
 import org.jooq.Catalog;
 import org.jooq.Table;
 import org.jooq.impl.SchemaImpl;
 
-import javax.annotation.Generated;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
+import com.vpu.mp.db.shop.tables.*;
 
 
 /**
@@ -990,6 +992,11 @@ public class MiniShop_471752 extends SchemaImpl {
     public final XcxCustomerPage XCX_CUSTOMER_PAGE = XcxCustomerPage.XCX_CUSTOMER_PAGE;
 
     /**
+     * The table <code>mini_shop_471752.b2c_coupon_pack_voucher</code>.
+     */
+    public final CouponPackVoucher COUPON_PACK_VOUCHER = com.vpu.mp.db.shop.tables.CouponPackVoucher.COUPON_PACK_VOUCHER;
+    
+    /**
      * No further instances allowed
      */
     private MiniShop_471752() {
@@ -1206,6 +1213,7 @@ public class MiniShop_471752 extends SchemaImpl {
             WxpUnlimitCode.WXP_UNLIMIT_CODE,
             WxpUnlimitScene.WXP_UNLIMIT_SCENE,
             WxShoppingRecommend.WX_SHOPPING_RECOMMEND,
-            XcxCustomerPage.XCX_CUSTOMER_PAGE);
+            XcxCustomerPage.XCX_CUSTOMER_PAGE,
+        	CouponPackVoucher.COUPON_PACK_VOUCHER);
     }
 }

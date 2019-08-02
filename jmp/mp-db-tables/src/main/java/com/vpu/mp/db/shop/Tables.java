@@ -971,4 +971,9 @@ public class Tables {
      * The table <code>mini_shop_471752.b2c_xcx_customer_page</code>.
      */
     public static final XcxCustomerPage XCX_CUSTOMER_PAGE = XcxCustomerPage.XCX_CUSTOMER_PAGE;
+    
+    /**
+     * The table <code>mini_shop_471752.b2c_coupon_pack_voucher</code>.
+     */
+    public static final CouponPackVoucher COUPON_PACK_VOUCHER = com.vpu.mp.db.shop.tables.CouponPackVoucher.COUPON_PACK_VOUCHER;
 }
