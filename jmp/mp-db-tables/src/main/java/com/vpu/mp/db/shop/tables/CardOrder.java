@@ -53,16 +53,6 @@ public class CardOrder extends TableImpl<CardOrderRecord> {
     public final TableField<CardOrderRecord, Integer> ORDER_ID = createField("order_id", org.jooq.impl.SQLDataType.INTEGER.nullable(false).identity(true), this, "订单id");
 
     /**
-     * The column <code>mini_shop_471752.b2c_card_order.card_id</code>. 会云卡id
-     */
-    public final TableField<CardOrderRecord, Integer> CARD_ID = createField("card_id", org.jooq.impl.SQLDataType.INTEGER.nullable(false).defaultValue(DSL.inline("0", org.jooq.impl.SQLDataType.INTEGER)), this, "会云卡id");
-
-    /**
-     * The column <code>mini_shop_471752.b2c_card_order.card_no</code>. 会员卡no
-     */
-    public final TableField<CardOrderRecord, String> CARD_NO = createField("card_no", org.jooq.impl.SQLDataType.VARCHAR(32).defaultValue(DSL.inline("0", org.jooq.impl.SQLDataType.VARCHAR)), this, "会员卡no");
-
-    /**
      * The column <code>mini_shop_471752.b2c_card_order.voucher_id</code>. 优惠券 ID
      */
     public final TableField<CardOrderRecord, Integer> VOUCHER_ID = createField("voucher_id", org.jooq.impl.SQLDataType.INTEGER, this, "优惠券 ID");
@@ -211,6 +201,11 @@ public class CardOrder extends TableImpl<CardOrderRecord> {
      * The column <code>mini_shop_471752.b2c_card_order.goods_type</code>. 虚拟商品类别：0：会员卡，1：优惠券
      */
     public final TableField<CardOrderRecord, Byte> GOODS_TYPE = createField("goods_type", org.jooq.impl.SQLDataType.TINYINT.nullable(false), this, "虚拟商品类别：0：会员卡，1：优惠券");
+
+    /**
+     * The column <code>jmini_shop_4748160.b2c_card_order.virtual_goods_id</code>. 虚拟商品id
+     */
+    public final TableField<CardOrderRecord, Integer> VIRTUAL_GOODS_ID = createField("virtual_goods_id", org.jooq.impl.SQLDataType.INTEGER.nullable(false), this, "虚拟商品id");
 
     /**
      * Create a <code>mini_shop_471752.b2c_card_order</code> table reference

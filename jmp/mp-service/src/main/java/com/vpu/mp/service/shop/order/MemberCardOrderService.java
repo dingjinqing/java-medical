@@ -19,6 +19,7 @@ import static com.vpu.mp.db.shop.tables.CardOrder.CARD_ORDER;
 import static com.vpu.mp.db.shop.tables.MemberCard.MEMBER_CARD;
 import static com.vpu.mp.db.shop.tables.RefundCardRecord.REFUND_CARD_RECORD;
 import static com.vpu.mp.db.shop.tables.User.USER;
+import static com.vpu.mp.db.shop.tables.UserCard.USER_CARD;
 import static com.vpu.mp.service.pojo.shop.order.virtual.MemberCardParam.SUCCESS;
 import static java.lang.String.format;
 import static org.apache.commons.lang3.StringUtils.isNotEmpty;
@@ -38,14 +39,14 @@ public class MemberCardOrderService extends ShopBaseService {
      * 订单列表
      */
     public PageResult<MemberCardVo> getMemberCardOrderList(MemberCardParam param) {
-        SelectOnConditionStep<Record16<Integer, String, Integer, Byte, Timestamp, BigDecimal, String, BigDecimal,
-            BigDecimal, Timestamp, String, String, String, Byte, BigDecimal, Byte>> select =
+        SelectOnConditionStep<Record16<Integer, String, Integer, Byte, Timestamp, BigDecimal, BigDecimal, BigDecimal, Timestamp, String, String, String, Byte, BigDecimal, Byte, String>> select =
             shopDb().select(CARD_ORDER.ORDER_ID, CARD_ORDER.ORDER_SN,
-                CARD_ORDER.CARD_ID, CARD_ORDER.RETURN_FLAG, CARD_ORDER.PAY_TIME, CARD_ORDER.MONEY_PAID, CARD_ORDER.CARD_NO,
+                CARD_ORDER.VIRTUAL_GOODS_ID, CARD_ORDER.RETURN_FLAG, CARD_ORDER.PAY_TIME, CARD_ORDER.MONEY_PAID,
                 CARD_ORDER.USE_ACCOUNT, CARD_ORDER.USE_SCORE, CARD_ORDER.RETURN_TIME, USER.USERNAME, USER.MOBILE,
-                MEMBER_CARD.CARD_NAME, MEMBER_CARD.CARD_TYPE, MEMBER_CARD.PAY_FEE, MEMBER_CARD.PAY_TYPE)
+                MEMBER_CARD.CARD_NAME, MEMBER_CARD.CARD_TYPE, MEMBER_CARD.PAY_FEE, MEMBER_CARD.PAY_TYPE,
+                USER_CARD.CARD_NO)
                 .from(CARD_ORDER)
-                .leftJoin(MEMBER_CARD).on(MEMBER_CARD.ID.eq(CARD_ORDER.CARD_ID))
+                .leftJoin(MEMBER_CARD).on(MEMBER_CARD.ID.eq(CARD_ORDER.VIRTUAL_GOODS_ID))
                 .leftJoin(USER).on(CARD_ORDER.USER_ID.eq(USER.USER_ID));
         buildOptions(select, param);
         return getPageResult(select, param, MemberCardVo.class);
@@ -54,8 +55,7 @@ public class MemberCardOrderService extends ShopBaseService {
     /**
      * 条件查询
      */
-    private void buildOptions(SelectOnConditionStep<Record16<Integer, String, Integer, Byte, Timestamp, BigDecimal,
-        String, BigDecimal, BigDecimal, Timestamp, String, String, String, Byte, BigDecimal, Byte>> select, MemberCardParam param) {
+    private void buildOptions(SelectOnConditionStep<Record16<Integer, String, Integer, Byte, Timestamp, BigDecimal, BigDecimal, BigDecimal, Timestamp, String, String, String, Byte, BigDecimal, Byte, String>> select, MemberCardParam param) {
         String orderSn = param.getOrderSn();
         String cardNo = param.getCardNo();
         Byte cardType = param.getCardType();
@@ -72,7 +72,7 @@ public class MemberCardOrderService extends ShopBaseService {
                 .or(USER.MOBILE.like(format("%s%%", userInfo)));
         }
         if (isNotEmpty(cardNo)) {
-            select.where(CARD_ORDER.CARD_NO.like(format("%s%%", cardNo)));
+            select.where(USER_CARD.CARD_NO.like(format("%s%%", cardNo)));
         }
         if (null != cardType) {
             select.where(MEMBER_CARD.CARD_TYPE.eq(cardType));
