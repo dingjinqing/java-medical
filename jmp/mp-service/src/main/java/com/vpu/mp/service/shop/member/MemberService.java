@@ -201,11 +201,13 @@ public class MemberService extends ShopBaseService {
 	 * @return
 	 */
 	public Map<Date,Integer> getMarketSourceUserAnalysis(MarketAnalysisParam param){
-		Map<Date,Integer> map =  db().select(date(USER.CREATE_TIME).as("date"),count().as("number")).from(USER).
-				where(USER.INVITE_ACT_ID.eq(param.getActId())).
-                and(USER.INVITE_SOURCE.eq(param.getInviteSource())).
-				and(USER.CREATE_TIME.between(param.getStartTime(),param.getEndTime())).
-				groupBy(date(USER.CREATE_TIME)).fetch().intoMap(date(USER.CREATE_TIME).as("date"),count().as("number"));
+		Map<Date,Integer> map;
+        SelectWhereStep<? extends Record> select = (SelectWhereStep<? extends Record>) db().select(date(USER.CREATE_TIME).as("date"),count().as("number")).from(USER).where(USER.INVITE_ACT_ID.eq(param.getActId()));
+		if(!StringUtils.isEmpty(param.getInviteSource())){
+            select.where(USER.INVITE_SOURCE.eq(param.getInviteSource()));
+        }
+        map = select.where(USER.CREATE_TIME.between(param.getStartTime(),param.getEndTime())).
+              groupBy(date(USER.CREATE_TIME)).fetch().intoMap(date(USER.CREATE_TIME).as("date"),count().as("number"));
 		return map;
 	}
 }
