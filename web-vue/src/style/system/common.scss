@@ -25,6 +25,10 @@
   float: right;
 }
 
+.fll {
+  float: left;
+}
+
 .clearfixed::after {
   content: '';
   display: block;
@@ -44,6 +48,14 @@
 
 .bg-white {
   background: #fff;
+}
+
+.mr-6 {
+  margin-right: 6px;
+}
+
+.mb-10 {
+  margin-bottom: 10px;
 }
 
 

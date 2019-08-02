@@ -1,5 +1,7 @@
 // cn.js
 import zhLocale from 'element-ui/lib/locale/lang/zh-CN'
+import {cn as programVersion} from './views/programVersion'
+
 const cn = {
   message: {
     'lang': '中文',
@@ -268,6 +270,7 @@ const cn = {
       { title: '自定义', colorLeft: 'background: #fff;', colorRight: 'background: #fff', id: 6, choiseId: '' }
     ]
   },
+  programVersion, // system 后台小程序版本
   ...zhLocale
 
 }

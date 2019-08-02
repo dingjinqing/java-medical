@@ -1,5 +1,7 @@
 // en.js
 import enLocale from 'element-ui/lib/locale/lang/en'
+import {en as programVersion} from './views/programVersion'
+
 const en = {
   message: {
     'lang': 'English',
@@ -269,6 +271,7 @@ const en = {
     ]
 
   },
+  programVersion, // system 后台小程序版本
   ...enLocale
 }
 

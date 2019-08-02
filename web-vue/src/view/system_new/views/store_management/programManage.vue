@@ -1,15 +1,17 @@
 <template>
   <el-tabs v-model="tabActive" type="border-card" class="tab" >
-    <el-tab-pane label="小程序模板版本管理" name="first">
+    <el-tab-pane :label="$t('programVersion.versionManage')" name="first">
       <versionManage />
     </el-tab-pane>
-    <el-tab-pane label="小程序版本操作日志" name="second">
+    <el-tab-pane :label="$t('programVersion.versionLog')" name="second">
       <versionLog />
     </el-tab-pane>
-    <el-tab-pane label="小程序授权列表" name="third">
+    <el-tab-pane :label="$t('programVersion.authList')" name="third">
       <authList />
     </el-tab-pane>
-    <el-tab-pane label="小程序版本统计" name="fourth">定时任务补偿</el-tab-pane>
+    <el-tab-pane :label="$t('programVersion.versionStatistics')" name="fourth">
+      <versionStatistics />
+    </el-tab-pane>
   </el-tabs>
 </template>
 
@@ -17,13 +19,15 @@
 import versionManage from './versionManage'
 import versionLog from './versionLog'
 import authList from './authList'
+import versionStatistics from './versionStatistics'
 
 export default {
   name: 'programManage',
   components: {
     versionManage,
     versionLog,
-    authList
+    authList,
+    versionStatistics
   },
   data () {
     return {
@@ -47,6 +51,7 @@ export default {
     padding: 0 10px 3px 10px!important;
     border-top: 2px solid transparent;
     font-weight: 400;
+    text-align: center;
   }
   /deep/ .el-tabs__content {
     padding: 10px 0 0 0;
