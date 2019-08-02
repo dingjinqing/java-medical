@@ -8,10 +8,14 @@ import java.sql.Timestamp;
 import java.util.Calendar;
 import java.util.Map;
 
+import com.vpu.mp.service.foundation.data.OrderConstant;
 import com.vpu.mp.service.pojo.shop.market.MarketAnalysisParam;
+import com.vpu.mp.service.pojo.shop.market.MarketOrderListParam;
 import com.vpu.mp.service.pojo.shop.market.MarketSourceUserListParam;
 import com.vpu.mp.service.pojo.shop.member.MemberInfoVo;
 import com.vpu.mp.service.pojo.shop.member.MemberPageListParam;
+import com.vpu.mp.service.pojo.shop.order.OrderListInfoVo;
+import com.vpu.mp.service.pojo.shop.order.OrderPageListQueryParam;
 import com.vpu.mp.service.shop.member.MemberService;
 import org.jooq.Record;
 import org.jooq.SelectWhereStep;
@@ -68,6 +72,18 @@ public class BargainService extends ShopBaseService  {
 	 * 活动类型 砍到区间内结算 
 	 */
 	public static final byte BARGAIN_TYPE_RANDOM = 1;
+
+    /**
+     * 取holdDate的一下天
+     * @param holdDate java.sql.Date类型
+     * @return java.sql.Date
+     */
+    private Date getNextDay(Date holdDate) {
+        Calendar calendar = Calendar.getInstance();
+        calendar.setTime(holdDate);
+        calendar.add(Calendar.DATE, 1);
+        return new Date(calendar.getTime().getTime());
+    }
 	
 	/**
 	 * 砍价活动列表分页查询
@@ -214,18 +230,6 @@ public class BargainService extends ShopBaseService  {
 		return bargainAnalysisDataVo;
 	}
 
-	/**
-	 * 取holdDate的一下天
-	 * @param holdDate java.sql.Date类型
-	 * @return java.sql.Date
-	 */
-	private Date getNextDay(Date holdDate) {
-		Calendar calendar = Calendar.getInstance();
-		calendar.setTime(holdDate);
-		calendar.add(Calendar.DATE, 1);
-		return new Date(calendar.getTime().getTime());
-	}
-
     /**
      * 活动新增用户
      *
@@ -240,5 +244,41 @@ public class BargainService extends ShopBaseService  {
         pageListParam.setInviteUserName(param.getInviteUserName());
 
         return saas().getShopApp(getShopId()).member.getSourceActList(pageListParam, MemberService.INVITE_SOURCE_BARGAIN, param.getActivityId());
+    }
+
+    /**
+     * 砍价订单
+     *
+     */
+    public PageResult<OrderListInfoVo> getBargainOrderList(MarketOrderListParam param) {
+        OrderPageListQueryParam orderParam =new OrderPageListQueryParam();
+        orderParam.setCurrentPage(param.getCurrentPage());
+        orderParam.setPageRows(param.getPageRows());
+        orderParam.setActivityId(param.getActivityId());
+        orderParam.setGoodsType(OrderConstant.GOODS_TYPE_BARGAIN);
+        orderParam.setGoodsName(param.getGoodsName());
+        orderParam.setOrderSn(param.getOrderSn());
+        orderParam.setOrderStatus(param.getOrderStatus());
+
+        orderParam.setMobile(param.getMobile());
+        orderParam.setConsignee(param.getConsignee());
+        orderParam.setCreateTimeStart(param.getCreateTimeStart());
+        orderParam.setCreateTimeEnd(param.getCreateTimeEnd());
+
+        orderParam.setCountryCode(param.getCountryCode());
+        orderParam.setProvinceCode(param.getProvinceCode());
+        orderParam.setCityCode(param.getCityCode());
+        orderParam.setDistrictCode(param.getDistrictCode());
+
+        PageResult<OrderListInfoVo> pageList = (PageResult<OrderListInfoVo>) saas().getShopApp(getShopId()).readOrder.getPageList(orderParam);
+
+        if(pageList.getDataList() != null){
+            pageList.getDataList().forEach(data->{
+                data.setChildOrders(null);
+                data.setGoods(null);
+            });
+        }
+
+        return pageList;
     }
 }

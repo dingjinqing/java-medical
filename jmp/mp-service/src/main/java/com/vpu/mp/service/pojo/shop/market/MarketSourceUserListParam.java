@@ -4,7 +4,8 @@ import com.vpu.mp.service.foundation.util.Page;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
-import lombok.NonNull;
+
+import javax.validation.constraints.NotNull;
 
 /**
  * @author 孔德成
@@ -25,7 +26,7 @@ public class MarketSourceUserListParam{
     /**
      * 营销活动主键
      */
-    @NonNull
+    @NotNull
     private Integer activityId;
 
     /**

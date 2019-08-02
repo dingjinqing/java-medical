@@ -3,6 +3,7 @@ package com.vpu.mp.controller.admin;
 import com.vpu.mp.service.foundation.data.JsonResult;
 import com.vpu.mp.service.foundation.util.PageResult;
 import com.vpu.mp.service.foundation.util.Util;
+import com.vpu.mp.service.pojo.shop.market.MarketOrderListParam;
 import com.vpu.mp.service.pojo.shop.market.MarketSourceUserListParam;
 import com.vpu.mp.service.pojo.shop.market.bargain.*;
 import com.vpu.mp.service.pojo.shop.market.bargain.analysis.BargainAnalysisParam;
@@ -168,5 +169,14 @@ public class AdminBargainController extends AdminBaseController {
     @PostMapping(value = "/api/admin/market/bargain/source")
     public JsonResult getBargainSourceUserList(@RequestBody @Validated MarketSourceUserListParam param) {
         return success(shop().bargain.getBargainSourceUserList(param));
+    }
+
+    /**
+     * 砍价订单列表
+     *
+     */
+    @PostMapping(value = "/api/admin/market/bargain/order")
+    public JsonResult getBargainOrderList(@RequestBody @Validated MarketOrderListParam param) {
+        return success(shop().bargain.getBargainOrderList(param));
     }
 }

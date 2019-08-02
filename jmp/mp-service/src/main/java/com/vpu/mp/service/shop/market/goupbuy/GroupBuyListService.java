@@ -4,10 +4,10 @@ import com.vpu.mp.service.foundation.data.DelFlag;
 import com.vpu.mp.service.foundation.data.OrderConstant;
 import com.vpu.mp.service.foundation.service.ShopBaseService;
 import com.vpu.mp.service.foundation.util.PageResult;
+import com.vpu.mp.service.pojo.shop.market.MarketOrderListParam;
 import com.vpu.mp.service.pojo.shop.market.MarketSourceUserListParam;
 import com.vpu.mp.service.pojo.shop.market.groupbuy.param.GroupBuyDetailParam;
 import com.vpu.mp.service.pojo.shop.market.groupbuy.param.GroupBuyListParam;
-import com.vpu.mp.service.pojo.shop.market.groupbuy.param.GroupBuyOrderListParam;
 import com.vpu.mp.service.pojo.shop.market.groupbuy.vo.GroupBuyDetailListVo;
 import com.vpu.mp.service.pojo.shop.market.groupbuy.vo.GroupBuyListVo;
 import com.vpu.mp.service.pojo.shop.member.MemberInfoVo;
@@ -113,10 +113,11 @@ public class GroupBuyListService  extends ShopBaseService {
      * @return
      */
     @SuppressWarnings("unchecked")
-	public PageResult<OrderListInfoVo> groupBuyOrderList(GroupBuyOrderListParam param ) {
+	public PageResult<OrderListInfoVo> groupBuyOrderList(MarketOrderListParam param ) {
         OrderPageListQueryParam orderParam =new OrderPageListQueryParam();
         orderParam.setCurrentPage(param.getCurrentPage());
         orderParam.setPageRows(param.getPageRows());
+        orderParam.setActivityId(param.getActivityId());
         orderParam.setGoodsType(OrderConstant.GOODS_TYPE_PIN_GROUP);
         orderParam.setGoodsName(param.getGoodsName());
         orderParam.setOrderSn(param.getOrderSn());
@@ -134,10 +135,12 @@ public class GroupBuyListService  extends ShopBaseService {
 
         PageResult<OrderListInfoVo> pageList = (PageResult<OrderListInfoVo>) orderReadService.getPageList(orderParam);
 
-        pageList.getDataList().forEach(data->{
-            data.setChildOrders(null);
-            data.setGoods(null);
-        });
+        if(pageList.getDataList() != null){
+            pageList.getDataList().forEach(data->{
+                data.setChildOrders(null);
+                data.setGoods(null);
+            });
+        }
 
         return pageList;
 
