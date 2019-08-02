@@ -12,7 +12,9 @@ import java.util.function.Consumer;
  * @Description:
  */
 public class Tuple2<E1,E2> implements Iterable<Object>, Serializable {
-    private E1 e1;
+	private static final long serialVersionUID = 4633679195259490261L;
+	
+	private E1 e1;
     private E2 e2;
 
     public E1 getE1() {

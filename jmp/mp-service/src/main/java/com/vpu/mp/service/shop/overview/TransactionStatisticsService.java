@@ -109,7 +109,7 @@ public class TransactionStatisticsService extends ShopBaseService {
      * 固定日期数据查询
      */
     private PageResult<LabelAnalysisVo> fixedLabelAnalysis(LabelAnalysisParam param){
-        SelectLimitStep limitStep = db().select(dt.TAG.as("tagName")
+        SelectConditionStep<Record7<String, Integer, Integer, BigDecimal, Integer, Integer, Integer>> limitStep = db().select(dt.TAG.as("tagName")
                 ,dt.PAY_USER_NUM.as("paidUserNum")
                 ,dt.PAY_ORDER_NUM.as("paidNum")
                 ,dt.PAY_ORDER_MONEY.as("paidMoney")
@@ -136,7 +136,7 @@ public class TransactionStatisticsService extends ShopBaseService {
             startTime = new Timestamp(param.getStartTime().getTime());
         }
         /** 先查用户数，放入分页集合中，然后循环设置其他数据 */
-        SelectLimitStep limitStep = db().select(min(ut.TAG_ID).as("tadId"),min(t.TAG_NAME).as("tagName"),count(ut.USER_ID).as("userNum"))
+        SelectHavingStep<Record3<Integer, String, Integer>> limitStep = db().select(min(ut.TAG_ID).as("tadId"),min(t.TAG_NAME).as("tagName"),count(ut.USER_ID).as("userNum"))
                 .from(ut).leftJoin(t).on(ut.TAG_ID.eq(t.TAG_ID))
                 .where(ut.CREATE_TIME.greaterOrEqual(startTime))
                 .and(ut.CREATE_TIME.lessThan(endTime))

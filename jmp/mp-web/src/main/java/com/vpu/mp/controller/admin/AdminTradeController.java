@@ -1,14 +1,5 @@
 package com.vpu.mp.controller.admin;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.vpu.mp.service.foundation.data.JsonResult;
-import com.vpu.mp.service.foundation.data.JsonResultMessage;
-import com.vpu.mp.service.pojo.shop.config.trade.*;
-import org.springframework.validation.annotation.Validated;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RestController;
-
 import java.beans.BeanInfo;
 import java.beans.IntrospectionException;
 import java.beans.Introspector;
@@ -16,6 +7,18 @@ import java.beans.PropertyDescriptor;
 import java.lang.reflect.InvocationTargetException;
 import java.util.Arrays;
 import java.util.List;
+import org.springframework.validation.annotation.Validated;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RestController;
+import com.vpu.mp.service.foundation.data.JsonResult;
+import com.vpu.mp.service.foundation.data.JsonResultMessage;
+import com.vpu.mp.service.pojo.shop.config.trade.OrderProcessParam;
+import com.vpu.mp.service.pojo.shop.config.trade.PaymentConfigParam;
+import com.vpu.mp.service.pojo.shop.config.trade.PaymentConfigVo;
+import com.vpu.mp.service.pojo.shop.config.trade.RetrunConfigParam;
+import com.vpu.mp.service.pojo.shop.config.trade.WxpayConfigParam;
+import com.vpu.mp.service.pojo.shop.config.trade.WxpaySearchParam;
 
 /**
  * @Author:liufei
@@ -50,7 +53,7 @@ public class AdminTradeController extends AdminBaseController {
     public void invoke(PropertyDescriptor descriptor,PaymentConfigParam paymentConfigParam){
         try{
             String paycode = descriptor.getName();
-            Object enabled = descriptor.getReadMethod().invoke(paymentConfigParam,null);
+            Object enabled = descriptor.getReadMethod().invoke(paymentConfigParam);
             if(enabled!=null){
                 shop().trade.updatePayment(paycode,(byte)enabled);
             }
@@ -134,7 +137,6 @@ public class AdminTradeController extends AdminBaseController {
      */
     @PostMapping("/api/admin/config/trade/getRetrunConfig")
     public JsonResult getRetrunConfig(){
-        ObjectMapper mapper = new ObjectMapper();
         RetrunConfigParam param = shop().config.returnConfigService.getRetrunConfigParam();
         return param != null ? success(param) : fail(JsonResultMessage.RETURN_CONFIG_IS_NULL);
     }

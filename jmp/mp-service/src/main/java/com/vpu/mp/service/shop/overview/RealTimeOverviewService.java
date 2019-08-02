@@ -75,15 +75,15 @@ public class RealTimeOverviewService extends ShopBaseService {
         /** pv  pay_order_num  第一行昨天，第二行今天，按时间排序
           * select sum(pv),SUM(pay_order_num) from b2c_trades GROUP BY ref_date HAVING ref_date = '2018-09-11' OR ref_date = '2018-09-12'
           */
-        List<Tuple2> tuple2s = db().select(DSL.sum(Trades.TRADES.PV),DSL.sum(Trades.TRADES.PAY_ORDER_NUM))
+        List<Record2<BigDecimal,BigDecimal>> record2 = db().select(DSL.sum(Trades.TRADES.PV),DSL.sum(Trades.TRADES.PAY_ORDER_NUM))
                 .from(Trades.TRADES)
                 .groupBy(Trades.TRADES.REF_DATE)
                 .having(Trades.TRADES.REF_DATE.eq(new java.sql.Date(Util.getEarlyDate(new Date(),0).getTime()))
                         .or(Trades.TRADES.REF_DATE.eq(new java.sql.Date(Util.getEarlyDate(new Date(),-1).getTime()))))
-                .fetchInto(Tuple2.class);
-        if(!Util.isEmpty(tuple2s)){
-            realTimeVo.setPageViews(new Tuple2<>(Long.valueOf(tuple2s.get(1).getE1().toString()),Long.valueOf(tuple2s.get(0).getE1().toString())));
-            realTimeVo.setPayOrderNum(new Tuple2<>(Integer.valueOf(tuple2s.get(1).getE2().toString()),Integer.valueOf(tuple2s.get(0).getE2().toString())));
+                .fetchInto(Record2.class);
+        if(!Util.isEmpty(record2)){
+            realTimeVo.setPageViews(new Tuple2<>(record2.get(1).value1().longValue(),record2.get(0).value1().longValue()));
+            realTimeVo.setPayOrderNum(new Tuple2<>(record2.get(1).value2().intValue(),record2.get(0).value2().intValue()));
         }
         return realTimeVo;
     }

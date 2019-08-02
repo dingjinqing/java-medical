@@ -3,11 +3,10 @@ package com.vpu.mp.controller.admin;
 import java.beans.IntrospectionException;
 import java.beans.PropertyDescriptor;
 import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 
 import javax.validation.Valid;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
@@ -27,8 +26,6 @@ import com.vpu.mp.service.pojo.shop.decoration.PageClassificationPojo;
  */
 @RestController
 public class AdminPageClassificationController extends AdminBaseController {
-    private Logger logger = LoggerFactory.getLogger(AdminPageClassificationController.class);
-
     /**
      * 添加页面分类
      * @param pageIn
@@ -88,7 +85,8 @@ public class AdminPageClassificationController extends AdminBaseController {
         for (PageClassificationPojo pojo : pageResult.dataList){
             try {
                 PropertyDescriptor descriptorId = new PropertyDescriptor("id",pojo.getClass());
-                int pageId = (int)descriptorId.getReadMethod().invoke(pojo,null);
+                Method method = descriptorId.getReadMethod();
+                int pageId = (int)method.invoke(pojo);
                 int subPageCount = shop().pageClassification.getPageCountByCategory(pageId);
                 PropertyDescriptor desSubPageCount = new PropertyDescriptor("subPageCount",pojo.getClass());
                 desSubPageCount.getWriteMethod().invoke(pojo,subPageCount);
