@@ -1,5 +1,7 @@
 package com.vpu.mp.service.shop.member;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 import com.vpu.mp.db.shop.tables.records.MemberCardRecord;
 import com.vpu.mp.service.foundation.data.JsonResultCode;
@@ -10,6 +12,7 @@ import com.vpu.mp.service.pojo.shop.member.card.CardParam;
 import com.vpu.mp.service.pojo.shop.member.card.GradeConditionJson;
 import com.vpu.mp.service.pojo.shop.member.card.PowerCardJson;
 import com.vpu.mp.service.pojo.shop.member.card.ScoreJson;
+import com.vpu.mp.service.pojo.shop.member.card.SearchCardParam;
 
 import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.*;
 /**
@@ -20,6 +23,8 @@ import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.*;
  */
 @Service
 public class MemberCardService extends ShopBaseService {
+	Logger logger = LoggerFactory.getLogger(this.getClass());
+	
 	public JsonResultCode addMemberCard(CardParam card) {
 		MemberCardRecord cardRecord = new MemberCardRecord();
 
@@ -307,4 +312,34 @@ public class MemberCardService extends ShopBaseService {
 	private int insertIntoMemberCard(MemberCardRecord cardRecord) {
 		return db().executeInsert(cardRecord);
 	}
+
+	/** 
+	 * 分页查询会员卡
+	 * @param param
+	 */
+	public void getCardList(SearchCardParam param) {
+		
+		String cardType = param.getCardType();
+		
+		/** 处理普通会员卡 */
+		if(NORMAL_TYPE.equals(cardType)) {
+			logger.info("正在分页查询普通会员卡");
+			getNormalCardList(param);
+		}
+		
+	}
+
+	/**
+	 * 分页查询普通会员卡
+	 * @param param
+	 */
+	private void getNormalCardList(SearchCardParam param) {
+		// TODO Auto-generated method stub
+		
+	}
+	
+	
+	
+	
+	
 }
