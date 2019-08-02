@@ -8,6 +8,8 @@ import java.sql.Timestamp;
 import java.util.Calendar;
 import java.util.Map;
 
+import com.vpu.mp.service.pojo.shop.market.MarketAnalysisParam;
+import com.vpu.mp.service.shop.member.MemberService;
 import org.jooq.Record;
 import org.jooq.SelectWhereStep;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -150,8 +152,14 @@ public class BargainService extends ShopBaseService  {
 	public BargainAnalysisDataVo getBargainAnalysisData(BargainAnalysisParam param){
 		Map<Date,Integer> recordMap = saas().getShopApp(getShopId()).bargain.bargainRecord.getRecordAnalysis(param);
 		Map<Date,Integer> userMap = saas().getShopApp(getShopId()).bargain.bargainRecord.getBargainUserAnalysis(param);
-		Map<Date,Integer> orderMap = saas().getShopApp(getShopId()).readOrder.getBargainOrderAnalysis(param);
-		Map<Date,Integer> sourceMap = saas().getShopApp(getShopId()).member.getBargainUserAnalysis(param);
+
+        MarketAnalysisParam marketParam = new MarketAnalysisParam();
+        marketParam.setActId(param.getBargainId());
+        marketParam.setInviteSource(MemberService.INVITE_SOURCE_BARGAIN);
+        marketParam.setStartTime(param.getStartTime());
+        marketParam.setEndTime(param.getEndTime());
+        Map<Date,Integer> orderMap = saas().getShopApp(getShopId()).readOrder.getMarketOrderAnalysis(marketParam);
+		Map<Date,Integer> sourceMap = saas().getShopApp(getShopId()).member.getMarketSourceUserAnalysis(marketParam);
 
 		Date temDate = new Date(param.getStartTime().getTime());
 		Date endTime = new Date(param.getEndTime().getTime());

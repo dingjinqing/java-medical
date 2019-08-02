@@ -159,7 +159,7 @@ public class GroupBuyListService  extends ShopBaseService {
         pageListParam.setUsername(param.getUserName());
         pageListParam.setInviteUserName(param.getInviteUserName());
 
-        return memberService.getSourceActList(pageListParam, GROUP_BUY, param.getActivityId());
+        return memberService.getSourceActList(pageListParam, MemberService.INVITE_SOURCE_GROUPBUY, param.getActivityId());
     }
 
 

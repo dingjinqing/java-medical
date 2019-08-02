@@ -1,11 +1,16 @@
 package com.vpu.mp.service.shop.member;
 
-import static com.vpu.mp.db.shop.Tables.ORDER_VERIFIER;
-import static com.vpu.mp.db.shop.Tables.USER;
-import static org.jooq.impl.DSL.count;
-import static org.jooq.impl.DSL.date;
-
-import com.vpu.mp.service.pojo.shop.market.bargain.analysis.BargainAnalysisParam;
+import com.vpu.mp.db.shop.tables.User;
+import com.vpu.mp.db.shop.tables.records.UserRecord;
+import com.vpu.mp.service.foundation.data.DelFlag;
+import com.vpu.mp.service.foundation.service.ShopBaseService;
+import com.vpu.mp.service.foundation.util.PageResult;
+import com.vpu.mp.service.foundation.util.Util;
+import com.vpu.mp.service.pojo.shop.market.MarketAnalysisParam;
+import com.vpu.mp.service.pojo.shop.member.CommonMemberPageListQueryParam;
+import com.vpu.mp.service.pojo.shop.member.CommonMemberPageListQueryVo;
+import com.vpu.mp.service.pojo.shop.member.MemberInfoVo;
+import com.vpu.mp.service.pojo.shop.member.MemberPageListParam;
 import org.jooq.Field;
 import org.jooq.Record;
 import org.jooq.SelectJoinStep;
@@ -14,19 +19,13 @@ import org.jooq.tools.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.vpu.mp.db.shop.tables.User;
-import com.vpu.mp.db.shop.tables.records.UserRecord;
-import com.vpu.mp.service.foundation.data.DelFlag;
-import com.vpu.mp.service.foundation.service.ShopBaseService;
-import com.vpu.mp.service.foundation.util.PageResult;
-import com.vpu.mp.service.foundation.util.Util;
-import com.vpu.mp.service.pojo.shop.member.CommonMemberPageListQueryParam;
-import com.vpu.mp.service.pojo.shop.member.CommonMemberPageListQueryVo;
-import com.vpu.mp.service.pojo.shop.member.MemberInfoVo;
-import com.vpu.mp.service.pojo.shop.member.MemberPageListParam;
-
 import java.sql.Date;
 import java.util.Map;
+
+import static com.vpu.mp.db.shop.Tables.ORDER_VERIFIER;
+import static com.vpu.mp.db.shop.Tables.USER;
+import static org.jooq.impl.DSL.count;
+import static org.jooq.impl.DSL.date;
 
 /**
  * 
@@ -197,13 +196,14 @@ public class MemberService extends ShopBaseService {
 	}
 
 	/**
-	 * 砍价拉新用户数据分析
+	 * 分裂营销活动拉新用户数据分析
 	 * @param param
 	 * @return
 	 */
-	public Map<Date,Integer> getBargainUserAnalysis(BargainAnalysisParam param){
+	public Map<Date,Integer> getMarketSourceUserAnalysis(MarketAnalysisParam param){
 		Map<Date,Integer> map =  db().select(date(USER.CREATE_TIME).as("date"),count().as("number")).from(USER).
-				where(USER.INVITE_ACT_ID.eq(param.getBargainId())).
+				where(USER.INVITE_ACT_ID.eq(param.getActId())).
+                and(USER.INVITE_SOURCE.eq(param.getInviteSource())).
 				and(USER.CREATE_TIME.between(param.getStartTime(),param.getEndTime())).
 				groupBy(date(USER.CREATE_TIME)).fetch().intoMap(date(USER.CREATE_TIME).as("date"),count().as("number"));
 		return map;

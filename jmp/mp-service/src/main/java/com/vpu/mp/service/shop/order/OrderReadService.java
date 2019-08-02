@@ -23,7 +23,7 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 import com.vpu.mp.service.foundation.database.DslPlus;
-import com.vpu.mp.service.pojo.shop.market.bargain.analysis.BargainAnalysisParam;
+import com.vpu.mp.service.pojo.shop.market.MarketAnalysisParam;
 import com.vpu.mp.service.pojo.shop.market.groupbuy.param.GroupBuyAnalysisParam;
 import org.jooq.*;
 import org.jooq.impl.DSL;
@@ -557,13 +557,13 @@ public class OrderReadService extends ShopBaseService {
 		}
 
 	/**
-	 * 砍价活动数据分析的订单部分数据
+	 * 分裂营销活动的活动数据分析的订单部分数据
 	 * @param param
 	 * @return
 	 */
-	 public Map<Date,Integer> getBargainOrderAnalysis(BargainAnalysisParam param){
+	 public Map<Date,Integer> getMarketOrderAnalysis(MarketAnalysisParam param){
 		 Map<Date,Integer> map =  db().select(date(ORDER_INFO.CREATE_TIME).as("date"),count().as("number")).from(ORDER_INFO).
-				 where(ORDER_INFO.PIN_GROUP_ID.eq(param.getBargainId())).
+				 where(ORDER_INFO.PIN_GROUP_ID.eq(param.getActId())).
 				 and(ORDER_INFO.CREATE_TIME.between(param.getStartTime(),param.getEndTime())).
 				 and(ORDER_INFO.ORDER_STATUS.gt(OrderConstant.ORDER_CLOSED)).
 				 and(sql("FIND_IN_SET("+OrderConstant.GOODS_TYPE_BARGAIN+", "+ORDER_INFO.getName() +"."+ ORDER_INFO.GOODS_TYPE.getName()+")")).
