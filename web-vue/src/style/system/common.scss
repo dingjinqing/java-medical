@@ -1,0 +1,50 @@
+.ml-10 {
+  margin-left: 10px;
+}
+
+.mt-10 {
+  margin-top: 10px;
+}
+
+.table-th {
+  th {
+    padding: 2px 0;
+    font-weight: 400;
+    font-size: 13px;
+    color: #333;
+    background: #eaedf4;
+  }
+}
+
+.pagination-wrap {
+  background: #fff;
+  padding: 10px;
+}
+
+.flr {
+  float: right;
+}
+
+.clearfixed::after {
+  content: '';
+  display: block;
+  clear: both;
+  width: 0;
+  height: 0;
+  visibility: hidden;
+}
+
+.ml-6 {
+  margin-left: 6px;
+}
+
+.pd-10 {
+  padding: 10px;
+}
+
+.bg-white {
+  background: #fff;
+}
+
+
+

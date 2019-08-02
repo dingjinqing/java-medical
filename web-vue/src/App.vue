@@ -12,8 +12,8 @@ export default {
   name: 'App'
 }
 </script>
-
-<style scoped>
+<style lang="scss" src="./style/system/common.scss"></style> <!--引入common全局样式-->
+<style scoped lang="scss">
 #app {
   /* height: 100%;
   position: absolute; */

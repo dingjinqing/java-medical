@@ -362,6 +362,8 @@ label {
 }
 .header_nav > div > img {
   position: absolute;
+  left: 50%;
+  transform: translateX(-50%); // 修复原代码图片不居中问题
   width: 26px;
   height: 24px;
 }
@@ -373,7 +375,12 @@ label {
   padding: 8px 0;
 }
 .wrapper {
+  position: relative;
   border-left: 1px solid #749dc9;
+  text-align: center;
+}
+.wrapper img {
+  margin: 0 auto;
 }
 .wrapper:nth-last-child(1) {
   border-right: 1px solid #749dc9;
