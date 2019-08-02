@@ -52,17 +52,15 @@ public class AccountService extends ShopBaseService {
 		if (StringUtils.isEmpty(param.getRemark())) {
 			param.setRemark("管理员操作");
 		}
-		//TODO 加事务
-		try {
+		//加事务
+		this.transaction(() ->{
 			// 插入要更新的数据
 			addRow(param, adminUser);
 			// 更新用户余额
 			updateUserAccount(param, user);
 
 			addTradeRecord(param, tradeType, tradeFlow);
-		} catch (Exception e) {
-			return -1;
-		}
+		});
 
 		return 1;
 	}
