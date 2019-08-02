@@ -543,3 +543,13 @@ create table `b2c_coupon_pack_voucher` (
   index `voucher_id` (`voucher_id`),
   index `act_id` (`act_id`)
 ) ENGINE = INNODB AUTO_INCREMENT = 39 DEFAULT CHARSET = utf8mb4 COLLATE = utf8mb4_unicode_ci;
+
+-- 修改虚拟订单表，整合不同商品id字段
+alter table b2c_card_order drop column card_id;
+
+alter table b2c_card_order drop column card_no;
+
+alter table b2c_card_order drop column voucher_id;
+
+alter table b2c_card_order
+    add virtual_goods_id int not null comment '虚拟商品id';
