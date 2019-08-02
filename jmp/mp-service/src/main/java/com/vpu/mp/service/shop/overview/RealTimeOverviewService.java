@@ -80,7 +80,7 @@ public class RealTimeOverviewService extends ShopBaseService {
                 .groupBy(Trades.TRADES.REF_DATE)
                 .having(Trades.TRADES.REF_DATE.eq(new java.sql.Date(Util.getEarlyDate(new Date(),0).getTime()))
                         .or(Trades.TRADES.REF_DATE.eq(new java.sql.Date(Util.getEarlyDate(new Date(),-1).getTime()))))
-                .fetchInto(Record2.class);
+                .fetch();
         if(!Util.isEmpty(record2)){
             realTimeVo.setPageViews(new Tuple2<>(record2.get(1).value1().longValue(),record2.get(0).value1().longValue()));
             realTimeVo.setPayOrderNum(new Tuple2<>(record2.get(1).value2().intValue(),record2.get(0).value2().intValue()));
