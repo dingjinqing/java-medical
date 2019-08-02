@@ -12,6 +12,6 @@ import lombok.Data;
  */
 @Data
 public class BaseMemberPojo {
-	public int pageRows  = Page.DEFAULT_PAGE_ROWS;
-	public int currentPage =  Page.DEFAULT_CURRENT_PAGE;
+	public Integer pageRows  = Page.DEFAULT_PAGE_ROWS;
+	public Integer currentPage =  Page.DEFAULT_CURRENT_PAGE;
 }
