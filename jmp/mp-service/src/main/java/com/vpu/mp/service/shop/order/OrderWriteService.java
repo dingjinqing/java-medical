@@ -22,9 +22,9 @@ import com.vpu.mp.db.shop.tables.records.OrderActionRecord;
 import com.vpu.mp.db.shop.tables.records.OrderGoodsRecord;
 import com.vpu.mp.db.shop.tables.records.OrderInfoRecord;
 import com.vpu.mp.service.foundation.data.JsonResultCode;
-import com.vpu.mp.service.foundation.data.OrderConstant;
 import com.vpu.mp.service.foundation.service.ShopBaseService;
 import com.vpu.mp.service.pojo.shop.operation.RecordContentTemplate;
+import com.vpu.mp.service.pojo.shop.order.OrderConstant;
 import com.vpu.mp.service.pojo.shop.order.goods.OrderGoodsVo;
 import com.vpu.mp.service.pojo.shop.order.write.remark.SellerRemarkParam;
 import com.vpu.mp.service.pojo.shop.order.write.remark.SellerRemarkVo;
@@ -33,7 +33,7 @@ import com.vpu.mp.service.pojo.shop.order.write.ship.ShipParam.ShipGoods;
 import com.vpu.mp.service.pojo.shop.order.write.star.StarParam;
 
 /**
- * 订单写操作
+ * 订单普通写操作
  * 
  * @author 王帅 2019/7/22
  * @param <E>

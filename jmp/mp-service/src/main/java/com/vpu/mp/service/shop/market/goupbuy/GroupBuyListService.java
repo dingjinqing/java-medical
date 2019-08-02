@@ -1,7 +1,6 @@
 package com.vpu.mp.service.shop.market.goupbuy;
 
 import com.vpu.mp.service.foundation.data.DelFlag;
-import com.vpu.mp.service.foundation.data.OrderConstant;
 import com.vpu.mp.service.foundation.service.ShopBaseService;
 import com.vpu.mp.service.foundation.util.PageResult;
 import com.vpu.mp.service.pojo.shop.market.MarketOrderListParam;
@@ -12,6 +11,7 @@ import com.vpu.mp.service.pojo.shop.market.groupbuy.vo.GroupBuyDetailListVo;
 import com.vpu.mp.service.pojo.shop.market.groupbuy.vo.GroupBuyListVo;
 import com.vpu.mp.service.pojo.shop.member.MemberInfoVo;
 import com.vpu.mp.service.pojo.shop.member.MemberPageListParam;
+import com.vpu.mp.service.pojo.shop.order.OrderConstant;
 import com.vpu.mp.service.pojo.shop.order.OrderListInfoVo;
 import com.vpu.mp.service.pojo.shop.order.OrderPageListQueryParam;
 import com.vpu.mp.service.shop.member.MemberService;

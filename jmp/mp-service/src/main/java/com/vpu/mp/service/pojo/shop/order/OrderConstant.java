@@ -1,4 +1,4 @@
-package com.vpu.mp.service.foundation.data;
+package com.vpu.mp.service.pojo.shop.order;
 
 /**
  * 订单状态order_status;订单类型goods_type常量类

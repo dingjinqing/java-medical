@@ -199,6 +199,7 @@ public class JsonResultMessage {
 	 * 订单
 	 */
 	final public static String MSG_ORDER = "order";
+	final public static String MSG_ORDER_OPERATE_NO_INSTANCEOF = "order_operate_no_instanceof";
 	final public static String MSG_ORDER_REMARK_ORDERSN_NOT_NULL = "order_remark_ordersn_not_null";
 	final public static String MSG_ORDER_REMARK_NOT_NULL = "order_remark_not_null";
 	final public static String MSG_ORDER_REMARK_TYPE_NOT_NULL = "order_remark_type_not_null";
