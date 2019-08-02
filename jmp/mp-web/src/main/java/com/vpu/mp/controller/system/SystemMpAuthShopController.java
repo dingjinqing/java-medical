@@ -2,10 +2,13 @@ package com.vpu.mp.controller.system;
 
 import java.io.IOException;
 
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.vpu.mp.db.main.tables.records.MpAuthShopRecord;
 import com.vpu.mp.service.foundation.data.JsonResult;
 import com.vpu.mp.service.foundation.data.JsonResultCode;
 import com.vpu.mp.service.foundation.util.PageResult;
@@ -108,6 +111,30 @@ public class SystemMpAuthShopController extends SystemBaseController {
 		}
 		MpAuthShopVo vo = mp.getAuthShopByAppId(param.getAppId()).into(MpAuthShopVo.class);
 		return result.isSuccess() ? success(vo) : fail(result.getErrmsg());
+	}
+	
+	/**
+	 * 得到小程序信息
+	 * 
+	 * @param param
+	 * @return
+	 */
+	@GetMapping("/api/system/mp/get/{appId}")
+	public JsonResult list(@PathVariable String appId) {
+		MpAuthShopRecord record = saas.shop.mp.getAuthShopByAppId(appId);
+		if(record ==null) {
+			return fail(JsonResultCode.CODE_PARAM_ERROR);
+		}
+		return  success(record.into(MpAuthShopVo.class));
+	} 
+	
+	/**
+	 * 批量提交审核
+	 * @return
+	 */
+	@PostMapping("/api/system/mp/publish/batch")
+	public JsonResult batchPublish() {
+		return success();
 	}
 
 }

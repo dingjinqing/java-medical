@@ -32,10 +32,10 @@ abstract public class AbstractCommonBaseService {
 
 	@Autowired
 	protected DatabaseManager databaseManager;
-	
+
 	@Autowired
 	protected OpenPlatform open;
-	
+
 	@Autowired
 	protected SaasApplication saas;
 
@@ -49,7 +49,6 @@ abstract public class AbstractCommonBaseService {
 	 */
 	private static ThreadLocal<Configuration> mainDbConfiguration = new ThreadLocal<Configuration>();
 
-
 	/**
 	 * 当前店铺DB连接
 	 * 
@@ -60,23 +59,22 @@ abstract public class AbstractCommonBaseService {
 		if (config != null) {
 			return (DefaultDSLContext) DSL.using(shopDbConfiguration.get());
 		}
-		return (DefaultDSLContext) databaseManager.currentShopDb();
+		return databaseManager.currentShopDb();
 	}
 
 	/**
 	 * 当前DB，需继承实现
+	 * 
 	 * @return
 	 */
-	abstract protected   DefaultDSLContext db();
-	
+	protected abstract DefaultDSLContext db();
+
 	/**
 	 * 当前DB事务处理
 	 * 
 	 * @param transactional
 	 */
-	abstract protected void transaction(final ContextTransactionalRunnable transactional);
-
-	
+	protected abstract void transaction(final ContextTransactionalRunnable transactional);
 
 	/**
 	 * 当前店铺Id
@@ -84,7 +82,11 @@ abstract public class AbstractCommonBaseService {
 	 * @return
 	 */
 	public DefaultDSLContext mainDb() {
-		return (DefaultDSLContext) databaseManager.mainDb();
+		Configuration config = mainDbConfiguration.get();
+		if (config != null) {
+			return (DefaultDSLContext) DSL.using(mainDbConfiguration.get());
+		}
+		return databaseManager.mainDb();
 	}
 
 	/**
@@ -155,7 +157,7 @@ abstract public class AbstractCommonBaseService {
 	public void assign(Object from, Record to) {
 		FieldsUtil.assignNotNull(from, to);
 	}
-	
+
 	/**
 	 * 复制from到jooq的记录对象中，不含值为null的字段
 	 * 
@@ -163,8 +165,8 @@ abstract public class AbstractCommonBaseService {
 	 * @param to
 	 * @param onlyFields
 	 */
-	public void assign(Object from, Record to,String[] onlyFields) {
-		FieldsUtil.assignNotNull(from, to,Arrays.asList(onlyFields));
+	public void assign(Object from, Record to, String[] onlyFields) {
+		FieldsUtil.assignNotNull(from, to, Arrays.asList(onlyFields));
 	}
 
 	public String likeValue(String val) {
@@ -190,14 +192,15 @@ abstract public class AbstractCommonBaseService {
 		}
 		return DelFlag.DEL_ITEM_PREFIX + recordId + DelFlag.DEL_ITEM_SPLITER;
 	}
-	
+
 	protected Logger logger() {
 		return LoggerFactory.getLogger(getClass());
 	}
-	
+
 	protected OpenPlatform open() {
 		return open;
 	}
+
 	protected SaasApplication saas() {
 		return saas;
 	}
