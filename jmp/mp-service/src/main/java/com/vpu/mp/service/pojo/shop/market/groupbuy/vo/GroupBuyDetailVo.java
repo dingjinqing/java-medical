@@ -1,4 +1,4 @@
-package com.vpu.mp.service.pojo.shop.market.groupbuy;
+package com.vpu.mp.service.pojo.shop.market.groupbuy.vo;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Data;

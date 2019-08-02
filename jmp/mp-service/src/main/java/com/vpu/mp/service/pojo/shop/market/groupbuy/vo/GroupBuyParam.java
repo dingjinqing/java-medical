@@ -1,6 +1,8 @@
-package com.vpu.mp.service.pojo.shop.market.groupbuy;
+package com.vpu.mp.service.pojo.shop.market.groupbuy.vo;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.vpu.mp.service.pojo.shop.market.groupbuy.param.GroupBuyProductParam;
+import com.vpu.mp.service.pojo.shop.market.groupbuy.param.GroupBuyShareConfigParam;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 

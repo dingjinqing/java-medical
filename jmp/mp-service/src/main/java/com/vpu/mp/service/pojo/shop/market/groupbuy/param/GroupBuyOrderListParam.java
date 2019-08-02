@@ -1,4 +1,4 @@
-package com.vpu.mp.service.pojo.shop.market.groupbuy;
+package com.vpu.mp.service.pojo.shop.market.groupbuy.param;
 
 import java.sql.Timestamp;
 
@@ -11,10 +11,8 @@ import lombok.Data;
  * @date 2019/7/23 15:38
  */
 @Data
-public class GroupBuyOrderListParam   {
+public class GroupBuyOrderListParam   extends  BasePageGroupBuyParam{
 
-
-    private Page page;
 
     public String goodsName;
     public String orderSn;

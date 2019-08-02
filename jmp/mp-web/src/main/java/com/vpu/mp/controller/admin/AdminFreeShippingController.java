@@ -1,21 +1,20 @@
 package com.vpu.mp.controller.admin;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
-import com.vpu.mp.db.shop.tables.records.FreeShippingRecord;
-import com.vpu.mp.db.shop.tables.records.FreeShippingRuleRecord;
-import com.vpu.mp.service.foundation.data.JsonResult;
-import com.vpu.mp.service.foundation.util.PageResult;
-import com.vpu.mp.service.pojo.shop.market.freeshipping.*;
-import org.jooq.Record;
 import org.jooq.Result;
-import org.jooq.SelectConditionStep;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.nio.channels.FileChannel;
-import java.util.List;
+import com.vpu.mp.db.shop.tables.records.FreeShippingRecord;
+import com.vpu.mp.db.shop.tables.records.FreeShippingRuleRecord;
+import com.vpu.mp.service.foundation.data.JsonResult;
+import com.vpu.mp.service.foundation.util.PageResult;
+import com.vpu.mp.service.pojo.shop.market.freeshipping.FreeShipQueryParam;
+import com.vpu.mp.service.pojo.shop.market.freeshipping.FreeShippingChangeParam;
+import com.vpu.mp.service.pojo.shop.market.freeshipping.FreeShippingParam;
+import com.vpu.mp.service.pojo.shop.market.freeshipping.FreeShippingRuleVo;
+import com.vpu.mp.service.pojo.shop.market.freeshipping.FreeShippingVo;
 
 /**
  * 满包邮活动

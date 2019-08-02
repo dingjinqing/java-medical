@@ -30,6 +30,7 @@ public class ImageCategoryService extends ShopBaseService {
 
     private static final String ROOT_NAME = "我的图片";
 
+    // TODO: 2019/8/1  find_in_set()
     /**
      * 添加分类
      *

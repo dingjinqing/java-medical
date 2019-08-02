@@ -1,4 +1,4 @@
-package com.vpu.mp.service.pojo.shop.market.groupbuy;
+package com.vpu.mp.service.pojo.shop.market.groupbuy.param;
 
 
 import com.vpu.mp.service.foundation.util.Page;
@@ -11,17 +11,12 @@ import lombok.NoArgsConstructor;
  */
 @Data
 @NoArgsConstructor
-public class GroupBuyListParam {
+public class GroupBuyListParam  extends BasePageGroupBuyParam{
 
     /**
      *  1全部拼团活动 2 进行中 3 未开始 4 已过期 5 已停用
      */
     private Integer type;
 
-    /**
-     * 	分页信息
-     */
-    private int currentPage = Page.DEFAULT_CURRENT_PAGE;
-    private int pageRows = Page.DEFAULT_PAGE_ROWS;
 
 }

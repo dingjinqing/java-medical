@@ -1,4 +1,4 @@
-package com.vpu.mp.service.pojo.shop.market.groupbuy;
+package com.vpu.mp.service.pojo.shop.market.groupbuy.param;
 
 import com.vpu.mp.service.foundation.util.Page;
 import lombok.Data;
@@ -11,10 +11,9 @@ import lombok.NonNull;
  */
 @Data
 @NoArgsConstructor
-public class GroupBuyMenberParam {
+public class GroupBuyMenberParam extends BasePageGroupBuyParam{
 
 
-    private Page page;
 
     private String mobile;
     private String userName;

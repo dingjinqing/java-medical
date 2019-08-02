@@ -115,7 +115,8 @@ public class GroupBuyListService  extends ShopBaseService {
     @SuppressWarnings("unchecked")
 	public PageResult<OrderListInfoVo> groupBuyOrderList(GroupBuyOrderListParam param ) {
         OrderPageListQueryParam orderParam =new OrderPageListQueryParam();
-        //TODO
+        orderParam.setCurrentPage(param.getCurrentPage());
+        orderParam.setPageRows(param.getPageRows());
         orderParam.setGoodsType(OrderConstant.GOODS_TYPE_PIN_GROUP);
         orderParam.setGoodsName(param.getGoodsName());
         orderParam.setOrderSn(param.getOrderSn());
@@ -150,6 +151,8 @@ public class GroupBuyListService  extends ShopBaseService {
      */
     public PageResult<MemberInfoVo> groupBuyNewUaerList(GroupBuyMenberParam param) {
         MemberPageListParam pageListParam = new MemberPageListParam();
+        pageListParam.setCurrentPage(pageListParam.getCurrentPage());
+        pageListParam.setPageRows(pageListParam.getPageRows());
         pageListParam.setPageRows(1);
         pageListParam.setCurrentPage(2);
         pageListParam.setMobile(param.getMobile());
@@ -176,7 +179,7 @@ public class GroupBuyListService  extends ShopBaseService {
 
         select.orderBy(GROUP_BUY_LIST.GOODS_ID.desc(), GROUP_BUY_LIST.IS_GROUPER.desc(), GROUP_BUY_LIST.ID.desc());
 
-        return getPageResult(select, param.getPage().getCurrentPage(), param.getPage().getPageRows(), GroupBuyDetailListVo.class);
+        return getPageResult(select, param.getCurrentPage(), param.getPageRows(), GroupBuyDetailListVo.class);
     }
 
     private void builderQuery(SelectConditionStep<Record> select, GroupBuyDetailParam param) {

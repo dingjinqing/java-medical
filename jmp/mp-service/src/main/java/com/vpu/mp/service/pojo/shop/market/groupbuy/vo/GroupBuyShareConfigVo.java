@@ -1,19 +1,17 @@
-package com.vpu.mp.service.pojo.shop.market.groupbuy;
+package com.vpu.mp.service.pojo.shop.market.groupbuy.vo;
 
 import lombok.Data;
 
 /**
  * @author 孔德成
- * @date 2019/7/19 15:52
+ * @date 2019/7/19 17:50
  */
+
 @Data
-public class GroupBuyShareConfigParam {
-
-
+public class GroupBuyShareConfigVo {
     private Integer shareAction;
     private String shareDoc;
     private Integer shareImgAction;
     private String shareImg;
-
 
 }

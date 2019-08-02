@@ -1,4 +1,4 @@
-package com.vpu.mp.service.pojo.shop.market.groupbuy;
+package com.vpu.mp.service.pojo.shop.market.groupbuy.vo;
 
 import lombok.Data;
 import lombok.NoArgsConstructor;

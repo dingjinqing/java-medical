@@ -1,4 +1,4 @@
-package com.vpu.mp.service.pojo.shop.market.groupbuy;
+package com.vpu.mp.service.pojo.shop.market.groupbuy.param;
 
 import com.vpu.mp.service.foundation.util.Page;
 import lombok.Data;
@@ -8,11 +8,10 @@ import lombok.Data;
  * @date 2019/7/23 13:40
  */
 @Data
-public class GroupBuyDetailParam {
+public class GroupBuyDetailParam  extends  BasePageGroupBuyParam{
 
     private Integer activityId;
 
-    private Page page;
 
     private String mobile;
 

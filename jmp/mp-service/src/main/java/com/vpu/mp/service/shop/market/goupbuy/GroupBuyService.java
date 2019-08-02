@@ -6,6 +6,9 @@ import static com.vpu.mp.db.shop.Tables.GROUP_BUY_PRODUCT_DEFINE;
 
 import java.util.List;
 
+import com.vpu.mp.service.pojo.shop.market.groupbuy.param.*;
+import com.vpu.mp.service.pojo.shop.market.groupbuy.vo.*;
+import com.vpu.mp.service.shop.order.OrderReadService;
 import org.jooq.DSLContext;
 import org.jooq.Record;
 import org.jooq.impl.DSL;
@@ -18,19 +21,6 @@ import com.vpu.mp.service.foundation.data.DelFlag;
 import com.vpu.mp.service.foundation.service.ShopBaseService;
 import com.vpu.mp.service.foundation.util.PageResult;
 import com.vpu.mp.service.foundation.util.Util;
-import com.vpu.mp.service.pojo.shop.market.groupbuy.GroupBuyDetailListVo;
-import com.vpu.mp.service.pojo.shop.market.groupbuy.GroupBuyDetailParam;
-import com.vpu.mp.service.pojo.shop.market.groupbuy.GroupBuyDetailVo;
-import com.vpu.mp.service.pojo.shop.market.groupbuy.GroupBuyEditParam;
-import com.vpu.mp.service.pojo.shop.market.groupbuy.GroupBuyIdParam;
-import com.vpu.mp.service.pojo.shop.market.groupbuy.GroupBuyListParam;
-import com.vpu.mp.service.pojo.shop.market.groupbuy.GroupBuyMenberParam;
-import com.vpu.mp.service.pojo.shop.market.groupbuy.GroupBuyOrderListParam;
-import com.vpu.mp.service.pojo.shop.market.groupbuy.GroupBuyParam;
-import com.vpu.mp.service.pojo.shop.market.groupbuy.GroupBuyProductParam;
-import com.vpu.mp.service.pojo.shop.market.groupbuy.GroupBuyProductVo;
-import com.vpu.mp.service.pojo.shop.market.groupbuy.GroupBuyShareConfigParam;
-import com.vpu.mp.service.pojo.shop.market.groupbuy.GroupBuyShareConfigVo;
 import com.vpu.mp.service.pojo.shop.member.MemberInfoVo;
 import com.vpu.mp.service.pojo.shop.order.OrderListInfoVo;
 
@@ -48,7 +38,8 @@ public class GroupBuyService extends ShopBaseService {
 
     @Autowired
     private GroupBuyListService groupBuyListService;
-
+    @Autowired
+    private OrderReadService orderReadService;
 
     /**
      * 添加拼团活动
@@ -206,7 +197,7 @@ public class GroupBuyService extends ShopBaseService {
     }
 
     /**
-     * "查询团购列表
+     * 查询团购列表
      * @param param
      * @return
      */
@@ -214,4 +205,15 @@ public class GroupBuyService extends ShopBaseService {
         return groupBuyListService.getListGroupBuy(param);
     }
 
+    /**
+     * 拼团活动效果数据
+     *
+     * @param param
+     */
+    public void groupBuyAnalysis(GroupBuyAnalysisParam param) {
+        GroupBuyDefineRecord record =db().selectFrom(GROUP_BUY_DEFINE).where(GROUP_BUY_DEFINE.ID.eq(param.getId())).fetchOne();
+        Record discountMoney = orderReadService.getActiveDiscountMoney(1, param.getId(), param);
+        orderReadService.getActiveOrderList();
+
+    }
 }

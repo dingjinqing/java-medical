@@ -22,11 +22,10 @@ import java.util.Map.Entry;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+import com.vpu.mp.service.foundation.database.DslPlus;
 import com.vpu.mp.service.pojo.shop.market.bargain.analysis.BargainAnalysisParam;
-import org.jooq.Record;
-import org.jooq.Record2;
-import org.jooq.SelectJoinStep;
-import org.jooq.SelectWhereStep;
+import com.vpu.mp.service.pojo.shop.market.groupbuy.param.GroupBuyAnalysisParam;
+import org.jooq.*;
 import org.jooq.impl.DSL;
 import org.jooq.tools.StringUtils;
 import org.slf4j.Logger;
@@ -571,4 +570,24 @@ public class OrderReadService extends ShopBaseService {
 				 groupBy(date(ORDER_INFO.CREATE_TIME)).fetch().intoMap(date(ORDER_INFO.CREATE_TIME).as("date"),count().as("number"));
 		 return map;
 	 }
+
+	 public Record getActiveDiscountMoney(Integer goodType, Integer groupBuyId, GroupBuyAnalysisParam param){
+		 Record record = db().select(DslPlus.dateFormatDay(ORDER_INFO.CREATE_TIME, "%Y-%m-%d"), ORDER_GOODS.asterisk())
+				 .from(ORDER_INFO)
+				 .leftJoin(ORDER_GOODS).on(ORDER_GOODS.ORDER_SN.eq(ORDER_INFO.ORDER_SN))
+				 .where(ORDER_INFO.PIN_GROUP_ID.eq(groupBuyId))
+				 .and(DslPlus.findInSet(goodType.toString(), ORDER_INFO.GOODS_TYPE))
+				 .and(ORDER_INFO.ORDER_STATUS.gt((byte) 2))
+				 .and(ORDER_INFO.CREATE_TIME.between(param.getStartTime(), param.getEndTime()))
+				 .groupBy(DslPlus.dateFormatDay(ORDER_INFO.CREATE_TIME, "%Y-%m-%d"))
+				 .fetchOne();
+		 return record;
+	 }
+
+	public void getActiveOrderList() {
+
+
+	}
+
+
 }

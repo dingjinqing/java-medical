@@ -79,7 +79,7 @@ public class FreeShippingRuleService extends ShopBaseService {
      * @param freeShippingId
      * @return
      */
-    public int deleteByid(Integer freeShippingId, List ruleList) {
+    public int deleteByid(Integer freeShippingId, List<?> ruleList) {
         DeleteConditionStep<FreeShippingRuleRecord> select = db().deleteFrom(FREE_SHIPPING_RULE)
                 .where(FREE_SHIPPING_RULE.SHIPPING_ID.eq(freeShippingId));
         if (ruleList != null && ruleList.size() > 0) {

@@ -1,4 +1,4 @@
-package com.vpu.mp.service.pojo.shop.market.groupbuy;
+package com.vpu.mp.service.pojo.shop.market.groupbuy.param;
 
 import lombok.Data;
 
@@ -9,7 +9,7 @@ import java.math.BigDecimal;
  * @date 2019/7/19 10:50
  */
 @Data
-public class GroupBuyProductParam {
+public class GroupBuyProductParam extends BasePageGroupBuyParam{
 
 
     /**

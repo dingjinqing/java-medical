@@ -204,9 +204,6 @@ public class ShopImageManageService  extends MainBaseService {
         }
     }
 
-    private Result<ShopUploadedImageCategoryRecord> getAllImageCategory() {
-        return mainDb().selectFrom(SHOP_UPLOADED_IMAGE_CATEGORY).fetch();
-    }
 
     private Result<ShopUploadedImageCategoryRecord> getImageCategoryBySysId(Integer sysId) {
         return mainDb().selectFrom(SHOP_UPLOADED_IMAGE_CATEGORY)
