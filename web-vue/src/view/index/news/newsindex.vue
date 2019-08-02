@@ -171,7 +171,7 @@ export default {
 }
 </style>
 <style>
-.el-pagination {
+.news_container .el-pagination {
   padding: 20px 0 20px 570px !important;
 }
 </style>
