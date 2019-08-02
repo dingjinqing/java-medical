@@ -39,7 +39,8 @@ public class MemberCardOrderService extends ShopBaseService {
      * 订单列表
      */
     public PageResult<MemberCardVo> getMemberCardOrderList(MemberCardParam param) {
-        SelectOnConditionStep<Record16<Integer, String, Integer, Byte, Timestamp, BigDecimal, BigDecimal, BigDecimal, Timestamp, String, String, String, Byte, BigDecimal, Byte, String>> select =
+        SelectOnConditionStep<Record16<Integer, String, Integer, Byte, Timestamp, BigDecimal, BigDecimal, BigDecimal,
+            Timestamp, String, String, String, Byte, BigDecimal, Byte, String>> select =
             shopDb().select(CARD_ORDER.ORDER_ID, CARD_ORDER.ORDER_SN,
                 CARD_ORDER.VIRTUAL_GOODS_ID, CARD_ORDER.RETURN_FLAG, CARD_ORDER.PAY_TIME, CARD_ORDER.MONEY_PAID,
                 CARD_ORDER.USE_ACCOUNT, CARD_ORDER.USE_SCORE, CARD_ORDER.RETURN_TIME, USER.USERNAME, USER.MOBILE,
@@ -56,7 +57,9 @@ public class MemberCardOrderService extends ShopBaseService {
     /**
      * 条件查询
      */
-    private void buildOptions(SelectOnConditionStep<Record16<Integer, String, Integer, Byte, Timestamp, BigDecimal, BigDecimal, BigDecimal, Timestamp, String, String, String, Byte, BigDecimal, Byte, String>> select, MemberCardParam param) {
+    private void buildOptions(SelectOnConditionStep<Record16<Integer, String, Integer, Byte, Timestamp, BigDecimal,
+        BigDecimal, BigDecimal, Timestamp, String, String, String, Byte, BigDecimal, Byte, String>> select,
+                              MemberCardParam param) {
         String orderSn = param.getOrderSn();
         String cardNo = param.getCardNo();
         Byte cardType = param.getCardType();
@@ -163,8 +166,10 @@ public class MemberCardOrderService extends ShopBaseService {
     /**
      * 订单信息
      */
-    private Record10<String, BigDecimal, BigDecimal, BigDecimal, String, Integer, Byte, BigDecimal, BigDecimal, BigDecimal> getPayInfo(Integer orderId) {
-        Record10<String, BigDecimal, BigDecimal, BigDecimal, String, Integer, Byte, BigDecimal, BigDecimal, BigDecimal> order =
+    private Record10<String, BigDecimal, BigDecimal, BigDecimal, String, Integer, Byte, BigDecimal, BigDecimal,
+        BigDecimal> getPayInfo(Integer orderId) {
+        Record10<String, BigDecimal, BigDecimal, BigDecimal, String, Integer, Byte, BigDecimal, BigDecimal
+            , BigDecimal> order =
             shopDb().select(CARD_ORDER.PAY_CODE, CARD_ORDER.MONEY_PAID, CARD_ORDER.USE_SCORE, CARD_ORDER.USE_ACCOUNT,
                 CARD_ORDER.ORDER_SN, CARD_ORDER.USER_ID, CARD_ORDER.RETURN_FLAG, CARD_ORDER.RETURN_MONEY,
                 CARD_ORDER.RETURN_ACCOUNT, CARD_ORDER.RETURN_SCORE)
