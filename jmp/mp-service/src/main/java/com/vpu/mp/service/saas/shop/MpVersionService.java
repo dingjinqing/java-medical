@@ -5,11 +5,16 @@ import static com.vpu.mp.db.main.tables.MpVersion.MP_VERSION;
 import java.sql.Timestamp;
 import java.util.List;
 
+import org.jooq.Record;
 import org.jooq.Result;
+import org.jooq.SelectWhereStep;
 import org.springframework.stereotype.Service;
 
 import com.vpu.mp.db.main.tables.records.MpVersionRecord;
 import com.vpu.mp.service.foundation.service.MainBaseService;
+import com.vpu.mp.service.foundation.util.PageResult;
+import com.vpu.mp.service.pojo.saas.shop.mp.MpVersionListParam;
+import com.vpu.mp.service.pojo.saas.shop.mp.MpVersionVo;
 
 import me.chanjar.weixin.common.error.WxErrorException;
 import me.chanjar.weixin.open.bean.WxOpenMaCodeTemplate;
@@ -30,9 +35,10 @@ public class MpVersionService extends MainBaseService {
 	/**
 	 * 同步版本列表
 	 * 
+	 * @return 返回模板的数量
 	 * @throws WxErrorException
 	 */
-	public void synMpVersionList() throws WxErrorException {
+	public Integer synMpVersionList() throws WxErrorException {
 		Integer lastTemplateId = 0;
 		List<WxOpenMaCodeTemplate> list = open.getWxOpenComponentService().getTemplateList();
 		for (WxOpenMaCodeTemplate template : list) {
@@ -49,6 +55,7 @@ public class MpVersionService extends MainBaseService {
 			// 如果没有当前的模板ID，最后的模板ID设置为当前使用模板ID
 			this.setCurrentUseTemplateId(lastTemplateId);
 		}
+		return list.size();
 	}
 
 	/**
@@ -91,22 +98,24 @@ public class MpVersionService extends MainBaseService {
 		MpVersionRecord record = getCurrentUseVersion(appId, packageVersion);
 		return record != null ? record.getTemplateId() : 0;
 	}
-	
+
 	/**
 	 * 得到当前使用的模板Id
+	 * 
 	 * @param appId
 	 * @return
 	 */
 	public Integer getCurrentUseTemplateId(String appId) {
-		return  getCurrentUseTemplateId(appId, PACK_VERSION_NORMAL);
+		return getCurrentUseTemplateId(appId, PACK_VERSION_NORMAL);
 	}
-	
+
 	/**
 	 * 得到当前使用的模板Id
+	 * 
 	 * @return
 	 */
 	public Integer getCurrentUseTemplateId() {
-		return  getCurrentUseTemplateId(null, PACK_VERSION_NORMAL);
+		return getCurrentUseTemplateId(null, PACK_VERSION_NORMAL);
 	}
 
 	/**
@@ -128,6 +137,7 @@ public class MpVersionService extends MainBaseService {
 
 	/**
 	 * 得到小程序模板版本列表
+	 * 
 	 * @return
 	 */
 	public Result<MpVersionRecord> getAll() {
@@ -142,5 +152,17 @@ public class MpVersionService extends MainBaseService {
 	 */
 	public MpVersionRecord getRow(Integer templateId) {
 		return db().fetchAny(MP_VERSION, MP_VERSION.TEMPLATE_ID.eq(templateId));
+	}
+
+	/**
+	 * 查询版本分页
+	 * 
+	 * @param param
+	 * @return
+	 */
+	public PageResult<MpVersionVo> getPageList(MpVersionListParam param) {
+		SelectWhereStep<Record> select = db().select().from(MP_VERSION);
+		select.orderBy(MP_VERSION.TEMPLATE_ID.desc());
+		return this.getPageResult(select, param.page, MpVersionVo.class);
 	}
 }

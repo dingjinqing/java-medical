@@ -21,6 +21,7 @@ import com.google.gson.JsonObject;
 import com.vpu.mp.config.DomainConfig;
 import com.vpu.mp.db.main.tables.MpAuthShop;
 import com.vpu.mp.db.main.tables.records.MpAuthShopRecord;
+import com.vpu.mp.db.main.tables.records.MpVersionRecord;
 import com.vpu.mp.service.foundation.service.MainBaseService;
 import com.vpu.mp.service.foundation.util.Util;
 import com.vpu.mp.service.pojo.shop.config.trade.WxpayConfigParam;
@@ -261,7 +262,8 @@ public class MpAuthShopService extends MainBaseService {
 		WxOpenMaService maService = this.getMaServiceByAppId(appId);
 		WxOpenMaDomainResult result = maService.modifyDomain(action, Arrays.asList(httpsDomains),
 				Arrays.asList(wssDomains), Arrays.asList(httpsDomains), Arrays.asList(httpsDomains));
-		if (result.isSuccess() || result.getErrcode().equals("85017")) {
+		String noNewDomainCode = "85017";
+		if (result.isSuccess() || noNewDomainCode.equals(result.getErrcode())) {
 			// 85017 : 没有新增域名，请确认小程序已经添加了域名或该域名是否没有在第三方平台添加
 			maService.setWebViewDomain(action, Arrays.asList(httpsDomains));
 			mp.setIsModifyDomain((byte) 1);
@@ -281,8 +283,9 @@ public class MpAuthShopService extends MainBaseService {
 	 * @return
 	 * @throws WxErrorException
 	 */
-	public WxOpenResult uploadCode(String appId, Long templateId, String userVersion, String userDesc)
+	public WxOpenResult uploadCode(String appId, Integer templateId)
 			throws WxErrorException {
+		MpVersionRecord version = saas.shop.mpVersion.getRow(templateId);
 		MpAuthShopRecord mp = this.getAuthShopByAppId(appId);
 		WxOpenMaService maService = this.getMaServiceByAppId(appId);
 		MpWxMaOpenCommitExtInfo extInfo = new MpWxMaOpenCommitExtInfo();
@@ -300,8 +303,8 @@ public class MpAuthShopService extends MainBaseService {
 
 		JsonObject params = new JsonObject();
 		params.addProperty("template_id", templateId);
-		params.addProperty("user_version", userVersion);
-		params.addProperty("user_desc", userDesc);
+		params.addProperty("user_version", version.getUserVersion());
+		params.addProperty("user_desc", version.getUserDesc());
 		params.addProperty("ext_json", Util.toJson(extInfo));
 		String response = maService.post(WxOpenMaService.API_CODE_COMMIT, Util.toJson(params));
 		WxOpenResult result = WxMaGsonBuilder.create().fromJson(response, WxOpenResult.class);
@@ -371,7 +374,7 @@ public class MpAuthShopService extends MainBaseService {
 				: Util.parseJson(mp.getTester(), new TypeReference<List<String>>() {
 				});
 		if (!testers.contains(wechatId)) {
-			return successResult();
+			return successResult(wechatId);
 		}
 		WxOpenMaService maService = this.getMaServiceByAppId(appId);
 		WxOpenResult result = maService.unbindTester(wechatId);
@@ -389,10 +392,10 @@ public class MpAuthShopService extends MainBaseService {
 	 * 
 	 * @return
 	 */
-	public WxOpenResult successResult() {
+	public WxOpenResult successResult(String message) {
 		WxOpenResult result = new WxOpenResult();
 		result.setErrcode("0");
-		result.setErrmsg("");
+		result.setErrmsg(message);
 		return result;
 	}
 
@@ -417,7 +420,7 @@ public class MpAuthShopService extends MainBaseService {
 	 * @throws IOException
 	 * @throws Exception
 	 */
-	public String getTestQrCode(String appId) throws WxErrorException, IOException {
+	public WxOpenResult getTestQrCode(String appId) throws WxErrorException, IOException {
 		MpAuthShopRecord mp = this.getAuthShopByAppId(appId);
 		WxOpenMaService maService = this.getMaServiceByAppId(appId);
 		String pagePath = "pages/bottom/bottom";
@@ -427,12 +430,12 @@ public class MpAuthShopService extends MainBaseService {
 			image.uploadToUpYun(relativePath, file);
 		} catch (Exception e) {
 			operateLog(mp, MpOperateLogService.OP_TYPE_GET_TESTER_QR, failResult(e.getMessage()));
-			return null;
+			return failResult(e.getMessage());
 		}
 		mp.setTestQrPath(relativePath);
 		mp.update();
-		operateLog(mp, MpOperateLogService.OP_TYPE_GET_TESTER_QR, successResult());
-		return relativePath;
+		operateLog(mp, MpOperateLogService.OP_TYPE_GET_TESTER_QR, successResult(relativePath));
+		return successResult(relativePath);
 	}
 
 	/**
@@ -532,11 +535,11 @@ public class MpAuthShopService extends MainBaseService {
 	 * @return
 	 * @throws WxErrorException
 	 */
-	public WxOpenResult uploadCodeAndApplyAudit(String appId, Long templateId, String userVersion, String userDesc)
+	public WxOpenResult uploadCodeAndApplyAudit(String appId, Integer templateId)
 			throws WxErrorException {
 		WxOpenResult result = this.modifyDomain(appId);
 		if (result.isSuccess()) {
-			result = this.uploadCode(appId, templateId, userVersion, userDesc);
+			result = this.uploadCode(appId, templateId);
 			if (result.isSuccess()) {
 				result = this.submitAudit(appId);
 			}
@@ -552,11 +555,11 @@ public class MpAuthShopService extends MainBaseService {
 	 * @param userDesc
 	 * @throws WxErrorException
 	 */
-	public void batchUploadCodeAndApplyAudit(Long templateId, String userVersion, String userDesc)
+	public void batchUploadCodeAndApplyAudit(Integer templateId)
 			throws WxErrorException {
 		Result<MpAuthShopRecord> records = db().fetch(MP_AUTH_SHOP, MP_AUTH_SHOP.IS_AUTH_OK.eq(AUTH_OK));
 		for (MpAuthShopRecord record : records) {
-			this.uploadCodeAndApplyAudit(record.getAppId(), templateId, null, null);
+			this.uploadCodeAndApplyAudit(record.getAppId(), templateId);
 		}
 	}
 
