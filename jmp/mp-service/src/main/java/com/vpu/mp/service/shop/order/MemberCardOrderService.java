@@ -1,5 +1,6 @@
 package com.vpu.mp.service.shop.order;
 
+import com.vpu.mp.db.shop.tables.records.PaymentRecordRecord;
 import com.vpu.mp.service.foundation.service.ShopBaseService;
 import com.vpu.mp.service.foundation.util.PageResult;
 import com.vpu.mp.service.pojo.shop.order.virtual.MemberCardParam;
@@ -17,6 +18,7 @@ import java.util.Arrays;
 
 import static com.vpu.mp.db.shop.tables.CardOrder.CARD_ORDER;
 import static com.vpu.mp.db.shop.tables.MemberCard.MEMBER_CARD;
+import static com.vpu.mp.db.shop.tables.PaymentRecord.PAYMENT_RECORD;
 import static com.vpu.mp.db.shop.tables.RefundCardRecord.REFUND_CARD_RECORD;
 import static com.vpu.mp.db.shop.tables.User.USER;
 import static com.vpu.mp.db.shop.tables.UserCard.USER_CARD;
@@ -120,7 +122,7 @@ public class MemberCardOrderService extends ShopBaseService {
         BigDecimal availableReturnScore = useScore.subtract(returnScore);
         switch (payCode) {
             case MemberCardParam.PAY_WX:
-                // todo 微信支付退款
+                refundWxPay(orderSn, money);
                 if (null == money || 0 > money || money > availableReturnMoney.doubleValue()) {
                     throw new IllegalArgumentException(INVALID_MONEY_AMOUNT);
                 }
@@ -180,6 +182,19 @@ public class MemberCardOrderService extends ShopBaseService {
             throw new IllegalArgumentException("Invalid orderId: " + orderId);
         }
         return order;
+    }
+
+    /**
+     * 微信退款
+     */
+    private void refundWxPay(String orderSn, Double money) {
+        PaymentRecordRecord payment = shopDb().selectFrom(PAYMENT_RECORD)
+            .where(PAYMENT_RECORD.ORDER_SN.eq(orderSn)).fetchAny();
+        if (null == payment) {
+            throw new IllegalArgumentException("Unknown order sn: " + orderSn);
+        }
+        log.info("WxPay refund -> orderSn: {}, amount: {}", orderSn, money);
+        // todo 微信支付退款 API ...
     }
 
     /**
