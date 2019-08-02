@@ -47,7 +47,8 @@ public class MemberCardOrderService extends ShopBaseService {
                 USER_CARD.CARD_NO)
                 .from(CARD_ORDER)
                 .leftJoin(MEMBER_CARD).on(MEMBER_CARD.ID.eq(CARD_ORDER.VIRTUAL_GOODS_ID))
-                .leftJoin(USER).on(CARD_ORDER.USER_ID.eq(USER.USER_ID));
+                .leftJoin(USER).on(CARD_ORDER.USER_ID.eq(USER.USER_ID))
+                .leftJoin(USER_CARD).on(CARD_ORDER.VIRTUAL_GOODS_ID.eq(USER_CARD.CARD_ID));
         buildOptions(select, param);
         return getPageResult(select, param, MemberCardVo.class);
     }
@@ -65,27 +66,29 @@ public class MemberCardOrderService extends ShopBaseService {
         Boolean isRefund = param.getRefund();
         select.where(CARD_ORDER.GOODS_TYPE.eq(GOODS_MEMBER_CARD));
         if (isNotEmpty(orderSn)) {
-            select.where(CARD_ORDER.ORDER_SN.like(format("%s%%", orderSn)));
+            select.and(CARD_ORDER.ORDER_SN.like(format("%s%%", orderSn)));
         }
         if (isNotEmpty(userInfo)) {
-            select.where(USER.USERNAME.like(format("%s%%", userInfo)))
-                .or(USER.MOBILE.like(format("%s%%", userInfo)));
+            select.and(USER.USERNAME.like(format("%s%%", userInfo)).or(USER.MOBILE.like(format("%s%%", userInfo))));
         }
         if (isNotEmpty(cardNo)) {
-            select.where(USER_CARD.CARD_NO.like(format("%s%%", cardNo)));
+            select.and(USER_CARD.CARD_NO.like(format("%s%%", cardNo)));
         }
         if (null != cardType) {
-            select.where(MEMBER_CARD.CARD_TYPE.eq(cardType));
+            select.and(MEMBER_CARD.CARD_TYPE.eq(cardType));
         }
         if (null != startTime) {
-            select.where(CARD_ORDER.PAY_TIME.ge(startTime));
+            select.and(CARD_ORDER.PAY_TIME.ge(startTime));
         }
         if (null != endTime) {
-            select.where(CARD_ORDER.PAY_TIME.le(endTime));
+            select.and(CARD_ORDER.PAY_TIME.le(endTime));
         }
-        if (null != isRefund && isRefund) {
-            select.where(CARD_ORDER.RETURN_FLAG.eq(SUCCESS))
-                .or(CARD_ORDER.RETURN_FLAG.eq(MemberCardParam.FAILED));
+        if (null != isRefund) {
+            if (isRefund) {
+                select.and(CARD_ORDER.RETURN_FLAG.eq(SUCCESS).or(CARD_ORDER.RETURN_FLAG.eq(MemberCardParam.FAILED)));
+            } else {
+                select.and(CARD_ORDER.RETURN_FLAG.eq(MemberCardParam.NOT_REFUND));
+            }
         }
     }
 
