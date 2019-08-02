@@ -10,8 +10,11 @@ import com.vpu.mp.service.foundation.data.JsonResult;
 import com.vpu.mp.service.foundation.util.PageResult;
 import com.vpu.mp.service.pojo.shop.coupon.give.CouponGiveDetailParam;
 import com.vpu.mp.service.pojo.shop.coupon.give.CouponGiveDetailVo;
+import com.vpu.mp.service.pojo.shop.coupon.give.CouponGiveGrantParam;
 import com.vpu.mp.service.pojo.shop.coupon.give.CouponGiveListParam;
 import com.vpu.mp.service.pojo.shop.coupon.give.CouponGiveListVo;
+import com.vpu.mp.service.pojo.shop.coupon.give.CouponGivePopParam;
+import com.vpu.mp.service.pojo.shop.coupon.give.CouponGivePopVo;
 
 /**
  * 发放优惠券控制器
@@ -34,7 +37,7 @@ public class AdminCouponGiveController extends AdminBaseController{
 		return success(pageResult);
 	}
 	/**
-	 * 发放优惠券明细
+	 * 优惠券明细
 	 *
 	 * @param param
 	 * @return
@@ -42,7 +45,34 @@ public class AdminCouponGiveController extends AdminBaseController{
 	@PostMapping("/api/admin/coupon/give/detail")
 	public JsonResult getDetail(@RequestBody CouponGiveDetailParam param) {
 
-		List<CouponGiveDetailVo> pageResult = shop().coupon.couponGiveService.getDetail(param);
+		PageResult<CouponGiveDetailVo> pageResult = shop().coupon.couponGiveService.getDetail(param);
+
+		return success(pageResult);
+	}
+	
+	/**
+	 * 发优惠券
+	 *
+	 * @param param
+	 * @return
+	 */
+	@PostMapping("/api/admin/coupon/give/grant")
+	public JsonResult insertGrant(@RequestBody CouponGiveGrantParam param) {
+		
+		shop().coupon.couponGiveService.insertGrant(param);
+		
+		return success();
+	}
+	/**
+	 * 优惠券弹窗
+	 *
+	 * @param param
+	 * @return
+	 */
+	@PostMapping("/api/admin/coupon/give/pop")
+	public JsonResult getPopWindow(@RequestBody CouponGivePopParam param) {
+
+		List<CouponGivePopVo> pageResult = shop().coupon.couponGiveService.popWindows(param);
 
 		return success(pageResult);
 	}
