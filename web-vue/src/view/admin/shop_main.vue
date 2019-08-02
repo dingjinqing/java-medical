@@ -22,14 +22,14 @@ export default {
     }
   },
   mounted () {
-    console.log(this.$route)
+    // console.log(this.$route)
     // 初始化组建切换
     this.changeComponents()
   },
   methods: {
     // 切换组件
     handleChange (index) {
-      console.log(index)
+      // console.log(index)
       switch (index) {
         case '0': this.flag = false
           break

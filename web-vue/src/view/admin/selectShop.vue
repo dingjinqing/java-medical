@@ -92,7 +92,6 @@ export default {
         })
         this.shop_list = res.content.dataList
         this.loading.close()
-        console.log(res)
       })
     },
     // 鼠标划入
@@ -108,11 +107,20 @@ export default {
       let obj = {
         shopId: data
       }
+
       changeShopRequest(obj).then((res) => {
-        console.log(res)
-      })
-      this.$router.push({
-        name: 'overviewOfMall'
+        const { error } = res
+        if (error === 0) {
+          this.$router.push({
+            name: 'overviewOfMall'
+          })
+        } else {
+          this.$message({
+            showClose: true,
+            message: '服务器暂时错误呦，晚会再点试一下',
+            type: 'error'
+          })
+        }
       })
     }
   }

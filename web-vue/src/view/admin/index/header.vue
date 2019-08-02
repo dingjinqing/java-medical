@@ -105,7 +105,7 @@ export default {
     }
   },
   mounted () {
-    console.log(this.$route)
+    // console.log(this.$route)
     // 初始化登录
     this.judgeuserinfo()
     // 初始化语言
@@ -146,7 +146,7 @@ export default {
           break
         case 4:
           loginRequestOut().then((res) => {
-            console.log(res)
+            // console.log(res)
             if (res.error === 0) {
               Cookies.remove('V-Token')
               localStorage.removeItem('V-Username')
@@ -188,7 +188,7 @@ export default {
       this.$router.push({
         name: name
       })
-      console.log(name)
+      // console.log(name)
       if (name === 'membershipList') {
         this.ToTurnMemberShipDetail('0')
       }

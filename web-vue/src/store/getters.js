@@ -4,7 +4,8 @@ const getters = {
   clickNode: state => state.smallProcedures.clickNode,
   allNodes: state => state.smallProcedures.allNodes,
   selectlinksIndex: state => state.smallProgramManagement.selectlinksIndex,
-  selectlinksLevelOneBottom: state => state.smallProgramManagement.selectlinksLevelOneBottom,
+  selectlinksLevelOneBottom: state =>
+    state.smallProgramManagement.selectlinksLevelOneBottom,
   choisePath: state => state.smallProgramManagement.choisePath,
   afferentPath: state => state.smallProgramManagement.afferentPath,
   crumbsTitle: state => state.crumbs.crumbsTitle,

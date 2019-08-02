@@ -2,7 +2,7 @@ const myMixin = {
   methods: {
     // 初始化语言
     langDefault () {
-      console.log(localStorage.getItem('WEPUBAO_LANGUAGE'))
+      // console.log(localStorage.getItem('WEPUBAO_LANGUAGE'))
       if (localStorage.getItem('WEPUBAO_LANGUAGE') === 'en_US') {
         this.$i18n.locale = 'en'
         this.Recommend_class = 'Recommend_class'

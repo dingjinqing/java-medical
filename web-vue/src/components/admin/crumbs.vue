@@ -28,7 +28,7 @@ export default {
   },
   watch: {
     crumbsTitle_ (newData, oldData) {
-      console.log(newData)
+      // console.log(newData)
       this.handleTitle(newData)
     },
     membershipdetailflag_ (newData, name) {
@@ -62,11 +62,11 @@ export default {
     }
   },
   mounted () {
-    console.log(this.mTitle)
+    // console.log(this.mTitle)
     let arr = this.mTitle.filter((item, index) => {
       return index !== 0
     })
-    console.log(arr)
+    // console.log(arr)
     this.title = arr
   },
   methods: {

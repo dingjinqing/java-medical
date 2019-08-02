@@ -165,13 +165,13 @@ export default {
     },
     onSubmit (index) {
       let flag = this.JudgementForm(index)
-      console.log(this.flag)
+      // console.log(this.flag)
       if (flag === false) return
-      console.log(index)
+      // console.log(index)
       localStorage.setItem('contentType', 'application/json;charset=UTF-8')
       if (index === 1) {
         loginRequest(this.mainData).then((res) => {
-          console.log(res)
+          // test
           if (res.error !== 0) {
             this.$message({
               showClose: true,
@@ -181,7 +181,6 @@ export default {
           } else {
             Cookies.set('V-Token', res.content.token, { expires: 1 / 48 })
             localStorage.setItem('V-Username', res.content.userName)
-            console.log(1)
             this.$message({
               showClose: true,
               message: res.message,
@@ -191,10 +190,11 @@ export default {
               name: 'shopMain'
             })
           }
+          // test
         })
       } else {
         loginRequest(this.subData).then((res) => {
-          console.log(res)
+          // console.log(res)
           if (res.error !== 0) {
             this.$message({
               showClose: true,

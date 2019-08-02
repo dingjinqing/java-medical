@@ -26,7 +26,10 @@ const service = axios.create({
 service.interceptors.request.use(
   config => {
     console.log(config)
-    console.log(localStorage.getItem('contentType'), localStorage.getItem('WEPUBAO_LANGUAGE'))
+    console.log(
+      localStorage.getItem('contentType'),
+      localStorage.getItem('WEPUBAO_LANGUAGE')
+    )
     config.headers['Content-Type'] = localStorage.getItem('contentType')
     console.log(Cookies.get('V-Token'))
     if (Cookies.get('V-Token')) {
@@ -80,10 +83,12 @@ service.interceptors.response.use(
       switch (error.response.status) {
         case 401:
           error.message = '抱歉，您没有访问此操作的权限！'
-          break
+          // eslint-disable-next-line
+          break;
         case 404:
           error.message = '抱歉，您请求的资源不存在！'
-          break
+          // eslint-disable-next-line
+          break;
         default:
           error.message = `服务正在处理，请稍后。`
       }

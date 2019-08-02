@@ -4,8 +4,6 @@
     <Crumbs :mTitle="M_title" />
     <!-- 主题内容部分 -->
     <addingGoodsContent />
-    <!-- Footer 部分 -->
-
   </div>
 </template>
 <script>
