@@ -1,14 +1,14 @@
 package com.vpu.mp.controller;
 
+import com.vpu.mp.service.foundation.data.JsonResult;
+import com.vpu.mp.service.foundation.data.JsonResultMessage;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.MethodArgumentNotValidException;
-import org.springframework.web.bind.annotation.*;
-
-import com.vpu.mp.service.foundation.data.JsonResult;
-import com.vpu.mp.service.foundation.data.JsonResultMessage;
+import org.springframework.web.bind.annotation.ExceptionHandler;
+import org.springframework.web.bind.annotation.RestControllerAdvice;
 
 import java.io.IOException;
 
@@ -18,7 +18,7 @@ import java.io.IOException;
  * @date: 2019-07-10 11:22
  *
 */
-@RestControllerAdvice(basePackages = "com.vpu.mp.controller")
+@RestControllerAdvice(basePackages = "com.vpu.mp.*")
 public class ExceptionControllerHandler extends BaseController {
 
     Logger logger= LoggerFactory.getLogger(this.getClass());
@@ -50,4 +50,13 @@ public class ExceptionControllerHandler extends BaseController {
         return fail(JsonResultMessage.MSG_PARAM_ERROR);
     }
 
+    /**
+     * 处理参数异常
+     *
+     * @author 郑保乐
+     */
+    @ExceptionHandler(IllegalArgumentException.class)
+    public JsonResult handleArgumentExceptions(IllegalArgumentException e) {
+        return fail(e.getMessage());
+    }
 }

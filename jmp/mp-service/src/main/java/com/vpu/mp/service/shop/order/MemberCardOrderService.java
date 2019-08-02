@@ -20,6 +20,7 @@ import static com.vpu.mp.db.shop.tables.MemberCard.MEMBER_CARD;
 import static com.vpu.mp.db.shop.tables.RefundCardRecord.REFUND_CARD_RECORD;
 import static com.vpu.mp.db.shop.tables.User.USER;
 import static com.vpu.mp.db.shop.tables.UserCard.USER_CARD;
+import static com.vpu.mp.service.foundation.data.JsonResultMessage.*;
 import static com.vpu.mp.service.pojo.shop.order.virtual.MemberCardParam.SUCCESS;
 import static java.lang.String.format;
 import static org.apache.commons.lang3.StringUtils.isNotEmpty;
@@ -101,7 +102,7 @@ public class MemberCardOrderService extends ShopBaseService {
     public void memberCardOrderRefund(MemberCardRefundParam param) {
         Double account = param.getAccount();
         Double money = param.getMoney();
-        Double score = param.getScore();
+        Integer score = param.getScore();
         Integer orderId = param.getOrderId();
         Record10<String, BigDecimal, BigDecimal, BigDecimal, String, Integer, Byte, BigDecimal, BigDecimal, BigDecimal>
             payInfo = getPayInfo(orderId);
@@ -121,27 +122,27 @@ public class MemberCardOrderService extends ShopBaseService {
             case MemberCardParam.PAY_WX:
                 // todo 微信支付退款
                 if (null == money || 0 > money || money > availableReturnMoney.doubleValue()) {
-                    throw new IllegalArgumentException("Invalid money amount: " + money);
+                    throw new IllegalArgumentException(INVALID_MONEY_AMOUNT);
                 }
                 break;
             case MemberCardParam.PAY_ACCOUNT:
                 if (null == account || null == score) {
-                    throw new IllegalArgumentException("Invalid account or money");
+                    throw new IllegalArgumentException(INVALID_ACCOUNT_OR_SCORE);
                 }
                 if (0 == account && 0 == score) {
-                    throw new IllegalArgumentException("Invalid refund amount");
+                    throw new IllegalArgumentException(INVALID_REFUND_AMOUNT);
                 }
                 if (0 != useAccount.doubleValue()) {
                     if (account > availableReturnAccount.doubleValue()) {
-                        throw new IllegalArgumentException("Refund account cannot larger than used account");
+                        throw new IllegalArgumentException(REFUND_ACCOUNT_LARGER_THAN_ACCOUNT_PAID);
                     }
-                    // todo 退余额
+                    addUserAccount(userId, account);
                 }
                 if (0 != useScore.doubleValue()) {
                     if (score > availableReturnScore.doubleValue()) {
-                        throw new IllegalArgumentException("Refund score cannot larger than used score");
+                        throw new IllegalArgumentException(REFUND_SCORE_LARGER_THAN_SCORE_PAID);
                     }
-                    // todo 退积分
+                    addUserScore(userId, score);
                 }
                 break;
             default:
@@ -179,5 +180,19 @@ public class MemberCardOrderService extends ShopBaseService {
             throw new IllegalArgumentException("Invalid orderId: " + orderId);
         }
         return order;
+    }
+
+    /**
+     * 退积分
+     */
+    private void addUserScore(Integer userId, Integer score) {
+        shopDb().update(USER).set(USER.SCORE, USER.SCORE.add(score)).where(USER.USER_ID.eq(userId)).execute();
+    }
+
+    /**
+     * 退余额
+     */
+    private void addUserAccount(Integer userId, Double account) {
+        shopDb().update(USER).set(USER.ACCOUNT, USER.ACCOUNT.add(account)).where(USER.USER_ID.eq(userId));
     }
 }

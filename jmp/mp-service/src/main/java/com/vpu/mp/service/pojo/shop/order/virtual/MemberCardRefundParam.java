@@ -16,5 +16,5 @@ public class MemberCardRefundParam {
     /** 现金 **/
     private Double money;
     /** 积分 **/
-    private Double score;
+    private Integer score;
 }

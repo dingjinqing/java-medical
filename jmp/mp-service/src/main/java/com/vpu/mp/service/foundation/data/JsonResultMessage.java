@@ -202,5 +202,9 @@ public class JsonResultMessage {
 	final public static String MSG_ORDER_REMARK_ORDERSN_NOT_NULL = "order_remark_ordersn_not_null";
 	final public static String MSG_ORDER_REMARK_NOT_NULL = "order_remark_not_null";
 	final public static String MSG_ORDER_REMARK_TYPE_NOT_NULL = "order_remark_type_not_null";
-
+    public static final String INVALID_MONEY_AMOUNT = "order.refund.invalid_money_amount";
+    public static final String INVALID_ACCOUNT_OR_SCORE = "order.refund.invalid_account_or_score";
+    public static final String INVALID_REFUND_AMOUNT = "order.refund.invalid_refund_amount";
+    public static final String REFUND_ACCOUNT_LARGER_THAN_ACCOUNT_PAID = "order.refund.account_larger_than_paid";
+    public static final String REFUND_SCORE_LARGER_THAN_SCORE_PAID = "order.refund.score_larger_than_paid";
 }
