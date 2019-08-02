@@ -1,7 +1,10 @@
 package com.vpu.mp.service.foundation.database;
 
+import com.vpu.mp.db.shop.tables.records.OrderInfoRecord;
 import org.jooq.Condition;
 import org.jooq.Field;
+import org.jooq.SortField;
+import org.jooq.TableField;
 import org.jooq.impl.DSL;
 import org.jooq.impl.SQLDataType;
 import org.slf4j.Logger;
@@ -22,6 +25,9 @@ public class DslPlus {
 
 
     private static final String FORMAT = "format";
+    private static TableField user_id;
+    private static TableField<OrderInfoRecord, Integer> user_id1;
+    private static String s;
 
     /**
      * 格式化时间到日
@@ -57,4 +63,20 @@ public class DslPlus {
     public static Condition findInSet(String format, Field<String> field) {
         return DSL.condition("FIND_IN_SET({0}, {1})", field, DSL.inline(format));
     }
+
+    /**
+     * mysql 聚合函数
+     * group_concat({0} order by {1}   separator '{2}')
+     *
+     * @param field
+     * @param SortField
+     * @param separator
+     * @param <T>
+     * @return
+     */
+    public static <T> Field groupConCat(Field<?> field, SortField<?> SortField, String separator) {
+        // TODO: 2019/8/2    函数有最大长度限制 #SET GLOBAL group_concat_max_len = 1024;   db.execute("SET NAMES utf8mb4");
+        return DSL.field("group_concat({0} order by {1}   separator '{2}')",field,SortField,separator);
+    }
+
 }

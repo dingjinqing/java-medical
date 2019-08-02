@@ -13,6 +13,7 @@ import static org.jooq.impl.DSL.*;
 
 
 import java.sql.Date;
+import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -571,20 +572,72 @@ public class OrderReadService extends ShopBaseService {
 		 return map;
 	 }
 
-	 public Record getActiveDiscountMoney(Integer goodType, Integer groupBuyId, GroupBuyAnalysisParam param){
-		 Record record = db().select(DslPlus.dateFormatDay(ORDER_INFO.CREATE_TIME, "%Y-%m-%d"), ORDER_GOODS.asterisk())
+
+	/**
+	 *
+	 * @param goodType
+	 * @param groupBuyId
+	 * @param startTime
+	 * @param endTime
+	 * @return
+	 */
+	 public Record getActiveDiscountMoney(Integer goodType, Integer groupBuyId, Timestamp startTime,Timestamp  endTime){
+		 Record record = db().select(DslPlus.dateFormatDay(ORDER_INFO.CREATE_TIME), ORDER_GOODS.asterisk())
 				 .from(ORDER_INFO)
 				 .leftJoin(ORDER_GOODS).on(ORDER_GOODS.ORDER_SN.eq(ORDER_INFO.ORDER_SN))
 				 .where(ORDER_INFO.PIN_GROUP_ID.eq(groupBuyId))
 				 .and(DslPlus.findInSet(goodType.toString(), ORDER_INFO.GOODS_TYPE))
-				 .and(ORDER_INFO.ORDER_STATUS.gt((byte) 2))
-				 .and(ORDER_INFO.CREATE_TIME.between(param.getStartTime(), param.getEndTime()))
-				 .groupBy(DslPlus.dateFormatDay(ORDER_INFO.CREATE_TIME, "%Y-%m-%d"))
+				 .and(ORDER_INFO.ORDER_STATUS.gt(OrderConstant.ORDER_CLOSED))
+				 .and(ORDER_INFO.CREATE_TIME.between(startTime, endTime))
+				 .groupBy(DslPlus.dateFormatDay(ORDER_INFO.CREATE_TIME))
 				 .fetchOne();
 		 return record;
 	 }
 
-	public void getActiveOrderList() {
+	/**
+	 *
+	 *  活动新用户订单
+	 *
+	 * @param goodType
+	 * @param groupBuyId
+	 * @param startTime
+	 * @param endTime
+	 */
+	public void getActiveOrderList(Integer goodType, Integer groupBuyId, Timestamp startTime,Timestamp  endTime) {
+		//查询在该店铺下过单的用户
+
+	 	List<Integer> userIdList = db().select(ORDER_INFO.USER_ID, count(ORDER_INFO.USER_ID))
+				.from(ORDER_INFO)
+				.where(ORDER_INFO.PIN_GROUP_ID.eq(groupBuyId))
+				.and(ORDER_INFO.ORDER_STATUS.gt(OrderConstant.ORDER_CLOSED))
+				.and(ORDER_INFO.CREATE_TIME.between(startTime, endTime))
+				.and(DslPlus.findInSet(goodType.toString(), ORDER_INFO.GOODS_TYPE))
+				.groupBy(ORDER_INFO.USER_ID)
+				.fetch().getValues(ORDER_INFO.USER_ID);
+
+
+
+
+
+		db().select(DslPlus.dateFormatDay(DSL.min(ORDER_INFO.CREATE_TIME)),ORDER_INFO.USER_ID )
+				.from(ORDER_INFO)
+				.where(ORDER_INFO.PIN_GROUP_ID.eq(groupBuyId))
+				.and(ORDER_INFO.ORDER_STATUS.gt(OrderConstant.ORDER_CLOSED))
+				.and(ORDER_INFO.CREATE_TIME.between(startTime, endTime))
+				.and(DslPlus.findInSet(goodType.toString(), ORDER_INFO.GOODS_TYPE))
+				.groupBy(ORDER_INFO.USER_ID)
+				.fetchOne();
+
+		Record record = db().select(DslPlus.dateFormatDay(ORDER_INFO.CREATE_TIME),ORDER_INFO.USER_ID)
+				.from(ORDER_INFO)
+				.where(ORDER_INFO.PIN_GROUP_ID.eq(groupBuyId))
+				.and(ORDER_INFO.ORDER_STATUS.gt(OrderConstant.ORDER_CLOSED))
+				.and(ORDER_INFO.CREATE_TIME.between(startTime, endTime))
+				.and(DslPlus.findInSet(goodType.toString(), ORDER_INFO.GOODS_TYPE))
+				.groupBy(ORDER_INFO.USER_ID,DslPlus.dateFormatDay(ORDER_INFO.CREATE_TIME))
+				.fetchOne();
+
+
 
 
 	}
