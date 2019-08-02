@@ -73,7 +73,10 @@
           v-for="(item,index) in lebalDataList"
           :key="index"
           class="lebalSpan"
-        >{{item}}</span>
+        >{{item}}<i
+            @click="hanldeToDelLabel(index)"
+            class="fa fa-remove"
+          ></i></span>
       </div>
     </div>
     <div class="topContainer">
@@ -88,10 +91,11 @@
           </div>
           <div class="assetsUlRight">
             <span>{{item.cardName}}</span>
-            <span>|</span>
+            <span v-if="item.haveSetUp === true ?true:false">|</span>
             <span
               v-if="item.haveSetUp === true ?true:false"
               style="color:#5A8BFF;cursor: pointer;"
+              @click="handleSetUp(index)"
             >设置</span>
             <span style="margin-top:10px;color:#5A8BFF;cursor: pointer;display:block">{{item.num}}</span>
           </div>
@@ -447,33 +451,121 @@
       <el-dialog
         title="设置会员卡"
         :visible.sync="memberCardT1DialogVisible"
-        width="25%"
+        width="35%"
         :modal-append-to-body="false"
       >
         <div
           class="labelEditDialogDiv"
           style="margin-bottom:30px"
         >
-          <div class="memberCardT1DialogTop">
-            <span>可以在这里编辑该会员的会员卡信息，添加会员卡，注意需要激活的会员卡将直接发放到用户。</span>
-          </div>
-          <div class="cardName">
-            <i>1</i>
-            普通会员卡
-          </div>
-          <div class="memberCardT1Main">
-            <div>已选：</div>
-            <div class="memberCardT1MainCardsMiddle">
+          <div class="MemberdialogContainer">
+
+            <div class="memberCardT1DialogTop">
+              <span>可以在这里编辑该会员的会员卡信息，添加会员卡，注意需要激活的会员卡将直接发放到用户。</span>
+            </div>
+            <div class="cardName">
+              <i>1</i>
+              普通会员卡
+            </div>
+            <div class="memberCardT1Main">
+              <div>已选：</div>
+              <div class="memberCardT1MainCardsMiddle">
+                <div
+                  class="memberCardT1MainCards"
+                  v-for="(item,index) in cardLlabelsdATa"
+                  :key="index"
+                >
+                  <span>{{item}}<i
+                      @click="hanldeToDelCard(index)"
+                      class="fa fa-remove"
+                    ></i></span>
+                </div>
+              </div>
               <div
-                class="memberCardT1MainCards"
-                v-for="(item,index) in cardLlabelsdATa"
-                :key="index"
+                class="memberCardT1MainRight"
+                @click="hanldeToTurnRows()"
               >
-                <span>{{item}}<i class="fa fa-remove"></i></span>
+                <span>添加新卡</span>
+                <i :class="newCardsT1Flag?'newCardsT1':'newCardsT2'"></i>
               </div>
             </div>
-            <div class="memberCardT1MainRight">
-              <span>添加新卡</span><i></i>
+            <div
+              class="memberCardT1Footer"
+              v-if="memberTableFlag"
+            >
+              <div
+                class="content"
+                v-if="page_two"
+              >
+                <table width='100%'>
+                  <thead>
+                    <tr>
+                      <td>卡名称</td>
+                      <td>创建时间</td>
+                      <td>卡权益</td>
+                      <td></td>
+                    </tr>
+                  </thead>
+                  <tbody v-if="tbodyFlagTwo">
+                    <tr
+                      v-for="(item,index) in trListTwo"
+                      :key="index"
+                      :class="item.index===index?'clickClass':''"
+                    >
+                      <td style="white-space: nowrap;">{{item.title}}</td>
+                      <td>{{item.time}}</td>
+                      <td class="link">{{item.content}}</td>
+                      <td class="lastTd">
+                        <span @click="handleClickMemberCard(index)">{{item.index===index?'-':'添加'}}</span>
+                      </td>
+                    </tr>
+                  </tbody>
+
+                </table>
+                <div
+                  class="noData"
+                  v-if="!tbodyFlagTwo"
+                >
+                  <img :src="noImg">
+                  <span>暂无相关数据</span>
+                </div>
+              </div>
+              <div
+                class="content_two"
+                v-else
+              >
+                <table width='100%'>
+                  <thead>
+                    <tr>
+                      <td>名称</td>
+
+                      <td>链接</td>
+                    </tr>
+                  </thead>
+                  <tbody v-if="tbodyFlag">
+                    <tr
+                      v-for="(item,index) in trList"
+                      :key="index"
+                      :class="clickIindex===index?'clickClass':''"
+                      @click="handleClick(index)"
+                    >
+                      <td>{{item.title}}</td>
+
+                      <td class="tb_decorate_a">
+                        {{item.path}}
+                      </td>
+                    </tr>
+                  </tbody>
+
+                </table>
+                <div
+                  class="noData"
+                  v-if="!tbodyFlag"
+                >
+                  <img :src="noImg">
+                  <span>暂无相关数据</span>
+                </div>
+              </div>
             </div>
           </div>
         </div>
@@ -485,6 +577,58 @@
           <el-button
             type="primary"
             @click="memberCardT1DialogVisible = false"
+          >确 定</el-button>
+        </span>
+      </el-dialog>
+    </div>
+    <!--设置会员卡弹窗类别二-->
+    <div
+      class="balanceDialo"
+      v-for="(item,index) in addDialogData"
+      :key="index"
+    >
+      <el-dialog
+        title="修改余额"
+        :visible.sync="memberLabelVisible"
+        width="40%"
+        :modal-append-to-body="false"
+      >
+        <div
+          class="labelEditDialogDiv"
+          style="margin-bottom:30px"
+        >
+          <div class="balanceDialogDiv">
+            <div class="bD_div">
+              <span>{{item.presentText}}：</span>
+              <span>{{item.persentMoney}}</span>
+            </div>
+            <div class="bD_div specialAddMoney">
+              <span>{{item.addText}}：</span>
+              <el-input
+                v-model="balanceDialogInput"
+                placeholder="请输入内容"
+                size="small"
+              ></el-input>
+              <span>{{item.tips}}</span>
+            </div>
+            <div class="bD_div">
+              <span>{{item.bzText}}：</span>
+              <el-input
+                v-model="balanceDialogBottomInput"
+                placeholder="请输入内容"
+                size="small"
+              ></el-input>
+            </div>
+          </div>
+        </div>
+        <span
+          slot="footer"
+          class="dialog-footer"
+        >
+          <el-button @click="memberLabelVisible = false">取 消</el-button>
+          <el-button
+            type="primary"
+            @click="memberLabelVisible = false"
           >确 定</el-button>
         </span>
       </el-dialog>
@@ -699,7 +843,9 @@ export default {
       ],
       modifypersonDialogVisible: false,
       page_one: true,
+      page_two: true,
       tbodyFlag: false,
+      tbodyFlagTwo: true,
       trList: [
         {
           title: '111',
@@ -724,6 +870,38 @@ export default {
         }
 
       ],
+      trListTwo: [
+        {
+          title: '省钱月卡',
+          time: '2019-06-03 16:11:20',
+          content: '会员折扣5.00折；会员专享商品；积分奖励；',
+          index: ''
+        },
+        {
+          title: '省钱月卡2',
+          time: '2019-06-03 16:11:20',
+          content: '会员折扣5.00折；会员专享商品；积分奖励；',
+          index: ''
+        },
+        {
+          title: '省钱月卡3',
+          time: '2019-06-03 16:11:20',
+          content: '会员折扣5.00折；会员专享商品；积分奖励；',
+          index: ''
+        },
+        {
+          title: '省钱月卡4',
+          time: '2019-06-03 16:11:20',
+          content: '会员折扣5.00折；会员专享商品；积分奖励；',
+          index: ''
+        },
+        {
+          title: '省钱月卡5',
+          time: '2019-06-03 16:11:20',
+          content: '会员折扣5.00折；会员专享商品；积分奖励；',
+          index: ''
+        }
+      ],
       clickIindex: null,
       noImg: 'http://mpimg2.weipubao.cn/image/admin/no_data.png',
       labelEditDialogVisible: false,
@@ -741,9 +919,36 @@ export default {
           label: 'IT服务(系统/数据/维护/多领域经营)'
         }
       ],
-      lebalDataList: [],
-      memberCardT1DialogVisible: true,
-      cardLlabelsdATa: ['省钱月卡', '省钱月卡', '省钱月卡', '省钱月卡', '省钱月卡', '省钱月卡', '省钱月卡']
+      lebalDataList: ['计算机软件1', '计算机硬件2', '计算机硬件3'],
+      memberCardT1DialogVisible: false,
+      cardLlabelsdATa: [],
+      newCardsT1Flag: true,
+      clickIindexTwo: null,
+      memberTableFlag: false,
+      addDialogData: [],
+      balanceDialogInput: '',
+      balanceDialogBottomInput: '',
+      memberLabelVisible: false,
+      balanceDialogData: [
+        {
+          title: '修改金额',
+          presentText: '当前金额',
+          persentMoney: '0.00',
+          addText: '增加金额',
+          tips: '（*当余额为正时，增加余额；余额为负时，减少余额*）',
+          bzText: '增加备注'
+        }
+      ],
+      integralDialogData: [
+        {
+          title: '修改积分',
+          presentText: '当前积分',
+          persentMoney: '0.00',
+          addText: '增加积分',
+          tips: '（*当积分为正时，增加积分；积分为负时，减少积分*）',
+          bzText: '增加备注'
+        }
+      ]
     }
   },
   methods: {
@@ -777,6 +982,48 @@ export default {
     handleLebelEdit () {
       this.lebalDataList.push(this.labelEditValue)
       this.labelEditDialogVisible = false
+    },
+    // 点击添加新卡
+    hanldeToTurnRows () {
+      this.newCardsT1Flag = !this.newCardsT1Flag
+      this.memberTableFlag = !this.memberTableFlag
+    },
+    // 点击设置会员卡里卡片删除icon
+    hanldeToDelCard (index) {
+      this.cardLlabelsdATa.splice(index, 1)
+    },
+    // 设置会员卡弹窗表格选中
+    handleClickMemberCard (index) {
+      this.trListTwo[index].index = index
+      this.cardLlabelsdATa.push(this.trListTwo[index].title)
+    },
+    // 资产信息点击设置
+    handleSetUp (index) {
+      switch (index) {
+        case 0:
+          this.memberCardT1DialogVisible = true
+          break
+        case 1:
+          this.memberCardT1DialogVisible = true
+          break
+        case 2:
+          this.memberCardT1DialogVisible = true
+          break
+        case 3:
+          console.log(3)
+          this.memberLabelVisible = true
+          this.addDialogData = this.balanceDialogData
+
+          break
+        case 4:
+          this.memberLabelVisible = true
+          this.addDialogData = this.integralDialogData
+          break
+      }
+    },
+    // 标签列表子项删除
+    hanldeToDelLabel (index) {
+      this.lebalDataList.splice(index, 1)
     }
   }
 
@@ -795,6 +1042,13 @@ export default {
   font-size: 12px;
   color: #444;
   margin-right: 15px;
+  position: relative;
+}
+.lebalSpan i {
+  position: absolute;
+  top: -6px;
+  right: -6px;
+  cursor: pointer;
 }
 .membersDetailContent {
   padding: 10px;
@@ -1013,6 +1267,9 @@ td {
   line-height: 24px;
   color: #5a8bff;
 }
+.cardName {
+  margin-top: 10px;
+}
 .cardName i {
   width: 20px;
   height: 20px;
@@ -1055,7 +1312,7 @@ td {
   color: #5a8bff;
   cursor: pointer;
 }
-.memberCardT1MainRight i {
+.newCardsT1 {
   width: 7px;
   height: 7px;
   border-top: 1px solid #5a8bff;
@@ -1066,7 +1323,38 @@ td {
   cursor: pointer;
   position: relative;
   top: 2px;
-  margin-left: 4px;
+  margin-right: 3px;
+}
+.newCardsT2 {
+  width: 7px;
+  height: 7px;
+  border-top: 1px solid #5a8bff;
+  border-right: 1px solid #5a8bff;
+  transform: rotate(-45deg);
+  display: inline-block;
+  vertical-align: middle;
+  position: relative;
+  top: 1px;
+  margin-right: 3px;
+}
+.lastTd span {
+  white-space: nowrap;
+  color: #5a8bff;
+  cursor: pointer;
+}
+.MemberdialogContainer {
+  height: 300px;
+  overflow-y: auto;
+  overflow-x: hidden;
+}
+.bD_div {
+  margin-bottom: 10px;
+  display: flex;
+}
+.bD_div span {
+  white-space: nowrap;
+  height: 32px;
+  line-height: 32px;
 }
 </style>
 <style>
@@ -1086,5 +1374,11 @@ td {
   height: 30px !important;
   padding: 0 10px !important;
   font-size: 12px !important;
+}
+.specialAddMoney .el-input__inner {
+  width: 100px !important;
+}
+.specialAddMoney .el-input {
+  width: 100px !important;
 }
 </style>

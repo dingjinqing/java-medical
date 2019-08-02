@@ -1,5 +1,5 @@
 <template>
-  <div class="brandManagementContent">
+  <div class="membershioListContent">
     <div class="brandManagementContent_main">
       <ul>
         <li class="li">
@@ -85,7 +85,7 @@
           <div class="liNav">
             <span>邀请人</span>
             <el-input
-              v-model="phoneNum"
+              v-model="inviteUserName"
               placeholder="请输入邀请人名称"
               size="small"
             ></el-input>
@@ -193,6 +193,7 @@
           <el-button
             type="primary"
             size="small"
+            @click="handleScreen()"
           >筛选</el-button>
           &nbsp;
           <el-button
@@ -248,7 +249,7 @@
                     @change='handleClick()'
                     v-model="item.ischecked"
                   ></el-checkbox>
-                  <span>{{item.id}}</span>
+                  <span>{{item.userId}}</span>
                 </div>
 
               </td>
@@ -256,32 +257,32 @@
                 <span
                   @click="hanldeToDetail()"
                   style="color: #5A8BFF;cursor:pointer"
-                >{{item.name}}</span>
+                >{{item.userName}}</span>
 
               </td>
               <td class="tb_decorate_a">
-                {{item.phoneNum}}
+                {{item.mobile}}
               </td>
               <td class="tb_decorate_a">
-                {{item.person}}
+                {{item.inviteUserName}}
               </td>
               <td class="tb_decorate_a">
-                <span class="plusSpan">{{item.balance}}</span>
+                <span class="plusSpan">{{item.account}}</span>
                 <img
-                  @click="handlebalanceDialog(0,item.balance)"
+                  @click="handlebalanceDialog(0,item.account,item.userId)"
                   :src="plusImg"
                 >
               </td>
               <td class="tb_decorate_a">
-                <span class="plusSpan">{{item.integral}}</span>
+                <span class="plusSpan">{{item.score}}</span>
                 <img
-                  @click="handlebalanceDialog(1,item.integral)"
+                  @click="handlebalanceDialog(1,item.score,item.userId)"
                   :src="plusImg"
                 >
               </td>
               <td class="tb_decorate_a">
                 <div class="member">
-                  <span>{{item.membershipCard}}</span>
+                  <span>{{item.source}}</span>
                   <div>
                     <span @click="handleSetUp()">设置</span>
                     <span
@@ -292,10 +293,10 @@
                 </div>
               </td>
               <td class="tb_decorate_a">
-                {{item.from}}
+                {{item.source}}
               </td>
               <td class="tb_decorate_a">
-                {{item.date}}
+                {{item.createTime}}
 
               </td>
               <td class="tb_decorate_a">
@@ -316,6 +317,13 @@
           </tbody>
 
         </table>
+        <div
+          class="noData"
+          v-if="!tbodyFlag"
+        >
+          <img :src="noImg">
+          <span>暂无相关数据</span>
+        </div>
         <!--表格底部-->
         <div class="tableFooter">
           <div class="footer_t">
@@ -329,6 +337,7 @@
                 v-model="value_one"
                 placeholder="请选择"
                 size="small"
+                @change="handleFooterSelect(0)"
               >
                 <el-option
                   v-for="item in options_one"
@@ -344,6 +353,7 @@
                 v-model="value_two"
                 placeholder="请选择"
                 size="small"
+                @change="handleFooterSelect(1)"
               >
                 <el-option
                   v-for="item in options_two"
@@ -359,6 +369,7 @@
                 v-model="value_three"
                 placeholder="请选择"
                 size="small"
+                @change="handleFooterSelect(2)"
               >
                 <el-option
                   v-for="item in options_three"
@@ -374,6 +385,7 @@
                 v-model="value_four"
                 placeholder="请选择"
                 size="small"
+                @change="handleFooterSelect(3)"
               >
                 <el-option
                   v-for="item in options_four"
@@ -389,6 +401,7 @@
                 v-model="value_five"
                 placeholder="请选择"
                 size="small"
+                @change="handleFooterSelect(4)"
               >
                 <el-option
                   v-for="item in options_five"
@@ -401,13 +414,13 @@
             </div>
           </div>
           <div class="footer_b">
-            <span>当前页面1/140，总记录2793条</span>
+            <span>当前页面{{this.currentPage3}}/{{this.pageCount}}，总记录{{this.totalNum}}条</span>
             <el-pagination
               @current-change="handleCurrentChange"
               :current-page.sync="currentPage3"
               :page-size="20"
               layout="prev, pager, next, jumper"
-              :total="1000"
+              :total="totalNum"
             >
             </el-pagination>
           </div>
@@ -457,7 +470,7 @@
           <el-button @click="balanceDialogVisible = false">取 消</el-button>
           <el-button
             type="primary"
-            @click="balanceDialogVisible = false"
+            @click="hanldemodifySure()"
           >确 定</el-button>
         </span>
       </el-dialog>
@@ -698,13 +711,19 @@
           style="margin-bottom:30px"
         >
           <span style="line-height:15px;font-size:12px;color:#a3a3a3;display:block;margin-bottom:10px">一个用户最多可以打5个标签，超过数量的标签将不再被添加给该用户</span>
-          <el-autocomplete
+          <el-select
             v-model="labelDialogInput"
-            :fetch-suggestions="labelQuerySearch"
-            @select="handleLabelSelect"
-            placeholder="请输入内容"
-            size="small"
-          ></el-autocomplete>
+            multiple
+            placeholder="请选择"
+          >
+            <el-option
+              v-for="item in hitLabeloptions"
+              :key="item.value"
+              :label="item.label"
+              :value="item.value"
+            >
+            </el-option>
+          </el-select>
         </div>
         <span
           slot="footer"
@@ -721,6 +740,7 @@
   </div>
 </template>
 <script>
+import { membershipListRequest, accountAddRequest } from '@/api/admin/membershipList.js'
 import { mapActions } from 'vuex'
 import ChoosingGoods from '@/components/admin/choosingGoods'
 export default {
@@ -729,6 +749,7 @@ export default {
     return {
       phoneNum: '',
       vxName: '',
+      inviteUserName: '',
       sourceOptions: [{
         value: '选项1',
         label: '黄金糕'
@@ -750,6 +771,7 @@ export default {
         value: '选项3',
         label: '会员3'
       }],
+      noImg: 'http://mpimg2.weipubao.cn/image/admin/no_data.png',
       membershipCardVal: '',
       labelVal: '',
       datePickerVal: '',
@@ -778,234 +800,75 @@ export default {
       choiseGoodImgUrl: this.$imageHost + '/image/admin/icon_jia.png',
       tbodyFlag: true,
       trList: [
-        {
-          id: '111',
-          name: '用户12811',
-          phoneNum: '13167356120',
-          person: '帅飞',
-          balance: '1.00',
-          integral: '1000',
-          membershipCard: '限次卡核销服务',
-          from: '后台',
-          date: '2019-07-30 10:41:31',
-          ischecked: false
-        },
-        {
-          id: '111',
-          name: '用户12811',
-          phoneNum: '13167356120',
-          person: '帅飞',
-          balance: '1.00',
-          integral: '1000',
-          membershipCard: '',
-          from: '后台',
-          date: '2019-07-30 10:41:31',
-          ischecked: false
-        },
-        {
-          id: '111',
-          name: '用户12811',
-          phoneNum: '13167356120',
-          person: '帅飞',
-          balance: '1.00',
-          integral: '1000',
-          membershipCard: '',
-          from: '后台',
-          date: '2019-07-30 10:41:31',
-          ischecked: false
-        },
-        {
-          id: '111',
-          name: '用户12811',
-          phoneNum: '13167356120',
-          person: '帅飞',
-          balance: '1.00',
-          integral: '1000',
-          membershipCard: '',
-          from: '后台',
-          date: '2019-07-30 10:41:31',
-          ischecked: false
-        },
-        {
-          id: '111',
-          name: '用户12811',
-          phoneNum: '13167356120',
-          person: '帅飞',
-          balance: '1.00',
-          integral: '1000',
-          membershipCard: '',
-          from: '后台',
-          date: '2019-07-30 10:41:31',
-          ischecked: false
-        },
-        {
-          id: '111',
-          name: '用户12811',
-          phoneNum: '13167356120',
-          person: '帅飞',
-          balance: '1.00',
-          integral: '1000',
-          membershipCard: '',
-          from: '后台',
-          date: '2019-07-30 10:41:31',
-          ischecked: false
-        },
-        {
-          id: '111',
-          name: '用户12811',
-          phoneNum: '13167356120',
-          person: '帅飞',
-          balance: '1.00',
-          integral: '1000',
-          membershipCard: '',
-          from: '后台',
-          date: '2019-07-30 10:41:31',
-          ischecked: false
-        },
-        {
-          id: '111',
-          name: '用户12811',
-          phoneNum: '13167356120',
-          person: '帅飞',
-          balance: '1.00',
-          integral: '1000',
-          membershipCard: '',
-          from: '后台',
-          date: '2019-07-30 10:41:31',
-          ischecked: false
-        },
-        {
-          id: '111',
-          name: '用户12811',
-          phoneNum: '13167356120',
-          person: '帅飞',
-          balance: '1.00',
-          integral: '1000',
-          membershipCard: '',
-          from: '后台',
-          date: '2019-07-30 10:41:31',
-          ischecked: false
-        },
-        {
-          id: '111',
-          name: '用户12811',
-          phoneNum: '13167356120',
-          person: '帅飞',
-          balance: '1.00',
-          integral: '1000',
-          membershipCard: '',
-          from: '后台',
-          date: '2019-07-30 10:41:31',
-          ischecked: false
-        },
-        {
-          id: '111',
-          name: '用户12811',
-          phoneNum: '13167356120',
-          person: '帅飞',
-          balance: '1.00',
-          integral: '1000',
-          membershipCard: '',
-          from: '后台',
-          date: '2019-07-30 10:41:31',
-          ischecked: false
-        },
-        {
-          id: '111',
-          name: '用户12811',
-          phoneNum: '13167356120',
-          person: '帅飞',
-          balance: '1.00',
-          integral: '1000',
-          membershipCard: '',
-          from: '后台',
-          date: '2019-07-30 10:41:31',
-          ischecked: false
-        },
-        {
-          id: '111',
-          name: '用户12811',
-          phoneNum: '13167356120',
-          person: '帅飞',
-          balance: '1.00',
-          integral: '1000',
-          membershipCard: '',
-          from: '后台',
-          date: '2019-07-30 10:41:31',
-          ischecked: false
-        },
-        {
-          id: '111',
-          name: '用户12811',
-          phoneNum: '13167356120',
-          person: '帅飞',
-          balance: '1.00',
-          integral: '1000',
-          membershipCard: '',
-          from: '后台',
-          date: '2019-07-30 10:41:31',
-          ischecked: false
-        }
+
       ],
       clickIindex: '',
       isCenterFlag: '',
       allChecked: false,
       options_one: [{
-        value: '选项1',
-        label: '黄金糕'
+        value: '0',
+        label: '批量禁止登陆'
       }, {
-        value: '选项2',
-        label: '双皮奶'
+        value: '1',
+        label: '对选中的人禁止登陆'
       }, {
-        value: '选项3',
-        label: '蚵仔煎'
+        value: '2',
+        label: ''
       }],
       options_two: [{
-        value: '选项1',
-        label: '黄金糕'
+        value: '0',
+        label: '批量添加标签'
       }, {
-        value: '选项2',
-        label: '双皮奶'
+        value: '1',
+        label: '对选中的人加标签'
       }, {
-        value: '选项3',
-        label: '蚵仔煎'
+        value: '2',
+        label: ''
       }],
       options_three: [{
-        value: '选项1',
-        label: '黄金糕'
+        value: '0',
+        label: '批量发放会员卡'
       }, {
-        value: '选项2',
-        label: '双皮奶'
+        value: '1',
+        label: '对选中的人发卡'
       }, {
-        value: '选项3',
-        label: '蚵仔煎'
+        value: '2',
+        label: ''
       }],
       options_four: [{
-        value: '选项1',
-        label: '黄金糕'
+        value: '0',
+        label: '批量修改积分'
       }, {
-        value: '选项2',
-        label: '双皮奶'
+        value: '1',
+        label: '对选中的人修改积分'
       }, {
-        value: '选项3',
-        label: '蚵仔煎'
+        value: '2',
+        label: ''
       }],
       options_five: [{
-        value: '选项1',
-        label: '黄金糕'
+        value: '0',
+        label: '批量修改邀请人'
       }, {
-        value: '选项2',
-        label: '双皮奶'
+        value: '1',
+        label: '对选中的人修改邀请人'
       }, {
-        value: '选项3',
-        label: '蚵仔煎'
+        value: '2',
+        label: ''
+      },
+      {
+        value: '3',
+        label: '对选中的人删除邀请人'
+      },
+      {
+        value: '4',
+        label: ''
       }],
       currentPage3: 1,
-      value_one: '',
-      value_two: '',
-      value_three: '',
-      value_four: '',
-      value_five: '',
+      value_one: '0',
+      value_two: '0',
+      value_three: '0',
+      value_four: '0',
+      value_five: '0',
       plusImg: this.$imageHost + '/image/admin/add_some.png',
       balanceDialogVisible: false,
       balanceDialogInput: '',
@@ -1074,7 +937,34 @@ export default {
       setUpSelectVal_three: [],
       noLandingDialogVisible: false,
       labelDialogVisible: false,
-      labelDialogInput: ''
+      labelDialogInput: '',
+      totalNum: null,
+      pageCount: '',
+      userId: '',
+      hitLabeloptions: [
+        {
+          value: '选项1',
+          label: '黄金糕'
+        }, {
+          value: '选项2',
+          label: '双皮奶'
+        }, {
+          value: '选项3',
+          label: '蚵仔煎'
+        },
+        {
+          value: '选项4',
+          label: '帅飞'
+        },
+        {
+          value: '选项5',
+          label: '拉拉'
+        },
+        {
+          value: '选项6',
+          label: '嘿嘿'
+        }
+      ]
     }
   },
   watch: {
@@ -1090,14 +980,62 @@ export default {
           })
         }
       }
+    },
+    labelDialogInput (newData) {
+      console.log(newData)
+      if (newData.length === 6) {
+        this.labelDialogInput.splice(5, 1)
+        this.$message.error('一个用户最多可以标记5个标签')
+      }
     }
   },
   mounted () {
     this.restaurants = this.loadAll()
-    this.restaurantsLebel = this.loadLabelAll()
+
+    // 初始化会员列表数据
+    this.defaultTabelListData()
   },
   methods: {
     ...mapActions(['ToTurnMemberShipDetail']),
+    defaultTabelListData () {
+      let obj = {
+        'source': '',
+        'username': this.vxName,
+        'inviteUserName': this.inviteUserName,
+        'currentPage': this.currentPage3,
+        'pageRows': '20',
+        'mobile': this.phoneNum,
+        'createTime': this.datePickerVal
+      }
+      membershipListRequest(obj).then((res) => {
+        if (res) {
+          if (res.content.dataList.length === 0) {
+            this.tbodyFlag = false
+            return
+          }
+          this.tbodyFlag = true
+          this.trList = res.content.dataList
+          this.trList.map((item, index) => {
+            item.ischecked = false
+          })
+          console.log(this.trList)
+
+          this.totalNum = res.content.page.totalRows
+          this.pageCount = res.content.page.pageCount
+
+          this.options_one[2].label = '对筛选出来的' + res.content.page.totalRows + '人禁止登陆'
+          this.options_two[2].label = '对筛选出来的' + res.content.page.totalRows + '人加标签'
+          this.options_three[2].label = '对筛选出来的' + res.content.page.totalRows + '人发卡'
+          this.options_four[2].label = '对筛选出来的' + res.content.page.totalRows + '人修改积分'
+          this.options_five[2].label = '对筛选出来的' + res.content.page.totalRows + '人修改邀请人'
+          this.options_five[4].label = '对筛选出来的' + res.content.page.totalRows + '人删除邀请人'
+        }
+      })
+    },
+    // 筛选按钮
+    handleScreen () {
+      this.defaultTabelListData()
+    },
     querySearch (queryString, cb) {
       var restaurants = this.restaurants
       var results = queryString ? restaurants.filter(this.createFilter(queryString)) : restaurants
@@ -1133,7 +1071,7 @@ export default {
     },
     // 当前页发生变化
     handleCurrentChange () {
-
+      this.defaultTabelListData()
     },
     // 会员列表表格选中
     handleClick () {
@@ -1148,6 +1086,7 @@ export default {
         this.allCheckFlag = true
         this.allChecked = false
       }
+      this.$forceUpdate()
       console.log(flag, 1)
     },
     // 全部checkbox选中
@@ -1155,8 +1094,9 @@ export default {
       this.allCheckFlag = false
     },
     // 控制修改余额弹窗
-    handlebalanceDialog (index, item) {
-      if (index === 1) {
+    handlebalanceDialog (index, item, id) {
+      console.log(index)
+      if (index === 0) {
         this.balanceDialogData[0].persentMoney = item
         this.addDialogData = this.balanceDialogData
       } else {
@@ -1164,6 +1104,109 @@ export default {
         this.addDialogData = this.integralDialogData
       }
       this.balanceDialogVisible = true
+      this.userId = id
+    },
+    // 修改余额弹窗确认按钮
+    hanldemodifySure () {
+      let obj = {
+        'userId': this.userId,
+        'account': this.addDialogData[0].persentMoney,
+        'remark': this.balanceDialogBottomInput,
+        'amount': parseInt(this.balanceDialogInput)
+      }
+      accountAddRequest(obj).then((res) => {
+        console.log(res)
+
+        if (res) {
+          this.defaultTabelListData()
+        }
+      })
+      this.balanceDialogVisible = false
+    },
+    // 表格底部下拉框选中事件
+    handleFooterSelect (index) {
+      console.log(index)
+      if (index === 0) {
+        console.log(this.value_one)
+        switch (this.value_one) {
+          case '1':
+            this.handlePdIsChecked('0')
+            break
+          case '2':
+            this.noLandingDialogVisible = true
+        }
+      } else if (index === 1) {
+        switch (this.value_two) {
+          case '1':
+            this.handlePdIsChecked('1')
+            break
+          case '2':
+            this.labelDialogVisible = true
+        }
+      } else if (index === 2) {
+        switch (this.value_three) {
+          case '1':
+            this.handlePdIsChecked('2')
+        }
+      } else if (index === 3) {
+        switch (this.value_four) {
+          case '1':
+            this.handlePdIsChecked('3')
+        }
+      } else if (index === 4) {
+        switch (this.value_five) {
+          case '1':
+            this.handlePdIsChecked('4')
+            break
+          case '3':
+            this.handlePdIsChecked('4')
+        }
+      }
+    },
+    // 表格底部下拉框选中ischecked判断函数
+    handlePdIsChecked (index) {
+      let flag = this.trList.filter((item, index) => {
+        return item.ischecked === true
+      })
+      console.log(flag)
+      if (flag.length === 0) {
+        this.$message('请选择会员')
+        switch (index) {
+          case '0':
+            this.value_one = '0'
+            break
+          case '1':
+            this.value_two = '0'
+            break
+          case '2':
+            this.value_three = '0'
+            break
+          case '3':
+            this.value_four = '0'
+            break
+          case '4':
+            this.value_five = '0'
+            break
+        }
+      } else {
+        switch (index) {
+          case '0':
+            this.noLandingDialogVisible = true
+            break
+          case '1':
+            this.labelDialogVisible = true
+            break
+          // case '2':
+          //   this.value_three = '0'
+          //   break
+          // case '3':
+          //   this.value_four = '0'
+          //   break
+          // case '4':
+          //   this.value_five = '0'
+          //   break
+        }
+      }
     },
     // 表格设置点击
     handleSetUp () {
@@ -1233,27 +1276,10 @@ export default {
     },
     // 打标签点击
     handleToLabel () {
+      this.labelDialogInput = []
       this.labelDialogVisible = true
     },
     // 打标签弹窗内的输入框建议处理事件
-    labelQuerySearch (queryString, cb) {
-      var restaurants = this.restaurantsLebel
-      var results = queryString ? restaurants.filter(this.createLabelFilter(queryString)) : restaurants
-      // 调用 callback 返回建议列表的数据
-      cb(results)
-    },
-    createLabelFilter (queryString) {
-      return (restaurant) => {
-        return (restaurant.value.toLowerCase().indexOf(queryString.toLowerCase()) === 0)
-      }
-    },
-    loadLabelAll () {
-      return [
-        { 'value': '1三全鲜食（北新泾店）', 'address': '长宁区新渔路144号' },
-        { 'value': '1Hot honey 首尔炸鸡（仙霞路）', 'address': '上海市长宁区淞虹路661号' },
-        { 'value': '1新旺角茶餐厅', 'address': '上海市普陀区真北路988号创邑金沙谷6号楼113' }
-      ]
-    },
     handleLabelSelect () {
 
     },
@@ -1265,11 +1291,12 @@ export default {
     handleToTurnMore (params) {
       this.ToTurnMemberShipDetail(params)
     }
+
   }
 }
 </script>
 <style scoped>
-.brandManagementContent {
+.membershioListContent {
   padding: 10px;
   padding-bottom: 68px;
   /* padding-right: 23px; */
@@ -1504,6 +1531,7 @@ img {
 }
 .tableFooter {
   height: 100px;
+  display: flex;
 }
 .footer_t {
   overflow: hidden;
@@ -1518,6 +1546,8 @@ img {
   display: flex;
   justify-content: flex-end;
   align-items: center;
+  flex: 1;
+  height: 60px !important;
 }
 .tb_decorate_a img {
   margin-left: 15px;
@@ -1611,6 +1641,19 @@ img {
 .labelClass {
   width: 42px !important;
 }
+.noData {
+  height: 100px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  /* width: 650px; */
+  flex-direction: column;
+  border: 1px solid #eee;
+  margin-top: 10px;
+}
+.noData span {
+  margin: 10px;
+}
 </style>
 <style>
 .liNav .el-input__inner {
@@ -1628,7 +1671,7 @@ img {
   border-radius: 3px !important;
 }
 .footer_t .el-input__inner {
-  width: 110px !important;
+  width: 140px !important;
 }
 .footer_b .el-pagination {
   display: inline-block;

@@ -17,15 +17,17 @@ import myMixins from '@/components/mixins.js'
 import VueCropper from 'vue-cropper'
 // 全局flag
 localStorage.setItem('V-overallFlag', true)
+
 Vue.use(VueCropper)
 Vue.component('v-distpicker', Distpicker)
 Vue.prototype.$http = new Vue()
-Vue.prototype.$imageHost = localStorage.getItem('V-ImageHost')
+Vue.prototype.$imageHost = 'http://mpimg2.weipubao.cn'
 Vue.use(vcolorpicker)
 Vue.use(ElementUI)
 Vue.use(vueSwiper)
 Vue.config.productionTip = false
 Vue.mixin(myMixins)
+
 /* eslint-disable no-new */
 new Vue({
   el: '#app',
