@@ -275,7 +275,7 @@
     <!--修改邀请人弹窗-->
     <div class="baseInfo">
       <el-dialog
-        title="编辑"
+        title="选择用户"
         :visible.sync="modifypersonDialogVisible"
         width="50%"
         :modal-append-to-body="false"

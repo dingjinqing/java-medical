@@ -5,7 +5,7 @@
         <li
           v-for="(item,index) in navLeftData"
           :key="index"
-          :class="$route.name == item.name||click_nav_index===index?'active_bg':''"
+          :class="$route.name == item.name||click_nav_index==index||saveIndex == index||$route.meta.category == item.name?'active_bg':''"
           @click="leftNavClick(index,item.name)"
           @mouseover="left_nav_over(index)"
           @mouseleave="left_nav_leave(index)"
@@ -410,21 +410,27 @@ export default {
       ],
       nav_index: '',
       click_nav_index: null,
-      nav_s_class_index: false
+      nav_s_class_index: false,
+      saveIndex: null
     }
   },
   watch: {
     $route (to, from) {
-      console.log(to.meta)
-      this.defaultNav(to.meta)
+      console.log(to)
+      this.flag = to.meta.flag
+      console.log(this.flag)
+      this.defaultNav(to.meta.meta)
     }
   },
   mounted () {
     // 初始化左侧菜单及顶部点击左侧菜单显示
-    this.defaultNav(this.$route.meta)
+    this.defaultNav(this.$route.meta.meta)
+
+    console.log(this.$route)
   },
   methods: {
     defaultNav (meta) {
+      console.log(meta)
       switch (meta) {
         case 'first_web_manage':
           this.navLeftData = this.first_web_manage
@@ -456,12 +462,18 @@ export default {
       } else {
         this.nav_s_class_index = false
       }
+      this.$http.$on('resit', (res) => {
+        this.saveIndex = 0
+      })
+      console.log(this.saveIndex)
     },
     // 左侧菜单栏点击事件
     leftNavClick (index, name) {
-      console.log(name)
+      console.log(index, name)
+
       if (name === 'first_market_manage') this.nav_s_class_index = true
       this.click_nav_index = index
+      this.saveIndex = index
       this.$router.push({
         name: name
       })

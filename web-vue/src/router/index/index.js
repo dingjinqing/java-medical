@@ -2,39 +2,39 @@ const routes = [
   {
     path: '/index/home',
     name: 'indexHome',
-    component: r => require.ensure([], () => r(require('@/view/index/home')), 'indexHome'),
+    component: () => import('@/view/index/home'),
     children: [
       {
         path: '/index/home/main',
         name: 'indexHomeMain',
-        component: r => require.ensure([], () => r(require('@/view/index/main')), 'indexHomeMain')
+        component: () => import('@/view/index/main')
       },
       {
         path: '/index/home/ontrial',
         name: 'indexHomeOntrial',
-        component: r => require.ensure([], () => r(require('@/view/index/onTrial')), 'indexHomeOntrial')
+        component: () => import('@/view/index/onTrial')
       },
       {
         path: '/index/home/news',
         name: 'indexNews',
-        component: r => require.ensure([], () => r(require('@/view/index/news')), 'indexNews'),
+        component: () => import('@/view/index/news'),
         children: [
           {
             path: '/index/home/news/newslist',
             name: 'newsList',
-            component: r => require.ensure([], () => r(require('@/view/index/news/newsindex')), 'newsList')
+            component: () => import('@/view/index/news/newsindex')
           },
           {
             path: '/index/home/news/newsdetail',
             name: 'newsDetail',
-            component: r => require.ensure([], () => r(require('@/view/index/news/newsDetail')), 'newsDetail')
+            component: () => import('@/view/index/news/newsDetail')
           }
         ]
       },
       {
         path: '/index/home/aboutus',
         name: 'aboutUs',
-        component: r => require.ensure([], () => r(require('@/view/index/aboutUs')), 'aboutUs')
+        component: () => import('@/view/index/aboutUs')
       }
     ]
   }

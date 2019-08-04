@@ -691,6 +691,10 @@ export default {
     },
     // 添加品牌按钮
     handleAddBrand () {
+      console.log(1)
+      this.$router.push({
+        name: 'addBrand'
+      })
       this.transmitEditGoodsId('add')
       let obj = {
         index: 2,

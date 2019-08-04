@@ -9,9 +9,9 @@ import adminRoutes from '@/router/admin/index'
 import systemRouters from '@/router/system/index'
 Vue.use(Router)
 
-const indexlogin = r => require.ensure([], () => r(require('@/components/index/login')), 'indexLogin')
-const systemlogin = r => require.ensure([], () => r(require('@/components/system/login')), 'systemLogin')
-const cropperDome = r => require.ensure([], () => r(require('@/components/admin/cropperDome')), 'cropperDome')
+const indexlogin = () => import('@/components/index/login')
+const systemlogin = () => import('@/components/system/login')
+const cropperDome = () => import('@/components/admin/cropperDome')
 const baseRoutes = [
   {
     path: '/',

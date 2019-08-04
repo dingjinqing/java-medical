@@ -1,7 +1,6 @@
 // en.js
 import enLocale from 'element-ui/lib/locale/lang/en'
-import {en as programVersion} from './views/programVersion'
-
+import { en as programVersion } from './views/programVersion'
 const en = {
   message: {
     'lang': 'English',
@@ -270,6 +269,11 @@ const en = {
       { title: 'custom', colorLeft: 'background: #fff;', colorRight: 'background: #fff', id: 6, choiseId: '' }
     ]
 
+  },
+  // 路由信息
+  router: {
+    membershipList: ['Membership management,Membership List'],
+    memberEditorList: ['Membership management,Membership Editorial Information']
   },
   programVersion, // system 后台小程序版本
   ...enLocale

@@ -7,7 +7,7 @@
       <div
         v-for="(item,index) in header_navData"
         :key="index"
-        :class="$route.meta == item.meta||click_nav_index==index?'active_bg':''"
+        :class="$route.meta.meta == item.meta||click_nav_index==index?'active_bg':''"
         @click="headerNavClick(index,item.name)"
         @mouseover="header_nav_over(index)"
         @mouseleave="header_nav_leave(index)"
@@ -184,6 +184,7 @@ export default {
     },
     // 顶部导航点击
     headerNavClick (index, name) {
+      this.$http.$emit('resit', false)
       this.click_nav_index = index
       this.$router.push({
         name: name

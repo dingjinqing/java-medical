@@ -3,15 +3,20 @@
     <Header />
     <div class="admin_contant">
       <LeftNavigation />
-      <router-view class="right_container" />
+      <div class="rightContainer">
+        <Crumbs />
+        <router-view class="right_container" />
+      </div>
+
     </div>
   </div>
 </template>
 <script>
+import Crumbs from '@/components/admin/crumbs'
 import Header from '@/view/admin/index/header'
 import LeftNavigation from '@/view/admin/index/leftNavigation'
 export default {
-  components: { Header, LeftNavigation }
+  components: { Header, LeftNavigation, Crumbs }
 }
 </script>
 <style scoped>
@@ -24,8 +29,14 @@ export default {
   top: 85px;
 }
 .right_container {
-  flex: 1;
   background-color: #e6e9f0;
   min-width: 600px;
+  flex: 1;
+}
+.rightContainer {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  overflow-y: auto;
 }
 </style>

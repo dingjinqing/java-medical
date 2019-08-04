@@ -1,6 +1,6 @@
 <template>
   <div>
-    <Crumbs :mTitle="M_title" />
+    <!-- <Crumbs :mTitle="M_title" /> -->
     <MembershipListContent v-if="flagIndex===0" />
     <MembershipInformation v-if="flagIndex===1" />
     <ReceiveDetail v-if="flagIndex===2" />
@@ -10,19 +10,15 @@
 </template>
 <script>
 import { mapGetters } from 'vuex'
-import Crumbs from '@/components/admin/crumbs'
 import MembershipListContent from '@/view/admin/index/leftNavComponents/user_manger/membershipList/membershipListContent'
 import MembershipInformation from '@/view/admin/index/leftNavComponents/user_manger/membershipList/membershipInformation'
 import ReceiveDetail from '@/view/admin/index/leftNavComponents/user_manger/membershipList/receiveDetail'
 import BalanceDetail from '@/view/admin/index/leftNavComponents/user_manger/membershipList/balanceDetail'
 import IntegralDetail from '@/view/admin/index/leftNavComponents/user_manger/membershipList/integralDetail'
 export default {
-  components: { Crumbs, MembershipListContent, MembershipInformation, ReceiveDetail, BalanceDetail, IntegralDetail },
+  components: { MembershipListContent, MembershipInformation, ReceiveDetail, BalanceDetail, IntegralDetail },
   data () {
     return {
-      M_title: [
-        '会员管理', '会员列表'
-      ],
       flagIndex: 0
     }
   },

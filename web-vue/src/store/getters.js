@@ -12,7 +12,9 @@ const getters = {
   goodsIds: state => state.goodsManagement.goodsIds,
   editGoodsId: state => state.goodsManagement.editGoodsId,
   proAndUrData: state => state.crumbs.proAndUrData,
-  membershipdetailflag: state => state.membershipList.membershipdetailflag
+  membershipdetailflag: state => state.membershipList.membershipdetailflag,
+  toHandleSetUpMemflag: state => state.membershipList.toHandleSetUpMemflag,
+  toHandleSelectingUsersflag: state => state.membershipList.toHandleSelectingUsersflag
 }
 
 export default getters

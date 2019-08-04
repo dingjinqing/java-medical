@@ -199,15 +199,16 @@ export default {
     choisePath_ (newData, oldData) {
       this.suerPath = newData
     }
+
   },
   mounted () {
     this.$http.$on('linkDialogFlag', (flag) => {
       console.log(flag)
       this.dialogVisible = flag
-    })
-    // 初始化弹窗子组件
-    this.$router.push({
-      name: 'commonLinks'
+      // 初始化弹窗子组件
+      this.$router.push({
+        name: 'commonLinks'
+      })
     })
   },
   methods: {

@@ -286,7 +286,7 @@
                   <div>
                     <span @click="handleSetUp()">设置</span>
                     <span
-                      @click="handleToTurnMore('receiveDetail')"
+                      @click="handleToTurnMore('receiveDetail',item.userName)"
                       style="margin-top:8px"
                     >更多</span>
                   </div>
@@ -301,8 +301,8 @@
               </td>
               <td class="tb_decorate_a">
                 <div class="lastDiv">
-                  <span @click="handleToTurnMore('balanceDetail')">余额明细</span>
-                  <span @click="handleToTurnMore('integralDetail')">积分明细</span>
+                  <span @click="handleToTurnMore('balanceDetail',item.userName)">余额明细</span>
+                  <span @click="handleToTurnMore('integralDetail',item.userName)">积分明细</span>
                   <span @click="handleNoLanding()">禁止登陆</span>
                 </div>
                 <div
@@ -737,16 +737,41 @@
         </span>
       </el-dialog>
     </div>
+    <SetUpMemCDialog />
+    <!--选择用户弹窗-->
+    <SelectingUsersDialog />
+    <!--删除选中人弹窗-->
+    <el-dialog
+      title="提醒"
+      :visible.sync="deletePersondialogVisible"
+      width="30%"
+    >
+      <span>{{deletePersonText}}</span>
+      <span
+        slot="footer"
+        class="dialog-footer"
+      >
+        <el-button @click="deletePersondialogVisible = false">取 消</el-button>
+        <el-button
+          type="primary"
+          @click="deletePersondialogVisible = false"
+        >确 定</el-button>
+      </span>
+    </el-dialog>
   </div>
 </template>
 <script>
 import { membershipListRequest, accountAddRequest } from '@/api/admin/membershipList.js'
 import { mapActions } from 'vuex'
 import ChoosingGoods from '@/components/admin/choosingGoods'
+import SetUpMemCDialog from '@/view/admin/index/leftNavComponents/user_manger/membershipList/setUpMemCDialog'
+import SelectingUsersDialog from '@/view/admin/index/leftNavComponents/user_manger/membershipList/selectingUsersDialog'
 export default {
-  components: { ChoosingGoods },
+  components: { ChoosingGoods, SetUpMemCDialog, SelectingUsersDialog },
   data () {
     return {
+      deletePersondialogVisible: false,
+      deletePersonText: '',
       phoneNum: '',
       vxName: '',
       inviteUserName: '',
@@ -996,7 +1021,7 @@ export default {
     this.defaultTabelListData()
   },
   methods: {
-    ...mapActions(['ToTurnMemberShipDetail']),
+    ...mapActions(['ToTurnMemberShipDetail', 'toHandleSetUpMemDialog', 'toHandleSelectingUsersDialog']),
     defaultTabelListData () {
       let obj = {
         'source': '',
@@ -1125,7 +1150,7 @@ export default {
     },
     // 表格底部下拉框选中事件
     handleFooterSelect (index) {
-      console.log(index)
+      console.log(index, this.value_five)
       if (index === 0) {
         console.log(this.value_one)
         switch (this.value_one) {
@@ -1147,19 +1172,38 @@ export default {
         switch (this.value_three) {
           case '1':
             this.handlePdIsChecked('2')
+            break
+          case '2':
+            this.toHandleSetUpMemDialog(true)
         }
       } else if (index === 3) {
         switch (this.value_four) {
           case '1':
             this.handlePdIsChecked('3')
+            break
+          case '2':
+            this.integralDialogData[0].persentMoney = '-300'
+            this.integralDialogData[0].presentText = '当前最低积分'
+            this.addDialogData = this.integralDialogData
+            this.balanceDialogVisible = true
         }
       } else if (index === 4) {
         switch (this.value_five) {
           case '1':
             this.handlePdIsChecked('4')
+
+            break
+          case '2':
+            this.toHandleSelectingUsersDialog(true)
             break
           case '3':
-            this.handlePdIsChecked('4')
+            this.deletePersondialogVisible = true
+            this.deletePersonText = '确认要删除吗？'
+            break
+          case '4':
+            this.deletePersondialogVisible = true
+            this.deletePersonText = '确认要删除所有的邀请人吗？'
+            break
         }
       }
     },
@@ -1196,15 +1240,18 @@ export default {
           case '1':
             this.labelDialogVisible = true
             break
-          // case '2':
-          //   this.value_three = '0'
-          //   break
-          // case '3':
-          //   this.value_four = '0'
-          //   break
-          // case '4':
-          //   this.value_five = '0'
-          //   break
+          case '2':
+            this.toHandleSetUpMemDialog(true)
+            break
+          case '3':
+            this.integralDialogData[0].persentMoney = '-300'
+            this.integralDialogData[0].presentText = '当前最低积分'
+            this.addDialogData = this.integralDialogData
+            this.balanceDialogVisible = true
+            break
+          case '4':
+            this.toHandleSelectingUsersDialog(true)
+            break
         }
       }
     },
@@ -1285,11 +1332,43 @@ export default {
     },
     // 跳转到会员详情
     hanldeToDetail () {
-      this.ToTurnMemberShipDetail('memberDetail')
+      // this.ToTurnMemberShipDetail('memberDetail')
+      this.$router.push({
+        name: 'membershipInformation'
+      })
     },
     // 点击表格中更多&&余额明细&&积分明细
-    handleToTurnMore (params) {
-      this.ToTurnMemberShipDetail(params)
+    handleToTurnMore (params, name) {
+      console.log(name)
+      console.log(params)
+      switch (params) {
+        case 'receiveDetail':
+          this.$router.push({
+            path: '/admin/home/main/receiveDetail',
+            query: {
+              name: name
+            }
+          })
+          break
+        case 'balanceDetail':
+          this.$router.push({
+            path: '/admin/home/main/balanceDetail',
+            query: {
+              name: name
+            }
+          })
+          break
+        case 'integralDetail':
+          this.$router.push({
+            path: '/admin/home/main/integralDetail',
+            query: {
+              name: name
+            }
+          })
+          break
+      }
+
+      // this.ToTurnMemberShipDetail(params)
     }
 
   }

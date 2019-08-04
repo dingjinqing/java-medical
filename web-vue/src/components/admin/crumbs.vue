@@ -1,83 +1,44 @@
 <template>
   <div class="container">
-    <span>{{mTitle[0]}}</span>
+    <span>{{titleLeft}}</span>
     <span
       style="color:#666"
-      v-for="(item,index) in title"
+      v-for="(item,index) in titleList"
       :key="index"
-    >/ {{item}}</span>
+    ><i v-if="index !==0">/ {{item}}</i></span>
   </div>
 </template>
 <script>
-import { mapGetters } from 'vuex'
 export default {
-  props: ['mTitle'],
   data () {
     return {
-      title: ''
-    }
-  },
-  computed: {
-    ...mapGetters(['crumbsTitle', 'membershipdetailflag']),
-    crumbsTitle_ () {
-      return this.crumbsTitle
-    },
-    membershipdetailflag_ () {
-      return this.membershipdetailflag
+      titleLeft: '',
+      titleList: ''
     }
   },
   watch: {
-    crumbsTitle_ (newData, oldData) {
-      // console.log(newData)
-      this.handleTitle(newData)
-    },
-    membershipdetailflag_ (newData, name) {
-      switch (newData) {
-        case '0':
-          this.title = [
-            '会员列表'
-          ]
-          break
-        case 'memberDetail':
-          this.title = [
-            '会员编辑信息'
-          ]
-          break
-        case 'receiveDetail':
-          this.title = [
-            '会员列表', name + '-会员卡领取明细'
-          ]
-          break
-        case 'balanceDetail':
-          this.title = [
-            '会员列表', name + '-会员卡余额明细'
-          ]
-          break
-        case 'integralDetail':
-          this.title = [
-            '会员列表', name + '-积分明细'
-          ]
-          break
-      }
+    '$route.name' (newData) {
+      console.log(newData)
+      this.changeText()
     }
   },
   mounted () {
-    // console.log(this.mTitle)
-    let arr = this.mTitle.filter((item, index) => {
-      return index !== 0
-    })
-    // console.log(arr)
-    this.title = arr
+    this.langDefault()
+    this.changeText()
   },
   methods: {
-    // vuextitle
-    handleTitle (data) {
-      let arr = data.filter((item, index) => {
-        return index !== 0
-      })
-      this.title = arr
+    // 更改数据
+    changeText () {
+      let data = JSON.parse(JSON.stringify(this.$t(this.$route.meta.crumbTitle)))
+      console.log(data, this.$route)
+      if (data[1] === '会员列表' && data[2]) {
+        data[2] = this.$route.query.name + '-' + data[2]
+      }
+      this.titleLeft = data[0]
+      this.titleList = data
     }
   }
+
 }
 </script>
 <style scoped>

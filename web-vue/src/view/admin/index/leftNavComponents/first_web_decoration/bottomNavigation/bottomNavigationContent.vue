@@ -67,7 +67,7 @@
               ></el-input>
               <el-button
                 size="mini"
-                @click="handleSelectLinks"
+                @click="handleSelectLinks(index)"
               >选择链接</el-button>
             </div>
           </div>
@@ -192,7 +192,8 @@ export default {
           text: '订单'
         }
       ],
-      iconindex: ''
+      iconindex: '',
+      linksIndex: ''
     }
   },
   computed: {
@@ -203,7 +204,8 @@ export default {
   },
   watch: {
     afferentPath_ (newData, oldData) {
-      this.linkInput = newData
+      console.log(newData)
+      this.contentList[this.linksIndex].page = newData
     }
   },
   mounted () {
@@ -227,7 +229,8 @@ export default {
       })
     },
     // 点击选择链接
-    handleSelectLinks () {
+    handleSelectLinks (index) {
+      this.linksIndex = index
       this.$http.$emit('linkDialogFlag', this.linkFlag)
     },
     // 点击底部li
