@@ -3,6 +3,7 @@ package com.vpu.mp.controller.admin;
 import com.vpu.mp.service.foundation.data.JsonResult;
 import com.vpu.mp.service.pojo.shop.market.groupdraw.GroupDrawAddParam;
 import com.vpu.mp.service.pojo.shop.market.groupdraw.GroupDrawListParam;
+import com.vpu.mp.service.pojo.shop.market.groupdraw.join.JoinUserListParam;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
@@ -40,5 +41,13 @@ public class AdminGroupDrawController extends AdminBaseController {
     public JsonResult deleteGroupDraw(@PathVariable Integer id) {
         shop().groupDraw.deleteGroupDraw(id);
         return success();
+    }
+
+    /**
+     * 参与用户
+     */
+    @PostMapping("/join_user/list")
+    public JsonResult getJoinUserList(@RequestBody @Valid JoinUserListParam param) {
+        return success(shop().groupDrawUsers.getJoinUserList(param));
     }
 }

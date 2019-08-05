@@ -19,6 +19,7 @@ import com.vpu.mp.service.shop.image.ImageService;
 import com.vpu.mp.service.shop.market.bargain.BargainService;
 import com.vpu.mp.service.shop.market.freeshipping.FreeShippingService;
 import com.vpu.mp.service.shop.market.goupbuy.GroupBuyService;
+import com.vpu.mp.service.shop.market.groupdraw.GroupDrawJoinUserService;
 import com.vpu.mp.service.shop.market.groupdraw.GroupDrawService;
 import com.vpu.mp.service.shop.member.MemberService;
 import com.vpu.mp.service.shop.member.ScoreCfgService;
@@ -129,4 +130,5 @@ public class ShopApplication  {
 
 
 	@Autowired public GroupDrawService groupDraw;
+	@Autowired public GroupDrawJoinUserService groupDrawUsers;
 }
