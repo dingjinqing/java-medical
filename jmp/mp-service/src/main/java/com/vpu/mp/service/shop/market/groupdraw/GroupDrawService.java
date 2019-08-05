@@ -38,7 +38,7 @@ public class GroupDrawService extends ShopBaseService {
             GROUP_DRAW.LIMIT_AMOUNT, GROUP_DRAW.MIN_JOIN_NUM, GROUP_DRAW.OPEN_LIMIT, GROUP_DRAW.STATUS,
             GROUP_DRAW.TO_NUM_SHOW, DSL.count(JOIN_DRAW_LIST.USER_ID).as("joinUserCount"),
             DSL.count(JOIN_GROUP_LIST.USER_ID).filterWhere(JOIN_GROUP_LIST.STATUS.eq((byte) 1)).as("groupUserCount"),
-            DSL.countDistinct(JOIN_GROUP_LIST.GROUP_ID).as("groupCount"),GROUP_DRAW.GOODS_ID,
+            DSL.countDistinct(JOIN_GROUP_LIST.GROUP_ID).as("groupCount"), GROUP_DRAW.GOODS_ID,
             DSL.countDistinct(JOIN_DRAW_LIST.USER_ID).filterWhere(JOIN_DRAW_LIST.IS_WIN_DRAW.eq((byte) 1)).as("drawUserCount"))
             .from(GROUP_DRAW).leftJoin(JOIN_GROUP_LIST).on(GROUP_DRAW.ID.eq(JOIN_GROUP_LIST.GROUP_DRAW_ID))
             .leftJoin(JOIN_DRAW_LIST).on(GROUP_DRAW.ID.eq(JOIN_DRAW_LIST.GROUP_DRAW_ID)).where();
@@ -77,6 +77,7 @@ public class GroupDrawService extends ShopBaseService {
         String name = param.getActivityName();
         LocalDate startTime = param.getStartTime();
         LocalDate endTime = param.getEndTime();
+        Byte status = param.getStatus();
         if (isNotEmpty(name)) {
             select.and(GROUP_DRAW.NAME.like(format("%s%%", name)));
         }
@@ -85,6 +86,28 @@ public class GroupDrawService extends ShopBaseService {
         }
         if (null != endTime) {
             select.and(DSL.date(GROUP_DRAW.END_TIME).eq(Date.valueOf(endTime)));
+        }
+        if (null != status) {
+            switch (status) {
+                case GroupDrawListVo.ONGOING:
+                    select.and(GROUP_DRAW.START_TIME.le(currentTimeStamp()))
+                        .and(GROUP_DRAW.END_TIME.ge(currentTimeStamp()));
+                    break;
+                case GroupDrawListVo.NOT_STARTED:
+                    select.and(GROUP_DRAW.START_TIME.greaterThan(currentTimeStamp()));
+                    break;
+                case GroupDrawListVo.FINISHED:
+                    select.and(GROUP_DRAW.END_TIME.lessThan(currentTimeStamp()));
+                    break;
+                case GroupDrawListVo.DISABLED:
+                    select.and(GROUP_DRAW.STATUS.eq(GROUP_DRAW_DISABLED));
+                    break;
+                default:
+                    throw new IllegalArgumentException("Unexpected status: " + status);
+            }
+            if (GroupDrawListVo.DISABLED != status) {
+                select.and(GROUP_DRAW.STATUS.eq(GROUP_DRAW_ENABLED));
+            }
         }
     }
 
