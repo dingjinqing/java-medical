@@ -1,7 +1,9 @@
 package com.vpu.mp.service.shop.market.groupdraw;
 
+import com.vpu.mp.db.shop.tables.records.GroupDrawRecord;
 import com.vpu.mp.service.foundation.service.ShopBaseService;
 import com.vpu.mp.service.foundation.util.PageResult;
+import com.vpu.mp.service.pojo.shop.market.groupdraw.GroupDrawAddParam;
 import com.vpu.mp.service.pojo.shop.market.groupdraw.GroupDrawListParam;
 import com.vpu.mp.service.pojo.shop.market.groupdraw.GroupDrawListVo;
 import org.jooq.Record16;
@@ -13,6 +15,7 @@ import java.sql.Date;
 import java.sql.Timestamp;
 import java.time.LocalDate;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import static com.vpu.mp.db.shop.tables.GroupDraw.GROUP_DRAW;
 import static com.vpu.mp.db.shop.tables.JoinDrawList.JOIN_DRAW_LIST;
@@ -31,6 +34,9 @@ public class GroupDrawService extends ShopBaseService {
     /** 禁用 **/
     private static final byte GROUP_DRAW_DISABLED = 0;
 
+    /**
+     * 列表查询
+     */
     public PageResult<GroupDrawListVo> getGroupDrawList(GroupDrawListParam param) {
         SelectConditionStep<Record16<Integer, String, Timestamp, Timestamp, Byte, Short, Short, Short, Short, Byte, Short,
             Integer, Integer, Integer, String, Integer>> select = shopDb().select(GROUP_DRAW.ID, GROUP_DRAW.NAME,
@@ -73,6 +79,9 @@ public class GroupDrawService extends ShopBaseService {
         return result;
     }
 
+    /**
+     * 查询条件
+     */
     private void buildOptions(SelectConditionStep<Record16<Integer, String, Timestamp, Timestamp, Byte, Short, Short, Short, Short, Byte, Short, Integer, Integer, Integer, String, Integer>> select, GroupDrawListParam param) {
         String name = param.getActivityName();
         LocalDate startTime = param.getStartTime();
@@ -109,6 +118,30 @@ public class GroupDrawService extends ShopBaseService {
                 select.and(GROUP_DRAW.STATUS.eq(GROUP_DRAW_ENABLED));
             }
         }
+        select.orderBy(GROUP_DRAW.CREATE_TIME.desc());
+    }
+
+    /**
+     * 添加活动
+     */
+    public void addGroupDraw(GroupDrawAddParam param) {
+        List<Integer> goodsIds = param.getGoodsIds();
+        List<Integer> rewardCouponIds = param.getRewardCouponIds();
+        if (null == goodsIds || goodsIds.isEmpty()) {
+            throw new IllegalArgumentException("Goods ids is required");
+        }
+        if (null != rewardCouponIds && (!rewardCouponIds.isEmpty())) {
+            param.setRewardCouponId(listToString(rewardCouponIds));
+        }
+        param.setGoodsId(listToString(goodsIds));
+        shopDb().insertInto(GROUP_DRAW).set(new GroupDrawRecord(null, param.getName(), param.getStartTime(),
+            param.getEndTime(), param.getGoodsId(), param.getMinJoinNum(), param.getPayMoney(), param.getJoinLimit(),
+            param.getOpenLimit(), param.getLimitAmount(), param.getToNumShow(), GROUP_DRAW_ENABLED, (byte) 1, null,
+            null, (byte) 0, null, param.getRewardCouponId())).execute();
+    }
+
+    private String listToString(List<Integer> rewardCouponIds) {
+        return rewardCouponIds.stream().map(String::valueOf).collect(Collectors.joining(","));
     }
 
     private Timestamp currentTimeStamp() {
