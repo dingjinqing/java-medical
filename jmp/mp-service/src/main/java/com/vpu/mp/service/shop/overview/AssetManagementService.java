@@ -1,18 +1,27 @@
 package com.vpu.mp.service.shop.overview;
 
+import com.vpu.mp.db.shop.tables.TradesRecord;
 import com.vpu.mp.db.shop.tables.TradesRecordSummary;
+import com.vpu.mp.db.shop.tables.User;
+import com.vpu.mp.service.foundation.excel.ExcelFactory;
+import com.vpu.mp.service.foundation.excel.ExcelTypeEnum;
+import com.vpu.mp.service.foundation.excel.ExcelWriter;
 import com.vpu.mp.service.foundation.service.ShopBaseService;
+import com.vpu.mp.service.foundation.util.PageResult;
 import com.vpu.mp.service.foundation.util.Util;
-import com.vpu.mp.service.pojo.shop.overview.asset.RevenueDate;
-import com.vpu.mp.service.pojo.shop.overview.asset.RevenueProfileParam;
-import com.vpu.mp.service.pojo.shop.overview.asset.RevenueProfileVo;
+import com.vpu.mp.service.pojo.shop.overview.asset.*;
+import com.vpu.mp.service.pojo.shop.overview.commodity.ProductEffectExportVo;
+import org.apache.poi.ss.usermodel.Workbook;
 import org.jooq.Record7;
+import org.jooq.Record8;
+import org.jooq.Record9;
 import org.jooq.SelectConditionStep;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.sql.Date;
+import java.sql.Timestamp;
 import java.util.List;
 import java.util.Optional;
 
@@ -28,9 +37,12 @@ import static org.jooq.impl.DSL.sum;
 public class AssetManagementService extends ShopBaseService {
     private static final BigDecimal ZERO = BigDecimal.valueOf(0.00);
     private static TradesRecordSummary trs = TradesRecordSummary.TRADES_RECORD_SUMMARY.as("trs");
+    private static TradesRecord tr = TradesRecord.TRADES_RECORD.as("tr");
+    private static User u = User.USER.as("u");
 
     /**
      * 营收概况
+     *
      * @param param 入参
      * @return 统计数据和折线图数据列表
      */
@@ -69,10 +81,10 @@ public class AssetManagementService extends ShopBaseService {
     }
 
     private BigDecimal getRate(BigDecimal vo, BigDecimal tempPre) {
-        if (vo.subtract(tempPre).compareTo(ZERO)==0 || tempPre.compareTo(ZERO)==0){
+        if (vo.subtract(tempPre).compareTo(ZERO) == 0 || tempPre.compareTo(ZERO) == 0) {
             return ZERO;
         }
-        return vo.subtract(tempPre).divide(tempPre,2, RoundingMode.HALF_UP);
+        return vo.subtract(tempPre).divide(tempPre, 2, RoundingMode.HALF_UP);
     }
 
     /**
@@ -101,12 +113,54 @@ public class AssetManagementService extends ShopBaseService {
     }
 
     private SelectConditionStep<Record7<Date, BigDecimal, BigDecimal, BigDecimal, BigDecimal, BigDecimal, BigDecimal>> getSelectConditonWithSum() {
-        return db().select(min(trs.REF_DATE).as("refDate")
-            , sum(trs.INCOME_REAL_MONEY).as("incomeRealMoney")
-            , sum(trs.INCOME_TOTAL_MONEY).as("incomeTotalMoney")
-            , sum(trs.OUTGO_MONEY).as("outgoMoney")
-            , sum(trs.INCOME_REAL_SCORE).as("incomeRealScore")
-            , sum(trs.INCOME_TOTAL_SCORE).as("incomeTotalScore")
-            , sum(trs.OUTGO_SCORE).as("outgoScore")).from(trs).where();
+        return db().select(min(trs.REF_DATE).as("refDate"), sum(trs.INCOME_REAL_MONEY).as("incomeRealMoney"), sum(trs.INCOME_TOTAL_MONEY).as("incomeTotalMoney"), sum(trs.OUTGO_MONEY).as("outgoMoney"), sum(trs.INCOME_REAL_SCORE).as("incomeRealScore"), sum(trs.INCOME_TOTAL_SCORE).as("incomeTotalScore"), sum(trs.OUTGO_SCORE).as("outgoScore")).from(trs).where();
     }
+
+    /**
+     * 现金/积分资产管理明细
+     */
+    public PageResult<AssetDetailVo> assetManageDetail(AssetDetailParam param) {
+        return getPageResult(getSelectConditionStep(param).orderBy(tr.TRADE_TIME.desc()), param.getCurrentPage(), param.getPageRows(), AssetDetailVo.class);
+    }
+    public SelectConditionStep<Record8<Timestamp, String, BigDecimal, Integer, Byte, Byte, Byte, String>> getSelectConditionStep(AssetDetailParam param){
+        SelectConditionStep<Record8<Timestamp, String, BigDecimal, Integer, Byte, Byte, Byte, String>> conditionStep =
+            db().select(tr.TRADE_TIME, tr.TRADE_SN, tr.TRADE_NUM, tr.USER_ID, tr.TRADE_TYPE, tr.TRADE_FLOW, tr.TRADE_STATUS, u.USERNAME)
+                .from(tr).leftJoin(u).on(tr.USER_ID.eq(u.USER_ID)).where(tr.TRADE_CONTENT.eq(param.getTradeContent()));
+
+        if (param.getTradeSn() != null && "".equalsIgnoreCase(param.getTradeSn())) {
+            conditionStep = conditionStep.and(tr.TRADE_SN.eq(param.getTradeSn()));
+        }
+        if (param.getStartTime() != null) {
+            conditionStep = conditionStep.and(tr.TRADE_TIME.greaterOrEqual(param.getStartTime()));
+        }
+        if (param.getEndTime() != null) {
+            conditionStep = conditionStep.and(tr.TRADE_TIME.lessOrEqual(param.getEndTime()));
+        }
+        if (param.getLowerLimit() != null) {
+            conditionStep = conditionStep.and(tr.TRADE_NUM.greaterOrEqual(param.getLowerLimit()));
+        }
+        if (param.getUpperLimit() != null) {
+            conditionStep = conditionStep.and(tr.TRADE_NUM.lessOrEqual(param.getUpperLimit()));
+        }
+        if (param.getTradeType() != null && param.getTradeType() > 0) {
+            conditionStep = conditionStep.and(tr.TRADE_TYPE.eq(param.getTradeType()));
+        }
+        if (param.getTradeFlow() != null && param.getTradeFlow() != -1) {
+            conditionStep = conditionStep.and(tr.TRADE_FLOW.eq(param.getTradeFlow()));
+        }
+        return conditionStep;
+    }
+
+    /**
+     * excel导出数据
+     * @param param 导出数据筛选条件
+     */
+    public Workbook export2Excel(AssetDetailParam param){
+        List<AssetDetailExportVo> list = getSelectConditionStep(param).orderBy(tr.TRADE_TIME.desc()).fetchInto(AssetDetailExportVo.class);
+        Workbook workbook=ExcelFactory.createWorkbook(ExcelTypeEnum.XLSX);
+        ExcelWriter excelWriter = new ExcelWriter(workbook);
+        excelWriter.writeModelList(list,AssetDetailExportVo.class);
+        return workbook;
+    }
+
 }

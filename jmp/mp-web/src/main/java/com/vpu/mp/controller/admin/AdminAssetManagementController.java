@@ -1,10 +1,18 @@
 package com.vpu.mp.controller.admin;
 
 import com.vpu.mp.service.foundation.data.JsonResult;
+import com.vpu.mp.service.pojo.shop.overview.asset.AssetDetailParam;
 import com.vpu.mp.service.pojo.shop.overview.asset.RevenueProfileParam;
+import com.vpu.mp.service.pojo.shop.overview.commodity.ProductEffectParam;
+import org.apache.poi.ss.usermodel.Workbook;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
+
+import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
+import java.util.Locale;
 
 /**
  * @author liufei
@@ -20,4 +28,30 @@ public class AdminAssetManagementController extends AdminBaseController{
     public JsonResult revenueprofile(@RequestBody RevenueProfileParam param){
         return success(shop().assetService.revenueprofile(param));
     }
+
+    /**
+     * 查看明细
+     */
+    @PostMapping("/api/admin/assetmanagement/assetManageDetail")
+    public JsonResult assetManageDetail(@RequestBody AssetDetailParam param){
+        return success(shop().assetService.assetManageDetail(param));
+    }
+
+    /**
+     * 资产管理明细导出excel
+     */
+    @PostMapping("/api/admin/assetmanagement/export2Excel")
+    public void export2Excel(@RequestBody @Validated AssetDetailParam param, HttpServletResponse response){
+        try {
+            Workbook workbook=shop().assetService.export2Excel(param);
+            response.setContentType("application/vnd.ms-excel;charset=UTF-8");
+            String fileName = "资产管理明细" + System.currentTimeMillis() + ".xlsx";
+            response.setHeader("Content-Disposition", "attachment;filename="+ fileName);
+            response.setLocale(Locale.ENGLISH);
+            workbook.write(response.getOutputStream());
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
 }
