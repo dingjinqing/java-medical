@@ -43,7 +43,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class RefundCardRecord extends TableImpl<RefundCardRecordRecord> {
 
-    private static final long serialVersionUID = 2125287863;
+    private static final long serialVersionUID = -1369665914;
 
     /**
      * The reference instance of <code>mini_shop_471752.b2c_refund_card_record</code>
@@ -89,6 +89,11 @@ public class RefundCardRecord extends TableImpl<RefundCardRecordRecord> {
     public final TableField<RefundCardRecordRecord, BigDecimal> MONEY_PAID = createField("money_paid", org.jooq.impl.SQLDataType.DECIMAL(10, 2).nullable(false).defaultValue(org.jooq.impl.DSL.inline("0.00", org.jooq.impl.SQLDataType.DECIMAL)), this, "退款余额");
 
     /**
+     * The column <code>mini_shop_471752.b2c_refund_card_record.member_card_balance</code>. 会员卡余额退款金额
+     */
+    public final TableField<RefundCardRecordRecord, BigDecimal> MEMBER_CARD_BALANCE = createField("member_card_balance", org.jooq.impl.SQLDataType.DECIMAL(10, 2).nullable(false).defaultValue(org.jooq.impl.DSL.inline("0.00", org.jooq.impl.SQLDataType.DECIMAL)), this, "会员卡余额退款金额");
+
+    /**
      * The column <code>mini_shop_471752.b2c_refund_card_record.refund_time</code>. 订单退款时间
      */
     public final TableField<RefundCardRecordRecord, Timestamp> REFUND_TIME = createField("refund_time", org.jooq.impl.SQLDataType.TIMESTAMP.nullable(false).defaultValue(org.jooq.impl.DSL.field("CURRENT_TIMESTAMP", org.jooq.impl.SQLDataType.TIMESTAMP)), this, "订单退款时间");
@@ -101,12 +106,12 @@ public class RefundCardRecord extends TableImpl<RefundCardRecordRecord> {
     /**
      * The column <code>mini_shop_471752.b2c_refund_card_record.create_time</code>.
      */
-    public final TableField<RefundCardRecordRecord, Timestamp> CREATE_TIME = createField("create_time", org.jooq.impl.SQLDataType.TIMESTAMP.nullable(false).defaultValue(org.jooq.impl.DSL.field("CURRENT_TIMESTAMP", org.jooq.impl.SQLDataType.TIMESTAMP)), this, "");
+    public final TableField<RefundCardRecordRecord, Timestamp> CREATE_TIME = createField("create_time", org.jooq.impl.SQLDataType.TIMESTAMP.defaultValue(org.jooq.impl.DSL.field("CURRENT_TIMESTAMP", org.jooq.impl.SQLDataType.TIMESTAMP)), this, "");
 
     /**
      * The column <code>mini_shop_471752.b2c_refund_card_record.update_time</code>. 最后修改时间
      */
-    public final TableField<RefundCardRecordRecord, Timestamp> UPDATE_TIME = createField("update_time", org.jooq.impl.SQLDataType.TIMESTAMP.nullable(false).defaultValue(org.jooq.impl.DSL.field("CURRENT_TIMESTAMP", org.jooq.impl.SQLDataType.TIMESTAMP)), this, "最后修改时间");
+    public final TableField<RefundCardRecordRecord, Timestamp> UPDATE_TIME = createField("update_time", org.jooq.impl.SQLDataType.TIMESTAMP.defaultValue(org.jooq.impl.DSL.field("CURRENT_TIMESTAMP", org.jooq.impl.SQLDataType.TIMESTAMP)), this, "最后修改时间");
 
     /**
      * Create a <code>mini_shop_471752.b2c_refund_card_record</code> table reference
