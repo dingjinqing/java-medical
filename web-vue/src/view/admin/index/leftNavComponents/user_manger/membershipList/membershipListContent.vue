@@ -1016,7 +1016,8 @@ export default {
   },
   mounted () {
     this.restaurants = this.loadAll()
-
+    // 初始化语言
+    this.langDefault()
     // 初始化会员列表数据
     this.defaultTabelListData()
   },

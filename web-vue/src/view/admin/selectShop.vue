@@ -112,7 +112,7 @@ export default {
         const { error } = res
         if (error === 0) {
           this.$router.push({
-            name: 'overviewOfMall'
+            name: 'shop_view'
           })
         } else {
           this.$message({

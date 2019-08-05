@@ -18,7 +18,7 @@ const routes = [
           // 概况系列子路由
           {
             path: '/admin/home/main/overviewOfMall',
-            name: 'overviewOfMall',
+            name: 'shop_view',
             meta: {
               crumbTitle: '',
               meta: 'first_web_manage'
@@ -28,7 +28,7 @@ const routes = [
           },
           {
             path: '/admin/home/main/overviewStatistics',
-            name: 'overviewStatistics',
+            name: 'analysis_basic',
             meta: {
               crumbTitle: '',
               meta: 'first_web_manage'
@@ -37,7 +37,7 @@ const routes = [
           },
           {
             path: '/admin/home/main/realtimeoverview',
-            name: 'realtimeoverview',
+            name: 'situation',
             meta: {
               crumbTitle: '',
               meta: 'first_web_manage'
@@ -46,7 +46,7 @@ const routes = [
           },
           {
             path: '/admin/home/main/userportrait',
-            name: 'userportrait',
+            name: 'analysis_portrait',
             meta: {
               crumbTitle: '',
               meta: 'first_web_manage'
@@ -56,7 +56,7 @@ const routes = [
           // 小程序管理系列子路由
           {
             path: '/admin/home/main/first_web_decoration',
-            name: 'first_web_decoration',
+            name: 'picture_setting',
             meta: {
               crumbTitle: '',
               meta: 'first_web_decoration'
@@ -74,7 +74,7 @@ const routes = [
           },
           {
             path: '/admin/home/main/freight_template',
-            name: 'freight_template',
+            name: 'image_list',
             meta: {
               crumbTitle: 'router.pictureSpace',
               meta: 'first_web_decoration'
@@ -83,7 +83,7 @@ const routes = [
           },
           {
             path: '/admin/home/main/shopStyle',
-            name: 'shopStyle',
+            name: 'shop_style',
             meta: {
               crumbTitle: 'router.shopStyle',
               meta: 'first_web_decoration'
@@ -92,7 +92,7 @@ const routes = [
           },
           {
             path: '/admin/home/main/bottomNavigation',
-            name: 'bottomNavigation',
+            name: 'image_manager',
             component: () => import('@/view/admin/index/leftNavComponents/first_web_decoration/bottomNavigation/bottomNavigation'),
             meta: {
               crumbTitle: 'router.bottomNavigation',
@@ -195,7 +195,7 @@ const routes = [
           // 商品管理系列子路由
           {
             path: '/admin/home/main/goods_manage',
-            name: 'goods_manage',
+            name: 'sale_on',
             meta: {
               crumbTitle: '',
               meta: 'goods_manage'
@@ -204,7 +204,7 @@ const routes = [
           },
           {
             path: '/admin/home/main/brandManagement',
-            name: 'brandManagement',
+            name: 'brand',
             meta: {
               crumbTitle: 'router.brandManagement',
               meta: 'goods_manage'
@@ -222,21 +222,21 @@ const routes = [
           },
           {
             path: '/admin/home/main/evaluationManagement',
-            name: 'evaluationManagement',
+            name: 'comment',
             meta: 'goods_manage',
             component: () => import('@/view/admin/index/leftNavComponents/goods_manage/evaluationManagement/evaluationManagement')
           },
           // 商品管理系列之添加商品
           {
             path: '/admin/home/main/addingGoods',
-            name: 'addingGoods',
+            name: 'goods_add',
             meta: 'goods_manage',
             component: () => import('@/view/admin/index/leftNavComponents/goods_manage/addingGoods/addingGoods')
           },
           // 订单管理系列子路由
           {
             path: '/admin/home/main/first_trade_manageL',
-            name: 'first_trade_manageL',
+            name: 'first_trade_manage',
             meta: {
               crumbTitle: '',
               meta: 'first_trade_manageL'
@@ -303,6 +303,15 @@ const routes = [
               category: 'membershipList'
             },
             component: () => import('@/view/admin/index/leftNavComponents/user_manger/membershipList/integralDetail')
+          },
+          {
+            path: '/admin/home/main/membershipIntroduction',
+            name: 'membershipIntroduction',
+            meta: {
+              crumbTitle: 'router.membershipIntroduction',
+              meta: 'user_manger'
+            },
+            component: () => import('@/view/admin/index/leftNavComponents/user_manger/membershipIntroduction/membershipIntroduction')
           },
           // 门店管理系列子路由
           {

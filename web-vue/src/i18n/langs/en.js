@@ -1,6 +1,8 @@
 // en.js
 import enLocale from 'element-ui/lib/locale/lang/en'
 import { en as programVersion } from './views/programVersion'
+import { en as router } from './views/router'
+import { en as membershipIntroduction } from './views/membershipIntroduction'
 const en = {
   message: {
     'lang': 'English',
@@ -215,22 +217,22 @@ const en = {
   },
   // admin 浏览图片弹窗 selectoptions数据
   options: [{
-    value: '选项1',
+    value: 0,
     label: 'Upload from late to early'
   }, {
-    value: '选项2',
+    value: 1,
     label: 'Upload time from morning to night'
   }, {
-    value: '选项3',
+    value: 2,
     label: 'From big to small by picture'
   }, {
-    value: '选项4',
+    value: 3,
     label: 'From small to large by picture'
   }, {
-    value: '选项5',
+    value: 4,
     label: 'Descend by image name'
   }, {
-    value: '选项6',
+    value: 5,
     label: 'Upgrade by image name'
   }],
   // 图片空间数据
@@ -270,11 +272,8 @@ const en = {
     ]
 
   },
-  // 路由信息
-  router: {
-    membershipList: ['Membership management,Membership List'],
-    memberEditorList: ['Membership management,Membership Editorial Information']
-  },
+  router, // 路由信息
+  membershipIntroduction, // 会员列表
   programVersion, // system 后台小程序版本
   ...enLocale
 }

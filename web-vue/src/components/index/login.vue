@@ -31,7 +31,7 @@
           <div
             class="content-zhu content-account"
             data-type="0"
-            v-show="!isSubLogin"
+            v-if="!isSubLogin"
           >
             <div class="mesg-error"></div>
             <div class="smart-form">
@@ -52,7 +52,8 @@
               </div>
               <el-button
                 type="primary"
-                @click="onSubmit(1)"
+                @click.native.prevent="onSubmit(1)"
+                @keyup.enter.native="onSubmit(1)"
                 class="btn"
               >{{$t('login_page.login_main')}}</el-button>
             </div>
@@ -60,7 +61,7 @@
           <div
             class="content-zi content-account"
             data-type="1"
-            v-show="isSubLogin"
+            v-if="isSubLogin"
           >
             <div class="mesg-error"></div>
             <div class="smart-form">
@@ -85,7 +86,8 @@
               <el-button
                 type="primary"
                 class="btn"
-                @click="onSubmit(2)"
+                @click.native.prevent="onSubmit(2)"
+                @keyup.enter.native="onSubmit(2)"
                 :value="$t('login_page.login_main')"
               >{{$t('login_page.login_main')}}</el-button>
             </div>
@@ -116,8 +118,29 @@ export default {
 
     }
   },
+
+  created () {
+    var _self = this
+    document.onkeydown = function (e) {
+      let key = ''
+      if (window.event === undefined) {
+        key = e.keyCode
+      } else {
+        key = window.event.keyCode
+      }
+      if (key === 13) {
+        if (_self.isSubLogin === true) {
+          _self.onSubmit(2)
+        } else {
+          _self.onSubmit(1)
+        }
+      }
+    }
+  },
+
   mounted () {
     this.langDefault()
+    // window.addEventListener('keyup', this.keyupEnter, false)
   },
   methods: {
     // 表单校验
@@ -167,7 +190,7 @@ export default {
       let flag = this.JudgementForm(index)
       // console.log(this.flag)
       if (flag === false) return
-      // console.log(index)
+      console.log(index)
       localStorage.setItem('contentType', 'application/json;charset=UTF-8')
       if (index === 1) {
         loginRequest(this.mainData).then((res) => {
@@ -179,6 +202,7 @@ export default {
               type: 'error'
             })
           } else {
+            document.onkeydown = undefined
             Cookies.set('V-Token', res.content.token, { expires: 1 / 48 })
             localStorage.setItem('V-Username', res.content.userName)
             this.$message({
@@ -202,6 +226,8 @@ export default {
               type: 'error'
             })
           } else {
+            document.onkeydown = undefined
+
             Cookies.set('V-Token', res.content.token, { expires: 1 / 48 })
             localStorage.setItem('V-Username', res.content.userName)
             this.$message({

@@ -16,13 +16,15 @@ export const cn = {
   // 会员管理 会员列表 余额
   balanceDetail: ['会员管理', '会员列表', '余额明细'],
   // 会员管理 会员列表 积分
-  integralDetail: ['会员管理', '会员列表', '积分明细']
+  integralDetail: ['会员管理', '会员列表', '积分明细'],
+  // 会员管理 会员导入
+  membershipIntroduction: ['会员管理', '会员导入']
 }
 
 export const en = {
   // 会员管理 会员列表
-  membershipList: ['Membership management,Membership List'],
-  memberEditorList: ['Membership management,Membership Editorial Information'],
+  membershipList: ['Membership management', 'Membership List'],
+  memberEditorList: ['Membership management', 'Membership Editorial Information'],
   // 小程序管理 图片空间
   pictureSpace: ['Small Program Management', 'Picture space'],
   // 小程序管理 店铺风格
@@ -33,9 +35,11 @@ export const en = {
   brandManagement: ['Brand Management', 'Brand Management'],
   brandAddManagement: ['Brand Management', 'Brand Management', 'Add Brand'],
   // 会员管理 会员列表 会员卡领取
-  receiveDetail: ['Membership management,Membership List', 'Membership Card Receiving Details'],
+  receiveDetail: ['Membership management', 'Membership List', 'Membership Card Receiving Details'],
   // 会员管理 会员列表 余额
-  balanceDetail: ['Membership management,Membership List', 'Balance details'],
+  balanceDetail: ['Membership management', 'Membership List', 'Balance details'],
   // 会员管理 会员列表 积分
-  integralDetail: ['Membership management,Membership List', 'Integral details']
+  integralDetail: ['Membership management', 'Membership List', 'Integral details'],
+  // 会员管理 会员导入
+  membershipIntroduction: ['Membership management', 'Membership List']
 }

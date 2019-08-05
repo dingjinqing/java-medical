@@ -2,6 +2,7 @@
 import zhLocale from 'element-ui/lib/locale/lang/zh-CN'
 import { cn as programVersion } from './views/programVersion'
 import { cn as router } from './views/router'
+import { cn as membershipIntroduction } from './views/membershipIntroduction'
 const cn = {
   message: {
     'lang': '中文',
@@ -270,8 +271,8 @@ const cn = {
       { title: '自定义', colorLeft: 'background: #fff;', colorRight: 'background: #fff', id: 6, choiseId: '' }
     ]
   },
-  // 路由信息
-  router,
+  router, // 路由信息
+  membershipIntroduction, // 会员列表
   programVersion, // system 后台小程序版本
   ...zhLocale
 

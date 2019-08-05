@@ -291,7 +291,7 @@ export default {
     }
   },
   mounted () {
-    console.log(this.options[0].value)
+    console.log(this.options)
     this.value = this.options[0].value
 
     console.log(this.clickNode)

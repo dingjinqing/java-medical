@@ -90,10 +90,10 @@ export default {
       username: '',
       menu_width: '',
       header_navData: [
-        { title: '概况', index: '', meta: 'first_web_manage', name: 'overviewOfMall' },
-        { title: '小程序管理', index: '', meta: 'first_web_decoration', name: 'first_web_decoration' },
-        { title: '商品管理', index: '', meta: 'goods_manage', name: 'goods_manage' },
-        { title: '订单管理', index: '', meta: 'first_trade_manageL', name: 'first_trade_manageL' },
+        { title: '概况', index: '', meta: 'first_web_manage', name: 'shop_view' },
+        { title: '小程序管理', index: '', meta: 'first_web_decoration', name: 'picture_setting' },
+        { title: '商品管理', index: '', meta: 'goods_manage', name: 'sale_on' },
+        { title: '订单管理', index: '', meta: 'first_trade_manageL', name: 'first_trade_manage' },
         { title: '营销管理', index: '', meta: 'first_market_manage', name: 'first_market_manage' },
         { title: '会员管理', index: '', meta: 'user_manger', name: 'membershipList' },
         { title: '门店管理', index: '', meta: 'store_manage', name: 'store_manage' },
@@ -186,6 +186,7 @@ export default {
     headerNavClick (index, name) {
       this.$http.$emit('resit', false)
       this.click_nav_index = index
+      console.log(name)
       this.$router.push({
         name: name
       })

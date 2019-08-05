@@ -30,6 +30,7 @@ export default {
   methods: {
     // 获取详情数据
     getData () {
+      console.log(this.$route.query.articleId)
       let obj = {
         articleId: this.$route.query.articleId
       }

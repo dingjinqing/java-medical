@@ -12,7 +12,7 @@ module.exports = {
     assetsPublicPath: '/',
     proxyTable: {
       '/vpb': {
-        target: 'http://123.207.160.110:8086',
+        target: 'http://jmpdev.weipubao.cn',
         changeOrigin: true,
         pathRewrite: { '^/vpb': '' }
       }

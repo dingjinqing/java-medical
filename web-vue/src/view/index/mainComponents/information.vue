@@ -17,6 +17,7 @@
           ></div>
         <div
           class="new_li"
+          @click="to_news(0,item_list.articleId)"
           v-for="(item_list,item_index) in item.new_list"
           :key='item_index'
         >
@@ -33,7 +34,7 @@
       <a
         @mouseenter="more_enter()"
         @mouseleave="more_leave()"
-        @click="to_news()"
+        @click="to_news(1)"
         :class="more_active"
         style="cursor:pointer"
       >{{$t('information.more')}}</a>
@@ -76,10 +77,23 @@ export default {
   },
   methods: {
     // 跳转到新闻页面
-    to_news () {
-      this.$router.push({
-        name: 'indexNews'
-      })
+    to_news (index, articleId) {
+      console.log(this.newData)
+      console.log(articleId)
+      if (index === 0) {
+        this.$router.push({
+          name: 'newsDetail',
+          query: {
+            articleId: articleId
+          }
+
+        })
+      } else {
+        this.$router.push({
+          name: 'newsList'
+
+        })
+      }
     },
     // 首页文章列表
     articleRequest () {

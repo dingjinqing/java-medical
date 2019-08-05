@@ -104,6 +104,7 @@ export default {
     },
     // 跳转到详情页
     to_detail (articleId) {
+      console.log(articleId)
       this.$router.push({
         name: 'newsDetail',
         query: {
