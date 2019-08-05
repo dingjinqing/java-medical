@@ -604,7 +604,7 @@ export default {
   text-align: center;
   position: absolute;
   z-index: 2;
-  bottom: 45px;
+  bottom: -10px;
   width: 100%;
   padding: 10px 0;
 }

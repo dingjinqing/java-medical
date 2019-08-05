@@ -32,11 +32,12 @@ export default {
   background-color: #e6e9f0;
   min-width: 600px;
   flex: 1;
+  overflow-y: auto;
 }
 .rightContainer {
   flex: 1;
   display: flex;
   flex-direction: column;
-  overflow-y: auto;
+  /* overflow-y: auto; */
 }
 </style>

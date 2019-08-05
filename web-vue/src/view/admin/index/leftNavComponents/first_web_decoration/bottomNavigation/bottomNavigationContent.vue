@@ -404,7 +404,7 @@ export default {
 }
 .bottomNavigationContent {
   padding: 10px;
-  padding-right: 23px;
+  /* padding-right: 23px; */
   min-width: 1400px;
   font-size: 14px;
   height: 100%;
