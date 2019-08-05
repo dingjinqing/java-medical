@@ -28,6 +28,7 @@ import com.vpu.mp.service.shop.order.MemberCardOrderService;
 import com.vpu.mp.service.shop.order.OrderReadService;
 import com.vpu.mp.service.shop.order.OrderWriteService;
 import com.vpu.mp.service.shop.order.action.base.OrderOperateFactory;
+import com.vpu.mp.service.shop.order.card.CouponPackOrderService;
 import com.vpu.mp.service.shop.overview.*;
 import com.vpu.mp.service.shop.store.store.StoreService;
 import com.vpu.mp.service.shop.summary.portrait.PortraitService;
@@ -87,6 +88,7 @@ public class ShopApplication  {
 	@Autowired public DistributorLevelService distributorLevel; //分销员等级配置
 	@Autowired public MemberCardOrderService memberCardOrder;
 	@Autowired public TransactionStatisticsService transactionService;
+    @Autowired public CouponPackOrderService couponPackOrder;
 	/**
 	 * 满免包邮
 	 */
