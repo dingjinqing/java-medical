@@ -98,7 +98,7 @@ public class AdminOrderController extends AdminBaseController {
 	/**
 	 * 	mp退款
 	 */
-	@PostMapping("/ship")
+	@PostMapping("/refund/money")
 	public JsonResult refundMoney(@RequestBody RefundMoneyParam param) {
 		JsonResultCode code = shop().orderActionFactory.orderOperate(param);
 		return code == null ? success() : fail(code);
