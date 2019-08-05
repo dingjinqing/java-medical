@@ -274,7 +274,7 @@ public class ShopService extends MainBaseService {
 		if (subAccountId > 0) {
 			select.where(SHOP_CHILD_ROLE.ACCOUNT_ID.eq(subAccountId));
 		}
-		return select.orderBy(SHOP.CREATED.desc()).fetch();
+		return select.orderBy(SHOP.CREATED.asc()).fetch();
 	}
 
 	public ShopPojo getShopBaseInfoById(Integer shopId) {
