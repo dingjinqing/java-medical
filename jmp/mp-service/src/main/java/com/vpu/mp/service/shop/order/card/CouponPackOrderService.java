@@ -200,7 +200,10 @@ public class CouponPackOrderService extends ShopBaseService {
 						.set(USER_CARD.MONEY,USER_CARD.MONEY.add(refundBalance))
 						.where(USER_CARD.CARD_NO.eq(orderRefund.getCardNo()))
 						.execute();
-				log.info("refund balance,execute result:{},userId :{},add acount:{}",execute,orderRefund.getUserId(),refundBalance);
+				log.info("refund balance,execute result:{},cardNo :{},add acount:{}",execute,orderRefund.getCardNo(),refundBalance);
+				if(execute == 0) {
+					throw new RuntimeException("Refill Balance Failed!");
+				}
 			}
 		});
 	}
@@ -227,7 +230,10 @@ public class CouponPackOrderService extends ShopBaseService {
 						.set(USER.ACCOUNT,USER.ACCOUNT.add(refundAccount))
 						.where(USER.USER_ID.eq(orderRefund.getUserId()))
 						.execute();
-				log.info("refund account,execute result:{},userId :{},add acount:{}",execute,orderRefund.getUserId(),refundAccount);
+				log.info("refund account,execute result:{},userId :{},add account:{}",execute,orderRefund.getUserId(),refundAccount);
+				if(execute == 0) {
+					throw new RuntimeException("Refill Account Failed!");
+				}
 			}
 		});
 	}
