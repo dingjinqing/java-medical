@@ -8,12 +8,12 @@ import java.lang.reflect.Method;
 import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 import org.jooq.Record1;
 import org.jooq.Record2;
 import org.jooq.Record3;
 import org.jooq.SelectConditionStep;
-
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 
@@ -21,6 +21,7 @@ import com.vpu.mp.db.main.tables.records.ShopRoleRecord;
 import com.vpu.mp.service.foundation.service.MainBaseService;
 import com.vpu.mp.service.foundation.util.Util;
 import com.vpu.mp.service.pojo.shop.auth.AdminTokenAuthInfo;
+import com.vpu.mp.service.pojo.shop.auth.MenuInnerParam;
 import com.vpu.mp.service.pojo.shop.auth.MenuParam;
 import com.vpu.mp.service.pojo.shop.auth.MenuReturnParam;
 import com.vpu.mp.service.pojo.shop.config.group.ShopRoleGroupUpdateParam;
@@ -196,5 +197,55 @@ public class ShopRoleService extends MainBaseService {
 		}
 		return false;
 	}
+	
+	/**
+	 * 特殊的几个权限的注入
+	 * 门店管理、订单管理、商品管理
+	 * @param menuParam
+	 * @param userList
+	 * @return
+	 */
+	public MenuParam specialParam(MenuParam menuParam, List<MenuInnerParam> plus) {
+		// 门店管理 store_list
+		
+		Class<?> clazz = menuParam.getClass();
+		Field[] fields = clazz.getDeclaredFields();
+		MenuParam outParam = new MenuParam();
+		Class<?> clazz2 = outParam.getClass();
+		for (Field field : fields) {
+			field.setAccessible(true);
+			try {
+				PropertyDescriptor pd = new PropertyDescriptor(field.getName(), clazz);
+				Method rm = pd.getReadMethod();
+				List<String> dylist = (List<String>) rm.invoke(menuParam);
+				PropertyDescriptor pd2 = new PropertyDescriptor(field.getName(), clazz2);
+				Method wm = pd2.getWriteMethod();
+				for (MenuInnerParam innParam:plus) {
+					if (isInner(dylist, innParam.getEnName())) {
+						exchangeInner(dylist, innParam.getPreName(),innParam.getEnName());
+						wm.invoke(outParam, dylist);
+					}
+				}
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+			
+		}
+		return menuParam;
 
+	}
+	private Boolean isInner(List<?> list,String param) {
+		for(Object object:list) {
+			if(object.equals(param)) {
+				return true;
+			}
+		}
+		return false;
+	}
+	
+	private void exchangeInner(List<String> list,List<String> list2,String param) {
+		int indexOf = list.indexOf(param);
+		list.remove(param);
+		list.addAll(indexOf, list2);
+	}
 }
