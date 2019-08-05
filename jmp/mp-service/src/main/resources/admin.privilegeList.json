@@ -16,10 +16,12 @@
 		"picture_setting",
 		"page_classification",
 		"image_list",
+		"video_list",
 		"shop_style",
 		"image_manager",
-		"mp_jump_list",
-		"mobile_deco"
+		"user_center_config",
+		"search_config",
+		"mp_jump_list"
 	],
 	"goods_manage": [
 		"sale_on",
@@ -88,6 +90,15 @@
 		"message_config",
 		"third_auth",
 		"pledge"
-	]
-
+	],
+	"plus": [{
+		"en_name": "sale_on",
+		"pre_name": ["sale_on", "sale_end", "sale_off", "goods_add"]
+	}, {
+		"en_name": "order",
+		"pre_name": ["order","order_wait","order_return","shop_setting","pin_group_fail"]
+	}, {
+		"en_name": "store_list",
+		"pre_name": ["store_list","add_store"]
+	}]
 }
