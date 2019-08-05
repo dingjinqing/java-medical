@@ -9,8 +9,9 @@ import static com.vpu.mp.db.shop.tables.ReturnOrderGoods.RETURN_ORDER_GOODS;
 import static com.vpu.mp.db.shop.tables.StoreOrder.STORE_ORDER;
 import static com.vpu.mp.db.shop.tables.User.USER;
 import static com.vpu.mp.db.shop.tables.UserTag.USER_TAG;
-import static org.jooq.impl.DSL.*;
-
+import static org.jooq.impl.DSL.count;
+import static org.jooq.impl.DSL.date;
+import static org.jooq.impl.DSL.sql;
 
 import java.sql.Date;
 import java.sql.Timestamp;
@@ -23,18 +24,20 @@ import java.util.Map.Entry;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-import com.vpu.mp.service.foundation.database.DslPlus;
-import com.vpu.mp.service.pojo.shop.market.MarketAnalysisParam;
-import com.vpu.mp.service.pojo.shop.market.groupbuy.param.GroupBuyAnalysisParam;
-import org.jooq.*;
+import org.jooq.Record;
+import org.jooq.Record2;
+import org.jooq.SelectJoinStep;
+import org.jooq.SelectWhereStep;
 import org.jooq.impl.DSL;
 import org.jooq.tools.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
+import com.vpu.mp.service.foundation.database.DslPlus;
 import com.vpu.mp.service.foundation.service.ShopBaseService;
 import com.vpu.mp.service.foundation.util.PageResult;
+import com.vpu.mp.service.pojo.shop.market.MarketAnalysisParam;
 import com.vpu.mp.service.pojo.shop.order.OrderConstant;
 import com.vpu.mp.service.pojo.shop.order.OrderInfoVo;
 import com.vpu.mp.service.pojo.shop.order.OrderListInfoVo;
@@ -47,13 +50,11 @@ import com.vpu.mp.service.pojo.shop.order.shipping.ShippingInfoVo;
 import com.vpu.mp.service.pojo.shop.order.shipping.ShippingInfoVo.Goods;
 import com.vpu.mp.service.pojo.shop.order.store.StoreOrderListInfoVo;
 import com.vpu.mp.service.pojo.shop.order.store.StoreOrderPageListQueryParam;
-import com.vpu.mp.service.pojo.shop.order.write.ship.ShipListParam;
-import com.vpu.mp.service.pojo.shop.order.write.ship.ShipVo;
 
 import lombok.Data;
 
 /**
- * 	订单模块查询service
+ * 	订单模块普通查询service
  * @author 常乐 2019年6月27日;王帅 2019/7/10
  */
 @Service
@@ -433,34 +434,35 @@ public class OrderReadService extends ShopBaseService {
 	}
 	
 	/**
-	  * 构造退货、款查询条件
-	  * @param select
-	  * @param param
-	  * @return
-	  */
-	 public SelectWhereStep<?> buildOptionsReturn(SelectJoinStep<?> select, OrderPageListQueryParam param) {
-		//自增id排序
+	 * 构造退货、款查询条件
+	 * 
+	 * @param select
+	 * @param param
+	 * @return
+	 */
+	public SelectWhereStep<?> buildOptionsReturn(SelectJoinStep<?> select, OrderPageListQueryParam param) {
+		// 自增id排序
 		select.orderBy(RETURN_ORDER.RET_ID);
-		
-		if(!StringUtils.isEmpty(param.getOrderSn())) {
+
+		if (!StringUtils.isEmpty(param.getOrderSn())) {
 			select.where(RETURN_ORDER.ORDER_SN.eq(param.getOrderSn()));
 		}
-		if(!StringUtils.isEmpty(param.getReturnOrderSn())) {
+		if (!StringUtils.isEmpty(param.getReturnOrderSn())) {
 			select.where(RETURN_ORDER.RETURN_ORDER_SN.eq(param.getReturnOrderSn()));
 		}
-		if(param.getRefundStatus() != null && param.getRefundStatus().length != 0) {
+		if (param.getRefundStatus() != null && param.getRefundStatus().length != 0) {
 			select.where(RETURN_ORDER.REFUND_STATUS.in(param.getRefundStatus()));
 		}
-		if(param.getReturnType() != null && param.getReturnType().length != 0) {
+		if (param.getReturnType() != null && param.getReturnType().length != 0) {
 			select.where(RETURN_ORDER.RETURN_TYPE.in(param.getReturnType()));
 		}
-		if(param.getReturnStart() != null ) {
+		if (param.getReturnStart() != null) {
 			select.where(RETURN_ORDER.APPLY_TIME.ge(param.getReturnStart()));
 		}
-		if(param.getReturnEnd() != null ) {
+		if (param.getReturnEnd() != null) {
 			select.where(RETURN_ORDER.APPLY_TIME.le(param.getReturnStart()));
 		}
-		return select; 
+		return select;
 	}
 	 
 	 /**
@@ -507,55 +509,6 @@ public class OrderReadService extends ShopBaseService {
 		}
 		return select; 
 	 }
-	 
-	 /**
-		 * 	发货查询
-		 * 
-		 * @param SellerRemarkParam
-		 * @return ShipVo :
-		 */
-		public ShipVo shipGoodsList(ShipListParam param) {
-			ShipVo shipVo = null;
-			logger.info("获取可发货信息参数为:" + param.toString());
-			// 订单信息
-			shipVo = db().select(ORDER_INFO.CONSIGNEE, ORDER_INFO.MOBILE, ORDER_INFO.COMPLETE_ADDRESS).from(ORDER_INFO)
-					.where(ORDER_INFO.ORDER_SN.eq(param.getOrderSn()).and(ORDER_INFO.ORDER_STATUS.eq(OrderConstant.ORDER_WAIT_DELIVERY))).fetchOneInto(ShipVo.class);
-			if(shipVo == null) {
-				return null;
-			}
-			// 设置可发货信息
-			shipVo.setOrderGoodsVo(canBeShipped(param.getOrderSn()));
-			logger.info("获取可发货信息完成");
-			return shipVo;
-		}
-
-		/**
-		 * 	获取该订单下可发货商品列表
-		 */
-		public List<OrderGoodsVo> canBeShipped(String orderSn) {
-			//TODO 修改select*
-			// 正常商品行
-			List<OrderGoodsVo> orderGoods = db().select(ORDER_GOODS.asterisk()).from(ORDER_GOODS).where(ORDER_GOODS.ORDER_SN.eq(orderSn))
-					.fetchInto(OrderGoodsVo.class);
-			// 退货信息
-			Map<Integer, List<OrderReturnGoodsVo>> returnOrderGoods = db().select(RETURN_ORDER_GOODS.asterisk()).select().from(RETURN_ORDER_GOODS)
-					.where(RETURN_ORDER_GOODS.ORDER_SN.eq(orderSn), RETURN_ORDER_GOODS.SUCCESS.eq(OrderConstant.SUCCESS_RETURNING))
-					.fetchGroups(RETURN_ORDER_GOODS.REC_ID, OrderReturnGoodsVo.class);
-			Iterator<OrderGoodsVo> iterator = orderGoods.iterator();
-			while (iterator.hasNext()) {
-				OrderGoodsVo vo = (OrderGoodsVo) iterator.next();
-				// 可发货数量=总数-退货(退货完成)-发货-退货(退货中)
-				int numTemp;
-				List<OrderReturnGoodsVo> orgTemp = returnOrderGoods.get(vo.getRecId());
-				int sum = orgTemp == null ? 0 : orgTemp.stream().mapToInt(OrderReturnGoodsVo::getGoodsNumber).sum();
-				if ((numTemp = vo.getGoodsNumber() - vo.getReturnNumber() - vo.getSendNumber() - sum) > 0) {
-					vo.setGoodsNumber(numTemp);
-				} else {
-					iterator.remove();
-				}
-			}
-			return orderGoods;
-		}
 
 	/**
 	 * 分裂营销活动的活动数据分析的订单部分数据
@@ -564,7 +517,7 @@ public class OrderReadService extends ShopBaseService {
 	 */
 	 public Map<Date,Integer> getMarketOrderAnalysis(MarketAnalysisParam param){
 		 Map<Date,Integer> map =  db().select(date(ORDER_INFO.CREATE_TIME).as("date"),count().as("number")).from(ORDER_INFO).
-				 where(ORDER_INFO.PIN_GROUP_ID.eq(param.getActId())).
+				 where(ORDER_INFO.ACTIVITY_ID.eq(param.getActId())).
 				 and(ORDER_INFO.CREATE_TIME.between(param.getStartTime(),param.getEndTime())).
 				 and(ORDER_INFO.ORDER_STATUS.gt(OrderConstant.ORDER_CLOSED)).
 				 and(sql("FIND_IN_SET("+OrderConstant.GOODS_TYPE_BARGAIN+", "+ORDER_INFO.getName() +"."+ ORDER_INFO.GOODS_TYPE.getName()+")")).
@@ -585,7 +538,7 @@ public class OrderReadService extends ShopBaseService {
 		 Record record = db().select(DslPlus.dateFormatDay(ORDER_INFO.CREATE_TIME), ORDER_GOODS.asterisk())
 				 .from(ORDER_INFO)
 				 .leftJoin(ORDER_GOODS).on(ORDER_GOODS.ORDER_SN.eq(ORDER_INFO.ORDER_SN))
-				 .where(ORDER_INFO.PIN_GROUP_ID.eq(groupBuyId))
+				 .where(ORDER_INFO.ACTIVITY_ID.eq(groupBuyId))
 				 .and(DslPlus.findInSet(goodType.toString(), ORDER_INFO.GOODS_TYPE))
 				 .and(ORDER_INFO.ORDER_STATUS.gt(OrderConstant.ORDER_CLOSED))
 				 .and(ORDER_INFO.CREATE_TIME.between(startTime, endTime))
@@ -608,7 +561,7 @@ public class OrderReadService extends ShopBaseService {
 
 	 	List<Integer> userIdList = db().select(ORDER_INFO.USER_ID, count(ORDER_INFO.USER_ID))
 				.from(ORDER_INFO)
-				.where(ORDER_INFO.PIN_GROUP_ID.eq(groupBuyId))
+				.where(ORDER_INFO.ACTIVITY_ID.eq(groupBuyId))
 				.and(ORDER_INFO.ORDER_STATUS.gt(OrderConstant.ORDER_CLOSED))
 				.and(ORDER_INFO.CREATE_TIME.between(startTime, endTime))
 				.and(DslPlus.findInSet(goodType.toString(), ORDER_INFO.GOODS_TYPE))
@@ -621,7 +574,7 @@ public class OrderReadService extends ShopBaseService {
 
 		db().select(DslPlus.dateFormatDay(DSL.min(ORDER_INFO.CREATE_TIME)),ORDER_INFO.USER_ID )
 				.from(ORDER_INFO)
-				.where(ORDER_INFO.PIN_GROUP_ID.eq(groupBuyId))
+				.where(ORDER_INFO.ACTIVITY_ID.eq(groupBuyId))
 				.and(ORDER_INFO.ORDER_STATUS.gt(OrderConstant.ORDER_CLOSED))
 				.and(ORDER_INFO.CREATE_TIME.between(startTime, endTime))
 				.and(DslPlus.findInSet(goodType.toString(), ORDER_INFO.GOODS_TYPE))
@@ -630,7 +583,7 @@ public class OrderReadService extends ShopBaseService {
 
 		Record record = db().select(DslPlus.dateFormatDay(ORDER_INFO.CREATE_TIME),ORDER_INFO.USER_ID)
 				.from(ORDER_INFO)
-				.where(ORDER_INFO.PIN_GROUP_ID.eq(groupBuyId))
+				.where(ORDER_INFO.ACTIVITY_ID.eq(groupBuyId))
 				.and(ORDER_INFO.ORDER_STATUS.gt(OrderConstant.ORDER_CLOSED))
 				.and(ORDER_INFO.CREATE_TIME.between(startTime, endTime))
 				.and(DslPlus.findInSet(goodType.toString(), ORDER_INFO.GOODS_TYPE))
