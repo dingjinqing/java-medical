@@ -188,7 +188,7 @@ public class CouponPackOrderService extends ShopBaseService {
 		if(BigDecimal.ZERO.compareTo(refundBalance) > 0) {
 			return ;
 		}
-		db().transaction(()->{
+		this.transaction(()->{
 			int execute = db().update(CARD_ORDER)
 					.set(CARD_ORDER.RETURN_CARD_BALANCE,CARD_ORDER.RETURN_CARD_BALANCE.add(refundBalance))
 					.set(CARD_ORDER.RETURN_FLAG,RefundStatus.SUCCESS)
@@ -198,7 +198,7 @@ public class CouponPackOrderService extends ShopBaseService {
 			if(execute>0) {
 				execute = db().update(USER_CARD)
 						.set(USER_CARD.MONEY,USER_CARD.MONEY.add(refundBalance))
-						.where(USER_CARD.CARD_ID.eq(orderRefund.getCardId()))
+						.where(USER_CARD.CARD_NO.eq(orderRefund.getCardNo()))
 						.execute();
 				log.info("refund balance,execute result:{},userId :{},add acount:{}",execute,orderRefund.getUserId(),refundBalance);
 			}
@@ -215,7 +215,7 @@ public class CouponPackOrderService extends ShopBaseService {
 		if(BigDecimal.ZERO.compareTo(refundAccount) > 0) {
 			return ;
 		}
-		db().transaction(()->{
+		this.transaction(()->{
 			int execute = db().update(CARD_ORDER)
 					.set(CARD_ORDER.RETURN_ACCOUNT,CARD_ORDER.RETURN_ACCOUNT.add(refundAccount))				
 					.set(CARD_ORDER.RETURN_FLAG,RefundStatus.SUCCESS)
@@ -250,7 +250,7 @@ public class CouponPackOrderService extends ShopBaseService {
 		if(BigDecimal.ZERO.compareTo(refundScore)>=0) {
 			return ;
 		}
-		db().transaction(()->{
+		this.transaction(()->{
 			
 			int execute = db().update(CARD_ORDER)
 					.set(CARD_ORDER.RETURN_SCORE,CARD_ORDER.RETURN_SCORE.add(refundScore))
