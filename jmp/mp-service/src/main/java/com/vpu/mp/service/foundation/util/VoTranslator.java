@@ -1,7 +1,5 @@
 package com.vpu.mp.service.foundation.util;
 
-import org.springframework.context.support.MessageSourceAccessor;
-import org.springframework.context.support.ReloadableResourceBundleMessageSource;
 import org.springframework.stereotype.Component;
 
 import javax.servlet.http.HttpServletRequest;
@@ -9,7 +7,6 @@ import java.lang.reflect.Field;
 import java.lang.reflect.ParameterizedType;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Locale;
 
 import static org.springframework.util.StringUtils.isEmpty;
 
@@ -57,14 +54,7 @@ public class VoTranslator {
      * 转换语言
      */
     private String translate(String prefix, String message, String defaultMessage) {
-        String language = getLanguage();
-        ReloadableResourceBundleMessageSource source = new ReloadableResourceBundleMessageSource();
-        source.setDefaultEncoding("UTF-8");
-        source.setBasename("static/i18n/" + prefix);
-        MessageSourceAccessor accessor = new MessageSourceAccessor(source);
-        String[] languages = language.split("_");
-        Locale locale = new Locale(languages[0], languages[1]);
-        return accessor.getMessage(message, defaultMessage, locale);
+        return Util.translateMessage(getLanguage(), message, defaultMessage, prefix);
     }
 
     /**
