@@ -96,6 +96,7 @@ public class MemberCardOrderService extends ShopBaseService {
                 select.and(CARD_ORDER.RETURN_FLAG.eq(MemberCardParam.NOT_REFUND));
             }
         }
+        select.orderBy(CARD_ORDER.ORDER_ID.desc());
     }
 
     /**
