@@ -10,14 +10,11 @@ import com.vpu.mp.service.foundation.service.ShopBaseService;
 import com.vpu.mp.service.foundation.util.PageResult;
 import com.vpu.mp.service.foundation.util.Util;
 import com.vpu.mp.service.pojo.shop.overview.asset.*;
-import com.vpu.mp.service.pojo.shop.overview.commodity.ProductEffectExportVo;
 import org.apache.poi.ss.usermodel.Workbook;
 import org.jooq.Record7;
 import org.jooq.Record8;
-import org.jooq.Record9;
 import org.jooq.SelectConditionStep;
 import org.springframework.stereotype.Service;
-
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.sql.Date;
@@ -122,10 +119,9 @@ public class AssetManagementService extends ShopBaseService {
     public PageResult<AssetDetailVo> assetManageDetail(AssetDetailParam param) {
         return getPageResult(getSelectConditionStep(param).orderBy(tr.TRADE_TIME.desc()), param.getCurrentPage(), param.getPageRows(), AssetDetailVo.class);
     }
-    public SelectConditionStep<Record8<Timestamp, String, BigDecimal, Integer, Byte, Byte, Byte, String>> getSelectConditionStep(AssetDetailParam param){
-        SelectConditionStep<Record8<Timestamp, String, BigDecimal, Integer, Byte, Byte, Byte, String>> conditionStep =
-            db().select(tr.TRADE_TIME, tr.TRADE_SN, tr.TRADE_NUM, tr.USER_ID, tr.TRADE_TYPE, tr.TRADE_FLOW, tr.TRADE_STATUS, u.USERNAME)
-                .from(tr).leftJoin(u).on(tr.USER_ID.eq(u.USER_ID)).where(tr.TRADE_CONTENT.eq(param.getTradeContent()));
+
+    private SelectConditionStep<Record8<Timestamp, String, BigDecimal, Integer, Byte, Byte, Byte, String>> getSelectConditionStep(AssetDetailParam param) {
+        SelectConditionStep<Record8<Timestamp, String, BigDecimal, Integer, Byte, Byte, Byte, String>> conditionStep = db().select(tr.TRADE_TIME, tr.TRADE_SN, tr.TRADE_NUM, tr.USER_ID, tr.TRADE_TYPE, tr.TRADE_FLOW, tr.TRADE_STATUS, u.USERNAME).from(tr).leftJoin(u).on(tr.USER_ID.eq(u.USER_ID)).where(tr.TRADE_CONTENT.eq(param.getTradeContent()));
 
         if (param.getTradeSn() != null && "".equalsIgnoreCase(param.getTradeSn())) {
             conditionStep = conditionStep.and(tr.TRADE_SN.eq(param.getTradeSn()));
@@ -153,13 +149,14 @@ public class AssetManagementService extends ShopBaseService {
 
     /**
      * excel导出数据
+     *
      * @param param 导出数据筛选条件
      */
-    public Workbook export2Excel(AssetDetailParam param){
+    public Workbook export2Excel(AssetDetailParam param) {
         List<AssetDetailExportVo> list = getSelectConditionStep(param).orderBy(tr.TRADE_TIME.desc()).fetchInto(AssetDetailExportVo.class);
-        Workbook workbook=ExcelFactory.createWorkbook(ExcelTypeEnum.XLSX);
+        Workbook workbook = ExcelFactory.createWorkbook(ExcelTypeEnum.XLSX);
         ExcelWriter excelWriter = new ExcelWriter(workbook);
-        excelWriter.writeModelList(list,AssetDetailExportVo.class);
+        excelWriter.writeModelList(list, AssetDetailExportVo.class);
         return workbook;
     }
 

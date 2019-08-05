@@ -2,7 +2,6 @@ package com.vpu.mp.service.pojo.shop.overview.asset;
 
 import lombok.Data;
 
-import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import java.math.BigDecimal;
 import java.sql.Timestamp;
