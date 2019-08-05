@@ -569,5 +569,5 @@ alter table b2c_card_order
 
 --增加虚拟商品 优惠劵订单 会员卡余额支付方式的退款金额字段
 ALTER TABLE `b2c_refund_card_record`
-	ADD COLUMN `member_card_balance`  decimal(10,2) NOT NULL COMMENT '会员卡余额退款金额' AFTER `money_paid`;
+	ADD COLUMN `member_card_balance`  decimal(10,2) NOT NULL default '0.00' COMMENT '会员卡余额退款金额' AFTER `money_paid`;
 
