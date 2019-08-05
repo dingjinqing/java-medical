@@ -121,29 +121,43 @@ public class MemberCardOrderService extends ShopBaseService {
         BigDecimal availableReturnAccount = useAccount.subtract(returnAccount);
         BigDecimal availableReturnScore = useScore.subtract(returnScore);
         switch (payCode) {
+            // 微信支付退款
             case MemberCardParam.PAY_WX:
                 refundWxPay(orderSn, money);
+                // 校验微信退款数额
                 if (null == money || 0 > money || money > availableReturnMoney.doubleValue()) {
                     throw new IllegalArgumentException(INVALID_MONEY_AMOUNT);
                 }
                 break;
+            // 余额支付
             case MemberCardParam.PAY_ACCOUNT:
-                if (null == account || null == score) {
+                if (null == account) {
                     throw new IllegalArgumentException(INVALID_ACCOUNT_OR_SCORE);
                 }
-                if (0 == account && 0 == score) {
+                if (0 == account) {
                     throw new IllegalArgumentException(INVALID_REFUND_AMOUNT);
                 }
                 if (0 != useAccount.doubleValue()) {
                     if (account > availableReturnAccount.doubleValue()) {
                         throw new IllegalArgumentException(REFUND_ACCOUNT_LARGER_THAN_ACCOUNT_PAID);
                     }
+                    // 退余额
                     addUserAccount(userId, account);
+                }
+                break;
+            // 积分支付
+            case MemberCardParam.SCORE:
+                if (null == score) {
+                    throw new IllegalArgumentException(INVALID_ACCOUNT_OR_SCORE);
+                }
+                if (0 == score) {
+                    throw new IllegalArgumentException(INVALID_REFUND_AMOUNT);
                 }
                 if (0 != useScore.doubleValue()) {
                     if (score > availableReturnScore.doubleValue()) {
                         throw new IllegalArgumentException(REFUND_SCORE_LARGER_THAN_SCORE_PAID);
                     }
+                    // 退积分
                     addUserScore(userId, score);
                 }
                 break;

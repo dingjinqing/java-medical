@@ -31,6 +31,8 @@ public class MemberCardParam extends BasePageParam {
     public static final String PAY_ACCOUNT = "balance";
     /** 微信支付 **/
     public static final String PAY_WX = "wxpay";
+    /** 积分支付 */
+    public static final String SCORE = "score";
 
     /** 下单用户信息（下单用户姓名或手机号）**/
     private String userInfo;
