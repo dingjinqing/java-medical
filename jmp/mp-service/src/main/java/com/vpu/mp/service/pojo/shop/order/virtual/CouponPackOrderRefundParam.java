@@ -28,13 +28,13 @@ public class CouponPackOrderRefundParam {
 	private String orderSn;
 	
 	/** 退积分 */
-	private BigDecimal refundScore;
+	private BigDecimal refundScore=BigDecimal.ZERO;
 	/** 退现金 */
-	private BigDecimal refundMoney;
+	private BigDecimal refundMoney=BigDecimal.ZERO;
 	/** 退余额 */
-	private BigDecimal refundAccount;
+	private BigDecimal refundAccount=BigDecimal.ZERO;
 	/** 退会员卡余额 */
-	private BigDecimal refundBalance;
+	private BigDecimal refundBalance=BigDecimal.ZERO;
 	
 	private Byte stillSendFlag=1;
 }
