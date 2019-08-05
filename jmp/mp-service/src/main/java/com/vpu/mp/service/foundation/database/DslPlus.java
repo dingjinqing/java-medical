@@ -24,10 +24,7 @@ public class DslPlus {
     private static final Logger log = LoggerFactory.getLogger(DslPlus.class);
 
 
-    private static final String FORMAT = "format";
-    private static TableField user_id;
-    private static TableField<OrderInfoRecord, Integer> user_id1;
-    private static String s;
+    private static final String FORMAT = "yyyy-MM-dd";
 
     /**
      * 格式化时间到日
@@ -75,7 +72,7 @@ public class DslPlus {
      * @return
      */
     public static <T> Field groupConCat(Field<?> field, SortField<?> SortField, String separator) {
-        // TODO: 2019/8/2    函数有最大长度限制 #SET GLOBAL group_concat_max_len = 1024;   db.execute("SET NAMES utf8mb4");
+        // TODO: 2019/8/2    函数有最大长度限制1024 #SET GLOBAL group_concat_max_len = 1024;
         return DSL.field("group_concat({0} order by {1}   separator '{2}')",field,SortField,separator);
     }
 
