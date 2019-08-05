@@ -25,6 +25,7 @@ import com.vpu.mp.service.shop.member.ScoreCfgService;
 import com.vpu.mp.service.shop.member.TagService;
 import com.vpu.mp.service.shop.operation.RecordAdminActionService;
 import com.vpu.mp.service.shop.order.MemberCardOrderService;
+import com.vpu.mp.service.shop.order.OrderOperateQueryService;
 import com.vpu.mp.service.shop.order.OrderReadService;
 import com.vpu.mp.service.shop.order.OrderWriteService;
 import com.vpu.mp.service.shop.order.action.base.OrderOperateFactory;
@@ -54,7 +55,7 @@ public class ShopApplication  {
 	@Autowired public ImageCategoryService imageCatgory;
 	@Autowired public ShopMpDecorationService mpDecoration;	
 	/**
-	 * 订单读操作
+	 * 订单普通操作
 	 */
 	@Autowired public OrderReadService readOrder;
 	/**
@@ -65,6 +66,10 @@ public class ShopApplication  {
 	 * 订单状态操作(发货、退货)
 	 */
 	@Autowired public OrderOperateFactory orderActionFactory;
+	/**
+	 * 订单状态操作的前置条件查询
+	 */
+	@Autowired public OrderOperateQueryService orderOperateQuery;
 	@Autowired public PageClassificationService pageClassification;
 	@Autowired public VersionService version;
 	@Autowired public ConfigService config;

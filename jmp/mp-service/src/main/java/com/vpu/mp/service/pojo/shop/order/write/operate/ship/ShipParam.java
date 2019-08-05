@@ -1,9 +1,10 @@
-package com.vpu.mp.service.pojo.shop.order.write.ship;
+package com.vpu.mp.service.pojo.shop.order.write.operate.ship;
 
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 
 import com.vpu.mp.service.foundation.data.JsonResultMessage;
+import com.vpu.mp.service.pojo.shop.order.write.operate.OrderOperateQueryParam;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -16,7 +17,7 @@ import lombok.Setter;
  */
 @Getter
 @Setter
-public class ShipParam extends ShipListParam {
+public class ShipParam extends OrderOperateQueryParam {
 	//TODO
 	@NotBlank(message = JsonResultMessage.MSG_ORDER)
 	private String shippingNo;

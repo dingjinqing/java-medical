@@ -27,11 +27,16 @@ public class OrderOperateFactory implements ApplicationContextAware {
 		// 获取实现IorderOperate接口并加入ioc管理的实例
 		Map<String, IorderOperate> map = applicationContext.getBeansOfType(IorderOperate.class);
 		orderOperateMap = new HashMap<OrderServiceCode, IorderOperate>();
-		map.forEach((key, value) -> orderOperateMap.put(value.getServiceCode(), value));
+		map.forEach((key, value) -> {
+			//防止实现IorderOperate接口的类的ServiceCode重复
+			assert(orderOperateMap.get(value.getServiceCode()) == null);
+			orderOperateMap.put(value.getServiceCode(), value);
+		});
 	}
 
 	/**
 	 * 通过传出param取其ServiceCode并调用execute
+	 * 
 	 * @param IOrderBase
 	 * @return 执行结果
 	 */
@@ -41,6 +46,7 @@ public class OrderOperateFactory implements ApplicationContextAware {
 
 	/**
 	 * 根据传入的code获得处理该业务的service
+	 * 
 	 * @param OrderServiceCode
 	 * @return IorderOperate的实现类
 	 */

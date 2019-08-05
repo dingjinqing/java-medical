@@ -26,10 +26,10 @@ import com.vpu.mp.service.foundation.service.ShopBaseService;
 import com.vpu.mp.service.pojo.shop.operation.RecordContentTemplate;
 import com.vpu.mp.service.pojo.shop.order.OrderConstant;
 import com.vpu.mp.service.pojo.shop.order.goods.OrderGoodsVo;
+import com.vpu.mp.service.pojo.shop.order.write.operate.ship.ShipParam;
+import com.vpu.mp.service.pojo.shop.order.write.operate.ship.ShipParam.ShipGoods;
 import com.vpu.mp.service.pojo.shop.order.write.remark.SellerRemarkParam;
 import com.vpu.mp.service.pojo.shop.order.write.remark.SellerRemarkVo;
-import com.vpu.mp.service.pojo.shop.order.write.ship.ShipParam;
-import com.vpu.mp.service.pojo.shop.order.write.ship.ShipParam.ShipGoods;
 import com.vpu.mp.service.pojo.shop.order.write.star.StarParam;
 
 /**
@@ -87,7 +87,7 @@ public class OrderWriteService extends ShopBaseService {
 		//是否存在可发货数>当前发货数的标识
 		boolean flag = false;
 		//可发货商品
-		List<OrderGoodsVo> canBeShipped = saas().getShopApp(getShopId()).readOrder.canBeShipped(param.getOrderSn());
+		List<OrderGoodsVo> canBeShipped = saas().getShopApp(getShopId()).orderOperateQuery.canBeShipped(param.getOrderSn());
 		if(canBeShipped == null || canBeShipped.size() == 0) {
 			//无可发货信息
 			logger.error("发货时无可发货商品");

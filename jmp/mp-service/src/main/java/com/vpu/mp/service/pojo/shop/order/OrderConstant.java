@@ -97,8 +97,18 @@ public class OrderConstant {
 	/**
 	 *  return_order_goods表success字段
 	 */
-	/**退货中1*/
+	/**0拒绝*/
+	public final static byte SUCCESS_REFUSE = 0;
+	/**退货、款中1*/
 	public final static byte SUCCESS_RETURNING = 1;
+	/**2完成*/
+	public final static byte SUCCESS_COMPLETE = 2;
+	
+	/**
+	 * mp端是否支持退款、退货,
+	 */
+	public final static byte CFG_RETURN_TYPE_Y = 1;
+	public final static byte CFG_RETURN_TYPE_N = 0;
 	private String[] orderStatus = {
 			// ORDER_WAIT_PAY
 			"待付款",

@@ -15,10 +15,10 @@ import com.vpu.mp.service.pojo.shop.order.OrderPageListQueryParam;
 import com.vpu.mp.service.pojo.shop.order.OrderParam;
 import com.vpu.mp.service.pojo.shop.order.store.StoreOrderListInfoVo;
 import com.vpu.mp.service.pojo.shop.order.store.StoreOrderPageListQueryParam;
+import com.vpu.mp.service.pojo.shop.order.write.operate.OrderOperateQueryParam;
 import com.vpu.mp.service.pojo.shop.order.write.operate.refund.money.RefundMoneyParam;
+import com.vpu.mp.service.pojo.shop.order.write.operate.ship.ShipParam;
 import com.vpu.mp.service.pojo.shop.order.write.remark.SellerRemarkParam;
-import com.vpu.mp.service.pojo.shop.order.write.ship.ShipListParam;
-import com.vpu.mp.service.pojo.shop.order.write.ship.ShipParam;
 import com.vpu.mp.service.pojo.shop.order.write.star.StarParam;
 
 /**
@@ -82,8 +82,8 @@ public class AdminOrderController extends AdminBaseController {
 	 * 	发货_查询可发货商品
 	 */
 	@PostMapping("/shipGoods")
-	public JsonResult shipGoodsList(@RequestBody @Valid ShipListParam param) {
-		return success(shop().readOrder.shipGoodsList(param));
+	public JsonResult shipGoodsList(@RequestBody @Valid OrderOperateQueryParam param) {
+		return success(shop().orderOperateQuery.shipGoodsList(param));
 	}
 	
 	/**
@@ -96,7 +96,16 @@ public class AdminOrderController extends AdminBaseController {
 	}
 	
 	/**
-	 * 	mp退款
+	 * 	退款、退货查询
+	 */
+	@PostMapping("/refund/list")
+	public JsonResult refundGoodsList(@RequestBody OrderOperateQueryParam param) {
+		shop().orderOperateQuery.refundGoodsList(param);
+		return null == null ? success() : fail();
+	}
+	
+	/**
+	 * 退款
 	 */
 	@PostMapping("/refund/money")
 	public JsonResult refundMoney(@RequestBody RefundMoneyParam param) {

@@ -1,4 +1,4 @@
-package com.vpu.mp.service.pojo.shop.order.write.ship;
+package com.vpu.mp.service.pojo.shop.order.write.operate.ship;
 
 import java.util.List;
 
@@ -20,5 +20,5 @@ public class ShipVo {
 	private String mobile;
 	/**完整收货地址*/
 	private String completeAddress;
-	private List<OrderGoodsVo> OrderGoodsVo;
+	private List<OrderGoodsVo> orderGoodsVo;
 }
