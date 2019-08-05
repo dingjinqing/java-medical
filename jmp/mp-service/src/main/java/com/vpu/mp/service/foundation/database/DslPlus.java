@@ -24,7 +24,7 @@ public class DslPlus {
     private static final Logger log = LoggerFactory.getLogger(DslPlus.class);
 
 
-    private static final String FORMAT = "yyyy-MM-dd";
+    private static final String FORMAT = "%Y-%m-%d";
 
     /**
      * 格式化时间到日
