@@ -114,7 +114,8 @@ public class JsonResultMessage {
 	final public static String DECORATE_STYLE_PARAM_UPDATE_VALUE_NULL="applets.style.param_update_value_null";
 	final public static String DECORATE_URL_ILLEGAL="applets.url.illegal";
 
-
+	public static final String BINDING_MINI_NO_SAME = "binding.mini.no.same";
+	public static final String BINDING_MINI_HAVEBIND = "binding.mini.havebind";
 	/**
 	 * 	门店管理
 	 */
