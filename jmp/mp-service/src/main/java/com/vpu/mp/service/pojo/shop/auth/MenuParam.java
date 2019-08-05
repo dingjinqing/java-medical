@@ -2,6 +2,7 @@ package com.vpu.mp.service.pojo.shop.auth;
 
 import java.util.List;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -15,27 +16,40 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class MenuParam {
 	@JsonProperty("first_web_manage")
-	private List<?> firstWebManage;
+	private List<String> firstWebManage;
 	
 	@JsonProperty("first_web_decoration")
-	private List<?> firstWebDecoration;
+	private List<String> firstWebDecoration;
 	
 	@JsonProperty("goods_manage")
-	private List<?> goodsManage;
+	private List<String> goodsManage;
 	
 	@JsonProperty("first_trade_manage")
-	private List<?> firstTradeManage;
+	private List<String> firstTradeManage;
 	
 	@JsonProperty("first_market_manage")
-	private List<?> firstMarketManage;
+	private List<String> firstMarketManage;
 	
 	@JsonProperty("user_manger")
-	private List<?> userManger;
+	private List<String> userManger;
 	
 	@JsonProperty("store_manage")
-	private List<?> storeManage;
+	private List<String> storeManage;
 	
 	@JsonProperty("base_manger")
-	private List<?> baseManger;
+	private List<String> baseManger;
+	
+	
+	private List<MenuInnerParam> plus;
+
+	@JsonIgnore
+	public List<MenuInnerParam> getPlus() {
+		return plus;
+	}
+
+	@JsonProperty
+	public void setPlus(List<MenuInnerParam> plus) {
+		this.plus = plus;
+	}
 
 }
