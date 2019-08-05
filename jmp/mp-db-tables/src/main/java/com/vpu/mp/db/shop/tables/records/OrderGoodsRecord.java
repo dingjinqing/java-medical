@@ -28,622 +28,678 @@ import org.jooq.impl.UpdatableRecordImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class OrderGoodsRecord extends UpdatableRecordImpl<OrderGoodsRecord> {
 
-    private static final long serialVersionUID = -832689327;
+    private static final long serialVersionUID = -1698357545;
 
     /**
-     * Setter for <code>mini_shop_471752.b2c_order_goods.rec_id</code>.
+     * Setter for <code>mini_shop_6797286.b2c_order_goods.rec_id</code>.
      */
     public void setRecId(Integer value) {
         set(0, value);
     }
 
     /**
-     * Getter for <code>mini_shop_471752.b2c_order_goods.rec_id</code>.
+     * Getter for <code>mini_shop_6797286.b2c_order_goods.rec_id</code>.
      */
     public Integer getRecId() {
         return (Integer) get(0);
     }
 
     /**
-     * Setter for <code>mini_shop_471752.b2c_order_goods.shop_id</code>. 店铺id
+     * Setter for <code>mini_shop_6797286.b2c_order_goods.shop_id</code>. 店铺ID
      */
     public void setShopId(Integer value) {
         set(1, value);
     }
 
     /**
-     * Getter for <code>mini_shop_471752.b2c_order_goods.shop_id</code>. 店铺id
+     * Getter for <code>mini_shop_6797286.b2c_order_goods.shop_id</code>. 店铺ID
      */
     public Integer getShopId() {
         return (Integer) get(1);
     }
 
     /**
-     * Setter for <code>mini_shop_471752.b2c_order_goods.order_id</code>.
+     * Setter for <code>mini_shop_6797286.b2c_order_goods.order_id</code>.
      */
     public void setOrderId(Integer value) {
         set(2, value);
     }
 
     /**
-     * Getter for <code>mini_shop_471752.b2c_order_goods.order_id</code>.
+     * Getter for <code>mini_shop_6797286.b2c_order_goods.order_id</code>.
      */
     public Integer getOrderId() {
         return (Integer) get(2);
     }
 
     /**
-     * Setter for <code>mini_shop_471752.b2c_order_goods.order_sn</code>.
+     * Setter for <code>mini_shop_6797286.b2c_order_goods.order_sn</code>.
      */
     public void setOrderSn(String value) {
         set(3, value);
     }
 
     /**
-     * Getter for <code>mini_shop_471752.b2c_order_goods.order_sn</code>.
+     * Getter for <code>mini_shop_6797286.b2c_order_goods.order_sn</code>.
      */
     public String getOrderSn() {
         return (String) get(3);
     }
 
     /**
-     * Setter for <code>mini_shop_471752.b2c_order_goods.goods_id</code>.
+     * Setter for <code>mini_shop_6797286.b2c_order_goods.goods_id</code>.
      */
     public void setGoodsId(Integer value) {
         set(4, value);
     }
 
     /**
-     * Getter for <code>mini_shop_471752.b2c_order_goods.goods_id</code>.
+     * Getter for <code>mini_shop_6797286.b2c_order_goods.goods_id</code>.
      */
     public Integer getGoodsId() {
         return (Integer) get(4);
     }
 
     /**
-     * Setter for <code>mini_shop_471752.b2c_order_goods.goods_name</code>.
+     * Setter for <code>mini_shop_6797286.b2c_order_goods.goods_name</code>.
      */
     public void setGoodsName(String value) {
         set(5, value);
     }
 
     /**
-     * Getter for <code>mini_shop_471752.b2c_order_goods.goods_name</code>.
+     * Getter for <code>mini_shop_6797286.b2c_order_goods.goods_name</code>.
      */
     public String getGoodsName() {
         return (String) get(5);
     }
 
     /**
-     * Setter for <code>mini_shop_471752.b2c_order_goods.goods_sn</code>.
+     * Setter for <code>mini_shop_6797286.b2c_order_goods.goods_sn</code>.
      */
     public void setGoodsSn(String value) {
         set(6, value);
     }
 
     /**
-     * Getter for <code>mini_shop_471752.b2c_order_goods.goods_sn</code>.
+     * Getter for <code>mini_shop_6797286.b2c_order_goods.goods_sn</code>.
      */
     public String getGoodsSn() {
         return (String) get(6);
     }
 
     /**
-     * Setter for <code>mini_shop_471752.b2c_order_goods.product_id</code>.
+     * Setter for <code>mini_shop_6797286.b2c_order_goods.product_id</code>.
      */
     public void setProductId(Integer value) {
         set(7, value);
     }
 
     /**
-     * Getter for <code>mini_shop_471752.b2c_order_goods.product_id</code>.
+     * Getter for <code>mini_shop_6797286.b2c_order_goods.product_id</code>.
      */
     public Integer getProductId() {
         return (Integer) get(7);
     }
 
     /**
-     * Setter for <code>mini_shop_471752.b2c_order_goods.product_sn</code>.
+     * Setter for <code>mini_shop_6797286.b2c_order_goods.product_sn</code>.
      */
     public void setProductSn(String value) {
         set(8, value);
     }
 
     /**
-     * Getter for <code>mini_shop_471752.b2c_order_goods.product_sn</code>.
+     * Getter for <code>mini_shop_6797286.b2c_order_goods.product_sn</code>.
      */
     public String getProductSn() {
         return (String) get(8);
     }
 
     /**
-     * Setter for <code>mini_shop_471752.b2c_order_goods.goods_number</code>.
+     * Setter for <code>mini_shop_6797286.b2c_order_goods.goods_number</code>.
      */
     public void setGoodsNumber(Short value) {
         set(9, value);
     }
 
     /**
-     * Getter for <code>mini_shop_471752.b2c_order_goods.goods_number</code>.
+     * Getter for <code>mini_shop_6797286.b2c_order_goods.goods_number</code>.
      */
     public Short getGoodsNumber() {
         return (Short) get(9);
     }
 
     /**
-     * Setter for <code>mini_shop_471752.b2c_order_goods.market_price</code>.
+     * Setter for <code>mini_shop_6797286.b2c_order_goods.market_price</code>.
      */
     public void setMarketPrice(BigDecimal value) {
         set(10, value);
     }
 
     /**
-     * Getter for <code>mini_shop_471752.b2c_order_goods.market_price</code>.
+     * Getter for <code>mini_shop_6797286.b2c_order_goods.market_price</code>.
      */
     public BigDecimal getMarketPrice() {
         return (BigDecimal) get(10);
     }
 
     /**
-     * Setter for <code>mini_shop_471752.b2c_order_goods.goods_price</code>.
+     * Setter for <code>mini_shop_6797286.b2c_order_goods.goods_price</code>.
      */
     public void setGoodsPrice(BigDecimal value) {
         set(11, value);
     }
 
     /**
-     * Getter for <code>mini_shop_471752.b2c_order_goods.goods_price</code>.
+     * Getter for <code>mini_shop_6797286.b2c_order_goods.goods_price</code>.
      */
     public BigDecimal getGoodsPrice() {
         return (BigDecimal) get(11);
     }
 
     /**
-     * Setter for <code>mini_shop_471752.b2c_order_goods.goods_attr</code>.
+     * Setter for <code>mini_shop_6797286.b2c_order_goods.goods_attr</code>.
      */
     public void setGoodsAttr(String value) {
         set(12, value);
     }
 
     /**
-     * Getter for <code>mini_shop_471752.b2c_order_goods.goods_attr</code>.
+     * Getter for <code>mini_shop_6797286.b2c_order_goods.goods_attr</code>.
      */
     public String getGoodsAttr() {
         return (String) get(12);
     }
 
     /**
-     * Setter for <code>mini_shop_471752.b2c_order_goods.send_number</code>.
+     * Setter for <code>mini_shop_6797286.b2c_order_goods.send_number</code>.
      */
     public void setSendNumber(Short value) {
         set(13, value);
     }
 
     /**
-     * Getter for <code>mini_shop_471752.b2c_order_goods.send_number</code>.
+     * Getter for <code>mini_shop_6797286.b2c_order_goods.send_number</code>.
      */
     public Short getSendNumber() {
         return (Short) get(13);
     }
 
     /**
-     * Setter for <code>mini_shop_471752.b2c_order_goods.return_number</code>. 退货/退款成功数量
+     * Setter for <code>mini_shop_6797286.b2c_order_goods.return_number</code>. 退货/退款成功数量
      */
     public void setReturnNumber(Short value) {
         set(14, value);
     }
 
     /**
-     * Getter for <code>mini_shop_471752.b2c_order_goods.return_number</code>. 退货/退款成功数量
+     * Getter for <code>mini_shop_6797286.b2c_order_goods.return_number</code>. 退货/退款成功数量
      */
     public Short getReturnNumber() {
         return (Short) get(14);
     }
 
     /**
-     * Setter for <code>mini_shop_471752.b2c_order_goods.is_real</code>.
+     * Setter for <code>mini_shop_6797286.b2c_order_goods.is_real</code>.
      */
     public void setIsReal(Byte value) {
         set(15, value);
     }
 
     /**
-     * Getter for <code>mini_shop_471752.b2c_order_goods.is_real</code>.
+     * Getter for <code>mini_shop_6797286.b2c_order_goods.is_real</code>.
      */
     public Byte getIsReal() {
         return (Byte) get(15);
     }
 
     /**
-     * Setter for <code>mini_shop_471752.b2c_order_goods.goods_attr_id</code>.
+     * Setter for <code>mini_shop_6797286.b2c_order_goods.goods_attr_id</code>.
      */
     public void setGoodsAttrId(String value) {
         set(16, value);
     }
 
     /**
-     * Getter for <code>mini_shop_471752.b2c_order_goods.goods_attr_id</code>.
+     * Getter for <code>mini_shop_6797286.b2c_order_goods.goods_attr_id</code>.
      */
     public String getGoodsAttrId() {
         return (String) get(16);
     }
 
     /**
-     * Setter for <code>mini_shop_471752.b2c_order_goods.goods_img</code>.
+     * Setter for <code>mini_shop_6797286.b2c_order_goods.goods_img</code>.
      */
     public void setGoodsImg(String value) {
         set(17, value);
     }
 
     /**
-     * Getter for <code>mini_shop_471752.b2c_order_goods.goods_img</code>.
+     * Getter for <code>mini_shop_6797286.b2c_order_goods.goods_img</code>.
      */
     public String getGoodsImg() {
         return (String) get(17);
     }
 
     /**
-     * Setter for <code>mini_shop_471752.b2c_order_goods.refund_status</code>. 1是审核中，2是通过审核，3退货没通过审核，4买家再次提交申请，5：退款退货成功，6是拒绝退款退货
+     * Setter for <code>mini_shop_6797286.b2c_order_goods.refund_status</code>. 1是审核中，2是通过审核，3退货没通过审核，4买家再次提交申请，5：退款退货成功，6是拒绝退款退货
      */
     public void setRefundStatus(Byte value) {
         set(18, value);
     }
 
     /**
-     * Getter for <code>mini_shop_471752.b2c_order_goods.refund_status</code>. 1是审核中，2是通过审核，3退货没通过审核，4买家再次提交申请，5：退款退货成功，6是拒绝退款退货
+     * Getter for <code>mini_shop_6797286.b2c_order_goods.refund_status</code>. 1是审核中，2是通过审核，3退货没通过审核，4买家再次提交申请，5：退款退货成功，6是拒绝退款退货
      */
     public Byte getRefundStatus() {
         return (Byte) get(18);
     }
 
     /**
-     * Setter for <code>mini_shop_471752.b2c_order_goods.comment_flag</code>. 0:未评论，1:已评论，2：已晒单
+     * Setter for <code>mini_shop_6797286.b2c_order_goods.comment_flag</code>. 0:未评论，1:已评论，2：已晒单
      */
     public void setCommentFlag(Byte value) {
         set(19, value);
     }
 
     /**
-     * Getter for <code>mini_shop_471752.b2c_order_goods.comment_flag</code>. 0:未评论，1:已评论，2：已晒单
+     * Getter for <code>mini_shop_6797286.b2c_order_goods.comment_flag</code>. 0:未评论，1:已评论，2：已晒单
      */
     public Byte getCommentFlag() {
         return (Byte) get(19);
     }
 
     /**
-     * Setter for <code>mini_shop_471752.b2c_order_goods.stra_id</code>. 商品参与的促销活动id
+     * Setter for <code>mini_shop_6797286.b2c_order_goods.stra_id</code>. 商品参与的促销活动id
      */
     public void setStraId(Integer value) {
         set(20, value);
     }
 
     /**
-     * Getter for <code>mini_shop_471752.b2c_order_goods.stra_id</code>. 商品参与的促销活动id
+     * Getter for <code>mini_shop_6797286.b2c_order_goods.stra_id</code>. 商品参与的促销活动id
      */
     public Integer getStraId() {
         return (Integer) get(20);
     }
 
     /**
-     * Setter for <code>mini_shop_471752.b2c_order_goods.per_discount</code>. 促销折扣均摊到每件商品的折扣
+     * Setter for <code>mini_shop_6797286.b2c_order_goods.per_discount</code>. 促销折扣均摊到每件商品的折扣
      */
     public void setPerDiscount(BigDecimal value) {
         set(21, value);
     }
 
     /**
-     * Getter for <code>mini_shop_471752.b2c_order_goods.per_discount</code>. 促销折扣均摊到每件商品的折扣
+     * Getter for <code>mini_shop_6797286.b2c_order_goods.per_discount</code>. 促销折扣均摊到每件商品的折扣
      */
     public BigDecimal getPerDiscount() {
         return (BigDecimal) get(21);
     }
 
     /**
-     * Setter for <code>mini_shop_471752.b2c_order_goods.is_gift</code>. 是否是赠品
+     * Setter for <code>mini_shop_6797286.b2c_order_goods.is_gift</code>. 是否是赠品
      */
     public void setIsGift(Integer value) {
         set(22, value);
     }
 
     /**
-     * Getter for <code>mini_shop_471752.b2c_order_goods.is_gift</code>. 是否是赠品
+     * Getter for <code>mini_shop_6797286.b2c_order_goods.is_gift</code>. 是否是赠品
      */
     public Integer getIsGift() {
         return (Integer) get(22);
     }
 
     /**
-     * Setter for <code>mini_shop_471752.b2c_order_goods.r_goods</code>. 赠品的关联商品
+     * Setter for <code>mini_shop_6797286.b2c_order_goods.r_goods</code>. 赠品的关联商品
      */
     public void setRGoods(String value) {
         set(23, value);
     }
 
     /**
-     * Getter for <code>mini_shop_471752.b2c_order_goods.r_goods</code>. 赠品的关联商品
+     * Getter for <code>mini_shop_6797286.b2c_order_goods.r_goods</code>. 赠品的关联商品
      */
     public String getRGoods() {
         return (String) get(23);
     }
 
     /**
-     * Setter for <code>mini_shop_471752.b2c_order_goods.goods_score</code>. 商品积分
+     * Setter for <code>mini_shop_6797286.b2c_order_goods.goods_score</code>. 商品积分
      */
     public void setGoodsScore(Integer value) {
         set(24, value);
     }
 
     /**
-     * Getter for <code>mini_shop_471752.b2c_order_goods.goods_score</code>. 商品积分
+     * Getter for <code>mini_shop_6797286.b2c_order_goods.goods_score</code>. 商品积分
      */
     public Integer getGoodsScore() {
         return (Integer) get(24);
     }
 
     /**
-     * Setter for <code>mini_shop_471752.b2c_order_goods.goods_growth</code>. 商品成长值
+     * Setter for <code>mini_shop_6797286.b2c_order_goods.goods_growth</code>. 商品成长值
      */
     public void setGoodsGrowth(Integer value) {
         set(25, value);
     }
 
     /**
-     * Getter for <code>mini_shop_471752.b2c_order_goods.goods_growth</code>. 商品成长值
+     * Getter for <code>mini_shop_6797286.b2c_order_goods.goods_growth</code>. 商品成长值
      */
     public Integer getGoodsGrowth() {
         return (Integer) get(25);
     }
 
     /**
-     * Setter for <code>mini_shop_471752.b2c_order_goods.discounted_goods_price</code>. 折后单价
+     * Setter for <code>mini_shop_6797286.b2c_order_goods.discounted_goods_price</code>. 折后单价
      */
     public void setDiscountedGoodsPrice(BigDecimal value) {
         set(26, value);
     }
 
     /**
-     * Getter for <code>mini_shop_471752.b2c_order_goods.discounted_goods_price</code>. 折后单价
+     * Getter for <code>mini_shop_6797286.b2c_order_goods.discounted_goods_price</code>. 折后单价
      */
     public BigDecimal getDiscountedGoodsPrice() {
         return (BigDecimal) get(26);
     }
 
     /**
-     * Setter for <code>mini_shop_471752.b2c_order_goods.discount_detail</code>. 打折详情，json存储
+     * Setter for <code>mini_shop_6797286.b2c_order_goods.discount_detail</code>. 打折详情，json存储
      */
     public void setDiscountDetail(String value) {
         set(27, value);
     }
 
     /**
-     * Getter for <code>mini_shop_471752.b2c_order_goods.discount_detail</code>. 打折详情，json存储
+     * Getter for <code>mini_shop_6797286.b2c_order_goods.discount_detail</code>. 打折详情，json存储
      */
     public String getDiscountDetail() {
         return (String) get(27);
     }
 
     /**
-     * Setter for <code>mini_shop_471752.b2c_order_goods.fanli_type</code>. 0:不返利商品，1：返利商品
+     * Setter for <code>mini_shop_6797286.b2c_order_goods.fanli_type</code>. 0:不返利商品，1：返利商品
      */
     public void setFanliType(Byte value) {
         set(28, value);
     }
 
     /**
-     * Getter for <code>mini_shop_471752.b2c_order_goods.fanli_type</code>. 0:不返利商品，1：返利商品
+     * Getter for <code>mini_shop_6797286.b2c_order_goods.fanli_type</code>. 0:不返利商品，1：返利商品
      */
     public Byte getFanliType() {
         return (Byte) get(28);
     }
 
     /**
-     * Setter for <code>mini_shop_471752.b2c_order_goods.can_calculate_money</code>. 单品可计算返利金额，刨除优惠券和其他折扣后的金额
+     * Setter for <code>mini_shop_6797286.b2c_order_goods.can_calculate_money</code>. 单品可计算返利金额，刨除优惠券和其他折扣后的金额
      */
     public void setCanCalculateMoney(BigDecimal value) {
         set(29, value);
     }
 
     /**
-     * Getter for <code>mini_shop_471752.b2c_order_goods.can_calculate_money</code>. 单品可计算返利金额，刨除优惠券和其他折扣后的金额
+     * Getter for <code>mini_shop_6797286.b2c_order_goods.can_calculate_money</code>. 单品可计算返利金额，刨除优惠券和其他折扣后的金额
      */
     public BigDecimal getCanCalculateMoney() {
         return (BigDecimal) get(29);
     }
 
     /**
-     * Setter for <code>mini_shop_471752.b2c_order_goods.fanli_money</code>. 单品返利金额
+     * Setter for <code>mini_shop_6797286.b2c_order_goods.fanli_money</code>. 单品返利金额
      */
     public void setFanliMoney(BigDecimal value) {
         set(30, value);
     }
 
     /**
-     * Getter for <code>mini_shop_471752.b2c_order_goods.fanli_money</code>. 单品返利金额
+     * Getter for <code>mini_shop_6797286.b2c_order_goods.fanli_money</code>. 单品返利金额
      */
     public BigDecimal getFanliMoney() {
         return (BigDecimal) get(30);
     }
 
     /**
-     * Setter for <code>mini_shop_471752.b2c_order_goods.discounted_total_price</code>. 折后总价
+     * Setter for <code>mini_shop_6797286.b2c_order_goods.discounted_total_price</code>. 折后总价
      */
     public void setDiscountedTotalPrice(BigDecimal value) {
         set(31, value);
     }
 
     /**
-     * Getter for <code>mini_shop_471752.b2c_order_goods.discounted_total_price</code>. 折后总价
+     * Getter for <code>mini_shop_6797286.b2c_order_goods.discounted_total_price</code>. 折后总价
      */
     public BigDecimal getDiscountedTotalPrice() {
         return (BigDecimal) get(31);
     }
 
     /**
-     * Setter for <code>mini_shop_471752.b2c_order_goods.total_fanli_money</code>. 商品返利总金额
+     * Setter for <code>mini_shop_6797286.b2c_order_goods.total_fanli_money</code>. 商品返利总金额
      */
     public void setTotalFanliMoney(BigDecimal value) {
         set(32, value);
     }
 
     /**
-     * Getter for <code>mini_shop_471752.b2c_order_goods.total_fanli_money</code>. 商品返利总金额
+     * Getter for <code>mini_shop_6797286.b2c_order_goods.total_fanli_money</code>. 商品返利总金额
      */
     public BigDecimal getTotalFanliMoney() {
         return (BigDecimal) get(32);
     }
 
     /**
-     * Setter for <code>mini_shop_471752.b2c_order_goods.purchase_price_id</code>. 加价购id
+     * Setter for <code>mini_shop_6797286.b2c_order_goods.fanli_strategy</code>. 返利比例
      */
-    public void setPurchasePriceId(Integer value) {
+    public void setFanliStrategy(String value) {
         set(33, value);
     }
 
     /**
-     * Getter for <code>mini_shop_471752.b2c_order_goods.purchase_price_id</code>. 加价购id
+     * Getter for <code>mini_shop_6797286.b2c_order_goods.fanli_strategy</code>. 返利比例
      */
-    public Integer getPurchasePriceId() {
-        return (Integer) get(33);
+    public String getFanliStrategy() {
+        return (String) get(33);
     }
 
     /**
-     * Setter for <code>mini_shop_471752.b2c_order_goods.purchase_price_rule_id</code>. 换购挡位id
+     * Setter for <code>mini_shop_6797286.b2c_order_goods.fanli_percent</code>. 返利比例
      */
-    public void setPurchasePriceRuleId(Integer value) {
+    public void setFanliPercent(BigDecimal value) {
         set(34, value);
     }
 
     /**
-     * Getter for <code>mini_shop_471752.b2c_order_goods.purchase_price_rule_id</code>. 换购挡位id
+     * Getter for <code>mini_shop_6797286.b2c_order_goods.fanli_percent</code>. 返利比例
      */
-    public Integer getPurchasePriceRuleId() {
-        return (Integer) get(34);
+    public BigDecimal getFanliPercent() {
+        return (BigDecimal) get(34);
     }
 
     /**
-     * Setter for <code>mini_shop_471752.b2c_order_goods.reduce_price_id</code>. 限时降价id
+     * Setter for <code>mini_shop_6797286.b2c_order_goods.purchase_price_id</code>. 加价购ID
      */
-    public void setReducePriceId(Integer value) {
+    public void setPurchasePriceId(Integer value) {
         set(35, value);
     }
 
     /**
-     * Getter for <code>mini_shop_471752.b2c_order_goods.reduce_price_id</code>. 限时降价id
+     * Getter for <code>mini_shop_6797286.b2c_order_goods.purchase_price_id</code>. 加价购ID
      */
-    public Integer getReducePriceId() {
+    public Integer getPurchasePriceId() {
         return (Integer) get(35);
     }
 
     /**
-     * Setter for <code>mini_shop_471752.b2c_order_goods.fanli_strategy</code>. 返利比例
+     * Setter for <code>mini_shop_6797286.b2c_order_goods.purchase_price_rule_id</code>. 换购挡位ID
      */
-    public void setFanliStrategy(String value) {
+    public void setPurchasePriceRuleId(Integer value) {
         set(36, value);
     }
 
     /**
-     * Getter for <code>mini_shop_471752.b2c_order_goods.fanli_strategy</code>. 返利比例
+     * Getter for <code>mini_shop_6797286.b2c_order_goods.purchase_price_rule_id</code>. 换购挡位ID
      */
-    public String getFanliStrategy() {
-        return (String) get(36);
+    public Integer getPurchasePriceRuleId() {
+        return (Integer) get(36);
     }
 
     /**
-     * Setter for <code>mini_shop_471752.b2c_order_goods.fanli_percent</code>. 返利比例
+     * Setter for <code>mini_shop_6797286.b2c_order_goods.reduce_price_id</code>. 限时降价ID
      */
-    public void setFanliPercent(BigDecimal value) {
+    public void setReducePriceId(Integer value) {
         set(37, value);
     }
 
     /**
-     * Getter for <code>mini_shop_471752.b2c_order_goods.fanli_percent</code>. 返利比例
+     * Getter for <code>mini_shop_6797286.b2c_order_goods.reduce_price_id</code>. 限时降价ID
      */
-    public BigDecimal getFanliPercent() {
-        return (BigDecimal) get(37);
+    public Integer getReducePriceId() {
+        return (Integer) get(37);
     }
 
     /**
-     * Setter for <code>mini_shop_471752.b2c_order_goods.cost_price</code>. 成本价
+     * Setter for <code>mini_shop_6797286.b2c_order_goods.cost_price</code>. 成本价
      */
     public void setCostPrice(BigDecimal value) {
         set(38, value);
     }
 
     /**
-     * Getter for <code>mini_shop_471752.b2c_order_goods.cost_price</code>. 成本价
+     * Getter for <code>mini_shop_6797286.b2c_order_goods.cost_price</code>. 成本价
      */
     public BigDecimal getCostPrice() {
         return (BigDecimal) get(38);
     }
 
     /**
-     * Setter for <code>mini_shop_471752.b2c_order_goods.is_card_exclusive</code>. 是否会员卡专属
+     * Setter for <code>mini_shop_6797286.b2c_order_goods.is_card_exclusive</code>. 是否会员卡专属
      */
     public void setIsCardExclusive(Byte value) {
         set(39, value);
     }
 
     /**
-     * Getter for <code>mini_shop_471752.b2c_order_goods.is_card_exclusive</code>. 是否会员卡专属
+     * Getter for <code>mini_shop_6797286.b2c_order_goods.is_card_exclusive</code>. 是否会员卡专属
      */
     public Byte getIsCardExclusive() {
         return (Byte) get(39);
     }
 
     /**
-     * Setter for <code>mini_shop_471752.b2c_order_goods.promote_info</code>. 推广信息
+     * Setter for <code>mini_shop_6797286.b2c_order_goods.promote_info</code>. 推广信息
      */
     public void setPromoteInfo(String value) {
         set(40, value);
     }
 
     /**
-     * Getter for <code>mini_shop_471752.b2c_order_goods.promote_info</code>. 推广信息
+     * Getter for <code>mini_shop_6797286.b2c_order_goods.promote_info</code>. 推广信息
      */
     public String getPromoteInfo() {
         return (String) get(40);
     }
 
     /**
-     * Setter for <code>mini_shop_471752.b2c_order_goods.gift_id</code>. 赠品id
+     * Setter for <code>mini_shop_6797286.b2c_order_goods.gift_id</code>. 赠品ID
      */
     public void setGiftId(Integer value) {
         set(41, value);
     }
 
     /**
-     * Getter for <code>mini_shop_471752.b2c_order_goods.gift_id</code>. 赠品id
+     * Getter for <code>mini_shop_6797286.b2c_order_goods.gift_id</code>. 赠品ID
      */
     public Integer getGiftId() {
         return (Integer) get(41);
     }
 
     /**
-     * Setter for <code>mini_shop_471752.b2c_order_goods.create_time</code>.
+     * Setter for <code>mini_shop_6797286.b2c_order_goods.is_can_return</code>. 是否可退款
      */
-    public void setCreateTime(Timestamp value) {
+    public void setIsCanReturn(Byte value) {
         set(42, value);
     }
 
     /**
-     * Getter for <code>mini_shop_471752.b2c_order_goods.create_time</code>.
+     * Getter for <code>mini_shop_6797286.b2c_order_goods.is_can_return</code>. 是否可退款
      */
-    public Timestamp getCreateTime() {
-        return (Timestamp) get(42);
+    public Byte getIsCanReturn() {
+        return (Byte) get(42);
     }
 
     /**
-     * Setter for <code>mini_shop_471752.b2c_order_goods.update_time</code>. 最后修改时间
+     * Setter for <code>mini_shop_6797286.b2c_order_goods.first_special_id</code>. 首单特惠ID
      */
-    public void setUpdateTime(Timestamp value) {
+    public void setFirstSpecialId(Integer value) {
         set(43, value);
     }
 
     /**
-     * Getter for <code>mini_shop_471752.b2c_order_goods.update_time</code>. 最后修改时间
+     * Getter for <code>mini_shop_6797286.b2c_order_goods.first_special_id</code>. 首单特惠ID
+     */
+    public Integer getFirstSpecialId() {
+        return (Integer) get(43);
+    }
+
+    /**
+     * Setter for <code>mini_shop_6797286.b2c_order_goods.free_ship</code>. 满包邮
+     */
+    public void setFreeShip(Byte value) {
+        set(44, value);
+    }
+
+    /**
+     * Getter for <code>mini_shop_6797286.b2c_order_goods.free_ship</code>. 满包邮
+     */
+    public Byte getFreeShip() {
+        return (Byte) get(44);
+    }
+
+    /**
+     * Setter for <code>mini_shop_6797286.b2c_order_goods.reduce_price_num</code>.
+     */
+    public void setReducePriceNum(Short value) {
+        set(45, value);
+    }
+
+    /**
+     * Getter for <code>mini_shop_6797286.b2c_order_goods.reduce_price_num</code>.
+     */
+    public Short getReducePriceNum() {
+        return (Short) get(45);
+    }
+
+    /**
+     * Setter for <code>mini_shop_6797286.b2c_order_goods.create_time</code>. 创建时间
+     */
+    public void setCreateTime(Timestamp value) {
+        set(46, value);
+    }
+
+    /**
+     * Getter for <code>mini_shop_6797286.b2c_order_goods.create_time</code>. 创建时间
+     */
+    public Timestamp getCreateTime() {
+        return (Timestamp) get(46);
+    }
+
+    /**
+     * Setter for <code>mini_shop_6797286.b2c_order_goods.update_time</code>. 修改时间
+     */
+    public void setUpdateTime(Timestamp value) {
+        set(47, value);
+    }
+
+    /**
+     * Getter for <code>mini_shop_6797286.b2c_order_goods.update_time</code>. 修改时间
      */
     public Timestamp getUpdateTime() {
-        return (Timestamp) get(43);
+        return (Timestamp) get(47);
     }
 
     // -------------------------------------------------------------------------
@@ -672,7 +728,7 @@ public class OrderGoodsRecord extends UpdatableRecordImpl<OrderGoodsRecord> {
     /**
      * Create a detached, initialised OrderGoodsRecord
      */
-    public OrderGoodsRecord(Integer recId, Integer shopId, Integer orderId, String orderSn, Integer goodsId, String goodsName, String goodsSn, Integer productId, String productSn, Short goodsNumber, BigDecimal marketPrice, BigDecimal goodsPrice, String goodsAttr, Short sendNumber, Short returnNumber, Byte isReal, String goodsAttrId, String goodsImg, Byte refundStatus, Byte commentFlag, Integer straId, BigDecimal perDiscount, Integer isGift, String rGoods, Integer goodsScore, Integer goodsGrowth, BigDecimal discountedGoodsPrice, String discountDetail, Byte fanliType, BigDecimal canCalculateMoney, BigDecimal fanliMoney, BigDecimal discountedTotalPrice, BigDecimal totalFanliMoney, Integer purchasePriceId, Integer purchasePriceRuleId, Integer reducePriceId, String fanliStrategy, BigDecimal fanliPercent, BigDecimal costPrice, Byte isCardExclusive, String promoteInfo, Integer giftId, Timestamp createTime, Timestamp updateTime) {
+    public OrderGoodsRecord(Integer recId, Integer shopId, Integer orderId, String orderSn, Integer goodsId, String goodsName, String goodsSn, Integer productId, String productSn, Short goodsNumber, BigDecimal marketPrice, BigDecimal goodsPrice, String goodsAttr, Short sendNumber, Short returnNumber, Byte isReal, String goodsAttrId, String goodsImg, Byte refundStatus, Byte commentFlag, Integer straId, BigDecimal perDiscount, Integer isGift, String rGoods, Integer goodsScore, Integer goodsGrowth, BigDecimal discountedGoodsPrice, String discountDetail, Byte fanliType, BigDecimal canCalculateMoney, BigDecimal fanliMoney, BigDecimal discountedTotalPrice, BigDecimal totalFanliMoney, String fanliStrategy, BigDecimal fanliPercent, Integer purchasePriceId, Integer purchasePriceRuleId, Integer reducePriceId, BigDecimal costPrice, Byte isCardExclusive, String promoteInfo, Integer giftId, Byte isCanReturn, Integer firstSpecialId, Byte freeShip, Short reducePriceNum, Timestamp createTime, Timestamp updateTime) {
         super(OrderGoods.ORDER_GOODS);
 
         set(0, recId);
@@ -708,16 +764,20 @@ public class OrderGoodsRecord extends UpdatableRecordImpl<OrderGoodsRecord> {
         set(30, fanliMoney);
         set(31, discountedTotalPrice);
         set(32, totalFanliMoney);
-        set(33, purchasePriceId);
-        set(34, purchasePriceRuleId);
-        set(35, reducePriceId);
-        set(36, fanliStrategy);
-        set(37, fanliPercent);
+        set(33, fanliStrategy);
+        set(34, fanliPercent);
+        set(35, purchasePriceId);
+        set(36, purchasePriceRuleId);
+        set(37, reducePriceId);
         set(38, costPrice);
         set(39, isCardExclusive);
         set(40, promoteInfo);
         set(41, giftId);
-        set(42, createTime);
-        set(43, updateTime);
+        set(42, isCanReturn);
+        set(43, firstSpecialId);
+        set(44, freeShip);
+        set(45, reducePriceNum);
+        set(46, createTime);
+        set(47, updateTime);
     }
 }

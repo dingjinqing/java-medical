@@ -43,10 +43,10 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class ReturnOrderGoods extends TableImpl<ReturnOrderGoodsRecord> {
 
-    private static final long serialVersionUID = 1202743166;
+    private static final long serialVersionUID = -2102385514;
 
     /**
-     * The reference instance of <code>mini_shop_471752.b2c_return_order_goods</code>
+     * The reference instance of <code>mini_shop_6797286.b2c_return_order_goods</code>
      */
     public static final ReturnOrderGoods RETURN_ORDER_GOODS = new ReturnOrderGoods();
 
@@ -59,106 +59,116 @@ public class ReturnOrderGoods extends TableImpl<ReturnOrderGoodsRecord> {
     }
 
     /**
-     * The column <code>mini_shop_471752.b2c_return_order_goods.id</code>.
+     * The column <code>mini_shop_6797286.b2c_return_order_goods.id</code>.
      */
     public final TableField<ReturnOrderGoodsRecord, Integer> ID = createField("id", org.jooq.impl.SQLDataType.INTEGER.nullable(false).identity(true), this, "");
 
     /**
-     * The column <code>mini_shop_471752.b2c_return_order_goods.shop_id</code>. 店铺id
+     * The column <code>mini_shop_6797286.b2c_return_order_goods.shop_id</code>. 店铺id
      */
     public final TableField<ReturnOrderGoodsRecord, Integer> SHOP_ID = createField("shop_id", org.jooq.impl.SQLDataType.INTEGER.nullable(false).defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.INTEGER)), this, "店铺id");
 
     /**
-     * The column <code>mini_shop_471752.b2c_return_order_goods.rec_id</code>. 订单商品表的id
+     * The column <code>mini_shop_6797286.b2c_return_order_goods.rec_id</code>. 订单商品表的id
      */
     public final TableField<ReturnOrderGoodsRecord, Integer> REC_ID = createField("rec_id", org.jooq.impl.SQLDataType.INTEGER, this, "订单商品表的id");
 
     /**
-     * The column <code>mini_shop_471752.b2c_return_order_goods.ret_id</code>. 退货记录表的id
+     * The column <code>mini_shop_6797286.b2c_return_order_goods.ret_id</code>. 退货记录表的id
      */
     public final TableField<ReturnOrderGoodsRecord, Integer> RET_ID = createField("ret_id", org.jooq.impl.SQLDataType.INTEGER, this, "退货记录表的id");
 
     /**
-     * The column <code>mini_shop_471752.b2c_return_order_goods.order_sn</code>.
+     * The column <code>mini_shop_6797286.b2c_return_order_goods.order_sn</code>.
      */
     public final TableField<ReturnOrderGoodsRecord, String> ORDER_SN = createField("order_sn", org.jooq.impl.SQLDataType.VARCHAR(20).nullable(false).defaultValue(org.jooq.impl.DSL.inline("", org.jooq.impl.SQLDataType.VARCHAR)), this, "");
 
     /**
-     * The column <code>mini_shop_471752.b2c_return_order_goods.goods_id</code>.
+     * The column <code>mini_shop_6797286.b2c_return_order_goods.goods_id</code>.
      */
     public final TableField<ReturnOrderGoodsRecord, Integer> GOODS_ID = createField("goods_id", org.jooq.impl.SQLDataType.INTEGER.nullable(false).defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.INTEGER)), this, "");
 
     /**
-     * The column <code>mini_shop_471752.b2c_return_order_goods.goods_name</code>.
+     * The column <code>mini_shop_6797286.b2c_return_order_goods.goods_name</code>.
      */
     public final TableField<ReturnOrderGoodsRecord, String> GOODS_NAME = createField("goods_name", org.jooq.impl.SQLDataType.VARCHAR(120).nullable(false).defaultValue(org.jooq.impl.DSL.inline("", org.jooq.impl.SQLDataType.VARCHAR)), this, "");
 
     /**
-     * The column <code>mini_shop_471752.b2c_return_order_goods.product_id</code>.
+     * The column <code>mini_shop_6797286.b2c_return_order_goods.product_id</code>.
      */
     public final TableField<ReturnOrderGoodsRecord, Integer> PRODUCT_ID = createField("product_id", org.jooq.impl.SQLDataType.INTEGER.nullable(false).defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.INTEGER)), this, "");
 
     /**
-     * The column <code>mini_shop_471752.b2c_return_order_goods.goods_number</code>. 退货商品数量
+     * The column <code>mini_shop_6797286.b2c_return_order_goods.goods_number</code>. 退货商品数量
      */
     public final TableField<ReturnOrderGoodsRecord, Short> GOODS_NUMBER = createField("goods_number", org.jooq.impl.SQLDataType.SMALLINT.nullable(false).defaultValue(org.jooq.impl.DSL.inline("1", org.jooq.impl.SQLDataType.SMALLINT)), this, "退货商品数量");
 
     /**
-     * The column <code>mini_shop_471752.b2c_return_order_goods.market_price</code>.
+     * The column <code>mini_shop_6797286.b2c_return_order_goods.market_price</code>.
      */
     public final TableField<ReturnOrderGoodsRecord, BigDecimal> MARKET_PRICE = createField("market_price", org.jooq.impl.SQLDataType.DECIMAL(10, 2).nullable(false).defaultValue(org.jooq.impl.DSL.inline("0.00", org.jooq.impl.SQLDataType.DECIMAL)), this, "");
 
     /**
-     * The column <code>mini_shop_471752.b2c_return_order_goods.goods_price</code>.
+     * The column <code>mini_shop_6797286.b2c_return_order_goods.goods_price</code>.
      */
     public final TableField<ReturnOrderGoodsRecord, BigDecimal> GOODS_PRICE = createField("goods_price", org.jooq.impl.SQLDataType.DECIMAL(10, 2).nullable(false).defaultValue(org.jooq.impl.DSL.inline("0.00", org.jooq.impl.SQLDataType.DECIMAL)), this, "");
 
     /**
-     * The column <code>mini_shop_471752.b2c_return_order_goods.goods_attr</code>.
+     * The column <code>mini_shop_6797286.b2c_return_order_goods.goods_attr</code>.
      */
     public final TableField<ReturnOrderGoodsRecord, String> GOODS_ATTR = createField("goods_attr", org.jooq.impl.SQLDataType.CLOB, this, "");
 
     /**
-     * The column <code>mini_shop_471752.b2c_return_order_goods.send_number</code>. 发货商品数量
+     * The column <code>mini_shop_6797286.b2c_return_order_goods.send_number</code>. 发货商品数量
      */
     public final TableField<ReturnOrderGoodsRecord, Short> SEND_NUMBER = createField("send_number", org.jooq.impl.SQLDataType.SMALLINT.nullable(false).defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.SMALLINT)), this, "发货商品数量");
 
     /**
-     * The column <code>mini_shop_471752.b2c_return_order_goods.goods_img</code>.
+     * The column <code>mini_shop_6797286.b2c_return_order_goods.return_money</code>. 实际退款金额
+     */
+    public final TableField<ReturnOrderGoodsRecord, BigDecimal> RETURN_MONEY = createField("return_money", org.jooq.impl.SQLDataType.DECIMAL(10, 2).nullable(false).defaultValue(org.jooq.impl.DSL.inline("0.00", org.jooq.impl.SQLDataType.DECIMAL)), this, "实际退款金额");
+
+    /**
+     * The column <code>mini_shop_6797286.b2c_return_order_goods.discounted_goods_price</code>. 实际退款金额
+     */
+    public final TableField<ReturnOrderGoodsRecord, BigDecimal> DISCOUNTED_GOODS_PRICE = createField("discounted_goods_price", org.jooq.impl.SQLDataType.DECIMAL(10, 2).nullable(false).defaultValue(org.jooq.impl.DSL.inline("0.00", org.jooq.impl.SQLDataType.DECIMAL)), this, "实际退款金额");
+
+    /**
+     * The column <code>mini_shop_6797286.b2c_return_order_goods.goods_img</code>.
      */
     public final TableField<ReturnOrderGoodsRecord, String> GOODS_IMG = createField("goods_img", org.jooq.impl.SQLDataType.VARCHAR(191).nullable(false).defaultValue(org.jooq.impl.DSL.inline("", org.jooq.impl.SQLDataType.VARCHAR)), this, "");
 
     /**
-     * The column <code>mini_shop_471752.b2c_return_order_goods.success</code>. 0代表退货申请被拒绝，1代表正在退货中，2代表退货成功
+     * The column <code>mini_shop_6797286.b2c_return_order_goods.success</code>. 0代表退货申请被拒绝，1代表正在退货中，2代表退货成功
      */
     public final TableField<ReturnOrderGoodsRecord, Byte> SUCCESS = createField("success", org.jooq.impl.SQLDataType.TINYINT.nullable(false).defaultValue(org.jooq.impl.DSL.inline("1", org.jooq.impl.SQLDataType.TINYINT)), this, "0代表退货申请被拒绝，1代表正在退货中，2代表退货成功");
 
     /**
-     * The column <code>mini_shop_471752.b2c_return_order_goods.create_time</code>.
+     * The column <code>mini_shop_6797286.b2c_return_order_goods.create_time</code>.
      */
     public final TableField<ReturnOrderGoodsRecord, Timestamp> CREATE_TIME = createField("create_time", org.jooq.impl.SQLDataType.TIMESTAMP.nullable(false).defaultValue(org.jooq.impl.DSL.field("CURRENT_TIMESTAMP", org.jooq.impl.SQLDataType.TIMESTAMP)), this, "");
 
     /**
-     * The column <code>mini_shop_471752.b2c_return_order_goods.update_time</code>. 最后修改时间
+     * The column <code>mini_shop_6797286.b2c_return_order_goods.update_time</code>. 最后修改时间
      */
     public final TableField<ReturnOrderGoodsRecord, Timestamp> UPDATE_TIME = createField("update_time", org.jooq.impl.SQLDataType.TIMESTAMP.nullable(false).defaultValue(org.jooq.impl.DSL.field("CURRENT_TIMESTAMP", org.jooq.impl.SQLDataType.TIMESTAMP)), this, "最后修改时间");
 
     /**
-     * Create a <code>mini_shop_471752.b2c_return_order_goods</code> table reference
+     * Create a <code>mini_shop_6797286.b2c_return_order_goods</code> table reference
      */
     public ReturnOrderGoods() {
         this(DSL.name("b2c_return_order_goods"), null);
     }
 
     /**
-     * Create an aliased <code>mini_shop_471752.b2c_return_order_goods</code> table reference
+     * Create an aliased <code>mini_shop_6797286.b2c_return_order_goods</code> table reference
      */
     public ReturnOrderGoods(String alias) {
         this(DSL.name(alias), RETURN_ORDER_GOODS);
     }
 
     /**
-     * Create an aliased <code>mini_shop_471752.b2c_return_order_goods</code> table reference
+     * Create an aliased <code>mini_shop_6797286.b2c_return_order_goods</code> table reference
      */
     public ReturnOrderGoods(Name alias) {
         this(alias, RETURN_ORDER_GOODS);
