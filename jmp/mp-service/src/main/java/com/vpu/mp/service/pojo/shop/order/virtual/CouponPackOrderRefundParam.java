@@ -35,7 +35,7 @@ public class CouponPackOrderRefundParam {
 	private BigDecimal refundAccount=BigDecimal.ZERO;
 	/** 退会员卡余额 */
 	private BigDecimal refundBalance=BigDecimal.ZERO;
-	
+	/** 退款后是否仍然发放优惠劵 */
 	private Byte stillSendFlag=1;
 }
 
