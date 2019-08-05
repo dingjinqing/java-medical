@@ -13,6 +13,15 @@ import java.sql.Timestamp;
 @Data
 public class GroupDrawListVo {
 
+    /** 进行中 **/
+    public static final byte ONGOING = 0;
+    /** 已结束 **/
+    public static final byte FINISHED = 1;
+    /** 已停用 **/
+    public static final byte DISABLED = 2;
+    /** 未开始 **/
+    public static final byte NOT_STARTED = 3;
+
     private Integer id;
     /** 活动名称 **/
     private String name;
@@ -31,7 +40,7 @@ public class GroupDrawListVo {
     /** 参与用户达到多少前端展示 **/
     private Integer toNumShow;
     /** 1：启用，0：禁用 **/
-    private Integer status;
+    private Byte status;
     /** 是否已开奖 **/
     private Boolean isDraw;
     @JsonIgnore
