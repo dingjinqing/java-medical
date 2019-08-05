@@ -8,6 +8,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import javax.validation.Valid;
+
 /**
  * 拼团抽奖
  *
@@ -26,10 +28,10 @@ public class AdminGroupDrawController extends AdminBaseController {
     }
 
     /**
-     * 添加活动
+     * 创建活动
      */
     @PostMapping("/add")
-    public JsonResult addGroupDraw(@RequestBody GroupDrawAddParam param) {
+    public JsonResult addGroupDraw(@RequestBody @Valid GroupDrawAddParam param) {
         shop().groupDraw.addGroupDraw(param);
         return success();
     }

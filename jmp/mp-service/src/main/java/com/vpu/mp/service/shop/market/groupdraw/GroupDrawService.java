@@ -24,6 +24,8 @@ import static java.lang.String.format;
 import static org.apache.commons.lang3.StringUtils.isNotEmpty;
 
 /**
+ * 拼团抽奖
+ *
  * @author 郑保乐
  */
 @Service
@@ -52,30 +54,7 @@ public class GroupDrawService extends ShopBaseService {
         select.groupBy(GROUP_DRAW.ID);
         PageResult<GroupDrawListVo> result = getPageResult(select, param, GroupDrawListVo.class);
         List<GroupDrawListVo> dataList = result.getDataList();
-        dataList.parallelStream().forEach(i -> {
-            Byte status = i.getStatus();
-            Timestamp startTime = i.getStartTime();
-            Timestamp endTime = i.getEndTime();
-            String goodsId = i.getGoodsId();
-            // 活动状态判断
-            switch (status) {
-                case GROUP_DRAW_ENABLED:
-                    if (startTime.after(currentTimeStamp())) {
-                        i.setStatus(GroupDrawListVo.NOT_STARTED);
-                    } else if (startTime.before(currentTimeStamp()) && endTime.after(currentTimeStamp())) {
-                        i.setStatus(GroupDrawListVo.ONGOING);
-                    } else {
-                        i.setStatus(GroupDrawListVo.FINISHED);
-                    }
-                    break;
-                case GROUP_DRAW_DISABLED:
-                    i.setStatus(GroupDrawListVo.DISABLED);
-                    break;
-            }
-            // 商品数量
-            int goodsCount = goodsId.split(",").length;
-            i.setGoodsCount(goodsCount);
-        });
+        transformStatus(dataList);
         return result;
     }
 
@@ -122,6 +101,36 @@ public class GroupDrawService extends ShopBaseService {
     }
 
     /**
+     * 状态转换
+     */
+    private void transformStatus(List<GroupDrawListVo> dataList) {
+        dataList.parallelStream().forEach(i -> {
+            Byte status = i.getStatus();
+            Timestamp startTime = i.getStartTime();
+            Timestamp endTime = i.getEndTime();
+            String goodsId = i.getGoodsId();
+            // 活动状态判断
+            switch (status) {
+                case GROUP_DRAW_ENABLED:
+                    if (startTime.after(currentTimeStamp())) {
+                        i.setStatus(GroupDrawListVo.NOT_STARTED);
+                    } else if (startTime.before(currentTimeStamp()) && endTime.after(currentTimeStamp())) {
+                        i.setStatus(GroupDrawListVo.ONGOING);
+                    } else {
+                        i.setStatus(GroupDrawListVo.FINISHED);
+                    }
+                    break;
+                case GROUP_DRAW_DISABLED:
+                    i.setStatus(GroupDrawListVo.DISABLED);
+                    break;
+            }
+            // 商品数量
+            int goodsCount = goodsId.split(",").length;
+            i.setGoodsCount(goodsCount);
+        });
+    }
+
+    /**
      * 添加活动
      */
     public void addGroupDraw(GroupDrawAddParam param) {
@@ -140,10 +149,16 @@ public class GroupDrawService extends ShopBaseService {
             null, (byte) 0, null, param.getRewardCouponId())).execute();
     }
 
+    /**
+     * List 转 String
+     */
     private String listToString(List<Integer> rewardCouponIds) {
         return rewardCouponIds.stream().map(String::valueOf).collect(Collectors.joining(","));
     }
 
+    /**
+     * 当前时间戳
+     */
     private Timestamp currentTimeStamp() {
         return new Timestamp(new java.util.Date().getTime());
     }
