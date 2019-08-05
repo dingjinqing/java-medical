@@ -566,5 +566,8 @@ alter table b2c_card_order
     
 alter table b2c_card_order
 	add still_send_flag tinyint(2) not null default '1' comment '退款后是否继续发放优惠劵，1：继续发放，0：停止发放' ;
-	
-	
+
+--增加虚拟商品 优惠劵订单 会员卡余额支付方式的退款金额字段
+ALTER TABLE `b2c_refund_card_record`
+	ADD COLUMN `member_card_balance`  decimal(10,2) NOT NULL COMMENT '会员卡余额退款金额' AFTER `money_paid`;
+
