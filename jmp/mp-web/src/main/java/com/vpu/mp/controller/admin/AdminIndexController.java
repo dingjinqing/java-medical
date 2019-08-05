@@ -1,6 +1,9 @@
 package com.vpu.mp.controller.admin;
 
 import java.util.Arrays;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.util.StringUtils;
@@ -14,6 +17,7 @@ import com.vpu.mp.service.foundation.jedis.JedisManager;
 import com.vpu.mp.service.foundation.util.Util;
 import com.vpu.mp.service.pojo.saas.shop.version.VersionConfig;
 import com.vpu.mp.service.pojo.saas.shop.version.VersionMainConfig;
+import com.vpu.mp.service.pojo.shop.auth.MenuInnerParam;
 import com.vpu.mp.service.pojo.shop.auth.MenuParam;
 import com.vpu.mp.service.pojo.shop.auth.MenuReturnParam;
 import com.vpu.mp.service.pojo.shop.auth.PrivilegeAndPassParam;
@@ -69,14 +73,18 @@ public class AdminIndexController extends AdminBaseController {
 			privilParam2.setPrivilegeLlist(Arrays.asList(menuReturnParam.getPrivilegePass().get(0)));
 			privilParam2.setPassList((Arrays.asList(menuReturnParam.getPrivilegePass().get(1))));
 
-			privilegeVo.setMenuParam(outParam);
+			
+			MenuParam specialParam = saas.shop.role.specialParam(outParam, menuParam.getPlus());
+			
+			privilegeVo.setMenuParam(specialParam);
 			privilegeVo.setPassParam(privilParam2);
 			return success(privilegeVo);
 		} else {
 			// 不是子账户
-			privilegeVo.setMenuParam(menuParam);
+			MenuParam specialParam = saas.shop.role.specialParam(menuParam, menuParam.getPlus());
+			privilegeVo.setMenuParam(specialParam);
 			privilegeVo.setPassParam(privilParam);
-			return success(menuParam);
+			return success(privilegeVo);
 		}
 	}
 
