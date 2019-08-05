@@ -422,7 +422,6 @@ public class Util {
 		return t == null || t.isEmpty();
 	}
 
-	/** 时间日期格式化工具类，单一线程内修改不影响其他线程 */
 	public static ThreadLocal<SimpleDateFormat> threadLocal = new ThreadLocal<SimpleDateFormat>(){
 		/** 默认时间格式为yyyy-MM-dd hh:mm:ss*/
 		@Override
