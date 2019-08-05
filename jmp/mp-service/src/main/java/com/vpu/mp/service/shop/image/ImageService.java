@@ -11,6 +11,7 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.vpu.mp.config.StorageConfig;
 import org.apache.commons.io.FileUtils;
 import org.jooq.Record;
 import org.jooq.SelectWhereStep;
@@ -46,7 +47,9 @@ public class ImageService extends ShopBaseService implements ImageDefault {
     
     @Autowired
     protected UpYunConfig upYunConfig;
-    
+
+    @Autowired
+    protected StorageConfig storageConfig;
     
     @Override
    	public String imageUrl(String relativePath) {
@@ -55,7 +58,7 @@ public class ImageService extends ShopBaseService implements ImageDefault {
 
    	@Override
    	public String fullPath(String relativePath) {
-   		return domainConfig.mainUrl(relativePath);
+   		return storageConfig.storagePath(relativePath);
    	}
 
    	@Override
@@ -286,6 +289,7 @@ public class ImageService extends ShopBaseService implements ImageDefault {
      * 当前店铺Id 
      * @return
      */
+    @Override
     public Integer currentShopId() {
     	return this.getShopId();
     }
