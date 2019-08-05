@@ -15,14 +15,13 @@ import com.vpu.mp.service.pojo.shop.config.SearchConfig;
  *
  */
 @RestController
-@RequestMapping("/api/admin/shop/cfg")
 public class AdminShopCfgController  extends AdminBaseController {
 
 	/**
 	 * 查询 搜索配置
 	 * @return
 	 */
-	@GetMapping("/get/searchcfg")
+	@GetMapping("/api/get/searchcfg")
 	public JsonResult getSearchCfg() {
 		return success(shop().config.searchCfg.getSearchConfig());
 	}
@@ -31,7 +30,7 @@ public class AdminShopCfgController  extends AdminBaseController {
 	 * @param jsonParam
 	 * @return
 	 */
-	@PostMapping("/update/searchcfg")
+	@PostMapping("/api/update/searchcfg")
 	public JsonResult updateSearchCfg(@RequestBody SearchConfig config){
 		shop().config.searchCfg.setSearchConfig(config);
 		return success();
