@@ -97,6 +97,7 @@ public class GroupDrawService extends ShopBaseService {
                 select.and(GROUP_DRAW.STATUS.eq(GROUP_DRAW_ENABLED));
             }
         }
+        select.and(GROUP_DRAW.DEL_FLAG.eq((byte) 0));
         select.orderBy(GROUP_DRAW.CREATE_TIME.desc());
     }
 
@@ -147,6 +148,13 @@ public class GroupDrawService extends ShopBaseService {
             param.getEndTime(), param.getGoodsId(), param.getMinJoinNum(), param.getPayMoney(), param.getJoinLimit(),
             param.getOpenLimit(), param.getLimitAmount(), param.getToNumShow(), GROUP_DRAW_ENABLED, (byte) 1, null,
             null, (byte) 0, null, param.getRewardCouponId())).execute();
+    }
+
+    /**
+     * 删除活动
+     */
+    public void deleteGroupDraw(Integer id) {
+        shopDb().update(GROUP_DRAW).set(GROUP_DRAW.DEL_FLAG, (byte) 1).where(GROUP_DRAW.ID.eq(id)).execute();
     }
 
     /**
