@@ -15,7 +15,7 @@ public class GroupDrawListVo {
 
     /** 进行中 **/
     public static final byte ONGOING = 0;
-    /** 已结束 **/
+    /** 已过期 **/
     public static final byte FINISHED = 1;
     /** 已停用 **/
     public static final byte DISABLED = 2;
