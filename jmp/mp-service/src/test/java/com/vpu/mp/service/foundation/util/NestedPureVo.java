@@ -1,4 +1,4 @@
-package com.vpu.mp.controller.i18n;
+package com.vpu.mp.service.foundation.util;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;

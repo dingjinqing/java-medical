@@ -1,6 +1,5 @@
-package com.vpu.mp.controller.i18n;
+package com.vpu.mp.service.foundation.util;
 
-import com.vpu.mp.service.foundation.util.I18N;
 import lombok.Data;
 
 import java.util.ArrayList;
