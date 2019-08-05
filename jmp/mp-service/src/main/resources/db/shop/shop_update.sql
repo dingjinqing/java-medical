@@ -571,3 +571,5 @@ alter table b2c_card_order
 ALTER TABLE `b2c_refund_card_record`
 	ADD COLUMN `member_card_balance`  decimal(10,2) NOT NULL default '0.00' COMMENT '会员卡余额退款金额' AFTER `money_paid`;
 
+-- 王兵兵 201-08-05 秒杀修改
+alter table `b2c_sec_kill_define` drop column `shop_id`;

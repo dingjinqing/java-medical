@@ -2390,7 +2390,6 @@ create table `b2c_purchase_price_rule` (
 -- drop table if exists `b2c_sec_kill_define`;
 create table `b2c_sec_kill_define` (
   `sk_id`         int(11)                                 not null auto_increment comment '秒杀活动id',
-  `shop_id`       int(11)                                 not null comment '店铺id',
   `goods_id`      int(11)                                 not null comment '商品id',
   `name`          varchar(100)  not null comment '活动名称',
   `limit_amount`  smallint(6)                             not null comment '每人限购数量',
