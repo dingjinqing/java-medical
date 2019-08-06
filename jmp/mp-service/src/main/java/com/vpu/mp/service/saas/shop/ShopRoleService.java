@@ -35,6 +35,7 @@ import com.vpu.mp.service.pojo.shop.config.group.ShopRoleVo;
 @Service
 
 public class ShopRoleService extends MainBaseService {
+	final protected String menuJsonPath = "admin.privilegeList.json";
 
 	public ShopRoleRecord getRoleById(Integer roleId) {
 		return db().selectFrom(SHOP_ROLE).where(SHOP_ROLE.ROLE_ID.eq(roleId)).fetchAny();
@@ -188,7 +189,16 @@ public class ShopRoleService extends MainBaseService {
 			prlJson = selectList.get(SHOP_ROLE.PRIVILEGE_LIST);
 		}
 
-		List<?> list = Util.parseJson(prlJson, List.class);
+		List<String> list = Util.parseJson(prlJson, List.class);
+		//加入特殊的
+		String json = Util.loadResource(menuJsonPath);
+		MenuParam menuParam = Util.parseJson(json, MenuParam.class);
+		List<MenuInnerParam> plus = menuParam.getPlus();
+		for(MenuInnerParam param:plus) {
+			List<String> preName = param.getPreName();
+			list.addAll(preName);
+		}
+		
 		for (Object enInnerName : list) {
 			if (enName.equals(enInnerName)) {
 				return true;
