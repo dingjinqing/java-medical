@@ -69,8 +69,8 @@ export const en = {
   ],
   // 会员管理 会员导入
   membershipIntroduction: ['Membership management', 'Membership List'],
-    // 基础配置 小程序授权
-    program_auth: ['Base management', 'Mini Program auth'],
-    // 基础配置 小程序授权成功页面
-    program_auth_details: ['Base Management', 'Mini Program auth']
+  // 基础配置 小程序授权
+  program_auth: ['Base management', 'Mini Program auth'],
+  // 基础配置 小程序授权成功页面
+  program_auth_details: ['Base Management', 'Mini Program auth']
 }
