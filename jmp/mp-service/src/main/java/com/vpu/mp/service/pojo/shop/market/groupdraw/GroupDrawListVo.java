@@ -3,7 +3,9 @@ package com.vpu.mp.service.pojo.shop.market.groupdraw;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Data;
 
+import java.math.BigDecimal;
 import java.sql.Timestamp;
+import java.util.List;
 
 /**
  * 拼团抽奖列表出参
@@ -43,6 +45,10 @@ public class GroupDrawListVo {
     private Byte status;
     /** 是否已开奖 **/
     private Boolean isDraw;
+    /** 下单支付金额 **/
+    private BigDecimal payMoney;
+    /** 商品 id **/
+    private List<Integer> goodsIds;
     @JsonIgnore
     private String goodsId;
 

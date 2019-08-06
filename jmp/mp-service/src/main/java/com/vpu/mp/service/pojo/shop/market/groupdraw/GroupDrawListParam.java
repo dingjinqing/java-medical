@@ -23,4 +23,6 @@ public class GroupDrawListParam extends BasePageParam {
     private LocalDate endTime;
     /** 活动状态 **/
     private Byte status;
+    /** 活动id **/
+    private Integer id;
 }

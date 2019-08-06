@@ -45,6 +45,14 @@ public class AdminGroupDrawController extends AdminBaseController {
     }
 
     /**
+     * 编辑活动 - 查询
+     */
+    @PostMapping("/detail/{id}")
+    public JsonResult groupDrawDetail(@PathVariable Integer id) {
+        return success(shop().groupDraw.getGroupDrawById(id));
+    }
+
+    /**
      * 参与用户
      */
     @PostMapping("/join_user/list")

@@ -16,6 +16,7 @@ public class OrderListVo {
     private String goodsImg;
     private Integer userId;
     private String mobile;
+    private String consigneeRealName;
     private Boolean isWinDraw;
     private LocalDate createTime;
     private String orderStatusName;

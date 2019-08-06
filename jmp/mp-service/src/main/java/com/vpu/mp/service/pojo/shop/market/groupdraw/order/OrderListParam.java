@@ -20,7 +20,7 @@ public class OrderListParam extends BasePageParam {
     private String consigneeName;
     private String mobile;
     private Timestamp createTime;
-    private Short provinceCode;
-    private Short cityCode;
-    private Short districtCode;
+    private Integer provinceCode;
+    private Integer cityCode;
+    private Integer districtCode;
 }

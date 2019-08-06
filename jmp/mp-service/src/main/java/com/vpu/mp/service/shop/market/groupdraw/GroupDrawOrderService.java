@@ -62,7 +62,7 @@ public class GroupDrawOrderService extends ShopBaseService {
             select.and(JOIN_GROUP_LIST.ORDER_SN.like(format("%s%%", orderSn)));
         }
         if (isNotEmpty(goodsName)) {
-            select.and(ORDER_GOODS.GOODS_NAME.like(format("%s%%", goodsName)));
+            select.and(ORDER_GOODS.GOODS_NAME.like(format("%%%s%%", goodsName)));
         }
         if (isNotEmpty(consigneeName)) {
             select.and(ORDER_MUST.CONSIGNEE_REAL_NAME.like(format("%s%%", consigneeName)));
