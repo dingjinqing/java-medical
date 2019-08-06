@@ -31,10 +31,10 @@ import java.util.List;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class GroupIntegrationList extends TableImpl<GroupIntegrationListRecord> {
 
-    private static final long serialVersionUID = 1096795844;
+    private static final long serialVersionUID = -1188816030;
 
     /**
-     * The reference instance of <code>mini_shop_4748160.b2c_group_integration_list</code>
+     * The reference instance of <code>mini_shop_471752.b2c_group_integration_list</code>
      */
     public static final GroupIntegrationList GROUP_INTEGRATION_LIST = new GroupIntegrationList();
 
@@ -47,101 +47,101 @@ public class GroupIntegrationList extends TableImpl<GroupIntegrationListRecord> 
     }
 
     /**
-     * The column <code>mini_shop_4748160.b2c_group_integration_list.id</code>.
+     * The column <code>mini_shop_471752.b2c_group_integration_list.id</code>.
      */
     public final TableField<GroupIntegrationListRecord, Integer> ID = createField("id", org.jooq.impl.SQLDataType.INTEGER.nullable(false).identity(true), this, "");
 
     /**
-     * The column <code>mini_shop_4748160.b2c_group_integration_list.inte_activity_id</code>. 瓜分积分活动定义id
+     * The column <code>mini_shop_471752.b2c_group_integration_list.inte_activity_id</code>. 瓜分积分活动定义id
      */
     public final TableField<GroupIntegrationListRecord, Integer> INTE_ACTIVITY_ID = createField("inte_activity_id", org.jooq.impl.SQLDataType.INTEGER.nullable(false), this, "瓜分积分活动定义id");
 
     /**
-     * The column <code>mini_shop_4748160.b2c_group_integration_list.group_id</code>. 拼团id
+     * The column <code>mini_shop_471752.b2c_group_integration_list.group_id</code>. 拼团ID
      */
-    public final TableField<GroupIntegrationListRecord, String> GROUP_ID = createField("group_id", org.jooq.impl.SQLDataType.VARCHAR(60).nullable(false).defaultValue(DSL.inline("", org.jooq.impl.SQLDataType.VARCHAR)), this, "拼团id");
+    public final TableField<GroupIntegrationListRecord, Integer> GROUP_ID = createField("group_id", org.jooq.impl.SQLDataType.INTEGER.nullable(false), this, "拼团ID");
 
     /**
-     * The column <code>mini_shop_4748160.b2c_group_integration_list.user_id</code>.
+     * The column <code>mini_shop_471752.b2c_group_integration_list.user_id</code>.
      */
     public final TableField<GroupIntegrationListRecord, Integer> USER_ID = createField("user_id", org.jooq.impl.SQLDataType.INTEGER.nullable(false), this, "");
 
     /**
-     * The column <code>mini_shop_4748160.b2c_group_integration_list.is_grouper</code>. 是否为团长 1：是 0：否
+     * The column <code>mini_shop_471752.b2c_group_integration_list.is_grouper</code>. 是否为团长 1：是 0：否
      */
-    public final TableField<GroupIntegrationListRecord, Byte> IS_GROUPER = createField("is_grouper", org.jooq.impl.SQLDataType.TINYINT.nullable(false).defaultValue(DSL.inline("0", org.jooq.impl.SQLDataType.TINYINT)), this, "是否为团长 1：是 0：否");
+    public final TableField<GroupIntegrationListRecord, Byte> IS_GROUPER = createField("is_grouper", org.jooq.impl.SQLDataType.TINYINT.nullable(false).defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.TINYINT)), this, "是否为团长 1：是 0：否");
 
     /**
-     * The column <code>mini_shop_4748160.b2c_group_integration_list.status</code>. 0: 拼团中 1:拼团成功 2:拼团失败
+     * The column <code>mini_shop_471752.b2c_group_integration_list.status</code>. 0: 拼团中 1:拼团成功 2:拼团失败
      */
-    public final TableField<GroupIntegrationListRecord, Byte> STATUS = createField("status", org.jooq.impl.SQLDataType.TINYINT.nullable(false).defaultValue(DSL.inline("0", org.jooq.impl.SQLDataType.TINYINT)), this, "0: 拼团中 1:拼团成功 2:拼团失败");
+    public final TableField<GroupIntegrationListRecord, Byte> STATUS = createField("status", org.jooq.impl.SQLDataType.TINYINT.nullable(false).defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.TINYINT)), this, "0: 拼团中 1:拼团成功 2:拼团失败");
 
     /**
-     * The column <code>mini_shop_4748160.b2c_group_integration_list.start_time</code>. 参团时间
+     * The column <code>mini_shop_471752.b2c_group_integration_list.start_time</code>. 参团时间
      */
     public final TableField<GroupIntegrationListRecord, Timestamp> START_TIME = createField("start_time", org.jooq.impl.SQLDataType.TIMESTAMP, this, "参团时间");
 
     /**
-     * The column <code>mini_shop_4748160.b2c_group_integration_list.end_time</code>. 成团时间
+     * The column <code>mini_shop_471752.b2c_group_integration_list.end_time</code>. 成团时间
      */
     public final TableField<GroupIntegrationListRecord, Timestamp> END_TIME = createField("end_time", org.jooq.impl.SQLDataType.TIMESTAMP, this, "成团时间");
 
     /**
-     * The column <code>mini_shop_4748160.b2c_group_integration_list.integration</code>. 瓜分到的积分
+     * The column <code>mini_shop_471752.b2c_group_integration_list.integration</code>. 瓜分到的积分
      */
-    public final TableField<GroupIntegrationListRecord, Integer> INTEGRATION = createField("integration", org.jooq.impl.SQLDataType.INTEGER.nullable(false).defaultValue(DSL.inline("0", org.jooq.impl.SQLDataType.INTEGER)), this, "瓜分到的积分");
+    public final TableField<GroupIntegrationListRecord, Integer> INTEGRATION = createField("integration", org.jooq.impl.SQLDataType.INTEGER.nullable(false).defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.INTEGER)), this, "瓜分到的积分");
 
     /**
-     * The column <code>mini_shop_4748160.b2c_group_integration_list.invite_num</code>. 邀请人的数量
+     * The column <code>mini_shop_471752.b2c_group_integration_list.invite_num</code>. 邀请人的数量
      */
-    public final TableField<GroupIntegrationListRecord, Short> INVITE_NUM = createField("invite_num", org.jooq.impl.SQLDataType.SMALLINT.nullable(false).defaultValue(DSL.inline("0", org.jooq.impl.SQLDataType.SMALLINT)), this, "邀请人的数量");
+    public final TableField<GroupIntegrationListRecord, Short> INVITE_NUM = createField("invite_num", org.jooq.impl.SQLDataType.SMALLINT.nullable(false).defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.SMALLINT)), this, "邀请人的数量");
 
     /**
-     * The column <code>mini_shop_4748160.b2c_group_integration_list.invite_user</code>. 邀请人（被谁邀请）
+     * The column <code>mini_shop_471752.b2c_group_integration_list.invite_user</code>. 邀请人（被谁邀请）
      */
-    public final TableField<GroupIntegrationListRecord, Integer> INVITE_USER = createField("invite_user", org.jooq.impl.SQLDataType.INTEGER.nullable(false).defaultValue(DSL.inline("0", org.jooq.impl.SQLDataType.INTEGER)), this, "邀请人（被谁邀请）");
+    public final TableField<GroupIntegrationListRecord, Integer> INVITE_USER = createField("invite_user", org.jooq.impl.SQLDataType.INTEGER.nullable(false).defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.INTEGER)), this, "邀请人（被谁邀请）");
 
     /**
-     * The column <code>mini_shop_4748160.b2c_group_integration_list.is_new</code>. 是否是新用户：0：不是，1：是
+     * The column <code>mini_shop_471752.b2c_group_integration_list.is_new</code>. 是否是新用户：0：不是，1：是
      */
-    public final TableField<GroupIntegrationListRecord, Byte> IS_NEW = createField("is_new", org.jooq.impl.SQLDataType.TINYINT.nullable(false).defaultValue(DSL.inline("0", org.jooq.impl.SQLDataType.TINYINT)), this, "是否是新用户：0：不是，1：是");
+    public final TableField<GroupIntegrationListRecord, Byte> IS_NEW = createField("is_new", org.jooq.impl.SQLDataType.TINYINT.nullable(false).defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.TINYINT)), this, "是否是新用户：0：不是，1：是");
 
     /**
-     * The column <code>mini_shop_4748160.b2c_group_integration_list.is_look</code>. 是否看过开奖结果
+     * The column <code>mini_shop_471752.b2c_group_integration_list.is_look</code>. 是否看过开奖结果
      */
-    public final TableField<GroupIntegrationListRecord, Byte> IS_LOOK = createField("is_look", org.jooq.impl.SQLDataType.TINYINT.nullable(false).defaultValue(DSL.inline("0", org.jooq.impl.SQLDataType.TINYINT)), this, "是否看过开奖结果");
+    public final TableField<GroupIntegrationListRecord, Byte> IS_LOOK = createField("is_look", org.jooq.impl.SQLDataType.TINYINT.nullable(false).defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.TINYINT)), this, "是否看过开奖结果");
 
     /**
-     * The column <code>mini_shop_4748160.b2c_group_integration_list.can_integration</code>. 该团可瓜分积分池
+     * The column <code>mini_shop_471752.b2c_group_integration_list.can_integration</code>. 该团可瓜分积分池
      */
-    public final TableField<GroupIntegrationListRecord, Integer> CAN_INTEGRATION = createField("can_integration", org.jooq.impl.SQLDataType.INTEGER.nullable(false).defaultValue(DSL.inline("0", org.jooq.impl.SQLDataType.INTEGER)), this, "该团可瓜分积分池");
+    public final TableField<GroupIntegrationListRecord, Integer> CAN_INTEGRATION = createField("can_integration", org.jooq.impl.SQLDataType.INTEGER.nullable(false).defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.INTEGER)), this, "该团可瓜分积分池");
 
     /**
-     * The column <code>mini_shop_4748160.b2c_group_integration_list.create_time</code>.
+     * The column <code>mini_shop_471752.b2c_group_integration_list.create_time</code>.
      */
-    public final TableField<GroupIntegrationListRecord, Timestamp> CREATE_TIME = createField("create_time", org.jooq.impl.SQLDataType.TIMESTAMP.defaultValue(DSL.field("CURRENT_TIMESTAMP", org.jooq.impl.SQLDataType.TIMESTAMP)), this, "");
+    public final TableField<GroupIntegrationListRecord, Timestamp> CREATE_TIME = createField("create_time", org.jooq.impl.SQLDataType.TIMESTAMP.defaultValue(org.jooq.impl.DSL.field("CURRENT_TIMESTAMP", org.jooq.impl.SQLDataType.TIMESTAMP)), this, "");
 
     /**
-     * The column <code>mini_shop_4748160.b2c_group_integration_list.update_time</code>. 最后修改时间
+     * The column <code>mini_shop_471752.b2c_group_integration_list.update_time</code>. 最后修改时间
      */
-    public final TableField<GroupIntegrationListRecord, Timestamp> UPDATE_TIME = createField("update_time", org.jooq.impl.SQLDataType.TIMESTAMP.defaultValue(DSL.field("CURRENT_TIMESTAMP", org.jooq.impl.SQLDataType.TIMESTAMP)), this, "最后修改时间");
+    public final TableField<GroupIntegrationListRecord, Timestamp> UPDATE_TIME = createField("update_time", org.jooq.impl.SQLDataType.TIMESTAMP.defaultValue(org.jooq.impl.DSL.field("CURRENT_TIMESTAMP", org.jooq.impl.SQLDataType.TIMESTAMP)), this, "最后修改时间");
 
     /**
-     * Create a <code>mini_shop_4748160.b2c_group_integration_list</code> table reference
+     * Create a <code>mini_shop_471752.b2c_group_integration_list</code> table reference
      */
     public GroupIntegrationList() {
         this(DSL.name("b2c_group_integration_list"), null);
     }
 
     /**
-     * Create an aliased <code>mini_shop_4748160.b2c_group_integration_list</code> table reference
+     * Create an aliased <code>mini_shop_471752.b2c_group_integration_list</code> table reference
      */
     public GroupIntegrationList(String alias) {
         this(DSL.name(alias), GROUP_INTEGRATION_LIST);
     }
 
     /**
-     * Create an aliased <code>mini_shop_4748160.b2c_group_integration_list</code> table reference
+     * Create an aliased <code>mini_shop_471752.b2c_group_integration_list</code> table reference
      */
     public GroupIntegrationList(Name alias) {
         this(alias, GROUP_INTEGRATION_LIST);
