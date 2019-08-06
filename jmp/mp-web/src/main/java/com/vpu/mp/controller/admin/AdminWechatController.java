@@ -1,23 +1,14 @@
 package com.vpu.mp.controller.admin;
 
-import com.vpu.mp.service.foundation.data.JsonResult;
-import com.vpu.mp.service.foundation.data.JsonResultCode;
-
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseBody;
-
 import com.vpu.mp.db.main.tables.records.MpAuthShopRecord;
+import com.vpu.mp.service.foundation.data.JsonResult;
 import com.vpu.mp.service.pojo.shop.auth.MenuAuthority;
 import com.vpu.mp.service.wechat.OpenPlatform;
-
 import me.chanjar.weixin.common.error.WxErrorException;
 import me.chanjar.weixin.open.bean.result.WxOpenQueryAuthResult;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.*;
 
 /**
  * 
@@ -33,21 +24,68 @@ public class AdminWechatController extends AdminBaseController {
 	@Autowired
 	protected OpenPlatform open;
 
+    @RequestMapping(value = "/wechat/proxy/test")
+    @ResponseBody
+    public String noAuthorization() {
+        System.out.println(authority);
+        return "hell";
+    }
 
-	@GetMapping(value = "/wechat/proxy/test")
-	@ResponseBody
-	public String noAuthorization() {
-		System.out.println(authority);
-		return "hell";
-	}
 
+    @RequestMapping(value = "/wechat/proxy/test/auth")
+    @ResponseBody
+    public String testAuth() {
+        return "<a href='/wechat/proxy/start/auth'>测试小程序授权</a>";
+    }
 
-	@GetMapping(value = "/wechat/proxy/test/auth")
-	@ResponseBody
-	public String testAuth() {
+    /**
+     * 开始小程序授权
+     *
+     * @return
+     */
+    @RequestMapping(value = "/wechat/proxy/start/auth")
+    public JsonResult startAuthorization() {
+        Integer shopId=this.shopId();
 
-		return "<a href='/wechat/proxy/start/auth?shop_id=245547'>测试小程序授权</a>";
-	}
+        String url = this.mainUrl("/wechat/proxy/authorization/callback?shop_id=" + shopId);
+        try {
+            String authType = "2";
+            String bizAppId = null;
+            MpAuthShopRecord mp = saas.shop.mp.getAuthShopByShopId(shopId);
+            if (mp != null) {
+                bizAppId = mp.getAppId();
+            }
+            url = open.getWxOpenComponentService().getPreAuthUrl(url, authType, bizAppId);
+
+            return success(url);
+        } catch (WxErrorException e) {
+            e.printStackTrace();
+            return fail();
+        }
+    }
+
+    /**
+     * 开始公众号授权
+     *
+     * @return
+     */
+    @RequestMapping(value = "/wechat/proxy/official/account/authorization")
+    public JsonResult startOfficialAccountAuthorization() {
+
+        String url = this.mainUrl("/wechat/proxy/authorization/callback?sys_id="+this.adminAuth.user().getSysId());
+
+        try {
+            String authType = "1";
+            String bizAppid = null;
+            url = open.getWxOpenComponentService().getPreAuthUrl(url, authType, bizAppid);
+
+            return success(url);
+        } catch (WxErrorException e) {
+            e.printStackTrace();
+            return fail();
+        }
+    }
+
 
 	/**
 	 * 公众号或小程序授权回调
@@ -55,7 +93,7 @@ public class AdminWechatController extends AdminBaseController {
 	 * @return
 	 */
 	@RequestMapping(value = "/wechat/proxy/authorization/callback")
-	public JsonResult authorizationCallback(@RequestParam("auth_code") String authorizationCode,
+	public String authorizationCallback(@RequestParam("auth_code") String authorizationCode,
 			@RequestParam(name = "sys_id", required = false) Integer sysId,
 			@RequestParam(name = "shop_id", required = false) Integer shopId) {
 		try {
@@ -70,13 +108,13 @@ public class AdminWechatController extends AdminBaseController {
 				if (mp != null && !mp.getAppId().equals(appId)) {
 					//小程序上次授权与本次授权AppId不一致，请联系客服！
 					logger().debug("appId"+appId+"小程序上次授权与本次授权AppId不一致，请联系客服！");
-					return fail(JsonResultCode.WX_BINDING_MINI_NO_SAME);
+                    return ("小程序上次授权与本次授权AppId不一致，请联系客服！");
 				}
 				mp = saas.shop.mp.getAuthShopByAppId(appId);
 				if (mp != null && mp.getShopId().intValue() != shopId) {
 					//小程序已授权绑定其他账号，请联系客服！
 					logger().debug("appId"+appId+"小程序已授权绑定其他账号，请联系客服！");
-					return fail(JsonResultCode.WX_BINDING_MINI_HAVEBIND);
+                    return ("小程序已授权绑定其他账号，请联系客服！");
 				}
 				saas.shop.mp.addMpAuthAccountInfo(appId, shopId);
 				saas.shop.mp.bindAllSamePrincipalOpenAppId(mp);
@@ -84,7 +122,7 @@ public class AdminWechatController extends AdminBaseController {
 			}
 
 			logger().info("getQueryAuth", queryAuthResult);
-			return success();
+            return "redirect:"+this.mainUrl("/wechat/mini/info");
 		} catch (WxErrorException e) {
 			logger().error("gotoPreAuthUrl", e);
 			throw new RuntimeException(e);
