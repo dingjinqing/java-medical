@@ -241,7 +241,7 @@ public class ShopMenuService extends MainBaseService {
 					return JsonResultCode.CODE_SUCCESS;
 				}
 				// 请求包含在api里
-				if (includeEname(versionJson, reqVsName)) {
+				if (includeEname(versionJson, path)) {
 					// 和用户自己的权限进行校验
 					return JsonResultCode.CODE_SUCCESS;
 				}
