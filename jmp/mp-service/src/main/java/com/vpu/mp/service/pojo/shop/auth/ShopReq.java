@@ -1,5 +1,7 @@
 package com.vpu.mp.service.pojo.shop.auth;
 
+import java.sql.Timestamp;
+
 import javax.validation.constraints.NotBlank;
 
 import com.vpu.mp.service.foundation.data.JsonResultMessage;
@@ -19,7 +21,9 @@ public class ShopReq {
 	@NotBlank(message = JsonResultMessage.MSG_ACCOUNT_USERNAME_NOT_NULL)
 	private Integer shopId;
 	private Integer sysId;
+	@NotBlank(message = JsonResultMessage.MSG_ACCOUNT_MODILE_NOT_NULL)
 	private String mobile;
+	@NotBlank(message = JsonResultMessage.MSG_ACCOUNT_USERNAME_NOT_NULL)
 	private String shopType;
 	private String receiveMobile;
 	private String shopName;
@@ -36,5 +40,10 @@ public class ShopReq {
 	private String password;
 	private Byte hidBottom;
 	private String dbConfig;
+	private Timestamp endTime;
+	/**
+	 * 数据库
+	 */
+	public String dbConfigId;
 
 }
