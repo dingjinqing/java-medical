@@ -1,5 +1,7 @@
 package com.vpu.mp.controller.admin;
 
+import com.vpu.mp.service.foundation.data.JsonResult;
+import com.vpu.mp.service.pojo.shop.config.WxShoppingListConfig;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -165,4 +167,17 @@ public class AdminWechatController extends AdminBaseController {
 		return open.appEvent(requestBody, appId, signature, timestamp, nonce, openid, encType, msgSignature);
 	}
 
+	@RequestMapping("/wechat/mini/shopping/list/update")
+    @ResponseBody
+    public void switchWxShoppingList(@RequestBody WxShoppingListConfig config){
+        shop().shoppingListConfig.setShoppingListConfig(config);
+    }
+
+    @RequestMapping("/wechat/mini/shopping/list/")
+    @ResponseBody
+    public JsonResult getWxShoppongList(){
+        WxShoppingListConfig shoppingListConfig = shop().shoppingListConfig.getShoppingListConfig();
+
+        return success(shoppingListConfig);
+    }
 }

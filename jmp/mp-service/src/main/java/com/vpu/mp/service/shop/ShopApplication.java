@@ -4,6 +4,7 @@ package com.vpu.mp.service.shop;
 import com.vpu.mp.service.shop.config.ConfigService;
 import com.vpu.mp.service.shop.config.ShopBasicConfigService;
 import com.vpu.mp.service.shop.config.TradeService;
+import com.vpu.mp.service.shop.config.WxShoppingListConfigService;
 import com.vpu.mp.service.shop.coupon.CouponService;
 import com.vpu.mp.service.shop.decoration.AppletsJumpService;
 import com.vpu.mp.service.shop.decoration.ChooseLinkService;
@@ -133,4 +134,9 @@ public class ShopApplication  {
 	@Autowired public GroupDrawService groupDraw;
 	@Autowired public GroupDrawJoinUserService groupDrawUsers;
 	@Autowired public GroupDrawOrderService groupDrawOrders;
+
+    /**
+     * 微信好物圈配置
+     */
+	@Autowired public WxShoppingListConfigService shoppingListConfig;
 }
