@@ -1,37 +1,57 @@
 <template>
   <el-tabs v-model="tabActive" type="border-card" class="tab" >
-    <el-tab-pane :label="$t('programVersion.versionManage')" name="first">
+    <el-tab-pane :label="$t('programVersion.versionManage')" name="versionManage">
       <versionManage />
     </el-tab-pane>
-    <el-tab-pane :label="$t('programVersion.versionLog')" name="second">
+    <el-tab-pane :label="$t('programVersion.versionLog')" name="versionLog">
       <versionLog />
     </el-tab-pane>
-    <el-tab-pane :label="$t('programVersion.authList')" name="third">
+    <el-tab-pane :label="$t('programVersion.authList')" name="authList">
       <authList />
     </el-tab-pane>
-    <el-tab-pane :label="$t('programVersion.versionStatistics')" name="fourth">
+    <el-tab-pane :label="$t('programVersion.versionStatistics')" name="versionStatistics">
       <versionStatistics />
+    </el-tab-pane>
+    <el-tab-pane
+      v-if="$route.params.page === 'authMsg'"
+      :label="$t('programVersion.authMsg')" name="authMsg">
+      <authMsg />
     </el-tab-pane>
   </el-tabs>
 </template>
 
 <script>
-import versionManage from './versionManage'
-import versionLog from './versionLog'
-import authList from './authList'
-import versionStatistics from './versionStatistics'
+import versionManage from './versionManage' // 首页组件直接加载，剩下的页面都异步加载
 
 export default {
   name: 'programManage',
   components: {
-    versionManage,
-    versionLog,
-    authList,
-    versionStatistics
+    versionManage: versionManage,
+    versionLog: () => import('./versionLog'),
+    authList: () => import('./authList'),
+    versionStatistics: () => import('./versionStatistics'),
+    authMsg: () => import('./authMsg')
   },
   data () {
     return {
-      tabActive: 'first'
+      tabActive: this.$route.params.page
+    }
+  },
+  watch: {
+    $route: { // 带选项watch写法。兼容国际化刷新立即显示
+      immediate: true,
+      handler (to) {
+        this.tabActive = to.params.page
+        this.$store.commit('UPDATE_BREADCRUMB_TITLE', this.$t(`programVersion.${this.$route.params.page}`))
+      }
+    },
+    tabActive (val) {
+      this.$router.push({
+        name: this.$route.name,
+        params: {
+          page: val
+        }
+      })
     }
   }
 }

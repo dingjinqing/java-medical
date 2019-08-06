@@ -4,7 +4,7 @@
       <div class="clearfixed">
         <el-select
           class="fll select-width mr-6 mb-10"
-          v-model="versionNum"
+          v-model="queryData.versionNum"
           placeholder="请选择版本号"
           size="small"
         >
@@ -16,7 +16,7 @@
         </el-select>
         <el-select
           class="fll select-width mr-6 mb-10"
-          v-model="isAuth"
+          v-model="queryData.isAuth"
           placeholder="选择是否授权"
           size="small"
         >
@@ -28,7 +28,7 @@
         </el-select>
         <el-select
           class="fll select-width mr-6 mb-10"
-          v-model="isWxPay"
+          v-model="queryData.isWxPay"
           placeholder="选择支持微信支付"
           size="small"
         >
@@ -40,7 +40,7 @@
         </el-select>
         <el-select
           class="fll select-width mr-6 mb-10"
-          v-model="isWxPay"
+          v-model="queryData.auditStatus"
           placeholder="选择审核状态"
           size="small"
         >
@@ -52,7 +52,7 @@
         </el-select>
         <el-select
           class="fll select-width mr-6 mb-10"
-          v-model="isWxPay"
+          v-model="queryData.isRelease"
           placeholder="选择发布状态"
           size="small"
         >
@@ -122,10 +122,15 @@ export default {
   name: 'versionStatistics',
   data () {
     return {
-      versionNum: '', // 版本号
-      isAuth: '', // 是否授权
-      isWxPay: '', // 是否微信支付
+      queryData: {
+        versionNum: '', // 版本号
+        isAuth: '', // 是否授权
+        isWxPay: '', // 是否微信支付
+        auditStatus: '', // 审核状态
+        isRelease: '' // 发布状态
+      },
       checkList: [0, 3], // 复选框选项
+
       tableData: [],
       selectIdOpt: [
         {

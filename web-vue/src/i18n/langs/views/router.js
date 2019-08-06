@@ -22,7 +22,11 @@ export const cn = {
   // 会员管理 会员列表 积分
   integralDetail: ['会员管理', '会员列表', '积分明细'],
   // 会员管理 会员导入
-  membershipIntroduction: ['会员管理', '会员导入']
+  membershipIntroduction: ['会员管理', '会员导入'],
+  // 基础配置 小程序授权
+  program_auth: ['基础配置', '小程序授权'],
+  // 基础配置 小程序授权成功页面
+  program_auth_details: ['基础配置', '小程序授权']
 }
 
 export const en = {
@@ -64,5 +68,9 @@ export const en = {
     'Integral details'
   ],
   // 会员管理 会员导入
-  membershipIntroduction: ['Membership management', 'Membership List']
+  membershipIntroduction: ['Membership management', 'Membership List'],
+    // 基础配置 小程序授权
+    program_auth: ['Base management', 'Mini Program auth'],
+    // 基础配置 小程序授权成功页面
+    program_auth_details: ['Base Management', 'Mini Program auth']
 }

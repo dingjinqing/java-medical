@@ -10,7 +10,7 @@
             @mouseout="hoverIndex = -1"
         >
           <img :src="isShowHighLight(item, index)" alt="">
-          <router-link :to="{name: item.routeName}" class="link_item">
+          <router-link :to="{name: item.routeName, params: item.params}" class="link_item">
             {{item.span}}
           </router-link>
         </li>
@@ -90,7 +90,10 @@ export default {
             imgUrl: '/static/image/system/icon_left/mobile_deco.png',
             imgUrl_h: '/static/image/system/icon_left/mobile_deco_h.png',
             span: '小程序版本',
-            routeName: 'programManage'
+            routeName: 'programManage',
+            params: {
+              page: 'versionManage'
+            }
           },
           {
             imgUrl: '/static/image/system/icon_left/picture_space.png',

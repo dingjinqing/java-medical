@@ -3,7 +3,7 @@
       <div class="menu-list pd-10 bg-white mt-10" style="padding-bottom: 0;">
         <el-select
           class="fll selected-id mr-6 mb-10"
-          v-model="selectedId"
+          v-model="queryData.selectedId"
           placeholder="请选择模板id"
           size="small"
         >
@@ -15,7 +15,7 @@
         </el-select>
         <el-select
           class="fll selected-id mr-6 mb-10"
-          v-model="selectedAuth"
+          v-model="queryData.selectedAuth"
           placeholder="请选择是否授权"
           size="small"
         >
@@ -27,7 +27,7 @@
         </el-select>
         <el-select
           class="fll selected-id mr-6 mb-10"
-          v-model="selectedWxPay"
+          v-model="queryData.selectedWxPay"
           placeholder="选择是否微信支付"
           size="small"
         >
@@ -39,7 +39,7 @@
         </el-select>
         <el-select
           class="fll selected-id mr-6 mb-10"
-          v-model="selectedAuditStatus"
+          v-model="queryData.selectedAuditStatus"
           placeholder="选择审核状态"
           size="small"
         >
@@ -51,7 +51,7 @@
         </el-select>
         <el-select
           class="fll selected-id mr-6 mb-10"
-          v-model="selectedReleaseStatus"
+          v-model="queryData.selectedReleaseStatus"
           placeholder="选择发布状态"
           size="small"
         >
@@ -63,7 +63,7 @@
         </el-select>
         <el-select
           class="fll selected-id mr-6 mb-10"
-          v-model="selectedShopStatus"
+          v-model="queryData.selectedShopStatus"
           placeholder="选择店铺状态"
           size="small"
         >
@@ -75,17 +75,17 @@
         </el-select>
         <el-input
           class="fll mr-6 input-width mb-10"
-          v-model="appid"
+          v-model="queryData.appid"
           placeholder="请输入appid"
           size="small" />
         <el-input
           class="fll mr-6 input-width mb-10"
-          v-model="shop_id"
+          v-model="queryData.shop_id"
           placeholder="请输入shop_id"
           size="small" />
         <el-input
           class="fll mr-6 input-width mb-10"
-          v-model="programName"
+          v-model="queryData.programName"
           placeholder="请输入小程序名称"
           size="small"
         />
@@ -186,15 +186,17 @@ export default {
   name: 'authList',
   data () {
     return {
-      selectedId: '', // 选择模板id
-      selectedAuth: '', // 选择是否授权
-      selectedWxPay: '', // 选择是否微信支付
-      selectedAuditStatus: '', // 审核状态
-      selectedReleaseStatus: '', // 发布状态
-      selectedShopStatus: '', // 选择店铺状态
-      appid: '', // appid输入框数据
-      shop_id: '', // shop——id输入框数据
-      programName: '', // 小程序名称输入框数据
+      queryData: {
+        selectedId: '', // 选择模板id
+        selectedAuth: '', // 选择是否授权
+        selectedWxPay: '', // 选择是否微信支付
+        selectedAuditStatus: '', // 审核状态
+        selectedReleaseStatus: '', // 发布状态
+        selectedShopStatus: '', // 选择店铺状态
+        appid: '', // appid输入框数据
+        shop_id: '', // shop——id输入框数据
+        programName: '' // 小程序名称输入框数据
+      },
       page: 1,
       selectIdOpt: [
         {
@@ -212,6 +214,14 @@ export default {
   methods: {
     handleChangePage (val) {
 
+    }
+  },
+  watch: {
+    queryData: {
+      deep: true,
+      handler (val) {
+
+      }
     }
   }
 }

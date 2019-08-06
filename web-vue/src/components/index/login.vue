@@ -1,5 +1,5 @@
 <template>
-  <div class="container">
+  <div class="container login-container">
     <div class="head_logo">
       <img
         src="/static/image/admin/shop_logoswe.png"
@@ -347,7 +347,7 @@ export default {
   color: #fff;
   border: 1px solid #5a8bff;
   cursor: pointer;
-  padding-left: none !important;
+  padding-left: none!important;
 }
 .btn {
   width: 160px;
@@ -386,9 +386,10 @@ input::-webkit-input-placeholder {
 .smart-form input {
   font-size: 16px !important;
 }
-</style>
-<style>
-.el-button {
-  padding: 12px 20px !important;
+
+.login-container /deep/ .el-button {
+  padding: 12px 20px;
 }
+  /*作用于组件内部的样式，可以全局覆盖，但是要添加页面类名隔离，避免污染全局组件，也可以使用deep修复。因影响到小程序版本页面的组件，所以改了，望同事谅解*/
 </style>
+<!--/*作用于组件内部的样式，可以全局覆盖，但是要添加页面类名隔离，避免污染全局组件，也可以使用deep修复。因影响到小程序版本页面的组件，所以改了，望同事谅解*/-->

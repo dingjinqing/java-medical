@@ -194,7 +194,7 @@ const routes = [
         }
       },
       {
-        path: 'program_manage',
+        path: 'program_manage/:page',
         component: () => import('@/view/system_new/views/store_management/program_management/programManage'),
         name: 'programManage',
         meta: {
@@ -202,6 +202,14 @@ const routes = [
         }
       }
     ]
+  },
+  {
+    path: '/system/program_manage_details/:page',
+    component: () => import('@/view/system_new/views/store_management/program_management/mpProgramManage'),
+    name: 'programDetails',
+    meta: {
+      title: '小程序详情'
+    }
   }
 ]
 export default routes
