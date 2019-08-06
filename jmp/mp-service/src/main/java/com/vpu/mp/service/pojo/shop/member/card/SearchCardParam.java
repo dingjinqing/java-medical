@@ -13,12 +13,12 @@ import lombok.Data;
 @Data
 public class SearchCardParam {
 	/** 会员卡类型 */
-	private String cardType;
+	private Byte cardType;
 	/** 
 	 * 分页信息
 	 */
 	/**
-     * 	分页信息
+     * 分页信息
      */
     private int currentPage = Page.DEFAULT_CURRENT_PAGE;
     private int pageRows = Page.DEFAULT_PAGE_ROWS;
