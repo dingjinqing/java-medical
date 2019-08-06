@@ -9,8 +9,10 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.vpu.mp.service.foundation.data.JsonResult;
+import com.vpu.mp.service.foundation.util.PageResult;
 import com.vpu.mp.service.foundation.util.Util;
 import com.vpu.mp.service.pojo.shop.member.card.CardParam;
+import com.vpu.mp.service.pojo.shop.member.card.CardVo;
 import com.vpu.mp.service.pojo.shop.member.card.SearchCardParam;
 
 /**
@@ -48,9 +50,8 @@ public class AdminMemberCardController extends AdminBaseController {
 	public JsonResult getCardList(@RequestBody SearchCardParam param) {
 		
 		logger.info(param.toString());
-		this.shop().member.card.getCardList(param);
-		
-		return success();
+		PageResult<CardVo> result = this.shop().member.card.getCardList(param);
+		return success(result);
 	}
 	
 	
