@@ -9,6 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
+import com.google.gson.JsonObject;
 import com.vpu.mp.service.foundation.jedis.JedisManager;
 
 import me.chanjar.weixin.common.error.WxErrorException;
@@ -18,6 +19,7 @@ import me.chanjar.weixin.mp.bean.message.WxMpXmlOutMessage;
 import me.chanjar.weixin.open.api.impl.WxOpenInRedisConfigStorage;
 import me.chanjar.weixin.open.api.impl.WxOpenMessageRouter;
 import me.chanjar.weixin.open.api.impl.WxOpenServiceImpl;
+import me.chanjar.weixin.open.bean.WxOpenCreateResult;
 import me.chanjar.weixin.open.bean.message.WxOpenXmlMessage;
 
 
@@ -50,6 +52,10 @@ public class OpenPlatform extends WxOpenServiceImpl {
 	@Autowired
 	protected JedisManager jedis;
 
+	String CREATE_OPEN_GET_URL="https://api.weixin.qq.com/cgi-bin/open/get";
+	String GET_AUTHORIZER_LIST_URL="https://api.weixin.qq.com/cgi-bin/component/api_get_authorizer_list";
+	String BIND_OPEN_PLATFORM="https://api.weixin.qq.com/cgi-bin/open/bind";
+	String UNBIND_OPEN_PLATFORM="https://api.weixin.qq.com/cgi-bin/open/unbind";
 	/**
 	 * 初始化
 	 */
@@ -207,4 +213,61 @@ public class OpenPlatform extends WxOpenServiceImpl {
 		return (StringUtils.equalsAnyIgnoreCase(appId, "wxd101a85aa106f53e", "wx570bc396a51b8ff8"));
 	}
 	
+	
+	public WxOpenCreateResult queryOpenAccount(String appId) throws WxErrorException {
+		JsonObject param = new JsonObject();
+		param.addProperty("appid", appId);
+		String uri = CREATE_OPEN_GET_URL;
+		String componentAccessToken = this.getWxOpenComponentService().getComponentAccessToken(false);
+		System.out.println(componentAccessToken);
+		//componentAccessToken="24_d9IYiG0o6UFeKAL1RhfKuAzF-4bE2v0aDbb-l_BKlddXP9xWdduYG0_MGB0JsrbJgn6nXS23KCUyXSMvO6JbV2v2rwfYN-lH5qobhpyBx03jOlE93I93WFoKTWQNDYdAEAEUP";
+		String uriWithComponentAccessToken = uri + (uri.contains("?") ? "&" : "?") + "access_token" + "="
+				+ componentAccessToken;
+		String json = post(uriWithComponentAccessToken, param.toString());
+
+		return WxOpenCreateResult.fromJson(json);
+	}
+	
+	//第三方平台可以使用接口拉取当前所有已授权的帐号基本信息。
+	public WxOpenCreateResult getAuthorizerList(String componentAppid,Integer offset,Integer count) throws WxErrorException {
+		JsonObject param = new JsonObject();
+		param.addProperty("component_appid", componentAppid);
+		param.addProperty("offset", offset);
+		param.addProperty("count", count);
+		String uri = GET_AUTHORIZER_LIST_URL;
+		String componentAccessToken = this.getWxOpenComponentService().getComponentAccessToken(false);
+		String uriWithComponentAccessToken = uri + (uri.contains("?") ? "&" : "?") + "component_access_token" + "="+ componentAccessToken;
+		String json = post(uriWithComponentAccessToken, param.toString());
+		return WxOpenCreateResult.fromJson(json);
+		
+	}
+	
+	//获取公众号/小程序所绑定的开放平台帐号
+	public WxOpenCreateResult bindOpenAppId(String appId,String openAppId) throws WxErrorException {
+		JsonObject param = new JsonObject();
+		param.addProperty("appid", appId);
+		param.addProperty("open_appid", openAppId);
+		String uri = BIND_OPEN_PLATFORM;
+		String componentAccessToken = this.getWxOpenComponentService().getComponentAccessToken(false);
+		String uriWithComponentAccessToken = uri + (uri.contains("?") ? "&" : "?") + "access_token" + "="
+				+ componentAccessToken;
+		String json = post(uriWithComponentAccessToken, param.toString());
+		return WxOpenCreateResult.fromJson(json);
+	}
+	
+	//将公众号/小程序从开放平台帐号下解绑
+	public WxOpenCreateResult unBindOpenAppId(String appId,String openAppId) throws WxErrorException {
+		JsonObject param = new JsonObject();
+		param.addProperty("appid", appId);
+		param.addProperty("open_appid", openAppId);
+		String uri = UNBIND_OPEN_PLATFORM;
+		String componentAccessToken = this.getWxOpenComponentService().getComponentAccessToken(false);
+		String uriWithComponentAccessToken = uri + (uri.contains("?") ? "&" : "?") + "access_token" + "="
+				+ componentAccessToken;
+		String json = post(uriWithComponentAccessToken, param.toString());
+		return WxOpenCreateResult.fromJson(json);
+	}
+	
+	
+
 }
