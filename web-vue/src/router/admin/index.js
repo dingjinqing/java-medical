@@ -280,7 +280,7 @@ const routes = [
                 '@/view/admin/index/leftNavComponents/goods_manage/evaluationManagement/evaluationManagement'
               )
           },
-          // 商品管理系列之添加商品
+          // 添加商品
           {
             path: '/admin/home/main/addingGoods',
             name: 'goods_add',
@@ -293,7 +293,7 @@ const routes = [
                 '@/view/admin/index/leftNavComponents/goods_manage/addingGoods/addingGoods'
               )
           },
-          // 商品管理系列之商家分类管理
+          // 商家分类管理
           {
             path: '/admin/home/main/goods/sort',
             name: 'sort',

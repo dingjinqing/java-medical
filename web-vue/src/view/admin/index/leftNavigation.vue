@@ -179,7 +179,7 @@ export default {
             imgUrl: '/static/image/admin/icon_left/picture_add.png',
             imgUrl_h: '/static/image/admin/icon_left/picture_add_h.png',
             span: '添加商品',
-            name: 'sale_on'
+            name: 'goods_add'
           },
           {
             imgUrl: '/static/image/admin/icon_left/deliver_tmpl.png',

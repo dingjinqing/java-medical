@@ -17,6 +17,6 @@ export default {
   padding: 10px;
 }
 .card_container {
-  background-color: skyblue;
+  margin-bottom: 40px;
 }
 </style>
