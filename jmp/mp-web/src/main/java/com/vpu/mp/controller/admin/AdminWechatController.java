@@ -49,50 +49,6 @@ public class AdminWechatController extends AdminBaseController {
 	}
 
 	/**
-	 * 开始小程序授权
-	 * 
-	 * @return
-	 */
-
-	@GetMapping(value = "/wechat/proxy/start/auth")
-	public String startAuthorization(@RequestParam(name = "shop_id", required = true) Integer shopId) {
-		String url = this.mainUrl("/wechat/proxy/authorization/callback?shop_id=" + shopId);
-		try {
-			String authType = "2";
-			String bizAppId = null;
-			MpAuthShopRecord mp = saas.shop.mp.getAuthShopByShopId(shopId);
-			if (mp != null) {
-				bizAppId = mp.getAppId();
-			}
-			url = open.getWxOpenComponentService().getPreAuthUrl(url, authType, bizAppId);
-		} catch (WxErrorException e) {
-			e.printStackTrace();
-			throw new RuntimeException(e);
-		}
-		
-		return "redirect:"+url;
-	}
-
-	/**
-	 * 开始公众号授权
-	 * 
-	 * @return
-	 */
-	@RequestMapping(value = "/wechat/proxy/official/account/authorization")
-	public String startOfficialAccountAuthorization() {
-		String url = this.mainUrl("/wechat/proxy/authorization/callback?sys_id="+this.adminAuth.user().getSysId());
-		try {
-			String authType = "1";
-			String bizAppid = null;
-			url = open.getWxOpenComponentService().getPreAuthUrl(url, authType, bizAppid);
-		} catch (WxErrorException e) {
-			e.printStackTrace();
-			throw new RuntimeException(e);
-		}
-		return "redirect:"+(url);
-	}
-
-	/**
 	 * 公众号或小程序授权回调
 	 * 
 	 * @return
