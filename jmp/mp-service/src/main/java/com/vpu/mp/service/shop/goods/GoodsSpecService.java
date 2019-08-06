@@ -1,21 +1,21 @@
 package com.vpu.mp.service.shop.goods;
 
-import com.vpu.mp.db.shop.tables.records.SpecRecord;
-import com.vpu.mp.db.shop.tables.records.SpecValsRecord;
-import com.vpu.mp.service.foundation.data.DelFlag;
-import com.vpu.mp.service.pojo.shop.goods.spec.GoodsSpec;
-import com.vpu.mp.service.pojo.shop.goods.spec.GoodsSpecVal;
-import org.jooq.DSLContext;
-import org.jooq.impl.DSL;
-
-import org.springframework.stereotype.Service;
+import static com.vpu.mp.db.shop.Tables.SPEC;
+import static com.vpu.mp.db.shop.Tables.SPEC_VALS;
 
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import static com.vpu.mp.db.shop.Tables.SPEC;
-import static com.vpu.mp.db.shop.Tables.SPEC_VALS;
+import org.jooq.DSLContext;
+import org.jooq.impl.DSL;
+import org.springframework.stereotype.Service;
+
+import com.vpu.mp.db.shop.tables.records.SpecRecord;
+import com.vpu.mp.db.shop.tables.records.SpecValsRecord;
+import com.vpu.mp.service.foundation.data.DelFlag;
+import com.vpu.mp.service.pojo.shop.goods.spec.GoodsSpec;
+import com.vpu.mp.service.pojo.shop.goods.spec.GoodsSpecVal;
 
 /**
  * @author 李晓冰

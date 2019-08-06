@@ -2,9 +2,6 @@ package com.vpu.mp.controller.admin;
 
 import javax.validation.Valid;
 
-import com.vpu.mp.service.pojo.shop.store.validated.AddValidatedGroup;
-import com.vpu.mp.service.pojo.shop.store.validated.CodingCheckValidatedGroup;
-import com.vpu.mp.service.pojo.shop.store.validated.UpdateValidatedGroup;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -36,6 +33,9 @@ import com.vpu.mp.service.pojo.shop.store.store.StoreListQueryParam;
 import com.vpu.mp.service.pojo.shop.store.store.StorePageListVo;
 import com.vpu.mp.service.pojo.shop.store.store.StoreParam;
 import com.vpu.mp.service.pojo.shop.store.store.StorePojo;
+import com.vpu.mp.service.pojo.shop.store.validated.AddValidatedGroup;
+import com.vpu.mp.service.pojo.shop.store.validated.CodingCheckValidatedGroup;
+import com.vpu.mp.service.pojo.shop.store.validated.UpdateValidatedGroup;
 import com.vpu.mp.service.pojo.shop.store.verifier.VerifierAddParam;
 import com.vpu.mp.service.pojo.shop.store.verifier.VerifierListQueryParam;
 import com.vpu.mp.service.shop.store.service.ServiceOrderService;

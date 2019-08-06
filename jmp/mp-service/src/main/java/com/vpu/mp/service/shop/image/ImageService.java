@@ -11,7 +11,6 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.vpu.mp.config.StorageConfig;
 import org.apache.commons.io.FileUtils;
 import org.jooq.Record;
 import org.jooq.SelectWhereStep;
@@ -23,6 +22,7 @@ import org.springframework.stereotype.Service;
 
 import com.UpYun;
 import com.vpu.mp.config.DomainConfig;
+import com.vpu.mp.config.StorageConfig;
 import com.vpu.mp.config.UpYunConfig;
 import com.vpu.mp.db.shop.tables.records.UploadedImageRecord;
 import com.vpu.mp.service.foundation.image.ImageDefault;

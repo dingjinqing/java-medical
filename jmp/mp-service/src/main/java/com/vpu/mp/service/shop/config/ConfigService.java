@@ -1,9 +1,10 @@
 package com.vpu.mp.service.shop.config;
 
-import com.vpu.mp.service.foundation.service.ShopBaseService;
-import com.vpu.mp.service.shop.goods.GoodsBrandConfigService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
+import com.vpu.mp.service.foundation.service.ShopBaseService;
+import com.vpu.mp.service.shop.goods.GoodsBrandConfigService;
 
 /**
  * 

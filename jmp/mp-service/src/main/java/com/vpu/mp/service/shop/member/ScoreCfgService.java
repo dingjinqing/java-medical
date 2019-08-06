@@ -1,26 +1,24 @@
 package com.vpu.mp.service.shop.member;
 
+import static com.vpu.mp.db.shop.tables.ShopCfg.SHOP_CFG;
 import static com.vpu.mp.db.shop.tables.UserScoreSet.USER_SCORE_SET;
+
 import java.lang.reflect.Field;
 import java.util.Map;
 
-import static com.vpu.mp.db.shop.tables.ShopCfg.SHOP_CFG;
-
 import org.jooq.InsertValuesStep3;
-
 import org.jooq.Record1;
 import org.jooq.Record2;
 import org.jooq.Result;
+import org.springframework.stereotype.Service;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.vpu.mp.db.shop.tables.records.UserScoreSetRecord;
 import com.vpu.mp.service.foundation.util.Util;
 import com.vpu.mp.service.pojo.shop.member.ScoreCfgVo;
 import com.vpu.mp.service.pojo.shop.member.ShopCfgParam;
-import com.vpu.mp.service.shop.config.BaseShopConfigService;
 import com.vpu.mp.service.pojo.shop.member.UserScoreSetValue;
-
-import org.springframework.stereotype.Service;
+import com.vpu.mp.service.shop.config.BaseShopConfigService;
 
 /**
  * 积分配置Service

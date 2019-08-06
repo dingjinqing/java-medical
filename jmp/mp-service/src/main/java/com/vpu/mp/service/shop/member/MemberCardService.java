@@ -1,8 +1,35 @@
 package com.vpu.mp.service.shop.member;
 
+import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.ACTIVE_NO;
+import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.ACTIVE_YES;
+import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.ALL_GOODS;
+import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.ALL_SHOP;
+import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.BG_COLOR_TYPE;
+import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.BG_IMG_TYPE;
+import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.BUTTON_ON;
+import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.BUY_BY_CRASH;
+import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.BUY_BY_SCORE;
+import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.CHECKED;
+import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.DISCOUNT_ALL_GOODS;
+import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.DISCOUNT_PART_GOODS;
+import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.DURING_TIME;
+import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.FIX_DATETIME;
+import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.FOREVER;
+import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.GET_DIRECTLY;
+import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.LIMIT_NUM_TYPE;
+import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.NEED_BUY;
+import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.NEED_CODE;
+import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.NONE_GOODS;
+import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.NORMAL_TYPE;
+import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.PART_GOODS;
+import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.PART_SHOP;
+import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.PROHIBITED;
+import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.RANK_TYPE;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
+
 import com.vpu.mp.db.shop.tables.records.MemberCardRecord;
 import com.vpu.mp.service.foundation.data.JsonResultCode;
 import com.vpu.mp.service.foundation.service.ShopBaseService;
@@ -13,8 +40,6 @@ import com.vpu.mp.service.pojo.shop.member.card.GradeConditionJson;
 import com.vpu.mp.service.pojo.shop.member.card.PowerCardJson;
 import com.vpu.mp.service.pojo.shop.member.card.ScoreJson;
 import com.vpu.mp.service.pojo.shop.member.card.SearchCardParam;
-
-import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.*;
 /**
  * 
  * @author 黄壮壮

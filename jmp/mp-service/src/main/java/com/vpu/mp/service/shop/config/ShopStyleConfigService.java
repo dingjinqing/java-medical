@@ -1,8 +1,8 @@
 package com.vpu.mp.service.shop.config;
 
-import com.vpu.mp.service.pojo.shop.config.ShopStyleConfig;
-
 import org.springframework.stereotype.Service;
+
+import com.vpu.mp.service.pojo.shop.config.ShopStyleConfig;
 
 /**
  * 

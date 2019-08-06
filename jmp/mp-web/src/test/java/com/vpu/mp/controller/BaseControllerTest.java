@@ -20,11 +20,12 @@ import com.vpu.mp.service.foundation.util.Util;
 
 public class BaseControllerTest {
 	
-
 	/**
 	 * 请求基础URL
 	 */
-	private final static String baseUrl = "http://localhost:8086";
+	@Value(value = "${test.base_url}")
+	protected String baseUrl;
+
 
 	/**
 	 * 请求模板客户端

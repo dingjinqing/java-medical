@@ -1,12 +1,12 @@
 package com.vpu.mp.service.shop.config;
 
-import com.fasterxml.jackson.core.type.TypeReference;
-import com.vpu.mp.service.pojo.shop.config.center.UserCenterConfigParam;
-import com.vpu.mp.service.pojo.shop.config.center.UserCenterConfigVo;
+import java.util.List;
 
 import org.springframework.stereotype.Service;
 
-import java.util.List;
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.vpu.mp.service.pojo.shop.config.center.UserCenterConfigParam;
+import com.vpu.mp.service.pojo.shop.config.center.UserCenterConfigVo;
 
 /**
  * 个人中心

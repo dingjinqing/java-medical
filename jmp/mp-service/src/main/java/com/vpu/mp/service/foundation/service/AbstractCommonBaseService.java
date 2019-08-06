@@ -1,7 +1,5 @@
 package com.vpu.mp.service.foundation.service;
 
-import com.vpu.mp.service.pojo.shop.base.BasePageParam;
-
 import java.util.Arrays;
 
 import org.jooq.Configuration;
@@ -20,6 +18,7 @@ import com.vpu.mp.service.foundation.database.DatabaseManager;
 import com.vpu.mp.service.foundation.util.FieldsUtil;
 import com.vpu.mp.service.foundation.util.Page;
 import com.vpu.mp.service.foundation.util.PageResult;
+import com.vpu.mp.service.pojo.shop.base.BasePageParam;
 import com.vpu.mp.service.saas.SaasApplication;
 import com.vpu.mp.service.wechat.OpenPlatform;
 

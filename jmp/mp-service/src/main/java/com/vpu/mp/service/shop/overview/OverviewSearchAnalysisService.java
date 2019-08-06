@@ -1,5 +1,7 @@
 package com.vpu.mp.service.shop.overview;
 
+import static com.vpu.mp.db.shop.Tables.SEARCH_HISTORY;
+
 import java.sql.Timestamp;
 import java.util.List;
 
@@ -10,8 +12,6 @@ import com.vpu.mp.service.foundation.service.ShopBaseService;
 import com.vpu.mp.service.pojo.shop.overview.searchanalysis.OverviewSearchAnalysisHistoryParam;
 import com.vpu.mp.service.pojo.shop.overview.searchanalysis.OverviewSearchAnalysisHistoryVo;
 import com.vpu.mp.service.pojo.shop.overview.searchanalysis.OverviewSearchAnalysisHotVo;
-
-import static com.vpu.mp.db.shop.Tables.SEARCH_HISTORY;
 /**
  * 搜索统计
  * 

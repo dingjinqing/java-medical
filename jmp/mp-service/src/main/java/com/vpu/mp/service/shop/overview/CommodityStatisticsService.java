@@ -1,30 +1,46 @@
 package com.vpu.mp.service.shop.overview;
 
-import com.vpu.mp.db.shop.tables.*;
-import com.vpu.mp.service.foundation.excel.ExcelFactory;
-import com.vpu.mp.service.foundation.excel.ExcelTypeEnum;
-import com.vpu.mp.service.foundation.excel.ExcelWriter;
-import com.vpu.mp.service.foundation.service.ShopBaseService;
-import com.vpu.mp.service.foundation.util.PageResult;
-import com.vpu.mp.service.foundation.util.Util;
-import com.vpu.mp.service.pojo.shop.overview.commodity.*;
-import org.apache.poi.ss.usermodel.Workbook;
-import org.jooq.*;
-import org.jooq.impl.DSL;
-import org.springframework.context.annotation.Scope;
-import org.springframework.stereotype.Service;
+import static com.vpu.mp.db.shop.tables.Goods.GOODS;
+import static com.vpu.mp.db.shop.tables.GoodsLabelCouple.GOODS_LABEL_COUPLE;
+import static com.vpu.mp.db.shop.tables.GoodsSummary.GOODS_SUMMARY;
+import static com.vpu.mp.db.shop.tables.GoodsUserSummary.GOODS_USER_SUMMARY;
+import static com.vpu.mp.service.shop.overview.RealTimeOverviewService.div;
+import static org.jooq.impl.DSL.countDistinct;
+import static org.jooq.impl.DSL.max;
+import static org.jooq.impl.DSL.name;
+import static org.jooq.impl.DSL.sum;
 
 import java.sql.Date;
 import java.sql.Timestamp;
 import java.util.List;
 import java.util.Optional;
 
-import static com.vpu.mp.db.shop.tables.Goods.GOODS;
-import static com.vpu.mp.db.shop.tables.GoodsLabelCouple.GOODS_LABEL_COUPLE;
-import static com.vpu.mp.db.shop.tables.GoodsSummary.GOODS_SUMMARY;
-import static com.vpu.mp.db.shop.tables.GoodsUserSummary.GOODS_USER_SUMMARY;
-import static com.vpu.mp.service.shop.overview.RealTimeOverviewService.div;
-import static org.jooq.impl.DSL.*;
+import org.apache.poi.ss.usermodel.Workbook;
+import org.jooq.Condition;
+import org.jooq.SelectConditionStep;
+import org.jooq.SelectJoinStep;
+import org.jooq.SelectLimitStep;
+import org.jooq.SortField;
+import org.jooq.impl.DSL;
+import org.springframework.context.annotation.Scope;
+import org.springframework.stereotype.Service;
+
+import com.vpu.mp.db.shop.tables.Goods;
+import com.vpu.mp.db.shop.tables.GoodsBak;
+import com.vpu.mp.db.shop.tables.GoodsLabelCouple;
+import com.vpu.mp.db.shop.tables.UserCartRecord;
+import com.vpu.mp.db.shop.tables.UserGoodsRecord;
+import com.vpu.mp.service.foundation.excel.ExcelFactory;
+import com.vpu.mp.service.foundation.excel.ExcelTypeEnum;
+import com.vpu.mp.service.foundation.excel.ExcelWriter;
+import com.vpu.mp.service.foundation.service.ShopBaseService;
+import com.vpu.mp.service.foundation.util.PageResult;
+import com.vpu.mp.service.foundation.util.Util;
+import com.vpu.mp.service.pojo.shop.overview.commodity.ProductEffectExportVo;
+import com.vpu.mp.service.pojo.shop.overview.commodity.ProductEffectParam;
+import com.vpu.mp.service.pojo.shop.overview.commodity.ProductEffectVo;
+import com.vpu.mp.service.pojo.shop.overview.commodity.ProductOverviewParam;
+import com.vpu.mp.service.pojo.shop.overview.commodity.ProductOverviewVo;
 
 /**
  * @Author:liufei

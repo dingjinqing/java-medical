@@ -7,19 +7,17 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import com.vpu.mp.service.pojo.shop.image.category.CategoryTreeItemVo;
-import com.vpu.mp.service.pojo.shop.image.category.ImageCategoryParam;
 import org.apache.commons.lang3.ArrayUtils;
 import org.jooq.Result;
 import org.jooq.SelectWhereStep;
 import org.jooq.impl.DSL;
+import org.springframework.stereotype.Service;
 
 import com.vpu.mp.db.shop.tables.records.UploadedImageCategoryRecord;
 import com.vpu.mp.service.foundation.service.ShopBaseService;
 import com.vpu.mp.service.foundation.util.Util;
-
-
-import org.springframework.stereotype.Service;
+import com.vpu.mp.service.pojo.shop.image.category.CategoryTreeItemVo;
+import com.vpu.mp.service.pojo.shop.image.category.ImageCategoryParam;
 
 /**
  * @author 新国，孔德成

@@ -1,5 +1,13 @@
 package com.vpu.mp.controller.admin;
 
+import java.util.List;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.validation.annotation.Validated;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RestController;
+
 import com.vpu.mp.service.foundation.data.JsonResult;
 import com.vpu.mp.service.foundation.data.JsonResultCode;
 import com.vpu.mp.service.foundation.data.JsonResultMessage;
@@ -7,14 +15,18 @@ import com.vpu.mp.service.foundation.util.PageResult;
 import com.vpu.mp.service.pojo.saas.article.ArticleListQueryParam;
 import com.vpu.mp.service.pojo.saas.article.ArticleParam;
 import com.vpu.mp.service.pojo.saas.article.ArticleVo;
-import com.vpu.mp.service.pojo.shop.overview.*;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.validation.annotation.Validated;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RestController;
-
-import java.util.List;
+import com.vpu.mp.service.pojo.shop.overview.BindUnBindOfficialParam;
+import com.vpu.mp.service.pojo.shop.overview.DataDemonstrationParam;
+import com.vpu.mp.service.pojo.shop.overview.DataDemonstrationVo;
+import com.vpu.mp.service.pojo.shop.overview.FixedAnnouncementParam;
+import com.vpu.mp.service.pojo.shop.overview.FixedAnnouncementVo;
+import com.vpu.mp.service.pojo.shop.overview.OverviewParam;
+import com.vpu.mp.service.pojo.shop.overview.OverviewVo;
+import com.vpu.mp.service.pojo.shop.overview.ShopAssistantParam;
+import com.vpu.mp.service.pojo.shop.overview.ShopAssistantVo;
+import com.vpu.mp.service.pojo.shop.overview.ShopBaseInfoParam;
+import com.vpu.mp.service.pojo.shop.overview.ShopBaseInfoVo;
+import com.vpu.mp.service.pojo.shop.overview.ToDoItemVo;
 
 /**
  * @Author:liufei

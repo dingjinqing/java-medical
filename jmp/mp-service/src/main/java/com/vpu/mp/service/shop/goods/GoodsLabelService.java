@@ -1,27 +1,33 @@
 package com.vpu.mp.service.shop.goods;
 
 
-import com.vpu.mp.db.shop.tables.records.GoodsLabelRecord;
-import com.vpu.mp.service.foundation.data.DelFlag;
-import com.vpu.mp.service.foundation.service.ShopBaseService;
-import com.vpu.mp.service.foundation.util.PageResult;
-import com.vpu.mp.service.pojo.shop.goods.GoodsView;
-import com.vpu.mp.service.pojo.shop.goods.label.*;
-import org.jooq.Record1;
-import org.jooq.SelectConditionStep;
-import org.jooq.SelectWhereStep;
-import org.jooq.tools.StringUtils;
-import org.springframework.beans.factory.annotation.Autowired;
-
-import org.springframework.stereotype.Service;
+import static com.vpu.mp.db.shop.Tables.GOODS_LABEL;
+import static com.vpu.mp.db.shop.Tables.GOODS_LABEL_COUPLE;
 
 import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-import static com.vpu.mp.db.shop.Tables.GOODS_LABEL;
-import static com.vpu.mp.db.shop.Tables.GOODS_LABEL_COUPLE;
+import org.jooq.Record1;
+import org.jooq.SelectConditionStep;
+import org.jooq.SelectWhereStep;
+import org.jooq.tools.StringUtils;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import com.vpu.mp.db.shop.tables.records.GoodsLabelRecord;
+import com.vpu.mp.service.foundation.data.DelFlag;
+import com.vpu.mp.service.foundation.service.ShopBaseService;
+import com.vpu.mp.service.foundation.util.PageResult;
+import com.vpu.mp.service.pojo.shop.goods.GoodsView;
+import com.vpu.mp.service.pojo.shop.goods.label.GoodsLabel;
+import com.vpu.mp.service.pojo.shop.goods.label.GoodsLabelCouple;
+import com.vpu.mp.service.pojo.shop.goods.label.GoodsLabelCoupleTypeEnum;
+import com.vpu.mp.service.pojo.shop.goods.label.GoodsLabelListVo;
+import com.vpu.mp.service.pojo.shop.goods.label.GoodsLabelPageListParam;
+import com.vpu.mp.service.pojo.shop.goods.label.GoodsLabelTypeEnum;
+import com.vpu.mp.service.pojo.shop.goods.label.GoodsLabelVo;
 
 /**
  * @author 黄荣刚

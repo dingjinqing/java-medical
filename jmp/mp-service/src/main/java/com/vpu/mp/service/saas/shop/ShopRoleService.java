@@ -8,7 +8,6 @@ import java.lang.reflect.Method;
 import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 
 import org.jooq.Record1;
 import org.jooq.Record2;

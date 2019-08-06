@@ -1,14 +1,19 @@
 package com.vpu.mp.controller.admin;
 
 
+import javax.validation.Valid;
+
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
+
 import com.vpu.mp.service.foundation.data.JsonResult;
 import com.vpu.mp.service.pojo.shop.image.category.ImageCategoryIDParam;
 import com.vpu.mp.service.pojo.shop.image.category.ImageCategoryParam;
 import com.vpu.mp.service.pojo.shop.image.category.ImageCategoryRenameParam;
 import com.vpu.mp.service.pojo.shop.image.category.UploadedImageCategoryParam;
-import org.springframework.web.bind.annotation.*;
-
-import javax.validation.Valid;
 
 /**
  * 图片分组列表

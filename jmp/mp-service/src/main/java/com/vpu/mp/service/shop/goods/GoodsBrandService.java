@@ -1,23 +1,36 @@
 package com.vpu.mp.service.shop.goods;
 
-import com.vpu.mp.db.shop.tables.records.BrandClassifyRecord;
-import com.vpu.mp.db.shop.tables.records.GoodsBrandRecord;
-import com.vpu.mp.service.foundation.data.DelFlag;
-import com.vpu.mp.service.foundation.service.ShopBaseService;
-import com.vpu.mp.service.foundation.util.PageResult;
-import com.vpu.mp.service.pojo.shop.goods.brand.*;
-import org.jooq.*;
-import org.jooq.impl.DSL;
-import org.jooq.tools.StringUtils;
-import org.springframework.stereotype.Service;
+import static com.vpu.mp.db.shop.Tables.BRAND_CLASSIFY;
+import static com.vpu.mp.db.shop.Tables.GOODS;
+import static com.vpu.mp.db.shop.Tables.GOODS_BRAND;
 
 import java.sql.Timestamp;
 import java.util.Arrays;
 import java.util.List;
 
-import static com.vpu.mp.db.shop.Tables.BRAND_CLASSIFY;
-import static com.vpu.mp.db.shop.Tables.GOODS;
-import static com.vpu.mp.db.shop.Tables.GOODS_BRAND;
+import org.jooq.Field;
+import org.jooq.Record1;
+import org.jooq.Record10;
+import org.jooq.Record5;
+import org.jooq.SelectConditionStep;
+import org.jooq.SelectJoinStep;
+import org.jooq.SelectOnConditionStep;
+import org.jooq.SelectWhereStep;
+import org.jooq.impl.DSL;
+import org.jooq.tools.StringUtils;
+import org.springframework.stereotype.Service;
+
+import com.vpu.mp.db.shop.tables.records.BrandClassifyRecord;
+import com.vpu.mp.db.shop.tables.records.GoodsBrandRecord;
+import com.vpu.mp.service.foundation.data.DelFlag;
+import com.vpu.mp.service.foundation.service.ShopBaseService;
+import com.vpu.mp.service.foundation.util.PageResult;
+import com.vpu.mp.service.pojo.shop.goods.brand.GoodsBrand;
+import com.vpu.mp.service.pojo.shop.goods.brand.GoodsBrandBatchParam;
+import com.vpu.mp.service.pojo.shop.goods.brand.GoodsBrandClassifyParam;
+import com.vpu.mp.service.pojo.shop.goods.brand.GoodsBrandClassifyVo;
+import com.vpu.mp.service.pojo.shop.goods.brand.GoodsBrandPageListParam;
+import com.vpu.mp.service.pojo.shop.goods.brand.GoodsBrandVo;
 
 /**
  * 商品品牌

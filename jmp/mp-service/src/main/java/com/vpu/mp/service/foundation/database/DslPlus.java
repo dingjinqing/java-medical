@@ -1,16 +1,14 @@
 package com.vpu.mp.service.foundation.database;
 
-import com.vpu.mp.db.shop.tables.records.OrderInfoRecord;
+import java.sql.Timestamp;
+
 import org.jooq.Condition;
 import org.jooq.Field;
 import org.jooq.SortField;
-import org.jooq.TableField;
 import org.jooq.impl.DSL;
 import org.jooq.impl.SQLDataType;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import java.sql.Timestamp;
 
 
 /**

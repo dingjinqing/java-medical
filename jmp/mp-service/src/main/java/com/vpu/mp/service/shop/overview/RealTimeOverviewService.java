@@ -1,5 +1,23 @@
 package com.vpu.mp.service.shop.overview;
 
+import static com.vpu.mp.db.shop.tables.UserLoginRecord.USER_LOGIN_RECORD;
+import static com.vpu.mp.db.shop.tables.UserSummaryTrend.USER_SUMMARY_TREND;
+import static org.jooq.impl.DSL.cast;
+
+import java.math.BigDecimal;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
+import java.util.Objects;
+import java.util.Optional;
+
+import org.jooq.Condition;
+import org.jooq.Record2;
+import org.jooq.Record8;
+import org.jooq.SelectConditionStep;
+import org.jooq.impl.DSL;
+import org.springframework.stereotype.Service;
+
 import com.vpu.mp.db.shop.tables.OrderInfo;
 import com.vpu.mp.db.shop.tables.Trades;
 import com.vpu.mp.db.shop.tables.UserSummaryTrend;
@@ -10,19 +28,6 @@ import com.vpu.mp.service.pojo.shop.overview.realtime.CoreIndicatorParam;
 import com.vpu.mp.service.pojo.shop.overview.realtime.CoreIndicatorVo;
 import com.vpu.mp.service.pojo.shop.overview.realtime.LineChartVo;
 import com.vpu.mp.service.pojo.shop.overview.realtime.RealTimeVo;
-import org.jooq.Condition;
-import org.jooq.Record2;
-import org.jooq.Record8;
-import org.jooq.SelectConditionStep;
-import org.jooq.impl.DSL;
-import org.springframework.stereotype.Service;
-
-import java.math.BigDecimal;
-import java.util.*;
-
-import static com.vpu.mp.db.shop.tables.UserLoginRecord.USER_LOGIN_RECORD;
-import static com.vpu.mp.db.shop.tables.UserSummaryTrend.USER_SUMMARY_TREND;
-import static org.jooq.impl.DSL.cast;
 
 /**
  * @author liufei

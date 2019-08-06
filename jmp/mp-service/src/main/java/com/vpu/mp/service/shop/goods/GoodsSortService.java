@@ -1,19 +1,24 @@
 package com.vpu.mp.service.shop.goods;
 
-import com.vpu.mp.db.shop.tables.records.SortRecord;
-import com.vpu.mp.service.foundation.service.ShopBaseService;
-import com.vpu.mp.service.pojo.shop.goods.sort.GoodsSortListParam;
-import com.vpu.mp.service.pojo.shop.goods.sort.Sort;
-import org.jooq.*;
-import org.jooq.impl.DSL;
-import org.jooq.tools.StringUtils;
-import org.springframework.stereotype.Service;
-
+import static com.vpu.mp.db.shop.tables.Sort.SORT;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import static com.vpu.mp.db.shop.tables.Sort.SORT;
+import org.jooq.Condition;
+import org.jooq.DSLContext;
+import org.jooq.Record;
+import org.jooq.Record1;
+import org.jooq.SelectConditionStep;
+import org.jooq.SelectWhereStep;
+import org.jooq.impl.DSL;
+import org.jooq.tools.StringUtils;
+import org.springframework.stereotype.Service;
+
+import com.vpu.mp.db.shop.tables.records.SortRecord;
+import com.vpu.mp.service.foundation.service.ShopBaseService;
+import com.vpu.mp.service.pojo.shop.goods.sort.GoodsSortListParam;
+import com.vpu.mp.service.pojo.shop.goods.sort.Sort;
 
 /**
  * @author 李晓冰

@@ -1,22 +1,47 @@
 package com.vpu.mp.service.shop.overview;
 
-import com.vpu.mp.db.shop.tables.*;
-import com.vpu.mp.db.shop.tables.User;
-import com.vpu.mp.service.foundation.service.ShopBaseService;
-import com.vpu.mp.service.foundation.util.PageResult;
-import com.vpu.mp.service.foundation.util.Util;
-import com.vpu.mp.service.pojo.shop.overview.transaction.*;
-import org.jooq.*;
-import org.springframework.stereotype.Service;
+import static com.vpu.mp.service.shop.overview.RealTimeOverviewService.div;
+import static java.util.stream.Collectors.toList;
+import static org.jooq.impl.DSL.count;
+import static org.jooq.impl.DSL.countDistinct;
+import static org.jooq.impl.DSL.min;
+import static org.jooq.impl.DSL.sum;
 
 import java.math.BigDecimal;
 import java.sql.Timestamp;
 import java.util.Comparator;
-import java.util.*;
+import java.util.Date;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
 
-import static com.vpu.mp.service.shop.overview.RealTimeOverviewService.div;
-import static java.util.stream.Collectors.toList;
-import static org.jooq.impl.DSL.*;
+import org.jooq.Condition;
+import org.jooq.OrderField;
+import org.jooq.Record2;
+import org.jooq.Record3;
+import org.jooq.Record5;
+import org.jooq.Record7;
+import org.jooq.SelectConditionStep;
+import org.jooq.SelectHavingStep;
+import org.jooq.SelectLimitStep;
+import org.jooq.TableField;
+import org.springframework.stereotype.Service;
+
+import com.vpu.mp.db.shop.tables.DistributionTag;
+import com.vpu.mp.db.shop.tables.OrderGoods;
+import com.vpu.mp.db.shop.tables.OrderInfo;
+import com.vpu.mp.db.shop.tables.Tag;
+import com.vpu.mp.db.shop.tables.User;
+import com.vpu.mp.db.shop.tables.UserLoginRecord;
+import com.vpu.mp.db.shop.tables.UserTag;
+import com.vpu.mp.service.foundation.service.ShopBaseService;
+import com.vpu.mp.service.foundation.util.PageResult;
+import com.vpu.mp.service.foundation.util.Util;
+import com.vpu.mp.service.pojo.shop.overview.transaction.GeographicalCollVo;
+import com.vpu.mp.service.pojo.shop.overview.transaction.GeographicalParam;
+import com.vpu.mp.service.pojo.shop.overview.transaction.GeographicalVo;
+import com.vpu.mp.service.pojo.shop.overview.transaction.LabelAnalysisParam;
+import com.vpu.mp.service.pojo.shop.overview.transaction.LabelAnalysisVo;
 
 /**
  * @author liufei

@@ -12,6 +12,7 @@ import org.jooq.Record4;
 import org.jooq.SelectWhereStep;
 import org.jooq.impl.DSL;
 import org.jooq.tools.StringUtils;
+import org.springframework.stereotype.Service;
 
 import com.vpu.mp.db.shop.tables.Tag;
 import com.vpu.mp.db.shop.tables.UserTag;
@@ -20,8 +21,6 @@ import com.vpu.mp.service.foundation.util.PageResult;
 import com.vpu.mp.service.pojo.shop.member.TagInfoVo;
 import com.vpu.mp.service.pojo.shop.member.TagPageListParam;
 import com.vpu.mp.service.pojo.shop.member.UpdateTagParam;
-
-import org.springframework.stereotype.Service;
 
 /**
  * 

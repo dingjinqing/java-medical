@@ -1,21 +1,36 @@
 package com.vpu.mp.controller.admin;
 
-import com.vpu.mp.db.main.tables.records.ShopUploadedImageRecord;
-import com.vpu.mp.service.foundation.data.JsonResult;
-import com.vpu.mp.service.foundation.data.JsonResultCode;
-import com.vpu.mp.service.foundation.util.PageResult;
-import com.vpu.mp.service.pojo.saas.shop.image.*;
-import com.vpu.mp.service.pojo.shop.auth.AdminTokenAuthInfo;
-import com.vpu.mp.service.pojo.shop.image.*;
-import com.vpu.mp.service.pojo.shop.image.category.ImageCategoryRenameParam;
-import org.springframework.web.bind.annotation.*;
+import java.awt.image.BufferedImage;
+import java.io.File;
+import java.io.IOException;
 
 import javax.imageio.ImageIO;
 import javax.servlet.http.Part;
 import javax.validation.Valid;
-import java.awt.image.BufferedImage;
-import java.io.File;
-import java.io.IOException;
+
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
+
+import com.vpu.mp.db.main.tables.records.ShopUploadedImageRecord;
+import com.vpu.mp.service.foundation.data.JsonResult;
+import com.vpu.mp.service.foundation.data.JsonResultCode;
+import com.vpu.mp.service.foundation.util.PageResult;
+import com.vpu.mp.service.pojo.saas.shop.image.ShopBatchMoveImageParam;
+import com.vpu.mp.service.pojo.saas.shop.image.ShopCropImageParam;
+import com.vpu.mp.service.pojo.saas.shop.image.ShopImageCategoryIDParam;
+import com.vpu.mp.service.pojo.saas.shop.image.ShopImageCategoryParam;
+import com.vpu.mp.service.pojo.saas.shop.image.ShopImageListQueryParam;
+import com.vpu.mp.service.pojo.saas.shop.image.ShopUploadImageCatNameVo;
+import com.vpu.mp.service.pojo.saas.shop.image.ShopUploadImageParam;
+import com.vpu.mp.service.pojo.saas.shop.image.ShopUploadedImageCategoryParam;
+import com.vpu.mp.service.pojo.saas.shop.image.ShopUploadedImageVo;
+import com.vpu.mp.service.pojo.shop.auth.AdminTokenAuthInfo;
+import com.vpu.mp.service.pojo.shop.image.BatchDeleteImageParam;
+import com.vpu.mp.service.pojo.shop.image.UploadPath;
+import com.vpu.mp.service.pojo.shop.image.category.ImageCategoryRenameParam;
 
 /**
  * @author 孔德成

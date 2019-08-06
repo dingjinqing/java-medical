@@ -2,6 +2,9 @@ package com.vpu.mp.service.shop.version;
 
 import java.util.Map;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
 import com.vpu.mp.service.foundation.service.ShopBaseService;
 import com.vpu.mp.service.pojo.saas.shop.version.VersionConfig;
 import com.vpu.mp.service.shop.decoration.ShopMpDecorationService;
@@ -10,10 +13,6 @@ import com.vpu.mp.service.shop.image.ImageService;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-
-import org.springframework.beans.factory.annotation.Autowired;
-
-import org.springframework.stereotype.Service;
 
 /**
  * 

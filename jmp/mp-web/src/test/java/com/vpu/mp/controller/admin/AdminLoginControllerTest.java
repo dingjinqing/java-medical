@@ -3,10 +3,10 @@ package com.vpu.mp.controller.admin;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.test.context.TestPropertySource;
-import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
+import org.springframework.test.context.junit4.SpringRunner;
 
 
-@RunWith(SpringJUnit4ClassRunner.class)
+@RunWith(SpringRunner.class)
 @TestPropertySource("classpath:test-user.properties")
 public class AdminLoginControllerTest extends AdminBaseControllerTest {
 

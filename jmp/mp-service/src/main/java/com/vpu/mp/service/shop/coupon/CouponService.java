@@ -10,6 +10,7 @@ import java.util.List;
 import org.jooq.Record;
 import org.jooq.SelectConditionStep;
 import org.jooq.SelectJoinStep;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.vpu.mp.db.shop.tables.records.MrkingVoucherRecord;
@@ -20,8 +21,6 @@ import com.vpu.mp.service.pojo.shop.coupon.CouponGetDetailVo;
 import com.vpu.mp.service.pojo.shop.coupon.CouponListParam;
 import com.vpu.mp.service.pojo.shop.coupon.CouponListVo;
 import com.vpu.mp.service.pojo.shop.coupon.CouponParam;
-
-import org.springframework.beans.factory.annotation.Autowired;
 
 
 /**

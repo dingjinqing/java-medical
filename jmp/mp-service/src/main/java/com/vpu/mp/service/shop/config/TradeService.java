@@ -1,12 +1,12 @@
 package com.vpu.mp.service.shop.config;
 
-import com.vpu.mp.db.shop.tables.Payment;
-import com.vpu.mp.service.pojo.shop.config.trade.OrderProcessParam;
-import com.vpu.mp.service.pojo.shop.config.trade.PaymentConfigVo;
+import java.util.List;
 
 import org.springframework.stereotype.Service;
 
-import java.util.List;
+import com.vpu.mp.db.shop.tables.Payment;
+import com.vpu.mp.service.pojo.shop.config.trade.OrderProcessParam;
+import com.vpu.mp.service.pojo.shop.config.trade.PaymentConfigVo;
 
 /**
  * @Author:liufei

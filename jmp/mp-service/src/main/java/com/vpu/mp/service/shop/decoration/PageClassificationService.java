@@ -5,18 +5,22 @@ import static com.vpu.mp.db.shop.tables.PageClassification.PAGE_CLASSIFICATION;
 import java.util.HashMap;
 import java.util.Map;
 
-import com.vpu.mp.db.shop.tables.PageClassification;
-import com.vpu.mp.db.shop.tables.XcxCustomerPage;
-import org.jooq.*;
+import org.jooq.Condition;
+import org.jooq.DSLContext;
+import org.jooq.Record;
+import org.jooq.Result;
+import org.jooq.SelectWhereStep;
 import org.jooq.impl.DSL;
 import org.jooq.tools.StringUtils;
+import org.springframework.stereotype.Service;
 
+import com.vpu.mp.db.shop.tables.PageClassification;
+import com.vpu.mp.db.shop.tables.XcxCustomerPage;
 import com.vpu.mp.db.shop.tables.records.PageClassificationRecord;
 import com.vpu.mp.service.foundation.service.ShopBaseService;
 import com.vpu.mp.service.foundation.util.PageResult;
 import com.vpu.mp.service.pojo.shop.decoration.PageCategoryListQueryParam;
 import com.vpu.mp.service.pojo.shop.decoration.PageClassificationPojo;
-import org.springframework.stereotype.Service;
 
 
 

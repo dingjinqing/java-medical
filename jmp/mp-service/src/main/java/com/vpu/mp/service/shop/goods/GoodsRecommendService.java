@@ -10,6 +10,8 @@ import org.jooq.Record1;
 import org.jooq.SelectConditionStep;
 import org.jooq.SelectWhereStep;
 import org.jooq.tools.StringUtils;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.vpu.mp.db.shop.tables.records.RecommendGoodsRecord;
@@ -22,10 +24,6 @@ import com.vpu.mp.service.pojo.shop.goods.recommend.GoodsRecommend;
 import com.vpu.mp.service.pojo.shop.goods.recommend.GoodsRecommendInsertParam;
 import com.vpu.mp.service.pojo.shop.goods.recommend.GoodsRecommendPageListParam;
 import com.vpu.mp.service.pojo.shop.goods.recommend.GoodsRecommendUpdateParam;
-
-import org.springframework.beans.factory.annotation.Autowired;
-
-import org.springframework.stereotype.Service;
 
 
 /**

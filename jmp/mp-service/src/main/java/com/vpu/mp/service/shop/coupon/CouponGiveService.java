@@ -1,15 +1,15 @@
 package com.vpu.mp.service.shop.coupon;
 
-import static com.vpu.mp.db.shop.Tables.MRKING_VOUCHER;
-import static com.vpu.mp.db.shop.Tables.GIVE_VOUCHER;
-import static com.vpu.mp.db.shop.Tables.USER;
-import static com.vpu.mp.db.shop.Tables.CUSTOMER_AVAIL_COUPONS;
-import static com.vpu.mp.db.shop.Tables.ORDER_INFO;
-import static com.vpu.mp.db.shop.Tables.ORDER_GOODS;
-import static com.vpu.mp.db.shop.Tables.USER_CARD;
-import static com.vpu.mp.db.shop.Tables.USER_TAG;
 import static com.vpu.mp.db.shop.Tables.CART;
+import static com.vpu.mp.db.shop.Tables.CUSTOMER_AVAIL_COUPONS;
+import static com.vpu.mp.db.shop.Tables.GIVE_VOUCHER;
+import static com.vpu.mp.db.shop.Tables.MRKING_VOUCHER;
+import static com.vpu.mp.db.shop.Tables.ORDER_GOODS;
+import static com.vpu.mp.db.shop.Tables.ORDER_INFO;
+import static com.vpu.mp.db.shop.Tables.USER;
+import static com.vpu.mp.db.shop.Tables.USER_CARD;
 import static com.vpu.mp.db.shop.Tables.USER_LOGIN_RECORD;
+import static com.vpu.mp.db.shop.Tables.USER_TAG;
 
 import java.io.IOException;
 import java.math.BigDecimal;
@@ -27,6 +27,7 @@ import org.jooq.SelectConditionStep;
 import org.jooq.SelectLimitStep;
 import org.jooq.SelectWhereStep;
 import org.jooq.impl.DSL;
+import org.springframework.stereotype.Service;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
@@ -43,8 +44,6 @@ import com.vpu.mp.service.pojo.shop.coupon.give.CouponGiveListParam;
 import com.vpu.mp.service.pojo.shop.coupon.give.CouponGiveListVo;
 import com.vpu.mp.service.pojo.shop.coupon.give.CouponGivePopParam;
 import com.vpu.mp.service.pojo.shop.coupon.give.CouponGivePopVo;
-
-import org.springframework.stereotype.Service;
 
 /**
  * 优惠券管理

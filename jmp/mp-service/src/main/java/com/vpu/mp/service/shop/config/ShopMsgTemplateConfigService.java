@@ -1,6 +1,7 @@
 package com.vpu.mp.service.shop.config;
 
 import org.springframework.stereotype.Service;
+
 import com.vpu.mp.service.pojo.shop.config.ShopMsgTempConfig;
 
 /**

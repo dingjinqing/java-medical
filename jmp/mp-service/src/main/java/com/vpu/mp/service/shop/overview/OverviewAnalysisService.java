@@ -1,18 +1,5 @@
 package com.vpu.mp.service.shop.overview;
 
-import com.vpu.mp.service.foundation.service.ShopBaseService;
-import com.vpu.mp.service.foundation.util.PropertiesUtil;
-import com.vpu.mp.service.pojo.shop.overview.analysis.OverviewAnalysisDateParam;
-import com.vpu.mp.service.pojo.shop.overview.analysis.OverviewAnalysisDayAgoVo;
-import com.vpu.mp.service.pojo.shop.overview.analysis.OverviewAnalysisMonthAgoVo;
-import com.vpu.mp.service.pojo.shop.overview.analysis.OverviewAnalysisPageParam;
-import com.vpu.mp.service.pojo.shop.overview.analysis.OverviewAnalysisPageListVo;
-import com.vpu.mp.service.pojo.shop.overview.analysis.OverviewAnalysisSelectParam;
-import com.vpu.mp.service.pojo.shop.overview.analysis.OverviewAnalysisSelectVo;
-import com.vpu.mp.service.pojo.shop.overview.analysis.OverviewAnalysisWeekAgoVo;
-import com.vpu.mp.service.pojo.shop.overview.analysis.OverviewAnalysisYesterdayVo;
-import com.vpu.mp.service.pojo.shop.overview.analysis.OverviewAnalysisPageVo;
-
 import static com.vpu.mp.db.shop.Tables.MP_DAILY_VISIT;
 import static com.vpu.mp.db.shop.Tables.MP_SUMMARY_TREND;
 import static com.vpu.mp.db.shop.Tables.MP_VISIT_PAGE;
@@ -27,6 +14,19 @@ import java.util.Optional;
 import org.jooq.TableField;
 import org.jooq.impl.DSL;
 import org.springframework.stereotype.Service;
+
+import com.vpu.mp.service.foundation.service.ShopBaseService;
+import com.vpu.mp.service.foundation.util.PropertiesUtil;
+import com.vpu.mp.service.pojo.shop.overview.analysis.OverviewAnalysisDateParam;
+import com.vpu.mp.service.pojo.shop.overview.analysis.OverviewAnalysisDayAgoVo;
+import com.vpu.mp.service.pojo.shop.overview.analysis.OverviewAnalysisMonthAgoVo;
+import com.vpu.mp.service.pojo.shop.overview.analysis.OverviewAnalysisPageListVo;
+import com.vpu.mp.service.pojo.shop.overview.analysis.OverviewAnalysisPageParam;
+import com.vpu.mp.service.pojo.shop.overview.analysis.OverviewAnalysisPageVo;
+import com.vpu.mp.service.pojo.shop.overview.analysis.OverviewAnalysisSelectParam;
+import com.vpu.mp.service.pojo.shop.overview.analysis.OverviewAnalysisSelectVo;
+import com.vpu.mp.service.pojo.shop.overview.analysis.OverviewAnalysisWeekAgoVo;
+import com.vpu.mp.service.pojo.shop.overview.analysis.OverviewAnalysisYesterdayVo;
 
 
 /**
