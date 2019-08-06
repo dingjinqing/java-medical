@@ -58,11 +58,8 @@ public class AdminBargainController extends AdminBaseController {
 	 */
 	@PostMapping(value = "/api/admin/market/bargain/add")
 	public JsonResult addBargain(@RequestBody @Valid BargainAddParam param) {
-		if(shop().bargain.addBargain(param)) {
-			return success();
-		}else {
-			return fail();
-		}
+		shop().bargain.addBargain(param);
+        return success();
 	}
 	
 	/**
@@ -71,12 +68,19 @@ public class AdminBargainController extends AdminBaseController {
 	 */
 	@PostMapping(value = "/api/admin/market/bargain/update")
 	public JsonResult updateBargain(@RequestBody @Valid BargainUpdateParam param) {
-		if(shop().bargain.updateBargain(param)) {
-			return success();
-		}else {
-			return fail();
-		}
+		shop().bargain.updateBargain(param);
+		return success();
 	}
+
+    /**
+     *删除  砍价活动
+     *
+     */
+    @PostMapping(value = "/api/admin/market/bargain/del")
+    public JsonResult delBargain(@RequestBody @Valid BargainUpdateParam param) {
+        shop().bargain.delBargain(param.getId());
+        return success();
+    }
 	
 	/**
 	 *取单个砍价活动信息

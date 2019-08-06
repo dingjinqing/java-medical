@@ -125,27 +125,39 @@ public class BargainService extends ShopBaseService  {
 	 * 新建砍价活动
 	 *
 	 */
-	public boolean addBargain(BargainAddParam param) {
+	public void addBargain(BargainAddParam param) {
 		BargainRecord record = new BargainRecord();
 		assign(param,record);
 		if(param.getShareConfig() != null) {
 			record.setShareConfig(Util.toJson(param.getShareConfig()));
 		}
-		return db().executeInsert(record) > 0 ? true : false;
+		db().executeInsert(record);
 	}
 	
 	/**
 	 * 更新砍价活动
 	 *
 	 */
-	public boolean updateBargain(BargainUpdateParam param) {
+	public void updateBargain(BargainUpdateParam param) {
 		BargainRecord record = new BargainRecord();
 		assign(param,record);
 		if(param.getShareConfig() != null) {
 			record.setShareConfig(Util.toJson(param.getShareConfig()));
 		}
-		return db().executeUpdate(record) > 0 ? true : false;
+		db().executeUpdate(record);
 	}
+
+    /**
+     * 删除砍价活动
+     *
+     */
+    public void delBargain(Integer id) {
+        db().update(BARGAIN).
+            set(BARGAIN.DEL_FLAG,DelFlag.DISABLE.getCode()).
+            set(BARGAIN.DEL_TIME,Util.getLocalDateTime()).
+            where(BARGAIN.ID.eq(id)).
+            execute();
+    }
 	
 	/**
 	 * 取单个砍价活动信息
@@ -155,7 +167,7 @@ public class BargainService extends ShopBaseService  {
 	public Bargain getBargainByIsd(Integer bargainId) {
 		Bargain bargain = db().select(BARGAIN.fields()).from(BARGAIN).where(BARGAIN.ID.eq(bargainId)).fetchOne().into(Bargain.class);
 		if(bargain != null) {
-			GoodsView goods = db().select(GOODS.GOODS_ID,GOODS.GOODS_NAME,GOODS.GOODS_IMG,GOODS.GOODS_NUMBER,GOODS.SHOP_PRICE).from(GOODS).where(GOODS.GOODS_ID.eq(bargain.getGoodsId())).fetchOne().into(GoodsView.class	);
+            GoodsView goods = saas().getShopApp(getShopId()).goods.getGoodsView(bargain.getGoodsId());
 			bargain.setGoods(goods);
 			return bargain;
 		}else {
