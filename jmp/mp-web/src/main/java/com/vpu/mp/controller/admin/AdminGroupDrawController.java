@@ -4,6 +4,7 @@ import com.vpu.mp.service.foundation.data.JsonResult;
 import com.vpu.mp.service.pojo.shop.market.groupdraw.GroupDrawAddParam;
 import com.vpu.mp.service.pojo.shop.market.groupdraw.GroupDrawListParam;
 import com.vpu.mp.service.pojo.shop.market.groupdraw.GroupDrawUpdateParam;
+import com.vpu.mp.service.pojo.shop.market.groupdraw.invite.InvitedUserListParam;
 import com.vpu.mp.service.pojo.shop.market.groupdraw.join.JoinUserListParam;
 import com.vpu.mp.service.pojo.shop.market.groupdraw.order.OrderListParam;
 import org.springframework.web.bind.annotation.*;
@@ -85,5 +86,13 @@ public class AdminGroupDrawController extends AdminBaseController {
     @PostMapping("/order/list")
     public JsonResult getGroupDrawOrderList(@RequestBody @Valid OrderListParam param) {
         return success(shop().groupDrawOrders.getGroupDrawOrderList(param));
+    }
+
+    /**
+     * 新用户
+     */
+    @PostMapping("/invited_user/list")
+    public JsonResult getInvitedUserList(@RequestBody @Valid InvitedUserListParam param) {
+        return success(shop().groupDrawUsers.getInvitedUserList(param));
     }
 }

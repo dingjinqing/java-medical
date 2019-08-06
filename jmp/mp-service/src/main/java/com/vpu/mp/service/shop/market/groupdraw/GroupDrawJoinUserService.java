@@ -2,15 +2,19 @@ package com.vpu.mp.service.shop.market.groupdraw;
 
 import com.vpu.mp.service.foundation.service.ShopBaseService;
 import com.vpu.mp.service.foundation.util.PageResult;
+import com.vpu.mp.service.pojo.shop.market.groupdraw.invite.InvitedUserListParam;
+import com.vpu.mp.service.pojo.shop.market.groupdraw.invite.InvitedUserListVo;
 import com.vpu.mp.service.pojo.shop.market.groupdraw.join.JoinUserListParam;
 import com.vpu.mp.service.pojo.shop.market.groupdraw.join.JoinUserListVo;
 import org.jooq.Record10;
+import org.jooq.Record7;
 import org.jooq.SelectConditionStep;
 import org.jooq.impl.DSL;
 import org.springframework.stereotype.Service;
 
 import java.sql.Timestamp;
 
+import static com.vpu.mp.db.shop.tables.GroupDrawInvite.GROUP_DRAW_INVITE;
 import static com.vpu.mp.db.shop.tables.JoinDrawList.JOIN_DRAW_LIST;
 import static com.vpu.mp.db.shop.tables.JoinGroupList.JOIN_GROUP_LIST;
 import static com.vpu.mp.db.shop.tables.User.USER;
@@ -18,15 +22,56 @@ import static java.lang.String.format;
 import static org.apache.commons.lang3.StringUtils.isNotEmpty;
 
 /**
- * 拼团抽奖 - 参与用户
+ * 拼团抽奖 - 参与用户、新用户
  *
  * @author 郑保乐
  */
 @Service
 public class GroupDrawJoinUserService extends ShopBaseService {
 
+    /** 查询别名 **/
+    private static final String ALIAS_NEW = "n";
+    private static final String ALIAS_OLD = "o";
+
     /**
-     * 列表查询
+     * 新用户列表
+     */
+    public PageResult<InvitedUserListVo> getInvitedUserList(InvitedUserListParam param) {
+        SelectConditionStep<Record7<Timestamp, Integer, Integer, Integer, String, String, String>> select =
+            shopDb().select(GROUP_DRAW_INVITE.CREATE_TIME, GROUP_DRAW_INVITE.IDENTITY_ID,
+                GROUP_DRAW_INVITE.INVITE_USER_ID.as("inviteUserId"), GROUP_DRAW_INVITE.USER_ID.as("invitedUserId"),
+                USER.as(ALIAS_NEW).USERNAME.as("invitedUsername"), USER.as(ALIAS_OLD).USERNAME.as("inviteUsername"),
+                USER.as(ALIAS_NEW).MOBILE.as("invitedUserMobile")).from(GROUP_DRAW_INVITE)
+                .leftJoin(USER.as(ALIAS_NEW)).on(USER.as(ALIAS_NEW).USER_ID.eq(GROUP_DRAW_INVITE.USER_ID))
+                .leftJoin(USER.as(ALIAS_OLD)).on(USER.as(ALIAS_OLD).USER_ID.eq(GROUP_DRAW_INVITE.INVITE_USER_ID))
+                .where();
+        buildInvitedUserOptions(select, param);
+        return getPageResult(select, param, InvitedUserListVo.class);
+    }
+
+    /**
+     * 新用户查询条件
+     */
+    private void buildInvitedUserOptions(SelectConditionStep<Record7<Timestamp, Integer, Integer, Integer, String,
+        String, String>> select, InvitedUserListParam param) {
+        Integer groupDrawId = param.getGroupDrawId();
+        String nickName = param.getNickName();
+        String mobile = param.getMobile();
+        String inviteUserNickname = param.getInviteUserNickname();
+        select.and(GROUP_DRAW_INVITE.IDENTITY_ID.eq(groupDrawId));
+        if (isNotEmpty(nickName)) {
+            select.and(USER.as(ALIAS_NEW).USERNAME.like(format("%s%%", nickName)));
+        }
+        if (isNotEmpty(mobile)) {
+            select.and(USER.as(ALIAS_NEW).MOBILE.like(format("%s%%", mobile)));
+        }
+        if (isNotEmpty(inviteUserNickname)) {
+            select.and(USER.as(ALIAS_OLD).USERNAME.like(format("%s%%", inviteUserNickname)));
+        }
+    }
+
+    /**
+     * 参与用户列表
      */
     public PageResult<JoinUserListVo> getJoinUserList(JoinUserListParam param) {
         SelectConditionStep<Record10<Timestamp, Integer, String, Timestamp, Byte, Integer, Integer, Integer, String,
