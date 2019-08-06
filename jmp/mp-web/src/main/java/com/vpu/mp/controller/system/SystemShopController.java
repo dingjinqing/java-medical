@@ -2,6 +2,8 @@ package com.vpu.mp.controller.system;
 
 import java.sql.Timestamp;
 
+import javax.validation.Valid;
+
 import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -59,7 +61,7 @@ public class SystemShopController extends SystemBaseController {
 	 * @return
 	 */
 	@PostMapping("/system/shop/add")
-	public JsonResult shopAdd(@RequestBody ShopReq shopReq) {
+	public JsonResult shopAdd(@RequestBody @Valid ShopReq shopReq) {
 		ShopAccountRecord accountInfo = saas.shop.account.getAccountInfoForId(shopReq.getSysId());
 		if (accountInfo == null) {
 			return fail();
