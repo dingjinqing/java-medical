@@ -1,51 +1,36 @@
 package com.vpu.mp.service.shop.overview;
 
-import static com.vpu.mp.db.shop.tables.Goods.GOODS;
-import static com.vpu.mp.db.shop.tables.GoodsLabelCouple.GOODS_LABEL_COUPLE;
-import static com.vpu.mp.db.shop.tables.GoodsSummary.GOODS_SUMMARY;
-import static com.vpu.mp.db.shop.tables.GoodsUserSummary.GOODS_USER_SUMMARY;
-import static com.vpu.mp.service.shop.overview.RealTimeOverviewService.div;
-import static org.jooq.impl.DSL.countDistinct;
-import static org.jooq.impl.DSL.max;
-import static org.jooq.impl.DSL.name;
-import static org.jooq.impl.DSL.sum;
-
-import java.sql.Date;
-import java.sql.Timestamp;
-import java.util.List;
-import java.util.Optional;
-
-import org.apache.poi.ss.usermodel.Workbook;
-import org.jooq.Condition;
-import org.jooq.SelectConditionStep;
-import org.jooq.SelectJoinStep;
-import org.jooq.SelectLimitStep;
-import org.jooq.SortField;
-import org.jooq.impl.DSL;
-import org.springframework.context.annotation.Scope;
-import org.springframework.stereotype.Service;
-
-import com.vpu.mp.db.shop.tables.Goods;
-import com.vpu.mp.db.shop.tables.GoodsBak;
-import com.vpu.mp.db.shop.tables.GoodsLabelCouple;
-import com.vpu.mp.db.shop.tables.UserCartRecord;
-import com.vpu.mp.db.shop.tables.UserGoodsRecord;
+import com.vpu.mp.db.shop.tables.*;
 import com.vpu.mp.service.foundation.excel.ExcelFactory;
 import com.vpu.mp.service.foundation.excel.ExcelTypeEnum;
 import com.vpu.mp.service.foundation.excel.ExcelWriter;
 import com.vpu.mp.service.foundation.service.ShopBaseService;
 import com.vpu.mp.service.foundation.util.PageResult;
 import com.vpu.mp.service.foundation.util.Util;
-import com.vpu.mp.service.pojo.shop.overview.commodity.ProductEffectExportVo;
-import com.vpu.mp.service.pojo.shop.overview.commodity.ProductEffectParam;
-import com.vpu.mp.service.pojo.shop.overview.commodity.ProductEffectVo;
-import com.vpu.mp.service.pojo.shop.overview.commodity.ProductOverviewParam;
-import com.vpu.mp.service.pojo.shop.overview.commodity.ProductOverviewVo;
+import com.vpu.mp.service.pojo.shop.overview.commodity.*;
+import org.apache.poi.ss.usermodel.Workbook;
+import org.jooq.*;
+import org.jooq.impl.DSL;
+import org.springframework.context.annotation.Scope;
+import org.springframework.stereotype.Service;
+
+import java.math.BigDecimal;
+import java.sql.Date;
+import java.sql.Timestamp;
+import java.util.List;
+import java.util.Optional;
+
+import static com.vpu.mp.db.shop.tables.Goods.GOODS;
+import static com.vpu.mp.db.shop.tables.GoodsLabelCouple.GOODS_LABEL_COUPLE;
+import static com.vpu.mp.db.shop.tables.GoodsSummary.GOODS_SUMMARY;
+import static com.vpu.mp.db.shop.tables.GoodsUserSummary.GOODS_USER_SUMMARY;
+import static com.vpu.mp.service.shop.overview.RealTimeOverviewService.div;
+import static org.jooq.impl.DSL.*;
 
 /**
- * @Author:liufei
- * @Date:2019/7/22
- * @Description:
+ * @author liufei
+ * @date 2019/7/22
+ * @description
  */
 @Service
 @Scope("prototype")
@@ -113,7 +98,7 @@ public class CommodityStatisticsService extends ShopBaseService {
         return vo;
     }
     /** 在架商品数 */
-    public int getSaleGoodsNumber(ProductOverviewParam param){
+    private int getSaleGoodsNumber(ProductOverviewParam param){
         GoodsBak gb = GoodsBak.GOODS_BAK.as("gb");
         GoodsLabelCouple glc = GoodsLabelCouple.GOODS_LABEL_COUPLE.as("glc");
         /** 基本筛选条件 */
@@ -149,7 +134,7 @@ public class CommodityStatisticsService extends ShopBaseService {
         return goodsIdNumber.orElse(0);
     }
     /** 被访问商品数 */
-    public int getGoodsNumByVisit(ProductOverviewParam param){
+    private int getGoodsNumByVisit(ProductOverviewParam param){
         UserGoodsRecord ugr = UserGoodsRecord.USER_GOODS_RECORD.as("ugr");
         Goods g = Goods.GOODS.as("g");
         GoodsLabelCouple glc = GoodsLabelCouple.GOODS_LABEL_COUPLE.as("glc");
@@ -190,7 +175,7 @@ public class CommodityStatisticsService extends ShopBaseService {
         return goodsIdVisit.orElse(0);
     }
     /** 商品UV数 */
-    public int getGoodsUv(ProductOverviewParam param){
+    private int getGoodsUv(ProductOverviewParam param){
         UserGoodsRecord ugr = UserGoodsRecord.USER_GOODS_RECORD.as("ugr");
         Goods g = Goods.GOODS.as("g");
         GoodsLabelCouple glc = GoodsLabelCouple.GOODS_LABEL_COUPLE.as("glc");
@@ -231,7 +216,7 @@ public class CommodityStatisticsService extends ShopBaseService {
         return goodsUv.orElse(0);
     }
     /** 商品PV数 */
-    public int getGoodsPv(ProductOverviewParam param) {
+    private int getGoodsPv(ProductOverviewParam param) {
         UserGoodsRecord ugr = UserGoodsRecord.USER_GOODS_RECORD.as("ugr");
         Goods g = Goods.GOODS.as("g");
         GoodsLabelCouple glc = GoodsLabelCouple.GOODS_LABEL_COUPLE.as("glc");
@@ -272,7 +257,7 @@ public class CommodityStatisticsService extends ShopBaseService {
         return goodsPv.orElse(0);
     }
     /** 加购人数 */
-    public int addCartUserNum(ProductOverviewParam param){
+    private int addCartUserNum(ProductOverviewParam param){
         UserCartRecord ucr = UserCartRecord.USER_CART_RECORD.as("ucr");
         Goods g = Goods.GOODS.as("g");
         GoodsLabelCouple glc = GoodsLabelCouple.GOODS_LABEL_COUPLE.as("glc");
@@ -313,7 +298,7 @@ public class CommodityStatisticsService extends ShopBaseService {
         return addCardUserNum.orElse(0);
     }
     /** 加购件数 */
-    public int getAddCartGoodsNumber(ProductOverviewParam param) {
+    private int getAddCartGoodsNumber(ProductOverviewParam param) {
         UserCartRecord ucr = UserCartRecord.USER_CART_RECORD.as("ucr");
         Goods g = Goods.GOODS.as("g");
         GoodsLabelCouple glc = GoodsLabelCouple.GOODS_LABEL_COUPLE.as("glc");
@@ -353,9 +338,36 @@ public class CommodityStatisticsService extends ShopBaseService {
         Optional<Integer> addCartGoodsNum = conditionStep.fetchOptionalInto(Integer.class);
         return addCartGoodsNum.orElse(0);
     }
-    /** 付款商品数 ToDo 具体计算规则未知 */
-    public int paidGoodsNum(ProductOverviewParam param){
-        return 0;
+    /** 付款商品数 */
+    private int paidGoodsNum(ProductOverviewParam param){
+        Goods g = Goods.GOODS.as("g");
+        OrderGoods og = OrderGoods.ORDER_GOODS.as("og");
+        OrderInfo oi = OrderInfo.ORDER_INFO.as("oi");
+        GoodsLabelCouple glc = GoodsLabelCouple.GOODS_LABEL_COUPLE.as("glc");
+
+        Condition ogConditon = og.CREATE_TIME.greaterOrEqual(Util.getEarlyTimeStamp(param.getStartTime(),0)).and(og.CREATE_TIME.lessThan(Util.getEarlyTimeStamp(param.getStartTime(),0)));
+        Condition oiCondition = oi.ORDER_STATUS.greaterOrEqual((byte)3);
+        Condition sortCondition = g.SORT_ID.eq(param.getSortId());
+        Condition brandCondition = g.BRAND_ID.eq(param.getBrandId());
+        Condition labelCondtion = glc.ID.eq(param.getLabelId()).and(glc.TYPE.eq((byte)1));
+
+        SelectJoinStep<Record1<BigDecimal>> joinStep = db().select(sum(og.GOODS_NUMBER)).from(og).leftJoin(oi).on(og.ORDER_SN.eq(oi.ORDER_SN));
+        if (param.getBrandId() > 0 || param.getSortId() > 0) {
+            joinStep = joinStep.leftJoin(g).on(og.GOODS_ID.eq(g.GOODS_ID));
+        }
+        if (param.getSortId() > 0) {
+            joinStep = joinStep.leftJoin(glc).on(glc.GTA_ID.eq(og.GOODS_ID));
+        }
+        if (param.getBrandId() > 0) {
+            ogConditon = ogConditon.and(brandCondition);
+        }
+        if (param.getSortId() > 0) {
+            ogConditon = ogConditon.and(sortCondition);
+        }
+        if (param.getLabelId() > 0) {
+            ogConditon = ogConditon.and(labelCondtion);
+        }
+        return joinStep.where(ogConditon.and(oiCondition)).fetchOptionalInto(Integer.class).orElse(0);
     }
 
 
@@ -421,8 +433,30 @@ public class CommodityStatisticsService extends ShopBaseService {
             vo.setNewUserPercentage(div(vo.getPaidUv(),vo.getNewUserNumber()));
             vo.setOldUserPercentage(div(vo.getPaidUv(),vo.getOldUserNumber()));
             vo.setUv2paidGoods(div(vo.getUv(),vo.getPaidGoodsNumber()));
+            vo.setRecommendUserNum(recommendUserNum(param,vo.getGoodsId()));
+            vo.setCollectUserNum(collectUserNum(param,vo.getGoodsId()));
         }
         return pageResult;
+    }
+
+    /**
+     * 推荐用户数
+     */
+    private int recommendUserNum(ProductEffectParam param,int goodsId){
+        WxShoppingRecommend wsr = WxShoppingRecommend.WX_SHOPPING_RECOMMEND.as("wsr");
+        return db().select(count(wsr.USER_ID)).from(wsr).where(wsr.CREATE_TIME.greaterOrEqual(Util.getEarlyTimeStamp(param.getStartTime(),0)))
+        .and(wsr.CREATE_TIME.lessOrEqual(Util.getEarlyTimeStamp(param.getEndTime(),0)))
+        .and(wsr.GOODS_ID.eq(goodsId)).fetchOptionalInto(Integer.class).orElse(0);
+    }
+
+    /**
+     * 商品收藏人数
+     */
+    private int collectUserNum(ProductEffectParam param,int goodsId){
+        UserCollection uc = UserCollection.USER_COLLECTION.as("uc");
+        return db().select(countDistinct(uc.USER_ID)).from(uc).where(uc.CREATE_TIME.greaterOrEqual(Util.getEarlyTimeStamp(param.getStartTime(),0)))
+        .and(uc.CREATE_TIME.lessOrEqual(Util.getEarlyTimeStamp(param.getEndTime(),0)))
+            .and(uc.GOODS_ID.eq(goodsId)).fetchOptionalInto(Integer.class).orElse(0);
     }
 
     /**

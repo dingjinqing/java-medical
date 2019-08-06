@@ -3,9 +3,9 @@ package com.vpu.mp.service.pojo.shop.overview.commodity;
 import lombok.Data;
 
 /**
- * @Author:liufei
- * @Date:2019/7/22
- * @Description: 商品效果
+ * @author liufei
+ * @date 2019/7/22
+ * @description 商品效果
  */
 @Data
 public class ProductEffectVo {
@@ -38,6 +38,7 @@ public class ProductEffectVo {
     /**  商品转化率  */
     private double uv2paidGoods;
     /**  推荐人数  */
-
+    private Integer recommendUserNum;
     /**  收藏人数  */
+    private Integer collectUserNum;
 }
