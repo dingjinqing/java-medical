@@ -22,20 +22,11 @@ public class RevenueProfileVo {
     private BigDecimal incomeTotalMoney;
     /** 现金总支出 */
     private BigDecimal outgoMoney;
-    /** 积分净收入 */
-    private BigDecimal incomeRealScore;
-    /** 积分总收入 */
-    private BigDecimal incomeTotalScore;
-    /** 积分总支出 */
-    private BigDecimal outgoScore;
 
     /** 较上一周期增长率 */
     private BigDecimal incomeRealMoneyPer;
     private BigDecimal incomeTotalMoneyPer;
     private BigDecimal outgoMoneyPer;
-    private BigDecimal incomeRealScorePer;
-    private BigDecimal incomeTotalScorePer;
-    private BigDecimal outgoScorePer;
 
     /** 折线图数据 */
     private List<RevenueDate> revenueDates;

@@ -3,6 +3,7 @@ package com.vpu.mp.service.pojo.shop.overview.asset;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.Data;
 
+import javax.validation.constraints.NotNull;
 import java.sql.Date;
 
 /**
@@ -18,4 +19,7 @@ public class RevenueProfileParam {
     private Date startTime;
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd")
     private Date endTime;
+    /** 交易内容：0：现金，1：积分 */
+    @NotNull
+    private Byte tradeContent;
 }

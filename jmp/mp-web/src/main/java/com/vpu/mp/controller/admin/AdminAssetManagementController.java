@@ -1,19 +1,17 @@
 package com.vpu.mp.controller.admin;
 
-import java.io.IOException;
-import java.util.Locale;
-
-import javax.servlet.http.HttpServletResponse;
-
+import com.vpu.mp.service.foundation.data.JsonResult;
+import com.vpu.mp.service.pojo.shop.overview.asset.AssetDetailParam;
+import com.vpu.mp.service.pojo.shop.overview.asset.RevenueProfileParam;
 import org.apache.poi.ss.usermodel.Workbook;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.vpu.mp.service.foundation.data.JsonResult;
-import com.vpu.mp.service.pojo.shop.overview.asset.AssetDetailParam;
-import com.vpu.mp.service.pojo.shop.overview.asset.RevenueProfileParam;
+import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
+import java.util.Locale;
 
 /**
  * @author liufei
@@ -27,7 +25,13 @@ public class AdminAssetManagementController extends AdminBaseController {
      */
     @PostMapping("/api/admin/assetmanagement/revenueprofile")
     public JsonResult revenueprofile(@RequestBody RevenueProfileParam param) {
-        return success(shop().assetService.revenueprofile(param));
+        if (param.getTradeContent()==0) {
+            return success(shop().assetService.revenueprofile(param));
+        }
+        if (param.getTradeContent()==1){
+            return success(shop().assetService.revenueprofileScore(param));
+        }
+        return success();
     }
 
     /**

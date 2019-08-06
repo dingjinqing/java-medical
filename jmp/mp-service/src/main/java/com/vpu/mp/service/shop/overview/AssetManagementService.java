@@ -1,21 +1,5 @@
 package com.vpu.mp.service.shop.overview;
 
-import static org.jooq.impl.DSL.min;
-import static org.jooq.impl.DSL.sum;
-
-import java.math.BigDecimal;
-import java.math.RoundingMode;
-import java.sql.Date;
-import java.sql.Timestamp;
-import java.util.List;
-import java.util.Optional;
-
-import org.apache.poi.ss.usermodel.Workbook;
-import org.jooq.Record7;
-import org.jooq.Record8;
-import org.jooq.SelectConditionStep;
-import org.springframework.stereotype.Service;
-
 import com.vpu.mp.db.shop.tables.TradesRecord;
 import com.vpu.mp.db.shop.tables.TradesRecordSummary;
 import com.vpu.mp.db.shop.tables.User;
@@ -25,12 +9,22 @@ import com.vpu.mp.service.foundation.excel.ExcelWriter;
 import com.vpu.mp.service.foundation.service.ShopBaseService;
 import com.vpu.mp.service.foundation.util.PageResult;
 import com.vpu.mp.service.foundation.util.Util;
-import com.vpu.mp.service.pojo.shop.overview.asset.AssetDetailExportVo;
-import com.vpu.mp.service.pojo.shop.overview.asset.AssetDetailParam;
-import com.vpu.mp.service.pojo.shop.overview.asset.AssetDetailVo;
-import com.vpu.mp.service.pojo.shop.overview.asset.RevenueDate;
-import com.vpu.mp.service.pojo.shop.overview.asset.RevenueProfileParam;
-import com.vpu.mp.service.pojo.shop.overview.asset.RevenueProfileVo;
+import com.vpu.mp.service.pojo.shop.overview.asset.*;
+import org.apache.poi.ss.usermodel.Workbook;
+import org.jooq.Record4;
+import org.jooq.Record8;
+import org.jooq.SelectConditionStep;
+import org.springframework.stereotype.Service;
+
+import java.math.BigDecimal;
+import java.math.RoundingMode;
+import java.sql.Date;
+import java.sql.Timestamp;
+import java.util.List;
+import java.util.Optional;
+
+import static org.jooq.impl.DSL.min;
+import static org.jooq.impl.DSL.sum;
 
 /**
  * @author liufei
@@ -45,7 +39,7 @@ public class AssetManagementService extends ShopBaseService {
     private static User u = User.USER.as("u");
 
     /**
-     * 营收概况
+     * 营收概况-现金/积分
      *
      * @param param 入参
      * @return 统计数据和折线图数据列表
@@ -71,6 +65,27 @@ public class AssetManagementService extends ShopBaseService {
         }
         return vo;
     }
+    public RevenueProfileScoreVo revenueprofileScore(RevenueProfileParam param) {
+        byte screeningTime = param.getScreeningTime();
+        RevenueProfileScoreVo vo;
+        if (screeningTime > 0) {
+            Date current = Util.getEarlySqlDate(new java.util.Date(), 0);
+            Date prior = Util.getEarlySqlDate(new java.util.Date(), -screeningTime);
+            vo = getRevenueScoreDate(current, screeningTime);
+            RevenueProfileScoreVo tempPre = getRevenueScoreDate(prior, screeningTime);
+            calScoreGrowthRate(vo, tempPre);
+            vo.setRevenueDates(getRevenueScoreDateList(prior, current));
+        } else {
+            Date startDate = Optional.of(param.getStartTime()).orElse(Util.getEarlySqlDate(new java.util.Date(), -1));
+            Date endDate = Optional.of(param.getEndTime()).orElse(Util.getEarlySqlDate(new java.util.Date(), 0));
+            int day = (int) ((endDate.getTime() - startDate.getTime()) / (24 * 60 * 60 * 1000));
+            vo = getRevenueScoreDate(startDate, endDate);
+            RevenueProfileScoreVo tempPre = getRevenueScoreDate(Util.getEarlySqlDate(startDate, -day), startDate);
+            calScoreGrowthRate(vo, tempPre);
+            vo.setRevenueDates(getRevenueScoreDateList(startDate, endDate));
+        }
+        return vo;
+    }
 
     /**
      * 计算增长率
@@ -79,6 +94,8 @@ public class AssetManagementService extends ShopBaseService {
         vo.setIncomeRealMoneyPer(getRate(vo.getIncomeRealMoney(), tempPre.getIncomeRealMoney()));
         vo.setIncomeTotalMoneyPer(getRate(vo.getIncomeTotalMoney(), tempPre.getIncomeTotalMoney()));
         vo.setOutgoMoneyPer(getRate(vo.getOutgoMoney(), tempPre.getOutgoMoney()));
+    }
+    private void calScoreGrowthRate(RevenueProfileScoreVo vo, RevenueProfileScoreVo tempPre) {
         vo.setIncomeRealScorePer(getRate(vo.getIncomeRealScore(), tempPre.getIncomeRealScore()));
         vo.setIncomeTotalScorePer(getRate(vo.getIncomeTotalScore(), tempPre.getIncomeTotalScore()));
         vo.setOutgoScorePer(getRate(vo.getOutgoScore(), tempPre.getOutgoScore()));
@@ -97,12 +114,18 @@ public class AssetManagementService extends ShopBaseService {
     private RevenueProfileVo getRevenueDate(Date date, byte type) {
         return getSelectConditon().and(trs.REF_DATE.eq(date)).and(trs.TYPE.eq(type)).fetchOptionalInto(RevenueProfileVo.class).orElse(new RevenueProfileVo());
     }
+    private RevenueProfileScoreVo getRevenueScoreDate(Date date, byte type) {
+        return getSelectConditon().and(trs.REF_DATE.eq(date)).and(trs.TYPE.eq(type)).fetchOptionalInto(RevenueProfileScoreVo.class).orElse(new RevenueProfileScoreVo());
+    }
 
     /**
      * 获取自定义时间数据
      */
     private RevenueProfileVo getRevenueDate(Date startDate, Date endDate) {
         return getSelectConditonWithSum().and(trs.REF_DATE.greaterOrEqual(startDate)).and(trs.REF_DATE.lessThan(endDate)).and(trs.TYPE.eq((byte) 1)).fetchOptionalInto(RevenueProfileVo.class).orElse(new RevenueProfileVo());
+    }
+    private RevenueProfileScoreVo getRevenueScoreDate(Date startDate, Date endDate) {
+        return getScoreSelectConditonWithSum().and(trs.REF_DATE.greaterOrEqual(startDate)).and(trs.REF_DATE.lessThan(endDate)).and(trs.TYPE.eq((byte) 1)).fetchOptionalInto(RevenueProfileScoreVo.class).orElse(new RevenueProfileScoreVo());
     }
 
     /**
@@ -111,13 +134,22 @@ public class AssetManagementService extends ShopBaseService {
     private List<RevenueDate> getRevenueDateList(Date startDate, Date endDate) {
         return getSelectConditon().and(trs.REF_DATE.greaterOrEqual(startDate)).and(trs.REF_DATE.lessThan(endDate)).and(trs.TYPE.eq((byte) 1)).fetchInto(RevenueDate.class);
     }
-
-    private SelectConditionStep<Record7<Date, BigDecimal, BigDecimal, BigDecimal, BigDecimal, BigDecimal, BigDecimal>> getSelectConditon() {
-        return db().select(trs.REF_DATE, trs.INCOME_REAL_MONEY, trs.INCOME_TOTAL_MONEY, trs.OUTGO_MONEY, trs.INCOME_REAL_SCORE, trs.INCOME_TOTAL_SCORE, trs.OUTGO_SCORE).from(trs).where();
+    private List<RevenueScoreDate> getRevenueScoreDateList(Date startDate, Date endDate) {
+        return getScoreSelectConditon().and(trs.REF_DATE.greaterOrEqual(startDate)).and(trs.REF_DATE.lessThan(endDate)).and(trs.TYPE.eq((byte) 1)).fetchInto(RevenueScoreDate.class);
     }
 
-    private SelectConditionStep<Record7<Date, BigDecimal, BigDecimal, BigDecimal, BigDecimal, BigDecimal, BigDecimal>> getSelectConditonWithSum() {
-        return db().select(min(trs.REF_DATE).as("refDate"), sum(trs.INCOME_REAL_MONEY).as("incomeRealMoney"), sum(trs.INCOME_TOTAL_MONEY).as("incomeTotalMoney"), sum(trs.OUTGO_MONEY).as("outgoMoney"), sum(trs.INCOME_REAL_SCORE).as("incomeRealScore"), sum(trs.INCOME_TOTAL_SCORE).as("incomeTotalScore"), sum(trs.OUTGO_SCORE).as("outgoScore")).from(trs).where();
+    private SelectConditionStep<Record4<Date, BigDecimal, BigDecimal, BigDecimal>> getSelectConditon() {
+        return db().select(trs.REF_DATE, trs.INCOME_REAL_MONEY, trs.INCOME_TOTAL_MONEY, trs.OUTGO_MONEY).from(trs).where();
+    }
+    private SelectConditionStep<Record4<Date, BigDecimal, BigDecimal, BigDecimal>> getScoreSelectConditon() {
+        return db().select(trs.REF_DATE, trs.INCOME_REAL_SCORE, trs.INCOME_TOTAL_SCORE, trs.OUTGO_SCORE).from(trs).where();
+    }
+
+    private SelectConditionStep<Record4<Date, BigDecimal, BigDecimal, BigDecimal>> getSelectConditonWithSum() {
+        return db().select(min(trs.REF_DATE).as("refDate"), sum(trs.INCOME_REAL_MONEY).as("incomeRealMoney"), sum(trs.INCOME_TOTAL_MONEY).as("incomeTotalMoney"), sum(trs.OUTGO_MONEY).as("outgoMoney")).from(trs).where();
+    }
+    private SelectConditionStep<Record4<Date, BigDecimal, BigDecimal, BigDecimal>> getScoreSelectConditonWithSum() {
+        return db().select(min(trs.REF_DATE).as("refDate"), sum(trs.INCOME_REAL_SCORE).as("incomeRealScore"), sum(trs.INCOME_TOTAL_SCORE).as("incomeTotalScore"), sum(trs.OUTGO_SCORE).as("outgoScore")).from(trs).where();
     }
 
     /**
