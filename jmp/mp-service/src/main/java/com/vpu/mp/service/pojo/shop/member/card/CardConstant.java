@@ -30,6 +30,7 @@ public class CardConstant {
 	public static final Byte DISCOUNT_ALL_GOODS = 1;
 	/** 指定商品 打折 */
 	public static final Byte DISCOUNT_PART_GOODS = 0;
+	
 	/** 
 	 * 门店类型
 	 * 全部门店，部分门店，不可在门店使用
@@ -64,5 +65,10 @@ public class CardConstant {
 	public static final Byte NONE_GOODS = 0;
 	public static final Byte PART_GOODS = 1;
 	public static final Byte ALL_GOODS = 2;
+	
+	/** 没有删除 */
+	public static final Byte DELETE_NO = 0;
+	/** 确定删除 */
+	public static final Byte DELETE_YES = 1;
 	
 }
