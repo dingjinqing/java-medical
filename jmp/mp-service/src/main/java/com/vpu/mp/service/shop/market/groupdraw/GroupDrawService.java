@@ -40,6 +40,14 @@ public class GroupDrawService extends ShopBaseService {
     private static final byte GROUP_DRAW_DISABLED = 0;
 
     /**
+     * 禁用活动
+     */
+    public void disableGroupDraw(Integer id) {
+        shopDb().update(GROUP_DRAW).set(GROUP_DRAW.STATUS, GROUP_DRAW_DISABLED)
+            .where(GROUP_DRAW.ID.eq(id)).execute();
+    }
+
+    /**
      * 更新活动
      */
     public void updateGroupDraw(Integer id, GroupDrawUpdateParam param) {

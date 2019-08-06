@@ -46,6 +46,15 @@ public class AdminGroupDrawController extends AdminBaseController {
     }
 
     /**
+     * 禁用活动
+     */
+    @PostMapping("/disable/{id}")
+    public JsonResult disableGroupDraw(@PathVariable Integer id) {
+        shop().groupDraw.disableGroupDraw(id);
+        return success();
+    }
+
+    /**
      * 编辑活动 - 查询
      */
     @PostMapping("/detail/{id}")
