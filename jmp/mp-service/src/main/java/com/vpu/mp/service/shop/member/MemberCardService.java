@@ -1,14 +1,15 @@
 package com.vpu.mp.service.shop.member;
 
+
+import static org.jooq.impl.DSL.count;
+
+import java.util.Map;
+
+
 import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.ACTIVE_NO;
 import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.ACTIVE_YES;
-import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.ALL_GOODS;
-import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.ALL_SHOP;
-import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.BG_COLOR_TYPE;
-import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.BG_IMG_TYPE;
 import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.BUTTON_ON;
-import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.BUY_BY_CRASH;
-import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.BUY_BY_SCORE;
+
 import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.CHECKED;
 import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.DISCOUNT_ALL_GOODS;
 import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.DISCOUNT_PART_GOODS;
@@ -25,7 +26,15 @@ import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.PART_GOODS;
 import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.PART_SHOP;
 import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.PROHIBITED;
 import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.RANK_TYPE;
+import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.DELETE_NO;
+import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.BG_COLOR_TYPE;
+import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.BG_IMG_TYPE;
+import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.ALL_SHOP;
+import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.ALL_GOODS;
+import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.BUY_BY_SCORE;
+import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.BUY_BY_CRASH;
 
+import org.jooq.SelectSeekStep1;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
@@ -34,12 +43,19 @@ import com.vpu.mp.db.shop.tables.records.MemberCardRecord;
 import com.vpu.mp.service.foundation.data.JsonResultCode;
 import com.vpu.mp.service.foundation.service.ShopBaseService;
 import com.vpu.mp.service.foundation.util.FieldsUtil;
+import com.vpu.mp.service.foundation.util.PageResult;
 import com.vpu.mp.service.foundation.util.Util;
 import com.vpu.mp.service.pojo.shop.member.card.CardParam;
 import com.vpu.mp.service.pojo.shop.member.card.GradeConditionJson;
 import com.vpu.mp.service.pojo.shop.member.card.PowerCardJson;
 import com.vpu.mp.service.pojo.shop.member.card.ScoreJson;
 import com.vpu.mp.service.pojo.shop.member.card.SearchCardParam;
+
+
+import com.vpu.mp.service.pojo.shop.member.card.CardVo;
+
+import static com.vpu.mp.db.shop.Tables.MEMBER_CARD;
+import static com.vpu.mp.db.shop.Tables.USER_CARD;
 /**
  * 
  * @author 黄壮壮
@@ -173,6 +189,8 @@ public class MemberCardService extends ShopBaseService {
 				/** 购物送积分策略json数据 */
 				ScoreJson scoreJson = card.getScoreJson();
 				cardRecord.setBuyScore(Util.toJson(scoreJson));
+			}else {
+				//准备设置为空
 			}
 
 			if (!flag && RANK_TYPE.equals(cardType)) {
@@ -315,9 +333,7 @@ public class MemberCardService extends ShopBaseService {
 			/** 设置金额 */
 			cardRecord.setSendMoney(card.getSendMoney());
 			/** 设置开卡策略 */
-			PowerCardJson powerCardJson = new PowerCardJson();
-			FieldsUtil.assignNotNull(card, powerCardJson);
-			cardRecord.setChargeMoney(Util.toJson(powerCardJson));
+			cardRecord.setChargeMoney(Util.toJson(card.getPowerCardJson()));
 		}
 		if (!flag) {
 			/** 必须选择一项会员权益 */
@@ -342,24 +358,83 @@ public class MemberCardService extends ShopBaseService {
 	 * 分页查询会员卡
 	 * @param param
 	 */
-	public void getCardList(SearchCardParam param) {
+	public PageResult<CardVo> getCardList(SearchCardParam param) {
 		
-		String cardType = param.getCardType();
+		Byte cardType = param.getCardType();
 		
 		/** 处理普通会员卡 */
 		if(NORMAL_TYPE.equals(cardType)) {
 			logger.info("正在分页查询普通会员卡");
-			getNormalCardList(param);
+			return getNormalCardList(param);
+		}else if(LIMIT_NUM_TYPE.equals(cardType)) {
+			logger.info("正在分页查询限次会员卡");
+			return getLimitCardList(param);
+		}else if(RANK_TYPE.equals(cardType)) {
+			logger.info("正在分页查询等级会员卡");
+			return getRankCardList(param);
 		}
+		return null;
 		
 	}
 
 	/**
 	 * 分页查询普通会员卡
 	 * @param param
+	 * @return
 	 */
-	private void getNormalCardList(SearchCardParam param) {
-		// TODO Auto-generated method stub
+	private PageResult<CardVo> getRankCardList(SearchCardParam param) {
+		
+		
+		return null;
+	}
+
+	/**
+	 * 分页查询限次会员卡
+	 * @param param
+	 * @return
+	 */
+	private PageResult<CardVo> getLimitCardList(SearchCardParam param) {
+		/** 构建select语句 */
+		SelectSeekStep1<MemberCardRecord, Integer> select = db().selectFrom(MEMBER_CARD)
+			.where(MEMBER_CARD.CARD_TYPE.equal(LIMIT_NUM_TYPE))
+			.and(MEMBER_CARD.DEL_FLAG.equal(DELETE_NO))
+			.orderBy(MEMBER_CARD.ID.desc());
+			
+		PageResult<CardVo> pageResult = this.getPageResult(select, param.getCurrentPage(), param.getPageRows(),CardVo.class);
+		/** 查询领取次数 */
+		Map<Integer, Integer> intoMap = db().select(USER_CARD.CARD_ID,count())
+											.from(USER_CARD)
+											.groupBy(USER_CARD.CARD_ID)
+											.fetch()
+											.intoMap(USER_CARD.CARD_ID, count());
+		
+		/** 设置未领取值 */
+		pageResult.dataList.stream().forEach(vo-> vo.setHasSend(intoMap.get(vo.getId())==null?0:intoMap.get(vo.getId())));
+		
+		return pageResult;
+	}
+
+	/**
+	 * 分页查询普通会员卡
+	 * @param param
+	 */
+	private PageResult<CardVo> getNormalCardList(SearchCardParam param) {
+		/**
+		 * select card_name from b2c_member_card where card_type=0 and is_delete=0 order by id desc;
+		 * 
+		 */
+		SelectSeekStep1<MemberCardRecord, Integer> select = db().selectFrom(MEMBER_CARD)
+			.where(MEMBER_CARD.CARD_TYPE.equal(NORMAL_TYPE))
+			.and(MEMBER_CARD.DEL_FLAG.equal(DELETE_NO))
+			.orderBy(MEMBER_CARD.ID.desc());
+		
+		PageResult<CardVo> pageResult = this.getPageResult(select, param.getCurrentPage(), param.getPageRows(), CardVo.class);
+		/** 将json配置文件转化成合适的数据给前端 */
+		for(CardVo vo: pageResult.dataList) {
+			vo.changeJsonCfgToArray();
+		}
+		
+		return pageResult;
 		
 	}
 	
