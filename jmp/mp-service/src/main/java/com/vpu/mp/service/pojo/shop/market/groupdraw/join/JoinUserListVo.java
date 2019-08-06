@@ -12,6 +12,8 @@ import java.time.LocalDate;
 @Data
 public class JoinUserListVo {
 
+    /** 用户id **/
+    private Integer userId;
     /** 昵称 **/
     private String username;
     /** 手机号 **/

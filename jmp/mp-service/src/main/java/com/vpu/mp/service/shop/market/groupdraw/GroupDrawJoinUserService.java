@@ -29,15 +29,17 @@ public class GroupDrawJoinUserService extends ShopBaseService {
      * 列表查询
      */
     public PageResult<JoinUserListVo> getJoinUserList(JoinUserListParam param) {
-        SelectConditionStep<Record10<Timestamp, Integer, String, Timestamp, Byte, Integer, Integer, Integer, String, String>> select =
-            shopDb().select(JOIN_GROUP_LIST.CREATE_TIME, JOIN_GROUP_LIST.USER_ID, JOIN_GROUP_LIST.ORDER_SN,
-                JOIN_GROUP_LIST.END_TIME, JOIN_GROUP_LIST.IS_GROUPER, JOIN_GROUP_LIST.GROUP_ID,
-                JOIN_GROUP_LIST.INVITE_USER_NUM, DSL.count(JOIN_DRAW_LIST.USER_ID).as("codeCount"), USER.USERNAME,
-                USER.MOBILE).from(JOIN_GROUP_LIST)
-                .leftJoin(JOIN_DRAW_LIST).on(JOIN_GROUP_LIST.GROUP_DRAW_ID.eq(JOIN_DRAW_LIST.GROUP_DRAW_ID)
+        SelectConditionStep<Record10<Timestamp, Integer, String, Timestamp, Byte, Integer, Integer, Integer, String,
+            String>> select = shopDb().select(JOIN_GROUP_LIST.CREATE_TIME, JOIN_GROUP_LIST.USER_ID,
+            JOIN_GROUP_LIST.ORDER_SN,
+            JOIN_GROUP_LIST.END_TIME, JOIN_GROUP_LIST.IS_GROUPER, JOIN_GROUP_LIST.GROUP_ID,
+            JOIN_GROUP_LIST.INVITE_USER_NUM, DSL.count(JOIN_DRAW_LIST.USER_ID).as("codeCount"),
+            USER.USERNAME,
+            USER.MOBILE).from(JOIN_GROUP_LIST)
+            .leftJoin(JOIN_DRAW_LIST).on(JOIN_GROUP_LIST.GROUP_DRAW_ID.eq(JOIN_DRAW_LIST.GROUP_DRAW_ID)
                 .and(JOIN_GROUP_LIST.USER_ID.eq(JOIN_DRAW_LIST.USER_ID)))
-                .leftJoin(USER).on(JOIN_GROUP_LIST.USER_ID.eq(USER.USER_ID))
-                .where();
+            .leftJoin(USER).on(JOIN_GROUP_LIST.USER_ID.eq(USER.USER_ID))
+            .where();
         buildOptions(select, param);
         return getPageResult(select, param, JoinUserListVo.class);
     }
@@ -45,8 +47,8 @@ public class GroupDrawJoinUserService extends ShopBaseService {
     /**
      * 查询条件
      */
-    private void buildOptions(SelectConditionStep<Record10<Timestamp, Integer, String, Timestamp, Byte, Integer, Integer,
-        Integer, String, String>> select, JoinUserListParam param) {
+    private void buildOptions(SelectConditionStep<Record10<Timestamp, Integer, String, Timestamp, Byte, Integer,
+        Integer, Integer, String, String>> select, JoinUserListParam param) {
         Integer groupDrawId = param.getGroupDrawId();
         String nickName = param.getNickName();
         Timestamp endTime = param.getEndTime();
@@ -69,7 +71,7 @@ public class GroupDrawJoinUserService extends ShopBaseService {
             select.and(JOIN_GROUP_LIST.GROUP_ID.eq(groupId));
         }
         if (null != isGrouped) {
-            select.and(JOIN_GROUP_LIST.STATUS.eq((byte) 1));
+            select.and(JOIN_GROUP_LIST.STATUS.eq((byte) (isGrouped ? 1 : 2)));
         }
         if (null != isGrouper) {
             select.and(JOIN_GROUP_LIST.IS_GROUPER.eq((byte) (isGrouper ? 1 : 0)));
