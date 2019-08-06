@@ -22,6 +22,7 @@ import com.vpu.mp.config.DomainConfig;
 import com.vpu.mp.db.main.tables.MpAuthShop;
 import com.vpu.mp.db.main.tables.records.MpAuthShopRecord;
 import com.vpu.mp.db.main.tables.records.MpVersionRecord;
+import com.vpu.mp.service.foundation.data.JsonResult;
 import com.vpu.mp.service.foundation.service.MainBaseService;
 import com.vpu.mp.service.foundation.util.Util;
 import com.vpu.mp.service.pojo.shop.config.trade.WxpayConfigParam;
@@ -32,6 +33,7 @@ import com.vpu.mp.service.wechat.ma.bean.MpWxMaOpenCommitExtInfo;
 import cn.binarywang.wx.miniapp.util.json.WxMaGsonBuilder;
 import me.chanjar.weixin.common.error.WxErrorException;
 import me.chanjar.weixin.open.api.WxOpenMaService;
+import me.chanjar.weixin.open.bean.WxOpenCreateResult;
 import me.chanjar.weixin.open.bean.auth.WxOpenAuthorizationInfo;
 import me.chanjar.weixin.open.bean.auth.WxOpenAuthorizerInfo;
 import me.chanjar.weixin.open.bean.ma.WxOpenMaCategory;
@@ -590,4 +592,111 @@ public class MpAuthShopService extends MainBaseService {
 		}
 		return null;
 	}
+	
+	public WxOpenCreateResult bindAllSamePrincipalOpenAppId(MpAuthShopRecord record) throws WxErrorException {
+		Result<MpAuthShopRecord> samePrincipalMpApps = getSamePrincipalMpApps(record.getPrincipalName());
+		String openAppId = null;
+		//遍历所有主体相同的号，查找不为空的openAppId
+		for (MpAuthShopRecord mShopRecord : samePrincipalMpApps) {
+			if (!StringUtils.isEmpty(mShopRecord.getBindOpenAppId())) {
+				openAppId = mShopRecord.getBindOpenAppId();
+				break;
+			}
+		}
+		for (MpAuthShopRecord mRecord : samePrincipalMpApps) {
+			WxOpenCreateResult bindOpenAppId = bindOpenAppId(mRecord.getAppId(), openAppId);
+			if(!bindOpenAppId.getErrcode().equals("0")) {
+				//返回报错
+				logger().debug(record.getAppId()+"微信回调绑定开放平台,出错,循环更新OpenAppId时，appId为"+mRecord.getAppId()+"出错："+bindOpenAppId.getErrmsg()+bindOpenAppId.getErrcode());
+				return bindOpenAppId;
+				
+			}
+			openAppId=bindOpenAppId.getOpenAppid();
+			if(!openAppId.equals(mRecord.getBindOpenAppId())) {
+				//更新数据库
+				mRecord.setBindOpenAppId(openAppId);
+				db().executeUpdate(mRecord);
+			}
+				
+		}
+		return null;
+	}
+	
+	
+	public WxOpenCreateResult bindOpenAppId(String appId,String openAppId) throws WxErrorException{
+		WxOpenCreateResult queryOpenAccount = open.queryOpenAccount(appId);
+		String errcode = queryOpenAccount.getErrcode();
+		if(errcode.equals("0")) {
+			//ok
+			if(StringUtils.isEmpty(openAppId)) {
+				//返回查询回来的openAppId
+				return queryOpenAccount;
+			}
+			if(!openAppId.equals(queryOpenAccount.getOpenAppid())) {
+				//本地存的和微信查回来的openAppId不一样
+				//解绑微信查回来的数据
+				//绑定传入的openAppId
+				WxOpenCreateResult unbindOpen = unbindOpen(appId, queryOpenAccount.getOpenAppid());
+				if(unbindOpen.getErrcode().equals("0")) {
+					//绑定
+					return bindOpen(appId, openAppId);
+				}
+			}
+			return queryOpenAccount;
+		}
+		//open not exists，该公众号/小程序未绑定微信开放平台帐号。
+		if(errcode.equals("89002")) {
+			if(StringUtils.isEmpty(openAppId)) {
+				//传入的openAppid为空，就是相同主体的都没绑定，先申请个开放平台(申请时候就会绑定，不用再绑定)
+				WxOpenCreateResult createOpenAccount = open.getWxOpenComponentService().createOpenAccount(appId);
+				logger().debug("appId:"+appId+"申请开放平台,openAppId为： "+createOpenAccount.getOpenAppid()+"结果为："+createOpenAccount.getErrmsg()+" "+createOpenAccount.getErrcode());
+				return createOpenAccount;
+			}else {
+				//传入的非空，直接绑定
+				return bindOpen(appId, openAppId);
+			}
+		}
+		logger().debug("调用bindOpenAppId方法，返回："+queryOpenAccount.getErrmsg()+"  "+queryOpenAccount.getErrcode());
+		return queryOpenAccount;
+	}
+
+	/**
+	 * 绑定开放平台
+	 * @param appId
+	 * @param openAppId
+	 * @return
+	 * @throws WxErrorException
+	 */
+	public WxOpenCreateResult bindOpen(String appId,String openAppId) throws WxErrorException {
+		 WxOpenCreateResult bindOpenAppId = open().bindOpenAppId(appId,openAppId);
+		 logger().debug("appid:"+appId+" 绑定到openAppId："+openAppId+" 结果："+bindOpenAppId.getErrcode()+" "+bindOpenAppId.getErrmsg());
+		 bindOpenAppId.setOpenAppid(openAppId);
+		 return bindOpenAppId;
+	}
+	
+	/**
+	 * 解绑开放平台
+	 * @param appId
+	 * @param openAppId
+	 * @return
+	 * @throws WxErrorException
+	 */
+	public WxOpenCreateResult unbindOpen(String appId,String openAppId) throws WxErrorException {
+		 WxOpenCreateResult bindOpenAppId = open().unBindOpenAppId(appId,openAppId);
+		 logger().debug("appid:"+appId+" 解绑,其openAppId："+openAppId+" 结果："+bindOpenAppId.getErrcode()+" "+bindOpenAppId.getErrmsg());
+		 return bindOpenAppId;
+	}
+	
+	
+	
+	/**
+	 * 查询主体名称相同的
+	 * @param principalName
+	 * @return
+	 */
+	public Result<MpAuthShopRecord> getSamePrincipalMpApps(String principalName) {
+		//db().select(MP_AUTH_SHOP.APP_ID,MP_AUTH_SHOP.BIND_OPEN_APP_ID).from(MP_AUTH_SHOP).where(MP_AUTH_SHOP.PRINCIPAL_NAME.eq(principalName).and(MP_AUTH_SHOP.IS_AUTH_OK.eq((byte) 1)));
+		return db().fetch(MP_AUTH_SHOP, MP_AUTH_SHOP.PRINCIPAL_NAME.eq(principalName).and(MP_AUTH_SHOP.IS_AUTH_OK.eq((byte) 1)));
+	}
+
 }
