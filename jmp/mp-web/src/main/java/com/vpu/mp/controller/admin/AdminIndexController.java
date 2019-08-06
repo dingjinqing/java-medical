@@ -91,14 +91,11 @@ public class AdminIndexController extends AdminBaseController {
 	}
 
 	/**
-	 * 点击的菜单或者功能有没有权限，暂时取消，都通过发的uri校验
+	 * 点击的菜单或者功能有没有权限
 	 * 
 	 * @return
 	 */
-	/**
-	 *  @RequestMapping(value = "/admin/checkMenu")
-	 * @return
-	 */
+	 @RequestMapping(value = "/admin/checkMenu")
 	public JsonResult checkMenu() {
 		if (StringUtils.isEmpty(adminAuth.user().loginShopId)) {
 			return fail(JsonResultCode.CODE_ACCOUNT_ROLE__SHOP_SELECT);
