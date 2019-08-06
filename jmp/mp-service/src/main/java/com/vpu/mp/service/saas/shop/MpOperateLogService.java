@@ -1,10 +1,16 @@
 package com.vpu.mp.service.saas.shop;
 
 import static com.vpu.mp.db.main.tables.MpOperateLog.MP_OPERATE_LOG;
+import static com.vpu.mp.db.main.tables.MpVersion.MP_VERSION;
 
+import org.jooq.Record;
+import org.jooq.SelectWhereStep;
 import org.springframework.stereotype.Service;
 
 import com.vpu.mp.service.foundation.service.MainBaseService;
+import com.vpu.mp.service.foundation.util.PageResult;
+import com.vpu.mp.service.pojo.saas.shop.mp.MpVersionListParam;
+import com.vpu.mp.service.pojo.saas.shop.mp.MpVersionVo;
 
 /**
  * 
@@ -105,4 +111,16 @@ public class MpOperateLogService extends MainBaseService {
 						MP_OPERATE_LOG.OPERATE_TYPE, MP_OPERATE_LOG.OPERATE_STATE,MP_OPERATE_LOG.MEMO)
 				.values(appId, templateId, operateType, operateState,memo).execute();
 	}
+	
+//	/**
+//	 * 查询版本分页
+//	 * 
+//	 * @param param
+//	 * @return
+//	 */
+//	public PageResult<MpVersionVo> getPageList(MpVersionListParam param) {
+//		SelectWhereStep<Record> select = db().select().from(MP_VERSION);
+//		select.orderBy(MP_VERSION.TEMPLATE_ID.desc());
+//		return this.getPageResult(select, param.page, MpVersionVo.class);
+//	}
 }

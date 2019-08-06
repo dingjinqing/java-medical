@@ -48,10 +48,10 @@ public class AdminMemberCardController extends AdminBaseController {
 	 */
 	@PostMapping("/card/list")
 	public JsonResult getCardList(@RequestBody SearchCardParam param) {
-		
-		logger.info(param.toString());
-		PageResult<CardVo> result = this.shop().member.card.getCardList(param);
-		return success(result);
+		return null;
+//		logger.info(param.toString());
+//		PageResult<CardVo> result = this.shop().member.card.getCardList(param);
+//		return success(result);
 	}
 	
 	

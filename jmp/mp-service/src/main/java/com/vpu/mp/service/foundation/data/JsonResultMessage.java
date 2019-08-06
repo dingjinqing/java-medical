@@ -128,6 +128,8 @@ public class JsonResultMessage {
 	public static final String BINDING_MINI_NO_SAME = "binding.mini.no.same";
 	public static final String BINDING_MINI_HAVEBIND = "binding.mini.havebind";
 	
+	public static final String WX_MA_APP_ID_NOT_AUTH = "wx.ma.app_id.not.auth";
+	
 	/**
 	 * 门店管理
 	 */
@@ -223,5 +225,8 @@ public class JsonResultMessage {
 	 * 虚拟订单
 	 */
 	public static final String ORDER_VIRTUAL_COUPONPACK_REFUND_SCORE = "order.virtual.couponpack.refund.score";
+	
+
+	
 
 }

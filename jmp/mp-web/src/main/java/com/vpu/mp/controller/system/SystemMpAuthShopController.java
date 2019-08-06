@@ -46,9 +46,32 @@ public class SystemMpAuthShopController extends SystemBaseController {
 	public JsonResult synMpList() throws WxErrorException {
 		return success(saas.shop.mpVersion.synMpVersionList());
 	}
+	
+	/**
+	 * 设置版本
+	 * 
+	 * @return
+	 */
+	@PostMapping("/api/system/mp/version/set/{templateId}")
+	public JsonResult setVersion(@PathVariable Integer templateId) {
+		saas.shop.mpVersion.setCurrentUseTemplateId(templateId);
+		return success();
+	}
+	
+	/**
+	 * 批量提交审核
+	 * 
+	 * @return
+	 */
+	@PostMapping("/api/system/mp/version/batch")
+	public JsonResult batchPublish() {
+
+		return success();
+	}
 
 	/**
 	 * 小程序模板发布
+	 * 
 	 * @param param
 	 * @return
 	 * @throws WxErrorException
@@ -57,6 +80,9 @@ public class SystemMpAuthShopController extends SystemBaseController {
 	@PostMapping("/api/system/mp/publish")
 	public JsonResult mpPublishAction(@RequestBody MpDeployQueryParam param) throws WxErrorException, IOException {
 		MpAuthShopService mp = saas.shop.mp;
+		if (!mp.isAuthOk(param.getAppId())) {
+			return fail(JsonResultCode.WX_MA_APP_ID_NOT_AUTH);
+		}
 		WxOpenResult result = null;
 		switch (param.getAct()) {
 		case MpDeployQueryParam.ACT_ADD_TESTER: {
@@ -112,7 +138,7 @@ public class SystemMpAuthShopController extends SystemBaseController {
 		MpAuthShopVo vo = mp.getAuthShopByAppId(param.getAppId()).into(MpAuthShopVo.class);
 		return result.isSuccess() ? success(vo) : fail(result.getErrmsg());
 	}
-	
+
 	/**
 	 * 得到小程序信息
 	 * 
@@ -122,19 +148,19 @@ public class SystemMpAuthShopController extends SystemBaseController {
 	@GetMapping("/api/system/mp/get/{appId}")
 	public JsonResult list(@PathVariable String appId) {
 		MpAuthShopRecord record = saas.shop.mp.getAuthShopByAppId(appId);
-		if(record ==null) {
+		if (record == null) {
 			return fail(JsonResultCode.CODE_PARAM_ERROR);
 		}
-		return  success(record.into(MpAuthShopVo.class));
-	} 
-	
-	/**
-	 * 批量提交审核
-	 * @return
-	 */
-	@PostMapping("/api/system/mp/publish/batch")
-	public JsonResult batchPublish() {
-		return success();
+		return success(record.into(MpAuthShopVo.class));
 	}
+
+	
+//	@PostMapping("/api/system/mp/operate/log/list")
+//	public JsonResult logList(@RequestBody MpVersionListParam param) {
+//		PageResult<MpVersionVo> pageList = saas.shop.mp.getPageList(param);
+//		return success(pageList);
+//	}
+
+	
 
 }
