@@ -3,6 +3,7 @@ package com.vpu.mp.controller.admin;
 import com.vpu.mp.service.foundation.data.JsonResult;
 import com.vpu.mp.service.pojo.shop.market.groupdraw.GroupDrawAddParam;
 import com.vpu.mp.service.pojo.shop.market.groupdraw.GroupDrawListParam;
+import com.vpu.mp.service.pojo.shop.market.groupdraw.GroupDrawUpdateParam;
 import com.vpu.mp.service.pojo.shop.market.groupdraw.join.JoinUserListParam;
 import com.vpu.mp.service.pojo.shop.market.groupdraw.order.OrderListParam;
 import org.springframework.web.bind.annotation.*;
@@ -56,7 +57,7 @@ public class AdminGroupDrawController extends AdminBaseController {
      * 编辑活动 - 更新
      */
     @PostMapping("/update/{id}")
-    public JsonResult updateGroupDraw(@PathVariable Integer id, @RequestBody @Valid GroupDrawAddParam param) {
+    public JsonResult updateGroupDraw(@PathVariable Integer id, @RequestBody @Valid GroupDrawUpdateParam param) {
         shop().groupDraw.updateGroupDraw(id, param);
         return success();
     }

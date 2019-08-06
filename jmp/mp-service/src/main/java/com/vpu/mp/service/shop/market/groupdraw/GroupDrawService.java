@@ -6,6 +6,7 @@ import com.vpu.mp.service.foundation.util.PageResult;
 import com.vpu.mp.service.pojo.shop.market.groupdraw.GroupDrawAddParam;
 import com.vpu.mp.service.pojo.shop.market.groupdraw.GroupDrawListParam;
 import com.vpu.mp.service.pojo.shop.market.groupdraw.GroupDrawListVo;
+import com.vpu.mp.service.pojo.shop.market.groupdraw.GroupDrawUpdateParam;
 import org.jooq.Record17;
 import org.jooq.SelectConditionStep;
 import org.jooq.impl.DSL;
@@ -41,16 +42,13 @@ public class GroupDrawService extends ShopBaseService {
     /**
      * 更新活动
      */
-    public void updateGroupDraw(Integer id, GroupDrawAddParam param) {
-        List<Integer> rewardCouponIds = param.getRewardCouponIds();
-        List<Integer> goodsIds = param.getGoodsIds();
-        if (null != rewardCouponIds && (!rewardCouponIds.isEmpty())) {
-            param.setRewardCouponId(listToString(rewardCouponIds));
-        }
-        param.setGoodsId(listToString(goodsIds));
-        GroupDrawRecord record = createGroupDrawRecord(param);
-        record.setId(id);
-        shopDb().update(GROUP_DRAW).set(record).where(GROUP_DRAW.ID.eq(id)).execute();
+    public void updateGroupDraw(Integer id, GroupDrawUpdateParam param) {
+        shopDb().update(GROUP_DRAW).set(GROUP_DRAW.NAME, param.getName()).set(GROUP_DRAW.START_TIME,
+            param.getStartTime()).set(GROUP_DRAW.END_TIME, param.getEndTime()).set(GROUP_DRAW.JOIN_LIMIT,
+            param.getJoinLimit()).set(GROUP_DRAW.LIMIT_AMOUNT, param.getLimitAmount()).set(GROUP_DRAW.OPEN_LIMIT,
+            param.getOpenLimit()).set(GROUP_DRAW.MIN_JOIN_NUM, param.getMinJoinNum()).set(GROUP_DRAW.PAY_MONEY,
+            param.getPayMoney()).set(GROUP_DRAW.TO_NUM_SHOW, param.getToNumShow())
+            .where(GROUP_DRAW.ID.eq(id)).execute();
     }
 
     /**
