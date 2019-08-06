@@ -39,6 +39,21 @@ public class GroupDrawService extends ShopBaseService {
     private static final byte GROUP_DRAW_DISABLED = 0;
 
     /**
+     * 更新活动
+     */
+    public void updateGroupDraw(Integer id, GroupDrawAddParam param) {
+        List<Integer> rewardCouponIds = param.getRewardCouponIds();
+        List<Integer> goodsIds = param.getGoodsIds();
+        if (null != rewardCouponIds && (!rewardCouponIds.isEmpty())) {
+            param.setRewardCouponId(listToString(rewardCouponIds));
+        }
+        param.setGoodsId(listToString(goodsIds));
+        GroupDrawRecord record = createGroupDrawRecord(param);
+        record.setId(id);
+        shopDb().update(GROUP_DRAW).set(record).where(GROUP_DRAW.ID.eq(id)).execute();
+    }
+
+    /**
      * 活动明细
      */
     public GroupDrawListVo getGroupDrawById(Integer id) {
@@ -181,10 +196,17 @@ public class GroupDrawService extends ShopBaseService {
             param.setRewardCouponId(listToString(rewardCouponIds));
         }
         param.setGoodsId(listToString(goodsIds));
-        shopDb().insertInto(GROUP_DRAW).set(new GroupDrawRecord(null, param.getName(), param.getStartTime(),
+        shopDb().insertInto(GROUP_DRAW).set(createGroupDrawRecord(param)).execute();
+    }
+
+    /**
+     * 获取活动record
+     */
+    private GroupDrawRecord createGroupDrawRecord(GroupDrawAddParam param) {
+        return new GroupDrawRecord(null, param.getName(), param.getStartTime(),
             param.getEndTime(), param.getGoodsId(), param.getMinJoinNum(), param.getPayMoney(), param.getJoinLimit(),
             param.getOpenLimit(), param.getLimitAmount(), param.getToNumShow(), GROUP_DRAW_ENABLED, (byte) 1, null,
-            null, (byte) 0, null, param.getRewardCouponId())).execute();
+            null, (byte) 0, null, param.getRewardCouponId());
     }
 
     /**
