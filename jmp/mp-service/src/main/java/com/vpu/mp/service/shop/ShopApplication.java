@@ -1,6 +1,10 @@
 package com.vpu.mp.service.shop;
 
 
+import com.vpu.mp.service.shop.market.seckill.SeckillService;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
 import com.vpu.mp.service.shop.config.ConfigService;
 import com.vpu.mp.service.shop.config.ShopBasicConfigService;
 import com.vpu.mp.service.shop.config.TradeService;
@@ -127,6 +131,12 @@ public class ShopApplication  {
 	 * 砍价 
 	 */
 	@Autowired public BargainService bargain;
+
+    /**
+     * 秒杀
+     */
+    @Autowired public SeckillService seckill;
+
 	@Autowired public CommodityStatisticsService statisticsService;
     @Autowired public AssetManagementService assetService;
 

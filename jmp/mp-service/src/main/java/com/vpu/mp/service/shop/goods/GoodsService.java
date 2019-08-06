@@ -296,6 +296,15 @@ public class GoodsService extends ShopBaseService {
     }
 
     /**
+     * 取单个GoodsView
+     */
+    public GoodsView getGoodsView(Integer goodsId){
+        return db().select(GOODS.GOODS_ID, GOODS.GOODS_NAME, GOODS.GOODS_IMG, GOODS.GOODS_NUMBER, GOODS.SHOP_PRICE, GOODS.UNIT).
+            from(GOODS).where(GOODS.GOODS_ID.eq(goodsId)).
+            fetchOne().into(GoodsView.class);
+    }
+
+    /**
      * 先插入商品，从而得到商品的id， 然后插入商品规格的属性和规格值，从而得到规格属性和规格值的id, 最后拼凑出prdSpecs再插入具体的商品规格
      *
      * @param goods
