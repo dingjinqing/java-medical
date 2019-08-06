@@ -3,6 +3,7 @@ package com.vpu.mp.service.shop.member;
 
 import static org.jooq.impl.DSL.count;
 
+import java.math.BigDecimal;
 import java.util.Map;
 
 
@@ -34,6 +35,8 @@ import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.ALL_GOODS;
 import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.BUY_BY_SCORE;
 import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.BUY_BY_CRASH;
 
+import org.jooq.Record7;
+import org.jooq.Record9;
 import org.jooq.SelectSeekStep1;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -47,7 +50,10 @@ import com.vpu.mp.service.foundation.util.PageResult;
 import com.vpu.mp.service.foundation.util.Util;
 import com.vpu.mp.service.pojo.shop.member.card.CardParam;
 import com.vpu.mp.service.pojo.shop.member.card.GradeConditionJson;
+import com.vpu.mp.service.pojo.shop.member.card.LimitNumCardVo;
+import com.vpu.mp.service.pojo.shop.member.card.NormalCardVo;
 import com.vpu.mp.service.pojo.shop.member.card.PowerCardJson;
+import com.vpu.mp.service.pojo.shop.member.card.RankCardVo;
 import com.vpu.mp.service.pojo.shop.member.card.ScoreJson;
 import com.vpu.mp.service.pojo.shop.member.card.SearchCardParam;
 
@@ -354,38 +360,22 @@ public class MemberCardService extends ShopBaseService {
 		return db().executeInsert(cardRecord);
 	}
 
-	/** 
-	 * 分页查询会员卡
-	 * @param param
-	 */
-	public PageResult<CardVo> getCardList(SearchCardParam param) {
-		
-		Byte cardType = param.getCardType();
-		
-		/** 处理普通会员卡 */
-		if(NORMAL_TYPE.equals(cardType)) {
-			logger.info("正在分页查询普通会员卡");
-			return getNormalCardList(param);
-		}else if(LIMIT_NUM_TYPE.equals(cardType)) {
-			logger.info("正在分页查询限次会员卡");
-			return getLimitCardList(param);
-		}else if(RANK_TYPE.equals(cardType)) {
-			logger.info("正在分页查询等级会员卡");
-			return getRankCardList(param);
-		}
-		return null;
-		
-	}
-
 	/**
-	 * 分页查询普通会员卡
+	 * 分页查询等级会员卡
 	 * @param param
 	 * @return
 	 */
-	private PageResult<CardVo> getRankCardList(SearchCardParam param) {
+	public PageResult<RankCardVo> getRankCardList(SearchCardParam param) {
+		/** 构建sql语句 */
+		SelectSeekStep1<MemberCardRecord, Integer> select = db().selectFrom(MEMBER_CARD)
+									.where(MEMBER_CARD.CARD_TYPE.equal(RANK_TYPE))
+									.and(MEMBER_CARD.DEL_FLAG.equal(DELETE_NO))
+									.orderBy(MEMBER_CARD.ID.desc());
 		
-		
-		return null;
+		PageResult<RankCardVo> pageResult = this.getPageResult(select, param.getCurrentPage(), param.getPageRows(),RankCardVo.class);
+		/** 执行转换 */
+		pageResult.dataList.stream().forEach(vo->vo.changeJsonCfg());
+		return pageResult;
 	}
 
 	/**
@@ -393,14 +383,15 @@ public class MemberCardService extends ShopBaseService {
 	 * @param param
 	 * @return
 	 */
-	private PageResult<CardVo> getLimitCardList(SearchCardParam param) {
+	public PageResult<LimitNumCardVo> getLimitCardList(SearchCardParam param) {
 		/** 构建select语句 */
+	
 		SelectSeekStep1<MemberCardRecord, Integer> select = db().selectFrom(MEMBER_CARD)
 			.where(MEMBER_CARD.CARD_TYPE.equal(LIMIT_NUM_TYPE))
 			.and(MEMBER_CARD.DEL_FLAG.equal(DELETE_NO))
 			.orderBy(MEMBER_CARD.ID.desc());
 			
-		PageResult<CardVo> pageResult = this.getPageResult(select, param.getCurrentPage(), param.getPageRows(),CardVo.class);
+		PageResult<LimitNumCardVo> pageResult = this.getPageResult(select, param.getCurrentPage(), param.getPageRows(),LimitNumCardVo.class);
 		/** 查询领取次数 */
 		Map<Integer, Integer> intoMap = db().select(USER_CARD.CARD_ID,count())
 											.from(USER_CARD)
@@ -418,7 +409,7 @@ public class MemberCardService extends ShopBaseService {
 	 * 分页查询普通会员卡
 	 * @param param
 	 */
-	private PageResult<CardVo> getNormalCardList(SearchCardParam param) {
+	public PageResult<NormalCardVo> getNormalCardList(SearchCardParam param) {
 		/**
 		 * select card_name from b2c_member_card where card_type=0 and is_delete=0 order by id desc;
 		 * 
@@ -428,18 +419,35 @@ public class MemberCardService extends ShopBaseService {
 			.and(MEMBER_CARD.DEL_FLAG.equal(DELETE_NO))
 			.orderBy(MEMBER_CARD.ID.desc());
 		
-		PageResult<CardVo> pageResult = this.getPageResult(select, param.getCurrentPage(), param.getPageRows(), CardVo.class);
+		PageResult<NormalCardVo> pageResult = this.getPageResult(select, param.getCurrentPage(), param.getPageRows(), NormalCardVo.class);
 		/** 将json配置文件转化成合适的数据给前端 */
-		for(CardVo vo: pageResult.dataList) {
-			vo.changeJsonCfgToArray();
+		for(NormalCardVo vo: pageResult.dataList) {
+			vo.changeJsonCfg();
 		}
 		
 		return pageResult;
-		
 	}
-	
-	
-	
-	
+
+	/**
+	 * 获取会员卡列表
+	 * @param param
+	 * @return
+	 */
+	public PageResult<? extends CardVo> getCardList(SearchCardParam param) {
+
+		Byte cardType = param.getCardType();
+		/** 处理普通会员卡 */
+		if(NORMAL_TYPE.equals(cardType)) {
+			logger.info("正在分页查询普通会员卡");
+			return getNormalCardList(param);
+		}else if(LIMIT_NUM_TYPE.equals(cardType)) {
+			logger.info("正在分页查询限次会员卡");
+			return getLimitCardList(param);
+		}else if(RANK_TYPE.equals(cardType)) {
+			logger.info("正在分页查询等级会员卡");
+			return getRankCardList(param);
+		}
+		return null;
+	}
 	
 }
