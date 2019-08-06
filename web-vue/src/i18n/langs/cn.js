@@ -3,6 +3,7 @@ import zhLocale from 'element-ui/lib/locale/lang/zh-CN'
 import { cn as programVersion } from './views/programVersion'
 import { cn as router } from './views/router'
 import { cn as membershipIntroduction } from './views/membershipIntroduction'
+console.log(zhLocale)
 const cn = {
   message: {
     'lang': '中文',

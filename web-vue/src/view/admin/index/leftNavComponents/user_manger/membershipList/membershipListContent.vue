@@ -4,26 +4,29 @@
       <ul>
         <li class="li">
           <div class="liNav">
-            <div class="phoneClass">手机号</div>
+            <div class="phoneClass">{{$t('membershipIntroduction.phoneNum')}}</div>
             <el-input
               v-model="phoneNum"
-              placeholder="请输入手机号"
+              :placeholder="$t('membershipIntroduction.placePhoneNum')"
               size="small"
             ></el-input>
           </div>
-          <div class="liNav">
-            <span>微信昵称</span>
+          <div
+            class="liNav"
+            :class="memberListliNav"
+          >
+            <span>{{$t('membershipIntroduction.wechatNickname')}}</span>
             <el-input
               v-model="vxName"
-              placeholder="请输入微信昵称"
+              :placeholder="$t('membershipIntroduction.placeWXNameNum')"
               size="small"
             ></el-input>
           </div>
           <div class="liNav">
-            <span>来源</span>
+            <span>{{$t('membershipIntroduction.source')}}</span>
             <el-select
               v-model="sourceValue"
-              placeholder="请选择"
+              :placeholder="$t('membershipIntroduction.placeChoise')"
               size="small"
             >
               <el-option
@@ -35,11 +38,14 @@
               </el-option>
             </el-select>
           </div>
-          <div class="liNav">
-            <span>会员卡</span>
+          <div
+            class="liNav"
+            :class="memberListliLast"
+          >
+            <span>{{$t('membershipIntroduction.membershipCard')}}</span>
             <el-select
               v-model="membershipCardVal"
-              placeholder="请选择"
+              :placeholder="$t('membershipIntroduction.placeChoise')"
               size="small"
             >
               <el-option
@@ -55,11 +61,17 @@
       </ul>
       <ul class="uls">
         <li>
-          <div class="liNav">
-            <span class="labelClass">标签</span>
+          <div
+            class="liNav"
+            :class="specielNav"
+          >
+            <span
+              :class="minixLabel"
+              class="labelClass"
+            >{{$t('membershipIntroduction.label')}}</span>
             <el-autocomplete
               v-model="labelVal"
-              placeholder="请输入标签"
+              :placeholder="$t('membershipIntroduction.placeinpuLabel')"
               :fetch-suggestions="querySearch"
               size="small"
               @select="handleSelect"
@@ -67,14 +79,17 @@
           </div>
         </li>
         <li>
-          <div class="liNav date">
-            <span>注册时间</span>
+          <div
+            class="liNav date"
+            :class="specialliNavTwo"
+          >
+            <span>{{$t('membershipIntroduction.registrationTime')}}</span>
             <el-date-picker
               v-model="datePickerVal"
               type="daterange"
-              range-separator="至"
-              start-placeholder="开始日期"
-              end-placeholder="结束日期"
+              :range-separator="$t('membershipIntroduction.to')"
+              :start-placeholder="$t('membershipIntroduction.Starttime')"
+              :end-placeholder="$t('membershipIntroduction.Endtime')"
               value-format='yyyy-MM-dd'
               size="small"
             >
@@ -82,11 +97,14 @@
           </div>
         </li>
         <li>
-          <div class="liNav">
-            <span>邀请人</span>
+          <div
+            class="liNav"
+            :class="memberListliLast"
+          >
+            <span>{{$t('membershipIntroduction.inviter')}}</span>
             <el-input
               v-model="inviteUserName"
-              placeholder="请输入邀请人名称"
+              :placeholder="$t('membershipIntroduction.coverName')"
               size="small"
             ></el-input>
           </div>
@@ -98,109 +116,109 @@
       >
         <li>
           <div>
-            <span>指定时间内登录有记录</span>
+            <span>{{$t('membershipIntroduction.reacord')}}</span>
             <el-date-picker
               v-model="datePickerVal_one"
               type="daterange"
-              range-separator="至"
-              start-placeholder="开始日期"
-              end-placeholder="结束日期"
+              :range-separator="$t('membershipIntroduction.to')"
+              :start-placeholder="$t('membershipIntroduction.startdata')"
+              :end-placeholder="$t('membershipIntroduction.enddate')"
               value-format='yyyy-MM-dd'
               size="small"
             >
             </el-date-picker>
           </div>
           <div class="hiddenRight">
-            <span>客单价</span>
+            <span>{{$t('membershipIntroduction.PassengerUnitPrice')}}</span>
             <el-input
               v-model="unitPriceLeft"
-              placeholder="请输入内容"
+              :placeholder="$t('membershipIntroduction.Pleasecontent')"
               size="small"
             ></el-input>
-            <i>至</i>
+            <i>{{$t('membershipIntroduction.to')}}</i>
             <el-input
               v-model="unitPriceRight"
-              placeholder="请输入内容"
+              :placeholder="$t('membershipIntroduction.Pleasecontent')"
               size="small"
             ></el-input>
           </div>
         </li>
         <li>
           <div>
-            <span>指定时间内有加购行为</span>
+            <span>{{$t('membershipIntroduction.behavior')}}</span>
             <el-date-picker
               v-model="datePickerVal_two"
               type="daterange"
-              range-separator="至"
-              start-placeholder="开始日期"
-              end-placeholder="结束日期"
+              :range-separator="$t('membershipIntroduction.to')"
+              :start-placeholder="$t('membershipIntroduction.startdata')"
+              :end-placeholder="$t('membershipIntroduction.enddate')"
               value-format='yyyy-MM-dd'
               size="small"
             >
             </el-date-picker>
           </div>
           <div class="hiddenRight">
-            <span>累计购买次数</span>
+            <span>{{$t('membershipIntroduction.purchasetimes')}}</span>
             <el-input
               v-model="frequencyLeft"
-              placeholder="请输入内容"
+              :placeholder="$t('membershipIntroduction.Pleasecontent')"
               size="small"
             ></el-input>
-            <i>至</i>
+            <i>{{$t('membershipIntroduction.to')}}</i>
             <el-input
               v-model="frequencyRight"
-              placeholder="请输入内容"
+              :placeholder="$t('membershipIntroduction.Pleasecontent')"
               size="small"
             ></el-input>
           </div>
         </li>
         <li class="specialLi">
           <div>
-            <span>指定时间内有交易行为</span>
+            <span>{{$t('membershipIntroduction.transaction')}}</span>
             <el-date-picker
               v-model="datePickerVal_two"
               type="daterange"
-              range-separator="至"
-              start-placeholder="开始日期"
-              end-placeholder="结束日期"
+              :range-separator="$t('membershipIntroduction.to')"
+              :start-placeholder="$t('membershipIntroduction.startdata')"
+              :end-placeholder="$t('membershipIntroduction.enddate')"
               value-format='yyyy-MM-dd'
               size="small"
             >
             </el-date-picker>
           </div>
           <div class="brand_title">
-            <span class="nameClass">购买指定商品</span>
+            <span class="nameClass">{{$t('membershipIntroduction.designatedgoods')}}</span>
             <div
               class="choiseDivClass"
               @click="handleClickChoiseGood()"
             >
               <img :src="choiseGoodImgUrl">
-              选择商品
+              {{$t('membershipIntroduction.choiseGoods')}}
             </div>
           </div>
         </li>
       </ul>
       <ul class="ulsThree">
         <li>
-          <el-checkbox v-model="checkPhone">手机号</el-checkbox>
-          <el-checkbox v-model="checkIntegr">有积分</el-checkbox>
-          <el-checkbox v-model="balance">有余额</el-checkbox>
-          <el-checkbox v-model="membershipCard">有会员卡</el-checkbox>
-          <el-checkbox v-model="noLanding">已禁止登陆</el-checkbox>
-          <el-checkbox v-model="importMembership">导入的会员</el-checkbox>
+          <el-checkbox v-model="checkPhone">{{$t('membershipIntroduction.phoneNum')}}</el-checkbox>
+          <el-checkbox v-model="checkIntegr">{{$t('membershipIntroduction.integral')}}</el-checkbox>
+          <el-checkbox v-model="balance">{{$t('membershipIntroduction.Balance')}}</el-checkbox>
+          <el-checkbox v-model="membershipCard">{{$t('membershipIntroduction.membershipCard')}}</el-checkbox>
+          <el-checkbox v-model="noLanding">{{$t('membershipIntroduction.banLogin')}}</el-checkbox>
+          <el-checkbox v-model="importMembership">{{$t('membershipIntroduction.importMembers')}}</el-checkbox>
         </li>
         <li>
           <el-button
             type="primary"
             size="small"
             @click="handleScreen()"
-          >筛选</el-button>
+          >{{$t('membershipIntroduction.screen')}}</el-button>
           &nbsp;
           <el-button
             type="info"
             size="small"
             plain
-          >会员导出</el-button>
+          >{{$t('membershipIntroduction.membershipExport')}}</el-button>
         </li>
       </ul>
 
@@ -210,11 +228,11 @@
             <div
               v-if="arrorFlag"
               style="color:rgb(90, 139, 255);cursor:pointer"
-            >更多&nbsp;<img :src="ArrowArr[0].img_1"></div>
+            >{{$t('membershipIntroduction.more')}}&nbsp;<img :src="ArrowArr[0].img_1"></div>
             <div
               v-if="!arrorFlag"
               style="color:rgb(90, 139, 255);cursor:pointer"
-            >收起&nbsp;<img :src="ArrowArr[1].img_2"></div>
+            >{{$t('membershipIntroduction.retract')}}&nbsp;<img :src="ArrowArr[1].img_2"></div>
           </div>
         </li>
       </ul>
@@ -227,15 +245,15 @@
           <thead>
             <tr>
               <td style="width:8%">ID</td>
-              <td style="width:10%">昵称</td>
-              <td style="width:8%">手机号</td>
-              <td>邀请人</td>
-              <td style="width:11%">余额</td>
-              <td style="width:11%">积分</td>
-              <td style="width:11%">会员卡</td>
-              <td style="width:10%">来源</td>
-              <td>注册时间</td>
-              <td>操作</td>
+              <td style="width:10%">{{$t('membershipIntroduction.nickname')}}</td>
+              <td style="width:8%">{{$t('membershipIntroduction.phoneNum')}}</td>
+              <td>{{$t('membershipIntroduction.inviter')}}</td>
+              <td style="width:11%">{{$t('membershipIntroduction.Balance')}}</td>
+              <td style="width:11%">{{$t('membershipIntroduction.integral')}}</td>
+              <td style="width:11%">{{$t('membershipIntroduction.membershipCard')}}</td>
+              <td style="width:10%">{{$t('membershipIntroduction.source')}}</td>
+              <td>{{$t('membershipIntroduction.registrationTime')}}</td>
+              <td>{{$t('membershipIntroduction.operation')}}</td>
             </tr>
           </thead>
           <tbody v-if="tbodyFlag">
@@ -284,11 +302,11 @@
                 <div class="member">
                   <span>{{item.source}}</span>
                   <div>
-                    <span @click="handleSetUp()">设置</span>
+                    <span @click="handleSetUp()">{{$t('membershipIntroduction.setup')}}</span>
                     <span
                       @click="handleToTurnMore('receiveDetail',item.userName)"
                       style="margin-top:8px"
-                    >更多</span>
+                    >{{$t('membershipIntroduction.more')}}</span>
                   </div>
                 </div>
               </td>
@@ -301,16 +319,16 @@
               </td>
               <td class="tb_decorate_a">
                 <div class="lastDiv">
-                  <span @click="handleToTurnMore('balanceDetail',item.userName)">余额明细</span>
-                  <span @click="handleToTurnMore('integralDetail',item.userName)">积分明细</span>
-                  <span @click="handleNoLanding()">禁止登陆</span>
+                  <span @click="handleToTurnMore('balanceDetail',item.userName)">{{$t('membershipIntroduction.Balancedetails')}}</span>
+                  <span @click="handleToTurnMore('integralDetail',item.userName)">{{$t('membershipIntroduction.Integraldetails')}}</span>
+                  <span @click="handleNoLanding()">{{$t('membershipIntroduction.Nolanding')}}</span>
                 </div>
                 <div
                   class="lastDiv"
                   style="margin-top:5px"
                 >
-                  <span @click="handleToLabel()">打标签</span>
-                  <span @click="hanldeToDetail()">查看详情</span>
+                  <span @click="handleToLabel()">{{$t('membershipIntroduction.Labeling')}}</span>
+                  <span @click="hanldeToDetail()">{{$t('membershipIntroduction.Seedetails')}}</span>
                 </div>
               </td>
             </tr>
@@ -331,11 +349,14 @@
             <el-checkbox
               v-model="allChecked"
               @change="handleAllcheck()"
-            >全选</el-checkbox>
-            <div style="margin-left:50px">
+            >{{$t('membershipIntroduction.Allelection')}}</el-checkbox>
+            <div
+              class="bottom_select_one"
+              :class="minx_bottom_select"
+            >
               <el-select
                 v-model="value_one"
-                placeholder="请选择"
+                :placeholder="$t('membershipIntroduction.placeChoise')"
                 size="small"
                 @change="handleFooterSelect(0)"
               >
@@ -351,7 +372,7 @@
             <div style="margin:0 10px">
               <el-select
                 v-model="value_two"
-                placeholder="请选择"
+                :placeholder="$t('membershipIntroduction.placeChoise')"
                 size="small"
                 @change="handleFooterSelect(1)"
               >
@@ -367,7 +388,7 @@
             <div style="margin:0 10px">
               <el-select
                 v-model="value_three"
-                placeholder="请选择"
+                :placeholder="$t('membershipIntroduction.placeChoise')"
                 size="small"
                 @change="handleFooterSelect(2)"
               >
@@ -383,7 +404,7 @@
             <div style="margin:0 10px">
               <el-select
                 v-model="value_four"
-                placeholder="请选择"
+                :placeholder="$t('membershipIntroduction.placeChoise')"
                 size="small"
                 @change="handleFooterSelect(3)"
               >
@@ -399,7 +420,7 @@
             <div style="margin:0 10px">
               <el-select
                 v-model="value_five"
-                placeholder="请选择"
+                :placeholder="$t('membershipIntroduction.placeChoise')"
                 size="small"
                 @change="handleFooterSelect(4)"
               >
@@ -414,7 +435,7 @@
             </div>
           </div>
           <div class="footer_b">
-            <span>当前页面{{this.currentPage3}}/{{this.pageCount}}，总记录{{this.totalNum}}条</span>
+            <span>{{$t('membershipIntroduction.Currentpage')}}{{this.currentPage3}}/{{this.pageCount}}，{{$t('membershipIntroduction.TotalRecords')}}{{this.totalNum}}{{$t('membershipIntroduction.strip')}}</span>
             <el-pagination
               @current-change="handleCurrentChange"
               :current-page.sync="currentPage3"
@@ -770,6 +791,8 @@ export default {
   components: { ChoosingGoods, SetUpMemCDialog, SelectingUsersDialog },
   data () {
     return {
+      minixLabel: '',
+      memberListliNav: '',
       deletePersondialogVisible: false,
       deletePersonText: '',
       phoneNum: '',
@@ -830,64 +853,11 @@ export default {
       clickIindex: '',
       isCenterFlag: '',
       allChecked: false,
-      options_one: [{
-        value: '0',
-        label: '批量禁止登陆'
-      }, {
-        value: '1',
-        label: '对选中的人禁止登陆'
-      }, {
-        value: '2',
-        label: ''
-      }],
-      options_two: [{
-        value: '0',
-        label: '批量添加标签'
-      }, {
-        value: '1',
-        label: '对选中的人加标签'
-      }, {
-        value: '2',
-        label: ''
-      }],
-      options_three: [{
-        value: '0',
-        label: '批量发放会员卡'
-      }, {
-        value: '1',
-        label: '对选中的人发卡'
-      }, {
-        value: '2',
-        label: ''
-      }],
-      options_four: [{
-        value: '0',
-        label: '批量修改积分'
-      }, {
-        value: '1',
-        label: '对选中的人修改积分'
-      }, {
-        value: '2',
-        label: ''
-      }],
-      options_five: [{
-        value: '0',
-        label: '批量修改邀请人'
-      }, {
-        value: '1',
-        label: '对选中的人修改邀请人'
-      }, {
-        value: '2',
-        label: ''
-      },
-      {
-        value: '3',
-        label: '对选中的人删除邀请人'
-      },
-      {
-        value: '4',
-        label: ''
-      }],
+      options_one: this.$t('membershipIntroduction.options_one'),
+      options_two: this.$t('membershipIntroduction.options_two'),
+      options_three: this.$t('membershipIntroduction.options_three'),
+      options_four: this.$t('membershipIntroduction.options_four'),
+      options_five: this.$t('membershipIntroduction.options_five'),
       currentPage3: 1,
       value_one: '0',
       value_two: '0',
@@ -966,6 +936,7 @@ export default {
       totalNum: null,
       pageCount: '',
       userId: '',
+      minx_bottom_select: '',
       hitLabeloptions: [
         {
           value: '选项1',
@@ -989,7 +960,10 @@ export default {
           value: '选项6',
           label: '嘿嘿'
         }
-      ]
+      ],
+      memberListliLast: '',
+      specielNav: '',
+      specialliNavTwo: ''
     }
   },
   watch: {
@@ -1049,12 +1023,12 @@ export default {
           this.totalNum = res.content.page.totalRows
           this.pageCount = res.content.page.pageCount
 
-          this.options_one[2].label = '对筛选出来的' + res.content.page.totalRows + '人禁止登陆'
-          this.options_two[2].label = '对筛选出来的' + res.content.page.totalRows + '人加标签'
-          this.options_three[2].label = '对筛选出来的' + res.content.page.totalRows + '人发卡'
-          this.options_four[2].label = '对筛选出来的' + res.content.page.totalRows + '人修改积分'
-          this.options_five[2].label = '对筛选出来的' + res.content.page.totalRows + '人修改邀请人'
-          this.options_five[4].label = '对筛选出来的' + res.content.page.totalRows + '人删除邀请人'
+          this.options_one[2].label = this.$t('membershipIntroduction.Forscreened') + res.content.page.totalRows + this.$t('membershipIntroduction.people') + this.$t('membershipIntroduction.Nolanding')
+          this.options_two[2].label = this.$t('membershipIntroduction.Forscreened') + res.content.page.totalRows + this.$t('membershipIntroduction.people') + this.$t('membershipIntroduction.Labeling')
+          this.options_three[2].label = this.$t('membershipIntroduction.Forscreened') + res.content.page.totalRows + this.$t('membershipIntroduction.people') + this.$t('membershipIntroduction.Hairpin')
+          this.options_four[2].label = this.$t('membershipIntroduction.Forscreened') + res.content.page.totalRows + this.$t('membershipIntroduction.people') + this.$t('membershipIntroduction.Hairpin')
+          this.options_five[2].label = this.$t('membershipIntroduction.Forscreened') + res.content.page.totalRows + this.$t('membershipIntroduction.people') + this.$t('membershipIntroduction.Revisioninviters')
+          this.options_five[4].label = this.$t('membershipIntroduction.Forscreened') + res.content.page.totalRows + this.$t('membershipIntroduction.people') + this.$t('membershipIntroduction.Deleteinviter')
         }
       })
     },
@@ -1471,7 +1445,7 @@ i {
   margin: 0 5px;
 }
 .choiseDivClass {
-  width: 120px;
+  width: 138px;
   height: 30px;
   line-height: 30px;
   text-align: center;
@@ -1733,6 +1707,38 @@ img {
 }
 .noData span {
   margin: 10px;
+}
+.memberListliNav {
+  margin-left: 50px;
+}
+.memberListliNav span {
+  width: 100px;
+}
+.memberListliLast {
+  margin-left: 10px;
+}
+.memberListliLast span {
+  width: 100px;
+}
+.minixLabel {
+  width: 174px !important;
+}
+.specielNav {
+  width: 294px;
+}
+.specialliNavTwo {
+  width: 500px;
+}
+.specialliNavTwo span {
+  width: 100px;
+  margin-left: 35px;
+  margin-right: 20px;
+}
+.bottom_select_one {
+  margin-left: 50px;
+}
+.minx_bottom_select {
+  margin-left: 88px;
 }
 </style>
 <style>

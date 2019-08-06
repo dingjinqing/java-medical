@@ -274,7 +274,10 @@ const routes = [
           {
             path: '/admin/home/main/evaluationManagement',
             name: 'comment',
-            meta: 'goods_manage',
+            meta: {
+              crumbTitle: '',
+              meta: 'goods_manage'
+            },
             component: () =>
               import(
                 '@/view/admin/index/leftNavComponents/goods_manage/evaluationManagement/evaluationManagement'
@@ -309,10 +312,10 @@ const routes = [
           // 订单管理系列子路由
           {
             path: '/admin/home/main/first_trade_manageL',
-            name: 'first_trade_manage',
+            name: 'order',
             meta: {
               crumbTitle: '',
-              meta: 'first_trade_manageL'
+              meta: 'first_trade_manage'
             },
             component: () =>
               import(
@@ -335,7 +338,7 @@ const routes = [
           // 会员管理系列子路由
           {
             path: '/admin/home/main/membershipList',
-            name: 'membershipList',
+            name: 'user_list',
             // meta: 'user_manger',
             meta: {
               crumbTitle: 'router.membershipList',
@@ -413,7 +416,7 @@ const routes = [
           // 门店管理系列子路由
           {
             path: '/admin/home/main/store_manage',
-            name: 'store_manage',
+            name: 'store_list',
             meta: {
               crumbTitle: '',
               meta: 'store_manage'
@@ -426,7 +429,7 @@ const routes = [
           // 基础配置系列子路由
           {
             path: '/admin/home/main/base_manger',
-            name: 'base_manger',
+            name: 'config_list',
             meta: {
               crumbTitle: '',
               meta: 'base_manger'

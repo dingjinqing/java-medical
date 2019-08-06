@@ -1,7 +1,7 @@
 const myMixin = {
   methods: {
     // 初始化语言
-    langDefault () {
+    langDefault() {
       // console.log(localStorage.getItem('WEPUBAO_LANGUAGE'))
       if (localStorage.getItem('WEPUBAO_LANGUAGE') === 'en_US') {
         this.$i18n.locale = 'en'
@@ -40,6 +40,16 @@ const myMixin = {
         // admin shopStyle
         this.en_ch_title_width_one = 'en_ch_title_width_one'
         this.en_ch_title_width_two = 'en_ch_title_width_two'
+
+        // admin 会员管理  会员列表
+        this.memberListliNav = 'memberListliNav'
+        this.memberListliLast = 'memberListliLast'
+        this.minixLabel = 'minixLabel'
+        this.specielNav = 'specielNav'
+        this.specialliNavTwo = 'specialliNavTwo'
+        this.minx_bottom_select = 'minx_bottom_select'
+        this.assetsUl = 'assetsUl'
+        this.mixinleftDiv = 'mixinleftDiv'
       } else {
         this.$i18n.locale = 'cn'
         this.Recommend_class = ''
@@ -76,6 +86,16 @@ const myMixin = {
         // admin shopStyle
         this.en_ch_title_width_one = ''
         this.en_ch_title_width_two = ''
+
+        // admin 会员管理  会员列表
+        this.memberListliNav = ''
+        this.memberListliLast = ''
+        this.minixLabel = ''
+        this.specielNav = ''
+        this.specialliNavTwo = ''
+        this.minx_bottom_select = ''
+        this.assetsUl = ''
+        this.mixinleftDiv = ''
       }
     }
   }

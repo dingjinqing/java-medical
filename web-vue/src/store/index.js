@@ -9,7 +9,7 @@ import crumbs from './modules/admin/crumbs'
 import goodsManagement from './modules/admin/goodsManagement'
 import membershipList from './modules/admin/membershipList'
 import breadcrumb from './modules/system/breadcrumb'
-
+import util from './modules/admin/util'
 Vue.use(Vuex)
 export default new Vuex.Store({
   modules: {
@@ -20,7 +20,8 @@ export default new Vuex.Store({
     crumbs,
     goodsManagement,
     membershipList,
-    breadcrumb
+    breadcrumb,
+    util
   },
   getters
 })

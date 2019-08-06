@@ -14,7 +14,9 @@ const getters = {
   proAndUrData: state => state.crumbs.proAndUrData,
   membershipdetailflag: state => state.membershipList.membershipdetailflag,
   toHandleSetUpMemflag: state => state.membershipList.toHandleSetUpMemflag,
-  toHandleSelectingUsersflag: state => state.membershipList.toHandleSelectingUsersflag
+  toHandleSelectingUsersflag: state => state.membershipList.toHandleSelectingUsersflag,
+  menuFlag: state => state.util.menuFlag,
+  activeFlag: state => state.util.activeFlag
 }
 
 export default getters

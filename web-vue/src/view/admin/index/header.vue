@@ -93,11 +93,11 @@ export default {
         { title: '概况', index: '', meta: 'first_web_manage', name: 'shop_view' },
         { title: '小程序管理', index: '', meta: 'first_web_decoration', name: 'picture_setting' },
         { title: '商品管理', index: '', meta: 'goods_manage', name: 'sale_on' },
-        { title: '订单管理', index: '', meta: 'first_trade_manageL', name: 'first_trade_manage' },
+        { title: '订单管理', index: '', meta: 'first_trade_manage', name: 'order' },
         { title: '营销管理', index: '', meta: 'first_market_manage', name: 'first_market_manage' },
-        { title: '会员管理', index: '', meta: 'user_manger', name: 'membershipList' },
-        { title: '门店管理', index: '', meta: 'store_manage', name: 'store_manage' },
-        { title: '基础配置', index: '', meta: 'base_manger', name: 'base_manger' }
+        { title: '会员管理', index: '', meta: 'user_manger', name: 'user_list' },
+        { title: '门店管理', index: '', meta: 'store_manage', name: 'store_list' },
+        { title: '基础配置', index: '', meta: 'base_manger', name: 'config_list' }
       ],
       active_bg: 'active_bg',
       nav_index: '',
@@ -112,7 +112,7 @@ export default {
     this.langDefault()
   },
   methods: {
-    ...mapActions(['ToTurnMemberShipDetail']),
+    ...mapActions(['ToTurnMemberShipDetail', 'judgeActiveMeunAll']),
     // 初始化登录
     judgeuserinfo () {
       if (Cookies.get('V-Token')) {
@@ -190,6 +190,7 @@ export default {
       this.$router.push({
         name: name
       })
+      this.judgeActiveMeunAll(name)
       // console.log(name)
       if (name === 'membershipList') {
         this.ToTurnMemberShipDetail('0')

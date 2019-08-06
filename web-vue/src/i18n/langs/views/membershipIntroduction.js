@@ -1,6 +1,12 @@
 export const cn = {
   phoneNum: '手机号',
+  placePhoneNum: '请输入手机号',
   wechatNickname: '微信昵称',
+  placeWXNameNum: '请输入微信昵称',
+
+  placeNameNum: '请输入昵称',
+  placeinpuLabel: '请输入标签',
+  placeChoise: '请选择',
   source: '来源',
   membershipCard: '会员卡',
   label: '标签',
@@ -88,10 +94,232 @@ export const cn = {
   }],
   currentPage: '当前页面',
   TotalRecords: '总记录',
-  strip: '条'
+  strip: '条',
+  Starttime: '开始时间',
+  Endtime: '结束时间',
+  to: '至',
+  coverName: '被邀请人姓名',
+  PassengerUnitPrice: '客单价',
+  Pleasecontent: '请输入内容',
+  startdata: '开始日期',
+  enddate: '结束日期',
+  purchasetimes: '累计购买次数',
+  designatedgoods: '累计指定商品',
+  choiseGoods: '选择商品',
+  setup: '设置',
+  Forscreened: '对筛选出来的',
+  people: '人',
+  Hairpin: '发卡',
+  ModifiedIntegral: '修改积分',
+  Deleteinviter: '删除邀请人',
+  Revisioninviters: '修改邀请人',
+  Currentpage: '当前页面',
+
+  Essentialinformation: '基本信息',
+  Towrite: '编辑',
+  Realname: '真实姓名',
+  Modifycontacts: '修改联系人',
+  Becomeacustomer: '成为客户',
+  Recentbrowsing: '最近浏览',
+  Accumulateintegrals: '累计获得积分',
+  Cumulativeamount: '累计消费金额',
+  address: '地址',
+  Sourcechannel: '来源渠道',
+  Birthday: '生日',
+  Educationlevel: '教育程度',
+  PermanentResidence: '常住地',
+  ID: '身份证',
+  B: '所属行业',
+  Maritalstatus: '婚姻状况',
+  monthlyincome: '月收入',
+  Gender: '性别',
+  Seemore: '查看更多',
+  Labelinformation: '标签信息',
+  AssetInformation: '资产信息',
+  assetsData: ['普通卡', '限次卡', '等级卡', '储值余额', '可用积分', '可用优惠券数'],
+  Transactionstatistics: '交易统计',
+  OrderList: '订单列表',
+  transactionData: [
+    {
+      title: '最近下单时间',
+      content: '暂未下单'
+    },
+    {
+      title: '客单价',
+      content: '￥ 0.00'
+    },
+    {
+      title: '累计下单金额',
+      content: '暂未下单'
+    },
+    {
+      title: '累计消费订单数',
+      content: '￥ 0.00'
+    },
+    {
+      title: '累计退款',
+      content: '0'
+    },
+    {
+      title: '累计退款订单数',
+      content: '￥ 0.00'
+    }
+
+  ],
+  distributionData: [
+    {
+      title: '获返利订单数量',
+      content: '暂未'
+    },
+    {
+      title: '返利商品总金额(元)',
+      content: '0.00'
+    },
+    {
+      title: '获返利佣金总金额(元)',
+      content: '0.00'
+    },
+    {
+      title: '已提现佣金总金额(元)',
+      content: '0.00'
+    },
+    {
+      title: '下级用户数',
+      content: '0'
+    },
+    {
+      title: '分销员等级',
+      content: '分销员测试'
+    },
+    {
+      title: '分销员分组',
+      content: '/'
+    }
+  ],
+  Collectiontime: '领取时间',
+  membershipcard: '会员卡类型',
+  CardNumber: '会员卡号',
+  Member: '会员',
+  type: 'type',
+  state: 'state',
+  Balanceyuan: '余额(元)',
+  servicestimes: '门店服务次数(次)',
+  ExchangeFrequency: '兑换商品次数(次)',
+  noData: '暂无相关数据'
 }
 
 export const en = {
+  noData: 'No relevant data available',
+  ExchangeFrequency: 'Frequency of Commodity Exchange (Frequency)',
+  servicestimes: 'Number of store services (times)',
+  Balanceyuan: 'Balance (yuan)',
+  state: 'state',
+  type: 'type',
+  Member: 'Member',
+  CardNumber: 'Membership Card Number',
+  membershipcard: 'Type of membership card',
+  Collectiontime: 'Collection time',
+  placeNameNum: 'Please enter a nickname',
+  distributionData: [
+    {
+      title: 'Quantity of returned orders',
+      content: 'Not yet'
+    },
+    {
+      title: 'Total Amount of Return Commodities (RMB)',
+      content: '0.00'
+    },
+    {
+      title: 'Total amount of rebate Commission (RMB)',
+      content: '0.00'
+    },
+    {
+      title: 'Total commission amount has been proposed (RMB)',
+      content: '0.00'
+    },
+    {
+      title: 'Number of subordinate users',
+      content: '0'
+    },
+    {
+      title: 'Distributor rank',
+      content: 'Distributor Testing'
+    },
+    {
+      title: 'Distributor grouping',
+      content: '/'
+    }
+  ],
+  transactionData: [
+    {
+      title: 'Latest order time',
+      content: 'No order yet'
+    },
+    {
+      title: 'Passenger Unit Price',
+      content: '￥ 0.00'
+    },
+    {
+      title: 'Cumulative order amount',
+      content: 'No order yet'
+    },
+    {
+      title: 'Cumulative consumption orders',
+      content: '￥ 0.00'
+    },
+    {
+      title: 'Accumulated refund',
+      content: '0'
+    },
+    {
+      title: 'Cumulative refund orders',
+      content: '￥ 0.00'
+    }
+
+  ],
+  OrderList: 'Order List',
+  Transactionstatistics: 'Transaction statistics',
+  assetsData: ['Ordinary Card', 'Limit Card', 'Grade Card', 'Reserve balance', 'Available Integral', 'Number of coupons available'],
+  AssetInformation: 'Asset Information',
+  Labelinformation: 'Label information',
+  Seemore: 'See more',
+  Gender: 'Gender',
+  monthlyincome: 'monthly income',
+  Maritalstatus: 'Marital status',
+  B: 'B.',
+  ID: 'ID',
+  PermanentResidence: 'Permanent Residence',
+  Educationlevel: 'Education level',
+  Birthday: 'Birthday',
+  Sourcechannel: 'Source channel',
+  address: 'address',
+  Cumulativeamount: 'Cumulative consumption amount',
+  Accumulateintegrals: 'Accumulate integrals',
+  Recentbrowsing: 'Recent browsing',
+  Becomeacustomer: 'Become a customer',
+  Modifycontacts: 'Modify contacts',
+  Realname: 'Real name',
+  Towrite: 'To write',
+  Essentialinformation: 'Essential information',
+  Currentpage: 'Current page',
+  Revisioninviters: 'Revision of inviters',
+  Deleteinviter: 'Delete the inviter',
+  ModifiedIntegral: 'Modified Integral',
+  Hairpin: 'Hairpin',
+  people: 'people',
+  Forscreened: 'For screened',
+  setup: 'Set up',
+  choiseGoods: 'Choosing goods',
+  designatedgoods: 'Cumulative designated goods',
+  purchasetimes: 'Accumulated purchase times',
+  enddate: 'End date',
+  startdata: 'Start date',
+  Pleasecontent: 'Please enter the content',
+  PassengerUnitPrice: 'Passenger Unit Price',
+  coverName: 'Name of the invitee',
+  to: 'to',
+  Endtime: 'End time',
+  Starttime: 'Start date',
   phoneNum: 'Cell-phone number',
   wechatNickname: 'Wechat nickname',
   source: 'source',
@@ -105,7 +333,7 @@ export const en = {
   importMembers: 'Imported Members',
   screen: 'screen',
   membershipExport: 'Membership Export',
-  More: 'More',
+  more: 'More',
   retract: 'Retract',
   reacord: 'Logged in at a specified time',
   passengerUnitPrice: 'Passenger Unit Price',
@@ -181,5 +409,9 @@ export const en = {
   }],
   currentPage: 'Current page',
   TotalRecords: 'Total Records',
-  strip: 'strip'
+  strip: 'strip',
+  placePhoneNum: 'Please enter your cell phone number',
+  placeWXNameNum: 'Please enter your Weixin nickname',
+  placeChoise: 'Please choose',
+  placeinpuLabel: 'Please enter the label'
 }

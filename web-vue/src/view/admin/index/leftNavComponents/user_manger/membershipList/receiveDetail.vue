@@ -2,32 +2,32 @@
   <div class="receiveDetail">
     <div class="receiveDetailMain">
       <div class="top spDiv">
-        <div>
-          <span>手机号码</span>
+        <div :class="mixinleftDiv">
+          <span>{{$t('membershipIntroduction.phoneNum')}}</span>
           <el-input
             v-model="phoneNum"
-            placeholder="请输入手机号码"
+            :placeholder="$t('membershipIntroduction.placePhoneNum')"
             size="small"
           ></el-input>
         </div>
         <div>
-          <span>昵称</span>
+          <span>{{$t('membershipIntroduction.nickname')}}</span>
           <el-input
             v-model="nameInput"
-            placeholder="请输入昵称"
+            :placeholder="$t('membershipIntroduction.placeNameNum')"
             size="small"
           ></el-input>
         </div>
         <div class="receiveDetailDate">
-          <span>领取时间</span>
+          <span>{{$t('membershipIntroduction.Collectiontime')}}</span>
           <el-date-picker
             v-model="dateInput"
             type="daterange"
             align="right"
             unlink-panels
-            range-separator="至"
-            start-placeholder="开始日期"
-            end-placeholder="结束日期"
+            :range-separator="$t('membershipIntroduction.to')"
+            :start-placeholder="$t('membershipIntroduction.startdata')"
+            :end-placeholder="$t('membershipIntroduction.enddate')"
             default-value="2010-10-01"
             size="small"
           >
@@ -37,10 +37,10 @@
 
       <div class="top middle">
         <div>
-          <span>会员卡</span>
+          <span>{{$t('membershipIntroduction.membershipCard')}}</span>
           <el-select
             v-model="membershipCardValue"
-            placeholder="请选择"
+            :placeholder="$t('membershipIntroduction.placeChoise')"
             size="small"
           >
             <el-option
@@ -53,10 +53,10 @@
           </el-select>
         </div>
         <div class="middleType">
-          <span class="middleTypeSpan">会员卡类型</span>
+          <span class="middleTypeSpan">{{$t('membershipIntroduction.membershipcard')}}</span>
           <el-select
             v-model="CardTypeValue"
-            placeholder="请选择"
+            :placeholder="$t('membershipIntroduction.placeChoise')"
             size="small"
           >
             <el-option
@@ -72,7 +72,7 @@
           <el-button
             type="primary"
             size="small"
-          >筛选</el-button>
+          >{{$t('membershipIntroduction.screen')}}</el-button>
         </div>
       </div>
 
@@ -84,15 +84,15 @@
         <table width='100%'>
           <thead>
             <tr>
-              <td>领取时间</td>
-              <td>会员卡号</td>
-              <td>会员</td>
-              <td>会员卡|类型</td>
-              <td>状态</td>
-              <td>余额(元)</td>
-              <td>门店服务次数(次)</td>
-              <td>兑换商品次数(次)</td>
-              <td>操作</td>
+              <td>{{$t('membershipIntroduction.Collectiontime')}}</td>
+              <td>{{$t('membershipIntroduction.CardNumber')}}</td>
+              <td>{{$t('membershipIntroduction.Member')}}</td>
+              <td>{{$t('membershipIntroduction.membershipCard')}}|{{$t('membershipIntroduction.type')}}</td>
+              <td>{{$t('membershipIntroduction.state')}}</td>
+              <td>{{$t('membershipIntroduction.Balanceyuan')}}</td>
+              <td>{{$t('membershipIntroduction.servicestimes')}}</td>
+              <td>{{$t('membershipIntroduction.ExchangeFrequency')}}</td>
+              <td>{{$t('membershipIntroduction.operation')}}</td>
             </tr>
           </thead>
           <tbody v-if="tbodyFlag">
@@ -122,7 +122,7 @@
           v-if="!tbodyFlag"
         >
           <img :src="noImg">
-          <span>暂无相关数据</span>
+          <span>{{$t('membershipIntroduction.noData')}}</span>
         </div>
       </div>
       <div
@@ -168,6 +168,7 @@
 export default {
   data () {
     return {
+
       phoneNum: '',
       nameInput: '',
       dateInput: '',
@@ -224,7 +225,8 @@ export default {
 
       ],
       clickIindex: null,
-      noImg: 'http://mpimg2.weipubao.cn/image/admin/no_data.png'
+      noImg: 'http://mpimg2.weipubao.cn/image/admin/no_data.png',
+      mixinleftDiv: ''
     }
   },
   methods: {
@@ -347,6 +349,10 @@ td {
 }
 .content_two td:nth-of-type(2) {
   width: 490px !important;
+}
+
+.mixinleftDiv {
+  width: 280px !important;
 }
 </style>
 <style>
