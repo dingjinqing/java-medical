@@ -34,7 +34,7 @@ public class AdminIndexController extends AdminBaseController {
 	final protected String menuJsonPath = "admin.privilegeList.json";
 	final protected String privilegeJsonPath = "admin.privilegePass.json";
 	
-	private static final String ENNAME="enName";
+	private static final String ENNAME="V-EnName";
 
 	/**
 	 * 返回店铺菜单
@@ -126,7 +126,9 @@ public class AdminIndexController extends AdminBaseController {
 		}
 		VersionMainConfig mainConfig = vConfig.getMainConfig();
 		String enName = request.getHeader(ENNAME);
-		String uri = request.getRequestURI();
+		if(StringUtils.isEmpty(enName)) {
+			return JsonResultCode.CODE_FAIL;
+		}
 
 		if (saas.shop.version.checkMainConfig(mainConfig, enName)) {
 			//为true则请求在version版本里
