@@ -38,7 +38,7 @@ public class WxAppAuth {
 	protected JedisManager jedis;
 
 	public static final String TOKEN = "V-Token";
-	
+
 	public static final String TOKEN_PREFIX = "WXAPP@";
 
 	/**
@@ -47,6 +47,16 @@ public class WxAppAuth {
 	 */
 	protected String getToken() {
 		return request.getHeader(TOKEN);
+	}
+
+	/**
+	 * 是否有效system登录TOKEN
+	 * 
+	 * @param token
+	 * @return
+	 */
+	public boolean isValidToken(String token) {
+		return token != null && StringUtils.startsWith(token, TOKEN_PREFIX);
 	}
 
 	/**
@@ -80,9 +90,11 @@ public class WxAppAuth {
 	 */
 	public WxAppSessionUser user() {
 		String token = getToken();
-		String json = jedis.get(token);
-		if (!StringUtils.isBlank(json)) {
-			return Util.parseJson(json, WxAppSessionUser.class);
+		if (this.isValidToken(token)) {
+			String json = jedis.get(token);
+			if (!StringUtils.isBlank(json)) {
+				return Util.parseJson(json, WxAppSessionUser.class);
+			}
 		}
 		return null;
 	}

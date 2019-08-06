@@ -1,4 +1,4 @@
-package com.vpu.mp.controller.admin;
+package com.vpu.mp.controller.system;
 
 import static org.junit.Assert.assertTrue;
 
@@ -9,20 +9,16 @@ import org.springframework.beans.factory.annotation.Value;
 
 import com.vpu.mp.controller.BaseControllerTest;
 import com.vpu.mp.service.foundation.data.JsonResult;
-import com.vpu.mp.service.pojo.shop.auth.AdminTokenAuthInfo;
-import com.vpu.mp.service.pojo.shop.auth.ShopLoginParam;
-import com.vpu.mp.service.pojo.shop.auth.ShopReq;
+import com.vpu.mp.service.pojo.saas.auth.SystemLoginParam;
+import com.vpu.mp.service.pojo.saas.auth.SystemTokenAuthInfo;
 
-public class AdminBaseControllerTest extends BaseControllerTest {
+public class SystemBaseControllerTest extends BaseControllerTest{
 
-	@Value(value = "${admin.main.username}")
+	@Value(value = "${system.main.username}")
 	protected String testUserName;
 
-	@Value(value = "${admin.main.password}")
+	@Value(value = "${system.main.password}")
 	protected String testPassword;
-
-	@Value(value = "${admin.login.shop_id}")
-	protected Integer testLoginShopId;
 
 	protected static String token;
 
@@ -52,25 +48,18 @@ public class AdminBaseControllerTest extends BaseControllerTest {
 	}
 
 	protected void login() {
-		if (token != null) {
-			return;
-		}
-		ShopLoginParam param = new ShopLoginParam();
+		SystemLoginParam param = new SystemLoginParam();
 		param.setUsername(testUserName);
 		param.setPassword(testPassword);
-		JsonResult result = this.post("/api/admin/login", param, null, null, null);
+		JsonResult result = this.post("/api/system/login", param, null, null, null);
 		this.expectSuccess(result);
-		AdminTokenAuthInfo info = parseJsonResultContent(result, AdminTokenAuthInfo.class);
-
+		SystemTokenAuthInfo info = parseJsonResultContent(result, SystemTokenAuthInfo.class);
 		token = info.getToken();
-		ShopReq shopReq = new ShopReq();
-		shopReq.setShopId(this.testLoginShopId);
-		result = this.post("/api/admin/account/shop/switch", shopReq, token, null, null);
-		this.expectSuccess(result);
 	}
 
+
 	protected void logout() {
-		JsonResult result = this.get("/api/admin/logout", token, null, null);
+		JsonResult result = this.get("/api/system/logout", token, null, null);
 		this.expectSuccess(result);
 		token = null;
 	}

@@ -52,7 +52,7 @@ public class SystemMpAuthShopController extends SystemBaseController {
 	 * 
 	 * @return
 	 */
-	@PostMapping("/api/system/mp/version/set/{templateId}")
+	@GetMapping("/api/system/mp/version/set/{templateId}")
 	public JsonResult setVersion(@PathVariable Integer templateId) {
 		saas.shop.mpVersion.setCurrentUseTemplateId(templateId);
 		return success();
@@ -63,7 +63,7 @@ public class SystemMpAuthShopController extends SystemBaseController {
 	 * 
 	 * @return
 	 */
-	@PostMapping("/api/system/mp/version/batch")
+	@GetMapping("/api/system/mp/version/batch")
 	public JsonResult batchPublish() {
 
 		return success();
@@ -146,7 +146,7 @@ public class SystemMpAuthShopController extends SystemBaseController {
 	 * @return
 	 */
 	@GetMapping("/api/system/mp/get/{appId}")
-	public JsonResult list(@PathVariable String appId) {
+	public JsonResult getMp(@PathVariable String appId) {
 		MpAuthShopRecord record = saas.shop.mp.getAuthShopByAppId(appId);
 		if (record == null) {
 			return fail(JsonResultCode.CODE_PARAM_ERROR);

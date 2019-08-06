@@ -146,5 +146,17 @@ public class BaseControllerTest {
 	@After
 	public void tearDown() throws Exception {
 	}
+	
+
+	/**
+	 * 
+	 * @param <T>
+	 * @param result
+	 * @param cls
+	 * @return
+	 */
+	protected <T> T parseJsonResultContent(JsonResult result, Class<T> cls) {
+		return Util.parseJson(Util.toJson(result.getContent()), cls);
+	}
 
 }
