@@ -71,27 +71,6 @@ public class VersionService extends ShopBaseService {
 			return versionNumberMap;
 		}
 		return null;
-		
-//			Map<String, Object> self = (Map<String, Object>) versionNumberMap.get("self");
-
-//			if (param.modName.equals(pictureNum)) {
-//				float size = image.getAllSize() / 1024 / 1024;
-//				self.put("use", String.format("%.2f", size));
-//			} else if (param.modName.equals(decorateNum)) {
-//				self.put("use", String.format("%d", mpDecoration.getPageCount()));
-//			} else if (param.modName.equals(videoNum)) {
-//				//  need implements
-//				// self.put("use", String.format("%d", mpDecoration.getPageCount()));
-//			} else if (param.modName.equals(goodsNum)) {
-//				// self.put("use", String.format("%d", mpDecoration.getPageCount()));
-//			} else if (param.modName.equals(storeNum)) {
-//				// self.put("use", String.format("%d", mpDecoration.getPageCount()));
-//			} else if (param.modName.equals(formNum)) {
-//				// self.put("use", String.format("%d", mpDecoration.getPageCount()));
-//			}
-			
-
-		
 
 	}
 

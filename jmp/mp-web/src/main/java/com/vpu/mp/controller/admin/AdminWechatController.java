@@ -4,6 +4,7 @@ import com.vpu.mp.service.foundation.data.JsonResult;
 import com.vpu.mp.service.pojo.shop.config.WxShoppingListConfig;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -31,17 +32,20 @@ public class AdminWechatController extends AdminBaseController {
 	@Autowired
 	protected OpenPlatform open;
 
-	@RequestMapping(value = "/wechat/proxy/test")
+
+	@GetMapping(value = "/wechat/proxy/test")
 	@ResponseBody
 	public String noAuthorization() {
 		System.out.println(authority);
 		return "hell";
 	}
 
-	@RequestMapping(value = "/wechat/proxy/test/auth")
+
+	@GetMapping(value = "/wechat/proxy/test/auth")
 	@ResponseBody
 	public String testAuth() {
-		return "<a href='/wechat/proxy/official/account/authorization'>测试公众号授权</a>";
+
+		return "<a href='/wechat/proxy/start/auth?shop_id=245547'>测试小程序授权</a>";
 	}
 
 	/**
@@ -49,7 +53,8 @@ public class AdminWechatController extends AdminBaseController {
 	 * 
 	 * @return
 	 */
-	@RequestMapping(value = "/wechat/proxy/start/auth")
+
+	@GetMapping(value = "/wechat/proxy/start/auth")
 	public String startAuthorization(@RequestParam(name = "shop_id", required = true) Integer shopId) {
 		String url = this.mainUrl("/wechat/proxy/authorization/callback?shop_id=" + shopId);
 		try {

@@ -1,4 +1,4 @@
-package com.vpu.mp.controller.wxapi;
+package com.vpu.mp.controller.wxapp;
 
 import org.springframework.web.bind.annotation.RestController;
 
@@ -8,6 +8,6 @@ import org.springframework.web.bind.annotation.RestController;
  * 2019年7月24日
  */
 @RestController
-public class WxApiStoreController extends WxApiBaseController{
+public class WxAppStoreController extends WxAppBaseController{
 
 }
