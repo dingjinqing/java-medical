@@ -1,14 +1,14 @@
 package com.vpu.mp.service.pojo.shop.market.groupbuy.param;
 
-import lombok.Data;
-import lombok.EqualsAndHashCode;
+import lombok.Getter;
+import lombok.Setter;
 
 /**
  * @author 孔德成
  * @date 2019/7/23 13:40
  */
-@Data
-@EqualsAndHashCode(callSuper = false)
+@Setter
+@Getter
 public class GroupBuyDetailParam  extends  BasePageGroupBuyParam{
 
     private Integer activityId;

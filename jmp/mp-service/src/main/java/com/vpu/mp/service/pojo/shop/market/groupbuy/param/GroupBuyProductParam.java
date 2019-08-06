@@ -1,16 +1,16 @@
 package com.vpu.mp.service.pojo.shop.market.groupbuy.param;
 
-import lombok.Data;
-import lombok.EqualsAndHashCode;
-
 import java.math.BigDecimal;
+
+import lombok.Getter;
+import lombok.Setter;
 
 /**
  * @author 孔德成
  * @date 2019/7/19 10:50
  */
-@Data
-@EqualsAndHashCode(callSuper = false)
+@Setter
+@Getter
 public class GroupBuyProductParam extends BasePageGroupBuyParam{
 
 

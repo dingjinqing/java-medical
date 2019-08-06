@@ -289,6 +289,7 @@ public class SystemImageService extends MainBaseService implements ImageDefault 
      * 当前店铺Id 
      * @return
      */
+    @Override
     public Integer currentShopId() {
     	return this.getShopId();
     }
