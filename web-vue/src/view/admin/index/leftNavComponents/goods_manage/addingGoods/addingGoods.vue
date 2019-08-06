@@ -1,18 +1,15 @@
 <template>
   <div class="addGoods">
-    <!-- 头部面包屑导航 -->
-    <Crumbs :mTitle="M_title" />
     <!-- 主题内容部分 -->
     <addingGoodsContent />
   </div>
 </template>
 <script>
 
-import Crumbs from '@/components/admin/crumbs'
 import addingGoodsContent from '@/view/admin/index/leftNavComponents/goods_manage/addingGoods/addingGoodsContent'
 
 export default {
-  components: { Crumbs, addingGoodsContent },
+  components: { addingGoodsContent },
   data () {
     return {
       M_title: [

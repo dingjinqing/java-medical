@@ -8,6 +8,8 @@ import i18n from './i18n/i18n'
 import vueSwiper from 'vue-awesome-swiper'
 import ElementUI from 'element-ui'
 import Distpicker from 'v-distpicker'
+// el-dialog 可拖拽
+import './directive/index'
 // 颜色选择器
 import vcolorpicker from 'vcolorpicker'
 import 'swiper/dist/css/swiper.css'
@@ -19,6 +21,7 @@ import VueCropper from 'vue-cropper'
 localStorage.setItem('V-overallFlag', true)
 
 Vue.use(VueCropper)
+
 Vue.component('v-distpicker', Distpicker)
 Vue.prototype.$http = new Vue()
 Vue.prototype.$imageHost = 'http://mpimg2.weipubao.cn'

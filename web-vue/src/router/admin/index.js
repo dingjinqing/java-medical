@@ -8,7 +8,6 @@ const routes = [
         path: '/admin/home/shop_main',
         name: 'shopMain',
         component: () => import('@/view/admin/shop_main')
-
       },
       {
         path: '/admin/home/main',
@@ -23,8 +22,10 @@ const routes = [
               crumbTitle: '',
               meta: 'first_web_manage'
             },
-            component: () => import('@/view/admin/index/leftNavComponents/first_web_manage/overviewOfMall')
-
+            component: () =>
+              import(
+                '@/view/admin/index/leftNavComponents/first_web_manage/overviewOfMall'
+              )
           },
           {
             path: '/admin/home/main/overviewStatistics',
@@ -33,7 +34,10 @@ const routes = [
               crumbTitle: '',
               meta: 'first_web_manage'
             },
-            component: () => import('@/view/admin/index/leftNavComponents/first_web_manage/overviewStatistics')
+            component: () =>
+              import(
+                '@/view/admin/index/leftNavComponents/first_web_manage/overviewStatistics'
+              )
           },
           {
             path: '/admin/home/main/realtimeoverview',
@@ -42,7 +46,10 @@ const routes = [
               crumbTitle: '',
               meta: 'first_web_manage'
             },
-            component: () => import('@/view/admin/index/leftNavComponents/first_web_manage/overviewStatistics')
+            component: () =>
+              import(
+                '@/view/admin/index/leftNavComponents/first_web_manage/overviewStatistics'
+              )
           },
           {
             path: '/admin/home/main/userportrait',
@@ -51,7 +58,10 @@ const routes = [
               crumbTitle: '',
               meta: 'first_web_manage'
             },
-            component: () => import('@/view/admin/index/leftNavComponents/first_web_manage/overviewStatistics')
+            component: () =>
+              import(
+                '@/view/admin/index/leftNavComponents/first_web_manage/overviewStatistics'
+              )
           },
           // 小程序管理系列子路由
           {
@@ -61,7 +71,10 @@ const routes = [
               crumbTitle: '',
               meta: 'first_web_decoration'
             },
-            component: () => import('@/view/admin/index/leftNavComponents/first_web_decoration/first_web_decoration')
+            component: () =>
+              import(
+                '@/view/admin/index/leftNavComponents/first_web_decoration/first_web_decoration'
+              )
           },
           {
             path: '/admin/home/main/page_classification',
@@ -70,7 +83,10 @@ const routes = [
               crumbTitle: '',
               meta: 'first_web_decoration'
             },
-            component: () => import('@/view/admin/index/leftNavComponents/first_web_decoration/page_classification')
+            component: () =>
+              import(
+                '@/view/admin/index/leftNavComponents/first_web_decoration/page_classification'
+              )
           },
           {
             path: '/admin/home/main/freight_template',
@@ -79,7 +95,10 @@ const routes = [
               crumbTitle: 'router.pictureSpace',
               meta: 'first_web_decoration'
             },
-            component: () => import('@/view/admin/index/leftNavComponents/first_web_decoration/PictureSpace/freight_template')
+            component: () =>
+              import(
+                '@/view/admin/index/leftNavComponents/first_web_decoration/PictureSpace/freight_template'
+              )
           },
           {
             path: '/admin/home/main/shopStyle',
@@ -88,12 +107,18 @@ const routes = [
               crumbTitle: 'router.shopStyle',
               meta: 'first_web_decoration'
             },
-            component: () => import('@/view/admin/index/leftNavComponents/first_web_decoration/shopStyle/shopStyle')
+            component: () =>
+              import(
+                '@/view/admin/index/leftNavComponents/first_web_decoration/shopStyle/shopStyle'
+              )
           },
           {
             path: '/admin/home/main/bottomNavigation',
             name: 'image_manager',
-            component: () => import('@/view/admin/index/leftNavComponents/first_web_decoration/bottomNavigation/bottomNavigation'),
+            component: () =>
+              import(
+                '@/view/admin/index/leftNavComponents/first_web_decoration/bottomNavigation/bottomNavigation'
+              ),
             meta: {
               crumbTitle: 'router.bottomNavigation',
               meta: 'first_web_decoration'
@@ -108,9 +133,9 @@ const routes = [
                   crumbTitle: 'router.bottomNavigation',
                   meta: 'first_web_decoration',
                   category: 'bottomNavigation'
-
                 },
-                component: () => import('@/components/admin/selectLinksComponents/commonLinks')
+                component: () =>
+                  import('@/components/admin/selectLinksComponents/commonLinks')
               },
               // 商品链接
               {
@@ -121,7 +146,10 @@ const routes = [
                   meta: 'first_web_decoration',
                   category: 'bottomNavigation'
                 },
-                component: () => import('@/components/admin/selectLinksComponents/commodityLinks')
+                component: () =>
+                  import(
+                    '@/components/admin/selectLinksComponents/commodityLinks'
+                  )
               },
               // 自定义页面
               {
@@ -132,7 +160,8 @@ const routes = [
                   meta: 'first_web_decoration',
                   category: 'bottomNavigation'
                 },
-                component: () => import('@/components/admin/selectLinksComponents/customPage')
+                component: () =>
+                  import('@/components/admin/selectLinksComponents/customPage')
               },
               // 营销活动
               {
@@ -143,7 +172,10 @@ const routes = [
                   meta: 'first_web_decoration',
                   category: 'bottomNavigation'
                 },
-                component: () => import('@/components/admin/selectLinksComponents/groupDrawing')
+                component: () =>
+                  import(
+                    '@/components/admin/selectLinksComponents/groupDrawing'
+                  )
               },
               // 商品分类
               {
@@ -155,7 +187,10 @@ const routes = [
                   meta: 'first_web_decoration',
                   category: 'bottomNavigation'
                 },
-                component: () => import('@/components/admin/selectLinksComponents/classificationOfCommodities')
+                component: () =>
+                  import(
+                    '@/components/admin/selectLinksComponents/classificationOfCommodities'
+                  )
               },
               // 网页跳转
               {
@@ -166,7 +201,8 @@ const routes = [
                   meta: 'first_web_decoration',
                   category: 'bottomNavigation'
                 },
-                component: () => import('@/components/admin/selectLinksComponents/pageJump')
+                component: () =>
+                  import('@/components/admin/selectLinksComponents/pageJump')
               },
               // 小程序跳转
               {
@@ -177,7 +213,10 @@ const routes = [
                   meta: 'first_web_decoration',
                   category: 'bottomNavigation'
                 },
-                component: () => import('@/components/admin/selectLinksComponents/smallProgramJump')
+                component: () =>
+                  import(
+                    '@/components/admin/selectLinksComponents/smallProgramJump'
+                  )
               },
               // 表单页面&&门店
               {
@@ -188,7 +227,8 @@ const routes = [
                   meta: 'first_web_decoration',
                   category: 'bottomNavigation'
                 },
-                component: () => import('@/components/admin/selectLinksComponents/formPage')
+                component: () =>
+                  import('@/components/admin/selectLinksComponents/formPage')
               }
             ]
           },
@@ -200,8 +240,12 @@ const routes = [
               crumbTitle: '',
               meta: 'goods_manage'
             },
-            component: () => import('@/view/admin/index/leftNavComponents/goods_manage/goods_manage')
+            component: () =>
+              import(
+                '@/view/admin/index/leftNavComponents/goods_manage/goods_manage'
+              )
           },
+          // 品牌管理
           {
             path: '/admin/home/main/brandManagement',
             name: 'brand',
@@ -209,8 +253,12 @@ const routes = [
               crumbTitle: 'router.brandManagement',
               meta: 'goods_manage'
             },
-            component: () => import('@/view/admin/index/leftNavComponents/goods_manage/brandManagement/brandManagement')
+            component: () =>
+              import(
+                '@/view/admin/index/leftNavComponents/goods_manage/brandManagement/brandManagement'
+              )
           },
+          // 添加品牌
           {
             path: '/admin/home/main/addBrand',
             name: 'addBrand',
@@ -218,20 +266,45 @@ const routes = [
               crumbTitle: 'router.brandAddManagement',
               meta: 'goods_manage'
             },
-            component: () => import('@/view/admin/index/leftNavComponents/goods_manage/brandManagement/addBrand')
+            component: () =>
+              import(
+                '@/view/admin/index/leftNavComponents/goods_manage/brandManagement/addBrand'
+              )
           },
           {
             path: '/admin/home/main/evaluationManagement',
             name: 'comment',
             meta: 'goods_manage',
-            component: () => import('@/view/admin/index/leftNavComponents/goods_manage/evaluationManagement/evaluationManagement')
+            component: () =>
+              import(
+                '@/view/admin/index/leftNavComponents/goods_manage/evaluationManagement/evaluationManagement'
+              )
           },
           // 商品管理系列之添加商品
           {
             path: '/admin/home/main/addingGoods',
             name: 'goods_add',
-            meta: 'goods_manage',
-            component: () => import('@/view/admin/index/leftNavComponents/goods_manage/addingGoods/addingGoods')
+            meta: {
+              crumbTitle: 'router.addingGoods',
+              meta: 'goods_manage'
+            },
+            component: () =>
+              import(
+                '@/view/admin/index/leftNavComponents/goods_manage/addingGoods/addingGoods'
+              )
+          },
+          // 商品管理系列之商家分类管理
+          {
+            path: '/admin/home/main/goods/sort',
+            name: 'sort',
+            meta: {
+              crumbTitle: 'router.goodsSort',
+              meta: 'goods_manage'
+            },
+            component: () =>
+              import(
+                '@/view/admin/index/leftNavComponents/goods_manage/goodsSort/goodsSort'
+              )
           },
           // 订单管理系列子路由
           {
@@ -241,7 +314,10 @@ const routes = [
               crumbTitle: '',
               meta: 'first_trade_manageL'
             },
-            component: () => import('@/view/admin/index/leftNavComponents/first_trade_manageL/first_trade_manageL')
+            component: () =>
+              import(
+                '@/view/admin/index/leftNavComponents/first_trade_manageL/first_trade_manageL'
+              )
           },
           // 营销管理系列子路由
           {
@@ -251,7 +327,10 @@ const routes = [
               crumbTitle: '',
               meta: 'first_market_manage'
             },
-            component: () => import('@/view/admin/index/leftNavComponents/first_market_manage/first_market_manage')
+            component: () =>
+              import(
+                '@/view/admin/index/leftNavComponents/first_market_manage/first_market_manage'
+              )
           },
           // 会员管理系列子路由
           {
@@ -262,7 +341,10 @@ const routes = [
               crumbTitle: 'router.membershipList',
               meta: 'user_manger'
             },
-            component: () => import('@/view/admin/index/leftNavComponents/user_manger/membershipList/membershipList')
+            component: () =>
+              import(
+                '@/view/admin/index/leftNavComponents/user_manger/membershipList/membershipList'
+              )
           },
           {
             path: '/admin/home/main/membershipInformation',
@@ -272,7 +354,10 @@ const routes = [
               meta: 'user_manger',
               category: 'membershipList'
             },
-            component: () => import('@/view/admin/index/leftNavComponents/user_manger/membershipList/membershipInformation')
+            component: () =>
+              import(
+                '@/view/admin/index/leftNavComponents/user_manger/membershipList/membershipInformation'
+              )
           },
           {
             path: '/admin/home/main/receiveDetail',
@@ -282,7 +367,10 @@ const routes = [
               meta: 'user_manger',
               category: 'membershipList'
             },
-            component: () => import('@/view/admin/index/leftNavComponents/user_manger/membershipList/receiveDetail')
+            component: () =>
+              import(
+                '@/view/admin/index/leftNavComponents/user_manger/membershipList/receiveDetail'
+              )
           },
           {
             path: '/admin/home/main/balanceDetail',
@@ -292,7 +380,10 @@ const routes = [
               meta: 'user_manger',
               category: 'membershipList'
             },
-            component: () => import('@/view/admin/index/leftNavComponents/user_manger/membershipList/balanceDetail')
+            component: () =>
+              import(
+                '@/view/admin/index/leftNavComponents/user_manger/membershipList/balanceDetail'
+              )
           },
           {
             path: '/admin/home/main/integralDetail',
@@ -302,7 +393,10 @@ const routes = [
               meta: 'user_manger',
               category: 'membershipList'
             },
-            component: () => import('@/view/admin/index/leftNavComponents/user_manger/membershipList/integralDetail')
+            component: () =>
+              import(
+                '@/view/admin/index/leftNavComponents/user_manger/membershipList/integralDetail'
+              )
           },
           {
             path: '/admin/home/main/membershipIntroduction',
@@ -311,7 +405,10 @@ const routes = [
               crumbTitle: 'router.membershipIntroduction',
               meta: 'user_manger'
             },
-            component: () => import('@/view/admin/index/leftNavComponents/user_manger/membershipIntroduction/membershipIntroduction')
+            component: () =>
+              import(
+                '@/view/admin/index/leftNavComponents/user_manger/membershipIntroduction/membershipIntroduction'
+              )
           },
           // 门店管理系列子路由
           {
@@ -321,7 +418,10 @@ const routes = [
               crumbTitle: '',
               meta: 'store_manage'
             },
-            component: () => import('@/view/admin/index/leftNavComponents/store_manage/store_manage')
+            component: () =>
+              import(
+                '@/view/admin/index/leftNavComponents/store_manage/store_manage'
+              )
           },
           // 基础配置系列子路由
           {
@@ -331,7 +431,10 @@ const routes = [
               crumbTitle: '',
               meta: 'base_manger'
             },
-            component: () => import('@/view/admin/index/leftNavComponents/base_manger/base_manger')
+            component: () =>
+              import(
+                '@/view/admin/index/leftNavComponents/base_manger/base_manger'
+              )
           }
         ]
       }

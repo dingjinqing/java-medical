@@ -7,7 +7,7 @@
     <!-- 基本信息 表单 -->
     <el-form
       :model="basicInformation"
-      :rules="rules"
+      :rules="basicInformation_rules"
       ref="basicInformation"
       label-width="100px"
       class="basicInformation_form"
@@ -142,33 +142,53 @@
       >
         <!-- 更多配置 部分 -->
         <el-form
+          :rules="rules"
           :model="moreConfiguration"
           ref="moreConfiguration"
           label-width="100px"
           class="moreConfiguration"
         >
-
+          <!-- 单位 -->
           <el-form-item
             label="单位"
-            prop="moreConfiguration_unit"
+            prop="customize"
           >
-            <el-select
-              v-model="moreConfiguration_unit"
-              clearable
-              placeholder="个"
-            >
-              <el-option
-                label="个"
-                value="个"
+            <el-row>
+              <el-col :span="5">
+                <el-select
+                  @change="unitChangeHandle"
+                  v-model="unit_value"
+                  placeholder="请选择单位"
+                >
+                  <el-option
+                    v-for="item in unit_options"
+                    :key="item.unit_value"
+                    :label="item.unit_label"
+                    :value="item.unit_value"
+                  >
+                  </el-option>
+                </el-select>
+              </el-col>
+              <el-col
+                :span="5"
+                class="customize"
               >
-              </el-option>
-            </el-select>
+                <el-input
+                  @blur="customize_value"
+                  v-model="moreConfiguration.customize"
+                  placeholder="长度限制为3个中文字符"
+                  v-show="isCustomize"
+                ></el-input>
+              </el-col>
+            </el-row>
+
           </el-form-item>
 
           <el-form-item
             label="商家分类"
             prop="moreConfiguration_unit"
           >
+
             <el-select
               v-model="moreConfiguration_unit"
               clearable
@@ -180,6 +200,7 @@
               >
               </el-option>
             </el-select>
+
           </el-form-item>
 
           <el-form-item
@@ -315,14 +336,45 @@
         >下一步</el-button>
       </section>
     </div>
+    <!-- 商品主图上传的dialog -->
+    <el-dialog
+      :visible.sync="dialogVisible_pic"
+      width="80%"
+      :before-close="handleClose"
+    >
+
+      <span
+        slot="title"
+        class="dialog_hearder"
+      >浏览图片</span>
+      <upLoadForPicture />
+      <span
+        slot="footer"
+        class="dialog-footer"
+      >
+        <el-button
+          size='small'
+          type="primary"
+          @click="confirmUpload"
+        >确 定</el-button>
+        <el-button
+          @click="dialogVisible_pic = false"
+          size='small'
+        >取 消</el-button>
+
+      </span>
+    </el-dialog>
   </div>
 </template>
 <script>
+import upLoadForPicture from '@/components/admin/upLoadForPicture/upLoadForPicture'
 import { selectPlatformClassification } from '@/api/admin/addingGoods/addingGoodsBasicInfo'
 export default {
+  components: { upLoadForPicture },
   props: {
     active: Number
   },
+
   created () {
     this.init()
   },
@@ -337,6 +389,8 @@ export default {
       optionsData: [],
       second: false,
       third: false,
+      // 商品主图上传
+      dialogVisible_pic: false,
       basicInformation: {
         productName: '',
         productAd: '',
@@ -344,9 +398,78 @@ export default {
         platformClassification: ''
       },
       moreConfiguration: {
-
+        customize: ''
+      },
+      basicInformation_rules: {
+        customize: [
+          { required: true, message: '请输入自定义单位', trigger: 'blur' },
+          { min: 1, max: 3, message: '长度在 1 到 3 个中文字符', trigger: 'blur' }
+        ]
       },
       moreConfiguration_unit: '',
+      // 单位的选择
+      unit_value: '',
+      unit_options: [{
+        unit_value: '选项1',
+        unit_label: '个'
+      }, {
+        unit_value: '选项2',
+        unit_label: '包'
+      }, {
+        unit_value: '选项3',
+        unit_label: '箱'
+      }, {
+        unit_value: '选项4',
+        unit_label: '袋'
+      }, {
+        unit_value: '选项5',
+        unit_label: '套'
+      }, {
+        unit_value: '选项6',
+        unit_label: '卷'
+      }, {
+        unit_value: '选项7',
+        unit_label: '件'
+      }, {
+        unit_value: '选项8',
+        unit_label: '台'
+      },
+      {
+        unit_value: '选项9',
+        unit_label: '吨'
+      }, {
+        unit_value: '选项10',
+        unit_label: '平方米'
+      }, {
+        unit_value: '选项11',
+        unit_label: '本'
+      }, {
+        unit_value: '选项12',
+        unit_label: '幅'
+      }, {
+        unit_value: '选项13',
+        unit_label: '张'
+      }, {
+        unit_value: '选项14',
+        unit_label: '支'
+      }, {
+        unit_value: '选项15',
+        unit_label: '盒'
+      }, {
+        unit_value: '选项16',
+        unit_label: '份'
+      }, {
+        unit_value: '选项17',
+        unit_label: '令'
+      }, {
+        unit_value: '选项18',
+        unit_label: '千克'
+      }, {
+        unit_value: '选项19',
+        unit_label: '自定义'
+      }],
+      isCustomize: false,
+      //
       rules: {
         productName: [
           { required: true, message: '请输入商品名称', trigger: 'blur' }
@@ -407,29 +530,32 @@ export default {
       })
     },
     // 商品主图上传的方法
-    handleAvatarSuccess (res, file) {
-      this.imageUrl = URL.createObjectURL(file.raw)
+    handleClose (done) {
+      done()
     },
-    beforeAvatarUpload (file) {
-      const isJPG = file.type === 'image/jpeg'
-      const isLt2M = file.size / 1024 / 1024 < 2
-
-      if (!isJPG) {
-        this.$message.error('上传头像图片只能是 JPG 格式!')
-      }
-      if (!isLt2M) {
-        this.$message.error('上传头像图片大小不能超过 2MB!')
-      }
-      return isJPG && isLt2M
+    confirmUpload () {
+      this.dialogVisible_pic = false
     },
+    upLoadPic () {
+      this.dialogVisible_pic = true
+    },
+    // 底部按钮跳转
     handleToList () {
       console.log('tolist')
     },
     handleNextStep () {
       this.$emit('toSecondPage')
     },
-    upLoadPic () {
-      console.log('上传商品主图')
+    // 单位选择
+    unitChangeHandle (val) {
+      if (val === '选项19') {
+        this.isCustomize = true
+      } else {
+        this.isCustomize = false
+      }
+    },
+    customize_value () {
+      console.log(this.moreConfiguration.customize)
     }
   }
 }
@@ -476,5 +602,15 @@ export default {
   max-height: 100%;
   vertical-align: middle;
   border: none;
+}
+.dialog_hearder {
+  color: #333;
+}
+.expandAndCollapse {
+  color: red;
+  background-color: skyblue;
+}
+.customize {
+  margin-left: 20px;
 }
 </style>

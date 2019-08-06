@@ -110,6 +110,7 @@ export default {
 
       changeShopRequest(obj).then((res) => {
         const { error } = res
+
         if (error === 0) {
           this.$router.push({
             name: 'shop_view'
