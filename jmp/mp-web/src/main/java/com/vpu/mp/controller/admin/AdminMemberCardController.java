@@ -1,6 +1,10 @@
 package com.vpu.mp.controller.admin;
 
 
+import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.LIMIT_NUM_TYPE;
+import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.NORMAL_TYPE;
+import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.RANK_TYPE;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -25,7 +29,6 @@ import com.vpu.mp.service.pojo.shop.member.card.SearchCardParam;
 @RequestMapping(value="/api/admin/member")
 public class AdminMemberCardController extends AdminBaseController {
 	private Logger logger = LoggerFactory.getLogger(getClass());
-	
 	/**
 	 * 创建一张会员卡
 	 * @param card
@@ -38,7 +41,6 @@ public class AdminMemberCardController extends AdminBaseController {
 		logger.info(Util.toJson(card));
 		this.shop().member.card.addMemberCard(card);
 		return this.success();
-	
 	}
 	
 	
@@ -48,11 +50,9 @@ public class AdminMemberCardController extends AdminBaseController {
 	 */
 	@PostMapping("/card/list")
 	public JsonResult getCardList(@RequestBody SearchCardParam param) {
-		return null;
-//		logger.info(param.toString());
-//		PageResult<CardVo> result = this.shop().member.card.getCardList(param);
-//		return success(result);
+		
+		logger.info(param.toString());
+		PageResult<? extends CardVo> result = shop().member.card.getCardList(param);
+		return success(result);
 	}
-	
-	
 }
