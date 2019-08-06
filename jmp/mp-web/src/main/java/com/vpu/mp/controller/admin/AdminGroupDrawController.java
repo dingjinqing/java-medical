@@ -4,6 +4,7 @@ import com.vpu.mp.service.foundation.data.JsonResult;
 import com.vpu.mp.service.pojo.shop.market.groupdraw.GroupDrawAddParam;
 import com.vpu.mp.service.pojo.shop.market.groupdraw.GroupDrawListParam;
 import com.vpu.mp.service.pojo.shop.market.groupdraw.GroupDrawUpdateParam;
+import com.vpu.mp.service.pojo.shop.market.groupdraw.group.GroupListParam;
 import com.vpu.mp.service.pojo.shop.market.groupdraw.invite.InvitedUserListParam;
 import com.vpu.mp.service.pojo.shop.market.groupdraw.join.JoinUserListParam;
 import com.vpu.mp.service.pojo.shop.market.groupdraw.order.OrderListParam;
@@ -94,5 +95,13 @@ public class AdminGroupDrawController extends AdminBaseController {
     @PostMapping("/invited_user/list")
     public JsonResult getInvitedUserList(@RequestBody @Valid InvitedUserListParam param) {
         return success(shop().groupDrawUsers.getInvitedUserList(param));
+    }
+
+    /**
+     * 开团明细
+     */
+    @PostMapping("/group/list")
+    public JsonResult getOpenGroupDetailList(@RequestBody GroupListParam param) {
+        return success(shop().groupDrawGroups.getGroupList(param));
     }
 }

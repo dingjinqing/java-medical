@@ -1,10 +1,6 @@
 package com.vpu.mp.service.shop;
 
 
-import com.vpu.mp.service.shop.market.seckill.SeckillService;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
-
 import com.vpu.mp.service.shop.config.ConfigService;
 import com.vpu.mp.service.shop.config.ShopBasicConfigService;
 import com.vpu.mp.service.shop.config.TradeService;
@@ -24,9 +20,11 @@ import com.vpu.mp.service.shop.image.ImageService;
 import com.vpu.mp.service.shop.market.bargain.BargainService;
 import com.vpu.mp.service.shop.market.freeshipping.FreeShippingService;
 import com.vpu.mp.service.shop.market.goupbuy.GroupBuyService;
+import com.vpu.mp.service.shop.market.groupdraw.GroupDrawGroupService;
 import com.vpu.mp.service.shop.market.groupdraw.GroupDrawJoinUserService;
 import com.vpu.mp.service.shop.market.groupdraw.GroupDrawOrderService;
 import com.vpu.mp.service.shop.market.groupdraw.GroupDrawService;
+import com.vpu.mp.service.shop.market.seckill.SeckillService;
 import com.vpu.mp.service.shop.member.MemberService;
 import com.vpu.mp.service.shop.member.ScoreCfgService;
 import com.vpu.mp.service.shop.member.TagService;
@@ -144,6 +142,7 @@ public class ShopApplication  {
 	@Autowired public GroupDrawService groupDraw;
 	@Autowired public GroupDrawJoinUserService groupDrawUsers;
 	@Autowired public GroupDrawOrderService groupDrawOrders;
+	@Autowired public GroupDrawGroupService groupDrawGroups;
 
     /**
      * 微信好物圈配置

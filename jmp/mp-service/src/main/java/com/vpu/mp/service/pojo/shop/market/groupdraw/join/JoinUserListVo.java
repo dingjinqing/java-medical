@@ -3,6 +3,7 @@ package com.vpu.mp.service.pojo.shop.market.groupdraw.join;
 import lombok.Data;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 /**
  * 拼团抽奖 - 参与用户 列表出参
@@ -27,7 +28,7 @@ public class JoinUserListVo {
     /** 团id **/
     private Integer groupId;
     /** 成团时间 **/
-    private LocalDate endTime;
+    private LocalDateTime endTime;
     /** 邀请用户数量 **/
     private Short inviteUserNum;
 
