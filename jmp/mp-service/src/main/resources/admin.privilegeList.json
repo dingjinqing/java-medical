@@ -92,6 +92,7 @@
 		"child_config",
 		"message_config",
 		"third_auth",
+		"action_record",
 		"pledge"
 	],
 	"plus": [
