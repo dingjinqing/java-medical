@@ -44,7 +44,8 @@ public class JsonResultMessage {
 	public static final String MSG_CODE_NEED_PRIVILEGEPASS = "account.need.privilegePass";
 	public static final String MSG_CODE_ACCOUNT_SYSID_IS_NULL = "account.sysId.is.null";
 	public static final String MSG_CODE_ACCOUNT_VERSIN_NO_POWER = "account.version.no.power";
-
+	public static final String MSG_ACCOUNT_SHOPTYPE_REGISTERED = "account.shoptype.notNull";
+	
 	// 图片
 
 	public static final String MSG_IMGAE_UPLOAD_FAILED = "image.upload.failed";
