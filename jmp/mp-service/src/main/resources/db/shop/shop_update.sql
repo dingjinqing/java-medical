@@ -573,3 +573,7 @@ ALTER TABLE `b2c_refund_card_record`
 
 -- 王兵兵 201-08-05 秒杀修改
 alter table `b2c_sec_kill_define` drop column `shop_id`;
+
+alter table `b2c_group_integration_list` modify column `group_id` int(11) not null comment '拼团ID';
+
+
