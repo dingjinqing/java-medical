@@ -23,10 +23,9 @@ import javax.annotation.Generated;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class SecKillDefine implements Serializable {
 
-    private static final long serialVersionUID = -366925556;
+    private static final long serialVersionUID = 1157642001;
 
     private Integer   skId;
-    private Integer   shopId;
     private Integer   goodsId;
     private String    name;
     private Short     limitAmount;
@@ -48,7 +47,6 @@ public class SecKillDefine implements Serializable {
 
     public SecKillDefine(SecKillDefine value) {
         this.skId = value.skId;
-        this.shopId = value.shopId;
         this.goodsId = value.goodsId;
         this.name = value.name;
         this.limitAmount = value.limitAmount;
@@ -69,7 +67,6 @@ public class SecKillDefine implements Serializable {
 
     public SecKillDefine(
         Integer   skId,
-        Integer   shopId,
         Integer   goodsId,
         String    name,
         Short     limitAmount,
@@ -88,7 +85,6 @@ public class SecKillDefine implements Serializable {
         String    shareConfig
     ) {
         this.skId = skId;
-        this.shopId = shopId;
         this.goodsId = goodsId;
         this.name = name;
         this.limitAmount = limitAmount;
@@ -113,14 +109,6 @@ public class SecKillDefine implements Serializable {
 
     public void setSkId(Integer skId) {
         this.skId = skId;
-    }
-
-    public Integer getShopId() {
-        return this.shopId;
-    }
-
-    public void setShopId(Integer shopId) {
-        this.shopId = shopId;
     }
 
     public Integer getGoodsId() {
@@ -256,7 +244,6 @@ public class SecKillDefine implements Serializable {
         StringBuilder sb = new StringBuilder("SecKillDefine (");
 
         sb.append(skId);
-        sb.append(", ").append(shopId);
         sb.append(", ").append(goodsId);
         sb.append(", ").append(name);
         sb.append(", ").append(limitAmount);
