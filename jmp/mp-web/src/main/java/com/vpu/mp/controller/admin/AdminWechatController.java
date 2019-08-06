@@ -1,7 +1,8 @@
 package com.vpu.mp.controller.admin;
 
 import com.vpu.mp.service.foundation.data.JsonResult;
-import com.vpu.mp.service.pojo.shop.config.WxShoppingListConfig;
+import com.vpu.mp.service.foundation.data.JsonResultCode;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -54,7 +55,7 @@ public class AdminWechatController extends AdminBaseController {
 	 * @return
 	 */
 	@RequestMapping(value = "/wechat/proxy/authorization/callback")
-	public String authorizationCallback(@RequestParam("auth_code") String authorizationCode,
+	public JsonResult authorizationCallback(@RequestParam("auth_code") String authorizationCode,
 			@RequestParam(name = "sys_id", required = false) Integer sysId,
 			@RequestParam(name = "shop_id", required = false) Integer shopId) {
 		try {
@@ -67,17 +68,23 @@ public class AdminWechatController extends AdminBaseController {
 				// 小程序授权
 				MpAuthShopRecord mp = saas.shop.mp.getAuthShopByShopId(shopId);
 				if (mp != null && !mp.getAppId().equals(appId)) {
-					return ("小程序上次授权与本次授权AppId不一致，请联系客服！");
+					//小程序上次授权与本次授权AppId不一致，请联系客服！
+					logger().debug("appId"+appId+"小程序上次授权与本次授权AppId不一致，请联系客服！");
+					return fail(JsonResultCode.WX_BINDING_MINI_NO_SAME);
 				}
 				mp = saas.shop.mp.getAuthShopByAppId(appId);
 				if (mp != null && mp.getShopId().intValue() != shopId) {
-					return ("小程序已授权绑定其他账号，请联系客服！");
+					//小程序已授权绑定其他账号，请联系客服！
+					logger().debug("appId"+appId+"小程序已授权绑定其他账号，请联系客服！");
+					return fail(JsonResultCode.WX_BINDING_MINI_HAVEBIND);
 				}
 				saas.shop.mp.addMpAuthAccountInfo(appId, shopId);
+				saas.shop.mp.bindAllSamePrincipalOpenAppId(mp);
+				
 			}
 
 			logger().info("getQueryAuth", queryAuthResult);
-			return "redirect:"+("/wechat/mini/info");
+			return success();
 		} catch (WxErrorException e) {
 			logger().error("gotoPreAuthUrl", e);
 			throw new RuntimeException(e);
@@ -128,17 +135,4 @@ public class AdminWechatController extends AdminBaseController {
 		return open.appEvent(requestBody, appId, signature, timestamp, nonce, openid, encType, msgSignature);
 	}
 
-	@RequestMapping("/wechat/mini/shopping/list/update")
-    @ResponseBody
-    public void switchWxShoppingList(@RequestBody WxShoppingListConfig config){
-        shop().shoppingListConfig.setShoppingListConfig(config);
-    }
-
-    @RequestMapping("/wechat/mini/shopping/list/")
-    @ResponseBody
-    public JsonResult getWxShoppongList(){
-        WxShoppingListConfig shoppingListConfig = shop().shoppingListConfig.getShoppingListConfig();
-
-        return success(shoppingListConfig);
-    }
 }
