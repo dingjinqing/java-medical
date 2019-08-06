@@ -26,24 +26,24 @@ public class RabbitmqSendService  {
 
     /**
      * 发送消息
-     * @param json 发送消息需要先把对象转为json字符串发送
+     * @param object 发送消息
      * @param queueName 在{@link com.vpu.mp.config.mq.RabbitConfig}配置自己的队列
      */
-    public  void sendMessage(String queueName,String json){
-        log.info("接收队列---{},MQ发送消息---{}",queueName,json);
+    public  void sendMessage(String queueName,Object object){
+        log.info("接收队列---{},MQ发送消息---{}",queueName,object);
         CorrelationData correlationData = new CorrelationData(UUID.randomUUID().toString());
-        rabbitTemplate.convertAndSend(queueName,(Object)json,correlationData);
+        rabbitTemplate.convertAndSend(queueName,object,correlationData);
     }
     /**
      * 发送消息
-     * @param json 发送消息需要先把对象转为json字符串发送
+     * @param object 发送消息
      * @param routingKey 路由键名称,在{@link com.vpu.mp.config.mq.RabbitConfig}配置
      * @param exchangeName 路由名称,在{@link com.vpu.mp.config.mq.RabbitConfig}配置
      */
-    public void sendMessage(String exchangeName,String routingKey,String json){
+    public void sendMessage(String exchangeName,String routingKey,Object object){
         log.info("接收路由---{}，路由键---{}",exchangeName,routingKey);
         CorrelationData correlationData = new CorrelationData(UUID.randomUUID().toString());
-        rabbitTemplate.convertAndSend(exchangeName,routingKey,json,correlationData);
+        rabbitTemplate.convertAndSend(exchangeName,routingKey,object,correlationData);
     }
 
 }
