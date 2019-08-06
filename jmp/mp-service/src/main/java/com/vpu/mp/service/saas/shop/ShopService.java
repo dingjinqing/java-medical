@@ -171,6 +171,9 @@ public class ShopService extends MainBaseService {
 	public Boolean addShop(ShopReq shopReq, SystemTokenAuthInfo user, HttpServletRequest request) {
 		shopReq.setShopId(getCanUseShopId());
 		DbConfig dbConfig = datasourceManager.getInstallShopDbConfig(shopReq.getShopId());
+		if(!StringUtils.isEmpty(shopReq.getDbConfigId())) {
+			//TODO 加插入传来的数据库信息
+		}
 		shopReq.setDbConfig(Util.toJson(dbConfig));
 		if (!databaseManager.installShopDb(dbConfig)) {
 			return false;
