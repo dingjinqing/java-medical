@@ -44,7 +44,7 @@ public class QRCodeService extends ShopBaseService {
     public String getMpQRCode(String pageUrl, Short typeId, Integer paramId) throws Exception {
         Record1<String> record = shopDb().select(CODE.QRCODE_IMG).from(CODE).where(CODE.TYPE_URL.eq(pageUrl))
             .or(CODE.TYPE.eq(typeId).and(CODE.PARAM_ID.eq(String.valueOf(paramId))))
-            .fetchOne();
+            .fetchAny();
         if (null == record) {
             String buffer = open().getMpQRCodeBuffer(pageUrl);
             File tempFile = File.createTempFile("", "");
