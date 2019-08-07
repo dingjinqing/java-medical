@@ -130,7 +130,6 @@ public class MpOperateLogService extends MainBaseService {
             MP_AUTH_SHOP.NICK_NAME, MP_OPERATE_LOG.MEMO, MP_VERSION.USER_VERSION)
             .from(MP_OPERATE_LOG).leftJoin(MP_AUTH_SHOP)
             .on(MP_OPERATE_LOG.APP_ID.eq(MP_AUTH_SHOP.APP_ID))
-            .leftJoin(MP_VERSION).on(MP_VERSION.TEMPLATE_ID.eq(MP_OPERATE_LOG.TEMPLATE_ID))
             .where(param.buildOption());
 
         where.orderBy(MP_OPERATE_LOG.CREATE_TIME.desc());
