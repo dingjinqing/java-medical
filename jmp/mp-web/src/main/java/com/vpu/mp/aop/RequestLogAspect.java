@@ -6,6 +6,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.*;
 import org.json.JSONArray;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.context.request.RequestContextHolder;
@@ -24,6 +25,7 @@ import java.util.Arrays;
 @Slf4j
 @Aspect
 @Configuration
+@ConditionalOnProperty(prefix="local",name = "log", havingValue = "on")
 public class RequestLogAspect {
     @Pointcut("execution(public com.vpu.mp.service.foundation.data.JsonResult com.vpu.mp.controller..*Controller.*(..))")
     public void controllerLogAspect(){}
