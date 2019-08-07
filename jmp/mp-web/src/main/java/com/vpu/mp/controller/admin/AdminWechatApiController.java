@@ -4,7 +4,12 @@ import com.vpu.mp.db.main.tables.records.MpAuthShopRecord;
 import com.vpu.mp.service.foundation.data.JsonResult;
 import com.vpu.mp.service.foundation.data.JsonResultCode;
 import com.vpu.mp.service.pojo.saas.shop.mp.MpAuthShopVo;
+import com.vpu.mp.service.wechat.OpenPlatform;
+import me.chanjar.weixin.common.error.WxErrorException;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
 /**
@@ -12,6 +17,58 @@ import org.springframework.web.bind.annotation.RestController;
  */
 @RestController
 public class AdminWechatApiController extends AdminBaseController {
+
+    @Autowired
+    protected OpenPlatform open;
+    /**
+     * 开始小程序授权
+     *
+     * @return
+     */
+    @RequestMapping(value = "/api/admin/start/auth")
+    @ResponseBody
+    public JsonResult startAuthorization() {
+        Integer shopId=this.shopId();
+
+        String url = this.mainUrl("/wechat/proxy/authorization/callback?shop_id=" + shopId);
+        try {
+            String authType = "2";
+            String bizAppId = null;
+            MpAuthShopRecord mp = saas.shop.mp.getAuthShopByShopId(shopId);
+            if (mp != null) {
+                bizAppId = mp.getAppId();
+            }
+            url = open.getWxOpenComponentService().getPreAuthUrl(url, authType, bizAppId);
+
+            return success(url);
+        } catch (WxErrorException e) {
+            e.printStackTrace();
+            return fail();
+        }
+    }
+
+    /**
+     * 开始公众号授权
+     *
+     * @return
+     */
+    @RequestMapping(value = "/api/admin/official/account/authorization")
+    @ResponseBody
+    public JsonResult startOfficialAccountAuthorization() {
+
+        String url = this.mainUrl("/wechat/proxy/authorization/callback?sys_id="+this.adminAuth.user().getSysId());
+
+        try {
+            String authType = "1";
+            String bizAppid = null;
+            url = open.getWxOpenComponentService().getPreAuthUrl(url, authType, bizAppid);
+
+            return success(url);
+        } catch (WxErrorException e) {
+            e.printStackTrace();
+            return fail();
+        }
+    }
 
 
     /**

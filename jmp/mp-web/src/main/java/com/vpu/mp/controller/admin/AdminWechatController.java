@@ -1,7 +1,6 @@
 package com.vpu.mp.controller.admin;
 
 import com.vpu.mp.db.main.tables.records.MpAuthShopRecord;
-import com.vpu.mp.service.foundation.data.JsonResult;
 import com.vpu.mp.service.pojo.shop.auth.MenuAuthority;
 import com.vpu.mp.service.wechat.OpenPlatform;
 import me.chanjar.weixin.common.error.WxErrorException;
@@ -36,56 +35,6 @@ public class AdminWechatController extends AdminBaseController {
     @ResponseBody
     public String testAuth() {
         return "<a href='/wechat/proxy/start/auth'>测试小程序授权</a>";
-    }
-
-    /**
-     * 开始小程序授权
-     *
-     * @return
-     */
-    @RequestMapping(value = "/api/wechat/proxy/start/auth")
-    @ResponseBody
-    public JsonResult startAuthorization() {
-        Integer shopId=this.shopId();
-
-        String url = this.mainUrl("/wechat/proxy/authorization/callback?shop_id=" + shopId);
-        try {
-            String authType = "2";
-            String bizAppId = null;
-            MpAuthShopRecord mp = saas.shop.mp.getAuthShopByShopId(shopId);
-            if (mp != null) {
-                bizAppId = mp.getAppId();
-            }
-            url = open.getWxOpenComponentService().getPreAuthUrl(url, authType, bizAppId);
-
-            return success(url);
-        } catch (WxErrorException e) {
-            e.printStackTrace();
-            return fail();
-        }
-    }
-
-    /**
-     * 开始公众号授权
-     *
-     * @return
-     */
-    @RequestMapping(value = "/api/wechat/proxy/official/account/authorization")
-    @ResponseBody
-    public JsonResult startOfficialAccountAuthorization() {
-
-        String url = this.mainUrl("/wechat/proxy/authorization/callback?sys_id="+this.adminAuth.user().getSysId());
-
-        try {
-            String authType = "1";
-            String bizAppid = null;
-            url = open.getWxOpenComponentService().getPreAuthUrl(url, authType, bizAppid);
-
-            return success(url);
-        } catch (WxErrorException e) {
-            e.printStackTrace();
-            return fail();
-        }
     }
 
 
