@@ -22,20 +22,25 @@ import me.chanjar.weixin.open.bean.result.WxOpenResult;
  */
 public class WxOpenComponentExtServiceImpl implements WxOpenComponentExtService {
 
+	static final String COMPONENT_TOKEN_KEY = "component_access_token";
+	static final String ACCESS_TOKEN_KEY = "access_token";
+	static final String METHOD_GET = "get";
+	static final String METHOD_POST = "post";
+
 	protected WxOpenService openService;
 
 	public WxOpenComponentExtServiceImpl(WxOpenService openService) {
 		this.openService = openService;
 	}
 
-
 	@Override
-	public WxOpenAuthorizerListResult getAuthorizerList(String componentAppid,Integer offset, Integer count) throws WxErrorException {
+	public WxOpenAuthorizerListResult getAuthorizerList(String componentAppid, Integer offset, Integer count)
+			throws WxErrorException {
 		JsonObject param = new JsonObject();
 		param.addProperty("component_appid", componentAppid);
 		param.addProperty("offset", offset);
 		param.addProperty("count", count);
-		String json = post( GET_AUTHORIZER_LIST_URL, param.toString());
+		String json = post(GET_AUTHORIZER_LIST_URL, param.toString(), ACCESS_TOKEN_KEY);
 		return WxOpenAuthorizerListResult.fromJson(json);
 	}
 
@@ -43,65 +48,66 @@ public class WxOpenComponentExtServiceImpl implements WxOpenComponentExtService 
 	public WxOpenGetResult getOpenAccount(String appId) throws WxErrorException {
 		JsonObject param = new JsonObject();
 		param.addProperty("appid", appId);
-		String json = post(CREATE_OPEN_GET_URL, param.toString());
+		String json = post(CREATE_OPEN_GET_URL, param.toString(), ACCESS_TOKEN_KEY);
 		return WxOpenGetResult.fromJson(json);
 	}
 
 	@Override
-	public WxOpenResult bindOpenAppId(String appId, String openAppId)  throws WxErrorException {
+	public WxOpenResult bindOpenAppId(String appId, String openAppId) throws WxErrorException {
 		JsonObject param = new JsonObject();
 		param.addProperty("appid", appId);
 		param.addProperty("open_appid", openAppId);
-		String json = post(BIND_OPEN_PLATFORM, param.toString());
+		String json = post(BIND_OPEN_PLATFORM, param.toString(), ACCESS_TOKEN_KEY);
 		return WxOpenGetResult.fromJson(json);
 	}
 
 	@Override
-	public WxOpenResult unbindOpenAppId(String appId,String openAppId) throws WxErrorException {
+	public WxOpenResult unbindOpenAppId(String appId, String openAppId) throws WxErrorException {
 		JsonObject param = new JsonObject();
 		param.addProperty("appid", appId);
 		param.addProperty("open_appid", openAppId);
-		String json = post(UNBIND_OPEN_PLATFORM, param.toString());
+		String json = post(UNBIND_OPEN_PLATFORM, param.toString(), ACCESS_TOKEN_KEY);
 		return WxOpenGetResult.fromJson(json);
 	}
-	
+
 	/**
 	 * 请求WxgetOpenComponentServiceImpl私有方法
-	 * @param method WxgetOpenComponentServiceImpl的私有方法get或者post
-	 * @param uri 
-	 * @param postData
+	 * 
+	 * @param method         WxgetOpenComponentServiceImpl的私有方法get或者post
+	 * @param uri
+	 * @param data
+	 * @param accessTokenKey
 	 * @return
 	 * @throws WxErrorException
 	 */
-	public String request(String method, String uri, String postData) throws WxErrorException {
-		Class<?>[] params = { String.class, String.class };
-		Method post;
+	public String request(String method, String uri, String data, String accessTokenKey) throws WxErrorException {
+		Class<?>[] postParams = { String.class, String.class };
+		Class<?>[] getParams = { String.class, String.class, String.class };
+		Method action;
 		try {
-			post = getOpenComponentService().getClass().getDeclaredMethod(method, params);
-			post.setAccessible(true);
-			return (String) post.invoke(getOpenComponentService(), uri, postData);
+			action = getOpenComponentService().getClass().getDeclaredMethod(method,
+					METHOD_POST.equals(method) ? postParams : getParams);
+			action.setAccessible(true);
+			return METHOD_POST.equals(method)
+					? (String) action.invoke(getOpenComponentService(), uri, data, accessTokenKey)
+					: (String) action.invoke(getOpenComponentService(), uri, accessTokenKey);
 		} catch (NoSuchMethodException | SecurityException | IllegalAccessException | IllegalArgumentException
 				| InvocationTargetException e) {
 			WxError error = WxError.builder().errorCode(-2).errorMsg(e.getMessage()).build();
 			throw new WxErrorException(error);
 		}
 	}
-	
+
 	protected WxOpenComponentService getOpenComponentService() {
 		return this.openService.getWxOpenComponentService();
 	}
 
-	public String post(String uri, String postData) throws WxErrorException {
-		return this.request("post", uri, postData);
+	public String post(String uri, String postData, String accessTokenKey) throws WxErrorException {
+		return this.request(METHOD_POST, uri, postData, accessTokenKey);
 	}
 
-	public String get(String uri, String queryParam) throws WxErrorException {
-		return this.request("get", uri, queryParam);
+	public String get(String uri, String accessTokenKey) throws WxErrorException {
+		return this.request(METHOD_GET, uri, null, accessTokenKey);
 	}
-	
-	public String get(String uri) throws WxErrorException {
-		return this.request("get", uri, null);
-	}
-	
 
 }
