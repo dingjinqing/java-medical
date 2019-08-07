@@ -42,7 +42,7 @@ public interface WxOpenAccountService {
 	 */
 	default WxOpenCreateResult createOpenAccount(String appId) throws WxErrorException {
 		JsonObject param = new JsonObject();
-		param.addProperty("app_id", appId);
+		param.addProperty("appid", appId);
 		String json = post(appId,CREATE_OPEN_ACCOUNT_URL, param.toString());
 		return WxOpenCreateResult.fromJson(json);
 	}
