@@ -58,6 +58,7 @@ export default {
   mounted () {
     grantAuthorizationRequest().then((res) => {
       if (res.error === 0) {
+        console.log(res.content)
         this.hrefDataOne = res.content
       }
     })

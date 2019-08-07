@@ -332,335 +332,335 @@
 </template>
 
 <script>
-  import { mapGetters } from 'vuex'
-  import { addCoountRequest, searchAccountRequest } from '@/api/system/accountList.js'
-  import VDistpicker from 'v-distpicker'
-  export default {
-    component: { VDistpicker },
-    data () {
-      return {
-        formData: {
-          userName: '',
-          password: '',
-          accountName: '',
-          maxSkuNum: '10000',
-          maxShopNum: '100',
-          buyTime: '',
-          endTime: '',
-          mobile: '',
-          company: '',
-          salesperson: '',
-          address: '',
-          provinc: '',
-          city: '',
-          area: '',
-          addCommentSwitch: false,
-          baseSale: false
-        },
-        pickerOptions: {
-          shortcuts: [{
-            text: '今天',
-            onClick (picker) {
-              picker.$emit('pick', new Date())
-            }
-          }, {
-            text: '昨天',
-            onClick (picker) {
-              const date = new Date()
-              date.setTime(date.getTime() - 3600 * 1000 * 24)
-              picker.$emit('pick', date)
-            }
-          }, {
-            text: '一周前',
-            onClick (picker) {
-              const date = new Date()
-              date.setTime(date.getTime() - 3600 * 1000 * 24 * 7)
-              picker.$emit('pick', date)
-            }
-          }]
-        },
-        mainData: {
-          currentPage3: 1,
-          state: '',
-          keywords: '',
-          company: ''
-        },
-        isSubLogin: false,
-        // options: [
-        //   { value: '选项1' },
-        //   { value: '选项2' },
-        //   { value: '选项3' },
-        //   { value: '选项4' }
-        // ],
-        // value: '',
-        totalRows: null,
-        pageRows: '',
-        currentPage: '',
-        currentPage3: 1,
-        pageCount: null,
-        pagination_b: true,
-        formTable: [{
-          usreName: '',
-          company: '',
-          state: '',
-          shopGrade: '',
-          shopNumber: '',
-          addTime: '',
-          buyTime: '',
-          endTime: '',
-          renewMoney: '',
-          mobile: ''
+import { mapGetters } from 'vuex'
+import { addCoountRequest, searchAccountRequest } from '@/api/system/accountList.js'
+import VDistpicker from 'v-distpicker'
+export default {
+  component: { VDistpicker },
+  data () {
+    return {
+      formData: {
+        userName: '',
+        password: '',
+        accountName: '',
+        maxSkuNum: '10000',
+        maxShopNum: '100',
+        buyTime: '',
+        endTime: '',
+        mobile: '',
+        company: '',
+        salesperson: '',
+        address: '',
+        provinc: '',
+        city: '',
+        area: '',
+        addCommentSwitch: false,
+        baseSale: false
+      },
+      pickerOptions: {
+        shortcuts: [{
+          text: '今天',
+          onClick (picker) {
+            picker.$emit('pick', new Date())
+          }
+        }, {
+          text: '昨天',
+          onClick (picker) {
+            const date = new Date()
+            date.setTime(date.getTime() - 3600 * 1000 * 24)
+            picker.$emit('pick', date)
+          }
+        }, {
+          text: '一周前',
+          onClick (picker) {
+            const date = new Date()
+            date.setTime(date.getTime() - 3600 * 1000 * 24 * 7)
+            picker.$emit('pick', date)
+          }
         }]
-      }
+      },
+      mainData: {
+        currentPage3: 1,
+        state: '',
+        keywords: '',
+        company: ''
+      },
+      isSubLogin: false,
+      // options: [
+      //   { value: '选项1' },
+      //   { value: '选项2' },
+      //   { value: '选项3' },
+      //   { value: '选项4' }
+      // ],
+      // value: '',
+      totalRows: null,
+      pageRows: '',
+      currentPage: '',
+      currentPage3: 1,
+      pageCount: null,
+      pagination_b: true,
+      formTable: [{
+        usreName: '',
+        company: '',
+        state: '',
+        shopGrade: '',
+        shopNumber: '',
+        addTime: '',
+        buyTime: '',
+        endTime: '',
+        renewMoney: '',
+        mobile: ''
+      }]
+    }
+  },
+  created () {
+    this.searchAccount()
+  },
+  computed: {
+    ...mapGetters(['proAndUrData']),
+    proAndUrData_ () {
+      return this.proAndUrData
+    }
+  },
+  watch: {
+    proAndUrData_ (newData, oldData) {
+      console.log(newData)
+      this.query()
+    }
+  },
+  methods: {
+    onSelected (data) {
+      this.formData.provinceCode = data.province.code
+      this.formData.cityCode = data.city.code
+      this.formData.districtCode = data.area.code
+      console.log(data)
+      // console.log(this.formData.districtCode)
     },
-    created () {
+    getProvinceCode (data) {
+      this.formData.provinceCode = data.code
+      // console.log(this.formData.provinceCode)
+    },
+    getCityCode (data) {
+      this.formData.cityCode = data.code
+      // console.log(this.formData.cityCode)
+    },
+    getDistrictCode (data) {
+      this.formData.districtCode = data.code
+      // console.log(this.formData.districtCode)
+    },
+
+    // 切换对应的两个tab
+    switchTab (subLogin) {
+      this.isSubLogin = subLogin
+    },
+    // 添加商家账户
+    save () {
+      let obj = {
+        'userName': '',
+        'password': '',
+        'state': '1',
+        'shopGrade': '1',
+        'maxSkuNum': '10000',
+        'maxShopNum': '100',
+        'provinceCode': '110000',
+        'cityCode': '110100',
+        'districtCode': '110101'
+      }
+      let params = Object.assign(obj, this.formData)
+      console.log(params)
+      addCoountRequest(params).then(res => {
+        console.log(res)
+        if (res.error === 0) {
+          this.$message({
+            message: '保存成功',
+            type: 'success'
+          })
+        } else {
+          this.$message({
+            message: res.message,
+            type: 'warning'
+          })
+        }
+      }).catch(() => {
+        this.$message.error('保存失败')
+      })
+    },
+    // currnentPage 改变时会触发
+    handleCurrentChange () {
       this.searchAccount()
     },
-    computed: {
-      ...mapGetters(['proAndUrData']),
-      proAndUrData_ () {
-        return this.proAndUrData
+    // ifendcase (state) {
+    //   if (state = 1) { return '哈哈哈' } else if (state == '2') { return '嗯嗯嗯' } else { return '进行中' }
+    // },
+    // 商家账号列表查询
+    searchAccount () {
+      let obj1 = {
+        'currentPage': this.currentPage3,
+        'pageRows': '20',
+        'state': '',
+        'keywords': '',
+        'company': ''
       }
-    },
-    watch: {
-      proAndUrData_ (newData, oldData) {
-        console.log(newData)
-        this.query()
-      }
-    },
-    methods: {
-      onSelected (data) {
-        this.formData.provinceCode = data.province.code
-        this.formData.cityCode = data.city.code
-        this.formData.districtCode = data.area.code
-        console.log(data)
-        // console.log(this.formData.districtCode)
-      },
-      getProvinceCode (data) {
-        this.formData.provinceCode = data.code
-        // console.log(this.formData.provinceCode)
-      },
-      getCityCode (data) {
-        this.formData.cityCode = data.code
-        // console.log(this.formData.cityCode)
-      },
-      getDistrictCode (data) {
-        this.formData.districtCode = data.code
-        // console.log(this.formData.districtCode)
-      },
+      let parameter = Object.assign(obj1, this.mainData)
+      searchAccountRequest(parameter).then((res) => {
+        console.log(res)
+        const { error, content } = res
+        if (error === 0) {
+          let formList = content.dataList
+          let pageObj = content.page
+          this.totalRows = pageObj.totalRows
+          this.currentPage = pageObj.currentPage
+          this.firstPage = pageObj.firstPage
+          this.lastPage = pageObj.lastPage
+          this.nextPage = pageObj.nextPage
+          this.pageCount = pageObj.pageCount
+          this.pageRows = pageObj.pageRows
 
-      // 切换对应的两个tab
-      switchTab (subLogin) {
-        this.isSubLogin = subLogin
-      },
-      // 添加商家账户
-      save () {
-        let obj = {
-          'userName': '',
-          'password': '',
-          'state': '1',
-          'shopGrade': '1',
-          'maxSkuNum': '10000',
-          'maxShopNum': '100',
-          'provinceCode': '110000',
-          'cityCode': '110100',
-          'districtCode': '110101'
+          this.formTable = formList
+          // console.log(this.formTable) // formTable是一个里面包含10个对象的数组
         }
-        let params = Object.assign(obj, this.formData)
-        console.log(params)
-        addCoountRequest(params).then(res => {
-          console.log(res)
-          if (res.error === 0) {
-            this.$message({
-              message: '保存成功',
-              type: 'success'
-            })
-          } else {
-            this.$message({
-              message: res.message,
-              type: 'warning'
-            })
-          }
-        }).catch(() => {
-          this.$message.error('保存失败')
-        })
-      },
-      // currnentPage 改变时会触发
-      handleCurrentChange () {
-        this.searchAccount()
-      },
-      // ifendcase (state) {
-      //   if (state = 1) { return '哈哈哈' } else if (state == '2') { return '嗯嗯嗯' } else { return '进行中' }
-      // },
-      // 商家账号列表查询
-      searchAccount () {
-        let obj1 = {
-          'currentPage': this.currentPage3,
-          'pageRows': '20',
-          'state': '',
-          'keywords': '',
-          'company': ''
-        }
-        let parameter = Object.assign(obj1, this.mainData)
-        searchAccountRequest(parameter).then((res) => {
-          console.log(res)
-          const { error, content } = res
-          if (error === 0) {
-            let formList = content.dataList
-            let pageObj = content.page
-            this.totalRows = pageObj.totalRows
-            this.currentPage = pageObj.currentPage
-            this.firstPage = pageObj.firstPage
-            this.lastPage = pageObj.lastPage
-            this.nextPage = pageObj.nextPage
-            this.pageCount = pageObj.pageCount
-            this.pageRows = pageObj.pageRows
-
-            this.formTable = formList
-            // console.log(this.formTable) // formTable是一个里面包含10个对象的数组
-          }
-        }).catch(() => {
-          this.$message.error('保存失败')
-        })
-      }
+      }).catch(() => {
+        this.$message.error('保存失败')
+      })
     }
   }
+}
 </script>
 
 <style scoped>
-  .outside {
-    width: 100%;
-    background: #e6e9f0;
-    overflow-y: scroll;
-    overflow-x: scroll;
-  }
-  .content {
-    width: 100%;
-    margin: 10px 10px;
-  }
-  .name {
-    background: #f5f5f5;
-    border-radius: 2px;
-    height: 34px;
-    line-height: 34px;
-    margin-bottom: 18px;
-  }
-  .name span {
-    margin-right: 5px;
-    font-size: 14px;
-    line-height: 24px;
-    height: 24px;
-    color: #999;
-  }
-  .name span:nth-child(1) {
-    color: #333;
-    margin-left: 15px;
-  }
-  .nav {
-    display: flex;
-    width: 100%;
-    height: 40px;
-    line-height: 40px;
-    text-align: center;
-    font-size: 14px;
-    background: #eef1f6;
-    cursor: default;
-  }
-  .nav_left {
-    width: 106px;
-  }
-  .nav_right {
-    width: 106px;
-  }
-  .title-active {
-    font-weight: 700;
-    border: 1px solid #ddd;
-    border-bottom-color: transparent;
-    background: #fff;
-    border-top: 2px solid green;
-    cursor: pointer;
-  }
-  .addInfo {
-    width: 100%;
-    height: 90px;
-    margin: 8px 0;
-    padding: 15px;
-    display: flex;
-    align-items: center;
-    border-radius: 2px;
-    /* border: 1px solid #000; */
-    background: #fff;
-  }
-  .info_wrapper {
-    width: 100%;
-    height: 60px;
-    padding: 15px;
-  }
-  .info_wrapper > select,
-  .info_wrapper > input {
-    width: 150px;
-    height: 30px;
-    padding-left: 12px;
-    border: 1px solid #ccc;
-  }
-  .info_wrapper > button {
-    width: 85px;
-    height: 30px;
-    margin-left: 15px;
-    border: 1px solid #5a8bff;
-    background: #5a8bff;
-    color: #fff;
-  }
-  .formtable {
-    width: 100%;
-    background: #f4f9fc;
-    /* border: 1px solid #000; */
-  }
-  .footer {
-    display: flex;
-    margin-top: 10px;
-    align-items: center;
-    justify-content: flex-end;
-  }
-  .footer > span {
-    font-size: 14px;
-  }
-  .infoForm {
-    padding: 15px;
-    margin-top: 8px;
-    margin-bottom: 8px;
-    border-radius: 2px;
-    background: #fff;
-  }
-  .infoWrapper {
-    padding: 15px;
-  }
-  .el-form-item {
-    font-size: 14px;
-    min-width: 400px;
-    margin: 7px 0;
-  }
-  .el-input {
-    width: 150px;
-  }
-  .el-select {
-    width: 150px;
-  }
-  .inputHeight > .el-input__inner {
-    height: 30px !important;
-  }
-  .save {
-    width: 52px;
-    height: 26px;
-    line-height: 26px;
-    background: #86a7cb;
-    background-color: #86a7cb;
-    font-size: 14px;
-    text-align: center;
-    cursor: pointer;
-    border-radius: 2px;
-    color: #fff;
-    left: 200px;
-    margin-left: 118px;
-  }
+.outside {
+  width: 100%;
+  background: #e6e9f0;
+  overflow-y: scroll;
+  overflow-x: scroll;
+}
+.content {
+  width: 100%;
+  margin: 10px 10px;
+}
+.name {
+  background: #f5f5f5;
+  border-radius: 2px;
+  height: 34px;
+  line-height: 34px;
+  margin-bottom: 18px;
+}
+.name span {
+  margin-right: 5px;
+  font-size: 14px;
+  line-height: 24px;
+  height: 24px;
+  color: #999;
+}
+.name span:nth-child(1) {
+  color: #333;
+  margin-left: 15px;
+}
+.nav {
+  display: flex;
+  width: 100%;
+  height: 40px;
+  line-height: 40px;
+  text-align: center;
+  font-size: 14px;
+  background: #eef1f6;
+  cursor: default;
+}
+.nav_left {
+  width: 106px;
+}
+.nav_right {
+  width: 106px;
+}
+.title-active {
+  font-weight: 700;
+  border: 1px solid #ddd;
+  border-bottom-color: transparent;
+  background: #fff;
+  border-top: 2px solid green;
+  cursor: pointer;
+}
+.addInfo {
+  width: 100%;
+  height: 90px;
+  margin: 8px 0;
+  padding: 15px;
+  display: flex;
+  align-items: center;
+  border-radius: 2px;
+  /* border: 1px solid #000; */
+  background: #fff;
+}
+.info_wrapper {
+  width: 100%;
+  height: 60px;
+  padding: 15px;
+}
+.info_wrapper > select,
+.info_wrapper > input {
+  width: 150px;
+  height: 30px;
+  padding-left: 12px;
+  border: 1px solid #ccc;
+}
+.info_wrapper > button {
+  width: 85px;
+  height: 30px;
+  margin-left: 15px;
+  border: 1px solid #5a8bff;
+  background: #5a8bff;
+  color: #fff;
+}
+.formtable {
+  width: 100%;
+  background: #f4f9fc;
+  /* border: 1px solid #000; */
+}
+.footer {
+  display: flex;
+  margin-top: 10px;
+  align-items: center;
+  justify-content: flex-end;
+}
+.footer > span {
+  font-size: 14px;
+}
+.infoForm {
+  padding: 15px;
+  margin-top: 8px;
+  margin-bottom: 8px;
+  border-radius: 2px;
+  background: #fff;
+}
+.infoWrapper {
+  padding: 15px;
+}
+.el-form-item {
+  font-size: 14px;
+  min-width: 400px;
+  margin: 7px 0;
+}
+.el-input {
+  width: 150px;
+}
+.el-select {
+  width: 150px;
+}
+.inputHeight > .el-input__inner {
+  height: 30px !important;
+}
+.save {
+  width: 52px;
+  height: 26px;
+  line-height: 26px;
+  background: #86a7cb;
+  background-color: #86a7cb;
+  font-size: 14px;
+  text-align: center;
+  cursor: pointer;
+  border-radius: 2px;
+  color: #fff;
+  left: 200px;
+  margin-left: 118px;
+}
 </style>
