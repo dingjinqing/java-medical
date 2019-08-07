@@ -4,7 +4,6 @@ import com.vpu.mp.service.wechat.api.WxOpenAccountService;
 
 import me.chanjar.weixin.common.error.WxErrorException;
 import me.chanjar.weixin.mp.api.WxMpService;
-import me.chanjar.weixin.open.api.WxOpenMaService;
 import me.chanjar.weixin.open.api.WxOpenService;
 
 /**
