@@ -3,20 +3,22 @@
  */
 package com.vpu.mp.service.pojo.saas.shop.mp;
 
-
 import java.sql.Timestamp;
 
 import lombok.Data;
 
-
-@Data 
-public class MpVersionVo{
-    private Integer   templateId;
-    private String    userVersion;
-    private String    userDesc;
-    private Timestamp createTime;
-    private Byte      delFlag;
-    private Byte      currentInUse;
-    private Byte      packageVersion;
+@Data
+public class MpVersionVo {
+	private Integer templateId;
+	private String userVersion;
+	private String userDesc;
+	private Timestamp createTime;
+	private Byte delFlag;
+	private Byte currentInUse;
+	private Byte packageVersion;
+	
+	private String source_miniprogram;
+	private String source_miniprogram_appid;
+	private String developer;
 
 }
