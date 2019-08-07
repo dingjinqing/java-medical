@@ -46,6 +46,7 @@ public class GroupDrawJoinUserService extends ShopBaseService {
                 .leftJoin(USER.as(ALIAS_OLD)).on(USER.as(ALIAS_OLD).USER_ID.eq(GROUP_DRAW_INVITE.INVITE_USER_ID))
                 .where();
         buildInvitedUserOptions(select, param);
+        select.orderBy(GROUP_DRAW_INVITE.CREATE_TIME.desc());
         return getPageResult(select, param, InvitedUserListVo.class);
     }
 

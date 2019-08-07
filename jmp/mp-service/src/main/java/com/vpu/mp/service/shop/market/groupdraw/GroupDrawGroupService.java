@@ -38,6 +38,7 @@ public class GroupDrawGroupService extends ShopBaseService {
             .leftJoin(ORDER_GOODS).on(JOIN_GROUP_LIST.GOODS_ID.eq(ORDER_GOODS.GOODS_ID))
             .where();
         buildOptions(select, param);
+        select.orderBy(JOIN_GROUP_LIST.END_TIME.desc());
         return getPageResult(select, param, GroupListVo.class);
     }
 
