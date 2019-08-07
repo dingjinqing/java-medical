@@ -15,7 +15,7 @@ if (process.env.NODE_ENV === 'development') {
   // baseURL = 'https://www.production.com'
   // localStorage.setItem('V-ImageHost', 'http://mpimg2.weipubao.cn')
 }
-console.log(process.env.NODE_ENV, baseURL)
+// console.log(process.env.NODE_ENV, baseURL)
 // 创建axios实例
 const service = axios.create({
   baseURL: baseURL, // api的base_url
@@ -25,13 +25,13 @@ const service = axios.create({
 // request拦截器
 service.interceptors.request.use(
   config => {
-    console.log(config)
-    console.log(
-      localStorage.getItem('contentType'),
-      localStorage.getItem('WEPUBAO_LANGUAGE')
-    )
+    // console.log(config)
+    // console.log(
+    //   localStorage.getItem('contentType'),
+    //   localStorage.getItem('WEPUBAO_LANGUAGE')
+    // )
     config.headers['Content-Type'] = localStorage.getItem('contentType')
-    console.log(Cookies.get('V-Token'))
+    // console.log(Cookies.get('V-Token'))
     if (Cookies.get('V-Token')) {
       config.headers['V-Token'] = Cookies.get('V-Token')
     }
@@ -46,7 +46,7 @@ service.interceptors.request.use(
   error => {
     // Do something with request error
     Message.error({ message: '请求超时!' })
-    console.log('err：' + error) // for debug
+    // console.log('err：' + error) // for debug
     Promise.reject(error)
   }
 )
@@ -95,7 +95,7 @@ service.interceptors.response.use(
     } else {
       error.message = '服务正在处理，请稍后。'
     }
-    console.log(flag)
+    // console.log(flag)
     if (flag === 'false') return
     Message.error({
       message: error.message,

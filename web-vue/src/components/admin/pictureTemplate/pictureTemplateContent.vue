@@ -1,60 +1,66 @@
 <template>
   <div class="pic_container">
-    <div style="background-color:#fff;padding-bottom: 15px;">
-      <!-- dialog_top -->
+    <div style="background-color:#fff;">
+      <!-- 浏览图片的头部 -->
       <div class="dialog_top">
-        <el-upload
-          class="upload-demo"
-          :before-upload="beforeUpLoad"
-          multiple
-          :limit="5"
-          :on-exceed="handleExceed"
-          :show-file-list="false"
-          action=""
-        >
-          <el-button
-            size="small"
-            type="primary"
-          >{{$t('imgageDalog.upload')}}</el-button>
-
-          <div
-            @mouseover="tip_over()"
-            @mouseleave="tip_leave()"
-            class="title_tip"
-          >{{$t('imgsSpace.tipTitle')}}<img :src="tip_img">
-            <div
-              class="tip_hidden"
-              v-if="tip_hidden_flag"
+        <el-row>
+          <el-col :span="3">
+            <el-upload
+              :before-upload="beforeUpLoad"
+              multiple
+              :limit="5"
+              :on-exceed="handleExceed"
+              :show-file-list="false"
+              action=""
             >
-              <div class="system_info_content_top">{{$t('imgsSpace.hiddleTitle')}}</div>
-              <div class="system_info_content_bottom">
-                <el-button
-                  type="primary"
-                  size="mini"
-                >{{$t('imgsSpace.modeText')}}</el-button>
+              <el-button
+                size="small"
+                type="primary"
+                class="upload_btn"
+              >{{$t('imgageDalog.upload')}}</el-button>
+
+            </el-upload>
+          </el-col>
+          <el-col :span="18">
+            <div
+              @mouseover="tip_over()"
+              @mouseleave="tip_leave()"
+              class="title_tip"
+            >{{$t('imgsSpace.tipTitle')}}<img :src="tip_img">
+              <div
+                class="tip_hidden"
+                v-if="tip_hidden_flag"
+              >
+                <div class="system_info_content_top">{{$t('imgsSpace.hiddleTitle')}}</div>
+                <div class="system_info_content_bottom">
+                  <el-button
+                    @click="understandMore"
+                    type="primary"
+                    size="mini"
+                  >{{$t('imgsSpace.modeText')}}</el-button>
+                </div>
               </div>
             </div>
-          </div>
-          <div
-            slot="tip"
-            class="tips"
-            :class="imageDalogTip_lineHeight"
-          >
-            <img :src="imgUrl[0].img_1">
-            {{$t('imgageDalog.tip')}}</div>
-        </el-upload>
+          </el-col>
+        </el-row>
+
+        <div
+          slot="tip"
+          class="tips"
+          :class="imageDalogTip_lineHeight"
+        >
+          <img :src="imgUrl[0].img_1">
+          {{$t('imgageDalog.tip')}}
+        </div>
+
       </div>
-      <!-- dialog_middle -->
+      <!-- 浏览图片的内容 -->
       <div class="dialog_middle">
         <div class="dialog_middle_top">
-          <Tree
-            pageIndex='pictureSpace'
-            class="tree"
-          />
+          <Tree pageIndex='pictureSpace' />
           <div class="dialog_middle_right_box">
             <div class="right_top">
               <el-select
-                @change="filter"
                 v-model="value"
                 placeholder="请选择"
                 size='mini'
@@ -188,9 +194,7 @@
         </div>
 
       </div>
-
     </div>
-
     <!--批量移动弹窗-->
     <el-dialog
       title="提示"
@@ -231,7 +235,6 @@ export default {
   components: { Tree },
   data () {
     return {
-
       imgUrl: [
         {
           img_1: this.$imageHost + '/image/admin/notice_img.png'
@@ -260,6 +263,7 @@ export default {
       options_move: [],
       value_move: '',
       allNodesName: [],
+      // 图片上传
       firstNodeId: '',
       totalRows: null,
       currentPage: '',
@@ -299,14 +303,16 @@ export default {
   },
   mounted () {
     this.value = this.options[0].value
+
     // console.log(this.clickNode)
     // 初始化语言
     this.langDefault()
   },
+
   methods: {
-    // 选择器改变的时候筛选图片
-    filter (val) {
-      console.log(val)
+    // 了解更多
+    understandMore () {
+      alert('了解更多')
     },
     // 初始化点击节点数据
     Initialization_nodeClick (data) {
@@ -341,7 +347,7 @@ export default {
           this.handleAllNodes(item.child)
         }
       })
-      // // console.log(item.chil)
+      // console.log(item.chil)
     },
     // 图片分组查询
     queryImgs () {
@@ -357,6 +363,9 @@ export default {
       }
       // console.log(obj)
       queryImgsRequest(obj).then((res) => {
+        // console.log(res)
+        // console.log(res.content.dataList)
+
         if (res.error === 0) {
           // console.log(res.content.dataList.length)
           if (res.content.dataList.length === 0) {
@@ -378,7 +387,7 @@ export default {
             item.imgIndex = ''
 
             // item.imgUrl = item.imgUrl.split('cn')[1]
-            // // console.log(item.imgUrl)
+            // console.log(item.imgUrl)
           })
           this.img_list = res.content.dataList
           this.right_content_hidden = true
@@ -398,33 +407,49 @@ export default {
         }
       })
     },
-    upLoadImg ({ file, imgSize }) {
-      let size = file.size / 1024 / 1024 < imgSize
-      if (!size) this.$message.error(`请上传小于${size}的图片`)
+    // 图片上传前开始
+    beforeUpLoad (file) {
+      let that = this
+      let is1M = file.size / 1024 / 1024 < 5 // 限制小于1M
+      if (!is1M) this.$message.error('请上传小于5M的图片')
+
+      // let width = 654 // 限制图片尺寸为654X270
+      // let height = 270
       let _URL = window.URL || window.webkitURL
       let img = new Image()
-      let _this = this
+      // 图片加载遇到问题
+      img.onerror = function () {
+        console.log('There is something wrong')
+      }
+      // 图片加载完成的时候
       img.onload = function () {
+        // this.upImgWidth = img.width
+        // this.upImgHeight = img.height
+        console.log(that.firstNodeId)
         let fd = new FormData()
         fd.append('file', file)
         fd.append('needImgWidth', img.width)
         fd.append('needImgHeight', img.height)
-        fd.append('imgCatId', _this.firstNodeId)
-        upmoreImgsRequest(fd).then((res) => {
+        fd.append('imgCatId', that.firstNodeId)
+        upmoreImgsRequest({
+          'needImgWidth': 1,
+          'needImgHeight': 1,
+          'imgCatId': 1,
+          'uploadFileId': 'aaa'
+        }).then((res) => {
           console.log(res)
           if (res.error === 0) {
-            _this.detailImgsSearch()
+            that.detailImgsSearch()
           }
         })
+        // let valid = img.width === width && img.height === height
       }
+      console.log(_URL.createObjectURL(file))
       img.src = _URL.createObjectURL(file)
-    },
-    // 图片上传前的钩子
-    beforeUpLoad (file) {
-      this.upLoadImg({ file, imgSize: 5 })
 
-      return false // 停止上传
+      return false
     },
+    // 图片上传前结束
     // 文件数量超出限制钩子
     handleExceed () {
       this.$message.error('单次上传图片数量不能超过5张')
@@ -454,11 +479,11 @@ export default {
     },
     // 鼠标划入
     enter (index) {
-      // // console.log(index)
+      // console.log(index)
       // this.mask_flag = !this.mask_flag
       // this.dim_flag = !this.dim_flag
       this.img_list[index].imgIndex = index
-      // // console.log(this.img_list[index].imgIndex)
+      // console.log(this.img_list[index].imgIndex)
     },
     tip_over () {
       this.tip_hidden_flag = true
@@ -468,7 +493,7 @@ export default {
       // this.mask_flag = !this.mask_flag
       // this.dim_flag = !this.dim_flag
       this.img_list[index].imgIndex = ''
-      // // console.log(this.img_list[index].imgIndex)
+      // console.log(this.img_list[index].imgIndex)
     },
     // 头部问号说明
     tip_leave () {
@@ -508,7 +533,7 @@ export default {
         imageIds: arr
       }
       imgsdeleteRequest(obj).then((res) => {
-        // console.log(res)
+        console.log(res)
         if (res.error === 0) {
           this.b_checked = false
           this.detailImgsSearch()
@@ -552,13 +577,13 @@ export default {
       })
       this.dialogVisible = false
     },
-    // 图片精确查询--------------start
+    // 图片精确查询
     detailImgsSearch () {
       // console.log(this.value, '---', this.imgNameInput)
       // console.log(this.firstNodeId)
       // console.log(this.options)
       // let id = this.options.filter((item, index) => {
-      //   // console.log(item.label)
+      //   console.log(item.label)
       //   return item.label === this.value
       // })
       let pageIndex = ''
@@ -576,30 +601,29 @@ export default {
         'needImgHeight': '',
         'uploadSortId': this.value
       }
+      // console.log(obj)
       queryImgsRequest(obj).then((res) => {
         if (res.error === 0) {
           if (res.content.dataList.length === 0) {
             this.right_content_hidden = false
             return
           }
-          console.log(res.content.dataList)
-          this.totalRows = res.content.page.totalRows // 总行数
-          this.currentPage = res.content.page.currentPage // 当前页码
-          this.pageCount = res.content.page.pageCount // 总页数
+          this.totalRows = res.content.page.totalRows
+          this.currentPage = res.content.page.currentPage
+          this.pageCount = res.content.page.pageCount
           res.content.dataList.map((item, index) => {
             item.checked = false
             item.imgIndex = ''
 
             // item.imgUrl = item.imgUrl.split('cn')[1]
-            // // console.log(item.imgUrl)
+            // console.log(item.imgUrl)
           })
-
           this.img_list = res.content.dataList
           this.right_content_hidden = true
         }
+        // console.log(res)
       })
     }
-    // 图片精确查询--------------end
   }
 }
 </script>
@@ -607,7 +631,7 @@ export default {
 .img_sel {
   width: 18px;
   height: 18px;
-  background: url(../../../../../../assets/adminImg/img_sel.png) no-repeat;
+  background: url(../../../assets/adminImg/img_sel.png) no-repeat;
   position: absolute;
   right: -9px;
   top: -9px;
@@ -630,6 +654,9 @@ export default {
 }
 .system_info_content_bottom {
   padding-top: 7px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
 .tip_hidden {
   position: absolute;
@@ -661,8 +688,8 @@ export default {
 }
 .pic_container {
   padding: 10px;
-  padding-right: 23px;
-  min-width: 1400px;
+
+  min-width: 100%;
 }
 .imageDalog_p_height {
   display: flex;

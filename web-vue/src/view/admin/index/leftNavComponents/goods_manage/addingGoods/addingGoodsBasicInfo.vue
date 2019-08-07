@@ -17,7 +17,10 @@
         prop="productName"
       >
         <el-col :span="16">
-          <el-input v-model="basicInformation.productName"></el-input>
+          <el-input
+            v-model="basicInformation.productName"
+            size="small"
+          ></el-input>
         </el-col>
 
       </el-form-item>
@@ -26,7 +29,10 @@
         prop="productAd"
       >
         <el-col :span="16">
-          <el-input v-model="basicInformation.productAd"></el-input>
+          <el-input
+            v-model="basicInformation.productAd"
+            size="small"
+          ></el-input>
         </el-col>
 
       </el-form-item>
@@ -35,7 +41,10 @@
         prop="productCode"
       >
         <el-col :span="8">
-          <el-input v-model="basicInformation.productCode"></el-input>
+          <el-input
+            v-model="basicInformation.productCode"
+            size="small"
+          ></el-input>
         </el-col>
         <span style="color:#999;margin-left:15px;">不填则由系统自动生成货号</span>
       </el-form-item>
@@ -49,6 +58,7 @@
       >
         <el-row>
           <el-select
+            size="small"
             v-model="value"
             placeholder="请选择平台分类"
             @change='handleChange'
@@ -62,6 +72,7 @@
             </el-option>
           </el-select>
           <el-select
+            size="small"
             v-show="second"
             placeholder="请选择"
             v-model="value2"
@@ -76,6 +87,7 @@
             </el-option>
           </el-select>
           <el-select
+            size="small"
             v-show="third"
             placeholder="请选择"
             v-model="value3"
@@ -106,11 +118,8 @@
       <el-form-item
         label="商品主图："
         prop="productMainPicture"
-        :rules="[
-              { required: true},
-              ]"
+        :rules="[{ required: true},]"
       >
-        <!-- 商品主图上传 -->
         <el-row>
           <el-col :span='3'>
             <section
@@ -119,7 +128,7 @@
             >
               <img
                 class="upLoadImg"
-                src="http://mpdevimg2.weipubao.cn/image/admin/add_img.png"
+                src="../../../../../../../static/image/admin/add_img.png"
                 alt="商品主图上传"
               >
             </section>
@@ -156,6 +165,7 @@
             <el-row>
               <el-col :span="5">
                 <el-select
+                  size="small"
                   @change="unitChangeHandle"
                   v-model="unit_value"
                   placeholder="请选择单位"
@@ -174,6 +184,7 @@
                 class="customize"
               >
                 <el-input
+                  size="small"
                   @blur="customize_value"
                   v-model="moreConfiguration.customize"
                   placeholder="长度限制为3个中文字符"
@@ -190,6 +201,7 @@
           >
 
             <el-select
+              size="small"
               v-model="moreConfiguration_unit"
               clearable
               placeholder="商家分类"
@@ -208,6 +220,7 @@
             prop="moreConfiguration_unit"
           >
             <el-select
+              size="small"
               v-model="moreConfiguration_unit"
               clearable
               placeholder="商家标签"
@@ -283,45 +296,208 @@
     <section class="basicInformation">
       库存/价格信息
     </section>
+    <el-form
+      :model="inventoryAndPrice"
+      :rules="inventoryAndPrice"
+      ref="inventoryAndPrice"
+      label-width="120px"
+      class="inventoryAndPrice"
+    >
+      <el-form-item
+        label-width="120px"
+        label="商品规格："
+        prop="productSpecifications"
+      >
+      </el-form-item>
+      <el-form-item
+        label-width="120px"
+        label="商品库存："
+        prop="commodityStocks"
+      >
+      </el-form-item>
+      <el-form-item
+        label-width="120px"
+        label="商品价格："
+        prop="commodityPrice"
+      >
+      </el-form-item>
+      <el-form-item
+        label-width="120px"
+        label="市场价格："
+        prop="marketPrice"
+      >
+      </el-form-item>
+      <el-form-item
+        label-width="120px"
+        label="会员价："
+        prop="memberPrice"
+      >
+      </el-form-item>
+    </el-form>
     <section class="basicInformation">
       配送信息
     </section>
+    <el-form
+      :model="delivery"
+      :rules="delivery"
+      ref="delivery"
+      label-width="120px"
+      class="delivery"
+    >
+      <el-form-item
+        label="运费模板："
+        prop="shipping"
+        :rules="[{ required: true},]"
+      >
+        <el-select
+          size="small"
+          v-model="freight"
+          filterable
+          placeholder="请选择"
+        >
+          <el-option
+            v-for="item in freight_options"
+            :key="item.value"
+            :label="item.label"
+            :value="item.value"
+          >
+          </el-option>
+
+        </el-select>
+        <el-link
+          class="el_link"
+          type="primary"
+          :underline="false"
+        >刷新</el-link>|
+        <el-link
+          class="el_link"
+          type="primary"
+          :underline="false"
+        >新建模板</el-link>|
+        <el-link
+          class="el_link"
+          type="primary"
+          :underline="false"
+        >管理模板</el-link>
+        <el-row class="ten">
+          店铺统一运费：10元
+          <el-link
+            type="primary"
+            :underline="false"
+            class="detail"
+          >查看详细</el-link>
+        </el-row>
+      </el-form-item>
+      <el-form-item
+        label-width="120px"
+        label="商品重量："
+        prop="weight"
+      >
+        <el-input
+          size="small"
+          v-model="delivery.weight"
+          style="width:160px;margin-right:8px"
+        >
+        </el-input>Kg
+      </el-form-item>
+      <el-form-item
+        label-width="120px"
+        label="发货地："
+        prop="place"
+      >
+        <el-input
+          size="small"
+          v-model="delivery.place"
+          style="width:260px;margin-right:8px"
+        >
+        </el-input>
+        <span>最多填写15个字</span>
+      </el-form-item>
+    </el-form>
     <section class="basicInformation">
       其他信息
     </section>
-    <!-- form 表单结构 start -->
     <el-form
-      ref="otherInfo"
-      :model="otherInfo"
-      label-width="100px"
+      :model="other"
+      :rules="other"
+      ref="other"
+      label-width="120px"
+      class="other"
     >
-      <el-form-item label="会员专享商品:">
-        <!-- `checked` 为 true 或 false -->
+
+      <el-form-item
+        label="会员专享商品："
+        prop="member"
+      >
         <el-checkbox v-model="checked">用户持有会员卡才可以购买此商品</el-checkbox>
-        <el-select
-          v-model="membershipCardSelection"
-          clearable
-          placeholder="请选择会员卡"
-        >
-        </el-select>
-        <span>
+        <el-row v-show="checked ===true">
+          <el-select
+            size="small"
+            v-model="membershipCard"
+            multiple
+            placeholder="请选择会员卡"
+          >
+            <el-option
+              v-for="item in membershipCard_options"
+              :key="item.value"
+              :label="item.label"
+              :value="item.value"
+            >
+            </el-option>
+          </el-select>
           <el-link
+            class="el_link"
             type="primary"
             :underline="false"
-          >刷新</el-link>
-          |
+          >刷新</el-link>|
           <el-link
+            class="el_link"
             type="primary"
             :underline="false"
-          >新建会员卡</el-link>
-          |
+          >新建会员卡</el-link>|
           <el-link
+            class="el_link"
             type="primary"
             :underline="false"
           >管理会员卡</el-link>
-        </span>
+        </el-row>
+      </el-form-item>
+
+      <el-form-item
+        label="上下架："
+        prop="upAndDown"
+      >
+
+        <el-radio-group v-model="radio">
+          <el-row>
+            <el-radio :label="3">立即上架售卖</el-radio>
+          </el-row>
+          <el-row class="middle">
+            <el-col :span="10">
+              <el-radio :label="6">自定义上架时间</el-radio>
+            </el-col>
+            <el-col :span="10">
+              <el-date-picker
+                size="small"
+                v-model="date_value"
+                align="right"
+                type="date"
+                placeholder="选择上架时间"
+                :picker-options="pickerOptions"
+              >
+              </el-date-picker>
+            </el-col>
+
+          </el-row>
+          <el-row>
+            <el-radio :label="9">暂不售卖，放入仓库</el-radio>
+          </el-row>
+
+        </el-radio-group>
+
       </el-form-item>
     </el-form>
+
     <!-- footer -->
     <div class="addingGoodsFooter">
       <section class="addingGoodsFooter">
@@ -342,12 +518,11 @@
       width="80%"
       :before-close="handleClose"
     >
-
       <span
         slot="title"
         class="dialog_hearder"
       >浏览图片</span>
-      <upLoadForPicture />
+      <pictureTemplate />
       <span
         slot="footer"
         class="dialog-footer"
@@ -367,16 +542,19 @@
   </div>
 </template>
 <script>
-import upLoadForPicture from '@/components/admin/upLoadForPicture/upLoadForPicture'
+// api
+import { deliverTemplatelist } from '@/api/admin/goods_manage/deliver/deliver'
+// components
+import pictureTemplate from '@/components/admin/pictureTemplate/pictureTemplateContent'
 import { selectPlatformClassification } from '@/api/admin/addingGoods/addingGoodsBasicInfo'
 export default {
-  components: { upLoadForPicture },
+  components: { pictureTemplate },
   props: {
     active: Number
   },
-
   created () {
     this.init()
+    this.fetchDeliverTemplatelist()
   },
   data () {
     return {
@@ -478,17 +656,82 @@ export default {
       },
       imageUrl: '',
       activeName: '1',
-      // 视频上传相关 data
-      // 其他信息 -----------------
-      otherInfo: {
+      // 库存/价格信息---- start
+      inventoryAndPrice: {},
+      // 库存/价格信息---- end
+      // 配送信息 -------- start
+      delivery: {
+        weight: '',
+        place: ''
+      },
+      freight_options: [],
+      freight: '',
+      // 配送信息 -------- end
+      // 其他信息 -------- start
+      other: { member: '', upAndDown: '' },
+      checked: false,
+      membershipCard: [],
+      membershipCard_options: [{
+        value: '1',
+        label: '储值卡11'
+      }, {
+        value: '2',
+        label: '开卡送券'
+      }, {
+        value: '3',
+        label: '余额'
+      }, {
+        value: '4',
+        label: '会员卡余额'
+      }, {
+        value: '5',
+        label: '省钱月卡'
+      }, {
+        value: '6',
+        label: '黄金会员卡'
+      }, {
+        value: '7',
+        label: '108度会员卡'
+      }],
+      radio: 3,
+      pickerOptions: {
+
+        shortcuts: [{
+          text: '今天',
+          onClick (picker) {
+            picker.$emit('pick', new Date())
+          }
+        }, {
+          text: '昨天',
+          onClick (picker) {
+            const date = new Date()
+            date.setTime(date.getTime() - 3600 * 1000 * 24)
+            picker.$emit('pick', date)
+          }
+        }, {
+          text: '一周前',
+          onClick (picker) {
+            const date = new Date()
+            date.setTime(date.getTime() - 3600 * 1000 * 24 * 7)
+            picker.$emit('pick', date)
+          }
+        }]
 
       },
-      checked: true,
-      membershipCardSelection: ''
-
+      date_value: ''
+      // 其他信息 -------- end
     }
   },
   methods: {
+    fetchDeliverTemplatelist () {
+      let params = {
+        'page': {
+          'currentPage': '1',
+          'pageRows': '20'
+        }
+      }
+      deliverTemplatelist(params).then(res => console.log(res)).catch(err => console.log(err))
+    },
     // 平台分类
     handleChange (value) {
       selectPlatformClassification(value).then(res => {
@@ -561,6 +804,12 @@ export default {
 }
 </script>
 <style scoped>
+.middle {
+  margin: 20px 0;
+  display: flex;
+  /* justify-content: center; */
+  align-items: center;
+}
 .basicInformation {
   font-weight: bold;
   height: 40px;
@@ -606,11 +855,22 @@ export default {
 .dialog_hearder {
   color: #333;
 }
-.expandAndCollapse {
-  color: red;
-  background-color: skyblue;
-}
+
 .customize {
   margin-left: 20px;
+}
+.el_link {
+  margin: 0 8px;
+}
+.ten {
+  padding: 0 20px;
+  color: #333;
+  margin-top: 10px;
+  background: #f5f5f5;
+  width: 920px;
+  height: 46px;
+}
+.detail {
+  float: right;
 }
 </style>
