@@ -13,7 +13,7 @@ import javax.validation.constraints.NotNull;
 public class AppletsJumpUpdatePrarm {
 
     @NotNull
-    private int id;
+    private Integer id;
     @NotNull
-    private int flag;
+    private Integer flag;
 }

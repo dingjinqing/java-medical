@@ -22,6 +22,7 @@ import com.vpu.mp.db.shop.tables.*;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class Tables {
 
+    public static final LotteryPrize LOTTERY_PRIZE = LotteryPrize.LOTTERY_PRIZE;
     public static final FreeShippingRule FREE_SHIPPING_RULE = FreeShippingRule.FREE_SHIPPING_RULE;
     public static final FreeShipping FREE_SHIPPING = FreeShipping.FREE_SHIPPING;
     public static final GroupBuyList GROUP_BUY_LIST = GroupBuyList.GROUP_BUY_LIST;

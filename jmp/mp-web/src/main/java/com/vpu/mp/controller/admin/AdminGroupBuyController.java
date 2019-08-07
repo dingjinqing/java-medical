@@ -180,8 +180,7 @@ public class AdminGroupBuyController extends AdminBaseController {
      */
     @PostMapping("/admin/market/groupbuy/analysis")
     public JsonResult groupBuyAnalysis(@RequestBody GroupBuyAnalysisParam param) {
-        shop().groupBuy.groupBuyAnalysis(param);
-        return success();
+        return success(shop().groupBuy.groupBuyAnalysis(param));
     }
 
 

@@ -8,10 +8,7 @@ import static org.jooq.impl.DSL.date;
 import java.sql.Date;
 import java.util.Map;
 
-import org.jooq.Field;
-import org.jooq.Record;
-import org.jooq.SelectJoinStep;
-import org.jooq.SelectWhereStep;
+import org.jooq.*;
 import org.jooq.tools.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -170,6 +167,9 @@ public class MemberService extends ShopBaseService {
 		return user;
 	}
 
+	public <T> T getUserFieldById(Integer userId, SelectField<T> field){
+		return db().select(field).from(USER).where(USER.USER_ID.eq(userId)).fetchOne().component1();
+	}
 
 	/**
 	 *  通过活动新增用户

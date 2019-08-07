@@ -1,6 +1,10 @@
 package com.vpu.mp.service.shop;
 
 
+import com.vpu.mp.service.shop.market.lottery.LotteryService;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
 import com.vpu.mp.service.shop.config.ConfigService;
 import com.vpu.mp.service.shop.config.ShopBasicConfigService;
 import com.vpu.mp.service.shop.config.TradeService;
@@ -103,6 +107,10 @@ public class ShopApplication  {
 	 * 满免包邮
 	 */
 	@Autowired public FreeShippingService freeShipping;
+	/**
+	 * 幸运抽奖
+	 */
+	@Autowired public LotteryService lottery;
 
 	@Autowired public ShopTaskService shopTaskService;
 	

@@ -1,15 +1,20 @@
 package com.vpu.mp.service.shop.market.goupbuy;
 
 
-import static com.vpu.mp.db.shop.Tables.GROUP_BUY_DEFINE;
-import static com.vpu.mp.db.shop.Tables.GROUP_BUY_PRODUCT_DEFINE;
-
-import java.util.List;
-
+import com.vpu.mp.db.shop.tables.records.GroupBuyDefineRecord;
+import com.vpu.mp.db.shop.tables.records.GroupBuyProductDefineRecord;
+import com.vpu.mp.service.foundation.data.DelFlag;
+import com.vpu.mp.service.foundation.service.ShopBaseService;
+import com.vpu.mp.service.foundation.util.PageResult;
+import com.vpu.mp.service.foundation.util.Util;
 import com.vpu.mp.service.pojo.shop.market.MarketOrderListParam;
 import com.vpu.mp.service.pojo.shop.market.MarketSourceUserListParam;
 import com.vpu.mp.service.pojo.shop.market.groupbuy.param.*;
 import com.vpu.mp.service.pojo.shop.market.groupbuy.vo.*;
+import com.vpu.mp.service.pojo.shop.member.MemberInfoVo;
+import com.vpu.mp.service.pojo.shop.order.OrderListInfoVo;
+import com.vpu.mp.service.pojo.shop.order.analysis.ActiveDiscountMoney;
+import com.vpu.mp.service.pojo.shop.order.analysis.ActiveOrderList;
 import com.vpu.mp.service.shop.order.OrderReadService;
 import org.jooq.DSLContext;
 import org.jooq.Record;
@@ -17,14 +22,12 @@ import org.jooq.impl.DSL;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.vpu.mp.db.shop.tables.records.GroupBuyDefineRecord;
-import com.vpu.mp.db.shop.tables.records.GroupBuyProductDefineRecord;
-import com.vpu.mp.service.foundation.data.DelFlag;
-import com.vpu.mp.service.foundation.service.ShopBaseService;
-import com.vpu.mp.service.foundation.util.PageResult;
-import com.vpu.mp.service.foundation.util.Util;
-import com.vpu.mp.service.pojo.shop.member.MemberInfoVo;
-import com.vpu.mp.service.pojo.shop.order.OrderListInfoVo;
+import java.math.BigDecimal;
+import java.sql.Timestamp;
+import java.util.*;
+
+import static com.vpu.mp.db.shop.Tables.GROUP_BUY_DEFINE;
+import static com.vpu.mp.db.shop.Tables.GROUP_BUY_PRODUCT_DEFINE;
 
 /**
  * @author 孔德成
@@ -211,12 +214,35 @@ public class GroupBuyService extends ShopBaseService {
      * 拼团活动效果数据
      *
      * @param param
+     * @return
      */
-    public void groupBuyAnalysis(GroupBuyAnalysisParam param) {
-        GroupBuyDefineRecord record =db().selectFrom(GROUP_BUY_DEFINE).where(GROUP_BUY_DEFINE.ID.eq(param.getId())).fetchOne();
-        //
-        Record discountMoney = orderReadService.getActiveDiscountMoney(1, param.getId(), param.getStartTime(),param.getEndTime());
-        orderReadService.getActiveOrderList(1,param.getId(),param.getStartTime(),param.getEndTime());
+    public Map groupBuyAnalysis(GroupBuyAnalysisParam param) {
 
+        GroupBuyDefineRecord record =db().selectFrom(GROUP_BUY_DEFINE).where(GROUP_BUY_DEFINE.ID.eq(param.getId())).fetchOne();
+        //获取销售额等金额
+        List<ActiveDiscountMoney> discountMoneyList = orderReadService.getActiveDiscountMoney(1, param.getId(), param.getStartTime(),param.getEndTime());
+        //获取参与用户信息
+        ActiveOrderList activeOrderList=  orderReadService.getActiveOrderList(1,param.getId(),param.getStartTime(),param.getEndTime());
+        //拼接返回报文
+        Map map=new HashMap();
+        Iterator<ActiveDiscountMoney> dIterator = discountMoneyList.iterator();
+        ActiveDiscountMoney discountMoney = null;
+        Timestamp date =Util.getStartToday(param.getStartTime());
+        while (date.compareTo(param.getEndTime())<=0){
+            if (dIterator.hasNext()&&discountMoney==null){
+                discountMoney=dIterator.next();
+            }
+            if (discountMoney!=null&&discountMoney.getCreateTime().equals(date)){
+                map.put("amount",discountMoney.getDiscountedTotalPrice());
+                map.put("discount",discountMoney.getMarketPrice().subtract(discountMoney.getGoodsPrice()));
+                map.put("ratio",discountMoney.getDiscountedTotalPrice().compareTo(BigDecimal.ZERO)>0?
+             discountMoney.getMarketPrice().subtract(discountMoney.getGoodsPrice()).divide(discountMoney.getDiscountedTotalPrice()):0);
+                map.put("old",activeOrderList.getOldUserNum());
+                map.put("new",activeOrderList.getNewUserNum());
+            }
+            map.put("date",date.toString());
+            date=Util.getEarlyTimeStamp(date,1);
+        }
+        return map;
     }
 }

@@ -39,6 +39,8 @@ public class MiniShop_471752 extends SchemaImpl {
 
 
 
+    public final LotteryPrize LOTTERY_PRIZE = LotteryPrize.LOTTERY_PRIZE;
+
     public final FreeShipping FREE_SHIPPING = FreeShipping.FREE_SHIPPING;
 
     public final FreeShippingRule FREE_SHIPPING_RULE = FreeShippingRule.FREE_SHIPPING_RULE;

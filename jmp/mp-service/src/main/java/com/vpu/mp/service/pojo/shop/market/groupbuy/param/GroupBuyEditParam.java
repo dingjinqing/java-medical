@@ -9,7 +9,7 @@ import lombok.Data;
 @Data
 public class GroupBuyEditParam {
 
-    private int id;
+    private Integer id;
     private String name;
     /**
      * 分享设置

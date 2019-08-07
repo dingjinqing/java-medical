@@ -16,7 +16,7 @@ public class AppletsJumpVo {
     private String appName;
     private String appId;
     private Timestamp createTime;
-    private int  usable;
-    private int flag;
+    private Integer  usable;
+    private Integer flag;
 
 }

@@ -29,6 +29,8 @@ public class Indexes {
     // -------------------------------------------------------------------------
     // INDEX definitions
     // -------------------------------------------------------------------------
+    public static final Index LOTTERY_PRIZE_PRIMARY = Indexes0.LOTTERY_PRIZE_PRIMARY;
+    public static final Index LOTTERY_PRIZE_USER_LOTTERY = Indexes0.LOTTERY_PRIZE_USER_LOTTERY;
     public static final Index FREE_SHIPPING_PRIMARY = Indexes0.FREE_SHIPPING_PRIMARY;
     public static final Index FREE_SHIPPING_RULE_PRIMARY = Indexes0.FREE_SHIPPING_RULE_PRIMARY;
     public static final Index FREE_SHIPPING_RULE_SHIPPING_ID = Indexes0.FREE_SHIPPING_RULE_SHIPPING_ID;
@@ -811,6 +813,8 @@ public class Indexes {
         public static Index COUPON_PACK_VOUCHER_ACT_ID = Internal.createIndex("act_id", CouponPackVoucher.COUPON_PACK_VOUCHER, new OrderField[] { CouponPackVoucher.COUPON_PACK_VOUCHER.ACT_ID }, false);
         public static Index COUPON_PACK_VOUCHER_PRIMARY = Internal.createIndex("PRIMARY", CouponPackVoucher.COUPON_PACK_VOUCHER, new OrderField[] { CouponPackVoucher.COUPON_PACK_VOUCHER.ID }, true);
         public static Index COUPON_PACK_VOUCHER_VOUCHER_ID = Internal.createIndex("voucher_id", CouponPackVoucher.COUPON_PACK_VOUCHER, new OrderField[] { CouponPackVoucher.COUPON_PACK_VOUCHER.VOUCHER_ID }, false);
+        public static Index LOTTERY_PRIZE_PRIMARY = Internal.createIndex("PRIMARY", LotteryPrize.LOTTERY_PRIZE, new OrderField[] { LotteryPrize.LOTTERY_PRIZE.ID }, true);
+        public static Index LOTTERY_PRIZE_USER_LOTTERY = Internal.createIndex("user_lottery", LotteryPrize.LOTTERY_PRIZE, new OrderField[] { LotteryPrize.LOTTERY_PRIZE.LOTTERY_ID }, false);
 
     }
 }

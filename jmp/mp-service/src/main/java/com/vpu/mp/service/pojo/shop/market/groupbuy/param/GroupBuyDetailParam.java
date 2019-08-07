@@ -18,7 +18,7 @@ public class GroupBuyDetailParam  extends  BasePageGroupBuyParam{
 
     private String nickName;
 
-    private byte status;
+    private Byte status;
 
 
 }
