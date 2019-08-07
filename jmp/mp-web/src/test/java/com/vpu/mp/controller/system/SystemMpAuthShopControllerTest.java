@@ -18,7 +18,8 @@ public class SystemMpAuthShopControllerTest extends SystemBaseControllerTest {
 	@Test
 	public void testList() {
 		MpVersionListParam param = new MpVersionListParam();
-		param.setPage(1);
+		param.setCurrentPage(1);
+		param.setPageRows(10);
 		JsonResult result = this.post("/api/system/mp/version/list", param, token,null,null);
 		this.expectSuccess(result);
 	}
