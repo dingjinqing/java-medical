@@ -2,7 +2,7 @@ package com.vpu.mp.service.pojo.shop.market.groupdraw.group;
 
 import lombok.Data;
 
-import java.time.LocalDateTime;
+import java.sql.Timestamp;
 
 /**
  * 成团明细出参
@@ -17,9 +17,9 @@ public class GroupListVo {
     private String goodsImg;
     private String goodsName;
     /** 开团时间 **/
-    private LocalDateTime openTime;
+    private Timestamp openTime;
     /** 成团时间 **/
-    private LocalDateTime endTime;
+    private Timestamp endTime;
     /** 团长昵称 **/
     private String grouperName;
     /** 团长手机号 **/

@@ -2,7 +2,7 @@ package com.vpu.mp.service.pojo.shop.market.groupdraw.invite;
 
 import lombok.Data;
 
-import java.time.LocalDateTime;
+import java.sql.Timestamp;
 
 /**
  * @author 郑保乐
@@ -21,5 +21,5 @@ public class InvitedUserListVo {
     /** 邀请人昵称 **/
     private String inviteUsername;
     /** 注册时间 **/
-    private LocalDateTime createTime;
+    private Timestamp createTime;
 }

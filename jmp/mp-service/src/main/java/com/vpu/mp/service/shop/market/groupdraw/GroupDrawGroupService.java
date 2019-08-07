@@ -67,13 +67,14 @@ public class GroupDrawGroupService extends ShopBaseService {
 
     private void buildOptions(SelectConditionStep<Record9<Integer, Integer, String, String, Timestamp, Timestamp,
         Object, Object, Object>> select, GroupListParam param) {
+        Integer groupDrawId = param.getGroupDrawId();
         String username = param.getUsername();
         String mobile = param.getMobile();
         Boolean grouped = param.getGrouped();
         Timestamp startTime = param.getStartTime();
         Timestamp endTime = param.getEndTime();
         Integer groupId = param.getGroupId();
-        select.and(JOIN_GROUP_LIST.as(ALIAS_OUTSIDE).USER_ID.ne(0));
+        select.and(JOIN_GROUP_LIST.as(ALIAS_OUTSIDE).GROUP_DRAW_ID.eq(groupDrawId));
         if (isNotEmpty(username)) {
             select.and(USER.USERNAME.like(format("%s%%", username)));
         }

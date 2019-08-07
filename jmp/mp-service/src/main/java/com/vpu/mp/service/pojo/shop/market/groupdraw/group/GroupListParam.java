@@ -4,6 +4,7 @@ import com.vpu.mp.service.pojo.shop.base.BasePageParam;
 import lombok.Getter;
 import lombok.Setter;
 
+import javax.validation.constraints.NotNull;
 import java.sql.Timestamp;
 
 /**
@@ -15,6 +16,8 @@ import java.sql.Timestamp;
 @Setter
 public class GroupListParam extends BasePageParam {
 
+    @NotNull
+    private Integer groupDrawId;
     /** 团长昵称 **/
     private String username;
     /** 团长手机号 **/
