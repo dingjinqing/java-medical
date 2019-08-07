@@ -81,8 +81,8 @@ public class WxOpenComponentExtServiceImpl implements WxOpenComponentExtService 
 	 * @throws WxErrorException
 	 */
 	public String request(String method, String uri, String data, String accessTokenKey) throws WxErrorException {
-		Class<?>[] postParams = { String.class, String.class };
-		Class<?>[] getParams = { String.class, String.class, String.class };
+		Class<?>[] getParams = { String.class, String.class };
+		Class<?>[] postParams = { String.class, String.class, String.class };
 		Method action;
 		try {
 			action = getOpenComponentService().getClass().getDeclaredMethod(method,
