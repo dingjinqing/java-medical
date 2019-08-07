@@ -4,7 +4,7 @@ import com.vpu.mp.service.foundation.service.ShopBaseService;
 import com.vpu.mp.service.foundation.util.PageResult;
 import com.vpu.mp.service.pojo.shop.market.groupdraw.group.GroupListParam;
 import com.vpu.mp.service.pojo.shop.market.groupdraw.group.GroupListVo;
-import org.jooq.Record6;
+import org.jooq.Record9;
 import org.jooq.SelectConditionStep;
 import org.jooq.impl.DSL;
 import org.springframework.stereotype.Service;
@@ -16,6 +16,7 @@ import static com.vpu.mp.db.shop.tables.OrderGoods.ORDER_GOODS;
 import static com.vpu.mp.db.shop.tables.User.USER;
 import static java.lang.String.format;
 import static org.apache.commons.lang3.StringUtils.isNotEmpty;
+import static org.jooq.impl.DSL.select;
 
 /**
  * 拼团抽奖 - 开团明细
@@ -25,31 +26,53 @@ import static org.apache.commons.lang3.StringUtils.isNotEmpty;
 @Service
 public class GroupDrawGroupService extends ShopBaseService {
 
+    /** 嵌套查询内外层表别名 **/
+    private static final String ALIAS_INSIDE = "i";
+    private static final String ALIAS_OUTSIDE = "o";
+
     /**
-     * todo 嵌套查团长信息
+     * 拼团明细列表
      */
     public PageResult<GroupListVo> getGroupList(GroupListParam param) {
-        SelectConditionStep<Record6<Integer, Integer, String, String, Timestamp, Timestamp>>
-            select = shopDb().select(JOIN_GROUP_LIST.GROUP_ID, DSL.count(JOIN_GROUP_LIST.USER_ID).as("userCount"),
-            ORDER_GOODS.GOODS_NAME,
-            ORDER_GOODS.GOODS_IMG, JOIN_GROUP_LIST.OPEN_TIME, JOIN_GROUP_LIST.END_TIME)
-            .from(JOIN_GROUP_LIST)
-            .leftJoin(USER).on(JOIN_GROUP_LIST.USER_ID.eq(USER.USER_ID))
-            .leftJoin(ORDER_GOODS).on(JOIN_GROUP_LIST.GOODS_ID.eq(ORDER_GOODS.GOODS_ID))
+        SelectConditionStep<Record9<Integer, Integer, String, String, Timestamp, Timestamp, Object, Object, Object>>
+            select = shopDb().select(
+            JOIN_GROUP_LIST.as(ALIAS_OUTSIDE).GROUP_ID,
+            DSL.count(JOIN_GROUP_LIST.as(ALIAS_OUTSIDE).USER_ID).as("userCount"), ORDER_GOODS.GOODS_NAME,
+            ORDER_GOODS.GOODS_IMG, JOIN_GROUP_LIST.as(ALIAS_OUTSIDE).OPEN_TIME, JOIN_GROUP_LIST.as(ALIAS_OUTSIDE).END_TIME,
+            // 三个嵌套查询
+            select(JOIN_GROUP_LIST.as(ALIAS_INSIDE).USER_ID).from(JOIN_GROUP_LIST.as(ALIAS_INSIDE))
+                .where(JOIN_GROUP_LIST.as(ALIAS_INSIDE).IS_GROUPER.eq((byte) 1)
+                    .and(JOIN_GROUP_LIST.as(ALIAS_INSIDE).GROUP_ID.eq(JOIN_GROUP_LIST.as(ALIAS_OUTSIDE).GROUP_ID)))
+                .asField("userId"),
+            select(USER.USERNAME).from(JOIN_GROUP_LIST.as(ALIAS_INSIDE))
+                .leftJoin(USER).on(JOIN_GROUP_LIST.as(ALIAS_INSIDE).USER_ID.eq(USER.USER_ID))
+                .where(JOIN_GROUP_LIST.as(ALIAS_INSIDE).IS_GROUPER.eq((byte) 1)
+                    .and(JOIN_GROUP_LIST.as(ALIAS_INSIDE).GROUP_ID.eq(JOIN_GROUP_LIST.as(ALIAS_OUTSIDE).GROUP_ID)))
+                .asField("grouperName"),
+            select(USER.MOBILE).from(JOIN_GROUP_LIST.as(ALIAS_INSIDE))
+                .leftJoin(USER).on(JOIN_GROUP_LIST.as(ALIAS_INSIDE).USER_ID.eq(USER.USER_ID))
+                .where(JOIN_GROUP_LIST.as(ALIAS_INSIDE).IS_GROUPER.eq((byte) 1)
+                    .and(JOIN_GROUP_LIST.as(ALIAS_INSIDE).GROUP_ID.eq(JOIN_GROUP_LIST.as(ALIAS_OUTSIDE).GROUP_ID)))
+                .asField("mobile")
+        )
+            .from(JOIN_GROUP_LIST.as(ALIAS_OUTSIDE))
+            .leftJoin(USER).on(JOIN_GROUP_LIST.as(ALIAS_OUTSIDE).USER_ID.eq(USER.USER_ID))
+            .leftJoin(ORDER_GOODS).on(JOIN_GROUP_LIST.as(ALIAS_OUTSIDE).GOODS_ID.eq(ORDER_GOODS.GOODS_ID))
             .where();
         buildOptions(select, param);
-        select.orderBy(JOIN_GROUP_LIST.END_TIME.desc());
+        select.orderBy(JOIN_GROUP_LIST.as(ALIAS_OUTSIDE).END_TIME.desc());
         return getPageResult(select, param, GroupListVo.class);
     }
 
-    private void buildOptions(SelectConditionStep<Record6<Integer, Integer, String, String, Timestamp,
-        Timestamp>> select, GroupListParam param) {
+    private void buildOptions(SelectConditionStep<Record9<Integer, Integer, String, String, Timestamp, Timestamp,
+        Object, Object, Object>> select, GroupListParam param) {
         String username = param.getUsername();
         String mobile = param.getMobile();
         Boolean grouped = param.getGrouped();
         Timestamp startTime = param.getStartTime();
         Timestamp endTime = param.getEndTime();
         Integer groupId = param.getGroupId();
+        select.and(JOIN_GROUP_LIST.as(ALIAS_OUTSIDE).USER_ID.ne(0));
         if (isNotEmpty(username)) {
             select.and(USER.USERNAME.like(format("%s%%", username)));
         }
@@ -57,18 +80,18 @@ public class GroupDrawGroupService extends ShopBaseService {
             select.and(USER.MOBILE.like(format("%s%%", mobile)));
         }
         if (null != grouped) {
-            select.and(JOIN_GROUP_LIST.STATUS.eq((byte) (grouped ? 1 : 2)));
+            select.and(JOIN_GROUP_LIST.as(ALIAS_OUTSIDE).STATUS.eq((byte) (grouped ? 1 : 2)));
         }
         if (null != startTime) {
-            select.and(JOIN_GROUP_LIST.OPEN_TIME.ge(startTime));
+            select.and(JOIN_GROUP_LIST.as(ALIAS_OUTSIDE).OPEN_TIME.ge(startTime));
         }
         if (null != endTime) {
-            select.and(JOIN_GROUP_LIST.END_TIME.le(endTime));
+            select.and(JOIN_GROUP_LIST.as(ALIAS_OUTSIDE).END_TIME.le(endTime));
         }
         if (null != groupId) {
-            select.and(JOIN_GROUP_LIST.GROUP_ID.eq(groupId));
+            select.and(JOIN_GROUP_LIST.as(ALIAS_OUTSIDE).GROUP_ID.eq(groupId));
         }
-        select.groupBy(JOIN_GROUP_LIST.GROUP_ID, ORDER_GOODS.GOODS_NAME,
-            ORDER_GOODS.GOODS_IMG, JOIN_GROUP_LIST.OPEN_TIME, JOIN_GROUP_LIST.END_TIME);
+        select.groupBy(JOIN_GROUP_LIST.as(ALIAS_OUTSIDE).GROUP_ID, ORDER_GOODS.GOODS_NAME, ORDER_GOODS.GOODS_IMG,
+            JOIN_GROUP_LIST.as(ALIAS_OUTSIDE).OPEN_TIME, JOIN_GROUP_LIST.as(ALIAS_OUTSIDE).END_TIME);
     }
 }
