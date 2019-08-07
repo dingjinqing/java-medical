@@ -40,20 +40,25 @@ public class RabbitConfig {
 
     /** 处理失败消息默认存放队列 */
     public static final String QUEUE_ERROR_DEAL = "error.deal";
-
+    
+    /** 发送优惠券默认存放队列 */
+    public static final String QUEUE_COUPON_SEND = "marketing.coupon";
 
 
 
     /** 发送失败队列存储的路由 */
     public static final String EXCHANGE_ERROR = "direct.error";
-
+    
+    /** 营销功能的路由 */
+    public static final String EXCHANGE_MARKETING = "direct.marketing";
 
     /** 发送失败路由键 */
     public static final String BINDING_EXCHANGE_ERROR_KEY = "direct.error.send";
     /** 处理失败路由键 */
     public static final String BINDING_EXCHANGE_DEAL_KEY = "direct.error.deal";
 
-
+    /** 发送优惠券路由键 */
+    public static final String BINDING_EXCHANGE_COUPON_KEY = "direct.marketing.coupon";
 
 
 
@@ -110,6 +115,13 @@ public class RabbitConfig {
         return new Queue(QUEUE_ERROR_DEAL,true,false,false,args);
     }
     /**
+     * @return 发送优惠券队列
+     */
+    @Bean
+    public Queue sendCouponWithQueue() {
+        return new Queue(QUEUE_COUPON_SEND,true,false,false);
+    }
+    /**
      * 1.交换机名字
      * 2.durable="true" 是否持久化 rabbitmq重启的时候不需要创建新的交换机
      * 3.autoDelete    当所有消费客户端连接断开后，是否自动删除队列
@@ -119,7 +131,14 @@ public class RabbitConfig {
     public DirectExchange errorExchange(){
         return new DirectExchange(EXCHANGE_ERROR,true,false);
     }
-
+    
+    /**
+     * @return 营销存储路由
+     */
+    @Bean
+    public DirectExchange marketingExchange(){
+        return new DirectExchange(EXCHANGE_MARKETING,true,false);
+    }
     /**
      * @return 路由和队列绑定
      */
@@ -131,5 +150,8 @@ public class RabbitConfig {
     public Binding bindingErrorDeal(){
         return BindingBuilder.bind(errorDealWithQueue()).to(errorExchange()).with(BINDING_EXCHANGE_DEAL_KEY);
     }
-
+    @Bean
+    public Binding bindingCouponSend(){
+        return BindingBuilder.bind(sendCouponWithQueue()).to(marketingExchange()).with(BINDING_EXCHANGE_COUPON_KEY);
+    }
 }

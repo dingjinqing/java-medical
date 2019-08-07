@@ -14,7 +14,6 @@ import static com.vpu.mp.db.shop.Tables.USER_TAG;
 import java.io.IOException;
 import java.math.BigDecimal;
 import java.sql.Timestamp;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -27,15 +26,24 @@ import org.jooq.SelectConditionStep;
 import org.jooq.SelectLimitStep;
 import org.jooq.SelectWhereStep;
 import org.jooq.impl.DSL;
+import org.springframework.amqp.core.Message;
+import org.springframework.amqp.rabbit.annotation.RabbitHandler;
+import org.springframework.amqp.rabbit.annotation.RabbitListener;
+import org.springframework.messaging.handler.annotation.Payload;
 import org.springframework.stereotype.Service;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.mysql.cj.util.StringUtils;
+import com.rabbitmq.client.Channel;
+import com.vpu.mp.config.mq.RabbitConfig;
+import com.vpu.mp.service.foundation.mq.RabbitmqSendService;
+import com.vpu.mp.service.foundation.mq.handler.BaseRabbitHandler;
 import com.vpu.mp.service.foundation.service.ShopBaseService;
 import com.vpu.mp.service.foundation.util.PageResult;
 import com.vpu.mp.service.foundation.util.Util;
+import com.vpu.mp.service.pojo.shop.coupon.give.CouponGiveDeleteParam;
 import com.vpu.mp.service.pojo.shop.coupon.give.CouponGiveDetailParam;
 import com.vpu.mp.service.pojo.shop.coupon.give.CouponGiveDetailVo;
 import com.vpu.mp.service.pojo.shop.coupon.give.CouponGiveGrantParam;
@@ -44,6 +52,7 @@ import com.vpu.mp.service.pojo.shop.coupon.give.CouponGiveListParam;
 import com.vpu.mp.service.pojo.shop.coupon.give.CouponGiveListVo;
 import com.vpu.mp.service.pojo.shop.coupon.give.CouponGivePopParam;
 import com.vpu.mp.service.pojo.shop.coupon.give.CouponGivePopVo;
+import com.vpu.mp.service.pojo.shop.coupon.give.CouponGiveQueueParam;
 
 /**
  * 优惠券管理
@@ -53,8 +62,13 @@ import com.vpu.mp.service.pojo.shop.coupon.give.CouponGivePopVo;
  */
 @Service
 
-public class CouponGiveService extends ShopBaseService {
-	private static long sn = 1;
+public class CouponGiveService extends ShopBaseService implements BaseRabbitHandler {
+	private final RabbitmqSendService rabbitmqSendService;
+
+	public CouponGiveService(RabbitmqSendService rabbitmqSendService) {
+		this.rabbitmqSendService = rabbitmqSendService;
+	}
+
 	/**
 	 * 优惠券发放情况分页列表
 	 * 
@@ -228,6 +242,7 @@ public class CouponGiveService extends ShopBaseService {
 				}
 			}
 			/* N天内有交易记录 */
+
 			Timestamp havePayDay = Util.getEarlyTimeStamp(today, -param.getHavePay());
 			List<Record1<Integer>> havePayUserIds = db().select(ORDER_INFO.USER_ID).from(ORDER_INFO)
 					.where(ORDER_INFO.ORDER_STATUS.greaterOrEqual((byte) 2))
@@ -241,6 +256,7 @@ public class CouponGiveService extends ShopBaseService {
 			}
 
 			/* N天内无交易记录 */
+
 			Timestamp noPayDay = Util.getEarlyTimeStamp(today, -param.getNoPay());
 			List<Record1<Integer>> noPayUserIds = db().select(ORDER_INFO.USER_ID).from(ORDER_INFO)
 					.where(ORDER_INFO.ORDER_STATUS.greaterOrEqual((byte) 2))
@@ -257,6 +273,7 @@ public class CouponGiveService extends ShopBaseService {
 			}
 
 			/* 累计购买次数大于N次 min */
+
 			List<Record1<Integer>> minCountUserIds = db().select(ORDER_INFO.USER_ID).from(ORDER_INFO)
 					.where(ORDER_INFO.ORDER_STATUS.greaterOrEqual((byte) 2)).groupBy(ORDER_INFO.USER_ID)
 					.having(DSL.count(ORDER_INFO.ORDER_ID).greaterThan(param.getMinCount())).fetch();
@@ -290,6 +307,7 @@ public class CouponGiveService extends ShopBaseService {
 				}
 			}
 			/* 购买商品均价小于N元 max */
+
 			List<Record1<Integer>> maxAvePriceUserIds = db().select(ORDER_INFO.USER_ID).from(ORDER_INFO)
 					.where(ORDER_INFO.ORDER_STATUS.greaterOrEqual((byte) 2)).groupBy(ORDER_INFO.USER_ID)
 					.having(DSL.avg(ORDER_INFO.ORDER_AMOUNT).lessThan(param.getMaxAvePrice())).fetch();
@@ -299,6 +317,7 @@ public class CouponGiveService extends ShopBaseService {
 					userIds.add(maxAvePriceUserId.value1());
 				}
 			}
+
 			/* 指定时间内有登陆记录 */
 			List<Record1<Integer>> loginRecordUserIds = db().select(USER_LOGIN_RECORD.USER_ID).from(USER_LOGIN_RECORD)
 					.where(USER_LOGIN_RECORD.CREATE_TIME.between(
@@ -311,42 +330,57 @@ public class CouponGiveService extends ShopBaseService {
 					userIds.add(loginRecordUserId.value1());
 				}
 			}
-			/* 插入user-coupon关联表 */
-			
+			/* 队列 */
 			String couponIds = param.getCouponGiveGrantInfoParams().getCouponIds().toString();
 			String[] couponArray = couponIds.split(",");
-			for (String couponId : couponArray ) {
-				String couponName = db().select(MRKING_VOUCHER.ACT_NAME)
-						.from(MRKING_VOUCHER)
-						.where(MRKING_VOUCHER.ID.eq(Integer.valueOf(couponId)))
-						.fetchOptionalInto(String.class).orElse(null);
-				BigDecimal denomination = db().select(MRKING_VOUCHER.DENOMINATION)
-						.from(MRKING_VOUCHER)
-						.where(MRKING_VOUCHER.ID.eq(Integer.valueOf(couponId)))
-						.fetchOptionalInto(BigDecimal.class).orElse(null);
-				for (Integer userId : userIds) {
-					db().insertInto(CUSTOMER_AVAIL_COUPONS,CUSTOMER_AVAIL_COUPONS.ACT_ID,
-							CUSTOMER_AVAIL_COUPONS.USER_ID,CUSTOMER_AVAIL_COUPONS.ACT_DESC,
-							CUSTOMER_AVAIL_COUPONS.AMOUNT,CUSTOMER_AVAIL_COUPONS.COUPON_SN)
-					.values(actId,userId,couponName,denomination,getCouponSn(sn))
-					.execute();
-				}
-			}
-			
-			
+			rabbitmqSendService.sendMessage(RabbitConfig.EXCHANGE_MARKETING, RabbitConfig.BINDING_EXCHANGE_COUPON_KEY,
+					new CouponGiveQueueParam(getShopId(), userIds, actId, couponArray));
+
 		} catch (JsonProcessingException e) {
 			e.printStackTrace();
 		}
 
 	}
-	/* 生成优惠券编号 */
-	public static String getCouponSn(long snLong) {
-		String str = new SimpleDateFormat("yyyyMM").format(new java.util.Date());
-		long m = Long.parseLong((str)) * 10000;
-		String couponSn ="C" + m + snLong;
-		sn = snLong + 1;
-		return couponSn;
+	
+	@RabbitListener(queues = RabbitConfig.QUEUE_COUPON_SEND, containerFactory = "simpleRabbitListenerContainerFactory")
+	@RabbitHandler
+	public void handler(@Payload CouponGiveQueueParam param,Message message, Channel channel) {
+		try {
+		/* 操作当前店铺 */
+		switchShopDb(param.getShopId());
+		/* 插入user-coupon关联表 */
+		for (String couponId : param.getCouponArray()) {
+			String couponName = db().select(MRKING_VOUCHER.ACT_NAME).from(MRKING_VOUCHER)
+					.where(MRKING_VOUCHER.ID.eq(Integer.valueOf(couponId))).fetchOptionalInto(String.class)
+					.orElse(null);
+			BigDecimal denomination = db().select(MRKING_VOUCHER.DENOMINATION).from(MRKING_VOUCHER)
+					.where(MRKING_VOUCHER.ID.eq(Integer.valueOf(couponId))).fetchOptionalInto(BigDecimal.class)
+					.orElse(null);
+			for (Integer userId : param.getUserIds()) {
+				db().insertInto(CUSTOMER_AVAIL_COUPONS, CUSTOMER_AVAIL_COUPONS.ACT_ID, CUSTOMER_AVAIL_COUPONS.USER_ID,
+						CUSTOMER_AVAIL_COUPONS.ACT_DESC, CUSTOMER_AVAIL_COUPONS.AMOUNT,
+						CUSTOMER_AVAIL_COUPONS.COUPON_SN).values(param.getActId(), userId, couponName, denomination, getCouponSn())
+						.execute();
+			}
 		}
+			this.success(channel, message.getMessageProperties().getDeliveryTag());
+		} catch (IOException e) {
+			try {
+				this.failReturn(channel, message.getMessageProperties().getDeliveryTag());
+			} catch (IOException e1) {
+				e1.printStackTrace();
+			}
+		}
+
+	}
+
+	/* 生成优惠券编号 */
+	public static String getCouponSn() {
+		System.currentTimeMillis();
+		String sn = "C" + System.currentTimeMillis();
+		return sn;
+	}
+
 	/**
 	 * 优惠券弹窗
 	 *
@@ -371,5 +405,17 @@ public class CouponGiveService extends ShopBaseService {
 
 		return popVo;
 
+	}
+
+	/**
+	 * 废除优惠券
+	 *
+	 * @param param
+	 * @return
+	 */
+	public void deleteCoupon(CouponGiveDeleteParam param) {
+		/* 假删除实现废除某个用户的某张优惠券 */
+		db().update(CUSTOMER_AVAIL_COUPONS).set(CUSTOMER_AVAIL_COUPONS.DEL_FLAG, (byte) 1)
+				.where(CUSTOMER_AVAIL_COUPONS.ID.eq(param.getId())).execute();
 	}
 }

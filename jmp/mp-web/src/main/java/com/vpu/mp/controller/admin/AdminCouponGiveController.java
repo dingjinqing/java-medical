@@ -4,10 +4,12 @@ import java.util.List;
 
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.vpu.mp.service.foundation.data.JsonResult;
 import com.vpu.mp.service.foundation.util.PageResult;
+import com.vpu.mp.service.pojo.shop.coupon.give.CouponGiveDeleteParam;
 import com.vpu.mp.service.pojo.shop.coupon.give.CouponGiveDetailParam;
 import com.vpu.mp.service.pojo.shop.coupon.give.CouponGiveDetailVo;
 import com.vpu.mp.service.pojo.shop.coupon.give.CouponGiveGrantParam;
@@ -75,5 +77,16 @@ public class AdminCouponGiveController extends AdminBaseController{
 		List<CouponGivePopVo> pageResult = shop().coupon.couponGiveService.popWindows(param);
 
 		return success(pageResult);
+	}
+	/**
+	 * 废除优惠券
+	 *
+	 * @param param
+	 * @return
+	 */
+	@RequestMapping("api/admin/coupon/give/delete")
+	public JsonResult deleteCoupon(@RequestBody CouponGiveDeleteParam param) {
+		shop().coupon.couponGiveService.deleteCoupon(param);
+		return success();
 	}
 }

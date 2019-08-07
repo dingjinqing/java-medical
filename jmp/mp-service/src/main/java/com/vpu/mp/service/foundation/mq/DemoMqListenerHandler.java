@@ -24,23 +24,6 @@ import java.io.IOException;
 @Service
 @Slf4j
 public class DemoMqListenerHandler implements BaseRabbitHandler {
-    @Autowired
-    RabbitmqSendService sendService;
-
-    @RabbitListener(queues = RabbitConfig.QUEUE_ERROR_SEND,
-            containerFactory = "simpleRabbitListenerContainerFactory")
-    
-//    @RabbitHandler
-    private void doDem1o(Message message, Channel channel) throws IOException {
-        log.error("消费了。。。");
-        System.out.println(new String(message.getBody(),"UTF-8"));
-
-        this.failReturn(channel,message.getMessageProperties().getDeliveryTag());
-    }
-//    @Scheduled(cron = "0/5 * * * * ?")
-    public void taskPerMinute() {
-        sendService.sendMessage("hello","test");
-
-    }
+   
 
 }
