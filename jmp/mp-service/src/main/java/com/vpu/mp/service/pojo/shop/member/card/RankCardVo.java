@@ -16,7 +16,7 @@ import lombok.extern.slf4j.Slf4j;
 */
 @Data
 @Slf4j
-public class RankCardVo extends CardVo {
+public class RankCardVo extends BaseCardVo {
 	
 	/**
 	 * 等级会员卡
@@ -52,6 +52,9 @@ public class RankCardVo extends CardVo {
 	@JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
 	private String buyScore;
 	
+	
+	/** 1:使用中，2:停止使用  */
+	private Byte flag;
 	
 	@Override
 	public void changeJsonCfg() {

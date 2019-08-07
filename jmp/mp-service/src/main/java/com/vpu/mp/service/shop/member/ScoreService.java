@@ -12,6 +12,7 @@ import java.util.List;
 import java.util.Random;
 
 import org.jooq.impl.DSL;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 
@@ -48,7 +49,7 @@ public class ScoreService extends ShopBaseService {
 	 * 积分有效的状态
 	 */
 	final Byte[] AVAILABLE_STATUS = new Byte[] { NO_USE_SCORE_STATUS, REFUND_SCORE_STATUS };
-
+	@Autowired
 	private MemberService member;
 
 	public JsonResultCode updateMemberScore(ScoreParam param, Integer subAccountId, Integer userId, Byte tradeType,

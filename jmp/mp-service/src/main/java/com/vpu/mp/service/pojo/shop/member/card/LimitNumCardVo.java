@@ -1,10 +1,15 @@
 package com.vpu.mp.service.pojo.shop.member.card;
 
+import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.CURRENT_DATE;
+import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.EXPIRED;
+import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.FIX_DATETIME;
+
 import java.sql.Timestamp;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import lombok.Data;
+import lombok.extern.slf4j.Slf4j;
 
 /**
 * @author 黄壮壮
@@ -12,12 +17,13 @@ import lombok.Data;
 * @Description: 限次会员卡出参
 */
 @Data
-public class LimitNumCardVo extends CardVo {
+@Slf4j
+public class LimitNumCardVo extends BaseCardVo {
 	
 	/**
 	 * 会员有效期类型 0：固定日期；1：自领取多少内有效；2：永久有效
 	 */
-	private Integer expireType;
+	private Byte expireType;
 	/** 开始时间 */
 	private Timestamp startTime;
 	/** 结束时间 */
@@ -43,11 +49,18 @@ public class LimitNumCardVo extends CardVo {
 	@JsonProperty("storeExCount")
 	private Integer count;
 	
-	
+	/** 1:使用中，2:停止使用 3：过期 */
+	private Byte flag;
 	
 	@Override
 	public void changeJsonCfg() {
 		
+		log.info("执行LimitCardToVo的处理策略");
+		/** 处理固定时间段，是否过期 */
+		if (FIX_DATETIME.equals(expireType) && endTime != null) {
+			boolean isExpired = endTime.toLocalDateTime().toLocalDate().isBefore(CURRENT_DATE);
+			flag = isExpired ? EXPIRED : flag;
+		}
 	}
 
 }

@@ -1,5 +1,6 @@
 package com.vpu.mp.service.pojo.shop.member.card;
 
+import java.time.LocalDate;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 /**
@@ -74,6 +75,15 @@ public class CardConstant {
 	public static final Byte DELETE_NO = 0;
 	/** 确定删除 */
 	public static final Byte DELETE_YES = 1;
-
+	
+	/** 停止使用 */
+	public static final Byte STOP_USING = 2;
+	
+	/** 过期 */
+	public static final Byte EXPIRED = 3;
+	
+	/** jackson */
 	public static final ObjectMapper MAPPER = new ObjectMapper();
+	/** 当前时间 */
+	public static final LocalDate CURRENT_DATE = LocalDate.now();
 }

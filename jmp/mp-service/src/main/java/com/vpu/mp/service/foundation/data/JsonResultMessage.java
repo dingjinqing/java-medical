@@ -201,7 +201,7 @@ public class JsonResultMessage {
 	 */
 
 	public static final String MSG_MEMBER_CARD_RIGHTS_EMPTY = "member.card.rights.empty";
-
+	public static final String MSG_MEMBER_CARD_ID_EMPTY = "member.card.id.empty";
 	/**
 	 * 概览
 	 */
@@ -226,6 +226,7 @@ public class JsonResultMessage {
 	 * 虚拟订单
 	 */
 	public static final String ORDER_VIRTUAL_COUPONPACK_REFUND_SCORE = "order.virtual.couponpack.refund.score";
+
 	
 
 	

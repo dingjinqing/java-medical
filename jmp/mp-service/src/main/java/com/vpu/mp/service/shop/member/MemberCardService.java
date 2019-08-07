@@ -6,6 +6,7 @@ import static org.jooq.impl.DSL.count;
 import java.math.BigDecimal;
 import java.util.Map;
 
+import javax.validation.Valid;
 
 import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.ACTIVE_NO;
 import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.ACTIVE_YES;
@@ -34,9 +35,11 @@ import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.ALL_SHOP;
 import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.ALL_GOODS;
 import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.BUY_BY_SCORE;
 import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.BUY_BY_CRASH;
+import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.DELETE_YES;
 
 import org.jooq.Record7;
 import org.jooq.Record9;
+import org.jooq.Result;
 import org.jooq.SelectSeekStep1;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -50,15 +53,20 @@ import com.vpu.mp.service.foundation.util.PageResult;
 import com.vpu.mp.service.foundation.util.Util;
 import com.vpu.mp.service.pojo.shop.member.card.CardParam;
 import com.vpu.mp.service.pojo.shop.member.card.GradeConditionJson;
+import com.vpu.mp.service.pojo.shop.member.card.LimitNumCardToVo;
 import com.vpu.mp.service.pojo.shop.member.card.LimitNumCardVo;
+import com.vpu.mp.service.pojo.shop.member.card.NormalCardToVo;
 import com.vpu.mp.service.pojo.shop.member.card.NormalCardVo;
 import com.vpu.mp.service.pojo.shop.member.card.PowerCardJson;
+import com.vpu.mp.service.pojo.shop.member.card.PowerCardParam;
+import com.vpu.mp.service.pojo.shop.member.card.RankCardToVo;
 import com.vpu.mp.service.pojo.shop.member.card.RankCardVo;
 import com.vpu.mp.service.pojo.shop.member.card.ScoreJson;
 import com.vpu.mp.service.pojo.shop.member.card.SearchCardParam;
 
-
 import com.vpu.mp.service.pojo.shop.member.card.CardVo;
+import com.vpu.mp.service.pojo.shop.member.card.BaseCardVo;
+import com.vpu.mp.service.pojo.shop.member.card.CardIdParam;
 
 import static com.vpu.mp.db.shop.Tables.MEMBER_CARD;
 import static com.vpu.mp.db.shop.Tables.USER_CARD;
@@ -399,9 +407,12 @@ public class MemberCardService extends ShopBaseService {
 											.fetch()
 											.intoMap(USER_CARD.CARD_ID, count());
 		
-		/** 设置未领取值 */
-		pageResult.dataList.stream().forEach(vo-> vo.setHasSend(intoMap.get(vo.getId())==null?0:intoMap.get(vo.getId())));
 		
+		for(LimitNumCardVo vo: pageResult.dataList) {
+			/** 设置未领取值 */
+			vo.setHasSend(intoMap.get(vo.getId())==null?0:intoMap.get(vo.getId()));
+			vo.changeJsonCfg();
+		}
 		return pageResult;
 	}
 
@@ -433,7 +444,7 @@ public class MemberCardService extends ShopBaseService {
 	 * @param param
 	 * @return
 	 */
-	public PageResult<? extends CardVo> getCardList(SearchCardParam param) {
+	public PageResult<? extends BaseCardVo> getCardList(SearchCardParam param) {
 
 		Byte cardType = param.getCardType();
 		/** 处理普通会员卡 */
@@ -446,6 +457,66 @@ public class MemberCardService extends ShopBaseService {
 		}else if(RANK_TYPE.equals(cardType)) {
 			logger.info("正在分页查询等级会员卡");
 			return getRankCardList(param);
+		}
+		return null;
+	}
+
+	/**
+	 * 设置会员卡启动或禁止状态
+	 * @param param
+	 */
+	public void powerCard(PowerCardParam param) {
+		/**
+		 * UPDATE b2c_member_card set flag = 51 where id=825;
+		 */
+		/** SQL语句执行 */
+		int result = db().update(MEMBER_CARD).set(MEMBER_CARD.FLAG, param.getFlag()).where(MEMBER_CARD.ID.eq(param.getId())).execute();
+		logger.info("设置会员卡状态成功，受影响行： "+result);
+	}
+
+	/**
+	 * 删除会员卡
+	 * @param paramH
+	 */
+	public void deleteCard(@Valid CardIdParam param) {
+		/**
+		 *  update `b2c_member_card` set `is_delete` = '1' where `id` = '819'  
+		 */
+		/** 假删除会员卡 */
+		int result = db().update(MEMBER_CARD).set(MEMBER_CARD.DEL_FLAG, DELETE_YES).where(MEMBER_CARD.ID.eq(param.getId())).execute();
+		logger.info("删除会员卡成功，受影响行： "+result);
+	}
+
+	/**
+	 * 根据ID获取该会员卡的详细信息
+	 * @param param
+	 * @return
+	 */
+	public BaseCardVo getCardById(CardIdParam param) {
+		MemberCardRecord record = db().selectFrom(MEMBER_CARD).where(MEMBER_CARD.ID.eq(param.getId())).fetchOne();
+		/** 会员卡类型 */
+		Byte cardType = record.getCardType();
+		if(NORMAL_TYPE.equals(cardType)) {
+			logger.info("查询出普通会员卡");
+			NormalCardToVo card = record.into(NormalCardToVo.class);
+			/**执行策略 */
+			card.changeJsonCfg();
+			return card;
+		}else if(LIMIT_NUM_TYPE.equals(cardType)) {
+			logger.info("查询出限次会员卡");
+			/** 执行策略 */
+			LimitNumCardToVo card = record.into(LimitNumCardToVo.class);
+			/** 查询已经被领取的数量 */
+			int hasSend  = 0;
+			hasSend = db().fetchCount(USER_CARD,USER_CARD.CARD_ID.eq(param.getId()));
+			card.setHasSend(hasSend);
+			card.changeJsonCfg();
+			return card;
+		}else if(RANK_TYPE.equals(cardType)){
+			logger.info("查询出等级会员卡");
+			RankCardToVo card = record.into(RankCardToVo.class);
+			card.changeJsonCfg();
+			return card;
 		}
 		return null;
 	}
