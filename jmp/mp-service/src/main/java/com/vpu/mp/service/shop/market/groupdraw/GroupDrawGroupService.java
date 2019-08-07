@@ -6,7 +6,6 @@ import com.vpu.mp.service.pojo.shop.market.groupdraw.group.GroupListParam;
 import com.vpu.mp.service.pojo.shop.market.groupdraw.group.GroupListVo;
 import org.jooq.Record9;
 import org.jooq.SelectConditionStep;
-import org.jooq.impl.DSL;
 import org.springframework.stereotype.Service;
 
 import java.sql.Timestamp;
@@ -16,6 +15,7 @@ import static com.vpu.mp.db.shop.tables.OrderGoods.ORDER_GOODS;
 import static com.vpu.mp.db.shop.tables.User.USER;
 import static java.lang.String.format;
 import static org.apache.commons.lang3.StringUtils.isNotEmpty;
+import static org.jooq.impl.DSL.count;
 import static org.jooq.impl.DSL.select;
 
 /**
@@ -38,7 +38,7 @@ public class GroupDrawGroupService extends ShopBaseService {
             select = shopDb()
             .select(
                 JOIN_GROUP_LIST.as(ALIAS_OUTSIDE).GROUP_ID,
-                DSL.count(JOIN_GROUP_LIST.as(ALIAS_OUTSIDE).USER_ID).as("userCount"), ORDER_GOODS.GOODS_NAME,
+                count(JOIN_GROUP_LIST.as(ALIAS_OUTSIDE).USER_ID).as("userCount"), ORDER_GOODS.GOODS_NAME,
                 ORDER_GOODS.GOODS_IMG, JOIN_GROUP_LIST.as(ALIAS_OUTSIDE).OPEN_TIME, JOIN_GROUP_LIST.as(ALIAS_OUTSIDE).END_TIME,
                 // 三个嵌套查询
                 select(JOIN_GROUP_LIST.as(ALIAS_INSIDE).USER_ID).from(JOIN_GROUP_LIST.as(ALIAS_INSIDE))
