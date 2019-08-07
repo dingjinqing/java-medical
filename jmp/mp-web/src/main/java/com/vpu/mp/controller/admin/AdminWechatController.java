@@ -43,7 +43,8 @@ public class AdminWechatController extends AdminBaseController {
      *
      * @return
      */
-    @RequestMapping(value = "/wechat/proxy/start/auth")
+    @RequestMapping(value = "/api/wechat/proxy/start/auth")
+    @ResponseBody
     public JsonResult startAuthorization() {
         Integer shopId=this.shopId();
 
@@ -69,7 +70,8 @@ public class AdminWechatController extends AdminBaseController {
      *
      * @return
      */
-    @RequestMapping(value = "/wechat/proxy/official/account/authorization")
+    @RequestMapping(value = "/api/wechat/proxy/official/account/authorization")
+    @ResponseBody
     public JsonResult startOfficialAccountAuthorization() {
 
         String url = this.mainUrl("/wechat/proxy/authorization/callback?sys_id="+this.adminAuth.user().getSysId());
