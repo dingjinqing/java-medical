@@ -194,7 +194,7 @@
       </el-table-column>
     </el-table>
 
-    <div class="footer">
+    <div class="footer clearfixed pagination-wrap">
       <span>每页{{this.pageRows}}行记录，当前页面：{{this.currentPage}}，总页数：{{this.pageCount}}，总记录数为：{{this.totalRows}}</span>
       <el-pagination
         @current-change="handleCurrentChange"
@@ -337,7 +337,6 @@ export default {
 }
 .footer {
   display: flex;
-  margin-top: 10px;
   align-items: center;
   justify-content: flex-end;
 }

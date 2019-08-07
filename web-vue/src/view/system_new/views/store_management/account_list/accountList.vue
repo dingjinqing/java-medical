@@ -8,7 +8,7 @@
       label="商家账号列表"
       name="first"
     >
-      <list />
+      <list @send="send" />
     </el-tab-pane>
     <el-tab-pane
       label="商家账号添加"
@@ -19,6 +19,7 @@
     <el-tab-pane
       label="编辑商家账户"
       name="third"
+      v-if="isShowEditAccount"
     >
       <editAccount />
     </el-tab-pane>
@@ -38,7 +39,18 @@ export default {
   },
   data () {
     return {
-      tabActive: 'first'
+      tabActive: 'first',
+      isShowEditAccount: false
+    }
+  },
+  methods: {
+
+    send (val) {
+      console.log(val)
+      if (val === 'third') {
+        this.isShowEditAccount = true
+        this.tabActive = 'third'
+      }
     }
   }
 }
@@ -60,8 +72,8 @@ export default {
     font-weight: 400;
   }
   /deep/ .el-tabs__content {
-    padding: 10px 0 0 0;
-    background: #fff;
+    padding: 10px 0px 0px 0px;
+    background: #e0e3ec;
   }
 }
 </style>

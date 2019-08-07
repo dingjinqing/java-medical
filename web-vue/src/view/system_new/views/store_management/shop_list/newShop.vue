@@ -1,12 +1,12 @@
 <template>
-  <div class="experience-version infoForm">
+  <div class="new-shop infoForm">
     <div class="select-menu top infoWrapper">
       <el-form
         ref="form"
         :model="Data"
         label-width="100px"
         @submit.prevent="onSubmit"
-        style="margin:20px 0px 0px 50px;width:25%;min-width:300px;"
+        style="margin:0px 0px 0px 50px;width:25%;min-width:300px;"
         label-position="left"
       >
         <el-form-item label="所属账号">
@@ -184,12 +184,10 @@
           ></el-input>
         </el-form-item>
       </el-form>
-      <div>
+      <div class="btn">
         <el-button
           size="small"
-          class="ml-6"
           type="primary"
-          style="margin-left: 148px;"
           @click="save()"
         >
           添加
@@ -304,12 +302,38 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-.form {
-  margin: 20px 0px 0px 50px;
-}
-.text {
-  color: #b94a48;
-  font-size: 14px;
-  margin-left: 15px;
+.new-shop {
+  background: #fff;
+  .infoWrapper {
+    padding-bottom: 50px;
+    .el-form-item:first-child {
+      padding-top: 20px;
+    }
+    .el-form-item {
+      margin-bottom: 10px;
+      /deep/ .el-textarea__inner {
+        width: 150px;
+        height: 80px;
+        margin-left: 30px;
+      }
+      /deep/ .el-form-item__label {
+        width: 130px !important;
+      }
+    }
+    .el-input {
+      width: 150px;
+    }
+    .el-select {
+      width: 150px;
+    }
+    .btn {
+      margin-left: 180px;
+      .text {
+        color: #b94a48;
+        font-size: 14px;
+        margin-left: 15px;
+      }
+    }
+  }
 }
 </style>

@@ -87,6 +87,7 @@
           <i
             class="el-icon-circle-plus-outline"
             @click="jump()"
+            style="cursor: pointer"
           ></i>
         </template>
       </el-table-column>
@@ -134,7 +135,7 @@
       </el-table-column>
     </el-table>
 
-    <div class="footer">
+    <div class="footer clearfixed pagination-wrap">
       <span>每页{{this.pageRows}}行记录，当前页面：{{this.currentPage}}，总页数：{{this.pageCount}}，总记录数为：{{this.totalRows}}</span>
       <el-pagination
         @current-change="handleCurrentChange"
@@ -192,8 +193,7 @@ export default {
       pageCount: null,
       pagination_b: true,
       value: '',
-      text: '',
-      isShowEditAccount: false
+      text: ''
     }
   },
   created () {
@@ -209,7 +209,9 @@ export default {
       console.log(111)
     },
     handleEditAccount () {
-      this.isShowEditAccount = true
+      this.name = 'third'
+      console.log(this.name)
+      this.$emit('send', this.name)
     },
     // 审核状态的四种数字转化为文字
     numberChange (row, rol) {
@@ -288,7 +290,6 @@ export default {
 }
 .footer {
   display: flex;
-  margin-top: 10px;
   align-items: center;
   justify-content: flex-end;
 }

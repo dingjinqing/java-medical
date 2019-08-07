@@ -1,20 +1,38 @@
 <template>
-  <el-tabs v-model="tabActive" type="border-card" class="tab" >
-    <el-tab-pane :label="$t('programVersion.versionManage')" name="versionManage">
+  <el-tabs
+    v-model="tabActive"
+    type="border-card"
+    class="tab"
+  >
+    <el-tab-pane
+      :label="$t('programVersion.versionManage')"
+      name="versionManage"
+    >
       <versionManage />
     </el-tab-pane>
-    <el-tab-pane :label="$t('programVersion.versionLog')" name="versionLog">
+    <el-tab-pane
+      :label="$t('programVersion.versionLog')"
+      name="versionLog"
+    >
       <versionLog />
     </el-tab-pane>
-    <el-tab-pane :label="$t('programVersion.authList')" name="authList">
+    <el-tab-pane
+      :label="$t('programVersion.authList')"
+      name="authList"
+    >
       <authList />
     </el-tab-pane>
-    <el-tab-pane :label="$t('programVersion.versionStatistics')" name="versionStatistics">
+    <el-tab-pane
+      :label="$t('programVersion.versionStatistics')"
+      name="versionStatistics"
+    >
       <versionStatistics />
     </el-tab-pane>
     <el-tab-pane
       v-if="$route.params.page === 'authMsg'"
-      :label="$t('programVersion.authMsg')" name="authMsg">
+      :label="$t('programVersion.authMsg')"
+      name="authMsg"
+    >
       <authMsg />
     </el-tab-pane>
   </el-tabs>
@@ -66,9 +84,9 @@ export default {
     font-size: 14px;
     font-weight: 700;
   }
-  /deep/ .el-tabs__item{
+  /deep/ .el-tabs__item {
     height: 46px;
-    padding: 0 10px 3px 10px!important;
+    padding: 0 10px 3px 10px !important;
     border-top: 2px solid transparent;
     font-weight: 400;
     text-align: center;

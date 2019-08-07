@@ -150,12 +150,20 @@ const routes = [
     path: '/system/overview',
     name: 'overviewMain',
     meta: {
-      title: '概览'
+      title: 'welcome'
     },
     component: () => import('@/view/system_new/layout/index'),
-    redirect: '/system/overview/overview',
+    redirect: '/system/overview/welcome',
     children: [
       // 概述子路由
+      {
+        path: 'welcome',
+        component: () => import('@/view/system_new/views/overview/welcome'),
+        name: 'welcome',
+        meta: {
+          title: 'welcome'
+        }
+      },
       {
         path: 'overview',
         component: () => import('@/view/system_new/views/overview/overview'),

@@ -61,7 +61,7 @@ export default {
   }
   /deep/ .el-tabs__content {
     padding: 10px 0 0 0;
-    background: #fff;
+    background: #e0e3ec;
   }
   /deep/ .el-form-item__label {
     width: 140px;
