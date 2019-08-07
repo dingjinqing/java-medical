@@ -71,7 +71,7 @@ public class AdminAuth {
 	 * @return
 	 */
 	public boolean isValidToken(String token) {
-		return token != null && StringUtils.startsWith(token, TOKEN_PREFIX);
+		return StringUtils.isNotEmpty(token) && StringUtils.startsWith(token, TOKEN_PREFIX);
 	}
 
 	/**
@@ -184,7 +184,7 @@ public class AdminAuth {
 	 */
 	public AdminTokenAuthInfo user() {
 		String token = getToken();
-		if (!StringUtils.isBlank(token)) {
+		if (this.isValidToken(token)) {
 			String json = jedis.get(token);
 			if (!StringUtils.isBlank(json)) {
 				return Util.parseJson(json, AdminTokenAuthInfo.class);
