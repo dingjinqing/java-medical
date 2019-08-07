@@ -1,23 +1,21 @@
 package com.vpu.mp.service.saas.shop;
 
-import static com.vpu.mp.db.main.tables.MpVersion.MP_VERSION;
-
-import java.sql.Timestamp;
-import java.util.List;
-
-import org.jooq.Record;
-import org.jooq.Result;
-import org.jooq.SelectWhereStep;
-import org.springframework.stereotype.Service;
-
 import com.vpu.mp.db.main.tables.records.MpVersionRecord;
 import com.vpu.mp.service.foundation.service.MainBaseService;
 import com.vpu.mp.service.foundation.util.PageResult;
 import com.vpu.mp.service.pojo.saas.shop.mp.MpVersionListParam;
 import com.vpu.mp.service.pojo.saas.shop.mp.MpVersionVo;
-
 import me.chanjar.weixin.common.error.WxErrorException;
 import me.chanjar.weixin.open.bean.WxOpenMaCodeTemplate;
+import org.jooq.Record;
+import org.jooq.Result;
+import org.jooq.SelectWhereStep;
+import org.springframework.stereotype.Service;
+
+import java.sql.Timestamp;
+import java.util.List;
+
+import static com.vpu.mp.db.main.tables.MpVersion.MP_VERSION;
 
 /**
  * 
@@ -165,4 +163,14 @@ public class MpVersionService extends MainBaseService {
 		select.orderBy(MP_VERSION.TEMPLATE_ID.desc());
 		return this.getPageResult(select, param.page, MpVersionVo.class);
 	}
+
+    /**
+     *  获取小程序版本名称列表值
+     * @return 名称列表值
+     */
+	public List<String> getMpUserVersionList(){
+        List<String> list = db().selectDistinct(MP_VERSION.USER_VERSION).from(MP_VERSION).fetch(MP_VERSION.USER_VERSION);
+
+        return list;
+    }
 }

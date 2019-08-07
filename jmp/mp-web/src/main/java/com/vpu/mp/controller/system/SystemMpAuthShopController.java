@@ -1,25 +1,17 @@
 package com.vpu.mp.controller.system;
 
-import java.io.IOException;
-
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RestController;
-
 import com.vpu.mp.db.main.tables.records.MpAuthShopRecord;
 import com.vpu.mp.service.foundation.data.JsonResult;
 import com.vpu.mp.service.foundation.data.JsonResultCode;
 import com.vpu.mp.service.foundation.util.PageResult;
-import com.vpu.mp.service.pojo.saas.shop.mp.MpAuthShopVo;
-import com.vpu.mp.service.pojo.saas.shop.mp.MpDeployQueryParam;
-import com.vpu.mp.service.pojo.saas.shop.mp.MpVersionListParam;
-import com.vpu.mp.service.pojo.saas.shop.mp.MpVersionVo;
+import com.vpu.mp.service.pojo.saas.shop.mp.*;
 import com.vpu.mp.service.saas.shop.MpAuthShopService;
-
 import me.chanjar.weixin.common.error.WxErrorException;
 import me.chanjar.weixin.open.bean.result.WxOpenResult;
+import org.springframework.web.bind.annotation.*;
+
+import java.io.IOException;
+import java.util.List;
 
 @RestController
 public class SystemMpAuthShopController extends SystemBaseController {
@@ -142,7 +134,7 @@ public class SystemMpAuthShopController extends SystemBaseController {
 	/**
 	 * 得到小程序信息
 	 * 
-	 * @param param
+	 * @param  appId 小程序id
 	 * @return
 	 */
 	@GetMapping("/api/system/mp/get/{appId}")
@@ -154,13 +146,28 @@ public class SystemMpAuthShopController extends SystemBaseController {
 		return success(record.into(MpAuthShopVo.class));
 	}
 
-	
-//	@PostMapping("/api/system/mp/operate/log/list")
-//	public JsonResult logList(@RequestBody MpVersionListParam param) {
-//		PageResult<MpVersionVo> pageList = saas.shop.mp.getPageList(param);
-//		return success(pageList);
-//	}
 
-	
+    /**
+     *  获取小程序版本下拉列表
+     * @return 下拉列表值
+     */
+    @GetMapping("/api/system/mp/version/user/version/list")
+	public JsonResult getMpUserVersionList(){
+        List<String> mpUserVersionList = saas.shop.mpVersion.getMpUserVersionList();
+
+        return success(mpUserVersionList);
+    }
+
+    /**
+     *  小程序版本操作日志分页列表
+     * @param param  过滤信息，未使用templateId字段，而使用user_version字段是因为不确定这两个字段的对应关系
+     *               是否一定是一对一
+     * @return 分页结果值
+     */
+	@PostMapping("/api/system/mp/operate/log/list")
+	public JsonResult logList(@RequestBody MpOperateListParam param) {
+        PageResult<MpOperateVo> mpOperateVoPageResult = saas.shop.mpOperateLog.logList(param);
+        return success(mpOperateVoPageResult);
+    }
 
 }
