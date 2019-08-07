@@ -13,6 +13,8 @@ import org.jooq.Record1;
 import org.jooq.SelectWhereStep;
 import org.jooq.impl.DSL;
 import org.jooq.tools.StringUtils;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
 import com.vpu.mp.db.main.tables.records.ShopAccountRecord;
 import com.vpu.mp.service.foundation.data.JsonResultCode;
@@ -23,10 +25,6 @@ import com.vpu.mp.service.foundation.util.PageResult;
 import com.vpu.mp.service.foundation.util.Util;
 import com.vpu.mp.service.pojo.saas.shop.ShopAccountListQueryParam;
 import com.vpu.mp.service.pojo.saas.shop.ShopAccountPojo;
-
-import org.springframework.beans.factory.annotation.Autowired;
-
-import org.springframework.stereotype.Service;
 
 /**
  * 

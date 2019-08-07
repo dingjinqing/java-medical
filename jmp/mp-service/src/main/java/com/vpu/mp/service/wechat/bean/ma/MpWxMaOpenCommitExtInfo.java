@@ -1,4 +1,4 @@
-package com.vpu.mp.service.wechat.ma.bean;
+package com.vpu.mp.service.wechat.bean.ma;
 
 import java.util.ArrayList;
 import java.util.HashMap;

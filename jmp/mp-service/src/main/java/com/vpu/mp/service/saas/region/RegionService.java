@@ -1,7 +1,6 @@
 package com.vpu.mp.service.saas.region;
 
 import org.springframework.beans.factory.annotation.Autowired;
-
 import org.springframework.stereotype.Service;
 
 import com.vpu.mp.service.foundation.service.MainBaseService;

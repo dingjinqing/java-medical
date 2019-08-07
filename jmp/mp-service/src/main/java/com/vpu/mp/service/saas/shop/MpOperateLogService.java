@@ -1,16 +1,10 @@
 package com.vpu.mp.service.saas.shop;
 
 import static com.vpu.mp.db.main.tables.MpOperateLog.MP_OPERATE_LOG;
-import static com.vpu.mp.db.main.tables.MpVersion.MP_VERSION;
 
-import org.jooq.Record;
-import org.jooq.SelectWhereStep;
 import org.springframework.stereotype.Service;
 
 import com.vpu.mp.service.foundation.service.MainBaseService;
-import com.vpu.mp.service.foundation.util.PageResult;
-import com.vpu.mp.service.pojo.saas.shop.mp.MpVersionListParam;
-import com.vpu.mp.service.pojo.saas.shop.mp.MpVersionVo;
 
 /**
  * 

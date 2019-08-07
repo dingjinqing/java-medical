@@ -12,7 +12,6 @@ import org.springframework.web.servlet.handler.HandlerInterceptorAdapter;
 import com.vpu.mp.service.foundation.data.JsonResult;
 import com.vpu.mp.service.foundation.data.JsonResultCode;
 import com.vpu.mp.service.foundation.util.Util;
-import com.vpu.mp.service.pojo.saas.auth.SystemTokenAuthInfo;
 import com.vpu.mp.service.pojo.wxapp.login.WxAppSessionUser;
 import com.vpu.mp.service.saas.SaasApplication;
 

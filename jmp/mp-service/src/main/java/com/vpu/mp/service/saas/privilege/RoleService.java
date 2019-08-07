@@ -1,11 +1,11 @@
 package com.vpu.mp.service.saas.privilege;
 
 import static com.vpu.mp.db.main.tables.SystemRole.SYSTEM_ROLE;
-import com.vpu.mp.db.main.tables.records.SystemRoleRecord;
-import com.vpu.mp.service.foundation.service.MainBaseService;
-
 
 import org.springframework.stereotype.Service;
+
+import com.vpu.mp.db.main.tables.records.SystemRoleRecord;
+import com.vpu.mp.service.foundation.service.MainBaseService;
 
 /**
  * 

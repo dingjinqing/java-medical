@@ -9,9 +9,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
-import com.google.gson.JsonObject;
 import com.vpu.mp.service.foundation.jedis.JedisManager;
+import com.vpu.mp.service.wechat.api.WxOpenComponentExtService;
+import com.vpu.mp.service.wechat.api.impl.WxOpenComponentExtServiceImpl;
 
+import lombok.Getter;
 import me.chanjar.weixin.common.error.WxErrorException;
 import me.chanjar.weixin.mp.bean.kefu.WxMpKefuMessage;
 import me.chanjar.weixin.mp.bean.message.WxMpXmlMessage;
@@ -19,9 +21,7 @@ import me.chanjar.weixin.mp.bean.message.WxMpXmlOutMessage;
 import me.chanjar.weixin.open.api.impl.WxOpenInRedisConfigStorage;
 import me.chanjar.weixin.open.api.impl.WxOpenMessageRouter;
 import me.chanjar.weixin.open.api.impl.WxOpenServiceImpl;
-import me.chanjar.weixin.open.bean.WxOpenCreateResult;
 import me.chanjar.weixin.open.bean.message.WxOpenXmlMessage;
-
 
 /**
  * 
@@ -30,32 +30,31 @@ import me.chanjar.weixin.open.bean.message.WxOpenXmlMessage;
  */
 @Service
 public class OpenPlatform extends WxOpenServiceImpl {
-	
+
 	@Value(value = "${wx.open.app_id}")
 	protected String appId;
-	
+
 	@Value(value = "${wx.open.app_secret}")
 	protected String appSecret;
-	
+
 	@Value(value = "${wx.open.token}")
 	protected String token;
-	
+
 	@Value(value = "${wx.open.aes_key}")
 	protected String aesKey;
-	
-	final String AES = "aes";
-	
+
+	static final String AES = "aes";
+
 	private Logger logger = LoggerFactory.getLogger(getClass());
-	
+
 	private WxOpenMessageRouter wxOpenMessageRouter;
-	
+
 	@Autowired
 	protected JedisManager jedis;
 
-	String CREATE_OPEN_GET_URL="https://api.weixin.qq.com/cgi-bin/open/get";
-	String GET_AUTHORIZER_LIST_URL="https://api.weixin.qq.com/cgi-bin/component/api_get_authorizer_list";
-	String BIND_OPEN_PLATFORM="https://api.weixin.qq.com/cgi-bin/open/bind";
-	String UNBIND_OPEN_PLATFORM="https://api.weixin.qq.com/cgi-bin/open/unbind";
+	@Getter
+	protected WxOpenComponentExtService openComponentExtService = new WxOpenComponentExtServiceImpl(this);
+
 	/**
 	 * 初始化
 	 */
@@ -90,31 +89,29 @@ public class OpenPlatform extends WxOpenServiceImpl {
 	 */
 	public String componetCallback(String requestBody, String timestamp,
 			String nonce, String signature, String encType, String msgSignature) {
-		 this.logger.info(
-	                "\n接收微信请求：[signature=[{}], encType=[{}], msgSignature=[{}],"
-	                        + " timestamp=[{}], nonce=[{}], requestBody=[\n{}\n] ",
-	                signature, encType, msgSignature, timestamp, nonce, requestBody);
+		this.logger.info(
+				"\n接收微信请求：[signature=[{}], encType=[{}], msgSignature=[{}],"
+						+ " timestamp=[{}], nonce=[{}], requestBody=[\n{}\n] ",
+				signature, encType, msgSignature, timestamp, nonce, requestBody);
 
-	        if (!StringUtils.equalsIgnoreCase(AES, encType)
-	                || !this.getWxOpenComponentService().checkSignature(timestamp, nonce, signature)) {
-	            throw new IllegalArgumentException("非法请求，可能属于伪造的请求！");
-	        }
+		if (!StringUtils.equalsIgnoreCase(AES, encType)
+				|| !this.getWxOpenComponentService().checkSignature(timestamp, nonce, signature)) {
+			throw new IllegalArgumentException("非法请求，可能属于伪造的请求！");
+		}
 
-	        // aes加密的消息
-	        WxOpenXmlMessage inMessage = WxOpenXmlMessage.fromEncryptedXml(requestBody,
-	                this.getWxOpenConfigStorage(), timestamp, nonce, msgSignature);
-	        this.logger.debug("\n消息解密后内容为：\n{} ", inMessage.toString());
-	        try {
-	            String out = this.getWxOpenComponentService().route(inMessage);
-	            this.logger.debug("\n组装回复信息：{}", out);
-	        } catch (WxErrorException e) {
-	            this.logger.error("receive_ticket", e);
-	        }
+		// aes加密的消息
+		WxOpenXmlMessage inMessage = WxOpenXmlMessage.fromEncryptedXml(requestBody,
+				this.getWxOpenConfigStorage(), timestamp, nonce, msgSignature);
+		this.logger.debug("\n消息解密后内容为：\n{} ", inMessage.toString());
+		try {
+			String out = this.getWxOpenComponentService().route(inMessage);
+			this.logger.debug("\n组装回复信息：{}", out);
+		} catch (WxErrorException e) {
+			this.logger.error("receive_ticket", e);
+		}
 
-	        return "success";
+		return "success";
 	}
-
-	
 
 	/**
 	 * 公众号或小程序事件处理
@@ -170,12 +167,12 @@ public class OpenPlatform extends WxOpenServiceImpl {
 		String mstTypeText = "text";
 		String testMsgTypeContent = "TESTCOMPONENT_MSG_TYPE_TEXT";
 		String testMsgTypeContentCallback = "TESTCOMPONENT_MSG_TYPE_TEXT_callback";
-		String queryAuthCodePrefix =  "QUERY_AUTH_CODE:";
-		String fromApiSuffix  = "_from_api";
-		String fromCallbackSuffix  = "from_callback";
+		String queryAuthCodePrefix = "QUERY_AUTH_CODE:";
+		String fromApiSuffix = "_from_api";
+		String fromCallbackSuffix = "from_callback";
 		if (isGlobalTestAppId(appId)) {
 			try {
-				if (StringUtils.equals(message.getMsgType(),mstTypeText)) {
+				if (StringUtils.equals(message.getMsgType(), mstTypeText)) {
 					if (StringUtils.equals(message.getContent(), testMsgTypeContent)) {
 						out = WxOpenXmlMessage.wxMpOutXmlMessageToEncryptedXml(
 								WxMpXmlOutMessage.TEXT().content(testMsgTypeContentCallback)
@@ -183,7 +180,7 @@ public class OpenPlatform extends WxOpenServiceImpl {
 										.toUser(message.getFromUser())
 										.build(),
 								this.getWxOpenConfigStorage());
-					} else if (StringUtils.startsWith(message.getContent(),queryAuthCodePrefix)) {
+					} else if (StringUtils.startsWith(message.getContent(), queryAuthCodePrefix)) {
 						String msg = message.getContent().replace(queryAuthCodePrefix, "") + fromApiSuffix;
 						WxMpKefuMessage kefuMessage = WxMpKefuMessage.TEXT().content(msg).toUser(message.getFromUser())
 								.build();
@@ -191,7 +188,8 @@ public class OpenPlatform extends WxOpenServiceImpl {
 								.sendKefuMessage(kefuMessage);
 					}
 				} else if (StringUtils.equals(message.getMsgType(), mstTypeEvent)) {
-					WxMpKefuMessage kefuMessage = WxMpKefuMessage.TEXT().content(message.getEvent() + fromCallbackSuffix)
+					WxMpKefuMessage kefuMessage = WxMpKefuMessage.TEXT()
+							.content(message.getEvent() + fromCallbackSuffix)
 							.toUser(message.getFromUser()).build();
 					this.getWxOpenComponentService().getWxMpServiceByAppid(appId).getKefuService()
 							.sendKefuMessage(kefuMessage);
@@ -212,62 +210,5 @@ public class OpenPlatform extends WxOpenServiceImpl {
 	protected boolean isGlobalTestAppId(String appId) {
 		return (StringUtils.equalsAnyIgnoreCase(appId, "wxd101a85aa106f53e", "wx570bc396a51b8ff8"));
 	}
-	
-	
-	public WxOpenCreateResult queryOpenAccount(String appId) throws WxErrorException {
-		JsonObject param = new JsonObject();
-		param.addProperty("appid", appId);
-		String uri = CREATE_OPEN_GET_URL;
-		String componentAccessToken = this.getWxOpenComponentService().getComponentAccessToken(false);
-		System.out.println(componentAccessToken);
-		//componentAccessToken="24_d9IYiG0o6UFeKAL1RhfKuAzF-4bE2v0aDbb-l_BKlddXP9xWdduYG0_MGB0JsrbJgn6nXS23KCUyXSMvO6JbV2v2rwfYN-lH5qobhpyBx03jOlE93I93WFoKTWQNDYdAEAEUP";
-		String uriWithComponentAccessToken = uri + (uri.contains("?") ? "&" : "?") + "access_token" + "="
-				+ componentAccessToken;
-		String json = post(uriWithComponentAccessToken, param.toString());
-
-		return WxOpenCreateResult.fromJson(json);
-	}
-	
-	//第三方平台可以使用接口拉取当前所有已授权的帐号基本信息。
-	public WxOpenCreateResult getAuthorizerList(String componentAppid,Integer offset,Integer count) throws WxErrorException {
-		JsonObject param = new JsonObject();
-		param.addProperty("component_appid", componentAppid);
-		param.addProperty("offset", offset);
-		param.addProperty("count", count);
-		String uri = GET_AUTHORIZER_LIST_URL;
-		String componentAccessToken = this.getWxOpenComponentService().getComponentAccessToken(false);
-		String uriWithComponentAccessToken = uri + (uri.contains("?") ? "&" : "?") + "component_access_token" + "="+ componentAccessToken;
-		String json = post(uriWithComponentAccessToken, param.toString());
-		return WxOpenCreateResult.fromJson(json);
-		
-	}
-	
-	//获取公众号/小程序所绑定的开放平台帐号
-	public WxOpenCreateResult bindOpenAppId(String appId,String openAppId) throws WxErrorException {
-		JsonObject param = new JsonObject();
-		param.addProperty("appid", appId);
-		param.addProperty("open_appid", openAppId);
-		String uri = BIND_OPEN_PLATFORM;
-		String componentAccessToken = this.getWxOpenComponentService().getComponentAccessToken(false);
-		String uriWithComponentAccessToken = uri + (uri.contains("?") ? "&" : "?") + "access_token" + "="
-				+ componentAccessToken;
-		String json = post(uriWithComponentAccessToken, param.toString());
-		return WxOpenCreateResult.fromJson(json);
-	}
-	
-	//将公众号/小程序从开放平台帐号下解绑
-	public WxOpenCreateResult unBindOpenAppId(String appId,String openAppId) throws WxErrorException {
-		JsonObject param = new JsonObject();
-		param.addProperty("appid", appId);
-		param.addProperty("open_appid", openAppId);
-		String uri = UNBIND_OPEN_PLATFORM;
-		String componentAccessToken = this.getWxOpenComponentService().getComponentAccessToken(false);
-		String uriWithComponentAccessToken = uri + (uri.contains("?") ? "&" : "?") + "access_token" + "="
-				+ componentAccessToken;
-		String json = post(uriWithComponentAccessToken, param.toString());
-		return WxOpenCreateResult.fromJson(json);
-	}
-	
-	
 
 }

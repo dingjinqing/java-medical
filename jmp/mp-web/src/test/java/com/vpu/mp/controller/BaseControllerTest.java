@@ -6,6 +6,8 @@ import static org.junit.Assert.fail;
 
 import org.junit.After;
 import org.junit.Before;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
@@ -19,13 +21,12 @@ import com.vpu.mp.service.foundation.data.JsonResultCode;
 import com.vpu.mp.service.foundation.util.Util;
 
 public class BaseControllerTest {
-	
+
 	/**
 	 * 请求基础URL
 	 */
 	@Value(value = "${test.base_url}")
 	protected String baseUrl;
-
 
 	/**
 	 * 请求模板客户端
@@ -105,9 +106,14 @@ public class BaseControllerTest {
 		} else {
 			fail("Not yet implemented methods");
 		}
+		logger().debug("requesst: " + url);
+		if (HttpMethod.POST.equals(method)) {
+			logger().debug("body   : "+ json);
+		}
+		
 		ResponseEntity<JsonResult> response = restTemplate.exchange(url, method, entity, JsonResult.class);
 		JsonResult result = response.getBody();
-		System.out.println(Util.toJson(result));
+		logger().debug("result : "+ Util.toJson(result));
 		return result;
 	}
 
@@ -146,7 +152,6 @@ public class BaseControllerTest {
 	@After
 	public void tearDown() throws Exception {
 	}
-	
 
 	/**
 	 * 
@@ -159,4 +164,7 @@ public class BaseControllerTest {
 		return Util.parseJson(Util.toJson(result.getContent()), cls);
 	}
 
+	protected Logger logger() {
+		return LoggerFactory.getLogger(getClass());
+	}
 }

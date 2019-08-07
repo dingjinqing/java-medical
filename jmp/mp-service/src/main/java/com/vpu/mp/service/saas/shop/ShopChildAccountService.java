@@ -15,6 +15,7 @@ import org.jooq.Result;
 import org.jooq.SelectConditionStep;
 import org.jooq.SelectLimitStep;
 import org.jooq.SelectWhereStep;
+import org.springframework.stereotype.Service;
 
 import com.vpu.mp.db.main.tables.ShopChildAccount;
 import com.vpu.mp.db.main.tables.ShopChildRole;
@@ -31,8 +32,6 @@ import com.vpu.mp.service.pojo.shop.config.group.ShopChildAccountVo;
 import com.vpu.mp.service.pojo.shop.config.group.ShopRoleAddListVo;
 import com.vpu.mp.service.pojo.shop.config.group.ShopRoleAddParam;
 import com.vpu.mp.service.pojo.shop.config.group.ShopRoleUpdateParam;
-
-import org.springframework.stereotype.Service;
 
 /**
  * 

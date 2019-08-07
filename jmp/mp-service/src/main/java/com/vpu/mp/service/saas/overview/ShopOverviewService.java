@@ -1,19 +1,33 @@
 package com.vpu.mp.service.saas.overview;
 
-import com.vpu.mp.db.main.tables.*;
-import com.vpu.mp.db.main.tables.records.MpAuthShopRecord;
-import com.vpu.mp.service.foundation.service.MainBaseService;
-import com.vpu.mp.service.foundation.util.Util;
-import com.vpu.mp.service.pojo.shop.overview.*;
+import java.sql.Timestamp;
+import java.text.SimpleDateFormat;
+import java.util.List;
+
 import org.apache.commons.lang3.StringUtils;
 import org.jooq.Record1;
 import org.jooq.Select;
 import org.jooq.SortField;
 import org.springframework.stereotype.Service;
 
-import java.sql.Timestamp;
-import java.text.SimpleDateFormat;
-import java.util.List;
+import com.vpu.mp.db.main.tables.Article;
+import com.vpu.mp.db.main.tables.MpAuthShop;
+import com.vpu.mp.db.main.tables.MpOfficialAccount;
+import com.vpu.mp.db.main.tables.Shop;
+import com.vpu.mp.db.main.tables.ShopAccount;
+import com.vpu.mp.db.main.tables.ShopChildAccount;
+import com.vpu.mp.db.main.tables.ShopRenew;
+import com.vpu.mp.db.main.tables.ShopVersion;
+import com.vpu.mp.db.main.tables.records.MpAuthShopRecord;
+import com.vpu.mp.service.foundation.service.MainBaseService;
+import com.vpu.mp.service.foundation.util.Util;
+import com.vpu.mp.service.pojo.shop.overview.BindUnBindOfficialParam;
+import com.vpu.mp.service.pojo.shop.overview.FixedAnnouncementParam;
+import com.vpu.mp.service.pojo.shop.overview.FixedAnnouncementVo;
+import com.vpu.mp.service.pojo.shop.overview.ShopAssistantParam;
+import com.vpu.mp.service.pojo.shop.overview.ShopAssistantVo;
+import com.vpu.mp.service.pojo.shop.overview.ShopBaseInfoParam;
+import com.vpu.mp.service.pojo.shop.overview.ShopBaseInfoVo;
 
 /**
  * @Author:liufei

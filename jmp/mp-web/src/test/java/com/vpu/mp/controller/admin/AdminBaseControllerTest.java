@@ -52,9 +52,6 @@ public class AdminBaseControllerTest extends BaseControllerTest {
 	}
 
 	protected void login() {
-		if (token != null) {
-			return;
-		}
 		ShopLoginParam param = new ShopLoginParam();
 		param.setUsername(testUserName);
 		param.setPassword(testPassword);
