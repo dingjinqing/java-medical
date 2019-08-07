@@ -4,11 +4,6 @@
 package com.vpu.mp.db.shop.tables;
 
 
-import com.vpu.mp.db.shop.Indexes;
-import com.vpu.mp.db.shop.Keys;
-import com.vpu.mp.db.shop.MiniShop_471752;
-import com.vpu.mp.db.shop.tables.records.UserTotalFanliRecord;
-
 import java.math.BigDecimal;
 import java.sql.Timestamp;
 import java.util.Arrays;
@@ -18,6 +13,7 @@ import javax.annotation.Generated;
 
 import org.jooq.Field;
 import org.jooq.ForeignKey;
+import org.jooq.Identity;
 import org.jooq.Index;
 import org.jooq.Name;
 import org.jooq.Record;
@@ -27,6 +23,11 @@ import org.jooq.TableField;
 import org.jooq.UniqueKey;
 import org.jooq.impl.DSL;
 import org.jooq.impl.TableImpl;
+
+import com.vpu.mp.db.shop.Indexes;
+import com.vpu.mp.db.shop.Keys;
+import com.vpu.mp.db.shop.MiniShop_471752;
+import com.vpu.mp.db.shop.tables.records.UserTotalFanliRecord;
 
 
 /**
@@ -42,10 +43,10 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class UserTotalFanli extends TableImpl<UserTotalFanliRecord> {
 
-    private static final long serialVersionUID = 582995466;
+    private static final long serialVersionUID = -159303324;
 
     /**
-     * The reference instance of <code>mini_shop_471752.b2c_user_total_fanli</code>
+     * The reference instance of <code>jmini_shop_471752.b2c_user_total_fanli</code>
      */
     public static final UserTotalFanli USER_TOTAL_FANLI = new UserTotalFanli();
 
@@ -58,61 +59,66 @@ public class UserTotalFanli extends TableImpl<UserTotalFanliRecord> {
     }
 
     /**
-     * The column <code>mini_shop_471752.b2c_user_total_fanli.user_id</code>. 会员id
+     * The column <code>jmini_shop_471752.b2c_user_total_fanli.id</code>.
+     */
+    public final TableField<UserTotalFanliRecord, Integer> ID = createField("id", org.jooq.impl.SQLDataType.INTEGER.nullable(false).identity(true), this, "");
+
+    /**
+     * The column <code>jmini_shop_471752.b2c_user_total_fanli.user_id</code>. 会员id
      */
     public final TableField<UserTotalFanliRecord, Integer> USER_ID = createField("user_id", org.jooq.impl.SQLDataType.INTEGER.nullable(false), this, "会员id");
 
     /**
-     * The column <code>mini_shop_471752.b2c_user_total_fanli.mobile</code>. 会员手机号
+     * The column <code>jmini_shop_471752.b2c_user_total_fanli.mobile</code>. 会员手机号
      */
     public final TableField<UserTotalFanliRecord, String> MOBILE = createField("mobile", org.jooq.impl.SQLDataType.VARCHAR(16).defaultValue(org.jooq.impl.DSL.inline("", org.jooq.impl.SQLDataType.VARCHAR)), this, "会员手机号");
 
     /**
-     * The column <code>mini_shop_471752.b2c_user_total_fanli.sublayer_number</code>. 子层分销员数量
+     * The column <code>jmini_shop_471752.b2c_user_total_fanli.sublayer_number</code>. 子层分销员数量
      */
     public final TableField<UserTotalFanliRecord, Integer> SUBLAYER_NUMBER = createField("sublayer_number", org.jooq.impl.SQLDataType.INTEGER.defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.INTEGER)), this, "子层分销员数量");
 
     /**
-     * The column <code>mini_shop_471752.b2c_user_total_fanli.total_money</code>. 累计获得佣金数
+     * The column <code>jmini_shop_471752.b2c_user_total_fanli.total_money</code>. 累计获得佣金数
      */
     public final TableField<UserTotalFanliRecord, BigDecimal> TOTAL_MONEY = createField("total_money", org.jooq.impl.SQLDataType.DECIMAL(10, 2).defaultValue(org.jooq.impl.DSL.inline("0.00", org.jooq.impl.SQLDataType.DECIMAL)), this, "累计获得佣金数");
 
     /**
-     * The column <code>mini_shop_471752.b2c_user_total_fanli.can_money</code>. 可用佣金余额
+     * The column <code>jmini_shop_471752.b2c_user_total_fanli.can_money</code>. 可用佣金余额
      */
     public final TableField<UserTotalFanliRecord, BigDecimal> CAN_MONEY = createField("can_money", org.jooq.impl.SQLDataType.DECIMAL(10, 2).defaultValue(org.jooq.impl.DSL.inline("0.00", org.jooq.impl.SQLDataType.DECIMAL)), this, "可用佣金余额");
 
     /**
-     * The column <code>mini_shop_471752.b2c_user_total_fanli.blocked</code>. 冻结佣金余额
+     * The column <code>jmini_shop_471752.b2c_user_total_fanli.blocked</code>. 冻结佣金余额
      */
     public final TableField<UserTotalFanliRecord, BigDecimal> BLOCKED = createField("blocked", org.jooq.impl.SQLDataType.DECIMAL(10, 2).defaultValue(org.jooq.impl.DSL.inline("0.00", org.jooq.impl.SQLDataType.DECIMAL)), this, "冻结佣金余额");
 
     /**
-     * The column <code>mini_shop_471752.b2c_user_total_fanli.create_time</code>.
+     * The column <code>jmini_shop_471752.b2c_user_total_fanli.create_time</code>.
      */
     public final TableField<UserTotalFanliRecord, Timestamp> CREATE_TIME = createField("create_time", org.jooq.impl.SQLDataType.TIMESTAMP.nullable(false).defaultValue(org.jooq.impl.DSL.field("CURRENT_TIMESTAMP", org.jooq.impl.SQLDataType.TIMESTAMP)), this, "");
 
     /**
-     * The column <code>mini_shop_471752.b2c_user_total_fanli.update_time</code>. 最后修改时间
+     * The column <code>jmini_shop_471752.b2c_user_total_fanli.update_time</code>. 最后修改时间
      */
     public final TableField<UserTotalFanliRecord, Timestamp> UPDATE_TIME = createField("update_time", org.jooq.impl.SQLDataType.TIMESTAMP.nullable(false).defaultValue(org.jooq.impl.DSL.field("CURRENT_TIMESTAMP", org.jooq.impl.SQLDataType.TIMESTAMP)), this, "最后修改时间");
 
     /**
-     * Create a <code>mini_shop_471752.b2c_user_total_fanli</code> table reference
+     * Create a <code>jmini_shop_471752.b2c_user_total_fanli</code> table reference
      */
     public UserTotalFanli() {
         this(DSL.name("b2c_user_total_fanli"), null);
     }
 
     /**
-     * Create an aliased <code>mini_shop_471752.b2c_user_total_fanli</code> table reference
+     * Create an aliased <code>jmini_shop_471752.b2c_user_total_fanli</code> table reference
      */
     public UserTotalFanli(String alias) {
         this(DSL.name(alias), USER_TOTAL_FANLI);
     }
 
     /**
-     * Create an aliased <code>mini_shop_471752.b2c_user_total_fanli</code> table reference
+     * Create an aliased <code>jmini_shop_471752.b2c_user_total_fanli</code> table reference
      */
     public UserTotalFanli(Name alias) {
         this(alias, USER_TOTAL_FANLI);
@@ -135,7 +141,7 @@ public class UserTotalFanli extends TableImpl<UserTotalFanliRecord> {
      */
     @Override
     public Schema getSchema() {
-        return MiniShop_471752.MINI_SHOP_471752;
+    	return MiniShop_471752.MINI_SHOP_471752;
     }
 
     /**
@@ -143,7 +149,15 @@ public class UserTotalFanli extends TableImpl<UserTotalFanliRecord> {
      */
     @Override
     public List<Index> getIndexes() {
-        return Arrays.<Index>asList(Indexes.USER_TOTAL_FANLI_PRIMARY);
+        return Arrays.<Index>asList(Indexes.USER_TOTAL_FANLI_PRIMARY, Indexes.USER_TOTAL_FANLI_USER_ID);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public Identity<UserTotalFanliRecord, Integer> getIdentity() {
+        return Keys.IDENTITY_USER_TOTAL_FANLI;
     }
 
     /**

@@ -4,12 +4,13 @@
 package com.vpu.mp.db.shop;
 
 
-import com.vpu.mp.db.shop.tables.*;
+import javax.annotation.Generated;
+
 import org.jooq.Index;
 import org.jooq.OrderField;
 import org.jooq.impl.Internal;
 
-import javax.annotation.Generated;
+import com.vpu.mp.db.shop.tables.*;
 
 
 /**
@@ -234,9 +235,6 @@ public class Indexes {
     public static final Index ORDER_GOODS_ORDER_SN = Indexes0.ORDER_GOODS_ORDER_SN;
     public static final Index ORDER_GOODS_PRIMARY = Indexes0.ORDER_GOODS_PRIMARY;
     public static final Index ORDER_GOODS_SHOP_ID = Indexes0.ORDER_GOODS_SHOP_ID;
-    public static final Index ORDER_GOODS_REBATE_ORDER_SN = Indexes0.ORDER_GOODS_REBATE_ORDER_SN;
-    public static final Index ORDER_GOODS_REBATE_PRIMARY = Indexes0.ORDER_GOODS_REBATE_PRIMARY;
-    public static final Index ORDER_GOODS_REBATE_REBATE_USER_ID = Indexes0.ORDER_GOODS_REBATE_REBATE_USER_ID;
     public static final Index ORDER_INFO_MAIN_ORDER_SN = Indexes0.ORDER_INFO_MAIN_ORDER_SN;
     public static final Index ORDER_INFO_ORDER_SN = Indexes0.ORDER_INFO_ORDER_SN;
     public static final Index ORDER_INFO_ORDER_STATUS = Indexes0.ORDER_INFO_ORDER_STATUS;
@@ -398,7 +396,6 @@ public class Indexes {
     public static final Index USER_SUMMARY_TREND_REF_TYPE = Indexes0.USER_SUMMARY_TREND_REF_TYPE;
     public static final Index USER_TAG_PRIMARY = Indexes0.USER_TAG_PRIMARY;
     public static final Index USER_TAG_USER_TAG = Indexes0.USER_TAG_USER_TAG;
-    public static final Index USER_TOTAL_FANLI_PRIMARY = Indexes0.USER_TOTAL_FANLI_PRIMARY;
     public static final Index WXP_UNLIMIT_CODE_PRIMARY = Indexes0.WXP_UNLIMIT_CODE_PRIMARY;
     public static final Index WXP_UNLIMIT_CODE_SCENE_ID = Indexes0.WXP_UNLIMIT_CODE_SCENE_ID;
     public static final Index WXP_UNLIMIT_SCENE_PRIMARY = Indexes0.WXP_UNLIMIT_SCENE_PRIMARY;
@@ -419,10 +416,20 @@ public class Indexes {
     public static final Index COUPON_PACK_VOUCHER_ACT_ID = Indexes0.COUPON_PACK_VOUCHER_ACT_ID;
     public static final Index COUPON_PACK_VOUCHER_PRIMARY = Indexes0.COUPON_PACK_VOUCHER_PRIMARY;
     public static final Index COUPON_PACK_VOUCHER_VOUCHER_ID = Indexes0.COUPON_PACK_VOUCHER_VOUCHER_ID;
+    public static final Index USER_FANLI_STATISTICS_PRIMARY = Indexes0.USER_FANLI_STATISTICS_PRIMARY;
+    public static final Index USER_FANLI_STATISTICS_USER_ID = Indexes0.USER_FANLI_STATISTICS_USER_ID;
+    public static final Index FANLI_GOODS_STATISTICS_PRIMARY = Indexes0.FANLI_GOODS_STATISTICS_PRIMARY;
+    public static final Index FANLI_GOODS_STATISTICS_REC_ID = Indexes0.FANLI_GOODS_STATISTICS_REC_ID;
+    public static final Index USER_TOTAL_FANLI_PRIMARY = Indexes0.USER_TOTAL_FANLI_PRIMARY;
+    public static final Index USER_TOTAL_FANLI_USER_ID = Indexes0.USER_TOTAL_FANLI_USER_ID;
+    public static final Index ORDER_GOODS_REBATE_ORDER_SN = Indexes0.ORDER_GOODS_REBATE_ORDER_SN;
+    public static final Index ORDER_GOODS_REBATE_PRIMARY = Indexes0.ORDER_GOODS_REBATE_PRIMARY;
+    public static final Index ORDER_GOODS_REBATE_REBATE_USER_ID = Indexes0.ORDER_GOODS_REBATE_REBATE_USER_ID;
+    public static final Index ORDER_GOODS_REBATE_REC_ID = Indexes0.ORDER_GOODS_REBATE_REC_ID;
     // -------------------------------------------------------------------------
     // [#1459] distribute members to avoid static initialisers > 64kb
     // -------------------------------------------------------------------------
-	public static final Index USER_FANLI_STATISTICS_PRIMARY = null;
+
 
     private static class Indexes0 {
         public static Index GROUP_BUY_LIST_PRIMARY = Internal.createIndex("PRIMARY", GroupBuyList.GROUP_BUY_LIST, new OrderField[] { GroupBuyList.GROUP_BUY_LIST.ID }, true);
@@ -625,9 +632,6 @@ public class Indexes {
         public static Index ORDER_GOODS_ORDER_SN = Internal.createIndex("order_sn", OrderGoods.ORDER_GOODS, new OrderField[] { OrderGoods.ORDER_GOODS.ORDER_SN }, false);
         public static Index ORDER_GOODS_PRIMARY = Internal.createIndex("PRIMARY", OrderGoods.ORDER_GOODS, new OrderField[] { OrderGoods.ORDER_GOODS.REC_ID }, true);
         public static Index ORDER_GOODS_SHOP_ID = Internal.createIndex("shop_id", OrderGoods.ORDER_GOODS, new OrderField[] { OrderGoods.ORDER_GOODS.SHOP_ID }, false);
-        public static Index ORDER_GOODS_REBATE_ORDER_SN = Internal.createIndex("order_sn", OrderGoodsRebate.ORDER_GOODS_REBATE, new OrderField[] { OrderGoodsRebate.ORDER_GOODS_REBATE.ORDER_SN, OrderGoodsRebate.ORDER_GOODS_REBATE.PRODUCT_ID }, false);
-        public static Index ORDER_GOODS_REBATE_PRIMARY = Internal.createIndex("PRIMARY", OrderGoodsRebate.ORDER_GOODS_REBATE, new OrderField[] { OrderGoodsRebate.ORDER_GOODS_REBATE.REBATE_ID }, true);
-        public static Index ORDER_GOODS_REBATE_REBATE_USER_ID = Internal.createIndex("rebate_user_id", OrderGoodsRebate.ORDER_GOODS_REBATE, new OrderField[] { OrderGoodsRebate.ORDER_GOODS_REBATE.REBATE_USER_ID }, false);
         public static Index ORDER_INFO_MAIN_ORDER_SN = Internal.createIndex("main_order_sn", OrderInfo.ORDER_INFO, new OrderField[] { OrderInfo.ORDER_INFO.MAIN_ORDER_SN }, false);
         public static Index ORDER_INFO_ORDER_SN = Internal.createIndex("order_sn", OrderInfo.ORDER_INFO, new OrderField[] { OrderInfo.ORDER_INFO.ORDER_SN }, true);
         public static Index ORDER_INFO_ORDER_STATUS = Internal.createIndex("order_status", OrderInfo.ORDER_INFO, new OrderField[] { OrderInfo.ORDER_INFO.ORDER_STATUS }, false);
@@ -789,7 +793,6 @@ public class Indexes {
         public static Index USER_SUMMARY_TREND_REF_TYPE = Internal.createIndex("ref_type", UserSummaryTrend.USER_SUMMARY_TREND, new OrderField[] { UserSummaryTrend.USER_SUMMARY_TREND.REF_DATE, UserSummaryTrend.USER_SUMMARY_TREND.TYPE }, false);
         public static Index USER_TAG_PRIMARY = Internal.createIndex("PRIMARY", UserTag.USER_TAG, new OrderField[] { UserTag.USER_TAG.USER_ID, UserTag.USER_TAG.TAG_ID }, true);
         public static Index USER_TAG_USER_TAG = Internal.createIndex("user_tag", UserTag.USER_TAG, new OrderField[] { UserTag.USER_TAG.USER_ID, UserTag.USER_TAG.TAG_ID }, true);
-        public static Index USER_TOTAL_FANLI_PRIMARY = Internal.createIndex("PRIMARY", UserTotalFanli.USER_TOTAL_FANLI, new OrderField[] { UserTotalFanli.USER_TOTAL_FANLI.USER_ID }, true);
         public static Index WXP_UNLIMIT_CODE_PRIMARY = Internal.createIndex("PRIMARY", WxpUnlimitCode.WXP_UNLIMIT_CODE, new OrderField[] { WxpUnlimitCode.WXP_UNLIMIT_CODE.CODE_ID }, true);
         public static Index WXP_UNLIMIT_CODE_SCENE_ID = Internal.createIndex("scene_id", WxpUnlimitCode.WXP_UNLIMIT_CODE, new OrderField[] { WxpUnlimitCode.WXP_UNLIMIT_CODE.SCENE_ID, WxpUnlimitCode.WXP_UNLIMIT_CODE.CODE_PAGE }, false);
         public static Index WXP_UNLIMIT_SCENE_PRIMARY = Internal.createIndex("PRIMARY", WxpUnlimitScene.WXP_UNLIMIT_SCENE, new OrderField[] { WxpUnlimitScene.WXP_UNLIMIT_SCENE.SCENE_ID }, true);
@@ -813,6 +816,16 @@ public class Indexes {
         public static Index COUPON_PACK_VOUCHER_ACT_ID = Internal.createIndex("act_id", CouponPackVoucher.COUPON_PACK_VOUCHER, new OrderField[] { CouponPackVoucher.COUPON_PACK_VOUCHER.ACT_ID }, false);
         public static Index COUPON_PACK_VOUCHER_PRIMARY = Internal.createIndex("PRIMARY", CouponPackVoucher.COUPON_PACK_VOUCHER, new OrderField[] { CouponPackVoucher.COUPON_PACK_VOUCHER.ID }, true);
         public static Index COUPON_PACK_VOUCHER_VOUCHER_ID = Internal.createIndex("voucher_id", CouponPackVoucher.COUPON_PACK_VOUCHER, new OrderField[] { CouponPackVoucher.COUPON_PACK_VOUCHER.VOUCHER_ID }, false);
+        public static Index USER_FANLI_STATISTICS_PRIMARY = Internal.createIndex("PRIMARY", UserFanliStatistics.USER_FANLI_STATISTICS, new OrderField[] { UserFanliStatistics.USER_FANLI_STATISTICS.ID }, true);
+        public static Index USER_FANLI_STATISTICS_USER_ID = Internal.createIndex("user_id", UserFanliStatistics.USER_FANLI_STATISTICS, new OrderField[] { UserFanliStatistics.USER_FANLI_STATISTICS.USER_ID }, false);
+        public static Index FANLI_GOODS_STATISTICS_PRIMARY = Internal.createIndex("PRIMARY", FanliGoodsStatistics.FANLI_GOODS_STATISTICS, new OrderField[] { FanliGoodsStatistics.FANLI_GOODS_STATISTICS.ID }, true);
+        public static Index FANLI_GOODS_STATISTICS_REC_ID = Internal.createIndex("rec_id", FanliGoodsStatistics.FANLI_GOODS_STATISTICS, new OrderField[] { FanliGoodsStatistics.FANLI_GOODS_STATISTICS.REC_ID }, false);
+        public static Index USER_TOTAL_FANLI_PRIMARY = Internal.createIndex("PRIMARY", UserTotalFanli.USER_TOTAL_FANLI, new OrderField[] { UserTotalFanli.USER_TOTAL_FANLI.ID }, true);
+        public static Index USER_TOTAL_FANLI_USER_ID = Internal.createIndex("user_id", UserTotalFanli.USER_TOTAL_FANLI, new OrderField[] { UserTotalFanli.USER_TOTAL_FANLI.USER_ID }, false);
+        public static Index ORDER_GOODS_REBATE_ORDER_SN = Internal.createIndex("order_sn", OrderGoodsRebate.ORDER_GOODS_REBATE, new OrderField[] { OrderGoodsRebate.ORDER_GOODS_REBATE.ORDER_SN, OrderGoodsRebate.ORDER_GOODS_REBATE.PRODUCT_ID }, false);
+        public static Index ORDER_GOODS_REBATE_PRIMARY = Internal.createIndex("PRIMARY", OrderGoodsRebate.ORDER_GOODS_REBATE, new OrderField[] { OrderGoodsRebate.ORDER_GOODS_REBATE.REBATE_ID }, true);
+        public static Index ORDER_GOODS_REBATE_REBATE_USER_ID = Internal.createIndex("rebate_user_id", OrderGoodsRebate.ORDER_GOODS_REBATE, new OrderField[] { OrderGoodsRebate.ORDER_GOODS_REBATE.REBATE_USER_ID }, false);
+        public static Index ORDER_GOODS_REBATE_REC_ID = Internal.createIndex("rec_id", OrderGoodsRebate.ORDER_GOODS_REBATE, new OrderField[] { OrderGoodsRebate.ORDER_GOODS_REBATE.REC_ID }, false);
         public static Index LOTTERY_PRIZE_PRIMARY = Internal.createIndex("PRIMARY", LotteryPrize.LOTTERY_PRIZE, new OrderField[] { LotteryPrize.LOTTERY_PRIZE.ID }, true);
         public static Index LOTTERY_PRIZE_USER_LOTTERY = Internal.createIndex("user_lottery", LotteryPrize.LOTTERY_PRIZE, new OrderField[] { LotteryPrize.LOTTERY_PRIZE.LOTTERY_ID }, false);
 

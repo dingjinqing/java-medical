@@ -239,11 +239,6 @@ public class Tables {
     public static final DistributorLevelRecord DISTRIBUTOR_LEVEL_RECORD = DistributorLevelRecord.DISTRIBUTOR_LEVEL_RECORD;
 
     /**
-     * The table <code>mini_shop_471752.b2c_fanli_goods_statistics</code>.
-     */
-    public static final FanliGoodsStatistics FANLI_GOODS_STATISTICS = FanliGoodsStatistics.FANLI_GOODS_STATISTICS;
-
-    /**
      * The table <code>mini_shop_471752.b2c_footprint_record</code>.
      */
     public static final FootprintRecord FOOTPRINT_RECORD = FootprintRecord.FOOTPRINT_RECORD;
@@ -548,10 +543,6 @@ public class Tables {
      */
     public static final OrderGoods ORDER_GOODS = OrderGoods.ORDER_GOODS;
 
-    /**
-     * The table <code>mini_shop_471752.b2c_order_goods_rebate</code>.
-     */
-    public static final OrderGoodsRebate ORDER_GOODS_REBATE = OrderGoodsRebate.ORDER_GOODS_REBATE;
 
     /**
      * The table <code>mini_shop_471752.b2c_order_info</code>.
@@ -899,11 +890,6 @@ public class Tables {
     public static final UserExplain USER_EXPLAIN = UserExplain.USER_EXPLAIN;
 
     /**
-     * The table <code>mini_shop_471752.b2c_user_fanli_statistics</code>.
-     */
-    public static final UserFanliStatistics USER_FANLI_STATISTICS = UserFanliStatistics.USER_FANLI_STATISTICS;
-
-    /**
      * The table <code>mini_shop_471752.b2c_user_goods_record</code>.
      */
     public static final UserGoodsRecord USER_GOODS_RECORD = UserGoodsRecord.USER_GOODS_RECORD;
@@ -949,11 +935,6 @@ public class Tables {
     public static final UserTag USER_TAG = UserTag.USER_TAG;
 
     /**
-     * The table <code>mini_shop_471752.b2c_user_total_fanli</code>.
-     */
-    public static final UserTotalFanli USER_TOTAL_FANLI = UserTotalFanli.USER_TOTAL_FANLI;
-
-    /**
      * The table <code>mini_shop_471752.b2c_wxp_unlimit_code</code>.
      */
     public static final WxpUnlimitCode WXP_UNLIMIT_CODE = WxpUnlimitCode.WXP_UNLIMIT_CODE;
@@ -977,4 +958,20 @@ public class Tables {
      * The table <code>mini_shop_471752.b2c_coupon_pack_voucher</code>.
      */
     public static final CouponPackVoucher COUPON_PACK_VOUCHER = com.vpu.mp.db.shop.tables.CouponPackVoucher.COUPON_PACK_VOUCHER;
+    /**
+     * The table <code>jmini_shop_471752.b2c_user_total_fanli</code>.
+     */
+    public static final UserTotalFanli USER_TOTAL_FANLI = com.vpu.mp.db.shop.tables.UserTotalFanli.USER_TOTAL_FANLI;
+    /**
+     * The table <code>jmini_shop_471752.b2c_fanli_goods_statistics</code>.
+     */
+    public static final FanliGoodsStatistics FANLI_GOODS_STATISTICS = com.vpu.mp.db.shop.tables.FanliGoodsStatistics.FANLI_GOODS_STATISTICS;
+    /**
+     * The table <code>jmini_shop_471752.b2c_user_fanli_statistics</code>.
+     */
+    public static final UserFanliStatistics USER_FANLI_STATISTICS = com.vpu.mp.db.shop.tables.UserFanliStatistics.USER_FANLI_STATISTICS;
+    /**
+     * The table <code>jmini_shop_471752.b2c_order_goods_rebate</code>.
+     */
+    public static final OrderGoodsRebate ORDER_GOODS_REBATE = com.vpu.mp.db.shop.tables.OrderGoodsRebate.ORDER_GOODS_REBATE;
 }

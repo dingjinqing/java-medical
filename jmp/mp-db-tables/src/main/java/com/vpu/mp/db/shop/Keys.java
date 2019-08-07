@@ -136,7 +136,6 @@ public class Keys {
     public static final Identity<MrkingVoucherRecord, Integer> IDENTITY_MRKING_VOUCHER = Identities0.IDENTITY_MRKING_VOUCHER;
     public static final Identity<OrderActionRecord, Integer> IDENTITY_ORDER_ACTION = Identities0.IDENTITY_ORDER_ACTION;
     public static final Identity<OrderGoodsRecord, Integer> IDENTITY_ORDER_GOODS = Identities0.IDENTITY_ORDER_GOODS;
-    public static final Identity<OrderGoodsRebateRecord, Integer> IDENTITY_ORDER_GOODS_REBATE = Identities0.IDENTITY_ORDER_GOODS_REBATE;
     public static final Identity<OrderInfoRecord, Integer> IDENTITY_ORDER_INFO = Identities0.IDENTITY_ORDER_INFO;
     public static final Identity<OrderMustRecord, Integer> IDENTITY_ORDER_MUST = Identities0.IDENTITY_ORDER_MUST;
     public static final Identity<OrderRefundRecordRecord, Integer> IDENTITY_ORDER_REFUND_RECORD = Identities0.IDENTITY_ORDER_REFUND_RECORD;
@@ -222,9 +221,11 @@ public class Keys {
     public static final Identity<MpVisitPageRecord, Integer> IDENTITY_MP_VISIT_PAGE = Identities0.IDENTITY_MP_VISIT_PAGE;
     public static final Identity<MpWeeklyRetainRecord, Integer> IDENTITY_MP_WEEKLY_RETAIN = Identities0.IDENTITY_MP_WEEKLY_RETAIN;
     public static final Identity<MpWeeklyVisitRecord, Integer> IDENTITY_MP_WEEKLY_VISIT = Identities0.IDENTITY_MP_WEEKLY_VISIT;
-    public static final UniqueKey<UserFanliStatisticsRecord> KEY_B2C_USER_FANLI_STATISTICS_PRIMARY = UniqueKeys0.KEY_B2C_USER_FANLI_STATISTICS_PRIMARY;
     public static final Identity<CouponPackVoucherRecord, Integer> IDENTITY_COUPON_PACK_VOUCHER = Identities0.IDENTITY_COUPON_PACK_VOUCHER;
-
+    public static final Identity<UserTotalFanliRecord, Integer> IDENTITY_USER_TOTAL_FANLI = Identities0.IDENTITY_USER_TOTAL_FANLI;
+    public static final Identity<FanliGoodsStatisticsRecord, Integer> IDENTITY_FANLI_GOODS_STATISTICS = Identities0.IDENTITY_FANLI_GOODS_STATISTICS;
+    public static final Identity<UserFanliStatisticsRecord, Integer> IDENTITY_USER_FANLI_STATISTICS = Identities0.IDENTITY_USER_FANLI_STATISTICS;
+    public static final Identity<OrderGoodsRebateRecord, Integer> IDENTITY_ORDER_GOODS_REBATE = Identities0.IDENTITY_ORDER_GOODS_REBATE;
     // -------------------------------------------------------------------------
     // UNIQUE and PRIMARY KEY definitions
     // -------------------------------------------------------------------------
@@ -332,7 +333,6 @@ public class Keys {
     public static final UniqueKey<MrkingVoucherRecord> KEY_B2C_MRKING_VOUCHER_ALIAS_CODE = UniqueKeys0.KEY_B2C_MRKING_VOUCHER_ALIAS_CODE;
     public static final UniqueKey<OrderActionRecord> KEY_B2C_ORDER_ACTION_PRIMARY = UniqueKeys0.KEY_B2C_ORDER_ACTION_PRIMARY;
     public static final UniqueKey<OrderGoodsRecord> KEY_B2C_ORDER_GOODS_PRIMARY = UniqueKeys0.KEY_B2C_ORDER_GOODS_PRIMARY;
-    public static final UniqueKey<OrderGoodsRebateRecord> KEY_B2C_ORDER_GOODS_REBATE_PRIMARY = UniqueKeys0.KEY_B2C_ORDER_GOODS_REBATE_PRIMARY;
     public static final UniqueKey<OrderInfoRecord> KEY_B2C_ORDER_INFO_PRIMARY = UniqueKeys0.KEY_B2C_ORDER_INFO_PRIMARY;
     public static final UniqueKey<OrderInfoRecord> KEY_B2C_ORDER_INFO_ORDER_SN = UniqueKeys0.KEY_B2C_ORDER_INFO_ORDER_SN;
     public static final UniqueKey<OrderMustRecord> KEY_B2C_ORDER_MUST_PRIMARY = UniqueKeys0.KEY_B2C_ORDER_MUST_PRIMARY;
@@ -426,7 +426,6 @@ public class Keys {
     public static final UniqueKey<UserSummaryTrendRecord> KEY_B2C_USER_SUMMARY_TREND_PRIMARY = UniqueKeys0.KEY_B2C_USER_SUMMARY_TREND_PRIMARY;
     public static final UniqueKey<UserTagRecord> KEY_B2C_USER_TAG_PRIMARY = UniqueKeys0.KEY_B2C_USER_TAG_PRIMARY;
     public static final UniqueKey<UserTagRecord> KEY_B2C_USER_TAG_USER_TAG = UniqueKeys0.KEY_B2C_USER_TAG_USER_TAG;
-    public static final UniqueKey<UserTotalFanliRecord> KEY_B2C_USER_TOTAL_FANLI_PRIMARY = UniqueKeys0.KEY_B2C_USER_TOTAL_FANLI_PRIMARY;
     public static final UniqueKey<WxpUnlimitCodeRecord> KEY_B2C_WXP_UNLIMIT_CODE_PRIMARY = UniqueKeys0.KEY_B2C_WXP_UNLIMIT_CODE_PRIMARY;
     public static final UniqueKey<WxpUnlimitSceneRecord> KEY_B2C_WXP_UNLIMIT_SCENE_PRIMARY = UniqueKeys0.KEY_B2C_WXP_UNLIMIT_SCENE_PRIMARY;
     public static final UniqueKey<WxShoppingRecommendRecord> KEY_B2C_WX_SHOPPING_RECOMMEND_PRIMARY = UniqueKeys0.KEY_B2C_WX_SHOPPING_RECOMMEND_PRIMARY;
@@ -441,6 +440,10 @@ public class Keys {
     public static final UniqueKey<MpWeeklyRetainRecord> KEY_B2C_MP_WEEKLY_RETAIN_PRIMARY = UniqueKeys0.KEY_B2C_MP_WEEKLY_RETAIN_PRIMARY;
     public static final UniqueKey<MpWeeklyVisitRecord> KEY_B2C_MP_WEEKLY_VISIT_PRIMARY = UniqueKeys0.KEY_B2C_MP_WEEKLY_VISIT_PRIMARY;
     public static final UniqueKey<CouponPackVoucherRecord> KEY_B2C_COUPON_PACK_VOUCHER_PRIMARY = UniqueKeys0.KEY_B2C_COUPON_PACK_VOUCHER_PRIMARY;
+    public static final UniqueKey<UserTotalFanliRecord> KEY_B2C_USER_TOTAL_FANLI_PRIMARY = UniqueKeys0.KEY_B2C_USER_TOTAL_FANLI_PRIMARY;
+    public static final UniqueKey<FanliGoodsStatisticsRecord> KEY_B2C_FANLI_GOODS_STATISTICS_PRIMARY = UniqueKeys0.KEY_B2C_FANLI_GOODS_STATISTICS_PRIMARY;
+    public static final UniqueKey<UserFanliStatisticsRecord> KEY_B2C_USER_FANLI_STATISTICS_PRIMARY = UniqueKeys0.KEY_B2C_USER_FANLI_STATISTICS_PRIMARY;
+    public static final UniqueKey<OrderGoodsRebateRecord> KEY_B2C_ORDER_GOODS_REBATE_PRIMARY = UniqueKeys0.KEY_B2C_ORDER_GOODS_REBATE_PRIMARY;
 
     // -------------------------------------------------------------------------
     // FOREIGN KEY definitions
@@ -549,7 +552,6 @@ public class Keys {
         public static Identity<MrkingVoucherRecord, Integer> IDENTITY_MRKING_VOUCHER = Internal.createIdentity(MrkingVoucher.MRKING_VOUCHER, MrkingVoucher.MRKING_VOUCHER.ID);
         public static Identity<OrderActionRecord, Integer> IDENTITY_ORDER_ACTION = Internal.createIdentity(OrderAction.ORDER_ACTION, OrderAction.ORDER_ACTION.ACTION_ID);
         public static Identity<OrderGoodsRecord, Integer> IDENTITY_ORDER_GOODS = Internal.createIdentity(OrderGoods.ORDER_GOODS, OrderGoods.ORDER_GOODS.REC_ID);
-        public static Identity<OrderGoodsRebateRecord, Integer> IDENTITY_ORDER_GOODS_REBATE = Internal.createIdentity(OrderGoodsRebate.ORDER_GOODS_REBATE, OrderGoodsRebate.ORDER_GOODS_REBATE.REBATE_ID);
         public static Identity<OrderInfoRecord, Integer> IDENTITY_ORDER_INFO = Internal.createIdentity(OrderInfo.ORDER_INFO, OrderInfo.ORDER_INFO.ORDER_ID);
         public static Identity<OrderMustRecord, Integer> IDENTITY_ORDER_MUST = Internal.createIdentity(OrderMust.ORDER_MUST, OrderMust.ORDER_MUST.ID);
         public static Identity<OrderRefundRecordRecord, Integer> IDENTITY_ORDER_REFUND_RECORD = Internal.createIdentity(OrderRefundRecord.ORDER_REFUND_RECORD, OrderRefundRecord.ORDER_REFUND_RECORD.ID);
@@ -636,6 +638,10 @@ public class Keys {
         public static Identity<MpWeeklyRetainRecord, Integer> IDENTITY_MP_WEEKLY_RETAIN = Internal.createIdentity(MpWeeklyRetain.MP_WEEKLY_RETAIN, MpWeeklyRetain.MP_WEEKLY_RETAIN.ID);
         public static Identity<MpWeeklyVisitRecord, Integer> IDENTITY_MP_WEEKLY_VISIT = Internal.createIdentity(MpWeeklyVisit.MP_WEEKLY_VISIT, MpWeeklyVisit.MP_WEEKLY_VISIT.ID);
         public static Identity<CouponPackVoucherRecord, Integer> IDENTITY_COUPON_PACK_VOUCHER = Internal.createIdentity(CouponPackVoucher.COUPON_PACK_VOUCHER, CouponPackVoucher.COUPON_PACK_VOUCHER.ID);
+        public static Identity<UserTotalFanliRecord, Integer> IDENTITY_USER_TOTAL_FANLI = Internal.createIdentity(UserTotalFanli.USER_TOTAL_FANLI, UserTotalFanli.USER_TOTAL_FANLI.ID);
+        public static Identity<FanliGoodsStatisticsRecord, Integer> IDENTITY_FANLI_GOODS_STATISTICS = Internal.createIdentity(FanliGoodsStatistics.FANLI_GOODS_STATISTICS, FanliGoodsStatistics.FANLI_GOODS_STATISTICS.ID);
+        public static Identity<UserFanliStatisticsRecord, Integer> IDENTITY_USER_FANLI_STATISTICS = Internal.createIdentity(UserFanliStatistics.USER_FANLI_STATISTICS, UserFanliStatistics.USER_FANLI_STATISTICS.ID);
+        public static Identity<OrderGoodsRebateRecord, Integer> IDENTITY_ORDER_GOODS_REBATE = Internal.createIdentity(OrderGoodsRebate.ORDER_GOODS_REBATE, OrderGoodsRebate.ORDER_GOODS_REBATE.REBATE_ID);
 
     }
 
@@ -743,7 +749,6 @@ public class Keys {
         public static final UniqueKey<MrkingVoucherRecord> KEY_B2C_MRKING_VOUCHER_ALIAS_CODE = Internal.createUniqueKey(MrkingVoucher.MRKING_VOUCHER, "KEY_b2c_mrking_voucher_alias_code", MrkingVoucher.MRKING_VOUCHER.ALIAS_CODE);
         public static final UniqueKey<OrderActionRecord> KEY_B2C_ORDER_ACTION_PRIMARY = Internal.createUniqueKey(OrderAction.ORDER_ACTION, "KEY_b2c_order_action_PRIMARY", OrderAction.ORDER_ACTION.ACTION_ID);
         public static final UniqueKey<OrderGoodsRecord> KEY_B2C_ORDER_GOODS_PRIMARY = Internal.createUniqueKey(OrderGoods.ORDER_GOODS, "KEY_b2c_order_goods_PRIMARY", OrderGoods.ORDER_GOODS.REC_ID);
-        public static final UniqueKey<OrderGoodsRebateRecord> KEY_B2C_ORDER_GOODS_REBATE_PRIMARY = Internal.createUniqueKey(OrderGoodsRebate.ORDER_GOODS_REBATE, "KEY_b2c_order_goods_rebate_PRIMARY", OrderGoodsRebate.ORDER_GOODS_REBATE.REBATE_ID);
         public static final UniqueKey<OrderInfoRecord> KEY_B2C_ORDER_INFO_PRIMARY = Internal.createUniqueKey(OrderInfo.ORDER_INFO, "KEY_b2c_order_info_PRIMARY", OrderInfo.ORDER_INFO.ORDER_ID);
         public static final UniqueKey<OrderInfoRecord> KEY_B2C_ORDER_INFO_ORDER_SN = Internal.createUniqueKey(OrderInfo.ORDER_INFO, "KEY_b2c_order_info_order_sn", OrderInfo.ORDER_INFO.ORDER_SN);
         public static final UniqueKey<OrderMustRecord> KEY_B2C_ORDER_MUST_PRIMARY = Internal.createUniqueKey(OrderMust.ORDER_MUST, "KEY_b2c_order_must_PRIMARY", OrderMust.ORDER_MUST.ID);
@@ -837,7 +842,6 @@ public class Keys {
         public static final UniqueKey<UserSummaryTrendRecord> KEY_B2C_USER_SUMMARY_TREND_PRIMARY = Internal.createUniqueKey(UserSummaryTrend.USER_SUMMARY_TREND, "KEY_b2c_user_summary_trend_PRIMARY", UserSummaryTrend.USER_SUMMARY_TREND.ID);
         public static final UniqueKey<UserTagRecord> KEY_B2C_USER_TAG_PRIMARY = Internal.createUniqueKey(UserTag.USER_TAG, "KEY_b2c_user_tag_PRIMARY", UserTag.USER_TAG.USER_ID, UserTag.USER_TAG.TAG_ID);
         public static final UniqueKey<UserTagRecord> KEY_B2C_USER_TAG_USER_TAG = Internal.createUniqueKey(UserTag.USER_TAG, "KEY_b2c_user_tag_user_tag", UserTag.USER_TAG.USER_ID, UserTag.USER_TAG.TAG_ID);
-        public static final UniqueKey<UserTotalFanliRecord> KEY_B2C_USER_TOTAL_FANLI_PRIMARY = Internal.createUniqueKey(UserTotalFanli.USER_TOTAL_FANLI, "KEY_b2c_user_total_fanli_PRIMARY", UserTotalFanli.USER_TOTAL_FANLI.USER_ID);
         public static final UniqueKey<WxpUnlimitCodeRecord> KEY_B2C_WXP_UNLIMIT_CODE_PRIMARY = Internal.createUniqueKey(WxpUnlimitCode.WXP_UNLIMIT_CODE, "KEY_b2c_wxp_unlimit_code_PRIMARY", WxpUnlimitCode.WXP_UNLIMIT_CODE.CODE_ID);
         public static final UniqueKey<WxpUnlimitSceneRecord> KEY_B2C_WXP_UNLIMIT_SCENE_PRIMARY = Internal.createUniqueKey(WxpUnlimitScene.WXP_UNLIMIT_SCENE, "KEY_b2c_wxp_unlimit_scene_PRIMARY", WxpUnlimitScene.WXP_UNLIMIT_SCENE.SCENE_ID);
         public static final UniqueKey<WxShoppingRecommendRecord> KEY_B2C_WX_SHOPPING_RECOMMEND_PRIMARY = Internal.createUniqueKey(WxShoppingRecommend.WX_SHOPPING_RECOMMEND, "KEY_b2c_wx_shopping_recommend_PRIMARY", WxShoppingRecommend.WX_SHOPPING_RECOMMEND.ID);
@@ -852,8 +856,11 @@ public class Keys {
         public static final UniqueKey<MpWeeklyRetainRecord> KEY_B2C_MP_WEEKLY_RETAIN_PRIMARY = UniqueKeys0.KEY_B2C_MP_WEEKLY_RETAIN_PRIMARY;
         public static final UniqueKey<MpWeeklyVisitRecord> KEY_B2C_MP_WEEKLY_VISIT_PRIMARY = UniqueKeys0.KEY_B2C_MP_WEEKLY_VISIT_PRIMARY;
         public static final UniqueKey<FreeShippingRuleRecord> KEY_B2C_FREE_SHIPPING_RULE_PRIMARY = Internal.createUniqueKey(FreeShippingRule.FREE_SHIPPING_RULE, "KEY_b2c_free_shipping_rule_PRIMARY", FreeShippingRule.FREE_SHIPPING_RULE.ID);
-        public static final UniqueKey<UserFanliStatisticsRecord> KEY_B2C_USER_FANLI_STATISTICS_PRIMARY = Internal.createUniqueKey(UserFanliStatistics.USER_FANLI_STATISTICS, "KEY_b2c_user_fanli_statistics_PRIMARY", UserFanliStatistics.USER_FANLI_STATISTICS.USER_ID);
         public static final UniqueKey<CouponPackVoucherRecord> KEY_B2C_COUPON_PACK_VOUCHER_PRIMARY = Internal.createUniqueKey(CouponPackVoucher.COUPON_PACK_VOUCHER, "KEY_b2c_coupon_pack_voucher_PRIMARY", CouponPackVoucher.COUPON_PACK_VOUCHER.ID);
+        public static final UniqueKey<UserTotalFanliRecord> KEY_B2C_USER_TOTAL_FANLI_PRIMARY = Internal.createUniqueKey(UserTotalFanli.USER_TOTAL_FANLI, "KEY_b2c_user_total_fanli_PRIMARY", UserTotalFanli.USER_TOTAL_FANLI.ID);
+        public static final UniqueKey<FanliGoodsStatisticsRecord> KEY_B2C_FANLI_GOODS_STATISTICS_PRIMARY = Internal.createUniqueKey(FanliGoodsStatistics.FANLI_GOODS_STATISTICS, "KEY_b2c_fanli_goods_statistics_PRIMARY", FanliGoodsStatistics.FANLI_GOODS_STATISTICS.ID);
+        public static final UniqueKey<UserFanliStatisticsRecord> KEY_B2C_USER_FANLI_STATISTICS_PRIMARY = Internal.createUniqueKey(UserFanliStatistics.USER_FANLI_STATISTICS, "KEY_b2c_user_fanli_statistics_PRIMARY", UserFanliStatistics.USER_FANLI_STATISTICS.ID);
+        public static final UniqueKey<OrderGoodsRebateRecord> KEY_B2C_ORDER_GOODS_REBATE_PRIMARY = Internal.createUniqueKey(OrderGoodsRebate.ORDER_GOODS_REBATE, "KEY_b2c_order_goods_rebate_PRIMARY", OrderGoodsRebate.ORDER_GOODS_REBATE.REBATE_ID);
 
     }
 }

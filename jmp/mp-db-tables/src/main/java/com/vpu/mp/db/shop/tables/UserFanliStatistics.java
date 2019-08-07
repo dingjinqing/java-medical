@@ -13,6 +13,7 @@ import javax.annotation.Generated;
 
 import org.jooq.Field;
 import org.jooq.ForeignKey;
+import org.jooq.Identity;
 import org.jooq.Index;
 import org.jooq.Name;
 import org.jooq.Record;
@@ -42,7 +43,7 @@ import com.vpu.mp.db.shop.tables.records.UserFanliStatisticsRecord;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class UserFanliStatistics extends TableImpl<UserFanliStatisticsRecord> {
 
-    private static final long serialVersionUID = 1679964292;
+    private static final long serialVersionUID = 573270407;
 
     /**
      * The reference instance of <code>jmini_shop_471752.b2c_user_fanli_statistics</code>
@@ -56,6 +57,11 @@ public class UserFanliStatistics extends TableImpl<UserFanliStatisticsRecord> {
     public Class<UserFanliStatisticsRecord> getRecordType() {
         return UserFanliStatisticsRecord.class;
     }
+
+    /**
+     * The column <code>jmini_shop_471752.b2c_user_fanli_statistics.id</code>.
+     */
+    public final TableField<UserFanliStatisticsRecord, Integer> ID = createField("id", org.jooq.impl.SQLDataType.INTEGER.nullable(false).identity(true), this, "");
 
     /**
      * The column <code>jmini_shop_471752.b2c_user_fanli_statistics.user_id</code>.
@@ -143,7 +149,15 @@ public class UserFanliStatistics extends TableImpl<UserFanliStatisticsRecord> {
      */
     @Override
     public List<Index> getIndexes() {
-        return Arrays.<Index>asList(Indexes.USER_FANLI_STATISTICS_PRIMARY);
+        return Arrays.<Index>asList(Indexes.USER_FANLI_STATISTICS_PRIMARY, Indexes.USER_FANLI_STATISTICS_USER_ID);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public Identity<UserFanliStatisticsRecord, Integer> getIdentity() {
+        return Keys.IDENTITY_USER_FANLI_STATISTICS;
     }
 
     /**

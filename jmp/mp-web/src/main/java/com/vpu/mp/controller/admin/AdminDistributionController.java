@@ -19,6 +19,8 @@ import com.vpu.mp.service.pojo.shop.distribution.DistributorGroupListVo;
 import com.vpu.mp.service.pojo.shop.distribution.DistributorLevelCfgVo;
 import com.vpu.mp.service.pojo.shop.distribution.DistributorLevelParam;
 import com.vpu.mp.service.pojo.shop.distribution.DistributorLevelVo;
+import com.vpu.mp.service.pojo.shop.distribution.DistributorListParam;
+import com.vpu.mp.service.pojo.shop.distribution.DistributorListVo;
 import com.vpu.mp.service.shop.ShopApplication;
 
 /**
@@ -294,5 +296,19 @@ public class AdminDistributionController extends AdminBaseController{
 		}
 		return this.success();
 	}
+	
+	
+	/**
+	 * 分销员列表
+	 * @param param
+	 * @return
+	 */
+	@PostMapping("/admin/distribution/distrobutor/list")
+	public JsonResult distributorList(@RequestBody DistributorListParam param) {
+		PageResult<DistributorListVo> distributorList = shop().distributorList.getPageList(param);
+		return this.success(distributorList); 
+	}
+	
+	
 	
 }
