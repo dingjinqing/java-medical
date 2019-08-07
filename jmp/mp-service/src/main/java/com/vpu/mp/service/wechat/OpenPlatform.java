@@ -10,8 +10,8 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import com.vpu.mp.service.foundation.jedis.JedisManager;
-import com.vpu.mp.service.wechat.api.WxOpenComponentExtService;
-import com.vpu.mp.service.wechat.api.impl.WxOpenComponentExtServiceImpl;
+import com.vpu.mp.service.wechat.api.impl.WxOpenMaServiceExtraImpl;
+import com.vpu.mp.service.wechat.api.impl.WxOpenMpServiceExtraImpl;
 
 import lombok.Getter;
 import me.chanjar.weixin.common.error.WxErrorException;
@@ -53,7 +53,10 @@ public class OpenPlatform extends WxOpenServiceImpl {
 	protected JedisManager jedis;
 
 	@Getter
-	protected WxOpenComponentExtService openComponentExtService = new WxOpenComponentExtServiceImpl(this);
+	protected WxOpenMaServiceExtraImpl maExtService = new WxOpenMaServiceExtraImpl(this);
+	
+	@Getter
+	protected WxOpenMpServiceExtraImpl mpExtService = new WxOpenMpServiceExtraImpl(this);
 
 	/**
 	 * 初始化

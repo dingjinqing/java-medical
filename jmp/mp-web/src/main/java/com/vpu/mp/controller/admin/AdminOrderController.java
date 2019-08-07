@@ -100,8 +100,9 @@ public class AdminOrderController extends AdminBaseController {
 	 */
 	@PostMapping("/refund/list")
 	public JsonResult refundGoodsList(@RequestBody OrderOperateQueryParam param) {
-		shop().orderOperateQuery.refundGoodsList(param);
-		return null == null ? success() : fail();
+		return null;
+//		shop().orderOperateQuery.refundGoodsList(param);
+//		return null == null ? success() : fail();
 	}
 	
 	/**

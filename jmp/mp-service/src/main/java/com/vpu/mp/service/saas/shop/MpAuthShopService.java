@@ -27,7 +27,7 @@ import com.vpu.mp.service.foundation.util.Util;
 import com.vpu.mp.service.pojo.shop.config.trade.WxpayConfigParam;
 import com.vpu.mp.service.pojo.shop.config.trade.WxpaySearchParam;
 import com.vpu.mp.service.saas.image.SystemImageService;
-import com.vpu.mp.service.wechat.api.WxOpenComponentExtService;
+import com.vpu.mp.service.wechat.api.WxOpenAccountService;
 import com.vpu.mp.service.wechat.bean.ma.MpWxMaOpenCommitExtInfo;
 import com.vpu.mp.service.wechat.bean.open.WxOpenGetResult;
 
@@ -596,6 +596,7 @@ public class MpAuthShopService extends MainBaseService {
 
 	/**
 	 * 绑定同一主体的小程序和公众号到开放平台账号
+	 * TODO: 暂时只处理 小程序，以后需要加入公众号
 	 * @param record
 	 * @throws WxErrorException
 	 */
@@ -610,8 +611,7 @@ public class MpAuthShopService extends MainBaseService {
 			}
 		}
 		for (MpAuthShopRecord mRecord : samePrincipalMpApps) {
-			openAppId = bindOpenAppId(mRecord.getAppId(), openAppId);
-
+			openAppId = bindOpenAppId(true,mRecord.getAppId(), openAppId);
 			if (!openAppId.equals(mRecord.getBindOpenAppId())) {
 				// 更新数据库
 				mRecord.setBindOpenAppId(openAppId);
@@ -623,13 +623,14 @@ public class MpAuthShopService extends MainBaseService {
 	/**
 	 * 用接口绑定小程序或者公众号appId到开放平台账号
 	 * 
+	 * @param isMa     是否是小程序
 	 * @param appId     小程序或者公众号appId
 	 * @param openAppId 开放平台账号，为空需要新创建
 	 * @return
 	 * @throws WxErrorException
 	 */
-	public String bindOpenAppId(String appId, String openAppId) throws WxErrorException {
-		WxOpenComponentExtService service = open.getOpenComponentExtService();
+	public String bindOpenAppId(Boolean isMa,String appId, String openAppId) throws WxErrorException {
+		WxOpenAccountService service = isMa ? open.getMaExtService() : open.getMpExtService();
 		WxOpenGetResult result = null;
 		try {
 			result = service.getOpenAccount(appId);
@@ -649,7 +650,7 @@ public class MpAuthShopService extends MainBaseService {
 				// 该公众号/小程序未绑定微信开放平台帐号
 				// 如果openAppId为空，则创建开放平台账号，否则绑定当前平台账号
 				if (StringUtils.isEmpty(openAppId)) {
-					WxOpenCreateResult openCreateResult = open.getWxOpenComponentService().createOpenAccount(appId);
+					WxOpenCreateResult openCreateResult = service.createOpenAccount(appId);
 					return openCreateResult.getOpenAppid();
 				} else {
 					service.bindOpenAppId(appId, openAppId);
