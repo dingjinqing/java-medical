@@ -47,14 +47,13 @@ public class QRCodeService extends ShopBaseService {
             .fetchAny();
         if (null == record) {
             String buffer = open().getMpQRCodeBuffer(pageUrl);
-            File tempFile = File.createTempFile("", "");
+            File tempFile = File.createTempFile("tmp", "");
             FileUtils.writeByteArrayToFile(tempFile, buffer.getBytes());
             String relativePath = format("upload/%s/qrcode/%s/T%sP%s_%s.jpg", typeId, getShopId(), typeId, paramId,
                 new SimpleDateFormat("yyyyMMddHHmmss").format(new java.util.Date()));
             imageService.uploadToUpYun(relativePath, tempFile);
-            CodeRecord codeRecord = new CodeRecord(null, typeId, typeId.toString(), pageUrl, relativePath,
-                (byte) 0,
-                "0", null, null);
+            CodeRecord codeRecord = new CodeRecord(null, typeId, typeId.toString(), pageUrl,
+                relativePath, (byte) 0, "0", null, null);
             shopDb().insertInto(CODE).set(codeRecord).execute();
             return relativePath;
         }

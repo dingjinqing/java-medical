@@ -62,11 +62,19 @@ public class GroupDrawService extends ShopBaseService {
     }
 
     /**
-     * 禁用活动
+     * 停用活动
      */
     public void disableGroupDraw(Integer id) {
         shopDb().update(GROUP_DRAW).set(GROUP_DRAW.STATUS, GROUP_DRAW_DISABLED)
             .where(GROUP_DRAW.ID.eq(id)).execute();
+    }
+
+    /**
+     * 拼团结算
+     * @param groupDrawId 活动id
+     */
+    public void settleOrders(Integer groupDrawId) {
+        
     }
 
     /**
