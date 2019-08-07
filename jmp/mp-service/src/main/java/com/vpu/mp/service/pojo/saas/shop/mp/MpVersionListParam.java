@@ -4,5 +4,6 @@ import lombok.Data;
 
 @Data
 public class MpVersionListParam {
-	public Integer page;
+	private Integer pageRows;
+	private Integer currentPage;
 }
