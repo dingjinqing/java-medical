@@ -5,6 +5,8 @@ import javax.validation.constraints.NotNull;
 
 import com.vpu.mp.service.foundation.data.JsonResultMessage;
 import com.vpu.mp.service.pojo.shop.order.write.operate.OrderOperateQueryParam;
+import com.vpu.mp.service.pojo.shop.order.write.operate.OrderServiceCode;
+import com.vpu.mp.service.shop.order.action.base.IOrderBase;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -17,7 +19,12 @@ import lombok.Setter;
  */
 @Getter
 @Setter
-public class ShipParam extends OrderOperateQueryParam {
+public final class ShipParam extends OrderOperateQueryParam implements IOrderBase{
+	
+	@Override
+	public OrderServiceCode getServiceCode() {
+		return OrderServiceCode.ADMIN_SHIP;
+	}
 	//TODO
 	@NotBlank(message = JsonResultMessage.MSG_ORDER)
 	private String shippingNo;

@@ -1,6 +1,10 @@
 package com.vpu.mp.service.pojo.shop.order.refund;
 
-import org.jooq.types.UShort;
+import java.math.BigDecimal;
+import java.sql.Timestamp;
+import java.util.List;
+
+import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import lombok.Data;
 
@@ -11,16 +15,20 @@ import lombok.Data;
  */
 @Data
 public class OrderConciseRefundInfoVo {
+	private Integer retId;
 	private Integer orderId;
 	private String orderSn;
-	private String goodsId;
-	/**return_order_goods表id*/
-	private Integer id;
-	/**return_order表id*/
-	private Integer retId;
-	private String goodsName;
-	/**退货数量*/
-	private UShort goodsNumber;
-	/**属性（规格）*/
-	private String goodsAttr;
+	private String returnOrderSn;
+	private String returnType;
+	private Byte refundStatus;
+	private BigDecimal money;
+	private Timestamp apply;
+	private Timestamp success;
+	private List<OrderReturnGoodsVo> orderReturnGoodsVo;
+	/**退货时的申请时间*/
+	@JsonIgnore
+	private Timestamp applyTime;
+	/**退款时的申请时间*/
+	@JsonIgnore
+	private Timestamp shippingOrRefundTime;
 }

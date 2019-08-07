@@ -4,6 +4,7 @@ import java.math.BigDecimal;
 import java.sql.Timestamp;
 import java.util.List;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.vpu.mp.service.pojo.shop.order.goods.OrderGoodsVo;
 
 import lombok.Data;
@@ -21,6 +22,7 @@ public class OrderListInfoVo {
 	private Integer orderId;
 	private String orderSn;
 	private String mainOrderSn;
+	private String goodsType;
 	private List<? extends OrderListInfoVo> childOrders;
 	private List<? extends OrderGoodsVo> goods;
 	private Byte orderStatus;
@@ -45,4 +47,7 @@ public class OrderListInfoVo {
 	private BigDecimal moneyPaid;
 	/**是否部分发货:0否，1是*/
 	private Byte partShipFlag;
+	/**是否支持mp端退款*/
+	@JsonIgnore
+	private Byte returnTypeCfg;
 }

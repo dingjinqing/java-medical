@@ -11,6 +11,7 @@ import lombok.Setter;
 @Getter
 @Setter
 public class OrderReturnGoodsVo extends OrderGoodsVo{
+	private Integer retId;
 	/**0代表退货申请被拒绝，1代表正在退货中，2代表退货成功'*/
 	private Byte success;
 }

@@ -12,7 +12,7 @@ import lombok.Setter;
  */
 @Getter
 @Setter
-public class RefundMoneyParam implements IOrderBase{
+public final class RefundMoneyParam implements IOrderBase{
 	
 	@Override
 	public OrderServiceCode getServiceCode() {

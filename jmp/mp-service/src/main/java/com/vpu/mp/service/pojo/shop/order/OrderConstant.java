@@ -105,10 +105,15 @@ public class OrderConstant {
 	public final static byte SUCCESS_COMPLETE = 2;
 	
 	/**
-	 * mp端是否支持退款、退货,
+	 * mp端是否支持退款、退货,orderInfo表字段
 	 */
 	public final static byte CFG_RETURN_TYPE_Y = 1;
-	public final static byte CFG_RETURN_TYPE_N = 0;
+	public final static byte CFG_RETURN_TYPE_N = 2;
+	/**
+	 * mp端是否支持退款、退货,orderGoods表字段
+	 */
+	public final static byte IS_CAN_RETURN_Y = 1;
+	public final static byte IS_CAN_RETURN_N = 0;
 	private String[] orderStatus = {
 			// ORDER_WAIT_PAY
 			"待付款",
