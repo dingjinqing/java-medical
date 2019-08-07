@@ -153,7 +153,7 @@ public class SystemMpAuthShopController extends SystemBaseController {
      */
     @GetMapping("/api/system/mp/version/user/version/list")
 	public JsonResult getMpUserVersionList(){
-        List<String> mpUserVersionList = saas.shop.mpVersion.getMpUserVersionList();
+        List<MpVersionVo> mpUserVersionList = saas.shop.mpVersion.getMpUserVersionList();
 
         return success(mpUserVersionList);
     }
