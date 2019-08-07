@@ -35,26 +35,27 @@ public class GroupDrawGroupService extends ShopBaseService {
      */
     public PageResult<GroupListVo> getGroupList(GroupListParam param) {
         SelectConditionStep<Record9<Integer, Integer, String, String, Timestamp, Timestamp, Object, Object, Object>>
-            select = shopDb().select(
-            JOIN_GROUP_LIST.as(ALIAS_OUTSIDE).GROUP_ID,
-            DSL.count(JOIN_GROUP_LIST.as(ALIAS_OUTSIDE).USER_ID).as("userCount"), ORDER_GOODS.GOODS_NAME,
-            ORDER_GOODS.GOODS_IMG, JOIN_GROUP_LIST.as(ALIAS_OUTSIDE).OPEN_TIME, JOIN_GROUP_LIST.as(ALIAS_OUTSIDE).END_TIME,
-            // 三个嵌套查询
-            select(JOIN_GROUP_LIST.as(ALIAS_INSIDE).USER_ID).from(JOIN_GROUP_LIST.as(ALIAS_INSIDE))
-                .where(JOIN_GROUP_LIST.as(ALIAS_INSIDE).IS_GROUPER.eq((byte) 1)
-                    .and(JOIN_GROUP_LIST.as(ALIAS_INSIDE).GROUP_ID.eq(JOIN_GROUP_LIST.as(ALIAS_OUTSIDE).GROUP_ID)))
-                .asField("userId"),
-            select(USER.USERNAME).from(JOIN_GROUP_LIST.as(ALIAS_INSIDE))
-                .leftJoin(USER).on(JOIN_GROUP_LIST.as(ALIAS_INSIDE).USER_ID.eq(USER.USER_ID))
-                .where(JOIN_GROUP_LIST.as(ALIAS_INSIDE).IS_GROUPER.eq((byte) 1)
-                    .and(JOIN_GROUP_LIST.as(ALIAS_INSIDE).GROUP_ID.eq(JOIN_GROUP_LIST.as(ALIAS_OUTSIDE).GROUP_ID)))
-                .asField("grouperName"),
-            select(USER.MOBILE).from(JOIN_GROUP_LIST.as(ALIAS_INSIDE))
-                .leftJoin(USER).on(JOIN_GROUP_LIST.as(ALIAS_INSIDE).USER_ID.eq(USER.USER_ID))
-                .where(JOIN_GROUP_LIST.as(ALIAS_INSIDE).IS_GROUPER.eq((byte) 1)
-                    .and(JOIN_GROUP_LIST.as(ALIAS_INSIDE).GROUP_ID.eq(JOIN_GROUP_LIST.as(ALIAS_OUTSIDE).GROUP_ID)))
-                .asField("mobile")
-        )
+            select = shopDb()
+            .select(
+                JOIN_GROUP_LIST.as(ALIAS_OUTSIDE).GROUP_ID,
+                DSL.count(JOIN_GROUP_LIST.as(ALIAS_OUTSIDE).USER_ID).as("userCount"), ORDER_GOODS.GOODS_NAME,
+                ORDER_GOODS.GOODS_IMG, JOIN_GROUP_LIST.as(ALIAS_OUTSIDE).OPEN_TIME, JOIN_GROUP_LIST.as(ALIAS_OUTSIDE).END_TIME,
+                // 三个嵌套查询
+                select(JOIN_GROUP_LIST.as(ALIAS_INSIDE).USER_ID).from(JOIN_GROUP_LIST.as(ALIAS_INSIDE))
+                    .where(JOIN_GROUP_LIST.as(ALIAS_INSIDE).IS_GROUPER.eq((byte) 1)
+                        .and(JOIN_GROUP_LIST.as(ALIAS_INSIDE).GROUP_ID.eq(JOIN_GROUP_LIST.as(ALIAS_OUTSIDE).GROUP_ID)))
+                    .asField("userId"),
+                select(USER.USERNAME).from(JOIN_GROUP_LIST.as(ALIAS_INSIDE))
+                    .leftJoin(USER).on(JOIN_GROUP_LIST.as(ALIAS_INSIDE).USER_ID.eq(USER.USER_ID))
+                    .where(JOIN_GROUP_LIST.as(ALIAS_INSIDE).IS_GROUPER.eq((byte) 1)
+                        .and(JOIN_GROUP_LIST.as(ALIAS_INSIDE).GROUP_ID.eq(JOIN_GROUP_LIST.as(ALIAS_OUTSIDE).GROUP_ID)))
+                    .asField("grouperName"),
+                select(USER.MOBILE).from(JOIN_GROUP_LIST.as(ALIAS_INSIDE))
+                    .leftJoin(USER).on(JOIN_GROUP_LIST.as(ALIAS_INSIDE).USER_ID.eq(USER.USER_ID))
+                    .where(JOIN_GROUP_LIST.as(ALIAS_INSIDE).IS_GROUPER.eq((byte) 1)
+                        .and(JOIN_GROUP_LIST.as(ALIAS_INSIDE).GROUP_ID.eq(JOIN_GROUP_LIST.as(ALIAS_OUTSIDE).GROUP_ID)))
+                    .asField("mobile")
+            )
             .from(JOIN_GROUP_LIST.as(ALIAS_OUTSIDE))
             .leftJoin(USER).on(JOIN_GROUP_LIST.as(ALIAS_OUTSIDE).USER_ID.eq(USER.USER_ID))
             .leftJoin(ORDER_GOODS).on(JOIN_GROUP_LIST.as(ALIAS_OUTSIDE).GOODS_ID.eq(ORDER_GOODS.GOODS_ID))
