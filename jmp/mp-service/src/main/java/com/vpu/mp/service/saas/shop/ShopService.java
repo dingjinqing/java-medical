@@ -9,10 +9,13 @@ import static com.vpu.mp.db.main.tables.ShopRenew.SHOP_RENEW;
 import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
 
+import org.jooq.DatePart;
+import org.jooq.Field;
 import org.jooq.Record;
 import org.jooq.Record1;
 import org.jooq.Record9;
@@ -108,8 +111,12 @@ public class ShopService extends MainBaseService {
 					.or(MP_AUTH_SHOP.NICK_NAME.like(keywords)).or(SHOP.SHOP_ID.eq(shopId)));
 		}
 
+		//使用中
 		Integer shopUsingStatus = 1;
+		//已过期
 		Integer shopExpiredStatus = 2;
+		//即将过期
+		Integer shopSoonExpiredStatus = 3;
 		if (param.isUse != null && param.isUse.equals(shopUsingStatus)) {
 			// 店铺在使用中
 			select.where(SHOP.SHOP_ID.in(db().selectDistinct(SHOP_RENEW.SHOP_ID).from(SHOP_RENEW).where(
@@ -121,6 +128,13 @@ public class ShopService extends MainBaseService {
 			select.where(SHOP.SHOP_ID.in(db().selectDistinct(SHOP_RENEW.SHOP_ID).from(SHOP_RENEW)
 					.where(SHOP_RENEW.SHOP_ID.eq(SHOP.SHOP_ID))
 					.and(SHOP_RENEW.EXPIRE_TIME.lt(DSL.currentTimestamp()).or(SHOP_RENEW.EXPIRE_TIME.isNull()))));
+		}
+		if (param.isUse != null && param.isUse.equals(shopSoonExpiredStatus)) {
+			// 即将过期
+			Field<Timestamp> timestampAdd = DSL.timestampAdd(DSL.currentTimestamp(), 1, DatePart.MONTH);
+			System.out.println(timestampAdd);
+			select.where(SHOP.SHOP_ID.in(db().selectDistinct(SHOP_RENEW.SHOP_ID).from(SHOP_RENEW).where(
+					SHOP_RENEW.SHOP_ID.eq(SHOP.SHOP_ID).and(SHOP_RENEW.EXPIRE_TIME.le(DSL.timestampAdd(DSL.currentTimestamp(), 1, DatePart.MONTH))).and(SHOP_RENEW.EXPIRE_TIME.ge(DSL.currentTimestamp())))));
 		}
 
 		if (!StringUtils.isEmpty(param.shopType)) {
