@@ -9,10 +9,11 @@ export function accountInfoRequest () {
 }
 
 // 添加店铺时验证手机号是否已经存在
-export function confirmMobileRequest () {
+export function confirmMobileRequest (data) {
   return service({
     url: '/api/system/shop/check/mobile',
-    method: 'post'
+    method: 'post',
+    data: data
   })
 }
 
@@ -35,7 +36,7 @@ export function searchAccountRequest (data) {
 }
 
 // 添加店铺
-export function addShopRequest () {
+export function addShopRequest (data) {
   return service({
     url: '/api/system/shop/add',
     method: 'post'

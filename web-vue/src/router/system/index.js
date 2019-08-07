@@ -194,6 +194,14 @@ const routes = [
         }
       },
       {
+        path: 'shop_list',
+        component: () => import('@/view/system_new/views/store_management/shop_list/shopList'),
+        name: 'shopList',
+        meta: {
+          title: '店铺账户列表'
+        }
+      },
+      {
         path: 'program_manage/:page',
         component: () => import('@/view/system_new/views/store_management/program_management/programManage'),
         name: 'programManage',

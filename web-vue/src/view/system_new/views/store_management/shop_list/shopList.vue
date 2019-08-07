@@ -5,36 +5,36 @@
     class="tab"
   >
     <el-tab-pane
-      label="商家账号列表"
+      label="体验版"
       name="first"
     >
-      <list />
+      <experienceVersion />
     </el-tab-pane>
     <el-tab-pane
-      label="商家账号添加"
+      label="付费版"
       name="second"
     >
-      <addAccount />
+      <payVersion />
     </el-tab-pane>
     <el-tab-pane
-      label="编辑商家账户"
+      label="店铺添加"
       name="third"
     >
-      <editAccount />
+      <newShop />
     </el-tab-pane>
   </el-tabs>
 </template>
 
 <script>
-import list from './list.vue'
-import addAccount from './addAccount.vue'
-import editAccount from './editAccount.vue'
+import experienceVersion from './experienceVersion.vue'
+import payVersion from './payVersion'
+import newShop from './newShop'
 export default {
-  name: 'accountList',
+  name: 'shopList',
   components: {
-    list,
-    addAccount,
-    editAccount
+    experienceVersion,
+    payVersion,
+    newShop
   },
   data () {
     return {
@@ -62,6 +62,9 @@ export default {
   /deep/ .el-tabs__content {
     padding: 10px 0 0 0;
     background: #fff;
+  }
+  /deep/ .el-form-item__label {
+    width: 140px;
   }
 }
 </style>

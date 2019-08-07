@@ -79,7 +79,8 @@ export default {
           {
             imgUrl: '/static/image/system/icon_left/mobile_deco.png',
             imgUrl_h: '/static/image/system/icon_left/mobile_deco_h.png',
-            span: '店铺列表'
+            span: '店铺列表',
+            routeName: 'shopList'
           },
           {
             imgUrl: '/static/image/system/icon_left/mobile_deco.png',
