@@ -96,13 +96,21 @@ public class AdminOrderController extends AdminBaseController {
 	}
 	
 	/**
-	 * 	退款、退货查询
+	 * 	mp退款、退货查询
 	 */
 	@PostMapping("/refund/list")
-	public JsonResult refundGoodsList(@RequestBody OrderOperateQueryParam param) {
-		return null;
-//		shop().orderOperateQuery.refundGoodsList(param);
-//		return null == null ? success() : fail();
+	public JsonResult mpRefundGoodsList(@RequestBody OrderOperateQueryParam param) {
+		shop().orderOperateQuery.refundGoodsList(param,Boolean.TRUE);
+		return null == null ? success() : fail();
+	}
+	
+	/**
+	 * 	admin退款、退货查询
+	 */
+	@PostMapping("/refund/adminList")
+	public JsonResult adminRefundGoodsList(@RequestBody OrderOperateQueryParam param) {
+		shop().orderOperateQuery.refundGoodsList(param,Boolean.FALSE);
+		return null == null ? success() : fail();
 	}
 	
 	/**
