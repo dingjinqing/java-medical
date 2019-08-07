@@ -24,8 +24,8 @@ import me.chanjar.weixin.open.bean.result.WxOpenResult;
  *
  */
 public class WxOpenComponentExtServiceImpl implements WxOpenComponentExtService {
-	
-	static final Logger logger =  LoggerFactory.getLogger(WxOpenComponentExtServiceImpl.class);
+
+	static final Logger logger = LoggerFactory.getLogger(WxOpenComponentExtServiceImpl.class);
 
 	static final String COMPONENT_TOKEN_KEY = "component_access_token";
 	static final String ACCESS_TOKEN_KEY = "access_token";
@@ -98,9 +98,14 @@ public class WxOpenComponentExtServiceImpl implements WxOpenComponentExtService 
 					: (String) action.invoke(getOpenComponentService(), uri, accessTokenKey);
 		} catch (NoSuchMethodException | SecurityException | IllegalAccessException | IllegalArgumentException
 				| InvocationTargetException e) {
-			logger.error(e.toString());
+			if (e instanceof InvocationTargetException) {
+				Throwable cause = ((InvocationTargetException) e).getCause();
+				if (cause instanceof WxErrorException) {
+					throw new WxErrorException(((WxErrorException) cause).getError(), cause);
+				}
+			}
 			WxError error = WxError.builder().errorCode(-2).errorMsg(e.getMessage()).build();
-			throw new WxErrorException(error,e);
+			throw new WxErrorException(error, e);
 		}
 	}
 
