@@ -3,6 +3,8 @@ package com.vpu.mp.service.shop.market.groupdraw;
 import com.vpu.mp.db.shop.tables.records.GroupDrawRecord;
 import com.vpu.mp.service.foundation.service.ShopBaseService;
 import com.vpu.mp.service.foundation.util.PageResult;
+import com.vpu.mp.service.pojo.shop.image.QrCodeTypeConstant;
+import com.vpu.mp.service.pojo.shop.image.ShareQrCodeVo;
 import com.vpu.mp.service.pojo.shop.market.groupdraw.*;
 import com.vpu.mp.service.shop.qrcode.QRCodeService;
 import lombok.extern.slf4j.Slf4j;
@@ -51,11 +53,11 @@ public class GroupDrawService extends ShopBaseService {
     /**
      * 获取小程序码
      */
-    public GroupDrawShareVo getMpQRCode(GroupDrawShareParam param) throws Exception {
+    public ShareQrCodeVo getMpQRCode(GroupDrawShareParam param) throws Exception {
         Integer groupDrawId = param.getGroupDrawId();
         String pagePath = GROUP_DRAW_SHARE_PATH + "?group_draw_id=" + groupDrawId;
-        String imageUrl = qrCode.getMpQRCode(pagePath, (short) 23, groupDrawId);
-        GroupDrawShareVo vo = new GroupDrawShareVo();
+        String imageUrl = qrCode.getMpQRCode(pagePath, QrCodeTypeConstant.QR_CODE_TYPE_GROUP_DRAW, groupDrawId);
+        ShareQrCodeVo vo = new ShareQrCodeVo();
         vo.setImageUrl(imageUrl);
         vo.setPagePath(pagePath);
         return vo;

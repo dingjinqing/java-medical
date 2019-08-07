@@ -38,7 +38,7 @@ public class SeckillVo {
     private Byte freeFreight;
 
     /** 专属会员卡，卡ID字符串，逗号分隔；为空时代表该活动所有人都可以参与*/
-    //TODO 是否需要输出会员卡名称列表
+    /** TODO 是否需要输出会员卡名称列表 */
     private String cardId;
 
     /** 分享设置*/

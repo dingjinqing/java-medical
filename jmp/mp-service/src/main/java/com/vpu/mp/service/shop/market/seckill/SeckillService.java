@@ -14,9 +14,21 @@ import com.vpu.mp.service.foundation.util.PageResult;
 import com.vpu.mp.service.foundation.util.Util;
 import com.vpu.mp.service.pojo.shop.config.ShopShareConfig;
 import com.vpu.mp.service.pojo.shop.goods.GoodsView;
+import com.vpu.mp.service.pojo.shop.image.QrCodeTypeConstant;
+import com.vpu.mp.service.pojo.shop.image.ShareQrCodeVo;
+import com.vpu.mp.service.pojo.shop.market.MarketOrderListParam;
+import com.vpu.mp.service.pojo.shop.market.MarketSourceUserListParam;
 import com.vpu.mp.service.pojo.shop.market.seckill.*;
+import com.vpu.mp.service.pojo.shop.member.MemberInfoVo;
+import com.vpu.mp.service.pojo.shop.member.MemberPageListParam;
+import com.vpu.mp.service.pojo.shop.order.OrderConstant;
+import com.vpu.mp.service.pojo.shop.order.OrderListInfoVo;
+import com.vpu.mp.service.pojo.shop.order.OrderPageListQueryParam;
+import com.vpu.mp.service.shop.member.MemberService;
+import com.vpu.mp.service.shop.qrcode.QRCodeService;
 import org.jooq.Record;
 import org.jooq.SelectWhereStep;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.sql.Timestamp;
@@ -29,6 +41,15 @@ import java.util.List;
  */
 @Service
 public class SeckillService extends ShopBaseService {
+
+    @Autowired
+    public SeckillListService seckillList;
+
+    @Autowired
+    private QRCodeService qrCode;
+
+    /** 小程序端活动页面 **/
+    private static final String SECKILL_SHARE_PATH = "pages/seckill/seckill";
 
     /**
      * 启用状态
@@ -141,4 +162,68 @@ public class SeckillService extends ShopBaseService {
             from(SEC_KILL_PRODUCT_DEFINE).innerJoin(GOODS_SPEC_PRODUCT).on(SEC_KILL_PRODUCT_DEFINE.PRODUCT_ID.eq(GOODS_SPEC_PRODUCT.PRD_ID)).
             where(SEC_KILL_PRODUCT_DEFINE.SK_ID.eq(skId)).fetch().into(SecKillProductVo.class);
     }
+
+    /**
+     * 活动新增用户
+     *
+     * @param param
+     */
+    public PageResult<MemberInfoVo> getSeckillSourceUserList(MarketSourceUserListParam param) {
+        MemberPageListParam pageListParam = new MemberPageListParam();
+        pageListParam.setCurrentPage(param.getCurrentPage());
+        pageListParam.setPageRows(param.getPageRows());
+        pageListParam.setMobile(param.getMobile());
+        pageListParam.setUsername(param.getUserName());
+        pageListParam.setInviteUserName(param.getInviteUserName());
+
+        return saas().getShopApp(getShopId()).member.getSourceActList(pageListParam, MemberService.INVITE_SOURCE_SECKILL, param.getActivityId());
+    }
+
+    /**
+     * 秒杀订单
+     *
+     */
+    public PageResult<OrderListInfoVo> getSeckillOrderList(MarketOrderListParam param) {
+        OrderPageListQueryParam orderParam =new OrderPageListQueryParam();
+        orderParam.setCurrentPage(param.getCurrentPage());
+        orderParam.setPageRows(param.getPageRows());
+        orderParam.setActivityId(param.getActivityId());
+        orderParam.setGoodsType(OrderConstant.GOODS_TYPE_SECKILL);
+        orderParam.setGoodsName(param.getGoodsName());
+        orderParam.setOrderSn(param.getOrderSn());
+        orderParam.setOrderStatus(param.getOrderStatus());
+
+        orderParam.setMobile(param.getMobile());
+        orderParam.setConsignee(param.getConsignee());
+        orderParam.setCreateTimeStart(param.getCreateTimeStart());
+        orderParam.setCreateTimeEnd(param.getCreateTimeEnd());
+
+        orderParam.setCountryCode(param.getCountryCode());
+        orderParam.setProvinceCode(param.getProvinceCode());
+        orderParam.setCityCode(param.getCityCode());
+        orderParam.setDistrictCode(param.getDistrictCode());
+
+        PageResult<OrderListInfoVo> pageList = (PageResult<OrderListInfoVo>) saas().getShopApp(getShopId()).readOrder.getPageList(orderParam);
+
+        if(pageList.getDataList() != null){
+            pageList.getDataList().forEach(data->{
+                data.setChildOrders(null);
+                data.setGoods(null);
+            });
+        }
+
+        return pageList;
+    }
+    /**
+     * 获取小程序码
+     */
+    public ShareQrCodeVo getMpQRCode(Integer skId) throws Exception {
+        String pagePath = SECKILL_SHARE_PATH + "?seckill_id=" + skId;
+        String imageUrl = qrCode.getMpQRCode(pagePath, QrCodeTypeConstant.QR_CODE_TYPE_SECKILL_GOODS_ITEM, skId);
+        ShareQrCodeVo vo = new ShareQrCodeVo();
+        vo.setImageUrl(imageUrl);
+        vo.setPagePath(pagePath);
+        return vo;
+    }
+
 }

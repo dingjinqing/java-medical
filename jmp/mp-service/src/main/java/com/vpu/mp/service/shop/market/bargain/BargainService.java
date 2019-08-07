@@ -249,8 +249,8 @@ public class BargainService extends ShopBaseService  {
      */
     public PageResult<MemberInfoVo> getBargainSourceUserList(MarketSourceUserListParam param) {
         MemberPageListParam pageListParam = new MemberPageListParam();
-        pageListParam.setCurrentPage(pageListParam.getCurrentPage());
-        pageListParam.setPageRows(pageListParam.getPageRows());
+        pageListParam.setCurrentPage(param.getCurrentPage());
+        pageListParam.setPageRows(param.getPageRows());
         pageListParam.setMobile(param.getMobile());
         pageListParam.setUsername(param.getUserName());
         pageListParam.setInviteUserName(param.getInviteUserName());
