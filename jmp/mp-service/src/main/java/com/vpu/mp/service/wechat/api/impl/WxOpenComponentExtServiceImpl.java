@@ -3,6 +3,9 @@ package com.vpu.mp.service.wechat.api.impl;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.google.gson.JsonObject;
 import com.vpu.mp.service.wechat.api.WxOpenComponentExtService;
 import com.vpu.mp.service.wechat.bean.open.WxOpenAuthorizerListResult;
@@ -21,6 +24,8 @@ import me.chanjar.weixin.open.bean.result.WxOpenResult;
  *
  */
 public class WxOpenComponentExtServiceImpl implements WxOpenComponentExtService {
+	
+	static final Logger logger =  LoggerFactory.getLogger(WxOpenComponentExtServiceImpl.class);
 
 	static final String COMPONENT_TOKEN_KEY = "component_access_token";
 	static final String ACCESS_TOKEN_KEY = "access_token";
@@ -93,6 +98,7 @@ public class WxOpenComponentExtServiceImpl implements WxOpenComponentExtService 
 					: (String) action.invoke(getOpenComponentService(), uri, accessTokenKey);
 		} catch (NoSuchMethodException | SecurityException | IllegalAccessException | IllegalArgumentException
 				| InvocationTargetException e) {
+			logger.error(e.toString());
 			WxError error = WxError.builder().errorCode(-2).errorMsg(e.getMessage()).build();
 			throw new WxErrorException(error,e);
 		}
