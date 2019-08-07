@@ -19,6 +19,7 @@ import com.vpu.mp.service.shop.goods.GoodsService;
 import com.vpu.mp.service.shop.image.ImageCategoryService;
 import com.vpu.mp.service.shop.image.ImageService;
 import com.vpu.mp.service.shop.market.bargain.BargainService;
+import com.vpu.mp.service.shop.market.form.FormStatisticsService;
 import com.vpu.mp.service.shop.market.freeshipping.FreeShippingService;
 import com.vpu.mp.service.shop.market.goupbuy.GroupBuyService;
 import com.vpu.mp.service.shop.market.groupdraw.GroupDrawGroupService;
@@ -157,4 +158,5 @@ public class ShopApplication  {
      * 微信好物圈配置
      */
 	@Autowired public WxShoppingListConfigService shoppingListConfig;
+	@Autowired public FormStatisticsService formService;
 }
