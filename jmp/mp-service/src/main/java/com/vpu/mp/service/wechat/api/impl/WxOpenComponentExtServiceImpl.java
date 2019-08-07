@@ -94,7 +94,7 @@ public class WxOpenComponentExtServiceImpl implements WxOpenComponentExtService 
 		} catch (NoSuchMethodException | SecurityException | IllegalAccessException | IllegalArgumentException
 				| InvocationTargetException e) {
 			WxError error = WxError.builder().errorCode(-2).errorMsg(e.getMessage()).build();
-			throw new WxErrorException(error);
+			throw new WxErrorException(error,e);
 		}
 	}
 
