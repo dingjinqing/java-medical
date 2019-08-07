@@ -1,9 +1,6 @@
 package com.vpu.mp.service.shop;
 
 
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
-
 import com.vpu.mp.service.shop.config.ConfigService;
 import com.vpu.mp.service.shop.config.ShopBasicConfigService;
 import com.vpu.mp.service.shop.config.TradeService;
@@ -40,12 +37,8 @@ import com.vpu.mp.service.shop.order.OrderReadService;
 import com.vpu.mp.service.shop.order.OrderWriteService;
 import com.vpu.mp.service.shop.order.action.base.OrderOperateFactory;
 import com.vpu.mp.service.shop.order.card.CouponPackOrderService;
-import com.vpu.mp.service.shop.overview.AssetManagementService;
-import com.vpu.mp.service.shop.overview.CommodityStatisticsService;
-import com.vpu.mp.service.shop.overview.MallOverviewService;
-import com.vpu.mp.service.shop.overview.OverviewService;
-import com.vpu.mp.service.shop.overview.RealTimeOverviewService;
-import com.vpu.mp.service.shop.overview.TransactionStatisticsService;
+import com.vpu.mp.service.shop.overview.*;
+import com.vpu.mp.service.shop.qrcode.QRCodeService;
 import com.vpu.mp.service.shop.store.store.StoreService;
 import com.vpu.mp.service.shop.summary.portrait.PortraitService;
 import com.vpu.mp.service.shop.summary.visit.AmountService;
@@ -54,6 +47,8 @@ import com.vpu.mp.service.shop.summary.visit.PageService;
 import com.vpu.mp.service.shop.summary.visit.RetainService;
 import com.vpu.mp.service.shop.task.ShopTaskService;
 import com.vpu.mp.service.shop.version.VersionService;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
 /**
  * 
@@ -65,6 +60,7 @@ public class ShopApplication  {
 
 	@Autowired public GoodsService goods;
 	@Autowired public ImageService image;
+	@Autowired public QRCodeService qrCode;
 	@Autowired public ImageCategoryService imageCatgory;
 	@Autowired public ShopMpDecorationService mpDecoration;	
 	/**

@@ -3,10 +3,9 @@ package com.vpu.mp.service.shop.market.groupdraw;
 import com.vpu.mp.db.shop.tables.records.GroupDrawRecord;
 import com.vpu.mp.service.foundation.service.ShopBaseService;
 import com.vpu.mp.service.foundation.util.PageResult;
-import com.vpu.mp.service.pojo.shop.market.groupdraw.GroupDrawAddParam;
-import com.vpu.mp.service.pojo.shop.market.groupdraw.GroupDrawListParam;
-import com.vpu.mp.service.pojo.shop.market.groupdraw.GroupDrawListVo;
-import com.vpu.mp.service.pojo.shop.market.groupdraw.GroupDrawUpdateParam;
+import com.vpu.mp.service.pojo.shop.market.groupdraw.*;
+import com.vpu.mp.service.shop.qrcode.QRCodeService;
+import lombok.extern.slf4j.Slf4j;
 import org.jooq.Record17;
 import org.jooq.SelectConditionStep;
 import org.jooq.impl.DSL;
@@ -32,12 +31,35 @@ import static org.apache.commons.lang3.StringUtils.isNotEmpty;
  * @author 郑保乐
  */
 @Service
+@Slf4j
 public class GroupDrawService extends ShopBaseService {
 
     /** 启用 **/
     private static final byte GROUP_DRAW_ENABLED = 1;
     /** 禁用 **/
     private static final byte GROUP_DRAW_DISABLED = 0;
+
+    /** 活动页面 **/
+    private static final String GROUP_DRAW_SHARE_PATH = "pages/pinlotterylist/pinlotterylist";
+
+    private final QRCodeService qrCode;
+
+    public GroupDrawService(QRCodeService qrCode) {
+        this.qrCode = qrCode;
+    }
+
+    /**
+     * 获取小程序码
+     */
+    public GroupDrawShareVo getMpQRCode(GroupDrawShareParam param) throws Exception {
+        Integer groupDrawId = param.getGroupDrawId();
+        String pagePath = GROUP_DRAW_SHARE_PATH + "?group_draw_id=" + groupDrawId;
+        String imageUrl = qrCode.getMpQRCode(pagePath, (short) 23, groupDrawId);
+        GroupDrawShareVo vo = new GroupDrawShareVo();
+        vo.setImageUrl(imageUrl);
+        vo.setPagePath(pagePath);
+        return vo;
+    }
 
     /**
      * 禁用活动

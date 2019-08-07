@@ -3,6 +3,7 @@ package com.vpu.mp.controller.admin;
 import com.vpu.mp.service.foundation.data.JsonResult;
 import com.vpu.mp.service.pojo.shop.market.groupdraw.GroupDrawAddParam;
 import com.vpu.mp.service.pojo.shop.market.groupdraw.GroupDrawListParam;
+import com.vpu.mp.service.pojo.shop.market.groupdraw.GroupDrawShareParam;
 import com.vpu.mp.service.pojo.shop.market.groupdraw.GroupDrawUpdateParam;
 import com.vpu.mp.service.pojo.shop.market.groupdraw.group.GroupListParam;
 import com.vpu.mp.service.pojo.shop.market.groupdraw.invite.InvitedUserListParam;
@@ -103,5 +104,13 @@ public class AdminGroupDrawController extends AdminBaseController {
     @PostMapping("/group/list")
     public JsonResult getOpenGroupDetailList(@RequestBody GroupListParam param) {
         return success(shop().groupDrawGroups.getGroupList(param));
+    }
+
+    /**
+     * 活动分享
+     */
+    @PostMapping("/share")
+    public JsonResult getGroupDrawShare(@RequestBody GroupDrawShareParam param) throws Exception {
+        return success(shop().groupDraw.getMpQRCode(param));
     }
 }
