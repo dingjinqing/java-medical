@@ -28,7 +28,6 @@
                     suffix-icon="fa fa-user"
                     v-model="mainData.username"
                     :placeholder="placeholder_username"
-                    @keyup.enter.native="loginEnter()"
                   >
                   </el-input>
                 </div>
@@ -41,7 +40,6 @@
                     suffix-icon="fa fa-lock"
                     v-model="mainData.password"
                     :placeholder="placeholder_password"
-                    @keyup.enter.native="loginEnter()"
                   >
                   </el-input>
                 </div>
@@ -51,7 +49,8 @@
               <el-button
                 type="primary"
                 class="button"
-                @click="onSubmit()"
+                @click.native.prevent="onSubmit()"
+                @keyup.enter.native="onSubmit()"
               >{{$t('systemLogin.login')}}</el-button>
 
             </div>
@@ -77,24 +76,26 @@ export default {
       flag: true
     }
   },
-  // create () {
-  //   var _self = this
-  //   document.onkeydown = function (e) {
-  //     alert(123)
-  //     console.log(e)
-  //     if (window.event === undefined) {
-  //       var nkey = e.keyCode
-  //     } else {
-  //       var newkey = window.event.keyCode
-  //     }
-  //     if (nkey === 13 || newkey === 13) {
-  //       _self.loginEnter()
-  //     }
-  //   }
-  // },
   mounted () {
     this.langDefault()
   },
+
+  created () {
+    var _self = this
+    document.onkeydown = function (e) {
+      let key = ''
+      if (window.event === undefined) {
+        key = e.keyCode
+      } else {
+        key = window.event.keyCode
+      }
+      if (key === 13) {
+        _self.onSubmit()
+      }
+    }
+    console.log(this)
+  },
+
   methods: {
     // 表单校验
     JudgementForm (index) {
@@ -151,32 +152,7 @@ export default {
             type: 'error'
           })
         } else {
-          Cookies.set('V-Token', res.content.token, { expires: 1 / 48 })
-          localStorage.setItem('V-Username', res.content.userName)
-          this.$message({
-            showClose: true,
-            message: res.message,
-            type: 'success'
-          })
-          this.$router.push({
-            name: 'overviewMain'
-          })
-        }
-      })
-    },
-    // 按enter健进行登录
-    loginEnter () {
-      // this.JudgementForm()
-      // if (this.flag === false) return
-      // localStorage.setItem('contentType', 'application/json;charset=UTF-8')
-      loginRequest(this.mainData).then((res) => {
-        if (res.error !== 0) {
-          this.$message({
-            showClose: true,
-            message: res.message,
-            type: 'error'
-          })
-        } else {
+          document.onkeydown = undefined
           Cookies.set('V-Token', res.content.token, { expires: 1 / 48 })
           localStorage.setItem('V-Username', res.content.userName)
           this.$message({

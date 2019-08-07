@@ -129,6 +129,7 @@
         <el-button
           type="text"
           style="color:#000"
+          @click="handleEditAccount"
         >编辑</el-button>
       </el-table-column>
     </el-table>
@@ -191,7 +192,8 @@ export default {
       pageCount: null,
       pagination_b: true,
       value: '',
-      text: ''
+      text: '',
+      isShowEditAccount: false
     }
   },
   created () {
@@ -205,6 +207,9 @@ export default {
 
     jump () {
       console.log(111)
+    },
+    handleEditAccount () {
+      this.isShowEditAccount = true
     },
     // 审核状态的四种数字转化为文字
     numberChange (row, rol) {
