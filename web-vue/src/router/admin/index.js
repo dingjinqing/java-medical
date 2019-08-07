@@ -403,7 +403,7 @@ const routes = [
           },
           {
             path: '/admin/home/main/membershipIntroduction',
-            name: 'membershipIntroduction',
+            name: 'user_import',
             meta: {
               crumbTitle: 'router.membershipIntroduction',
               meta: 'user_manger'
