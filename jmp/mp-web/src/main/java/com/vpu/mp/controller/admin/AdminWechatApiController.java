@@ -6,6 +6,7 @@ import com.vpu.mp.service.foundation.data.JsonResultCode;
 import com.vpu.mp.service.pojo.saas.shop.mp.MpAuthShopVo;
 import com.vpu.mp.service.wechat.OpenPlatform;
 import me.chanjar.weixin.common.error.WxErrorException;
+import org.slf4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -28,17 +29,28 @@ public class AdminWechatApiController extends AdminBaseController {
     @RequestMapping(value = "/api/admin/start/auth")
     @ResponseBody
     public JsonResult startAuthorization() {
+        Logger logger=logger();
+
         Integer shopId=this.shopId();
 
+        logger.debug("授权店铺ID:"+shopId);
+
         String url = this.mainUrl("/wechat/proxy/authorization/callback?shop_id=" + shopId);
+
+        logger.debug("授权回调url:"+url);
+
         try {
-            String authType = "2";
+            String authType = "1";
             String bizAppId = null;
             MpAuthShopRecord mp = saas.shop.mp.getAuthShopByShopId(shopId);
             if (mp != null) {
                 bizAppId = mp.getAppId();
+
+                logger.debug("授权bizAppId:"+bizAppId);
             }
-            url = open.getWxOpenComponentService().getPreAuthUrl(url, authType, bizAppId);
+            url = open.getWxOpenComponentService().getPreAuthUrl(url, null, bizAppId);
+
+            logger.debug("授权二维码页面url:"+url);
 
             return success(url);
         } catch (WxErrorException e) {
