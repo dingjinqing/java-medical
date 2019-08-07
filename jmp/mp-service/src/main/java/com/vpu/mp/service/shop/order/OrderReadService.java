@@ -16,10 +16,6 @@ import java.util.Map.Entry;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-import com.vpu.mp.service.pojo.shop.order.analysis.ActiveDiscountMoney;
-import com.vpu.mp.service.pojo.shop.order.analysis.ActiveOrderList;
-import com.vpu.mp.service.pojo.shop.order.analysis.OrderActivityUserNum;
-import org.jooq.Record;
 import org.jooq.impl.DSL;
 import org.jooq.tools.StringUtils;
 import org.slf4j.Logger;
@@ -35,6 +31,9 @@ import com.vpu.mp.service.pojo.shop.order.OrderConstant;
 import com.vpu.mp.service.pojo.shop.order.OrderInfoVo;
 import com.vpu.mp.service.pojo.shop.order.OrderListInfoVo;
 import com.vpu.mp.service.pojo.shop.order.OrderPageListQueryParam;
+import com.vpu.mp.service.pojo.shop.order.analysis.ActiveDiscountMoney;
+import com.vpu.mp.service.pojo.shop.order.analysis.ActiveOrderList;
+import com.vpu.mp.service.pojo.shop.order.analysis.OrderActivityUserNum;
 import com.vpu.mp.service.pojo.shop.order.goods.OrderGoodsVo;
 import com.vpu.mp.service.pojo.shop.order.refund.OrderConciseRefundInfoVo;
 import com.vpu.mp.service.pojo.shop.order.refund.OrderReturnGoodsVo;
@@ -242,13 +241,7 @@ public class OrderReadService extends ShopBaseService {
 	 * @return
 	 */
 	 public Map<Date,Integer> getMarketOrderAnalysis(MarketAnalysisParam param){
-		 Map<Date,Integer> map =  db().select(date(ORDER_INFO.CREATE_TIME).as("date"),count().as("number")).from(ORDER_INFO).
-				 where(ORDER_INFO.ACTIVITY_ID.eq(param.getActId())).
-				 and(ORDER_INFO.CREATE_TIME.between(param.getStartTime(),param.getEndTime())).
-				 and(ORDER_INFO.ORDER_STATUS.gt(OrderConstant.ORDER_CLOSED)).
-				 and(sql("FIND_IN_SET("+OrderConstant.GOODS_TYPE_BARGAIN+", "+ORDER_INFO.getName() +"."+ ORDER_INFO.GOODS_TYPE.getName()+")")).
-				 groupBy(date(ORDER_INFO.CREATE_TIME)).fetch().intoMap(date(ORDER_INFO.CREATE_TIME).as("date"),count().as("number"));
-		 return map;
+		 return orderInfo.getMarketOrderAnalysis(param);
 	 }
 
 
@@ -262,20 +255,7 @@ public class OrderReadService extends ShopBaseService {
 	 * @return
 	 */
 	public List<ActiveDiscountMoney> getActiveDiscountMoney(Integer goodType, Integer activityId, Timestamp startTime, Timestamp  endTime){
-		List<ActiveDiscountMoney> record = db().select(
-				DslPlus.dateFormatDay(ORDER_INFO.CREATE_TIME),
-				DSL.sum(ORDER_GOODS.MARKET_PRICE),
-				DSL.sum(ORDER_GOODS.GOODS_PRICE),
-				DSL.sum(ORDER_GOODS.DISCOUNTED_TOTAL_PRICE))
-				.from(ORDER_INFO)
-				.leftJoin(ORDER_GOODS).on(ORDER_GOODS.ORDER_SN.eq(ORDER_INFO.ORDER_SN))
-				.where(ORDER_INFO.ACTIVITY_ID.eq(activityId))
-				.and(DslPlus.findInSet(goodType.toString(), ORDER_INFO.GOODS_TYPE))
-				.and(ORDER_INFO.ORDER_STATUS.gt(OrderConstant.ORDER_CLOSED))
-				.and(ORDER_INFO.CREATE_TIME.between(startTime, endTime))
-				.groupBy(DslPlus.dateFormatDay(ORDER_INFO.CREATE_TIME))
-				.fetchInto(ActiveDiscountMoney.class);
-		return record;
+		return orderInfo.getActiveDiscountMoney(goodType, activityId, startTime, endTime);
 	}
 
 	/**
@@ -289,47 +269,7 @@ public class OrderReadService extends ShopBaseService {
 	 * @return
 	 */
 	public ActiveOrderList getActiveOrderList(Integer goodType, Integer activityId, Timestamp startTime, Timestamp  endTime) {
-		//查询该活动下过单的用户——所有用户
-		List<Integer> userIdList = db().select(ORDER_INFO.USER_ID)
-				.from(ORDER_INFO)
-				.where(ORDER_INFO.ACTIVITY_ID.eq(activityId))
-				.and(ORDER_INFO.ORDER_STATUS.gt(OrderConstant.ORDER_CLOSED))
-				.and(ORDER_INFO.CREATE_TIME.between(startTime, endTime))
-				.and(DslPlus.findInSet(goodType.toString(), ORDER_INFO.GOODS_TYPE))
-				.groupBy(ORDER_INFO.USER_ID)
-				.fetch(ORDER_INFO.USER_ID);
-		//查新用户活动前下过订单——老用户
-		List<Integer> oldUserIdList= db().select(ORDER_INFO.USER_ID)
-				.from(ORDER_INFO)
-				.where(ORDER_INFO.ORDER_STATUS.gt(OrderConstant.ORDER_CLOSED))
-				.and(ORDER_INFO.CREATE_TIME.lt(startTime))
-				.and(ORDER_INFO.USER_ID.in(userIdList))
-				.orderBy(ORDER_INFO.USER_ID).fetch(ORDER_INFO.USER_ID);
-		// 老用户订单数据
-		List<OrderActivityUserNum> oldList= db().select(DslPlus.dateFormatDay(ORDER_INFO.CREATE_TIME).as("date"),count(ORDER_INFO.CREATE_TIME))
-				.from(ORDER_INFO)
-				.where(ORDER_INFO.ACTIVITY_ID.eq(activityId))
-				.and(ORDER_INFO.ORDER_STATUS.gt(OrderConstant.ORDER_CLOSED))
-				.and(ORDER_INFO.CREATE_TIME.between(startTime, endTime))
-				.and(DslPlus.findInSet(goodType.toString(), ORDER_INFO.GOODS_TYPE))
-				.and(ORDER_INFO.USER_ID.in(oldUserIdList))
-				.groupBy(ORDER_INFO.CREATE_TIME)
-				.fetchInto(OrderActivityUserNum.class);
-		//新用户订单数据
-		userIdList.removeAll(oldUserIdList);
-		List<OrderActivityUserNum> newList = db().select(DslPlus.dateFormatDay(ORDER_INFO.CREATE_TIME).as("date"), count(ORDER_INFO.CREATE_TIME))
-				.from(ORDER_INFO)
-				.where(ORDER_INFO.ACTIVITY_ID.eq(activityId))
-				.and(ORDER_INFO.ORDER_STATUS.gt(OrderConstant.ORDER_CLOSED))
-				.and(ORDER_INFO.CREATE_TIME.between(startTime, endTime))
-				.and(DslPlus.findInSet(goodType.toString(), ORDER_INFO.GOODS_TYPE))
-				.and(ORDER_INFO.USER_ID.in(userIdList))
-				.groupBy(DslPlus.dateFormatDay(ORDER_INFO.CREATE_TIME))
-				.fetchInto(OrderActivityUserNum.class);
-		ActiveOrderList activeOrderList=new ActiveOrderList();
-		activeOrderList.setNewUserNum(newList);
-		activeOrderList.setOldUserNum(oldList);
-		return activeOrderList;
+		return orderInfo.getActiveOrderList(goodType, activityId, startTime, endTime);
 	}
 
 
