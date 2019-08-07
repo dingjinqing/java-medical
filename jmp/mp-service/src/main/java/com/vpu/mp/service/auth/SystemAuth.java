@@ -69,7 +69,7 @@ public class SystemAuth {
 	 * @return
 	 */
 	public boolean isValidToken(String token) {
-		return token != null && StringUtils.startsWith(token, TOKEN_PREFIX);
+		return StringUtils.isNotEmpty(token) && StringUtils.startsWith(token, TOKEN_PREFIX);
 	}
 
 	/**
