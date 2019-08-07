@@ -7,10 +7,12 @@
           <el-button
             type="primary"
             size="small"
+            @click="handleSetAll(0)"
           >设置激活通知</el-button>
           <el-button
             type="primary"
             size="small"
+            @click="handleSetAll(1)"
           >会员导入</el-button>
         </div>
       </div>
@@ -23,10 +25,167 @@
             size="small"
           ></el-input>
         </div>
+        <div
+          class="batchNumber"
+          style="margin-right:10px"
+        >
+          <span>操作时间</span>
+          <el-date-picker
+            v-model="introducionDate"
+            type="daterange"
+            range-separator="至"
+            start-placeholder="开始日期"
+            end-placeholder="结束日期"
+            size="small"
+          >
+          </el-date-picker>
+        </div>
+        <el-button
+          type="primary"
+          size="small"
+          @click="handleSetAll(2)"
+        >筛选</el-button>
+      </div>
+      <el-table
+        class="auth-list mt-10"
+        header-row-class-name='tableClss'
+        :data="tableData"
+        border
+        style="width: 100%"
+      >
+        <el-table-column
+          prop="versionNum"
+          label="批次号"
+          align="center"
+        >
+        </el-table-column>
+        <el-table-column
+          prop="isAuth"
+          label="操作时间"
+          align="center"
+        >
+        </el-table-column>
+        <el-table-column
+          align="center"
+          label="会员卡"
+        >
+          <template slot-scope="scope">
+            <div
+              class="num"
+              @click="handleClickMem(scope.row.ispay)"
+            >{{scope.row.ispay}}</div>
+          </template>
+        </el-table-column>
+        <el-table-column
+          prop="status1"
+          align="center"
+          label="成功数量"
+        >
+        </el-table-column>
+        <el-table-column
+          prop="status2"
+          align="center"
+          label="失败数量"
+        >
+        </el-table-column>
+        <el-table-column
+          prop="num"
+          align="center"
+          label="激活数量"
+        >
+
+        </el-table-column>
+        <el-table-column
+          align="center"
+          label="操作"
+        >
+          <template slot-scope="scope">
+            <div
+              class="num"
+              @click="handleClickO(scope.row)"
+            >下载激活数据</div>
+          </template>
+        </el-table-column>
+      </el-table>
+
+      <div class="footer">
+        <span>当前页面1/2,总记录3条</span>
+        <el-pagination
+          @current-change="handleCurrentChange"
+          :current-page.sync="currentPage"
+          :page-size="1"
+          layout="prev, pager, next, jumper"
+          :total="3"
+        >
+        </el-pagination>
       </div>
     </div>
   </div>
 </template>
+<script>
+export default {
+  data () {
+    return {
+      input: '',
+      introducionDate: '',
+      tableData: [
+        {
+          versionNum: '23',
+          isAuth: '2019-07-30 19:50:05',
+          ispay: '会员卡',
+          status1: '成功数量',
+          status2: '失败数量',
+          num: '2'
+        },
+        {
+          versionNum: '23',
+          isAuth: '2019-07-30 19:50:05',
+          ispay: '会员卡',
+          status1: '成功数量',
+          status2: '失败数量',
+          num: '2'
+        },
+        {
+          versionNum: '23',
+          isAuth: '2019-07-30 19:50:05',
+          ispay: '会员卡',
+          status1: '成功数量',
+          status2: '失败数量',
+          num: '2'
+        }
+      ],
+      currentPage: null
+
+    }
+  },
+  methods: {
+    // 下载激活数据
+    handleClickO () {
+
+    },
+    // 当前页改变
+    handleCurrentChange () {
+
+    },
+    // 会员卡项点击
+    handleClickMem (data) {
+
+    },
+    // 设置激活通知  会员导入  筛选 综合处理
+    handleSetAll (flag) {
+      switch (flag) {
+        case 0:
+          break
+        case 1:
+          break
+        case 2:
+          break
+      }
+    }
+  }
+}
+</script>
+
 <style scoped lang="scss">
 .introductionContainer {
   padding: 10px;
@@ -50,10 +209,12 @@
       .topLeft {
         height: 32px;
         line-height: 32px;
+        color: #666;
       }
     }
     .introductionMain_middle {
       padding: 8px 0;
+      display: flex;
       span {
         white-space: normal;
         display: block;
@@ -68,6 +229,27 @@
         }
       }
     }
+  }
+  /deep/ .tableClss th {
+    background-color: #f5f5f5;
+    border: none;
+    height: 36px;
+    font-weight: bold;
+    color: #000;
+    padding: 8px 10px;
+  }
+  .num {
+    color: #5a8bff;
+    cursor: pointer;
+    &:hover {
+      color: #000;
+    }
+  }
+  .footer {
+    height: 50px;
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
   }
 }
 </style>

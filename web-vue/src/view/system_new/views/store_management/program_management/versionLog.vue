@@ -10,17 +10,21 @@
           v-for="item in options"
           :key="item.value"
           :label="item.label"
-          :value="item.value">
+          :value="item.value"
+        >
         </el-option>
       </el-select>
-      <el-input v-model="text"
-                placeholder="请输入appid"
-                size="small"
-                class="search-input ml-6" />
+      <el-input
+        v-model="text"
+        placeholder="请输入appid"
+        size="small"
+        class="search-input ml-6"
+      />
       <el-button
         size="small"
         class="ml-6"
-        type="primary">搜索</el-button>
+        type="primary"
+      >搜索</el-button>
     </div>
 
     <el-table
@@ -28,39 +32,45 @@
       header-row-class-name="table-th"
       :data="tableData"
       border
-      style="width: 100%">
+      style="width: 100%"
+    >
       <el-table-column
-        prop="date"
+        prop="time"
         label="时间"
         align="center"
       >
       </el-table-column>
       <el-table-column
-        prop="name"
+        prop="app_id"
         label="appid"
         align="center"
+        width="200"
       >
       </el-table-column>
       <el-table-column
-        prop="address"
+        prop="name"
         align="center"
-        label="昵称">
+        label="昵称"
+      >
       </el-table-column>
       <el-table-column
-        prop="address"
+        prop="content"
         align="center"
         min-width="500"
-        label="日志内容">
+        label="日志内容"
+      >
       </el-table-column>
       <el-table-column
-        prop="address"
+        prop="version"
         align="center"
-        label="小程序版本">
+        label="小程序版本"
+      >
       </el-table-column>
       <el-table-column
-        prop="address"
+        prop="operation"
         align="center"
-        label="操作">
+        label="操作"
+      >
       </el-table-column>
     </el-table>
 
@@ -71,7 +81,8 @@
         :current-page="page"
         :page-size="20"
         layout="total, sizes, prev, pager, next, jumper"
-        :total="400">
+        :total="400"
+      >
       </el-pagination>
     </div>
   </div>
@@ -101,7 +112,32 @@ export default {
         label: '北京烤鸭'
       }],
       text: '',
-      tableData: []
+      tableData: [
+        {
+          time: '2019-08-07 14:03:35',
+          app_id: 'wxeaeb5c37a376f415',
+          name: '微铺宝b2c商城',
+          content: '提交审核成功',
+          version: '1.28.3',
+          operation: '查看详情'
+        },
+        {
+          time: '2019-08-07 14:03:35',
+          app_id: 'wxeaeb5c37a376f415',
+          name: '微铺宝b2c商城',
+          content: '提交审核成功',
+          version: '1.28.3',
+          operation: '查看详情'
+        },
+        {
+          time: '2019-08-07 14:03:35',
+          app_id: 'wxeaeb5c37a376f415',
+          name: '微铺宝b2c商城',
+          content: '提交审核成功',
+          version: '1.28.3',
+          operation: '查看详情'
+        }
+      ]
     }
   },
   methods: {
@@ -121,5 +157,4 @@ export default {
 .search-input {
   width: 200px;
 }
-
 </style>

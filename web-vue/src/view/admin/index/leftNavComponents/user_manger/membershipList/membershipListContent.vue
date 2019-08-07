@@ -853,11 +853,11 @@ export default {
       clickIindex: '',
       isCenterFlag: '',
       allChecked: false,
-      options_one: this.$t('membershipIntroduction.options_one'),
-      options_two: this.$t('membershipIntroduction.options_two'),
-      options_three: this.$t('membershipIntroduction.options_three'),
-      options_four: this.$t('membershipIntroduction.options_four'),
-      options_five: this.$t('membershipIntroduction.options_five'),
+      options_one: '',
+      options_two: '',
+      options_three: '',
+      options_four: '',
+      options_five: '',
       currentPage3: 1,
       value_one: '0',
       value_two: '0',
@@ -998,6 +998,11 @@ export default {
   methods: {
     ...mapActions(['ToTurnMemberShipDetail', 'toHandleSetUpMemDialog', 'toHandleSelectingUsersDialog']),
     defaultTabelListData () {
+      this.options_one = this.$t('membershipIntroduction.options_one')
+      this.options_two = this.$t('membershipIntroduction.options_two')
+      this.options_three = this.$t('membershipIntroduction.options_three')
+      this.options_four = this.$t('membershipIntroduction.options_four')
+      this.options_five = this.$t('membershipIntroduction.options_five')
       let obj = {
         'source': '',
         'username': this.vxName,

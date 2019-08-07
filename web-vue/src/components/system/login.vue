@@ -154,7 +154,7 @@ export default {
         } else {
           document.onkeydown = undefined
           Cookies.set('V-Token', res.content.token, { expires: 1 / 48 })
-          localStorage.setItem('V-Username', res.content.userName)
+          localStorage.setItem('S-Username', res.content.userName)
           this.$message({
             showClose: true,
             message: res.message,

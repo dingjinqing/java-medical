@@ -96,7 +96,10 @@ export default {
         this.username = localStorage.getItem('V-Username')
         // console.log(Cookies.get('V-Token'), '----', localStorage.getItem('V-Username'))
         queryShopRequest().then((res) => {
-          this.shopAvatar = res.content.shopAvatar
+          console.log(res)
+          if (res.error === 0) {
+            this.shopAvatar = res.content.shopAvatar
+          }
           console.log(res)
         })
       } else {

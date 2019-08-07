@@ -20,12 +20,12 @@ import VueCropper from 'vue-cropper'
 
 // 全局flag
 localStorage.setItem('V-overallFlag', true)
-
+Vue.prototype.$imageHost = 'http://mpimg2.weipubao.cn'
 Vue.use(VueCropper)
 
 Vue.component('v-distpicker', Distpicker)
 Vue.prototype.$http = new Vue()
-Vue.prototype.$imageHost = 'http://mpimg2.weipubao.cn'
+
 Vue.use(vcolorpicker)
 Vue.use(ElementUI)
 Vue.use(vueSwiper)

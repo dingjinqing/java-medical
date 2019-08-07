@@ -8,10 +8,11 @@
           placeholder="请选择版本号"
           size="small"
         >
-          <el-option v-for="(item, index) in selectIdOpt"
-                     :key="index"
-                     :value="item.value"
-                     :label="item.label"
+          <el-option
+            v-for="(item, index) in selectIdOpt"
+            :key="index"
+            :value="item.value"
+            :label="item.label"
           />
         </el-select>
         <el-select
@@ -20,10 +21,11 @@
           placeholder="选择是否授权"
           size="small"
         >
-          <el-option v-for="(item, index) in selectIdOpt"
-                     :key="index"
-                     :value="item.value"
-                     :label="item.label"
+          <el-option
+            v-for="(item, index) in selectIdOpt"
+            :key="index"
+            :value="item.value"
+            :label="item.label"
           />
         </el-select>
         <el-select
@@ -32,10 +34,11 @@
           placeholder="选择支持微信支付"
           size="small"
         >
-          <el-option v-for="(item, index) in selectIdOpt"
-                     :key="index"
-                     :value="item.value"
-                     :label="item.label"
+          <el-option
+            v-for="(item, index) in selectIdOpt"
+            :key="index"
+            :value="item.value"
+            :label="item.label"
           />
         </el-select>
         <el-select
@@ -44,10 +47,11 @@
           placeholder="选择审核状态"
           size="small"
         >
-          <el-option v-for="(item, index) in selectIdOpt"
-                     :key="index"
-                     :value="item.value"
-                     :label="item.label"
+          <el-option
+            v-for="(item, index) in selectIdOpt"
+            :key="index"
+            :value="item.value"
+            :label="item.label"
           />
         </el-select>
         <el-select
@@ -56,16 +60,20 @@
           placeholder="选择发布状态"
           size="small"
         >
-          <el-option v-for="(item, index) in selectIdOpt"
-                     :key="index"
-                     :value="item.value"
-                     :label="item.label"
+          <el-option
+            v-for="(item, index) in selectIdOpt"
+            :key="index"
+            :value="item.value"
+            :label="item.label"
           />
         </el-select>
       </div>
       <div class="row clearfixed">
         <span class="title fll">显示列: </span>
-        <el-checkbox-group v-model="checkList" class="fll">
+        <el-checkbox-group
+          v-model="checkList"
+          class="fll"
+        >
           <el-checkbox :label="0">版本号</el-checkbox>
           <el-checkbox :label="1">是否授权</el-checkbox>
           <el-checkbox :label="2">支持微信支付</el-checkbox>
@@ -80,38 +88,50 @@
       header-row-class-name="table-th"
       :data="tableData"
       border
-      style="width: 100%">
+      style="width: 100%"
+    >
       <el-table-column
-        prop="date"
+        prop="versionNum"
         label="版本号"
         align="center"
+        v-if="holdHiddenArr[0]"
       >
       </el-table-column>
       <el-table-column
-        prop="name"
+        prop="isAuth"
         label="是否授权"
         align="center"
+        v-if="holdHiddenArr[1]"
       >
       </el-table-column>
       <el-table-column
-        prop="address"
+        prop="ispay"
         align="center"
-        label="支持微信支付">
+        label="支持微信支付"
+        v-if="holdHiddenArr[2]"
+      >
       </el-table-column>
       <el-table-column
-        prop="address"
+        prop="status1"
         align="center"
-        label="审核状态">
+        label="审核状态"
+        v-if="holdHiddenArr[3]"
+      >
       </el-table-column>
       <el-table-column
-        prop="address"
+        prop="status2"
         align="center"
-        label="发布状态">
+        label="发布状态"
+        v-if="holdHiddenArr[4]"
+      >
       </el-table-column>
       <el-table-column
-        prop="address"
         align="center"
-        label="店铺数量">
+        label="店铺数量"
+      >
+        <template slot-scope="scope">
+          <div class="num">{{scope.row.num}}</div>
+        </template>
       </el-table-column>
     </el-table>
   </div>
@@ -129,9 +149,33 @@ export default {
         auditStatus: '', // 审核状态
         isRelease: '' // 发布状态
       },
-      checkList: [0, 3], // 复选框选项
-
-      tableData: [],
+      checkList: [0, 3, 4], // 复选框选项
+      tableData: [
+        {
+          versionNum: '1.28.3',
+          isAuth: '已授权',
+          ispay: '支持微信支付',
+          status1: '审核中',
+          status2: '已发布',
+          num: '2'
+        },
+        {
+          versionNum: '1.28.3',
+          isAuth: '已授权',
+          ispay: '支持微信支付',
+          status1: '审核中',
+          status2: '已发布',
+          num: '2'
+        },
+        {
+          versionNum: '1.28.3',
+          isAuth: '已授权',
+          ispay: '支持微信支付',
+          status1: '审核中',
+          status2: '已发布',
+          num: '2'
+        }
+      ],
       selectIdOpt: [
         {
           value: '1',
@@ -141,7 +185,25 @@ export default {
           value: '2',
           label: '2.0.0'
         }
-      ]
+      ],
+      holdHiddenArr: [false, false, false, false, false]
+    }
+  },
+  watch: {
+    checkList: {
+      handler (newData) {
+        console.log(newData)
+        let arr = [0, 1, 2, 3, 4, 5]
+
+        arr.map((item, index) => {
+          if (newData.indexOf(item) !== -1) {
+            this.holdHiddenArr[item] = true
+          } else {
+            this.holdHiddenArr[item] = false
+          }
+        })
+      },
+      immediate: true
     }
   }
 }
@@ -160,6 +222,20 @@ export default {
       font-size: 14px;
     }
   }
-}
 
+  .num {
+    border: 1px solid #dedede;
+    padding: 0px 8px;
+    height: 30px;
+    line-height: 30px;
+    width: 30px;
+    margin: 0 auto;
+    cursor: pointer;
+    &:hover {
+      background: #fff !important;
+      color: #5a8bff;
+      border: 1px solid #5a8bff;
+    }
+  }
+}
 </style>
