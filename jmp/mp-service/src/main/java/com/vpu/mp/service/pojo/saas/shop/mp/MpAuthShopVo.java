@@ -2,6 +2,8 @@ package com.vpu.mp.service.pojo.saas.shop.mp;
 
 import java.sql.Timestamp;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import lombok.Data;
 
 /**
@@ -27,11 +29,17 @@ public class MpAuthShopVo {
     private String    qrcodeUrl;
     private Byte      openPay;
     private Byte      openCard;
+    @JsonIgnore
     private String    authorizerInfo;
+    @JsonIgnore
     private String    authorizationInfo;
+    @JsonIgnore
     private String    payMchId;
+    @JsonIgnore
     private String    payKey;
+    @JsonIgnore
     private String    payCertContent;
+    @JsonIgnore
     private String    payKeyContent;
     private Byte      isModifyDomain;
     private Integer   bindTemplateId;
@@ -52,8 +60,11 @@ public class MpAuthShopVo {
     private String    bindOpenAppId;
     private String    linkOfficialAppId;
     private Byte      isSubMerchant;
+    @JsonIgnore
     private String    unionPayAppId;
+    @JsonIgnore
     private String    unionPayCusId;
+    @JsonIgnore
     private String    unionPayAppKey;
 
 }
