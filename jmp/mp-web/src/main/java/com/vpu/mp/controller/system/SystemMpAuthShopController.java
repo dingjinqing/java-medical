@@ -10,10 +10,9 @@ import me.chanjar.weixin.common.error.WxErrorException;
 import me.chanjar.weixin.open.bean.result.WxOpenResult;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
 import java.io.IOException;
 import java.util.List;
-
-import javax.validation.Valid;
 
 /**
  * 
@@ -167,8 +166,7 @@ public class SystemMpAuthShopController extends SystemBaseController {
 
     /**
      *  小程序版本操作日志分页列表
-     * @param param  过滤信息，未使用templateId字段，而使用user_version字段是因为不确定这两个字段的对应关系
-     *               是否一定是一对一
+     * @param param  过滤信息
      * @return 分页结果值
      */
 	@PostMapping("/api/system/mp/operate/log/list")
@@ -191,5 +189,12 @@ public class SystemMpAuthShopController extends SystemBaseController {
 		return success();
 		
 	}
+
+	@RequestMapping("/api/system/mp/auth/list")
+	public JsonResult test(MpAuthShopListParam param){
+        PageResult<MpAuthShopListVo> authList = saas.shop.mp.getAuthList(param);
+
+        return success(authList);
+    }
 
 }

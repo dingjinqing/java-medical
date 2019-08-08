@@ -1,6 +1,37 @@
 package com.vpu.mp.service.saas.shop;
 
-import static com.vpu.mp.db.main.tables.MpAuthShop.MP_AUTH_SHOP;
+import cn.binarywang.wx.miniapp.util.json.WxMaGsonBuilder;
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.google.gson.JsonObject;
+import com.vpu.mp.config.DomainConfig;
+import com.vpu.mp.db.main.tables.MpAuthShop;
+import com.vpu.mp.db.main.tables.records.MpAuthShopRecord;
+import com.vpu.mp.db.main.tables.records.MpVersionRecord;
+import com.vpu.mp.service.foundation.service.MainBaseService;
+import com.vpu.mp.service.foundation.util.PageResult;
+import com.vpu.mp.service.foundation.util.Util;
+import com.vpu.mp.service.pojo.saas.shop.mp.MpAuthShopListParam;
+import com.vpu.mp.service.pojo.saas.shop.mp.MpAuthShopListVo;
+import com.vpu.mp.service.pojo.shop.config.trade.WxpayConfigParam;
+import com.vpu.mp.service.pojo.shop.config.trade.WxpaySearchParam;
+import com.vpu.mp.service.saas.image.SystemImageService;
+import com.vpu.mp.service.wechat.api.WxOpenAccountService;
+import com.vpu.mp.service.wechat.bean.ma.MpWxMaOpenCommitExtInfo;
+import com.vpu.mp.service.wechat.bean.open.WxOpenGetResult;
+import me.chanjar.weixin.common.error.WxErrorException;
+import me.chanjar.weixin.open.api.WxOpenMaService;
+import me.chanjar.weixin.open.bean.WxOpenCreateResult;
+import me.chanjar.weixin.open.bean.auth.WxOpenAuthorizationInfo;
+import me.chanjar.weixin.open.bean.auth.WxOpenAuthorizerInfo;
+import me.chanjar.weixin.open.bean.ma.WxOpenMaCategory;
+import me.chanjar.weixin.open.bean.ma.WxOpenMaSubmitAudit;
+import me.chanjar.weixin.open.bean.message.WxOpenMaSubmitAuditMessage;
+import me.chanjar.weixin.open.bean.result.*;
+import org.apache.commons.lang3.StringUtils;
+import org.jooq.*;
+import org.jooq.impl.DSL;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
 import java.io.File;
 import java.io.IOException;
@@ -10,43 +41,8 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import org.apache.commons.lang3.StringUtils;
-import org.jooq.Condition;
-import org.jooq.Result;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
-
-import com.fasterxml.jackson.core.type.TypeReference;
-import com.google.gson.JsonObject;
-import com.vpu.mp.config.DomainConfig;
-import com.vpu.mp.db.main.tables.MpAuthShop;
-import com.vpu.mp.db.main.tables.records.MpAuthShopRecord;
-import com.vpu.mp.db.main.tables.records.MpVersionRecord;
-import com.vpu.mp.service.foundation.service.MainBaseService;
-import com.vpu.mp.service.foundation.util.Util;
-import com.vpu.mp.service.pojo.shop.config.trade.WxpayConfigParam;
-import com.vpu.mp.service.pojo.shop.config.trade.WxpaySearchParam;
-import com.vpu.mp.service.saas.image.SystemImageService;
-import com.vpu.mp.service.wechat.api.WxOpenAccountService;
-import com.vpu.mp.service.wechat.bean.ma.MpWxMaOpenCommitExtInfo;
-import com.vpu.mp.service.wechat.bean.open.WxOpenGetResult;
-
-import cn.binarywang.wx.miniapp.util.json.WxMaGsonBuilder;
-import me.chanjar.weixin.common.error.WxErrorException;
-import me.chanjar.weixin.open.api.WxOpenMaService;
-import me.chanjar.weixin.open.bean.WxOpenCreateResult;
-import me.chanjar.weixin.open.bean.auth.WxOpenAuthorizationInfo;
-import me.chanjar.weixin.open.bean.auth.WxOpenAuthorizerInfo;
-import me.chanjar.weixin.open.bean.ma.WxOpenMaCategory;
-import me.chanjar.weixin.open.bean.ma.WxOpenMaSubmitAudit;
-import me.chanjar.weixin.open.bean.message.WxOpenMaSubmitAuditMessage;
-import me.chanjar.weixin.open.bean.result.WxOpenAuthorizerInfoResult;
-import me.chanjar.weixin.open.bean.result.WxOpenMaCategoryListResult;
-import me.chanjar.weixin.open.bean.result.WxOpenMaDomainResult;
-import me.chanjar.weixin.open.bean.result.WxOpenMaPageListResult;
-import me.chanjar.weixin.open.bean.result.WxOpenMaQueryAuditResult;
-import me.chanjar.weixin.open.bean.result.WxOpenMaSubmitAuditResult;
-import me.chanjar.weixin.open.bean.result.WxOpenResult;
+import static com.vpu.mp.db.main.tables.MpAuthShop.MP_AUTH_SHOP;
+import static com.vpu.mp.db.main.tables.ShopRenew.SHOP_RENEW;
 
 /**
  * 
@@ -685,5 +681,34 @@ public class MpAuthShopService extends MainBaseService {
 		return db().fetch(MP_AUTH_SHOP,
 				MP_AUTH_SHOP.PRINCIPAL_NAME.eq(principalName).and(MP_AUTH_SHOP.IS_AUTH_OK.eq((byte) 1)));
 	}
+
+    /**
+     * 获取小程序授权列表
+     *
+     * @param param 过滤参数
+     * @return 分页内容
+     */
+    public PageResult<MpAuthShopListVo> getAuthList(MpAuthShopListParam param) {
+
+        String shopFieldName=SHOP_RENEW.SHOP_ID.getName();
+        String expireFieldName=SHOP_RENEW.EXPIRE_TIME.getName();
+
+        Table<Record2<Integer, Timestamp>> nested =
+            db().select(SHOP_RENEW.SHOP_ID.as(shopFieldName),
+                DSL.max(SHOP_RENEW.EXPIRE_TIME).as(expireFieldName))
+                .from(SHOP_RENEW).groupBy(SHOP_RENEW.SHOP_ID).asTable("nested");
+
+        Timestamp timestamp = Timestamp.valueOf(LocalDateTime.now());
+
+        SelectConditionStep<Record13<String, Integer, String, String, Byte, String, Byte, Timestamp, Integer, Byte, Byte, Integer, Timestamp>> select = db().select(MP_AUTH_SHOP.APP_ID, MP_AUTH_SHOP.SHOP_ID, MP_AUTH_SHOP.NICK_NAME, MP_AUTH_SHOP.HEAD_IMG,
+            MP_AUTH_SHOP.IS_AUTH_OK, MP_AUTH_SHOP.VERIFY_TYPE_INFO, MP_AUTH_SHOP.OPEN_PAY, MP_AUTH_SHOP.LAST_AUTH_TIME,
+            MP_AUTH_SHOP.BIND_TEMPLATE_ID, MP_AUTH_SHOP.AUDIT_STATE, MP_AUTH_SHOP.PUBLISH_STATE,
+            DSL.when(nested.field(expireFieldName, Timestamp.class).lt(timestamp), 0).otherwise(1).as("shopState"),
+            MP_AUTH_SHOP.CREATE_TIME)
+            .from(MP_AUTH_SHOP).leftJoin(nested).on(nested.field(shopFieldName, Integer.class).eq(MP_AUTH_SHOP.SHOP_ID))
+            .where(param.buildOption());
+
+        return this.getPageResult(select, param.getCurrentPage(), param.getPageRows(), MpAuthShopListVo.class);
+    }
 
 }
