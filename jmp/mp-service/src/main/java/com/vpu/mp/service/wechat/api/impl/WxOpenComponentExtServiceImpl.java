@@ -6,6 +6,7 @@ import java.lang.reflect.Method;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.vpu.mp.service.wechat.api.WxOpenComponentExtService;
 import com.vpu.mp.service.wechat.api.WxOpenComponentHttpBase;
 
 import me.chanjar.weixin.common.error.WxError;
@@ -19,8 +20,11 @@ import me.chanjar.weixin.open.api.WxOpenService;
  * @author lixinguo
  *
  */
-public class WxOpenComponentExtServiceImpl implements WxOpenComponentHttpBase {
+public class WxOpenComponentExtServiceImpl implements WxOpenComponentHttpBase,WxOpenComponentExtService {
 
+	public static final String METHOD_GET = "get";
+	public static final String METHOD_POST = "post";
+	
 	static final Logger logger = LoggerFactory.getLogger(WxOpenComponentExtServiceImpl.class);
 
 	protected WxOpenService openService;
