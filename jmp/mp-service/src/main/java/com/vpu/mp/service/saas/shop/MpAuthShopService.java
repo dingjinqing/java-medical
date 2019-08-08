@@ -92,6 +92,7 @@ public class MpAuthShopService extends MainBaseService {
 		record.setAppId(authorizationInfo.getAuthorizerAppid());
 		record.setShopId((shopId));
 		record.setNickName(authorizerInfo.getNickName());
+		record.setUserName(authorizerInfo.getUserName());
 		record.setAlias(authorizerInfo.getAlias());
 		record.setVerifyTypeInfo(authorizerInfo.getVerifyTypeInfo().toString());
 		record.setHeadImg(authorizerInfo.getHeadImg());
