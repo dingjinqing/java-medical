@@ -348,4 +348,16 @@ public interface ImageDefault {
 	public default boolean uploadToUpYunBySteam(String upYunPath, InputStream inStream) throws IOException, Exception {
 		return this.getUpYunClient().writeFile(upYunPath, inStream, true, null);
 	}
+	
+	/**
+	 * 根据byte[] 上传图片到又拍云
+	 * @param upYunPath
+	 * @param inStream
+	 * @return
+	 * @throws IOException
+	 * @throws Exception
+	 */
+	public default boolean uploadToUpYunByByte(String filePath, byte[] datas) throws IOException, Exception {
+		return this.getUpYunClient().writeFile(filePath,datas,true);
+	}
 }
