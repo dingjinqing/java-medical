@@ -19,12 +19,11 @@ import lombok.NoArgsConstructor;
 @Data
 @NoArgsConstructor
 public class ShopReq {
-	@NotNull(message = JsonResultMessage.MSG_ACCOUNT_USERNAME_NOT_NULL)
 	private Integer shopId;
 	private Integer sysId;
 	@NotBlank(message = JsonResultMessage.MSG_ACCOUNT_MODILE_NOT_NULL)
 	private String mobile;
-	@NotBlank(message = JsonResultMessage.MSG_ACCOUNT_USERNAME_NOT_NULL)
+	@NotBlank(message = JsonResultMessage.MSG_ACCOUNT_SHOPTYPE_REGISTERED)
 	private String shopType;
 	private String receiveMobile;
 	private String shopName;
