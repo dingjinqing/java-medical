@@ -16,6 +16,7 @@ import org.jooq.SelectConditionStep;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 
+import com.fasterxml.jackson.core.type.TypeReference;
 import com.vpu.mp.db.main.tables.records.ShopRoleRecord;
 import com.vpu.mp.service.foundation.service.MainBaseService;
 import com.vpu.mp.service.foundation.util.Util;
@@ -35,7 +36,7 @@ import com.vpu.mp.service.pojo.shop.config.group.ShopRoleVo;
 @Service
 
 public class ShopRoleService extends MainBaseService {
-	final protected String menuJsonPath = "admin.privilegeList.json";
+	protected final  String menuJsonPath = "admin.privilegeList.json";
 
 	public ShopRoleRecord getRoleById(Integer roleId) {
 		return db().selectFrom(SHOP_ROLE).where(SHOP_ROLE.ROLE_ID.eq(roleId)).fetchAny();
@@ -126,7 +127,7 @@ public class ShopRoleService extends MainBaseService {
 		MenuParam outParam = new MenuParam();
 		Class<?> clazz2 = outParam.getClass();
 		for (Field field : fields) {
-			List<String> haveList = new ArrayList<String>();
+			List<String> haveList = new ArrayList<>();
 			for (Object inner : userList) {
 				field.setAccessible(true);
 				try {
@@ -189,7 +190,8 @@ public class ShopRoleService extends MainBaseService {
 			prlJson = selectList.get(SHOP_ROLE.PRIVILEGE_LIST);
 		}
 
-		List<String> list = Util.parseJson(prlJson, List.class);
+		List<String> list = Util.parseJson(prlJson, new TypeReference<List<String>>() {});
+		
 		//加入特殊的
 		String json = Util.loadResource(menuJsonPath);
 		MenuParam menuParam = Util.parseJson(json, MenuParam.class);
@@ -214,6 +216,7 @@ public class ShopRoleService extends MainBaseService {
 	 * @param userList
 	 * @return
 	 */
+	@SuppressWarnings("unchecked")
 	public MenuParam specialParam(MenuParam menuParam, List<MenuInnerParam> plus) {
 		// 门店管理 store_list
 		
