@@ -26,7 +26,9 @@ export const cn = {
   // 基础配置 小程序授权
   program_auth: ['基础配置', '小程序授权'],
   // 基础配置 小程序授权成功页面
-  program_auth_details: ['基础配置', '小程序授权']
+  program_auth_details: ['基础配置', '小程序授权'],
+  // 基础配置  店铺基础配置
+  base_manger: ['基础配置', '店铺基础配置']
 }
 
 export const en = {
@@ -72,5 +74,7 @@ export const en = {
   // 基础配置 小程序授权
   program_auth: ['Base management', 'Mini Program auth'],
   // 基础配置 小程序授权成功页面
-  program_auth_details: ['Base Management', 'Mini Program auth']
+  program_auth_details: ['Base Management', 'Mini Program auth'],
+  // 基础配置  店铺基础配置
+  base_manger: ['Basic configuration', 'Shop Foundation Configuration']
 }

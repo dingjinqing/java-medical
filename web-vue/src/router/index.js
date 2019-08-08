@@ -11,7 +11,7 @@ Vue.use(Router)
 
 const indexlogin = () => import('@/components/index/login')
 const systemlogin = () => import('@/components/system/login')
-const cropperDome = () => import('@/components/admin/cropperDome')
+
 const baseRoutes = [
   {
     path: '/',
@@ -26,12 +26,8 @@ const baseRoutes = [
     path: '/system/login',
     name: 'systemLogin',
     component: systemlogin
-  },
-  {
-    path: '/admin/cropperDome',
-    name: 'cropperDome',
-    component: cropperDome
   }
+
 ]
 const routes = baseRoutes.concat(baseRoutes, indexRoutes, adminRoutes, systemRouters)
 

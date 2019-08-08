@@ -39,7 +39,9 @@
         去微信平台申请小程序，立即申请
       </a>
     </Card>
+
   </div>
+
 </template>
 
 <script>
@@ -53,6 +55,7 @@ export default {
   data () {
     return {
       hrefDataOne: null
+
     }
   },
   mounted () {
@@ -62,6 +65,9 @@ export default {
         this.hrefDataOne = res.content
       }
     })
+  },
+  methods: {
+
   }
 }
 </script>

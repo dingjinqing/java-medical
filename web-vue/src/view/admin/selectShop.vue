@@ -72,6 +72,11 @@ export default {
   methods: {
     getAllshopsData () {
       shopListRequest().then((res) => {
+        console.log(res)
+        if (!res) {
+          this.loading.close()
+          return
+        }
         res.content.dataList.map((item, index) => {
           if (item.created) item.created = item.created.split(' ')[0]
           if (item.expireTime) item.expireTime = item.expireTime.split(' ')[0]
@@ -93,6 +98,10 @@ export default {
         this.shop_list = res.content.dataList
         this.loading.close()
       })
+        .catch((err) => {
+          this.loading.close()
+          console.log(err)
+        })
     },
     // 鼠标划入
     enter (index) {

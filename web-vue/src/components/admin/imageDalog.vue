@@ -93,6 +93,12 @@
                           title="显示原图"
                         >{{$t('imgageDalog.OriginalImg')}}</a>
                         <a
+                          title="裁剪图片"
+                          @click="handleCropper(item.imgPath,item.imgCatId,item.imgId)"
+                        >
+                          裁剪
+                        </a>
+                        <a
                           class="remove_image"
                           title="删除图片"
                           @click="delImg(item.imgId)"
@@ -143,15 +149,17 @@
       </el-dialog>
 
     </div>
+    <Cropper />
   </div>
 </template>
 <script>
 import { mapGetters } from 'vuex'
 import Tree from '@/components/admin/tree'
+import Cropper from '@/components/admin/cropper'
 import { queryHeadImgsRequest, upmoreHeadImgsRequest, imgsHeaddeleteRequest } from '@/api/admin/tree.js'
 import { upmoreImgsRequest, queryImgsRequest, imgsdeleteRequest } from '@/api/admin/pictureSpace.js'
 export default {
-  components: { Tree },
+  components: { Tree, Cropper },
   props: ['pageIndex'],
   data () {
     return {
@@ -185,9 +193,12 @@ export default {
     }
   },
   computed: {
-    ...mapGetters(['allNodes']),
+    ...mapGetters(['allNodes', 'activeFresh']),
     allNodes_ () {
       return this.allNodes
+    },
+    activeFresh_ () {
+      return this.activeFresh
     }
   },
   watch: {
@@ -200,6 +211,10 @@ export default {
         this.firstNodeId = newData.id
       }
 
+      this.queryImgs()
+    },
+    activeFresh_ (data) {
+      console.log(data, 11111)
       this.queryImgs()
     }
   },
@@ -235,7 +250,7 @@ export default {
         console.log(that.firstNodeId)
         let fd = new FormData()
         // console.log(fd)
-
+        console.log(file)
         fd.append('file', file)
         fd.append('needImgWidth', img.width)
         fd.append('needImgHeight', img.height)
@@ -406,6 +421,15 @@ export default {
       // this.dim_flag = !this.dim_flag
       this.img_list[index].imgIndex = ''
       console.log(this.img_list[index].imgIndex)
+    },
+    // 裁剪弹窗确认
+    handleCropper (path, catid, imgid) {
+      let obj = {
+        path: path,
+        catid: catid,
+        imgid: imgid
+      }
+      this.$store.commit('TOCHANGE_RECRUITMENTDIALOG', obj)
     }
   }
 }

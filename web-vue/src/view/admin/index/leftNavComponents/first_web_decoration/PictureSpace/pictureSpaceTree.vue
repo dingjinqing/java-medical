@@ -115,6 +115,12 @@
                         title="显示原图"
                       >{{$t('imgageDalog.OriginalImg')}}</a>
                       <a
+                        title="裁剪图片"
+                        @click="handleCropper(item.imgPath,item.imgCatId,item.imgId)"
+                      >
+                        裁剪
+                      </a>
+                      <a
                         class="remove_image"
                         img_id="17"
                         img_width="52"
@@ -598,8 +604,17 @@ export default {
           this.right_content_hidden = true
         }
       })
-    }
+    },
     // 图片精确查询--------------end
+    // 裁剪弹窗确认
+    handleCropper (path, catid, imgid) {
+      // let obj = {
+      //   path: path,
+      //   catid: catid,
+      //   imgid: imgid
+      // }
+      // this.$store.commit('TOCHANGE_RECRUITMENTDIALOG', obj)
+    }
   }
 }
 </script>

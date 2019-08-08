@@ -16,7 +16,9 @@ const getters = {
   toHandleSetUpMemflag: state => state.membershipList.toHandleSetUpMemflag,
   toHandleSelectingUsersflag: state => state.membershipList.toHandleSelectingUsersflag,
   menuFlag: state => state.util.menuFlag,
-  activeFlag: state => state.util.activeFlag
+  activeFlag: state => state.util.activeFlag,
+  cropperFlag: state => state.util.cropperFlag,
+  activeFresh: state => state.util.activeFresh
 }
 
 export default getters

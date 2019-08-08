@@ -1,7 +1,9 @@
 const crumbs = {
   state: {
     menuFlag: null,
-    activeFlag: null
+    activeFlag: null,
+    cropperFlag: null,
+    activeFresh: null
   },
   mutations: {
     TOCHANGE_MENUALL: (state, params) => {
@@ -9,6 +11,14 @@ const crumbs = {
     },
     TOCHANGE_ACTIVEMENUALL: (state, params) => {
       state.activeFlag = params
+    },
+    TOCHANGE_RECRUITMENTDIALOG: (state, params) => {
+      state.cropperFlag = params
+      console.log(state.cropperFlag)
+    },
+    TOCHANGE_AUTOREFRESH: (state, params) => {
+      state.activeFresh = params
+      console.log(state.activeFresh)
     }
   },
   actions: {
@@ -21,6 +31,14 @@ const crumbs = {
     judgeActiveMeunAll ({ commit }, params) {
       console.log(params)
       commit('TOCHANGE_ACTIVEMENUALL', params)
+    },
+    // 调取裁剪弹窗
+    recruitMentandDialog ({ commit }, params) {
+      commit('TOCHANGE_RECRUITMENTDIALOG', params)
+    },
+    // 主动刷新图片弹窗类数据
+    autoRefresh ({ commit }, params) {
+      commit('TOCHANGE_AUTOREFRESH', params)
     }
   }
 }

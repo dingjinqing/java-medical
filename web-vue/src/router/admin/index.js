@@ -431,13 +431,10 @@ const routes = [
             path: '/admin/home/main/base_manger',
             name: 'config_list',
             meta: {
-              crumbTitle: '',
+              crumbTitle: 'router.base_manger',
               meta: 'base_manger'
             },
-            component: () =>
-              import(
-                '@/view/admin/index/leftNavComponents/base_manger/base_manger'
-              )
+            component: () => import('@/view/admin/index/leftNavComponents/base_manger/base_manger')
           },
           // 小程序授权页面
           {
