@@ -120,10 +120,14 @@
         </el-pagination>
       </div>
     </div>
+    <!--设置激活通知弹窗-->
+    <ActivationNotificationDialog />
   </div>
 </template>
 <script>
+import ActivationNotificationDialog from '@/view/admin/index/leftNavComponents/user_manger/membershipIntroduction/activationNotificationDialog'
 export default {
+  components: { ActivationNotificationDialog },
   data () {
     return {
       input: '',

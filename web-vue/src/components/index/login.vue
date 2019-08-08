@@ -190,20 +190,15 @@ export default {
       let flag = this.JudgementForm(index)
       // console.log(this.flag)
       if (flag === false) return
-      console.log(index)
       localStorage.setItem('contentType', 'application/json;charset=UTF-8')
       if (index === 1) {
         loginRequest(this.mainData).then((res) => {
           // test
-          if (res.error !== 0) {
-            this.$message({
-              showClose: true,
-              message: res.message,
-              type: 'error'
-            })
-          } else {
+          console.log('第一')
+          if (!res) return
+          if (res.error === 0) {
             document.onkeydown = undefined
-            Cookies.set('V-Token', res.content.token, { expires: 1 / 48 })
+            Cookies.set('V-Token', res.content.token)
             localStorage.setItem('V-Username', res.content.userName)
             this.$message({
               showClose: true,
@@ -218,17 +213,11 @@ export default {
         })
       } else {
         loginRequest(this.subData).then((res) => {
-          // console.log(res)
-          if (res.error !== 0) {
-            this.$message({
-              showClose: true,
-              message: res.message,
-              type: 'error'
-            })
-          } else {
+          console.log('第二')
+          if (res.error === 0) {
             document.onkeydown = undefined
 
-            Cookies.set('V-Token', res.content.token, { expires: 1 / 48 })
+            Cookies.set('V-Token', res.content.token)
             localStorage.setItem('V-Username', res.content.userName)
             this.$message({
               showClose: true,
@@ -347,7 +336,7 @@ export default {
   color: #fff;
   border: 1px solid #5a8bff;
   cursor: pointer;
-  padding-left: none!important;
+  padding-left: none !important;
 }
 .btn {
   width: 160px;
@@ -390,6 +379,6 @@ input::-webkit-input-placeholder {
 .login-container /deep/ .el-button {
   padding: 12px 20px;
 }
-  /*作用于组件内部的样式，可以全局覆盖，但是要添加页面类名隔离，避免污染全局组件，也可以使用deep修复。因影响到小程序版本页面的组件，所以改了，望同事谅解*/
+/*作用于组件内部的样式，可以全局覆盖，但是要添加页面类名隔离，避免污染全局组件，也可以使用deep修复。因影响到小程序版本页面的组件，所以改了，望同事谅解*/
 </style>
 <!--/*作用于组件内部的样式，可以全局覆盖，但是要添加页面类名隔离，避免污染全局组件，也可以使用deep修复。因影响到小程序版本页面的组件，所以改了，望同事谅解*/-->

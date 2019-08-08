@@ -55,56 +55,79 @@ service.interceptors.request.use(
 service.interceptors.response.use(
   response => {
     const res = response
+    let flag = localStorage.getItem('V-overallFlag')
+
+    console.log(1)
+
     if (res) {
       switch (res.status) {
         // 成功
         case 200:
-          if (res.data.error === 100004) {
+
+          if (res.data.error === 100004 && flag !== 'false') {
             Message.error({
               message: res.data.message,
               showClose: true
             })
+
             router.push('/index/login')
           }
+          if (res.data.error === 100001 && flag !== 'false') {
+            Message.error({
+              message: res.data.message,
+              showClose: true
+            })
+          }
+          localStorage.setItem('V-overallFlag', false)
+          if (flag !== 'false') {
+            setTimeout(() => {
+              localStorage.setItem('V-overallFlag', true)
+            }, 3000)
+          }
           return res.data
-        default:
-          Message.error({
-            message: res.data.message,
-            showClose: true
-          })
       }
     }
 
     return res
   },
   error => {
+    console.log(2)
     let flag = localStorage.getItem('V-overallFlag')
+
     if (error && error.response) {
       switch (error.response.status) {
         case 401:
-          error.message = '抱歉，您没有访问此操作的权限！'
+          if (flag !== 'false') {
+            error.message = '抱歉，您没有访问此操作的权限！'
+          }
           // eslint-disable-next-line
           break;
         case 404:
-          error.message = '抱歉，您请求的资源不存在！'
+          if (flag !== 'false') {
+            error.message = '抱歉，您请求的资源不存在！'
+          }
           // eslint-disable-next-line
           break;
         default:
-          error.message = `服务正在处理，请稍后。`
+          if (flag !== 'false') {
+            error.message = `服务正在处理，请稍后。`
+          }
       }
     } else {
-      error.message = '服务正在处理，请稍后。'
+      if (flag !== 'false') {
+        error.message = '服务正在处理，请稍后。'
+      }
     }
-    // console.log(flag)
-    if (flag === 'false') return
-    Message.error({
-      message: error.message,
-      showClose: true
-    })
+
     localStorage.setItem('V-overallFlag', false)
-    setTimeout(() => {
-      localStorage.setItem('V-overallFlag', true)
-    }, 1000)
+    if (flag !== 'false') {
+      setTimeout(() => {
+        localStorage.setItem('V-overallFlag', true)
+      }, 3000)
+    }
+
+    // console.log(flag)
+
     return Promise.reject(error)
   }
 )
