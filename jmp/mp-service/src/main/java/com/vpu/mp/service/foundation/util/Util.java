@@ -225,6 +225,7 @@ public class Util {
 
 	public static final <T> T convert(Object from, Class<? extends T> toClass, T defaultValue) {
 		try {
+			if(from == null) return defaultValue;
 			T t = Convert.convert(from, toClass);
 			return t == null ? defaultValue : t;
 		} catch (DataTypeException e) {
