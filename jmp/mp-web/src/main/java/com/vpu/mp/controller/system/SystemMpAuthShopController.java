@@ -13,6 +13,8 @@ import org.springframework.web.bind.annotation.*;
 import java.io.IOException;
 import java.util.List;
 
+import javax.validation.Valid;
+
 /**
  * 
  * @author lixinguo
@@ -60,8 +62,8 @@ public class SystemMpAuthShopController extends SystemBaseController {
 	 * 
 	 * @return
 	 */
-	@GetMapping("/api/system/mp/version/batch")
-	public JsonResult batchPublish() {
+	@GetMapping("/api/system/mp/version/batch{templateId}")
+	public JsonResult batchPublish(@PathVariable Integer templateId) {
 
 		return success();
 	}
@@ -174,5 +176,20 @@ public class SystemMpAuthShopController extends SystemBaseController {
         PageResult<MpOperateVo> mpOperateVoPageResult = saas.shop.mpOperateLog.logList(param);
         return success(mpOperateVoPageResult);
     }
+	
+	/**
+	 * 更改当前包版本
+	 * @param pVersionVo
+	 * @return
+	 */
+	@PostMapping(value = "/api/system/mp/package/version")
+	public JsonResult setPackageVersion(@RequestBody @Valid MpPackageVersionVo pVersionVo) {
+		Integer updatePackVersion = saas.shop.mpVersion.updatePackVersion(pVersionVo.getTemplateId(), pVersionVo.getPackageVersion());
+		if(updatePackVersion<0) {
+			return fail();
+		}
+		return success();
+		
+	}
 
 }
