@@ -211,4 +211,14 @@ public class MpVersionService extends MainBaseService {
 			db().update(MP_VERSION).set( MP_VERSION.DEL_FLAG,(byte) 1).where(MP_VERSION.TEMPLATE_ID.in(wxOldList)).execute();
 		}
 	}
+	
+	/**
+	 * 更新当前包版本
+	 * @param templateId
+	 * @param packVersion
+	 * @return
+	 */
+	public Integer updatePackVersion(Integer templateId,Byte packVersion) {
+		return db().update(MP_VERSION).set(MP_VERSION.PACKAGE_VERSION,packVersion).where(MP_VERSION.TEMPLATE_ID.eq(templateId)).execute();
+	}
 }
