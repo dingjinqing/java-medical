@@ -6,8 +6,10 @@ import java.lang.reflect.Method;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.google.gson.JsonObject;
 import com.vpu.mp.service.wechat.api.WxOpenComponentExtService;
 import com.vpu.mp.service.wechat.api.WxOpenComponentHttpBase;
+import com.vpu.mp.service.wechat.bean.open.WxOpenAuthorizerListResult;
 
 import me.chanjar.weixin.common.error.WxError;
 import me.chanjar.weixin.common.error.WxErrorException;
@@ -32,6 +34,25 @@ public class WxOpenComponentExtServiceImpl implements WxOpenComponentHttpBase,Wx
 	public WxOpenComponentExtServiceImpl(WxOpenService openService) {
 		this.openService = openService;
 	}
+	
+	/**
+	 * 第三方平台可以使用接口拉取当前所有已授权的帐号基本信息。
+	 * 
+	 * @param offset
+	 * @param count
+	 * @return
+	 * @throws WxErrorException
+	 */
+	public WxOpenAuthorizerListResult getAuthorizerList(Integer offset,Integer count) throws WxErrorException {
+		JsonObject param = new JsonObject();
+		param.addProperty("component_appid", openService.getWxOpenConfigStorage().getComponentAppId());
+		param.addProperty("offset", offset);
+		param.addProperty("count", count);
+		String json = post(GET_AUTHORIZER_LIST, param.toString(),COMPONENT_TOKEN_KEY);
+		return WxOpenAuthorizerListResult.fromJson(json);
+	}
+	
+	
 
 	/**
 	 * 请求WxOpenComponentServiceImpl私有方法
