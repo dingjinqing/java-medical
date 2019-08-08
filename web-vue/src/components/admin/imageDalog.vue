@@ -422,12 +422,13 @@ export default {
       this.img_list[index].imgIndex = ''
       console.log(this.img_list[index].imgIndex)
     },
-    // 裁剪弹窗确认
+    // 裁剪弹窗调起
     handleCropper (path, catid, imgid) {
       let obj = {
         path: path,
         catid: catid,
-        imgid: imgid
+        imgid: imgid,
+        index: 1
       }
       this.$store.commit('TOCHANGE_RECRUITMENTDIALOG', obj)
     }

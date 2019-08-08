@@ -72,3 +72,13 @@ export function upmoreImgsRequest (riid) {
     data: riid
   })
 }
+
+// 图片裁剪
+export function picSpaceimgsCropperRequest (riid) {
+  localStorage.setItem('contentType', 'application/json;charset=UTF-8')
+  return service({
+    url: '/api/admin/image/makeCrop',
+    method: 'post',
+    data: riid
+  })
+}

@@ -3,7 +3,8 @@ const crumbs = {
     menuFlag: null,
     activeFlag: null,
     cropperFlag: null,
-    activeFresh: null
+    activeFresh: null,
+    picSpaceCropperFlag: null
   },
   mutations: {
     TOCHANGE_MENUALL: (state, params) => {
@@ -18,6 +19,10 @@ const crumbs = {
     },
     TOCHANGE_AUTOREFRESH: (state, params) => {
       state.activeFresh = params
+      console.log(state.activeFresh)
+    },
+    TOCHANGE_AUTOREFRESHPICSPACE: (state, params) => {
+      state.picSpaceCropperFlag = params
       console.log(state.activeFresh)
     }
   },
@@ -39,6 +44,10 @@ const crumbs = {
     // 主动刷新图片弹窗类数据
     autoRefresh ({ commit }, params) {
       commit('TOCHANGE_AUTOREFRESH', params)
+    },
+    // 图片空间主动刷新数据
+    autoRefreshPicSpace ({ commit }, params) {
+      commit('TOCHANGE_AUTOREFRESHPICSPACE', params)
     }
   }
 }

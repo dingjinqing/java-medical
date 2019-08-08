@@ -226,15 +226,16 @@
         >确 定</el-button>
       </span>
     </el-dialog>
-
+    <Cropper />
   </div>
 </template>
 <script>
+import Cropper from '@/components/admin/cropper'
 import { mapGetters } from 'vuex'
 import Tree from '@/components/admin/tree'
 import { imgsdeleteRequest, queryImgsRequest, moveImgsRequest, upmoreImgsRequest } from '@/api/admin/pictureSpace.js'
 export default {
-  components: { Tree },
+  components: { Tree, Cropper },
   data () {
     return {
 
@@ -278,12 +279,15 @@ export default {
     }
   },
   computed: {
-    ...mapGetters(['clickNode', 'allNodes']),
+    ...mapGetters(['clickNode', 'allNodes', 'picSpaceCropperFlag']),
     clickNode_ () {
       return this.clickNode
     },
     allNodes_ () {
       return this.allNodes
+    },
+    picSpaceCropperFlag_ () {
+      return this.picSpaceCropperFlag
     }
   },
   watch: {
@@ -300,6 +304,9 @@ export default {
         this.firstNodeId = newData.id
       }
 
+      this.queryImgs()
+    },
+    picSpaceCropperFlag_ (obj) {
       this.queryImgs()
     }
   },
@@ -608,12 +615,14 @@ export default {
     // 图片精确查询--------------end
     // 裁剪弹窗确认
     handleCropper (path, catid, imgid) {
-      // let obj = {
-      //   path: path,
-      //   catid: catid,
-      //   imgid: imgid
-      // }
-      // this.$store.commit('TOCHANGE_RECRUITMENTDIALOG', obj)
+      let obj = {
+        path: path,
+        catid: catid,
+        imgid: imgid,
+        index: 2
+      }
+      console.log(1)
+      this.$store.commit('TOCHANGE_RECRUITMENTDIALOG', obj)
     }
   }
 }

@@ -18,7 +18,8 @@ const getters = {
   menuFlag: state => state.util.menuFlag,
   activeFlag: state => state.util.activeFlag,
   cropperFlag: state => state.util.cropperFlag,
-  activeFresh: state => state.util.activeFresh
+  activeFresh: state => state.util.activeFresh,
+  picSpaceCropperFlag: state => state.util.picSpaceCropperFlag
   // getUserName: state => state.getUserName
 }
 

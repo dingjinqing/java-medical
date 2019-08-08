@@ -5,7 +5,7 @@
       <el-dialog
         title="裁剪图片"
         :visible.sync="dialogVisible"
-        width="30%"
+        width="35%"
       >
         <div class="CropperContainer">
           <div class="CropperTop">
@@ -99,6 +99,7 @@
 <script>
 import { mapGetters } from 'vuex'
 import { imgsCropperRequest } from '@/api/admin/tree.js'
+import { picSpaceimgsCropperRequest } from '@/api/admin/pictureSpace.js'
 export default {
   data () {
     return {
@@ -129,7 +130,8 @@ export default {
       cropMovingY: '',
       imgPath: '',
       imgCatId: '',
-      imgID: ''
+      imgID: '',
+      cropperFlag: ''
     }
   },
   computed: {
@@ -139,16 +141,22 @@ export default {
     }
   },
   watch: {
-    cropperFlag_ (obj) {
-      console.log(obj)
-      this.dialogVisible = true
-      // this.option.img = url
-      this.imgPath = obj.path
-      this.imgCatId = obj.catid
-      this.imgID = obj.imgid
+    cropperFlag_: {
+      handler (obj) {
+        console.log(obj, 111)
+        if (obj === null) return
+        this.dialogVisible = true
+        // this.option.img = url
+        this.imgPath = obj.path
+        this.imgCatId = obj.catid
+        this.imgID = obj.imgid
+        this.cropperFlag = obj.index
+      },
+      immediate: true
     }
   },
   methods: {
+
     // 预览相关
     realTime (data) {
       this.previews = data
@@ -182,12 +190,21 @@ export default {
         imgCatId: this.imgCatId,
         remoteImgId: this.imgID
       }
-      imgsCropperRequest(obj).then((res) => {
-        console.log(res)
-        if (res.error === 0) {
-          this.$store.commit('TOCHANGE_AUTOREFRESH', this.imgID)
-        }
-      })
+      if (this.cropperFlag === 0) {
+        imgsCropperRequest(obj).then((res) => {
+          console.log(res)
+          if (res.error === 0) {
+            this.$store.commit('TOCHANGE_AUTOREFRESH', this.imgID)
+          }
+        })
+      } else {
+        picSpaceimgsCropperRequest(obj).then((res) => {
+          console.log(res)
+          if (res.error === 0) {
+            this.$store.commit('TOCHANGE_AUTOREFRESHPICSPACE', this.imgID)
+          }
+        })
+      }
 
       this.dialogVisible = false
     },
@@ -218,6 +235,9 @@ export default {
       }
       div {
         white-space: nowrap;
+      }
+      /deep/ .el-input__inner {
+        width: 52px;
       }
     }
   }
