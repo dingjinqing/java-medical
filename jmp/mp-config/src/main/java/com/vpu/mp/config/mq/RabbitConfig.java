@@ -1,17 +1,23 @@
 package com.vpu.mp.config.mq;
 
-import org.springframework.amqp.core.*;
+import java.util.HashMap;
+import java.util.Map;
+
+import org.springframework.amqp.core.AcknowledgeMode;
+import org.springframework.amqp.core.Binding;
+import org.springframework.amqp.core.BindingBuilder;
+import org.springframework.amqp.core.DirectExchange;
+import org.springframework.amqp.core.Queue;
 import org.springframework.amqp.rabbit.config.SimpleRabbitListenerContainerFactory;
 import org.springframework.amqp.rabbit.connection.CachingConnectionFactory;
 import org.springframework.amqp.rabbit.connection.ConnectionFactory;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.amqp.support.converter.Jackson2JsonMessageConverter;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Lazy;
-import java.util.HashMap;
-import java.util.Map;
 
 /**
  * rabbitMq相关配置
@@ -20,6 +26,7 @@ import java.util.Map;
  *
 */
 @Configuration
+@ConditionalOnProperty(prefix="schedule",name = "switch", havingValue = "on")
 public class RabbitConfig {
 
     @Value("${rabbitmq.host}")
