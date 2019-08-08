@@ -16,6 +16,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.jooq.Record1;
+import org.jooq.Record6;
 import org.jooq.Record8;
 import org.jooq.SelectConditionStep;
 import org.jooq.SelectJoinStep;
@@ -23,17 +24,16 @@ import org.springframework.stereotype.Service;
 
 import com.vpu.mp.service.foundation.service.ShopBaseService;
 import com.vpu.mp.service.foundation.util.PageResult;
+import com.vpu.mp.service.pojo.shop.distribution.DistributorInvitedListParam;
+import com.vpu.mp.service.pojo.shop.distribution.DistributorInvitedListVo;
 import com.vpu.mp.service.pojo.shop.distribution.DistributorListParam;
 import com.vpu.mp.service.pojo.shop.distribution.DistributorListVo;
-
-import lombok.extern.slf4j.Slf4j;
 
 /**
  * 分销员列表
  * @author 常乐
  * 2019年8月5日
  */
-@Slf4j
 @Service
 public class DistributorListService extends ShopBaseService{
 	/**
@@ -132,6 +132,40 @@ public class DistributorListService extends ShopBaseService{
 		//分销等级
 		if(param.getDistributorLevel() != null) {
 			sql = sql.and(USER.DISTRIBUTOR_LEVEL.eq(param.getDistributorLevel()));
+		}
+		return sql;
+	}
+	
+	/**
+	 * 分销员已邀请用户列表
+	 * @param param
+	 * @return
+	 */
+	public PageResult<DistributorInvitedListVo> getInvitedList(DistributorInvitedListParam param) {
+		SelectJoinStep<Record6<String, String, Timestamp, Integer, BigDecimal, BigDecimal>> select = db().select(USER.USERNAME,USER.MOBILE,USER.CREATE_TIME,USER_FANLI_STATISTICS.ORDER_NUMBER,USER_FANLI_STATISTICS.TOTAL_CAN_FANLI_MONEY,USER_FANLI_STATISTICS.TOTAL_FANLI_MONEY)
+				.from(USER.leftJoin(USER_FANLI_STATISTICS).on(USER.USER_ID.eq(USER_FANLI_STATISTICS.USER_ID)));
+		SelectConditionStep<Record6<String, String, Timestamp, Integer, BigDecimal, BigDecimal>> sql = getInvitedListOptions(select,param);
+		PageResult<DistributorInvitedListVo> invitedlist = this.getPageResult(sql, param.currentpage, param.pageRows, DistributorInvitedListVo.class);
+		return invitedlist;
+	}
+	
+	/**
+	 * 已邀请用户列表条件查询
+	 * @param select
+	 * @param param
+	 * @return
+	 */
+	public SelectConditionStep<Record6<String, String, Timestamp, Integer, BigDecimal, BigDecimal>> getInvitedListOptions(SelectJoinStep<Record6<String, String, Timestamp, Integer, BigDecimal, BigDecimal>> select,DistributorInvitedListParam param) {
+		SelectConditionStep<Record6<String, String, Timestamp, Integer, BigDecimal, BigDecimal>> sql = select.where(USER.USER_ID.eq(param.getUserId()).and(USER_FANLI_STATISTICS.REBATE_LEVEL.eq((byte)1)));
+		
+		if(param.getMobile() != null) {
+			sql = sql.and(USER.MOBILE.eq(param.getMobile()));
+		}
+		if(param.getUsername() != null) {
+			sql = sql.and(USER.USERNAME.eq(param.getUsername()));
+		}
+		if(param.getStartCreateTime() != null && param.getEndCreateTime() != null) {
+			sql = sql.and(USER.CREATE_TIME.ge(param.getStartCreateTime()).and(USER.CREATE_TIME.le(param.getEndCreateTime())));
 		}
 		return sql;
 	}

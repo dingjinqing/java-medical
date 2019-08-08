@@ -16,6 +16,8 @@ import com.vpu.mp.service.pojo.shop.distribution.DistributionStrategyParam;
 import com.vpu.mp.service.pojo.shop.distribution.DistributionStrategyVo;
 import com.vpu.mp.service.pojo.shop.distribution.DistributorGroupListParam;
 import com.vpu.mp.service.pojo.shop.distribution.DistributorGroupListVo;
+import com.vpu.mp.service.pojo.shop.distribution.DistributorInvitedListParam;
+import com.vpu.mp.service.pojo.shop.distribution.DistributorInvitedListVo;
 import com.vpu.mp.service.pojo.shop.distribution.DistributorLevelCfgVo;
 import com.vpu.mp.service.pojo.shop.distribution.DistributorLevelParam;
 import com.vpu.mp.service.pojo.shop.distribution.DistributorLevelVo;
@@ -307,6 +309,17 @@ public class AdminDistributionController extends AdminBaseController{
 	public JsonResult distributorList(@RequestBody DistributorListParam param) {
 		PageResult<DistributorListVo> distributorList = shop().distributorList.getPageList(param);
 		return this.success(distributorList); 
+	}
+	
+	/**
+	 * 分销员已邀请用户列表
+	 * @param param
+	 * @return
+	 */
+	@PostMapping("/admin/distribution/invited/list")
+	public JsonResult invitedList(@RequestBody DistributorInvitedListParam param) {
+		PageResult<DistributorInvitedListVo> invitedlist = shop().distributorList.getInvitedList(param);
+		return this.success(invitedlist);
 	}
 	
 	
