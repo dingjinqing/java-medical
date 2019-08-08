@@ -8,11 +8,15 @@ export const cn = {
   shopStyle: ['小程序管理', '店铺风格'],
   // 小程序管理 底部导航
   bottomNavigation: ['小程序管理', '底部导航'],
+  // 商品管理 全部商品
+  allProducts: ['商品管理', '全部商品'],
   // 商品管理 品牌管理
   brandManagement: ['商品管理', '品牌管理'],
   brandAddManagement: ['商品管理', '品牌管理', '添加品牌'],
   // 商品管理 添加商品
   addingGoods: ['商品管理', '添加商品'],
+  // 商品管理 运费模板
+  deliverTemplate: ['商品管理', '运费模板'],
   // 商品管理 商家分类管理
   goodsSort: ['商品管理', '商家分类管理'],
   // 会员管理 会员列表 会员卡领取
@@ -44,13 +48,18 @@ export const en = {
   shopStyle: ['Small Program Management', 'shop style'],
   // 小程序管理 底部导航
   bottomNavigation: ['Small Program Management', 'Bottom navigation'],
+  // ------------------------------------------------------
+  // 商品管理 全部商品
+  allProducts: ['Commodity Management', 'All Products'],
+  // 商品管理 添加商品
+  addingGoods: ['Commodity Management', 'Adding Goods'],
+  // 商品管理 运费模板
+  deliverTemplate: ['Commodity Management', 'Deliver Template'],
+  // 商品管理 商家分类管理
+  goodsSort: ['Commodity Management', 'Sort Goods'],
   // 商品管理 品牌管理
   brandManagement: ['Brand Management', 'Brand Management'],
   brandAddManagement: ['Brand Management', 'Brand Management', 'Add Brand'],
-  // 商品管理 添加商品
-  addingGoods: ['Brand Management', 'Adding Goods'],
-  // 商品管理 商家分类管理
-  goodsSort: ['Brand Management', 'Sort Goods'],
   // 会员管理 会员列表 会员卡领取
   receiveDetail: [
     'Membership management',

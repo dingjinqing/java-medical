@@ -237,12 +237,12 @@ const routes = [
             path: '/admin/home/main/goods_manage',
             name: 'sale_on',
             meta: {
-              crumbTitle: '',
+              crumbTitle: 'router.allProducts',
               meta: 'goods_manage'
             },
             component: () =>
               import(
-                '@/view/admin/index/leftNavComponents/goods_manage/goods_manage'
+                '@/view/admin/index/leftNavComponents/goods_manage/allProducts/allProducts'
               )
           },
           // 品牌管理
@@ -295,6 +295,54 @@ const routes = [
               import(
                 '@/view/admin/index/leftNavComponents/goods_manage/addingGoods/addingGoods'
               )
+          },
+          // 运费模板
+          {
+            path: '/admin/home/main/deliver',
+            name: 'deliver',
+            redirect: '/admin/home/main/deliver/template/list',
+            meta: {
+              crumbTitle: 'router.deliverTemplate',
+              meta: 'goods_manage'
+            },
+            component: () =>
+              import(
+                '@/view/admin/index/leftNavComponents/goods_manage/deliverTemplate/deliver'
+              ),
+            children: [
+              {
+                meta: {
+                  crumbTitle: 'router.deliverTemplate',
+                  meta: 'goods_manage'
+                },
+                path: '/admin/home/main/deliver/template/list',
+                component: () =>
+                  import(
+                    '@/view/admin/index/leftNavComponents/goods_manage/deliverTemplate/templateList'
+                  )
+              },
+              {
+                path: '/admin/home/main/deliver/template/weight/list',
+                component: () =>
+                  import(
+                    '@/view/admin/index/leftNavComponents/goods_manage/deliverTemplate/templateWeightList'
+                  )
+              },
+              {
+                path: '/admin/home/main/deliver/template/add',
+                component: () =>
+                  import(
+                    '@/view/admin/index/leftNavComponents/goods_manage/deliverTemplate/templateAdd'
+                  )
+              },
+              {
+                path: '/admin/home/main/deliver/template/weight/add',
+                component: () =>
+                  import(
+                    '@/view/admin/index/leftNavComponents/goods_manage/deliverTemplate/templateWeightAdd'
+                  )
+              }
+            ]
           },
           // 商家分类管理
           {
@@ -445,7 +493,10 @@ const routes = [
               meta: 'base_manger',
               category: 'base_manger'
             },
-            component: () => import('@/view/admin/index/leftNavComponents/base_manger/program_auth')
+            component: () =>
+              import(
+                '@/view/admin/index/leftNavComponents/base_manger/program_auth'
+              )
           },
           // 小程序授权后页面
           {
@@ -456,7 +507,10 @@ const routes = [
               meta: 'base_manger',
               category: 'base_manger'
             },
-            component: () => import('@/view/admin/index/leftNavComponents/base_manger/program_auth_details')
+            component: () =>
+              import(
+                '@/view/admin/index/leftNavComponents/base_manger/program_auth_details'
+              )
           }
         ]
       }
