@@ -27,13 +27,24 @@ public class QRCodeService extends ShopBaseService {
         this.imageService = imageService;
     }
 
+    /**
+     * 获取小程序码
+     *
+     * @param pageUrl 带参数的小程序页面url
+     *
+     * @return 小程序码图片url
+     */
+    public String getMpQRCode(String pageUrl) {
+        return getMpQRCode(pageUrl, null, null);
+    }
 
     /**
-     * 获取小程分享码
+     * 获取小程序码
      *
      * @param pageUrl 带参数的小程序页面url
      * @param typeId  类型id
      * @param paramId 参数id
+     *
      * @return 小程序码图片url
      */
     public String getMpQRCode(String pageUrl, Short typeId, Integer paramId) {
@@ -51,7 +62,8 @@ public class QRCodeService extends ShopBaseService {
             //二维码图片大小
             int qrcodWidth = 430;
             try {
-                byte[] qrcodeBytes = open().getWxOpenComponentService().getWxMaServiceByAppid(appId).getQrcodeService().createQrcodeBytes(pageUrl, qrcodWidth);
+                byte[] qrcodeBytes = open().getWxOpenComponentService().getWxMaServiceByAppid(appId)
+                    .getQrcodeService().createQrcodeBytes(pageUrl, qrcodWidth);
 
                 relativePath = format("upload/%s/qrcode/%s/T%sP%s_%s.jpg", typeId, getShopId(), typeId, paramId,
                     new SimpleDateFormat("yyyyMMddHHmmss").format(new java.util.Date()));

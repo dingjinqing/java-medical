@@ -6,7 +6,6 @@ import com.vpu.mp.db.shop.tables.records.JoinGroupListRecord;
 import com.vpu.mp.service.foundation.service.ShopBaseService;
 import com.vpu.mp.service.foundation.util.PageResult;
 import com.vpu.mp.service.pojo.shop.coupon.give.CouponGiveQueueParam;
-import com.vpu.mp.service.pojo.shop.image.QrCodeTypeConstant;
 import com.vpu.mp.service.pojo.shop.image.ShareQrCodeVo;
 import com.vpu.mp.service.pojo.shop.market.groupdraw.*;
 import com.vpu.mp.service.shop.qrcode.QRCodeService;
@@ -73,7 +72,7 @@ public class GroupDrawService extends ShopBaseService {
     public ShareQrCodeVo getMpQRCode(GroupDrawShareParam param) throws Exception {
         Integer groupDrawId = param.getGroupDrawId();
         String pagePath = GROUP_DRAW_SHARE_PATH + "?group_draw_id=" + groupDrawId;
-        String imageUrl = qrCode.getMpQRCode(pagePath, QrCodeTypeConstant.QR_CODE_TYPE_GROUP_DRAW, groupDrawId);
+        String imageUrl = qrCode.getMpQRCode(pagePath);
         ShareQrCodeVo vo = new ShareQrCodeVo();
         vo.setImageUrl(imageUrl);
         vo.setPagePath(pagePath);
