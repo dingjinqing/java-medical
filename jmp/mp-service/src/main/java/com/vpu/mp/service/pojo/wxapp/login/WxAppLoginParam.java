@@ -2,12 +2,12 @@ package com.vpu.mp.service.pojo.wxapp.login;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 
-import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
 
-@Data
-public class WxAppLoginParam {
-	@JsonProperty(value = "shop_id")
-	Integer shopId;
+@Getter
+@Setter
+public class WxAppLoginParam  extends WxAppCommonParam{
 	String code;
 	String avatar;
 	@JsonProperty(value = "path_query")

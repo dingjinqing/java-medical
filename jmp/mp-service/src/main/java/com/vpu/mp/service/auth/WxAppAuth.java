@@ -48,6 +48,15 @@ public class WxAppAuth {
 	protected String getToken() {
 		return request.getHeader(TOKEN);
 	}
+	
+	/**
+	 * 得到当前小程序ID
+	 * @return
+	 */
+	protected Integer shopId() {
+		String shopId = this.request.getHeader("V-ShopId");
+		return Util.getInteger(shopId);
+	}
 
 	/**
 	 * 是否有效system登录TOKEN
@@ -58,6 +67,7 @@ public class WxAppAuth {
 	public boolean isValidToken(String token) {
 		return token != null && StringUtils.startsWith(token, TOKEN_PREFIX);
 	}
+	
 
 	/**
 	 * 登录账户
@@ -67,18 +77,19 @@ public class WxAppAuth {
 	 * @throws WxErrorException
 	 */
 	public WxAppSessionUser login(WxAppLoginParam param) throws WxErrorException {
-		WxOpenMaService maService = saas.shop.mp.getMaServiceByShopId(param.getShopId());
+		Integer shopId = shopId();
+		WxOpenMaService maService = saas.shop.mp.getMaServiceByShopId(shopId);
 		WxMaJscode2SessionResult result = maService.jsCode2SessionInfo(param.getCode());
 
 		// TODO:保存用户信息
 
 		// 保存session
 		String token = TOKEN_PREFIX
-				+ Util.md5(String.format("%d_%s_%s", param.getShopId(), result.getOpenid(), result.getSessionKey()));
+				+ Util.md5(String.format("%d_%s_%s", shopId, result.getOpenid(), result.getSessionKey()));
 		WxAppSessionUser sessionUser = new WxAppSessionUser();
 		sessionUser.setOpenId(result.getOpenid());
 		sessionUser.setToken(token);
-		sessionUser.setShopId(param.getShopId());
+		sessionUser.setShopId(shopId);
 		jedis.set(token, Util.toJson(sessionUser));
 		return sessionUser;
 	}

@@ -1,10 +1,7 @@
 package com.vpu.mp.service.shop.config;
 
-import static com.vpu.mp.db.shop.tables.ShopCfg.SHOP_CFG;
-
 import java.util.List;
 
-import org.jooq.exception.DataAccessException;
 import org.springframework.stereotype.Service;
 
 import com.fasterxml.jackson.core.type.TypeReference;
@@ -41,31 +38,4 @@ public class BottomNavigatorConfigService extends BaseShopConfigService {
 		return this.setJsonObject(K_BOTTOM, config);
 	}
 	
-	
-	public void test() {
-		try {
-			this.transaction(() -> {
-				
-				Short v =1;
-				db().update(SHOP_CFG).set(SHOP_CFG.V, "3").where(SHOP_CFG.K.eq("express")).execute();
-				db().insertInto(SHOP_CFG, SHOP_CFG.REC_ID).values(v).execute();
-				
-				try {
-					this.transaction(() -> {
-						db().update(SHOP_CFG).set(SHOP_CFG.V, "3").where(SHOP_CFG.K.eq("express")).execute();
-						db().insertInto(SHOP_CFG, SHOP_CFG.REC_ID).values(v).execute();
-					});
-				}catch(DataAccessException e) {
-					System.out.println("rollback 1 ok:"+e.getMessage());
-				}
-				
-				
-			});
-		}catch(DataAccessException e) {
-			System.out.println("rollback 2 ok:"+e.getMessage());
-		}
-		
-		
-		
-	}
 }
