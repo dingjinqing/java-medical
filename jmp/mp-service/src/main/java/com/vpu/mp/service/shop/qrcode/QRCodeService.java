@@ -24,8 +24,6 @@ public class QRCodeService extends ShopBaseService {
 
     private final ImageService imageService;
 
-    private final int qrcodWidth=430;
-
     @Value("http://${domain.image}/")
     private String imageDomain;
 
@@ -40,10 +38,9 @@ public class QRCodeService extends ShopBaseService {
      * @param pageUrl 带参数的小程序页面url
      * @param typeId  类型id
      * @param paramId 参数id
-     *
      * @return 小程序码图片url
      */
-    public String getMpQRCode(String pageUrl, Short typeId, Integer paramId){
+    public String getMpQRCode(String pageUrl, Short typeId, Integer paramId) {
         Record1<String> record = shopDb().select(CODE.QRCODE_IMG).from(CODE).where(CODE.TYPE_URL.eq(pageUrl))
             .or(CODE.TYPE.eq(typeId).and(CODE.PARAM_ID.eq(String.valueOf(paramId))))
             .fetchAny();
@@ -54,17 +51,21 @@ public class QRCodeService extends ShopBaseService {
             String appId = mainDb().select(MP_AUTH_SHOP.APP_ID).from(MP_AUTH_SHOP)
                 .where(MP_AUTH_SHOP.SHOP_ID.eq(shopId)).fetchAny(MP_AUTH_SHOP.APP_ID);
 
-            String relativePath = format("upload/%s/qrcode/%s/T%sP%s_%s.jpg", typeId, getShopId(), typeId, paramId,
-                new SimpleDateFormat("yyyyMMddHHmmss").format(new java.util.Date()));
-
+            String relativePath = null;
+            //二维码图片大小
+            int qrcodWidth = 430;
             try {
                 byte[] qrcodeBytes = open().getWxOpenComponentService().getWxMaServiceByAppid(appId).getQrcodeService().createQrcodeBytes(pageUrl, qrcodWidth);
-                this.imageService.getUpYunClient().writeFile(relativePath,qrcodeBytes,true);
+
+                relativePath = format("upload/%s/qrcode/%s/T%sP%s_%s.jpg", typeId, getShopId(), typeId, paramId,
+                    new SimpleDateFormat("yyyyMMddHHmmss").format(new java.util.Date()));
+
+                this.imageService.getUpYunClient().writeFile(relativePath, qrcodeBytes, true);
             } catch (WxErrorException e) {
-                logger().warn("获取小程序分享码错误："+e.getMessage());
+                logger().warn("获取小程序分享码错误：" + e.getMessage());
                 return null;
             } catch (Exception e) {
-                logger().warn("upYun上传文件错误："+e.getMessage());
+                logger().warn("upYun上传文件错误：" + e.getMessage());
                 return null;
             }
 
