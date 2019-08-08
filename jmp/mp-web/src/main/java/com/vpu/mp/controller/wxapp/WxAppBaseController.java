@@ -41,8 +41,7 @@ public class WxAppBaseController  extends BaseController {
 	 * @return
 	 */
 	protected Integer shopId() {
-		String shopId = this.request.getParameter("shop_id");
-		return Util.getInteger(shopId);
+		return wxAppAuth.shopId();
 	}
 	
 	

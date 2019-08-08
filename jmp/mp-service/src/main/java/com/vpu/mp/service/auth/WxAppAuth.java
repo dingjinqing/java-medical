@@ -53,8 +53,8 @@ public class WxAppAuth {
 	 * 得到当前小程序ID
 	 * @return
 	 */
-	protected Integer shopId() {
-		String shopId = this.request.getHeader("V-ShopId");
+	public Integer shopId() {
+		String shopId = this.request.getParameter("shop_id");
 		return Util.getInteger(shopId);
 	}
 
