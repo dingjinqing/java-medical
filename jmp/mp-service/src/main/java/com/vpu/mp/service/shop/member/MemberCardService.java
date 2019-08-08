@@ -32,10 +32,14 @@ import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.PROHIBITED;
 import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.RANK_TYPE;
 import static org.jooq.impl.DSL.count;
 
+import java.util.List;
 import java.util.Map;
 
 import javax.validation.Valid;
 
+import com.vpu.mp.service.foundation.data.DelFlag;
+import com.vpu.mp.service.foundation.database.DslPlus;
+import com.vpu.mp.service.pojo.shop.member.card.*;
 import org.jooq.SelectSeekStep1;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -46,19 +50,7 @@ import com.vpu.mp.service.foundation.data.JsonResultCode;
 import com.vpu.mp.service.foundation.service.ShopBaseService;
 import com.vpu.mp.service.foundation.util.PageResult;
 import com.vpu.mp.service.foundation.util.Util;
-import com.vpu.mp.service.pojo.shop.member.card.BaseCardVo;
-import com.vpu.mp.service.pojo.shop.member.card.CardIdParam;
-import com.vpu.mp.service.pojo.shop.member.card.CardParam;
-import com.vpu.mp.service.pojo.shop.member.card.GradeConditionJson;
-import com.vpu.mp.service.pojo.shop.member.card.LimitNumCardToVo;
-import com.vpu.mp.service.pojo.shop.member.card.LimitNumCardVo;
-import com.vpu.mp.service.pojo.shop.member.card.NormalCardToVo;
-import com.vpu.mp.service.pojo.shop.member.card.NormalCardVo;
-import com.vpu.mp.service.pojo.shop.member.card.PowerCardParam;
-import com.vpu.mp.service.pojo.shop.member.card.RankCardToVo;
-import com.vpu.mp.service.pojo.shop.member.card.RankCardVo;
-import com.vpu.mp.service.pojo.shop.member.card.ScoreJson;
-import com.vpu.mp.service.pojo.shop.member.card.SearchCardParam;
+
 /**
  * 
  * @author 黄壮壮
@@ -488,7 +480,7 @@ public class MemberCardService extends ShopBaseService {
 
 	/**
 	 * 删除会员卡
-	 * @param paramH
+	 * @param
 	 */
 	public void deleteCard(@Valid CardIdParam param) {
 		/**
@@ -532,5 +524,13 @@ public class MemberCardService extends ShopBaseService {
 		}
 		return null;
 	}
+
+    /**
+     * 根据会员卡ID字符串（逗号分隔）取会员卡信息列表
+     *
+     */
+	public List<SimpleMemberCardVo> getMemberCardByCardIdsString(String cardIdsString){
+	    return db().select(MEMBER_CARD.ID,MEMBER_CARD.CARD_NAME).from(MEMBER_CARD).where(DslPlus.findInSet(cardIdsString,MEMBER_CARD.ID)).and(MEMBER_CARD.DEL_FLAG.eq(DelFlag.NORMAL.getCode())).fetchInto(SimpleMemberCardVo.class);
+    }
 
 }

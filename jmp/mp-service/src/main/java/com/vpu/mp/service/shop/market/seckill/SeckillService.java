@@ -65,7 +65,7 @@ public class SeckillService extends ShopBaseService {
      *
      */
     public PageResult<SeckillPageListQueryVo> getPageList(SeckillPageListQueryParam param) {
-        SelectWhereStep<? extends Record> select = db().select(SEC_KILL_DEFINE.SK_ID,GOODS.GOODS_NAME,SEC_KILL_DEFINE.START_TIME,SEC_KILL_DEFINE.END_TIME,
+        SelectWhereStep<? extends Record> select = db().select(SEC_KILL_DEFINE.SK_ID,SEC_KILL_DEFINE.NAME,GOODS.GOODS_NAME,SEC_KILL_DEFINE.START_TIME,SEC_KILL_DEFINE.END_TIME,
             SEC_KILL_DEFINE.STATUS,SEC_KILL_DEFINE.SALE_NUM,SEC_KILL_DEFINE.LIMIT_AMOUNT).
             from(SEC_KILL_DEFINE).
             leftJoin(GOODS).on(SEC_KILL_DEFINE.GOODS_ID.eq(GOODS.GOODS_ID));
@@ -152,6 +152,7 @@ public class SeckillService extends ShopBaseService {
         GoodsView goods = saas().getShopApp(getShopId()).goods.getGoodsView(record.getGoodsId());
         res.setGoods(goods);
         res.setSecKillProduct(this.getSecKillProductVo(skId));
+        res.setMemberCard(saas().getShopApp(getShopId()).member.card.getMemberCardByCardIdsString(record.getCardId()));
         res.setShareConfig(Util.parseJson(record.getShareConfig(), ShopShareConfig.class));
 
         return res;

@@ -2,6 +2,7 @@ package com.vpu.mp.service.pojo.shop.market.seckill;
 
 import com.vpu.mp.service.pojo.shop.config.ShopShareConfig;
 import com.vpu.mp.service.pojo.shop.goods.GoodsView;
+import com.vpu.mp.service.pojo.shop.member.card.SimpleMemberCardVo;
 import lombok.Data;
 
 import java.sql.Timestamp;
@@ -38,8 +39,7 @@ public class SeckillVo {
     private Byte freeFreight;
 
     /** 专属会员卡，卡ID字符串，逗号分隔；为空时代表该活动所有人都可以参与*/
-    /** TODO 是否需要输出会员卡名称列表 */
-    private String cardId;
+    private List<SimpleMemberCardVo> memberCard;
 
     /** 分享设置*/
     private ShopShareConfig shareConfig;

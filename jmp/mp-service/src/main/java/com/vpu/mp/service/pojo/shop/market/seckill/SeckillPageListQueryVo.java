@@ -14,6 +14,9 @@ public class SeckillPageListQueryVo {
     /**主键*/
     private Integer skId;
 
+    /** 活动名称 */
+    private String name;
+
     private String goodsName;
 
     private Timestamp startTime;
@@ -25,8 +28,8 @@ public class SeckillPageListQueryVo {
     private Byte status;
 
     /**商品交易数量*/
-    private Integer saleNum;
+    private Short saleNum;
 
     /**单用户最大购买数量*/
-    private Byte limitAmount;
+    private Short limitAmount;
 }

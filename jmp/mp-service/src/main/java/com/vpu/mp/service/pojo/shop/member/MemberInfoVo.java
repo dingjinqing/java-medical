@@ -1,5 +1,6 @@
 package com.vpu.mp.service.pojo.shop.member;
 
+import java.math.BigDecimal;
 import java.sql.Timestamp;
 
 import lombok.Data;
@@ -21,7 +22,7 @@ public class MemberInfoVo {
 	//邀请人
 	private String inviteUserName;
 	//余额
-	private Double account;
+	private BigDecimal account;
 	//积分
 	private Integer score;
 	//来源 门店来源-1未录入0后台>0为门店

@@ -55,7 +55,7 @@ public class DslPlus {
      * @param field
      * @return
      */
-    public static Condition findInSet(String format, Field<String> field) {
+    public static Condition findInSet(String format, Field<?> field) {
         return DSL.condition("FIND_IN_SET({0}, {1})", field, DSL.inline(format));
     }
 
