@@ -190,8 +190,8 @@ public class SystemMpAuthShopController extends SystemBaseController {
 		
 	}
 
-	@RequestMapping("/api/system/mp/auth/list")
-	public JsonResult test(MpAuthShopListParam param){
+	@PostMapping("/api/system/mp/auth/list")
+	public JsonResult test(@RequestBody MpAuthShopListParam param){
         PageResult<MpAuthShopListVo> authList = saas.shop.mp.getAuthList(param);
 
         return success(authList);

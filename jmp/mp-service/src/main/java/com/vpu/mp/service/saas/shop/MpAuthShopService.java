@@ -700,13 +700,22 @@ public class MpAuthShopService extends MainBaseService {
 
         Timestamp timestamp = Timestamp.valueOf(LocalDateTime.now());
 
+        Condition condition = param.buildOption();
+        if (param.getShopState() != null && param.getShopState() == 0) {
+            condition = condition.and(nested.field(expireFieldName, Timestamp.class).lt(Timestamp.valueOf(LocalDateTime.now())));
+        }
+
+        if (param.getShopState() != null && param.getShopState() == 1) {
+            condition = condition.and(nested.field(expireFieldName, Timestamp.class).ge(Timestamp.valueOf(LocalDateTime.now())));
+        }
+
         SelectConditionStep<Record13<String, Integer, String, String, Byte, String, Byte, Timestamp, Integer, Byte, Byte, Integer, Timestamp>> select = db().select(MP_AUTH_SHOP.APP_ID, MP_AUTH_SHOP.SHOP_ID, MP_AUTH_SHOP.NICK_NAME, MP_AUTH_SHOP.HEAD_IMG,
             MP_AUTH_SHOP.IS_AUTH_OK, MP_AUTH_SHOP.VERIFY_TYPE_INFO, MP_AUTH_SHOP.OPEN_PAY, MP_AUTH_SHOP.LAST_AUTH_TIME,
             MP_AUTH_SHOP.BIND_TEMPLATE_ID, MP_AUTH_SHOP.AUDIT_STATE, MP_AUTH_SHOP.PUBLISH_STATE,
             DSL.when(nested.field(expireFieldName, Timestamp.class).lt(timestamp), 0).otherwise(1).as("shopState"),
             MP_AUTH_SHOP.CREATE_TIME)
             .from(MP_AUTH_SHOP).leftJoin(nested).on(nested.field(shopFieldName, Integer.class).eq(MP_AUTH_SHOP.SHOP_ID))
-            .where(param.buildOption());
+            .where(condition);
 
         return this.getPageResult(select, param.getCurrentPage(), param.getPageRows(), MpAuthShopListVo.class);
     }

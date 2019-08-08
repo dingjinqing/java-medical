@@ -4,11 +4,7 @@ import lombok.Data;
 import org.jooq.Condition;
 import org.jooq.impl.DSL;
 
-import java.sql.Timestamp;
-import java.time.LocalDateTime;
-
 import static com.vpu.mp.db.main.tables.MpAuthShop.MP_AUTH_SHOP;
-import static com.vpu.mp.db.main.tables.ShopRenew.SHOP_RENEW;
 
 /**
  * @author 李晓冰
@@ -69,13 +65,7 @@ public class MpAuthShopListParam {
             condition = condition.and(MP_AUTH_SHOP.PUBLISH_STATE.eq(publishState));
         }
 
-        if (shopState != null && shopState == 0) {
-            condition = condition.and(SHOP_RENEW.EXPIRE_TIME.lt(Timestamp.valueOf(LocalDateTime.now())));
-        }
 
-        if (shopState != null && shopState == 1) {
-            condition = condition.and(SHOP_RENEW.EXPIRE_TIME.ge(Timestamp.valueOf(LocalDateTime.now())));
-        }
 
         if (appId != null) {
             condition = condition.and(MP_AUTH_SHOP.APP_ID.eq(appId));
