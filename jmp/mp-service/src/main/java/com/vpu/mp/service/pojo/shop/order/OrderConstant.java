@@ -22,11 +22,13 @@ public class OrderConstant {
 	public static byte ORDER_RECEIVED = 5;
 	/** 已完成 可进行操作：无 */
 	public static byte ORDER_FINISHED = 6;
-	/** 退货中 可进行操作：完成退货 已完成 */
+	/** 目前没用-退货中 可进行操作：完成退货 已完成 */
+	@Deprecated
 	public static byte ORDER_RETURNING = 7;
 	/** 完成退货 可进行操作：无 */
 	public static byte ORDER_RETURN_FINISHED = 8;
-	/** 退款中 可进行操作：无 */
+	/** 目前没用-退款中 可进行操作：无 */
+	@Deprecated
 	public static byte ORDER_REFUNDING = 9;
 	/** 退款成功 可进行操作：无 */
 	public static byte ORDER_REFUND_FINISHED = 10;
