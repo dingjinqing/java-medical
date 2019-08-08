@@ -26,6 +26,7 @@ import com.vpu.mp.service.shop.market.groupdraw.GroupDrawGroupService;
 import com.vpu.mp.service.shop.market.groupdraw.GroupDrawJoinUserService;
 import com.vpu.mp.service.shop.market.groupdraw.GroupDrawOrderService;
 import com.vpu.mp.service.shop.market.groupdraw.GroupDrawService;
+import com.vpu.mp.service.shop.market.integration.GroupIntegrationService;
 import com.vpu.mp.service.shop.market.lottery.LotteryService;
 import com.vpu.mp.service.shop.market.seckill.SeckillService;
 import com.vpu.mp.service.shop.member.MemberService;
@@ -153,7 +154,10 @@ public class ShopApplication  {
 	@Autowired public GroupDrawJoinUserService groupDrawUsers;
 	@Autowired public GroupDrawOrderService groupDrawOrders;
 	@Autowired public GroupDrawGroupService groupDrawGroups;
-
+	/**
+	 * 瓜分积分
+	 */
+	@Autowired public GroupIntegrationService groupIntegration;
     /**
      * 微信好物圈配置
      */
