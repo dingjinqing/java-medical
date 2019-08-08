@@ -3,6 +3,7 @@ package com.vpu.mp.controller.admin;
 import org.slf4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
@@ -94,7 +95,7 @@ public class AdminWechatApiController extends AdminBaseController {
     public JsonResult getMp() {
         MpAuthShopRecord record = saas.shop.mp.getAuthShopByShopId(this.shopId());
         if (record == null) {
-            return fail(JsonResultCode.CODE_PARAM_ERROR);
+            return fail(JsonResultCode.WX_MA_NEED_AUTHORIZATION);
         }
         return success(record.into(MpAuthShopVo.class));
     }
