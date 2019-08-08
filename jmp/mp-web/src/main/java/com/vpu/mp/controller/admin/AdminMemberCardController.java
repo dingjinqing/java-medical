@@ -12,10 +12,10 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.vpu.mp.service.foundation.data.JsonResult;
 import com.vpu.mp.service.foundation.util.PageResult;
-import com.vpu.mp.service.foundation.util.Util;
+import com.vpu.mp.service.pojo.shop.member.card.CardParam;
 import com.vpu.mp.service.pojo.shop.member.card.BaseCardVo;
 import com.vpu.mp.service.pojo.shop.member.card.CardIdParam;
-import com.vpu.mp.service.pojo.shop.member.card.CardParam;
+
 import com.vpu.mp.service.pojo.shop.member.card.PowerCardParam;
 import com.vpu.mp.service.pojo.shop.member.card.SearchCardParam;
 
@@ -26,38 +26,47 @@ import com.vpu.mp.service.pojo.shop.member.card.SearchCardParam;
  * @Description: 会员卡管理
  */
 @RestController
-@RequestMapping(value="/api/admin/member")
+@RequestMapping(value = "/api/admin/member")
 public class AdminMemberCardController extends AdminBaseController {
 	private Logger logger = LoggerFactory.getLogger(getClass());
+
 	/**
-	 * 创建一张会员卡
-	 * @param card
-	 * @return
+	 * 会员卡 - 创建
 	 */
 	@PostMapping("/card/add")
 	public JsonResult createMemberCard(@RequestBody CardParam card) {
-		/** logger info*/
-		logger.info(card.getDesc());
-		logger.info(Util.toJson(card));
-		this.shop().member.card.addMemberCard(card);
+		logger.info("创建会员卡");
+		shop().member.card.addMemberCard(card);
 		return this.success();
 	}
 	
+	/**
+     * 会员卡 - 更新
+     */
+	@PostMapping("/card/update")
+	public JsonResult updateCard(@RequestBody CardParam param) {
+		logger.info("更新会员卡");
+		shop().member.card.updateMemberCard(param);
+		return success();
+	}
 	
+
 	/**
 	 * 返回相应的会员卡列表
+	 * 
 	 * @return
 	 */
 	@PostMapping("/card/list")
 	public JsonResult getCardList(@RequestBody SearchCardParam param) {
-		
+
 		logger.info(param.toString());
 		PageResult<? extends BaseCardVo> result = shop().member.card.getCardList(param);
 		return success(result);
 	}
-	
+
 	/**
 	 * 设置会员卡使用状态或停用状态
+	 * 
 	 * @param param
 	 * @return
 	 */
@@ -67,10 +76,10 @@ public class AdminMemberCardController extends AdminBaseController {
 		shop().member.card.powerCard(param);
 		return success();
 	}
-	
-	
+
 	/**
 	 * 删除会员卡
+	 * 
 	 * @param param
 	 * @return
 	 */
@@ -80,9 +89,10 @@ public class AdminMemberCardController extends AdminBaseController {
 		shop().member.card.deleteCard(param);
 		return success();
 	}
-	
+
 	/**
 	 * 获取需要更新的会员卡的详细信息
+	 * 
 	 * @param param
 	 * @return
 	 */
@@ -91,7 +101,6 @@ public class AdminMemberCardController extends AdminBaseController {
 		logger.info("获取会员卡的详细信息");
 		BaseCardVo card = shop().member.card.getCardById(param);
 		return success(card);
-	}
-	
+	}	
 	
 }
