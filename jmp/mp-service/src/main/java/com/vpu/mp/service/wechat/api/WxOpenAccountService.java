@@ -9,7 +9,7 @@ import me.chanjar.weixin.open.bean.result.WxOpenResult;
 
 /**
  */
-public interface WxOpenAccountService extends WxOpenHttpBase {
+public interface WxOpenAccountService extends WxOpenMaMpHttpBase {
 	/**
 	 * 开放平台帐号相关
 	 */

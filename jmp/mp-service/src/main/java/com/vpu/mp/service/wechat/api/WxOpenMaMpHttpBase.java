@@ -2,7 +2,13 @@ package com.vpu.mp.service.wechat.api;
 
 import me.chanjar.weixin.common.error.WxErrorException;
 
-public interface WxOpenHttpBase {
+/**
+ * 小程序 或者公众号 http请求接口
+ * 
+ * @author lixinguo
+ *
+ */
+public interface WxOpenMaMpHttpBase {
 	/**
 	 * post请求
 	 * 

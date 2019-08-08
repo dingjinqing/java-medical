@@ -6,43 +6,40 @@ import java.lang.reflect.Method;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.vpu.mp.service.wechat.api.WxOpenComponentHttpBase;
+
 import me.chanjar.weixin.common.error.WxError;
 import me.chanjar.weixin.common.error.WxErrorException;
 import me.chanjar.weixin.open.api.WxOpenComponentService;
 import me.chanjar.weixin.open.api.WxOpenService;
 
 /**
- *  用于实现原开放平台未实现的接口
+ * 用于实现原开放平台未实现的接口
  * 
  * @author lixinguo
  *
  */
-public class WxOpenComponentExtraServiceImpl  {
+public class WxOpenComponentExtServiceImpl implements WxOpenComponentHttpBase {
 
-	static final Logger logger = LoggerFactory.getLogger(WxOpenComponentExtraServiceImpl.class);
-
-	static final String COMPONENT_TOKEN_KEY = "component_access_token";
-	static final String ACCESS_TOKEN_KEY = "access_token";
-	static final String METHOD_GET = "get";
-	static final String METHOD_POST = "post";
+	static final Logger logger = LoggerFactory.getLogger(WxOpenComponentExtServiceImpl.class);
 
 	protected WxOpenService openService;
 
-	public WxOpenComponentExtraServiceImpl(WxOpenService openService) {
+	public WxOpenComponentExtServiceImpl(WxOpenService openService) {
 		this.openService = openService;
 	}
 
 	/**
-	 * 请求WxgetMaExtServiceImpl私有方法
+	 * 请求WxOpenComponentServiceImpl私有方法
 	 * 
-	 * @param method         WxgetMaExtServiceImpl的私有方法get或者post
+	 * @param method         WxOpenComponentServiceImpl的私有方法get或者post
 	 * @param uri
 	 * @param data
 	 * @param accessTokenKey
 	 * @return
 	 * @throws WxErrorException
 	 */
-	public String request( String method, String uri, String data, String accessTokenKey) throws WxErrorException {
+	public String request(String method, String uri, String data, String accessTokenKey) throws WxErrorException {
 		Class<?>[] getParams = { String.class, String.class };
 		Class<?>[] postParams = { String.class, String.class, String.class };
 		Method action;
@@ -65,10 +62,19 @@ public class WxOpenComponentExtraServiceImpl  {
 			throw new WxErrorException(error, e);
 		}
 	}
-	
+
 	public WxOpenComponentService getComponentService() {
 		return this.openService.getWxOpenComponentService();
 	}
-	
+
+	@Override
+	public String post(String url, String data, String accessTokenKey) throws WxErrorException {
+		return request(METHOD_POST, url, data, accessTokenKey);
+	}
+
+	@Override
+	public String get(String appId, String url, String accessTokenKey) throws WxErrorException {
+		return request(METHOD_GET, url, null,accessTokenKey);
+	}
 
 }

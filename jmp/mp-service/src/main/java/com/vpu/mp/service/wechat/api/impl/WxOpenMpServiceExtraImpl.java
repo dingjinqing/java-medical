@@ -1,6 +1,7 @@
 package com.vpu.mp.service.wechat.api.impl;
 
 import com.vpu.mp.service.wechat.api.WxOpenAccountService;
+import com.vpu.mp.service.wechat.api.WxOpenMaMpHttpBase;
 
 import me.chanjar.weixin.common.error.WxErrorException;
 import me.chanjar.weixin.mp.api.WxMpService;
@@ -12,7 +13,7 @@ import me.chanjar.weixin.open.api.WxOpenService;
  * @author lixinguo
  *
  */
-public class WxOpenMpServiceExtraImpl implements WxOpenAccountService {
+public class WxOpenMpServiceExtraImpl implements WxOpenMaMpHttpBase,WxOpenAccountService {
 
 	protected WxOpenService openService;
 	
