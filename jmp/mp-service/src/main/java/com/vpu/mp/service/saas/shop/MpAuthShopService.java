@@ -363,9 +363,11 @@ public class MpAuthShopService extends MainBaseService {
 			byte[] createWxaCodeBytes = open().getWxOpenComponentService().getWxMaServiceByAppid(appId).getQrcodeService().createWxaCodeBytes(path, 430, true, null, false);
 			addImgeToUp = saas.sysImage.uploadToUpYunByByte(relativePath, createWxaCodeBytes);
 		} catch (WxErrorException e) {
-			logger().debug("appId" + appId +"获取小程序二维码失败"+e.printStackTrace());
+			logger().debug("appId" + appId +"获取小程序二维码失败");
+			e.printStackTrace();
 		} catch (Exception e) {
-			logger().debug("appId" + appId + "头像上传又拍云失败"+e.printStackTrace());
+			logger().debug("appId" + appId + "头像上传又拍云失败");
+			e.printStackTrace();
 		}
 		logger().debug("appId" + appId + "头像上传又拍云" + addImgeToUp);
 		return relativePath;
