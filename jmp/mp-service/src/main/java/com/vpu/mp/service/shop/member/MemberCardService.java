@@ -69,9 +69,40 @@ import com.vpu.mp.service.pojo.shop.member.card.SearchCardParam;
 public class MemberCardService extends ShopBaseService {
 	Logger logger = LoggerFactory.getLogger(this.getClass());
 	
+	/**
+	 * 添加会员卡
+	 */
 	public JsonResultCode addMemberCard(CardParam card) {
-		MemberCardRecord cardRecord = new MemberCardRecord();
+		/** 处理会员卡的基本信息 */
+		MemberCardRecord cardRecord = dealWithCard(card);
+		
+		/** 插入数据库 */
+		insertIntoMemberCard(cardRecord);
+		return null;
+	}
+	
+	
+	/**
+	 * 更新会员卡
+	 */
+	public void updateMemberCard(CardParam card) {
+		/** 处理会员卡的基本信息 */
+		MemberCardRecord cardRecord = dealWithCard(card);
+		
+		/** 更新数据 */
+		updateMemberCardById(cardRecord,card.getId());
+	}
+	
 
+
+
+
+	/**
+	 * 处理会员卡的基本信息
+	 */
+	private MemberCardRecord dealWithCard(CardParam card) {
+		logger.info("正在处理会卡信息");
+		MemberCardRecord cardRecord = new MemberCardRecord();
 		/** 设置会员卡的公共属性 */
 		setCommonCardAttr(card, cardRecord);
 
@@ -86,7 +117,6 @@ public class MemberCardService extends ShopBaseService {
 				cardRecord.setExpireType(FIX_DATETIME);
 				cardRecord.setStartTime(card.getStartTime());
 				cardRecord.setEndTime(card.getEndTime());
-				// String endTime = card.getEndTime().substring(0, 10).concat(FINAL_TIME);
 			} else if (DURING_TIME.equals(expiredType)) {
 				cardRecord.setExpireType(DURING_TIME);
 				cardRecord.setReceiveDay(card.getReceiveDay());
@@ -129,33 +159,25 @@ public class MemberCardService extends ShopBaseService {
 		}
 
 		/** 设置限次与等级会员卡的公共属性 */
-		JsonResultCode result = setLimitAndRankCard(card, cardRecord);
-		if (result.getCode() != JsonResultCode.CODE_SUCCESS.getCode()) {
-			return result;
-		}
+		setLimitAndRankCard(card, cardRecord);
 
 		/** 处理普通会员卡 */
 		if (NORMAL_TYPE.equals(cardType)) {
-			return dealWithNormalCard(card, cardRecord);
+			dealWithNormalCard(card, cardRecord);
 		} else if (LIMIT_NUM_TYPE.equals(cardType)) {
 			/** 处理限次会员卡 */
-			return dealWithLimitNumCard(card, cardRecord);
+			dealWithLimitNumCard(card, cardRecord);
 		} else if (RANK_TYPE.equals(cardType)) {
-			return dealWithRankCard(card, cardRecord);
+			dealWithRankCard(card, cardRecord);
 		}
-
-		// TODO 没有此类会员卡
-		return JsonResultCode.CODE_SUCCESS;
-
+		
+		return cardRecord;
 	}
 
 	/**
 	 * 设置限次与等级会员卡的公共属性
-	 * 
-	 * @param card
-	 * @param cardRecord
 	 */
-	private JsonResultCode setLimitAndRankCard(CardParam card, MemberCardRecord cardRecord) {
+	private void setLimitAndRankCard(CardParam card, MemberCardRecord cardRecord) {
 		Byte cardType = card.getCardType();
 		Byte payOwnGood;
 		if (NORMAL_TYPE.equals(cardType) || RANK_TYPE.equals(cardType)) {
@@ -198,11 +220,11 @@ public class MemberCardService extends ShopBaseService {
 
 			if (!flag && RANK_TYPE.equals(cardType)) {
 				/** 必须选择一项会员权益 针对等级卡 */
-				return JsonResultCode.CODE_MEMBER_CARD_RIGHTS_EMPTY;
+				throw new IllegalArgumentException("必须选择一项会员权益 针对等级卡");
+				//JsonResultCode.CODE_MEMBER_CARD_RIGHTS_EMPTY;
 			}
 
 		}
-		return JsonResultCode.CODE_SUCCESS;
 	}
 
 	/**
@@ -212,7 +234,7 @@ public class MemberCardService extends ShopBaseService {
 	 * @param cardRecord
 	 * @return
 	 */
-	private JsonResultCode dealWithRankCard(CardParam card, MemberCardRecord cardRecord) {
+	private void dealWithRankCard(CardParam card, MemberCardRecord cardRecord) {
 
 		/** 启用 */
 		cardRecord.setFlag(card.getFlag());
@@ -226,9 +248,6 @@ public class MemberCardService extends ShopBaseService {
 
 		/** 等级 */
 		cardRecord.setGrade(card.getGrade());
-
-		insertIntoMemberCard(cardRecord);
-		return JsonResultCode.CODE_SUCCESS;
 	}
 
 	/**
@@ -279,7 +298,7 @@ public class MemberCardService extends ShopBaseService {
 	 * @param cardRecord
 	 * @return
 	 */
-	private JsonResultCode dealWithLimitNumCard(CardParam card, MemberCardRecord cardRecord) {
+	private void dealWithLimitNumCard(CardParam card, MemberCardRecord cardRecord) {
 
 		/** 适用商品 */
 		Byte isExchange = card.getIsExchange();
@@ -313,19 +332,16 @@ public class MemberCardService extends ShopBaseService {
 		/** 每人领取次数 */
 		cardRecord.setLimits(card.getLimits());
 
-		/** insert in to member_card table */
-		insertIntoMemberCard(cardRecord);
-		return JsonResultCode.CODE_SUCCESS;
 	}
 
 	/**
-	 * 创建普通会员卡
+	 * 处理普通会员卡
 	 * 
 	 * @param card
 	 * @param cardRecord
 	 * @return
 	 */
-	private JsonResultCode dealWithNormalCard(CardParam card, MemberCardRecord cardRecord) {
+	private void dealWithNormalCard(CardParam card, MemberCardRecord cardRecord) {
 
 		/** 处理会员权益 */
 		boolean flag = false;
@@ -340,12 +356,8 @@ public class MemberCardService extends ShopBaseService {
 		}
 		if (!flag) {
 			/** 必须选择一项会员权益 */
-			return JsonResultCode.CODE_MEMBER_CARD_RIGHTS_EMPTY;
+			throw new IllegalArgumentException("必须选择一项会员权益 针对等级卡");
 		}
-
-		/** insert in to member_card table */
-		insertIntoMemberCard(cardRecord);
-		return JsonResultCode.CODE_SUCCESS;
 	}
 
 	/**
@@ -354,9 +366,20 @@ public class MemberCardService extends ShopBaseService {
 	 * @param cardRecord
 	 */
 	private int insertIntoMemberCard(MemberCardRecord cardRecord) {
+		
 		return db().executeInsert(cardRecord);
 	}
 
+	/**
+	 * 会员卡数据更新
+	 * @param cardRecord
+	 */
+	private void updateMemberCardById(MemberCardRecord cardRecord,Integer id) {
+		int num = db().executeUpdate(cardRecord, MEMBER_CARD.ID.eq(id));
+		logger.info("成功更新： "+ num + " 行数据");
+	}
+	
+	
 	/**
 	 * 分页查询等级会员卡
 	 * @param param
@@ -509,5 +532,5 @@ public class MemberCardService extends ShopBaseService {
 		}
 		return null;
 	}
-	
+
 }

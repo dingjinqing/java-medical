@@ -15,6 +15,12 @@ import lombok.extern.slf4j.Slf4j;
 @Setter
 @Slf4j
 public class RankCardToVo extends RankCardVo {
+	
+	/** 使用须知 */
+	private String desc;
+	/** 联系方式 */
+	private String mobile;
+	
 	/**
 	 * 会员卡是否启用 1:使用中，2:停止使用
 	 */
@@ -40,6 +46,9 @@ public class RankCardToVo extends RankCardVo {
 	private String gradeCondition;
 	private GradeConditionJson gradeConditionJson;
 	
+	
+	/** 激活需要的信息 */
+	private String[] activationCfgBox;
 	
 	/**
 	 * 处理策略
@@ -72,6 +81,12 @@ public class RankCardToVo extends RankCardVo {
 			} catch (Exception e) {
 				log.info("等级卡升级策略json解析失败");
 			} 
+		}
+		
+		/** 激活需要填写的信息 */
+		String activationCfg = getActivationCfg();
+		if(null != activationCfg) {
+			activationCfgBox = activationCfg.replaceAll("\\s+","").split(",");
 		}
 		
 	}

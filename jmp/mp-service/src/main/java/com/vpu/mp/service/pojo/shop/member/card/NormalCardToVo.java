@@ -1,14 +1,19 @@
 package com.vpu.mp.service.pojo.shop.member.card;
-import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.ALL_SHOP;
-import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.MAPPER;
-import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.PART_SHOP;
-import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.PROHIBITED;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import lombok.Getter;
 import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
+
+import java.math.BigDecimal;
+import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.BUY_BY_CRASH;
+import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.BUY_BY_SCORE;
+import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.PART_SHOP;
+import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.ALL_SHOP;
+import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.PROHIBITED;
+import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.MAPPER;
+
 /**
 * @author 黄壮壮
 * @Date: 2019年8月7日
@@ -60,6 +65,18 @@ public class NormalCardToVo extends NormalCardVo {
 	private String[] storeListArray;
 	
 	
+	/** 购买类型 */
+	private Byte payType;
+	@JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
+	private BigDecimal payFee;
+	/**购买类型0 为 现金购买金额 */
+	private BigDecimal payMoney;
+	/**购买类型1 积分购买 */
+	private BigDecimal payScore;
+	
+	/** 激活需要的信息 */
+	private String[] activationCfgBox;
+	
 	/**
 	 * 处理策略
 	 */
@@ -102,5 +119,20 @@ public class NormalCardToVo extends NormalCardVo {
 				storeListType = PART_SHOP;
 			}
 		}
+		
+		/** 激活需要填写的信息 */
+		String activationCfg = getActivationCfg();
+		if(null != activationCfg) {
+			activationCfgBox = activationCfg.replaceAll("\\s+","").split(",");
+		}
+		
+		/** 购买类型 */
+		if(BUY_BY_CRASH.equals(payType)) {
+			payMoney = payFee;
+		}else if(BUY_BY_SCORE.equals(payType)) {
+			payScore = payFee;
+		}
+		
+		
 	}
 }

@@ -2,6 +2,8 @@ package com.vpu.mp.service.pojo.shop.member.card;
 
 
 
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
@@ -46,6 +48,8 @@ public abstract class BaseCardVo {
 	/** 是否审核 0： 否；1： 是 */
 	private Byte examine;
 	
+	/** 激活需要的信息*/
+	@JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
+	private String activationCfg;
 	public abstract void changeJsonCfg();
-	
 }

@@ -1,15 +1,18 @@
 package com.vpu.mp.service.pojo.shop.member.card;
 
-import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.ALL_SHOP;
-import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.PART_SHOP;
-import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.PROHIBITED;
-
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import lombok.Getter;
 import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
 
+import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.BUY_BY_CRASH;
+import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.BUY_BY_SCORE;
+import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.ALL_SHOP;
+import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.PART_SHOP;
+import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.PROHIBITED;
+
+import java.math.BigDecimal;
 /**
 * @author 黄壮壮
 * @Date: 2019年8月7日
@@ -52,6 +55,25 @@ public class LimitNumCardToVo extends LimitNumCardVo {
 	@JsonProperty("storeList")
 	private String[] storeListArray;
 	
+	/** 激活需要的信息 */
+	private String[] activationCfgBox;
+	
+	
+	/** 使用时间 1工作日 2双休 0不限制 */
+	private Byte useTime;
+	
+	/** 购买类型 */
+	private Byte payType;
+	@JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
+	private BigDecimal payFee;
+	/**购买类型0 为 现金购买金额 */
+	private BigDecimal payMoney;
+	/**购买类型1 积分购买 */
+	private BigDecimal payScore;
+	
+	
+	/** 领取限制 填0为不限制 */
+	private Integer limits;
 	
 	/**
 	 * 处理策略
@@ -79,6 +101,22 @@ public class LimitNumCardToVo extends LimitNumCardVo {
 				storeListType = PART_SHOP;
 			}
 		}
+		
+		
+		/** 激活需要填写的信息 */
+		String activationCfg = getActivationCfg();
+		if(null != activationCfg) {
+			activationCfgBox = activationCfg.replaceAll("\\s+","").split(",");
+		}
+		
+		/** 购买类型 */
+		if(BUY_BY_CRASH.equals(payType)) {
+			payMoney = payFee;
+		}else if(BUY_BY_SCORE.equals(payType)) {
+			payScore = payFee;
+		}
+		
+		
 	}
 	
 	
