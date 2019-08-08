@@ -1,20 +1,22 @@
 package com.vpu.mp.service.pojo.shop.member.card;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
-
-import lombok.extern.slf4j.Slf4j;
-import lombok.Data;
-
-import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.PROHIBITED;
 import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.ALL_SHOP;
 import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.PART_SHOP;
+import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.PROHIBITED;
+
+import com.fasterxml.jackson.annotation.JsonProperty;
+
+import lombok.Getter;
+import lombok.Setter;
+import lombok.extern.slf4j.Slf4j;
 
 /**
 * @author 黄壮壮
 * @Date: 2019年8月7日
 * @Description: 处理策略的限次会员卡出参
 */
-@Data
+@Getter
+@Setter
 @Slf4j
 public class LimitNumCardToVo extends LimitNumCardVo {
 	/** 使用须知 */

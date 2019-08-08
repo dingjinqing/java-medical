@@ -1,12 +1,14 @@
 package com.vpu.mp.service.pojo.shop.member.card;
 
+import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.BUTTON_ON;
+import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.MAPPER;
+
 import java.math.BigDecimal;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 
-import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.BUTTON_ON;
-import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.MAPPER;
-import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
 
 /**
@@ -14,7 +16,8 @@ import lombok.extern.slf4j.Slf4j;
 * @Date: 2019年8月6日
 * @Description:
 */
-@Data
+@Getter
+@Setter
 @Slf4j
 public class RankCardVo extends BaseCardVo {
 	

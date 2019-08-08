@@ -1,7 +1,6 @@
 package com.vpu.mp.service.wechat.bean.open;
 
 import java.io.Serializable;
-import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -28,7 +27,7 @@ public class WxOpenAuthorizerListResult implements Serializable {
 		private String refreshToken;
 
 		@SerializedName("auth_time")
-		private Timestamp authTime;
+		private Integer authTime;
 	}
 
 	public static WxOpenAuthorizerListResult fromJson(String json) {

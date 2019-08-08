@@ -1,17 +1,21 @@
 package com.vpu.mp.service.pojo.shop.member.card;
-import com.fasterxml.jackson.annotation.JsonProperty;
-import lombok.Data;
-import lombok.extern.slf4j.Slf4j;
-import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.MAPPER;
-import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.PROHIBITED;
 import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.ALL_SHOP;
+import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.MAPPER;
 import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.PART_SHOP;
+import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.PROHIBITED;
+
+import com.fasterxml.jackson.annotation.JsonProperty;
+
+import lombok.Getter;
+import lombok.Setter;
+import lombok.extern.slf4j.Slf4j;
 /**
 * @author 黄壮壮
 * @Date: 2019年8月7日
 * @Description:
 */
-@Data
+@Getter
+@Setter
 @Slf4j
 public class NormalCardToVo extends NormalCardVo {
 	

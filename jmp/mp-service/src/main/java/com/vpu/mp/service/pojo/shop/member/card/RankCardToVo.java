@@ -1,14 +1,18 @@
 package com.vpu.mp.service.pojo.shop.member.card;
-import com.fasterxml.jackson.annotation.JsonProperty;
-import lombok.Data;
-import lombok.extern.slf4j.Slf4j;
 import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.MAPPER;
+
+import com.fasterxml.jackson.annotation.JsonProperty;
+
+import lombok.Getter;
+import lombok.Setter;
+import lombok.extern.slf4j.Slf4j;
 /**
 * @author 黄壮壮
 * @Date: 2019年8月7日
 * @Description:
 */
-@Data
+@Getter
+@Setter
 @Slf4j
 public class RankCardToVo extends RankCardVo {
 	/**

@@ -69,7 +69,7 @@ public class DslPlus {
      * @param <T>
      * @return
      */
-    public static <T> Field groupConCat(Field<?> field, SortField<?> sortField, String separator) {
+    public static <T> Field<?> groupConCat(Field<?> field, SortField<?> sortField, String separator) {
         // TODO: 2019/8/2    函数有最大长度限制1024 #SET GLOBAL group_concat_max_len = 1024;
         return DSL.field("group_concat({0} order by {1}   separator '{2}')",field,sortField,separator);
     }

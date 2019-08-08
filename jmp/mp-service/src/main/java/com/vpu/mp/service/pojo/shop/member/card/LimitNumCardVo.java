@@ -8,7 +8,8 @@ import java.sql.Timestamp;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 
-import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
 
 /**
@@ -16,7 +17,8 @@ import lombok.extern.slf4j.Slf4j;
 * @Date: 2019年8月6日
 * @Description: 限次会员卡出参
 */
-@Data
+@Getter
+@Setter
 @Slf4j
 public class LimitNumCardVo extends BaseCardVo {
 	

@@ -1,16 +1,18 @@
 package com.vpu.mp.service.pojo.shop.member.card;
 
-import java.math.BigDecimal;
-import java.sql.Timestamp;
-import com.fasterxml.jackson.annotation.JsonProperty;
-
-import lombok.Data;
-import lombok.extern.slf4j.Slf4j;
-
 import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.BUTTON_ON;
-import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.FIX_DATETIME;
 import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.CURRENT_DATE;
 import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.EXPIRED;
+import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.FIX_DATETIME;
+
+import java.math.BigDecimal;
+import java.sql.Timestamp;
+
+import com.fasterxml.jackson.annotation.JsonProperty;
+
+import lombok.Getter;
+import lombok.Setter;
+import lombok.extern.slf4j.Slf4j;
 
 /**
  * 
@@ -18,7 +20,8 @@ import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.EXPIRED;
  * @Date: 2019年8月6日
  * @Description: 普通会员卡查询出参
  */
-@Data
+@Getter
+@Setter
 @Slf4j
 public class NormalCardVo extends BaseCardVo {
 	/**
