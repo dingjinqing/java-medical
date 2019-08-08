@@ -3,6 +3,7 @@ package com.vpu.mp.service.pojo.shop.auth;
 import java.sql.Timestamp;
 
 import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
 
 import com.vpu.mp.service.foundation.data.JsonResultMessage;
 
@@ -18,7 +19,7 @@ import lombok.NoArgsConstructor;
 @Data
 @NoArgsConstructor
 public class ShopReq {
-	@NotBlank(message = JsonResultMessage.MSG_ACCOUNT_USERNAME_NOT_NULL)
+	@NotNull(message = JsonResultMessage.MSG_ACCOUNT_USERNAME_NOT_NULL)
 	private Integer shopId;
 	private Integer sysId;
 	@NotBlank(message = JsonResultMessage.MSG_ACCOUNT_MODILE_NOT_NULL)
