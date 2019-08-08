@@ -8,6 +8,11 @@ import com.vpu.mp.service.foundation.util.Util;
 
 import lombok.Data;
 
+/**
+ * 
+ * @author lixinguo
+ *
+ */
 @Data
 public class WxOpenAuthorizerListResult {
 

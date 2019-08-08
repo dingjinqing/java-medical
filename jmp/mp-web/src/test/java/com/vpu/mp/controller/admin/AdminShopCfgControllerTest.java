@@ -8,6 +8,11 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import com.vpu.mp.service.foundation.data.JsonResult;
 import com.vpu.mp.service.pojo.shop.config.SearchConfig;
 
+/**
+ * 
+ * @author lixinguo
+ *
+ */
 @RunWith(SpringJUnit4ClassRunner.class)
 @TestPropertySource("classpath:test-user.properties")
 public class AdminShopCfgControllerTest extends AdminBaseControllerTest {

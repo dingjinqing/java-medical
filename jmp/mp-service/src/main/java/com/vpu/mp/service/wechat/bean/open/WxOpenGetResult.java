@@ -7,6 +7,11 @@ import lombok.Setter;
 import me.chanjar.weixin.common.util.json.WxGsonBuilder;
 import me.chanjar.weixin.open.bean.result.WxOpenResult;
 
+/**
+ * 
+ * @author lixinguo
+ *
+ */
 @Getter
 @Setter
 public class WxOpenGetResult extends WxOpenResult {

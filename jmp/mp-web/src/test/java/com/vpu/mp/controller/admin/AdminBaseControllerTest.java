@@ -13,6 +13,11 @@ import com.vpu.mp.service.pojo.shop.auth.AdminTokenAuthInfo;
 import com.vpu.mp.service.pojo.shop.auth.ShopLoginParam;
 import com.vpu.mp.service.pojo.shop.auth.ShopReq;
 
+/**
+ * 
+ * @author lixinguo
+ *
+ */
 public class AdminBaseControllerTest extends BaseControllerTest {
 
 	@Value(value = "${admin.main.username}")

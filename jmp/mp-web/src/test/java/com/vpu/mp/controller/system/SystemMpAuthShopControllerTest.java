@@ -11,6 +11,11 @@ import com.vpu.mp.service.foundation.data.JsonResult;
 import com.vpu.mp.service.pojo.saas.shop.mp.MpDeployQueryParam;
 import com.vpu.mp.service.pojo.saas.shop.mp.MpVersionListParam;
 
+/**
+ * 
+ * @author lixinguo
+ *
+ */
 @RunWith(SpringRunner.class)
 @TestPropertySource("classpath:test-user.properties")
 public class SystemMpAuthShopControllerTest extends SystemBaseControllerTest {

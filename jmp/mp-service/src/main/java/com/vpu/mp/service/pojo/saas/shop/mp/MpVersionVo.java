@@ -7,6 +7,11 @@ import java.sql.Timestamp;
 
 import lombok.Data;
 
+/**
+ * 
+ * @author lixinguo
+ *
+ */
 @Data
 public class MpVersionVo {
 	private Integer templateId;

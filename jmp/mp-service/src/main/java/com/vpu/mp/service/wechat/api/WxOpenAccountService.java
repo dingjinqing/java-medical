@@ -8,6 +8,9 @@ import me.chanjar.weixin.open.bean.WxOpenCreateResult;
 import me.chanjar.weixin.open.bean.result.WxOpenResult;
 
 /**
+ * 
+ * @author lixinguo
+ *
  */
 public interface WxOpenAccountService extends WxOpenMaMpHttpBase {
 	/**

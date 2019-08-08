@@ -12,6 +12,11 @@ import com.vpu.mp.service.foundation.data.JsonResult;
 import com.vpu.mp.service.pojo.saas.auth.SystemLoginParam;
 import com.vpu.mp.service.pojo.saas.auth.SystemTokenAuthInfo;
 
+/**
+ * 
+ * @author lixinguo
+ *
+ */
 public class SystemBaseControllerTest extends BaseControllerTest{
 
 	@Value(value = "${system.main.username}")

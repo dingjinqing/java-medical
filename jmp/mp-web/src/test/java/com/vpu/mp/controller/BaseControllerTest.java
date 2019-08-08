@@ -20,6 +20,11 @@ import com.vpu.mp.service.foundation.data.JsonResult;
 import com.vpu.mp.service.foundation.data.JsonResultCode;
 import com.vpu.mp.service.foundation.util.Util;
 
+/**
+ * 
+ * @author lixinguo
+ *
+ */
 public class BaseControllerTest {
 
 	/**

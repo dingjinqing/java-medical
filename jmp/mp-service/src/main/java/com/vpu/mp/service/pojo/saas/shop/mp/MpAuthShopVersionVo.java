@@ -2,6 +2,11 @@ package com.vpu.mp.service.pojo.saas.shop.mp;
 
 import lombok.Data;
 
+/**
+ * 
+ * @author lixinguo
+ *
+ */
 @Data
 public class MpAuthShopVersionVo {
 	private String appId;
