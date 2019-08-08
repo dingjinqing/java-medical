@@ -5,7 +5,6 @@ import com.vpu.mp.service.foundation.service.ShopBaseService;
 import com.vpu.mp.service.shop.image.ImageService;
 import me.chanjar.weixin.common.error.WxErrorException;
 import org.jooq.Record1;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import java.text.SimpleDateFormat;
@@ -23,9 +22,6 @@ import static java.lang.String.format;
 public class QRCodeService extends ShopBaseService {
 
     private final ImageService imageService;
-
-    @Value("http://${domain.image}/")
-    private String imageDomain;
 
     public QRCodeService(ImageService imageService) {
         this.imageService = imageService;
