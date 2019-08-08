@@ -16,9 +16,5 @@ public class MpVersionVo {
 	private Byte delFlag;
 	private Byte currentInUse;
 	private Byte packageVersion;
-	
-	private String source_miniprogram;
-	private String source_miniprogram_appid;
-	private String developer;
 
 }
