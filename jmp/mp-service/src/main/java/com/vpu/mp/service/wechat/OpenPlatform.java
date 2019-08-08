@@ -12,11 +12,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
-import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
-import com.google.gson.reflect.TypeToken;
-import com.vpu.mp.service.foundation.jedis.JedisManager;
-import com.vpu.mp.service.wechat.ma.bean.WxOpenMaCodeTemplatePlus;
 import me.chanjar.weixin.common.error.WxErrorException;
 import me.chanjar.weixin.mp.bean.kefu.WxMpKefuMessage;
 import me.chanjar.weixin.mp.bean.message.WxMpXmlMessage;
@@ -26,17 +22,7 @@ import me.chanjar.weixin.open.api.impl.WxOpenMessageRouter;
 import me.chanjar.weixin.open.api.impl.WxOpenServiceImpl;
 import me.chanjar.weixin.open.bean.WxOpenCreateResult;
 import me.chanjar.weixin.open.bean.message.WxOpenXmlMessage;
-import org.apache.commons.lang3.StringUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.stereotype.Service;
-import me.chanjar.weixin.open.bean.WxOpenMaCodeTemplate;
-import me.chanjar.weixin.open.bean.message.WxOpenXmlMessage;
-import me.chanjar.weixin.open.util.json.WxOpenGsonBuilder;
 
-import java.util.List;
 
 import javax.annotation.PostConstruct;
 
@@ -307,22 +293,4 @@ public class OpenPlatform extends WxOpenServiceImpl {
             + componentAccessToken;
         return post(uriWithComponentAccessToken, param.toString());
     }
-	//获取代码模版库中的所有小程序代码模版
-	public List<WxOpenMaCodeTemplatePlus> getTemplateList() throws WxErrorException {
-		//GET_TEMPLATE_LIST_URL
-		String uri = GET_TEMPLATE_LIST_URL;
-		String componentAccessToken = this.getWxOpenComponentService().getComponentAccessToken(false);
-		String uriWithComponentAccessToken = uri + (uri.contains("?") ? "&" : "?") + "access_token" + "="
-				+ componentAccessToken;
-		String json = get(uriWithComponentAccessToken,null);
-		JsonObject response = JSON_PARSER.parse(StringUtils.defaultString(json, "{}")).getAsJsonObject();
-		boolean hasDraftList = response.has("template_list");
-	    if (hasDraftList) {
-	      return WxOpenGsonBuilder.create().fromJson(response.getAsJsonArray("template_list"),
-	        new TypeToken<List<WxOpenMaCodeTemplatePlus>>() {
-	        }.getType());
-	    } else {
-	      return null;
-	    }
-	}
 }
