@@ -281,6 +281,8 @@ export default {
   text-align: center;
   background: -webkit-linear-gradient(top, #4564e9, #55b0fd);
   background: -moz-linear-gradient(top, #4564e9, #55b0fd);
+  background: -o-linear-gradient(top, #4564e9, #55b0fd);
+  background: -ms-linear-gradient(top, #4564e9, #55b0fd);
   background: linear-gradient(top, #4564e9, #55b0fd);
   line-height: 480px;
 }
@@ -379,6 +381,6 @@ input::-webkit-input-placeholder {
 .login-container /deep/ .el-button {
   padding: 12px 20px;
 }
-/*作用于组件内部的样式，可以全局覆盖，但是要添加页面类名隔离，避免污染全局组件，也可以使用deep修复。因影响到小程序版本页面的组件，所以改了，望同事谅解*/
+/*作用于组件内部的样式，可以全局覆盖，但是要添加页面类名隔离，避免污染全局组件，也可以使用deep修复。因影响到小程序版本页面的组件*/
 </style>
-<!--/*作用于组件内部的样式，可以全局覆盖，但是要添加页面类名隔离，避免污染全局组件，也可以使用deep修复。因影响到小程序版本页面的组件，所以改了，望同事谅解*/-->
+<!--/*作用于组件内部的样式，可以全局覆盖，但是要添加页面类名隔离，避免污染全局组件，也可以使用deep修复。因影响到小程序版本页面的组件*/-->
