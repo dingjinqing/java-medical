@@ -21,7 +21,7 @@ public class AdminTestController extends AdminBaseController {
 	
 	@RequestMapping(value = "/admin/test")
 	public JsonResult test() throws Exception {
-		WxOpenAuthorizerListResult result = open.getComponentExtService().getAuthorizerList("wx85400b70274e9929",0,10);
-		return success(result);
+//		WxOpenAuthorizerListResult result = open.getComponentExtService().getAuthorizerList("wx85400b70274e9929",0,10);
+		return success();
 	}
 }
