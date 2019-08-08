@@ -5,7 +5,7 @@ import java.util.Arrays;
 import java.util.List;
 
 public class tets {
-	public List specialParam(List<String> goodsManage, List<String> userList) {
+	public List<String> specialParam(List<String> goodsManage, List<String> userList) {
 		// 门店管理 store_list
 		if (isInner(goodsManage, "store_list")) {
 			System.out.println("进来");
@@ -38,9 +38,9 @@ public class tets {
 	public static void main(String[] args) {
 		tets test = new tets();
 		List<String> goodsManage1 = Arrays.asList("store_list","store_verify","add_store1","group_manage","store_service_config");
-		List<String> goodsManage=new ArrayList(goodsManage1);
+		List<String> goodsManage=new ArrayList<>(goodsManage1);
 		List<String> userList = Arrays.asList("store_list","add_store");
-		List specialParam = test.specialParam(goodsManage, userList);
+		List<String> specialParam = test.specialParam(goodsManage, userList);
 		for(Object s:specialParam) {
 			System.out.println(s);
 		}
