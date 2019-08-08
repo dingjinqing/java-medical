@@ -19,7 +19,9 @@ public class WxOpenAuthorizerListResult implements Serializable {
 	@SerializedName("list")
 	private List<WxMpAppInfo> list = new ArrayList<>();
 
-	static final class WxMpAppInfo {
+	static final class WxMpAppInfo implements Serializable{
+		private static final long serialVersionUID = -726195037493295418L;
+
 		@SerializedName("authorizer_appid")
 		private String authorizerAppId;
 
