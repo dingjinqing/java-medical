@@ -299,7 +299,7 @@ public class CouponGiveService extends ShopBaseService implements BaseRabbitHand
 			/* 购买商品均价大于N元 min */
 			List<Record1<Integer>> minAvePriceUserIds = db().select(ORDER_INFO.USER_ID).from(ORDER_INFO)
 					.where(ORDER_INFO.ORDER_STATUS.greaterOrEqual((byte) 2)).groupBy(ORDER_INFO.USER_ID)
-					.having(DSL.avg(ORDER_INFO.ORDER_AMOUNT).greaterThan(param.getMinAvePrice())).fetch();
+					.having((DSL.sum(ORDER_INFO.ORDER_AMOUNT).divide(DSL.sum(ORDER_INFO.GOODS_AMOUNT))).greaterThan(param.getMinAvePrice())).fetch();
 			for (Record1<Integer> minAvePriceUserId : minAvePriceUserIds) {
 				if (param.getCouponGiveGrantInfoParams().getCustomBox().equals(1)
 						&& !userIds.contains(minAvePriceUserId.value1())) {
@@ -310,7 +310,7 @@ public class CouponGiveService extends ShopBaseService implements BaseRabbitHand
 
 			List<Record1<Integer>> maxAvePriceUserIds = db().select(ORDER_INFO.USER_ID).from(ORDER_INFO)
 					.where(ORDER_INFO.ORDER_STATUS.greaterOrEqual((byte) 2)).groupBy(ORDER_INFO.USER_ID)
-					.having(DSL.avg(ORDER_INFO.ORDER_AMOUNT).lessThan(param.getMaxAvePrice())).fetch();
+					.having((DSL.sum(ORDER_INFO.ORDER_AMOUNT).divide(DSL.sum(ORDER_INFO.GOODS_AMOUNT))).lessThan(param.getMaxAvePrice())).fetch();
 			for (Record1<Integer> maxAvePriceUserId : maxAvePriceUserIds) {
 				if (param.getCouponGiveGrantInfoParams().getCustomBox().equals(1)
 						&& !userIds.contains(maxAvePriceUserId.value1())) {
