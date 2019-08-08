@@ -20,7 +20,14 @@ public class WxAppBaseController  extends BaseController {
 	@Autowired
 	protected WxAppAuth wxAppAuth;
 	
-
+	/**
+	 * 小程序前端语言，是由店铺控制的，需要在店铺读取 
+	 */
+	protected String getLang() {
+		// TODO:待实现
+		return null;
+	}
+	
 	/**
 	 * 得到当前小程序店铺
 	 * @return
@@ -34,7 +41,7 @@ public class WxAppBaseController  extends BaseController {
 	 * @return
 	 */
 	protected Integer shopId() {
-		String shopId = this.request.getHeader("V-ShopId");
+		String shopId = this.request.getParameter("shop_id");
 		return Util.getInteger(shopId);
 	}
 	
