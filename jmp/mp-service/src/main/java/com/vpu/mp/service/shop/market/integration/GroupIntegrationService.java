@@ -107,7 +107,7 @@ public class GroupIntegrationService extends ShopBaseService {
 	 * @return
 	 */
 	public int insertDefine(GroupIntegrationDefineParam param) {
-		Double paramN = calculateParamN(param.getInteGroup(),param.getLimitAmount());
+		Double paramNum = calculateParamNum(param.getInteGroup(),param.getLimitAmount());
 		
 		GroupIntegrationDefineRecord record = new GroupIntegrationDefineRecord();
 		record.setId(param.getId());
@@ -125,7 +125,7 @@ public class GroupIntegrationService extends ShopBaseService {
 		record.setInteRemain(param.getInteTotal());
 		record.setIsDayDivide(param.getIsDayDivide());
 		record.setIsContinue(GroupIntegrationDefineEnums.IsContinue.TRUE.value());
-		record.setParamN(paramN);
+		record.setParamN(paramNum);
 		record.setAdvertise(param.getAdvertise());
 		db().executeInsert(record);
 		return 0;
@@ -218,13 +218,13 @@ public class GroupIntegrationService extends ShopBaseService {
 	 * @param limitAmount    成团人数
 	 * @return
 	 */
-	private Double calculateParamN(Integer inteGroup, double limitAmount) {
+	private Double calculateParamNum(Integer inteGroup, double limitAmount) {
 		NumberFormat nf = NumberFormat.getNumberInstance();
 		nf.setMaximumFractionDigits(2);
 		nf.setRoundingMode(RoundingMode.HALF_UP);
 		double temp = Math.pow(inteGroup,1/limitAmount );
-		String formatParamN = nf.format(temp);
-		return Double.parseDouble(formatParamN);
+		String formatParamNum = nf.format(temp);
+		return Double.parseDouble(formatParamNum);
 	}
 
 	/**
@@ -314,6 +314,7 @@ public class GroupIntegrationService extends ShopBaseService {
 				step.and(GROUP_INTEGRATION_DEFINE.START_TIME.le(Timestamp.valueOf(LocalDateTime.now())))
 					.and(GROUP_INTEGRATION_DEFINE.END_TIME.ge(Timestamp.valueOf(LocalDateTime.now())));
 				break;
+			default :break;
 		}
 		return step;
 	}

@@ -18,9 +18,6 @@ public class CouponPackOrderRefundParam {
 	/** 用户ID*/
 	private Integer userId;
 	
-//	/** 优惠劵包ID */
-//	private Integer couponPackId;
-//	
 	/** 会员卡号 */
 	private String cardNo;
 	
