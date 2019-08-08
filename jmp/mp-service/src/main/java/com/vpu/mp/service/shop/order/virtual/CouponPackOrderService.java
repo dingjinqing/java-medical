@@ -1,4 +1,4 @@
-package com.vpu.mp.service.shop.order.card;
+package com.vpu.mp.service.shop.order.virtual;
 
 import static com.vpu.mp.db.shop.tables.CardOrder.CARD_ORDER;
 import static com.vpu.mp.db.shop.tables.CouponPack.COUPON_PACK;
