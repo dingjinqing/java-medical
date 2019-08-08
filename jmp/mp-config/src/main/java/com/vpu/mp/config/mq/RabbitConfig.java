@@ -26,7 +26,6 @@ import org.springframework.context.annotation.Lazy;
  *
 */
 @Configuration
-@ConditionalOnProperty(prefix="schedule",name = "switch", havingValue = "on")
 public class RabbitConfig {
 
     @Value("${rabbitmq.host}")
