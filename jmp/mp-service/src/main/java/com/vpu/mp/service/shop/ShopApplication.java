@@ -39,7 +39,7 @@ import com.vpu.mp.service.shop.order.OrderOperateQueryService;
 import com.vpu.mp.service.shop.order.OrderReadService;
 import com.vpu.mp.service.shop.order.OrderWriteService;
 import com.vpu.mp.service.shop.order.action.base.OrderOperateFactory;
-import com.vpu.mp.service.shop.order.card.CouponPackOrderService;
+import com.vpu.mp.service.shop.order.virtual.CouponPackOrderService;
 import com.vpu.mp.service.shop.overview.*;
 import com.vpu.mp.service.shop.qrcode.QRCodeService;
 import com.vpu.mp.service.shop.store.store.StoreService;
