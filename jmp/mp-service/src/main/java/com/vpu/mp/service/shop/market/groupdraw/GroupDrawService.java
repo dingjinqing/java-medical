@@ -1,6 +1,7 @@
 package com.vpu.mp.service.shop.market.groupdraw;
 
 import com.vpu.mp.db.shop.tables.records.GroupDrawRecord;
+import com.vpu.mp.db.shop.tables.records.JoinGroupListRecord;
 import com.vpu.mp.service.foundation.service.ShopBaseService;
 import com.vpu.mp.service.foundation.util.PageResult;
 import com.vpu.mp.service.pojo.shop.image.QrCodeTypeConstant;
@@ -17,8 +18,7 @@ import java.math.BigDecimal;
 import java.sql.Date;
 import java.sql.Timestamp;
 import java.time.LocalDate;
-import java.util.Arrays;
-import java.util.List;
+import java.util.*;
 import java.util.stream.Collectors;
 
 import static com.vpu.mp.db.shop.tables.GroupDraw.GROUP_DRAW;
@@ -35,6 +35,15 @@ import static org.apache.commons.lang3.StringUtils.isNotEmpty;
 @Service
 @Slf4j
 public class GroupDrawService extends ShopBaseService {
+
+    /** 已成团 **/
+    private static final byte GROUPED = 1;
+    /** 未成团 **/
+    private static final byte NOT_GROUPED = 2;
+    /** 已开奖 **/
+    private static final byte DRAWED = 1;
+    /** 已中奖 **/
+    private static final byte WIN_DRAW = 1;
 
     /** 启用 **/
     private static final byte GROUP_DRAW_ENABLED = 1;
@@ -69,14 +78,87 @@ public class GroupDrawService extends ShopBaseService {
     public void disableGroupDraw(Integer id) {
         shopDb().update(GROUP_DRAW).set(GROUP_DRAW.STATUS, GROUP_DRAW_DISABLED)
             .where(GROUP_DRAW.ID.eq(id)).execute();
+        settleGroupDraw(id);
     }
 
     /**
-     * 拼团结算
+     * 拼团活动结算
+     *
      * @param groupDrawId 活动id
      */
-    public void settleOrders(Integer groupDrawId) {
-        
+    private void settleGroupDraw(Integer groupDrawId) {
+        // 活动
+        GroupDrawRecord groupDraw = shopDb().selectFrom(GROUP_DRAW).where(GROUP_DRAW.ID.eq(groupDrawId)).fetchAny();
+        if (null == groupDraw) {
+            throw new IllegalArgumentException("Invalid group draw id: " + groupDrawId);
+        }
+        // 最小成团人数
+        Short openLimit = groupDraw.get(GROUP_DRAW.OPEN_LIMIT);
+        // 优惠券
+        List<Integer> coupOnIds = stringToList(groupDraw.getRewardCouponId());
+        // 参与记录
+        List<JoinGroupListRecord> joins = shopDb().select(JOIN_GROUP_LIST.USER_ID, JOIN_GROUP_LIST.GROUP_ID, JOIN_GROUP_LIST.ORDER_SN)
+            .from(JOIN_GROUP_LIST).where(JOIN_GROUP_LIST.GROUP_DRAW_ID.eq(groupDrawId)).fetch().into(JoinGroupListRecord.class);
+        // 临时团
+        Map<Integer, List<JoinGroupListRecord>> groups =
+            joins.stream().collect(Collectors.groupingBy(JoinGroupListRecord::getGroupId));
+        // 涉及到的团
+        List<Integer> groupIds = joins.stream().map(JoinGroupListRecord::getGroupId).distinct().collect(Collectors.toList());
+        // 被邀请用户
+        List<JoinGroupListRecord> invitedJoin = joins.stream().filter(join -> null != join.getInviteUserId()).collect(Collectors.toList());
+        // 每个用户邀请的人数
+        Map<Integer, Long> userInviteCounts =
+            invitedJoin.stream().collect(Collectors.groupingBy(JoinGroupListRecord::getInviteUserId, Collectors.counting()));
+        LinkedList<String> winDrawnOrderSns = new LinkedList<>();
+        LinkedList<String> failDrawOrderSns = new LinkedList<>();
+        LinkedList<Integer> openGroupIds = new LinkedList<>();
+        LinkedList<Integer> failOpenGroupIds = new LinkedList<>();
+        groups.forEach((groupId, records) -> {
+            if (openLimit <= records.size()) {
+                // 成团，团内用户抽奖
+                int size = records.size();
+                int winIndex = new Random().nextInt(size);
+                String winOrderSn = records.get(winIndex).getOrderSn();
+                winDrawnOrderSns.add(winOrderSn);
+                for (int i = 0; i < records.size(); i++) {
+                    if (winIndex != i) {
+                        JoinGroupListRecord failRecord = records.get(i);
+                        String failOrderSn = failRecord.getOrderSn();
+                        failDrawOrderSns.add(failOrderSn);
+                    }
+                }
+                openGroupIds.add(groupId);
+            } else {
+                // 未达到成团条件，全部退款、送券
+                records.forEach(record -> failDrawOrderSns.add(record.getOrderSn()));
+                failOpenGroupIds.add(groupId);
+            }
+        });
+        // 中奖订单更新状态
+        winDrawnOrderSns.forEach(orderSn -> {
+            // todo 更新状态
+        });
+        // 未中奖订单退款、通知
+        failDrawOrderSns.forEach(orderSn -> {
+            // todo 退款、通知
+        });
+        // 送券
+        if (!coupOnIds.isEmpty()) {
+            // todo 送券
+        }
+        // 更新中奖用户
+        shopDb().update(JOIN_GROUP_LIST).set(JOIN_GROUP_LIST.IS_WIN_DRAW, WIN_DRAW)
+            .where(JOIN_GROUP_LIST.GROUP_DRAW_ID.eq(groupDrawId)).and(JOIN_GROUP_LIST.GROUP_ID.in(groupIds)
+            .and(JOIN_GROUP_LIST.ORDER_SN.in(winDrawnOrderSns))).execute();
+        // 已成团
+        shopDb().update(JOIN_GROUP_LIST).set(JOIN_GROUP_LIST.STATUS, GROUPED).set(JOIN_GROUP_LIST.END_TIME,
+            currentTimeStamp()).set(JOIN_GROUP_LIST.DRAW_STATUS, DRAWED).where(JOIN_GROUP_LIST.GROUP_ID.in(openGroupIds)).execute();
+        // 未成团
+        shopDb().update(JOIN_GROUP_LIST).set(JOIN_GROUP_LIST.STATUS, NOT_GROUPED).set(JOIN_GROUP_LIST.END_TIME,
+            currentTimeStamp()).set(JOIN_GROUP_LIST.DRAW_STATUS, DRAWED).where(JOIN_GROUP_LIST.GROUP_ID.in(failOpenGroupIds)).execute();
+        // 更新邀请人数
+        userInviteCounts.forEach((inviteUserId, count) -> shopDb().update(JOIN_GROUP_LIST)
+            .set(JOIN_GROUP_LIST.INVITE_USER_NUM, count.intValue()).execute());
     }
 
     /**
