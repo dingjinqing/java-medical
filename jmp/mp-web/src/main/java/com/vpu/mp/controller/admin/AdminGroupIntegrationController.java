@@ -17,6 +17,7 @@ import com.vpu.mp.service.pojo.shop.market.integration.GroupIntegrationDefinePar
 import com.vpu.mp.service.pojo.shop.market.integration.GroupIntegrationDefineVo;
 import com.vpu.mp.service.pojo.shop.market.integration.GroupIntegrationListDetailParam;
 import com.vpu.mp.service.pojo.shop.market.integration.GroupIntegrationListParticipationVo;
+import com.vpu.mp.service.pojo.shop.market.integration.GroupIntegrationShareQRCodeVo;
 import com.vpu.mp.service.pojo.shop.market.integration.GroupIntegrationSuccessParam;
 import com.vpu.mp.service.pojo.shop.market.integration.GroupIntegrationSuccessVo;
 
@@ -116,5 +117,19 @@ public class AdminGroupIntegrationController extends AdminBaseController {
 		PageResult<GroupIntegrationSuccessVo> result = shop().groupIntegration.groupIntegrationList.getSuccessPageList(param);
 		return success(result);
 	}
+	/**
+	 * 获取分享活动的小程序码
+	 * @param actId
+	 * @return
+	 */
+	@PostMapping("/getqrcode/{actId}")
+	public JsonResult getQrcode(@PathVariable Integer actId) {
+		GroupIntegrationShareQRCodeVo maQRCode = shop().groupIntegration.getMaQRCode(actId);
+		if(maQRCode != null) {
+			return success(maQRCode);
+		}
+		return fail();
+	}
+	
 }
 

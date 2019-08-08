@@ -23,10 +23,13 @@ import com.vpu.mp.db.shop.tables.records.GroupIntegrationListRecord;
 import com.vpu.mp.service.foundation.data.DelFlag;
 import com.vpu.mp.service.foundation.service.ShopBaseService;
 import com.vpu.mp.service.foundation.util.PageResult;
+import com.vpu.mp.service.pojo.shop.image.QrCodeTypeConstant;
 import com.vpu.mp.service.pojo.shop.market.integration.GroupIntegrationDefineEnums;
 import com.vpu.mp.service.pojo.shop.market.integration.GroupIntegrationDefinePageParam;
 import com.vpu.mp.service.pojo.shop.market.integration.GroupIntegrationDefineParam;
 import com.vpu.mp.service.pojo.shop.market.integration.GroupIntegrationDefineVo;
+import com.vpu.mp.service.pojo.shop.market.integration.GroupIntegrationShareQRCodeVo;
+import com.vpu.mp.service.shop.qrcode.QRCodeService;
 
 import lombok.Data;
 
@@ -40,6 +43,9 @@ import lombok.Data;
 public class GroupIntegrationService extends ShopBaseService {
 	
 	@Autowired public GroupIntegrationListService groupIntegrationList;
+    @Autowired public QRCodeService qrCode;
+    
+    public static final String GROUP_INTEGRATION_SHARE_PATH = "pages/pinintegration/pinintegration";
 	
 	/**
 	 * 分页查询瓜分积分活动列表
@@ -144,6 +150,7 @@ public class GroupIntegrationService extends ShopBaseService {
 			.execute();
 		return execute;
 	}
+	
 	/**
 	 * 更新指定ID的瓜分积分活动
 	 * @param param
@@ -166,6 +173,24 @@ public class GroupIntegrationService extends ShopBaseService {
 			.execute();
 		return execute;	
 	}
+	/**
+	 * 获取分享的小程序码url
+	 * @param actId
+	 * @return
+	 */
+	public GroupIntegrationShareQRCodeVo getMaQRCode(Integer actId) {
+		GroupIntegrationDefineRecord record = selectDefineById(actId);
+		GroupIntegrationShareQRCodeVo qrCodeVo = null;
+		if(record != null) {
+			String pageUrl = GROUP_INTEGRATION_SHARE_PATH+"?pinInte_id="+actId+"&invite_user=&group_id=";
+			String imgUrl = qrCode.getMpQRCode(pageUrl, QrCodeTypeConstant.QR_CODE_TYPE_GROUP_INTEGRATION, actId);
+			qrCodeVo = new GroupIntegrationShareQRCodeVo();
+			qrCodeVo.setImgUrl(imgUrl);
+			qrCodeVo.setPageUrl(pageUrl);
+		}
+		return qrCodeVo;
+	}
+	
 	/**
 	 * 更新指定ID的瓜分积分活动
 	 * @param param
