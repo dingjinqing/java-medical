@@ -4042,7 +4042,7 @@ create table `b2c_coupon_pack` (
   primary key (`id`)
 );
 
-=======
+
 set foreign_key_checks = false;
 
 -- -- 用户
