@@ -42,7 +42,7 @@ public class AdminFormStatisticsController extends AdminBaseController {
      *
      * @param param 表单信息入参
      */
-    @PostMapping("/api/admin/formstatistics/addforminfo")
+    @PostMapping("/api/admin/formstatistics/updateforminfo")
     public JsonResult updateFormInfo(@RequestBody @Validated FormUAParam param) {
         shop().formService.updateFormInfo(param);
         return success();
