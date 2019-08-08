@@ -1,6 +1,7 @@
 <template>
   <div class="experience-version">
     <div class="select-menu top">
+      <div>{{this.$store.state.userName}}</div>
       <el-select
         v-model="mainData.state"
         placeholder="选择审核状态"
@@ -86,7 +87,7 @@
           <span style="margin-left: 10px">{{ scope.row.shopNumber }}</span>
           <i
             class="el-icon-circle-plus-outline"
-            @click="jump()"
+            @click="jumptoNewShop(scope.row.userName)"
             style="cursor: pointer"
           ></i>
         </template>
@@ -151,6 +152,7 @@
 
 <script>
 import { searchAccountRequest } from '@/api/system/accountList.js'
+
 export default {
   name: 'experienceVersion',
   data () {
@@ -205,12 +207,19 @@ export default {
       this.searchAccount()
     },
 
-    jump () {
-      console.log(111)
+    jumptoNewShop (userName) {
+      console.log(this.userName)
+      this.$router.push({
+        name: 'shopList',
+        params: {
+          name: userName,
+          flag: true
+        }
+      })
+      // bus.$emit('revice', userName)
     },
     handleEditAccount () {
       this.name = 'third'
-      console.log(this.name)
       this.$emit('send', this.name)
     },
     // 审核状态的四种数字转化为文字

@@ -13,10 +13,11 @@
         @mouseleave="header_nav_leave(index)"
         class="wrapper"
       >
-        <img :src="item.img" alt="">
-        <span
-          :class="nav_index==index||click_nav_index==index?'active_bg':''"
-        >{{item.title}}</span>
+        <img
+          :src="item.img"
+          alt=""
+        >
+        <span :class="nav_index==index||click_nav_index==index?'active_bg':''">{{item.title}}</span>
       </div>
     </div>
 
@@ -72,7 +73,7 @@ export default {
       ],
       log_menu_show: false,
       // hiddle_menu_list: [this.$t('shopData.set'), this.$t('shopData.administration_J'), this.$t('shopData.public'), this.$t('shopData.choice'), this.$t('shopData.loginOut')],
-      hiddle_menu_list: [ '密码修改', '子账号管理', '退出' ],
+      hiddle_menu_list: ['密码修改', '子账号管理', '退出'],
       changeColorIndex: '',
       username: '',
       menu_width: '',

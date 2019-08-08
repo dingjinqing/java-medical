@@ -10,11 +10,16 @@
         label-position="left"
       >
         <el-form-item label="所属账号">
-          <el-input
+          <!-- <el-input
             v-model="Data.sysId"
             key="1"
             size="small"
-          ></el-input>
+            v-if="flag"
+          ></el-input> -->
+          <span
+            v-if="!flag"
+            style="color:#333"
+          >{{this.$route.params.name}}</span>
         </el-form-item>
         <el-form-item label="数据库">
           <el-select
@@ -225,6 +230,8 @@ export default {
         dbConfigId: '',
         endTime: ''
       },
+      name: '',
+      flag: '',
       pickerOptions: {
         shortcuts: [{
           text: '今天',
@@ -249,6 +256,13 @@ export default {
       }
     }
   },
+  // mounted () {
+  //   console.log(this.$route.params)
+  //   if (this.$route.params.flag === true) {
+  //     let name = this.$route.params.name
+  //     console.log(name)
+  //   }
+  // },
   methods: {
     // 添加商家账户
     save () {
@@ -258,7 +272,7 @@ export default {
         'shopType': 'v4',
         'shopName': 'json测试3'
       }
-      newShopRequest(params).then(res => console.log(res)).catch(err => console.log(err))
+      newShopRequest(params).then(res => console.log(res + '1111')).catch(err => console.log(err + '8888'))
       //   let obj = {
       //     'sysId': '2',
       //     'mobile': '18722222233',

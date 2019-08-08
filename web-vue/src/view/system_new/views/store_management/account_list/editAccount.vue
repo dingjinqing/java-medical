@@ -6,14 +6,13 @@
         :model="formData"
         label-width="100px"
         @submit.prevent="onSubmit"
-        style="margin:20px 0px 0px 50px;width:20%;min-width:200px;"
+        style="margin:0px 0px 0px 50px;width:20%;min-width:200px;"
         label-position="left"
         :rules="rules"
       >
         <el-form-item label="用户名">
           <el-input
             v-model="formData.userName"
-            class="inputHeight"
             key="1"
             size="small"
           ></el-input>
@@ -23,14 +22,12 @@
             v-model="formData.password"
             type="password"
             key="2"
-            class="inputHeight"
             size="small"
           ></el-input>
         </el-form-item>
         <el-form-item label="昵称">
           <el-input
             v-model="formData.accountName"
-            class="inputHeight"
             size="small"
           ></el-input>
         </el-form-item>
@@ -38,7 +35,6 @@
           <el-select
             v-model="formData.state"
             placeholder="请选择状态"
-            class="inputHeight"
             size="small"
           >
             <el-option
@@ -62,7 +58,6 @@
         <el-form-item label="最大SKU数量">
           <el-input
             v-model="formData.maxSkuNum"
-            class="inputHeight"
             label='1000'
             size="small"
           ></el-input>
@@ -70,7 +65,6 @@
         <el-form-item label="最大店铺数量">
           <el-input
             v-model="formData.maxShopNum"
-            class="inputHeight"
             label='100'
             size="small"
           ></el-input>
@@ -79,7 +73,6 @@
           <div class="block">
             <el-date-picker
               size="small"
-              class="inputHeight"
               v-model="formData.buyTime"
               type="datetime"
               placeholder="选择日期时间"
@@ -91,7 +84,6 @@
           <div class="block">
             <el-date-picker
               size="small"
-              class="inputHeight"
               v-model="formData.endTime"
               type="datetime"
               placeholder="选择日期时间"
@@ -102,29 +94,24 @@
         <el-form-item label="手机号">
           <el-input
             v-model="formData.mobile"
-            class="inputHeight"
             size="small"
           ></el-input>
         </el-form-item>
         <el-form-item label="公司名称">
           <el-input
             v-model="formData.company"
-            class="inputHeight"
             size="small"
           ></el-input>
         </el-form-item>
         <el-form-item label="销售员">
           <el-input
             v-model="formData.salesperson"
-            class="inputHeight"
             size="small"
           ></el-input>
         </el-form-item>
         <el-form-item label="地理位置">
-          <div style="display: flex; width: 800px;">
+          <div style="display: flex; width: 800px">
             <v-distpicker
-              style="height:30px"
-              class="inputHeight"
               :province="formData.provinceCode"
               :city="formData.cityCode"
               :area="formData.districtCode"
@@ -134,7 +121,6 @@
         <el-form-item label="详细地址">
           <el-input
             v-model="formData.address"
-            class="inputHeight"
             size="small"
           ></el-input>
         </el-form-item>
@@ -283,7 +269,33 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-.form {
-  margin: 20px 0px 0px 50px;
+.experience-version {
+  background: #fff;
+  .infoWrapper {
+    padding-bottom: 30px;
+    .el-form-item:first-child {
+      padding-top: 20px;
+    }
+    .el-form-item {
+      margin-bottom: 10px;
+    }
+    .el-input {
+      width: 150px;
+    }
+    .el-select {
+      width: 150px;
+    }
+    .el-button--small {
+      width: 52px;
+      height: 26px;
+      padding: 7px 14px;
+    }
+    /deep/ .distpicker-address-wrapper select {
+      padding: 0;
+      font-size: 14px;
+      width: 150px;
+      height: 30px;
+    }
+  }
 }
 </style>

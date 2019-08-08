@@ -19,6 +19,7 @@ const getters = {
   activeFlag: state => state.util.activeFlag,
   cropperFlag: state => state.util.cropperFlag,
   activeFresh: state => state.util.activeFresh
+  // getUserName: state => state.getUserName
 }
 
 export default getters

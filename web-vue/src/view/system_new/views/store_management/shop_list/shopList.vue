@@ -19,6 +19,8 @@
     <el-tab-pane
       label="店铺添加"
       name="third"
+      v-if="isShowShopList"
+      @getUserName="revice()"
     >
       <newShop />
     </el-tab-pane>
@@ -29,6 +31,7 @@
 import experienceVersion from './experienceVersion.vue'
 import payVersion from './payVersion'
 import newShop from './newShop'
+
 export default {
   name: 'shopList',
   components: {
@@ -38,8 +41,54 @@ export default {
   },
   data () {
     return {
-      tabActive: 'first'
+      tabActive: 'first',
+      isShowShopList: false
     }
+  },
+  created () {
+    // console.log(this.$route)
+    if (this.$route) {
+      this.tabActive = 'third'
+      this.isShowShopList = true
+    }
+  },
+  beforeRouteEnter: (to, from, next) => {
+    // if (this.$route.path === `/system/store_management/account_list`) {
+    next(vm => {
+      alert(vm.name)
+    })
+    // }
+  },
+
+  // mounted () {
+  //   console.log(this.$route.params)
+  //   if (this.$route.params.flag === true) {
+  //     this.tabActive = 'third'
+  //     this.isShowShopList = true
+  //   }
+  // },
+  // created () {
+  //   console.log(this.$route.params.name)
+  //   if (this.$route.params.flag === true) {
+  //     console.log(111)
+  //     this.tabActive = 'third'
+  //     this.isShowEditAccount = true
+  //   }
+  // },
+  methods: {
+    getUserName () {
+      console.log(this.$route.params.name)
+      if (this.$route.params.name) {
+        this.isShowEditAccount = true
+        this.tabActive = 'third'
+      }
+      // bus.$on('revice', data => {
+      //   console.log(data)
+      // })
+    }
+  },
+  watch: {
+    '$route': 'revice'
   }
 }
 </script>

@@ -44,9 +44,7 @@ export default {
     }
   },
   methods: {
-
     send (val) {
-      console.log(val)
       if (val === 'third') {
         this.isShowEditAccount = true
         this.tabActive = 'third'
