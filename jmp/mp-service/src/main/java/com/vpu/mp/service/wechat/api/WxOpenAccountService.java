@@ -9,7 +9,7 @@ import me.chanjar.weixin.open.bean.result.WxOpenResult;
 
 /**
  */
-public interface WxOpenAccountService {
+public interface WxOpenAccountService extends WxOpenHttpBase {
 	/**
 	 * 开放平台帐号相关
 	 */
@@ -17,25 +17,7 @@ public interface WxOpenAccountService {
 	static final String CREATE_OPEN_GET_URL = "https://api.weixin.qq.com/cgi-bin/open/get";
 	static final String BIND_OPEN_PLATFORM = "https://api.weixin.qq.com/cgi-bin/open/bind";
 	static final String UNBIND_OPEN_PLATFORM = "https://api.weixin.qq.com/cgi-bin/open/unbind";
-
-	/**
-	 * post请求
-	 * 
-	 * @param url
-	 * @param data
-	 * @return
-	 */
-	String post(String appId, String url, String data) throws WxErrorException;
-
-	/**
-	 * get请求
-	 * 
-	 * @param url
-	 * @param data
-	 * @param queryParam
-	 * @return
-	 */
-	String get(String appId, String url,String queryParam) throws WxErrorException;
+	
 
 	/**
 	 * 获取公众号/小程序所绑定的开放平台帐号
