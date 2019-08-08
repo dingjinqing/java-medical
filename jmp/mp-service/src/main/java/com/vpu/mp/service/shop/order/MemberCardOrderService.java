@@ -1,37 +1,31 @@
 package com.vpu.mp.service.shop.order;
 
-import static com.vpu.mp.db.shop.tables.CardOrder.CARD_ORDER;
-import static com.vpu.mp.db.shop.tables.MemberCard.MEMBER_CARD;
-import static com.vpu.mp.db.shop.tables.PaymentRecord.PAYMENT_RECORD;
-import static com.vpu.mp.db.shop.tables.RefundCardRecord.REFUND_CARD_RECORD;
-import static com.vpu.mp.db.shop.tables.User.USER;
-import static com.vpu.mp.db.shop.tables.UserCard.USER_CARD;
-import static com.vpu.mp.service.foundation.data.JsonResultMessage.INVALID_ACCOUNT_OR_SCORE;
-import static com.vpu.mp.service.foundation.data.JsonResultMessage.INVALID_MONEY_AMOUNT;
-import static com.vpu.mp.service.foundation.data.JsonResultMessage.INVALID_REFUND_AMOUNT;
-import static com.vpu.mp.service.foundation.data.JsonResultMessage.REFUND_ACCOUNT_LARGER_THAN_ACCOUNT_PAID;
-import static com.vpu.mp.service.foundation.data.JsonResultMessage.REFUND_SCORE_LARGER_THAN_SCORE_PAID;
-import static com.vpu.mp.service.pojo.shop.order.virtual.MemberCardParam.SUCCESS;
-import static java.lang.String.format;
-import static org.apache.commons.lang3.StringUtils.isNotEmpty;
-
-import java.math.BigDecimal;
-import java.sql.Timestamp;
-import java.util.Arrays;
-
-import org.jooq.Record10;
-import org.jooq.Record16;
-import org.jooq.SelectOnConditionStep;
-import org.springframework.stereotype.Service;
-
 import com.vpu.mp.db.shop.tables.records.PaymentRecordRecord;
 import com.vpu.mp.service.foundation.service.ShopBaseService;
 import com.vpu.mp.service.foundation.util.PageResult;
 import com.vpu.mp.service.pojo.shop.order.virtual.MemberCardParam;
 import com.vpu.mp.service.pojo.shop.order.virtual.MemberCardRefundParam;
 import com.vpu.mp.service.pojo.shop.order.virtual.MemberCardVo;
-
 import lombok.extern.slf4j.Slf4j;
+import org.jooq.Record10;
+import org.jooq.Record16;
+import org.jooq.SelectOnConditionStep;
+import org.springframework.stereotype.Service;
+
+import java.math.BigDecimal;
+import java.sql.Timestamp;
+import java.util.Arrays;
+
+import static com.vpu.mp.db.shop.tables.CardOrder.CARD_ORDER;
+import static com.vpu.mp.db.shop.tables.MemberCard.MEMBER_CARD;
+import static com.vpu.mp.db.shop.tables.PaymentRecord.PAYMENT_RECORD;
+import static com.vpu.mp.db.shop.tables.RefundCardRecord.REFUND_CARD_RECORD;
+import static com.vpu.mp.db.shop.tables.User.USER;
+import static com.vpu.mp.db.shop.tables.UserCard.USER_CARD;
+import static com.vpu.mp.service.foundation.data.JsonResultMessage.*;
+import static com.vpu.mp.service.pojo.shop.order.virtual.MemberCardParam.SUCCESS;
+import static java.lang.String.format;
+import static org.apache.commons.lang3.StringUtils.isNotEmpty;
 
 /**
  * 虚拟商品订单 - 会员卡
@@ -216,7 +210,7 @@ public class MemberCardOrderService extends ShopBaseService {
             throw new IllegalArgumentException("Unknown order sn: " + orderSn);
         }
         log.info("WxPay refund -> orderSn: {}, amount: {}", orderSn, money);
-        // todo 微信支付退款 API ...
+        // todo 退款 微信支付退款 API ...
     }
 
     /**
