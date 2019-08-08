@@ -279,11 +279,11 @@ export default {
   width: 43%;
   height: 100%;
   text-align: center;
-  background: -webkit-linear-gradient(top, #4564e9, #55b0fd);
-  background: -moz-linear-gradient(top, #4564e9, #55b0fd);
-  background: -o-linear-gradient(top, #4564e9, #55b0fd);
-  background: -ms-linear-gradient(top, #4564e9, #55b0fd);
-  background: linear-gradient(top, #4564e9, #55b0fd);
+  background: -webkit-linear-gradient(top, #4564e9, #55b0fd) !important;
+  background: -moz-linear-gradient(top, #4564e9, #55b0fd) !important;
+  background: -o-linear-gradient(top, #4564e9, #55b0fd) !important;
+  background: -ms-linear-gradient(top, #4564e9, #55b0fd) !important;
+  background: linear-gradient(top, #4564e9, #55b0fd) !important;
   line-height: 480px;
 }
 
