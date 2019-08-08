@@ -98,7 +98,7 @@ public class WxOpenComponentExtServiceImpl implements WxOpenComponentHttpBase,Wx
 	}
 
 	@Override
-	public String get(String appId, String url, String accessTokenKey) throws WxErrorException {
+	public String get(String url, String accessTokenKey) throws WxErrorException {
 		return request(METHOD_GET, url, null,accessTokenKey);
 	}
 
