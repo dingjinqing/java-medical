@@ -544,7 +544,7 @@ create table `b2c_coupon_pack_voucher` (
   index `act_id` (`act_id`)
 ) ENGINE = INNODB AUTO_INCREMENT = 39 DEFAULT CHARSET = utf8mb4 COLLATE = utf8mb4_unicode_ci;
 
-=======
+
 -- -- 李晓冰 b2c_goods_brand 将记录创建时间添加默认值为当前时间戳，记录修改时间设置为当前记录变化时间戳
 -- ALTER TABLE b2c_goods_brand MODIFY COLUMN add_time DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '记录创建时间';
 -- ALTER TABLE b2c_goods_brand MODIFY COLUMN update_time DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '记录修改时间';
@@ -1099,7 +1099,7 @@ alter table b2c_card_order drop column card_no;
 alter table b2c_card_order drop column voucher_id;
 
 alter table b2c_card_order
-    add virtual_goods_id int not null comment '虚拟商品id';=======
+    add virtual_goods_id int not null comment '虚拟商品id';
 -- -- 李晓冰 b2c_goods_brand 将记录创建时间添加默认值为当前时间戳，记录修改时间设置为当前记录变化时间戳
 -- ALTER TABLE b2c_goods_brand MODIFY COLUMN add_time DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '记录创建时间';
 -- ALTER TABLE b2c_goods_brand MODIFY COLUMN update_time DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '记录修改时间';
@@ -1675,7 +1675,7 @@ ALTER TABLE `b2c_refund_card_record`
 
 --订单返利表---常乐--2019-08-07
 ALTER TABLE `b2c_order_goods_rebate` ADD COLUMN `real_rebate_money` DECIMAL(10,2) DEFAULT 0.00  NULL   COMMENT '实际返利金额';
-=======
+
 -- -- 李晓冰 b2c_goods_brand 将记录创建时间添加默认值为当前时间戳，记录修改时间设置为当前记录变化时间戳
 -- ALTER TABLE b2c_goods_brand MODIFY COLUMN add_time DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '记录创建时间';
 -- ALTER TABLE b2c_goods_brand MODIFY COLUMN update_time DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '记录修改时间';
