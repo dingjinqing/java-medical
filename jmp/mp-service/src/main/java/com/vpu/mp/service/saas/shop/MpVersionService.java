@@ -1,22 +1,24 @@
 package com.vpu.mp.service.saas.shop;
 
-import com.vpu.mp.db.main.tables.records.MpVersionRecord;
-import com.vpu.mp.service.foundation.service.MainBaseService;
-import com.vpu.mp.service.foundation.util.PageResult;
-import com.vpu.mp.service.pojo.saas.shop.mp.MpVersionListParam;
-import com.vpu.mp.service.pojo.saas.shop.mp.MpVersionVo;
-import com.vpu.mp.service.wechat.ma.bean.WxOpenMaCodeTemplatePlus;
-import me.chanjar.weixin.common.error.WxErrorException;
-import org.jooq.Record;
-import org.jooq.Result;
-import org.jooq.SelectWhereStep;
-import org.springframework.stereotype.Service;
+import static com.vpu.mp.db.main.tables.MpVersion.MP_VERSION;
 
 import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.List;
 
-import static com.vpu.mp.db.main.tables.MpVersion.MP_VERSION;
+import org.jooq.Record;
+import org.jooq.Result;
+import org.jooq.SelectWhereStep;
+import org.springframework.stereotype.Service;
+
+import com.vpu.mp.db.main.tables.records.MpVersionRecord;
+import com.vpu.mp.service.foundation.service.MainBaseService;
+import com.vpu.mp.service.foundation.util.PageResult;
+import com.vpu.mp.service.pojo.saas.shop.mp.MpVersionListParam;
+import com.vpu.mp.service.pojo.saas.shop.mp.MpVersionVo;
+
+import me.chanjar.weixin.common.error.WxErrorException;
+import me.chanjar.weixin.open.bean.WxOpenMaCodeTemplate;
 
 /**
  * 
@@ -39,17 +41,14 @@ public class MpVersionService extends MainBaseService {
 	 */
 	public Integer synMpVersionList() throws WxErrorException {
 		Integer lastTemplateId = 0;
-		List<WxOpenMaCodeTemplatePlus> list = open.getTemplateList();
+		List<WxOpenMaCodeTemplate> list = open.getWxOpenComponentService().getTemplateList();
 		List<Integer> wxOpenList=new ArrayList<Integer>(list.size());
-		for (WxOpenMaCodeTemplatePlus template : list) {
+		for (WxOpenMaCodeTemplate template : list) {
 			MpVersionRecord record = db().newRecord(MP_VERSION);
 			record.setCreateTime(new Timestamp(template.getCreateTime()));
 			record.setUserVersion(template.getUserVersion());
 			record.setUserDesc(template.getUserDesc());
 			record.setTemplateId(template.getTemplateId().intValue());
-			record.setSourceMiniprogram(template.getSource_miniprogram());
-			record.setSourceMiniprogramAppid(template.getSource_miniprogram_appid());
-			record.setDeveloper(template.getDeveloper());
 			MpVersionRecord row = getRow(template.getTemplateId().intValue());
 			if(row==null) {
 				db().executeInsert(record);
