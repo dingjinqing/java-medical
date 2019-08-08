@@ -1,6 +1,7 @@
 package com.vpu.mp.service.pojo.shop.market.lottery;
 
 import com.vpu.mp.db.shop.tables.records.LotteryRecord;
+
 import lombok.Data;
 
 /**

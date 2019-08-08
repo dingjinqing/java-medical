@@ -1,18 +1,20 @@
 package com.vpu.mp.service.shop.member;
 
 
-import static org.jooq.impl.DSL.count;
-
-import java.math.BigDecimal;
-import java.util.Map;
-
-import javax.validation.Valid;
-
+import static com.vpu.mp.db.shop.Tables.MEMBER_CARD;
+import static com.vpu.mp.db.shop.Tables.USER_CARD;
 import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.ACTIVE_NO;
 import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.ACTIVE_YES;
+import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.ALL_GOODS;
+import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.ALL_SHOP;
+import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.BG_COLOR_TYPE;
+import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.BG_IMG_TYPE;
 import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.BUTTON_ON;
-
+import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.BUY_BY_CRASH;
+import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.BUY_BY_SCORE;
 import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.CHECKED;
+import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.DELETE_NO;
+import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.DELETE_YES;
 import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.DISCOUNT_ALL_GOODS;
 import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.DISCOUNT_PART_GOODS;
 import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.DURING_TIME;
@@ -28,18 +30,12 @@ import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.PART_GOODS;
 import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.PART_SHOP;
 import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.PROHIBITED;
 import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.RANK_TYPE;
-import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.DELETE_NO;
-import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.BG_COLOR_TYPE;
-import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.BG_IMG_TYPE;
-import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.ALL_SHOP;
-import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.ALL_GOODS;
-import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.BUY_BY_SCORE;
-import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.BUY_BY_CRASH;
-import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.DELETE_YES;
+import static org.jooq.impl.DSL.count;
 
-import org.jooq.Record7;
-import org.jooq.Record9;
-import org.jooq.Result;
+import java.util.Map;
+
+import javax.validation.Valid;
+
 import org.jooq.SelectSeekStep1;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -48,28 +44,21 @@ import org.springframework.stereotype.Service;
 import com.vpu.mp.db.shop.tables.records.MemberCardRecord;
 import com.vpu.mp.service.foundation.data.JsonResultCode;
 import com.vpu.mp.service.foundation.service.ShopBaseService;
-import com.vpu.mp.service.foundation.util.FieldsUtil;
 import com.vpu.mp.service.foundation.util.PageResult;
 import com.vpu.mp.service.foundation.util.Util;
+import com.vpu.mp.service.pojo.shop.member.card.BaseCardVo;
+import com.vpu.mp.service.pojo.shop.member.card.CardIdParam;
 import com.vpu.mp.service.pojo.shop.member.card.CardParam;
 import com.vpu.mp.service.pojo.shop.member.card.GradeConditionJson;
 import com.vpu.mp.service.pojo.shop.member.card.LimitNumCardToVo;
 import com.vpu.mp.service.pojo.shop.member.card.LimitNumCardVo;
 import com.vpu.mp.service.pojo.shop.member.card.NormalCardToVo;
 import com.vpu.mp.service.pojo.shop.member.card.NormalCardVo;
-import com.vpu.mp.service.pojo.shop.member.card.PowerCardJson;
 import com.vpu.mp.service.pojo.shop.member.card.PowerCardParam;
 import com.vpu.mp.service.pojo.shop.member.card.RankCardToVo;
 import com.vpu.mp.service.pojo.shop.member.card.RankCardVo;
 import com.vpu.mp.service.pojo.shop.member.card.ScoreJson;
 import com.vpu.mp.service.pojo.shop.member.card.SearchCardParam;
-
-import com.vpu.mp.service.pojo.shop.member.card.CardVo;
-import com.vpu.mp.service.pojo.shop.member.card.BaseCardVo;
-import com.vpu.mp.service.pojo.shop.member.card.CardIdParam;
-
-import static com.vpu.mp.db.shop.Tables.MEMBER_CARD;
-import static com.vpu.mp.db.shop.Tables.USER_CARD;
 /**
  * 
  * @author 黄壮壮

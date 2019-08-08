@@ -2,12 +2,12 @@ package com.vpu.mp.service.shop.distribution;
 
 import static com.vpu.mp.db.shop.Tables.DISTRIBUTOR_GROUP;
 import static com.vpu.mp.db.shop.Tables.DISTRIBUTOR_LEVEL;
-import static com.vpu.mp.db.shop.Tables.USER;
-import static com.vpu.mp.db.shop.Tables.USER_DETAIL;
-import static com.vpu.mp.db.shop.Tables.USER_TOTAL_FANLI;
-import static com.vpu.mp.db.shop.Tables.USER_FANLI_STATISTICS;
 import static com.vpu.mp.db.shop.Tables.ORDER_GOODS_REBATE;
 import static com.vpu.mp.db.shop.Tables.ORDER_INFO;
+import static com.vpu.mp.db.shop.Tables.USER;
+import static com.vpu.mp.db.shop.Tables.USER_DETAIL;
+import static com.vpu.mp.db.shop.Tables.USER_FANLI_STATISTICS;
+import static com.vpu.mp.db.shop.Tables.USER_TOTAL_FANLI;
 import static org.jooq.impl.DSL.sum;
 
 import java.math.BigDecimal;
@@ -16,12 +16,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.jooq.Record1;
-import org.jooq.Record2;
 import org.jooq.Record8;
-import org.jooq.Result;
 import org.jooq.SelectConditionStep;
 import org.jooq.SelectJoinStep;
-import org.jooq.SelectSelectStep;
 import org.springframework.stereotype.Service;
 
 import com.vpu.mp.service.foundation.service.ShopBaseService;

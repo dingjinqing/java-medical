@@ -1,10 +1,11 @@
 package com.vpu.mp.service.pojo.shop.market.lottery.record;
 
+import java.sql.Timestamp;
+
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.vpu.mp.service.pojo.shop.market.lottery.prize.LotteryPrizeVo;
-import lombok.Data;
 
-import java.sql.Timestamp;
+import lombok.Data;
 
 /**
  * @author 孔德成

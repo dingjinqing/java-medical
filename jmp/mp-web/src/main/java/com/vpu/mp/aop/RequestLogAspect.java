@@ -1,20 +1,24 @@
 package com.vpu.mp.aop;
 
 
-import com.vpu.mp.service.foundation.util.RequestUtil;
-import lombok.extern.slf4j.Slf4j;
+import java.util.Arrays;
+
+import javax.servlet.http.HttpServletRequest;
+
 import org.aspectj.lang.ProceedingJoinPoint;
-import org.aspectj.lang.annotation.*;
-import org.json.JSONArray;
+import org.aspectj.lang.annotation.Around;
+import org.aspectj.lang.annotation.Aspect;
+import org.aspectj.lang.annotation.Pointcut;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
-import com.vpu.mp.service.foundation.data.JsonResult;
 
-import javax.servlet.http.HttpServletRequest;
-import java.util.Arrays;
+import com.vpu.mp.service.foundation.data.JsonResult;
+import com.vpu.mp.service.foundation.util.RequestUtil;
+
+import lombok.extern.slf4j.Slf4j;
 
 /**
  * controller所有请求日志记录

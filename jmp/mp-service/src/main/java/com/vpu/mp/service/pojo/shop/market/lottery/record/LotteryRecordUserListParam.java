@@ -1,11 +1,10 @@
 package com.vpu.mp.service.pojo.shop.market.lottery.record;
 
-import com.vpu.mp.service.foundation.util.Page;
+import javax.validation.constraints.NotNull;
+
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
-
-import javax.validation.constraints.NotNull;
 
 /**
  * @author 孔德成

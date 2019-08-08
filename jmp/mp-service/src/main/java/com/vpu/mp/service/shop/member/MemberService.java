@@ -8,7 +8,11 @@ import static org.jooq.impl.DSL.date;
 import java.sql.Date;
 import java.util.Map;
 
-import org.jooq.*;
+import org.jooq.Field;
+import org.jooq.Record;
+import org.jooq.SelectField;
+import org.jooq.SelectJoinStep;
+import org.jooq.SelectWhereStep;
 import org.jooq.tools.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;

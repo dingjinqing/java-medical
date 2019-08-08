@@ -1,10 +1,9 @@
 package com.vpu.mp.service.pojo.shop.market.lottery;
 
-import com.vpu.mp.service.foundation.util.Page;
-import lombok.Data;
-
 import javax.validation.constraints.Max;
 import javax.validation.constraints.Min;
+
+import lombok.Data;
 
 /**
  * @author 孔德成

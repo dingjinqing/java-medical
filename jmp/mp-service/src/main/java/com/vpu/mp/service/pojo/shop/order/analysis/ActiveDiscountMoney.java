@@ -1,10 +1,9 @@
 package com.vpu.mp.service.pojo.shop.order.analysis;
 
-import lombok.Data;
-import org.springframework.web.bind.annotation.RequestMapping;
-
 import java.math.BigDecimal;
 import java.sql.Timestamp;
+
+import lombok.Data;
 
 /**
  * @author 孔德成

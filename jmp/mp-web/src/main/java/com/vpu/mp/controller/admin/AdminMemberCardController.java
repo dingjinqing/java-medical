@@ -1,10 +1,6 @@
 package com.vpu.mp.controller.admin;
 
 
-import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.LIMIT_NUM_TYPE;
-import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.NORMAL_TYPE;
-import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.RANK_TYPE;
-
 import javax.validation.Valid;
 
 import org.slf4j.Logger;
@@ -17,10 +13,9 @@ import org.springframework.web.bind.annotation.RestController;
 import com.vpu.mp.service.foundation.data.JsonResult;
 import com.vpu.mp.service.foundation.util.PageResult;
 import com.vpu.mp.service.foundation.util.Util;
-import com.vpu.mp.service.pojo.shop.member.card.CardParam;
-import com.vpu.mp.service.pojo.shop.member.card.CardVo;
 import com.vpu.mp.service.pojo.shop.member.card.BaseCardVo;
 import com.vpu.mp.service.pojo.shop.member.card.CardIdParam;
+import com.vpu.mp.service.pojo.shop.member.card.CardParam;
 import com.vpu.mp.service.pojo.shop.member.card.PowerCardParam;
 import com.vpu.mp.service.pojo.shop.member.card.SearchCardParam;
 

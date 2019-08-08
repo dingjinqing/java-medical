@@ -1,17 +1,19 @@
 package com.vpu.mp.controller.admin;
 
-import com.vpu.mp.db.main.tables.records.MpAuthShopRecord;
-import com.vpu.mp.service.foundation.data.JsonResult;
-import com.vpu.mp.service.foundation.data.JsonResultCode;
-import com.vpu.mp.service.pojo.saas.shop.mp.MpAuthShopVo;
-import com.vpu.mp.service.wechat.OpenPlatform;
-import me.chanjar.weixin.common.error.WxErrorException;
 import org.slf4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
+
+import com.vpu.mp.db.main.tables.records.MpAuthShopRecord;
+import com.vpu.mp.service.foundation.data.JsonResult;
+import com.vpu.mp.service.foundation.data.JsonResultCode;
+import com.vpu.mp.service.pojo.saas.shop.mp.MpAuthShopVo;
+import com.vpu.mp.service.wechat.OpenPlatform;
+
+import me.chanjar.weixin.common.error.WxErrorException;
 
 /**
  * @author lixinguo

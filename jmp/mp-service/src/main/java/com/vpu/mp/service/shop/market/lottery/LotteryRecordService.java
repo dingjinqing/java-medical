@@ -1,29 +1,22 @@
 package com.vpu.mp.service.shop.market.lottery;
 
-import com.vpu.mp.db.shop.Tables;
-import com.vpu.mp.db.shop.tables.records.LotteryRecord;
-import com.vpu.mp.service.foundation.service.ShopBaseService;
-import com.vpu.mp.service.foundation.util.PageResult;
-import com.vpu.mp.service.foundation.util.Util;
-import com.vpu.mp.service.pojo.shop.market.lottery.JoinLottery;
-import com.vpu.mp.service.pojo.shop.market.lottery.JoinLotteryParam;
-import com.vpu.mp.service.pojo.shop.market.lottery.prize.LotteryPrizeVo;
-import com.vpu.mp.service.pojo.shop.market.lottery.record.LotteryRecordPageListParam;
-import com.vpu.mp.service.pojo.shop.market.lottery.record.LotteryRecordPageListVo;
-import com.vpu.mp.service.shop.member.MemberService;
+import static com.vpu.mp.db.shop.tables.LotteryRecord.LOTTERY_RECORD;
+import static com.vpu.mp.db.shop.tables.User.USER;
+
 import org.jooq.Condition;
 import org.jooq.Record;
 import org.jooq.SelectConditionStep;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.Random;
-
-import static com.vpu.mp.db.shop.Tables.LOTTERY;
-import static com.vpu.mp.db.shop.Tables.LOTTERY_PRIZE;
-import static com.vpu.mp.db.shop.tables.LotteryRecord.LOTTERY_RECORD;
-import static com.vpu.mp.db.shop.tables.User.USER;
-import static com.vpu.mp.service.pojo.shop.market.lottery.JoinLotteryParam.*;
+import com.vpu.mp.db.shop.Tables;
+import com.vpu.mp.service.foundation.service.ShopBaseService;
+import com.vpu.mp.service.foundation.util.PageResult;
+import com.vpu.mp.service.foundation.util.Util;
+import com.vpu.mp.service.pojo.shop.market.lottery.prize.LotteryPrizeVo;
+import com.vpu.mp.service.pojo.shop.market.lottery.record.LotteryRecordPageListParam;
+import com.vpu.mp.service.pojo.shop.market.lottery.record.LotteryRecordPageListVo;
+import com.vpu.mp.service.shop.member.MemberService;
 
 /**
  * @author 孔德成

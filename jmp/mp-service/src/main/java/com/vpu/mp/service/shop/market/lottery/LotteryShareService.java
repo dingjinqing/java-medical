@@ -1,10 +1,11 @@
 package com.vpu.mp.service.shop.market.lottery;
 
-import com.vpu.mp.db.shop.tables.records.LotteryShareRecord;
-import com.vpu.mp.service.foundation.service.ShopBaseService;
+import static com.vpu.mp.db.shop.Tables.LOTTERY_SHARE;
+
 import org.springframework.stereotype.Service;
 
-import static com.vpu.mp.db.shop.Tables.LOTTERY_SHARE;
+import com.vpu.mp.db.shop.tables.records.LotteryShareRecord;
+import com.vpu.mp.service.foundation.service.ShopBaseService;
 
 /**
  * @author 孔德成
