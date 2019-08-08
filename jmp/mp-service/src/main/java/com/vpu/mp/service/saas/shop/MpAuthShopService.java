@@ -354,11 +354,19 @@ public class MpAuthShopService extends MainBaseService {
 	}
 
 	public String getMpQrCode(String appId, WxOpenAuthorizerInfo authorizerInfo) {
-		String qrcodeUrl = authorizerInfo.getQrcodeUrl();
+		//String qrcodeUrl = authorizerInfo.getQrcodeUrl();
 		String path = "pages/bottom/bottom";
 		String filename = appId + "_" + Util.md5(path) + ".jpg";
 		String relativePath = "upload/saas/mp/app_code/" + filename;
-		Boolean addImgeToUp = saas.sysImage.addImgeToUp(qrcodeUrl, relativePath);
+		Boolean addImgeToUp=false;
+		try {
+			byte[] createWxaCodeBytes = open().getWxOpenComponentService().getWxMaServiceByAppid(appId).getQrcodeService().createWxaCodeBytes(path, 430, true, null, false);
+			addImgeToUp = saas.sysImage.uploadToUpYunByByte(relativePath, createWxaCodeBytes);
+		} catch (WxErrorException e) {
+			logger().debug("appId" + appId +"获取小程序二维码失败"+e.printStackTrace());
+		} catch (Exception e) {
+			logger().debug("appId" + appId + "头像上传又拍云失败"+e.printStackTrace());
+		}
 		logger().debug("appId" + appId + "头像上传又拍云" + addImgeToUp);
 		return relativePath;
 	}
