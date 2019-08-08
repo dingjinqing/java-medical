@@ -1,20 +1,9 @@
 package com.vpu.mp.service.wechat;
 
-import javax.annotation.PostConstruct;
-
-import org.apache.commons.lang3.StringUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.stereotype.Service;
-
-import com.google.gson.JsonObject;
 import com.vpu.mp.service.foundation.jedis.JedisManager;
 import com.vpu.mp.service.wechat.api.impl.WxOpenComponentExtServiceImpl;
 import com.vpu.mp.service.wechat.api.impl.WxOpenMaServiceExtraImpl;
 import com.vpu.mp.service.wechat.api.impl.WxOpenMpServiceExtraImpl;
-
 import lombok.Getter;
 import me.chanjar.weixin.common.error.WxErrorException;
 import me.chanjar.weixin.mp.bean.kefu.WxMpKefuMessage;
@@ -24,6 +13,14 @@ import me.chanjar.weixin.open.api.impl.WxOpenInRedisConfigStorage;
 import me.chanjar.weixin.open.api.impl.WxOpenMessageRouter;
 import me.chanjar.weixin.open.api.impl.WxOpenServiceImpl;
 import me.chanjar.weixin.open.bean.message.WxOpenXmlMessage;
+import org.apache.commons.lang3.StringUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.stereotype.Service;
+
+import javax.annotation.PostConstruct;
 
 
 /**
@@ -231,20 +228,4 @@ public class OpenPlatform extends WxOpenServiceImpl {
 	protected boolean isGlobalTestAppId(String appId) {
 		return (StringUtils.equalsAnyIgnoreCase(appId, "wxd101a85aa106f53e", "wx570bc396a51b8ff8"));
 	}
-
-
-
-    /**
-     * 获取小程序码
-     * @deprecated qr类专门处理
-     */
-    public String getMpQRCodeBuffer(String path) throws WxErrorException {
-        JsonObject param = new JsonObject();
-        param.addProperty("path", path);
-        String uri = GET_MP_QR_CODE + path;
-        String componentAccessToken = this.getWxOpenComponentService().getComponentAccessToken(false);
-        String uriWithComponentAccessToken = uri + (uri.contains("?") ? "&" : "?") + "access_token" + "="
-            + componentAccessToken;
-        return post(uriWithComponentAccessToken, param.toString());
-    }
 }
