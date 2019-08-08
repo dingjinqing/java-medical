@@ -57,7 +57,7 @@ service.interceptors.response.use(
     const res = response
     let flag = localStorage.getItem('V-overallFlag')
 
-    console.log(1)
+    console.log(flag)
 
     if (res) {
       switch (res.status) {
