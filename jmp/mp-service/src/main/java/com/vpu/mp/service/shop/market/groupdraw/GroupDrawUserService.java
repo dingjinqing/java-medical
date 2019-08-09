@@ -90,17 +90,7 @@ public class GroupDrawUserService extends ShopBaseService {
                     List<Integer> couponIds = Util.stringToList(goodsGroupDraw.getRewardCouponId());
                     groupUserList.forEach(groupUser -> {
                         if (WIN_DRAW == groupUser.getIsWinDraw()) {
-                            // todo 中奖用户订单扣减库存
-                            String orderSn = groupUser.getOrderSn();
-                            List<OrderGoodsRecord> orderGoods = getOrderGoods(orderSn);
-                            OrderGoodsRecord goods = orderGoods.get(0);
-                            Integer productId = goods.getProductId();
-                            GoodsSpecProductRecord goodsSpecProduct = getGoodsSpecProduct(productId);
-                            Integer productNumber = goodsSpecProduct.getPrdNumber();
-                            if (0 < productNumber) {
-                                OrderInfoRecord orderInfo = getOrderInfo(orderSn);
-                                updateGoodsSkuAfterWaitDeliver(orderInfo);
-                            }
+                            updateProductNumber(groupUser.getOrderSn());
                         } else {
                             // todo 退款
 
@@ -115,6 +105,21 @@ public class GroupDrawUserService extends ShopBaseService {
                 }
             });
         });
+    }
+
+    /**
+     * 更新库存
+     */
+    private void updateProductNumber(String orderSn) {
+        List<OrderGoodsRecord> orderGoods = getOrderGoods(orderSn);
+        OrderGoodsRecord goods = orderGoods.get(0);
+        Integer productId = goods.getProductId();
+        GoodsSpecProductRecord goodsSpecProduct = getGoodsSpecProduct(productId);
+        Integer productNumber = goodsSpecProduct.getPrdNumber();
+        if (0 < productNumber) {
+            OrderInfoRecord orderInfo = getOrderInfo(orderSn);
+            updateGoodsSkuAfterWaitDeliver(orderInfo);
+        }
     }
 
     /**
