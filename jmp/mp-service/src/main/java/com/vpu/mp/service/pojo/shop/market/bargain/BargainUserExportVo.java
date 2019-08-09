@@ -1,5 +1,6 @@
 package com.vpu.mp.service.pojo.shop.market.bargain;
 
+import com.vpu.mp.service.foundation.data.JsonResultMessage;
 import com.vpu.mp.service.foundation.excel.annotation.ExcelColumn;
 import com.vpu.mp.service.foundation.excel.annotation.ExcelSheet;
 import lombok.Data;
@@ -19,21 +20,21 @@ public class BargainUserExportVo {
     /**
      * 主键
      */
-    @ExcelColumn(columnName = "bargain.user.list.id",columnIndex = 0)
+    @ExcelColumn(columnName = JsonResultMessage.BARGAIN_USER_LIST_ID,columnIndex = 0)
     private Integer id;
 
-    @ExcelColumn(columnName = "bargain.user.list.username",columnIndex = 1)
+    @ExcelColumn(columnName = JsonResultMessage.BARGAIN_USER_LIST_USERNAME,columnIndex = 1)
     private String username;
 
-    @ExcelColumn(columnName = "bargain.user.list.mobile",columnIndex = 2)
+    @ExcelColumn(columnName = JsonResultMessage.BARGAIN_USER_LIST_MOBILE,columnIndex = 2)
     private String mobile;
 
-    @ExcelColumn(columnName = "bargain.user.list.create_time",columnIndex = 3)
+    @ExcelColumn(columnName = JsonResultMessage.BARGAIN_USER_LIST_CREATE_TIME,columnIndex = 3)
     private Timestamp createTime;
 
     /**
      * 帮砍金额
      */
-    @ExcelColumn(columnName = "bargain.user.list.bargain_money",columnIndex = 4)
+    @ExcelColumn(columnName = JsonResultMessage.BARGAIN_USER_LIST_BARGAIN_MONEY,columnIndex = 4)
     private BigDecimal bargainMoney;
 }

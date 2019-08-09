@@ -101,6 +101,33 @@ public class JsonResultMessage {
 	 */
 	public static final String DISTRIBUTOR_GROUP_NAME_EXIST = "distributor.group.name.exist";
 
+    /**
+     * 营销-砍价excel导出-发起砍价
+     */
+    public static final String STATUS_SUCCESS = "status.success";
+    public static final String STATUS_FAIL = "status.fail";
+    public static final String STATUS_IN_PROGRESS = "status.in_progress";
+    public static final String BARGAIN_RECORD_LIST_FILENAME = "bargain.record.list.filename";
+    public static final String BARGAIN_RECORD_LIST_ID = "bargain.record.list.id";
+    public static final String BARGAIN_RECORD_LIST_GOODS_NAME = "bargain.record.list.goods_name";
+    public static final String BARGAIN_RECORD_LIST_USERNAME= "bargain.record.list.username";
+    public static final String BARGAIN_RECORD_LIST_MOBILE = "bargain.record.list.mobile";
+    public static final String BARGAIN_RECORD_LIST_CREATE_TIME = "bargain.record.list.create_time";
+    public static final String BARGAIN_RECORD_LIST_BARGAIN_MONEY = "bargain.record.list.bargain_money";
+    public static final String BARGAIN_RECORD_LIST_SURPLUS_MONEY = "bargain.record.list.surplus_money";
+    public static final String BARGAIN_RECORD_LIST_USER_NUMBER = "bargain.record.list.user_number";
+    public static final String BARGAIN_RECORD_LIST_STATUS = "bargain.record.list.status";
+
+    /**
+     * 营销-砍价excel导出-帮忙砍价
+     */
+    public static final String BARGAIN_USER_LIST_FILENAME = "bargain.user.list.filename";
+    public static final String BARGAIN_USER_LIST_ID = "bargain.user.list.id";
+    public static final String BARGAIN_USER_LIST_USERNAME = "bargain.user.list.username";
+    public static final String BARGAIN_USER_LIST_MOBILE = "bargain.user.list.mobile";
+    public static final String BARGAIN_USER_LIST_CREATE_TIME = "bargain.user.list.create_time";
+    public static final String BARGAIN_USER_LIST_BARGAIN_MONEY = "bargain.user.list.bargain_money";
+
 	/**
 	 * 文章_分类
 	 */

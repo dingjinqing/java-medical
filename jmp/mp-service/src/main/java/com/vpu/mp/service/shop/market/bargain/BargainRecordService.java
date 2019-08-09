@@ -13,6 +13,7 @@ import java.sql.Date;
 import java.util.List;
 import java.util.Map;
 
+import com.vpu.mp.service.foundation.data.JsonResultMessage;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.poi.ss.usermodel.Workbook;
 import org.jooq.Record;
@@ -142,13 +143,13 @@ public class BargainRecordService extends ShopBaseService {
 		for(BargainRecordExportVo vo : bargainRecordList) {
 			switch(vo.getStatus()) {
 				case 0:
-					vo.setStatusName(Util.translateMessage(lang, "status.in_process",LANGUAGE_TYPE_EXCEL));
+					vo.setStatusName(Util.translateMessage(lang, JsonResultMessage.STATUS_IN_PROGRESS,LANGUAGE_TYPE_EXCEL));
 					break;
 				case 1:
-					vo.setStatusName(Util.translateMessage(lang, "status.success",LANGUAGE_TYPE_EXCEL));
+					vo.setStatusName(Util.translateMessage(lang, JsonResultMessage.STATUS_SUCCESS,LANGUAGE_TYPE_EXCEL));
 					break;
 				case 2:
-					vo.setStatusName(Util.translateMessage(lang, "status.fail",LANGUAGE_TYPE_EXCEL));
+					vo.setStatusName(Util.translateMessage(lang, JsonResultMessage.STATUS_FAIL,LANGUAGE_TYPE_EXCEL));
 					break;
 				default:
 			}
