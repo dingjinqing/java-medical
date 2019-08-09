@@ -768,7 +768,7 @@ public class MpAuthShopService extends MainBaseService {
 		}
     	//好物圈的appId
     	appId="wx56c8f077de74b07c";
-    	if(plugInManage.getErrcode().equals(0)&&plugInManage.getErrmsg().equals("ok")) {
+    	if(plugInManage.getErrcode().equals("0")&&plugInManage.getErrmsg().equals("ok")) {
     		 List<MaWxPlusInListInner> pluginList = plugInManage.getPluginList();
     		for(MaWxPlusInListInner inner:pluginList) {
     			if(inner.getAppid().equals(appId)) {
