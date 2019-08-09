@@ -922,32 +922,32 @@ create table `b2c_part_order_goods_ship` (
 );
 -- -- 退货商品表
 -- drop table if exists `b2c_return_order_goods`;
-create table `b2c_return_order_goods` (
-  `id`           int(11)       	not null  auto_increment,
-  `shop_id`      int(11)      		not null default 0 comment '店铺id',
-  `rec_id`       int(11)  							comment '订单商品表的id',
-  `ret_id`       int(11)  							comment '退货记录表的id',
-  `order_sn`     varchar(20)   		not null default '',
-  `goods_id`     mediumint(8)  		not null default '0',
-  `goods_name`   varchar(120)  		not null default '',
-  `product_id`   mediumint(8)  		not null default '0',
-  `goods_number` smallint(5)   		not null default '1' comment '退货商品数量',
-  `market_price` decimal(10, 2)		not null default '0.00',
-  `goods_price`  decimal(10, 2)		not null default '0.00',
-  `goods_attr`   text,
-  `send_number`  smallint(5)   		not null default '0' comment '发货商品数量',
-  `return_money`  decimal(10, 2)		not null default '0.00' comment '实际退款金额',
-  `discounted_goods_price` decimal(10, 2)		not null default '0.00' '折后商品单价',
-  `goods_img`    varchar(191)  		not null default '',
-  `success`      tinyint(1)   		not null default 1 comment '0代表退货申请被拒绝，1代表正在退货中，2代表退货成功',
-  `create_time`      timestamp    	default current_timestamp,
-  `update_time`      timestamp     	default current_timestamp on update current_timestamp comment '最后修改时间',
-  primary key (`id`),
-  key `rec_id` (`rec_id`),
-  key `ret_id` (`ret_id`),
-  key `order_sn` (`order_sn`),
-  key `goods_id` (`goods_id`),
-  key (`shop_id`)
+CREATE TABLE `b2c_return_order_goods`  (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `shop_id` int(11) NOT NULL DEFAULT 0 COMMENT '店铺id',
+  `rec_id` int(11) DEFAULT NULL COMMENT '订单商品表的id',
+  `ret_id` int(11) DEFAULT NULL COMMENT '退货记录表的id',
+  `order_sn` varchar(20) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '',
+  `goods_id` mediumint(8) NOT NULL DEFAULT 0,
+  `goods_name` varchar(120) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '',
+  `product_id` mediumint(8) NOT NULL DEFAULT 0,
+  `goods_number` smallint(5) NOT NULL DEFAULT 1 COMMENT '退货商品数量',
+  `market_price` decimal(10, 2) NOT NULL DEFAULT 0.00,
+  `goods_price` decimal(10, 2) NOT NULL DEFAULT 0.00,
+  `goods_attr` text CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci,
+  `send_number` smallint(5) NOT NULL DEFAULT 0 COMMENT '发货商品数量',
+  `return_money` decimal(10, 2) NOT NULL DEFAULT 0.00 COMMENT '实际退款金额',
+  `discounted_goods_price` decimal(10, 2) NOT NULL DEFAULT 0.00 COMMENT '实际退款金额',
+  `goods_img` varchar(191) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '',
+  `success` tinyint(1) NOT NULL DEFAULT 1 COMMENT '0代表退货申请被拒绝，1代表正在退货中，2代表退货成功',
+  `create_time` timestamp(0) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `update_time` timestamp(0) NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP(0) COMMENT '最后修改时间',
+  PRIMARY KEY (`id`) USING BTREE,
+  INDEX `rec_id`(`rec_id`) USING BTREE,
+  INDEX `ret_id`(`ret_id`) USING BTREE,
+  INDEX `order_sn`(`order_sn`) USING BTREE,
+  INDEX `goods_id`(`goods_id`) USING BTREE,
+  INDEX `shop_id`(`shop_id`) USING BTREE
 );
 
 -- -- 满折满减活动列表
