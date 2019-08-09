@@ -57,8 +57,11 @@ public class WxAppAuth {
 	 * @return
 	 */
 	public Integer shopId() {
-		String shopId = this.request.getHeader(SHOP_ID);
-		return Util.getInteger(shopId);
+		Integer shopId = Util.getInteger(this.request.getHeader(SHOP_ID));
+		if(shopId == 0) {
+			throw new IllegalArgumentException("Invalid shopId");
+		}
+		return shopId;
 	}
 
 	/**
