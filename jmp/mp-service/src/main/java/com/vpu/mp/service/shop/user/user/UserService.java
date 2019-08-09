@@ -3,6 +3,7 @@ package com.vpu.mp.service.shop.user.user;
 import static com.vpu.mp.db.shop.tables.User.USER;
 import static com.vpu.mp.db.shop.tables.UserDetail.USER_DETAIL;
 
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Service;
 
 import com.vpu.mp.db.shop.tables.records.UserDetailRecord;
@@ -55,8 +56,13 @@ public class UserService extends ShopBaseService {
 			// TODO: user.setScene(value);
 			// TODO: user.setInviteSource(value);
 			user.setUsername(result.getOpenid());
+			String unionId = (!StringUtils.isBlank(result.getUnionid())) ? result.getUnionid() : "";
+			user.setWxUnionId(unionId);
+		}else {
+			if((!StringUtils.isBlank(result.getUnionid()))) {
+				user.setWxUnionId(result.getUnionid());
+			}
 		}
-		user.setWxUnionId(result.getUnionid());
 		user.store();
 		return user;
 	}
