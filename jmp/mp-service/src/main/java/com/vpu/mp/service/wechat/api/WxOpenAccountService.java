@@ -1,6 +1,10 @@
 package com.vpu.mp.service.wechat.api;
 
+import java.util.Map;
+import java.util.Set;
+
 import com.google.gson.JsonObject;
+import com.vpu.mp.service.wechat.bean.open.MaWxPlusInResult;
 import com.vpu.mp.service.wechat.bean.open.WxOpenGetResult;
 
 import me.chanjar.weixin.common.error.WxErrorException;
@@ -20,6 +24,7 @@ public interface WxOpenAccountService extends WxOpenMaMpHttpBase {
 	static final String CREATE_OPEN_GET_URL = "https://api.weixin.qq.com/cgi-bin/open/get";
 	static final String BIND_OPEN_PLATFORM = "https://api.weixin.qq.com/cgi-bin/open/bind";
 	static final String UNBIND_OPEN_PLATFORM = "https://api.weixin.qq.com/cgi-bin/open/unbind";
+	static final String WXA_PLUSIN = "https://api.weixin.qq.com/wxa/plugin";
 	
 
 	/**
@@ -62,6 +67,24 @@ public interface WxOpenAccountService extends WxOpenMaMpHttpBase {
 		param.addProperty("open_appid", openAppId);
 		String json = post(appId,UNBIND_OPEN_PLATFORM, param.toString());
 		return WxOpenGetResult.fromJson(json);
+	}
+	
+	/**
+	 *插件管理
+	 * @param appId
+	 * @param map
+	 * @return
+	 * @throws WxErrorException
+	 */
+	default MaWxPlusInResult plugInManage(String appId,Map<String,String> map) throws WxErrorException{
+		JsonObject param = new JsonObject();
+		Set<String> keySet = map.keySet();
+		for(String key:keySet) {
+			param.addProperty(key, map.get(key));
+		}
+		String json = post(appId,WXA_PLUSIN, param.toString());
+		return MaWxPlusInResult.fromJson(json);
+		
 	}
 
 }
