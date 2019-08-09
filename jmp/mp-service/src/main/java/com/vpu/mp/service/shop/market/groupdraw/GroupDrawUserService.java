@@ -101,7 +101,7 @@ public class GroupDrawUserService extends ShopBaseService {
                         }
                     });
                     // 批量送券
-                    giveVoucher(couponIds, goodsGroupDrawId, couponUserIds);
+                    giveVoucher(couponIds, couponUserIds);
                 }
             });
         });
@@ -301,7 +301,7 @@ public class GroupDrawUserService extends ShopBaseService {
     /**
      * 未中奖送券
      */
-    private void giveVoucher(List<Integer> coupOnIds, Integer groupDrawId, List<Integer> userIds) {
+    private void giveVoucher(List<Integer> coupOnIds, List<Integer> userIds) {
         String[] couponIdArray = new String[coupOnIds.size()];
         for (int i = 0; i < coupOnIds.size(); i++) {
             couponIdArray[i] = String.valueOf(coupOnIds.get(i));
