@@ -5,16 +5,14 @@ package com.vpu.mp.db.shop.tables.records;
 
 
 import com.vpu.mp.db.shop.tables.Code;
-
-import java.sql.Timestamp;
-
-import javax.annotation.Generated;
-
 import org.jooq.Field;
 import org.jooq.Record1;
 import org.jooq.Record9;
 import org.jooq.Row9;
 import org.jooq.impl.UpdatableRecordImpl;
+
+import javax.annotation.Generated;
+import java.sql.Timestamp;
 
 
 /**
@@ -30,7 +28,7 @@ import org.jooq.impl.UpdatableRecordImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class CodeRecord extends UpdatableRecordImpl<CodeRecord> implements Record9<Integer, Short, String, String, String, Byte, String, Timestamp, Timestamp> {
 
-    private static final long serialVersionUID = 1148078493;
+    private static final long serialVersionUID = -206351930;
 
     /**
      * Setter for <code>mini_shop_471752.b2c_code.code_id</code>. 二维码id
@@ -61,14 +59,14 @@ public class CodeRecord extends UpdatableRecordImpl<CodeRecord> implements Recor
     }
 
     /**
-     * Setter for <code>mini_shop_471752.b2c_code.param_id</code>. 对应的参数id
+     * Setter for <code>mini_shop_471752.b2c_code.param_id</code>. 对应的记录唯一值，可根据url产生
      */
     public void setParamId(String value) {
         set(2, value);
     }
 
     /**
-     * Getter for <code>mini_shop_471752.b2c_code.param_id</code>. 对应的参数id
+     * Getter for <code>mini_shop_471752.b2c_code.param_id</code>. 对应的记录唯一值，可根据url产生
      */
     public String getParamId() {
         return (String) get(2);
@@ -103,28 +101,28 @@ public class CodeRecord extends UpdatableRecordImpl<CodeRecord> implements Recor
     }
 
     /**
-     * Setter for <code>mini_shop_471752.b2c_code.flag</code>. 标记位
+     * Setter for <code>mini_shop_471752.b2c_code.del_flag</code>. 标记位
      */
-    public void setFlag(Byte value) {
+    public void setDelFlag(Byte value) {
         set(5, value);
     }
 
     /**
-     * Getter for <code>mini_shop_471752.b2c_code.flag</code>. 标记位
+     * Getter for <code>mini_shop_471752.b2c_code.del_flag</code>. 标记位
      */
-    public Byte getFlag() {
+    public Byte getDelFlag() {
         return (Byte) get(5);
     }
 
     /**
-     * Setter for <code>mini_shop_471752.b2c_code.channel</code>. 渠道分享码
+     * Setter for <code>mini_shop_471752.b2c_code.channel</code>. 渠道分享码，保留字段目前未使用，后期确认后可删除
      */
     public void setChannel(String value) {
         set(6, value);
     }
 
     /**
-     * Getter for <code>mini_shop_471752.b2c_code.channel</code>. 渠道分享码
+     * Getter for <code>mini_shop_471752.b2c_code.channel</code>. 渠道分享码，保留字段目前未使用，后期确认后可删除
      */
     public String getChannel() {
         return (String) get(6);
@@ -235,7 +233,7 @@ public class CodeRecord extends UpdatableRecordImpl<CodeRecord> implements Recor
      */
     @Override
     public Field<Byte> field6() {
-        return Code.CODE.FLAG;
+        return Code.CODE.DEL_FLAG;
     }
 
     /**
@@ -307,7 +305,7 @@ public class CodeRecord extends UpdatableRecordImpl<CodeRecord> implements Recor
      */
     @Override
     public Byte component6() {
-        return getFlag();
+        return getDelFlag();
     }
 
     /**
@@ -379,7 +377,7 @@ public class CodeRecord extends UpdatableRecordImpl<CodeRecord> implements Recor
      */
     @Override
     public Byte value6() {
-        return getFlag();
+        return getDelFlag();
     }
 
     /**
@@ -456,7 +454,7 @@ public class CodeRecord extends UpdatableRecordImpl<CodeRecord> implements Recor
      */
     @Override
     public CodeRecord value6(Byte value) {
-        setFlag(value);
+        setDelFlag(value);
         return this;
     }
 
@@ -518,7 +516,7 @@ public class CodeRecord extends UpdatableRecordImpl<CodeRecord> implements Recor
     /**
      * Create a detached, initialised CodeRecord
      */
-    public CodeRecord(Integer codeId, Short type, String paramId, String typeUrl, String qrcodeImg, Byte flag, String channel, Timestamp createTime, Timestamp updateTime) {
+    public CodeRecord(Integer codeId, Short type, String paramId, String typeUrl, String qrcodeImg, Byte delFlag, String channel, Timestamp createTime, Timestamp updateTime) {
         super(Code.CODE);
 
         set(0, codeId);
@@ -526,7 +524,7 @@ public class CodeRecord extends UpdatableRecordImpl<CodeRecord> implements Recor
         set(2, paramId);
         set(3, typeUrl);
         set(4, qrcodeImg);
-        set(5, flag);
+        set(5, delFlag);
         set(6, channel);
         set(7, createTime);
         set(8, updateTime);

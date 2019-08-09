@@ -12,6 +12,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import com.vpu.mp.service.pojo.shop.qrcode.QrCodeTypeEnum;
 import org.jooq.SelectConditionStep;
 import org.jooq.SelectWhereStep;
 import org.jooq.impl.DSL;
@@ -29,7 +30,7 @@ import com.vpu.mp.service.pojo.shop.market.integration.GroupIntegrationDefinePag
 import com.vpu.mp.service.pojo.shop.market.integration.GroupIntegrationDefineParam;
 import com.vpu.mp.service.pojo.shop.market.integration.GroupIntegrationDefineVo;
 import com.vpu.mp.service.pojo.shop.market.integration.GroupIntegrationShareQRCodeVo;
-import com.vpu.mp.service.shop.qrcode.QRCodeService;
+import com.vpu.mp.service.shop.image.QRCodeService;
 
 import lombok.Data;
 
@@ -45,7 +46,7 @@ public class GroupIntegrationService extends ShopBaseService {
 	@Autowired public GroupIntegrationListService groupIntegrationList;
     @Autowired public QRCodeService qrCode;
     
-    public static final String GROUP_INTEGRATION_SHARE_PATH = "pages/pinintegration/pinintegration";
+//    public static final String GROUP_INTEGRATION_SHARE_PATH = "pages/pinintegration/pinintegration";
 	
 	/**
 	 * 分页查询瓜分积分活动列表
@@ -182,11 +183,15 @@ public class GroupIntegrationService extends ShopBaseService {
 		GroupIntegrationDefineRecord record = selectDefineById(actId);
 		GroupIntegrationShareQRCodeVo qrCodeVo = null;
 		if(record != null) {
-			String pageUrl = GROUP_INTEGRATION_SHARE_PATH+"?pinInte_id="+actId+"&invite_user=&group_id=";
-			String imgUrl = qrCode.getMpQRCode(pageUrl, QrCodeTypeConstant.QR_CODE_TYPE_GROUP_INTEGRATION, actId);
+//			String pageUrl = GROUP_INTEGRATION_SHARE_PATH+"?pinInte_id="+actId+"&invite_user=&group_id=";
+//			String imgUrl = qrCode.getMpQRCode(pageUrl, QrCodeTypeConstant.QR_CODE_TYPE_GROUP_INTEGRATION, actId);
+
+			String pathParam="pinInte_id="+actId+"&invite_user=&group_id=";
+			String imageUrl=qrCode.getMpQrCode(QrCodeTypeEnum.PARTATION_INTEGRAL,pathParam);
+
 			qrCodeVo = new GroupIntegrationShareQRCodeVo();
-			qrCodeVo.setImgUrl(imgUrl);
-			qrCodeVo.setPageUrl(pageUrl);
+			qrCodeVo.setImgUrl(imageUrl);
+			qrCodeVo.setPageUrl(QrCodeTypeEnum.PARTATION_INTEGRAL.getPathUrl(pathParam));
 		}
 		return qrCodeVo;
 	}

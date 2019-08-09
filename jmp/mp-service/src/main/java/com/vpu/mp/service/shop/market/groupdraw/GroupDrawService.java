@@ -5,7 +5,8 @@ import com.vpu.mp.service.foundation.service.ShopBaseService;
 import com.vpu.mp.service.foundation.util.PageResult;
 import com.vpu.mp.service.pojo.shop.image.ShareQrCodeVo;
 import com.vpu.mp.service.pojo.shop.market.groupdraw.*;
-import com.vpu.mp.service.shop.qrcode.QRCodeService;
+import com.vpu.mp.service.pojo.shop.qrcode.QrCodeTypeEnum;
+import com.vpu.mp.service.shop.image.QRCodeService;
 import lombok.extern.slf4j.Slf4j;
 import org.jooq.Record17;
 import org.jooq.SelectConditionStep;
@@ -40,7 +41,7 @@ public class GroupDrawService extends ShopBaseService {
     private static final byte GROUP_DRAW_DISABLED = 0;
 
     /** 活动页面 **/
-    private static final String GROUP_DRAW_SHARE_PATH = "pages/pinlotterylist/pinlotterylist";
+//    private static final String GROUP_DRAW_SHARE_PATH = "pages/pinlotterylist/pinlotterylist";
 
     private final QRCodeService qrCode;
 
@@ -53,11 +54,13 @@ public class GroupDrawService extends ShopBaseService {
      */
     public ShareQrCodeVo getMpQRCode(GroupDrawShareParam param) {
         Integer groupDrawId = param.getGroupDrawId();
-        String pagePath = GROUP_DRAW_SHARE_PATH + "?group_draw_id=" + groupDrawId;
-        String imageUrl = qrCode.getMpQRCode(pagePath);
+//        String pagePath = GROUP_DRAW_SHARE_PATH + "?group_draw_id=" + groupDrawId;
+//        String imageUrl = qrCode.getMpQRCode(pagePath);
+        String pathParam="group_draw_id=" + groupDrawId;
+        String imageUrl=qrCode.getMpQrCode(QrCodeTypeEnum.PIN_LOTTERY,pathParam);
         ShareQrCodeVo vo = new ShareQrCodeVo();
         vo.setImageUrl(imageUrl);
-        vo.setPagePath(pagePath);
+        vo.setPagePath(QrCodeTypeEnum.PIN_LOTTERY.getPathUrl(pathParam));
         return vo;
     }
 

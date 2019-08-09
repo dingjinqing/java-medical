@@ -49,7 +49,7 @@ import com.vpu.mp.service.shop.overview.MallOverviewService;
 import com.vpu.mp.service.shop.overview.OverviewService;
 import com.vpu.mp.service.shop.overview.RealTimeOverviewService;
 import com.vpu.mp.service.shop.overview.TransactionStatisticsService;
-import com.vpu.mp.service.shop.qrcode.QRCodeService;
+import com.vpu.mp.service.shop.image.QRCodeService;
 import com.vpu.mp.service.shop.store.store.StoreService;
 import com.vpu.mp.service.shop.summary.portrait.PortraitService;
 import com.vpu.mp.service.shop.summary.visit.AmountService;
