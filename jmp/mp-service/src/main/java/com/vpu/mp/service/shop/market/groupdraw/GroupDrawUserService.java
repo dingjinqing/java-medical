@@ -307,7 +307,6 @@ public class GroupDrawUserService extends ShopBaseService {
             couponIdArray[i] = String.valueOf(coupOnIds.get(i));
         }
         CouponGiveQueueParam message = new CouponGiveQueueParam();
-        message.setActId(groupDrawId);
         message.setShopId(getShopId());
         message.setUserIds(userIds);
         message.setCouponArray(couponIdArray);
