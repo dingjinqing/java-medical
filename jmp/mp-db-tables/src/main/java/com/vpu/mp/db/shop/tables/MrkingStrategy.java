@@ -42,7 +42,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class MrkingStrategy extends TableImpl<MrkingStrategyRecord> {
 
-    private static final long serialVersionUID = 1749842944;
+    private static final long serialVersionUID = -403397702;
 
     /**
      * The reference instance of <code>mini_shop_471752.b2c_mrking_strategy</code>
@@ -63,19 +63,14 @@ public class MrkingStrategy extends TableImpl<MrkingStrategyRecord> {
     public final TableField<MrkingStrategyRecord, Integer> ID = createField("id", org.jooq.impl.SQLDataType.INTEGER.nullable(false).identity(true), this, "");
 
     /**
-     * The column <code>mini_shop_471752.b2c_mrking_strategy.shop_id</code>. 店铺id
-     */
-    public final TableField<MrkingStrategyRecord, Integer> SHOP_ID = createField("shop_id", org.jooq.impl.SQLDataType.INTEGER.nullable(false).defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.INTEGER)), this, "店铺id");
-
-    /**
      * The column <code>mini_shop_471752.b2c_mrking_strategy.act_name</code>.
      */
     public final TableField<MrkingStrategyRecord, String> ACT_NAME = createField("act_name", org.jooq.impl.SQLDataType.VARCHAR(120).nullable(false).defaultValue(org.jooq.impl.DSL.inline("", org.jooq.impl.SQLDataType.VARCHAR)), this, "");
 
     /**
-     * The column <code>mini_shop_471752.b2c_mrking_strategy.type</code>. 类型,1每满减 2满件 3满折 4满赠
+     * The column <code>mini_shop_471752.b2c_mrking_strategy.type</code>. 类型,1每满减 2满件 3满折 4仅第X件打折
      */
-    public final TableField<MrkingStrategyRecord, Byte> TYPE = createField("type", org.jooq.impl.SQLDataType.TINYINT.nullable(false).defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.TINYINT)), this, "类型,1每满减 2满件 3满折 4满赠");
+    public final TableField<MrkingStrategyRecord, Byte> TYPE = createField("type", org.jooq.impl.SQLDataType.TINYINT.nullable(false).defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.TINYINT)), this, "类型,1每满减 2满件 3满折 4仅第X件打折");
 
     /**
      * The column <code>mini_shop_471752.b2c_mrking_strategy.start_time</code>.
@@ -110,7 +105,7 @@ public class MrkingStrategy extends TableImpl<MrkingStrategyRecord> {
     /**
      * The column <code>mini_shop_471752.b2c_mrking_strategy.del_flag</code>.
      */
-    public final TableField<MrkingStrategyRecord, Integer> DEL_FLAG = createField("del_flag", org.jooq.impl.SQLDataType.INTEGER.nullable(false).defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.INTEGER)), this, "");
+    public final TableField<MrkingStrategyRecord, Byte> DEL_FLAG = createField("del_flag", org.jooq.impl.SQLDataType.TINYINT.nullable(false).defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.TINYINT)), this, "");
 
     /**
      * The column <code>mini_shop_471752.b2c_mrking_strategy.strategy_priority</code>. 促销活动优先级
@@ -125,12 +120,17 @@ public class MrkingStrategy extends TableImpl<MrkingStrategyRecord> {
     /**
      * The column <code>mini_shop_471752.b2c_mrking_strategy.create_time</code>.
      */
-    public final TableField<MrkingStrategyRecord, Timestamp> CREATE_TIME = createField("create_time", org.jooq.impl.SQLDataType.TIMESTAMP.nullable(false).defaultValue(org.jooq.impl.DSL.field("CURRENT_TIMESTAMP", org.jooq.impl.SQLDataType.TIMESTAMP)), this, "");
+    public final TableField<MrkingStrategyRecord, Timestamp> CREATE_TIME = createField("create_time", org.jooq.impl.SQLDataType.TIMESTAMP.defaultValue(org.jooq.impl.DSL.field("CURRENT_TIMESTAMP", org.jooq.impl.SQLDataType.TIMESTAMP)), this, "");
 
     /**
      * The column <code>mini_shop_471752.b2c_mrking_strategy.update_time</code>. 最后修改时间
      */
-    public final TableField<MrkingStrategyRecord, Timestamp> UPDATE_TIME = createField("update_time", org.jooq.impl.SQLDataType.TIMESTAMP.nullable(false).defaultValue(org.jooq.impl.DSL.field("CURRENT_TIMESTAMP", org.jooq.impl.SQLDataType.TIMESTAMP)), this, "最后修改时间");
+    public final TableField<MrkingStrategyRecord, Timestamp> UPDATE_TIME = createField("update_time", org.jooq.impl.SQLDataType.TIMESTAMP.defaultValue(org.jooq.impl.DSL.field("CURRENT_TIMESTAMP", org.jooq.impl.SQLDataType.TIMESTAMP)), this, "最后修改时间");
+
+    /**
+     * The column <code>mini_shop_471752.b2c_mrking_strategy.status</code>. 状态：1可用，0停用
+     */
+    public final TableField<MrkingStrategyRecord, Byte> STATUS = createField("status", org.jooq.impl.SQLDataType.TINYINT.nullable(false).defaultValue(org.jooq.impl.DSL.inline("1", org.jooq.impl.SQLDataType.TINYINT)), this, "状态：1可用，0停用");
 
     /**
      * Create a <code>mini_shop_471752.b2c_mrking_strategy</code> table reference
@@ -178,7 +178,7 @@ public class MrkingStrategy extends TableImpl<MrkingStrategyRecord> {
      */
     @Override
     public List<Index> getIndexes() {
-        return Arrays.<Index>asList(Indexes.MRKING_STRATEGY_MRKING_STRATEGY_DELFLAG, Indexes.MRKING_STRATEGY_PRIMARY, Indexes.MRKING_STRATEGY_SHOP_ID);
+        return Arrays.<Index>asList(Indexes.MRKING_STRATEGY_MRKING_STRATEGY_DELFLAG, Indexes.MRKING_STRATEGY_PRIMARY);
     }
 
     /**

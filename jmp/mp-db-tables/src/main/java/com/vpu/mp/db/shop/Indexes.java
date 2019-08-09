@@ -222,7 +222,6 @@ public class Indexes {
     public static final Index MP_VISIT_PAGE_REF_DATE = Indexes0.MP_VISIT_PAGE_REF_DATE;
     public static final Index MRKING_STRATEGY_MRKING_STRATEGY_DELFLAG = Indexes0.MRKING_STRATEGY_MRKING_STRATEGY_DELFLAG;
     public static final Index MRKING_STRATEGY_PRIMARY = Indexes0.MRKING_STRATEGY_PRIMARY;
-    public static final Index MRKING_STRATEGY_SHOP_ID = Indexes0.MRKING_STRATEGY_SHOP_ID;
     public static final Index MRKING_STRATEGY_CONDITION_PRIMARY = Indexes0.MRKING_STRATEGY_CONDITION_PRIMARY;
     public static final Index MRKING_VOUCHER_ACT_NAME = Indexes0.MRKING_VOUCHER_ACT_NAME;
     public static final Index MRKING_VOUCHER_ALIAS_CODE = Indexes0.MRKING_VOUCHER_ALIAS_CODE;
@@ -619,7 +618,6 @@ public class Indexes {
         public static Index MP_VISIT_PAGE_REF_DATE = Internal.createIndex("ref_date", MpVisitPage.MP_VISIT_PAGE, new OrderField[] { MpVisitPage.MP_VISIT_PAGE.REF_DATE }, false);
         public static Index MRKING_STRATEGY_MRKING_STRATEGY_DELFLAG = Internal.createIndex("mrking_strategy_delflag", MrkingStrategy.MRKING_STRATEGY, new OrderField[] { MrkingStrategy.MRKING_STRATEGY.DEL_FLAG }, false);
         public static Index MRKING_STRATEGY_PRIMARY = Internal.createIndex("PRIMARY", MrkingStrategy.MRKING_STRATEGY, new OrderField[] { MrkingStrategy.MRKING_STRATEGY.ID }, true);
-        public static Index MRKING_STRATEGY_SHOP_ID = Internal.createIndex("shop_id", MrkingStrategy.MRKING_STRATEGY, new OrderField[] { MrkingStrategy.MRKING_STRATEGY.SHOP_ID }, false);
         public static Index MRKING_STRATEGY_CONDITION_PRIMARY = Internal.createIndex("PRIMARY", MrkingStrategyCondition.MRKING_STRATEGY_CONDITION, new OrderField[] { MrkingStrategyCondition.MRKING_STRATEGY_CONDITION.ID }, true);
         public static Index MRKING_VOUCHER_ACT_NAME = Internal.createIndex("act_name", MrkingVoucher.MRKING_VOUCHER, new OrderField[] { MrkingVoucher.MRKING_VOUCHER.ACT_NAME }, false);
         public static Index MRKING_VOUCHER_ALIAS_CODE = Internal.createIndex("alias_code", MrkingVoucher.MRKING_VOUCHER, new OrderField[] { MrkingVoucher.MRKING_VOUCHER.ALIAS_CODE }, true);

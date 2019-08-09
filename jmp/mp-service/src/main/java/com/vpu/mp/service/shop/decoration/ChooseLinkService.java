@@ -217,7 +217,7 @@ public class ChooseLinkService extends ShopBaseService {
 		List<ActivityVo>list = db().select(MRKING_STRATEGY.ID,MRKING_STRATEGY.ACT_NAME,MRKING_STRATEGY.START_TIME,MRKING_STRATEGY.END_TIME)
 				.from(MRKING_STRATEGY)
 				.where(MRKING_STRATEGY.END_TIME.ge(new Timestamp(System.currentTimeMillis())))
-				.and(MRKING_STRATEGY.DEL_FLAG.eq((int) 0))
+				.and(MRKING_STRATEGY.DEL_FLAG.eq(DelFlag.NORMAL.getCode()))
 				.fetch().into(ActivityVo.class);
 		return list;
 	}

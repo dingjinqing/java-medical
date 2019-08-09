@@ -579,3 +579,13 @@ alter table `b2c_group_integration_list` modify column `group_id` int(11) not nu
 --订单返利表---常乐--2019-08-07
 ALTER TABLE `b2c_order_goods_rebate` ADD COLUMN `real_rebate_money` DECIMAL(10,2) DEFAULT 0.00  NULL   COMMENT '实际返利金额';
 
+-- 王兵兵 201-08-09 满折满减
+alter table `b2c_mrking_strategy` drop column `shop_id`;
+alter table `b2c_mrking_strategy` add column `status` tinyint(1)  not null default '1' comment '状态：1可用，0停用';
+alter table `b2c_mrking_strategy` modify column `del_flag`  tinyint(1)  not null default 0;
+alter table `b2c_mrking_strategy` modify column `type`  tinyint(1)  not null default 0 comment '类型,1每满减 2满件 3满折 4仅第X件打折';
+alter table `b2c_mrking_strategy_condition` drop column `shop_id`;
+alter table `b2c_mrking_strategy_condition` drop column `gift`;
+alter table `b2c_mrking_strategy_condition` drop column `gift_left`;
+alter table `b2c_mrking_strategy_condition` modify column `amount`  int(11)  not null default '0' comment '满几件或第几件（第X件打折）';
+

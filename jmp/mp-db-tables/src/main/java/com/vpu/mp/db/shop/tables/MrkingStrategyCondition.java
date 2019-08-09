@@ -43,7 +43,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class MrkingStrategyCondition extends TableImpl<MrkingStrategyConditionRecord> {
 
-    private static final long serialVersionUID = -276790711;
+    private static final long serialVersionUID = -1507154037;
 
     /**
      * The reference instance of <code>mini_shop_471752.b2c_mrking_strategy_condition</code>
@@ -64,11 +64,6 @@ public class MrkingStrategyCondition extends TableImpl<MrkingStrategyConditionRe
     public final TableField<MrkingStrategyConditionRecord, Integer> ID = createField("id", org.jooq.impl.SQLDataType.INTEGER.nullable(false).identity(true), this, "");
 
     /**
-     * The column <code>mini_shop_471752.b2c_mrking_strategy_condition.shop_id</code>. 店铺id
-     */
-    public final TableField<MrkingStrategyConditionRecord, Integer> SHOP_ID = createField("shop_id", org.jooq.impl.SQLDataType.INTEGER.nullable(false).defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.INTEGER)), this, "店铺id");
-
-    /**
      * The column <code>mini_shop_471752.b2c_mrking_strategy_condition.strategy_id</code>.
      */
     public final TableField<MrkingStrategyConditionRecord, Integer> STRATEGY_ID = createField("strategy_id", org.jooq.impl.SQLDataType.INTEGER.nullable(false).defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.INTEGER)), this, "");
@@ -84,9 +79,9 @@ public class MrkingStrategyCondition extends TableImpl<MrkingStrategyConditionRe
     public final TableField<MrkingStrategyConditionRecord, BigDecimal> REDUCE_MONEY = createField("reduce_money", org.jooq.impl.SQLDataType.DECIMAL(10, 2).nullable(false).defaultValue(org.jooq.impl.DSL.inline("0.00", org.jooq.impl.SQLDataType.DECIMAL)), this, "减多少钱");
 
     /**
-     * The column <code>mini_shop_471752.b2c_mrking_strategy_condition.amount</code>. 满几件
+     * The column <code>mini_shop_471752.b2c_mrking_strategy_condition.amount</code>. 满几件或第几件（第X件打折）
      */
-    public final TableField<MrkingStrategyConditionRecord, Integer> AMOUNT = createField("amount", org.jooq.impl.SQLDataType.INTEGER.nullable(false).defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.INTEGER)), this, "满几件");
+    public final TableField<MrkingStrategyConditionRecord, Integer> AMOUNT = createField("amount", org.jooq.impl.SQLDataType.INTEGER.nullable(false).defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.INTEGER)), this, "满几件或第几件（第X件打折）");
 
     /**
      * The column <code>mini_shop_471752.b2c_mrking_strategy_condition.discount</code>. 打几折
@@ -94,24 +89,14 @@ public class MrkingStrategyCondition extends TableImpl<MrkingStrategyConditionRe
     public final TableField<MrkingStrategyConditionRecord, BigDecimal> DISCOUNT = createField("discount", org.jooq.impl.SQLDataType.DECIMAL(10, 2).nullable(false).defaultValue(org.jooq.impl.DSL.inline("0.00", org.jooq.impl.SQLDataType.DECIMAL)), this, "打几折");
 
     /**
-     * The column <code>mini_shop_471752.b2c_mrking_strategy_condition.gift</code>. 赠品
-     */
-    public final TableField<MrkingStrategyConditionRecord, String> GIFT = createField("gift", org.jooq.impl.SQLDataType.CLOB, this, "赠品");
-
-    /**
-     * The column <code>mini_shop_471752.b2c_mrking_strategy_condition.gift_left</code>. 赠品剩余数量
-     */
-    public final TableField<MrkingStrategyConditionRecord, String> GIFT_LEFT = createField("gift_left", org.jooq.impl.SQLDataType.CLOB, this, "赠品剩余数量");
-
-    /**
      * The column <code>mini_shop_471752.b2c_mrking_strategy_condition.create_time</code>.
      */
-    public final TableField<MrkingStrategyConditionRecord, Timestamp> CREATE_TIME = createField("create_time", org.jooq.impl.SQLDataType.TIMESTAMP.nullable(false).defaultValue(org.jooq.impl.DSL.field("CURRENT_TIMESTAMP", org.jooq.impl.SQLDataType.TIMESTAMP)), this, "");
+    public final TableField<MrkingStrategyConditionRecord, Timestamp> CREATE_TIME = createField("create_time", org.jooq.impl.SQLDataType.TIMESTAMP.defaultValue(org.jooq.impl.DSL.field("CURRENT_TIMESTAMP", org.jooq.impl.SQLDataType.TIMESTAMP)), this, "");
 
     /**
      * The column <code>mini_shop_471752.b2c_mrking_strategy_condition.update_time</code>. 最后修改时间
      */
-    public final TableField<MrkingStrategyConditionRecord, Timestamp> UPDATE_TIME = createField("update_time", org.jooq.impl.SQLDataType.TIMESTAMP.nullable(false).defaultValue(org.jooq.impl.DSL.field("CURRENT_TIMESTAMP", org.jooq.impl.SQLDataType.TIMESTAMP)), this, "最后修改时间");
+    public final TableField<MrkingStrategyConditionRecord, Timestamp> UPDATE_TIME = createField("update_time", org.jooq.impl.SQLDataType.TIMESTAMP.defaultValue(org.jooq.impl.DSL.field("CURRENT_TIMESTAMP", org.jooq.impl.SQLDataType.TIMESTAMP)), this, "最后修改时间");
 
     /**
      * Create a <code>mini_shop_471752.b2c_mrking_strategy_condition</code> table reference

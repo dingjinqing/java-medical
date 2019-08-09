@@ -954,22 +954,21 @@ create table `b2c_return_order_goods` (
 -- drop table if exists `b2c_mrking_strategy`;
 create table `b2c_mrking_strategy` (
   `id`                 mediumint(8)  not null auto_increment,
-  `shop_id`            int(11)      		not null default 0 comment '店铺id',
   `act_name`           varchar(120)       	not null default '',
-  `type`               tinyint(1)           not null default 0 comment '类型,1每满减 2满件 3满折 4满赠',
+  `type`               tinyint(1)           not null default 0 comment '类型,1每满减 2满件 3满折 4仅第X件打折',
   `start_time`         timestamp           null	default null,
   `end_time`           timestamp           null	default null,
   `recommend_goods_id` text                 comment '指定商品可用',
   `recommend_cat_id`   text                	comment '指定分类可用',
   `recommend_brand_id` text                	comment '指定品牌可用',
   `act_type`           tinyint(1)           not null default 0 comment '活动类型，0-选中项参与活动；1-选中项不参与活动',
-  `del_flag`           int(1)              	not null default 0,
+  `del_flag`           tinyint(1)              	not null default 0,
+  `status`             tinyint(1)           not null default '1' comment '状态：1可用，0停用',
   `strategy_priority`  int(11)            	not null default 0 comment '促销活动优先级',
   `card_id`            text 					comment '专属会员卡',
   `create_time`      timestamp    	default current_timestamp,
   `update_time`      timestamp     	default current_timestamp on update current_timestamp comment '最后修改时间',
   primary key (`id`),
-  key (`shop_id`),
   key mrking_strategy_delflag(`del_flag`)
 );
 
@@ -978,14 +977,11 @@ create table `b2c_mrking_strategy` (
 -- drop table if exists `b2c_mrking_strategy_condition`;
 create table `b2c_mrking_strategy_condition` (
   `id`           mediumint(8)  not null  auto_increment,
-  `shop_id`      int(11)           	not null default 0 comment '店铺id',
   `strategy_id`  int(11)           	not null default 0,
   `full_money`   decimal(10, 2)    	not null default '0.00' comment '满多少金额',
   `reduce_money` decimal(10, 2)    	not null default '0.00' comment '减多少钱',
-  `amount`       int(11)       		not null default '0' comment '满几件',
+  `amount`       int(11)       		not null default '0' comment '满几件或第几件（第X件打折）',
   `discount`     decimal(10, 2)    	not null default '0.00' comment '打几折',
-  `gift`         text                   comment '赠品',
-  `gift_left`    text                   comment '赠品剩余数量',
   `create_time`      timestamp    	default current_timestamp,
   `update_time`      timestamp     	default current_timestamp on update current_timestamp comment '最后修改时间',
   primary key (`id`)
