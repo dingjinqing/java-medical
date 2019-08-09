@@ -26,12 +26,4 @@ public class MaWxPlusInListInner implements Serializable {
 	@SerializedName("headimgurl")
 	private String headimgurl;
 	
-	
-
-	public static MaWxPlusInListInner fromJson(String json) {
-		return Util.parseJson(json, MaWxPlusInListInner.class);
-	}
-
-	
-	
 }
