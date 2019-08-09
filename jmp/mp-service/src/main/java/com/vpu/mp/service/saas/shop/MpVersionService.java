@@ -47,7 +47,7 @@ public class MpVersionService extends MainBaseService {
 		List<Integer> wxOpenList=new ArrayList<Integer>(list.size());
 		for (WxOpenMaCodeTemplate template : list) {
 			MpVersionRecord record = db().newRecord(MP_VERSION);
-			record.setCreateTime(new Timestamp(template.getCreateTime()));
+			record.setCreateTime(new Timestamp(template.getCreateTime()*1000));
 			record.setUserVersion(template.getUserVersion());
 			record.setUserDesc(template.getUserDesc());
 			record.setTemplateId(template.getTemplateId().intValue());
