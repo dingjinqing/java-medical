@@ -9,8 +9,10 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.vpu.mp.service.foundation.data.JsonResult;
 import com.vpu.mp.service.foundation.util.PageResult;
+import com.vpu.mp.service.pojo.shop.config.DeliverTemplateConfig;
 import com.vpu.mp.service.pojo.shop.goods.deliver.GoodsDeliverIdParam;
 import com.vpu.mp.service.pojo.shop.goods.deliver.GoodsDeliverPageListParam;
+import com.vpu.mp.service.pojo.shop.goods.deliver.GoodsDeliverTemplateListVo;
 import com.vpu.mp.service.pojo.shop.goods.deliver.GoodsDeliverTemplateParam;
 import com.vpu.mp.service.pojo.shop.goods.deliver.GoodsDeliverTemplateVo;
 
@@ -32,10 +34,12 @@ public class AdminGoodsDeliverController extends AdminBaseController {
 
 	@RequestMapping("/api/admin/goods/deliver/templatelist")
 	public JsonResult getTemplateList(@RequestBody GoodsDeliverPageListParam param) {
-
+		String config = shop().config.deliverTemplateConfigService.getDefaultDeliverTemplate();
 		PageResult<GoodsDeliverTemplateVo> pageResult = shop().goods.goodsDeliver.getDeliverTemplateList(param);
-
-		return success(pageResult);
+		GoodsDeliverTemplateListVo vo = new GoodsDeliverTemplateListVo();
+		vo.setConfig(config);
+		vo.setPageResult(pageResult);
+		return success(vo);
 
 	}
 
@@ -142,4 +146,20 @@ public class AdminGoodsDeliverController extends AdminBaseController {
 		return success(goodsDeliverTemplateVos);
 
 	}
+	
+	/**
+	 * 默认运费模板配置
+	 *
+	 * @param 
+	 * @return
+	 */
+	@RequestMapping("/api/admin/goods/deliver/config")
+	public JsonResult setDefaultDeliverTemplate(@RequestBody DeliverTemplateConfig param) {
+		
+		String jsonString = shop().config.deliverTemplateConfigService.getJsonString(param);
+		shop().config.deliverTemplateConfigService.setDefaultDeliverTemplate(jsonString);
+		
+		return success();
+	}
+	
 }
