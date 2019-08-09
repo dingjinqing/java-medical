@@ -42,7 +42,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class MrkingStrategy extends TableImpl<MrkingStrategyRecord> {
 
-    private static final long serialVersionUID = -403397702;
+    private static final long serialVersionUID = -1822194030;
 
     /**
      * The reference instance of <code>mini_shop_471752.b2c_mrking_strategy</code>
@@ -88,9 +88,9 @@ public class MrkingStrategy extends TableImpl<MrkingStrategyRecord> {
     public final TableField<MrkingStrategyRecord, String> RECOMMEND_GOODS_ID = createField("recommend_goods_id", org.jooq.impl.SQLDataType.CLOB, this, "指定商品可用");
 
     /**
-     * The column <code>mini_shop_471752.b2c_mrking_strategy.recommend_cat_id</code>. 指定分类可用
+     * The column <code>mini_shop_471752.b2c_mrking_strategy.recommend_cat_id</code>. 指定平台分类可用
      */
-    public final TableField<MrkingStrategyRecord, String> RECOMMEND_CAT_ID = createField("recommend_cat_id", org.jooq.impl.SQLDataType.CLOB, this, "指定分类可用");
+    public final TableField<MrkingStrategyRecord, String> RECOMMEND_CAT_ID = createField("recommend_cat_id", org.jooq.impl.SQLDataType.CLOB, this, "指定平台分类可用");
 
     /**
      * The column <code>mini_shop_471752.b2c_mrking_strategy.recommend_brand_id</code>. 指定品牌可用
@@ -98,9 +98,9 @@ public class MrkingStrategy extends TableImpl<MrkingStrategyRecord> {
     public final TableField<MrkingStrategyRecord, String> RECOMMEND_BRAND_ID = createField("recommend_brand_id", org.jooq.impl.SQLDataType.CLOB, this, "指定品牌可用");
 
     /**
-     * The column <code>mini_shop_471752.b2c_mrking_strategy.act_type</code>. 活动类型，0-选中项参与活动；1-选中项不参与活动
+     * The column <code>mini_shop_471752.b2c_mrking_strategy.act_type</code>. 活动类型，0-全部商品参与活动；1-选中商品参与活动（由商品、平台分类、商家分类、品牌等ID字符串指定）
      */
-    public final TableField<MrkingStrategyRecord, Byte> ACT_TYPE = createField("act_type", org.jooq.impl.SQLDataType.TINYINT.nullable(false).defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.TINYINT)), this, "活动类型，0-选中项参与活动；1-选中项不参与活动");
+    public final TableField<MrkingStrategyRecord, Byte> ACT_TYPE = createField("act_type", org.jooq.impl.SQLDataType.TINYINT.nullable(false).defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.TINYINT)), this, "活动类型，0-全部商品参与活动；1-选中商品参与活动（由商品、平台分类、商家分类、品牌等ID字符串指定）");
 
     /**
      * The column <code>mini_shop_471752.b2c_mrking_strategy.del_flag</code>.
@@ -131,6 +131,11 @@ public class MrkingStrategy extends TableImpl<MrkingStrategyRecord> {
      * The column <code>mini_shop_471752.b2c_mrking_strategy.status</code>. 状态：1可用，0停用
      */
     public final TableField<MrkingStrategyRecord, Byte> STATUS = createField("status", org.jooq.impl.SQLDataType.TINYINT.nullable(false).defaultValue(org.jooq.impl.DSL.inline("1", org.jooq.impl.SQLDataType.TINYINT)), this, "状态：1可用，0停用");
+
+    /**
+     * The column <code>mini_shop_471752.b2c_mrking_strategy.recommend_sort_id</code>. 指定商家分类可用
+     */
+    public final TableField<MrkingStrategyRecord, String> RECOMMEND_SORT_ID = createField("recommend_sort_id", org.jooq.impl.SQLDataType.CLOB, this, "指定商家分类可用");
 
     /**
      * Create a <code>mini_shop_471752.b2c_mrking_strategy</code> table reference

@@ -592,3 +592,8 @@ alter table `b2c_mrking_strategy_condition` modify column `amount`  int(11)  not
 -- 李晓冰 8月9号修改
 ALTER table b2c_code MODIFY COLUMN param_id varchar(64) NOT NULL DEFAULT '' COMMENT '记录唯一值，由url和对应参数产生';
 ALTER table b2c_code CHANGE COLUMN flag del_flag tinyint  NOT NULL DEFAULT 0;
+
+-- 王兵兵 201-08-09
+alter table `b2c_mrking_strategy` add column `recommend_sort_id` text comment '指定商家分类可用';
+alter table `b2c_mrking_strategy` modify column `recommend_cat_id` text comment '指定平台分类可用';
+alter table `b2c_mrking_strategy` modify column `act_type` tinyint(1) not null default '0' comment '活动类型，0-全部商品参与活动；1-选中商品参与活动（由商品、平台分类、商家分类、品牌等ID字符串指定）';

@@ -959,9 +959,10 @@ create table `b2c_mrking_strategy` (
   `start_time`         timestamp           null	default null,
   `end_time`           timestamp           null	default null,
   `recommend_goods_id` text                 comment '指定商品可用',
-  `recommend_cat_id`   text                	comment '指定分类可用',
+  `recommend_cat_id`   text                	comment '指定平台分类可用',
   `recommend_brand_id` text                	comment '指定品牌可用',
-  `act_type`           tinyint(1)           not null default 0 comment '活动类型，0-选中项参与活动；1-选中项不参与活动',
+  `recommend_sort_id`  text                	comment '指定商家分类可用',
+  `act_type`           tinyint(1)           not null default 0 comment '活动类型，0-全部商品参与活动；1-选中商品参与活动（由商品、平台分类、商家分类、品牌等ID字符串指定）',
   `del_flag`           tinyint(1)              	not null default 0,
   `status`             tinyint(1)           not null default '1' comment '状态：1可用，0停用',
   `strategy_priority`  int(11)            	not null default 0 comment '促销活动优先级',
@@ -973,7 +974,7 @@ create table `b2c_mrking_strategy` (
 );
 
 
--- -- 瞒折满减优惠规则表
+-- -- 满折满减优惠规则表
 -- drop table if exists `b2c_mrking_strategy_condition`;
 create table `b2c_mrking_strategy_condition` (
   `id`           mediumint(8)  not null  auto_increment,
