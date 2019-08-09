@@ -8,12 +8,11 @@ import org.springframework.web.bind.annotation.RestController;
 import com.vpu.mp.service.foundation.data.JsonResult;
 import com.vpu.mp.service.foundation.util.PageResult;
 import com.vpu.mp.service.pojo.shop.market.MarketSourceUserListParam;
-import com.vpu.mp.service.pojo.shop.market.lottery.LotteryByIdParam;
-import com.vpu.mp.service.pojo.shop.market.lottery.LotteryPageListParam;
-import com.vpu.mp.service.pojo.shop.market.lottery.LotteryPageListVo;
-import com.vpu.mp.service.pojo.shop.market.lottery.LotteryParam;
+import com.vpu.mp.service.pojo.shop.market.lottery.*;
 import com.vpu.mp.service.pojo.shop.market.lottery.record.LotteryRecordPageListParam;
 import com.vpu.mp.service.pojo.shop.market.lottery.record.LotteryRecordPageListVo;
+
+import javax.validation.Valid;
 
 /**
  * @author 孔德成
@@ -37,58 +36,70 @@ public class AdminLotteryController extends AdminBaseController {
 
     /**
      * 新增抽奖活动
-     * @param param
-     * @return
+     * @param param param
+     * @return json
      */
     @PostMapping("/add")
-    public JsonResult addLottery(@RequestBody LotteryParam param){
-        shop().lottery.addLottery(param);
+    public JsonResult addLottery(@RequestBody @Valid  LotteryParam param){
+        Integer integer = shop().lottery.addLottery(param);
+        if (integer<1){
+            return fail();
+        }
         return success();
     }
 
     /**
      * 更新抽奖活动
-     * @param param
-     * @return
+     * @param param param
+     * @return json
      */
     @PostMapping("/update")
-    public JsonResult updateLottery(@RequestBody LotteryParam param){
-        shop().lottery.updateLottery(param);
+    public JsonResult updateLottery(@RequestBody @Valid LotteryParam param){
+        Integer flag= shop().lottery.updateLottery(param);
+        if (flag<1){
+            return fail();
+        }
         return success();
     }
 
     /**
      * 改变状态
-     * @param param
-     * @return
+     * @param param param
+     * @return json
      */
     @PostMapping("/change")
     public JsonResult closeAndRestartById(@RequestBody LotteryByIdParam param){
-        shop().lottery.closeAndRestartById(param.getId());
+        Integer flag = shop().lottery.closeAndRestartById(param.getId());
+        if (flag<1){
+            return fail();
+        }
         return success();
     }
 
     @PostMapping("/delete")
     public JsonResult deleteLottery(@RequestBody LotteryByIdParam param){
-        shop().lottery.deleteLottery(param.getId());
+        Integer flag = shop().lottery.deleteLottery(param.getId());
+        if (flag<1){
+            return fail();
+        }
         return success();
     }
 
     /**
      * 获取单个抽象活动信息
-     * @param param
-     * @return
+     * @param param param
+     * @return json
      */
     @PostMapping("/get")
-    public JsonResult getlotteryById(@RequestBody LotteryByIdParam param){
+    public JsonResult getLotteryById(@RequestBody LotteryByIdParam param){
         LotteryPageListVo result = shop().lottery.getLotteryById(param.getId()).into(LotteryPageListVo.class);
         return success(result);
     }
 
     /**
      * 查询抽奖活动的记录
-     * @param param
-     * @return
+     * @param param param
+     * @return json
      */
     @PostMapping("/record/list")
     public JsonResult getLotteryRecordList(@RequestBody LotteryRecordPageListParam param){
@@ -98,10 +109,21 @@ public class AdminLotteryController extends AdminBaseController {
 
     /**
      *  查询抽奖用户列表
-     * @return
+     * @return json
      */
     @PostMapping("/user/list")
     public JsonResult getLotteryUserList(@RequestBody MarketSourceUserListParam param){
         return success(shop().lottery.getLotteryUserList(param));
+    }
+
+    /**
+     * 抽奖模拟
+     *
+     * @param param JoinLotteryParam
+     * @return json
+     */
+    @PostMapping("/join")
+    public JsonResult joinLottery(JoinLotteryParam param){
+        return success(shop().lottery.joinLottery(param));
     }
 }

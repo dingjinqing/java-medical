@@ -5,6 +5,7 @@ package com.vpu.mp.db.shop.tables.pojos;
 
 
 import java.io.Serializable;
+import java.sql.Timestamp;
 
 import javax.annotation.Generated;
 
@@ -22,68 +23,88 @@ import javax.annotation.Generated;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class LotteryPrize implements Serializable {
 
-    private static final long serialVersionUID = 1175262091;
+    private static final long serialVersionUID = -551099239;
 
-    private Integer id;
-    private Integer lotteryId;
-    private Byte    lotteryGrade;
-    private Byte    chance;
-    private Byte    presentType;
-    private Integer presentNumber;
-    private Integer integralScore;
-    private Byte    couponId;
-    private Byte    prdId;
-    private Byte    prdKeepDays;
-    private String  presentDetail;
-    private String  iconImgsImage;
-    private String  iconImgs;
+    private Integer   id;
+    private Integer   lotteryId;
+    private Integer   chanceNumerator;
+    private Integer   chanceDenominator;
+    private Byte      lotteryGrade;
+    private String    lotteryDetail;
+    private String    iconImgsImage;
+    private String    iconImgs;
+    private Byte      lotteryType;
+    private Integer   lotteryNumber;
+    private Integer   awardTimes;
+    private Integer   integralScore;
+    private Byte      couponId;
+    private Byte      prdId;
+    private Byte      prdKeepDays;
+    private Byte      delFlag;
+    private Timestamp createTime;
+    private Timestamp updateTime;
 
     public LotteryPrize() {}
 
     public LotteryPrize(LotteryPrize value) {
         this.id = value.id;
         this.lotteryId = value.lotteryId;
+        this.chanceNumerator = value.chanceNumerator;
+        this.chanceDenominator = value.chanceDenominator;
         this.lotteryGrade = value.lotteryGrade;
-        this.chance = value.chance;
-        this.presentType = value.presentType;
-        this.presentNumber = value.presentNumber;
+        this.lotteryDetail = value.lotteryDetail;
+        this.iconImgsImage = value.iconImgsImage;
+        this.iconImgs = value.iconImgs;
+        this.lotteryType = value.lotteryType;
+        this.lotteryNumber = value.lotteryNumber;
+        this.awardTimes = value.awardTimes;
         this.integralScore = value.integralScore;
         this.couponId = value.couponId;
         this.prdId = value.prdId;
         this.prdKeepDays = value.prdKeepDays;
-        this.presentDetail = value.presentDetail;
-        this.iconImgsImage = value.iconImgsImage;
-        this.iconImgs = value.iconImgs;
+        this.delFlag = value.delFlag;
+        this.createTime = value.createTime;
+        this.updateTime = value.updateTime;
     }
 
     public LotteryPrize(
-        Integer id,
-        Integer lotteryId,
-        Byte    lotteryGrade,
-        Byte    chance,
-        Byte    presentType,
-        Integer presentNumber,
-        Integer integralScore,
-        Byte    couponId,
-        Byte    prdId,
-        Byte    prdKeepDays,
-        String  presentDetail,
-        String  iconImgsImage,
-        String  iconImgs
+        Integer   id,
+        Integer   lotteryId,
+        Integer   chanceNumerator,
+        Integer   chanceDenominator,
+        Byte      lotteryGrade,
+        String    lotteryDetail,
+        String    iconImgsImage,
+        String    iconImgs,
+        Byte      lotteryType,
+        Integer   lotteryNumber,
+        Integer   awardTimes,
+        Integer   integralScore,
+        Byte      couponId,
+        Byte      prdId,
+        Byte      prdKeepDays,
+        Byte      delFlag,
+        Timestamp createTime,
+        Timestamp updateTime
     ) {
         this.id = id;
         this.lotteryId = lotteryId;
+        this.chanceNumerator = chanceNumerator;
+        this.chanceDenominator = chanceDenominator;
         this.lotteryGrade = lotteryGrade;
-        this.chance = chance;
-        this.presentType = presentType;
-        this.presentNumber = presentNumber;
+        this.lotteryDetail = lotteryDetail;
+        this.iconImgsImage = iconImgsImage;
+        this.iconImgs = iconImgs;
+        this.lotteryType = lotteryType;
+        this.lotteryNumber = lotteryNumber;
+        this.awardTimes = awardTimes;
         this.integralScore = integralScore;
         this.couponId = couponId;
         this.prdId = prdId;
         this.prdKeepDays = prdKeepDays;
-        this.presentDetail = presentDetail;
-        this.iconImgsImage = iconImgsImage;
-        this.iconImgs = iconImgs;
+        this.delFlag = delFlag;
+        this.createTime = createTime;
+        this.updateTime = updateTime;
     }
 
     public Integer getId() {
@@ -102,6 +123,22 @@ public class LotteryPrize implements Serializable {
         this.lotteryId = lotteryId;
     }
 
+    public Integer getChanceNumerator() {
+        return this.chanceNumerator;
+    }
+
+    public void setChanceNumerator(Integer chanceNumerator) {
+        this.chanceNumerator = chanceNumerator;
+    }
+
+    public Integer getChanceDenominator() {
+        return this.chanceDenominator;
+    }
+
+    public void setChanceDenominator(Integer chanceDenominator) {
+        this.chanceDenominator = chanceDenominator;
+    }
+
     public Byte getLotteryGrade() {
         return this.lotteryGrade;
     }
@@ -110,28 +147,52 @@ public class LotteryPrize implements Serializable {
         this.lotteryGrade = lotteryGrade;
     }
 
-    public Byte getChance() {
-        return this.chance;
+    public String getLotteryDetail() {
+        return this.lotteryDetail;
     }
 
-    public void setChance(Byte chance) {
-        this.chance = chance;
+    public void setLotteryDetail(String lotteryDetail) {
+        this.lotteryDetail = lotteryDetail;
     }
 
-    public Byte getPresentType() {
-        return this.presentType;
+    public String getIconImgsImage() {
+        return this.iconImgsImage;
     }
 
-    public void setPresentType(Byte presentType) {
-        this.presentType = presentType;
+    public void setIconImgsImage(String iconImgsImage) {
+        this.iconImgsImage = iconImgsImage;
     }
 
-    public Integer getPresentNumber() {
-        return this.presentNumber;
+    public String getIconImgs() {
+        return this.iconImgs;
     }
 
-    public void setPresentNumber(Integer presentNumber) {
-        this.presentNumber = presentNumber;
+    public void setIconImgs(String iconImgs) {
+        this.iconImgs = iconImgs;
+    }
+
+    public Byte getLotteryType() {
+        return this.lotteryType;
+    }
+
+    public void setLotteryType(Byte lotteryType) {
+        this.lotteryType = lotteryType;
+    }
+
+    public Integer getLotteryNumber() {
+        return this.lotteryNumber;
+    }
+
+    public void setLotteryNumber(Integer lotteryNumber) {
+        this.lotteryNumber = lotteryNumber;
+    }
+
+    public Integer getAwardTimes() {
+        return this.awardTimes;
+    }
+
+    public void setAwardTimes(Integer awardTimes) {
+        this.awardTimes = awardTimes;
     }
 
     public Integer getIntegralScore() {
@@ -166,28 +227,28 @@ public class LotteryPrize implements Serializable {
         this.prdKeepDays = prdKeepDays;
     }
 
-    public String getPresentDetail() {
-        return this.presentDetail;
+    public Byte getDelFlag() {
+        return this.delFlag;
     }
 
-    public void setPresentDetail(String presentDetail) {
-        this.presentDetail = presentDetail;
+    public void setDelFlag(Byte delFlag) {
+        this.delFlag = delFlag;
     }
 
-    public String getIconImgsImage() {
-        return this.iconImgsImage;
+    public Timestamp getCreateTime() {
+        return this.createTime;
     }
 
-    public void setIconImgsImage(String iconImgsImage) {
-        this.iconImgsImage = iconImgsImage;
+    public void setCreateTime(Timestamp createTime) {
+        this.createTime = createTime;
     }
 
-    public String getIconImgs() {
-        return this.iconImgs;
+    public Timestamp getUpdateTime() {
+        return this.updateTime;
     }
 
-    public void setIconImgs(String iconImgs) {
-        this.iconImgs = iconImgs;
+    public void setUpdateTime(Timestamp updateTime) {
+        this.updateTime = updateTime;
     }
 
     @Override
@@ -196,17 +257,22 @@ public class LotteryPrize implements Serializable {
 
         sb.append(id);
         sb.append(", ").append(lotteryId);
+        sb.append(", ").append(chanceNumerator);
+        sb.append(", ").append(chanceDenominator);
         sb.append(", ").append(lotteryGrade);
-        sb.append(", ").append(chance);
-        sb.append(", ").append(presentType);
-        sb.append(", ").append(presentNumber);
+        sb.append(", ").append(lotteryDetail);
+        sb.append(", ").append(iconImgsImage);
+        sb.append(", ").append(iconImgs);
+        sb.append(", ").append(lotteryType);
+        sb.append(", ").append(lotteryNumber);
+        sb.append(", ").append(awardTimes);
         sb.append(", ").append(integralScore);
         sb.append(", ").append(couponId);
         sb.append(", ").append(prdId);
         sb.append(", ").append(prdKeepDays);
-        sb.append(", ").append(presentDetail);
-        sb.append(", ").append(iconImgsImage);
-        sb.append(", ").append(iconImgs);
+        sb.append(", ").append(delFlag);
+        sb.append(", ").append(createTime);
+        sb.append(", ").append(updateTime);
 
         sb.append(")");
         return sb.toString();

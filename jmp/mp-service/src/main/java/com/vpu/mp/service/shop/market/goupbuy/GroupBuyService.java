@@ -212,7 +212,7 @@ public class GroupBuyService extends ShopBaseService {
 
     /**
      * 拼团活动效果数据
-     *
+     * 
      * @param param
      * @return
      */
@@ -233,6 +233,8 @@ public class GroupBuyService extends ShopBaseService {
                 discountMoney=dIterator.next();
             }
             if (discountMoney!=null&&discountMoney.getCreateTime().equals(date)){
+
+                // TODO: 2019/8/8  map不使用 
                 map.put("amount",discountMoney.getDiscountedTotalPrice());
                 map.put("discount",discountMoney.getMarketPrice().subtract(discountMoney.getGoodsPrice()));
                 map.put("ratio",discountMoney.getDiscountedTotalPrice().compareTo(BigDecimal.ZERO)>0?

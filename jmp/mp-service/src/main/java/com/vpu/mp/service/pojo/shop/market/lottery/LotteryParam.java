@@ -1,8 +1,12 @@
 package com.vpu.mp.service.pojo.shop.market.lottery;
 
-import java.sql.Timestamp;
-
+import com.vpu.mp.service.pojo.shop.market.lottery.prize.LotteryPrizeParam;
 import lombok.Data;
+
+import javax.validation.constraints.NotNull;
+import java.sql.Timestamp;
+import java.util.List;
+
 
 /**
  * @author 孔德成
@@ -12,9 +16,13 @@ import lombok.Data;
 public class LotteryParam {
 
     private Integer   id;
+    @NotNull
     private String    lotteryName;
+    @NotNull
     private Timestamp startTime;
+    @NotNull
     private Timestamp endTime;
+    @NotNull
     private String    lotteryExplain;
     private Integer   freeChances;
     private Byte      canShare;
@@ -25,8 +33,5 @@ public class LotteryParam {
     private Integer   noAwardScore;
     private String    noAwardImage;
     private String    noAwardIcon;
-    private String    firstAward;
-    private String    secondAward;
-    private String    thirdAward;
-    private String    fourthAward;
+    private List<LotteryPrizeParam> prizeList ;
 }

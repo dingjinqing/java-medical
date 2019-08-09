@@ -1,22 +1,23 @@
 package com.vpu.mp.service.shop.market.lottery;
 
-import static com.vpu.mp.db.shop.tables.LotteryRecord.LOTTERY_RECORD;
-import static com.vpu.mp.db.shop.tables.User.USER;
-
+import com.vpu.mp.db.shop.Tables;
+import com.vpu.mp.db.shop.tables.records.LotteryPrizeRecord;
+import com.vpu.mp.service.foundation.service.ShopBaseService;
+import com.vpu.mp.service.foundation.util.PageResult;
+import com.vpu.mp.service.foundation.util.Util;
+import com.vpu.mp.service.pojo.shop.market.lottery.JoinLottery;
+import com.vpu.mp.service.pojo.shop.market.lottery.prize.LotteryPrizeVo;
+import com.vpu.mp.service.pojo.shop.market.lottery.record.LotteryRecordPageListParam;
+import com.vpu.mp.service.pojo.shop.market.lottery.record.LotteryRecordPageListVo;
+import com.vpu.mp.service.shop.member.MemberService;
 import org.jooq.Condition;
 import org.jooq.Record;
 import org.jooq.SelectConditionStep;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.vpu.mp.db.shop.Tables;
-import com.vpu.mp.service.foundation.service.ShopBaseService;
-import com.vpu.mp.service.foundation.util.PageResult;
-import com.vpu.mp.service.foundation.util.Util;
-import com.vpu.mp.service.pojo.shop.market.lottery.prize.LotteryPrizeVo;
-import com.vpu.mp.service.pojo.shop.market.lottery.record.LotteryRecordPageListParam;
-import com.vpu.mp.service.pojo.shop.market.lottery.record.LotteryRecordPageListVo;
-import com.vpu.mp.service.shop.member.MemberService;
+import static com.vpu.mp.db.shop.tables.LotteryRecord.LOTTERY_RECORD;
+import static com.vpu.mp.db.shop.tables.User.USER;
 
 /**
  * @author 孔德成
@@ -31,8 +32,8 @@ public class LotteryRecordService extends ShopBaseService {
     /**
      * 抽奖记录查询
      *
-     * @param param
-     * @return
+     * @param param LotteryRecordPageListParam
+     * @return LotteryRecordPageListVo
      */
     public PageResult<LotteryRecordPageListVo> getLotteryRecordList(LotteryRecordPageListParam param) {
         SelectConditionStep<Record> select = db().select(LOTTERY_RECORD.asterisk(), USER.USERNAME, USER.MOBILE)
@@ -67,10 +68,11 @@ public class LotteryRecordService extends ShopBaseService {
 
     /**
      * 获取用户已抽奖次数
-     * @param userId
-     * @param lotteryId
+     *
+     * @param userId       会员id
+     * @param lotteryId    活动id
      * @param chanceSource 0:free 1:share 2:score
-     * @return
+     * @return 抽奖次数
      */
     public Integer getJoinLotteryNumber(Integer userId, Integer lotteryId, Byte chanceSource) {
         Condition condition = LOTTERY_RECORD.USER_ID.eq(userId)
@@ -81,18 +83,40 @@ public class LotteryRecordService extends ShopBaseService {
         return db().fetchCount(LOTTERY_RECORD, condition);
     }
 
+
     /**
-     * 获取用户已抽奖次数
+     * 发送奖品
+     * TODO: 2019/8/8  抽奖业务逻辑
      *
-     * @param userId
-     * @param lotteryId
-     * @return
+     * @param joinValid JoinLottery
      */
-    public Integer getJoinLotteryNumber(Integer userId, Integer lotteryId) {
-        return getJoinLotteryNumber(userId, lotteryId, (byte) -1);
+    public void sendAwardPresent(JoinLottery joinValid) {
+        LotteryPrizeRecord lotteryPrize = joinValid.getLotteryPrize();
+        //安慰奖
+        if (lotteryPrize == null) {
+            //送积分
+            return;
+        }
+        //选择奖类型
+        switch (lotteryPrize.getLotteryType()) {
+            case 0:
+                //积分
+                break;
+            case 1:
+                //用户余额
+                break;
+            case 2:
+                //2优惠券
+                break;
+            case 3:
+                //3赠品
+                break;
+            case 4:
+                //自定义
+                break;
+            default:
+        }
     }
-
-
 
 
 }

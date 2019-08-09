@@ -132,10 +132,9 @@ public class AdminImageController extends AdminBaseController {
 	 */
 	@PostMapping(value = "/admin/image/makeCrop")
 	public JsonResult makeCrop(@RequestBody CropImageParam param) throws Exception {
-//		System.out.println(param.remoteImgPath);
 		ShopApplication shop = shop();
 		UploadPath uploadPath = shop.image.makeCrop(param);
-		System.out.println(uploadPath);
+
 		return success();
 	}
 

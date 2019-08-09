@@ -147,12 +147,10 @@ public class FreeShippingService extends ShopBaseService {
     public void addFreeShipping(FreeShippingParam param) {
         transaction(() -> {
             param.setId(null);
-            FreeShippingRecord record = db().newRecord(FREE_SHIPPING);
-            assign(param, record);
+            FreeShippingRecord record = db().newRecord(FREE_SHIPPING,param);
             record.insert();
-            FreeShippingRuleRecord ruleRecord = db().newRecord(FREE_SHIPPING_RULE);
             param.getRuleList().forEach(rule -> {
-                assign(rule, ruleRecord);
+                FreeShippingRuleRecord ruleRecord = db().newRecord(FREE_SHIPPING_RULE,rule);
                 ruleRecord.setShippingId(record.getId());
                 ruleRecord.insert();
             });
@@ -168,14 +166,12 @@ public class FreeShippingService extends ShopBaseService {
     public void updateFreeShipping(FreeShippingParam param) {
         //开启事务
         transaction(() -> {
-            FreeShippingRecord record = new FreeShippingRecord();
-            assign(param, record);
+            FreeShippingRecord record = db().newRecord(FREE_SHIPPING,param);
             record.update();
-            FreeShippingRuleRecord ruleRecord = new FreeShippingRuleRecord();
             List<Integer> ruleList = new ArrayList<>();
             //更新规则
             param.getRuleList().forEach(rule -> {
-                assign(rule, ruleRecord);
+                FreeShippingRuleRecord ruleRecord = db().newRecord(FREE_SHIPPING_RULE,rule);
                 ruleRecord.setShippingId(record.getId());
                 if (ruleRecord.getId() == null) {
                     ruleRecord.insert();

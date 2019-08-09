@@ -13,6 +13,7 @@ import org.jooq.impl.DSL;
 import org.jooq.impl.TableImpl;
 
 import javax.annotation.Generated;
+import java.sql.Timestamp;
 import java.util.Arrays;
 import java.util.List;
 
@@ -30,7 +31,7 @@ import java.util.List;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class LotteryPrize extends TableImpl<LotteryPrizeRecord> {
 
-    private static final long serialVersionUID = -1742349104;
+    private static final long serialVersionUID = -773705220;
 
     /**
      * The reference instance of <code>mini_shop_4748160.b2c_lottery_prize</code>
@@ -56,24 +57,49 @@ public class LotteryPrize extends TableImpl<LotteryPrizeRecord> {
     public final TableField<LotteryPrizeRecord, Integer> LOTTERY_ID = createField("lottery_id", org.jooq.impl.SQLDataType.INTEGER.nullable(false), this, "抽奖编号");
 
     /**
-     * The column <code>mini_shop_4748160.b2c_lottery_prize.lottery_grade</code>. 中奖等级：1一等奖，2二等奖，3三等奖，4四等奖
+     * The column <code>mini_shop_4748160.b2c_lottery_prize.chance_numerator</code>. 中奖概率--分子
      */
-    public final TableField<LotteryPrizeRecord, Byte> LOTTERY_GRADE = createField("lottery_grade", org.jooq.impl.SQLDataType.TINYINT, this, "中奖等级：1一等奖，2二等奖，3三等奖，4四等奖");
+    public final TableField<LotteryPrizeRecord, Integer> CHANCE_NUMERATOR = createField("chance_numerator", org.jooq.impl.SQLDataType.INTEGER.nullable(false), this, "中奖概率--分子");
 
     /**
-     * The column <code>mini_shop_4748160.b2c_lottery_prize.chance</code>. 中奖概率%
+     * The column <code>mini_shop_4748160.b2c_lottery_prize.chance_denominator</code>. 中奖概率--分母
      */
-    public final TableField<LotteryPrizeRecord, Byte> CHANCE = createField("chance", org.jooq.impl.SQLDataType.TINYINT.nullable(false), this, "中奖概率%");
+    public final TableField<LotteryPrizeRecord, Integer> CHANCE_DENOMINATOR = createField("chance_denominator", org.jooq.impl.SQLDataType.INTEGER.nullable(false), this, "中奖概率--分母");
 
     /**
-     * The column <code>mini_shop_4748160.b2c_lottery_prize.present_type</code>. 选择奖类型 0积分 1 用户余额 2优惠券 3赠品 4 自定义 
+     * The column <code>mini_shop_4748160.b2c_lottery_prize.lottery_grade</code>. 中奖等级：1一等奖，2二等奖，3三等奖，4四等奖 5.。。。
      */
-    public final TableField<LotteryPrizeRecord, Byte> PRESENT_TYPE = createField("present_type", org.jooq.impl.SQLDataType.TINYINT.nullable(false).defaultValue(DSL.inline("0", org.jooq.impl.SQLDataType.TINYINT)), this, "选择奖类型 0积分 1 用户余额 2优惠券 3赠品 4 自定义 ");
+    public final TableField<LotteryPrizeRecord, Byte> LOTTERY_GRADE = createField("lottery_grade", org.jooq.impl.SQLDataType.TINYINT, this, "中奖等级：1一等奖，2二等奖，3三等奖，4四等奖 5.。。。");
 
     /**
-     * The column <code>mini_shop_4748160.b2c_lottery_prize.present_number</code>. 奖品份数
+     * The column <code>mini_shop_4748160.b2c_lottery_prize.lottery_detail</code>. 奖品信息
      */
-    public final TableField<LotteryPrizeRecord, Integer> PRESENT_NUMBER = createField("present_number", org.jooq.impl.SQLDataType.INTEGER.nullable(false), this, "奖品份数");
+    public final TableField<LotteryPrizeRecord, String> LOTTERY_DETAIL = createField("lottery_detail", org.jooq.impl.SQLDataType.VARCHAR(32).nullable(false), this, "奖品信息");
+
+    /**
+     * The column <code>mini_shop_4748160.b2c_lottery_prize.icon_imgs_image</code>. 中奖图片
+     */
+    public final TableField<LotteryPrizeRecord, String> ICON_IMGS_IMAGE = createField("icon_imgs_image", org.jooq.impl.SQLDataType.VARCHAR(199), this, "中奖图片");
+
+    /**
+     * The column <code>mini_shop_4748160.b2c_lottery_prize.icon_imgs</code>. 中奖提示
+     */
+    public final TableField<LotteryPrizeRecord, String> ICON_IMGS = createField("icon_imgs", org.jooq.impl.SQLDataType.VARCHAR(20), this, "中奖提示");
+
+    /**
+     * The column <code>mini_shop_4748160.b2c_lottery_prize.lottery_type</code>. 选择奖类型 0积分 1 用户余额 2优惠券 3赠品 4 自定义 
+     */
+    public final TableField<LotteryPrizeRecord, Byte> LOTTERY_TYPE = createField("lottery_type", org.jooq.impl.SQLDataType.TINYINT.nullable(false).defaultValue(DSL.inline("0", org.jooq.impl.SQLDataType.TINYINT)), this, "选择奖类型 0积分 1 用户余额 2优惠券 3赠品 4 自定义 ");
+
+    /**
+     * The column <code>mini_shop_4748160.b2c_lottery_prize.lottery_number</code>. 奖品份数
+     */
+    public final TableField<LotteryPrizeRecord, Integer> LOTTERY_NUMBER = createField("lottery_number", org.jooq.impl.SQLDataType.INTEGER.nullable(false), this, "奖品份数");
+
+    /**
+     * The column <code>mini_shop_4748160.b2c_lottery_prize.award_times</code>. 已发生中奖数
+     */
+    public final TableField<LotteryPrizeRecord, Integer> AWARD_TIMES = createField("award_times", org.jooq.impl.SQLDataType.INTEGER.nullable(false), this, "已发生中奖数");
 
     /**
      * The column <code>mini_shop_4748160.b2c_lottery_prize.integral_score</code>. 积分数量
@@ -96,19 +122,19 @@ public class LotteryPrize extends TableImpl<LotteryPrizeRecord> {
     public final TableField<LotteryPrizeRecord, Byte> PRD_KEEP_DAYS = createField("prd_keep_days", org.jooq.impl.SQLDataType.TINYINT.nullable(false), this, "赠品有效期");
 
     /**
-     * The column <code>mini_shop_4748160.b2c_lottery_prize.present_detail</code>. 奖品信息
+     * The column <code>mini_shop_4748160.b2c_lottery_prize.del_flag</code>. 1删除
      */
-    public final TableField<LotteryPrizeRecord, String> PRESENT_DETAIL = createField("present_detail", org.jooq.impl.SQLDataType.VARCHAR(32).nullable(false), this, "奖品信息");
+    public final TableField<LotteryPrizeRecord, Byte> DEL_FLAG = createField("del_flag", org.jooq.impl.SQLDataType.TINYINT.nullable(false).defaultValue(DSL.inline("0", org.jooq.impl.SQLDataType.TINYINT)), this, "1删除");
 
     /**
-     * The column <code>mini_shop_4748160.b2c_lottery_prize.icon_imgs_image</code>. 中奖图片
+     * The column <code>mini_shop_4748160.b2c_lottery_prize.create_time</code>.
      */
-    public final TableField<LotteryPrizeRecord, String> ICON_IMGS_IMAGE = createField("icon_imgs_image", org.jooq.impl.SQLDataType.VARCHAR(199), this, "中奖图片");
+    public final TableField<LotteryPrizeRecord, Timestamp> CREATE_TIME = createField("create_time", org.jooq.impl.SQLDataType.TIMESTAMP.defaultValue(DSL.field("CURRENT_TIMESTAMP", org.jooq.impl.SQLDataType.TIMESTAMP)), this, "");
 
     /**
-     * The column <code>mini_shop_4748160.b2c_lottery_prize.icon_imgs</code>. 中奖提示
+     * The column <code>mini_shop_4748160.b2c_lottery_prize.update_time</code>. 最后修改时间
      */
-    public final TableField<LotteryPrizeRecord, String> ICON_IMGS = createField("icon_imgs", org.jooq.impl.SQLDataType.VARCHAR(20), this, "中奖提示");
+    public final TableField<LotteryPrizeRecord, Timestamp> UPDATE_TIME = createField("update_time", org.jooq.impl.SQLDataType.TIMESTAMP.defaultValue(DSL.field("CURRENT_TIMESTAMP", org.jooq.impl.SQLDataType.TIMESTAMP)), this, "最后修改时间");
 
     /**
      * Create a <code>mini_shop_4748160.b2c_lottery_prize</code> table reference

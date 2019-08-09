@@ -1,5 +1,7 @@
 package com.vpu.mp.service.pojo.shop.market.lottery;
 
+import com.vpu.mp.db.shop.tables.LotteryPrize;
+import com.vpu.mp.db.shop.tables.records.LotteryPrizeRecord;
 import com.vpu.mp.db.shop.tables.records.LotteryRecord;
 
 import lombok.Data;
@@ -64,7 +66,14 @@ public class JoinLottery {
 
     private Integer score=0;
 
+    /**
+     * 抽奖规则
+     */
     private LotteryRecord lottery;
 
+    /**
+     * 中奖奖品规则
+     */
+    private LotteryPrizeRecord lotteryPrize;
 
 }
