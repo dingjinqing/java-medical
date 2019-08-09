@@ -10,8 +10,10 @@ import org.jooq.Record;
 import org.jooq.Result;
 import org.jooq.SelectWhereStep;
 import org.springframework.stereotype.Service;
+import org.springframework.web.bind.annotation.PostMapping;
 
 import com.vpu.mp.db.main.tables.records.MpVersionRecord;
+import com.vpu.mp.service.foundation.data.JsonResult;
 import com.vpu.mp.service.foundation.service.MainBaseService;
 import com.vpu.mp.service.foundation.util.PageResult;
 import com.vpu.mp.service.pojo.saas.shop.mp.MpVersionListParam;
@@ -180,11 +182,15 @@ public class MpVersionService extends MainBaseService {
      *  获取小程序版本名称列表值
      * @return 名称列表值
      */
-	public List<MpVersionVo> getMpUserVersionList(){
+	public String[] getMpUserVersionList(){
         List<MpVersionVo> list = db().selectDistinct(MP_VERSION.USER_VERSION)
-            .from(MP_VERSION).fetch().into(MpVersionVo.class);
+            .from(MP_VERSION).orderBy(MP_VERSION.USER_VERSION.desc()).fetch().into(MpVersionVo.class);
+        String[] versions=new String[list.size()];
 
-        return list;
+        for(int i=0;i<list.size();i++) {
+        	versions[i]=list.get(i).getUserVersion();
+        }
+        return versions;
     }
 	
 	/**
