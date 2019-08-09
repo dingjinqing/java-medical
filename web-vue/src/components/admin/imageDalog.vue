@@ -94,7 +94,7 @@
                         >{{$t('imgageDalog.OriginalImg')}}</a>
                         <a
                           title="裁剪图片"
-                          @click="handleCropper(item.imgPath,item.imgCatId,item.imgId)"
+                          @click="handleCropper(item.imgPath,item.imgCatId,item.imgId,item.imgUrl)"
                         >
                           裁剪
                         </a>
@@ -423,13 +423,15 @@ export default {
       console.log(this.img_list[index].imgIndex)
     },
     // 裁剪弹窗调起
-    handleCropper (path, catid, imgid) {
+    handleCropper (path, catid, imgid, url) {
       let obj = {
         path: path,
         catid: catid,
         imgid: imgid,
+        url: url,
         index: 1
       }
+      console.log(1)
       this.$store.commit('TOCHANGE_RECRUITMENTDIALOG', obj)
     }
   }

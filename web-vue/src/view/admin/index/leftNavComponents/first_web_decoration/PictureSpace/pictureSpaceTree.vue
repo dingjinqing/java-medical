@@ -116,7 +116,7 @@
                       >{{$t('imgageDalog.OriginalImg')}}</a>
                       <a
                         title="裁剪图片"
-                        @click="handleCropper(item.imgPath,item.imgCatId,item.imgId)"
+                        @click="handleCropper(item.imgPath,item.imgCatId,item.imgId,item.imgUrl)"
                       >
                         裁剪
                       </a>
@@ -613,12 +613,13 @@ export default {
       })
     },
     // 图片精确查询--------------end
-    // 裁剪弹窗确认
-    handleCropper (path, catid, imgid) {
+    // 裁剪弹窗调起
+    handleCropper (path, catid, imgid, url) {
       let obj = {
         path: path,
         catid: catid,
         imgid: imgid,
+        url: url,
         index: 2
       }
       console.log(1)

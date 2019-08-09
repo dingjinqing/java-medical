@@ -131,7 +131,7 @@ export default {
       imgPath: '',
       imgCatId: '',
       imgID: '',
-      cropperFlag: ''
+      cropperFlagP: ''
     }
   },
   computed: {
@@ -141,18 +141,16 @@ export default {
     }
   },
   watch: {
-    cropperFlag_: {
-      handler (obj) {
-        console.log(obj, 111)
-        if (obj === null) return
-        this.dialogVisible = true
-        // this.option.img = url
-        this.imgPath = obj.path
-        this.imgCatId = obj.catid
-        this.imgID = obj.imgid
-        this.cropperFlag = obj.index
-      },
-      immediate: true
+    cropperFlag_ (obj) {
+      console.log(obj, 111)
+      if (obj === null) return
+      this.dialogVisible = true
+      // this.option.img = url
+      this.imgPath = obj.path
+      this.imgCatId = obj.catid
+      this.imgID = obj.imgid
+      this.cropperFlagP = obj.index
+      this.option.img = obj.url
     }
   },
   methods: {
@@ -190,7 +188,7 @@ export default {
         imgCatId: this.imgCatId,
         remoteImgId: this.imgID
       }
-      if (this.cropperFlag === 0) {
+      if (this.cropperFlagF === 0) {
         imgsCropperRequest(obj).then((res) => {
           console.log(res)
           if (res.error === 0) {

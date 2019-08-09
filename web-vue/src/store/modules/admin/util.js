@@ -9,9 +9,11 @@ const crumbs = {
   mutations: {
     TOCHANGE_MENUALL: (state, params) => {
       state.menuFlag = params
+      console.log(state.menuFlag)
     },
     TOCHANGE_ACTIVEMENUALL: (state, params) => {
       state.activeFlag = params
+      console.log(state.activeFlag)
     },
     TOCHANGE_RECRUITMENTDIALOG: (state, params) => {
       state.cropperFlag = params
