@@ -7,15 +7,15 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
+import com.vpu.mp.db.main.tables.records.ShopRecord;
+import com.vpu.mp.db.main.tables.records.UserRecord;
 import com.vpu.mp.service.foundation.jedis.JedisManager;
 import com.vpu.mp.service.foundation.util.Util;
 import com.vpu.mp.service.pojo.wxapp.login.WxAppLoginParam;
 import com.vpu.mp.service.pojo.wxapp.login.WxAppSessionUser;
 import com.vpu.mp.service.saas.SaasApplication;
 
-import cn.binarywang.wx.miniapp.bean.WxMaJscode2SessionResult;
 import me.chanjar.weixin.common.error.WxErrorException;
-import me.chanjar.weixin.open.api.WxOpenMaService;
 
 /**
  * 
@@ -40,7 +40,7 @@ public class WxAppAuth {
 	public static final String TOKEN = "V-Token";
 
 	public static final String TOKEN_PREFIX = "WXAPP@";
-	
+
 	public static final String SHOP_ID = "V-ShopId";
 
 	/**
@@ -50,9 +50,10 @@ public class WxAppAuth {
 	protected String getToken() {
 		return request.getHeader(TOKEN);
 	}
-	
+
 	/**
 	 * 得到当前小程序ID
+	 * 
 	 * @return
 	 */
 	public Integer shopId() {
@@ -69,7 +70,6 @@ public class WxAppAuth {
 	public boolean isValidToken(String token) {
 		return token != null && StringUtils.startsWith(token, TOKEN_PREFIX);
 	}
-	
 
 	/**
 	 * 登录账户
@@ -80,18 +80,17 @@ public class WxAppAuth {
 	 */
 	public WxAppSessionUser login(WxAppLoginParam param) throws WxErrorException {
 		Integer shopId = shopId();
-		WxOpenMaService maService = saas.shop.mp.getMaServiceByShopId(shopId);
-		WxMaJscode2SessionResult result = maService.jsCode2SessionInfo(param.getCode());
-
-		// TODO:保存用户信息
+		ShopRecord shop = saas.shop.getShopById(shopId);
+		UserRecord user = saas.getShopApp(shopId).user.loginUser(param);
 
 		// 保存session
-		String token = TOKEN_PREFIX
-				+ Util.md5(String.format("%d_%s_%s", shopId, result.getOpenid(), result.getSessionKey()));
+		String token = TOKEN_PREFIX + Util.md5(shopId + "_" + user.getUserId());
 		WxAppSessionUser sessionUser = new WxAppSessionUser();
-		sessionUser.setOpenId(result.getOpenid());
+		sessionUser.setOpenId(user.getWxOpenid());
 		sessionUser.setToken(token);
 		sessionUser.setShopId(shopId);
+		sessionUser.setShopFlag(shop.getShopFlag());
+		sessionUser.setUserId(user.getUserId().intValue());
 		jedis.set(token, Util.toJson(sessionUser));
 		return sessionUser;
 	}
