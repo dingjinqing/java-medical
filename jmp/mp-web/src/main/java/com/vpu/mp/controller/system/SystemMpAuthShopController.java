@@ -12,7 +12,6 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 import java.io.IOException;
-import java.util.List;
 
 /**
  * 
@@ -189,7 +188,7 @@ public class SystemMpAuthShopController extends SystemBaseController {
 	}
 
 	@PostMapping("/api/system/mp/auth/list")
-	public JsonResult test(@RequestBody MpAuthShopListParam param){
+	public JsonResult authList(@RequestBody MpAuthShopListParam param){
         PageResult<MpAuthShopListVo> authList = saas.shop.mp.getAuthList(param);
 
         return success(authList);
