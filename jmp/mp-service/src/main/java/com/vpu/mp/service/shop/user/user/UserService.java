@@ -1,13 +1,12 @@
 package com.vpu.mp.service.shop.user.user;
 
-import static com.vpu.mp.db.main.tables.User.USER;
-import static com.vpu.mp.db.main.tables.UserDetail.USER_DETAIL;
+import static com.vpu.mp.db.shop.tables.User.USER;
+import static com.vpu.mp.db.shop.tables.UserDetail.USER_DETAIL;
 
 import org.springframework.stereotype.Service;
 
-import com.vpu.mp.db.main.tables.records.ShopRecord;
-import com.vpu.mp.db.main.tables.records.UserDetailRecord;
-import com.vpu.mp.db.main.tables.records.UserRecord;
+import com.vpu.mp.db.shop.tables.records.UserDetailRecord;
+import com.vpu.mp.db.shop.tables.records.UserRecord;
 import com.vpu.mp.service.foundation.service.ShopBaseService;
 import com.vpu.mp.service.pojo.wxapp.login.WxAppLoginParam;
 
@@ -35,7 +34,7 @@ public class UserService extends ShopBaseService {
 	 * @return
 	 */
 	public UserRecord getUserByUserId(Integer userId) {
-		return db().fetchAny(USER, USER.USER_ID.eq(userId.longValue()));
+		return db().fetchAny(USER, USER.USER_ID.eq(userId));
 	}
 
 	/**
