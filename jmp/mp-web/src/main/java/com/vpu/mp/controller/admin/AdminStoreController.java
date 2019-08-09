@@ -10,9 +10,9 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.vpu.mp.service.foundation.data.JsonResult;
 import com.vpu.mp.service.foundation.data.JsonResultCode;
+import com.vpu.mp.service.foundation.util.DateUtil;
 import com.vpu.mp.service.foundation.util.FieldsUtil;
 import com.vpu.mp.service.foundation.util.PageResult;
-import com.vpu.mp.service.foundation.util.Util;
 import com.vpu.mp.service.pojo.shop.config.store.StoreServiceConfig;
 import com.vpu.mp.service.pojo.shop.member.account.AccountParam;
 import com.vpu.mp.service.pojo.shop.store.goods.StoreGoodsListQueryParam;
@@ -495,7 +495,7 @@ public class AdminStoreController extends AdminBaseController{
 		}
     	if(tradeFlag) {
     		ServiceOrderUpdateParam updateParam = new ServiceOrderUpdateParam();
-    		updateParam.setFinishedTime(Util.getLocalDateTime());
+    		updateParam.setFinishedTime(DateUtil.getLocalDateTime());
     		updateParam.setVerifyAdmin(adminAuth.user().getUserName());
     		updateParam.setOrderStatus(ServiceOrderService.ORDER_STATUS_FINISHED);
     		
@@ -527,7 +527,7 @@ public class AdminStoreController extends AdminBaseController{
     		return fail(JsonResultCode.CODE_SERVICE_ORDER_CANCEL_REASON_IS_NULL);
     	}
     	ServiceOrderUpdateParam updateParam = new ServiceOrderUpdateParam();
-		updateParam.setCancelledTime(Util.getLocalDateTime());
+		updateParam.setCancelledTime(DateUtil.getLocalDateTime());
 		FieldsUtil.assignNotNull(param, updateParam);
 		if(shop().store.serviceOrder.serviceOrderUpdate(updateParam)) {
 			

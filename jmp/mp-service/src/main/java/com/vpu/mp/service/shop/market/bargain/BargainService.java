@@ -8,15 +8,6 @@ import java.sql.Timestamp;
 import java.util.Calendar;
 import java.util.Map;
 
-import com.vpu.mp.service.pojo.shop.market.MarketAnalysisParam;
-import com.vpu.mp.service.pojo.shop.market.MarketOrderListParam;
-import com.vpu.mp.service.pojo.shop.market.MarketSourceUserListParam;
-import com.vpu.mp.service.pojo.shop.member.MemberInfoVo;
-import com.vpu.mp.service.pojo.shop.member.MemberPageListParam;
-import com.vpu.mp.service.pojo.shop.order.OrderConstant;
-import com.vpu.mp.service.pojo.shop.order.OrderListInfoVo;
-import com.vpu.mp.service.pojo.shop.order.OrderPageListQueryParam;
-import com.vpu.mp.service.shop.member.MemberService;
 import org.jooq.Record;
 import org.jooq.SelectWhereStep;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,9 +16,13 @@ import org.springframework.stereotype.Service;
 import com.vpu.mp.db.shop.tables.records.BargainRecord;
 import com.vpu.mp.service.foundation.data.DelFlag;
 import com.vpu.mp.service.foundation.service.ShopBaseService;
+import com.vpu.mp.service.foundation.util.DateUtil;
 import com.vpu.mp.service.foundation.util.PageResult;
 import com.vpu.mp.service.foundation.util.Util;
 import com.vpu.mp.service.pojo.shop.goods.GoodsView;
+import com.vpu.mp.service.pojo.shop.market.MarketAnalysisParam;
+import com.vpu.mp.service.pojo.shop.market.MarketOrderListParam;
+import com.vpu.mp.service.pojo.shop.market.MarketSourceUserListParam;
 import com.vpu.mp.service.pojo.shop.market.bargain.Bargain;
 import com.vpu.mp.service.pojo.shop.market.bargain.BargainAddParam;
 import com.vpu.mp.service.pojo.shop.market.bargain.BargainPageListQueryParam;
@@ -36,6 +31,12 @@ import com.vpu.mp.service.pojo.shop.market.bargain.BargainUpdateParam;
 import com.vpu.mp.service.pojo.shop.market.bargain.analysis.BargainAnalysisDataVo;
 import com.vpu.mp.service.pojo.shop.market.bargain.analysis.BargainAnalysisParam;
 import com.vpu.mp.service.pojo.shop.market.bargain.analysis.BargainAnalysisTotalVo;
+import com.vpu.mp.service.pojo.shop.member.MemberInfoVo;
+import com.vpu.mp.service.pojo.shop.member.MemberPageListParam;
+import com.vpu.mp.service.pojo.shop.order.OrderConstant;
+import com.vpu.mp.service.pojo.shop.order.OrderListInfoVo;
+import com.vpu.mp.service.pojo.shop.order.OrderPageListQueryParam;
+import com.vpu.mp.service.shop.member.MemberService;
 
 /**
  * @author 王兵兵
@@ -99,7 +100,7 @@ public class BargainService extends ShopBaseService  {
 				leftJoin(GOODS).on(BARGAIN.GOODS_ID.eq(GOODS.GOODS_ID));
 		if(param.getState() > 0) {
 			/** 状态过滤*/
-			Timestamp now = Util.getLocalDateTime();
+			Timestamp now = DateUtil.getLocalDateTime();
 			switch(param.getState()) {
 			case (byte)1:
 				select.where(BARGAIN.STATUS.eq(STATUS_NORMAL)).and(BARGAIN.START_TIME.lt(now)).and(BARGAIN.END_TIME.gt(now));
@@ -154,7 +155,7 @@ public class BargainService extends ShopBaseService  {
     public void delBargain(Integer id) {
         db().update(BARGAIN).
             set(BARGAIN.DEL_FLAG,DelFlag.DISABLE.getCode()).
-            set(BARGAIN.DEL_TIME,Util.getLocalDateTime()).
+            set(BARGAIN.DEL_TIME,DateUtil.getLocalDateTime()).
             where(BARGAIN.ID.eq(id)).
             execute();
     }

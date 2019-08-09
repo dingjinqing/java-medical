@@ -20,6 +20,7 @@ import com.vpu.mp.db.main.tables.records.ShopAccountRecord;
 import com.vpu.mp.service.foundation.data.JsonResultCode;
 import com.vpu.mp.service.foundation.jedis.JedisManager;
 import com.vpu.mp.service.foundation.service.MainBaseService;
+import com.vpu.mp.service.foundation.util.DateUtil;
 import com.vpu.mp.service.foundation.util.FieldsUtil;
 import com.vpu.mp.service.foundation.util.PageResult;
 import com.vpu.mp.service.foundation.util.Util;
@@ -81,11 +82,11 @@ public class ShopAccountService extends MainBaseService {
 	public Integer getShopAccountNumber(String startTime, String endTime) {
 		SelectWhereStep<Record1<Integer>> select = db().selectCount().from(SHOP_ACCOUNT);
 		if (startTime != null) {
-			Timestamp ts = Util.convertToTimestamp(startTime);
+			Timestamp ts = DateUtil.convertToTimestamp(startTime);
 			select.where(SHOP_ACCOUNT.ADD_TIME.ge(ts));
 		}
 		if (endTime != null) {
-			Timestamp ts = Util.convertToTimestamp(endTime);
+			Timestamp ts = DateUtil.convertToTimestamp(endTime);
 			select.where(SHOP_ACCOUNT.ADD_TIME.le(ts));
 		}
 		return (Integer) select.limit(1).fetchSingle(0);
@@ -101,7 +102,7 @@ public class ShopAccountService extends MainBaseService {
 		SelectWhereStep<Record1<Integer>> select = db().selectCount().from(SHOP_ACCOUNT);
 		Timestamp startTimestamp = new Timestamp((new Date()).getTime());
 		if (startTime != null) {
-			startTimestamp = Util.convertToTimestamp(startTime);
+			startTimestamp = DateUtil.convertToTimestamp(startTime);
 		}
 		select.where(SHOP_ACCOUNT.END_TIME.ge(startTimestamp));
 

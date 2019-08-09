@@ -21,8 +21,8 @@ import com.vpu.mp.db.shop.tables.User;
 import com.vpu.mp.db.shop.tables.records.UserRecord;
 import com.vpu.mp.service.foundation.data.DelFlag;
 import com.vpu.mp.service.foundation.service.ShopBaseService;
+import com.vpu.mp.service.foundation.util.DateUtil;
 import com.vpu.mp.service.foundation.util.PageResult;
-import com.vpu.mp.service.foundation.util.Util;
 import com.vpu.mp.service.pojo.shop.market.MarketAnalysisParam;
 import com.vpu.mp.service.pojo.shop.member.CommonMemberPageListQueryParam;
 import com.vpu.mp.service.pojo.shop.member.CommonMemberPageListQueryVo;
@@ -107,12 +107,12 @@ public class MemberService extends ShopBaseService {
 		
 		//注册时间
 		if(!StringUtils.isEmpty(param.getCreateTime())) {
-			select.where(u.CREATE_TIME.ge(Util.convertToTimestamp(param.getCreateTime())));
+			select.where(u.CREATE_TIME.ge(DateUtil.convertToTimestamp(param.getCreateTime())));
 		}
 		
 		//结束时间
 		if(!StringUtils.isEmpty(param.getEndTime())) {
-			select.where(u.CREATE_TIME.le(Util.convertToTimestamp(param.getCreateTime())));
+			select.where(u.CREATE_TIME.le(DateUtil.convertToTimestamp(param.getCreateTime())));
 		}
 		
 		//TODO 指定时间内有登录

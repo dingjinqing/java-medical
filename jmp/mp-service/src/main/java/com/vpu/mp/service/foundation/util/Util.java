@@ -179,9 +179,7 @@ public class Util {
 		return ipAddress;
 	}
 
-	public static Timestamp convertToTimestamp(String dateTime) {
-		return Timestamp.valueOf(dateTime);
-	}
+
 
 	/**
 	 * 获取对象的属性值
@@ -228,7 +226,9 @@ public class Util {
 
 	public static final <T> T convert(Object from, Class<? extends T> toClass, T defaultValue) {
 		try {
-			if(from == null) return defaultValue;
+			if(from == null) {
+				return defaultValue;
+			}
 			T t = Convert.convert(from, toClass);
 			return t == null ? defaultValue : t;
 		} catch (DataTypeException e) {
@@ -416,56 +416,13 @@ public class Util {
 		return map.keySet().stream().map(key -> key + " = " + map.get(key)).collect(Collectors.joining(", ", "{", "}"));
 	}
 
-	/**
-	 * 获取本地的时间
-	 */
-	public static Timestamp getLocalDateTime() {
-		return Timestamp.valueOf((LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"))));
-	}
 
 	public static <T extends Collection<?>> boolean isEmpty(T t) {
 		return t == null || t.isEmpty();
 	}
 
 
-	protected static ThreadLocal<SimpleDateFormat> threadLocal = ThreadLocal.withInitial(() ->new SimpleDateFormat("yyyy-MM-dd hh:mm:ss")) ;
 	
-	/**
-	 * 线程单例，时间格式yyyy-MM-dd hh:mm:ss
-	 * @return
-	 */
-	public static SimpleDateFormat dateFormat(){
-		return threadLocal.get();
-	}
-
-	/**
-	 * 获取当前/指定月份第一天
-	 */
-	public static Timestamp currentMonthFirstDay(Date date) {
-		Calendar calendar = Calendar.getInstance();
-		calendar.setTime(date != null ? date : new Date());
-		calendar.set(Calendar.DAY_OF_MONTH, calendar.getActualMinimum(Calendar.DAY_OF_MONTH));
-		return new Timestamp(calendar.getTime().getTime());
-	}
-	/**
-	 * 获取当前月份最后一天
-	 */
-	public static Timestamp currentMonthLastDay() {
-		Calendar calendar = Calendar.getInstance();
-		calendar.setTime(new Date());
-		calendar.set(Calendar.DAY_OF_MONTH, calendar.getActualMaximum(Calendar.DAY_OF_MONTH));
-		return new Timestamp(calendar.getTime().getTime());
-	}
-	/**
-	 * 获取指定月份的下一个月的第一天.
-	 */
-	public static Timestamp nextMonthFirstDay(Date date) {
-		Calendar calendar = Calendar.getInstance();
-		calendar.setTime(date);
-		calendar.add(Calendar.MONTH, 1);
-		calendar.set(Calendar.DAY_OF_MONTH, calendar.getActualMinimum(Calendar.DAY_OF_MONTH));
-		return new Timestamp(calendar.getTime().getTime());
-	}
 
     /**
      * List 转 String

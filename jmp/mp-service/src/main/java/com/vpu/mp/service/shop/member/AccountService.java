@@ -13,7 +13,7 @@ import org.springframework.util.StringUtils;
 
 import com.vpu.mp.db.shop.tables.records.UserRecord;
 import com.vpu.mp.service.foundation.service.ShopBaseService;
-import com.vpu.mp.service.foundation.util.Util;
+import com.vpu.mp.service.foundation.util.DateUtil;
 import com.vpu.mp.service.pojo.shop.auth.AdminTokenAuthInfo;
 import com.vpu.mp.service.pojo.shop.member.account.AccountParam;
 
@@ -71,7 +71,7 @@ public class AccountService extends ShopBaseService {
 		db().insertInto(TRADES_RECORD, TRADES_RECORD.TRADE_TIME, TRADES_RECORD.TRADE_NUM, TRADES_RECORD.TRADE_SN,
 				TRADES_RECORD.USER_ID, TRADES_RECORD.TRADE_TYPE, TRADES_RECORD.TRADE_FLOW, TRADES_RECORD.TRADE_STATUS,
 				TRADES_RECORD.TRADE_STATUS)
-				.values(Util.getLocalDateTime(), param.getAmount(), tradeSn, param.getUserId(), zero, tradeType,
+				.values(DateUtil.getLocalDateTime(), param.getAmount(), tradeSn, param.getUserId(), zero, tradeType,
 						tradeFlow, tradeFlow == 2 ? zero : tradeFlow)
 				.execute();
 

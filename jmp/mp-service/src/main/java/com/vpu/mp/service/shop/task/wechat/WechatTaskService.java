@@ -43,7 +43,7 @@ public class WechatTaskService extends ShopBaseService {
     private static final String CONTENT = "wechat-context";
     private static final ThreadLocal<String> local = ThreadLocal.withInitial(() -> {
         LocalDate date = LocalDate.now();
-        return new SimpleDateFormat(DateUtil.pattern_one).
+        return new SimpleDateFormat(DateUtil.DATE_FORMAT_SHORT).
                 format(date.minusDays(1));
     });
 
@@ -193,7 +193,7 @@ public class WechatTaskService extends ShopBaseService {
     private void getWeeklyVisitTrend(WxMaAnalysisService service, Date date) {
         try {
             LocalDate startDate = LocalDate.parse(local.get(),
-                    DateTimeFormatter.ofPattern(DateUtil.pattern_one)).minusDays(6);
+                    DateTimeFormatter.ofPattern(DateUtil.DATE_FORMAT_SHORT)).minusDays(6);
             List<WxMaVisitTrend> result = service.getWeeklyVisitTrend(
                     Date.from(startDate.atStartOfDay(ZoneId.systemDefault()).toInstant()),date);
             if(validationData(result, MP_WEEKLY_VISIT)){
@@ -217,7 +217,7 @@ public class WechatTaskService extends ShopBaseService {
     private void getMonthlyVisitTrend(WxMaAnalysisService service, Date date) {
         try {
             LocalDate startDate = LocalDate.parse(local.get(),
-                    DateTimeFormatter.ofPattern(DateUtil.pattern_one)).withDayOfMonth(1);
+                    DateTimeFormatter.ofPattern(DateUtil.DATE_FORMAT_SHORT)).withDayOfMonth(1);
             List<WxMaVisitTrend> result = service.getMonthlyVisitTrend(
                     Date.from(startDate.atStartOfDay(ZoneId.systemDefault()).toInstant()),date);
             if(validationData(result, MP_MONTHLY_VISIT)){
@@ -262,7 +262,7 @@ public class WechatTaskService extends ShopBaseService {
     private void getWeeklyRetainInfo(WxMaAnalysisService service,Date date){
         try {
             LocalDate startDate = LocalDate.parse(local.get(),
-                    DateTimeFormatter.ofPattern(DateUtil.pattern_one)).minusDays(6);
+                    DateTimeFormatter.ofPattern(DateUtil.DATE_FORMAT_SHORT)).minusDays(6);
             WxMaRetainInfo info = service.getWeeklyRetainInfo(
                     java.sql.Date.valueOf(startDate),date);
             if(validationData(info, MP_WEEKLY_RETAIN)){
@@ -285,7 +285,7 @@ public class WechatTaskService extends ShopBaseService {
     private void getMonthlyRetainInfo(WxMaAnalysisService service,Date date){
         try {
             LocalDate startDate = LocalDate.parse(local.get(),
-                    DateTimeFormatter.ofPattern(DateUtil.pattern_one)).withDayOfMonth(1);
+                    DateTimeFormatter.ofPattern(DateUtil.DATE_FORMAT_SHORT)).withDayOfMonth(1);
             WxMaRetainInfo info = service.getWeeklyRetainInfo(
                     java.sql.Date.valueOf(startDate),date);
             if(validationData(info, MP_MONTHLY_RETAIN)){

@@ -35,6 +35,7 @@ import com.vpu.mp.db.shop.tables.UserLoginRecord;
 import com.vpu.mp.db.shop.tables.UserTag;
 import com.vpu.mp.db.shop.tables.records.DistributionTagRecord;
 import com.vpu.mp.service.foundation.service.ShopBaseService;
+import com.vpu.mp.service.foundation.util.DateUtil;
 import com.vpu.mp.service.foundation.util.PageResult;
 import com.vpu.mp.service.foundation.util.Util;
 import com.vpu.mp.service.pojo.shop.overview.transaction.GeographicalCollVo;
@@ -69,8 +70,8 @@ public class TransactionStatisticsService extends ShopBaseService {
     public GeographicalCollVo geographical(GeographicalParam param) {
         GeographicalCollVo collVo = new GeographicalCollVo();
         Optional<Date> screeningTime = Optional.of(param.getScreeningTime());
-        Timestamp startTime = Util.currentMonthFirstDay(screeningTime.orElse(new Date()));
-        Timestamp endTime = Util.nextMonthFirstDay(screeningTime.orElse(new Date()));
+        Timestamp startTime = DateUtil.currentMonthFirstDay(screeningTime.orElse(new Date()));
+        Timestamp endTime = DateUtil.nextMonthFirstDay(screeningTime.orElse(new Date()));
         List<GeographicalVo> voList = db().select(min(oi.PROVINCE_NAME).as("province")
                 , min(oi.PROVINCE_CODE).as("provinceCode")
                 , sum(oi.MONEY_PAID.add(oi.SCORE_DISCOUNT).add(oi.USE_ACCOUNT).add(oi.MEMBER_CARD_BALANCE)).as("totalDealMoney")

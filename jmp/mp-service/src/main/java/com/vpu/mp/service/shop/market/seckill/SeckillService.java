@@ -1,9 +1,23 @@
 package com.vpu.mp.service.shop.market.seckill;
 
+import static com.vpu.mp.db.shop.tables.Goods.GOODS;
+import static com.vpu.mp.db.shop.tables.GoodsSpecProduct.GOODS_SPEC_PRODUCT;
+import static com.vpu.mp.db.shop.tables.SecKillDefine.SEC_KILL_DEFINE;
+import static com.vpu.mp.db.shop.tables.SecKillProductDefine.SEC_KILL_PRODUCT_DEFINE;
+
+import java.sql.Timestamp;
+import java.util.List;
+
+import org.jooq.Record;
+import org.jooq.SelectWhereStep;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
 import com.vpu.mp.db.shop.tables.records.SecKillDefineRecord;
 import com.vpu.mp.db.shop.tables.records.SecKillProductDefineRecord;
 import com.vpu.mp.service.foundation.data.DelFlag;
 import com.vpu.mp.service.foundation.service.ShopBaseService;
+import com.vpu.mp.service.foundation.util.DateUtil;
 import com.vpu.mp.service.foundation.util.PageResult;
 import com.vpu.mp.service.foundation.util.Util;
 import com.vpu.mp.service.pojo.shop.config.ShopShareConfig;
@@ -11,7 +25,13 @@ import com.vpu.mp.service.pojo.shop.goods.GoodsView;
 import com.vpu.mp.service.pojo.shop.image.ShareQrCodeVo;
 import com.vpu.mp.service.pojo.shop.market.MarketOrderListParam;
 import com.vpu.mp.service.pojo.shop.market.MarketSourceUserListParam;
-import com.vpu.mp.service.pojo.shop.market.seckill.*;
+import com.vpu.mp.service.pojo.shop.market.seckill.SecKillProductDefine;
+import com.vpu.mp.service.pojo.shop.market.seckill.SecKillProductVo;
+import com.vpu.mp.service.pojo.shop.market.seckill.SeckillAddParam;
+import com.vpu.mp.service.pojo.shop.market.seckill.SeckillPageListQueryParam;
+import com.vpu.mp.service.pojo.shop.market.seckill.SeckillPageListQueryVo;
+import com.vpu.mp.service.pojo.shop.market.seckill.SeckillUpdateParam;
+import com.vpu.mp.service.pojo.shop.market.seckill.SeckillVo;
 import com.vpu.mp.service.pojo.shop.member.MemberInfoVo;
 import com.vpu.mp.service.pojo.shop.member.MemberPageListParam;
 import com.vpu.mp.service.pojo.shop.order.OrderConstant;
@@ -20,18 +40,6 @@ import com.vpu.mp.service.pojo.shop.order.OrderPageListQueryParam;
 import com.vpu.mp.service.pojo.shop.qrcode.QrCodeTypeEnum;
 import com.vpu.mp.service.shop.image.QRCodeService;
 import com.vpu.mp.service.shop.member.MemberService;
-import org.jooq.Record;
-import org.jooq.SelectWhereStep;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
-
-import java.sql.Timestamp;
-import java.util.List;
-
-import static com.vpu.mp.db.shop.tables.Goods.GOODS;
-import static com.vpu.mp.db.shop.tables.GoodsSpecProduct.GOODS_SPEC_PRODUCT;
-import static com.vpu.mp.db.shop.tables.SecKillDefine.SEC_KILL_DEFINE;
-import static com.vpu.mp.db.shop.tables.SecKillProductDefine.SEC_KILL_PRODUCT_DEFINE;
 
 /**
  * @author 王兵兵
@@ -70,7 +78,7 @@ public class SeckillService extends ShopBaseService {
             leftJoin(GOODS).on(SEC_KILL_DEFINE.GOODS_ID.eq(GOODS.GOODS_ID));
         if(param.getState() > 0) {
             /** 状态过滤*/
-            Timestamp now = Util.getLocalDateTime();
+            Timestamp now = DateUtil.getLocalDateTime();
             switch(param.getState()) {
                 case (byte)1:
                     select.where(SEC_KILL_DEFINE.STATUS.eq(STATUS_NORMAL)).and(SEC_KILL_DEFINE.START_TIME.lt(now)).and(SEC_KILL_DEFINE.END_TIME.gt(now));
@@ -133,7 +141,7 @@ public class SeckillService extends ShopBaseService {
     public void delSeckill(Integer skId) {
         db().update(SEC_KILL_DEFINE).
             set(SEC_KILL_DEFINE.DEL_FLAG,DelFlag.DISABLE.getCode()).
-            set(SEC_KILL_DEFINE.DEL_TIME,Util.getLocalDateTime()).
+            set(SEC_KILL_DEFINE.DEL_TIME,DateUtil.getLocalDateTime()).
             where(SEC_KILL_DEFINE.SK_ID.eq(skId)).
             execute();
     }

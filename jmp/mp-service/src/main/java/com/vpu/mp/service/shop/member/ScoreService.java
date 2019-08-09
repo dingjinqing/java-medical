@@ -21,7 +21,7 @@ import com.vpu.mp.db.shop.tables.records.UserRecord;
 import com.vpu.mp.db.shop.tables.records.UserScoreRecord;
 import com.vpu.mp.service.foundation.data.JsonResultCode;
 import com.vpu.mp.service.foundation.service.ShopBaseService;
-import com.vpu.mp.service.foundation.util.Util;
+import com.vpu.mp.service.foundation.util.DateUtil;
 import com.vpu.mp.service.pojo.shop.member.account.ScoreParam;
 
 /**
@@ -123,7 +123,7 @@ public class ScoreService extends ShopBaseService {
 		
 		// 7. 记录更新record action
 		TradesRecordRecord tradesRecord=new TradesRecordRecord();
-		tradesRecord.setTradeTime(Util.getLocalDateTime());
+		tradesRecord.setTradeTime(DateUtil.getLocalDateTime());
 		tradesRecord.setTradeNum(BigDecimal.valueOf(Math.abs(score)));
 		tradesRecord.setTradeSn(orderSn);
 		tradesRecord.setUserId(userId);
@@ -159,7 +159,7 @@ public class ScoreService extends ShopBaseService {
 
 	private Integer getTotalAvailableScoreById(Integer userId) {
 		List<Byte> list = Arrays.asList(AVAILABLE_STATUS);
-		Timestamp localDateTime = Util.getLocalDateTime();
+		Timestamp localDateTime = DateUtil.getLocalDateTime();
 		// 根据用户id,status,有效期
 		Integer sum = db().select(DSL.sum(USER_SCORE.USABLE_SCORE)).from(USER_SCORE)
 				.where(USER_SCORE.USER_ID.eq(userId)).and(USER_SCORE.STATUS.in(list))
@@ -247,7 +247,7 @@ public class ScoreService extends ShopBaseService {
 	 */
 	private UserScoreRecord getEarlyUsableRecord(Integer userId) {
 		// 通过score和status来筛选
-		Timestamp localDateTime = Util.getLocalDateTime();
+		Timestamp localDateTime = DateUtil.getLocalDateTime();
 
 		List<Byte> list = Arrays.asList(AVAILABLE_STATUS);
 

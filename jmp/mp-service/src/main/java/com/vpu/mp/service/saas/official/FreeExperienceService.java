@@ -11,8 +11,8 @@ import org.springframework.stereotype.Service;
 
 import com.vpu.mp.db.main.tables.records.ShopFreeExperienceRecord;
 import com.vpu.mp.service.foundation.service.MainBaseService;
+import com.vpu.mp.service.foundation.util.DateUtil;
 import com.vpu.mp.service.foundation.util.PageResult;
-import com.vpu.mp.service.foundation.util.Util;
 import com.vpu.mp.service.pojo.saas.offical.FreeExperienceInfo;
 import com.vpu.mp.service.pojo.saas.offical.FreeExperiencePageListParam;
 import com.vpu.mp.service.pojo.saas.offical.ShopFreeExperience;
@@ -72,11 +72,11 @@ public class FreeExperienceService extends MainBaseService{
 		
 		//开始时间
 		if(param.getStartTime() != null) {
-			select.where(SHOP_FREE_EXPERIENCE.ASK_TIME.ge(Util.convertToTimestamp(param.getStartTime())));
+			select.where(SHOP_FREE_EXPERIENCE.ASK_TIME.ge(DateUtil.convertToTimestamp(param.getStartTime())));
 		}
 		//最终时间
 		if(param.getEndTime() != null) {
-			select.where(SHOP_FREE_EXPERIENCE.ASK_TIME.le(Util.convertToTimestamp(param.getEndTime())));
+			select.where(SHOP_FREE_EXPERIENCE.ASK_TIME.le(DateUtil.convertToTimestamp(param.getEndTime())));
 		}
 		//店铺ID
 		if(param.getSearchShopId() != null) {

@@ -5,7 +5,6 @@ import java.io.IOException;
 import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
 
-import com.vpu.mp.service.foundation.data.JsonResultMessage;
 import org.apache.poi.ss.usermodel.Workbook;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -14,6 +13,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.vpu.mp.service.foundation.data.JsonResult;
+import com.vpu.mp.service.foundation.data.JsonResultMessage;
+import com.vpu.mp.service.foundation.util.DateUtil;
 import com.vpu.mp.service.foundation.util.PageResult;
 import com.vpu.mp.service.foundation.util.Util;
 import com.vpu.mp.service.pojo.shop.market.MarketOrderListParam;
@@ -140,7 +141,7 @@ public class AdminBargainController extends AdminBaseController {
 	public void exportBargainRecordList(@RequestBody @Valid BargainRecordPageListQueryParam param, HttpServletResponse response) throws IOException {
 		Workbook workbook =shop().bargain.bargainRecord.exportBargainRecordList(param,getLang());
 		response.setContentType("application/vnd.ms-excel;charset=UTF-8");
-        String fileName = Util.translateMessage(getLang(), JsonResultMessage.BARGAIN_RECORD_LIST_FILENAME,LANGUAGE_TYPE_EXCEL) + Util.getLocalDateTime().toString();
+        String fileName = Util.translateMessage(getLang(), JsonResultMessage.BARGAIN_RECORD_LIST_FILENAME,LANGUAGE_TYPE_EXCEL) + DateUtil.getLocalDateTime().toString();
         response.setHeader("Content-Disposition", "attachment;filename=" + fileName + ".xls");
 		workbook.write(response.getOutputStream());
 	}
@@ -153,7 +154,7 @@ public class AdminBargainController extends AdminBaseController {
     public void exportBargainUserList(@RequestBody @Valid BargainUserListQueryParam param, HttpServletResponse response) throws IOException {
         Workbook workbook =shop().bargain.bargainUser.exportBargainUserList(param,getLang());
         response.setContentType("application/vnd.ms-excel;charset=UTF-8");
-        String fileName = Util.translateMessage(getLang(), JsonResultMessage.BARGAIN_USER_LIST_FILENAME,LANGUAGE_TYPE_EXCEL) + Util.getLocalDateTime().toString();
+        String fileName = Util.translateMessage(getLang(), JsonResultMessage.BARGAIN_USER_LIST_FILENAME,LANGUAGE_TYPE_EXCEL) + DateUtil.getLocalDateTime().toString();
         response.setHeader("Content-Disposition", "attachment;filename=" + fileName + ".xls");
         workbook.write(response.getOutputStream());
     }
