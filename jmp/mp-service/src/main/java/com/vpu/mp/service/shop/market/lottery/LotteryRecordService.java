@@ -46,13 +46,13 @@ public class LotteryRecordService extends ShopBaseService {
         if (param.getMobile() != null) {
             select.and(Tables.USER.MOBILE.like(prefixLikeValue(param.getMobile())));
         }
-        if (param.getLotteryGrade() != null) {
+        if (param.getLotteryGrade() != null&&param.getLotteryGrade()>=0) {
             select.and(Tables.LOTTERY_RECORD.LOTTERY_GRADE.eq(param.getLotteryGrade()));
         }
-        if (param.getLotteryGrade() != null) {
+        if (param.getLotterySource() != null&&param.getLotterySource()>=0) {
             select.and(Tables.LOTTERY_RECORD.LOTTERY_SOURCE.eq(param.getLotterySource()));
         }
-        if (param.getChanceSource() != null) {
+        if (param.getChanceSource() != null&&param.getChanceSource()>=0) {
             select.and(Tables.LOTTERY_RECORD.CHANCE_SOURCE.eq(param.getChanceSource()));
         }
         select.orderBy(LOTTERY_RECORD.CREATE_TIME.desc());

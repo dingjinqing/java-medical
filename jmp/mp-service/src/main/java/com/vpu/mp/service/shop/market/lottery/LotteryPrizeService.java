@@ -33,8 +33,12 @@ public class LotteryPrizeService  extends ShopBaseService {
 
 
     public Result<LotteryPrizeRecord> getPrizeByLotteryId(Integer lotteryId) {
+        return  getPrizeByLotteryId(lotteryId,(byte)0);
+    }
+    public Result<LotteryPrizeRecord> getPrizeByLotteryId(Integer lotteryId,Byte delFlag) {
         return  db().selectFrom(LOTTERY_PRIZE)
                 .where(LOTTERY_PRIZE.LOTTERY_ID.eq(lotteryId))
+                .and(LOTTERY_PRIZE.DEL_FLAG.eq(delFlag))
                 .orderBy(LOTTERY_PRIZE.LOTTERY_GRADE).fetch();
     }
 

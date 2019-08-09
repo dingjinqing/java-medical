@@ -1,6 +1,5 @@
 package com.vpu.mp.service.shop.market.lottery;
 
-import com.vpu.mp.db.main.tables.records.ShopAccountRecord;
 import com.vpu.mp.db.shop.tables.records.LotteryPrizeRecord;
 import com.vpu.mp.db.shop.tables.records.LotteryRecord;
 import com.vpu.mp.db.shop.tables.records.LotteryShareRecord;
@@ -14,10 +13,7 @@ import com.vpu.mp.service.pojo.shop.market.lottery.record.LotteryRecordPageListV
 import com.vpu.mp.service.pojo.shop.member.MemberInfoVo;
 import com.vpu.mp.service.pojo.shop.member.MemberPageListParam;
 import com.vpu.mp.service.shop.member.MemberService;
-import org.jooq.AggregateFunction;
-import org.jooq.Record6;
-import org.jooq.Record7;
-import org.jooq.SelectConditionStep;
+import org.jooq.*;
 import org.jooq.impl.DSL;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -26,7 +22,6 @@ import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.List;
 
-import static com.vpu.mp.db.main.tables.ShopAccount.SHOP_ACCOUNT;
 import static com.vpu.mp.db.shop.Tables.*;
 import static com.vpu.mp.db.shop.tables.User.USER;
 
@@ -94,6 +89,7 @@ public class LotteryService extends ShopBaseService {
             db().update(LOTTERY_PRIZE)
                     .set(LOTTERY_PRIZE.DEL_FLAG, DelFlag.DISABLE_VALUE)
                     .where(LOTTERY_PRIZE.LOTTERY_ID.eq(record.getId()))
+                    .and(LOTTERY_PRIZE.DEL_FLAG.eq(DelFlag.NORMAL_VALUE))
                     .and(LOTTERY_PRIZE.ID.notIn(prizeIdList))
                     .execute();
             return 1;
@@ -178,6 +174,10 @@ public class LotteryService extends ShopBaseService {
         return db().selectFrom(LOTTERY).where(LOTTERY.ID.eq(id)).fetchOne();
     }
 
+
+    public Result<LotteryPrizeRecord> getLotteryPrizeById(Integer id){
+        return lotteryPrize.getPrizeByLotteryId(id);
+    }
     /**
      * 抽奖记录
      *

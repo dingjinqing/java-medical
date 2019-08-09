@@ -250,6 +250,7 @@ public class OrderInfoService extends ShopBaseService {
 				.and(ORDER_INFO.CREATE_TIME.between(startTime, endTime))
 				.and(DslPlus.findInSet(goodType.toString(), ORDER_INFO.GOODS_TYPE))
 				.groupBy(ORDER_INFO.USER_ID)
+				.orderBy(ORDER_INFO.CREATE_TIME.asc())
 				.fetch(ORDER_INFO.USER_ID);
 		//查新用户活动前下过订单——老用户
 		List<Integer> oldUserIdList= db().select(ORDER_INFO.USER_ID)
@@ -257,7 +258,8 @@ public class OrderInfoService extends ShopBaseService {
 				.where(ORDER_INFO.ORDER_STATUS.gt(OrderConstant.ORDER_CLOSED))
 				.and(ORDER_INFO.CREATE_TIME.lt(startTime))
 				.and(ORDER_INFO.USER_ID.in(userIdList))
-				.orderBy(ORDER_INFO.USER_ID).fetch(ORDER_INFO.USER_ID);
+				.orderBy(ORDER_INFO.CREATE_TIME.asc())
+				.fetch(ORDER_INFO.USER_ID);
 		// 老用户订单数据
 		List<OrderActivityUserNum> oldList= db().select(DslPlus.dateFormatDay(ORDER_INFO.CREATE_TIME).as("date"),count(ORDER_INFO.CREATE_TIME))
 				.from(ORDER_INFO)
@@ -267,6 +269,7 @@ public class OrderInfoService extends ShopBaseService {
 				.and(DslPlus.findInSet(goodType.toString(), ORDER_INFO.GOODS_TYPE))
 				.and(ORDER_INFO.USER_ID.in(oldUserIdList))
 				.groupBy(ORDER_INFO.CREATE_TIME)
+				.orderBy(ORDER_INFO.CREATE_TIME.asc())
 				.fetchInto(OrderActivityUserNum.class);
 		//新用户订单数据
 		userIdList.removeAll(oldUserIdList);
@@ -278,6 +281,7 @@ public class OrderInfoService extends ShopBaseService {
 				.and(DslPlus.findInSet(goodType.toString(), ORDER_INFO.GOODS_TYPE))
 				.and(ORDER_INFO.USER_ID.in(userIdList))
 				.groupBy(DslPlus.dateFormatDay(ORDER_INFO.CREATE_TIME))
+				.orderBy(ORDER_INFO.CREATE_TIME.asc())
 				.fetchInto(OrderActivityUserNum.class);
 		ActiveOrderList activeOrderList=new ActiveOrderList();
 		activeOrderList.setNewUserNum(newList);
@@ -303,7 +307,7 @@ public class OrderInfoService extends ShopBaseService {
 
 	/**
 	 *
-	 *
+	 *活动实付总金额 活动优惠总金额
 	 * @param goodType
 	 * @param activityId
 	 * @param startTime
@@ -323,6 +327,7 @@ public class OrderInfoService extends ShopBaseService {
 				.and(ORDER_INFO.ORDER_STATUS.gt(OrderConstant.ORDER_CLOSED))
 				.and(ORDER_INFO.CREATE_TIME.between(startTime, endTime))
 				.groupBy(DslPlus.dateFormatDay(ORDER_INFO.CREATE_TIME))
+				.orderBy(ORDER_INFO.CREATE_TIME)
 				.fetchInto(ActiveDiscountMoney.class);
 		return record;
 	}

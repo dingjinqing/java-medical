@@ -9,10 +9,14 @@ import lombok.Data;
 @Data
 public class LotteryPrizeVo {
 
+
+    private Integer   id;
+    private Integer   lotteryId;
     /**
      * 中奖率
      */
-    private Byte    chance;
+    private Integer chanceNumerator;
+    private Integer chanceDenominator;
     /**
      * 中奖等级
      */
@@ -25,6 +29,10 @@ public class LotteryPrizeVo {
      * 奖品份数
      */
     private Integer presentNumber;
+    /**
+     * 中奖次数
+     */
+    private Integer awardTimes;
     /**
      * 积分数量
      */

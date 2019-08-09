@@ -15,6 +15,7 @@ import com.vpu.mp.service.pojo.shop.member.MemberInfoVo;
 import com.vpu.mp.service.pojo.shop.order.OrderListInfoVo;
 import com.vpu.mp.service.pojo.shop.order.analysis.ActiveDiscountMoney;
 import com.vpu.mp.service.pojo.shop.order.analysis.ActiveOrderList;
+import com.vpu.mp.service.pojo.shop.order.analysis.OrderActivityUserNum;
 import com.vpu.mp.service.shop.order.OrderReadService;
 import org.jooq.DSLContext;
 import org.jooq.Record;
@@ -203,6 +204,7 @@ public class GroupBuyService extends ShopBaseService {
 
     /**
      * 查询团购列表
+     *
      * @param param
      * @return
      */
@@ -212,39 +214,66 @@ public class GroupBuyService extends ShopBaseService {
 
     /**
      * 拼团活动效果数据
-     * 
+     *
      * @param param
      * @return
      */
-    public Map groupBuyAnalysis(GroupBuyAnalysisParam param) {
-
-        GroupBuyDefineRecord record =db().selectFrom(GROUP_BUY_DEFINE).where(GROUP_BUY_DEFINE.ID.eq(param.getId())).fetchOne();
+    public GroupBuyAnalysisVo groupBuyAnalysis(GroupBuyAnalysisParam param) {
+        GroupBuyAnalysisVo analysisVo = new GroupBuyAnalysisVo();
         //获取销售额等金额
-        List<ActiveDiscountMoney> discountMoneyList = orderReadService.getActiveDiscountMoney(1, param.getId(), param.getStartTime(),param.getEndTime());
+        List<ActiveDiscountMoney> discountMoneyList = orderReadService.getActiveDiscountMoney(1, param.getId(), param.getStartTime(), param.getEndTime());
         //获取参与用户信息
-        ActiveOrderList activeOrderList=  orderReadService.getActiveOrderList(1,param.getId(),param.getStartTime(),param.getEndTime());
-        //拼接返回报文
-        Map map=new HashMap();
-        Iterator<ActiveDiscountMoney> dIterator = discountMoneyList.iterator();
-        ActiveDiscountMoney discountMoney = null;
-        Timestamp date =Util.getStartToday(param.getStartTime());
-        while (date.compareTo(param.getEndTime())<=0){
-            if (dIterator.hasNext()&&discountMoney==null){
-                discountMoney=dIterator.next();
-            }
-            if (discountMoney!=null&&discountMoney.getCreateTime().equals(date)){
+        ActiveOrderList activeOrderList = orderReadService.getActiveOrderList(1, param.getId(), param.getStartTime(), param.getEndTime());
 
-                // TODO: 2019/8/8  map不使用 
-                map.put("amount",discountMoney.getDiscountedTotalPrice());
-                map.put("discount",discountMoney.getMarketPrice().subtract(discountMoney.getGoodsPrice()));
-                map.put("ratio",discountMoney.getDiscountedTotalPrice().compareTo(BigDecimal.ZERO)>0?
-             discountMoney.getMarketPrice().subtract(discountMoney.getGoodsPrice()).divide(discountMoney.getDiscountedTotalPrice()):0);
-                map.put("old",activeOrderList.getOldUserNum());
-                map.put("new",activeOrderList.getNewUserNum());
+        Timestamp date = Util.getStartToday(param.getStartTime());
+        while (Objects.requireNonNull(date).compareTo(param.getEndTime()) <= 0) {
+            //活动实付金额
+            ActiveDiscountMoney discountMoney = getDiscountMoneyByDate(discountMoneyList, date);
+            if (discountMoney==null){
+                analysisVo.getGoodsPriceList().add(BigDecimal.ZERO);
+                analysisVo.getMarketPriceList().add(BigDecimal.ZERO);
+                analysisVo.getRatioList().add(BigDecimal.ZERO);
+            }else {
+                analysisVo.getGoodsPriceList().add(discountMoney.getGoodsPrice());
+                analysisVo.getMarketPriceList().add(discountMoney.getMarketPrice());
+                analysisVo.getRatioList().add(discountMoney.getDiscountedTotalPrice().compareTo(BigDecimal.ZERO)>0?
+                        discountMoney.getMarketPrice().subtract(discountMoney.getGoodsPrice()).divide(discountMoney.getDiscountedTotalPrice()):BigDecimal.ZERO);
             }
-            map.put("date",date.toString());
-            date=Util.getEarlyTimeStamp(date,1);
+            //新用户数
+            OrderActivityUserNum newUser = getUserNum(activeOrderList.getNewUserNum(), date);
+            if (newUser==null){
+                analysisVo.getNewUserList().add(0);
+            }else {
+                analysisVo.getNewUserList().add(newUser.getNum());
+            }
+            //老用户数
+            OrderActivityUserNum oldUser = getUserNum(activeOrderList.getOldUserNum(), date);
+            if (oldUser==null){
+                analysisVo.getOldUserList().add(0);
+            }else {
+                analysisVo.getOldUserList().add(oldUser.getNum());
+            }
+            date = Util.getEarlyTimeStamp(date, 1);
         }
-        return map;
+        return analysisVo;
     }
+
+    public ActiveDiscountMoney getDiscountMoneyByDate(List<ActiveDiscountMoney> discountMoneyList, Timestamp timestamp) {
+        for (ActiveDiscountMoney data : discountMoneyList) {
+            if (data.getCreateTime().equals(timestamp)) {
+                return data;
+            }
+        }
+        return null;
+    }
+
+    private OrderActivityUserNum getUserNum(List<OrderActivityUserNum> list, Timestamp timestamp) {
+        for (OrderActivityUserNum activityUserNum : list) {
+            if (activityUserNum.getDate().equals(timestamp)) {
+                return activityUserNum;
+            }
+        }
+        return null;
+    }
+
 }

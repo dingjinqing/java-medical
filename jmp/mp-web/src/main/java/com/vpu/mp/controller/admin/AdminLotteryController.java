@@ -1,5 +1,10 @@
 package com.vpu.mp.controller.admin;
 
+import com.vpu.mp.db.shop.tables.LotteryPrize;
+import com.vpu.mp.db.shop.tables.records.LotteryPrizeRecord;
+import com.vpu.mp.db.shop.tables.records.LotteryRecord;
+import com.vpu.mp.service.pojo.shop.market.lottery.prize.LotteryPrizeVo;
+import org.jooq.Result;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -13,6 +18,7 @@ import com.vpu.mp.service.pojo.shop.market.lottery.record.LotteryRecordPageListP
 import com.vpu.mp.service.pojo.shop.market.lottery.record.LotteryRecordPageListVo;
 
 import javax.validation.Valid;
+import java.util.List;
 
 /**
  * @author 孔德成
@@ -92,8 +98,12 @@ public class AdminLotteryController extends AdminBaseController {
      */
     @PostMapping("/get")
     public JsonResult getLotteryById(@RequestBody LotteryByIdParam param){
-        LotteryPageListVo result = shop().lottery.getLotteryById(param.getId()).into(LotteryPageListVo.class);
-        return success(result);
+        LotteryRecord lottery = shop().lottery.getLotteryById(param.getId());
+        Result<LotteryPrizeRecord> lotteryPrizeList = shop().lottery.getLotteryPrizeById(param.getId());
+        LotteryVo lotteryVo =lottery.into(LotteryVo.class);
+        List<LotteryPrizeVo>  lotteryPrizeVoList =lotteryPrizeList.into(LotteryPrizeVo.class);
+        lotteryVo.setPrizeList(lotteryPrizeVoList);
+        return success(lotteryVo);
     }
 
     /**

@@ -17,8 +17,6 @@ public class LotteryRecordPageListVo {
     private Integer id;
     private String userName;
     private String mobile;
-    private Timestamp startTime;
-    private Timestamp endTime;
     /**
      * 抽奖时间
      */
