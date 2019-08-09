@@ -1,6 +1,5 @@
 package com.vpu.mp.service.pojo.saas.shop.mp;
 
-import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 
 import com.vpu.mp.service.foundation.data.JsonResultMessage;

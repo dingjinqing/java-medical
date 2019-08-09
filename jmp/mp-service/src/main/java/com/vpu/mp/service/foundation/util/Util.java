@@ -1,10 +1,35 @@
 package com.vpu.mp.service.foundation.util;
 
-import com.fasterxml.jackson.core.JsonParseException;
-import com.fasterxml.jackson.core.type.TypeReference;
-import com.fasterxml.jackson.databind.DeserializationFeature;
-import com.fasterxml.jackson.databind.JsonMappingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
+import java.io.IOException;
+import java.lang.reflect.Field;
+import java.net.InetAddress;
+import java.net.UnknownHostException;
+import java.nio.charset.StandardCharsets;
+import java.sql.Timestamp;
+import java.text.MessageFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Calendar;
+import java.util.Collection;
+import java.util.Date;
+import java.util.GregorianCalendar;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Locale;
+import java.util.Map;
+import java.util.Properties;
+import java.util.Random;
+import java.util.UUID;
+import java.util.stream.Collectors;
+
+import javax.servlet.ServletException;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.Part;
+
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.jooq.exception.DataTypeException;
@@ -15,21 +40,11 @@ import org.springframework.core.io.ClassPathResource;
 import org.springframework.core.io.support.PropertiesLoaderUtils;
 import org.springframework.util.DigestUtils;
 
-import javax.servlet.ServletException;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.Part;
-import java.io.IOException;
-import java.lang.reflect.Field;
-import java.net.InetAddress;
-import java.net.UnknownHostException;
-import java.nio.charset.StandardCharsets;
-import java.sql.Timestamp;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
-import java.util.*;
-import java.util.stream.Collectors;
+import com.fasterxml.jackson.core.JsonParseException;
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.DeserializationFeature;
+import com.fasterxml.jackson.databind.JsonMappingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 /**
  *
@@ -188,6 +203,7 @@ public class Util {
 		}
 		return null;
 	}
+	
 
 	public static String getProperty(String path, String key) {
 		try {
@@ -246,12 +262,12 @@ public class Util {
 	 * 转换语言
 	 *
 	 * @param language
-	 * @param message
-	 * @param defaultMessage
+	 * @param message 
+	 * @param defaultMessage 缺省内容
 	 * @param languageType
 	 * @return
 	 */
-	public static String translateMessage(String language, String message, String defaultMessage, String languageType) {
+	public static String translateMessage(String language, String message, String defaultMessage, String languageType,Object ...args) {
 		language = StringUtils.isBlank(language) ? "zh_CN" : language;
 		ReloadableResourceBundleMessageSource source = new ReloadableResourceBundleMessageSource();
 		source.setBasename("static/i18n/" + languageType);
@@ -259,7 +275,8 @@ public class Util {
 		MessageSourceAccessor accessor = new MessageSourceAccessor(source);
 		String[] languages = language.split(UNDEER_LINE);
 		Locale locale = new Locale(languages[0], languages[1]);
-		return accessor.getMessage(message, defaultMessage, locale);
+		String result =  accessor.getMessage(message, defaultMessage, locale);
+		return MessageFormat.format(result, args);
 	}
 
 	/**
@@ -269,8 +286,8 @@ public class Util {
 	 * @param message
 	 * @return
 	 */
-	public static String translateMessage(String language, String message, String languageType) {
-		return translateMessage(language, message, message, languageType);
+	public static String translateMessage(String language, String message, String languageType,Object ...args) {
+		return translateMessage(language, message, message, languageType,args);
 	}
 
 	/***
@@ -410,14 +427,13 @@ public class Util {
 		return t == null || t.isEmpty();
 	}
 
-	public static ThreadLocal<SimpleDateFormat> threadLocal = new ThreadLocal<SimpleDateFormat>(){
-		/** 默认时间格式为yyyy-MM-dd hh:mm:ss*/
-		@Override
-		protected SimpleDateFormat initialValue() {
-			return new SimpleDateFormat("yyyy-MM-dd hh:mm:ss");
-		}
-	};
 
+	protected static ThreadLocal<SimpleDateFormat> threadLocal = ThreadLocal.withInitial(() ->new SimpleDateFormat("yyyy-MM-dd hh:mm:ss")) ;
+	
+	/**
+	 * 线程单例，时间格式yyyy-MM-dd hh:mm:ss
+	 * @return
+	 */
 	public static SimpleDateFormat dateFormat(){
 		return threadLocal.get();
 	}

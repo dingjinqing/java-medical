@@ -1,12 +1,14 @@
 package com.vpu.mp.service.pojo.shop.market.form;
 
-import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
 
 /**
  * @author liufei
  * @date 2019/8/8
  * @description
  */
-@Data
+@Getter
+@Setter
 public class FormDetailVo extends FormUAParam {
 }

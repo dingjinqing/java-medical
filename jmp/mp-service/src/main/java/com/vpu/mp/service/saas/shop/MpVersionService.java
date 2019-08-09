@@ -8,10 +8,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.jooq.Record;
-import org.jooq.Record6;
 import org.jooq.Record7;
 import org.jooq.Result;
-import org.jooq.Select;
 import org.jooq.SelectOnConditionStep;
 import org.jooq.SelectWhereStep;
 import org.jooq.impl.DSL;
@@ -21,7 +19,6 @@ import org.springframework.util.StringUtils;
 import com.vpu.mp.db.main.tables.records.MpVersionRecord;
 import com.vpu.mp.service.foundation.service.MainBaseService;
 import com.vpu.mp.service.foundation.util.PageResult;
-import com.vpu.mp.service.pojo.saas.shop.mp.MpAuthShopListVo;
 import com.vpu.mp.service.pojo.saas.shop.mp.MpVersionListParam;
 import com.vpu.mp.service.pojo.saas.shop.mp.MpVersionListVo;
 import com.vpu.mp.service.pojo.saas.shop.mp.MpVersionParam;

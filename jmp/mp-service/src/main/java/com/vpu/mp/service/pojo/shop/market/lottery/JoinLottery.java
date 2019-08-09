@@ -1,6 +1,5 @@
 package com.vpu.mp.service.pojo.shop.market.lottery;
 
-import com.vpu.mp.db.shop.tables.LotteryPrize;
 import com.vpu.mp.db.shop.tables.records.LotteryPrizeRecord;
 import com.vpu.mp.db.shop.tables.records.LotteryRecord;
 

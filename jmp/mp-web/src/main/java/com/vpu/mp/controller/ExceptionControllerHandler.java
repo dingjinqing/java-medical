@@ -13,6 +13,8 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 import com.vpu.mp.service.foundation.data.JsonResult;
 import com.vpu.mp.service.foundation.data.JsonResultMessage;
 
+import me.chanjar.weixin.common.error.WxErrorException;
+
 /**
  * controller全局异常捕获处理
  * @author: 卢光耀
@@ -32,6 +34,12 @@ public class ExceptionControllerHandler extends BaseController {
                 return this.fail(result.getFieldError().getDefaultMessage());
             }
         return null;
+    }
+    
+    @ExceptionHandler({WxErrorException.class})
+    public JsonResult procesErrorException(WxErrorException e){
+                
+    	return fail();
     }
 
     /**

@@ -1,7 +1,5 @@
 package com.vpu.mp.service.pojo.shop.member.account;
 
-import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.BUTTON_ON;
-
 import java.math.BigDecimal;
 import java.sql.Timestamp;
 

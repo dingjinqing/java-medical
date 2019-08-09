@@ -16,7 +16,6 @@ import java.util.Map;
 import java.util.Optional;
 
 import org.jooq.Condition;
-import org.jooq.OrderField;
 import org.jooq.Record2;
 import org.jooq.Record3;
 import org.jooq.Record5;
@@ -34,6 +33,7 @@ import com.vpu.mp.db.shop.tables.Tag;
 import com.vpu.mp.db.shop.tables.User;
 import com.vpu.mp.db.shop.tables.UserLoginRecord;
 import com.vpu.mp.db.shop.tables.UserTag;
+import com.vpu.mp.db.shop.tables.records.DistributionTagRecord;
 import com.vpu.mp.service.foundation.service.ShopBaseService;
 import com.vpu.mp.service.foundation.util.PageResult;
 import com.vpu.mp.service.foundation.util.Util;
@@ -166,32 +166,31 @@ public class TransactionStatisticsService extends ShopBaseService {
                 .where(dt.REF_DATE.eq(Util.getEarlySqlDate(new Date(),0)))
                 .and(dt.TYPE.eq(param.getScreeningTime()));
 
-        OrderField<?> field1 = dt.HAS_USER_NUM;
+       TableField<DistributionTagRecord, ?> field = dt.HAS_USER_NUM;
         switch(param.getOrderByField()){
             case "user_num" :
                 break;
             case "user_num_with_phone" :
-                field1 = dt.HAS_MOBILE_NUM;
+                field = dt.HAS_MOBILE_NUM;
                 break;
             case "paid_num" :
-                field1 = dt.PAY_ORDER_NUM;
+                field = dt.PAY_ORDER_NUM;
                 break;
             case "paid_money" :
-                field1 = dt.PAY_ORDER_MONEY;
+                field = dt.PAY_ORDER_MONEY;
                 break;
             case "paid_user_num" :
-                field1 = dt.PAY_USER_NUM;
+                field = dt.PAY_USER_NUM;
                 break;
             case "paid_goods_num" :
-                field1 = dt.PAY_GOODS_NUMBER;
+                field = dt.PAY_GOODS_NUMBER;
                 break;
             default :
                 break;
         }
-        if(!DEFAULT_SORT_TYPE.equalsIgnoreCase(param.getOrderByType())){
-            field1 = ((TableField) field1).desc();
-        }
-        SelectLimitStep<Record7<String, Integer, Integer, BigDecimal, Integer, Integer, Integer>> limitStep = conditionStep.orderBy(field1);
+        Boolean desc = (!DEFAULT_SORT_TYPE.equalsIgnoreCase(param.getOrderByType()));
+
+        SelectLimitStep<Record7<String, Integer, Integer, BigDecimal, Integer, Integer, Integer>> limitStep = conditionStep.orderBy(desc ? field.desc() : field);
         return getPageResult(limitStep,param.getCurrentPage(),param.getPageRows(),LabelAnalysisVo.class);
 
     }

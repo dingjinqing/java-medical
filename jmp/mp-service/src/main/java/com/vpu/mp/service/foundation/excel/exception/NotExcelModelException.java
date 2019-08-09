@@ -7,4 +7,6 @@ package com.vpu.mp.service.foundation.excel.exception;
  */
 public class NotExcelModelException extends RuntimeException {
 
+	private static final long serialVersionUID = -8798303231998717761L;
+
 }

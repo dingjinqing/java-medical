@@ -6,8 +6,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 
 import com.vpu.mp.controller.BaseController;
 import com.vpu.mp.service.auth.WxAppAuth;
-import com.vpu.mp.service.foundation.util.Util;
-import com.vpu.mp.service.pojo.shop.auth.AdminTokenAuthInfo;
 import com.vpu.mp.service.shop.ShopApplication;
 
 /**

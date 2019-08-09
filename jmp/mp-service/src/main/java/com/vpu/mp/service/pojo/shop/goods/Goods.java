@@ -15,8 +15,6 @@ import lombok.Data;
  */
 @Data
 public class Goods {
-    private static final long serialVersionUID = 1778325631;
-
     private Integer goodsId;
 
     private String goodsName;

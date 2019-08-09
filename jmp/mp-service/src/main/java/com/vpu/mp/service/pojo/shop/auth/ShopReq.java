@@ -3,7 +3,6 @@ package com.vpu.mp.service.pojo.shop.auth;
 import java.sql.Timestamp;
 
 import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.NotNull;
 
 import com.vpu.mp.service.foundation.data.JsonResultMessage;
 

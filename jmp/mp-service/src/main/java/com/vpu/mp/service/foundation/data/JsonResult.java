@@ -50,7 +50,7 @@ public class JsonResult {
 		this.language = language = StringUtils.isBlank(language) ? "zh_CN" : language;
 		this.error = resultCode.getCode();
 		this.content = content;
-		this.message = String.format(Util.translateMessage(language, resultCode.getMessage(),LANGUAGE_TYPE_MSG),args);
+		this.message =Util.translateMessage(language, resultCode.getMessage(),LANGUAGE_TYPE_MSG,args);
 		return this;
 	}
 

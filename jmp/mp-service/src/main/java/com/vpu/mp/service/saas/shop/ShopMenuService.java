@@ -43,7 +43,6 @@ public class ShopMenuService extends MainBaseService {
 	 * @param reqeName
 	 * @return
 	 */
-	@SuppressWarnings("unchecked")
 	public JsonResultCode passwdAccess(Integer roleId, String path, String reqeName, String passwd) {
 		String[] privilegePass = roleId == 0 ? null : saas().shop.role.getPrivilegePass(roleId);
 		if (privilegePass == null) {
@@ -123,7 +122,6 @@ public class ShopMenuService extends MainBaseService {
 	 * @param reqeName
 	 * @return
 	 */
-	@SuppressWarnings("unchecked")
 	public Boolean apiAccess(Integer roleId, String path, String reqeName) {
 		String[] privilegeList = roleId == 0 ? null : saas().shop.role.getPrivilegeList(roleId);
 		if (privilegeList == null) {
@@ -207,7 +205,6 @@ public class ShopMenuService extends MainBaseService {
 	 * @param reqVsName
 	 * @return
 	 */
-	@SuppressWarnings({ "unchecked", "rawtypes" })
 	public JsonResultCode versionAccess(Integer shopId, String path, String reqEnName, String reqVsName) {
 		VersionConfig vConfig = saas().shop.version.mergeVersion(shopId);
 		if (vConfig == null) {

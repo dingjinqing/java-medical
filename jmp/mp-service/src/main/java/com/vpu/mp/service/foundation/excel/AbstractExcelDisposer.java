@@ -86,7 +86,7 @@ public abstract class AbstractExcelDisposer {
                     columnBean.columnName = columnAnnotation.columnName();
                 }
 
-                columnBean.columnName = String.format(Util.translateMessage(language, columnBean.columnName, LANGUAGE_TYPE_EXCEL), columnBean.args);
+                columnBean.columnName =Util.translateMessage(language, columnBean.columnName, LANGUAGE_TYPE_EXCEL, columnBean.args);
 
                 if (columnAnnotation.columnIndex() != -1) {
                     columnBean.columnIndex = columnAnnotation.columnIndex();

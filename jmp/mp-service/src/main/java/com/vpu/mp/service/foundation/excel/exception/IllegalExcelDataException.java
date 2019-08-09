@@ -5,4 +5,6 @@ package com.vpu.mp.service.foundation.excel.exception;
  * @date 2019年07月18日
  */
 public class IllegalExcelDataException extends Exception {
+
+	private static final long serialVersionUID = -3304454398414462057L;
 }
