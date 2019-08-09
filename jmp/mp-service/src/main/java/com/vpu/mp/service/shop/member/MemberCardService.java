@@ -1,6 +1,5 @@
 package com.vpu.mp.service.shop.member;
 
-
 import static com.vpu.mp.db.shop.Tables.MEMBER_CARD;
 import static com.vpu.mp.db.shop.Tables.USER_CARD;
 import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.ACTIVE_NO;
@@ -37,8 +36,11 @@ import java.util.Map;
 
 import javax.validation.Valid;
 
+import org.jooq.Result;
 import com.vpu.mp.service.foundation.data.DelFlag;
 import com.vpu.mp.service.foundation.database.DslPlus;
+import com.vpu.mp.service.pojo.shop.member.account.MemberCard;
+import com.vpu.mp.service.pojo.shop.member.account.MemberCardVo;
 import com.vpu.mp.service.pojo.shop.member.card.*;
 import org.jooq.SelectSeekStep1;
 import org.slf4j.Logger;
@@ -527,10 +529,49 @@ public class MemberCardService extends ShopBaseService {
 
     /**
      * 根据会员卡ID字符串（逗号分隔）取会员卡信息列表
-     *
+     * 
      */
 	public List<SimpleMemberCardVo> getMemberCardByCardIdsString(String cardIdsString){
 	    return db().select(MEMBER_CARD.ID,MEMBER_CARD.CARD_NAME).from(MEMBER_CARD).where(DslPlus.findInSet(cardIdsString,MEMBER_CARD.ID)).and(MEMBER_CARD.DEL_FLAG.eq(DelFlag.NORMAL.getCode())).fetchInto(SimpleMemberCardVo.class);
     }
+	
+	/**
+	 * 会员卡列表弹窗
+	 * @return
+	 */
+	public MemberCardVo getAllCardList() {
+		
+		Result<MemberCardRecord> cardRecords = selectAllMemberCard();
+		MemberCardVo vo = new MemberCardVo();
+		/** 分类  普通 | 限次 | 等级 会员卡 */
+		logger.info("正在分类处理");
+		for(MemberCardRecord card: cardRecords) {
+			Byte cardType = card.getCardType();
+			MemberCard cardVo = card.into(MemberCard.class);
+			/**执行策略 */
+			cardVo.changeJsonCfg();
+			
+			if(NORMAL_TYPE.equals(cardType)){
+				vo.getNormalCard().add(cardVo);
+			}else if(LIMIT_NUM_TYPE.equals(cardType)) {
+				vo.getLimitNumCard().add(cardVo);
+			}else if(RANK_TYPE.equals(cardType)) {
+				vo.getRankCard().add(cardVo);
+			}
+		
+		}
+		
+		return vo;
+	}
+
+	/**
+	 * 查询所有的会员卡
+	 * @return
+	 */
+	private Result<MemberCardRecord> selectAllMemberCard() {
+		logger.info("查询所有会员卡");
+		Result<MemberCardRecord> cardRecords = db().selectFrom(MEMBER_CARD).fetch();
+		return cardRecords;
+	}
 
 }
