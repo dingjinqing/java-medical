@@ -65,18 +65,6 @@ const routes = [
           },
           // 小程序管理系列子路由
           {
-            path: '/admin/home/main/first_web_decoration',
-            name: 'picture_setting',
-            meta: {
-              crumbTitle: '',
-              meta: 'first_web_decoration'
-            },
-            component: () =>
-              import(
-                '@/view/admin/index/leftNavComponents/first_web_decoration/first_web_decoration'
-              )
-          },
-          {
             path: '/admin/home/main/page_classification',
             name: 'page_classification',
             meta: {
@@ -113,12 +101,21 @@ const routes = [
               )
           },
           {
-            path: '/admin/home/main/bottomNavigation',
-            name: 'image_manager',
+            path: '/admin/home/main/pictureSetting',
+            name: 'picture_setting',
+            meta: {
+              crumbTitle: 'router.picture_setting',
+              meta: 'first_web_decoration'
+            },
             component: () =>
               import(
-                '@/view/admin/index/leftNavComponents/first_web_decoration/bottomNavigation/bottomNavigation'
-              ),
+                '@/view/admin/index/leftNavComponents/first_web_decoration/picture_setting/picture_setting'
+              )
+          },
+          {
+            path: '/admin/home/main/bottomNavigation',
+            name: 'image_manager',
+            component: () => import('@/view/admin/index/leftNavComponents/first_web_decoration/bottomNavigation/bottomNavigation'),
             meta: {
               crumbTitle: 'router.bottomNavigation',
               meta: 'first_web_decoration'

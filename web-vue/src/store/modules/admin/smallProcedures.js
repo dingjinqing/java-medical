@@ -1,7 +1,8 @@
 const smallProcedures = {
   state: {
     clickNode: null,
-    allNodes: null
+    allNodes: null,
+    Micropage: null
   },
   mutations: {
     // tree点击节点
@@ -12,6 +13,9 @@ const smallProcedures = {
     },
     GETALL_NODES: (state, params) => {
       state.allNodes = params
+    },
+    TOCALLMICROPAGE: (state, params) => {
+      state.Micropage = params
     }
   },
   actions: {
@@ -25,6 +29,11 @@ const smallProcedures = {
     allNodes ({ commit }, params) {
       console.log(params)
       commit('GETALL_NODES', params)
+    },
+    // 调起新建微页面弹窗
+    handleToCallMicropage ({ commit }, params) {
+      console.log(params)
+      commit('TOCALLMICROPAGE', params)
     }
   }
 }

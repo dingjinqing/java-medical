@@ -19,7 +19,8 @@ const getters = {
   activeFlag: state => state.util.activeFlag,
   cropperFlag: state => state.util.cropperFlag,
   activeFresh: state => state.util.activeFresh,
-  picSpaceCropperFlag: state => state.util.picSpaceCropperFlag
+  picSpaceCropperFlag: state => state.util.picSpaceCropperFlag,
+  Micropage: state => state.smallProcedures.Micropage
   // getUserName: state => state.getUserName
 }
 

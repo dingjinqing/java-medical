@@ -32,7 +32,10 @@ export const cn = {
   // 基础配置 小程序授权成功页面
   program_auth_details: ['基础配置', '小程序授权'],
   // 基础配置  店铺基础配置
-  base_manger: ['基础配置', '店铺基础配置']
+  base_manger: ['基础配置', '店铺基础配置'],
+  // 小程序管理 自定义页面装修
+  picture_setting: ['小程序管理', '自定义页面装修']
+
 }
 
 export const en = {
@@ -85,5 +88,7 @@ export const en = {
   // 基础配置 小程序授权成功页面
   program_auth_details: ['Base Management', 'Mini Program auth'],
   // 基础配置  店铺基础配置
-  base_manger: ['Basic configuration', 'Shop Foundation Configuration']
+  base_manger: ['Basic configuration', 'Shop Foundation Configuration'],
+  // 小程序管理 自定义页面装修
+  picture_setting: ['Small Program Management', 'Custom Page Decoration']
 }
