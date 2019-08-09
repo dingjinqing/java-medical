@@ -54,6 +54,7 @@ public class UserService extends ShopBaseService {
 			// 新用户，处理来源
 			// TODO: user.setScene(value);
 			// TODO: user.setInviteSource(value);
+			user.setUsername(result.getOpenid());
 		}
 		user.setWxUnionId(result.getUnionid());
 		user.store();
