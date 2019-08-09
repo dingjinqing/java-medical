@@ -1,6 +1,29 @@
 package com.vpu.mp.service.saas.shop;
 
-import cn.binarywang.wx.miniapp.util.json.WxMaGsonBuilder;
+import static com.vpu.mp.db.main.tables.MpAuthShop.MP_AUTH_SHOP;
+import static com.vpu.mp.db.main.tables.ShopRenew.SHOP_RENEW;
+
+import java.io.File;
+import java.io.IOException;
+import java.sql.Timestamp;
+import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import org.apache.commons.lang3.StringUtils;
+import org.jooq.Condition;
+import org.jooq.Record13;
+import org.jooq.Record2;
+import org.jooq.Result;
+import org.jooq.SelectConditionStep;
+import org.jooq.Table;
+import org.jooq.impl.DSL;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.google.gson.JsonObject;
 import com.vpu.mp.config.DomainConfig;
@@ -17,7 +40,11 @@ import com.vpu.mp.service.pojo.shop.config.trade.WxpaySearchParam;
 import com.vpu.mp.service.saas.image.SystemImageService;
 import com.vpu.mp.service.wechat.api.WxOpenAccountService;
 import com.vpu.mp.service.wechat.bean.ma.MpWxMaOpenCommitExtInfo;
+import com.vpu.mp.service.wechat.bean.open.MaWxPlusInListInner;
+import com.vpu.mp.service.wechat.bean.open.MaWxPlusInResult;
 import com.vpu.mp.service.wechat.bean.open.WxOpenGetResult;
+
+import cn.binarywang.wx.miniapp.util.json.WxMaGsonBuilder;
 import me.chanjar.weixin.common.error.WxErrorException;
 import me.chanjar.weixin.open.api.WxOpenMaService;
 import me.chanjar.weixin.open.bean.WxOpenCreateResult;
@@ -26,23 +53,13 @@ import me.chanjar.weixin.open.bean.auth.WxOpenAuthorizerInfo;
 import me.chanjar.weixin.open.bean.ma.WxOpenMaCategory;
 import me.chanjar.weixin.open.bean.ma.WxOpenMaSubmitAudit;
 import me.chanjar.weixin.open.bean.message.WxOpenMaSubmitAuditMessage;
-import me.chanjar.weixin.open.bean.result.*;
-import org.apache.commons.lang3.StringUtils;
-import org.jooq.*;
-import org.jooq.impl.DSL;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
-
-import java.io.File;
-import java.io.IOException;
-import java.sql.Timestamp;
-import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-
-import static com.vpu.mp.db.main.tables.MpAuthShop.MP_AUTH_SHOP;
-import static com.vpu.mp.db.main.tables.ShopRenew.SHOP_RENEW;
+import me.chanjar.weixin.open.bean.result.WxOpenAuthorizerInfoResult;
+import me.chanjar.weixin.open.bean.result.WxOpenMaCategoryListResult;
+import me.chanjar.weixin.open.bean.result.WxOpenMaDomainResult;
+import me.chanjar.weixin.open.bean.result.WxOpenMaPageListResult;
+import me.chanjar.weixin.open.bean.result.WxOpenMaQueryAuditResult;
+import me.chanjar.weixin.open.bean.result.WxOpenMaSubmitAuditResult;
+import me.chanjar.weixin.open.bean.result.WxOpenResult;
 
 /**
  * 
@@ -719,5 +736,45 @@ public class MpAuthShopService extends MainBaseService {
 
         return this.getPageResult(select, param.getCurrentPage(), param.getPageRows(), MpAuthShopListVo.class);
     }
+
+    /**
+     * 	获得小程序发版版本  1 正常版本 2 好物推荐版本
+     * @param appId
+     * @return
+     */
+	public Byte getMpPackageVersion(String appId) {
+		MaWxPlusInListInner plugin = getPlugin(appId);
+		if(plugin!=null&&plugin.getStatus().equals("2")) {
+			return 2;
+		}
+		return 1;
+
+	}
+	
+	/**
+	 * 	获得插件
+	 * @param appId
+	 * @return
+	 */
+	public MaWxPlusInListInner getPlugin(String appId) {
+		WxOpenAccountService service =open.getMaExtService();
+    	Map<String, String> map=new HashMap<String, String>();
+    	map.put("action", "list");
+    	MaWxPlusInResult plugInManage=null;
+    	try {
+			plugInManage = service.plugInManage(appId, map);
+		} catch (WxErrorException e) {
+			e.printStackTrace();
+		}
+    	if(plugInManage.getErrcode().equals(0)&&plugInManage.getErrmsg().equals("ok")) {
+    		 List<MaWxPlusInListInner> pluginList = plugInManage.getPluginList();
+    		for(MaWxPlusInListInner inner:pluginList) {
+    			if(inner.getAppid().equals(appId)) {
+    				return inner;
+    			}
+    		}
+    	}
+		return null;
+	}
 
 }
