@@ -125,7 +125,7 @@ public class DatasourceManager {
 	 */
 	public String getJdbcUrl(String host, Integer port, String database) {
 		return "jdbc:mysql://" + host + ":" + port + "/" + database
-				+ "?serverTimezone=Hongkong&useSSL=false&useUnicode=true&characterEncoding=UTF-8";
+				+ "?serverTimezone=Hongkong&useSSL=false&useUnicode=true&characterEncoding=UTF-8&zeroDateTimeBehavior=convertToNull";
 	}
 
 	/**
