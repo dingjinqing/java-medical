@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
 import com.vpu.mp.service.foundation.data.JsonResult;
+import com.vpu.mp.service.foundation.data.JsonResultCode;
 import com.vpu.mp.service.foundation.data.JsonResultMessage;
 
 import me.chanjar.weixin.common.error.WxErrorException;
@@ -36,10 +37,14 @@ public class ExceptionControllerHandler extends BaseController {
         return null;
     }
     
+    /**
+     * 对于WxErrorException的统一处理
+     * @param e
+     * @return
+     */
     @ExceptionHandler({WxErrorException.class})
     public JsonResult procesErrorException(WxErrorException e){
-                
-    	return fail();
+    	return fail(JsonResultCode.WX_ERROR_EXCEPTION,e.getError().getErrorCode(),e.getError().getErrorMsg());
     }
 
     /**
