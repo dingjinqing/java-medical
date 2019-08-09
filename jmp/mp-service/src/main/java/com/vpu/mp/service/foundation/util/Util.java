@@ -1,33 +1,10 @@
 package com.vpu.mp.service.foundation.util;
 
-import java.io.IOException;
-import java.lang.reflect.Field;
-import java.net.InetAddress;
-import java.net.UnknownHostException;
-import java.nio.charset.StandardCharsets;
-import java.sql.Timestamp;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
-import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Collection;
-import java.util.Date;
-import java.util.GregorianCalendar;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Locale;
-import java.util.Map;
-import java.util.Properties;
-import java.util.Random;
-import java.util.UUID;
-import java.util.stream.Collectors;
-
-import javax.servlet.ServletException;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.Part;
-
+import com.fasterxml.jackson.core.JsonParseException;
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.DeserializationFeature;
+import com.fasterxml.jackson.databind.JsonMappingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.jooq.exception.DataTypeException;
@@ -38,14 +15,24 @@ import org.springframework.core.io.ClassPathResource;
 import org.springframework.core.io.support.PropertiesLoaderUtils;
 import org.springframework.util.DigestUtils;
 
-import com.fasterxml.jackson.core.JsonParseException;
-import com.fasterxml.jackson.core.type.TypeReference;
-import com.fasterxml.jackson.databind.DeserializationFeature;
-import com.fasterxml.jackson.databind.JsonMappingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
+import javax.servlet.ServletException;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.Part;
+import java.io.IOException;
+import java.lang.reflect.Field;
+import java.net.InetAddress;
+import java.net.UnknownHostException;
+import java.nio.charset.StandardCharsets;
+import java.sql.Timestamp;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+import java.util.*;
+import java.util.stream.Collectors;
 
 /**
- * 
+ *
  * @author 新国
  *
  */
@@ -183,7 +170,7 @@ public class Util {
 
 	/**
 	 * 获取对象的属性值
-	 * 
+	 *
 	 * @param o
 	 * @param name
 	 * @return
@@ -257,7 +244,7 @@ public class Util {
 
 	/**
 	 * 转换语言
-	 * 
+	 *
 	 * @param language
 	 * @param message
 	 * @param defaultMessage
@@ -277,7 +264,7 @@ public class Util {
 
 	/**
 	 * 转换语言
-	 * 
+	 *
 	 * @param language
 	 * @param message
 	 * @return
@@ -288,9 +275,9 @@ public class Util {
 
 	/***
 	 * 下划线命名转为驼峰命名
-	 * 
+	 *
 	 * @param para
-	 * 
+	 *
 	 */
 	public static String underlineToHump(String para) {
 		StringBuilder result = new StringBuilder();
@@ -312,9 +299,9 @@ public class Util {
 
 	/***
 	 * 驼峰命名转为下划线命名
-	 * 
+	 *
 	 * @param para
-	 * 
+	 *
 	 */
 	public static String humpToUnderline(String para) {
 		StringBuilder sb = new StringBuilder(para);
@@ -332,7 +319,7 @@ public class Util {
 
 	/**
 	 * 产生uuid
-	 * 
+	 *
 	 * @return
 	 */
 	public static String randomId() {
@@ -342,7 +329,7 @@ public class Util {
 
 	/**
 	 * 将字符串数组中的每一个 元素 转换为 Integer类型，转换失败直接跳过，不会抛异常
-	 * 
+	 *
 	 * @param from
 	 * @return
 	 */
@@ -378,7 +365,7 @@ public class Util {
 
 	/**
 	 * 获取给定日期之前/之后多少天的日期
-	 * 
+	 *
 	 * @param date 给定日期
 	 * @param days 指定多少天之前/之后
 	 * @return 返回的是后推或者前移后的日期的开始时间
@@ -404,7 +391,7 @@ public class Util {
 
 	/**
 	 * 将map 以String方式返回
-	 * 
+	 *
 	 * @param map
 	 * @return
 	 */
@@ -463,4 +450,25 @@ public class Util {
 		calendar.set(Calendar.DAY_OF_MONTH, calendar.getActualMinimum(Calendar.DAY_OF_MONTH));
 		return new Timestamp(calendar.getTime().getTime());
 	}
+
+    /**
+     * List 转 String
+     */
+    public static String listToString(List<Integer> rewardCouponIds) {
+        return rewardCouponIds.stream().map(String::valueOf).collect(Collectors.joining(","));
+    }
+
+    /**
+     * String 转 List
+     */
+    public static List<Integer> stringToList(String goodsId) {
+        return Arrays.stream(goodsId.split(",")).map(Integer::valueOf).collect(Collectors.toList());
+    }
+
+    /**
+     * 当前时间戳
+     */
+    public static Timestamp currentTimeStamp() {
+        return new Timestamp(new java.util.Date().getTime());
+    }
 }
