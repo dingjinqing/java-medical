@@ -218,6 +218,7 @@ public class DatabaseManager {
 		try {
 			executer.execute();
 		} catch (BuildException e) {
+			loger.debug(e.getMessage(),e);
 			e.printStackTrace();
 			return false;
 		}
