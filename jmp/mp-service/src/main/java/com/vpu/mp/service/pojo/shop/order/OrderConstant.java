@@ -1,5 +1,9 @@
 package com.vpu.mp.service.pojo.shop.order;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+
 /**
  * 订单状态order_status;订单类型goods_type常量类
  * 
@@ -9,92 +13,127 @@ package com.vpu.mp.service.pojo.shop.order;
 public class OrderConstant {
 	/** 订单状态order_status */
 	/** 待付款 可进行操作：关闭订单 */
-	public static byte ORDER_WAIT_PAY = 0;
+	public final static byte ORDER_WAIT_PAY = 0;
 	/** 客户已取消 可进行操作：无 */
-	public static byte ORDER_CANCELLED = 1;
+	public final static byte ORDER_CANCELLED = 1;
 	/** 卖家关闭 */
-	public static byte ORDER_CLOSED = 2;
+	public final static byte ORDER_CLOSED = 2;
 	/** 待发货 可进行操作：发货，卖家关闭（关闭原因） */
-	public static byte ORDER_WAIT_DELIVERY = 3;
+	public final static byte ORDER_WAIT_DELIVERY = 3;
 	/** 已发货 可进行操作：已收货（需检查已超时未收货时才可操作） */
-	public static byte ORDER_SHIPPED = 4;
+	public final static byte ORDER_SHIPPED = 4;
 	/** 已收货 可进行操作：完成 */
-	public static byte ORDER_RECEIVED = 5;
+	public final static byte ORDER_RECEIVED = 5;
 	/** 已完成 可进行操作：无 */
-	public static byte ORDER_FINISHED = 6;
+	public final static byte ORDER_FINISHED = 6;
 	/** 目前没用-退货中 可进行操作：完成退货 已完成 */
 	@Deprecated
-	public static byte ORDER_RETURNING = 7;
+	public final static byte ORDER_RETURNING = 7;
 	/** 完成退货 可进行操作：无 */
-	public static byte ORDER_RETURN_FINISHED = 8;
+	public final static byte ORDER_RETURN_FINISHED = 8;
 	/** 目前没用-退款中 可进行操作：无 */
 	@Deprecated
-	public static byte ORDER_REFUNDING = 9;
+	public final static byte ORDER_REFUNDING = 9;
 	/** 退款成功 可进行操作：无 */
-	public static byte ORDER_REFUND_FINISHED = 10;
-	/** 拼团已支付拼团中状态,这时需等待拼团是否成功。拼团成功后，如果为定金订单则变为待补款，否则为待发货；拼团失败则变为退款 */
-	public static byte ORDER_PIN_PAYED_GROUPING = 11;
+	public final static byte ORDER_REFUND_FINISHED = 10;
+	/** 拼团已支付拼团中状态,这时需等待拼团是否成功.拼团成功后,如果为定金订单则变为待补款,否则为待发货;拼团失败则变为退款 */
+	public final static byte ORDER_PIN_PAYED_GROUPING = 11;
 	/** 已成团 */
-	public static byte ORDER_PIN_SUCCESSS = 12;
+	public final static byte ORDER_PIN_SUCCESSS = 12;
 	/** 礼单(主订单)环节已完成 */
-	public static byte ORDER_GIVE_GIFT_FINISHED = 13;
+	public final static byte ORDER_GIVE_GIFT_FINISHED = 13;
 
 	/** 订单类型goods_type常量 */
 	/** 普通商品订单 返利 */
-	public static byte GOODS_TYPE_GENERAL = 0;
+	public final static byte GOODS_TYPE_GENERAL = 0;
 	/** 拼团商品订单 */
-	public static byte GOODS_TYPE_PIN_GROUP = 1;
+	public final static byte GOODS_TYPE_PIN_GROUP = 1;
 	/** 返利商品 */
-	public static byte GOODS_TYPE_REBATE = 2;
+	public final static byte GOODS_TYPE_REBATE = 2;
 	/** 砍价商品 */
-	public static byte GOODS_TYPE_BARGAIN = 3;
+	public final static byte GOODS_TYPE_BARGAIN = 3;
 	/** 积分兑换商品 */
-	public static byte GOODS_TYPE_INTEGRAL = 4;
+	public final static byte GOODS_TYPE_INTEGRAL = 4;
 	/** 秒杀商品 */
-	public static byte GOODS_TYPE_SECKILL = 5;
+	public final static byte GOODS_TYPE_SECKILL = 5;
 	/** 限时降价 返利 */
-	public static byte GOODS_TYPE_REDUCE_PRICE = 6;
+	public final static byte GOODS_TYPE_REDUCE_PRICE = 6;
 	/** 加价购 返利 */
-	public static byte GOODS_TYPE_PURCHASE_PRICE = 7;
+	public final static byte GOODS_TYPE_PURCHASE_PRICE = 7;
 	/** 拼团抽奖 */
-	public static byte GOODS_TYPE_GROUP_DRAW = 8;
+	public final static byte GOODS_TYPE_GROUP_DRAW = 8;
 	/** 一口价 */
-	public static byte GOODS_TYPE_PACKAGE_SALE = 9;
+	public final static byte GOODS_TYPE_PACKAGE_SALE = 9;
 	/** 定金膨胀 */
-	public static byte GOODS_TYPE_PRE_SALE = 10;
+	public final static byte GOODS_TYPE_PRE_SALE = 10;
 	/** 赠品 */
-	public static byte GOODS_TYPE_GIFT = 11;
+	public final static byte GOODS_TYPE_GIFT = 11;
 	/** 幸运大抽奖 */
-	public static byte GOODS_TYPE_LOTTERY_PRESENT = 12;
+	public final static byte GOODS_TYPE_LOTTERY_PRESENT = 12;
 	/** 限次卡兑换 */
-	public static byte GOODS_TYPE_EXCHANG_ORDER = 13;
+	public final static byte GOODS_TYPE_EXCHANG_ORDER = 13;
 	/** 好友助力 */
-	public static byte GOODS_TYPE_PROMOTE_ORDER = 14;
+	public final static byte GOODS_TYPE_PROMOTE_ORDER = 14;
 	/** 满包邮 */
-	public static byte GOODS_TYPE_FREESHIP_ORDER = 15;
+	public final static byte GOODS_TYPE_FREESHIP_ORDER = 15;
 	/** 测评 */
-	public static byte GOODS_TYPE_ASSESS_ORDER = 16;
+	public final static byte GOODS_TYPE_ASSESS_ORDER = 16;
 	/** 送礼 */
-	public static byte GOODS_TYPE_GIVE_GIFT = 17;
+	public final static byte GOODS_TYPE_GIVE_GIFT = 17;
 	/** 首单特惠 */
-	public static byte GOODS_TYPE_FIRST_SPECIAL = 18;
+	public final static byte GOODS_TYPE_FIRST_SPECIAL = 18;
+	
+	/**退货状态*/
+	/**审核中,退款且退货申请*/
+	public final static byte  REFUND_STATUS_AUDITING = 1;
+	/**审核通过,更新卖家的收货地址信息*/
+	public final static byte  REFUND_STATUS_AUDIT_PASS = 2;
+	/**未通过审核,继续走正常订单流程*/
+	public final static byte  REFUND_STATUS_AUDIT_NOT_PASS = 3;
+	/**买家提交物流 或 仅退款时,买家申请退款*/
+	public final static byte  REFUND_STATUS_APPLY_REFUND_OR_SHIPPING = 4;
+	/**退款/退货完成*/
+	public final static byte  REFUND_STATUS_FINISH = 5;
+	/**拒绝退款/退货*/
+	public final static byte  REFUND_STATUS_REFUSE = 6;
+	/**退款/退货 撤销*/
+	public final static byte  REFUND_STATUS_CLOSE = 7;
 	
 	/**
-	 * 配送方式
+	 * 	支付code
+	 */
+	/**微信*/
+	public final static String PAY_CODE_WX_PAY = "wxpay";
+	/**积分*/
+	@Deprecated
+	public final static String PAY_CODE_SCORE_PAY = "score";
+	/**余额*/
+	public final static String PAY_CODE_BALANCE_PAY = "balance";
+	/**货到付款*/
+	public final static String PAY_CODE_COD = "cod";
+	/**会员卡*/
+	@Deprecated
+	public final static String PAY_CODE_MEMBER_CARD = "member_card";
+	/**ali_mini*/
+	@Deprecated
+	public final static String PAY_CODE_ALI_MINI_PAY = "ali_mini_pay";
+    
+	/**
+	 *	 配送方式
 	 * 
 	 */
 	/**快递*/
-	public static byte DELIVER_TYPE_COURIER = 0;
+	public final static byte DELIVER_TYPE_COURIER = 0;
 	/**自提*/
-	public static byte DELIVER_TYPE_SELF = 1;
+	public final static byte DELIVER_TYPE_SELF = 1;
 	
 	/**
 	 *	 是否部分发货
 	 */
 	/**否*/
-	public static byte NO_PART_SHIP = 0;
+	public final static byte NO_PART_SHIP = 0;
 	/**是*/
-	public static byte PART_SHIP = 1;
+	public final static byte PART_SHIP = 1;
 	
 	/**
 	 *  return_order_goods表success字段
@@ -116,6 +155,14 @@ public class OrderConstant {
 	 */
 	public final static byte IS_CAN_RETURN_Y = 1;
 	public final static byte IS_CAN_RETURN_N = 0;
+	/**
+	 * 0当前订单可以退款
+	 * 1当前订单可以退款、退货
+	 */
+	/**退款支持状态:待发货 已发货 已收货*/
+	public final static List<Byte> isReturnMoney = new ArrayList<Byte>(Arrays.asList(ORDER_WAIT_DELIVERY, ORDER_SHIPPED, ORDER_RECEIVED));
+	/**退货支持状态:已收货 已完成*/
+	public final static List<Byte> isReturnGoods = new ArrayList<Byte>(Arrays.asList(ORDER_RECEIVED, ORDER_FINISHED));
 	private String[] orderStatus = {
 			// ORDER_WAIT_PAY
 			"待付款",
