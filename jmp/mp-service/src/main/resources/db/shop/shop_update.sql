@@ -563,7 +563,7 @@ alter table b2c_card_order
 
 alter table b2c_card_order
     add return_card_balance decimal(10, 2) not null default '0.00' comment '会员卡退款' after return_money;
-    
+
 alter table b2c_card_order
 	add still_send_flag tinyint(2) not null default '1' comment '退款后是否继续发放优惠劵，1：继续发放，0：停止发放' ;
 
@@ -589,3 +589,6 @@ alter table `b2c_mrking_strategy_condition` drop column `gift`;
 alter table `b2c_mrking_strategy_condition` drop column `gift_left`;
 alter table `b2c_mrking_strategy_condition` modify column `amount`  int(11)  not null default '0' comment '满几件或第几件（第X件打折）';
 
+-- 李晓冰 8月9号修改
+ALTER table b2c_code MODIFY COLUMN param_id varchar(64) NOT NULL DEFAULT '' COMMENT '记录唯一值，由url和对应参数产生';
+ALTER table b2c_code CHANGE COLUMN flag del_flag tinyint  NOT NULL DEFAULT 0;

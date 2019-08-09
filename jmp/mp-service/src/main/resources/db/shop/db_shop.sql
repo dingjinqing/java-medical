@@ -1347,10 +1347,10 @@ create table `b2c_service_order` (
 create table `b2c_code` (
   `code_id`    mediumint(11)     not null auto_increment comment '二维码id',
   `type`       smallint(2)              not null default '0' comment '分类：1店铺，2商品，3服务，4会员卡，5优惠券',
-  `param_id`   varchar(32) default '0'  not null comment '对应的参数id',
+  `param_id`   varchar(64) default ''  not null comment '记录唯一值，由url和对应参数产生',
   `type_url`   varchar(100)             not null default '' comment 'type对应的app页面地址',
   `qrcode_img` varchar(200)             not null default '' comment '二维码位置',
-  `flag`       tinyint(1)               not null default '0' comment '标记位',
+  `del_flag`       tinyint(1)               not null default '0' comment '标记位',
   `channel` 		varchar(20) 		not null default '0' comment '渠道分享码',
   `create_time`		timestamp      default current_timestamp,
   `update_time` 	timestamp      default current_timestamp on update current_timestamp comment '最后修改时间',
