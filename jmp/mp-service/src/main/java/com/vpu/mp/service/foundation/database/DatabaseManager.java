@@ -172,11 +172,11 @@ public class DatabaseManager {
 
 		boolean ret = execScript(dbConfig, "db/shop/db_shop.sql");
 		// 测试用，测完删log
-		loger.info("db_shop.sql执行结果" + ret);
+		loger.debug("db_shop.sql执行结果" + ret);
 		if (ret) {
-			loger.info("准备执行db_shop.sql的dbConfig" + dbConfig);
+			loger.debug("准备执行db_shop.sql的dbConfig" + dbConfig);
 			ret = execScript(dbConfig, "db/shop/db_shop_data.sql");
-			loger.info("db_shop_data.sql执行结果" + ret);
+			loger.debug("db_shop_data.sql执行结果" + ret);
 		}
 		return ret;
 	}
