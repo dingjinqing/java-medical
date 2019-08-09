@@ -1,6 +1,7 @@
 package com.vpu.mp.controller.wxapp;
 
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.vpu.mp.service.foundation.data.JsonResult;
@@ -19,7 +20,7 @@ public class WxAppLoginController extends WxAppBaseController {
 	 * @throws WxErrorException
 	 */
 	@PostMapping("/api/wxapp/login")
-	public JsonResult login(WxAppLoginParam param) throws WxErrorException {
+	public JsonResult login(@RequestBody WxAppLoginParam param) throws WxErrorException {
 		WxAppSessionUser user = wxAppAuth.login(param);
 		return success(user);
 	}
@@ -30,7 +31,7 @@ public class WxAppLoginController extends WxAppBaseController {
 	 * @return
 	 */
 	@PostMapping("/api/wxapp/cfg/bottom")
-	public JsonResult config(WxAppCommonParam param) {
+	public JsonResult config(@RequestBody WxAppCommonParam param) {
 		return success(this.shop().config.getAppConfig());
 	}
 }

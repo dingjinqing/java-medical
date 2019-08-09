@@ -40,6 +40,8 @@ public class WxAppAuth {
 	public static final String TOKEN = "V-Token";
 
 	public static final String TOKEN_PREFIX = "WXAPP@";
+	
+	public static final String SHOP_ID = "V-ShopId";
 
 	/**
 	 * 
@@ -54,7 +56,7 @@ public class WxAppAuth {
 	 * @return
 	 */
 	public Integer shopId() {
-		String shopId = this.request.getParameter("shop_id");
+		String shopId = this.request.getHeader(SHOP_ID);
 		return Util.getInteger(shopId);
 	}
 
