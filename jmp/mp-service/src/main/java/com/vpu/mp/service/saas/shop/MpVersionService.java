@@ -1,5 +1,6 @@
 package com.vpu.mp.service.saas.shop;
 
+import static com.vpu.mp.db.main.tables.MpAuthShop.MP_AUTH_SHOP;
 import static com.vpu.mp.db.main.tables.MpVersion.MP_VERSION;
 
 import java.sql.Timestamp;
@@ -7,16 +8,23 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.jooq.Record;
+import org.jooq.Record6;
+import org.jooq.Record7;
 import org.jooq.Result;
+import org.jooq.Select;
+import org.jooq.SelectOnConditionStep;
 import org.jooq.SelectWhereStep;
+import org.jooq.impl.DSL;
 import org.springframework.stereotype.Service;
-import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.util.StringUtils;
 
 import com.vpu.mp.db.main.tables.records.MpVersionRecord;
-import com.vpu.mp.service.foundation.data.JsonResult;
 import com.vpu.mp.service.foundation.service.MainBaseService;
 import com.vpu.mp.service.foundation.util.PageResult;
+import com.vpu.mp.service.pojo.saas.shop.mp.MpAuthShopListVo;
 import com.vpu.mp.service.pojo.saas.shop.mp.MpVersionListParam;
+import com.vpu.mp.service.pojo.saas.shop.mp.MpVersionListVo;
+import com.vpu.mp.service.pojo.saas.shop.mp.MpVersionParam;
 import com.vpu.mp.service.pojo.saas.shop.mp.MpVersionVo;
 
 import me.chanjar.weixin.common.error.WxErrorException;
@@ -226,5 +234,36 @@ public class MpVersionService extends MainBaseService {
 	 */
 	public Integer updatePackVersion(Integer templateId,Byte packVersion) {
 		return db().update(MP_VERSION).set(MP_VERSION.PACKAGE_VERSION,packVersion).where(MP_VERSION.TEMPLATE_ID.eq(templateId)).execute();
+	}
+	
+    
+	public PageResult<MpVersionListVo> getMpStat(MpVersionParam mVersionParam) {
+
+		// MpVersionListVo 返回
+		SelectOnConditionStep<Record7<Integer, String, Byte, Byte, Byte, Byte, Integer>> select = db()
+				.select(MP_VERSION.TEMPLATE_ID, MP_VERSION.USER_VERSION, MP_AUTH_SHOP.IS_AUTH_OK, MP_AUTH_SHOP.OPEN_PAY,
+						MP_AUTH_SHOP.AUDIT_STATE, MP_AUTH_SHOP.PUBLISH_STATE,
+						DSL.count(MP_VERSION.TEMPLATE_ID).as("number"))
+				.from(MP_AUTH_SHOP).innerJoin(MP_VERSION).on(MP_AUTH_SHOP.BIND_TEMPLATE_ID.eq(MP_VERSION.TEMPLATE_ID));
+		if (mVersionParam.getTemplateId() != null) {
+			select.where(MP_VERSION.TEMPLATE_ID.eq(mVersionParam.getTemplateId()));
+		}
+		if (!StringUtils.isEmpty(mVersionParam.getIsAuthOk())) {
+			select.where(MP_AUTH_SHOP.IS_AUTH_OK.eq(mVersionParam.getIsAuthOk()));
+		}
+		if (!StringUtils.isEmpty(mVersionParam.getOpenPay())) {
+			select.where(MP_AUTH_SHOP.OPEN_PAY.eq(mVersionParam.getOpenPay()));
+		}
+		if (!StringUtils.isEmpty(mVersionParam.getAuditState())) {
+			select.where(MP_AUTH_SHOP.AUDIT_STATE.eq(mVersionParam.getAuditState()));
+		}
+		if (!StringUtils.isEmpty(mVersionParam.getPublishState())) {
+			select.where(MP_AUTH_SHOP.PUBLISH_STATE.eq(mVersionParam.getPublishState()));
+		}
+		select.groupBy(MP_VERSION.TEMPLATE_ID, MP_AUTH_SHOP.IS_AUTH_OK, MP_AUTH_SHOP.OPEN_PAY, MP_AUTH_SHOP.AUDIT_STATE,
+				MP_AUTH_SHOP.PUBLISH_STATE);
+		select.orderBy(MP_VERSION.TEMPLATE_ID.desc());
+		return this.getPageResult(select, mVersionParam.getCurrentPage(), mVersionParam.getPageRows(),
+				MpVersionListVo.class);
 	}
 }
