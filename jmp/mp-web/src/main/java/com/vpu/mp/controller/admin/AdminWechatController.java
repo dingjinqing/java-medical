@@ -125,28 +125,5 @@ public class AdminWechatController extends AdminBaseController {
 			@RequestParam("msg_signature") String msgSignature) {
 		return open.appEvent(requestBody, appId, signature, timestamp, nonce, openid, encType, msgSignature);
 	}
-	
-	
-	
-	@RequestMapping("/test")
-	@ResponseBody
-	public JsonResult test() {
-		String path = "pages/bottom/bottom";
-		String filename = "123" + "_" + Util.md5(path) + ".jpg";
-		String relativePath = "upload/saas/mp/app_code/" + filename;
-		byte[] createWxaCodeBytes=null;
-		try {
-			createWxaCodeBytes = open.getWxOpenComponentService().getWxMaServiceByAppid("wx063baa2888577d13").getQrcodeService().createWxaCodeBytes(path, 430, true, null, false);
-			if(createWxaCodeBytes!=null) {
-				boolean uploadToUpYunByByte = saas.sysImage.uploadToUpYunByByte(relativePath, createWxaCodeBytes);
-				System.out.println("上传成功");
-			}
-			System.out.println(createWxaCodeBytes.toString());
-		} catch (Exception e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		return success("http://jmpdevimg.weipubao.cn/"+relativePath);
-	}
 
 }
