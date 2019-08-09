@@ -8,7 +8,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 import com.vpu.mp.db.main.tables.records.ShopRecord;
-import com.vpu.mp.db.main.tables.records.UserRecord;
+import com.vpu.mp.db.shop.tables.records.UserRecord;
 import com.vpu.mp.service.foundation.jedis.JedisManager;
 import com.vpu.mp.service.foundation.util.Util;
 import com.vpu.mp.service.pojo.wxapp.login.WxAppLoginParam;
@@ -93,7 +93,7 @@ public class WxAppAuth {
 		sessionUser.setToken(token);
 		sessionUser.setShopId(shopId);
 		sessionUser.setShopFlag(shop.getShopFlag());
-		sessionUser.setUserId(user.getUserId().intValue());
+		sessionUser.setUserId(user.getUserId());
 		jedis.set(token, Util.toJson(sessionUser));
 		return sessionUser;
 	}
