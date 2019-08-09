@@ -17,10 +17,11 @@ import com.vpu.mp.service.pojo.shop.member.CommonMemberPageListQueryVo;
 import com.vpu.mp.service.pojo.shop.member.MemberInfoVo;
 import com.vpu.mp.service.pojo.shop.member.MemberPageListParam;
 import com.vpu.mp.service.pojo.shop.member.account.AccountParam;
+import com.vpu.mp.service.pojo.shop.member.account.MemberCardVo;
 import com.vpu.mp.service.pojo.shop.member.account.ScoreParam;
 import com.vpu.mp.service.shop.member.MemberService;
-
-
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 /**
  * 会员管理
  * @author 黄壮壮
@@ -29,7 +30,7 @@ import com.vpu.mp.service.shop.member.MemberService;
 @RestController
 @RequestMapping(value="/api/admin/member")
 public class AdminMemberController extends AdminBaseController{
-
+	Logger logger = LoggerFactory.getLogger(getClass());
 	/**
 	 * 通用会员列表弹窗分页查询
 	 * @return
@@ -50,6 +51,14 @@ public class AdminMemberController extends AdminBaseController{
 		return this.success(pageResult);
 	}
 	
+	
+	@PostMapping("/card/all/list")
+	public JsonResult getAllCardList() {
+		logger.info("获取系统中的所有会员卡");
+		MemberCardVo vo  = shop().member.card.getAllCardList();
+		
+		return success(vo);
+	}
 	
 	
 	
@@ -108,4 +117,6 @@ public class AdminMemberController extends AdminBaseController{
 		}
 		return success(param.toString());
 	}
+	
+	
 }
