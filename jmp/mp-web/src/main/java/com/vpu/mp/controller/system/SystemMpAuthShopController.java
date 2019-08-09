@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 import java.io.IOException;
+import java.util.List;
 
 /**
  * 
@@ -193,5 +194,17 @@ public class SystemMpAuthShopController extends SystemBaseController {
 
         return success(authList);
     }
+	
+	/**
+	 * 小程序版本统计
+	 * @param mVersionParam
+	 * @return
+	 */
+	@PostMapping("/api/system/mp/version/stat")
+	public JsonResult mpVersionStat(@RequestBody MpVersionParam mVersionParam) {
+		PageResult<MpVersionListVo> mpStat = saas.shop.mpVersion.getMpStat(mVersionParam);
+		return success(mpStat);
+		
+	}
 
 }
