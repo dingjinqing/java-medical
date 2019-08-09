@@ -1,19 +1,15 @@
 package com.vpu.mp.controller.admin;
 
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseBody;
-
 import com.vpu.mp.db.main.tables.records.MpAuthShopRecord;
+import com.vpu.mp.service.foundation.data.JsonResult;
+import com.vpu.mp.service.foundation.util.Util;
 import com.vpu.mp.service.pojo.shop.auth.MenuAuthority;
 import com.vpu.mp.service.wechat.OpenPlatform;
-
 import me.chanjar.weixin.common.error.WxErrorException;
 import me.chanjar.weixin.open.bean.result.WxOpenQueryAuthResult;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.*;
 
 /**
  * 
@@ -128,6 +124,29 @@ public class AdminWechatController extends AdminBaseController {
 			@RequestParam("openid") String openid, @RequestParam("encrypt_type") String encType,
 			@RequestParam("msg_signature") String msgSignature) {
 		return open.appEvent(requestBody, appId, signature, timestamp, nonce, openid, encType, msgSignature);
+	}
+	
+	
+	
+	@RequestMapping("/test")
+	@ResponseBody
+	public JsonResult test() {
+		String path = "pages/bottom/bottom";
+		String filename = "123" + "_" + Util.md5(path) + ".jpg";
+		String relativePath = "upload/saas/mp/app_code/" + filename;
+		byte[] createWxaCodeBytes=null;
+		try {
+			createWxaCodeBytes = open.getWxOpenComponentService().getWxMaServiceByAppid("wx063baa2888577d13").getQrcodeService().createWxaCodeBytes(path, 430, true, null, false);
+			if(createWxaCodeBytes!=null) {
+				boolean uploadToUpYunByByte = saas.sysImage.uploadToUpYunByByte(relativePath, createWxaCodeBytes);
+				System.out.println("上传成功");
+			}
+			System.out.println(createWxaCodeBytes.toString());
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return success("http://jmpdevimg.weipubao.cn/"+relativePath);
 	}
 
 }
