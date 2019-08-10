@@ -17,11 +17,13 @@ import com.vpu.mp.service.shop.distribution.BrokerageStatisticalService;
 import com.vpu.mp.service.shop.distribution.DistributorGroupService;
 import com.vpu.mp.service.shop.distribution.DistributorLevelService;
 import com.vpu.mp.service.shop.distribution.DistributorListService;
+import com.vpu.mp.service.shop.distribution.RebateGoodsService;
 import com.vpu.mp.service.shop.distribution.RebateStrategyService;
 import com.vpu.mp.service.shop.goods.GoodsRecommendService;
 import com.vpu.mp.service.shop.goods.GoodsService;
 import com.vpu.mp.service.shop.image.ImageCategoryService;
 import com.vpu.mp.service.shop.image.ImageService;
+import com.vpu.mp.service.shop.image.QRCodeService;
 import com.vpu.mp.service.shop.market.bargain.BargainService;
 import com.vpu.mp.service.shop.market.form.FormStatisticsService;
 import com.vpu.mp.service.shop.market.freeshipping.FreeShippingService;
@@ -50,7 +52,6 @@ import com.vpu.mp.service.shop.overview.MallOverviewService;
 import com.vpu.mp.service.shop.overview.OverviewService;
 import com.vpu.mp.service.shop.overview.RealTimeOverviewService;
 import com.vpu.mp.service.shop.overview.TransactionStatisticsService;
-import com.vpu.mp.service.shop.image.QRCodeService;
 import com.vpu.mp.service.shop.store.store.StoreService;
 import com.vpu.mp.service.shop.summary.portrait.PortraitService;
 import com.vpu.mp.service.shop.summary.visit.AmountService;
@@ -113,6 +114,7 @@ public class ShopApplication  {
 	@Autowired public DistributorLevelService distributorLevel; //分销员等级配置
 	@Autowired public DistributorListService distributorList; //分销员列表
 	@Autowired public BrokerageStatisticalService brokerage; //佣金统计
+	@Autowired public RebateGoodsService rebateGoods; //返利商品统计
 	@Autowired public MemberCardOrderService memberCardOrder;
 	@Autowired public TransactionStatisticsService transactionService;
     @Autowired public CouponPackOrderService couponPackOrder;

@@ -25,6 +25,8 @@ import com.vpu.mp.service.pojo.shop.distribution.DistributorLevelParam;
 import com.vpu.mp.service.pojo.shop.distribution.DistributorLevelVo;
 import com.vpu.mp.service.pojo.shop.distribution.DistributorListParam;
 import com.vpu.mp.service.pojo.shop.distribution.DistributorListVo;
+import com.vpu.mp.service.pojo.shop.distribution.RebateGoodsParam;
+import com.vpu.mp.service.pojo.shop.distribution.RebateGoodsVo;
 import com.vpu.mp.service.pojo.shop.market.groupdraw.group.GroupListParam;
 import com.vpu.mp.service.shop.ShopApplication;
 
@@ -356,4 +358,14 @@ public class AdminDistributionController extends AdminBaseController{
 		return this.success(groupList);
 	}
 	
+	/**
+	 * 返利商品统计
+	 * @param param
+	 * @return
+	 */
+	@PostMapping("/admin/distribution/rebate/goods/list")
+	public JsonResult rebateGoodsDetail(@RequestBody RebateGoodsParam param) {
+		PageResult<RebateGoodsVo> rebateGoodsList = shop().rebateGoods.getRebateGoods(param);
+		return this.success(rebateGoodsList);
+	}
 }
