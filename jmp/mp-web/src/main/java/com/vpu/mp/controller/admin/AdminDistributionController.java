@@ -12,6 +12,8 @@ import com.vpu.mp.service.foundation.data.JsonResult;
 import com.vpu.mp.service.foundation.data.JsonResultCode;
 import com.vpu.mp.service.foundation.util.PageResult;
 import com.vpu.mp.service.pojo.shop.config.distribution.DistributionParam;
+import com.vpu.mp.service.pojo.shop.distribution.BrokerageListParam;
+import com.vpu.mp.service.pojo.shop.distribution.BrokerageListVo;
 import com.vpu.mp.service.pojo.shop.distribution.DistributionStrategyParam;
 import com.vpu.mp.service.pojo.shop.distribution.DistributionStrategyVo;
 import com.vpu.mp.service.pojo.shop.distribution.DistributorGroupListParam;
@@ -23,6 +25,7 @@ import com.vpu.mp.service.pojo.shop.distribution.DistributorLevelParam;
 import com.vpu.mp.service.pojo.shop.distribution.DistributorLevelVo;
 import com.vpu.mp.service.pojo.shop.distribution.DistributorListParam;
 import com.vpu.mp.service.pojo.shop.distribution.DistributorListVo;
+import com.vpu.mp.service.pojo.shop.market.groupdraw.group.GroupListParam;
 import com.vpu.mp.service.shop.ShopApplication;
 
 /**
@@ -322,6 +325,35 @@ public class AdminDistributionController extends AdminBaseController{
 		return this.success(invitedlist);
 	}
 	
+	/**
+	 * 佣金统计
+	 * @param param
+	 * @return
+	 */
+	@PostMapping("/admin/distributio/brokerage/list")
+	public JsonResult brokerageList(@RequestBody BrokerageListParam param) {
+		PageResult<BrokerageListVo> list = shop().brokerage.getbrokerageList(param);
+		return this.success(list);
+	}
 	
+	/**
+	 * 分销员等级列表
+	 * @return
+	 */
+	@GetMapping("/admin/distribution/distributor/level")
+	public JsonResult distributorLevelList() {
+		List<DistributorLevelVo> levelList = shop().brokerage.getLevelList();
+		return this.success(levelList);
+	}
+	
+	/**
+	 * 分销员分组列表
+	 * @return
+	 */
+	@GetMapping("/admin/distribution/distributor/group")
+	public JsonResult distributorGroupList() {
+		List<DistributorGroupListVo> groupList = shop().brokerage.getGroupList();
+		return this.success(groupList);
+	}
 	
 }
