@@ -13,7 +13,7 @@ import com.vpu.mp.service.foundation.util.PageResult;
 import com.vpu.mp.service.pojo.shop.image.ShareQrCodeVo;
 import com.vpu.mp.service.pojo.shop.market.form.*;
 import com.vpu.mp.service.pojo.shop.qrcode.QrCodeTypeEnum;
-import com.vpu.mp.service.shop.image.QRCodeService;
+import com.vpu.mp.service.shop.image.QrCodeService;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.poi.ss.usermodel.Workbook;
 import org.jooq.Record5;
@@ -43,7 +43,7 @@ import static org.jooq.impl.DSL.countDistinct;
 @Service
 public class FormStatisticsService extends ShopBaseService {
     @Autowired
-    QRCodeService qrCodeService;
+    QrCodeService qrCodeService;
     /**
      * FORM_PAGE表单删除状态值，删除状态页面不展示
      */

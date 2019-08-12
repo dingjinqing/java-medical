@@ -6,7 +6,7 @@ import org.jooq.impl.DSL;
 
 import static com.vpu.mp.db.main.tables.MpAuthShop.MP_AUTH_SHOP;
 
-/**
+/***
  * @author 李晓冰
  * @date 2019年08月07日
  */
@@ -17,16 +17,16 @@ public class MpAuthShopListParam {
 
     private Byte isAuthOk;
 
-    /*是否开通微信支付 0否 1是*/
+    /**是否开通微信支付 0否 1是*/
     private Byte openPay;
 
-    /*审核状态 0未提交，1审核中，2审核成功，3审核失败*/
+    /**审核状态 0未提交，1审核中，2审核成功，3审核失败*/
     private Byte auditState;
 
-    /*发布状态 0 未发布 1已发布*/
+    /**发布状态 0 未发布 1已发布*/
     private Byte publishState;
 
-    /*店铺状态 0 已过期，1正使用*/
+    /**店铺状态 0 已过期，1正使用*/
     private Byte shopState;
 
     private String appId;

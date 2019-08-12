@@ -15,13 +15,13 @@ public class MpVersionParam {
 
     private Byte isAuthOk;
 
-    /*是否开通微信支付 0否 1是*/
+    /**是否开通微信支付 0否 1是*/
     private Byte openPay;
 
-    /*审核状态 0未提交，1审核中，2审核成功，3审核失败*/
+    /**审核状态 0未提交，1审核中，2审核成功，3审核失败*/
     private Byte auditState;
 
-    /*发布状态 0 未发布 1已发布*/
+    /**发布状态 0 未发布 1已发布*/
     private Byte publishState;
     
     private Integer currentPage;

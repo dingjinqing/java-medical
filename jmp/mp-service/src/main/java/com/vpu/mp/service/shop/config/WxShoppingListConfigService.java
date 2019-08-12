@@ -14,6 +14,8 @@ public class WxShoppingListConfigService extends BaseShopConfigService {
 
     final static String K_WX_SHOPPING_RECOMMEND = "wx_shopping_recommend";
 
+    final static String DISABLE_WX_SHOPPING_LIST="0";
+
     /**
      * @return 好物圈配置信息
      */
@@ -38,7 +40,7 @@ public class WxShoppingListConfigService extends BaseShopConfigService {
 
         set(K_ENABLED_WX_SHOPPING_LIST,wxShoppingListConfig.getEnabeldWxShoppingList());
 
-        if ("0".equals(wxShoppingListConfig.getEnabeldWxShoppingList())) {
+        if (DISABLE_WX_SHOPPING_LIST.equals(wxShoppingListConfig.getEnabeldWxShoppingList())) {
             set(K_WX_SHOPPING_RECOMMEND,"");
         } else {
             set(K_WX_SHOPPING_RECOMMEND,wxShoppingListConfig.getWxShoppingRecommend());

@@ -24,11 +24,11 @@ import static java.lang.String.format;
  * @author 郑保乐
  */
 @Service
-public class QRCodeService extends ShopBaseService {
+public class QrCodeService extends ShopBaseService {
 
     private final ImageService imageService;
 
-    public QRCodeService(ImageService imageService) {
+    public QrCodeService(ImageService imageService) {
         this.imageService = imageService;
     }
 

@@ -30,7 +30,7 @@ import com.vpu.mp.service.pojo.shop.market.integration.GroupIntegrationDefinePag
 import com.vpu.mp.service.pojo.shop.market.integration.GroupIntegrationDefineParam;
 import com.vpu.mp.service.pojo.shop.market.integration.GroupIntegrationDefineVo;
 import com.vpu.mp.service.pojo.shop.market.integration.GroupIntegrationShareQRCodeVo;
-import com.vpu.mp.service.shop.image.QRCodeService;
+import com.vpu.mp.service.shop.image.QrCodeService;
 
 import lombok.Data;
 
@@ -44,7 +44,7 @@ import lombok.Data;
 public class GroupIntegrationService extends ShopBaseService {
 	
 	@Autowired public GroupIntegrationListService groupIntegrationList;
-    @Autowired public QRCodeService qrCode;
+    @Autowired public QrCodeService qrCode;
     
 //    public static final String GROUP_INTEGRATION_SHARE_PATH = "pages/pinintegration/pinintegration";
 	
