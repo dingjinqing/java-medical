@@ -24,3 +24,11 @@ export function deliverDelete (data) {
     data
   })
 }
+// 修改默认运费模板配置
+export function deliverConfig (data) {
+  return service({
+    url: '/api/admin/goods/deliver/config',
+    method: 'post',
+    data
+  })
+}

@@ -10,6 +10,7 @@ import goodsManagement from './modules/admin/goodsManagement'
 import membershipList from './modules/admin/membershipList'
 import breadcrumb from './modules/system/breadcrumb'
 import util from './modules/admin/util'
+import brandDialog from './modules/admin/brandDialog'
 Vue.use(Vuex)
 export default new Vuex.Store({
   modules: {
@@ -21,7 +22,8 @@ export default new Vuex.Store({
     goodsManagement,
     membershipList,
     breadcrumb,
-    util
+    util,
+    brandDialog
   },
   getters
 })

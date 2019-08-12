@@ -32,7 +32,7 @@
       </el-steps>
       <!-- 编辑基本信息|编辑商品详情|编辑分销信息 -->
       <div v-if="active === 1">
-        <addingGoodsBasicInfo
+        <addingGoodsProductInfo
           :active='active'
           @toSecondPage='changeActive'
         />
@@ -55,10 +55,10 @@
 </template>
 <script>
 import addingGoodsDetails from '@/view/admin/index/leftNavComponents/goods_manage/addingGoods/addingGoodsDetails'
-import addingGoodsBasicInfo from '@/view/admin/index/leftNavComponents/goods_manage/addingGoods/addingGoodsBasicInfo'
+import addingGoodsProductInfo from './addingGoodsProductInfo'
 import addingGoodsDistributionInfo from '@/view/admin/index/leftNavComponents/goods_manage/addingGoods/addingGoodsDistributionInfo'
 export default {
-  components: { addingGoodsBasicInfo, addingGoodsDetails, addingGoodsDistributionInfo },
+  components: { addingGoodsProductInfo, addingGoodsDetails, addingGoodsDistributionInfo },
   data () {
     return {
       active: 1,

@@ -7,6 +7,7 @@
     >
       <el-form-item label="模板名称：">
         <el-input
+          v-model="name"
           size="small"
           style="width:210px"
         ></el-input>
@@ -18,12 +19,42 @@
         </section>
       </el-form-item>
       <el-form-item>
-        <section class="other">
-
+        <section
+          class="other"
+          v-show="!checked"
+        >
+          其他区域运费:
+          <el-input
+            size="small"
+            v-model="piece"
+            style="width:50px;"
+          ></el-input>
+          件内，
+          <el-input
+            size="small"
+            v-model="money"
+            style="width:50px;"
+          ></el-input>
+          元，每增加
+          <el-input
+            size="small"
+            v-model="addPiece"
+            style="width:50px;"
+          ></el-input>
+          件，增加运费
+          <el-input
+            size="small"
+            v-model="addMoney"
+            style="width:50px;"
+          ></el-input>
+          元
         </section>
       </el-form-item>
     </el-form>
-
+    <el-button
+      @click="testData"
+      type="primary"
+    >测试数据</el-button>
   </div>
 </template>
 <script>
@@ -34,12 +65,25 @@ export default {
       addForm: {
 
       },
-      checked: false
+      checked: false,
+      piece: 1,
+      money: 0,
+      addPiece: 1,
+      addMoney: 0,
+      name: ''
 
     }
   },
-  created () {
-    console.log(this.$route)
+  methods: {
+    testData () {
+      let params = {
+        'templateName': this.name,
+        'goodsDeliverTemplateLimitParam': {
+
+        }
+      }
+      console.log(params)
+    }
   }
 }
 </script>
@@ -60,5 +104,8 @@ export default {
   border-radius: 0px;
   width: 865px;
   height: 51px;
+  display: flex;
+  /* justify-content: center; */
+  align-items: center;
 }
 </style>

@@ -73,11 +73,13 @@
         </el-col>
       </el-row>
     </el-form>
+
     <el-table
       :data="dataList"
       border
       style="width: 100%"
     >
+
       <el-table-column
         prop="area_text"
         label="可配送区域"
@@ -158,15 +160,16 @@ export default {
         // }
       }
       deliverTemplatelist(params).then(res => {
-        const { content: { page, dataList }, error } = res
-        if (error === 0) {
-          console.log(page)
-          console.log(dataList)
-          dataList.forEach(item => {
-            let newTemplateContent = JSON.parse(item.templateContent)
-            console.log(newTemplateContent)
-          })
-        }
+        console.log(res)
+        // const { content: { page, dataList }, error } = res
+        // if (error === 0) {
+        //   console.log(page)
+        //   console.log(dataList)
+        //   dataList.forEach(item => {
+        //     let newTemplateContent = JSON.parse(item.templateContent)
+        //     console.log(newTemplateContent)
+        //   })
+        // }
         // let data = content.dataList[0].templateContent
         // data = JSON.parse(data)
         // console.log(data)

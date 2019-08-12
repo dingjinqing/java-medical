@@ -14,14 +14,16 @@ const getters = {
   proAndUrData: state => state.crumbs.proAndUrData,
   membershipdetailflag: state => state.membershipList.membershipdetailflag,
   toHandleSetUpMemflag: state => state.membershipList.toHandleSetUpMemflag,
-  toHandleSelectingUsersflag: state => state.membershipList.toHandleSelectingUsersflag,
+  toHandleSelectingUsersflag: state =>
+    state.membershipList.toHandleSelectingUsersflag,
   menuFlag: state => state.util.menuFlag,
   activeFlag: state => state.util.activeFlag,
   cropperFlag: state => state.util.cropperFlag,
   activeFresh: state => state.util.activeFresh,
   picSpaceCropperFlag: state => state.util.picSpaceCropperFlag,
-  Micropage: state => state.smallProcedures.Micropage
+  Micropage: state => state.smallProcedures.Micropage,
   // getUserName: state => state.getUserName
+  dialogVisible: state => state.brandDialog.dialogVisible
 }
 
 export default getters
