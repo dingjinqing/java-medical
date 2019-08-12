@@ -3,6 +3,7 @@ package com.vpu.mp.controller.admin;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.apache.xmlbeans.impl.soap.Detail;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -25,6 +26,8 @@ import com.vpu.mp.service.pojo.shop.distribution.DistributorLevelParam;
 import com.vpu.mp.service.pojo.shop.distribution.DistributorLevelVo;
 import com.vpu.mp.service.pojo.shop.distribution.DistributorListParam;
 import com.vpu.mp.service.pojo.shop.distribution.DistributorListVo;
+import com.vpu.mp.service.pojo.shop.distribution.RebateGoodsDetailParam;
+import com.vpu.mp.service.pojo.shop.distribution.RebateGoodsDetailVo;
 import com.vpu.mp.service.pojo.shop.distribution.RebateGoodsParam;
 import com.vpu.mp.service.pojo.shop.distribution.RebateGoodsVo;
 import com.vpu.mp.service.pojo.shop.market.groupdraw.group.GroupListParam;
@@ -140,7 +143,7 @@ public class AdminDistributionController extends AdminBaseController{
 	@GetMapping("/admin/distribution/rebate/delete")
 	public JsonResult deleteRebateStrategy(@RequestBody Integer id) {
 		boolean result = shop().rebateStrategy.deleteRebate(id);
-		if(result) {
+		if(result) { 
 			return this.success(result);
 		}else {
 			return this.fail();
@@ -359,13 +362,24 @@ public class AdminDistributionController extends AdminBaseController{
 	}
 	
 	/**
-	 * 返利商品统计
+	 * 商品返利统计
 	 * @param param
 	 * @return
 	 */
 	@PostMapping("/admin/distribution/rebate/goods/list")
-	public JsonResult rebateGoodsDetail(@RequestBody RebateGoodsParam param) {
+	public JsonResult rebateGoodsList(@RequestBody RebateGoodsParam param) {
 		PageResult<RebateGoodsVo> rebateGoodsList = shop().rebateGoods.getRebateGoods(param);
 		return this.success(rebateGoodsList);
+	}
+	
+	/**
+	 * 商品返利明细
+	 * @param param
+	 * @return
+	 */
+	@PostMapping("/admin/distribution/rebate/goods/detail")
+	public JsonResult rebateGoodsDetail(@RequestBody RebateGoodsDetailParam param) {
+		PageResult<RebateGoodsDetailVo> detail = shop().rebateGoods.getRebateGoodsDetail(param);
+		return this.success(detail);
 	}
 }
