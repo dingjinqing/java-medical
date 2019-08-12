@@ -1,20 +1,19 @@
 package com.vpu.mp.service.saas.shop;
 
-import static com.vpu.mp.db.main.Tables.MP_AUTH_SHOP;
-import static com.vpu.mp.db.main.tables.MpOperateLog.MP_OPERATE_LOG;
-import static com.vpu.mp.db.main.tables.MpVersion.MP_VERSION;
-
-import java.sql.Timestamp;
-
+import com.vpu.mp.service.foundation.service.MainBaseService;
+import com.vpu.mp.service.foundation.util.PageResult;
+import com.vpu.mp.service.pojo.saas.shop.mp.MpOperateListParam;
+import com.vpu.mp.service.pojo.saas.shop.mp.MpOperateVo;
 import org.jooq.Record6;
 import org.jooq.SelectConditionStep;
 import org.slf4j.Logger;
 import org.springframework.stereotype.Service;
 
-import com.vpu.mp.service.foundation.service.MainBaseService;
-import com.vpu.mp.service.foundation.util.PageResult;
-import com.vpu.mp.service.pojo.saas.shop.mp.MpOperateListParam;
-import com.vpu.mp.service.pojo.saas.shop.mp.MpOperateVo;
+import java.sql.Timestamp;
+
+import static com.vpu.mp.db.main.Tables.MP_AUTH_SHOP;
+import static com.vpu.mp.db.main.tables.MpOperateLog.MP_OPERATE_LOG;
+import static com.vpu.mp.db.main.tables.MpVersion.MP_VERSION;
 
 /**
  * 
@@ -131,6 +130,8 @@ public class MpOperateLogService extends MainBaseService {
             MP_AUTH_SHOP.NICK_NAME, MP_OPERATE_LOG.MEMO, MP_VERSION.USER_VERSION)
             .from(MP_OPERATE_LOG).leftJoin(MP_AUTH_SHOP)
             .on(MP_OPERATE_LOG.APP_ID.eq(MP_AUTH_SHOP.APP_ID))
+            .leftJoin(MP_VERSION)
+            .on(MP_OPERATE_LOG.TEMPLATE_ID.eq(MP_VERSION.TEMPLATE_ID))
             .where(param.buildOption());
 
         where.orderBy(MP_OPERATE_LOG.CREATE_TIME.desc());
