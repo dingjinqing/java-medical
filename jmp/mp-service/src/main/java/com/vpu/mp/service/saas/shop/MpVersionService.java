@@ -179,7 +179,7 @@ public class MpVersionService extends MainBaseService {
      * @return 名称列表值
      */
 	public List<MpVersionIdVo> getMpUserVersionList(){
-        List<MpVersionIdVo> list = db().selectDistinct(MP_VERSION.USER_VERSION)
+        List<MpVersionIdVo> list = db().selectDistinct(MP_VERSION.USER_VERSION,MP_VERSION.TEMPLATE_ID)
             .from(MP_VERSION).orderBy(MP_VERSION.USER_VERSION.desc()).fetch().into(MpVersionIdVo.class);
         return list;
     }
