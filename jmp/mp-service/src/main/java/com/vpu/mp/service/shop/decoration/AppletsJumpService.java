@@ -6,12 +6,14 @@ import static com.vpu.mp.db.shop.tables.MpJumpUsable.MP_JUMP_USABLE;
 import static org.jooq.impl.DSL.count;
 import static org.jooq.impl.DSL.sum;
 
+import java.util.ArrayList;
 import java.math.BigDecimal;
 import java.util.List;
 
 import org.jooq.Record1;
 import org.springframework.stereotype.Service;
 
+import com.vpu.mp.db.shop.tables.records.MpJumpUsableRecord;
 import com.vpu.mp.service.foundation.data.DelFlag;
 import com.vpu.mp.service.foundation.service.ShopBaseService;
 import com.vpu.mp.service.pojo.shop.applets.AppletsJumpAddPrarm;
@@ -138,4 +140,56 @@ public class AppletsJumpService extends ShopBaseService {
                 .fetch().into(AppletsJumpVo.class);
         return appletsJump;
     }
+    
+    
+    //最新提交审核的记录为已发布
+    public int updateMpJumpVersion(String shopId) {
+    	return mainDb().update(MP_JUMP_VERSION).set(MP_JUMP_VERSION.FLAG,(byte)1).where(MP_JUMP_VERSION.SHOP_ID.eq(shopId)).execute();
+    }
+    
+    public List<String> getMpJumpAppIDList(){
+		List<String> values = shopDb().selectFrom(MP_JUMP).where(MP_JUMP.DEL_FLAG.eq((byte) 0).and(MP_JUMP.FLAG.eq((byte) 0))).orderBy(MP_JUMP.CREATE_TIME).fetch().getValues(MP_JUMP.APP_ID, String.class);
+		List<String> returnList=new ArrayList<String>();
+		//wx56c8f077de74b07c 微信购物清单中的appid
+		returnList.add("wx56c8f077de74b07c");
+		//wx6885acbedba59c14 快递100
+		returnList.add("wx6885acbedba59c14");
+		for(String value:values) {
+			if(returnList.size()>=10) {
+				break;
+			}
+			//去重
+			if(!returnList.contains(value)) {
+				returnList.add(value);				
+			}
+		}
+		return returnList;
+	}
+	
+	/**
+	 * 上传代码保存小程序跳转的提交的appid 版本号，appid ,状态
+	 * @param jumpList
+	 * @param templateId
+	 */
+	public void saveMpJumpAppIDList(List<String> jumpList,Integer templateId){
+		//TODO 状态usable插不插？？？
+		if(jumpList.size()==0) {
+			//为空
+			shopDb().insertInto(MP_JUMP_USABLE).set(MP_JUMP_USABLE.APP_ID,"").set(MP_JUMP_USABLE.TEMPLATE_ID,templateId).execute();
+		}else {
+			for(String appId:jumpList) {
+				MpJumpUsableRecord fetchAny = shopDb().selectFrom(MP_JUMP_USABLE).where(MP_JUMP_USABLE.APP_ID.eq(appId)).fetchAny();
+				MpJumpUsableRecord record=MP_JUMP_USABLE.newRecord();
+				record.setAppId(appId);
+				record.setTemplateId(templateId);
+				if(fetchAny==null) {
+					//插入
+					shopDb().executeInsert(record);
+				}else {
+					//更新
+					shopDb().executeUpdate(record);
+				}
+			}
+		}
+	}
 }
