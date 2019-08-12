@@ -3,7 +3,6 @@ package com.vpu.mp.controller.admin;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.apache.xmlbeans.impl.soap.Detail;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -26,11 +25,12 @@ import com.vpu.mp.service.pojo.shop.distribution.DistributorLevelParam;
 import com.vpu.mp.service.pojo.shop.distribution.DistributorLevelVo;
 import com.vpu.mp.service.pojo.shop.distribution.DistributorListParam;
 import com.vpu.mp.service.pojo.shop.distribution.DistributorListVo;
+import com.vpu.mp.service.pojo.shop.distribution.PromotionLanguageListParam;
+import com.vpu.mp.service.pojo.shop.distribution.PromotionLanguageListVo;
 import com.vpu.mp.service.pojo.shop.distribution.RebateGoodsDetailParam;
 import com.vpu.mp.service.pojo.shop.distribution.RebateGoodsDetailVo;
 import com.vpu.mp.service.pojo.shop.distribution.RebateGoodsParam;
 import com.vpu.mp.service.pojo.shop.distribution.RebateGoodsVo;
-import com.vpu.mp.service.pojo.shop.market.groupdraw.group.GroupListParam;
 import com.vpu.mp.service.shop.ShopApplication;
 
 /**
@@ -381,5 +381,16 @@ public class AdminDistributionController extends AdminBaseController{
 	public JsonResult rebateGoodsDetail(@RequestBody RebateGoodsDetailParam param) {
 		PageResult<RebateGoodsDetailVo> detail = shop().rebateGoods.getRebateGoodsDetail(param);
 		return this.success(detail);
+	}
+	
+	//分销推广语
+	/**
+	 * 分销推广语列表
+	 * @param param
+	 * @return
+	 */
+	public JsonResult promotionLanguageList(PromotionLanguageListParam param) {
+		PageResult<PromotionLanguageListVo> promotionLanguageList = shop().promotionLanguage.getPromotionLanguageList(param);
+		return this.success(promotionLanguageList);
 	}
 }
