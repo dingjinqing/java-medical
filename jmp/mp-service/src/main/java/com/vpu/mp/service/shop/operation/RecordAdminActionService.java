@@ -37,7 +37,6 @@ import com.vpu.mp.service.pojo.shop.operation.RecordContentTemplate;
 
 /**
  * 操作记录的实现逻辑
- * 
  * @author: 卢光耀
  * @date: 2019-07-12 10:21
  *
@@ -46,17 +45,17 @@ import com.vpu.mp.service.pojo.shop.operation.RecordContentTemplate;
 
 public class RecordAdminActionService extends ShopBaseService {
 
-	protected static final String REDIS_PACKAGE = "record.user.";
+    private static final String REDIS_PACKAGE="record.user.";
 
-	protected static final String REDIS_TIMEOUT = "auth.timeout";
+    protected static final String REDIS_TIMEOUT="auth.timeout";
 
-	protected static final String REQUEST_TYPE_SYSTEM = "system";
+    private static final String REQUEST_TYPE_SYSTEM="system";
 
-	protected static final String REQUEST_TYPE_ACCOUNT = "account";
+    private static final String REQUEST_TYPE_ACCOUNT="account";
 
-	protected static final String REQUEST_TYPE_NONE = "none";
+    private static final String REQUEST_TYPE_NONE = "none";
 
-	protected static final String LANGUAGE_TYPE_RECORD = "record";
+    private static final String LANGUAGE_TYPE_RECORD = "record";
 
 	@Autowired
 	protected JedisManager jedis;
@@ -118,6 +117,7 @@ public class RecordAdminActionService extends ShopBaseService {
 		});
 		pageInfo.setDataList(infos);
 		return pageInfo;
+
 	}
 
 	private void buildParams(SelectWhereStep<? extends Record> select, RecordAdminActionParam param) {
@@ -141,7 +141,7 @@ public class RecordAdminActionService extends ShopBaseService {
 			sb.append(RecordContentTemplate.GOODS_CONTENT_ADD).append(",");
 		});
 		return Util.translateMessage(language, RecordContentTemplate.GOODS_CONTENT_ADD.getMessage(),
-				LANGUAGE_TYPE_RECORD, datas.split(","));
+				LANGUAGE_TYPE_RECORD, (Object[]) datas.split(","));
 	}
 
 	private RecordAdminActionRecord getAdminRecord() {
