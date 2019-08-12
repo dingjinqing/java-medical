@@ -1,11 +1,9 @@
 package com.vpu.mp.service.pojo.shop.market.form;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.vpu.mp.service.shop.market.form.FormStatisticsService;
-import lombok.Data;
-
 import java.util.HashMap;
 import java.util.Map;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import lombok.Data;
 
 /**
  * @author liufei
