@@ -2,6 +2,7 @@ package com.vpu.mp.service.shop.member;
 
 import static com.vpu.mp.db.shop.Tables.MEMBER_CARD;
 import static com.vpu.mp.db.shop.Tables.USER_CARD;
+import static com.vpu.mp.db.shop.Tables.USER;
 import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.ACTIVE_NO;
 import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.ACTIVE_YES;
 import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.ALL_GOODS;
@@ -29,25 +30,52 @@ import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.PART_GOODS;
 import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.PART_SHOP;
 import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.PROHIBITED;
 import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.RANK_TYPE;
+import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.DAY_DATE_TYPE;
+import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.WEEK_DATE_TYPE;
+import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.MONTH_DATE_TYPE;
+import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.DAY;
+import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.WEEK;
+import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.MONTH;
+
 import static org.jooq.impl.DSL.count;
 
+import java.math.BigDecimal;
+import java.sql.Timestamp;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.Queue;
+import java.util.stream.Stream;
 
 import javax.validation.Valid;
 
+import org.jooq.Field;
+import org.jooq.InsertValuesStep10;
+import org.jooq.InsertValuesStep7;
+import org.jooq.InsertValuesStep8;
+import org.jooq.InsertValuesStep9;
+import org.jooq.InsertValuesStepN;
+import org.jooq.Record1;
 import org.jooq.Result;
 import com.vpu.mp.service.foundation.data.DelFlag;
 import com.vpu.mp.service.foundation.database.DslPlus;
+import com.vpu.mp.service.pojo.shop.member.account.AddMemberCardParam;
 import com.vpu.mp.service.pojo.shop.member.account.MemberCard;
 import com.vpu.mp.service.pojo.shop.member.account.MemberCardVo;
 import com.vpu.mp.service.pojo.shop.member.card.*;
+import com.vpu.mp.service.pojo.shop.operation.RecordContentTemplate;
+
 import org.jooq.SelectSeekStep1;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
 import com.vpu.mp.db.shop.tables.records.MemberCardRecord;
+import com.vpu.mp.db.shop.tables.records.UserCardRecord;
 import com.vpu.mp.service.foundation.data.JsonResultCode;
 import com.vpu.mp.service.foundation.service.ShopBaseService;
 import com.vpu.mp.service.foundation.util.PageResult;
@@ -574,4 +602,121 @@ public class MemberCardService extends ShopBaseService {
 		return cardRecords;
 	}
 
+	/**
+	 * 为会员分配会员卡
+	 */
+	public void addCardForMember(AddMemberCardParam param) {
+		
+		/** 准备数据 */
+		
+		int sizeOfUserId = param.getUserIdList().size();
+		int sizeOfCardId = param.getCardIdList().size();
+		List<Integer> cardIdList = param.getCardIdList();
+		List<Integer> userIdList = param.getUserIdList();
+		
+		/** cardNo */
+		Queue<String> cardNoList = new LinkedList<>();
+		for(int i = 0;i<sizeOfUserId;i++) {
+			for(int j = 0;j<sizeOfCardId;j++) {
+				/** 确保cardNo唯一性 */
+				while(true) {
+					String cardNo = generateCardNo(cardIdList.get(j));
+					if(!cardNoList.contains(cardNo)) {
+						cardNoList.add(cardNo);
+						break;
+					}
+				}
+			}
+		}
+		
+		/** 查询所有的会员卡 */
+		Result<MemberCardRecord> memberCardList = db().selectFrom(MEMBER_CARD).where(MEMBER_CARD.ID.in(param.getCardIdList())).fetch();
+		logger.info("一共查询到: "+memberCardList.size()+" 张会员卡");
+		
+		
+		LocalDateTime now = LocalDateTime.now();
+		LocalDateTime expireTime=null;
+		/** 过期时间-多少日内 */
+		for(MemberCardRecord memberCard:memberCardList) {
+			if(DURING_TIME.equals(memberCard.getExpireType())) {
+				/** 计算过期时间 */
+				Byte dateType = memberCard.getDateType();
+				/** 领取之日起n */
+				Integer receiveDay = memberCard.getReceiveDay();
+				if(DAY_DATE_TYPE.equals(dateType)) {
+					expireTime = now.plusDays(receiveDay);
+				}else if(WEEK_DATE_TYPE.equals(dateType)) {
+					expireTime = now.plusDays(WEEK*receiveDay);
+				}else if(MONTH_DATE_TYPE.equals(dateType)) {
+					expireTime = now.plusDays(MONTH*receiveDay);
+				}
+				memberCard.setEndTime(Timestamp.valueOf(expireTime));
+			}
+		}
+		
+		
+		/** insert */
+		//InsertValuesStepN<UserCardRecord>  insert = db().insertInto(USER_CARD).columns(USER_CARD.fields());
+		/**USER_CARD.SURPLUS-门店兑换次数，USER_CARD.EXCHANG_SURPLUS-商品兑换次数*/
+		InsertValuesStep7<UserCardRecord, Integer, Integer, String, Timestamp, Integer, Timestamp, Integer> insert = db().insertInto(USER_CARD)
+				 						.columns(USER_CARD.USER_ID,USER_CARD.CARD_ID,USER_CARD.CARD_NO,USER_CARD.EXPIRE_TIME,
+				 							USER_CARD.SURPLUS,USER_CARD.ACTIVATION_TIME,USER_CARD.EXCHANG_SURPLUS);
+		
+		
+		for(int i = 0;i<sizeOfUserId;i++) {
+			for(int j = 0;j<sizeOfCardId;j++) {
+				/*
+				insert into `b2c_user_card` (`user_id`, `card_id`, `add_time`, `card_no`, `expire_time`, `surplus`, `activation_time`)
+				*/
+				MemberCardRecord memberCard = memberCardList.get(j);
+				insert.values(userIdList.get(i),cardIdList.get(j),cardNoList.poll(),memberCard.getEndTime(),memberCard.getCount(),Timestamp.valueOf(now),memberCard.getExchangCount());
+			}
+		}
+		
+		int execute = insert.execute();
+		logger.info("成功添加： "+execute+" 行记录");
+		
+		
+		/** add record */
+		//List<String> userNameList = db().select(USER.USERNAME).from(USER).where(USER.USER_ID.in(userIdList)).fetch().into(String.class);
+		Map<Integer, String> userNameMap = db().select(USER.USER_ID,USER.USERNAME).from(USER).where(USER.USER_ID.in(userIdList)).fetch().intoMap(USER.USER_ID, USER.USERNAME);
+		List<String> tmpData = new ArrayList<>();
+		String messageFormat = RecordContentTemplate.MEMBER_CARD_SEND.getMessage();
+		/** generate template message */
+		for(int i=0;i<sizeOfUserId;i++) {
+			for(int j=0;j<sizeOfCardId;j++) {
+				tmpData.add(String.format(messageFormat, userIdList.get(i),userNameMap.get(userIdList.get(i)),memberCardList.get(j).getCardName()));
+			}
+		}
+		
+		//tmpData.stream().forEach(logger::info);
+		saas().getShopApp(getShopId()).record.insertRecord(Arrays.asList(new Integer[] { RecordContentTemplate.MEMBER_CARD_SEND.code }), tmpData.stream().toArray(String[]::new));
+	}
+	
+
+	/**
+	 * 生成会员卡号
+	 */
+	public String generateCardNo(int cardId) {
+		StringBuilder cardNo = new StringBuilder();
+		
+		for(int i = 0;i<Integer.MAX_VALUE;i++) {
+			/** 会员卡号 = 店铺id+两位随机数+四位会员卡id+四位随机数 */
+			cardNo.append(getShopId());
+			cardNo.append(Util.randomInteger(10,100));
+			cardNo.append(String.format("%04d", cardId).substring(0, 4));
+			cardNo.append(Util.randomInteger(1000,10000));
+			
+			/** 确保数据库会员卡号具有唯一性 */
+			int count = db().fetchCount(USER_CARD, USER_CARD.CARD_NO.eq(cardNo.toString()));
+			if(count == 0) {
+				break;
+			}
+			/** clear string buffer */
+			cardNo.setLength(0);
+		}
+		
+		logger.info("cardNo: "+cardNo.toString());
+		return cardNo.toString();
+	}
 }

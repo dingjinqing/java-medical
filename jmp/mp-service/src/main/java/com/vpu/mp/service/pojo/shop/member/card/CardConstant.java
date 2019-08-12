@@ -28,7 +28,18 @@ public class CardConstant {
 	public static final Byte DURING_TIME = 1;
 	/** 永久有效 */
 	public static final Byte FOREVER = 2;
+	/** DURING_TIME的天数类型 0:日，1:周 2: 月 */
+	public static final Byte DAY_DATE_TYPE = 0;
+	public static final Byte WEEK_DATE_TYPE = 1;
+	public static final Byte MONTH_DATE_TYPE = 2;
+	
+	/** 天数 */
+	public static final Byte DAY = 1;
+	public static final Byte WEEK = 7;
+	public static final Byte MONTH = 30;
 
+	
+	
 	/** 背景色类型 */
 	public static final Byte BG_COLOR_TYPE = 0;
 	/** 背景图片类型 */
@@ -86,4 +97,6 @@ public class CardConstant {
 	public static final ObjectMapper MAPPER = new ObjectMapper();
 	/** 当前时间 */
 	public static final LocalDate CURRENT_DATE = LocalDate.now();
+	
+
 }

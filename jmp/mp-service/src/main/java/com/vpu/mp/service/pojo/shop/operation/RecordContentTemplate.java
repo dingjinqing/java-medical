@@ -15,7 +15,10 @@ public enum   RecordContentTemplate {
     GOODS_CONTENT_ADD(2001,RecordContentMessage.GOODS_CONTENT_ADD),
 	
 	/**订单*/
-	ORDER_SHIP(3001,RecordContentMessage.ORDER_SHIP);
+	ORDER_SHIP(3001,RecordContentMessage.ORDER_SHIP),
+	
+	/** 会员-会员卡 */
+	MEMBER_CARD_SEND(4001,RecordContentMessage.MSG_MEMBER_CARD_SEND);
 	
     /**
      * 得到返回码

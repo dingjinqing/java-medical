@@ -15,5 +15,12 @@ public class RecordContentMessage {
      */
     /**发货*/
     public static final String ORDER_SHIP = "order.ship";
+    
+    /**
+     * 	会员
+     */
+    /** 会员发放会员卡 */
+    public static final String MSG_MEMBER_CARD_SEND = "发放给'ID：%d；昵称：%s'的会员卡:  %s";
+    
 
 }
