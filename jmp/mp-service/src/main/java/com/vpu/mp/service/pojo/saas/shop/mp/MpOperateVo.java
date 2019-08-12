@@ -11,7 +11,7 @@ import java.sql.Timestamp;
 @Data
 public class MpOperateVo {
 
-    private String templateId;
+    private Integer templateId;
 
     private Timestamp createTime;
 
