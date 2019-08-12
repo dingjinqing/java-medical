@@ -3,6 +3,7 @@ package com.vpu.mp.service.saas.shop;
 import static com.vpu.mp.db.main.tables.MpAuthShop.MP_AUTH_SHOP;
 import static com.vpu.mp.db.main.tables.ShopRenew.SHOP_RENEW;
 
+
 import java.io.File;
 import java.io.IOException;
 import java.sql.Timestamp;
@@ -15,6 +16,7 @@ import java.util.Map;
 
 import org.apache.commons.lang3.StringUtils;
 import org.jooq.Condition;
+import org.jooq.Record1;
 import org.jooq.Record13;
 import org.jooq.Record2;
 import org.jooq.Result;
@@ -29,7 +31,9 @@ import com.google.gson.JsonObject;
 import com.vpu.mp.config.DomainConfig;
 import com.vpu.mp.db.main.tables.MpAuthShop;
 import com.vpu.mp.db.main.tables.records.MpAuthShopRecord;
+import com.vpu.mp.db.main.tables.records.MpDeployHistoryRecord;
 import com.vpu.mp.db.main.tables.records.MpVersionRecord;
+import com.vpu.mp.db.shop.tables.records.MpJumpUsableRecord;
 import com.vpu.mp.service.foundation.service.MainBaseService;
 import com.vpu.mp.service.foundation.util.PageResult;
 import com.vpu.mp.service.foundation.util.Util;
@@ -38,6 +42,7 @@ import com.vpu.mp.service.pojo.saas.shop.mp.MpAuthShopListVo;
 import com.vpu.mp.service.pojo.shop.config.trade.WxpayConfigParam;
 import com.vpu.mp.service.pojo.shop.config.trade.WxpaySearchParam;
 import com.vpu.mp.service.saas.image.SystemImageService;
+import com.vpu.mp.service.shop.decoration.AppletsJumpService;
 import com.vpu.mp.service.wechat.api.WxOpenAccountService;
 import com.vpu.mp.service.wechat.bean.ma.MpWxMaOpenCommitExtInfo;
 import com.vpu.mp.service.wechat.bean.open.MaWxPlusInListInner;
@@ -75,6 +80,9 @@ public class MpAuthShopService extends MainBaseService {
 
 	@Autowired
 	protected SystemImageService image;
+	
+	@Autowired
+	protected AppletsJumpService appletsJumpService;
 
 	public static final Byte AUTH_OK = 1;
 	public static final Byte AUTH_CANCEL = 0;
@@ -284,9 +292,17 @@ public class MpAuthShopService extends MainBaseService {
 		String noNewDomainCode = "85017";
 		if (result.isSuccess() || noNewDomainCode.equals(result.getErrcode())) {
 			// 85017 : 没有新增域名，请确认小程序已经添加了域名或该域名是否没有在第三方平台添加
-			maService.setWebViewDomain(action, Arrays.asList(httpsDomains));
+			String setWebViewDomain = maService.setWebViewDomain(action, Arrays.asList(httpsDomains));
+			WxOpenResult fromJson = WxMaGsonBuilder.create().fromJson(setWebViewDomain, WxOpenResult.class);
+			if(fromJson.isSuccess()) {
+				//同步到主库???
+			}else {
+				logger().debug("appId:"+appId+"修改域名setWebViewDomain失败"+fromJson.getErrcode()+"  "+fromJson.getErrmsg());
+			}
 			mp.setIsModifyDomain((byte) 1);
-			mp.update();
+			mp.update();				
+		}else {
+			logger().debug("appId:"+appId+"修改域名modifyDomain失败"+result.getErrcode()+"  "+result.getErrmsg());
 		}
 		operateLog(mp, MpOperateLogService.OP_TYPE_MODIFY_DOMAIN, result);
 		return result;
@@ -319,7 +335,11 @@ public class MpAuthShopService extends MainBaseService {
 		 * TODO: add setNavigateToMiniProgramAppIdList
 		 * extInfo.setNavigateToMiniProgramAppIdList(navigateToMiniProgr++amAppIdList);
 		 */
-
+		extInfo.setNavigateToMiniProgramAppIdList(appletsJumpService.getMpJumpAppIDList());
+		
+		//上传代码保存小程序跳转的提交的appid 版本号，appid ,状态
+		appletsJumpService.saveMpJumpAppIDList(extInfo.getNavigateToMiniProgramAppIdList(), templateId);
+		
 		JsonObject params = new JsonObject();
 		params.addProperty("template_id", templateId);
 		params.addProperty("user_version", version.getUserVersion());
@@ -328,6 +348,8 @@ public class MpAuthShopService extends MainBaseService {
 		String response = maService.post(WxOpenMaService.API_CODE_COMMIT, Util.toJson(params));
 		WxOpenResult result = WxMaGsonBuilder.create().fromJson(response, WxOpenResult.class);
 		operateLog(mp, MpOperateLogService.OP_TYPE_UPLOAD_CODE, result);
+		//更新申请发布小程序为已发布
+		appletsJumpService.updateMpJumpVersion(mp.getShopId().toString());
 		return result;
 	}
 
@@ -501,6 +523,8 @@ public class MpAuthShopService extends MainBaseService {
 			mp.setCategory(Util.toJson(result.getPageList()));
 			mp.update();
 		}
+		//更新部署日志
+		updateDeployData(result.getPageList(), appId);
 		operateLog(mp, MpOperateLogService.OP_TYPE_GET_PAGE_CFG, result);
 		return result;
 	}
@@ -550,6 +574,10 @@ public class MpAuthShopService extends MainBaseService {
 		MpAuthShopRecord mp = this.getAuthShopByAppId(appId);
 		WxOpenMaService maService = this.getMaServiceByAppId(appId);
 		WxOpenResult result = maService.releaesAudited();
+		if(result.isSuccess()) {
+			//更新数据库
+			updatePush(appId);
+		}
 		operateLog(mp, MpOperateLogService.OP_TYPE_PUBLISH_CODE, result);
 		return result;
 	}
@@ -778,5 +806,28 @@ public class MpAuthShopService extends MainBaseService {
     	}
 		return null;
 	}
-
+	
+	
+	//	更新部署日志
+	public void updateDeployData(List<String> pageList,String appId) {
+		Byte templateId = getMpPackageVersion(appId);
+		Integer tempId=Integer.parseInt(templateId.toString());
+		MpDeployHistoryRecord deployInfo = saas().deployHistoryService.getDeployInfo(appId, tempId);
+		if(deployInfo!=null) {
+			saas().deployHistoryService.addRow(appId, tempId);
+		}
+		saas().deployHistoryService.update(appId, tempId, pageList);
+				
+	}
+	
+	public void updatePush(String appId) {
+		MpAuthShopRecord newRecord = MP_AUTH_SHOP.newRecord();
+		newRecord.setAppId(appId);
+		newRecord.setPublishState((byte) 1);
+		newRecord.setPublishTime(new Timestamp(System.currentTimeMillis()));
+		db().executeUpdate(newRecord);
+		
+	}
+	
+	
 }
