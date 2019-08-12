@@ -1,9 +1,6 @@
 package com.vpu.mp.service.shop;
 
 
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
-
 import com.vpu.mp.service.shop.config.ConfigService;
 import com.vpu.mp.service.shop.config.ShopBasicConfigService;
 import com.vpu.mp.service.shop.config.TradeService;
@@ -13,11 +10,9 @@ import com.vpu.mp.service.shop.decoration.AppletsJumpService;
 import com.vpu.mp.service.shop.decoration.ChooseLinkService;
 import com.vpu.mp.service.shop.decoration.PageClassificationService;
 import com.vpu.mp.service.shop.decoration.ShopMpDecorationService;
-import com.vpu.mp.service.shop.distribution.BrokerageStatisticalService;
 import com.vpu.mp.service.shop.distribution.DistributorGroupService;
 import com.vpu.mp.service.shop.distribution.DistributorLevelService;
 import com.vpu.mp.service.shop.distribution.DistributorListService;
-import com.vpu.mp.service.shop.distribution.RebateGoodsService;
 import com.vpu.mp.service.shop.distribution.RebateStrategyService;
 import com.vpu.mp.service.shop.goods.GoodsRecommendService;
 import com.vpu.mp.service.shop.goods.GoodsService;
@@ -29,10 +24,7 @@ import com.vpu.mp.service.shop.market.form.FormStatisticsService;
 import com.vpu.mp.service.shop.market.freeshipping.FreeShippingService;
 import com.vpu.mp.service.shop.market.friendpromote.FriendPromoteService;
 import com.vpu.mp.service.shop.market.goupbuy.GroupBuyService;
-import com.vpu.mp.service.shop.market.groupdraw.GroupDrawGroupService;
-import com.vpu.mp.service.shop.market.groupdraw.GroupDrawJoinUserService;
-import com.vpu.mp.service.shop.market.groupdraw.GroupDrawOrderService;
-import com.vpu.mp.service.shop.market.groupdraw.GroupDrawService;
+import com.vpu.mp.service.shop.market.groupdraw.*;
 import com.vpu.mp.service.shop.market.integration.GroupIntegrationService;
 import com.vpu.mp.service.shop.market.lottery.LotteryService;
 import com.vpu.mp.service.shop.market.seckill.SeckillService;
@@ -46,12 +38,7 @@ import com.vpu.mp.service.shop.order.OrderReadService;
 import com.vpu.mp.service.shop.order.OrderWriteService;
 import com.vpu.mp.service.shop.order.action.base.OrderOperateFactory;
 import com.vpu.mp.service.shop.order.virtual.CouponPackOrderService;
-import com.vpu.mp.service.shop.overview.AssetManagementService;
-import com.vpu.mp.service.shop.overview.CommodityStatisticsService;
-import com.vpu.mp.service.shop.overview.MallOverviewService;
-import com.vpu.mp.service.shop.overview.OverviewService;
-import com.vpu.mp.service.shop.overview.RealTimeOverviewService;
-import com.vpu.mp.service.shop.overview.TransactionStatisticsService;
+import com.vpu.mp.service.shop.overview.*;
 import com.vpu.mp.service.shop.store.store.StoreService;
 import com.vpu.mp.service.shop.summary.portrait.PortraitService;
 import com.vpu.mp.service.shop.summary.visit.AmountService;
@@ -61,6 +48,8 @@ import com.vpu.mp.service.shop.summary.visit.RetainService;
 import com.vpu.mp.service.shop.task.ShopTaskService;
 import com.vpu.mp.service.shop.user.user.UserService;
 import com.vpu.mp.service.shop.version.VersionService;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
 /**
  * 
@@ -113,8 +102,6 @@ public class ShopApplication  {
 	@Autowired public DistributorGroupService distributorGroup; //分销员分组
 	@Autowired public DistributorLevelService distributorLevel; //分销员等级配置
 	@Autowired public DistributorListService distributorList; //分销员列表
-	@Autowired public BrokerageStatisticalService brokerage; //佣金统计
-	@Autowired public RebateGoodsService rebateGoods; //返利商品统计
 	@Autowired public MemberCardOrderService memberCardOrder;
 	@Autowired public TransactionStatisticsService transactionService;
     @Autowired public CouponPackOrderService couponPackOrder;
@@ -161,11 +148,16 @@ public class ShopApplication  {
 	@Autowired public CommodityStatisticsService statisticsService;
     @Autowired public AssetManagementService assetService;
 
-
+    /**
+     * 拼团抽奖
+     */
 	@Autowired public GroupDrawService groupDraw;
 	@Autowired public GroupDrawJoinUserService groupDrawUsers;
 	@Autowired public GroupDrawOrderService groupDrawOrders;
 	@Autowired public GroupDrawGroupService groupDrawGroups;
+	@Autowired public GroupDrawInviteService groupDrawInvite;
+	@Autowired public GroupDrawUserService groupDrawUser;
+
 	/**
 	 * 瓜分积分
 	 */

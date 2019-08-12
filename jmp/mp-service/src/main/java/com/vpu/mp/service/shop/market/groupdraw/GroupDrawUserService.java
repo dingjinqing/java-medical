@@ -6,8 +6,10 @@ import com.vpu.mp.service.foundation.service.ShopBaseService;
 import com.vpu.mp.service.foundation.util.Util;
 import com.vpu.mp.service.pojo.shop.coupon.give.CouponGiveQueueParam;
 import com.vpu.mp.service.pojo.shop.order.OrderConstant;
+import com.vpu.mp.service.shop.ShopApplication;
 import org.jooq.Record1;
 import org.jooq.SelectConditionStep;
+import org.jooq.impl.DSL;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.stereotype.Service;
 
@@ -17,12 +19,14 @@ import java.util.Random;
 import java.util.stream.Collectors;
 
 import static com.vpu.mp.db.shop.tables.GoodsSpecProduct.GOODS_SPEC_PRODUCT;
+import static com.vpu.mp.db.shop.tables.GroupBuyList.GROUP_BUY_LIST;
 import static com.vpu.mp.db.shop.tables.GroupDraw.GROUP_DRAW;
 import static com.vpu.mp.db.shop.tables.JoinDrawList.JOIN_DRAW_LIST;
 import static com.vpu.mp.db.shop.tables.JoinGroupList.JOIN_GROUP_LIST;
 import static com.vpu.mp.db.shop.tables.OrderGoods.ORDER_GOODS;
 import static com.vpu.mp.db.shop.tables.OrderInfo.ORDER_INFO;
 import static com.vpu.mp.service.foundation.util.Util.currentTimeStamp;
+import static com.vpu.mp.service.pojo.shop.order.OrderConstant.ORDER_PIN_SUCCESSS;
 import static com.vpu.mp.service.pojo.shop.order.OrderConstant.ORDER_WAIT_DELIVERY;
 
 /**
@@ -47,9 +51,91 @@ public class GroupDrawUserService extends ShopBaseService {
     private static final byte WIN_DRAW = 1;
 
     private final RabbitTemplate rabbit;
+    private final ShopApplication shop;
 
-    public GroupDrawUserService(RabbitTemplate rabbit) {
+    public GroupDrawUserService(RabbitTemplate rabbit, ShopApplication shop) {
         this.rabbit = rabbit;
+        this.shop = shop;
+    }
+
+    /**
+     * 生成团记录
+     */
+    private void generateGroupInfo(OrderInfoRecord orderInfo, Integer groupId, Integer status) {
+        String orderSn = orderInfo.getOrderSn();
+        Byte isGrouper = (byte) (null == groupId ? 1 : 0);
+        if (null == groupId) {
+            groupId = generateGroupId();
+        }
+        List<OrderGoodsRecord> orderGoods = getOrderGoods(orderSn);
+        // 记录邀请用户
+        GroupDrawInviteRecord availableInviteUser = shop.groupDrawInvite.getAvailableInviteUser(getGroupDrawId(orderSn),
+            orderGoods.get(0).getGoodsId(), orderInfo.getUserId());
+        Integer inviteUserId = availableInviteUser == null ? 0 : availableInviteUser.getUserId();
+        // todo 记录邀请用户
+    }
+
+    private Integer getGroupDrawId(String orderSn) {
+        return (Integer) shopDb().select(GROUP_BUY_LIST.ACTIVITY_ID).from(GROUP_BUY_LIST)
+            .where(GROUP_BUY_LIST.ORDER_SN.eq(orderSn)).fetchOne(0);
+    }
+
+    /**
+     * 生成团id
+     */
+    private Integer generateGroupId() {
+        return (Integer) shopDb().select(DSL.max(JOIN_GROUP_LIST.GROUP_ID)).fetchOne().get(0) + 1;
+    }
+
+    /**
+     * 成团
+     */
+    private void successGroup(Integer groupDrawId, Integer groupId) {
+        GroupDrawRecord groupDraw = getGroupDraw(groupDrawId);
+        List<JoinGroupListRecord> groupUserList = getOnGoingGroupList(groupDrawId, groupId);
+        if (groupDraw.getLimitAmount() <= groupUserList.size()) {
+            List<String> orderSns = groupUserList.stream().map(JoinGroupListRecord::getOrderSn).collect(Collectors.toList());
+            // 更新订单状态
+            updateOrderGroupedStatus(orderSns);
+            // 更新成团状态
+            updateGroupInfo(groupDrawId, groupId);
+            // todo 发送拼团成功模板消息
+        }
+    }
+
+    /**
+     * 更新团信息
+     */
+    private void updateGroupInfo(Integer groupDrawId, Integer groupId) {
+        shopDb().update(JOIN_GROUP_LIST).set(JOIN_GROUP_LIST.STATUS, GROUPED)
+            .set(JOIN_GROUP_LIST.END_TIME, Util.currentTimeStamp()).where(JOIN_GROUP_LIST.GROUP_DRAW_ID.eq(groupDrawId)
+            .and(JOIN_GROUP_LIST.GROUP_ID.eq(groupId).and(JOIN_GROUP_LIST.STATUS.eq(GROUP_ONGOING))))
+            .execute();
+    }
+
+    /**
+     * 更新订单状态
+     */
+    private void updateOrderGroupedStatus(List<String> orderSns) {
+        shopDb().update(ORDER_INFO).set(ORDER_INFO.ORDER_STATUS, OrderConstant.ORDER_PIN_SUCCESSS)
+            .set(ORDER_INFO.ORDER_STATUS_NAME, new OrderConstant().getOrderStatus(ORDER_PIN_SUCCESSS))
+            .where(ORDER_INFO.ORDER_SN.in(orderSns)).execute();
+    }
+
+    /**
+     * 获取拼团中的参团记录
+     */
+    private List<JoinGroupListRecord> getOnGoingGroupList(Integer groupDrawId, Integer groupId) {
+        return shopDb().selectFrom(JOIN_GROUP_LIST).where(JOIN_GROUP_LIST.GROUP_DRAW_ID.eq(groupDrawId)
+            .and(JOIN_GROUP_LIST.STATUS.eq(GROUP_ONGOING).and(JOIN_GROUP_LIST.GROUP_ID.eq(groupId))))
+            .fetchInto(JOIN_GROUP_LIST);
+    }
+
+    /**
+     * 获取拼团抽奖活动
+     */
+    private GroupDrawRecord getGroupDraw(Integer groupDrawId) {
+        return shopDb().selectFrom(GROUP_DRAW).where(GROUP_DRAW.ID.eq(groupDrawId)).fetchOneInto(GROUP_DRAW);
     }
 
     /**
@@ -92,7 +178,7 @@ public class GroupDrawUserService extends ShopBaseService {
                         if (WIN_DRAW == groupUser.getIsWinDraw()) {
                             updateProductNumber(groupUser.getOrderSn());
                         } else {
-                            // todo 退款
+                            // todo 未中奖退款
 
                             // todo 发送中奖模板消息
                             if (!couponIds.isEmpty()) {
@@ -123,8 +209,7 @@ public class GroupDrawUserService extends ShopBaseService {
     }
 
     /**
-     * 更新库存
-     * todo
+     * todo 更新库存
      */
     private void updateGoodsSkuAfterWaitDeliver(OrderInfoRecord orderInfo) {
 
