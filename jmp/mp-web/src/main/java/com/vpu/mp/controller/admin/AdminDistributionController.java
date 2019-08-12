@@ -265,12 +265,12 @@ public class AdminDistributionController extends AdminBaseController{
 					boolean res = shop().distributorLevel.updateLevel(level);
 					
 					//配置是否有更新
-					boolean no_change = levelInfo.getInviteNumber() == level.getInviteNumber() 
+					boolean noChange = levelInfo.getInviteNumber() == level.getInviteNumber() 
 									&& levelInfo.getTotalBuyMoney() == level.getTotalBuyMoney()
 									&& levelInfo.getTotalDistributionMoney() == level.getTotalDistributionMoney();
 					
 					//自动升级更改
-					if(res && level.getLevelUpRoute() == 0 && !no_change) {
+					if(res && level.getLevelUpRoute() == 0 && !noChange) {
 						//可自动升级等级
 						List<Byte> canUpLevels = shop().distributorLevel.getLowerCanUpLevels(level.getLevelId());
 						for(Byte canUpLevel : canUpLevels) {	

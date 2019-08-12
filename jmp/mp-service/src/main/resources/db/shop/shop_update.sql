@@ -602,3 +602,29 @@ alter table `b2c_mrking_strategy` modify column `act_type` tinyint(1) not null d
 ALTER TABLE `b2c_coupon_activity` ADD COLUMN `customize_img_path` varchar(191)  not null default '' comment '活动有礼跳转活动图片路径';
 ALTER TABLE `b2c_coupon_activity` ADD COLUMN `customize_url` varchar(191)  not null default '' comment '活动有礼跳转活动链接';
 ALTER TABLE `b2c_coupon_activity` CHANGE `activity_action` `activity_action` tinyint(1) DEFAULT '1' COMMENT '活动类型：1：活动送券 2：大转盘抽奖 3：跳转自定义链接';
+
+--8月12日 常乐 分销推广语相关表
+--分销推广语
+--DROP TABLE IF EXISTS `b2c_promotion_language`;
+create table `b2c_promotion_language` (
+  `id`                   int(8)       not null  auto_increment,
+  `title`                varchar(32)  not null comment '推广语标题',
+  `promotion_language`   varchar(400) not null comment '推广语',
+  `create_time`          timestamp      default current_timestamp,
+  `update_time`          timestamp      default current_timestamp on update current_timestamp comment '最后修改时间',
+  `is_block`             tinyint(1)             default 0 comment '是否停用：0否，1是',
+  `del_flag`             tinyint(1)             default 0 comment '是否停用：0否，1是',
+  primary key (`id`)
+);
+
+--用户默认分销推广语
+--DROP TABLE IF EXISTS `b2c_user_promotion_language`;
+create table `b2c_user_promotion_language` (
+  `id`             int(8)   not null  auto_increment,
+  `lan_id`         int(8)   not null  default 0 comment '推广语关联ID',
+  `user_id`        int(11)  not null  default 0 comment '会员ID',
+  `create_time`    timestamp      default current_timestamp,
+  `update_time`    timestamp      default current_timestamp on update current_timestamp comment '最后修改时间',
+  primary key (`id`),
+  key (`user_id`)
+);

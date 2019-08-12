@@ -226,6 +226,9 @@ public class Keys {
     public static final Identity<FanliGoodsStatisticsRecord, Integer> IDENTITY_FANLI_GOODS_STATISTICS = Identities0.IDENTITY_FANLI_GOODS_STATISTICS;
     public static final Identity<UserFanliStatisticsRecord, Integer> IDENTITY_USER_FANLI_STATISTICS = Identities0.IDENTITY_USER_FANLI_STATISTICS;
     public static final Identity<OrderGoodsRebateRecord, Integer> IDENTITY_ORDER_GOODS_REBATE = Identities0.IDENTITY_ORDER_GOODS_REBATE;
+    public static final Identity<PromotionLanguageRecord, Integer> IDENTITY_PROMOTION_LANGUAGE = Identities0.IDENTITY_PROMOTION_LANGUAGE;
+    public static final Identity<UserPromotionLanguageRecord, Integer> IDENTITY_USER_PROMOTION_LANGUAGE = Identities0.IDENTITY_USER_PROMOTION_LANGUAGE;
+
     // -------------------------------------------------------------------------
     // UNIQUE and PRIMARY KEY definitions
     // -------------------------------------------------------------------------
@@ -444,6 +447,8 @@ public class Keys {
     public static final UniqueKey<FanliGoodsStatisticsRecord> KEY_B2C_FANLI_GOODS_STATISTICS_PRIMARY = UniqueKeys0.KEY_B2C_FANLI_GOODS_STATISTICS_PRIMARY;
     public static final UniqueKey<UserFanliStatisticsRecord> KEY_B2C_USER_FANLI_STATISTICS_PRIMARY = UniqueKeys0.KEY_B2C_USER_FANLI_STATISTICS_PRIMARY;
     public static final UniqueKey<OrderGoodsRebateRecord> KEY_B2C_ORDER_GOODS_REBATE_PRIMARY = UniqueKeys0.KEY_B2C_ORDER_GOODS_REBATE_PRIMARY;
+    public static final UniqueKey<PromotionLanguageRecord> KEY_B2C_PROMOTION_LANGUAGE_PRIMARY = UniqueKeys0.KEY_B2C_PROMOTION_LANGUAGE_PRIMARY;
+    public static final UniqueKey<UserPromotionLanguageRecord> KEY_B2C_USER_PROMOTION_LANGUAGE_PRIMARY = UniqueKeys0.KEY_B2C_USER_PROMOTION_LANGUAGE_PRIMARY;
 
     // -------------------------------------------------------------------------
     // FOREIGN KEY definitions
@@ -642,6 +647,8 @@ public class Keys {
         public static Identity<FanliGoodsStatisticsRecord, Integer> IDENTITY_FANLI_GOODS_STATISTICS = Internal.createIdentity(FanliGoodsStatistics.FANLI_GOODS_STATISTICS, FanliGoodsStatistics.FANLI_GOODS_STATISTICS.ID);
         public static Identity<UserFanliStatisticsRecord, Integer> IDENTITY_USER_FANLI_STATISTICS = Internal.createIdentity(UserFanliStatistics.USER_FANLI_STATISTICS, UserFanliStatistics.USER_FANLI_STATISTICS.ID);
         public static Identity<OrderGoodsRebateRecord, Integer> IDENTITY_ORDER_GOODS_REBATE = Internal.createIdentity(OrderGoodsRebate.ORDER_GOODS_REBATE, OrderGoodsRebate.ORDER_GOODS_REBATE.REBATE_ID);
+        public static Identity<PromotionLanguageRecord, Integer> IDENTITY_PROMOTION_LANGUAGE = Internal.createIdentity(PromotionLanguage.PROMOTION_LANGUAGE, PromotionLanguage.PROMOTION_LANGUAGE.ID);
+        public static Identity<UserPromotionLanguageRecord, Integer> IDENTITY_USER_PROMOTION_LANGUAGE = Internal.createIdentity(UserPromotionLanguage.USER_PROMOTION_LANGUAGE, UserPromotionLanguage.USER_PROMOTION_LANGUAGE.ID);
 
     }
 
@@ -861,6 +868,8 @@ public class Keys {
         public static final UniqueKey<FanliGoodsStatisticsRecord> KEY_B2C_FANLI_GOODS_STATISTICS_PRIMARY = Internal.createUniqueKey(FanliGoodsStatistics.FANLI_GOODS_STATISTICS, "KEY_b2c_fanli_goods_statistics_PRIMARY", FanliGoodsStatistics.FANLI_GOODS_STATISTICS.ID);
         public static final UniqueKey<UserFanliStatisticsRecord> KEY_B2C_USER_FANLI_STATISTICS_PRIMARY = Internal.createUniqueKey(UserFanliStatistics.USER_FANLI_STATISTICS, "KEY_b2c_user_fanli_statistics_PRIMARY", UserFanliStatistics.USER_FANLI_STATISTICS.ID);
         public static final UniqueKey<OrderGoodsRebateRecord> KEY_B2C_ORDER_GOODS_REBATE_PRIMARY = Internal.createUniqueKey(OrderGoodsRebate.ORDER_GOODS_REBATE, "KEY_b2c_order_goods_rebate_PRIMARY", OrderGoodsRebate.ORDER_GOODS_REBATE.REBATE_ID);
+        public static final UniqueKey<PromotionLanguageRecord> KEY_B2C_PROMOTION_LANGUAGE_PRIMARY = Internal.createUniqueKey(PromotionLanguage.PROMOTION_LANGUAGE, "KEY_b2c_promotion_language_PRIMARY", PromotionLanguage.PROMOTION_LANGUAGE.ID);
+        public static final UniqueKey<UserPromotionLanguageRecord> KEY_B2C_USER_PROMOTION_LANGUAGE_PRIMARY = Internal.createUniqueKey(UserPromotionLanguage.USER_PROMOTION_LANGUAGE, "KEY_b2c_user_promotion_language_PRIMARY", UserPromotionLanguage.USER_PROMOTION_LANGUAGE.ID);
 
     }
 }

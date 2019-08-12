@@ -4005,8 +4005,8 @@ create table `b2c_assess_topic_record` (
 );
 
 -- 7月12日 常乐 添加优惠礼包表结构
-##优惠券礼包
-#DROP TABLE IF EXISTS `b2c_coupon_pack`;
+--优惠券礼包
+--DROP TABLE IF EXISTS `b2c_coupon_pack`;
 create table `b2c_coupon_pack` (
   `id`              int(11)                  not null auto_increment,
   `act_name`        varchar(100)             not null comment '活动名称',
@@ -4025,4 +4025,30 @@ create table `b2c_coupon_pack` (
   `del_flag`        tinyint(1)                        default 0,
   `del_time`        timestamp      null default null,
   primary key (`id`)
+);
+
+--8月12日 常乐 分销推广语相关表
+--分销推广语
+--DROP TABLE IF EXISTS `b2c_promotion_language`;
+create table `b2c_promotion_language` (
+  `id`                   int(8)       not null  auto_increment,
+  `title`                varchar(32)  not null comment '推广语标题',
+  `promotion_language`   varchar(400) not null comment '推广语',
+  `create_time`          timestamp      default current_timestamp,
+  `update_time`          timestamp      default current_timestamp on update current_timestamp comment '最后修改时间',
+  `is_block`             tinyint(1)             default 0 comment '是否停用：0否，1是',
+  `del_flag`             tinyint(1)             default 0 comment '是否停用：0否，1是',
+  primary key (`id`)
+);
+
+--用户默认分销推广语
+--DROP TABLE IF EXISTS `b2c_user_promotion_language`;
+create table `b2c_user_promotion_language` (
+  `id`             int(8)   not null  auto_increment,
+  `lan_id`         int(8)   not null  default 0 comment '推广语关联ID',
+  `user_id`        int(11)  not null  default 0 comment '会员ID',
+  `create_time`    timestamp      default current_timestamp,
+  `update_time`    timestamp      default current_timestamp on update current_timestamp comment '最后修改时间',
+  primary key (`id`),
+  key (`user_id`)
 );

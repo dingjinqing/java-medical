@@ -5,6 +5,11 @@ import java.sql.Timestamp;
 
 import lombok.Data;
 
+/**
+ * 商品返利明细列表出参
+ * @author 常乐
+ * 2019年8月12日
+ */
 @Data
 public class RebateGoodsDetailVo {
 	private String goodsName;

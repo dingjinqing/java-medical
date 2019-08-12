@@ -974,4 +974,12 @@ public class Tables {
      * The table <code>jmini_shop_471752.b2c_order_goods_rebate</code>.
      */
     public static final OrderGoodsRebate ORDER_GOODS_REBATE = com.vpu.mp.db.shop.tables.OrderGoodsRebate.ORDER_GOODS_REBATE;
+    /**
+     * The table <code>jmini_shop_471752.b2c_promotion_language</code>.
+     */
+    public static final PromotionLanguage PROMOTION_LANGUAGE = com.vpu.mp.db.shop.tables.PromotionLanguage.PROMOTION_LANGUAGE;
+    /**
+     * The table <code>jmini_shop_471752.b2c_user_promotion_language</code>.
+     */
+    public static final UserPromotionLanguage USER_PROMOTION_LANGUAGE = com.vpu.mp.db.shop.tables.UserPromotionLanguage.USER_PROMOTION_LANGUAGE;
 }

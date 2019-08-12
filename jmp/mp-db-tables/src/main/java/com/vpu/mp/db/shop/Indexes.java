@@ -425,6 +425,10 @@ public class Indexes {
     public static final Index ORDER_GOODS_REBATE_PRIMARY = Indexes0.ORDER_GOODS_REBATE_PRIMARY;
     public static final Index ORDER_GOODS_REBATE_REBATE_USER_ID = Indexes0.ORDER_GOODS_REBATE_REBATE_USER_ID;
     public static final Index ORDER_GOODS_REBATE_REC_ID = Indexes0.ORDER_GOODS_REBATE_REC_ID;
+    public static final Index PROMOTION_LANGUAGE_PRIMARY = Indexes0.PROMOTION_LANGUAGE_PRIMARY;
+    public static final Index USER_PROMOTION_LANGUAGE_PRIMARY = Indexes0.USER_PROMOTION_LANGUAGE_PRIMARY;
+    public static final Index USER_PROMOTION_LANGUAGE_USER_ID = Indexes0.USER_PROMOTION_LANGUAGE_USER_ID;
+
     // -------------------------------------------------------------------------
     // [#1459] distribute members to avoid static initialisers > 64kb
     // -------------------------------------------------------------------------
@@ -826,6 +830,8 @@ public class Indexes {
         public static Index ORDER_GOODS_REBATE_REC_ID = Internal.createIndex("rec_id", OrderGoodsRebate.ORDER_GOODS_REBATE, new OrderField[] { OrderGoodsRebate.ORDER_GOODS_REBATE.REC_ID }, false);
         public static Index LOTTERY_PRIZE_PRIMARY = Internal.createIndex("PRIMARY", LotteryPrize.LOTTERY_PRIZE, new OrderField[] { LotteryPrize.LOTTERY_PRIZE.ID }, true);
         public static Index LOTTERY_PRIZE_USER_LOTTERY = Internal.createIndex("user_lottery", LotteryPrize.LOTTERY_PRIZE, new OrderField[] { LotteryPrize.LOTTERY_PRIZE.LOTTERY_ID }, false);
-
+        public static Index PROMOTION_LANGUAGE_PRIMARY = Internal.createIndex("PRIMARY", PromotionLanguage.PROMOTION_LANGUAGE, new OrderField[] { PromotionLanguage.PROMOTION_LANGUAGE.ID }, true);
+        public static Index USER_PROMOTION_LANGUAGE_PRIMARY = Internal.createIndex("PRIMARY", UserPromotionLanguage.USER_PROMOTION_LANGUAGE, new OrderField[] { UserPromotionLanguage.USER_PROMOTION_LANGUAGE.ID }, true);
+        public static Index USER_PROMOTION_LANGUAGE_USER_ID = Internal.createIndex("user_id", UserPromotionLanguage.USER_PROMOTION_LANGUAGE, new OrderField[] { UserPromotionLanguage.USER_PROMOTION_LANGUAGE.USER_ID }, false);
     }
 }
