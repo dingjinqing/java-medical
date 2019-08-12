@@ -37,7 +37,7 @@
           <el-select
             v-model="scope.row.versionVal"
             placeholder="请选择"
-            @change='handleClickSelect(scope.row.packageVersion)'
+            @change='handleClickSelect(scope.row,scope.row.versionVal)'
             size="mini"
           >
             <el-option
@@ -121,11 +121,22 @@
         </template>
       </el-table-column>
     </el-table>
+    <div class="footer">
+      <div>每页20行记录，当前页面：{{this.currentPage}}，总页数：{{this.pageCount}}，总记录数微：{{this.totle}}</div>
+      <el-pagination
+        @current-change="handleCurrentChange"
+        :current-page.sync="currentPage"
+        :page-size="20"
+        layout="prev, pager, next, jumper"
+        :total="totle"
+      >
+      </el-pagination>
+    </div>
   </div>
 </template>
 
 <script>
-import { synchronizationRequest, smallProManRequest, setNowVersionRequest } from '@/api/system/programManage'
+import { synchronizationRequest, smallProManRequest, setNowVersionRequest, setCurrentVersionRequest } from '@/api/system/programManage'
 export default {
   name: 'versionManage',
   data () {
@@ -138,83 +149,10 @@ export default {
         value: '2',
         label: '好物版本'
       }],
-      // tableData: [{
-      //   id: '216',
-      //   num: '1.28.2',
-      //   version: [{
-      //     value: '选项1',
-      //     label: '普通版本'
-      //   }, {
-      //     value: '选项2',
-      //     label: '好物版本'
-      //   }],
-      //   versionDescribe: '8.6测试版本1',
-      //   time: '2019-08-06 09：16：33',
-      //   appid: 'wxeaeb5c37a376f415',
-      //   appName: '微铺宝b2c商城',
-      //   developer: '帅飞',
-      //   isDelete: '正常',
-      //   isUse: '当前使用',
-      //   operation: '',
-      //   selectVal: ''
-      // }, {
-      //   id: '216',
-      //   num: '1.28.2',
-      //   version: [{
-      //     value: '选项1',
-      //     label: '普通版本'
-      //   }, {
-      //     value: '选项2',
-      //     label: '好物版本'
-      //   }],
-      //   versionDescribe: '8.6测试版本1',
-      //   time: '2019-08-06 09：16：33',
-      //   appid: 'wxeaeb5c37a376f415',
-      //   appName: '微铺宝b2c商城',
-      //   developer: '帅飞',
-      //   isDelete: '正常',
-      //   isUse: '否',
-      //   operation: '',
-      //   selectVal: ''
-      // }, {
-      //   id: '216',
-      //   num: '1.28.2',
-      //   version: [{
-      //     value: '选项1',
-      //     label: '普通版本'
-      //   }, {
-      //     value: '选项2',
-      //     label: '好物版本'
-      //   }],
-      //   versionDescribe: '8.6测试版本1',
-      //   time: '2019-08-06 09：16：33',
-      //   appid: 'wxeaeb5c37a376f415',
-      //   appName: '微铺宝b2c商城',
-      //   developer: '帅飞',
-      //   isDelete: '正常',
-      //   isUse: '当前使用',
-      //   operation: ''
-      // }, {
-      //   id: '216',
-      //   num: '1.28.2',
-      //   version: [{
-      //     value: '选项1',
-      //     label: '普通版本'
-      //   }, {
-      //     value: '选项2',
-      //     label: '好物版本'
-      //   }],
-      //   versionDescribe: '8.6测试版本1',
-      //   time: '2019-08-06 09：16：33',
-      //   appid: 'wxeaeb5c37a376f415',
-      //   appName: '微铺宝b2c商城',
-      //   developer: '帅飞',
-      //   isDelete: '正常',
-      //   isUse: '当前使用',
-      //   operation: '',
-      //   selectVal: ''
-      // }],
-      operationData: ['批量上传并提交审核', '查看当前版本操作日志', '设置为当前使用版本']
+      operationData: ['批量上传并提交审核', '查看当前版本操作日志', '设置为当前使用版本'],
+      currentPage: 1,
+      totle: null,
+      pageCount: null
     }
   },
   mounted () {
@@ -225,7 +163,8 @@ export default {
     // 初始化数据
     defaluteData () {
       let obj = {
-        'page': 1
+        'pageRows': 20,
+        'currentPage': this.currentPage
       }
       smallProManRequest(obj).then((res) => {
         if (res.error === 0) {
@@ -239,23 +178,51 @@ export default {
           })
 
           this.tableData = res.content.dataList
+          this.totle = res.content.page.totalRows
+          this.pageCount = res.content.page.pageCount
+          console.log(this.pageCount)
         }
         console.log(res)
       })
     },
     // 当前版本下拉框选中
-    handleClickSelect (data) {
-      console.log(data)
-    },
-    // 操作点击处理
-    handleOperationClick (row, index) {
-      console.log(row, index)
-      setNowVersionRequest(row.templateId).then((res) => {
+    handleClickSelect (data, val) {
+      console.log(data, val)
+      let obj = {
+        templateId: data.templateId,
+        packageVersion: val
+      }
+      setCurrentVersionRequest(obj).then((res) => {
         if (res.error === 0) {
           this.defaluteData()
         }
         console.log(res)
       })
+    },
+    // 操作点击处理
+    handleOperationClick (row, index) {
+      console.log(row, index)
+      switch (index) {
+        case 0:
+          break
+        case 1:
+          this.$router.push({
+            name: 'programManage',
+            params: {
+              page: 'versionLog',
+              userVersion: row.templateId
+            }
+          })
+          break
+        case 2:
+          setNowVersionRequest(row.templateId).then((res) => {
+            if (res.error === 0) {
+              this.defaluteData()
+            }
+            console.log(res)
+          })
+          break
+      }
     },
     // 同步微信开放平台小程序
     handleBtn () {
@@ -265,6 +232,10 @@ export default {
           this.defaluteData()
         }
       })
+    },
+    // 当前页发生变化
+    handleCurrentChange () {
+      this.defaluteData()
     }
   }
 }
@@ -308,6 +279,25 @@ export default {
 .version-manage {
   .version-manage-table {
     margin-top: 10px;
+  }
+
+  .footer {
+    background-color: #fff;
+    height: 50px;
+    line-height: 50px;
+    color: #333;
+    font-size: 14px;
+    display: flex;
+    justify-content: flex-end;
+    padding-right: 10px;
+    /deep/ .el-pagination {
+      display: flex;
+      align-items: center;
+      .el-pager {
+        display: flex;
+        align-items: center;
+      }
+    }
   }
 }
 </style>

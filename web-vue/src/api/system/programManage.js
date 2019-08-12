@@ -23,3 +23,55 @@ export function setNowVersionRequest (data) {
     method: 'get'
   })
 }
+
+// 当前包版本设置
+export function setCurrentVersionRequest (data) {
+  return request({
+    url: '/api/system/mp/package/version',
+    method: 'post',
+    data: data
+  })
+}
+
+// 小程序授权列表
+export function authListRequest (data) {
+  return request({
+    url: '/api/system/mp/auth/list',
+    method: 'post',
+    data: data
+  })
+}
+
+// 获取小程序版本下拉列表
+export function SpinnerListRequest () {
+  return request({
+    url: '/api/system/mp/version/user/version/list',
+    method: 'get'
+  })
+}
+
+// 小程序版本统计
+export function versionStatRequest (data) {
+  return request({
+    url: '/api/system/mp/version/stat',
+    method: 'post',
+    data: data
+  })
+}
+
+// 小程序操作日志
+export function operateLogRequest (data) {
+  return request({
+    url: '/api/system/mp/operate/log/list',
+    method: 'post',
+    data: data
+  })
+}
+
+// 小程序授权信息
+export function authInformationRequest (data) {
+  return request({
+    url: `/api/system/mp/get/${data}`,
+    method: 'get'
+  })
+}

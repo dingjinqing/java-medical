@@ -113,6 +113,19 @@ const routes = [
               )
           },
           {
+            path: '/admin/home/main/decorationHome',
+            name: 'decorationHome',
+            meta: {
+              crumbTitle: 'router.picture_setting',
+              meta: 'first_web_decoration',
+              category: 'picture_setting'
+            },
+            component: () =>
+              import(
+                '@/view/admin/index/leftNavComponents/first_web_decoration/picture_setting/picture_setting'
+              )
+          },
+          {
             path: '/admin/home/main/bottomNavigation',
             name: 'image_manager',
             component: () => import('@/view/admin/index/leftNavComponents/first_web_decoration/bottomNavigation/bottomNavigation'),

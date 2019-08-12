@@ -7,9 +7,10 @@
           v-model="queryData.versionNum"
           placeholder="请选择版本号"
           size="small"
+          @change="handleSelectId()"
         >
           <el-option
-            v-for="(item, index) in selectIdOpt"
+            v-for="(item, index) in selectIdTemId"
             :key="index"
             :value="item.value"
             :label="item.label"
@@ -19,10 +20,11 @@
           class="fll select-width mr-6 mb-10"
           v-model="queryData.isAuth"
           placeholder="选择是否授权"
+          @change="handleSelectId()"
           size="small"
         >
           <el-option
-            v-for="(item, index) in selectIdOpt"
+            v-for="(item, index) in selectIsAuthorization"
             :key="index"
             :value="item.value"
             :label="item.label"
@@ -32,10 +34,11 @@
           class="fll select-width mr-6 mb-10"
           v-model="queryData.isWxPay"
           placeholder="选择支持微信支付"
+          @change="handleSelectId()"
           size="small"
         >
           <el-option
-            v-for="(item, index) in selectIdOpt"
+            v-for="(item, index) in selectIsPay"
             :key="index"
             :value="item.value"
             :label="item.label"
@@ -45,10 +48,11 @@
           class="fll select-width mr-6 mb-10"
           v-model="queryData.auditStatus"
           placeholder="选择审核状态"
+          @change="handleSelectId()"
           size="small"
         >
           <el-option
-            v-for="(item, index) in selectIdOpt"
+            v-for="(item, index) in selectExamineStatus"
             :key="index"
             :value="item.value"
             :label="item.label"
@@ -61,7 +65,7 @@
           size="small"
         >
           <el-option
-            v-for="(item, index) in selectIdOpt"
+            v-for="(item, index) in selectReleaseStatus"
             :key="index"
             :value="item.value"
             :label="item.label"
@@ -91,35 +95,35 @@
       style="width: 100%"
     >
       <el-table-column
-        prop="versionNum"
+        prop="userVersion"
         label="版本号"
         align="center"
         v-if="holdHiddenArr[0]"
       >
       </el-table-column>
       <el-table-column
-        prop="isAuth"
+        prop="isAuthOk"
         label="是否授权"
         align="center"
         v-if="holdHiddenArr[1]"
       >
       </el-table-column>
       <el-table-column
-        prop="ispay"
+        prop="openPay"
         align="center"
         label="支持微信支付"
         v-if="holdHiddenArr[2]"
       >
       </el-table-column>
       <el-table-column
-        prop="status1"
+        prop="auditState"
         align="center"
         label="审核状态"
         v-if="holdHiddenArr[3]"
       >
       </el-table-column>
       <el-table-column
-        prop="status2"
+        prop="publishState"
         align="center"
         label="发布状态"
         v-if="holdHiddenArr[4]"
@@ -130,18 +134,34 @@
         label="店铺数量"
       >
         <template slot-scope="scope">
-          <div class="num">{{scope.row.num}}</div>
+          <div class="num">{{scope.row.number}}</div>
         </template>
       </el-table-column>
     </el-table>
+
+    <div class="footer">
+      <div>每页20行记录，当前页面：{{this.currentPage}}，总页数：{{this.pageCount}}，总记录数：{{this.totle}}</div>
+      <el-pagination
+        @current-change="handleCurrentChange"
+        :current-page.sync="currentPage"
+        :page-size="20"
+        layout="prev, pager, next, jumper"
+        :total="totle"
+      >
+      </el-pagination>
+    </div>
   </div>
 </template>
 
 <script>
+import { versionStatRequest, SpinnerListRequest } from '@/api/system/programManage'
 export default {
   name: 'versionStatistics',
   data () {
     return {
+      currentPage: 1,
+      pageCount: 1,
+      totle: 0,
       queryData: {
         versionNum: '', // 版本号
         isAuth: '', // 是否授权
@@ -151,42 +171,81 @@ export default {
       },
       checkList: [0, 3, 4], // 复选框选项
       tableData: [
-        {
-          versionNum: '1.28.3',
-          isAuth: '已授权',
-          ispay: '支持微信支付',
-          status1: '审核中',
-          status2: '已发布',
-          num: '2'
-        },
-        {
-          versionNum: '1.28.3',
-          isAuth: '已授权',
-          ispay: '支持微信支付',
-          status1: '审核中',
-          status2: '已发布',
-          num: '2'
-        },
-        {
-          versionNum: '1.28.3',
-          isAuth: '已授权',
-          ispay: '支持微信支付',
-          status1: '审核中',
-          status2: '已发布',
-          num: '2'
-        }
+        // {
+        //   versionNum: '1.28.3',
+        //   isAuth: '已授权',
+        //   ispay: '支持微信支付',
+        //   status1: '审核中',
+        //   status2: '已发布',
+        //   num: '2'
+        // },
+        // {
+        //   versionNum: '1.28.3',
+        //   isAuth: '已授权',
+        //   ispay: '支持微信支付',
+        //   status1: '审核中',
+        //   status2: '已发布',
+        //   num: '2'
+        // },
+        // {
+        //   versionNum: '1.28.3',
+        //   isAuth: '已授权',
+        //   ispay: '支持微信支付',
+        //   status1: '审核中',
+        //   status2: '已发布',
+        //   num: '2'
+        // }
       ],
-      selectIdOpt: [
+      holdHiddenArr: [false, false, false, false, false],
+      selectIdTemId: [],
+      selectIsAuthorization: [
+        {
+          value: '0',
+          label: '未授权'
+        },
         {
           value: '1',
-          label: '1.0.0'
+          label: '已授权'
+        }
+      ],
+      selectIsPay: [
+        {
+          value: '0',
+          label: '不支持微信支付'
+        },
+        {
+          value: '1',
+          label: '支持微信支付'
+        }
+      ],
+      selectExamineStatus: [
+        {
+          value: '0',
+          label: '未提交审核'
+        },
+        {
+          value: '1',
+          label: '审核中'
         },
         {
           value: '2',
-          label: '2.0.0'
+          label: '审核通过'
+        },
+        {
+          value: '3',
+          label: '审核未通过'
         }
       ],
-      holdHiddenArr: [false, false, false, false, false]
+      selectReleaseStatus: [
+        {
+          value: '0',
+          label: '未发布'
+        },
+        {
+          value: '1',
+          label: '已发布'
+        }
+      ]
     }
   },
   watch: {
@@ -204,6 +263,83 @@ export default {
         })
       },
       immediate: true
+    }
+  },
+  mounted () {
+    // 初始化数据
+    this.defaultData()
+  },
+  methods: {
+    async defaultData () {
+      let spinnerList = await SpinnerListRequest()
+      console.log(spinnerList)
+      if (spinnerList.error === 0) {
+        let arr = []
+        spinnerList.content.map((item, index) => {
+          let obj = {}
+          obj.value = index
+          obj.label = item.userVersion
+          arr.push(obj)
+        })
+        this.selectIdTemId = arr
+      }
+    },
+    handleQueryTableData () {
+      let obj = {
+        'templateId': this.queryData.versionNum,
+        'userVserion': '1.0.1',
+        'isAuthOk': this.queryData.isAuth,
+        'openPay': this.queryData.isWxPay,
+        'auditState': this.queryData.auditStatus,
+        'publishState': this.queryData.isRelease,
+        'currentPage': this.currentPage,
+        'pageRows': 0
+      }
+      versionStatRequest(obj).then((res) => {
+        if (res.error === 0) {
+          res.content.dataList.map((item, index) => {
+            if (item.isAuthOk === 1) {
+              item.isAuthOk = '已授权'
+            } else {
+              item.isAuthOk = '未授权'
+            }
+            if (item.openPay === 1) {
+              item.openPay = '支持微信支付'
+            } else {
+              item.openPay = '不支持微信支付'
+            }
+            switch (item.auditState) {
+              case 0:
+                item.auditState = '未提交'
+                break
+              case 1:
+                item.auditState = '深刻中'
+                break
+              case 2:
+                item.auditState = '审核成功'
+                break
+              case 3:
+                item.auditState = '审核失败'
+                break
+            }
+            if (item.publishState === 0) {
+              item.publishState = '已发布'
+            } else {
+              item.publishState = '未发布'
+            }
+          })
+          this.tableData = res.content.dataList
+        }
+        console.log(res)
+      })
+    },
+    // 选择模板下拉框选中
+    handleSelectId () {
+      this.handleQueryTableData()
+    },
+    // 当前页改变
+    handleCurrentChange (val) {
+      this.handleQueryTableData()
     }
   }
 }
@@ -235,6 +371,24 @@ export default {
       background: #fff !important;
       color: #5a8bff;
       border: 1px solid #5a8bff;
+    }
+  }
+  .footer {
+    background-color: #fff;
+    height: 50px;
+    line-height: 50px;
+    color: #333;
+    font-size: 14px;
+    display: flex;
+    justify-content: flex-end;
+    padding-right: 10px;
+    /deep/ .el-pagination {
+      display: flex;
+      align-items: center;
+      .el-pager {
+        display: flex;
+        align-items: center;
+      }
     }
   }
 }

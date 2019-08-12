@@ -9,9 +9,10 @@
         v-model="queryData.selectedId"
         placeholder="请选择模板id"
         size="small"
+        @change="handleSelectId()"
       >
         <el-option
-          v-for="(item, index) in selectIdOpt"
+          v-for="(item, index) in selectIdTemId"
           :key="index"
           :value="item.value"
           :label="item.label"
@@ -22,9 +23,10 @@
         v-model="queryData.selectedAuth"
         placeholder="请选择是否授权"
         size="small"
+        @change="handleSelectId()"
       >
         <el-option
-          v-for="(item, index) in selectIdOpt"
+          v-for="(item, index) in selectIsAuthorization"
           :key="index"
           :value="item.value"
           :label="item.label"
@@ -35,9 +37,10 @@
         v-model="queryData.selectedWxPay"
         placeholder="选择是否微信支付"
         size="small"
+        @change="handleSelectId()"
       >
         <el-option
-          v-for="(item, index) in selectIdOpt"
+          v-for="(item, index) in selectIsPay"
           :key="index"
           :value="item.value"
           :label="item.label"
@@ -47,10 +50,11 @@
         class="fll selected-id mr-6 mb-10"
         v-model="queryData.selectedAuditStatus"
         placeholder="选择审核状态"
+        @change="handleSelectId()"
         size="small"
       >
         <el-option
-          v-for="(item, index) in selectIdOpt"
+          v-for="(item, index) in selectExamineStatus"
           :key="index"
           :value="item.value"
           :label="item.label"
@@ -60,10 +64,11 @@
         class="fll selected-id mr-6 mb-10"
         v-model="queryData.selectedReleaseStatus"
         placeholder="选择发布状态"
+        @change="handleSelectId()"
         size="small"
       >
         <el-option
-          v-for="(item, index) in selectIdOpt"
+          v-for="(item, index) in selectReleaseStatus"
           :key="index"
           :value="item.value"
           :label="item.label"
@@ -73,10 +78,11 @@
         class="fll selected-id mr-6 mb-10"
         v-model="queryData.selectedShopStatus"
         placeholder="选择店铺状态"
+        @change="handleSelectId()"
         size="small"
       >
         <el-option
-          v-for="(item, index) in selectIdOpt"
+          v-for="(item, index) in selectShopStatus"
           :key="index"
           :value="item.value"
           :label="item.label"
@@ -104,6 +110,7 @@
         size="small"
         type="primary"
         class="mr-6 mb-10"
+        @click="handleQuery()"
       >搜索</el-button>
     </div>
 
@@ -115,20 +122,20 @@
       style="width: 100%"
     >
       <el-table-column
-        prop="app_id"
+        prop="appId"
         label="appid"
         align="center"
         width="200"
       >
       </el-table-column>
       <el-table-column
-        prop="id"
+        prop="shopId"
         label="店铺ID"
         align="center"
       >
       </el-table-column>
       <el-table-column
-        prop="name"
+        prop="nickName"
         align="center"
         label="昵称"
       >
@@ -138,7 +145,7 @@
         label="头像"
       >
         <template slot-scope="scope">
-          <img :src="scope.row.img">
+          <img :src="scope.row.headImg">
         </template>
       </el-table-column>
       <el-table-column
@@ -148,12 +155,12 @@
         <template slot-scope="scope">
           <span
             class="useSpan"
-            v-if="scope.row.iscansel === '已取消授权'"
-          >{{scope.row.iscansel}}</span>
+            v-if="scope.row.isAuthOk === 0"
+          >已取消授权</span>
           <span
             class="useSpan nuSpan"
-            v-if="scope.row.iscansel === '已授权'"
-          >{{scope.row.iscansel}}</span>
+            v-if="scope.row.isAuthOk === 1"
+          >已授权</span>
         </template>
       </el-table-column>
       <el-table-column
@@ -163,12 +170,12 @@
         <template slot-scope="scope">
           <span
             class="useSpan"
-            v-if="scope.row.isAuthentication === '未认证'"
-          >{{scope.row.isAuthentication}}</span>
+            v-if="scope.row.verifyTypeInfo === '0'"
+          >未认证</span>
           <span
             class="useSpan nuSpan"
-            v-if="scope.row.isAuthentication === '已认证'"
-          >{{scope.row.isAuthentication}}</span>
+            v-if="scope.row.verifyTypeInfo === '1'"
+          >已认证</span>
         </template>
       </el-table-column>
       <el-table-column
@@ -179,22 +186,22 @@
         <template slot-scope="scope">
           <span
             class="useSpan"
-            v-if="scope.row.ispay === '不支持'"
-          >{{scope.row.ispay}}</span>
+            v-if="scope.row.openPay === 0"
+          >不支持</span>
           <span
             class="useSpan nuSpan"
-            v-if="scope.row.ispay === '支持'"
-          >{{scope.row.ispay}}</span>
+            v-if="scope.row.openPay === 1"
+          >支持</span>
         </template>
       </el-table-column>
       <el-table-column
-        prop="lastTime"
+        prop="lastAuthTime"
         align="center"
         label="最后授权时间"
       >
       </el-table-column>
       <el-table-column
-        prop="temId"
+        prop="bindTemplateId"
         align="center"
         label="绑定模板ID"
       >
@@ -204,6 +211,11 @@
         align="center"
         label="审核状态"
       >
+        <template slot-scope="scope">
+          <span v-if="scope.row.auditState === 0">未提交</span>
+          <span v-if="scope.row.auditState === 1">审核中</span>
+          <span v-if="scope.row.auditState === 2">审核失败</span>
+        </template>
       </el-table-column>
       <el-table-column
         prop="status2"
@@ -213,12 +225,12 @@
         <template slot-scope="scope">
           <span
             class="useSpan"
-            v-if="scope.row.status2 === '未发布'"
-          >{{scope.row.status2}}</span>
+            v-if="scope.row.publishState === 0"
+          >未发布</span>
           <span
             class="useSpan nuSpan"
-            v-if="scope.row.status2 === '已发布'"
-          >{{scope.row.status2}}</span>
+            v-if="scope.row.publishState === 1"
+          >已发布</span>
         </template>
       </el-table-column>
       <el-table-column
@@ -226,6 +238,11 @@
         align="center"
         label="店铺状态"
       >
+        <template slot-scope="scope">
+          <span v-if="scope.row.shopState === 0">已过期</span>
+          <span v-if="scope.row.shopState === 1">使用中</span>
+
+        </template>
       </el-table-column>
       <el-table-column
         prop="operation"
@@ -246,14 +263,14 @@
       </el-table-column>
     </el-table>
 
-    <div class="clearfixed pagination-wrap">
+    <div class="footer">
+      <div>每页20行记录，当前页面：{{this.currentPage}}，总页数：{{this.pageCount}}，总记录数：{{this.totle}}</div>
       <el-pagination
-        class="flr"
-        @current-change="handleChangePage"
-        :current-page="page"
+        @current-change="handleCurrentChange"
+        :current-page.sync="currentPage"
         :page-size="20"
-        layout="total, sizes, prev, pager, next, jumper"
-        :total="400"
+        layout="prev, pager, next, jumper"
+        :total="totle"
       >
       </el-pagination>
     </div>
@@ -261,21 +278,34 @@
 </template>
 
 <script>
+import { authListRequest, SpinnerListRequest } from '@/api/system/programManage'
 export default {
   name: 'authList',
   data () {
     return {
+      pageCount: 1,
       queryData: {
         selectedId: '', // 选择模板id
-        selectedAuth: '', // 选择是否授权
-        selectedWxPay: '', // 选择是否微信支付
-        selectedAuditStatus: '', // 审核状态
-        selectedReleaseStatus: '', // 发布状态
-        selectedShopStatus: '', // 选择店铺状态
-        appid: '', // appid输入框数据
-        shop_id: '', // shop——id输入框数据
-        programName: '' // 小程序名称输入框数据
+        selectedAuth: null, // 选择是否授权
+        selectedWxPay: null, // 选择是否微信支付
+        selectedAuditStatus: null, // 审核状态
+        selectedReleaseStatus: null, // 发布状态
+        selectedShopStatus: null, // 选择店铺状态
+        appid: null, // appid输入框数据
+        shop_id: null, // shop——id输入框数据
+        programName: null // 小程序名称输入框数据
+
       },
+      selectIsAuthorization: [
+        {
+          value: '0',
+          label: '未授权'
+        },
+        {
+          value: '1',
+          label: '已授权'
+        }
+      ],
       page: 1,
       selectIdOpt: [
         {
@@ -287,63 +317,169 @@ export default {
           label: '2.0.0'
         }
       ],
-      tableData: [
+      selectIsPay: [
         {
-          app_id: 'wx0d2a00751c5c6aa6',
-          id: '3603035',
-          name: '帅飞',
-          img: 'http://wx.qlogo.cn/mmopen/xTMBoLQLB83uKQwjDwe8t8KOicdr7XzcM6nERK4ia49EM3ViaUvjTuxlrwO5pxXvHicOZP19Bljo9uAVKynlFSm9xUiap6RuuSyiab/0',
-          iscansel: '已取消授权',
-          isAuthentication: '已认证',
-          ispay: '支持',
-          lastTime: '2019-05-23 03:09',
-          temId: '199',
-          status1: '审核成功',
-          status2: '已发布',
-          status3: '使用中',
-          operation: ''
+          value: '0',
+          label: '不支持微信支付'
         },
         {
-          app_id: 'wx0d2a00751c5c6aa6',
-          id: '3603035',
-          name: '帅飞',
-          img: 'http://wx.qlogo.cn/mmopen/xTMBoLQLB83uKQwjDwe8t8KOicdr7XzcM6nERK4ia49EM3ViaUvjTuxlrwO5pxXvHicOZP19Bljo9uAVKynlFSm9xUiap6RuuSyiab/0',
-          iscansel: '已授权',
-          isAuthentication: '未认证',
-          ispay: '不支持',
-          lastTime: '2019-05-23 03:09',
-          temId: '199',
-          status1: '审核失败',
-          status2: '未发布',
-          status3: '使用中',
-          operation: ''
-        },
-        {
-          app_id: 'wx0d2a00751c5c6aa6',
-          id: '3603035',
-          name: '帅飞',
-          img: 'http://wx.qlogo.cn/mmopen/xTMBoLQLB83uKQwjDwe8t8KOicdr7XzcM6nERK4ia49EM3ViaUvjTuxlrwO5pxXvHicOZP19Bljo9uAVKynlFSm9xUiap6RuuSyiab/0',
-          iscansel: '已取消授权',
-          isAuthentication: '已认证',
-          ispay: '支持',
-          lastTime: '2019-05-23 03:09',
-          temId: '199',
-          status1: '审核成功',
-          status2: '已发布',
-          status3: '使用中',
-          operation: ''
+          value: '1',
+          label: '支持微信支付'
         }
       ],
-      operationData: ['查看详细', '版本操作日志']
+      selectExamineStatus: [
+        {
+          value: '0',
+          label: '未提交审核'
+        },
+        {
+          value: '1',
+          label: '审核中'
+        },
+        {
+          value: '2',
+          label: '审核通过'
+        },
+        {
+          value: '3',
+          label: '审核未通过'
+        }
+      ],
+      selectReleaseStatus: [
+        {
+          value: '0',
+          label: '未发布'
+        },
+        {
+          value: '1',
+          label: '已发布'
+        }
+      ],
+      selectShopStatus: [
+        {
+          value: '1',
+          label: '使用中'
+        },
+        {
+          value: '0',
+          label: '已过期'
+        }
+      ],
+      tableData: [
+        // {
+        //   app_id: 'wx0d2a00751c5c6aa6',
+        //   id: '3603035',
+        //   name: '帅飞',
+        //   img: 'http://wx.qlogo.cn/mmopen/xTMBoLQLB83uKQwjDwe8t8KOicdr7XzcM6nERK4ia49EM3ViaUvjTuxlrwO5pxXvHicOZP19Bljo9uAVKynlFSm9xUiap6RuuSyiab/0',
+        //   iscansel: '已取消授权',
+        //   isAuthentication: '已认证',
+        //   ispay: '支持',
+        //   lastTime: '2019-05-23 03:09',
+        //   temId: '199',
+        //   status1: '审核成功',
+        //   status2: '已发布',
+        //   status3: '使用中',
+        //   operation: ''
+        // },
+        // {
+        //   app_id: 'wx0d2a00751c5c6aa6',
+        //   id: '3603035',
+        //   name: '帅飞',
+        //   img: 'http://wx.qlogo.cn/mmopen/xTMBoLQLB83uKQwjDwe8t8KOicdr7XzcM6nERK4ia49EM3ViaUvjTuxlrwO5pxXvHicOZP19Bljo9uAVKynlFSm9xUiap6RuuSyiab/0',
+        //   iscansel: '已授权',
+        //   isAuthentication: '未认证',
+        //   ispay: '不支持',
+        //   lastTime: '2019-05-23 03:09',
+        //   temId: '199',
+        //   status1: '审核失败',
+        //   status2: '未发布',
+        //   status3: '使用中',
+        //   operation: ''
+        // },
+        // {
+        //   app_id: 'wx0d2a00751c5c6aa6',
+        //   id: '3603035',
+        //   name: '帅飞',
+        //   img: 'http://wx.qlogo.cn/mmopen/xTMBoLQLB83uKQwjDwe8t8KOicdr7XzcM6nERK4ia49EM3ViaUvjTuxlrwO5pxXvHicOZP19Bljo9uAVKynlFSm9xUiap6RuuSyiab/0',
+        //   iscansel: '已取消授权',
+        //   isAuthentication: '已认证',
+        //   ispay: '支持',
+        //   lastTime: '2019-05-23 03:09',
+        //   temId: '199',
+        //   status1: '审核成功',
+        //   status2: '已发布',
+        //   status3: '使用中',
+        //   operation: ''
+        // }
+      ],
+      operationData: ['查看详细', '版本操作日志'],
+      selectIdTemId: [],
+      currentPage: 1,
+      totle: 0
     }
   },
+  mounted () {
+    // 初始化数据
+    this.defaultData()
+  },
   methods: {
-    handleChangePage (val) {
-
+    async defaultData () {
+      let spinnerList = await SpinnerListRequest()
+      console.log(spinnerList)
+      if (spinnerList.error === 0) {
+        let arr = []
+        spinnerList.content.map((item, index) => {
+          let obj = {}
+          obj.value = index
+          obj.label = item.userVersion
+          arr.push(obj)
+        })
+        console.log(arr)
+        this.selectIdTemId = arr
+        this.handleQueryTableData()
+      }
+    },
+    // 小程序列表分页查询
+    handleQueryTableData () {
+      console.log(this.queryData)
+      let obj = {
+        'templateId': this.queryData.selectedId,
+        'isAuthOk': this.queryData.selectedAuth,
+        'shopState': this.queryData.selectedShopStatus,
+        'openPay': this.queryData.selectedWxPay,
+        'auditState': this.queryData.selectedAuditStatus,
+        'publishState': this.queryData.selectedReleaseStatus,
+        'appId': this.queryData.appid,
+        'shopId': this.queryData.shop_id,
+        'nickName': this.queryData.programName,
+        'currentPage': this.currentPage,
+        'pageRows': 0
+      }
+      authListRequest(obj).then((res) => {
+        if (res.error === 0) {
+          console.log(res)
+          this.tableData = res.content.dataList
+          this.pageCount = res.content.page.pageCount
+          this.totle = res.content.page.totalRows
+        }
+        console.log(res)
+      })
+    },
+    // 选择模板下拉框选中
+    handleSelectId () {
+      this.handleQueryTableData()
+    },
+    // 当前页改变
+    handleCurrentChange (val) {
+      this.handleQueryTableData()
     },
     // 操作点击处理
     handleToClick (row, index) {
 
+    },
+    // 点击搜索
+    handleQuery () {
+      this.handleQueryTableData()
     }
   },
   watch: {
@@ -387,6 +523,24 @@ export default {
   img {
     width: 50px;
     height: 50px;
+  }
+  .footer {
+    background-color: #fff;
+    height: 50px;
+    line-height: 50px;
+    color: #333;
+    font-size: 14px;
+    display: flex;
+    justify-content: flex-end;
+    padding-right: 10px;
+    /deep/ .el-pagination {
+      display: flex;
+      align-items: center;
+      .el-pager {
+        display: flex;
+        align-items: center;
+      }
+    }
   }
 }
 </style>

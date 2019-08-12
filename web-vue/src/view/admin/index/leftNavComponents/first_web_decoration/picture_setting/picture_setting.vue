@@ -120,7 +120,10 @@
           >
             <template slot-scope="scope">
               <span>{{scope.row.pageClass}}</span>
-              <span style="color:#5A8BFF;cursor:pointer">设置</span>
+              <span
+                @click="handleSet()"
+                style="color:#5A8BFF;cursor:pointer"
+              >设置</span>
             </template>
           </el-table-column>
           <el-table-column
@@ -461,6 +464,10 @@ export default {
     // 点击新建微页面
     handleToNewPage () {
       this.handleToCallMicropage(true)
+    },
+    // 表格设置点击
+    handleSet () {
+      this.pageSetdialogVisible = true
     }
   }
 }

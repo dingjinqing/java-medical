@@ -5,9 +5,10 @@
         v-model="value"
         placeholder="请选择"
         size="small"
+        @change="handleSelect()"
       >
         <el-option
-          v-for="item in options"
+          v-for="item in selectIdTemId"
           :key="item.value"
           :label="item.label"
           :value="item.value"
@@ -24,6 +25,7 @@
         size="small"
         class="ml-6"
         type="primary"
+        @click="handleQuery()"
       >搜索</el-button>
     </div>
 
@@ -35,33 +37,37 @@
       style="width: 100%"
     >
       <el-table-column
-        prop="time"
+        prop="createTime"
         label="时间"
         align="center"
       >
       </el-table-column>
       <el-table-column
-        prop="app_id"
+        prop="appId"
         label="appid"
         align="center"
         width="200"
       >
       </el-table-column>
       <el-table-column
-        prop="name"
+        prop="nickName"
         align="center"
         label="昵称"
       >
       </el-table-column>
       <el-table-column
-        prop="content"
+        prop="memo"
         align="center"
         min-width="500"
         label="日志内容"
       >
+        <template slot-scope="scope">
+          <p v-html="scope.row.memo"></p>
+
+        </template>
       </el-table-column>
       <el-table-column
-        prop="version"
+        prop="userVersion"
         align="center"
         label="小程序版本"
       >
@@ -71,17 +77,24 @@
         align="center"
         label="操作"
       >
+        <template slot-scope="scope">
+          <span
+            style="cursor:pointer"
+            @click="handleDetail(scope.row)"
+          >查看详情</span>
+
+        </template>
       </el-table-column>
     </el-table>
 
-    <div class="clearfixed pagination-wrap">
+    <div class="footer">
+      <div>每页20行记录，当前页面：{{this.currentPage}}，总页数：{{this.pageCount}}，总记录数：{{this.totle}}</div>
       <el-pagination
-        class="flr"
-        @current-change="handleChangePage"
-        :current-page="page"
+        @current-change="handleCurrentChange"
+        :current-page.sync="currentPage"
         :page-size="20"
-        layout="total, sizes, prev, pager, next, jumper"
-        :total="400"
+        layout="prev, pager, next, jumper"
+        :total="totle"
       >
       </el-pagination>
     </div>
@@ -89,29 +102,18 @@
 </template>
 
 <script>
+import { operateLogRequest, SpinnerListRequest } from '@/api/system/programManage'
 export default {
   name: 'versionLog',
   data () {
     return {
       page: 1,
-      value: '',
-      options: [{
-        value: '选项1',
-        label: '黄金糕'
-      }, {
-        value: '选项2',
-        label: '双皮奶'
-      }, {
-        value: '选项3',
-        label: '蚵仔煎'
-      }, {
-        value: '选项4',
-        label: '龙须面'
-      }, {
-        value: '选项5',
-        label: '北京烤鸭'
-      }],
-      text: '',
+      value: null,
+      selectIdTemId: [],
+      currentPage: 1,
+      pageCount: 1,
+      totle: 0,
+      text: null,
       tableData: [
         {
           time: '2019-08-07 14:03:35',
@@ -140,21 +142,117 @@ export default {
       ]
     }
   },
+  watch: {
+    $route (to) {
+      console.log(to.params.userVersion)
+      console.log(this.selectIdTemId)
+      this.selectIdTemId.map((item, index) => {
+        if (item.value === to.params.userVersion) {
+          this.value = item.label
+        }
+      })
+      console.log(this.value)
+      this.handleQueryTableData(to.params.userVersion)
+    }
+  },
+  mounted () {
+    // 初始化数据
+    this.defaultData()
+  },
   methods: {
-    handleChangePage (page) {
-      console.log(`当前页${page}`)
+    async defaultData () {
+      let spinnerList = await SpinnerListRequest()
+      console.log(spinnerList)
+      if (spinnerList.error === 0) {
+        let arr = []
+        spinnerList.content.map((item, index) => {
+          let obj = {}
+          obj.value = index
+          obj.label = item.userVersion
+          arr.push(obj)
+        })
+        console.log(arr)
+        this.selectIdTemId = arr
+        this.handleQueryTableData()
+      }
+    },
+    handleQueryTableData (params) {
+      console.log(params)
+      let templateId = ''
+      if (params) {
+        templateId = params
+      } else {
+        templateId = this.value
+      }
+      let obj = {
+        'templateId': templateId,
+        'appId': this.text,
+        'currentPage': 1,
+        'pageRows': 0
+      }
+
+      operateLogRequest(obj).then((res) => {
+        if (res.error === 0) {
+          this.tableData = res.content.dataList
+        }
+        console.log(res)
+      })
+    },
+    // 当前页变化
+    handleCurrentChange (page) {
+      this.handleQueryTableData()
+    },
+    // 点击搜索
+    handleQuery () {
+      this.handleQueryTableData()
+    },
+    // 点击查看详情
+    handleDetail (row) {
+      console.log(row)
+      this.$router.push({
+        name: 'programManage',
+        params: {
+          page: 'authMsg',
+          appId: row.appId
+        }
+      })
+      console.log(row)
+    },
+    // 下拉框事件
+    handleSelect () {
+      this.handleQueryTableData()
     }
   }
 }
 </script>
 
 <style scoped lang="scss">
-.filter-menu {
-  display: flex;
-  padding: 10px;
-  background: #fff;
-}
-.search-input {
-  width: 200px;
+.version-log {
+  .search-input {
+    width: 200px;
+  }
+  .filter-menu {
+    display: flex;
+    padding: 10px;
+    background: #fff;
+  }
+  .footer {
+    background-color: #fff;
+    height: 50px;
+    line-height: 50px;
+    color: #333;
+    font-size: 14px;
+    display: flex;
+    justify-content: flex-end;
+    padding-right: 10px;
+    /deep/ .el-pagination {
+      display: flex;
+      align-items: center;
+      .el-pager {
+        display: flex;
+        align-items: center;
+      }
+    }
+  }
 }
 </style>

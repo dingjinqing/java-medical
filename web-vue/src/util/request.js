@@ -69,8 +69,12 @@ service.interceptors.response.use(
               message: res.data.message,
               showClose: true
             })
-
-            router.push('/index/login')
+            let loginType = localStorage.getItem('V-loginType')
+            if (loginType === '0') {
+              router.push('/index/login')
+            } else {
+              router.push('/system/login')
+            }
           }
           if (res.data.error === 100001 && flag !== 'false') {
             Message.error({

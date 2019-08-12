@@ -4,6 +4,7 @@ export const cn = {
   authList: '小程序授权列表',
   versionStatistics: '小程序版本统计',
   authMsg: '小程序授权信息'
+
 }
 
 export const en = {
