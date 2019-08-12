@@ -189,13 +189,13 @@ public class RecordAdminActionService extends ShopBaseService {
 	}
 
 	private String getSystemNameAndMobile(Integer sysId, List<String> resultList) {
-		Record2<String, String> record2 = mainDb().select(SHOP_ACCOUNT.ACCOUNT_NAME, SHOP_ACCOUNT.MOBILE)
+		Record2<String, String> record2 = mainDb().select(SHOP_ACCOUNT.USER_NAME, SHOP_ACCOUNT.MOBILE)
 				.from(SHOP_ACCOUNT)
 				.where(SHOP_ACCOUNT.SYS_ID.eq(sysId))
 				.fetchAny();
-		resultList.add(record2.get(SHOP_ACCOUNT.ACCOUNT_NAME));
+		resultList.add(record2.get(SHOP_ACCOUNT.USER_NAME));
 		resultList.add(record2.get(SHOP_ACCOUNT.MOBILE));
-		return record2.get(SHOP_ACCOUNT.ACCOUNT_NAME) + "," + record2.get(SHOP_ACCOUNT.MOBILE);
+		return record2.get(SHOP_ACCOUNT.USER_NAME) + "," + record2.get(SHOP_ACCOUNT.MOBILE);
 	}
 
 	private List<String> getCommonNameAndMobile(Integer id, String type) {
