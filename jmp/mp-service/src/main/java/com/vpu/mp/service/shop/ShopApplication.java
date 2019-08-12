@@ -16,6 +16,7 @@ import com.vpu.mp.service.shop.goods.GoodsService;
 import com.vpu.mp.service.shop.image.ImageCategoryService;
 import com.vpu.mp.service.shop.image.ImageService;
 import com.vpu.mp.service.shop.image.QrCodeService;
+import com.vpu.mp.service.shop.market.activity.ActivityIssueService;
 import com.vpu.mp.service.shop.market.activity.ActivityService;
 import com.vpu.mp.service.shop.market.bargain.BargainService;
 import com.vpu.mp.service.shop.market.form.FormStatisticsService;
@@ -181,6 +182,7 @@ public class ShopApplication  {
      * 活动有礼
      */
     @Autowired public ActivityService activity;
+    @Autowired public ActivityIssueService issue;
 
     /**
      * 满折满减
