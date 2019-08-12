@@ -6,6 +6,8 @@ import org.springframework.stereotype.Service;
 import redis.clients.jedis.Jedis;
 import redis.clients.jedis.JedisPool;
 
+import java.util.List;
+
 /**
  * 
  * JedisPool是线程安全的
@@ -19,8 +21,6 @@ public class JedisManager {
 	@Autowired
 	private JedisPool pool;
 
-	private JedisManager() {
-	}
 
 	/**
 	 * 获取缓存连接池
@@ -44,6 +44,34 @@ public class JedisManager {
 			jedis.expire(key, seconds);
 		}
 	}
+    /**
+     *
+     * @param key
+     * @param value
+     */
+    public void lpush(String key, String[] value) {
+        try (Jedis jedis = getJedisPool().getResource()){
+            jedis.lpush(key, value);
+        }
+    }
+    /**
+     *
+     * @param key
+     */
+    public Long getListSize(String key) {
+        try (Jedis jedis = getJedisPool().getResource()){
+           return jedis.llen(key);
+        }
+    }
+    /**
+     * 获取当前key下的所有list
+     * @param key
+     */
+    public List<String> getList(String key) {
+        try (Jedis jedis = getJedisPool().getResource()){
+            return jedis.lrange(key,0,-1);
+        }
+    }
 
 	/**
 	 * 永久设置缓存
