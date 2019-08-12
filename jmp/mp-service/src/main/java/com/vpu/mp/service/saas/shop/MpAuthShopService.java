@@ -202,7 +202,9 @@ public class MpAuthShopService extends MainBaseService {
 	 * @return
 	 */
 	public MpAuthShopRecord getAuthShopByAppId(String appId) {
-		return db().fetchAny(MP_AUTH_SHOP, MP_AUTH_SHOP.APP_ID.eq(appId));
+		MpAuthShopRecord fetchAny = db().fetchAny(MP_AUTH_SHOP, MP_AUTH_SHOP.APP_ID.eq(appId));
+		fetchAny.setQrcodeUrl(image.imageUrl(fetchAny.getQrcodeUrl())); 
+		return fetchAny;
 	}
 
 	/**
