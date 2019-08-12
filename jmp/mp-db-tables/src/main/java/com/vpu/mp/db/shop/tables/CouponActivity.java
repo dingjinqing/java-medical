@@ -8,25 +8,14 @@ import com.vpu.mp.db.shop.Indexes;
 import com.vpu.mp.db.shop.Keys;
 import com.vpu.mp.db.shop.MiniShop_471752;
 import com.vpu.mp.db.shop.tables.records.CouponActivityRecord;
+import org.jooq.*;
+import org.jooq.impl.DSL;
+import org.jooq.impl.TableImpl;
 
+import javax.annotation.Generated;
 import java.sql.Timestamp;
 import java.util.Arrays;
 import java.util.List;
-
-import javax.annotation.Generated;
-
-import org.jooq.Field;
-import org.jooq.ForeignKey;
-import org.jooq.Identity;
-import org.jooq.Index;
-import org.jooq.Name;
-import org.jooq.Record;
-import org.jooq.Schema;
-import org.jooq.Table;
-import org.jooq.TableField;
-import org.jooq.UniqueKey;
-import org.jooq.impl.DSL;
-import org.jooq.impl.TableImpl;
 
 
 /**
@@ -42,7 +31,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class CouponActivity extends TableImpl<CouponActivityRecord> {
 
-    private static final long serialVersionUID = 712775954;
+    private static final long serialVersionUID = 1855460774;
 
     /**
      * The reference instance of <code>mini_shop_471752.b2c_coupon_activity</code>
@@ -63,9 +52,9 @@ public class CouponActivity extends TableImpl<CouponActivityRecord> {
     public final TableField<CouponActivityRecord, Integer> ID = createField("id", org.jooq.impl.SQLDataType.INTEGER.nullable(false).identity(true), this, "");
 
     /**
-     * The column <code>mini_shop_471752.b2c_coupon_activity.activity_action</code>. 活动类型：1：活动送券 2：大转盘抽奖
+     * The column <code>mini_shop_471752.b2c_coupon_activity.activity_action</code>. 活动类型：1：活动送券 2：大转盘抽奖 3：跳转自定义链接
      */
-    public final TableField<CouponActivityRecord, Byte> ACTIVITY_ACTION = createField("activity_action", org.jooq.impl.SQLDataType.TINYINT.defaultValue(org.jooq.impl.DSL.inline("1", org.jooq.impl.SQLDataType.TINYINT)), this, "活动类型：1：活动送券 2：大转盘抽奖");
+    public final TableField<CouponActivityRecord, Byte> ACTIVITY_ACTION = createField("activity_action", org.jooq.impl.SQLDataType.TINYINT.defaultValue(org.jooq.impl.DSL.inline("1", org.jooq.impl.SQLDataType.TINYINT)), this, "活动类型：1：活动送券 2：大转盘抽奖 3：跳转自定义链接");
 
     /**
      * The column <code>mini_shop_471752.b2c_coupon_activity.action</code>. 针对用户群体： 1: 新用户 2: 全部用户
@@ -90,12 +79,12 @@ public class CouponActivity extends TableImpl<CouponActivityRecord> {
     /**
      * The column <code>mini_shop_471752.b2c_coupon_activity.start_date</code>. 有效期-起始
      */
-    public final TableField<CouponActivityRecord, Timestamp> START_DATE = createField("start_date", org.jooq.impl.SQLDataType.TIMESTAMP, this, "有效期-起始");
+    public final TableField<CouponActivityRecord, Timestamp> START_DATE = createField("start_date", org.jooq.impl.SQLDataType.TIMESTAMP.nullable(false).defaultValue(org.jooq.impl.DSL.field("CURRENT_TIMESTAMP", org.jooq.impl.SQLDataType.TIMESTAMP)), this, "有效期-起始");
 
     /**
      * The column <code>mini_shop_471752.b2c_coupon_activity.end_date</code>. 有效期-结束
      */
-    public final TableField<CouponActivityRecord, Timestamp> END_DATE = createField("end_date", org.jooq.impl.SQLDataType.TIMESTAMP, this, "有效期-结束");
+    public final TableField<CouponActivityRecord, Timestamp> END_DATE = createField("end_date", org.jooq.impl.SQLDataType.TIMESTAMP.nullable(false).defaultValue(org.jooq.impl.DSL.field("CURRENT_TIMESTAMP", org.jooq.impl.SQLDataType.TIMESTAMP)), this, "有效期-结束");
 
     /**
      * The column <code>mini_shop_471752.b2c_coupon_activity.mrking_voucher_id</code>. 活动优惠券，逗号分隔
@@ -115,7 +104,7 @@ public class CouponActivity extends TableImpl<CouponActivityRecord> {
     /**
      * The column <code>mini_shop_471752.b2c_coupon_activity.del_time</code>.
      */
-    public final TableField<CouponActivityRecord, Timestamp> DEL_TIME = createField("del_time", org.jooq.impl.SQLDataType.TIMESTAMP, this, "");
+    public final TableField<CouponActivityRecord, Timestamp> DEL_TIME = createField("del_time", org.jooq.impl.SQLDataType.TIMESTAMP.nullable(false).defaultValue(org.jooq.impl.DSL.field("CURRENT_TIMESTAMP", org.jooq.impl.SQLDataType.TIMESTAMP)), this, "");
 
     /**
      * The column <code>mini_shop_471752.b2c_coupon_activity.create_time</code>.
@@ -126,6 +115,16 @@ public class CouponActivity extends TableImpl<CouponActivityRecord> {
      * The column <code>mini_shop_471752.b2c_coupon_activity.update_time</code>. 最后修改时间
      */
     public final TableField<CouponActivityRecord, Timestamp> UPDATE_TIME = createField("update_time", org.jooq.impl.SQLDataType.TIMESTAMP.nullable(false).defaultValue(org.jooq.impl.DSL.field("CURRENT_TIMESTAMP", org.jooq.impl.SQLDataType.TIMESTAMP)), this, "最后修改时间");
+
+    /**
+     * The column <code>mini_shop_471752.b2c_coupon_activity.customize_img_path</code>. 活动有礼跳转活动图片路径
+     */
+    public final TableField<CouponActivityRecord, String> CUSTOMIZE_IMG_PATH = createField("customize_img_path", org.jooq.impl.SQLDataType.VARCHAR(191).nullable(false).defaultValue(org.jooq.impl.DSL.inline("", org.jooq.impl.SQLDataType.VARCHAR)), this, "活动有礼跳转活动图片路径");
+
+    /**
+     * The column <code>mini_shop_471752.b2c_coupon_activity.customize_url</code>. 活动有礼跳转活动链接
+     */
+    public final TableField<CouponActivityRecord, String> CUSTOMIZE_URL = createField("customize_url", org.jooq.impl.SQLDataType.VARCHAR(191).nullable(false).defaultValue(org.jooq.impl.DSL.inline("", org.jooq.impl.SQLDataType.VARCHAR)), this, "活动有礼跳转活动链接");
 
     /**
      * Create a <code>mini_shop_471752.b2c_coupon_activity</code> table reference
