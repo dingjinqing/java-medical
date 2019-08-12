@@ -17,6 +17,7 @@ import com.vpu.mp.service.pojo.shop.member.CommonMemberPageListQueryVo;
 import com.vpu.mp.service.pojo.shop.member.MemberInfoVo;
 import com.vpu.mp.service.pojo.shop.member.MemberPageListParam;
 import com.vpu.mp.service.pojo.shop.member.account.AccountParam;
+import com.vpu.mp.service.pojo.shop.member.account.AddMemberCardParam;
 import com.vpu.mp.service.pojo.shop.member.account.MemberCardVo;
 import com.vpu.mp.service.pojo.shop.member.account.ScoreParam;
 import com.vpu.mp.service.shop.member.MemberService;
@@ -51,7 +52,9 @@ public class AdminMemberController extends AdminBaseController{
 		return this.success(pageResult);
 	}
 	
-	
+	/**
+	 * 会员卡-弹窗
+	 */
 	@PostMapping("/card/all/list")
 	public JsonResult getAllCardList() {
 		logger.info("获取系统中的所有会员卡");
@@ -60,6 +63,16 @@ public class AdminMemberController extends AdminBaseController{
 		return success(vo);
 	}
 	
+	/**
+	 * 会员-添加会员卡
+	 */
+	@PostMapping("/card/all/add")
+	public JsonResult addCardForMember(@RequestBody @Valid AddMemberCardParam param) {
+		logger.info("为会员发放会员卡");
+		logger.info(param.toString());
+		shop().member.card.addCardForMember(param);
+		return success();
+	}
 	
 	
 	@PostMapping("/account/add")
@@ -117,6 +130,4 @@ public class AdminMemberController extends AdminBaseController{
 		}
 		return success(param.toString());
 	}
-	
-	
 }
