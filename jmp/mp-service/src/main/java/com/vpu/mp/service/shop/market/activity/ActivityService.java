@@ -43,24 +43,32 @@ public class ActivityService extends ShopBaseService {
      * 状态转换
      */
     private void transform(PageResult<ActivityListVo> result) {
-        result.getDataList().forEach(vo -> {
-            Byte status = vo.getStatus();
-            if (DISABLE == status) {
-                vo.setStatus(DISABLED);
-            } else {
-                Timestamp startDate = vo.getStartDate();
-                Timestamp endDate = vo.getEndDate();
-                if (startDate.after(Util.currentTimeStamp())) {
-                    vo.setStatus(NOT_STARTED);
-                } else if (endDate.after(Util.currentTimeStamp())) {
-                    vo.setStatus(ONGOING);
-                } else {
-                    vo.setStatus(EXPIRED);
-                }
-            }
-        });
+        result.getDataList().forEach(vo -> vo.setStatus(getStatusOf(vo)));
     }
 
+    /**
+     * 获取活动的状态
+     */
+    private byte getStatusOf(ActivityListVo vo) {
+        Byte status = vo.getStatus();
+        if (DISABLE == status) {
+            return DISABLED;
+        } else {
+            Timestamp startDate = vo.getStartDate();
+            Timestamp endDate = vo.getEndDate();
+            if (startDate.after(Util.currentTimeStamp())) {
+                return NOT_STARTED;
+            } else if (endDate.after(Util.currentTimeStamp())) {
+                return ONGOING;
+            } else {
+                return EXPIRED;
+            }
+        }
+    }
+
+    /**
+     * 查询条件
+     */
     private void buildOptions(SelectConditionStep<CouponActivityRecord> select, ActivityListParam param) {
         Integer status = param.getStatus();
         if (null != status) {
@@ -131,6 +139,9 @@ public class ActivityService extends ShopBaseService {
                 param.getCustomizePagePath()).execute();
     }
 
+    /**
+     * 参数校验
+     */
     private void validateParam(final ActivityParam param) {
         byte type = param.getType();
         switch (type) {
