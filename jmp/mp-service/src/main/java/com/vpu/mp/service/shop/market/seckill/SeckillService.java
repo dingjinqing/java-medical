@@ -48,9 +48,6 @@ public class SeckillService extends ShopBaseService {
     @Autowired
     private QrCodeService qrCode;
 
-    /** 小程序端活动页面 **/
-    private static final String SECKILL_SHARE_PATH = "pages/seckill/seckill";
-
     /**
      * 启用状态
      */
@@ -218,7 +215,7 @@ public class SeckillService extends ShopBaseService {
     /**
      * 获取小程序码
      */
-    public ShareQrCodeVo getMpQRCode(Integer skId) throws Exception {
+    public ShareQrCodeVo getMpQrCode(Integer skId) throws Exception {
 
         String pathParam="paramId="+skId;
         String imageUrl = qrCode.getMpQrCode(QrCodeTypeEnum.SECKILL_GOODS_ITEM_INFO, pathParam);

@@ -1,5 +1,6 @@
 package com.vpu.mp.controller.admin;
 
+import com.vpu.mp.service.pojo.shop.market.seckill.*;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -9,11 +10,6 @@ import org.springframework.web.bind.annotation.RestController;
 import com.vpu.mp.service.foundation.data.JsonResult;
 import com.vpu.mp.service.pojo.shop.market.MarketOrderListParam;
 import com.vpu.mp.service.pojo.shop.market.MarketSourceUserListParam;
-import com.vpu.mp.service.pojo.shop.market.seckill.SeckillAddParam;
-import com.vpu.mp.service.pojo.shop.market.seckill.SeckillDetailPageListQueryParam;
-import com.vpu.mp.service.pojo.shop.market.seckill.SeckillPageListQueryParam;
-import com.vpu.mp.service.pojo.shop.market.seckill.SeckillUpdateParam;
-import com.vpu.mp.service.pojo.shop.market.seckill.SeckillVo;
 
 
 /**
@@ -58,7 +54,7 @@ public class AdminSeckillController extends AdminBaseController {
      *
      */
     @PostMapping(value = "/api/admin/market/seckill/del")
-    public JsonResult delSeckill(@RequestBody @Validated SeckillUpdateParam param) {
+    public JsonResult delSeckill(@RequestBody @Validated SimpleSeckillParam param) {
         shop().seckill.delSeckill(param.getSkId());
         return success();
     }
@@ -68,7 +64,7 @@ public class AdminSeckillController extends AdminBaseController {
      *
      */
     @PostMapping(value = "/api/admin/market/seckill/get")
-    public JsonResult getSeckillByIsd(@RequestBody @Validated SeckillUpdateParam param) {
+    public JsonResult getSeckillById(@RequestBody @Validated SimpleSeckillParam param) {
         SeckillVo seckillVo = shop().seckill.getSeckillById(param.getSkId());
         if(seckillVo != null) {
             return success(seckillVo);
@@ -109,6 +105,6 @@ public class AdminSeckillController extends AdminBaseController {
      */
     @GetMapping("/api/admin/market/seckill/share")
     public JsonResult getSeckillShareCode(Integer skId) throws Exception {
-        return success(shop().seckill.getMpQRCode(skId));
+        return success(shop().seckill.getMpQrCode(skId));
     }
 }

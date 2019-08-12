@@ -21,6 +21,7 @@ import com.vpu.mp.service.shop.market.bargain.BargainService;
 import com.vpu.mp.service.shop.market.form.FormStatisticsService;
 import com.vpu.mp.service.shop.market.freeshipping.FreeShippingService;
 import com.vpu.mp.service.shop.market.friendpromote.FriendPromoteService;
+import com.vpu.mp.service.shop.market.fullcut.MrkingStrategyService;
 import com.vpu.mp.service.shop.market.goupbuy.GroupBuyService;
 import com.vpu.mp.service.shop.market.groupdraw.*;
 import com.vpu.mp.service.shop.market.integration.GroupIntegrationService;
@@ -180,4 +181,9 @@ public class ShopApplication  {
      * 活动有礼
      */
     @Autowired public ActivityService activity;
+
+    /**
+     * 满折满减
+     */
+    @Autowired public MrkingStrategyService mrkingStrategy;
 }
