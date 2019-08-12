@@ -82,9 +82,12 @@ public class MrkingStrategyService extends ShopBaseService {
         }
         select.where(MRKING_STRATEGY.DEL_FLAG.eq(DelFlag.NORMAL.getCode())).orderBy(MRKING_STRATEGY.CREATE_TIME.desc());
         PageResult<MrkingStrategyPageListQueryVo> res =  getPageResult(select,param.getCurrentPage(),param.getPageRows(),MrkingStrategyPageListQueryVo.class);
-        for(MrkingStrategyPageListQueryVo mrkingStrategy : res.dataList){
-            mrkingStrategy.setCondition(this.getMrkingStrategyCondition(mrkingStrategy.getId()));
+        if(res.dataList != null){
+            for(MrkingStrategyPageListQueryVo mrkingStrategy : res.dataList){
+                mrkingStrategy.setCondition(this.getMrkingStrategyCondition(mrkingStrategy.getId()));
+            }
         }
+
         return res;
     }
 

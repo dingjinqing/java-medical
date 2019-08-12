@@ -16,7 +16,7 @@ import org.springframework.web.bind.annotation.RestController;
 public class AdminMrkingStrategyController extends AdminBaseController {
 
     /**
-     * 秒杀活动分页查询列表
+     * 满折满减活动分页查询列表
      *
      */
     @PostMapping(value = "/api/admin/market/fullcut/list")
