@@ -1,38 +1,22 @@
 package com.vpu.mp.service.saas.shop;
 
-import static com.vpu.mp.db.main.tables.MpAuthShop.MP_AUTH_SHOP;
-import static com.vpu.mp.db.main.tables.MpVersion.MP_VERSION;
-
-import java.sql.Timestamp;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
-import org.jooq.Record;
-import org.jooq.Record6;
-import org.jooq.Record7;
-import org.jooq.Result;
-import org.jooq.Select;
-import org.jooq.SelectOnConditionStep;
-import org.jooq.SelectWhereStep;
+import com.vpu.mp.db.main.tables.records.MpVersionRecord;
+import com.vpu.mp.service.foundation.service.MainBaseService;
+import com.vpu.mp.service.foundation.util.PageResult;
+import com.vpu.mp.service.pojo.saas.shop.mp.*;
+import me.chanjar.weixin.common.error.WxErrorException;
+import me.chanjar.weixin.open.bean.WxOpenMaCodeTemplate;
+import org.jooq.*;
 import org.jooq.impl.DSL;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 
-import com.vpu.mp.db.main.tables.records.MpVersionRecord;
-import com.vpu.mp.service.foundation.service.MainBaseService;
-import com.vpu.mp.service.foundation.util.PageResult;
-import com.vpu.mp.service.pojo.saas.shop.mp.MpAuthShopListVo;
-import com.vpu.mp.service.pojo.saas.shop.mp.MpVersionListParam;
-import com.vpu.mp.service.pojo.saas.shop.mp.MpVersionListVo;
-import com.vpu.mp.service.pojo.saas.shop.mp.MpVersionParam;
-import com.vpu.mp.service.pojo.saas.shop.mp.MpVersionVo;
-import com.vpu.mp.service.wechat.api.WxOpenAccountService;
-import com.vpu.mp.service.wechat.bean.open.MaWxPlusInResult;
+import java.sql.Timestamp;
+import java.util.ArrayList;
+import java.util.List;
 
-import me.chanjar.weixin.common.error.WxErrorException;
-import me.chanjar.weixin.open.bean.WxOpenMaCodeTemplate;
+import static com.vpu.mp.db.main.tables.MpAuthShop.MP_AUTH_SHOP;
+import static com.vpu.mp.db.main.tables.MpVersion.MP_VERSION;
 
 /**
  * 
@@ -194,20 +178,15 @@ public class MpVersionService extends MainBaseService {
      *  获取小程序版本名称列表值
      * @return 名称列表值
      */
-	public String[] getMpUserVersionList(){
-        List<MpVersionVo> list = db().selectDistinct(MP_VERSION.USER_VERSION)
-            .from(MP_VERSION).orderBy(MP_VERSION.USER_VERSION.desc()).fetch().into(MpVersionVo.class);
-        String[] versions=new String[list.size()];
-
-        for(int i=0;i<list.size();i++) {
-        	versions[i]=list.get(i).getUserVersion();
-        }
-        return versions;
+	public List<MpVersionIdVo> getMpUserVersionList(){
+        List<MpVersionIdVo> list = db().selectDistinct(MP_VERSION.USER_VERSION)
+            .from(MP_VERSION).orderBy(MP_VERSION.USER_VERSION.desc()).fetch().into(MpVersionIdVo.class);
+        return list;
     }
-	
+
 	/**
 	 * 得到小程序模板版本列表
-	 * 
+	 *
 	 * @return
 	 */
 	public Result<MpVersionRecord> getAllByDelFlag() {
