@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.vpu.mp.db.main.tables.records.MpAuthShopRecord;
 import com.vpu.mp.service.foundation.data.JsonResult;
 import com.vpu.mp.service.foundation.data.JsonResultCode;
+import com.vpu.mp.service.pojo.saas.shop.mp.MpAuthShopToAdminVo;
 import com.vpu.mp.service.pojo.saas.shop.mp.MpAuthShopVo;
 import com.vpu.mp.service.wechat.OpenPlatform;
 
@@ -95,7 +96,7 @@ public class AdminWechatApiController extends AdminBaseController {
 		if (record == null) {
 			return fail(JsonResultCode.WX_MA_NEED_AUTHORIZATION);
 		}
-		return success(record.into(MpAuthShopVo.class));
+		return success(record.into(MpAuthShopToAdminVo.class));
 	}
 
 }
