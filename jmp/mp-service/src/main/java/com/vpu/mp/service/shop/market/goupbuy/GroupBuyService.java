@@ -25,7 +25,8 @@ import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
 import java.sql.Timestamp;
-import java.util.*;
+import java.util.List;
+import java.util.Objects;
 
 import static com.vpu.mp.db.shop.Tables.GROUP_BUY_DEFINE;
 import static com.vpu.mp.db.shop.Tables.GROUP_BUY_PRODUCT_DEFINE;
@@ -52,20 +53,18 @@ public class GroupBuyService extends ShopBaseService {
      *
      * @param groupBuy
      */
-    public int addGroupBuy(GroupBuyParam groupBuy) {
+    public void addGroupBuy(GroupBuyParam groupBuy) {
         db().transaction((configuration) -> {
             DSLContext db = DSL.using(configuration);
 
             //分享配置转json
             GroupBuyShareConfigParam a = groupBuy.getShare();
             groupBuy.setShareConfig(Util.toJson(groupBuy.getShare()));
-            groupBuy.setStatus((byte) USE_STATUS);
+            groupBuy.setStatus( USE_STATUS);
 
             //订单总库存
             groupBuy.setStock((short) 0);
-            groupBuy.getProduct().forEach((product) -> {
-                groupBuy.setStock((short) (product.getStock() + groupBuy.getStock()));
-            });
+            groupBuy.getProduct().forEach((product) -> groupBuy.setStock((short) (product.getStock() + groupBuy.getStock())));
             //拼团信息
             GroupBuyDefineRecord groupBuyDefineRecord = db.newRecord(GROUP_BUY_DEFINE, groupBuy);
             groupBuyDefineRecord.insert();
@@ -77,13 +76,12 @@ public class GroupBuyService extends ShopBaseService {
             }
         });
 
-        return 0;
     }
 
     /**
      * 删除
      *
-     * @param id
+     * @param id id
      */
     public int deleteGroupBuy(Integer id) {
         return db().update(GROUP_BUY_DEFINE)
@@ -95,8 +93,8 @@ public class GroupBuyService extends ShopBaseService {
     /**
      * 编辑测试
      *
-     * @param param
-     * @return
+     * @param param GroupBuyEditParam
+     * @return  int
      */
     public int editGroupBuy(GroupBuyEditParam param) {
         param.setShareConfig(Util.toJson(param.getShare()));
@@ -160,17 +158,17 @@ public class GroupBuyService extends ShopBaseService {
     /**
      * 校验商品是否有叠加
      *
-     * @param parm
+     * @param param  GroupBuyParam
      * @return 0
      */
-    public Boolean validGroupGoods(GroupBuyParam parm) {
+    public Boolean validGroupGoods(GroupBuyParam param) {
         return db().fetchCount(GROUP_BUY_DEFINE,
-                GROUP_BUY_DEFINE.GOODS_ID.eq(parm.getGoodsId())
+                GROUP_BUY_DEFINE.GOODS_ID.eq(param.getGoodsId())
                         .and(GROUP_BUY_DEFINE.DEL_FLAG.eq(DelFlag.NORMAL.getCode()))
                         .and(GROUP_BUY_DEFINE.STATUS.eq(USE_STATUS))
-                        .and(GROUP_BUY_DEFINE.ID.notEqual(parm.getGoodsId()))
-                        .and(GROUP_BUY_DEFINE.START_TIME.lt(parm.getEndTime()))
-                        .and(GROUP_BUY_DEFINE.END_TIME.gt(parm.getStartTime()))) == 0;
+                        .and(GROUP_BUY_DEFINE.ID.notEqual(param.getGoodsId()))
+                        .and(GROUP_BUY_DEFINE.START_TIME.lt(param.getEndTime()))
+                        .and(GROUP_BUY_DEFINE.END_TIME.gt(param.getStartTime()))) == 0;
 
     }
 
@@ -188,8 +186,8 @@ public class GroupBuyService extends ShopBaseService {
      *
      * @param param
      */
-    public PageResult<MemberInfoVo> groupBuyNewUaerList(MarketSourceUserListParam param) {
-        return groupBuyListService.groupBuyNewUaerList(param);
+    public PageResult<MemberInfoVo> groupBuyNewUserList(MarketSourceUserListParam param) {
+        return groupBuyListService.groupBuyNewUserList(param);
     }
 
     /**
@@ -237,7 +235,7 @@ public class GroupBuyService extends ShopBaseService {
                 analysisVo.getGoodsPriceList().add(discountMoney.getGoodsPrice());
                 analysisVo.getMarketPriceList().add(discountMoney.getMarketPrice());
                 analysisVo.getRatioList().add(discountMoney.getDiscountedTotalPrice().compareTo(BigDecimal.ZERO)>0?
-                        discountMoney.getMarketPrice().subtract(discountMoney.getGoodsPrice()).divide(discountMoney.getDiscountedTotalPrice()):BigDecimal.ZERO);
+                        discountMoney.getMarketPrice().subtract(discountMoney.getGoodsPrice()).divide(discountMoney.getDiscountedTotalPrice(),BigDecimal.ROUND_FLOOR):BigDecimal.ZERO);
             }
             //新用户数
             OrderActivityUserNum newUser = getUserNum(activeOrderList.getNewUserNum(), date);
@@ -258,7 +256,8 @@ public class GroupBuyService extends ShopBaseService {
         return analysisVo;
     }
 
-    public ActiveDiscountMoney getDiscountMoneyByDate(List<ActiveDiscountMoney> discountMoneyList, Timestamp timestamp) {
+
+    private ActiveDiscountMoney getDiscountMoneyByDate(List<ActiveDiscountMoney> discountMoneyList, Timestamp timestamp) {
         for (ActiveDiscountMoney data : discountMoneyList) {
             if (data.getCreateTime().equals(timestamp)) {
                 return data;

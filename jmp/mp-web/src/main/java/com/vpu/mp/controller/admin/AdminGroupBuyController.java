@@ -38,8 +38,8 @@ public class AdminGroupBuyController extends AdminBaseController {
     /**
      * 查询团购列表
      *
-     * @param param
-     * @return
+     * @param param GroupBuyListParam
+     * @return JsonResult
      */
     @PostMapping("/admin/market/groupbuy/list")
     public JsonResult getListGroupBuy(@RequestBody GroupBuyListParam param) {
@@ -50,8 +50,8 @@ public class AdminGroupBuyController extends AdminBaseController {
     /**
      * 增加拼团活动
      *
-     * @param param
-     * @return
+     * @param param GroupBuyParam
+     * @return JsonResult
      */
     @PostMapping("/admin/market/groupbuy/add")
     public JsonResult addGroupBuy(@RequestBody @Valid GroupBuyParam param) {
@@ -62,8 +62,8 @@ public class AdminGroupBuyController extends AdminBaseController {
             return fail(JsonResultCode.CODE_PARAM_ERROR);
         }
         //校验商品是否叠加 (并发不安全)
-        Boolean falg = shop().groupBuy.validGroupGoods(param);
-        if (!falg) {
+        Boolean flag = shop().groupBuy.validGroupGoods(param);
+        if (!flag) {
             return fail(JsonResultCode.CODE_PARAM_ERROR);
         }
         //插入数据
@@ -75,12 +75,12 @@ public class AdminGroupBuyController extends AdminBaseController {
     /**
      * 删除拼团活动
      *
-     * @param parm
-     * @return
+     * @param param GroupBuyIdParam
+     * @return  JsonResult
      */
-    @PostMapping("/admin/market/groupbuy/detele")
-    public JsonResult deleteGroupBuy(@RequestBody GroupBuyIdParam parm) {
-        shop().groupBuy.deleteGroupBuy(parm.getId());
+    @PostMapping("/admin/market/groupbuy/delete")
+    public JsonResult deleteGroupBuy(@RequestBody GroupBuyIdParam param) {
+        shop().groupBuy.deleteGroupBuy(param.getId());
         return success();
     }
 
@@ -88,12 +88,15 @@ public class AdminGroupBuyController extends AdminBaseController {
     /**
      * 修改拼团设置
      *
-     * @param param
-     * @return
+     * @param param GroupBuyEditParam
+     * @return JsonResult
      */
     @PostMapping("/admin/market/groupbuy/edit")
     public JsonResult editGroupBuy(@RequestBody GroupBuyEditParam param) {
-        shop().groupBuy.editGroupBuy(param);
+        int flag = shop().groupBuy.editGroupBuy(param);
+        if (flag<=0){
+            return fail();
+        }
         return success();
     }
 
@@ -101,8 +104,8 @@ public class AdminGroupBuyController extends AdminBaseController {
     /**
      * 参团明细
      *
-     * @param param
-     * @return
+     * @param param GroupBuyIdParam
+     * @return JsonResult
      */
     @PostMapping("/admin/market/groupbuy/detail")
     public JsonResult detailGroupBuy(@RequestBody GroupBuyIdParam param) {
@@ -114,8 +117,8 @@ public class AdminGroupBuyController extends AdminBaseController {
     /**
      * 分享拼团
      *
-     * @param param
-     * @return
+     * @param param GroupBuyParam
+     * @return JsonResult
      */
     @PostMapping("/admin/market/groupbuy/share")
     public JsonResult shareGroupBuy(@RequestBody GroupBuyParam param) {
@@ -126,8 +129,8 @@ public class AdminGroupBuyController extends AdminBaseController {
     /**
      * 停用,启用拼团
      *
-     * @param param
-     * @return
+     * @param param GroupBuyIdParam
+     * @return JsonResult
      */
     @PostMapping("/admin/market/groupbuy/update")
     public JsonResult stopGroupBuy(@RequestBody GroupBuyIdParam param) {
@@ -140,8 +143,8 @@ public class AdminGroupBuyController extends AdminBaseController {
     /**
      * 参团明细列表
      *
-     * @param param
-     * @return
+     * @param param GroupBuyDetailParam
+     * @return JsonResult
      */
     @PostMapping("/admin/market/groupbuy/detaillist")
     public JsonResult detailGroupBuyList(@RequestBody GroupBuyDetailParam param) {
@@ -151,9 +154,8 @@ public class AdminGroupBuyController extends AdminBaseController {
 
 
     /**
-     * - 拼团订单
-     *
-     * @return
+     * 拼团订单
+     * @return JsonResult
      */
     @PostMapping("/admin/market/groupbuy/order/list")
     public JsonResult groupBuyOrderList(@RequestBody MarketOrderListParam param) {
@@ -164,11 +166,11 @@ public class AdminGroupBuyController extends AdminBaseController {
     /**
      * 用户列表
      *
-     * @return
+     * @return JsonResult
      */
     @PostMapping("/admin/market/groupbuy/user/list")
-    public JsonResult groupBuyNewUaerList(@RequestBody MarketSourceUserListParam param) {
-        PageResult<MemberInfoVo> pageResult = shop().groupBuy.groupBuyNewUaerList(param);
+    public JsonResult groupBuyNewUserList(@RequestBody MarketSourceUserListParam param) {
+        PageResult<MemberInfoVo> pageResult = shop().groupBuy.groupBuyNewUserList(param);
         return success(pageResult);
     }
 
@@ -176,7 +178,7 @@ public class AdminGroupBuyController extends AdminBaseController {
     /**
      * 拼团活动效果数据
      *
-     * @return
+     * @return JsonResult
      */
     @PostMapping("/admin/market/groupbuy/analysis")
     public JsonResult groupBuyAnalysis(@RequestBody GroupBuyAnalysisParam param) {

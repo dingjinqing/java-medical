@@ -152,7 +152,7 @@ public class GroupBuyListService  extends ShopBaseService {
      *
      * @param param
      */
-    public PageResult<MemberInfoVo> groupBuyNewUaerList(MarketSourceUserListParam param) {
+    public PageResult<MemberInfoVo> groupBuyNewUserList(MarketSourceUserListParam param) {
         MemberPageListParam pageListParam = new MemberPageListParam();
         pageListParam.setCurrentPage(param.getCurrentPage());
         pageListParam.setPageRows(param.getPageRows());

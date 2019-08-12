@@ -6,6 +6,7 @@ import static com.vpu.mp.db.shop.tables.MpJumpUsable.MP_JUMP_USABLE;
 import static org.jooq.impl.DSL.count;
 import static org.jooq.impl.DSL.sum;
 
+import java.math.BigDecimal;
 import java.util.List;
 
 import org.jooq.Record1;
@@ -28,6 +29,7 @@ import com.vpu.mp.service.pojo.shop.applets.AppletsJumpVo;
 
 public class AppletsJumpService extends ShopBaseService {
 
+    private static final  Integer EIGHT=8;
 
     /**
      * 添加小程序跳转
@@ -107,7 +109,7 @@ public class AppletsJumpService extends ShopBaseService {
                 .where(MP_JUMP.DEL_FLAG.eq((byte) 0))
                 .and(MP_JUMP.FLAG.eq((byte) 0))
                 .and(MP_JUMP_USABLE.USABLE.eq((byte) 0)).execute();
-        if (count>8){
+        if (count> EIGHT){
             return false;
         }
         //查前8条数据

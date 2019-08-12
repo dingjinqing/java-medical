@@ -18,9 +18,8 @@ public enum OrderServiceCode {
 	//TODO 小程序端发起退货请求
 	//MP_REFUND_GOODS_APPLY;
 	
-	@SuppressWarnings("unused")
-	private Class<? extends ShopBaseService> clz;
+
 	private OrderServiceCode(Class<? extends ShopBaseService> clz){
-		this.clz = clz;
+
 	}
 }

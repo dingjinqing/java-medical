@@ -41,21 +41,11 @@ public class FreeShippingService extends ShopBaseService {
      * 有效期 0 固定期限 1永久有效
      */
     private static final byte FIXED_EXPIRE = 0;
-    private static final byte NEVER_EXIRE = 1;
+    private static final byte NEVER_EXPIRE  = 1;
 
     @Autowired
     public FreeShippingRuleService ruleService;
 
-    /**
-     * 查询免运费列表
-     *
-     * @param param
-     * @return
-     */
-    public PageResult<T> freeShipPingList(FreeShippingParam param) {
-        db().fetch(FREE_SHIPPING_RULE);
-        return null;
-    }
 
 
     /**
@@ -70,7 +60,7 @@ public class FreeShippingService extends ShopBaseService {
         Timestamp date = new Timestamp(System.currentTimeMillis());
         Result<FreeShippingRecord> freeShippingList = db()
                 .selectFrom(FREE_SHIPPING)
-                .where(FREE_SHIPPING.EXPIRE_TYPE.eq(NEVER_EXIRE)
+                .where(FREE_SHIPPING.EXPIRE_TYPE.eq(NEVER_EXPIRE)
                         .or(DSL.field(FREE_SHIPPING.EXPIRE_TYPE.eq(FIXED_EXPIRE)
                                 .and(FREE_SHIPPING.START_TIME.lt(date)
                                         .and(FREE_SHIPPING.END_TIME.gt(date))))))
@@ -78,42 +68,26 @@ public class FreeShippingService extends ShopBaseService {
                 .and(FREE_SHIPPING.STATUS.eq(USE_STATUS))
                 .fetch();
         freeShippingList.forEach(freeShip -> {
+            Result<FreeShippingRuleRecord> ruleList = ruleService.getFreeShippingRule(freeShip.getId());
             if (freeShip.getType().equals(0)) {
-                Result<FreeShippingRuleRecord> ruleList = ruleService.getFreeShippingRule(freeShip.getId());
                 ruleList.forEach(freeShipRule -> {
                     FreeShippingGoodsRuleVo ruleVo = new FreeShippingGoodsRuleVo();
                     ruleVo.setAction(5);
                     ruleVo.setIdentityId(freeShipRule.getId());
                     ruleVo.setShippingId(freeShipRule.getShippingId());
                     ruleVo.setConType(freeShipRule.getConType());
-                    if (freeShipRule.getConType().equals(0)) {
-                        ruleVo.setName("满 ? 元，部分地区包邮");
-                    } else if (freeShipRule.getConType().equals(5)) {
-                        ruleVo.setName("满 ? 件，部分地区包邮");
-                    } else {
-                        ruleVo.setName("满 ? 元或 ? 件，部分地区包邮");
-                    }
-
                 });
 
             } else {
                 if (freeShip.getRecommendGoodsId().contains(goodsId.toString()) ||
                         (goods.getSortId() != null && freeShip.getRecommendSortId().contains(goods.getSortId().toString())) ||
                         (goods.getCatId() != null && freeShip.getRecommendCatId().contains(goods.getCatId().toString()))) {
-                    Result<FreeShippingRuleRecord> ruleList = ruleService.getFreeShippingRule(freeShip.getId());
                     ruleList.forEach(freeShipRule -> {
                         FreeShippingGoodsRuleVo ruleVo = new FreeShippingGoodsRuleVo();
                         ruleVo.setAction(5);
                         ruleVo.setIdentityId(freeShipRule.getId());
                         ruleVo.setShippingId(freeShipRule.getShippingId());
                         ruleVo.setConType(freeShipRule.getConType());
-                        if (freeShipRule.getConType().equals(0)) {
-                            ruleVo.setName("满 ? 元，部分地区包邮");
-                        } else if (freeShipRule.getConType().equals(1)) {
-                            ruleVo.setName("满 ? 件，部分地区包邮");
-                        } else {
-                            ruleVo.setName("满 ? 元或 ? 件，部分地区包邮");
-                        }
                     });
                 }
             }
@@ -217,7 +191,7 @@ public class FreeShippingService extends ShopBaseService {
                     break;
                 case 1:
                     //进行中的
-                    select.and(FREE_SHIPPING.EXPIRE_TYPE.eq(NEVER_EXIRE))
+                    select.and(FREE_SHIPPING.EXPIRE_TYPE.eq(NEVER_EXPIRE))
                             .or(FREE_SHIPPING.EXPIRE_TYPE.eq(FIXED_EXPIRE)
                                     .and(FREE_SHIPPING.START_TIME.le(timestamp))
                                     .and(FREE_SHIPPING.END_TIME.ge(timestamp)))

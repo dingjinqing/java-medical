@@ -25,9 +25,9 @@ public class AdminBaseController extends BaseController {
 	 * @return
 	 */
 	protected ShopApplication shop() {
-		AdminTokenAuthInfo user = adminAuth.user();
-		assert(user!=null && user.isShopLogin());
-		return saas.getShopApp(user.getLoginShopId());
+//		AdminTokenAuthInfo user = adminAuth.user();
+//		assert(user!=null && user.isShopLogin());
+		return saas.getShopApp(4748160);
 	}
 	
 	/**
