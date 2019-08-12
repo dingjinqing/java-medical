@@ -17,6 +17,7 @@ import com.vpu.mp.service.saas.privilege.RoleService;
 import com.vpu.mp.service.saas.privilege.SystemUserService;
 import com.vpu.mp.service.saas.region.CityService;
 import com.vpu.mp.service.saas.region.RegionService;
+import com.vpu.mp.service.saas.shop.MpDeployHistoryService;
 import com.vpu.mp.service.saas.shop.ShopService;
 import com.vpu.mp.service.shop.ShopApplication;
 
@@ -55,6 +56,8 @@ public class SaasApplication {
 	public CityService city;
 	@Autowired
 	public SystemImageService sysImage;
+	@Autowired
+	public MpDeployHistoryService deployHistoryService;
 
 	@Autowired
 	DatabaseManager databaseManager;
