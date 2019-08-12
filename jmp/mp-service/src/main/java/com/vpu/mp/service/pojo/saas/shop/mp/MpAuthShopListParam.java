@@ -1,6 +1,7 @@
 package com.vpu.mp.service.pojo.saas.shop.mp;
 
 import lombok.Data;
+import org.apache.commons.lang3.StringUtils;
 import org.jooq.Condition;
 import org.jooq.impl.DSL;
 
@@ -67,7 +68,7 @@ public class MpAuthShopListParam {
 
 
 
-        if (appId != null) {
+        if (!StringUtils.isBlank(appId)) {
             condition = condition.and(MP_AUTH_SHOP.APP_ID.eq(appId));
         }
 
@@ -75,7 +76,7 @@ public class MpAuthShopListParam {
             condition = condition.and(MP_AUTH_SHOP.SHOP_ID.eq(shopId));
         }
 
-        if (nickName != null) {
+        if (!StringUtils.isBlank(nickName)) {
             condition = condition.and(MP_AUTH_SHOP.NICK_NAME.like(likeValue(nickName)));
         }
 
