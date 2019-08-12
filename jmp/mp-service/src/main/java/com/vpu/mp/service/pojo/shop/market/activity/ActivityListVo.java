@@ -12,21 +12,14 @@ import java.sql.Timestamp;
 @Data
 public class ActivityListVo {
 
-    /* 触发条件 */
-    /** 新用户 **/
-    public static final byte BRAND_NEW = 1;
-    /** 全部用户 **/
-    public static final byte ALL = 2;
-    /** 未支付过的用户 **/
-    public static final byte NOT_PAYED = 3;
-
+    private Integer id;
     /* 活动类型 */
     /** 送券 **/
-    public static final byte VOUCHER = 1;
+    public static final byte COUPON = 0;
     /** 幸运大抽奖 **/
-    public static final byte DRAW = 2;
+    public static final byte DRAW = 1;
     /** 自定义活动 **/
-    public static final byte CUSTOMIZE = 3;
+    public static final byte CUSTOMIZE = 2;
 
     /* 活动状态 */
     /** 开启 **/

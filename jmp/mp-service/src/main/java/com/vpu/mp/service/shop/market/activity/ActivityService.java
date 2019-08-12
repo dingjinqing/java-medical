@@ -7,14 +7,15 @@ import com.vpu.mp.service.foundation.util.PageResult;
 import com.vpu.mp.service.foundation.util.Util;
 import com.vpu.mp.service.pojo.shop.market.activity.ActivityListParam;
 import com.vpu.mp.service.pojo.shop.market.activity.ActivityListVo;
+import com.vpu.mp.service.pojo.shop.market.activity.ActivityParam;
 import org.jooq.SelectConditionStep;
 import org.springframework.stereotype.Service;
+import org.springframework.util.Assert;
 
 import java.sql.Timestamp;
 
 import static com.vpu.mp.service.pojo.shop.market.activity.ActivityListParam.*;
-import static com.vpu.mp.service.pojo.shop.market.activity.ActivityListVo.ABLE;
-import static com.vpu.mp.service.pojo.shop.market.activity.ActivityListVo.DISABLE;
+import static com.vpu.mp.service.pojo.shop.market.activity.ActivityListVo.*;
 
 /**
  * 活动有礼
@@ -31,7 +32,7 @@ public class ActivityService extends ShopBaseService {
      */
     public PageResult<ActivityListVo> getPageList(ActivityListParam param) {
         SelectConditionStep<CouponActivityRecord> select =
-            shopDb().selectFrom(TABLE).where(TABLE.DEL_FLAG.eq(DISABLE));
+            shopDb().selectFrom(TABLE).where(TABLE.DEL_FLAG.eq((byte) 0));
         buildOptions(select, param);
         PageResult<ActivityListVo> result = getPageResult(select, param, ActivityListVo.class);
         transform(result);
@@ -90,5 +91,64 @@ public class ActivityService extends ShopBaseService {
      */
     public void disableActivity(Integer activityId) {
         shopDb().update(TABLE).set(TABLE.STATUS, DISABLE).where(TABLE.ID.eq(activityId)).execute();
+    }
+
+    /**
+     * 启用活动
+     */
+    public void enableActivity(Integer id) {
+        shopDb().update(TABLE).set(TABLE.STATUS, ABLE).where(TABLE.ID.eq(id)).execute();
+    }
+
+    /**
+     * 删除活动
+     */
+    public void deleteActivity(Integer activityId) {
+        shopDb().update(TABLE).set(TABLE.DEL_FLAG, (byte) 1).where(TABLE.ID.eq(activityId)).execute();
+    }
+
+    /**
+     * 添加活动
+     */
+    public void addActivity(ActivityParam param) {
+        validateParam(param);
+        String couponId = "";
+        Byte bgAction = 1;
+        switch (param.getType()) {
+            case COUPON:
+                couponId = Util.listToString(param.getCouponId());
+                bgAction = param.getBgAction();
+                break;
+            case DRAW:
+                couponId = String.valueOf(param.getActivityId());
+                break;
+        }
+        shopDb().insertInto(TABLE).columns(TABLE.NAME, TABLE.ACTION, TABLE.ACTIVITY_ACTION, TABLE.BG_ACTION,
+            TABLE.START_DATE, TABLE.END_DATE, TABLE.MRKING_VOUCHER_ID, TABLE.TITLE, TABLE.STATUS,
+            TABLE.CUSTOMIZE_IMG_PATH, TABLE.CUSTOMIZE_URL)
+            .values(param.getName(), param.getAction(), param.getType(), bgAction, param.getStartDate(),
+                param.getEndDate(), couponId, param.getTitle(), ABLE, param.getCustomizeImgUrl(),
+                param.getCustomizePagePath()).execute();
+    }
+
+    private void validateParam(final ActivityParam param) {
+        byte type = param.getType();
+        switch (type) {
+            case COUPON:
+                Assert.notNull(param.getBgAction(), "Missing parameter bgAction");
+                Assert.notNull(param.getCouponId(), "Missing parameter couponId");
+                Assert.notEmpty(param.getCouponId(), "CouponId is empty");
+                Assert.notNull(param.getTitle(), "Missing parameter title");
+                break;
+            case DRAW:
+                Assert.notNull(param.getActivityId(), "Missing parameter activityId");
+                break;
+            case CUSTOMIZE:
+                Assert.notNull(param.getCustomizeImgUrl(), "Missing parameter customizeImgUrl");
+                Assert.notNull(param.getCustomizePagePath(), "Missing parameter customizePagePath");
+                break;
+            default:
+                throw new IllegalArgumentException("Unexpected type: " + type);
+        }
     }
 }
