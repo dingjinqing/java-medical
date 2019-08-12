@@ -109,6 +109,9 @@ public class QrCodeTypeConstant {
     /** 我要送礼 */
     public static Short QR_CODE_TYPE_GIFT_GIVING = 34;
 
+    /** 表单统计 */
+    public static Short QR_CODE_TYPE_FORM_STATISTICS = 35;
+
     /** 砍价分享图 */
     public static Short QR_CODE_TYPE_BARGAIN_SHARE = 98;
 

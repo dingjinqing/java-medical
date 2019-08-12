@@ -1,32 +1,38 @@
 package com.vpu.mp.service.shop.market.form;
 
-import com.vpu.mp.db.shop.tables.FormPage;
-import com.vpu.mp.db.shop.tables.FormSubmitDetails;
-import com.vpu.mp.db.shop.tables.FormSubmitList;
-import com.vpu.mp.db.shop.tables.User;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.vpu.mp.db.shop.tables.*;
 import com.vpu.mp.db.shop.tables.records.FormPageRecord;
-import com.vpu.mp.db.shop.tables.records.FormSubmitDetailsRecord;
-import com.vpu.mp.db.shop.tables.records.FormSubmitListRecord;
+import com.vpu.mp.service.foundation.data.DelFlag;
 import com.vpu.mp.service.foundation.excel.ExcelFactory;
 import com.vpu.mp.service.foundation.excel.ExcelTypeEnum;
 import com.vpu.mp.service.foundation.excel.ExcelWriter;
 import com.vpu.mp.service.foundation.service.ShopBaseService;
 import com.vpu.mp.service.foundation.util.FieldsUtil;
 import com.vpu.mp.service.foundation.util.PageResult;
+import com.vpu.mp.service.pojo.shop.image.ShareQrCodeVo;
 import com.vpu.mp.service.pojo.shop.market.form.*;
+import com.vpu.mp.service.pojo.shop.qrcode.QrCodeTypeEnum;
+import com.vpu.mp.service.shop.image.QRCodeService;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.poi.ss.usermodel.Workbook;
-import org.jooq.DSLContext;
 import org.jooq.Record5;
 import org.jooq.Record6;
 import org.jooq.SelectConditionStep;
-import org.jooq.impl.DSL;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.io.IOException;
 import java.sql.Timestamp;
+import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
+
+import static com.vpu.mp.db.shop.tables.Code.CODE;
+import static com.vpu.mp.service.pojo.shop.market.form.FormConstant.*;
+import static org.jooq.impl.DSL.countDistinct;
 
 /**
  * @author liufei
@@ -36,10 +42,17 @@ import java.util.concurrent.ExecutionException;
 @Slf4j
 @Service
 public class FormStatisticsService extends ShopBaseService {
+    @Autowired
+    QRCodeService qrCodeService;
     /**
      * FORM_PAGE表单删除状态值，删除状态页面不展示
      */
     private static final Byte FP_DEL_STATUS = 3;
+    /**
+     * 分享二维码页面显示图片路径
+     */
+    private static final String PARAM = "page_id=";
+
     private static FormPage fp = FormPage.FORM_PAGE.as("fp");
     private static FormSubmitDetails fsd = FormSubmitDetails.FORM_SUBMIT_DETAILS.as("fsd");
     private static FormSubmitList fsl = FormSubmitList.FORM_SUBMIT_LIST.as("fsl");
@@ -73,26 +86,11 @@ public class FormStatisticsService extends ShopBaseService {
      * 查看表单信息详情
      * 已发布的表单只可查看，不可编辑
      *
-     * @param param 使用表单id，店铺id，用户id作为查询条件
-     * @return formpage，formsubmitdetail，formsubmitlist三表汇总表单详细信息
+     * @param param 表单id
+     * @return formpage表单详细信息
      */
     public FormDetailVo getFormDetailInfo(FormDetailParam param) {
-        try {
-            int pageId = param.getPageId();
-            int shopId = param.getShopId();
-            int userId = param.getUserId();
-
-            CompletableFuture<FormDetailVo> fpFuture = CompletableFuture.supplyAsync(() -> db().selectFrom(fp).where(fp.PAGE_ID.eq(pageId)).and(fp.SHOP_ID.eq(shopId)).fetchOptionalInto(FormDetailVo.class).orElse(new FormDetailVo()));
-            FormDetailVo vo = fpFuture.get();
-            CompletableFuture<FormList> fslFuture = CompletableFuture.supplyAsync(() -> db().selectFrom(fsl).where(fsl.PAGE_ID.eq(pageId)).and(fsl.SHOP_ID.eq(shopId)).and(fsl.USER_ID.eq(userId)).fetchOptionalInto(FormList.class).orElse(new FormList()));
-            vo.setFormList(fslFuture.get());
-            fslFuture.thenAccept((e) -> vo.setDetails(db().selectFrom(fsd).where(fsd.PAGE_ID.eq(pageId)).and(fsd.SUBMIT_ID.eq(e.getSubmitId())).fetchInto(FormDetail.class)));
-
-            return vo;
-        } catch (InterruptedException | ExecutionException e) {
-            log.debug(e.getMessage());
-        }
-        return null;
+        return db().selectFrom(fp).where(fp.PAGE_ID.eq(param.getPageId())).fetchOptionalInto(FormDetailVo.class).orElse(new FormDetailVo());
     }
 
     /**
@@ -100,34 +98,11 @@ public class FormStatisticsService extends ShopBaseService {
      *
      * @param param 表单信息
      */
-    public void addFormInfo(FormUAParam param) {
+    public void addFormInfo(FormAddParam param) {
         param.setPageId(null);
         FormPageRecord fpRecord = new FormPageRecord();
         FieldsUtil.assignNotNull(param, fpRecord);
-        FormSubmitListRecord fslRecord = new FormSubmitListRecord();
-        FieldsUtil.assignNotNull(param.getFormList(), fslRecord);
-        FormSubmitDetailsRecord fsdRecord = new FormSubmitDetailsRecord();
-
-        int[] temp = {-1, -1};
-        log.debug("FormPage,FormSubmitList,FormSubmitDetails三表原子插入");
-        db().transaction(configuration -> {
-            DSLContext db = DSL.using(configuration);
-            db.executeInsert(fpRecord);
-            temp[0] = db.lastID().intValue();
-            log.debug("获取刚刚FormPage表插入成功后生成的自增主键值：last_insert_id---{}", temp[0]);
-            fslRecord.setPageId(temp[0]);
-            fslRecord.setSubmitId(null);
-            db.executeInsert(fslRecord);
-            temp[1] = db.lastID().intValue();
-            log.debug("获取刚刚FormSubmitList表插入成功后生成的自增主键值：last_insert_id---{}", temp[1]);
-            for (FormDetail detail : param.getDetails()) {
-                FieldsUtil.assignNotNull(detail, fsdRecord);
-                fsdRecord.setSubmitId(temp[1]);
-                fsdRecord.setRecId(null);
-                db.executeInsert(fsdRecord);
-                fsdRecord.reset();
-            }
-        });
+        db().executeInsert(fpRecord);
     }
 
     /**
@@ -135,33 +110,28 @@ public class FormStatisticsService extends ShopBaseService {
      *
      * @param param 表单信息
      */
-    public void updateFormInfo(FormUAParam param) {
+    public void updateFormInfo(FormAddParam param) {
         FormPageRecord fpRecord = new FormPageRecord();
         FieldsUtil.assignNotNull(param, fpRecord);
-        FormSubmitListRecord fslRecord = new FormSubmitListRecord();
-        FieldsUtil.assignNotNull(param.getFormList(), fslRecord);
-        FormSubmitDetailsRecord fsdRecord = new FormSubmitDetailsRecord();
-        log.debug("FormPage,FormSubmitList,FormSubmitDetails三表原子更新");
-        db().transaction(configuration -> {
-            DSLContext db = DSL.using(configuration);
-            if (db.fetchExists(fp, fp.PAGE_ID.eq(param.getPageId()))) {
-                db.executeUpdate(fpRecord);
-            }
-            if (db.fetchExists(fsl, fsl.SUBMIT_ID.eq(param.getFormList().getSubmitId()))) {
-                db.executeUpdate(fslRecord);
-            }
-            for (FormDetail detail : param.getDetails()) {
-                if (db.fetchExists(fsd, fsd.REC_ID.eq(detail.getRecId()))) {
-                    FieldsUtil.assignNotNull(detail, fsdRecord);
-                    db.executeUpdate(fsdRecord);
-                    fsdRecord.reset();
-                }
-            }
-        });
+
+        if (db().fetchExists(fp, fp.PAGE_ID.eq(param.getPageId()))) {
+            db().executeUpdate(fpRecord);
+        }
     }
 
-    //TODO 分享
-    public void shareForm() {
+    /**
+     * 分享,获取小程序二维码
+     *
+     * @param param 表单id
+     * @return 图片路径
+     */
+    public ShareQrCodeVo shareForm(FormDetailParam param) {
+        String pathParam = PARAM + param.getPageId();
+        String imageUrl = qrCodeService.getMpQrCode(QrCodeTypeEnum.FORM, pathParam);
+        ShareQrCodeVo vo = new ShareQrCodeVo();
+        vo.setImageUrl(imageUrl);
+        vo.setPagePath(QrCodeTypeEnum.SECKILL_GOODS_ITEM_INFO.getPathUrl(pathParam));
+        return vo;
 
     }
 
@@ -193,7 +163,7 @@ public class FormStatisticsService extends ShopBaseService {
         return getPageResult(getFeedBackStep(param), param.getCurrentPage(), param.getPageRows(), FormFeedVo.class);
     }
 
-    public SelectConditionStep<Record6<Integer, Integer, Integer, String, Timestamp, String>> getFeedBackStep(FormFeedParam param) {
+    private SelectConditionStep<Record6<Integer, Integer, Integer, String, Timestamp, String>> getFeedBackStep(FormFeedParam param) {
         SelectConditionStep<Record6<Integer, Integer, Integer, String, Timestamp, String>> conditionStep = db().select(fsl.SUBMIT_ID, fsl.PAGE_ID, fsl.USER_ID, fsl.NICK_NAME, fsl.CREATE_TIME, u.MOBILE).from(fsl).leftJoin(u).on(fsl.USER_ID.eq(u.USER_ID)).where(fsl.PAGE_ID.eq(param.getPageId())).and(fsl.SHOP_ID.eq(param.getShopId()));
         if (param.getNickName() != null && !"".equals(param.getNickName())) {
             conditionStep = conditionStep.and(fsl.NICK_NAME.eq(param.getNickName()));
@@ -209,6 +179,7 @@ public class FormStatisticsService extends ShopBaseService {
 
     /**
      * 反馈列表导出
+     * TODO 导出数量控制
      *
      * @param param 导出数据筛选条件
      */
@@ -220,4 +191,112 @@ public class FormStatisticsService extends ShopBaseService {
         return workbook;
     }
 
+    /**
+     * 反馈信息详情
+     *
+     * @param param 表单id和用户id
+     * @return 反馈信息详情列表
+     */
+    public List<FeedBackDetailVo> feedBackDetail(FeedBackDetailParam param) {
+        List<FeedBackDetailVo> list = db().select(fsd.SUBMIT_ID, fsd.MODULE_NAME, fsd.MODULE_TYPE, fsd.MODULE_VALUE, fsd.CUR_IDX).from(fsd).where(fsd.PAGE_ID.eq(param.getPageId())).and(fsd.USER_ID.eq(param.getUserId())).fetchInto(FeedBackDetailVo.class);
+
+        for (FeedBackDetailVo vo : list) {
+            String moduleName = vo.getModuleName();
+            if (!FormConstant.all.containsKey(moduleName)) {
+                continue;
+            }
+            if (FormConstant.special.containsKey(moduleName)) {
+                try {
+                    int curIdx = vo.getCurIdx();
+                    String pageContent = db().select(fp.PAGE_CONTENT).from(fp).where(fp.PAGE_ID.eq(param.getPageId())).fetchOptionalInto(String.class).orElse("");
+                    JsonNode node = MAPPER.readTree(pageContent);
+                    vo.setModuleValueList(findModuleValue(node, curIdx));
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+        return list;
+    }
+
+    private List<String> findModuleValue(JsonNode node, int curIdx) {
+        List<String> resultList = new ArrayList<>();
+        String nodeKey = "c_" + curIdx;
+        log.debug("page_content中module对应的key值为：{}" + nodeKey);
+        JsonNode targetNode = node.get(nodeKey);
+        JsonNode listNode = targetNode.get(SELECT);
+        Iterator<JsonNode> iterator = listNode.elements();
+        while (iterator.hasNext()) {
+            JsonNode next = iterator.next();
+            resultList.add(next.toString());
+        }
+        return resultList;
+    }
+
+    /**
+     * 反馈统计
+     *
+     * @param param 表单id
+     * @return 统计数据返回，只有性别，下拉，选项三项
+     */
+    public FeedBackStatisticsVo feedBackStatistics(FormDetailParam param) {
+        try {
+            FeedBackStatisticsVo vo = db().select(fp.SUBMIT_NUM, fp.IS_FOREVER_VALID, fp.STATE).from(fp).where(fp.PAGE_ID.eq(param.getPageId())).fetchOptionalInto(FeedBackStatisticsVo.class).orElse(new FeedBackStatisticsVo());
+            Integer num = db().select(countDistinct(fsl.USER_ID)).from(fsl).where(fsl.PAGE_ID.eq(param.getPageId())).fetchOptionalInto(Integer.class).orElse(0);
+            vo.setParticipantsNum(num);
+
+            String pageContent = db().select(fp.PAGE_CONTENT).from(fp).where(fp.PAGE_ID.eq(param.getPageId())).fetchOptionalInto(String.class).orElse("");
+            JsonNode node = MAPPER.readTree(pageContent);
+
+            List<FeedBackInnerVo> sexList = new ArrayList<>();
+            List<FeedBackInnerVo> slideList = new ArrayList<>();
+            List<FeedBackInnerVo> chooseList = new ArrayList<>();
+
+            Iterator<JsonNode> iterator = node.elements();
+            while (iterator.hasNext()) {
+                JsonNode next = iterator.next();
+                if (M_SEX.equals(next.get(MODULE_NAME).toString())) {
+                    getSpecialList(next, sexList);
+                }
+                if (M_CHOOSE.equals(next.get(MODULE_NAME).toString())) {
+                    getSpecialList(next, chooseList);
+                }
+                if (M_SLIDE.equals(next.get(MODULE_NAME).toString())) {
+                    getSpecialList(next, slideList);
+                }
+            }
+            vo.setSexList(CompletableFuture.supplyAsync(() -> calPercentage(sexList, M_SEX, param.getPageId(), vo)).get());
+            vo.setSlideList(CompletableFuture.supplyAsync(() -> calPercentage(slideList, M_SLIDE, param.getPageId(), vo)).get());
+            vo.setChooseList(CompletableFuture.supplyAsync(() -> calPercentage(chooseList, M_CHOOSE, param.getPageId(), vo)).get());
+            return vo;
+        } catch (IOException | InterruptedException | ExecutionException e) {
+            log.debug(e.getMessage());
+        }
+        return null;
+    }
+
+    private List<FeedBackInnerVo> calPercentage(List<FeedBackInnerVo> target, String moduleName, Integer pageId, FeedBackStatisticsVo vo) {
+        for (FeedBackInnerVo innerVo : target) {
+            innerVo.setVotes(db().select(countDistinct(fsd.USER_ID)).from(fsd).where(fsd.PAGE_ID.eq(pageId)).and(fsd.MODULE_NAME.eq(moduleName)).and(fsd.MODULE_VALUE.eq(innerVo.getModuleValue())).fetchOptionalInto(Integer.class).orElse(0));
+            innerVo.setPercentage(Double.valueOf(innerVo.getVotes()) / vo.getParticipantsNum());
+        }
+        return target;
+    }
+
+    private void getSpecialList(JsonNode next, List<FeedBackInnerVo> list) {
+        JsonNode listNode = next.get(SELECT);
+        Iterator<JsonNode> it = listNode.elements();
+        int value = 1;
+        while (it.hasNext()) {
+            JsonNode type = it.next();
+            list.add(new FeedBackInnerVo(String.valueOf(value++), type.toString()));
+        }
+    }
+
+    /**
+     * 获取图片，海报，二维码下载地址
+     */
+    public String imgDownloadUrl(ImgDownloadParam param) {
+        return db().select(CODE.QRCODE_IMG).from(CODE).where(CODE.TYPE_URL.eq(param.getTypeUrl())).and(CODE.TYPE.eq(param.getType())).and(CODE.DEL_FLAG.eq(DelFlag.NORMAL.getCode())).fetchAny(CODE.QRCODE_IMG);
+    }
 }

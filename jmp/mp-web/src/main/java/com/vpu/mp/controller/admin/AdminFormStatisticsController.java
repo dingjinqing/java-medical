@@ -34,8 +34,8 @@ public class AdminFormStatisticsController extends AdminBaseController {
      * 查看表单信息详情
      * 已发布的表单只可查看，不可编辑
      *
-     * @param param 使用表单id，店铺id，用户id作为查询条件
-     * @return formpage，formsubmitdetail，formsubmitlist三表汇总表单详细信息
+     * @param param 表单id
+     * @return formpage表单详细信息
      */
     @PostMapping("/api/admin/formstatistics/getformdetailinfo")
     public JsonResult getFormDetailInfo(@RequestBody @Validated FormDetailParam param) {
@@ -49,7 +49,7 @@ public class AdminFormStatisticsController extends AdminBaseController {
      * @param param 表单信息入参
      */
     @PostMapping("/api/admin/formstatistics/addforminfo")
-    public JsonResult addFormInfo(@RequestBody @Validated FormUAParam param) {
+    public JsonResult addFormInfo(@RequestBody @Validated FormAddParam param) {
         shop().formService.addFormInfo(param);
         return success();
     }
@@ -60,7 +60,7 @@ public class AdminFormStatisticsController extends AdminBaseController {
      * @param param 表单信息入参
      */
     @PostMapping("/api/admin/formstatistics/updateforminfo")
-    public JsonResult updateFormInfo(@RequestBody @Validated FormUAParam param) {
+    public JsonResult updateFormInfo(@RequestBody @Validated FormAddParam param) {
         shop().formService.updateFormInfo(param);
         return success();
     }
@@ -110,5 +110,43 @@ public class AdminFormStatisticsController extends AdminBaseController {
     @PostMapping("/api/admin/formstatistics/feedBackList")
     public JsonResult feedBackList(@RequestBody @Validated FormFeedParam param) {
         return success(shop().formService.feedBackList(param));
+    }
+
+    /**
+     * 分享,获取小程序二维码
+     */
+    @PostMapping("/api/admin/formstatistics/shareForm")
+    public JsonResult shareForm(@RequestBody @Validated FormDetailParam param) {
+        return success(shop().formService.shareForm(param));
+    }
+
+    /**
+     * 反馈信息详情
+     *
+     * @param param 表单id和用户id
+     * @return 反馈信息详情列表
+     */
+    @PostMapping("/api/admin/formstatistics/feedBackDetail")
+    public JsonResult feedBackDetail(@RequestBody @Validated FeedBackDetailParam param) {
+        return success(shop().formService.feedBackDetail(param));
+    }
+
+    /**
+     * 反馈统计
+     *
+     * @param param 表单id
+     * @return 统计数据返回，只有性别，下拉，选项三项
+     */
+    @PostMapping("/api/admin/formstatistics/feedBackStatistics")
+    public JsonResult feedBackStatistics(@RequestBody @Validated FormDetailParam param) {
+        return success(shop().formService.feedBackStatistics(param));
+    }
+
+    /**
+     * 分享,获取小程序二维码
+     */
+    @PostMapping("/api/admin/formstatistics/imgDownloadUrl")
+    public JsonResult imgDownloadUrl(@RequestBody @Validated ImgDownloadParam param) {
+        return success(shop().formService.imgDownloadUrl(param));
     }
 }

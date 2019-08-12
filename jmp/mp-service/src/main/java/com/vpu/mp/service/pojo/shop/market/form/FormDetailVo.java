@@ -10,5 +10,5 @@ import lombok.Setter;
  */
 @Getter
 @Setter
-public class FormDetailVo extends FormUAParam {
+public class FormDetailVo extends FormAddParam {
 }

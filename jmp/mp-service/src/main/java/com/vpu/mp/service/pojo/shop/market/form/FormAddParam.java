@@ -4,7 +4,6 @@ import lombok.Data;
 
 import javax.validation.constraints.NotNull;
 import java.sql.Timestamp;
-import java.util.List;
 
 /**
  * @author liufei
@@ -12,7 +11,7 @@ import java.util.List;
  * @description 表单添加/更新实体类
  */
 @Data
-public class FormUAParam {
+public class FormAddParam {
     private Integer pageId;
     @NotNull
     private Integer shopId;
@@ -30,8 +29,4 @@ public class FormUAParam {
     /**反馈数量*/
     @NotNull
     private Integer submitNum;
-    /**Form_List表数据参数*/
-    private FormList formList;
-    /**Form_detail表数据参数*/
-    private List<FormDetail> details;
 }
