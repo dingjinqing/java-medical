@@ -597,3 +597,8 @@ ALTER table b2c_code CHANGE COLUMN flag del_flag tinyint  NOT NULL DEFAULT 0;
 alter table `b2c_mrking_strategy` add column `recommend_sort_id` text comment '指定商家分类可用';
 alter table `b2c_mrking_strategy` modify column `recommend_cat_id` text comment '指定平台分类可用';
 alter table `b2c_mrking_strategy` modify column `act_type` tinyint(1) not null default '0' comment '活动类型，0-全部商品参与活动；1-选中商品参与活动（由商品、平台分类、商家分类、品牌等ID字符串指定）';
+
+-- 活动有礼 - 郑保乐 - 2019-08-12
+ALTER TABLE `b2c_coupon_activity` ADD COLUMN `customize_img_path` varchar(191)  not null default '' comment '活动有礼跳转活动图片路径';
+ALTER TABLE `b2c_coupon_activity` ADD COLUMN `customize_url` varchar(191)  not null default '' comment '活动有礼跳转活动链接';
+ALTER TABLE `b2c_coupon_activity` CHANGE `activity_action` `activity_action` tinyint(1) DEFAULT '1' COMMENT '活动类型：1：活动送券 2：大转盘抽奖 3：跳转自定义链接';
