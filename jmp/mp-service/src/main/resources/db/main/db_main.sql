@@ -335,6 +335,8 @@ create table `b2c_mp_auth_shop` (
   `union_pay_app_id`      varchar(191) not null default '' comment '通联支付子商户appId',
   `union_pay_cus_id`      varchar(191) not null default '' comment '通联支付子商户商户号',
   `union_pay_app_key`     varchar(191) not null default '' comment '通联支付子商户密钥',
+  `fee_type` 			  varchar(191) DEFAULT 'CNY' COMMENT '标价币种，国际支付字段',
+  `merchant_category_code` varchar(191) NOT NULL DEFAULT '' COMMENT 'MCC码，国际支付字段',
   primary key (`app_id`),
   unique key (`shop_id`),
   key (`principal_name`),
