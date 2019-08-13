@@ -191,7 +191,7 @@
               </el-option>
             </el-select>
           </el-form-item>
-          <!-- 商品标签 -->
+          <!-- 商品品牌 -->
           <el-form-item
             label="商品品牌："
             prop="brandName"
@@ -200,12 +200,18 @@
               class="brand"
               @click="showDialog"
             >添加品牌</span>
-
+          </el-form-item>
+          <!-- 商品视频 -->
+          <el-form-item
+            label="商品视频："
+            prop="video"
+          >
+            <span>上传视频仅支持MP4格式。为保障无线端各种网络环境下正常播放，只支持上传大小不超过10M，时长不超过3分钟的视频。</span>
           </el-form-item>
         </el-form>
       </el-collapse-item>
     </el-collapse>
-    <addBrandDialog />
+    <addBrandDialog :dialogVisible.sync="dialogVisible" />
     <el-button @click="handleTest">测试数据</el-button>
   </div>
 </template>
@@ -235,7 +241,8 @@ export default {
         goodsLabels: [],
         sortId: '',
         name: '',
-        brandName: ''
+        brandName: '',
+        video: ''
       },
       rules: {
         goodsName: [
@@ -324,7 +331,8 @@ export default {
         label: 'sortName',
         children: 'children'
       },
-      goodsLabels: []
+      goodsLabels: [],
+      dialogVisible: false
 
     }
   },
@@ -415,7 +423,7 @@ export default {
       }).catch(err => console.log(err))
     },
     showDialog () {
-
+      this.dialogVisible = true
     }
 
   }

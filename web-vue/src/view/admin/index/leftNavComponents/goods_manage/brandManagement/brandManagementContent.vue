@@ -733,6 +733,7 @@ export default {
         'currentPage': 1,
         'pageRows': 20
       }
+      console.log(obj)
       brandAllGetRequest(obj).then((res) => {
         if (res.error === 0) {
           this.trList = res.content.dataList

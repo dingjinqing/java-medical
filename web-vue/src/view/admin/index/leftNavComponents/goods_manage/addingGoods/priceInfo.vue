@@ -12,6 +12,107 @@
         label="商品规格："
         prop=""
       >
+        <el-button
+          v-show="showAddSpec"
+          class="add-spec add_all"
+          @click="handleAddSpec"
+        >添加规格</el-button>
+        <section
+          class="show-spec"
+          v-show="!showAddSpec"
+        >
+          <section class="GoodsSpec">
+            <section class="specName">
+              <span>规格名：</span>
+              <el-tag
+                :key="tag"
+                v-for="tag in tagsList"
+                closable
+                :disable-transitions="false"
+                @close="handleClose(tag)"
+              >
+                {{tag}}
+              </el-tag>
+              <el-input
+                class="input-new-tag"
+                v-if="inputVisible"
+                v-model="inputValue"
+                ref="saveTagInput"
+                size="small"
+                @keyup.enter.native="handleInputConfirm"
+                @blur="handleInputConfirm"
+              >
+              </el-input>
+              <el-button
+                v-else
+                class="button-new-tag"
+                size="small"
+                @click="showInput"
+              >+ New Tag</el-button>
+            </section>
+            <section class="specValName">
+              <span>规格值：</span>
+              <el-tag type="info">标签三</el-tag>
+            </section>
+          </section>
+        </section>
+      </el-form-item>
+      <el-form-item
+        label-width="120px"
+        label="规格价格："
+        prop=""
+      >
+        <section
+          class="show-spec"
+          v-show="!showAddSpec"
+        >
+          <el-table
+            :data="tableData"
+            style="width: 100%"
+          >
+            <template slot="empty">
+
+            </template>
+
+            <el-table-column
+              label=""
+              width="180"
+            >
+            </el-table-column>
+            <el-table-column
+              label="价格（元）"
+              width="180"
+            >
+            </el-table-column>
+            <el-table-column
+              label="成本价格（元）"
+              width="180"
+            >
+            </el-table-column>
+            <el-table-column
+              label="库存"
+              width="180"
+            >
+            </el-table-column>
+            <el-table-column
+              label="规格编码"
+              width="180"
+            >
+            </el-table-column>
+            <el-table-column
+              label="规格图片"
+              width="180"
+            >
+            </el-table-column>
+          </el-table>
+          <section class="batchSetting">
+            <span>批量设置：</span>
+            <el-button type="text">价格</el-button>
+            <el-button type="text">成本价格</el-button>
+            <el-button type="text">库存</el-button>
+            <el-button type="text">规格图片</el-button>
+          </section>
+        </section>
       </el-form-item>
       <el-form-item
         label-width="120px"
@@ -171,7 +272,12 @@ export default {
       },
       rules1: {
 
-      }
+      },
+      showAddSpec: false,
+      tableData: [],
+      tagsList: [],
+      inputVisible: false,
+      inputValue: ''
     }
   },
   methods: {
@@ -183,9 +289,66 @@ export default {
     },
     handleChange1 (val) {
 
+    },
+    handleAddSpec () {
+      this.showAddSpec = false
+    },
+    handleClose (tag) {
+      this.tagsList.splice(this.tagsList.indexOf(tag), 1)
+    },
+    showInput () {
+      this.inputVisible = true
+      this.$nextTick(_ => {
+        this.$refs.saveTagInput.$refs.input.focus()
+      })
+    },
+    handleInputConfirm () {
+      let inputValue = this.inputValue
+      if (inputValue) {
+        this.tagsList.push(inputValue)
+      }
+      this.inputVisible = false
+      this.inputValue = ''
     }
   }
 }
 </script>
 <style scoped>
+.add-spec {
+  background: #fff;
+  color: #333;
+  border: 1px solid #ccc;
+  width: 120px;
+  height: 30px;
+  line-height: 10px;
+}
+.show-spec {
+  border: 1px solid #ccc;
+  padding: 10px;
+  color: #333;
+  min-width: 745px;
+}
+.batchSetting {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+.specName {
+  background-color: #f8f8f8;
+}
+.el-tag + .el-tag {
+  margin-left: 10px;
+}
+.button-new-tag {
+  margin-left: 10px;
+  height: 32px;
+  line-height: 30px;
+  padding-top: 0;
+  padding-bottom: 0;
+}
+.input-new-tag {
+  width: 90px;
+  margin-left: 10px;
+  vertical-align: bottom;
+}
 </style>
