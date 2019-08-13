@@ -1,11 +1,11 @@
 package com.vpu.mp.service.foundation.service;
 
+import com.vpu.mp.service.foundation.database.SqlExcuteListener;
 import lombok.extern.slf4j.Slf4j;
 import org.jooq.ExecuteContext;
 import org.jooq.ExecuteType;
 import org.jooq.Query;
 import org.jooq.UpdateQuery;
-import org.jooq.impl.DefaultExecuteListener;
 
 /**
  * Update SQL 监听器
@@ -15,10 +15,11 @@ import org.jooq.impl.DefaultExecuteListener;
  * @author 郑保乐
  */
 @Slf4j
-public class UpdateListener extends DefaultExecuteListener {
+public class UpdateListener extends SqlExcuteListener {
 
     @Override
     public void start(ExecuteContext ctx) {
+        super.start(ctx);
         ExecuteType type = ctx.type();
         if (type == ExecuteType.WRITE) {
             Query query = ctx.query();
