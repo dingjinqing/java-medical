@@ -4052,3 +4052,63 @@ create table `b2c_user_promotion_language` (
   primary key (`id`),
   key (`user_id`)
 );
+-- 送礼_礼物卡
+-- DROP TABLE IF EXISTS `b2c_gift_cart`;
+CREATE TABLE `b2c_gift_cart` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `gift_id` int(11) NOT NULL COMMENT '礼单ID',
+  `user_id` int(11) NOT NULL COMMENT '用户ID',
+  `product_id` text COLLATE utf8mb4_unicode_ci COMMENT '已选商品，逗号分隔',
+  `goods_number` text COLLATE utf8mb4_unicode_ci COMMENT '已选商品数，逗号分隔',
+  `gift_type` tinyint(1) NOT NULL DEFAULT '1' COMMENT '赠送方式：1:直接送礼 2:先到先得 3:定时开奖',
+  `draw_time` datetime DEFAULT NULL COMMENT '开奖时间',
+  `message` varchar(200) COLLATE utf8mb4_unicode_ci DEFAULT NULL COMMENT '祝福语',
+  `status` tinyint(1) NOT NULL DEFAULT '0',
+  `create_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
+  `update_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '最后修改时间',
+  PRIMARY KEY (`id`),
+  KEY `gift_id` (`gift_id`),
+  KEY `user_id` (`user_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+-- 送礼_活动主表
+-- DROP TABLE IF EXISTS `b2c_gift_giving_activity`;
+CREATE TABLE `b2c_gift_giving_activity` (
+  `id` mediumint(8) unsigned NOT NULL AUTO_INCREMENT,
+  `act_name` varchar(120) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '' COMMENT '活动名称',
+  `start_time` datetime NOT NULL COMMENT '活动起始时间',
+  `end_time` datetime NOT NULL COMMENT '活动截止时间',
+  `level` smallint(6) NOT NULL DEFAULT '0' COMMENT '优先级',
+  `due_time_type` tinyint(1) DEFAULT '0' COMMENT '是否永久有效：0否，1是',
+  `act_type_first_served` tinyint(1) DEFAULT '0' COMMENT '活动玩法：先到先得 1开启',
+  `act_type_timing_open` tinyint(1) DEFAULT '0' COMMENT '活动玩法：定时开奖 1开启',
+  `act_type_direct_giving` tinyint(1) DEFAULT '0' COMMENT '活动玩法：直接送礼 1开启',
+  `recommend_goods_id` text COLLATE utf8mb4_unicode_ci COMMENT '指定商品可用',
+  `status` tinyint(1) DEFAULT '0' COMMENT '活动状态：1启用',
+  `del_flag` tinyint(1) DEFAULT '0' COMMENT '删除标识：0未删除，1已删除',
+  `create_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
+  `update_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '最后修改时间',
+  PRIMARY KEY (`id`),
+  KEY `act_name` (`act_name`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+-- 送礼_记录表
+-- DROP TABLE IF EXISTS `b2c_give_gift_receive`;
+CREATE TABLE `b2c_give_gift_receive` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `main_order_sn` varchar(50) COLLATE utf8mb4_unicode_ci NOT NULL COMMENT '主单号',
+  `gift_id` int(11) NOT NULL COMMENT '送礼ID',
+  `gift_cart_id` int(11) NOT NULL COMMENT '送礼购物车ID',
+  `user_id` int(11) NOT NULL COMMENT '用户ID',
+  `order_sn` varchar(50) COLLATE utf8mb4_unicode_ci DEFAULT NULL COMMENT '订单号',
+  `product_id` int(11) NOT NULL COMMENT '规格ID',
+  `address_id` int(11) DEFAULT NULL COMMENT '用户地址ID',
+  `status` tinyint(1) DEFAULT '0' COMMENT '0：未提交地址 1：已送礼 2：待开奖 3：未抢到',
+  `status_name` varchar(50) COLLATE utf8mb4_unicode_ci DEFAULT NULL COMMENT '状态名',
+  `create_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
+  `update_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '最后修改时间',
+  PRIMARY KEY (`id`),
+  KEY `gift_id` (`gift_id`),
+  KEY `gift_cart_id` (`gift_cart_id`),
+  KEY `user_id` (`user_id`),
+  KEY `order_sn` (`order_sn`),
+  KEY `main_order_sn` (`main_order_sn`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
