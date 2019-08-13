@@ -1,7 +1,8 @@
 <template>
   <div class="main">
     <Header />
-    <router-view />
+    <router-view v-if="!defaultFlag" />
+    <Main v-else />
     <Footer />
     <Contact />
   </div>
@@ -10,10 +11,30 @@
 import Header from '@/view/index/header'
 import Footer from '@/view/index/footer'
 import Contact from '@/view/index/contact'
+import Main from '@/view/index/main'
 export default {
-  components: { Header, Footer, Contact },
+  components: { Header, Footer, Contact, Main },
   data () {
     return {
+      defaultFlag: true
+    }
+  },
+  watch: {
+    '$route' (to) {
+      console.log(to)
+      let arr = Object.keys(to.meta)
+
+      if (arr.length === 0) {
+        this.defaultFlag = false
+      } else {
+        this.defaultFlag = true
+      }
+    }
+  },
+  mounted () {
+    console.log(this.$route)
+    if (this.$route.meta.defaultTurn) {
+      this.defaultFlag = this.$route.meta.defaultTurn
     }
   },
   beforeRouteEnter (to, from, next) {

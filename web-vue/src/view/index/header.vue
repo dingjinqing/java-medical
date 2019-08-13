@@ -148,6 +148,14 @@ export default {
       username: ''
     }
   },
+  watch: {
+    $route (to) {
+      console.log(to)
+      if (to.name === 'newsList') {
+        this.navshow()
+      }
+    }
+  },
   mounted () {
     this.$http.$on('to_rej', () => {
       this.navshow()
@@ -219,7 +227,7 @@ export default {
         case 1:
           this.activeIndex = 1
           this.$router.push({
-            name: 'indexHomeMain'
+            path: '/'
           })
           break
         case 2:

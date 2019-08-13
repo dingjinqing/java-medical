@@ -128,6 +128,7 @@ p {
   flex: 1;
   display: flex;
   flex-direction: column;
+  overflow-x: hidden;
   /* overflow-y: auto; */
 }
 .hiddleContainer {

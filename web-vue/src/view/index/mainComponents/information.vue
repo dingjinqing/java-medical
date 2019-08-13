@@ -78,7 +78,7 @@ export default {
   methods: {
     // 跳转到新闻页面
     to_news (index, articleId) {
-      console.log(this.newData)
+      console.log(index, this.newData)
       console.log(articleId)
       if (index === 0) {
         this.$router.push({

@@ -16,7 +16,10 @@ const baseRoutes = [
 
   {
     path: '/',
-    redirect: '/index/home/main'
+    component: () => import('@/view/index/home'),
+    meta: {
+      defaultTurn: true
+    }
   },
   {
     path: '/index/login',
