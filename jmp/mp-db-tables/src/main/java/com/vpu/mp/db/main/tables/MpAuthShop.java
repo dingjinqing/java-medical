@@ -41,7 +41,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class MpAuthShop extends TableImpl<MpAuthShopRecord> {
 
-    private static final long serialVersionUID = -625136855;
+    private static final long serialVersionUID = -1667883129;
 
     /**
      * The reference instance of <code>mini_main.b2c_mp_auth_shop</code>
@@ -252,9 +252,9 @@ public class MpAuthShop extends TableImpl<MpAuthShopRecord> {
     public final TableField<MpAuthShopRecord, String> LINK_OFFICIAL_APP_ID = createField("link_official_app_id", org.jooq.impl.SQLDataType.VARCHAR(191).nullable(false), this, "关联公众号appId，用于发送模板消息");
 
     /**
-     * The column <code>mini_main.b2c_mp_auth_shop.is_sub_merchant</code>. 子商户模式,0：非子商户 1：微铺宝子商户 2：通联支付子商户
+     * The column <code>mini_main.b2c_mp_auth_shop.is_sub_merchant</code>. 子商户模式,0：非子商户 1：微铺宝子商户 2：通联支付子商户,3: 微信国际支付
      */
-    public final TableField<MpAuthShopRecord, Byte> IS_SUB_MERCHANT = createField("is_sub_merchant", org.jooq.impl.SQLDataType.TINYINT.nullable(false).defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.TINYINT)), this, "子商户模式,0：非子商户 1：微铺宝子商户 2：通联支付子商户");
+    public final TableField<MpAuthShopRecord, Byte> IS_SUB_MERCHANT = createField("is_sub_merchant", org.jooq.impl.SQLDataType.TINYINT.nullable(false).defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.TINYINT)), this, "子商户模式,0：非子商户 1：微铺宝子商户 2：通联支付子商户,3: 微信国际支付");
 
     /**
      * The column <code>mini_main.b2c_mp_auth_shop.union_pay_app_id</code>. 通联支付子商户appId
@@ -270,6 +270,16 @@ public class MpAuthShop extends TableImpl<MpAuthShopRecord> {
      * The column <code>mini_main.b2c_mp_auth_shop.union_pay_app_key</code>. 通联支付子商户密钥
      */
     public final TableField<MpAuthShopRecord, String> UNION_PAY_APP_KEY = createField("union_pay_app_key", org.jooq.impl.SQLDataType.VARCHAR(191).nullable(false).defaultValue(org.jooq.impl.DSL.inline("", org.jooq.impl.SQLDataType.VARCHAR)), this, "通联支付子商户密钥");
+
+    /**
+     * The column <code>mini_main.b2c_mp_auth_shop.fee_type</code>. 标价币种，国际支付字段
+     */
+    public final TableField<MpAuthShopRecord, String> FEE_TYPE = createField("fee_type", org.jooq.impl.SQLDataType.VARCHAR(191).defaultValue(org.jooq.impl.DSL.inline("CNY", org.jooq.impl.SQLDataType.VARCHAR)), this, "标价币种，国际支付字段");
+
+    /**
+     * The column <code>mini_main.b2c_mp_auth_shop.merchant_category_code</code>. MCC码，国际支付字段
+     */
+    public final TableField<MpAuthShopRecord, String> MERCHANT_CATEGORY_CODE = createField("merchant_category_code", org.jooq.impl.SQLDataType.VARCHAR(191).nullable(false).defaultValue(org.jooq.impl.DSL.inline("", org.jooq.impl.SQLDataType.VARCHAR)), this, "MCC码，国际支付字段");
 
     /**
      * Create a <code>mini_main.b2c_mp_auth_shop</code> table reference
