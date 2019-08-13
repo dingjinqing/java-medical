@@ -6,16 +6,26 @@ import static com.vpu.mp.db.shop.tables.User.USER;
 import static com.vpu.mp.db.shop.tables.UserAccount.USER_ACCOUNT;
 
 import java.math.BigDecimal;
+import java.sql.Timestamp;
+
+import javax.validation.Valid;
+
+import org.jooq.Record4;
+import org.jooq.Record6;
+import org.jooq.SelectConditionStep;
+import org.jooq.tools.StringUtils;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.util.StringUtils;
 
 import com.vpu.mp.db.shop.tables.records.UserRecord;
 import com.vpu.mp.service.foundation.service.ShopBaseService;
 import com.vpu.mp.service.foundation.util.DateUtil;
+import com.vpu.mp.service.foundation.util.PageResult;
 import com.vpu.mp.service.pojo.shop.auth.AdminTokenAuthInfo;
+import com.vpu.mp.service.pojo.shop.member.account.AccountPageListParam;
 import com.vpu.mp.service.pojo.shop.member.account.AccountParam;
+import com.vpu.mp.service.pojo.shop.member.account.AccountPageListVo;
 
 /**
  * @author 黄壮壮 2019-07-18 16:47
@@ -130,6 +140,49 @@ public class AccountService extends ShopBaseService {
 			return BigDecimal.ZERO;
 		}else {
 			return user.getAccount();
+		}
+	}
+
+	
+	/**
+	 * 分页查询会员用户余额详情
+	 */
+	public PageResult<AccountPageListVo> getPageListOfAccountDetails(AccountPageListParam param) {
+		
+
+		
+		SelectConditionStep<Record6<String, String, String, BigDecimal, Timestamp, String>> select = db().select(USER.USERNAME,USER.MOBILE,USER_ACCOUNT.ORDER_SN,USER_ACCOUNT.AMOUNT,USER_ACCOUNT.CREATE_TIME,USER_ACCOUNT.REMARK)
+		.from(USER_ACCOUNT.join(USER).on(USER.USER_ID.eq(USER_ACCOUNT.USER_ID))).where(USER_ACCOUNT.USER_ID.eq(param.getUserId()));
+		
+		
+		/** 查询条件的其他选项 */
+		buildOptions(select,param);
+		
+		/** 以时间降序 */
+		select.orderBy(USER_ACCOUNT.CREATE_TIME.desc());
+		return getPageResult(select, param.getCurrentPage(), param.getPageRows(), AccountPageListVo.class);
+	}
+
+	/**
+	 * 分页查询用户余额详情时其他查询条件
+	 */
+	private void buildOptions(SelectConditionStep<Record6<String, String, String, BigDecimal, Timestamp, String>> select,
+			AccountPageListParam param) {
+		logger().info("正在构建查询条件");
+		
+		/** 订单号 */
+		if(!StringUtils.isEmpty(param.getOrderSn())) {
+			select.and(USER_ACCOUNT.ORDER_SN.eq(param.getOrderSn()));
+		}
+		
+		/** 时间范围 */
+		/** 开始时间 */
+		if(param.getStartTime() != null) {
+			select.and(USER_ACCOUNT.CREATE_TIME.ge(param.getStartTime()));
+		}
+		/** 结束时间 */
+		if(param.getEndTime() != null) {
+			select.and(USER_ACCOUNT.CREATE_TIME.le(param.getEndTime()));
 		}
 	}
 

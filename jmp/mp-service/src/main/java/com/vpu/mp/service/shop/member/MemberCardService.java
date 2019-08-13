@@ -629,6 +629,7 @@ public class MemberCardService extends ShopBaseService {
 			}
 		}
 		
+		
 		/** 查询所有的会员卡 */
 		Result<MemberCardRecord> memberCardList = db().selectFrom(MEMBER_CARD).where(MEMBER_CARD.ID.in(param.getCardIdList())).fetch();
 		logger.info("一共查询到: "+memberCardList.size()+" 张会员卡");
@@ -656,7 +657,6 @@ public class MemberCardService extends ShopBaseService {
 		
 		
 		/** insert */
-		//InsertValuesStepN<UserCardRecord>  insert = db().insertInto(USER_CARD).columns(USER_CARD.fields());
 		/**USER_CARD.SURPLUS-门店兑换次数，USER_CARD.EXCHANG_SURPLUS-商品兑换次数*/
 		InsertValuesStep7<UserCardRecord, Integer, Integer, String, Timestamp, Integer, Timestamp, Integer> insert = db().insertInto(USER_CARD)
 				 						.columns(USER_CARD.USER_ID,USER_CARD.CARD_ID,USER_CARD.CARD_NO,USER_CARD.EXPIRE_TIME,
@@ -665,9 +665,6 @@ public class MemberCardService extends ShopBaseService {
 		
 		for(int i = 0;i<sizeOfUserId;i++) {
 			for(int j = 0;j<sizeOfCardId;j++) {
-				/*
-				insert into `b2c_user_card` (`user_id`, `card_id`, `add_time`, `card_no`, `expire_time`, `surplus`, `activation_time`)
-				*/
 				MemberCardRecord memberCard = memberCardList.get(j);
 				insert.values(userIdList.get(i),cardIdList.get(j),cardNoList.poll(),memberCard.getEndTime(),memberCard.getCount(),Timestamp.valueOf(now),memberCard.getExchangCount());
 			}
@@ -689,7 +686,6 @@ public class MemberCardService extends ShopBaseService {
 			}
 		}
 		
-		//tmpData.stream().forEach(logger::info);
 		saas().getShopApp(getShopId()).record.insertRecord(Arrays.asList(new Integer[] { RecordContentTemplate.MEMBER_CARD_SEND.code }), tmpData.stream().toArray(String[]::new));
 	}
 	
