@@ -228,7 +228,9 @@ public class Keys {
     public static final Identity<OrderGoodsRebateRecord, Integer> IDENTITY_ORDER_GOODS_REBATE = Identities0.IDENTITY_ORDER_GOODS_REBATE;
     public static final Identity<PromotionLanguageRecord, Integer> IDENTITY_PROMOTION_LANGUAGE = Identities0.IDENTITY_PROMOTION_LANGUAGE;
     public static final Identity<UserPromotionLanguageRecord, Integer> IDENTITY_USER_PROMOTION_LANGUAGE = Identities0.IDENTITY_USER_PROMOTION_LANGUAGE;
-
+    public static final Identity<GiftCartRecord, Integer> IDENTITY_GIFT_CART = Identities0.IDENTITY_GIFT_CART;
+    public static final Identity<GiveGiftReceiveRecord, Integer> IDENTITY_GIVE_GIFT_RECEIVE = Identities0.IDENTITY_GIVE_GIFT_RECEIVE;
+    public static final Identity<GiftGivingActivityRecord, Integer> IDENTITY_GIFT_GIVING_ACTIVITY = Identities0.IDENTITY_GIFT_GIVING_ACTIVITY;
     // -------------------------------------------------------------------------
     // UNIQUE and PRIMARY KEY definitions
     // -------------------------------------------------------------------------
@@ -449,6 +451,9 @@ public class Keys {
     public static final UniqueKey<OrderGoodsRebateRecord> KEY_B2C_ORDER_GOODS_REBATE_PRIMARY = UniqueKeys0.KEY_B2C_ORDER_GOODS_REBATE_PRIMARY;
     public static final UniqueKey<PromotionLanguageRecord> KEY_B2C_PROMOTION_LANGUAGE_PRIMARY = UniqueKeys0.KEY_B2C_PROMOTION_LANGUAGE_PRIMARY;
     public static final UniqueKey<UserPromotionLanguageRecord> KEY_B2C_USER_PROMOTION_LANGUAGE_PRIMARY = UniqueKeys0.KEY_B2C_USER_PROMOTION_LANGUAGE_PRIMARY;
+    public static final UniqueKey<GiftCartRecord> KEY_B2C_GIFT_CART_PRIMARY = UniqueKeys0.KEY_B2C_GIFT_CART_PRIMARY;
+    public static final UniqueKey<GiveGiftReceiveRecord> KEY_B2C_GIVE_GIFT_RECEIVE_PRIMARY = UniqueKeys0.KEY_B2C_GIVE_GIFT_RECEIVE_PRIMARY;
+    public static final UniqueKey<GiftGivingActivityRecord> KEY_B2C_GIFT_GIVING_ACTIVITY_PRIMARY = UniqueKeys0.KEY_B2C_GIFT_GIVING_ACTIVITY_PRIMARY;
 
     // -------------------------------------------------------------------------
     // FOREIGN KEY definitions
@@ -649,7 +654,9 @@ public class Keys {
         public static Identity<OrderGoodsRebateRecord, Integer> IDENTITY_ORDER_GOODS_REBATE = Internal.createIdentity(OrderGoodsRebate.ORDER_GOODS_REBATE, OrderGoodsRebate.ORDER_GOODS_REBATE.REBATE_ID);
         public static Identity<PromotionLanguageRecord, Integer> IDENTITY_PROMOTION_LANGUAGE = Internal.createIdentity(PromotionLanguage.PROMOTION_LANGUAGE, PromotionLanguage.PROMOTION_LANGUAGE.ID);
         public static Identity<UserPromotionLanguageRecord, Integer> IDENTITY_USER_PROMOTION_LANGUAGE = Internal.createIdentity(UserPromotionLanguage.USER_PROMOTION_LANGUAGE, UserPromotionLanguage.USER_PROMOTION_LANGUAGE.ID);
-
+        public static Identity<GiftCartRecord, Integer> IDENTITY_GIFT_CART = Internal.createIdentity(GiftCart.GIFT_CART, GiftCart.GIFT_CART.ID);
+        public static Identity<GiveGiftReceiveRecord, Integer> IDENTITY_GIVE_GIFT_RECEIVE = Internal.createIdentity(GiveGiftReceive.GIVE_GIFT_RECEIVE, GiveGiftReceive.GIVE_GIFT_RECEIVE.ID);
+        public static Identity<GiftGivingActivityRecord, Integer> IDENTITY_GIFT_GIVING_ACTIVITY = Internal.createIdentity(GiftGivingActivity.GIFT_GIVING_ACTIVITY, GiftGivingActivity.GIFT_GIVING_ACTIVITY.ID);
     }
 
     private static class UniqueKeys0 {
@@ -870,6 +877,8 @@ public class Keys {
         public static final UniqueKey<OrderGoodsRebateRecord> KEY_B2C_ORDER_GOODS_REBATE_PRIMARY = Internal.createUniqueKey(OrderGoodsRebate.ORDER_GOODS_REBATE, "KEY_b2c_order_goods_rebate_PRIMARY", OrderGoodsRebate.ORDER_GOODS_REBATE.REBATE_ID);
         public static final UniqueKey<PromotionLanguageRecord> KEY_B2C_PROMOTION_LANGUAGE_PRIMARY = Internal.createUniqueKey(PromotionLanguage.PROMOTION_LANGUAGE, "KEY_b2c_promotion_language_PRIMARY", PromotionLanguage.PROMOTION_LANGUAGE.ID);
         public static final UniqueKey<UserPromotionLanguageRecord> KEY_B2C_USER_PROMOTION_LANGUAGE_PRIMARY = Internal.createUniqueKey(UserPromotionLanguage.USER_PROMOTION_LANGUAGE, "KEY_b2c_user_promotion_language_PRIMARY", UserPromotionLanguage.USER_PROMOTION_LANGUAGE.ID);
-
+        public static final UniqueKey<GiftCartRecord> KEY_B2C_GIFT_CART_PRIMARY = Internal.createUniqueKey(GiftCart.GIFT_CART, "KEY_b2c_gift_cart_PRIMARY", GiftCart.GIFT_CART.ID);
+        public static final UniqueKey<GiveGiftReceiveRecord> KEY_B2C_GIVE_GIFT_RECEIVE_PRIMARY = Internal.createUniqueKey(GiveGiftReceive.GIVE_GIFT_RECEIVE, "KEY_b2c_give_gift_receive_PRIMARY", GiveGiftReceive.GIVE_GIFT_RECEIVE.ID);
+        public static final UniqueKey<GiftGivingActivityRecord> KEY_B2C_GIFT_GIVING_ACTIVITY_PRIMARY = Internal.createUniqueKey(GiftGivingActivity.GIFT_GIVING_ACTIVITY, "KEY_b2c_gift_giving_activity_PRIMARY", GiftGivingActivity.GIFT_GIVING_ACTIVITY.ID);
     }
 }

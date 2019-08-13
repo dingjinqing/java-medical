@@ -428,7 +428,17 @@ public class Indexes {
     public static final Index PROMOTION_LANGUAGE_PRIMARY = Indexes0.PROMOTION_LANGUAGE_PRIMARY;
     public static final Index USER_PROMOTION_LANGUAGE_PRIMARY = Indexes0.USER_PROMOTION_LANGUAGE_PRIMARY;
     public static final Index USER_PROMOTION_LANGUAGE_USER_ID = Indexes0.USER_PROMOTION_LANGUAGE_USER_ID;
-
+    public static final Index GIFT_CART_GIFT_ID = Indexes0.GIFT_CART_GIFT_ID;
+    public static final Index GIFT_CART_PRIMARY = Indexes0.GIFT_CART_PRIMARY;
+    public static final Index GIFT_CART_USER_ID = Indexes0.GIFT_CART_USER_ID;
+    public static final Index GIVE_GIFT_RECEIVE_GIFT_CART_ID = Indexes0.GIVE_GIFT_RECEIVE_GIFT_CART_ID;
+    public static final Index GIVE_GIFT_RECEIVE_GIFT_ID = Indexes0.GIVE_GIFT_RECEIVE_GIFT_ID;
+    public static final Index GIVE_GIFT_RECEIVE_MAIN_ORDER_SN = Indexes0.GIVE_GIFT_RECEIVE_MAIN_ORDER_SN;
+    public static final Index GIVE_GIFT_RECEIVE_ORDER_SN = Indexes0.GIVE_GIFT_RECEIVE_ORDER_SN;
+    public static final Index GIVE_GIFT_RECEIVE_PRIMARY = Indexes0.GIVE_GIFT_RECEIVE_PRIMARY;
+    public static final Index GIVE_GIFT_RECEIVE_USER_ID = Indexes0.GIVE_GIFT_RECEIVE_USER_ID;
+    public static final Index GIFT_GIVING_ACTIVITY_ACT_NAME = Indexes0.GIFT_GIVING_ACTIVITY_ACT_NAME;
+    public static final Index GIFT_GIVING_ACTIVITY_PRIMARY = Indexes0.GIFT_GIVING_ACTIVITY_PRIMARY;
     // -------------------------------------------------------------------------
     // [#1459] distribute members to avoid static initialisers > 64kb
     // -------------------------------------------------------------------------
@@ -833,5 +843,16 @@ public class Indexes {
         public static Index PROMOTION_LANGUAGE_PRIMARY = Internal.createIndex("PRIMARY", PromotionLanguage.PROMOTION_LANGUAGE, new OrderField[] { PromotionLanguage.PROMOTION_LANGUAGE.ID }, true);
         public static Index USER_PROMOTION_LANGUAGE_PRIMARY = Internal.createIndex("PRIMARY", UserPromotionLanguage.USER_PROMOTION_LANGUAGE, new OrderField[] { UserPromotionLanguage.USER_PROMOTION_LANGUAGE.ID }, true);
         public static Index USER_PROMOTION_LANGUAGE_USER_ID = Internal.createIndex("user_id", UserPromotionLanguage.USER_PROMOTION_LANGUAGE, new OrderField[] { UserPromotionLanguage.USER_PROMOTION_LANGUAGE.USER_ID }, false);
-    }
+        public static Index GIFT_CART_GIFT_ID = Internal.createIndex("gift_id", GiftCart.GIFT_CART, new OrderField[] { GiftCart.GIFT_CART.GIFT_ID }, false);
+        public static Index GIFT_CART_PRIMARY = Internal.createIndex("PRIMARY", GiftCart.GIFT_CART, new OrderField[] { GiftCart.GIFT_CART.ID }, true);
+        public static Index GIFT_CART_USER_ID = Internal.createIndex("user_id", GiftCart.GIFT_CART, new OrderField[] { GiftCart.GIFT_CART.USER_ID }, false);
+        public static Index GIVE_GIFT_RECEIVE_GIFT_CART_ID = Internal.createIndex("gift_cart_id", GiveGiftReceive.GIVE_GIFT_RECEIVE, new OrderField[] { GiveGiftReceive.GIVE_GIFT_RECEIVE.GIFT_CART_ID }, false);
+        public static Index GIVE_GIFT_RECEIVE_GIFT_ID = Internal.createIndex("gift_id", GiveGiftReceive.GIVE_GIFT_RECEIVE, new OrderField[] { GiveGiftReceive.GIVE_GIFT_RECEIVE.GIFT_ID }, false);
+        public static Index GIVE_GIFT_RECEIVE_MAIN_ORDER_SN = Internal.createIndex("main_order_sn", GiveGiftReceive.GIVE_GIFT_RECEIVE, new OrderField[] { GiveGiftReceive.GIVE_GIFT_RECEIVE.MAIN_ORDER_SN }, false);
+        public static Index GIVE_GIFT_RECEIVE_ORDER_SN = Internal.createIndex("order_sn", GiveGiftReceive.GIVE_GIFT_RECEIVE, new OrderField[] { GiveGiftReceive.GIVE_GIFT_RECEIVE.ORDER_SN }, false);
+        public static Index GIVE_GIFT_RECEIVE_PRIMARY = Internal.createIndex("PRIMARY", GiveGiftReceive.GIVE_GIFT_RECEIVE, new OrderField[] { GiveGiftReceive.GIVE_GIFT_RECEIVE.ID }, true);
+        public static Index GIVE_GIFT_RECEIVE_USER_ID = Internal.createIndex("user_id", GiveGiftReceive.GIVE_GIFT_RECEIVE, new OrderField[] { GiveGiftReceive.GIVE_GIFT_RECEIVE.USER_ID }, false);
+        public static Index GIFT_GIVING_ACTIVITY_ACT_NAME = Internal.createIndex("act_name", GiftGivingActivity.GIFT_GIVING_ACTIVITY, new OrderField[] { GiftGivingActivity.GIFT_GIVING_ACTIVITY.ACT_NAME }, false);
+        public static Index GIFT_GIVING_ACTIVITY_PRIMARY = Internal.createIndex("PRIMARY", GiftGivingActivity.GIFT_GIVING_ACTIVITY, new OrderField[] { GiftGivingActivity.GIFT_GIVING_ACTIVITY.ID }, true);
+        }
 }

@@ -6,7 +6,7 @@ package com.vpu.mp.db.shop.tables;
 
 import com.vpu.mp.db.shop.Indexes;
 import com.vpu.mp.db.shop.Keys;
-import com.vpu.mp.db.shop.MiniShop_6797286;
+import com.vpu.mp.db.shop.MiniShop_471752;
 import com.vpu.mp.db.shop.tables.records.GiftCartRecord;
 
 import java.sql.Timestamp;
@@ -150,7 +150,7 @@ public class GiftCart extends TableImpl<GiftCartRecord> {
      */
     @Override
     public Schema getSchema() {
-        return MiniShop_6797286.MINI_SHOP_6797286;
+        return MiniShop_471752.MINI_SHOP_471752;
     }
 
     /**
