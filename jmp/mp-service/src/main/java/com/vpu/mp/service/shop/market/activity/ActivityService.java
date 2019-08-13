@@ -8,17 +8,22 @@ import com.vpu.mp.service.foundation.util.Util;
 import com.vpu.mp.service.pojo.shop.market.activity.ActivityListParam;
 import com.vpu.mp.service.pojo.shop.market.activity.ActivityListVo;
 import com.vpu.mp.service.pojo.shop.market.activity.ActivityParam;
+import org.jooq.Record1;
 import org.jooq.SelectConditionStep;
+import org.jooq.UpdateSetMoreStep;
+import org.jooq.impl.DSL;
 import org.springframework.stereotype.Service;
 import org.springframework.util.Assert;
 
 import java.sql.Timestamp;
+import java.util.Optional;
 
+import static com.vpu.mp.service.foundation.data.JsonResultMessage.COUPON_ACTIVITY_TIME_RANGE_CONFLICT;
 import static com.vpu.mp.service.pojo.shop.market.activity.ActivityListParam.*;
 import static com.vpu.mp.service.pojo.shop.market.activity.ActivityListVo.*;
 
 /**
- * 活动有礼
+ * 开屏有礼（活动有礼）
  *
  * @author 郑保乐
  */
@@ -120,12 +125,15 @@ public class ActivityService extends ShopBaseService {
      */
     public void addActivity(ActivityParam param) {
         validateParam(param);
+        validateTimeRange(param);
         String couponId = "";
+        String title = "";
         Byte bgAction = 1;
         switch (param.getType()) {
             case COUPON:
                 couponId = Util.listToString(param.getCouponId());
                 bgAction = param.getBgAction();
+                title = param.getTitle();
                 break;
             case DRAW:
                 couponId = String.valueOf(param.getActivityId());
@@ -135,7 +143,7 @@ public class ActivityService extends ShopBaseService {
             TABLE.START_DATE, TABLE.END_DATE, TABLE.MRKING_VOUCHER_ID, TABLE.TITLE, TABLE.STATUS,
             TABLE.CUSTOMIZE_IMG_PATH, TABLE.CUSTOMIZE_URL)
             .values(param.getName(), param.getAction(), param.getType(), bgAction, param.getStartDate(),
-                param.getEndDate(), couponId, param.getTitle(), ABLE, param.getCustomizeImgUrl(),
+                param.getEndDate(), couponId, title, ABLE, param.getCustomizeImgUrl(),
                 param.getCustomizePagePath()).execute();
     }
 
@@ -161,5 +169,82 @@ public class ActivityService extends ShopBaseService {
             default:
                 throw new IllegalArgumentException("Unexpected type: " + type);
         }
+    }
+
+    /**
+     * 修改活动
+     */
+    public void updateActivity(ActivityParam param) {
+        validateParam(param);
+        validateTimeRange(param, true);
+        ActivityListVo vo = getActivity(param.getId()).fetchOneInto(ActivityListVo.class);
+        byte status = getStatusOf(vo);
+        if (DISABLED == status) {
+            throw new IllegalStateException("Activity has been disabled");
+        }
+        // 更新
+        UpdateSetMoreStep<CouponActivityRecord> update = shopDb().update(TABLE).set(TABLE.STATUS, vo.getStatus());
+        // 活动名称
+        update.set(TABLE.NAME, param.getName());
+        if (ONGOING == status) {
+            // 宣传语
+            update.set(TABLE.TITLE, Optional.ofNullable(param.getTitle()).orElse(""));
+        } else if (NOT_STARTED == status) {
+            // 触发条件
+            update.set(TABLE.ACTION, param.getAction());
+            // 背景图
+            update.set(TABLE.BG_ACTION, Optional.ofNullable(param.getBgAction()).orElse((byte) 1));
+            // 自定义图片
+            update.set(TABLE.CUSTOMIZE_IMG_PATH, param.getCustomizeImgUrl());
+            // 自定义链接
+            update.set(TABLE.CUSTOMIZE_URL, param.getCustomizePagePath());
+            // 优惠券、抽奖活动
+            String mrkingVoucherId = "";
+            switch (param.getType()) {
+                case COUPON:
+                    mrkingVoucherId = Util.listToString(param.getCouponId());
+                    break;
+                case DRAW:
+                    mrkingVoucherId = String.valueOf(param.getActivityId());
+                    break;
+            }
+            update.set(TABLE.MRKING_VOUCHER_ID, mrkingVoucherId);
+            // 活动时间范围
+            update.set(TABLE.START_DATE, param.getStartDate());
+            update.set(TABLE.END_DATE, param.getEndDate());
+        }
+        update.where(TABLE.ID.eq(param.getId()));
+        update.execute();
+    }
+
+    /**
+     * 检查该时段内是否有其它开屏有礼活动
+     */
+    private void validateTimeRange(ActivityParam param) {
+        validateTimeRange(param, false);
+    }
+
+    /**
+     * 检查该时段内是否有其它开屏有礼活动
+     */
+    private void validateTimeRange(ActivityParam param, boolean update) {
+        Timestamp startDate = param.getStartDate();
+        Timestamp endDate = param.getEndDate();
+        SelectConditionStep<Record1<Integer>> condition = DSL.select(TABLE.ID).from(TABLE)
+            .where(TABLE.STATUS.eq(ABLE).and(TABLE.START_DATE.ge(startDate)).and(TABLE.END_DATE.le(endDate)));
+        if (update) {
+            condition.and(TABLE.ID.ne(param.getId()));
+        }
+        boolean exists = shopDb().fetchExists(condition);
+        if (exists) {
+            throw new IllegalArgumentException(COUPON_ACTIVITY_TIME_RANGE_CONFLICT);
+        }
+    }
+
+    /**
+     * 获取活动
+     */
+    private SelectConditionStep<CouponActivityRecord> getActivity(Integer id) {
+        return shopDb().selectFrom(TABLE).where(TABLE.ID.eq(id));
     }
 }

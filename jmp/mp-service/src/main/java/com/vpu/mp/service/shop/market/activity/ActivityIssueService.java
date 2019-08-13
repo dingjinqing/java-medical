@@ -22,7 +22,7 @@ import static java.lang.String.format;
 import static org.apache.commons.lang3.StringUtils.isNotEmpty;
 
 /**
- * 发放明细
+ * 开屏有礼 - 优惠券发放明细
  *
  * @author 郑保乐
  */

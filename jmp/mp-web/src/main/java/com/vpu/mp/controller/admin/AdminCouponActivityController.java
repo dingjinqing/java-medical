@@ -62,9 +62,22 @@ public class AdminCouponActivityController extends AdminBaseController {
     }
 
     /**
+     * todo 活动修改 - 明细
+     */
+
+    /**
+     * todo 活动修改 - 更新
+     */
+    @PostMapping("/update")
+    public JsonResult updateActivity(@RequestBody @Valid ActivityParam param) {
+        shop().activity.updateActivity(param);
+        return success();
+    }
+
+    /**
      * 发放明细
      */
-    @PostMapping("/detail")
+    @PostMapping("/issue_detail")
     public JsonResult issueDetail(@RequestBody ActivityIssueListParam param) {
         return success(shop().issue.getIssuePageList(param));
     }

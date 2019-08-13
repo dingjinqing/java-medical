@@ -24,6 +24,7 @@ public class ActivityParam {
     /** 未支付过的用户 **/
     public static final byte NOT_PAYED = 3;
 
+    private Integer id;
     /** 活动类型 **/
     @NotNull
     private Byte type;
