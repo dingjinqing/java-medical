@@ -53,7 +53,10 @@ public class SystemImageService extends MainBaseService implements ImageDefault 
     
     @Override
    	public String imageUrl(String relativePath) {
-   		return domainConfig.imageUrl(relativePath);
+    	if(!StringUtils.isEmpty(relativePath)) {
+    		return domainConfig.imageUrl(relativePath);    		
+    	}
+    	return null;
    	}
 
    	@Override
