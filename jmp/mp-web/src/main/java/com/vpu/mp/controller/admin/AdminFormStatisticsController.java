@@ -60,7 +60,7 @@ public class AdminFormStatisticsController extends AdminBaseController {
      * @param param 表单信息入参
      */
     @PostMapping("/api/admin/formstatistics/updateforminfo")
-    public JsonResult updateFormInfo(@RequestBody @Validated FormAddParam param) {
+    public JsonResult updateFormInfo(@RequestBody @Validated FormUpdateParam param) {
         shop().formService.updateFormInfo(param);
         return success();
     }
@@ -148,5 +148,14 @@ public class AdminFormStatisticsController extends AdminBaseController {
     @PostMapping("/api/admin/formstatistics/imgDownloadUrl")
     public JsonResult imgDownloadUrl(@RequestBody @Validated ImgDownloadParam param) {
         return success(shop().formService.imgDownloadUrl(param));
+    }
+
+    /**
+     * 添加反馈信息
+     */
+    @PostMapping("/api/admin/formstatistics/addFeedBackInfo")
+    public JsonResult addFeedBackInfo(@RequestBody @Validated FeedBackInfoParam param) {
+        shop().formService.addFeedBackInfo(param);
+        return success();
     }
 }

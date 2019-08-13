@@ -21,6 +21,6 @@ public class FeedBackDetailVo {
     private String moduleValue;
     private List<String> moduleValueList;
     @JsonIgnore
-    private Integer curIdx;
+    private String curIdx;
 
 }
