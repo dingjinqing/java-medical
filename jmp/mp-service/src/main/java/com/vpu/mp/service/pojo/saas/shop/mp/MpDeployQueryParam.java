@@ -68,6 +68,11 @@ public class MpDeployQueryParam {
 	 * 刷新审核状态
 	 */
 	public static final String ACT_REFRESH_AUDIT_STATE = "refresh-audit-state";
+	
+	/**
+	 * 设置支付方式
+	 */
+	public static final String SETTING_SUB_MERCHANT="setting-sub-merchant";
 
 	/**
 	 * 请求动作，以上ACT_下划线开头的常量值
@@ -88,4 +93,26 @@ public class MpDeployQueryParam {
 	 * 模板Id，act 为upload-code upload-audit有效
 	 */
 	Integer templateId;
+	
+	/**
+	 * 支付方式设置
+	 * 
+	 * "0"：微信直连支付
+	   "1"：微铺宝子商户支付
+	   "2"：通联子商户支付
+	   "3"：微信国际融合钱包支付
+	 * 
+	 */
+	Integer isSubMerchant;
+	//商户APPID
+	String union_pay_app_id;
+	//商户商户号
+	String union_pay_cus_id;
+	//商户密钥
+	String union_pay_app_key;
+	//MCC码
+	String merchant_category_code;
+	//标价币种
+	String fee_type;
+	
 }
