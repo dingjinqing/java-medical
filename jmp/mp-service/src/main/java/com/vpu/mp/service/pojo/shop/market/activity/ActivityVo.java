@@ -29,6 +29,12 @@ public class ActivityVo {
     private Timestamp endDate;
     /** 优惠券 **/
     private List<Voucher> vouchers;
+    /** 图片 **/
+    private String customizeImgPath;
+    /** 链接 **/
+    private String customizeUrl;
+    /** 抽奖活动id **/
+    private Integer activityId;
 
     @JsonIgnore
     private String mrkingVoucherId;

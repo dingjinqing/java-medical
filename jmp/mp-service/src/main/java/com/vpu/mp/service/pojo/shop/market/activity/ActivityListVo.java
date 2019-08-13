@@ -15,11 +15,11 @@ public class ActivityListVo {
     private Integer id;
     /* 活动类型 */
     /** 送券 **/
-    public static final byte COUPON = 0;
+    public static final byte COUPON = 1;
     /** 幸运大抽奖 **/
-    public static final byte DRAW = 1;
+    public static final byte DRAW = 2;
     /** 自定义活动 **/
-    public static final byte CUSTOMIZE = 2;
+    public static final byte CUSTOMIZE = 3;
 
     /* 活动状态 */
     /** 开启 **/

@@ -251,7 +251,15 @@ public class ActivityService extends ShopBaseService {
             MRKING_VOUCHER.LEAST_CONSUME, MRKING_VOUCHER.TOTAL_AMOUNT.minus(MRKING_VOUCHER.RECEIVE_AMOUNT).as(
                 "available_quantity")).from(MRKING_VOUCHER).where(MRKING_VOUCHER.ID.in(voucherIds)).fetchInto(Voucher.class);
         vouchers.forEach(v -> v.setRestrict(v.getUseConsumeRestrict() == 1));
-        vo.setVouchers(vouchers);
+        Byte type = vo.getActivityAction();
+        switch (type) {
+            case COUPON:
+                vo.setVouchers(vouchers);
+                break;
+            case DRAW:
+                vo.setActivityId(Integer.valueOf(vo.getMrkingVoucherId()));
+                break;
+        }
         return vo;
     }
 
