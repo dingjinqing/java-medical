@@ -76,6 +76,7 @@
               v-model="formData.buyTime"
               type="datetime"
               placeholder="选择日期时间"
+              value-format="yyyy-MM-dd HH:mm:ss"
             >
             </el-date-picker>
           </div>
@@ -87,6 +88,7 @@
               v-model="formData.endTime"
               type="datetime"
               placeholder="选择日期时间"
+              value-format="yyyy-MM-dd HH:mm:ss"
             >
             </el-date-picker>
           </div>
@@ -112,9 +114,13 @@
         <el-form-item label="地理位置">
           <div style="display: flex; width: 800px">
             <v-distpicker
+              @selected="onSelected"
               :province="formData.provinceCode"
               :city="formData.cityCode"
               :area="formData.districtCode"
+              @province="getProvinceCode"
+              @city="getCityCode"
+              @area="getDistrictCode"
             ></v-distpicker>
           </div>
         </el-form-item>
@@ -159,11 +165,24 @@
 </template>
 
 <script>
+import { mapGetters } from 'vuex'
 import { addCoountRequest } from '@/api/system/accountList.js'
 import VDistpicker from 'v-distpicker'
 export default {
   name: 'experienceVersion',
   component: { VDistpicker },
+  computed: {
+    ...mapGetters(['proAndUrData']),
+    proAndUrData_ () {
+      return this.proAndUrData
+    }
+  },
+  watch: {
+    proAndUrData_ (newData, oldData) {
+      console.log(newData)
+      this.query()
+    }
+  },
   data () {
     return {
       formData: {
@@ -206,32 +225,25 @@ export default {
         address: [
           { required: true, message: '请选择片区', trigger: 'change' }
         ]
-      },
-      pickerOptions: {
-        shortcuts: [{
-          text: '今天',
-          onClick (picker) {
-            picker.$emit('pick', new Date())
-          }
-        }, {
-          text: '昨天',
-          onClick (picker) {
-            const date = new Date()
-            date.setTime(date.getTime() - 3600 * 1000 * 24)
-            picker.$emit('pick', date)
-          }
-        }, {
-          text: '一周前',
-          onClick (picker) {
-            const date = new Date()
-            date.setTime(date.getTime() - 3600 * 1000 * 24 * 7)
-            picker.$emit('pick', date)
-          }
-        }]
       }
     }
   },
   methods: {
+    // 省市区数据更新
+    onSelected (data) {
+      this.formData.provinceCode = data.province.code
+      this.formData.cityCode = data.city.code
+      this.formData.districtCode = data.area.code
+    },
+    getProvinceCode (data) {
+      this.formData.provinceCode = data.code
+    },
+    getCityCode (data) {
+      this.formData.cityCode = data.code
+    },
+    getDistrictCode (data) {
+      this.formData.districtCode = data.code
+    },
     // 添加商家账户
     save () {
       let obj = {

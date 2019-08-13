@@ -1,6 +1,8 @@
 // cn.js
 import zhLocale from 'element-ui/lib/locale/lang/zh-CN'
 import { cn as programVersion } from './views/programVersion'
+import { cn as shopAccountList } from './views/shopAccountList'
+import { cn as shopList } from './views/shopList'
 import { cn as router } from './views/router'
 import { cn as membershipIntroduction } from './views/membershipIntroduction'
 console.log(zhLocale)
@@ -272,11 +274,68 @@ const cn = {
       { title: '自定义', colorLeft: 'background: #fff;', colorRight: 'background: #fff', id: 6, choiseId: '' }
     ]
   },
+  // system 列表首页页面
+  sys_message: {
+    'lang': '中文',
+    'system_nav_overview': '概览',
+    'system_nav_shopManagement': '店铺管理',
+    'system_nav_data': '数据统计',
+    'system_nav_storeManagement': '商品管理',
+    'system_nav_member': '会员管理',
+    'system_nav_order': '订单管理',
+    'system_nav_setting': '设置',
+    'system_leftNav_title1': '商家账户列表',
+    'system_leftNav_title2': '店铺列表',
+    'system_leftNav_title3': '发布列表',
+    'system_leftNav_title4': '小程序版本',
+    'system_leftNav_title5': '版本列表',
+    'system_leftNav_title6': '微信全链路',
+    'system_leftNav_title7': '申请发布列表'
+
+  },
+  // system 账户列表页面 商家账号列表
+  ashopAccountList: {
+    list: '商家账号列表',
+    userName: '用户名',
+    nickName: '昵称',
+    company: '公司名称',
+    state: '审核状态',
+    shopGrade: '店铺等级',
+    shopNumber: '店铺总数',
+    addTime: '添加时间',
+    buyTime: '首次续费',
+    endTime: '到期时间',
+    renewMoney: '续费总额',
+    mobile: '手机号',
+    operation: '操作'
+  },
+  // system 账户列表页面 商家账号添加
+  accountAdd: {
+    userName: '用户名',
+    password: '密码',
+    accountName: '昵称',
+    state: '审核状态',
+    maxSkuNum: '最大SKU数量',
+    maxShopNum: '最大店铺数量',
+    buyTime: '首次续费时间',
+    endTime: '到期时间',
+    mobile: '手机号',
+    company: '公司名称',
+    salesperson: '销售员',
+    provinceCode: '省',
+    cityCode: '市',
+    districtCode: '区',
+    address: '详细地址',
+    baseSale: '初始销量',
+    addCommentSwitch: '添加评价',
+    search: '搜索'
+  },
   router, // 路由信息
   membershipIntroduction, // 会员列表
   programVersion, // system 后台小程序版本
+  shopAccountList, // system 店铺账户列表
+  shopList, // sysytem 店铺列表
   ...zhLocale
-
 }
 
 export default cn

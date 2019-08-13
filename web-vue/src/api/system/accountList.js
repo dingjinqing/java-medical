@@ -8,15 +8,6 @@ export function accountInfoRequest () {
   })
 }
 
-// 添加店铺时验证手机号是否已经存在
-export function confirmMobileRequest (data) {
-  return service({
-    url: '/api/system/shop/check/mobile',
-    method: 'post',
-    data: data
-  })
-}
-
 // 添加商家账户
 export function addCoountRequest (data) {
   return service({
@@ -32,13 +23,5 @@ export function searchAccountRequest (data) {
     url: '/api/system/shop/account/list',
     method: 'post',
     data: data
-  })
-}
-
-// 添加店铺
-export function addShopRequest (data) {
-  return service({
-    url: '/api/system/shop/add',
-    method: 'post'
   })
 }

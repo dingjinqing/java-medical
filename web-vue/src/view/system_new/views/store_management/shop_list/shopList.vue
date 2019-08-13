@@ -46,19 +46,19 @@ export default {
     }
   },
   created () {
-    // console.log(this.$route)
-    if (this.$route) {
+    console.log(this.$route.params.name)
+    if (this.$route.params.flag === true) {
       this.tabActive = 'third'
       this.isShowShopList = true
     }
   },
-  beforeRouteEnter: (to, from, next) => {
-    // if (this.$route.path === `/system/store_management/account_list`) {
-    next(vm => {
-      alert(vm.name)
-    })
-    // }
-  },
+  // beforeRouteEnter: (to, from, next) => {
+  //   // if (this.$route.path === `/system/store_management/account_list`) {
+  //   next(vm => {
+  //     alert(vm.name)
+  //   })
+  //   // }
+  // },
 
   // mounted () {
   //   console.log(this.$route.params)

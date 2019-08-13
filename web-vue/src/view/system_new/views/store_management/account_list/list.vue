@@ -17,7 +17,7 @@
         </el-option>
       </el-select>
       <el-input
-        v-model="mainData.keywords"
+        v-model="mainData.accountName"
         placeholder="请输入用户名、昵称"
         size="small"
         class="select-input ml-6"
@@ -48,91 +48,98 @@
     >
       <el-table-column
         prop="userName"
-        label="用户名"
+        :label="$t('ashopAccountList.userName')"
         align="center"
       >
       </el-table-column>
       <el-table-column
-        prop="keywords"
-        label="昵称"
+        prop="accountName"
+        :label="$t('ashopAccountList.nickName')"
         align="center"
       >
       </el-table-column>
       <el-table-column
         prop="company"
         align="center"
-        label="公司名称"
+        :label="$t('ashopAccountList.company')"
       >
       </el-table-column>
       <el-table-column
         prop="state"
         align="center"
-        :formatter="numberChange"
-        label="审核状态"
+        :formatter="changeState"
+        :label="$t('ashopAccountList.state')"
       >
+        <!-- <template slot-scope="scope"> -->
+        <!-- <span>{{scope.row.state === 1 ? '普通店':scope.row.shopGrade}}</span> -->
+        <!-- </template> -->
       </el-table-column>
       <el-table-column
         prop="shopGrade"
         align="center"
-        :formatter="levelChange"
-        label="店铺等级"
+        :label="$t('ashopAccountList.shopGrade')"
       >
+        <template slot-scope="scope">
+          <span>{{scope.row.shopGrade === 1 ? '普通店':scope.row.shopGrade}}</span>
+        </template>
       </el-table-column>
       <el-table-column
         prop="shopNumber"
         align="center"
-        label="店铺总数"
+        :label="$t('ashopAccountList.shopNumber')"
       >
         <template slot-scope="scope">
           <span style="margin-left: 10px">{{ scope.row.shopNumber }}</span>
           <i
             class="el-icon-circle-plus-outline"
-            @click="jumptoNewShop(scope.row.userName)"
-            style="cursor: pointer"
+            @click="jumptoNewShop(scope.row.sysId)"
+            style="cursor: pointer;color:blue; opacity:0.7"
           ></i>
         </template>
       </el-table-column>
       <el-table-column
         prop="addTime"
         align="center"
-        label="添加时间"
+        :label="$t('ashopAccountList.addTime')"
       >
       </el-table-column>
       <el-table-column
         prop="buyTime"
         align="center"
-        label="首次续费"
+        :label="$t('ashopAccountList.buyTime')"
       >
       </el-table-column>
       <el-table-column
         prop="endTime"
         align="center"
-        label="到期时间"
+        :label="$t('ashopAccountList.endTime')"
       >
       </el-table-column>
       <el-table-column
         prop="renewMoney"
         align="center"
-        label="续费总额"
+        :label="$t('ashopAccountList.renewMoney')"
       >
       </el-table-column>
       <el-table-column
         prop="mobile"
         align="center"
-        :formatter="mobile"
-        label="手机号"
+        :label="$t('ashopAccountList.mobile')"
       >
+        <template slot-scope="scope">
+          <span>{{scope.row.mobile === '' ? '未设置':scope.row.mobile}}</span>
+        </template>
       </el-table-column>
       <el-table-column
         prop="operation"
         align="center"
-        label="操作"
+        :label="$t('ashopAccountList.operation')"
       >
         <el-button
           type="text"
           style="color:#000"
           @click="handleEditAccount"
-        >编辑</el-button>
+        >{{$t('ashopAccountList.operation')}}</el-button>
       </el-table-column>
     </el-table>
 
@@ -173,7 +180,7 @@ export default {
       mainData: {
         currentPage3: 1,
         state: '',
-        keywords: '',
+        accountName: '',
         company: ''
       },
       formTable: [{
@@ -207,24 +214,25 @@ export default {
       this.searchAccount()
     },
 
-    jumptoNewShop (userName) {
-      console.log(this.userName)
+    jumptoNewShop (sysId) {
       this.$router.push({
         name: 'shopList',
         params: {
-          name: userName,
+          name: sysId,
           flag: true
         }
       })
       // bus.$emit('revice', userName)
+      console.log(this.userName)
     },
     handleEditAccount () {
       this.name = 'third'
       this.$emit('send', this.name)
     },
-    // 审核状态的四种数字转化为文字
-    numberChange (row, rol) {
+    // // 审核状态的四种数字转化为文字
+    changeState (row, rol) {
       for (var i in this.formTable) {
+        // console.log(this.formTable)
         if (this.formTable[i].state === 1) {
           return '申请中'
         } else if (this.formTable[i].state === 2) {
@@ -236,37 +244,27 @@ export default {
         }
       }
     },
-    // 店铺等级的数字转化为文字
-    levelChange (row, rol) {
-      for (var i in this.formTable) {
-        if (this.formTable[i].shopGrade === 1) {
-          return '普通店'
-        }
-      }
-    },
-    // 电话号码文字处理
-    mobile (row, rol) {
-      for (var i in this.formTable) {
-        if (this.formTable[i].mobile === '') {
-          return '未设置'
-        } else {
-          return this.formTable[i].mobile
-        }
-      }
-    },
+    // // 店铺等级的数字转化为文字
+    // levelChange (row, rol) {
+    //   for (var i in this.formTable) {
+    //     if (this.formTable[i].shopGrade === 1) {
+    //       return '普通店'
+    //     }
+    //   }
+    // },
     // 商家账户列表查询
     searchAccount () {
       let obj1 = {
         'currentPage': this.currentPage3,
         'pageRows': '20',
         'state': '',
-        'keywords': '',
+        'accountName': '',
         'company': ''
       }
       let parameter = Object.assign(obj1, this.mainData)
       searchAccountRequest(parameter).then((res) => {
-        console.log(res)
         const { error, content } = res
+        console.log(res)
         if (error === 0) {
           let formList = content.dataList
           let pageObj = content.page

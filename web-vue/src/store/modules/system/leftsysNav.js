@@ -11,7 +11,7 @@ const leftsysNav = {
   },
   actions: {
     changesysNavLeft ({ commit }, params) {
-      // console.log(params)
+      console.log(params)
       commit('TOCHANGE_LEFTNAV', params)
     }
   }

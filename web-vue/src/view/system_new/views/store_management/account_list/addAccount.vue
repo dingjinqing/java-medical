@@ -10,14 +10,14 @@
         label-position="left"
         :rules="rules"
       >
-        <el-form-item label="用户名">
+        <el-form-item :label="$t('accountAdd.userName')">
           <el-input
             v-model="formData.userName"
             key="1"
             size="small"
           ></el-input>
         </el-form-item>
-        <el-form-item label="密码">
+        <el-form-item :label="$t('accountAdd.password')">
           <el-input
             v-model="formData.password"
             type="password"
@@ -25,13 +25,13 @@
             size="small"
           ></el-input>
         </el-form-item>
-        <el-form-item label="昵称">
+        <el-form-item :label="$t('accountAdd.accountName')">
           <el-input
             v-model="formData.accountName"
             size="small"
           ></el-input>
         </el-form-item>
-        <el-form-item label="审核状态">
+        <el-form-item :label="$t('accountAdd.state')">
           <el-select
             v-model="formData.state"
             placeholder="请选择状态"
@@ -55,55 +55,57 @@
             ></el-option>
           </el-select>
         </el-form-item>
-        <el-form-item label="最大SKU数量">
+        <el-form-item :label="$t('accountAdd.maxSkuNum')">
           <el-input
             v-model="formData.maxSkuNum"
             label='1000'
             size="small"
           ></el-input>
         </el-form-item>
-        <el-form-item label="最大店铺数量">
+        <el-form-item :label="$t('accountAdd.maxShopNum')">
           <el-input
             v-model="formData.maxShopNum"
             label='100'
             size="small"
           ></el-input>
         </el-form-item>
-        <el-form-item label="首次续费时间">
+        <el-form-item :label="$t('accountAdd.buyTime')">
           <div class="block">
             <el-date-picker
               size="small"
               v-model="formData.buyTime"
               type="datetime"
               placeholder="选择日期时间"
+              value-format="yyyy-MM-dd HH:mm:ss"
             >
             </el-date-picker>
           </div>
         </el-form-item>
-        <el-form-item label="到期时间">
+        <el-form-item :label="$t('accountAdd.endTime')">
           <div class="block">
             <el-date-picker
               size="small"
               v-model="formData.endTime"
               type="datetime"
               placeholder="选择日期时间"
+              value-format="yyyy-MM-dd HH:mm:ss"
             >
             </el-date-picker>
           </div>
         </el-form-item>
-        <el-form-item label="手机号">
+        <el-form-item :label="$t('accountAdd.mobile')">
           <el-input
             v-model="formData.mobile"
             size="small"
           ></el-input>
         </el-form-item>
-        <el-form-item label="公司名称">
+        <el-form-item :label="$t('accountAdd.company')">
           <el-input
             v-model="formData.company"
             size="small"
           ></el-input>
         </el-form-item>
-        <el-form-item label="销售员">
+        <el-form-item :label="$t('accountAdd.salesperson')">
           <el-input
             v-model="formData.salesperson"
             size="small"
@@ -112,19 +114,23 @@
         <el-form-item label="地理位置">
           <div style="display: flex; width: 800px">
             <v-distpicker
+              @selected="onSelected"
               :province="formData.provinceCode"
               :city="formData.cityCode"
               :area="formData.districtCode"
+              @province="getProvinceCode"
+              @city="getCityCode"
+              @area="getDistrictCode"
             ></v-distpicker>
           </div>
         </el-form-item>
-        <el-form-item label="详细地址">
+        <el-form-item :label="$t('accountAdd.address')">
           <el-input
             v-model="formData.address"
             size="small"
           ></el-input>
         </el-form-item>
-        <el-form-item label="初始销量">
+        <el-form-item :label="$t('accountAdd.baseSale')">
           <el-switch
             active-value="1"
             inactive-value="0"
@@ -134,7 +140,7 @@
           >
           </el-switch>
         </el-form-item>
-        <el-form-item label="添加评价">
+        <el-form-item :label="$t('accountAdd.addCommentSwitch')">
           <el-switch
             active-value="1"
             inactive-value="0"
@@ -152,18 +158,31 @@
         style="margin-left: 148px"
         @click="save()"
       >
-        搜索
+        {{$t('accountAdd.search')}}
       </el-button>
     </div>
   </div>
 </template>
 
 <script>
+import { mapGetters } from 'vuex'
 import { addCoountRequest } from '@/api/system/accountList.js'
 import VDistpicker from 'v-distpicker'
 export default {
   name: 'experienceVersion',
   component: { VDistpicker },
+  computed: {
+    ...mapGetters(['proAndUrData']),
+    proAndUrData_ () {
+      return this.proAndUrData
+    }
+  },
+  watch: {
+    proAndUrData_ (newData, oldData) {
+      console.log(newData)
+      this.query()
+    }
+  },
   data () {
     return {
       formData: {
@@ -206,32 +225,25 @@ export default {
         address: [
           { required: true, message: '请选择片区', trigger: 'change' }
         ]
-      },
-      pickerOptions: {
-        shortcuts: [{
-          text: '今天',
-          onClick (picker) {
-            picker.$emit('pick', new Date())
-          }
-        }, {
-          text: '昨天',
-          onClick (picker) {
-            const date = new Date()
-            date.setTime(date.getTime() - 3600 * 1000 * 24)
-            picker.$emit('pick', date)
-          }
-        }, {
-          text: '一周前',
-          onClick (picker) {
-            const date = new Date()
-            date.setTime(date.getTime() - 3600 * 1000 * 24 * 7)
-            picker.$emit('pick', date)
-          }
-        }]
       }
     }
   },
   methods: {
+    // 省市区数据更新
+    onSelected (data) {
+      this.formData.provinceCode = data.province.code
+      this.formData.cityCode = data.city.code
+      this.formData.districtCode = data.area.code
+    },
+    getProvinceCode (data) {
+      this.formData.provinceCode = data.code
+    },
+    getCityCode (data) {
+      this.formData.cityCode = data.code
+    },
+    getDistrictCode (data) {
+      this.formData.districtCode = data.code
+    },
     // 添加商家账户
     save () {
       let obj = {

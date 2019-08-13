@@ -11,10 +11,11 @@
         @click="headerNavClick(item.routeName)"
         class="wrapper"
       >
-        <img :src="item.img" alt="">
-        <span
-          :class="{active_bg: $route.matched[0].meta.title === item.title}"
-        >{{item.title}}</span>
+        <img
+          :src="item.img"
+          alt=""
+        >
+        <span :class="{active_bg: $route.matched[0].meta.title === item.title}">{{item.title}}</span>
       </div>
     </div>
 
@@ -59,7 +60,7 @@
 <script>
 import Vuex from 'vuex'
 import Cookies from 'js-cookie'
-import { loginRequestOut } from '@/api/index/login.js'
+import { loginRequest } from '@/api/index/login.js'
 export default {
   data () {
     return {
@@ -70,7 +71,7 @@ export default {
       ],
       log_menu_show: false,
       // hiddle_menu_list: [this.$t('shopData.set'), this.$t('shopData.administration_J'), this.$t('shopData.public'), this.$t('shopData.choice'), this.$t('shopData.loginOut')],
-      hiddle_menu_list: [ '密码修改', '子账号管理', '退出' ],
+      hiddle_menu_list: ['密码修改', '子账号管理', '退出'],
       changeColorIndex: '',
       username: '',
       menu_width: '',
@@ -98,7 +99,8 @@ export default {
         },
         {
           title: '订单管理',
-          img: this.$imageHost + '/image/system/first_4.png'
+          img: this.$imageHost + '/image/system/first_4.png',
+          routeName: 'orderMain'
         },
         {
           title: '设置',
@@ -184,8 +186,8 @@ export default {
           })
           break
         case 4:
-          loginRequestOut().then((res) => {
-            // console.log(res)
+          loginRequest().then((res) => {
+            console.log(res)
             if (res.error === 0) {
               Cookies.remove('V-Token')
               localStorage.removeItem('V-Username')
@@ -208,7 +210,17 @@ export default {
     },
     // 顶部导航点击 通过传入路由的name来默认匹配每一次点击后的第一个页面
     headerNavClick (routeName) {
-      this.$router.push({name: routeName})
+      this.$router.push({ name: routeName })
+    },
+    user_enter (index) {
+      this.log_menu_show = true
+      if (index === 'undefined') return 0
+      this.changeColorIndex = index
+    },
+    user_leave (index) {
+      this.log_menu_show = false
+      if (!index) return 0
+      this.changeColorIndex = ''
     }
   }
 }

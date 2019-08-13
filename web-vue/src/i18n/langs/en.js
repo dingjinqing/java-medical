@@ -1,6 +1,8 @@
 // en.js
 import enLocale from 'element-ui/lib/locale/lang/en'
 import { en as programVersion } from './views/programVersion'
+import { en as shopAccountList } from './views/shopAccountList'
+import { en as shopList } from './views/shopList'
 import { en as router } from './views/router'
 import { en as membershipIntroduction } from './views/membershipIntroduction'
 const en = {
@@ -270,11 +272,67 @@ const en = {
       { title: 'Colour Matching 6', colorLeft: 'background: #feb609;', colorRight: 'background: #333333', id: '', choiseId: '' },
       { title: 'custom', colorLeft: 'background: #fff;', colorRight: 'background: #fff', id: 6, choiseId: '' }
     ]
-
+  },
+  // system 列表首页页面
+  sys_message: {
+    'lang': 'English',
+    'system_nav_overview': 'Overview',
+    'system_nav_shopManagement': 'Store Management',
+    'system_nav_data': 'Data statistics',
+    'system_nav_storeManagement': 'Commodity management',
+    'system_nav_member': 'Member management',
+    'system_nav_order': 'Order management',
+    'system_nav_setting': 'Setting',
+    'system_leftNav_title1': 'Merchant account list',
+    'system_leftNav_title2': 'Shop list',
+    'system_leftNav_title3': 'Release list',
+    'system_leftNav_title4': 'Applet version',
+    'system_leftNav_title5': 'Version list',
+    'system_leftNav_title6': 'WeChat full link',
+    'system_leftNav_title7': 'Application release list'
+  },
+  // system 账户列表页面 商家账号列表
+  ashopAccountList: {
+    list: 'Merchant account list',
+    userName: 'username',
+    nickName: 'nickname',
+    company: 'company name',
+    state: 'Approval Status',
+    shopGrade: 'Store level',
+    shopNumber: 'Total number of stores',
+    addTime: 'add time',
+    buyTime: 'First renewal',
+    endTime: 'Expire date',
+    renewMoney: 'Total renewal fee',
+    mobile: 'phone number',
+    operation: 'operating'
+  },
+  // system 账户列表页面 商家账号添加
+  accountAdd: {
+    userName: 'username',
+    password: 'password',
+    accountName: 'nickname',
+    state: 'Approval Status',
+    maxSkuNum: 'Maximum number of SKUs',
+    maxShopNum: 'Maximum number of stores',
+    buyTime: 'First renewal time',
+    endTime: 'Expire date',
+    mobile: 'phone number',
+    company: 'company name',
+    salesperson: 'seller',
+    provinceCode: 'province',
+    cityCode: 'city',
+    districtCode: 'area',
+    address: 'address',
+    baseSale: 'Initial sales',
+    addCommentSwitch: 'Add review',
+    search: 'search'
   },
   router, // 路由信息
   membershipIntroduction, // 会员列表
   programVersion, // system 后台小程序版本
+  shopAccountList, // system 店铺账户列表
+  shopList, // system 店铺列表
   ...enLocale
 }
 

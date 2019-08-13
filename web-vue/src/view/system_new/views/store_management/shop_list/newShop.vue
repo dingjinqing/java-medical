@@ -10,16 +10,17 @@
         label-position="left"
       >
         <el-form-item label="所属账号">
-          <!-- <el-input
-            v-model="Data.sysId"
+          <el-input
+            v-model="this.$route.params.name"
             key="1"
             size="small"
-            v-if="flag"
-          ></el-input> -->
-          <span
+            v-if="!flag"
+            style="border: none"
+          ></el-input>
+          <!-- <span
             v-if="!flag"
             style="color:#333"
-          >{{this.$route.params.name}}</span>
+          >{{this.$route.params.name}}</span> -->
         </el-form-item>
         <el-form-item label="数据库">
           <el-select
@@ -78,6 +79,7 @@
               size="small"
               type="datetime"
               placeholder="选择日期时间"
+              value-format="yyyy-MM-dd HH:mm:ss"
             >
             </el-date-picker>
           </div>
@@ -200,17 +202,20 @@
         <span class="text">添加新店铺，会创建此店铺的数据库。添加店铺只可以禁用，不能删除！，谨慎添加。</span>
       </div>
     </div>
+    <el-button @click="getList">获取列表</el-button>
+    <el-button @click="addOne">添加某一</el-button>
+
   </div>
 </template>
 
 <script>
-import { newShopRequest } from '@/api/system/shopList.js'
+import { newShopRequest, shopSearchRequest } from '@/api/system/shopList.js'
 export default {
   name: 'newShop',
   data () {
     return {
       Data: {
-        sysId: '',
+        sysId: this.$route.params.name,
         mobile: '',
         shopType: '',
         receiveMobile: '',
@@ -231,29 +236,7 @@ export default {
         endTime: ''
       },
       name: '',
-      flag: '',
-      pickerOptions: {
-        shortcuts: [{
-          text: '今天',
-          onClick (picker) {
-            picker.$emit('pick', new Date())
-          }
-        }, {
-          text: '昨天',
-          onClick (picker) {
-            const date = new Date()
-            date.setTime(date.getTime() - 3600 * 1000 * 24)
-            picker.$emit('pick', date)
-          }
-        }, {
-          text: '一周前',
-          onClick (picker) {
-            const date = new Date()
-            date.setTime(date.getTime() - 3600 * 1000 * 24 * 7)
-            picker.$emit('pick', date)
-          }
-        }]
-      }
+      flag: ''
     }
   },
   // mounted () {
@@ -264,52 +247,74 @@ export default {
   //   }
   // },
   methods: {
+    getList () {
+      shopSearchRequest({
+        'currentPage': 1,
+        'pageRows': 10
+      }).then(res => console.log(res)).catch(err => console.log(err))
+    },
+    addOne () {
+      newShopRequest({
+        'sysId': 85,
+        'mobile': '18237093404',
+        'shopType': 'v4',
+        'shopName': '旺店'
+      }).then(res => console.log(res)).catch(err => console.log(err))
+    },
     // 添加商家账户
     save () {
+      // let params = {
+      //   'sysId': '85',
+      //   'mobile': '18722222233',
+      //   'shopType': 'v4',
+      //   'shopName': 'json测试3'
+      // }
       let params = {
-        'sysId': '',
-        'mobile': '18722222233',
+        'sysId': '85',
+        'mobile': '18237093404',
         'shopType': 'v4',
-        'shopName': 'json测试3'
+        'shopName': '旺店'
       }
-      newShopRequest(params).then(res => console.log(res + '1111')).catch(err => console.log(err + '8888'))
-      //   let obj = {
-      //     'sysId': '2',
-      //     'mobile': '18722222233',
-      //     'shopType': 'v4',
-      //     'receiveMobile': '18722222234',
-      //     'shopName': 'json测试3',
-      //     'shopPhone': '18722222235',
-      //     'shopNotice': '店铺公告',
-      //     'shopWx': 'weixin',
-      //     'shopEmail': 'lalala@163.com',
-      //     'isEnabled': '0',
-      //     'shopFlag': '2',
-      //     'hidBottom': '0',
-      //     'shopQq': '99887766',
-      //     'memberKey': '欧派店铺标识',
-      //     'tenancyName': '欧派大屏租户名称',
-      //     'userName': '欧派大屏用户名',
-      //     'password': '123456'
+      console.log(params)
+      newShopRequest(params).then(res => console.log(res)).catch(err => console.log(err))
+
+      // let obj = {
+      //   'sysId': '85',
+      //   'mobile': '18722222233',
+      //   'shopType': 'v4',
+      //   'receiveMobile': '18722222234',
+      //   'shopName': 'json测试4443',
+      //   'shopPhone': '18722222235',
+      //   'shopNotice': '店铺公告',
+      //   'shopWx': 'weixin',
+      //   'shopEmail': 'lalala@163.com',
+      //   'isEnabled': '0',
+      //   'shopFlag': '2',
+      //   'hidBottom': '0',
+      //   'shopQq': '99887766',
+      //   'memberKey': '欧派店铺标识',
+      //   'tenancyName': '欧派大屏租户名称',
+      //   'userName': '欧派大屏用户名',
+      //   'password': '123456'
+      // }
+      // let params = Object.assign(obj)
+      // console.log(params)
+      // newShopRequest(params).then(res => {
+      //   console.log(res)
+      //   if (res.error === 0) {
+      //     this.$message({
+      //       message: '保存成功',
+      //       type: 'success'
+      //     })
+      //   } else {
+      //     this.$message({
+      //       message: res.message,
+      //       type: 'warning'
+      //     })
       //   }
-      //   let params = Object.assign(obj, this.Data)
-      //   console.log(params)
-      //   newShopRequest(params).then(res => {
-      //     console.log(res)
-      //     if (res.error === 0) {
-      //       this.$message({
-      //         message: '保存成功',
-      //         type: 'success'
-      //       })
-      //     } else {
-      //       this.$message({
-      //         message: res.message,
-      //         type: 'warning'
-      //       })
-      //     }
-      //   }).catch(() => {
-      //     this.$message.error('保存失败')
-      //   })
+      // }).catch(() => {
+      //   this.$message.error('保存失败')
+      // })
     }
   }
 }

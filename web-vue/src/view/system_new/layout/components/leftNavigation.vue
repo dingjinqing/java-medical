@@ -2,15 +2,22 @@
   <div class="container">
     <div class="left_menu">
       <ul class="menu_wrap">
-        <li class="left_menu_item"
-            :class="{active_bg: $route.meta.title === item.span}"
-            v-for="(item, index) in filterNavArr"
-            :key="index"
-            @mouseenter="hoverIndex = index"
-            @mouseout="hoverIndex = -1"
+        <li
+          class="left_menu_item"
+          :class="{active_bg: $route.meta.title === item.span}"
+          v-for="(item, index) in filterNavArr"
+          :key="index"
+          @mouseenter="hoverIndex = index"
+          @mouseout="hoverIndex = -1"
         >
-          <img :src="isShowHighLight(item, index)" alt="">
-          <router-link :to="{name: item.routeName, params: item.params}" class="link_item">
+          <img
+            :src="isShowHighLight(item, index)"
+            alt=""
+          >
+          <router-link
+            :to="{name: item.routeName, params: item.params}"
+            class="link_item"
+          >
             {{item.span}}
           </router-link>
         </li>
@@ -26,6 +33,14 @@ export default {
     return {
       navLeftData: '',
       navLeftArr: {
+        welcome: [
+          {
+            imgUrl: '/static/image/system/icon_left/shop_view.png',
+            imgUrl_h: '/static/image/system/icon_left/shop_view_h.png',
+            span: 'welcome',
+            routeName: 'welcome'
+          }
+        ],
         overviewMain: [
           {
             imgUrl: '/static/image/system/icon_left/shop_view.png',
@@ -36,7 +51,8 @@ export default {
           {
             imgUrl: '/static/image/system/icon_left/picture_space.png',
             imgUrl_h: '/static/image/system/icon_left/picture_space_h.png',
-            span: '升级续费申请'
+            span: '升级续费申请',
+            routeName: 'upgradeRenewal'
           },
           {
             imgUrl: '/static/image/system/icon_left/get_user.png',
@@ -66,7 +82,8 @@ export default {
           {
             imgUrl: '/static/image/system/icon_left/picture_space.png',
             imgUrl_h: '/static/image/system/icon_left/picture_space_h.png',
-            span: '图片空间'
+            span: '图片空间',
+            routeName: 'picSpace'
           }
         ],
         storeManagementMain: [
@@ -85,7 +102,8 @@ export default {
           {
             imgUrl: '/static/image/system/icon_left/mobile_deco.png',
             imgUrl_h: '/static/image/system/icon_left/mobile_deco_h.png',
-            span: '发布列表'
+            span: '发布列表',
+            routeName: 'pshopList'
           },
           {
             imgUrl: '/static/image/system/icon_left/mobile_deco.png',
@@ -100,6 +118,7 @@ export default {
             imgUrl: '/static/image/system/icon_left/picture_space.png',
             imgUrl_h: '/static/image/system/icon_left/picture_space_h.png',
             span: '版本列表'
+            // routeName: 'versionList'
           },
           {
             imgUrl: '/static/image/system/icon_left/picture_space.png',
@@ -178,16 +197,18 @@ export default {
             span: '会员列表'
           }
         ],
-        order_manage: [
+        orderMain: [
           {
             imgUrl: '/static/image/system/icon_left/order_admin.png',
             imgUrl_h: '/static/image/system/icon_left/order_admin_h.png',
-            span: '订单统计'
+            span: '订单统计',
+            routeName: 'orderStatistics'
           },
           {
             imgUrl: '/static/image/system/icon_left/order_admin.png',
             imgUrl_h: '/static/image/system/icon_left/order_admin_h.png',
-            span: '订单列表'
+            span: '订单列表',
+            routeName: 'orderList'
           }
         ],
         setting: [
@@ -223,8 +244,8 @@ export default {
     }
   },
   created () {
-    console.log(this.$router, 'router')
-    console.log(this.$route, 'route')
+    // console.log(this.$router, 'router')
+    // console.log(this.$route, 'route')
   },
   methods: {
     isShowHighLight (route, index) {
@@ -249,79 +270,79 @@ export default {
 }
 </script>
 <style scoped lang="scss">
-  .container {
-    height: 100%;
-    width: 150px;
-    z-index: 10;
-  }
+.container {
+  height: 100%;
+  width: 150px;
+  z-index: 10;
+}
 
-  .menu_wrap {
-    padding-top: 85px;
-  }
+.menu_wrap {
+  padding-top: 85px;
+}
 
-  .left_menu {
-    position: fixed;
-    left: 0;
-    top: 0;
-    bottom: 0;
-    background: #aac1e0;
-    width: 150px;
-    z-index: 100;
-    height: 100%;
-    min-height: 100vh;
+.left_menu {
+  position: fixed;
+  left: 0;
+  top: 0;
+  bottom: 0;
+  background: #aac1e0;
+  width: 150px;
+  z-index: 100;
+  height: 100%;
+  min-height: 100vh;
 
-    .link_item {
-      text-decoration: none;
-      color: #fff;
-    }
-  }
-
-  ul li {
-    height: 45px;
-    line-height: 45px;
-    padding-left: 12px;
-    overflow: hidden;
-    display: flex;
-    cursor: pointer;
-    &:hover {
-      background: #e7f1ff;
-      .link_item {
-        color: #86a7cb;
-      }
-    }
-  }
-
-  ul li img {
-    display: block;
-    float: left;
-    width: 20px;
-    height: 20px;
-    margin: auto 0;
-  }
-
-  ul li a {
-    display: block;
-    float: left;
+  .link_item {
+    text-decoration: none;
     color: #fff;
-    margin-left: 17px;
-    font-size: 14px;
-    height: 45px;
-    line-height: 45px;
-    opacity: 1;
   }
+}
 
-  .active_bg {
+ul li {
+  height: 45px;
+  line-height: 45px;
+  padding-left: 12px;
+  overflow: hidden;
+  display: flex;
+  cursor: pointer;
+  &:hover {
     background: #e7f1ff;
-    a {
-      color: #86a7cb!important;
+    .link_item {
+      color: #86a7cb;
     }
   }
+}
 
-  .nav_s_class {
-    width: 66px;
-    height: 26px;
-    position: relative;
-    left: -11px;
-    bottom: -9px;
+ul li img {
+  display: block;
+  float: left;
+  width: 20px;
+  height: 20px;
+  margin: auto 0;
+}
+
+ul li a {
+  display: block;
+  float: left;
+  color: #fff;
+  margin-left: 17px;
+  font-size: 14px;
+  height: 45px;
+  line-height: 45px;
+  opacity: 1;
+}
+
+.active_bg {
+  background: #e7f1ff;
+  a {
+    color: #86a7cb !important;
   }
+}
+
+.nav_s_class {
+  width: 66px;
+  height: 26px;
+  position: relative;
+  left: -11px;
+  bottom: -9px;
+}
 </style>

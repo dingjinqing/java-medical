@@ -5,20 +5,20 @@
     class="tab"
   >
     <el-tab-pane
-      label="商家账号列表"
       name="first"
+      :label="$t('shopAccountList.list')"
     >
       <list @send="send" />
     </el-tab-pane>
     <el-tab-pane
-      label="商家账号添加"
       name="second"
+      :label="$t('shopAccountList.addAccount')"
     >
       <addAccount />
     </el-tab-pane>
     <el-tab-pane
-      label="编辑商家账户"
       name="third"
+      :label="$t('shopAccountList.editAccount')"
       v-if="isShowEditAccount"
     >
       <editAccount />
@@ -30,19 +30,43 @@
 import list from './list.vue'
 import addAccount from './addAccount.vue'
 import editAccount from './editAccount.vue'
+
 export default {
   name: 'accountList',
   components: {
     list,
     addAccount,
     editAccount
+
+    // list: () => import('./list'),
+    // addAccount: () => import('./addAccount'),
+    // editAccount: () => import('./editAccount')
   },
   data () {
     return {
       tabActive: 'first',
       isShowEditAccount: false
+
+      // tabActive: this.$route.params.page
     }
   },
+  // watch: {
+  //   $route: { // 带选项watch写法。兼容国际化刷新立即显示
+  //     immediate: true,
+  //     handler (to) {
+  //       this.tabActive = to.params.page
+  //       this.$store.commit('UPDATE_BREADCRUMB_TITLE', this.$t(`shopAccountList.${this.$route.params.page}`))
+  //     }
+  //   },
+  //   tabActive (val) {
+  //     this.$router.push({
+  //       name: this.$route.name,
+  //       params: {
+  //         page: val
+  //       }
+  //     })
+  //   }
+  // },
   methods: {
     send (val) {
       if (val === 'third') {
