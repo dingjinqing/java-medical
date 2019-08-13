@@ -16,6 +16,6 @@ public class FormInfoVo {
     /**反馈数量*/
     private Integer submitNum;
     private Byte status;
-    /**有效期*/
+    /**有效期 1永久有效，0期限内有效*/
     private Byte validityPeriod;
 }

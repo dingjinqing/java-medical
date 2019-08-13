@@ -2,28 +2,20 @@ package com.vpu.mp.service.pojo.shop.market.form;
 
 import lombok.Data;
 
-import javax.validation.constraints.NotNull;
 import java.sql.Timestamp;
 
 /**
  * @author liufei
- * @date 2019/8/7
- * @description 表单添加实体类
+ * @date 2019/8/13
+ * @description
  */
 @Data
-public class FormAddParam {
-    private Integer pageId;
-    @NotNull
-    private Integer shopId;
-    @NotNull
+public class FormCopyVo {
     private String pageName;
-    @NotNull
-    private Byte status;
     private String pageContent;
     private String formCfg;
     private Timestamp startTime;
     private Timestamp endTime;
     /**有效期*/
-    @NotNull
-    private Byte validityPeriod;
+    private Byte isForeverValid;
 }

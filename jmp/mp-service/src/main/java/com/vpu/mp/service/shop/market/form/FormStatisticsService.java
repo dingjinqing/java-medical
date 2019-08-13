@@ -73,7 +73,7 @@ public class FormStatisticsService extends ShopBaseService {
             conditionStep = conditionStep.and(fp.STATE.eq(param.getStatus()));
         }
         if (param.getPageName() != null && !"".equals(param.getPageName())) {
-            conditionStep = conditionStep.and(fp.PAGE_NAME.eq(param.getPageName()));
+            conditionStep = conditionStep.and(fp.PAGE_NAME.like(this.likeValue(param.getPageName())));
         }
         if (param.getStartTime() != null) {
             conditionStep = conditionStep.and(fp.CREATE_TIME.greaterOrEqual(new Timestamp(param.getStartTime().getTime())));
@@ -105,6 +105,8 @@ public class FormStatisticsService extends ShopBaseService {
         param.setPageId(null);
         FormPageRecord fpRecord = new FormPageRecord();
         FieldsUtil.assignNotNull(param, fpRecord);
+        //设置初始反馈数量为0
+        fpRecord.setSubmitNum(0);
         db().executeInsert(fpRecord);
     }
 
@@ -151,8 +153,10 @@ public class FormStatisticsService extends ShopBaseService {
      *
      * @param param 表单唯一标识pageId
      */
-    public FormDetailVo copyForm(FormDetailParam param) {
-        return getFormDetailInfo(param);
+    public FormCopyVo copyForm(FormDetailParam param) {
+        FormCopyVo vo = new FormCopyVo();
+        FieldsUtil.assignNotNull(getFormDetailInfo(param),vo);
+        return vo;
 
     }
 
@@ -320,6 +324,7 @@ public class FormStatisticsService extends ShopBaseService {
 //            future.thenAccept((e) -> addFeedDetail(param, e));
             Integer submitId = addFeedList(param, listRecord);
             addFeedDetail(param, submitId);
+            db().update(fp).set(fp.SUBMIT_NUM,fp.SUBMIT_NUM.add(1)).execute();
         });
     }
 
