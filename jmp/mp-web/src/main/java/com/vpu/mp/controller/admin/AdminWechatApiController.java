@@ -92,7 +92,7 @@ public class AdminWechatApiController extends AdminBaseController {
 	 */
 	@GetMapping("/api/admin/mp/get")
 	public JsonResult getMp() {
-		MpAuthShopRecord record = saas.shop.mp.getAuthShopByShopId(this.shopId());
+		MpAuthShopRecord record = saas.shop.mp.getAuthShopByShopIdAddURL(this.shopId());
 		if (record == null) {
 			return fail(JsonResultCode.WX_MA_NEED_AUTHORIZATION);
 		}
