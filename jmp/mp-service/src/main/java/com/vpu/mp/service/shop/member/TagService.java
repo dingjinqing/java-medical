@@ -4,6 +4,7 @@ import static com.vpu.mp.db.shop.Tables.TAG;
 import static com.vpu.mp.db.shop.Tables.USER_TAG;
 
 import java.sql.Timestamp;
+import java.util.List;
 
 import javax.validation.Valid;
 
@@ -21,6 +22,7 @@ import com.vpu.mp.service.foundation.util.PageResult;
 import com.vpu.mp.service.pojo.shop.member.TagInfoVo;
 import com.vpu.mp.service.pojo.shop.member.TagPageListParam;
 import com.vpu.mp.service.pojo.shop.member.UpdateTagParam;
+import com.vpu.mp.service.pojo.shop.member.tag.CommonTagVo;
 
 /**
  * 
@@ -29,7 +31,7 @@ import com.vpu.mp.service.pojo.shop.member.UpdateTagParam;
 @Service
 
 public class TagService extends ShopBaseService {
-
+	final static Byte DELETE_NO = 0;
 	public PageResult<TagInfoVo> getPageList(TagPageListParam param) {
 
 		UserTag ut = USER_TAG.as("ut");
@@ -147,4 +149,13 @@ public class TagService extends ShopBaseService {
 		return result;
 	}
 
+	/**
+	 * 查询标签列表
+	 */
+	public List<CommonTagVo> getCommonTagList() {
+
+		List<CommonTagVo> list = db().selectFrom(TAG).where(TAG.IS_DELETE.eq(DELETE_NO)).orderBy(TAG.TAG_ID.asc()).fetch().into(CommonTagVo.class);
+		logger().info("共查询到： "+list.size()+" 条数据");
+		return list;
+	}
 }

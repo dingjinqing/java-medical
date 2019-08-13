@@ -2,13 +2,14 @@ package com.vpu.mp.service.shop.member;
 
 import static com.vpu.mp.db.shop.Tables.ORDER_VERIFIER;
 import static com.vpu.mp.db.shop.Tables.USER;
+import static com.vpu.mp.db.shop.Tables.USER_TAG;
 import static org.jooq.impl.DSL.count;
 import static org.jooq.impl.DSL.date;
 
 import java.sql.Date;
 import java.util.Map;
-
 import org.jooq.Field;
+import org.jooq.InsertValuesStep2;
 import org.jooq.Record;
 import org.jooq.SelectField;
 import org.jooq.SelectJoinStep;
@@ -19,6 +20,7 @@ import org.springframework.stereotype.Service;
 
 import com.vpu.mp.db.shop.tables.User;
 import com.vpu.mp.db.shop.tables.records.UserRecord;
+import com.vpu.mp.db.shop.tables.records.UserTagRecord;
 import com.vpu.mp.service.foundation.data.DelFlag;
 import com.vpu.mp.service.foundation.service.ShopBaseService;
 import com.vpu.mp.service.foundation.util.DateUtil;
@@ -28,6 +30,8 @@ import com.vpu.mp.service.pojo.shop.member.CommonMemberPageListQueryParam;
 import com.vpu.mp.service.pojo.shop.member.CommonMemberPageListQueryVo;
 import com.vpu.mp.service.pojo.shop.member.MemberInfoVo;
 import com.vpu.mp.service.pojo.shop.member.MemberPageListParam;
+import com.vpu.mp.service.pojo.shop.member.MememberLoginStatusParam;
+import com.vpu.mp.service.pojo.shop.member.tag.UserTagParam;
 
 /**
  * 
@@ -212,5 +216,38 @@ public class MemberService extends ShopBaseService {
         map = select.where(USER.CREATE_TIME.between(param.getStartTime(),param.getEndTime())).
               groupBy(date(USER.CREATE_TIME)).fetch().intoMap(date(USER.CREATE_TIME).as("date"),count().as("number"));
 		return map;
+	}
+
+	/**
+	 * 批量设置用户的登录状态 ： 禁止登录-恢复登录
+	 */
+	public void changeLoginStatus(MememberLoginStatusParam param) {
+
+		int result = db().update(USER)
+						.set(USER.DEL_FLAG, param.getIsDelete())
+						.where(USER.USER_ID.in(param.getUserIdList()))
+						.execute();
+		
+		logger().info("更新  " + result + " 条数据");
+	}
+
+	
+	/**
+	 * 为会员用户打标签
+	 */
+	public void setTagForMember(UserTagParam param) {
+		
+		/** 在事务中 */
+		this.transaction(()->{
+			/** 构建insert sql语句*/
+			InsertValuesStep2<UserTagRecord, Integer, Integer> insert = db().insertInto(USER_TAG).columns(USER_TAG.USER_ID,USER_TAG.TAG_ID);
+			/** 将值放入insert 语句 */
+			param.getTagIdList().stream().forEach(x-> insert.values(param.getUserId(), x));
+			
+			/** 删除原来的标签 */
+			int before = db().delete(USER_TAG).where(USER_TAG.USER_ID.eq(param.getUserId())).execute();
+			int after = insert.execute();
+			logger().info("删除 " + before +" 条记录。添加 " + after + " 条记录。");
+		});
 	}
 }

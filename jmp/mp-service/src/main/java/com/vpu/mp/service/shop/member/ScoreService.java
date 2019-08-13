@@ -1,7 +1,8 @@
 package com.vpu.mp.service.shop.member;
 
-import static com.vpu.mp.db.shop.Tables.USER;
-import static com.vpu.mp.db.shop.Tables.USER_SCORE;
+
+import static com.vpu.mp.db.shop.tables.User.USER;
+import static com.vpu.mp.db.shop.tables.UserScore.USER_SCORE;
 
 import java.math.BigDecimal;
 import java.sql.Timestamp;
@@ -11,6 +12,8 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Random;
 
+import org.jooq.Record7;
+import org.jooq.SelectConditionStep;
 import org.jooq.impl.DSL;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -22,7 +25,10 @@ import com.vpu.mp.db.shop.tables.records.UserScoreRecord;
 import com.vpu.mp.service.foundation.data.JsonResultCode;
 import com.vpu.mp.service.foundation.service.ShopBaseService;
 import com.vpu.mp.service.foundation.util.DateUtil;
+import com.vpu.mp.service.foundation.util.PageResult;
 import com.vpu.mp.service.pojo.shop.member.account.ScoreParam;
+import com.vpu.mp.service.pojo.shop.member.score.ScorePageListParam;
+import com.vpu.mp.service.pojo.shop.member.score.ScorePageListVo;
 
 /**
  * @author 黄壮壮 2019-07-19 15:03
@@ -282,6 +288,45 @@ public class ScoreService extends ShopBaseService {
 			}
 		}
 		return result;
+	}
+
+	/**
+	 * 分页查询会员用户积分详情
+	 */
+	public PageResult<ScorePageListVo> getPageListOfScoreDetails(ScorePageListParam param) {
+		SelectConditionStep<Record7<String, String, String, Integer, Timestamp, Timestamp, String>> select = db()
+				.select(USER.USERNAME,USER.MOBILE,USER_SCORE.ORDER_SN,USER_SCORE.SCORE,USER_SCORE.CREATE_TIME,USER_SCORE.EXPIRE_TIME,USER_SCORE.REMARK)
+				.from(USER_SCORE.join(USER).on(USER.USER_ID.eq(USER_SCORE.USER_ID))).where(USER_SCORE.USER_ID.eq(param.getUserId()));
+		
+		buildOptions(select,param);
+		select.orderBy(USER_SCORE.CREATE_TIME.desc());
+		
+		return getPageResult(select, param.getCurrentPage(), param.getPageRows(),ScorePageListVo.class);
+	}
+
+	/**
+	 * 分页查询用户积分明细-积分明细时其他查询条件
+	 */
+	private void buildOptions(
+			SelectConditionStep<Record7<String, String, String, Integer, Timestamp, Timestamp, String>> select,
+			ScorePageListParam param) {
+		logger().info("正在构建查询条件");
+		
+		/** 订单号 */
+		if(!StringUtils.isEmpty(param.getOrderSn())) {
+			select.and(USER_SCORE.ORDER_SN.eq(param.getOrderSn()));
+		}
+		
+		/** 时间范围 */
+		/** 开始时间 */
+		if(param.getStartTime() != null) {
+			select.and(USER_SCORE.CREATE_TIME.ge(param.getStartTime()));
+		}
+		/** 结束时间 */
+		if(param.getEndTime() != null) {
+			select.and(USER_SCORE.CREATE_TIME.le(param.getEndTime()));
+		}
+		
 	}
 
 }

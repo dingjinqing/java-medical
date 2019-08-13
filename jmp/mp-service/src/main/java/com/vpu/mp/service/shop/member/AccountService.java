@@ -5,12 +5,11 @@ import static com.vpu.mp.db.shop.tables.TradesRecord.TRADES_RECORD;
 import static com.vpu.mp.db.shop.tables.User.USER;
 import static com.vpu.mp.db.shop.tables.UserAccount.USER_ACCOUNT;
 
+
 import java.math.BigDecimal;
 import java.sql.Timestamp;
 
-import javax.validation.Valid;
 
-import org.jooq.Record4;
 import org.jooq.Record6;
 import org.jooq.SelectConditionStep;
 import org.jooq.tools.StringUtils;
@@ -25,6 +24,8 @@ import com.vpu.mp.service.foundation.util.PageResult;
 import com.vpu.mp.service.pojo.shop.auth.AdminTokenAuthInfo;
 import com.vpu.mp.service.pojo.shop.member.account.AccountPageListParam;
 import com.vpu.mp.service.pojo.shop.member.account.AccountParam;
+import com.vpu.mp.service.pojo.shop.member.score.ScorePageListParam;
+import com.vpu.mp.service.pojo.shop.member.score.ScorePageListVo;
 import com.vpu.mp.service.pojo.shop.member.account.AccountPageListVo;
 
 /**
@@ -149,10 +150,9 @@ public class AccountService extends ShopBaseService {
 	 */
 	public PageResult<AccountPageListVo> getPageListOfAccountDetails(AccountPageListParam param) {
 		
-
-		
-		SelectConditionStep<Record6<String, String, String, BigDecimal, Timestamp, String>> select = db().select(USER.USERNAME,USER.MOBILE,USER_ACCOUNT.ORDER_SN,USER_ACCOUNT.AMOUNT,USER_ACCOUNT.CREATE_TIME,USER_ACCOUNT.REMARK)
-		.from(USER_ACCOUNT.join(USER).on(USER.USER_ID.eq(USER_ACCOUNT.USER_ID))).where(USER_ACCOUNT.USER_ID.eq(param.getUserId()));
+		SelectConditionStep<Record6<String, String, String, BigDecimal, Timestamp, String>> select = db()
+				.select(USER.USERNAME,USER.MOBILE,USER_ACCOUNT.ORDER_SN,USER_ACCOUNT.AMOUNT,USER_ACCOUNT.CREATE_TIME,USER_ACCOUNT.REMARK)
+				.from(USER_ACCOUNT.join(USER).on(USER.USER_ID.eq(USER_ACCOUNT.USER_ID))).where(USER_ACCOUNT.USER_ID.eq(param.getUserId()));
 		
 		
 		/** 查询条件的其他选项 */
@@ -163,8 +163,11 @@ public class AccountService extends ShopBaseService {
 		return getPageResult(select, param.getCurrentPage(), param.getPageRows(), AccountPageListVo.class);
 	}
 
+	
+
+	
 	/**
-	 * 分页查询用户余额详情时其他查询条件
+	 * 分页查询用户余额明细-积分明细时其他查询条件
 	 */
 	private void buildOptions(SelectConditionStep<Record6<String, String, String, BigDecimal, Timestamp, String>> select,
 			AccountPageListParam param) {
@@ -185,5 +188,7 @@ public class AccountService extends ShopBaseService {
 			select.and(USER_ACCOUNT.CREATE_TIME.le(param.getEndTime()));
 		}
 	}
+
+
 
 }
