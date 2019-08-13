@@ -25,6 +25,7 @@ import com.vpu.mp.service.pojo.shop.distribution.DistributorLevelParam;
 import com.vpu.mp.service.pojo.shop.distribution.DistributorLevelVo;
 import com.vpu.mp.service.pojo.shop.distribution.DistributorListParam;
 import com.vpu.mp.service.pojo.shop.distribution.DistributorListVo;
+import com.vpu.mp.service.pojo.shop.distribution.PromotionLanguageAddParam;
 import com.vpu.mp.service.pojo.shop.distribution.PromotionLanguageListParam;
 import com.vpu.mp.service.pojo.shop.distribution.PromotionLanguageListVo;
 import com.vpu.mp.service.pojo.shop.distribution.RebateGoodsDetailParam;
@@ -393,5 +394,71 @@ public class AdminDistributionController extends AdminBaseController{
 	public JsonResult promotionLanguageList(@RequestBody PromotionLanguageListParam param) {
 		PageResult<PromotionLanguageListVo> promotionLanguageList = shop().promotionLanguage.getPromotionLanguageList(param);
 		return this.success(promotionLanguageList);
+	}
+	
+	/**
+	 * 添加分销推广语
+	 * @param param
+	 * @return
+	 */
+	@PostMapping("/admin/distribution/promotion/add")
+	public JsonResult promotionLanguageAdd(@RequestBody PromotionLanguageAddParam param) {
+		int result = shop().promotionLanguage.addPromotionLanguage(param);
+		return this.success(result);
+	}
+	
+	/**
+	 * 获取单条分销推广语信息
+	 * @param id
+	 * @return
+	 */
+	@GetMapping("/admin/distribution/promotion/edit")
+	public JsonResult promotionLanguageEdit(Integer id) {
+		PromotionLanguageListVo result = shop().promotionLanguage.getOnePromotion(id);
+		return this.success(result);
+	}
+	
+	/**
+	 * 分销推广语编辑保存
+	 * @param param
+	 * @return
+	 */
+	@PostMapping("/admin/distribution/promotion/save")
+	public JsonResult promotionLanguageSave(@RequestBody PromotionLanguageAddParam param) {
+		int result = shop().promotionLanguage.savePromotionLanguage(param);
+		return this.success(result);
+	}
+	
+	/**
+	 * 删除分销推广语，假删除
+	 * @param id
+	 * @return
+	 */
+	@GetMapping("/admin/distribution/promotion/delete")
+	public JsonResult promotionLanguageDelete(Integer id) {
+		int result = shop().promotionLanguage.delPromotionLanguage(id);
+		return this.success(result);
+	}
+	
+	/**
+	 * 停用分销推广语
+	 * @param id
+	 * @return
+	 */
+	@GetMapping("/admin/distribution/promotion/pause")
+	public JsonResult promotionLanguagePause(Integer id) {
+		int result = shop().promotionLanguage.pausePromotionLanguage(id);
+		return this.success(result);
+	}
+	
+	/**
+	 *启用分销推广语
+	 * @param id
+	 * @return
+	 */
+	@GetMapping("/admin/distribution/promotion/open")
+	public JsonResult promotionLanguageOpen(Integer id) {
+		int result = shop().promotionLanguage.openPromotionLanguage(id);
+		return this.success(result);
 	}
 }
