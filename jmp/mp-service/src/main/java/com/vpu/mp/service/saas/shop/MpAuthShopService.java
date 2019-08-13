@@ -869,8 +869,9 @@ public class MpAuthShopService extends MainBaseService {
 			}
 			int execute = db().update(MP_AUTH_SHOP).set(MP_AUTH_SHOP.UNION_PAY_APP_ID, param.getUnion_pay_app_id())
 					.set(MP_AUTH_SHOP.UNION_PAY_CUS_ID, param.getUnion_pay_cus_id())
-					.set(MP_AUTH_SHOP.UNION_PAY_APP_KEY, param.getUnion_pay_app_key()).execute();
-			if(execute>0) {
+					.set(MP_AUTH_SHOP.UNION_PAY_APP_KEY, param.getUnion_pay_app_key())
+					.set(MP_AUTH_SHOP.IS_SUB_MERCHANT, param.getIsSubMerchant().byteValue()).execute();
+			if (execute > 0) {
 				wxOpenResult.setErrcode(JsonResultMessage.MSG_SUCCESS);
 			}
 			break;
@@ -881,9 +882,11 @@ public class MpAuthShopService extends MainBaseService {
 				wxOpenResult.setErrcode(JsonResultMessage.MSG_FAIL);
 				return wxOpenResult;
 			}
-			int execute2 = db().update(MP_AUTH_SHOP).set(MP_AUTH_SHOP.MERCHANT_CATEGORY_CODE, param.getMerchant_category_code())
-					.set(MP_AUTH_SHOP.FEE_TYPE, param.getFee_type()).execute();
-			if(execute2>0) {
+			int execute2 = db().update(MP_AUTH_SHOP)
+					.set(MP_AUTH_SHOP.MERCHANT_CATEGORY_CODE, param.getMerchant_category_code())
+					.set(MP_AUTH_SHOP.FEE_TYPE, param.getFee_type())
+					.set(MP_AUTH_SHOP.IS_SUB_MERCHANT, param.getIsSubMerchant().byteValue()).execute();
+			if (execute2 > 0) {
 				wxOpenResult.setErrcode(JsonResultMessage.MSG_SUCCESS);
 			}
 			break;
@@ -893,6 +896,5 @@ public class MpAuthShopService extends MainBaseService {
 		}
 		return wxOpenResult;
 	}
-	
 	
 }
