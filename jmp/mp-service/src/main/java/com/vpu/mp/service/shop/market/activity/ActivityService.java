@@ -91,6 +91,7 @@ public class ActivityService extends ShopBaseService {
                     break;
                 case DISABLED:
                     select.and(TABLE.STATUS.eq(DISABLE));
+                    break;
                 default:
                     throw new IllegalArgumentException("Unexpected status: " + status);
             }
