@@ -12,27 +12,27 @@ import lombok.Data;
  */
 @Data
 public class DistributorInvitedListVo {
-	public String username;
-	public String mobile;
-	public Timestamp createTime;
+	private String username;
+	private String mobile;
+	private Timestamp createTime;
 	/**
 	 * 累积返利订单数
 	 */
-	public Integer orderNumber;
+	private Integer orderNumber;
 	/**
 	 * 累积订单返利商品总金额
 	 */
-	public BigDecimal totalCanFanliMoney;
+	private BigDecimal totalCanFanliMoney;
 	/**
 	 * 累积返利佣金
 	 */
-	public BigDecimal totalFanliMoney;
+	private BigDecimal totalFanliMoney;
 	/**
 	 * 返利有效日期
 	 */
-	public Timestamp invitExpiryDate;
+	private Timestamp invitExpiryDate;
 	/**
 	 * 邀请保护日期
 	 */
-	public Timestamp inviteProtectDate;
+	private Timestamp inviteProtectDate;
 }

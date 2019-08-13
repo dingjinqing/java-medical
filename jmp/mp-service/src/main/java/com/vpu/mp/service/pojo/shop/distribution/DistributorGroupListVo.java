@@ -11,11 +11,11 @@ import lombok.Data;
  */
 @Data
 public class DistributorGroupListVo {
-	public Integer id;
-	public String groupName;
-	public Integer isDefault;
-	public Integer delFlag;
-	public Integer distributorAmount;
+	private Integer id;
+	private String groupName;
+	private Integer isDefault;
+	private Integer delFlag;
+	private Integer distributorAmount;
 	
 	 /**
      * 	分页信息

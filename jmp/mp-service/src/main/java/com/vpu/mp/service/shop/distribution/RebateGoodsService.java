@@ -37,7 +37,7 @@ public class RebateGoodsService extends ShopBaseService{
 		 SelectJoinStep<? extends Record> select = db().select(FANLI_GOODS_STATISTICS.SALE_NUMBER,FANLI_GOODS_STATISTICS.PRD_TOTAL_FANLI,GOODS.GOODS_NAME,GOODS.GOODS_SALE_NUM,GOODS.SHOP_PRICE).from(FANLI_GOODS_STATISTICS
 				.leftJoin(GOODS).on(FANLI_GOODS_STATISTICS.GOODS_ID.eq(GOODS.GOODS_ID)));
 		optionBuild(select,param);
-		PageResult<RebateGoodsVo> pageList = this.getPageResult(select, param.currentPage, param.pageRows, RebateGoodsVo.class);
+		PageResult<RebateGoodsVo> pageList = this.getPageResult(select, param.getCurrentPage(), param.getPageRows(), RebateGoodsVo.class);
 		return pageList;
 	}
 	

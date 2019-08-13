@@ -4,6 +4,6 @@ import lombok.Data;
 
 @Data
 public class DistributorLevelUserNumVo {
-	public Integer distributor_level;
-	public Integer userNumber;
+	private Integer distributor_level;
+	private Integer userNumber;
 }

@@ -13,16 +13,16 @@ import lombok.Data;
  */
 @Data
 public class DistributorListParam {
-	public String mobile;
-	public String username;
-	public String realName;
-	public String invitedMobile;
-	public String invitedUsername;
-	public Timestamp startCreateTime;
-	public Timestamp endCreateTime;
-	public Byte distributorLevel;
-	public Integer distributorGroup;
+	private String mobile;
+	private String username;
+	private String realName;
+	private String invitedMobile;
+	private String invitedUsername;
+	private Timestamp startCreateTime;
+	private Timestamp endCreateTime;
+	private Byte distributorLevel;
+	private Integer distributorGroup;
 	
-	public Integer currentpage = Page.DEFAULT_CURRENT_PAGE;
-	public Integer pageRows = Page.DEFAULT_PAGE_ROWS;
+	private Integer currentPage = Page.DEFAULT_CURRENT_PAGE;
+	private Integer pageRows = Page.DEFAULT_PAGE_ROWS;
 }

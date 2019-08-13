@@ -250,7 +250,7 @@ public class AdminDistributionController extends AdminBaseController{
 	public JsonResult saveDistributorLevel(@RequestBody DistributorLevelParam[] levelData) {
 		for(DistributorLevelParam level : levelData) {
 			//各等级信息
-			DistributorLevelVo levelInfo = shop().distributorLevel.getOneLevelInfo(level.levelId);
+			DistributorLevelVo levelInfo = shop().distributorLevel.getOneLevelInfo(level.getLevelId());
 			//定义需要重新定等级的用户
 			List<Integer> upUserIds = new ArrayList<Integer>();
 			
@@ -389,7 +389,8 @@ public class AdminDistributionController extends AdminBaseController{
 	 * @param param
 	 * @return
 	 */
-	public JsonResult promotionLanguageList(PromotionLanguageListParam param) {
+	@PostMapping("/admin/distribution/promotion/list")
+	public JsonResult promotionLanguageList(@RequestBody PromotionLanguageListParam param) {
 		PageResult<PromotionLanguageListVo> promotionLanguageList = shop().promotionLanguage.getPromotionLanguageList(param);
 		return this.success(promotionLanguageList);
 	}

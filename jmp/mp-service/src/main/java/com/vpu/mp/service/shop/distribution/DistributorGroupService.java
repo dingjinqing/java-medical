@@ -30,7 +30,7 @@ public class DistributorGroupService extends ShopBaseService{
 				.select(DISTRIBUTOR_GROUP.ID,DISTRIBUTOR_GROUP.GROUP_NAME,DISTRIBUTOR_GROUP.IS_DEFAULT,DISTRIBUTOR_GROUP.DEL_FLAG)
 				.from(DISTRIBUTOR_GROUP);
 		SelectConditionStep<Record4<Integer, String, Byte, Byte>> sql = buildOptions(select,param);
-		PageResult<DistributorGroupListVo> groupList = this.getPageResult(sql, param.currentpage, param.pageRows, DistributorGroupListVo.class);
+		PageResult<DistributorGroupListVo> groupList = this.getPageResult(sql, param.getCurrentPage(), param.getPageRows(), DistributorGroupListVo.class);
 		
 		//每个分组下的分销员数量
 		for(DistributorGroupListVo group : groupList.dataList) {
@@ -73,7 +73,7 @@ public class DistributorGroupService extends ShopBaseService{
 	public boolean isExistGroup(DistributorGroupListParam param) {
 		Record1<String> res = db().select(DISTRIBUTOR_GROUP.GROUP_NAME)
 				.from(DISTRIBUTOR_GROUP)
-				.where(DISTRIBUTOR_GROUP.GROUP_NAME.eq(param.groupName))
+				.where(DISTRIBUTOR_GROUP.GROUP_NAME.eq(param.getGroupName()))
 				.fetchOne();
 		Integer count = res.getValue(0, Integer.class);
         if (count > 0) {

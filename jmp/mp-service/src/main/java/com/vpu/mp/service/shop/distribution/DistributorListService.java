@@ -48,7 +48,7 @@ public class DistributorListService extends ShopBaseService{
 				.leftJoin(DISTRIBUTOR_GROUP).on(DISTRIBUTOR_GROUP.ID.eq(USER.INVITE_GROUP))
 				.leftJoin(DISTRIBUTOR_LEVEL).on(USER.DISTRIBUTOR_LEVEL.eq(DISTRIBUTOR_LEVEL.LEVEL_ID)));
 		SelectConditionStep<Record8<Integer, String, String, Timestamp, String, String, String, Integer>> sql = buildOptions(select,param);
-		PageResult<DistributorListVo> distributorList = this.getPageResult(sql, param.getCurrentpage(), param.getPageRows(), DistributorListVo.class);
+		PageResult<DistributorListVo> distributorList = this.getPageResult(sql, param.getCurrentPage(), param.getPageRows(), DistributorListVo.class);
 		
 		for(DistributorListVo distributor : distributorList.dataList) {
 			//间接邀请用户数
@@ -77,7 +77,7 @@ public class DistributorListService extends ShopBaseService{
 					.leftJoin(ORDER_INFO).on(ORDER_GOODS_REBATE.ORDER_SN.eq(ORDER_INFO.ORDER_SN)))
 					.where(ORDER_INFO.SETTLEMENT_FLAG.eq((byte)0))
 					.and(ORDER_INFO.ORDER_STATUS.ge((byte)3))
-					.and(ORDER_GOODS_REBATE.REBATE_USER_ID.eq(distributor.userId))
+					.and(ORDER_GOODS_REBATE.REBATE_USER_ID.eq(distributor.getUserId()))
 					.fetchOne().into(BigDecimal.class);
 			distributor.setWaitFanliMoney(waitFanliMoney);		
 		}
@@ -145,7 +145,7 @@ public class DistributorListService extends ShopBaseService{
 		SelectJoinStep<Record6<String, String, Timestamp, Integer, BigDecimal, BigDecimal>> select = db().select(USER.USERNAME,USER.MOBILE,USER.CREATE_TIME,USER_FANLI_STATISTICS.ORDER_NUMBER,USER_FANLI_STATISTICS.TOTAL_CAN_FANLI_MONEY,USER_FANLI_STATISTICS.TOTAL_FANLI_MONEY)
 				.from(USER.leftJoin(USER_FANLI_STATISTICS).on(USER.USER_ID.eq(USER_FANLI_STATISTICS.USER_ID)));
 		SelectConditionStep<Record6<String, String, Timestamp, Integer, BigDecimal, BigDecimal>> sql = getInvitedListOptions(select,param);
-		PageResult<DistributorInvitedListVo> invitedlist = this.getPageResult(sql, param.currentpage, param.pageRows, DistributorInvitedListVo.class);
+		PageResult<DistributorInvitedListVo> invitedlist = this.getPageResult(sql, param.getCurrentPage(), param.getPageRows(), DistributorInvitedListVo.class);
 		return invitedlist;
 	}
 	

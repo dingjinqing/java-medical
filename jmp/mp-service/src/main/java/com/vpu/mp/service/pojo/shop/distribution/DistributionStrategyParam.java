@@ -37,6 +37,6 @@ public class DistributionStrategyParam {
 	    /**
 	     * 	分页信息
 	     */
-	    public int currentPage;
-	    public int pageRows;
+	    private int currentPage;
+	    private int pageRows;
 }

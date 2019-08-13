@@ -4,12 +4,12 @@ import lombok.Data;
 
 @Data
 public class DistributorLevelParam {
-	public Integer id;
-	public Byte levelId;
-	public String levelName;
-	public Integer levelUpRoute;
-	public Integer inviteNumber;
-	public String totalDistributionMoney;
-	public String totalBuyMoney;
-	public String levelUserIds;
+	private Integer id;
+	private Byte levelId;
+	private String levelName;
+	private Integer levelUpRoute;
+	private Integer inviteNumber;
+	private String totalDistributionMoney;
+	private String totalBuyMoney;
+	private String levelUserIds;
 }

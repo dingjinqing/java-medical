@@ -11,10 +11,10 @@ import lombok.Data;
  */
 @Data
 public class RebateGoodsVo {
-	public String goodsName;
-	public BigDecimal goodsPrice;
-	public String catName;
-	public Integer goodsSaleNum;
-	public Integer saleNumber;
-	public BigDecimal prdTotalFanli;
+	private String goodsName;
+	private BigDecimal goodsPrice;
+	private String catName;
+	private Integer goodsSaleNum;
+	private Integer saleNumber;
+	private BigDecimal prdTotalFanli;
 }

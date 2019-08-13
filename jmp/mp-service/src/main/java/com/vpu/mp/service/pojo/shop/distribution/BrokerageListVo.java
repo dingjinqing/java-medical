@@ -12,34 +12,34 @@ import lombok.Data;
  */
 @Data
 public class BrokerageListVo {
-	public String distributorName;
-	public String distributorMobile;
-	public String realName;
-	public String distributorGroup;
-	public String ordersn;
+	private String distributorName;
+	private String distributorMobile;
+	private String realName;
+	private String distributorGroup;
+	private String ordersn;
 	/**
 	 * 订单总金额
 	 */
-	public BigDecimal totalOrderMoney;
-	public String userMobile;
-	public String orderUserName;
+	private BigDecimal totalOrderMoney;
+	private String userMobile;
+	private String orderUserName;
 	/**
 	 * 返利关系
 	 */
-	public Integer rebateLevel;
+	private Integer rebateLevel;
 	/**
 	 * 返利商品总金额
 	 */
-	public BigDecimal totalRebateMoney;
+	private BigDecimal totalRebateMoney;
 	/**
 	 * 返利佣金金额
 	 */
-	public BigDecimal realRebateMoney;
-	public Timestamp createTime;
+	private BigDecimal realRebateMoney;
+	private Timestamp createTime;
 	/**
 	 * 返利时间
 	 */
-	public Timestamp rebateTime;
+	private Timestamp rebateTime;
 	
 	
 }

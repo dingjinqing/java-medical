@@ -43,7 +43,7 @@ public class BrokerageStatisticalService extends ShopBaseService{
 				.leftJoin(USER_DETAIL).on(ORDER_GOODS_REBATE.REBATE_USER_ID.eq(USER_DETAIL.USER_ID)));
 
 				buildoptions(select,param);
-		PageResult<BrokerageListVo> list = this.getPageResult(select, param.currentpage, param.pageRows, BrokerageListVo.class);
+		PageResult<BrokerageListVo> list = this.getPageResult(select, param.getCurrentPage(), param.getPageRows(), BrokerageListVo.class);
 		return list;
 		
 	}
@@ -76,7 +76,7 @@ public class BrokerageStatisticalService extends ShopBaseService{
 		if(param.getStartRebateTime() != null && param.getEndRebateTime() != null) {
 			select.where(ORDER_INFO.FINISHED_TIME.ge(param.getStartRebateTime()).and(ORDER_INFO.FINISHED_TIME.le(param.getEndRebateTime())));
 		}
-		if(param.rebateStatus != null) {
+		if(param.getRebateStatus() != null) {
 			select.where(ORDER_INFO.SETTLEMENT_FLAG.eq(param.getRebateStatus()));
 		}
 		if(param.getDistributorGroup() != null) {

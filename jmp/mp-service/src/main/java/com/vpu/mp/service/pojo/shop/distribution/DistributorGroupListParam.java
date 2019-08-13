@@ -11,7 +11,7 @@ import lombok.Data;
  */
 @Data
 public class DistributorGroupListParam {
-	public String groupName;
-	public Integer currentpage = Page.DEFAULT_CURRENT_PAGE;
-	public Integer pageRows = Page.DEFAULT_PAGE_ROWS;
+	private String groupName;
+	private Integer currentPage = Page.DEFAULT_CURRENT_PAGE;
+	private Integer pageRows = Page.DEFAULT_PAGE_ROWS;
 }

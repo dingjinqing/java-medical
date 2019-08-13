@@ -45,7 +45,7 @@ public class RebateStrategyService extends ShopBaseService{
 				.select(DISTRIBUTION_STRATEGY.STRATEGY_NAME,DISTRIBUTION_STRATEGY.START_TIME,DISTRIBUTION_STRATEGY.END_TIME,DISTRIBUTION_STRATEGY.FANLI_RATIO,DISTRIBUTION_STRATEGY.STRATEGY_LEVEL,DISTRIBUTION_STRATEGY.CREATE_TIME,DISTRIBUTION_STRATEGY.STATUS,DISTRIBUTION_STRATEGY.DEL_FLAG)
 				.from(DISTRIBUTION_STRATEGY);
 		SelectConditionStep<Record8<String,Timestamp,Timestamp,Double,Byte,Timestamp,Byte,Byte>> sql = buildOptions(select,param);
-		PageResult<DistributionStrategyVo> list = this.getPageResult(sql, param.currentPage, param.pageRows,DistributionStrategyVo.class);
+		PageResult<DistributionStrategyVo> list = this.getPageResult(sql, param.getCurrentPage(), param.getPageRows(),DistributionStrategyVo.class);
 		return list;
 	}
 	

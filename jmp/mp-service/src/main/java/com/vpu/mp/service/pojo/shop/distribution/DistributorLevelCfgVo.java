@@ -6,6 +6,6 @@ import lombok.Data;
 
 @Data
 public class DistributorLevelCfgVo {
-	public List<?> lavelData;
-	public List<?> levelUserNum;
+	private List<?> lavelData;
+	private List<?> levelUserNum;
 }

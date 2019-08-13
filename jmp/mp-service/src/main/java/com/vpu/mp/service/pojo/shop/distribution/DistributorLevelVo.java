@@ -4,13 +4,13 @@ import lombok.Data;
 
 @Data
 public class DistributorLevelVo {
-	public Integer    id;
-	public Byte       levelId;
-	public String     levelName;
-	public Byte       levelUpRoute;
-	public Integer    inviteNumber;
-	public String totalDistributionMoney;
-	public String totalBuyMoney;
-	public String     levelUserIds;
-	public Byte       levelStatus;
+	private Integer    id;
+	private Byte       levelId;
+	private String     levelName;
+	private Byte       levelUpRoute;
+	private Integer    inviteNumber;
+	private String totalDistributionMoney;
+	private String totalBuyMoney;
+	private String     levelUserIds;
+	private Byte       levelStatus;
 }

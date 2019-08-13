@@ -16,53 +16,53 @@ public class BrokerageListParam {
 	/**
 	 * 分销员名称
 	 */
-	public String distributorName;
+	private String distributorName;
 	/**
 	 * 分销员电话
 	 */
-	public String distributorMobile;
+	private String distributorMobile;
 	/**
 	 * 下单用户名
 	 */
-	public String username;
+	private String username;
 	/**
 	 * 下单用户手机号
 	 */
-	public String mobile;
+	private String mobile;
 	/**
 	 * 下单开始时间
 	 */
-	public Timestamp startCreateTime;
+	private Timestamp startCreateTime;
 	/**
 	 * 下单结束时间
 	 */
-	public Timestamp endCreateTime;
+	private Timestamp endCreateTime;
 	/**
 	 * 订单号
 	 */
-	public String orderSn;
+	private String orderSn;
 	/**
 	 * 开始返利时间
 	 */
-	public Timestamp startRebateTime;
+	private Timestamp startRebateTime;
 	/**
 	 * 返利结束时间
 	 */
-	public Timestamp endRebateTime;
+	private Timestamp endRebateTime;
 	/**
 	 * 返利状态
 	 */
-	public Byte rebateStatus;
+	private Byte rebateStatus;
 	/**
 	 * 分销员分组
 	 */
-	public Integer distributorGroup;
+	private Integer distributorGroup;
 	/**
 	 * 返利关系
 	 */
-	public Byte rebateLevel;
+	private Byte rebateLevel;
 	
-	public Integer currentpage = Page.DEFAULT_CURRENT_PAGE;
-	public Integer pageRows = Page.DEFAULT_PAGE_ROWS;
+	private Integer currentPage;
+	private Integer pageRows;
 	
 }

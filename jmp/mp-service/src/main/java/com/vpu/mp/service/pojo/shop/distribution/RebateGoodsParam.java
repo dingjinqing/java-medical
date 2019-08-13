@@ -9,12 +9,12 @@ import lombok.Data;
  */
 @Data
 public class RebateGoodsParam {
-	public Integer goodsType;
-	public String goodsName;
+	private Integer goodsType;
+	private String goodsName;
 	
 	/**
      * 	分页信息
      */
-    public int currentPage;
-    public int pageRows;
+	private int currentPage;
+	private int pageRows;
 }
