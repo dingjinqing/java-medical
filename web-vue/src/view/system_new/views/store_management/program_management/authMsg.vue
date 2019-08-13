@@ -248,7 +248,10 @@
                             支付方式:
                           </td>
                           <td>
-                            微信直连支付
+                            <span v-if="dataList.isSubMerchant===0">子商户模式</span>
+                            <span v-if="dataList.isSubMerchant===1">非子商户</span>
+                            <span v-if="dataList.isSubMerchant===2">微铺宝子商户</span>
+                            <span v-if="dataList.isSubMerchant===3">通联支付子商户</span>
                           </td>
                         </tr>
                         <tr>
@@ -256,7 +259,16 @@
                             支付配置:
                           </td>
                           <td>
-                            无额外配置
+                            <span v-if="dataList.isSubMerchant===0 || dataList.isSubMerchant===1">无额外配置</span>
+                            <div v-if="dataList.isSubMerchant===2">
+                              <div>通联支付子商户APPID：{{this.dataList.unionPayAppId}}</div>
+                              <div>通联支付子商户商户号：{{this.dataList.unionPayCusId}}</div>
+                              <div>通联支付子商户密钥：{{this.dataList.unionPayAppKey}}</div>
+                            </div>
+                            <div v-if="dataList.isSubMerchant===3">
+                              <div>MCC码：{{this.dataList.merchantCategoryCode}}</div>
+                              <div>MCC码：{{this.dataList.feeType}}</div>
+                            </div>
                           </td>
                         </tr>
                       </table>

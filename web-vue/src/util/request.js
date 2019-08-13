@@ -7,7 +7,7 @@ import { Message } from 'element-ui'
 // 环境的切换
 let baseURL = ''
 if (process.env.NODE_ENV === 'development') {
-  baseURL = 'vpb'
+  baseURL = '/vpb'
   // localStorage.setItem('V-ImageHost', 'http://mpimg2.weipubao.cn')
 } else if (process.env.NODE_ENV === 'testing') {
   // baseURL = 'https://www.ceshi.com'

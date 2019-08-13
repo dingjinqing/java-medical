@@ -13,6 +13,7 @@ const indexlogin = () => import('@/components/index/login')
 const systemlogin = () => import('@/components/system/login')
 
 const baseRoutes = [
+
   {
     path: '/',
     redirect: '/index/home/main'
@@ -32,6 +33,7 @@ const baseRoutes = [
 const routes = baseRoutes.concat(baseRoutes, indexRoutes, adminRoutes, systemRouters)
 
 const router = new Router({
+  mode: 'history',
   routes
 })
 // 全局路由守卫
