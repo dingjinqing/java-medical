@@ -205,10 +205,22 @@ public class MpAuthShopService extends MainBaseService {
 	 */
 	public MpAuthShopRecord getAuthShopByAppId(String appId) {
 		MpAuthShopRecord fetchAny = db().fetchAny(MP_AUTH_SHOP, MP_AUTH_SHOP.APP_ID.eq(appId));
-		fetchAny.setQrcodeUrl(image.imageUrl(fetchAny.getQrcodeUrl())); 
 		return fetchAny;
 	}
 
+	
+	/**
+	 * 通过appId得到小程序信息，返回的图片带url
+	 * 
+	 * @param appId
+	 * @return
+	 */
+	public MpAuthShopRecord getAuthShopByAppIdAddURL(String appId) {
+		MpAuthShopRecord fetchAny = db().fetchAny(MP_AUTH_SHOP, MP_AUTH_SHOP.APP_ID.eq(appId));
+		fetchAny.setQrcodeUrl(image.imageUrl(fetchAny.getQrcodeUrl())); 
+		fetchAny.setTestQrPath(image.imageUrl(fetchAny.getTestQrPath()));
+		return fetchAny;
+	}
 	/**
 	 * 通过shopId得到小程序信息
 	 * 
@@ -217,7 +229,20 @@ public class MpAuthShopService extends MainBaseService {
 	 */
 	public MpAuthShopRecord getAuthShopByShopId(Integer shopId) {
 		MpAuthShopRecord fetchAny = db().fetchAny(MP_AUTH_SHOP, MP_AUTH_SHOP.SHOP_ID.eq((shopId)));
+		return fetchAny;
+	}
+	
+	
+	/**
+	 * 通过shopId得到小程序信息
+	 * 
+	 * @param shopId
+	 * @return
+	 */
+	public MpAuthShopRecord getAuthShopByShopIdAddURL(Integer shopId) {
+		MpAuthShopRecord fetchAny = db().fetchAny(MP_AUTH_SHOP, MP_AUTH_SHOP.SHOP_ID.eq((shopId)));
 		fetchAny.setQrcodeUrl(image.imageUrl(fetchAny.getQrcodeUrl())); 
+		fetchAny.setTestQrPath(image.imageUrl(fetchAny.getTestQrPath()));
 		return fetchAny;
 	}
 
