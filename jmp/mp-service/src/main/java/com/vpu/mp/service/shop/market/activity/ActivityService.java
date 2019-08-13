@@ -17,6 +17,7 @@ import java.sql.Timestamp;
 import java.util.List;
 import java.util.Optional;
 
+import static com.vpu.mp.db.shop.tables.Lottery.LOTTERY;
 import static com.vpu.mp.db.shop.tables.MrkingVoucher.MRKING_VOUCHER;
 import static com.vpu.mp.service.foundation.data.JsonResultMessage.COUPON_ACTIVITY_TIME_RANGE_CONFLICT;
 import static com.vpu.mp.service.pojo.shop.market.activity.ActivityListParam.*;
@@ -268,5 +269,16 @@ public class ActivityService extends ShopBaseService {
      */
     private SelectConditionStep<CouponActivityRecord> getActivity(Integer id) {
         return shopDb().selectFrom(TABLE).where(TABLE.ID.eq(id));
+    }
+
+    /**
+     * 获取可用的抽奖活动
+     */
+    public LotteryVo getAvailableLotteries() {
+        List<Lottery> lotteries = shopDb().select(LOTTERY.ID, LOTTERY.LOTTERY_NAME.as("name")).from(LOTTERY)
+            .where(LOTTERY.STATUS.eq((byte) 0).and(LOTTERY.END_TIME.gt(Util.currentTimeStamp()))
+                .and(LOTTERY.DEL_FLAG.eq((byte) 0)))
+            .fetchInto(Lottery.class);
+        return new LotteryVo(lotteries);
     }
 }

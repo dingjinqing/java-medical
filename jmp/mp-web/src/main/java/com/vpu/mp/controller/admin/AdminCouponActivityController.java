@@ -85,4 +85,12 @@ public class AdminCouponActivityController extends AdminBaseController {
     public JsonResult issueDetail(@RequestBody ActivityIssueListParam param) {
         return success(shop().issue.getIssuePageList(param));
     }
+
+    /**
+     * 获取可用的抽奖活动
+     */
+    @PostMapping("/lottery")
+    public JsonResult getAvailableLotteries() {
+        return success(shop().activity.getAvailableLotteries());
+    }
 }
