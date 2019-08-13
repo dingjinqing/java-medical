@@ -75,3 +75,29 @@ export function authInformationRequest (data) {
     method: 'get'
   })
 }
+
+// 小程序授权信息页面设置弹窗统一设置接口
+export function publishRequest (data) {
+  return request({
+    url: '/api/system/mp/publish',
+    method: 'post',
+    data: data
+  })
+}
+
+// 当前模板id查询
+export function nowIdRequest (data) {
+  return request({
+    url: `/api/system/mp/info/useTemplateId/${data}`,
+    method: 'get'
+  })
+}
+
+// 小程序授权信息页面按钮统一处理接口
+export function publishSetRequest (data) {
+  return request({
+    url: '/api/system/mp/publish',
+    method: 'post',
+    data: data
+  })
+}

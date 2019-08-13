@@ -475,7 +475,24 @@ export default {
     },
     // 操作点击处理
     handleToClick (row, index) {
-
+      console.log(row, index)
+      if (index === 0) {
+        this.$router.push({
+          name: 'programManage',
+          params: {
+            page: 'authMsg',
+            appId: row.appId
+          }
+        })
+      } else {
+        this.$router.push({
+          name: 'programManage',
+          params: {
+            page: 'versionLog',
+            appId: row.appId
+          }
+        })
+      }
     },
     // 点击搜索
     handleQuery () {

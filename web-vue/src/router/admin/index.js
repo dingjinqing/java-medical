@@ -22,10 +22,7 @@ const routes = [
               crumbTitle: '',
               meta: 'first_web_manage'
             },
-            component: () =>
-              import(
-                '@/view/admin/index/leftNavComponents/first_web_manage/overviewOfMall'
-              )
+            component: () => import('@/view/admin/index/leftNavComponents/first_web_manage/overviewOfMall')
           },
           {
             path: '/admin/home/main/overviewStatistics',
@@ -397,15 +394,11 @@ const routes = [
           {
             path: '/admin/home/main/membershipList',
             name: 'user_list',
-            // meta: 'user_manger',
             meta: {
               crumbTitle: 'router.membershipList',
               meta: 'user_manger'
             },
-            component: () =>
-              import(
-                '@/view/admin/index/leftNavComponents/user_manger/membershipList/membershipList'
-              )
+            component: () => import('@/view/admin/index/leftNavComponents/user_manger/membershipList/membershipList')
           },
           {
             path: '/admin/home/main/membershipInformation',
@@ -415,10 +408,7 @@ const routes = [
               meta: 'user_manger',
               category: 'membershipList'
             },
-            component: () =>
-              import(
-                '@/view/admin/index/leftNavComponents/user_manger/membershipList/membershipInformation'
-              )
+            component: () => import('@/view/admin/index/leftNavComponents/user_manger/membershipList/membershipInformation')
           },
           {
             path: '/admin/home/main/receiveDetail',

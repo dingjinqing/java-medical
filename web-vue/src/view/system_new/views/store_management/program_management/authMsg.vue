@@ -2,7 +2,7 @@
   <div class="authMsg">
     <div class="bg-white pd-10">
       <div class="handle-status">
-        操作成功
+        {{this.opStatus}}
       </div>
     </div>
 
@@ -267,7 +267,7 @@
                             </div>
                             <div v-if="dataList.isSubMerchant===3">
                               <div>MCC码：{{this.dataList.merchantCategoryCode}}</div>
-                              <div>MCC码：{{this.dataList.feeType}}</div>
+                              <div>标价币种：{{this.dataList.feeType}}</div>
                             </div>
                           </td>
                         </tr>
@@ -276,6 +276,7 @@
                         <el-button
                           type="primary"
                           size="small"
+                          @click="handleSetPay(dataList)"
                         >设置支付方式</el-button>
                       </div>
                     </td>
@@ -329,7 +330,7 @@
                         size="small"
                         type="primary"
                       >
-                        上传代码 （模板ID: 215）
+                        上传代码 （模板ID: {{this.tem_id}}）
                       </el-button>
                     </td>
                   </tr>
@@ -364,6 +365,7 @@
                       <el-button
                         size="small"
                         type="primary"
+                        @click="handleClickty()"
                       >
                         添加微信体验者
                       </el-button>
@@ -499,15 +501,120 @@
       </el-row>
 
     </div>
+    <!--设置支付方式弹窗-->
+    <div class="payDialog">
+      <el-dialog
+        title="设置支付方式"
+        :visible.sync="dialogVisible"
+        width="20%"
+      >
+        <div class="payDialogDiv first">
+          <span>支付方式设置</span>
+          <el-select
+            v-model="value"
+            placeholder="请选择"
+            size="small"
+            @change="handleSelect()"
+          >
+            <el-option
+              v-for="item in options"
+              :key="item.value"
+              :label="item.label"
+              :value="item.value"
+            >
+            </el-option>
+          </el-select>
+        </div>
+        <div v-if="value === '2'">
+          <div class="payDialogDiv">
+            <span>商户APPID： </span>
+            <el-input
+              v-model="appidinput"
+              size="small"
+              placeholder="请输入内容"
+            ></el-input>
+          </div>
+          <div class="payDialogDiv">
+            <span>商户商户号： </span>
+            <el-input
+              v-model="shnuminput"
+              size="small"
+              placeholder="请输入内容"
+            ></el-input>
+          </div>
+          <div class="payDialogDiv sp">
+            <span>商户密钥： </span>
+            <el-input
+              v-model="myinput"
+              size="small"
+              placeholder="请输入内容"
+            ></el-input>
+          </div>
+        </div>
+        <div v-if="value === '3'">
+          <div class="payDialogDiv mcc">
+            <span>MCC码： </span>
+            <el-input
+              v-model="mccinput"
+              size="small"
+              placeholder="请输入内容"
+            ></el-input>
+          </div>
+          <div class="payDialogDiv bz">
+            <span>标价币种： </span>
+            <el-input
+              v-model="bzinput"
+              size="small"
+              placeholder="请输入内容"
+            ></el-input>
+          </div>
+        </div>
+        <span
+          slot="footer"
+          class="dialog-footer"
+        >
+          <el-button @click="dialogVisible = false">取 消</el-button>
+          <el-button
+            type="primary"
+            @click="handleSureSetPay()"
+          >确 定</el-button>
+        </span>
+      </el-dialog>
+    </div>
+    <!--添加小程序体验者弹窗-->
+    <div class="smallProgramDialog">
+      <el-dialog
+        title="提示"
+        :visible.sync="smallDialogVisible"
+        width="25%"
+      >
+        <div style="margin-bottom:10px">请输入体验微信号</div>
+        <el-input
+          v-model="tyinput"
+          placeholder="请输入内容"
+        ></el-input>
+        <span
+          slot="footer"
+          class="dialog-footer"
+        >
+          <el-button @click="smallDialogVisible = false">取 消</el-button>
+          <el-button
+            type="primary"
+            @click="handleClickSureTy()"
+          >确 定</el-button>
+        </span>
+      </el-dialog>
+    </div>
   </div>
 </template>
 
 <script>
-import { authInformationRequest } from '@/api/system/programManage'
+import { authInformationRequest, nowIdRequest, publishSetRequest } from '@/api/system/programManage'
 export default {
   name: 'authMsg',
   data () {
     return {
+      smallDialogVisible: false,
       tagOpt: [ // 小程序微信体验者数据
         {
           name: 'gaoyuanyuan9554'
@@ -521,7 +628,32 @@ export default {
       ],
       dataList: {
 
-      }
+      },
+      dialogVisible: false,
+      options: [{
+        value: '0',
+        label: '微信直连支付'
+      }, {
+        value: '1',
+        label: '微铺宝子商户支付'
+      },
+      {
+        value: '2',
+        label: '通联子商户支付'
+      },
+      {
+        value: '3',
+        label: '微信国际融合钱包支付'
+      }],
+      value: '微信直连支付',
+      appidinput: '',
+      shnuminput: '',
+      myinput: '',
+      mccinput: '',
+      bzinput: '',
+      tyinput: '',
+      opStatus: '操作成功',
+      tem_id: ''
     }
   },
   mounted () {
@@ -566,6 +698,13 @@ export default {
             }
           })
           console.log(arr)
+          nowIdRequest(res.content.appId).then(res => {
+            if (res.error === 0) {
+              console.log(res.content.currentUseTemplateId)
+              this.tem_id = res.content.currentUseTemplateId
+            }
+            console.log(res)
+          })
           res.content.funcInfo = arr
           this.dataList = res.content
         }
@@ -576,6 +715,44 @@ export default {
     handleClose (idx) {
       console.log(`删除的tag标签为${this.tagOpt[idx].name}`)
       this.tagOpt.splice(idx, 1)
+    },
+    // 设置支付方式下拉框支付
+    handleSelect () {
+      console.log(this.value)
+    },
+    // 点击支付按钮
+    handleSetPay (data) {
+      console.log(this.unionPayAppId, this.unionPayCusId, this.unionPayAppKey, this.merchantCategoryCode, this.feeType)
+      this.appidinput = this.unionPayAppId
+      this.shnuminput = this.unionPayCusId
+      this.myinput = this.unionPayAppKey
+      this.mccinput = this.merchantCategoryCode
+      this.bzinput = this.feeType
+      this.dialogVisible = true
+    },
+    // 设置支付方式弹窗确定事件
+    handleSureSetPay (index) {
+      let obj = {}
+      switch (index) {
+        case 0:
+          obj.act = 'setting-sub-merchant'
+      }
+
+      publishSetRequest(obj).then(res => {
+        console.log(res)
+      })
+    },
+    // 点击添加微信体验者
+    handleClickty () {
+      this.smallDialogVisible = true
+    },
+    // 添加微信体验者确定按钮点击
+    handleClickSureTy () {
+      let obj = {
+        name: this.tyinput
+      }
+      this.tagOpt.push(obj)
+      this.smallDialogVisible = false
     }
   }
 }
@@ -684,6 +861,43 @@ export default {
           margin-top: 30px;
         }
       }
+    }
+  }
+  .payDialog {
+    /deep/ .el-dialog__header {
+      text-align: center;
+      background-color: #f3f3f3;
+    }
+    /deep/ .el-dialog__title {
+      font-size: 14px;
+    }
+    .payDialogDiv {
+      border-top: 2px solid #ddd;
+      height: 50px;
+      display: flex;
+      justify-content: flex-end;
+      align-items: center;
+      padding: 0 20px;
+      span {
+        margin-right: 10px;
+        white-space: nowrap;
+      }
+      /deep/ .el-input__inner {
+        width: 210px;
+      }
+    }
+    .sp {
+      padding-left: 50px;
+    }
+    .first {
+      padding-left: 10px;
+      justify-content: space-between;
+    }
+    .mcc {
+      padding-left: 50px;
+    }
+    .bz {
+      padding-left: 40px;
     }
   }
 }

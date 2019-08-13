@@ -161,6 +161,7 @@ export default {
   },
   methods: {
     async defaultData () {
+      this.text = this.$route.params.appId
       let spinnerList = await SpinnerListRequest()
       console.log(spinnerList)
       if (spinnerList.error === 0) {
