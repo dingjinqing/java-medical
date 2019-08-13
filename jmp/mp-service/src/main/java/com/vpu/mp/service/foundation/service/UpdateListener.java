@@ -31,7 +31,6 @@ public class UpdateListener extends DefaultExecuteListener {
                     throw new IllegalArgumentException("Update sql without any condition cannot be executed. ");
                 }
             }
-            log.debug(sql);
         }
     }
 }
