@@ -13,8 +13,16 @@ import me.chanjar.weixin.common.error.WxErrorException;
 import me.chanjar.weixin.open.bean.result.WxOpenResult;
 import org.springframework.web.bind.annotation.*;
 
+import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
+
+import java.io.BufferedOutputStream;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.OutputStream;
 import java.util.List;
 
 /**
@@ -140,7 +148,7 @@ public class SystemMpAuthShopController extends SystemBaseController {
 			return fail(JsonResultCode.CODE_PARAM_ERROR);
 		}
 		}
-		MpAuthShopVo vo = mp.getAuthShopByAppId(param.getAppId()).into(MpAuthShopVo.class);
+		MpAuthShopVo vo = mp.getAuthShopByAppIdAddURL(param.getAppId()).into(MpAuthShopVo.class);
 		return result.isSuccess() ? success(vo) : fail(result.getErrmsg());
 	}
 
@@ -152,7 +160,7 @@ public class SystemMpAuthShopController extends SystemBaseController {
 	 */
 	@GetMapping("/api/system/mp/get/{appId}")
 	public JsonResult getMp(@PathVariable String appId) {
-		MpAuthShopRecord record = saas.shop.mp.getAuthShopByAppId(appId);
+		MpAuthShopRecord record = saas.shop.mp.getAuthShopByAppIdAddURL(appId);
 		if (record == null) {
 			return fail(JsonResultCode.CODE_PARAM_ERROR);
 		}
