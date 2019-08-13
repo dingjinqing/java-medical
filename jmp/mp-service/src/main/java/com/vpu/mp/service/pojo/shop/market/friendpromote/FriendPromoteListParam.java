@@ -9,6 +9,12 @@ import lombok.Data;
  */
 @Data
 public class FriendPromoteListParam {
+	/* 未删除标识 */
+	public static final int NOT_DELETE = 0;
+	
+	/* 领取状态 */
+	public static final int RECIEVED = 2;
+	
 	/* 活动名称 */
 	private String actName;
 	
@@ -24,6 +30,10 @@ public class FriendPromoteListParam {
 	
 	/* 活动状态 0已停用，1进行中，2未开始，3已过期 */
 	public static final int ACTSTATE_DEFAULT_VALUE = -1; 
+	public static final int STOPPED = 0;
+	public static final int DOING = 1;
+	public static final int TODO = 2;
+	public static final int OUT_OF_DATE = 3;
 	private Integer actState = ACTSTATE_DEFAULT_VALUE;
 	
 	/* 分页信息 */

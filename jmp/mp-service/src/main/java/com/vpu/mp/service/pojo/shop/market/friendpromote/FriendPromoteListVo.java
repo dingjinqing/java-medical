@@ -11,7 +11,7 @@ import lombok.Data;
 public class FriendPromoteListVo {
 	
 	/* 活动Id */
-	private Integer actId;
+	private Integer id;
 	
 	/* 活动名称 */
 	private String actName;
