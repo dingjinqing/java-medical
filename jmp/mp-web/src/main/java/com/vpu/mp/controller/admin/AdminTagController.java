@@ -14,6 +14,8 @@ import com.vpu.mp.service.pojo.shop.member.TagInfoParam;
 import com.vpu.mp.service.pojo.shop.member.TagPageListParam;
 import com.vpu.mp.service.pojo.shop.member.UpdateTagParam;
 
+import ch.qos.logback.classic.Logger;
+
 /**
  * 会员标签管理
  * 
@@ -32,6 +34,16 @@ public class AdminTagController extends AdminBaseController {
 		
 		return this.success(shop().tag.getPageList(param));
 	}
+	
+	/**
+	 * 标签弹窗
+	 */
+	@PostMapping("/api/admin/common/tag/list")
+	public JsonResult getCommonTag() {
+		logger().info("获取标签的弹窗接口");
+		return this.success(shop().tag.getCommonTagList());
+	}
+	
 	
 	/**
 	 * 添加标签
@@ -93,4 +105,8 @@ public class AdminTagController extends AdminBaseController {
 		}
 		return this.success();
 	}
+	
+	
+	
+	
 }

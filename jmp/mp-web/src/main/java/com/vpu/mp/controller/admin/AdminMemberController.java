@@ -16,10 +16,12 @@ import com.vpu.mp.service.pojo.shop.member.CommonMemberPageListQueryParam;
 import com.vpu.mp.service.pojo.shop.member.CommonMemberPageListQueryVo;
 import com.vpu.mp.service.pojo.shop.member.MemberInfoVo;
 import com.vpu.mp.service.pojo.shop.member.MemberPageListParam;
+import com.vpu.mp.service.pojo.shop.member.MememberLoginStatusParam;
 import com.vpu.mp.service.pojo.shop.member.account.AccountParam;
 import com.vpu.mp.service.pojo.shop.member.account.AddMemberCardParam;
 import com.vpu.mp.service.pojo.shop.member.account.MemberCardVo;
 import com.vpu.mp.service.pojo.shop.member.account.ScoreParam;
+import com.vpu.mp.service.pojo.shop.member.tag.UserTagParam;
 import com.vpu.mp.service.shop.member.MemberService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -74,6 +76,27 @@ public class AdminMemberController extends AdminBaseController{
 		return success();
 	}
 	
+	
+	/**
+	 * 批量禁止登录-恢复登录
+	 */
+	@PostMapping("/manage/update")
+	public JsonResult loginStatusControl(@RequestBody @Valid MememberLoginStatusParam param) {
+		logger().info("更新用户登录状态");
+		shop().member.changeLoginStatus(param);
+		return success();
+	}
+	
+	
+	/**
+	 * 打标签，为用户设置标签
+	 */
+	@PostMapping("/tag/edit")
+	public JsonResult setTagForMember(@RequestBody @Valid UserTagParam param) {
+		logger().info("为会员用户打标签");
+		shop().member.setTagForMember(param);
+		return success();
+	}
 	
 	@PostMapping("/account/add")
 	public JsonResult updateMemberAccount(@RequestBody AccountParam param) {
