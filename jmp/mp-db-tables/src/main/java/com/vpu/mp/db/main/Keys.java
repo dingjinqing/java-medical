@@ -4,148 +4,12 @@
 package com.vpu.mp.db.main;
 
 
-import com.vpu.mp.db.main.tables.ActivityStatistics;
-import com.vpu.mp.db.main.tables.AliMiniAgent;
-import com.vpu.mp.db.main.tables.AliMiniAppVersion;
-import com.vpu.mp.db.main.tables.AliMiniAuthShop;
-import com.vpu.mp.db.main.tables.AliMyOrder;
-import com.vpu.mp.db.main.tables.AliUserToken;
-import com.vpu.mp.db.main.tables.App;
-import com.vpu.mp.db.main.tables.AppAuth;
-import com.vpu.mp.db.main.tables.Article;
-import com.vpu.mp.db.main.tables.ArticleCategory;
-import com.vpu.mp.db.main.tables.BackProcess;
-import com.vpu.mp.db.main.tables.Cache;
-import com.vpu.mp.db.main.tables.Category;
-import com.vpu.mp.db.main.tables.ChargeRenew;
-import com.vpu.mp.db.main.tables.DbOptionRecord;
-import com.vpu.mp.db.main.tables.DecorationTemplate;
-import com.vpu.mp.db.main.tables.DictCity;
-import com.vpu.mp.db.main.tables.DictCountry;
-import com.vpu.mp.db.main.tables.DictDistrict;
-import com.vpu.mp.db.main.tables.DictProvince;
-import com.vpu.mp.db.main.tables.FailedJobs;
-import com.vpu.mp.db.main.tables.Goods;
-import com.vpu.mp.db.main.tables.GoodsBrand;
-import com.vpu.mp.db.main.tables.GoodsImg;
-import com.vpu.mp.db.main.tables.GoodsSpecProduct;
-import com.vpu.mp.db.main.tables.GraspGoods;
-import com.vpu.mp.db.main.tables.Jobs;
-import com.vpu.mp.db.main.tables.LogManage;
-import com.vpu.mp.db.main.tables.MpAuthShop;
-import com.vpu.mp.db.main.tables.MpDeployHistory;
-import com.vpu.mp.db.main.tables.MpJumpVersion;
-import com.vpu.mp.db.main.tables.MpOfficialAccount;
-import com.vpu.mp.db.main.tables.MpOfficialAccountUser;
-import com.vpu.mp.db.main.tables.MpOperateLog;
-import com.vpu.mp.db.main.tables.MpVersion;
-import com.vpu.mp.db.main.tables.OrderGoods;
-import com.vpu.mp.db.main.tables.OrderInfo;
-import com.vpu.mp.db.main.tables.QfImg;
-import com.vpu.mp.db.main.tables.Shop;
-import com.vpu.mp.db.main.tables.ShopAccount;
-import com.vpu.mp.db.main.tables.ShopActivity;
-import com.vpu.mp.db.main.tables.ShopChildAccount;
-import com.vpu.mp.db.main.tables.ShopChildRole;
-import com.vpu.mp.db.main.tables.ShopFreeExperience;
-import com.vpu.mp.db.main.tables.ShopGrade;
-import com.vpu.mp.db.main.tables.ShopGradeLog;
-import com.vpu.mp.db.main.tables.ShopOperation;
-import com.vpu.mp.db.main.tables.ShopQuestionFeedback;
-import com.vpu.mp.db.main.tables.ShopRenew;
-import com.vpu.mp.db.main.tables.ShopRole;
-import com.vpu.mp.db.main.tables.ShopUploadedImage;
-import com.vpu.mp.db.main.tables.ShopUploadedImageCategory;
-import com.vpu.mp.db.main.tables.ShopVersion;
-import com.vpu.mp.db.main.tables.Sms;
-import com.vpu.mp.db.main.tables.Sort;
-import com.vpu.mp.db.main.tables.Spec;
-import com.vpu.mp.db.main.tables.SpecVals;
-import com.vpu.mp.db.main.tables.StatisticsShop;
-import com.vpu.mp.db.main.tables.SystemCfg;
-import com.vpu.mp.db.main.tables.SystemChildAccount;
-import com.vpu.mp.db.main.tables.SystemRole;
-import com.vpu.mp.db.main.tables.SystemUser;
-import com.vpu.mp.db.main.tables.UploadUyunRecord;
-import com.vpu.mp.db.main.tables.UploadedImage;
-import com.vpu.mp.db.main.tables.UploadedImageCategory;
-import com.vpu.mp.db.main.tables.User;
-import com.vpu.mp.db.main.tables.UserDetail;
-import com.vpu.mp.db.main.tables.UserLoginRecord;
-import com.vpu.mp.db.main.tables.UserSummaryTrend;
-import com.vpu.mp.db.main.tables.records.ActivityStatisticsRecord;
-import com.vpu.mp.db.main.tables.records.AliMiniAgentRecord;
-import com.vpu.mp.db.main.tables.records.AliMiniAppVersionRecord;
-import com.vpu.mp.db.main.tables.records.AliMiniAuthShopRecord;
-import com.vpu.mp.db.main.tables.records.AliMyOrderRecord;
-import com.vpu.mp.db.main.tables.records.AliUserTokenRecord;
-import com.vpu.mp.db.main.tables.records.AppAuthRecord;
-import com.vpu.mp.db.main.tables.records.AppRecord;
-import com.vpu.mp.db.main.tables.records.ArticleCategoryRecord;
-import com.vpu.mp.db.main.tables.records.ArticleRecord;
-import com.vpu.mp.db.main.tables.records.ArticleRecordRecord;
-import com.vpu.mp.db.main.tables.records.BackProcessRecord;
-import com.vpu.mp.db.main.tables.records.CacheRecord;
-import com.vpu.mp.db.main.tables.records.CategoryRecord;
-import com.vpu.mp.db.main.tables.records.ChargeRenewRecord;
-import com.vpu.mp.db.main.tables.records.DbOptionRecordRecord;
-import com.vpu.mp.db.main.tables.records.DecorationTemplateRecord;
-import com.vpu.mp.db.main.tables.records.DictCityRecord;
-import com.vpu.mp.db.main.tables.records.DictCountryRecord;
-import com.vpu.mp.db.main.tables.records.DictDistrictRecord;
-import com.vpu.mp.db.main.tables.records.DictProvinceRecord;
-import com.vpu.mp.db.main.tables.records.FailedJobsRecord;
-import com.vpu.mp.db.main.tables.records.GoodsBrandRecord;
-import com.vpu.mp.db.main.tables.records.GoodsImgRecord;
-import com.vpu.mp.db.main.tables.records.GoodsRecord;
-import com.vpu.mp.db.main.tables.records.GoodsSpecProductRecord;
-import com.vpu.mp.db.main.tables.records.GraspGoodsRecord;
-import com.vpu.mp.db.main.tables.records.JobsRecord;
-import com.vpu.mp.db.main.tables.records.LogManageRecord;
-import com.vpu.mp.db.main.tables.records.MpAuthShopRecord;
-import com.vpu.mp.db.main.tables.records.MpDeployHistoryRecord;
-import com.vpu.mp.db.main.tables.records.MpJumpVersionRecord;
-import com.vpu.mp.db.main.tables.records.MpOfficialAccountRecord;
-import com.vpu.mp.db.main.tables.records.MpOfficialAccountUserRecord;
-import com.vpu.mp.db.main.tables.records.MpOperateLogRecord;
-import com.vpu.mp.db.main.tables.records.MpVersionRecord;
-import com.vpu.mp.db.main.tables.records.OrderGoodsRecord;
-import com.vpu.mp.db.main.tables.records.OrderInfoRecord;
-import com.vpu.mp.db.main.tables.records.QfImgRecord;
-import com.vpu.mp.db.main.tables.records.ShopAccountRecord;
-import com.vpu.mp.db.main.tables.records.ShopActivityRecord;
-import com.vpu.mp.db.main.tables.records.ShopChildAccountRecord;
-import com.vpu.mp.db.main.tables.records.ShopChildRoleRecord;
-import com.vpu.mp.db.main.tables.records.ShopFreeExperienceRecord;
-import com.vpu.mp.db.main.tables.records.ShopGradeLogRecord;
-import com.vpu.mp.db.main.tables.records.ShopGradeRecord;
-import com.vpu.mp.db.main.tables.records.ShopOperationRecord;
-import com.vpu.mp.db.main.tables.records.ShopQuestionFeedbackRecord;
-import com.vpu.mp.db.main.tables.records.ShopRecord;
-import com.vpu.mp.db.main.tables.records.ShopRenewRecord;
-import com.vpu.mp.db.main.tables.records.ShopRoleRecord;
-import com.vpu.mp.db.main.tables.records.ShopUploadedImageCategoryRecord;
-import com.vpu.mp.db.main.tables.records.ShopUploadedImageRecord;
-import com.vpu.mp.db.main.tables.records.ShopVersionRecord;
-import com.vpu.mp.db.main.tables.records.SmsRecord;
-import com.vpu.mp.db.main.tables.records.SortRecord;
-import com.vpu.mp.db.main.tables.records.SpecRecord;
-import com.vpu.mp.db.main.tables.records.SpecValsRecord;
-import com.vpu.mp.db.main.tables.records.StatisticsShopRecord;
-import com.vpu.mp.db.main.tables.records.SystemCfgRecord;
-import com.vpu.mp.db.main.tables.records.SystemChildAccountRecord;
-import com.vpu.mp.db.main.tables.records.SystemRoleRecord;
-import com.vpu.mp.db.main.tables.records.SystemUserRecord;
-import com.vpu.mp.db.main.tables.records.UploadUyunRecordRecord;
-import com.vpu.mp.db.main.tables.records.UploadedImageCategoryRecord;
-import com.vpu.mp.db.main.tables.records.UploadedImageRecord;
-import com.vpu.mp.db.main.tables.records.UserDetailRecord;
-import com.vpu.mp.db.main.tables.records.UserLoginRecordRecord;
-import com.vpu.mp.db.main.tables.records.UserRecord;
-import com.vpu.mp.db.main.tables.records.UserSummaryTrendRecord;
+import com.vpu.mp.db.main.tables.*;
+import com.vpu.mp.db.main.tables.records.*;
 
 import javax.annotation.Generated;
 
+import com.vpu.mp.db.main.tables.records.ArticleRecord;
 import org.jooq.Identity;
 import org.jooq.UniqueKey;
 import org.jooq.impl.Internal;
@@ -168,7 +32,7 @@ public class Keys {
     // -------------------------------------------------------------------------
     // IDENTITY definitions
     // -------------------------------------------------------------------------
-
+    public static final Identity<TaskJobsMainRecord, Integer> IDENTITY_TASK_JOBS_MAIN = Identities0.IDENTITY_TASK_JOBS_MAIN;
     public static final Identity<ActivityStatisticsRecord, Integer> IDENTITY_ACTIVITY_STATISTICS = Identities0.IDENTITY_ACTIVITY_STATISTICS;
     public static final Identity<AliMiniAgentRecord, Integer> IDENTITY_ALI_MINI_AGENT = Identities0.IDENTITY_ALI_MINI_AGENT;
     public static final Identity<AliMiniAppVersionRecord, Integer> IDENTITY_ALI_MINI_APP_VERSION = Identities0.IDENTITY_ALI_MINI_APP_VERSION;
@@ -230,7 +94,7 @@ public class Keys {
     public static final Identity<UserLoginRecordRecord, Integer> IDENTITY_USER_LOGIN_RECORD = Identities0.IDENTITY_USER_LOGIN_RECORD;
     public static final Identity<UserSummaryTrendRecord, Integer> IDENTITY_USER_SUMMARY_TREND = Identities0.IDENTITY_USER_SUMMARY_TREND;
     public static final Identity<ShopUploadedImageCategoryRecord, Integer> IDENTITY_SHOP_UPLOADED_IMAGE_CATEGORY = Identities0.IDENTITY_SHOP_UPLOADED_IMAGE_CATEGORY;
-    
+    public static final Identity<TaskJobsContentRecord, Integer> IDENTITY_TASK_JOBS_CONTENT = Identities0.IDENTITY_TASK_JOBS_CONTENT;
 
     // -------------------------------------------------------------------------
     // UNIQUE and PRIMARY KEY definitions
@@ -329,7 +193,8 @@ public class Keys {
     public static final UniqueKey<UserSummaryTrendRecord> KEY_B2C_USER_SUMMARY_TREND_PRIMARY = UniqueKeys0.KEY_B2C_USER_SUMMARY_TREND_PRIMARY;
     public static final UniqueKey<ShopUploadedImageCategoryRecord> KEY_B2C_SHOP_UPLOADED_IMAGE_CATEGORY_PRIMARY = UniqueKeys0.KEY_B2C_SHOP_UPLOADED_IMAGE_CATEGORY_PRIMARY;
     public static final UniqueKey<ShopAccountRecord> KEY_B2C_SHOP_ACCOUNT_USER_NAME = UniqueKeys0.KEY_B2C_SHOP_ACCOUNT_USER_NAME;
-    
+    public static final UniqueKey<TaskJobsMainRecord> KEY_B2C_TASK_JOBS_MAIN_PRIMARY = UniqueKeys0.KEY_B2C_TASK_JOBS_MAIN_PRIMARY;
+    public static final UniqueKey<TaskJobsContentRecord> KEY_B2C_TASK_JOBS_CONTENT_PRIMARY = UniqueKeys0.KEY_B2C_TASK_JOBS_CONTENT_PRIMARY;
     // -------------------------------------------------------------------------
     // FOREIGN KEY definitions
     // -------------------------------------------------------------------------
@@ -400,7 +265,9 @@ public class Keys {
         public static Identity<UserRecord, Long> IDENTITY_USER = Internal.createIdentity(User.USER, User.USER.ID);
         public static Identity<UserDetailRecord, Integer> IDENTITY_USER_DETAIL = Internal.createIdentity(UserDetail.USER_DETAIL, UserDetail.USER_DETAIL.ID);
         public static Identity<UserLoginRecordRecord, Integer> IDENTITY_USER_LOGIN_RECORD = Internal.createIdentity(UserLoginRecord.USER_LOGIN_RECORD, UserLoginRecord.USER_LOGIN_RECORD.ID);
+        public static Identity<TaskJobsMainRecord, Integer> IDENTITY_TASK_JOBS_MAIN = Internal.createIdentity(TaskJobsMain.TASK_JOBS_MAIN, TaskJobsMain.TASK_JOBS_MAIN.ID);
         public static Identity<UserSummaryTrendRecord, Integer> IDENTITY_USER_SUMMARY_TREND = Internal.createIdentity(UserSummaryTrend.USER_SUMMARY_TREND, UserSummaryTrend.USER_SUMMARY_TREND.ID);
+        public static Identity<TaskJobsContentRecord, Integer> IDENTITY_TASK_JOBS_CONTENT = Internal.createIdentity(TaskJobsContent.TASK_JOBS_CONTENT, TaskJobsContent.TASK_JOBS_CONTENT.ID);
     }
 
     private static class UniqueKeys0 {
@@ -497,5 +364,7 @@ public class Keys {
         public static final UniqueKey<UserLoginRecordRecord> KEY_B2C_USER_LOGIN_RECORD_PRIMARY = Internal.createUniqueKey(UserLoginRecord.USER_LOGIN_RECORD, "KEY_b2c_user_login_record_PRIMARY", UserLoginRecord.USER_LOGIN_RECORD.ID);
         public static final UniqueKey<UserSummaryTrendRecord> KEY_B2C_USER_SUMMARY_TREND_PRIMARY = Internal.createUniqueKey(UserSummaryTrend.USER_SUMMARY_TREND, "KEY_b2c_user_summary_trend_PRIMARY", UserSummaryTrend.USER_SUMMARY_TREND.ID);
         public static final UniqueKey<ShopAccountRecord> KEY_B2C_SHOP_ACCOUNT_USER_NAME = Internal.createUniqueKey(ShopAccount.SHOP_ACCOUNT, "KEY_b2c_shop_account_user_name", ShopAccount.SHOP_ACCOUNT.USER_NAME);
+        public static final UniqueKey<TaskJobsMainRecord> KEY_B2C_TASK_JOBS_MAIN_PRIMARY = Internal.createUniqueKey(TaskJobsMain.TASK_JOBS_MAIN, "KEY_b2c_task_jobs_main_PRIMARY", TaskJobsMain.TASK_JOBS_MAIN.ID);
+        public static final UniqueKey<TaskJobsContentRecord> KEY_B2C_TASK_JOBS_CONTENT_PRIMARY = Internal.createUniqueKey(TaskJobsContent.TASK_JOBS_CONTENT, "KEY_b2c_task_jobs_content_PRIMARY", TaskJobsContent.TASK_JOBS_CONTENT.ID);
     }
 }

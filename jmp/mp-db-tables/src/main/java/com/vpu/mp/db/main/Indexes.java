@@ -4,82 +4,7 @@
 package com.vpu.mp.db.main;
 
 
-import com.vpu.mp.db.main.tables.ActivityStatistics;
-import com.vpu.mp.db.main.tables.AliMiniAgent;
-import com.vpu.mp.db.main.tables.AliMiniAppVersion;
-import com.vpu.mp.db.main.tables.AliMiniAuthShop;
-import com.vpu.mp.db.main.tables.AliMyOrder;
-import com.vpu.mp.db.main.tables.AliUserToken;
-import com.vpu.mp.db.main.tables.App;
-import com.vpu.mp.db.main.tables.AppAuth;
-import com.vpu.mp.db.main.tables.Article;
-import com.vpu.mp.db.main.tables.ArticleCategory;
-import com.vpu.mp.db.main.tables.ArticleRecord;
-import com.vpu.mp.db.main.tables.BackProcess;
-import com.vpu.mp.db.main.tables.Cache;
-import com.vpu.mp.db.main.tables.Category;
-import com.vpu.mp.db.main.tables.ChargeRenew;
-import com.vpu.mp.db.main.tables.DbOptionRecord;
-import com.vpu.mp.db.main.tables.DecorationTemplate;
-import com.vpu.mp.db.main.tables.DictCity;
-import com.vpu.mp.db.main.tables.DictCountry;
-import com.vpu.mp.db.main.tables.DictDistrict;
-import com.vpu.mp.db.main.tables.DictProvince;
-import com.vpu.mp.db.main.tables.FailedJobs;
-import com.vpu.mp.db.main.tables.Goods;
-import com.vpu.mp.db.main.tables.GoodsBrand;
-import com.vpu.mp.db.main.tables.GoodsImg;
-import com.vpu.mp.db.main.tables.GoodsSpecProduct;
-import com.vpu.mp.db.main.tables.GraspGoods;
-import com.vpu.mp.db.main.tables.Jobs;
-import com.vpu.mp.db.main.tables.LogManage;
-import com.vpu.mp.db.main.tables.MpAuthShop;
-import com.vpu.mp.db.main.tables.MpDailyRetain;
-import com.vpu.mp.db.main.tables.MpDeployHistory;
-import com.vpu.mp.db.main.tables.MpDistributionVisit;
-import com.vpu.mp.db.main.tables.MpJumpVersion;
-import com.vpu.mp.db.main.tables.MpOfficialAccount;
-import com.vpu.mp.db.main.tables.MpOfficialAccountUser;
-import com.vpu.mp.db.main.tables.MpOperateLog;
-import com.vpu.mp.db.main.tables.MpSummaryTrendShop;
-import com.vpu.mp.db.main.tables.MpUserPortrait;
-import com.vpu.mp.db.main.tables.MpVersion;
-import com.vpu.mp.db.main.tables.MpVisitPage;
-import com.vpu.mp.db.main.tables.OrderGoods;
-import com.vpu.mp.db.main.tables.OrderInfo;
-import com.vpu.mp.db.main.tables.QfImg;
-import com.vpu.mp.db.main.tables.Shop;
-import com.vpu.mp.db.main.tables.ShopAccount;
-import com.vpu.mp.db.main.tables.ShopActivity;
-import com.vpu.mp.db.main.tables.ShopChildAccount;
-import com.vpu.mp.db.main.tables.ShopChildRole;
-import com.vpu.mp.db.main.tables.ShopFreeExperience;
-import com.vpu.mp.db.main.tables.ShopGrade;
-import com.vpu.mp.db.main.tables.ShopGradeLog;
-import com.vpu.mp.db.main.tables.ShopOperation;
-import com.vpu.mp.db.main.tables.ShopQuestionFeedback;
-import com.vpu.mp.db.main.tables.ShopRenew;
-import com.vpu.mp.db.main.tables.ShopRole;
-import com.vpu.mp.db.main.tables.ShopUploadedImage;
-import com.vpu.mp.db.main.tables.ShopUploadedImageCategory;
-import com.vpu.mp.db.main.tables.ShopVersion;
-import com.vpu.mp.db.main.tables.Sms;
-import com.vpu.mp.db.main.tables.Sort;
-import com.vpu.mp.db.main.tables.Spec;
-import com.vpu.mp.db.main.tables.SpecVals;
-import com.vpu.mp.db.main.tables.StatisticsShop;
-import com.vpu.mp.db.main.tables.SystemCfg;
-import com.vpu.mp.db.main.tables.SystemChildAccount;
-import com.vpu.mp.db.main.tables.SystemRole;
-import com.vpu.mp.db.main.tables.SystemUser;
-import com.vpu.mp.db.main.tables.ThirdPartyServices;
-import com.vpu.mp.db.main.tables.UploadUyunRecord;
-import com.vpu.mp.db.main.tables.UploadedImage;
-import com.vpu.mp.db.main.tables.UploadedImageCategory;
-import com.vpu.mp.db.main.tables.User;
-import com.vpu.mp.db.main.tables.UserDetail;
-import com.vpu.mp.db.main.tables.UserLoginRecord;
-import com.vpu.mp.db.main.tables.UserSummaryTrend;
+import com.vpu.mp.db.main.tables.*;
 
 import javax.annotation.Generated;
 
@@ -281,6 +206,8 @@ public class Indexes {
     public static final Index USER_SUMMARY_TREND_PRIMARY = Indexes0.USER_SUMMARY_TREND_PRIMARY;
     public static final Index USER_SUMMARY_TREND_REF_TYPE = Indexes0.USER_SUMMARY_TREND_REF_TYPE;
     public static final Index SHOP_ACCOUNT_USER_NAME = Indexes0.SHOP_ACCOUNT_USER_NAME;
+    public static final Index TASK_JOBS_MAIN_PRIMARY = Indexes0.TASK_JOBS_MAIN_PRIMARY;
+    public static final Index TASK_JOBS_CONTENT_PRIMARY = Indexes0.TASK_JOBS_CONTENT_PRIMARY;
     // -------------------------------------------------------------------------
     // [#1459] distribute members to avoid static initialisers > 64kb
     // -------------------------------------------------------------------------
@@ -462,5 +389,7 @@ public class Indexes {
         public static Index USER_SUMMARY_TREND_PRIMARY = Internal.createIndex("PRIMARY", UserSummaryTrend.USER_SUMMARY_TREND, new OrderField[] { UserSummaryTrend.USER_SUMMARY_TREND.ID }, true);
         public static Index USER_SUMMARY_TREND_REF_TYPE = Internal.createIndex("ref_type", UserSummaryTrend.USER_SUMMARY_TREND, new OrderField[] { UserSummaryTrend.USER_SUMMARY_TREND.REF_DATE, UserSummaryTrend.USER_SUMMARY_TREND.TYPE }, false);
         public static Index SHOP_ACCOUNT_USER_NAME = Internal.createIndex("user_name", ShopAccount.SHOP_ACCOUNT, new OrderField[] { ShopAccount.SHOP_ACCOUNT.USER_NAME }, true);
+        public static Index TASK_JOBS_MAIN_PRIMARY = Internal.createIndex("PRIMARY", TaskJobsMain.TASK_JOBS_MAIN, new OrderField[] { TaskJobsMain.TASK_JOBS_MAIN.ID }, true);
+        public static Index TASK_JOBS_CONTENT_PRIMARY = Internal.createIndex("PRIMARY", TaskJobsContent.TASK_JOBS_CONTENT, new OrderField[] { TaskJobsContent.TASK_JOBS_CONTENT.ID }, true);
     }
 }
