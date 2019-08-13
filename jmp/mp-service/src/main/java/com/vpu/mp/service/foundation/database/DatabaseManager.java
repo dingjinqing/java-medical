@@ -1,7 +1,7 @@
 package com.vpu.mp.service.foundation.database;
 
 import com.vpu.mp.db.main.tables.records.ShopRecord;
-import com.vpu.mp.service.foundation.service.UpdateListener;
+import com.vpu.mp.service.foundation.service.QueryFilter;
 import com.vpu.mp.service.foundation.util.Util;
 import org.apache.commons.dbcp2.BasicDataSource;
 import org.apache.commons.lang3.StringUtils;
@@ -308,9 +308,9 @@ public class DatabaseManager {
 
 		settings.withRenderCatalog(false);
 		jooqConfiguration.setSettings(settings);
-		// update 拦截器
-        UpdateListener updateListener = new UpdateListener();
-        jooqConfiguration.set(updateListener);
+		// 不安全操作拦截器
+        QueryFilter queryFilter = new QueryFilter();
+        jooqConfiguration.set(queryFilter);
 		return jooqConfiguration;
 	}
 
