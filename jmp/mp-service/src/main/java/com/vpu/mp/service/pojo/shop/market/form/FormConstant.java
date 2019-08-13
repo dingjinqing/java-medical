@@ -1,10 +1,11 @@
 package com.vpu.mp.service.pojo.shop.market.form;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-import lombok.Data;
-
 import java.util.HashMap;
 import java.util.Map;
+
+import com.fasterxml.jackson.databind.ObjectMapper;
+
+import lombok.Data;
 
 /**
  * @author liufei
@@ -55,7 +56,8 @@ public class FormConstant {
     public static final String M_IMGS = "m_imgs";
 
     public static Map<String, String> ALL = new HashMap<String, String>(){
-        {
+		private static final long serialVersionUID = 7311691185434226748L;
+		{
             put(M_INPUT_NAME, M_INPUT_NAME);
             put(M_INPUT_MOBILE, M_INPUT_MOBILE);
             put(M_ADDRESS, M_ADDRESS);
@@ -69,7 +71,8 @@ public class FormConstant {
         }
     };
     public static Map<String, String> SPECIAL = new HashMap<String, String>(){
-        {
+		private static final long serialVersionUID = -888856750061624135L;
+		{
             put(M_SEX, M_SEX);
             put(M_CHOOSE, M_CHOOSE);
             put(M_SLIDE, M_SLIDE);

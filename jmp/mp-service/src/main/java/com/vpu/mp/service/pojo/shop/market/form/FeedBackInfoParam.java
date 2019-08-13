@@ -1,15 +1,10 @@
 package com.vpu.mp.service.pojo.shop.market.form;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
+import java.util.List;
+import javax.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import org.junit.Test;
-
-import javax.validation.constraints.NotNull;
-import java.util.List;
-
-import static com.vpu.mp.service.pojo.shop.market.form.FormConstant.MAPPER;
 
 /**
  * @author liufei
