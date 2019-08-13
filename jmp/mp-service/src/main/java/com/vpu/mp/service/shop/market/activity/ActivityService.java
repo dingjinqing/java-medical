@@ -5,10 +5,7 @@ import com.vpu.mp.db.shop.tables.records.CouponActivityRecord;
 import com.vpu.mp.service.foundation.service.ShopBaseService;
 import com.vpu.mp.service.foundation.util.PageResult;
 import com.vpu.mp.service.foundation.util.Util;
-import com.vpu.mp.service.pojo.shop.market.activity.ActivityListParam;
-import com.vpu.mp.service.pojo.shop.market.activity.ActivityListVo;
-import com.vpu.mp.service.pojo.shop.market.activity.ActivityParam;
-import com.vpu.mp.service.pojo.shop.market.activity.ActivityVo;
+import com.vpu.mp.service.pojo.shop.market.activity.*;
 import org.jooq.Record1;
 import org.jooq.SelectConditionStep;
 import org.jooq.UpdateSetMoreStep;
@@ -17,8 +14,10 @@ import org.springframework.stereotype.Service;
 import org.springframework.util.Assert;
 
 import java.sql.Timestamp;
+import java.util.List;
 import java.util.Optional;
 
+import static com.vpu.mp.db.shop.tables.MrkingVoucher.MRKING_VOUCHER;
 import static com.vpu.mp.service.foundation.data.JsonResultMessage.COUPON_ACTIVITY_TIME_RANGE_CONFLICT;
 import static com.vpu.mp.service.pojo.shop.market.activity.ActivityListParam.*;
 import static com.vpu.mp.service.pojo.shop.market.activity.ActivityListVo.*;
@@ -247,7 +246,12 @@ public class ActivityService extends ShopBaseService {
      */
     public ActivityVo getActivityDetail(Integer id) {
         ActivityVo vo = getActivity(id).fetchOneInto(ActivityVo.class);
-        vo.setVoucherId(Util.stringToList(vo.getMrkingVoucherId()));
+        List<Integer> voucherIds = Util.stringToList(vo.getMrkingVoucherId());
+        List<Voucher> vouchers = shopDb().select(MRKING_VOUCHER.ID, MRKING_VOUCHER.USE_CONSUME_RESTRICT,
+            MRKING_VOUCHER.LEAST_CONSUME, MRKING_VOUCHER.TOTAL_AMOUNT.minus(MRKING_VOUCHER.RECEIVE_AMOUNT).as(
+                "available_quantity")).from(MRKING_VOUCHER).where(MRKING_VOUCHER.ID.in(voucherIds)).fetchInto(Voucher.class);
+        vouchers.forEach(v -> v.setRestrict(v.getUseConsumeRestrict() == 1));
+        vo.setVouchers(vouchers);
         return vo;
     }
 

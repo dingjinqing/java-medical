@@ -28,7 +28,7 @@ public class ActivityVo {
     private Timestamp startDate;
     private Timestamp endDate;
     /** 优惠券 **/
-    private List<Integer> voucherId;
+    private List<Voucher> vouchers;
 
     @JsonIgnore
     private String mrkingVoucherId;
