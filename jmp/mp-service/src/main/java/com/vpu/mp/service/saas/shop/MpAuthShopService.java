@@ -544,7 +544,7 @@ public class MpAuthShopService extends MainBaseService {
 
 		WxOpenMaSubmitAudit audit = new WxOpenMaSubmitAudit();
 		List<WxOpenMaCategory> categoryList = null;
-		if (StringUtils.isBlank(mp.getCategory())) {
+		if (!StringUtils.isBlank(mp.getCategory())) {
 			categoryList = Util.parseJson(mp.getCategory(), new TypeReference<List<WxOpenMaCategory>>() {
 			});
 		} else {
