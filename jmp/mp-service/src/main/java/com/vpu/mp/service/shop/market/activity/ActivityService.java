@@ -8,6 +8,7 @@ import com.vpu.mp.service.foundation.util.Util;
 import com.vpu.mp.service.pojo.shop.market.activity.ActivityListParam;
 import com.vpu.mp.service.pojo.shop.market.activity.ActivityListVo;
 import com.vpu.mp.service.pojo.shop.market.activity.ActivityParam;
+import com.vpu.mp.service.pojo.shop.market.activity.ActivityVo;
 import org.jooq.Record1;
 import org.jooq.SelectConditionStep;
 import org.jooq.UpdateSetMoreStep;
@@ -239,6 +240,15 @@ public class ActivityService extends ShopBaseService {
         if (exists) {
             throw new IllegalArgumentException(COUPON_ACTIVITY_TIME_RANGE_CONFLICT);
         }
+    }
+
+    /**
+     * 获取活动明细
+     */
+    public ActivityVo getActivityDetail(Integer id) {
+        ActivityVo vo = getActivity(id).fetchOneInto(ActivityVo.class);
+        vo.setVoucherId(Util.stringToList(vo.getMrkingVoucherId()));
+        return vo;
     }
 
     /**

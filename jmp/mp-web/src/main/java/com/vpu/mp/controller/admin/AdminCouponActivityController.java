@@ -62,11 +62,15 @@ public class AdminCouponActivityController extends AdminBaseController {
     }
 
     /**
-     * todo 活动修改 - 明细
+     * 活动修改 - 明细
      */
+    @PostMapping("/detail/{id}")
+    public JsonResult getActivityDetail(@PathVariable Integer id) {
+        return success(shop().activity.getActivityDetail(id));
+    }
 
     /**
-     * todo 活动修改 - 更新
+     * 活动修改 - 更新
      */
     @PostMapping("/update")
     public JsonResult updateActivity(@RequestBody @Valid ActivityParam param) {
