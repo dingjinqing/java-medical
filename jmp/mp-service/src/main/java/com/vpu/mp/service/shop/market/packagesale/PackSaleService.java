@@ -39,8 +39,8 @@ import com.vpu.mp.service.pojo.shop.order.OrderPageListQueryParam;
 import com.vpu.mp.service.pojo.shop.qrcode.QrCodeTypeEnum;
 import com.vpu.mp.service.shop.goods.GoodsService;
 import com.vpu.mp.service.shop.image.QrCodeService;
-import com.vpu.mp.service.shop.order.OrderInfoService;
 import com.vpu.mp.service.shop.order.OrderReadService;
+import com.vpu.mp.service.shop.order.info.OrderInfoService;
 
 /**
  * @author huangronggang
