@@ -105,7 +105,7 @@ export default {
     return {
       dialogVisible: false,
       option: {
-        img: 'http://localhost:8080/static/image/admin/official/channel/06.png',
+        img: this.$imageHost + '/image/admin/official/channel/06.png',
         size: 1,
         outputType: 'jpeg',
         canScale: false, // 图片是否允许滚轮缩放

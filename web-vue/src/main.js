@@ -19,7 +19,7 @@ import myMixins from '@/components/mixins.js'
 import VueCropper from 'vue-cropper'
 // 全局flag
 localStorage.setItem('V-overallFlag', true)
-Vue.prototype.$imageHost = 'http://mpimg2.weipubao.cn'
+Vue.prototype.$imageHost = 'http://jmpdevimg.weipubao.cn'
 Vue.use(VueCropper)
 
 Vue.component('v-distpicker', Distpicker)
@@ -40,3 +40,4 @@ new Vue({
   components: { App },
   template: '<App/>'
 })
+// /image/admin/sort_moren.png

@@ -2,7 +2,7 @@
   <div class="container login-container">
     <div class="head_logo">
       <img
-        src="/static/image/admin/shop_logoswe.png"
+        :src="imgUrl[0].img"
         alt="微铺宝logo"
         width="200px"
       />
@@ -10,7 +10,7 @@
     <div class="main clearfix">
       <div class="main-left">
         <img
-          src="/static/image/admin/login_new_new.png"
+          :src="imgUrl[1].img"
           alt=""
         />
       </div>
@@ -114,8 +114,15 @@ export default {
         subUsername: '',
         isSubLogin: true
       },
-      isSubLogin: false
-
+      isSubLogin: false,
+      imgUrl: [
+        {
+          img: this.$imageHost + '/image/admin/shop_logoswe.png'
+        },
+        {
+          img: this.$imageHost + '/image/admin/login_new_new.png'
+        }
+      ]
     }
   },
 

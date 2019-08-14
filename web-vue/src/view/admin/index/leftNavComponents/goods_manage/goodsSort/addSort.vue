@@ -58,7 +58,7 @@
           >
             <img
               class="add_simple"
-              src="../../../../../../../static/image/admin/addSort/add_simple.png"
+              :src="$imageHost+'/image/admin/addSort/add_simple.png'"
               alt=""
             >
           </section>
@@ -134,7 +134,7 @@
           >
             <img
               class="sort_img"
-              src="../../../../../../../static/image/admin/addSort/sort.jpg"
+              :src="$imageHost+'/image/admin/addSort/sort.jpg'"
               alt="sort"
             >
           </section>

@@ -169,10 +169,10 @@ export default {
   methods: {
     // 初始化登录
     judgeuserinfo () {
-      if (Cookies.get('V-Token')) {
+      let loginType = localStorage.getItem('V-loginType')
+      if (loginType === '0') {
         this.user_flag = true
         this.username = localStorage.getItem('V-Username')
-        // console.log(Cookies.get('V-Token'), '----', localStorage.getItem('V-Username'))
       } else {
         this.user_flag = false
       }

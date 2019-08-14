@@ -2,17 +2,14 @@
   <div class="sys_container">
     <div class="head_logo">
       <img
-        src="/static/image/admin/shop_logoswe.png"
+        :src="imgUrl[0].img"
         alt="微铺宝logo"
         width="200px"
       />
     </div>
     <div class="main clearfix">
       <div class="main-left">
-        <img
-          src="http://mpdev.weipubao.cn//image/admin/login_back.png"
-          alt=""
-        />
+        <img :src="imgUrl[1].img" />
       </div>
       <div class="main-right">
         <div class="well">
@@ -73,7 +70,15 @@ export default {
       },
       placeholder_username: '请输入用户名或者手机号',
       placeholder_password: '请输入密码',
-      flag: true
+      flag: true,
+      imgUrl: [
+        {
+          img: this.$imageHost + '/image/admin/shop_logoswe.png'
+        },
+        {
+          img: this.$imageHost + '/image/admin/login_back.png'
+        }
+      ]
     }
   },
   mounted () {

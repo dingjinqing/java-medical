@@ -2,7 +2,6 @@
   <div class="contact_container">
     <div class="container">
       <h2 class="common-h2">{{$t('contact.title')}}</h2>
-      <!--<img src="__STATIC__/index/img/about-us/introduce/07.png" alt="">-->
       <div class="efficiency">
         <div>
           <span class="pulse delay-06"></span>

@@ -30,185 +30,185 @@ export default {
       navLeftData: '',
       overview: [
         {
-          imgUrl: '/static/image/system/icon_left/shop_view.png',
-          imgUrl_h: '/static/image/system/icon_left/shop_view_h.png',
+          imgUrl: this.$imageHost + '/image/system/icon_left/shop_view.png',
+          imgUrl_h: this.$imageHost + '/image/system/icon_left/shop_view_h.png',
           span: '概览'
         },
         {
-          imgUrl: '/static/image/system/icon_left/picture_space.png',
-          imgUrl_h: '/static/image/system/icon_left/picture_space_h.png',
+          imgUrl: this.$imageHost + '/image/system/icon_left/picture_space.png',
+          imgUrl_h: this.$imageHost + '/image/system/icon_left/picture_space_h.png',
           span: '升级续费申请'
         },
         {
-          imgUrl: '/static/image/system/icon_left/get_user.png',
-          imgUrl_h: '/static/image/system/icon_left/get_user_h.png',
+          imgUrl: this.$imageHost + '/image/system/icon_left/get_user.png',
+          imgUrl_h: this.$imageHost + '/image/system/icon_left/get_user_h.png',
           span: '官网申请试用'
         },
         {
-          imgUrl: '/static/image/system/icon_left/get_user.png',
-          imgUrl_h: '/static/image/system/icon_left/get_user_h.png',
+          imgUrl: this.$imageHost + '/image/system/icon_left/get_user.png',
+          imgUrl_h: this.$imageHost + '/image/system/icon_left/get_user_h.png',
           span: '问题反馈'
         },
         {
-          imgUrl: '/static/image/system/icon_left/get_user.png',
-          imgUrl_h: '/static/image/system/icon_left/get_user_h.png',
+          imgUrl: this.$imageHost + '/image/system/icon_left/get_user.png',
+          imgUrl_h: this.$imageHost + '/image/system/icon_left/get_user_h.png',
           span: '店铺登录日志'
         },
         {
-          imgUrl: '/static/image/system/icon_left/picture_space.png',
-          imgUrl_h: '/static/image/system/icon_left/picture_space_h.png',
+          imgUrl: this.$imageHost + '/image/system/icon_left/picture_space.png',
+          imgUrl_h: this.$imageHost + '/image/system/icon_left/picture_space_h.png',
           span: '日志管理'
         },
         {
-          imgUrl: '/static/image/system/icon_left/essay_admin.png',
-          imgUrl_h: '/static/image/system/icon_left/essay_admin_h.png',
+          imgUrl: this.$imageHost + '/image/system/icon_left/essay_admin.png',
+          imgUrl_h: this.$imageHost + '/image/system/icon_left/essay_admin_h.png',
           span: '文章管理'
         },
         {
-          imgUrl: '/static/image/system/icon_left/picture_space.png',
-          imgUrl_h: '/static/image/system/icon_left/picture_space_h.png',
+          imgUrl: this.$imageHost + '/image/system/icon_left/picture_space.png',
+          imgUrl_h: this.$imageHost + '/image/system/icon_left/picture_space_h.png',
           span: '图片空间'
         }
       ],
       shop_manage: [
         {
-          imgUrl: '/static/image/system/icon_left/mobile_deco.png',
-          imgUrl_h: '/static/image/system/icon_left/mobile_deco_h.png',
+          imgUrl: this.$imageHost + '/image/system/icon_left/mobile_deco.png',
+          imgUrl_h: this.$imageHost + '/image/system/icon_left/mobile_deco_h.png',
           span: '店铺账户列表'
         },
         {
-          imgUrl: '/static/image/system/icon_left/mobile_deco.png',
-          imgUrl_h: '/static/image/system/icon_left/mobile_deco_h.png',
+          imgUrl: this.$imageHost + '/image/system/icon_left/mobile_deco.png',
+          imgUrl_h: this.$imageHost + '/image/system/icon_left/mobile_deco_h.png',
           span: '店铺列表'
         },
         {
-          imgUrl: '/static/image/system/icon_left/mobile_deco.png',
-          imgUrl_h: '/static/image/system/icon_left/mobile_deco_h.png',
+          imgUrl: this.$imageHost + '/image/system/icon_left/mobile_deco.png',
+          imgUrl_h: this.$imageHost + '/image/system/icon_left/mobile_deco_h.png',
           span: '发布列表'
         },
         {
-          imgUrl: '/static/image/system/icon_left/mobile_deco.png',
-          imgUrl_h: '/static/image/system/icon_left/mobile_deco_h.png',
+          imgUrl: this.$imageHost + '/image/system/icon_left/mobile_deco.png',
+          imgUrl_h: this.$imageHost + '/image/system/icon_left/mobile_deco_h.png',
           span: '小程序版本'
         },
         {
-          imgUrl: '/static/image/system/icon_left/picture_space.png',
-          imgUrl_h: '/static/image/system/icon_left/picture_space_h.png',
+          imgUrl: this.$imageHost + '/image/system/icon_left/picture_space.png',
+          imgUrl_h: this.$imageHost + '/image/system/icon_left/picture_space_h.png',
           span: '版本列表'
         },
         {
-          imgUrl: '/static/image/system/icon_left/picture_space.png',
-          imgUrl_h: '/static/image/system/icon_left/picture_space_h.png',
+          imgUrl: this.$imageHost + '/image/system/icon_left/picture_space.png',
+          imgUrl_h: this.$imageHost + '/image/system/icon_left/picture_space_h.png',
           span: '微信全链路'
         },
         {
-          imgUrl: '/static/image/system/icon_left/picture_space.png',
-          imgUrl_h: '/static/image/system/icon_left/picture_space_h.png',
+          imgUrl: this.$imageHost + '/image/system/icon_left/picture_space.png',
+          imgUrl_h: this.$imageHost + '/image/system/icon_left/picture_space_h.png',
           span: '申请发布列表'
         }
       ],
       data_statistics: [
         {
-          imgUrl: '/static/image/system/icon_left/shop_view.png',
-          imgUrl_h: '/static/image/system/icon_left/shop_view_h.png',
+          imgUrl: this.$imageHost + '/image/system/icon_left/shop_view.png',
+          imgUrl_h: this.$imageHost + '/image/system/icon_left/shop_view_h.png',
           span: '概览'
         },
         {
-          imgUrl: '/static/image/system/icon_left/shop_view.png',
-          imgUrl_h: '/static/image/system/icon_left/shop_view_h.png',
+          imgUrl: this.$imageHost + '/image/system/icon_left/shop_view.png',
+          imgUrl_h: this.$imageHost + '/image/system/icon_left/shop_view_h.png',
           span: '用户画像'
         },
         {
-          imgUrl: '/static/image/system/icon_left/shop_view.png',
-          imgUrl_h: '/static/image/system/icon_left/shop_view_h.png',
+          imgUrl: this.$imageHost + '/image/system/icon_left/shop_view.png',
+          imgUrl_h: this.$imageHost + '/image/system/icon_left/shop_view_h.png',
           span: '访问趋势'
         },
         {
-          imgUrl: '/static/image/system/icon_left/shop_view.png',
-          imgUrl_h: '/static/image/system/icon_left/shop_view_h.png',
+          imgUrl: this.$imageHost + '/image/system/icon_left/shop_view.png',
+          imgUrl_h: this.$imageHost + '/image/system/icon_left/shop_view_h.png',
           span: '访问分析'
         },
         {
-          imgUrl: '/static/image/system/icon_left/shop_view.png',
-          imgUrl_h: '/static/image/system/icon_left/shop_view_h.png',
+          imgUrl: this.$imageHost + '/image/system/icon_left/shop_view.png',
+          imgUrl_h: this.$imageHost + '/image/system/icon_left/shop_view_h.png',
           span: '店铺访问量'
         },
         {
-          imgUrl: '/static/image/system/icon_left/shop_view.png',
-          imgUrl_h: '/static/image/system/icon_left/shop_view_h.png',
+          imgUrl: this.$imageHost + '/image/system/icon_left/shop_view.png',
+          imgUrl_h: this.$imageHost + '/image/system/icon_left/shop_view_h.png',
           span: '功能使用'
         },
         {
-          imgUrl: '/static/image/system/icon_left/shop_view.png',
-          imgUrl_h: '/static/image/system/icon_left/shop_view_h.png',
+          imgUrl: this.$imageHost + '/image/system/icon_left/shop_view.png',
+          imgUrl_h: this.$imageHost + '/image/system/icon_left/shop_view_h.png',
           span: '收入统计'
         }
       ],
       goods_manage: [
         {
-          imgUrl: '/static/image/system/icon_left/product_list.png',
-          imgUrl_h: '/static/image/system/icon_left/product_list_h.png',
+          imgUrl: this.$imageHost + '/image/system/icon_left/product_list.png',
+          imgUrl_h: this.$imageHost + '/image/system/icon_left/product_list_h.png',
           span: '商品统计'
         },
         {
-          imgUrl: '/static/image/system/icon_left/product_list.png',
-          imgUrl_h: '/static/image/system/icon_left/product_list_h.png',
+          imgUrl: this.$imageHost + '/image/system/icon_left/product_list.png',
+          imgUrl_h: this.$imageHost + '/image/system/icon_left/product_list_h.png',
           span: '商品列表'
         },
         {
-          imgUrl: '/static/image/system/icon_left/picture_attr.png',
-          imgUrl_h: '/static/image/system/icon_left/picture_attr_h.png',
+          imgUrl: this.$imageHost + '/image/system/icon_left/picture_attr.png',
+          imgUrl_h: this.$imageHost + '/image/system/icon_left/picture_attr_h.png',
           span: '分类管理'
         }
       ],
       member_manage: [
         {
-          imgUrl: '/static/image/system/icon_left/get_user.png',
-          imgUrl_h: '/static/image/system/icon_left/get_user_h.png',
+          imgUrl: this.$imageHost + '/image/system/icon_left/get_user.png',
+          imgUrl_h: this.$imageHost + '/image/system/icon_left/get_user_h.png',
           span: '会员统计'
         },
         {
-          imgUrl: '/static/image/system/icon_left/get_user.png',
-          imgUrl_h: '/static/image/system/icon_left/get_user_h.png',
+          imgUrl: this.$imageHost + '/image/system/icon_left/get_user.png',
+          imgUrl_h: this.$imageHost + '/image/system/icon_left/get_user_h.png',
           span: '会员列表'
         }
       ],
       order_manage: [
         {
-          imgUrl: '/static/image/system/icon_left/order_admin.png',
-          imgUrl_h: '/static/image/system/icon_left/order_admin_h.png',
+          imgUrl: this.$imageHost + '/image/system/icon_left/order_admin.png',
+          imgUrl_h: this.$imageHost + '/image/system/icon_left/order_admin_h.png',
           span: '订单统计'
         },
         {
-          imgUrl: '/static/image/system/icon_left/order_admin.png',
-          imgUrl_h: '/static/image/system/icon_left/order_admin_h.png',
+          imgUrl: this.$imageHost + '/image/system/icon_left/order_admin.png',
+          imgUrl_h: this.$imageHost + '/image/system/icon_left/order_admin_h.png',
           span: '订单列表'
         }
       ],
       setting: [
         {
-          imgUrl: '/static/image/system/icon_left/get_user.png',
-          imgUrl_h: '/static/image/system/icon_left/get_user_h.png',
+          imgUrl: this.$imageHost + '/image/system/icon_left/get_user.png',
+          imgUrl_h: this.$imageHost + '/image/system/icon_left/get_user_h.png',
           span: '装修模板'
         },
         {
-          imgUrl: '/static/image/system/icon_left/get_user.png',
-          imgUrl_h: '/static/image/system/icon_left/get_user_h.png',
+          imgUrl: this.$imageHost + '/image/system/icon_left/get_user.png',
+          imgUrl_h: this.$imageHost + '/image/system/icon_left/get_user_h.png',
           span: '子账号管理'
         },
         {
-          imgUrl: '/static/image/system/icon_left/get_user.png',
-          imgUrl_h: '/static/image/system/icon_left/get_user_h.png',
+          imgUrl: this.$imageHost + '/image/system/icon_left/get_user.png',
+          imgUrl_h: this.$imageHost + '/image/system/icon_left/get_user_h.png',
           span: 'Enter Admin'
         },
         {
-          imgUrl: '/static/image/system/icon_left/get_user.png',
-          imgUrl_h: '/static/image/system/icon_left/get_user_h.png',
+          imgUrl: this.$imageHost + '/image/system/icon_left/get_user.png',
+          imgUrl_h: this.$imageHost + '/image/system/icon_left/get_user_h.png',
           span: '数据库管理'
         },
         {
-          imgUrl: '/static/image/system/icon_left/get_user.png',
-          imgUrl_h: '/static/image/system/icon_left/get_user_h.png',
+          imgUrl: this.$imageHost + '/image/system/icon_left/get_user.png',
+          imgUrl_h: this.$imageHost + '/image/system/icon_left/get_user_h.png',
           span: '图片存储'
         }
       ],

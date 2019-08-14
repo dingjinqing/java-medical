@@ -153,42 +153,42 @@ export default {
       secondNavIndex: '',
       contentList: [
       ],
-      dele_icon: '../../../../../../static/image/admin/icon_delete.png',
+      dele_icon: this.$imageHost + '/image/admin/icon_delete.png',
       modifyDialog: false,
       modifyDialogList: [
         {
-          img_one: 'http://mpdevimg2.weipubao.cn/image/admin/icon_mps/icon_yes_2.png',
-          img_two: 'http://mpdevimg2.weipubao.cn/image/admin/icon_mps/icon_no_2.png',
+          img_one: this.$imageHost + '/image/admin/icon_mps/icon_yes_2.png',
+          img_two: this.$imageHost + '/image/admin/icon_mps/icon_no_2.png',
           text: '首页'
         },
         {
-          img_one: 'http://mpdevimg2.weipubao.cn/image/admin/icon_mps/icon_yes_1.png',
-          img_two: 'http://mpdevimg2.weipubao.cn/image/admin/icon_mps/icon_no_1.png',
+          img_one: this.$imageHost + '/image/admin/icon_mps/icon_yes_1.png',
+          img_two: this.$imageHost + '/image/admin/icon_mps/icon_no_1.png',
           text: '门店'
         },
         {
-          img_one: 'http://mpdevimg2.weipubao.cn/image/admin/icon_mps/icon_yes_3.png',
-          img_two: 'http://mpdevimg2.weipubao.cn/image/admin/icon_mps/icon_no_3.png',
+          img_one: this.$imageHost + '/image/admin/icon_mps/icon_yes_3.png',
+          img_two: this.$imageHost + '/image/admin/icon_mps/icon_no_3.png',
           text: '购物车'
         },
         {
-          img_one: 'http://mpdevimg2.weipubao.cn/image/admin/icon_mps/icon_yes_4.png',
-          img_two: 'http://mpdevimg2.weipubao.cn/image/admin/icon_mps/icon_no_4.png',
+          img_one: this.$imageHost + '/image/admin/icon_mps/icon_yes_4.png',
+          img_two: this.$imageHost + '/image/admin/icon_mps/icon_no_4.png',
           text: '我的'
         },
         {
-          img_one: 'http://mpdevimg2.weipubao.cn/image/admin/icon_mps/icon_yes_5.png',
-          img_two: 'http://mpdevimg2.weipubao.cn/image/admin/icon_mps/icon_no_5.png',
+          img_one: this.$imageHost + '/image/admin/icon_mps/icon_yes_5.png',
+          img_two: this.$imageHost + '/image/admin/icon_mps/icon_no_5.png',
           text: '分类'
         },
         {
-          img_one: 'http://mpdevimg2.weipubao.cn/image/admin/icon_mps/icon_yes_6.png',
-          img_two: 'http://mpdevimg2.weipubao.cn/image/admin/icon_mps/icon_no_6.png',
+          img_one: this.$imageHost + '/image/admin/icon_mps/icon_yes_6.png',
+          img_two: this.$imageHost + '/image/admin/icon_mps/icon_no_6.png',
           text: '活动'
         },
         {
-          img_one: 'http://mpdevimg2.weipubao.cn/image/admin/icon_mps/icon_yes_7.png',
-          img_two: 'http://mpdevimg2.weipubao.cn/image/admin/icon_mps/icon_no_7.png',
+          img_one: this.$imageHost + '/image/admin/icon_mps/icon_yes_7.png',
+          img_two: this.$imageHost + '/image/admin/icon_mps/icon_no_7.png',
           text: '订单'
         }
       ],

@@ -128,7 +128,7 @@
             >
               <img
                 class="upLoadImg"
-                src="../../../../../../../static/image/admin/add_img.png"
+                :src="$imageHost+'/image/admin/add_img.png'"
                 alt="商品主图上传"
               >
             </section>

@@ -25,8 +25,8 @@ const routes = [
         name: 'overview',
         meta: {
           title: '概览',
-          imgUrl: '/static/image/system/icon_left/shop_view.png',
-          imgUrl_h: '/static/image/system/icon_left/shop_view_h.png'
+          imgUrl: this.$imageHost + '/image/system/icon_left/shop_view.png',
+          imgUrl_h: this.$imageHost + '/image/system/icon_left/shop_view_h.png'
         }
       },
       {

@@ -406,7 +406,7 @@ const routes = [
             meta: {
               crumbTitle: 'router.memberEditorList',
               meta: 'user_manger',
-              category: 'membershipList'
+              category: 'user_list'
             },
             component: () => import('@/view/admin/index/leftNavComponents/user_manger/membershipList/membershipInformation')
           },
@@ -416,7 +416,7 @@ const routes = [
             meta: {
               crumbTitle: 'router.receiveDetail',
               meta: 'user_manger',
-              category: 'membershipList'
+              category: 'user_list'
             },
             component: () =>
               import(
@@ -429,7 +429,7 @@ const routes = [
             meta: {
               crumbTitle: 'router.balanceDetail',
               meta: 'user_manger',
-              category: 'membershipList'
+              category: 'user_list'
             },
             component: () =>
               import(
@@ -442,7 +442,7 @@ const routes = [
             meta: {
               crumbTitle: 'router.integralDetail',
               meta: 'user_manger',
-              category: 'membershipList'
+              category: 'user_list'
             },
             component: () =>
               import(
