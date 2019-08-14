@@ -177,7 +177,7 @@ export default {
 
       ],
       clickIindex: null,
-      noImg: 'http://mpimg2.weipubao.cn/image/admin/no_data.png'
+      noImg: this.$imageHost + '/image/admin/no_data.png'
     }
   },
   methods: {

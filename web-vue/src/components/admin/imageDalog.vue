@@ -88,7 +88,7 @@
                       <p :class="imageDalog_p_height">
                         <a
                           class="old_pic"
-                          href="http://mpdevimg2.weipubao.cn/upload/4748160/image/20190708/crop_aeZqHE9BhNhWub8j.jpeg"
+                          :href="$imageHost + '/image/20190708/crop_aeZqHE9BhNhWub8j.jpeg'"
                           target="_blank"
                           title="显示原图"
                         >{{$t('imgageDalog.OriginalImg')}}</a>

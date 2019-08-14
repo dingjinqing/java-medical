@@ -819,7 +819,7 @@ export default {
         value: '选项3',
         label: '会员3'
       }],
-      noImg: 'http://mpimg2.weipubao.cn/image/admin/no_data.png',
+      noImg: this.$imageHost + '/image/admin/no_data.png',
       membershipCardVal: '',
       labelVal: '',
       datePickerVal: '',

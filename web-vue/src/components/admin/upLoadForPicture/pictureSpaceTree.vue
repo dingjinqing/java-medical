@@ -185,7 +185,7 @@
               v-else
             >
               <img
-                src="http://mpdevimg2.weipubao.cn/image/admin/image_no_data.png"
+                :src="$imageHost + '/image/admin/image_no_data.png'"
                 style="margin-top: 20px"
               >
               <p style="color:#999;font-size: 14px;text-align: center;margin-top: 15px">{{$t('imgsSpace.noneImgsText')}}</p>

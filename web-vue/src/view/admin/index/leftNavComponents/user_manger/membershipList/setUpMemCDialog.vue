@@ -249,7 +249,7 @@ export default {
       memberTableFlag: false,
       tbodyFlag: true,
       tbodyFlagTwo: true,
-      noImg: 'http://mpimg2.weipubao.cn/image/admin/no_data.png',
+      noImg: this.$imageHost + '/image/admin/no_data.png',
       trListTwo: [
         {
           title: '省钱月卡',

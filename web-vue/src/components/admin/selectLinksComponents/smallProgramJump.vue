@@ -107,7 +107,7 @@ export default {
       pageName: '',
       pagePath: '',
       tbodyFlag: true,
-      noImg: 'http://mpimg2.weipubao.cn/image/admin/no_data.png',
+      noImg: this.$imageHost + '/image/admin/no_data.png',
       trList: [
         {
           title: '111',
