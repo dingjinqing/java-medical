@@ -31,6 +31,7 @@ import com.vpu.mp.db.main.tables.MpAuthShop;
 import com.vpu.mp.db.main.tables.records.MpAuthShopRecord;
 import com.vpu.mp.db.main.tables.records.MpDeployHistoryRecord;
 import com.vpu.mp.db.main.tables.records.MpVersionRecord;
+import com.vpu.mp.db.shop.tables.records.MpJumpUsableRecord;
 import com.vpu.mp.service.foundation.data.JsonResultMessage;
 import com.vpu.mp.service.foundation.service.MainBaseService;
 import com.vpu.mp.service.foundation.util.PageResult;
@@ -375,7 +376,7 @@ public class MpAuthShopService extends MainBaseService {
 		 * TODO: add setNavigateToMiniProgramAppIdList
 		 * extInfo.setNavigateToMiniProgramAppIdList(navigateToMiniProgr++amAppIdList);
 		 */
-		extInfo.setNavigateToMiniProgramAppIdList(appletsJumpService.getMpJumpAppIDList());
+		extInfo.setNavigateToMiniProgramAppIdList(appletsJumpService.getMpJumpAppIDList(mp.getShopId()));
 		
 		//上传代码保存小程序跳转的提交的appid 版本号，appid ,状态
 		appletsJumpService.saveMpJumpAppIDList(extInfo.getNavigateToMiniProgramAppIdList(), templateId);
@@ -432,6 +433,7 @@ public class MpAuthShopService extends MainBaseService {
 	}
 
 	public String getMpQrCode(String appId, WxOpenAuthorizerInfo authorizerInfo) {
+		//String qrcodeUrl = authorizerInfo.getQrcodeUrl();
 		String path = "pages/bottom/bottom";
 		String filename = appId + "_" + Util.md5(path) + ".jpg";
 		String relativePath = "upload/saas/mp/app_code/" + filename;
