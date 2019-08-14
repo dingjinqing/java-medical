@@ -313,21 +313,35 @@ public class MpAuthShopService extends MainBaseService {
 	public WxOpenMaDomainResult modifyDomain(String appId) throws WxErrorException {
 		MpAuthShopRecord mp = this.getAuthShopByAppId(appId);
 		String action = "add";
-		String[] httpsDomains = { domainConfig.imageUrl("/", "https") };
-		String[] wssDomains = { domainConfig.imageUrl("/", "wss") };
+		String[] httpsDomains = { domainConfig.mainUrl("", "https") };
+		String[] wssDomains = { domainConfig.mainUrl("", "wss") };
 		WxOpenMaService maService = this.getMaServiceByAppId(appId);
-		WxOpenMaDomainResult result = maService.modifyDomain(action, Arrays.asList(httpsDomains),
-				Arrays.asList(wssDomains), Arrays.asList(httpsDomains), Arrays.asList(httpsDomains));
+		WxOpenMaDomainResult result=new WxOpenMaDomainResult();
 		String noNewDomainCode = "85017";
-		if (result.isSuccess() || noNewDomainCode.equals(result.getErrcode())) {
-			// 85017 : 没有新增域名，请确认小程序已经添加了域名或该域名是否没有在第三方平台添加
-			String setWebViewDomain = maService.setWebViewDomain(action, Arrays.asList(httpsDomains));
-			WxOpenResult fromJson = WxMaGsonBuilder.create().fromJson(setWebViewDomain, WxOpenResult.class);
-			if(fromJson.isSuccess()) {
-				//同步到主库???
-			}else {
-				logger().debug("appId:"+appId+"修改域名setWebViewDomain失败"+fromJson.getErrcode()+"  "+fromJson.getErrmsg());
+		try {
+			result = maService.modifyDomain(action, Arrays.asList(httpsDomains),
+					Arrays.asList(wssDomains), Arrays.asList(httpsDomains), Arrays.asList(httpsDomains));
+		} catch (WxErrorException e) {
+			//logger().debug(e.getMessage(),e);
+			//没有新增域名，请确认小程序已经添加了域名或该域名是否没有在第三方平台添加
+			logger().debug("appId:"+appId+"修改域名modifyDomain失败："+e.getError().getErrorCode()+"  "+e.getError().getErrorMsg());
+			WxOpenResult fromJson =null;
+			if(noNewDomainCode.equals(String.valueOf(e.getError().getErrorCode()))) {
+				String setWebViewDomain = maService.setWebViewDomain(action, Arrays.asList(httpsDomains));
+				fromJson = WxMaGsonBuilder.create().fromJson(setWebViewDomain, WxOpenResult.class);
+				if(fromJson.isSuccess()) {
+					mp.setIsModifyDomain((byte) 1);
+					mp.update();
+				}else {
+					logger().debug("appId:"+appId+"修改域名setWebViewDomain失败"+fromJson.getErrcode()+"  "+fromJson.getErrmsg());
+				}
 			}
+			operateLog(mp, MpOperateLogService.OP_TYPE_MODIFY_DOMAIN, fromJson);
+			result.setErrcode(fromJson.getErrcode());
+			result.setErrmsg(fromJson.getErrmsg());
+			return result;
+		}
+		if (result.isSuccess()) {
 			mp.setIsModifyDomain((byte) 1);
 			mp.update();				
 		}else {
