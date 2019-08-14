@@ -3281,7 +3281,7 @@ create table `b2c_presale` (
   primary key (`id`)
 );
 
--- -- 会员卡专享商品关联表
+-- 定金膨胀活动商品表
 -- drop table if exists `b2c_presale_product`;
 create table `b2c_presale_product` (
   `id`                   int(11)  not null auto_increment,
