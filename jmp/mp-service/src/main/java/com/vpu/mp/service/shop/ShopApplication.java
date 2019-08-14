@@ -207,4 +207,7 @@ public class ShopApplication  {
      * 限时降价
      */
     @Autowired public ReducePriceService reducePrice;
+    
+    @Autowired
+  	protected AppletsJumpService appletsJumpService;
 }

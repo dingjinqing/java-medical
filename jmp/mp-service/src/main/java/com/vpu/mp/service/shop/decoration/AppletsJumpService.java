@@ -146,9 +146,8 @@ public class AppletsJumpService extends ShopBaseService {
     	return mainDb().update(MP_JUMP_VERSION).set(MP_JUMP_VERSION.FLAG,(byte)1).where(MP_JUMP_VERSION.SHOP_ID.eq(shopId)).execute();
     }
     
-    public List<String> getMpJumpAppIDList(Integer shopId){
-    	databaseManager.switchShopDb(shopId);
-		List<String> values = shopDb().selectFrom(MP_JUMP).where(MP_JUMP.DEL_FLAG.eq((byte) 0).and(MP_JUMP.FLAG.eq((byte) 0))).orderBy(MP_JUMP.CREATE_TIME).fetch().getValues(MP_JUMP.APP_ID, String.class);
+    public List<String> getMpJumpAppIDList(){
+		List<String> values = db().selectFrom(MP_JUMP).where(MP_JUMP.DEL_FLAG.eq((byte) 0).and(MP_JUMP.FLAG.eq((byte) 0))).orderBy(MP_JUMP.CREATE_TIME).fetch().getValues(MP_JUMP.APP_ID, String.class);
 		List<String> returnList=new ArrayList<String>();
 		//wx56c8f077de74b07c 微信购物清单中的appid
 		returnList.add("wx56c8f077de74b07c");

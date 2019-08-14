@@ -21,15 +21,6 @@ public class ShopBaseService extends AbstractCommonBaseService {
 	protected void transaction(ContextTransactionalRunnable transactional) {
 		this.shopTransaction(transactional);
 	}
-
-	/**
-	 * 切换当前店铺ID
-	 * 
-	 * @param shopId
-	 */
-	public void switchShopDb(Integer shopId) {
-		databaseManager.switchShopDb(shopId);
-	}
 	
 	/**
 	 * 当前店铺Id

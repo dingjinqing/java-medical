@@ -81,8 +81,7 @@ public class MpAuthShopService extends MainBaseService {
 	@Autowired
 	protected SystemImageService image;
 	
-	@Autowired
-	protected AppletsJumpService appletsJumpService;
+	
 
 	public static final Byte AUTH_OK = 1;
 	public static final Byte AUTH_CANCEL = 0;
@@ -372,11 +371,12 @@ public class MpAuthShopService extends MainBaseService {
 		extInfo.addExt("shop_id", mp.getShopId().toString());
 		extInfo.addExt("version", templateId.toString());
 
+		AppletsJumpService appletsJumpService = saas.getShopApp(mp.getShopId()).appletsJump;
 		/**
 		 * TODO: add setNavigateToMiniProgramAppIdList
 		 * extInfo.setNavigateToMiniProgramAppIdList(navigateToMiniProgr++amAppIdList);
 		 */
-		extInfo.setNavigateToMiniProgramAppIdList(appletsJumpService.getMpJumpAppIDList(mp.getShopId()));
+		extInfo.setNavigateToMiniProgramAppIdList(appletsJumpService.getMpJumpAppIDList());
 		
 		//上传代码保存小程序跳转的提交的appid 版本号，appid ,状态
 		appletsJumpService.saveMpJumpAppIDList(extInfo.getNavigateToMiniProgramAppIdList(), templateId);
