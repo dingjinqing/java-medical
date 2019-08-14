@@ -90,7 +90,7 @@ public class AdminOrderController extends AdminBaseController {
 	 * 	发货
 	 */
 	@PostMapping("/ship")
-	public JsonResult ship(@RequestBody ShipParam param ) {
+	public JsonResult ship(@RequestBody @Valid ShipParam param ) {
 		JsonResultCode code = shop().orderActionFactory.orderOperate(param);
 		return code == null ? success() : fail(code);
 	}
@@ -99,7 +99,7 @@ public class AdminOrderController extends AdminBaseController {
 	 * 	mp退款、退货查询
 	 */
 	@PostMapping("/refund/list")
-	public JsonResult mpRefundGoodsList(@RequestBody OrderOperateQueryParam param) {
+	public JsonResult mpRefundGoodsList(@RequestBody @Valid OrderOperateQueryParam param) {
 		return success(shop().orderActionFactory.orderQuery(param));
 	}
 	
@@ -107,7 +107,7 @@ public class AdminOrderController extends AdminBaseController {
 	 * 	admin退款、退货查询
 	 */
 	@PostMapping("/refund/adminList")
-	public JsonResult adminRefundGoodsList(@RequestBody OrderOperateQueryParam param) {
+	public JsonResult adminRefundGoodsList(@RequestBody @Valid OrderOperateQueryParam param) {
 		JsonResultCode code = shop().orderActionFactory.orderOperate(param);
 		return code == null ? success() : fail(code);
 	}
@@ -116,7 +116,7 @@ public class AdminOrderController extends AdminBaseController {
 	 * 退款
 	 */
 	@PostMapping("/refund/money")
-	public JsonResult refundMoney(@RequestBody RefundMoneyParam param) {
+	public JsonResult refundMoney(@RequestBody @Valid RefundMoneyParam param) {
 		JsonResultCode code = shop().orderActionFactory.orderOperate(param);
 		return code == null ? success() : fail(code);
 	}
