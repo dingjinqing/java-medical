@@ -238,11 +238,11 @@ public class OrderConstant {
 	};
 
 	/** 全款 **/
-    public static final byte PAY_WAI_FULL = 0;
+    public static final byte PAY_WAY_FULL = 0;
     /** 定金 **/
-    public static final byte PAY_WAI_BARGIAN = 1;
+    public static final byte PAY_WAY_BARGIAN = 1;
     /** 补款 **/
-    public static final byte PAY_WAI_TAIL = 2;
+    public static final byte PAY_WAY_TAIL = 2;
 
 	public String getOrderStatus(byte orderStatusCode) {
 		return orderStatus[orderStatusCode];
