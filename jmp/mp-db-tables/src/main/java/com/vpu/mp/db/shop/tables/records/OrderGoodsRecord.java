@@ -28,7 +28,7 @@ import org.jooq.impl.UpdatableRecordImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class OrderGoodsRecord extends UpdatableRecordImpl<OrderGoodsRecord> {
 
-    private static final long serialVersionUID = -1698357545;
+    private static final long serialVersionUID = 627502420;
 
     /**
      * Setter for <code>mini_shop_6797286.b2c_order_goods.rec_id</code>.
@@ -521,185 +521,143 @@ public class OrderGoodsRecord extends UpdatableRecordImpl<OrderGoodsRecord> {
     }
 
     /**
-     * Setter for <code>mini_shop_6797286.b2c_order_goods.purchase_price_id</code>. 加价购ID
-     */
-    public void setPurchasePriceId(Integer value) {
-        set(35, value);
-    }
-
-    /**
-     * Getter for <code>mini_shop_6797286.b2c_order_goods.purchase_price_id</code>. 加价购ID
-     */
-    public Integer getPurchasePriceId() {
-        return (Integer) get(35);
-    }
-
-    /**
-     * Setter for <code>mini_shop_6797286.b2c_order_goods.purchase_price_rule_id</code>. 换购挡位ID
-     */
-    public void setPurchasePriceRuleId(Integer value) {
-        set(36, value);
-    }
-
-    /**
-     * Getter for <code>mini_shop_6797286.b2c_order_goods.purchase_price_rule_id</code>. 换购挡位ID
-     */
-    public Integer getPurchasePriceRuleId() {
-        return (Integer) get(36);
-    }
-
-    /**
-     * Setter for <code>mini_shop_6797286.b2c_order_goods.reduce_price_id</code>. 限时降价ID
-     */
-    public void setReducePriceId(Integer value) {
-        set(37, value);
-    }
-
-    /**
-     * Getter for <code>mini_shop_6797286.b2c_order_goods.reduce_price_id</code>. 限时降价ID
-     */
-    public Integer getReducePriceId() {
-        return (Integer) get(37);
-    }
-
-    /**
      * Setter for <code>mini_shop_6797286.b2c_order_goods.cost_price</code>. 成本价
      */
     public void setCostPrice(BigDecimal value) {
-        set(38, value);
+        set(35, value);
     }
 
     /**
      * Getter for <code>mini_shop_6797286.b2c_order_goods.cost_price</code>. 成本价
      */
     public BigDecimal getCostPrice() {
-        return (BigDecimal) get(38);
+        return (BigDecimal) get(35);
     }
 
     /**
      * Setter for <code>mini_shop_6797286.b2c_order_goods.is_card_exclusive</code>. 是否会员卡专属
      */
     public void setIsCardExclusive(Byte value) {
-        set(39, value);
+        set(36, value);
     }
 
     /**
      * Getter for <code>mini_shop_6797286.b2c_order_goods.is_card_exclusive</code>. 是否会员卡专属
      */
     public Byte getIsCardExclusive() {
-        return (Byte) get(39);
+        return (Byte) get(36);
     }
 
     /**
      * Setter for <code>mini_shop_6797286.b2c_order_goods.promote_info</code>. 推广信息
      */
     public void setPromoteInfo(String value) {
-        set(40, value);
+        set(37, value);
     }
 
     /**
      * Getter for <code>mini_shop_6797286.b2c_order_goods.promote_info</code>. 推广信息
      */
     public String getPromoteInfo() {
-        return (String) get(40);
+        return (String) get(37);
     }
 
     /**
      * Setter for <code>mini_shop_6797286.b2c_order_goods.gift_id</code>. 赠品ID
      */
     public void setGiftId(Integer value) {
-        set(41, value);
+        set(38, value);
     }
 
     /**
      * Getter for <code>mini_shop_6797286.b2c_order_goods.gift_id</code>. 赠品ID
      */
     public Integer getGiftId() {
-        return (Integer) get(41);
+        return (Integer) get(38);
     }
 
     /**
      * Setter for <code>mini_shop_6797286.b2c_order_goods.is_can_return</code>. 是否可退款
      */
     public void setIsCanReturn(Byte value) {
-        set(42, value);
+        set(39, value);
     }
 
     /**
      * Getter for <code>mini_shop_6797286.b2c_order_goods.is_can_return</code>. 是否可退款
      */
     public Byte getIsCanReturn() {
-        return (Byte) get(42);
-    }
-
-    /**
-     * Setter for <code>mini_shop_6797286.b2c_order_goods.first_special_id</code>. 首单特惠ID
-     */
-    public void setFirstSpecialId(Integer value) {
-        set(43, value);
-    }
-
-    /**
-     * Getter for <code>mini_shop_6797286.b2c_order_goods.first_special_id</code>. 首单特惠ID
-     */
-    public Integer getFirstSpecialId() {
-        return (Integer) get(43);
-    }
-
-    /**
-     * Setter for <code>mini_shop_6797286.b2c_order_goods.free_ship</code>. 满包邮
-     */
-    public void setFreeShip(Byte value) {
-        set(44, value);
-    }
-
-    /**
-     * Getter for <code>mini_shop_6797286.b2c_order_goods.free_ship</code>. 满包邮
-     */
-    public Byte getFreeShip() {
-        return (Byte) get(44);
+        return (Byte) get(39);
     }
 
     /**
      * Setter for <code>mini_shop_6797286.b2c_order_goods.reduce_price_num</code>.
      */
     public void setReducePriceNum(Short value) {
-        set(45, value);
+        set(40, value);
     }
 
     /**
      * Getter for <code>mini_shop_6797286.b2c_order_goods.reduce_price_num</code>.
      */
     public Short getReducePriceNum() {
-        return (Short) get(45);
+        return (Short) get(40);
+    }
+
+    /**
+     * Setter for <code>mini_shop_6797286.b2c_order_goods.activity_type</code>. 营销活动种类
+     */
+    public void setActivityType(Integer value) {
+        set(41, value);
+    }
+
+    /**
+     * Getter for <code>mini_shop_6797286.b2c_order_goods.activity_type</code>. 营销活动种类
+     */
+    public Integer getActivityType() {
+        return (Integer) get(41);
+    }
+
+    /**
+     * Setter for <code>mini_shop_6797286.b2c_order_goods.activity_id</code>. 营销活动id
+     */
+    public void setActivityId(Integer value) {
+        set(42, value);
+    }
+
+    /**
+     * Getter for <code>mini_shop_6797286.b2c_order_goods.activity_id</code>. 营销活动id
+     */
+    public Integer getActivityId() {
+        return (Integer) get(42);
     }
 
     /**
      * Setter for <code>mini_shop_6797286.b2c_order_goods.create_time</code>. 创建时间
      */
     public void setCreateTime(Timestamp value) {
-        set(46, value);
+        set(43, value);
     }
 
     /**
      * Getter for <code>mini_shop_6797286.b2c_order_goods.create_time</code>. 创建时间
      */
     public Timestamp getCreateTime() {
-        return (Timestamp) get(46);
+        return (Timestamp) get(43);
     }
 
     /**
      * Setter for <code>mini_shop_6797286.b2c_order_goods.update_time</code>. 修改时间
      */
     public void setUpdateTime(Timestamp value) {
-        set(47, value);
+        set(44, value);
     }
 
     /**
      * Getter for <code>mini_shop_6797286.b2c_order_goods.update_time</code>. 修改时间
      */
     public Timestamp getUpdateTime() {
-        return (Timestamp) get(47);
+        return (Timestamp) get(44);
     }
 
     // -------------------------------------------------------------------------
@@ -728,7 +686,7 @@ public class OrderGoodsRecord extends UpdatableRecordImpl<OrderGoodsRecord> {
     /**
      * Create a detached, initialised OrderGoodsRecord
      */
-    public OrderGoodsRecord(Integer recId, Integer shopId, Integer orderId, String orderSn, Integer goodsId, String goodsName, String goodsSn, Integer productId, String productSn, Short goodsNumber, BigDecimal marketPrice, BigDecimal goodsPrice, String goodsAttr, Short sendNumber, Short returnNumber, Byte isReal, String goodsAttrId, String goodsImg, Byte refundStatus, Byte commentFlag, Integer straId, BigDecimal perDiscount, Integer isGift, String rGoods, Integer goodsScore, Integer goodsGrowth, BigDecimal discountedGoodsPrice, String discountDetail, Byte fanliType, BigDecimal canCalculateMoney, BigDecimal fanliMoney, BigDecimal discountedTotalPrice, BigDecimal totalFanliMoney, String fanliStrategy, BigDecimal fanliPercent, Integer purchasePriceId, Integer purchasePriceRuleId, Integer reducePriceId, BigDecimal costPrice, Byte isCardExclusive, String promoteInfo, Integer giftId, Byte isCanReturn, Integer firstSpecialId, Byte freeShip, Short reducePriceNum, Timestamp createTime, Timestamp updateTime) {
+    public OrderGoodsRecord(Integer recId, Integer shopId, Integer orderId, String orderSn, Integer goodsId, String goodsName, String goodsSn, Integer productId, String productSn, Short goodsNumber, BigDecimal marketPrice, BigDecimal goodsPrice, String goodsAttr, Short sendNumber, Short returnNumber, Byte isReal, String goodsAttrId, String goodsImg, Byte refundStatus, Byte commentFlag, Integer straId, BigDecimal perDiscount, Integer isGift, String rGoods, Integer goodsScore, Integer goodsGrowth, BigDecimal discountedGoodsPrice, String discountDetail, Byte fanliType, BigDecimal canCalculateMoney, BigDecimal fanliMoney, BigDecimal discountedTotalPrice, BigDecimal totalFanliMoney, String fanliStrategy, BigDecimal fanliPercent, BigDecimal costPrice, Byte isCardExclusive, String promoteInfo, Integer giftId, Byte isCanReturn, Short reducePriceNum, Integer activityType, Integer activityId, Timestamp createTime, Timestamp updateTime) {
         super(OrderGoods.ORDER_GOODS);
 
         set(0, recId);
@@ -766,18 +724,15 @@ public class OrderGoodsRecord extends UpdatableRecordImpl<OrderGoodsRecord> {
         set(32, totalFanliMoney);
         set(33, fanliStrategy);
         set(34, fanliPercent);
-        set(35, purchasePriceId);
-        set(36, purchasePriceRuleId);
-        set(37, reducePriceId);
-        set(38, costPrice);
-        set(39, isCardExclusive);
-        set(40, promoteInfo);
-        set(41, giftId);
-        set(42, isCanReturn);
-        set(43, firstSpecialId);
-        set(44, freeShip);
-        set(45, reducePriceNum);
-        set(46, createTime);
-        set(47, updateTime);
+        set(35, costPrice);
+        set(36, isCardExclusive);
+        set(37, promoteInfo);
+        set(38, giftId);
+        set(39, isCanReturn);
+        set(40, reducePriceNum);
+        set(41, activityType);
+        set(42, activityId);
+        set(43, createTime);
+        set(44, updateTime);
     }
 }

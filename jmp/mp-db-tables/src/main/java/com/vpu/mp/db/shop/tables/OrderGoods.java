@@ -43,7 +43,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class OrderGoods extends TableImpl<OrderGoodsRecord> {
 
-    private static final long serialVersionUID = -200868733;
+    private static final long serialVersionUID = -655579287;
 
     /**
      * The reference instance of <code>mini_shop_6797286.b2c_order_goods</code>
@@ -234,21 +234,6 @@ public class OrderGoods extends TableImpl<OrderGoodsRecord> {
     public final TableField<OrderGoodsRecord, BigDecimal> FANLI_PERCENT = createField("fanli_percent", org.jooq.impl.SQLDataType.DECIMAL(10, 2).defaultValue(org.jooq.impl.DSL.inline("0.00", org.jooq.impl.SQLDataType.DECIMAL)), this, "返利比例");
 
     /**
-     * The column <code>mini_shop_6797286.b2c_order_goods.purchase_price_id</code>. 加价购ID
-     */
-    public final TableField<OrderGoodsRecord, Integer> PURCHASE_PRICE_ID = createField("purchase_price_id", org.jooq.impl.SQLDataType.INTEGER.defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.INTEGER)), this, "加价购ID");
-
-    /**
-     * The column <code>mini_shop_6797286.b2c_order_goods.purchase_price_rule_id</code>. 换购挡位ID
-     */
-    public final TableField<OrderGoodsRecord, Integer> PURCHASE_PRICE_RULE_ID = createField("purchase_price_rule_id", org.jooq.impl.SQLDataType.INTEGER.defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.INTEGER)), this, "换购挡位ID");
-
-    /**
-     * The column <code>mini_shop_6797286.b2c_order_goods.reduce_price_id</code>. 限时降价ID
-     */
-    public final TableField<OrderGoodsRecord, Integer> REDUCE_PRICE_ID = createField("reduce_price_id", org.jooq.impl.SQLDataType.INTEGER.defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.INTEGER)), this, "限时降价ID");
-
-    /**
      * The column <code>mini_shop_6797286.b2c_order_goods.cost_price</code>. 成本价
      */
     public final TableField<OrderGoodsRecord, BigDecimal> COST_PRICE = createField("cost_price", org.jooq.impl.SQLDataType.DECIMAL(10, 2), this, "成本价");
@@ -274,19 +259,19 @@ public class OrderGoods extends TableImpl<OrderGoodsRecord> {
     public final TableField<OrderGoodsRecord, Byte> IS_CAN_RETURN = createField("is_can_return", org.jooq.impl.SQLDataType.TINYINT.defaultValue(org.jooq.impl.DSL.inline("1", org.jooq.impl.SQLDataType.TINYINT)), this, "是否可退款");
 
     /**
-     * The column <code>mini_shop_6797286.b2c_order_goods.first_special_id</code>. 首单特惠ID
-     */
-    public final TableField<OrderGoodsRecord, Integer> FIRST_SPECIAL_ID = createField("first_special_id", org.jooq.impl.SQLDataType.INTEGER.defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.INTEGER)), this, "首单特惠ID");
-
-    /**
-     * The column <code>mini_shop_6797286.b2c_order_goods.free_ship</code>. 满包邮
-     */
-    public final TableField<OrderGoodsRecord, Byte> FREE_SHIP = createField("free_ship", org.jooq.impl.SQLDataType.TINYINT.defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.TINYINT)), this, "满包邮");
-
-    /**
      * The column <code>mini_shop_6797286.b2c_order_goods.reduce_price_num</code>.
      */
     public final TableField<OrderGoodsRecord, Short> REDUCE_PRICE_NUM = createField("reduce_price_num", org.jooq.impl.SQLDataType.SMALLINT.nullable(false).defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.SMALLINT)), this, "");
+
+    /**
+     * The column <code>mini_shop_6797286.b2c_order_goods.activity_type</code>. 营销活动种类
+     */
+    public final TableField<OrderGoodsRecord, Integer> ACTIVITY_TYPE = createField("activity_type", org.jooq.impl.SQLDataType.INTEGER.nullable(false).defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.INTEGER)), this, "营销活动种类");
+
+    /**
+     * The column <code>mini_shop_6797286.b2c_order_goods.activity_id</code>. 营销活动id
+     */
+    public final TableField<OrderGoodsRecord, Integer> ACTIVITY_ID = createField("activity_id", org.jooq.impl.SQLDataType.INTEGER.nullable(false).defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.INTEGER)), this, "营销活动id");
 
     /**
      * The column <code>mini_shop_6797286.b2c_order_goods.create_time</code>. 创建时间
