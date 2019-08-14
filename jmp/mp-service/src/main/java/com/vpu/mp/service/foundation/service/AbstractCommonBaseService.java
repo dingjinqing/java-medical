@@ -1,6 +1,8 @@
 package com.vpu.mp.service.foundation.service;
 
+import java.util.ArrayDeque;
 import java.util.Arrays;
+import java.util.Deque;
 
 import org.jooq.Configuration;
 import org.jooq.ContextTransactionalRunnable;
@@ -27,7 +29,7 @@ import com.vpu.mp.service.wechat.OpenPlatform;
  * @author lixinguo
  *
  */
-abstract public class AbstractCommonBaseService {
+public abstract  class AbstractCommonBaseService {
 
 	@Autowired
 	protected DatabaseManager databaseManager;
@@ -41,12 +43,12 @@ abstract public class AbstractCommonBaseService {
 	/**
 	 * Shop DB连接事务配置，线程内单例
 	 */
-	private static ThreadLocal<Configuration> shopDbConfiguration = new ThreadLocal<Configuration>();
+	private static ThreadLocal<Deque<Configuration>> shopDbConfiguration = ThreadLocal.withInitial(ArrayDeque<Configuration>::new);
 
 	/**
 	 * Main DB连接事务配置，线程内单例
 	 */
-	private static ThreadLocal<Configuration> mainDbConfiguration = new ThreadLocal<Configuration>();
+	private static ThreadLocal<Deque<Configuration>> mainDbConfiguration = ThreadLocal.withInitial(ArrayDeque<Configuration>::new);
 
 	/**
 	 * 当前店铺DB连接
@@ -54,9 +56,9 @@ abstract public class AbstractCommonBaseService {
 	 * @return
 	 */
 	public DefaultDSLContext shopDb() {
-		Configuration config = shopDbConfiguration.get();
-		if (config != null) {
-			return (DefaultDSLContext) DSL.using(shopDbConfiguration.get());
+		Deque<Configuration> config = shopDbConfiguration.get();
+		if (config.peek() != null) {
+			return (DefaultDSLContext) DSL.using(config.peek());
 		}
 		return databaseManager.currentShopDb();
 	}
@@ -81,9 +83,9 @@ abstract public class AbstractCommonBaseService {
 	 * @return
 	 */
 	public DefaultDSLContext mainDb() {
-		Configuration config = mainDbConfiguration.get();
-		if (config != null) {
-			return (DefaultDSLContext) DSL.using(mainDbConfiguration.get());
+		Deque<Configuration> config = mainDbConfiguration.get();
+		if (config.peek() != null) {
+			return (DefaultDSLContext) DSL.using(config.peek());
 		}
 		return databaseManager.mainDb();
 	}
@@ -95,9 +97,13 @@ abstract public class AbstractCommonBaseService {
 	 */
 	public void shopTransaction(final ContextTransactionalRunnable transactional) {
 		shopDb().transaction((configuration) -> {
-			shopDbConfiguration.set(configuration);
-			transactional.run();
-			shopDbConfiguration.remove();
+			Deque<Configuration> config = shopDbConfiguration.get();
+			config.push(configuration);
+			try {
+				transactional.run();
+			} finally {
+				config.pop();
+			}
 		});
 	}
 
@@ -108,9 +114,13 @@ abstract public class AbstractCommonBaseService {
 	 */
 	public void mainTransaction(final ContextTransactionalRunnable transactional) {
 		mainDb().transaction((configuration) -> {
-			mainDbConfiguration.set(configuration);
-			transactional.run();
-			mainDbConfiguration.remove();
+			Deque<Configuration> config = mainDbConfiguration.get();
+			config.push(configuration);
+			try {
+				transactional.run();
+			} finally {
+				config.pop();
+			}
 		});
 	}
 

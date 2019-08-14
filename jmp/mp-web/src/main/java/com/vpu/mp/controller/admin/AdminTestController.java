@@ -6,7 +6,6 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.vpu.mp.service.foundation.data.JsonResult;
 import com.vpu.mp.service.wechat.OpenPlatform;
-import com.vpu.mp.service.wechat.bean.open.WxOpenAuthorizerListResult;
 
 /**
  * 
@@ -21,7 +20,7 @@ public class AdminTestController extends AdminBaseController {
 	
 	@RequestMapping(value = "/admin/test")
 	public JsonResult test() throws Exception {
-		WxOpenAuthorizerListResult result = open.getComponentExtService().getAuthorizerList(0,10);
-		return success(result);
+		saas.getShopApp(123456).config.bottomCfg.test();
+		return success("OK");
 	}
 }

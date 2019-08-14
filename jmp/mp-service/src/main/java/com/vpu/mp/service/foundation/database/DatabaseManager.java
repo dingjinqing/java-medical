@@ -1,10 +1,9 @@
 package com.vpu.mp.service.foundation.database;
 
-import static com.vpu.mp.db.main.tables.Shop.SHOP;
-
-import java.io.IOException;
-import java.nio.charset.StandardCharsets;
-
+import com.vpu.mp.config.DatabaseConfig;
+import com.vpu.mp.db.main.tables.records.ShopRecord;
+import com.vpu.mp.service.foundation.service.QueryFilter;
+import com.vpu.mp.service.foundation.util.Util;
 import org.apache.commons.dbcp2.BasicDataSource;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.tools.ant.BuildException;
@@ -17,11 +16,7 @@ import org.jooq.conf.MappedSchema;
 import org.jooq.conf.RenderMapping;
 import org.jooq.conf.Settings;
 import org.jooq.exception.DataAccessException;
-import org.jooq.impl.DataSourceConnectionProvider;
-import org.jooq.impl.DefaultConfiguration;
-import org.jooq.impl.DefaultDSLContext;
-import org.jooq.impl.DefaultExecuteListenerProvider;
-import org.jooq.impl.DefaultTransactionProvider;
+import org.jooq.impl.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -29,10 +24,10 @@ import org.springframework.core.io.ClassPathResource;
 import org.springframework.stereotype.Service;
 import org.springframework.util.FileCopyUtils;
 
-import com.vpu.mp.config.DatabaseConfig;
-import com.vpu.mp.db.main.tables.records.ShopRecord;
-import com.vpu.mp.service.foundation.service.QueryFilter;
-import com.vpu.mp.service.foundation.util.Util;
+import java.io.IOException;
+import java.nio.charset.StandardCharsets;
+
+import static com.vpu.mp.db.main.tables.Shop.SHOP;
 
 /**
  * 数据库管理，单例。需要考虑多线程互斥情况
@@ -42,10 +37,10 @@ import com.vpu.mp.service.foundation.util.Util;
  */
 @Service
 public class DatabaseManager {
-	
+
 	@Autowired
 	protected DatabaseConfig databaseConfig;
-
+	
 	@Autowired
 	protected DatasourceManager datasourceManager;
 
@@ -339,5 +334,26 @@ public class DatabaseManager {
 	 */
 	public String getMainDbSchema() {
 		return databaseConfig.getDatabase();
+	}
+
+	@Override
+	protected void finalize() {
+		MpDefaultDslContext db = mainDsl.get();
+		if (db != null) {
+			mainDsl.remove();
+			db = null;
+		}
+
+		db = shopDsl.get();
+		if (db != null) {
+			shopDsl.remove();
+			db = null;
+		}
+		if (currentShopId.get() != null) {
+			currentShopId.remove();
+		}
+		if (lastShopId.get() != null) {
+			lastShopId.remove();
+		}
 	}
 }
