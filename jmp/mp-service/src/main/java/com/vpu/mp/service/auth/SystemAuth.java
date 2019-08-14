@@ -52,10 +52,10 @@ public class SystemAuth {
 	public boolean logout() {
 		SystemTokenAuthInfo info = user();
 		if (info == null) {
-			return true;
+			return false;
 		}
 		this.deleteTokenInfo(info);
-		return false;
+		return true;
 	}
 
 	protected String getToken() {
