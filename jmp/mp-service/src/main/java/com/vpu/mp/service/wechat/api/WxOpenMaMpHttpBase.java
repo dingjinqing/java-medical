@@ -9,22 +9,25 @@ import me.chanjar.weixin.common.error.WxErrorException;
  *
  */
 public interface WxOpenMaMpHttpBase {
+
 	/**
-	 * post请求
-	 * 
+	 * post请求 
+	 * @param appId
 	 * @param url
 	 * @param data
 	 * @return
+	 * @throws WxErrorException
 	 */
 	String post(String appId, String url, String data) throws WxErrorException;
 
+	
 	/**
-	 * get请求
-	 * 
+	 * get请求 
+	 * @param appId
 	 * @param url
-	 * @param data
 	 * @param queryParam
 	 * @return
+	 * @throws WxErrorException
 	 */
 	String get(String appId, String url,String queryParam) throws WxErrorException;
 }

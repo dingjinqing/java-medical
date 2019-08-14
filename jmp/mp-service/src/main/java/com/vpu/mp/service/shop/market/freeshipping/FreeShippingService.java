@@ -1,13 +1,13 @@
 package com.vpu.mp.service.shop.market.freeshipping;
 
-import com.vpu.mp.db.main.tables.records.GoodsRecord;
-import com.vpu.mp.db.shop.tables.records.FreeShippingRecord;
-import com.vpu.mp.db.shop.tables.records.FreeShippingRuleRecord;
-import com.vpu.mp.service.foundation.data.DelFlag;
-import com.vpu.mp.service.foundation.service.ShopBaseService;
-import com.vpu.mp.service.foundation.util.PageResult;
-import com.vpu.mp.service.pojo.shop.market.freeshipping.*;
-import org.apache.poi.ss.formula.functions.T;
+import static com.vpu.mp.db.main.tables.Goods.GOODS;
+import static com.vpu.mp.db.shop.tables.FreeShipping.FREE_SHIPPING;
+import static com.vpu.mp.db.shop.tables.FreeShippingRule.FREE_SHIPPING_RULE;
+
+import java.sql.Timestamp;
+import java.util.ArrayList;
+import java.util.List;
+
 import org.jooq.Record;
 import org.jooq.Result;
 import org.jooq.SelectConditionStep;
@@ -15,13 +15,17 @@ import org.jooq.impl.DSL;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.sql.Timestamp;
-import java.util.ArrayList;
-import java.util.List;
-
-import static com.vpu.mp.db.main.tables.Goods.GOODS;
-import static com.vpu.mp.db.shop.tables.FreeShipping.FREE_SHIPPING;
-import static com.vpu.mp.db.shop.tables.FreeShippingRule.FREE_SHIPPING_RULE;
+import com.vpu.mp.db.main.tables.records.GoodsRecord;
+import com.vpu.mp.db.shop.tables.records.FreeShippingRecord;
+import com.vpu.mp.db.shop.tables.records.FreeShippingRuleRecord;
+import com.vpu.mp.service.foundation.data.DelFlag;
+import com.vpu.mp.service.foundation.service.ShopBaseService;
+import com.vpu.mp.service.foundation.util.PageResult;
+import com.vpu.mp.service.pojo.shop.market.freeshipping.FreeShipQueryParam;
+import com.vpu.mp.service.pojo.shop.market.freeshipping.FreeShippingGoodsRuleVo;
+import com.vpu.mp.service.pojo.shop.market.freeshipping.FreeShippingParam;
+import com.vpu.mp.service.pojo.shop.market.freeshipping.FreeShippingRuleVo;
+import com.vpu.mp.service.pojo.shop.market.freeshipping.FreeShippingVo;
 
 /**
  * 免邮费

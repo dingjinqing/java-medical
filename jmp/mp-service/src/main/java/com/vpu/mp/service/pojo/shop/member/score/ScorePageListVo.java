@@ -1,6 +1,5 @@
 package com.vpu.mp.service.pojo.shop.member.score;
 
-import java.math.BigDecimal;
 import java.sql.Timestamp;
 
 import lombok.Getter;

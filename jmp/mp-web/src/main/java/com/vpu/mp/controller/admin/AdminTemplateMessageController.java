@@ -1,11 +1,11 @@
 package com.vpu.mp.controller.admin;
 
-import com.vpu.mp.service.foundation.data.JsonResult;
-import com.vpu.mp.service.pojo.shop.market.message.MessageTemplateQuery;
-import com.vpu.mp.service.pojo.shop.market.message.UserInfoQuery;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+
+import com.vpu.mp.service.foundation.data.JsonResult;
+import com.vpu.mp.service.pojo.shop.market.message.UserInfoQuery;
 
 /**
  * 营销管理-消息推送

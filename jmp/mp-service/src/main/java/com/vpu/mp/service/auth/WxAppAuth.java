@@ -4,9 +4,9 @@ import javax.servlet.http.HttpServletRequest;
 
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
+import com.vpu.mp.config.AuthConfig;
 import com.vpu.mp.db.main.tables.records.ShopRecord;
 import com.vpu.mp.db.shop.tables.records.UserRecord;
 import com.vpu.mp.service.foundation.jedis.JedisManager;
@@ -25,8 +25,8 @@ import me.chanjar.weixin.common.error.WxErrorException;
 @Component
 public class WxAppAuth {
 
-	@Value(value = "${auth.timeout}")
-	protected Integer timeout;
+	@Autowired
+	protected AuthConfig authConfig;
 
 	@Autowired
 	protected HttpServletRequest request;

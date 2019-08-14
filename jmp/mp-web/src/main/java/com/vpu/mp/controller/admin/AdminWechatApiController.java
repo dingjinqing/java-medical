@@ -10,7 +10,6 @@ import com.vpu.mp.db.main.tables.records.MpAuthShopRecord;
 import com.vpu.mp.service.foundation.data.JsonResult;
 import com.vpu.mp.service.foundation.data.JsonResultCode;
 import com.vpu.mp.service.pojo.saas.shop.mp.MpAuthShopToAdminVo;
-import com.vpu.mp.service.pojo.saas.shop.mp.MpAuthShopVo;
 import com.vpu.mp.service.wechat.OpenPlatform;
 
 import me.chanjar.weixin.common.error.WxErrorException;

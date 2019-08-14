@@ -7,7 +7,6 @@ import static org.jooq.impl.DSL.count;
 import static org.jooq.impl.DSL.sum;
 
 import java.util.ArrayList;
-import java.math.BigDecimal;
 import java.util.List;
 
 import org.jooq.Record1;

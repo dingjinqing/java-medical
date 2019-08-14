@@ -2,8 +2,6 @@ package com.vpu.mp.service.pojo.saas.shop.mp;
 
 import java.sql.Timestamp;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
-
 import lombok.Data;
 
 /**

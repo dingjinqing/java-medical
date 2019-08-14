@@ -1,24 +1,29 @@
 package com.vpu.mp.controller.admin;
 
-import com.vpu.mp.db.shop.tables.LotteryPrize;
-import com.vpu.mp.db.shop.tables.records.LotteryPrizeRecord;
-import com.vpu.mp.db.shop.tables.records.LotteryRecord;
-import com.vpu.mp.service.pojo.shop.market.lottery.prize.LotteryPrizeVo;
+import java.util.List;
+
+import javax.validation.Valid;
+
 import org.jooq.Result;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.vpu.mp.db.shop.tables.records.LotteryPrizeRecord;
+import com.vpu.mp.db.shop.tables.records.LotteryRecord;
 import com.vpu.mp.service.foundation.data.JsonResult;
 import com.vpu.mp.service.foundation.util.PageResult;
 import com.vpu.mp.service.pojo.shop.market.MarketSourceUserListParam;
-import com.vpu.mp.service.pojo.shop.market.lottery.*;
+import com.vpu.mp.service.pojo.shop.market.lottery.JoinLotteryParam;
+import com.vpu.mp.service.pojo.shop.market.lottery.LotteryByIdParam;
+import com.vpu.mp.service.pojo.shop.market.lottery.LotteryPageListParam;
+import com.vpu.mp.service.pojo.shop.market.lottery.LotteryPageListVo;
+import com.vpu.mp.service.pojo.shop.market.lottery.LotteryParam;
+import com.vpu.mp.service.pojo.shop.market.lottery.LotteryVo;
+import com.vpu.mp.service.pojo.shop.market.lottery.prize.LotteryPrizeVo;
 import com.vpu.mp.service.pojo.shop.market.lottery.record.LotteryRecordPageListParam;
 import com.vpu.mp.service.pojo.shop.market.lottery.record.LotteryRecordPageListVo;
-
-import javax.validation.Valid;
-import java.util.List;
 
 /**
  * @author 孔德成

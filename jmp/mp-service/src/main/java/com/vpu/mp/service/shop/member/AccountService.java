@@ -5,15 +5,12 @@ import static com.vpu.mp.db.shop.tables.TradesRecord.TRADES_RECORD;
 import static com.vpu.mp.db.shop.tables.User.USER;
 import static com.vpu.mp.db.shop.tables.UserAccount.USER_ACCOUNT;
 
-
 import java.math.BigDecimal;
 import java.sql.Timestamp;
-
 
 import org.jooq.Record6;
 import org.jooq.SelectConditionStep;
 import org.jooq.tools.StringUtils;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -23,10 +20,8 @@ import com.vpu.mp.service.foundation.util.DateUtil;
 import com.vpu.mp.service.foundation.util.PageResult;
 import com.vpu.mp.service.pojo.shop.auth.AdminTokenAuthInfo;
 import com.vpu.mp.service.pojo.shop.member.account.AccountPageListParam;
-import com.vpu.mp.service.pojo.shop.member.account.AccountParam;
-import com.vpu.mp.service.pojo.shop.member.score.ScorePageListParam;
-import com.vpu.mp.service.pojo.shop.member.score.ScorePageListVo;
 import com.vpu.mp.service.pojo.shop.member.account.AccountPageListVo;
+import com.vpu.mp.service.pojo.shop.member.account.AccountParam;
 
 /**
  * @author 黄壮壮 2019-07-18 16:47

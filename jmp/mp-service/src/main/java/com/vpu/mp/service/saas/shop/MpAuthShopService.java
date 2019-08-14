@@ -3,7 +3,6 @@ package com.vpu.mp.service.saas.shop;
 import static com.vpu.mp.db.main.tables.MpAuthShop.MP_AUTH_SHOP;
 import static com.vpu.mp.db.main.tables.ShopRenew.SHOP_RENEW;
 
-
 import java.io.File;
 import java.io.IOException;
 import java.sql.Timestamp;
@@ -16,7 +15,6 @@ import java.util.Map;
 
 import org.apache.commons.lang3.StringUtils;
 import org.jooq.Condition;
-import org.jooq.Record1;
 import org.jooq.Record13;
 import org.jooq.Record2;
 import org.jooq.Result;
@@ -33,7 +31,6 @@ import com.vpu.mp.db.main.tables.MpAuthShop;
 import com.vpu.mp.db.main.tables.records.MpAuthShopRecord;
 import com.vpu.mp.db.main.tables.records.MpDeployHistoryRecord;
 import com.vpu.mp.db.main.tables.records.MpVersionRecord;
-import com.vpu.mp.db.shop.tables.records.MpJumpUsableRecord;
 import com.vpu.mp.service.foundation.data.JsonResultMessage;
 import com.vpu.mp.service.foundation.service.MainBaseService;
 import com.vpu.mp.service.foundation.util.PageResult;
@@ -435,7 +432,6 @@ public class MpAuthShopService extends MainBaseService {
 	}
 
 	public String getMpQrCode(String appId, WxOpenAuthorizerInfo authorizerInfo) {
-		//String qrcodeUrl = authorizerInfo.getQrcodeUrl();
 		String path = "pages/bottom/bottom";
 		String filename = appId + "_" + Util.md5(path) + ".jpg";
 		String relativePath = "upload/saas/mp/app_code/" + filename;
@@ -444,10 +440,10 @@ public class MpAuthShopService extends MainBaseService {
 			byte[] createWxaCodeBytes = open().getWxOpenComponentService().getWxMaServiceByAppid(appId).getQrcodeService().createWxaCodeBytes(path, 430, true, null, false);
 			addImgeToUp = saas.sysImage.uploadToUpYunByByte(relativePath, createWxaCodeBytes);
 		} catch (WxErrorException e) {
-			logger().debug("appId" + appId +"获取小程序二维码失败");
+			logger().error("appId" + appId +"获取小程序二维码失败");
 			e.printStackTrace();
 		} catch (Exception e) {
-			logger().debug("appId" + appId + "头像上传又拍云失败");
+			logger().error("appId" + appId + "头像上传又拍云失败");
 			e.printStackTrace();
 		}
 		logger().debug("appId" + appId + "头像上传又拍云" + addImgeToUp);

@@ -25,10 +25,14 @@ public class AdminLoginController extends AdminBaseController {
 
 	@PostMapping(value = "/admin/login")
 	public JsonResult login(@RequestBody @Valid ShopLoginParam param, BindingResult result) {
+
+
+
 		if (result.hasErrors()) {
 			return this.fail(result.getFieldError().getDefaultMessage());
 		}
 		AdminTokenAuthInfo info = adminAuth.login(param);
+
 		if (info != null) {
 			return this.success(info);
 		} else {

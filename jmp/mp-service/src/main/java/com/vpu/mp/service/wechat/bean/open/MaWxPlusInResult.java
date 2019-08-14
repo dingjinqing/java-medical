@@ -5,10 +5,8 @@ import java.util.List;
 
 import com.google.gson.annotations.SerializedName;
 import com.google.gson.reflect.TypeToken;
-import com.vpu.mp.service.foundation.util.Util;
 
 import lombok.Data;
-import me.chanjar.weixin.open.bean.WxOpenMaCodeTemplate;
 import me.chanjar.weixin.open.util.json.WxOpenGsonBuilder;
 
 @Data

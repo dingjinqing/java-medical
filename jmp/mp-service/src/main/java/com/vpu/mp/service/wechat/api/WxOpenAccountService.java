@@ -29,6 +29,9 @@ public interface WxOpenAccountService extends WxOpenMaMpHttpBase {
 
 	/**
 	 * 获取公众号/小程序所绑定的开放平台帐号
+	 * @param appId
+	 * @return
+	 * @throws WxErrorException
 	 */
 	default WxOpenCreateResult createOpenAccount(String appId) throws WxErrorException {
 		JsonObject param = new JsonObject();
@@ -37,8 +40,12 @@ public interface WxOpenAccountService extends WxOpenMaMpHttpBase {
 		return WxOpenCreateResult.fromJson(json);
 	}
 
+
 	/**
 	 * 获取公众号/小程序所绑定的开放平台帐号
+	 * @param appId
+	 * @return
+	 * @throws WxErrorException
 	 */
 	default WxOpenGetResult getOpenAccount(String appId) throws WxErrorException{
 		JsonObject param = new JsonObject();
@@ -47,8 +54,13 @@ public interface WxOpenAccountService extends WxOpenMaMpHttpBase {
 		return WxOpenGetResult.fromJson(json);
 	}
 
+	
 	/**
 	 * 将 公众号/小程序绑定到开放平台帐号下
+	 * @param appId
+	 * @param openAppId
+	 * @return
+	 * @throws WxErrorException
 	 */
 	default WxOpenResult bindOpenAppId(String appId, String openAppId) throws WxErrorException{
 		JsonObject param = new JsonObject();
@@ -58,8 +70,13 @@ public interface WxOpenAccountService extends WxOpenMaMpHttpBase {
 		return WxOpenGetResult.fromJson(json);
 	}
 
+	
 	/**
 	 * 将公众号/小程序从开放平台帐号下解绑
+	 * @param appId
+	 * @param openAppId
+	 * @return
+	 * @throws WxErrorException
 	 */
 	default WxOpenResult unbindOpenAppId(String appId, String openAppId) throws WxErrorException{
 		JsonObject param = new JsonObject();

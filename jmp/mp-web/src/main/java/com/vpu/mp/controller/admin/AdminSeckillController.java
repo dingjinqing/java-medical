@@ -1,6 +1,5 @@
 package com.vpu.mp.controller.admin;
 
-import com.vpu.mp.service.pojo.shop.market.seckill.*;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -10,6 +9,12 @@ import org.springframework.web.bind.annotation.RestController;
 import com.vpu.mp.service.foundation.data.JsonResult;
 import com.vpu.mp.service.pojo.shop.market.MarketOrderListParam;
 import com.vpu.mp.service.pojo.shop.market.MarketSourceUserListParam;
+import com.vpu.mp.service.pojo.shop.market.seckill.SeckillAddParam;
+import com.vpu.mp.service.pojo.shop.market.seckill.SeckillDetailPageListQueryParam;
+import com.vpu.mp.service.pojo.shop.market.seckill.SeckillPageListQueryParam;
+import com.vpu.mp.service.pojo.shop.market.seckill.SeckillUpdateParam;
+import com.vpu.mp.service.pojo.shop.market.seckill.SeckillVo;
+import com.vpu.mp.service.pojo.shop.market.seckill.SimpleSeckillParam;
 
 
 /**

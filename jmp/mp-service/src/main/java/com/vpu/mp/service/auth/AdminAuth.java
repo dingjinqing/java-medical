@@ -8,9 +8,9 @@ import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
+import com.vpu.mp.config.AuthConfig;
 import com.vpu.mp.db.main.tables.records.ShopAccountRecord;
 import com.vpu.mp.db.main.tables.records.ShopChildAccountRecord;
 import com.vpu.mp.db.main.tables.records.ShopRecord;
@@ -29,8 +29,8 @@ import com.vpu.mp.service.saas.SaasApplication;
 @Component
 public class AdminAuth {
 
-	@Value(value = "${auth.timeout}")
-	protected Integer timeout;
+	@Autowired
+	protected AuthConfig authConfig;
 	
 	@Autowired
 	protected HttpServletRequest request;
@@ -43,10 +43,10 @@ public class AdminAuth {
 	
 	protected Logger log = LoggerFactory.getLogger(AdminAuth.class);
 
-	final String TOKEN = "V-Token";
-	final String AUTH_SECRET = "auth.secret";
-	final String AUTH_TIMEOUT = "auth.timeout";
-	final String TOKEN_PREFIX = "ADM@";
+	protected static final String TOKEN = "V-Token";
+	protected static final String AUTH_SECRET = "auth.secret";
+	protected static final String AUTH_TIMEOUT = "auth.timeout";
+	protected static final String TOKEN_PREFIX = "ADM@";
 
 	/**
 	 * 登出
@@ -127,7 +127,7 @@ public class AdminAuth {
 							Util.randomId(), Calendar.getInstance().getTimeInMillis()));
 			info.setToken(loginToken);
 		}
-		jedis.set(info.token, Util.toJson(info), timeout);
+		jedis.set(info.token, Util.toJson(info), authConfig.getTimeout());
 	}
 
 	/**

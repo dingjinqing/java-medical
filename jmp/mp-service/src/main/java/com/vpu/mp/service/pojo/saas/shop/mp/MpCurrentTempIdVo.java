@@ -1,10 +1,6 @@
 package com.vpu.mp.service.pojo.saas.shop.mp;
 
 import lombok.Data;
-import org.jooq.Condition;
-import org.jooq.impl.DSL;
-
-import static com.vpu.mp.db.main.tables.MpAuthShop.MP_AUTH_SHOP;
 
 /**
  * 

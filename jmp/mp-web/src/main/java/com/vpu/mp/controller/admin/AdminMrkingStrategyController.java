@@ -1,12 +1,16 @@
 package com.vpu.mp.controller.admin;
 
-import com.vpu.mp.service.foundation.data.JsonResult;
-import com.vpu.mp.service.foundation.util.PageResult;
-import com.vpu.mp.service.pojo.shop.market.fullcut.*;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
+
+import com.vpu.mp.service.foundation.data.JsonResult;
+import com.vpu.mp.service.pojo.shop.market.fullcut.MrkingStrategyAddParam;
+import com.vpu.mp.service.pojo.shop.market.fullcut.MrkingStrategyPageListQueryParam;
+import com.vpu.mp.service.pojo.shop.market.fullcut.MrkingStrategyUpdateParam;
+import com.vpu.mp.service.pojo.shop.market.fullcut.MrkingStrategyVo;
+import com.vpu.mp.service.pojo.shop.market.fullcut.SimpleMrkingStrategyParam;
 
 /**
  * @author: 王兵兵

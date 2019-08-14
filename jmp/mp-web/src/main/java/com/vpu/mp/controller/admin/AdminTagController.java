@@ -14,8 +14,6 @@ import com.vpu.mp.service.pojo.shop.member.TagInfoParam;
 import com.vpu.mp.service.pojo.shop.member.TagPageListParam;
 import com.vpu.mp.service.pojo.shop.member.UpdateTagParam;
 
-import ch.qos.logback.classic.Logger;
-
 /**
  * 会员标签管理
  * 

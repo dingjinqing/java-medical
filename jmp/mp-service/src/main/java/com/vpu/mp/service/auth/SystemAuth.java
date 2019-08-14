@@ -8,9 +8,9 @@ import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
+import com.vpu.mp.config.AuthConfig;
 import com.vpu.mp.db.main.tables.records.SystemChildAccountRecord;
 import com.vpu.mp.db.main.tables.records.SystemUserRecord;
 import com.vpu.mp.service.foundation.jedis.JedisManager;
@@ -27,24 +27,24 @@ import com.vpu.mp.service.saas.SaasApplication;
 @Component
 public class SystemAuth {
 
-	@Value(value = "${auth.timeout}")
-	protected Integer timeout;
-	
+	@Autowired
+	protected AuthConfig authConfig;
+
 	@Autowired
 	protected HttpServletRequest request;
-	
+
 	@Autowired
 	protected SaasApplication saas;
-	
+
 	@Autowired
 	protected JedisManager jedis;
-	
+
 	protected Logger log = LoggerFactory.getLogger(SystemAuth.class);
 
-	final String TOKEN = "V-Token";
-	final String AUTH_SECRET = "auth.secret";
-	final String AUTH_TIMEOUT = "auth.timeout";
-	final String TOKEN_PREFIX = "SYS@";
+	protected static final String TOKEN = "V-Token";
+	protected static final String AUTH_SECRET = "auth.secret";
+	protected static final String AUTH_TIMEOUT = "auth.timeout";
+	protected static final String TOKEN_PREFIX = "SYS@";
 
 	/**
 	 * 登出
@@ -65,7 +65,7 @@ public class SystemAuth {
 	/**
 	 * 是否有效system登录TOKEN
 	 * 
-	 * @param  token
+	 * @param token
 	 * @return
 	 */
 	public boolean isValidToken(String token) {
@@ -75,7 +75,7 @@ public class SystemAuth {
 	/**
 	 * 登录账户
 	 * 
-	 * @param  param
+	 * @param param
 	 * @return
 	 */
 	public SystemTokenAuthInfo login(SystemLoginParam param) {
@@ -96,10 +96,11 @@ public class SystemAuth {
 		info.setSubLogin(subAccount != null);
 		// 如果当前登录用户与正在登录的用户相同，则使用当前登录用户的Token
 		SystemTokenAuthInfo user = user();
-		if(user!=null && user.getSystemUserId() == info.getSystemUserId() && user.getSubAccountId() == info.getSubAccountId()) {
+		if (user != null && user.getSystemUserId() == info.getSystemUserId()
+				&& user.getSubAccountId() == info.getSubAccountId()) {
 			info.setToken(user.getToken());
 		}
-	    this.saveTokenInfo(info);
+		this.saveTokenInfo(info);
 		return info;
 	}
 
@@ -115,7 +116,7 @@ public class SystemAuth {
 							Util.randomId(), Calendar.getInstance().getTimeInMillis()));
 			info.setToken(loginToken);
 		}
-		jedis.set(info.token, Util.toJson(info), timeout);
+		jedis.set(info.token, Util.toJson(info), authConfig.getTimeout());
 	}
 
 	/**

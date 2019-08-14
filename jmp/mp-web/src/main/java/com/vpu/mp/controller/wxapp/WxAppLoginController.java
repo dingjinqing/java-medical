@@ -11,6 +11,11 @@ import com.vpu.mp.service.pojo.wxapp.login.WxAppSessionUser;
 
 import me.chanjar.weixin.common.error.WxErrorException;
 
+/**
+ * 
+ * @author lixinguo
+ *
+ */
 @RestController
 public class WxAppLoginController extends WxAppBaseController {
 

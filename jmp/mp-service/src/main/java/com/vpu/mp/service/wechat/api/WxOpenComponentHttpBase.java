@@ -13,24 +13,24 @@ public interface WxOpenComponentHttpBase {
 	public static final String COMPONENT_TOKEN_KEY = "component_access_token";
 	public static final String ACCESS_TOKEN_KEY = "access_token";
 
-	
-	
+
 	/**
 	 * post请求
-	 * 
 	 * @param url
 	 * @param data
 	 * @param accessTokenKey
 	 * @return
+	 * @throws WxErrorException
 	 */
 	String post(String url, String data,String accessTokenKey) throws WxErrorException;
 
+	
 	/**
 	 * get请求
-	 * 
-	 * @param data
+	 * @param url
 	 * @param accessTokenKey
 	 * @return
+	 * @throws WxErrorException
 	 */
 	String get(String url,String accessTokenKey) throws WxErrorException;
 }

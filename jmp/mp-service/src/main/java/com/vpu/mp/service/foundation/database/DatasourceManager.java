@@ -5,8 +5,10 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.apache.commons.dbcp2.BasicDataSource;
-import org.springframework.beans.factory.annotation.Value;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
+import com.vpu.mp.config.DatabaseConfig;
 
 import lombok.Data;
 
@@ -19,41 +21,8 @@ import lombok.Data;
 @Data
 public class DatasourceManager {
 
-	@Value(value = "${db.host}")
-	protected String host;
-
-	@Value(value = "${db.port}")
-	protected Integer port;
-
-	@Value(value = "${db.database}")
-	protected String database;
-
-	@Value(value = "${db.username}")
-	protected String username;
-
-	@Value(value = "${db.password}")
-	protected String password;
-
-	@Value(value = "${db.prefix}")
-	protected String dbPrefix;
-
-	@Value(value = "${db.shop.host}")
-	protected String shopHost;
-
-	@Value(value = "${db.shop.port}")
-	protected Integer shopPort;
-
-	@Value(value = "${db.shop.username}")
-	protected String shopUsername;
-
-	@Value(value = "${db.shop.password}")
-	protected String shopPassword;
-
-	@Value(value = "${db.shop.prefix}")
-	protected String shopDbPrefix;
-
-	protected String driver = "com.mysql.cj.jdbc.Driver";
-	protected String dialect = "MYSQL";
+	@Autowired
+	protected DatabaseConfig databaseConfig;
 
 	/**
 	 * 数据源列表，多线程共用。
@@ -67,7 +36,8 @@ public class DatasourceManager {
 	 * @return
 	 */
 	public DbConfig getMainDbConfig() {
-		return new DbConfig(host, port, database, username, password);
+		return new DbConfig(databaseConfig.getHost(), databaseConfig.getPort(), databaseConfig.getDatabase(),
+				databaseConfig.getUsername(), databaseConfig.getPassword());
 	}
 
 	/**
@@ -81,7 +51,8 @@ public class DatasourceManager {
 	 * 得到即将创建店铺库的数据源
 	 */
 	public BasicDataSource getToCreateShopDbDatasource() {
-		return this.getDatasource(new DbConfig(shopHost, shopPort, "", shopUsername, shopPassword));
+		return this.getDatasource(new DbConfig(databaseConfig.getShopHost(), databaseConfig.getShopPort(), "",
+				databaseConfig.getShopUsername(), databaseConfig.getShopPassword()));
 	}
 
 	/**
@@ -110,7 +81,7 @@ public class DatasourceManager {
 		dataSource.setUrl(url);
 		dataSource.setUsername(username);
 		dataSource.setPassword(password);
-		dataSource.setDriverClassName(driver);
+		dataSource.setDriverClassName(databaseConfig.getDriver());
 		// TODO：设置数据源其他参数，可以在配置里读取
 		return dataSource;
 	}
@@ -135,6 +106,8 @@ public class DatasourceManager {
 	 * @return
 	 */
 	public DbConfig getInstallShopDbConfig(Integer shopId) {
-		return new DbConfig(host, port, shopDbPrefix + shopId.toString(), username, password);
+		return new DbConfig(databaseConfig.getShopHost(), databaseConfig.getShopPort(),
+				databaseConfig.getShopDbPrefix() + shopId.toString(), databaseConfig.getShopUsername(),
+				databaseConfig.getShopPassword());
 	}
 }

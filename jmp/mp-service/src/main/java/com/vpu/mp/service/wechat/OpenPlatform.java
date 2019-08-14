@@ -6,9 +6,9 @@ import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
+import com.vpu.mp.config.WxOpenConfig;
 import com.vpu.mp.service.foundation.jedis.JedisManager;
 import com.vpu.mp.service.wechat.api.impl.WxOpenComponentExtServiceImpl;
 import com.vpu.mp.service.wechat.api.impl.WxOpenMaServiceExtraImpl;
@@ -33,17 +33,8 @@ import me.chanjar.weixin.open.bean.message.WxOpenXmlMessage;
 @Service
 public class OpenPlatform extends WxOpenServiceImpl {
 
-	@Value(value = "${wx.open.app_id}")
-	protected String appId;
-
-	@Value(value = "${wx.open.app_secret}")
-	protected String appSecret;
-
-	@Value(value = "${wx.open.token}")
-	protected String token;
-
-	@Value(value = "${wx.open.aes_key}")
-	protected String aesKey;
+	@Autowired
+	protected WxOpenConfig wxOpenConfig;
 
 	static final String AES = "aes";
 
@@ -79,10 +70,10 @@ public class OpenPlatform extends WxOpenServiceImpl {
 	@PostConstruct
 	public void init() {
 		WxOpenInRedisConfigStorage inRedisConfigStorage = new WxOpenInRedisConfigStorage(jedis.getJedisPool());
-		inRedisConfigStorage.setComponentAppId(appId);
-		inRedisConfigStorage.setComponentAppSecret(appSecret);
-		inRedisConfigStorage.setComponentToken(token);
-		inRedisConfigStorage.setComponentAesKey(aesKey);
+		inRedisConfigStorage.setComponentAppId(wxOpenConfig.getAppId());
+		inRedisConfigStorage.setComponentAppSecret(wxOpenConfig.getAppSecret());
+		inRedisConfigStorage.setComponentToken(wxOpenConfig.getToken());
+		inRedisConfigStorage.setComponentAesKey(wxOpenConfig.getAesKey());
 		setWxOpenConfigStorage(inRedisConfigStorage);
 		this.wxOpenMessageRouter = new WxOpenMessageRouter(this);
 		messageRouter();

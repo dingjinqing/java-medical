@@ -34,23 +34,6 @@ import com.vpu.mp.service.pojo.shop.market.lottery.record.LotteryRecordPageListV
 import com.vpu.mp.service.pojo.shop.member.MemberInfoVo;
 import com.vpu.mp.service.pojo.shop.member.MemberPageListParam;
 import com.vpu.mp.service.shop.member.MemberService;
-import lombok.extern.java.Log;
-import lombok.extern.log4j.Log4j;
-import lombok.extern.log4j.Log4j2;
-import org.jooq.AggregateFunction;
-import org.jooq.Record7;
-import org.jooq.Result;
-import org.jooq.SelectConditionStep;
-import org.jooq.impl.DSL;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
-
-import java.sql.Timestamp;
-import java.util.ArrayList;
-import java.util.List;
-
-import static com.vpu.mp.db.shop.Tables.*;
-import static com.vpu.mp.db.shop.tables.User.USER;
 
 /**
  * @author 孔德成

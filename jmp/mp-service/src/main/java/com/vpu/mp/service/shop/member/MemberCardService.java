@@ -1,8 +1,8 @@
 package com.vpu.mp.service.shop.member;
 
 import static com.vpu.mp.db.shop.Tables.MEMBER_CARD;
-import static com.vpu.mp.db.shop.Tables.USER_CARD;
 import static com.vpu.mp.db.shop.Tables.USER;
+import static com.vpu.mp.db.shop.Tables.USER_CARD;
 import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.ACTIVE_NO;
 import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.ACTIVE_YES;
 import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.ALL_GOODS;
@@ -13,6 +13,7 @@ import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.BUTTON_ON;
 import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.BUY_BY_CRASH;
 import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.BUY_BY_SCORE;
 import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.CHECKED;
+import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.DAY_DATE_TYPE;
 import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.DELETE_NO;
 import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.DELETE_YES;
 import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.DISCOUNT_ALL_GOODS;
@@ -22,6 +23,8 @@ import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.FIX_DATETIME
 import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.FOREVER;
 import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.GET_DIRECTLY;
 import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.LIMIT_NUM_TYPE;
+import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.MONTH;
+import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.MONTH_DATE_TYPE;
 import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.NEED_BUY;
 import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.NEED_CODE;
 import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.NONE_GOODS;
@@ -30,18 +33,11 @@ import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.PART_GOODS;
 import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.PART_SHOP;
 import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.PROHIBITED;
 import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.RANK_TYPE;
-import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.DAY_DATE_TYPE;
-import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.WEEK_DATE_TYPE;
-import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.MONTH_DATE_TYPE;
-import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.DAY;
 import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.WEEK;
-import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.MONTH;
-
+import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.WEEK_DATE_TYPE;
 import static org.jooq.impl.DSL.count;
 
-import java.math.BigDecimal;
 import java.sql.Timestamp;
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -49,26 +45,11 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Queue;
-import java.util.stream.Stream;
 
 import javax.validation.Valid;
 
-import org.jooq.Field;
-import org.jooq.InsertValuesStep10;
 import org.jooq.InsertValuesStep7;
-import org.jooq.InsertValuesStep8;
-import org.jooq.InsertValuesStep9;
-import org.jooq.InsertValuesStepN;
-import org.jooq.Record1;
 import org.jooq.Result;
-import com.vpu.mp.service.foundation.data.DelFlag;
-import com.vpu.mp.service.foundation.database.DslPlus;
-import com.vpu.mp.service.pojo.shop.member.account.AddMemberCardParam;
-import com.vpu.mp.service.pojo.shop.member.account.MemberCard;
-import com.vpu.mp.service.pojo.shop.member.account.MemberCardVo;
-import com.vpu.mp.service.pojo.shop.member.card.*;
-import com.vpu.mp.service.pojo.shop.operation.RecordContentTemplate;
-
 import org.jooq.SelectSeekStep1;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -76,10 +57,30 @@ import org.springframework.stereotype.Service;
 
 import com.vpu.mp.db.shop.tables.records.MemberCardRecord;
 import com.vpu.mp.db.shop.tables.records.UserCardRecord;
+import com.vpu.mp.service.foundation.data.DelFlag;
 import com.vpu.mp.service.foundation.data.JsonResultCode;
+import com.vpu.mp.service.foundation.database.DslPlus;
 import com.vpu.mp.service.foundation.service.ShopBaseService;
 import com.vpu.mp.service.foundation.util.PageResult;
 import com.vpu.mp.service.foundation.util.Util;
+import com.vpu.mp.service.pojo.shop.member.account.AddMemberCardParam;
+import com.vpu.mp.service.pojo.shop.member.account.MemberCard;
+import com.vpu.mp.service.pojo.shop.member.account.MemberCardVo;
+import com.vpu.mp.service.pojo.shop.member.card.BaseCardVo;
+import com.vpu.mp.service.pojo.shop.member.card.CardIdParam;
+import com.vpu.mp.service.pojo.shop.member.card.CardParam;
+import com.vpu.mp.service.pojo.shop.member.card.GradeConditionJson;
+import com.vpu.mp.service.pojo.shop.member.card.LimitNumCardToVo;
+import com.vpu.mp.service.pojo.shop.member.card.LimitNumCardVo;
+import com.vpu.mp.service.pojo.shop.member.card.NormalCardToVo;
+import com.vpu.mp.service.pojo.shop.member.card.NormalCardVo;
+import com.vpu.mp.service.pojo.shop.member.card.PowerCardParam;
+import com.vpu.mp.service.pojo.shop.member.card.RankCardToVo;
+import com.vpu.mp.service.pojo.shop.member.card.RankCardVo;
+import com.vpu.mp.service.pojo.shop.member.card.ScoreJson;
+import com.vpu.mp.service.pojo.shop.member.card.SearchCardParam;
+import com.vpu.mp.service.pojo.shop.member.card.SimpleMemberCardVo;
+import com.vpu.mp.service.pojo.shop.operation.RecordContentTemplate;
 
 /**
  * 

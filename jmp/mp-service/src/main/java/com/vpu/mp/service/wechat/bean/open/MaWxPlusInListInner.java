@@ -1,10 +1,8 @@
 package com.vpu.mp.service.wechat.bean.open;
 
 import java.io.Serializable;
-import java.util.List;
 
 import com.google.gson.annotations.SerializedName;
-import com.vpu.mp.service.foundation.util.Util;
 
 import lombok.Data;
 

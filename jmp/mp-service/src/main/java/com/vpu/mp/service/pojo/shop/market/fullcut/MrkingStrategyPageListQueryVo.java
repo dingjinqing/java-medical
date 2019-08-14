@@ -1,11 +1,9 @@
 package com.vpu.mp.service.pojo.shop.market.fullcut;
 
-import com.vpu.mp.service.pojo.shop.goods.GoodsView;
-import com.vpu.mp.service.pojo.shop.member.card.SimpleMemberCardVo;
-import lombok.Data;
-
 import java.sql.Timestamp;
 import java.util.List;
+
+import lombok.Data;
 
 /**
  * @author: 王兵兵
