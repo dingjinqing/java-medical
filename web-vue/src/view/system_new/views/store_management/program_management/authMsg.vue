@@ -73,7 +73,10 @@
                   <tr>
                     <td>小程序二维码</td>
                     <td>
-                      <img :src="this.dataList.qrcodeUrl">
+                      <img
+                        style="width:52px"
+                        :src="this.dataList.qrcodeUrl"
+                      >
                       <!-- <el-avatar
                         shape="square"
                         src="http://wx.qlogo.cn/mmopen/ibkKkoaQFco4LkwgLSc80z6O24h245qPMLL6znSwbPhEs5eLBcT07CXcXC0CzvohMts3N47SuUQsNmbMOPzbNsFrSGoj1Lfd8/0"
@@ -315,7 +318,7 @@
                   <tr>
                     <td>设置服务器域名</td>
                     <td>
-                      1
+                      {{this.dataList.isModifyDomain}}
                       <el-button
                         size="small"
                         type="primary"
@@ -325,7 +328,7 @@
                   <tr>
                     <td>绑定代码模板ID</td>
                     <td>
-                      214
+                      {{this.dataList.bindTemplateId}}
                       <el-button
                         size="small"
                         type="primary"
@@ -339,20 +342,21 @@
                       上传代码状态
                     </td>
                     <td>
-                      已上传
+                      <span v-if="dataList.uploadState===0">未上传</span>
+                      <span v-if="dataList.uploadState===1">已上传</span>
                     </td>
                   </tr>
                   <tr>
                     <td>最后上传代码时间</td>
                     <td>
-                      2019-08-01 10:50:04
+                      {{this.dataList.lastUploadTime}}
                     </td>
                   </tr>
                   <tr>
                     <td>小程序体验者</td>
                     <td style="padding-top: 5px;">
                       <el-tag
-                        v-for="(tag,index) in tagOpt"
+                        v-for="(tag,index) in dataList.tester"
                         :key="index"
                         type="warning"
                         size="small"
@@ -360,7 +364,7 @@
                         @close="handleClose(index)"
                         class="tag-item"
                       >
-                        {{tag['name']}}
+                        {{tag}}
                       </el-tag>
                       <el-button
                         size="small"
@@ -374,6 +378,10 @@
                   <tr>
                     <td>体验二维码</td>
                     <td>
+                      <img
+                        style="wdith:52px"
+                        :src="dataList.testQrPath"
+                      >
                       <!-- <el-avatar
                         style="vertical-align: middle"
                         shape="square"
@@ -381,6 +389,7 @@
                         fit="fit"
                         src="http://mpdevimg2.weipubao.cn/upload/saas/mp/qr/wxeaeb5c37a376f415.jpg"
                       /> -->
+
                       <el-button
                         style="vertical-align: middle"
                         size="small"
