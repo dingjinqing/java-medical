@@ -2746,6 +2746,7 @@ create table `b2c_reduce_price` (
   `create_time`		timestamp      	default current_timestamp,
   `update_time` 	timestamp      	default current_timestamp on update current_timestamp comment '最后修改时间',
   `share_config`      text   comment '分享设置',
+  `limit_flag`      tinyint(1)   default '0' comment '超限购买设置标记，1禁止超限购买，0超限全部恢复原价',
   primary key (`id`)
 );
 --  限时减价活动商品
@@ -2757,7 +2758,6 @@ create table `b2c_reduce_price_goods` (
   `discount`        decimal(10, 2)   default null comment '打几折',
   `reduce_price`    decimal(10, 2)   default null comment '减多少钱',
   `goods_price`     decimal(10, 2)   default null comment '折后价格',
-  `is_checked`      tinyint(1)       default null comment '是否选中',
   `create_time`		timestamp      	default current_timestamp,
   `update_time` 	timestamp      	default current_timestamp on update current_timestamp comment '最后修改时间',
   primary key (`id`),

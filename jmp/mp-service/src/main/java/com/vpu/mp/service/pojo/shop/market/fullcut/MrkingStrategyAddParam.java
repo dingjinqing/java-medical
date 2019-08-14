@@ -36,16 +36,16 @@ public class MrkingStrategyAddParam {
     @NotNull
     private Timestamp endTime;
 
-    /** 指定商品可用 */
+    /** 指定商品可用,商品ID列表串，逗号分隔 */
     private String recommendGoodsId;
 
-    /** 指定平台分类可用 */
+    /** 指定平台分类可用 ,平台分类ID列表串，逗号分隔*/
     private String recommendCatId;
 
-    /** 指定商家分类可用 */
+    /** 指定商家分类可用,商家分类ID列表串，逗号分隔 */
     private String recommendSortId;
 
-    /** 指定品牌可用 */
+    /** 指定品牌可用 ,品牌ID列表串，逗号分隔*/
     private String recommendBrandId;
 
     /** 持会员卡用户可参与，卡ID字符串，逗号分隔；为空时代表该活动所有人都可以参与 */

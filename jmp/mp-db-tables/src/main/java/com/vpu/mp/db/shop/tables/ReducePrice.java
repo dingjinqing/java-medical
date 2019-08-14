@@ -43,7 +43,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class ReducePrice extends TableImpl<ReducePriceRecord> {
 
-    private static final long serialVersionUID = -32586000;
+    private static final long serialVersionUID = -59302518;
 
     /**
      * The reference instance of <code>mini_shop_471752.b2c_reduce_price</code>
@@ -141,17 +141,22 @@ public class ReducePrice extends TableImpl<ReducePriceRecord> {
     /**
      * The column <code>mini_shop_471752.b2c_reduce_price.create_time</code>.
      */
-    public final TableField<ReducePriceRecord, Timestamp> CREATE_TIME = createField("create_time", org.jooq.impl.SQLDataType.TIMESTAMP.nullable(false).defaultValue(org.jooq.impl.DSL.field("CURRENT_TIMESTAMP", org.jooq.impl.SQLDataType.TIMESTAMP)), this, "");
+    public final TableField<ReducePriceRecord, Timestamp> CREATE_TIME = createField("create_time", org.jooq.impl.SQLDataType.TIMESTAMP.defaultValue(org.jooq.impl.DSL.field("CURRENT_TIMESTAMP", org.jooq.impl.SQLDataType.TIMESTAMP)), this, "");
 
     /**
      * The column <code>mini_shop_471752.b2c_reduce_price.update_time</code>. 最后修改时间
      */
-    public final TableField<ReducePriceRecord, Timestamp> UPDATE_TIME = createField("update_time", org.jooq.impl.SQLDataType.TIMESTAMP.nullable(false).defaultValue(org.jooq.impl.DSL.field("CURRENT_TIMESTAMP", org.jooq.impl.SQLDataType.TIMESTAMP)), this, "最后修改时间");
+    public final TableField<ReducePriceRecord, Timestamp> UPDATE_TIME = createField("update_time", org.jooq.impl.SQLDataType.TIMESTAMP.defaultValue(org.jooq.impl.DSL.field("CURRENT_TIMESTAMP", org.jooq.impl.SQLDataType.TIMESTAMP)), this, "最后修改时间");
 
     /**
      * The column <code>mini_shop_471752.b2c_reduce_price.share_config</code>. 分享设置
      */
     public final TableField<ReducePriceRecord, String> SHARE_CONFIG = createField("share_config", org.jooq.impl.SQLDataType.CLOB, this, "分享设置");
+
+    /**
+     * The column <code>mini_shop_471752.b2c_reduce_price.limit_flag</code>. 超限购买设置标记，1禁止超限购买，0超限全部恢复原价
+     */
+    public final TableField<ReducePriceRecord, Byte> LIMIT_FLAG = createField("limit_flag", org.jooq.impl.SQLDataType.TINYINT.defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.TINYINT)), this, "超限购买设置标记，1禁止超限购买，0超限全部恢复原价");
 
     /**
      * Create a <code>mini_shop_471752.b2c_reduce_price</code> table reference

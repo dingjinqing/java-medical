@@ -1,0 +1,41 @@
+package com.vpu.mp.service.pojo.shop.market.reduceprice;
+
+import lombok.Data;
+
+import java.math.BigDecimal;
+import java.sql.Timestamp;
+
+/**
+ * @author: 王兵兵
+ * @create: 2019-08-14 11:25
+ **/
+@Data
+public class ReducePricePageListQueryVo {
+
+    /** 活动的主键 */
+    private Integer id;
+
+    /** 活动名称 */
+    private String name;
+
+    /** 商品数量 */
+    private Integer goodsAmount;
+
+    /** 开始时间 */
+    private Timestamp startTime;
+
+    /** 结束时间 */
+    private Timestamp endTime;
+
+    /** 活动状态：0停用，1启用 */
+    private Byte status;
+
+    /** 付款订单数 */
+    private Integer orderAmount;
+
+    /** 付款用户数 */
+    private Integer userAmount;
+
+    /** 付款总金额 */
+    private BigDecimal PaymentTotalAmount;
+}

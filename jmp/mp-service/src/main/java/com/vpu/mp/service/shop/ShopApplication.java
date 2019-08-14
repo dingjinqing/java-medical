@@ -29,6 +29,7 @@ import com.vpu.mp.service.shop.market.integration.GroupIntegrationService;
 import com.vpu.mp.service.shop.market.lottery.LotteryService;
 import com.vpu.mp.service.shop.market.packagesale.PackSaleService;
 import com.vpu.mp.service.shop.market.presale.PreSaleService;
+import com.vpu.mp.service.shop.market.reduceprice.ReducePriceService;
 import com.vpu.mp.service.shop.market.seckill.SeckillService;
 import com.vpu.mp.service.shop.member.MemberService;
 import com.vpu.mp.service.shop.member.ScoreCfgService;
@@ -201,4 +202,9 @@ public class ShopApplication  {
      * 打包一口价
      */
     @Autowired public PackSaleService packSale;
+
+    /**
+     * 限时降价
+     */
+    @Autowired public ReducePriceService reducePrice;
 }

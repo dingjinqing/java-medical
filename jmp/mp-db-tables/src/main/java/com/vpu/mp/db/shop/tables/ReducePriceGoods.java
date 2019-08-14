@@ -43,7 +43,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class ReducePriceGoods extends TableImpl<ReducePriceGoodsRecord> {
 
-    private static final long serialVersionUID = -1810712954;
+    private static final long serialVersionUID = -4714094;
 
     /**
      * The reference instance of <code>mini_shop_471752.b2c_reduce_price_goods</code>
@@ -89,19 +89,14 @@ public class ReducePriceGoods extends TableImpl<ReducePriceGoodsRecord> {
     public final TableField<ReducePriceGoodsRecord, BigDecimal> GOODS_PRICE = createField("goods_price", org.jooq.impl.SQLDataType.DECIMAL(10, 2), this, "折后价格");
 
     /**
-     * The column <code>mini_shop_471752.b2c_reduce_price_goods.is_checked</code>. 是否选中
-     */
-    public final TableField<ReducePriceGoodsRecord, Byte> IS_CHECKED = createField("is_checked", org.jooq.impl.SQLDataType.TINYINT, this, "是否选中");
-
-    /**
      * The column <code>mini_shop_471752.b2c_reduce_price_goods.create_time</code>.
      */
-    public final TableField<ReducePriceGoodsRecord, Timestamp> CREATE_TIME = createField("create_time", org.jooq.impl.SQLDataType.TIMESTAMP.nullable(false).defaultValue(org.jooq.impl.DSL.field("CURRENT_TIMESTAMP", org.jooq.impl.SQLDataType.TIMESTAMP)), this, "");
+    public final TableField<ReducePriceGoodsRecord, Timestamp> CREATE_TIME = createField("create_time", org.jooq.impl.SQLDataType.TIMESTAMP.defaultValue(org.jooq.impl.DSL.field("CURRENT_TIMESTAMP", org.jooq.impl.SQLDataType.TIMESTAMP)), this, "");
 
     /**
      * The column <code>mini_shop_471752.b2c_reduce_price_goods.update_time</code>. 最后修改时间
      */
-    public final TableField<ReducePriceGoodsRecord, Timestamp> UPDATE_TIME = createField("update_time", org.jooq.impl.SQLDataType.TIMESTAMP.nullable(false).defaultValue(org.jooq.impl.DSL.field("CURRENT_TIMESTAMP", org.jooq.impl.SQLDataType.TIMESTAMP)), this, "最后修改时间");
+    public final TableField<ReducePriceGoodsRecord, Timestamp> UPDATE_TIME = createField("update_time", org.jooq.impl.SQLDataType.TIMESTAMP.defaultValue(org.jooq.impl.DSL.field("CURRENT_TIMESTAMP", org.jooq.impl.SQLDataType.TIMESTAMP)), this, "最后修改时间");
 
     /**
      * Create a <code>mini_shop_471752.b2c_reduce_price_goods</code> table reference

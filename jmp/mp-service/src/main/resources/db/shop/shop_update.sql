@@ -603,9 +603,9 @@ ALTER TABLE `b2c_coupon_activity` ADD COLUMN `customize_img_path` varchar(191)  
 ALTER TABLE `b2c_coupon_activity` ADD COLUMN `customize_url` varchar(191)  not null default '' comment '活动有礼跳转活动链接';
 ALTER TABLE `b2c_coupon_activity` CHANGE `activity_action` `activity_action` tinyint(1) DEFAULT '1' COMMENT '活动类型：1：活动送券 2：大转盘抽奖 3：跳转自定义链接';
 
---8月12日 常乐 分销推广语相关表
---分销推广语
---DROP TABLE IF EXISTS `b2c_promotion_language`;
+-- 8月12日 常乐 分销推广语相关表
+-- 分销推广语
+-- DROP TABLE IF EXISTS `b2c_promotion_language`;
 create table `b2c_promotion_language` (
   `id`                   int(8)       not null  auto_increment,
   `title`                varchar(32)  not null comment '推广语标题',
@@ -617,8 +617,8 @@ create table `b2c_promotion_language` (
   primary key (`id`)
 );
 
---用户默认分销推广语
---DROP TABLE IF EXISTS `b2c_user_promotion_language`;
+-- 用户默认分销推广语
+-- DROP TABLE IF EXISTS `b2c_user_promotion_language`;
 create table `b2c_user_promotion_language` (
   `id`             int(8)   not null  auto_increment,
   `lan_id`         int(8)   not null  default 0 comment '推广语关联ID',
@@ -637,3 +637,7 @@ drop column `purchase_price_rule_id`,
 drop column `reduce_price_id`,
 add column `activity_type`  tinyint(1) NOT NULL DEFAULT '0' COMMENT '营销活动种类',
 add column `activity_id` int(11) NOT NULL DEFAULT '0' COMMENT '营销活动id';
+
+-- 王兵兵 201-08-14
+alter table `b2c_reduce_price` add column `limit_flag`  tinyint(1)   default '0' comment '超限购买设置标记，1禁止超限购买，0超限全部恢复原价';
+alter table `b2c_reduce_price_goods` drop column `is_checked`;
