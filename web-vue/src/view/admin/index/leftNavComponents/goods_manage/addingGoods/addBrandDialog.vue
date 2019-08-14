@@ -13,7 +13,7 @@
       <el-form :model="formData">
 
         <el-row>
-          <el-col :span="8">
+          <el-col :span="9">
             <el-form-item
               label="品牌名称："
               :label-width="formLabelWidth"
@@ -26,7 +26,7 @@
               ></el-input>
             </el-form-item>
           </el-col>
-          <el-col :span="10">
+          <el-col :span="11">
             <el-form-item
               label="品牌分类："
               :label-width="formLabelWidth"
@@ -46,7 +46,7 @@
               </el-select>
             </el-form-item>
           </el-col>
-          <el-col :span="5">
+          <el-col :span="3">
             <el-button
               @click="filter"
               type="primary"

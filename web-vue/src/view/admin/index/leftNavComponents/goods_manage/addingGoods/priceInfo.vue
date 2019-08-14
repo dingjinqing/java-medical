@@ -17,47 +17,43 @@
           class="add-spec add_all"
           @click="handleAddSpec"
         >添加规格</el-button>
+
         <section
           class="show-spec"
-          v-show="!showAddSpec"
+          v-show="isShowWrap"
         >
-          <section class="GoodsSpec">
-            <section class="specName">
-              <span>规格名：</span>
-              <el-tag
-                :key="tag"
-                v-for="tag in tagsList"
-                closable
-                :disable-transitions="false"
-                @close="handleClose(tag)"
-              >
-                {{tag}}
-              </el-tag>
-              <el-input
-                class="input-new-tag"
-                v-if="inputVisible"
-                v-model="inputValue"
-                ref="saveTagInput"
-                size="small"
-                @keyup.enter.native="handleInputConfirm"
-                @blur="handleInputConfirm"
-              >
-              </el-input>
-              <el-button
-                v-else
-                class="button-new-tag"
-                size="small"
-                @click="showInput"
-              >+ New Tag</el-button>
+          <specName
+            @hide="hide"
+            @sendSpecName="sendSpecName"
+          />
+          <specValue />
+          <section
+            v-for="(item,index) in counter"
+            :key="index"
+          >
+            <section
+              class="GoodsSpec"
+              v-if="isShowOne"
+            >
+              <section class="specName">
+                <specName @row="row" />
+              </section>
+              <section class="specValName">
+                <specValue />
+              </section>
             </section>
-            <section class="specValName">
-              <span>规格值：</span>
-              <el-tag type="info">标签三</el-tag>
-            </section>
+          </section>
+
+          <section class="addSpecs">
+            <el-button
+              class="add_one"
+              @click="addSpecOptions"
+            >添加规格选项</el-button>
           </section>
         </section>
       </el-form-item>
       <el-form-item
+        v-if="isShowSpecPrice"
         label-width="120px"
         label="规格价格："
         prop=""
@@ -71,38 +67,92 @@
             style="width: 100%"
           >
             <template slot="empty">
-
+              ...
             </template>
 
             <el-table-column
-              label=""
+              :label="name"
               width="180"
+              prop='value'
             >
             </el-table-column>
             <el-table-column
               label="价格（元）"
               width="180"
+              prop="price"
             >
+              <template slot-scope="scope">
+                <slot
+                  :row="scope.row"
+                  :$index="scope.$index"
+                >
+                  <el-input
+                    v-model="scope.row.price"
+                    size="small"
+                  ></el-input>
+                </slot>
+              </template>
             </el-table-column>
             <el-table-column
               label="成本价格（元）"
               width="180"
             >
+              <template slot-scope="scope">
+                <slot
+                  :row="scope.row"
+                  :$index="scope.$index"
+                >
+                  <el-input size="small"></el-input>
+                </slot>
+              </template>
             </el-table-column>
             <el-table-column
               label="库存"
               width="180"
             >
+              <template slot-scope="scope">
+                <slot
+                  :row="scope.row"
+                  :$index="scope.$index"
+                >
+                  <el-input-number
+                    v-model="num"
+                    size="small"
+                    controls-position="right"
+                    @change="handleChange2"
+                    :min="0"
+                    :max="1000000000000"
+                    label="库存"
+                  ></el-input-number>
+                </slot>
+              </template>
+
             </el-table-column>
             <el-table-column
               label="规格编码"
               width="180"
             >
+              <template slot-scope="scope">
+                <slot
+                  :row="scope.row"
+                  :$index="scope.$index"
+                >
+                  <el-input size="small"></el-input>
+                </slot>
+              </template>
             </el-table-column>
             <el-table-column
               label="规格图片"
               width="180"
             >
+              <template slot-scope="scope">
+                <slot
+                  :row="scope.row"
+                  :$index="scope.$index"
+                >
+                  <el-input size="small"></el-input>
+                </slot>
+              </template>
             </el-table-column>
           </el-table>
           <section class="batchSetting">
@@ -242,11 +292,15 @@
       @click="handleTest"
       type="success"
     >测试按钮</el-button>
+
   </div>
 </template>
 <script>
+import specValue from './specValue'
+import specName from './specName'
 export default {
   name: 'priceInfo',
+  components: { specValue, specName },
   data () {
     return {
       formData: {
@@ -267,17 +321,26 @@ export default {
         limitBuyNum: '',
         limitMaxNum: '',
         costPrice: '',
-        specValName: '',
+
         init: ''
       },
       rules1: {
 
       },
-      showAddSpec: false,
-      tableData: [],
-      tagsList: [],
-      inputVisible: false,
-      inputValue: ''
+      showAddSpec: true,
+      isShowWrap: false,
+      tableData: [{
+        value: '001',
+        price: '',
+        edit: 0
+      }],
+      specName: '',
+      isShowSpecPrice: false,
+      specValName: '',
+      counter: [],
+      isShowOne: true,
+      name: '',
+      num: 0
     }
   },
   methods: {
@@ -290,26 +353,33 @@ export default {
     handleChange1 (val) {
 
     },
+    handleChange2 (val) {
+
+    },
     handleAddSpec () {
       this.showAddSpec = false
+      this.isShowSpecPrice = true
+      this.isShowWrap = true
     },
-    handleClose (tag) {
-      this.tagsList.splice(this.tagsList.indexOf(tag), 1)
+
+    addSpecOptions () {
+      // this.counter.push({})
+      // console.log(this.counter)
+      // this.isShowOne = true
     },
-    showInput () {
-      this.inputVisible = true
-      this.$nextTick(_ => {
-        this.$refs.saveTagInput.$refs.input.focus()
-      })
+    hide () {
+      this.isShowSpecPrice = false
+      this.isShowWrap = false
+      this.showAddSpec = true
     },
-    handleInputConfirm () {
-      let inputValue = this.inputValue
-      if (inputValue) {
-        this.tagsList.push(inputValue)
-      }
-      this.inputVisible = false
-      this.inputValue = ''
+    row () {
+
+    },
+    sendSpecName (val) {
+      console.log(val)
+      this.name = val
     }
+
   }
 }
 </script>
@@ -324,6 +394,7 @@ export default {
 }
 .show-spec {
   border: 1px solid #ccc;
+  border: 1px solid red;
   padding: 10px;
   color: #333;
   min-width: 745px;
@@ -336,19 +407,24 @@ export default {
 .specName {
   background-color: #f8f8f8;
 }
-.el-tag + .el-tag {
-  margin-left: 10px;
+.del_img {
+  position: relative;
 }
-.button-new-tag {
-  margin-left: 10px;
-  height: 32px;
-  line-height: 30px;
-  padding-top: 0;
-  padding-bottom: 0;
+.addSpecs {
+  background-color: #f8f8f8;
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
 }
-.input-new-tag {
-  width: 90px;
-  margin-left: 10px;
-  vertical-align: bottom;
+.add_one {
+  background: #fff;
+  color: #333;
+  border: 1px solid #ccc;
+  width: 120px;
+  height: 30px;
+  margin-top: 10px;
+}
+.GoodsSpec {
+  margin-bottom: 3px;
 }
 </style>

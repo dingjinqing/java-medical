@@ -10,6 +10,7 @@ import ElementUI from 'element-ui'
 import Distpicker from 'v-distpicker'
 // el-dialog 可拖拽
 import './directive/index'
+
 // 颜色选择器
 import vcolorpicker from 'vcolorpicker'
 import 'swiper/dist/css/swiper.css'
@@ -20,6 +21,8 @@ import VueCropper from 'vue-cropper'
 // 全局flag
 localStorage.setItem('V-overallFlag', true)
 Vue.prototype.$imageHost = 'http://jmpdevimg.weipubao.cn'
+// 全局事件总线
+Vue.prototype.$EventBus = new Vue()
 Vue.use(VueCropper)
 
 Vue.component('v-distpicker', Distpicker)
