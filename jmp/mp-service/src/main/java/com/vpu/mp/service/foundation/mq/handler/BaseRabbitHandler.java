@@ -18,8 +18,12 @@ public interface BaseRabbitHandler {
      * @param tag 消息的唯一标识
      * @throws IOException 异常
      */
-    default void success(Channel channel, Long tag) throws IOException {
-        channel.basicAck(tag,false);
+    default void success(Channel channel, Long tag) {
+        try {
+            channel.basicAck(tag,false);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
     /**
@@ -28,8 +32,12 @@ public interface BaseRabbitHandler {
      * @param tag 消息的唯一标识
      * @throws IOException 异常
      */
-    default void failReturn(Channel channel,Long tag) throws IOException{
-        channel.basicNack(tag,false,true);
+    default void failReturn(Channel channel,Long tag){
+        try {
+            channel.basicNack(tag,false,true);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
     /**
@@ -38,7 +46,11 @@ public interface BaseRabbitHandler {
      * @param tag 消息的唯一标识
      * @throws IOException 异常
      */
-    default void failNotReturn(Channel channel,Long tag) throws IOException{
-        channel.basicNack(tag,false,false);
+    default void failNotReturn(Channel channel,Long tag){
+        try {
+            channel.basicNack(tag,false,false);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 }
