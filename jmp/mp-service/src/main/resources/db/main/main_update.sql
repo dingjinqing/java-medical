@@ -48,6 +48,6 @@ ALTER TABLE `b2c_shop_renew` ADD COLUMN `send_content` varchar(32)  NOT NULL DEF
 --b2c_mp_operate_log新增字段
 ALTER TABLE  b2c_mp_operate_log  ADD COLUMN `operate_state` tinyint      not null  default 1 comment '操作状态:1成功 2失败';
 
---b2c_payment_record新增字段
-ALTER TABLE `b2c_payment_record` ADD COLUMN `fee_type` varchar(191) default 'CNY' comment '标价币种，国际支付字段';
-ALTER TABLE `b2c_payment_record` ADD COLUMN `merchant_category_code` varchar(191) not null default '' comment 'MCC码，国际支付字段';
+--b2c_mp_auth_shop新增字段
+ALTER TABLE `b2c_mp_auth_shop` ADD COLUMN `fee_type` varchar(191) default 'CNY' comment '标价币种，国际支付字段';
+ALTER TABLE `b2c_mp_auth_shop` ADD COLUMN `merchant_category_code` varchar(191) not null default '' comment 'MCC码，国际支付字段';
