@@ -636,4 +636,4 @@ drop column `purchase_price_id`,
 drop column `purchase_price_rule_id`,
 drop column `reduce_price_id`,
 add column `activity_type`  tinyint(1) NOT NULL DEFAULT '0' COMMENT '营销活动种类',
-add column `activity_type` int(11) NOT NULL DEFAULT '0' COMMENT '营销活动id';
+add column `activity_id` int(11) NOT NULL DEFAULT '0' COMMENT '营销活动id';
