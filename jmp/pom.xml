@@ -25,7 +25,7 @@
 	<modules>
 		<module>mp-db-tables</module>
 		<module>mp-config</module>
-		<module>mp-schedule</module>
+		<module>mp-background</module>
 		<module>mp-service</module>
 		<module>mp-web</module>
 	</modules>
@@ -51,7 +51,7 @@
 			</dependency>
 			<dependency>
 				<groupId>com.vpu.mp</groupId>
-				<artifactId>mp-schedule</artifactId>
+				<artifactId>mp-background</artifactId>
 				<version>${project.version}</version>
 			</dependency>
 

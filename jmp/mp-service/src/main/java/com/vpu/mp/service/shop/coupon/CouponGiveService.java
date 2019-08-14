@@ -39,7 +39,7 @@ import static com.vpu.mp.db.shop.Tables.*;
  */
 @Service
 
-public class CouponGiveService extends ShopBaseService implements BaseRabbitHandler {
+public class CouponGiveService extends ShopBaseService {
     private final RabbitmqSendService rabbitmqSendService;
     private static final MrkingVoucher mv = MrkingVoucher.MRKING_VOUCHER.as("mv");
     private static final CustomerAvailCoupons cac = CustomerAvailCoupons.CUSTOMER_AVAIL_COUPONS.as("cac");
@@ -267,12 +267,11 @@ public class CouponGiveService extends ShopBaseService implements BaseRabbitHand
 
     }
 
-    @RabbitListener(queues = RabbitConfig.QUEUE_COUPON_SEND, containerFactory = "simpleRabbitListenerContainerFactory")
-    @RabbitHandler
-    public void handler(@Payload CouponGiveQueueParam param, Message message, Channel channel) {
-        try {
-            /* 操作当前店铺 */
-            switchShopDb(param.getShopId());
+    /**
+     * 定向发券，后台异步执行
+     * @param param
+     */
+    public void handlerGouonGive(CouponGiveQueueParam param) {
             /* 插入user-coupon关联表 */
             for (String couponId : param.getCouponArray()) {
                 String couponName = db().select(MRKING_VOUCHER.ACT_NAME).from(MRKING_VOUCHER).where(MRKING_VOUCHER.ID.eq(Integer.valueOf(couponId))).fetchOptionalInto(String.class).orElse(null);
@@ -281,22 +280,11 @@ public class CouponGiveService extends ShopBaseService implements BaseRabbitHand
                     db().insertInto(CUSTOMER_AVAIL_COUPONS, CUSTOMER_AVAIL_COUPONS.ACT_ID, CUSTOMER_AVAIL_COUPONS.USER_ID, CUSTOMER_AVAIL_COUPONS.ACT_DESC, CUSTOMER_AVAIL_COUPONS.AMOUNT, CUSTOMER_AVAIL_COUPONS.COUPON_SN).values(param.getActId(), userId, couponName, denomination, getCouponSn()).execute();
                 }
             }
-            this.success(channel, message.getMessageProperties().getDeliveryTag());
-        } catch (IOException e) {
-            try {
-                this.failReturn(channel, message.getMessageProperties().getDeliveryTag());
-            } catch (IOException e1) {
-                e1.printStackTrace();
-            }
-        }
-
     }
 
     /* 生成优惠券编号 */
     public static String getCouponSn() {
-        System.currentTimeMillis();
-        String sn = "C" + System.currentTimeMillis();
-        return sn;
+        return  "C" + System.currentTimeMillis();
     }
 
     /**
