@@ -169,4 +169,25 @@ public class PreSaleService extends ShopBaseService {
             }
         }
     }
+
+    /**
+     * 删除活动
+     */
+    public void deletePreSale(Integer id) {
+        shopDb().update(TABLE).set(TABLE.DEL_FLAG, (byte) 1).where(TABLE.ID.eq(id)).execute();
+    }
+
+    /**
+     * 停用活动
+     */
+    public void disablePreSale(Integer id) {
+        shopDb().update(TABLE).set(TABLE.STATUS, (byte) 0).where(TABLE.ID.eq(id)).execute();
+    }
+
+    /**
+     * 启用活动
+     */
+    public void enablePreSale(Integer id) {
+        shopDb().update(TABLE).set(TABLE.STATUS, (byte) 1).where(TABLE.ID.eq(id)).execute();
+    }
 }
