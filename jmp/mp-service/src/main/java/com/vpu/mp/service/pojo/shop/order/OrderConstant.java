@@ -6,7 +6,7 @@ import java.util.List;
 
 /**
  * 订单状态order_status;订单类型goods_type常量类
- * 
+ *
  * @author wangshuai
  *
  */
@@ -82,7 +82,7 @@ public class OrderConstant {
 	public final static byte GOODS_TYPE_GIVE_GIFT = 17;
 	/** 首单特惠 */
 	public final static byte GOODS_TYPE_FIRST_SPECIAL = 18;
-	
+
 	/**退货状态*/
 	/**审核中,退款且退货申请*/
 	public final static byte  REFUND_STATUS_AUDITING = 1;
@@ -98,7 +98,7 @@ public class OrderConstant {
 	public final static byte  REFUND_STATUS_REFUSE = 6;
 	/**退款/退货 撤销*/
 	public final static byte  REFUND_STATUS_CLOSE = 7;
-	
+
 	/**
 	 * 	支付code
 	 */
@@ -117,16 +117,16 @@ public class OrderConstant {
 	/**ali_mini*/
 	@Deprecated
 	public final static String PAY_CODE_ALI_MINI_PAY = "ali_mini_pay";
-    
+
 	/**
 	 *	 配送方式
-	 * 
+	 *
 	 */
 	/**快递*/
 	public final static byte DELIVER_TYPE_COURIER = 0;
 	/**自提*/
 	public final static byte DELIVER_TYPE_SELF = 1;
-	
+
 	/**
 	 *	 是否部分发货
 	 */
@@ -134,7 +134,7 @@ public class OrderConstant {
 	public final static byte NO_PART_SHIP = 0;
 	/**是*/
 	public final static byte PART_SHIP = 1;
-	
+
 	/**
 	 *  return_order_goods表success字段
 	 */
@@ -144,7 +144,7 @@ public class OrderConstant {
 	public final static byte SUCCESS_RETURNING = 1;
 	/**2完成*/
 	public final static byte SUCCESS_COMPLETE = 2;
-	
+
 	/**
 	 * mp端是否支持退款、退货,orderInfo表字段
 	 */
@@ -195,7 +195,7 @@ public class OrderConstant {
 			// ORDER_GIVE_GIFT_FINISHED
 			"送礼已完成"
 	};
-	
+
 	private String[] goodsType = {
 			// GOODS_TYPE_GENERAL
 			"普通订单",
@@ -236,11 +236,18 @@ public class OrderConstant {
 			// GOODS_TYPE_GIVE_GIFT
 			"送礼订单"
 	};
-	
+
+	/** 全款 **/
+    public static final byte PAY_WAI_FULL = 0;
+    /** 定金 **/
+    public static final byte PAY_WAI_BARGIAN = 1;
+    /** 补款 **/
+    public static final byte PAY_WAI_TAIL = 2;
+
 	public String getOrderStatus(byte orderStatusCode) {
 		return orderStatus[orderStatusCode];
 	}
-	
+
 	public String getGoodsType(byte goodsTypeCode) {
 		return goodsType[goodsTypeCode];
 	}
