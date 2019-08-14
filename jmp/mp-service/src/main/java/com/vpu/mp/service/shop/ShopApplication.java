@@ -27,6 +27,7 @@ import com.vpu.mp.service.shop.market.goupbuy.GroupBuyService;
 import com.vpu.mp.service.shop.market.groupdraw.*;
 import com.vpu.mp.service.shop.market.integration.GroupIntegrationService;
 import com.vpu.mp.service.shop.market.lottery.LotteryService;
+import com.vpu.mp.service.shop.market.packagesale.PackSaleService;
 import com.vpu.mp.service.shop.market.seckill.SeckillService;
 import com.vpu.mp.service.shop.member.MemberService;
 import com.vpu.mp.service.shop.member.ScoreCfgService;
@@ -183,6 +184,8 @@ public class ShopApplication  {
      * 活动有礼
      */
     @Autowired public ActivityService activity;
+    
+    @Autowired public PackSaleService packSale;
     @Autowired public ActivityIssueService issue;
 
     /**
