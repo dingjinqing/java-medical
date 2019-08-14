@@ -28,6 +28,7 @@ import com.vpu.mp.service.shop.market.groupdraw.*;
 import com.vpu.mp.service.shop.market.integration.GroupIntegrationService;
 import com.vpu.mp.service.shop.market.lottery.LotteryService;
 import com.vpu.mp.service.shop.market.packagesale.PackSaleService;
+import com.vpu.mp.service.shop.market.presale.PreSaleService;
 import com.vpu.mp.service.shop.market.seckill.SeckillService;
 import com.vpu.mp.service.shop.member.MemberService;
 import com.vpu.mp.service.shop.member.ScoreCfgService;
@@ -184,12 +185,20 @@ public class ShopApplication  {
      * 活动有礼
      */
     @Autowired public ActivityService activity;
-    
-    @Autowired public PackSaleService packSale;
     @Autowired public ActivityIssueService issue;
 
     /**
      * 满折满减
      */
     @Autowired public MrkingStrategyService mrkingStrategy;
+
+    /**
+     * 定金膨胀
+     */
+    @Autowired public PreSaleService preSale;
+
+    /**
+     * 打包一口价
+     */
+    @Autowired public PackSaleService packSale;
 }
