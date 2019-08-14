@@ -25,13 +25,16 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.fasterxml.jackson.core.type.TypeReference;
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
 import com.vpu.mp.config.DomainConfig;
 import com.vpu.mp.db.main.tables.MpAuthShop;
 import com.vpu.mp.db.main.tables.records.MpAuthShopRecord;
 import com.vpu.mp.db.main.tables.records.MpDeployHistoryRecord;
 import com.vpu.mp.db.main.tables.records.MpVersionRecord;
-import com.vpu.mp.db.shop.tables.records.MpJumpUsableRecord;
 import com.vpu.mp.service.foundation.data.JsonResultMessage;
 import com.vpu.mp.service.foundation.service.MainBaseService;
 import com.vpu.mp.service.foundation.util.PageResult;
@@ -386,7 +389,11 @@ public class MpAuthShopService extends MainBaseService {
 		params.addProperty("user_version", version.getUserVersion());
 		params.addProperty("user_desc", version.getUserDesc());
 		params.addProperty("ext_json", Util.toJson(extInfo));
-		String response = maService.post(WxOpenMaService.API_CODE_COMMIT, Util.toJson(params));
+		Gson gson = new GsonBuilder().setPrettyPrinting().disableHtmlEscaping().create();
+		JsonParser parser = new JsonParser();
+		JsonElement je = parser.parse(params.toString());
+		System.out.println(gson.toJson(je));
+		String response = maService.post(WxOpenMaService.API_CODE_COMMIT, gson.toJson(je));
 		WxOpenResult result = WxMaGsonBuilder.create().fromJson(response, WxOpenResult.class);
 		operateLog(mp, MpOperateLogService.OP_TYPE_UPLOAD_CODE, result);
 		//更新申请发布小程序为已发布
@@ -561,7 +568,7 @@ public class MpAuthShopService extends MainBaseService {
 		WxOpenMaService maService = this.getMaServiceByAppId(appId);
 		WxOpenMaPageListResult result = maService.getPageList();
 		if (result.isSuccess()) {
-			mp.setCategory(Util.toJson(result.getPageList()));
+			mp.setPageCfg(Util.toJson(result.getPageList()));
 			mp.update();
 		}
 		//更新部署日志
@@ -583,6 +590,7 @@ public class MpAuthShopService extends MainBaseService {
 
 		WxOpenMaSubmitAudit audit = new WxOpenMaSubmitAudit();
 		List<WxOpenMaCategory> categoryList = null;
+		//获取授权小程序帐号的可选类目 first_class  first_id
 		if (!StringUtils.isBlank(mp.getCategory())) {
 			categoryList = Util.parseJson(mp.getCategory(), new TypeReference<List<WxOpenMaCategory>>() {
 			});
@@ -590,11 +598,24 @@ public class MpAuthShopService extends MainBaseService {
 			WxOpenMaCategoryListResult category = this.getCategory(appId);
 			categoryList = category.getCategoryList();
 		}
-
-		String pagePath = "pages/bottom/bottom";
+		//获取小程序的第三方提交代码的页面配置  address
+		List<String> pageCfg=new ArrayList<String>();
+		pageCfg.add("pages/bottom/bottom");
+		if (!StringUtils.isBlank(mp.getPageCfg())) {
+			pageCfg = Util.parseJson(mp.getPageCfg(), new TypeReference<List<String>>() {
+			});
+		}else {
+			WxOpenMaPageListResult page = this.getPage(appId);
+			pageCfg=page.getPageList();
+		}
+		String pagePath = pageCfg.get(0);
 		audit.setPagePath(pagePath);
 		audit.setFirstClass(categoryList.get(0).getFirstClass());
 		audit.setTag(categoryList.get(0).getFirstClass());
+		audit.setTitle("首页");
+		audit.setFirstId(categoryList.get(0).getFirstId());
+		audit.setSecondClass(categoryList.get(0).getSecondClass());
+		audit.setSecondId(categoryList.get(0).getSecondId());
 		WxOpenMaSubmitAuditMessage submitAuditMessage = new WxOpenMaSubmitAuditMessage();
 		List<WxOpenMaSubmitAudit> itemList = new ArrayList<>();
 		itemList.add(audit);
