@@ -520,7 +520,7 @@ CREATE TABLE `b2c_order_info` (
 `grouper_cheap_reduce` DECIMAL ( 10, 2 ) NOT NULL DEFAULT '0.00' COMMENT '团长优惠金额',
 `bk_shipping_time` TIMESTAMP NULL DEFAULT NULL COMMENT '定金预计发货时间',
 `bk_return_type` TINYINT ( 2 ) DEFAULT NULL COMMENT '定金退款状态',
-`bk_prepay_id` VARCHAR ( 191 ) COLLATE utf8mb4_unicode_ci DEFAULT NULL COMMENT '定金膨胀活动id',
+`bk_prepay_id` VARCHAR ( 191 ) COLLATE utf8mb4_unicode_ci DEFAULT NULL COMMENT '微信支付id，用于发送模板消息',
 `pre_sale_discount` DECIMAL ( 10, 2 ) NOT NULL DEFAULT '0.00' COMMENT '定金膨胀优惠金额',
 `instead_pay_money` DECIMAL ( 10, 2 ) NOT NULL DEFAULT '0.00' COMMENT '代付金额',
 `order_user_message` VARCHAR ( 50 ) COLLATE utf8mb4_unicode_ci DEFAULT NULL COMMENT '发起人留言',
