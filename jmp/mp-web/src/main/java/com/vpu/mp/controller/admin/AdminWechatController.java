@@ -29,27 +29,13 @@ public class AdminWechatController extends AdminBaseController {
 	@Autowired
 	protected OpenPlatform open;
 
-    @RequestMapping(value = "/wechat/proxy/test")
-    @ResponseBody
-    public String noAuthorization() {
-        System.out.println(authority);
-        return "hell";
-    }
-
-
-    @RequestMapping(value = "/wechat/proxy/test/auth")
-    @ResponseBody
-    public String testAuth() {
-        return "<a href='/wechat/proxy/start/auth'>测试小程序授权</a>";
-    }
-
 
 	/**
 	 * 公众号或小程序授权回调
 	 * 
 	 * @return
 	 */
-	@RequestMapping(value = "/wechat/proxy/authorization/callback")
+	@RequestMapping(value = "/wechat/notify/authorization/callback")
 	public String authorizationCallback(@RequestParam("auth_code") String authorizationCode,
 			@RequestParam(name = "sys_id", required = false) Integer sysId,
 			@RequestParam(name = "shop_id", required = false) Integer shopId) {
@@ -97,7 +83,7 @@ public class AdminWechatController extends AdminBaseController {
 	 * @param msgSignature
 	 * @return
 	 */
-	@RequestMapping("/wechat/proxy/component/event/callback")
+	@RequestMapping("/wechat/notify/component/event/callback")
 	@ResponseBody
 	public Object componentEventCb(@RequestBody(required = false) String requestBody,
 			@RequestParam("timestamp") String timestamp, @RequestParam("nonce") String nonce,
@@ -120,7 +106,7 @@ public class AdminWechatController extends AdminBaseController {
 	 * @param msgSignature
 	 * @return
 	 */
-	@RequestMapping("/wechat/proxy/app/event/{appId}/callback")
+	@RequestMapping("/wechat/notify/app/event/{appId}/callback")
 	@ResponseBody
 	public Object appEventCallback(@RequestBody(required = false) String requestBody,
 			@PathVariable("appId") String appId, @RequestParam("signature") String signature,

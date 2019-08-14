@@ -37,7 +37,7 @@ public class AdminWechatApiController extends AdminBaseController {
 
 		logger.debug("授权店铺ID: {}", shopId);
 
-		String url = this.mainUrl("/wechat/proxy/authorization/callback?shop_id=" + shopId);
+		String url = this.mainUrl("/wechat/notify/authorization/callback?shop_id=" + shopId);
 
 		logger.debug("授权回调url: {}", url);
 
@@ -70,7 +70,7 @@ public class AdminWechatApiController extends AdminBaseController {
 	@ResponseBody
 	public JsonResult startOfficialAccountAuthorization() {
 
-		String url = this.mainUrl("/wechat/proxy/authorization/callback?sys_id=" + this.adminAuth.user().getSysId());
+		String url = this.mainUrl("/wechat/notify/authorization/callback?sys_id=" + this.adminAuth.user().getSysId());
 
 		try {
 			String authType = "1";
