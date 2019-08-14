@@ -33,4 +33,6 @@ public class PreSaleListParam extends BasePageParam {
     private Timestamp startTime;
     /** 尾款支付结束时间 **/
     private Timestamp endTime;
+    /** 状态 **/
+    private Byte status;
 }

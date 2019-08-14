@@ -1,5 +1,6 @@
 package com.vpu.mp.service.pojo.shop.market.presale;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Data;
 
 import java.sql.Timestamp;
@@ -34,4 +35,9 @@ public class PreSaleListVo {
     /** 下单用户数 **/
     private Integer orderUserQuantity;
     private Byte status;
+
+    @JsonIgnore
+    private Timestamp preStartTime2;
+    @JsonIgnore
+    private Timestamp preEndTime2;
 }

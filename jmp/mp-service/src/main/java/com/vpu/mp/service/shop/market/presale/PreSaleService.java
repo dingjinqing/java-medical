@@ -9,7 +9,7 @@ import com.vpu.mp.service.foundation.util.Util;
 import com.vpu.mp.service.pojo.shop.market.presale.PreSaleListParam;
 import com.vpu.mp.service.pojo.shop.market.presale.PreSaleListVo;
 import com.vpu.mp.service.pojo.shop.order.OrderConstant;
-import org.jooq.Record12;
+import org.jooq.Record14;
 import org.jooq.SelectConditionStep;
 import org.jooq.impl.DSL;
 import org.springframework.stereotype.Service;
@@ -51,18 +51,21 @@ public class PreSaleService extends ShopBaseService {
      * 获取定金膨胀活动列表
      */
     public PageResult<PreSaleListVo> getPageList(PreSaleListParam param) {
-        SelectConditionStep<Record12<Integer, String, Timestamp, Timestamp, Timestamp, Timestamp, Byte, Integer,
-            Integer, Integer, Integer, Serializable>> query =
+        SelectConditionStep<Record14<Integer, String, Timestamp, Timestamp, Timestamp, Timestamp, Byte, Timestamp,
+            Timestamp, Integer, Integer, Integer, Integer, Serializable>> query =
             shopDb().select(TABLE.ID, TABLE.PRESALE_NAME, TABLE.PRE_START_TIME, TABLE.PRE_END_TIME,
-                TABLE.START_TIME, TABLE.END_TIME, TABLE.STATUS,
+                TABLE.START_TIME, TABLE.END_TIME, TABLE.STATUS, TABLE.PRE_START_TIME_2, TABLE.PRE_END_TIME_2,
                 DSL.count(ORDER.ORDER_ID).as(ORDER_QUANTITY),
-                DSL.count(ORDER.ORDER_ID).filterWhere(ORDER.ORDER_PAY_WAY.eq(OrderConstant.PAY_WAY_BARGIAN)).as(BARGAIN_PAID_QUANTITY),
-                DSL.count(ORDER.ORDER_ID).filterWhere(ORDER.ORDER_PAY_WAY.eq(OrderConstant.PAY_WAY_TAIL)).as(TAIL_PAID_QUANTITY),
+                DSL.count(ORDER.ORDER_ID)
+                    .filterWhere(ORDER.ORDER_PAY_WAY.eq(OrderConstant.PAY_WAY_BARGIAN)).as(BARGAIN_PAID_QUANTITY),
+                DSL.count(ORDER.ORDER_ID)
+                    .filterWhere(ORDER.ORDER_PAY_WAY.eq(OrderConstant.PAY_WAY_TAIL)).as(TAIL_PAID_QUANTITY),
                 DSL.countDistinct(ORDER.USER_ID).as(ORDER_USER_QUANTITY),
                 DSL.coalesce(DSL.sum(ORDER_GOODS.GOODS_NUMBER), 0).as(BOUGHT_QUANTITY)
             )
                 .from(TABLE)
-                .leftJoin(ORDER).on(ORDER.GOODS_TYPE.eq(String.valueOf(GOODS_TYPE_PRE_SALE)).and(ORDER.ACTIVITY_ID.eq(TABLE.ID)))
+                .leftJoin(ORDER)
+                .on(ORDER.GOODS_TYPE.eq(String.valueOf(GOODS_TYPE_PRE_SALE)).and(ORDER.ACTIVITY_ID.eq(TABLE.ID)))
                 .leftJoin(ORDER_GOODS).on(ORDER_GOODS.ORDER_ID.eq(ORDER.ORDER_ID))
                 .where(TABLE.DEL_FLAG.eq(NOT_DELETED));
         buildOptions(query, param);
@@ -96,13 +99,21 @@ public class PreSaleService extends ShopBaseService {
         } else {
             Timestamp preStartTime = vo.getPreStartTime();
             Timestamp preEndTime = vo.getPreEndTime();
+            Timestamp preStartTime2 = vo.getPreStartTime2();
+            Timestamp preEndTime2 = vo.getPreEndTime2();
             Timestamp startTime = vo.getStartTime();
             Timestamp endTime = vo.getEndTime();
             Timestamp now = Util.currentTimeStamp();
-            if ((now.after(preStartTime) && now.before(preEndTime))) {
+            if (now.before(preStartTime)) {
+                return NOT_STARTED;
+            } else if ((now.after(preStartTime) && now.before(preEndTime))) {
                 return ONGOING;
             } else if (null != startTime && null != endTime) {
-                if ((now.after(startTime) && now.before(endTime))) {
+                if (now.after(startTime) && now.before(endTime)) {
+                    return ONGOING;
+                }
+            } else if (null != preStartTime2 && null != preEndTime2) {
+                if (now.after(preStartTime2) && now.before(preEndTime2)) {
                     return ONGOING;
                 }
             }
@@ -113,27 +124,49 @@ public class PreSaleService extends ShopBaseService {
     /**
      * 条件查询
      */
-    private void buildOptions(SelectConditionStep<Record12<Integer, String, Timestamp, Timestamp, Timestamp,
-        Timestamp, Byte, Integer, Integer, Integer, Integer, Serializable>> query, PreSaleListParam param) {
+    private void buildOptions(SelectConditionStep<Record14<Integer, String, Timestamp, Timestamp, Timestamp,
+        Timestamp, Byte, Timestamp, Timestamp, Integer, Integer,
+        Integer, Integer, Serializable>> query, PreSaleListParam param) {
         String name = param.getName();
         Timestamp preStartTime = param.getPreStartTime();
         Timestamp preEndTime = param.getPreEndTime();
         Timestamp startTime = param.getStartTime();
         Timestamp endTime = param.getEndTime();
+        Byte status = param.getStatus();
+        Timestamp now = Util.currentTimeStamp();
         if (!isEmpty(name)) {
             query.and(TABLE.PRESALE_NAME.like(format("%s%%", name)));
         }
         if (null != preStartTime) {
-            TABLE.START_TIME.ge(preStartTime);
+            query.and(TABLE.START_TIME.ge(preStartTime));
         }
         if (null != preEndTime) {
-            TABLE.PRE_END_TIME.le(preEndTime);
+            query.and(TABLE.PRE_END_TIME.le(preEndTime));
         }
         if (null != startTime) {
-            TABLE.START_TIME.ge(startTime);
+            query.and(TABLE.START_TIME.ge(startTime));
         }
         if (null != endTime) {
-            TABLE.END_TIME.le(endTime);
+            query.and(TABLE.END_TIME.le(endTime));
+        }
+        if (null != status) {
+            switch (status) {
+                case NOT_STARTED:
+                    query.and(TABLE.PRE_START_TIME.gt(now));
+                    break;
+                case ONGOING:
+                    query.and(TABLE.PRE_START_TIME.le(now).and(TABLE.PRE_END_TIME.gt(now)))
+                        .or(TABLE.START_TIME.ge(now).and(TABLE.END_TIME.gt(now)))
+                        .or(TABLE.PRE_START_TIME_2.le(now).and(TABLE.PRE_END_TIME_2.gt(now)));
+                    break;
+                case EXPIRED:
+                    query.and(TABLE.PRE_END_TIME.le(now).and(TABLE.PRE_START_TIME_2.gt(now))
+                        .and(TABLE.PRE_END_TIME_2.le(now).and(TABLE.START_TIME.gt(now))))
+                        .or(TABLE.PRE_END_TIME.le(now).and(TABLE.START_TIME.gt(now)).or(TABLE.END_TIME.gt(now)));
+                    break;
+                case DISABLED:
+                    break;
+            }
         }
     }
 }
