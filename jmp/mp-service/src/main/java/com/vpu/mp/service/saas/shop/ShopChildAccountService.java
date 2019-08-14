@@ -102,6 +102,10 @@ public class ShopChildAccountService extends MainBaseService {
 				.and(SHOP_CHILD_ACCOUNT.ACCOUNT_ID.eq(subAccountId)).fetchAny();
 	}
 
+	public ShopChildAccountRecord getSubAccountInfo(Integer subAccountId) {
+		return db().selectFrom(SHOP_CHILD_ACCOUNT).where(SHOP_CHILD_ACCOUNT.ACCOUNT_ID.eq(subAccountId)).fetchAny();
+	}
+
 	public Result<ShopChildAccountRecord> getSubAccountUser(String nameOrMobile) {
 		return db().selectFrom(SHOP_CHILD_ACCOUNT).where(SHOP_CHILD_ACCOUNT.ACCOUNT_NAME.eq(nameOrMobile))
 				.or(SHOP_CHILD_ACCOUNT.MOBILE.eq(nameOrMobile)).fetch();
@@ -171,7 +175,8 @@ public class ShopChildAccountService extends MainBaseService {
 
 	public ShopChildRoleRecord checkByRecodeAndAccId(Integer roleId, Integer accountId, AdminTokenAuthInfo info) {
 		return db().selectFrom(SHOP_CHILD_ROLE)
-				.where(SHOP_CHILD_ROLE.SYS_ID.eq(info.getSysId()).and(SHOP_CHILD_ROLE.ACCOUNT_ID.eq(accountId)).and(SHOP_CHILD_ROLE.SHOP_ID.eq(info.getLoginShopId())))
+				.where(SHOP_CHILD_ROLE.SYS_ID.eq(info.getSysId()).and(SHOP_CHILD_ROLE.ACCOUNT_ID.eq(accountId))
+						.and(SHOP_CHILD_ROLE.SHOP_ID.eq(info.getLoginShopId())))
 				.fetchAny();
 	}
 

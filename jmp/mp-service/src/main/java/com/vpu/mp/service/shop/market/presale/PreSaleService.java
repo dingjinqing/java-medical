@@ -53,7 +53,7 @@ public class PreSaleService extends ShopBaseService {
     public PageResult<PreSaleListVo> getPageList(PreSaleListParam param) {
         SelectConditionStep<Record14<Integer, String, Timestamp, Timestamp, Timestamp, Timestamp, Byte, Timestamp,
             Timestamp, Integer, Integer, Integer, Integer, Serializable>> query =
-            shopDb().select(TABLE.ID, TABLE.PRESALE_NAME, TABLE.PRE_START_TIME, TABLE.PRE_END_TIME,
+            db().select(TABLE.ID, TABLE.PRESALE_NAME, TABLE.PRE_START_TIME, TABLE.PRE_END_TIME,
                 TABLE.START_TIME, TABLE.END_TIME, TABLE.STATUS, TABLE.PRE_START_TIME_2, TABLE.PRE_END_TIME_2,
                 DSL.count(ORDER.ORDER_ID).as(ORDER_QUANTITY),
                 DSL.count(ORDER.ORDER_ID)
@@ -174,20 +174,20 @@ public class PreSaleService extends ShopBaseService {
      * 删除活动
      */
     public void deletePreSale(Integer id) {
-        shopDb().update(TABLE).set(TABLE.DEL_FLAG, (byte) 1).where(TABLE.ID.eq(id)).execute();
+        db().update(TABLE).set(TABLE.DEL_FLAG, (byte) 1).where(TABLE.ID.eq(id)).execute();
     }
 
     /**
      * 停用活动
      */
     public void disablePreSale(Integer id) {
-        shopDb().update(TABLE).set(TABLE.STATUS, (byte) 0).where(TABLE.ID.eq(id)).execute();
+        db().update(TABLE).set(TABLE.STATUS, (byte) 0).where(TABLE.ID.eq(id)).execute();
     }
 
     /**
      * 启用活动
      */
     public void enablePreSale(Integer id) {
-        shopDb().update(TABLE).set(TABLE.STATUS, (byte) 1).where(TABLE.ID.eq(id)).execute();
+        db().update(TABLE).set(TABLE.STATUS, (byte) 1).where(TABLE.ID.eq(id)).execute();
     }
 }

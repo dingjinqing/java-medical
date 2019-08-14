@@ -68,7 +68,7 @@ public class GroupDrawService extends ShopBaseService {
      * 停用活动
      */
     public void disableGroupDraw(Integer id) {
-        int result = shopDb().update(GROUP_DRAW).set(GROUP_DRAW.STATUS, GROUP_DRAW_DISABLED)
+        int result = db().update(GROUP_DRAW).set(GROUP_DRAW.STATUS, GROUP_DRAW_DISABLED)
             .where(GROUP_DRAW.ID.eq(id).and(GROUP_DRAW.STATUS.ne(GROUP_DRAW_DISABLED))).execute();
         if (0 == result) {
             throw new IllegalStateException("Invalid group draw id or it has already been disabled.");
@@ -79,7 +79,7 @@ public class GroupDrawService extends ShopBaseService {
      * 更新活动
      */
     public void updateGroupDraw(Integer id, GroupDrawUpdateParam param) {
-        shopDb().update(GROUP_DRAW).set(GROUP_DRAW.NAME, param.getName()).set(GROUP_DRAW.START_TIME,
+        db().update(GROUP_DRAW).set(GROUP_DRAW.NAME, param.getName()).set(GROUP_DRAW.START_TIME,
             param.getStartTime()).set(GROUP_DRAW.END_TIME, param.getEndTime()).set(GROUP_DRAW.JOIN_LIMIT,
             param.getJoinLimit()).set(GROUP_DRAW.LIMIT_AMOUNT, param.getLimitAmount()).set(GROUP_DRAW.OPEN_LIMIT,
             param.getOpenLimit()).set(GROUP_DRAW.MIN_JOIN_NUM, param.getMinJoinNum()).set(GROUP_DRAW.PAY_MONEY,
@@ -118,7 +118,7 @@ public class GroupDrawService extends ShopBaseService {
     private SelectConditionStep<Record17<Integer, String, Timestamp, Timestamp, Byte, Short, BigDecimal, Short, Short,
         Short, Byte, Short, Integer, Integer, Integer, String, Integer>> createSelect(GroupDrawListParam param) {
         SelectConditionStep<Record17<Integer, String, Timestamp, Timestamp, Byte, Short, BigDecimal, Short, Short, Short,
-            Byte, Short, Integer, Integer, Integer, String, Integer>> select = shopDb().select(GROUP_DRAW.ID, GROUP_DRAW.NAME,
+            Byte, Short, Integer, Integer, Integer, String, Integer>> select = db().select(GROUP_DRAW.ID, GROUP_DRAW.NAME,
             GROUP_DRAW.END_TIME, GROUP_DRAW.START_TIME, GROUP_DRAW.IS_DRAW, GROUP_DRAW.JOIN_LIMIT, GROUP_DRAW.PAY_MONEY,
             GROUP_DRAW.LIMIT_AMOUNT, GROUP_DRAW.MIN_JOIN_NUM, GROUP_DRAW.OPEN_LIMIT, GROUP_DRAW.STATUS,
             GROUP_DRAW.TO_NUM_SHOW, DSL.count(JOIN_DRAW_LIST.USER_ID).as("joinUserCount"),
@@ -230,7 +230,7 @@ public class GroupDrawService extends ShopBaseService {
             param.setRewardCouponId(listToString(rewardCouponIds));
         }
         param.setGoodsId(listToString(goodsIds));
-        shopDb().insertInto(GROUP_DRAW).set(createGroupDrawRecord(param)).execute();
+        db().insertInto(GROUP_DRAW).set(createGroupDrawRecord(param)).execute();
     }
 
     /**
@@ -247,6 +247,6 @@ public class GroupDrawService extends ShopBaseService {
      * 删除活动
      */
     public void deleteGroupDraw(Integer id) {
-        shopDb().update(GROUP_DRAW).set(GROUP_DRAW.DEL_FLAG, (byte) 1).where(GROUP_DRAW.ID.eq(id)).execute();
+        db().update(GROUP_DRAW).set(GROUP_DRAW.DEL_FLAG, (byte) 1).where(GROUP_DRAW.ID.eq(id)).execute();
     }
 }

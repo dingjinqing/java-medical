@@ -1,6 +1,8 @@
 package com.vpu.mp.service.shop.summary.portrait;
 
 import com.fasterxml.jackson.core.type.TypeReference;
+import com.vpu.mp.db.main.tables.records.DictCityRecord;
+import com.vpu.mp.db.main.tables.records.DictProvinceRecord;
 import com.vpu.mp.db.shop.tables.records.MpUserPortraitRecord;
 import com.vpu.mp.service.foundation.service.ShopBaseService;
 import com.vpu.mp.service.foundation.util.Util;
@@ -133,12 +135,11 @@ public class PortraitService extends ShopBaseService {
      * @return province_id count
      */
     private Result<Record2<Integer, Integer>> getProvinceSumResult(String provinceName) {
-        Integer provinceId = mainDb().select(DICT_PROVINCE.PROVINCE_ID)
-                .from(DICT_PROVINCE)
-                .where(DICT_PROVINCE.NAME.equal(provinceName)).fetchOne().into(Integer.class);
+    	DictProvinceRecord province = saas.region.province.getProvinceName(provinceName);
+
         return db().select(USER_DETAIL.CITY_CODE, DSL.count(USER_DETAIL.ID))
                 .from(USER_DETAIL)
-                .where(USER_DETAIL.PROVINCE_CODE.equal(provinceId))
+                .where(USER_DETAIL.PROVINCE_CODE.equal(province.getProvinceId()))
                 .and(USER_DETAIL.CITY_CODE.notEqual(0))
                 .groupBy(USER_DETAIL.CITY_CODE)
                 .fetch();
@@ -150,14 +151,8 @@ public class PortraitService extends ShopBaseService {
      * @param provinceName 省份名称
      */
     private Map<Integer, String> cityMap(String provinceName) {
-        Integer provinceId = mainDb().select(DICT_PROVINCE.PROVINCE_ID)
-                .from(DICT_PROVINCE)
-                .where(DICT_PROVINCE.NAME.equal(provinceName)).fetchOne().into(Integer.class);
-        Result<Record2<Integer, String>> cityIdName =
-                mainDb().select(DICT_CITY.CITY_ID, DICT_CITY.NAME)
-                        .from(DICT_CITY)
-                        .where(DICT_CITY.PROVINCE_ID.equal(provinceId))
-                        .fetch();
-        return cityIdName.intoMap(DICT_CITY.CITY_ID, DICT_CITY.NAME);
+    	DictProvinceRecord province = saas.region.province.getProvinceName(provinceName);
+    	Result<DictCityRecord> cityList = saas.region.city.getCityList(province.getProvinceId());
+    	return cityList.intoMap(DICT_CITY.CITY_ID, DICT_CITY.NAME);
     }
 }

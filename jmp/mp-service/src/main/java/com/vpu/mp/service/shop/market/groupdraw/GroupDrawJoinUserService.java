@@ -38,7 +38,7 @@ public class GroupDrawJoinUserService extends ShopBaseService {
      */
     public PageResult<InvitedUserListVo> getInvitedUserList(InvitedUserListParam param) {
         SelectConditionStep<Record7<Timestamp, Integer, Integer, Integer, String, String, String>> select =
-            shopDb().select(GROUP_DRAW_INVITE.CREATE_TIME, GROUP_DRAW_INVITE.IDENTITY_ID,
+            db().select(GROUP_DRAW_INVITE.CREATE_TIME, GROUP_DRAW_INVITE.IDENTITY_ID,
                 GROUP_DRAW_INVITE.INVITE_USER_ID.as("inviteUserId"), GROUP_DRAW_INVITE.USER_ID.as("invitedUserId"),
                 USER.as(ALIAS_NEW).USERNAME.as("invitedUsername"), USER.as(ALIAS_OLD).USERNAME.as("inviteUsername"),
                 USER.as(ALIAS_NEW).MOBILE.as("invitedUserMobile")).from(GROUP_DRAW_INVITE)
@@ -76,7 +76,7 @@ public class GroupDrawJoinUserService extends ShopBaseService {
      */
     public PageResult<JoinUserListVo> getJoinUserList(JoinUserListParam param) {
         SelectConditionStep<Record10<Timestamp, Integer, String, Timestamp, Byte, Integer, Integer, Integer, String,
-            String>> select = shopDb().select(JOIN_GROUP_LIST.CREATE_TIME, JOIN_GROUP_LIST.USER_ID,
+            String>> select = db().select(JOIN_GROUP_LIST.CREATE_TIME, JOIN_GROUP_LIST.USER_ID,
             JOIN_GROUP_LIST.ORDER_SN,
             JOIN_GROUP_LIST.END_TIME, JOIN_GROUP_LIST.IS_GROUPER, JOIN_GROUP_LIST.GROUP_ID,
             JOIN_GROUP_LIST.INVITE_USER_NUM, DSL.count(JOIN_DRAW_LIST.USER_ID).as("codeCount"),

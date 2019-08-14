@@ -341,26 +341,8 @@ public class ChooseLinkService extends ShopBaseService {
 		}
 	}
 	
-	/**
-	 * 选择平台分分类列表
-	 * @return
-	 */
-	public List<SysCatevo> getSysCate() {
-		List<SysCatevo>	parentList = mainDb().select()
-				 .from(CATEGORY)
-				 .fetchInto(SysCatevo.class);
-		return parentList;
-	}
+
 	
-	/**
-	 * 根据父id获取子分类
-	 * @param parentId
-	 * @return
-	 */
-	public List<ChildCateVo> getSysCateChild(Short parentId) {
-		List<ChildCateVo> child = mainDb().select().from(CATEGORY).where(CATEGORY.PARENT_ID.eq(parentId)).fetch().into(ChildCateVo.class);
-		return child;
-	}
 	
 	/**
 	 * 选择商家分类

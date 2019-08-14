@@ -38,7 +38,7 @@ public class ActivityService extends ShopBaseService {
      */
     public PageResult<ActivityListVo> getPageList(ActivityListParam param) {
         SelectConditionStep<CouponActivityRecord> select =
-            shopDb().selectFrom(TABLE).where(TABLE.DEL_FLAG.eq((byte) 0));
+            db().selectFrom(TABLE).where(TABLE.DEL_FLAG.eq((byte) 0));
         buildOptions(select, param);
         PageResult<ActivityListVo> result = getPageResult(select, param, ActivityListVo.class);
         transform(result);
@@ -105,21 +105,21 @@ public class ActivityService extends ShopBaseService {
      * 停用活动
      */
     public void disableActivity(Integer activityId) {
-        shopDb().update(TABLE).set(TABLE.STATUS, DISABLE).where(TABLE.ID.eq(activityId)).execute();
+        db().update(TABLE).set(TABLE.STATUS, DISABLE).where(TABLE.ID.eq(activityId)).execute();
     }
 
     /**
      * 启用活动
      */
     public void enableActivity(Integer id) {
-        shopDb().update(TABLE).set(TABLE.STATUS, ABLE).where(TABLE.ID.eq(id)).execute();
+        db().update(TABLE).set(TABLE.STATUS, ABLE).where(TABLE.ID.eq(id)).execute();
     }
 
     /**
      * 删除活动
      */
     public void deleteActivity(Integer activityId) {
-        shopDb().update(TABLE).set(TABLE.DEL_FLAG, (byte) 1).where(TABLE.ID.eq(activityId)).execute();
+        db().update(TABLE).set(TABLE.DEL_FLAG, (byte) 1).where(TABLE.ID.eq(activityId)).execute();
     }
 
     /**
@@ -141,7 +141,7 @@ public class ActivityService extends ShopBaseService {
                 couponId = String.valueOf(param.getActivityId());
                 break;
         }
-        shopDb().insertInto(TABLE).columns(TABLE.NAME, TABLE.ACTION, TABLE.ACTIVITY_ACTION, TABLE.BG_ACTION,
+        db().insertInto(TABLE).columns(TABLE.NAME, TABLE.ACTION, TABLE.ACTIVITY_ACTION, TABLE.BG_ACTION,
             TABLE.START_DATE, TABLE.END_DATE, TABLE.MRKING_VOUCHER_ID, TABLE.TITLE, TABLE.STATUS,
             TABLE.CUSTOMIZE_IMG_PATH, TABLE.CUSTOMIZE_URL)
             .values(param.getName(), param.getAction(), param.getType(), bgAction, param.getStartDate(),
@@ -185,7 +185,7 @@ public class ActivityService extends ShopBaseService {
             throw new IllegalStateException("Activity has been disabled");
         }
         // 更新
-        UpdateSetMoreStep<CouponActivityRecord> update = shopDb().update(TABLE).set(TABLE.STATUS, vo.getStatus());
+        UpdateSetMoreStep<CouponActivityRecord> update = db().update(TABLE).set(TABLE.STATUS, vo.getStatus());
         // 活动名称
         update.set(TABLE.NAME, param.getName());
         if (ONGOING == status) {
@@ -239,7 +239,7 @@ public class ActivityService extends ShopBaseService {
         if (update) {
             condition.and(TABLE.ID.ne(param.getId()));
         }
-        boolean exists = shopDb().fetchExists(condition);
+        boolean exists = db().fetchExists(condition);
         if (exists) {
             throw new IllegalArgumentException(COUPON_ACTIVITY_TIME_RANGE_CONFLICT);
         }
@@ -251,7 +251,7 @@ public class ActivityService extends ShopBaseService {
     public ActivityVo getActivityDetail(Integer id) {
         ActivityVo vo = getActivity(id).fetchOneInto(ActivityVo.class);
         List<Integer> voucherIds = Util.stringToList(vo.getMrkingVoucherId());
-        List<Voucher> vouchers = shopDb().select(MRKING_VOUCHER.ID, MRKING_VOUCHER.USE_CONSUME_RESTRICT,
+        List<Voucher> vouchers = db().select(MRKING_VOUCHER.ID, MRKING_VOUCHER.USE_CONSUME_RESTRICT,
             MRKING_VOUCHER.LEAST_CONSUME, MRKING_VOUCHER.TOTAL_AMOUNT.minus(MRKING_VOUCHER.RECEIVE_AMOUNT).as(
                 "available_quantity")).from(MRKING_VOUCHER).where(MRKING_VOUCHER.ID.in(voucherIds)).fetchInto(Voucher.class);
         vouchers.forEach(v -> v.setRestrict(v.getUseConsumeRestrict() == 1));
@@ -271,14 +271,14 @@ public class ActivityService extends ShopBaseService {
      * 获取活动
      */
     private SelectConditionStep<CouponActivityRecord> getActivity(Integer id) {
-        return shopDb().selectFrom(TABLE).where(TABLE.ID.eq(id));
+        return db().selectFrom(TABLE).where(TABLE.ID.eq(id));
     }
 
     /**
      * 获取可用的抽奖活动
      */
     public LotteryVo getAvailableLotteries() {
-        List<Lottery> lotteries = shopDb().select(LOTTERY.ID, LOTTERY.LOTTERY_NAME.as("name")).from(LOTTERY)
+        List<Lottery> lotteries = db().select(LOTTERY.ID, LOTTERY.LOTTERY_NAME.as("name")).from(LOTTERY)
             .where(LOTTERY.STATUS.eq((byte) 0).and(LOTTERY.END_TIME.gt(Util.currentTimeStamp()))
                 .and(LOTTERY.DEL_FLAG.eq((byte) 0)))
             .fetchInto(Lottery.class);

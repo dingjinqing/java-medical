@@ -47,12 +47,13 @@ public class AdminAppletsJumpController  extends AdminBaseController {
             return fail();
         }
         //获取最新的一跳记录
-        Integer count  =shop().appletsJump.getAppletsJumpAddVersion();
+        Integer count  = saas.shop.mpJumpVersion.getAppletsJumpAddVersion(this.shopId());
         if (count>0){
             //已申请,不用重复申请，请等待此版本审核结果
             return fail();
         }
-        shop().appletsJump.appletsJumpAddVersion();
+        // 提交版本申请
+        saas.shop.mpJumpVersion.appletsJumpAddVersion(this.shopId());
         return success();
     }
 

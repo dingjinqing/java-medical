@@ -10,6 +10,7 @@ import java.util.List;
 
 import org.jooq.Record;
 import org.jooq.Record1;
+import org.jooq.Record2;
 import org.jooq.SelectWhereStep;
 import org.jooq.impl.DSL;
 import org.jooq.tools.StringUtils;
@@ -192,5 +193,7 @@ public class ShopAccountService extends MainBaseService {
 		}
 		return JsonResultCode.CODE_FAIL;
 	}
+	
+
 
 }

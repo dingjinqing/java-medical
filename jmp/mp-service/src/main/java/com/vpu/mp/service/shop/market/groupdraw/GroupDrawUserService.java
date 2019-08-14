@@ -76,7 +76,7 @@ public class GroupDrawUserService extends ShopBaseService {
     }
 
     private Integer getGroupDrawId(String orderSn) {
-        return (Integer) shopDb().select(GROUP_BUY_LIST.ACTIVITY_ID).from(GROUP_BUY_LIST)
+        return (Integer) db().select(GROUP_BUY_LIST.ACTIVITY_ID).from(GROUP_BUY_LIST)
             .where(GROUP_BUY_LIST.ORDER_SN.eq(orderSn)).fetchOne(0);
     }
 
@@ -84,7 +84,7 @@ public class GroupDrawUserService extends ShopBaseService {
      * 生成团id
      */
     private Integer generateGroupId() {
-        return (Integer) shopDb().select(DSL.max(JOIN_GROUP_LIST.GROUP_ID)).fetchOne().get(0) + 1;
+        return (Integer) db().select(DSL.max(JOIN_GROUP_LIST.GROUP_ID)).fetchOne().get(0) + 1;
     }
 
     /**
@@ -107,7 +107,7 @@ public class GroupDrawUserService extends ShopBaseService {
      * 更新团信息
      */
     private void updateGroupInfo(Integer groupDrawId, Integer groupId) {
-        shopDb().update(JOIN_GROUP_LIST).set(JOIN_GROUP_LIST.STATUS, GROUPED)
+        db().update(JOIN_GROUP_LIST).set(JOIN_GROUP_LIST.STATUS, GROUPED)
             .set(JOIN_GROUP_LIST.END_TIME, Util.currentTimeStamp()).where(JOIN_GROUP_LIST.GROUP_DRAW_ID.eq(groupDrawId)
             .and(JOIN_GROUP_LIST.GROUP_ID.eq(groupId).and(JOIN_GROUP_LIST.STATUS.eq(GROUP_ONGOING))))
             .execute();
@@ -117,7 +117,7 @@ public class GroupDrawUserService extends ShopBaseService {
      * 更新订单状态
      */
     private void updateOrderGroupedStatus(List<String> orderSns) {
-        shopDb().update(ORDER_INFO).set(ORDER_INFO.ORDER_STATUS, OrderConstant.ORDER_PIN_SUCCESSS)
+        db().update(ORDER_INFO).set(ORDER_INFO.ORDER_STATUS, OrderConstant.ORDER_PIN_SUCCESSS)
             .set(ORDER_INFO.ORDER_STATUS_NAME, new OrderConstant().getOrderStatus(ORDER_PIN_SUCCESSS))
             .where(ORDER_INFO.ORDER_SN.in(orderSns)).execute();
     }
@@ -126,7 +126,7 @@ public class GroupDrawUserService extends ShopBaseService {
      * 获取拼团中的参团记录
      */
     private List<JoinGroupListRecord> getOnGoingGroupList(Integer groupDrawId, Integer groupId) {
-        return shopDb().selectFrom(JOIN_GROUP_LIST).where(JOIN_GROUP_LIST.GROUP_DRAW_ID.eq(groupDrawId)
+        return db().selectFrom(JOIN_GROUP_LIST).where(JOIN_GROUP_LIST.GROUP_DRAW_ID.eq(groupDrawId)
             .and(JOIN_GROUP_LIST.STATUS.eq(GROUP_ONGOING).and(JOIN_GROUP_LIST.GROUP_ID.eq(groupId))))
             .fetchInto(JOIN_GROUP_LIST);
     }
@@ -135,7 +135,7 @@ public class GroupDrawUserService extends ShopBaseService {
      * 获取拼团抽奖活动
      */
     private GroupDrawRecord getGroupDraw(Integer groupDrawId) {
-        return shopDb().selectFrom(GROUP_DRAW).where(GROUP_DRAW.ID.eq(groupDrawId)).fetchOneInto(GROUP_DRAW);
+        return db().selectFrom(GROUP_DRAW).where(GROUP_DRAW.ID.eq(groupDrawId)).fetchOneInto(GROUP_DRAW);
     }
 
     /**
@@ -219,14 +219,14 @@ public class GroupDrawUserService extends ShopBaseService {
      * 获取订单信息
      */
     private OrderInfoRecord getOrderInfo(String orderSn) {
-        return shopDb().selectFrom(ORDER_INFO).where(ORDER_INFO.ORDER_SN.eq(orderSn)).fetchOneInto(ORDER_INFO);
+        return db().selectFrom(ORDER_INFO).where(ORDER_INFO.ORDER_SN.eq(orderSn)).fetchOneInto(ORDER_INFO);
     }
 
     /**
      * 获取单品
      */
     private GoodsSpecProductRecord getGoodsSpecProduct(Integer productId) {
-        return shopDb().selectFrom(GOODS_SPEC_PRODUCT).where(GOODS_SPEC_PRODUCT.PRD_ID.eq(productId))
+        return db().selectFrom(GOODS_SPEC_PRODUCT).where(GOODS_SPEC_PRODUCT.PRD_ID.eq(productId))
             .fetchOneInto(GOODS_SPEC_PRODUCT);
     }
 
@@ -234,7 +234,7 @@ public class GroupDrawUserService extends ShopBaseService {
      * 获取订单中的商品
      */
     private List<OrderGoodsRecord> getOrderGoods(String orderSn) {
-        return shopDb().selectFrom(ORDER_GOODS).where(ORDER_GOODS.ORDER_SN.eq(orderSn)).fetch()
+        return db().selectFrom(ORDER_GOODS).where(ORDER_GOODS.ORDER_SN.eq(orderSn)).fetch()
             .into(OrderGoodsRecord.class);
     }
 
@@ -242,7 +242,7 @@ public class GroupDrawUserService extends ShopBaseService {
      * 更新订单状态为待发货
      */
     private void updateOrderWaitDelivery(List<String> orderSns) {
-        shopDb().update(ORDER_INFO).set(ORDER_INFO.ORDER_STATUS, ORDER_WAIT_DELIVERY)
+        db().update(ORDER_INFO).set(ORDER_INFO.ORDER_STATUS, ORDER_WAIT_DELIVERY)
             .set(ORDER_INFO.ORDER_STATUS_NAME, new OrderConstant().getOrderStatus(ORDER_WAIT_DELIVERY))
             .where(ORDER_INFO.ORDER_SN.in(orderSns))
             .execute();
@@ -252,7 +252,7 @@ public class GroupDrawUserService extends ShopBaseService {
      * 拼团失败更新状态
      */
     private void updateOnGoingGroupDrawStatus(Integer goodsGroupDrawId, Integer goodsId) {
-        shopDb().update(JOIN_GROUP_LIST).set(JOIN_GROUP_LIST.STATUS, NOT_GROUPED)
+        db().update(JOIN_GROUP_LIST).set(JOIN_GROUP_LIST.STATUS, NOT_GROUPED)
             .set(JOIN_GROUP_LIST.END_TIME, currentTimeStamp())
             .where(JOIN_GROUP_LIST.GROUP_DRAW_ID.eq(goodsGroupDrawId).and(JOIN_GROUP_LIST.GOODS_ID.eq(goodsId)))
             .execute();
@@ -262,7 +262,7 @@ public class GroupDrawUserService extends ShopBaseService {
      * 不满足开奖条件，更新状态
      */
     private void updateGroupDrawStatus(Integer goodsGroupDrawId, Integer goodsId) {
-        shopDb().update(JOIN_GROUP_LIST).set(JOIN_GROUP_LIST.DRAW_STATUS, DRAW_FAIL)
+        db().update(JOIN_GROUP_LIST).set(JOIN_GROUP_LIST.DRAW_STATUS, DRAW_FAIL)
             .set(JOIN_GROUP_LIST.DRAW_TIME, currentTimeStamp())
             .where(JOIN_GROUP_LIST.GROUP_DRAW_ID.eq(goodsGroupDrawId).and(JOIN_GROUP_LIST.GOODS_ID.eq(goodsId)))
             .execute();
@@ -272,7 +272,7 @@ public class GroupDrawUserService extends ShopBaseService {
      * 获取某个商品的参与用户数
      */
     private Integer getJoinUserNumByGoodsId(Integer groupDrawId, Integer goodsId, Byte status) {
-        SelectConditionStep<Record1<Integer>> select = shopDb().selectCount().from(JOIN_GROUP_LIST)
+        SelectConditionStep<Record1<Integer>> select = db().selectCount().from(JOIN_GROUP_LIST)
             .where(JOIN_GROUP_LIST.GROUP_DRAW_ID.eq(groupDrawId).and(JOIN_GROUP_LIST.GOODS_ID.eq(goodsId)));
         if (null != status) {
             select.and(JOIN_GROUP_LIST.STATUS.eq(status));
@@ -284,7 +284,7 @@ public class GroupDrawUserService extends ShopBaseService {
      * 更新开奖状态
      */
     private void updateGroupDrawStatus(Integer id) {
-        shopDb().update(JOIN_GROUP_LIST).set(JOIN_GROUP_LIST.IS_WIN_DRAW, (byte) 1)
+        db().update(JOIN_GROUP_LIST).set(JOIN_GROUP_LIST.IS_WIN_DRAW, (byte) 1)
             .where(JOIN_GROUP_LIST.ID.eq(id));
     }
 
@@ -292,7 +292,7 @@ public class GroupDrawUserService extends ShopBaseService {
      * 获取待开奖活动
      */
     private List<GroupDrawRecord> getOpenGroupDrawList() {
-        return shopDb().selectFrom(GROUP_DRAW).where(GROUP_DRAW.END_TIME.le(currentTimeStamp()))
+        return db().selectFrom(GROUP_DRAW).where(GROUP_DRAW.END_TIME.le(currentTimeStamp()))
             .fetchInto(GroupDrawRecord.class);
     }
 
@@ -321,7 +321,7 @@ public class GroupDrawUserService extends ShopBaseService {
      * 更新团开奖状态
      */
     private void updateGroupInfoByGoodsId(Integer groupDrawId, Integer goodsId) {
-        shopDb().update(JOIN_GROUP_LIST).set(JOIN_GROUP_LIST.DRAW_STATUS, DREW)
+        db().update(JOIN_GROUP_LIST).set(JOIN_GROUP_LIST.DRAW_STATUS, DREW)
             .where(JOIN_GROUP_LIST.GROUP_DRAW_ID.eq(groupDrawId).and(JOIN_GROUP_LIST.GOODS_ID.eq(goodsId)));
     }
 
@@ -329,7 +329,7 @@ public class GroupDrawUserService extends ShopBaseService {
      * 更新团中奖状态
      */
     private void updateDrawStatus(Integer groupDrawId, Integer winDrawGroupId, Integer winDrawUserId) {
-        shopDb().update(JOIN_GROUP_LIST).set(JOIN_GROUP_LIST.IS_WIN_DRAW, WIN_DRAW)
+        db().update(JOIN_GROUP_LIST).set(JOIN_GROUP_LIST.IS_WIN_DRAW, WIN_DRAW)
             .where(JOIN_GROUP_LIST.GROUP_DRAW_ID.eq(groupDrawId).and(JOIN_GROUP_LIST.GROUP_ID.eq(winDrawGroupId)
                 .and(JOIN_GROUP_LIST.USER_ID.eq(winDrawUserId)))).execute();
     }
@@ -338,7 +338,7 @@ public class GroupDrawUserService extends ShopBaseService {
      * 获取抽奖记录
      */
     private JoinDrawListRecord getDrawRecordById(Integer winDrawId) {
-        return shopDb().selectFrom(JOIN_DRAW_LIST).where(JOIN_DRAW_LIST.ID.eq(winDrawId))
+        return db().selectFrom(JOIN_DRAW_LIST).where(JOIN_DRAW_LIST.ID.eq(winDrawId))
             .fetchOneInto(JoinDrawListRecord.class);
     }
 
@@ -346,7 +346,7 @@ public class GroupDrawUserService extends ShopBaseService {
      * 更新中奖状态
      */
     private void updateDraw(Integer winDrawId) {
-        shopDb().update(JOIN_DRAW_LIST).set(JOIN_DRAW_LIST.IS_WIN_DRAW, WIN_DRAW)
+        db().update(JOIN_DRAW_LIST).set(JOIN_DRAW_LIST.IS_WIN_DRAW, WIN_DRAW)
             .where(JOIN_DRAW_LIST.ID.eq(winDrawId)).execute();
     }
 
@@ -362,7 +362,7 @@ public class GroupDrawUserService extends ShopBaseService {
      * 获取团内用户
      */
     private List<Integer> getUserByGroupIds(Integer groupDrawId, Integer goodsId, List<Integer> groupIds) {
-        return shopDb().selectFrom(JOIN_DRAW_LIST).where(JOIN_DRAW_LIST.GROUP_DRAW_ID.eq(groupDrawId)
+        return db().selectFrom(JOIN_DRAW_LIST).where(JOIN_DRAW_LIST.GROUP_DRAW_ID.eq(groupDrawId)
             .and(JOIN_DRAW_LIST.GOODS_ID.eq(goodsId).and(JOIN_DRAW_LIST.GROUP_ID.in(groupIds))))
             .fetch().into(JoinDrawListRecord.class).stream().map(JoinDrawListRecord::getUserId).collect(Collectors.toList());
     }
@@ -371,7 +371,7 @@ public class GroupDrawUserService extends ShopBaseService {
      * 获取某个商品的参团记录
      */
     private List<JoinGroupListRecord> getGroupListByGoodsId(Integer groupDrawId, Integer goodsId, Byte groupStatus) {
-        SelectConditionStep<JoinGroupListRecord> select = shopDb().selectFrom(JOIN_GROUP_LIST)
+        SelectConditionStep<JoinGroupListRecord> select = db().selectFrom(JOIN_GROUP_LIST)
             .where(JOIN_GROUP_LIST.GROUP_DRAW_ID.eq(groupDrawId)
                 .and(JOIN_GROUP_LIST.GOODS_ID.eq(goodsId)));
         if (null != groupStatus) {

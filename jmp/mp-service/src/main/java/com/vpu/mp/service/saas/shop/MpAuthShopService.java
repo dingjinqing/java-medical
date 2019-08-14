@@ -397,7 +397,7 @@ public class MpAuthShopService extends MainBaseService {
 		WxOpenResult result = WxMaGsonBuilder.create().fromJson(response, WxOpenResult.class);
 		operateLog(mp, MpOperateLogService.OP_TYPE_UPLOAD_CODE, result);
 		//更新申请发布小程序为已发布
-		appletsJumpService.updateMpJumpVersion(mp.getShopId().toString());
+		saas.shop.mpJumpVersion.updateMpJumpVersion(mp.getShopId());
 		return result;
 	}
 

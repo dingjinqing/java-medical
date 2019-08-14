@@ -22,6 +22,9 @@ import org.springframework.web.context.request.RequestAttributes;
 import org.springframework.web.context.request.RequestContextHolder;
 
 import com.vpu.mp.config.AuthConfig;
+import com.vpu.mp.db.main.tables.records.ShopAccountRecord;
+import com.vpu.mp.db.main.tables.records.ShopChildAccountRecord;
+import com.vpu.mp.db.main.tables.records.ShopRecord;
 import com.vpu.mp.db.shop.tables.records.RecordAdminActionRecord;
 import com.vpu.mp.service.auth.AdminAuth;
 import com.vpu.mp.service.foundation.jedis.JedisManager;
@@ -36,6 +39,7 @@ import com.vpu.mp.service.pojo.shop.operation.RecordContentTemplate;
 
 /**
  * 操作记录的实现逻辑
+ * 
  * @author: 卢光耀
  * @date: 2019-07-12 10:21
  *
@@ -44,17 +48,17 @@ import com.vpu.mp.service.pojo.shop.operation.RecordContentTemplate;
 
 public class RecordAdminActionService extends ShopBaseService {
 
-    private static final String REDIS_PACKAGE="record.user.";
+	private static final String REDIS_PACKAGE = "record.user.";
 
-    protected static final String REDIS_TIMEOUT="auth.timeout";
+	protected static final String REDIS_TIMEOUT = "auth.timeout";
 
-    private static final String REQUEST_TYPE_SYSTEM="system";
+	private static final String REQUEST_TYPE_SYSTEM = "system";
 
-    private static final String REQUEST_TYPE_ACCOUNT="account";
+	private static final String REQUEST_TYPE_ACCOUNT = "account";
 
-    private static final String REQUEST_TYPE_NONE = "none";
+	private static final String REQUEST_TYPE_NONE = "none";
 
-    private static final String LANGUAGE_TYPE_RECORD = "record";
+	private static final String LANGUAGE_TYPE_RECORD = "record";
 
 	@Autowired
 	protected JedisManager jedis;
@@ -169,32 +173,23 @@ public class RecordAdminActionService extends ShopBaseService {
 	}
 
 	private Integer getSystemIdByNoRequest() {
-		Optional<Integer> optional = mainDb().select(SHOP.SYS_ID)
-				.from(SHOP)
-				.where(SHOP.SHOP_ID.eq(getShopId()))
-				.fetchOptional(SHOP.SYS_ID);
-		return optional.isPresent() ? optional.get() : 0;
-
+		return this.getSysId();
 	}
 
 	private String getNameAndMobileByNoRequest() {
-		Record2<String, String> record2 = mainDb().select(SHOP_ACCOUNT.ACCOUNT_NAME, SHOP_ACCOUNT.MOBILE)
-				.from(SHOP_ACCOUNT)
-				.leftJoin(SHOP)
-				.on(SHOP.SYS_ID.eq(SHOP_ACCOUNT.SYS_ID))
-				.where(SHOP.SHOP_ID.eq(getShopId()))
-				.fetchAny();
-		return record2.get(SHOP_ACCOUNT.ACCOUNT_NAME) + "," + record2.get(SHOP_ACCOUNT.MOBILE);
+		Integer sysId = this.getSysId();
+		if (sysId != 0) {
+			ShopAccountRecord account = saas.shop.account.getAccountInfoForId(sysId);
+			return String.format("%s,%s", account.getAccountName(), account.getMobile());
+		}
+		return "";
 	}
 
 	private String getSystemNameAndMobile(Integer sysId, List<String> resultList) {
-		Record2<String, String> record2 = mainDb().select(SHOP_ACCOUNT.USER_NAME, SHOP_ACCOUNT.MOBILE)
-				.from(SHOP_ACCOUNT)
-				.where(SHOP_ACCOUNT.SYS_ID.eq(sysId))
-				.fetchAny();
-		resultList.add(record2.get(SHOP_ACCOUNT.USER_NAME));
-		resultList.add(record2.get(SHOP_ACCOUNT.MOBILE));
-		return record2.get(SHOP_ACCOUNT.USER_NAME) + "," + record2.get(SHOP_ACCOUNT.MOBILE);
+		ShopAccountRecord account = saas.shop.account.getAccountInfoForId(sysId);
+		resultList.add(account.getUserName());
+		resultList.add(account.getMobile());
+		return String.format("%s,%s", account.getAccountName(), account.getMobile());
 	}
 
 	private List<String> getCommonNameAndMobile(Integer id, String type) {
@@ -217,13 +212,10 @@ public class RecordAdminActionService extends ShopBaseService {
 	}
 
 	private String getAccountNameAndMobile(Integer accountId, List<String> resultList) {
-		Record2<String, String> record2 = mainDb().select(SHOP_CHILD_ACCOUNT.ACCOUNT_NAME, SHOP_CHILD_ACCOUNT.MOBILE)
-				.from(SHOP_CHILD_ACCOUNT)
-				.where(SHOP_CHILD_ACCOUNT.ACCOUNT_ID.eq(accountId))
-				.fetchAny();
-		resultList.add(record2.get(SHOP_CHILD_ACCOUNT.ACCOUNT_NAME));
-		resultList.add(record2.get(SHOP_CHILD_ACCOUNT.MOBILE));
-		return record2.get(SHOP_CHILD_ACCOUNT.ACCOUNT_NAME) + "," + record2.get(SHOP_CHILD_ACCOUNT.MOBILE);
+		ShopChildAccountRecord subAccount = saas.shop.subAccount.getSubAccountInfo(accountId);
+		resultList.add(subAccount.getAccountName());
+		resultList.add(subAccount.getMobile());
+		return String.format("%s,%s", subAccount.getAccountName(),subAccount.getMobile());
 	}
 
 }

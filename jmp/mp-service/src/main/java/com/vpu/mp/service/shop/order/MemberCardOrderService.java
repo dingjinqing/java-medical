@@ -50,7 +50,7 @@ public class MemberCardOrderService extends ShopBaseService {
     public PageResult<MemberCardVo> getMemberCardOrderList(MemberCardParam param) {
         SelectOnConditionStep<Record16<Integer, String, Integer, Byte, Timestamp, BigDecimal, BigDecimal, BigDecimal,
             Timestamp, String, String, String, Byte, BigDecimal, Byte, String>> select =
-            shopDb().select(CARD_ORDER.ORDER_ID, CARD_ORDER.ORDER_SN,
+            db().select(CARD_ORDER.ORDER_ID, CARD_ORDER.ORDER_SN,
                 CARD_ORDER.VIRTUAL_GOODS_ID, CARD_ORDER.RETURN_FLAG, CARD_ORDER.PAY_TIME, CARD_ORDER.MONEY_PAID,
                 CARD_ORDER.USE_ACCOUNT, CARD_ORDER.USE_SCORE, CARD_ORDER.RETURN_TIME, USER.USERNAME, USER.MOBILE,
                 MEMBER_CARD.CARD_NAME, MEMBER_CARD.CARD_TYPE, MEMBER_CARD.PAY_FEE, MEMBER_CARD.PAY_TYPE,
@@ -178,12 +178,12 @@ public class MemberCardOrderService extends ShopBaseService {
         log.info("Member card refund -> orderId: {}, return account: {}, return money: {}, return score: {}",
             orderId, account, money, score);
         // 记录退款信息
-        shopDb().insertInto(REFUND_CARD_RECORD, REFUND_CARD_RECORD.ORDER_SN, REFUND_CARD_RECORD.USER_ID,
+        db().insertInto(REFUND_CARD_RECORD, REFUND_CARD_RECORD.ORDER_SN, REFUND_CARD_RECORD.USER_ID,
             REFUND_CARD_RECORD.MONEY_PAID, REFUND_CARD_RECORD.USE_ACCOUNT, REFUND_CARD_RECORD.USE_SCORE,
             REFUND_CARD_RECORD.IS_SUCCESS)
             .values(Arrays.asList(orderSn, userId, money, account, score, 1)).execute();
         // 更新订单状态
-        shopDb().update(CARD_ORDER).set(CARD_ORDER.RETURN_FLAG, SUCCESS).set(CARD_ORDER.RETURN_MONEY,
+        db().update(CARD_ORDER).set(CARD_ORDER.RETURN_FLAG, SUCCESS).set(CARD_ORDER.RETURN_MONEY,
             finalReturnMoney).set(CARD_ORDER.RETURN_ACCOUNT, finalReturnAccount)
             .set(CARD_ORDER.RETURN_SCORE, finalReturnScore).execute();
     }
@@ -195,7 +195,7 @@ public class MemberCardOrderService extends ShopBaseService {
         BigDecimal> getPayInfo(Integer orderId) {
         Record10<String, BigDecimal, BigDecimal, BigDecimal, String, Integer, Byte, BigDecimal, BigDecimal
             , BigDecimal> order =
-            shopDb().select(CARD_ORDER.PAY_CODE, CARD_ORDER.MONEY_PAID, CARD_ORDER.USE_SCORE, CARD_ORDER.USE_ACCOUNT,
+            db().select(CARD_ORDER.PAY_CODE, CARD_ORDER.MONEY_PAID, CARD_ORDER.USE_SCORE, CARD_ORDER.USE_ACCOUNT,
                 CARD_ORDER.ORDER_SN, CARD_ORDER.USER_ID, CARD_ORDER.RETURN_FLAG, CARD_ORDER.RETURN_MONEY,
                 CARD_ORDER.RETURN_ACCOUNT, CARD_ORDER.RETURN_SCORE)
                 .from(CARD_ORDER)
@@ -210,7 +210,7 @@ public class MemberCardOrderService extends ShopBaseService {
      * 微信退款
      */
     private void refundWxPay(String orderSn, Double money) {
-        PaymentRecordRecord payment = shopDb().selectFrom(PAYMENT_RECORD)
+        PaymentRecordRecord payment = db().selectFrom(PAYMENT_RECORD)
             .where(PAYMENT_RECORD.ORDER_SN.eq(orderSn)).fetchAny();
         if (null == payment) {
             throw new IllegalArgumentException("Unknown order sn: " + orderSn);
@@ -223,13 +223,13 @@ public class MemberCardOrderService extends ShopBaseService {
      * 退积分
      */
     private void addUserScore(Integer userId, Integer score) {
-        shopDb().update(USER).set(USER.SCORE, USER.SCORE.add(score)).where(USER.USER_ID.eq(userId)).execute();
+        db().update(USER).set(USER.SCORE, USER.SCORE.add(score)).where(USER.USER_ID.eq(userId)).execute();
     }
 
     /**
      * 退余额
      */
     private void addUserAccount(Integer userId, Double account) {
-        shopDb().update(USER).set(USER.ACCOUNT, USER.ACCOUNT.add(account)).where(USER.USER_ID.eq(userId));
+        db().update(USER).set(USER.ACCOUNT, USER.ACCOUNT.add(account)).where(USER.USER_ID.eq(userId));
     }
 }

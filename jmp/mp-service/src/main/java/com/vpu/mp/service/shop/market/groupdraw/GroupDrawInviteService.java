@@ -21,7 +21,7 @@ public class GroupDrawInviteService extends ShopBaseService {
      * 获取可用邀请用户信息
      */
     GroupDrawInviteRecord getAvailableInviteUser(Integer groupDrawId, Integer goodsId, Integer userId) {
-        return shopDb().selectFrom(GROUP_DRAW_INVITE).where(GROUP_DRAW_INVITE.ACTION.eq(ACTION_GROUP_DRAW)
+        return db().selectFrom(GROUP_DRAW_INVITE).where(GROUP_DRAW_INVITE.ACTION.eq(ACTION_GROUP_DRAW)
             .and(GROUP_DRAW_INVITE.IDENTITY_ID.eq(groupDrawId))
             .and(GROUP_DRAW_INVITE.GOODS_ID.eq(goodsId))
             .and(GROUP_DRAW_INVITE.USER_ID.eq(userId))

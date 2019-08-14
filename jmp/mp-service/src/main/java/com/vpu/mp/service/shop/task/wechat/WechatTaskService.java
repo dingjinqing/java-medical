@@ -98,7 +98,7 @@ public class WechatTaskService extends ShopBaseService {
             if(validationData(result, MP_DISTRIBUTION_VISIT)){
                 return ;
             }
-            MpDistributionVisitRecord record = shopDb().newRecord(MP_DISTRIBUTION_VISIT);
+            MpDistributionVisitRecord record = db().newRecord(MP_DISTRIBUTION_VISIT);
             record.setRefDate(result.getRefDate());
             record.setList(Util.toJson(result.getList()));
             record.insert();
@@ -118,8 +118,8 @@ public class WechatTaskService extends ShopBaseService {
                 return ;
             }
             List<MpSummaryTrendRecord> list = new ArrayList<>(result.size());
-            result.forEach(v->list.add(shopDb().newRecord(MP_SUMMARY_TREND,v)));
-            shopDb().batchInsert(list);
+            result.forEach(v->list.add(db().newRecord(MP_SUMMARY_TREND,v)));
+            db().batchInsert(list);
         } catch (WxErrorException e) {
             logger().error(CONTENT,e);
         }
@@ -136,8 +136,8 @@ public class WechatTaskService extends ShopBaseService {
                 return ;
             }
             List<MpVisitPageRecord> list = new ArrayList<>(result.size());
-            result.forEach(v->list.add(shopDb().newRecord(MP_VISIT_PAGE,v)));
-            shopDb().batchInsert(list);
+            result.forEach(v->list.add(db().newRecord(MP_VISIT_PAGE,v)));
+            db().batchInsert(list);
         } catch (WxErrorException e) {
             logger().error(CONTENT,e);
         }
@@ -154,7 +154,7 @@ public class WechatTaskService extends ShopBaseService {
             if(validationData(info, MP_USER_PORTRAIT)){
                 return ;
             }
-            MpUserPortraitRecord record = shopDb().newRecord(MP_USER_PORTRAIT);
+            MpUserPortraitRecord record = db().newRecord(MP_USER_PORTRAIT);
             record.setRefDate(info.getRefDate());
             record.setVisitUvNew(Util.toJson(info.getVisitUvNew()));
             record.setVisitUv(Util.toJson(info.getVisitUv()));
@@ -177,10 +177,10 @@ public class WechatTaskService extends ShopBaseService {
             }
             List<MpDailyVisitRecord> list = new ArrayList<>(result.size());
             result.forEach(v->{
-                MpDailyVisitRecord record = shopDb().newRecord(MP_DAILY_VISIT,v);
+                MpDailyVisitRecord record = db().newRecord(MP_DAILY_VISIT,v);
                 list.add(record);
             });
-            shopDb().batchInsert(list);
+            db().batchInsert(list);
         } catch (WxErrorException e) {
             logger().error(CONTENT,e);
         }
@@ -201,10 +201,10 @@ public class WechatTaskService extends ShopBaseService {
             }
             List<MpWeeklyVisitRecord> list = new ArrayList<>(result.size());
             result.forEach(v->{
-                MpWeeklyVisitRecord record = shopDb().newRecord(MP_WEEKLY_VISIT,v);
+                MpWeeklyVisitRecord record = db().newRecord(MP_WEEKLY_VISIT,v);
                 list.add(record);
             });
-            shopDb().batchInsert(list);
+            db().batchInsert(list);
         } catch (WxErrorException e) {
             logger().error(CONTENT,e);
         }
@@ -225,10 +225,10 @@ public class WechatTaskService extends ShopBaseService {
             }
             List<MpMonthlyVisitRecord> list = new ArrayList<>(result.size());
             result.forEach(v->{
-                MpMonthlyVisitRecord record = shopDb().newRecord(MP_MONTHLY_VISIT,v);
+                MpMonthlyVisitRecord record = db().newRecord(MP_MONTHLY_VISIT,v);
                 list.add(record);
             });
-            shopDb().batchInsert(list);
+            db().batchInsert(list);
         } catch (WxErrorException e) {
             logger().error(CONTENT,e);
         }
@@ -245,7 +245,7 @@ public class WechatTaskService extends ShopBaseService {
             if(validationData(info, MP_DAILY_RETAIN)){
                 return ;
             }
-            MpDailyRetainRecord record = shopDb().newRecord(MP_DAILY_RETAIN);
+            MpDailyRetainRecord record = db().newRecord(MP_DAILY_RETAIN);
             record.setRefDate(info.getRefDate());
             record.setVisitUvNew(Util.toJson(info.getVisitUvNew()));
             record.setVisitUv(Util.toJson(info.getVisitUv()));
@@ -268,7 +268,7 @@ public class WechatTaskService extends ShopBaseService {
             if(validationData(info, MP_WEEKLY_RETAIN)){
                 return ;
             }
-            MpWeeklyRetainRecord record = shopDb().newRecord(MP_WEEKLY_RETAIN);
+            MpWeeklyRetainRecord record = db().newRecord(MP_WEEKLY_RETAIN);
             record.setRefDate(info.getRefDate());
             record.setVisitUvNew(Util.toJson(info.getVisitUvNew()));
             record.setVisitUv(Util.toJson(info.getVisitUv()));
@@ -291,7 +291,7 @@ public class WechatTaskService extends ShopBaseService {
             if(validationData(info, MP_MONTHLY_RETAIN)){
                 return ;
             }
-            MpMonthlyRetainRecord record = shopDb().newRecord(MP_MONTHLY_RETAIN);
+            MpMonthlyRetainRecord record = db().newRecord(MP_MONTHLY_RETAIN);
             record.setRefDate(info.getRefDate());
             record.setVisitUvNew(Util.toJson(info.getVisitUvNew()));
             record.setVisitUv(Util.toJson(info.getVisitUv()));

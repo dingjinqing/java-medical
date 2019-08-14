@@ -1,6 +1,7 @@
 package com.vpu.mp.service.shop.image;
 
 import com.upyun.UpException;
+import com.vpu.mp.db.main.tables.records.MpAuthShopRecord;
 import com.vpu.mp.db.shop.tables.records.CodeRecord;
 import com.vpu.mp.service.foundation.data.DelFlag;
 import com.vpu.mp.service.foundation.service.ShopBaseService;
@@ -90,8 +91,8 @@ public class QrCodeService extends ShopBaseService {
 
         //获取小程序分享码
         Integer shopId = getShopId();
-        String appId = mainDb().select(MP_AUTH_SHOP.APP_ID).from(MP_AUTH_SHOP)
-            .where(MP_AUTH_SHOP.SHOP_ID.eq(shopId)).fetchAny(MP_AUTH_SHOP.APP_ID);
+        MpAuthShopRecord mp = saas.shop.mp.getAuthShopByShopId(shopId);
+        String appId =  mp.getAppId();
 
         //二维码图片大小
         int qrcodWidth = 430;

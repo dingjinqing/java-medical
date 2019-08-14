@@ -36,7 +36,7 @@ public class ActivityIssueService extends ShopBaseService {
      */
     public PageResult<ActivityIssueListVo> getIssuePageList(ActivityIssueListParam param) {
         SelectConditionStep<Record6<String, Timestamp, Integer, String, String, String>> select =
-            shopDb().select(TABLE.MRKING_VOUCHER_ID,
+            db().select(TABLE.MRKING_VOUCHER_ID,
                 TABLE.RECEIVE_TIME, TABLE.USER_ID, COUPON_ACTIVITY.NAME, USER.USERNAME, USER.MOBILE).from(TABLE)
                 .leftJoin(USER).on(USER.USER_ID.eq(TABLE.USER_ID))
                 .leftJoin(COUPON_ACTIVITY).on(COUPON_ACTIVITY.ID.eq(TABLE.ACTIVITY_ID)).where();
@@ -48,7 +48,7 @@ public class ActivityIssueService extends ShopBaseService {
             .collect(Collectors.toList());
         // 本页用到的优惠券
         List<MrkingVoucherRecord> vouchers =
-            shopDb().select(MRKING_VOUCHER.ID, MRKING_VOUCHER.ACT_NAME).from(MRKING_VOUCHER)
+            db().select(MRKING_VOUCHER.ID, MRKING_VOUCHER.ACT_NAME).from(MRKING_VOUCHER)
                 .where(MRKING_VOUCHER.ID.in(voucherIds)).fetchInto(MrkingVoucherRecord.class);
         page.getDataList().forEach(issue -> {
             // 本次领取的优惠券id list

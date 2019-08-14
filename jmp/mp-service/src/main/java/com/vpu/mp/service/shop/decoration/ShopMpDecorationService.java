@@ -293,8 +293,7 @@ public class ShopMpDecorationService extends ShopBaseService {
 	 * @return
 	 */
 	public XcxCustomerPageRecord cloneTemplate(Integer templateId) {
-		DecorationTemplateRecord record = mainDb().fetchAny(DECORATION_TEMPLATE,
-				DECORATION_TEMPLATE.PAGE_ID.eq((templateId)));
+		DecorationTemplateRecord record = saas.shop.decoration.getRow(templateId);
 		XcxCustomerPageRecord page = db().newRecord(XCX_CUSTOMER_PAGE);
 		page.setPageContent(record.getPageContent());
 		page.insert();

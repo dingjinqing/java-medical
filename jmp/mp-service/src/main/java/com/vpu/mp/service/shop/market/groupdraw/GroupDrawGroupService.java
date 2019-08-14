@@ -35,7 +35,7 @@ public class GroupDrawGroupService extends ShopBaseService {
      */
     public PageResult<GroupListVo> getGroupList(GroupListParam param) {
         SelectConditionStep<Record9<Integer, Integer, String, String, Timestamp, Timestamp, Object, Object, Object>>
-            select = shopDb()
+            select = db()
             .select(
                 JOIN_GROUP_LIST.as(ALIAS_OUTSIDE).GROUP_ID,
                 count(JOIN_GROUP_LIST.as(ALIAS_OUTSIDE).USER_ID).as("userCount"), ORDER_GOODS.GOODS_NAME,

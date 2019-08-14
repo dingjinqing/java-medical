@@ -29,7 +29,7 @@ public class GroupDrawOrderService extends ShopBaseService {
     public PageResult<OrderListVo> getGroupDrawOrderList(OrderListParam param) {
         SelectConditionStep<Record12<String, String, String, Integer, Integer, Timestamp, String, String, Byte, Integer,
             String, Boolean>>
-            select = shopDb().select(JOIN_GROUP_LIST.ORDER_SN, ORDER_GOODS.GOODS_NAME, ORDER_GOODS.GOODS_IMG,
+            select = db().select(JOIN_GROUP_LIST.ORDER_SN, ORDER_GOODS.GOODS_NAME, ORDER_GOODS.GOODS_IMG,
             JOIN_GROUP_LIST.USER_ID, ORDER_GOODS.ORDER_ID,
             ORDER_INFO.CREATE_TIME, ORDER_INFO.MOBILE, ORDER_MUST.CONSIGNEE_REAL_NAME, JOIN_GROUP_LIST.IS_WIN_DRAW,
             DSL.count(JOIN_DRAW_LIST.USER_ID).as("codeCount"), ORDER_INFO.ORDER_STATUS_NAME,

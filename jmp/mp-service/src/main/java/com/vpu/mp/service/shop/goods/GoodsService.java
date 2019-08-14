@@ -80,7 +80,7 @@ public class GoodsService extends ShopBaseService {
 
         goodsInitialVo.setGoodsSorts(goodsSort.getList(new GoodsSortListParam()));
 
-        goodsInitialVo.setSysCates(chooseLink.getSysCate());
+        goodsInitialVo.setSysCates(saas.sysCate.getSysCate());
 
         return goodsInitialVo;
     }
@@ -106,33 +106,14 @@ public class GoodsService extends ShopBaseService {
         PageResult<GoodsPageListVo> pageResult = this.getPageResult(select, goodsPageListParam.getCurrentPage(),
                 goodsPageListParam.getPageRows(), GoodsPageListVo.class);
 
-        this.disposeCategoryName(pageResult.getDataList());
+        saas.sysCate.disposeCategoryName(pageResult.getDataList());
 
         this.disposeGoodsLabels(pageResult.getDataList());
 
         return pageResult;
     }
 
-    /**
-     * 遍历查询结果设置对应的平台分类
-     *
-     * @param goodsPageListVos
-     */
-    private void disposeCategoryName(List<GoodsPageListVo> goodsPageListVos) {
-        List<Short> catIds = new ArrayList<Short>(goodsPageListVos.size());
-
-        for (GoodsPageListVo vo : goodsPageListVos) {
-            catIds.add(vo.getCatId());
-        }
-
-        Map<Short, String> catIdNameMap = mainDb().select(CATEGORY.CAT_ID, CATEGORY.CAT_NAME).from(CATEGORY)
-                .where(CATEGORY.CAT_ID.in(catIds)).fetch().intoMap(CATEGORY.CAT_ID, CATEGORY.CAT_NAME);
-
-        for (GoodsPageListVo goodsPageListVo : goodsPageListVos) {
-            Short catId = goodsPageListVo.getCatId();
-            goodsPageListVo.setCatName(catIdNameMap.get(catId));
-        }
-    }
+   
 
     /**
      * 处理商品的关联的标签

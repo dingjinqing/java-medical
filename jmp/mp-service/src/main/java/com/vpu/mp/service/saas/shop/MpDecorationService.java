@@ -1,6 +1,7 @@
 package com.vpu.mp.service.saas.shop;
 
 import static com.vpu.mp.db.main.tables.DecorationTemplate.DECORATION_TEMPLATE;
+import static com.vpu.mp.db.shop.tables.XcxCustomerPage.XCX_CUSTOMER_PAGE;
 
 import org.jooq.Record;
 import org.jooq.Result;
@@ -9,6 +10,7 @@ import org.jooq.tools.StringUtils;
 import org.springframework.stereotype.Service;
 
 import com.vpu.mp.db.main.tables.records.DecorationTemplateRecord;
+import com.vpu.mp.db.shop.tables.records.XcxCustomerPageRecord;
 import com.vpu.mp.service.foundation.service.MainBaseService;
 import com.vpu.mp.service.foundation.util.PageResult;
 import com.vpu.mp.service.pojo.saas.decorate.DecorationTemplatePojo;
@@ -47,5 +49,16 @@ public class MpDecorationService extends MainBaseService {
 
 	public Result<DecorationTemplateRecord> getAll() {
 		return db().fetch(DECORATION_TEMPLATE, DECORATION_TEMPLATE.PAGE_ENABLED.eq((byte) 1));
+	}
+	
+	/**
+	 * 得到系统模板
+	 * 
+	 * @param templateId
+	 * @return
+	 */
+	public DecorationTemplateRecord getRow(Integer templateId) {
+		return db().fetchAny(DECORATION_TEMPLATE,
+				DECORATION_TEMPLATE.PAGE_ID.eq((templateId)));
 	}
 }

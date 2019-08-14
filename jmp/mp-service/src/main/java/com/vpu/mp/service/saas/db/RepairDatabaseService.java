@@ -39,7 +39,7 @@ public class RepairDatabaseService extends MainBaseService {
 	public void repairMainDb() {
 		String sql = Util.loadResource("db/main/db_main.sql");
 		List<Table> tables = this.parseSql(sql);
-		repairDb(tables, this.mainDb());
+		repairDb(tables, databaseManager.mainDb());
 	}
 
 	/**
@@ -50,7 +50,7 @@ public class RepairDatabaseService extends MainBaseService {
 		String sql = Util.loadResource("db/main/db_shop.sql");
 		List<Table> tables = this.parseSql(sql);
 		databaseManager.switchShopDb(shopId);
-		repairDb(tables, this.shopDb());
+		repairDb(tables, databaseManager.currentShopDb());
 		databaseManager.restoreLastShopDb();
 	}
 
@@ -63,7 +63,7 @@ public class RepairDatabaseService extends MainBaseService {
 		Result<ShopRecord> shops = saas().shop.getAll();
 		for (ShopRecord shop : shops) {
 			databaseManager.switchShopDb(shop.getShopId());
-			repairDb(tables, this.shopDb());
+			repairDb(tables, databaseManager.currentShopDb());
 			databaseManager.restoreLastShopDb();
 		}
 	}

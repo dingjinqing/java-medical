@@ -58,7 +58,7 @@ public class ShopImageManageService  extends MainBaseService {
      * @return
      */
     public Boolean addCategory(ShopImageCategoryParam cat, Integer sysId) {
-        ShopUploadedImageCategoryRecord record = mainDb().newRecord(SHOP_UPLOADED_IMAGE_CATEGORY, cat);
+        ShopUploadedImageCategoryRecord record = db().newRecord(SHOP_UPLOADED_IMAGE_CATEGORY, cat);
         record.setSysId(sysId);
         record.insert();
         if (cat.getImgCatParentId().equals(0)) {
@@ -80,7 +80,7 @@ public class ShopImageManageService  extends MainBaseService {
      * @return
      */
     private ShopUploadedImageCategoryRecord getCategoryById(Integer imgCatParentId) {
-        return mainDb().selectFrom(SHOP_UPLOADED_IMAGE_CATEGORY).where(SHOP_UPLOADED_IMAGE_CATEGORY.IMG_CAT_ID.eq(imgCatParentId)).fetchAny();
+        return db().selectFrom(SHOP_UPLOADED_IMAGE_CATEGORY).where(SHOP_UPLOADED_IMAGE_CATEGORY.IMG_CAT_ID.eq(imgCatParentId)).fetchAny();
     }
 
 
@@ -95,7 +95,7 @@ public class ShopImageManageService  extends MainBaseService {
         }
         List<Integer> ids = this.getChildCategoryIds(imgCatId);
         ids.add(imgCatId);
-        return mainDb()
+        return db()
                 .delete(SHOP_UPLOADED_IMAGE_CATEGORY)
                 .where(SHOP_UPLOADED_IMAGE_CATEGORY.IMG_CAT_ID.in(ids.toArray(new Integer[0])))
                 .and(SHOP_UPLOADED_IMAGE_CATEGORY.SYS_ID.eq(sysId))
@@ -123,7 +123,7 @@ public class ShopImageManageService  extends MainBaseService {
         if (record==null){
             return null;
         }
-        Result<ShopUploadedImageCategoryRecord> record1 = mainDb()
+        Result<ShopUploadedImageCategoryRecord> record1 = db()
                 .selectFrom(SHOP_UPLOADED_IMAGE_CATEGORY)
                 .where(SHOP_UPLOADED_IMAGE_CATEGORY.CAT_IDS.like(this.prefixLikeValue(record.getCatIds() + ",")))
                 .fetch();
@@ -148,7 +148,7 @@ public class ShopImageManageService  extends MainBaseService {
                 : 0 - record.getLevel();
         String newCatIdPreifx = parentRecord != null ? parentRecord.getCatIds() + "," + record.getImgCatId()
                 : record.getImgCatId().toString();
-        return mainDb()
+        return db()
                 .update(SHOP_UPLOADED_IMAGE_CATEGORY)
                 .set(SHOP_UPLOADED_IMAGE_CATEGORY.CAT_IDS, DSL.concat(newCatIdPreifx, DSL.substring(SHOP_UPLOADED_IMAGE_CATEGORY.CAT_IDS, oldCatIdsPrefix.length() + 1)))
                 .set(SHOP_UPLOADED_IMAGE_CATEGORY.LEVEL, SHOP_UPLOADED_IMAGE_CATEGORY.LEVEL.add(levelDiff))
@@ -165,7 +165,7 @@ public class ShopImageManageService  extends MainBaseService {
      * @param sysId
      */
     public void renameImageCategory(Integer imgCatId, String imgCatName, Integer sysId) {
-        mainDb().update(SHOP_UPLOADED_IMAGE_CATEGORY)
+        db().update(SHOP_UPLOADED_IMAGE_CATEGORY)
                 .set(SHOP_UPLOADED_IMAGE_CATEGORY.IMG_CAT_NAME,imgCatName)
                 .where(SHOP_UPLOADED_IMAGE_CATEGORY.IMG_CAT_ID.eq(imgCatId))
                 .and(SHOP_UPLOADED_IMAGE_CATEGORY.SYS_ID.eq(sysId))
@@ -206,7 +206,7 @@ public class ShopImageManageService  extends MainBaseService {
 
 
     private Result<ShopUploadedImageCategoryRecord> getImageCategoryBySysId(Integer sysId) {
-        return mainDb().selectFrom(SHOP_UPLOADED_IMAGE_CATEGORY)
+        return db().selectFrom(SHOP_UPLOADED_IMAGE_CATEGORY)
                 .where(SHOP_UPLOADED_IMAGE_CATEGORY.SYS_ID.eq(sysId))
                 .fetch();
     }
@@ -219,7 +219,7 @@ public class ShopImageManageService  extends MainBaseService {
             if (imageInfo == null) {
                 return null;
             }
-            ShopUploadedImageRecord image = mainDb().newRecord(SHOP_UPLOADED_IMAGE);
+            ShopUploadedImageRecord image = db().newRecord(SHOP_UPLOADED_IMAGE);
             image.setImgName(baseFilename == null ? file.getName() : baseFilename);
             image.setImgPath(relativeFilePath);
             image.setImgType(imageService.getImageExension(fullPath));
@@ -240,7 +240,7 @@ public class ShopImageManageService  extends MainBaseService {
 
 
     public PageResult<ShopUploadImageCatNameVo> getPageList(ShopImageListQueryParam param, Integer sysId) {
-        SelectWhereStep<Record> select = mainDb().select(SHOP_UPLOADED_IMAGE.asterisk(), SHOP_UPLOADED_IMAGE_CATEGORY.IMG_CAT_NAME)
+        SelectWhereStep<Record> select = db().select(SHOP_UPLOADED_IMAGE.asterisk(), SHOP_UPLOADED_IMAGE_CATEGORY.IMG_CAT_NAME)
                 .from(SHOP_UPLOADED_IMAGE)
                 .leftJoin(SHOP_UPLOADED_IMAGE_CATEGORY)
 
@@ -324,7 +324,7 @@ public class ShopImageManageService  extends MainBaseService {
 
 
     public int setCatId(Integer[] imageIds, Integer imageCatId, Integer sysId) {
-        return mainDb().update(SHOP_UPLOADED_IMAGE)
+        return db().update(SHOP_UPLOADED_IMAGE)
                 .set(SHOP_UPLOADED_IMAGE.IMG_CAT_ID, imageCatId)
                 .where(SHOP_UPLOADED_IMAGE.IMG_ID.in((imageIds)))
                 .and(SHOP_UPLOADED_IMAGE.SYS_ID.eq(sysId))
@@ -334,7 +334,7 @@ public class ShopImageManageService  extends MainBaseService {
     }
 
     public int removeRows(List<Integer> imageIds, Integer sysId) {
-        return mainDb().update(SHOP_UPLOADED_IMAGE)
+        return db().update(SHOP_UPLOADED_IMAGE)
                 .set(SHOP_UPLOADED_IMAGE.DEL_FLAG,(byte)1)
                 .where(SHOP_UPLOADED_IMAGE.IMG_ID.in(imageIds))
                 .and(SHOP_UPLOADED_IMAGE.SYS_ID.eq(sysId))

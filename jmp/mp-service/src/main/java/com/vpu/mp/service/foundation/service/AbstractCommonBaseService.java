@@ -40,89 +40,12 @@ public abstract  class AbstractCommonBaseService {
 	@Autowired
 	protected SaasApplication saas;
 
-	/**
-	 * Shop DB连接事务配置，线程内单例
-	 */
-	private static ThreadLocal<Deque<Configuration>> shopDbConfiguration = ThreadLocal.withInitial(ArrayDeque<Configuration>::new);
 
 	/**
-	 * Main DB连接事务配置，线程内单例
-	 */
-	private static ThreadLocal<Deque<Configuration>> mainDbConfiguration = ThreadLocal.withInitial(ArrayDeque<Configuration>::new);
-
-	/**
-	 * 当前店铺DB连接
-	 * 
-	 * @return
-	 */
-	public DefaultDSLContext shopDb() {
-		Deque<Configuration> config = shopDbConfiguration.get();
-		if (config.peek() != null) {
-			return (DefaultDSLContext) DSL.using(config.peek());
-		}
-		return databaseManager.currentShopDb();
-	}
-
-	/**
-	 * 当前DB，需继承实现
-	 * 
+	 * 当前DB
 	 * @return
 	 */
 	protected abstract DefaultDSLContext db();
-
-	/**
-	 * 当前DB事务处理
-	 * 
-	 * @param transactional
-	 */
-	protected abstract void transaction(final ContextTransactionalRunnable transactional);
-
-	/**
-	 * 当前店铺Id
-	 * 
-	 * @return
-	 */
-	public DefaultDSLContext mainDb() {
-		Deque<Configuration> config = mainDbConfiguration.get();
-		if (config.peek() != null) {
-			return (DefaultDSLContext) DSL.using(config.peek());
-		}
-		return databaseManager.mainDb();
-	}
-
-	/**
-	 * 店铺DB事务处理
-	 * 
-	 * @param transactional
-	 */
-	public void shopTransaction(final ContextTransactionalRunnable transactional) {
-		shopDb().transaction((configuration) -> {
-			Deque<Configuration> config = shopDbConfiguration.get();
-			config.push(configuration);
-			try {
-				transactional.run();
-			} finally {
-				config.pop();
-			}
-		});
-	}
-
-	/**
-	 * 主库DB事务处理
-	 * 
-	 * @param transactional
-	 */
-	public void mainTransaction(final ContextTransactionalRunnable transactional) {
-		mainDb().transaction((configuration) -> {
-			Deque<Configuration> config = mainDbConfiguration.get();
-			config.push(configuration);
-			try {
-				transactional.run();
-			} finally {
-				config.pop();
-			}
-		});
-	}
 
 	/**
 	 * 得到分页结果

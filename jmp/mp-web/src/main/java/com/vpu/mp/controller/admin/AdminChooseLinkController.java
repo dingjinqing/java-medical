@@ -267,7 +267,7 @@ public class AdminChooseLinkController extends AdminBaseController{
 	 */
 	@GetMapping(value = "/admin/decorate/cate/list")
 	public JsonResult sysCate() {
-		List<SysCatevo> parentList = shop().chooselink.getSysCate();
+		List<SysCatevo> parentList = saas.sysCate.getSysCate();
 		return this.success(parentList);
 	}
 	
@@ -277,7 +277,7 @@ public class AdminChooseLinkController extends AdminBaseController{
 	 */
 	@GetMapping(value = "/admin/decorate/cate/child")
 	public JsonResult sysCate(Short parentId) {
-		List<ChildCateVo> parentList = shop().chooselink.getSysCateChild(parentId);
+		List<ChildCateVo> parentList = saas.sysCate.getSysCateChild(parentId);
 		return this.success(parentList);
 	}
 	
