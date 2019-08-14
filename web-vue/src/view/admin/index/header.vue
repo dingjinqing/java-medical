@@ -30,7 +30,7 @@
       <div class="account">
         <div class="menu">
           <div class="menu_main">
-            <span>
+            <span class="avatar">
               <img :src="imageUrl[1].img_2">
             </span>
             <span>
@@ -75,7 +75,7 @@ export default {
           img_1: this.$imageHost + '/image/admin/official/bottom_logo.png'
         },
         {
-          img_2: this.$imageHost + '/upload/0/image/20180528/crop_WOo1stJyM79N6k70.jpeg'
+          img_2: ''
         },
         {
           img_3: this.$imageHost + '/image/admin/img1.png'
@@ -115,6 +115,7 @@ export default {
     ...mapActions(['ToTurnMemberShipDetail', 'judgeActiveMeunAll']),
     // 初始化登录
     judgeuserinfo () {
+      this.imageUrl[1].img_2 = localStorage.getItem('V-shopAvatar')
       if (Cookies.get('V-Token')) {
         this.user_flag = true
         this.username = localStorage.getItem('V-Username')
@@ -319,5 +320,10 @@ label {
 }
 .active_bg {
   background-color: rgb(67, 122, 249);
+}
+.avatar img {
+  display: inline-block;
+  width: 52px;
+  height: 52px;
 }
 </style>

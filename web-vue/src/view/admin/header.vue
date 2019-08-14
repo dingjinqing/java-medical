@@ -99,6 +99,7 @@ export default {
           console.log(res)
           if (res.error === 0) {
             this.shopAvatar = res.content.shopAvatar
+            localStorage.setItem('V-shopAvatar', res.content.shopAvatar)
           }
           console.log(res)
         })
