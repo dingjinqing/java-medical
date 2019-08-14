@@ -236,7 +236,7 @@ import Tree from '@/components/admin/tree'
 import { imgsdeleteRequest, queryImgsRequest, moveImgsRequest, upmoreImgsRequest } from '@/api/admin/pictureSpace.js'
 export default {
   components: { Tree, Cropper },
-  data() {
+  data () {
     return {
 
       imgUrl: [
@@ -280,21 +280,21 @@ export default {
   },
   computed: {
     ...mapGetters(['clickNode', 'allNodes', 'picSpaceCropperFlag']),
-    clickNode_() {
+    clickNode_ () {
       return this.clickNode
     },
-    allNodes_() {
+    allNodes_ () {
       return this.allNodes
     },
-    picSpaceCropperFlag_() {
+    picSpaceCropperFlag_ () {
       return this.picSpaceCropperFlag
     }
   },
   watch: {
-    clickNode_(newData, oldData) {
+    clickNode_ (newData, oldData) {
       this.Initialization_nodeClick(newData)
     },
-    allNodes_(newData, oldData) {
+    allNodes_ (newData, oldData) {
       // console.log(newData)
       // 初始化图片查询数据
       if (newData.content) {
@@ -306,11 +306,11 @@ export default {
 
       this.queryImgs()
     },
-    picSpaceCropperFlag_(obj) {
+    picSpaceCropperFlag_ (obj) {
       this.queryImgs()
     }
   },
-  mounted() {
+  mounted () {
     this.value = this.options[0].value
     // console.log(this.clickNode)
     // 初始化语言
@@ -318,14 +318,14 @@ export default {
   },
   methods: {
     // 选择器改变的时候筛选图片
-    filter(val) {
+    filter (val) {
       console.log(val)
     },
     // 初始化点击节点数据
-    Initialization_nodeClick(data) {
+    Initialization_nodeClick (data) {
       // console.log(data)
     },
-    Initialization_allTree(data) {
+    Initialization_allTree (data) {
       let content = data.content[0]
       let obj = {
         name: content.name,
@@ -339,7 +339,7 @@ export default {
       // console.log(content)
     },
     // 处理所有节点数据、
-    handleAllNodes(data) {
+    handleAllNodes (data) {
       // console.log(data)
       data.map((item, index) => {
         if (item.name !== '') {
@@ -357,7 +357,7 @@ export default {
       // // console.log(item.chil)
     },
     // 图片分组查询
-    queryImgs() {
+    queryImgs () {
       // console.log(this.firstNodeId)
       let obj = {
         'page': 1,
@@ -399,7 +399,7 @@ export default {
       })
     },
     // 遮罩层删除点击
-    delMaskImg(data) {
+    delMaskImg (data) {
       // console.log(data)
       let obj = {
         imageIds: [data]
@@ -411,7 +411,7 @@ export default {
         }
       })
     },
-    upLoadImg({ file, imgSize }) {
+    upLoadImg ({ file, imgSize }) {
       let size = file.size / 1024 / 1024 < imgSize
       if (!size) this.$message.error(`请上传小于${size}的图片`)
       let _URL = window.URL || window.webkitURL
@@ -433,21 +433,21 @@ export default {
       img.src = _URL.createObjectURL(file)
     },
     // 图片上传前的钩子
-    beforeUpLoad(file) {
+    beforeUpLoad (file) {
       this.upLoadImg({ file, imgSize: 5 })
 
       return false // 停止上传
     },
     // 文件数量超出限制钩子
-    handleExceed() {
+    handleExceed () {
       this.$message.error('单次上传图片数量不能超过5张')
     },
     // pageSize 改变时会触发
-    handleSizeChange() {
+    handleSizeChange () {
 
     },
     // currentPage 改变时会触发
-    handleCurrentChange() {
+    handleCurrentChange () {
       // console.log(this.currentPage3)
       let obj = {
         'page': this.currentPage3,
@@ -466,33 +466,33 @@ export default {
       })
     },
     // 鼠标划入
-    enter(index) {
+    enter (index) {
       // // console.log(index)
       // this.mask_flag = !this.mask_flag
       // this.dim_flag = !this.dim_flag
       this.img_list[index].imgIndex = index
       // // console.log(this.img_list[index].imgIndex)
     },
-    tip_over() {
+    tip_over () {
       this.tip_hidden_flag = true
     },
     // 鼠标划出
-    leave(index) {
+    leave (index) {
       // this.mask_flag = !this.mask_flag
       // this.dim_flag = !this.dim_flag
       this.img_list[index].imgIndex = ''
       // // console.log(this.img_list[index].imgIndex)
     },
     // 头部问号说明
-    tip_leave() {
+    tip_leave () {
       this.tip_hidden_flag = false
     },
     // 单图片选中
-    handleChecked(index) {
+    handleChecked (index) {
       this.img_list[index].checked = !this.img_list[index].checked
     },
     // 全部选中
-    allChecked() {
+    allChecked () {
       // console.log(this.b_checked)
       this.img_list.map((item, index) => {
         if (this.b_checked === '1') {
@@ -503,7 +503,7 @@ export default {
       })
     },
     // 图片批量删除
-    deleteImgs() {
+    deleteImgs () {
       let checkArr = this.img_list.filter((item, index) => {
         return item.checked === true
       })
@@ -529,7 +529,7 @@ export default {
       })
     },
     // 图片批量移动
-    handleMoveimgs() {
+    handleMoveimgs () {
       this.checkArr = this.img_list.filter((item, index) => {
         return item.checked === true
       })
@@ -541,7 +541,7 @@ export default {
       // console.log(this.checkArr)
     },
     // 图片批量移动下拉框确定事件
-    allNodesSelectSure() {
+    allNodesSelectSure () {
       // console.log(this.checkArr)
       let arr = []
       this.checkArr.map((item, index) => {
@@ -566,7 +566,7 @@ export default {
       this.dialogVisible = false
     },
     // 图片精确查询--------------start
-    detailImgsSearch() {
+    detailImgsSearch () {
       // console.log(this.value, '---', this.imgNameInput)
       // console.log(this.firstNodeId)
       // console.log(this.options)
@@ -614,7 +614,7 @@ export default {
     },
     // 图片精确查询--------------end
     // 裁剪弹窗调起
-    handleCropper(path, catid, imgid, url) {
+    handleCropper (path, catid, imgid, url) {
       let obj = {
         path: path,
         catid: catid,
