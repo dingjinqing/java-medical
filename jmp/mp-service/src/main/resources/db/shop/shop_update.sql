@@ -628,3 +628,12 @@ create table `b2c_user_promotion_language` (
   primary key (`id`),
   key (`user_id`)
 );
+-- 王帅orderGoods删除营销字段，增加营销分类和营销id
+alter table `b2c_order_goods`
+drop column `first_special_id`,
+drop column `free_ship`,
+drop column `purchase_price_id`,
+drop column `purchase_price_rule_id`,
+drop column `reduce_price_id`,
+add column `activity_type`  tinyint(1) NOT NULL DEFAULT '0' COMMENT '营销活动种类',
+add column `activity_type` int(11) NOT NULL DEFAULT '0' COMMENT '营销活动id';
