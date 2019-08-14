@@ -60,6 +60,6 @@ public class DomainConfig {
 	 */
 	public String mainUrl(String relativePath, String schema) {
 		schema = schema == null ? "http" : schema;
-		return String.format("%s://%s/%s", schema, mainDomain, relativePath);
+		return String.format("%s://%s%s", schema, mainDomain, relativePath);
 	}
 }
