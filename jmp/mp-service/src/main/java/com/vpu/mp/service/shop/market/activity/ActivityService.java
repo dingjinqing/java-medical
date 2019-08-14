@@ -203,9 +203,11 @@ public class ActivityService extends ShopBaseService {
             // 优惠券、抽奖活动
             String mrkingVoucherId = "";
             switch (param.getType()) {
+                // 活动送券
                 case COUPON:
                     mrkingVoucherId = Util.listToString(param.getCouponId());
                     break;
+                // 幸运大抽奖
                 case DRAW:
                     mrkingVoucherId = String.valueOf(param.getActivityId());
                     break;
