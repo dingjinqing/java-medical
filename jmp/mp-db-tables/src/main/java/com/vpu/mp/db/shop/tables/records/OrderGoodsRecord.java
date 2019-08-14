@@ -28,7 +28,7 @@ import org.jooq.impl.UpdatableRecordImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class OrderGoodsRecord extends UpdatableRecordImpl<OrderGoodsRecord> {
 
-    private static final long serialVersionUID = 627502420;
+    private static final long serialVersionUID = 469661556;
 
     /**
      * Setter for <code>mini_shop_6797286.b2c_order_goods.rec_id</code>.
@@ -607,15 +607,15 @@ public class OrderGoodsRecord extends UpdatableRecordImpl<OrderGoodsRecord> {
     /**
      * Setter for <code>mini_shop_6797286.b2c_order_goods.activity_type</code>. 营销活动种类
      */
-    public void setActivityType(Integer value) {
+    public void setActivityType(Byte value) {
         set(41, value);
     }
 
     /**
      * Getter for <code>mini_shop_6797286.b2c_order_goods.activity_type</code>. 营销活动种类
      */
-    public Integer getActivityType() {
-        return (Integer) get(41);
+    public Byte getActivityType() {
+        return (Byte) get(41);
     }
 
     /**
@@ -686,7 +686,7 @@ public class OrderGoodsRecord extends UpdatableRecordImpl<OrderGoodsRecord> {
     /**
      * Create a detached, initialised OrderGoodsRecord
      */
-    public OrderGoodsRecord(Integer recId, Integer shopId, Integer orderId, String orderSn, Integer goodsId, String goodsName, String goodsSn, Integer productId, String productSn, Short goodsNumber, BigDecimal marketPrice, BigDecimal goodsPrice, String goodsAttr, Short sendNumber, Short returnNumber, Byte isReal, String goodsAttrId, String goodsImg, Byte refundStatus, Byte commentFlag, Integer straId, BigDecimal perDiscount, Integer isGift, String rGoods, Integer goodsScore, Integer goodsGrowth, BigDecimal discountedGoodsPrice, String discountDetail, Byte fanliType, BigDecimal canCalculateMoney, BigDecimal fanliMoney, BigDecimal discountedTotalPrice, BigDecimal totalFanliMoney, String fanliStrategy, BigDecimal fanliPercent, BigDecimal costPrice, Byte isCardExclusive, String promoteInfo, Integer giftId, Byte isCanReturn, Short reducePriceNum, Integer activityType, Integer activityId, Timestamp createTime, Timestamp updateTime) {
+    public OrderGoodsRecord(Integer recId, Integer shopId, Integer orderId, String orderSn, Integer goodsId, String goodsName, String goodsSn, Integer productId, String productSn, Short goodsNumber, BigDecimal marketPrice, BigDecimal goodsPrice, String goodsAttr, Short sendNumber, Short returnNumber, Byte isReal, String goodsAttrId, String goodsImg, Byte refundStatus, Byte commentFlag, Integer straId, BigDecimal perDiscount, Integer isGift, String rGoods, Integer goodsScore, Integer goodsGrowth, BigDecimal discountedGoodsPrice, String discountDetail, Byte fanliType, BigDecimal canCalculateMoney, BigDecimal fanliMoney, BigDecimal discountedTotalPrice, BigDecimal totalFanliMoney, String fanliStrategy, BigDecimal fanliPercent, BigDecimal costPrice, Byte isCardExclusive, String promoteInfo, Integer giftId, Byte isCanReturn, Short reducePriceNum, Byte activityType, Integer activityId, Timestamp createTime, Timestamp updateTime) {
         super(OrderGoods.ORDER_GOODS);
 
         set(0, recId);

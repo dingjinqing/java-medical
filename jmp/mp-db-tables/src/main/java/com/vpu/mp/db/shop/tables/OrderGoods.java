@@ -6,7 +6,7 @@ package com.vpu.mp.db.shop.tables;
 
 import com.vpu.mp.db.shop.Indexes;
 import com.vpu.mp.db.shop.Keys;
-import com.vpu.mp.db.shop.MiniShop_471752;
+import com.vpu.mp.db.shop.MiniShop_6797286;
 import com.vpu.mp.db.shop.tables.records.OrderGoodsRecord;
 
 import java.math.BigDecimal;
@@ -43,7 +43,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class OrderGoods extends TableImpl<OrderGoodsRecord> {
 
-    private static final long serialVersionUID = -655579287;
+    private static final long serialVersionUID = -1447255863;
 
     /**
      * The reference instance of <code>mini_shop_6797286.b2c_order_goods</code>
@@ -266,7 +266,7 @@ public class OrderGoods extends TableImpl<OrderGoodsRecord> {
     /**
      * The column <code>mini_shop_6797286.b2c_order_goods.activity_type</code>. 营销活动种类
      */
-    public final TableField<OrderGoodsRecord, Integer> ACTIVITY_TYPE = createField("activity_type", org.jooq.impl.SQLDataType.INTEGER.nullable(false).defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.INTEGER)), this, "营销活动种类");
+    public final TableField<OrderGoodsRecord, Byte> ACTIVITY_TYPE = createField("activity_type", org.jooq.impl.SQLDataType.TINYINT.nullable(false).defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.TINYINT)), this, "营销活动种类");
 
     /**
      * The column <code>mini_shop_6797286.b2c_order_goods.activity_id</code>. 营销活动id
@@ -321,7 +321,7 @@ public class OrderGoods extends TableImpl<OrderGoodsRecord> {
      */
     @Override
     public Schema getSchema() {
-        return MiniShop_471752.MINI_SHOP_471752;
+        return MiniShop_6797286.MINI_SHOP_6797286;
     }
 
     /**
