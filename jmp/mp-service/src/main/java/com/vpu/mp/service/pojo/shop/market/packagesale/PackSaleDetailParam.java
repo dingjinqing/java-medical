@@ -2,8 +2,6 @@ package com.vpu.mp.service.pojo.shop.market.packagesale;
 
 import javax.validation.constraints.NotNull;
 
-import org.junit.Test;
-
 import com.vpu.mp.service.foundation.util.Page;
 import com.vpu.mp.service.pojo.shop.order.OrderConstant;
 import com.vpu.mp.service.pojo.shop.order.OrderPageListQueryParam;
