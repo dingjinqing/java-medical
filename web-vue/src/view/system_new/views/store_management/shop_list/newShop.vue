@@ -9,7 +9,7 @@
         style="margin:0px 0px 0px 50px;width:25%;min-width:300px;"
         label-position="left"
       >
-        <el-form-item label="所属账号">
+        <el-form-item :label="$t('shopList.addInfo.sysId')">
           <el-input
             v-model="this.$route.params.name"
             key="1"
@@ -22,7 +22,7 @@
             style="color:#333"
           >{{this.$route.params.name}}</span> -->
         </el-form-item>
-        <el-form-item label="数据库">
+        <el-form-item :label="$t('shopList.addInfo.dbConfigId')">
           <el-select
             v-model="Data.dbConfigId"
             placeholder="请选择数据库"
@@ -35,7 +35,7 @@
           </el-select>
         </el-form-item>
         <el-form-item
-          label="手机号"
+          :label="$t('shopList.addInfo.mobile')"
           :required=true
         >
           <el-input
@@ -46,7 +46,7 @@
           ></el-input>
         </el-form-item>
         <el-form-item
-          label="店铺类型"
+          :label="$t('shopList.addInfo.shopType')"
           :required=true
         >
           <el-select
@@ -72,7 +72,7 @@
             ></el-option>
           </el-select>
         </el-form-item>
-        <el-form-item label="到期时间">
+        <el-form-item :label="$t('shopList.addInfo.endTime')">
           <div class="block">
             <el-date-picker
               v-model="Data.endTime"
@@ -84,7 +84,7 @@
             </el-date-picker>
           </div>
         </el-form-item>
-        <el-form-item label="接收短信手机号">
+        <el-form-item :label="$t('shopList.addInfo.receiveMobile')">
           <el-input
             v-model="Data.receiveMobile"
             label='1000'
@@ -92,7 +92,7 @@
           ></el-input>
         </el-form-item>
         <el-form-item
-          label="店铺名称"
+          :label="$t('shopList.addInfo.shopName')"
           :required=true
         >
           <el-input
@@ -101,7 +101,7 @@
             size="small"
           ></el-input>
         </el-form-item>
-        <el-form-item label="店铺客服电话">
+        <el-form-item :label="$t('shopList.addInfo.shopPhone')">
           <el-input
             v-model="Data.shopPhone"
             label="100"
@@ -109,26 +109,26 @@
           >
           </el-input>
         </el-form-item>
-        <el-form-item label="店铺公告">
+        <el-form-item :label="$t('shopList.addInfo.shopNotice')">
           <el-input
             type="textarea"
             v-model="Data.shopNotice"
             size="small"
           ></el-input>
         </el-form-item>
-        <el-form-item label="店铺微信">
+        <el-form-item :label="$t('shopList.addInfo.shopWx')">
           <el-input
             v-model="Data.shopWx"
             size="small"
           ></el-input>
         </el-form-item>
-        <el-form-item label="店铺邮箱">
+        <el-form-item :label="$t('shopList.addInfo.shopEmail')">
           <el-input
             v-model="Data.shopEmail"
             size="small"
           ></el-input>
         </el-form-item>
-        <el-form-item label="店铺禁用">
+        <el-form-item :label="$t('shopList.addInfo.isDisabled')">
           <el-checkbox-group v-model="Data.isEnabled">
             <el-checkbox
               label="禁用"
@@ -136,7 +136,7 @@
             ></el-checkbox>
           </el-checkbox-group>
         </el-form-item>
-        <el-form-item label="店铺标记">
+        <el-form-item :label="$t('shopList.addInfo.shopFlag')">
           <el-select
             v-model="Data.shopFlag"
             placeholder="请选择店铺标记"
@@ -152,7 +152,7 @@
             ></el-option>
           </el-select>
         </el-form-item>
-        <el-form-item label="隐藏底部">
+        <el-form-item :label="$t('shopList.addInfo.hidBottom')">
           <el-checkbox-group v-model="Data.hidBottom">
             <el-checkbox
               label="隐藏"
@@ -160,31 +160,31 @@
             ></el-checkbox>
           </el-checkbox-group>
         </el-form-item>
-        <el-form-item label="欧派店铺标识">
+        <el-form-item :label="$t('shopList.addInfo.memberKey')">
           <el-input
             v-model="Data.memberKey"
             size="small"
           ></el-input>
         </el-form-item>
-        <el-form-item label="欧派大屏租户名称">
+        <el-form-item :label="$t('shopList.addInfo.tenancyName')">
           <el-input
             v-model="Data.tenancyName"
             size="small"
           ></el-input>
         </el-form-item>
-        <el-form-item label="欧派大屏用户名">
+        <el-form-item :label="$t('shopList.addInfo.userName')">
           <el-input
             v-model="Data.userName"
             size="small"
           ></el-input>
         </el-form-item>
-        <el-form-item label="欧派大屏密码">
+        <el-form-item :label="$t('shopList.addInfo.password')">
           <el-input
             v-model="Data.password"
             size="small"
           ></el-input>
         </el-form-item>
-        <el-form-item label="店铺客服QQ">
+        <el-form-item :label="$t('shopList.addInfo.shopQq')">
           <el-input
             v-model="Data.shopQq"
             size="small"

@@ -6,19 +6,19 @@
   >
     <el-tab-pane
       name="first"
-      :label="$t('shopAccountList.list')"
+      :label="$t('shopAccountList.title.list')"
     >
       <list @send="send" />
     </el-tab-pane>
     <el-tab-pane
       name="second"
-      :label="$t('shopAccountList.addAccount')"
+      :label="$t('shopAccountList.title.addAccount')"
     >
       <addAccount />
     </el-tab-pane>
     <el-tab-pane
       name="third"
-      :label="$t('shopAccountList.editAccount')"
+      :label="$t('shopAccountList.title.editAccount')"
       v-if="isShowEditAccount"
     >
       <editAccount />

@@ -4,7 +4,7 @@
       <div>{{this.$store.state.userName}}</div>
       <el-select
         v-model="mainData.state"
-        placeholder="选择审核状态"
+        :placeholder="$t('shopAccountList.selectState')"
         size="small"
         class="select-input ml-6"
       >
@@ -17,14 +17,14 @@
         </el-option>
       </el-select>
       <el-input
-        v-model="mainData.accountName"
-        placeholder="请输入用户名、昵称"
+        v-model="mainData.keywords"
+        :placeholder="$t('shopAccountList.inputName')"
         size="small"
         class="select-input ml-6"
       ></el-input>
       <el-input
         v-model="mainData.company"
-        placeholder="请输入公司名称"
+        :placeholder="$t('shopAccountList.inputCompany')"
         size="small"
         class="select-input ml-6"
       ></el-input>
@@ -34,7 +34,7 @@
         type="primary"
         @click="searchAccount()"
       >
-        搜索
+        {{$t('shopAccountList.search')}}
       </el-button>
     </div>
 
@@ -48,27 +48,27 @@
     >
       <el-table-column
         prop="userName"
-        :label="$t('ashopAccountList.userName')"
+        :label="$t('shopAccountList.ashopAccountList.userName')"
         align="center"
       >
       </el-table-column>
       <el-table-column
         prop="accountName"
-        :label="$t('ashopAccountList.nickName')"
+        :label="$t('shopAccountList.ashopAccountList.nickName')"
         align="center"
       >
       </el-table-column>
       <el-table-column
         prop="company"
         align="center"
-        :label="$t('ashopAccountList.company')"
+        :label="$t('shopAccountList.ashopAccountList.company')"
       >
       </el-table-column>
       <el-table-column
         prop="state"
         align="center"
         :formatter="changeState"
-        :label="$t('ashopAccountList.state')"
+        :label="$t('shopAccountList.ashopAccountList.state')"
       >
         <!-- <template slot-scope="scope"> -->
         <!-- <span>{{scope.row.state === 1 ? '普通店':scope.row.shopGrade}}</span> -->
@@ -77,7 +77,7 @@
       <el-table-column
         prop="shopGrade"
         align="center"
-        :label="$t('ashopAccountList.shopGrade')"
+        :label="$t('shopAccountList.ashopAccountList.shopGrade')"
       >
         <template slot-scope="scope">
           <span>{{scope.row.shopGrade === 1 ? '普通店':scope.row.shopGrade}}</span>
@@ -86,7 +86,7 @@
       <el-table-column
         prop="shopNumber"
         align="center"
-        :label="$t('ashopAccountList.shopNumber')"
+        :label="$t('shopAccountList.ashopAccountList.shopNumber')"
       >
         <template slot-scope="scope">
           <span style="margin-left: 10px">{{ scope.row.shopNumber }}</span>
@@ -100,31 +100,31 @@
       <el-table-column
         prop="addTime"
         align="center"
-        :label="$t('ashopAccountList.addTime')"
+        :label="$t('shopAccountList.ashopAccountList.addTime')"
       >
       </el-table-column>
       <el-table-column
         prop="buyTime"
         align="center"
-        :label="$t('ashopAccountList.buyTime')"
+        :label="$t('shopAccountList.ashopAccountList.buyTime')"
       >
       </el-table-column>
       <el-table-column
         prop="endTime"
         align="center"
-        :label="$t('ashopAccountList.endTime')"
+        :label="$t('shopAccountList.ashopAccountList.endTime')"
       >
       </el-table-column>
       <el-table-column
         prop="renewMoney"
         align="center"
-        :label="$t('ashopAccountList.renewMoney')"
+        :label="$t('shopAccountList.ashopAccountList.renewMoney')"
       >
       </el-table-column>
       <el-table-column
         prop="mobile"
         align="center"
-        :label="$t('ashopAccountList.mobile')"
+        :label="$t('shopAccountList.ashopAccountList.mobile')"
       >
         <template slot-scope="scope">
           <span>{{scope.row.mobile === '' ? '未设置':scope.row.mobile}}</span>
@@ -133,13 +133,13 @@
       <el-table-column
         prop="operation"
         align="center"
-        :label="$t('ashopAccountList.operation')"
+        :label="$t('shopAccountList.ashopAccountList.operation')"
       >
         <el-button
           type="text"
           style="color:#000"
           @click="handleEditAccount"
-        >{{$t('ashopAccountList.operation')}}</el-button>
+        >{{$t('shopAccountList.ashopAccountList.operation')}}</el-button>
       </el-table-column>
     </el-table>
 
@@ -166,21 +166,21 @@ export default {
     return {
       options: [{
         value: '1',
-        label: '审核中'
+        label: this.$t('shopAccountList.stateOption.state1')
       }, {
         value: '2',
-        label: '审核通过'
+        label: this.$t('shopAccountList.stateOption.state2')
       }, {
         value: '3',
-        label: '审核不通过'
+        label: this.$t('shopAccountList.stateOption.state3')
       }, {
         value: '4',
-        label: '已禁用'
+        label: this.$t('shopAccountList.stateOption.state4')
       }],
       mainData: {
         currentPage3: 1,
         state: '',
-        accountName: '',
+        keywords: '',
         company: ''
       },
       formTable: [{
@@ -263,6 +263,7 @@ export default {
       }
       let parameter = Object.assign(obj1, this.mainData)
       searchAccountRequest(parameter).then((res) => {
+        console.log(res)
         const { error, content } = res
         console.log(res)
         if (error === 0) {

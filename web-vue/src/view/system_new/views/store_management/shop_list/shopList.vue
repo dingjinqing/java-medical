@@ -5,19 +5,19 @@
     class="tab"
   >
     <el-tab-pane
-      label="体验版"
+      :label="$t('shopList.title.experienceVersion')"
       name="first"
     >
       <experienceVersion />
     </el-tab-pane>
     <el-tab-pane
-      label="付费版"
+      :label="$t('shopList.title.payVersion')"
       name="second"
     >
       <payVersion />
     </el-tab-pane>
     <el-tab-pane
-      label="店铺添加"
+      :label="$t('shopList.title.newShop')"
       name="third"
       v-if="isShowShopList"
       @getUserName="revice()"

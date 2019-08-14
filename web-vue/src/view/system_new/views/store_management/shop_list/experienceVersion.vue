@@ -3,19 +3,19 @@
     <div class="select-menu top">
       <el-input
         v-model="mainData.accountKey"
-        placeholder="账号ID、公司"
+        :placeholder="$t('shopList.info.account_info1')"
         size="small"
         class="select-input ml-6"
       ></el-input>
       <el-input
         v-model="mainData.keywords"
-        placeholder="店铺ID、账户名称、手机号、小程序名"
+        :placeholder="$t('shopList.info.account_info2')"
         size="small"
         class="select-input ml-6"
       ></el-input>
       <el-select
         v-model="mainData.isUse"
-        placeholder="选择店铺状态"
+        :placeholder="$t('shopList.info.account_info3')"
         size="small"
         class="select-input ml-6"
       >
@@ -29,7 +29,7 @@
       </el-select>
       <el-select
         v-model="mainData.shopFlag"
-        placeholder="选择店铺标识"
+        :placeholder="$t('shopList.info.account_info4')"
         size="small"
         class="select-input ml-6"
       >
@@ -46,7 +46,7 @@
     <div class="select-menu bottom">
       <el-select
         v-model="mainData.isEnabled"
-        placeholder="选择禁用状态"
+        :placeholder="$t('shopList.info.account_info5')"
         size="small"
         class="select-input ml-6"
       >
@@ -60,7 +60,7 @@
       </el-select>
       <el-select
         v-model="mainData.hidBottom"
-        placeholder="底部导航"
+        :placeholder="$t('shopList.info.account_info6')"
         size="small"
         class="select-input ml-6"
       >
@@ -73,17 +73,17 @@
         </el-option>
       </el-select>
       <div class="timeline">
-        <span>店铺到期时间</span>
+        <span>{{$t('shopList.info.account_info7')}}</span>
         <el-input
           v-model="mainData.flag"
-          placeholder="请选择时间"
+          :placeholder="$t('shopList.info.account_info8')"
           size="small"
           class="select-input ml-6"
         ></el-input>
-        <span>至</span>
+        <span style="margin-left: 5px">{{$t('shopList.info.account_info9')}}</span>
         <el-input
           v-model="mainData.flag"
-          placeholder="请选择时间"
+          :placeholder="$t('shopList.info.account_info8')"
           size="small"
           class="select-input ml-6"
         ></el-input>
@@ -93,7 +93,7 @@
         class="ml-6"
         type="primary"
         @click="search()"
-      >搜索</el-button>
+      >{{$t('shopList.info.account_info10')}}</el-button>
     </div>
 
     <el-table
@@ -104,92 +104,92 @@
     >
       <el-table-column
         prop="shopId"
-        label="账号ID"
+        :label="$t('shopList.table.ID')"
         align="center"
       >
       </el-table-column>
       <el-table-column
         prop="shopType"
-        label="店铺ID(店铺类型)"
+        :label="$t('shopList.table.shopID')"
         align="center"
       >
       </el-table-column>
       <el-table-column
         prop="shopName"
         align="center"
-        label="店铺名称"
+        :label="$t('shopList.table.shopName')"
       >
       </el-table-column>
       <el-table-column
         prop="nickName"
         align="center"
-        label="小程序名称(公司)"
+        :label="$t('shopList.table.wechatName')"
       >
       </el-table-column>
       <el-table-column
         prop="mobile"
         align="center"
-        label="手机号"
+        :label="$t('shopList.table.mobile')"
       >
       </el-table-column>
       <el-table-column
         prop="created"
         align="center"
-        label="创建时间"
+        :label="$t('shopList.table.createTime')"
       >
       </el-table-column>
       <el-table-column
         prop="expireTime"
         align="center"
-        label="到期时间(店铺状态)"
+        :label="$t('shopList.table.endTime')"
       >
       </el-table-column>
       <el-table-column
         prop="isEnabled"
         align="center"
-        label="是否禁用"
+        :label="$t('shopList.table.isDisabled')"
       >
       </el-table-column>
       <el-table-column
         prop="isAuthOk"
         align="center"
-        label="小程序授权"
+        :label="$t('shopList.table.permission')"
       >
       </el-table-column>
       <el-table-column
         prop="userName"
         align="center"
-        label="所属账号"
+        :label="$t('shopList.table.account')"
       >
       </el-table-column>
       <el-table-column
         prop="renewMoney"
         align="center"
-        label="续费总金额"
+        :label="$t('shopList.table.money')"
       >
       </el-table-column>
       <el-table-column
         prop="shopFlag"
         align="center"
-        label="店铺标识"
+        :label="$t('shopList.table.shopFlag')"
       >
       </el-table-column>
       <el-table-column
         prop="hidBottom"
         align="center"
-        label="底部导航"
+        :label="$t('shopList.table.bottom')"
       >
       </el-table-column>
       <el-table-column
         prop="specialsetting"
         align="center"
-        label="特殊配置"
+        :label="$t('shopList.table.special')"
       >
       </el-table-column>
       <el-table-column
         prop="operate"
         align="center"
-        label="操作"
+        :label="$t('shopList.table.operating')"
       >
       </el-table-column>
     </el-table>
@@ -215,7 +215,7 @@ export default {
     return {
       state: [{
         value: '1',
-        label: '使用中'
+        label: '未过期'
       }, {
         value: '3',
         label: '即将过期'
@@ -341,6 +341,10 @@ export default {
   justify-content: flex-end;
 }
 .footer > span {
+  font-size: 14px;
+}
+.timeline {
+  margin-left: 15px;
   font-size: 14px;
 }
 </style>

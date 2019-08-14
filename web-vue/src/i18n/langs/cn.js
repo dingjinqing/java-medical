@@ -291,44 +291,6 @@ const cn = {
     'system_leftNav_title5': '版本列表',
     'system_leftNav_title6': '微信全链路',
     'system_leftNav_title7': '申请发布列表'
-
-  },
-  // system 账户列表页面 商家账号列表
-  ashopAccountList: {
-    list: '商家账号列表',
-    userName: '用户名',
-    nickName: '昵称',
-    company: '公司名称',
-    state: '审核状态',
-    shopGrade: '店铺等级',
-    shopNumber: '店铺总数',
-    addTime: '添加时间',
-    buyTime: '首次续费',
-    endTime: '到期时间',
-    renewMoney: '续费总额',
-    mobile: '手机号',
-    operation: '操作'
-  },
-  // system 账户列表页面 商家账号添加
-  accountAdd: {
-    userName: '用户名',
-    password: '密码',
-    accountName: '昵称',
-    state: '审核状态',
-    maxSkuNum: '最大SKU数量',
-    maxShopNum: '最大店铺数量',
-    buyTime: '首次续费时间',
-    endTime: '到期时间',
-    mobile: '手机号',
-    company: '公司名称',
-    salesperson: '销售员',
-    provinceCode: '省',
-    cityCode: '市',
-    districtCode: '区',
-    address: '详细地址',
-    baseSale: '初始销量',
-    addCommentSwitch: '添加评价',
-    search: '搜索'
   },
   router, // 路由信息
   membershipIntroduction, // 会员列表

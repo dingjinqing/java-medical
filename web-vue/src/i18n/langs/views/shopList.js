@@ -1,7 +1,8 @@
 export const cn = {
   title: {
     experienceVersion: '体验版',
-    payVersion: '付费版'
+    payVersion: '付费版',
+    newShop: '店铺添加'
   },
   info: {
     account_info1: '账号ID、公司',
@@ -10,10 +11,11 @@ export const cn = {
     account_info4: '选择店铺标识',
     account_info5: '选择禁用状态',
     account_info6: '底部导航',
-    account_info7: '到期时间',
+    account_info7: '店铺到期时间',
     account_info8: '请选择时间',
     account_info9: '至',
-    account_info10: '搜索'
+    account_info10: '搜索',
+    shop_type: '店铺类型'
   },
   state_option: {
     isUsing: '使用中',
@@ -52,7 +54,28 @@ export const cn = {
     shopFlag: '店铺标识',
     bottom: '底部导航',
     special: '特殊配置',
-    opearting: '操作'
+    operating: '操作'
+  },
+  addInfo: {
+    sysId: '所属账号',
+    dbConfigId: '数据库',
+    mobile: '手机号',
+    shopType: '店铺类型',
+    endTime: '到期时间',
+    receiveMobile: '接收短信手机号',
+    shopName: '店铺名称',
+    shopPhone: '店铺客服电话',
+    shopNotice: '店铺公告',
+    shopWx: '店铺微信',
+    shopEmail: '店铺邮箱',
+    isDisabled: '店铺禁用',
+    shopQq: '店铺客服QQ',
+    shopFlag: '店铺标记',
+    memberKey: '欧派店铺标识',
+    tenancyName: '欧派大屏租户名称',
+    userName: '欧派大屏用户名',
+    password: '欧派大屏密码',
+    hidBottom: '隐藏底部'
   }
 }
 
@@ -71,7 +94,8 @@ export const en = {
     account_info7: 'Expire date',
     account_info8: 'Please select time',
     account_info9: 'to',
-    account_info10: 'search'
+    account_info10: 'search',
+    shop_type: 'Store type'
   },
   state_option: {
     isUsing: 'Using',
@@ -110,6 +134,27 @@ export const en = {
     shopFlag: 'Store identification',
     bottom: 'Bottom navigation',
     special: 'Special configuration',
-    opearting: 'operating'
+    operating: 'operating'
+  },
+  addInfo: {
+    sysId: 'account',
+    dbConfigId: 'database',
+    mobile: 'phone number',
+    shopType: 'store type',
+    endTime: 'Expire date',
+    receiveMobile: 'Receive SMS phone number',
+    shopName: 'store name',
+    shopPhone: 'Shop customer service phone',
+    shopNotice: 'Shop announcement',
+    shopWx: 'Shop WeCha',
+    shopEmail: 'Shop Mailbox ',
+    isDisabled: 'Store disabled',
+    shopQq: 'Shop customer service QQ',
+    shopFlag: 'Shop mark',
+    memberKey: 'European shop logo',
+    tenancyName: 'Ou Pai big screen tenant name',
+    userName: 'Ou Pai big screen username',
+    password: 'European big screen password',
+    hidBottom: 'Hide bottom'
   }
 }

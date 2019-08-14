@@ -291,43 +291,6 @@ const en = {
     'system_leftNav_title6': 'WeChat full link',
     'system_leftNav_title7': 'Application release list'
   },
-  // system 账户列表页面 商家账号列表
-  ashopAccountList: {
-    list: 'Merchant account list',
-    userName: 'username',
-    nickName: 'nickname',
-    company: 'company name',
-    state: 'Approval Status',
-    shopGrade: 'Store level',
-    shopNumber: 'Total number of stores',
-    addTime: 'add time',
-    buyTime: 'First renewal',
-    endTime: 'Expire date',
-    renewMoney: 'Total renewal fee',
-    mobile: 'phone number',
-    operation: 'operating'
-  },
-  // system 账户列表页面 商家账号添加
-  accountAdd: {
-    userName: 'username',
-    password: 'password',
-    accountName: 'nickname',
-    state: 'Approval Status',
-    maxSkuNum: 'Maximum number of SKUs',
-    maxShopNum: 'Maximum number of stores',
-    buyTime: 'First renewal time',
-    endTime: 'Expire date',
-    mobile: 'phone number',
-    company: 'company name',
-    salesperson: 'seller',
-    provinceCode: 'province',
-    cityCode: 'city',
-    districtCode: 'area',
-    address: 'address',
-    baseSale: 'Initial sales',
-    addCommentSwitch: 'Add review',
-    search: 'search'
-  },
   router, // 路由信息
   membershipIntroduction, // 会员列表
   programVersion, // system 后台小程序版本
@@ -335,5 +298,4 @@ const en = {
   shopList, // system 店铺列表
   ...enLocale
 }
-
 export default en

@@ -2,116 +2,122 @@
   <div class="experience-version infoForm">
     <div class="select-menu top infoWrapper">
       <el-form
-        ref="form"
+        ref="formData"
         :model="formData"
-        label-width="100px"
+        label-width="110px"
         @submit.prevent="onSubmit"
-        style="margin:0px 0px 0px 50px;width:20%;min-width:200px;"
+        style="margin:0px 0px 0px 50px;"
         label-position="left"
+        status-icon
         :rules="rules"
       >
-        <el-form-item :label="$t('accountAdd.userName')">
+        <el-form-item :label="$t('shopAccountList.accountAdd.userName')">
           <el-input
+            type="text"
             v-model="formData.userName"
             key="1"
             size="small"
           ></el-input>
         </el-form-item>
-        <el-form-item :label="$t('accountAdd.password')">
+        <el-form-item :label="$t('shopAccountList.accountAdd.password')">
           <el-input
             v-model="formData.password"
+            autocomplete="new-password"
+            onfocus="this.removeAttribute('readonly')"
+            onblur="this.setAttribute('readonly',true)"
             type="password"
+            readonly
             key="2"
             size="small"
           ></el-input>
         </el-form-item>
-        <el-form-item :label="$t('accountAdd.accountName')">
+        <el-form-item :label="$t('shopAccountList.accountAdd.accountName')">
           <el-input
             v-model="formData.accountName"
             size="small"
           ></el-input>
         </el-form-item>
-        <el-form-item :label="$t('accountAdd.state')">
+        <el-form-item :label="$t('shopAccountList.accountAdd.state')">
           <el-select
             v-model="formData.state"
-            placeholder="请选择状态"
+            :placeholder="$t('shopAccountList.selectState')"
             size="small"
           >
             <el-option
-              label="申请中"
+              :label="$t('shopAccountList.stateOption.state1')"
               value="1"
             ></el-option>
             <el-option
-              label="审核通过"
+              :label="$t('shopAccountList.stateOption.state2')"
               value="2"
             ></el-option>
             <el-option
-              label="审核不通过"
+              :label="$t('shopAccountList.stateOption.state3')"
               value="3"
             ></el-option>
             <el-option
-              label="已禁用"
+              :label="$t('shopAccountList.stateOption.state4')"
               value="4"
             ></el-option>
           </el-select>
         </el-form-item>
-        <el-form-item :label="$t('accountAdd.maxSkuNum')">
+        <el-form-item :label="$t('shopAccountList.accountAdd.maxSkuNum')">
           <el-input
             v-model="formData.maxSkuNum"
             label='1000'
             size="small"
           ></el-input>
         </el-form-item>
-        <el-form-item :label="$t('accountAdd.maxShopNum')">
+        <el-form-item :label="$t('shopAccountList.accountAdd.maxShopNum')">
           <el-input
             v-model="formData.maxShopNum"
             label='100'
             size="small"
           ></el-input>
         </el-form-item>
-        <el-form-item :label="$t('accountAdd.buyTime')">
+        <el-form-item :label="$t('shopAccountList.accountAdd.buyTime')">
           <div class="block">
             <el-date-picker
               size="small"
               v-model="formData.buyTime"
               type="datetime"
-              placeholder="选择日期时间"
+              :placeholder="$t('shopAccountList.timeSelect')"
               value-format="yyyy-MM-dd HH:mm:ss"
             >
             </el-date-picker>
           </div>
         </el-form-item>
-        <el-form-item :label="$t('accountAdd.endTime')">
+        <el-form-item :label="$t('shopAccountList.accountAdd.endTime')">
           <div class="block">
             <el-date-picker
               size="small"
               v-model="formData.endTime"
               type="datetime"
-              placeholder="选择日期时间"
+              :placeholder="$t('shopAccountList.timeSelect')"
               value-format="yyyy-MM-dd HH:mm:ss"
             >
             </el-date-picker>
           </div>
         </el-form-item>
-        <el-form-item :label="$t('accountAdd.mobile')">
+        <el-form-item :label="$t('shopAccountList.accountAdd.mobile')">
           <el-input
             v-model="formData.mobile"
             size="small"
           ></el-input>
         </el-form-item>
-        <el-form-item :label="$t('accountAdd.company')">
+        <el-form-item :label="$t('shopAccountList.accountAdd.company')">
           <el-input
             v-model="formData.company"
             size="small"
           ></el-input>
         </el-form-item>
-        <el-form-item :label="$t('accountAdd.salesperson')">
+        <el-form-item :label="$t('shopAccountList.accountAdd.salesperson')">
           <el-input
             v-model="formData.salesperson"
             size="small"
           ></el-input>
         </el-form-item>
-        <el-form-item label="地理位置">
+        <el-form-item :label="$t('shopAccountList.accountAdd.geoLocation')">
           <div style="display: flex; width: 800px">
             <v-distpicker
               @selected="onSelected"
@@ -124,13 +130,13 @@
             ></v-distpicker>
           </div>
         </el-form-item>
-        <el-form-item :label="$t('accountAdd.address')">
+        <el-form-item :label="$t('shopAccountList.accountAdd.address')">
           <el-input
             v-model="formData.address"
             size="small"
           ></el-input>
         </el-form-item>
-        <el-form-item :label="$t('accountAdd.baseSale')">
+        <el-form-item :label="$t('shopAccountList.accountAdd.baseSale')">
           <el-switch
             active-value="1"
             inactive-value="0"
@@ -140,7 +146,7 @@
           >
           </el-switch>
         </el-form-item>
-        <el-form-item :label="$t('accountAdd.addCommentSwitch')">
+        <el-form-item :label="$t('shopAccountList.accountAdd.addCommentSwitch')">
           <el-switch
             active-value="1"
             inactive-value="0"
@@ -153,12 +159,11 @@
       </el-form>
       <el-button
         size="small"
-        class="ml-6"
         type="primary"
-        style="margin-left: 148px"
-        @click="save()"
+        style="margin-left: 158px; padding: 0!important"
+        @click="save('formData')"
       >
-        {{$t('accountAdd.search')}}
+        {{$t('shopAccountList.accountAdd.search')}}
       </el-button>
     </div>
   </div>
@@ -184,6 +189,21 @@ export default {
     }
   },
   data () {
+    var checkUserName = (rule, value, callback) => {
+      if (value === '') {
+        return callback(new Error('请输入用户名'))
+      }
+    }
+    var checkPassword = (rule, value, callback) => {
+      if (value === '') {
+        callback(new Error('请输入密码'))
+      } else {
+        if (this.formData.password !== '') {
+          this.$refs.formData.validateField('checkPassword')
+        }
+        callback()
+      }
+    }
     return {
       formData: {
         userName: '',
@@ -205,26 +225,26 @@ export default {
       },
       rules: {
         userName: [
-          { required: true, message: '请输入用户名', trigger: 'blur' }
+          { validator: checkUserName, trigger: 'blur' }
         ],
         password: [
-          { required: true, message: '请输入密码', trigger: 'change' }
-        ],
-        state: [
-          { type: 'date', required: true, message: '请选择日期', trigger: 'change' }
-        ],
-        date2: [
-          { type: 'date', required: true, message: '请选择时间', trigger: 'change' }
-        ],
-        provinceCode: [
-          { required: true, message: '请选择省份', trigger: 'change' }
-        ],
-        cityCode: [
-          { required: true, message: '请选择市区', trigger: 'change' }
-        ],
-        address: [
-          { required: true, message: '请选择片区', trigger: 'change' }
+          { validator: checkPassword, trigger: 'change' }
         ]
+        // state: [
+        //   { type: 'date', required: true, message: '请选择日期', trigger: 'change' }
+        // ],
+        // date2: [
+        //   { type: 'date', required: true, message: '请选择时间', trigger: 'change' }
+        // ],
+        // provinceCode: [
+        //   { required: true, message: '请选择省份', trigger: 'change' }
+        // ],
+        // cityCode: [
+        //   { required: true, message: '请选择市区', trigger: 'change' }
+        // ],
+        // address: [
+        //   { required: true, message: '请选择片区', trigger: 'change' }
+        // ]
       }
     }
   },
@@ -245,7 +265,15 @@ export default {
       this.formData.districtCode = data.code
     },
     // 添加商家账户
-    save () {
+    save (formData) {
+      this.$refs[formData].validate((valid) => {
+        if (valid) {
+          alert('submit!')
+        } else {
+          console.log('error submit!')
+          return false
+        }
+      })
       let obj = {
         'userName': '',
         'password': '',
