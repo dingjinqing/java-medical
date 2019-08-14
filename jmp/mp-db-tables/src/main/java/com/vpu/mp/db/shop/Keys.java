@@ -20,6 +20,7 @@ import com.vpu.mp.db.shop.tables.records.CouponActivityRecord;
 import com.vpu.mp.db.shop.tables.records.DistributorLevelRecord;
 import com.vpu.mp.db.shop.tables.records.LotteryRecord;
 import com.vpu.mp.db.shop.tables.records.PaymentRecord;
+import com.vpu.mp.db.shop.tables.records.PayRewardRecord;
 
 
 /**
@@ -39,6 +40,8 @@ public class Keys {
     // -------------------------------------------------------------------------
     // IDENTITY definitions
     // -------------------------------------------------------------------------
+    public static final Identity<PayRewardRecord, Integer> IDENTITY_PAY_REWARD = Identities0.IDENTITY_PAY_REWARD;
+    public static final Identity<PayRewardRecordRecord, Integer> IDENTITY_PAY_REWARD_RECORD = Identities0.IDENTITY_PAY_REWARD_RECORD;
     public static final Identity<LotteryPrizeRecord, Integer> IDENTITY_LOTTERY_PRIZE = Identities0.IDENTITY_LOTTERY_PRIZE;
     public static final Identity<FreeShippingRecord, Integer> IDENTITY_FREE_SHIPPING = Identities0.IDENTITY_FREE_SHIPPING;
     public static final Identity<FreeShippingRuleRecord, Integer> IDENTITY_FREE_SHIPPING_RULE = Identities0.IDENTITY_FREE_SHIPPING_RULE;
@@ -234,6 +237,8 @@ public class Keys {
     // -------------------------------------------------------------------------
     // UNIQUE and PRIMARY KEY definitions
     // -------------------------------------------------------------------------
+    public static final UniqueKey<PayRewardRecord> KEY_B2C_PAY_REWARD_PRIMARY = UniqueKeys0.KEY_B2C_PAY_REWARD_PRIMARY;
+    public static final UniqueKey<PayRewardRecordRecord> KEY_B2C_PAY_REWARD_RECORD_PRIMARY = UniqueKeys0.KEY_B2C_PAY_REWARD_RECORD_PRIMARY;
     public static final UniqueKey<LotteryPrizeRecord> KEY_B2C_LOTTERY_PRIZE_PRIMARY = UniqueKeys0.KEY_B2C_LOTTERY_PRIZE_PRIMARY;
     public static final UniqueKey<FreeShippingRecord> KEY_B2C_FREE_SHIPPING_PRIMARY = UniqueKeys0.KEY_B2C_FREE_SHIPPING_PRIMARY;
     public static final UniqueKey<FreeShippingRuleRecord> KEY_B2C_FREE_SHIPPING_RULE_PRIMARY = UniqueKeys0.KEY_B2C_FREE_SHIPPING_RULE_PRIMARY;
@@ -657,6 +662,9 @@ public class Keys {
         public static Identity<GiftCartRecord, Integer> IDENTITY_GIFT_CART = Internal.createIdentity(GiftCart.GIFT_CART, GiftCart.GIFT_CART.ID);
         public static Identity<GiveGiftReceiveRecord, Integer> IDENTITY_GIVE_GIFT_RECEIVE = Internal.createIdentity(GiveGiftReceive.GIVE_GIFT_RECEIVE, GiveGiftReceive.GIVE_GIFT_RECEIVE.ID);
         public static Identity<GiftGivingActivityRecord, Integer> IDENTITY_GIFT_GIVING_ACTIVITY = Internal.createIdentity(GiftGivingActivity.GIFT_GIVING_ACTIVITY, GiftGivingActivity.GIFT_GIVING_ACTIVITY.ID);
+        public static Identity<PayRewardRecord, Integer> IDENTITY_PAY_REWARD = Internal.createIdentity(PayReward.PAY_REWARD, PayReward.PAY_REWARD.ID);
+        public static Identity<PayRewardRecordRecord, Integer> IDENTITY_PAY_REWARD_RECORD = Internal.createIdentity(com.vpu.mp.db.shop.tables.PayRewardRecord.PAY_REWARD_RECORD, com.vpu.mp.db.shop.tables.PayRewardRecord.PAY_REWARD_RECORD.ID);
+
     }
 
     private static class UniqueKeys0 {
@@ -880,5 +888,8 @@ public class Keys {
         public static final UniqueKey<GiftCartRecord> KEY_B2C_GIFT_CART_PRIMARY = Internal.createUniqueKey(GiftCart.GIFT_CART, "KEY_b2c_gift_cart_PRIMARY", GiftCart.GIFT_CART.ID);
         public static final UniqueKey<GiveGiftReceiveRecord> KEY_B2C_GIVE_GIFT_RECEIVE_PRIMARY = Internal.createUniqueKey(GiveGiftReceive.GIVE_GIFT_RECEIVE, "KEY_b2c_give_gift_receive_PRIMARY", GiveGiftReceive.GIVE_GIFT_RECEIVE.ID);
         public static final UniqueKey<GiftGivingActivityRecord> KEY_B2C_GIFT_GIVING_ACTIVITY_PRIMARY = Internal.createUniqueKey(GiftGivingActivity.GIFT_GIVING_ACTIVITY, "KEY_b2c_gift_giving_activity_PRIMARY", GiftGivingActivity.GIFT_GIVING_ACTIVITY.ID);
+        public static final UniqueKey<PayRewardRecord> KEY_B2C_PAY_REWARD_PRIMARY = Internal.createUniqueKey(PayReward.PAY_REWARD, "KEY_b2c_pay_reward_PRIMARY", PayReward.PAY_REWARD.ID);
+        public static final UniqueKey<PayRewardRecordRecord> KEY_B2C_PAY_REWARD_RECORD_PRIMARY = Internal.createUniqueKey(com.vpu.mp.db.shop.tables.PayRewardRecord.PAY_REWARD_RECORD, "KEY_b2c_pay_reward_record_PRIMARY", com.vpu.mp.db.shop.tables.PayRewardRecord.PAY_REWARD_RECORD.ID);
+
     }
 }

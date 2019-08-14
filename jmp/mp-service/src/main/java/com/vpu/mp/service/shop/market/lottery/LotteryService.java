@@ -117,11 +117,12 @@ public class LotteryService extends ShopBaseService {
         LotteryRecord record = db().newRecord(LOTTERY);
         record.setId(lotteryId);
         record.refresh();
-        if (record.getStatus().equals(STOP_STATUS)) {
-            return db().update(LOTTERY).set(LOTTERY.STATUS, START_STATUS).where(LOTTERY.ID.eq(lotteryId)).execute();
+        if (STOP_STATUS.equals(record.getStatus())) {
+            record.setStatus(START_STATUS);
         } else {
-            return db().update(LOTTERY).set(LOTTERY.STATUS, STOP_STATUS).where(LOTTERY.ID.eq(lotteryId)).execute();
+            record.setStatus(STOP_STATUS);
         }
+        return record.update();
     }
 
     /**
@@ -143,7 +144,7 @@ public class LotteryService extends ShopBaseService {
     public PageResult<LotteryPageListVo> getLotteryList(LotteryPageListParam param) {
         AggregateFunction<Integer> awardNumber = DSL.count(DSL.when(LOTTERY_RECORD.LOTTERY_GRADE.gt((byte) 0), LOTTERY_RECORD.ID));
         SelectConditionStep<Record7<Integer, String, Timestamp, Timestamp, Byte, Integer, Integer>> select = db()
-                .select(LOTTERY.ID, LOTTERY.LOTTERY_NAME, LOTTERY.START_TIME, LOTTERY.END_TIME,LOTTERY.STATUS,
+                .select(LOTTERY.ID, LOTTERY.LOTTERY_NAME, LOTTERY.START_TIME, LOTTERY.END_TIME, LOTTERY.STATUS,
                         DSL.count(LOTTERY_RECORD.ID).as(LotteryPageListVo.JOIN_NUMBER),
                         awardNumber.as(LotteryPageListVo.AWAED_NUMBER))
                 .from(LOTTERY)
@@ -185,9 +186,10 @@ public class LotteryService extends ShopBaseService {
     }
 
 
-    public Result<LotteryPrizeRecord> getLotteryPrizeById(Integer id){
+    public Result<LotteryPrizeRecord> getLotteryPrizeById(Integer id) {
         return lotteryPrize.getPrizeByLotteryId(id);
     }
+
     /**
      * 抽奖记录
      *

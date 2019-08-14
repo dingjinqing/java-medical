@@ -2,6 +2,7 @@ package com.vpu.mp.controller.admin;
 
 import java.util.List;
 
+import com.vpu.mp.service.pojo.shop.coupon.hold.CouponHoldListVo;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -47,7 +48,7 @@ public class AdminCouponGiveController extends AdminBaseController{
 	@PostMapping("/api/admin/coupon/give/detail")
 	public JsonResult getDetail(@RequestBody CouponGiveDetailParam param) {
 
-		PageResult<CouponGiveDetailVo> pageResult = shop().coupon.couponGiveService.getDetail(param);
+		PageResult<CouponHoldListVo> pageResult = shop().coupon.couponGiveService.getDetail(param);
 
 		return success(pageResult);
 	}

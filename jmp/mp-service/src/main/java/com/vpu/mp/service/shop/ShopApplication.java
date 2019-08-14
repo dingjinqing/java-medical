@@ -27,6 +27,7 @@ import com.vpu.mp.service.shop.market.goupbuy.GroupBuyService;
 import com.vpu.mp.service.shop.market.groupdraw.*;
 import com.vpu.mp.service.shop.market.integration.GroupIntegrationService;
 import com.vpu.mp.service.shop.market.lottery.LotteryService;
+import com.vpu.mp.service.shop.market.payreward.PayRewardService;
 import com.vpu.mp.service.shop.market.packagesale.PackSaleService;
 import com.vpu.mp.service.shop.market.presale.PreSaleService;
 import com.vpu.mp.service.shop.market.reduceprice.ReducePriceService;
@@ -187,6 +188,11 @@ public class ShopApplication  {
      * 满折满减
      */
     @Autowired public MrkingStrategyService mrkingStrategy;
+
+	/**
+	 * 支付有礼
+	 */
+	@Autowired public PayRewardService payReward;
 
     /**
      * 定金膨胀

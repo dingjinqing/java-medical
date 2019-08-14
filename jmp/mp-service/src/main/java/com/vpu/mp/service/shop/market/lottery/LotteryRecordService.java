@@ -1,6 +1,5 @@
 package com.vpu.mp.service.shop.market.lottery;
 
-import com.vpu.mp.db.shop.Tables;
 import com.vpu.mp.db.shop.tables.records.LotteryPrizeRecord;
 import com.vpu.mp.service.foundation.service.ShopBaseService;
 import com.vpu.mp.service.foundation.util.PageResult;
@@ -12,7 +11,7 @@ import com.vpu.mp.service.pojo.shop.market.lottery.record.LotteryRecordPageListV
 import com.vpu.mp.service.shop.member.MemberService;
 import org.jooq.Condition;
 import org.jooq.Record;
-import org.jooq.SelectConditionStep;
+import org.jooq.SelectOnConditionStep;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -20,6 +19,7 @@ import static com.vpu.mp.db.shop.tables.LotteryRecord.LOTTERY_RECORD;
 import static com.vpu.mp.db.shop.tables.User.USER;
 
 /**
+ *  抽奖记录
  * @author 孔德成
  * @date 2019/8/6 9:34
  */
@@ -36,25 +36,10 @@ public class LotteryRecordService extends ShopBaseService {
      * @return LotteryRecordPageListVo
      */
     public PageResult<LotteryRecordPageListVo> getLotteryRecordList(LotteryRecordPageListParam param) {
-        SelectConditionStep<Record> select = db().select(LOTTERY_RECORD.asterisk(), USER.USERNAME, USER.MOBILE)
+        SelectOnConditionStep<Record> select =  db().select(LOTTERY_RECORD.asterisk(), USER.USERNAME, USER.MOBILE)
                 .from(LOTTERY_RECORD)
-                .leftJoin(USER).on(USER.USER_ID.eq(LOTTERY_RECORD.USER_ID))
-                .where(LOTTERY_RECORD.LOTTERY_ID.eq(param.getLotteryId()));
-        if (param.getUsername() != null) {
-            select.and(Tables.USER.USERNAME.like(likeValue(param.getUsername())));
-        }
-        if (param.getMobile() != null) {
-            select.and(Tables.USER.MOBILE.like(prefixLikeValue(param.getMobile())));
-        }
-        if (param.getLotteryGrade() != null&&param.getLotteryGrade()>=0) {
-            select.and(Tables.LOTTERY_RECORD.LOTTERY_GRADE.eq(param.getLotteryGrade()));
-        }
-        if (param.getLotterySource() != null&&param.getLotterySource()>=0) {
-            select.and(Tables.LOTTERY_RECORD.LOTTERY_SOURCE.eq(param.getLotterySource()));
-        }
-        if (param.getChanceSource() != null&&param.getChanceSource()>=0) {
-            select.and(Tables.LOTTERY_RECORD.CHANCE_SOURCE.eq(param.getChanceSource()));
-        }
+                .leftJoin(USER).on(USER.USER_ID.eq(LOTTERY_RECORD.USER_ID));
+        buildSelect(select,param);
         select.orderBy(LOTTERY_RECORD.CREATE_TIME.desc());
         PageResult<LotteryRecordPageListVo> pageList = getPageResult(select, param.getCurrentPage(), param.getPageRows(), LotteryRecordPageListVo.class);
         pageList.getDataList().forEach(item -> {
@@ -62,8 +47,33 @@ public class LotteryRecordService extends ShopBaseService {
             item.setAwardInfo(null);
         });
         return pageList;
-
     }
+
+    private void buildSelect(SelectOnConditionStep<Record> select, LotteryRecordPageListParam param){
+        if (param.getLotteryId()!=null){
+            select.and(LOTTERY_RECORD.LOTTERY_ID.eq(param.getLotteryId()));
+        }
+        if (param.getUsername() != null) {
+            select.and(USER.USERNAME.like(likeValue(param.getUsername())));
+        }
+        if (param.getMobile() != null) {
+            select.and(USER.MOBILE.like(prefixLikeValue(param.getMobile())));
+        }
+        if (param.getLotteryGrade() != null&&param.getLotteryGrade()>=0) {
+            select.and(LOTTERY_RECORD.LOTTERY_GRADE.eq(param.getLotteryGrade()));
+        }
+        if (param.getLotterySource() != null&&param.getLotterySource()>=0) {
+            select.and(LOTTERY_RECORD.LOTTERY_SOURCE.eq(param.getLotterySource()));
+        }
+        if (param.getChanceSource() != null&&param.getChanceSource()>=0) {
+            select.and(LOTTERY_RECORD.CHANCE_SOURCE.eq(param.getChanceSource()));
+        }
+        if (param.getLotteryActId()!=null){
+            select.and(LOTTERY_RECORD.LOTTERY_ACT_ID.eq(param.getLotteryActId()));
+
+        }
+    }
+
 
 
     /**

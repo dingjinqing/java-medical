@@ -21,7 +21,7 @@ import com.vpu.mp.service.pojo.shop.order.write.star.StarParam;
 public class OrderWriteService extends ShopBaseService {
 
 	private final Logger logger = LoggerFactory.getLogger(this.getClass());
-	
+
 	/**
 	 * 订单标星切换
 	 * 

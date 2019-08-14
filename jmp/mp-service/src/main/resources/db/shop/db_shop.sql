@@ -614,7 +614,7 @@ KEY `shop_id` ( `shop_id` )
 ) ENGINE = INNODB DEFAULT CHARSET = utf8mb4 COLLATE = utf8mb4_unicode_ci;
 
 
--- -- 发放优惠券
+-- -- 发放优惠券 --用户持有的优惠券
 -- drop table if exists `b2c_customer_avail_coupons`;
 create table `b2c_customer_avail_coupons` (
   `id`                 mediumint(8)  	not null auto_increment,
@@ -628,8 +628,8 @@ create table `b2c_customer_avail_coupons` (
   `amount`             decimal(10, 2)   not null default '0.00' comment '打折或减价量',
   `act_desc`           varchar(128)    	not null default '',
   `limit_order_amount` mediumint(8)  	not null default '0',
-  `is_used`            tinyint(1)      	not null default '0',
-  `used_time`          timestamp       null	default null,
+  `is_used`            tinyint(1)      	not null default '0' comment '0 未使用 1 已使用 2过期吧? 3 废除',
+  `used_time`          timestamp       null	default null     comment '使用时间',
   `access_mode`        tinyint(1)      	not null default '0' comment '获取方式，0：发放，1：领取',
   `access_id`          mediumint(8)    	not null default '0' comment '发放活动id',
   `notify_time`        timestamp       null	default null comment '通知时间',

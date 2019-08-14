@@ -1,25 +1,22 @@
-package com.vpu.mp.service.pojo.shop.market.lottery.record;
+package com.vpu.mp.service.pojo.shop.market.payreward.record;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Data;
 
 /**
+ * 抽奖记录
  * @author 孔德成
- * @date 2019/8/5 15:28
+ * @date 2019/8/14 13:36
  */
 @Data
-public class LotteryRecordPageListParam {
+public class PayRewardLotteryParam {
+
     /**
-     * 分页信息
+     * 	分页信息
      */
     private Integer currentPage;
-    private Integer pageRows;
+    private Integer pageRows ;
 
-
-    /**
-     * 抽奖活动id
-     */
-    private Integer lotteryId;
     /**
      * 用户电话
      */
@@ -33,18 +30,12 @@ public class LotteryRecordPageListParam {
      */
     private Byte lotteryGrade;
     /**
-     * 抽奖来源 1.登录  2.支付有礼
+     * 抽奖来源 1.登录2.支付
      */
     private Byte lotterySource;
-    /**
-     * 抽奖来源id
+    /**|
+     * 来源id
      */
-    @JsonIgnore
-    private Integer lotteryActId;
-    /**
-     * 抽奖机会来源 0免费 1分享 2积分
-     */
-    private Byte chanceSource;
-
+    private Integer actId;
 
 }

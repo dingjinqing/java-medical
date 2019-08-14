@@ -1,26 +1,21 @@
 package com.vpu.mp.service.shop.coupon;
 
-import static com.vpu.mp.db.shop.Tables.CUSTOMER_AVAIL_COUPONS;
-import static com.vpu.mp.db.shop.Tables.MRKING_VOUCHER;
-import static com.vpu.mp.db.shop.Tables.USER;
-
-import java.sql.Timestamp;
-import java.util.List;
-
+import com.vpu.mp.db.shop.tables.records.MrkingVoucherRecord;
+import com.vpu.mp.service.foundation.service.ShopBaseService;
+import com.vpu.mp.service.foundation.util.PageResult;
+import com.vpu.mp.service.pojo.shop.coupon.*;
+import com.vpu.mp.service.pojo.shop.coupon.hold.CouponHoldListParam;
+import com.vpu.mp.service.pojo.shop.coupon.hold.CouponHoldListVo;
 import org.jooq.Record;
 import org.jooq.SelectConditionStep;
 import org.jooq.SelectJoinStep;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.vpu.mp.db.shop.tables.records.MrkingVoucherRecord;
-import com.vpu.mp.service.foundation.service.ShopBaseService;
-import com.vpu.mp.service.foundation.util.PageResult;
-import com.vpu.mp.service.pojo.shop.coupon.CouponGetDetailParam;
-import com.vpu.mp.service.pojo.shop.coupon.CouponGetDetailVo;
-import com.vpu.mp.service.pojo.shop.coupon.CouponListParam;
-import com.vpu.mp.service.pojo.shop.coupon.CouponListVo;
-import com.vpu.mp.service.pojo.shop.coupon.CouponParam;
+import java.sql.Timestamp;
+import java.util.List;
+
+import static com.vpu.mp.db.shop.Tables.*;
 
 
 /**
@@ -32,6 +27,9 @@ import com.vpu.mp.service.pojo.shop.coupon.CouponParam;
 
 public class CouponService extends ShopBaseService{
 	@Autowired public CouponGiveService couponGiveService;
+
+	@Autowired
+	public CouponHoldService couponHold;
 	/**
 	 * 创建优惠券
 	 * @param couponInfo
@@ -88,6 +86,8 @@ public class CouponService extends ShopBaseService{
 			case 4:
 				sql = sql.and(MRKING_VOUCHER.ENABLED.eq((byte) 0));
 				break;
+			default:
+
 			}
 		}
 		return sql;
@@ -104,7 +104,17 @@ public class CouponService extends ShopBaseService{
 				.fetch().into(CouponParam.class);
 		return couponInfo;
 	}
-	
+
+	/**
+	 * 获取单个优惠券信息
+	 * @param couponId
+	 * @return
+	 */
+	public MrkingVoucherRecord 	getOneCouponById(Integer couponId){
+		return  db().selectFrom(MRKING_VOUCHER).where(MRKING_VOUCHER.ID.eq(couponId)).fetchOne();
+	}
+
+
 	/**
 	 * 保存编辑信息
 	 * @param param
@@ -147,37 +157,15 @@ public class CouponService extends ShopBaseService{
 	 * @param param
 	 * @return
 	 */
-	public PageResult<CouponGetDetailVo> getDetail(CouponGetDetailParam param) {
-		SelectJoinStep<Record> select = db().select()
-				.from(CUSTOMER_AVAIL_COUPONS 
-						.leftJoin(MRKING_VOUCHER) 
-						.on(CUSTOMER_AVAIL_COUPONS.ACT_ID .eq(MRKING_VOUCHER.ID))
-						.leftJoin(USER) 
-						.on(CUSTOMER_AVAIL_COUPONS.USER_ID.eq(USER.USER_ID)));
-		SelectConditionStep<Record> sql = detailBuildOptions(select,param);
-		sql.orderBy(CUSTOMER_AVAIL_COUPONS.USED_TIME);
-		PageResult<CouponGetDetailVo> detailList = this.getPageResult(sql,param.getCurrentPage(),param.getPageRows(),CouponGetDetailVo.class);
-		return detailList;		
-	}
-	
-	/**
-	 * 按条件查询领取明细
-	 * @param select
-	 * @param param
-	 * @return
-	 */
-	public SelectConditionStep<Record> detailBuildOptions(SelectJoinStep<Record> select,CouponGetDetailParam param) {
-		SelectConditionStep<Record> sql = select.where(CUSTOMER_AVAIL_COUPONS.ACT_ID .eq(param.getId()));
-		if(param.getMobile() != null) {
-			sql.and(USER.MOBILE.eq(param.getMobile()));
-		}
-		if(param.getUserName() != null) {
-			sql.and(USER.USERNAME.eq(param.getUserName()));
-		}
-		if(param.getIsUsed() != null) {
-			sql.and(CUSTOMER_AVAIL_COUPONS.IS_USED.eq(param.getIsUsed()));
-		}
-		return sql;
-		
+	public PageResult<CouponHoldListVo> getDetail(CouponGetDetailParam param) {
+        CouponHoldListParam couponParam  =new CouponHoldListParam();
+        couponParam.setActId(param.getId());
+        couponParam.setMobile(param.getMobile());
+        couponParam.setUsername(param.getUserName());
+        couponParam.setStatus(param.getIsUsed());
+        couponParam.setCurrentPage(param.getCurrentPage());
+        couponParam.setPageRows(param.getPageRows());
+        return   couponHold.getCouponHoldList(couponParam);
+
 	}
 }

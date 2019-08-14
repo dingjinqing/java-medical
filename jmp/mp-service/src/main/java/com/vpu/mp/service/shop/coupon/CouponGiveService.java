@@ -16,11 +16,17 @@ import com.vpu.mp.service.foundation.service.ShopBaseService;
 import com.vpu.mp.service.foundation.util.PageResult;
 import com.vpu.mp.service.foundation.util.Util;
 import com.vpu.mp.service.pojo.shop.coupon.give.*;
-import org.jooq.*;
+import com.vpu.mp.service.pojo.shop.coupon.hold.CouponHoldListParam;
+import com.vpu.mp.service.pojo.shop.coupon.hold.CouponHoldListVo;
+import org.jooq.Record1;
+import org.jooq.Record5;
+import org.jooq.SelectLimitStep;
+import org.jooq.SelectWhereStep;
 import org.jooq.impl.DSL;
 import org.springframework.amqp.core.Message;
 import org.springframework.amqp.rabbit.annotation.RabbitHandler;
 import org.springframework.amqp.rabbit.annotation.RabbitListener;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.messaging.handler.annotation.Payload;
 import org.springframework.stereotype.Service;
 
@@ -40,6 +46,10 @@ import static com.vpu.mp.db.shop.Tables.*;
 @Service
 
 public class CouponGiveService extends ShopBaseService {
+
+	@Autowired
+    private CouponHoldService couponHold;
+
     private final RabbitmqSendService rabbitmqSendService;
     private static final MrkingVoucher mv = MrkingVoucher.MRKING_VOUCHER.as("mv");
     private static final CustomerAvailCoupons cac = CustomerAvailCoupons.CUSTOMER_AVAIL_COUPONS.as("cac");
@@ -91,27 +101,24 @@ public class CouponGiveService extends ShopBaseService {
         }
     }
 
-    /**
-     * 优惠券明细
-     *
-     * @param param
-     * @return
-     */
-    public PageResult<CouponGiveDetailVo> getDetail(CouponGiveDetailParam param) {
-        SelectConditionStep<Record11<String, String, String, Byte, Byte, String, Timestamp, Timestamp, Timestamp, Timestamp, Byte>> detailVo = db().select(USER.USERNAME, USER.MOBILE, MRKING_VOUCHER.ACT_NAME.as("coupon_name"), CUSTOMER_AVAIL_COUPONS.ACCESS_MODE, CUSTOMER_AVAIL_COUPONS.IS_USED, CUSTOMER_AVAIL_COUPONS.ORDER_SN, CUSTOMER_AVAIL_COUPONS.START_TIME, CUSTOMER_AVAIL_COUPONS.END_TIME, CUSTOMER_AVAIL_COUPONS.CREATE_TIME, CUSTOMER_AVAIL_COUPONS.USED_TIME, CUSTOMER_AVAIL_COUPONS.DEL_FLAG).from(USER, MRKING_VOUCHER, CUSTOMER_AVAIL_COUPONS).where(CUSTOMER_AVAIL_COUPONS.ACT_ID.eq(param.getActId())).and(CUSTOMER_AVAIL_COUPONS.USER_ID.eq(USER.USER_ID)).and(MRKING_VOUCHER.ID.eq(param.getCouponId()));
-        if (!StringUtils.isNullOrEmpty(param.getMobile())) {
-            detailVo = detailVo.and(USER.MOBILE.like(this.likeValue(param.getMobile())));
-        }
-        if (!StringUtils.isNullOrEmpty(param.getUsername())) {
-            detailVo = detailVo.and(USER.USERNAME.like(this.likeValue(param.getUsername())));
-        }
-        if (param.getIsUsed() != CouponGiveDetailParam.ISUSED_DEFAULT_VALUE) {
-            detailVo = detailVo.and(CUSTOMER_AVAIL_COUPONS.IS_USED.eq((byte) param.getIsUsed()));
-        }
-        /* 整合分页信息 */
-        PageResult<CouponGiveDetailVo> listVo = this.getPageResult(detailVo, param.getCurrentPage(), param.getPageRows(), CouponGiveDetailVo.class);
-        return listVo;
-    }
+	/**
+	 * 优惠券明细
+	 * 
+	 * @param param
+	 * @return
+	 */
+	public PageResult<CouponHoldListVo> getDetail(CouponGiveDetailParam param) {
+
+		CouponHoldListParam couponParam  =new CouponHoldListParam();
+		couponParam.setActId(param.getActId());
+		couponParam.setMobile(param.getMobile());
+		couponParam.setUsername(param.getUsername());
+		couponParam.setStatus(param.getIsUsed().byteValue());
+		couponParam.setCurrentPage(param.getCurrentPage());
+		couponParam.setPageRows(param.getPageRows());
+		return   couponHold.getCouponHoldList(couponParam);
+
+	}
 
     /**
      * 发放优惠券

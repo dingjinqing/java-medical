@@ -21,6 +21,15 @@ import com.vpu.mp.db.shop.tables.*;
 )
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class Tables {
+    /**
+     * The table <code>mini_shop_4748160.b2c_pay_reward</code>.
+     */
+    public static final PayReward PAY_REWARD = com.vpu.mp.db.shop.tables.PayReward.PAY_REWARD;
+
+    /**
+     * The table <code>mini_shop_4748160.b2c_pay_reward_record</code>.
+     */
+    public static final PayRewardRecord PAY_REWARD_RECORD = com.vpu.mp.db.shop.tables.PayRewardRecord.PAY_REWARD_RECORD;
 
     public static final LotteryPrize LOTTERY_PRIZE = LotteryPrize.LOTTERY_PRIZE;
     public static final FreeShippingRule FREE_SHIPPING_RULE = FreeShippingRule.FREE_SHIPPING_RULE;

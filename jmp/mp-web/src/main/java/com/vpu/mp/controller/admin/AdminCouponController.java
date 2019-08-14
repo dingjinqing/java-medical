@@ -4,6 +4,7 @@ import java.util.List;
 
 import javax.validation.constraints.NotNull;
 
+import com.vpu.mp.service.pojo.shop.coupon.hold.CouponHoldListVo;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -113,7 +114,7 @@ public class AdminCouponController extends AdminBaseController{
 	 */
 	@PostMapping("/admin/coupon/get/detail")
 	public JsonResult couponGetDetail(@RequestBody CouponGetDetailParam param) {
-		PageResult<CouponGetDetailVo> detail = shop().coupon.getDetail(param);
+		PageResult<CouponHoldListVo> detail = shop().coupon.getDetail(param);
 		return this.success(detail);
 	}
 }
