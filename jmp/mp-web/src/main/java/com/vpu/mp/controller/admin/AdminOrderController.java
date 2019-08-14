@@ -100,8 +100,7 @@ public class AdminOrderController extends AdminBaseController {
 	 */
 	@PostMapping("/refund/list")
 	public JsonResult mpRefundGoodsList(@RequestBody OrderOperateQueryParam param) {
-		shop().orderOperateQuery.refundGoodsList(param,Boolean.TRUE);
-		return null == null ? success() : fail();
+		return success(shop().orderActionFactory.orderQuery(param));
 	}
 	
 	/**
@@ -109,8 +108,8 @@ public class AdminOrderController extends AdminBaseController {
 	 */
 	@PostMapping("/refund/adminList")
 	public JsonResult adminRefundGoodsList(@RequestBody OrderOperateQueryParam param) {
-		shop().orderOperateQuery.refundGoodsList(param,Boolean.FALSE);
-		return null == null ? success() : fail();
+		JsonResultCode code = shop().orderActionFactory.orderOperate(param);
+		return code == null ? success() : fail(code);
 	}
 	
 	/**

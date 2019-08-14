@@ -23,7 +23,8 @@ public class OrderOperateQueryParam implements IOrderBase{
 	private String orderSn;
 	@NotNull(message = JsonResultMessage.MSG_ORDER)
 	private Byte action;
-	
+	/**区分前后台操作*/
+	private Boolean isMp;
 	@Override
 	public OrderServiceCode getServiceCode() {
 		//enum类型values取得数组利用默认排序顺序获取对应service
