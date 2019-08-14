@@ -83,15 +83,15 @@ public class AdminOrderController extends AdminBaseController {
 	 */
 	@PostMapping("/shipGoods")
 	public JsonResult shipGoodsList(@RequestBody @Valid OrderOperateQueryParam param) {
-		return success(shop().orderOperateQuery.shipGoodsList(param));
+		return success(shop().orderActionFactory.orderQuery(param));
 	}
 	
 	/**
 	 * 	发货
 	 */
 	@PostMapping("/ship")
-	public JsonResult ship(@RequestBody @Valid ShipParam param) {
-		JsonResultCode code = shop().writeOrder.ship(param);
+	public JsonResult ship(@RequestBody ShipParam param ) {
+		JsonResultCode code = shop().orderActionFactory.orderOperate(param);
 		return code == null ? success() : fail(code);
 	}
 	
