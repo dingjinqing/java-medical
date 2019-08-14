@@ -3251,7 +3251,7 @@ create table `b2c_goods_card_couple` (
   primary key (`id`)
 );
 
--- -- 会员卡专享商品关联表
+-- 定金膨胀活动表
 -- drop table if exists `b2c_presale`;
 create table `b2c_presale` (
   `id`               int(11)                         not null auto_increment comment '活动id',
