@@ -331,4 +331,46 @@ public class OrderInfoService extends ShopBaseService {
 				.fetchInto(ActiveDiscountMoney.class);
 		return record;
 	}
+	
+	
+	
+	
+	
+	/**
+	 * 查找一口价活动 已购商品数量
+	 * @param activityId
+	 * @return
+	 */
+	public Integer getPackageSaleGoodsNum(Integer activityId) {
+		Integer goodsNum = db().select(DSL.sum(ORDER_INFO.GOODS_AMOUNT)).from(ORDER_INFO)
+			.where(ORDER_INFO.ACTIVITY_ID.eq(activityId))
+			.and(DSL.sql("FIND_IN_SET("+OrderConstant.GOODS_TYPE_PACKAGE_SALE+", "+ORDER_INFO.getName() +"."+ ORDER_INFO.GOODS_TYPE.getName()+")"))
+			.fetchOneInto(Integer.class);
+		return goodsNum;
+	}
+	/**
+	 * 查找一口价活动下单用户数量
+	 * @param activityId
+	 * @return
+	 */
+	public Integer getPackageSaleUserNum(Integer activityId) {
+		Integer userNum = db().select(DSL.countDistinct(ORDER_INFO.USER_ID)).from(ORDER_INFO)
+			.where(ORDER_INFO.ACTIVITY_ID.eq(activityId))
+			.and(DSL.sql("FIND_IN_SET("+OrderConstant.GOODS_TYPE_PACKAGE_SALE+", "+ORDER_INFO.getName() +"."+ ORDER_INFO.GOODS_TYPE.getName()+")"))
+			.fetchOneInto(Integer.class);
+		return userNum;
+	}
+	/**
+	 * 查找一口价活动订单数量
+	 * @param activityId
+	 * @return
+	 */
+	public Integer getPackageSaleOrderNum(Integer activityId) {
+		Integer goodsNum = db().select(DSL.count()).from(ORDER_INFO)
+				.where(ORDER_INFO.ACTIVITY_ID.eq(activityId))
+				.and(DSL.sql("FIND_IN_SET("+OrderConstant.GOODS_TYPE_PACKAGE_SALE+", "+ORDER_INFO.getName() +"."+ ORDER_INFO.GOODS_TYPE.getName()+")"))
+				.fetchOneInto(Integer.class);
+			return goodsNum;
+	}
+	
 }
