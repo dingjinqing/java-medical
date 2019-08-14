@@ -26,19 +26,14 @@ public class OrderListInfoVo {
 	private List<? extends OrderListInfoVo> childOrders;
 	private List<? extends OrderGoodsVo> goods;
 	private Byte orderStatus;
-	//private String orderStatusName;
 	/** 收件人姓名 */
 	private String consignee;
 	/** 收件人手机 */
 	private String mobile;
 	/** 支付方式 */
 	private String payCode;
-	/** 支付名称 */
-	//private String payName;
 	/** 配送方式:0 快递 1 自提 */
 	private Byte deliverType;
-	/** 配送类型名称 */
-	//private String deliverTypeName;
 	/** 下单时间 */
 	private Timestamp createTime;
 	/** 快递费金额 */
@@ -50,4 +45,24 @@ public class OrderListInfoVo {
 	/**是否支持mp端退款*/
 	@JsonIgnore
 	private Byte returnTypeCfg;
+	/**积分抵扣金额*/
+	@JsonIgnore
+	private BigDecimal scoreDiscount;
+	/**用户消费余额*/
+	@JsonIgnore
+	private BigDecimal useAccount;
+	/**会员卡消费金额*/
+	@JsonIgnore
+	private BigDecimal memberCardBalance;
+	/**TODO 数据库没字段子单金额*/
+	@JsonIgnore
+	private BigDecimal subGoodsPrice;
+	/**退款/退货状态*/
+	@JsonIgnore
+	private Byte refundStatus;
+	/**补款金额*/
+	@JsonIgnore
+	private BigDecimal bkOrderMoney;
+	@JsonIgnore
+	private Integer userId;
 }

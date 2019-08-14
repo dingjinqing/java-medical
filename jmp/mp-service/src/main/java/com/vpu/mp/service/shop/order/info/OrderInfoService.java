@@ -1,20 +1,25 @@
-package com.vpu.mp.service.shop.order;
+package com.vpu.mp.service.shop.order.info;
 
 import static com.vpu.mp.db.shop.tables.GroupBuyList.GROUP_BUY_LIST;
 import static com.vpu.mp.db.shop.tables.OrderGoods.ORDER_GOODS;
 import static com.vpu.mp.db.shop.tables.OrderInfo.ORDER_INFO;
+import static com.vpu.mp.db.shop.tables.RefundAmountRecord.REFUND_AMOUNT_RECORD;
 import static com.vpu.mp.db.shop.tables.User.USER;
 import static com.vpu.mp.db.shop.tables.UserTag.USER_TAG;
 import static org.jooq.impl.DSL.count;
 import static org.jooq.impl.DSL.date;
 import static org.jooq.impl.DSL.sql;
 
+import java.math.BigDecimal;
 import java.sql.Date;
 import java.sql.Timestamp;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 
 import org.jooq.Condition;
 import org.jooq.Record2;
@@ -22,11 +27,14 @@ import org.jooq.SelectJoinStep;
 import org.jooq.SelectWhereStep;
 import org.jooq.impl.DSL;
 import org.jooq.tools.StringUtils;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.vpu.mp.db.shop.tables.OrderInfo;
+import com.vpu.mp.db.shop.tables.RefundAmountRecord;
 import com.vpu.mp.service.foundation.database.DslPlus;
 import com.vpu.mp.service.foundation.service.ShopBaseService;
+import com.vpu.mp.service.foundation.util.BigDecimalUtil;
 import com.vpu.mp.service.foundation.util.PageResult;
 import com.vpu.mp.service.pojo.shop.market.MarketAnalysisParam;
 import com.vpu.mp.service.pojo.shop.order.OrderConstant;
@@ -36,6 +44,7 @@ import com.vpu.mp.service.pojo.shop.order.analysis.ActiveDiscountMoney;
 import com.vpu.mp.service.pojo.shop.order.analysis.ActiveOrderList;
 import com.vpu.mp.service.pojo.shop.order.analysis.OrderActivityUserNum;
 import com.vpu.mp.service.pojo.shop.order.goods.OrderGoodsVo;
+import com.vpu.mp.service.shop.order.refund.record.RefundAmountRecordService;
 
 import lombok.Data;
 
@@ -43,12 +52,43 @@ import lombok.Data;
  * Table:order_info
  * 
  * @author 王帅
+ * @param <V>
  *
  */
 @Service
 public class OrderInfoService extends ShopBaseService {
 
 	public final OrderInfo TABLE = ORDER_INFO;
+	
+	/**
+	 * 	支付种类（细分）PAY_SUBDIVISION
+	 */
+	/**积分抵扣金额*/
+	public final String PS_SCORE_DISCOUNT = TABLE.SCORE_DISCOUNT.getName();
+	/**用户消费余额*/
+	public final String PS_USE_ACCOUNT = TABLE.USE_ACCOUNT.getName();
+	/**会员卡消费金额*/
+	public final String PS_MEMBER_CARD_BALANCE = TABLE.MEMBER_CARD_BALANCE.getName();
+	/**TODO 数据库没字段子单金额*/
+	public final String PS_MONEY_PAID= TABLE.MONEY_PAID.getName();
+	/**补款金额*/
+	public final String PS_BK_ORDER_MONEY= TABLE.BK_ORDER_MONEY.getName();
+	
+	public final String[] PAY_SUBDIVISION = {PS_BK_ORDER_MONEY,PS_MEMBER_CARD_BALANCE,PS_USE_ACCOUNT,PS_SCORE_DISCOUNT,PS_MONEY_PAID};
+	
+	@Autowired
+	private RefundAmountRecordService refundAmountRecord;
+	
+	/**
+	 * @param <T> <? extends OrderListVo>
+	 * @param orderId 订单id
+	 * @param clz 
+	 * @return oneOrder
+	 */
+	public <T> T getByOrderId(Integer orderId , Class<T> clz){
+		T order = db().select(TABLE.asterisk()).where(TABLE.ORDER_ID.eq(orderId)).fetchOneInto(clz);
+		return order;
+	}
 	/**
 	 * 	订单综合查询:通过条件获得主订单号（因为前端显示以主订单为主）
 	 * @param param
@@ -64,7 +104,7 @@ public class OrderInfoService extends ShopBaseService {
 	}
 	
 	@Data
-	static class MainOrderResult {
+	public static class MainOrderResult {
 		String mainOrderSn;
 		Integer orderId;
 	}
@@ -232,6 +272,102 @@ public class OrderInfoService extends ShopBaseService {
 	}
 	
 	/**
+	 * 	得到实际支付金额（判读是否包含运费）
+	 * @param order
+	 * @param isIncludeShipingFee 是否包含运费
+	 * @return
+	 */
+	public BigDecimal getOrderFinalAmount(OrderListInfoVo order , boolean isIncludeShipingFee) {
+		return order.getBkOrderMoney().add(order.getMoneyPaid())
+		.add(order.getScoreDiscount())
+		.add(order.getMemberCardBalance())
+		.add(order.getUseAccount())
+		.add(order.getSubGoodsPrice())
+		.subtract(isIncludeShipingFee ? BigDecimal.ZERO : order.getShippingFee());
+	}
+	
+	/**
+	 * 	当前订单为子订单需要替换支付信息与用户信息(子订单无补款信息，不需复制)
+	 * @param currentOrder
+	 */
+	public void replaceOrderInfo(OrderListInfoVo currentOrder) {
+		if(!StringUtils.isBlank(currentOrder.getMainOrderSn()) && !currentOrder.getOrderSn().equals(currentOrder.getMainOrderSn())) {
+			OrderListInfoVo mainOrder = db().select(TABLE.asterisk()).from(TABLE).where(TABLE.ORDER_SN.eq(currentOrder.getMainOrderSn())).fetchOneInto(OrderListInfoVo.class);
+			currentOrder.setMemberCardBalance(mainOrder.getMemberCardBalance());
+			currentOrder.setUseAccount(mainOrder.getUseAccount());
+			currentOrder.setScoreDiscount(mainOrder.getScoreDiscount());
+			currentOrder.setMoneyPaid(mainOrder.getMoneyPaid());
+			currentOrder.setUserId(mainOrder.getUserId());
+		}
+	}
+	/**
+	 * 	是否为主订单
+	 * @param currentOrder
+	 * @return
+	 */
+	public Boolean isMainOrder(OrderListInfoVo currentOrder) {
+		if(!StringUtils.isBlank(currentOrder.getMainOrderSn()) && currentOrder.getOrderSn().equals(currentOrder.getMainOrderSn())) {
+			return Boolean.TRUE;
+		}
+		return Boolean.FALSE;
+	}
+	
+	/**
+	 * 	通过主订单号获取orders
+	 * @param MainOrderSn
+	 * @param isMain
+	 * @return List<OrderListInfoVo>
+	 */
+	public List<OrderListInfoVo> getChildOrders(OrderListInfoVo currentOrder , Boolean isMain){
+		//是否为主订单
+		if(isMain) {
+			return db().select(TABLE.asterisk()).from(TABLE).
+					where(TABLE.MAIN_ORDER_SN.eq(currentOrder.getMainOrderSn()).and(TABLE.MAIN_ORDER_SN.notEqual(TABLE.ORDER_SN))).fetchInto(OrderListInfoVo.class);
+		}
+		return new ArrayList<OrderListInfoVo>(0);
+	}
+	
+	/**
+	 * 	将order支付信息构造成map方便计算
+	 * @param currentOrder
+	 * @return Map<String, BigDecimal>
+	 */
+	public Map<String , BigDecimal> getPayInfoMap(OrderListInfoVo currentOrder){
+		Map<String, BigDecimal> map = new HashMap<String, BigDecimal>(PAY_SUBDIVISION.length);
+		map.put(PS_BK_ORDER_MONEY,currentOrder.getBkOrderMoney());
+		map.put(PS_MEMBER_CARD_BALANCE,currentOrder.getMemberCardBalance());
+		map.put(PS_USE_ACCOUNT,currentOrder.getUseAccount());
+		map.put(PS_SCORE_DISCOUNT,currentOrder.getScoreDiscount());
+		map.put(PS_MONEY_PAID,currentOrder.getMoneyPaid());
+		return map;
+	}
+	/**
+	 * 
+	 * @param currentOrder
+	 * @param amount 当前订单最终支付金额(包含运费)
+	 * @param map 退款数据汇总
+	 * @return Map<String , BigDecimal> 
+	 */
+	public Map<String , BigDecimal> getCanReturn(OrderListInfoVo currentOrder , BigDecimal amount , LinkedHashMap<String , BigDecimal> map) {
+		//将order支付信息构造成map方便计算
+		Map<String, BigDecimal> payInfoMap = getPayInfoMap(currentOrder);
+		for (Entry<String, BigDecimal> entry : map.entrySet()) {
+			//某key已支付-已退=可退
+			BigDecimal currentKeyCanReturn = payInfoMap.get(entry.getKey()).subtract(entry.getValue());
+			//可退金额<=0
+			if(BigDecimalUtil.compareTo(currentKeyCanReturn, BigDecimal.ZERO) < 1) {
+				entry.setValue(BigDecimal.ZERO);
+				continue;
+			}
+			//设置当前key的可退金额（增加双重校验，实际上实际退款时已经判断，不会出现amount<currentKeyCanReturn）
+			entry.setValue(BigDecimalUtil.compareTo(amount, currentKeyCanReturn) > 0 ? entry.getValue() : amount);
+			//设置下次循环的amount
+			amount = amount.subtract(BigDecimalUtil.compareTo(amount, currentKeyCanReturn) > 0 ? amount.subtract(entry.getValue()) : BigDecimal.ZERO);
+		}
+		return map;
+	}
+	
+	/**
 	 *
 	 *  活动新用户订单
 	 *
@@ -307,7 +443,7 @@ public class OrderInfoService extends ShopBaseService {
 
 	/**
 	 *
-	 *活动实付总金额 活动优惠总金额
+	 *	活动实付总金额 活动优惠总金额
 	 * @param goodType
 	 * @param activityId
 	 * @param startTime
@@ -331,10 +467,6 @@ public class OrderInfoService extends ShopBaseService {
 				.fetchInto(ActiveDiscountMoney.class);
 		return record;
 	}
-	
-	
-	
-	
 	
 	/**
 	 * 查找一口价活动 已购商品数量
@@ -372,5 +504,4 @@ public class OrderInfoService extends ShopBaseService {
 				.fetchOneInto(Integer.class);
 			return goodsNum;
 	}
-	
 }

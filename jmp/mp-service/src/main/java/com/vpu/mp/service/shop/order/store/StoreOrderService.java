@@ -15,7 +15,7 @@ import com.vpu.mp.service.pojo.shop.order.store.StoreOrderListInfoVo;
 import com.vpu.mp.service.pojo.shop.order.store.StoreOrderPageListQueryParam;
 
 /**
- * Table:part_order_goods_ship
+ * Table:STORE_ORDER
  * 
  * @author 王帅
  *
@@ -31,7 +31,7 @@ public class StoreOrderService extends ShopBaseService {
 	 * @return
 	 */
 	public PageResult<StoreOrderListInfoVo> getPageList(StoreOrderPageListQueryParam param){
-		SelectWhereStep<? extends Record> select = db().select(STORE_ORDER.ORDER_ID,STORE_ORDER.ORDER_SN,STORE_ORDER.ORDER_STATUS,STORE_ORDER.STORE_ID,STORE_ORDER.PAY_TIME,STORE_ORDER.MONEY_PAID,STORE_ORDER.PAY_CODE,STORE_ORDER.PAY_NAME,USER.USERNAME)
+		SelectWhereStep<? extends Record> select = db().select(TABLE.ORDER_ID,TABLE.ORDER_SN,TABLE.ORDER_STATUS,STORE_ORDER.STORE_ID,STORE_ORDER.PAY_TIME,STORE_ORDER.MONEY_PAID,STORE_ORDER.PAY_CODE,STORE_ORDER.PAY_NAME,USER.USERNAME)
 				.from(STORE_ORDER).leftJoin(USER)
 				.on(USER.USER_ID.eq(STORE_ORDER.USER_ID));
 		buildOptionsStore(select,param);

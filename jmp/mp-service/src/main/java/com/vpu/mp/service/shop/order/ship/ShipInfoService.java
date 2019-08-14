@@ -12,9 +12,12 @@ import java.util.Map.Entry;
 import org.springframework.stereotype.Service;
 
 import com.vpu.mp.db.shop.tables.PartOrderGoodsShip;
+import com.vpu.mp.db.shop.tables.records.OrderGoodsRecord;
+import com.vpu.mp.db.shop.tables.records.PartOrderGoodsShipRecord;
 import com.vpu.mp.service.foundation.service.ShopBaseService;
 import com.vpu.mp.service.pojo.shop.order.shipping.ShippingInfoVo;
 import com.vpu.mp.service.pojo.shop.order.shipping.ShippingInfoVo.Goods;
+import com.vpu.mp.service.pojo.shop.order.write.operate.ship.ShipParam;
 
 /**
  * Table:part_order_goods_ship
@@ -62,5 +65,21 @@ public class ShipInfoService extends ShopBaseService {
 			}
 		}
 		return goods;	
+	}
+	
+	public void addRecord(List<PartOrderGoodsShipRecord> shipInfoList , OrderGoodsRecord orderGoodsVo , String batchNo , ShipParam param , Integer sendNumber) {
+		PartOrderGoodsShipRecord record = new PartOrderGoodsShipRecord();
+		record.set(PART_ORDER_GOODS_SHIP.SHOP_ID,getShopId());
+		record.set(PART_ORDER_GOODS_SHIP.ORDER_GOODS_ID,orderGoodsVo.getRecId());
+		record.set(PART_ORDER_GOODS_SHIP.ORDER_SN,orderGoodsVo.getOrderSn());
+		record.set(PART_ORDER_GOODS_SHIP.BATCH_NO,batchNo);
+		record.set(PART_ORDER_GOODS_SHIP.GOODS_ID,orderGoodsVo.getGoodsId());
+		record.set(PART_ORDER_GOODS_SHIP.GOODS_NAME,orderGoodsVo.getGoodsName());
+		record.set(PART_ORDER_GOODS_SHIP.PRODUCT_ID,orderGoodsVo.getProductId());
+		record.set(PART_ORDER_GOODS_SHIP.SEND_NUMBER,sendNumber.shortValue());
+		record.set(PART_ORDER_GOODS_SHIP.GOODS_ATTR,orderGoodsVo.getGoodsAttr());
+		record.set(PART_ORDER_GOODS_SHIP.SHIPPING_NO,param.getShippingNo());
+		record.set(PART_ORDER_GOODS_SHIP.SHIPPING_ID,param.getShippingId());
+		shipInfoList.add(record);
 	}
 }

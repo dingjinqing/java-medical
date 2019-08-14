@@ -9,6 +9,7 @@ import org.springframework.context.ApplicationContextAware;
 import org.springframework.stereotype.Component;
 
 import com.vpu.mp.service.foundation.data.JsonResultCode;
+import com.vpu.mp.service.pojo.shop.order.write.operate.OrderOperateQueryParam;
 import com.vpu.mp.service.pojo.shop.order.write.operate.OrderServiceCode;
 
 /**
@@ -42,6 +43,16 @@ public class OrderOperateFactory implements ApplicationContextAware {
 	 */
 	public JsonResultCode orderOperate(IOrderBase info) {
 		return getService(info.getServiceCode()).execute(info);
+	}
+	
+	/**
+	 * 通过传出param取其ServiceCode并调用query
+	 * 
+	 * @param OrderOperateQueryParam
+	 * @return 执行结果
+	 */
+	public Object orderQuery(OrderOperateQueryParam param) {
+		return getService(param.getServiceCode()).query(param);
 	}
 
 	/**

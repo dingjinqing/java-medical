@@ -26,7 +26,8 @@ public final class DateUtil {
 
 	public static final String DATE_FORMAT_SHORT = "yyyyMMdd";
 	public static final String DATE_FORMAT_FULL = "yyyy-MM-dd HH:mm:ss";
-
+	public static final String DATE_FORMAT_FULL_NO_UNDERLINE = "yyyyMMddHHmmss";
+	
 	/**
 	 * 转换日期格式输出
 	 * @param format

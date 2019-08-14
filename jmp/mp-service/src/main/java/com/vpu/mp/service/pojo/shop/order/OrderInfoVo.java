@@ -31,8 +31,6 @@ public class OrderInfoVo extends OrderListInfoVo {
 	private Timestamp confirmTime;
 	/**下单人昵称*/
 	private String username;
-	/**下单人手机号*/
-	private String mobile;
 	/**完整收货地址*/
 	private String completeAddress;
 	/**买家留言*/
@@ -44,7 +42,5 @@ public class OrderInfoVo extends OrderListInfoVo {
 	private List<ShippingInfoVo> shippingList;
 	/**退款、货信息*/
 	private List<OrderConciseRefundInfoVo> refundList;
-	/**退货、款状态*/
-	private Byte refundStatus;
 	/**其他信息...*/
 }

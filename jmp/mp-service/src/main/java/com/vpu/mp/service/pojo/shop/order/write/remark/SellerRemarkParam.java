@@ -9,7 +9,7 @@ import com.vpu.mp.service.foundation.data.JsonResultMessage;
 import lombok.Data;
 
 /**
- * 卖家备注参数
+ * 	卖家备注参数
  * 
  * @author 王帅
  *

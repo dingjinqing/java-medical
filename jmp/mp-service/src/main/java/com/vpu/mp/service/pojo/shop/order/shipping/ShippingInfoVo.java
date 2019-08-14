@@ -1,6 +1,7 @@
 package com.vpu.mp.service.pojo.shop.order.shipping;
 
 import java.sql.Timestamp;
+
 import java.util.List;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
@@ -9,6 +10,11 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.Getter;
 import lombok.Setter;
+/**
+ * 	可发货信息
+ * @author 王帅
+ *
+ */
 @Getter
 @Setter
 public class ShippingInfoVo {

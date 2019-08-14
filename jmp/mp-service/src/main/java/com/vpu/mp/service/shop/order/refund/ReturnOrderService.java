@@ -2,21 +2,28 @@ package com.vpu.mp.service.shop.order.refund;
 
 import static com.vpu.mp.db.shop.tables.ReturnOrder.RETURN_ORDER;
 
+import java.math.BigDecimal;
+
+import javax.swing.text.TabExpander;
+
 import org.jooq.Record;
+import org.jooq.Record1;
 import org.jooq.Result;
 import org.jooq.SelectJoinStep;
 import org.jooq.SelectWhereStep;
+import org.jooq.impl.DSL;
 import org.jooq.tools.StringUtils;
 import org.springframework.stereotype.Service;
 
 import com.vpu.mp.db.shop.tables.ReturnOrder;
 import com.vpu.mp.service.foundation.service.ShopBaseService;
 import com.vpu.mp.service.foundation.util.PageResult;
+import com.vpu.mp.service.pojo.shop.order.OrderConstant;
 import com.vpu.mp.service.pojo.shop.order.OrderPageListQueryParam;
 import com.vpu.mp.service.pojo.shop.order.refund.OrderReturnListVo;
 
 /**
- * Table:order_goods
+ * Table:return_order
  * @author 王帅
  *
  */
@@ -82,4 +89,13 @@ public class ReturnOrderService extends ShopBaseService{
 		return select;
 	}
 	
+	/**
+	 * 	获取该订单的退成功运费记录（送礼订单无运费）
+	 * @param orderSn 订单号
+	 * @return 存在退运费成功则返回金额，否则为0
+	 */
+	public BigDecimal getReturnShipingFee(String orderSn) {
+		Record1<BigDecimal> fetchOne = db().select(DSL.sum(TABLE.SHIPPING_FEE)).from(TABLE).where(TABLE.ORDER_SN.eq(orderSn).and(TABLE.REFUND_STATUS.eq(OrderConstant.REFUND_STATUS_FINISH))).fetchOne();
+		return fetchOne.value1() == null ? BigDecimal.ZERO : fetchOne.value1();
+	}
 }

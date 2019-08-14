@@ -32,8 +32,9 @@ import com.vpu.mp.service.pojo.shop.order.refund.OrderReturnListVo;
 import com.vpu.mp.service.pojo.shop.order.shipping.ShippingInfoVo;
 import com.vpu.mp.service.pojo.shop.order.store.StoreOrderListInfoVo;
 import com.vpu.mp.service.pojo.shop.order.store.StoreOrderPageListQueryParam;
-import com.vpu.mp.service.shop.order.OrderInfoService.MainOrderResult;
 import com.vpu.mp.service.shop.order.goods.OrderGoodsService;
+import com.vpu.mp.service.shop.order.info.OrderInfoService;
+import com.vpu.mp.service.shop.order.info.OrderInfoService.MainOrderResult;
 import com.vpu.mp.service.shop.order.refund.ReturnOrderService;
 import com.vpu.mp.service.shop.order.refund.goods.ReturnOrderGoodsService;
 import com.vpu.mp.service.shop.order.ship.ShipInfoService;
@@ -112,7 +113,7 @@ public class OrderReadService extends ShopBaseService {
 		//需要查询商品的订单
 		Integer[] goodsListToSearch = goodsList.keySet().toArray(new Integer[0]);
 		//key为order_id,v为其下商品
-		Map<Integer, List<OrderGoodsVo>> goods = orderGoods.getByOrderId(goodsListToSearch).intoGroups(orderGoods.TABLE.ORDER_ID,OrderGoodsVo.class);
+		Map<Integer, List<OrderGoodsVo>> goods = orderGoods.getByOrderIds(goodsListToSearch).intoGroups(orderGoods.TABLE.ORDER_ID,OrderGoodsVo.class);
 		Set<Entry<Integer, List<OrderGoodsVo>>> entrySet = goods.entrySet();
 		for (Entry<Integer, List<OrderGoodsVo>> entry : entrySet) {
 			//过滤主订单中已经拆到子订单的商品(依赖于orderinfo表自增id,当循环到主订单时其子订单下的商品都已插入到childOrders.goods里)
@@ -166,7 +167,7 @@ public class OrderReadService extends ShopBaseService {
 		}
 		OrderInfoVo mainOrder = orders.get(0);
 		//查询商品行
-		Map<Integer, List<OrderGoodsVo>> goods = orderGoods.getByOrderId(orderIds.toArray(new Integer[orderIds.size()])).intoGroups(orderGoods.TABLE.ORDER_ID,OrderGoodsVo.class);
+		Map<Integer, List<OrderGoodsVo>> goods = orderGoods.getByOrderIds(orderIds.toArray(new Integer[orderIds.size()])).intoGroups(orderGoods.TABLE.ORDER_ID,OrderGoodsVo.class);
 		//查询配送信息
 		Map<String, List<ShippingInfoVo>> shippingByOrderSn = shipInfo.getShippingByOrderSn(sOrderSns.toArray(new String[sOrderSns.size()]));
 		//查询退款订单信息

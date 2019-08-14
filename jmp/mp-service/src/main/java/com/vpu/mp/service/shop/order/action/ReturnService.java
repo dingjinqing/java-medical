@@ -4,12 +4,13 @@ import org.springframework.stereotype.Component;
 
 import com.vpu.mp.service.foundation.data.JsonResultCode;
 import com.vpu.mp.service.foundation.service.ShopBaseService;
+import com.vpu.mp.service.pojo.shop.order.write.operate.OrderOperateQueryParam;
 import com.vpu.mp.service.pojo.shop.order.write.operate.OrderServiceCode;
 import com.vpu.mp.service.pojo.shop.order.write.operate.refund.money.RefundMoneyParam;
 import com.vpu.mp.service.shop.order.action.base.IorderOperate;
 
-@Component
-public class RefundMoneyService extends ShopBaseService implements IorderOperate {
+@Component 
+public class ReturnService extends ShopBaseService implements IorderOperate {
 	
 	@Override
 	public OrderServiceCode getServiceCode() {
@@ -39,6 +40,12 @@ public class RefundMoneyService extends ShopBaseService implements IorderOperate
 			//update b2c_order_goods
 			
 		});
+		return null;
+	}
+
+	@Override
+	public Object query(OrderOperateQueryParam param) {
+		// TODO Auto-generated method stub
 		return null;
 	}
 

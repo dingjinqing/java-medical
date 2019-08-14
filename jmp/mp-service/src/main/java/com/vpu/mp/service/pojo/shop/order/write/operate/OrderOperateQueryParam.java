@@ -1,8 +1,10 @@
 package com.vpu.mp.service.pojo.shop.order.write.operate;
 
 import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
 
 import com.vpu.mp.service.foundation.data.JsonResultMessage;
+import com.vpu.mp.service.shop.order.action.base.IOrderBase;
 
 import lombok.Data;
 
@@ -13,8 +15,19 @@ import lombok.Data;
  *
  */
 @Data
-public class OrderOperateQueryParam {
+public class OrderOperateQueryParam implements IOrderBase{
 	//TODO
+	@NotNull(message = JsonResultMessage.MSG_ORDER)
+	private Integer orderId;
 	@NotBlank(message = JsonResultMessage.MSG_ORDER)
 	private String orderSn;
+	@NotNull(message = JsonResultMessage.MSG_ORDER)
+	private Byte action;
+	
+	@Override
+	public OrderServiceCode getServiceCode() {
+		//enum类型values取得数组利用默认排序顺序获取对应service
+		return OrderServiceCode.values()[action];
+	}
+	
 }
