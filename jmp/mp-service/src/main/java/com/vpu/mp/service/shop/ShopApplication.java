@@ -25,6 +25,7 @@ import com.vpu.mp.service.shop.market.friendpromote.FriendPromoteService;
 import com.vpu.mp.service.shop.market.fullcut.MrkingStrategyService;
 import com.vpu.mp.service.shop.market.goupbuy.GroupBuyService;
 import com.vpu.mp.service.shop.market.groupdraw.*;
+import com.vpu.mp.service.shop.market.increasepurchase.IncreasePurchaseService;
 import com.vpu.mp.service.shop.market.integration.GroupIntegrationService;
 import com.vpu.mp.service.shop.market.lottery.LotteryService;
 import com.vpu.mp.service.shop.market.payreward.PayRewardService;
@@ -211,4 +212,7 @@ public class ShopApplication  {
     
     @Autowired
   	protected AppletsJumpService appletsJumpService;
+
+    /** 加价购 */
+    @Autowired public IncreasePurchaseService increaseService;
 }

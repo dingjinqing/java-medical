@@ -304,13 +304,6 @@ public class FormStatisticsService extends ShopBaseService {
     }
 
     /**
-     * 获取图片，海报，二维码下载地址
-     */
-    public String imgDownloadUrl(ImgDownloadParam param) {
-        return db().select(CODE.QRCODE_IMG).from(CODE).where(CODE.TYPE_URL.eq(param.getTypeUrl())).and(CODE.TYPE.eq(param.getType())).and(CODE.DEL_FLAG.eq(DelFlag.NORMAL.getCode())).fetchAny(CODE.QRCODE_IMG);
-    }
-
-    /**
      * 添加反馈信息
      *
      * @param param 反馈信息详情

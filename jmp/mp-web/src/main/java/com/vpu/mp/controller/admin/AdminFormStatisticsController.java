@@ -153,14 +153,6 @@ public class AdminFormStatisticsController extends AdminBaseController {
     }
 
     /**
-     * 分享,获取小程序二维码
-     */
-    @PostMapping("/api/admin/formstatistics/imgDownloadUrl")
-    public JsonResult imgDownloadUrl(@RequestBody @Validated ImgDownloadParam param) {
-        return success(shop().formService.imgDownloadUrl(param));
-    }
-
-    /**
      * 添加反馈信息
      */
     @PostMapping("/api/admin/formstatistics/addFeedBackInfo")
