@@ -14,6 +14,9 @@ public class ReducePriceProductVo {
     /** 限时降价活动b2c_reduce_price_product表ID */
     private Integer id;
 
+    /** 规格ID */
+    private Integer productId;
+
     /** 规格描述 */
     private String prdDesc;
 

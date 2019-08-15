@@ -1,0 +1,22 @@
+package com.vpu.mp.service.pojo.shop.market.reduceprice;
+
+import lombok.Data;
+
+import javax.validation.constraints.Max;
+import javax.validation.constraints.Min;
+
+/**
+ * @author: 王兵兵
+ * @create: 2019-08-15 14:55
+ **/
+@Data
+public class ReducePriceUpdateParam {
+
+    /** 活动主键 */
+    private Integer id;
+
+    /** 状态：1：启用 0：禁用 */
+    @Min(0)
+    @Max(1)
+    private Byte status;
+}

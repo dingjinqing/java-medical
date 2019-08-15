@@ -3,6 +3,7 @@ package com.vpu.mp.service.pojo.shop.market.seckill;
 import com.vpu.mp.service.pojo.shop.config.ShopShareConfig;
 import lombok.Data;
 
+import javax.validation.constraints.Max;
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotNull;
 
@@ -22,6 +23,8 @@ public class SeckillUpdateParam {
     /**
      *  状态：1可用，0停用
      */
+    @Min(0)
+    @Max(1)
     private Byte status;
 
     /** 活动名称*/

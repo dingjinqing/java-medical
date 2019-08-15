@@ -150,7 +150,7 @@ public class SeckillService extends ShopBaseService {
         res.setGoods(goods);
         res.setSecKillProduct(this.getSecKillProductVo(skId));
         res.setMemberCard(saas().getShopApp(getShopId()).member.card.getMemberCardByCardIdsString(record.getCardId()));
-        res.setShareConfig(Util.parseJson(record.getShareConfig(), ShopShareConfig.class));
+        res.setShopShareConfig(Util.parseJson(record.getShareConfig(), ShopShareConfig.class));
 
         return res;
     }

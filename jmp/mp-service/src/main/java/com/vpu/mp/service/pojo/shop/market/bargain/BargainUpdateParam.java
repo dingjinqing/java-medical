@@ -1,5 +1,6 @@
 package com.vpu.mp.service.pojo.shop.market.bargain;
 
+import javax.validation.constraints.Max;
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotNull;
 
@@ -25,6 +26,8 @@ public class BargainUpdateParam {
 	/**
 	 *  状态：1可用，0停用
 	 */
+	@Min(0)
+    @Max(1)
 	private Byte status;
 	
 	private String bargainName;

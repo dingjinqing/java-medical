@@ -3,9 +3,11 @@ package com.vpu.mp.service.pojo.shop.market.reduceprice;
 import java.sql.Timestamp;
 import java.util.List;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.vpu.mp.service.pojo.shop.config.ShopShareConfig;
 
 import lombok.Data;
+
 
 /**
  * @author: 王兵兵
@@ -13,6 +15,9 @@ import lombok.Data;
  **/
 @Data
 public class ReducePriceVo {
+
+    /** 活动ID */
+    private Integer id;
 
     /** 活动名称 */
     private String name;
@@ -42,5 +47,5 @@ public class ReducePriceVo {
     private List<ReducePriceGoodsVo> reducePriceGoods;
 
     /** 分享设置 */
-    private ShopShareConfig shareConfig;
+    private ShopShareConfig shopShareConfig;
 }

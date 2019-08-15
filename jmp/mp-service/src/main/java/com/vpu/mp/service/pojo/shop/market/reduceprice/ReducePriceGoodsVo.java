@@ -1,9 +1,12 @@
 package com.vpu.mp.service.pojo.shop.market.reduceprice;
 
+import com.vpu.mp.service.pojo.shop.goods.GoodsView;
+import lombok.Data;
+
 import java.math.BigDecimal;
 import java.util.List;
 
-import lombok.Data;
+
 
 /**
  * @author: 王兵兵
@@ -15,17 +18,10 @@ public class ReducePriceGoodsVo {
     /** 限时降价活动b2c_reduce_price_goods表ID */
     private Integer id;
 
-    /** 商品名 */
-    private String goodsName;
+    private Integer goodsId;
 
-    /** 商品主图 */
-    private String goodsImg;
-
-    /** 原价 */
-    private BigDecimal shopPrice;
-
-    /** 库存 */
-    private Integer goodsNumber;
+    /** 商品信息 */
+    private GoodsView goodsView;
 
     /** 折扣 */
     private BigDecimal discount;

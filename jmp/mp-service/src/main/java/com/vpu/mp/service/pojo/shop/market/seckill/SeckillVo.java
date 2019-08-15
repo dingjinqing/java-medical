@@ -42,5 +42,5 @@ public class SeckillVo {
     private List<SimpleMemberCardVo> memberCard;
 
     /** 分享设置*/
-    private ShopShareConfig shareConfig;
+    private ShopShareConfig shopShareConfig;
 }
