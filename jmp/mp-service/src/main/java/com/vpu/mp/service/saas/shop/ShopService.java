@@ -86,8 +86,7 @@ public class ShopService extends MainBaseService {
 	
 	public PageResult<ShopListQueryResultVo> getPageList(ShopListQueryParam param) {
 		SelectWhereStep<?> select = db()
-				.select(SHOP.SHOP_TYPE, MP_AUTH_SHOP.APP_ID, MP_AUTH_SHOP.IS_AUTH_OK, MP_AUTH_SHOP.NICK_NAME,
-						MP_AUTH_SHOP.PRINCIPAL_NAME)
+				.select(SHOP.asterisk(), MP_AUTH_SHOP.asterisk())
 				.from(SHOP).join(SHOP_ACCOUNT).on(SHOP.SYS_ID.eq(SHOP_ACCOUNT.SYS_ID)).leftJoin(MP_AUTH_SHOP)
 				.on(SHOP.SHOP_ID.eq(DSL.cast(MP_AUTH_SHOP.SHOP_ID, Integer.class)));
 		select = this.buildOptions(select, param);
