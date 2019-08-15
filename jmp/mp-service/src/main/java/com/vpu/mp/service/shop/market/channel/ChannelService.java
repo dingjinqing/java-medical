@@ -78,13 +78,13 @@ public class ChannelService extends ShopBaseService {
 			step.where(CHANNEL.CREATE_TIME.le(param.getEndTime()));
 		}
 		
-		if(!StringUtils.isBlank(param.getSourcePage())){
-			List<Integer> idList = shopMpDecoration.getIdByName(param.getSourcePage());
-			if(idList == null || idList.isEmpty()) {
-				return ;
-			}
-			step.where(CHANNEL.PAGE_ID.in(idList));
-		}
+//		if(!StringUtils.isBlank(param.getSourcePage())){
+//			List<Integer> idList = shopMpDecoration.getIdByName(param.getSourcePage());
+//			if(idList == null || idList.isEmpty()) {
+//				return ;
+//			}
+//			step.where(CHANNEL.PAGE_ID.in(idList));
+//		}
 		step.orderBy(CHANNEL.CREATE_TIME);
 		return ;
 	}
