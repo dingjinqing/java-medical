@@ -285,6 +285,7 @@ export default {
         'cityCode': '110100',
         'districtCode': '110101'
       }
+      console.log(this.formData)
       let params = Object.assign(obj, this.formData)
       console.log(params)
       addCoountRequest(params).then(res => {

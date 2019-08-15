@@ -46,7 +46,7 @@ export default {
     }
   },
   created () {
-    console.log(this.$route.params.name)
+    console.log(this.$route.params)
     if (this.$route.params.flag === true) {
       this.tabActive = 'third'
       this.isShowShopList = true

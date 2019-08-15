@@ -1,352 +1,307 @@
 <template>
-  <div class="experience-version">
-    <div class="select-menu top">
-      <el-input
-        v-model="mainData.accountKey"
-        :placeholder="$t('shopList.info.account_info1')"
-        size="small"
-        class="select-input ml-6"
-      ></el-input>
-      <el-input
-        v-model="mainData.keywords"
-        :placeholder="$t('shopList.info.account_info2')"
-        size="small"
-        class="select-input ml-6"
-      ></el-input>
-      <el-select
-        v-model="mainData.isUse"
-        :placeholder="$t('shopList.info.account_info3')"
-        size="small"
-        class="select-input ml-6"
+  <div class="new-shop infoForm">
+    <div class="select-menu top infoWrapper">
+      <el-form
+        ref="form"
+        :model="Data"
+        label-width="100px"
+        @submit.prevent="onSubmit"
+        style="margin:0px 0px 0px 50px;width:25%;min-width:300px;"
+        label-position="left"
       >
-        <el-option
-          v-for="item in state"
-          :key="item.value"
-          :label="item.label"
-          :value="item.value"
+        <el-form-item :label="$t('shopList.addInfo.sysId')">
+          <el-input
+            v-model="this.$route.params.name"
+            key="1"
+            size="small"
+            v-if="!flag"
+            style="border: none"
+          ></el-input>
+          <!-- <span
+            v-if="!flag"
+            style="color:#333"
+          >{{this.$route.params.name}}</span> -->
+        </el-form-item>
+        <el-form-item :label="$t('shopList.addInfo.dbConfigId')">
+          <el-select
+            v-model="Data.dbConfigId"
+            :placeholder="$t('shopList.selectDb')"
+            size="small"
+          >
+            <el-option
+              label="vpu_user(172.21.0.3)"
+              value="1"
+            ></el-option>
+          </el-select>
+        </el-form-item>
+        <el-form-item
+          :label="$t('shopList.addInfo.mobile')"
+          :required=true
         >
-        </el-option>
-      </el-select>
-      <el-select
-        v-model="mainData.shopType"
-        :placeholder="$t('shopList.info.shop_type')"
-        size="small"
-        class="select-input ml-6"
-      >
-        <el-option
-          v-for="item in type"
-          :key="item.value"
-          :label="item.label"
-          :value="item.value"
+          <el-input
+            v-model="Data.mobile"
+            type="text"
+            key="2"
+            size="small"
+          ></el-input>
+        </el-form-item>
+        <el-form-item
+          :label="$t('shopList.addInfo.shopType')"
+          :required=true
         >
-        </el-option>
-      </el-select>
-      <el-select
-        v-model="mainData.shopFlag"
-        :placeholder="$t('shopList.info.account_info4')"
-        size="small"
-        class="select-input ml-6"
-      >
-        <el-option
-          v-for="item in flag"
-          :key="item.value"
-          :label="item.label"
-          :value="item.value"
+          <el-select
+            v-model="Data.shopType"
+            :placeholder="$t('shopList.selectType')"
+            size="small"
+          >
+            <el-option
+              :label="$t('shopList.versionName.exp')"
+              value="v1"
+            ></el-option>
+            <el-option
+              :label="$t('shopList.versionName.base')"
+              value="v2"
+            ></el-option>
+            <el-option
+              :label="$t('shopList.versionName.high')"
+              value="v3"
+            ></el-option>
+            <el-option
+              :label="$t('shopList.versionName.unique')"
+              value="v4"
+            ></el-option>
+          </el-select>
+        </el-form-item>
+        <el-form-item :label="$t('shopList.addInfo.endTime')">
+          <div class="block">
+            <el-date-picker
+              v-model="Data.endTime"
+              size="small"
+              type="datetime"
+              :placeholder="$t('shopList.selectData')"
+              value-format="yyyy-MM-dd HH:mm:ss"
+            >
+            </el-date-picker>
+          </div>
+        </el-form-item>
+        <el-form-item :label="$t('shopList.addInfo.receiveMobile')">
+          <el-input
+            v-model="Data.receiveMobile"
+            label='1000'
+            size="small"
+          ></el-input>
+        </el-form-item>
+        <el-form-item
+          :label="$t('shopList.addInfo.shopName')"
+          :required=true
         >
-        </el-option>
-      </el-select>
-    </div>
-
-    <div class="select-menu bottom">
-      <el-select
-        v-model="mainData.isEnabled"
-        :placeholder="$t('shopList.info.account_info5')"
-        size="small"
-        class="select-input ml-6"
-      >
-        <el-option
-          v-for="item in disabled"
-          :key="item.value"
-          :label="item.label"
-          :value="item.value"
-        >
-        </el-option>
-      </el-select>
-      <el-select
-        v-model="mainData.hidBottom"
-        :placeholder="$t('shopList.info.account_info6')"
-        size="small"
-        class="select-input ml-6"
-      >
-        <el-option
-          v-for="item in bottom"
-          :key="item.value"
-          :label="item.label"
-          :value="item.value"
-        >
-        </el-option>
-      </el-select>
-      <div class="timeline">
-        <span>{{$t('shopList.info.account_info7')}}</span>
-        <el-input
-          v-model="mainData.flag"
-          :placeholder="$t('shopList.info.account_info8')"
+          <el-input
+            v-model="Data.shopName"
+            label='100'
+            size="small"
+          ></el-input>
+        </el-form-item>
+        <el-form-item :label="$t('shopList.addInfo.shopPhone')">
+          <el-input
+            v-model="Data.shopPhone"
+            label="100"
+            size="small"
+          >
+          </el-input>
+        </el-form-item>
+        <el-form-item :label="$t('shopList.addInfo.shopNotice')">
+          <el-input
+            type="textarea"
+            v-model="Data.shopNotice"
+            size="small"
+          ></el-input>
+        </el-form-item>
+        <el-form-item :label="$t('shopList.addInfo.shopWx')">
+          <el-input
+            v-model="Data.shopWx"
+            size="small"
+          ></el-input>
+        </el-form-item>
+        <el-form-item :label="$t('shopList.addInfo.shopEmail')">
+          <el-input
+            v-model="Data.shopEmail"
+            size="small"
+          ></el-input>
+        </el-form-item>
+        <el-form-item :label="$t('shopList.addInfo.isDisabled')">
+          <el-checkbox-group v-model="Data.isEnabled">
+            <el-checkbox
+              :label="$t('shopList.shopDisabled')"
+              name="type"
+              true-label=1
+              false-label=0
+            ></el-checkbox>
+          </el-checkbox-group>
+        </el-form-item>
+        <el-form-item :label="$t('shopList.addInfo.shopFlag')">
+          <el-select
+            v-model="Data.shopFlag"
+            :placeholder="$('shopList.selectFlag')"
+            size="small"
+            clearable
+          >
+            <el-option
+              :label="$t('shopList.flag_type.type1')"
+              value="1"
+            ></el-option>
+            <el-option
+              :label="$t('shopList.flag_type.type2')"
+              value="2"
+            ></el-option>
+          </el-select>
+        </el-form-item>
+        <el-form-item :label="$t('shopList.addInfo.hidBottom')">
+          <el-checkbox-group v-model="Data.hidBottom">
+            <el-checkbox
+              :label="$t('shopList.hideFooter')"
+              name="type"
+              true-label=1
+              false-label=0
+            ></el-checkbox>
+          </el-checkbox-group>
+        </el-form-item>
+        <el-form-item :label="$t('shopList.addInfo.memberKey')">
+          <el-input
+            v-model="Data.memberKey"
+            size="small"
+          ></el-input>
+        </el-form-item>
+        <el-form-item :label="$t('shopList.addInfo.tenancyName')">
+          <el-input
+            v-model="Data.tenancyName"
+            size="small"
+          ></el-input>
+        </el-form-item>
+        <el-form-item :label="$t('shopList.addInfo.userName')">
+          <el-input
+            v-model="Data.userName"
+            size="small"
+          ></el-input>
+        </el-form-item>
+        <el-form-item :label="$t('shopList.addInfo.password')">
+          <el-input
+            v-model="Data.password"
+            size="small"
+          ></el-input>
+        </el-form-item>
+        <el-form-item :label="$t('shopList.addInfo.shopQq')">
+          <el-input
+            v-model="Data.shopQq"
+            size="small"
+          ></el-input>
+        </el-form-item>
+      </el-form>
+      <div class="btn">
+        <el-button
           size="small"
-          class="select-input ml-6"
-        ></el-input>
-        <span style="margin-left: 5px">{{$t('shopList.info.account_info9')}}</span>
-        <el-input
-          v-model="mainData.flag"
-          :placeholder="$t('shopList.info.account_info8')"
-          size="small"
-          class="select-input ml-6"
-        ></el-input>
+          type="primary"
+          @click="save()"
+        >
+          添加
+        </el-button>
+        <span class="text">添加新店铺，会创建此店铺的数据库。添加店铺只可以禁用，不能删除！，谨慎添加。</span>
       </div>
-      <el-button
-        size="small"
-        class="ml-6"
-        type="primary"
-        @click="search()"
-      >{{$t('shopList.info.account_info10')}}</el-button>
-    </div>
-
-    <el-table
-      class="experience-log mt-10"
-      header-row-class-name="table-th"
-      border
-      style="width: 100%"
-    >
-      <el-table-column
-        prop="shopId"
-        :label="$t('shopList.table.ID')"
-        align="center"
-      >
-      </el-table-column>
-      <el-table-column
-        prop="shopType"
-        :label="$t('shopList.table.shopID')"
-        align="center"
-      >
-      </el-table-column>
-      <el-table-column
-        prop="shopName"
-        align="center"
-        :label="$t('shopList.table.shopName')"
-      >
-      </el-table-column>
-      <el-table-column
-        prop="nickName"
-        align="center"
-        :label="$t('shopList.table.wechatName')"
-      >
-      </el-table-column>
-      <el-table-column
-        prop="mobile"
-        align="center"
-        :label="$t('shopList.table.mobile')"
-      >
-      </el-table-column>
-      <el-table-column
-        prop="created"
-        align="center"
-        :label="$t('shopList.table.createTime')"
-      >
-      </el-table-column>
-      <el-table-column
-        prop="expireTime"
-        align="center"
-        :label="$t('shopList.table.endTime')"
-      >
-      </el-table-column>
-      <el-table-column
-        prop="isEnabled"
-        align="center"
-        :label="$t('shopList.table.isDisabled')"
-      >
-      </el-table-column>
-      <el-table-column
-        prop="isAuthOk"
-        align="center"
-        :label="$t('shopList.table.permission')"
-      >
-      </el-table-column>
-      <el-table-column
-        prop="userName"
-        align="center"
-        :label="$t('shopList.table.account')"
-      >
-      </el-table-column>
-      <el-table-column
-        prop="renewMoney"
-        align="center"
-        :label="$t('shopList.table.money')"
-      >
-      </el-table-column>
-      <el-table-column
-        prop="shopFlag"
-        align="center"
-        :label="$t('shopList.table.shopFlag')"
-      >
-      </el-table-column>
-      <el-table-column
-        prop="hidBottom"
-        align="center"
-        :label="$t('shopList.table.bottom')"
-      >
-      </el-table-column>
-      <el-table-column
-        prop="specialsetting"
-        align="center"
-        :label="$t('shopList.table.special')"
-      >
-      </el-table-column>
-      <el-table-column
-        prop="operate"
-        align="center"
-        :label="$t('shopList.table.operating')"
-      >
-      </el-table-column>
-    </el-table>
-
-    <div class="footer clearfixed pagination-wrap">
-      <span>每页{{this.pageRows}}行记录，当前页面：{{this.currentPage}}，总页数：{{this.pageCount}}，总记录数为：{{this.totalRows}}</span>
-      <el-pagination
-        @current-change="handleCurrentChange"
-        :current-page.sync="currentPage3"
-        layout="prev, pager, next, jumper"
-        :small="pagination_b"
-      >
-      </el-pagination>
     </div>
   </div>
 </template>
 
 <script>
-import { shopSearchRequest } from '@/api/system/shopList.js'
+import { newShopRequest, shopSearchRequest } from '@/api/system/shopList.js'
 export default {
-  name: 'experienceVersion',
+  name: 'newShop',
   data () {
     return {
-      state: [{
-        value: '1',
-        label: '未过期'
-      }, {
-        value: '3',
-        label: '即将过期'
-      }, {
-        value: '2',
-        label: '已过期'
-      }],
-      type: [{
-        value: 'v1',
-        label: '体验版'
-      }, {
-        value: 'v2',
-        label: '基础版'
-      }, {
-        value: 'v3',
-        label: '高级版'
-      }, {
-        value: 'v4',
-        label: '旗舰版'
-      }],
-      flag: [{
-        value: '0',
-        label: '店+'
-      }, {
-        value: '1',
-        label: '欧派'
-      }, {
-        value: '2',
-        label: '寺库'
-      }],
-      disabled: [{
-        value: '0',
-        label: '未禁用'
-      }, {
-        value: '1',
-        label: '已禁用'
-      }],
-      bottom: [{
-        value: '0',
-        label: '显示'
-      }, {
-        value: '1',
-        label: '隐藏'
-      }],
-      value: '',
-      text: '',
-      totalRows: null,
-      pageRows: '',
-      currentPage: '',
-      currentPage3: 1,
-      pageCount: null,
-      pagination_b: true,
-      mainData: {
-        accountKey: '',
-        keywords: '',
-        isUse: '',
-        shopType: '',
-        shopFlag: '',
-        isEnabled: '',
-        hidBottm: ''
-      },
-      formTable: [{
-        shopId: '',
-        shopType: '',
-        shopName: '',
-        nickName: '',
+      Data: {
+        sysId: this.$route.params.name,
         mobile: '',
-        created: '',
-        isUse: '',
-        expireTime: '',
+        shopType: '',
+        receiveMobile: '',
+        shopName: '',
+        shopPhone: '',
+        shopNotice: '',
+        shopWx: '',
+        shopEmail: '',
         isEnabled: '',
-        isAuthOK: '',
-        userName: '',
-        renewMoney: '',
+        shopQq: '',
         shopFlag: '',
-        hidBottm: ''
-      }]
+        memberKey: '',
+        tenancyName: '',
+        userName: '',
+        password: '',
+        hidBottom: '',
+        dbConfigId: '',
+        endTime: ''
+      },
+      name: '',
+      flag: ''
     }
   },
+  // mounted () {
+  //   console.log(this.$route.params)
+  //   if (this.$route.params.flag === true) {
+  //     let name = this.$route.params.name
+  //     console.log(name)
+  //   }
+  // },
   methods: {
-    // currnentPage 改变时会触发
-    handleCurrentChange () {
-      this.searchAccount()
-    },
-
-    // 店铺列表查询
-    search () {
-      let obj = {
-        'accountKey': '2',
-        'keywords': '740296',
-        'isUse': '1',
-        'shopType': 'v3',
-        'shopFlag': '2',
-        'isEnabled': '0',
-        'hidBottom': '0',
-        'currentPage': this.currentPage3,
+    getList () {
+      shopSearchRequest({
+        'currentPage': 1,
         'pageRows': 10
+      }).then(res => console.log(res)).catch(err => console.log(err))
+    },
+    addOne () {
+      newShopRequest({
+        'sysId': 85,
+        'mobile': '18237093404',
+        'shopType': 'v4',
+        'shopName': '旺店'
+      }).then(res => console.log(res)).catch(err => console.log(err))
+    },
+    // 添加商家账户
+    save () {
+      let obj = {
+        'sysId': '85',
+        'mobile': '18722222233',
+        'shopType': 'v4',
+        'receiveMobile': '18722222234',
+        'shopName': 'json测试4443',
+        'shopPhone': '18722222235',
+        'shopNotice': '店铺公告',
+        'shopWx': 'weixin',
+        'shopEmail': 'lalala@163.com',
+        'isEnabled': '0',
+        'shopFlag': '2',
+        'hidBottom': '0',
+        'shopQq': '99887766',
+        'memberKey': '欧派店铺标识',
+        'tenancyName': '欧派大屏租户名称',
+        'userName': '欧派大屏用户名',
+        'password': '123456'
       }
-      console.log(this.mainData)
-
-      let parame = Object.assign(obj, this.mainData)
-
-      console.log(parame)
-      shopSearchRequest(parame).then((res) => {
+      console.log(this.Data)
+      let params = Object.assign(obj, this.Data)
+      console.log(params)
+      newShopRequest(params).then(res => {
         console.log(res)
-        const { error, content } = res
-        if (error === 0) {
-          let formList = content.dataList
-          this.formTable = formList
-
-          this.currentPage = content.page.currentPage
-          this.pageRows = content.page.pageRows
-          this.pageCount = content.page.pageCount
-          this.totalRows = content.page.totalRows
+        if (res.error === 0) {
+          this.$message({
+            message: '保存成功',
+            type: 'success'
+          })
+        } else {
+          this.$message({
+            message: res.message,
+            type: 'warning'
+          })
         }
       }).catch(() => {
-        this.$message.error('操作失败')
+        this.$message.error('保存失败')
       })
     }
   }
@@ -354,24 +309,38 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-.select-menu {
-  display: flex;
-  padding: 10px;
+.new-shop {
   background: #fff;
-}
-.select-input {
-  width: 200px;
-}
-.footer {
-  display: flex;
-  align-items: center;
-  justify-content: flex-end;
-}
-.footer > span {
-  font-size: 14px;
-}
-.timeline {
-  margin-left: 15px;
-  font-size: 14px;
+  .infoWrapper {
+    padding-bottom: 50px;
+    .el-form-item:first-child {
+      padding-top: 20px;
+    }
+    .el-form-item {
+      margin-bottom: 10px;
+      /deep/ .el-textarea__inner {
+        width: 150px;
+        height: 80px;
+        margin-left: 30px;
+      }
+      /deep/ .el-form-item__label {
+        width: 130px !important;
+      }
+    }
+    .el-input {
+      width: 150px;
+    }
+    .el-select {
+      width: 150px;
+    }
+    .btn {
+      margin-left: 180px;
+      .text {
+        color: #b94a48;
+        font-size: 14px;
+        margin-left: 15px;
+      }
+    }
+  }
 }
 </style>

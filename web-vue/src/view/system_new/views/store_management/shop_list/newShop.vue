@@ -10,22 +10,26 @@
         label-position="left"
       >
         <el-form-item :label="$t('shopList.addInfo.sysId')">
-          <el-input
+          <!-- <el-input
             v-model="this.$route.params.name"
             key="1"
             size="small"
             v-if="!flag"
             style="border: none"
-          ></el-input>
+          ></el-input> -->
           <!-- <span
             v-if="!flag"
             style="color:#333"
           >{{this.$route.params.name}}</span> -->
+          <span
+            v-if="!flag"
+            style="color:#333"
+          >{{this.$route.params.title}}</span>
         </el-form-item>
         <el-form-item :label="$t('shopList.addInfo.dbConfigId')">
           <el-select
             v-model="Data.dbConfigId"
-            placeholder="请选择数据库"
+            :placeholder="$t('shopList.selectDb')"
             size="small"
           >
             <el-option
@@ -51,23 +55,23 @@
         >
           <el-select
             v-model="Data.shopType"
-            placeholder="请选择店铺类型"
+            :placeholder="$t('shopList.selectType')"
             size="small"
           >
             <el-option
-              label="体验版"
+              :label="$t('shopList.versionName.exp')"
               value="v1"
             ></el-option>
             <el-option
-              label="基础版"
+              :label="$t('shopList.versionName.base')"
               value="v2"
             ></el-option>
             <el-option
-              label="高级版"
+              :label="$t('shopList.versionName.high')"
               value="v3"
             ></el-option>
             <el-option
-              label="旗舰版"
+              :label="$t('shopList.versionName.unique')"
               value="v4"
             ></el-option>
           </el-select>
@@ -78,7 +82,7 @@
               v-model="Data.endTime"
               size="small"
               type="datetime"
-              placeholder="选择日期时间"
+              :placeholder="$t('shopList.selectData')"
               value-format="yyyy-MM-dd HH:mm:ss"
             >
             </el-date-picker>
@@ -113,7 +117,6 @@
           <el-input
             type="textarea"
             v-model="Data.shopNotice"
-            size="small"
           ></el-input>
         </el-form-item>
         <el-form-item :label="$t('shopList.addInfo.shopWx')">
@@ -131,23 +134,26 @@
         <el-form-item :label="$t('shopList.addInfo.isDisabled')">
           <el-checkbox-group v-model="Data.isEnabled">
             <el-checkbox
-              label="禁用"
+              :label="$t('shopList.shopDisabled')"
               name="type"
+              true-label=1
+              false-label=0
             ></el-checkbox>
           </el-checkbox-group>
         </el-form-item>
         <el-form-item :label="$t('shopList.addInfo.shopFlag')">
           <el-select
             v-model="Data.shopFlag"
-            placeholder="请选择店铺标记"
+            :placeholder="$t('shopList.selectFlag')"
             size="small"
+            clearable
           >
             <el-option
-              label="欧派"
+              :label="$t('shopList.flag_type.type1')"
               value="1"
             ></el-option>
             <el-option
-              label="寺库"
+              :label="$t('shopList.flag_type.type2')"
               value="2"
             ></el-option>
           </el-select>
@@ -155,8 +161,10 @@
         <el-form-item :label="$t('shopList.addInfo.hidBottom')">
           <el-checkbox-group v-model="Data.hidBottom">
             <el-checkbox
-              label="隐藏"
+              :label="$t('shopList.hideFooter')"
               name="type"
+              true-label=1
+              false-label=0
             ></el-checkbox>
           </el-checkbox-group>
         </el-form-item>
@@ -197,14 +205,11 @@
           type="primary"
           @click="save()"
         >
-          添加
+          {{$t('shopList.save')}}
         </el-button>
-        <span class="text">添加新店铺，会创建此店铺的数据库。添加店铺只可以禁用，不能删除！，谨慎添加。</span>
+        <span class="text">{{$t('shopList.prompt')}}</span>
       </div>
     </div>
-    <el-button @click="getList">获取列表</el-button>
-    <el-button @click="addOne">添加某一</el-button>
-
   </div>
 </template>
 
@@ -263,58 +268,44 @@ export default {
     },
     // 添加商家账户
     save () {
-      // let params = {
-      //   'sysId': '85',
-      //   'mobile': '18722222233',
-      //   'shopType': 'v4',
-      //   'shopName': 'json测试3'
-      // }
-      let params = {
+      let obj = {
         'sysId': '85',
-        'mobile': '18237093404',
+        'mobile': '18722222233',
         'shopType': 'v4',
-        'shopName': '旺店'
+        'receiveMobile': '18722222234',
+        'shopName': 'json测试4443',
+        'shopPhone': '18722222235',
+        'shopNotice': '店铺公告',
+        'shopWx': 'weixin',
+        'shopEmail': 'lalala@163.com',
+        'isEnabled': '0',
+        'shopFlag': '2',
+        'hidBottom': '0',
+        'shopQq': '99887766',
+        'memberKey': '欧派店铺标识',
+        'tenancyName': '欧派大屏租户名称',
+        'userName': '欧派大屏用户名',
+        'password': '123456'
       }
+      console.log(this.Data)
+      let params = Object.assign(obj, this.Data)
       console.log(params)
-      newShopRequest(params).then(res => console.log(res)).catch(err => console.log(err))
-
-      // let obj = {
-      //   'sysId': '85',
-      //   'mobile': '18722222233',
-      //   'shopType': 'v4',
-      //   'receiveMobile': '18722222234',
-      //   'shopName': 'json测试4443',
-      //   'shopPhone': '18722222235',
-      //   'shopNotice': '店铺公告',
-      //   'shopWx': 'weixin',
-      //   'shopEmail': 'lalala@163.com',
-      //   'isEnabled': '0',
-      //   'shopFlag': '2',
-      //   'hidBottom': '0',
-      //   'shopQq': '99887766',
-      //   'memberKey': '欧派店铺标识',
-      //   'tenancyName': '欧派大屏租户名称',
-      //   'userName': '欧派大屏用户名',
-      //   'password': '123456'
-      // }
-      // let params = Object.assign(obj)
-      // console.log(params)
-      // newShopRequest(params).then(res => {
-      //   console.log(res)
-      //   if (res.error === 0) {
-      //     this.$message({
-      //       message: '保存成功',
-      //       type: 'success'
-      //     })
-      //   } else {
-      //     this.$message({
-      //       message: res.message,
-      //       type: 'warning'
-      //     })
-      //   }
-      // }).catch(() => {
-      //   this.$message.error('保存失败')
-      // })
+      newShopRequest(params).then(res => {
+        console.log(res)
+        if (res.error === 0) {
+          this.$message({
+            message: '保存成功',
+            type: 'success'
+          })
+        } else {
+          this.$message({
+            message: res.message,
+            type: 'warning'
+          })
+        }
+      }).catch(() => {
+        this.$message.error('保存失败')
+      })
     }
   }
 }
@@ -331,9 +322,9 @@ export default {
     .el-form-item {
       margin-bottom: 10px;
       /deep/ .el-textarea__inner {
-        width: 150px;
+        width: 150px !important;
         height: 80px;
-        margin-left: 30px;
+        margin: -30px 0 10px 30px;
       }
       /deep/ .el-form-item__label {
         width: 130px !important;

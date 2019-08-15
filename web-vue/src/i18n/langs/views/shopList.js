@@ -4,6 +4,8 @@ export const cn = {
     payVersion: '付费版',
     newShop: '店铺添加'
   },
+
+  // 体验版和付费版页面共同字段，二者基本相同
   info: {
     account_info1: '账号ID、公司',
     account_info2: '店铺ID、账户名称、手机号',
@@ -15,7 +17,7 @@ export const cn = {
     account_info8: '请选择时间',
     account_info9: '至',
     account_info10: '搜索',
-    shop_type: '店铺类型'
+    shop_type: '店铺类型' // 付费版特有字段
   },
   state_option: {
     isUsing: '使用中',
@@ -56,6 +58,8 @@ export const cn = {
     special: '特殊配置',
     operating: '操作'
   },
+
+  // 店铺添加
   addInfo: {
     sysId: '所属账号',
     dbConfigId: '数据库',
@@ -76,7 +80,25 @@ export const cn = {
     userName: '欧派大屏用户名',
     password: '欧派大屏密码',
     hidBottom: '隐藏底部'
-  }
+  },
+  selectDb: '请选择数据库',
+  selectType: '请选择店铺类型',
+  versionName: {
+    exp: '体验版',
+    base: '基础版',
+    high: '高级版',
+    unique: '旗舰版'
+  },
+  selectData: '请选择日期时间',
+  selectFlag: '请选择店铺标记',
+  flag_type: {
+    type1: '欧派',
+    type2: '寺库'
+  },
+  shopDisabled: '禁用',
+  hideFooter: '隐藏',
+  save: '保存',
+  prompt: '添加新店铺，会创建此店铺的数据库。添加店铺只可以禁用，不能删除！谨慎添加'
 }
 
 export const en = {
@@ -84,6 +106,8 @@ export const en = {
     experienceVersion: 'Trial Version',
     payVersion: 'Paid version'
   },
+
+  // 体验版和付费版共同的字段，二者基本相同
   info: {
     account_info1: 'Account ID、Company',
     account_info2: 'Store ID、account name、phone number',
@@ -95,7 +119,7 @@ export const en = {
     account_info8: 'Please select time',
     account_info9: 'to',
     account_info10: 'search',
-    shop_type: 'Store type'
+    shop_type: 'Store type' // 付费版特有字段
   },
   state_option: {
     isUsing: 'Using',
@@ -136,6 +160,8 @@ export const en = {
     special: 'Special configuration',
     operating: 'operating'
   },
+
+  // 店铺添加页面
   addInfo: {
     sysId: 'account',
     dbConfigId: 'database',
@@ -156,5 +182,23 @@ export const en = {
     userName: 'Ou Pai big screen username',
     password: 'European big screen password',
     hidBottom: 'Hide bottom'
-  }
+  },
+  selectDb: 'Please select a database',
+  selectType: 'Please select the store type',
+  versionName: {
+    exp: 'Trial Version',
+    base: 'Basic version',
+    high: 'Advanced version',
+    unique: 'Ultimate'
+  },
+  selectData: 'Please select a date and time',
+  selectFlag: 'Please select a store tag',
+  flag_type: {
+    type1: 'European',
+    type2: 'Temple library'
+  },
+  shopDisabled: 'Disable',
+  hideFooter: 'hide',
+  save: 'save',
+  prompt: 'Add a new store and create a database for this store. Adding a store can only be disabled and cannot be deleted! Cautiously add '
 }

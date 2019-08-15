@@ -290,7 +290,7 @@ export default {
         shopType: '',
         shopFlag: '',
         isEnabled: '',
-        hidBottm: ''
+        hidBottom: ''
       },
       formTable: [{
         shopId: '',
@@ -306,7 +306,7 @@ export default {
         userName: '',
         renewMoney: '',
         shopFlag: '',
-        hidBottm: ''
+        hidBottom: ''
       }]
     }
   },

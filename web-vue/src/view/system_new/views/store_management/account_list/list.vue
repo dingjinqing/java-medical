@@ -92,7 +92,7 @@
           <span style="margin-left: 10px">{{ scope.row.shopNumber }}</span>
           <i
             class="el-icon-circle-plus-outline"
-            @click="jumptoNewShop(scope.row.sysId)"
+            @click="jumptoNewShop(scope.row.sysId, scope.row.userName)"
             style="cursor: pointer;color:blue; opacity:0.7"
           ></i>
         </template>
@@ -214,12 +214,14 @@ export default {
       this.searchAccount()
     },
 
-    jumptoNewShop (sysId) {
+    jumptoNewShop (sysId, userName) {
+      console.log()
       this.$router.push({
         name: 'shopList',
         params: {
           name: sysId,
-          flag: true
+          flag: true,
+          title: userName
         }
       })
       // bus.$emit('revice', userName)

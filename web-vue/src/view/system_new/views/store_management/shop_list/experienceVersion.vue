@@ -262,7 +262,7 @@ export default {
         shopType: '',
         shopFlag: '',
         isEnabled: '',
-        hidBottm: ''
+        hidBottom: ''
       },
       formTable: [{
         shopId: '',
@@ -278,7 +278,7 @@ export default {
         userName: '',
         renewMoney: '',
         shopFlag: '',
-        hidBottm: ''
+        hidBottom: ''
       }]
     }
   },
@@ -291,19 +291,13 @@ export default {
     // 店铺列表查询
     search () {
       let obj = {
-        'accountKey': '2',
-        'keywords': '740296',
-        'isUse': '1',
-        'shopType': 'v3',
-        'shopFlag': '2',
-        'isEnabled': '0',
-        'hidBottom': '0',
+
         'currentPage': this.currentPage3,
         'pageRows': 10
       }
-      console.log(this.mainData)
 
-      let parame = Object.assign(obj, this.mainData)
+      console.log(this.mainData)
+      let parame = Object.assign(obj)
 
       console.log(parame)
       shopSearchRequest(parame).then((res) => {
