@@ -649,3 +649,7 @@ drop column `reason`,
 drop column `return_desc`,
 add column `reason_type`  tinyint(1) NOT NULL DEFAULT '0' comment '退款/退货原因类型，0：协商一致退款，1：未按约定时间发货，2：缺货，3：拍错/多拍/不想要，4：其他',
 add column `reason_desc` text comment '退款/退货描述';
+-- orderinfo修改营销活动id名称
+alter table `b2c_order_info`
+drop column `pin_group_id`,
+add column `activity_id` INT ( 11 ) NOT NULL DEFAULT '0' COMMENT '营销活动id';
