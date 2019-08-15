@@ -387,5 +387,16 @@ public class ShopMpDecorationService extends ShopBaseService {
 
 	}
 
+	/**
+	 * 根据页面名称模糊查询满足条件的页面ID
+	 * 
+	 * @param sourcePage
+	 * @return
+	 */
+	public List<Integer> getIdByName(String sourcePage) {
+		List<Integer> idList = db().select(XCX_CUSTOMER_PAGE.PAGE_ID).from(XCX_CUSTOMER_PAGE)
+				.where(XCX_CUSTOMER_PAGE.PAGE_NAME.like(this.likeValue(sourcePage))).fetchInto(Integer.class);
+		return idList;
+	}
 
 }
