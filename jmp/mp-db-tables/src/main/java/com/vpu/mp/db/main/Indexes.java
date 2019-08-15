@@ -30,6 +30,8 @@ public class Indexes {
     // INDEX definitions
     // -------------------------------------------------------------------------
 
+    public static final Index TASK_JOB_CONTENT_PRIMARY = Indexes0.TASK_JOB_CONTENT_PRIMARY;
+    public static final Index TASK_JOB_MAIN_PRIMARY = Indexes0.TASK_JOB_MAIN_PRIMARY;
     public static final Index ACTIVITY_STATISTICS_PRIMARY = Indexes0.ACTIVITY_STATISTICS_PRIMARY;
     public static final Index ALI_MINI_AGENT_AUTH_APP_ID = Indexes0.ALI_MINI_AGENT_AUTH_APP_ID;
     public static final Index ALI_MINI_AGENT_PRIMARY = Indexes0.ALI_MINI_AGENT_PRIMARY;
@@ -206,13 +208,12 @@ public class Indexes {
     public static final Index USER_SUMMARY_TREND_PRIMARY = Indexes0.USER_SUMMARY_TREND_PRIMARY;
     public static final Index USER_SUMMARY_TREND_REF_TYPE = Indexes0.USER_SUMMARY_TREND_REF_TYPE;
     public static final Index SHOP_ACCOUNT_USER_NAME = Indexes0.SHOP_ACCOUNT_USER_NAME;
-    public static final Index TASK_JOBS_MAIN_PRIMARY = Indexes0.TASK_JOBS_MAIN_PRIMARY;
-    public static final Index TASK_JOBS_CONTENT_PRIMARY = Indexes0.TASK_JOBS_CONTENT_PRIMARY;
     // -------------------------------------------------------------------------
     // [#1459] distribute members to avoid static initialisers > 64kb
     // -------------------------------------------------------------------------
 
     private static class Indexes0 {
+        public static Index TASK_JOB_MAIN_PRIMARY = Internal.createIndex("PRIMARY", TaskJobMain.TASK_JOB_MAIN, new OrderField[] { TaskJobMain.TASK_JOB_MAIN.ID }, true);
         public static Index ACTIVITY_STATISTICS_PRIMARY = Internal.createIndex("PRIMARY", ActivityStatistics.ACTIVITY_STATISTICS, new OrderField[] { ActivityStatistics.ACTIVITY_STATISTICS.ID }, true);
         public static Index ALI_MINI_AGENT_AUTH_APP_ID = Internal.createIndex("auth_app_id", AliMiniAgent.ALI_MINI_AGENT, new OrderField[] { AliMiniAgent.ALI_MINI_AGENT.AUTH_APP_ID }, true);
         public static Index ALI_MINI_AGENT_PRIMARY = Internal.createIndex("PRIMARY", AliMiniAgent.ALI_MINI_AGENT, new OrderField[] { AliMiniAgent.ALI_MINI_AGENT.REC_ID }, true);
@@ -389,7 +390,6 @@ public class Indexes {
         public static Index USER_SUMMARY_TREND_PRIMARY = Internal.createIndex("PRIMARY", UserSummaryTrend.USER_SUMMARY_TREND, new OrderField[] { UserSummaryTrend.USER_SUMMARY_TREND.ID }, true);
         public static Index USER_SUMMARY_TREND_REF_TYPE = Internal.createIndex("ref_type", UserSummaryTrend.USER_SUMMARY_TREND, new OrderField[] { UserSummaryTrend.USER_SUMMARY_TREND.REF_DATE, UserSummaryTrend.USER_SUMMARY_TREND.TYPE }, false);
         public static Index SHOP_ACCOUNT_USER_NAME = Internal.createIndex("user_name", ShopAccount.SHOP_ACCOUNT, new OrderField[] { ShopAccount.SHOP_ACCOUNT.USER_NAME }, true);
-        public static Index TASK_JOBS_MAIN_PRIMARY = Internal.createIndex("PRIMARY", TaskJobsMain.TASK_JOBS_MAIN, new OrderField[] { TaskJobsMain.TASK_JOBS_MAIN.ID }, true);
-        public static Index TASK_JOBS_CONTENT_PRIMARY = Internal.createIndex("PRIMARY", TaskJobsContent.TASK_JOBS_CONTENT, new OrderField[] { TaskJobsContent.TASK_JOBS_CONTENT.ID }, true);
+        public static Index TASK_JOB_CONTENT_PRIMARY = Internal.createIndex("PRIMARY", TaskJobContent.TASK_JOB_CONTENT, new OrderField[] { TaskJobContent.TASK_JOB_CONTENT.ID }, true);
     }
 }

@@ -32,7 +32,8 @@ public class Keys {
     // -------------------------------------------------------------------------
     // IDENTITY definitions
     // -------------------------------------------------------------------------
-    public static final Identity<TaskJobsMainRecord, Integer> IDENTITY_TASK_JOBS_MAIN = Identities0.IDENTITY_TASK_JOBS_MAIN;
+    public static final Identity<TaskJobContentRecord, Integer> IDENTITY_TASK_JOB_CONTENT = Identities0.IDENTITY_TASK_JOB_CONTENT;
+    public static final Identity<TaskJobMainRecord, Integer> IDENTITY_TASK_JOB_MAIN = Identities0.IDENTITY_TASK_JOB_MAIN;
     public static final Identity<ActivityStatisticsRecord, Integer> IDENTITY_ACTIVITY_STATISTICS = Identities0.IDENTITY_ACTIVITY_STATISTICS;
     public static final Identity<AliMiniAgentRecord, Integer> IDENTITY_ALI_MINI_AGENT = Identities0.IDENTITY_ALI_MINI_AGENT;
     public static final Identity<AliMiniAppVersionRecord, Integer> IDENTITY_ALI_MINI_APP_VERSION = Identities0.IDENTITY_ALI_MINI_APP_VERSION;
@@ -94,12 +95,13 @@ public class Keys {
     public static final Identity<UserLoginRecordRecord, Integer> IDENTITY_USER_LOGIN_RECORD = Identities0.IDENTITY_USER_LOGIN_RECORD;
     public static final Identity<UserSummaryTrendRecord, Integer> IDENTITY_USER_SUMMARY_TREND = Identities0.IDENTITY_USER_SUMMARY_TREND;
     public static final Identity<ShopUploadedImageCategoryRecord, Integer> IDENTITY_SHOP_UPLOADED_IMAGE_CATEGORY = Identities0.IDENTITY_SHOP_UPLOADED_IMAGE_CATEGORY;
-    public static final Identity<TaskJobsContentRecord, Integer> IDENTITY_TASK_JOBS_CONTENT = Identities0.IDENTITY_TASK_JOBS_CONTENT;
 
     // -------------------------------------------------------------------------
     // UNIQUE and PRIMARY KEY definitions
     // -------------------------------------------------------------------------
 
+    public static final UniqueKey<TaskJobContentRecord> KEY_B2C_TASK_JOB_CONTENT_PRIMARY = UniqueKeys0.KEY_B2C_TASK_JOB_CONTENT_PRIMARY;
+    public static final UniqueKey<TaskJobMainRecord> KEY_B2C_TASK_JOB_MAIN_PRIMARY = UniqueKeys0.KEY_B2C_TASK_JOB_MAIN_PRIMARY;
     public static final UniqueKey<ActivityStatisticsRecord> KEY_B2C_ACTIVITY_STATISTICS_PRIMARY = UniqueKeys0.KEY_B2C_ACTIVITY_STATISTICS_PRIMARY;
     public static final UniqueKey<AliMiniAgentRecord> KEY_B2C_ALI_MINI_AGENT_PRIMARY = UniqueKeys0.KEY_B2C_ALI_MINI_AGENT_PRIMARY;
     public static final UniqueKey<AliMiniAgentRecord> KEY_B2C_ALI_MINI_AGENT_SHOP_ID = UniqueKeys0.KEY_B2C_ALI_MINI_AGENT_SHOP_ID;
@@ -193,8 +195,7 @@ public class Keys {
     public static final UniqueKey<UserSummaryTrendRecord> KEY_B2C_USER_SUMMARY_TREND_PRIMARY = UniqueKeys0.KEY_B2C_USER_SUMMARY_TREND_PRIMARY;
     public static final UniqueKey<ShopUploadedImageCategoryRecord> KEY_B2C_SHOP_UPLOADED_IMAGE_CATEGORY_PRIMARY = UniqueKeys0.KEY_B2C_SHOP_UPLOADED_IMAGE_CATEGORY_PRIMARY;
     public static final UniqueKey<ShopAccountRecord> KEY_B2C_SHOP_ACCOUNT_USER_NAME = UniqueKeys0.KEY_B2C_SHOP_ACCOUNT_USER_NAME;
-    public static final UniqueKey<TaskJobsMainRecord> KEY_B2C_TASK_JOBS_MAIN_PRIMARY = UniqueKeys0.KEY_B2C_TASK_JOBS_MAIN_PRIMARY;
-    public static final UniqueKey<TaskJobsContentRecord> KEY_B2C_TASK_JOBS_CONTENT_PRIMARY = UniqueKeys0.KEY_B2C_TASK_JOBS_CONTENT_PRIMARY;
+
     // -------------------------------------------------------------------------
     // FOREIGN KEY definitions
     // -------------------------------------------------------------------------
@@ -205,6 +206,8 @@ public class Keys {
     // -------------------------------------------------------------------------
 
     private static class Identities0 {
+        public static Identity<TaskJobContentRecord, Integer> IDENTITY_TASK_JOB_CONTENT = Internal.createIdentity(TaskJobContent.TASK_JOB_CONTENT, TaskJobContent.TASK_JOB_CONTENT.ID);
+        public static Identity<TaskJobMainRecord, Integer> IDENTITY_TASK_JOB_MAIN = Internal.createIdentity(TaskJobMain.TASK_JOB_MAIN, TaskJobMain.TASK_JOB_MAIN.ID);
         public static Identity<ShopUploadedImageCategoryRecord, Integer> IDENTITY_SHOP_UPLOADED_IMAGE_CATEGORY = Internal.createIdentity(ShopUploadedImageCategory.SHOP_UPLOADED_IMAGE_CATEGORY, ShopUploadedImageCategory.SHOP_UPLOADED_IMAGE_CATEGORY.IMG_CAT_ID);
         public static Identity<ActivityStatisticsRecord, Integer> IDENTITY_ACTIVITY_STATISTICS = Internal.createIdentity(ActivityStatistics.ACTIVITY_STATISTICS, ActivityStatistics.ACTIVITY_STATISTICS.ID);
         public static Identity<AliMiniAgentRecord, Integer> IDENTITY_ALI_MINI_AGENT = Internal.createIdentity(AliMiniAgent.ALI_MINI_AGENT, AliMiniAgent.ALI_MINI_AGENT.REC_ID);
@@ -265,12 +268,11 @@ public class Keys {
         public static Identity<UserRecord, Long> IDENTITY_USER = Internal.createIdentity(User.USER, User.USER.ID);
         public static Identity<UserDetailRecord, Integer> IDENTITY_USER_DETAIL = Internal.createIdentity(UserDetail.USER_DETAIL, UserDetail.USER_DETAIL.ID);
         public static Identity<UserLoginRecordRecord, Integer> IDENTITY_USER_LOGIN_RECORD = Internal.createIdentity(UserLoginRecord.USER_LOGIN_RECORD, UserLoginRecord.USER_LOGIN_RECORD.ID);
-        public static Identity<TaskJobsMainRecord, Integer> IDENTITY_TASK_JOBS_MAIN = Internal.createIdentity(TaskJobsMain.TASK_JOBS_MAIN, TaskJobsMain.TASK_JOBS_MAIN.ID);
         public static Identity<UserSummaryTrendRecord, Integer> IDENTITY_USER_SUMMARY_TREND = Internal.createIdentity(UserSummaryTrend.USER_SUMMARY_TREND, UserSummaryTrend.USER_SUMMARY_TREND.ID);
-        public static Identity<TaskJobsContentRecord, Integer> IDENTITY_TASK_JOBS_CONTENT = Internal.createIdentity(TaskJobsContent.TASK_JOBS_CONTENT, TaskJobsContent.TASK_JOBS_CONTENT.ID);
     }
 
     private static class UniqueKeys0 {
+        public static final UniqueKey<TaskJobMainRecord> KEY_B2C_TASK_JOB_MAIN_PRIMARY = Internal.createUniqueKey(TaskJobMain.TASK_JOB_MAIN, "KEY_b2c_task_job_main_PRIMARY", TaskJobMain.TASK_JOB_MAIN.ID);
         public static final UniqueKey<ShopUploadedImageCategoryRecord> KEY_B2C_SHOP_UPLOADED_IMAGE_CATEGORY_PRIMARY = Internal.createUniqueKey(ShopUploadedImageCategory.SHOP_UPLOADED_IMAGE_CATEGORY, "KEY_b2c_shop_uploaded_image_category_PRIMARY", ShopUploadedImageCategory.SHOP_UPLOADED_IMAGE_CATEGORY.IMG_CAT_ID);
         public static final UniqueKey<ActivityStatisticsRecord> KEY_B2C_ACTIVITY_STATISTICS_PRIMARY = Internal.createUniqueKey(ActivityStatistics.ACTIVITY_STATISTICS, "KEY_b2c_activity_statistics_PRIMARY", ActivityStatistics.ACTIVITY_STATISTICS.ID);
         public static final UniqueKey<AliMiniAgentRecord> KEY_B2C_ALI_MINI_AGENT_PRIMARY = Internal.createUniqueKey(AliMiniAgent.ALI_MINI_AGENT, "KEY_b2c_ali_mini_agent_PRIMARY", AliMiniAgent.ALI_MINI_AGENT.REC_ID);
@@ -364,7 +366,6 @@ public class Keys {
         public static final UniqueKey<UserLoginRecordRecord> KEY_B2C_USER_LOGIN_RECORD_PRIMARY = Internal.createUniqueKey(UserLoginRecord.USER_LOGIN_RECORD, "KEY_b2c_user_login_record_PRIMARY", UserLoginRecord.USER_LOGIN_RECORD.ID);
         public static final UniqueKey<UserSummaryTrendRecord> KEY_B2C_USER_SUMMARY_TREND_PRIMARY = Internal.createUniqueKey(UserSummaryTrend.USER_SUMMARY_TREND, "KEY_b2c_user_summary_trend_PRIMARY", UserSummaryTrend.USER_SUMMARY_TREND.ID);
         public static final UniqueKey<ShopAccountRecord> KEY_B2C_SHOP_ACCOUNT_USER_NAME = Internal.createUniqueKey(ShopAccount.SHOP_ACCOUNT, "KEY_b2c_shop_account_user_name", ShopAccount.SHOP_ACCOUNT.USER_NAME);
-        public static final UniqueKey<TaskJobsMainRecord> KEY_B2C_TASK_JOBS_MAIN_PRIMARY = Internal.createUniqueKey(TaskJobsMain.TASK_JOBS_MAIN, "KEY_b2c_task_jobs_main_PRIMARY", TaskJobsMain.TASK_JOBS_MAIN.ID);
-        public static final UniqueKey<TaskJobsContentRecord> KEY_B2C_TASK_JOBS_CONTENT_PRIMARY = Internal.createUniqueKey(TaskJobsContent.TASK_JOBS_CONTENT, "KEY_b2c_task_jobs_content_PRIMARY", TaskJobsContent.TASK_JOBS_CONTENT.ID);
+        public static final UniqueKey<TaskJobContentRecord> KEY_B2C_TASK_JOB_CONTENT_PRIMARY = Internal.createUniqueKey(TaskJobContent.TASK_JOB_CONTENT, "KEY_b2c_task_job_content_PRIMARY", TaskJobContent.TASK_JOB_CONTENT.ID);
     }
 }
