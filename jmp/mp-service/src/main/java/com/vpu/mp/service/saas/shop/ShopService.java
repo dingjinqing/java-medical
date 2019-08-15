@@ -143,17 +143,18 @@ public class ShopService extends MainBaseService {
 			select.where(SHOP.SHOP_TYPE.eq(param.shopType));
 		}
 
-		/*
-		 * if (StringUtils.isEmpty(param.shopType) &&
-		 * !StringUtils.isEmpty(param.shopTypes)) { // 区分体验版和付费版 if
-		 * (param.shopTypes.equals(ShopConst.shopTypes.TRIAL_VERSION)) { // 体验版
-		 * select.where(SHOP.SHOP_TYPE.eq(ShopConst.shopType.v1)); } if
-		 * (param.shopTypes.equals(ShopConst.shopTypes.PAID_VERSION)) { // 付费版
-		 * select.where(SHOP.SHOP_TYPE.in(ShopConst.shopType.v2, ShopConst.shopType.v3,
-		 * ShopConst.shopType.v4)); }
-		 * 
-		 * }
-		 */
+		if (StringUtils.isEmpty(param.shopType) && !StringUtils.isEmpty(param.shopTypes)) {
+			// 区分体验版和付费版
+			if (param.shopTypes.equals(ShopConst.shopTypes.TRIAL_VERSION)) {
+				// 体验版
+				select.where(SHOP.SHOP_TYPE.eq(ShopConst.shopType.v1));
+			}
+			if (param.shopTypes.equals(ShopConst.shopTypes.PAID_VERSION)) {
+				// 付费版
+				select.where(SHOP.SHOP_TYPE.in(ShopConst.shopType.v2, ShopConst.shopType.v3, ShopConst.shopType.v4));
+			}
+
+		}
 		if (param.shopFlag != null) {
 			if (param.shopFlag == 0) {
 				select.where(SHOP.SHOP_FLAG.eq(param.shopFlag).or(SHOP.SHOP_FLAG.isNull()));
