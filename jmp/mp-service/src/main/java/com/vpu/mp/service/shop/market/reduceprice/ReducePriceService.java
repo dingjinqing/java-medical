@@ -16,8 +16,11 @@ import com.vpu.mp.service.foundation.util.DateUtil;
 import com.vpu.mp.service.foundation.util.PageResult;
 import com.vpu.mp.service.foundation.util.Util;
 import com.vpu.mp.service.pojo.shop.config.ShopShareConfig;
+import com.vpu.mp.service.pojo.shop.market.MarketOrderListParam;
 import com.vpu.mp.service.pojo.shop.market.reduceprice.*;
 import com.vpu.mp.service.pojo.shop.order.OrderConstant;
+import com.vpu.mp.service.pojo.shop.order.OrderListInfoVo;
+import com.vpu.mp.service.pojo.shop.order.OrderPageListQueryParam;
 import org.jooq.Record;
 import org.jooq.SelectWhereStep;
 import org.springframework.stereotype.Service;
@@ -150,6 +153,35 @@ public class ReducePriceService extends ShopBaseService {
             set(REDUCE_PRICE.DEL_TIME,DateUtil.getLocalDateTime()).
             where(REDUCE_PRICE.ID.eq(id)).
             execute();
+    }
+
+    /**
+     * 限时降价订单
+     *
+     */
+    public PageResult<OrderListInfoVo> getReducePriceOrderList(MarketOrderListParam param) {
+        OrderPageListQueryParam orderParam =new OrderPageListQueryParam();
+        orderParam.setCurrentPage(param.getCurrentPage());
+        orderParam.setPageRows(param.getPageRows());
+        orderParam.setActivityId(param.getActivityId());
+        orderParam.setGoodsType(OrderConstant.GOODS_TYPE_REDUCE_PRICE);
+        orderParam.setGoodsName(param.getGoodsName());
+        orderParam.setOrderSn(param.getOrderSn());
+        orderParam.setOrderStatus(param.getOrderStatus());
+
+        orderParam.setMobile(param.getMobile());
+        orderParam.setConsignee(param.getConsignee());
+        orderParam.setCreateTimeStart(param.getCreateTimeStart());
+        orderParam.setCreateTimeEnd(param.getCreateTimeEnd());
+
+        orderParam.setCountryCode(param.getCountryCode());
+        orderParam.setProvinceCode(param.getProvinceCode());
+        orderParam.setCityCode(param.getCityCode());
+        orderParam.setDistrictCode(param.getDistrictCode());
+
+        PageResult<OrderListInfoVo> pageList = (PageResult<OrderListInfoVo>) saas().getShopApp(getShopId()).readOrder.getPageList(orderParam);
+
+        return pageList;
     }
 
     private int getReducePriceActGoodsAmount(int id){

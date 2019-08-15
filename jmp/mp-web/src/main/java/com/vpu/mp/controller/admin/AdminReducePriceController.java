@@ -1,6 +1,7 @@
 package com.vpu.mp.controller.admin;
 
 import com.vpu.mp.service.foundation.data.JsonResult;
+import com.vpu.mp.service.pojo.shop.market.MarketOrderListParam;
 import com.vpu.mp.service.pojo.shop.market.reduceprice.*;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -63,5 +64,14 @@ public class AdminReducePriceController extends AdminBaseController {
     public JsonResult delReducePrice(@RequestBody @Validated SimpleReducePriceParam param) {
         shop().reducePrice.delReducePrice(param.getId());
         return success();
+    }
+
+    /**
+     * 限时降价订单列表
+     *
+     */
+    @PostMapping(value = "/api/admin/market/reduceprice/order")
+    public JsonResult getReducePriceOrderList(@RequestBody @Validated MarketOrderListParam param) {
+        return success(shop().reducePrice.getReducePriceOrderList(param));
     }
 }
