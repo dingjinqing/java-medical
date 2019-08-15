@@ -3,21 +3,32 @@ package com.vpu.mp.service.shop.market.presale;
 import com.vpu.mp.db.shop.tables.OrderGoods;
 import com.vpu.mp.db.shop.tables.OrderInfo;
 import com.vpu.mp.db.shop.tables.Presale;
+import com.vpu.mp.db.shop.tables.records.PresaleProductRecord;
+import com.vpu.mp.db.shop.tables.records.PresaleRecord;
 import com.vpu.mp.service.foundation.service.ShopBaseService;
 import com.vpu.mp.service.foundation.util.PageResult;
 import com.vpu.mp.service.foundation.util.Util;
 import com.vpu.mp.service.pojo.shop.market.presale.PreSaleListParam;
 import com.vpu.mp.service.pojo.shop.market.presale.PreSaleListVo;
+import com.vpu.mp.service.pojo.shop.market.presale.PreSaleParam;
+import com.vpu.mp.service.pojo.shop.market.presale.Product;
 import com.vpu.mp.service.pojo.shop.order.OrderConstant;
+import org.jooq.DSLContext;
 import org.jooq.Record14;
 import org.jooq.SelectConditionStep;
 import org.jooq.impl.DSL;
 import org.springframework.stereotype.Service;
+import org.springframework.util.Assert;
 
 import java.io.Serializable;
 import java.sql.Timestamp;
+import java.util.List;
+import java.util.stream.Collectors;
 
+import static com.vpu.mp.db.shop.tables.PresaleProduct.PRESALE_PRODUCT;
 import static com.vpu.mp.service.pojo.shop.market.presale.PreSaleListParam.*;
+import static com.vpu.mp.service.pojo.shop.market.presale.PreSaleParam.DELIVER_POSTPONE;
+import static com.vpu.mp.service.pojo.shop.market.presale.PreSaleParam.DELIVER_SPECIFIC;
 import static com.vpu.mp.service.pojo.shop.order.OrderConstant.GOODS_TYPE_PRE_SALE;
 import static java.lang.String.format;
 import static org.springframework.util.StringUtils.isEmpty;
@@ -133,12 +144,11 @@ public class PreSaleService extends ShopBaseService {
         Timestamp startTime = param.getStartTime();
         Timestamp endTime = param.getEndTime();
         Byte status = param.getStatus();
-        Timestamp now = Util.currentTimeStamp();
         if (!isEmpty(name)) {
             query.and(TABLE.PRESALE_NAME.like(format("%s%%", name)));
         }
         if (null != preStartTime) {
-            query.and(TABLE.START_TIME.ge(preStartTime));
+            query.and(TABLE.PRE_START_TIME.ge(preStartTime));
         }
         if (null != preEndTime) {
             query.and(TABLE.PRE_END_TIME.le(preEndTime));
@@ -150,24 +160,149 @@ public class PreSaleService extends ShopBaseService {
             query.and(TABLE.END_TIME.le(endTime));
         }
         if (null != status) {
-            switch (status) {
-                case NOT_STARTED:
-                    query.and(TABLE.PRE_START_TIME.gt(now));
-                    break;
-                case ONGOING:
-                    query.and(TABLE.PRE_START_TIME.le(now).and(TABLE.PRE_END_TIME.gt(now)))
-                        .or(TABLE.START_TIME.ge(now).and(TABLE.END_TIME.gt(now)))
-                        .or(TABLE.PRE_START_TIME_2.le(now).and(TABLE.PRE_END_TIME_2.gt(now)));
-                    break;
-                case EXPIRED:
-                    query.and(TABLE.PRE_END_TIME.le(now).and(TABLE.PRE_START_TIME_2.gt(now))
-                        .and(TABLE.PRE_END_TIME_2.le(now).and(TABLE.START_TIME.gt(now))))
-                        .or(TABLE.PRE_END_TIME.le(now).and(TABLE.START_TIME.gt(now)).or(TABLE.END_TIME.gt(now)));
-                    break;
-                case DISABLED:
-                    break;
-            }
+            andStatus(query, status);
         }
+    }
+
+    /**
+     * 状态转换
+     */
+    private void andStatus(SelectConditionStep<Record14<Integer, String, Timestamp, Timestamp, Timestamp, Timestamp, Byte, Timestamp, Timestamp, Integer, Integer, Integer, Integer, Serializable>> query, Byte status) {
+        Timestamp now = Util.currentTimeStamp();
+        switch (status) {
+            case NOT_STARTED:
+                query.and(TABLE.PRE_START_TIME.gt(now));
+                break;
+            case ONGOING:
+                query.and(TABLE.PRE_START_TIME.le(now).and(TABLE.PRE_END_TIME.gt(now)))
+                    .or(TABLE.START_TIME.ge(now).and(TABLE.END_TIME.gt(now)))
+                    .or(TABLE.PRE_START_TIME_2.le(now).and(TABLE.PRE_END_TIME_2.gt(now)));
+                break;
+            case EXPIRED:
+                query.and(TABLE.PRE_END_TIME.le(now).and(TABLE.PRE_START_TIME_2.gt(now))
+                    .and(TABLE.PRE_END_TIME_2.le(now).and(TABLE.START_TIME.gt(now))))
+                    .or(TABLE.PRE_END_TIME.le(now).and(TABLE.START_TIME.gt(now)).or(TABLE.END_TIME.gt(now)));
+                break;
+            case DISABLED:
+                break;
+        }
+    }
+
+    /**
+     * 添加活动
+     */
+    public void addPreSale(PreSaleParam param) {
+        validateParam(param);
+        db().transaction(config -> {
+            DSLContext db = DSL.using(config);
+            this.insertPresale(db, param);
+        });
+    }
+
+    /**
+     * 保存活动
+     */
+    private void insertPresale(DSLContext db, PreSaleParam param) {
+        PresaleRecord presale = db.newRecord(TABLE, param);
+        presale.insert();
+        Integer id = presale.getId();
+        this.insertPresaleProduct(db, param, id);
+    }
+
+    /**
+     * 保存活动产品
+     */
+    private void insertPresaleProduct(DSLContext db, PreSaleParam param, Integer presaleId) {
+        List<Product> products = param.getProducts();
+        List<PresaleProductRecord> productRecords = products.stream().map(product -> {
+            product.setPresaleId(presaleId);
+            return db.newRecord(PRESALE_PRODUCT, product);
+        }).collect(Collectors.toList());
+        db.batchInsert(productRecords).execute();
+    }
+
+    /**
+     * 获取分享配置 json
+     */
+    private String shareConfigJson(PreSaleParam param) {
+        return null;
+    }
+
+    /**
+     * 校验活动商品参数
+     */
+    private void validateParam(PreSaleParam param) {
+        validateTime(param);
+        validateDeliverTime(param);
+        param.getProducts().forEach(this::validateProduct);
+    }
+
+    /**
+     * 校验支付时间
+     */
+    private void validateTime(PreSaleParam param) {
+        byte prePayStep = param.getPrePayStep();
+        switch (prePayStep) {
+            case 1:
+                if (param.getPreStartTime().after(param.getPreEndTime())) {
+                    throw new IllegalArgumentException("PreEndTime earlier than preStartTime");
+                }
+                break;
+            case 2:
+                Assert.notNull(param.getPreStartTime2(), "Missing parameter preStartTime2");
+                Assert.notNull(param.getPreEndTime2(), "Missing parameter preEndTime2");
+                if (param.getPreStartTime2().after(param.getPreEndTime2())) {
+                    throw new IllegalArgumentException("PreEndTime2 earlier than preStartTime2");
+                }
+                break;
+            default:
+                throw new IllegalArgumentException("Unexpected prePayStep: " + prePayStep);
+        }
+    }
+
+    /**
+     * 校验发货时间
+     */
+    private void validateDeliverTime(PreSaleParam param) {
+        byte deliverType = param.getDeliverType();
+        switch (deliverType) {
+            case DELIVER_SPECIFIC:
+                Assert.notNull(param.getDeliverTime(), "Missing parameter deliverTime");
+                if (param.getDeliverTime().before(param.getEndTime())) {
+                    throw new IllegalArgumentException("DeliverTime earlier than endTime");
+                }
+                break;
+            case DELIVER_POSTPONE:
+                Assert.notNull(param.getDeliverDays(), "Missing parameter deliverDays");
+                break;
+            default:
+                throw new IllegalArgumentException("Unexpected deliverType: " + deliverType);
+        }
+    }
+
+    /**
+     * 校验活动产品参数
+     */
+    private void validateProduct(Product product) {
+        Double presalePrice = product.getPresalePrice();
+        Double presaleMoney = product.getPresaleMoney();
+        Double preDiscountMoney1 = product.getPreDiscountMoney1();
+        Double preDiscountMoney2 = product.getPreDiscountMoney2();
+        if (preDiscountMoney1 < presaleMoney || preDiscountMoney1 > presalePrice) {
+            throwMoneyException();
+        }
+        if (null != preDiscountMoney2 &&
+            (preDiscountMoney2 < presaleMoney
+                || preDiscountMoney2 > presalePrice)) {
+            throwMoneyException();
+        }
+    }
+
+    /**
+     * 抵扣金额异常
+     */
+    private void throwMoneyException() {
+        throw new IllegalArgumentException("Discount money error");
     }
 
     /**
@@ -190,4 +325,12 @@ public class PreSaleService extends ShopBaseService {
     public void enablePreSale(Integer id) {
         db().update(TABLE).set(TABLE.STATUS, (byte) 1).where(TABLE.ID.eq(id)).execute();
     }
+
+    /**
+     * todo 活动分享
+     */
+
+    /**
+     * todo 导出 Excel
+     */
 }

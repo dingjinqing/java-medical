@@ -28,8 +28,9 @@ import com.vpu.mp.service.shop.market.groupdraw.*;
 import com.vpu.mp.service.shop.market.increasepurchase.IncreasePurchaseService;
 import com.vpu.mp.service.shop.market.integration.GroupIntegrationService;
 import com.vpu.mp.service.shop.market.lottery.LotteryService;
-import com.vpu.mp.service.shop.market.payreward.PayRewardService;
 import com.vpu.mp.service.shop.market.packagesale.PackSaleService;
+import com.vpu.mp.service.shop.market.payreward.PayRewardService;
+import com.vpu.mp.service.shop.market.presale.PreSaleOrderService;
 import com.vpu.mp.service.shop.market.presale.PreSaleService;
 import com.vpu.mp.service.shop.market.reduceprice.ReducePriceService;
 import com.vpu.mp.service.shop.market.seckill.SeckillService;
@@ -200,6 +201,7 @@ public class ShopApplication  {
      * 定金膨胀
      */
     @Autowired public PreSaleService preSale;
+    @Autowired public PreSaleOrderService preSaleOrder;
 
     /**
      * 打包一口价
