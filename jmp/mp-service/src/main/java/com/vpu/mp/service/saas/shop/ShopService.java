@@ -21,9 +21,9 @@ import org.jooq.Record9;
 import org.jooq.Result;
 import org.jooq.SelectWhereStep;
 import org.jooq.impl.DSL;
-import org.jooq.tools.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.util.StringUtils;
 
 import com.vpu.mp.db.main.tables.records.ShopOperationRecord;
 import com.vpu.mp.db.main.tables.records.ShopRecord;
@@ -414,31 +414,31 @@ public class ShopService extends MainBaseService {
 	 */
 	public String diffEdit(ShopRecord newShop, ShopRecord oldShop) {
 		StringBuffer sbf = new StringBuffer("新建或者更新");
-		if (!newShop.getMobile().equals(oldShop.getMobile())) {
+		if ((!StringUtils.isEmpty(newShop.getMobile()))&&!newShop.getMobile().equals(oldShop.getMobile())) {
 			sbf.append("电话:" + newShop.getMobile() + ",");			
 		}
-		if (!newShop.getShopName().equals(oldShop.getShopName())) {
+		if ((!StringUtils.isEmpty(newShop.getShopName()))&&!newShop.getShopName().equals(oldShop.getShopName())) {
 			sbf.append("店铺名称:" + newShop.getShopName() + ",");			
 		}
-		if (!newShop.getShopPhone().equals(oldShop.getShopPhone())) {
-			sbf.append("店铺客服电话:" + newShop.getShopPhone() + ",");			
+		if ((!StringUtils.isEmpty(newShop.getShopPhone()))&&!newShop.getShopPhone().equals(oldShop.getShopPhone())) {
+			sbf.append("店铺客服电话:" + newShop.getShopPhone() + ",");
 		}
-		if (!newShop.getShopNotice().equals(oldShop.getShopNotice())) {
+		if ((!StringUtils.isEmpty(newShop.getShopNotice()))&&!newShop.getShopNotice().equals(oldShop.getShopNotice())) {
 			sbf.append("店铺公告:" + newShop.getShopNotice() + ",");			
 		}
-		if (!newShop.getShopWx().equals(oldShop.getShopWx())) {
+		if ((!StringUtils.isEmpty(newShop.getShopWx()))&&!newShop.getShopWx().equals(oldShop.getShopWx())) {
 			sbf.append("店铺微信:" + newShop.getShopWx() + ",");			
 		}
-		if (!newShop.getShopEmail().equals(oldShop.getShopEmail())) {
+		if ((!StringUtils.isEmpty(newShop.getShopEmail()))&&!newShop.getShopEmail().equals(oldShop.getShopEmail())) {
 			sbf.append("店铺邮箱:" + newShop.getShopEmail() + ",");			
 		}
-		if (!newShop.getIsEnabled().equals(oldShop.getIsEnabled())) {
+		if ((!StringUtils.isEmpty(newShop.getIsEnabled()))&&!newShop.getIsEnabled().equals(oldShop.getIsEnabled())) {
 			sbf.append("店铺禁用:" + newShop.getIsEnabled() + ",");			
 		}
-		if (!newShop.getShopQq().equals(oldShop.getShopQq())) {
+		if ((!StringUtils.isEmpty(newShop.getShopQq()))&&!newShop.getShopQq().equals(oldShop.getShopQq())) {
 			sbf.append("店铺客服QQ:" + newShop.getShopQq() + ",");			
 		}
-		if (!newShop.getShopType().equals(oldShop.getShopType())) {
+		if ((!StringUtils.isEmpty(newShop.getShopType()))&&!newShop.getShopType().equals(oldShop.getShopType())) {
 			sbf.append("店铺类型:" + version.getVersionNameByLevel(newShop.getShopType()));			
 		}
 		return sbf.toString();
