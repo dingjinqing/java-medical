@@ -397,7 +397,7 @@ export default {
   border: 1px solid red;
   padding: 10px;
   color: #333;
-  min-width: 745px;
+  min-width: 100%;
 }
 .batchSetting {
   display: flex;

@@ -227,7 +227,7 @@ export default {
 </script>
 <style scoped lang="scss">
 .header_container {
-  min-width: 1280px;
+  min-width: 100%;
   width: 100%;
   height: 85px;
   line-height: 85px;

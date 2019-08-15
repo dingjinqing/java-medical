@@ -120,7 +120,7 @@ p {
 }
 .right_container {
   background-color: #e6e9f0;
-  min-width: 600px;
+  min-width: 100%;
   flex: 1;
   overflow-y: auto;
 }

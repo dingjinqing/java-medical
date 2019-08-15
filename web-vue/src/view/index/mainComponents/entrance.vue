@@ -54,7 +54,7 @@ export default {
   padding-top: 410px;
   text-align: center;
   padding-bottom: 70px;
-  min-width: 1024px;
+  min-width: 100%;
 }
 .en_box {
   background-color: #f7f7f7;

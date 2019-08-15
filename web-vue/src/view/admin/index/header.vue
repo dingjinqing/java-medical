@@ -202,7 +202,7 @@ export default {
 </script>
 <style scoped>
 .header_container {
-  min-width: 1250px;
+  min-width: 800px;
   width: 100%;
   height: 85px;
   line-height: 85px;

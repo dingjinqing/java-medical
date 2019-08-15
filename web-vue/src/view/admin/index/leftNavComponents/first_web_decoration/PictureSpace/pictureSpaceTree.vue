@@ -687,7 +687,7 @@ export default {
 .pic_container {
   padding: 10px;
   /* padding-right: 23px; */
-  min-width: 1400px;
+  min-width: 100%;
 }
 .imageDalog_p_height {
   display: flex;

@@ -58,7 +58,7 @@ export default {
 </script>
 <style scoped>
 .pro_highlights {
-  min-width: 1024px;
+  min-width: 100%;
   padding: 0 0px 20px;
 }
 .light_head {

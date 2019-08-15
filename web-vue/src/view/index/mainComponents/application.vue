@@ -68,7 +68,7 @@ div {
   box-sizing: border-box;
 }
 .container {
-  min-width: 1024px;
+  min-width: 100%;
   padding: 0 0px 20px;
 }
 .top {

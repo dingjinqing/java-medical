@@ -333,7 +333,7 @@ a {
   /* position: absolute; */
   padding: 0px 100px;
   width: 100%;
-  min-width: 1024px;
+  min-width: 100%;
   box-sizing: border-box;
   height: 82px;
   background: #fff !important;

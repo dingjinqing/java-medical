@@ -145,10 +145,10 @@ export default {
   padding: 0 100px 30px;
   box-shadow: 0 5px 16px rgba(0, 0, 0, 0.2);
   margin-top: 107px;
-  min-width: 1100px;
+  min-width: 100%;
 }
 .main {
-  min-width: 950px;
+  min-width: 100%;
 }
 .main_top {
   padding: 10px 0px;

@@ -173,7 +173,7 @@ export default {
   text-align: center;
   padding-bottom: 70px;
   position: relative;
-  min-width: 1024px;
+  min-width: 100%;
   padding: 0 0px 20px;
 }
 .light_head {

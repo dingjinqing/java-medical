@@ -255,7 +255,7 @@ export default {
   padding: 10px;
   padding-bottom: 68px;
   /* padding-right: 23px; */
-  min-width: 1300px;
+  min-width: 100%;
   font-size: 14px;
   height: 100%;
   position: relative;

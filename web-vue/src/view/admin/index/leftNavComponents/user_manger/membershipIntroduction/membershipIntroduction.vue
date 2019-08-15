@@ -194,7 +194,7 @@ export default {
 .introductionContainer {
   padding: 10px;
   padding-bottom: 68px;
-  min-width: 1300px;
+  min-width: 100%;
   font-size: 14px;
   height: 100%;
   position: relative;

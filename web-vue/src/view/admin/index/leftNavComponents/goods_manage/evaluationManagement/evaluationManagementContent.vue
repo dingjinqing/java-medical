@@ -41,7 +41,7 @@ export default {
 .brandManagementContent {
   padding: 10px;
   padding-right: 23px;
-  min-width: 1400px;
+  min-width: 100%;
   font-size: 14px;
   height: 100%;
   position: relative;

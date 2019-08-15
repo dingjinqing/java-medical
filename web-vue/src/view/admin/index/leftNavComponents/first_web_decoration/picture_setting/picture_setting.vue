@@ -475,7 +475,7 @@ export default {
 <style lang="scss" scoped>
 .picture_setting {
   padding: 10px;
-  min-width: 1400px;
+  min-width: 100%;
   font-size: 14px;
   height: 100%;
   .picture_settingMain {
