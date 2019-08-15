@@ -483,34 +483,6 @@ const routes = [
               meta: 'base_manger'
             },
             component: () => import('@/view/admin/index/leftNavComponents/base_manger/base_manger')
-          },
-          // 小程序授权页面
-          {
-            path: '/admin/home/main/program_auth',
-            name: 'program_auth',
-            meta: {
-              crumbTitle: 'router.program_auth',
-              meta: 'base_manger',
-              category: 'base_manger'
-            },
-            component: () =>
-              import(
-                '@/view/admin/index/leftNavComponents/base_manger/program_auth'
-              )
-          },
-          // 小程序授权后页面
-          {
-            path: '/admin/home/main/program_auth_details',
-            name: 'program_auth_details',
-            meta: {
-              crumbTitle: 'router.program_auth_details',
-              meta: 'base_manger',
-              category: 'base_manger'
-            },
-            component: () =>
-              import(
-                '@/view/admin/index/leftNavComponents/base_manger/program_auth_details'
-              )
           }
         ]
       }

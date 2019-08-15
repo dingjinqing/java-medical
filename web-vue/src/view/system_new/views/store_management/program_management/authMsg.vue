@@ -20,6 +20,7 @@
               <el-button
                 size="small"
                 type="primary"
+                @click="handleSureSetPay(9)"
               >
                 更新授权信息
               </el-button>
@@ -308,6 +309,7 @@
               <el-button
                 size="small"
                 type="primary"
+                @click="handleSureSetPay(7)"
               >
                 一键提交审核
               </el-button>
@@ -322,6 +324,7 @@
                       <el-button
                         size="small"
                         type="primary"
+                        @click="handleSureSetPay(3)"
                       >修改域名</el-button>
                     </td>
                   </tr>
@@ -394,6 +397,7 @@
                         style="vertical-align: middle"
                         size="small"
                         type="primary"
+                        @click="handleSureSetPay(4)"
                       >
                         获取二维码
                       </el-button>
@@ -402,11 +406,11 @@
                   <tr>
                     <td>可选类目</td>
                     <td>
-                      Array ( [0] => Array ( [first_class] => IT科技 [second_class] => 硬件与设备 [first_id] => 210 [second_id]
-                      => 211 ) )
+                      {{this.dataList.category}}
                       <el-button
                         size="small"
                         type="primary"
+                        @click="handleSureSetPay(5)"
                       >
                         获取可选类目
                       </el-button>
@@ -415,25 +419,11 @@
                   <tr>
                     <td>页面配置</td>
                     <td>
-                      Array ( [0] => pages/bottom/bottom [1] => pages/agreement/agreement [2] => pages/account/account [3]
-                      => pages/appointcomment/appointcomment [4] => pages/appointinfo/appointinfo [5] =>
-                      pages/appointlist/appointlist [6] => pages/appointment/appointment [7] =>
-                      pages/appointorder/appointorder [8] => pages/cart/cart [9] => pages/cardpay/cardpay [10] =>
-                      pages/checkout/checkout [11] => pages/collect/collect [12] => pages/comment/comment [13] =>
-                      pages/couponlist/couponlist [14] => pages/express/express [15] => pages/getcoupon/getcoupon [16] =>
-                      pages/goodscomment/goodscomment [17] => pages/groupbuyitem/groupbuyitem [18] =>
-                      pages/groupbuyinfo/groupbuyinfo [19] => pages/groupbuyrule/groupbuyrule [20] => pages/index/index
-                      [21] => pages/integral/integral [22] => pages/item/item [23] => pages/orderinfo/orderinfo [24] =>
-                      pages/orderlist/orderlist [25] => pages/return_order_list/return_order_list [26] =>
-                      pages/returnorder/returnorder [27] => pages/searchs/search [28] =>
-                      pages/servicecomment/servicecomment [29] => pages/splitcoupon/splitcoupon [30] =>
-                      pages/splitinfo/splitinfo [31] => pages/storelist/storelist [32] => pages/storeinfo/storeinfo [33]
-                      => pages/shopcheckout/shopcheckout [34] => pages/shoporderinfo/shoporderinfo [35] =>
-                      pages/usercenter/usercenter [36] => pages/usercardlist/usercardlist [37] =>
-                      pages/usercardinfo/usercardinfo [38] => pages/userinfo/userinfo )
+                      {{this.dataList.pageCfg}}
                       <el-button
                         size="small"
                         type="primary"
+                        @click="handleSureSetPay(6)"
                       >
                         获取页面配置
                       </el-button>
@@ -442,10 +432,11 @@
                   <tr>
                     <td>提交审核ID</td>
                     <td>
-                      500454342
+                      {{this.dataList.auditId}}
                       <el-button
                         size="small"
                         type="primary"
+                        @click="handleSureSetPay(7)"
                       >
                         提交审核
                       </el-button>
@@ -456,34 +447,35 @@
                       提交审核状态
                     </td>
                     <td>
-                      审核成功
+                      {{this.dataList.auditState}}
                     </td>
                   </tr>
                   <tr>
                     <td>提交审核时间</td>
                     <td>
-                      2019-08-01 14:45:07
+                      {{this.dataList.submitAuditTime}}
                     </td>
                   </tr>
                   <tr>
                     <td>审批成功时间</td>
                     <td>
-                      2019-08-02 09:45:34
+                      {{this.dataList.auditOkTime}}
                     </td>
                   </tr>
                   <tr>
                     <td>审批失败原因</td>
-                    <td v-html="'审批失败原因\t1:小程序内容不符合规则:<br>(1):你好，小程序【分类】页面无具体运营内容，请上架正式内容或商品（非测试）后重新提交审核。<br>'">
+                    <td v-html="dataList.auditFailReason">
 
                     </td>
                   </tr>
                   <tr>
                     <td>发布代码状态</td>
                     <td>
-                      <span>1</span>
+                      <span>{{this.dataList.auditOkTime}}</span>
                       <el-button
                         size="small"
                         type="primary"
+                        @click="handleSureSetPay(8)"
                       >
                         发布代码
                       </el-button>
@@ -492,13 +484,13 @@
                   <tr>
                     <td>发布时间</td>
                     <td>
-                      2019-08-01 11:52:22
+                      {{dataList.publishTime}}
                     </td>
                   </tr>
                   <tr>
                     <td>最后取消授权时间</td>
                     <td>
-                      2018-05-23 09:44:17
+                      {{dataList.lastCancelAuthTime}}
                     </td>
                   </tr>
 
@@ -585,7 +577,7 @@
           <el-button @click="dialogVisible = false">取 消</el-button>
           <el-button
             type="primary"
-            @click="handleSureSetPay()"
+            @click="handleSureSetPay(0)"
           >确 定</el-button>
         </span>
       </el-dialog>
@@ -706,6 +698,21 @@ export default {
                 break
             }
           })
+          switch (res.content.auditState) {
+            case 0:
+              res.content.auditState = '未提交'
+              break
+            case 1:
+              res.content.auditState = '审核中'
+              break
+            case 2:
+              res.content.auditState = '审核成功'
+              break
+            case 3:
+              res.content.auditState = '审核失败'
+              break
+          }
+
           console.log(arr)
           nowIdRequest(res.content.appId).then(res => {
             if (res.error === 0) {
@@ -724,6 +731,7 @@ export default {
     handleClose (idx) {
       console.log(`删除的tag标签为${this.tagOpt[idx].name}`)
       this.tagOpt.splice(idx, 1)
+      this.handleSureSetPay(2, this.tagOpt[idx].name)
     },
     // 设置支付方式下拉框支付
     handleSelect () {
@@ -740,11 +748,55 @@ export default {
       this.dialogVisible = true
     },
     // 设置支付方式弹窗确定事件
-    handleSureSetPay (index) {
+    handleSureSetPay (index, wechatid) {
       let obj = {}
+      obj.appId = this.dataList.appId
       switch (index) {
         case 0:
           obj.act = 'setting-sub-merchant'
+          obj.isSubMerchant = this.value
+          if (this.value === 2) {
+            obj.union_pay_app_id = this.appidinput
+            obj.union_pay_cus_id = this.shnuminput
+            obj.union_pay_app_key = this.myinput
+          } else if (this.value === 3) {
+            obj.merchant_category_code = this.mccinput
+            if (this.bzinput) {
+              obj.fee_type = this.bzinput
+            } else {
+              obj.fee_type = 'CNY'
+            }
+          }
+          break
+        case 1:
+          obj.act = 'handleSureSetPay'
+          obj.wechatId = this.tyinput
+          break
+        case 2:
+          obj.act = 'remove-tester'
+          obj.wechatId = wechatid
+          break
+        case 3:
+          obj.act = 'modify-domain'
+          break
+        case 4:
+          obj.act = 'get-test-qr'
+          break
+        case 5:
+          obj.act = 'get-category'
+          break
+        case 6:
+          obj.act = 'get-page'
+          break
+        case 7:
+          obj.act = 'submit-audit'
+          break
+        case 8:
+          obj.act = 'publish-code'
+          break
+        case 9:
+          obj.act = 'update-mp'
+          break
       }
 
       publishSetRequest(obj).then(res => {
@@ -761,6 +813,7 @@ export default {
         name: this.tyinput
       }
       this.tagOpt.push(obj)
+      this.handleSureSetPay(1)
       this.smallDialogVisible = false
     }
   }

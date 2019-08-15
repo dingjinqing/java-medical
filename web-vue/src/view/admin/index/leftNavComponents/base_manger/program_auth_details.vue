@@ -14,7 +14,7 @@
               小程序名称:
             </span>
             <span class="item-title ml-20">
-              微铺宝b2c商城
+              {{this.data.nickName}}
             </span>
             <el-button
               size="mini"
@@ -49,7 +49,7 @@
               审核状态:
             </span>
             <span class="item-title ml-20">
-              审核成功
+              {{data.auditState}}
             </span>
           </li>
           <li class="details-item">
@@ -57,20 +57,17 @@
               授权状态:
             </span>
             <span class="item-title ml-20">
-              已授权
+              {{data.isAuthOk}}
             </span>
           </li>
           <li class="details-item img-row">
             <span class="item-label fll">
               小程序头像:
             </span>
-            <el-avatar
-              shape="square"
-              :size="100"
-              fit="cover"
-              class="fll ml-20"
-              src="http://wx.qlogo.cn/mmopen/ibkKkoaQFco4LkwgLSc80z6O24h245qPMLL6znSwbPhEs5eLBcT07CXcXC0CzvohMts3N47SuUQsNmbMOPzbNsFrSGoj1Lfd8/0"
-            />
+            <img
+              style="width:100px;margin-left:25px"
+              :src="data.headImg"
+            >
           </li>
           <li
             class="details-item img-row"
@@ -79,20 +76,17 @@
             <span class="item-label">
               小程序码:
             </span>
-            <el-avatar
-              class="item-label ml-20"
-              :size="150"
-              shape="square"
-              fit="cover"
-              src="http://mpdevimg2.weipubao.cn/upload/7893594/qrcode/1/T1P0_20190806150150.jpg"
-            />
+            <img
+              style="width:100px;margin-left:25px"
+              :src="data.qrcodeUrl"
+            >
           </li>
           <li class="details-item">
             <span class="item-label">
               微信认证:
             </span>
             <span class="item-title ml-20">
-              已认证
+              {{data.verifyTypeInfo}}
             </span>
           </li>
           <li class="details-item">
@@ -100,7 +94,7 @@
               原始ID:
             </span>
             <span class="item-title ml-20">
-              gh_b48e11dd4e99
+              {{data.userName}}
             </span>
           </li>
           <li class="details-item">
@@ -108,7 +102,7 @@
               AppID:
             </span>
             <span class="item-title ml-20">
-              wxeaeb5c37a376f415
+              {{data.appId}}
             </span>
           </li>
         </ul>
@@ -224,33 +218,17 @@
             <el-button
               size="small"
               type="primary"
+              @click="handleToSave()"
             >保存</el-button>
           </li>
         </ul>
-      </div>
-    </el-card>
-    <el-card>
-      <div
-        slot="header"
-        class="__el-card-header"
-      >短信设置</div>
-      <div class="flex-wrap">
-        <el-input
-          v-model="queryData.rechargeAmount"
-          style="width: 200px;"
-          size="small"
-        />
-        <el-button
-          size="mini"
-          type="text"
-          class="fz-14"
-        >创建充值账号</el-button>
       </div>
     </el-card>
   </div>
 </template>
 
 <script>
+import { checkGoodThingRequest, setGoodThingRequest } from '@/api/admin/basicConfiguration/shopConfig'
 export default {
   name: 'program_auth_details',
   data () {
@@ -258,16 +236,116 @@ export default {
       queryData: {
         switch: false,
         isShowDetails: false, // 订单详情页是否展示
-        isShowGoodsDetails: false, // 商品详情页是否展示
-        rechargeAmount: '' // 充值金额
+        isShowGoodsDetails: false // 商品详情页是否展示
       },
       isShowOrderDetails: false, // 是否展示订单详情页缩略图
-      isShowGoodsDetails: false // 是否显示商品详情页缩略图
+      isShowGoodsDetails: false, // 是否显示商品详情页缩略图,
+      data: {}
     }
   },
+  mounted () {
+    // 初始化数据
+    this.defaultData()
+  },
   methods: {
+    defaultData () {
+      this.$http.$on('handleToAuthData', res => {
+        console.log(res)
+        this.handleData(res)
+      })
+      checkGoodThingRequest().then(res => {
+        if (res.error === 0) {
+          if (res.content.enabeldWxShoppingList === '0') {
+            this.queryData.switch = false
+          } else {
+            this.queryData.switch = true
+          }
+          switch (res.content.wxShoppingRecommend) {
+            case '':
+              this.isShowDetails = false
+              this.isShowGoodsDetails = false
+              break
+            case '1':
+              this.isShowDetails = true
+              break
+            case '2':
+              this.isShowGoodsDetails = true
+              break
+            case '1,2':
+              this.isShowDetails = true
+              this.isShowGoodsDetails = true
+          }
+        }
+        console.log(res)
+      })
+    },
+    // 初始化数据处理
+    handleData (res) {
+      switch (res.auditState) {
+        case 0:
+          res.auditState = '未提交'
+          break
+        case 1:
+          res.auditState = '审核中'
+          break
+        case 2:
+          res.auditState = '审核中'
+          break
+        case 3:
+          res.auditState = '审核失败'
+          break
+      }
+      switch (res.isAuthOk) {
+        case 0:
+          res.isAuthOk = '未授权'
+          break
+        case 1:
+          res.isAuthOk = '已授权'
+      }
+      switch (res.verifyTypeInfo) {
+        case '-1':
+          res.verifyTypeInfo = '未认证'
+          break
+        case '0':
+          res.verifyTypeInfo = '微信认证'
+      }
+      this.data = res
+    },
     handleChange (val) {
       console.log(val)
+    },
+    // 保存点击
+    handleToSave () {
+      let params1 = ''
+      let params2 = ''
+      if (this.queryData.switch === false) {
+        params1 = '0'
+      } else {
+        params1 = '1'
+      }
+      if (this.queryData.isShowDetails === false && this.queryData.isShowGoodsDetails === false) {
+        params2 = ''
+      } else if (this.queryData.isShowDetails === true && this.queryData.isShowGoodsDetails === false) {
+        params2 = '1'
+      } else if (this.queryData.isShowDetails === false && this.queryData.isShowGoodsDetails === true) {
+        params2 = '2'
+      } else if (this.queryData.isShowDetails === true && this.queryData.isShowGoodsDetails === true) {
+        params2 = '1,2'
+      }
+
+      let obj = {
+        'enabeldWxShoppingList': params1,
+        'wxShoppingRecommend': params2
+      }
+      console.log(params1, params2)
+      setGoodThingRequest(obj).then(res => {
+        if (res.error === 0) {
+          this.$message({
+            message: '设置成功',
+            type: 'success'
+          })
+        }
+      })
     }
   }
 }
@@ -275,9 +353,6 @@ export default {
 
 <style scoped lang="scss">
 .program_auth_details {
-  padding: 10px;
-  background: #e0e3ec;
-
   /deep/ .el-card__header {
     border-left: 2px solid #5a8bff;
     font-size: 14px;

@@ -74,10 +74,6 @@ export default {
 
 <style scoped lang="scss">
 .program-auth {
-  padding: 15px;
-  background: #e0e3ec;
-  min-height: 100vh;
-
   .card-text {
     margin-bottom: 10px;
     text-align: center;
