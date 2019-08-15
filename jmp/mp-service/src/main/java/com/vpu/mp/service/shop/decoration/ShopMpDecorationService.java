@@ -1,6 +1,5 @@
 package com.vpu.mp.service.shop.decoration;
 
-import static com.vpu.mp.db.main.tables.DecorationTemplate.DECORATION_TEMPLATE;
 import static com.vpu.mp.db.shop.tables.PageClassification.PAGE_CLASSIFICATION;
 import static com.vpu.mp.db.shop.tables.XcxCustomerPage.XCX_CUSTOMER_PAGE;
 

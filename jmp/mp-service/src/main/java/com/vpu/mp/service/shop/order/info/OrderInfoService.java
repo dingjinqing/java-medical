@@ -3,7 +3,6 @@ package com.vpu.mp.service.shop.order.info;
 import static com.vpu.mp.db.shop.tables.GroupBuyList.GROUP_BUY_LIST;
 import static com.vpu.mp.db.shop.tables.OrderGoods.ORDER_GOODS;
 import static com.vpu.mp.db.shop.tables.OrderInfo.ORDER_INFO;
-import static com.vpu.mp.db.shop.tables.RefundAmountRecord.REFUND_AMOUNT_RECORD;
 import static com.vpu.mp.db.shop.tables.User.USER;
 import static com.vpu.mp.db.shop.tables.UserTag.USER_TAG;
 import static org.jooq.impl.DSL.count;
@@ -31,7 +30,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.vpu.mp.db.shop.tables.OrderInfo;
-import com.vpu.mp.db.shop.tables.RefundAmountRecord;
 import com.vpu.mp.service.foundation.database.DslPlus;
 import com.vpu.mp.service.foundation.service.ShopBaseService;
 import com.vpu.mp.service.foundation.util.BigDecimalUtil;

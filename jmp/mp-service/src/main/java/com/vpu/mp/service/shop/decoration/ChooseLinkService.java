@@ -1,6 +1,5 @@
 package com.vpu.mp.service.shop.decoration;
 
-import static com.vpu.mp.db.main.Tables.CATEGORY;
 import static com.vpu.mp.db.shop.Tables.ASSESS_ACTIVITY;
 import static com.vpu.mp.db.shop.Tables.COUPON_PACK;
 import static com.vpu.mp.db.shop.Tables.DECORATE_LINK;
@@ -34,9 +33,7 @@ import com.vpu.mp.db.shop.tables.records.DecorateLinkRecord;
 import com.vpu.mp.service.foundation.data.DelFlag;
 import com.vpu.mp.service.foundation.service.ShopBaseService;
 import com.vpu.mp.service.foundation.util.PageResult;
-import com.vpu.mp.service.pojo.saas.category.SysCatevo;
 import com.vpu.mp.service.pojo.shop.decoration.ActivityVo;
-import com.vpu.mp.service.pojo.shop.decoration.ChildCateVo;
 import com.vpu.mp.service.pojo.shop.decoration.ChooseLinkParam;
 import com.vpu.mp.service.pojo.shop.decoration.GoodsLinkVo;
 import com.vpu.mp.service.pojo.shop.decoration.PageFormVo;

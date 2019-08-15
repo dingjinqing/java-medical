@@ -1,15 +1,10 @@
 package com.vpu.mp.service.foundation.service;
 
-import java.util.ArrayDeque;
 import java.util.Arrays;
-import java.util.Deque;
 
-import org.jooq.Configuration;
-import org.jooq.ContextTransactionalRunnable;
 import org.jooq.Record;
 import org.jooq.Result;
 import org.jooq.SelectLimitStep;
-import org.jooq.impl.DSL;
 import org.jooq.impl.DefaultDSLContext;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

@@ -2,7 +2,6 @@ package com.vpu.mp.controller.admin;
 
 import java.util.List;
 
-import com.vpu.mp.service.pojo.shop.coupon.hold.CouponHoldListVo;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -12,12 +11,12 @@ import com.vpu.mp.service.foundation.data.JsonResult;
 import com.vpu.mp.service.foundation.util.PageResult;
 import com.vpu.mp.service.pojo.shop.coupon.give.CouponGiveDeleteParam;
 import com.vpu.mp.service.pojo.shop.coupon.give.CouponGiveDetailParam;
-import com.vpu.mp.service.pojo.shop.coupon.give.CouponGiveDetailVo;
 import com.vpu.mp.service.pojo.shop.coupon.give.CouponGiveGrantParam;
 import com.vpu.mp.service.pojo.shop.coupon.give.CouponGiveListParam;
 import com.vpu.mp.service.pojo.shop.coupon.give.CouponGiveListVo;
 import com.vpu.mp.service.pojo.shop.coupon.give.CouponGivePopParam;
 import com.vpu.mp.service.pojo.shop.coupon.give.CouponGivePopVo;
+import com.vpu.mp.service.pojo.shop.coupon.hold.CouponHoldListVo;
 
 /**
  * 发放优惠券控制器

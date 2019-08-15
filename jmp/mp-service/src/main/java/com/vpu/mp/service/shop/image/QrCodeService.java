@@ -1,5 +1,15 @@
 package com.vpu.mp.service.shop.image;
 
+import static com.vpu.mp.db.shop.tables.Code.CODE;
+import static java.lang.String.format;
+
+import java.io.IOException;
+import java.text.SimpleDateFormat;
+import java.util.Map;
+
+import org.apache.commons.lang3.StringUtils;
+import org.springframework.stereotype.Service;
+
 import com.upyun.UpException;
 import com.vpu.mp.db.main.tables.records.MpAuthShopRecord;
 import com.vpu.mp.db.shop.tables.records.CodeRecord;
@@ -7,17 +17,8 @@ import com.vpu.mp.service.foundation.data.DelFlag;
 import com.vpu.mp.service.foundation.service.ShopBaseService;
 import com.vpu.mp.service.foundation.util.Util;
 import com.vpu.mp.service.pojo.shop.qrcode.QrCodeTypeEnum;
+
 import me.chanjar.weixin.common.error.WxErrorException;
-import org.apache.commons.lang3.StringUtils;
-import org.springframework.stereotype.Service;
-
-import java.io.IOException;
-import java.text.SimpleDateFormat;
-import java.util.Map;
-
-import static com.vpu.mp.db.main.Tables.MP_AUTH_SHOP;
-import static com.vpu.mp.db.shop.tables.Code.CODE;
-import static java.lang.String.format;
 
 /**
  * 小程序码

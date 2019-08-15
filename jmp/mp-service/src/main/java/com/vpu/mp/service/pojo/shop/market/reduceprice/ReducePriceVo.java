@@ -1,11 +1,11 @@
 package com.vpu.mp.service.pojo.shop.market.reduceprice;
 
-import com.vpu.mp.service.pojo.shop.config.ShopShareConfig;
-import lombok.Data;
-
-import java.math.BigDecimal;
 import java.sql.Timestamp;
 import java.util.List;
+
+import com.vpu.mp.service.pojo.shop.config.ShopShareConfig;
+
+import lombok.Data;
 
 /**
  * @author: 王兵兵

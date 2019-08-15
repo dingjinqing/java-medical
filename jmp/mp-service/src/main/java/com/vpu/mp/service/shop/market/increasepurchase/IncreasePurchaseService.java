@@ -1,27 +1,42 @@
 package com.vpu.mp.service.shop.market.increasepurchase;
 
-import com.vpu.mp.db.shop.tables.*;
+import java.math.BigDecimal;
+import java.sql.Timestamp;
+import java.util.List;
+
+import org.jooq.Condition;
+import org.jooq.DSLContext;
+import org.jooq.Record6;
+import org.jooq.SelectConditionStep;
+import org.jooq.Table;
+import org.jooq.impl.DSL;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import com.vpu.mp.db.shop.tables.Goods;
+import com.vpu.mp.db.shop.tables.OrderGoods;
+import com.vpu.mp.db.shop.tables.OrderInfo;
+import com.vpu.mp.db.shop.tables.PurchasePriceDefine;
+import com.vpu.mp.db.shop.tables.PurchasePriceRule;
 import com.vpu.mp.db.shop.tables.records.PurchasePriceDefineRecord;
 import com.vpu.mp.db.shop.tables.records.PurchasePriceRuleRecord;
 import com.vpu.mp.service.foundation.service.ShopBaseService;
 import com.vpu.mp.service.foundation.util.FieldsUtil;
 import com.vpu.mp.service.foundation.util.PageResult;
 import com.vpu.mp.service.pojo.shop.image.ShareQrCodeVo;
-import com.vpu.mp.service.pojo.shop.market.increasepurchase.*;
-import com.vpu.mp.service.pojo.shop.order.OrderConstant;
+import com.vpu.mp.service.pojo.shop.market.increasepurchase.AddPurchaseParam;
+import com.vpu.mp.service.pojo.shop.market.increasepurchase.GoodsInfo;
+import com.vpu.mp.service.pojo.shop.market.increasepurchase.PurchaseDetailParam;
+import com.vpu.mp.service.pojo.shop.market.increasepurchase.PurchaseDetailVo;
+import com.vpu.mp.service.pojo.shop.market.increasepurchase.PurchaseRule;
+import com.vpu.mp.service.pojo.shop.market.increasepurchase.PurchaseShowParam;
+import com.vpu.mp.service.pojo.shop.market.increasepurchase.PurchaseShowVo;
+import com.vpu.mp.service.pojo.shop.market.increasepurchase.PurchaseStatusParam;
+import com.vpu.mp.service.pojo.shop.market.increasepurchase.UpdatePurchaseParam;
 import com.vpu.mp.service.pojo.shop.qrcode.QrCodeTypeEnum;
 import com.vpu.mp.service.shop.image.QrCodeService;
+
 import lombok.extern.slf4j.Slf4j;
-import org.jooq.*;
-import org.jooq.impl.DSL;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
-
-import java.math.BigDecimal;
-import java.sql.Timestamp;
-import java.util.List;
-
-import static org.jooq.impl.DSL.sum;
 
 /**
  * @author liufei

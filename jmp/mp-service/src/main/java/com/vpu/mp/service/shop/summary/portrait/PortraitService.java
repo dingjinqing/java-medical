@@ -1,17 +1,8 @@
 package com.vpu.mp.service.shop.summary.portrait;
 
-import com.fasterxml.jackson.core.type.TypeReference;
-import com.vpu.mp.db.main.tables.records.DictCityRecord;
-import com.vpu.mp.db.main.tables.records.DictProvinceRecord;
-import com.vpu.mp.db.shop.tables.records.MpUserPortraitRecord;
-import com.vpu.mp.service.foundation.service.ShopBaseService;
-import com.vpu.mp.service.foundation.util.Util;
-import com.vpu.mp.service.pojo.shop.summary.KeyValueChart;
-import com.vpu.mp.service.pojo.shop.summary.portrait.*;
-import org.jooq.Record2;
-import org.jooq.Result;
-import org.jooq.impl.DSL;
-import org.springframework.stereotype.Service;
+import static com.vpu.mp.db.main.tables.DictCity.DICT_CITY;
+import static com.vpu.mp.db.shop.tables.MpUserPortrait.MP_USER_PORTRAIT;
+import static com.vpu.mp.db.shop.tables.UserDetail.USER_DETAIL;
 
 import java.sql.Timestamp;
 import java.time.Instant;
@@ -19,10 +10,26 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
-import static com.vpu.mp.db.main.tables.DictCity.DICT_CITY;
-import static com.vpu.mp.db.main.tables.DictProvince.DICT_PROVINCE;
-import static com.vpu.mp.db.shop.tables.MpUserPortrait.MP_USER_PORTRAIT;
-import static com.vpu.mp.db.shop.tables.UserDetail.USER_DETAIL;
+import org.jooq.Record2;
+import org.jooq.Result;
+import org.jooq.impl.DSL;
+import org.springframework.stereotype.Service;
+
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.vpu.mp.db.main.tables.records.DictCityRecord;
+import com.vpu.mp.db.main.tables.records.DictProvinceRecord;
+import com.vpu.mp.db.shop.tables.records.MpUserPortraitRecord;
+import com.vpu.mp.service.foundation.service.ShopBaseService;
+import com.vpu.mp.service.foundation.util.Util;
+import com.vpu.mp.service.pojo.shop.summary.KeyValueChart;
+import com.vpu.mp.service.pojo.shop.summary.portrait.Portrait;
+import com.vpu.mp.service.pojo.shop.summary.portrait.PortraitDeviceItem;
+import com.vpu.mp.service.pojo.shop.summary.portrait.PortraitItem;
+import com.vpu.mp.service.pojo.shop.summary.portrait.PortraitParam;
+import com.vpu.mp.service.pojo.shop.summary.portrait.PortraitSum;
+import com.vpu.mp.service.pojo.shop.summary.portrait.PortraitVo;
+import com.vpu.mp.service.pojo.shop.summary.portrait.ProvinceParam;
+import com.vpu.mp.service.pojo.shop.summary.portrait.ProvinceVo;
 
 /**
  * 用户画像

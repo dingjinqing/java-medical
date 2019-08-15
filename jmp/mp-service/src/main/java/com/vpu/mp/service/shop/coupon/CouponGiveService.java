@@ -1,41 +1,58 @@
 package com.vpu.mp.service.shop.coupon;
 
+import static com.vpu.mp.db.shop.Tables.CART;
+import static com.vpu.mp.db.shop.Tables.CUSTOMER_AVAIL_COUPONS;
+import static com.vpu.mp.db.shop.Tables.GIVE_VOUCHER;
+import static com.vpu.mp.db.shop.Tables.MRKING_VOUCHER;
+import static com.vpu.mp.db.shop.Tables.ORDER_GOODS;
+import static com.vpu.mp.db.shop.Tables.ORDER_INFO;
+import static com.vpu.mp.db.shop.Tables.USER;
+import static com.vpu.mp.db.shop.Tables.USER_CARD;
+import static com.vpu.mp.db.shop.Tables.USER_LOGIN_RECORD;
+import static com.vpu.mp.db.shop.Tables.USER_TAG;
+
+import java.io.IOException;
+import java.math.BigDecimal;
+import java.sql.Timestamp;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Optional;
+import java.util.Set;
+
+import org.jooq.Record1;
+import org.jooq.Record5;
+import org.jooq.SelectLimitStep;
+import org.jooq.SelectWhereStep;
+import org.jooq.impl.DSL;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.mysql.cj.util.StringUtils;
-import com.rabbitmq.client.Channel;
 import com.vpu.mp.config.mq.RabbitConfig;
 import com.vpu.mp.db.shop.tables.CustomerAvailCoupons;
 import com.vpu.mp.db.shop.tables.MrkingVoucher;
 import com.vpu.mp.db.shop.tables.records.CustomerAvailCouponsRecord;
 import com.vpu.mp.db.shop.tables.records.MrkingVoucherRecord;
 import com.vpu.mp.service.foundation.mq.RabbitmqSendService;
-import com.vpu.mp.service.foundation.mq.handler.BaseRabbitHandler;
 import com.vpu.mp.service.foundation.service.ShopBaseService;
 import com.vpu.mp.service.foundation.util.PageResult;
 import com.vpu.mp.service.foundation.util.Util;
-import com.vpu.mp.service.pojo.shop.coupon.give.*;
+import com.vpu.mp.service.pojo.shop.coupon.give.CouponGiveDeleteParam;
+import com.vpu.mp.service.pojo.shop.coupon.give.CouponGiveDetailParam;
+import com.vpu.mp.service.pojo.shop.coupon.give.CouponGiveGrantParam;
+import com.vpu.mp.service.pojo.shop.coupon.give.CouponGiveListConditionVo;
+import com.vpu.mp.service.pojo.shop.coupon.give.CouponGiveListParam;
+import com.vpu.mp.service.pojo.shop.coupon.give.CouponGiveListVo;
+import com.vpu.mp.service.pojo.shop.coupon.give.CouponGivePopParam;
+import com.vpu.mp.service.pojo.shop.coupon.give.CouponGivePopVo;
+import com.vpu.mp.service.pojo.shop.coupon.give.CouponGiveQueueParam;
 import com.vpu.mp.service.pojo.shop.coupon.hold.CouponHoldListParam;
 import com.vpu.mp.service.pojo.shop.coupon.hold.CouponHoldListVo;
-import org.jooq.Record1;
-import org.jooq.Record5;
-import org.jooq.SelectLimitStep;
-import org.jooq.SelectWhereStep;
-import org.jooq.impl.DSL;
-import org.springframework.amqp.core.Message;
-import org.springframework.amqp.rabbit.annotation.RabbitHandler;
-import org.springframework.amqp.rabbit.annotation.RabbitListener;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.messaging.handler.annotation.Payload;
-import org.springframework.stereotype.Service;
-
-import java.io.IOException;
-import java.math.BigDecimal;
-import java.sql.Timestamp;
-import java.util.*;
-
-import static com.vpu.mp.db.shop.Tables.*;
 
 /**
  * 优惠券管理

@@ -1,6 +1,5 @@
 package com.vpu.mp.service.pojo.shop.market.payreward.record;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Data;
 
 /**

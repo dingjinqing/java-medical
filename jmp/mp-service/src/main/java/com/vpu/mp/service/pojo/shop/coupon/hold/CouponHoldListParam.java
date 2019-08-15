@@ -2,8 +2,6 @@ package com.vpu.mp.service.pojo.shop.coupon.hold;
 
 import lombok.Data;
 
-import java.util.List;
-
 /**
  * @author 孔德成
  * @date 2019/8/13 16:46

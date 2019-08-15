@@ -1,6 +1,5 @@
 package com.vpu.mp.service.shop.decoration;
 
-import static com.vpu.mp.db.main.tables.MpJumpVersion.MP_JUMP_VERSION;
 import static com.vpu.mp.db.shop.tables.MpJump.MP_JUMP;
 import static com.vpu.mp.db.shop.tables.MpJumpUsable.MP_JUMP_USABLE;
 import static org.jooq.impl.DSL.count;
@@ -9,7 +8,6 @@ import static org.jooq.impl.DSL.sum;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.jooq.Record1;
 import org.springframework.stereotype.Service;
 
 import com.vpu.mp.db.shop.tables.records.MpJumpUsableRecord;

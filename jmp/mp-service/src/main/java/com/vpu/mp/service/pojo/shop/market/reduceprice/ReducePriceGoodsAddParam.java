@@ -1,9 +1,10 @@
 package com.vpu.mp.service.pojo.shop.market.reduceprice;
 
-import lombok.Data;
+import java.math.BigDecimal;
 
 import javax.validation.constraints.NotNull;
-import java.math.BigDecimal;
+
+import lombok.Data;
 
 /**
  * @author: 王兵兵

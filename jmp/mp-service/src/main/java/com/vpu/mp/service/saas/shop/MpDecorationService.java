@@ -1,7 +1,6 @@
 package com.vpu.mp.service.saas.shop;
 
 import static com.vpu.mp.db.main.tables.DecorationTemplate.DECORATION_TEMPLATE;
-import static com.vpu.mp.db.shop.tables.XcxCustomerPage.XCX_CUSTOMER_PAGE;
 
 import org.jooq.Record;
 import org.jooq.Result;
@@ -10,7 +9,6 @@ import org.jooq.tools.StringUtils;
 import org.springframework.stereotype.Service;
 
 import com.vpu.mp.db.main.tables.records.DecorationTemplateRecord;
-import com.vpu.mp.db.shop.tables.records.XcxCustomerPageRecord;
 import com.vpu.mp.service.foundation.service.MainBaseService;
 import com.vpu.mp.service.foundation.util.PageResult;
 import com.vpu.mp.service.pojo.saas.decorate.DecorationTemplatePojo;

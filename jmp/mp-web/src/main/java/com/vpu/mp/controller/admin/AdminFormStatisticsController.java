@@ -20,7 +20,6 @@ import com.vpu.mp.service.pojo.shop.market.form.FormFeedParam;
 import com.vpu.mp.service.pojo.shop.market.form.FormSearchParam;
 import com.vpu.mp.service.pojo.shop.market.form.FormStatusParam;
 import com.vpu.mp.service.pojo.shop.market.form.FormUpdateParam;
-import com.vpu.mp.service.pojo.shop.market.form.ImgDownloadParam;
 
 /**
  * @author liufei

@@ -1,7 +1,6 @@
 package com.vpu.mp.service.shop.order.refund.record;
 
 import static com.vpu.mp.db.shop.tables.RefundAmountRecord.REFUND_AMOUNT_RECORD;
-import static com.vpu.mp.db.shop.tables.OrderInfo.ORDER_INFO;
 
 import java.math.BigDecimal;
 import java.util.LinkedHashMap;

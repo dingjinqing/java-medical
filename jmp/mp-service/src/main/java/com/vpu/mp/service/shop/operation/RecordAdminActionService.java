@@ -1,18 +1,13 @@
 package com.vpu.mp.service.shop.operation;
 
-import static com.vpu.mp.db.main.tables.Shop.SHOP;
-import static com.vpu.mp.db.main.tables.ShopAccount.SHOP_ACCOUNT;
-import static com.vpu.mp.db.main.tables.ShopChildAccount.SHOP_CHILD_ACCOUNT;
 import static com.vpu.mp.db.shop.tables.RecordAdminAction.RECORD_ADMIN_ACTION;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import java.util.Optional;
 
 import org.apache.commons.lang3.StringUtils;
 import org.jooq.Record;
-import org.jooq.Record2;
 import org.jooq.SelectWhereStep;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,7 +19,6 @@ import org.springframework.web.context.request.RequestContextHolder;
 import com.vpu.mp.config.AuthConfig;
 import com.vpu.mp.db.main.tables.records.ShopAccountRecord;
 import com.vpu.mp.db.main.tables.records.ShopChildAccountRecord;
-import com.vpu.mp.db.main.tables.records.ShopRecord;
 import com.vpu.mp.db.shop.tables.records.RecordAdminActionRecord;
 import com.vpu.mp.service.auth.AdminAuth;
 import com.vpu.mp.service.foundation.jedis.JedisManager;

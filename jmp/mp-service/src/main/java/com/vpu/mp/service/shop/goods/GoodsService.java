@@ -1,6 +1,5 @@
 package com.vpu.mp.service.shop.goods;
 
-import static com.vpu.mp.db.main.Tables.CATEGORY;
 import static com.vpu.mp.db.shop.Tables.GOODS;
 import static com.vpu.mp.db.shop.Tables.GOODS_BRAND;
 import static com.vpu.mp.db.shop.Tables.GOODS_IMG;
