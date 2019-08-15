@@ -843,12 +843,12 @@ create table `b2c_return_order` (
   `shop_id`                 int(11)        	not null  default 0 comment '店铺id',
   `user_id`                 int(11)         not null  default '0',
   `goods_id`                int(11)         not null  default '0',
-  `refund_status`           tinyint(1)     	not null  default '1' comment '1是审核中，2是通过审核，3退货没通过审核，4买家提交物流 或 仅退款申请，5：退款退货成功，6是拒绝退款退货',
+  `refund_status`           tinyint(1)     	not null  default '1' comment '1是审核中，2是通过审核，3退货没通过审核，4买家提交物流 或 仅退款申请，5：退款退货成功，6是拒绝退款退货,7 撤销退款、退货',
   `money`                   decimal(10, 2)  not null  default '0.00' comment '退款商品金额',
   `shipping_fee`            decimal(10, 2)  not null  default '0.00' comment '退运费金额',
   `return_type`             tinyint(1)              not null  default '0' comment '退款类型,0:只退款，1:退货又退款',
-  `reason`                  varchar(191)            not null  default '' comment '退款理由',
-  `return_desc`             text                    comment '退款说明',
+  `reason_type`             tinyint(1)              not null  default '0' comment '退款/退货原因类型，0：协商一致退款，1：未按约定时间发货，2：缺货，3：拍错/多拍/不想要，4：其他',
+  `reason_desc`             text                    comment '退款/退货描述',
   `shipping_type`           varchar(191)            not null  default '' comment '快递类型',
   `shipping_no`             varchar(50)             not null  default '' comment '快递单号',
   `goods_images`            text comment '商品图片',
@@ -872,7 +872,6 @@ create table `b2c_return_order` (
   primary key (`ret_id`),
   key `order_sn` (`order_sn`)
 );
-
 
 -- -- --  退款日志记录，优先级卡余额、用户余额、积分抵扣、支付额
 -- drop table if exists `b2c_refund_amount_record`;

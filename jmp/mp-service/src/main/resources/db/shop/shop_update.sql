@@ -641,3 +641,10 @@ add column `activity_id` int(11) NOT NULL DEFAULT '0' COMMENT '营销活动id';
 -- 王兵兵 201-08-14
 alter table `b2c_reduce_price` add column `limit_flag`  tinyint(1)   default '0' comment '超限购买设置标记，1禁止超限购买，0超限全部恢复原价';
 alter table `b2c_reduce_price_goods` drop column `is_checked`;
+
+-- 王帅retuen_order删除退款原因，修改退款原因描述，增加退款原因类型
+alter table `b2c_return_order`
+drop column `reason`,
+drop column `return_desc`,
+add column `reason_type`  tinyint(1) NOT NULL DEFAULT '0' comment '退款/退货原因类型，0：协商一致退款，1：未按约定时间发货，2：缺货，3：拍错/多拍/不想要，4：其他',
+add column `reason_desc` text comment '退款/退货描述';
