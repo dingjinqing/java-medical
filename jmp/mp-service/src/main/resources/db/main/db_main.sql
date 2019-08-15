@@ -1,7 +1,7 @@
 /*
-drop database if exists mini_main;
-create database mini_main default charset utf8mb4 collate utf8mb4_unicode_ci;
-use b2c_shop;
+drop database if exists jmini_main;
+create database jmini_main default charset utf8mb4 collate utf8mb4_unicode_ci;
+use jmini_main;
 */
 -- ddd
 --
@@ -115,7 +115,7 @@ create table `b2c_shop` (
   `business_state`   tinyint(1)                              default 0 comment '营业状态 0未营业 1营业',
   `manage_fee`       decimal(10, 2) default '0.00' not null comment '平台管理费',
   `surplus`          decimal(10, 2)                not null  default 0.0 comment '余额',
-  `db_config`        text                                    default '' comment 'db config,json format',
+  `db_config`        text                                     comment 'db config,json format',
   `shop_type`        varchar(20)                   not null  default 'v3' comment '店铺类型',
   `version_config`   text comment '店铺功能',
   `shop_flag`        tinyint(2) default 0          null comment '店铺标志：0店家，1欧派，2嗨购',
@@ -299,7 +299,7 @@ create table `b2c_mp_auth_shop` (
   `alias`                 varchar(191)          default '' comment '授权方小程序所设置的微信号，可为空',
   `verify_type_info`      varchar(191)          default '' comment '授权方认证类型，-1代表未认证，0代表微信认证',
   `head_img`              varchar(191)          default '' comment '头像URL',
-  `func_info`             text                  default '' comment '权限集',
+  `func_info`             text                   comment '权限集',
   `is_auth_ok`            tinyint(1)            default 1 comment '是否授权成功,如果小程序后台取消授权，则为0',
   `last_auth_time`        timestamp    null     default null comment '最后成功授权的时间',
   `last_cancel_auth_time` timestamp    null     default null comment '最后取消授权的时间',
@@ -355,7 +355,7 @@ create table `b2c_mp_official_account` (
   `alias`                 varchar(191)          default '' comment '授权方小程序所设置的微信号，可为空',
   `verify_type_info`      varchar(191)          default '' comment '授权方认证类型，-1代表未认证，0代表微信认证',
   `head_img`              varchar(191)          default '' comment '头像URL',
-  `func_info`             text                  default '' comment '权限集',
+  `func_info`             text                   comment '权限集',
   `is_auth_ok`            tinyint(1)            default 1 comment '是否授权成功,如果公众号后台取消授权，则为0',
   `last_auth_time`        timestamp    null     default null comment '最后成功授权的时间',
   `last_cancel_auth_time` timestamp    null     default null comment '最后取消授权的时间',
@@ -453,7 +453,7 @@ create table `b2c_user` (
   `score`              int(11)                        default '0' comment '积分',
   `source`             int(11)                        default '-1' comment '门店来源-1未录入0后台>0为门店',
   `invite_id`          int(11)                        default '0' comment '邀请人ID',
-  `invite_expiry_date` date                           default '0000-00-00' comment '邀请失效时间',
+  `invite_expiry_date` date                 null         comment '邀请失效时间',
   `wx_union_id`        varchar(191)         not null  default '' comment '小程序union_id',
   `update_time`        timestamp            null      default CURRENT_TIMESTAMP on update CURRENT_TIMESTAMP comment '最后修改时间',
   `is_distributor`     tinyint(2) default 0 null comment '是否是分销员',
@@ -554,7 +554,7 @@ create table `b2c_mp_deploy_history` (
   `deploy_id`         int(11)      not null            auto_increment comment '自增ID',
   `bind_template_id`  int(11)      not null comment '小程序模板Id',
   `app_id`            varchar(191) not null            default '' comment '小程序app_id',
-  `deploy_log`        text                             default '' comment '小程序模板部署日志',
+  `deploy_log`        text                              comment '小程序模板部署日志',
   `deploy_time`       timestamp    not null            default now() comment '小程序模板添加时间',
   `is_modify_domain`  tinyint(1)                       default 0 comment '是否修改开发和业务域名，0未修改，1已修改',
   `upload_state`      tinyint(1)                       default 0 comment '上传状态，0未上传，1已上传',
@@ -582,7 +582,7 @@ create table `b2c_mp_operate_log` (
   `template_id`  int(11)      not null comment '小程序模板Id',
   `operate_type` tinyint      not null  default 1 comment '操作类型',
   `operate_state` tinyint      not null  default 1 comment '操作状态:1成功 2失败',
-  `memo`         text                   default '' comment '失败原因',
+  `memo`         text                    comment '失败原因',
   `create_time`  timestamp    not null  default now() comment '记录时间',
   primary key (`operate_id`),
   key (`app_id`),
@@ -606,7 +606,7 @@ create table `b2c_back_process` (
   `only_run_one`  tinyint(1)             default 0 comment '是否只允许一个进程存在，按照class_name，static_method联合查',
   `progress`      smallint(4)            default 0 comment '执行进度',
   `progress_info` varchar(255) not null  default '' comment '当前进度信息',
-  `end_time`      timestamp    not null  default '0000-00-00 00:00:00' comment '进程结束时间',
+  `end_time`      timestamp    not null  comment '进程结束时间',
   `job_code`      int          not null  default 0 comment '执行结果码，成功0，其他非0',
   `job_message`   varchar(255) not null  default '' comment '错误信息',
   `job_result`    text comment '执行结果,serialize存储',
@@ -1676,7 +1676,7 @@ create table `b2c_db_option_record` (
   `option_rst`  longtext collate utf8mb4_unicode_ci comment '执行结果',
   `db_type`     varchar(32) collate utf8mb4_unicode_ci    default '' comment '更新类型：mian主库，shop从库',
   `shop_id`     int(11)   not null                        default '0' comment '店铺ID，单个店铺更新时使用',
-  `in_time`     timestamp null                            default '0000-00-00 00:00:00' comment '添加时间',
+  `in_time`     timestamp null                             comment '添加时间',
   `up_time`     timestamp not null                        default CURRENT_TIMESTAMP on update CURRENT_TIMESTAMP comment '更新时间',
   `option_type` varchar(32) collate utf8mb4_unicode_ci    default '' comment '操作类型：command命令行操作，SQL语句操作',
   `total_num`   int(6)                                    default '0' comment '总更新条数',
@@ -1692,7 +1692,7 @@ create table `b2c_upload_uyun_record` (
   `file_size`        int(64)      not null comment '文件大小',
   `file_url`         varchar(500) not null default '' comment '文件url',
   `update_timestamp` varchar(500) not null default '' comment '文件更新时间戳',
-  `update_date`      timestamp    not null default '0000-00-00 00:00:00' comment '文件更新日期',
+  `update_date`      timestamp    not null  comment '文件更新日期',
   `upload_status`    tinyint(2)            default 0 comment '文件上传状态 0：上传成功；1：上传失败（或开关关闭后未上传的文件）',
   `upload_time`      timestamp             default now() comment '文件上传时间',
   `fail_reason`      text         not null comment '失败原因',
@@ -1715,7 +1715,7 @@ create table `b2c_third_party_services` (
   index `account_id` (`account_id`)
 );
 
---task jobs
+#task jobs
 CREATE TABLE `b2c_task_jobs_main` (
     `ID` INT(11) NOT NULL AUTO_INCREMENT,
 	`SHOP_ID` INT(11) DEFAULT '0' COMMENT '店铺ID',
@@ -1729,7 +1729,7 @@ CREATE TABLE `b2c_task_jobs_main` (
 	`UPDATE_TIME` TIMESTAMP NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '最后修改时间',
 	`DEL_FLAG` TINYINT(1) DEFAULT '0' COMMENT '删除标识：0未删除，1已删除',
 	PRIMARY KEY (`ID`)
-)
+);
 
 CREATE TABLE `b2c_task_jobs_content` (
     `ID` INT(11) NOT NULL AUTO_INCREMENT,
@@ -1739,4 +1739,4 @@ CREATE TABLE `b2c_task_jobs_content` (
 	`UPDATE_TIME` TIMESTAMP NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '最后修改时间',
 	`DEL_FLAG` TINYINT(1) DEFAULT '0' COMMENT '删除标识：0未删除，1已删除',
 	PRIMARY KEY (`ID`)
-)
+);
