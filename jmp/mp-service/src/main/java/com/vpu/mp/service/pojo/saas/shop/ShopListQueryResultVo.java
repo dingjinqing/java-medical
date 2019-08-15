@@ -6,6 +6,7 @@ import java.sql.Timestamp;
 import com.vpu.mp.service.foundation.util.Page;
 
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 /**
  * 
@@ -13,6 +14,7 @@ import lombok.Data;
  *
  */
 @Data
+@NoArgsConstructor
 public class ShopListQueryResultVo {
 	public Page page;
 	public Integer sysId;
