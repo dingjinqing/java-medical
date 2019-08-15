@@ -70,7 +70,7 @@ public class AdminIncreasePurchaseController extends AdminBaseController {
     /**
      * 分享,获取小程序二维码
      */
-    @PostMapping("/api/admin/formstatistics/shareForm")
+    @PostMapping("/api/market/increasepurchase/shareForm")
     public JsonResult shareForm(@RequestBody @Validated FormDetailParam param) {
         return success(shop().formService.shareForm(param));
     }
