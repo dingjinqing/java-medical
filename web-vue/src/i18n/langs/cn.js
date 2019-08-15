@@ -298,7 +298,7 @@ const cn = {
   programVersion, // system 后台小程序版本
   shopAccountList, // system 店铺账户列表
   shopList, // sysytem 店铺列表
-  marketManage,//营销管理
+  marketManage, // 营销管理
   ...zhLocale
 }
 

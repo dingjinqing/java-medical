@@ -35,9 +35,8 @@ export const cn = {
   base_manger: ['基础配置', '店铺基础配置'],
   // 小程序管理 自定义页面装修
   picture_setting: ['小程序管理', '自定义页面装修'],
-  //营销管理
+  // 营销管理
   market_manage: ['营销管理']
-
 
 }
 
@@ -94,6 +93,6 @@ export const en = {
   base_manger: ['Basic configuration', 'Shop Foundation Configuration'],
   // 小程序管理 自定义页面装修
   picture_setting: ['Small Program Management', 'Custom Page Decoration'],
-    //营销管理
+  // 营销管理
   market_manage: ['Marketing management']
 }
