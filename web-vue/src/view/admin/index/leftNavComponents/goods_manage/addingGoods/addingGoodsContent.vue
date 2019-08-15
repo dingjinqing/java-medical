@@ -1,54 +1,38 @@
 <template>
   <div class="addingGoodsContent">
-    <!-- 卡片 -->
+    <!-- 主要内容区域 -->
     <el-card class="box-card">
       <!-- 步骤条  -->
-      <el-steps
-        :active="active"
-        finish-status="finish"
-        simple
-        style="margin-top: 0px"
-      >
-
-        <el-step
-          @click.native="toFirstPage"
-          :title="title1"
-          icon="el-icon-edit"
+      <section class="header">
+        <el-steps
+          :active="active"
+          finish-status="finish"
+          simple
+          style="margin-top: 0px"
         >
-        </el-step>
-
-        <el-step
-          @click.native="toSecondPage"
-          :title="title2"
-          icon="el-icon-edit"
-        ></el-step>
-
-        <el-step
-          @click.native="toPageThree"
-          :title="title3"
-          icon="el-icon-edit"
-        ></el-step>
-
-      </el-steps>
+          <el-step
+            @click.native="basicInfo"
+            :title="title1"
+            icon="el-icon-edit"
+          >
+          </el-step>
+          <el-step
+            @click.native="goodsDetails"
+            :title="title2"
+            icon="el-icon-edit"
+          ></el-step>
+          <el-step
+            @click.native="otherInfo"
+            :title="title3"
+            icon="el-icon-edit"
+          ></el-step>
+        </el-steps>
+      </section>
       <!-- 编辑基本信息|编辑商品详情|编辑分销信息 -->
-      <div v-if="active === 1">
-        <addingGoodsProductInfo
-          :active='active'
-          @toSecondPage='changeActive'
-        />
-      </div>
-      <div v-else-if="active === 2">
-        <addingGoodsDetails
-          @toFirst='toFirst'
-          @toThird='toThird'
-        />
-      </div>
-      <div v-else-if="active === 3">
-        <addingGoodsDistributionInfo @toPre='toPre' />
-      </div>
-      <div v-else>
-        Not Component
-      </div>
+      <!-- 路由匹配到的组件将渲染在这里 -->
+      <keep-alive>
+        <router-view></router-view>
+      </keep-alive>
     </el-card>
 
   </div>
@@ -67,29 +51,40 @@ export default {
       title3: '编辑分销信息'
     }
   },
+  watch: {
+    '$route': function (to, from) {
+      console.log(to)
+      switch (to.name) {
+        case 'basic':
+          this.active = 1
+          break
+        case 'details':
+          this.active = 2
+          break
+        case 'distribution':
+          this.active = 3
+          break
+      }
+    }
+  },
   methods: {
-    toPre () {
-      this.active = 2
+    basicInfo () {
+      this.$router.push(
+        { path: 'basic', query: {} }
+      )
     },
-    toFirst () {
-      this.active = 1
+    goodsDetails () {
+      this.$router.push(
+        { path: 'details', query: {} }
+      )
     },
-    toThird () {
-      this.active = 3
-    },
-    changeActive () {
-      this.active = 2
-    },
-    toFirstPage () {
-      this.active = 1
-    },
-    toSecondPage () {
-      this.active = 2
-    },
-    toPageThree () {
-      this.active = 3
+    otherInfo () {
+      this.$router.push(
+        { path: 'distribution', query: {} }
+      )
     }
   }
+
 }
 </script>
 

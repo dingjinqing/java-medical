@@ -21,6 +21,7 @@ import VueCropper from 'vue-cropper'
 // 全局flag
 localStorage.setItem('V-overallFlag', true)
 Vue.prototype.$imageHost = 'http://jmpdevimg.weipubao.cn'
+Vue.prototype.$imageHostDev = `@/assets/image/admin/`
 // 全局事件总线
 Vue.prototype.$EventBus = new Vue()
 Vue.use(VueCropper)

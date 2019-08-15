@@ -3,7 +3,7 @@
     <el-form
       :model="formData"
       :rules="rules"
-      ref="form"
+      ref="basicInfo_form"
       label-width="120px"
       class="basic"
     >
@@ -13,7 +13,9 @@
         prop="goodsName"
       >
         <el-input
+          ref="goodsName"
           style="width:400px"
+          @blur="sendGoodsName"
           v-model="formData.goodsName"
           size="small"
         ></el-input>
@@ -340,7 +342,16 @@ export default {
     this.init()
     this.fetchSortList()
   },
+  mounted () {
+
+  },
+  computed: {
+    getFormData () {
+      return this.formData
+    }
+  },
   methods: {
+
     handleTest () {
       getLabelList({}).then(res => console.log(res)).catch(err => console.log(err))
       // deleteSort({
@@ -424,6 +435,13 @@ export default {
     },
     showDialog () {
       this.dialogVisible = true
+    },
+    // 传值函数 事件派发
+    passValue () {
+
+    },
+    sendGoodsName () {
+
     }
 
   }

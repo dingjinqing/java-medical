@@ -22,7 +22,10 @@ const routes = [
               crumbTitle: '',
               meta: 'first_web_manage'
             },
-            component: () => import('@/view/admin/index/leftNavComponents/first_web_manage/overviewOfMall')
+            component: () =>
+              import(
+                '@/view/admin/index/leftNavComponents/first_web_manage/overviewOfMall'
+              )
           },
           {
             path: '/admin/home/main/overviewStatistics',
@@ -125,7 +128,10 @@ const routes = [
           {
             path: '/admin/home/main/bottomNavigation',
             name: 'image_manager',
-            component: () => import('@/view/admin/index/leftNavComponents/first_web_decoration/bottomNavigation/bottomNavigation'),
+            component: () =>
+              import(
+                '@/view/admin/index/leftNavComponents/first_web_decoration/bottomNavigation/bottomNavigation'
+              ),
             meta: {
               crumbTitle: 'router.bottomNavigation',
               meta: 'first_web_decoration'
@@ -293,6 +299,7 @@ const routes = [
           // 添加商品
           {
             path: '/admin/home/main/addingGoods',
+            redirect: '/admin/home/main/addingGoods/basic',
             name: 'goods_add',
             meta: {
               crumbTitle: 'router.addingGoods',
@@ -301,7 +308,51 @@ const routes = [
             component: () =>
               import(
                 '@/view/admin/index/leftNavComponents/goods_manage/addingGoods/addingGoods'
-              )
+              ),
+            children: [
+              // 编辑基本信息
+              {
+                path: '/admin/home/main/addingGoods/basic',
+                name: 'basic',
+                meta: {
+                  crumbTitle: 'router.addingGoods',
+                  meta: 'goods_manage',
+                  category: 'goods_add'
+                },
+                component: () =>
+                  import(
+                    '@/view/admin/index/leftNavComponents/goods_manage/addingGoods/addingGoodsProductInfo'
+                  )
+              },
+              // 编辑商品详情
+              {
+                path: '/admin/home/main/addingGoods/details',
+                name: 'details',
+                meta: {
+                  crumbTitle: 'router.addingGoods',
+                  meta: 'goods_manage',
+                  category: 'goods_add'
+                },
+                component: () =>
+                  import(
+                    '@/view/admin/index/leftNavComponents/goods_manage/addingGoods/addingGoodsDetails'
+                  )
+              },
+              // 编辑分销信息
+              {
+                path: '/admin/home/main/addingGoods/distribution',
+                name: 'distribution',
+                meta: {
+                  crumbTitle: 'router.addingGoods',
+                  meta: 'goods_manage',
+                  category: 'goods_add'
+                },
+                component: () =>
+                  import(
+                    '@/view/admin/index/leftNavComponents/goods_manage/addingGoods/addingGoodsDistributionInfo'
+                  )
+              }
+            ]
           },
           // 运费模板
           {
@@ -398,7 +449,10 @@ const routes = [
               crumbTitle: 'router.membershipList',
               meta: 'user_manger'
             },
-            component: () => import('@/view/admin/index/leftNavComponents/user_manger/membershipList/membershipList')
+            component: () =>
+              import(
+                '@/view/admin/index/leftNavComponents/user_manger/membershipList/membershipList'
+              )
           },
           {
             path: '/admin/home/main/membershipInformation',
@@ -408,7 +462,10 @@ const routes = [
               meta: 'user_manger',
               category: 'user_list'
             },
-            component: () => import('@/view/admin/index/leftNavComponents/user_manger/membershipList/membershipInformation')
+            component: () =>
+              import(
+                '@/view/admin/index/leftNavComponents/user_manger/membershipList/membershipInformation'
+              )
           },
           {
             path: '/admin/home/main/receiveDetail',
@@ -482,7 +539,10 @@ const routes = [
               crumbTitle: 'router.base_manger',
               meta: 'base_manger'
             },
-            component: () => import('@/view/admin/index/leftNavComponents/base_manger/base_manger')
+            component: () =>
+              import(
+                '@/view/admin/index/leftNavComponents/base_manger/base_manger'
+              )
           }
         ]
       }
