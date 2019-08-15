@@ -25,6 +25,9 @@ import com.vpu.mp.service.pojo.shop.distribution.DistributorLevelParam;
 import com.vpu.mp.service.pojo.shop.distribution.DistributorLevelVo;
 import com.vpu.mp.service.pojo.shop.distribution.DistributorListParam;
 import com.vpu.mp.service.pojo.shop.distribution.DistributorListVo;
+import com.vpu.mp.service.pojo.shop.distribution.DistributorWithdrawDetailVo;
+import com.vpu.mp.service.pojo.shop.distribution.DistributorWithdrawListParam;
+import com.vpu.mp.service.pojo.shop.distribution.DistributorWithdrawListVo;
 import com.vpu.mp.service.pojo.shop.distribution.PromotionLanguageAddParam;
 import com.vpu.mp.service.pojo.shop.distribution.PromotionLanguageListParam;
 import com.vpu.mp.service.pojo.shop.distribution.PromotionLanguageListVo;
@@ -460,5 +463,28 @@ public class AdminDistributionController extends AdminBaseController{
 	public JsonResult promotionLanguageOpen(Integer id) {
 		int result = shop().promotionLanguage.openPromotionLanguage(id);
 		return this.success(result);
+	}
+	
+	//分销提现审核
+	/**
+	 * 分销提现审核列表
+	 * @param param
+	 * @return
+	 */
+	@PostMapping("/admin/distribution/withdraw/list")
+	public JsonResult withdrawList(DistributorWithdrawListParam param) {
+		PageResult<DistributorWithdrawListVo> withdrawList = shop().withdraw.getWithdrawList(param);
+		return this.success(withdrawList);
+	}
+	
+	/**
+	 * 提现审核详情
+	 * @param orderSn
+	 * @return
+	 */
+	@GetMapping("/admin/distribution/withdraw/detail")
+	public JsonResult withdrawDetail(String orderSn) {
+		DistributorWithdrawDetailVo detail = shop().withdraw.getWithdrawDetail(orderSn);
+		return this.success(detail);
 	}
 }

@@ -105,6 +105,7 @@ public class ShopApplication  {
     @Autowired public BrokerageStatisticalService brokerage; //佣金统计
     @Autowired public RebateGoodsService rebateGoods; //返利商品统计
     @Autowired public PromotionLanguageService promotionLanguage; //分销推广语
+    @Autowired public DistributorWithdrawService withdraw; //分销提现
 	@Autowired public MemberCardOrderService memberCardOrder;
 	@Autowired public TransactionStatisticsService transactionService;
     @Autowired public CouponPackOrderService couponPackOrder;
