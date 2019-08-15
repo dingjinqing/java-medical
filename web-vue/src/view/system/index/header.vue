@@ -364,7 +364,7 @@ label {
 .header_nav > div > img {
   position: absolute;
   left: 50%;
-  transform: translateX(-50%); // 修复原代码图片不居中问题
+  transform: translateX(-50%);
   width: 26px;
   height: 24px;
 }
