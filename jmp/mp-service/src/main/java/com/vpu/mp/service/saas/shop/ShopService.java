@@ -85,14 +85,14 @@ public class ShopService extends MainBaseService {
 	
 	
 	public PageResult<ShopListQueryResultVo> getPageList(ShopListQueryParam param) {
-		SelectWhereStep<Record> select = db()
-				.select(SHOP.asterisk(), MP_AUTH_SHOP.APP_ID, MP_AUTH_SHOP.IS_AUTH_OK, MP_AUTH_SHOP.NICK_NAME,
+		SelectWhereStep<?> select = db()
+				.select(SHOP.SHOP_TYPE, MP_AUTH_SHOP.APP_ID, MP_AUTH_SHOP.IS_AUTH_OK, MP_AUTH_SHOP.NICK_NAME,
 						MP_AUTH_SHOP.PRINCIPAL_NAME)
 				.from(SHOP).join(SHOP_ACCOUNT).on(SHOP.SYS_ID.eq(SHOP_ACCOUNT.SYS_ID)).leftJoin(MP_AUTH_SHOP)
 				.on(SHOP.SHOP_ID.eq(DSL.cast(MP_AUTH_SHOP.SHOP_ID, Integer.class)));
 		select = this.buildOptions(select, param);
 		select.orderBy(SHOP.CREATED.desc());
-		PageResult<ShopListQueryResultVo> result = account.getPageResult(select, param.currentPage, param.pageRows,
+		PageResult<ShopListQueryResultVo> result = this.getPageResult(select, param.currentPage, param.pageRows,
 				ShopListQueryResultVo.class);
 		for (ShopListQueryResultVo shopList : result.dataList) {
 			shopList.setRenewMoney(this.renew.getShopRenewTotal(shopList.getShopId()));
@@ -102,7 +102,7 @@ public class ShopService extends MainBaseService {
 		return result;
 	}
 
-	public SelectWhereStep<Record> buildOptions(SelectWhereStep<Record> select, ShopListQueryParam param) {
+	public SelectWhereStep<?> buildOptions(SelectWhereStep<?> select, ShopListQueryParam param) {
 		if (param == null) {
 			return select;
 		}
