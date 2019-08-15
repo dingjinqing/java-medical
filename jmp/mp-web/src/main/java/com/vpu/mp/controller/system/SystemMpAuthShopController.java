@@ -214,6 +214,11 @@ public class SystemMpAuthShopController extends SystemBaseController {
 
     }
 
+    /**
+     *  小程序授权列表分页查询
+     * @param param
+     * @return
+     */
     @PostMapping("/api/system/mp/auth/list")
     public JsonResult authList(@RequestBody MpAuthShopListParam param) {
         PageResult<MpAuthShopListVo> authList = saas.shop.mp.getAuthList(param);

@@ -102,8 +102,9 @@ public class AdminWechatApiController extends AdminBaseController {
      * @param config
      */
     @PostMapping("/api/admin/wxshopping/update")
-    public void switchWxShoppingList(@RequestBody WxShoppingListConfig config){
+    public JsonResult switchWxShoppingList(@RequestBody WxShoppingListConfig config){
         shop().shoppingListConfig.setShoppingListConfig(config);
+        return success();
     }
 
     /**
