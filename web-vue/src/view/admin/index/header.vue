@@ -302,7 +302,7 @@ label {
   display: flex;
   height: 85px;
   float: left;
-  margin-left: 95px;
+  margin-left: 6%;
 }
 .header_nav > div {
   height: 85px;
