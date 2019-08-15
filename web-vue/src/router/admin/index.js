@@ -382,7 +382,7 @@ const routes = [
             path: '/admin/home/main/first_market_manage',
             name: 'first_market_manage',
             meta: {
-              crumbTitle: '',
+              crumbTitle: 'router.market_manage',
               meta: 'first_market_manage'
             },
             component: () =>

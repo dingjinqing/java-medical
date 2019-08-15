@@ -5,6 +5,7 @@ import { cn as shopAccountList } from './views/shopAccountList'
 import { cn as shopList } from './views/shopList'
 import { cn as router } from './views/router'
 import { cn as membershipIntroduction } from './views/membershipIntroduction'
+import { cn as marketManage } from './views/marketManage'
 console.log(zhLocale)
 const cn = {
   message: {
@@ -297,6 +298,7 @@ const cn = {
   programVersion, // system 后台小程序版本
   shopAccountList, // system 店铺账户列表
   shopList, // sysytem 店铺列表
+  marketManage,//营销管理
   ...zhLocale
 }
 
