@@ -9,8 +9,8 @@ import lombok.Data;
  */
 @Data
 public class WxShoppingListConfig {
-
+    /**"0"未开启 "1"开启*/
     private String enabeldWxShoppingList;
-
+    /** "1"订单详情页显示，"2"商品详情页显示，"1,2"前两者都设置，""空表示未设置*/
     private String wxShoppingRecommend;
 }

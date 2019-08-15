@@ -1,10 +1,9 @@
 package com.vpu.mp.controller.admin;
 
+import com.vpu.mp.service.pojo.shop.config.WxShoppingListConfig;
 import org.slf4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ResponseBody;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import com.vpu.mp.db.main.tables.records.MpAuthShopRecord;
 import com.vpu.mp.service.foundation.data.JsonResult;
@@ -97,5 +96,25 @@ public class AdminWechatApiController extends AdminBaseController {
 		}
 		return success(record.into(MpAuthShopToAdminVo.class));
 	}
+
+    /**
+     * 设置小程序好物圈
+     * @param config
+     */
+    @PostMapping("/api/admin/wxshopping/update")
+    public void switchWxShoppingList(@RequestBody WxShoppingListConfig config){
+        shop().shoppingListConfig.setShoppingListConfig(config);
+    }
+
+    /**
+     * 查看小程序好物圈情况
+     * @return
+     */
+    @GetMapping("/api/admin/wxshopping/list")
+    public JsonResult getWxShoppongList(){
+        WxShoppingListConfig shoppingListConfig = shop().shoppingListConfig.getShoppingListConfig();
+
+        return success(shoppingListConfig);
+    }
 
 }
