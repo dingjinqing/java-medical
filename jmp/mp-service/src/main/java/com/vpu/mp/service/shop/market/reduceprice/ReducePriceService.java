@@ -179,7 +179,8 @@ public class ReducePriceService extends ShopBaseService {
         orderParam.setCityCode(param.getCityCode());
         orderParam.setDistrictCode(param.getDistrictCode());
 
-        PageResult<OrderListInfoVo> pageList = (PageResult<OrderListInfoVo>) saas().getShopApp(getShopId()).readOrder.getPageList(orderParam);
+        @SuppressWarnings("unchecked")
+		PageResult<OrderListInfoVo> pageList = (PageResult<OrderListInfoVo>) saas().getShopApp(getShopId()).readOrder.getPageList(orderParam);
 
         return pageList;
     }

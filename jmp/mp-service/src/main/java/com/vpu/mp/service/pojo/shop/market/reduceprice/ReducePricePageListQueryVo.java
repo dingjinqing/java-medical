@@ -37,5 +37,5 @@ public class ReducePricePageListQueryVo {
     private Integer userAmount;
 
     /** 付款总金额 */
-    private BigDecimal PaymentTotalAmount;
+    private BigDecimal paymentTotalAmount;
 }

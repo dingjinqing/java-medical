@@ -3,7 +3,6 @@ package com.vpu.mp.service.pojo.shop.market.reduceprice;
 import java.sql.Timestamp;
 import java.util.List;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
 import com.vpu.mp.service.pojo.shop.config.ShopShareConfig;
 
 import lombok.Data;
