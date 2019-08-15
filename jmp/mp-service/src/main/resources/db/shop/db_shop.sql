@@ -604,6 +604,7 @@ CREATE TABLE `b2c_order_goods` (
 `reduce_price_num` SMALLINT ( 5 ) NOT NULL DEFAULT '0',
 `activity_type` TINYINT ( 1 ) NOT NULL DEFAULT '0' COMMENT '营销活动种类',
 `activity_id` int(11) NOT NULL DEFAULT '0' COMMENT '营销活动id',
+`activity_rule` int(11) NOT NULL DEFAULT '0' COMMENT '营销活动id',
 `create_time` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
 `update_time` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '修改时间',
 PRIMARY KEY ( `rec_id` ),

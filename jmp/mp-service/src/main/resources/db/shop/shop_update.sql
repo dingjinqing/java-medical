@@ -636,7 +636,8 @@ drop column `purchase_price_id`,
 drop column `purchase_price_rule_id`,
 drop column `reduce_price_id`,
 add column `activity_type`  tinyint(1) NOT NULL DEFAULT '0' COMMENT '营销活动种类',
-add column `activity_id` int(11) NOT NULL DEFAULT '0' COMMENT '营销活动id';
+add column `activity_id` int(11) NOT NULL DEFAULT '0' COMMENT '营销活动id',
+add column `activity_rule` int(11) NOT NULL DEFAULT '0' COMMENT '营销活动规则（目前加价购用到）';
 
 -- 王兵兵 201-08-14
 alter table `b2c_reduce_price` add column `limit_flag`  tinyint(1)   default '0' comment '超限购买设置标记，1禁止超限购买，0超限全部恢复原价';

@@ -43,7 +43,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class OrderGoods extends TableImpl<OrderGoodsRecord> {
 
-    private static final long serialVersionUID = -1447255863;
+    private static final long serialVersionUID = 1716066429;
 
     /**
      * The reference instance of <code>mini_shop_6797286.b2c_order_goods</code>
@@ -272,6 +272,11 @@ public class OrderGoods extends TableImpl<OrderGoodsRecord> {
      * The column <code>mini_shop_6797286.b2c_order_goods.activity_id</code>. 营销活动id
      */
     public final TableField<OrderGoodsRecord, Integer> ACTIVITY_ID = createField("activity_id", org.jooq.impl.SQLDataType.INTEGER.nullable(false).defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.INTEGER)), this, "营销活动id");
+
+    /**
+     * The column <code>mini_shop_6797286.b2c_order_goods.activity_rule</code>. 营销活动规则（目前加价购用到）
+     */
+    public final TableField<OrderGoodsRecord, Integer> ACTIVITY_RULE = createField("activity_rule", org.jooq.impl.SQLDataType.INTEGER.nullable(false).defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.INTEGER)), this, "营销活动规则（目前加价购用到）");
 
     /**
      * The column <code>mini_shop_6797286.b2c_order_goods.create_time</code>. 创建时间
