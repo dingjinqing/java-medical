@@ -33,6 +33,7 @@ public class PayRewardRecord extends UpdatableRecordImpl<PayRewardRecord> implem
 
     private static final long serialVersionUID = 171150838;
 
+
     /**
      * Setter for <code>mini_shop_4748160.b2c_pay_reward.id</code>.
      */
