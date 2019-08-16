@@ -46,7 +46,7 @@ public class MpAuthShopToAdminVo {
     private Integer   bindTemplateId;
     private Byte      uploadState;
     private Timestamp lastUploadTime;
-    private Integer   auditId;
+    private Long   auditId;
     private Byte      auditState;
     private Timestamp submitAuditTime;
     private Timestamp auditOkTime;
