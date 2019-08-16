@@ -111,5 +111,17 @@
           <version>3.0.0</version>
           <scope>test</scope>
         </dependency>
+
+        <dependency>
+          <groupId>org.jooq</groupId>
+          <artifactId>jool</artifactId>
+          <version>0.9.12</version>
+         </dependency>
+
+        <dependency>
+          <groupId>org.simpleflatmapper</groupId>
+          <artifactId>sfm-jdbc</artifactId>
+          <version>3.11.2</version>
+        </dependency>
   </dependencies>
 </project>
