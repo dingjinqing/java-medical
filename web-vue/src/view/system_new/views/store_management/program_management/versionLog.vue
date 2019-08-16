@@ -123,12 +123,13 @@ export default {
       console.log(to.params.userVersion)
       console.log(this.selectIdTemId)
       this.selectIdTemId.map((item, index) => {
-        if (item.value === to.params.userVersion) {
+        console.log(item.value)
+        if (item.label === to.params.userVersion) {
           this.value = item.label
         }
       })
       console.log(this.value)
-      this.handleQueryTableData(to.params.userVersion)
+      this.handleQueryTableData(to.params.id)
     }
   },
   mounted () {

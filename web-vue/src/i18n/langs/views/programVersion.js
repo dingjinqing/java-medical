@@ -53,7 +53,14 @@ export const cn = {
   publiStatus: '发布状态',
   shopStatus: '店铺状态',
   cancelRevoked: '已取消授权',
-  beRevoked: '已授权'
+  beRevoked: '已授权',
+  uncertified: '未认证',
+  certified: '已认证',
+  noSupport: '不支持',
+  support: '支持',
+  notSubmitted: '未提交',
+  auditProgress: '审核中',
+  auditFailure: '审核失败'
 }
 
 export const en = {
@@ -109,5 +116,14 @@ export const en = {
   bindingTemplateID: 'Binding template ID',
   auditStatus: 'Audit status',
   publiStatus: 'Publication status',
-  shopStatus: 'Shop status'
+  shopStatus: 'Shop status',
+  cancelRevoked: 'Delegation has been revoked',
+  beRevoked: 'Authorized',
+  uncertified: 'Uncertified',
+  certified: 'Certified',
+  noSupport: 'No Support',
+  support: 'Support',
+  notSubmitted: 'Not submitted',
+  auditProgress: 'Audit in progress',
+  auditFailure: 'Audit failure'
 }

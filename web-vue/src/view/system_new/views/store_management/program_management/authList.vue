@@ -156,11 +156,11 @@
           <span
             class="useSpan"
             v-if="scope.row.isAuthOk === 0"
-          >已取消授权</span>
+          >{{$t('programVersion.cancelRevoked')}}</span>
           <span
             class="useSpan nuSpan"
             v-if="scope.row.isAuthOk === 1"
-          >已授权</span>
+          >{{$t('programVersion.beRevoked')}}</span>
         </template>
       </el-table-column>
       <el-table-column
@@ -171,11 +171,11 @@
           <span
             class="useSpan"
             v-if="scope.row.verifyTypeInfo === '0'"
-          >未认证</span>
+          >{{$t('programVersion.uncertified')}}</span>
           <span
             class="useSpan nuSpan"
             v-if="scope.row.verifyTypeInfo === '1'"
-          >已认证</span>
+          >{{$t('programVersion.certified')}}</span>
         </template>
       </el-table-column>
       <el-table-column
@@ -187,11 +187,11 @@
           <span
             class="useSpan"
             v-if="scope.row.openPay === 0"
-          >不支持</span>
+          >{{$t('programVersion.noSupport')}}</span>
           <span
             class="useSpan nuSpan"
             v-if="scope.row.openPay === 1"
-          >支持</span>
+          >{{$t('programVersion.support')}}</span>
         </template>
       </el-table-column>
       <el-table-column

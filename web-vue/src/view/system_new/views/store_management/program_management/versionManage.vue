@@ -212,7 +212,8 @@ export default {
             name: 'programManage',
             params: {
               page: 'versionLog',
-              userVersion: row.templateId
+              userVersion: row.userVersion,
+              id: row.templateId
             }
           })
           break
