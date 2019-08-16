@@ -264,7 +264,7 @@ public class JsonResultMessage {
     /**
      * 开屏有礼
      */
-    public static final String COUPON_ACTIVITY_TIME_RANGE_CONFLICT = "activity.coupon.time_range_conflict";
+    public static final String ACTIVITY_TIME_RANGE_CONFLICT = "activity.coupon.time_range_conflict";
 	
 
 }

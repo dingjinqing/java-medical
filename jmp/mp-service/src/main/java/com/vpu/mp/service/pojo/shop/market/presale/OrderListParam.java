@@ -4,7 +4,6 @@ import com.vpu.mp.service.pojo.shop.base.BasePageParam;
 import lombok.Getter;
 import lombok.Setter;
 
-import javax.validation.constraints.NotNull;
 import java.sql.Timestamp;
 
 /**
@@ -16,11 +15,10 @@ import java.sql.Timestamp;
 @Setter
 public class OrderListParam extends BasePageParam {
 
-    /** 商品名称 **/
-    @NotNull
-    private String goodsName;
     /** 活动id **/
     private Integer id;
+    /** 商品名称 **/
+    private String goodsName;
     /** 订单号 **/
     private String orderSn;
     /** 订单状态名 **/

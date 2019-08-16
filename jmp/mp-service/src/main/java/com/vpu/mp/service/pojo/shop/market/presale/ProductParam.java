@@ -6,12 +6,12 @@ import lombok.Data;
 import javax.validation.constraints.NotNull;
 
 /**
- * 活动商品
+ * 活动商品规格入参
  *
  * @author 郑保乐
  */
 @Data
-public class Product {
+public class ProductParam {
 
     /** 预售id **/
     @JsonIgnore
@@ -36,6 +36,5 @@ public class Product {
     @NotNull
     private Double preDiscountMoney1;
     /** 2段定金可抵扣金额 **/
-    @NotNull
     private Double preDiscountMoney2;
 }

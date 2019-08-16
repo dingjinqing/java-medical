@@ -43,6 +43,10 @@ public class PreSaleParam {
     public static final byte ORIGINAL_PRICE_BUY_ENABLE = 1;
     /** 不支持原价购买 **/
     public static final byte ORIGINAL_PRICE_BUY_DISABLE = 0;
+    /** 自动退定金 **/
+    public static final byte AUTO_RETURN_PRESALE_MONEY = 1;
+    /** 不退定金 **/
+    public static final byte NOT_RETURN_PRESALE_MONEY = 0;
 
     /** 活动类型 **/
     @NotNull
@@ -105,5 +109,5 @@ public class PreSaleParam {
     private String shareImg;
     /** 活动商品 **/
     @NotEmpty
-    private List<Product> products;
+    private List<ProductParam> products;
 }

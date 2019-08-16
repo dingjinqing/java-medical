@@ -3,34 +3,38 @@ package com.vpu.mp.service.shop.market.presale;
 import com.vpu.mp.db.shop.tables.OrderGoods;
 import com.vpu.mp.db.shop.tables.OrderInfo;
 import com.vpu.mp.db.shop.tables.Presale;
+import com.vpu.mp.db.shop.tables.PresaleProduct;
 import com.vpu.mp.db.shop.tables.records.PresaleProductRecord;
 import com.vpu.mp.db.shop.tables.records.PresaleRecord;
 import com.vpu.mp.service.foundation.service.ShopBaseService;
 import com.vpu.mp.service.foundation.util.PageResult;
 import com.vpu.mp.service.foundation.util.Util;
-import com.vpu.mp.service.pojo.shop.market.presale.PreSaleListParam;
-import com.vpu.mp.service.pojo.shop.market.presale.PreSaleListVo;
-import com.vpu.mp.service.pojo.shop.market.presale.PreSaleParam;
-import com.vpu.mp.service.pojo.shop.market.presale.Product;
+import com.vpu.mp.service.pojo.shop.image.share.ShareConfig;
+import com.vpu.mp.service.pojo.shop.market.presale.*;
 import com.vpu.mp.service.pojo.shop.order.OrderConstant;
-import org.jooq.DSLContext;
-import org.jooq.Record14;
-import org.jooq.SelectConditionStep;
+import org.jooq.*;
 import org.jooq.impl.DSL;
+import org.jooq.lambda.tuple.Tuple2;
 import org.springframework.stereotype.Service;
 import org.springframework.util.Assert;
 
 import java.io.Serializable;
 import java.sql.Timestamp;
+import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import static com.vpu.mp.db.shop.tables.GoodsSpecProduct.GOODS_SPEC_PRODUCT;
+import static com.vpu.mp.db.shop.tables.OrderInfo.ORDER_INFO;
+import static com.vpu.mp.db.shop.tables.Presale.PRESALE;
 import static com.vpu.mp.db.shop.tables.PresaleProduct.PRESALE_PRODUCT;
+import static com.vpu.mp.service.foundation.data.JsonResultMessage.ACTIVITY_TIME_RANGE_CONFLICT;
 import static com.vpu.mp.service.pojo.shop.market.presale.PreSaleListParam.*;
 import static com.vpu.mp.service.pojo.shop.market.presale.PreSaleParam.DELIVER_POSTPONE;
 import static com.vpu.mp.service.pojo.shop.market.presale.PreSaleParam.DELIVER_SPECIFIC;
 import static com.vpu.mp.service.pojo.shop.order.OrderConstant.GOODS_TYPE_PRE_SALE;
 import static java.lang.String.format;
+import static org.jooq.impl.DSL.select;
 import static org.springframework.util.StringUtils.isEmpty;
 
 /**
@@ -41,8 +45,9 @@ import static org.springframework.util.StringUtils.isEmpty;
 @Service
 public class PreSaleService extends ShopBaseService {
 
-    private static final Presale TABLE = Presale.PRESALE;
-    private static final OrderInfo ORDER = OrderInfo.ORDER_INFO;
+    private static final Presale TABLE = PRESALE;
+    private static final PresaleProduct SUB_TABLE = PRESALE_PRODUCT;
+    private static final OrderInfo ORDER = ORDER_INFO;
     private static final OrderGoods ORDER_GOODS = OrderGoods.ORDER_GOODS;
 
     private static final byte NOT_DELETED = 0;
@@ -204,6 +209,8 @@ public class PreSaleService extends ShopBaseService {
      */
     private void insertPresale(DSLContext db, PreSaleParam param) {
         PresaleRecord presale = db.newRecord(TABLE, param);
+        String config = shareConfigJson(param);
+        presale.setShareConfig(config);
         presale.insert();
         Integer id = presale.getId();
         this.insertPresaleProduct(db, param, id);
@@ -213,11 +220,12 @@ public class PreSaleService extends ShopBaseService {
      * 保存活动产品
      */
     private void insertPresaleProduct(DSLContext db, PreSaleParam param, Integer presaleId) {
-        List<Product> products = param.getProducts();
-        List<PresaleProductRecord> productRecords = products.stream().map(product -> {
-            product.setPresaleId(presaleId);
-            return db.newRecord(PRESALE_PRODUCT, product);
-        }).collect(Collectors.toList());
+        List<ProductParam> products = param.getProducts();
+        List<PresaleProductRecord> productRecords =
+            products.stream().map(product -> {
+                product.setPresaleId(presaleId);
+                return db.newRecord(SUB_TABLE, product);
+            }).collect(Collectors.toList());
         db.batchInsert(productRecords).execute();
     }
 
@@ -225,7 +233,20 @@ public class PreSaleService extends ShopBaseService {
      * 获取分享配置 json
      */
     private String shareConfigJson(PreSaleParam param) {
-        return null;
+        ShareConfig config = createShareConfig(param);
+        return Util.underLineStyleGson().toJson(config);
+    }
+
+    /**
+     * 分享配置
+     */
+    private ShareConfig createShareConfig(PreSaleParam param) {
+        ShareConfig shareConfig = new ShareConfig();
+        shareConfig.setShareAction(param.getShareType());
+        shareConfig.setShareDoc(param.getShareText());
+        shareConfig.setShareImgAction(param.getShareImgType());
+        shareConfig.setShareImg(param.getShareImg());
+        return shareConfig;
     }
 
     /**
@@ -233,8 +254,9 @@ public class PreSaleService extends ShopBaseService {
      */
     private void validateParam(PreSaleParam param) {
         validateTime(param);
+        assertTimeNoConflict(param);
         validateDeliverTime(param);
-        param.getProducts().forEach(this::validateProduct);
+        param.getProducts().forEach(product -> this.validateProduct(product, param));
     }
 
     /**
@@ -254,9 +276,40 @@ public class PreSaleService extends ShopBaseService {
                 if (param.getPreStartTime2().after(param.getPreEndTime2())) {
                     throw new IllegalArgumentException("PreEndTime2 earlier than preStartTime2");
                 }
+                if (param.getPreStartTime2().before(param.getPreEndTime())) {
+                    throw new IllegalArgumentException("PreEndTime2 earlier than preEndTime");
+                }
                 break;
             default:
                 throw new IllegalArgumentException("Unexpected prePayStep: " + prePayStep);
+        }
+    }
+
+    /**
+     * 判断活动时间是否冲突
+     */
+    private void assertTimeNoConflict(PreSaleParam param) {
+        Tuple2<Timestamp, Timestamp> timePair = new Tuple2<>(param.getPreStartTime(), param.getPreEndTime());
+        Tuple2<Timestamp, Timestamp> timePair2 = new Tuple2<>(param.getPreStartTime2(), param.getPreEndTime2());
+        List<Tuple2<Timestamp, Timestamp>> timePairs = Arrays.asList(timePair, timePair2);
+        assertTimeNoConflict(timePairs);
+    }
+
+    /**
+     * 判断活动时间段是否冲突
+     */
+    private void assertTimeNoConflict(List<Tuple2<Timestamp, Timestamp>> timePairs) {
+        Condition statusCondition = TABLE.DEL_FLAG.eq((byte) 0).and(TABLE.STATUS.eq((byte) 1));
+        Condition timeCondition = DSL.or();
+        for (Tuple2<Timestamp, Timestamp> timePair : timePairs) {
+            timeCondition =
+                timeCondition.or(TABLE.PRE_START_TIME.ge(timePair.v1()).and(TABLE.PRE_END_TIME.le(timePair.v2())))
+                    .or(TABLE.PRE_START_TIME_2.ge(timePair.v1()).and(TABLE.PRE_END_TIME_2.le(timePair.v2())));
+        }
+        SelectConditionStep<Record1<Integer>> query =
+            select(TABLE.ID).from(TABLE).where(statusCondition.and(timeCondition));
+        if (db().fetchExists(query)) {
+            throw new IllegalArgumentException(ACTIVITY_TIME_RANGE_CONFLICT);
         }
     }
 
@@ -283,7 +336,11 @@ public class PreSaleService extends ShopBaseService {
     /**
      * 校验活动产品参数
      */
-    private void validateProduct(Product product) {
+    private void validateProduct(ProductParam product, PreSaleParam param) {
+        Byte prePayStep = param.getPrePayStep();
+        if (2 == prePayStep) {
+            Assert.notNull(product.getPreDiscountMoney2(), "Missing parameter preDiscountMoney2");
+        }
         Double presalePrice = product.getPresalePrice();
         Double presaleMoney = product.getPresaleMoney();
         Double preDiscountMoney1 = product.getPreDiscountMoney1();
@@ -324,6 +381,44 @@ public class PreSaleService extends ShopBaseService {
      */
     public void enablePreSale(Integer id) {
         db().update(TABLE).set(TABLE.STATUS, (byte) 1).where(TABLE.ID.eq(id)).execute();
+    }
+
+    /**
+     * 获取活动明细
+     */
+    public PreSaleVo getDetail(Integer preSaleId) {
+        PreSaleVo preSaleVo =
+            db().select(TABLE.ID, TABLE.PRE_START_TIME,
+                TABLE.PRE_END_TIME, TABLE.START_TIME, TABLE.END_TIME, TABLE.PRESALE_NAME, TABLE.BUY_NUMBER,
+                TABLE.BUY_TYPE, TABLE.DELIVER_DAYS, TABLE.DELIVER_TIME, TABLE.DELIVER_TYPE, TABLE.GOODS_ID,
+                TABLE.DISCOUNT_TYPE, TABLE.PRE_PAY_STEP, TABLE.PRESALE_TYPE, TABLE.RETURN_TYPE, TABLE.SHARE_CONFIG,
+                TABLE.SHOW_SALE_NUMBER)
+                .select(TABLE.PRE_START_TIME_2.as("preStartTimeTwo"))
+                .select(TABLE.PRE_END_TIME_2.as("preEndTimeTwo"))
+                .from(TABLE)
+                .where(TABLE.ID.eq(preSaleId))
+                .fetchOneInto(PreSaleVo.class);
+        List<ProductVo> productVos = db().select(SUB_TABLE.ID, SUB_TABLE.PRESALE_ID, SUB_TABLE.PRODUCT_ID,
+            SUB_TABLE.PRESALE_MONEY, SUB_TABLE.PRESALE_NUMBER, SUB_TABLE.PRESALE_PRICE, SUB_TABLE.GOODS_ID,
+            GOODS_SPEC_PRODUCT.PRD_ID, GOODS_SPEC_PRODUCT.PRD_DESC, GOODS_SPEC_PRODUCT.PRD_NUMBER,
+            GOODS_SPEC_PRODUCT.PRD_PRICE)
+            .select(SUB_TABLE.PRE_DISCOUNT_MONEY_1.as("preDiscountMoneyOne"))
+            .select(SUB_TABLE.PRE_DISCOUNT_MONEY_2.as("preDiscountMoneyTwo"))
+            .from(SUB_TABLE)
+            .leftJoin(GOODS_SPEC_PRODUCT)
+            .on(GOODS_SPEC_PRODUCT.PRD_ID.eq(SUB_TABLE.PRODUCT_ID))
+            .where(SUB_TABLE.PRESALE_ID.eq(preSaleId)).fetchInto(ProductVo.class);
+        preSaleVo.setProducts(productVos);
+        preSaleVo.setShareConfiguration(shareConfig(preSaleVo));
+        return preSaleVo;
+    }
+
+    /**
+     * 获取分享配置
+     */
+    private ShareConfig shareConfig(PreSaleVo preSaleVo) {
+        String shareConfig = preSaleVo.getShareConfig();
+        return Util.underLineStyleGson().fromJson(shareConfig, ShareConfig.class);
     }
 
     /**

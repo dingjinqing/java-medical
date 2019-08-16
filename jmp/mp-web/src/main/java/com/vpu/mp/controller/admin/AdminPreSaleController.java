@@ -74,4 +74,12 @@ public class AdminPreSaleController extends AdminBaseController {
         shop().preSale.addPreSale(param);
         return success();
     }
+
+    /**
+     * 编辑活动 - 查询明细
+     */
+    @PostMapping("/detail/{id}")
+    public JsonResult getPreSale(@PathVariable Integer id) {
+        return success(shop().preSale.getDetail(id));
+    }
 }

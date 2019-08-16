@@ -19,7 +19,7 @@ import java.util.Optional;
 
 import static com.vpu.mp.db.shop.tables.Lottery.LOTTERY;
 import static com.vpu.mp.db.shop.tables.MrkingVoucher.MRKING_VOUCHER;
-import static com.vpu.mp.service.foundation.data.JsonResultMessage.COUPON_ACTIVITY_TIME_RANGE_CONFLICT;
+import static com.vpu.mp.service.foundation.data.JsonResultMessage.ACTIVITY_TIME_RANGE_CONFLICT;
 import static com.vpu.mp.service.pojo.shop.market.activity.ActivityListParam.*;
 import static com.vpu.mp.service.pojo.shop.market.activity.ActivityListVo.*;
 
@@ -241,7 +241,7 @@ public class ActivityService extends ShopBaseService {
         }
         boolean exists = db().fetchExists(condition);
         if (exists) {
-            throw new IllegalArgumentException(COUPON_ACTIVITY_TIME_RANGE_CONFLICT);
+            throw new IllegalArgumentException(ACTIVITY_TIME_RANGE_CONFLICT);
         }
     }
 

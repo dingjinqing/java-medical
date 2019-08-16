@@ -5,6 +5,8 @@ import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.jooq.exception.DataTypeException;
@@ -29,6 +31,8 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.*;
 import java.util.stream.Collectors;
+
+import static com.google.gson.FieldNamingPolicy.LOWER_CASE_WITH_UNDERSCORES;
 
 /**
  *
@@ -185,7 +189,7 @@ public class Util {
 		}
 		return null;
 	}
-	
+
 
 	public static String getProperty(String path, String key) {
 		try {
@@ -246,7 +250,7 @@ public class Util {
 	 * 转换语言
 	 *
 	 * @param language
-	 * @param message 
+	 * @param message
 	 * @param defaultMessage 缺省内容
 	 * @param languageType
 	 * @return
@@ -430,5 +434,12 @@ public class Util {
      */
     public static Timestamp currentTimeStamp() {
         return new Timestamp(new java.util.Date().getTime());
+    }
+
+    /**
+     * 获取驼峰到小写下划线风格的 Gson 实例
+     */
+    public static Gson underLineStyleGson() {
+        return new GsonBuilder().setFieldNamingPolicy(LOWER_CASE_WITH_UNDERSCORES).create();
     }
 }
