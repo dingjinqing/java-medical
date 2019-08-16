@@ -6,6 +6,7 @@ import { en as shopList } from './views/shopList'
 import { en as router } from './views/router'
 import { en as membershipIntroduction } from './views/membershipIntroduction'
 import { en as marketManage } from './views/marketManage'
+import { en as ordinaryCoupon } from './views/ordinaryCoupon'
 const en = {
   message: {
     'lang': 'English',
@@ -298,6 +299,7 @@ const en = {
   shopAccountList, // system 店铺账户列表
   shopList, // system 店铺列表
   marketManage, // 营销管理
+  ordinaryCoupon, // 普通优惠券
   ...enLocale
 }
 export default en

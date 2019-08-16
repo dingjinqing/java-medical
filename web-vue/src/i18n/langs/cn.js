@@ -6,6 +6,7 @@ import { cn as shopList } from './views/shopList'
 import { cn as router } from './views/router'
 import { cn as membershipIntroduction } from './views/membershipIntroduction'
 import { cn as marketManage } from './views/marketManage'
+import { cn as ordinaryCoupon } from './views/ordinaryCoupon'
 console.log(zhLocale)
 const cn = {
   message: {
@@ -299,6 +300,7 @@ const cn = {
   shopAccountList, // system 店铺账户列表
   shopList, // sysytem 店铺列表
   marketManage, // 营销管理
+  ordinaryCoupon, // 普通优惠券
   ...zhLocale
 }
 

@@ -36,7 +36,9 @@ export const cn = {
   // 小程序管理 自定义页面装修
   picture_setting: ['小程序管理', '自定义页面装修'],
   // 营销管理
-  market_manage: ['营销管理']
+  market_manage: ['营销管理'],
+  // 营销管理 普通优惠券
+  ordinary_coupon: ['营销管理', '普通优惠券']
 
 }
 
@@ -94,5 +96,7 @@ export const en = {
   // 小程序管理 自定义页面装修
   picture_setting: ['Small Program Management', 'Custom Page Decoration'],
   // 营销管理
-  market_manage: ['Marketing management']
+  market_manage: ['Marketing management'],
+  // 营销管理 普通优惠券
+  ordinary_coupon: ['Marketing management', 'ordinary coupon']
 }

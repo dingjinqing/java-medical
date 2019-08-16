@@ -438,7 +438,21 @@ const routes = [
             },
             component: () =>
               import(
-                '@/view/admin/index/leftNavComponents/first_market_manage/first_market_manage'
+                '@/view/admin/index/leftNavComponents/first_market_manage/first_market/first_market_manage'
+              )
+          },
+          // 普通优惠券
+          {
+            path: '/admin/home/main/ordinary_coupon',
+            name: 'ordinary_coupon',
+            meta: {
+              crumbTitle: 'router.ordinary_coupon',
+              meta: 'ordinary_coupon',
+              category: 'first_market_manage'
+            },
+            component: () =>
+              import(
+                '@/view/admin/index/leftNavComponents/first_market_manage/first_market/ordinary_coupon'
               )
           },
           // 会员管理系列子路由
