@@ -664,9 +664,9 @@ export default {
   methods: {
     defaultData () {
       console.log(this.$route)
-      // let appId = this.$route.params.appId
+      let appId = this.$route.params.appId
       console.log(typeof appId)
-      authInformationRequest('wx3a6cbd7a7735b683').then((res) => {
+      authInformationRequest(appId).then((res) => {
         if (res.error === 0) {
           let arr = []
           JSON.parse(res.content.funcInfo).map((item, index) => {

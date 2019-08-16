@@ -145,12 +145,17 @@ export default {
       console.log(spinnerList)
       if (spinnerList.error === 0) {
         let arr = []
+        let defaultObj = {}
+        defaultObj.value = ''
+        defaultObj.label = '请选择'
+        arr.push(defaultObj)
         spinnerList.content.map((item, index) => {
           let obj = {}
           obj.value = index
           obj.label = item.userVersion
           arr.push(obj)
         })
+
         console.log(arr)
         this.selectIdTemId = arr
         this.handleQueryTableData()

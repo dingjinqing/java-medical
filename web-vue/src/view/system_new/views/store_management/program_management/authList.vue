@@ -286,7 +286,7 @@ export default {
     return {
       pageCount: 1,
       queryData: {
-        selectedId: '', // 选择模板id
+        selectedId: null, // 选择模板id
         selectedAuth: null, // 选择是否授权
         selectedWxPay: null, // 选择是否微信支付
         selectedAuditStatus: null, // 审核状态
@@ -299,6 +299,10 @@ export default {
       },
       selectIsAuthorization: [
         {
+          value: '',
+          label: '选择是否授权'
+        },
+        {
           value: '0',
           label: '未授权'
         },
@@ -309,6 +313,7 @@ export default {
       ],
       page: 1,
       selectIdOpt: [
+
         {
           value: '1',
           label: '1.0.0'
@@ -320,6 +325,10 @@ export default {
       ],
       selectIsPay: [
         {
+          value: '',
+          label: '选择是否授权微信支付'
+        },
+        {
           value: '0',
           label: '不支持微信支付'
         },
@@ -329,6 +338,10 @@ export default {
         }
       ],
       selectExamineStatus: [
+        {
+          value: '',
+          label: '选择审核状态'
+        },
         {
           value: '0',
           label: '未提交审核'
@@ -348,6 +361,10 @@ export default {
       ],
       selectReleaseStatus: [
         {
+          value: '',
+          label: '选择发布状态'
+        },
+        {
           value: '0',
           label: '未发布'
         },
@@ -358,6 +375,10 @@ export default {
       ],
       selectShopStatus: [
         {
+          value: '',
+          label: '选择店铺状态'
+        },
+        {
           value: '1',
           label: '使用中'
         },
@@ -367,51 +388,7 @@ export default {
         }
       ],
       tableData: [
-        // {
-        //   app_id: 'wx0d2a00751c5c6aa6',
-        //   id: '3603035',
-        //   name: '帅飞',
-        //   img: 'http://wx.qlogo.cn/mmopen/xTMBoLQLB83uKQwjDwe8t8KOicdr7XzcM6nERK4ia49EM3ViaUvjTuxlrwO5pxXvHicOZP19Bljo9uAVKynlFSm9xUiap6RuuSyiab/0',
-        //   iscansel: '已取消授权',
-        //   isAuthentication: '已认证',
-        //   ispay: '支持',
-        //   lastTime: '2019-05-23 03:09',
-        //   temId: '199',
-        //   status1: '审核成功',
-        //   status2: '已发布',
-        //   status3: '使用中',
-        //   operation: ''
-        // },
-        // {
-        //   app_id: 'wx0d2a00751c5c6aa6',
-        //   id: '3603035',
-        //   name: '帅飞',
-        //   img: 'http://wx.qlogo.cn/mmopen/xTMBoLQLB83uKQwjDwe8t8KOicdr7XzcM6nERK4ia49EM3ViaUvjTuxlrwO5pxXvHicOZP19Bljo9uAVKynlFSm9xUiap6RuuSyiab/0',
-        //   iscansel: '已授权',
-        //   isAuthentication: '未认证',
-        //   ispay: '不支持',
-        //   lastTime: '2019-05-23 03:09',
-        //   temId: '199',
-        //   status1: '审核失败',
-        //   status2: '未发布',
-        //   status3: '使用中',
-        //   operation: ''
-        // },
-        // {
-        //   app_id: 'wx0d2a00751c5c6aa6',
-        //   id: '3603035',
-        //   name: '帅飞',
-        //   img: 'http://wx.qlogo.cn/mmopen/xTMBoLQLB83uKQwjDwe8t8KOicdr7XzcM6nERK4ia49EM3ViaUvjTuxlrwO5pxXvHicOZP19Bljo9uAVKynlFSm9xUiap6RuuSyiab/0',
-        //   iscansel: '已取消授权',
-        //   isAuthentication: '已认证',
-        //   ispay: '支持',
-        //   lastTime: '2019-05-23 03:09',
-        //   temId: '199',
-        //   status1: '审核成功',
-        //   status2: '已发布',
-        //   status3: '使用中',
-        //   operation: ''
-        // }
+
       ],
       operationData: ['查看详细', '版本操作日志'],
       selectIdTemId: [],
@@ -429,6 +406,10 @@ export default {
       console.log(spinnerList)
       if (spinnerList.error === 0) {
         let arr = []
+        let defaultObj = {}
+        defaultObj.value = ''
+        defaultObj.label = '请选择模板id'
+        arr.push(defaultObj)
         spinnerList.content.map((item, index) => {
           let obj = {}
           obj.value = index
