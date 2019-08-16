@@ -174,29 +174,29 @@
       </el-form>
     </el-row>
     <!-- footer -->
-    <div class="addingGoodsFooter">
-      <section class="addingGoodsFooter">
-        <el-button
-          type="primary"
-          size="small"
-          @click.native.prevent="handleToList"
-        >保存后返回列表</el-button>
-        <el-button
-          size="small"
-          @click.native.prevent="handlePreStep"
-        >上一步</el-button>
-        <el-button
-          type="primary"
-          size="small"
-          @click.native.prevent="handleAddAfterSaving"
-        >保存后继续添加</el-button>
-        <el-button
-          type="primary"
-          size="small"
-          @click.native.prevent="handlePreview"
-        >保存后预览商品</el-button>
-      </section>
-    </div>
+
+    <section class="addingGoodsFooter">
+      <el-button
+        type="primary"
+        size="small"
+        @click.native.prevent="handleToList"
+      >保存后返回列表</el-button>
+      <el-button
+        size="small"
+        @click.native.prevent="handlePreStep"
+      >上一步</el-button>
+      <el-button
+        type="primary"
+        size="small"
+        @click.native.prevent="handleAddAfterSaving"
+      >保存后继续添加</el-button>
+      <el-button
+        type="primary"
+        size="small"
+        @click.native.prevent="handlePreview"
+      >保存后预览商品</el-button>
+    </section>
+
   </div>
 </template>
 <script>
@@ -229,7 +229,10 @@ export default {
 
     },
     handlePreStep () {
-      this.$emit('toPre')
+      this.$router.push({
+        name: 'details',
+        query: {}
+      })
     },
 
     handleAddAfterSaving () {
@@ -291,15 +294,16 @@ export default {
   margin-left: 20px;
 }
 .addingGoodsFooter {
+  border-top: 1px solid #f2f2f2;
+  display: flex;
+  justify-content: center;
+  align-items: center;
   position: fixed;
   bottom: 0;
-  width: 1092px;
-  padding: 10px;
-  margin-left: -16px;
-  border-top: 1px solid #f2f2f2;
-  text-align: center;
   z-index: 2;
+  width: 88%;
+  height: 50px;
   background: #f8f8fa;
-  display: block;
+  margin-left: -20px;
 }
 </style>

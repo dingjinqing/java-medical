@@ -9,7 +9,7 @@
     <section class="title">
       <span>库存/价格信息</span>
     </section>
-    <priceInfo />
+    <priceInfo ref="priceInfo" />
     <!-- 配送信息 -->
     <section class="title">
       <span>配送信息</span>
@@ -59,11 +59,12 @@ export default {
       console.log('tolist')
     },
     handleNextStep () {
-      console.log(this.$refs.basicInfo.getFormData)
-      this.formData = this.$refs.basicInfo.getFormData
-      console.log(this.formData)
+      let obj1 = this.$refs.priceInfo.getPrice
+      let obj2 = this.$refs.basicInfo.getFormData
+      Object.assign(obj1, obj2)
+      console.log(obj1)
       this.$router.push(
-        { name: 'details', query: this.formData }
+        { name: 'details', query: obj1 }
       )
     }
   }

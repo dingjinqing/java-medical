@@ -1,9 +1,18 @@
 <template>
   <div class="addingGoodsDetails">
+
     <!-- 编辑商品详情的左侧组件 -->
-    <addingGoodsDetailsLeft :getParams="getParams" />
-    <!-- 编辑商品详情的右侧组件 -->
-    <addingGoodsDetailsRight />
+    <section class="con">
+      <addingGoodsDetailsLeft
+        :getParams="getParams"
+        class="left"
+      />
+
+      <!-- 编辑商品详情的右侧组件 -->
+      <addingGoodsDetailsRight class="right" />
+
+    </section>
+
     <!-- 编辑商品详情的底部按钮 -->
 
     <section class="addingGoodsFooter">
@@ -36,7 +45,7 @@
         @click.native.prevent="handlePreview"
       >保存后预览商品</el-button>
     </section>
-    <el-button @click="test">测试按钮</el-button>
+
   </div>
 </template>
 <script>
@@ -63,9 +72,7 @@ export default {
 
   },
   methods: {
-    test () {
-      console.log(this.getParams)
-    },
+
     handleToList () {
 
     },
@@ -75,7 +82,10 @@ export default {
       )
     },
     handleNextStep () {
-      this.$emit('toThird')
+      this.$router.push({
+        name: 'distribution',
+        query: {}
+      })
     },
     handleAddAfterSaving () {
 
@@ -103,5 +113,20 @@ export default {
 }
 .btn {
   margin: 0 10px;
+}
+.details {
+  margin-top: 35px;
+}
+.con {
+  display: flex;
+  justify-content: center;
+  /* align-items: center; */
+  margin-top: 30px;
+}
+.left {
+  margin-right: 10px;
+}
+.right {
+  margin-left: 10px;
 }
 </style>

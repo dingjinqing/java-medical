@@ -7,173 +7,187 @@
       label-width="120px"
       class="inventoryAndPrice"
     >
+      <!-- 商品规格 -->
       <el-form-item
         label-width="120px"
         label="商品规格："
         prop=""
       >
-        <el-button
-          v-show="showAddSpec"
-          class="add-spec add_all"
-          @click="handleAddSpec"
-        >添加规格</el-button>
-
+        <section class="btn">
+          <el-button
+            size="small"
+            @click="handleShowCon"
+            v-if="isShowBtn"
+          >添加规格</el-button>
+        </section>
         <section
-          class="show-spec"
-          v-show="isShowWrap"
+          class="proSpec"
+          v-if="isShowproSpec"
         >
-          <specName
-            @hide="hide"
-            @sendSpecName="sendSpecName"
-          />
-          <specValue />
-          <section
-            v-for="(item,index) in counter"
-            :key="index"
-          >
+          <section class="conta">
             <section
-              class="GoodsSpec"
-              v-if="isShowOne"
+              class="group"
+              v-for="(item,index) in specNameList"
+              :key="index"
             >
-              <section class="specName">
-                <specName @row="row" />
+
+              <section class="name">
+                <span>规格名：</span>
+                <el-input
+                  v-model="item.name"
+                  size="small"
+                  style="width:100px"
+                ></el-input>
+                <img
+                  @click="delRow(index)"
+                  class="right_top"
+                  src="../../../../../../assets/image/admin/icon_delete.png"
+                  alt="del"
+                >
               </section>
-              <section class="specValName">
-                <specValue />
+              <section class="children">
+                <span>规格值：</span>
+                <el-input
+                  v-for=" (ipt,i) in item.children"
+                  :key="i"
+                  size="small"
+                  style="width:100px"
+                  v-model="ipt.val"
+                  ref="saveTagInput"
+                  @keyup.enter.native="handleConfirm"
+                  @blur="handleConfirm"
+                >
+                </el-input>
+                <el-button
+                  type="text"
+                  @click="addVal(index)"
+                >添加规格值</el-button>
               </section>
             </section>
           </section>
-
-          <section class="addSpecs">
+          <section class="addSpec">
             <el-button
-              class="add_one"
-              @click="addSpecOptions"
+              @click="handleAddSpec"
+              size="small"
             >添加规格选项</el-button>
           </section>
         </section>
       </el-form-item>
+      <!-- 规格价格 -->
       <el-form-item
-        v-if="isShowSpecPrice"
+        v-if="isShowproSpec"
         label-width="120px"
         label="规格价格："
         prop=""
       >
-        <section
-          class="show-spec"
-          v-show="!showAddSpec"
-        >
+
+        <section class="specPrice">
           <el-table
+            ref="filterTable"
             :data="tableData"
             style="width: 100%"
           >
             <template slot="empty">
               ...
             </template>
+            <el-table-column
+              prop=""
+              label=""
+              width="180"
+            >
 
-            <el-table-column
-              :label="name"
-              width="180"
-              prop='value'
-            >
             </el-table-column>
             <el-table-column
-              label="价格（元）"
-              width="180"
-              prop="price"
-            >
-              <template slot-scope="scope">
-                <slot
-                  :row="scope.row"
-                  :$index="scope.$index"
-                >
-                  <el-input
-                    v-model="scope.row.price"
-                    size="small"
-                  ></el-input>
-                </slot>
-              </template>
-            </el-table-column>
-            <el-table-column
-              label="成本价格（元）"
+              prop="prdPrice"
+              label="价格(元)"
               width="180"
             >
               <template slot-scope="scope">
-                <slot
-                  :row="scope.row"
-                  :$index="scope.$index"
-                >
-                  <el-input size="small"></el-input>
-                </slot>
+                <el-input
+                  v-if="scope.row.status"
+                  v-model="scope.row.prdPrice"
+                ></el-input>
+                <span v-else>{{scope.row.prdPrice}}</span>
               </template>
             </el-table-column>
             <el-table-column
+              prop="prdCostPrice"
+              label="成本价格(元)"
+              width="180"
+            >
+              <template slot-scope="scope">
+                <el-input
+                  v-if="scope.row.status"
+                  v-model="scope.row.prdCostPrice"
+                ></el-input>
+                <span v-else>{{scope.row.prdCostPrice}}</span>
+              </template>
+            </el-table-column>
+            <el-table-column
+              prop="prdNumber"
               label="库存"
               width="180"
             >
               <template slot-scope="scope">
-                <slot
-                  :row="scope.row"
-                  :$index="scope.$index"
-                >
-                  <el-input-number
-                    v-model="num"
-                    size="small"
-                    controls-position="right"
-                    @change="handleChange2"
-                    :min="0"
-                    :max="1000000000000"
-                    label="库存"
-                  ></el-input-number>
-                </slot>
+                <el-input
+                  v-if="scope.row.status"
+                  v-model="scope.row.prdNumber"
+                ></el-input>
+                <span v-else>{{scope.row.prdNumber}}</span>
               </template>
-
             </el-table-column>
             <el-table-column
+              prop="prdCoding"
               label="规格编码"
               width="180"
             >
               <template slot-scope="scope">
-                <slot
-                  :row="scope.row"
-                  :$index="scope.$index"
-                >
-                  <el-input size="small"></el-input>
-                </slot>
+                <el-input
+                  v-if="scope.row.status"
+                  v-model="scope.row.prdCoding"
+                ></el-input>
+                <span v-else>{{scope.row.prdCoding}}</span>
               </template>
             </el-table-column>
             <el-table-column
+              prop="img"
               label="规格图片"
               width="180"
             >
               <template slot-scope="scope">
-                <slot
-                  :row="scope.row"
-                  :$index="scope.$index"
-                >
-                  <el-input size="small"></el-input>
-                </slot>
+                <el-input
+                  v-if="scope.row.status"
+                  v-model="scope.row.img"
+                ></el-input>
+                <span v-else>{{scope.row.img}}</span>
               </template>
             </el-table-column>
           </el-table>
+
+          <!-- 批量设置 -->
           <section class="batchSetting">
             <span>批量设置：</span>
             <el-button type="text">价格</el-button>
             <el-button type="text">成本价格</el-button>
             <el-button type="text">库存</el-button>
             <el-button type="text">规格图片</el-button>
+            <el-button
+              type="text"
+              @click="addOne"
+            >添加一行</el-button>
           </section>
         </section>
       </el-form-item>
       <el-form-item
         label-width="120px"
         label="商品库存："
-        prop="goodsNumber"
+        prop="prdNumber"
       >
         <el-input-number
           size="small"
-          v-model="formData.goodsNumber"
+          v-model="formData.prdNumber"
           controls-position="right"
-          @change="handleChange"
+          @change="handleGetPrdNumber"
           :min="0"
         ></el-input-number>
         <span style="color: #999;">设置了规格库存商品库存将失效，不在前端展示</span>
@@ -288,28 +302,27 @@
         </el-form>
       </el-collapse-item>
     </el-collapse>
-    <el-button
-      @click="handleTest"
-      type="success"
-    >测试按钮</el-button>
 
   </div>
 </template>
 <script>
-import specValue from './specValue'
-import specName from './specName'
+
 export default {
   name: 'priceInfo',
-  components: { specValue, specName },
+  computed: {
+    getPrice () {
+      return this.formData
+    }
+  },
   data () {
     return {
       formData: {
-        goodsNumber: '',
+        prdNumber: '',
         prdPrice: '',
         prdMarketPrice: ''
       },
       rules: {
-        goodsNumber: [
+        prdNumber: [
           { required: true, message: '请输入商品库存', trigger: 'change' }
         ],
         prdPrice: [
@@ -327,27 +340,37 @@ export default {
       rules1: {
 
       },
-      showAddSpec: true,
-      isShowWrap: false,
-      tableData: [{
-        value: '001',
-        price: '',
-        edit: 0
-      }],
+
+      tableData: [],
       specName: '',
-      isShowSpecPrice: false,
       specValName: '',
       counter: [],
       isShowOne: true,
       name: '',
-      num: 0
+      num: 0,
+      specNameList: [],
+      isShowBtn: true,
+      isShowproSpec: false,
+      vals: [],
+      inputVisible: false,
+      inputValue: ''
+
     }
   },
   methods: {
-    handleTest () {
-
+    addOne () {
+      this.tableData.map(item => {
+        if (item.status) {
+          item.status = 0
+        }
+        return item
+      })
+      this.tableData.push({
+        name: '', age: '', status: 1
+      })
     },
-    handleChange (val) {
+
+    handleGetPrdNumber (val) {
 
     },
     handleChange1 (val) {
@@ -357,15 +380,16 @@ export default {
 
     },
     handleAddSpec () {
-      this.showAddSpec = false
-      this.isShowSpecPrice = true
-      this.isShowWrap = true
+      this.specNameList.push({
+        name: ``,
+        children: [{
+          val: ``
+        }]
+      })
     },
 
     addSpecOptions () {
-      // this.counter.push({})
-      // console.log(this.counter)
-      // this.isShowOne = true
+
     },
     hide () {
       this.isShowSpecPrice = false
@@ -378,6 +402,40 @@ export default {
     sendSpecName (val) {
       console.log(val)
       this.name = val
+    },
+    handleShowCon () {
+      this.isShowproSpec = true
+      this.isShowBtn = false
+      this.specNameList.push({
+        name: ``,
+        children: [{
+          val: ``
+        }]
+      })
+    },
+    delRow (index) {
+      this.specNameList.splice(index, 1)
+      if (this.specNameList.length === 0) {
+        this.isShowBtn = true
+        this.isShowproSpec = false
+        this.isShowproSpec = false
+      }
+    },
+    handleConfirm () {
+      console.log(this.specNameList)
+    },
+    addVal (index) {
+      console.log(index)
+      let res = this.specNameList.find((item, i) => i === index)
+      console.log(res)
+      res.children.push({
+        val: ``
+      })
+      // this.specNameList.forEach(item => {
+      //   item.children.push({
+      //     val: ``
+      //   })
+      // })
     }
 
   }
@@ -392,9 +450,14 @@ export default {
   height: 30px;
   line-height: 10px;
 }
-.show-spec {
+.proSpec {
   border: 1px solid #ccc;
-  border: 1px solid red;
+  padding: 10px;
+  color: #333;
+  min-width: 100%;
+}
+.specPrice {
+  border: 1px solid #ccc;
   padding: 10px;
   color: #333;
   min-width: 100%;
@@ -410,8 +473,7 @@ export default {
 .del_img {
   position: relative;
 }
-.addSpecs {
-  background-color: #f8f8f8;
+.addSpec {
   display: flex;
   justify-content: flex-end;
   align-items: center;
@@ -426,5 +488,37 @@ export default {
 }
 .GoodsSpec {
   margin-bottom: 3px;
+}
+.tb-edit .el-input {
+  display: none;
+}
+.tb-edit .current-row .el-input {
+  display: block;
+}
+.tb-edit .current-row .el-input + span {
+  display: none;
+}
+.right_top {
+  position: absolute;
+  left: 150px;
+  cursor: pointer;
+}
+.wrapper {
+  position: relative;
+}
+.el-tag + .el-tag {
+  margin-left: 10px;
+}
+.button-new-tag {
+  margin-left: 10px;
+  height: 32px;
+  line-height: 30px;
+  padding-top: 0;
+  padding-bottom: 0;
+}
+.input-new-tag {
+  width: 90px;
+  margin-left: 10px;
+  vertical-align: bottom;
 }
 </style>

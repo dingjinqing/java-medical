@@ -18,12 +18,12 @@
             </div>
           </el-image>
         </section>
-        <section class="proName">{{getParams.goodsName}}</section>
-        <!-- <section class="proPri">¥ {{getParams}}</section>
-        <section class="proNum">库存：{{}}</section> -->
+        <section class="proName">{{goodsName}}</section>
+        <section class="proPri">¥ {{prdPrice}}</section>
+        <section class="proNum">库存：{{prdNumber}}</section>
       </section>
     </section>
-    <el-button @click="test">测试按钮</el-button>
+
   </div>
 </template>
 <script>
@@ -36,13 +36,13 @@ export default {
   data () {
     return {
       src: this.getParams.goodsImg,
-      goodsName: ``
+      goodsName: this.getParams.goodsName,
+      prdPrice: this.getParams.prdPrice,
+      prdNumber: this.getParams.prdNumber
     }
   },
   methods: {
-    test () {
-      console.log(this.goodsName)
-    }
+
   }
 }
 </script>
