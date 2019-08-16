@@ -3,7 +3,7 @@
     <div class="filter-menu">
       <el-select
         v-model="value"
-        placeholder="请选择"
+        :placeholder="$t('programVersion.placeChoise')"
         size="small"
         @change="handleSelect()"
       >
@@ -26,7 +26,7 @@
         class="ml-6"
         type="primary"
         @click="handleQuery()"
-      >搜索</el-button>
+      >{{$t('programVersion.search')}}</el-button>
     </div>
 
     <el-table
@@ -38,7 +38,7 @@
     >
       <el-table-column
         prop="createTime"
-        label="时间"
+        :label="$t('programVersion.date')"
         align="center"
       >
       </el-table-column>
@@ -52,14 +52,14 @@
       <el-table-column
         prop="nickName"
         align="center"
-        label="昵称"
+        :label="$t('programVersion.nickName')"
       >
       </el-table-column>
       <el-table-column
         prop="memo"
         align="center"
-        min-width="500"
-        label="日志内容"
+        min-width="400"
+        :label="$t('programVersion.logContent')"
       >
         <template slot-scope="scope">
           <p v-html="scope.row.memo"></p>
@@ -69,26 +69,26 @@
       <el-table-column
         prop="userVersion"
         align="center"
-        label="小程序版本"
+        :label="$t('programVersion.smallProgramVersion')"
       >
       </el-table-column>
       <el-table-column
         prop="operation"
         align="center"
-        label="操作"
+        :label="$t('programVersion.operation')"
       >
         <template slot-scope="scope">
           <span
             style="cursor:pointer"
             @click="handleDetail(scope.row)"
-          >查看详情</span>
+          >{{$t('programVersion.seeDetails')}}</span>
 
         </template>
       </el-table-column>
     </el-table>
 
     <div class="footer">
-      <div>每页20行记录，当前页面：{{this.currentPage}}，总页数：{{this.pageCount}}，总记录数：{{this.totle}}</div>
+      <div>{{$t('programVersion.currentPage')}}：{{this.currentPage}}，{{$t('programVersion.totalPage')}}：{{this.pageCount}}，{{$t('programVersion.totalRecord')}}：{{this.totle}}</div>
       <el-pagination
         @current-change="handleCurrentChange"
         :current-page.sync="currentPage"
@@ -115,30 +115,6 @@ export default {
       totle: 0,
       text: null,
       tableData: [
-        {
-          time: '2019-08-07 14:03:35',
-          app_id: 'wxeaeb5c37a376f415',
-          name: '微铺宝b2c商城',
-          content: '提交审核成功',
-          version: '1.28.3',
-          operation: '查看详情'
-        },
-        {
-          time: '2019-08-07 14:03:35',
-          app_id: 'wxeaeb5c37a376f415',
-          name: '微铺宝b2c商城',
-          content: '提交审核成功',
-          version: '1.28.3',
-          operation: '查看详情'
-        },
-        {
-          time: '2019-08-07 14:03:35',
-          app_id: 'wxeaeb5c37a376f415',
-          name: '微铺宝b2c商城',
-          content: '提交审核成功',
-          version: '1.28.3',
-          operation: '查看详情'
-        }
       ]
     }
   },

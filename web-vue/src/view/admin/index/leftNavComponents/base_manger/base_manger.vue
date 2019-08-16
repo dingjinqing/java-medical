@@ -41,6 +41,7 @@ export default {
   mounted () {
     // 初始化
     this.defaultData()
+    console.log(window.location.href)
   },
   methods: {
     defaultData () {

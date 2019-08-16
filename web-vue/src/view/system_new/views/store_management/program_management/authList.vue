@@ -7,7 +7,7 @@
       <el-select
         class="fll selected-id mr-6 mb-10"
         v-model="queryData.selectedId"
-        placeholder="请选择模板id"
+        :placeholder="$t('programVersion.selectTemplateID')"
         size="small"
         @change="handleSelectId()"
       >
@@ -21,7 +21,7 @@
       <el-select
         class="fll selected-id mr-6 mb-10"
         v-model="queryData.selectedAuth"
-        placeholder="请选择是否授权"
+        :placeholder="$t('programVersion.whetherToAuthorize')"
         size="small"
         @change="handleSelectId()"
       >
@@ -35,7 +35,7 @@
       <el-select
         class="fll selected-id mr-6 mb-10"
         v-model="queryData.selectedWxPay"
-        placeholder="选择是否微信支付"
+        :placeholder="$t('programVersion.whetherToPay')"
         size="small"
         @change="handleSelectId()"
       >
@@ -49,7 +49,7 @@
       <el-select
         class="fll selected-id mr-6 mb-10"
         v-model="queryData.selectedAuditStatus"
-        placeholder="选择审核状态"
+        :placeholder="$t('programVersion.selectAuditStatus')"
         @change="handleSelectId()"
         size="small"
       >
@@ -63,7 +63,7 @@
       <el-select
         class="fll selected-id mr-6 mb-10"
         v-model="queryData.selectedReleaseStatus"
-        placeholder="选择发布状态"
+        :placeholder="$t('programVersion.publicationStatus')"
         @change="handleSelectId()"
         size="small"
       >
@@ -77,7 +77,7 @@
       <el-select
         class="fll selected-id mr-6 mb-10"
         v-model="queryData.selectedShopStatus"
-        placeholder="选择店铺状态"
+        :placeholder="$t('programVersion.storeStatus')"
         @change="handleSelectId()"
         size="small"
       >
@@ -91,19 +91,19 @@
       <el-input
         class="fll mr-6 input-width mb-10"
         v-model="queryData.appid"
-        placeholder="请输入appid"
+        :placeholder="$t('programVersion.enterAppid')"
         size="small"
       />
       <el-input
         class="fll mr-6 input-width mb-10"
         v-model="queryData.shop_id"
-        placeholder="请输入shop_id"
+        :placeholder="$t('programVersion.enterShopid')"
         size="small"
       />
       <el-input
         class="fll mr-6 input-width mb-10"
         v-model="queryData.programName"
-        placeholder="请输入小程序名称"
+        :placeholder="$t('programVersion.enterNameApplet')"
         size="small"
       />
       <el-button
@@ -111,7 +111,7 @@
         type="primary"
         class="mr-6 mb-10"
         @click="handleQuery()"
-      >搜索</el-button>
+      >{{$t('programVersion.search')}}</el-button>
     </div>
 
     <el-table
@@ -130,19 +130,19 @@
       </el-table-column>
       <el-table-column
         prop="shopId"
-        label="店铺ID"
+        :label="$t('programVersion.shopID')"
         align="center"
       >
       </el-table-column>
       <el-table-column
         prop="nickName"
         align="center"
-        label="昵称"
+        :label="$t('programVersion.nickName')"
       >
       </el-table-column>
       <el-table-column
         align="center"
-        label="头像"
+        :label="$t('programVersion.head')"
       >
         <template slot-scope="scope">
           <img :src="scope.row.headImg">
@@ -150,7 +150,7 @@
       </el-table-column>
       <el-table-column
         align="center"
-        label="是否授权"
+        :label="$t('programVersion.ToAuthorize')"
       >
         <template slot-scope="scope">
           <span
@@ -165,7 +165,7 @@
       </el-table-column>
       <el-table-column
         align="center"
-        label="是否认证"
+        :label="$t('programVersion.certificationOrNot')"
       >
         <template slot-scope="scope">
           <span
@@ -181,7 +181,7 @@
       <el-table-column
         align="center"
         width="150"
-        label="是否支持微信支付"
+        :label="$t('programVersion.SupportWechatPayment')"
       >
         <template slot-scope="scope">
           <span
@@ -197,19 +197,19 @@
       <el-table-column
         prop="lastAuthTime"
         align="center"
-        label="最后授权时间"
+        :label="$t('programVersion.authorizationTime')"
       >
       </el-table-column>
       <el-table-column
         prop="bindTemplateId"
         align="center"
-        label="绑定模板ID"
+        :label="$t('programVersion.bindingTemplateID')"
       >
       </el-table-column>
       <el-table-column
         prop="status1"
         align="center"
-        label="审核状态"
+        :label="$t('programVersion.auditStatus')"
       >
         <template slot-scope="scope">
           <span v-if="scope.row.auditState === 0">未提交</span>
@@ -220,7 +220,8 @@
       <el-table-column
         prop="status2"
         align="center"
-        label="发布状态"
+        min-width="100"
+        :label="$t('programVersion.publiStatus')"
       >
         <template slot-scope="scope">
           <span
@@ -236,7 +237,7 @@
       <el-table-column
         prop="status3"
         align="center"
-        label="店铺状态"
+        :label="$t('programVersion.shopStatus')"
       >
         <template slot-scope="scope">
           <span v-if="scope.row.shopState === 0">已过期</span>
@@ -247,7 +248,7 @@
       <el-table-column
         prop="operation"
         align="center"
-        label="操作"
+        :label="$t('programVersion.operation')"
         width="200"
       >
         <template slot-scope="scope">

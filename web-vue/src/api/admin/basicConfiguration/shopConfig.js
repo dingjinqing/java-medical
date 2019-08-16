@@ -8,7 +8,7 @@ export function grantAuthorizationRequest () {
   })
 }
 
-//  我已有小程序，一键授权
+//  授权信息查询
 export function queryAuthdritionRequest () {
   return service({
     url: '/api/admin/mp/get',

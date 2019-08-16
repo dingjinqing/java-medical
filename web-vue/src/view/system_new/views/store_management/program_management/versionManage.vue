@@ -6,7 +6,7 @@
         size="small"
         @click="handleBtn()"
       >
-        同步微信开放平台小程序代码模板
+        {{this.$t('programVersion.synchronization')}}
       </el-button>
     </div>
 
@@ -19,19 +19,19 @@
     >
       <el-table-column
         prop="templateId"
-        label="模板ID"
+        :label="$t('programVersion.templateID')"
         align="center"
       >
       </el-table-column>
       <el-table-column
         prop="userVersion"
-        label="模板版本号"
+        :label="$t('programVersion.templateVersionNumber')"
         align="center"
       >
       </el-table-column>
       <el-table-column
         align="center"
-        label="当前包版本"
+        :label="$t('programVersion.currentPackageVersion')"
       >
         <template slot-scope="scope">
           <el-select
@@ -53,59 +53,59 @@
       <el-table-column
         prop="userDesc"
         align="center"
-        label="模板描述"
+        :label="$t('programVersion.templateDescription')"
       >
       </el-table-column>
       <el-table-column
         prop="createTime"
         align="center"
-        label="模板添加时间"
+        :label="$t('programVersion.templateAdditionTime')"
         width="200"
       >
       </el-table-column>
       <el-table-column
         align="center"
-        label="开发appid"
+        :label="$t('programVersion.developingAppid')"
         width="200"
       >
       </el-table-column>
       <el-table-column
         align="center"
-        label="开发app名称"
+        :label="$t('programVersion.developAppName')"
       >
       </el-table-column>
       <el-table-column
         align="center"
-        label="开发者"
+        :label="$t('programVersion.developer')"
       >
       </el-table-column>
       <el-table-column
         align="center"
-        label="是否删除"
+        :label="$t('programVersion.isDel')"
       >
         <template slot-scope="scope">
-          <span v-if="scope.row.delFlag ===0">正常</span>
-          <span v-if="scope.row.delFlag ===1">删除</span>
+          <span v-if="scope.row.delFlag ===0">{{$t('programVersion.normal')}}</span>
+          <span v-if="scope.row.delFlag ===1">{{$t('programVersion.del')}}</span>
         </template>
       </el-table-column>
       <el-table-column
         align="center"
-        label="是否当前使用"
+        :label="$t('programVersion.iscueerenuse')"
       >
         <template slot-scope="scope">
           <span
             class="useSpan"
             v-if="scope.row.currentInUse ===1"
-          >当前使用</span>
+          >{{$t('programVersion.currentUse')}}</span>
           <span
             class="nuuseSpan"
             v-if="scope.row.currentInUse ===0"
-          >否</span>
+          >{{$t('programVersion.no')}}</span>
         </template>
       </el-table-column>
       <el-table-column
         align="center"
-        label="操作"
+        :label="$t('programVersion.operation')"
         width="200"
       >
         <template slot-scope="scope">
@@ -122,7 +122,7 @@
       </el-table-column>
     </el-table>
     <div class="footer">
-      <div>每页20行记录，当前页面：{{this.currentPage}}，总页数：{{this.pageCount}}，总记录数微：{{this.totle}}</div>
+      <div>{{$t('programVersion.currentPage')}}：{{this.currentPage}}，{{$t('programVersion.totalPage')}}：{{this.pageCount}}，{{$t('programVersion.totalRecord')}}：{{this.totle}}</div>
       <el-pagination
         @current-change="handleCurrentChange"
         :current-page.sync="currentPage"
@@ -144,12 +144,12 @@ export default {
       tableData: [],
       version: [{
         value: '1',
-        label: '普通版本'
+        label: this.$t('programVersion.ordinaryVersion')
       }, {
         value: '2',
-        label: '好物版本'
+        label: this.$t('programVersion.goodVersion')
       }],
-      operationData: ['批量上传并提交审核', '查看当前版本操作日志', '设置为当前使用版本'],
+      operationData: this.$t('programVersion.operationData'),
       currentPage: 1,
       totle: null,
       pageCount: null
@@ -158,6 +158,8 @@ export default {
   mounted () {
     // 初始化数据
     this.defaluteData()
+    // 初始化语言
+    this.langDefault()
   },
   methods: {
     // 初始化数据
@@ -171,9 +173,9 @@ export default {
           res.content.dataList.map((item, index) => {
             item.version = this.version
             if (item.packageVersion === 1) {
-              item.versionVal = '普通版本'
+              item.versionVal = this.$t('programVersion.ordinaryVersion')
             } else if (item.packageVersion === 2) {
-              item.versionVal = '好物版本'
+              item.versionVal = this.$t('programVersion.goodVersion')
             }
           })
 
