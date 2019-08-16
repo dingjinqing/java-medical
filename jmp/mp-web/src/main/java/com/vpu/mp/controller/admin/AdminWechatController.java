@@ -67,7 +67,7 @@ public class AdminWechatController extends AdminBaseController {
 			}
 
 			logger().info("getQueryAuth", queryAuthResult);
-            return "redirect:"+this.mainUrl("/admin/home/main/base_manger");
+            return "redirect:"+this.mainUrl("/admin/home/main/base_manger/authok");
 		} catch (WxErrorException e) {
 			logger().error("gotoPreAuthUrl", e);
 			throw new RuntimeException(e);
