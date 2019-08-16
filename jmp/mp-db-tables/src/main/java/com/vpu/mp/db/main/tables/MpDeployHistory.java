@@ -42,7 +42,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class MpDeployHistory extends TableImpl<MpDeployHistoryRecord> {
 
-    private static final long serialVersionUID = 9693984;
+    private static final long serialVersionUID = 1552866742;
 
     /**
      * The reference instance of <code>mini_main.b2c_mp_deploy_history</code>
@@ -100,7 +100,7 @@ public class MpDeployHistory extends TableImpl<MpDeployHistoryRecord> {
     /**
      * The column <code>mini_main.b2c_mp_deploy_history.audit_id</code>. 最新的审核ID
      */
-    public final TableField<MpDeployHistoryRecord, Integer> AUDIT_ID = createField("audit_id", org.jooq.impl.SQLDataType.INTEGER.defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.INTEGER)), this, "最新的审核ID");
+    public final TableField<MpDeployHistoryRecord, Long> AUDIT_ID = createField("audit_id", org.jooq.impl.SQLDataType.BIGINT.defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.BIGINT)), this, "最新的审核ID");
 
     /**
      * The column <code>mini_main.b2c_mp_deploy_history.audit_state</code>. 审核状态，0未提交，1审核中，2审核成功 3审核失败
