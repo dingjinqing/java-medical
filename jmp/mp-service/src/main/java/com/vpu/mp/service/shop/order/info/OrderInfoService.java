@@ -26,7 +26,6 @@ import org.jooq.SelectJoinStep;
 import org.jooq.SelectWhereStep;
 import org.jooq.impl.DSL;
 import org.jooq.tools.StringUtils;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.vpu.mp.db.shop.tables.OrderInfo;
@@ -42,7 +41,6 @@ import com.vpu.mp.service.pojo.shop.order.analysis.ActiveDiscountMoney;
 import com.vpu.mp.service.pojo.shop.order.analysis.ActiveOrderList;
 import com.vpu.mp.service.pojo.shop.order.analysis.OrderActivityUserNum;
 import com.vpu.mp.service.pojo.shop.order.goods.OrderGoodsVo;
-import com.vpu.mp.service.shop.order.refund.record.RefundAmountRecordService;
 
 import lombok.Data;
 
@@ -73,9 +71,6 @@ public class OrderInfoService extends ShopBaseService {
 	public final String PS_BK_ORDER_MONEY= TABLE.BK_ORDER_MONEY.getName();
 	
 	public final String[] PAY_SUBDIVISION = {PS_BK_ORDER_MONEY,PS_MEMBER_CARD_BALANCE,PS_USE_ACCOUNT,PS_SCORE_DISCOUNT,PS_MONEY_PAID};
-	
-	@Autowired
-	private RefundAmountRecordService refundAmountRecord;
 	
 	/**
 	 * @param <T> <? extends OrderListVo>
