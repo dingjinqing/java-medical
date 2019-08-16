@@ -802,7 +802,10 @@ public class MpAuthShopService extends MainBaseService {
 	 * @throws WxErrorException
 	 */
 	public void bindAllSamePrincipalOpenAppId(MpAuthShopRecord record) throws WxErrorException {
+		logger().debug("入参"+record.toString());
+		logger().debug("name  "+record.getPrincipalName());
 		Result<MpAuthShopRecord> samePrincipalMpApps = getSamePrincipalMpApps(record.getPrincipalName());
+		logger().debug("查询"+samePrincipalMpApps);
 		String openAppId = null;
 		// 遍历所有主体相同的号，查找不为空的openAppId
 		for (MpAuthShopRecord mShopRecord : samePrincipalMpApps) {
