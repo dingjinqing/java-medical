@@ -27,6 +27,7 @@ import com.vpu.mp.service.shop.market.fullcut.MrkingStrategyService;
 import com.vpu.mp.service.shop.market.goupbuy.GroupBuyService;
 import com.vpu.mp.service.shop.market.groupdraw.*;
 import com.vpu.mp.service.shop.market.increasepurchase.IncreasePurchaseService;
+import com.vpu.mp.service.shop.market.integralconvert.IntegralConvertService;
 import com.vpu.mp.service.shop.market.integration.GroupIntegrationService;
 import com.vpu.mp.service.shop.market.lottery.LotteryService;
 import com.vpu.mp.service.shop.market.packagesale.PackSaleService;
@@ -224,4 +225,9 @@ public class ShopApplication  {
      * 首单特惠
      */
     @Autowired public FirstSpecialService firstSpecial;
+    /**
+     * 积分兑换
+     */
+    @Autowired public IntegralConvertService integralConvertService;
+    
 }

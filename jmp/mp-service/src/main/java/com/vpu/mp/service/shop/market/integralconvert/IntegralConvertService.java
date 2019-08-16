@@ -1,0 +1,383 @@
+package com.vpu.mp.service.shop.market.integralconvert;
+
+import org.jooq.Record;
+import org.jooq.SelectConditionStep;
+import org.jooq.SelectOnConditionStep;
+import org.jooq.impl.DSL;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.mysql.cj.util.StringUtils;
+import com.vpu.mp.db.shop.tables.IntegralMallDefine;
+import com.vpu.mp.db.shop.tables.IntegralMallProduct;
+import com.vpu.mp.db.shop.tables.IntegralMallRecord;
+import com.vpu.mp.service.foundation.service.ShopBaseService;
+import com.vpu.mp.service.foundation.util.FieldsUtil;
+import com.vpu.mp.service.foundation.util.PageResult;
+import com.vpu.mp.service.pojo.shop.market.MarketOrderListParam;
+import com.vpu.mp.service.pojo.shop.market.MarketSourceUserListParam;
+import com.vpu.mp.service.pojo.shop.market.integralconvert.IntegralConvertAddParam;
+import com.vpu.mp.service.pojo.shop.market.integralconvert.IntegralConvertGoodsParam;
+import com.vpu.mp.service.pojo.shop.market.integralconvert.IntegralConvertGoodsVo;
+import com.vpu.mp.service.pojo.shop.market.integralconvert.IntegralConvertListParam;
+import com.vpu.mp.service.pojo.shop.market.integralconvert.IntegralConvertListVo;
+import com.vpu.mp.service.pojo.shop.market.integralconvert.IntegralConvertOrderVo;
+import com.vpu.mp.service.pojo.shop.market.integralconvert.IntegralConvertProductVo;
+import com.vpu.mp.service.pojo.shop.market.integralconvert.IntegralConvertSelectParam;
+import com.vpu.mp.service.pojo.shop.market.integralconvert.IntegralConvertSelectVo;
+import com.vpu.mp.service.pojo.shop.market.integralconvert.IntegralConvertSwitchParam;
+import com.vpu.mp.service.pojo.shop.market.integralconvert.IntegralConvertUserParam;
+import com.vpu.mp.service.pojo.shop.market.integralconvert.IntegralConvertUserVo;
+import com.vpu.mp.service.pojo.shop.member.MemberInfoVo;
+import com.vpu.mp.service.pojo.shop.member.MemberPageListParam;
+import com.vpu.mp.service.pojo.shop.order.OrderConstant;
+import com.vpu.mp.service.pojo.shop.order.OrderListInfoVo;
+import com.vpu.mp.service.pojo.shop.order.OrderPageListQueryParam;
+import com.vpu.mp.service.shop.member.MemberService;
+import com.vpu.mp.service.shop.order.OrderReadService;
+
+import static com.vpu.mp.db.shop.Tables.INTEGRAL_MALL_DEFINE;
+import static com.vpu.mp.db.shop.Tables.INTEGRAL_MALL_PRODUCT;
+import static com.vpu.mp.db.shop.Tables.INTEGRAL_MALL_RECORD;
+import static com.vpu.mp.db.shop.Tables.GOODS;
+import static com.vpu.mp.db.shop.Tables.USER;
+import static com.vpu.mp.db.shop.Tables.GOODS_SPEC_PRODUCT;
+
+import java.io.IOException;
+import java.math.BigDecimal;
+import java.sql.Timestamp;
+import java.util.ArrayList;
+import java.util.List;
+
+/**
+ * 积分兑换
+ * 
+ * @author liangchen
+ * @date 2019年8月14日
+ */
+@Service
+public class IntegralConvertService extends ShopBaseService {
+	IntegralMallDefine imd = INTEGRAL_MALL_DEFINE.as("imd");
+	IntegralMallProduct imp = INTEGRAL_MALL_PRODUCT.as("imp");
+	IntegralMallRecord imr = INTEGRAL_MALL_RECORD.as("imr");
+
+	@Autowired
+	private OrderReadService orderReadService;
+	@Autowired
+	private MemberService memberService;
+
+	/**
+	 * 积分兑换分页查询列表
+	 *
+	 * @param IntegralConvertListParam
+	 * @return PageResult<IntegralConvertListVo>
+	 */
+	public PageResult<IntegralConvertListVo> getList(IntegralConvertListParam param) {
+		Timestamp nowTime = new Timestamp(System.currentTimeMillis());
+		SelectOnConditionStep<? extends Record> sql = db()
+				.select(imd.ID, imd.NAME, GOODS.GOODS_ID, GOODS.GOODS_IMG, GOODS.GOODS_NAME, imd.START_TIME,
+						imd.END_TIME, DSL.sum(imr.MONEY).as("money"), DSL.sum(imr.SCORE).as("score"),
+						GOODS.GOODS_NUMBER, imp.STOCK, DSL.sum(imr.NUMBER).as("number"),
+						DSL.count(imr.USER_ID).as("userNumber"))
+				.from(imd).leftJoin(GOODS).on(imd.GOODS_ID.eq(GOODS.GOODS_ID)).leftJoin(imp)
+				.on(imd.ID.eq(imp.INTEGRAL_MALL_DEFINE_ID)).leftJoin(imr).on(imd.ID.eq(imr.INTEGRAL_MALL_DEFINE_ID));
+
+		/* 活动状态0全部 */
+		if (IntegralConvertListParam.ALL == param.getActState()) {
+
+		}
+		/* 活动状态1进行中 */
+		if (IntegralConvertListParam.DOING == param.getActState()) {
+			sql.where(imd.STATUS.eq((byte) IntegralConvertListParam.NOT_BLOCK)).and(imd.START_TIME.lessOrEqual(nowTime))
+					.and(imd.END_TIME.greaterOrEqual(nowTime));
+		}
+		/* 活动状态2未开始 */
+		if (IntegralConvertListParam.TODO == param.getActState()) {
+			sql.where(imd.STATUS.eq((byte) IntegralConvertListParam.NOT_BLOCK))
+					.and(imd.START_TIME.greaterOrEqual(nowTime));
+		}
+		/* 活动状态3已过期 */
+		if (IntegralConvertListParam.DID == param.getActState()) {
+			sql.where(imd.STATUS.eq((byte) IntegralConvertListParam.NOT_BLOCK)).and(imd.END_TIME.lessOrEqual(nowTime));
+		}
+		/* 活动状态0已停用 */
+		if (IntegralConvertListParam.STOP == param.getActState()) {
+			sql.where(imd.STATUS.eq((byte) IntegralConvertListParam.BLOCK));
+		}
+		sql.groupBy(imd.ID, imd.NAME, GOODS.GOODS_ID, GOODS.GOODS_IMG, GOODS.GOODS_NAME, imd.START_TIME, imd.END_TIME,
+				GOODS.GOODS_NUMBER, imp.STOCK);
+		PageResult<IntegralConvertListVo> listVo = getPageResult(sql, param.getCurrentPage(), param.getPageRows(),
+				IntegralConvertListVo.class);
+
+		return listVo;
+	}
+
+	/**
+	 * 停用或启用活动
+	 *
+	 * @param IntegralConvertSwitchParam
+	 * @return
+	 */
+	public void startOrStop(IntegralConvertSwitchParam param) {
+		/* 判断当前状态 停用中or启用中 */
+		int status = db().select(imd.STATUS).from(imd).where(imd.ID.eq(param.getId())).fetchOptionalInto(Integer.class)
+				.get();
+		/* 若已停用 则启用 */
+		if (status == IntegralConvertSwitchParam.BLOCK) {
+			db().update(imd).set(imd.STATUS, (byte) IntegralConvertSwitchParam.NOT_BLOCK)
+					.where(imd.ID.eq(param.getId())).execute();
+		}
+		/* 若启用中 则停用 */
+		if (status == IntegralConvertSwitchParam.NOT_BLOCK) {
+			db().update(imd).set(imd.STATUS, (byte) IntegralConvertSwitchParam.BLOCK).where(imd.ID.eq(param.getId()))
+					.execute();
+		}
+
+	}
+
+	/**
+	 * 积分兑换用户列表
+	 *
+	 * @param IntegralConvertUserParam
+	 * @return PageResult<IntegralConvertUserVo>
+	 */
+	public PageResult<IntegralConvertUserVo> userList(IntegralConvertUserParam param) {
+
+		SelectConditionStep<? extends Record> sql = db()
+				.select(imr.USER_ID, imr.ORDER_SN, imr.GOODS_ID, GOODS.GOODS_IMG, GOODS.GOODS_NAME, imr.MONEY,
+						imr.SCORE, USER.USERNAME, USER.MOBILE, imr.NUMBER, imr.CREATE_TIME)
+				.from(imr).leftJoin(GOODS).on(imr.GOODS_ID.eq(GOODS.GOODS_ID)).leftJoin(USER)
+				.on(imr.USER_ID.eq(USER.USER_ID)).where(imr.INTEGRAL_MALL_DEFINE_ID.eq(param.getId()));
+		/* 查询条件 */
+		/* 用户昵称 */
+		if (!StringUtils.isNullOrEmpty(param.getUsername())) {
+			sql.and(USER.USERNAME.like(this.likeValue(param.getUsername())));
+		}
+		/* 手机号 */
+		if (!StringUtils.isNullOrEmpty(param.getMobile())) {
+			sql.and(USER.MOBILE.like(this.likeValue(param.getMobile())));
+		}
+
+		/* 整合分页信息 */
+		PageResult<IntegralConvertUserVo> pageResult = getPageResult(sql, param.getCurrentPage(), param.getPageRows(),
+				IntegralConvertUserVo.class);
+
+		return pageResult;
+	}
+
+	/**
+	 * 返回指定商品规格详情
+	 *
+	 * @param IntegralConvertGoodsParam
+	 * @return List<IntegralConvertGoodsVo>
+	 */
+	public List<IntegralConvertGoodsVo> getproduct(IntegralConvertGoodsParam param) {
+
+		List<IntegralConvertGoodsVo> sql = db().select().from(GOODS_SPEC_PRODUCT)
+				.where(GOODS_SPEC_PRODUCT.GOODS_ID.eq(param.getGoodsId()))
+				.and(GOODS_SPEC_PRODUCT.DEL_FLAG.eq((byte) IntegralConvertGoodsParam.NOT_DELETE))
+				.fetchInto(IntegralConvertGoodsVo.class);
+
+		return sql;
+	}
+
+	/**
+	 * 添加积分兑换活动
+	 *
+	 * @param IntegralConvertAddParam
+	 * @return
+	 */
+	public void addAction(IntegralConvertAddParam param) {
+
+		try {
+			/* 入参对象解析为json字符串 */
+			ObjectMapper objectMapper = new ObjectMapper();
+			String shareCondfig = objectMapper.writeValueAsString(param.getConfigParam());
+			/* 添加数据-活动信息表 */
+			db().insertInto(INTEGRAL_MALL_DEFINE, INTEGRAL_MALL_DEFINE.NAME, INTEGRAL_MALL_DEFINE.START_TIME,
+					INTEGRAL_MALL_DEFINE.END_TIME, INTEGRAL_MALL_DEFINE.GOODS_ID, INTEGRAL_MALL_DEFINE.SHARE_CONFIG)
+					.values(param.getName(), param.getStartTime(), param.getEndTime(), param.getGoodsId(), shareCondfig)
+					.execute();
+			/* 得到刚添加到活动表的活动id */
+			int imdId = db().lastID().intValue();
+			/* 查找指定商品的所有规格 */
+			List<Integer> productIds = db().select(GOODS_SPEC_PRODUCT.PRD_ID).from(GOODS_SPEC_PRODUCT)
+					.where(GOODS_SPEC_PRODUCT.GOODS_ID.eq(param.getGoodsId()))
+					.and(GOODS_SPEC_PRODUCT.DEL_FLAG.eq((byte) IntegralConvertGoodsParam.NOT_DELETE))
+					.fetchInto(Integer.class);
+			/* 添加数据-活动规格信息表 */
+			for (int i = 0; i < productIds.size(); i++) {
+				db().insertInto(INTEGRAL_MALL_PRODUCT, INTEGRAL_MALL_PRODUCT.INTEGRAL_MALL_DEFINE_ID,
+						INTEGRAL_MALL_PRODUCT.PRODUCT_ID, INTEGRAL_MALL_PRODUCT.MONEY, INTEGRAL_MALL_PRODUCT.SCORE,
+						INTEGRAL_MALL_PRODUCT.STOCK)
+						.values(imdId, productIds.get(i), param.getProductParam().get(i).getMoney(),
+								param.getProductParam().get(i).getScore(), param.getProductParam().get(i).getStock())
+						.execute();
+			}
+
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+	}
+
+	/**
+	 * 查询指定活动信息
+	 *
+	 * @param
+	 * @return
+	 */
+	public IntegralConvertSelectVo selectOne(IntegralConvertSelectParam param) {
+
+		IntegralConvertSelectVo selectVo = db()
+				.select(imd.NAME, imd.START_TIME, imd.END_TIME, imd.MAX_EXCHANGE_NUM, imd.GOODS_ID, GOODS.GOODS_NAME,
+						imd.SHARE_CONFIG)
+				.from(imd).leftJoin(GOODS).on(imd.GOODS_ID.eq(GOODS.GOODS_ID)).where(imd.ID.eq(param.getId()))
+				.fetchOneInto(IntegralConvertSelectVo.class);
+		int goodId = selectVo.getGoodsId();
+
+		List<Integer> productIds = db().select(GOODS_SPEC_PRODUCT.PRD_ID).from(GOODS_SPEC_PRODUCT)
+				.where(GOODS_SPEC_PRODUCT.GOODS_ID.eq(goodId))
+				.and(GOODS_SPEC_PRODUCT.DEL_FLAG.eq((byte) IntegralConvertGoodsParam.NOT_DELETE))
+				.fetchInto(Integer.class);
+
+		List<IntegralConvertProductVo> productList = new ArrayList<IntegralConvertProductVo>(1024);
+		for (int i = 0; i < productIds.size(); i++) {
+
+			IntegralConvertProductVo listVo = db().select(imp.MONEY, imp.SCORE, imp.STOCK).from(imp)
+					.where(imp.PRODUCT_ID.eq(productIds.get(i))).and(imp.INTEGRAL_MALL_DEFINE_ID.eq(param.getId()))
+					.fetchOneInto(IntegralConvertProductVo.class);
+
+			String prdDesc = db().select(GOODS_SPEC_PRODUCT.PRD_DESC).from(GOODS_SPEC_PRODUCT)
+					.where(GOODS_SPEC_PRODUCT.PRD_ID.eq(productIds.get(i)))
+					.and(GOODS_SPEC_PRODUCT.DEL_FLAG.eq((byte) IntegralConvertGoodsParam.NOT_DELETE))
+					.fetchOptionalInto(String.class).orElse(null);
+
+			listVo.setPrdDesc(prdDesc);
+
+			System.out.println(listVo);
+
+			productList.add(i, listVo);
+
+		}
+		selectVo.setProductVo(productList);
+
+		return selectVo;
+	}
+
+	/**
+	 * 修改积分兑换活动
+	 *
+	 * @param IntegralConvertAddParam
+	 * @return
+	 */
+	public void updateAction(IntegralConvertAddParam param) {
+
+		try {
+			/* 入参对象解析为json字符串 */
+			ObjectMapper objectMapper = new ObjectMapper();
+			String shareCondfig = objectMapper.writeValueAsString(param.getConfigParam());
+			/* 修改数据-活动信息表 */
+			db().update(INTEGRAL_MALL_DEFINE).set(INTEGRAL_MALL_DEFINE.NAME, param.getName())
+					.set(INTEGRAL_MALL_DEFINE.START_TIME, param.getStartTime())
+					.set(INTEGRAL_MALL_DEFINE.END_TIME, param.getEndTime())
+					.set(INTEGRAL_MALL_DEFINE.GOODS_ID, param.getGoodsId())
+					.set(INTEGRAL_MALL_DEFINE.SHARE_CONFIG, shareCondfig)
+					.where(INTEGRAL_MALL_DEFINE.ID.eq(param.getId())).execute();
+
+			/* 查找指定商品的所有规格 */
+			List<Integer> productIds = db().select(GOODS_SPEC_PRODUCT.PRD_ID).from(GOODS_SPEC_PRODUCT)
+					.where(GOODS_SPEC_PRODUCT.GOODS_ID.eq(param.getGoodsId()))
+					.and(GOODS_SPEC_PRODUCT.DEL_FLAG.eq((byte) IntegralConvertGoodsParam.NOT_DELETE))
+					.fetchInto(Integer.class);
+			/* 修改数据-活动规格信息表 */
+			for (int i = 0; i < productIds.size(); i++) {
+				db().update(INTEGRAL_MALL_PRODUCT).set(INTEGRAL_MALL_PRODUCT.INTEGRAL_MALL_DEFINE_ID, param.getId())
+						.set(INTEGRAL_MALL_PRODUCT.MONEY, param.getProductParam().get(i).getMoney())
+						.set(INTEGRAL_MALL_PRODUCT.SCORE, param.getProductParam().get(i).getScore())
+						.set(INTEGRAL_MALL_PRODUCT.STOCK, param.getProductParam().get(i).getStock())
+						.where(INTEGRAL_MALL_PRODUCT.INTEGRAL_MALL_DEFINE_ID.eq(param.getId()))
+						.and(INTEGRAL_MALL_PRODUCT.PRODUCT_ID.eq(productIds.get(i))).execute();
+			}
+
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+	}
+
+	/**
+	 * 活动新增用户
+	 *
+	 * @param param
+	 * @return
+	 */
+	public PageResult<MemberInfoVo> integralNewUserList(MarketSourceUserListParam param) {
+		MemberPageListParam pageListParam = new MemberPageListParam();
+		pageListParam.setCurrentPage(param.getCurrentPage());
+		pageListParam.setPageRows(param.getPageRows());
+		pageListParam.setMobile(param.getMobile());
+		pageListParam.setUsername(param.getUserName());
+		pageListParam.setInviteUserName(param.getInviteUserName());
+		return memberService.getSourceActList(pageListParam, MemberService.INVITE_SOURCE_INTEGRAL,
+				param.getActivityId());
+	}
+
+	/**
+	 * 查看积分兑换订单
+	 *
+	 * @param
+	 * @return
+	 */
+	@SuppressWarnings("unchecked")
+	public PageResult<IntegralConvertOrderVo> interalOrderList(MarketOrderListParam param) {
+		OrderPageListQueryParam orderParam = new OrderPageListQueryParam();
+		orderParam.setCurrentPage(param.getCurrentPage());
+		orderParam.setPageRows(param.getPageRows());
+		orderParam.setActivityId(param.getActivityId());
+		orderParam.setGoodsType(OrderConstant.GOODS_TYPE_INTEGRAL);
+		orderParam.setGoodsName(param.getGoodsName());
+		orderParam.setOrderSn(param.getOrderSn());
+		orderParam.setOrderStatus(param.getOrderStatus());
+
+		orderParam.setMobile(param.getMobile());
+		orderParam.setConsignee(param.getConsignee());
+		orderParam.setCreateTimeStart(param.getCreateTimeStart());
+		orderParam.setCreateTimeEnd(param.getCreateTimeEnd());
+
+		orderParam.setCountryCode(param.getCountryCode());
+		orderParam.setProvinceCode(param.getProvinceCode());
+		orderParam.setCityCode(param.getCityCode());
+		orderParam.setDistrictCode(param.getDistrictCode());
+
+		PageResult<OrderListInfoVo> pageList = (PageResult<OrderListInfoVo>) orderReadService.getPageList(orderParam);
+
+		List<IntegralConvertOrderVo> newList = new ArrayList<IntegralConvertOrderVo>(20);
+
+		if (pageList.getDataList() != null) {
+			pageList.getDataList().forEach(data -> {
+				IntegralConvertOrderVo vo = new IntegralConvertOrderVo();
+				FieldsUtil.assignNotNull(data, vo);
+
+				int number = db().select(DSL.sum(imr.NUMBER)).from(imr).where(imr.ORDER_SN.eq(vo.getOrderSn()))
+						.fetchOptionalInto(Integer.class).get();
+				vo.setNumber(number);
+
+				BigDecimal money = db().select(DSL.sum(imr.MONEY)).from(imr).where(imr.ORDER_SN.eq(vo.getOrderSn()))
+						.fetchOptionalInto(BigDecimal.class).get();
+				vo.setMoney(money);
+
+				int score = db().select(DSL.sum(imr.SCORE)).from(imr).where(imr.ORDER_SN.eq(vo.getOrderSn()))
+						.fetchOptionalInto(Integer.class).get();
+				vo.setScore(score);
+				
+				newList.add(vo);
+			});
+		}
+		PageResult<IntegralConvertOrderVo> pageResult = new PageResult<IntegralConvertOrderVo>();
+		pageResult.setDataList(newList);
+		pageResult.setPage(pageList.getPage());
+
+		return pageResult;
+
+	}
+}

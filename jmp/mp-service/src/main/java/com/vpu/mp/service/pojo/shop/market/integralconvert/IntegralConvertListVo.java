@@ -1,0 +1,49 @@
+package com.vpu.mp.service.pojo.shop.market.integralconvert;
+
+import java.math.BigDecimal;
+
+import lombok.Data;
+
+/**
+ * 积分兑换分页查询列表
+ * @author liangchen
+ * @date 2019年8月14日
+ */
+@Data
+public class IntegralConvertListVo {
+	
+	/* 活动id */
+	private Integer id;
+	
+	/* 活动名称 */
+	private String name;
+	
+	/* 商品id */
+	private Integer goodsId;
+	
+	/* 商品图片 */
+	private String goodsImg;
+	
+	/* 商品名称 */
+	private String goodsName;
+	
+	/* 兑换所需现金 */
+	private BigDecimal money;
+	
+	/* 兑换所需积分 */
+	private Integer score;
+	
+	/* 商品库存 */
+	private Integer goodsNumber;
+	
+	/* 积分兑换库存 */
+	private Integer stock;
+	
+	/* 已兑换数量 */
+	private Integer number;
+	
+	/* 兑换用户数 */
+	private Integer userNumber;
+	
+	
+}
