@@ -263,7 +263,8 @@ public class BargainService extends ShopBaseService  {
      * 砍价订单
      *
      */
-    public PageResult<OrderListInfoVo> getBargainOrderList(MarketOrderListParam param) {
+    @SuppressWarnings("unchecked")
+	public PageResult<OrderListInfoVo> getBargainOrderList(MarketOrderListParam param) {
         OrderPageListQueryParam orderParam =new OrderPageListQueryParam();
         orderParam.setCurrentPage(param.getCurrentPage());
         orderParam.setPageRows(param.getPageRows());

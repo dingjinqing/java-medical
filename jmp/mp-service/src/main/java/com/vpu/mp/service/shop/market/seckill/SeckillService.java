@@ -181,7 +181,8 @@ public class SeckillService extends ShopBaseService {
      * 秒杀订单
      *
      */
-    public PageResult<OrderListInfoVo> getSeckillOrderList(MarketOrderListParam param) {
+    @SuppressWarnings("unchecked")
+	public PageResult<OrderListInfoVo> getSeckillOrderList(MarketOrderListParam param) {
         OrderPageListQueryParam orderParam =new OrderPageListQueryParam();
         orderParam.setCurrentPage(param.getCurrentPage());
         orderParam.setPageRows(param.getPageRows());
