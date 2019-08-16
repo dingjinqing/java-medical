@@ -150,13 +150,7 @@ export default {
       if (this.flag === false) return
       localStorage.setItem('contentType', 'application/json;charset=UTF-8')
       loginRequest(this.mainData).then((res) => {
-        if (res.error !== 0) {
-          this.$message({
-            showClose: true,
-            message: res.message,
-            type: 'error'
-          })
-        } else {
+        if (res.error === 0) {
           document.onkeydown = undefined
           localStorage.setItem('V-loginType', 1)
           Cookies.set('V-Token', res.content.token, { expires: 1 / 48 })

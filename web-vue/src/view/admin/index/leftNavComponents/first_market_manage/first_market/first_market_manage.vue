@@ -426,6 +426,7 @@ export default {
     this.langDefault()
   },
   methods: {
+    // 普通优惠卷点击
     coupon () {
       this.$router.push({
         name: 'ordinary_coupon'

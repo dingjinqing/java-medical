@@ -447,7 +447,7 @@ const routes = [
             name: 'ordinary_coupon',
             meta: {
               crumbTitle: 'router.ordinary_coupon',
-              meta: 'ordinary_coupon',
+              meta: 'first_market_manage',
               category: 'first_market_manage'
             },
             component: () =>
