@@ -547,7 +547,7 @@ const routes = [
           },
           // 基础配置系列子路由
           {
-            path: '/admin/home/main/base_manger',
+            path: '/admin/home/main/base_manger/:isAuth',
             name: 'config_list',
             meta: {
               crumbTitle: 'router.base_manger',
