@@ -1,8 +1,8 @@
 <template>
-<div class="mpProgramManage">
-  <breadcrumb />
-  <programMange />
-</div>
+  <div class="mpProgramManage">
+    <breadcrumb />
+    <programMange />
+  </div>
 </template>
 
 <script>
@@ -23,6 +23,5 @@ export default {
 
 <style scoped lang="scss">
 .mpProgramManage {
-
 }
 </style>

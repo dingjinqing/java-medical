@@ -111,7 +111,8 @@ export default {
             span: '小程序版本',
             routeName: 'programManage',
             params: {
-              page: 'versionManage'
+              page: 'versionManage',
+              appId: '0'
             }
           },
           {

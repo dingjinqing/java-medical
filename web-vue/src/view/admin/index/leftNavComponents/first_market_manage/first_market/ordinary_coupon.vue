@@ -20,34 +20,51 @@
       </div>
       <div>
         <el-table
+          class="version-manage-table"
+          header-row-class-name="tableClss"
           :data="tableData"
+          border
           style="width: 100%"
         >
-          <e-table-column
-            prop="name"
-            label="优惠券名称"
+          <el-table-column
+            label=""
+            align="center"
           >
 
-          </e-table-column>
-          <e-table-column
-            prop="name"
-            label="积分兑换"
+          </el-table-column>
+          <el-table-column
+            prop="pageName"
+            label="页面名称"
+            align="center"
+          >
+          </el-table-column>
+          <el-table-column
+            prop="creatTime"
+            label="创建时间"
+            align="center"
+          >
+          </el-table-column>
+          <el-table-column
+            prop="isFirstPage"
+            label="是否首页"
+            align="center"
           >
 
-          </e-table-column>
-          <e-table-column
-            prop="name"
-            label="价值"
+          </el-table-column>
+          <el-table-column
+            prop="pageClass"
+            label="页面分类"
+            align="center"
           >
 
-          </e-table-column>
-          <e-table-column
-            prop="name"
-            label="最低消费"
+          </el-table-column>
+          <el-table-column
+            label="操作"
+            align="center"
+            width="150"
           >
 
-          </e-table-column>
-
+          </el-table-column>
         </el-table>
       </div>
     </div>
@@ -60,6 +77,9 @@ export default {
     return {
       tableData: []
     }
+  },
+  methods: {
+
   }
 }
 </script>
@@ -97,5 +117,13 @@ export default {
       margin: 0 10px 0 30px;
     }
   }
+}
+/deep/ .tableClss th {
+  background-color: #f5f5f5;
+  border: none;
+  height: 36px;
+  font-weight: bold;
+  color: #000;
+  padding: 8px 10px;
 }
 </style>
