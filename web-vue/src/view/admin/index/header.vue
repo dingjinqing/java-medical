@@ -188,7 +188,8 @@ export default {
       this.$http.$emit('resit', false)
       this.click_nav_index = index
       console.log(name)
-      if (name === 'base_manger') {
+      if (name === 'config_list') {
+        console.log(123)
         this.$router.push({
           name: name,
           params: {

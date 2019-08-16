@@ -573,7 +573,7 @@ export default {
       if (name === 'first_market_manage') this.nav_s_class_index = true
       this.click_nav_index = index
       this.saveIndex = index
-      if (name === 'base_manger') {
+      if (name === 'config_list') {
         this.$router.push({
           name: name,
           params: {
