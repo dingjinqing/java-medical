@@ -33,9 +33,9 @@ import com.vpu.mp.service.pojo.shop.store.store.StoreListQueryParam;
 import com.vpu.mp.service.pojo.shop.store.store.StorePageListVo;
 import com.vpu.mp.service.pojo.shop.store.store.StoreParam;
 import com.vpu.mp.service.pojo.shop.store.store.StorePojo;
-import com.vpu.mp.service.pojo.shop.store.validated.AddValidatedGroup;
-import com.vpu.mp.service.pojo.shop.store.validated.CodingCheckValidatedGroup;
-import com.vpu.mp.service.pojo.shop.store.validated.UpdateValidatedGroup;
+import com.vpu.mp.service.pojo.shop.store.validated.StoreAddValidatedGroup;
+import com.vpu.mp.service.pojo.shop.store.validated.StoreCodingCheckValidatedGroup;
+import com.vpu.mp.service.pojo.shop.store.validated.StoreUpdateValidatedGroup;
 import com.vpu.mp.service.pojo.shop.store.verifier.VerifierAddParam;
 import com.vpu.mp.service.pojo.shop.store.verifier.VerifierListQueryParam;
 import com.vpu.mp.service.shop.store.service.ServiceOrderService;
@@ -73,7 +73,7 @@ public class AdminStoreController extends AdminBaseController{
      * @return
      */
     @PostMapping(value = "/api/admin/store/add")
-    public JsonResult addStore(@RequestBody(required = true) @Validated({AddValidatedGroup.class}) StorePojo store) {
+    public JsonResult addStore(@RequestBody(required = true) @Validated({StoreAddValidatedGroup.class}) StorePojo store) {
        if(shop().store.addStore(store)) {
     	   return success();
        }else {
@@ -86,7 +86,7 @@ public class AdminStoreController extends AdminBaseController{
      * @return
      */
     @PostMapping(value = "/api/admin/store/update")
-    public JsonResult updateStore(@RequestBody(required = true) @Validated({UpdateValidatedGroup.class}) StorePojo store) {
+    public JsonResult updateStore(@RequestBody(required = true) @Validated({StoreUpdateValidatedGroup.class}) StorePojo store) {
        if(shop().store.updateStore(store)) {
     	   return success();
        }else {
@@ -127,7 +127,7 @@ public class AdminStoreController extends AdminBaseController{
      * @return
      */
     @PostMapping(value = "/api/admin/store/coding/check")
-    public JsonResult checkStoreCoding(@RequestBody(required = true) @Validated({CodingCheckValidatedGroup.class}) StorePojo store) {
+    public JsonResult checkStoreCoding(@RequestBody(required = true) @Validated({StoreCodingCheckValidatedGroup.class}) StorePojo store) {
        if(shop().store.checkStoreCoding(store.getPosShopId())) {
     	   return success();
        }else {

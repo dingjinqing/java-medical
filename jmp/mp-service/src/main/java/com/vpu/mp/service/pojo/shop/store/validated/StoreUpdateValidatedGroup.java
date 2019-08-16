@@ -7,5 +7,5 @@ import javax.validation.groups.Default;
  * @author: 王兵兵
  *
  */
-public interface UpdateValidatedGroup  extends Default {
+public interface StoreUpdateValidatedGroup extends Default {
 }

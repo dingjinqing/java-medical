@@ -4,6 +4,7 @@ import lombok.Data;
 
 import javax.validation.constraints.Max;
 import javax.validation.constraints.Min;
+import javax.validation.constraints.NotNull;
 
 /**
  * @author: 王兵兵
@@ -13,6 +14,7 @@ import javax.validation.constraints.Min;
 public class ReducePriceUpdateParam {
 
     /** 活动主键 */
+    @NotNull
     private Integer id;
 
     /** 状态：1：启用 0：禁用 */

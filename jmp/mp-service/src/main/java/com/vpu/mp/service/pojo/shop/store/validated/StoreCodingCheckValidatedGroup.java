@@ -7,5 +7,5 @@ import javax.validation.groups.Default;
  * @author: 王兵兵
  *
  */
-public interface CodingCheckValidatedGroup  extends Default {
+public interface StoreCodingCheckValidatedGroup extends Default {
 }

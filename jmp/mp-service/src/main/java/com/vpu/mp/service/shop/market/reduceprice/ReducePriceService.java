@@ -65,12 +65,12 @@ public class ReducePriceService extends ShopBaseService {
                 goodsRecord.setReducePriceId(reducePriceId);
                 goodsRecord.insert();
                 if(goods.getGoodsProductAddParams() != null && goods.getGoodsProductAddParams().length > 0){
-                    Integer reducePriceGoodsId = goodsRecord.getId();
+                    Integer goodsId = goodsRecord.getGoodsId();
                     for(ReducePriceGoodsProductAddParam goodsProduct : goods.getGoodsProductAddParams()){
                         ReducePriceProductRecord productRecord = db().newRecord(REDUCE_PRICE_PRODUCT);
                         assign(goodsProduct,productRecord);
                         productRecord.setReducePriceId(reducePriceId);
-                        productRecord.setGoodsId(reducePriceGoodsId);
+                        productRecord.setGoodsId(goodsId);
                         productRecord.insert();
                     }
                 }
