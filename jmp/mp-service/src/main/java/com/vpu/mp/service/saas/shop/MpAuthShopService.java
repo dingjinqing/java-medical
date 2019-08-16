@@ -479,6 +479,7 @@ public class MpAuthShopService extends MainBaseService {
 	 * @throws WxErrorException
 	 */
 	public WxOpenResult bindTester(String appId, String wechatId) throws WxErrorException {
+		logger().debug("绑定体验者开始···································");
 		MpAuthShopRecord mp = this.getAuthShopByAppId(appId);
 		List<String> testers = StringUtils.isBlank(mp.getTester()) ? new ArrayList<>()
 				: Util.parseJson(mp.getTester(), new TypeReference<List<String>>() {
