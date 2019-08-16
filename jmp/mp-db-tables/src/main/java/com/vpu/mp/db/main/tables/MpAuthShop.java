@@ -41,7 +41,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class MpAuthShop extends TableImpl<MpAuthShopRecord> {
 
-    private static final long serialVersionUID = -1667883129;
+    private static final long serialVersionUID = -1134435482;
 
     /**
      * The reference instance of <code>mini_main.b2c_mp_auth_shop</code>
@@ -184,7 +184,7 @@ public class MpAuthShop extends TableImpl<MpAuthShopRecord> {
     /**
      * The column <code>mini_main.b2c_mp_auth_shop.audit_id</code>. 最新的审核ID
      */
-    public final TableField<MpAuthShopRecord, Integer> AUDIT_ID = createField("audit_id", org.jooq.impl.SQLDataType.INTEGER.defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.INTEGER)), this, "最新的审核ID");
+    public final TableField<MpAuthShopRecord, Long> AUDIT_ID = createField("audit_id", org.jooq.impl.SQLDataType.BIGINT.defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.BIGINT)), this, "最新的审核ID");
 
     /**
      * The column <code>mini_main.b2c_mp_auth_shop.audit_state</code>. 审核状态，0未提交，1审核中，2审核成功 3审核失败
