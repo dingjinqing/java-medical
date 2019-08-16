@@ -144,11 +144,14 @@ public class MpAuthShopService extends MainBaseService {
      * @return 是否更新成功
      */
     public WxOpenResult updateAppInfo(String appId) throws WxErrorException {
+        String updateSuccessMsg="更新授信息";
+        String updateErrorMsg="database has no data";
+
         MpAuthShopRecord record = db().selectFrom(MP_AUTH_SHOP).where(MP_AUTH_SHOP.APP_ID.eq(appId)).fetchAny();
         WxOpenResult wxOpenResult = new WxOpenResult();
         if (record == null) {
             wxOpenResult.setErrcode("1");
-            wxOpenResult.setErrmsg("database has no data");
+            wxOpenResult.setErrmsg(updateErrorMsg);
             return wxOpenResult;
         }
         WxOpenAuthorizerInfoResult authInfo = open().getWxOpenComponentService().getAuthorizerInfo(appId);
@@ -172,6 +175,7 @@ public class MpAuthShopService extends MainBaseService {
         record.update();
 
         wxOpenResult.setErrcode("0");
+        wxOpenResult.setErrmsg(updateSuccessMsg);
 
         operateLog(record,MpOperateLogService.OP_TYPE_UPDATE_MP,wxOpenResult);
 
