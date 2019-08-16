@@ -61,8 +61,8 @@ public class AdminWechatController extends AdminBaseController {
                     return ("小程序已授权绑定其他账号，请联系客服！");
 				}
 				logger().debug("查询出的值2："+mp);
-				saas.shop.mp.addMpAuthAccountInfo(appId, shopId);
-				saas.shop.mp.bindAllSamePrincipalOpenAppId(mp);
+				MpAuthShopRecord addMpAuthAccountInfo = saas.shop.mp.addMpAuthAccountInfo(appId, shopId);
+				saas.shop.mp.bindAllSamePrincipalOpenAppId(addMpAuthAccountInfo);
 				
 			}
 
