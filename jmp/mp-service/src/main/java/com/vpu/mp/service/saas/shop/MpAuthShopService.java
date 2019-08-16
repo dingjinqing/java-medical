@@ -669,6 +669,8 @@ public class MpAuthShopService extends MainBaseService {
 		audit.setFirstId(categoryList.get(0).getFirstId());
 		audit.setSecondClass(categoryList.get(0).getSecondClass());
 		audit.setSecondId(categoryList.get(0).getSecondId());
+		audit.setThirdId(categoryList.get(0).getThirdId());
+		audit.setThirdClass(categoryList.get(0).getThirdClass());
 		WxOpenMaSubmitAuditMessage submitAuditMessage = new WxOpenMaSubmitAuditMessage();
 		List<WxOpenMaSubmitAudit> itemList = new ArrayList<>();
 		itemList.add(audit);
