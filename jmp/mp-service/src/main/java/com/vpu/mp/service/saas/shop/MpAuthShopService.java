@@ -151,9 +151,7 @@ public class MpAuthShopService extends MainBaseService {
             wxOpenResult.setErrmsg("database has no data");
             return wxOpenResult;
         }
-        logger().debug("更新小程序信息-小程序id："+appId);
         WxOpenAuthorizerInfoResult authInfo = open().getWxOpenComponentService().getAuthorizerInfo(appId);
-        logger().debug("更新小程序信息-小程序authInfo："+authInfo);
         WxOpenAuthorizationInfo authorizationInfo = authInfo.getAuthorizationInfo();
         WxOpenAuthorizerInfo authorizerInfo = authInfo.getAuthorizerInfo();
 
