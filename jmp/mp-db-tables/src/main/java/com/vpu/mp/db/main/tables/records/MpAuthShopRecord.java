@@ -28,7 +28,7 @@ import org.jooq.types.UInteger;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class MpAuthShopRecord extends UpdatableRecordImpl<MpAuthShopRecord> {
 
-    private static final long serialVersionUID = -781351854;
+    private static final long serialVersionUID = 1289723426;
 
     /**
      * Setter for <code>mini_main.b2c_mp_auth_shop.app_id</code>. 授权小程序appId
@@ -383,15 +383,15 @@ public class MpAuthShopRecord extends UpdatableRecordImpl<MpAuthShopRecord> {
     /**
      * Setter for <code>mini_main.b2c_mp_auth_shop.audit_id</code>. 最新的审核ID
      */
-    public void setAuditId(Integer value) {
+    public void setAuditId(Long value) {
         set(25, value);
     }
 
     /**
      * Getter for <code>mini_main.b2c_mp_auth_shop.audit_id</code>. 最新的审核ID
      */
-    public Integer getAuditId() {
-        return (Integer) get(25);
+    public Long getAuditId() {
+        return (Long) get(25);
     }
 
     /**
@@ -686,7 +686,7 @@ public class MpAuthShopRecord extends UpdatableRecordImpl<MpAuthShopRecord> {
     /**
      * Create a detached, initialised MpAuthShopRecord
      */
-    public MpAuthShopRecord(String appId, Integer shopId, String nickName, String userName, String alias, String verifyTypeInfo, String headImg, String funcInfo, Byte isAuthOk, Timestamp lastAuthTime, Timestamp lastCancelAuthTime, Timestamp createTime, String qrcodeUrl, Byte openPay, Byte openCard, String authorizerInfo, String authorizationInfo, String payMchId, String payKey, String payCertContent, String payKeyContent, Byte isModifyDomain, Integer bindTemplateId, Byte uploadState, Timestamp lastUploadTime, Integer auditId, Byte auditState, Timestamp submitAuditTime, Timestamp auditOkTime, String auditFailReason, Byte publishState, Timestamp publishTime, String tester, String testQrPath, String category, String pageCfg, String principalName, String bindOpenAppId, String linkOfficialAppId, Byte isSubMerchant, String unionPayAppId, String unionPayCusId, String unionPayAppKey, String feeType, String merchantCategoryCode) {
+    public MpAuthShopRecord(String appId, Integer shopId, String nickName, String userName, String alias, String verifyTypeInfo, String headImg, String funcInfo, Byte isAuthOk, Timestamp lastAuthTime, Timestamp lastCancelAuthTime, Timestamp createTime, String qrcodeUrl, Byte openPay, Byte openCard, String authorizerInfo, String authorizationInfo, String payMchId, String payKey, String payCertContent, String payKeyContent, Byte isModifyDomain, Integer bindTemplateId, Byte uploadState, Timestamp lastUploadTime, Long auditId, Byte auditState, Timestamp submitAuditTime, Timestamp auditOkTime, String auditFailReason, Byte publishState, Timestamp publishTime, String tester, String testQrPath, String category, String pageCfg, String principalName, String bindOpenAppId, String linkOfficialAppId, Byte isSubMerchant, String unionPayAppId, String unionPayCusId, String unionPayAppKey, String feeType, String merchantCategoryCode) {
         super(MpAuthShop.MP_AUTH_SHOP);
 
         set(0, appId);
