@@ -653,3 +653,50 @@ add column `reason_desc` text comment '退款/退货描述';
 alter table `b2c_order_info`
 drop column `pin_group_id`,
 add column `activity_id` INT ( 11 ) NOT NULL DEFAULT '0' COMMENT '营销活动id';
+
+-- 首单特惠定义表
+-- DROP TABLE IF EXISTS `b2c_first_special`;
+CREATE TABLE `b2c_first_special` (
+   `id`                 int(11) NOT NULL AUTO_INCREMENT,
+   `name`               varchar(50) COLLATE utf8mb4_unicode_ci NOT NULL COMMENT '活动名称',
+   `start_time`         timestamp NULL DEFAULT NULL COMMENT '开始时间',
+   `end_time`           timestamp NULL DEFAULT NULL COMMENT '结束日期',
+   `batch_discount`     tinyint(1) DEFAULT '0' COMMENT '批量打几折',
+   `batch_reduce`       decimal(10,2) DEFAULT NULL COMMENT '批量减多少',
+   `batch_final_price`  decimal(10,2) DEFAULT NULL COMMENT '批量折后价',
+   `is_batch_integer`   tinyint(1) DEFAULT '0' COMMENT '是否批量取整',
+   `status`             tinyint(1) DEFAULT '1' COMMENT '状态：1：启用 0：禁用',
+   `del_flag`           tinyint(1) DEFAULT '0',
+   `del_time`           timestamp NULL DEFAULT NULL,
+   `limit_amount`       int(11) DEFAULT '0',
+   `first`              tinyint(1) DEFAULT '1' COMMENT '优先级',
+   `share_config`       text COLLATE utf8mb4_unicode_ci COMMENT '分享设置',
+   `is_forever`         tinyint(1) DEFAULT '0' COMMENT '是否永久',
+   `limit_flag`         tinyint(1) DEFAULT '0' COMMENT '超限购购买标记',
+   `create_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
+   `update_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '最后修改时间',
+   PRIMARY KEY (`id`)
+);
+
+-- 首单特惠商品
+-- DROP TABLE IF EXISTS `b2c_first_special_goods`;
+CREATE TABLE `b2c_first_special_goods` (
+   `id`               int(11) NOT NULL AUTO_INCREMENT,
+   `first_special_id` int(11) NOT NULL COMMENT '限时减价活动ID',
+   `goods_id`         int(11) NOT NULL COMMENT '商品ID',
+   `discount`         decimal(10,2) DEFAULT NULL COMMENT '打几折',
+   `reduce_price`     decimal(10,2) DEFAULT NULL COMMENT '减多少钱',
+   `goods_price`      decimal(10,2) DEFAULT NULL COMMENT '折后价格',
+   PRIMARY KEY (`id`)
+);
+
+-- 首单特惠商品规格
+-- ROP TABLE IF EXISTS `b2c_first_special_product`;
+CREATE TABLE `b2c_first_special_product` (
+   `id`               int(11) NOT NULL AUTO_INCREMENT,
+   `first_special_id` int(11) NOT NULL COMMENT '限时减价活动ID',
+   `goods_id`         int(11) NOT NULL COMMENT '商品ID',
+   `product_id`       int(11) NOT NULL COMMENT '规格ID',
+   `prd_price`        decimal(10,2) DEFAULT NULL COMMENT '折后价格',
+   PRIMARY KEY (`id`)
+);

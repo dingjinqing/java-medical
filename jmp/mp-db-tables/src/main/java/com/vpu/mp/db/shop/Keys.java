@@ -234,6 +234,9 @@ public class Keys {
     public static final Identity<GiftCartRecord, Integer> IDENTITY_GIFT_CART = Identities0.IDENTITY_GIFT_CART;
     public static final Identity<GiveGiftReceiveRecord, Integer> IDENTITY_GIVE_GIFT_RECEIVE = Identities0.IDENTITY_GIVE_GIFT_RECEIVE;
     public static final Identity<GiftGivingActivityRecord, Integer> IDENTITY_GIFT_GIVING_ACTIVITY = Identities0.IDENTITY_GIFT_GIVING_ACTIVITY;
+    public static final Identity<FirstSpecialRecord, Integer> IDENTITY_FIRST_SPECIAL = Identities0.IDENTITY_FIRST_SPECIAL;
+    public static final Identity<FirstSpecialGoodsRecord, Integer> IDENTITY_FIRST_SPECIAL_GOODS = Identities0.IDENTITY_FIRST_SPECIAL_GOODS;
+    public static final Identity<FirstSpecialProductRecord, Integer> IDENTITY_FIRST_SPECIAL_PRODUCT = Identities0.IDENTITY_FIRST_SPECIAL_PRODUCT;
     // -------------------------------------------------------------------------
     // UNIQUE and PRIMARY KEY definitions
     // -------------------------------------------------------------------------
@@ -459,6 +462,9 @@ public class Keys {
     public static final UniqueKey<GiftCartRecord> KEY_B2C_GIFT_CART_PRIMARY = UniqueKeys0.KEY_B2C_GIFT_CART_PRIMARY;
     public static final UniqueKey<GiveGiftReceiveRecord> KEY_B2C_GIVE_GIFT_RECEIVE_PRIMARY = UniqueKeys0.KEY_B2C_GIVE_GIFT_RECEIVE_PRIMARY;
     public static final UniqueKey<GiftGivingActivityRecord> KEY_B2C_GIFT_GIVING_ACTIVITY_PRIMARY = UniqueKeys0.KEY_B2C_GIFT_GIVING_ACTIVITY_PRIMARY;
+    public static final UniqueKey<FirstSpecialRecord> KEY_B2C_FIRST_SPECIAL_PRIMARY = UniqueKeys0.KEY_B2C_FIRST_SPECIAL_PRIMARY;
+    public static final UniqueKey<FirstSpecialGoodsRecord> KEY_B2C_FIRST_SPECIAL_GOODS_PRIMARY = UniqueKeys0.KEY_B2C_FIRST_SPECIAL_GOODS_PRIMARY;
+    public static final UniqueKey<FirstSpecialProductRecord> KEY_B2C_FIRST_SPECIAL_PRODUCT_PRIMARY = UniqueKeys0.KEY_B2C_FIRST_SPECIAL_PRODUCT_PRIMARY;
 
     // -------------------------------------------------------------------------
     // FOREIGN KEY definitions
@@ -664,6 +670,9 @@ public class Keys {
         public static Identity<GiftGivingActivityRecord, Integer> IDENTITY_GIFT_GIVING_ACTIVITY = Internal.createIdentity(GiftGivingActivity.GIFT_GIVING_ACTIVITY, GiftGivingActivity.GIFT_GIVING_ACTIVITY.ID);
         public static Identity<PayRewardRecord, Integer> IDENTITY_PAY_REWARD = Internal.createIdentity(PayReward.PAY_REWARD, PayReward.PAY_REWARD.ID);
         public static Identity<PayRewardRecordRecord, Integer> IDENTITY_PAY_REWARD_RECORD = Internal.createIdentity(com.vpu.mp.db.shop.tables.PayRewardRecord.PAY_REWARD_RECORD, com.vpu.mp.db.shop.tables.PayRewardRecord.PAY_REWARD_RECORD.ID);
+        public static Identity<FirstSpecialRecord, Integer> IDENTITY_FIRST_SPECIAL = Internal.createIdentity(FirstSpecial.FIRST_SPECIAL, FirstSpecial.FIRST_SPECIAL.ID);
+        public static Identity<FirstSpecialGoodsRecord, Integer> IDENTITY_FIRST_SPECIAL_GOODS = Internal.createIdentity(FirstSpecialGoods.FIRST_SPECIAL_GOODS, FirstSpecialGoods.FIRST_SPECIAL_GOODS.ID);
+        public static Identity<FirstSpecialProductRecord, Integer> IDENTITY_FIRST_SPECIAL_PRODUCT = Internal.createIdentity(FirstSpecialProduct.FIRST_SPECIAL_PRODUCT, FirstSpecialProduct.FIRST_SPECIAL_PRODUCT.ID);
 
     }
 
@@ -890,6 +899,9 @@ public class Keys {
         public static final UniqueKey<GiftGivingActivityRecord> KEY_B2C_GIFT_GIVING_ACTIVITY_PRIMARY = Internal.createUniqueKey(GiftGivingActivity.GIFT_GIVING_ACTIVITY, "KEY_b2c_gift_giving_activity_PRIMARY", GiftGivingActivity.GIFT_GIVING_ACTIVITY.ID);
         public static final UniqueKey<PayRewardRecord> KEY_B2C_PAY_REWARD_PRIMARY = Internal.createUniqueKey(PayReward.PAY_REWARD, "KEY_b2c_pay_reward_PRIMARY", PayReward.PAY_REWARD.ID);
         public static final UniqueKey<PayRewardRecordRecord> KEY_B2C_PAY_REWARD_RECORD_PRIMARY = Internal.createUniqueKey(com.vpu.mp.db.shop.tables.PayRewardRecord.PAY_REWARD_RECORD, "KEY_b2c_pay_reward_record_PRIMARY", com.vpu.mp.db.shop.tables.PayRewardRecord.PAY_REWARD_RECORD.ID);
+        public static final UniqueKey<FirstSpecialRecord> KEY_B2C_FIRST_SPECIAL_PRIMARY = Internal.createUniqueKey(FirstSpecial.FIRST_SPECIAL, "KEY_b2c_first_special_PRIMARY", FirstSpecial.FIRST_SPECIAL.ID);
+        public static final UniqueKey<FirstSpecialGoodsRecord> KEY_B2C_FIRST_SPECIAL_GOODS_PRIMARY = Internal.createUniqueKey(FirstSpecialGoods.FIRST_SPECIAL_GOODS, "KEY_b2c_first_special_goods_PRIMARY", FirstSpecialGoods.FIRST_SPECIAL_GOODS.ID);
+        public static final UniqueKey<FirstSpecialProductRecord> KEY_B2C_FIRST_SPECIAL_PRODUCT_PRIMARY = Internal.createUniqueKey(FirstSpecialProduct.FIRST_SPECIAL_PRODUCT, "KEY_b2c_first_special_product_PRIMARY", FirstSpecialProduct.FIRST_SPECIAL_PRODUCT.ID);
 
     }
 }

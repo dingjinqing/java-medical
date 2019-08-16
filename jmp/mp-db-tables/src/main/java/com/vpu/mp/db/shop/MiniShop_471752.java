@@ -1006,6 +1006,21 @@ public class MiniShop_471752 extends SchemaImpl {
      * The table <code>mini_shop_471752.b2c_coupon_pack_voucher</code>.
      */
     public final CouponPackVoucher COUPON_PACK_VOUCHER = com.vpu.mp.db.shop.tables.CouponPackVoucher.COUPON_PACK_VOUCHER;
+
+    /**
+     * The table <code>mini_shop_471752.b2c_first_special</code>.
+     */
+    public final FirstSpecial FIRST_SPECIAL = com.vpu.mp.db.shop.tables.FirstSpecial.FIRST_SPECIAL;
+
+    /**
+     * The table <code>mini_shop_471752.b2c_first_special_goods</code>.
+     */
+    public final FirstSpecialGoods FIRST_SPECIAL_GOODS = com.vpu.mp.db.shop.tables.FirstSpecialGoods.FIRST_SPECIAL_GOODS;
+
+    /**
+     * The table <code>mini_shop_471752.b2c_first_special_product</code>.
+     */
+    public final FirstSpecialProduct FIRST_SPECIAL_PRODUCT = com.vpu.mp.db.shop.tables.FirstSpecialProduct.FIRST_SPECIAL_PRODUCT;
     
     /**
      * No further instances allowed
@@ -1225,6 +1240,9 @@ public class MiniShop_471752 extends SchemaImpl {
             WxpUnlimitScene.WXP_UNLIMIT_SCENE,
             WxShoppingRecommend.WX_SHOPPING_RECOMMEND,
             XcxCustomerPage.XCX_CUSTOMER_PAGE,
-        	CouponPackVoucher.COUPON_PACK_VOUCHER);
+        	CouponPackVoucher.COUPON_PACK_VOUCHER,
+            FirstSpecial.FIRST_SPECIAL,
+            FirstSpecialGoods.FIRST_SPECIAL_GOODS,
+            FirstSpecialProduct.FIRST_SPECIAL_PRODUCT);
     }
 }

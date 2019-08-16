@@ -441,6 +441,9 @@ public class Indexes {
     public static final Index GIVE_GIFT_RECEIVE_USER_ID = Indexes0.GIVE_GIFT_RECEIVE_USER_ID;
     public static final Index GIFT_GIVING_ACTIVITY_ACT_NAME = Indexes0.GIFT_GIVING_ACTIVITY_ACT_NAME;
     public static final Index GIFT_GIVING_ACTIVITY_PRIMARY = Indexes0.GIFT_GIVING_ACTIVITY_PRIMARY;
+    public static final Index FIRST_SPECIAL_PRIMARY = Indexes0.FIRST_SPECIAL_PRIMARY;
+    public static final Index FIRST_SPECIAL_GOODS_PRIMARY = Indexes0.FIRST_SPECIAL_GOODS_PRIMARY;
+    public static final Index FIRST_SPECIAL_PRODUCT_PRIMARY = Indexes0.FIRST_SPECIAL_PRODUCT_PRIMARY;
     // -------------------------------------------------------------------------
     // [#1459] distribute members to avoid static initialisers > 64kb
     // -------------------------------------------------------------------------
@@ -858,5 +861,8 @@ public class Indexes {
         public static Index GIVE_GIFT_RECEIVE_USER_ID = Internal.createIndex("user_id", GiveGiftReceive.GIVE_GIFT_RECEIVE, new OrderField[] { GiveGiftReceive.GIVE_GIFT_RECEIVE.USER_ID }, false);
         public static Index GIFT_GIVING_ACTIVITY_ACT_NAME = Internal.createIndex("act_name", GiftGivingActivity.GIFT_GIVING_ACTIVITY, new OrderField[] { GiftGivingActivity.GIFT_GIVING_ACTIVITY.ACT_NAME }, false);
         public static Index GIFT_GIVING_ACTIVITY_PRIMARY = Internal.createIndex("PRIMARY", GiftGivingActivity.GIFT_GIVING_ACTIVITY, new OrderField[] { GiftGivingActivity.GIFT_GIVING_ACTIVITY.ID }, true);
+        public static Index FIRST_SPECIAL_PRIMARY = Internal.createIndex("PRIMARY", FirstSpecial.FIRST_SPECIAL, new OrderField[] { FirstSpecial.FIRST_SPECIAL.ID }, true);
+        public static Index FIRST_SPECIAL_GOODS_PRIMARY = Internal.createIndex("PRIMARY", FirstSpecialGoods.FIRST_SPECIAL_GOODS, new OrderField[] { FirstSpecialGoods.FIRST_SPECIAL_GOODS.ID }, true);
+        public static Index FIRST_SPECIAL_PRODUCT_PRIMARY = Internal.createIndex("PRIMARY", FirstSpecialProduct.FIRST_SPECIAL_PRODUCT, new OrderField[] { FirstSpecialProduct.FIRST_SPECIAL_PRODUCT.ID }, true);
         }
 }

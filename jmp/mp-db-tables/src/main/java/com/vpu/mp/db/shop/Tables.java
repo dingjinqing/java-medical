@@ -991,4 +991,16 @@ public class Tables {
      * The table <code>jmini_shop_471752.b2c_user_promotion_language</code>.
      */
     public static final UserPromotionLanguage USER_PROMOTION_LANGUAGE = com.vpu.mp.db.shop.tables.UserPromotionLanguage.USER_PROMOTION_LANGUAGE;
+    /**
+     * The table <code>mini_shop_471752.b2c_first_special</code>.
+     */
+    public static final FirstSpecial FIRST_SPECIAL = com.vpu.mp.db.shop.tables.FirstSpecial.FIRST_SPECIAL;
+    /**
+     * The table <code>mini_shop_471752.b2c_first_special_goods</code>.
+     */
+    public static final FirstSpecialGoods FIRST_SPECIAL_GOODS = com.vpu.mp.db.shop.tables.FirstSpecialGoods.FIRST_SPECIAL_GOODS;
+    /**
+     * The table <code>mini_shop_471752.b2c_first_special_product</code>.
+     */
+    public static final FirstSpecialProduct FIRST_SPECIAL_PRODUCT = com.vpu.mp.db.shop.tables.FirstSpecialProduct.FIRST_SPECIAL_PRODUCT;
 }
