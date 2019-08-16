@@ -51,3 +51,8 @@ ALTER TABLE  b2c_mp_operate_log  ADD COLUMN `operate_state` tinyint      not nul
 --b2c_mp_auth_shop新增字段
 ALTER TABLE `b2c_mp_auth_shop` ADD COLUMN `fee_type` varchar(191) default 'CNY' comment '标价币种，国际支付字段';
 ALTER TABLE `b2c_mp_auth_shop` ADD COLUMN `merchant_category_code` varchar(191) not null default '' comment 'MCC码，国际支付字段';
+
+
+--audit_id改为Long类型
+ALTER TABLE `b2c_mp_auth_shop` CHANGE COLUMN `audit_id` `audit_id` BIGINT(64) NULL DEFAULT '0' COMMENT '最新的审核ID' ;
+ALTER TABLE `b2c_mp_deploy_history` CHANGE COLUMN `audit_id` `audit_id` BIGINT(64) NULL DEFAULT '0' COMMENT '最新的审核ID' ;
