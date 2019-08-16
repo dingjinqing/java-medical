@@ -35,6 +35,7 @@ import com.vpu.mp.db.main.tables.MpAuthShop;
 import com.vpu.mp.db.main.tables.records.MpAuthShopRecord;
 import com.vpu.mp.db.main.tables.records.MpDeployHistoryRecord;
 import com.vpu.mp.db.main.tables.records.MpVersionRecord;
+import com.vpu.mp.service.foundation.data.JsonResultCode;
 import com.vpu.mp.service.foundation.data.JsonResultMessage;
 import com.vpu.mp.service.foundation.service.MainBaseService;
 import com.vpu.mp.service.foundation.util.PageResult;
@@ -256,8 +257,10 @@ public class MpAuthShopService extends MainBaseService {
 	 */
 	public MpAuthShopRecord getAuthShopByAppIdAddURL(String appId) {
 		MpAuthShopRecord fetchAny = db().fetchAny(MP_AUTH_SHOP, MP_AUTH_SHOP.APP_ID.eq(appId));
-		fetchAny.setQrcodeUrl(image.imageUrl(fetchAny.getQrcodeUrl())); 
-		fetchAny.setTestQrPath(image.imageUrl(fetchAny.getTestQrPath()));
+		if(fetchAny!=null) {
+			fetchAny.setQrcodeUrl(image.imageUrl(fetchAny.getQrcodeUrl())); 
+			fetchAny.setTestQrPath(image.imageUrl(fetchAny.getTestQrPath()));			
+		}
 		return fetchAny;
 	}
 	/**
@@ -280,8 +283,10 @@ public class MpAuthShopService extends MainBaseService {
 	 */
 	public MpAuthShopRecord getAuthShopByShopIdAddURL(Integer shopId) {
 		MpAuthShopRecord fetchAny = db().fetchAny(MP_AUTH_SHOP, MP_AUTH_SHOP.SHOP_ID.eq((shopId)));
-		fetchAny.setQrcodeUrl(image.imageUrl(fetchAny.getQrcodeUrl())); 
-		fetchAny.setTestQrPath(image.imageUrl(fetchAny.getTestQrPath()));
+		if(fetchAny!=null) {
+			fetchAny.setQrcodeUrl(image.imageUrl(fetchAny.getQrcodeUrl())); 
+			fetchAny.setTestQrPath(image.imageUrl(fetchAny.getTestQrPath()));			
+		}
 		return fetchAny;
 	}
 
@@ -690,13 +695,21 @@ public class MpAuthShopService extends MainBaseService {
 	 */
 	public WxOpenResult publishAuditSuccessCode(String appId) throws WxErrorException {
 		MpAuthShopRecord mp = this.getAuthShopByAppId(appId);
-		WxOpenMaService maService = this.getMaServiceByAppId(appId);
-		WxOpenResult result = maService.releaesAudited();
-		if(result.isSuccess()) {
-			//更新数据库
-			updatePush(appId);
+		WxOpenResult result=new WxOpenResult();
+		if (mp.getAuditId() != null && mp.getAuditState().equals(AUDIT_STATE_AUDIT_SUCCESS)) {
+			//审核成功的代码
+			WxOpenMaService maService = this.getMaServiceByAppId(appId);
+			result = maService.releaesAudited();
+			if(result.isSuccess()) {
+				//更新数据库
+				updatePush(appId);
+			}
+			operateLog(mp, MpOperateLogService.OP_TYPE_PUBLISH_CODE, result);
+			return result;
 		}
-		operateLog(mp, MpOperateLogService.OP_TYPE_PUBLISH_CODE, result);
+		result.setErrcode(JsonResultCode.WX_MA_NEED_AUDITING_CODE_SUCCESS.toString());
+		//请等待代码审核成功或未上传代码
+		result.setErrmsg(JsonResultMessage.WX_MA_NEED_AUDITING_CODE_SUCCESS);
 		return result;
 	}
 
@@ -747,10 +760,11 @@ public class MpAuthShopService extends MainBaseService {
 	 */
 	public WxOpenMaQueryAuditResult refreshAppInfo(String appId) throws WxErrorException {
 		MpAuthShopRecord mp = this.getAuthShopByAppId(appId);
-		WxOpenMaQueryAuditResult result=null;
+		WxOpenMaQueryAuditResult result=new WxOpenMaQueryAuditResult();
 		if (mp.getAuditId() != null && mp.getAuditState().equals(AUDIT_STATE_AUDITING)) {
 			WxOpenMaService maService = this.getMaServiceByAppId(appId);
 			result = maService.getAuditStatus(mp.getAuditId());
+			System.out.println(result);
 			if (result.isSuccess()) {
 				if (result.getStatus().equals(WX_AUTH_STATUS_PASSED)) {
 					mp.setAuditState(AUDIT_STATE_AUDIT_SUCCESS);
@@ -764,9 +778,21 @@ public class MpAuthShopService extends MainBaseService {
 			}
 			return result;
 		}
-		result.setErrcode("-1");
-		result.setErrmsg("尚未提交代码");
+		//尚未上传代码
+		result.setErrcode(JsonResultCode.WX_MA_NEED_UPLOADCODE.toString());
+		result.setErrmsg(JsonResultMessage.WX_MA_NEED_UPLOADCODE);
 		return result;
+	}
+	
+	
+	public WxOpenMaQueryAuditResult getLatestAuditStatus(String appId) throws WxErrorException {
+		WxOpenMaService maService = this.getMaServiceByAppId(appId);
+		WxOpenMaQueryAuditResult latestAuditStatus = maService.getLatestAuditStatus();
+		if(latestAuditStatus.isSuccess()) {
+			System.out.println(latestAuditStatus.getAuditId());
+			return latestAuditStatus;
+		}
+		return latestAuditStatus;
 	}
 
 	/**
