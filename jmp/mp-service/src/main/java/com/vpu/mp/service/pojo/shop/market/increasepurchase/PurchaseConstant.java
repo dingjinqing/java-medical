@@ -36,7 +36,11 @@ public class PurchaseConstant {
      */
     public static final String IDENTITY_ID = "identity_id";
     /**
-     * 分隔符常量
+     * 使用mysql GROUPCONCAT()函数 分隔符常量
      */
     public static final String GROUPCONCAT_SEPARATOR = " ; ";
+    /**
+     * 使用mysql CONCAT_WS()函数 分隔符常量
+     */
+    public static final String CONCAT_WS_SEPARATOR = " --- ";
 }

@@ -4,9 +4,9 @@ import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Data;
 
-import java.math.BigDecimal;
 import java.sql.Timestamp;
 import java.util.List;
+import java.util.Map;
 
 /**
  * @author liufei
@@ -35,9 +35,9 @@ public class PurchaseDetailVo {
      */
     private Short level;
     /**
-     * 活动信息规则，主商品购满 [] 元可加 [] 元换购
+     * 活动信息规则，规则id：[] --- []；主商品购满 [] 元可加 [] 元换购
      */
-    private BigDecimal[][] purchaseInfo;
+    private Map<Integer, String> purchaseInfo;
     /**
      * 单笔最大换购数量
      */

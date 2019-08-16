@@ -1,7 +1,9 @@
 package com.vpu.mp.service.foundation.database;
 
 import java.sql.Timestamp;
+import java.util.Arrays;
 
+import org.apache.poi.ss.formula.functions.T;
 import org.jooq.Condition;
 import org.jooq.Field;
 import org.jooq.SortField;
@@ -9,6 +11,9 @@ import org.jooq.impl.DSL;
 import org.jooq.impl.SQLDataType;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import static org.jooq.impl.DSL.cast;
+import static org.jooq.impl.DSL.concat;
 
 
 /**
@@ -72,6 +77,24 @@ public class DslPlus {
     public static <T> Field<?> groupConCat(Field<?> field, SortField<?> sortField, String separator) {
         // TODO: 2019/8/2    函数有最大长度限制1024 #SET GLOBAL group_concat_max_len = 1024;
         return DSL.field("group_concat({0} order by {1}   separator '{2}')",field,sortField,separator);
+    }
+
+    /**
+     * mysql CONCAT_WS(separator,str1,str2...)函数
+     * @param separator 分隔符
+     * @param fields 分割字段
+     * @return 组合后的String类型字段
+     */
+    public static Field<String> concatWs(String separator, Field<?>... fields){
+        if (fields.length==0){
+            return null;
+        }
+        Field<String> head = cast(fields[0],String.class);
+        head = Arrays.stream(fields).skip(1).reduce(head,(field1,field2)->concatHandler(field1,field2,separator)).cast(String.class);
+        return head;
+    }
+    private static Field<String> concatHandler(Field<?> head,Field<?> next,String separator){
+        return concat(concat(cast(head,String.class),separator),cast(next,String.class));
     }
 
 }
