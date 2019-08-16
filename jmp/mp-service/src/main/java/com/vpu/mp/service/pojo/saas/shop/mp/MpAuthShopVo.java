@@ -111,7 +111,7 @@ public class MpAuthShopVo {
 	/**
 	 * 提交审核ID
 	 */
-	private Integer auditId;
+	private Long auditId;
 	/**
 	 * 提交审核状态
 	 */
