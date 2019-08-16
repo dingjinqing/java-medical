@@ -212,9 +212,9 @@
         :label="$t('programVersion.auditStatus')"
       >
         <template slot-scope="scope">
-          <span v-if="scope.row.auditState === 0">未提交</span>
-          <span v-if="scope.row.auditState === 1">审核中</span>
-          <span v-if="scope.row.auditState === 2">审核失败</span>
+          <span v-if="scope.row.auditState === 0">{{$t('programVersion.notSubmitted')}}</span>
+          <span v-if="scope.row.auditState === 1">{{$t('programVersion.auditProgress')}}</span>
+          <span v-if="scope.row.auditState === 2">{{$t('programVersion.auditFailure')}}</span>
         </template>
       </el-table-column>
       <el-table-column

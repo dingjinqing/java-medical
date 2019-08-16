@@ -138,7 +138,9 @@ export default {
   },
   methods: {
     async defaultData () {
-      this.text = this.$route.params.appId
+      if (this.$route.params.appId === -1) {
+        this.text = this.$route.params.appId
+      }
       let spinnerList = await SpinnerListRequest()
       console.log(spinnerList)
       if (spinnerList.error === 0) {
@@ -165,13 +167,15 @@ export default {
       let obj = {
         'templateId': templateId,
         'appId': this.text,
-        'currentPage': 1,
+        'currentPage': this.currentPage,
         'pageRows': 0
       }
 
       operateLogRequest(obj).then((res) => {
         if (res.error === 0) {
           this.tableData = res.content.dataList
+          this.pageCount = res.content.page.pageCount
+          this.totle = res.content.page.totalRows
         }
         console.log(res)
       })

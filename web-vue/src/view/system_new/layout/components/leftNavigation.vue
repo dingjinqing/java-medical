@@ -112,7 +112,7 @@ export default {
             routeName: 'programManage',
             params: {
               page: 'versionManage',
-              appId: '0'
+              appId: '-1'
             }
           },
           {
