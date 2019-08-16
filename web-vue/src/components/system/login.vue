@@ -183,7 +183,7 @@ export default {
 
 .sys_container {
   width: 810px;
-  /* padding: 1% 0; */
+  padding: 5% 0;
   margin: 0 auto !important;
 }
 

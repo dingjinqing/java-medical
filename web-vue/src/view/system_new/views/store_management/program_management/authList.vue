@@ -240,8 +240,8 @@
         :label="$t('programVersion.shopStatus')"
       >
         <template slot-scope="scope">
-          <span v-if="scope.row.shopState === 0">已过期</span>
-          <span v-if="scope.row.shopState === 1">使用中</span>
+          <span v-if="scope.row.shopState === 0">{{$t('programVersion.expired')}}</span>
+          <span v-if="scope.row.shopState === 1">{{$t('programVersion.inUse')}}</span>
 
         </template>
       </el-table-column>
@@ -265,7 +265,7 @@
     </el-table>
 
     <div class="footer">
-      <div>每页20行记录，当前页面：{{this.currentPage}}，总页数：{{this.pageCount}}，总记录数：{{this.totle}}</div>
+      <div>{{$t('programVersion.currentPage')}}：{{this.currentPage}}，{{$t('programVersion.totalPage')}}：{{this.pageCount}}，{{$t('programVersion.totalRecord')}}：{{this.totle}}</div>
       <el-pagination
         @current-change="handleCurrentChange"
         :current-page.sync="currentPage"
@@ -323,42 +323,8 @@ export default {
           label: '2.0.0'
         }
       ],
-      selectIsPay: [
-        {
-          value: '',
-          label: '选择是否授权微信支付'
-        },
-        {
-          value: '0',
-          label: '不支持微信支付'
-        },
-        {
-          value: '1',
-          label: '支持微信支付'
-        }
-      ],
-      selectExamineStatus: [
-        {
-          value: '',
-          label: '选择审核状态'
-        },
-        {
-          value: '0',
-          label: '未提交审核'
-        },
-        {
-          value: '1',
-          label: '审核中'
-        },
-        {
-          value: '2',
-          label: '审核通过'
-        },
-        {
-          value: '3',
-          label: '审核未通过'
-        }
-      ],
+      selectIsPay: this.$t('programVersion.selectIsPay'),
+      selectExamineStatus: this.$t('programVersion.selectExamineStatus'),
       selectReleaseStatus: [
         {
           value: '',
@@ -390,7 +356,7 @@ export default {
       tableData: [
 
       ],
-      operationData: ['查看详细', '版本操作日志'],
+      operationData: this.$t('programVersion.operationAuLishData'),
       selectIdTemId: [],
       currentPage: 1,
       totle: 0

@@ -62,7 +62,46 @@ export const cn = {
   auditProgress: '审核中',
   auditFailure: '审核失败',
   unpublished: '未发布',
-  published: '已发布'
+  published: '已发布',
+  expired: '已过期',
+  inUse: '使用者',
+  operationAuLishData: ['查看详细', '版本操作日志'],
+  selectIsPay: [
+    {
+      value: '',
+      label: '选择是否授权微信支付'
+    },
+    {
+      value: '0',
+      label: '不支持微信支付'
+    },
+    {
+      value: '1',
+      label: '支持微信支付'
+    }
+  ],
+  selectExamineStatus: [
+    {
+      value: '',
+      label: '选择审核状态'
+    },
+    {
+      value: '0',
+      label: '未提交审核'
+    },
+    {
+      value: '1',
+      label: '审核中'
+    },
+    {
+      value: '2',
+      label: '审核通过'
+    },
+    {
+      value: '3',
+      label: '审核未通过'
+    }
+  ]
 }
 
 export const en = {
@@ -129,5 +168,44 @@ export const en = {
   auditProgress: 'Audit in progress',
   auditFailure: 'Audit failure',
   unpublished: 'Unpublished',
-  published: 'Published'
+  published: 'Published',
+  expired: 'Expired',
+  inUse: 'in use',
+  operationAuLishData: ['View details', 'Version Operations Log'],
+  selectIsPay: [
+    {
+      value: '',
+      label: 'Choose whether to authorize Wechat Payment'
+    },
+    {
+      value: '0',
+      label: 'Wechat Payment is not Supported'
+    },
+    {
+      value: '1',
+      label: 'Support Wechat Payment'
+    }
+  ],
+  selectExamineStatus: [
+    {
+      value: '',
+      label: 'Select Audit Status'
+    },
+    {
+      value: '0',
+      label: 'Not submitted for audit'
+    },
+    {
+      value: '1',
+      label: 'Audit in progress'
+    },
+    {
+      value: '2',
+      label: 'Audit and approval'
+    },
+    {
+      value: '3',
+      label: 'Audit failed'
+    }
+  ]
 }
