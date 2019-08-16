@@ -23,6 +23,11 @@ import static com.vpu.mp.db.main.tables.MpVersion.MP_VERSION;
 @Service
 public class MpOperateLogService extends MainBaseService {
 
+    /**
+     * 更新小程序信息
+     */
+    public static final Byte OP_TYPE_UPDATE_MP=0;
+
 	/**
 	 * 设置服务器域名
 	 */

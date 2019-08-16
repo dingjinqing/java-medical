@@ -175,6 +175,8 @@ public class MpAuthShopService extends MainBaseService {
 
         wxOpenResult.setErrcode("0");
 
+        operateLog(record,MpOperateLogService.OP_TYPE_UPDATE_MP,wxOpenResult);
+
         return wxOpenResult;
     }
 
