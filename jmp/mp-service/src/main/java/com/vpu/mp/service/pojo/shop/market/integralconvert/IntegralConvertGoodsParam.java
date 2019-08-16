@@ -10,9 +10,9 @@ import lombok.Data;
 @Data
 public class IntegralConvertGoodsParam {
 	
-	/* 商品id */
+	/** 商品id */
 	private Integer goodsId;
-	/* 0：未删除 1：删除 */
+	/** 0：未删除 1：删除 */
 	public static final int NOT_DELETE = 0; 
 	public static final int DELETE = 1; 
 }

@@ -9,16 +9,16 @@ import lombok.Data;
  */
 @Data
 public class IntegralConvertUserParam {
-	/* 活动id */
+	/** 活动id */
 	private Integer id;
 	
-	/* 用户昵称 */
+	/** 用户昵称 */
 	private String username;
 	
-	/* 手机号 */
+	/** 手机号 */
 	private String mobile;
 	
-	/* 分页信息 */
+	/** 分页信息 */
 	private Integer currentPage;
 	private Integer pageRows;
 	

@@ -12,13 +12,13 @@ import lombok.Data;
 @Data
 public class IntegralConvertProductParam {
 	
-	/* 商品兑换金额 */
+	/** 商品兑换金额 */
 	private BigDecimal money;
 	
-	/* 商品兑换积分 */
+	/** 商品兑换积分 */
 	private Integer score;
 	
-	/* 兑换商品库存 */
+	/** 兑换商品库存 */
 	private Short stock;
 	
 	

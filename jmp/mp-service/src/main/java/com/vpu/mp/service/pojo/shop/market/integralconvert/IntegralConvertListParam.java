@@ -21,12 +21,12 @@ public class IntegralConvertListParam {
 	public static final int STOP = 4;
 	private Integer actState = DOING;
 	
-	/* 禁用信息 */
+	/** 禁用信息 */
 	public static final int BLOCK = 0;
 	public static final int NOT_BLOCK = 1;
 	
 	
-	/* 分页信息 */
+	/** 分页信息 */
 	private Integer currentPage;
 	private Integer pageRows;
 	

@@ -13,37 +13,37 @@ import lombok.Data;
 @Data
 public class IntegralConvertUserVo {
 	
-	/* 用户id */
-	private Integer UserId;
+	/** 用户id */
+	private Integer userId;
 	
-	/* 订单编号 */
+	/** 订单编号 */
 	private String orderSn;
 	
-	/* 商品id */
+	/** 商品id */
 	private Integer goodsId;
 	
-	/* 商品图片 */
+	/** 商品图片 */
 	private String goodsImg;
 	
-	/* 商品名称 */
+	/** 商品名称 */
 	private String goodsName;
 	
-	/* 兑换现金 */
+	/** 兑换现金 */
 	private BigDecimal money;
 	
-	/* 兑换积分 */
+	/** 兑换积分 */
 	private Integer score;
 	
-	/* 用户昵称 */
+	/** 用户昵称 */
 	private String username;
 	
-	/* 手机号 */
+	/** 手机号 */
 	private String mobile;
 	
-	/* 兑换商品数 */
+	/** 兑换商品数 */
 	private Integer number;
 	
-	/* 兑换时间 */
+	/** 兑换时间 */
 	private Timestamp createTime;
 	
 	

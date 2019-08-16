@@ -12,19 +12,19 @@ import lombok.Data;
 @Data
 public class IntegralConvertShareConfigParam {
 	
-	/* 样式  1：默认样式   2：自定义样式 */
+	/** 样式  1：默认样式   2：自定义样式 */
 	@JsonProperty("share_action")
 	private Integer shareAction;
 	
-	/* 自定义样式文案 */
+	/** 自定义样式文案 */
 	@JsonProperty("share_doc")
 	private String shareDoc;
 	
-	/* 是否默认活动商品信息图  1:默认图片  2：自定义图片 */
+	/** 是否默认活动商品信息图  1:默认图片  2：自定义图片 */
 	@JsonProperty("share_img_action")
 	private Integer shareImgAction;
 	
-	/* 自定义图片地址 */
+	/** 自定义图片地址 */
 	@JsonProperty("share_img")
 	private String shareImg;
 

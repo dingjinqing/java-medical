@@ -10,7 +10,7 @@ import lombok.Data;
 @Data
 public class IntegralConvertSelectParam {
 	
-	/* 活动id */
+	/** 活动id */
 	private Integer id;
 	
 	

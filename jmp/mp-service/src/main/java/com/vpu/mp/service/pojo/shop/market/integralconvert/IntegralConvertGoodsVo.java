@@ -10,13 +10,13 @@ import lombok.Data;
 @Data
 public class IntegralConvertGoodsVo {
 	
-	/* 规格描述 */
+	/** 规格描述 */
 	private String prdDesc;
 	
-	/* 原价 */
+	/** 原价 */
 	private String prdPrice;
 	
-	/* 原库存 */
+	/** 原库存 */
 	private Integer prdNumber;
 	
 }
