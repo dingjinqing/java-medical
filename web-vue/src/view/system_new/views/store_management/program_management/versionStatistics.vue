@@ -163,11 +163,11 @@ export default {
       pageCount: 1,
       totle: 0,
       queryData: {
-        versionNum: '', // 版本号
-        isAuth: '', // 是否授权
-        isWxPay: '', // 是否微信支付
-        auditStatus: '', // 审核状态
-        isRelease: '' // 发布状态
+        versionNum: null, // 版本号
+        isAuth: null, // 是否授权
+        isWxPay: null, // 是否微信支付
+        auditStatus: null, // 审核状态
+        isRelease: null // 发布状态
       },
       checkList: [0, 3, 4], // 复选框选项
       tableData: [
@@ -200,6 +200,10 @@ export default {
       selectIdTemId: [],
       selectIsAuthorization: [
         {
+          value: '',
+          label: '选择是否授权'
+        },
+        {
           value: '0',
           label: '未授权'
         },
@@ -210,6 +214,10 @@ export default {
       ],
       selectIsPay: [
         {
+          value: '',
+          label: '选择支持微信支付'
+        },
+        {
           value: '0',
           label: '不支持微信支付'
         },
@@ -219,6 +227,10 @@ export default {
         }
       ],
       selectExamineStatus: [
+        {
+          value: '',
+          label: '选择审核状态'
+        },
         {
           value: '0',
           label: '未提交审核'
@@ -237,6 +249,10 @@ export default {
         }
       ],
       selectReleaseStatus: [
+        {
+          value: '',
+          label: '选择发布状态'
+        },
         {
           value: '0',
           label: '未发布'
@@ -275,6 +291,10 @@ export default {
       console.log(spinnerList)
       if (spinnerList.error === 0) {
         let arr = []
+        let defaultObj = {}
+        defaultObj.value = ''
+        defaultObj.label = '请选择版本号'
+        arr.push(defaultObj)
         spinnerList.content.map((item, index) => {
           let obj = {}
           obj.value = index
