@@ -573,9 +573,18 @@ export default {
       if (name === 'first_market_manage') this.nav_s_class_index = true
       this.click_nav_index = index
       this.saveIndex = index
-      this.$router.push({
-        name: name
-      })
+      if (name === 'base_manger') {
+        this.$router.push({
+          name: name,
+          params: {
+            isAuth: '-1'
+          }
+        })
+      } else {
+        this.$router.push({
+          name: name
+        })
+      }
     },
     // 左侧菜单栏划入事件
     left_nav_over (index) {

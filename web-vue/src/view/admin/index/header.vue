@@ -188,9 +188,19 @@ export default {
       this.$http.$emit('resit', false)
       this.click_nav_index = index
       console.log(name)
-      this.$router.push({
-        name: name
-      })
+      if (name === 'base_manger') {
+        this.$router.push({
+          name: name,
+          params: {
+            isAuth: '-1'
+          }
+        })
+      } else {
+        this.$router.push({
+          name: name
+        })
+      }
+
       this.judgeActiveMeunAll(name)
       // console.log(name)
       if (name === 'membershipList') {
