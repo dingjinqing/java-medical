@@ -48,6 +48,8 @@ public class PreSaleParam {
     /** 不退定金 **/
     public static final byte NOT_RETURN_PRESALE_MONEY = 0;
 
+    /** 活动id **/
+    private Integer id;
     /** 活动类型 **/
     @NotNull
     private Byte presaleType;
@@ -91,7 +93,7 @@ public class PreSaleParam {
     private Byte returnType;
     /** 预售数量展示 **/
     @NotNull
-    private Byte showSaleNumber;
+    private Integer showSaleNumber;
     /** 商品购买方式 **/
     @NotNull
     private Byte buyType;

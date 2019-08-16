@@ -19,6 +19,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.util.Assert;
 
 import java.io.Serializable;
+import java.math.BigDecimal;
 import java.sql.Timestamp;
 import java.util.Arrays;
 import java.util.List;
@@ -62,6 +63,8 @@ public class PreSaleService extends ShopBaseService {
     private static final String TAIL_PAID_QUANTITY = "tailPaidOrderQuantity";
     /** 下单用户数 **/
     private static final String ORDER_USER_QUANTITY = "orderUserQuantity";
+
+    private static final String SHARE_PAGE_PATH = "pages/presaleitem/presaleitem?goods_id=%s&presale_id=%s";
 
     /**
      * 获取定金膨胀活动列表
@@ -172,7 +175,8 @@ public class PreSaleService extends ShopBaseService {
     /**
      * 状态转换
      */
-    private void andStatus(SelectConditionStep<Record14<Integer, String, Timestamp, Timestamp, Timestamp, Timestamp, Byte, Timestamp, Timestamp, Integer, Integer, Integer, Integer, Serializable>> query, Byte status) {
+    private void andStatus(SelectConditionStep<Record14<Integer, String, Timestamp, Timestamp, Timestamp, Timestamp,
+        Byte, Timestamp, Timestamp, Integer, Integer, Integer, Integer, Serializable>> query, Byte status) {
         Timestamp now = Util.currentTimeStamp();
         switch (status) {
             case NOT_STARTED:
@@ -292,13 +296,13 @@ public class PreSaleService extends ShopBaseService {
         Tuple2<Timestamp, Timestamp> timePair = new Tuple2<>(param.getPreStartTime(), param.getPreEndTime());
         Tuple2<Timestamp, Timestamp> timePair2 = new Tuple2<>(param.getPreStartTime2(), param.getPreEndTime2());
         List<Tuple2<Timestamp, Timestamp>> timePairs = Arrays.asList(timePair, timePair2);
-        assertTimeNoConflict(timePairs);
+        assertTimeNoConflict(timePairs, param.getId());
     }
 
     /**
      * 判断活动时间段是否冲突
      */
-    private void assertTimeNoConflict(List<Tuple2<Timestamp, Timestamp>> timePairs) {
+    private void assertTimeNoConflict(List<Tuple2<Timestamp, Timestamp>> timePairs, Integer id) {
         Condition statusCondition = TABLE.DEL_FLAG.eq((byte) 0).and(TABLE.STATUS.eq((byte) 1));
         Condition timeCondition = DSL.or();
         for (Tuple2<Timestamp, Timestamp> timePair : timePairs) {
@@ -308,6 +312,9 @@ public class PreSaleService extends ShopBaseService {
         }
         SelectConditionStep<Record1<Integer>> query =
             select(TABLE.ID).from(TABLE).where(statusCondition.and(timeCondition));
+        if (null != id) {
+            query.and(TABLE.ID.ne(id));
+        }
         if (db().fetchExists(query)) {
             throw new IllegalArgumentException(ACTIVITY_TIME_RANGE_CONFLICT);
         }
@@ -422,8 +429,61 @@ public class PreSaleService extends ShopBaseService {
     }
 
     /**
-     * todo 活动分享
+     * 更新活动
      */
+    public void updatePreSale(PreSaleParam param) {
+        Integer presaleId = param.getId();
+        Assert.notNull(presaleId, "Missing parameter id");
+        PreSaleListVo presale = db().selectFrom(TABLE).where(TABLE.ID.eq(presaleId)).fetchOneInto(PreSaleListVo.class);
+        Byte status = getStatusOf(presale);
+        String shareConfiguration = shareConfigJson(param);
+        if (ONGOING == status) {
+            db().update(TABLE).set(TABLE.PRESALE_NAME, param.getPresaleName())
+                .set(TABLE.SHARE_CONFIG, shareConfiguration);
+        } else if (NOT_STARTED == status) {
+            validateParam(param);
+            db().update(TABLE).set(TABLE.PRESALE_NAME, param.getPresaleName()).set(TABLE.PRE_START_TIME,
+                param.getPreStartTime()).set(TABLE.PRE_END_TIME, param.getPreEndTime()).set(TABLE.PRE_START_TIME_2,
+                param.getPreStartTime2()).set(TABLE.PRE_END_TIME_2, param.getPreEndTime2()).set(TABLE.PRESALE_TYPE,
+                param.getPresaleType()).set(TABLE.PRE_PAY_STEP, param.getPrePayStep()).set(TABLE.START_TIME,
+                param.getStartTime()).set(TABLE.END_TIME, param.getEndTime()).set(TABLE.GOODS_ID,
+                param.getGoodsId()).set(TABLE.DELIVER_TYPE, param.getDeliverType()).set(TABLE.DELIVER_TIME,
+                param.getDeliverTime()).set(TABLE.DELIVER_DAYS, param.getDeliverDays()).set(TABLE.DISCOUNT_TYPE,
+                param.getDiscountType()).set(TABLE.RETURN_TYPE, param.getReturnType()).set(TABLE.SHOW_SALE_NUMBER,
+                param.getShowSaleNumber()).set(TABLE.BUY_TYPE, param.getBuyType()).set(TABLE.BUY_NUMBER, param.getBuyNumber())
+                .where(TABLE.ID.eq(presaleId))
+                .execute();
+            db().transaction(configuration -> {
+                DSLContext db = DSL.using(configuration);
+                db.delete(SUB_TABLE).where(SUB_TABLE.PRESALE_ID.eq(presaleId)).execute();
+                param.getProducts().forEach(product -> {
+                    product.setPresaleId(presaleId);
+                    db.insertInto(SUB_TABLE)
+                        .columns(SUB_TABLE.PRESALE_ID, SUB_TABLE.GOODS_ID, SUB_TABLE.PRODUCT_ID,
+                            SUB_TABLE.PRESALE_PRICE,
+                            SUB_TABLE.PRESALE_NUMBER, SUB_TABLE.PRESALE_MONEY, SUB_TABLE.PRE_DISCOUNT_MONEY_1,
+                            SUB_TABLE.PRE_DISCOUNT_MONEY_2)
+                        .values(presaleId, product.getGoodsId(), product.getProductId(),
+                            BigDecimal.valueOf(product.getPresalePrice()),
+                            product.getPresaleNumber(), BigDecimal.valueOf(product.getPresaleMoney()),
+                            BigDecimal.valueOf(product.getPreDiscountMoney1()),
+                            BigDecimal.valueOf(product.getPreDiscountMoney2()))
+                        .execute();
+                });
+
+            });
+        } else {
+            throw new IllegalStateException("Error status");
+        }
+    }
+
+    /**
+     * 活动分享
+     */
+    public String sharePreSale(Integer presaleId) {
+        Integer goodsId = db().selectFrom(TABLE).where(TABLE.ID.eq(presaleId)).fetchOne(TABLE.GOODS_ID);
+        return format(SHARE_PAGE_PATH, goodsId, presaleId);
+    }
 
     /**
      * todo 导出 Excel

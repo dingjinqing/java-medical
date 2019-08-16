@@ -17,6 +17,7 @@ public class ProductParam {
     @JsonIgnore
     private Integer presaleId;
 
+    private Integer id;
     /** 商品id **/
     @NotNull
     private Integer goodsId;

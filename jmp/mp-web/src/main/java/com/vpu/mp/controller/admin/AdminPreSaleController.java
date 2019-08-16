@@ -1,9 +1,11 @@
 package com.vpu.mp.controller.admin;
 
 import com.vpu.mp.service.foundation.data.JsonResult;
+import com.vpu.mp.service.pojo.shop.image.ShareQrCodeVo;
 import com.vpu.mp.service.pojo.shop.market.presale.OrderListParam;
 import com.vpu.mp.service.pojo.shop.market.presale.PreSaleListParam;
 import com.vpu.mp.service.pojo.shop.market.presale.PreSaleParam;
+import com.vpu.mp.service.pojo.shop.qrcode.QrCodeTypeEnum;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
@@ -81,5 +83,27 @@ public class AdminPreSaleController extends AdminBaseController {
     @PostMapping("/detail/{id}")
     public JsonResult getPreSale(@PathVariable Integer id) {
         return success(shop().preSale.getDetail(id));
+    }
+
+    /**
+     * 编辑活动 - 更新
+     */
+    @PostMapping("/update")
+    public JsonResult updatePreSale(@RequestBody @Valid PreSaleParam param) {
+        shop().preSale.updatePreSale(param);
+        return success();
+    }
+
+    /**
+     * 活动分享
+     */
+    @PostMapping("/share/{id}")
+    public JsonResult sharePreSale(@PathVariable Integer id) {
+        String pagePath = shop().preSale.sharePreSale(id);
+        String code = shop().qrCode.getMpQrCode(QrCodeTypeEnum.DOWN_PAYMENT_INFO, pagePath);
+        ShareQrCodeVo vo = new ShareQrCodeVo();
+        vo.setImageUrl(code);
+        vo.setPagePath(pagePath);
+        return success(vo);
     }
 }
