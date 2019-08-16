@@ -31,7 +31,7 @@ public class OrderGoodsService extends ShopBaseService{
 	 * @return  Result<?>
 	 */
 	public Result<?> getByOrderIds(Integer... arrayToSearch) {
-		Result<?> goods = db().select(TABLE.ORDER_ID,TABLE.ORDER_SN,TABLE.GOODS_ID,TABLE.GOODS_NAME,TABLE.GOODS_SN,TABLE.GOODS_NUMBER,TABLE.GOODS_PRICE,TABLE.GOODS_ATTR,TABLE.PRODUCT_ID).from(TABLE)
+		Result<?> goods = db().select(TABLE.ORDER_ID,TABLE.ORDER_SN,TABLE.GOODS_ID,TABLE.GOODS_NAME,TABLE.GOODS_SN,TABLE.GOODS_NUMBER,TABLE.GOODS_PRICE,TABLE.GOODS_ATTR,TABLE.PRODUCT_ID,TABLE.GOODS_IMG).from(TABLE)
 			.where(TABLE.ORDER_ID.in(arrayToSearch))
 			.orderBy(TABLE.ORDER_ID.desc())
 			.fetch();

@@ -332,4 +332,5 @@ public class FriendPromoteService extends ShopBaseService {
 		db().executeUpdate(record);
 
 	}
+	
 }
