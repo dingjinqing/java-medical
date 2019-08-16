@@ -2,15 +2,20 @@ package com.vpu.mp.support;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
+import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.security.KeyFactory;
 import java.security.KeyStore;
+import java.security.KeyStoreException;
+import java.security.NoSuchAlgorithmException;
 import java.security.PrivateKey;
 import java.security.cert.CertificateFactory;
+import java.security.spec.InvalidKeySpecException;
 import java.security.spec.PKCS8EncodedKeySpec;
 import java.util.Base64;
 
 import java.security.cert.Certificate;
+import java.security.cert.CertificateException;
 
 /**
  * 
@@ -21,6 +26,19 @@ public class PemToPkcs12 {
 
 	/**
 	 * X.509 pem format to pkcs12 format
+	 * 
+	 * @param privateKeyStr
+	 * @param certificateStr
+	 * @return
+	 * @throws Exception
+	 */
+	public static byte[] pemToPkcs12(String privateKeyStr, String certificateStr) throws Exception {
+		return pemToPkcs12(privateKeyStr, certificateStr, null, "alias");
+	}
+
+	/**
+	 * X.509 pem format to pkcs12 format
+	 * 
 	 * @param privateKeyStr
 	 * @param certificateStr
 	 * @param password
@@ -33,6 +51,7 @@ public class PemToPkcs12 {
 
 	/**
 	 * X.509 pem format to pkcs12 format
+	 * 
 	 * @param privateKeyStr
 	 * @param certificateStr
 	 * @param password
@@ -41,8 +60,7 @@ public class PemToPkcs12 {
 	 * @throws Exception
 	 */
 	public static byte[] pemToPkcs12(String privateKeyStr, String certificateStr, char[] password,
-			String alias)
-			throws Exception {
+			String alias) throws Exception {
 		byte privateKeyData[] = privateKeyStr.getBytes();
 		byte certificateData[] = certificateStr.getBytes();
 

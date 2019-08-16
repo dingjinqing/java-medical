@@ -1,10 +1,12 @@
 package com.vpu.mp.service.pojo.shop.market.message;
 
 
-import com.vpu.mp.service.pojo.shop.base.BasePageParam;
-import lombok.Data;
-
 import java.sql.Timestamp;
+
+import com.vpu.mp.service.pojo.shop.base.BasePageParam;
+
+import lombok.Getter;
+import lombok.Setter;
 
 /**
  * 消息推送通用查询类
@@ -12,7 +14,8 @@ import java.sql.Timestamp;
  * @date 2019-08-09 10:02
  *
 */
-@Data
+@Getter
+@Setter
 public class MessageTemplateQuery extends BasePageParam {
     /** 用户ID */
     private Integer userId;

@@ -63,4 +63,14 @@ public class DomainConfig {
 		schema = schema == null ? "http" : schema;
 		return String.format("%s://%s%s", schema, mainDomain, relativePath);
 	}
+	
+	
+	/**
+	 * 小程序支付回调URL
+	 * @param shopId
+	 * @return
+	 */
+	public String getWxMaPayNotifyUrl(Integer shopId) {
+		return mainUrl("/wechat/notify/ma/payment/"+shopId);
+	}
 }

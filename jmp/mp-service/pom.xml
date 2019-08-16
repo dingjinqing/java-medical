@@ -9,7 +9,7 @@
   <name>mp-service</name>
   
   <properties>
-		<weixin-java-open.version>3.4.0</weixin-java-open.version>
+		<weixin-java-open.version>3.5.0</weixin-java-open.version>
 	</properties>
   
   
@@ -40,6 +40,12 @@
 			<artifactId>weixin-java-open</artifactId>
 			<version>${weixin-java-open.version}</version>
 		</dependency>
+		
+		 <dependency>
+            <groupId>com.github.binarywang</groupId>
+            <artifactId>weixin-java-pay</artifactId>
+            <version>${weixin-java-open.version}</version>
+        </dependency>
 		
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
