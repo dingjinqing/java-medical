@@ -130,7 +130,7 @@ public class SystemMpAuthShopController extends SystemBaseController {
 			break;
 		}
 		case MpDeployQueryParam.ACT_UPDATE_MP: {
-			mp.updateAppInfo(param.getAppId());
+			result=mp.updateAppInfo(param.getAppId());
 			break;
 		}
 		case MpDeployQueryParam.ACT_REFRESH_AUDIT_STATE: {
