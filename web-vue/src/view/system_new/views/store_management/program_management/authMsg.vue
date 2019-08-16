@@ -335,6 +335,7 @@
                       <el-button
                         size="small"
                         type="primary"
+                        @click="handleSureSetPay(10)"
                       >
                         上传代码 （模板ID: {{this.tem_id}}）
                       </el-button>
@@ -382,7 +383,7 @@
                     <td>体验二维码</td>
                     <td>
                       <img
-                        style="wdith:52px"
+                        style="wdith:52px;height:52px"
                         :src="dataList.testQrPath"
                       >
                       <!-- <el-avatar
@@ -654,7 +655,8 @@ export default {
       bzinput: '',
       tyinput: '',
       opStatus: '操作成功',
-      tem_id: ''
+      tem_id: '',
+      templateId: ''
     }
   },
   mounted () {
@@ -790,6 +792,7 @@ export default {
           break
         case 7:
           obj.act = 'submit-audit'
+          obj.templateId = this.tem_id
           break
         case 8:
           obj.act = 'publish-code'
@@ -797,10 +800,19 @@ export default {
         case 9:
           obj.act = 'update-mp'
           break
+        case 10:
+          obj.act = 'upload-code'
+          obj.appId = this.dataList.appId
+          obj.templateId = this.tem_id
+          break
       }
 
       publishSetRequest(obj).then(res => {
         console.log(res)
+        if (res.error === 0) {
+          this.opStatus = res.content
+          this.defaultData()
+        }
       })
     },
     // 点击添加微信体验者

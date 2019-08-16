@@ -227,11 +227,11 @@
           <span
             class="useSpan"
             v-if="scope.row.publishState === 0"
-          >未发布</span>
+          >{{$t('programVersion.unpublished')}}</span>
           <span
             class="useSpan nuSpan"
             v-if="scope.row.publishState === 1"
-          >已发布</span>
+          >{{$t('programVersion.published')}}</span>
         </template>
       </el-table-column>
       <el-table-column

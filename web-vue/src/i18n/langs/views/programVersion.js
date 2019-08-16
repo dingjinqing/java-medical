@@ -60,7 +60,9 @@ export const cn = {
   support: '支持',
   notSubmitted: '未提交',
   auditProgress: '审核中',
-  auditFailure: '审核失败'
+  auditFailure: '审核失败',
+  unpublished: '未发布',
+  published: '已发布'
 }
 
 export const en = {
@@ -125,5 +127,7 @@ export const en = {
   support: 'Support',
   notSubmitted: 'Not submitted',
   auditProgress: 'Audit in progress',
-  auditFailure: 'Audit failure'
+  auditFailure: 'Audit failure',
+  unpublished: 'Unpublished',
+  published: 'Published'
 }
