@@ -48,6 +48,7 @@ public class AdminWechatController extends AdminBaseController {
 			if (shopId != null) {
 				// 小程序授权
 				MpAuthShopRecord mp = saas.shop.mp.getAuthShopByShopId(shopId);
+				logger().debug("查询出的值1："+mp);
 				if (mp != null && !mp.getAppId().equals(appId)) {
 					//小程序上次授权与本次授权AppId不一致，请联系客服！
 					logger().debug("appId"+appId+"小程序上次授权与本次授权AppId不一致，请联系客服！");
@@ -59,6 +60,7 @@ public class AdminWechatController extends AdminBaseController {
 					logger().debug("appId"+appId+"小程序已授权绑定其他账号，请联系客服！");
                     return ("小程序已授权绑定其他账号，请联系客服！");
 				}
+				logger().debug("查询出的值2："+mp);
 				saas.shop.mp.addMpAuthAccountInfo(appId, shopId);
 				saas.shop.mp.bindAllSamePrincipalOpenAppId(mp);
 				
