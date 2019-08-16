@@ -1,42 +1,33 @@
 package com.vpu.mp.service.shop.market.increasepurchase;
 
-import java.math.BigDecimal;
-import java.sql.Timestamp;
-import java.util.List;
-
-import org.jooq.Condition;
-import org.jooq.DSLContext;
-import org.jooq.Record6;
-import org.jooq.SelectConditionStep;
-import org.jooq.Table;
-import org.jooq.impl.DSL;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
-
-import com.vpu.mp.db.shop.tables.Goods;
-import com.vpu.mp.db.shop.tables.OrderGoods;
-import com.vpu.mp.db.shop.tables.OrderInfo;
-import com.vpu.mp.db.shop.tables.PurchasePriceDefine;
-import com.vpu.mp.db.shop.tables.PurchasePriceRule;
+import com.vpu.mp.db.shop.tables.*;
+import com.vpu.mp.db.shop.tables.User;
 import com.vpu.mp.db.shop.tables.records.PurchasePriceDefineRecord;
 import com.vpu.mp.db.shop.tables.records.PurchasePriceRuleRecord;
 import com.vpu.mp.service.foundation.service.ShopBaseService;
 import com.vpu.mp.service.foundation.util.FieldsUtil;
 import com.vpu.mp.service.foundation.util.PageResult;
 import com.vpu.mp.service.pojo.shop.image.ShareQrCodeVo;
-import com.vpu.mp.service.pojo.shop.market.increasepurchase.AddPurchaseParam;
-import com.vpu.mp.service.pojo.shop.market.increasepurchase.GoodsInfo;
-import com.vpu.mp.service.pojo.shop.market.increasepurchase.PurchaseDetailParam;
-import com.vpu.mp.service.pojo.shop.market.increasepurchase.PurchaseDetailVo;
-import com.vpu.mp.service.pojo.shop.market.increasepurchase.PurchaseRule;
-import com.vpu.mp.service.pojo.shop.market.increasepurchase.PurchaseShowParam;
-import com.vpu.mp.service.pojo.shop.market.increasepurchase.PurchaseShowVo;
-import com.vpu.mp.service.pojo.shop.market.increasepurchase.PurchaseStatusParam;
-import com.vpu.mp.service.pojo.shop.market.increasepurchase.UpdatePurchaseParam;
+import com.vpu.mp.service.pojo.shop.market.increasepurchase.*;
+import com.vpu.mp.service.pojo.shop.order.OrderConstant;
 import com.vpu.mp.service.pojo.shop.qrcode.QrCodeTypeEnum;
 import com.vpu.mp.service.shop.image.QrCodeService;
-
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.StringUtils;
+import org.jooq.*;
+import org.jooq.impl.DSL;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import java.math.BigDecimal;
+import java.sql.Timestamp;
+import java.util.ArrayList;
+import java.util.List;
+
+import static com.vpu.mp.service.pojo.shop.market.increasepurchase.PurchaseConstant.*;
+import static com.vpu.mp.service.pojo.shop.order.OrderConstant.GOODS_TYPE_PURCHASE_PRICE;
+import static org.jooq.impl.DSL.groupConcat;
+import static org.jooq.impl.DSL.sum;
 
 /**
  * @author liufei
@@ -49,15 +40,12 @@ public class IncreasePurchaseService extends ShopBaseService {
     private static OrderGoods og = OrderGoods.ORDER_GOODS.as("og");
     private static OrderInfo oi = OrderInfo.ORDER_INFO.as("oi");
     private static Goods g = Goods.GOODS.as("g");
+    private static User u = User.USER.as("u");
     private static PurchasePriceDefine ppd = PurchasePriceDefine.PURCHASE_PRICE_DEFINE.as("ppd");
     private static PurchasePriceRule ppr = PurchasePriceRule.PURCHASE_PRICE_RULE.as("ppr");
 
     @Autowired
-    QrCodeService qrCodeService;
-    /**
-     * 获取分享二维码常量参数
-     */
-    private static final String IDENTITY_ID = "identity_id";
+    public QrCodeService qrCodeService;
 
     /**
      * 分页查询加价购活动信息
@@ -68,26 +56,26 @@ public class IncreasePurchaseService extends ShopBaseService {
     public PageResult<PurchaseShowVo> selectByPage(PurchaseShowParam param) {
         Condition categoryConditon = ppd.ID.isNotNull();
         switch (param.getCategory()) {
-            /** 所有0 */
+            // 所有0
             case 0b0000:
                 break;
-            /** 已停用1 */
+            // 已停用1
             case 0b0001:
                 categoryConditon = categoryConditon.and(ppd.STATUS.eq((byte) 0));
                 break;
-            /** 已过期2 */
+            // 已过期2
             case 0b0010:
                 categoryConditon = categoryConditon.and(ppd.END_TIME.lessThan(new Timestamp(System.currentTimeMillis()))).and(ppd.STATUS.eq((byte) 1));
                 break;
-            /** 未开始4 */
+            // 未开始4
             case 0b0100:
                 categoryConditon = categoryConditon.and(ppd.START_TIME.greaterThan(new Timestamp(System.currentTimeMillis()))).and(ppd.STATUS.eq((byte) 1));
                 break;
-            /** 进行中8 */
+            // 进行中8
             case 0b1000:
                 categoryConditon = categoryConditon.and(ppd.START_TIME.lessThan(new Timestamp(System.currentTimeMillis()))).and(ppd.END_TIME.greaterThan(new Timestamp(System.currentTimeMillis()))).and(ppd.STATUS.eq((byte) 1));
                 break;
-            /** 默认进行中8 */
+            // 默认进行中8
             default:
                 categoryConditon = categoryConditon.and(ppd.START_TIME.lessThan(new Timestamp(System.currentTimeMillis()))).and(ppd.END_TIME.greaterThan(new Timestamp(System.currentTimeMillis()))).and(ppd.STATUS.eq((byte) 1));
                 break;
@@ -151,8 +139,14 @@ public class IncreasePurchaseService extends ShopBaseService {
      * 计算已换购数量
      */
     private Short getResaleQuantity(Integer purchasePriceId) {
-        //TODO ORDER_GOODS表重构后如何计算已换购数量
-        return 0;
+        Short defaultValue=0;
+        return db().select(sum(og.GOODS_NUMBER)).from(og)
+            .where(og.ACTIVITY_TYPE.eq(GOODS_TYPE_PURCHASE_PRICE))
+            .and(og.ACTIVITY_ID.eq(purchasePriceId))
+            .and(og.ACTIVITY_RULE.greaterThan(0))
+            .and(oi.ORDER_STATUS.greaterOrEqual(OrderConstant.ORDER_WAIT_DELIVERY))
+            .and(oi.SHIPPING_TIME.isNotNull()).or(oi.ORDER_STATUS.notEqual(OrderConstant.ORDER_REFUND_FINISHED))
+            .fetchOptionalInto(Short.class).orElse(defaultValue);
     }
 
     /**
@@ -180,7 +174,7 @@ public class IncreasePurchaseService extends ShopBaseService {
 
     /**
      * 更新加价购活动
-     *
+     * TODO FieldsUtil.assignNotNull不支持继承父类的的属性赋值
      * @param param 加价购活动详情参数
      */
     public void updateIncreasePurchase(UpdatePurchaseParam param) {
@@ -197,7 +191,7 @@ public class IncreasePurchaseService extends ShopBaseService {
             for (PurchaseRule rule : param.getRules()) {
                 FieldsUtil.assignNotNull(rule, ruleRecord);
                 ruleRecord.setPurchasePriceId(param.getId());
-                db.executeInsert(ruleRecord);
+                db.executeUpdate(ruleRecord);
                 ruleRecord.reset();
             }
         });
@@ -209,7 +203,7 @@ public class IncreasePurchaseService extends ShopBaseService {
      * @param param 加价购活动id
      */
     public PurchaseDetailVo getPurchaseDetail(PurchaseDetailParam param) {
-        PurchaseDetailVo vo = db().select(ppd.ID, ppd.NAME, ppd.LEVEL, ppd.MAX_CHANGE_PURCHASE, ppd.START_TIME, ppd.END_TIME).from(ppd).where(ppd.ID.eq(param.getPurchaseId())).fetchOptionalInto(PurchaseDetailVo.class).orElseThrow(() -> new RuntimeException("Information doesn't exist!"));
+        PurchaseDetailVo vo = db().select(ppd.ID, ppd.NAME, ppd.LEVEL, ppd.MAX_CHANGE_PURCHASE, ppd.START_TIME, ppd.END_TIME,ppd.GOODS_ID).from(ppd).where(ppd.ID.eq(param.getPurchaseId())).fetchOptionalInto(PurchaseDetailVo.class).orElseThrow(() -> new RuntimeException("Information doesn't exist!"));
         vo.setPurchaseInfo(getPurchaseDetailInfo(param.getPurchaseId()));
         String goodsId = vo.getGoodsId();
         //主商品详情
@@ -217,7 +211,8 @@ public class IncreasePurchaseService extends ShopBaseService {
         vo.setMainGoods(db().select(g.GOODS_NAME, g.SHOP_ID, g.GOODS_NUMBER).from(g).where(g.GOODS_ID.in(goodsIdArray)).fetchInto(GoodsInfo.class));
         //换购商品详情
         List<String> redemptionGoods = db().select(ppr.PRODUCT_ID).from(ppr).where(ppr.PURCHASE_PRICE_ID.eq(param.getPurchaseId())).orderBy(ppr.ID).fetchInto(String.class);
-        List<GoodsInfo>[] redemptionresult = vo.getRedemptionGoods();
+//        List<GoodsInfo>[] redemptionresult = vo.getRedemptionGoods();
+        List<GoodsInfo>[] redemptionresult = new List[redemptionGoods.size()];
         Integer integer = 0;
         for (String s : redemptionGoods) {
             Integer[] array = stringArray2Int(s.split(","));
@@ -261,4 +256,112 @@ public class IncreasePurchaseService extends ShopBaseService {
 
     }
 
+    /**
+     * 查看换购订单列表
+     * @param param 加价购活动id和筛选条件
+     * @return 分页数据
+     */
+    public PageResult<RedemptionOrderVo> getRedemptionOrderList(RedemptionOrderParam param) {
+        SelectConditionStep<Record11<String, String, String, String, String, String, String, Timestamp, String, String, String>> conditionStep = db()
+            .select(oi.ORDER_SN
+            ,groupConcat(og.GOODS_ID,GROUPCONCAT_SEPARATOR).as("concatId")
+            ,groupConcat(og.GOODS_NAME,GROUPCONCAT_SEPARATOR).as("concatName")
+            ,groupConcat(og.GOODS_NUMBER,GROUPCONCAT_SEPARATOR).as("concatNumber")
+            ,groupConcat(og.ACTIVITY_ID,GROUPCONCAT_SEPARATOR).as("activityIds")
+            ,groupConcat(og.ACTIVITY_RULE,GROUPCONCAT_SEPARATOR).as("activityRules")
+            ,groupConcat(g.GOODS_IMG,GROUPCONCAT_SEPARATOR).as("concatImg")
+            ,oi.CREATE_TIME
+            ,oi.CONSIGNEE
+            ,oi.MOBILE
+            ,oi.ORDER_STATUS_NAME)
+            .from(og).leftJoin(g).on(og.GOODS_ID.eq(g.GOODS_ID)).leftJoin(oi).on(og.ORDER_SN.eq(oi.ORDER_SN))
+            .where(og.ACTIVITY_ID.eq(param.getActivityId()));
+
+        if (StringUtils.isNotBlank(param.getGoodsName())){
+            conditionStep = conditionStep.and(og.GOODS_NAME.like(likeValue(param.getGoodsName())));
+        }
+        if (StringUtils.isNotBlank(param.getOrderSn())){
+            conditionStep = conditionStep.and(og.ORDER_SN.like(likeValue(param.getOrderSn())));
+        }
+        if (StringUtils.isNotBlank(param.getReceiverName())){
+            conditionStep = conditionStep.and(oi.CONSIGNEE.like(likeValue(param.getReceiverName())));
+        }
+        if (StringUtils.isNotBlank(param.getReceiverPhone())){
+            conditionStep = conditionStep.and(oi.MOBILE.like(likeValue(param.getReceiverPhone())));
+        }
+        if (param.getOrderStatus()!=null){
+            conditionStep = conditionStep.and(oi.ORDER_STATUS.eq(param.getOrderStatus()));
+        }
+        if (param.getProvinceCode()!=null){
+            conditionStep = conditionStep.and(oi.PROVINCE_CODE.eq(param.getProvinceCode()));
+        }
+        if (param.getCityCode()!=null){
+            conditionStep = conditionStep.and(oi.CITY_CODE.eq(param.getCityCode()));
+        }
+        if (param.getDistrictCode()!=null){
+            conditionStep = conditionStep.and(oi.DISTRICT_CODE.eq(param.getDistrictCode()));
+        }
+        //默认排序方式---下单时间
+        PageResult<RedemptionOrderVo> vo = this.getPageResult(conditionStep.groupBy(og.ORDER_SN).orderBy(oi.CREATE_TIME),param.getCurrentPage(),param.getPageRows(),RedemptionOrderVo.class);
+
+        log.debug("进行商品展示信息的组合");
+        for (RedemptionOrderVo redemption : vo.getDataList()){
+            String[] concatIds = redemption.getConcatId().split(GROUPCONCAT_SEPARATOR);
+            String[] concatNames = redemption.getConcatName().split(GROUPCONCAT_SEPARATOR);
+            String[] concatNumbers = redemption.getConcatNumber().split(GROUPCONCAT_SEPARATOR);
+            String[] activityRules = redemption.getActivityRules().split(GROUPCONCAT_SEPARATOR);
+            String[] concatImgs = redemption.getConcatImg().split(GROUPCONCAT_SEPARATOR);
+            List<RedemptionGoodsInfo> mainGoods = new ArrayList<>();
+            List<RedemptionGoodsInfo> redempGoods = new ArrayList<>();
+            for(int i = 0; i < concatIds.length;i++){
+                log.debug("activityRule字段不为默认值0，说明该商品在本次订单中属于加购商品（非主商品）");
+                if (Integer.valueOf(activityRules[i]) > 0){
+                    redempGoods.add(new RedemptionGoodsInfo(Integer.valueOf(concatIds[i]),concatNames[i],concatImgs[i],Integer.valueOf(concatNumbers[i])));
+                }else {
+                    mainGoods.add(new RedemptionGoodsInfo(Integer.valueOf(concatIds[i]),concatNames[i],concatImgs[i],Integer.valueOf(concatNumbers[i])));
+                }
+            }
+            redemption.setMainGoods(mainGoods);
+            redemption.setRedemptionGoods(redempGoods);
+        }
+        return vo;
+    }
+
+    /**
+     * 查看换购明细
+     * @param param 加价购活动id和筛选条件
+     * @return 分页数据
+     */
+    public PageResult<RedemptionDetailVo> getRedemptionDetail(RedemptionDetailParam param){
+        SelectOnConditionStep<Record8<Integer, String, String, String, Timestamp, String, String, String>> conditionStep = db().select(oi.USER_ID
+            ,u.USERNAME
+            ,u.MOBILE
+            ,oi.ORDER_SN
+            ,oi.CREATE_TIME
+            ,groupConcat(og.GOODS_PRICE,GROUPCONCAT_SEPARATOR).as("concatPrices")
+            ,groupConcat(og.GOODS_NUMBER,GROUPCONCAT_SEPARATOR).as("concatNumbers")
+            ,groupConcat(og.ACTIVITY_RULE,GROUPCONCAT_SEPARATOR).as("activityRules"))
+            .from(og).leftJoin(oi).on(og.ORDER_SN.eq(oi.ORDER_SN)).leftJoin(u).on(oi.USER_ID.eq(u.USER_ID));
+        PageResult<RedemptionDetailVo> vo = this.getPageResult(conditionStep.groupBy(og.ORDER_SN).orderBy(oi.CREATE_TIME),param.getCurrentPage(),param.getPageRows(),RedemptionDetailVo.class);
+        for (RedemptionDetailVo redemption : vo.getDataList()){
+            String[] concatPrices = redemption.getConcatPrices().split(GROUPCONCAT_SEPARATOR);
+            String[] concatNumbers = redemption.getConcatNumbers().split(GROUPCONCAT_SEPARATOR);
+            String[] activityRules = redemption.getActivityRules().split(GROUPCONCAT_SEPARATOR);
+            BigDecimal mainMoney = new BigDecimal(0);
+            BigDecimal redempMoney = new BigDecimal(0);
+            Integer redempNum = 0;
+            for(int i = 0; i < activityRules.length;i++){
+                if (Integer.valueOf(activityRules[i]) > 0){
+                    redempMoney = redempMoney.add(new BigDecimal(concatPrices[i]));
+                    redempNum += Integer.valueOf(concatNumbers[i]);
+                }else {
+                    mainMoney = mainMoney.add(new BigDecimal(concatPrices[i]));
+                }
+            }
+            redemption.setMainGoodsTotalMoney(mainMoney);
+            redemption.setRedemptionNum(redempNum);
+            redemption.setRedemptionTotalMoney(redempMoney);
+        }
+        return vo;
+    }
 }

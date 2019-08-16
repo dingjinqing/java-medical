@@ -1,7 +1,6 @@
 package com.vpu.mp.controller.admin;
 
 import com.vpu.mp.service.foundation.data.JsonResult;
-import com.vpu.mp.service.pojo.shop.market.form.FormDetailParam;
 import com.vpu.mp.service.pojo.shop.market.increasepurchase.*;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -18,8 +17,8 @@ public class AdminIncreasePurchaseController extends AdminBaseController {
     /**
      * 加价购分页条件查询
      */
-    @PostMapping("/admin/market/increasepurchase/selectbypage")
-    public JsonResult selectByPage(@RequestBody PurchaseShowParam param) {
+    @PostMapping("/api/admin/market/increasepurchase/selectbypage")
+    public JsonResult selectByPage(@RequestBody @Validated PurchaseShowParam param) {
         return success(shop().increaseService.selectByPage(param));
     }
 
@@ -29,8 +28,8 @@ public class AdminIncreasePurchaseController extends AdminBaseController {
      *
      * @param param 加价购活动详情参数
      */
-    @PostMapping("/admin/market/increasepurchase/addincreasepurchase")
-    public JsonResult addIncreasePurchase(@RequestBody AddPurchaseParam param) {
+    @PostMapping("/api/admin/market/increasepurchase/addincreasepurchase")
+    public JsonResult addIncreasePurchase(@RequestBody @Validated AddPurchaseParam param) {
         shop().increaseService.addIncreasePurchase(param);
         return success();
     }
@@ -40,8 +39,8 @@ public class AdminIncreasePurchaseController extends AdminBaseController {
      *
      * @param param 加价购活动详情参数
      */
-    @PostMapping("/admin/market/increasepurchase/updateincreasepurchase")
-    public JsonResult updateIncreasePurchase(@RequestBody UpdatePurchaseParam param) {
+    @PostMapping("/api/admin/market/increasepurchase/updateincreasepurchase")
+    public JsonResult updateIncreasePurchase(@RequestBody @Validated UpdatePurchaseParam param) {
         shop().increaseService.updateIncreasePurchase(param);
         return success();
     }
@@ -51,18 +50,18 @@ public class AdminIncreasePurchaseController extends AdminBaseController {
      *
      * @param param 加价购活动id
      */
-    @PostMapping("/admin/market/increasepurchase/getpurchasedetail")
-    public JsonResult getPurchaseDetail(@RequestBody PurchaseDetailParam param) {
+    @PostMapping("/api/admin/market/increasepurchase/getpurchasedetail")
+    public JsonResult getPurchaseDetail(@RequestBody @Validated PurchaseDetailParam param) {
         return success(shop().increaseService.getPurchaseDetail(param));
     }
 
     /**
-     * 停用/启用加价购活动
+     * 停用/启用/删除加价购活动
      *
      * @param param 活动id和被修改的状态值
      */
-    @PostMapping("/admin/market/increasepurchase/changethestatus")
-    public JsonResult changeTheStatus(@RequestBody PurchaseStatusParam param) {
+    @PostMapping("/api/admin/market/increasepurchase/changethestatus")
+    public JsonResult changeTheStatus(@RequestBody @Validated PurchaseStatusParam param) {
         shop().increaseService.changeTheStatus(param);
         return success();
     }
@@ -70,8 +69,30 @@ public class AdminIncreasePurchaseController extends AdminBaseController {
     /**
      * 分享,获取小程序二维码
      */
-    @PostMapping("/api/market/increasepurchase/shareForm")
-    public JsonResult shareForm(@RequestBody @Validated FormDetailParam param) {
-        return success(shop().formService.shareForm(param));
+    @PostMapping("/api/admin/market/increasepurchase/share")
+    public JsonResult share(@RequestBody @Validated PurchaseStatusParam param) {
+        return success(shop().increaseService.share(param));
+    }
+
+    /**
+     * 查看换购订单列表
+     *
+     * @param param 加价购活动id和筛选条件
+     * @return 分页数据
+     */
+    @PostMapping("/api/admin/market/increasepurchase/getredemptionorderlist")
+    public JsonResult getRedemptionOrderList(@RequestBody @Validated RedemptionOrderParam param) {
+        return success(shop().increaseService.getRedemptionOrderList(param));
+    }
+
+    /**
+     * 查看换购明细
+     *
+     * @param param 加价购活动id和筛选条件
+     * @return 分页数据
+     */
+    @PostMapping("/api/admin/market/increasepurchase/getredemptiondetail")
+    public JsonResult getRedemptionDetail(@RequestBody @Validated RedemptionDetailParam param) {
+        return success(shop().increaseService.getRedemptionDetail(param));
     }
 }

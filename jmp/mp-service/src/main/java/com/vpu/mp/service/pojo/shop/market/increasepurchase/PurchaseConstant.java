@@ -9,8 +9,8 @@ import lombok.Data;
  */
 @Data
 public class PurchaseConstant {
-    /** 加价购页面分页展示分模块，进行中8 ，未开始4，已过期2，已停用1，所有0 ；筛选优先级高于下面的条件*/
     /**
+     * 加价购页面分页展示分模块，进行中8 ，未开始4，已过期2，已停用1，所有0 ；筛选优先级高于下面的条件
      * 所有0
      */
     public static final Byte PURCHASE_ALL = 0b0000;
@@ -30,4 +30,13 @@ public class PurchaseConstant {
      * 进行中8
      */
     public static final Byte PURCHASE_PROCESSING = 0b1000;
+
+    /**
+     * 获取分享二维码常量参数
+     */
+    public static final String IDENTITY_ID = "identity_id";
+    /**
+     * 分隔符常量
+     */
+    public static final String GROUPCONCAT_SEPARATOR = " ; ";
 }
