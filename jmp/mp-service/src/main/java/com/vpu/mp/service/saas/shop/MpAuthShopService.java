@@ -485,6 +485,8 @@ public class MpAuthShopService extends MainBaseService {
 				});
 		WxOpenMaService maService = this.getMaServiceByAppId(appId);
 		WxOpenResult result = maService.bindTester(wechatId);
+		logger().debug("绑定体验者"+result);
+		logger().debug(result.getErrcode()+result.getErrmsg());
 		if (result.isSuccess()) {
 			testers.add(wechatId);
 			mp.setTester(Util.toJson(testers));
