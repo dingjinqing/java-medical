@@ -10,6 +10,7 @@ import com.vpu.mp.service.wechat.bean.open.MaWxPlusInListInner;
 import com.vpu.mp.service.wechat.bean.open.MaWxPlusInResult;
 
 import me.chanjar.weixin.common.error.WxErrorException;
+import me.chanjar.weixin.open.bean.result.WxOpenMaQueryAuditResult;
 import me.chanjar.weixin.open.bean.result.WxOpenResult;
 import org.springframework.web.bind.annotation.*;
 
@@ -152,8 +153,12 @@ public class SystemMpAuthShopController extends SystemBaseController {
 			return fail(JsonResultCode.CODE_PARAM_ERROR);
 		}
 		}
-		MpAuthShopVo vo = mp.getAuthShopByAppIdAddURL(param.getAppId()).into(MpAuthShopVo.class);
-		return result.isSuccess() ? success(vo) : fail(result.getErrmsg());
+		/*
+		 * MpAuthShopVo vo =
+		 * mp.getAuthShopByAppIdAddURL(param.getAppId()).into(MpAuthShopVo.class);
+		 * return result.isSuccess() ? success(vo) : fail(result.getErrmsg());
+		 */
+		return result.isSuccess() ? success(result) : fail(result.getErrmsg());
 	}
 
 	/**
