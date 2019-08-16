@@ -41,7 +41,6 @@ export default {
   mounted () {
     // 初始化
     this.defaultData()
-    console.log(window.location.href)
   },
   methods: {
     defaultData () {
@@ -51,6 +50,10 @@ export default {
         } else {
           this.flag = true
           if (res.error === 0) {
+            if (window.location.href.split('/').pop() === 'authok') {
+              console.log(11111)
+              this.activeName = 'third'
+            }
             this.$http.$emit('handleToAuthData', res.content)
           }
           console.log(res)
