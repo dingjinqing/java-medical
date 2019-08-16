@@ -19,45 +19,35 @@ import lombok.NoArgsConstructor;
 public class ShopListQueryResultVo {
 	public Page page;
 	public Integer sysId;
-	@JsonProperty("shop_id")
 	public Integer shopId;
-	@JsonProperty("shop_name")
 	public String shopName;
-	@JsonProperty("shop_type")
 	public String shopType;
 	/**
 	 * 小程序昵称
 	 */
-	@JsonProperty("nick_name")
 	public String nickName;
-	@JsonProperty("mobile")
 	public String mobile;
-	@JsonProperty("created")
 	public Timestamp created;
 	/**
 	 * 店铺状态
 	 */
-	
+
 	public Integer isUse;
 	/**
 	 * 续费到期时间
 	 */
-	@JsonProperty("expire_time")
 	public Timestamp expireTime;
 	/**
 	 * 是否禁止
 	 */
-	@JsonProperty("is_enabled")
 	public Byte isEnabled;
 	/**
 	 * 小程序是否授权
 	 */
-	@JsonProperty(value = "is_auth_ok")
 	public Byte isAuthOk;
 	/**
 	 * 所属账号
 	 */
-	@JsonProperty("user_name")
 	public String userName;
 	/**
 	 * 续费总金额
@@ -66,11 +56,19 @@ public class ShopListQueryResultVo {
 	/**
 	 * 店铺标识
 	 */
-	@JsonProperty("shop_flag")
 	public Byte shopFlag;
 	/**
 	 * 底部导航
 	 */
-	@JsonProperty("hid_bottom")
 	public Byte hidBottom;
+
+	private String receiveMobile;
+	private String shopPhone;
+	private String shopNotice;
+	private String shopWx;
+	private String shopEmail;
+	private String shopQq;
+	private String memberKey;
+	private String tenancyName;
+	private Timestamp endTime;
 }
