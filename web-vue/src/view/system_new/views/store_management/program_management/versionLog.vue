@@ -147,7 +147,7 @@ export default {
         let arr = []
         let defaultObj = {}
         defaultObj.value = ''
-        defaultObj.label = '请选择'
+        defaultObj.label = this.$t('programVersion.placeChoise')
         arr.push(defaultObj)
         spinnerList.content.map((item, index) => {
           let obj = {}

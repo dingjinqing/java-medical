@@ -101,7 +101,59 @@ export const cn = {
       value: '3',
       label: '审核未通过'
     }
-  ]
+  ],
+  selectIsAuthorization: [
+    {
+      value: '',
+      label: '选择是否授权'
+    },
+    {
+      value: '0',
+      label: '未授权'
+    },
+    {
+      value: '1',
+      label: '已授权'
+    }
+  ],
+  selectReleaseStatus: [
+    {
+      value: '',
+      label: '选择发布状态'
+    },
+    {
+      value: '0',
+      label: '未发布'
+    },
+    {
+      value: '1',
+      label: '已发布'
+    }
+  ],
+  selectShopStatus: [
+    {
+      value: '',
+      label: '选择店铺状态'
+    },
+    {
+      value: '1',
+      label: '使用中'
+    },
+    {
+      value: '0',
+      label: '已过期'
+    }
+  ],
+  selectVersionNumber: '请选择版本号',
+  whetherToorNot: '选择是否授权',
+  supportWechatPayment: '选择支持微信支付',
+  SelectAuditStatus: '选择审核状态',
+  publicStatus: '选择发布状态',
+  displayColumn: '显示列',
+  versionNumber: '版本号',
+  WhetherToAuthorize: '是否授权',
+  WechatPayment: '支持微信支付',
+  NumberStores: '店铺数量'
 }
 
 export const en = {
@@ -207,5 +259,57 @@ export const en = {
       value: '3',
       label: 'Audit failed'
     }
-  ]
+  ],
+  selectIsAuthorization: [
+    {
+      value: '',
+      label: 'Choose whether to authorize or not'
+    },
+    {
+      value: '0',
+      label: 'Unauthorized'
+    },
+    {
+      value: '1',
+      label: 'Authorized'
+    }
+  ],
+  selectReleaseStatus: [
+    {
+      value: '',
+      label: 'Select Publication Status'
+    },
+    {
+      value: '0',
+      label: 'Unpublished'
+    },
+    {
+      value: '1',
+      label: 'Published'
+    }
+  ],
+  selectShopStatus: [
+    {
+      value: '',
+      label: 'Choose store status'
+    },
+    {
+      value: '1',
+      label: 'in use'
+    },
+    {
+      value: '0',
+      label: 'Expired'
+    }
+  ],
+  selectVersionNumber: 'Please select the version number',
+  whetherToorNot: 'Choose whether to authorize or not',
+  supportWechatPayment: 'Choose to support Wechat Payment',
+  SelectAuditStatus: 'Select Audit Status',
+  publicStatus: 'Select Publication Status',
+  displayColumn: 'Display column',
+  versionNumber: 'version number',
+  WhetherToAuthorize: 'Whether to authorize',
+  WechatPayment: 'Support Wechat Payment',
+  NumberStores: 'Number of stores'
 }

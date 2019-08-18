@@ -5,7 +5,7 @@
         <el-select
           class="fll select-width mr-6 mb-10"
           v-model="queryData.versionNum"
-          placeholder="请选择版本号"
+          :placeholder="$t('programVersion.selectVersionNumber')"
           size="small"
           @change="handleSelectId()"
         >
@@ -19,7 +19,7 @@
         <el-select
           class="fll select-width mr-6 mb-10"
           v-model="queryData.isAuth"
-          placeholder="选择是否授权"
+          :placeholder="$t('programVersion.whetherToorNot')"
           @change="handleSelectId()"
           size="small"
         >
@@ -33,7 +33,7 @@
         <el-select
           class="fll select-width mr-6 mb-10"
           v-model="queryData.isWxPay"
-          placeholder="选择支持微信支付"
+          :placeholder="$t('programVersion.supportWechatPayment')"
           @change="handleSelectId()"
           size="small"
         >
@@ -47,7 +47,7 @@
         <el-select
           class="fll select-width mr-6 mb-10"
           v-model="queryData.auditStatus"
-          placeholder="选择审核状态"
+          :placeholder="$t('programVersion.SelectAuditStatus')"
           @change="handleSelectId()"
           size="small"
         >
@@ -61,7 +61,7 @@
         <el-select
           class="fll select-width mr-6 mb-10"
           v-model="queryData.isRelease"
-          placeholder="选择发布状态"
+          :placeholder="$t('programVersion.publicStatus')"
           size="small"
         >
           <el-option
@@ -73,16 +73,16 @@
         </el-select>
       </div>
       <div class="row clearfixed">
-        <span class="title fll">显示列: </span>
+        <span class="title fll">{{$t('programVersion.displayColumn')}}: </span>
         <el-checkbox-group
           v-model="checkList"
           class="fll"
         >
-          <el-checkbox :label="0">版本号</el-checkbox>
-          <el-checkbox :label="1">是否授权</el-checkbox>
-          <el-checkbox :label="2">支持微信支付</el-checkbox>
-          <el-checkbox :label="3">审核状态</el-checkbox>
-          <el-checkbox :label="4">发布状态</el-checkbox>
+          <el-checkbox :label="0">{{$t('programVersion.versionNumber')}}</el-checkbox>
+          <el-checkbox :label="1">{{$t('programVersion.WhetherToAuthorize')}}</el-checkbox>
+          <el-checkbox :label="2">{{$t('programVersion.WechatPayment')}}</el-checkbox>
+          <el-checkbox :label="3">{{$t('programVersion.auditStatus')}}</el-checkbox>
+          <el-checkbox :label="4">{{$t('programVersion.publiStatus')}}</el-checkbox>
         </el-checkbox-group>
       </div>
     </div>
@@ -96,14 +96,14 @@
     >
       <el-table-column
         prop="userVersion"
-        label="版本号"
+        :label="$t('programVersion.versionNumber')"
         align="center"
         v-if="holdHiddenArr[0]"
       >
       </el-table-column>
       <el-table-column
         prop="isAuthOk"
-        label="是否授权"
+        :label="$t('programVersion.WhetherToAuthorize')"
         align="center"
         v-if="holdHiddenArr[1]"
       >
@@ -111,27 +111,27 @@
       <el-table-column
         prop="openPay"
         align="center"
-        label="支持微信支付"
+        :label="$t('programVersion.WechatPayment')"
         v-if="holdHiddenArr[2]"
       >
       </el-table-column>
       <el-table-column
         prop="auditState"
         align="center"
-        label="审核状态"
+        :label="$t('programVersion.auditStatus')"
         v-if="holdHiddenArr[3]"
       >
       </el-table-column>
       <el-table-column
         prop="publishState"
         align="center"
-        label="发布状态"
+        :label="$t('programVersion.publiStatus')"
         v-if="holdHiddenArr[4]"
       >
       </el-table-column>
       <el-table-column
         align="center"
-        label="店铺数量"
+        :label="$t('programVersion.publiStatus')"
       >
         <template slot-scope="scope">
           <div class="num">{{scope.row.number}}</div>
@@ -140,7 +140,7 @@
     </el-table>
 
     <div class="footer">
-      <div>每页20行记录，当前页面：{{this.currentPage}}，总页数：{{this.pageCount}}，总记录数：{{this.totle}}</div>
+      <div>{{$t('programVersion.currentPage')}}：{{this.currentPage}}，{{$t('programVersion.totalPage')}}：{{this.pageCount}}，{{$t('programVersion.totalRecord')}}：{{this.totle}}</div>
       <el-pagination
         @current-change="handleCurrentChange"
         :current-page.sync="currentPage"
@@ -198,70 +198,10 @@ export default {
       ],
       holdHiddenArr: [false, false, false, false, false],
       selectIdTemId: [],
-      selectIsAuthorization: [
-        {
-          value: '',
-          label: '选择是否授权'
-        },
-        {
-          value: '0',
-          label: '未授权'
-        },
-        {
-          value: '1',
-          label: '已授权'
-        }
-      ],
-      selectIsPay: [
-        {
-          value: '',
-          label: '选择支持微信支付'
-        },
-        {
-          value: '0',
-          label: '不支持微信支付'
-        },
-        {
-          value: '1',
-          label: '支持微信支付'
-        }
-      ],
-      selectExamineStatus: [
-        {
-          value: '',
-          label: '选择审核状态'
-        },
-        {
-          value: '0',
-          label: '未提交审核'
-        },
-        {
-          value: '1',
-          label: '审核中'
-        },
-        {
-          value: '2',
-          label: '审核通过'
-        },
-        {
-          value: '3',
-          label: '审核未通过'
-        }
-      ],
-      selectReleaseStatus: [
-        {
-          value: '',
-          label: '选择发布状态'
-        },
-        {
-          value: '0',
-          label: '未发布'
-        },
-        {
-          value: '1',
-          label: '已发布'
-        }
-      ]
+      selectIsAuthorization: this.$t('programVersion.selectIsAuthorization'),
+      selectIsPay: this.$t('programVersion.selectIsPay'),
+      selectExamineStatus: this.$t('programVersion.selectExamineStatus'),
+      selectReleaseStatus: this.$t('programVersion.selectReleaseStatus')
     }
   },
   watch: {
@@ -293,7 +233,7 @@ export default {
         let arr = []
         let defaultObj = {}
         defaultObj.value = ''
-        defaultObj.label = '请选择版本号'
+        defaultObj.label = this.$t('programVersion.selectVersionNumber')
         arr.push(defaultObj)
         spinnerList.content.map((item, index) => {
           let obj = {}

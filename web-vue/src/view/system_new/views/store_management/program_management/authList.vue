@@ -297,20 +297,7 @@ export default {
         programName: null // 小程序名称输入框数据
 
       },
-      selectIsAuthorization: [
-        {
-          value: '',
-          label: '选择是否授权'
-        },
-        {
-          value: '0',
-          label: '未授权'
-        },
-        {
-          value: '1',
-          label: '已授权'
-        }
-      ],
+      selectIsAuthorization: this.$t('programVersion.selectIsAuthorization'),
       page: 1,
       selectIdOpt: [
 
@@ -325,34 +312,8 @@ export default {
       ],
       selectIsPay: this.$t('programVersion.selectIsPay'),
       selectExamineStatus: this.$t('programVersion.selectExamineStatus'),
-      selectReleaseStatus: [
-        {
-          value: '',
-          label: '选择发布状态'
-        },
-        {
-          value: '0',
-          label: '未发布'
-        },
-        {
-          value: '1',
-          label: '已发布'
-        }
-      ],
-      selectShopStatus: [
-        {
-          value: '',
-          label: '选择店铺状态'
-        },
-        {
-          value: '1',
-          label: '使用中'
-        },
-        {
-          value: '0',
-          label: '已过期'
-        }
-      ],
+      selectReleaseStatus: this.$t('programVersion.selectReleaseStatus'),
+      selectShopStatus: this.$t('programVersion.selectShopStatus'),
       tableData: [
 
       ],
@@ -374,7 +335,7 @@ export default {
         let arr = []
         let defaultObj = {}
         defaultObj.value = ''
-        defaultObj.label = '请选择模板id'
+        defaultObj.label = this.$t('programVersion.selectTemplateID')
         arr.push(defaultObj)
         spinnerList.content.map((item, index) => {
           let obj = {}
