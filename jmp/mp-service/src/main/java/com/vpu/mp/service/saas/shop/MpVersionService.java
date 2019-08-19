@@ -243,7 +243,7 @@ public class MpVersionService extends MainBaseService {
 		if (!StringUtils.isEmpty(mVersionParam.getPublishState())) {
 			select.where(MP_AUTH_SHOP.PUBLISH_STATE.eq(mVersionParam.getPublishState()));
 		}
-		select.groupBy(MP_VERSION.TEMPLATE_ID, MP_AUTH_SHOP.IS_AUTH_OK, MP_AUTH_SHOP.OPEN_PAY, MP_AUTH_SHOP.AUDIT_STATE,
+		select.groupBy(MP_VERSION.TEMPLATE_ID, MP_VERSION.USER_VERSION,MP_AUTH_SHOP.IS_AUTH_OK, MP_AUTH_SHOP.OPEN_PAY, MP_AUTH_SHOP.AUDIT_STATE,
 				MP_AUTH_SHOP.PUBLISH_STATE);
 		select.orderBy(MP_VERSION.TEMPLATE_ID.desc());
 		return this.getPageResult(select, mVersionParam.getCurrentPage(), mVersionParam.getPageRows(),
