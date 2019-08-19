@@ -28,6 +28,8 @@ import com.vpu.mp.service.shop.image.QrCodeService;
 import com.vpu.mp.service.shop.market.activity.ActivityIssueService;
 import com.vpu.mp.service.shop.market.activity.ActivityService;
 import com.vpu.mp.service.shop.market.bargain.BargainService;
+import com.vpu.mp.service.shop.market.channel.ChannelService;
+import com.vpu.mp.service.shop.market.channel.ChannelStatisticalService;
 import com.vpu.mp.service.shop.market.firstspecial.FirstSpecialService;
 import com.vpu.mp.service.shop.market.form.FormStatisticsService;
 import com.vpu.mp.service.shop.market.freeshipping.FreeShippingService;
@@ -319,6 +321,9 @@ public class ShopApplication {
 	@Autowired
 	public IntegralConvertService integralConvertService;
 
+    /** 渠道页面分析 */
+    @Autowired public ChannelService channelService;
+    @Autowired public ChannelStatisticalService channelStatitical;
 	@Autowired
 	public PaymentService pay;
 }
