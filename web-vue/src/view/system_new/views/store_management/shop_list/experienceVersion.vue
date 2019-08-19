@@ -18,6 +18,7 @@
         :placeholder="$t('shopList.info.account_info3')"
         size="small"
         class="select-input ml-6"
+        clearable
       >
         <el-option
           v-for="item in state"
@@ -32,6 +33,7 @@
         :placeholder="$t('shopList.info.account_info4')"
         size="small"
         class="select-input ml-6"
+        clearable
       >
         <el-option
           v-for="item in flag"
@@ -49,6 +51,7 @@
         :placeholder="$t('shopList.info.account_info5')"
         size="small"
         class="select-input ml-6"
+        clearable
       >
         <el-option
           v-for="item in disabled"
@@ -63,6 +66,7 @@
         :placeholder="$t('shopList.info.account_info6')"
         size="small"
         class="select-input ml-6"
+        clearable
       >
         <el-option
           v-for="item in bottom"
@@ -73,20 +77,28 @@
         </el-option>
       </el-select>
       <div class="timeline">
-        <span>{{$t('shopList.info.account_info7')}}</span>
-        <el-input
-          v-model="mainData.flag"
-          :placeholder="$t('shopList.info.account_info8')"
-          size="small"
-          class="select-input ml-6"
-        ></el-input>
-        <span style="margin-left: 5px">{{$t('shopList.info.account_info9')}}</span>
-        <el-input
-          v-model="mainData.flag"
-          :placeholder="$t('shopList.info.account_info8')"
-          size="small"
-          class="select-input ml-6"
-        ></el-input>
+        <span style="padding: 10px 15px 0 0 ">{{$t('shopList.info.account_info7')}}</span>
+        <div class="block">
+          <el-date-picker
+            size="small"
+            v-model="mainData.flag"
+            type="datetime"
+            :placeholder="$t('shopList.info.account_info8')"
+            value-format="yyyy-MM-dd HH:mm:ss"
+          >
+          </el-date-picker>
+        </div>
+        <span style="padding: 10px 10px 0">{{$t('shopList.info.account_info9')}}</span>
+        <div class="block">
+          <el-date-picker
+            size="small"
+            v-model="mainData.flag"
+            type="datetime"
+            :placeholder="$t('shopList.info.account_info8')"
+            value-format="yyyy-MM-dd HH:mm:ss"
+          >
+          </el-date-picker>
+        </div>
       </div>
       <el-button
         size="small"
@@ -97,10 +109,12 @@
     </div>
 
     <el-table
-      class="experience-log mt-10"
+      class="experience-log mt-10 formTable"
+      :data="formTable"
       header-row-class-name="table-th"
       border
       style="width: 100%"
+      height="400"
     >
       <el-table-column
         prop="shopId"
@@ -111,6 +125,7 @@
       <el-table-column
         prop="shopType"
         :label="$t('shopList.table.shopID')"
+        :formatter="changeShopId"
         align="center"
       >
       </el-table-column>
@@ -142,12 +157,14 @@
         prop="expireTime"
         align="center"
         :label="$t('shopList.table.endTime')"
+        :formatter="changeShopState"
       >
       </el-table-column>
       <el-table-column
         prop="isEnabled"
         align="center"
         :label="$t('shopList.table.isDisabled')"
+        :formatter="changeIsDisabled"
       >
       </el-table-column>
       <el-table-column
@@ -172,12 +189,14 @@
         prop="shopFlag"
         align="center"
         :label="$t('shopList.table.shopFlag')"
+        :formatter="changeShopFlag"
       >
       </el-table-column>
       <el-table-column
         prop="hidBottom"
         align="center"
         :label="$t('shopList.table.bottom')"
+        :formatter="changeBottom"
       >
       </el-table-column>
       <el-table-column
@@ -200,6 +219,7 @@
         @current-change="handleCurrentChange"
         :current-page.sync="currentPage3"
         layout="prev, pager, next, jumper"
+        :page-count="pageCount"
         :small="pagination_b"
       >
       </el-pagination>
@@ -256,6 +276,7 @@ export default {
       pageCount: null,
       pagination_b: true,
       mainData: {
+        currentPage3: 1,
         accountKey: '',
         keywords: '',
         isUse: '',
@@ -282,23 +303,99 @@ export default {
       }]
     }
   },
+
+  created () {
+    this.search()
+  },
   methods: {
     // currnentPage 改变时会触发
     handleCurrentChange () {
-      this.searchAccount()
+      this.search()
+    },
+
+    // 选择店铺类型文字转化
+    changeShopId (row, rol) {
+      switch (row.shopType) {
+        case 'v1':
+          row.shopType = '基础版'
+          break
+        case 'v2':
+          row.shopType = '中极版'
+          break
+        case 'v3':
+          row.shopType = '高级版'
+          break
+        case 'v4':
+          row.shopType = '旗舰版'
+          break
+      }
+      return row.shopType
+    },
+
+    // 选择店铺状态文字转化
+    changeShopState (row, rol) {
+      switch (row.isUse) {
+        case 1:
+          row.isUse = '使用中'
+          break
+        case 2:
+          row.isUse = '已过期'
+          break
+      }
+      return row.isUse
+    },
+
+    // 店铺标识文案处理
+    changeShopFlag (row, rol) {
+      switch (row.shopFlag) {
+        case 0:
+          row.shopFlag = '店+'
+          break
+        case 1:
+          row.shopFlag = '欧派'
+          break
+        case 2:
+          row.shopFlag = '寺库'
+          break
+      }
+      return row.shopFlag
+    },
+
+    // 是否禁用状态文字转化
+    changeIsDisabled (row, rol) {
+      switch (row.isEnabled) {
+        case 0:
+          row.isEnabled = '未禁用'
+          break
+        case 1:
+          row.isEnabled = '已禁用'
+          break
+      }
+      return row.isEnabled
+    },
+
+    // 底部导航文字转化
+    changeBottom (row, rol) {
+      switch (row.hidBottom) {
+        case 0:
+          row.hidBottom = '显示'
+          break
+        case 1:
+          row.hidBottom = '隐藏'
+          break
+      }
+      return row.hidBottom
     },
 
     // 店铺列表查询
     search () {
       let obj = {
-
         'currentPage': this.currentPage3,
-        'pageRows': 10
+        'pageRows': 20
       }
 
       console.log(this.mainData)
-      let parame = Object.assign(obj)
-
+      let parame = Object.assign(obj, this.mainData)
       console.log(parame)
       shopSearchRequest(parame).then((res) => {
         console.log(res)
@@ -311,6 +408,9 @@ export default {
           this.pageRows = content.page.pageRows
           this.pageCount = content.page.pageCount
           this.totalRows = content.page.totalRows
+          this.firstPage = content.page.firstPage
+          this.lastPage = content.page.lastPage
+          this.nextPage = content.page.nextPage
         }
       }).catch(() => {
         this.$message.error('操作失败')
@@ -338,6 +438,7 @@ export default {
   font-size: 14px;
 }
 .timeline {
+  display: flex;
   margin-left: 15px;
   font-size: 14px;
 }

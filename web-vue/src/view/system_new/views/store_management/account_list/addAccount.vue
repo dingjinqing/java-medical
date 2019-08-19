@@ -11,7 +11,10 @@
         status-icon
         :rules="rules"
       >
-        <el-form-item :label="$t('shopAccountList.accountAdd.userName')">
+        <el-form-item
+          :label="$t('shopAccountList.accountAdd.userName')"
+          prop="userName"
+        >
           <el-input
             type="text"
             v-model="formData.userName"
@@ -19,7 +22,10 @@
             size="small"
           ></el-input>
         </el-form-item>
-        <el-form-item :label="$t('shopAccountList.accountAdd.password')">
+        <el-form-item
+          :label="$t('shopAccountList.accountAdd.password')"
+          prop="password"
+        >
           <el-input
             v-model="formData.password"
             autocomplete="new-password"
@@ -42,6 +48,7 @@
             v-model="formData.state"
             :placeholder="$t('shopAccountList.selectState')"
             size="small"
+            clearable
           >
             <el-option
               :label="$t('shopAccountList.stateOption.state1')"
@@ -163,7 +170,7 @@
         style="margin-left: 158px; padding: 0!important"
         @click="save('formData')"
       >
-        {{$t('shopAccountList.accountAdd.search')}}
+        {{$t('shopAccountList.accountAdd.save')}}
       </el-button>
     </div>
   </div>

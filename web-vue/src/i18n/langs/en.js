@@ -3,6 +3,7 @@ import enLocale from 'element-ui/lib/locale/lang/en'
 import { en as programVersion } from './views/programVersion'
 import { en as shopAccountList } from './views/shopAccountList'
 import { en as shopList } from './views/shopList'
+import { en as publishList } from './views/publishList'
 import { en as router } from './views/router'
 import { en as membershipIntroduction } from './views/membershipIntroduction'
 import { en as marketManage } from './views/marketManage'
@@ -295,11 +296,19 @@ const en = {
     'system_leftNav_title6': 'WeChat full link',
     'system_leftNav_title7': 'Application release list'
   },
+
+  // system 导航右侧用户名hover选项
+  useNameOption: {
+    pasModify: 'change password',
+    accountMange: 'sub-account management',
+    exit: 'exit'
+  },
   router, // 路由信息
   membershipIntroduction, // 会员列表
   programVersion, // system 后台小程序版本
   shopAccountList, // system 店铺账户列表
   shopList, // system 店铺列表
+  publishList, // system 发布列表
   marketManage, // 营销管理
   ordinaryCoupon, // 普通优惠券
   ShopConfiguration, // admin 店铺基础配置

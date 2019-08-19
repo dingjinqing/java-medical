@@ -1,43 +1,65 @@
 <template>
   <div class="experience-version">
     <div class="select-menu top">
-      <div>{{this.$store.state.userName}}</div>
+      <el-input
+        v-model="mainData.keywords"
+        :placeholder="$t('publishList.inputName')"
+        size="small"
+        class="select-input ml-6"
+        clearable
+      ></el-input>
       <el-select
         v-model="mainData.state"
-        :placeholder="$t('shopAccountList.selectState')"
+        :placeholder="$t('publishList.shopOptions.selectType')"
         size="small"
         class="select-input ml-6"
         clearable
       >
         <el-option
-          v-for="item in options"
+          v-for="item in shopOptions"
           :key="item.value"
           :label="item.label"
           :value="item.value"
         >
         </el-option>
       </el-select>
-      <el-input
-        v-model="mainData.keywords"
-        :placeholder="$t('shopAccountList.inputName')"
+      <el-select
+        v-model="mainData.state"
+        :placeholder="$t('publishList.payOptions.selectType')"
         size="small"
         class="select-input ml-6"
         clearable
-      ></el-input>
-      <el-input
-        v-model="mainData.company"
-        :placeholder="$t('shopAccountList.inputCompany')"
+      >
+        <el-option
+          v-for="item in payOptions"
+          :key="item.value"
+          :label="item.label"
+          :value="item.value"
+        >
+        </el-option>
+      </el-select>
+      <el-select
+        v-model="mainData.state"
+        :placeholder="$t('publishList.disabledOption.selectType')"
         size="small"
         class="select-input ml-6"
         clearable
-      ></el-input>
+      >
+        <el-option
+          v-for="item in disabledOptions"
+          :key="item.value"
+          :label="item.label"
+          :value="item.value"
+        >
+        </el-option>
+      </el-select>
       <el-button
         size="small"
         class="ml-6"
         type="primary"
         @click="searchAccount()"
       >
-        {{$t('shopAccountList.search')}}
+        {{$t('publishList.search')}}
       </el-button>
     </div>
 
@@ -51,33 +73,33 @@
     >
       <el-table-column
         prop="userName"
-        :label="$t('shopAccountList.ashopAccountList.userName')"
+        :label="$t('publishList.table.shopID')"
         align="center"
       >
       </el-table-column>
       <el-table-column
         prop="accountName"
-        :label="$t('shopAccountList.ashopAccountList.nickName')"
+        :label="$t('publishList.table.wechatName')"
         align="center"
       >
       </el-table-column>
       <el-table-column
         prop="company"
         align="center"
-        :label="$t('shopAccountList.ashopAccountList.company')"
+        :label="$t('publishList.table.companyName')"
       >
       </el-table-column>
       <el-table-column
         prop="state"
         align="center"
         :formatter="changeState"
-        :label="$t('shopAccountList.ashopAccountList.state')"
+        :label="$t('publishList.table.createTime')"
       >
       </el-table-column>
       <el-table-column
         prop="shopGrade"
         align="center"
-        :label="$t('shopAccountList.ashopAccountList.shopGrade')"
+        :label="$t('publishList.table.startTime')"
       >
         <template slot-scope="scope">
           <span>{{scope.row.shopGrade === 1 ? '普通店':scope.row.shopGrade}}</span>
@@ -86,60 +108,55 @@
       <el-table-column
         prop="shopNumber"
         align="center"
-        :label="$t('shopAccountList.ashopAccountList.shopNumber')"
+        :label="$t('publishList.table.nowTime')"
       >
-        <template slot-scope="scope">
-          <span style="margin-left: 10px">{{ scope.row.shopNumber }}</span>
-          <i
-            class="el-icon-circle-plus-outline"
-            @click="jumptoNewShop(scope.row.sysId, scope.row.userName)"
-            style="cursor: pointer;color:blue; opacity:0.7"
-          ></i>
-        </template>
       </el-table-column>
       <el-table-column
         prop="addTime"
         align="center"
-        :label="$t('shopAccountList.ashopAccountList.addTime')"
+        :label="$t('publishList.table.pay')"
       >
       </el-table-column>
       <el-table-column
         prop="buyTime"
         align="center"
-        :label="$t('shopAccountList.ashopAccountList.buyTime')"
+        :label="$t('publishList.table.shopType')"
       >
       </el-table-column>
       <el-table-column
         prop="endTime"
         align="center"
-        :label="$t('shopAccountList.ashopAccountList.endTime')"
+        :label="$t('publishList.table.shopState')"
       >
       </el-table-column>
       <el-table-column
         prop="renewMoney"
         align="center"
-        :label="$t('shopAccountList.ashopAccountList.renewMoney')"
+        :label="$t('publishList.table.disabled')"
       >
       </el-table-column>
       <el-table-column
         prop="mobile"
         align="center"
-        :label="$t('shopAccountList.ashopAccountList.mobile')"
+        :label="$t('publishList.table.money')"
       >
-        <template slot-scope="scope">
-          <span>{{scope.row.mobile === '' ? '未设置':scope.row.mobile}}</span>
-        </template>
+      </el-table-column>
+      <el-table-column
+        prop="renewMoney"
+        align="center"
+        :label="$t('publishList.table.endTime')"
+      >
       </el-table-column>
       <el-table-column
         prop="operation"
         align="center"
-        :label="$t('shopAccountList.ashopAccountList.operation')"
+        :label="$t('publishList.table.view')"
       >
-        <el-button
+        <!-- <el-button
           type="text"
           style="color:#000"
-          @click="handleEditAccount"
-        >{{$t('shopAccountList.ashopAccountList.operation')}}</el-button>
+          @click="handleView"
+        >{{$t('publishList.table.view')}}</el-button> -->
       </el-table-column>
     </el-table>
 
@@ -158,13 +175,41 @@
 </template>
 
 <script>
-import { searchAccountRequest } from '@/api/system/accountList.js'
+// import { searchAccountRequest } from '@/api/system/accountList.js'
 
 export default {
   name: 'experienceVersion',
   data () {
     return {
-      options: [{
+      shopOptions: [{
+        value: '1',
+        label: this.$t('shopAccountList.stateOption.state1')
+      }, {
+        value: '2',
+        label: this.$t('shopAccountList.stateOption.state2')
+      }, {
+        value: '3',
+        label: this.$t('shopAccountList.stateOption.state3')
+      }, {
+        value: '4',
+        label: this.$t('shopAccountList.stateOption.state4')
+      }],
+
+      payOptions: [{
+        value: '1',
+        label: this.$t('shopAccountList.stateOption.state1')
+      }, {
+        value: '2',
+        label: this.$t('shopAccountList.stateOption.state2')
+      }, {
+        value: '3',
+        label: this.$t('shopAccountList.stateOption.state3')
+      }, {
+        value: '4',
+        label: this.$t('shopAccountList.stateOption.state4')
+      }],
+
+      disabledOptions: [{
         value: '1',
         label: this.$t('shopAccountList.stateOption.state1')
       }, {
@@ -226,7 +271,7 @@ export default {
       // bus.$emit('revice', userName)
       console.log(this.userName)
     },
-    handleEditAccount () {
+    handleView () {
       this.name = 'third'
       this.$emit('send', this.name)
     },
@@ -247,33 +292,33 @@ export default {
 
     // 商家账户列表查询
     searchAccount () {
-      let obj1 = {
-        'currentPage': this.currentPage3,
-        'pageRows': '20',
-        'state': '',
-        'accountName': '',
-        'company': ''
-      }
-      let parameter = Object.assign(obj1, this.mainData)
-      searchAccountRequest(parameter).then((res) => {
-        // console.log(res)
-        const { error, content } = res
-        if (error === 0) {
-          let formList = content.dataList
-          let pageObj = content.page
-          this.totalRows = pageObj.totalRows
-          this.currentPage = pageObj.currentPage
-          this.firstPage = pageObj.firstPage
-          this.lastPage = pageObj.lastPage
-          this.nextPage = pageObj.nextPage
-          this.pageCount = pageObj.pageCount
-          this.pageRows = pageObj.pageRows
+      // let obj1 = {
+      //   'currentPage': this.currentPage3,
+      //   'pageRows': '20',
+      //   'state': '',
+      //   'accountName': '',
+      //   'company': ''
+      // }
+      // let parameter = Object.assign(obj1, this.mainData)
+      // searchAccountRequest(parameter).then((res) => {
+      //   // console.log(res)
+      //   const { error, content } = res
+      //   if (error === 0) {
+      //     let formList = content.dataList
+      //     let pageObj = content.page
+      //     this.totalRows = pageObj.totalRows
+      //     this.currentPage = pageObj.currentPage
+      //     this.firstPage = pageObj.firstPage
+      //     this.lastPage = pageObj.lastPage
+      //     this.nextPage = pageObj.nextPage
+      //     this.pageCount = pageObj.pageCount
+      //     this.pageRows = pageObj.pageRows
 
-          this.formTable = formList
-        }
-      }).catch(() => {
-        this.$message.error('保存失败')
-      })
+      //     this.formTable = formList
+      //   }
+      // }).catch(() => {
+      //   this.$message.error('保存失败')
+      // })
     }
   }
 }

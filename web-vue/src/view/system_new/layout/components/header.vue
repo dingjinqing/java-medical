@@ -60,7 +60,8 @@
 <script>
 import Vuex from 'vuex'
 import Cookies from 'js-cookie'
-import { loginRequest } from '@/api/index/login.js'
+import { logOut } from '@/api/system/login.js'
+// import { loginRequestOut } from '@/api/index/login.js'
 export default {
   data () {
     return {
@@ -70,8 +71,7 @@ export default {
         { img_3: this.$imageHost + '/image/admin/menu_top_1.png' }
       ],
       log_menu_show: false,
-      // hiddle_menu_list: [this.$t('shopData.set'), this.$t('shopData.administration_J'), this.$t('shopData.public'), this.$t('shopData.choice'), this.$t('shopData.loginOut')],
-      hiddle_menu_list: ['密码修改', '子账号管理', '退出'],
+      hiddle_menu_list: [this.$t('useNameOption.pasModify'), this.$t('useNameOption.accountMange'), this.$t('useNameOption.exit')],
       changeColorIndex: '',
       username: '',
       menu_width: '',
@@ -88,7 +88,8 @@ export default {
         },
         {
           title: '数据统计',
-          img: this.$imageHost + '/image/system/first_3.png' },
+          img: this.$imageHost + '/image/system/first_3.png'
+        },
         {
           title: '商品管理',
           img: this.$imageHost + '/image/system/first_3.png'
@@ -156,10 +157,10 @@ export default {
     },
     // 初始化登录
     judgeuserinfo () {
+      console.log(this)
       if (Cookies.get('V-Token')) {
         this.user_flag = true
-        this.username = localStorage.getItem('V-Username')
-        // console.log(Cookies.get('V-Token'), '----', localStorage.getItem('V-Username'))
+        this.username = localStorage.getItem('System-Username') // 获取到登录用户的名字
       } else {
         this.user_flag = false
       }
@@ -167,32 +168,14 @@ export default {
     // 用户选项点击
     handle_user_list (index) {
       switch (index) {
-        case 0:
-          this.$emit('change_components', '0')
-          this.$router.push({
-            path: '/admin/home/shop_main',
-            query: {
-              change_components: '0'
-            }
-          })
-          break
-        case 3:
-          this.$emit('change_components', '3')
-          this.$router.push({
-            path: '/admin/home/shop_main',
-            query: {
-              change_components: '3'
-            }
-          })
-          break
-        case 4:
-          loginRequest().then((res) => {
+        case 2:
+          logOut().then((res) => {
             console.log(res)
             if (res.error === 0) {
               Cookies.remove('V-Token')
-              localStorage.removeItem('V-Username')
+              localStorage.removeItem('System-Username')
               this.$router.push({
-                path: '/index/login'
+                path: '/system/login'
               })
             } else {
               this.$message({

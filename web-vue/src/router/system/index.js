@@ -1,14 +1,4 @@
 const routes = [
-
-  // {
-  //   path: '/system/welcome',
-  //   name: 'welcome',
-  //   meta: {
-  //     title: 'welcome'
-  //   },
-  //   component: () => import('@/view/system_new/layout/index'),
-  //   redirect: '/system/welcome'
-  // },
   {
     path: '/system/overview',
     name: 'overviewMain',
@@ -16,7 +6,7 @@ const routes = [
       title: '概览'
     },
     component: () => import('@/view/system_new/layout/index'),
-    redirect: '/system/overview/overview_index',
+    // redirect: '/system/overview/overview_index',
     children: [
       // 概述子路由
       {
@@ -87,6 +77,14 @@ const routes = [
         name: 'programManage',
         meta: {
           title: '小程序版本'
+        }
+      },
+      {
+        path: 'versionList',
+        component: () => ('@/view/system_new/views/store_management/verionList/versionList'),
+        // name: 'versionList',
+        meta: {
+          titie: '版本列表'
         }
       }
     ]

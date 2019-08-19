@@ -149,12 +149,20 @@ export default {
       this.JudgementForm()
       if (this.flag === false) return
       localStorage.setItem('contentType', 'application/json;charset=UTF-8')
+      console.log(this.mainData)
       loginRequest(this.mainData).then((res) => {
-        if (res.error === 0) {
+        console.log(res)
+        if (res.error !== 0) {
+          this.$message({
+            showClose: true,
+            message: res.message,
+            type: 'error'
+          })
+        } else {
           document.onkeydown = undefined
           localStorage.setItem('V-loginType', 1)
           Cookies.set('V-Token', res.content.token, { expires: 1 / 48 })
-          localStorage.setItem('S-Username', res.content.userName)
+          localStorage.setItem('System-Username', res.content.userName)
           this.$message({
             showClose: true,
             message: res.message,
@@ -183,7 +191,7 @@ export default {
 
 .sys_container {
   width: 810px;
-  padding: 5% 0;
+  padding: 1% 0;
   margin: 0 auto !important;
 }
 

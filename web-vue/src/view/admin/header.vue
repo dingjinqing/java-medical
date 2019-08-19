@@ -94,7 +94,7 @@ export default {
       if (Cookies.get('V-Token')) {
         this.user_flag = true
         this.username = localStorage.getItem('V-Username')
-        // console.log(Cookies.get('V-Token'), '----', localStorage.getItem('V-Username'))
+        console.log(Cookies.get('V-Token'), '----', localStorage.getItem('V-Username'))
         queryShopRequest().then((res) => {
           console.log(res)
           if (res.error === 0) {

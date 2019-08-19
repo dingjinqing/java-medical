@@ -3,6 +3,7 @@ import zhLocale from 'element-ui/lib/locale/lang/zh-CN'
 import { cn as programVersion } from './views/programVersion'
 import { cn as shopAccountList } from './views/shopAccountList'
 import { cn as shopList } from './views/shopList'
+import { cn as publishList } from './views/publishList'
 import { cn as router } from './views/router'
 import { cn as membershipIntroduction } from './views/membershipIntroduction'
 import { cn as marketManage } from './views/marketManage'
@@ -296,11 +297,20 @@ const cn = {
     'system_leftNav_title6': '微信全链路',
     'system_leftNav_title7': '申请发布列表'
   },
+
+  // system 导航右侧用户名hover选项
+  useNameOption: {
+    pasModify: '密码修改',
+    accountMange: '子账号管理',
+    exit: '退出'
+  },
+
   router, // 路由信息
   membershipIntroduction, // 会员列表
   programVersion, // system 后台小程序版本
   shopAccountList, // system 店铺账户列表
   shopList, // sysytem 店铺列表
+  publishList, // system 发布列表
   marketManage, // 营销管理
   ordinaryCoupon, // 普通优惠券
   ShopConfiguration, // admin 店铺基础配置

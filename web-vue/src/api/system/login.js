@@ -1,6 +1,6 @@
 import request from '@/util/request'
 
-// system登录接口
+// system 登录接口
 export function loginRequest (riid) {
   return request({
     url: '/api/system/login',
@@ -9,9 +9,11 @@ export function loginRequest (riid) {
   })
 }
 
-// export function viewOne(id) {
-//     return request({
-//         url: `receivesys/note/open/${id}`,
-//         method: 'get'
-//     })
-// }
+// system 退出接口
+export function logOut (params) {
+  return request({
+    url: `/api/system/logout`,
+    method: 'get',
+    data: params
+  })
+}

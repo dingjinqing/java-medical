@@ -51,7 +51,8 @@ export const cn = {
     baseSale: '初始销量',
     addCommentSwitch: '添加评价',
     search: '搜索',
-    geoLocation: '地理位置'
+    geoLocation: '地理位置',
+    save: '保存'
   },
   timeSelect: '请选择日期时间'
 }
@@ -109,7 +110,8 @@ export const en = {
     baseSale: 'Initial sales',
     addCommentSwitch: 'Add review',
     search: 'search',
-    geoLocation: 'Geographic location'
+    geoLocation: 'Geographic location',
+    save: 'save'
   },
   timeSelect: 'Please select a date and time'
 }
