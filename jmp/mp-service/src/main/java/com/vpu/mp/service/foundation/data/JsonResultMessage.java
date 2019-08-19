@@ -164,6 +164,8 @@ public class JsonResultMessage {
 	public static final String WX_MA_NEED_UPLOADCODE = "wx.ma.need.uploadcode";
 	public static final String WX_MA_NEED_AUDITING_CODE_SUCCESS = "wx.ma.need.auditing.success";
 	public static final String WX_MA_SHOP_HAS_NO_APP="wx.ma.shop.has.no.app";
+	public static final String WX_MA_FEATURE_NOT_OPEN="wx.ma.feature.not.open";
+	public static final String WX_MA_ISSUBMERCHANT_ISNULL = "wx.ma.isSubMerchant.is.null";
 	
 	/**
 	 * 门店管理
@@ -279,4 +281,5 @@ public class JsonResultMessage {
     public static final String PRESALE_MONEY_PAID = "presale.order.money_paid";
     public static final String PRESALE_ORDER_STATUS = "presale.order.order_status";
     public static final String INCLUDING_SHIPPING_FEE = "presale.order.including_shipping_fee";
+	
 }
