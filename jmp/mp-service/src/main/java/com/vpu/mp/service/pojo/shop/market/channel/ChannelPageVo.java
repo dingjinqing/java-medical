@@ -14,14 +14,12 @@ import lombok.NoArgsConstructor;
 public class ChannelPageVo {
 	/** 渠道页ID*/
 	private Integer id;
-	/** 原页面ID */
-	private Integer pageId;
 	/** 源页面 名称 */
 	private String pageName;
+	/** 原页面ID */
+	private Integer pageId;
 	/**商品详情页 id */
 	private Integer goodsId;
-	/** 商品名称 */
-	private String goodsName;
 	/** 渠道页名称 */
 	private String channelName;
 	/**  来源类型 0自定义 1商品 */
