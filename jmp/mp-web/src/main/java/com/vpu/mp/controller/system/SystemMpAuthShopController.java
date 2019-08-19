@@ -129,8 +129,7 @@ public class SystemMpAuthShopController extends SystemBaseController {
 				break;
 			}
 			case MpDeployQueryParam.ACT_PUBLISH_CODE: {
-				//result = mp.publishAuditSuccessCode(param.getAppId());
-				int i=0/0;
+				result = mp.publishAuditSuccessCode(param.getAppId());
 				break;
 			}
 			case MpDeployQueryParam.ACT_SUBMIT_AUDIT: {
