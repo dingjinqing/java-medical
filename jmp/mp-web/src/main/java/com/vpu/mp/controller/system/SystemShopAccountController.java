@@ -48,7 +48,7 @@ public class SystemShopAccountController extends SystemBaseController {
 		// TODO 空的判断
 		for (ShopAccountPojo sap : result.dataList) {
 			// sysId
-			sap.setShopNumber(saas.shop.renew.getShopNumber((Integer) sap.getSysId()));
+			sap.setShopNumber(saas.shop.getShopNumber((Integer) sap.getSysId()));
 			sap.setRenewMoney(saas.shop.renew.getRenewTotal((Integer) sap.getSysId()));
 		}
 		return success(result);
