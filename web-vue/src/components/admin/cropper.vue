@@ -150,7 +150,7 @@ export default {
       this.imgCatId = obj.catid
       this.imgID = obj.imgid
       this.cropperFlagP = obj.index
-      this.option.img = obj.url
+      this.option.img = obj.url + "?"+ (new Date()).getTime()
     }
   },
   methods: {
