@@ -1,6 +1,7 @@
 package com.vpu.mp.service.pojo.shop.market.integralconvert;
 
 import java.math.BigDecimal;
+import java.sql.Timestamp;
 
 import lombok.Data;
 
@@ -26,6 +27,12 @@ public class IntegralConvertListVo {
 	
 	/** 商品名称 */
 	private String goodsName;
+	
+	/** 开始时间 */
+	private Timestamp startTime;
+	
+	/** 结束时间 */
+	private Timestamp endTime;
 	
 	/** 兑换所需现金 */
 	private BigDecimal money;
