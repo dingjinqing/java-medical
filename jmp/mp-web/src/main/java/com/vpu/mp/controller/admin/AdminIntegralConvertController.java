@@ -11,6 +11,7 @@ import com.vpu.mp.service.foundation.data.JsonResult;
 import com.vpu.mp.service.foundation.util.PageResult;
 import com.vpu.mp.service.pojo.shop.market.MarketOrderListParam;
 import com.vpu.mp.service.pojo.shop.market.MarketSourceUserListParam;
+import com.vpu.mp.service.pojo.shop.market.friendpromote.FriendPromoteOptionParam;
 import com.vpu.mp.service.pojo.shop.market.integralconvert.IntegralConvertAddParam;
 import com.vpu.mp.service.pojo.shop.market.integralconvert.IntegralConvertGoodsParam;
 import com.vpu.mp.service.pojo.shop.market.integralconvert.IntegralConvertGoodsVo;
@@ -58,6 +59,18 @@ public class AdminIntegralConvertController extends AdminBaseController{
 		shop().integralConvertService.startOrStop(param);
 		return success();
 		
+	}
+	
+	/**
+	 * 删除单个活动
+	 *
+	 * @param param
+	 * @return
+	 */
+	@RequestMapping("api/admin/market/integralconvert/delete")
+	public JsonResult deleteAct(@RequestBody IntegralConvertSwitchParam param) {
+		shop().integralConvertService.deleteAct(param);
+		return success();
 	}
 	
 	/**
