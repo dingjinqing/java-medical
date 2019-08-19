@@ -6,7 +6,7 @@
     >
       <el-select
         class="fll selected-id mr-6 mb-10"
-        v-model="queryData.selectedId"
+        v-model="templateId"
         :placeholder="$t('programVersion.selectTemplateID')"
         size="small"
         @change="handleSelectId()"
@@ -300,6 +300,7 @@ export default {
       },
       selectIsAuthorization: this.$t('programVersion.selectIsAuthorization'),
       page: 1,
+      templateId: '',
       selectIdOpt: [
 
         {
@@ -326,6 +327,21 @@ export default {
   },
   mounted () {
     // 初始化数据
+    this.$http.$on('formStatics', (row) => {
+      console.log(row)
+      this.templateId = row.userVersion
+      this.queryData.selectedId = row.templateId
+      if (row.auditState === '未提交') {
+        this.queryData.selectedAuditStatus = 0
+      } else if (row.auditState === '审核中') {
+        this.queryData.selectedAuditStatus = 1
+      } else if (row.auditState === '审核成功') {
+        this.queryData.selectedAuditStatus = 2
+      } else if (row.auditState === '审核失败') {
+        this.queryData.selectedAuditStatus = 3
+      }
+      // this.defaultData()
+    })
     this.defaultData()
   },
   methods: {

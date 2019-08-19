@@ -63,6 +63,7 @@
           v-model="queryData.isRelease"
           :placeholder="$t('programVersion.publicStatus')"
           size="small"
+          @change="handleSelectId()"
         >
           <el-option
             v-for="(item, index) in selectReleaseStatus"
@@ -134,7 +135,10 @@
         :label="$t('programVersion.NumberStores')"
       >
         <template slot-scope="scope">
-          <div class="num">{{scope.row.number}}</div>
+          <div
+            class="num"
+            @click="handleToAuthListPpage(scope.row)"
+          >{{scope.row.number}}</div>
         </template>
       </el-table-column>
     </el-table>
@@ -302,6 +306,18 @@ export default {
     // 当前页改变
     handleCurrentChange (val) {
       this.handleQueryTableData()
+    },
+    // 跳转到小程序授权列表页
+    handleToAuthListPpage (row) {
+      console.log(row)
+      this.$http.$emit('formStatics', row)
+      this.$router.push({
+        name: 'programManage',
+        params: {
+          page: 'authList',
+          appId: -1
+        }
+      })
     }
   }
 }
