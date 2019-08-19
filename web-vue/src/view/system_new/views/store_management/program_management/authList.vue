@@ -214,7 +214,8 @@
         <template slot-scope="scope">
           <span v-if="scope.row.auditState === 0">{{$t('programVersion.notSubmitted')}}</span>
           <span v-if="scope.row.auditState === 1">{{$t('programVersion.auditProgress')}}</span>
-          <span v-if="scope.row.auditState === 2">{{$t('programVersion.auditFailure')}}</span>
+          <span v-if="scope.row.auditState === 2">{{$t('programVersion.AuditSuccess')}}</span>
+          <span v-if="scope.row.auditState === 3">{{$t('programVersion.auditFailure')}}</span>
         </template>
       </el-table-column>
       <el-table-column
@@ -367,6 +368,7 @@ export default {
       authListRequest(obj).then((res) => {
         if (res.error === 0) {
           console.log(res)
+
           this.tableData = res.content.dataList
           this.pageCount = res.content.page.pageCount
           this.totle = res.content.page.totalRows

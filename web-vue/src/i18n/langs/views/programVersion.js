@@ -64,7 +64,7 @@ export const cn = {
   unpublished: '未发布',
   published: '已发布',
   expired: '已过期',
-  inUse: '使用者',
+  inUse: '使用中',
   operationAuLishData: ['查看详细', '版本操作日志'],
   selectIsPay: [
     {

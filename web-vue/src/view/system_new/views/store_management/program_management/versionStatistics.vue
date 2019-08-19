@@ -242,6 +242,7 @@ export default {
           arr.push(obj)
         })
         this.selectIdTemId = arr
+        this.handleQueryTableData()
       }
     },
     handleQueryTableData () {
@@ -256,6 +257,7 @@ export default {
         'pageRows': 0
       }
       versionStatRequest(obj).then((res) => {
+        console.log(res)
         if (res.error === 0) {
           res.content.dataList.map((item, index) => {
             if (item.isAuthOk === 1) {

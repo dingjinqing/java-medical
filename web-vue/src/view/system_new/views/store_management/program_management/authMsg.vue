@@ -658,7 +658,7 @@ export default {
       },
       dialogVisible: false,
       options: this.$t('programVersion.options'),
-      value: this.$t('programVersion.WechatDirectPayment'),
+      value: '',
       appidinput: '',
       shnuminput: '',
       myinput: '',
@@ -775,6 +775,7 @@ export default {
       switch (index) {
         case 0:
           obj.act = 'setting-sub-merchant'
+          console.log(this.value)
           obj.isSubMerchant = this.value
           if (this.value === 2) {
             obj.union_pay_app_id = this.appidinput
@@ -835,6 +836,7 @@ export default {
           this.tyinput = ''
           this.opStatus = res.content
           this.defaultData()
+          this.dialogVisible = false
         }
       })
     },
