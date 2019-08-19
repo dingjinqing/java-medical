@@ -1010,7 +1010,8 @@ public class MpAuthShopService extends MainBaseService {
 	public WxOpenResult setSubMerchant(MpDeployQueryParam param) {
 		MpAuthShopRecord mp = this.getAuthShopByAppId(param.getAppId());
 		WxOpenResult wxOpenResult = new WxOpenResult();
-		wxOpenResult.setErrcode(JsonResultMessage.MSG_FAIL);
+		wxOpenResult.setErrcode(String.valueOf(JsonResultCode.CODE_FAIL));
+		wxOpenResult.setErrmsg(String.valueOf(JsonResultMessage.MSG_FAIL));
 		if (mp == null) {
 			return wxOpenResult;
 		}
@@ -1020,24 +1021,27 @@ public class MpAuthShopService extends MainBaseService {
 		 */
 		if (param.getIsSubMerchant() == null) {
 			// TODO 返回字段为空
-			wxOpenResult.setErrcode(JsonResultMessage.MSG_FAIL);
+			wxOpenResult.setErrcode(String.valueOf(JsonResultCode.WX_MA_ISSUBMERCHANT_ISNULL));
+			wxOpenResult.setErrmsg(String.valueOf(JsonResultMessage.WX_MA_ISSUBMERCHANT_ISNULL));
 			return wxOpenResult;
 		}
 		switch (param.getIsSubMerchant()) {
 		case 0:
 			// 微信直连支付
-
+			wxOpenResult.setErrcode(String.valueOf(JsonResultCode.WX_MA_FEATURE_NOT_OPEN));
+			wxOpenResult.setErrmsg(JsonResultMessage.WX_MA_FEATURE_NOT_OPEN);
 			break;
 		case 1:
 			// 微铺宝子商户支付
-
+			wxOpenResult.setErrcode(String.valueOf(JsonResultCode.WX_MA_FEATURE_NOT_OPEN));
+			wxOpenResult.setErrmsg(JsonResultMessage.WX_MA_FEATURE_NOT_OPEN);
 			break;
 		case 2:
 			// 通联子商户支付
 			if (StringUtils.isEmpty(param.getUnion_pay_app_id()) || StringUtils.isEmpty(param.getUnion_pay_cus_id())
 					|| StringUtils.isEmpty(param.getUnion_pay_app_key())) {
-				// TODO 返回字段为空
-				wxOpenResult.setErrcode(JsonResultMessage.MSG_FAIL);
+				wxOpenResult.setErrcode(String.valueOf(JsonResultCode.WX_MA_TABLE_ISNULL));
+				wxOpenResult.setErrcode(JsonResultMessage.WX_MA_TABLE_ISNULL);
 				return wxOpenResult;
 			}
 			int execute = db().update(MP_AUTH_SHOP).set(MP_AUTH_SHOP.UNION_PAY_APP_ID, param.getUnion_pay_app_id())
@@ -1045,14 +1049,15 @@ public class MpAuthShopService extends MainBaseService {
 					.set(MP_AUTH_SHOP.UNION_PAY_APP_KEY, param.getUnion_pay_app_key())
 					.set(MP_AUTH_SHOP.IS_SUB_MERCHANT, param.getIsSubMerchant().byteValue()).execute();
 			if (execute > 0) {
+				wxOpenResult.setErrcode(String.valueOf(JsonResultCode.CODE_SUCCESS));
 				wxOpenResult.setErrcode(JsonResultMessage.MSG_SUCCESS);
 			}
 			break;
 		case 3:
 			// 微信国际融合钱包支付 [, 'merchant_category_code', 'fee_type']
 			if (StringUtils.isEmpty(param.getMerchant_category_code()) || StringUtils.isEmpty(param.getFee_type())) {
-				// TODO 返回字段为空
-				wxOpenResult.setErrcode(JsonResultMessage.MSG_FAIL);
+				wxOpenResult.setErrcode(String.valueOf(JsonResultCode.WX_MA_TABLE_ISNULL));
+				wxOpenResult.setErrcode(JsonResultMessage.WX_MA_TABLE_ISNULL);
 				return wxOpenResult;
 			}
 			int execute2 = db().update(MP_AUTH_SHOP)
@@ -1060,6 +1065,7 @@ public class MpAuthShopService extends MainBaseService {
 					.set(MP_AUTH_SHOP.FEE_TYPE, param.getFee_type())
 					.set(MP_AUTH_SHOP.IS_SUB_MERCHANT, param.getIsSubMerchant().byteValue()).execute();
 			if (execute2 > 0) {
+				wxOpenResult.setErrcode(String.valueOf(JsonResultCode.CODE_SUCCESS));
 				wxOpenResult.setErrcode(JsonResultMessage.MSG_SUCCESS);
 			}
 			break;
