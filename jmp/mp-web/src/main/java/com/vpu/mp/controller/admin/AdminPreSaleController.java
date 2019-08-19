@@ -119,7 +119,8 @@ public class AdminPreSaleController extends AdminBaseController {
      * 导出活动订单
      */
     @PostMapping("/order/export")
-    public void exportOrderExcel(@RequestBody @Valid OrderListParam param, HttpServletResponse response) throws IOException {
+    public void exportOrderExcel(
+        @RequestBody @Valid OrderListParam param, HttpServletResponse response) throws IOException {
         Workbook workbook = shop().preSaleOrder.exportOrderList(param, getLang());
         response.setContentType("application/vnd.ms-excel;charset=UTF-8");
         String fileName =
