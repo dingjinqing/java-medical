@@ -474,7 +474,6 @@ public class PreSaleService extends ShopBaseService {
                             BigDecimal.valueOf(product.getPreDiscountMoney2()))
                         .execute();
                 });
-
             });
         } else {
             throw new IllegalStateException("Error status");
