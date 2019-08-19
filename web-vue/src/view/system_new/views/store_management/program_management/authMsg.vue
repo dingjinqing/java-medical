@@ -724,6 +724,8 @@ export default {
             console.log(res)
           })
           res.content.funcInfo = arr
+          console.log(res.content)
+          res.content.tester = JSON.parse(res.content.tester)
           this.dataList = res.content
         }
 
@@ -731,9 +733,10 @@ export default {
       })
     },
     handleClose (idx) {
-      console.log(`删除的tag标签为${this.tagOpt[idx].name}`)
+      console.log(this.tagOpt)
+      console.log(`删除的tag标签为${this.dataList.tester[idx]}`)
       this.tagOpt.splice(idx, 1)
-      this.handleSureSetPay(2, this.tagOpt[idx].name)
+      this.handleSureSetPay(2, this.dataList.tester[idx])
     },
     // 设置支付方式下拉框支付
     handleSelect () {
@@ -771,7 +774,7 @@ export default {
           }
           break
         case 1:
-          obj.act = 'handleSureSetPay'
+          obj.act = 'add-tester'
           obj.wechatId = this.tyinput
           break
         case 2:
