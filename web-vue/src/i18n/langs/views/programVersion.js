@@ -153,7 +153,22 @@ export const cn = {
   versionNumber: '版本号',
   WhetherToAuthorize: '是否授权',
   WechatPayment: '支持微信支付',
-  NumberStores: '店铺数量'
+  NumberStores: '店铺数量',
+
+  BasicInformation: '授权基本信息',
+  UpdateInformation: '更新授权信息',
+  ShopID: '店铺ID',
+  SubjectName: '主体名称',
+  UserName: '用户名',
+  alias: '别名',
+  SmallProgramCode: '小程序体验码',
+  WidgetRights: '小程序授权权限',
+  iscertified: '是否已认证',
+  supportVouchers: '是否支持卡券',
+  FauthorizationTime: '最后取消授权时间',
+  RecordingTime: '记录时间',
+  BusinessName: '商户号'
+
 }
 
 export const en = {

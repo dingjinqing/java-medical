@@ -891,7 +891,7 @@ export default {
           padding: 10px;
           border: 1px solid #ddd;
           vertical-align: middle;
-
+          text-align: left;
           .td-item {
             margin-bottom: 2px;
           }
