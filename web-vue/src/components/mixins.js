@@ -50,6 +50,11 @@ const myMixin = {
         this.minx_bottom_select = 'minx_bottom_select'
         this.assetsUl = 'assetsUl'
         this.mixinleftDiv = 'mixinleftDiv'
+
+        // system小程序版本 会员详情兼容
+        this.payDialogDivEn = 'payDialogDivEn'
+        this.payDialogDivEnLast = 'payDialogDivEnLast'
+        this.payDialogDivEnhiddenTwo = 'payDialogDivEnhiddenTwo'
       } else {
         this.$i18n.locale = 'cn'
         this.Recommend_class = ''
@@ -96,6 +101,11 @@ const myMixin = {
         this.minx_bottom_select = ''
         this.assetsUl = ''
         this.mixinleftDiv = ''
+
+        // system小程序版本 会员详情兼容
+        this.payDialogDivEn = ''
+        this.payDialogDivEnLast = ''
+        this.payDialogDivEnhiddenTwo = ''
       }
     }
   }

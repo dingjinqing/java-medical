@@ -6,15 +6,15 @@
     >
       <el-tabs v-model="activeName">
         <el-tab-pane
-          label="店铺基础信息"
+          :label="$t('ShopConfiguration.ShopBasicInformation')"
           name="first"
         >店铺基础信息</el-tab-pane>
         <el-tab-pane
-          label="店铺通用设置"
+          :label="$t('ShopConfiguration.GeneralStoreSettings')"
           name="second"
         >店铺通用设置</el-tab-pane>
         <el-tab-pane
-          label="小程序授权"
+          :label="$t('ShopConfiguration.SmallProgramAuthorization')"
           name="third"
         >
           <programAuthDetails />

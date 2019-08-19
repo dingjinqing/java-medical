@@ -15,21 +15,21 @@
           <div class="details-item">
             <div class="item-header">
               <span class="title">
-                授权基本信息
+                {{$t('programVersion.BasicInformation')}}
               </span>
               <el-button
                 size="small"
                 type="primary"
                 @click="handleSureSetPay(9)"
               >
-                更新授权信息
+                {{$t('programVersion.UpdateInformation')}}
               </el-button>
             </div>
             <div class="item-content">
               <table class="item-table">
                 <tbody>
                   <tr>
-                    <td>店铺ID</td>
+                    <td>{{$t('programVersion.ShopID')}}</td>
                     <td>
                       {{this.dataList.shopId}}
                     </td>
@@ -40,26 +40,26 @@
                   </tr>
                   <tr>
                     <td>
-                      主体名称
+                      {{$t('programVersion.SubjectName')}}
                     </td>
                     <td>
                       {{this.dataList.principalName}}
                     </td>
                   </tr>
                   <tr>
-                    <td>昵称</td>
+                    <td>{{$t('programVersion.nickName')}}</td>
                     <td>{{this.dataList.nickName}}</td>
                   </tr>
                   <tr>
-                    <td>用户名</td>
+                    <td>{{$t('programVersion.UserName')}}</td>
                     <td>{{this.dataList.userName}}</td>
                   </tr>
                   <tr>
-                    <td>别名</td>
+                    <td>{{$t('programVersion.alias')}}</td>
                     <td>{{this.dataList.alias}}</td>
                   </tr>
                   <tr>
-                    <td>头像</td>
+                    <td>{{$t('programVersion.head')}}</td>
                     <td>
                       <img
                         class="imgClass"
@@ -72,7 +72,7 @@
                     </td>
                   </tr>
                   <tr>
-                    <td>小程序二维码</td>
+                    <td>{{$t('programVersion.ToProgramCode')}}</td>
                     <td>
                       <img
                         style="width:52px"
@@ -86,7 +86,7 @@
                   </tr>
                   <tr>
                     <td>
-                      小程序授权权限
+                      {{$t('programVersion.WidgetRights')}}
                     </td>
                     <td>
                       <div
@@ -99,7 +99,7 @@
                           size="small"
                           effect="dark"
                         >
-                          已授权
+                          {{$t('programVersion.beRevoked')}}
                         </el-tag>
                         <span>
                           {{item}}
@@ -108,7 +108,7 @@
                     </td>
                   </tr>
                   <tr>
-                    <td>是否已认证</td>
+                    <td>{{$t('programVersion.iscertified')}}</td>
                     <td>
 
                       <el-tag
@@ -117,7 +117,7 @@
                         effect="dark"
                         v-if="dataList.verifyTypeInfo==='0'"
                       >
-                        已认证
+                        {{$t('programVersion.certified')}}
                       </el-tag>
                       <el-tag
                         type="danger"
@@ -125,12 +125,12 @@
                         effect="dark"
                         v-if="dataList.verifyTypeInfo==='1'"
                       >
-                        未认证
+                        {{$t('programVersion.uncertified')}}
                       </el-tag>
                     </td>
                   </tr>
                   <tr>
-                    <td>是否支持微信支付</td>
+                    <td>{{$t('programVersion.SupportWechatPayment')}}</td>
                     <td>
                       <el-tag
                         type="primary"
@@ -138,7 +138,7 @@
                         effect="dark"
                         v-if="dataList.openPay===1"
                       >
-                        是
+                        {{$t('programVersion.yes')}}
                       </el-tag>
                       <el-tag
                         type="danger"
@@ -146,12 +146,12 @@
                         effect="dark"
                         v-if="dataList.openPay===0"
                       >
-                        否
+                        {{$t('programVersion.no')}}
                       </el-tag>
                     </td>
                   </tr>
                   <tr>
-                    <td>是否支持卡券</td>
+                    <td>{{$t('programVersion.supportVouchers')}}</td>
                     <td>
                       <el-tag
                         type="primary"
@@ -159,7 +159,7 @@
                         effect="dark"
                         v-if="dataList.openCard===1"
                       >
-                        是
+                        {{$t('programVersion.yes')}}
                       </el-tag>
                       <el-tag
                         type="danger"
@@ -167,12 +167,12 @@
                         effect="dark"
                         v-if="dataList.openCard===0"
                       >
-                        否
+                        {{$t('programVersion.no')}}
                       </el-tag>
                     </td>
                   </tr>
                   <tr>
-                    <td>是否授权</td>
+                    <td>{{$t('programVersion.ToAuthorize')}}</td>
                     <td>
                       <el-tag
                         type="primary"
@@ -180,7 +180,7 @@
                         effect="dark"
                         v-if="dataList.isAuthOk===1"
                       >
-                        是
+                        {{$t('programVersion.yes')}}
                       </el-tag>
                       <el-tag
                         type="danger"
@@ -188,43 +188,43 @@
                         effect="dark"
                         v-if="dataList.isAuthOk===0"
                       >
-                        否
+                        {{$t('programVersion.no')}}
                       </el-tag>
                     </td>
                   </tr>
                   <tr>
-                    <td>最后授权时间</td>
+                    <td>{{$t('programVersion.authorizationTime')}}</td>
                     <td>
                       {{this.dataList.lastAuthTime}}
                     </td>
                   </tr>
                   <tr>
-                    <td>最后取消授权时间</td>
+                    <td>{{$t('programVersion.FauthorizationTime')}}</td>
                     <td>
                       {{this.dataList.lastCancelAuthTime}}
                     </td>
                   </tr>
                   <tr>
-                    <td>记录时间</td>
+                    <td>{{$t('programVersion.RecordingTime')}}</td>
                     <td>
                       {{this.dataList.createTime}}
                     </td>
                   </tr>
                   <tr>
-                    <td>商户号</td>
+                    <td>{{$t('programVersion.BusinessName')}}</td>
                     <td>
                       {{this.dataList.payMchId}}
                     </td>
                   </tr>
                   <tr>
-                    <td>商户密钥</td>
+                    <td>{{$t('programVersion.BusinessKey')}}</td>
                     <td>
                       {{this.dataList.payKey}}
                     </td>
                   </tr>
                   <tr>
                     <td>
-                      证书内容
+                      {{$t('programVersion.CertificateContent')}}
                     </td>
                     <td class="elippse">
                       {{this.dataList.payCertContent}}
@@ -232,7 +232,7 @@
                   </tr>
                   <tr>
                     <td>
-                      私钥内容
+                      {{$t('programVersion.PrivateKeyContent')}}
                     </td>
                     <td class="elippse">
                       {{this.dataList.payKeyContent}}
@@ -240,38 +240,38 @@
                   </tr>
                   <tr>
                     <td>
-                      私钥内容
+                      {{$t('programVersion.PrivateKeyContent')}}
                     </td>
                     <td class="pd-10">
                       <div class="warning-text">
-                        谨慎设置支付方式，设置之前，请确认商户支付已经申请成功。
+                        {{$t('programVersion.keyTips')}}
                       </div>
                       <table class="min-table">
                         <tr>
                           <td>
-                            支付方式:
+                            {{$t('programVersion.PaymentMethod')}}:
                           </td>
                           <td>
-                            <span v-if="dataList.isSubMerchant===0">子商户模式</span>
-                            <span v-if="dataList.isSubMerchant===1">非子商户</span>
-                            <span v-if="dataList.isSubMerchant===2">微铺宝子商户</span>
-                            <span v-if="dataList.isSubMerchant===3">通联支付子商户</span>
+                            <span v-if="dataList.isSubMerchant===0">{{$t('programVersion.SubMerchantModel')}}</span>
+                            <span v-if="dataList.isSubMerchant===1">{{$t('programVersion.NonSubMerchants')}}</span>
+                            <span v-if="dataList.isSubMerchant===2">{{$t('programVersion.WeipuBaoziMerchants')}}</span>
+                            <span v-if="dataList.isSubMerchant===3">{{$t('programVersion.UnicomPaymentSubmerchants')}}</span>
                           </td>
                         </tr>
                         <tr>
                           <td>
-                            支付配置:
+                            {{$t('programVersion.PaymentConfiguration')}}:
                           </td>
                           <td>
-                            <span v-if="dataList.isSubMerchant===0 || dataList.isSubMerchant===1">无额外配置</span>
+                            <span v-if="dataList.isSubMerchant===0 || dataList.isSubMerchant===1">{{$t('programVersion.NoConfiguration')}}</span>
                             <div v-if="dataList.isSubMerchant===2">
-                              <div>通联支付子商户APPID：{{this.dataList.unionPayAppId}}</div>
-                              <div>通联支付子商户商户号：{{this.dataList.unionPayCusId}}</div>
-                              <div>通联支付子商户密钥：{{this.dataList.unionPayAppKey}}</div>
+                              <div>{{$t('programVersion.UnicomPaymentSubmerchant')}}{{this.dataList.unionPayAppId}}</div>
+                              <div>{{$t('programVersion.UnicomPaymentNumber')}}{{this.dataList.unionPayCusId}}</div>
+                              <div>{{$t('programVersion.UnicomSubmerchantKey')}}{{this.dataList.unionPayAppKey}}</div>
                             </div>
                             <div v-if="dataList.isSubMerchant===3">
-                              <div>MCC码：{{this.dataList.merchantCategoryCode}}</div>
-                              <div>标价币种：{{this.dataList.feeType}}</div>
+                              <div>{{$t('programVersion.MCCCode')}}{{this.dataList.merchantCategoryCode}}</div>
+                              <div>{{$t('programVersion.PricedCurrencies')}}{{this.dataList.feeType}}</div>
                             </div>
                           </td>
                         </tr>
@@ -281,7 +281,7 @@
                           type="primary"
                           size="small"
                           @click="handleSetPay(dataList)"
-                        >设置支付方式</el-button>
+                        >{{$t('programVersion.SettingPaymentMethod')}}</el-button>
                       </div>
                     </td>
                   </tr>
@@ -300,36 +300,36 @@
           <div class="details-item">
             <div class="item-header">
               <span class="title">
-                上传审核发布信息
+                {{$t('programVersion.UploadReleaseInformation')}}
               </span>
               <router-link
                 to="#"
                 class="td-inner-link"
-              >查看版本操作日志</router-link>
+              >{{$t('programVersion.ViewVersionOperationsLog')}}</router-link>
               <el-button
                 size="small"
                 type="primary"
                 @click="handleSureSetPay(7)"
               >
-                一键提交审核
+                {{$t('programVersion.clickSubmissionAudit')}}
               </el-button>
             </div>
             <div class="item-content">
               <table class="item-table">
                 <tbody>
                   <tr>
-                    <td>设置服务器域名</td>
+                    <td>{{$t('programVersion.SettingServerDomainName')}}</td>
                     <td>
                       {{this.dataList.isModifyDomain}}
                       <el-button
                         size="small"
                         type="primary"
                         @click="handleSureSetPay(3)"
-                      >修改域名</el-button>
+                      >{{$t('programVersion.ModifyDomaiName')}}</el-button>
                     </td>
                   </tr>
                   <tr>
-                    <td>绑定代码模板ID</td>
+                    <td>{{$t('programVersion.BindingCodeTemplateID')}}</td>
                     <td>
                       {{this.dataList.bindTemplateId}}
                       <el-button
@@ -337,27 +337,27 @@
                         type="primary"
                         @click="handleSureSetPay(10)"
                       >
-                        上传代码 （模板ID: {{this.tem_id}}）
+                        {{$t('programVersion.UploadCode')}} （{{$t('programVersion.TemplateID')}}: {{this.tem_id}}）
                       </el-button>
                     </td>
                   </tr>
                   <tr>
                     <td>
-                      上传代码状态
+                      {{$t('programVersion.UploadCodeStatus')}}
                     </td>
                     <td>
-                      <span v-if="dataList.uploadState===0">未上传</span>
-                      <span v-if="dataList.uploadState===1">已上传</span>
+                      <span v-if="dataList.uploadState===0">{{$t('programVersion.NotUploaded')}}</span>
+                      <span v-if="dataList.uploadState===1">{{$t('programVersion.Uploaded')}}</span>
                     </td>
                   </tr>
                   <tr>
-                    <td>最后上传代码时间</td>
+                    <td>{{$t('programVersion.LastUploadCodeTime')}}</td>
                     <td>
                       {{this.dataList.lastUploadTime}}
                     </td>
                   </tr>
                   <tr>
-                    <td>小程序体验者</td>
+                    <td>{{$t('programVersion.SmallProgramExperiencer')}}</td>
                     <td style="padding-top: 5px;">
                       <el-tag
                         v-for="(tag,index) in dataList.tester"
@@ -375,12 +375,12 @@
                         type="primary"
                         @click="handleClickty()"
                       >
-                        添加微信体验者
+                        {{$t('programVersion.AddingWechatExperiencer')}}
                       </el-button>
                     </td>
                   </tr>
                   <tr>
-                    <td>体验二维码</td>
+                    <td>{{$t('programVersion.ExperienceCode')}}</td>
                     <td>
                       <img
                         style="wdith:150px;height:150px"
@@ -400,12 +400,12 @@
                         type="primary"
                         @click="handleSureSetPay(4)"
                       >
-                        获取二维码
+                        {{$t('programVersion.AcquisitionCodes')}}
                       </el-button>
                     </td>
                   </tr>
                   <tr>
-                    <td>可选类目</td>
+                    <td>{{$t('programVersion.OptionalCategory')}}</td>
                     <td>
                       {{this.dataList.category}}
                       <el-button
@@ -413,12 +413,12 @@
                         type="primary"
                         @click="handleSureSetPay(5)"
                       >
-                        获取可选类目
+                        {{$t('programVersion.GetOptionalCategories')}}
                       </el-button>
                     </td>
                   </tr>
                   <tr>
-                    <td>页面配置</td>
+                    <td>{{$t('programVersion.PageConfiguration')}}</td>
                     <td>
                       {{this.dataList.pageCfg}}
                       <el-button
@@ -426,12 +426,12 @@
                         type="primary"
                         @click="handleSureSetPay(6)"
                       >
-                        获取页面配置
+                        {{$t('programVersion.GetPageConfiguration')}}
                       </el-button>
                     </td>
                   </tr>
                   <tr>
-                    <td>提交审核ID</td>
+                    <td>{{$t('programVersion.SubmitAuditID')}}</td>
                     <td>
                       {{this.dataList.auditId}}
                       <el-button
@@ -439,13 +439,13 @@
                         type="primary"
                         @click="handleSureSetPay(7)"
                       >
-                        提交审核
+                        {{$t('programVersion.SubmiAudit')}}
                       </el-button>
                     </td>
                   </tr>
                   <tr>
                     <td>
-                      提交审核状态
+                      {{$t('programVersion.SubmitAuditstatus')}}
                     </td>
                     <td>
                       {{this.dataList.auditState}}
@@ -454,30 +454,30 @@
                         type="primary"
                         @click="handleSureSetPay(11)"
                       >
-                        刷新审核状态
+                        {{$t('programVersion.RefreshAuditStatus')}}
                       </el-button>
                     </td>
                   </tr>
                   <tr>
-                    <td>提交审核时间</td>
+                    <td>{{$t('programVersion.AuditSubmisSiontime')}}</td>
                     <td>
                       {{this.dataList.submitAuditTime}}
                     </td>
                   </tr>
                   <tr>
-                    <td>审批成功时间</td>
+                    <td>{{$t('programVersion.ApprovalSuccessTime')}}</td>
                     <td>
                       {{this.dataList.auditOkTime}}
                     </td>
                   </tr>
                   <tr>
-                    <td>审批失败原因</td>
+                    <td>{{$t('programVersion.ReasonsFailureApproval')}}</td>
                     <td v-html="dataList.auditFailReason">
 
                     </td>
                   </tr>
                   <tr>
-                    <td>发布代码状态</td>
+                    <td>{{$t('programVersion.PublishCodeStatus')}}</td>
                     <td>
                       <span>{{this.dataList.auditOkTime}}</span>
                       <el-button
@@ -485,18 +485,18 @@
                         type="primary"
                         @click="handleSureSetPay(8)"
                       >
-                        发布代码
+                        {{$t('programVersion.PublishCode')}}
                       </el-button>
                     </td>
                   </tr>
                   <tr>
-                    <td>发布时间</td>
+                    <td>{{$t('programVersion.ReleaseTime')}}</td>
                     <td>
                       {{dataList.publishTime}}
                     </td>
                   </tr>
                   <tr>
-                    <td>最后取消授权时间</td>
+                    <td>{{$t('programVersion.FauthorizationTime')}}</td>
                     <td>
                       {{dataList.lastCancelAuthTime}}
                     </td>
@@ -513,15 +513,18 @@
     <!--设置支付方式弹窗-->
     <div class="payDialog">
       <el-dialog
-        title="设置支付方式"
+        :title="$t('programVersion.SettingPaymentMethod')"
         :visible.sync="dialogVisible"
         width="20%"
       >
-        <div class="payDialogDiv first">
-          <span>支付方式设置</span>
+        <div
+          class="payDialogDiv first"
+          :class="payDialogDivEn"
+        >
+          <span>{{$t('programVersion.PaymentSettings')}}</span>
           <el-select
             v-model="value"
-            placeholder="请选择"
+            :placeholder="$t('programVersion.placeChoise')"
             size="small"
             @change="handleSelect()"
           >
@@ -535,46 +538,61 @@
           </el-select>
         </div>
         <div v-if="value === '2'">
-          <div class="payDialogDiv">
-            <span>商户APPID： </span>
+          <div
+            class="payDialogDiv"
+            :class="payDialogDivEn"
+          >
+            <span>{{$t('programVersion.MerchantAPPID')}} </span>
             <el-input
               v-model="appidinput"
               size="small"
-              placeholder="请输入内容"
+              :placeholder="$t('programVersion.PleaseContent')"
             ></el-input>
           </div>
-          <div class="payDialogDiv">
-            <span>商户商户号： </span>
+          <div
+            class="payDialogDiv sp"
+            :class="payDialogDivEn"
+          >
+            <span>{{$t('programVersion.BusinessName')}}： </span>
             <el-input
               v-model="shnuminput"
               size="small"
-              placeholder="请输入内容"
+              :placeholder="$t('programVersion.PleaseContent')"
             ></el-input>
           </div>
-          <div class="payDialogDiv sp">
-            <span>商户密钥： </span>
+          <div
+            class="payDialogDiv sp"
+            :class="payDialogDivEnLast"
+          >
+            <span>{{$t('programVersion.BusinessKey')}}： </span>
             <el-input
               v-model="myinput"
               size="small"
-              placeholder="请输入内容"
+              :placeholder="$t('programVersion.PleaseContent')"
             ></el-input>
           </div>
         </div>
         <div v-if="value === '3'">
-          <div class="payDialogDiv mcc">
-            <span>MCC码： </span>
+          <div
+            class="payDialogDiv mcc"
+            :class="payDialogDivEnhiddenTwo"
+          >
+            <span>{{$t('programVersion.MCCCode')}} </span>
             <el-input
               v-model="mccinput"
               size="small"
-              placeholder="请输入内容"
+              :placeholder="$t('programVersion.PleaseContent')"
             ></el-input>
           </div>
-          <div class="payDialogDiv bz">
-            <span>标价币种： </span>
+          <div
+            class="payDialogDiv bz"
+            :class="payDialogDivEn"
+          >
+            <span>{{$t('programVersion.PricedCurrencies')}} </span>
             <el-input
               v-model="bzinput"
               size="small"
-              placeholder="请输入内容"
+              :placeholder="$t('programVersion.PleaseContent')"
             ></el-input>
           </div>
         </div>
@@ -582,35 +600,35 @@
           slot="footer"
           class="dialog-footer"
         >
-          <el-button @click="dialogVisible = false">取 消</el-button>
+          <el-button @click="dialogVisible = false">{{$t('programVersion.cancel')}}</el-button>
           <el-button
             type="primary"
             @click="handleSureSetPay(0)"
-          >确 定</el-button>
+          >{{$t('programVersion.Sure')}}</el-button>
         </span>
       </el-dialog>
     </div>
     <!--添加小程序体验者弹窗-->
     <div class="smallProgramDialog">
       <el-dialog
-        title="提示"
+        :title="$t('programVersion.Tips')"
         :visible.sync="smallDialogVisible"
         width="25%"
       >
-        <div style="margin-bottom:10px">请输入体验微信号</div>
+        <div style="margin-bottom:10px">{{$t('programVersion.PleaseEnterMicroSignal')}}</div>
         <el-input
           v-model="tyinput"
-          placeholder="请输入内容"
+          :placeholder="$t('programVersion.PleaseContent')"
         ></el-input>
         <span
           slot="footer"
           class="dialog-footer"
         >
-          <el-button @click="smallDialogVisible = false">取 消</el-button>
+          <el-button @click="smallDialogVisible = false">{{$t('programVersion.cancel')}}</el-button>
           <el-button
             type="primary"
             @click="handleClickSureTy()"
-          >确 定</el-button>
+          >{{$t('programVersion.Sure')}}</el-button>
         </span>
       </el-dialog>
     </div>
@@ -639,34 +657,25 @@ export default {
 
       },
       dialogVisible: false,
-      options: [{
-        value: '0',
-        label: '微信直连支付'
-      }, {
-        value: '1',
-        label: '微铺宝子商户支付'
-      },
-      {
-        value: '2',
-        label: '通联子商户支付'
-      },
-      {
-        value: '3',
-        label: '微信国际融合钱包支付'
-      }],
-      value: '微信直连支付',
+      options: this.$t('programVersion.options'),
+      value: this.$t('programVersion.WechatDirectPayment'),
       appidinput: '',
       shnuminput: '',
       myinput: '',
       mccinput: '',
       bzinput: '',
       tyinput: '',
-      opStatus: '操作成功',
+      opStatus: this.$t('programVersion.SuccessfulOperation'),
       tem_id: '',
-      templateId: ''
+      templateId: '',
+      payDialogDivEn: '',
+      payDialogDivEnLast: '',
+      payDialogDivEnhiddenTwo: ''
     }
   },
   mounted () {
+    // 初始化语言
+    this.langDefault()
     // 初始化数据
     this.defaultData()
   },
@@ -682,43 +691,43 @@ export default {
             let str = ''
             switch (item) {
               case 17:
-                str = '帐号管理权限（小程序）'
+                str = this.$t('programVersion.AccountManagementRights')
                 arr.push(str)
                 break
               case 18:
-                str = '开发管理与数据分析权限（小程序）'
+                str = this.$t('programVersion.DevelopmentAnalysisAuthority')
                 arr.push(str)
                 break
               case 19:
-                str = '客服消息管理权限（小程序）'
+                str = this.$t('programVersion.CustomerManagementAuthority')
                 arr.push(str)
                 break
               case 25:
-                str = '开放平台帐号管理权限（小程序）'
+                str = this.$t('programVersion.ManagementAuthority')
                 arr.push(str)
                 break
               case 30:
-                str = '小程序基本信息设置权限'
+                str = this.$t('programVersion.BasicSettingSmallPrograms')
                 arr.push(str)
                 break
               case 31:
-                str = '小程序认证权限'
+                str = this.$t('programVersion.WidgetAuthenticationAuthority')
                 arr.push(str)
                 break
             }
           })
           switch (res.content.auditState) {
             case 0:
-              res.content.auditState = '未提交'
+              res.content.auditState = this.$t('programVersion.notSubmitted')
               break
             case 1:
-              res.content.auditState = '审核中'
+              res.content.auditState = this.$t('programVersion.auditProgress')
               break
             case 2:
-              res.content.auditState = '审核成功'
+              res.content.auditState = this.$t('programVersion.AuditSuccess')
               break
             case 3:
-              res.content.auditState = '审核失败'
+              res.content.auditState = this.$t('programVersion.auditFailure')
               break
           }
 
@@ -820,10 +829,10 @@ export default {
           obj.appId = this.dataList.appId
           obj.wechatId = wechatid
       }
-
       publishSetRequest(obj).then(res => {
         console.log(res)
-        if (res.error === 0) {
+        if (res.error === 0 || res.error === -1) {
+          this.tyinput = ''
           this.opStatus = res.content
           this.defaultData()
         }
@@ -974,6 +983,7 @@ export default {
         width: 210px;
       }
     }
+
     .sp {
       padding-left: 50px;
     }
@@ -986,6 +996,19 @@ export default {
     }
     .bz {
       padding-left: 40px;
+    }
+    .payDialogDivEn {
+      padding: 0 0 0 16px !important;
+    }
+    .payDialogDivEnLast {
+      padding-left: 28px !important;
+      display: flex;
+      justify-content: flex-start;
+    }
+    .payDialogDivEnhiddenTwo {
+      padding-left: 55px !important;
+      display: flex;
+      justify-content: flex-start;
     }
   }
 }
