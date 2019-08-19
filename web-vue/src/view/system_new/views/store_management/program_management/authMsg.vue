@@ -383,7 +383,7 @@
                     <td>体验二维码</td>
                     <td>
                       <img
-                        style="wdith:52px;height:52px"
+                        style="wdith:150px;height:150px"
                         :src="dataList.testQrPath"
                       >
                       <!-- <el-avatar
@@ -449,6 +449,13 @@
                     </td>
                     <td>
                       {{this.dataList.auditState}}
+                      <el-button
+                        size="small"
+                        type="primary"
+                        @click="handleSureSetPay(11)"
+                      >
+                        刷新审核状态
+                      </el-button>
                     </td>
                   </tr>
                   <tr>
@@ -808,6 +815,10 @@ export default {
           obj.appId = this.dataList.appId
           obj.templateId = this.tem_id
           break
+        case 11:
+          obj.act = 'refresh-audit-state'
+          obj.appId = this.dataList.appId
+          obj.wechatId = wechatid
       }
 
       publishSetRequest(obj).then(res => {
