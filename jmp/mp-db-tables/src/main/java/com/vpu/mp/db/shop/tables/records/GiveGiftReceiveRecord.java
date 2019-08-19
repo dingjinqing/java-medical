@@ -30,171 +30,171 @@ import org.jooq.impl.UpdatableRecordImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class GiveGiftReceiveRecord extends UpdatableRecordImpl<GiveGiftReceiveRecord> implements Record12<Integer, String, Integer, Integer, Integer, String, Integer, Integer, Byte, String, Timestamp, Timestamp> {
 
-    private static final long serialVersionUID = 239017070;
+    private static final long serialVersionUID = -994805437;
 
     /**
-     * Setter for <code>mini_shop_6797286.b2c_give_gift_receive.id</code>.
+     * Setter for <code>mini_shop_4748160.b2c_give_gift_receive.id</code>.
      */
     public void setId(Integer value) {
         set(0, value);
     }
 
     /**
-     * Getter for <code>mini_shop_6797286.b2c_give_gift_receive.id</code>.
+     * Getter for <code>mini_shop_4748160.b2c_give_gift_receive.id</code>.
      */
     public Integer getId() {
         return (Integer) get(0);
     }
 
     /**
-     * Setter for <code>mini_shop_6797286.b2c_give_gift_receive.main_order_sn</code>. 主单号
+     * Setter for <code>mini_shop_4748160.b2c_give_gift_receive.main_order_sn</code>. 主单号
      */
     public void setMainOrderSn(String value) {
         set(1, value);
     }
 
     /**
-     * Getter for <code>mini_shop_6797286.b2c_give_gift_receive.main_order_sn</code>. 主单号
+     * Getter for <code>mini_shop_4748160.b2c_give_gift_receive.main_order_sn</code>. 主单号
      */
     public String getMainOrderSn() {
         return (String) get(1);
     }
 
     /**
-     * Setter for <code>mini_shop_6797286.b2c_give_gift_receive.gift_id</code>. 送礼ID
+     * Setter for <code>mini_shop_4748160.b2c_give_gift_receive.give_gift_id</code>. 送礼ID
      */
-    public void setGiftId(Integer value) {
+    public void setGiveGiftId(Integer value) {
         set(2, value);
     }
 
     /**
-     * Getter for <code>mini_shop_6797286.b2c_give_gift_receive.gift_id</code>. 送礼ID
+     * Getter for <code>mini_shop_4748160.b2c_give_gift_receive.give_gift_id</code>. 送礼ID
      */
-    public Integer getGiftId() {
+    public Integer getGiveGiftId() {
         return (Integer) get(2);
     }
 
     /**
-     * Setter for <code>mini_shop_6797286.b2c_give_gift_receive.gift_cart_id</code>. 送礼购物车ID
+     * Setter for <code>mini_shop_4748160.b2c_give_gift_receive.gift_cart_id</code>. 送礼购物车ID
      */
     public void setGiftCartId(Integer value) {
         set(3, value);
     }
 
     /**
-     * Getter for <code>mini_shop_6797286.b2c_give_gift_receive.gift_cart_id</code>. 送礼购物车ID
+     * Getter for <code>mini_shop_4748160.b2c_give_gift_receive.gift_cart_id</code>. 送礼购物车ID
      */
     public Integer getGiftCartId() {
         return (Integer) get(3);
     }
 
     /**
-     * Setter for <code>mini_shop_6797286.b2c_give_gift_receive.user_id</code>. 用户ID
+     * Setter for <code>mini_shop_4748160.b2c_give_gift_receive.user_id</code>. 用户ID
      */
     public void setUserId(Integer value) {
         set(4, value);
     }
 
     /**
-     * Getter for <code>mini_shop_6797286.b2c_give_gift_receive.user_id</code>. 用户ID
+     * Getter for <code>mini_shop_4748160.b2c_give_gift_receive.user_id</code>. 用户ID
      */
     public Integer getUserId() {
         return (Integer) get(4);
     }
 
     /**
-     * Setter for <code>mini_shop_6797286.b2c_give_gift_receive.order_sn</code>. 订单号
+     * Setter for <code>mini_shop_4748160.b2c_give_gift_receive.order_sn</code>. 订单号
      */
     public void setOrderSn(String value) {
         set(5, value);
     }
 
     /**
-     * Getter for <code>mini_shop_6797286.b2c_give_gift_receive.order_sn</code>. 订单号
+     * Getter for <code>mini_shop_4748160.b2c_give_gift_receive.order_sn</code>. 订单号
      */
     public String getOrderSn() {
         return (String) get(5);
     }
 
     /**
-     * Setter for <code>mini_shop_6797286.b2c_give_gift_receive.product_id</code>. 规格ID
+     * Setter for <code>mini_shop_4748160.b2c_give_gift_receive.product_id</code>. 规格ID
      */
     public void setProductId(Integer value) {
         set(6, value);
     }
 
     /**
-     * Getter for <code>mini_shop_6797286.b2c_give_gift_receive.product_id</code>. 规格ID
+     * Getter for <code>mini_shop_4748160.b2c_give_gift_receive.product_id</code>. 规格ID
      */
     public Integer getProductId() {
         return (Integer) get(6);
     }
 
     /**
-     * Setter for <code>mini_shop_6797286.b2c_give_gift_receive.address_id</code>. 用户地址ID
+     * Setter for <code>mini_shop_4748160.b2c_give_gift_receive.address_id</code>. 用户地址ID
      */
     public void setAddressId(Integer value) {
         set(7, value);
     }
 
     /**
-     * Getter for <code>mini_shop_6797286.b2c_give_gift_receive.address_id</code>. 用户地址ID
+     * Getter for <code>mini_shop_4748160.b2c_give_gift_receive.address_id</code>. 用户地址ID
      */
     public Integer getAddressId() {
         return (Integer) get(7);
     }
 
     /**
-     * Setter for <code>mini_shop_6797286.b2c_give_gift_receive.status</code>. 0：未提交地址 1：已送礼 2：待开奖 3：未抢到
+     * Setter for <code>mini_shop_4748160.b2c_give_gift_receive.status</code>. 0：未提交地址 1：已送礼 2：待开奖 3：未抢到
      */
     public void setStatus(Byte value) {
         set(8, value);
     }
 
     /**
-     * Getter for <code>mini_shop_6797286.b2c_give_gift_receive.status</code>. 0：未提交地址 1：已送礼 2：待开奖 3：未抢到
+     * Getter for <code>mini_shop_4748160.b2c_give_gift_receive.status</code>. 0：未提交地址 1：已送礼 2：待开奖 3：未抢到
      */
     public Byte getStatus() {
         return (Byte) get(8);
     }
 
     /**
-     * Setter for <code>mini_shop_6797286.b2c_give_gift_receive.status_name</code>. 状态名
+     * Setter for <code>mini_shop_4748160.b2c_give_gift_receive.status_name</code>. 状态名
      */
     public void setStatusName(String value) {
         set(9, value);
     }
 
     /**
-     * Getter for <code>mini_shop_6797286.b2c_give_gift_receive.status_name</code>. 状态名
+     * Getter for <code>mini_shop_4748160.b2c_give_gift_receive.status_name</code>. 状态名
      */
     public String getStatusName() {
         return (String) get(9);
     }
 
     /**
-     * Setter for <code>mini_shop_6797286.b2c_give_gift_receive.create_time</code>. 创建时间
+     * Setter for <code>mini_shop_4748160.b2c_give_gift_receive.create_time</code>. 创建时间
      */
     public void setCreateTime(Timestamp value) {
         set(10, value);
     }
 
     /**
-     * Getter for <code>mini_shop_6797286.b2c_give_gift_receive.create_time</code>. 创建时间
+     * Getter for <code>mini_shop_4748160.b2c_give_gift_receive.create_time</code>. 创建时间
      */
     public Timestamp getCreateTime() {
         return (Timestamp) get(10);
     }
 
     /**
-     * Setter for <code>mini_shop_6797286.b2c_give_gift_receive.update_time</code>. 最后修改时间
+     * Setter for <code>mini_shop_4748160.b2c_give_gift_receive.update_time</code>. 最后修改时间
      */
     public void setUpdateTime(Timestamp value) {
         set(11, value);
     }
 
     /**
-     * Getter for <code>mini_shop_6797286.b2c_give_gift_receive.update_time</code>. 最后修改时间
+     * Getter for <code>mini_shop_4748160.b2c_give_gift_receive.update_time</code>. 最后修改时间
      */
     public Timestamp getUpdateTime() {
         return (Timestamp) get(11);
@@ -253,7 +253,7 @@ public class GiveGiftReceiveRecord extends UpdatableRecordImpl<GiveGiftReceiveRe
      */
     @Override
     public Field<Integer> field3() {
-        return GiveGiftReceive.GIVE_GIFT_RECEIVE.GIFT_ID;
+        return GiveGiftReceive.GIVE_GIFT_RECEIVE.GIVE_GIFT_ID;
     }
 
     /**
@@ -349,7 +349,7 @@ public class GiveGiftReceiveRecord extends UpdatableRecordImpl<GiveGiftReceiveRe
      */
     @Override
     public Integer component3() {
-        return getGiftId();
+        return getGiveGiftId();
     }
 
     /**
@@ -445,7 +445,7 @@ public class GiveGiftReceiveRecord extends UpdatableRecordImpl<GiveGiftReceiveRe
      */
     @Override
     public Integer value3() {
-        return getGiftId();
+        return getGiveGiftId();
     }
 
     /**
@@ -543,7 +543,7 @@ public class GiveGiftReceiveRecord extends UpdatableRecordImpl<GiveGiftReceiveRe
      */
     @Override
     public GiveGiftReceiveRecord value3(Integer value) {
-        setGiftId(value);
+        setGiveGiftId(value);
         return this;
     }
 
@@ -662,12 +662,12 @@ public class GiveGiftReceiveRecord extends UpdatableRecordImpl<GiveGiftReceiveRe
     /**
      * Create a detached, initialised GiveGiftReceiveRecord
      */
-    public GiveGiftReceiveRecord(Integer id, String mainOrderSn, Integer giftId, Integer giftCartId, Integer userId, String orderSn, Integer productId, Integer addressId, Byte status, String statusName, Timestamp createTime, Timestamp updateTime) {
+    public GiveGiftReceiveRecord(Integer id, String mainOrderSn, Integer giveGiftId, Integer giftCartId, Integer userId, String orderSn, Integer productId, Integer addressId, Byte status, String statusName, Timestamp createTime, Timestamp updateTime) {
         super(GiveGiftReceive.GIVE_GIFT_RECEIVE);
 
         set(0, id);
         set(1, mainOrderSn);
-        set(2, giftId);
+        set(2, giveGiftId);
         set(3, giftCartId);
         set(4, userId);
         set(5, orderSn);

@@ -35,6 +35,7 @@ import com.vpu.mp.service.shop.market.form.FormStatisticsService;
 import com.vpu.mp.service.shop.market.freeshipping.FreeShippingService;
 import com.vpu.mp.service.shop.market.friendpromote.FriendPromoteService;
 import com.vpu.mp.service.shop.market.fullcut.MrkingStrategyService;
+import com.vpu.mp.service.shop.market.givegift.GiveGiftService;
 import com.vpu.mp.service.shop.market.goupbuy.GroupBuyService;
 import com.vpu.mp.service.shop.market.groupdraw.GroupDrawGroupService;
 import com.vpu.mp.service.shop.market.groupdraw.GroupDrawInviteService;
@@ -284,10 +285,14 @@ public class ShopApplication {
 	public PayRewardService payReward;
 
 	/**
-	 * 定金膨胀
+	 * 我要送礼
 	 */
-	@Autowired
-	public PreSaleService preSale;
+	@Autowired public GiveGiftService giveGift;
+    /**
+     * 定金膨胀
+     */
+    @Autowired public PreSaleService preSale;
+
 	@Autowired
 	public PreSaleOrderService preSaleOrder;
 
@@ -297,14 +302,16 @@ public class ShopApplication {
 	@Autowired
 	public PackSaleService packSale;
 
+    /**
+     * 限时降价
+     */
+    @Autowired public ReducePriceService reducePrice;
+
 	/**
-	 * 限时降价
+	 * 小程序跳转
 	 */
 	@Autowired
-	public ReducePriceService reducePrice;
-
-	@Autowired
-	protected AppletsJumpService appletsJumpService;
+  	protected AppletsJumpService appletsJumpService;
 
 	/** 加价购 */
 	@Autowired

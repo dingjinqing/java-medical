@@ -174,7 +174,7 @@ create table `b2c_goods` (
   `goods_id`            int(8)                  not null auto_increment,
   `shop_id`             int(11)                	not null default '0' 	comment '店铺id',
   `cat_id`              int(5)                 	not null default '0',
-  `goods_sn`            varchar(60)            	not null default '',
+  `goods_sn`            varchar(60)            	not null default ''  comment '货号',
   `goods_name`          varchar(120)          	not null default '',
   `brand_id`            int(11)                	not null default 0 		comment '品牌id',
   `goods_ad`            varchar(1024)          	not null default '' 		comment '广告词',
@@ -4109,6 +4109,47 @@ CREATE TABLE `b2c_give_gift_receive` (
   KEY `order_sn` (`order_sn`),
   KEY `main_order_sn` (`main_order_sn`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+--  满包邮详情
+-- DROP TABLE IF EXISTS `b2c_free_shipping`;
+CREATE TABLE `b2c_free_shipping` (
+`id` INT ( 11 ) NOT NULL AUTO_INCREMENT,
+`name` VARCHAR ( 100 ) COLLATE utf8mb4_unicode_ci NOT NULL COMMENT '活动名称',
+`expire_type` TINYINT ( 1 ) DEFAULT '0' COMMENT '0:固定日期 1：永久有效',
+`start_time` datetime DEFAULT NULL COMMENT '开始时间',
+`end_time` datetime DEFAULT NULL COMMENT '结束时间',
+`type` INT ( 11 ) NOT NULL COMMENT '条件 0全部 1部分',
+`recommend_goods_id` text COLLATE utf8mb4_unicode_ci COMMENT '指定商品可用',
+`recommend_cat_id` text COLLATE utf8mb4_unicode_ci COMMENT '指定分类可用',
+`recommend_sort_id` text COLLATE utf8mb4_unicode_ci COMMENT '指定商家分类可用',
+`status` TINYINT ( 1 ) DEFAULT '0' COMMENT '1停用',
+`create_time` TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+`update_time` TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '最后修改时间',
+`del_flag` TINYINT ( 1 ) DEFAULT '0' COMMENT '1删除',
+`del_time` datetime DEFAULT NULL,
+`level` TINYINT ( 2 ) DEFAULT '0' COMMENT '优先级 默认0',
+PRIMARY KEY ( `id` )
+) ENGINE = INNODB AUTO_INCREMENT = 22 DEFAULT CHARSET = utf8mb4 COLLATE = utf8mb4_unicode_ci;
+
+
+
+-- 满包邮规则
+-- DROP TABLE IF EXISTS `b2c_free_shipping_rule`;
+CREATE TABLE `b2c_free_shipping_rule` (
+`id` INT ( 11 ) NOT NULL AUTO_INCREMENT,
+`shipping_id` INT ( 11 ) NOT NULL COMMENT '包邮活动ID',
+`con_type` INT ( 11 ) NOT NULL COMMENT '包邮条件 0满金额 1满件数',
+`money` DECIMAL ( 10, 2 ) NOT NULL COMMENT '满金额',
+`num` INT ( 11 ) NOT NULL COMMENT '满件数',
+`area` text COLLATE utf8mb4_unicode_ci COMMENT '包邮地区',
+`area_list` text COLLATE utf8mb4_unicode_ci COMMENT '包邮地区',
+`area_text` text COLLATE utf8mb4_unicode_ci COMMENT '包邮地区',
+`create_time` TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+`update_time` TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '最后修改时间',
+PRIMARY KEY ( `id` ),
+KEY `shipping_id` ( `shipping_id` )
+) ENGINE = INNODB AUTO_INCREMENT = 39 DEFAULT CHARSET = utf8mb4 COLLATE = utf8mb4_unicode_ci;
+
 
 -- 首单特惠定义表
 -- DROP TABLE IF EXISTS `b2c_first_special`;

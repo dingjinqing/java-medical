@@ -509,6 +509,8 @@ CREATE TABLE `b2c_free_shipping` (
 PRIMARY KEY ( `id` )
 ) ENGINE = INNODB AUTO_INCREMENT = 22 DEFAULT CHARSET = utf8mb4 COLLATE = utf8mb4_unicode_ci;
 
+
+
 -- 满包邮规则
 -- DROP TABLE IF EXISTS `b2c_free_shipping_rule`;
 CREATE TABLE `b2c_free_shipping_rule` (
@@ -518,6 +520,8 @@ CREATE TABLE `b2c_free_shipping_rule` (
 `money` DECIMAL ( 10, 2 ) NOT NULL COMMENT '满金额',
 `num` INT ( 11 ) NOT NULL COMMENT '满件数',
 `area` text COLLATE utf8mb4_unicode_ci COMMENT '包邮地区',
+`area_list` text COLLATE utf8mb4_unicode_ci COMMENT '包邮地区',
+`area_text` text COLLATE utf8mb4_unicode_ci COMMENT '包邮地区',
 `create_time` TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
 `update_time` TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '最后修改时间',
 PRIMARY KEY ( `id` ),

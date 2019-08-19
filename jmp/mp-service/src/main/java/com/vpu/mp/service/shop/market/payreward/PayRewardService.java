@@ -59,6 +59,7 @@ public class PayRewardService  extends ShopBaseService {
                 CouponActivityRecord couponActivity =db().newRecord(COUPON_ACTIVITY,param.getCoupon());
                 couponActivity.setId(null);
                 couponActivity.insert();
+
                 payReward.setCouponIds(couponActivity.getId().toString());
             }else {
                 return false;

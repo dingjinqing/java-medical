@@ -1,13 +1,13 @@
 package com.vpu.mp.service.shop.order.info;
 
+import static com.vpu.mp.db.shop.Tables.GIVE_GIFT_ACTIVITY;
+import static com.vpu.mp.db.shop.Tables.GIVE_GIFT_CART;
 import static com.vpu.mp.db.shop.tables.GroupBuyList.GROUP_BUY_LIST;
 import static com.vpu.mp.db.shop.tables.OrderGoods.ORDER_GOODS;
 import static com.vpu.mp.db.shop.tables.OrderInfo.ORDER_INFO;
 import static com.vpu.mp.db.shop.tables.User.USER;
 import static com.vpu.mp.db.shop.tables.UserTag.USER_TAG;
-import static org.jooq.impl.DSL.count;
-import static org.jooq.impl.DSL.date;
-import static org.jooq.impl.DSL.sql;
+import static org.jooq.impl.DSL.*;
 
 import java.math.BigDecimal;
 import java.sql.Date;
@@ -20,10 +20,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 
-import org.jooq.Condition;
-import org.jooq.Record2;
-import org.jooq.SelectJoinStep;
-import org.jooq.SelectWhereStep;
+import com.vpu.mp.service.foundation.data.DelFlag;
+import com.vpu.mp.service.pojo.shop.market.givegift.record.GiveGiftRecordListParam;
+import org.jooq.*;
 import org.jooq.impl.DSL;
 import org.jooq.tools.StringUtils;
 import org.springframework.stereotype.Service;
@@ -497,4 +496,71 @@ public class OrderInfoService extends ShopBaseService {
 				.fetchOneInto(Integer.class);
 			return goodsNum;
 	}
+
+	/**
+	 *  我要送礼
+	 * @param activityId 活动id
+	 * @return  送礼的礼物车数量
+	 */
+	public Integer getSendGiftOrderCt(Integer activityId){
+		return db().selectCount()
+				.from(TABLE)
+				.leftJoin(GIVE_GIFT_CART).on(TABLE.ACTIVITY_ID.eq(GIVE_GIFT_CART.ID))
+				.where(GIVE_GIFT_CART.GIVE_GIFT_ID.eq(activityId))
+				.and(TABLE.DEL_FLAG.eq(DelFlag.NORMAL_VALUE))
+				.and(TABLE.ORDER_STATUS.gt((byte) 2))
+				.and(DslPlus.findInSet(OrderConstant.GOODS_TYPE_GIVE_GIFT,TABLE.GOODS_TYPE))
+				.and(TABLE.ORDER_SN.eq(TABLE.MAIN_ORDER_SN))
+				.fetchOne().component1();
+	}
+
+
+	public SelectConditionStep<? extends Record> giveGiftRecordList(GiveGiftRecordListParam param) {
+		SelectConditionStep<? extends Record> select = db()
+				.select(TABLE.MAIN_ORDER_SN,
+						TABLE.ORDER_AMOUNT,
+						TABLE.CREATE_TIME,
+						TABLE.PAY_TIME,
+						TABLE.ORDER_STATUS,
+						TABLE.ORDER_STATUS_NAME,
+						GIVE_GIFT_CART.GIFT_TYPE,
+						GIVE_GIFT_ACTIVITY.RECOMMEND_GOODS_ID,
+						USER.USER_ID,
+						USER.USERNAME,
+						USER.MOBILE
+				)
+				.from(TABLE)
+				.leftJoin(ORDER_GOODS).on(ORDER_GOODS.ORDER_SN.eq(TABLE.ORDER_SN))
+				.leftJoin(GIVE_GIFT_CART).on(GIVE_GIFT_CART.ID.eq(TABLE.ACTIVITY_ID))
+				.leftJoin(GIVE_GIFT_ACTIVITY).on(GIVE_GIFT_ACTIVITY.ID.eq(GIVE_GIFT_CART.GIVE_GIFT_ID))
+				.leftJoin(USER).on(USER.USER_ID.eq(GIVE_GIFT_CART.USER_ID))
+				.where(GIVE_GIFT_CART.GIVE_GIFT_ID.eq(param.getActivityId()))
+				.and(TABLE.DEL_FLAG.eq(DelFlag.NORMAL_VALUE))
+				.and(TABLE.ORDER_STATUS.gt((byte) 2))
+				.and(DslPlus.findInSet(OrderConstant.GOODS_TYPE_GIVE_GIFT, TABLE.GOODS_TYPE))
+				.and(TABLE.ORDER_SN.eq(TABLE.MAIN_ORDER_SN));
+
+		if (param.getGoodsName()!=null){
+			select.and(USER.USER_ID.like(prefixLikeValue(param.getGoodsName())));
+		}
+		if (param.getMobile()!=null){
+			select.and(USER.MOBILE.like(prefixLikeValue(param.getMobile())));
+		}
+		if (param.getGoodsName()!=null){
+			select.and(ORDER_GOODS.GOODS_NAME.like(likeValue(param.getGoodsName())));
+		}
+		if (param.getGoodsSn()!=null){
+			select.and(ORDER_GOODS.ORDER_SN.like(likeValue(param.getGoodsSn())));
+		}
+		if (param.getOrderStatus()!=null&&param.getOrderStatus()>-1){
+			if (param.getOrderStatus()==13){
+				select.and(TABLE.ORDER_STATUS.eq(param.getOrderStatus()));
+			}else {
+				select.and(TABLE.ORDER_STATUS.lt(OrderConstant.ORDER_GIVE_GIFT_FINISHED));
+			}
+		}
+		return select;
+	}
+
+
 }

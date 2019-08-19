@@ -38,6 +38,21 @@ public class MiniShop_471752 extends SchemaImpl {
      */
     public static final MiniShop_471752 MINI_SHOP_471752 = new MiniShop_471752();
 
+    /**
+     * The table <code>mini_shop_4748160.b2c_give_gift_activity</code>.
+     */
+    public final GiveGiftActivity GIVE_GIFT_ACTIVITY = com.vpu.mp.db.shop.tables.GiveGiftActivity.GIVE_GIFT_ACTIVITY;
+
+    /**
+     * The table <code>mini_shop_4748160.b2c_give_gift_cart</code>.
+     */
+    public final GiveGiftCart GIVE_GIFT_CART = com.vpu.mp.db.shop.tables.GiveGiftCart.GIVE_GIFT_CART;
+
+    /**
+     * The table <code>mini_shop_4748160.b2c_give_gift_receive</code>.
+     */
+    public final GiveGiftReceive GIVE_GIFT_RECEIVE = com.vpu.mp.db.shop.tables.GiveGiftReceive.GIVE_GIFT_RECEIVE;
+
 
     /**
      * The table <code>mini_shop_4748160.b2c_pay_reward</code>.

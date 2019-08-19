@@ -8,25 +8,14 @@ import com.vpu.mp.db.shop.Indexes;
 import com.vpu.mp.db.shop.Keys;
 import com.vpu.mp.db.shop.MiniShop_471752;
 import com.vpu.mp.db.shop.tables.records.GiveGiftReceiveRecord;
+import org.jooq.*;
+import org.jooq.impl.DSL;
+import org.jooq.impl.TableImpl;
 
+import javax.annotation.Generated;
 import java.sql.Timestamp;
 import java.util.Arrays;
 import java.util.List;
-
-import javax.annotation.Generated;
-
-import org.jooq.Field;
-import org.jooq.ForeignKey;
-import org.jooq.Identity;
-import org.jooq.Index;
-import org.jooq.Name;
-import org.jooq.Record;
-import org.jooq.Schema;
-import org.jooq.Table;
-import org.jooq.TableField;
-import org.jooq.UniqueKey;
-import org.jooq.impl.DSL;
-import org.jooq.impl.TableImpl;
 
 
 /**
@@ -42,10 +31,10 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class GiveGiftReceive extends TableImpl<GiveGiftReceiveRecord> {
 
-    private static final long serialVersionUID = 1785960927;
+    private static final long serialVersionUID = -2144021364;
 
     /**
-     * The reference instance of <code>mini_shop_6797286.b2c_give_gift_receive</code>
+     * The reference instance of <code>mini_shop_4748160.b2c_give_gift_receive</code>
      */
     public static final GiveGiftReceive GIVE_GIFT_RECEIVE = new GiveGiftReceive();
 
@@ -58,81 +47,81 @@ public class GiveGiftReceive extends TableImpl<GiveGiftReceiveRecord> {
     }
 
     /**
-     * The column <code>mini_shop_6797286.b2c_give_gift_receive.id</code>.
+     * The column <code>mini_shop_4748160.b2c_give_gift_receive.id</code>.
      */
     public final TableField<GiveGiftReceiveRecord, Integer> ID = createField("id", org.jooq.impl.SQLDataType.INTEGER.nullable(false).identity(true), this, "");
 
     /**
-     * The column <code>mini_shop_6797286.b2c_give_gift_receive.main_order_sn</code>. 主单号
+     * The column <code>mini_shop_4748160.b2c_give_gift_receive.main_order_sn</code>. 主单号
      */
     public final TableField<GiveGiftReceiveRecord, String> MAIN_ORDER_SN = createField("main_order_sn", org.jooq.impl.SQLDataType.VARCHAR(50).nullable(false), this, "主单号");
 
     /**
-     * The column <code>mini_shop_6797286.b2c_give_gift_receive.gift_id</code>. 送礼ID
+     * The column <code>mini_shop_4748160.b2c_give_gift_receive.give_gift_id</code>. 送礼ID
      */
-    public final TableField<GiveGiftReceiveRecord, Integer> GIFT_ID = createField("gift_id", org.jooq.impl.SQLDataType.INTEGER.nullable(false), this, "送礼ID");
+    public final TableField<GiveGiftReceiveRecord, Integer> GIVE_GIFT_ID = createField("give_gift_id", org.jooq.impl.SQLDataType.INTEGER.nullable(false), this, "送礼ID");
 
     /**
-     * The column <code>mini_shop_6797286.b2c_give_gift_receive.gift_cart_id</code>. 送礼购物车ID
+     * The column <code>mini_shop_4748160.b2c_give_gift_receive.gift_cart_id</code>. 送礼购物车ID
      */
     public final TableField<GiveGiftReceiveRecord, Integer> GIFT_CART_ID = createField("gift_cart_id", org.jooq.impl.SQLDataType.INTEGER.nullable(false), this, "送礼购物车ID");
 
     /**
-     * The column <code>mini_shop_6797286.b2c_give_gift_receive.user_id</code>. 用户ID
+     * The column <code>mini_shop_4748160.b2c_give_gift_receive.user_id</code>. 用户ID
      */
     public final TableField<GiveGiftReceiveRecord, Integer> USER_ID = createField("user_id", org.jooq.impl.SQLDataType.INTEGER.nullable(false), this, "用户ID");
 
     /**
-     * The column <code>mini_shop_6797286.b2c_give_gift_receive.order_sn</code>. 订单号
+     * The column <code>mini_shop_4748160.b2c_give_gift_receive.order_sn</code>. 订单号
      */
     public final TableField<GiveGiftReceiveRecord, String> ORDER_SN = createField("order_sn", org.jooq.impl.SQLDataType.VARCHAR(50), this, "订单号");
 
     /**
-     * The column <code>mini_shop_6797286.b2c_give_gift_receive.product_id</code>. 规格ID
+     * The column <code>mini_shop_4748160.b2c_give_gift_receive.product_id</code>. 规格ID
      */
     public final TableField<GiveGiftReceiveRecord, Integer> PRODUCT_ID = createField("product_id", org.jooq.impl.SQLDataType.INTEGER.nullable(false), this, "规格ID");
 
     /**
-     * The column <code>mini_shop_6797286.b2c_give_gift_receive.address_id</code>. 用户地址ID
+     * The column <code>mini_shop_4748160.b2c_give_gift_receive.address_id</code>. 用户地址ID
      */
     public final TableField<GiveGiftReceiveRecord, Integer> ADDRESS_ID = createField("address_id", org.jooq.impl.SQLDataType.INTEGER, this, "用户地址ID");
 
     /**
-     * The column <code>mini_shop_6797286.b2c_give_gift_receive.status</code>. 0：未提交地址 1：已送礼 2：待开奖 3：未抢到
+     * The column <code>mini_shop_4748160.b2c_give_gift_receive.status</code>. 0：未提交地址 1：已送礼 2：待开奖 3：未抢到
      */
-    public final TableField<GiveGiftReceiveRecord, Byte> STATUS = createField("status", org.jooq.impl.SQLDataType.TINYINT.defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.TINYINT)), this, "0：未提交地址 1：已送礼 2：待开奖 3：未抢到");
+    public final TableField<GiveGiftReceiveRecord, Byte> STATUS = createField("status", org.jooq.impl.SQLDataType.TINYINT.defaultValue(DSL.inline("0", org.jooq.impl.SQLDataType.TINYINT)), this, "0：未提交地址 1：已送礼 2：待开奖 3：未抢到");
 
     /**
-     * The column <code>mini_shop_6797286.b2c_give_gift_receive.status_name</code>. 状态名
+     * The column <code>mini_shop_4748160.b2c_give_gift_receive.status_name</code>. 状态名
      */
     public final TableField<GiveGiftReceiveRecord, String> STATUS_NAME = createField("status_name", org.jooq.impl.SQLDataType.VARCHAR(50), this, "状态名");
 
     /**
-     * The column <code>mini_shop_6797286.b2c_give_gift_receive.create_time</code>. 创建时间
+     * The column <code>mini_shop_4748160.b2c_give_gift_receive.create_time</code>. 创建时间
      */
-    public final TableField<GiveGiftReceiveRecord, Timestamp> CREATE_TIME = createField("create_time", org.jooq.impl.SQLDataType.TIMESTAMP.nullable(false).defaultValue(org.jooq.impl.DSL.field("CURRENT_TIMESTAMP", org.jooq.impl.SQLDataType.TIMESTAMP)), this, "创建时间");
+    public final TableField<GiveGiftReceiveRecord, Timestamp> CREATE_TIME = createField("create_time", org.jooq.impl.SQLDataType.TIMESTAMP.nullable(false).defaultValue(DSL.field("CURRENT_TIMESTAMP", org.jooq.impl.SQLDataType.TIMESTAMP)), this, "创建时间");
 
     /**
-     * The column <code>mini_shop_6797286.b2c_give_gift_receive.update_time</code>. 最后修改时间
+     * The column <code>mini_shop_4748160.b2c_give_gift_receive.update_time</code>. 最后修改时间
      */
-    public final TableField<GiveGiftReceiveRecord, Timestamp> UPDATE_TIME = createField("update_time", org.jooq.impl.SQLDataType.TIMESTAMP.nullable(false).defaultValue(org.jooq.impl.DSL.field("CURRENT_TIMESTAMP", org.jooq.impl.SQLDataType.TIMESTAMP)), this, "最后修改时间");
+    public final TableField<GiveGiftReceiveRecord, Timestamp> UPDATE_TIME = createField("update_time", org.jooq.impl.SQLDataType.TIMESTAMP.nullable(false).defaultValue(DSL.field("CURRENT_TIMESTAMP", org.jooq.impl.SQLDataType.TIMESTAMP)), this, "最后修改时间");
 
     /**
-     * Create a <code>mini_shop_6797286.b2c_give_gift_receive</code> table reference
+     * Create a <code>mini_shop_4748160.b2c_give_gift_receive</code> table reference
      */
     public GiveGiftReceive() {
         this(DSL.name("b2c_give_gift_receive"), null);
     }
 
     /**
-     * Create an aliased <code>mini_shop_6797286.b2c_give_gift_receive</code> table reference
+     * Create an aliased <code>mini_shop_4748160.b2c_give_gift_receive</code> table reference
      */
     public GiveGiftReceive(String alias) {
         this(DSL.name(alias), GIVE_GIFT_RECEIVE);
     }
 
     /**
-     * Create an aliased <code>mini_shop_6797286.b2c_give_gift_receive</code> table reference
+     * Create an aliased <code>mini_shop_4748160.b2c_give_gift_receive</code> table reference
      */
     public GiveGiftReceive(Name alias) {
         this(alias, GIVE_GIFT_RECEIVE);
@@ -163,7 +152,7 @@ public class GiveGiftReceive extends TableImpl<GiveGiftReceiveRecord> {
      */
     @Override
     public List<Index> getIndexes() {
-        return Arrays.<Index>asList(Indexes.GIVE_GIFT_RECEIVE_GIFT_CART_ID, Indexes.GIVE_GIFT_RECEIVE_GIFT_ID, Indexes.GIVE_GIFT_RECEIVE_MAIN_ORDER_SN, Indexes.GIVE_GIFT_RECEIVE_ORDER_SN, Indexes.GIVE_GIFT_RECEIVE_PRIMARY, Indexes.GIVE_GIFT_RECEIVE_USER_ID);
+        return Arrays.<Index>asList(Indexes.GIVE_GIFT_RECEIVE_GIFT_CART_ID, Indexes.GIVE_GIFT_RECEIVE_GIVE_GIFT_ID, Indexes.GIVE_GIFT_RECEIVE_MAIN_ORDER_SN, Indexes.GIVE_GIFT_RECEIVE_ORDER_SN, Indexes.GIVE_GIFT_RECEIVE_PRIMARY, Indexes.GIVE_GIFT_RECEIVE_USER_ID);
     }
 
     /**

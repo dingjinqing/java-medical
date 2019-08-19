@@ -22,6 +22,23 @@ import com.vpu.mp.db.shop.tables.records.ShareAwardRecord;
 )
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class Tables {
+
+
+    /**
+     * The table <code>mini_shop_4748160.b2c_give_gift_activity</code>.
+     */
+    public static final GiveGiftActivity GIVE_GIFT_ACTIVITY = com.vpu.mp.db.shop.tables.GiveGiftActivity.GIVE_GIFT_ACTIVITY;
+
+    /**
+     * The table <code>mini_shop_4748160.b2c_give_gift_cart</code>.
+     */
+    public static final GiveGiftCart GIVE_GIFT_CART = com.vpu.mp.db.shop.tables.GiveGiftCart.GIVE_GIFT_CART;
+
+    /**
+     * The table <code>mini_shop_4748160.b2c_give_gift_receive</code>.
+     */
+    public static final GiveGiftReceive GIVE_GIFT_RECEIVE = com.vpu.mp.db.shop.tables.GiveGiftReceive.GIVE_GIFT_RECEIVE;
+
     /**
      * The table <code>mini_shop_4748160.b2c_pay_reward</code>.
      */
