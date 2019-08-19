@@ -1,5 +1,7 @@
 package com.vpu.mp.service.saas.shop;
 
+import com.vpu.mp.db.main.tables.MpOperateLog;
+import com.vpu.mp.db.main.tables.records.MpAuthShopRecord;
 import com.vpu.mp.service.foundation.service.MainBaseService;
 import com.vpu.mp.service.foundation.util.PageResult;
 import com.vpu.mp.service.pojo.saas.shop.mp.MpOperateListParam;
@@ -119,6 +121,18 @@ public class MpOperateLogService extends MainBaseService {
 						MP_OPERATE_LOG.OPERATE_TYPE, MP_OPERATE_LOG.OPERATE_STATE,MP_OPERATE_LOG.MEMO)
 				.values(appId, templateId, operateType, operateState,memo).execute();
 	}
+
+    /**
+     *  通过店铺id查询小程序操作日志
+     * @param param 分页过滤参数
+     * @param shopId 小程序所属的店铺id
+     * @return 日志结果
+     */
+	public PageResult<MpOperateVo> logList(MpOperateListParam param,Integer shopId) {
+        MpAuthShopRecord authShopByShopId = saas().shop.mp.getAuthShopByShopId(shopId);
+        param.setAppId(authShopByShopId.getAppId());
+        return logList(param);
+    }
 
     /**
      * 小程序版本日志查询

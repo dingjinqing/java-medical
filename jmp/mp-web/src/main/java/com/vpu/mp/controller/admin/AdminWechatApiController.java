@@ -1,5 +1,8 @@
 package com.vpu.mp.controller.admin;
 
+import com.vpu.mp.service.foundation.util.PageResult;
+import com.vpu.mp.service.pojo.saas.shop.mp.MpOperateListParam;
+import com.vpu.mp.service.pojo.saas.shop.mp.MpOperateVo;
 import com.vpu.mp.service.pojo.shop.config.WxShoppingListConfig;
 import org.slf4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -117,5 +120,34 @@ public class AdminWechatApiController extends AdminBaseController {
 
         return success(shoppingListConfig);
     }
+
+    /**
+     * 店家小程序版本操作日志分页列表
+     *
+     * @param param 过滤信息
+     * @return 分页结果值
+     */
+    @PostMapping("/api/admin/mp/operate/log/list")
+    public JsonResult logList(@RequestBody MpOperateListParam param) {
+        Integer shopId = shopId();
+        Boolean authOk = saas.shop.mp.isAuthOk(shopId);
+        if (!authOk) {
+            return fail(JsonResultCode.WX_MA_SHOP_HAS_NO_AP);
+        }
+        PageResult<MpOperateVo> mpOperateVoPageResult = saas.shop.mpOperateLog.logList(param,shopId);
+        return success(mpOperateVoPageResult);
+    }
+
+    /**
+     * 获取小程序版本下拉列表
+     *
+     * @return 下拉列表值
+     */
+    @GetMapping("/api/admin/mp/version/user/version/list")
+    public JsonResult getMpUserVersionList() {
+        return success(saas.shop.mpVersion.getMpUserVersionList());
+    }
+
+
 
 }
