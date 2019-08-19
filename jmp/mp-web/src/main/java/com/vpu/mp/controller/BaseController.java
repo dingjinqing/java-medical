@@ -167,7 +167,13 @@ public class BaseController {
 		return result(JsonResultCode.CODE_SUCCESS, content);
 	}
 	
-	public JsonResult wxfail(Object result) {
-		return result(JsonResultCode.CODE_FAIL,result);
+	public JsonResult wxfail(WxOpenResult result) {
+		JsonResult result2 = null;
+		for (JsonResultCode code : JsonResultCode.values()) {
+			if (code.getMessage().equals(result.getErrmsg())) {
+				result2 = result(code, null);
+			}
+		}
+		return result(JsonResultCode.CODE_FAIL, result2==null?result:result2);
 	}
 }
