@@ -2,9 +2,9 @@
   <div class="program-auth">
     <Card title="绑定已有小程序">
       <div class="item1">
-        <div class="card-text">我已经拥有小程序</div>
+        <div class="card-text">{{$t('ShopConfiguration.UnauthorizedPages.title')}}</div>
         <div class="card-text">
-          小程序管理员可将小程序一键授权给我们
+          {{$t('ShopConfiguration.UnauthorizedPages.authToUs')}}
         </div>
       </div>
       <a
@@ -12,14 +12,14 @@
         :href="hrefDataOne"
         target="_blank"
       >
-        我已有小程序，一键授权
+        {{$t('ShopConfiguration.UnauthorizedPages.OneAuthorization')}}
       </a>
     </Card>
     <Card title="注册小程序">
       <div class="item2">
-        <div class="card-text">我还没有小程序</div>
+        <div class="card-text">{{$t('ShopConfiguration.UnauthorizedPages.noSmallProcedures')}}</div>
         <div class="card-text">
-          去微信平台申请小程序
+          {{$t('ShopConfiguration.UnauthorizedPages.toApplyPro')}}
         </div>
         <div class="card-text">
           <a
@@ -27,7 +27,7 @@
             target="_blank"
             class="help-link"
           >
-            查看教程
+            {{$t('ShopConfiguration.UnauthorizedPages.toCheckMes')}}
           </a>
         </div>
       </div>
@@ -36,7 +36,7 @@
         href="https://mp.weixin.qq.com/"
         target="_blank"
       >
-        去微信平台申请小程序，立即申请
+        {{$t('ShopConfiguration.UnauthorizedPages.toApply')}}
       </a>
     </Card>
 
@@ -59,6 +59,8 @@ export default {
     }
   },
   mounted () {
+    // 初始化语言
+    this.langDefault()
     grantAuthorizationRequest().then((res) => {
       if (res.error === 0) {
         console.log(res.content)

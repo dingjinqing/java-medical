@@ -131,7 +131,7 @@
       </el-table-column>
       <el-table-column
         align="center"
-        :label="$t('programVersion.publiStatus')"
+        :label="$t('programVersion.NumberStores')"
       >
         <template slot-scope="scope">
           <div class="num">{{scope.row.number}}</div>
@@ -261,33 +261,33 @@ export default {
         if (res.error === 0) {
           res.content.dataList.map((item, index) => {
             if (item.isAuthOk === 1) {
-              item.isAuthOk = '已授权'
+              item.isAuthOk = this.$t('programVersion.beRevoked')
             } else {
-              item.isAuthOk = '未授权'
+              item.isAuthOk = this.$t('programVersion.Unauthorized')
             }
             if (item.openPay === 1) {
-              item.openPay = '支持微信支付'
+              item.openPay = this.$t('programVersion.WechatPayment')
             } else {
-              item.openPay = '不支持微信支付'
+              item.openPay = this.$t('programVersion.selectIsPay[1].label')
             }
             switch (item.auditState) {
               case 0:
-                item.auditState = '未提交'
+                item.auditState = this.$t('programVersion.notSubmitted')
                 break
               case 1:
-                item.auditState = '深刻中'
+                item.auditState = this.$t('programVersion.auditProgress')
                 break
               case 2:
-                item.auditState = '审核成功'
+                item.auditState = this.$t('programVersion.AuditSuccess')
                 break
               case 3:
-                item.auditState = '审核失败'
+                item.auditState = this.$t('programVersion.auditFailure')
                 break
             }
             if (item.publishState === 0) {
-              item.publishState = '已发布'
+              item.publishState = this.$t('programVersion.unpublished')
             } else {
-              item.publishState = '未发布'
+              item.publishState = this.$t('programVersion.published')
             }
           })
           this.tableData = res.content.dataList

@@ -248,10 +248,12 @@ export const cn = {
   ManagementAuthority: '开放平台帐号管理权限（小程序）',
   BasicSettingSmallPrograms: '小程序基本信息设置权限',
   WidgetAuthenticationAuthority: '小程序认证权限',
-  AuditSuccess: '审核成功'
+  AuditSuccess: '审核成功',
+  Unauthorized: '未授权'
 }
 
 export const en = {
+  Unauthorized: 'Unauthorized',
   AuditSuccess: 'Audit success',
   SuccessfulOperation: 'Successful operation',
   WechatDirectPayment: 'Wechat Direct Payment',
