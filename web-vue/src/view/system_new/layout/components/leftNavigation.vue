@@ -118,7 +118,7 @@ export default {
           {
             imgUrl: this.$imageHost + '/image/system/icon_left/picture_space.png',
             imgUrl_h: this.$imageHost + '/image/system/icon_left/picture_space_h.png',
-            span: '版本列表',
+            span: '版本列表'
             // routeName: 'versionList'
           },
           {
