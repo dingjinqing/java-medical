@@ -443,7 +443,7 @@ const routes = [
           },
           // 普通优惠券
           {
-            path: '/admin/home/main/ordinary_coupon',
+            path: '/admin/home/main/ordinaryCoupon',
             name: 'ordinary_coupon',
             meta: {
               crumbTitle: 'router.ordinary_coupon',
@@ -452,7 +452,7 @@ const routes = [
             },
             component: () =>
               import(
-                '@/view/admin/index/leftNavComponents/first_market_manage/first_market/ordinary_coupon'
+                '@/view/admin/index/leftNavComponents/first_market_manage/first_market/ordinaryCoupon'
               )
           },
           // 会员管理系列子路由
