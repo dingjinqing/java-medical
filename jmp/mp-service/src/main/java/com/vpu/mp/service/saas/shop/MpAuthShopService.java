@@ -448,6 +448,7 @@ public class MpAuthShopService extends MainBaseService {
 			MpAuthShopRecord upMp=MP_AUTH_SHOP.newRecord();
 			upMp.setAppId(appId);
 			upMp.setUploadState((byte) 1);
+			upMp.setBindTemplateId(templateId);
 			upMp.setLastAuthTime(Timestamp.valueOf(LocalDateTime.now()));
 			db().executeUpdate(upMp);
 		}
