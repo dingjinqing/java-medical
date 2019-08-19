@@ -65,7 +65,8 @@ public class RecordAdminActionService extends ShopBaseService {
 
 	/**
 	 *
-	 * @param templateIds 模版id
+	 * @param templateIds 模版id {@link RecordContentTemplate}
+     *                    和{@link com.vpu.mp.service.pojo.shop.operation.RecordContentMessage}
 	 * @param datas       模版数据
 	 */
 	@Async
