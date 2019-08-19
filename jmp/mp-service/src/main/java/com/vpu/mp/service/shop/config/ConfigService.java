@@ -45,6 +45,8 @@ public class ConfigService extends ShopBaseService {
     public GoodsBrandConfigService goodsBrandConfigService;
 	@Autowired
     public DeliverTemplateConfigService deliverTemplateConfigService;
+    @Autowired
+    public FirstSpecialConfigService firstSpecialConfigService;
 	
 	
 	/**

@@ -6,6 +6,7 @@ import com.vpu.mp.service.pojo.shop.market.firstspecial.*;
 import com.vpu.mp.service.pojo.shop.market.firstspecial.validated.FirstSpecialAddValidatedGroup;
 import com.vpu.mp.service.pojo.shop.market.firstspecial.validated.FirstSpecialUpdateValidatedGroup;
 import org.springframework.validation.annotation.Validated;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
@@ -74,5 +75,27 @@ public class AdminFirstSpecialController extends AdminBaseController {
     @PostMapping(value = "/api/admin/market/firstspecial/order")
     public JsonResult getFirstSpecialOrderList(@RequestBody @Validated MarketOrderListParam param) {
         return success(shop().firstSpecial.getFirstSpecialOrderList(param));
+    }
+
+    /**
+     * 获取首单特惠用户仅可购买活动商品的数量
+     *
+     */
+    @GetMapping(value = "/api/admin/market/firstspecial/limit/goods/get")
+    public JsonResult getFirstSpecialLimitGoods() {
+        return success(shop().config.firstSpecialConfigService.getFirstLimitGoods());
+    }
+
+    /**
+     * 设置首单特惠用户仅可购买活动商品的数量
+     *
+     */
+    @GetMapping(value = "/api/admin/market/firstspecial/limit/goods/set")
+    public JsonResult setFirstSpecialLimitGoods(Integer firstLimitGoods) {
+        if(shop().config.firstSpecialConfigService.setFirstLimitGoods(firstLimitGoods) > 0){
+            return success();
+        }else{
+            return fail();
+        }
     }
 }
