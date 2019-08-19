@@ -13,6 +13,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import com.vpu.mp.service.pojo.saas.shop.mp.MpAuditStateVo;
 import org.apache.commons.lang3.StringUtils;
 import org.jooq.Condition;
 import org.jooq.Record13;
@@ -792,7 +793,26 @@ public class MpAuthShopService extends MainBaseService {
 		result.setErrmsg(JsonResultMessage.WX_MA_NEED_UPLOADCODE);
 		return result;
 	}
-	
+
+    /**
+     *  根据店铺id获取小程序审核状态
+     * @param shopId 店铺id
+     * @return  小程序审核信息
+     */
+	public MpAuditStateVo getAppAuditInfo(Integer shopId){
+
+        MpAuthShopRecord mp = this.getAuthShopByShopId(shopId);
+        MpAuditStateVo mpAuditStateVo = new MpAuditStateVo();
+        mpAuditStateVo.setAppId(mp.getAppId());
+        mpAuditStateVo.setAuditId(mp.getAuditId());
+        mpAuditStateVo.setAuditState(mp.getAuditState());
+        mpAuditStateVo.setSubmitAuditTime(mp.getSubmitAuditTime());
+        mpAuditStateVo.setAuditOkTime(mp.getAuditOkTime());
+        mpAuditStateVo.setAuditFailReason(mp.getAuditFailReason());
+
+        return mpAuditStateVo;
+    }
+
 	
 	public WxOpenMaQueryAuditResult getLatestAuditStatus(String appId) throws WxErrorException {
 		WxOpenMaService maService = this.getMaServiceByAppId(appId);

@@ -1,6 +1,7 @@
 package com.vpu.mp.controller.admin;
 
 import com.vpu.mp.service.foundation.util.PageResult;
+import com.vpu.mp.service.pojo.saas.shop.mp.MpAuditStateVo;
 import com.vpu.mp.service.pojo.saas.shop.mp.MpOperateListParam;
 import com.vpu.mp.service.pojo.saas.shop.mp.MpOperateVo;
 import com.vpu.mp.service.pojo.shop.config.WxShoppingListConfig;
@@ -146,6 +147,23 @@ public class AdminWechatApiController extends AdminBaseController {
     @GetMapping("/api/admin/mp/version/user/version/list")
     public JsonResult getMpUserVersionList() {
         return success(saas.shop.mpVersion.getMpUserVersionList());
+    }
+
+    /**
+     *  获取店铺相关联的小程序的审核信息
+     * @return 审核信息
+     */
+    @GetMapping("/api/admin/mp/audit/get")
+    public JsonResult getAppAduitInfo(){
+        Integer shopId = shopId();
+        Boolean authOk = saas.shop.mp.isAuthOk(shopId);
+        if (!authOk) {
+            return fail(JsonResultCode.WX_MA_SHOP_HAS_NO_AP);
+        }
+
+        MpAuditStateVo appAuditInfo = saas.shop.mp.getAppAuditInfo(shopId);
+
+        return success(appAuditInfo);
     }
 
 
