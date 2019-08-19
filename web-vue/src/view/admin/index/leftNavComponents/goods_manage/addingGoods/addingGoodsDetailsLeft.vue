@@ -27,13 +27,14 @@
   </div>
 </template>
 <script>
+/* eslint-disable */
 export default {
   name: 'addingGoodsDetailsLeft',
   props: ['getParams'],
-  created () {
+  created() {
 
   },
-  data () {
+  data() {
     return {
       src: this.getParams.goodsImg,
       goodsName: this.getParams.goodsName,

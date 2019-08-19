@@ -10,6 +10,7 @@
       <span>库存/价格信息</span>
     </section>
     <priceInfo ref="priceInfo" />
+    <!-- <stockAndPriceInfo /> -->
     <!-- 配送信息 -->
     <section class="title">
       <span>配送信息</span>
@@ -39,32 +40,29 @@
 </template>
 <script>
 import basicInfo from './basicInfo'
-import pictureTemplate from '@/components/admin/pictureTemplate/pictureTemplateContent'
 import otherInfo from './otherInfo'
 import deliveryInfo from './deliveryInfo'
 import priceInfo from './priceInfo'
+// import stockAndPriceInfo from './stockAndPriceInfo'
 export default {
-  components: { basicInfo, priceInfo, pictureTemplate, otherInfo, deliveryInfo },
+  components: { basicInfo, priceInfo, otherInfo, deliveryInfo },
   props: {
     active: Number
   },
-  data () {
-    return {
-      formData: ''
-    }
-  },
+
   methods: {
-    // 底部按钮跳转
-    handleToList () {
-      console.log('tolist')
+    // 保存后返回列表
+    handleToList() {
+
     },
-    handleNextStep () {
-      let obj1 = this.$refs.priceInfo.getPrice
-      let obj2 = this.$refs.basicInfo.getFormData
-      Object.assign(obj1, obj2)
-      console.log(obj1)
+    // 下一步（去到编辑商品详情）
+    handleNextStep() {
+      // let obj1 = this.$refs.priceInfo.getPrice
+      // let obj2 = this.$refs.basicInfo.getFormData
+      // Object.assign(obj1, obj2)
+      // console.log(obj1)
       this.$router.push(
-        { name: 'details', query: obj1 }
+        { name: 'details', query: {} }
       )
     }
   }

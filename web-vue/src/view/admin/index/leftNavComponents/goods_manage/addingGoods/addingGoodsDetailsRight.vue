@@ -36,6 +36,10 @@
         <section class="four one">
           <span class="text1"> 商品详情</span>
           <el-divider></el-divider>
+          <tinymce
+            id="d1"
+            v-model="content"
+          ></tinymce>
         </section>
       </el-form>
 
@@ -52,7 +56,9 @@ export default {
       formData: {
 
       },
-      radio: '1'
+      radio: '1',
+      content: ``
+
     }
   }
 }

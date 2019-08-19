@@ -127,7 +127,7 @@ import SelectLinks from '@/components/admin/selectLinks'
 import { bottomGetRequest, bottomUpdateRequest } from '@/api/admin/bottomNavigation'
 export default {
   components: { SelectLinks, ImageDalog },
-  data () {
+  data() {
     return {
       ulClickIndex: 0,
       inputValArr: [
@@ -198,22 +198,22 @@ export default {
   },
   computed: {
     ...mapGetters(['afferentPath']),
-    afferentPath_ () {
+    afferentPath_() {
       return this.afferentPath
     }
   },
   watch: {
-    afferentPath_ (newData, oldData) {
+    afferentPath_(newData, oldData) {
       console.log(newData)
       this.contentList[this.linksIndex].page = newData
     }
   },
-  mounted () {
+  mounted() {
     // 初始化查询
     this.queryBottom()
   },
   methods: {
-    queryBottom () {
+    queryBottom() {
       bottomGetRequest().then((res) => {
         if (res.error === 0) {
           console.log(res.error)
@@ -229,21 +229,21 @@ export default {
       })
     },
     // 点击选择链接
-    handleSelectLinks (index) {
+    handleSelectLinks(index) {
       this.linksIndex = index
       this.$http.$emit('linkDialogFlag', this.linkFlag)
     },
     // 点击底部li
-    hanleFooterLi (index) {
+    hanleFooterLi(index) {
       this.ulClickIndex = index
     },
     // 点击修改
-    handleModifyDialog (index) {
+    handleModifyDialog(index) {
       this.iconindex = index
       this.modifyDialog = true
     },
     // 保存
-    saveShopStyle () {
+    saveShopStyle() {
       let obj = this.contentList
       bottomUpdateRequest(obj).then((res) => {
         if (res.error === 0) {
@@ -256,18 +256,18 @@ export default {
       })
     },
     // 删除某项
-    handleDel (index) {
+    handleDel(index) {
       this.contentList.splice(index, 1)
     },
     // 更换图标
-    handleChangeIcon (first, second) {
+    handleChangeIcon(first, second) {
       console.log(first, second)
       this.firstNavIndex = first
       this.secondNavIndex = second
       this.$http.$emit('dtVisible')
     },
     // 弹框确定选中
-    handleSelectImg (res) {
+    handleSelectImg(res) {
       // this.imageUrl[0].img_1 = res
       console.log(res)
       let first = this.firstNavIndex
@@ -282,7 +282,7 @@ export default {
       this.$forceUpdate()
     },
     // 修改icon弹窗li点击事件
-    handleSelectIcon (data, index) {
+    handleSelectIcon(data, index) {
       this.contentList[this.iconindex].text = data.text
       this.contentList[this.iconindex].normal = data.img_one
       this.contentList[this.iconindex].hover = data.img_two

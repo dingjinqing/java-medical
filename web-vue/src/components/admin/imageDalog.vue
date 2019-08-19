@@ -161,7 +161,7 @@ import { upmoreImgsRequest, queryImgsRequest, imgsdeleteRequest } from '@/api/ad
 export default {
   components: { Tree, Cropper },
   props: ['pageIndex'],
-  data () {
+  data() {
     return {
       dialogTableVisible: false,
       imgUrl: [
@@ -194,15 +194,15 @@ export default {
   },
   computed: {
     ...mapGetters(['allNodes', 'activeFresh']),
-    allNodes_ () {
+    allNodes_() {
       return this.allNodes
     },
-    activeFresh_ () {
+    activeFresh_() {
       return this.activeFresh
     }
   },
   watch: {
-    allNodes_ (newData, oldData) {
+    allNodes_(newData, oldData) {
       console.log(newData)
       // 初始化图片查询数据
       if (newData.content) {
@@ -213,12 +213,12 @@ export default {
 
       this.queryImgs()
     },
-    activeFresh_ (data) {
+    activeFresh_(data) {
       console.log(data, 11111)
       this.queryImgs()
     }
   },
-  mounted () {
+  mounted() {
     // accountSettings组件控制本组件弹窗
     this.$http.$on('dtVisible', () => {
       console.log(123)
@@ -230,7 +230,7 @@ export default {
   },
   methods: {
     // 图片上传前的钩子
-    beforeUpLoad (file) {
+    beforeUpLoad(file) {
       console.log(file)
       let that = this
       console.log(this.firstNodeId)
@@ -281,19 +281,19 @@ export default {
       return false
     },
     // 文件数量超出限制钩子
-    handleExceed () {
+    handleExceed() {
       this.$message.error('单次上传图片数量不能超过5张')
     },
     // currentPage 改变时会触发
-    handleCurrentChange () {
+    handleCurrentChange() {
       this.queryImgs(this.currentPage3)
     },
     // 点击搜索
-    handleSearch () {
+    handleSearch() {
       this.queryImgs(1)
     },
     // 图片分组查询
-    queryImgs (currentPage3) {
+    queryImgs(currentPage3) {
       console.log(this.firstNodeId)
       console.log(this.value)
       console.log(this.checked)
@@ -307,6 +307,43 @@ export default {
           if (this.checked === true) {
             width = 80
             height = 80
+          } else {
+            width = ''
+            height = ''
+          }
+          obj = {
+            'page': currentPage3,
+            'imgCatId': this.firstNodeId,
+            'keywords': this.imgNameInput,
+            'searchNeed': 1,
+            'pageRows': 8,
+            'needImgWidth': width,
+            'needImgHeight': height,
+            'uploadSortId': this.value
+          }
+          queryImgsRequest(obj).then((res) => {
+            console.log(res)
+            if (res.error === 0) {
+              this.totalRows = res.content.page.totalRows
+              this.currentPage = res.content.page.currentPage
+              this.pageCount = res.content.page.pageCount
+              res.content.dataList.map((item, index) => {
+                item.checked = false
+                item.imgIndex = ''
+
+                // item.imgUrl = item.imgUrl.split('cn')[1]
+                // console.log(item.imgUrl)
+              })
+              this.img_list = res.content.dataList
+              console.log(this.img_list, 1)
+            }
+          })
+          break
+        case 'goodsImg':
+          this.size = 800
+          if (this.checked === true) {
+            width = 800
+            height = 800
           } else {
             width = ''
             height = ''
@@ -378,7 +415,7 @@ export default {
       }
     },
     // 单张图片删除
-    delImg (data) {
+    delImg(data) {
       console.log(data)
       let obj = {
         imageIds: [data]
@@ -402,13 +439,13 @@ export default {
       }
     },
     // 单图片选中
-    handleChecked (index) {
+    handleChecked(index) {
       this.img_list[index].checked = !this.img_list[index].checked
       this.$emit('handleSelectImg', this.img_list[index].imgUrl)
       this.dialogTableVisible = false
     },
     // 鼠标划入
-    enter (index) {
+    enter(index) {
       console.log(index)
       // this.mask_flag = !this.mask_flag
       // this.dim_flag = !this.dim_flag
@@ -416,14 +453,14 @@ export default {
       console.log(this.img_list[index].imgIndex)
     },
     // 鼠标划出
-    leave (index) {
+    leave(index) {
       // this.mask_flag = !this.mask_flag
       // this.dim_flag = !this.dim_flag
       this.img_list[index].imgIndex = ''
       console.log(this.img_list[index].imgIndex)
     },
     // 裁剪弹窗调起
-    handleCropper (path, catid, imgid, url) {
+    handleCropper(path, catid, imgid, url) {
       let obj = {
         path: path,
         catid: catid,

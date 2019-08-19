@@ -106,7 +106,7 @@
         > 取 消</el-button>
 
       </div>
-      <el-button @click="handleTest">测试数据</el-button>
+      <!-- <el-button @click="handleTest">测试数据</el-button> -->
     </el-dialog>
 
   </div>
@@ -117,7 +117,7 @@ import { brandAllGetRequest, classificationSelectRequest } from '@/api/admin/bra
 // import { mapGetters, mapMutations } from 'vuex'
 export default {
   name: 'addBrandDialog',
-  created () {
+  created() {
     this.fetchTableData(this.currentPage, this.pageRows)
     this.initData()
   },
@@ -125,7 +125,7 @@ export default {
     // ...mapGetters(['dialogVisible'])
   },
   props: ['dialogVisible'],
-  data () {
+  data() {
     return {
       formData: {
         brandName: '',
@@ -142,7 +142,7 @@ export default {
   },
 
   methods: {
-    handleTest () {
+    handleTest() {
       console.log(this.classifyIdOPtions)
       // let params = {
       //   'currentPage': '1',
@@ -158,16 +158,16 @@ export default {
       // }).then(res => console.log(res)).catch(err => console.log(err))
     },
     // ...mapMutations(['SHOW_DIALOG']),
-    handleSave () {
+    handleSave() {
       this.$emit('update:dialogVisible', false) // 直接修改父组件的属性
     },
-    handleCancel () {
+    handleCancel() {
       this.$emit('update:dialogVisible', false) // 直接修改父组件的属性
     },
-    modalClose () {
+    modalClose() {
       this.$emit('update:dialogVisible', false) // 直接修改父组件的属性
     },
-    filter () {
+    filter() {
       let params = {
         'brandName': this.formData.brandName,
         'classifyId': this.formData.classifyId,
@@ -184,7 +184,7 @@ export default {
         }
       }).catch(err => console.log(err))
     },
-    fetchTableData (currentPage, pageRows) {
+    fetchTableData(currentPage, pageRows) {
       console.log(currentPage, pageRows)
       brandAllGetRequest({
         'currentPage': currentPage,
@@ -206,13 +206,13 @@ export default {
         }
       }).catch(err => console.log(err))
     },
-    handleSizeChange (val) {
+    handleSizeChange(val) {
       console.log(val)
       this.pageRows = val
       this.fetchTableData(1, val)
       this.currentPage = 1
     },
-    handleCurrentChange (val) {
+    handleCurrentChange(val) {
       console.log(val)
       this.currentPage = val
       // 切换页码时，要获取每页显示的条数
@@ -220,7 +220,7 @@ export default {
       // this.fetchTableData((val) * (this.pageSize), this.PageSize)
     },
     // init Data
-    initData () {
+    initData() {
       classificationSelectRequest().then(res => {
         this.classifyIdOPtions = res.content
       }).catch(err => console.log(err))

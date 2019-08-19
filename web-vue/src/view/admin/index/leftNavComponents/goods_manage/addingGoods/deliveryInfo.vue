@@ -84,20 +84,17 @@
         <span>最多填写15个字</span>
       </el-form-item>
     </el-form>
-    <el-button
-      @click="handleTest"
-      type="success"
-    >测试按钮</el-button>
+
   </div>
 </template>
 <script>
 import { deliverTemplatelist } from '@/api/admin/goods_manage/deliver/deliver'
 export default {
   name: 'deliveryInfo',
-  created () {
+  created() {
     this.fetchDeliverTemplatelist()
   },
-  data () {
+  data() {
     return {
       formData: {
         value: '店铺默认运费模板'
@@ -122,15 +119,8 @@ export default {
     }
   },
   methods: {
-    handleTest () {
-      let params = {
-        deliverTemplateId: this.goodsWeight,
-        goodsWeight: this.deliverTemplateId
-      }
-      console.log(params)
-    },
 
-    fetchDeliverTemplatelist () {
+    fetchDeliverTemplatelist() {
       let params = {}
       deliverTemplatelist(params).then(res => {
         const { error, content } = res
@@ -160,10 +150,10 @@ export default {
         }
       }).catch(err => console.log(err))
     },
-    toDetailHandle () {
+    toDetailHandle() {
       this.$router.push({ path: '/admin/home/main/deliver/template/list' })
     },
-    getTemplateHandle (val) {
+    getTemplateHandle(val) {
       let res = this.options.filter((item) => {
         return item.value === val
       })

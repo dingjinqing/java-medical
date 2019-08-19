@@ -106,11 +106,7 @@
         label="商品主图："
         prop="goodsImg"
       >
-        <el-input
-          style="width:160px;"
-          v-model="formData.goodsImg"
-          size="small"
-        ></el-input>
+        <goodsMainPic />
       </el-form-item>
     </el-form>
     <!-- 展开收起更多配置 -->
@@ -214,7 +210,7 @@
       </el-collapse-item>
     </el-collapse>
     <addBrandDialog :dialogVisible.sync="dialogVisible" />
-    <el-button @click="handleTest">测试数据</el-button>
+    <!-- <el-button @click="handleTest">测试数据</el-button> -->
   </div>
 </template>
 <script>
@@ -224,10 +220,12 @@ import { selectPlatformClassification } from '@/api/admin/addingGoods/addingGood
 import { initGrandgetRequest } from '@/api/admin/brandManagement.js'
 import { getLabelList } from '@/api/admin/labelList/labelList'
 import addBrandDialog from './addBrandDialog'
+import goodsMainPic from './goodsMainPic'
 export default {
+  /* eslint-disable */
   name: 'basicInfo',
-  components: { addBrandDialog },
-  data () {
+  components: { addBrandDialog, goodsMainPic },
+  data() {
     return {
       formData: {
         goodsName: '',
@@ -334,25 +332,25 @@ export default {
         children: 'children'
       },
       goodsLabels: [],
-      dialogVisible: false
+      dialogVisible: false,
 
     }
   },
-  created () {
+  created() {
     this.init()
     this.fetchSortList()
   },
-  mounted () {
+  mounted() {
 
   },
   computed: {
-    getFormData () {
+    getFormData() {
       return this.formData
     }
   },
   methods: {
 
-    handleTest () {
+    handleTest() {
       getLabelList({}).then(res => console.log(res)).catch(err => console.log(err))
       // deleteSort({
       //   'sortId': 20
@@ -373,7 +371,7 @@ export default {
       }
       console.log(params, this.formData1)
     },
-    handleChange (value) {
+    handleChange(value) {
       console.log(value)
       selectPlatformClassification(value).then(res => {
         const { error, content } = res
@@ -383,7 +381,7 @@ export default {
         }
       })
     },
-    handleChange2 (value) {
+    handleChange2(value) {
       console.log(value)
       selectPlatformClassification(value).then(res => {
         const { error, content } = res
@@ -393,10 +391,10 @@ export default {
         }
       })
     },
-    handleChange3 (value) {
+    handleChange3(value) {
       this.formData.catId = value
     },
-    formatContent (content) {
+    formatContent(content) {
       let newArr = []
       content.forEach(item => {
         newArr.push({
@@ -406,7 +404,7 @@ export default {
       })
       return newArr
     },
-    init () {
+    init() {
       selectPlatformClassification(0).then(res => {
         const { error, content } = res
         if (error === 0) {
@@ -414,14 +412,14 @@ export default {
         }
       })
     },
-    getValue (val) {
+    getValue(val) {
       if (val === '自定义') {
         this.isShow = true
       } else {
         this.isShow = false
       }
     },
-    fetchSortList () {
+    fetchSortList() {
       initGrandgetRequest().then(res => {
         const { error, content: { goodsSorts, goodsLabels } } = res
         console.log(res)
@@ -433,14 +431,14 @@ export default {
         }
       }).catch(err => console.log(err))
     },
-    showDialog () {
+    showDialog() {
       this.dialogVisible = true
     },
     // 传值函数 事件派发
-    passValue () {
+    passValue() {
 
     },
-    sendGoodsName () {
+    sendGoodsName() {
 
     }
 

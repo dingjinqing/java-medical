@@ -28,10 +28,11 @@
   </div>
 </template>
 <script>
+/* eslint-disable */
 import { mapActions } from 'vuex'
 import { jurisdictionQueryRequest } from '@/api/admin/jurisdiction'
 export default {
-  data () {
+  data() {
     return {
       navLeftData: '',
       dataList: {
@@ -487,21 +488,21 @@ export default {
     }
   },
   watch: {
-    $route (to, from) {
+    $route(to, from) {
       console.log(to)
 
       console.log(this.flag)
       this.defaultNav(to.meta.meta)
     }
   },
-  mounted () {
+  mounted() {
     console.log(this.$route)
     // 权限处理
     this.handleJurisdiction()
   },
   methods: {
     ...mapActions(['judgeMenuAll']),
-    handleJurisdiction () {
+    handleJurisdiction() {
       jurisdictionQueryRequest().then((res) => {
         console.log(res)
         for (let i in this.dataList) {
@@ -519,7 +520,7 @@ export default {
         console.log(this.dataList)
       })
     },
-    defaultNav (meta) {
+    defaultNav(meta) {
       console.log(meta)
       console.log(this.dataList)
       switch (meta) {
@@ -567,9 +568,7 @@ export default {
       console.log(this.navLeftData)
     },
     // 左侧菜单栏点击事件
-    leftNavClick (index, name) {
-      console.log(index, name)
-
+    leftNavClick(index, name) {
       if (name === 'first_market_manage') this.nav_s_class_index = true
       this.click_nav_index = index
       this.saveIndex = index
@@ -587,15 +586,16 @@ export default {
       }
     },
     // 左侧菜单栏划入事件
-    left_nav_over (index) {
+    left_nav_over(index) {
       this.click_nav_index = index
     },
     // 左侧菜单栏划出事件
-    left_nav_leave (index) {
+    left_nav_leave(index) {
       this.click_nav_index = null
     }
   }
 }
+
 </script>
 <style scoped>
 .container {
@@ -613,9 +613,9 @@ export default {
 .lestList img {
   display: block;
   float: left;
-  width: 20px;
-  height: 20px;
-  margin: auto 0;
+  width: 20px !important;
+  height: 20px !important;
+  margin: auto 0 !important;
 }
 .lestList span {
   display: block;
@@ -645,7 +645,7 @@ export default {
   width: 66px !important;
   height: 26px !important;
   position: relative;
-  left: -11px;
-  bottom: -9px;
+  /* left: -11px;
+  bottom: -9px; */
 }
 </style>

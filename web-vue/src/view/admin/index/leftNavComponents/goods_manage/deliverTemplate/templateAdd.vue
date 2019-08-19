@@ -51,16 +51,13 @@
         </section>
       </el-form-item>
     </el-form>
-    <el-button
-      @click="testData"
-      type="primary"
-    >测试数据</el-button>
+
   </div>
 </template>
 <script>
 export default {
   name: 'templateAdd',
-  data () {
+  data() {
     return {
       addForm: {
 
@@ -75,15 +72,15 @@ export default {
     }
   },
   methods: {
-    testData () {
-      let params = {
-        'templateName': this.name,
-        'goodsDeliverTemplateLimitParam': {
+    // testData () {
+    //   let params = {
+    //     'templateName': this.name,
+    //     'goodsDeliverTemplateLimitParam': {
 
-        }
-      }
-      console.log(params)
-    }
+    //     }
+    //   }
+    //   console.log(params)
+    // }
   }
 }
 </script>
