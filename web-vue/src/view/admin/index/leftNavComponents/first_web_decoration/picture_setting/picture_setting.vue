@@ -384,6 +384,8 @@ export default {
   },
   mounted () {
     this.restaurants = this.loadAll()
+    // 初始化语言
+    this.langDefault()
   },
   methods: {
     ...mapActions(['handleToCallMicropage']),

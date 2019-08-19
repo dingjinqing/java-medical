@@ -8,6 +8,7 @@ import { en as membershipIntroduction } from './views/membershipIntroduction'
 import { en as marketManage } from './views/marketManage'
 import { en as ordinaryCoupon } from './views/ordinaryCoupon'
 import { en as ShopConfiguration } from './views/ShopConfiguration'
+import { en as adminPageFramework } from './views/adminPageFramework'
 const en = {
   message: {
     'lang': 'English',
@@ -302,6 +303,7 @@ const en = {
   marketManage, // 营销管理
   ordinaryCoupon, // 普通优惠券
   ShopConfiguration, // admin 店铺基础配置
+  adminPageFramework, // admin 页面框架
   ...enLocale
 }
 export default en

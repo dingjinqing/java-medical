@@ -30,6 +30,10 @@ service.interceptors.request.use(
     //   localStorage.getItem('contentType'),
     //   localStorage.getItem('WEPUBAO_LANGUAGE')
     // )
+    config.headers['Expires'] = 0
+    config.headers['Cache-Control'] = 'no-cache'
+    config.headers['Pragma'] = 'no-cache'
+
     config.headers['Content-Type'] = localStorage.getItem('contentType')
     // console.log(Cookies.get('V-Token'))
     if (Cookies.get('V-Token')) {

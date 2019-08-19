@@ -22,7 +22,23 @@ export const cn = {
     tip1: '此公众号已取消授权，无法给用户发送公众号消息、分销员返利佣金不能提现，如有需要，请重新授权',
     SmallProgramVersion: '小程序版本',
     AuditStatus: '审核状态',
-    AuthorizationStatus: '授权状态'
+    AuthorizationStatus: '授权状态',
+    SmallProgramAvatar: '小程序头像',
+    SmallProgramCode: '小程序码',
+    WechatAuthentication: '微信认证',
+    OriginalID: '原始ID',
+    WechatCircleSettings: '微信好物圈功能设置',
+    tip2: '开关开启，小程序前端可同步购物车商品及支付完成订单信息到微信好物圈，助力享有小程序搜索能力。',
+    IntroductiontoFunctions: '功能介绍',
+    Note: '注：',
+    tip3: '开启或关闭【好物圈】，需重新授权小程序并勾选/取消勾选好物圈权限，才能生效',
+    tip4: '【好物推荐】在小程序端展示位置：',
+    OrderDetailsPage: '订单详情页',
+    ViewExamples: '查看示例',
+    CommodityDetailsPage: '商品详情页',
+    tip5: '当前【好物推荐】申请通过',
+    tip6: '注：好物圈插件申请后，小程序公众平台后台不要关闭或者删除此插件，负责小程序将无法正常使用。若想关闭此功能，请联系客服、运营人员，协助操作。',
+    Preservation: '保存'
   }
 }
 
@@ -39,5 +55,33 @@ export const en = {
     toApplyPro: 'Application Procedure for Wechat Platform',
     toCheckMes: 'Check out the tutorial',
     toApply: 'Apply to Wechat Platform for Small Procedures and Apply Immediately'
+  },
+  // 小程序授权页面
+  SmallProgramAuthorizationPage: {
+    BindedApplet: 'Binded applet',
+    WidgetName: 'Widget name',
+    Reauthorization: 'Reauthorization',
+    BindedPublicNumber: 'Binded Public Number',
+    MicroshopEnterpriseService: 'Microshop Enterprise Service',
+    tip1: 'This public number has been revoked, can not send public number messages to users, distributor rebate commission can not be withdrawn, if necessary, please re-authorize',
+    SmallProgramVersion: 'Small program version',
+    AuditStatus: 'Audit status',
+    AuthorizationStatus: 'Authorization status',
+    SmallProgramAvatar: 'Small program Avatar',
+    SmallProgramCode: 'Small program code',
+    WechatAuthentication: 'Wechat Authentication',
+    OriginalID: 'Original ID',
+    WechatCircleSettings: 'Wechat Good Circle Function Settings',
+    tip2: 'Switch on, the front end of the small program can synchronize shopping cart goods and payment order information to the Wechat good circle, which helps to enjoy the small program search ability.',
+    IntroductiontoFunctions: 'Introduction to Functions',
+    Note: 'Note:',
+    tip3: 'To open or close a good circle, it is necessary to re-authorize the applet and check/cancel the right to check the circle in order to take effect.',
+    tip4: '[Good Things Recommendation] Display the location on the small program side:',
+    OrderDetailsPage: 'Order Details Page',
+    ViewExamples: 'View examples',
+    CommodityDetailsPage: 'Commodity Details Page',
+    tip5: 'At present, the application has been approved.',
+    tip6: 'Note: After the application of good circle plug-in, do not close or delete this plug-in in the background of the public platform of small programs, the responsible small programs will not be able to use normally. If you want to turn off this function, please contact customer service and operator to assist in operation.',
+    Preservation: 'Preservation'
   }
 }

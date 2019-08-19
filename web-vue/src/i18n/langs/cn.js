@@ -8,6 +8,7 @@ import { cn as membershipIntroduction } from './views/membershipIntroduction'
 import { cn as marketManage } from './views/marketManage'
 import { cn as ordinaryCoupon } from './views/ordinaryCoupon'
 import { cn as ShopConfiguration } from './views/ShopConfiguration'
+import { cn as adminPageFramework } from './views/adminPageFramework'
 console.log(zhLocale)
 const cn = {
   message: {
@@ -303,6 +304,7 @@ const cn = {
   marketManage, // 营销管理
   ordinaryCoupon, // 普通优惠券
   ShopConfiguration, // admin 店铺基础配置
+  adminPageFramework, // admin页面框架
   ...zhLocale
 }
 

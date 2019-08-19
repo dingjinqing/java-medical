@@ -5,13 +5,13 @@
         slot="header"
         class="__el-card-header"
       >
-        已绑定小程序
+        {{$t('ShopConfiguration.SmallProgramAuthorizationPage.BindedApplet')}}
       </div>
       <div class="__el-card-content">
         <ul class="program-details">
           <li class="details-item">
             <span class="item-label">
-              小程序名称:
+              {{$t('ShopConfiguration.SmallProgramAuthorizationPage.WidgetName')}}:
             </span>
             <span class="item-title ml-20">
               {{this.data.nickName}}
@@ -22,23 +22,23 @@
               class="ml-20"
               style="font-size: 14px;"
             >
-              重新授权
+              {{$t('ShopConfiguration.SmallProgramAuthorizationPage.Reauthorization')}}
             </el-button>
           </li>
           <li class="details-item">
             <span class="item-label">
-              已绑定的公众号:
+              {{$t('ShopConfiguration.SmallProgramAuthorizationPage.BindedPublicNumber')}}:
             </span>
             <span class="item-title ml-20">
-              微铺宝企业服务
+              {{$t('ShopConfiguration.SmallProgramAuthorizationPage.MicroshopEnterpriseService')}}
             </span>
             <span class="info-text ml-20">
-              此公众号已取消授权，无法给用户发送公众号消息、分销员返利佣金不能提现，如有需要，请重新授权
+              {{$t('ShopConfiguration.SmallProgramAuthorizationPage.tip1')}}
             </span>
           </li>
           <li class="details-item">
             <span class="item-label">
-              小程序版本:
+              {{$t('ShopConfiguration.SmallProgramAuthorizationPage.SmallProgramVersion')}}:
             </span>
             <span class="item-title ml-20">
               1.28.2
@@ -46,7 +46,7 @@
           </li>
           <li class="details-item">
             <span class="item-label">
-              审核状态:
+              {{$t('ShopConfiguration.SmallProgramAuthorizationPage.AuditStatus')}}:
             </span>
             <span class="item-title ml-20">
               {{data.auditState}}
@@ -54,7 +54,7 @@
           </li>
           <li class="details-item">
             <span class="item-label">
-              授权状态:
+              {{$t('ShopConfiguration.SmallProgramAuthorizationPage.AuthorizationStatus')}}:
             </span>
             <span class="item-title ml-20">
               {{data.isAuthOk}}
@@ -62,7 +62,7 @@
           </li>
           <li class="details-item img-row">
             <span class="item-label fll">
-              小程序头像:
+              {{$t('ShopConfiguration.SmallProgramAuthorizationPage.SmallProgramAvatar')}}:
             </span>
             <img
               style="width:100px;margin-left:25px"
@@ -74,7 +74,7 @@
             style="height: 150px;"
           >
             <span class="item-label">
-              小程序码:
+              {{$t('ShopConfiguration.SmallProgramAuthorizationPage.SmallProgramCode')}}:
             </span>
             <img
               style="width:100px;margin-left:25px"
@@ -83,7 +83,7 @@
           </li>
           <li class="details-item">
             <span class="item-label">
-              微信认证:
+              {{$t('ShopConfiguration.SmallProgramAuthorizationPage.WechatAuthentication')}}:
             </span>
             <span class="item-title ml-20">
               {{data.verifyTypeInfo}}
@@ -91,7 +91,7 @@
           </li>
           <li class="details-item">
             <span class="item-label">
-              原始ID:
+              {{$t('ShopConfiguration.SmallProgramAuthorizationPage.OriginalID')}}:
             </span>
             <span class="item-title ml-20">
               {{data.userName}}
@@ -113,7 +113,7 @@
         slot="header"
         class="__el-card-header"
       >
-        微信好物圈功能设置
+        {{$t('ShopConfiguration.SmallProgramAuthorizationPage.WechatCircleSettings')}}
       </div>
       <div class="__el-card-content fun-opt">
         <el-switch
@@ -125,7 +125,7 @@
         <ul class="program-details ml-20">
           <li class="details-item flex-wrap">
             <span class="item-text c-999">
-              开关开启，小程序前端可同步购物车商品及支付完成订单信息到微信好物圈，助力享有小程序搜索能力。
+              {{$t('ShopConfiguration.SmallProgramAuthorizationPage.tip2')}}
             </span>
             <el-button
               size="mini"
@@ -133,20 +133,20 @@
               style="font-size: 14px;"
               type="text"
             >
-              功能介绍
+              {{$t('ShopConfiguration.SmallProgramAuthorizationPage.IntroductiontoFunctions')}}
             </el-button>
           </li>
           <li class="details-item">
             <strong>
-              注：
+              {{$t('ShopConfiguration.SmallProgramAuthorizationPage.Note')}}
             </strong>
             <span class="item-text c-999">
-              开启或关闭【好物圈】，需重新授权小程序并勾选/取消勾选好物圈权限，才能生效
+              {{$t('ShopConfiguration.SmallProgramAuthorizationPage.tip3')}}
             </span>
           </li>
           <li class="details-item">
             <span class="item-text">
-              【好物推荐】在小程序端展示位置：
+              {{$t('ShopConfiguration.SmallProgramAuthorizationPage.tip4')}}
             </span>
           </li>
           <li class="details-item flex-wrap">
@@ -155,7 +155,7 @@
                 v-model="queryData.isShowDetails"
                 @change="handleChange"
               >
-                订单详情页
+                {{$t('ShopConfiguration.SmallProgramAuthorizationPage.OrderDetailsPage')}}
               </el-checkbox>
               <el-popover
                 placement="right"
@@ -173,7 +173,7 @@
                   class="fz-14 ml-10"
                   size="mini"
                 >
-                  查看示例
+                  {{$t('ShopConfiguration.SmallProgramAuthorizationPage.ViewExamples')}}
                 </el-button>
               </el-popover>
             </div>
@@ -183,7 +183,7 @@
                 v-model="queryData.isShowGoodsDetails"
                 @change="handleChange"
               >
-                商品详情页
+                {{$t('ShopConfiguration.SmallProgramAuthorizationPage.CommodityDetailsPage')}}
               </el-checkbox>
               <el-popover
                 placement="right"
@@ -201,17 +201,17 @@
                   class="fz-14 ml-10"
                   size="mini"
                 >
-                  查看示例
+                  {{$t('ShopConfiguration.SmallProgramAuthorizationPage.ViewExamples')}}
                 </el-button>
               </el-popover>
             </div>
           </li>
           <li class="details-item">
             <span class="item-text">
-              当前【好物推荐】申请通过
+              {{$t('ShopConfiguration.SmallProgramAuthorizationPage.tip5')}}
             </span>
             <div style="color: red;">
-              注：好物圈插件申请后，小程序公众平台后台不要关闭或者删除此插件，负责小程序将无法正常使用。若想关闭此功能，请联系客服、运营人员，协助操作。
+              {{$t('ShopConfiguration.SmallProgramAuthorizationPage.tip6')}}
             </div>
           </li>
           <li style="margin-top: 50px;">
@@ -219,7 +219,7 @@
               size="small"
               type="primary"
               @click="handleToSave()"
-            >保存</el-button>
+            >{{$t('ShopConfiguration.SmallProgramAuthorizationPage.Preservation')}}</el-button>
           </li>
         </ul>
       </div>
