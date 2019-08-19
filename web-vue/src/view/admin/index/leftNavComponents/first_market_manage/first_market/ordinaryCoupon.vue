@@ -70,18 +70,21 @@
 
         </el-table-column>
         <el-table-column
+          prop="vaildDate"
           label="有效期"
           align="center"
         >
 
         </el-table-column>
         <el-table-column
+          prop="receivePerson"
           label="领取人/次"
           align="center"
         >
 
         </el-table-column>
         <el-table-column
+          prop="giveOutPerson"
           label="发放人/次"
           align="center"
         >
@@ -139,6 +142,9 @@ export default {
         //     item.surplus = 'asd'
         //   }
         //   item.surplus =
+        item.vaildDate = `${item.startTime}至${item.endTime}`
+        item.receivePerson = `${item.receivePerson}/${item.receiveAmount}`
+        item.giveOutPerson = `${item.giveoutPerson}/${item.giveoutAmount}`
       })
       this.tableData = data
     }
