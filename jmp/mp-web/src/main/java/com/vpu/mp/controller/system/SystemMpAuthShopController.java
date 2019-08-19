@@ -3,6 +3,7 @@ package com.vpu.mp.controller.system;
 import com.vpu.mp.db.main.tables.records.MpAuthShopRecord;
 import com.vpu.mp.service.foundation.data.JsonResult;
 import com.vpu.mp.service.foundation.data.JsonResultCode;
+import com.vpu.mp.service.foundation.util.FieldsUtil;
 import com.vpu.mp.service.foundation.util.PageResult;
 import com.vpu.mp.service.pojo.saas.shop.mp.*;
 import com.vpu.mp.service.saas.shop.MpAuthShopService;
@@ -12,6 +13,9 @@ import com.vpu.mp.service.wechat.bean.open.MaWxPlusInResult;
 import me.chanjar.weixin.common.error.WxErrorException;
 import me.chanjar.weixin.open.bean.result.WxOpenMaQueryAuditResult;
 import me.chanjar.weixin.open.bean.result.WxOpenResult;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletResponse;
@@ -34,6 +38,8 @@ import java.util.List;
 @RestController
 public class SystemMpAuthShopController extends SystemBaseController {
 
+	
+	private static Logger log = LoggerFactory.getLogger(FieldsUtil.class);
 	/**
 	 * 小程序模板版本分页
 	 * 
@@ -93,72 +99,78 @@ public class SystemMpAuthShopController extends SystemBaseController {
 		if (!mp.isAuthOk(param.getAppId())) {
 			return fail(JsonResultCode.WX_MA_APP_ID_NOT_AUTH);
 		}
-		WxOpenResult result = null;
-		switch (param.getAct()) {
-		case MpDeployQueryParam.ACT_ADD_TESTER: {
-			result = mp.bindTester(param.getAppId(), param.getWechatId());
-			break;
-		}
+		WxOpenResult result = new WxOpenResult();
+		try {
+			switch (param.getAct()) {
+			case MpDeployQueryParam.ACT_ADD_TESTER: {
+				result = mp.bindTester(param.getAppId(), param.getWechatId());
+				break;
+			}
 
-		case MpDeployQueryParam.ACT_DEL_TESTER: {
-			result = mp.unbindTester(param.getAppId(), param.getWechatId());
-			break;
-		}
+			case MpDeployQueryParam.ACT_DEL_TESTER: {
+				result = mp.unbindTester(param.getAppId(), param.getWechatId());
+				break;
+			}
 
-		case MpDeployQueryParam.ACT_GET_CATEGORY: {
-			result = mp.getCategory(param.getAppId());
-			break;
+			case MpDeployQueryParam.ACT_GET_CATEGORY: {
+				result = mp.getCategory(param.getAppId());
+				break;
+			}
+			case MpDeployQueryParam.ACT_GET_PAGE_CFG: {
+				result = mp.getPage(param.getAppId());
+				break;
+			}
+			case MpDeployQueryParam.ACT_GET_TESTER_QR: {
+				result = mp.getTestQrCode(param.getAppId());
+				break;
+			}
+			case MpDeployQueryParam.ACT_MODIFY_DOMAIN: {
+				result = mp.modifyDomain(param.getAppId());
+				break;
+			}
+			case MpDeployQueryParam.ACT_PUBLISH_CODE: {
+				//result = mp.publishAuditSuccessCode(param.getAppId());
+				int i=0/0;
+				break;
+			}
+			case MpDeployQueryParam.ACT_SUBMIT_AUDIT: {
+				result = mp.submitAudit(param.getAppId());
+				break;
+			}
+			case MpDeployQueryParam.ACT_UPDATE_MP: {
+				result=mp.updateAppInfo(param.getAppId());
+				break;
+			}
+			case MpDeployQueryParam.ACT_REFRESH_AUDIT_STATE: {
+				result = mp.refreshAppInfo(param.getAppId());
+				break;
+			}
+			case MpDeployQueryParam.ACT_UPLOAD_AUDIT: {
+				result = mp.uploadCodeAndApplyAudit(param.getAppId(), param.getTemplateId());
+				break;
+			}
+			case MpDeployQueryParam.ACT_UPLOAD_CODE: {
+				result = mp.uploadCode(param.getAppId(), param.getTemplateId());
+				break;
+			}
+			case MpDeployQueryParam.SETTING_SUB_MERCHANT: {
+				result = mp.setSubMerchant(param);
+				break;
+			}
+			default: {
+				return fail(JsonResultCode.CODE_PARAM_ERROR);
+			}
+			}
+		} catch (WxErrorException e) {
+			result.setErrcode(String.valueOf(e.getError().getErrorCode()));
+			result.setErrmsg(e.getError().getErrorMsg());
+			log.debug(e.getMessage(),e);
+		}catch (Exception e) {
+			result.setErrcode("500");
+			result.setErrmsg(e.getMessage());
+			log.debug(e.getMessage(),e);
 		}
-		case MpDeployQueryParam.ACT_GET_PAGE_CFG: {
-			result = mp.getPage(param.getAppId());
-			break;
-		}
-		case MpDeployQueryParam.ACT_GET_TESTER_QR: {
-			result = mp.getTestQrCode(param.getAppId());
-			break;
-		}
-		case MpDeployQueryParam.ACT_MODIFY_DOMAIN: {
-			result = mp.modifyDomain(param.getAppId());
-			break;
-		}
-		case MpDeployQueryParam.ACT_PUBLISH_CODE: {
-			result = mp.publishAuditSuccessCode(param.getAppId());
-			break;
-		}
-		case MpDeployQueryParam.ACT_SUBMIT_AUDIT: {
-			result = mp.submitAudit(param.getAppId());
-			break;
-		}
-		case MpDeployQueryParam.ACT_UPDATE_MP: {
-			result=mp.updateAppInfo(param.getAppId());
-			break;
-		}
-		case MpDeployQueryParam.ACT_REFRESH_AUDIT_STATE: {
-			result = mp.refreshAppInfo(param.getAppId());
-			break;
-		}
-		case MpDeployQueryParam.ACT_UPLOAD_AUDIT: {
-			result = mp.uploadCodeAndApplyAudit(param.getAppId(), param.getTemplateId());
-			break;
-		}
-		case MpDeployQueryParam.ACT_UPLOAD_CODE: {
-			result = mp.uploadCode(param.getAppId(), param.getTemplateId());
-			break;
-		}
-		case MpDeployQueryParam.SETTING_SUB_MERCHANT: {
-			result = mp.setSubMerchant(param);
-			break;
-		}
-		default: {
-			return fail(JsonResultCode.CODE_PARAM_ERROR);
-		}
-		}
-		/*
-		 * MpAuthShopVo vo =
-		 * mp.getAuthShopByAppIdAddURL(param.getAppId()).into(MpAuthShopVo.class);
-		 * return result.isSuccess() ? success(vo) : fail(result.getErrmsg());
-		 */
-		return result.isSuccess() ? success(result) : fail(result.getErrmsg());
+		return result.isSuccess() ? success(result) : wxfail(result);
 	}
 
 	/**
