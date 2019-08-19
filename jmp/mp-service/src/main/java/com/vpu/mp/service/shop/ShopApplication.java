@@ -1,8 +1,5 @@
 package com.vpu.mp.service.shop;
 
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
-
 import com.vpu.mp.service.shop.config.ConfigService;
 import com.vpu.mp.service.shop.config.ShopBasicConfigService;
 import com.vpu.mp.service.shop.config.TradeService;
@@ -12,14 +9,7 @@ import com.vpu.mp.service.shop.decoration.AppletsJumpService;
 import com.vpu.mp.service.shop.decoration.ChooseLinkService;
 import com.vpu.mp.service.shop.decoration.PageClassificationService;
 import com.vpu.mp.service.shop.decoration.ShopMpDecorationService;
-import com.vpu.mp.service.shop.distribution.BrokerageStatisticalService;
-import com.vpu.mp.service.shop.distribution.DistributorGroupService;
-import com.vpu.mp.service.shop.distribution.DistributorLevelService;
-import com.vpu.mp.service.shop.distribution.DistributorListService;
-import com.vpu.mp.service.shop.distribution.DistributorWithdrawService;
-import com.vpu.mp.service.shop.distribution.PromotionLanguageService;
-import com.vpu.mp.service.shop.distribution.RebateGoodsService;
-import com.vpu.mp.service.shop.distribution.RebateStrategyService;
+import com.vpu.mp.service.shop.distribution.*;
 import com.vpu.mp.service.shop.goods.GoodsRecommendService;
 import com.vpu.mp.service.shop.goods.GoodsService;
 import com.vpu.mp.service.shop.image.ImageCategoryService;
@@ -35,14 +25,10 @@ import com.vpu.mp.service.shop.market.form.FormStatisticsService;
 import com.vpu.mp.service.shop.market.freeshipping.FreeShippingService;
 import com.vpu.mp.service.shop.market.friendpromote.FriendPromoteService;
 import com.vpu.mp.service.shop.market.fullcut.MrkingStrategyService;
+import com.vpu.mp.service.shop.market.gift.GiftService;
 import com.vpu.mp.service.shop.market.givegift.GiveGiftService;
 import com.vpu.mp.service.shop.market.goupbuy.GroupBuyService;
-import com.vpu.mp.service.shop.market.groupdraw.GroupDrawGroupService;
-import com.vpu.mp.service.shop.market.groupdraw.GroupDrawInviteService;
-import com.vpu.mp.service.shop.market.groupdraw.GroupDrawJoinUserService;
-import com.vpu.mp.service.shop.market.groupdraw.GroupDrawOrderService;
-import com.vpu.mp.service.shop.market.groupdraw.GroupDrawService;
-import com.vpu.mp.service.shop.market.groupdraw.GroupDrawUserService;
+import com.vpu.mp.service.shop.market.groupdraw.*;
 import com.vpu.mp.service.shop.market.increasepurchase.IncreasePurchaseService;
 import com.vpu.mp.service.shop.market.integralconvert.IntegralConvertService;
 import com.vpu.mp.service.shop.market.integration.GroupIntegrationService;
@@ -62,12 +48,7 @@ import com.vpu.mp.service.shop.order.OrderReadService;
 import com.vpu.mp.service.shop.order.OrderWriteService;
 import com.vpu.mp.service.shop.order.action.base.OrderOperateFactory;
 import com.vpu.mp.service.shop.order.virtual.CouponPackOrderService;
-import com.vpu.mp.service.shop.overview.AssetManagementService;
-import com.vpu.mp.service.shop.overview.CommodityStatisticsService;
-import com.vpu.mp.service.shop.overview.MallOverviewService;
-import com.vpu.mp.service.shop.overview.OverviewService;
-import com.vpu.mp.service.shop.overview.RealTimeOverviewService;
-import com.vpu.mp.service.shop.overview.TransactionStatisticsService;
+import com.vpu.mp.service.shop.overview.*;
 import com.vpu.mp.service.shop.payment.PaymentService;
 import com.vpu.mp.service.shop.store.store.StoreService;
 import com.vpu.mp.service.shop.summary.portrait.PortraitService;
@@ -78,6 +59,8 @@ import com.vpu.mp.service.shop.summary.visit.RetainService;
 import com.vpu.mp.service.shop.task.ShopTaskService;
 import com.vpu.mp.service.shop.user.user.UserService;
 import com.vpu.mp.service.shop.version.VersionService;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
 /**
  * 
@@ -136,8 +119,11 @@ public class ShopApplication {
 	public AppletsJumpService appletsJump;
 	@Autowired
 	public MallOverviewService mallOverview;
+    /**
+     * 优惠券管理
+     */
 	@Autowired
-	public CouponService coupon; // 优惠券管理
+	public CouponService coupon;
 	@Autowired
 	public RetainService retain;
 	@Autowired
@@ -150,20 +136,41 @@ public class ShopApplication {
 	public RebateStrategyService rebateStrategy;
 	@Autowired
 	public RealTimeOverviewService realTimeOverview;
+    /**
+     * 分销员分组
+     */
 	@Autowired
-	public DistributorGroupService distributorGroup; // 分销员分组
+	public DistributorGroupService distributorGroup;
+    /**
+     * 分销员等级配置
+     */
 	@Autowired
-	public DistributorLevelService distributorLevel; // 分销员等级配置
-	@Autowired
-	public DistributorListService distributorList; // 分销员列表
-	@Autowired
-	public BrokerageStatisticalService brokerage; // 佣金统计
-	@Autowired
-	public RebateGoodsService rebateGoods; // 返利商品统计
-	@Autowired
-	public PromotionLanguageService promotionLanguage; // 分销推广语
-	@Autowired
-	public DistributorWithdrawService withdraw; // 分销提现
+	public DistributorLevelService distributorLevel;
+    /**
+     * 分销员列表
+     */
+    @Autowired
+	public DistributorListService distributorList;
+    /**
+     * 佣金统计
+     */
+    @Autowired
+	public BrokerageStatisticalService brokerage;
+    /**
+     * 返利商品统计
+     */
+    @Autowired
+	public RebateGoodsService rebateGoods;
+    /**
+     * 分销推广语
+     */
+    @Autowired
+	public PromotionLanguageService promotionLanguage;
+    /**
+     * 分销提现
+     */
+    @Autowired
+	public DistributorWithdrawService withdraw;
 	@Autowired
 	public MemberCardOrderService memberCardOrder;
 	@Autowired
@@ -333,4 +340,10 @@ public class ShopApplication {
     @Autowired public ChannelStatisticalService channelStatitical;
 	@Autowired
 	public PaymentService pay;
+
+    /**
+     * 赠品
+     */
+    @Autowired
+    public GiftService gift;
 }
