@@ -6,6 +6,7 @@ package com.vpu.mp.db.shop;
 
 import javax.annotation.Generated;
 
+import com.vpu.mp.db.shop.tables.records.ShareAwardRecord;
 import org.jooq.Index;
 import org.jooq.OrderField;
 import org.jooq.impl.Internal;
@@ -444,6 +445,19 @@ public class Indexes {
     public static final Index FIRST_SPECIAL_PRIMARY = Indexes0.FIRST_SPECIAL_PRIMARY;
     public static final Index FIRST_SPECIAL_GOODS_PRIMARY = Indexes0.FIRST_SPECIAL_GOODS_PRIMARY;
     public static final Index FIRST_SPECIAL_PRODUCT_PRIMARY = Indexes0.FIRST_SPECIAL_PRODUCT_PRIMARY;
+    public static final Index SHARE_AWARD_PRIMARY = Indexes0.SHARE_AWARD_PRIMARY;
+    public static final Index SHARE_AWARD_SHARE_NAME = Indexes0.SHARE_AWARD_SHARE_NAME;
+    public static final Index SHARE_AWARD_RECORD_PRIMARY = Indexes0.SHARE_AWARD_RECORD_PRIMARY;
+    public static final Index SHARE_AWARD_RECORD_SHARE_ID = Indexes0.SHARE_AWARD_RECORD_SHARE_ID;
+    public static final Index SHARE_AWARD_RECORD_USER_SHARE = Indexes0.SHARE_AWARD_RECORD_USER_SHARE;
+    public static final Index SHARE_AWARD_RECEIVE_PRIMARY = Indexes0.SHARE_AWARD_RECEIVE_PRIMARY;
+    public static final Index SHARE_AWARD_RECEIVE_SHARE_ID = Indexes0.SHARE_AWARD_RECEIVE_SHARE_ID;
+    public static final Index SHARE_AWARD_RECEIVE_USER_SHARE = Indexes0.SHARE_AWARD_RECEIVE_USER_SHARE;
+    public static final Index ATTEND_SHARE_USER_ATTEND_SHARE_USER = Indexes0.ATTEND_SHARE_USER_ATTEND_SHARE_USER;
+    public static final Index ATTEND_SHARE_USER_PRIMARY = Indexes0.ATTEND_SHARE_USER_PRIMARY;
+
+
+
     // -------------------------------------------------------------------------
     // [#1459] distribute members to avoid static initialisers > 64kb
     // -------------------------------------------------------------------------
@@ -864,5 +878,16 @@ public class Indexes {
         public static Index FIRST_SPECIAL_PRIMARY = Internal.createIndex("PRIMARY", FirstSpecial.FIRST_SPECIAL, new OrderField[] { FirstSpecial.FIRST_SPECIAL.ID }, true);
         public static Index FIRST_SPECIAL_GOODS_PRIMARY = Internal.createIndex("PRIMARY", FirstSpecialGoods.FIRST_SPECIAL_GOODS, new OrderField[] { FirstSpecialGoods.FIRST_SPECIAL_GOODS.ID }, true);
         public static Index FIRST_SPECIAL_PRODUCT_PRIMARY = Internal.createIndex("PRIMARY", FirstSpecialProduct.FIRST_SPECIAL_PRODUCT, new OrderField[] { FirstSpecialProduct.FIRST_SPECIAL_PRODUCT.ID }, true);
-        }
+        public static Index SHARE_AWARD_PRIMARY = Internal.createIndex("PRIMARY", ShareAward.SHARE_AWARD, new OrderField[] { ShareAward.SHARE_AWARD.ID }, true);
+        public static Index SHARE_AWARD_SHARE_NAME = Internal.createIndex("share_name", ShareAward.SHARE_AWARD, new OrderField[] { ShareAward.SHARE_AWARD.NAME, ShareAward.SHARE_AWARD.DEL_FLAG }, false);
+        public static Index SHARE_AWARD_RECORD_PRIMARY = Internal.createIndex("PRIMARY", com.vpu.mp.db.shop.tables.ShareAwardRecord.SHARE_AWARD_RECORD, new OrderField[] { com.vpu.mp.db.shop.tables.ShareAwardRecord.SHARE_AWARD_RECORD.ID }, true);
+        public static Index SHARE_AWARD_RECORD_SHARE_ID = Internal.createIndex("share_id", com.vpu.mp.db.shop.tables.ShareAwardRecord.SHARE_AWARD_RECORD, new OrderField[] { com.vpu.mp.db.shop.tables.ShareAwardRecord.SHARE_AWARD_RECORD.SHARE_ID }, false);
+        public static Index SHARE_AWARD_RECORD_USER_SHARE = Internal.createIndex("user_share", com.vpu.mp.db.shop.tables.ShareAwardRecord.SHARE_AWARD_RECORD, new OrderField[] { com.vpu.mp.db.shop.tables.ShareAwardRecord.SHARE_AWARD_RECORD.USER_ID, com.vpu.mp.db.shop.tables.ShareAwardRecord.SHARE_AWARD_RECORD.SHARE_ID, com.vpu.mp.db.shop.tables.ShareAwardRecord.SHARE_AWARD_RECORD.GOODS_ID }, false);
+        public static Index SHARE_AWARD_RECEIVE_PRIMARY = Internal.createIndex("PRIMARY", ShareAwardReceive.SHARE_AWARD_RECEIVE, new OrderField[] { ShareAwardReceive.SHARE_AWARD_RECEIVE.ID }, true);
+        public static Index SHARE_AWARD_RECEIVE_SHARE_ID = Internal.createIndex("share_id", ShareAwardReceive.SHARE_AWARD_RECEIVE, new OrderField[] { ShareAwardReceive.SHARE_AWARD_RECEIVE.SHARE_ID }, false);
+        public static Index SHARE_AWARD_RECEIVE_USER_SHARE = Internal.createIndex("user_share", ShareAwardReceive.SHARE_AWARD_RECEIVE, new OrderField[] { ShareAwardReceive.SHARE_AWARD_RECEIVE.USER_ID, ShareAwardReceive.SHARE_AWARD_RECEIVE.SHARE_ID, ShareAwardReceive.SHARE_AWARD_RECEIVE.GOODS_ID }, false);
+        public static Index ATTEND_SHARE_USER_ATTEND_SHARE_USER = Internal.createIndex("attend_share_user", AttendShareUser.ATTEND_SHARE_USER, new OrderField[] { AttendShareUser.ATTEND_SHARE_USER.RECORD_ID, AttendShareUser.ATTEND_SHARE_USER.USER_ID }, false);
+        public static Index ATTEND_SHARE_USER_PRIMARY = Internal.createIndex("PRIMARY", AttendShareUser.ATTEND_SHARE_USER, new OrderField[] { AttendShareUser.ATTEND_SHARE_USER.ID }, true);
+
+    }
 }

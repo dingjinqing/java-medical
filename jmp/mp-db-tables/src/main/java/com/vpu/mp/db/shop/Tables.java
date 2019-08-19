@@ -7,6 +7,7 @@ package com.vpu.mp.db.shop;
 import javax.annotation.Generated;
 
 import com.vpu.mp.db.shop.tables.*;
+import com.vpu.mp.db.shop.tables.records.ShareAwardRecord;
 
 
 /**
@@ -1003,4 +1004,21 @@ public class Tables {
      * The table <code>mini_shop_471752.b2c_first_special_product</code>.
      */
     public static final FirstSpecialProduct FIRST_SPECIAL_PRODUCT = com.vpu.mp.db.shop.tables.FirstSpecialProduct.FIRST_SPECIAL_PRODUCT;
+    /**
+     * 分享有礼活动记录表
+     */
+    public static final ShareAward SHARE_AWARD = com.vpu.mp.db.shop.tables.ShareAward.SHARE_AWARD;
+    /**
+     * 用户分享记录表
+     */
+    public static final com.vpu.mp.db.shop.tables.ShareAwardRecord SHARE_AWARD_RECORD = com.vpu.mp.db.shop.tables.ShareAwardRecord.SHARE_AWARD_RECORD;
+    /**
+     * 用户领取分享奖励记录表
+     */
+    public static final ShareAwardReceive SHARE_AWARD_RECEIVE = com.vpu.mp.db.shop.tables.ShareAwardReceive.SHARE_AWARD_RECEIVE;
+    /**
+     * 用户点击分享链接触发分享生效记录表
+     */
+    public static final AttendShareUser ATTEND_SHARE_USER = com.vpu.mp.db.shop.tables.AttendShareUser.ATTEND_SHARE_USER;
+
 }

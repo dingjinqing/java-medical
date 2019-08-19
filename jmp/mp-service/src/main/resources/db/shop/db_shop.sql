@@ -2657,8 +2657,8 @@ create table `b2c_goods_spec_product_bak` (
   `low_shop_price`   varchar(1024)                      not null default '0.00'   comment '最低售出价格',
   `prd_img`          varchar(1024)                      not null default ''     comment '图片地址',
   `price_flag`       tinyint(1)                         not null default '0'  comment '0:商家未改价，1：商家改价，2：批量改价，3：毛利改价',
-  `create_time`      timestamp      not null comment '规格记录在原表内的添加时间',
-  `update_time`      timestamp      not null comment '规格记录在原表内的最后修改时间',
+  `create_time`      timestamp      not null default current_timestamp comment '规格记录在原表内的添加时间',
+  `update_time`      timestamp      not null default current_timestamp on update current_timestamp comment '规格记录在原表内的最后修改时间',
   primary key (`prd_bak_id`),
   key `gsp_goods_id` (`goods_id`),
   key `gsp_goods_codes` (`prd_codes`),
@@ -4156,3 +4156,83 @@ CREATE TABLE `b2c_first_special_product` (
    `prd_price`        decimal(10,2) DEFAULT NULL COMMENT '折后价格',
    PRIMARY KEY (`id`)
 );
+
+-- 营销管理-分享有礼活动
+-- 分享有礼活动记录表
+DROP TABLE IF EXISTS `b2c_share_award`;
+CREATE TABLE `b2c_share_award`  (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `name` varchar(120) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL COMMENT '活动名称',
+  `start_time` timestamp NULL DEFAULT NULL COMMENT '开始时间',
+  `end_time` timestamp NULL DEFAULT NULL COMMENT '结束时间',
+  `is_forever` tinyint(1) NULL DEFAULT NULL COMMENT '是否永久，0否，1是',
+  `priority` mediumint(4) NULL DEFAULT 1 COMMENT '优先级',
+  `condition` tinyint(1) NOT NULL COMMENT '触发条件：1.分享全部商品，2.分享指定商品，3.分享访问量较少商品',
+  `goods_ids` varchar(200) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NULL DEFAULT NULL COMMENT '触发条件为2时：分享指定商品id列表，逗号分隔符',
+  `goods_pv` int(8) NULL DEFAULT NULL COMMENT '触发条件为3时：被分享商品访问量条件',
+  `visit_first` tinyint(1) NULL DEFAULT NULL COMMENT '仅邀请未访问过的用户有效',
+  `status` tinyint(1) NOT NULL DEFAULT 0 COMMENT '状态：1停用',
+  `del_flag` tinyint(1) NOT NULL DEFAULT 0 COMMENT '是否删除：1删除',
+  `first_level_rule` varchar(500) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NULL DEFAULT NULL COMMENT '一级规则设置（json）：规则优先级从一到三依次增强，规则一满足后方可进行规则二',
+  `second_level_rule` varchar(500) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NULL DEFAULT NULL COMMENT '二级规则设置（json）',
+  `third_level_rule` varchar(500) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NULL DEFAULT NULL COMMENT '三级规则设置（json）',
+  `first_award_num` int(10) NULL DEFAULT 0 COMMENT '一级规则剩余奖品数',
+  `second_award_num` int(10) NULL DEFAULT 0 COMMENT '二级规则剩余奖品数',
+  `third_award_num` int(10) NULL DEFAULT 0 COMMENT '三级规则剩余奖品数',
+  `create_time` timestamp(0) NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
+  `update_time` timestamp(0) NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP(0) COMMENT '更新时间',
+  PRIMARY KEY (`id`) USING BTREE,
+  INDEX `share_name`(`name`,`del_flag`) USING BTREE
+) ENGINE = InnoDB AUTO_INCREMENT = 1 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_unicode_ci ROW_FORMAT = Compact COMMENT '分享有礼活动记录表';
+
+-- 用户分享记录表
+DROP TABLE IF EXISTS `b2c_share_award_record`;
+CREATE TABLE `b2c_share_award_record`  (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `user_id` int(9) NOT NULL DEFAULT 0 COMMENT '用户ID',
+  `share_id` int(9) NOT NULL DEFAULT 0 COMMENT '活动ID',
+  `goods_id` int(9) NULL DEFAULT 0 COMMENT '商品ID',
+  `user_number` int(6) NULL DEFAULT 0 COMMENT '分享链接被查看用户数',
+  `status` tinyint(1) NULL DEFAULT 0 COMMENT '活动现在处于等级 1，2,3分别对应b2c_share_award表中的first_level_rule，second_level_rule，third_level_rule',
+  `first_award` tinyint(1) NULL DEFAULT 0 COMMENT '1级规则奖品状态 0进行中 1未领取 2已领取 3已过期',
+  `second_award` tinyint(1) NULL DEFAULT 0 COMMENT '2级规则奖品状态 0进行中 1未领取 2已领取 3已过期',
+  `third_award` tinyint(1) NULL DEFAULT 0 COMMENT '3级规则奖品状态 0进行中 1未领取 2已领取 3已过期',
+  `create_time` timestamp(0) NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
+  `update_time` timestamp(0) NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP(0) COMMENT '更新时间',
+  PRIMARY KEY (`id`) USING BTREE,
+  INDEX `share_id`(`share_id`) USING BTREE,
+  INDEX `user_share`(`user_id`, `share_id`, `goods_id`) USING BTREE
+) ENGINE = InnoDB AUTO_INCREMENT = 1 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_unicode_ci ROW_FORMAT = Compact COMMENT '用户分享记录表';
+
+-- 用户领取分享奖励记录表
+DROP TABLE IF EXISTS `b2c_share_award_receive`;
+CREATE TABLE `b2c_share_award_receive`  (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `user_id` int(9) NOT NULL DEFAULT 0 COMMENT '用户ID',
+  `share_id` int(9) NOT NULL DEFAULT 0 COMMENT '活动ID',
+  `goods_id` int(9) NOT NULL DEFAULT 0 COMMENT '商品ID',
+  `award_level` tinyint(1) NULL DEFAULT 0 COMMENT '领取的是几级奖励 1,2 3',
+  `create_time` timestamp(0) NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间/分享奖励领取时间',
+  `update_time` timestamp(0) NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP(0) COMMENT '更新时间',
+  PRIMARY KEY (`id`) USING BTREE,
+  INDEX `share_id`(`share_id`) USING BTREE,
+  INDEX `user_share`(`user_id`, `share_id`, `goods_id`) USING BTREE
+) ENGINE = InnoDB AUTO_INCREMENT = 1 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_unicode_ci ROW_FORMAT = Compact  COMMENT '用户领取分享奖励记录表';
+
+-- 用户点击分享链接触发分享生效记录表
+DROP TABLE IF EXISTS `b2c_attend_share_user`;
+CREATE TABLE `b2c_attend_share_user`  (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `record_id` int(11) NOT NULL DEFAULT 0 COMMENT '对应b2c_share_award_record表id',
+  `share_id` int(9) NOT NULL DEFAULT 0 COMMENT '活动ID',
+  `goods_id` int(9) NULL DEFAULT 0 COMMENT '商品ID',
+  `user_id` int(9) NOT NULL DEFAULT 0 COMMENT '参与分享活动用户ID，即点击别人分享链接查看商品的用户id',
+  `is_new` tinyint(1) NULL DEFAULT 0 COMMENT '是否是新用户',
+  `launch_user_id` int(9) NOT NULL DEFAULT 0 COMMENT '触发分享活动用户ID，即分享商品的用户id',
+  `level` tinyint(1) NULL DEFAULT 0 COMMENT '参加活动时的活动进行等级1,2,3',
+  `create_time` timestamp(0) NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
+  `update_time` timestamp(0) NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP(0) COMMENT '更新时间',
+  PRIMARY KEY (`id`) USING BTREE,
+  INDEX `attend_share_user`(`record_id`, `user_id`) USING BTREE
+) ENGINE = InnoDB AUTO_INCREMENT = 73 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_unicode_ci ROW_FORMAT = Compact COMMENT '用户点击分享链接触发分享生效记录表';
+

@@ -4,13 +4,8 @@
 package com.vpu.mp.db.shop;
 
 
-import javax.annotation.Generated;
-
-import org.jooq.Identity;
-import org.jooq.UniqueKey;
-import org.jooq.impl.Internal;
-
 import com.vpu.mp.db.shop.tables.*;
+import com.vpu.mp.db.shop.tables.ShareAwardRecord;
 import com.vpu.mp.db.shop.tables.TradesRecord;
 import com.vpu.mp.db.shop.tables.records.*;
 import com.vpu.mp.db.shop.tables.records.AssessTopicRecord;
@@ -19,8 +14,13 @@ import com.vpu.mp.db.shop.tables.records.ChannelRecord;
 import com.vpu.mp.db.shop.tables.records.CouponActivityRecord;
 import com.vpu.mp.db.shop.tables.records.DistributorLevelRecord;
 import com.vpu.mp.db.shop.tables.records.LotteryRecord;
-import com.vpu.mp.db.shop.tables.records.PaymentRecord;
 import com.vpu.mp.db.shop.tables.records.PayRewardRecord;
+import com.vpu.mp.db.shop.tables.records.PaymentRecord;
+import org.jooq.Identity;
+import org.jooq.UniqueKey;
+import org.jooq.impl.Internal;
+
+import javax.annotation.Generated;
 
 
 /**
@@ -237,6 +237,11 @@ public class Keys {
     public static final Identity<FirstSpecialRecord, Integer> IDENTITY_FIRST_SPECIAL = Identities0.IDENTITY_FIRST_SPECIAL;
     public static final Identity<FirstSpecialGoodsRecord, Integer> IDENTITY_FIRST_SPECIAL_GOODS = Identities0.IDENTITY_FIRST_SPECIAL_GOODS;
     public static final Identity<FirstSpecialProductRecord, Integer> IDENTITY_FIRST_SPECIAL_PRODUCT = Identities0.IDENTITY_FIRST_SPECIAL_PRODUCT;
+    public static final Identity<com.vpu.mp.db.shop.tables.records.ShareAwardRecord, Integer> IDENTITY_SHARE_AWARD = Identities0.IDENTITY_SHARE_AWARD;
+    public static final Identity<ShareAwardRecordRecord, Integer> IDENTITY_SHARE_AWARD_RECORD = Identities0.IDENTITY_SHARE_AWARD_RECORD;
+    public static final Identity<ShareAwardReceiveRecord, Integer> IDENTITY_SHARE_AWARD_RECEIVE = Identities0.IDENTITY_SHARE_AWARD_RECEIVE;
+    public static final Identity<AttendShareUserRecord, Integer> IDENTITY_ATTEND_SHARE_USER = Identities0.IDENTITY_ATTEND_SHARE_USER;
+
     // -------------------------------------------------------------------------
     // UNIQUE and PRIMARY KEY definitions
     // -------------------------------------------------------------------------
@@ -465,6 +470,10 @@ public class Keys {
     public static final UniqueKey<FirstSpecialRecord> KEY_B2C_FIRST_SPECIAL_PRIMARY = UniqueKeys0.KEY_B2C_FIRST_SPECIAL_PRIMARY;
     public static final UniqueKey<FirstSpecialGoodsRecord> KEY_B2C_FIRST_SPECIAL_GOODS_PRIMARY = UniqueKeys0.KEY_B2C_FIRST_SPECIAL_GOODS_PRIMARY;
     public static final UniqueKey<FirstSpecialProductRecord> KEY_B2C_FIRST_SPECIAL_PRODUCT_PRIMARY = UniqueKeys0.KEY_B2C_FIRST_SPECIAL_PRODUCT_PRIMARY;
+    public static final UniqueKey<com.vpu.mp.db.shop.tables.records.ShareAwardRecord> KEY_B2C_SHARE_AWARD_PRIMARY = UniqueKeys0.KEY_B2C_SHARE_AWARD_PRIMARY;
+    public static final UniqueKey<ShareAwardRecordRecord> KEY_B2C_SHARE_AWARD_RECORD_PRIMARY = UniqueKeys0.KEY_B2C_SHARE_AWARD_RECORD_PRIMARY;
+    public static final UniqueKey<ShareAwardReceiveRecord> KEY_B2C_SHARE_AWARD_RECEIVE_PRIMARY = UniqueKeys0.KEY_B2C_SHARE_AWARD_RECEIVE_PRIMARY;
+    public static final UniqueKey<AttendShareUserRecord> KEY_B2C_ATTEND_SHARE_USER_PRIMARY = UniqueKeys0.KEY_B2C_ATTEND_SHARE_USER_PRIMARY;
 
     // -------------------------------------------------------------------------
     // FOREIGN KEY definitions
@@ -673,6 +682,10 @@ public class Keys {
         public static Identity<FirstSpecialRecord, Integer> IDENTITY_FIRST_SPECIAL = Internal.createIdentity(FirstSpecial.FIRST_SPECIAL, FirstSpecial.FIRST_SPECIAL.ID);
         public static Identity<FirstSpecialGoodsRecord, Integer> IDENTITY_FIRST_SPECIAL_GOODS = Internal.createIdentity(FirstSpecialGoods.FIRST_SPECIAL_GOODS, FirstSpecialGoods.FIRST_SPECIAL_GOODS.ID);
         public static Identity<FirstSpecialProductRecord, Integer> IDENTITY_FIRST_SPECIAL_PRODUCT = Internal.createIdentity(FirstSpecialProduct.FIRST_SPECIAL_PRODUCT, FirstSpecialProduct.FIRST_SPECIAL_PRODUCT.ID);
+        public static Identity<com.vpu.mp.db.shop.tables.records.ShareAwardRecord, Integer> IDENTITY_SHARE_AWARD = Internal.createIdentity(ShareAward.SHARE_AWARD, ShareAward.SHARE_AWARD.ID);
+        public static Identity<ShareAwardRecordRecord, Integer> IDENTITY_SHARE_AWARD_RECORD = Internal.createIdentity(ShareAwardRecord.SHARE_AWARD_RECORD, ShareAwardRecord.SHARE_AWARD_RECORD.ID);
+        public static Identity<ShareAwardReceiveRecord, Integer> IDENTITY_SHARE_AWARD_RECEIVE = Internal.createIdentity(ShareAwardReceive.SHARE_AWARD_RECEIVE, ShareAwardReceive.SHARE_AWARD_RECEIVE.ID);
+        public static Identity<AttendShareUserRecord, Integer> IDENTITY_ATTEND_SHARE_USER = Internal.createIdentity(AttendShareUser.ATTEND_SHARE_USER, AttendShareUser.ATTEND_SHARE_USER.ID);
 
     }
 
@@ -902,6 +915,10 @@ public class Keys {
         public static final UniqueKey<FirstSpecialRecord> KEY_B2C_FIRST_SPECIAL_PRIMARY = Internal.createUniqueKey(FirstSpecial.FIRST_SPECIAL, "KEY_b2c_first_special_PRIMARY", FirstSpecial.FIRST_SPECIAL.ID);
         public static final UniqueKey<FirstSpecialGoodsRecord> KEY_B2C_FIRST_SPECIAL_GOODS_PRIMARY = Internal.createUniqueKey(FirstSpecialGoods.FIRST_SPECIAL_GOODS, "KEY_b2c_first_special_goods_PRIMARY", FirstSpecialGoods.FIRST_SPECIAL_GOODS.ID);
         public static final UniqueKey<FirstSpecialProductRecord> KEY_B2C_FIRST_SPECIAL_PRODUCT_PRIMARY = Internal.createUniqueKey(FirstSpecialProduct.FIRST_SPECIAL_PRODUCT, "KEY_b2c_first_special_product_PRIMARY", FirstSpecialProduct.FIRST_SPECIAL_PRODUCT.ID);
+        public static final UniqueKey<com.vpu.mp.db.shop.tables.records.ShareAwardRecord> KEY_B2C_SHARE_AWARD_PRIMARY = Internal.createUniqueKey(ShareAward.SHARE_AWARD, "KEY_b2c_share_award_PRIMARY", ShareAward.SHARE_AWARD.ID);
+        public static final UniqueKey<ShareAwardRecordRecord> KEY_B2C_SHARE_AWARD_RECORD_PRIMARY = Internal.createUniqueKey(ShareAwardRecord.SHARE_AWARD_RECORD, "KEY_b2c_share_award_record_PRIMARY", ShareAwardRecord.SHARE_AWARD_RECORD.ID);
+        public static final UniqueKey<ShareAwardReceiveRecord> KEY_B2C_SHARE_AWARD_RECEIVE_PRIMARY = Internal.createUniqueKey(ShareAwardReceive.SHARE_AWARD_RECEIVE, "KEY_b2c_share_award_receive_PRIMARY", ShareAwardReceive.SHARE_AWARD_RECEIVE.ID);
+        public static final UniqueKey<AttendShareUserRecord> KEY_B2C_ATTEND_SHARE_USER_PRIMARY = Internal.createUniqueKey(AttendShareUser.ATTEND_SHARE_USER, "KEY_b2c_attend_share_user_PRIMARY", AttendShareUser.ATTEND_SHARE_USER.ID);
 
     }
 }
