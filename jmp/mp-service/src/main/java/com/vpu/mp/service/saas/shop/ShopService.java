@@ -449,5 +449,9 @@ public class ShopService extends MainBaseService {
 	public ShopRecord checkShop(Integer shopId,Integer sysId) {
 		 return db().selectFrom(SHOP).where(SHOP.SHOP_ID.eq(shopId).and(SHOP.SYS_ID.eq(sysId))).fetchOne();
 	}
+	
+	public Integer getShopNumber(Integer sysId) {
+		return (Integer) db().select(DSL.count(SHOP.SYS_ID)).from(SHOP).where(SHOP.SYS_ID.eq(sysId)).fetchAny(0);
+	}
 
 }
