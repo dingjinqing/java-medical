@@ -2,7 +2,6 @@ package com.vpu.mp.service.shop.market.integralconvert;
 
 import org.jooq.Record;
 import org.jooq.SelectConditionStep;
-import org.jooq.SelectOnConditionStep;
 import org.jooq.impl.DSL;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -18,6 +17,7 @@ import com.vpu.mp.service.foundation.util.PageResult;
 import com.vpu.mp.service.pojo.shop.market.MarketOrderListParam;
 import com.vpu.mp.service.pojo.shop.market.MarketSourceUserListParam;
 import com.vpu.mp.service.pojo.shop.market.integralconvert.IntegralConvertAddParam;
+import com.vpu.mp.service.pojo.shop.market.integralconvert.IntegralConvertConstant;
 import com.vpu.mp.service.pojo.shop.market.integralconvert.IntegralConvertGoodsParam;
 import com.vpu.mp.service.pojo.shop.market.integralconvert.IntegralConvertGoodsVo;
 import com.vpu.mp.service.pojo.shop.market.integralconvert.IntegralConvertListParam;
@@ -75,35 +75,36 @@ public class IntegralConvertService extends ShopBaseService {
 	 */
 	public PageResult<IntegralConvertListVo> getList(IntegralConvertListParam param) {
 		Timestamp nowTime = new Timestamp(System.currentTimeMillis());
-		SelectOnConditionStep<? extends Record> sql = db()
+		SelectConditionStep<? extends Record> sql = db()
 				.select(imd.ID, imd.NAME, GOODS.GOODS_ID, GOODS.GOODS_IMG, GOODS.GOODS_NAME, imd.START_TIME,
 						imd.END_TIME, DSL.sum(imr.MONEY).as("money"), DSL.sum(imr.SCORE).as("score"),
 						GOODS.GOODS_NUMBER, imp.STOCK, DSL.sum(imr.NUMBER).as("number"),
 						DSL.count(imr.USER_ID).as("userNumber"))
 				.from(imd).leftJoin(GOODS).on(imd.GOODS_ID.eq(GOODS.GOODS_ID)).leftJoin(imp)
-				.on(imd.ID.eq(imp.INTEGRAL_MALL_DEFINE_ID)).leftJoin(imr).on(imd.ID.eq(imr.INTEGRAL_MALL_DEFINE_ID));
+				.on(imd.ID.eq(imp.INTEGRAL_MALL_DEFINE_ID)).leftJoin(imr).on(imd.ID.eq(imr.INTEGRAL_MALL_DEFINE_ID))
+				.where(imd.DEL_FLAG.equal((byte)IntegralConvertConstant.NOT_DELETE));
 
 		/* 活动状态0全部 */
-		if (IntegralConvertListParam.ALL == param.getActState()) {
+		if (IntegralConvertConstant.ALL == param.getActState()) {
 
 		}
 		/* 活动状态1进行中 */
-		if (IntegralConvertListParam.DOING == param.getActState()) {
-			sql.where(imd.STATUS.eq((byte) IntegralConvertListParam.NOT_BLOCK)).and(imd.START_TIME.lessOrEqual(nowTime))
+		if (IntegralConvertConstant.DOING == param.getActState()) {
+			sql.and(imd.STATUS.eq((byte) IntegralConvertConstant.NOT_BLOCK)).and(imd.START_TIME.lessOrEqual(nowTime))
 					.and(imd.END_TIME.greaterOrEqual(nowTime));
 		}
 		/* 活动状态2未开始 */
-		if (IntegralConvertListParam.TODO == param.getActState()) {
-			sql.where(imd.STATUS.eq((byte) IntegralConvertListParam.NOT_BLOCK))
+		if (IntegralConvertConstant.TODO == param.getActState()) {
+			sql.and(imd.STATUS.eq((byte) IntegralConvertConstant.NOT_BLOCK))
 					.and(imd.START_TIME.greaterOrEqual(nowTime));
 		}
 		/* 活动状态3已过期 */
-		if (IntegralConvertListParam.DID == param.getActState()) {
-			sql.where(imd.STATUS.eq((byte) IntegralConvertListParam.NOT_BLOCK)).and(imd.END_TIME.lessOrEqual(nowTime));
+		if (IntegralConvertConstant.DID == param.getActState()) {
+			sql.and(imd.STATUS.eq((byte) IntegralConvertConstant.NOT_BLOCK)).and(imd.END_TIME.lessOrEqual(nowTime));
 		}
 		/* 活动状态0已停用 */
-		if (IntegralConvertListParam.STOP == param.getActState()) {
-			sql.where(imd.STATUS.eq((byte) IntegralConvertListParam.BLOCK));
+		if (IntegralConvertConstant.STOP == param.getActState()) {
+			sql.and(imd.STATUS.eq((byte) IntegralConvertConstant.BLOCK));
 		}
 		sql.groupBy(imd.ID, imd.NAME, GOODS.GOODS_ID, GOODS.GOODS_IMG, GOODS.GOODS_NAME, imd.START_TIME, imd.END_TIME,
 				GOODS.GOODS_NUMBER, imp.STOCK);
@@ -124,18 +125,29 @@ public class IntegralConvertService extends ShopBaseService {
 		int status = db().select(imd.STATUS).from(imd).where(imd.ID.eq(param.getId())).fetchOptionalInto(Integer.class)
 				.get();
 		/* 若已停用 则启用 */
-		if (status == IntegralConvertSwitchParam.BLOCK) {
-			db().update(imd).set(imd.STATUS, (byte) IntegralConvertSwitchParam.NOT_BLOCK)
+		if (status == IntegralConvertConstant.BLOCK) {
+			db().update(imd).set(imd.STATUS, (byte) IntegralConvertConstant.NOT_BLOCK)
 					.where(imd.ID.eq(param.getId())).execute();
 		}
 		/* 若启用中 则停用 */
-		if (status == IntegralConvertSwitchParam.NOT_BLOCK) {
-			db().update(imd).set(imd.STATUS, (byte) IntegralConvertSwitchParam.BLOCK).where(imd.ID.eq(param.getId()))
+		if (status == IntegralConvertConstant.NOT_BLOCK) {
+			db().update(imd).set(imd.STATUS, (byte) IntegralConvertConstant.BLOCK).where(imd.ID.eq(param.getId()))
 					.execute();
 		}
 
 	}
 
+	/**
+	 * 删除单个活动
+	 *
+	 * @param IntegralConvertSwitchParam
+	 * @return void
+	 */
+	public void deleteAct(IntegralConvertSwitchParam param) {
+		/* 修改del_flag */
+		db().update(imd).set(imd.DEL_FLAG, (byte) IntegralConvertConstant.DELETE).where(imd.ID.eq(param.getId()))
+				.execute();
+	}
 	/**
 	 * 积分兑换用户列表
 	 *
@@ -176,7 +188,7 @@ public class IntegralConvertService extends ShopBaseService {
 
 		List<IntegralConvertGoodsVo> sql = db().select().from(GOODS_SPEC_PRODUCT)
 				.where(GOODS_SPEC_PRODUCT.GOODS_ID.eq(param.getGoodsId()))
-				.and(GOODS_SPEC_PRODUCT.DEL_FLAG.eq((byte) IntegralConvertGoodsParam.NOT_DELETE))
+				.and(GOODS_SPEC_PRODUCT.DEL_FLAG.eq((byte) IntegralConvertConstant.NOT_DELETE))
 				.fetchInto(IntegralConvertGoodsVo.class);
 
 		return sql;
@@ -204,7 +216,7 @@ public class IntegralConvertService extends ShopBaseService {
 			/* 查找指定商品的所有规格 */
 			List<Integer> productIds = db().select(GOODS_SPEC_PRODUCT.PRD_ID).from(GOODS_SPEC_PRODUCT)
 					.where(GOODS_SPEC_PRODUCT.GOODS_ID.eq(param.getGoodsId()))
-					.and(GOODS_SPEC_PRODUCT.DEL_FLAG.eq((byte) IntegralConvertGoodsParam.NOT_DELETE))
+					.and(GOODS_SPEC_PRODUCT.DEL_FLAG.eq((byte) IntegralConvertConstant.NOT_DELETE))
 					.fetchInto(Integer.class);
 			/* 添加数据-活动规格信息表 */
 			for (int i = 0; i < productIds.size(); i++) {
@@ -238,7 +250,7 @@ public class IntegralConvertService extends ShopBaseService {
 
 		List<Integer> productIds = db().select(GOODS_SPEC_PRODUCT.PRD_ID).from(GOODS_SPEC_PRODUCT)
 				.where(GOODS_SPEC_PRODUCT.GOODS_ID.eq(goodId))
-				.and(GOODS_SPEC_PRODUCT.DEL_FLAG.eq((byte) IntegralConvertGoodsParam.NOT_DELETE))
+				.and(GOODS_SPEC_PRODUCT.DEL_FLAG.eq((byte) IntegralConvertConstant.NOT_DELETE))
 				.fetchInto(Integer.class);
 
 		List<IntegralConvertProductVo> productList = new ArrayList<IntegralConvertProductVo>(1024);
@@ -250,12 +262,10 @@ public class IntegralConvertService extends ShopBaseService {
 
 			String prdDesc = db().select(GOODS_SPEC_PRODUCT.PRD_DESC).from(GOODS_SPEC_PRODUCT)
 					.where(GOODS_SPEC_PRODUCT.PRD_ID.eq(productIds.get(i)))
-					.and(GOODS_SPEC_PRODUCT.DEL_FLAG.eq((byte) IntegralConvertGoodsParam.NOT_DELETE))
+					.and(GOODS_SPEC_PRODUCT.DEL_FLAG.eq((byte) IntegralConvertConstant.NOT_DELETE))
 					.fetchOptionalInto(String.class).orElse(null);
 
 			listVo.setPrdDesc(prdDesc);
-
-			System.out.println(listVo);
 
 			productList.add(i, listVo);
 
@@ -288,7 +298,7 @@ public class IntegralConvertService extends ShopBaseService {
 			/* 查找指定商品的所有规格 */
 			List<Integer> productIds = db().select(GOODS_SPEC_PRODUCT.PRD_ID).from(GOODS_SPEC_PRODUCT)
 					.where(GOODS_SPEC_PRODUCT.GOODS_ID.eq(param.getGoodsId()))
-					.and(GOODS_SPEC_PRODUCT.DEL_FLAG.eq((byte) IntegralConvertGoodsParam.NOT_DELETE))
+					.and(GOODS_SPEC_PRODUCT.DEL_FLAG.eq((byte) IntegralConvertConstant.NOT_DELETE))
 					.fetchInto(Integer.class);
 			/* 修改数据-活动规格信息表 */
 			for (int i = 0; i < productIds.size(); i++) {
