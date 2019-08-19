@@ -11,7 +11,6 @@ import com.vpu.mp.service.foundation.data.JsonResult;
 import com.vpu.mp.service.foundation.util.PageResult;
 import com.vpu.mp.service.pojo.shop.market.MarketOrderListParam;
 import com.vpu.mp.service.pojo.shop.market.MarketSourceUserListParam;
-import com.vpu.mp.service.pojo.shop.market.friendpromote.FriendPromoteOptionParam;
 import com.vpu.mp.service.pojo.shop.market.integralconvert.IntegralConvertAddParam;
 import com.vpu.mp.service.pojo.shop.market.integralconvert.IntegralConvertGoodsParam;
 import com.vpu.mp.service.pojo.shop.market.integralconvert.IntegralConvertGoodsVo;

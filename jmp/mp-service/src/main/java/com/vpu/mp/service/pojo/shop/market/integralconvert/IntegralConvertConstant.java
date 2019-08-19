@@ -1,5 +1,10 @@
 package com.vpu.mp.service.pojo.shop.market.integralconvert;
 
+/**
+ * 积分兑换常量
+ * @author liangchen
+ * @date 2019年8月19日
+ */
 public class IntegralConvertConstant {
 
 	/** 
