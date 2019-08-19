@@ -17,6 +17,8 @@ import com.vpu.mp.service.foundation.util.VoTranslator;
 import com.vpu.mp.service.pojo.shop.summary.visit.VisitPageParam;
 import com.vpu.mp.service.saas.SaasApplication;
 
+import me.chanjar.weixin.open.bean.result.WxOpenResult;
+
 /**
  * 
  * @author 新国
@@ -163,5 +165,9 @@ public class BaseController {
 	protected JsonResult i18nSuccess(Object content) {
 		translator.translateFields(content);
 		return result(JsonResultCode.CODE_SUCCESS, content);
+	}
+	
+	public JsonResult wxfail(Object result) {
+		return result(JsonResultCode.CODE_FAIL,result);
 	}
 }
