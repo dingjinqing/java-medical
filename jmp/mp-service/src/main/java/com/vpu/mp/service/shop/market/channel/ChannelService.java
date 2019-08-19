@@ -50,6 +50,9 @@ public class ChannelService extends ShopBaseService {
 
 	public static final String PAGE_PATH_PARAM_FORMAT = "page=%d&channel=%s";
 	public static final String GOODS_PATH_PARAM_FORMAT = "goods_id=%d&channel=%s";
+	/** 分享码 进制转换使用 */
+	private static final String digit = "0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ";
+	private static final BigInteger scale = new BigInteger("62");
 	@Autowired
 	ShopMpDecorationService shopMpDecoration;
 	@Autowired
@@ -247,8 +250,6 @@ public class ChannelService extends ShopBaseService {
 	}
 	
 	private String convert62(BigInteger from) {
-		final String digit = "0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ";
-		final BigInteger scale = new BigInteger("62");
 		StringBuilder dest = new StringBuilder();
 		String sign = from.signum() ==-1?"-":"";
 		while(true) {
