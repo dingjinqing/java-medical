@@ -515,13 +515,13 @@
       <el-dialog
         :title="$t('programVersion.SettingPaymentMethod')"
         :visible.sync="dialogVisible"
-        width="20%"
+        width="25%"
       >
         <div
           class="payDialogDiv first"
           :class="payDialogDivEn"
         >
-          <span>{{$t('programVersion.PaymentSettings')}}</span>
+          <span style="margin-right:22px">{{$t('programVersion.PaymentSettings')}}</span>
           <el-select
             v-model="value"
             :placeholder="$t('programVersion.placeChoise')"
@@ -984,6 +984,9 @@ export default {
       /deep/ .el-input__inner {
         width: 210px;
       }
+      /deep/ .el-input {
+        width: auto;
+      }
     }
 
     .sp {
@@ -991,7 +994,7 @@ export default {
     }
     .first {
       padding-left: 10px;
-      justify-content: space-between;
+      justify-content: flex-end;
     }
     .mcc {
       padding-left: 50px;

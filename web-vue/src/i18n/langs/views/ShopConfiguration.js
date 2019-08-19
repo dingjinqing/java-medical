@@ -14,7 +14,15 @@ export const cn = {
   },
   // 小程序授权页面
   SmallProgramAuthorizationPage: {
-    BindedApplet: '已绑定小程序'
+    BindedApplet: '已绑定小程序',
+    WidgetName: '小程序名称',
+    Reauthorization: '重新授权',
+    BindedPublicNumber: '已绑定的公众号',
+    MicroshopEnterpriseService: '微铺宝企业服务',
+    tip1: '此公众号已取消授权，无法给用户发送公众号消息、分销员返利佣金不能提现，如有需要，请重新授权',
+    SmallProgramVersion: '小程序版本',
+    AuditStatus: '审核状态',
+    AuthorizationStatus: '授权状态'
   }
 }
 
