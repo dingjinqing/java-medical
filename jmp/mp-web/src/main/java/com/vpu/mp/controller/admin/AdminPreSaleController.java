@@ -1,14 +1,20 @@
 package com.vpu.mp.controller.admin;
 
 import com.vpu.mp.service.foundation.data.JsonResult;
+import com.vpu.mp.service.foundation.data.JsonResultMessage;
+import com.vpu.mp.service.foundation.util.DateUtil;
+import com.vpu.mp.service.foundation.util.Util;
 import com.vpu.mp.service.pojo.shop.image.ShareQrCodeVo;
 import com.vpu.mp.service.pojo.shop.market.presale.OrderListParam;
 import com.vpu.mp.service.pojo.shop.market.presale.PreSaleListParam;
 import com.vpu.mp.service.pojo.shop.market.presale.PreSaleParam;
 import com.vpu.mp.service.pojo.shop.qrcode.QrCodeTypeEnum;
+import org.apache.poi.ss.usermodel.Workbook;
 import org.springframework.web.bind.annotation.*;
 
+import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
+import java.io.IOException;
 
 /**
  * @author 郑保乐
@@ -16,6 +22,8 @@ import javax.validation.Valid;
 @RestController
 @RequestMapping("/api/admin/market/pre_sale")
 public class AdminPreSaleController extends AdminBaseController {
+
+    private static final String LANGUAGE_TYPE_EXCEL = "excel";
 
     /**
      * 活动列表
@@ -105,5 +113,19 @@ public class AdminPreSaleController extends AdminBaseController {
         vo.setImageUrl(code);
         vo.setPagePath(pagePath);
         return success(vo);
+    }
+
+    /**
+     * 导出活动订单
+     */
+    @PostMapping("/order/export")
+    public void exportOrderExcel(@RequestBody @Valid OrderListParam param, HttpServletResponse response) throws IOException {
+        Workbook workbook = shop().preSaleOrder.exportOrderList(param, getLang());
+        response.setContentType("application/vnd.ms-excel;charset=UTF-8");
+        String fileName =
+            Util.translateMessage(getLang(),
+                JsonResultMessage.PRESALE_ORDER_EXCEL, LANGUAGE_TYPE_EXCEL) + DateUtil.getLocalDateTime().toString();
+        response.setHeader("Content-Disposition", "attachment;filename=" + fileName + ".xls");
+        workbook.write(response.getOutputStream());
     }
 }

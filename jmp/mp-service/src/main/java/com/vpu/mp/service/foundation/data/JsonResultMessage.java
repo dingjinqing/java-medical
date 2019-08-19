@@ -266,6 +266,17 @@ public class JsonResultMessage {
      * 开屏有礼
      */
     public static final String ACTIVITY_TIME_RANGE_CONFLICT = "activity.coupon.time_range_conflict";
-	
 
+    /**
+     * 定金膨胀
+     */
+    public static final String PRESALE_ORDER_EXCEL = "presale.order.order_excel";
+    public static final String PRESALE_ORDER_SN = "presale.order.order_sn";
+    public static final String PRESALE_GOODS_NAME = "presale.order.goods_name";
+    public static final String PRESALE_GOODS_AMOUNT = "presale.order.goods_amount";
+    public static final String PRESALE_ORDER_TIME = "presale.order.create_time";
+    public static final String PRESALE_CONSIGNEE_INFO = "presale.order.consignee_info";
+    public static final String PRESALE_MONEY_PAID = "presale.order.money_paid";
+    public static final String PRESALE_ORDER_STATUS = "presale.order.order_status";
+    public static final String INCLUDING_SHIPPING_FEE = "presale.order.including_shipping_fee";
 }

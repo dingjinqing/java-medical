@@ -194,6 +194,8 @@ public class PreSaleService extends ShopBaseService {
                 break;
             case DISABLED:
                 break;
+            default:
+                throw new IllegalArgumentException("Unexpected status: " + status);
         }
     }
 
@@ -345,7 +347,8 @@ public class PreSaleService extends ShopBaseService {
      */
     private void validateProduct(ProductParam product, PreSaleParam param) {
         Byte prePayStep = param.getPrePayStep();
-        if (2 == prePayStep) {
+        int twoSteps = 2;
+        if (twoSteps == prePayStep) {
             Assert.notNull(product.getPreDiscountMoney2(), "Missing parameter preDiscountMoney2");
         }
         Double presalePrice = product.getPresalePrice();
@@ -355,10 +358,11 @@ public class PreSaleService extends ShopBaseService {
         if (preDiscountMoney1 < presaleMoney || preDiscountMoney1 > presalePrice) {
             throwMoneyException();
         }
-        if (null != preDiscountMoney2 &&
-            (preDiscountMoney2 < presaleMoney
-                || preDiscountMoney2 > presalePrice)) {
-            throwMoneyException();
+        if (null != preDiscountMoney2) {
+            boolean illegalPresaleMoney = preDiscountMoney2 < presaleMoney || preDiscountMoney2 > presalePrice;
+            if (illegalPresaleMoney) {
+                throwMoneyException();
+            }
         }
     }
 
@@ -484,8 +488,4 @@ public class PreSaleService extends ShopBaseService {
         Integer goodsId = db().selectFrom(TABLE).where(TABLE.ID.eq(presaleId)).fetchOne(TABLE.GOODS_ID);
         return format(SHARE_PAGE_PATH, goodsId, presaleId);
     }
-
-    /**
-     * todo 导出 Excel
-     */
 }

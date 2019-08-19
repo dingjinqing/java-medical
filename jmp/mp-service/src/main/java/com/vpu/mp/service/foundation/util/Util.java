@@ -22,10 +22,12 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.Part;
 import java.io.IOException;
 import java.lang.reflect.Field;
+import java.math.BigDecimal;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
 import java.nio.charset.StandardCharsets;
 import java.sql.Timestamp;
+import java.text.DecimalFormat;
 import java.text.MessageFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -410,7 +412,7 @@ public class Util {
 	}
 
 
-	
+
 
     /**
      * List 转 String
@@ -441,5 +443,22 @@ public class Util {
      */
     public static Gson underLineStyleGson() {
         return new GsonBuilder().setFieldNamingPolicy(LOWER_CASE_WITH_UNDERSCORES).create();
+    }
+
+    /**
+     * 获取标准格式的日期字符串
+     */
+    public static String getStandardDate(Timestamp timestamp) {
+        Date date = new Date(timestamp.getTime());
+        SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss");
+        return format.format(date);
+    }
+
+    /**
+     * 获取金额字符串
+     */
+    public static String getCurrencyAmount(BigDecimal amount) {
+        DecimalFormat format = new DecimalFormat("###.00");
+        return format.format(amount);
     }
 }
