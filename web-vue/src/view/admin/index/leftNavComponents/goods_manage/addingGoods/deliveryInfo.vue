@@ -91,10 +91,10 @@
 import { deliverTemplatelist } from '@/api/admin/goods_manage/deliver/deliver'
 export default {
   name: 'deliveryInfo',
-  created() {
+  created () {
     this.fetchDeliverTemplatelist()
   },
-  data() {
+  data () {
     return {
       formData: {
         value: '店铺默认运费模板'
@@ -120,7 +120,7 @@ export default {
   },
   methods: {
 
-    fetchDeliverTemplatelist() {
+    fetchDeliverTemplatelist () {
       let params = {}
       deliverTemplatelist(params).then(res => {
         const { error, content } = res
@@ -150,10 +150,10 @@ export default {
         }
       }).catch(err => console.log(err))
     },
-    toDetailHandle() {
+    toDetailHandle () {
       this.$router.push({ path: '/admin/home/main/deliver/template/list' })
     },
-    getTemplateHandle(val) {
+    getTemplateHandle (val) {
       let res = this.options.filter((item) => {
         return item.value === val
       })

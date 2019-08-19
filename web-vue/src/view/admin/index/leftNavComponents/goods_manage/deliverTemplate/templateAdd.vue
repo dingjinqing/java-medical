@@ -57,20 +57,20 @@
 <script>
 export default {
   name: 'templateAdd',
-  data() {
-    return {
-      addForm: {
+  // data() {
+  //   return {
+  //     addForm: {
 
-      },
-      checked: false,
-      piece: 1,
-      money: 0,
-      addPiece: 1,
-      addMoney: 0,
-      name: ''
+  //     },
+  //     checked: false,
+  //     piece: 1,
+  //     money: 0,
+  //     addPiece: 1,
+  //     addMoney: 0,
+  //     name: ''
 
-    }
-  },
+  //   }
+  // },
   methods: {
     // testData () {
     //   let params = {

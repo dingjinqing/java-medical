@@ -3,7 +3,10 @@
     <div class="left">
       <img :src="imageUrl[0].img_1">
     </div>
-    <div class="header_nav">
+    <div
+      class="header_nav"
+      :class="headerNavEn"
+    >
       <div
         v-for="(item,index) in header_navData"
         :key="index"
@@ -101,7 +104,8 @@ export default {
       ],
       active_bg: 'active_bg',
       nav_index: '',
-      click_nav_index: null
+      click_nav_index: null,
+      headerNavEn: ''
 
     }
   },
@@ -336,6 +340,12 @@ label {
   display: flex;
   padding: 15px 25px;
   cursor: pointer;
+}
+.headerNavEn {
+  margin-left: 4% !important;
+}
+.headerNavEn > div {
+  padding: 15px 4px !important;
 }
 .header_nav > div > span {
   display: block;

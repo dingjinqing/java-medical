@@ -55,6 +55,9 @@ const myMixin = {
         this.payDialogDivEn = 'payDialogDivEn'
         this.payDialogDivEnLast = 'payDialogDivEnLast'
         this.payDialogDivEnhiddenTwo = 'payDialogDivEnhiddenTwo'
+
+        // admin页面框架
+        this.headerNavEn = 'headerNavEn'
       } else {
         this.$i18n.locale = 'cn'
         this.Recommend_class = ''
@@ -106,6 +109,9 @@ const myMixin = {
         this.payDialogDivEn = ''
         this.payDialogDivEnLast = ''
         this.payDialogDivEnhiddenTwo = ''
+
+        // admin页面框架
+        this.headerNavEn = ''
       }
     }
   }

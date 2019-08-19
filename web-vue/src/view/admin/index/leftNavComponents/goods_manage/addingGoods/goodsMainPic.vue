@@ -34,7 +34,7 @@ import ImageDalog from '@/components/admin/imageDalog'
 
 export default {
   components: { ImageDalog },
-  data() {
+  data () {
     return {
       src: '',
       isShowPic: false,
@@ -43,10 +43,10 @@ export default {
     }
   },
   methods: {
-    handleShowDialog() {
+    handleShowDialog () {
       this.$http.$emit('dtVisible')
     },
-    handleSelectImg(res) {
+    handleSelectImg (res) {
       console.log(res)
 
       this.imgLists.push({

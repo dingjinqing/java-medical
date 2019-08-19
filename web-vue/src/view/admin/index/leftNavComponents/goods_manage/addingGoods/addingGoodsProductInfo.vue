@@ -52,11 +52,11 @@ export default {
 
   methods: {
     // 保存后返回列表
-    handleToList() {
+    handleToList () {
 
     },
     // 下一步（去到编辑商品详情）
-    handleNextStep() {
+    handleNextStep () {
       // let obj1 = this.$refs.priceInfo.getPrice
       // let obj2 = this.$refs.basicInfo.getFormData
       // Object.assign(obj1, obj2)
