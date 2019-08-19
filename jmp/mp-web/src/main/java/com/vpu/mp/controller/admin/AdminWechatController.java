@@ -8,9 +8,15 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import com.github.binarywang.wxpay.bean.notify.WxPayNotifyResponse;
+import com.github.binarywang.wxpay.bean.notify.WxPayOrderNotifyResult;
+import com.github.binarywang.wxpay.exception.WxPayException;
+import com.github.binarywang.wxpay.util.SignUtils;
 import com.vpu.mp.db.main.tables.records.MpAuthShopRecord;
 import com.vpu.mp.service.pojo.shop.auth.MenuAuthority;
+import com.vpu.mp.service.shop.payment.MpPaymentService;
 import com.vpu.mp.service.wechat.OpenPlatform;
+import com.vpu.mp.service.wechat.WxPayment;
 
 import me.chanjar.weixin.common.error.WxErrorException;
 import me.chanjar.weixin.open.bean.result.WxOpenQueryAuthResult;
@@ -25,10 +31,9 @@ public class AdminWechatController extends AdminBaseController {
 
 	@Autowired
 	protected MenuAuthority authority;
-	
+
 	@Autowired
 	protected OpenPlatform open;
-
 
 	/**
 	 * 公众号或小程序授权回调
@@ -48,26 +53,26 @@ public class AdminWechatController extends AdminBaseController {
 			if (shopId != null) {
 				// 小程序授权
 				MpAuthShopRecord mp = saas.shop.mp.getAuthShopByShopId(shopId);
-				logger().debug("查询出的值1："+mp);
+				logger().debug("查询出的值1：" + mp);
 				if (mp != null && !mp.getAppId().equals(appId)) {
-					//小程序上次授权与本次授权AppId不一致，请联系客服！
-					logger().debug("appId"+appId+"小程序上次授权与本次授权AppId不一致，请联系客服！");
-                    return ("小程序上次授权与本次授权AppId不一致，请联系客服！");
+					// 小程序上次授权与本次授权AppId不一致，请联系客服！
+					logger().debug("appId" + appId + "小程序上次授权与本次授权AppId不一致，请联系客服！");
+					return ("小程序上次授权与本次授权AppId不一致，请联系客服！");
 				}
 				mp = saas.shop.mp.getAuthShopByAppId(appId);
 				if (mp != null && mp.getShopId().intValue() != shopId) {
-					//小程序已授权绑定其他账号，请联系客服！
-					logger().debug("appId"+appId+"小程序已授权绑定其他账号，请联系客服！");
-                    return ("小程序已授权绑定其他账号，请联系客服！");
+					// 小程序已授权绑定其他账号，请联系客服！
+					logger().debug("appId" + appId + "小程序已授权绑定其他账号，请联系客服！");
+					return ("小程序已授权绑定其他账号，请联系客服！");
 				}
-				logger().debug("查询出的值2："+mp);
+				logger().debug("查询出的值2：" + mp);
 				MpAuthShopRecord addMpAuthAccountInfo = saas.shop.mp.addMpAuthAccountInfo(appId, shopId);
 				saas.shop.mp.bindAllSamePrincipalOpenAppId(addMpAuthAccountInfo);
-				
+
 			}
 
 			logger().info("getQueryAuth", queryAuthResult);
-            return "redirect:"+this.mainUrl("/admin/home/main/base_manger/authok");
+			return "redirect:" + this.mainUrl("/admin/home/main/base_manger/authok");
 		} catch (WxErrorException e) {
 			logger().error("gotoPreAuthUrl", e);
 			throw new RuntimeException(e);
@@ -116,6 +121,32 @@ public class AdminWechatController extends AdminBaseController {
 			@RequestParam("openid") String openid, @RequestParam("encrypt_type") String encType,
 			@RequestParam("msg_signature") String msgSignature) {
 		return open.appEvent(requestBody, appId, signature, timestamp, nonce, openid, encType, msgSignature);
+	}
+
+	/**
+	 * 小程序微信支付回调
+	 * 
+	 * @param xmlData
+	 * @param shopId
+	 * @return
+	 */
+	@RequestMapping("/wechat/notify/ma/payment/{shopId}")
+	@ResponseBody
+	public String maPaymentNotify(@RequestBody String xmlData, @PathVariable Integer shopId) {
+		logger().debug("maPaymentNotify request: {}", xmlData);
+		MpPaymentService mpPay = saas.getShopApp(shopId).pay.mpPay;
+		WxPayment wxPayService = mpPay.getMpPay();
+		WxPayOrderNotifyResult orderResult;
+		try {
+			orderResult = mpPay.getMpPay().parseOrderNotifyResult(xmlData);
+			orderResult.checkResult(wxPayService, null, true);
+			mpPay.onPayNotify(orderResult);
+			return WxPayNotifyResponse.success("Ok");
+		} catch (WxPayException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			return WxPayNotifyResponse.fail(e.getMessage());
+		}
 	}
 
 }

@@ -28,6 +28,7 @@ import org.jooq.tools.StringUtils;
 import org.springframework.stereotype.Service;
 
 import com.vpu.mp.db.shop.tables.OrderInfo;
+import com.vpu.mp.db.shop.tables.records.OrderInfoRecord;
 import com.vpu.mp.service.foundation.database.DslPlus;
 import com.vpu.mp.service.foundation.service.ShopBaseService;
 import com.vpu.mp.service.foundation.util.BigDecimalUtil;
@@ -81,6 +82,11 @@ public class OrderInfoService extends ShopBaseService {
 		T order = db().select(TABLE.asterisk()).where(TABLE.ORDER_ID.eq(orderId)).fetchOneInto(clz);
 		return order;
 	}
+	
+	public OrderInfoRecord getOrderByOrderSn(String orderSn) {
+		return db().fetchAny(TABLE,TABLE.ORDER_SN.eq(orderSn));
+	}
+	
 	/**
 	 * 	订单综合查询:通过条件获得主订单号（因为前端显示以主订单为主）
 	 * @param param
