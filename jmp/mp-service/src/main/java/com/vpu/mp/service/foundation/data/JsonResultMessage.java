@@ -166,6 +166,7 @@ public class JsonResultMessage {
 	public static final String WX_MA_SHOP_HAS_NO_APP="wx.ma.shop.has.no.app";
 	public static final String WX_MA_FEATURE_NOT_OPEN="wx.ma.feature.not.open";
 	public static final String WX_MA_ISSUBMERCHANT_ISNULL = "wx.ma.isSubMerchant.is.null";
+	public static final String WX_MA_TABLE_ISNULL = "wx.ma.table.is.null";
 	
 	/**
 	 * 门店管理
