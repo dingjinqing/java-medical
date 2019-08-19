@@ -163,6 +163,7 @@ public class JsonResultMessage {
 	public static final String WX_ERROR_EXCEPTION = "wx.error.exception";
 	public static final String WX_MA_NEED_UPLOADCODE = "wx.ma.need.uploadcode";
 	public static final String WX_MA_NEED_AUDITING_CODE_SUCCESS = "wx.ma.need.auditing.success";
+	public static final String WX_MA_SHOP_HAS_NO_APP="wx.ma.shop.has.no.app";
 	
 	/**
 	 * 门店管理
