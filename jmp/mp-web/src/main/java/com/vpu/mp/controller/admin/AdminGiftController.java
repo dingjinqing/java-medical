@@ -1,6 +1,7 @@
 package com.vpu.mp.controller.admin;
 
 import com.vpu.mp.service.foundation.data.JsonResult;
+import com.vpu.mp.service.pojo.shop.market.gift.GiftDetailListParam;
 import com.vpu.mp.service.pojo.shop.market.gift.GiftListParam;
 import com.vpu.mp.service.pojo.shop.market.gift.GiftParam;
 import com.vpu.mp.service.pojo.shop.market.gift.LevelParam;
@@ -25,6 +26,10 @@ public class AdminGiftController extends AdminBaseController {
         shop().gift.addGift(param);
         return success();
     }
+
+    /**
+     * todo 编辑 - 查询明细
+     */
 
     /**
      * 修改活动
@@ -68,5 +73,13 @@ public class AdminGiftController extends AdminBaseController {
     public JsonResult updateLevel(@RequestBody @Valid LevelParam param) {
         shop().gift.updateLevel(param);
         return success();
+    }
+
+    /**
+     * 赠品明细
+     */
+    @PostMapping("/gift_detail")
+    public JsonResult giftDetail(@RequestBody @Valid GiftDetailListParam param) {
+        return success(shop().gift.getGiftDetailPageList(param));
     }
 }

@@ -89,6 +89,7 @@ public class PreSaleService extends ShopBaseService {
                 .where(TABLE.DEL_FLAG.eq(NOT_DELETED));
         buildOptions(query, param);
         query.groupBy(TABLE.ID);
+        query.orderBy(TABLE.CREATE_TIME.desc());
         PageResult<PreSaleListVo> page = getPageResult(query, param, PreSaleListVo.class);
         transform(page);
         return page;
