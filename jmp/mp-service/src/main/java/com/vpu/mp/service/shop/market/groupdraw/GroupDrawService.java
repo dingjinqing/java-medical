@@ -40,9 +40,6 @@ public class GroupDrawService extends ShopBaseService {
     /** 禁用 **/
     private static final byte GROUP_DRAW_DISABLED = 0;
 
-    /** 活动页面 **/
-//    private static final String GROUP_DRAW_SHARE_PATH = "pages/pinlotterylist/pinlotterylist";
-
     private final QrCodeService qrCode;
 
     public GroupDrawService(QrCodeService qrCode) {
@@ -54,8 +51,6 @@ public class GroupDrawService extends ShopBaseService {
      */
     public ShareQrCodeVo getMpQRCode(GroupDrawShareParam param) {
         Integer groupDrawId = param.getGroupDrawId();
-//        String pagePath = GROUP_DRAW_SHARE_PATH + "?group_draw_id=" + groupDrawId;
-//        String imageUrl = qrCode.getMpQRCode(pagePath);
         String pathParam="group_draw_id=" + groupDrawId;
         String imageUrl=qrCode.getMpQrCode(QrCodeTypeEnum.PIN_LOTTERY,pathParam);
         ShareQrCodeVo vo = new ShareQrCodeVo();
