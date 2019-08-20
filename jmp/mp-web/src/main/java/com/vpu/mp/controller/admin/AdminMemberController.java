@@ -2,8 +2,8 @@ package com.vpu.mp.controller.admin;
 
 import javax.validation.Valid;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.springframework.web.bind.annotation.PathVariable;
+
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -16,6 +16,7 @@ import com.vpu.mp.service.foundation.util.PageResult;
 import com.vpu.mp.service.pojo.shop.auth.AdminTokenAuthInfo;
 import com.vpu.mp.service.pojo.shop.member.CommonMemberPageListQueryParam;
 import com.vpu.mp.service.pojo.shop.member.CommonMemberPageListQueryVo;
+import com.vpu.mp.service.pojo.shop.member.MemberDetailsVo;
 import com.vpu.mp.service.pojo.shop.member.MemberInfoVo;
 import com.vpu.mp.service.pojo.shop.member.MemberPageListParam;
 import com.vpu.mp.service.pojo.shop.member.MememberLoginStatusParam;
@@ -33,7 +34,7 @@ import com.vpu.mp.service.shop.member.MemberService;
 @RestController
 @RequestMapping(value="/api/admin/member")
 public class AdminMemberController extends AdminBaseController{
-	Logger logger = LoggerFactory.getLogger(getClass());
+	
 	/**
 	 * 通用会员列表弹窗分页查询
 	 * @return
@@ -59,7 +60,7 @@ public class AdminMemberController extends AdminBaseController{
 	 */
 	@PostMapping("/card/all/list")
 	public JsonResult getAllCardList() {
-		logger.info("获取系统中的所有会员卡");
+		logger().info("获取系统中的所有会员卡");
 		MemberCardVo vo  = shop().member.card.getAllCardList();
 		
 		return success(vo);
@@ -70,8 +71,8 @@ public class AdminMemberController extends AdminBaseController{
 	 */
 	@PostMapping("/card/all/add")
 	public JsonResult addCardForMember(@RequestBody @Valid AddMemberCardParam param) {
-		logger.info("为会员发放会员卡");
-		logger.info(param.toString());
+		logger().info("为会员发放会员卡");
+		logger().info(param.toString());
 		shop().member.card.addCardForMember(param);
 		return success();
 	}
@@ -97,6 +98,21 @@ public class AdminMemberController extends AdminBaseController{
 		shop().member.setTagForMember(param);
 		return success();
 	}
+	
+	
+	/**
+	 * 会员信息详情
+	 */
+	@PostMapping("/manager/center/{userId}")
+	public JsonResult getMemberInfo(@PathVariable Integer userId) {
+		logger().info("获取会员用户id为 " + userId + " 详情信息");
+		MemberDetailsVo vo = shop().member.getMemberInfoById(userId);
+		return i18nSuccess(vo);
+	}
+	
+	
+	
+	
 	
 	@PostMapping("/account/add")
 	public JsonResult updateMemberAccount(@RequestBody AccountParam param) {
