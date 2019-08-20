@@ -98,7 +98,8 @@ public class OrderConstant {
 	public final static byte  REFUND_STATUS_REFUSE = 6;
 	/**退款/退货 撤销*/
 	public final static byte  REFUND_STATUS_CLOSE = 7;
-
+	/** 退货的默认状态 */
+	public final static byte REFUND_DEFAULT_STATUS = 0;
 	/**
 	 * 	支付code
 	 */
@@ -251,4 +252,9 @@ public class OrderConstant {
 	public String getGoodsType(byte goodsTypeCode) {
 		return goodsType[goodsTypeCode];
 	}
+	
+	/** 是否删除 0： 否； 1： 是 */
+	public static final Byte DELETE_NO = 0;
+	public static final Byte DELETE_YES = 1;
+	
 }
