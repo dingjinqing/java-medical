@@ -8,6 +8,7 @@ import org.jooq.Record;
 import org.jooq.SelectJoinStep;
 import org.springframework.stereotype.Service;
 
+import com.vpu.mp.db.shop.tables.records.DistributionWithdrawRecord;
 import com.vpu.mp.service.foundation.service.ShopBaseService;
 import com.vpu.mp.service.foundation.util.PageResult;
 import com.vpu.mp.service.pojo.shop.distribution.DistributorWithdrawDetailVo;
@@ -103,4 +104,14 @@ public class DistributorWithdrawService extends ShopBaseService{
 		detailVo.setUserWithdrawList(otherWithdrawRecord);
 		return detail;
 	}
+	
+	/**
+	 * 根据userid获取分销提现
+	 * @param userId
+	 * @return
+	 */
+	public DistributionWithdrawRecord getWithdrawByUserId(Integer userId) {
+		return db().selectFrom(DISTRIBUTION_WITHDRAW).where(DISTRIBUTION_WITHDRAW.USER_ID.eq(userId)).fetchOne();
+	}
+	
 }

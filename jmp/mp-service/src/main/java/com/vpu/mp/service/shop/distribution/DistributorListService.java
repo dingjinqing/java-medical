@@ -169,4 +169,13 @@ public class DistributorListService extends ShopBaseService{
 		}
 		return sql;
 	}
+	
+	/**
+	 * 获取返利订单数量
+	 * @param userId
+	 * @return
+	 */
+	public int getRebateOrderNum(Integer userId) {
+		return db().fetchCount(USER_FANLI_STATISTICS, USER_FANLI_STATISTICS.FANLI_USER_ID.eq(userId));
+	}
 }
