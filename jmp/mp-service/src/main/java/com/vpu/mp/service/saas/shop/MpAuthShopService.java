@@ -1056,7 +1056,7 @@ public class MpAuthShopService extends MainBaseService {
 			if (StringUtils.isEmpty(param.getUnion_pay_app_id()) || StringUtils.isEmpty(param.getUnion_pay_cus_id())
 					|| StringUtils.isEmpty(param.getUnion_pay_app_key())) {
 				wxOpenResult.setErrcode(String.valueOf(JsonResultCode.WX_MA_TABLE_ISNULL));
-				wxOpenResult.setErrcode(JsonResultMessage.WX_MA_TABLE_ISNULL);
+				wxOpenResult.setErrmsg(JsonResultMessage.WX_MA_TABLE_ISNULL);
 				return wxOpenResult;
 			}
 			int execute = db().update(MP_AUTH_SHOP).set(MP_AUTH_SHOP.UNION_PAY_APP_ID, param.getUnion_pay_app_id())
@@ -1065,14 +1065,14 @@ public class MpAuthShopService extends MainBaseService {
 					.set(MP_AUTH_SHOP.IS_SUB_MERCHANT, param.getIsSubMerchant().byteValue()).execute();
 			if (execute > 0) {
 				wxOpenResult.setErrcode(String.valueOf(JsonResultCode.CODE_SUCCESS));
-				wxOpenResult.setErrcode(JsonResultMessage.MSG_SUCCESS);
+				wxOpenResult.setErrmsg(JsonResultMessage.MSG_SUCCESS);
 			}
 			break;
 		case 3:
 			// 微信国际融合钱包支付 [, 'merchant_category_code', 'fee_type']
 			if (StringUtils.isEmpty(param.getMerchant_category_code()) || StringUtils.isEmpty(param.getFee_type())) {
 				wxOpenResult.setErrcode(String.valueOf(JsonResultCode.WX_MA_TABLE_ISNULL));
-				wxOpenResult.setErrcode(JsonResultMessage.WX_MA_TABLE_ISNULL);
+				wxOpenResult.setErrmsg(JsonResultMessage.WX_MA_TABLE_ISNULL);
 				return wxOpenResult;
 			}
 			int execute2 = db().update(MP_AUTH_SHOP)
@@ -1081,7 +1081,7 @@ public class MpAuthShopService extends MainBaseService {
 					.set(MP_AUTH_SHOP.IS_SUB_MERCHANT, param.getIsSubMerchant().byteValue()).execute();
 			if (execute2 > 0) {
 				wxOpenResult.setErrcode(String.valueOf(JsonResultCode.CODE_SUCCESS));
-				wxOpenResult.setErrcode(JsonResultMessage.MSG_SUCCESS);
+				wxOpenResult.setErrmsg(JsonResultMessage.MSG_SUCCESS);
 			}
 			break;
 
