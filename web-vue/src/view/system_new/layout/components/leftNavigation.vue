@@ -33,14 +33,14 @@ export default {
     return {
       navLeftData: '',
       navLeftArr: {
-        welcome: [
-          {
-            imgUrl: this.$imageHost + '/image/system/icon_left/shop_view.png',
-            imgUrl_h: this.$imageHost + '/image/system/icon_left/shop_view_h.png',
-            span: 'welcome',
-            routeName: 'welcome'
-          }
-        ],
+        // welcome: [
+        //   {
+        //     imgUrl: this.$imageHost + '/image/system/icon_left/shop_view.png',
+        //     imgUrl_h: this.$imageHost + '/image/system/icon_left/shop_view_h.png',
+        //     span: 'welcome',
+        //     routeName: 'welcome'
+        //   }
+        // ],
         overviewMain: [
           {
             imgUrl: this.$imageHost + '/image/system/icon_left/shop_view.png',
@@ -118,8 +118,8 @@ export default {
           {
             imgUrl: this.$imageHost + '/image/system/icon_left/picture_space.png',
             imgUrl_h: this.$imageHost + '/image/system/icon_left/picture_space_h.png',
-            span: '版本列表'
-            // routeName: 'versionList'
+            span: '版本列表',
+            routeName: 'versionList'
           },
           {
             imgUrl: this.$imageHost + '/image/system/icon_left/picture_space.png',

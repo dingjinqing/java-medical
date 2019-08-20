@@ -4,6 +4,7 @@ import { cn as programVersion } from './views/programVersion'
 import { cn as shopAccountList } from './views/shopAccountList'
 import { cn as shopList } from './views/shopList'
 import { cn as publishList } from './views/publishList'
+import { cn as versionList } from './views/versionList'
 import { cn as router } from './views/router'
 import { cn as membershipIntroduction } from './views/membershipIntroduction'
 import { cn as marketManage } from './views/marketManage'
@@ -311,6 +312,7 @@ const cn = {
   shopAccountList, // system 店铺账户列表
   shopList, // sysytem 店铺列表
   publishList, // system 发布列表
+  versionList, // system 版本列表
   marketManage, // 营销管理
   ordinaryCoupon, // 普通优惠券
   ShopConfiguration, // admin 店铺基础配置

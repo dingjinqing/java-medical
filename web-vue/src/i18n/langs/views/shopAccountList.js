@@ -18,10 +18,11 @@ export const cn = {
     endTime: '到期时间',
     renewMoney: '续费总额',
     mobile: '手机号',
-    operation: '操作'
+    operation: '操作',
+    edit: '编辑'
   },
   stateOption: {
-    state1: '审核中',
+    state1: '申请中',
     state2: '审核通过',
     state3: '审核不通过',
     state4: '已禁用'

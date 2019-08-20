@@ -128,9 +128,6 @@
           <div style="display: flex; width: 800px">
             <v-distpicker
               @selected="onSelected"
-              :province="formData.provinceCode"
-              :city="formData.cityCode"
-              :area="formData.districtCode"
               @province="getProvinceCode"
               @city="getCityCode"
               @area="getDistrictCode"
@@ -181,7 +178,7 @@ import { mapGetters } from 'vuex'
 import { addCoountRequest } from '@/api/system/accountList.js'
 import VDistpicker from 'v-distpicker'
 export default {
-  name: 'experienceVersion',
+  name: 'addAccount',
   component: { VDistpicker },
   computed: {
     ...mapGetters(['proAndUrData']),
@@ -191,7 +188,6 @@ export default {
   },
   watch: {
     proAndUrData_ (newData, oldData) {
-      console.log(newData)
       this.query()
     }
   },
@@ -224,9 +220,6 @@ export default {
         company: '',
         salesperson: '',
         address: '',
-        provinc: '',
-        city: '',
-        area: '',
         addCommentSwitch: false,
         baseSale: false
       },
@@ -237,21 +230,6 @@ export default {
         password: [
           { validator: checkPassword, trigger: 'change' }
         ]
-        // state: [
-        //   { type: 'date', required: true, message: '请选择日期', trigger: 'change' }
-        // ],
-        // date2: [
-        //   { type: 'date', required: true, message: '请选择时间', trigger: 'change' }
-        // ],
-        // provinceCode: [
-        //   { required: true, message: '请选择省份', trigger: 'change' }
-        // ],
-        // cityCode: [
-        //   { required: true, message: '请选择市区', trigger: 'change' }
-        // ],
-        // address: [
-        //   { required: true, message: '请选择片区', trigger: 'change' }
-        // ]
       }
     }
   },

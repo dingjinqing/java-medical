@@ -127,9 +127,6 @@
           <div style="display: flex; width: 800px">
             <v-distpicker
               @selected="onSelected"
-              :province="formData.provinceCode"
-              :city="formData.cityCode"
-              :area="formData.districtCode"
               @province="getProvinceCode"
               @city="getCityCode"
               @area="getDistrictCode"
@@ -169,7 +166,7 @@
         style="margin-left: 158px; padding: 0!important"
         @click="save('formData')"
       >
-        {{$t('shopAccountList.accountAdd.search')}}
+        {{$t('shopAccountList.accountAdd.save')}}
       </el-button>
     </div>
   </div>
@@ -180,7 +177,7 @@ import { mapGetters } from 'vuex'
 import { addCoountRequest } from '@/api/system/accountList.js'
 import VDistpicker from 'v-distpicker'
 export default {
-  name: 'experienceVersion',
+  name: 'editAccount',
   component: { VDistpicker },
   computed: {
     ...mapGetters(['proAndUrData']),
@@ -222,9 +219,6 @@ export default {
         mobile: '',
         company: '',
         salesperson: '',
-        address: '',
-        provinc: '',
-        city: '',
         area: '',
         addCommentSwitch: false,
         baseSale: false
@@ -236,21 +230,6 @@ export default {
         password: [
           { validator: checkPassword, trigger: 'change' }
         ]
-        // state: [
-        //   { type: 'date', required: true, message: '请选择日期', trigger: 'change' }
-        // ],
-        // date2: [
-        //   { type: 'date', required: true, message: '请选择时间', trigger: 'change' }
-        // ],
-        // provinceCode: [
-        //   { required: true, message: '请选择省份', trigger: 'change' }
-        // ],
-        // cityCode: [
-        //   { required: true, message: '请选择市区', trigger: 'change' }
-        // ],
-        // address: [
-        //   { required: true, message: '请选择片区', trigger: 'change' }
-        // ]
       }
     }
   },
@@ -281,8 +260,8 @@ export default {
         }
       })
       let obj = {
+        'sysId': '',
         'userName': '',
-        'password': '',
         'state': '1',
         'shopGrade': '1',
         'maxSkuNum': '10000',

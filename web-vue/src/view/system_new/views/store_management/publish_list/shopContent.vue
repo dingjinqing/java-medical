@@ -293,11 +293,6 @@ export default {
     // 商家账户列表查询
     searchAccount () {
       // let obj1 = {
-      //   'currentPage': this.currentPage3,
-      //   'pageRows': '20',
-      //   'state': '',
-      //   'accountName': '',
-      //   'company': ''
       // }
       // let parameter = Object.assign(obj1, this.mainData)
       // searchAccountRequest(parameter).then((res) => {

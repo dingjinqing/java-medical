@@ -135,11 +135,15 @@
         align="center"
         :label="$t('shopAccountList.ashopAccountList.operation')"
       >
-        <el-button
-          type="text"
-          style="color:#000"
-          @click="handleEditAccount"
-        >{{$t('shopAccountList.ashopAccountList.operation')}}</el-button>
+        <template slot-scope="scope">
+          <el-button
+            type="text"
+            style="color:#000"
+            @click="handleEditAccount(scope.row)"
+          >
+            {{$t('shopAccountList.ashopAccountList.edit')}}
+          </el-button>
+        </template>
       </el-table-column>
     </el-table>
 
@@ -161,7 +165,7 @@
 import { searchAccountRequest } from '@/api/system/accountList.js'
 
 export default {
-  name: 'experienceVersion',
+  name: 'list',
   data () {
     return {
       options: [{
@@ -223,10 +227,13 @@ export default {
           title: userName
         }
       })
-      // bus.$emit('revice', userName)
       console.log(this.userName)
     },
-    handleEditAccount () {
+    handleEditAccount (scope) {
+      console.log(scope)
+      console.log(scope.sysId)
+      console.log(scope.userName)
+      // console.log(scope.sysId, scope.accountName)
       this.name = 'third'
       this.$emit('send', this.name)
     },

@@ -81,8 +81,8 @@ const routes = [
       },
       {
         path: 'versionList',
-        component: () => ('@/view/system_new/views/store_management/verionList/versionList'),
-        // name: 'versionList',
+        component: () => import('@/view/system_new/views/store_management/version_list/versionList'),
+        name: 'versionList',
         meta: {
           titie: '版本列表'
         }
