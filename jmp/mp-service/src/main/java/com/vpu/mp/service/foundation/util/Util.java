@@ -417,8 +417,11 @@ public class Util {
     /**
      * List 转 String
      */
-    public static String listToString(List<Integer> rewardCouponIds) {
-        return rewardCouponIds.stream().map(String::valueOf).collect(Collectors.joining(","));
+    public static String listToString(List<Integer> stringValue) {
+        if (null == stringValue) {
+            return null;
+        }
+        return stringValue.stream().map(String::valueOf).collect(Collectors.joining(","));
     }
 
     /**

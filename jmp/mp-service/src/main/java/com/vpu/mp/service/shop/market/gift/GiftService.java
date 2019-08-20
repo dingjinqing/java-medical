@@ -24,6 +24,7 @@ import static com.vpu.mp.db.shop.tables.Goods.GOODS;
 import static com.vpu.mp.db.shop.tables.OrderGoods.ORDER_GOODS;
 import static com.vpu.mp.db.shop.tables.OrderInfo.ORDER_INFO;
 import static com.vpu.mp.db.shop.tables.User.USER;
+import static com.vpu.mp.service.foundation.util.Util.*;
 import static com.vpu.mp.service.pojo.shop.market.gift.GiftListParam.*;
 import static com.vpu.mp.service.pojo.shop.market.gift.GiftListVo.ABLE;
 import static com.vpu.mp.service.pojo.shop.market.gift.GiftListVo.DISABLE;
@@ -74,13 +75,43 @@ public class GiftService extends ShopBaseService {
      * 格式转换
      */
     private void transformParam(GiftParam param) {
-        String ruleJson = Util.underLineStyleGson().toJson(param.getRules());
-        String goodsId = Util.listToString(param.getGoodsIds());
+        RuleParam rules = param.getRules();
+        RuleJson json = getRuleJson(rules);
+        String ruleJson = underLineStyleGson().toJson(json);
+        String goodsId = listToString(param.getGoodsIds());
         if (isEmpty(goodsId)) {
             goodsId = null;
         }
         param.setGoodsId(goodsId);
         param.setRule(ruleJson);
+    }
+
+    /**
+     * 赠品规则 json 转换
+     */
+    private RuleJson getRuleJson(RuleParam param) {
+        RuleJson ruleJson = new RuleJson();
+        ruleJson.setFullNumber(numberToString(param.getFullNumber()));
+        ruleJson.setCardId(listToString(param.getCardId()));
+        ruleJson.setFullPrice(numberToString(param.getFullPrice()));
+        ruleJson.setMaxPayNum(numberToString(param.getMaxPayNum()));
+        ruleJson.setMinPayNum(numberToString(param.getMinPayNum()));
+        ruleJson.setPayTop(numberToString(param.getPayTop()));
+        ruleJson.setUserAction(numberToString(param.getUserAction()));
+        ruleJson.setTagId(listToString(param.getTagId()));
+        ruleJson.setPayEndTime(param.getPayEndTime());
+        ruleJson.setPayStartTime(param.getPayStartTime());
+        return ruleJson;
+    }
+
+    /**
+     * 数值转字符串
+     */
+    private String numberToString(Number fullNumber) {
+        if (null != fullNumber) {
+            return String.valueOf(fullNumber);
+        }
+        return null;
     }
 
     /**
@@ -160,8 +191,69 @@ public class GiftService extends ShopBaseService {
      * 出参格式转换
      */
     private void transformVo(GiftVo giftVo) {
-        giftVo.setGoodsIds(Util.stringToList(giftVo.getGoodsId()));
-        giftVo.setRules(Util.underLineStyleGson().fromJson(giftVo.getRule(), RuleVo.class));
+        giftVo.setGoodsIds(stringToList(giftVo.getGoodsId()));
+        String rule = giftVo.getRule();
+        RuleJson ruleJson = underLineStyleGson().fromJson(rule, RuleJson.class);
+        RuleVo ruleVo = getRuleVo(ruleJson);
+        giftVo.setRules(ruleVo);
+    }
+
+    /**
+     * 赠品规则 json 转 vo
+     */
+    private RuleVo getRuleVo(RuleJson ruleJson) {
+        RuleVo ruleVo = new RuleVo();
+        ruleVo.setCardId(stringToListNullable(ruleJson.getCardId()));
+        ruleVo.setTagId(stringToListNullable(ruleJson.getTagId()));
+        ruleVo.setFullNumber(stringToInt(ruleJson.getFullNumber()));
+        ruleVo.setFullPrice(stringToDouble(ruleJson.getFullPrice()));
+        ruleVo.setMaxPayNum(stringToInt(ruleJson.getMaxPayNum()));
+        ruleVo.setMinPayNum(stringToInt(ruleJson.getMinPayNum()));
+        ruleVo.setPayStartTime(ruleJson.getPayStartTime());
+        ruleVo.setPayEndTime(ruleJson.getPayEndTime());
+        ruleVo.setPayTop(stringToInt(ruleJson.getPayTop()));
+        ruleVo.setUserAction(stringToByte(ruleJson.getUserAction()));
+        return ruleVo;
+    }
+
+    /**
+     * 字符串转 List（null 参数则返回 null，而非空 List）
+     */
+    private List<Integer> stringToListNullable(String stringValue) {
+        if (null == stringValue) {
+            return null;
+        }
+        return stringToList(stringValue);
+    }
+
+    /**
+     * 字符串转 Byte
+     */
+    private Byte stringToByte(String value) {
+        if (null == value) {
+            return null;
+        }
+        return Byte.valueOf(value);
+    }
+
+    /**
+     * 字符串转 Double
+     */
+    private Double stringToDouble(String value) {
+        if (null == value) {
+            return null;
+        }
+        return Double.valueOf(value);
+    }
+
+    /**
+     * 字符串转 Integer
+     */
+    private Integer stringToInt(String value) {
+        if (null == value) {
+            return null;
+        }
+        return Integer.valueOf(value);
     }
 
     /**
