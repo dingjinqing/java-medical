@@ -11,7 +11,8 @@ public class WxContentMessage {
 	/**
 	 * 获取小程序体验码
 	 */
-	public static final String WX_GET_TEST_QRCODE = "wx.get.test.qrcode";
+	public static final String WX_GET_TESTER_QR_FAIL = "wx.get.test.qr.fail";
+	public static final String WX_GET_TESTER_QR_SUCCESS = "wx.get.test.qr.success";
 	/**
 	 * 綁定体验者
 	 */
