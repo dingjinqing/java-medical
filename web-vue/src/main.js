@@ -17,14 +17,14 @@ import 'swiper/dist/css/swiper.css';
 import 'element-ui/lib/theme-chalk/index.css';
 import 'font-awesome/css/font-awesome.min.css';
 import myMixins from '@/components/mixins.js';
-import VueCropper from 'vue-cropper';
+// import VueCropper from 'vue-cropper';
 // 全局flag
 localStorage.setItem('V-overallFlag', true);
 Vue.prototype.$imageHost = 'http://jmpdevimg.weipubao.cn';
 Vue.prototype.$imageHostDev = `@/assets/image/admin/`;
 // 全局事件总线
 
-Vue.use(VueCropper);
+// Vue.use(VueCropper);
 
 Vue.component('v-distpicker', Distpicker);
 Vue.prototype.$http = new Vue();

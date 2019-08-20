@@ -97,10 +97,14 @@
 </template>
 
 <script>
+import vueCropper from '@/components/admin/vue-cropper/vue-cropper'
 import { mapGetters } from 'vuex'
 import { imgsCropperRequest } from '@/api/admin/tree.js'
 import { picSpaceimgsCropperRequest } from '@/api/admin/pictureSpace.js'
 export default {
+  components: {
+    vueCropper
+  },
   data () {
     return {
       dialogVisible: false,
@@ -150,7 +154,7 @@ export default {
       this.imgCatId = obj.catid
       this.imgID = obj.imgid
       this.cropperFlagP = obj.index
-      this.option.img = obj.url + '?' + (new Date()).getTime()
+      this.option.img = obj.url
     }
   },
   methods: {
