@@ -46,10 +46,12 @@ import com.vpu.mp.service.pojo.saas.shop.mp.MpAuthShopListVo;
 import com.vpu.mp.service.pojo.saas.shop.mp.MpDeployQueryParam;
 import com.vpu.mp.service.pojo.shop.config.trade.WxpayConfigParam;
 import com.vpu.mp.service.pojo.shop.config.trade.WxpaySearchParam;
+import com.vpu.mp.service.pojo.shop.operation.RecordContentTemplate;
 import com.vpu.mp.service.saas.image.SystemImageService;
 import com.vpu.mp.service.shop.decoration.AppletsJumpService;
 import com.vpu.mp.service.wechat.api.WxOpenAccountService;
 import com.vpu.mp.service.wechat.bean.ma.MpWxMaOpenCommitExtInfo;
+import com.vpu.mp.service.wechat.bean.ma.WxContentTemplate;
 import com.vpu.mp.service.wechat.bean.open.MaWxPlusInListInner;
 import com.vpu.mp.service.wechat.bean.open.MaWxPlusInResult;
 import com.vpu.mp.service.wechat.bean.open.WxOpenGetResult;
@@ -178,8 +180,7 @@ public class MpAuthShopService extends MainBaseService {
         wxOpenResult.setErrcode("0");
         wxOpenResult.setErrmsg(updateSuccessMsg);
 
-        operateLog(record,MpOperateLogService.OP_TYPE_UPDATE_MP,wxOpenResult);
-
+        operateLogGlobal(record, MpOperateLogService.OP_TYPE_UPDATE_MP, wxOpenResult, WxContentTemplate.WX_DEL_TESTER_SUCCESS.code, new String[] {});
         return wxOpenResult;
     }
 
@@ -385,9 +386,9 @@ public class MpAuthShopService extends MainBaseService {
 					logger().debug("appId:"+appId+"修改域名setWebViewDomain失败"+fromJson.getErrcode()+"  "+fromJson.getErrmsg());
 				}
 			}
-			operateLog(mp, MpOperateLogService.OP_TYPE_MODIFY_DOMAIN, fromJson);
 			result.setErrcode(fromJson.getErrcode());
 			result.setErrmsg(fromJson.getErrmsg());
+			operateLogGlobal(mp, MpOperateLogService.OP_TYPE_MODIFY_DOMAIN, result, WxContentTemplate.WX_MODIFY_DOMAIN_FAIL.code, new String[] {fromJson.getErrcode(),fromJson.getErrmsg()});
 			return result;
 		}
 		if (result.isSuccess()) {
@@ -396,7 +397,7 @@ public class MpAuthShopService extends MainBaseService {
 		}else {
 			logger().debug("appId:"+appId+"修改域名modifyDomain失败"+result.getErrcode()+"  "+result.getErrmsg());
 		}
-		operateLog(mp, MpOperateLogService.OP_TYPE_MODIFY_DOMAIN, result);
+		operateLogGlobal(mp, MpOperateLogService.OP_TYPE_MODIFY_DOMAIN, result, WxContentTemplate.WX_MODIFY_DOMAIN_SUCCESS.code, new String[] {});
 		return result;
 	}
 
@@ -424,12 +425,7 @@ public class MpAuthShopService extends MainBaseService {
 		extInfo.addExt("version", templateId.toString());
 
 		AppletsJumpService appletsJumpService = saas.getShopApp(mp.getShopId()).appletsJump;
-		/**
-		 * TODO: add setNavigateToMiniProgramAppIdList
-		 * extInfo.setNavigateToMiniProgramAppIdList(navigateToMiniProgr++amAppIdList);
-		 */
 		extInfo.setNavigateToMiniProgramAppIdList(appletsJumpService.getMpJumpAppIDList());
-		
 		//上传代码保存小程序跳转的提交的appid 版本号，appid ,状态
 		appletsJumpService.saveMpJumpAppIDList(extInfo.getNavigateToMiniProgramAppIdList(), templateId);
 		
@@ -452,7 +448,7 @@ public class MpAuthShopService extends MainBaseService {
 			upMp.setLastAuthTime(Timestamp.valueOf(LocalDateTime.now()));
 			db().executeUpdate(upMp);
 		}
-		operateLog(mp, MpOperateLogService.OP_TYPE_UPLOAD_CODE, result);
+		operateLogGlobal(mp, MpOperateLogService.OP_TYPE_UPLOAD_CODE, result, WxContentTemplate.WX_UPLOAD_CODE_SUCCESS.code, new String[] {});
 		//更新申请发布小程序为已发布
 		saas.shop.mpJumpVersion.updateMpJumpVersion(mp.getShopId());
 		return result;
@@ -470,6 +466,19 @@ public class MpAuthShopService extends MainBaseService {
 		Byte operateState = result.isSuccess() ? MpOperateLogService.OP_STATE_SUCCESS
 				: MpOperateLogService.OP_STATE_FAILED;
 		saas.shop.mpOperateLog.log(mp.getAppId(), mp.getBindTemplateId(), operateType, operateState, message);
+	}
+	
+	/**
+	 * 记录操作日志多语言
+	 * 
+	 * @param mp
+	 * @param operateType
+	 * @param result
+	 */
+	public void operateLogGlobal(MpAuthShopRecord mp, Byte operateType, WxOpenResult result,Integer templateIds, String... datas) {
+		Byte operateState = result.isSuccess() ? MpOperateLogService.OP_STATE_SUCCESS
+				: MpOperateLogService.OP_STATE_FAILED;
+		saas.shop.mpOperateLog.insertRecord(mp.getBindTemplateId(), operateType, mp.getAppId(), operateState, templateIds, datas);
 	}
 
 	/**
@@ -495,7 +504,8 @@ public class MpAuthShopService extends MainBaseService {
 			mp.setTester(Util.toJson(testers));
 			mp.update();
 		}
-		operateLog(mp, MpOperateLogService.OP_TYPE_ADD_TESTER, result);
+		//绑定测试者
+		operateLogGlobal(mp, MpOperateLogService.OP_TYPE_ADD_TESTER, result, WxContentTemplate.WX_BIND_TESTER_SUCCESS.code, new String[] {wechatId});
 		return result;
 	}
 
@@ -542,7 +552,7 @@ public class MpAuthShopService extends MainBaseService {
 			mp.setTester(Util.toJson(testers));
 			mp.update();
 		}
-		operateLog(mp, MpOperateLogService.OP_TYPE_DEL_TESTER, result);
+		operateLogGlobal(mp, MpOperateLogService.OP_TYPE_DEL_TESTER, result, WxContentTemplate.WX_DEL_TESTER_SUCCESS.code, new String[] {wechatId});
 		return result;
 	}
 
@@ -585,15 +595,18 @@ public class MpAuthShopService extends MainBaseService {
 		String pagePath = "pages/bottom/bottom";
 		File file = maService.getTestQrcode(pagePath, null);
 		String relativePath = "upload/saas/qr/" + appId + ".jpg";
+		WxOpenResult result=new WxOpenResult();
 		try {
 			image.uploadToUpYun(relativePath, file);
 		} catch (Exception e) {
-			operateLog(mp, MpOperateLogService.OP_TYPE_GET_TESTER_QR, failResult(e.getMessage()));
+			result.setErrcode("-2");
+			result.setErrmsg(e.getMessage());
+			operateLogGlobal(mp, MpOperateLogService.OP_TYPE_GET_TESTER_QR, result, WxContentTemplate.WX_DEL_TESTER_FAIL.code, new String[] {"-2",e.getMessage()});
 			return failResult(e.getMessage());
 		}
 		mp.setTestQrPath(relativePath);
 		mp.update();
-		operateLog(mp, MpOperateLogService.OP_TYPE_GET_TESTER_QR, successResult(relativePath));
+		operateLogGlobal(mp, MpOperateLogService.OP_TYPE_GET_TESTER_QR, result, WxContentTemplate.WX_DEL_TESTER_SUCCESS.code, new String[] {});
 		return successResult(relativePath);
 	}
 
@@ -612,7 +625,7 @@ public class MpAuthShopService extends MainBaseService {
 			mp.setCategory(Util.toJson(result.getCategoryList()));
 			mp.update();
 		}
-		operateLog(mp, MpOperateLogService.OP_TYPE_GET_CATEGORY, result);
+		operateLogGlobal(mp, MpOperateLogService.OP_TYPE_GET_CATEGORY, result, WxContentTemplate.WX_GET_CATEGORY_SUCCESS.code, new String[] {});
 		return result;
 	}
 
@@ -633,7 +646,7 @@ public class MpAuthShopService extends MainBaseService {
 		}
 		//更新部署日志
 		updateDeployData(result.getPageList(), appId);
-		operateLog(mp, MpOperateLogService.OP_TYPE_GET_PAGE_CFG, result);
+		operateLogGlobal(mp, MpOperateLogService.OP_TYPE_GET_PAGE_CFG, result, WxContentTemplate.WX_GET_PAGE_CFG_SUCCESS.code, new String[] {});
 		return result;
 	}
 
@@ -693,7 +706,7 @@ public class MpAuthShopService extends MainBaseService {
 			upMp.setSubmitAuditTime(new Timestamp(System.currentTimeMillis()));
 			db().executeUpdate(upMp);
 		}
-		operateLog(mp, MpOperateLogService.OP_TYPE_SUBMIT_AUDIT, result);
+		operateLogGlobal(mp, MpOperateLogService.OP_TYPE_SUBMIT_AUDIT, result, WxContentTemplate.WX_SUBMIT_AUDIT_SUCCESS.code, new String[] {});
 		return result;
 	}
 
@@ -715,12 +728,13 @@ public class MpAuthShopService extends MainBaseService {
 				//更新数据库
 				updatePush(appId);
 			}
-			operateLog(mp, MpOperateLogService.OP_TYPE_PUBLISH_CODE, result);
+			operateLogGlobal(mp, MpOperateLogService.OP_TYPE_PUBLISH_CODE, result, WxContentTemplate.WX_PUBLISH_CODE_SUCCESS.code, new String[] {});
 			return result;
 		}
 		result.setErrcode(JsonResultCode.WX_MA_NEED_AUDITING_CODE_SUCCESS.toString());
 		//请等待代码审核成功或未上传代码
 		result.setErrmsg(JsonResultMessage.WX_MA_NEED_AUDITING_CODE_SUCCESS);
+		operateLogGlobal(mp, MpOperateLogService.OP_TYPE_PUBLISH_CODE, result, WxContentTemplate.WX_PUBLISH_CODE_SUCCESS.code, new String[] {result.getErrcode(),result.getErrmsg()});
 		return result;
 	}
 
@@ -787,11 +801,13 @@ public class MpAuthShopService extends MainBaseService {
 					mp.update();
 				}
 			}
+			operateLogGlobal(mp, MpOperateLogService.OP_TYPE_REFRESH_AUDIT_STATE, result, WxContentTemplate.WX_REFRESH_AUDIT_STATE_SUCCESS.code, new String[] {});
 			return result;
 		}
 		//尚未上传代码
 		result.setErrcode(JsonResultCode.WX_MA_NEED_UPLOADCODE.toString());
 		result.setErrmsg(JsonResultMessage.WX_MA_NEED_UPLOADCODE);
+		operateLogGlobal(mp, MpOperateLogService.OP_TYPE_REFRESH_AUDIT_STATE, result, WxContentTemplate.WX_REFRESH_AUDIT_STATE_FAIL.code, new String[] {result.getErrcode(),result.getErrmsg()});
 		return result;
 	}
 
@@ -819,7 +835,6 @@ public class MpAuthShopService extends MainBaseService {
 		WxOpenMaService maService = this.getMaServiceByAppId(appId);
 		WxOpenMaQueryAuditResult latestAuditStatus = maService.getLatestAuditStatus();
 		if(latestAuditStatus.isSuccess()) {
-			System.out.println(latestAuditStatus.getAuditId());
 			return latestAuditStatus;
 		}
 		return latestAuditStatus;
@@ -1073,7 +1088,127 @@ public class MpAuthShopService extends MainBaseService {
 		default:
 			break;
 		}
+		operateLogGlobal(mp, MpOperateLogService.OP_TYPE_SETTING_SUB_MERCHANT, wxOpenResult, WxContentTemplate.WX_SETTING_SUB_MERCHANT_SUCCESS.code, new String[] {});
 		return wxOpenResult;
+	}
+	
+	/**
+	 * 将抛错信息存入log表
+	 * @param act
+	 * @param result
+	 */
+	public void erroInsert(MpDeployQueryParam param,WxOpenResult result){
+		MpAuthShopRecord mp = this.getAuthShopByAppId(param.getAppId());
+		Byte operateType=null;
+		Integer templateIds=2000;
+		String[] datas=null;
+		switch (param.getAct()) {
+		case MpDeployQueryParam.ACT_ADD_TESTER: {
+			//绑定体验者
+			operateType=MpOperateLogService.OP_TYPE_ADD_TESTER;
+			templateIds=WxContentTemplate.WX_BIND_TESTER_FAIL.code;
+			datas=new String[] {param.getWechatId(),result.getErrcode(),result.getErrmsg()};
+			break;
+		}
+
+		case MpDeployQueryParam.ACT_DEL_TESTER: {
+			// 删除体验者
+			operateType=MpOperateLogService.OP_TYPE_DEL_TESTER;
+			templateIds=WxContentTemplate.WX_DEL_TESTER_FAIL.code;
+			datas=new String[] {param.getWechatId(),result.getErrcode(),result.getErrmsg()};
+			break;
+		}
+
+		case MpDeployQueryParam.ACT_GET_CATEGORY: {
+			//获取可选类目
+			operateType=MpOperateLogService.OP_TYPE_GET_CATEGORY;
+			templateIds=WxContentTemplate.WX_GET_CATEGORY_FAIL.code;
+			datas=new String[] {result.getErrcode(),result.getErrmsg()};
+			break;
+		}
+		case MpDeployQueryParam.ACT_GET_PAGE_CFG: {
+			//获取页面配置
+			operateType=MpOperateLogService.OP_TYPE_GET_PAGE_CFG;
+			templateIds=WxContentTemplate.WX_GET_PAGE_CFG_FAIL.code;
+			datas=new String[] {result.getErrcode(),result.getErrmsg()};
+			break;
+		}
+		case MpDeployQueryParam.ACT_GET_TESTER_QR: {
+			//获取体验者二维码
+			operateType=MpOperateLogService.OP_TYPE_GET_TESTER_QR;
+			templateIds=WxContentTemplate.WX_GET_NO_RECORD_FAIL.code;
+			datas=new String[] {result.getErrcode(),result.getErrmsg()};
+			break;
+		}
+		case MpDeployQueryParam.ACT_MODIFY_DOMAIN: {
+			// 设置服务器域名
+			operateType=MpOperateLogService.OP_TYPE_MODIFY_DOMAIN;
+			templateIds=WxContentTemplate.WX_MODIFY_DOMAIN_FAIL.code;
+			datas=new String[] {result.getErrcode(),result.getErrmsg()};
+			break;
+		}
+		case MpDeployQueryParam.ACT_PUBLISH_CODE: {
+			//发布代码
+			operateType=MpOperateLogService.OP_TYPE_PUBLISH_CODE;
+			templateIds=WxContentTemplate.WX_PUBLISH_CODE_FAIL.code;
+			datas=new String[] {result.getErrcode(),result.getErrmsg()};
+			break;
+		}
+		case MpDeployQueryParam.ACT_SUBMIT_AUDIT: {
+			//提交审核
+			operateType=MpOperateLogService.OP_TYPE_SUBMIT_AUDIT;
+			templateIds=WxContentTemplate.WX_SUBMIT_AUDIT_FAIL.code;
+			datas=new String[] {result.getErrcode(),result.getErrmsg()};
+			break;
+		}
+		case MpDeployQueryParam.ACT_UPDATE_MP: {
+			//更新小程序信息
+			operateType=MpOperateLogService.OP_TYPE_UPDATE_MP;
+			templateIds=WxContentTemplate.WX_UPDATE_MP_FAIL.code;
+			datas=new String[] {result.getErrcode(),result.getErrmsg()};
+			break;
+		}
+		case MpDeployQueryParam.ACT_REFRESH_AUDIT_STATE: {
+			// 刷新审核状态
+			operateType=MpOperateLogService.OP_TYPE_REFRESH_AUDIT_STATE;
+			templateIds=WxContentTemplate.WX_REFRESH_AUDIT_STATE_FAIL.code;
+			datas=new String[] {result.getErrcode(),result.getErrmsg()};
+			break;
+		}
+		case MpDeployQueryParam.ACT_UPLOAD_AUDIT: {
+			//上传代码并提交审核   一键提交审核
+			operateType=MpOperateLogService.OP_TYPE_UPLOAD_AUDIT;
+			templateIds=WxContentTemplate.WX_UPLOAD_AUDIT_FAIL.code;
+			datas=new String[] {result.getErrcode(),result.getErrmsg()};
+			break;
+		}
+		case MpDeployQueryParam.ACT_UPLOAD_CODE: {
+			//上传代码
+			operateType=MpOperateLogService.OP_TYPE_UPLOAD_CODE;
+			templateIds=WxContentTemplate.WX_UPLOAD_CODE_FAIL.code;
+			datas=new String[] {String.valueOf(param.getIsSubMerchant()),result.getErrcode(),result.getErrmsg()};
+			break;
+		}
+		case MpDeployQueryParam.SETTING_SUB_MERCHANT: {
+			//设置支付方式
+			operateType=MpOperateLogService.OP_TYPE_SETTING_SUB_MERCHANT;
+			templateIds=WxContentTemplate.WX_SETTING_SUB_MERCHANT_FAIL.code;
+			datas=new String[] {result.getErrcode(),result.getErrmsg()};
+			break;
+		}
+		default: {
+			operateType=MpOperateLogService.OP_STATE_FAILED;
+			templateIds=WxContentTemplate.WX_ERROE.code;
+			datas=new String[] {param.getAct(),result.getErrcode(),result.getErrmsg()};
+		}
+		}
+		if(result.getErrcode().equals("500")) {
+			//error错误
+			operateType=MpOperateLogService.OP_STATE_FAILED;
+			templateIds=WxContentTemplate.WX_ERROE.code;
+			datas=new String[] {param.getAct(),result.getErrcode(),result.getErrmsg()};
+		}
+		operateLogGlobal(mp, operateType, result, templateIds, datas);
 	}
 	
 }
