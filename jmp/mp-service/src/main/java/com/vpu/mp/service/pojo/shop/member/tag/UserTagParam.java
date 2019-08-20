@@ -17,7 +17,7 @@ import lombok.Setter;
 public class UserTagParam {
 	/** 用户id */
 	@NotNull
-	private Integer userId;
+	private List<Integer> userIdList;
 	/** 标签id列表  */
 	private List<Integer> tagIdList;
 }
