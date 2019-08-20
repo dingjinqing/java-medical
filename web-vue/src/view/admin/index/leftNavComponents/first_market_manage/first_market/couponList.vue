@@ -14,8 +14,13 @@
           <el-button
             type="primary"
             size="small"
-            @click="handleQuery()"
           >查询</el-button>
+        </div>
+        <div class="add_coupon">
+          <el-button
+            type="primary"
+            size="small"
+          >添加优惠券</el-button>
         </div>
       </div>
     </div>
@@ -28,33 +33,34 @@
         style="width: 100%"
       >
         <el-table-column
+          prop="actName"
           label="优惠券名称"
           align="center"
         >
 
         </el-table-column>
         <el-table-column
-          prop="pageName"
+          prop="useScore"
           label="积分兑换"
           align="center"
         >
         </el-table-column>
         <el-table-column
-          prop="creatTime"
+          prop="denomination"
           label="价值"
           align="center"
           width="80"
         >
         </el-table-column>
         <el-table-column
-          prop="isFirstPage"
+          prop="useConsumeRestrict"
           label="最低消费"
           align="center"
         >
 
         </el-table-column>
         <el-table-column
-          prop="pageClass"
+          prop="remainAmount"
           label="库存"
           align="center"
           width="80"
@@ -62,30 +68,35 @@
 
         </el-table-column>
         <el-table-column
+          prop="receivePerPerson"
           label="领取限制"
           align="center"
         >
 
         </el-table-column>
         <el-table-column
+          prop="vaildDate"
           label="有效期"
           align="center"
         >
 
         </el-table-column>
         <el-table-column
+          prop="receivePerson"
           label="领取人/次"
           align="center"
         >
 
         </el-table-column>
         <el-table-column
+          prop="giveOutPerson"
           label="发放人/次"
           align="center"
         >
 
         </el-table-column>
         <el-table-column
+          prop="used"
           label="已使用"
           align="center"
         >
@@ -96,25 +107,110 @@
           align="center"
           width="130"
         >
-
+          <template slot-scope="scope">
+            <div class="opt">
+              <span>编辑</span>
+              <span>分享</span>
+              <span @click="puaseCoupon(scope.row.id)">停用</span>
+              <span>领取明细</span>
+              <span @click="delCoupon(scope.row.id)">删除</span>
+            </div>
+          </template>
         </el-table-column>
       </el-table>
     </div>
+    <!--禁止登陆弹窗-->
+    <div class="balanceDialo">
+      <el-dialog
+        title="禁止登陆"
+        :visible.sync="noLandingDialogVisible"
+        width="40%"
+        :modal-append-to-body="false"
+      >
+        <div
+          class="balanceDialogDiv"
+          style="margin-bottom:30px"
+        >
+          <span style="color:#f66">提示：</span>
+          <span>禁止登陆后会员将不能登陆了，确定禁止登陆吗?</span>
+        </div>
+        <span
+          slot="footer"
+          class="dialog-footer"
+        >
+          <el-button @click="noLandingDialogVisible = false">取 消</el-button>
+          <el-button
+            type="primary"
+            @click="noLandingDialogVisible = false"
+          >确 定</el-button>
+        </span>
+      </el-dialog>
+    </div>
   </div>
+
 </template>
 <script>
+import { couponList, pauseCoupon, deleteCoupon } from '@/api/admin/marketManage/couponList.js'
 export default {
   data () {
     return {
       tableData: []
     }
   },
+  mounted () {
+    // 初始化数据
+    this.seacherCouponList()
+  },
   methods: {
+    seacherCouponList () {
+      let obj = {
+        'currentPage ': 0,
+        'pageRows ': 20,
+        'actName': null
+      }
 
+      couponList(obj).then((res) => {
+        console.log(res)
+        if (res.error === 0) {
+          this.handleData(res.content.dataList)
+        }
+      })
+    },
+    // 表格数据处理
+    handleData (data) {
+      data.map((item, index) => {
+        //   if (item.surplus === 0) {
+        //     item.surplus = 'asd'
+        //   }
+        //   item.surplus =
+        item.vaildDate = `${item.startTime}至${item.endTime}`
+        item.receivePerson = `${item.receivePerson}/${item.receiveAmount}`
+        item.giveOutPerson = `${item.giveoutPerson}/${item.giveoutAmount}`
+      })
+      this.tableData = data
+    },
+    // 停用优惠券
+    puaseCoupon (id) {
+      console.log(id)
+      pauseCoupon(id).then(res => {
+        if (res.error === 0) {
+          alert('停用成功！')
+        }
+        console.log(res)
+      })
+    },
+    // 删除优惠券
+    delCoupon (id) {
+      deleteCoupon(id).then(res => {
+        if (res.error === 0) {
+          alert('删除成功！')
+          this.seacherCouponList()
+        }
+      })
+    }
   }
 }
 </script>
-
 <style lang="scss" scoped>
 .content {
   padding: 10px;
@@ -163,5 +259,25 @@ export default {
   margin-top: 10px;
   background-color: #fff;
   padding: 10px 20px 0 20px;
+}
+.opt {
+  text-align: left;
+  color: #5a8bff;
+  span {
+    cursor: pointer;
+  }
+}
+.balanceDialo .el-dialog__body {
+  padding-bottom: 0 !important;
+}
+.balanceDialo .el-dialog__footer {
+  border-top: 1px solid #eee;
+}
+.setUpDialog .el-dialog__body {
+  padding-top: 10px !important;
+}
+.add_coupon {
+  float: left;
+  margin-left: 65%;
 }
 </style>
