@@ -3,6 +3,7 @@ package com.vpu.mp.controller.admin;
 import com.vpu.mp.service.foundation.data.JsonResult;
 import com.vpu.mp.service.pojo.shop.market.gift.GiftListParam;
 import com.vpu.mp.service.pojo.shop.market.gift.GiftParam;
+import com.vpu.mp.service.pojo.shop.market.gift.LevelParam;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
@@ -58,5 +59,14 @@ public class AdminGiftController extends AdminBaseController {
     @PostMapping("/list")
     public JsonResult getPageList(@RequestBody GiftListParam param) {
         return success(shop().gift.getPageList(param));
+    }
+
+    /**
+     * 修改优先级
+     */
+    @PostMapping("/level/update")
+    public JsonResult updateLevel(@RequestBody @Valid LevelParam param) {
+        shop().gift.updateLevel(param);
+        return success();
     }
 }

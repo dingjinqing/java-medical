@@ -7,10 +7,7 @@ import com.vpu.mp.db.shop.tables.records.GiftRecord;
 import com.vpu.mp.service.foundation.service.ShopBaseService;
 import com.vpu.mp.service.foundation.util.PageResult;
 import com.vpu.mp.service.foundation.util.Util;
-import com.vpu.mp.service.pojo.shop.market.gift.GiftListParam;
-import com.vpu.mp.service.pojo.shop.market.gift.GiftListVo;
-import com.vpu.mp.service.pojo.shop.market.gift.GiftParam;
-import com.vpu.mp.service.pojo.shop.market.gift.RuleParam;
+import com.vpu.mp.service.pojo.shop.market.gift.*;
 import org.jooq.DSLContext;
 import org.jooq.SelectConditionStep;
 import org.jooq.impl.DSL;
@@ -240,5 +237,12 @@ public class GiftService extends ShopBaseService {
                 return EXPIRED;
             }
         }
+    }
+
+    /**
+     * 修改活动优先级
+     */
+    public void updateLevel(LevelParam param) {
+        db().update(TABLE).set(TABLE.LEVEL, param.getLevel()).where(TABLE.ID.eq(param.getId())).execute();
     }
 }
