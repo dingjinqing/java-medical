@@ -58,6 +58,7 @@ const myMixin = {
 
         // admin页面框架
         this.headerNavEn = 'headerNavEn'
+        this.leftMenuEn = 'leftMenuEn'
       } else {
         this.$i18n.locale = 'cn'
         this.Recommend_class = ''
@@ -112,6 +113,7 @@ const myMixin = {
 
         // admin页面框架
         this.headerNavEn = ''
+        this.leftMenuEn = ''
       }
     }
   }

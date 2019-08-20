@@ -1,6 +1,12 @@
 <template>
-  <div class="container">
-    <div class="left_menu">
+  <div
+    class="container"
+    :class="leftMenuEn"
+  >
+    <div
+      class="left_menu"
+      :class="leftMenuEn"
+    >
       <ul>
         <li
           v-for="(item,index) in navLeftData"
@@ -40,77 +46,77 @@ export default {
           {
             imgUrl: this.$imageHost + '/image/admin/icon_left/shop_look.png',
             imgUrl_h: this.$imageHost + '/image/admin/icon_left/shop_look_h.png',
-            span: '商城概览',
+            span: '',
             name: 'shop_view',
             flag: false
           },
           {
             imgUrl: this.$imageHost + '/image/admin/icon_left/analysis_basic.png',
             imgUrl_h: this.$imageHost + '/image/admin/icon_left/analysis_basic_h.png',
-            span: '概况统计',
+            span: '',
             name: 'analysis_basic',
             flag: false
           },
           {
             imgUrl: this.$imageHost + '/image/admin/icon_left/situation.png',
             imgUrl_h: this.$imageHost + '/image/admin/icon_left/situation_h.png',
-            span: '实时概况',
+            span: '',
             name: 'situation',
             flag: false
           },
           {
             imgUrl: this.$imageHost + '/image/admin/icon_left/new_analysis_portrait.png',
             imgUrl_h: this.$imageHost + '/image/admin/icon_left/new_analtsis_portrait_h.png',
-            span: '用户画像',
+            span: '',
             name: 'analysis_portrait',
             flag: false
           },
           {
             imgUrl: this.$imageHost + '/image/admin/icon_left/analysis_visit.png',
             imgUrl_h: this.$imageHost + '/image/admin/icon_left/analysis_visit_h.png',
-            span: '访问分析',
+            span: '',
             name: 'analysis_visit',
             flag: false
           },
           {
             imgUrl: this.$imageHost + '/image/admin/icon_left/laiyuan.png',
             imgUrl_h: this.$imageHost + '/image/admin/icon_left/laiyuan_h.png',
-            span: '来源分析',
+            span: '',
             name: 'analysis_visit_source',
             flag: false
           },
           {
             imgUrl: this.$imageHost + '/image/admin/icon_left/new_yonghu.png',
             imgUrl_h: this.$imageHost + '/image/admin/icon_left/new_yonghu_h.png',
-            span: '用户统计',
+            span: '',
             name: 'user_summary',
             flag: false
           },
           {
             imgUrl: this.$imageHost + '/image/admin/icon_left/goods_new_ana.png',
             imgUrl_h: this.$imageHost + '/image/admin/icon_left/goods_new_ana_h.png',
-            span: '商品统计',
+            span: '',
             name: 'goods_summary',
             flag: false
           },
           {
             imgUrl: this.$imageHost + '/image/admin/icon_left/jiaoyi.png',
             imgUrl_h: this.$imageHost + '/image/admin/icon_left/jiaoyi_h.png',
-            span: '交易统计',
+            span: '',
             name: 'trades_summary',
             flag: false
           },
           {
             imgUrl: this.$imageHost + '/image/admin/icon_left/asset_manage.png',
             imgUrl_h: this.$imageHost + '/image/admin/icon_left/asset_manage_h.png',
-            span: '资产管理',
+            span: '',
             name: 'asset_summary',
             flag: false
           },
           {
             imgUrl: this.$imageHost + '/image/admin/icon_left/search_config.png',
             imgUrl_h: this.$imageHost + '/image/admin/icon_left/search_config_h.png',
-            span: '搜索统计',
+            span: '',
             name: 'search_summary',
             flag: false
           }
@@ -119,56 +125,56 @@ export default {
           {
             imgUrl: this.$imageHost + '/image/admin/icon_left/page_decoration.png',
             imgUrl_h: this.$imageHost + '/image/admin/icon_left/page_decoration_h.png',
-            span: '页面装修',
+            span: '',
             name: 'picture_setting',
             flag: false
           },
           {
             imgUrl: this.$imageHost + '/image/admin/icon_left/picture_setting.png',
             imgUrl_h: this.$imageHost + '/image/admin/icon_left/picture_setting_h.png',
-            span: '页面分类',
+            span: '',
             name: 'page_classification',
             flag: false
           },
           {
             imgUrl: this.$imageHost + '/image/admin/icon_left/image_list.png',
             imgUrl_h: this.$imageHost + '/image/admin/icon_left/image_list_h.png',
-            span: '图片空间',
+            span: '',
             name: 'image_list',
             flag: false
           },
           {
             imgUrl: this.$imageHost + '/image/admin/icon_left/shop_style.png',
             imgUrl_h: this.$imageHost + '/image/admin/icon_left/shop_style_h.png',
-            span: '店铺风格',
+            span: '',
             name: 'shop_style',
             flag: false
           },
           {
             imgUrl: this.$imageHost + '/image/admin/icon_left/picture_space.png',
             imgUrl_h: this.$imageHost + '/image/admin/icon_left/picture_space_h.png',
-            span: '底部导航',
+            span: '',
             name: 'image_manager',
             flag: false
           },
           {
             imgUrl: this.$imageHost + '/image/admin/icon_left/user_config.png',
             imgUrl_h: this.$imageHost + '/image/admin/icon_left/user_config_h.png',
-            span: '个人中心',
+            span: '',
             name: 'user_center_config',
             flag: false
           },
           {
             imgUrl: this.$imageHost + '/image/admin/icon_left/search_config.png',
             imgUrl_h: this.$imageHost + '/image/admin/icon_left/search_config_h.png',
-            span: '搜索配置',
+            span: '',
             name: 'search_config',
             flag: false
           },
           {
             imgUrl: this.$imageHost + '/image/admin/icon_left/mobile_deco.png',
             imgUrl_h: this.$imageHost + '/image/admin/icon_left/mobile_deco_h.png',
-            span: '小程序跳转',
+            span: '',
             name: 'mp_jump_list',
             flag: false
           }
@@ -177,63 +183,63 @@ export default {
           {
             imgUrl: this.$imageHost + '/image/admin/icon_left/product_in.png',
             imgUrl_h: this.$imageHost + '/image/admin/icon_left/product_in_h.png',
-            span: '全部商品',
+            span: '',
             name: 'sale_on',
             flag: false
           },
           {
             imgUrl: this.$imageHost + '/image/admin/icon_left/picture_add.png',
             imgUrl_h: this.$imageHost + '/image/admin/icon_left/picture_add_h.png',
-            span: '添加商品',
+            span: '',
             name: 'goods_add',
             flag: false
           },
           {
             imgUrl: this.$imageHost + '/image/admin/icon_left/deliver_tmpl.png',
             imgUrl_h: this.$imageHost + '/image/admin/icon_left/deliver_tmpl_h.png',
-            span: '运费模板',
+            span: '',
             name: 'deliver',
             flag: false
           },
           {
             imgUrl: this.$imageHost + '/image/admin/icon_left/img_sort.png',
             imgUrl_h: this.$imageHost + '/image/admin/icon_left/img_sort_h.png',
-            span: '商家分类管理',
+            span: '',
             name: 'sort',
             flag: false
           },
           {
             imgUrl: this.$imageHost + '/image/admin/icon_left/brand_icon.png',
             imgUrl_h: this.$imageHost + '/image/admin/icon_left/brand_icon_h.png',
-            span: '品牌管理',
+            span: '',
             name: 'brand',
             flag: false
           },
           {
             imgUrl: this.$imageHost + '/image/admin/icon_left/comment_man.png',
             imgUrl_h: this.$imageHost + '/image/admin/icon_left/comment_man_h.png',
-            span: '评价管理',
+            span: '',
             name: 'comment',
             flag: false
           },
           {
             imgUrl: this.$imageHost + '/image/admin/icon_left/recommend_icon.png',
             imgUrl_h: this.$imageHost + '/image/admin/icon_left/recommend_icon_h.png',
-            span: '商品推荐',
+            span: '',
             name: 'recommend',
             flag: false
           },
           {
             imgUrl: this.$imageHost + '/image/admin/icon_left/goods_label1.png',
             imgUrl_h: this.$imageHost + '/image/admin/icon_left/goods_label1_h.png',
-            span: '商品标签',
+            span: '',
             name: 'label',
             flag: false
           },
           {
             imgUrl: this.$imageHost + '/image/admin/icon_left/user_import.png',
             imgUrl_h: this.$imageHost + '/image/admin/icon_left/user_import_h.png',
-            span: '商品导入',
+            span: '',
             name: 'goods_import',
             flag: false
           }
@@ -242,49 +248,49 @@ export default {
           {
             imgUrl: this.$imageHost + '/image/admin/icon_left/all_order.png',
             imgUrl_h: this.$imageHost + '/image/admin/icon_left/all_order_h.png',
-            span: '全部订单',
+            span: '',
             name: 'order',
             flag: false
           },
           {
             imgUrl: this.$imageHost + '/image/admin/icon_left/wait_order.png',
             imgUrl_h: this.$imageHost + '/image/admin/icon_left/wait_order_h.png',
-            span: '待发货订单',
+            span: '',
             name: 'order_wait',
             flag: false
           },
           {
             imgUrl: this.$imageHost + '/image/admin/icon_left/return_order.png',
             imgUrl_h: this.$imageHost + '/image/admin/icon_left/return_order_h.png',
-            span: '退货退款订单',
+            span: '',
             name: 'order_return',
             flag: false
           },
           {
             imgUrl: this.$imageHost + '/image/admin/icon_left/self_order.png',
             imgUrl_h: this.$imageHost + '/image/admin/icon_left/self_order_h.png',
-            span: '自提订单',
+            span: '',
             name: 'shop_setting',
             flag: false
           },
           {
             imgUrl: this.$imageHost + '/image/admin/icon_left/pin_group_fail.png',
             imgUrl_h: this.$imageHost + '/image/admin/icon_left/pin_group_fail_h.png',
-            span: '拼团退款失败单',
+            span: '',
             name: 'pin_group_fail',
             flag: false
           },
           {
             imgUrl: this.$imageHost + '/image/admin/icon_left/checkout.png',
             imgUrl_h: this.$imageHost + '/image/admin/icon_left/checkout_h.png',
-            span: '买单订单',
+            span: '',
             name: 'check_order',
             flag: false
           },
           {
             imgUrl: this.$imageHost + '/image/admin/icon_left/fake_icon.png',
             imgUrl_h: this.$imageHost + '/image/admin/icon_left/fake_icon_h.png',
-            span: '虚拟商品订单',
+            span: '',
             name: 'member_card_order',
             flag: false
           }
@@ -300,63 +306,63 @@ export default {
           {
             imgUrl: this.$imageHost + '/image/admin/icon_left/bargain.png',
             imgUrl_h: this.$imageHost + '/image/admin/icon_left/bargain_h.png',
-            span: '砍价',
+            span: '',
             name: 'kanjia',
             flag: false
           },
           {
             imgUrl: this.$imageHost + '/image/admin/icon_left/icon_group.png',
             imgUrl_h: this.$imageHost + '/image/admin/icon_left/icon_group_h.png',
-            span: '多人拼团',
+            span: '',
             name: 'pin_group',
             flag: false
           },
           {
             imgUrl: this.$imageHost + '/image/admin/icon_left/img_distribution.png',
             imgUrl_h: this.$imageHost + '/image/admin/icon_left/img_distribution_h.png',
-            span: '分销',
+            span: '',
             name: 'distribution_info',
             flag: false
           },
           {
             imgUrl: this.$imageHost + '/image/admin/icon_left/groupdraw.png',
             imgUrl_h: this.$imageHost + '/image/admin/icon_left/groupdraw_h.png',
-            span: '拼团抽奖',
+            span: '',
             name: 'group_draw',
             flag: false
           },
           {
             imgUrl: this.$imageHost + '/image/admin/icon_left/pinintegration.png',
             imgUrl_h: this.$imageHost + '/image/admin/icon_left/pinintegration_h.png',
-            span: '瓜分积分',
+            span: '',
             name: 'pin_integration',
             flag: false
           },
           {
             imgUrl: this.$imageHost + '/image/admin/icon_left/friend_promote.png',
             imgUrl_h: this.$imageHost + '/image/admin/icon_left/friend_promote_h.png',
-            span: '好友助力',
+            span: '',
             name: 'promote',
             flag: false
           },
           {
             imgUrl: this.$imageHost + '/image/admin/icon_left/icon_lottery.png',
             imgUrl_h: this.$imageHost + '/image/admin/icon_left/icon_lottery_h.png',
-            span: '幸运大抽奖',
+            span: '',
             name: 'lottery_activity',
             flag: false
           },
           {
             imgUrl: this.$imageHost + '/image/admin/icon_left/icon_gifted.png',
             imgUrl_h: this.$imageHost + '/image/admin/icon_left/icon_gifted_h.png',
-            span: '活动有礼',
+            span: '',
             name: 'market_gifted',
             flag: false
           },
           {
             imgUrl: this.$imageHost + '/image/admin/icon_left/icon_payreward.png',
             imgUrl_h: this.$imageHost + '/image/admin/icon_left/icon_payreward_h.png',
-            span: '支付有礼',
+            span: '',
             name: 'payreward',
             flag: false
           }
@@ -365,35 +371,35 @@ export default {
           {
             imgUrl: this.$imageHost + '/image/admin/icon_left/card.png',
             imgUrl_h: this.$imageHost + '/image/admin/icon_left/card_h.png',
-            span: '会员列表',
+            span: '',
             name: 'user_list',
             flag: false
           },
           {
             imgUrl: this.$imageHost + '/image/admin/icon_left/user_import.png',
             imgUrl_h: this.$imageHost + '/image/admin/icon_left/user_import_h.png',
-            span: '会员导入',
+            span: '',
             name: 'user_import',
             flag: false
           },
           {
             imgUrl: this.$imageHost + '/image/admin/icon_left/user_code.png',
             imgUrl_h: this.$imageHost + '/image/admin/icon_left/user_code_h.png',
-            span: '会员卡',
+            span: '',
             name: 'user_card',
             flag: false
           },
           {
             imgUrl: this.$imageHost + '/image/admin/icon_left/label_man.png',
             imgUrl_h: this.$imageHost + '/image/admin/icon_left/label_man_h.png',
-            span: '标签管理',
+            span: '',
             name: 'user_tag',
             flag: false
           },
           {
             imgUrl: this.$imageHost + '/image/admin/icon_left/essay_admin.png',
             imgUrl_h: this.$imageHost + '/image/admin/icon_left/essay_admin_h.png',
-            span: '积分管理',
+            span: '',
             name: 'score',
             flag: false
           }
@@ -402,28 +408,28 @@ export default {
           {
             imgUrl: this.$imageHost + '/image/admin/icon_left/store_list.png',
             imgUrl_h: this.$imageHost + '/image/admin/icon_left/store_list_h.png',
-            span: '门店列表',
+            span: '',
             name: 'store_list',
             flag: false
           },
           {
             imgUrl: this.$imageHost + '/image/admin/icon_left/store_add.png',
             imgUrl_h: this.$imageHost + '/image/admin/icon_left/store_add_h.png',
-            span: '新增门店',
+            span: '',
             name: 'add_store',
             flag: false
           },
           {
             imgUrl: this.$imageHost + '/image/admin/icon_left/store_group.png',
             imgUrl_h: this.$imageHost + '/image/admin/icon_left/store_group_h.png',
-            span: '分组管理',
+            span: '',
             name: 'group_manage',
             flag: false
           },
           {
             imgUrl: this.$imageHost + '/image/admin/icon_left/service_config.png',
             imgUrl_h: this.$imageHost + '/image/admin/icon_left/service_config_h.png',
-            span: '门店服务配置',
+            span: '',
             name: 'store_service_config',
             flag: false
           }
@@ -432,49 +438,49 @@ export default {
           {
             imgUrl: this.$imageHost + '/image/admin/icon_left/config_list.png',
             imgUrl_h: this.$imageHost + '/image/admin/icon_left/config_list_h.png',
-            span: '店铺基础配置',
+            span: '',
             name: 'config_list',
             flag: false
           },
           {
             imgUrl: this.$imageHost + '/image/admin/icon_left/pay_config.png',
             imgUrl_h: this.$imageHost + '/image/admin/icon_left/pay_config_h.png',
-            span: '交易配置',
+            span: '',
             name: 'pay',
             flag: false
           },
           {
             imgUrl: this.$imageHost + '/image/admin/icon_left/child_config.png',
             imgUrl_h: this.$imageHost + '/image/admin/icon_left/child_config_h.png',
-            span: '店铺权限',
+            span: '',
             name: 'child_config',
             flag: false
           },
           {
             imgUrl: this.$imageHost + '/image/admin/icon_left/message_config.png',
             imgUrl_h: this.$imageHost + '/image/admin/icon_left/message_config_h.png',
-            span: '模版消息',
+            span: '',
             name: 'message_config',
             flag: false
           },
           {
             imgUrl: this.$imageHost + '/image/admin/icon_left/third_party_config.png',
             imgUrl_h: this.$imageHost + '/image/admin/icon_left/third_party_config_h.png',
-            span: '第三方对接',
+            span: '',
             name: 'third_auth',
             flag: false
           },
           {
             imgUrl: this.$imageHost + '/image/admin/icon_left/action_record.png',
             imgUrl_h: this.$imageHost + '/image/admin/icon_left/action_record_h.png',
-            span: '操作记录',
+            span: '',
             name: 'action_record',
             flag: false
           },
           {
             imgUrl: this.$imageHost + '/image/admin/icon_left/pledge_config.png',
             imgUrl_h: this.$imageHost + '/image/admin/icon_left/pledge_config_h.png',
-            span: '服务承诺',
+            span: '',
             name: 'pledge',
             flag: false
           }
@@ -484,7 +490,8 @@ export default {
       nav_index: '',
       click_nav_index: null,
       nav_s_class_index: false,
-      saveIndex: null
+      saveIndex: null,
+      leftMenuEn: ''
     }
   },
   watch: {
@@ -497,6 +504,8 @@ export default {
   },
   mounted() {
     console.log(this.$route)
+    //初始化语言
+    this.langDefault()
     // 权限处理
     this.handleJurisdiction()
   },
@@ -520,33 +529,58 @@ export default {
         console.log(this.dataList)
       })
     },
-    defaultNav(meta) {
+    async defaultNav(meta) {
       console.log(meta)
       console.log(this.dataList)
       switch (meta) {
         case 'first_web_manage':
+          // this.dataList['first_web_manage'][0].span = this.$t('adminPageFramework.shop_view')
+          this.dataList['first_web_manage'].map((item, index) => {
+            this.dataList['first_web_manage'][index].span = this.$t(`adminPageFramework.leftNavArr.nav1[${index}]`)
+          })
           this.navLeftData = this.dataList['first_web_manage']
           break
         case 'first_web_decoration':
+          this.dataList['first_web_decoration'].map((item, index) => {
+            this.dataList['first_web_decoration'][index].span = this.$t(`adminPageFramework.leftNavArr.nav2[${index}]`)
+          })
           this.navLeftData = this.dataList['first_web_decoration']
           break
         case 'goods_manage':
           console.log(this.dataList['goods_manage'])
+          this.dataList['goods_manage'].map((item, index) => {
+            this.dataList['goods_manage'][index].span = this.$t(`adminPageFramework.leftNavArr.nav3[${index}]`)
+          })
           this.navLeftData = this.dataList['goods_manage']
           break
         case 'first_trade_manage':
+          this.dataList['first_trade_manage'].map((item, index) => {
+            this.dataList['first_trade_manage'][index].span = this.$t(`adminPageFramework.leftNavArr.nav4[${index}]`)
+          })
           this.navLeftData = this.dataList['first_trade_manage']
           break
         case 'first_market_manage':
+          this.dataList['first_market_manage'].map((item, index) => {
+            this.dataList['first_market_manage'][index].span = this.$t(`adminPageFramework.leftNavArr.nav5[${index}]`)
+          })
           this.navLeftData = this.dataList['first_market_manage']
           break
         case 'user_manger':
+          this.dataList['user_manger'].map((item, index) => {
+            this.dataList['user_manger'][index].span = this.$t(`adminPageFramework.leftNavArr.nav6[${index}]`)
+          })
           this.navLeftData = this.dataList['user_manger']
           break
         case 'store_manage':
+          this.dataList['store_manage'].map((item, index) => {
+            this.dataList['store_manage'][index].span = this.$t(`adminPageFramework.leftNavArr.nav7[${index}]`)
+          })
           this.navLeftData = this.dataList['store_manage']
           break
         case 'base_manger':
+          this.dataList['base_manger'].map((item, index) => {
+            this.dataList['base_manger'][index].span = this.$t(`adminPageFramework.leftNavArr.nav8[${index}]`)
+          })
           this.navLeftData = this.dataList['base_manger']
           break
       }
@@ -564,6 +598,8 @@ export default {
       } else {
         this.judgeMenuAll(true)
       }
+
+
       console.log(this.saveIndex)
       console.log(this.navLeftData)
     },
@@ -609,12 +645,14 @@ export default {
   z-index: 100;
   height: 100%;
 }
-
+.leftMenuEn {
+  width: 190px !important;
+}
 .lestList img {
   display: block;
   float: left;
-  width: 20px !important;
-  height: 20px !important;
+  width: 20px;
+  height: 20px;
   margin: auto 0 !important;
 }
 .lestList span {

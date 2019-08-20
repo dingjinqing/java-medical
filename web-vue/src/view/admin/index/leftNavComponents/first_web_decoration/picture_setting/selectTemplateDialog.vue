@@ -27,6 +27,7 @@
                     <el-button
                       type="primary"
                       size="small"
+                      @click="handleToDecPage()"
                     >{{index===0?'自定义':'使用模板'}}</el-button>
                   </div>
 
@@ -153,6 +154,12 @@ export default {
     leave (index) {
       console.log(index)
       this.dialogData[index].flag = ''
+    },
+    // 跳转到装修主页
+    handleToDecPage () {
+      // this.$router.push({
+
+      // })
     }
   }
 }
