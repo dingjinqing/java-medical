@@ -180,7 +180,7 @@ public class MpAuthShopService extends MainBaseService {
         wxOpenResult.setErrcode("0");
         wxOpenResult.setErrmsg(updateSuccessMsg);
 
-        operateLogGlobal(record, MpOperateLogService.OP_TYPE_UPDATE_MP, wxOpenResult, WxContentTemplate.WX_DEL_TESTER_SUCCESS.code, new String[] {});
+        operateLogGlobal(record, MpOperateLogService.OP_TYPE_UPDATE_MP, wxOpenResult, WxContentTemplate.WX_UPDATE_MP_SUCCESS.code, new String[] {});
         return wxOpenResult;
     }
 
@@ -601,12 +601,12 @@ public class MpAuthShopService extends MainBaseService {
 		} catch (Exception e) {
 			result.setErrcode("-2");
 			result.setErrmsg(e.getMessage());
-			operateLogGlobal(mp, MpOperateLogService.OP_TYPE_GET_TESTER_QR, result, WxContentTemplate.WX_DEL_TESTER_FAIL.code, new String[] {"-2",e.getMessage()});
+			operateLogGlobal(mp, MpOperateLogService.OP_TYPE_GET_TESTER_QR, result, WxContentTemplate.WX_GET_TESTER_QR_FAIL.code, new String[] {"-2",e.getMessage()});
 			return failResult(e.getMessage());
 		}
 		mp.setTestQrPath(relativePath);
 		mp.update();
-		operateLogGlobal(mp, MpOperateLogService.OP_TYPE_GET_TESTER_QR, result, WxContentTemplate.WX_DEL_TESTER_SUCCESS.code, new String[] {});
+		operateLogGlobal(mp, MpOperateLogService.OP_TYPE_GET_TESTER_QR, result, WxContentTemplate.WX_GET_TESTER_QR_SUCCESS.code, new String[] {});
 		return successResult(relativePath);
 	}
 

@@ -219,7 +219,7 @@ public class MpOperateLogService extends MainBaseService {
 	
 	private String splicingAdminRecordForContent(String templateIds, String datas, String language) {
 		int memoId = Integer.parseInt(templateIds);
-		String message = WxContentTemplate.WX_GET_NO_RECORD.getMessage();
+		String message = WxContentTemplate.WX_ERROE.getMessage();
 		for (WxContentTemplate wxt : WxContentTemplate.values()) {
 			if (wxt.getCode() == memoId) {
 				message = wxt.getMessage();
