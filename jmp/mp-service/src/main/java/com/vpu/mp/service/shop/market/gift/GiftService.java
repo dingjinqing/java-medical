@@ -103,14 +103,14 @@ public class GiftService extends ShopBaseService {
      */
     public void deleteGift(Integer id) {
         db().update(TABLE).set(TABLE.STATUS, (byte) 0).set(TABLE.DEL_FLAG, (byte) 1).set(TABLE.DEL_TIME,
-            Util.currentTimeStamp()).execute();
+            Util.currentTimeStamp()).where(TABLE.ID.eq(id)).execute();
     }
 
     /**
      * 停用活动
      */
     public void disableGift(Integer id) {
-        db().update(TABLE).set(TABLE.STATUS, (byte) 0).execute();
+        db().update(TABLE).set(TABLE.STATUS, (byte) 0).where(TABLE.ID.eq(id)).execute();
     }
 
     /**
