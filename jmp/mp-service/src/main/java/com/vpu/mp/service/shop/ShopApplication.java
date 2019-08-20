@@ -1,5 +1,6 @@
 package com.vpu.mp.service.shop;
 
+import com.vpu.mp.service.shop.assess.AssessService;
 import com.vpu.mp.service.shop.config.ConfigService;
 import com.vpu.mp.service.shop.config.ShopBasicConfigService;
 import com.vpu.mp.service.shop.config.TradeService;
@@ -177,6 +178,7 @@ public class ShopApplication {
 	public TransactionStatisticsService transactionService;
 	@Autowired
 	public CouponPackOrderService couponPackOrder;
+    @Autowired public AssessService assess;
 	/**
 	 * 满免包邮
 	 */
