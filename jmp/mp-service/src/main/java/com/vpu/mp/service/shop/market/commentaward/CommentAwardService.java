@@ -11,6 +11,7 @@ import com.vpu.mp.service.pojo.shop.market.commentaward.CommentAwardVo;
 import lombok.Data;
 import org.jooq.Record;
 import org.jooq.SelectConditionStep;
+import org.springframework.stereotype.Service;
 
 import java.sql.Timestamp;
 
@@ -20,7 +21,7 @@ import static com.vpu.mp.db.shop.Tables.COMMENT_AWARD;
  * @author 孔德成
  * @date 2019/8/20 13:57
  */
-@Data
+@Service
 public class CommentAwardService extends ShopBaseService {
 
     /**
