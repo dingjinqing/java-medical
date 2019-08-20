@@ -2,16 +2,28 @@ package com.vpu.mp.service.saas.shop;
 
 import com.vpu.mp.db.main.tables.MpOperateLog;
 import com.vpu.mp.db.main.tables.records.MpAuthShopRecord;
+import com.vpu.mp.db.main.tables.records.MpOperateLogRecord;
+import com.vpu.mp.service.foundation.data.JsonResultCode;
 import com.vpu.mp.service.foundation.service.MainBaseService;
 import com.vpu.mp.service.foundation.util.PageResult;
+import com.vpu.mp.service.foundation.util.Util;
 import com.vpu.mp.service.pojo.saas.shop.mp.MpOperateListParam;
 import com.vpu.mp.service.pojo.saas.shop.mp.MpOperateVo;
+import com.vpu.mp.service.pojo.shop.operation.RecordAdminActionInfo;
+import com.vpu.mp.service.pojo.shop.operation.RecordContentTemplate;
+import com.vpu.mp.service.wechat.bean.ma.WxContentTemplate;
+
 import org.jooq.Record6;
+import org.jooq.Record8;
 import org.jooq.SelectConditionStep;
 import org.slf4j.Logger;
+import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Service;
 
 import java.sql.Timestamp;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
 import static com.vpu.mp.db.main.Tables.MP_AUTH_SHOP;
 import static com.vpu.mp.db.main.tables.MpOperateLog.MP_OPERATE_LOG;
@@ -104,6 +116,24 @@ public class MpOperateLogService extends MainBaseService {
 	 * 操作失败
 	 */
 	public static final Byte OP_STATE_FAILED = 2;
+	
+	
+	private static final String LANGUAGE_TYPE_WX = "wxapp";
+
+	/**
+	 * 上传代码并提交审核   一键提交审核
+	 */
+	public static final Byte OP_TYPE_UPLOAD_AUDIT = 14;
+	
+	/**
+	 * 设置支付方式
+	 */
+	public static final Byte OP_TYPE_SETTING_SUB_MERCHANT = 15;
+	
+	/**
+	 * 刷新审核状态
+	 */
+	public static final Byte OP_TYPE_REFRESH_AUDIT_STATE = 16;
 
 	/**
 	 * 记录小程序相关Log
@@ -120,6 +150,22 @@ public class MpOperateLogService extends MainBaseService {
 				.insertInto(MP_OPERATE_LOG, MP_OPERATE_LOG.APP_ID, MP_OPERATE_LOG.TEMPLATE_ID,
 						MP_OPERATE_LOG.OPERATE_TYPE, MP_OPERATE_LOG.OPERATE_STATE,MP_OPERATE_LOG.MEMO)
 				.values(appId, templateId, operateType, operateState,memo).execute();
+	}
+	
+	public void insertRecord(Integer templateId,Byte operateType,String appId,Byte operateState,Integer templateIds, String... datas) {
+		//mp_operate_log
+		MpOperateLogRecord mLogRecord=MP_OPERATE_LOG.newRecord();
+		StringBuilder dataStr = new StringBuilder();
+		Arrays.stream(datas).forEach((x) -> dataStr.append(x).append(","));
+		mLogRecord.setAppId(appId);
+		mLogRecord.setTemplateId(templateId);
+		mLogRecord.setMemo(dataStr.toString());
+		mLogRecord.setOperateState(operateState);
+		mLogRecord.setOperateType(operateType);
+		//国家化的模板ID和内容
+		mLogRecord.setMemoId(templateIds.toString());
+		mLogRecord.setMemoList(dataStr.toString());
+		db().executeInsert(mLogRecord);
 	}
 
     /**
@@ -139,14 +185,14 @@ public class MpOperateLogService extends MainBaseService {
      * @param param 查询参数
      * @return 日志结果
      */
-    public PageResult<MpOperateVo> logList(MpOperateListParam param){
+    public PageResult<MpOperateVo> logList(MpOperateListParam param,String language){
 
         Logger logger = logger();
 
         logger.debug(String.format("小程序版本操作日志入参：%s",param.toString()));
 
-        SelectConditionStep<Record6<Integer, Timestamp, String, String, String, String>> where = db().select(MP_OPERATE_LOG.TEMPLATE_ID, MP_OPERATE_LOG.CREATE_TIME, MP_OPERATE_LOG.APP_ID,
-            MP_AUTH_SHOP.NICK_NAME, MP_OPERATE_LOG.MEMO, MP_VERSION.USER_VERSION)
+        SelectConditionStep<Record8<Integer,Timestamp,String,String,String,String,String,String>> where = db().select(MP_OPERATE_LOG.TEMPLATE_ID, MP_OPERATE_LOG.CREATE_TIME, MP_OPERATE_LOG.APP_ID,
+            MP_AUTH_SHOP.NICK_NAME, MP_OPERATE_LOG.MEMO, MP_VERSION.USER_VERSION,MP_OPERATE_LOG.MEMO_ID,MP_OPERATE_LOG.MEMO_LIST)
             .from(MP_OPERATE_LOG).leftJoin(MP_AUTH_SHOP)
             .on(MP_OPERATE_LOG.APP_ID.eq(MP_AUTH_SHOP.APP_ID))
             .leftJoin(MP_VERSION)
@@ -157,6 +203,29 @@ public class MpOperateLogService extends MainBaseService {
 
         PageResult<MpOperateVo> pageResult = getPageResult(where, param.getCurrentPage(), param.getPageRows(), MpOperateVo.class);
 
-        return pageResult;
+        return pojoCompareToInfo(pageResult, language);
     }
+    
+    
+	private PageResult<MpOperateVo> pojoCompareToInfo(PageResult<MpOperateVo> pageResult, String language) {
+		List<MpOperateVo> dataList = pageResult.getDataList();
+		for (MpOperateVo vo : dataList) {
+			vo.setMemo(splicingAdminRecordForContent(vo.getMemoId(), vo.getMemoList(), language));
+		}
+		pageResult.setDataList(dataList);
+		return pageResult;
+
+	}
+	
+	private String splicingAdminRecordForContent(String templateIds, String datas, String language) {
+		int memoId = Integer.parseInt(templateIds);
+		String message = WxContentTemplate.WX_GET_NO_RECORD.getMessage();
+		for (WxContentTemplate wxt : WxContentTemplate.values()) {
+			if (wxt.getCode() == memoId) {
+				message = wxt.getMessage();
+				break;
+			}
+		}
+		return Util.translateMessage(language, message, LANGUAGE_TYPE_WX, (Object[]) datas.split(","));
+	}
 }
