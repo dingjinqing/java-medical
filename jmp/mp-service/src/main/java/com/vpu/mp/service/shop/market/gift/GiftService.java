@@ -29,6 +29,7 @@ import static com.vpu.mp.service.pojo.shop.market.gift.GiftListVo.ABLE;
 import static com.vpu.mp.service.pojo.shop.market.gift.GiftListVo.DISABLE;
 import static java.lang.String.format;
 import static org.apache.commons.lang3.StringUtils.isNotEmpty;
+import static org.springframework.util.StringUtils.isEmpty;
 
 /**
  * 赠品
@@ -75,6 +76,9 @@ public class GiftService extends ShopBaseService {
     private void transformParam(GiftParam param) {
         String ruleJson = Util.underLineStyleGson().toJson(param.getRules());
         String goodsId = Util.listToString(param.getGoodsIds());
+        if (isEmpty(goodsId)) {
+            goodsId = null;
+        }
         param.setGoodsId(goodsId);
         param.setRule(ruleJson);
     }
