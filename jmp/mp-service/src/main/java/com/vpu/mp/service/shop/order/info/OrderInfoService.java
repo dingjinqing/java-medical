@@ -7,7 +7,16 @@ import static com.vpu.mp.db.shop.tables.OrderGoods.ORDER_GOODS;
 import static com.vpu.mp.db.shop.tables.OrderInfo.ORDER_INFO;
 import static com.vpu.mp.db.shop.tables.User.USER;
 import static com.vpu.mp.db.shop.tables.UserTag.USER_TAG;
+
+import static com.vpu.mp.db.shop.tables.StoreOrder.STORE_ORDER;
+import static com.vpu.mp.db.shop.tables.ServiceOrder.SERVICE_ORDER;
+
+
+import static org.jooq.impl.DSL.count;
+import static org.jooq.impl.DSL.date;
+import static org.jooq.impl.DSL.sql;
 import static org.jooq.impl.DSL.*;
+import static org.jooq.impl.DSL.sum;
 
 import java.math.BigDecimal;
 import java.sql.Date;
@@ -20,9 +29,17 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 
+
+import org.jooq.Condition;
+import org.jooq.Record1;
+import org.jooq.Record2;
+import org.jooq.SelectJoinStep;
+import org.jooq.SelectWhereStep;
+
 import com.vpu.mp.service.foundation.data.DelFlag;
 import com.vpu.mp.service.pojo.shop.market.givegift.record.GiveGiftRecordListParam;
 import org.jooq.*;
+
 import org.jooq.impl.DSL;
 import org.jooq.tools.StringUtils;
 import org.springframework.stereotype.Service;
@@ -42,6 +59,19 @@ import com.vpu.mp.service.pojo.shop.order.analysis.ActiveOrderList;
 import com.vpu.mp.service.pojo.shop.order.analysis.OrderActivityUserNum;
 import com.vpu.mp.service.pojo.shop.order.goods.OrderGoodsVo;
 
+
+import static com.vpu.mp.service.pojo.shop.order.OrderConstant.ORDER_FINISHED; 	
+
+import static com.vpu.mp.service.pojo.shop.order.OrderConstant.PAY_CODE_BALANCE_PAY;
+import static com.vpu.mp.service.pojo.shop.order.OrderConstant.PAY_CODE_WX_PAY;
+import static com.vpu.mp.service.pojo.shop.order.OrderConstant.ORDER_REFUND_FINISHED; 
+import static com.vpu.mp.service.pojo.shop.order.OrderConstant.ORDER_RETURN_FINISHED; 
+import static com.vpu.mp.service.pojo.shop.order.OrderConstant.ORDER_CANCELLED;
+import static com.vpu.mp.service.pojo.shop.order.store.StoreOrderConstant.STORE_ORDER_PAID;
+import static com.vpu.mp.service.shop.store.service.ServiceOrderService.ORDER_STATUS_FINISHED;
+import static com.vpu.mp.service.pojo.shop.order.OrderConstant.REFUND_DEFAULT_STATUS;
+import static com.vpu.mp.service.pojo.shop.order.OrderConstant.DELETE_NO;
+import static com.vpu.mp.service.pojo.shop.order.OrderConstant.REFUND_STATUS_FINISH;
 import lombok.Data;
 
 /**
@@ -503,6 +533,193 @@ public class OrderInfoService extends ShopBaseService {
 			return goodsNum;
 	}
 
+	
+	/**
+	 * 根据用户id获取累计消费金额
+	 */
+	public BigDecimal getAllConsumpAmount(Integer userId) {
+		BigDecimal totalConsumpAmount = new BigDecimal(0);
+		logger().info("计算会员 "+userId+" 的累积消费金额");
+		
+		/** 会员卡消费金额 */
+		BigDecimal memberCardBalance = db().select(sum(ORDER_INFO.MEMBER_CARD_BALANCE))
+										   .from(ORDER_INFO)
+										   .where(ORDER_INFO.USER_ID.eq(userId))
+										   .and(ORDER_INFO.ORDER_STATUS.eq(ORDER_FINISHED))
+										   .fetchOne()
+										   .into(BigDecimal.class);
+		logger().info("会员卡消费金额: " + memberCardBalance);
+		if(memberCardBalance != null) {
+			totalConsumpAmount = totalConsumpAmount.add(memberCardBalance);
+		}
+		
+		/** 余额，微信订单应付金额*/
+		BigDecimal moneyPaid = db().select(sum(ORDER_INFO.MONEY_PAID))
+									.from(ORDER_INFO)
+									.where(ORDER_INFO.USER_ID.eq(userId))
+									.and(ORDER_INFO.ORDER_STATUS.eq(ORDER_FINISHED))
+									.and(ORDER_INFO.PAY_CODE.in(PAY_CODE_BALANCE_PAY,PAY_CODE_WX_PAY))
+									.fetchOne()
+									.into(BigDecimal.class);
+		logger().info("余额，微信订单应付金额: " + moneyPaid);
+		if(moneyPaid != null) {
+			totalConsumpAmount = totalConsumpAmount.add(moneyPaid);
+		}
+		
+		
+		/** 用户消费余额 */
+		BigDecimal useAccount = db().select(sum(ORDER_INFO.USE_ACCOUNT))
+				.from(ORDER_INFO)
+				.where(ORDER_INFO.USER_ID.eq(userId))
+				.and(ORDER_INFO.ORDER_STATUS.eq(ORDER_FINISHED))
+				.fetchOne()
+				.into(BigDecimal.class);
+		logger().info("用户消费余额 "+useAccount);
+		if(useAccount != null) {
+			totalConsumpAmount = totalConsumpAmount.add(useAccount);
+		}
+		
+		
+		/** 门店-会员卡消费金额  */
+		BigDecimal storeMemberCardBalance = db().select(sum(STORE_ORDER.MEMBER_CARD_BALANCE))
+												.from(STORE_ORDER)
+												.where(STORE_ORDER.USER_ID.eq(userId))
+												.and(STORE_ORDER.ORDER_STATUS.eq(STORE_ORDER_PAID))
+												.fetchOne()
+												.into(BigDecimal.class);
+		logger().info("门店-会员卡消费金额"+storeMemberCardBalance);
+		if(storeMemberCardBalance != null) {
+			totalConsumpAmount = totalConsumpAmount.add(storeMemberCardBalance);
+		}
+		
+		/** 门店-订单应付金额  */ 
+		BigDecimal storeMoneyPaid = db().select(sum(STORE_ORDER.MONEY_PAID))
+			.from(STORE_ORDER)
+			.where(STORE_ORDER.USER_ID.eq(userId))
+			.and(STORE_ORDER.ORDER_STATUS.eq(STORE_ORDER_PAID))
+			.fetchOne()
+			.into(BigDecimal.class);
+		
+		logger().info("门店-订单应付金额"+storeMoneyPaid);
+		if(storeMoneyPaid != null) {
+			totalConsumpAmount = totalConsumpAmount.add(storeMoneyPaid);
+		}
+		
+		/** 门店-用户消费余额*/
+		BigDecimal storeUserAccount = db().select(sum(STORE_ORDER.USE_ACCOUNT))
+											.from(STORE_ORDER)
+											.where(STORE_ORDER.USER_ID.eq(userId))
+											.and(STORE_ORDER.ORDER_STATUS.eq(STORE_ORDER_PAID))
+											.fetchOne()
+											.into(BigDecimal.class);
+		logger().info("门店-用户消费余额"+storeUserAccount);
+		if(storeUserAccount != null) {
+			totalConsumpAmount = totalConsumpAmount.add(storeUserAccount);
+		}
+		
+		/** 服务订单表 订单应付金额 */
+		BigDecimal serviceMoneyPaid = db().select(sum(SERVICE_ORDER.MONEY_PAID))
+									.from(SERVICE_ORDER)
+									.where(SERVICE_ORDER.USER_ID.eq(userId))
+									.and(SERVICE_ORDER.ORDER_STATUS.eq(ORDER_STATUS_FINISHED))
+									.and(SERVICE_ORDER.PAY_CODE.in(PAY_CODE_BALANCE_PAY,PAY_CODE_WX_PAY))
+									.fetchOne()
+									.into(BigDecimal.class);
+		
+		logger().info("服务订单表 订单应付金额"+serviceMoneyPaid);
+		if(serviceMoneyPaid != null) {
+			totalConsumpAmount = totalConsumpAmount.add(serviceMoneyPaid);
+		}
+		
+		return totalConsumpAmount;
+	}
+	
+	/**
+	 * 获取最近用户下单的订单时间
+	 * @param userId
+	 * @return 
+	 * @return 
+	 * @return 
+	 */
+	public Timestamp getRecentOrderInfoByUserId(Integer userId) {
+		return db().select(ORDER_INFO.CREATE_TIME)
+				.from(ORDER_INFO)
+			.where(ORDER_INFO.USER_ID.eq(userId))
+			.and(ORDER_INFO.ORDER_STATUS.in(ORDER_FINISHED,ORDER_RETURN_FINISHED,ORDER_REFUND_FINISHED))
+			.and(ORDER_INFO.REFUND_STATUS.eq(REFUND_DEFAULT_STATUS))
+			.and(ORDER_INFO.DEL_FLAG.eq(DELETE_NO))
+			.orderBy(ORDER_INFO.CREATE_TIME.desc())
+			.fetchOne().into(Timestamp.class);
+	}
+	
+	/**
+	 * 累计下单金额
+	 * @param userId
+	 */
+	public BigDecimal getAllOrderMoney(Integer userId) {
+		BigDecimal orderMoney = db().select(sum(ORDER_INFO.ORDER_AMOUNT))
+			.from(ORDER_INFO)
+			.where(ORDER_INFO.USER_ID.eq(userId))
+			.and(ORDER_INFO.ORDER_STATUS.in(ORDER_FINISHED,ORDER_RETURN_FINISHED,ORDER_REFUND_FINISHED))
+			.and(ORDER_INFO.REFUND_STATUS.eq(REFUND_DEFAULT_STATUS))
+			.and(ORDER_INFO.DEL_FLAG.eq(DELETE_NO))
+			.fetchOne()
+			.into(BigDecimal.class);
+		return orderMoney;
+	}
+	
+	/**
+	 * 累计消费订单数 
+	 * @param userId
+	 * @return 
+	 */
+	public Integer getAllOrderNum(Integer userId) {
+		return db().select(count())
+				.from(ORDER_INFO)
+				.where(ORDER_INFO.USER_ID.eq(userId))
+				.and(ORDER_INFO.ORDER_STATUS.in(ORDER_FINISHED,ORDER_RETURN_FINISHED,ORDER_REFUND_FINISHED))
+				.and(ORDER_INFO.REFUND_STATUS.eq(REFUND_DEFAULT_STATUS))
+				.and(ORDER_INFO.DEL_FLAG.eq(DELETE_NO))
+				.fetchOne()
+				.into(Integer.class);
+		}
+	
+	/**
+	 * 累计退款金额
+	 * @param userId
+	 * @return 
+	 */
+	public BigDecimal getAllReturnOrderMoney(Integer userId) {
+		OrderInfoRecord record = db().select(sum(ORDER_INFO.MONEY_PAID).as(ORDER_INFO.MONEY_PAID),sum(ORDER_INFO.SHIPPING_FEE).as(ORDER_INFO.SHIPPING_FEE))
+			.from(ORDER_INFO)
+			.where(ORDER_INFO.USER_ID.eq(userId))
+			.and(ORDER_INFO.REFUND_STATUS.eq(REFUND_STATUS_FINISH))
+			.fetchOne()
+			.into(OrderInfoRecord.class);
+		
+		BigDecimal result = record.getMoneyPaid().add(record.getShippingFee());
+		return result;
+	}
+	
+	/**
+	 * 累计退款订单数
+	 * @param userId
+	 * @return 
+	 */
+	public Integer getAllReturnOrderNum(Integer userId) {
+		return db().select(count())
+				.from(ORDER_INFO)
+				.where(ORDER_INFO.USER_ID.eq(userId))
+				.and(ORDER_INFO.ORDER_STATUS.notIn(ORDER_FINISHED,ORDER_RETURN_FINISHED,ORDER_REFUND_FINISHED))
+				.and(ORDER_INFO.REFUND_STATUS.eq(REFUND_STATUS_FINISH))
+				.and(ORDER_INFO.DEL_FLAG.eq(DELETE_NO))
+				.fetchOne()
+				.into(Integer.class);
+	}
+
+
+
+
 	/**
 	 *  我要送礼
 	 * @param activityId 活动id
@@ -571,6 +788,5 @@ public class OrderInfoService extends ShopBaseService {
 		}
 		return select;
 	}
-
 
 }
