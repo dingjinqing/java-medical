@@ -713,3 +713,44 @@ MODIFY total_fee  DECIMAL ( 10, 2 ) NOT NULL DEFAULT '0.00' COMMENT '交易金�
 
 alter table `b2c_coupon_pack` change column `state` `status` tinyint(1) not null default '1' comment '开启状态1:开启，0:停用';
 alter table `b2c_coupon_pack` modify column `limit_get_times` int(11) not null default 0 comment '单用户领取限制次数，0不限制';
+
+DROP TABLE IF EXISTS `b2c_card_order`;
+DROP TABLE IF EXISTS `b2c_virtual_order`;
+CREATE TABLE `b2c_virtual_order` (
+  `order_id` int(11) NOT NULL AUTO_INCREMENT COMMENT '订单id',
+  `order_sn` varchar(20) NOT NULL DEFAULT '' COMMENT '订单编号',
+  `user_id` mediumint(8) NOT NULL DEFAULT '0' COMMENT '用户id',
+  `order_status` tinyint(1) NOT NULL DEFAULT '0' COMMENT '订单状态',
+  `order_status_name` varchar(32) NOT NULL DEFAULT '' COMMENT '订单状态名称',
+  `invoice_id` int(11) NOT NULL DEFAULT '0' COMMENT '发票id',
+  `invoice_detail` text COMMENT '发票内容：json存储',
+  `add_message` varchar(191) NOT NULL DEFAULT '' COMMENT '客户留言',
+  `pay_code` varchar(30) DEFAULT NULL COMMENT '支付代号',
+  `pay_name` varchar(120) DEFAULT NULL COMMENT '支付名称',
+  `prepay_id` varchar(191) DEFAULT NULL COMMENT '微信支付id，用于发送模板消息',
+  `pay_sn` varchar(32) DEFAULT NULL COMMENT '支付流水号',
+  `money_paid` decimal(10,2) NOT NULL DEFAULT '0.00' COMMENT '用户消费现金',
+  `use_account` decimal(10,2) NOT NULL DEFAULT '0.00' COMMENT '用户消费余额',
+  `use_score` decimal(10,2) NOT NULL DEFAULT '0.00' COMMENT '用户消费积分',
+  `member_card_balance` decimal(10,2) NOT NULL DEFAULT '0.00' COMMENT '会员卡消费金额',
+  `order_amount` decimal(10,2) NOT NULL DEFAULT '0.00' COMMENT '订单总金额',
+  `pay_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '支付时间',
+  `seller_remark` varchar(512) NOT NULL DEFAULT '' COMMENT '卖家备注',
+  `star_flag` tinyint(1) NOT NULL DEFAULT '0' COMMENT '标星订单：0 未标星 1 标星',
+  `del_flag` tinyint(1) NOT NULL DEFAULT '0' COMMENT '删除',
+  `ali_trade_no` varchar(60) NOT NULL DEFAULT '' COMMENT '支付宝交易单号',
+  `return_flag` tinyint(1) NOT NULL DEFAULT '0' COMMENT '0:未申请退款，1：退款失败，2：退款成功',
+  `return_score` decimal(10,2) NOT NULL DEFAULT '0.00' COMMENT '退款积分',
+  `return_account` decimal(10,2) NOT NULL DEFAULT '0.00' COMMENT '退款余额',
+  `return_money` decimal(10,2) NOT NULL DEFAULT '0.00' COMMENT '退款现金',
+  `return_card_balance` decimal(10,2) NOT NULL DEFAULT '0.00' COMMENT '会员卡退款余额',
+  `return_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '退款时间',
+  `del_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '退款时间',
+  `create_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `update_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '最后修改时间',
+  `goods_type` tinyint(2) NOT NULL COMMENT '虚拟商品类别：0：会员卡，1：优惠券',
+  `virtual_goods_id` int(11) NOT NULL COMMENT '虚拟商品id',
+  `card_no` varchar(32) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci DEFAULT NULL COMMENT '下单使用的会员卡号',
+  `still_send_flag` tinyint(2) NOT NULL DEFAULT '1' COMMENT '退款后是否继续发放优惠劵，1：继续发放，0：停止发放',
+  PRIMARY KEY (`order_id`) USING BTREE
+) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci ROW_FORMAT=DYNAMIC;
