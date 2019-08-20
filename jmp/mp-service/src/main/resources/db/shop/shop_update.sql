@@ -707,3 +707,6 @@ CREATE TABLE `b2c_first_special_product` (
 -- 修改支付记录表创建时间
 ALTER table b2c_payment_record
 CHANGE  created create_time timestamp   DEFAULT CURRENT_TIMESTAMP COMMENT '记录创建时间';
+--修改支付记录表金额类型
+ALTER table b2c_payment_record
+MODIFY total_fee  DECIMAL ( 10, 2 ) NOT NULL DEFAULT '0.00' COMMENT '交易金额';

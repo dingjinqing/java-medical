@@ -9,6 +9,7 @@ import com.vpu.mp.db.shop.Keys;
 import com.vpu.mp.db.shop.MiniShop_471752;
 import com.vpu.mp.db.shop.tables.records.PaymentRecordRecord;
 
+import java.math.BigDecimal;
 import java.sql.Timestamp;
 import java.util.Arrays;
 import java.util.List;
@@ -42,7 +43,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class PaymentRecord extends TableImpl<PaymentRecordRecord> {
 
-    private static final long serialVersionUID = -1102950892;
+    private static final long serialVersionUID = 1215152292;
 
     /**
      * The reference instance of <code>mini_shop_6797286.b2c_payment_record</code>
@@ -120,7 +121,7 @@ public class PaymentRecord extends TableImpl<PaymentRecordRecord> {
     /**
      * The column <code>mini_shop_6797286.b2c_payment_record.total_fee</code>. 交易金额
      */
-    public final TableField<PaymentRecordRecord, String> TOTAL_FEE = createField("total_fee", org.jooq.impl.SQLDataType.VARCHAR(20).nullable(false).defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.VARCHAR)), this, "交易金额");
+    public final TableField<PaymentRecordRecord, BigDecimal> TOTAL_FEE = createField("total_fee", org.jooq.impl.SQLDataType.DECIMAL(10, 2).nullable(false).defaultValue(org.jooq.impl.DSL.inline("0.00", org.jooq.impl.SQLDataType.DECIMAL)), this, "交易金额");
 
     /**
      * The column <code>mini_shop_6797286.b2c_payment_record.buyer_id</code>. 买家支付用户号

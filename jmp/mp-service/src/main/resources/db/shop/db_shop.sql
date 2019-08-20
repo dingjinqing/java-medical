@@ -766,7 +766,7 @@ create table `b2c_payment_record` (
   `quantity`            mediumint(10)          not null default '1' comment '购买数量',
   `order_sn`            varchar(32)            not null default '' comment '网站订单号',
   `main_order_sn`       varchar(20)            not null default '' comment '网站主订单号',
-  `total_fee`           varchar(20)            not null default '0' comment '交易金额',
+  `total_fee`           DECIMAL(10,2)          not null default '0.00' comment '交易金额',
   `buyer_id`            varchar(256)           not null default '' comment '买家支付用户号',
   `buyer_account`       varchar(256)           not null default '' comment '各平台买家支付账号',
   `seller_id`           varchar(32)            not null default '' comment '收款方用户号',

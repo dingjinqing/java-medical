@@ -6,6 +6,7 @@ package com.vpu.mp.db.shop.tables.records;
 
 import com.vpu.mp.db.shop.tables.PaymentRecord;
 
+import java.math.BigDecimal;
 import java.sql.Timestamp;
 
 import javax.annotation.Generated;
@@ -27,7 +28,7 @@ import org.jooq.impl.UpdatableRecordImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class PaymentRecordRecord extends UpdatableRecordImpl<PaymentRecordRecord> {
 
-    private static final long serialVersionUID = 761869153;
+    private static final long serialVersionUID = 1858849530;
 
     /**
      * Setter for <code>mini_shop_6797286.b2c_payment_record.id</code>.
@@ -200,15 +201,15 @@ public class PaymentRecordRecord extends UpdatableRecordImpl<PaymentRecordRecord
     /**
      * Setter for <code>mini_shop_6797286.b2c_payment_record.total_fee</code>. 交易金额
      */
-    public void setTotalFee(String value) {
+    public void setTotalFee(BigDecimal value) {
         set(12, value);
     }
 
     /**
      * Getter for <code>mini_shop_6797286.b2c_payment_record.total_fee</code>. 交易金额
      */
-    public String getTotalFee() {
-        return (String) get(12);
+    public BigDecimal getTotalFee() {
+        return (BigDecimal) get(12);
     }
 
     /**
@@ -391,7 +392,7 @@ public class PaymentRecordRecord extends UpdatableRecordImpl<PaymentRecordRecord
     /**
      * Create a detached, initialised PaymentRecordRecord
      */
-    public PaymentRecordRecord(Integer id, Integer shopId, String paySn, String payCode, String payCodeAlias, String tradeNo, Byte trdaeStatus, String trdaeOriginStatus, String subject, Integer quantity, String orderSn, String mainOrderSn, String totalFee, String buyerId, String buyerAccount, String sellerId, String sellerAccount, Timestamp gmtCreate, Timestamp notifyTime, Timestamp gmtPayTime, Timestamp gmtCloseTime, Timestamp createTime, String remark1, String remark2) {
+    public PaymentRecordRecord(Integer id, Integer shopId, String paySn, String payCode, String payCodeAlias, String tradeNo, Byte trdaeStatus, String trdaeOriginStatus, String subject, Integer quantity, String orderSn, String mainOrderSn, BigDecimal totalFee, String buyerId, String buyerAccount, String sellerId, String sellerAccount, Timestamp gmtCreate, Timestamp notifyTime, Timestamp gmtPayTime, Timestamp gmtCloseTime, Timestamp createTime, String remark1, String remark2) {
         super(PaymentRecord.PAYMENT_RECORD);
 
         set(0, id);
