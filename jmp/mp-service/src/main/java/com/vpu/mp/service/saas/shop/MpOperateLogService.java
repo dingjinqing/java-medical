@@ -209,6 +209,9 @@ public class MpOperateLogService extends MainBaseService {
     
 	private PageResult<MpOperateVo> pojoCompareToInfo(PageResult<MpOperateVo> pageResult, String language) {
 		List<MpOperateVo> dataList = pageResult.getDataList();
+		if(dataList.size()==0) {
+			return pageResult;
+		}
 		for (MpOperateVo vo : dataList) {
 			vo.setMemo(splicingAdminRecordForContent(vo.getMemoId(), vo.getMemoList(), language));
 		}
