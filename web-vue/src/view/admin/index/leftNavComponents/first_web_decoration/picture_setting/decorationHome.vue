@@ -14,19 +14,24 @@
               label="图文组件"
               name="first"
             >
-              <div class="picTextConDiv">
-                <div
-                  v-for="(item,index) in pivTextConArr"
-                  :key="index"
-                  class="picTextConDivList"
-                >
-                  <img
-                    :src="item.imgUrl"
-                    :alt="item.text"
+              <vue-scroll
+                :ops="ops"
+                style="height:520px"
+              >
+                <div class="picTextConDiv">
+                  <div
+                    v-for="(item,index) in pivTextConArr"
+                    :key="index"
+                    class="picTextConDivList"
                   >
-                  <div style="height:24px;margin-top:-10px">{{item.text}}</div>
+                    <img
+                      :src="item.imgUrl"
+                      :alt="item.text"
+                    >
+                    <div style="height:24px;margin-top:-10px">{{item.text}}</div>
+                  </div>
                 </div>
-              </div>
+              </vue-scroll>
             </el-tab-pane>
             <el-tab-pane
               label="商品组件"
@@ -50,9 +55,27 @@
   </div>
 </template>
 <script>
+import vuescroll from 'vuescroll'
 export default {
+  components: {
+    vuescroll
+  },
   data () {
     return {
+      ops: {
+        vuescroll: {
+          mode: 'native'
+        },
+        scrollPanel: {},
+        rail: {
+          keepShow: true
+        },
+        bar: {
+          hoverStyle: true,
+          onlyShowBarOnScroll: false, // 是否只有滚动的时候才显示滚动条
+          background: '#eee'
+        }
+      },
       activeName: 'first',
       pivTextConArr: [
         {
@@ -60,59 +83,59 @@ export default {
           text: '轮播图'
         },
         {
-          imgUrl: this.$imageHost + '/image/admin/new_shop_beautify/dg_rotation.png',
+          imgUrl: this.$imageHost + '/image/admin/new_shop_beautify/dg_guide.png',
           text: '图片导航'
         },
         {
-          imgUrl: this.$imageHost + '/image/admin/new_shop_beautify/dg_rotation.png',
+          imgUrl: this.$imageHost + '/image/admin/new_shop_beautify/dg_img_advertist.png',
           text: '图片广告'
         },
         {
-          imgUrl: this.$imageHost + '/image/admin/new_shop_beautify/dg_rotation.png',
+          imgUrl: this.$imageHost + '/image/admin/new_shop_beautify/dg_imgwindow.png',
           text: '魔方多图'
         },
         {
-          imgUrl: this.$imageHost + '/image/admin/new_shop_beautify/dg_rotation.png',
+          imgUrl: this.$imageHost + '/image/admin/new_shop_beautify/hot-area.png',
           text: '图片热区'
         },
         {
-          imgUrl: this.$imageHost + '/image/admin/new_shop_beautify/dg_rotation.png',
+          imgUrl: this.$imageHost + '/image/admin/new_shop_beautify/text_image.png',
           text: '左图右文'
         },
         {
-          imgUrl: this.$imageHost + '/image/admin/new_shop_beautify/dg_rotation.png',
+          imgUrl: this.$imageHost + '/image/admin/new_shop_beautify/dg_text.png',
           text: '文本模块'
         },
         {
-          imgUrl: this.$imageHost + '/image/admin/new_shop_beautify/dg_rotation.png',
+          imgUrl: this.$imageHost + '/image/admin/new_shop_beautify/dg_rich_text.png',
           text: '富文本'
         },
         {
-          imgUrl: this.$imageHost + '/image/admin/new_shop_beautify/dg_rotation.png',
+          imgUrl: this.$imageHost + '/image/admin/new_shop_beautify/dg_helpblank.png',
           text: '辅助空白'
         },
         {
-          imgUrl: this.$imageHost + '/image/admin/new_shop_beautify/dg_rotation.png',
+          imgUrl: this.$imageHost + '/image/admin/new_shop_beautify/dg_helpline.png',
           text: '辅助线'
         },
         {
-          imgUrl: this.$imageHost + '/image/admin/new_shop_beautify/dg_rotation.png',
+          imgUrl: this.$imageHost + '/image/admin/new_shop_beautify/dg_title.png',
           text: '标题模块'
         },
         {
-          imgUrl: this.$imageHost + '/image/admin/new_shop_beautify/dg_rotation.png',
+          imgUrl: this.$imageHost + '/image/admin/new_shop_beautify/icon_video.png',
           text: '视频模块'
         },
         {
-          imgUrl: this.$imageHost + '/image/admin/new_shop_beautify/dg_rotation.png',
+          imgUrl: this.$imageHost + '/image/admin/new_shop_beautify/shop_announce.png',
           text: '店铺公告'
         },
         {
-          imgUrl: this.$imageHost + '/image/admin/new_shop_beautify/dg_rotation.png',
+          imgUrl: this.$imageHost + '/image/admin/new_shop_beautify/official_account.png',
           text: '公众号'
         },
         {
-          imgUrl: this.$imageHost + '/image/admin/new_shop_beautify/dg_rotation.png',
+          imgUrl: this.$imageHost + '/image/admin/new_shop_beautify/service.png',
           text: '客服模块'
         },
         {
@@ -129,6 +152,9 @@ export default {
         }
       ]
     }
+  },
+  methods: {
+
   }
 }
 </script>
@@ -157,9 +183,9 @@ export default {
         margin: 2px;
         padding: 0 2px;
         .picTextConDiv {
-          min-height: 520px;
-          height: 520px;
-          overflow-y: auto;
+          // min-height: 520px;
+          // height: 520px;
+          // overflow-y: auto;
           .picTextConDivList {
             float: left;
             border: 1px solid #e5e5e5;
