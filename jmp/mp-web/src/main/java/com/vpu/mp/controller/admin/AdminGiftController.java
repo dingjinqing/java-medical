@@ -28,8 +28,12 @@ public class AdminGiftController extends AdminBaseController {
     }
 
     /**
-     * todo 编辑 - 查询明细
+     * 编辑 - 查询明细
      */
+    @PostMapping("/detail/{id}")
+    public JsonResult getDetail(@PathVariable Integer id) {
+        return success(shop().gift.getGiftDetail(id));
+    }
 
     /**
      * 修改活动

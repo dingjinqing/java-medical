@@ -2,6 +2,7 @@ package com.vpu.mp.service.shop.market.gift;
 
 import com.vpu.mp.db.shop.tables.Gift;
 import com.vpu.mp.db.shop.tables.GiftProduct;
+import com.vpu.mp.db.shop.tables.GoodsSpecProduct;
 import com.vpu.mp.db.shop.tables.records.GiftProductRecord;
 import com.vpu.mp.db.shop.tables.records.GiftRecord;
 import com.vpu.mp.service.foundation.service.ShopBaseService;
@@ -19,6 +20,7 @@ import java.util.List;
 import java.util.function.Supplier;
 import java.util.stream.Collectors;
 
+import static com.vpu.mp.db.shop.tables.Goods.GOODS;
 import static com.vpu.mp.db.shop.tables.OrderGoods.ORDER_GOODS;
 import static com.vpu.mp.db.shop.tables.OrderInfo.ORDER_INFO;
 import static com.vpu.mp.db.shop.tables.User.USER;
@@ -38,6 +40,7 @@ public class GiftService extends ShopBaseService {
 
     private static final Gift TABLE = Gift.GIFT;
     private static final GiftProduct SUB_TABLE = GiftProduct.GIFT_PRODUCT;
+    private static final GoodsSpecProduct PRODUCT = GoodsSpecProduct.GOODS_SPEC_PRODUCT;
 
     private static final int MAX_RULE_SIZE = 3;
 
@@ -60,7 +63,7 @@ public class GiftService extends ShopBaseService {
      * 保存赠品规格
      */
     private int insertGift(DSLContext db, GiftParam param) {
-        transform(param);
+        transformParam(param);
         GiftRecord giftRecord = db.newRecord(TABLE, param);
         giftRecord.insert();
         return giftRecord.getId();
@@ -69,7 +72,7 @@ public class GiftService extends ShopBaseService {
     /**
      * 格式转换
      */
-    private void transform(GiftParam param) {
+    private void transformParam(GiftParam param) {
         String ruleJson = Util.underLineStyleGson().toJson(param.getRules());
         String goodsId = Util.listToString(param.getGoodsIds());
         param.setGoodsId(goodsId);
@@ -125,13 +128,46 @@ public class GiftService extends ShopBaseService {
     }
 
     /**
+     * 编辑活动 - 查询明细
+     */
+    public GiftVo getGiftDetail(Integer id) {
+        GiftVo giftVo = db().selectFrom(TABLE).where(TABLE.ID.eq(id)).fetchOneInto(GiftVo.class);
+        transformVo(giftVo);
+        List<ProductVo> productVos = getGiftProduct(id);
+        giftVo.setGifts(productVos);
+        return giftVo;
+    }
+
+    /**
+     * 获取活动赠品
+     */
+    private List<ProductVo> getGiftProduct(Integer giftId) {
+        return db().select(SUB_TABLE.fields())
+            .select(PRODUCT.PRD_PRICE, PRODUCT.PRD_IMG, PRODUCT.PRD_NUMBER, PRODUCT.PRD_DESC)
+            .select(GOODS.GOODS_NAME)
+            .from(SUB_TABLE)
+            .leftJoin(PRODUCT).on(PRODUCT.PRD_ID.eq(SUB_TABLE.PRODUCT_ID))
+            .leftJoin(GOODS).on(GOODS.GOODS_ID.eq(PRODUCT.GOODS_ID))
+            .where(SUB_TABLE.GIFT_ID.eq(giftId))
+            .fetchInto(ProductVo.class);
+    }
+
+    /**
+     * 出参格式转换
+     */
+    private void transformVo(GiftVo giftVo) {
+        giftVo.setGoodsIds(Util.stringToList(giftVo.getGoodsId()));
+        giftVo.setRules(Util.underLineStyleGson().fromJson(giftVo.getRule(), RuleVo.class));
+    }
+
+    /**
      * 编辑活动 - 更新
      */
     public void updateGift(GiftParam param) {
         Integer giftId = param.getId();
         Assert.notNull(giftId, "Missing parameter id");
         validateRules(param);
-        transform(param);
+        transformParam(param);
         db().transaction(configuration -> {
             DSLContext db = DSL.using(configuration);
             updateGift(db, param);
@@ -170,15 +206,22 @@ public class GiftService extends ShopBaseService {
      * 赠品活动列表
      */
     public PageResult<GiftListVo> getPageList(GiftListParam param) {
-        SelectConditionStep<?> query = db().select(TABLE.ID, TABLE.NAME, TABLE.START_TIME, TABLE.END_TIME,
-            TABLE.LEVEL, TABLE.STATUS, DSL.count(ORDER_GOODS.REC_ID).as("giftTimes")).from(TABLE)
-            .leftJoin(ORDER_GOODS).on(ORDER_GOODS.IS_GIFT.eq(1).and(ORDER_GOODS.GIFT_ID.eq(TABLE.ID)))
-            .where(TABLE.DEL_FLAG.eq((byte) 0));
+        SelectConditionStep<?> query = getPageListQuery();
         buildOptions(query, param);
         query.orderBy(TABLE.CREATE_TIME.desc());
         PageResult<GiftListVo> page = getPageResult(query, param, GiftListVo.class);
         page.getDataList().forEach(row -> row.setStatus(getStatusOf(row)));
         return page;
+    }
+
+    /**
+     * 列表查询
+     */
+    private SelectConditionStep<?> getPageListQuery() {
+        return db().select(TABLE.ID, TABLE.NAME, TABLE.START_TIME, TABLE.END_TIME,
+            TABLE.LEVEL, TABLE.STATUS, DSL.count(ORDER_GOODS.REC_ID).as("giftTimes")).from(TABLE)
+            .leftJoin(ORDER_GOODS).on(ORDER_GOODS.IS_GIFT.eq(1).and(ORDER_GOODS.GIFT_ID.eq(TABLE.ID)))
+            .where(TABLE.DEL_FLAG.eq((byte) 0));
     }
 
     /**
