@@ -11,19 +11,6 @@ public class DeliverTemplateConfigService extends BaseShopConfigService{
 	
 	final public static String K_DELIVER_TEMPLATE = "deliverTemplate";
 	
-	
-	/**
-	 * 传入默认运费模板信息
-	 *
-	 * @param param
-	 * @return jsonString
-	 */
-	public String getJsonString(DeliverTemplateConfig param) {
-		
-		String defaultDeliverTemplate = param.toString();
-		return defaultDeliverTemplate;
-	}
-	
 	 /**
      * 获取默认运费模板配置
      *
@@ -42,8 +29,8 @@ public class DeliverTemplateConfigService extends BaseShopConfigService{
      * @return 
      */
 	
-	public int setDefaultDeliverTemplate(String value) {
-		return this.set(K_DELIVER_TEMPLATE,value);
+	public int setDefaultDeliverTemplate(DeliverTemplateConfig param) {
+		return this.setJsonObject(K_DELIVER_TEMPLATE, param);
 	}
 	
 	

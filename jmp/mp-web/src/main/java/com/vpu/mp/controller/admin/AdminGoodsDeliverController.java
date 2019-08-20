@@ -156,8 +156,7 @@ public class AdminGoodsDeliverController extends AdminBaseController {
 	@RequestMapping("/api/admin/goods/deliver/config")
 	public JsonResult setDefaultDeliverTemplate(@RequestBody DeliverTemplateConfig param) {
 		
-		String jsonString = shop().config.deliverTemplateConfigService.getJsonString(param);
-		shop().config.deliverTemplateConfigService.setDefaultDeliverTemplate(jsonString);
+		shop().config.deliverTemplateConfigService.setDefaultDeliverTemplate(param);
 		
 		return success();
 	}
