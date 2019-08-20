@@ -17,10 +17,10 @@ import 'tinymce/plugins/image'
 import 'tinymce/plugins/media'
 import 'tinymce/plugins/table'
 import 'tinymce/plugins/lists'
-import 'tinymce/plugins/contextmenu'
+// import 'tinymce/plugins/contextmenu'
 import 'tinymce/plugins/wordcount'
 import 'tinymce/plugins/colorpicker'
-import 'tinymce/plugins/textcolor'
+// import 'tinymce/plugins/textcolor'
 
 export default {
   name: 'tinymceEditor',
@@ -37,7 +37,7 @@ export default {
     },
     plugins: {
       type: [String, Array],
-      default: 'lists image media table textcolor wordcount contextmenu'
+      default: 'lists image media table  wordcount '
     },
     toolbar: {
       type: [String, Array],
@@ -48,10 +48,10 @@ export default {
     return {
       // 初始化配置
       init: {
-        language_url: '/static/tinymce/zh_CN.js',
+        language_url: '../../../../static/tinymce/tinymce_languages/langs/zh_CN.js',
         language: 'zh_CN',
-        height: 300,
-        skin_url: '/static/tinymce/skins/ui/oxide',
+        height: 450,
+        skin_url: '../../../../static/tinymce/skins/ui/oxide',
         plugins: this.plugins,
         toolbar: this.toolbar,
         branding: false,

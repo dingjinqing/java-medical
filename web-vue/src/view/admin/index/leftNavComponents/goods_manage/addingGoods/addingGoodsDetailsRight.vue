@@ -36,8 +36,15 @@
         <section class="four one">
           <span class="text1"> 商品详情</span>
           <el-divider></el-divider>
-          <!-- 富文本编辑器 -->
-
+          <section class="tinymceWrap">
+            <!-- 富文本编辑器 -->
+            <tinymceEditor
+              v-model="msg"
+              :disabled="disabled"
+              @onClick="onClick"
+              ref="editor"
+            />
+          </section>
         </section>
       </el-form>
       <goodsPageTemplate
@@ -45,11 +52,11 @@
         @close="handleClose"
       />
     </section>
-    <el-button @click="handleTest">测试按钮</el-button>
+
   </div>
 </template>
 <script>
-import { shopDecorateList } from '@/api/admin/smallProgramManagement/pictureSetting/pictureSetting'
+// import { shopDecorateList } from '@/api/admin/smallProgramManagement/pictureSetting/pictureSetting'
 import goodsPageTemplate from './goodsPageTemplate'
 import tinymceEditor from '@/components/admin/tinymceEditor/tinymceEditor'
 export default {
@@ -60,30 +67,20 @@ export default {
       formData: {
 
       },
-
       radio: '1',
-      content: ``,
       visible: false,
-      msg: 'Welcome to Use Tinymce Editor',
+      msg: '请输入商品详情……',
       disabled: false
 
     }
   },
   methods: {
-    handleTest () {
-      shopDecorateList({
-        'pageName': null,
-        'catId': null
-      }).then(res => console.log(res)).catch(err => console.log(err))
-    },
     handleClose () {
       this.visible = false
     },
     // 鼠标单击的事件
     onClick (e, editor) {
-      console.log('Element clicked')
-      console.log(e)
-      console.log(editor)
+
     },
     // 清空内容
     clear () {
@@ -95,7 +92,7 @@ export default {
 <style scoped>
 .addingGoodsDetailsRight {
   width: 682px;
-  height: 790px;
+  min-height: 790px;
   background: #f8f8f8;
   padding: 15px;
   border: 1px solid #e5e5e5;
@@ -122,5 +119,8 @@ export default {
   font-size: 14px;
   color: #606266;
   padding-left: 30px;
+}
+.tinymceWrap {
+  padding: 5px;
 }
 </style>
