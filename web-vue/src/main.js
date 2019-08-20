@@ -22,11 +22,11 @@ import myMixins from '@/components/mixins.js';
 localStorage.setItem('V-overallFlag', true);
 Vue.prototype.$imageHost = 'http://jmpdevimg.weipubao.cn';
 Vue.prototype.$imageHostDev = `@/assets/image/admin/`;
-// 全局事件总线
 
 // Vue.use(VueCropper);
 
 Vue.component('v-distpicker', Distpicker);
+// 全局事件总线
 Vue.prototype.$http = new Vue();
 
 Vue.use(vcolorpicker);

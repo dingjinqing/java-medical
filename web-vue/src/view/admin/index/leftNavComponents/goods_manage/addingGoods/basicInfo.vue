@@ -1,5 +1,6 @@
 <template>
   <div class="basicInfo">
+    <el-button @click="handleTest">测试数据</el-button>
     <el-form
       :model="formData"
       :rules="rules"
@@ -15,7 +16,6 @@
         <el-input
           ref="goodsName"
           style="width:400px"
-          @blur="sendGoodsName"
           v-model="formData.goodsName"
           size="small"
         ></el-input>
@@ -106,7 +106,7 @@
         label="商品主图："
         prop="goodsImg"
       >
-        <goodsMainPic />
+        <goodsMainPic @mainUrl="handleReceiveMainUrl" />
       </el-form-item>
     </el-form>
     <!-- 展开收起更多配置 -->
@@ -210,13 +210,11 @@
       </el-collapse-item>
     </el-collapse>
     <addBrandDialog :dialogVisible.sync="dialogVisible" />
-    <!-- <el-button @click="handleTest">测试数据</el-button> -->
+
   </div>
 </template>
 <script>
-import { selectPlatformClassification } from '@/api/admin/addingGoods/addingGoodsBasicInfo'
-// import { getSortList } from '@/api/admin/goodsSort/goodsSort'
-// import { deleteSort } from '@/api/admin/goodsSort/goodsSort'
+import { selectPlatformClassification } from '@/api/admin/goods_manage/addingGoods/addingGoods'
 import { initGrandgetRequest } from '@/api/admin/brandManagement.js'
 import { getLabelList } from '@/api/admin/labelList/labelList'
 import addBrandDialog from './addBrandDialog'
@@ -232,7 +230,7 @@ export default {
         goodsAd: '',
         goodsNumber: '',
         catId: '',
-        goodsImg: 'https://s2.ax1x.com/2019/08/12/exsIJI.png'
+        goodsImg: ''
       },
       formData1: {
         unit: '个',
@@ -434,12 +432,10 @@ export default {
     showDialog() {
       this.dialogVisible = true
     },
-    // 传值函数 事件派发
-    passValue() {
-
-    },
-    sendGoodsName() {
-
+    // 接收商品主图传过来的goodsImg
+    handleReceiveMainUrl(val) {
+      // console.log(val)
+      this.formData.goodsImg = val
     }
 
   }

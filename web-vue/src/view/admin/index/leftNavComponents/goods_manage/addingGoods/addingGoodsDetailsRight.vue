@@ -29,36 +29,65 @@
           <span class="text1"> 自定义内容</span>
           <el-divider></el-divider>
           <span class="text2">商品页模板</span>
-          <el-button>选择模板</el-button>
+          <el-button size="small">选择模板</el-button>
           <el-button type="text">刷新</el-button>
           <el-button type="text">添加模板</el-button>
         </section>
         <section class="four one">
           <span class="text1"> 商品详情</span>
           <el-divider></el-divider>
-          <tinymce
-            id="d1"
-            v-model="content"
-          ></tinymce>
+          <!-- 富文本编辑器 -->
+
         </section>
       </el-form>
-
+      <goodsPageTemplate
+        :visible="visible"
+        @close="handleClose"
+      />
     </section>
+    <el-button @click="handleTest">测试按钮</el-button>
   </div>
 </template>
 <script>
-
+import { shopDecorateList } from '@/api/admin/smallProgramManagement/pictureSetting/pictureSetting'
+import goodsPageTemplate from './goodsPageTemplate'
+import tinymceEditor from '@/components/admin/tinymceEditor/tinymceEditor'
 export default {
   name: 'addingGoodsDetailsRight',
-
+  components: { goodsPageTemplate, tinymceEditor },
   data () {
     return {
       formData: {
 
       },
-      radio: '1',
-      content: ``
 
+      radio: '1',
+      content: ``,
+      visible: false,
+      msg: 'Welcome to Use Tinymce Editor',
+      disabled: false
+
+    }
+  },
+  methods: {
+    handleTest () {
+      shopDecorateList({
+        'pageName': null,
+        'catId': null
+      }).then(res => console.log(res)).catch(err => console.log(err))
+    },
+    handleClose () {
+      this.visible = false
+    },
+    // 鼠标单击的事件
+    onClick (e, editor) {
+      console.log('Element clicked')
+      console.log(e)
+      console.log(editor)
+    },
+    // 清空内容
+    clear () {
+      this.$refs.editor.clear()
     }
   }
 }

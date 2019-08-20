@@ -2,6 +2,8 @@ export const cn = {
   // 会员管理 会员列表
   membershipList: ['会员管理', '会员列表'],
   memberEditorList: ['会员管理', '会员编辑信息'],
+  // 小程序管理 页面分类
+  pageClassification: ['小程序管理', '页面分类'],
   // 小程序管理 图片空间
   pictureSpace: ['小程序管理', '图片空间'],
   // 小程序管理 店铺风格
@@ -39,7 +41,6 @@ export const cn = {
   market_manage: ['营销管理'],
   // 营销管理 普通优惠券
   ordinary_coupon: ['营销管理', '普通优惠券']
-
 }
 
 export const en = {
@@ -49,6 +50,8 @@ export const en = {
     'Membership management',
     'Membership Editorial Information'
   ],
+  // 小程序管理 页面分类
+  pageClassification: ['Small Program Management', 'Page classification'],
   // 小程序管理 图片空间
   pictureSpace: ['Small Program Management', 'Picture space'],
   // 小程序管理 店铺风格

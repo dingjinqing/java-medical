@@ -297,28 +297,28 @@
 <script>
 
 export default {
-  /* eslint-disable */
+
   name: 'priceInfo',
-  /* eslint-disable */
+
   filters: {
     getName: function (obj, index) {
       if (obj) {
-        let r = parseInt((index - 1) / obj['rowspan']);
-        let l = obj['specLen'] || 1;
-        let key = r % l;
-        return obj['spec'] && obj['spec'][key] && obj['spec'][key]['cName'];
+        let r = parseInt((index - 1) / obj['rowspan'])
+        let l = obj['specLen'] || 1
+        let key = r % l
+        return obj['spec'] && obj['spec'][key] && obj['spec'][key]['cName']
       }
     }
   },
   computed: {
     // 获取价格
-    getPrice() {
+    getPrice () {
       return this.formData
     },
     // 表格数据
-    tableData() {
-      let attrs = this.attrs;
-      let len = attrs.length;
+    tableData () {
+      let attrs = this.attrs
+      let len = attrs.length
       if (len === 0) {
         return
       }
@@ -359,7 +359,7 @@ export default {
       }
       return tData
     },
-    rows() {
+    rows () {
       if (!this.tableData) {
         return
       }
@@ -371,12 +371,12 @@ export default {
         rows *= specLen
       }
       // 每条rowspan都为1情况
-      if (rows == 1) {
+      if (rows === 1) {
         return tableData[0]['spec'].length
       }
       return rows
     },
-    tableList() {
+    tableList () {
       if (!this.tableData) {
         return
       }
@@ -400,17 +400,17 @@ export default {
           listItem[key] = spec[index]['cName']
         }
         // 构建固定项(价格price,成本价格costPrice,库存stock,规格编码code,规格图片img)
-        listItem['price'] = ""
-        listItem['costPrice'] = ""
-        listItem['stock'] = ""
-        listItem['code'] = ""
-        listItem['img'] = ""
+        listItem['price'] = ''
+        listItem['costPrice'] = ''
+        listItem['stock'] = ''
+        listItem['code'] = ''
+        listItem['img'] = ''
         tList.push(listItem)
       }
       return tList
     }
   },
-  data() {
+  data () {
     return {
 
       attrs: [],
@@ -443,71 +443,67 @@ export default {
       name: '',
       num: 0,
       isShowBtn: true,
-      isShowproSpec: false,
+      isShowproSpec: false
     }
   },
   methods: {
-    test() {
+    test () {
       console.log(this.tableList)
     },
 
-    handleGetPrdNumber(val) {
+    handleGetPrdNumber (val) {
 
     },
-    handleChange1(val) {
+    handleChange1 (val) {
 
     },
-    handleChange2(val) {
+    handleChange2 (val) {
 
     },
-    toDeletVal(index2) {
+    toDeletVal (index2) {
       console.log(index2)
       console.log(this.attrs)
       this.attrs.forEach(item => {
         item.spec.splice(index2, 1)
       })
     },
-    hide() {
+    hide () {
       this.isShowSpecPrice = false
       this.isShowWrap = false
       this.showAddSpec = true
     },
-    sendSpecName(val) {
+    sendSpecName (val) {
       console.log(val)
       this.name = val
     },
-    handleShowCon() {
+    handleShowCon () {
       this.isShowproSpec = true
       this.isShowBtn = false
-
     },
-    addSpecVal() {
-
+    addSpecVal () {
       this.obj.spec.push({ cName: '' })
-
     },
     // 添加一个规格选项
-    addItem() {
+    addItem () {
       let obj = {
         pName: '',
         rowspan: 1,
         spec: [
-          { cName: '' },
+          { cName: '' }
         ]
       }
       this.obj = obj
       this.attrs.push(this.obj)
     },
     // 删除规格名
-    toDelete(index) {
+    toDelete (index) {
       this.attrs.splice(index, 1)
       if (this.attrs.length === 0) {
         this.isShowBtn = true
         this.isShowproSpec = false
         this.isShowproSpec = false
       }
-    },
-
+    }
 
   }
 }

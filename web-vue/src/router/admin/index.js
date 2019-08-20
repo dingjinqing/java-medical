@@ -64,16 +64,17 @@ const routes = [
               )
           },
           // 小程序管理系列子路由
+          // 页面分类
           {
             path: '/admin/home/main/page_classification',
             name: 'page_classification',
             meta: {
-              crumbTitle: '',
+              crumbTitle: 'router.pageClassification',
               meta: 'first_web_decoration'
             },
             component: () =>
               import(
-                '@/view/admin/index/leftNavComponents/first_web_decoration/page_classification'
+                '@/view/admin/index/leftNavComponents/first_web_decoration/pageClassification/pageClassification'
               )
           },
           {

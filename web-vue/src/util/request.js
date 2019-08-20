@@ -53,13 +53,12 @@ service.interceptors.response.use(
     const res = response
     let flag = localStorage.getItem('V-overallFlag')
 
-    console.log(flag, res)
+    // console.log(flag, res)
 
     if (res) {
       switch (res.status) {
         // 成功
         case 200:
-
           if (res.data.error === 100004 && flag !== 'false') {
             Message.error({
               message: res.data.message,

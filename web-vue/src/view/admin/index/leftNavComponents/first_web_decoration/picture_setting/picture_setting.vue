@@ -1,6 +1,7 @@
 <template>
   <div class="picture_setting">
     <div class="picture_settingMain">
+
       <div class="p_top">
         <div class="p_top_left">
           <el-button
@@ -310,38 +311,38 @@ export default {
         label: '蚵仔煎'
       }],
       tableData: [
-        {
-          ischeck: false,
-          pageName: '尾浦巴普电商运营',
-          creatTime: '2018-05-14 13:22:07',
-          isFirstPage: true,
-          pageClass: '测试页面'
+        // {
+        //   ischeck: false,
+        //   pageName: '尾浦巴普电商运营',
+        //   creatTime: '2018-05-14 13:22:07',
+        //   isFirstPage: true,
+        //   pageClass: '测试页面'
 
-        },
-        {
-          ischeck: false,
-          pageName: '测试页面',
-          creatTime: '2018-05-14 13:22:07',
-          isFirstPage: false,
-          pageClass: '测试页面'
+        // },
+        // {
+        //   ischeck: false,
+        //   pageName: '测试页面',
+        //   creatTime: '2018-05-14 13:22:07',
+        //   isFirstPage: false,
+        //   pageClass: '测试页面'
 
-        },
-        {
-          ischeck: false,
-          pageName: '帅飞',
-          creatTime: '2018-05-14 13:22:07',
-          isFirstPage: false,
-          pageClass: '测试页面'
+        // },
+        // {
+        //   ischeck: false,
+        //   pageName: '帅飞',
+        //   creatTime: '2018-05-14 13:22:07',
+        //   isFirstPage: false,
+        //   pageClass: '测试页面'
 
-        },
-        {
-          ischeck: false,
-          pageName: '帅飞啊',
-          creatTime: '2018-05-14 13:22:07',
-          isFirstPage: false,
-          pageClass: '测试页面'
+        // },
+        // {
+        //   ischeck: false,
+        //   pageName: '帅飞啊',
+        //   creatTime: '2018-05-14 13:22:07',
+        //   isFirstPage: false,
+        //   pageClass: '测试页面'
 
-        }
+        // }
       ],
       allChecked: false,
       allCheckedFlag: false,
