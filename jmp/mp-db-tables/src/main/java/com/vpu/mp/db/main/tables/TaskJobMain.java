@@ -78,9 +78,9 @@ public class TaskJobMain extends TableImpl<TaskJobMainRecord> {
     public final TableField<TaskJobMainRecord, Byte> STATUS = createField("STATUS", org.jooq.impl.SQLDataType.TINYINT.defaultValue(DSL.inline("0", org.jooq.impl.SQLDataType.TINYINT)), this, "任务状态：0待执行,1执行中,2已完成");
 
     /**
-     * The column <code>mini_main.b2c_task_job_main.SCHEDULE</code>. 任务进度：0-100
+     * The column <code>mini_main.b2c_task_job_main.PROGRESS</code>. 任务进度：0-100
      */
-    public final TableField<TaskJobMainRecord, Byte> SCHEDULE = createField("SCHEDULE", org.jooq.impl.SQLDataType.TINYINT.defaultValue(DSL.inline("0", org.jooq.impl.SQLDataType.TINYINT)), this, "任务进度：0-100");
+    public final TableField<TaskJobMainRecord, Byte> PROGRESS = createField("PROGRESS", org.jooq.impl.SQLDataType.TINYINT.defaultValue(DSL.inline("0", org.jooq.impl.SQLDataType.TINYINT)), this, "任务进度：0-100");
 
     /**
      * The column <code>mini_main.b2c_task_job_main.EXECUTION_TYPE</code>. 执行类型:任务类型标识

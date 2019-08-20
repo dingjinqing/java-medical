@@ -89,16 +89,16 @@ public class TaskJobMainRecord extends UpdatableRecordImpl<TaskJobMainRecord> im
     }
 
     /**
-     * Setter for <code>mini_main.b2c_task_job_main.SCHEDULE</code>. 任务进度：0-100
+     * Setter for <code>mini_main.b2c_task_job_main.PROGRESS</code>. 任务进度：0-100
      */
-    public void setSchedule(Byte value) {
+    public void setProgress(Byte value) {
         set(4, value);
     }
 
     /**
-     * Getter for <code>mini_main.b2c_task_job_main.SCHEDULE</code>. 任务进度：0-100
+     * Getter for <code>mini_main.b2c_task_job_main.PROGRESS</code>. 任务进度：0-100
      */
-    public Byte getSchedule() {
+    public Byte getProgress() {
         return (Byte) get(4);
     }
 
@@ -297,7 +297,7 @@ public class TaskJobMainRecord extends UpdatableRecordImpl<TaskJobMainRecord> im
      */
     @Override
     public Field<Byte> field5() {
-        return TaskJobMain.TASK_JOB_MAIN.SCHEDULE;
+        return TaskJobMain.TASK_JOB_MAIN.PROGRESS;
     }
 
     /**
@@ -409,7 +409,7 @@ public class TaskJobMainRecord extends UpdatableRecordImpl<TaskJobMainRecord> im
      */
     @Override
     public Byte component5() {
-        return getSchedule();
+        return getProgress();
     }
 
     /**
@@ -521,7 +521,7 @@ public class TaskJobMainRecord extends UpdatableRecordImpl<TaskJobMainRecord> im
      */
     @Override
     public Byte value5() {
-        return getSchedule();
+        return getProgress();
     }
 
     /**
@@ -637,7 +637,7 @@ public class TaskJobMainRecord extends UpdatableRecordImpl<TaskJobMainRecord> im
      */
     @Override
     public TaskJobMainRecord value5(Byte value) {
-        setSchedule(value);
+        setProgress(value);
         return this;
     }
 
@@ -758,14 +758,14 @@ public class TaskJobMainRecord extends UpdatableRecordImpl<TaskJobMainRecord> im
     /**
      * Create a detached, initialised TaskJobMainRecord
      */
-    public TaskJobMainRecord(Integer id, Integer shopId, Integer contentId, Byte status, Byte schedule, Integer executionType, Integer cycle, Byte type, Timestamp nextExecuteTime, Timestamp startTime, Timestamp endTime, Timestamp createTime, Timestamp updateTime, Byte delFlag) {
+    public TaskJobMainRecord(Integer id, Integer shopId, Integer contentId, Byte status, Byte progress, Integer executionType, Integer cycle, Byte type, Timestamp nextExecuteTime, Timestamp startTime, Timestamp endTime, Timestamp createTime, Timestamp updateTime, Byte delFlag) {
         super(TaskJobMain.TASK_JOB_MAIN);
 
         set(0, id);
         set(1, shopId);
         set(2, contentId);
         set(3, status);
-        set(4, schedule);
+        set(4, progress);
         set(5, executionType);
         set(6, cycle);
         set(7, type);
