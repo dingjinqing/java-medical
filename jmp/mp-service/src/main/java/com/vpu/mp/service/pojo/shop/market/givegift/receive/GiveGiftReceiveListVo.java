@@ -10,12 +10,12 @@ import java.sql.Timestamp;
  */
 @Data
 public class GiveGiftReceiveListVo {
-    Integer rUserId;
-    String rUsername;
-    String rMobile;
-    Integer userId;
-    String username;
-    String mobile;
+    Integer receiveuserId;
+    String receiveusername;
+    String receivemobile;
+    Integer giveruserId;
+    String giverusername;
+    String givermobile;
     Integer productId;
     String mainOrderSn;
     Timestamp createTime;

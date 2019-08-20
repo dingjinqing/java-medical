@@ -520,7 +520,11 @@ public class OrderInfoService extends ShopBaseService {
 				.fetchOne().component1();
 	}
 
-
+	/**
+	 * 收礼明细
+	 * @param param GiveGiftReceiveListParam
+	 * @return SelectConditionStep<? extends Record>
+	 */
 	public SelectConditionStep<? extends Record> giveGiftRecordList(GiveGiftRecordListParam param) {
 		SelectConditionStep<? extends Record> select = db()
 				.select(TABLE.MAIN_ORDER_SN,

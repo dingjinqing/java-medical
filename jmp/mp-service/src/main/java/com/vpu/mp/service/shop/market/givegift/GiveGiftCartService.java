@@ -31,6 +31,11 @@ public class GiveGiftCartService extends ShopBaseService {
          return orderInfo.getSendGiftOrderCt(activityId);
     }
 
+    /**
+     * 送礼明细列表
+     * @param param  GiveGiftRecordListParam
+     * @return PageResult<GiveGiftRecordListVo>
+     */
     public PageResult<GiveGiftRecordListVo> giveGiftRecordList(GiveGiftRecordListParam param) {
         SelectConditionStep<? extends Record> selectConditionStep = orderInfo.giveGiftRecordList(param);
 

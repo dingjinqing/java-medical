@@ -40,12 +40,20 @@ public class GiveGiftService extends ShopBaseService {
      * 查询送礼活动列表
      *
      * @param param
+     * @return
      */
-    public void getGiveGiftList(GiveGiftListParam param) {
+    public PageResult<GiveGiftListVo> getGiveGiftList(GiveGiftListParam param) {
         SelectConditionStep<? extends Record> select = db()
-                .select(GIVE_GIFT_ACTIVITY.ACT_NAME, GIVE_GIFT_ACTIVITY.DUE_TIME_TYPE
-                        , GIVE_GIFT_ACTIVITY.START_TIME, GIVE_GIFT_ACTIVITY.END_TIME
-                        , GIVE_GIFT_ACTIVITY.LEVEL, GIVE_GIFT_ACTIVITY.STATUS)
+                .select(GIVE_GIFT_ACTIVITY.ID,
+                        GIVE_GIFT_ACTIVITY.ACT_NAME,
+                        GIVE_GIFT_ACTIVITY.DUE_TIME_TYPE,
+                        GIVE_GIFT_ACTIVITY.START_TIME,
+                        GIVE_GIFT_ACTIVITY.END_TIME,
+                        GIVE_GIFT_ACTIVITY.LEVEL,
+                        GIVE_GIFT_ACTIVITY.STATUS,
+                        GIVE_GIFT_ACTIVITY.CREATE_TIME,
+                        GIVE_GIFT_ACTIVITY.UPDATE_TIME
+                        )
                 .from(GIVE_GIFT_ACTIVITY)
                 .where(GIVE_GIFT_ACTIVITY.DEL_FLAG.eq(DelFlag.NORMAL_VALUE));
         buildParam(select, param);
@@ -60,7 +68,7 @@ public class GiveGiftService extends ShopBaseService {
             data.setSendOrderNumber(sendGiftOrderCt);
             data.setGetOrderMunber(getGiftOrderCt);
         });
-
+        return pageResult;
     }
 
     private void buildParam(SelectConditionStep<? extends Record> select, GiveGiftListParam param) {
@@ -141,9 +149,9 @@ public class GiveGiftService extends ShopBaseService {
         GiveGiftActivityRecord record = db().selectFrom(GIVE_GIFT_ACTIVITY).where(GIVE_GIFT_ACTIVITY.ID.eq(giveGiftId)).fetchOne();
         if (record != null) {
             if (record.getStatus() == STOP_STATUS) {
-                return db().update(GIVE_GIFT_ACTIVITY).set(GIVE_GIFT_ACTIVITY.STATUS, USE_STATUS).execute();
+                return db().update(GIVE_GIFT_ACTIVITY).set(GIVE_GIFT_ACTIVITY.STATUS, USE_STATUS).where(GIVE_GIFT_ACTIVITY.ID.eq(giveGiftId)).execute();
             } else {
-                return db().update(GIVE_GIFT_ACTIVITY).set(GIVE_GIFT_ACTIVITY.STATUS, STOP_STATUS).execute();
+                return db().update(GIVE_GIFT_ACTIVITY).set(GIVE_GIFT_ACTIVITY.STATUS, STOP_STATUS).where(GIVE_GIFT_ACTIVITY.ID.eq(giveGiftId)).execute();
             }
         }
         return 0;
@@ -156,14 +164,24 @@ public class GiveGiftService extends ShopBaseService {
      * @return 1 成功
      */
     public int deleteGiveGift(Integer giveGiftId) {
-        return db().update(GIVE_GIFT_ACTIVITY).set(GIVE_GIFT_ACTIVITY.DEL_FLAG, DelFlag.DISABLE_VALUE).execute();
+        return db().update(GIVE_GIFT_ACTIVITY).set(GIVE_GIFT_ACTIVITY.DEL_FLAG, DelFlag.DISABLE_VALUE)
+                .where(GIVE_GIFT_ACTIVITY.ID.eq(giveGiftId)).execute();
     }
 
-
+    /**
+     * 送礼明细列表
+     * @param param  GiveGiftRecordListParam
+     * @return PageResult<GiveGiftRecordListVo>
+     */
     public PageResult<GiveGiftRecordListVo> giveGiftRecordList(GiveGiftRecordListParam param) {
         return  giveGiftCart.giveGiftRecordList(param);
     }
 
+    /**
+     * 收礼明细
+     * @param param GiveGiftReceiveListParam
+     * @return PageResult<GiveGiftReceiveListVo>
+     */
     public PageResult<GiveGiftReceiveListVo> giveGiftReceiveList(GiveGiftReceiveListParam param) {
         return giveGiftReceive.giveGiftReceiveList(param);
     }

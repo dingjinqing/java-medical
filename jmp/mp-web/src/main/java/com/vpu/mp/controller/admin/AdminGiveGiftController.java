@@ -1,10 +1,9 @@
 package com.vpu.mp.controller.admin;
 
+import com.vpu.mp.db.shop.tables.records.GiveGiftActivityRecord;
 import com.vpu.mp.service.foundation.data.JsonResult;
 import com.vpu.mp.service.foundation.util.PageResult;
-import com.vpu.mp.service.pojo.shop.market.givegift.GiveGiftIdParam;
-import com.vpu.mp.service.pojo.shop.market.givegift.GiveGiftListParam;
-import com.vpu.mp.service.pojo.shop.market.givegift.GiveGiftParam;
+import com.vpu.mp.service.pojo.shop.market.givegift.*;
 import com.vpu.mp.service.pojo.shop.market.givegift.receive.GiveGiftReceiveListParam;
 import com.vpu.mp.service.pojo.shop.market.givegift.receive.GiveGiftReceiveListVo;
 import com.vpu.mp.service.pojo.shop.market.givegift.record.GiveGiftRecordListParam;
@@ -31,8 +30,8 @@ public class AdminGiveGiftController extends AdminBaseController {
      */
     @PostMapping("/list")
     public JsonResult getGiveGiftList(@RequestBody GiveGiftListParam param) {
-        shop().giveGift.getGiveGiftList(param);
-        return success();
+        PageResult<GiveGiftListVo> giveGiftList = shop().giveGift.getGiveGiftList(param);
+        return success(giveGiftList);
     }
 
     /**
@@ -42,8 +41,8 @@ public class AdminGiveGiftController extends AdminBaseController {
      */
     @PostMapping("/get")
     public JsonResult getGiveGiftById(@RequestBody GiveGiftIdParam param){
-        shop().giveGift.getGiveGiftById(param.getId());
-        return success();
+        GiveGiftVo giveGiftVo = shop().giveGift.getGiveGiftById(param.getId()).into(GiveGiftVo.class);
+        return success(giveGiftVo);
     }
 
         /**
@@ -55,7 +54,7 @@ public class AdminGiveGiftController extends AdminBaseController {
         @PostMapping("/add")
         public JsonResult addGiveGift(@RequestBody GiveGiftParam param) {
             Integer flag = shop().giveGift.addGiveGift(param);
-            if (flag>0){
+            if (flag<=0){
                 return fail();
             }
             return success();
@@ -71,9 +70,9 @@ public class AdminGiveGiftController extends AdminBaseController {
     public JsonResult updateGiveGift(@RequestBody GiveGiftParam param) {
         Integer flag = shop().giveGift.updateGiveGift(param);
         if (flag>0){
-            return fail();
+            return success();
         }
-        return success();
+        return fail();
     }
 
     /**
@@ -85,9 +84,9 @@ public class AdminGiveGiftController extends AdminBaseController {
     public JsonResult changeGiveGift(@RequestBody GiveGiftIdParam param) {
         int flag = shop().giveGift.changeGiveGift(param.getId());
         if (flag>0){
-            return fail();
+            return success();
         }
-        return success();
+        return fail();
     }
 
     /**
@@ -100,9 +99,9 @@ public class AdminGiveGiftController extends AdminBaseController {
     public JsonResult deleteGiveGift(@RequestBody GiveGiftIdParam param) {
         int flag = shop().giveGift.deleteGiveGift(param.getId());
         if (flag>0){
-            return fail();
+            return success();
         }
-        return success();
+        return fail();
     }
 
 

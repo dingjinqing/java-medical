@@ -8,6 +8,7 @@ import com.vpu.mp.service.pojo.shop.market.givegift.GiveGiftConstant;
 import com.vpu.mp.service.pojo.shop.market.givegift.receive.GiveGiftReceiveListParam;
 import com.vpu.mp.service.pojo.shop.market.givegift.receive.GiveGiftReceiveListVo;
 import com.vpu.mp.service.pojo.shop.order.OrderConstant;
+import org.jooq.Field;
 import org.jooq.Record;
 import org.jooq.SelectConditionStep;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,10 +16,7 @@ import org.springframework.stereotype.Service;
 
 import java.sql.Timestamp;
 
-import static com.vpu.mp.db.main.Tables.ORDER_GOODS;
-import static com.vpu.mp.db.main.tables.OrderInfo.ORDER_INFO;
-import static com.vpu.mp.db.shop.Tables.GIVE_GIFT_CART;
-import static com.vpu.mp.db.shop.Tables.USER;
+import static com.vpu.mp.db.shop.Tables.*;
 import static com.vpu.mp.db.shop.tables.GiveGiftReceive.GIVE_GIFT_RECEIVE;
 
 /**
@@ -58,12 +56,12 @@ public class GiveGiftReceiveService extends ShopBaseService {
         User giver = USER.as("giver");
         SelectConditionStep<? extends Record> select = db()
                 .select(
-                        receive.USER_ID.as("rUserId"),
-                        receive.USERNAME.as("rUsername"),
-                        receive.MOBILE.as("rMobile"),
-                        giver.USER_ID,
-                        giver.USERNAME,
-                        giver.MOBILE,
+                        receive.USER_ID.as(receive.getName()+receive.USER_ID.getName()),
+                        receive.USERNAME.as(receive.getName()+receive.USERNAME.getName()),
+                        receive.MOBILE.as(receive.getName()+receive.MOBILE.getName()),
+                        giver.USER_ID.as(giver.getName()+giver.USER_ID.getName()),
+                        giver.USERNAME.as(giver.getName()+giver.USERNAME.getName()),
+                        giver.MOBILE.as(giver.getName()+giver.MOBILE.getName()),
                         GIVE_GIFT_RECEIVE.PRODUCT_ID,
                         GIVE_GIFT_RECEIVE.MAIN_ORDER_SN,
                         GIVE_GIFT_RECEIVE.CREATE_TIME,
@@ -139,7 +137,6 @@ public class GiveGiftReceiveService extends ShopBaseService {
                     break;
                 default:
                     select.and(GIVE_GIFT_RECEIVE.STATUS.eq(param.getGiftReceiveStatus()));
-
             }
         }
 
