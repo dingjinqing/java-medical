@@ -25,6 +25,7 @@ import com.vpu.mp.service.shop.market.activity.ActivityService;
 import com.vpu.mp.service.shop.market.bargain.BargainService;
 import com.vpu.mp.service.shop.market.channel.ChannelService;
 import com.vpu.mp.service.shop.market.channel.ChannelStatisticalService;
+import com.vpu.mp.service.shop.market.commentaward.CommentAwardService;
 import com.vpu.mp.service.shop.market.firstspecial.FirstSpecialService;
 import com.vpu.mp.service.shop.market.form.FormStatisticsService;
 import com.vpu.mp.service.shop.market.freeshipping.FreeShippingService;
@@ -354,4 +355,10 @@ public class ShopApplication {
     public GiftService gift;
 
 	@Autowired public ShareRewardService shareRewardService;
+
+	/**
+	 * 评价有礼
+	 */
+	@Autowired
+    public CommentAwardService commentAward;
 }

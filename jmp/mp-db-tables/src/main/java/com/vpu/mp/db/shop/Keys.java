@@ -40,6 +40,8 @@ public class Keys {
     // -------------------------------------------------------------------------
     // IDENTITY definitions
     // -------------------------------------------------------------------------
+    public static final Identity<CommentGoodsRecord, Integer> IDENTITY_COMMENT_GOODS = Identities0.IDENTITY_COMMENT_GOODS;
+    public static final Identity<CommentAwardRecord, Integer> IDENTITY_COMMENT_AWARD = Identities0.IDENTITY_COMMENT_AWARD;
     public static final Identity<GiveGiftActivityRecord, Integer> IDENTITY_GIVE_GIFT_ACTIVITY = Identities0.IDENTITY_GIVE_GIFT_ACTIVITY;
     public static final Identity<GiveGiftCartRecord, Integer> IDENTITY_GIVE_GIFT_CART = Identities0.IDENTITY_GIVE_GIFT_CART;
     public static final Identity<GiveGiftReceiveRecord, Integer> IDENTITY_GIVE_GIFT_RECEIVE = Identities0.IDENTITY_GIVE_GIFT_RECEIVE;
@@ -76,7 +78,6 @@ public class Keys {
     public static final Identity<ChannelStatisticalRecord, Integer> IDENTITY_CHANNEL_STATISTICAL = Identities0.IDENTITY_CHANNEL_STATISTICAL;
     public static final Identity<ChargeMoneyRecord, Integer> IDENTITY_CHARGE_MONEY = Identities0.IDENTITY_CHARGE_MONEY;
     public static final Identity<CodeRecord, Integer> IDENTITY_CODE = Identities0.IDENTITY_CODE;
-    public static final Identity<CommentGoodsRecord, Integer> IDENTITY_COMMENT_GOODS = Identities0.IDENTITY_COMMENT_GOODS;
     public static final Identity<CommentGoodsAnswerRecord, Integer> IDENTITY_COMMENT_GOODS_ANSWER = Identities0.IDENTITY_COMMENT_GOODS_ANSWER;
     public static final Identity<CommentServiceRecord, Integer> IDENTITY_COMMENT_SERVICE = Identities0.IDENTITY_COMMENT_SERVICE;
     public static final Identity<CouponActivityRecord, Integer> IDENTITY_COUPON_ACTIVITY = Identities0.IDENTITY_COUPON_ACTIVITY;
@@ -245,7 +246,8 @@ public class Keys {
     // -------------------------------------------------------------------------
     // UNIQUE and PRIMARY KEY definitions
     // -------------------------------------------------------------------------
-
+    public static final UniqueKey<CommentGoodsRecord> KEY_B2C_COMMENT_GOODS_PRIMARY = UniqueKeys0.KEY_B2C_COMMENT_GOODS_PRIMARY;
+    public static final UniqueKey<CommentAwardRecord> KEY_B2C_COMMENT_AWARD_PRIMARY = UniqueKeys0.KEY_B2C_COMMENT_AWARD_PRIMARY;
     public static final UniqueKey<GiveGiftActivityRecord> KEY_B2C_GIVE_GIFT_ACTIVITY_PRIMARY = UniqueKeys0.KEY_B2C_GIVE_GIFT_ACTIVITY_PRIMARY;
     public static final UniqueKey<GiveGiftCartRecord> KEY_B2C_GIVE_GIFT_CART_PRIMARY = UniqueKeys0.KEY_B2C_GIVE_GIFT_CART_PRIMARY;
     public static final UniqueKey<GiveGiftReceiveRecord> KEY_B2C_GIVE_GIFT_RECEIVE_PRIMARY = UniqueKeys0.KEY_B2C_GIVE_GIFT_RECEIVE_PRIMARY;
@@ -282,7 +284,6 @@ public class Keys {
     public static final UniqueKey<ChannelStatisticalRecord> KEY_B2C_CHANNEL_STATISTICAL_PRIMARY = UniqueKeys0.KEY_B2C_CHANNEL_STATISTICAL_PRIMARY;
     public static final UniqueKey<ChargeMoneyRecord> KEY_B2C_CHARGE_MONEY_PRIMARY = UniqueKeys0.KEY_B2C_CHARGE_MONEY_PRIMARY;
     public static final UniqueKey<CodeRecord> KEY_B2C_CODE_PRIMARY = UniqueKeys0.KEY_B2C_CODE_PRIMARY;
-    public static final UniqueKey<CommentGoodsRecord> KEY_B2C_COMMENT_GOODS_PRIMARY = UniqueKeys0.KEY_B2C_COMMENT_GOODS_PRIMARY;
     public static final UniqueKey<CommentGoodsAnswerRecord> KEY_B2C_COMMENT_GOODS_ANSWER_PRIMARY = UniqueKeys0.KEY_B2C_COMMENT_GOODS_ANSWER_PRIMARY;
     public static final UniqueKey<CommentServiceRecord> KEY_B2C_COMMENT_SERVICE_PRIMARY = UniqueKeys0.KEY_B2C_COMMENT_SERVICE_PRIMARY;
     public static final UniqueKey<CouponActivityRecord> KEY_B2C_COUPON_ACTIVITY_PRIMARY = UniqueKeys0.KEY_B2C_COUPON_ACTIVITY_PRIMARY;
@@ -486,6 +487,8 @@ public class Keys {
     // -------------------------------------------------------------------------
 
     private static class Identities0 {
+        public static Identity<CommentGoodsRecord, Integer> IDENTITY_COMMENT_GOODS = Internal.createIdentity(CommentGoods.COMMENT_GOODS, CommentGoods.COMMENT_GOODS.ID);
+        public static Identity<CommentAwardRecord, Integer> IDENTITY_COMMENT_AWARD = Internal.createIdentity(CommentAward.COMMENT_AWARD, CommentAward.COMMENT_AWARD.ID);
         public static Identity<GiveGiftActivityRecord, Integer> IDENTITY_GIVE_GIFT_ACTIVITY = Internal.createIdentity(GiveGiftActivity.GIVE_GIFT_ACTIVITY, GiveGiftActivity.GIVE_GIFT_ACTIVITY.ID);
         public static Identity<GiveGiftCartRecord, Integer> IDENTITY_GIVE_GIFT_CART = Internal.createIdentity(GiveGiftCart.GIVE_GIFT_CART, GiveGiftCart.GIVE_GIFT_CART.ID);
         public static Identity<GiveGiftReceiveRecord, Integer> IDENTITY_GIVE_GIFT_RECEIVE = Internal.createIdentity(GiveGiftReceive.GIVE_GIFT_RECEIVE, GiveGiftReceive.GIVE_GIFT_RECEIVE.ID);
@@ -520,7 +523,6 @@ public class Keys {
         public static Identity<ChannelStatisticalRecord, Integer> IDENTITY_CHANNEL_STATISTICAL = Internal.createIdentity(ChannelStatistical.CHANNEL_STATISTICAL, ChannelStatistical.CHANNEL_STATISTICAL.ID);
         public static Identity<ChargeMoneyRecord, Integer> IDENTITY_CHARGE_MONEY = Internal.createIdentity(ChargeMoney.CHARGE_MONEY, ChargeMoney.CHARGE_MONEY.ID);
         public static Identity<CodeRecord, Integer> IDENTITY_CODE = Internal.createIdentity(Code.CODE, Code.CODE.CODE_ID);
-        public static Identity<CommentGoodsRecord, Integer> IDENTITY_COMMENT_GOODS = Internal.createIdentity(CommentGoods.COMMENT_GOODS, CommentGoods.COMMENT_GOODS.ID);
         public static Identity<CommentGoodsAnswerRecord, Integer> IDENTITY_COMMENT_GOODS_ANSWER = Internal.createIdentity(CommentGoodsAnswer.COMMENT_GOODS_ANSWER, CommentGoodsAnswer.COMMENT_GOODS_ANSWER.ANSWER_ID);
         public static Identity<CommentServiceRecord, Integer> IDENTITY_COMMENT_SERVICE = Internal.createIdentity(CommentService.COMMENT_SERVICE, CommentService.COMMENT_SERVICE.ID);
         public static Identity<CouponActivityRecord, Integer> IDENTITY_COUPON_ACTIVITY = Internal.createIdentity(CouponActivity.COUPON_ACTIVITY, CouponActivity.COUPON_ACTIVITY.ID);
@@ -691,6 +693,8 @@ public class Keys {
     }
 
     private static class UniqueKeys0 {
+        public static final UniqueKey<CommentGoodsRecord> KEY_B2C_COMMENT_GOODS_PRIMARY = Internal.createUniqueKey(CommentGoods.COMMENT_GOODS, "KEY_b2c_comment_goods_PRIMARY", CommentGoods.COMMENT_GOODS.ID);
+        public static final UniqueKey<CommentAwardRecord> KEY_B2C_COMMENT_AWARD_PRIMARY = Internal.createUniqueKey(CommentAward.COMMENT_AWARD, "KEY_b2c_comment_award_PRIMARY", CommentAward.COMMENT_AWARD.ID);
         public static final UniqueKey<GiveGiftActivityRecord> KEY_B2C_GIVE_GIFT_ACTIVITY_PRIMARY = Internal.createUniqueKey(GiveGiftActivity.GIVE_GIFT_ACTIVITY, "KEY_b2c_give_gift_activity_PRIMARY", GiveGiftActivity.GIVE_GIFT_ACTIVITY.ID);
         public static final UniqueKey<GiveGiftCartRecord> KEY_B2C_GIVE_GIFT_CART_PRIMARY = Internal.createUniqueKey(GiveGiftCart.GIVE_GIFT_CART, "KEY_b2c_give_gift_cart_PRIMARY", GiveGiftCart.GIVE_GIFT_CART.ID);
         public static final UniqueKey<GiveGiftReceiveRecord> KEY_B2C_GIVE_GIFT_RECEIVE_PRIMARY = Internal.createUniqueKey(GiveGiftReceive.GIVE_GIFT_RECEIVE, "KEY_b2c_give_gift_receive_PRIMARY", GiveGiftReceive.GIVE_GIFT_RECEIVE.ID);
@@ -724,7 +728,6 @@ public class Keys {
         public static final UniqueKey<ChannelStatisticalRecord> KEY_B2C_CHANNEL_STATISTICAL_PRIMARY = Internal.createUniqueKey(ChannelStatistical.CHANNEL_STATISTICAL, "KEY_b2c_channel_statistical_PRIMARY", ChannelStatistical.CHANNEL_STATISTICAL.ID);
         public static final UniqueKey<ChargeMoneyRecord> KEY_B2C_CHARGE_MONEY_PRIMARY = Internal.createUniqueKey(ChargeMoney.CHARGE_MONEY, "KEY_b2c_charge_money_PRIMARY", ChargeMoney.CHARGE_MONEY.ID);
         public static final UniqueKey<CodeRecord> KEY_B2C_CODE_PRIMARY = Internal.createUniqueKey(Code.CODE, "KEY_b2c_code_PRIMARY", Code.CODE.CODE_ID);
-        public static final UniqueKey<CommentGoodsRecord> KEY_B2C_COMMENT_GOODS_PRIMARY = Internal.createUniqueKey(CommentGoods.COMMENT_GOODS, "KEY_b2c_comment_goods_PRIMARY", CommentGoods.COMMENT_GOODS.ID);
         public static final UniqueKey<CommentGoodsAnswerRecord> KEY_B2C_COMMENT_GOODS_ANSWER_PRIMARY = Internal.createUniqueKey(CommentGoodsAnswer.COMMENT_GOODS_ANSWER, "KEY_b2c_comment_goods_answer_PRIMARY", CommentGoodsAnswer.COMMENT_GOODS_ANSWER.ANSWER_ID);
         public static final UniqueKey<CommentServiceRecord> KEY_B2C_COMMENT_SERVICE_PRIMARY = Internal.createUniqueKey(CommentService.COMMENT_SERVICE, "KEY_b2c_comment_service_PRIMARY", CommentService.COMMENT_SERVICE.ID);
         public static final UniqueKey<CouponActivityRecord> KEY_B2C_COUPON_ACTIVITY_PRIMARY = Internal.createUniqueKey(CouponActivity.COUPON_ACTIVITY, "KEY_b2c_coupon_activity_PRIMARY", CouponActivity.COUPON_ACTIVITY.ID);

@@ -31,6 +31,9 @@ public class Indexes {
     // -------------------------------------------------------------------------
     // INDEX definitions
     // -------------------------------------------------------------------------
+    public static final Index COMMENT_GOODS_PRIMARY = Indexes0.COMMENT_GOODS_PRIMARY;
+    public static final Index COMMENT_GOODS_SHOP_ID = Indexes0.COMMENT_GOODS_SHOP_ID;
+    public static final Index COMMENT_AWARD_PRIMARY = Indexes0.COMMENT_AWARD_PRIMARY;
     public static final Index PAY_REWARD_PRIMARY = Indexes0.PAY_REWARD_PRIMARY;
     public static final Index PAY_REWARD_RECORD_PRIMARY = Indexes0.PAY_REWARD_RECORD_PRIMARY;
     public static final Index LOTTERY_PRIZE_PRIMARY = Indexes0.LOTTERY_PRIZE_PRIMARY;
@@ -87,8 +90,6 @@ public class Indexes {
     public static final Index CHANNEL_STATISTICAL_REF_DATE = Indexes0.CHANNEL_STATISTICAL_REF_DATE;
     public static final Index CHARGE_MONEY_PRIMARY = Indexes0.CHARGE_MONEY_PRIMARY;
     public static final Index CODE_PRIMARY = Indexes0.CODE_PRIMARY;
-    public static final Index COMMENT_GOODS_PRIMARY = Indexes0.COMMENT_GOODS_PRIMARY;
-    public static final Index COMMENT_GOODS_SHOP_ID = Indexes0.COMMENT_GOODS_SHOP_ID;
     public static final Index COMMENT_GOODS_ANSWER_COMMENT_ID = Indexes0.COMMENT_GOODS_ANSWER_COMMENT_ID;
     public static final Index COMMENT_GOODS_ANSWER_PRIMARY = Indexes0.COMMENT_GOODS_ANSWER_PRIMARY;
     public static final Index COMMENT_SERVICE_PRIMARY = Indexes0.COMMENT_SERVICE_PRIMARY;
@@ -464,6 +465,7 @@ public class Indexes {
 
 
     private static class Indexes0 {
+        public static Index COMMENT_AWARD_PRIMARY = Internal.createIndex("PRIMARY", CommentAward.COMMENT_AWARD, new OrderField[] { CommentAward.COMMENT_AWARD.ID }, true);
         public static Index GROUP_BUY_LIST_PRIMARY = Internal.createIndex("PRIMARY", GroupBuyList.GROUP_BUY_LIST, new OrderField[] { GroupBuyList.GROUP_BUY_LIST.ID }, true);
         public static Index GROUP_INTEGRATION_DEFINE_PRIMARY = Internal.createIndex("PRIMARY", GroupIntegrationDefine.GROUP_INTEGRATION_DEFINE, new OrderField[] { GroupIntegrationDefine.GROUP_INTEGRATION_DEFINE.ID }, true);
         public static Index GROUP_BUY_PRODUCT_DEFINE_PRIMARY = Internal.createIndex("PRIMARY", GroupBuyProductDefine.GROUP_BUY_PRODUCT_DEFINE, new OrderField[] { GroupBuyProductDefine.GROUP_BUY_PRODUCT_DEFINE.ID }, true);
@@ -888,6 +890,5 @@ public class Indexes {
         public static Index SHARE_AWARD_RECEIVE_USER_SHARE = Internal.createIndex("user_share", ShareAwardReceive.SHARE_AWARD_RECEIVE, new OrderField[] { ShareAwardReceive.SHARE_AWARD_RECEIVE.USER_ID, ShareAwardReceive.SHARE_AWARD_RECEIVE.SHARE_ID, ShareAwardReceive.SHARE_AWARD_RECEIVE.GOODS_ID }, false);
         public static Index ATTEND_SHARE_USER_ATTEND_SHARE_USER = Internal.createIndex("attend_share_user", AttendShareUser.ATTEND_SHARE_USER, new OrderField[] { AttendShareUser.ATTEND_SHARE_USER.RECORD_ID, AttendShareUser.ATTEND_SHARE_USER.USER_ID }, false);
         public static Index ATTEND_SHARE_USER_PRIMARY = Internal.createIndex("PRIMARY", AttendShareUser.ATTEND_SHARE_USER, new OrderField[] { AttendShareUser.ATTEND_SHARE_USER.ID }, true);
-
     }
 }

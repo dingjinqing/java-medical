@@ -44,7 +44,7 @@ public class LotteryService extends ShopBaseService {
 
 
     private static final Byte STOP_STATUS = 1;
-    private static final Byte START_STATUS = 0;
+    private static final Byte USE_STATUS = 0;
 
 
     @Autowired
@@ -118,7 +118,7 @@ public class LotteryService extends ShopBaseService {
         record.setId(lotteryId);
         record.refresh();
         if (STOP_STATUS.equals(record.getStatus())) {
-            record.setStatus(START_STATUS);
+            record.setStatus(USE_STATUS);
         } else {
             record.setStatus(STOP_STATUS);
         }
@@ -155,18 +155,18 @@ public class LotteryService extends ShopBaseService {
             case 1:
                 select.and(LOTTERY.START_TIME.lt(nowTime))
                         .and(LOTTERY.END_TIME.gt(nowTime))
-                        .and(LOTTERY.STATUS.eq((byte) 0));
+                        .and(LOTTERY.STATUS.eq(USE_STATUS));
                 break;
             case 2:
-                select.and(LOTTERY.STATUS.eq((byte) 0))
+                select.and(LOTTERY.STATUS.eq(USE_STATUS))
                         .and(LOTTERY.START_TIME.gt(nowTime));
                 break;
             case 3:
-                select.and(LOTTERY.STATUS.gt((byte) 0))
+                select.and(LOTTERY.STATUS.gt(USE_STATUS))
                         .and(LOTTERY.END_TIME.lt(nowTime));
                 break;
             case 4:
-                select.and(LOTTERY.STATUS.eq((byte) 1));
+                select.and(LOTTERY.STATUS.eq(STOP_STATUS));
                 break;
             default:
         }

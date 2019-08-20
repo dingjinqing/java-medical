@@ -4277,3 +4277,35 @@ CREATE TABLE `b2c_attend_share_user`  (
   INDEX `attend_share_user`(`record_id`, `user_id`) USING BTREE
 ) ENGINE = InnoDB AUTO_INCREMENT = 73 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_unicode_ci ROW_FORMAT = Compact COMMENT '用户点击分享链接触发分享生效记录表';
 
+
+-- 评价有礼活动
+--  drop table if exists `b2c_comment_award`;
+create table `b2c_comment_award` (
+	`id` int ( 9 ) not null auto_increment,
+	`name` varchar ( 120 ) not null comment '活动名称',
+	`start_time` timestamp default null comment '开始时间',
+	`end_time` timestamp default null comment '结束时间',
+	`is_forever` tinyint ( 1 ) default null comment '是否永久',
+	`leve` int ( 9 ) default '1' comment '优先级',
+	`goods_type` tinyint ( 4 ) not null comment '触发条件 1全部商品 2指定商品 3 实际品论比较少的商品',
+	`goods_ids` varchar ( 199 ) default null comment '对应商品',
+	`comment_num` int ( 8 ) default null comment '品论数',
+	`comment_type` tinyint ( 4 ) not null comment '评价类型 1评价即送 2 自定义',
+	`comment_words` int ( 8 ) default null comment '评价字数条件',
+	`has_pic_num` tinyint ( 4 ) default null comment '嗮图',
+	`has_five_stars` tinyint ( 4 ) default null comment '五星好评',
+	`award_type` int ( 2 ) not null comment '奖品类型 1积分 2优惠卷 3 余额 4幸运大抽奖 5自定义',
+	`score` int ( 11 ) not null comment '积分数',
+	`activity_id` varchar ( 200 ) default null comment ' 评价奖励活动id，逗号分隔  优惠卷或者抽奖',
+	`account` decimal ( 10, 2 ) default '0.00' comment '用户余额',
+	`award_num` int ( 8 ) default null comment '奖品份数',
+	`send_num` int ( 8 ) default '0' comment '奖品送出份数',
+	`award_path` varchar ( 100 ) default null comment '设置链接',
+	`award_img` varchar ( 100 ) default null comment '活动图片',
+	`first_comment_goods` tinyint ( 1 ) DEFAULT NULL COMMENT '首次平价商品',
+	`status` tinyint ( 2 ) default '1' comment '状态：1启用',
+	`del_flag` tinyint ( 2 ) default '0' comment '1删除',
+	`create_time` timestamp default current_timestamp,
+	`update_time` timestamp default current_timestamp on update current_timestamp comment '最后修改时间',
+	primary key ( `id` )
+)

@@ -31,13 +31,13 @@ public class GoodsCommentPageListParam {
     private String goodsName;
     private String mobile;
     private String sortName = SORTNAME_DEFAULT_VALUE;
-    private int flag=FLAG_DEFAULT_VALUE;
-    private int commstar = COMMSTAR_DEFAULT_VALUE;
-   /*private int isRecommend = COMMSTAR_DEFAULT_VALUE;*/  //应该是评价奖励
+    private Byte flag=FLAG_DEFAULT_VALUE;
+    private Byte commstar = COMMSTAR_DEFAULT_VALUE;
+    private Integer awardActivityId;
 
     /**
      * 	分页信息
      */
-    private int currentPage = Page.DEFAULT_CURRENT_PAGE;
-    private int pageRows = Page.DEFAULT_PAGE_ROWS;
+    private Integer currentPage = Page.DEFAULT_CURRENT_PAGE;
+    private Integer pageRows = Page.DEFAULT_PAGE_ROWS;
 }

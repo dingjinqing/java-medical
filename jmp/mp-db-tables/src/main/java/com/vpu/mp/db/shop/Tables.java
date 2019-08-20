@@ -23,6 +23,15 @@ import com.vpu.mp.db.shop.tables.records.ShareAwardRecord;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class Tables {
 
+    /**
+     * The table <code>mini_shop_4748160.b2c_comment_goods</code>.
+     */
+    public static final CommentGoods COMMENT_GOODS = com.vpu.mp.db.shop.tables.CommentGoods.COMMENT_GOODS;
+
+    /**
+     * The table <code>mini_shop_4748160.b2c_comment_award</code>.
+     */
+    public static final CommentAward COMMENT_AWARD = com.vpu.mp.db.shop.tables.CommentAward.COMMENT_AWARD;
 
     /**
      * The table <code>mini_shop_4748160.b2c_give_gift_activity</code>.
@@ -175,10 +184,6 @@ public class Tables {
      */
     public static final Code CODE = Code.CODE;
 
-    /**
-     * The table <code>mini_shop_471752.b2c_comment_goods</code>.
-     */
-    public static final CommentGoods COMMENT_GOODS = CommentGoods.COMMENT_GOODS;
 
     /**
      * The table <code>mini_shop_471752.b2c_comment_goods_answer</code>.

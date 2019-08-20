@@ -1,21 +1,10 @@
 package com.vpu.mp.service.shop.goods;
 
-import static com.vpu.mp.db.shop.Tables.COMMENT_GOODS;
-import static com.vpu.mp.db.shop.Tables.COMMENT_GOODS_ANSWER;
-import static com.vpu.mp.db.shop.Tables.GOODS;
-import static com.vpu.mp.db.shop.Tables.GOODS_SUMMARY;
-import static com.vpu.mp.db.shop.Tables.LOTTERY_RECORD;
-import static com.vpu.mp.db.shop.Tables.ORDER_GOODS;
-import static com.vpu.mp.db.shop.Tables.SORT;
-import static com.vpu.mp.db.shop.Tables.USER;
-
 import java.math.BigDecimal;
 import java.sql.Timestamp;
 
-import org.jooq.Record10;
-import org.jooq.Record12;
-import org.jooq.Record13;
-import org.jooq.SelectConditionStep;
+import com.vpu.mp.service.foundation.data.DelFlag;
+import org.jooq.*;
 import org.jooq.tools.StringUtils;
 import org.springframework.stereotype.Service;
 
@@ -28,6 +17,8 @@ import com.vpu.mp.service.pojo.shop.goods.comment.GoodsCommentCheckListVo;
 import com.vpu.mp.service.pojo.shop.goods.comment.GoodsCommentIdParam;
 import com.vpu.mp.service.pojo.shop.goods.comment.GoodsCommentPageListParam;
 import com.vpu.mp.service.pojo.shop.goods.comment.GoodsCommentVo;
+
+import static com.vpu.mp.db.shop.Tables.*;
 
 /**
  * 商品评价
@@ -45,18 +36,28 @@ public class GoodsCommentService extends ShopBaseService {
      * @return
      */
     public PageResult<GoodsCommentVo> getPageList(GoodsCommentPageListParam param) {
-        SelectConditionStep<Record12<Integer,String,Byte, String, String,Timestamp, String,  String, String,String, Byte,String>> selectFrom = db()
-        		.select(COMMENT_GOODS.ID,
-        		COMMENT_GOODS.ORDER_SN,COMMENT_GOODS.COMMSTAR,
-        		COMMENT_GOODS.COMM_NOTE,COMMENT_GOODS_ANSWER.CONTENT,COMMENT_GOODS.CREATE_TIME,
-        		ORDER_GOODS.GOODS_NAME,ORDER_GOODS.GOODS_IMG,USER.USERNAME,USER.MOBILE,COMMENT_GOODS.ANONYMOUSFLAG,LOTTERY_RECORD.LOTTERY_AWARD)
-        		.from(COMMENT_GOODS,ORDER_GOODS,USER,LOTTERY_RECORD,COMMENT_GOODS_ANSWER)
-        		.where(COMMENT_GOODS.ORDER_SN.eq(ORDER_GOODS.ORDER_SN))
-        		.and(COMMENT_GOODS.USER_ID.eq(USER.USER_ID))
-        		.and(COMMENT_GOODS.ORDER_SN.eq(LOTTERY_RECORD.ORDER_SN))
-        		.and(COMMENT_GOODS.ID.eq(COMMENT_GOODS_ANSWER.COMMENT_ID));
 
-        SelectConditionStep<?> select = this.buildOptions(selectFrom, param);
+        SelectConditionStep<? extends Record> select = db().select(COMMENT_GOODS.ID,
+                COMMENT_GOODS.ORDER_SN,
+                COMMENT_GOODS.COMMSTAR,
+                COMMENT_GOODS.COMM_NOTE,
+                COMMENT_GOODS_ANSWER.CONTENT,
+                COMMENT_GOODS.CREATE_TIME,
+                COMMENT_GOODS.ANONYMOUSFLAG,
+                GOODS.GOODS_NAME,
+                GOODS.GOODS_IMG,
+                USER.USERNAME,
+                USER.MOBILE,
+                COMMENT_AWARD.NAME,
+                COMMENT_AWARD.AWARD_TYPE,
+                COMMENT_AWARD.SCORE,
+                COMMENT_AWARD.ACCOUNT)
+                .from(COMMENT_GOODS)
+                .leftJoin(GOODS).on(GOODS.GOODS_ID.eq(COMMENT_GOODS.GOODS_ID))
+                .leftJoin(USER).on(USER.USER_ID.eq(COMMENT_GOODS.USER_ID))
+                .leftJoin(COMMENT_AWARD).on(COMMENT_GOODS.COMMENT_AWARD_ID.eq(COMMENT_AWARD.ID))
+                .where(COMMENT_GOODS.DEL_FLAG.eq(DelFlag.NORMAL_VALUE));
+        this.buildOptions(select, param);
 
         select.orderBy( COMMENT_GOODS.CREATE_TIME.desc());
 
@@ -68,12 +69,12 @@ public class GoodsCommentService extends ShopBaseService {
     /**
      * 根据过滤条件构造对应的sql语句
      *
-     * @param selectFrom
+     * @param select
      * @param param
      * @return
      */
-    private SelectConditionStep<?> buildOptions(SelectConditionStep<Record12<Integer,String, Byte,String, String,Timestamp,  String, String, String,String,Byte, String>> selectFrom, GoodsCommentPageListParam param) {
-        SelectConditionStep<?> scs = selectFrom
+    private SelectConditionStep<?> buildOptions(SelectConditionStep<? extends Record> select, GoodsCommentPageListParam param) {
+        SelectConditionStep<?> scs = select
                 .and(COMMENT_GOODS.DEL_FLAG.eq((byte) GoodsCommentPageListParam.IS_DELETE_DEFAULT_VALUE));
 
         if (!StringUtils.isBlank(param.getOrderSn())) {
@@ -89,9 +90,11 @@ public class GoodsCommentService extends ShopBaseService {
         }
 
         if (param.getCommstar() != GoodsCommentPageListParam.COMMSTAR_DEFAULT_VALUE) {
-            scs = scs.and(COMMENT_GOODS.COMMSTAR.eq((byte)param.getCommstar()));
+            scs = scs.and(COMMENT_GOODS.COMMSTAR.eq(param.getCommstar()));
         }
-
+        if (param.getAwardActivityId()!=null){
+            scs.and(COMMENT_GOODS.COMMENT_AWARD_ID.eq(param.getAwardActivityId()));
+        }
         return scs;
     }
 
