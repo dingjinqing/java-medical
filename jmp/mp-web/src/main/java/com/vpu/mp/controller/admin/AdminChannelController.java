@@ -27,7 +27,7 @@ public class AdminChannelController extends AdminBaseController {
 	 * 渠道页面分析分页查询
 	 * 
 	 * @param param
-	 * @return
+	 * @return ChannelPageVo
 	 */
 	@PostMapping("/list")
 	public JsonResult getList(@RequestBody  ChannelPageParam param) {
@@ -36,7 +36,7 @@ public class AdminChannelController extends AdminBaseController {
 	/** 
 	 * 停用页面
 	 * @param id
-	 * @return
+	 * @return JsonResult
 	 */
 	@PostMapping("/disable/{id}")
 	public JsonResult disable(@PathVariable Integer id) {
@@ -46,7 +46,7 @@ public class AdminChannelController extends AdminBaseController {
 	/**
 	 * 启用渠道页面
 	 * @param id
-	 * @return
+	 * @return JsonResult
 	 */
 	@PostMapping("/enable/{id}")
 	public JsonResult enable(@PathVariable Integer id) {
@@ -56,7 +56,7 @@ public class AdminChannelController extends AdminBaseController {
 	/**
 	 * 渠道页面  分享
 	 * @param id
-	 * @return
+	 * @return QrCodeShareVo
 	 */
 	@PostMapping("/share/{id}")
 	public JsonResult share(@PathVariable Integer id) {
@@ -66,7 +66,7 @@ public class AdminChannelController extends AdminBaseController {
 	/**
 	 * 添加渠道页面
 	 * @param param
-	 * @return
+	 * @return JsonResult
 	 */
 	@PostMapping("/add")
 	public JsonResult add(@RequestBody @Valid ChannelParam param) {
@@ -74,9 +74,9 @@ public class AdminChannelController extends AdminBaseController {
 		return result(result);
 	}
 	/**
-	 * 电商运营页面数据统计
+	 * 页面数据统计
 	 * @param param
-	 * @return
+	 * @return ChannelStatisticalAllVo
 	 */
 	@PostMapping("/statistical")
 	public JsonResult channelStatistical(@RequestBody @Valid ChannelStatisticalParam param) {

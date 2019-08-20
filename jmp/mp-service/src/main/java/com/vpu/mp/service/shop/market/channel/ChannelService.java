@@ -66,7 +66,7 @@ public class ChannelService extends ShopBaseService {
 	 * 渠道页面分析 分页查询
 	 * 
 	 * @param param
-	 * @return
+	 * @return 
 	 */
 	public PageResult<ChannelPageVo> getPageList(ChannelPageParam param) {
 		SelectOnConditionStep<?> step = db()
@@ -245,7 +245,7 @@ public class ChannelService extends ShopBaseService {
 	 * @return
 	 */
 	public String createShare() {
-		BigInteger hex =new BigInteger(Util.randomId(),16);
+		BigInteger hex =new BigInteger(Util.randomId().replace("-", ""),16);
 		return convert62(hex);
 	}
 	
