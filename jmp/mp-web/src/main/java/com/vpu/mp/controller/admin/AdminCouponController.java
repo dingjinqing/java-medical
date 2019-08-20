@@ -98,7 +98,7 @@ public class AdminCouponController extends AdminBaseController{
 	 * @return
 	 */
 	@GetMapping("/admin/coupon/delete")
-	public JsonResult couponDel(@RequestBody Integer couponId) {
+	public JsonResult couponDel(Integer couponId) {
 		boolean result = shop().coupon.couponDel(couponId);
 		if(result) {
 			return this.success(result);
