@@ -174,10 +174,10 @@ public class MpOperateLogService extends MainBaseService {
      * @param shopId 小程序所属的店铺id
      * @return 日志结果
      */
-	public PageResult<MpOperateVo> logList(MpOperateListParam param,Integer shopId) {
+	public PageResult<MpOperateVo> logList(MpOperateListParam param,Integer shopId,String language) {
         MpAuthShopRecord authShopByShopId = saas().shop.mp.getAuthShopByShopId(shopId);
         param.setAppId(authShopByShopId.getAppId());
-        return logList(param);
+        return logList(param,language);
     }
 
     /**
