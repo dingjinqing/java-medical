@@ -18,8 +18,8 @@ public class CouponGivePopVo {
 	/* 使用限制 0：无限制 1：有限制 */
 	private Integer 	useConsumeRestrict;
 	/* 满多少可用 */
-	private Integer 	leastConsume;
+	private BigDecimal 	leastConsume;
 	/* 剩余数量 */
-	private Integer 	remainAmount;
+	private Integer 	surplus;
 	
 }

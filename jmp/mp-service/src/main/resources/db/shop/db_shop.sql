@@ -649,7 +649,6 @@ create table `b2c_customer_avail_coupons` (
 -- drop table if exists `b2c_mrking_voucher`;
 create table `b2c_mrking_voucher` (
   `id`                   int(11)                not null auto_increment,
-  `shop_id`              int(11)                not null default 0 comment '店铺id',
   `act_code`             varchar(50)            not null default 'voucher',
   `act_name`             varchar(120)           not null default '',
   `start_time`           timestamp null default null,
@@ -658,9 +657,8 @@ create table `b2c_mrking_voucher` (
   `total_amount`         int(11)                not null default '0' comment '发行量',
   `type`                 tinyint(1)             default 0 comment '优惠券类型，0普通优惠券；1分裂优惠券',
   `surplus`              int(11)                not null default '0',
-  `remain_amount`        int(11)                not null default '0',
   `use_consume_restrict` tinyint(1)             not null default '0' comment '使用限制',
-  `least_consume`        mediumint(5)           not null default '0' comment '满多少可用',
+  `least_consume`        decimal(10,2)          not null default '0' comment '满多少可用',
   `use_explain`          varchar(256)           not null default '',
   `enabled`              tinyint(1)             not null default '1',
   `is_random`            tinyint(1)             not null default '0' comment '是否需要积分兑换',

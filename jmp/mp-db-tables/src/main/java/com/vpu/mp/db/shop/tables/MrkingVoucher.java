@@ -43,7 +43,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class MrkingVoucher extends TableImpl<MrkingVoucherRecord> {
 
-    private static final long serialVersionUID = 1732727743;
+    private static final long serialVersionUID = -405257843;
 
     /**
      * The reference instance of <code>mini_shop_471752.b2c_mrking_voucher</code>
@@ -62,11 +62,6 @@ public class MrkingVoucher extends TableImpl<MrkingVoucherRecord> {
      * The column <code>mini_shop_471752.b2c_mrking_voucher.id</code>.
      */
     public final TableField<MrkingVoucherRecord, Integer> ID = createField("id", org.jooq.impl.SQLDataType.INTEGER.nullable(false).identity(true), this, "");
-
-    /**
-     * The column <code>mini_shop_471752.b2c_mrking_voucher.shop_id</code>. 店铺id
-     */
-    public final TableField<MrkingVoucherRecord, Integer> SHOP_ID = createField("shop_id", org.jooq.impl.SQLDataType.INTEGER.nullable(false).defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.INTEGER)), this, "店铺id");
 
     /**
      * The column <code>mini_shop_471752.b2c_mrking_voucher.act_code</code>.
@@ -109,11 +104,6 @@ public class MrkingVoucher extends TableImpl<MrkingVoucherRecord> {
     public final TableField<MrkingVoucherRecord, Integer> SURPLUS = createField("surplus", org.jooq.impl.SQLDataType.INTEGER.nullable(false).defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.INTEGER)), this, "");
 
     /**
-     * The column <code>mini_shop_471752.b2c_mrking_voucher.remain_amount</code>.
-     */
-    public final TableField<MrkingVoucherRecord, Integer> REMAIN_AMOUNT = createField("remain_amount", org.jooq.impl.SQLDataType.INTEGER.nullable(false).defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.INTEGER)), this, "");
-
-    /**
      * The column <code>mini_shop_471752.b2c_mrking_voucher.use_consume_restrict</code>. 使用限制
      */
     public final TableField<MrkingVoucherRecord, Byte> USE_CONSUME_RESTRICT = createField("use_consume_restrict", org.jooq.impl.SQLDataType.TINYINT.nullable(false).defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.TINYINT)), this, "使用限制");
@@ -121,7 +111,7 @@ public class MrkingVoucher extends TableImpl<MrkingVoucherRecord> {
     /**
      * The column <code>mini_shop_471752.b2c_mrking_voucher.least_consume</code>. 满多少可用
      */
-    public final TableField<MrkingVoucherRecord, Integer> LEAST_CONSUME = createField("least_consume", org.jooq.impl.SQLDataType.INTEGER.nullable(false).defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.INTEGER)), this, "满多少可用");
+    public final TableField<MrkingVoucherRecord, BigDecimal> LEAST_CONSUME = createField("least_consume", org.jooq.impl.SQLDataType.DECIMAL(10, 2).nullable(false).defaultValue(org.jooq.impl.DSL.inline("0.00", org.jooq.impl.SQLDataType.DECIMAL)), this, "满多少可用");
 
     /**
      * The column <code>mini_shop_471752.b2c_mrking_voucher.use_explain</code>.
@@ -256,12 +246,12 @@ public class MrkingVoucher extends TableImpl<MrkingVoucherRecord> {
     /**
      * The column <code>mini_shop_471752.b2c_mrking_voucher.create_time</code>.
      */
-    public final TableField<MrkingVoucherRecord, Timestamp> CREATE_TIME = createField("create_time", org.jooq.impl.SQLDataType.TIMESTAMP.nullable(false).defaultValue(org.jooq.impl.DSL.field("CURRENT_TIMESTAMP", org.jooq.impl.SQLDataType.TIMESTAMP)), this, "");
+    public final TableField<MrkingVoucherRecord, Timestamp> CREATE_TIME = createField("create_time", org.jooq.impl.SQLDataType.TIMESTAMP.defaultValue(org.jooq.impl.DSL.field("CURRENT_TIMESTAMP", org.jooq.impl.SQLDataType.TIMESTAMP)), this, "");
 
     /**
      * The column <code>mini_shop_471752.b2c_mrking_voucher.update_time</code>. 最后修改时间
      */
-    public final TableField<MrkingVoucherRecord, Timestamp> UPDATE_TIME = createField("update_time", org.jooq.impl.SQLDataType.TIMESTAMP.nullable(false).defaultValue(org.jooq.impl.DSL.field("CURRENT_TIMESTAMP", org.jooq.impl.SQLDataType.TIMESTAMP)), this, "最后修改时间");
+    public final TableField<MrkingVoucherRecord, Timestamp> UPDATE_TIME = createField("update_time", org.jooq.impl.SQLDataType.TIMESTAMP.defaultValue(org.jooq.impl.DSL.field("CURRENT_TIMESTAMP", org.jooq.impl.SQLDataType.TIMESTAMP)), this, "最后修改时间");
 
     /**
      * Create a <code>mini_shop_471752.b2c_mrking_voucher</code> table reference
@@ -309,7 +299,7 @@ public class MrkingVoucher extends TableImpl<MrkingVoucherRecord> {
      */
     @Override
     public List<Index> getIndexes() {
-        return Arrays.<Index>asList(Indexes.MRKING_VOUCHER_ACT_NAME, Indexes.MRKING_VOUCHER_ALIAS_CODE, Indexes.MRKING_VOUCHER_PRIMARY, Indexes.MRKING_VOUCHER_SHOP_ID);
+        return Arrays.<Index>asList(Indexes.MRKING_VOUCHER_ACT_NAME, Indexes.MRKING_VOUCHER_ALIAS_CODE, Indexes.MRKING_VOUCHER_PRIMARY);
     }
 
     /**

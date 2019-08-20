@@ -14,7 +14,6 @@ import lombok.Data;
 public class CouponParam {
 
     private Integer    id;
-    private Integer    shopId;
     private String     actCode;
     private String     actName;
     private Timestamp  startTime;
@@ -23,9 +22,8 @@ public class CouponParam {
     private Integer    totalAmount;
     private Byte       type;
     private Integer    surplus;
-    private Integer    remainAmount;
     private Byte       useConsumeRestrict;
-    private Integer    leastConsume;
+    private BigDecimal    leastConsume;
     private String     useExplain;
     private Byte       enabled;
     private Byte       isRandom;

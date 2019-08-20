@@ -20,9 +20,8 @@ public class CouponVo {
     private Integer    totalAmount;
     private Byte       type;
     private Integer    surplus;
-    private Integer    remainAmount;
     private Byte       useConsumeRestrict;
-    private Integer    leastConsume;
+    private BigDecimal    leastConsume;
     private String     useExplain;
     private Byte       enabled;
     private Byte       isRandom;

@@ -14,7 +14,7 @@ import lombok.Data;
 public class CouponGiveListConditionVo {
 	
 	private String 		couponName;
-	private Integer 	leastConsume;
+	private BigDecimal	leastConsume;
 	private BigDecimal 	denomination;
 	private Integer 	validity;
 	

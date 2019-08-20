@@ -230,7 +230,6 @@ public class Indexes {
     public static final Index MRKING_VOUCHER_ACT_NAME = Indexes0.MRKING_VOUCHER_ACT_NAME;
     public static final Index MRKING_VOUCHER_ALIAS_CODE = Indexes0.MRKING_VOUCHER_ALIAS_CODE;
     public static final Index MRKING_VOUCHER_PRIMARY = Indexes0.MRKING_VOUCHER_PRIMARY;
-    public static final Index MRKING_VOUCHER_SHOP_ID = Indexes0.MRKING_VOUCHER_SHOP_ID;
     public static final Index ORDER_ACTION_ORDER_ID = Indexes0.ORDER_ACTION_ORDER_ID;
     public static final Index ORDER_ACTION_PRIMARY = Indexes0.ORDER_ACTION_PRIMARY;
     public static final Index ORDER_GOODS_GOODS_ID = Indexes0.ORDER_GOODS_GOODS_ID;
@@ -657,7 +656,6 @@ public class Indexes {
         public static Index MRKING_VOUCHER_ACT_NAME = Internal.createIndex("act_name", MrkingVoucher.MRKING_VOUCHER, new OrderField[] { MrkingVoucher.MRKING_VOUCHER.ACT_NAME }, false);
         public static Index MRKING_VOUCHER_ALIAS_CODE = Internal.createIndex("alias_code", MrkingVoucher.MRKING_VOUCHER, new OrderField[] { MrkingVoucher.MRKING_VOUCHER.ALIAS_CODE }, true);
         public static Index MRKING_VOUCHER_PRIMARY = Internal.createIndex("PRIMARY", MrkingVoucher.MRKING_VOUCHER, new OrderField[] { MrkingVoucher.MRKING_VOUCHER.ID }, true);
-        public static Index MRKING_VOUCHER_SHOP_ID = Internal.createIndex("shop_id", MrkingVoucher.MRKING_VOUCHER, new OrderField[] { MrkingVoucher.MRKING_VOUCHER.SHOP_ID }, false);
         public static Index ORDER_ACTION_ORDER_ID = Internal.createIndex("order_id", OrderAction.ORDER_ACTION, new OrderField[] { OrderAction.ORDER_ACTION.ORDER_ID, OrderAction.ORDER_ACTION.ORDER_SN }, false);
         public static Index ORDER_ACTION_PRIMARY = Internal.createIndex("PRIMARY", OrderAction.ORDER_ACTION, new OrderField[] { OrderAction.ORDER_ACTION.ACTION_ID }, true);
         public static Index ORDER_GOODS_GOODS_ID = Internal.createIndex("goods_id", OrderGoods.ORDER_GOODS, new OrderField[] { OrderGoods.ORDER_GOODS.GOODS_ID }, false);

@@ -754,3 +754,7 @@ CREATE TABLE `b2c_virtual_order` (
   `still_send_flag` tinyint(2) NOT NULL DEFAULT '1' COMMENT '退款后是否继续发放优惠劵，1：继续发放，0：停止发放',
   PRIMARY KEY (`order_id`) USING BTREE
 ) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci ROW_FORMAT=DYNAMIC;
+
+alter table `b2c_mrking_voucher` modify column `least_consume` decimal(10,2) not null default '0.00' comment '满多少可用';
+alter table `b2c_mrking_voucher` drop column `shop_id`;
+alter table `b2c_mrking_voucher` drop column `remain_amount`;

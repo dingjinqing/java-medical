@@ -19,9 +19,8 @@ public class CouponListVo {
 	    private BigDecimal denomination;
 	    private Integer    totalAmount;
 	    private Integer    surplus;
-	    private Integer    remainAmount;
 	    private Byte       useConsumeRestrict;
-	    private Integer    leastConsume;
+	    private BigDecimal    leastConsume;
 	    private Byte       isRandom;
 	    private Short      receivePerPerson;
 	    private Short      giveoutAmount;
