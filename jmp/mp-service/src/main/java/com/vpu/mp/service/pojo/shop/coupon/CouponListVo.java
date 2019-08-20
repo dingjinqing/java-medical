@@ -32,4 +32,5 @@ public class CouponListVo {
 	    private Byte       delFlag;
 	    private Byte       useScore;
 	    private Integer    scoreNumber;
+	    private Integer    used;
 }

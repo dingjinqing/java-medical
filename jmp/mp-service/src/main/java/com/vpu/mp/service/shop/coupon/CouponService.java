@@ -47,10 +47,15 @@ public class CouponService extends ShopBaseService{
 	 * @return
 	 */
 	public PageResult<CouponListVo> getCouponList(CouponListParam param) {
+		System.out.println(param);
 		SelectJoinStep<Record> select = db().select().from(MRKING_VOUCHER);
 		SelectConditionStep<Record> sql = buildOptions(select,param);
 		sql.orderBy(MRKING_VOUCHER.CREATE_TIME.desc());
 		PageResult<CouponListVo> couponList = this.getPageResult(sql,param.getCurrentPage(),param.getPageRows(),CouponListVo.class);
+		for(CouponListVo list : couponList.dataList) {
+			int used = db().selectCount().from(CUSTOMER_AVAIL_COUPONS).where(CUSTOMER_AVAIL_COUPONS.ACT_ID.eq(list.getId())).and(CUSTOMER_AVAIL_COUPONS.IS_USED.eq((byte) 1)).fetchOne().into(Integer.class);
+			list.setUsed(used);
+		}
 		return couponList;
 	}
 	
@@ -65,7 +70,7 @@ public class CouponService extends ShopBaseService{
 		if(param.getActName() != null) {
 			sql = sql.and(MRKING_VOUCHER.ACT_NAME.eq(param.getActName()));
 		}
-		
+
 		Timestamp nowDate = new Timestamp(System.currentTimeMillis());
 
 		if(param.getNav() != null) {
@@ -90,6 +95,7 @@ public class CouponService extends ShopBaseService{
 
 			}
 		}
+		System.out.println(sql);
 		return sql;
 	}
 	
