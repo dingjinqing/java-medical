@@ -3,14 +3,29 @@ package com.vpu.mp.service.shop.member;
 import static com.vpu.mp.db.shop.Tables.ORDER_VERIFIER;
 import static com.vpu.mp.db.shop.Tables.USER;
 import static com.vpu.mp.db.shop.Tables.USER_TAG;
+import static com.vpu.mp.db.shop.Tables.USER_DETAIL;
+import static com.vpu.mp.db.shop.Tables.USER_LOGIN_RECORD;
+import static com.vpu.mp.db.shop.Tables.USER_SCORE;
+import static com.vpu.mp.db.shop.Tables.ORDER_INFO;
+import static com.vpu.mp.db.main.Tables.DICT_PROVINCE;
+import static com.vpu.mp.db.shop.Tables.STORE;
 import static org.jooq.impl.DSL.count;
 import static org.jooq.impl.DSL.date;
+import static org.jooq.impl.DSL.sum;
 
+import java.math.BigDecimal;
 import java.sql.Date;
+import java.sql.Timestamp;
+import java.time.Duration;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.util.Arrays;
+import java.util.List;
 import java.util.Map;
 import org.jooq.Field;
 import org.jooq.InsertValuesStep2;
 import org.jooq.Record;
+import org.jooq.Record2;
 import org.jooq.SelectField;
 import org.jooq.SelectJoinStep;
 import org.jooq.SelectWhereStep;
@@ -19,6 +34,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.vpu.mp.db.shop.tables.User;
+import com.vpu.mp.db.shop.tables.records.DistributionWithdrawRecord;
+import com.vpu.mp.db.shop.tables.records.OrderInfoRecord;
 import com.vpu.mp.db.shop.tables.records.UserRecord;
 import com.vpu.mp.db.shop.tables.records.UserTagRecord;
 import com.vpu.mp.service.foundation.data.DelFlag;
@@ -28,11 +45,19 @@ import com.vpu.mp.service.foundation.util.PageResult;
 import com.vpu.mp.service.pojo.shop.market.MarketAnalysisParam;
 import com.vpu.mp.service.pojo.shop.member.CommonMemberPageListQueryParam;
 import com.vpu.mp.service.pojo.shop.member.CommonMemberPageListQueryVo;
+import com.vpu.mp.service.pojo.shop.member.MemberBasicInfoVo;
+import com.vpu.mp.service.pojo.shop.member.MemberDetailsVo;
+import com.vpu.mp.service.pojo.shop.member.MemberEducationEnum;
 import com.vpu.mp.service.pojo.shop.member.MemberInfoVo;
 import com.vpu.mp.service.pojo.shop.member.MemberPageListParam;
+import com.vpu.mp.service.pojo.shop.member.MemberTransactionStatisticsVo;
 import com.vpu.mp.service.pojo.shop.member.MememberLoginStatusParam;
 import com.vpu.mp.service.pojo.shop.member.tag.UserTagParam;
-
+import com.vpu.mp.service.shop.order.info.OrderInfoService;
+import com.vpu.mp.service.pojo.shop.distribution.DistributorListParam;
+import com.vpu.mp.service.pojo.shop.distribution.DistributorListVo;
+import com.vpu.mp.service.shop.distribution.DistributorListService;
+import com.vpu.mp.service.shop.distribution.DistributorWithdrawService;
 /**
  * 
  * @author 黄壮壮
@@ -53,10 +78,20 @@ public class MemberService extends ShopBaseService {
 	public static final String INVITE_SOURCE_MEMBERCARD="membercard";
 	public static final String INVITE_SOURCE_SCANQRCODE="scanqrcode";
 	public static final String INVITE_SOURCE_CHANNEL="channel";
+	public static final String ZERO = "0";
+	public static final String NEG_ONE = "-1";
+	public static final Integer WEEK = 7;
+	public static final Integer MONTH = 30;
+	public static final Integer YEAR = 365;
+	public static final Byte YES_DISTRIBUTOR = 1;
 
 	@Autowired public AccountService account;
 	@Autowired public ScoreService score;
 	@Autowired public MemberCardService card;
+	@Autowired public OrderInfoService order;
+	@Autowired public AddressService address;
+	@Autowired public DistributorListService distributorListService;
+	@Autowired public DistributorWithdrawService distributorWithdrawService;
 	/**
 	 * 会员列表分页查询
 	 * @param param
@@ -68,7 +103,7 @@ public class MemberService extends ShopBaseService {
 		User n = USER.as("n");
 		
 		//自查寻
-		Field<?> inviteUserName =  this.db().select(n.USERNAME).from(n).where(n.INVITE_ID.eq(u.USER_ID)).asField(INVITE_USERNAME);
+		Field<?> inviteUserName =  this.db().select(n.USERNAME).from(n).where(n.USER_ID.eq(u.INVITE_ID)).asField(INVITE_USERNAME);
 		SelectWhereStep<? extends Record> select =(SelectWhereStep<? extends Record>) this.db()
 											.select(u.USER_ID,u.USERNAME.as(USER_NAME),inviteUserName,u.MOBILE,u.ACCOUNT,u.SCORE,u.SOURCE,u.CREATE_TIME)
 											.from(u);
@@ -242,12 +277,210 @@ public class MemberService extends ShopBaseService {
 			/** 构建insert sql语句*/
 			InsertValuesStep2<UserTagRecord, Integer, Integer> insert = db().insertInto(USER_TAG).columns(USER_TAG.USER_ID,USER_TAG.TAG_ID);
 			/** 将值放入insert 语句 */
-			param.getTagIdList().stream().forEach(x-> insert.values(param.getUserId(), x));
+			param.getUserIdList().forEach(userId->{
+				param.getTagIdList().forEach(tagId-> insert.values(userId, tagId));
+			});
+			
 			
 			/** 删除原来的标签 */
-			int before = db().delete(USER_TAG).where(USER_TAG.USER_ID.eq(param.getUserId())).execute();
+			int before = db().delete(USER_TAG).where(USER_TAG.USER_ID.in(param.getUserIdList())).execute();
 			int after = insert.execute();
 			logger().info("删除 " + before +" 条记录。添加 " + after + " 条记录。");
 		});
+	}
+
+	/** 根据用户id获取用户详情 */
+	public MemberDetailsVo getMemberInfoById(Integer userId) {
+		MemberDetailsVo vo = new MemberDetailsVo();
+		MemberTransactionStatisticsVo transStatistic = new MemberTransactionStatisticsVo();
+		
+		/** 用户基本信息 */
+		MemberBasicInfoVo memberBasicInfoVo = dealWithUserBasicInfo(userId, transStatistic);
+		
+		/** 分销统计 */
+		dealWithDistributorsInfo(userId, transStatistic, memberBasicInfoVo);
+		
+		vo.setMemberBasicInfo(memberBasicInfoVo);
+		vo.setTransStatistic(transStatistic);
+		return vo;
+	}
+	
+	/**
+	 * 处理会员用户的底本信息
+	 * @param userId
+	 * @param transStatistic
+	 * @return
+	 */
+	private MemberBasicInfoVo dealWithUserBasicInfo(Integer userId, MemberTransactionStatisticsVo transStatistic) {
+		/** 会员用户基本信息 */
+		logger().info("正在处理会员基本信息");
+		
+		User a = USER.as("a");
+		User b = USER.as("b");
+		Field<?> inviteName = db().select(b.USERNAME).from(b).where(b.USER_ID.eq(a.INVITE_ID)).asField(INVITE_USERNAME);
+		MemberBasicInfoVo memberBasicInfoVo = db().select(a.USERNAME,a.WX_UNION_ID,a.CREATE_TIME,a.MOBILE,a.WX_OPENID,a.INVITE_ID,a.SOURCE,a.UNIT_PRICE,
+													inviteName,USER_DETAIL.REAL_NAME,USER_DETAIL.EDUCATION,USER_DETAIL.PROVINCE_CODE,
+													a.IS_DISTRIBUTOR,
+													USER_DETAIL.CITY_CODE,USER_DETAIL.DISTRICT_CODE,USER_DETAIL.BIRTHDAY_DAY,USER_DETAIL.BIRTHDAY_MONTH,
+													USER_DETAIL.BIRTHDAY_YEAR,USER_DETAIL.SEX,USER_DETAIL.MARITAL_STATUS,
+													USER_DETAIL.MONTHLY_INCOME,USER_DETAIL.CID)
+												  .from(a.join(USER_DETAIL).on(a.USER_ID.eq(USER_DETAIL.USER_ID)))
+												  .where(a.USER_ID.eq(userId))
+												  .fetchOne()
+												  .into(MemberBasicInfoVo.class);
+		
+		logger().info("生日: " + memberBasicInfoVo.getBirthdayYear());
+		
+		/** 最近浏览时间*/
+		Record2<Timestamp, Timestamp> loginTime = db().select(USER_LOGIN_RECORD.CREATE_TIME,USER_LOGIN_RECORD.UPDATE_TIME).from(USER_LOGIN_RECORD).where(USER_LOGIN_RECORD.USER_ID.eq(userId)).orderBy(USER_LOGIN_RECORD.ID.desc()).limit(1).fetchOne();
+		
+		/** 最近浏览时间如果updateTime 为null，则设置为createTime */
+		if(loginTime.get(USER_LOGIN_RECORD.UPDATE_TIME) != null) {
+			memberBasicInfoVo.setUpdateTime(loginTime.get(USER_LOGIN_RECORD.UPDATE_TIME));
+		}else {
+			memberBasicInfoVo.setUpdateTime(loginTime.get(USER_LOGIN_RECORD.CREATE_TIME));
+		}
+		/** 累计积分 */
+		BigDecimal totalScore = score.getTotalScore(userId);
+		memberBasicInfoVo.setTotalScore(totalScore);
+		
+		/** 订单相关信息 */
+		getOrderInfo(userId, transStatistic, memberBasicInfoVo);
+		
+		/** 详细地址 */
+		List<String> addressList = address.getUserAddressById(userId);
+		memberBasicInfoVo.setAddressList(addressList);
+		
+		/** 受教育程度 */
+		Byte eduCode = memberBasicInfoVo.getEducation();
+		memberBasicInfoVo.setEducationStr(MemberEducationEnum.valueOf(eduCode).getName());
+		logger().info("受教育程度"+MemberEducationEnum.valueOf(eduCode).getName());
+		
+		/** 来源  */
+		String source = memberBasicInfoVo.getSource();
+		if( !ZERO.equals(source) && !NEG_ONE.equals(source)) {
+			source = db().select(STORE.STORE_NAME).from(STORE).where(STORE.STORE_ID.eq(Integer.parseInt(source))).fetchOne().into(String.class);
+			memberBasicInfoVo.setSource(source);
+		}
+		
+		
+		/** ---统计信息---  */
+		/** 最近下单的订单信息 */
+		Timestamp createTime = order.getRecentOrderInfoByUserId(userId);
+		if(createTime != null) {
+			LocalDate now = LocalDate.now();
+			LocalDate tmp = createTime.toLocalDateTime().toLocalDate();
+			long days = Duration.between(tmp.atStartOfDay(), now.atStartOfDay()).toDays();
+			StringBuilder lastAddOrder = new StringBuilder();
+			if(days<WEEK) {
+				lastAddOrder.append(days+"-D");
+			}else if(days<MONTH) {
+				lastAddOrder.append("1-M");
+			}else if(days<YEAR) {
+				lastAddOrder.append((days / 30)+"-M");
+			}else {
+				lastAddOrder.append((days / 365)+"-Y");
+			}
+			logger().info("最近下单距离现在 "+lastAddOrder.toString());
+			transStatistic.setLastAddOrder(lastAddOrder.toString());
+		}else {
+			transStatistic.setLastAddOrder("0");
+		}
+		return memberBasicInfoVo;
+	}
+
+	
+	/**
+	 * 获取分销信息
+	 * @param userId
+	 * @param transStatistic
+	 * @param memberBasicInfoVo
+	 */
+	private void dealWithDistributorsInfo(Integer userId, MemberTransactionStatisticsVo transStatistic,
+			MemberBasicInfoVo memberBasicInfoVo) {
+		
+		logger().info("正在获取分销统计信息");
+		/** 分销统计 */
+		/** 判断是不是分销员 */
+		if(YES_DISTRIBUTOR.equals(memberBasicInfoVo.getIsDistributor())) {
+			DistributorListVo distributor = getDistributor(userId, memberBasicInfoVo);
+			/** 用户的分销信息 */
+			DistributionWithdrawRecord distributionWithdraw = distributorWithdrawService.getWithdrawByUserId(userId);
+			if(distributor != null) {
+				
+				/** 获返利订单数量  */
+				Integer rebateOrderNum;
+				
+				/** 返利商品总金额(元) */
+				transStatistic.setTotalCanFanliMoney(distributor.getTotalCanFanliMoney());
+				
+				/** 获返利佣金总额(元) */
+				transStatistic.setRebateMoney(distributor.getTotalFanliMoney().add(distributor.getWaitFanliMoney()));
+				
+				/** 分销员分组 */
+				transStatistic.setGroupName(distributor.getGroupName());
+				
+				/** 分销员等级 */
+				transStatistic.setLevelName(distributor.getLevelName());
+				
+				/** 下级用户数 */
+				transStatistic.setSublayerNumber(distributor.getSublayerNumber());
+				
+				/** 已提现佣金总额(元) */
+				transStatistic.setWithdrawCash(distributionWithdraw.getWithdrawCash());
+				
+				/** 获返利订单数量  */
+				transStatistic.setRebateOrderNum(distributorListService.getRebateOrderNum(userId));
+				
+			}
+		}
+	}
+
+	/** 
+	 * 获取对应Id的分销员信息 
+	 * @param userId
+	 * @param memberBasicInfoVo
+	 * @return
+	 */
+	private DistributorListVo getDistributor(Integer userId, MemberBasicInfoVo memberBasicInfoVo) {
+		/** 通过调用DistributorListService 服务的分页信息获取该分销员的信息 */
+		DistributorListParam param = new DistributorListParam();
+		param.setUsername(memberBasicInfoVo.getUsername());
+		PageResult<DistributorListVo> pageList = distributorListService.getPageList(param);
+		/** 找到userId相同的数据 */
+		for(DistributorListVo distributor: pageList.dataList) {
+			if(distributor.getUserId().equals(userId)) {
+				return distributor;
+			}
+		}
+		return null;
+	}
+
+	/** 获取用户详情关于订单的信息*/
+	private void getOrderInfo(Integer userId, MemberTransactionStatisticsVo transStatistic,
+			MemberBasicInfoVo memberBasicInfoVo) {
+		/** 累计消费金额 */
+		BigDecimal totalConsumpAmount = order.getAllConsumpAmount(userId);
+		memberBasicInfoVo.setTotalConsumpAmount(totalConsumpAmount);
+		
+		/** 累计消费订单数  */
+		Integer orderNum = order.getAllOrderNum(userId);
+		transStatistic.setOrderNum(orderNum);
+		logger().info("累计消费订单数"+orderNum);
+		
+		/** 累计下单金额 */
+		BigDecimal orderMoney = order.getAllOrderMoney(userId);
+		transStatistic.setOrderMoney(orderMoney);
+		
+		/** 累计退款金额 */
+		BigDecimal returnOrderMoney = order.getAllReturnOrderMoney(userId);
+		transStatistic.setReturnOrderMoney(returnOrderMoney);
+		logger().info("累计退款金额 "+returnOrderMoney);
+		
+		
+		/** 累计退款订单数 */
+		Integer returnOrderNum = order.getAllReturnOrderNum(userId);
+		transStatistic.setReturnOrderNum(returnOrderNum);
+		logger().info("累计退款订单数 "+returnOrderNum);
 	}
 }

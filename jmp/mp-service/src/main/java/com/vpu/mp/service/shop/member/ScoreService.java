@@ -1,8 +1,9 @@
 package com.vpu.mp.service.shop.member;
 
 
-import static com.vpu.mp.db.shop.tables.User.USER;
-import static com.vpu.mp.db.shop.tables.UserScore.USER_SCORE;
+import static com.vpu.mp.db.shop.Tables.USER_SCORE;
+import static com.vpu.mp.db.shop.Tables.USER;
+import static org.jooq.impl.DSL.sum;
 
 import java.math.BigDecimal;
 import java.sql.Timestamp;
@@ -329,4 +330,15 @@ public class ScoreService extends ShopBaseService {
 		
 	}
 
+	
+	/** 累计积分 */
+	public BigDecimal getTotalScore(Integer userId) {
+		
+		BigDecimal totalScore = db().select(sum(USER_SCORE.SCORE))
+								.from(USER_SCORE)
+								.where(USER_SCORE.USER_ID.eq(userId).and(USER_SCORE.SCORE.greaterThan(0)))
+								.fetchOne()
+								.into(BigDecimal.class);
+		return totalScore;
+	}
 }

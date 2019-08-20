@@ -154,7 +154,7 @@ public class TagService extends ShopBaseService {
 	 */
 	public List<CommonTagVo> getCommonTagList() {
 
-		List<CommonTagVo> list = db().selectFrom(TAG).where(TAG.IS_DELETE.eq(DELETE_NO)).orderBy(TAG.TAG_ID.asc()).fetch().into(CommonTagVo.class);
+		List<CommonTagVo> list = db().selectFrom(TAG).orderBy(TAG.TAG_ID.asc()).fetch().into(CommonTagVo.class);
 		logger().info("共查询到： "+list.size()+" 条数据");
 		return list;
 	}
