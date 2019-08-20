@@ -16,6 +16,7 @@ import me.chanjar.weixin.open.bean.result.WxOpenResult;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletResponse;
@@ -111,7 +112,6 @@ public class SystemMpAuthShopController extends SystemBaseController {
 				result = mp.unbindTester(param.getAppId(), param.getWechatId());
 				break;
 			}
-
 			case MpDeployQueryParam.ACT_GET_CATEGORY: {
 				result = mp.getCategory(param.getAppId());
 				break;
@@ -164,10 +164,13 @@ public class SystemMpAuthShopController extends SystemBaseController {
 			result.setErrcode(String.valueOf(e.getError().getErrorCode()));
 			result.setErrmsg(e.getError().getErrorMsg());
 			log.debug(e.getMessage(),e);
+			//加入日志中
+			mp.erroInsert(param, result);
 		}catch (Exception e) {
 			result.setErrcode("500");
 			result.setErrmsg(e.getMessage());
 			log.debug(e.getMessage(),e);
+			mp.erroInsert(param, result);
 		}
 		return result.isSuccess() ? success(result) : wxfail(result);
 	}
@@ -205,7 +208,8 @@ public class SystemMpAuthShopController extends SystemBaseController {
 	 */
 	@PostMapping("/api/system/mp/operate/log/list")
 	public JsonResult logList(@RequestBody MpOperateListParam param) {
-		PageResult<MpOperateVo> mpOperateVoPageResult = saas.shop.mpOperateLog.logList(param);
+		String language = StringUtils.isEmpty(request.getHeader("V-Lang"))?"":request.getHeader("V-Lang");
+		PageResult<MpOperateVo> mpOperateVoPageResult = saas.shop.mpOperateLog.logList(param,language);
 		return success(mpOperateVoPageResult);
 	}
 
