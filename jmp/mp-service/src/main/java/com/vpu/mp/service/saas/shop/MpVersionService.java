@@ -53,7 +53,6 @@ public class MpVersionService extends MainBaseService {
 			}else {
 				db().executeUpdate(record);
 			}
-			//record.store();
 			wxOpenList.add(record.getTemplateId());
 			lastTemplateId = template.getTemplateId().intValue();
 		}

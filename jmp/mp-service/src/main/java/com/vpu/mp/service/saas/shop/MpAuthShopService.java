@@ -372,7 +372,7 @@ public class MpAuthShopService extends MainBaseService {
 			result = maService.modifyDomain(action, Arrays.asList(httpsDomains),
 					Arrays.asList(wssDomains), Arrays.asList(httpsDomains), Arrays.asList(httpsDomains));
 		} catch (WxErrorException e) {
-			//logger().debug(e.getMessage(),e);
+			logger().debug(e.getMessage(),e);
 			//没有新增域名，请确认小程序已经添加了域名或该域名是否没有在第三方平台添加
 			logger().debug("appId:"+appId+"修改域名modifyDomain失败："+e.getError().getErrorCode()+"  "+e.getError().getErrorMsg());
 			WxOpenResult fromJson =null;
@@ -510,7 +510,6 @@ public class MpAuthShopService extends MainBaseService {
 	}
 
 	public String getMpQrCode(String appId, WxOpenAuthorizerInfo authorizerInfo) {
-		//String qrcodeUrl = authorizerInfo.getQrcodeUrl();
 		String path = "pages/bottom/bottom";
 		String filename = appId + "_" + Util.md5(path) + ".jpg";
 		String relativePath = "upload/saas/mp/app_code/" + filename;
@@ -978,7 +977,7 @@ public class MpAuthShopService extends MainBaseService {
 	 */
 	public MaWxPlusInListInner getPlugin(String appId) {
 		WxOpenAccountService service =open.getMaExtService();
-    	Map<String, String> map=new HashMap<String, String>();
+    	Map<String, String> map=new HashMap<String, String>(0);
     	map.put("action", "list");
     	MaWxPlusInResult plugInManage=null;
     	try {
@@ -1000,7 +999,9 @@ public class MpAuthShopService extends MainBaseService {
 	}
 	
 	
-	//	更新部署日志
+	/**
+	 * 更新部署日志
+	 */
 	public void updateDeployData(List<String> pageList,String appId) {
 		Byte templateId = getMpPackageVersion(appId);
 		Integer tempId=Integer.parseInt(templateId.toString());
@@ -1021,7 +1022,9 @@ public class MpAuthShopService extends MainBaseService {
 		
 	}
 
-	//设置支付方式
+	/**
+	 * 设置支付方式
+	 */
 	public WxOpenResult setSubMerchant(MpDeployQueryParam param) {
 		MpAuthShopRecord mp = this.getAuthShopByAppId(param.getAppId());
 		WxOpenResult wxOpenResult = new WxOpenResult();
