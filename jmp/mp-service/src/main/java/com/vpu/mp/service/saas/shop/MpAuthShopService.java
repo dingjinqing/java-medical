@@ -388,7 +388,7 @@ public class MpAuthShopService extends MainBaseService {
 			}
 			result.setErrcode(fromJson.getErrcode());
 			result.setErrmsg(fromJson.getErrmsg());
-			operateLogGlobal(mp, MpOperateLogService.OP_TYPE_MODIFY_DOMAIN, result, WxContentTemplate.WX_MODIFY_DOMAIN_FAIL.code, new String[] {fromJson.getErrcode(),fromJson.getErrmsg()});
+			operateLogGlobal(mp, MpOperateLogService.OP_TYPE_MODIFY_DOMAIN, result, WxContentTemplate.WX_MODIFY_DOMAIN_SUCCESS.code, new String[] {});
 			return result;
 		}
 		if (result.isSuccess()) {
