@@ -297,8 +297,7 @@ public class GiftService extends ShopBaseService {
      */
     public PageResult<GiftDetailListVo> getGiftDetailPageList(GiftDetailListParam param) {
         SelectConditionStep<?> query = db().select(ORDER_INFO.ORDER_SN, USER.USER_ID, USER.USERNAME, USER.MOBILE,
-            DSL.sum(ORDER_GOODS.GOODS_NUMBER).as(
-                "giftAmount"), ORDER_INFO.CREATE_TIME).from(ORDER_GOODS)
+            DSL.sum(ORDER_GOODS.GOODS_NUMBER).as("giftAmount"), ORDER_INFO.CREATE_TIME).from(ORDER_GOODS)
             .leftJoin(ORDER_INFO).on(ORDER_INFO.ORDER_SN.eq(ORDER_GOODS.ORDER_SN))
             .leftJoin(USER).on(USER.USER_ID.eq(ORDER_INFO.USER_ID))
             .where(ORDER_GOODS.IS_GIFT.eq(1));
