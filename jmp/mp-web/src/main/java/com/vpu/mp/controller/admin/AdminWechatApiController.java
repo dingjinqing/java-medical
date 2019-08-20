@@ -7,6 +7,7 @@ import com.vpu.mp.service.pojo.saas.shop.mp.MpOperateVo;
 import com.vpu.mp.service.pojo.shop.config.WxShoppingListConfig;
 import org.slf4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.*;
 
 import com.vpu.mp.db.main.tables.records.MpAuthShopRecord;
@@ -135,7 +136,9 @@ public class AdminWechatApiController extends AdminBaseController {
         if (!authOk) {
             return fail(JsonResultCode.WX_MA_SHOP_HAS_NO_AP);
         }
-        PageResult<MpOperateVo> mpOperateVoPageResult = saas.shop.mpOperateLog.logList(param,shopId);
+        
+        String language = StringUtils.isEmpty(request.getHeader("V-Lang"))?"":request.getHeader("V-Lang");
+        PageResult<MpOperateVo> mpOperateVoPageResult = saas.shop.mpOperateLog.logList(param,shopId,language);
         return success(mpOperateVoPageResult);
     }
 
