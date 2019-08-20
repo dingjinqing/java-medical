@@ -1,6 +1,6 @@
 package com.vpu.mp.service.shop.order.virtual;
 
-import static com.vpu.mp.db.shop.tables.CardOrder.CARD_ORDER;
+import static com.vpu.mp.db.shop.tables.VirtualOrder.VIRTUAL_ORDER;
 import static com.vpu.mp.db.shop.tables.CouponPack.COUPON_PACK;
 import static com.vpu.mp.db.shop.tables.CouponPackVoucher.COUPON_PACK_VOUCHER;
 import static com.vpu.mp.db.shop.tables.CustomerAvailCoupons.CUSTOMER_AVAIL_COUPONS;
@@ -61,13 +61,13 @@ public class CouponPackOrderService extends ShopBaseService {
 	 */
 	public PageResult<CouponPackOrderVo> getPageList(CouponPackOrderPageParam param){
 		SelectWhereStep<? extends Record> selectFrom = db()
-			.select(CARD_ORDER.ORDER_ID,CARD_ORDER.VIRTUAL_GOODS_ID,COUPON_PACK.PACK_NAME,
-					CARD_ORDER.ORDER_SN,CARD_ORDER.USER_ID,USER.USERNAME,USER.MOBILE,CARD_ORDER.MONEY_PAID,CARD_ORDER.USE_ACCOUNT,CARD_ORDER.USE_SCORE,CARD_ORDER.MEMBER_CARD_BALANCE,CARD_ORDER.CARD_NO,CARD_ORDER.PAY_CODE,CARD_ORDER.PAY_NAME,CARD_ORDER.PREPAY_ID,CARD_ORDER.PAY_SN,CARD_ORDER.ORDER_AMOUNT,
-					CARD_ORDER.CREATE_TIME,CARD_ORDER.RETURN_FLAG,CARD_ORDER.RETURN_SCORE,CARD_ORDER.RETURN_ACCOUNT,CARD_ORDER.RETURN_MONEY,CARD_ORDER.RETURN_CARD_BALANCE,
-					CARD_ORDER.RETURN_TIME)
-			.from(CARD_ORDER)
-			.leftJoin(COUPON_PACK).on(CARD_ORDER.VIRTUAL_GOODS_ID.eq(COUPON_PACK.ID))
-			.leftJoin(USER).on(CARD_ORDER.USER_ID.eq(USER.USER_ID));
+			.select(VIRTUAL_ORDER.ORDER_ID,VIRTUAL_ORDER.VIRTUAL_GOODS_ID,COUPON_PACK.PACK_NAME,
+					VIRTUAL_ORDER.ORDER_SN,VIRTUAL_ORDER.USER_ID,USER.USERNAME,USER.MOBILE,VIRTUAL_ORDER.MONEY_PAID,VIRTUAL_ORDER.USE_ACCOUNT,VIRTUAL_ORDER.USE_SCORE,VIRTUAL_ORDER.MEMBER_CARD_BALANCE,VIRTUAL_ORDER.CARD_NO,VIRTUAL_ORDER.PAY_CODE,VIRTUAL_ORDER.PAY_NAME,VIRTUAL_ORDER.PREPAY_ID,VIRTUAL_ORDER.PAY_SN,VIRTUAL_ORDER.ORDER_AMOUNT,
+					VIRTUAL_ORDER.CREATE_TIME,VIRTUAL_ORDER.RETURN_FLAG,VIRTUAL_ORDER.RETURN_SCORE,VIRTUAL_ORDER.RETURN_ACCOUNT,VIRTUAL_ORDER.RETURN_MONEY,VIRTUAL_ORDER.RETURN_CARD_BALANCE,
+					VIRTUAL_ORDER.RETURN_TIME)
+			.from(VIRTUAL_ORDER)
+			.leftJoin(COUPON_PACK).on(VIRTUAL_ORDER.VIRTUAL_GOODS_ID.eq(COUPON_PACK.ID))
+			.leftJoin(USER).on(VIRTUAL_ORDER.USER_ID.eq(USER.USER_ID));
 		SelectConditionStep<? extends Record> select = buildOptions(selectFrom,param);
 		PageResult<CouponPackOrderVo> pageResult = getPageResult(select,param.getCurrentPage(),param.getPageRows(), CouponPackOrderVo.class);
 		List<CouponPackOrderVo> dataList = pageResult.dataList;	
@@ -86,25 +86,25 @@ public class CouponPackOrderService extends ShopBaseService {
 	 * @return 
 	 */
 	private  SelectConditionStep<? extends Record> buildOptions(SelectWhereStep<? extends Record> select, CouponPackOrderPageParam param) {
-		SelectConditionStep<? extends Record> condition = select.where(CARD_ORDER.GOODS_TYPE.eq(VirtualGoodsOrderType.COUPONPACK))
-			  .and(CARD_ORDER.DEL_FLAG.eq(DelFlag.NORMAL_VALUE));
+		SelectConditionStep<? extends Record> condition = select.where(VIRTUAL_ORDER.GOODS_TYPE.eq(VirtualGoodsOrderType.COUPONPACK))
+			  .and(VIRTUAL_ORDER.DEL_FLAG.eq(DelFlag.NORMAL_VALUE));
 		if(!StringUtils.isBlank(param.getPackName())) {
 			condition.and(COUPON_PACK.PACK_NAME.like(this.likeValue(param.getPackName())));
 		}
 		if(!StringUtils.isBlank(param.getOrderSn())) {
-			condition.and(CARD_ORDER.ORDER_SN.like(this.likeValue(param.getOrderSn())));
+			condition.and(VIRTUAL_ORDER.ORDER_SN.like(this.likeValue(param.getOrderSn())));
 		}
 		if(!StringUtils.isBlank(param.getUserInfo())) {
 			condition.and(USER.USERNAME.like(likeValue(param.getUserInfo())));
 			condition.and(USER.MOBILE.like(likeValue(param.getUserInfo())));
 		}
 		if(param.getStartTime() != null) {
-			condition.and(CARD_ORDER.CREATE_TIME.gt(param.getStartTime()));
+			condition.and(VIRTUAL_ORDER.CREATE_TIME.gt(param.getStartTime()));
 		}
 		if(param.getEndTime() != null) {
-			condition.and(CARD_ORDER.CREATE_TIME.le(param.getEndTime()));
+			condition.and(VIRTUAL_ORDER.CREATE_TIME.le(param.getEndTime()));
 		}
-		condition.orderBy(CARD_ORDER.CREATE_TIME);
+		condition.orderBy(VIRTUAL_ORDER.CREATE_TIME);
 		return condition;
 	}
 	
@@ -187,11 +187,11 @@ public class CouponPackOrderService extends ShopBaseService {
 			return ;
 		}
 		this.transaction(()->{
-			int execute = db().update(CARD_ORDER)
-					.set(CARD_ORDER.RETURN_CARD_BALANCE,CARD_ORDER.RETURN_CARD_BALANCE.add(refundBalance))
-					.set(CARD_ORDER.RETURN_FLAG,RefundStatus.SUCCESS)
-					.where(CARD_ORDER.ORDER_ID.eq(orderRefund.getOrderId()))
-					.and(CARD_ORDER.MEMBER_CARD_BALANCE.ge(CARD_ORDER.RETURN_CARD_BALANCE.add(refundBalance)))
+			int execute = db().update(VIRTUAL_ORDER)
+					.set(VIRTUAL_ORDER.RETURN_CARD_BALANCE,VIRTUAL_ORDER.RETURN_CARD_BALANCE.add(refundBalance))
+					.set(VIRTUAL_ORDER.RETURN_FLAG,RefundStatus.SUCCESS)
+					.where(VIRTUAL_ORDER.ORDER_ID.eq(orderRefund.getOrderId()))
+					.and(VIRTUAL_ORDER.MEMBER_CARD_BALANCE.ge(VIRTUAL_ORDER.RETURN_CARD_BALANCE.add(refundBalance)))
 					.execute();
 			if(execute>0) {
 				execute = db().update(USER_CARD)
@@ -217,11 +217,11 @@ public class CouponPackOrderService extends ShopBaseService {
 			return ;
 		}
 		this.transaction(()->{
-			int execute = db().update(CARD_ORDER)
-					.set(CARD_ORDER.RETURN_ACCOUNT,CARD_ORDER.RETURN_ACCOUNT.add(refundAccount))				
-					.set(CARD_ORDER.RETURN_FLAG,RefundStatus.SUCCESS)
-					.where(CARD_ORDER.ORDER_ID.eq(orderRefund.getOrderId()))
-					.and(CARD_ORDER.USE_ACCOUNT.ge(CARD_ORDER.RETURN_ACCOUNT.add(refundAccount)))
+			int execute = db().update(VIRTUAL_ORDER)
+					.set(VIRTUAL_ORDER.RETURN_ACCOUNT,VIRTUAL_ORDER.RETURN_ACCOUNT.add(refundAccount))				
+					.set(VIRTUAL_ORDER.RETURN_FLAG,RefundStatus.SUCCESS)
+					.where(VIRTUAL_ORDER.ORDER_ID.eq(orderRefund.getOrderId()))
+					.and(VIRTUAL_ORDER.USE_ACCOUNT.ge(VIRTUAL_ORDER.RETURN_ACCOUNT.add(refundAccount)))
 					.execute();
 			if(execute >0) {
 				execute = db().update(USER)
@@ -256,11 +256,11 @@ public class CouponPackOrderService extends ShopBaseService {
 		}
 		this.transaction(()->{
 			
-			int execute = db().update(CARD_ORDER)
-					.set(CARD_ORDER.RETURN_SCORE,CARD_ORDER.RETURN_SCORE.add(refundScore))
-					.set(CARD_ORDER.RETURN_FLAG,RefundStatus.SUCCESS)
-					.where(CARD_ORDER.ORDER_ID.eq(orderRefund.getOrderId()))
-					.and(CARD_ORDER.USE_SCORE.ge(CARD_ORDER.RETURN_SCORE.add(refundScore)))
+			int execute = db().update(VIRTUAL_ORDER)
+					.set(VIRTUAL_ORDER.RETURN_SCORE,VIRTUAL_ORDER.RETURN_SCORE.add(refundScore))
+					.set(VIRTUAL_ORDER.RETURN_FLAG,RefundStatus.SUCCESS)
+					.where(VIRTUAL_ORDER.ORDER_ID.eq(orderRefund.getOrderId()))
+					.and(VIRTUAL_ORDER.USE_SCORE.ge(VIRTUAL_ORDER.RETURN_SCORE.add(refundScore)))
 					.execute();
 			if(execute == 0) {
 				return ;
@@ -279,9 +279,9 @@ public class CouponPackOrderService extends ShopBaseService {
 	
 	
 	public void updateSendFlag(Byte sendFlag,Integer orderId) {
-		db().update(CARD_ORDER)
-			.set(CARD_ORDER.STILL_SEND_FLAG,sendFlag)
-			.where(CARD_ORDER.ORDER_ID.eq(orderId)).execute();
+		db().update(VIRTUAL_ORDER)
+			.set(VIRTUAL_ORDER.STILL_SEND_FLAG,sendFlag)
+			.where(VIRTUAL_ORDER.ORDER_ID.eq(orderId)).execute();
 	}
 	
 }
