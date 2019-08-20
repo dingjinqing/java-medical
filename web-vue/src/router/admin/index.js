@@ -122,7 +122,7 @@ const routes = [
             },
             component: () =>
               import(
-                '@/view/admin/index/leftNavComponents/first_web_decoration/picture_setting/picture_setting'
+                '@/view/admin/index/leftNavComponents/first_web_decoration/picture_setting/decorationHome'
               )
           },
           {

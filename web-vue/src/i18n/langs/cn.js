@@ -12,7 +12,7 @@ import { cn as ShopConfiguration } from './views/ShopConfiguration'
 import { cn as adminPageFramework } from './views/adminPageFramework'
 console.log(zhLocale)
 const cn = {
-  message: {
+  messages: {
     'lang': '中文',
     'index_nav_main': '首页',
     'index_nav_new': '新闻资讯',

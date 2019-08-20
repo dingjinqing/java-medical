@@ -1,8 +1,8 @@
 <template>
   <div class="advan">
     <div class="light_head">
-      <h4><span style="color: #fff;">{{$t('message.index_advantage_top_title')}}</span></h4>
-      <div>{{$t('message.index_advantage_top_content')}}</div>
+      <h4><span style="color: #fff;">{{$t('messages.index_advantage_top_title')}}</span></h4>
+      <div>{{$t('messages.index_advantage_top_content')}}</div>
     </div>
     <div id="slider">
       <div class="scroll">
@@ -20,26 +20,26 @@
             </div>
             <div class="advan_li_right">
               <span></span>
-              <h2>{{$t('message.index_advantage_title_1')}}</h2>
+              <h2>{{$t('messages.index_advantage_title_1')}}</h2>
               <p>
-                {{$t('message.index_advantage_content_1')}}
+                {{$t('messages.index_advantage_content_1')}}
               </p>
               <p>
-                {{$t('message.index_advantage_content_2')}}
+                {{$t('messages.index_advantage_content_2')}}
               </p>
               <p>
-                {{$t('message.index_advantage_content_3')}}
+                {{$t('messages.index_advantage_content_3')}}
               </p>
               <p>
-                {{$t('message.index_advantage_content_4')}}
+                {{$t('messages.index_advantage_content_4')}}
               </p>
               <p style="width: 500px;">
-                {{$t('message.index_advantage_content_5')}}
-                {{$t('message.index_advantage_content_6')}}
+                {{$t('messages.index_advantage_content_5')}}
+                {{$t('messages.index_advantage_content_6')}}
                 <a
                   style="cursor:pointer"
                   @click="to_apply()"
-                >{{$t('message.index_advantage_title_2')}}</a>
+                >{{$t('messages.index_advantage_title_2')}}</a>
               </p>
             </div>
           </swiper-slide>
@@ -52,20 +52,20 @@
             </div>
             <div class="advan_li_right">
               <span></span>
-              <h2>{{$t('message.index_advantage_2_title_1')}}</h2>
+              <h2>{{$t('messages.index_advantage_2_title_1')}}</h2>
               <p>
-                {{$t('message.index_advantage_2_content_1')}}
+                {{$t('messages.index_advantage_2_content_1')}}
               </p>
               <p>
-                {{$t('message.index_advantage_2_content_2')}}
+                {{$t('messages.index_advantage_2_content_2')}}
               </p>
               <p>
-                {{$t('message.index_advantage_2_content_3')}}
+                {{$t('messages.index_advantage_2_content_3')}}
               </p>
               <a
                 style="cursor:pointer"
                 @click="to_apply()"
-              >{{$t('message.index_advantage_2_title_2')}}</a>
+              >{{$t('messages.index_advantage_2_title_2')}}</a>
             </div>
           </swiper-slide>
           <swiper-slide>
@@ -77,20 +77,20 @@
             </div>
             <div class="advan_li_right">
               <span></span>
-              <h2>{{$t('message.index_advantage_3_title_1')}}</h2>
+              <h2>{{$t('messages.index_advantage_3_title_1')}}</h2>
               <p>
-                {{$t('message.index_advantage_3_content_1')}}
+                {{$t('messages.index_advantage_3_content_1')}}
               </p>
               <p>
-                {{$t('message.index_advantage_3_content_2')}}
+                {{$t('messages.index_advantage_3_content_2')}}
               </p>
               <p>
-                {{$t('message.index_advantage_3_content_3')}}
+                {{$t('messages.index_advantage_3_content_3')}}
               </p>
               <a
                 style="cursor:pointer"
                 @click="to_apply()"
-              >{{$t('message.index_advantage_3_title_2')}}</a>
+              >{{$t('messages.index_advantage_3_title_2')}}</a>
             </div>
           </swiper-slide>
           <swiper-slide>
@@ -102,20 +102,20 @@
             </div>
             <div class="advan_li_right">
               <span></span>
-              <h2>{{$t('message.index_advantage_4_title_1')}}</h2>
+              <h2>{{$t('messages.index_advantage_4_title_1')}}</h2>
               <p>
-                {{$t('message.index_advantage_4_content_1')}}
+                {{$t('messages.index_advantage_4_content_1')}}
               </p>
               <p>
-                {{$t('message.index_advantage_4_content_2')}}
+                {{$t('messages.index_advantage_4_content_2')}}
               </p>
               <p>
-                {{$t('message.index_advantage_4_content_3')}}
+                {{$t('messages.index_advantage_4_content_3')}}
               </p>
               <a
                 style="cursor:pointer"
                 @click="to_apply()"
-              >{{$t('message.index_advantage_4_title_2')}}</a>
+              >{{$t('messages.index_advantage_4_title_2')}}</a>
             </div>
           </swiper-slide>
           <swiper-slide>
@@ -127,20 +127,20 @@
             </div>
             <div class="advan_li_right">
               <span></span>
-              <h2>{{$t('message.index_advantage_5_title_1')}}</h2>
+              <h2>{{$t('messages.index_advantage_5_title_1')}}</h2>
               <p>
-                {{$t('message.index_advantage_5_content_1')}}
+                {{$t('messages.index_advantage_5_content_1')}}
               </p>
               <p>
-                {{$t('message.index_advantage_5_content_2')}}
+                {{$t('messages.index_advantage_5_content_2')}}
               </p>
               <p>
-                {{$t('message.index_advantage_5_content_3')}}
+                {{$t('messages.index_advantage_5_content_3')}}
               </p>
               <a
                 style="cursor:pointer"
                 @click="to_apply()"
-              >{{$t('message.index_advantage_5_title_2')}}</a>
+              >{{$t('messages.index_advantage_5_title_2')}}</a>
             </div>
           </swiper-slide>
           <swiper-slide>
@@ -152,17 +152,17 @@
             </div>
             <div class="advan_li_right">
               <span></span>
-              <h2>{{$t('message.index_advantage_6_title_1')}}</h2>
+              <h2>{{$t('messages.index_advantage_6_title_1')}}</h2>
               <p>
-                {{$t('message.index_advantage_6_content_1')}}
+                {{$t('messages.index_advantage_6_content_1')}}
               </p>
               <p>
-                {{$t('message.index_advantage_6_content_2')}}
+                {{$t('messages.index_advantage_6_content_2')}}
               </p>
               <a
                 style="cursor:pointer"
                 @click="to_apply()"
-              >{{$t('message.index_advantage_6_title_2')}}</a>
+              >{{$t('messages.index_advantage_6_title_2')}}</a>
             </div>
           </swiper-slide>
         </swiper>

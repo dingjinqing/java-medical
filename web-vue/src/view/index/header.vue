@@ -63,7 +63,7 @@
         class="f_div"
         :style="lang_with"
       >
-        <span>{{$t('message.lang')}}</span>
+        <span>{{$t('messages.lang')}}</span>
         <img
           :src="imageUrlData[3].image_4"
           class="head_down"
@@ -88,23 +88,23 @@
         <li
           :class="[activeIndex == 1?'active':'',mar_class]"
           @click="handlenav(1)"
-        ><a>{{$t('message.index_nav_main')}}</a></li>
+        ><a>{{$t('messages.index_nav_main')}}</a></li>
         <li
           :class="[activeIndex == 2?'active':'',mar_class]"
           @click="handlenav(2)"
-        ><a>{{$t('message.index_nav_new')}}</a></li>
+        ><a>{{$t('messages.index_nav_new')}}</a></li>
         <li
           :class="[activeIndex == 3?'active':'',mar_class]"
           @click="handlenav(3)"
-        ><a>{{$t('message.index_nav_forum')}}</a></li>
+        ><a>{{$t('messages.index_nav_forum')}}</a></li>
         <li
           :class="[activeIndex == 4?'active':'',mar_class]"
           @click="handlenav(4)"
-        ><a>{{$t('message.index_nav_link')}}</a></li>
+        ><a>{{$t('messages.index_nav_link')}}</a></li>
         <li
           :class="[activeIndex == 5?'active':'',mar_class]"
           @click="handlenav(5)"
-        ><a>{{$t('message.index_nav_apply')}}</a></li>
+        ><a>{{$t('messages.index_nav_apply')}}</a></li>
       </ul>
     </div>
   </div>

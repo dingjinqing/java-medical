@@ -11,7 +11,7 @@ import { en as ordinaryCoupon } from './views/ordinaryCoupon'
 import { en as ShopConfiguration } from './views/ShopConfiguration'
 import { en as adminPageFramework } from './views/adminPageFramework'
 const en = {
-  message: {
+  messages: {
     'lang': 'English',
     'index_nav_main': 'home page',
     'index_nav_new': 'News and Information',

@@ -777,11 +777,11 @@ export default {
           obj.act = 'setting-sub-merchant'
           console.log(this.value)
           obj.isSubMerchant = this.value
-          if (this.value === 2) {
+          if (this.value === '2') {
             obj.union_pay_app_id = this.appidinput
             obj.union_pay_cus_id = this.shnuminput
             obj.union_pay_app_key = this.myinput
-          } else if (this.value === 3) {
+          } else if (this.value === '3') {
             obj.merchant_category_code = this.mccinput
             if (this.bzinput) {
               obj.fee_type = this.bzinput

@@ -157,9 +157,9 @@ export default {
     },
     // 跳转到装修主页
     handleToDecPage () {
-      // this.$router.push({
-
-      // })
+      this.$router.push({
+        name: 'decorationHome'
+      })
     }
   }
 }

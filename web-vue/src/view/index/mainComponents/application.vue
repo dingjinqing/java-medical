@@ -2,9 +2,9 @@
   <div class="container">
     <div class="top">
       <h4>
-        <span>{{$t('message.index_application_title_1')}}</span>
+        <span>{{$t('messages.index_application_title_1')}}</span>
       </h4>
-      <div>{{$t('message.index_application_content_1')}}</div>
+      <div>{{$t('messages.index_application_content_1')}}</div>
     </div>
     <ul class="light_four">
       <li class=" ">
@@ -12,32 +12,32 @@
           :src="imageUrlData[0].image_1"
           class=""
         >
-        <div>{{$t('message.index_application_title_2')}}</div>
-        <p>{{$t('message.index_application_content_2')}}</p>
+        <div>{{$t('messages.index_application_title_2')}}</div>
+        <p>{{$t('messages.index_application_content_2')}}</p>
       </li>
       <li class=" ">
         <img
           :src="imageUrlData[1].image_2"
           class=""
         >
-        <div>{{$t('message.index_application_title_3')}}</div>
-        <p>{{$t('message.index_application_content_3')}}</p>
+        <div>{{$t('messages.index_application_title_3')}}</div>
+        <p>{{$t('messages.index_application_content_3')}}</p>
       </li>
       <li class=" ">
         <img
           :src="imageUrlData[2].image_3"
           class=""
         >
-        <div>{{$t('message.index_application_title_4')}}</div>
-        <p>{{$t('message.index_application_content_4')}}</p>
+        <div>{{$t('messages.index_application_title_4')}}</div>
+        <p>{{$t('messages.index_application_content_4')}}</p>
       </li>
       <li class=" ">
         <img
           :src="imageUrlData[3].image_4"
           class=""
         >
-        <div>{{$t('message.index_application_title_5')}}</div>
-        <p>{{$t('message.index_application_content_5')}}</p>
+        <div>{{$t('messages.index_application_title_5')}}</div>
+        <p>{{$t('messages.index_application_content_5')}}</p>
       </li>
     </ul>
   </div>
