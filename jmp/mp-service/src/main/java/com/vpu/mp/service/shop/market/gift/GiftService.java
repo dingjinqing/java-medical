@@ -21,8 +21,10 @@ import java.util.function.Supplier;
 import java.util.stream.Collectors;
 
 import static com.vpu.mp.db.shop.tables.Goods.GOODS;
+import static com.vpu.mp.db.shop.tables.MemberCard.MEMBER_CARD;
 import static com.vpu.mp.db.shop.tables.OrderGoods.ORDER_GOODS;
 import static com.vpu.mp.db.shop.tables.OrderInfo.ORDER_INFO;
+import static com.vpu.mp.db.shop.tables.Tag.TAG;
 import static com.vpu.mp.db.shop.tables.User.USER;
 import static com.vpu.mp.service.foundation.util.Util.*;
 import static com.vpu.mp.service.pojo.shop.market.gift.GiftListParam.*;
@@ -424,5 +426,21 @@ public class GiftService extends ShopBaseService {
             query.and(USER.MOBILE.like(format("%s%%", mobile)));
         }
         query.and(ORDER_GOODS.GIFT_ID.eq(giftId));
+    }
+
+    /**
+     * 获取会员卡列表
+     */
+    public List<UserAction> getMemberCardList() {
+        return db().select(MEMBER_CARD.ID, MEMBER_CARD.CARD_NAME.as("name")).from(MEMBER_CARD)
+            .where(MEMBER_CARD.DEL_FLAG.eq((byte) 0)).fetchInto(UserAction.class);
+    }
+
+    /**
+     * 获取用户标签列表
+     */
+    public List<UserAction> getUserTagList() {
+        return db().select(TAG.TAG_ID.as("id"), TAG.TAG_NAME.as("name")).from(TAG)
+            .fetchInto(UserAction.class);
     }
 }

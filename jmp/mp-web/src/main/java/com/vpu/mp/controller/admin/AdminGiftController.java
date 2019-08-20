@@ -86,4 +86,20 @@ public class AdminGiftController extends AdminBaseController {
     public JsonResult giftDetail(@RequestBody @Valid GiftDetailListParam param) {
         return success(shop().gift.getGiftDetailPageList(param));
     }
+
+    /**
+     * 获取会员卡列表
+     */
+    @PostMapping("/member_card/list")
+    public JsonResult getMemberCardList() {
+        return success(shop().gift.getMemberCardList());
+    }
+
+    /**
+     * 获取会员卡列表
+     */
+    @PostMapping("/tag/list")
+    public JsonResult getTagList() {
+        return success(shop().gift.getUserTagList());
+    }
 }
