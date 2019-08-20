@@ -61,22 +61,22 @@ public class IncreasePurchaseService extends ShopBaseService {
         Condition categoryConditon = ppd.ID.isNotNull();
         switch (param.getCategory()) {
             // 所有0
-            case 0b0000:
+            case PURCHASE_ALL:
                 break;
             // 已停用1
-            case 0b0001:
+            case PURCHASE_TERMINATED:
                 categoryConditon = categoryConditon.and(ppd.STATUS.eq((byte) 0));
                 break;
             // 已过期2
-            case 0b0010:
+            case PURCHASE_EXPIRED:
                 categoryConditon = categoryConditon.and(ppd.END_TIME.lessThan(new Timestamp(System.currentTimeMillis()))).and(ppd.STATUS.eq((byte) 1));
                 break;
             // 未开始4
-            case 0b0100:
+            case PURCHASE_PREPARE:
                 categoryConditon = categoryConditon.and(ppd.START_TIME.greaterThan(new Timestamp(System.currentTimeMillis()))).and(ppd.STATUS.eq((byte) 1));
                 break;
             // 进行中8
-            case 0b1000:
+            case PURCHASE_PROCESSING:
                 categoryConditon = categoryConditon.and(ppd.START_TIME.lessThan(new Timestamp(System.currentTimeMillis()))).and(ppd.END_TIME.greaterThan(new Timestamp(System.currentTimeMillis()))).and(ppd.STATUS.eq((byte) 1));
                 break;
             // 默认进行中8

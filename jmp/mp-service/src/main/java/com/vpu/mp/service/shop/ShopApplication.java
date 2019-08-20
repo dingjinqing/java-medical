@@ -1,6 +1,10 @@
 package com.vpu.mp.service.shop;
 
 import com.vpu.mp.service.shop.assess.AssessService;
+import com.vpu.mp.service.shop.market.sharereward.ShareRewardService;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
 import com.vpu.mp.service.shop.config.ConfigService;
 import com.vpu.mp.service.shop.config.ShopBasicConfigService;
 import com.vpu.mp.service.shop.config.TradeService;
@@ -348,4 +352,6 @@ public class ShopApplication {
      */
     @Autowired
     public GiftService gift;
+
+	@Autowired public ShareRewardService shareRewardService;
 }

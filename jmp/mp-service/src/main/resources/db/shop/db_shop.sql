@@ -4268,7 +4268,7 @@ CREATE TABLE `b2c_attend_share_user`  (
   `share_id` int(9) NOT NULL DEFAULT 0 COMMENT '活动ID',
   `goods_id` int(9) NULL DEFAULT 0 COMMENT '商品ID',
   `user_id` int(9) NOT NULL DEFAULT 0 COMMENT '参与分享活动用户ID，即点击别人分享链接查看商品的用户id',
-  `is_new` tinyint(1) NULL DEFAULT 0 COMMENT '是否是新用户',
+  `is_new` tinyint(1) NULL DEFAULT 0 COMMENT '是否是新用户：0否，1是',
   `launch_user_id` int(9) NOT NULL DEFAULT 0 COMMENT '触发分享活动用户ID，即分享商品的用户id',
   `level` tinyint(1) NULL DEFAULT 0 COMMENT '参加活动时的活动进行等级1,2,3',
   `create_time` timestamp(0) NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
