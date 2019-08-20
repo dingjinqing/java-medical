@@ -43,7 +43,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class CouponPack extends TableImpl<CouponPackRecord> {
 
-    private static final long serialVersionUID = 1507543310;
+    private static final long serialVersionUID = 1972823753;
 
     /**
      * The reference instance of <code>mini_shop_471752.b2c_coupon_pack</code>
@@ -86,7 +86,7 @@ public class CouponPack extends TableImpl<CouponPackRecord> {
     /**
      * The column <code>mini_shop_471752.b2c_coupon_pack.limit_get_times</code>. 单用户领取限制次数，0不限制
      */
-    public final TableField<CouponPackRecord, Byte> LIMIT_GET_TIMES = createField("limit_get_times", org.jooq.impl.SQLDataType.TINYINT.nullable(false).defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.TINYINT)), this, "单用户领取限制次数，0不限制");
+    public final TableField<CouponPackRecord, Integer> LIMIT_GET_TIMES = createField("limit_get_times", org.jooq.impl.SQLDataType.INTEGER.nullable(false).defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.INTEGER)), this, "单用户领取限制次数，0不限制");
 
     /**
      * The column <code>mini_shop_471752.b2c_coupon_pack.total_amount</code>. 总数量
@@ -114,19 +114,19 @@ public class CouponPack extends TableImpl<CouponPackRecord> {
     public final TableField<CouponPackRecord, String> ACT_RULE = createField("act_rule", org.jooq.impl.SQLDataType.CLOB, this, "活动规则");
 
     /**
-     * The column <code>mini_shop_471752.b2c_coupon_pack.state</code>. 开启状态1:开启，0:停用
+     * The column <code>mini_shop_471752.b2c_coupon_pack.status</code>. 开启状态1:开启，0:停用
      */
-    public final TableField<CouponPackRecord, Byte> STATE = createField("state", org.jooq.impl.SQLDataType.TINYINT.nullable(false).defaultValue(org.jooq.impl.DSL.inline("1", org.jooq.impl.SQLDataType.TINYINT)), this, "开启状态1:开启，0:停用");
+    public final TableField<CouponPackRecord, Byte> STATUS = createField("status", org.jooq.impl.SQLDataType.TINYINT.nullable(false).defaultValue(org.jooq.impl.DSL.inline("1", org.jooq.impl.SQLDataType.TINYINT)), this, "开启状态1:开启，0:停用");
 
     /**
      * The column <code>mini_shop_471752.b2c_coupon_pack.create_time</code>.
      */
-    public final TableField<CouponPackRecord, Timestamp> CREATE_TIME = createField("create_time", org.jooq.impl.SQLDataType.TIMESTAMP.nullable(false).defaultValue(org.jooq.impl.DSL.field("CURRENT_TIMESTAMP", org.jooq.impl.SQLDataType.TIMESTAMP)), this, "");
+    public final TableField<CouponPackRecord, Timestamp> CREATE_TIME = createField("create_time", org.jooq.impl.SQLDataType.TIMESTAMP.defaultValue(org.jooq.impl.DSL.field("CURRENT_TIMESTAMP", org.jooq.impl.SQLDataType.TIMESTAMP)), this, "");
 
     /**
      * The column <code>mini_shop_471752.b2c_coupon_pack.update_time</code>. 最后修改时间
      */
-    public final TableField<CouponPackRecord, Timestamp> UPDATE_TIME = createField("update_time", org.jooq.impl.SQLDataType.TIMESTAMP.nullable(false).defaultValue(org.jooq.impl.DSL.field("CURRENT_TIMESTAMP", org.jooq.impl.SQLDataType.TIMESTAMP)), this, "最后修改时间");
+    public final TableField<CouponPackRecord, Timestamp> UPDATE_TIME = createField("update_time", org.jooq.impl.SQLDataType.TIMESTAMP.defaultValue(org.jooq.impl.DSL.field("CURRENT_TIMESTAMP", org.jooq.impl.SQLDataType.TIMESTAMP)), this, "最后修改时间");
 
     /**
      * The column <code>mini_shop_471752.b2c_coupon_pack.del_flag</code>.

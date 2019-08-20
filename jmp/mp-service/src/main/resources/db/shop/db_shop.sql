@@ -4010,13 +4010,13 @@ create table `b2c_coupon_pack` (
   `start_time`      datetime                 not null comment '开始时间',
   `end_time`        datetime                 not null comment '结束时间',
   `pack_name`       varchar(20)              not null comment '礼包名称',
-  `limit_get_times` tinyint(5)           not null default 0 comment '单用户领取限制次数，0不限制',
+  `limit_get_times` int(11)           not null default 0 comment '单用户领取限制次数，0不限制',
   `total_amount`    int(11)                  not null default '0' comment '总数量',
   `issued_amount`   int(11)                  not null default '0' comment '已发放数量',
   `access_mode`     tinyint(1)               not null default '0' comment '获取方式，0：现金购买，1：积分购买，2直接领取',
   `access_cost`     decimal(10, 2)           null     default 0.00 comment '价格（现金或积分，直接领取时该值为0）',
   `act_rule`        text collate utf8mb4_bin null comment '活动规则',
-  `state`           tinyint(1)               not null default '1' comment '开启状态1:开启，0:停用',
+  `status`          tinyint(1)               not null default '1' comment '开启状态1:开启，0:停用',
   `create_time`     timestamp       default current_timestamp,
   `update_time`     timestamp       default current_timestamp on update current_timestamp comment '最后修改时间',
   `del_flag`        tinyint(1)                        default 0,
@@ -4277,7 +4277,6 @@ CREATE TABLE `b2c_attend_share_user`  (
   INDEX `attend_share_user`(`record_id`, `user_id`) USING BTREE
 ) ENGINE = InnoDB AUTO_INCREMENT = 73 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_unicode_ci ROW_FORMAT = Compact COMMENT '用户点击分享链接触发分享生效记录表';
 
-
 -- 评价有礼活动
 --  drop table if exists `b2c_comment_award`;
 create table `b2c_comment_award` (
@@ -4309,3 +4308,21 @@ create table `b2c_comment_award` (
 	`update_time` timestamp default current_timestamp on update current_timestamp comment '最后修改时间',
 	primary key ( `id` )
 )
+
+-- 优惠券礼包_礼包内容(优惠券)
+-- DROP TABLE IF EXISTS `b2c_coupon_pack_voucher`;
+create table `b2c_coupon_pack_voucher` (
+  `id`                       int(11)               not null auto_increment,
+  `voucher_id`               int(11)               not null default 0 comment '优惠券id',
+  `act_id`                   int(11)               not null default 0 comment '所属优惠券礼包id',
+  `total_amount`             int(11)               not null default '0' comment '总数量',
+  `immediately_grant_amount` int(11)               not null default '0' comment '立即发放数量',
+  `timing_every`             int(11)               null     default '0' comment '每个时间单位间隔（1为无间隔）',
+  `timing_unit`              tinyint(1)            null     default '0' comment '定时发放的时间单位，0：自然天，1：自然周，2自然月',
+  `timing_time`              int(11)               null     default '0' comment '定时发放的时间,周1-7，月1-31，自然天不填',
+  `timing_amount`            int(11)               null     default '0' comment '定时发放的数量',
+  `del_flag`                 tinyint(1)                 default 0,
+  primary key (`id`),
+  index `voucher_id` (`voucher_id`),
+  index `act_id` (`act_id`)
+) ENGINE = INNODB AUTO_INCREMENT = 39 DEFAULT CHARSET = utf8mb4 COLLATE = utf8mb4_unicode_ci;

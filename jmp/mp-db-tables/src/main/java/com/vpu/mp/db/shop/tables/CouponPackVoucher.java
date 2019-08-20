@@ -26,7 +26,6 @@ import org.jooq.TableField;
 import org.jooq.UniqueKey;
 import org.jooq.impl.DSL;
 import org.jooq.impl.TableImpl;
-import org.jooq.types.UInteger;
 
 
 /**
@@ -42,7 +41,7 @@ import org.jooq.types.UInteger;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class CouponPackVoucher extends TableImpl<CouponPackVoucherRecord> {
 
-    private static final long serialVersionUID = -610165689;
+    private static final long serialVersionUID = -953004162;
 
     /**
      * The reference instance of <code>mini_shop_471752.b2c_coupon_pack_voucher</code>
@@ -75,17 +74,17 @@ public class CouponPackVoucher extends TableImpl<CouponPackVoucherRecord> {
     /**
      * The column <code>mini_shop_471752.b2c_coupon_pack_voucher.total_amount</code>. 总数量
      */
-    public final TableField<CouponPackVoucherRecord, UInteger> TOTAL_AMOUNT = createField("total_amount", org.jooq.impl.SQLDataType.INTEGERUNSIGNED.nullable(false).defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.INTEGERUNSIGNED)), this, "总数量");
+    public final TableField<CouponPackVoucherRecord, Integer> TOTAL_AMOUNT = createField("total_amount", org.jooq.impl.SQLDataType.INTEGER.nullable(false).defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.INTEGER)), this, "总数量");
 
     /**
      * The column <code>mini_shop_471752.b2c_coupon_pack_voucher.immediately_grant_amount</code>. 立即发放数量
      */
-    public final TableField<CouponPackVoucherRecord, UInteger> IMMEDIATELY_GRANT_AMOUNT = createField("immediately_grant_amount", org.jooq.impl.SQLDataType.INTEGERUNSIGNED.nullable(false).defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.INTEGERUNSIGNED)), this, "立即发放数量");
+    public final TableField<CouponPackVoucherRecord, Integer> IMMEDIATELY_GRANT_AMOUNT = createField("immediately_grant_amount", org.jooq.impl.SQLDataType.INTEGER.nullable(false).defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.INTEGER)), this, "立即发放数量");
 
     /**
      * The column <code>mini_shop_471752.b2c_coupon_pack_voucher.timing_every</code>. 每个时间单位间隔（1为无间隔）
      */
-    public final TableField<CouponPackVoucherRecord, UInteger> TIMING_EVERY = createField("timing_every", org.jooq.impl.SQLDataType.INTEGERUNSIGNED.defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.INTEGERUNSIGNED)), this, "每个时间单位间隔（1为无间隔）");
+    public final TableField<CouponPackVoucherRecord, Integer> TIMING_EVERY = createField("timing_every", org.jooq.impl.SQLDataType.INTEGER.defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.INTEGER)), this, "每个时间单位间隔（1为无间隔）");
 
     /**
      * The column <code>mini_shop_471752.b2c_coupon_pack_voucher.timing_unit</code>. 定时发放的时间单位，0：自然天，1：自然周，2自然月
@@ -100,7 +99,7 @@ public class CouponPackVoucher extends TableImpl<CouponPackVoucherRecord> {
     /**
      * The column <code>mini_shop_471752.b2c_coupon_pack_voucher.timing_amount</code>. 定时发放的数量
      */
-    public final TableField<CouponPackVoucherRecord, UInteger> TIMING_AMOUNT = createField("timing_amount", org.jooq.impl.SQLDataType.INTEGERUNSIGNED.defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.INTEGERUNSIGNED)), this, "定时发放的数量");
+    public final TableField<CouponPackVoucherRecord, Integer> TIMING_AMOUNT = createField("timing_amount", org.jooq.impl.SQLDataType.INTEGER.defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.INTEGER)), this, "定时发放的数量");
 
     /**
      * The column <code>mini_shop_471752.b2c_coupon_pack_voucher.del_flag</code>.

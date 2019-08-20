@@ -45,7 +45,6 @@ public class FirstSpecialUpdateParam {
 
     /** 改价的商品数组 */
     @Size(min=1)
-    @NotNull(groups = {FirstSpecialUpdateValidatedGroup.class},message = JsonResultMessage.MSG_PARAM_ERROR)
     private FirstSpecialGoodsParam[] firstSpecialGoodsParams;
 
     /** 分享设置 */

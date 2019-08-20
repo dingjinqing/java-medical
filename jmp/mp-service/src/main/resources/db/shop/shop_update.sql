@@ -710,3 +710,6 @@ CHANGE  created create_time timestamp   DEFAULT CURRENT_TIMESTAMP COMMENT '记�
 --修改支付记录表金额类型
 ALTER table b2c_payment_record
 MODIFY total_fee  DECIMAL ( 10, 2 ) NOT NULL DEFAULT '0.00' COMMENT '交易金额';
+
+alter table `b2c_coupon_pack` change column `state` `status` tinyint(1) not null default '1' comment '开启状态1:开启，0:停用';
+alter table `b2c_coupon_pack` modify column `limit_get_times` int(11) not null default 0 comment '单用户领取限制次数，0不限制';
