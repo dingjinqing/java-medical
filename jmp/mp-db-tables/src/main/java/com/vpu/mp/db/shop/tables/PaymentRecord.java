@@ -42,10 +42,10 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class PaymentRecord extends TableImpl<PaymentRecordRecord> {
 
-    private static final long serialVersionUID = 1763788671;
+    private static final long serialVersionUID = -1102950892;
 
     /**
-     * The reference instance of <code>mini_shop_471752.b2c_payment_record</code>
+     * The reference instance of <code>mini_shop_6797286.b2c_payment_record</code>
      */
     public static final PaymentRecord PAYMENT_RECORD = new PaymentRecord();
 
@@ -58,141 +58,141 @@ public class PaymentRecord extends TableImpl<PaymentRecordRecord> {
     }
 
     /**
-     * The column <code>mini_shop_471752.b2c_payment_record.id</code>.
+     * The column <code>mini_shop_6797286.b2c_payment_record.id</code>.
      */
     public final TableField<PaymentRecordRecord, Integer> ID = createField("id", org.jooq.impl.SQLDataType.INTEGER.nullable(false).identity(true), this, "");
 
     /**
-     * The column <code>mini_shop_471752.b2c_payment_record.shop_id</code>. 店铺id
+     * The column <code>mini_shop_6797286.b2c_payment_record.shop_id</code>. 店铺id
      */
     public final TableField<PaymentRecordRecord, Integer> SHOP_ID = createField("shop_id", org.jooq.impl.SQLDataType.INTEGER.nullable(false).defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.INTEGER)), this, "店铺id");
 
     /**
-     * The column <code>mini_shop_471752.b2c_payment_record.pay_sn</code>. 支付流水号
+     * The column <code>mini_shop_6797286.b2c_payment_record.pay_sn</code>. 支付流水号
      */
     public final TableField<PaymentRecordRecord, String> PAY_SN = createField("pay_sn", org.jooq.impl.SQLDataType.VARCHAR(32).nullable(false).defaultValue(org.jooq.impl.DSL.inline("", org.jooq.impl.SQLDataType.VARCHAR)), this, "支付流水号");
 
     /**
-     * The column <code>mini_shop_471752.b2c_payment_record.pay_code</code>. 支付宝:alipay,微信：？，...
+     * The column <code>mini_shop_6797286.b2c_payment_record.pay_code</code>. 支付宝:alipay,微信：？，...
      */
     public final TableField<PaymentRecordRecord, String> PAY_CODE = createField("pay_code", org.jooq.impl.SQLDataType.VARCHAR(20).nullable(false).defaultValue(org.jooq.impl.DSL.inline("", org.jooq.impl.SQLDataType.VARCHAR)), this, "支付宝:alipay,微信：？，...");
 
     /**
-     * The column <code>mini_shop_471752.b2c_payment_record.pay_code_alias</code>. 支付宝:alipay,微信：？，...
+     * The column <code>mini_shop_6797286.b2c_payment_record.pay_code_alias</code>. 支付宝:alipay,微信：？，...
      */
     public final TableField<PaymentRecordRecord, String> PAY_CODE_ALIAS = createField("pay_code_alias", org.jooq.impl.SQLDataType.VARCHAR(20).nullable(false).defaultValue(org.jooq.impl.DSL.inline("", org.jooq.impl.SQLDataType.VARCHAR)), this, "支付宝:alipay,微信：？，...");
 
     /**
-     * The column <code>mini_shop_471752.b2c_payment_record.trade_no</code>. 各平台交易号
+     * The column <code>mini_shop_6797286.b2c_payment_record.trade_no</code>. 各平台交易号
      */
     public final TableField<PaymentRecordRecord, String> TRADE_NO = createField("trade_no", org.jooq.impl.SQLDataType.VARCHAR(32).nullable(false).defaultValue(org.jooq.impl.DSL.inline("", org.jooq.impl.SQLDataType.VARCHAR)), this, "各平台交易号");
 
     /**
-     * The column <code>mini_shop_471752.b2c_payment_record.trdae_status</code>. 交易状态0:成功，其它失败
+     * The column <code>mini_shop_6797286.b2c_payment_record.trdae_status</code>. 交易状态0:成功，其它失败
      */
     public final TableField<PaymentRecordRecord, Byte> TRDAE_STATUS = createField("trdae_status", org.jooq.impl.SQLDataType.TINYINT.nullable(false).defaultValue(org.jooq.impl.DSL.inline("-1", org.jooq.impl.SQLDataType.TINYINT)), this, "交易状态0:成功，其它失败");
 
     /**
-     * The column <code>mini_shop_471752.b2c_payment_record.trdae_origin_status</code>. 原始交易状态
+     * The column <code>mini_shop_6797286.b2c_payment_record.trdae_origin_status</code>. 原始交易状态
      */
     public final TableField<PaymentRecordRecord, String> TRDAE_ORIGIN_STATUS = createField("trdae_origin_status", org.jooq.impl.SQLDataType.VARCHAR(20).nullable(false).defaultValue(org.jooq.impl.DSL.inline("", org.jooq.impl.SQLDataType.VARCHAR)), this, "原始交易状态");
 
     /**
-     * The column <code>mini_shop_471752.b2c_payment_record.subject</code>. 商品名称
+     * The column <code>mini_shop_6797286.b2c_payment_record.subject</code>. 商品名称
      */
     public final TableField<PaymentRecordRecord, String> SUBJECT = createField("subject", org.jooq.impl.SQLDataType.VARCHAR(256).nullable(false).defaultValue(org.jooq.impl.DSL.inline("", org.jooq.impl.SQLDataType.VARCHAR)), this, "商品名称");
 
     /**
-     * The column <code>mini_shop_471752.b2c_payment_record.quantity</code>. 购买数量
+     * The column <code>mini_shop_6797286.b2c_payment_record.quantity</code>. 购买数量
      */
     public final TableField<PaymentRecordRecord, Integer> QUANTITY = createField("quantity", org.jooq.impl.SQLDataType.INTEGER.nullable(false).defaultValue(org.jooq.impl.DSL.inline("1", org.jooq.impl.SQLDataType.INTEGER)), this, "购买数量");
 
     /**
-     * The column <code>mini_shop_471752.b2c_payment_record.order_sn</code>. 网站订单号
+     * The column <code>mini_shop_6797286.b2c_payment_record.order_sn</code>. 网站订单号
      */
     public final TableField<PaymentRecordRecord, String> ORDER_SN = createField("order_sn", org.jooq.impl.SQLDataType.VARCHAR(32).nullable(false).defaultValue(org.jooq.impl.DSL.inline("", org.jooq.impl.SQLDataType.VARCHAR)), this, "网站订单号");
 
     /**
-     * The column <code>mini_shop_471752.b2c_payment_record.main_order_sn</code>. 网站主订单号
+     * The column <code>mini_shop_6797286.b2c_payment_record.main_order_sn</code>. 网站主订单号
      */
     public final TableField<PaymentRecordRecord, String> MAIN_ORDER_SN = createField("main_order_sn", org.jooq.impl.SQLDataType.VARCHAR(20).nullable(false).defaultValue(org.jooq.impl.DSL.inline("", org.jooq.impl.SQLDataType.VARCHAR)), this, "网站主订单号");
 
     /**
-     * The column <code>mini_shop_471752.b2c_payment_record.total_fee</code>. 交易金额
+     * The column <code>mini_shop_6797286.b2c_payment_record.total_fee</code>. 交易金额
      */
     public final TableField<PaymentRecordRecord, String> TOTAL_FEE = createField("total_fee", org.jooq.impl.SQLDataType.VARCHAR(20).nullable(false).defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.VARCHAR)), this, "交易金额");
 
     /**
-     * The column <code>mini_shop_471752.b2c_payment_record.buyer_id</code>. 买家支付用户号
+     * The column <code>mini_shop_6797286.b2c_payment_record.buyer_id</code>. 买家支付用户号
      */
     public final TableField<PaymentRecordRecord, String> BUYER_ID = createField("buyer_id", org.jooq.impl.SQLDataType.VARCHAR(256).nullable(false).defaultValue(org.jooq.impl.DSL.inline("", org.jooq.impl.SQLDataType.VARCHAR)), this, "买家支付用户号");
 
     /**
-     * The column <code>mini_shop_471752.b2c_payment_record.buyer_account</code>. 各平台买家支付账号
+     * The column <code>mini_shop_6797286.b2c_payment_record.buyer_account</code>. 各平台买家支付账号
      */
     public final TableField<PaymentRecordRecord, String> BUYER_ACCOUNT = createField("buyer_account", org.jooq.impl.SQLDataType.VARCHAR(256).nullable(false).defaultValue(org.jooq.impl.DSL.inline("", org.jooq.impl.SQLDataType.VARCHAR)), this, "各平台买家支付账号");
 
     /**
-     * The column <code>mini_shop_471752.b2c_payment_record.seller_id</code>. 收款方用户号
+     * The column <code>mini_shop_6797286.b2c_payment_record.seller_id</code>. 收款方用户号
      */
     public final TableField<PaymentRecordRecord, String> SELLER_ID = createField("seller_id", org.jooq.impl.SQLDataType.VARCHAR(32).nullable(false).defaultValue(org.jooq.impl.DSL.inline("", org.jooq.impl.SQLDataType.VARCHAR)), this, "收款方用户号");
 
     /**
-     * The column <code>mini_shop_471752.b2c_payment_record.seller_account</code>. 各平台收款方支付账号
+     * The column <code>mini_shop_6797286.b2c_payment_record.seller_account</code>. 各平台收款方支付账号
      */
     public final TableField<PaymentRecordRecord, String> SELLER_ACCOUNT = createField("seller_account", org.jooq.impl.SQLDataType.VARCHAR(100).nullable(false).defaultValue(org.jooq.impl.DSL.inline("", org.jooq.impl.SQLDataType.VARCHAR)), this, "各平台收款方支付账号");
 
     /**
-     * The column <code>mini_shop_471752.b2c_payment_record.gmt_create</code>. 支付交易创建时间
+     * The column <code>mini_shop_6797286.b2c_payment_record.gmt_create</code>. 支付交易创建时间
      */
     public final TableField<PaymentRecordRecord, Timestamp> GMT_CREATE = createField("gmt_create", org.jooq.impl.SQLDataType.TIMESTAMP, this, "支付交易创建时间");
 
     /**
-     * The column <code>mini_shop_471752.b2c_payment_record.notify_time</code>. 通知时间
+     * The column <code>mini_shop_6797286.b2c_payment_record.notify_time</code>. 通知时间
      */
     public final TableField<PaymentRecordRecord, Timestamp> NOTIFY_TIME = createField("notify_time", org.jooq.impl.SQLDataType.TIMESTAMP, this, "通知时间");
 
     /**
-     * The column <code>mini_shop_471752.b2c_payment_record.gmt_pay_time</code>. 交易付款时间
+     * The column <code>mini_shop_6797286.b2c_payment_record.gmt_pay_time</code>. 交易付款时间
      */
     public final TableField<PaymentRecordRecord, Timestamp> GMT_PAY_TIME = createField("gmt_pay_time", org.jooq.impl.SQLDataType.TIMESTAMP, this, "交易付款时间");
 
     /**
-     * The column <code>mini_shop_471752.b2c_payment_record.gmt_close_time</code>. 交易关闭时间
+     * The column <code>mini_shop_6797286.b2c_payment_record.gmt_close_time</code>. 交易关闭时间
      */
     public final TableField<PaymentRecordRecord, Timestamp> GMT_CLOSE_TIME = createField("gmt_close_time", org.jooq.impl.SQLDataType.TIMESTAMP, this, "交易关闭时间");
 
     /**
-     * The column <code>mini_shop_471752.b2c_payment_record.created</code>. 插入时间
+     * The column <code>mini_shop_6797286.b2c_payment_record.create_time</code>. 插入时间
      */
-    public final TableField<PaymentRecordRecord, Timestamp> CREATED = createField("created", org.jooq.impl.SQLDataType.TIMESTAMP, this, "插入时间");
+    public final TableField<PaymentRecordRecord, Timestamp> CREATE_TIME = createField("create_time", org.jooq.impl.SQLDataType.TIMESTAMP, this, "插入时间");
 
     /**
-     * The column <code>mini_shop_471752.b2c_payment_record.remark1</code>. 自定义备注  建议用于存储原始数据
+     * The column <code>mini_shop_6797286.b2c_payment_record.remark1</code>. 自定义备注  建议用于存储原始数据
      */
     public final TableField<PaymentRecordRecord, String> REMARK1 = createField("remark1", org.jooq.impl.SQLDataType.CLOB, this, "自定义备注  建议用于存储原始数据");
 
     /**
-     * The column <code>mini_shop_471752.b2c_payment_record.remark2</code>. 自定义备注
+     * The column <code>mini_shop_6797286.b2c_payment_record.remark2</code>. 自定义备注
      */
     public final TableField<PaymentRecordRecord, String> REMARK2 = createField("remark2", org.jooq.impl.SQLDataType.CLOB, this, "自定义备注");
 
     /**
-     * Create a <code>mini_shop_471752.b2c_payment_record</code> table reference
+     * Create a <code>mini_shop_6797286.b2c_payment_record</code> table reference
      */
     public PaymentRecord() {
         this(DSL.name("b2c_payment_record"), null);
     }
 
     /**
-     * Create an aliased <code>mini_shop_471752.b2c_payment_record</code> table reference
+     * Create an aliased <code>mini_shop_6797286.b2c_payment_record</code> table reference
      */
     public PaymentRecord(String alias) {
         this(DSL.name(alias), PAYMENT_RECORD);
     }
 
     /**
-     * Create an aliased <code>mini_shop_471752.b2c_payment_record</code> table reference
+     * Create an aliased <code>mini_shop_6797286.b2c_payment_record</code> table reference
      */
     public PaymentRecord(Name alias) {
         this(alias, PAYMENT_RECORD);

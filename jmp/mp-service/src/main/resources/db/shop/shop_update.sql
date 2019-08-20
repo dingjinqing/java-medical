@@ -704,3 +704,6 @@ CREATE TABLE `b2c_first_special_product` (
    `prd_price`        decimal(10,2) DEFAULT NULL COMMENT '折后价格',
    PRIMARY KEY (`id`)
 );
+-- 修改支付记录表创建时间
+ALTER table b2c_payment_record
+CHANGE  created create_time timestamp   DEFAULT CURRENT_TIMESTAMP COMMENT '记录创建时间';

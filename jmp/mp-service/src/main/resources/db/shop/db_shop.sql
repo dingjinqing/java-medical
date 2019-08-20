@@ -775,7 +775,7 @@ create table `b2c_payment_record` (
   `notify_time`         timestamp            null	default null comment '通知时间',
   `gmt_pay_time`        timestamp              null	default null comment '交易付款时间',
   `gmt_close_time`      timestamp              null	default null comment '交易关闭时间',
-  `created`             timestamp             null	default null comment '插入时间',
+  `create_time`             timestamp             null	default null comment '插入时间',
   `remark1`             text 					comment '自定义备注  建议用于存储原始数据',
   `remark2`             text 					comment '自定义备注',
   primary key (`id`),
