@@ -5,17 +5,30 @@ import com.vpu.mp.db.shop.tables.GiftProduct;
 import com.vpu.mp.db.shop.tables.records.GiftProductRecord;
 import com.vpu.mp.db.shop.tables.records.GiftRecord;
 import com.vpu.mp.service.foundation.service.ShopBaseService;
+import com.vpu.mp.service.foundation.util.PageResult;
 import com.vpu.mp.service.foundation.util.Util;
+import com.vpu.mp.service.pojo.shop.market.gift.GiftListParam;
+import com.vpu.mp.service.pojo.shop.market.gift.GiftListVo;
 import com.vpu.mp.service.pojo.shop.market.gift.GiftParam;
 import com.vpu.mp.service.pojo.shop.market.gift.RuleParam;
 import org.jooq.DSLContext;
+import org.jooq.SelectConditionStep;
 import org.jooq.impl.DSL;
 import org.springframework.stereotype.Service;
 import org.springframework.util.Assert;
 
+import java.sql.Timestamp;
 import java.util.List;
 import java.util.function.Supplier;
 import java.util.stream.Collectors;
+
+import static com.vpu.mp.db.shop.tables.GiveGiftReceive.GIVE_GIFT_RECEIVE;
+import static com.vpu.mp.db.shop.tables.OrderGoods.ORDER_GOODS;
+import static com.vpu.mp.service.pojo.shop.market.gift.GiftListParam.*;
+import static com.vpu.mp.service.pojo.shop.market.gift.GiftListVo.ABLE;
+import static com.vpu.mp.service.pojo.shop.market.gift.GiftListVo.DISABLE;
+import static java.lang.String.format;
+import static org.apache.commons.lang3.StringUtils.isNotEmpty;
 
 /**
  * 赠品
@@ -153,5 +166,79 @@ public class GiftService extends ShopBaseService {
             productRecord.setGiftId(param.getId());
             return productRecord;
         }).collect(Collectors.toList());
+    }
+
+    /**
+     * 赠品活动列表
+     */
+    public PageResult<GiftListVo> getPageList(GiftListParam param) {
+        SelectConditionStep<?> query = db().select(TABLE.ID, TABLE.NAME, TABLE.START_TIME, TABLE.END_TIME,
+            TABLE.STATUS, DSL.count(GIVE_GIFT_RECEIVE.ID).as("giftTimes")).from(TABLE)
+            .leftJoin(ORDER_GOODS).on(ORDER_GOODS.IS_GIFT.eq(1).and(ORDER_GOODS.GIFT_ID.eq(TABLE.ID)))
+            .where(TABLE.DEL_FLAG.eq((byte) 0));
+        buildOptions(query, param);
+        PageResult<GiftListVo> page = getPageResult(query, param, GiftListVo.class);
+        page.getDataList().forEach(row -> row.setStatus(getStatusOf(row)));
+        return page;
+    }
+
+    /**
+     * 查询条件
+     */
+    private void buildOptions(SelectConditionStep<?> query, GiftListParam param) {
+        Byte status = param.getStatus();
+        String name = param.getName();
+        if (null != status) {
+            addStatusCondition(query, status);
+        }
+        if (isNotEmpty(name)) {
+            query.and(TABLE.NAME.like(format("%s%%", name)));
+        }
+    }
+
+    /**
+     * 状态转换
+     */
+    private void addStatusCondition(SelectConditionStep<?> query, Byte status) {
+        switch (status) {
+            case NOT_STARTED:
+                query.and(TABLE.START_TIME.gt(Util.currentTimeStamp()));
+                break;
+            case ONGOING:
+                query.and(TABLE.START_TIME.le(Util.currentTimeStamp()))
+                    .and(TABLE.END_TIME.gt(Util.currentTimeStamp()));
+                break;
+            case EXPIRED:
+                query.and(TABLE.END_TIME.lt(Util.currentTimeStamp()));
+                break;
+            case DISABLED:
+                query.and(TABLE.STATUS.eq(DISABLE));
+                break;
+            default:
+                throw new IllegalArgumentException("Unexpected status: " + status);
+        }
+        if (DISABLED != status) {
+            query.and(TABLE.STATUS.eq(ABLE));
+        }
+    }
+
+    /**
+     * 获取活动的状态
+     */
+    private byte getStatusOf(GiftListVo vo) {
+        Byte status = vo.getStatus();
+        if (DISABLE == status) {
+            return DISABLED;
+        } else {
+            Timestamp startDate = vo.getStartTime();
+            Timestamp endDate = vo.getEndTime();
+            if (startDate.after(Util.currentTimeStamp())) {
+                return NOT_STARTED;
+            } else if (endDate.after(Util.currentTimeStamp())) {
+                return ONGOING;
+            } else {
+                return EXPIRED;
+            }
+        }
     }
 }
