@@ -148,9 +148,9 @@ public class MiniShop_471752 extends SchemaImpl {
     public final CardExamine CARD_EXAMINE = CardExamine.CARD_EXAMINE;
 
     /**
-     * The table <code>mini_shop_471752.b2c_card_order</code>.
+     * The table <code>mini_shop_471752.b2c_virtual_order</code>.
      */
-    public final CardOrder CARD_ORDER = CardOrder.CARD_ORDER;
+    public final VirtualOrder VIRTUAL_ORDER = com.vpu.mp.db.shop.tables.VirtualOrder.VIRTUAL_ORDER;
 
     /**
      * The table <code>mini_shop_471752.b2c_card_receive_code</code>.
@@ -1097,7 +1097,7 @@ public class MiniShop_471752 extends SchemaImpl {
             CardBatch.CARD_BATCH,
             CardConsumer.CARD_CONSUMER,
             CardExamine.CARD_EXAMINE,
-            CardOrder.CARD_ORDER,
+            VirtualOrder.VIRTUAL_ORDER,
             CardReceiveCode.CARD_RECEIVE_CODE,
             CardUpgrade.CARD_UPGRADE,
             Cart.CART,

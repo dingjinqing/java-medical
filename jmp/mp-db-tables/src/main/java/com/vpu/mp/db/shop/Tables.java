@@ -7,7 +7,6 @@ package com.vpu.mp.db.shop;
 import javax.annotation.Generated;
 
 import com.vpu.mp.db.shop.tables.*;
-import com.vpu.mp.db.shop.tables.records.ShareAwardRecord;
 
 
 /**
@@ -140,9 +139,9 @@ public class Tables {
     public static final CardExamine CARD_EXAMINE = CardExamine.CARD_EXAMINE;
 
     /**
-     * The table <code>mini_shop_471752.b2c_card_order</code>.
+     * The table <code>mini_shop_471752.b2c_virtual_order</code>.
      */
-    public static final CardOrder CARD_ORDER = CardOrder.CARD_ORDER;
+    public static final VirtualOrder VIRTUAL_ORDER = com.vpu.mp.db.shop.tables.VirtualOrder.VIRTUAL_ORDER;
 
     /**
      * The table <code>mini_shop_471752.b2c_card_receive_code</code>.

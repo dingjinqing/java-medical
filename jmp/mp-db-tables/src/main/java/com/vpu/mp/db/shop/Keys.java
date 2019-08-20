@@ -69,7 +69,7 @@ public class Keys {
     public static final Identity<CardBatchRecord, Integer> IDENTITY_CARD_BATCH = Identities0.IDENTITY_CARD_BATCH;
     public static final Identity<CardConsumerRecord, Integer> IDENTITY_CARD_CONSUMER = Identities0.IDENTITY_CARD_CONSUMER;
     public static final Identity<CardExamineRecord, Integer> IDENTITY_CARD_EXAMINE = Identities0.IDENTITY_CARD_EXAMINE;
-    public static final Identity<CardOrderRecord, Integer> IDENTITY_CARD_ORDER = Identities0.IDENTITY_CARD_ORDER;
+    public static final Identity<VirtualOrderRecord, Integer> IDENTITY_VIRTUAL_ORDER = Identities0.IDENTITY_VIRTUAL_ORDER;
     public static final Identity<CardReceiveCodeRecord, Integer> IDENTITY_CARD_RECEIVE_CODE = Identities0.IDENTITY_CARD_RECEIVE_CODE;
     public static final Identity<CardUpgradeRecord, Integer> IDENTITY_CARD_UPGRADE = Identities0.IDENTITY_CARD_UPGRADE;
     public static final Identity<CartRecord, Long> IDENTITY_CART = Identities0.IDENTITY_CART;
@@ -275,7 +275,7 @@ public class Keys {
     public static final UniqueKey<CardBatchRecord> KEY_B2C_CARD_BATCH_PRIMARY = UniqueKeys0.KEY_B2C_CARD_BATCH_PRIMARY;
     public static final UniqueKey<CardConsumerRecord> KEY_B2C_CARD_CONSUMER_PRIMARY = UniqueKeys0.KEY_B2C_CARD_CONSUMER_PRIMARY;
     public static final UniqueKey<CardExamineRecord> KEY_B2C_CARD_EXAMINE_PRIMARY = UniqueKeys0.KEY_B2C_CARD_EXAMINE_PRIMARY;
-    public static final UniqueKey<CardOrderRecord> KEY_B2C_CARD_ORDER_PRIMARY = UniqueKeys0.KEY_B2C_CARD_ORDER_PRIMARY;
+    public static final UniqueKey<VirtualOrderRecord> KEY_B2C_VIRTUAL_ORDER_PRIMARY = UniqueKeys0.KEY_B2C_VIRTUAL_ORDER_PRIMARY;
     public static final UniqueKey<CardReceiveCodeRecord> KEY_B2C_CARD_RECEIVE_CODE_PRIMARY = UniqueKeys0.KEY_B2C_CARD_RECEIVE_CODE_PRIMARY;
     public static final UniqueKey<CardUpgradeRecord> KEY_B2C_CARD_UPGRADE_PRIMARY = UniqueKeys0.KEY_B2C_CARD_UPGRADE_PRIMARY;
     public static final UniqueKey<CartRecord> KEY_B2C_CART_PRIMARY = UniqueKeys0.KEY_B2C_CART_PRIMARY;
@@ -514,7 +514,7 @@ public class Keys {
         public static Identity<CardBatchRecord, Integer> IDENTITY_CARD_BATCH = Internal.createIdentity(CardBatch.CARD_BATCH, CardBatch.CARD_BATCH.ID);
         public static Identity<CardConsumerRecord, Integer> IDENTITY_CARD_CONSUMER = Internal.createIdentity(CardConsumer.CARD_CONSUMER, CardConsumer.CARD_CONSUMER.ID);
         public static Identity<CardExamineRecord, Integer> IDENTITY_CARD_EXAMINE = Internal.createIdentity(CardExamine.CARD_EXAMINE, CardExamine.CARD_EXAMINE.ID);
-        public static Identity<CardOrderRecord, Integer> IDENTITY_CARD_ORDER = Internal.createIdentity(CardOrder.CARD_ORDER, CardOrder.CARD_ORDER.ORDER_ID);
+        public static Identity<VirtualOrderRecord, Integer> IDENTITY_VIRTUAL_ORDER = Internal.createIdentity(VirtualOrder.VIRTUAL_ORDER, VirtualOrder.VIRTUAL_ORDER.ORDER_ID);
         public static Identity<CardReceiveCodeRecord, Integer> IDENTITY_CARD_RECEIVE_CODE = Internal.createIdentity(CardReceiveCode.CARD_RECEIVE_CODE, CardReceiveCode.CARD_RECEIVE_CODE.ID);
         public static Identity<CardUpgradeRecord, Integer> IDENTITY_CARD_UPGRADE = Internal.createIdentity(CardUpgrade.CARD_UPGRADE, CardUpgrade.CARD_UPGRADE.ID);
         public static Identity<CartRecord, Long> IDENTITY_CART = Internal.createIdentity(Cart.CART, Cart.CART.REC_ID);
@@ -719,7 +719,7 @@ public class Keys {
         public static final UniqueKey<CardBatchRecord> KEY_B2C_CARD_BATCH_PRIMARY = Internal.createUniqueKey(CardBatch.CARD_BATCH, "KEY_b2c_card_batch_PRIMARY", CardBatch.CARD_BATCH.ID);
         public static final UniqueKey<CardConsumerRecord> KEY_B2C_CARD_CONSUMER_PRIMARY = Internal.createUniqueKey(CardConsumer.CARD_CONSUMER, "KEY_b2c_card_consumer_PRIMARY", CardConsumer.CARD_CONSUMER.ID);
         public static final UniqueKey<CardExamineRecord> KEY_B2C_CARD_EXAMINE_PRIMARY = Internal.createUniqueKey(CardExamine.CARD_EXAMINE, "KEY_b2c_card_examine_PRIMARY", CardExamine.CARD_EXAMINE.ID);
-        public static final UniqueKey<CardOrderRecord> KEY_B2C_CARD_ORDER_PRIMARY = Internal.createUniqueKey(CardOrder.CARD_ORDER, "KEY_b2c_card_order_PRIMARY", CardOrder.CARD_ORDER.ORDER_ID);
+        public static final UniqueKey<VirtualOrderRecord> KEY_B2C_VIRTUAL_ORDER_PRIMARY = Internal.createUniqueKey(VirtualOrder.VIRTUAL_ORDER, "KEY_b2c_virtual_order_PRIMARY", VirtualOrder.VIRTUAL_ORDER.ORDER_ID);
         public static final UniqueKey<CardReceiveCodeRecord> KEY_B2C_CARD_RECEIVE_CODE_PRIMARY = Internal.createUniqueKey(CardReceiveCode.CARD_RECEIVE_CODE, "KEY_b2c_card_receive_code_PRIMARY", CardReceiveCode.CARD_RECEIVE_CODE.ID);
         public static final UniqueKey<CardUpgradeRecord> KEY_B2C_CARD_UPGRADE_PRIMARY = Internal.createUniqueKey(CardUpgrade.CARD_UPGRADE, "KEY_b2c_card_upgrade_PRIMARY", CardUpgrade.CARD_UPGRADE.ID);
         public static final UniqueKey<CartRecord> KEY_B2C_CART_PRIMARY = Internal.createUniqueKey(Cart.CART, "KEY_b2c_cart_PRIMARY", Cart.CART.REC_ID);

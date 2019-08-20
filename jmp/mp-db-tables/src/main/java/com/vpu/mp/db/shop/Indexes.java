@@ -77,7 +77,7 @@ public class Indexes {
     public static final Index CARD_BATCH_PRIMARY = Indexes0.CARD_BATCH_PRIMARY;
     public static final Index CARD_CONSUMER_PRIMARY = Indexes0.CARD_CONSUMER_PRIMARY;
     public static final Index CARD_EXAMINE_PRIMARY = Indexes0.CARD_EXAMINE_PRIMARY;
-    public static final Index CARD_ORDER_PRIMARY = Indexes0.CARD_ORDER_PRIMARY;
+    public static final Index VIRTUAL_ORDER_PRIMARY = Indexes0.VIRTUAL_ORDER_PRIMARY;
     public static final Index CARD_RECEIVE_CODE_BATCH_ID = Indexes0.CARD_RECEIVE_CODE_BATCH_ID;
     public static final Index CARD_RECEIVE_CODE_CARD_ID = Indexes0.CARD_RECEIVE_CODE_CARD_ID;
     public static final Index CARD_RECEIVE_CODE_PRIMARY = Indexes0.CARD_RECEIVE_CODE_PRIMARY;
@@ -502,7 +502,7 @@ public class Indexes {
         public static Index CARD_BATCH_PRIMARY = Internal.createIndex("PRIMARY", CardBatch.CARD_BATCH, new OrderField[] { CardBatch.CARD_BATCH.ID }, true);
         public static Index CARD_CONSUMER_PRIMARY = Internal.createIndex("PRIMARY", CardConsumer.CARD_CONSUMER, new OrderField[] { CardConsumer.CARD_CONSUMER.ID }, true);
         public static Index CARD_EXAMINE_PRIMARY = Internal.createIndex("PRIMARY", CardExamine.CARD_EXAMINE, new OrderField[] { CardExamine.CARD_EXAMINE.ID }, true);
-        public static Index CARD_ORDER_PRIMARY = Internal.createIndex("PRIMARY", CardOrder.CARD_ORDER, new OrderField[] { CardOrder.CARD_ORDER.ORDER_ID }, true);
+        public static Index VIRTUAL_ORDER_PRIMARY = Internal.createIndex("PRIMARY", VirtualOrder.VIRTUAL_ORDER, new OrderField[] { VirtualOrder.VIRTUAL_ORDER.ORDER_ID }, true);
         public static Index CARD_RECEIVE_CODE_BATCH_ID = Internal.createIndex("batch_id", CardReceiveCode.CARD_RECEIVE_CODE, new OrderField[] { CardReceiveCode.CARD_RECEIVE_CODE.BATCH_ID }, false);
         public static Index CARD_RECEIVE_CODE_CARD_ID = Internal.createIndex("card_id", CardReceiveCode.CARD_RECEIVE_CODE, new OrderField[] { CardReceiveCode.CARD_RECEIVE_CODE.CARD_ID }, false);
         public static Index CARD_RECEIVE_CODE_PRIMARY = Internal.createIndex("PRIMARY", CardReceiveCode.CARD_RECEIVE_CODE, new OrderField[] { CardReceiveCode.CARD_RECEIVE_CODE.ID }, true);
