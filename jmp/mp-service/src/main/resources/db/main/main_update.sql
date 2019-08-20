@@ -56,3 +56,8 @@ ALTER TABLE `b2c_mp_auth_shop` ADD COLUMN `merchant_category_code` varchar(191) 
 --audit_id改为Long类型
 ALTER TABLE `b2c_mp_auth_shop` CHANGE COLUMN `audit_id` `audit_id` BIGINT(64) NULL DEFAULT '0' COMMENT '最新的审核ID' ;
 ALTER TABLE `b2c_mp_deploy_history` CHANGE COLUMN `audit_id` `audit_id` BIGINT(64) NULL DEFAULT '0' COMMENT '最新的审核ID' ;
+
+
+
+ALTER TABLE `mini_main`.`b2c_mp_operate_log` ADD COLUMN `memo_id` VARCHAR(100) NOT NULL AFTER `create_time`, ADD COLUMN `memo_list` VARCHAR(100) NOT NULL AFTER `memo_id`;
+
