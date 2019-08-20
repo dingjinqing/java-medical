@@ -1,6 +1,7 @@
 package com.vpu.mp.controller.admin;
 
 import com.vpu.mp.service.foundation.data.JsonResult;
+import com.vpu.mp.service.pojo.shop.market.gift.GiftListParam;
 import com.vpu.mp.service.pojo.shop.market.gift.GiftParam;
 import org.springframework.web.bind.annotation.*;
 
@@ -49,5 +50,13 @@ public class AdminGiftController extends AdminBaseController {
     public JsonResult deleteGift(@PathVariable Integer id) {
         shop().gift.deleteGift(id);
         return success();
+    }
+
+    /**
+     * 列表查询
+     */
+    @PostMapping("/list")
+    public JsonResult getPageList(@RequestBody GiftListParam param) {
+        return success(shop().gift.getPageList(param));
     }
 }

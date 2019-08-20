@@ -22,7 +22,6 @@ import java.util.List;
 import java.util.function.Supplier;
 import java.util.stream.Collectors;
 
-import static com.vpu.mp.db.shop.tables.GiveGiftReceive.GIVE_GIFT_RECEIVE;
 import static com.vpu.mp.db.shop.tables.OrderGoods.ORDER_GOODS;
 import static com.vpu.mp.service.pojo.shop.market.gift.GiftListParam.*;
 import static com.vpu.mp.service.pojo.shop.market.gift.GiftListVo.ABLE;
@@ -173,7 +172,7 @@ public class GiftService extends ShopBaseService {
      */
     public PageResult<GiftListVo> getPageList(GiftListParam param) {
         SelectConditionStep<?> query = db().select(TABLE.ID, TABLE.NAME, TABLE.START_TIME, TABLE.END_TIME,
-            TABLE.STATUS, DSL.count(GIVE_GIFT_RECEIVE.ID).as("giftTimes")).from(TABLE)
+            TABLE.LEVEL, TABLE.STATUS, DSL.count(ORDER_GOODS.REC_ID).as("giftTimes")).from(TABLE)
             .leftJoin(ORDER_GOODS).on(ORDER_GOODS.IS_GIFT.eq(1).and(ORDER_GOODS.GIFT_ID.eq(TABLE.ID)))
             .where(TABLE.DEL_FLAG.eq((byte) 0));
         buildOptions(query, param);
@@ -194,6 +193,7 @@ public class GiftService extends ShopBaseService {
         if (isNotEmpty(name)) {
             query.and(TABLE.NAME.like(format("%s%%", name)));
         }
+        query.groupBy(TABLE.ID);
     }
 
     /**
