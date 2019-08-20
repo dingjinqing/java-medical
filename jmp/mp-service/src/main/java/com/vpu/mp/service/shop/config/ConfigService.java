@@ -47,7 +47,8 @@ public class ConfigService extends ShopBaseService {
     public DeliverTemplateConfigService deliverTemplateConfigService;
     @Autowired
     public FirstSpecialConfigService firstSpecialConfigService;
-	
+	@Autowired
+    public InsteadPayConfig insteadPayConfig;
 	
 	/**
 	 * 得到店铺配置

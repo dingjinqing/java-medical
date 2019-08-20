@@ -1,16 +1,14 @@
 package com.vpu.mp.service.foundation.data;
 
 /**
- * 
  * @author 新国
- *
  */
 public class JsonResultMessage {
-	public static final String MSG_SUCCESS = "common.success";
-	public static final String MSG_FAIL = "common.fail";
-	public static final String MSG_PARAM_ERROR = "common.param.error";
+    public static final String MSG_SUCCESS = "common.success";
+    public static final String MSG_FAIL = "common.fail";
+    public static final String MSG_PARAM_ERROR = "common.param.error";
 
-	// 账号
+    // 账号
 
 	public static final String MSG_ACCOUNT_OR_PASSWORD_INCRRECT = "account.accountOrPassword.incrrect";
 	public static final String MSG_ACCOUNT_MODILE_APPLIED = "account.mobile.applied";
@@ -96,10 +94,10 @@ public class JsonResultMessage {
 	public static final String GOODS_RECOMMEND_ID_NOT_EXIST = "goods.recommend.id.notexist";
 	public static final String GOODS_RECOMMEND_NOT_EXIST = "goods.recommend.id.notexist";
 
-	/**
-	 * 营销
-	 */
-	public static final String DISTRIBUTOR_GROUP_NAME_EXIST = "distributor.group.name.exist";
+    /**
+     * 营销
+     */
+    public static final String DISTRIBUTOR_GROUP_NAME_EXIST = "distributor.group.name.exist";
 
     /**
      * 营销-砍价excel导出-发起砍价
@@ -128,15 +126,30 @@ public class JsonResultMessage {
     public static final String BARGAIN_USER_LIST_CREATE_TIME = "bargain.user.list.create_time";
     public static final String BARGAIN_USER_LIST_BARGAIN_MONEY = "bargain.user.list.bargain_money";
 
-	/**
-	 * 文章_分类
-	 */
-	public static final String ARTICLE_CATEGORY_IS_EXIST = "api.code.article_category_is_exist";
-	public static final String ARTICLE_CATEGORY_CATEGORYNAME_ISNULL = "api.code.article_category_categoryName_isNull";
-	public static final String ARTICLE_CATEGORY_CATEGORYID_ISNULL = "api.code.article_category_categoryId_isNull";
-	public static final String ARTICLE_TITLE_ISNULL = "api.code.article_title_isNull";
-	public static final String ARTICLE_ARTICLEID_ISNULL = "api.code.article_articleId_isNull";
-	public static final String ARTICLE_CATEGORY_UPDATE_FAILED = "api.code_article_category_update_failed";
+    /**
+     * 营销-好友代付
+     */
+    public static final String INSTEAD_PAY_NOT_SET_PAY_WAY = "instead.pay.not.set.pay.way";
+    public static final String INSTEAD_PAY_NOT_SET_SINGLE_PAY_MESSAGE = "instead.pay.not.set.single.pay.message";
+    public static final String INSTEAD_PAY_SINGLE_PAY_MESSAGE_TOO_LONG = "instead.pay.single.pay.message.too.long";
+    public static final String INSTEAD_PAY_NOT_SET_MULTIPLE_PAY_MESSAGE = "instead.pay.not.set.multiple.pay.message";
+    public static final String INSTEAD_PAY_MULTIPLE_PAY_MESSAGE_TOO_LONG = "instead.pay.multiple.pay.message.too.long";
+    public static final String INSTEAD_PAY_NEED_AT_LEAST_THREE_PAY_RATIO = "instead.pay.need.at.least.three.pay.ratio";
+    public static final String INSTEAD_PAY_NEED_AT_LEAST_TWO_DOUBLE_PAY_RATIO = "instead.pay.need.at.least.two.double.pay.ratio";
+    public static final String INSTEAD_PAY_VALUE_OVER_RANGE = "instead.pay.value.over.range";
+    public static final String INSTEAD_PAY_STATUS_IS_NULL= "instead.pay.status.is.null";
+
+
+
+    /**
+     * 文章_分类
+     */
+    public static final String ARTICLE_CATEGORY_IS_EXIST = "api.code.article_category_is_exist";
+    public static final String ARTICLE_CATEGORY_CATEGORYNAME_ISNULL = "api.code.article_category_categoryName_isNull";
+    public static final String ARTICLE_CATEGORY_CATEGORYID_ISNULL = "api.code.article_category_categoryId_isNull";
+    public static final String ARTICLE_TITLE_ISNULL = "api.code.article_title_isNull";
+    public static final String ARTICLE_ARTICLEID_ISNULL = "api.code.article_articleId_isNull";
+    public static final String ARTICLE_CATEGORY_UPDATE_FAILED = "api.code_article_category_update_failed";
 
 	/**
 	 * 小程序管理
@@ -167,7 +180,7 @@ public class JsonResultMessage {
 	public static final String WX_MA_FEATURE_NOT_OPEN="wx.ma.feature.not.open";
 	public static final String WX_MA_ISSUBMERCHANT_ISNULL = "wx.ma.isSubMerchant.is.null";
 	public static final String WX_MA_TABLE_ISNULL = "wx.ma.table.is.null";
-	
+
 	/**
 	 * 门店管理
 	 */
@@ -282,5 +295,5 @@ public class JsonResultMessage {
     public static final String PRESALE_MONEY_PAID = "presale.order.money_paid";
     public static final String PRESALE_ORDER_STATUS = "presale.order.order_status";
     public static final String INCLUDING_SHIPPING_FEE = "presale.order.including_shipping_fee";
-	
+
 }
