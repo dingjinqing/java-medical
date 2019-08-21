@@ -127,6 +127,24 @@ public class JsonResultMessage {
     public static final String BARGAIN_USER_LIST_BARGAIN_MONEY = "bargain.user.list.bargain_money";
 
     /**
+     * 营销-优惠券礼包订单excel导出
+     */
+    public static final String COUPON_PACK_ORDER_FILENAME = "coupon.pack.order.filename";
+    public static final String ORDER_STATUS_WAIT_PAY= "status.wait_pay";
+    public static final String ORDER_STATUS_FINISHED = "status.finished";
+    public static final String COUPON_PACK_ORDER_ORDER_SN = "coupon.pack.order.order_sn";
+    public static final String COUPON_PACK_ORDER_MONEY_PAID = "coupon.pack.order.money_paid";
+    public static final String COUPON_PACK_ORDER_USE_ACCOUNT = "coupon.pack.order.use_account";
+    public static final String COUPON_PACK_ORDER_USE_SCORE = "coupon.pack.order.use_score";
+    public static final String COUPON_PACK_ORDER_MEMBER_CARD_BALANCE = "coupon.pack.order.member_card_balance";
+    public static final String COUPON_PACK_ORDER_USERNAME = "coupon.pack.order.username";
+    public static final String COUPON_PACK_ORDER_MOBILE = "coupon.pack.order.mobile";
+    public static final String COUPON_PACK_ORDER_CREATE_TIME = "coupon.pack.order.create_time";
+    public static final String COUPON_PACK_ORDER_STATUS = "coupon.pack.order.order_status";
+
+
+
+    /**
      * 营销-好友代付
      */
     public static final String INSTEAD_PAY_NOT_SET_PAY_WAY = "instead.pay.not.set.pay.way";

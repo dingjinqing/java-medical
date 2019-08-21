@@ -36,7 +36,11 @@ import static org.apache.commons.lang3.StringUtils.isNotEmpty;
 @Slf4j
 public class MemberCardOrderService extends ShopBaseService {
 
-    private static final Byte GOODS_MEMBER_CARD = 0;
+    /** 会员卡订单 */
+    public static final Byte GOODS_TYPE_MEMBER_CARD = 0;
+
+    /** 优惠券礼包订单 */
+    public static final Byte GOODS_TYPE_COUPON_PACK = 1;
 
     /**
      * 订单列表
@@ -70,7 +74,7 @@ public class MemberCardOrderService extends ShopBaseService {
         Timestamp startTime = param.getStartTime();
         Timestamp endTime = param.getEndTime();
         Boolean isRefund = param.getRefund();
-        select.where(VIRTUAL_ORDER.GOODS_TYPE.eq(GOODS_MEMBER_CARD));
+        select.where(VIRTUAL_ORDER.GOODS_TYPE.eq(GOODS_TYPE_MEMBER_CARD));
         if (isNotEmpty(orderSn)) {
             select.and(VIRTUAL_ORDER.ORDER_SN.like(format("%s%%", orderSn)));
         }

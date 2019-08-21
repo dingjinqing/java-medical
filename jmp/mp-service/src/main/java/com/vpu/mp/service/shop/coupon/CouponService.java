@@ -1,6 +1,7 @@
 package com.vpu.mp.service.shop.coupon;
 
 import com.vpu.mp.db.shop.tables.records.MrkingVoucherRecord;
+import com.vpu.mp.service.foundation.data.DelFlag;
 import com.vpu.mp.service.foundation.service.ShopBaseService;
 import com.vpu.mp.service.foundation.util.PageResult;
 import com.vpu.mp.service.pojo.shop.coupon.*;
@@ -174,4 +175,13 @@ public class CouponService extends ShopBaseService{
         return   couponHold.getCouponHoldList(couponParam);
 
 	}
+
+    /**
+     * 取单个优惠券的基本信息
+     * @param id
+     * @return
+     */
+	public CouponView getCouponViewById(int id){
+	    return db().select(MRKING_VOUCHER.ID,MRKING_VOUCHER.ACT_NAME,MRKING_VOUCHER.DENOMINATION,MRKING_VOUCHER.USE_CONSUME_RESTRICT,MRKING_VOUCHER.LEAST_CONSUME,MRKING_VOUCHER.SURPLUS,MRKING_VOUCHER.VALIDITY_TYPE,MRKING_VOUCHER.START_TIME,MRKING_VOUCHER.END_TIME,MRKING_VOUCHER.VALIDITY,MRKING_VOUCHER.VALIDITY_HOUR,MRKING_VOUCHER.VALIDITY_MINUTE).from(MRKING_VOUCHER).where(MRKING_VOUCHER.ID.eq(id)).and(MRKING_VOUCHER.DEL_FLAG.eq(DelFlag.NORMAL_VALUE)).fetchOne().into(CouponView.class);
+    }
 }
