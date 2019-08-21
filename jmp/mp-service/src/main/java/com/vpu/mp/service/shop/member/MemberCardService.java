@@ -269,6 +269,7 @@ public class MemberCardService extends ShopBaseService {
 		updateMemberCardById(cardRecord, id);
 	}
 	
+	
 	/**
 	 * 根据会员卡id批量更新会员专享商品
 	 * @param goodsId
@@ -289,7 +290,14 @@ public class MemberCardService extends ShopBaseService {
 	 */
 	public void batchUpdateGoods(CardParam card,List<Integer> cardIdList) {
 		UpdateSetFirstStep<MemberCardRecord> update = db().update(MEMBER_CARD);
+		buildOptions(card, update);
+		((UpdateWhereStep<MemberCardRecord>) update).where(MEMBER_CARD.ID.in(cardIdList));
 		
+	}
+	
+	
+	/** 更新商品条件选择 */
+	private void buildOptions(CardParam card, UpdateSetFirstStep<MemberCardRecord> update) {
 		/** 折扣指定商品 */
 		/** 商品 */
 		if(card.getGoodsId() != null) {
@@ -308,10 +316,6 @@ public class MemberCardService extends ShopBaseService {
 		
 		//TODO品牌
 		/** 会员专享商品 */
-		
-		
-		((UpdateWhereStep<MemberCardRecord>) update).where(MEMBER_CARD.ID.in(cardIdList));
-		
 	}
 	
 	
