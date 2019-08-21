@@ -140,7 +140,7 @@ export default {
       let obj = {
         'currentPage ': 0,
         'pageRows ': 20,
-        'actName': null
+        'nav': 4
       }
 
       couponList(obj).then((res) => {

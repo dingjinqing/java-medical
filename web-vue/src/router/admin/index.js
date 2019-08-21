@@ -439,7 +439,7 @@ const routes = [
             },
             component: () =>
               import(
-                '@/view/admin/index/leftNavComponents/first_market_manage/first_market/first_market_manage'
+                '@/view/admin/index/leftNavComponents/first_market_manage/first_market/firstMarketManage'
               )
           },
           // 普通优惠券
