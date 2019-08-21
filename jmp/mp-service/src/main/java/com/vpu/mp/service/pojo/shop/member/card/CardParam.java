@@ -36,6 +36,7 @@ public class CardParam {
 	/** 会员折扣: 全部商品；1代表全部商品，0代表指定商品 */
 	private Byte discountIsAll;
 
+	/** 会员折扣商品 */
 	/** 添加的商品Id */
 	private Integer[] goodsId;
 	/** 添加的商家分类Id */
@@ -43,6 +44,17 @@ public class CardParam {
 	/** 添加的平台分类Id */
 	private Integer[] platformCategoryIds;
 
+	
+	/** 专享商品 */
+	/** 商品id */
+	private Integer[] ownGoodsId;
+	/** 商家id */
+	private Integer[] ownShopCategoryIds;
+	/** 平台id  */
+	private Integer[] ownPlatFormCategoryIds;
+	
+	
+	/** 
 	/**
 	 * 积分获取开关，会员折扣开关， 0表示关闭，1表示开启
 	 */
