@@ -29,7 +29,7 @@ import com.vpu.mp.service.pojo.shop.market.friendpromote.FriendPromoteUpdatePara
  * @date 2019年8月7日
  */
 @RestController
-@RequestMapping("/api/admin/market/friend/promote")
+@RequestMapping("/api/admin/market/promote")
 public class AdminFriendPromoteController extends AdminBaseController{
 	/**
 	  *  分页查询好友助力活动列表
