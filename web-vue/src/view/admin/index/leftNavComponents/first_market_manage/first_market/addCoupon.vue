@@ -64,7 +64,20 @@
               </div>
             </div>
           </div>
-
+          <div class="content_right">
+            <div class="coupon_info">
+              <div class="coupon_info_title">优惠券基础信息</div>
+              <ul>
+                <li class="content_right_li clearfix">
+                  <div class=fl>
+                    <em>*</em>优惠券名称
+                  </div>
+                </li>
+                <li class="content_right_li clearfix"></li>
+                <li class="content_right_li clearfix"></li>
+              </ul>
+            </div>
+          </div>
         </div>
       </div>
     </div>
@@ -213,5 +226,9 @@
   border-radius: 5px;
   padding: 5px;
   font-size: 12px;
+}
+.add_coupon_content .content_right {
+  float: right;
+  width: 560px;
 }
 </style>
