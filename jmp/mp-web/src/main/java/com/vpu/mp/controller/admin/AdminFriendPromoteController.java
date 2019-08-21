@@ -2,6 +2,7 @@ package com.vpu.mp.controller.admin;
 
 import java.util.List;
 
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -28,6 +29,7 @@ import com.vpu.mp.service.pojo.shop.market.friendpromote.FriendPromoteUpdatePara
  * @date 2019年8月7日
  */
 @RestController
+@RequestMapping("/api/admin/market/friend/promote")
 public class AdminFriendPromoteController extends AdminBaseController{
 	/**
 	  *  分页查询好友助力活动列表
@@ -35,7 +37,7 @@ public class AdminFriendPromoteController extends AdminBaseController{
 	 * @param param
 	 * @return 
 	 */
-	@RequestMapping("api/admin/market/friendpromote/list")
+	@PostMapping("/list")
 	public JsonResult getList(@RequestBody FriendPromoteListParam param) {
 		PageResult<FriendPromoteListVo> listVo = shop().friendPromoteService.friendPromoteList(param);
 		return success(listVo);
@@ -46,7 +48,7 @@ public class AdminFriendPromoteController extends AdminBaseController{
 	 * @param param
 	 * @return 
 	 */
-	@RequestMapping("api/admin/market/friendpromote/switch")
+	@PostMapping("/switch")
 	public JsonResult startOrBlock(@RequestBody FriendPromoteOptionParam param) {
 		shop().friendPromoteService.startOrBlock(param);
 		return success();
@@ -57,7 +59,7 @@ public class AdminFriendPromoteController extends AdminBaseController{
 	 * @param param
 	 * @return
 	 */
-	@RequestMapping("api/admin/market/friendpromote/delete")
+	@PostMapping("/delete")
 	public JsonResult deleteAct(@RequestBody FriendPromoteOptionParam param) {
 		shop().friendPromoteService.deleteAct(param);
 		return success();
@@ -69,7 +71,7 @@ public class AdminFriendPromoteController extends AdminBaseController{
 	 * @param param 
 	 * @return
 	 */
-	@RequestMapping("api/admin/market/friendpromote/receive")
+	@PostMapping("/receive")
 	public JsonResult receiveDetail(@RequestBody FriendPromoteReceiveParam param) {
 		PageResult<FriendPromoteReceiveVo> pageResult = 
 				shop().friendPromoteService.receiveDetail(param);
@@ -82,7 +84,7 @@ public class AdminFriendPromoteController extends AdminBaseController{
 	 * @param param 
 	 * @return
 	 */
-	@RequestMapping("api/admin/market/friendpromote/launch")
+	@PostMapping("/launch")
 	public JsonResult launchDetail(@RequestBody FriendPromoteLaunchParam param) {
 		PageResult<FriendPromoteLaunchVo> pageResult = 
 				shop().friendPromoteService.launchDetail(param);
@@ -95,7 +97,7 @@ public class AdminFriendPromoteController extends AdminBaseController{
 	 * @param param 
 	 * @return
 	 */
-	@RequestMapping("api/admin/market/friendpromote/participate")
+	@PostMapping("/participate")
 	public JsonResult participateDetail(@RequestBody FriendPromoteParticipateParam param) {
 		PageResult<FriendPromoteParticipateVo> pageResult = 
 				shop().friendPromoteService.participateDetail(param);
@@ -108,7 +110,7 @@ public class AdminFriendPromoteController extends AdminBaseController{
 	 * @param param 
 	 * @return
 	 */
-	@RequestMapping("api/admin/market/friendpromote/add")
+	@PostMapping("/add")
 	public JsonResult addActivity(@RequestBody FriendPromoteAddParam param) {
 		shop().friendPromoteService.addActivity(param);
 		return success();
@@ -120,7 +122,7 @@ public class AdminFriendPromoteController extends AdminBaseController{
 	 * @param param 
 	 * @return
 	 */
-	@RequestMapping("api/admin/market/friendpromote/select")
+	@PostMapping("/select")
 	public JsonResult selectOne(@RequestBody FriendPromoteSelectParam param) {
 		List<FriendPromoteSelectVo> vo	= shop().friendPromoteService.selectOne(param);
 		return success(vo);
@@ -132,7 +134,7 @@ public class AdminFriendPromoteController extends AdminBaseController{
 	 * @param param 
 	 * @return
 	 */
-	@RequestMapping("api/admin/market/friendpromote/update")
+	@PostMapping("/update")
 	public JsonResult updateActivity(@RequestBody FriendPromoteUpdateParam param) {
 		shop().friendPromoteService.updateActivity(param);
 		return success();

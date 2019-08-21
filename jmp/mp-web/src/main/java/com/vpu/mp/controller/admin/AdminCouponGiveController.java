@@ -24,6 +24,7 @@ import com.vpu.mp.service.pojo.shop.coupon.hold.CouponHoldListVo;
  * @date 2019年7月29日
  */
 @RestController
+@RequestMapping("/api/admin/coupon/give")
 public class AdminCouponGiveController extends AdminBaseController{
 	/**
 	 * 定向发放优惠券列表
@@ -31,7 +32,7 @@ public class AdminCouponGiveController extends AdminBaseController{
 	 * @param param
 	 * @return
 	 */
-	@PostMapping("/api/admin/coupon/give/list")
+	@PostMapping("/list")
 	public JsonResult getPageList(@RequestBody CouponGiveListParam param) {
 
 		PageResult<CouponGiveListVo> pageResult = shop().coupon.couponGiveService.getCouponGiveList(param);
@@ -44,7 +45,7 @@ public class AdminCouponGiveController extends AdminBaseController{
 	 * @param param
 	 * @return
 	 */
-	@PostMapping("/api/admin/coupon/give/detail")
+	@PostMapping("/detail")
 	public JsonResult getDetail(@RequestBody CouponGiveDetailParam param) {
 
 		PageResult<CouponHoldListVo> pageResult = shop().coupon.couponGiveService.getDetail(param);
@@ -58,7 +59,7 @@ public class AdminCouponGiveController extends AdminBaseController{
 	 * @param param
 	 * @return
 	 */
-	@PostMapping("/api/admin/coupon/give/grant")
+	@PostMapping("/grant")
 	public JsonResult insertGrant(@RequestBody CouponGiveGrantParam param) {
 		
 		shop().coupon.couponGiveService.insertGrant(param);
@@ -71,7 +72,7 @@ public class AdminCouponGiveController extends AdminBaseController{
 	 * @param param
 	 * @return
 	 */
-	@PostMapping("/api/admin/coupon/give/pop")
+	@PostMapping("/pop")
 	public JsonResult getPopWindow(@RequestBody CouponGivePopParam param) {
 
 		List<CouponGivePopVo> pageResult = shop().coupon.couponGiveService.popWindows(param);
@@ -84,7 +85,7 @@ public class AdminCouponGiveController extends AdminBaseController{
 	 * @param param
 	 * @return
 	 */
-	@RequestMapping("api/admin/coupon/give/delete")
+	@PostMapping("/delete")
 	public JsonResult deleteCoupon(@RequestBody CouponGiveDeleteParam param) {
 		shop().coupon.couponGiveService.deleteCoupon(param);
 		return success();
