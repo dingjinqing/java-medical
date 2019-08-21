@@ -456,6 +456,20 @@ const routes = [
                 '@/view/admin/index/leftNavComponents/first_market_manage/first_market/ordinaryCoupon'
               )
           },
+          // 添加优惠券活动
+          {
+            path: '/admin/home/main/addyCoupon',
+            name: 'add_coupon',
+            meta: {
+              crumbTitle: 'router.ordinary_coupon',
+              meta: 'first_market_manage',
+              category: 'first_market_manage'
+            },
+            component: () =>
+              import(
+                '@/view/admin/index/leftNavComponents/first_market_manage/first_market/addCoupon'
+              )
+          },
           // 会员管理系列子路由
           {
             path: '/admin/home/main/membershipList',

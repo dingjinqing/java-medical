@@ -26,3 +26,12 @@ export function deleteCoupon (data) {
     data: data
   })
 }
+
+// 添加优惠券
+export function addCoupon (data) {
+  return service({
+    url: `/api/admin/coupon/add`,
+    method: 'get',
+    data: data
+  })
+}

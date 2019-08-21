@@ -7,15 +7,8 @@
 <script>
 import CouponList from './couponList'
 export default {
-  components: { CouponList },
-  data () {
-    return {
-      tableData: []
-    }
-  },
-  mounted () {
+  components: { CouponList }
 
-  }
 }
 </script>
 <style lang="scss" scoped>
