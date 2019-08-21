@@ -98,5 +98,12 @@ public class CardConstant {
 	/** 当前时间 */
 	public static final LocalDate CURRENT_DATE = LocalDate.now();
 	
-
+	/** 专享商品:标签关联类型  */
+	/** 1：关联商品  */
+	public static final Byte RELATED_GOODS_TYPE = 1;
+	/**  2：关联商家分类  */
+	public static final Byte RELATED_STORE_CATEGORY_TYPE = 2;
+	/** 3：关联平台分类  */
+	public static final Byte RELATED_PLATFORM_CATEGORY_TYPE = 3;
+	
 }
