@@ -547,6 +547,18 @@ const routes = [
                 '@/view/admin/index/leftNavComponents/user_manger/membershipIntroduction/membershipIntroduction'
               )
           },
+          {
+            path: '/admin/home/main/user_card',
+            name: 'user_card',
+            meta: {
+              crumbTitle: 'router.userCard',
+              meta: 'user_manger'
+            },
+            component: () =>
+              import(
+                '@/view/admin/index/leftNavComponents/user_manger/membershipCard/membershipCard'
+              )
+          },
           // 门店管理系列子路由
           {
             path: '/admin/home/main/store_manage',

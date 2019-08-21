@@ -29,6 +29,8 @@ export const cn = {
   integralDetail: ['会员管理', '会员列表', '积分明细'],
   // 会员管理 会员导入
   membershipIntroduction: ['会员管理', '会员导入'],
+  // 会员管理 会员卡
+  userCard: ['会员管理', '普通会员卡'],
   // 基础配置 小程序授权
   program_auth: ['基础配置', '小程序授权'],
   // 基础配置 小程序授权成功页面

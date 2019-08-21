@@ -36,17 +36,76 @@
             <el-tab-pane
               label="商品组件"
               name="second"
-            >商品组件</el-tab-pane>
+            >
+              <vue-scroll
+                :ops="ops"
+                style="height:520px"
+              >
+                <div class="picTextConDiv">
+                  <div
+                    v-for="(item,index) in goodsTextConArr"
+                    :key="index"
+                    class="picTextConDivList"
+                  >
+                    <img
+                      :src="item.imgUrl"
+                      :alt="item.text"
+                    >
+                    <div style="height:24px;margin-top:-10px">{{item.text}}</div>
+                  </div>
+                </div>
+              </vue-scroll>
+            </el-tab-pane>
             <el-tab-pane
               label="营销组件"
               name="third"
-            >营销组件</el-tab-pane>
+            >
+              <draggable
+                class="list-group"
+                element="div"
+                v-model="listLeft"
+                :options="dragOptions1"
+                :move="onMove"
+                @start="isDragging=true"
+                @end="isDragging=false"
+              >
+                <div
+                  v-for="(item,key) in listLeft"
+                  :key="key"
+                  class="picTextConDivList"
+                >
+                  <img :src="item.name">
+                  {{item.value}}
+
+                </div>
+              </draggable>
+            </el-tab-pane>
           </el-tabs>
         </div>
-        <!-- <div class="decMiddle">
-          2
+        <div class="decMiddle">
+          <div class="decTop"></div>
+          <div class="decContent">
+            <draggable
+              class="list-group"
+              element="div"
+              v-model="listRight"
+              :options="dragOptions2"
+              :move="onMove"
+              @start="isDragging=true"
+              @end="isDragging=false"
+            >
+              <div
+                v-for="(item,key) in listRight"
+                :key="key"
+                class="picTextConDivList"
+              >
+                <img :src="item.name">
+                {{item.value}}
+              </div>
+            </draggable>
+          </div>
         </div>
-        <div class="decRight">
+        <!-- <div class="decRight">
           3
         </div> -->
       </div>
@@ -55,10 +114,12 @@
   </div>
 </template>
 <script>
+import draggable from 'vuedraggable'
 import vuescroll from 'vuescroll'
 export default {
   components: {
-    vuescroll
+    vuescroll,
+    draggable
   },
   data () {
     return {
@@ -139,22 +200,109 @@ export default {
           text: '客服模块'
         },
         {
-          imgUrl: this.$imageHost + '/image/admin/new_shop_beautify/dg_rotation.png',
+          imgUrl: this.$imageHost + '/image/admin/new_shop_beautify/drag_phone.png',
           text: '电话模块'
         },
         {
-          imgUrl: this.$imageHost + '/image/admin/new_shop_beautify/dg_rotation.png',
+          imgUrl: this.$imageHost + '/image/admin/new_shop_beautify/dg_navigation.png',
           text: '店招设置'
         },
         {
-          imgUrl: this.$imageHost + '/image/admin/new_shop_beautify/dg_rotation.png',
+          imgUrl: this.$imageHost + '/image/admin/new_shop_beautify/icon_map.png',
           text: '地图模块'
         }
-      ]
+      ],
+      goodsTextConArr: [
+        {
+          imgUrl: this.$imageHost + '/image/admin/new_shop_beautify/deco_goods.png',
+          text: '商品'
+        },
+        {
+          imgUrl: this.$imageHost + '/image/admin/new_shop_beautify/dg_search.png',
+          text: '商品搜索'
+        },
+        {
+          imgUrl: this.$imageHost + '/image/admin/new_shop_beautify/goods_group.png',
+          text: '商品分组'
+        }
+      ],
+      marketingTextConArr: [
+        {
+          imgUrl: this.$imageHost + '/image/admin/new_shop_beautify/deco_card.png',
+          text: '会员卡'
+        },
+        {
+          imgUrl: this.$imageHost + '/image/admin/new_shop_beautify/deco_voucher.png',
+          text: '优惠卷'
+        },
+        {
+          imgUrl: this.$imageHost + '/image/admin/new_shop_beautify/bargain.png',
+          text: '砍价'
+        },
+        {
+          imgUrl: this.$imageHost + '/image/admin/new_shop_beautify/icon_integral_deco.png',
+          text: '积分兑换'
+        },
+        {
+          imgUrl: this.$imageHost + '/image/admin/new_shop_beautify/secKill.png',
+          text: '秒杀'
+        },
+        {
+          imgUrl: this.$imageHost + '/image/admin/new_shop_beautify/fight_group.png',
+          text: '拼团抽奖'
+        },
+        {
+          imgUrl: this.$imageHost + '/image/admin/new_shop_beautify/pin_integration.png',
+          text: '瓜分积分'
+        }
+      ],
+      isDragging: false,
+      listLeft: [{
+        name: this.$imageHost + '/image/admin/new_shop_beautify/pin_integration.png',
+        value: '瓜分积分'
+      }, {
+        name: this.$imageHost + '/image/admin/new_shop_beautify/pin_integration.png',
+        value: '瓜分积分2'
+      }, {
+        name: this.$imageHost + '/image/admin/new_shop_beautify/pin_integration.png',
+        value: '瓜分积分3'
+      }, {
+        name: this.$imageHost + '/image/admin/new_shop_beautify/pin_integration.png',
+        value: '瓜分积分3'
+      }, {
+        name: this.$imageHost + '/image/admin/new_shop_beautify/pin_integration.png',
+        value: '瓜分积分4'
+      }],
+      listRight: []
+    }
+  },
+  computed: {
+    dragOptions1 () {
+      return {
+        animation: 0,
+        group: {
+          name: 'description',
+          pull: 'clone',
+          put: false
+        },
+        ghostClass: 'ghost'
+      }
+    },
+    dragOptions2 () {
+      return {
+        animation: 0,
+        group: 'description'
+      }
     }
   },
   methods: {
-
+    onMove ({ relatedContext, draggedContext }) {
+      const relatedElement = relatedContext.element
+      const draggedElement = draggedContext.element
+      return (
+        (!relatedElement || !relatedElement.fixed) && !draggedElement.fixed
+      )
+    }
   }
 }
 </script>
@@ -165,6 +313,7 @@ export default {
   font-size: 14px;
   height: 100%;
   .decHomeMain {
+    height: 100%;
     position: relative;
     background-color: #fff;
     padding: 10px 20px 0 20px;
@@ -178,33 +327,48 @@ export default {
     .content {
       display: flex;
       justify-content: flex-start;
-      .decLeft {
+      .decLeft,
+      .decMiddle {
         width: 254px;
         margin: 2px;
         padding: 0 2px;
-        .picTextConDiv {
-          // min-height: 520px;
-          // height: 520px;
-          // overflow-y: auto;
-          .picTextConDivList {
-            float: left;
-            border: 1px solid #e5e5e5;
-            background: #f8f8f8;
-            border-radius: 5px;
-            line-height: 24px;
-            width: 100px;
-            height: 84px;
-            margin: 5px 0 10px 10px;
-            cursor: move;
-            position: relative;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            flex-direction: column;
-          }
+
+        .picTextConDivList {
+          overflow: hidden;
+          float: left;
+          border: 1px solid #e5e5e5;
+          background: #f8f8f8;
+          border-radius: 5px;
+          line-height: 24px;
+          width: 100px;
+          height: 84px;
+          margin: 5px 0 10px 14px;
+          cursor: move;
+          position: relative;
+          display: flex;
+          justify-content: center;
+          align-items: center;
+          flex-direction: column;
+        }
+      }
+      .decMiddle {
+        width: 385px;
+        border: 1px solid #e5e5e5;
+        margin-left: 30px;
+        .decTop {
+          height: 64px;
+          background: url(../../../../../../assets/adminImg/page_name.png)
+            no-repeat;
+        }
+        .decContent {
+          background: #eee;
+          height: 100%;
         }
       }
     }
+  }
+  .list-group {
+    height: 100%;
   }
 }
 </style>
