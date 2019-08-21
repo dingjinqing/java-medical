@@ -280,10 +280,20 @@ public class MemberCardService extends ShopBaseService {
 	 * @param cardIdList
 	 */
 	public void batchUpdateGoods(List<Integer> goodsIdList,List<Integer> cardIdList) {
+		batchUpdateGoods(goodsIdList,cardIdList,RELATED_GOODS_TYPE);
+	}
+	
+	/**
+	 * 根据会员id以及标签关联类型，批量更新会员专享商品： 商品，平台分类，商家分类
+	 * @param goodsIdList
+	 * @param cardIdList
+	 * @param type
+	 */
+	public void batchUpdateGoods(List<Integer> goodsIdList,List<Integer> cardIdList,Byte type) {
 		logger().info("根据会员卡id批量更新会员专享商品");
 		this.transaction(()->{
 			/** 删除会员专享商品记录 */
-			int deleteNum = deleteOwnEnjoyGoods(cardIdList,RELATED_GOODS_TYPE);
+			int deleteNum = deleteOwnEnjoyGoods(cardIdList,type);
 			logger().info("成功删除："+deleteNum);
 			
 			InsertValuesStep3<GoodsCardCoupleRecord, String, Integer, Byte> insert = db().
@@ -292,7 +302,7 @@ public class MemberCardService extends ShopBaseService {
 			
 			for(Integer cardId: cardIdList) {
 				for(Integer goodsId:  goodsIdList) {
-					insert.values(String.valueOf(cardId), goodsId,RELATED_GOODS_TYPE);
+					insert.values(String.valueOf(cardId), goodsId,type);
 				}
 			}
 		
