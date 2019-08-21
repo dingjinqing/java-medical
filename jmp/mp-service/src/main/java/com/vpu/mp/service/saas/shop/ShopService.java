@@ -83,6 +83,9 @@ public class ShopService extends MainBaseService {
 	@Autowired
 	public MpJumpVersionService mpJumpVersion;
 	
+	@Autowired
+	public ShopOfficialAccount officeAccount;
+	
 	public PageResult<ShopListQueryResultVo> getPageList(ShopListQueryParam param) {
 		SelectWhereStep<?> select = db()
 				.select(SHOP.SYS_ID, SHOP.SHOP_ID, SHOP.SHOP_NAME, SHOP.SHOP_TYPE, SHOP.MOBILE, SHOP.CREATED,
