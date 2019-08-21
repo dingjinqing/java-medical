@@ -89,7 +89,7 @@ public class CouponService extends ShopBaseService{
 				break;
 			//已停用
 			case 4:
-				sql = sql.and(MRKING_VOUCHER.ENABLED.eq((byte) 0));
+				sql = sql.and(MRKING_VOUCHER.ENABLED.eq((byte) 1));
 				break;
 			default:
 
