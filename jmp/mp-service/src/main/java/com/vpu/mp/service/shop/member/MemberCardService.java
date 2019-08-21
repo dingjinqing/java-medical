@@ -292,6 +292,7 @@ public class MemberCardService extends ShopBaseService {
 	public void batchUpdateGoods(List<Integer> goodsIdList,List<Integer> cardIdList,Byte type) {
 		logger().info("根据会员卡id批量更新会员专享商品");
 		this.transaction(()->{
+			
 			/** 删除会员专享商品记录 */
 			int deleteNum = deleteOwnEnjoyGoods(cardIdList,type);
 			logger().info("成功删除："+deleteNum);
