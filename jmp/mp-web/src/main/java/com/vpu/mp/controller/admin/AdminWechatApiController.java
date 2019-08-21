@@ -81,8 +81,7 @@ public class AdminWechatApiController extends AdminBaseController {
 	@GetMapping(value = "/api/admin/official/account/authorization")
 	@ResponseBody
 	public JsonResult startOfficialAccountAuthorization() {
-		//this.adminAuth.user().getSysId()
-		String url = this.mainUrl("/wechat/notify/authorization/callback?sys_id=" + 1);
+		String url = this.mainUrl("/wechat/notify/authorization/callback?sys_id=" + this.adminAuth.user().getSysId());
 
 		try {
 			String authType = "1";
