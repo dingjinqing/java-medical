@@ -3,6 +3,7 @@ package com.vpu.mp.service.shop.member;
 import static com.vpu.mp.db.shop.Tables.MEMBER_CARD;
 import static com.vpu.mp.db.shop.Tables.USER;
 import static com.vpu.mp.db.shop.Tables.USER_CARD;
+import static com.vpu.mp.db.shop.Tables.GOODS_CARD_COUPLE;
 import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.ACTIVE_NO;
 import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.ACTIVE_YES;
 import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.ALL_GOODS;
@@ -35,6 +36,7 @@ import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.PROHIBITED;
 import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.RANK_TYPE;
 import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.WEEK;
 import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.WEEK_DATE_TYPE;
+import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.RELATED_GOODS_TYPE;
 import static org.jooq.impl.DSL.count;
 
 import java.sql.Timestamp;
@@ -48,6 +50,7 @@ import java.util.Queue;
 
 import javax.validation.Valid;
 
+import org.jooq.InsertValuesStep3;
 import org.jooq.InsertValuesStep7;
 import org.jooq.Result;
 import org.jooq.SelectSeekStep1;
@@ -57,6 +60,7 @@ import org.junit.Test;
 import org.slf4j.Logger;
 import org.springframework.stereotype.Service;
 
+import com.vpu.mp.db.shop.tables.records.GoodsCardCoupleRecord;
 import com.vpu.mp.db.shop.tables.records.MemberCardRecord;
 import com.vpu.mp.db.shop.tables.records.UserCardRecord;
 import com.vpu.mp.service.foundation.data.DelFlag;
@@ -275,10 +279,39 @@ public class MemberCardService extends ShopBaseService {
 	 * @param goodsId
 	 * @param cardIdList
 	 */
-	public void batchUpdateGoods(List<Integer> goodsId,List<Integer> cardIdList) {
-		CardParam card = new CardParam();
-		card.setGoodsId((Integer[]) goodsId.toArray());
-		batchUpdateGoods(card,cardIdList);
+	public void batchUpdateGoods(List<Integer> goodsIdList,List<Integer> cardIdList) {
+		logger().info("根据会员卡id批量更新会员专享商品");
+		this.transaction(()->{
+			/** 删除会员专享商品记录 */
+			int deleteNum = deleteOwnEnjoyGoods(cardIdList,RELATED_GOODS_TYPE);
+			logger().info("成功删除："+deleteNum);
+			
+			InsertValuesStep3<GoodsCardCoupleRecord, String, Integer, Byte> insert = db().
+												insertInto(GOODS_CARD_COUPLE)
+												.columns(GOODS_CARD_COUPLE.CARD_ID,GOODS_CARD_COUPLE.GCTA_ID,GOODS_CARD_COUPLE.TYPE);
+			
+			for(Integer cardId: cardIdList) {
+				for(Integer goodsId:  goodsIdList) {
+					insert.values(String.valueOf(cardId), goodsId,RELATED_GOODS_TYPE);
+				}
+			}
+		
+			int execute = insert.execute();
+			logger().info("成功更新会员专享商品： "+execute+"行");
+		});
+	}
+
+	/**
+	 * 根据会员卡id,标签关联类型进行删除
+	 * @param cardIdList
+	 * @param type
+	 * @return
+	 */
+	private int deleteOwnEnjoyGoods(List<Integer> cardIdList,Byte type) {
+		return db().deleteFrom(GOODS_CARD_COUPLE)
+				.where(GOODS_CARD_COUPLE.CARD_ID.in(cardIdList))
+				.and(GOODS_CARD_COUPLE.TYPE.eq(type))
+				.execute();
 	}
 	
 	
@@ -290,35 +323,12 @@ public class MemberCardService extends ShopBaseService {
 	 */
 	public void batchUpdateGoods(CardParam card,List<Integer> cardIdList) {
 		UpdateSetFirstStep<MemberCardRecord> update = db().update(MEMBER_CARD);
-		buildOptions(card, update);
+		//buildOptions(card, update);
 		((UpdateWhereStep<MemberCardRecord>) update).where(MEMBER_CARD.ID.in(cardIdList));
 		
 	}
 	
-	
-	/** 更新商品条件选择 */
-	private void buildOptions(CardParam card, UpdateSetFirstStep<MemberCardRecord> update) {
-		/** 折扣指定商品 */
-		/** 商品 */
-		if(card.getGoodsId() != null) {
-			update.set(MEMBER_CARD.DISCOUNT_GOODS_ID, Util.listToString(Arrays.asList(card.getGoodsId())));
-		}
-		
-		/** 平台分类 */
-		if(card.getPlatformCategoryIds()!=null) {
-			update.set(MEMBER_CARD.DISCOUNT_CAT_ID,Util.listToString(Arrays.asList(card.getPlatformCategoryIds())));
-		}
-		
-		/** 商家分类  */
-		if(card.getShopCategoryIds()!=null) {
-			update.set(MEMBER_CARD.DISCOUNT_SORT_ID,Util.listToString(Arrays.asList(card.getShopCategoryIds())));
-		}
-		
-		//TODO品牌
-		/** 会员专享商品 */
-	}
-	
-	
+
 	
 	
 
