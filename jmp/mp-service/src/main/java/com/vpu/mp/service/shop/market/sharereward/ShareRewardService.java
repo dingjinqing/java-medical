@@ -11,6 +11,7 @@ import com.vpu.mp.service.foundation.util.FieldsUtil;
 import com.vpu.mp.service.foundation.util.PageResult;
 import com.vpu.mp.service.pojo.shop.market.sharereward.*;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.StringUtils;
 import org.jooq.Condition;
 import org.jooq.Record11;
 import org.jooq.SelectConditionStep;
@@ -146,6 +147,7 @@ public class ShareRewardService extends ShopBaseService {
 
 
     private static final Byte IS_FOREVER = 1;
+    private static final byte CONDITION = 0;
     private static final byte CONDITION_ONE = 1;
     private static final byte CONDITION_TWO = 2;
     private static final byte CONDITION_THREE = 3;
@@ -223,14 +225,14 @@ public class ShareRewardService extends ShopBaseService {
      */
     public void changeActivity(ShareRewardStatusParam param) {
         switch (param.getStatus()) {
+            case CONDITION:
+                db().update(sa).set(sa.STATUS, CONDITION).where(sa.ID.eq(param.getShareId())).execute();
+                break;
             case CONDITION_ONE:
-                db().update(sa).set(sa.STATUS, param.getStatus()).where(sa.ID.eq(param.getShareId()));
+                db().update(sa).set(sa.STATUS, CONDITION_ONE).where(sa.ID.eq(param.getShareId())).execute();
                 break;
             case CONDITION_TWO:
-                db().update(sa).set(sa.STATUS, param.getStatus()).where(sa.ID.eq(param.getShareId()));
-                break;
-            case CONDITION_THREE:
-                db().update(sa).set(sa.DEL_FLAG, CONDITION_ONE).where(sa.ID.eq(param.getShareId()));
+                db().update(sa).set(sa.DEL_FLAG, CONDITION_ONE).where(sa.ID.eq(param.getShareId())).execute();
                 break;
             default:
                 break;
@@ -246,13 +248,13 @@ public class ShareRewardService extends ShopBaseService {
     public PageResult<ShareReceiveDetailVo> shareReceiveDetail(ShareReceiveDetailParam param) {
         SelectConditionStep<Record11<Integer, Integer, String, String, Integer, String, Byte, String, String, String, Timestamp>> conditionStep = db().select(sare.SHARE_ID, sare.USER_ID, USER.USERNAME, USER.MOBILE, sare.GOODS_ID, GOODS.GOODS_NAME, sare.AWARD_LEVEL, sa.FIRST_LEVEL_RULE, sa.SECOND_LEVEL_RULE, sa.THIRD_LEVEL_RULE, sare.CREATE_TIME).from(sare).leftJoin(sa).on(sare.SHARE_ID.eq(sa.ID)).leftJoin(GOODS).on(sare.GOODS_ID.eq(GOODS.GOODS_ID)).leftJoin(USER).on(sare.USER_ID.eq(USER.USER_ID)).where(sare.SHARE_ID.eq(param.getShareId()));
 
-        if (param.getGoodsName() != null) {
+        if (StringUtils.isNotEmpty(param.getGoodsName())) {
             conditionStep = conditionStep.and(GOODS.GOODS_NAME.like(this.likeReplace(param.getGoodsName())));
         }
-        if (param.getMobile() != null) {
+        if (StringUtils.isNotEmpty(param.getMobile())) {
             conditionStep = conditionStep.and(USER.MOBILE.eq(param.getMobile()));
         }
-        if (param.getUsername() != null) {
+        if (StringUtils.isNotEmpty(param.getUsername())) {
             conditionStep = conditionStep.and(USER.USERNAME.like(this.likeReplace(param.getUsername())));
         }
         if (param.getRewardLevel() != null) {

@@ -13,6 +13,9 @@ import java.sql.Timestamp;
  */
 @Data
 public class ShareRewardAddParam {
+    /**
+     * 活动id
+     */
     private Integer id;
     /**
      * 活动名称

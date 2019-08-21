@@ -12,6 +12,9 @@ import java.sql.Timestamp;
  */
 @Data
 public class ShareReceiveDetailVo {
+    /**
+     * 活动id
+     */
     public Integer shareId;
     /**
      * 用户id
@@ -26,9 +29,12 @@ public class ShareReceiveDetailVo {
      */
     public String mobile;
     /**
-     * 分享商品
+     * 分享商品id
      */
     public Integer goodsId;
+    /**
+     * 分享商品名称
+     */
     public String goodsName;
     /**
      * 奖励级别

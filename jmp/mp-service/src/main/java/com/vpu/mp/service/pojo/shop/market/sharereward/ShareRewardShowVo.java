@@ -14,6 +14,9 @@ import java.util.Set;
  */
 @Data
 public class ShareRewardShowVo {
+    /**
+     * 活动id
+     */
     private Integer id;
     /**
      * 活动名称
@@ -47,7 +50,6 @@ public class ShareRewardShowVo {
      * 邀请人数
      */
     private Integer inviteNum;
-
     /**
      * 活动起始时间
      */
