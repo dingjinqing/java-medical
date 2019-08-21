@@ -40,12 +40,21 @@ public class AdminMemberCardController extends AdminBaseController {
 	}
 	
 	/**
-     * 会员卡 - 更新
+	 * 会员卡 - 更新
      */
 	@PostMapping("/card/update")
 	public JsonResult updateCard(@RequestBody CardParam param) {
 		logger.info("更新会员卡");
 		shop().member.card.updateMemberCard(param);
+		return success();
+	}
+	/**
+	 * 会员卡 - 更新-测试
+     */
+	@PostMapping("/card/test/update")
+	public JsonResult updateCardTest(@RequestBody CardParam param) {
+		logger.info("更新会员卡测试");
+		shop().member.card.updateDiscountPartGoodsByCardId(param);
 		return success();
 	}
 	
