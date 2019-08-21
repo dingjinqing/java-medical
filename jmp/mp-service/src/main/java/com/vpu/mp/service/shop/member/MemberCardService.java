@@ -37,6 +37,8 @@ import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.RANK_TYPE;
 import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.WEEK;
 import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.WEEK_DATE_TYPE;
 import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.RELATED_GOODS_TYPE;
+import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.RELATED_STORE_CATEGORY_TYPE;
+import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.RELATED_PLATFORM_CATEGORY_TYPE;
 import static org.jooq.impl.DSL.count;
 
 import java.sql.Timestamp;
@@ -283,6 +285,28 @@ public class MemberCardService extends ShopBaseService {
 		batchUpdateGoods(goodsIdList,cardIdList,RELATED_GOODS_TYPE);
 	}
 	
+
+	/**
+	 * 根据会员卡id批量更新会员专享商品-商家分类
+	 * @param goodsId
+	 * @param cardIdList
+	 */
+	public void batchUpdateStoreCategory(List<Integer> storeIdList,List<Integer> cardIdList) {
+		logger().info("更新会员专享商品-商家分类");
+		batchUpdateGoods(storeIdList,cardIdList,RELATED_STORE_CATEGORY_TYPE);
+	}
+	
+	/**
+	 * 根据会员卡id批量更新会员专享商品-平台分类
+	 * @param goodsId
+	 * @param cardIdList
+	 */
+	public void batchUpdatePlatformCategory(List<Integer> platformIdList,List<Integer> cardIdList) {
+		batchUpdateGoods(platformIdList,cardIdList,RELATED_PLATFORM_CATEGORY_TYPE);
+	}
+	
+	
+	
 	/**
 	 * 根据会员id以及标签关联类型，批量更新会员专享商品： 商品，平台分类，商家分类
 	 * @param goodsIdList
@@ -327,19 +351,6 @@ public class MemberCardService extends ShopBaseService {
 	
 	
 	
-	/**
-	 * 根据会员卡id批量更新，专属商品，折扣指定商品的： 商品，商家，平台，品牌
-	 * @param card 会员卡参数，主要存户商品id,商家分类id，平台分类id,品牌id
-	 * @param cardIdList 需要批量更新的会员卡id
-	 */
-	public void batchUpdateGoods(CardParam card,List<Integer> cardIdList) {
-		UpdateSetFirstStep<MemberCardRecord> update = db().update(MEMBER_CARD);
-		//buildOptions(card, update);
-		((UpdateWhereStep<MemberCardRecord>) update).where(MEMBER_CARD.ID.in(cardIdList));
-		
-	}
-	
-
 	
 	
 
