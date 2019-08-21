@@ -270,6 +270,19 @@ public class MemberCardService extends ShopBaseService {
 	}
 	
 	/**
+	 * 根据会员卡id批量更新会员专享商品
+	 * @param goodsId
+	 * @param cardIdList
+	 */
+	public void batchUpdateGoods(List<Integer> goodsId,List<Integer> cardIdList) {
+		CardParam card = new CardParam();
+		card.setGoodsId((Integer[]) goodsId.toArray());
+		batchUpdateGoods(card,cardIdList);
+	}
+	
+	
+	
+	/**
 	 * 根据会员卡id批量更新，专属商品，折扣指定商品的： 商品，商家，平台，品牌
 	 * @param card 会员卡参数，主要存户商品id,商家分类id，平台分类id,品牌id
 	 * @param cardIdList 需要批量更新的会员卡id
