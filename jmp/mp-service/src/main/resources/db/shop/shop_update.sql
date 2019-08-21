@@ -758,3 +758,8 @@ CREATE TABLE `b2c_virtual_order` (
 alter table `b2c_mrking_voucher` modify column `least_consume` decimal(10,2) not null default '0.00' comment '满多少可用';
 alter table `b2c_mrking_voucher` drop column `shop_id`;
 alter table `b2c_mrking_voucher` drop column `remain_amount`;
+
+alter table `b2c_mrking_voucher` drop column `is_random`;
+alter table `b2c_mrking_voucher` add column `validity_type`  tinyint(1)   default '0' comment '优惠券有效期类型标记，1领取后开始指定时间段内有效，0固定时间段有效';
+alter table `b2c_mrking_voucher` add column `validity_hour`  mediumint(11) default 0  null comment '优惠券有效小时数';
+alter table `b2c_mrking_voucher` add column `validity_minute`  mediumint(11) default 0  null comment '优惠券有效分钟数';

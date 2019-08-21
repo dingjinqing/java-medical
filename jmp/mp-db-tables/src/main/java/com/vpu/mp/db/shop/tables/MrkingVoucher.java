@@ -43,7 +43,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class MrkingVoucher extends TableImpl<MrkingVoucherRecord> {
 
-    private static final long serialVersionUID = -405257843;
+    private static final long serialVersionUID = -621693077;
 
     /**
      * The reference instance of <code>mini_shop_471752.b2c_mrking_voucher</code>
@@ -122,11 +122,6 @@ public class MrkingVoucher extends TableImpl<MrkingVoucherRecord> {
      * The column <code>mini_shop_471752.b2c_mrking_voucher.enabled</code>.
      */
     public final TableField<MrkingVoucherRecord, Byte> ENABLED = createField("enabled", org.jooq.impl.SQLDataType.TINYINT.nullable(false).defaultValue(org.jooq.impl.DSL.inline("1", org.jooq.impl.SQLDataType.TINYINT)), this, "");
-
-    /**
-     * The column <code>mini_shop_471752.b2c_mrking_voucher.is_random</code>. 是否需要积分兑换
-     */
-    public final TableField<MrkingVoucherRecord, Byte> IS_RANDOM = createField("is_random", org.jooq.impl.SQLDataType.TINYINT.nullable(false).defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.TINYINT)), this, "是否需要积分兑换");
 
     /**
      * The column <code>mini_shop_471752.b2c_mrking_voucher.receive_per_person</code>. 每人限领张数
@@ -252,6 +247,21 @@ public class MrkingVoucher extends TableImpl<MrkingVoucherRecord> {
      * The column <code>mini_shop_471752.b2c_mrking_voucher.update_time</code>. 最后修改时间
      */
     public final TableField<MrkingVoucherRecord, Timestamp> UPDATE_TIME = createField("update_time", org.jooq.impl.SQLDataType.TIMESTAMP.defaultValue(org.jooq.impl.DSL.field("CURRENT_TIMESTAMP", org.jooq.impl.SQLDataType.TIMESTAMP)), this, "最后修改时间");
+
+    /**
+     * The column <code>mini_shop_471752.b2c_mrking_voucher.validity_type</code>. 优惠券有效期类型标记，1领取后开始指定时间段内有效，0固定时间段有效
+     */
+    public final TableField<MrkingVoucherRecord, Byte> VALIDITY_TYPE = createField("validity_type", org.jooq.impl.SQLDataType.TINYINT.defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.TINYINT)), this, "优惠券有效期类型标记，1领取后开始指定时间段内有效，0固定时间段有效");
+
+    /**
+     * The column <code>mini_shop_471752.b2c_mrking_voucher.validity_hour</code>. 优惠券有效小时数
+     */
+    public final TableField<MrkingVoucherRecord, Integer> VALIDITY_HOUR = createField("validity_hour", org.jooq.impl.SQLDataType.INTEGER.defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.INTEGER)), this, "优惠券有效小时数");
+
+    /**
+     * The column <code>mini_shop_471752.b2c_mrking_voucher.validity_minute</code>. 优惠券有效分钟数
+     */
+    public final TableField<MrkingVoucherRecord, Integer> VALIDITY_MINUTE = createField("validity_minute", org.jooq.impl.SQLDataType.INTEGER.defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.INTEGER)), this, "优惠券有效分钟数");
 
     /**
      * Create a <code>mini_shop_471752.b2c_mrking_voucher</code> table reference
