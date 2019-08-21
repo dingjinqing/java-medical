@@ -1,7 +1,7 @@
 package com.vpu.mp.service.pojo.shop.market.seckill;
 
 import com.vpu.mp.service.pojo.shop.config.ShopShareConfig;
-import com.vpu.mp.service.pojo.shop.goods.GoodsView;
+import com.vpu.mp.service.pojo.shop.goods.goods.GoodsView;
 import com.vpu.mp.service.pojo.shop.member.card.SimpleMemberCardVo;
 import lombok.Data;
 

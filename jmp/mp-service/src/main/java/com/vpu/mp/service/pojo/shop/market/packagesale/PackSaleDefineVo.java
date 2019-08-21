@@ -7,7 +7,7 @@ import java.util.List;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 
-import com.vpu.mp.service.pojo.shop.goods.GoodsView;
+import com.vpu.mp.service.pojo.shop.goods.goods.GoodsView;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;

@@ -11,7 +11,7 @@ import org.springframework.stereotype.Service;
 import com.vpu.mp.service.foundation.service.MainBaseService;
 import com.vpu.mp.service.pojo.saas.category.SysCatevo;
 import com.vpu.mp.service.pojo.shop.decoration.ChildCateVo;
-import com.vpu.mp.service.pojo.shop.goods.GoodsPageListVo;
+import com.vpu.mp.service.pojo.shop.goods.goods.GoodsPageListVo;
 
 /**
  * 平台分类

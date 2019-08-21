@@ -1,6 +1,6 @@
 package com.vpu.mp.service.pojo.shop.market.fullcut;
 
-import com.vpu.mp.service.pojo.shop.goods.GoodsView;
+import com.vpu.mp.service.pojo.shop.goods.goods.GoodsView;
 import com.vpu.mp.service.pojo.shop.member.card.SimpleMemberCardVo;
 import lombok.Data;
 

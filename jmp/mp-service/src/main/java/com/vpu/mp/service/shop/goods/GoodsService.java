@@ -1,45 +1,12 @@
 package com.vpu.mp.service.shop.goods;
 
-import static com.vpu.mp.db.shop.Tables.GOODS;
-import static com.vpu.mp.db.shop.Tables.GOODS_BRAND;
-import static com.vpu.mp.db.shop.Tables.GOODS_IMG;
-import static com.vpu.mp.db.shop.Tables.GOODS_SPEC_PRODUCT;
-import static com.vpu.mp.db.shop.Tables.SORT;
-import static com.vpu.mp.service.pojo.shop.goods.GoodsPageListParam.ASC;
-
-import java.math.BigDecimal;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Map;
-
-import org.jooq.DSLContext;
-import org.jooq.InsertValuesStep2;
-import org.jooq.Record;
-import org.jooq.Record1;
-import org.jooq.SelectConditionStep;
-import org.jooq.SelectJoinStep;
-import org.jooq.SelectOnConditionStep;
-import org.jooq.SelectSelectStep;
-import org.jooq.impl.DSL;
-import org.jooq.tools.StringUtils;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
-
 import com.vpu.mp.db.shop.tables.records.GoodsImgRecord;
 import com.vpu.mp.db.shop.tables.records.GoodsRecord;
 import com.vpu.mp.service.foundation.data.DelFlag;
 import com.vpu.mp.service.foundation.service.ShopBaseService;
 import com.vpu.mp.service.foundation.util.PageResult;
 import com.vpu.mp.service.foundation.util.Util;
-import com.vpu.mp.service.pojo.shop.goods.Goods;
-import com.vpu.mp.service.pojo.shop.goods.GoodsBatchOperateParam;
-import com.vpu.mp.service.pojo.shop.goods.GoodsColumnCheckExistParam;
-import com.vpu.mp.service.pojo.shop.goods.GoodsInitialVo;
-import com.vpu.mp.service.pojo.shop.goods.GoodsPageListParam;
-import com.vpu.mp.service.pojo.shop.goods.GoodsPageListVo;
-import com.vpu.mp.service.pojo.shop.goods.GoodsView;
-import com.vpu.mp.service.pojo.shop.goods.GoodsVo;
+import com.vpu.mp.service.pojo.shop.goods.goods.*;
 import com.vpu.mp.service.pojo.shop.goods.label.GoodsLabelCouple;
 import com.vpu.mp.service.pojo.shop.goods.label.GoodsLabelCoupleTypeEnum;
 import com.vpu.mp.service.pojo.shop.goods.label.GoodsLabelListVo;
@@ -48,6 +15,20 @@ import com.vpu.mp.service.pojo.shop.goods.spec.GoodsSpec;
 import com.vpu.mp.service.pojo.shop.goods.spec.GoodsSpecProduct;
 import com.vpu.mp.service.pojo.shop.goods.spec.GoodsSpecVal;
 import com.vpu.mp.service.shop.decoration.ChooseLinkService;
+import org.jooq.*;
+import org.jooq.impl.DSL;
+import org.jooq.tools.StringUtils;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import java.math.BigDecimal;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Map;
+
+import static com.vpu.mp.db.shop.Tables.*;
+import static com.vpu.mp.service.pojo.shop.goods.goods.GoodsPageListParam.ASC;
 
 /**
  * 商品品牌

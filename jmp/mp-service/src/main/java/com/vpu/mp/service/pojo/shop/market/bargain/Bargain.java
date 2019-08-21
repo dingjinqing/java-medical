@@ -3,7 +3,7 @@ package com.vpu.mp.service.pojo.shop.market.bargain;
 import java.math.BigDecimal;
 import java.sql.Timestamp;
 
-import com.vpu.mp.service.pojo.shop.goods.GoodsView;
+import com.vpu.mp.service.pojo.shop.goods.goods.GoodsView;
 
 import lombok.Data;
 
