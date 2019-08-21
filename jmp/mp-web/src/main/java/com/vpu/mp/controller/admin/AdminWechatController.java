@@ -13,12 +13,15 @@ import com.github.binarywang.wxpay.bean.notify.WxPayOrderNotifyResult;
 import com.github.binarywang.wxpay.exception.WxPayException;
 import com.github.binarywang.wxpay.util.SignUtils;
 import com.vpu.mp.db.main.tables.records.MpAuthShopRecord;
+import com.vpu.mp.db.main.tables.records.MpOfficialAccountRecord;
+import com.vpu.mp.service.pojo.saas.shop.officeAccount.MpOfficeAccountListVo;
 import com.vpu.mp.service.pojo.shop.auth.MenuAuthority;
 import com.vpu.mp.service.shop.payment.MpPaymentService;
 import com.vpu.mp.service.wechat.OpenPlatform;
 import com.vpu.mp.service.wechat.WxPayment;
 
 import me.chanjar.weixin.common.error.WxErrorException;
+import me.chanjar.weixin.open.bean.result.WxOpenAuthorizerInfoResult;
 import me.chanjar.weixin.open.bean.result.WxOpenQueryAuthResult;
 
 /**
@@ -48,7 +51,25 @@ public class AdminWechatController extends AdminBaseController {
 			WxOpenQueryAuthResult queryAuthResult = open.getWxOpenComponentService().getQueryAuth(authorizationCode);
 			String appId = queryAuthResult.getAuthorizationInfo().getAuthorizerAppid();
 			if (sysId != null) {
-				// 服务号授权 TODO:
+				// 服务号授权
+				//获取授权方的帐号基本信息
+				WxOpenAuthorizerInfoResult authorizerInfo = open.getWxOpenComponentService().getAuthorizerInfo(appId);
+				if (authorizerInfo.getAuthorizerInfo().getVerifyTypeInfo() == -1
+						|| authorizerInfo.getAuthorizerInfo().getServiceTypeInfo() != 2) {
+					// 请使用认证服务号授权
+					return ("请使用认证服务号授权");
+				}
+				MpOfficeAccountListVo officeAccountByAppId = saas.shop.officeAccount
+						.getOfficeAccountByAppId(authorizerInfo.getAuthorizationInfo().getAuthorizerAppid());
+				if (officeAccountByAppId != null && officeAccountByAppId.getSysId() != sysId) {
+					// 公众号已经授权给其他账号！
+					return ("公众号已经授权给其他账号！");
+				}
+				MpOfficialAccountRecord addMpOfficialAccountInfo = saas.shop.officeAccount.addMpOfficialAccountInfo(sysId, authorizerInfo);
+				saas.shop.officeAccount.bindAllSamePrincipalOpenAppId(addMpOfficialAccountInfo);
+				logger().info("公众号authorizerInfo", authorizerInfo);
+				return "redirect:" + this.mainUrl("/admin/home/main/base_manger/authok");
+
 			}
 			if (shopId != null) {
 				// 小程序授权
@@ -69,10 +90,10 @@ public class AdminWechatController extends AdminBaseController {
 				MpAuthShopRecord addMpAuthAccountInfo = saas.shop.mp.addMpAuthAccountInfo(appId, shopId);
 				saas.shop.mp.bindAllSamePrincipalOpenAppId(addMpAuthAccountInfo);
 
+				logger().info("小程序getQueryAuth", queryAuthResult);
+				return "redirect:" + this.mainUrl("/admin/home/main/base_manger/authok");
 			}
-
-			logger().info("getQueryAuth", queryAuthResult);
-			return "redirect:" + this.mainUrl("/admin/home/main/base_manger/authok");
+			return null;
 		} catch (WxErrorException e) {
 			logger().error("gotoPreAuthUrl", e);
 			throw new RuntimeException(e);
