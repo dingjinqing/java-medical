@@ -30,6 +30,7 @@ import com.vpu.mp.service.pojo.shop.member.MemberInfoVo;
  * @date 2019年8月14日
  */
 @RestController
+@RequestMapping("/api/admin/market/integral/convert")
 public class AdminIntegralConvertController extends AdminBaseController{
 
 	/**
@@ -38,7 +39,7 @@ public class AdminIntegralConvertController extends AdminBaseController{
 	 * @param IntegralConvertListParam
 	 * @return
 	 */
-	@RequestMapping("/api/admin/market/integralconvert/list")
+	@PostMapping("/list")
 	public JsonResult getList(@RequestBody IntegralConvertListParam param) {
 		
 		PageResult<IntegralConvertListVo> pageResult = shop().integralConvertService.getList(param);
@@ -52,7 +53,7 @@ public class AdminIntegralConvertController extends AdminBaseController{
 	 * @param IntegralConvertSwitchParam
 	 * @return
 	 */
-	@RequestMapping("/api/admin/market/integralconvert/switch")
+	@PostMapping("/switch")
 	public JsonResult startOrStop(@RequestBody IntegralConvertSwitchParam param) {
 		
 		shop().integralConvertService.startOrStop(param);
@@ -66,7 +67,7 @@ public class AdminIntegralConvertController extends AdminBaseController{
 	 * @param param
 	 * @return
 	 */
-	@RequestMapping("api/admin/market/integralconvert/delete")
+	@PostMapping("/delete")
 	public JsonResult deleteAct(@RequestBody IntegralConvertSwitchParam param) {
 		shop().integralConvertService.deleteAct(param);
 		return success();
@@ -78,7 +79,7 @@ public class AdminIntegralConvertController extends AdminBaseController{
 	 * @param 
 	 * @return
 	 */
-	@RequestMapping("/api/admin/market/integralconvert/user")
+	@PostMapping("/user")
 	public JsonResult userList(@RequestBody IntegralConvertUserParam param) {
 		
 		PageResult<IntegralConvertUserVo> pageResult = shop().integralConvertService.userList(param);
@@ -91,7 +92,7 @@ public class AdminIntegralConvertController extends AdminBaseController{
 	 * @param 
 	 * @return
 	 */
-	@RequestMapping("/api/admin/market/integralconvert/add")
+	@PostMapping("/add")
 	public JsonResult addAction(@RequestBody IntegralConvertAddParam param) {
 		
 		shop().integralConvertService.addAction(param);
@@ -104,7 +105,7 @@ public class AdminIntegralConvertController extends AdminBaseController{
 	 * @param 
 	 * @return
 	 */
-	@RequestMapping("/api/admin/market/integralconvert/product")
+	@PostMapping("/product")
 	public JsonResult getproduct(@RequestBody IntegralConvertGoodsParam param) {
 		
 		List<IntegralConvertGoodsVo> vo = shop().integralConvertService.getproduct(param);
@@ -117,7 +118,7 @@ public class AdminIntegralConvertController extends AdminBaseController{
 	 * @param 
 	 * @return
 	 */
-	@RequestMapping("/api/admin/market/integralconvert/select")
+	@PostMapping("/select")
 	public JsonResult selectOne(@RequestBody IntegralConvertSelectParam param) {
 		
 		IntegralConvertSelectVo vo = shop().integralConvertService.selectOne(param);
@@ -129,7 +130,7 @@ public class AdminIntegralConvertController extends AdminBaseController{
 	 * @param 
 	 * @return
 	 */
-	@RequestMapping("/api/admin/market/integralconvert/update")
+	@PostMapping("/update")
 	public JsonResult updateAction(@RequestBody IntegralConvertAddParam param) {
 		
 		shop().integralConvertService.updateAction(param);
@@ -141,7 +142,7 @@ public class AdminIntegralConvertController extends AdminBaseController{
      * @param
      * @return JsonResult
      */
-    @PostMapping("/api/admin/market/integralconvert/newuser")
+    @PostMapping("/newuser")
     public JsonResult integralNewUserList(@RequestBody MarketSourceUserListParam param) {
         PageResult<MemberInfoVo> pageResult = shop().integralConvertService.integralNewUserList(param);
         return success(pageResult);
@@ -153,7 +154,7 @@ public class AdminIntegralConvertController extends AdminBaseController{
      * @param
      * @return JsonResult
      */
-    @PostMapping("/api/admin/market/integralconvert/order")
+    @PostMapping("/order")
     public JsonResult integralOrderList(@RequestBody MarketOrderListParam param) {
         PageResult<IntegralConvertOrderVo> pageList = shop().integralConvertService.interalOrderList(param);
         return success(pageList);
