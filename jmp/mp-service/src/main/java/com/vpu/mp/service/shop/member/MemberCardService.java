@@ -51,8 +51,10 @@ import javax.validation.Valid;
 import org.jooq.InsertValuesStep7;
 import org.jooq.Result;
 import org.jooq.SelectSeekStep1;
+import org.jooq.UpdateSetFirstStep;
+import org.jooq.UpdateWhereStep;
+import org.junit.Test;
 import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
 import com.vpu.mp.db.shop.tables.records.MemberCardRecord;
@@ -90,35 +92,31 @@ import com.vpu.mp.service.pojo.shop.operation.RecordContentTemplate;
  */
 @Service
 public class MemberCardService extends ShopBaseService {
-	Logger logger = LoggerFactory.getLogger(this.getClass());
-	
+	Logger logger = logger();
+
 	/**
 	 * 添加会员卡
 	 */
 	public JsonResultCode addMemberCard(CardParam card) {
 		/** 处理会员卡的基本信息 */
 		MemberCardRecord cardRecord = dealWithCard(card);
-		
+
 		/** 插入数据库 */
 		insertIntoMemberCard(cardRecord);
 		return null;
 	}
-	
-	
+
 	/**
 	 * 更新会员卡
 	 */
 	public void updateMemberCard(CardParam card) {
 		/** 处理会员卡的基本信息 */
 		MemberCardRecord cardRecord = dealWithCard(card);
-		
+
+		// TODO 如果Record的属性值设置为null,会跟新数据库信息为null吗
 		/** 更新数据 */
-		updateMemberCardById(cardRecord,card.getId());
+		updateMemberCardById(cardRecord, card.getId());
 	}
-	
-
-
-
 
 	/**
 	 * 处理会员卡的基本信息
@@ -193,7 +191,7 @@ public class MemberCardService extends ShopBaseService {
 		} else if (RANK_TYPE.equals(cardType)) {
 			dealWithRankCard(card, cardRecord);
 		}
-		
+
 		return cardRecord;
 	}
 
@@ -220,12 +218,16 @@ public class MemberCardService extends ShopBaseService {
 			if (DISCOUNT_ALL_GOODS.equals(card.getDiscountIsAll())) {
 				cardRecord.setDiscountIsAll(DISCOUNT_ALL_GOODS);
 			} else if (DISCOUNT_PART_GOODS.equals(card.getDiscountIsAll())) {
-				// TODO 处理需要折扣的部分商品
 				cardRecord.setDiscountIsAll(DISCOUNT_PART_GOODS);
+				/** 处理需要折扣的部分商品,平台,商家 */
+				updateDiscountPartGoods(card, cardRecord);
+
 			}
+
 			/** 2. 会员专享商品 */
 			if (BUTTON_ON.equals(card.getPowerPayOwnGood())) {
-				// TODO 处理允许会员专享的商家，分类，平台等
+				// TODO 处理允许会员专享的商品，商家，分类，平台等
+
 				flag = true;
 			}
 			/** 3. 积分获取 */
@@ -233,20 +235,102 @@ public class MemberCardService extends ShopBaseService {
 				flag = true;
 				/** 积分 */
 				cardRecord.setSorce(card.getScore());
-				
+
 				/** 购物送积分策略json数据 */
 				ScoreJson scoreJson = card.getScoreJson();
 				cardRecord.setBuyScore(Util.toJson(scoreJson));
-			}else {
-				//准备设置为空
+			} else {
+				// 准备设置为空
 			}
 
 			if (!flag && RANK_TYPE.equals(cardType)) {
 				/** 必须选择一项会员权益 针对等级卡 */
 				throw new IllegalArgumentException("必须选择一项会员权益 针对等级卡");
-				//JsonResultCode.CODE_MEMBER_CARD_RIGHTS_EMPTY;
+				// JsonResultCode.CODE_MEMBER_CARD_RIGHTS_EMPTY;
 			}
 
+		}
+	}
+
+	/**
+	 * 通过会员卡id,更新折扣指定商品信息： 商品，商家，平台等信息
+	 * 
+	 * @param card
+	 */
+	public void updateDiscountPartGoodsByCardId(CardParam card) {
+		logger().info("更新会员折扣指定商品");
+		MemberCardRecord cardRecord = new MemberCardRecord();
+		Integer id = card.getId();
+
+		/** 准备更新数据 */
+		updateDiscountPartGoods(card, cardRecord);
+
+		/** 更新到数据库 */
+		updateMemberCardById(cardRecord, id);
+	}
+	
+	/**
+	 * 根据会员卡id批量更新，专属商品，折扣指定商品的： 商品，商家，平台，品牌
+	 * @param card 会员卡参数，主要存户商品id,商家分类id，平台分类id,品牌id
+	 * @param cardIdList 需要批量更新的会员卡id
+	 */
+	public void batchUpdateGoods(CardParam card,List<Integer> cardIdList) {
+		UpdateSetFirstStep<MemberCardRecord> update = db().update(MEMBER_CARD);
+		
+		/** 折扣指定商品 */
+		/** 商品 */
+		if(card.getGoodsId() != null) {
+			update.set(MEMBER_CARD.DISCOUNT_GOODS_ID, Util.listToString(Arrays.asList(card.getGoodsId())));
+		}
+		
+		/** 平台分类 */
+		if(card.getPlatformCategoryIds()!=null) {
+			update.set(MEMBER_CARD.DISCOUNT_CAT_ID,Util.listToString(Arrays.asList(card.getPlatformCategoryIds())));
+		}
+		
+		/** 商家分类  */
+		if(card.getShopCategoryIds()!=null) {
+			update.set(MEMBER_CARD.DISCOUNT_SORT_ID,Util.listToString(Arrays.asList(card.getShopCategoryIds())));
+		}
+		
+		//TODO品牌
+		/** 会员专享商品 */
+		
+		
+		((UpdateWhereStep<MemberCardRecord>) update).where(MEMBER_CARD.ID.in(cardIdList));
+		
+	}
+	
+	
+	
+	
+
+	/**
+	 * 更新折扣指定商品信息： 商品，商家，平台
+	 * 
+	 * @param card
+	 * @param cardRecord
+	 */
+	private void updateDiscountPartGoods(CardParam card, MemberCardRecord cardRecord) {
+		logger().info("更新折扣指定商品信息： 商品，商家，平台");
+		/** 添加商品 */
+		if (card.getGoodsId() != null) {
+			String discountGoodsIds = Util.listToString(Arrays.asList(card.getGoodsId()));
+			logger().info("折扣商品id: " + discountGoodsIds);
+			cardRecord.setDiscountGoodsId(discountGoodsIds);
+		}
+
+		/** 折扣商家分类id */
+		if (card.getShopCategoryIds() != null) {
+			String discountSortIds = Util.listToString(Arrays.asList(card.getShopCategoryIds()));
+			logger().info("折扣商家分类id " + discountSortIds);
+			cardRecord.setDiscountSortId(discountSortIds);
+		}
+
+		/** 添加平台 */
+		if (card.getPlatformCategoryIds() != null) {
+			String discountCatId = Util.listToString(Arrays.asList(card.getPlatformCategoryIds()));
+			logger().info("折扣平台分类id " + discountCatId);
 		}
 	}
 
@@ -389,63 +473,61 @@ public class MemberCardService extends ShopBaseService {
 	 * @param cardRecord
 	 */
 	private int insertIntoMemberCard(MemberCardRecord cardRecord) {
-		
+
 		return db().executeInsert(cardRecord);
 	}
 
 	/**
 	 * 会员卡数据更新
+	 * 
 	 * @param cardRecord
 	 */
-	private void updateMemberCardById(MemberCardRecord cardRecord,Integer id) {
+	private void updateMemberCardById(MemberCardRecord cardRecord, Integer id) {
 		int num = db().executeUpdate(cardRecord, MEMBER_CARD.ID.eq(id));
-		logger.info("成功更新： "+ num + " 行数据");
+		logger.info("成功更新： " + num + " 行数据");
 	}
-	
-	
+
 	/**
 	 * 分页查询等级会员卡
+	 * 
 	 * @param param
 	 * @return
 	 */
 	public PageResult<RankCardVo> getRankCardList(SearchCardParam param) {
 		/** 构建sql语句 */
 		SelectSeekStep1<MemberCardRecord, Integer> select = db().selectFrom(MEMBER_CARD)
-									.where(MEMBER_CARD.CARD_TYPE.equal(RANK_TYPE))
-									.and(MEMBER_CARD.DEL_FLAG.equal(DELETE_NO))
-									.orderBy(MEMBER_CARD.ID.desc());
-		
-		PageResult<RankCardVo> pageResult = this.getPageResult(select, param.getCurrentPage(), param.getPageRows(),RankCardVo.class);
+				.where(MEMBER_CARD.CARD_TYPE.equal(RANK_TYPE)).and(MEMBER_CARD.DEL_FLAG.equal(DELETE_NO))
+				.orderBy(MEMBER_CARD.ID.desc());
+
+		PageResult<RankCardVo> pageResult = this.getPageResult(select, param.getCurrentPage(), param.getPageRows(),
+				RankCardVo.class);
 		/** 执行转换 */
-		pageResult.dataList.stream().forEach(vo->vo.changeJsonCfg());
+		pageResult.dataList.stream().forEach(vo -> vo.changeJsonCfg());
 		return pageResult;
 	}
 
 	/**
 	 * 分页查询限次会员卡
+	 * 
 	 * @param param
 	 * @return
 	 */
 	public PageResult<LimitNumCardVo> getLimitCardList(SearchCardParam param) {
 		/** 构建select语句 */
-	
+
 		SelectSeekStep1<MemberCardRecord, Integer> select = db().selectFrom(MEMBER_CARD)
-			.where(MEMBER_CARD.CARD_TYPE.equal(LIMIT_NUM_TYPE))
-			.and(MEMBER_CARD.DEL_FLAG.equal(DELETE_NO))
-			.orderBy(MEMBER_CARD.ID.desc());
-			
-		PageResult<LimitNumCardVo> pageResult = this.getPageResult(select, param.getCurrentPage(), param.getPageRows(),LimitNumCardVo.class);
+				.where(MEMBER_CARD.CARD_TYPE.equal(LIMIT_NUM_TYPE)).and(MEMBER_CARD.DEL_FLAG.equal(DELETE_NO))
+				.orderBy(MEMBER_CARD.ID.desc());
+
+		PageResult<LimitNumCardVo> pageResult = this.getPageResult(select, param.getCurrentPage(), param.getPageRows(),
+				LimitNumCardVo.class);
 		/** 查询领取次数 */
-		Map<Integer, Integer> intoMap = db().select(USER_CARD.CARD_ID,count())
-											.from(USER_CARD)
-											.groupBy(USER_CARD.CARD_ID)
-											.fetch()
-											.intoMap(USER_CARD.CARD_ID, count());
-		
-		
-		for(LimitNumCardVo vo: pageResult.dataList) {
+		Map<Integer, Integer> intoMap = db().select(USER_CARD.CARD_ID, count()).from(USER_CARD)
+				.groupBy(USER_CARD.CARD_ID).fetch().intoMap(USER_CARD.CARD_ID, count());
+
+		for (LimitNumCardVo vo : pageResult.dataList) {
 			/** 设置未领取值 */
-			vo.setHasSend(intoMap.get(vo.getId())==null?0:intoMap.get(vo.getId()));
+			vo.setHasSend(intoMap.get(vo.getId()) == null ? 0 : intoMap.get(vo.getId()));
 			vo.changeJsonCfg();
 		}
 		return pageResult;
@@ -453,29 +535,32 @@ public class MemberCardService extends ShopBaseService {
 
 	/**
 	 * 分页查询普通会员卡
+	 * 
 	 * @param param
 	 */
 	public PageResult<NormalCardVo> getNormalCardList(SearchCardParam param) {
 		/**
-		 * select card_name from b2c_member_card where card_type=0 and is_delete=0 order by id desc;
+		 * select card_name from b2c_member_card where card_type=0 and is_delete=0 order
+		 * by id desc;
 		 * 
 		 */
 		SelectSeekStep1<MemberCardRecord, Integer> select = db().selectFrom(MEMBER_CARD)
-			.where(MEMBER_CARD.CARD_TYPE.equal(NORMAL_TYPE))
-			.and(MEMBER_CARD.DEL_FLAG.equal(DELETE_NO))
-			.orderBy(MEMBER_CARD.ID.desc());
-		
-		PageResult<NormalCardVo> pageResult = this.getPageResult(select, param.getCurrentPage(), param.getPageRows(), NormalCardVo.class);
+				.where(MEMBER_CARD.CARD_TYPE.equal(NORMAL_TYPE)).and(MEMBER_CARD.DEL_FLAG.equal(DELETE_NO))
+				.orderBy(MEMBER_CARD.ID.desc());
+
+		PageResult<NormalCardVo> pageResult = this.getPageResult(select, param.getCurrentPage(), param.getPageRows(),
+				NormalCardVo.class);
 		/** 将json配置文件转化成合适的数据给前端 */
-		for(NormalCardVo vo: pageResult.dataList) {
+		for (NormalCardVo vo : pageResult.dataList) {
 			vo.changeJsonCfg();
 		}
-		
+
 		return pageResult;
 	}
 
 	/**
 	 * 获取会员卡列表
+	 * 
 	 * @param param
 	 * @return
 	 */
@@ -483,13 +568,13 @@ public class MemberCardService extends ShopBaseService {
 
 		Byte cardType = param.getCardType();
 		/** 处理普通会员卡 */
-		if(NORMAL_TYPE.equals(cardType)) {
+		if (NORMAL_TYPE.equals(cardType)) {
 			logger.info("正在分页查询普通会员卡");
 			return getNormalCardList(param);
-		}else if(LIMIT_NUM_TYPE.equals(cardType)) {
+		} else if (LIMIT_NUM_TYPE.equals(cardType)) {
 			logger.info("正在分页查询限次会员卡");
 			return getLimitCardList(param);
-		}else if(RANK_TYPE.equals(cardType)) {
+		} else if (RANK_TYPE.equals(cardType)) {
 			logger.info("正在分页查询等级会员卡");
 			return getRankCardList(param);
 		}
@@ -498,6 +583,7 @@ public class MemberCardService extends ShopBaseService {
 
 	/**
 	 * 设置会员卡启动或禁止状态
+	 * 
 	 * @param param
 	 */
 	public void powerCard(PowerCardParam param) {
@@ -505,25 +591,29 @@ public class MemberCardService extends ShopBaseService {
 		 * UPDATE b2c_member_card set flag = 51 where id=825;
 		 */
 		/** SQL语句执行 */
-		int result = db().update(MEMBER_CARD).set(MEMBER_CARD.FLAG, param.getFlag()).where(MEMBER_CARD.ID.eq(param.getId())).execute();
-		logger.info("设置会员卡状态成功，受影响行： "+result);
+		int result = db().update(MEMBER_CARD).set(MEMBER_CARD.FLAG, param.getFlag())
+				.where(MEMBER_CARD.ID.eq(param.getId())).execute();
+		logger.info("设置会员卡状态成功，受影响行： " + result);
 	}
 
 	/**
 	 * 删除会员卡
+	 * 
 	 * @param
 	 */
 	public void deleteCard(@Valid CardIdParam param) {
 		/**
-		 *  update `b2c_member_card` set `is_delete` = '1' where `id` = '819'  
+		 * update `b2c_member_card` set `is_delete` = '1' where `id` = '819'
 		 */
 		/** 假删除会员卡 */
-		int result = db().update(MEMBER_CARD).set(MEMBER_CARD.DEL_FLAG, DELETE_YES).where(MEMBER_CARD.ID.eq(param.getId())).execute();
-		logger.info("删除会员卡成功，受影响行： "+result);
+		int result = db().update(MEMBER_CARD).set(MEMBER_CARD.DEL_FLAG, DELETE_YES)
+				.where(MEMBER_CARD.ID.eq(param.getId())).execute();
+		logger.info("删除会员卡成功，受影响行： " + result);
 	}
 
 	/**
 	 * 根据ID获取该会员卡的详细信息
+	 * 
 	 * @param param
 	 * @return
 	 */
@@ -531,23 +621,23 @@ public class MemberCardService extends ShopBaseService {
 		MemberCardRecord record = db().selectFrom(MEMBER_CARD).where(MEMBER_CARD.ID.eq(param.getId())).fetchOne();
 		/** 会员卡类型 */
 		Byte cardType = record.getCardType();
-		if(NORMAL_TYPE.equals(cardType)) {
+		if (NORMAL_TYPE.equals(cardType)) {
 			logger.info("查询出普通会员卡");
 			NormalCardToVo card = record.into(NormalCardToVo.class);
-			/**执行策略 */
+			/** 执行策略 */
 			card.changeJsonCfg();
 			return card;
-		}else if(LIMIT_NUM_TYPE.equals(cardType)) {
+		} else if (LIMIT_NUM_TYPE.equals(cardType)) {
 			logger.info("查询出限次会员卡");
 			/** 执行策略 */
 			LimitNumCardToVo card = record.into(LimitNumCardToVo.class);
 			/** 查询已经被领取的数量 */
-			int hasSend  = 0;
-			hasSend = db().fetchCount(USER_CARD,USER_CARD.CARD_ID.eq(param.getId()));
+			int hasSend = 0;
+			hasSend = db().fetchCount(USER_CARD, USER_CARD.CARD_ID.eq(param.getId()));
 			card.setHasSend(hasSend);
 			card.changeJsonCfg();
 			return card;
-		}else if(RANK_TYPE.equals(cardType)){
+		} else if (RANK_TYPE.equals(cardType)) {
 			logger.info("查询出等级会员卡");
 			RankCardToVo card = record.into(RankCardToVo.class);
 			card.changeJsonCfg();
@@ -556,45 +646,49 @@ public class MemberCardService extends ShopBaseService {
 		return null;
 	}
 
-    /**
-     * 根据会员卡ID字符串（逗号分隔）取会员卡信息列表
-     * 
-     */
-	public List<SimpleMemberCardVo> getMemberCardByCardIdsString(String cardIdsString){
-	    return db().select(MEMBER_CARD.ID,MEMBER_CARD.CARD_NAME).from(MEMBER_CARD).where(DslPlus.findInSet(cardIdsString,MEMBER_CARD.ID)).and(MEMBER_CARD.DEL_FLAG.eq(DelFlag.NORMAL.getCode())).fetchInto(SimpleMemberCardVo.class);
-    }
-	
+	/**
+	 * 根据会员卡ID字符串（逗号分隔）取会员卡信息列表
+	 * 
+	 */
+	public List<SimpleMemberCardVo> getMemberCardByCardIdsString(String cardIdsString) {
+		return db().select(MEMBER_CARD.ID, MEMBER_CARD.CARD_NAME).from(MEMBER_CARD)
+				.where(DslPlus.findInSet(cardIdsString, MEMBER_CARD.ID))
+				.and(MEMBER_CARD.DEL_FLAG.eq(DelFlag.NORMAL.getCode())).fetchInto(SimpleMemberCardVo.class);
+	}
+
 	/**
 	 * 会员卡列表弹窗
+	 * 
 	 * @return
 	 */
 	public MemberCardVo getAllCardList() {
-		
+
 		Result<MemberCardRecord> cardRecords = selectAllMemberCard();
 		MemberCardVo vo = new MemberCardVo();
-		/** 分类  普通 | 限次 | 等级 会员卡 */
+		/** 分类 普通 | 限次 | 等级 会员卡 */
 		logger.info("正在分类处理");
-		for(MemberCardRecord card: cardRecords) {
+		for (MemberCardRecord card : cardRecords) {
 			Byte cardType = card.getCardType();
 			MemberCard cardVo = card.into(MemberCard.class);
-			/**执行策略 */
+			/** 执行策略 */
 			cardVo.changeJsonCfg();
-			
-			if(NORMAL_TYPE.equals(cardType)){
+
+			if (NORMAL_TYPE.equals(cardType)) {
 				vo.getNormalCard().add(cardVo);
-			}else if(LIMIT_NUM_TYPE.equals(cardType)) {
+			} else if (LIMIT_NUM_TYPE.equals(cardType)) {
 				vo.getLimitNumCard().add(cardVo);
-			}else if(RANK_TYPE.equals(cardType)) {
+			} else if (RANK_TYPE.equals(cardType)) {
 				vo.getRankCard().add(cardVo);
 			}
-		
+
 		}
-		
+
 		return vo;
 	}
 
 	/**
 	 * 查询所有的会员卡
+	 * 
 	 * @return
 	 */
 	private Result<MemberCardRecord> selectAllMemberCard() {
@@ -607,113 +701,114 @@ public class MemberCardService extends ShopBaseService {
 	 * 为会员分配会员卡
 	 */
 	public void addCardForMember(AddMemberCardParam param) {
-		
+
 		/** 准备数据 */
-		
+
 		int sizeOfUserId = param.getUserIdList().size();
 		int sizeOfCardId = param.getCardIdList().size();
 		List<Integer> cardIdList = param.getCardIdList();
 		List<Integer> userIdList = param.getUserIdList();
-		
+
 		/** cardNo */
 		Queue<String> cardNoList = new LinkedList<>();
-		for(int i = 0;i<sizeOfUserId;i++) {
-			for(int j = 0;j<sizeOfCardId;j++) {
+		for (int i = 0; i < sizeOfUserId; i++) {
+			for (int j = 0; j < sizeOfCardId; j++) {
 				/** 确保cardNo唯一性 */
-				while(true) {
+				while (true) {
 					String cardNo = generateCardNo(cardIdList.get(j));
-					if(!cardNoList.contains(cardNo)) {
+					if (!cardNoList.contains(cardNo)) {
 						cardNoList.add(cardNo);
 						break;
 					}
 				}
 			}
 		}
-		
-		
+
 		/** 查询所有的会员卡 */
-		Result<MemberCardRecord> memberCardList = db().selectFrom(MEMBER_CARD).where(MEMBER_CARD.ID.in(param.getCardIdList())).fetch();
-		logger.info("一共查询到: "+memberCardList.size()+" 张会员卡");
-		
-		
+		Result<MemberCardRecord> memberCardList = db().selectFrom(MEMBER_CARD)
+				.where(MEMBER_CARD.ID.in(param.getCardIdList())).fetch();
+		logger.info("一共查询到: " + memberCardList.size() + " 张会员卡");
+
 		LocalDateTime now = LocalDateTime.now();
-		LocalDateTime expireTime=null;
+		LocalDateTime expireTime = null;
 		/** 过期时间-多少日内 */
-		for(MemberCardRecord memberCard:memberCardList) {
-			if(DURING_TIME.equals(memberCard.getExpireType())) {
+		for (MemberCardRecord memberCard : memberCardList) {
+			if (DURING_TIME.equals(memberCard.getExpireType())) {
 				/** 计算过期时间 */
 				Byte dateType = memberCard.getDateType();
 				/** 领取之日起n */
 				Integer receiveDay = memberCard.getReceiveDay();
-				if(DAY_DATE_TYPE.equals(dateType)) {
+				if (DAY_DATE_TYPE.equals(dateType)) {
 					expireTime = now.plusDays(receiveDay);
-				}else if(WEEK_DATE_TYPE.equals(dateType)) {
-					expireTime = now.plusDays(WEEK*receiveDay);
-				}else if(MONTH_DATE_TYPE.equals(dateType)) {
-					expireTime = now.plusDays(MONTH*receiveDay);
+				} else if (WEEK_DATE_TYPE.equals(dateType)) {
+					expireTime = now.plusDays(WEEK * receiveDay);
+				} else if (MONTH_DATE_TYPE.equals(dateType)) {
+					expireTime = now.plusDays(MONTH * receiveDay);
 				}
 				memberCard.setEndTime(Timestamp.valueOf(expireTime));
 			}
 		}
-		
-		
+
 		/** insert */
-		/**USER_CARD.SURPLUS-门店兑换次数，USER_CARD.EXCHANG_SURPLUS-商品兑换次数*/
-		InsertValuesStep7<UserCardRecord, Integer, Integer, String, Timestamp, Integer, Timestamp, Integer> insert = db().insertInto(USER_CARD)
-				 						.columns(USER_CARD.USER_ID,USER_CARD.CARD_ID,USER_CARD.CARD_NO,USER_CARD.EXPIRE_TIME,
-				 							USER_CARD.SURPLUS,USER_CARD.ACTIVATION_TIME,USER_CARD.EXCHANG_SURPLUS);
-		
-		
-		for(int i = 0;i<sizeOfUserId;i++) {
-			for(int j = 0;j<sizeOfCardId;j++) {
+		/** USER_CARD.SURPLUS-门店兑换次数，USER_CARD.EXCHANG_SURPLUS-商品兑换次数 */
+		InsertValuesStep7<UserCardRecord, Integer, Integer, String, Timestamp, Integer, Timestamp, Integer> insert = db()
+				.insertInto(USER_CARD).columns(USER_CARD.USER_ID, USER_CARD.CARD_ID, USER_CARD.CARD_NO,
+						USER_CARD.EXPIRE_TIME, USER_CARD.SURPLUS, USER_CARD.ACTIVATION_TIME, USER_CARD.EXCHANG_SURPLUS);
+
+		for (int i = 0; i < sizeOfUserId; i++) {
+			for (int j = 0; j < sizeOfCardId; j++) {
 				MemberCardRecord memberCard = memberCardList.get(j);
-				insert.values(userIdList.get(i),cardIdList.get(j),cardNoList.poll(),memberCard.getEndTime(),memberCard.getCount(),Timestamp.valueOf(now),memberCard.getExchangCount());
+				insert.values(userIdList.get(i), cardIdList.get(j), cardNoList.poll(), memberCard.getEndTime(),
+						memberCard.getCount(), Timestamp.valueOf(now), memberCard.getExchangCount());
 			}
 		}
-		
+
 		int execute = insert.execute();
-		logger.info("成功添加： "+execute+" 行记录");
-		
-		
+		logger.info("成功添加： " + execute + " 行记录");
+
 		/** add record */
-		//List<String> userNameList = db().select(USER.USERNAME).from(USER).where(USER.USER_ID.in(userIdList)).fetch().into(String.class);
-		Map<Integer, String> userNameMap = db().select(USER.USER_ID,USER.USERNAME).from(USER).where(USER.USER_ID.in(userIdList)).fetch().intoMap(USER.USER_ID, USER.USERNAME);
+		// List<String> userNameList =
+		// db().select(USER.USERNAME).from(USER).where(USER.USER_ID.in(userIdList)).fetch().into(String.class);
+		Map<Integer, String> userNameMap = db().select(USER.USER_ID, USER.USERNAME).from(USER)
+				.where(USER.USER_ID.in(userIdList)).fetch().intoMap(USER.USER_ID, USER.USERNAME);
 		List<String> tmpData = new ArrayList<>();
 		String messageFormat = RecordContentTemplate.MEMBER_CARD_SEND.getMessage();
 		/** generate template message */
-		for(int i=0;i<sizeOfUserId;i++) {
-			for(int j=0;j<sizeOfCardId;j++) {
-				tmpData.add(String.format(messageFormat, userIdList.get(i),userNameMap.get(userIdList.get(i)),memberCardList.get(j).getCardName()));
+		for (int i = 0; i < sizeOfUserId; i++) {
+			for (int j = 0; j < sizeOfCardId; j++) {
+				tmpData.add(String.format(messageFormat, userIdList.get(i), userNameMap.get(userIdList.get(i)),
+						memberCardList.get(j).getCardName()));
 			}
 		}
-		
-		saas().getShopApp(getShopId()).record.insertRecord(Arrays.asList(new Integer[] { RecordContentTemplate.MEMBER_CARD_SEND.code }), tmpData.stream().toArray(String[]::new));
+
+		saas().getShopApp(getShopId()).record.insertRecord(
+				Arrays.asList(new Integer[] { RecordContentTemplate.MEMBER_CARD_SEND.code }),
+				tmpData.stream().toArray(String[]::new));
 	}
-	
 
 	/**
 	 * 生成会员卡号
 	 */
 	public String generateCardNo(int cardId) {
 		StringBuilder cardNo = new StringBuilder();
-		
-		for(int i = 0;i<Integer.MAX_VALUE;i++) {
+
+		for (int i = 0; i < Integer.MAX_VALUE; i++) {
 			/** 会员卡号 = 店铺id+两位随机数+四位会员卡id+四位随机数 */
 			cardNo.append(getShopId());
-			cardNo.append(Util.randomInteger(10,100));
+			cardNo.append(Util.randomInteger(10, 100));
 			cardNo.append(String.format("%04d", cardId).substring(0, 4));
-			cardNo.append(Util.randomInteger(1000,10000));
-			
+			cardNo.append(Util.randomInteger(1000, 10000));
+
 			/** 确保数据库会员卡号具有唯一性 */
 			int count = db().fetchCount(USER_CARD, USER_CARD.CARD_NO.eq(cardNo.toString()));
-			if(count == 0) {
+			if (count == 0) {
 				break;
 			}
 			/** clear string buffer */
 			cardNo.setLength(0);
 		}
-		
-		logger.info("cardNo: "+cardNo.toString());
+
+		logger.info("cardNo: " + cardNo.toString());
 		return cardNo.toString();
 	}
 }
