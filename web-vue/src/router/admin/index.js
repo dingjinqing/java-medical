@@ -528,6 +528,19 @@ const routes = [
                 '@/view/admin/index/leftNavComponents/first_market_manage/first_market/ordinaryCoupon'
               )
           },
+          // 好友助力
+          {
+            path: '/admin/home/main/friendHelp',
+            name: 'promote',
+            meta: {
+              crumbTitle: 'router.promote',
+              meta: 'first_market_manage'
+            },
+            component: () =>
+              import(
+                '@/view/admin/index/leftNavComponents/first_market_manage/friendHelp/friendHelp'
+              )
+          },
           // 添加优惠券活动
           {
             path: '/admin/home/main/addyCoupon',
