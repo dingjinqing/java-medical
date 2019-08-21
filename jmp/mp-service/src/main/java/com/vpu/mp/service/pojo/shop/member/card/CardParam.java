@@ -48,9 +48,9 @@ public class CardParam {
 	/** 专享商品 */
 	/** 商品id */
 	private Integer[] ownGoodsId;
-	/** 商家id */
+	/** 商家分类id */
 	private Integer[] ownShopCategoryIds;
-	/** 平台id  */
+	/** 平台分类id  */
 	private Integer[] ownPlatFormCategoryIds;
 	
 	
