@@ -18,7 +18,6 @@
         </div>
         <div class="add_coupon">
           <el-button
-            @click="addCoupon()"
             type="primary"
             size="small"
           >添加优惠券</el-button>
@@ -120,6 +119,33 @@
         </el-table-column>
       </el-table>
     </div>
+    <!--禁止登陆弹窗-->
+    <div class="balanceDialo">
+      <el-dialog
+        title="禁止登陆"
+        :visible.sync="noLandingDialogVisible"
+        width="40%"
+        :modal-append-to-body="false"
+      >
+        <div
+          class="balanceDialogDiv"
+          style="margin-bottom:30px"
+        >
+          <span style="color:#f66">提示：</span>
+          <span>禁止登陆后会员将不能登陆了，确定禁止登陆吗?</span>
+        </div>
+        <span
+          slot="footer"
+          class="dialog-footer"
+        >
+          <el-button @click="noLandingDialogVisible = false">取 消</el-button>
+          <el-button
+            type="primary"
+            @click="noLandingDialogVisible = false"
+          >确 定</el-button>
+        </span>
+      </el-dialog>
+    </div>
   </div>
 
 </template>
@@ -180,11 +206,6 @@ export default {
           alert('删除成功！')
           this.seacherCouponList()
         }
-      })
-    },
-    addCoupon () {
-      this.$router.push({
-        name: 'add_coupon'
       })
     }
   }

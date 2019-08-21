@@ -442,6 +442,33 @@ const routes = [
                 '@/view/admin/index/leftNavComponents/first_market_manage/first_market/firstMarketManage'
               )
           },
+          // 砍价
+          {
+            path: '/admin/home/main/bargain',
+            name: 'kanjia',
+            meta: {
+              crumbTitle: 'router.kanjia',
+              meta: 'first_market_manage',
+              category: 'first_market_manage'
+            },
+            component: () =>
+              import(
+                '@/view/admin/index/leftNavComponents/first_market_manage/bargain/bargainIndex'
+              )
+          },
+          // 多人拼团
+          {
+            path: '/admin/home/main/spellGroup',
+            name: 'pin_group',
+            meta: {
+              crumbTitle: 'router.pin_group',
+              meta: 'first_market_manage'
+            },
+            component: () =>
+              import(
+                '@/view/admin/index/leftNavComponents/first_market_manage/spellGroup/spellGroup'
+              )
+          },
           // 普通优惠券
           {
             path: '/admin/home/main/ordinaryCoupon',

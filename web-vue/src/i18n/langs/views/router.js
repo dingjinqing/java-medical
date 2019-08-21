@@ -41,6 +41,10 @@ export const cn = {
   picture_setting: ['小程序管理', '自定义页面装修'],
   // 营销管理
   market_manage: ['营销管理'],
+  // 营销管理 多人拼团
+  pin_group: ['营销管理', '多人拼团'],
+  // 营销管理 砍价
+  kanjia: ['营销管理', '砍价'],
   // 营销管理 普通优惠券
   ordinary_coupon: ['营销管理', '普通优惠券']
 }

@@ -139,7 +139,7 @@
           <el-button
             type="text"
             style="color:#000"
-            @click="handleEditAccount(scope.row)"
+            @click="handleEditAccount(scope.row.sysId, scope.row.userName)"
           >
             {{$t('shopAccountList.ashopAccountList.edit')}}
           </el-button>
@@ -227,15 +227,25 @@ export default {
           title: userName
         }
       })
-      console.log(this.userName)
     },
-    handleEditAccount (scope) {
-      console.log(scope)
-      console.log(scope.sysId)
-      console.log(scope.userName)
-      // console.log(scope.sysId, scope.accountName)
-      this.name = 'third'
-      this.$emit('send', this.name)
+    handleEditAccount (sysId, userName) {
+      this.$router.push({
+        name: 'versionList',
+        params: {
+          name: sysId,
+          flag: true,
+          title: userName
+        }
+      })
+
+      // // console.log(scope)
+      // // console.log(scope.sysId, scope.userName)
+      // let sysId = scope.sysId
+      // let userName = scope.userName
+      // // console.log(sysId, userName)
+
+      // this.name = 'third'
+      // this.$emit('send', this.name, sysId, userName)
     },
     // 审核状态的四种数字转化为文字
     changeState (row, col) {

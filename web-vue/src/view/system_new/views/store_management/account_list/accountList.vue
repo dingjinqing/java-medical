@@ -8,7 +8,7 @@
       name="first"
       :label="$t('shopAccountList.title.list')"
     >
-      <list @send="send" />
+      <list @send="send(arguments)" />
     </el-tab-pane>
     <el-tab-pane
       name="second"
@@ -20,6 +20,7 @@
       name="third"
       :label="$t('shopAccountList.title.editAccount')"
       v-if="isShowEditAccount"
+      @getInfo="revice()"
     >
       <editAccount />
     </el-tab-pane>
@@ -46,34 +47,36 @@ export default {
     return {
       tabActive: 'first',
       isShowEditAccount: false
-
-      // tabActive: this.$route.params.page
     }
   },
-  // watch: {
-  //   $route: { // 带选项watch写法。兼容国际化刷新立即显示
-  //     immediate: true,
-  //     handler (to) {
-  //       this.tabActive = to.params.page
-  //       this.$store.commit('UPDATE_BREADCRUMB_TITLE', this.$t(`shopAccountList.${this.$route.params.page}`))
-  //     }
-  //   },
-  //   tabActive (val) {
-  //     this.$router.push({
-  //       name: this.$route.name,
-  //       params: {
-  //         page: val
-  //       }
-  //     })
-  //   }
-  // },
+  created () {
+    console.log(this.$.params)
+    if (this.$route.params.flag === true) {
+      this.tabActive = 'third'
+      this.isShowShopList = true
+    }
+  },
   methods: {
-    send (val) {
-      if (val === 'third') {
+    // send (val) {
+    //   console.log(val)
+    //   let receiveSysId = val[1]
+    //   let receiveUserName = val[0]
+    //   if (val[0] === 'third') {
+    //     this.isShowEditAccount = true
+    //     this.tabActive = 'third'
+    //   }
+    // }
+    getInfo () {
+      // console.log(111)
+      console.log(this.$router)
+      if (this.$route.params.name) {
         this.isShowEditAccount = true
         this.tabActive = 'third'
       }
     }
+  },
+  watch: {
+    '$route': 'revice'
   }
 }
 </script>

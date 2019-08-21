@@ -5,11 +5,9 @@
         ref="formData"
         :model="formData"
         label-width="110px"
-        @submit.prevent="onSubmit"
         style="margin:0px 0px 0px 50px;"
         label-position="left"
         status-icon
-        :rules="rules"
       >
         <el-form-item
           :label="$t('shopAccountList.accountAdd.userName')"
@@ -192,21 +190,6 @@ export default {
     }
   },
   data () {
-    var checkUserName = (rule, value, callback) => {
-      if (value === '') {
-        return callback(new Error('请输入用户名'))
-      }
-    }
-    var checkPassword = (rule, value, callback) => {
-      if (value === '') {
-        callback(new Error('请输入密码'))
-      } else {
-        if (this.formData.password !== '') {
-          this.$refs.formData.validateField('checkPassword')
-        }
-        callback()
-      }
-    }
     return {
       formData: {
         userName: '',
@@ -222,14 +205,6 @@ export default {
         area: '',
         addCommentSwitch: false,
         baseSale: false
-      },
-      rules: {
-        userName: [
-          { validator: checkUserName, trigger: 'blur' }
-        ],
-        password: [
-          { validator: checkPassword, trigger: 'change' }
-        ]
       }
     }
   },
@@ -251,14 +226,6 @@ export default {
     },
     // 添加商家账户
     save (formData) {
-      this.$refs[formData].validate((valid) => {
-        if (valid) {
-          alert('submit!')
-        } else {
-          console.log('error submit!')
-          return false
-        }
-      })
       let obj = {
         'sysId': '',
         'userName': '',

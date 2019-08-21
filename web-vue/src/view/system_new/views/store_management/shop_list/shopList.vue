@@ -82,9 +82,6 @@ export default {
         this.isShowEditAccount = true
         this.tabActive = 'third'
       }
-      // bus.$on('revice', data => {
-      //   console.log(data)
-      // })
     }
   },
   watch: {
