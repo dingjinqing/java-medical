@@ -763,3 +763,10 @@ alter table `b2c_mrking_voucher` drop column `is_random`;
 alter table `b2c_mrking_voucher` add column `validity_type`  tinyint(1)   default '0' comment '优惠券有效期类型标记，1领取后开始指定时间段内有效，0固定时间段有效';
 alter table `b2c_mrking_voucher` add column `validity_hour`  mediumint(11) default 0  null comment '优惠券有效小时数';
 alter table `b2c_mrking_voucher` add column `validity_minute`  mediumint(11) default 0  null comment '优惠券有效分钟数';
+
+
+-- 李晓冰2019-8-21修改商品表
+ALTER TABLE b2c_goods ADD COLUMN `promotion_language_switch` TINYINT(1) NOT NULL DEFAULT 1 COMMENT '是否使用分销推广语0关闭，1使用';
+ALTER TABLE b2c_goods ADD COLUMN `promotion_language` VARCHAR (400) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '' COMMENT '推广语';
+ALTER TABLE b2c_goods ADD COLUMN `deliver_place` VARCHAR ( 191 ) COLLATE utf8mb4_unicode_ci DEFAULT NULL COMMENT '发货地址';
+ALTER TABLE b2c_goods ADD COLUMN `share_config` VARCHAR ( 500 ) COLLATE utf8mb4_unicode_ci DEFAULT NULL COMMENT '分享配置';
