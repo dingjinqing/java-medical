@@ -2,7 +2,7 @@ package com.vpu.mp.service.pojo.shop.goods.recommend;
 
 import java.util.List;
 
-import com.vpu.mp.service.pojo.shop.goods.GoodsView;
+import com.vpu.mp.service.pojo.shop.goods.goods.GoodsView;
 
 import lombok.Data;
 

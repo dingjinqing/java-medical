@@ -1,11 +1,10 @@
 package com.vpu.mp.service.pojo.shop.goods.label;
 
+import com.vpu.mp.service.pojo.shop.goods.goods.GoodsView;
+import lombok.Data;
+
 import java.sql.Timestamp;
 import java.util.List;
-
-import com.vpu.mp.service.pojo.shop.goods.GoodsView;
-
-import lombok.Data;
 
 /**
  * @author 黄荣刚
