@@ -2,6 +2,7 @@ package com.vpu.mp.controller.admin;
 
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.vpu.mp.service.foundation.data.JsonResult;
@@ -23,6 +24,7 @@ import com.vpu.mp.service.pojo.shop.goods.comment.GoodsCommentVo;
  */
 
 @RestController
+@RequestMapping("/api/admin/goods/comment")
 public class AdminGoodsCommentController extends AdminBaseController {
 
 	/**
@@ -31,7 +33,7 @@ public class AdminGoodsCommentController extends AdminBaseController {
 	 * @param param
 	 * @return
 	 */
-	@PostMapping("/api/admin/goods/comment/list")
+	@PostMapping("/list")
 	public JsonResult getPageList(@RequestBody GoodsCommentPageListParam param) {
 
 		PageResult<GoodsCommentVo> pageResult = shop().goods.goodsComment.getPageList(param);
@@ -45,7 +47,7 @@ public class AdminGoodsCommentController extends AdminBaseController {
 	 * @param param
 	 * @return
 	 */
-	@PostMapping("/api/admin/goods/comment/checklist")
+	@PostMapping("/checklist")
 	public JsonResult getCheckPageList(@RequestBody GoodsCommentPageListParam param) {
 
 		PageResult<GoodsCommentCheckListVo> pageResult = shop().goods.goodsComment.getCheckPageList(param);
@@ -60,7 +62,7 @@ public class AdminGoodsCommentController extends AdminBaseController {
 	 * @return
 	 *
 	 */
-	@PostMapping("api/admin/goods/comment/answer")
+	@PostMapping("/answer")
 	public JsonResult insertAnswer(@RequestBody GoodsCommentAnswerParam goodsCommentAnswer) {
 
 		shop().goods.goodsComment.insertAnswer(goodsCommentAnswer);
@@ -75,7 +77,7 @@ public class AdminGoodsCommentController extends AdminBaseController {
 	 * @param goodsCommentId
 	 * @return
 	 */
-	@PostMapping("/api/admin/goods/comment/delete")
+	@PostMapping("/delete")
 	public JsonResult delete(@RequestBody GoodsCommentIdParam goodsCommentId) {
 
 		shop().goods.goodsComment.delete(goodsCommentId);
@@ -90,7 +92,7 @@ public class AdminGoodsCommentController extends AdminBaseController {
 	 * @return
 	 */
 
-	@PostMapping("/api/admin/goods/comment/passflag")
+	@PostMapping("/passflag")
 	public JsonResult passflag(@RequestBody GoodsCommentIdParam goodsCommentId) {
 
 		shop().goods.goodsComment.passflag(goodsCommentId);
@@ -98,7 +100,7 @@ public class AdminGoodsCommentController extends AdminBaseController {
 		return success();
 	}
 	
-	@PostMapping("/api/admin/goods/comment/refuseflag")
+	@PostMapping("/refuseflag")
 	public JsonResult refuseflag(@RequestBody GoodsCommentIdParam goodsCommentId) {
 
 		shop().goods.goodsComment.refuseflag(goodsCommentId);
@@ -113,7 +115,7 @@ public class AdminGoodsCommentController extends AdminBaseController {
 	 * @return
 	 *
 	 */
-	@PostMapping("api/admin/goods/comment/checkconfig")
+	@PostMapping("/checkconfig")
 	public JsonResult checkConfig(@RequestBody GoodsCommentConfigParam goodsCommentConfig) {
 		
 			shop().config.commentConfigService.setCheckConfig(goodsCommentConfig.getV());
@@ -128,7 +130,7 @@ public class AdminGoodsCommentController extends AdminBaseController {
 	 * @return
 	 *
 	 */
-	@PostMapping("api/admin/goods/comment/switchconfig")
+	@PostMapping("/switchconfig")
 	public JsonResult switchConfig(@RequestBody GoodsCommentConfigParam goodsCommentConfig) {
 		
 			shop().config.commentConfigService.setSwitchConfig(goodsCommentConfig.getV());
@@ -141,7 +143,7 @@ public class AdminGoodsCommentController extends AdminBaseController {
 	 * @param param
 	 * @return
 	 */
-	@PostMapping("/api/admin/goods/comment/addlist")
+	@PostMapping("/addlist")
 	public JsonResult getAddPageList(@RequestBody GoodsCommentPageListParam param) {
 
 		PageResult<GoodsCommentAddListVo> pageResult = shop().goods.goodsComment.getAddList(param);
@@ -156,7 +158,7 @@ public class AdminGoodsCommentController extends AdminBaseController {
 	 * @param goodsCommentAddComm
 	 * @return
 	 */
-	@PostMapping("/api/admin/goods/comment/addcomm")
+	@PostMapping("/addcomm")
 	public JsonResult addComment(@RequestBody GoodsCommentAddCommParam goodsCommentAddComm) {
 
 		shop().goods.goodsComment.addComment(goodsCommentAddComm);

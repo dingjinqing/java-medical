@@ -23,6 +23,7 @@ import com.vpu.mp.service.pojo.shop.goods.deliver.GoodsDeliverTemplateVo;
  * @date 2019年7月11日
  */
 @RestController
+@RequestMapping("/api/admin/goods/deliver")
 public class AdminGoodsDeliverController extends AdminBaseController {
 
 	/**
@@ -32,7 +33,7 @@ public class AdminGoodsDeliverController extends AdminBaseController {
 	 * @return
 	 */
 
-	@RequestMapping("/api/admin/goods/deliver/templatelist")
+	@PostMapping("/templatelist")
 	public JsonResult getTemplateList(@RequestBody GoodsDeliverPageListParam param) {
 		String config = shop().config.deliverTemplateConfigService.getDefaultDeliverTemplate();
 		PageResult<GoodsDeliverTemplateVo> pageResult = shop().goods.goodsDeliver.getDeliverTemplateList(param);
@@ -50,7 +51,7 @@ public class AdminGoodsDeliverController extends AdminBaseController {
 	 * @param param
 	 * @return
 	 */
-	@RequestMapping("/api/admin/goods/deliver/weighttemplatelist")
+	@PostMapping("/weighttemplatelist")
 	public JsonResult getWeightTemplateList(@RequestBody GoodsDeliverPageListParam param) {
 		PageResult<GoodsDeliverTemplateVo> pageResult = shop().goods.goodsDeliver.getWeightDeliverTemplateList(param);
 
@@ -64,7 +65,7 @@ public class AdminGoodsDeliverController extends AdminBaseController {
 	 * @return
 	 *
 	 */
-	@RequestMapping("/api/admin/goods/deliver/addtemplate")
+	@PostMapping("/addtemplate")
 	public JsonResult addDeliverTemplate(@RequestBody GoodsDeliverTemplateParam goodsDeliverTemplateParam) {
 
 		shop().goods.goodsDeliver.addDeliverTemplate(goodsDeliverTemplateParam);
@@ -79,7 +80,7 @@ public class AdminGoodsDeliverController extends AdminBaseController {
 	 * @return
 	 *
 	 */
-	@RequestMapping("/api/admin/goods/deliver/addweighttemplate")
+	@PostMapping("/addweighttemplate")
 	public JsonResult addDeliverWeightTemplate(@RequestBody GoodsDeliverTemplateParam goodsDeliverTemplateParam) {
 
 		shop().goods.goodsDeliver.addDeliverWeightTemplate(goodsDeliverTemplateParam);
@@ -94,7 +95,7 @@ public class AdminGoodsDeliverController extends AdminBaseController {
 	 * @return
 	 *
 	 */
-	@RequestMapping("/api/admin/goods/deliver/updatetemplate")
+	@PostMapping("/updatetemplate")
 	public JsonResult updataDeliverTemplate(@RequestBody GoodsDeliverTemplateParam goodsDeliverTemplateParam) {
 
 		shop().goods.goodsDeliver.updateDeliverTemplate(goodsDeliverTemplateParam);
@@ -109,7 +110,7 @@ public class AdminGoodsDeliverController extends AdminBaseController {
 	 * @return
 	 *
 	 */
-	@RequestMapping("/api/admin/goods/deliver/updateweighttemplate")
+	@PostMapping("/updateweighttemplate")
 	public JsonResult updateDeliverWeightTemplate(@RequestBody GoodsDeliverTemplateParam goodsDeliverTemplateParam) {
 
 		shop().goods.goodsDeliver.updateDeliverWeightTemplate(goodsDeliverTemplateParam);
@@ -123,7 +124,7 @@ public class AdminGoodsDeliverController extends AdminBaseController {
 	 * @param goodsCommentId
 	 * @return
 	 */
-	@PostMapping("/api/admin/goods/deliver/delete")
+	@PostMapping("/delete")
 	public JsonResult delete(@RequestBody GoodsDeliverIdParam goodsDeliverIdParam) {
 
 		shop().goods.goodsDeliver.deleteDeliverTemplate(goodsDeliverIdParam);
@@ -138,7 +139,7 @@ public class AdminGoodsDeliverController extends AdminBaseController {
 	 * @return JsonResult
 	 */
 
-	@RequestMapping("/api/admin/goods/deliver/templateone")
+	@PostMapping("/templateone")
 	public JsonResult selectOne(@RequestBody GoodsDeliverIdParam param) {
 
 		List<GoodsDeliverTemplateVo> goodsDeliverTemplateVos = shop().goods.goodsDeliver.selectOne(param);
@@ -153,7 +154,7 @@ public class AdminGoodsDeliverController extends AdminBaseController {
 	 * @param 
 	 * @return
 	 */
-	@RequestMapping("/api/admin/goods/deliver/config")
+	@PostMapping("/config")
 	public JsonResult setDefaultDeliverTemplate(@RequestBody DeliverTemplateConfig param) {
 		
 		shop().config.deliverTemplateConfigService.setDefaultDeliverTemplate(param);
