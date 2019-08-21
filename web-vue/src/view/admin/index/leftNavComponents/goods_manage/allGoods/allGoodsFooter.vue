@@ -2,6 +2,7 @@
   <div class="allGoodsFooter">
     <!-- 左侧操作 -->
     <section>
+      <span>全选</span>
       <el-button
         plain
         type="primary"
@@ -38,8 +39,8 @@
     <section>
       <pagination
         :total="total"
-        :page.sync="list.page"
-        :limit.sync="list.limit"
+        :currentPage.sync="list.currentPage"
+        :pageRows.sync="list.pageRows"
         @pagination="getList"
       />
     </section>
@@ -61,8 +62,8 @@ export default {
       ],
       total: 0,
       list: {
-        page: null,
-        limit: null
+        currentPage: 1,
+        pageRows: 5
       }
     }
   },
@@ -76,8 +77,14 @@ export default {
     },
     // 获取表格数据
     getList () {
-      brandAllGetRequest({}).then(res => {
-        console.log(res)
+      brandAllGetRequest(this.list).then(res => {
+        const { error, content } = res
+        if (error === 0) {
+          console.log(content.page)
+          console.log(content.dataList)
+          this.list = content.page
+          this.total = content.page.totalRows
+        }
       }).catch(err => console.log(err))
     }
   }

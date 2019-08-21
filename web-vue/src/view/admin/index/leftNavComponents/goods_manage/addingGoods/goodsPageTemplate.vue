@@ -74,6 +74,8 @@
           width=""
         ></el-table-column>
       </el-table>
+      <!-- 分页 -->
+
       <div
         slot="footer"
         class="dialog-footer"
@@ -87,15 +89,7 @@
           @click="handleClose"
           size="small"
         >取 消</el-button>
-        <!-- 分页 -->
-        <section>
-          <pagination
-            :total="total"
-            :page.sync="data.page"
-            :limit.sync="data.limit"
-            @pagination="fetchDataList"
-          />
-        </section>
+
         <el-button @click="handleTest">测试按钮</el-button>
       </div>
     </el-dialog>
@@ -103,13 +97,13 @@
 </template>
 <script>
 // 引入分页组件
-import pagination from '@/components/admin/pagination/pagination'
+// import pagination from '@/components/admin/pagination/pagination'
 import { getPageclassificationData } from '@/api/admin/smallProgramManagement/pageClassification/pageClassification'
 
 import { shopDecorateList } from '@/api/admin/smallProgramManagement/pictureSetting/pictureSetting'
 export default {
   name: 'goodsPageTemplate',
-  components: { pagination },
+  // components: { pagination },
   props: {
     visible: {
       type: Boolean

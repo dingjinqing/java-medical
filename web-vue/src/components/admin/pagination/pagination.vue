@@ -5,7 +5,7 @@
   >
     <el-pagination
       :background="background"
-      :current-page.sync="currentPage"
+      :current-page.sync="currentPage1"
       :page-size.sync="pageSize"
       :layout="layout"
       :page-sizes="pageSizes"
@@ -27,18 +27,18 @@ export default {
       required: true,
       type: Number
     },
-    page: {
+    currentPage: {
       type: Number,
       default: 1
     },
-    limit: {
+    pageRows: {
       type: Number,
       default: 20
     },
     pageSizes: {
       type: Array,
       default () {
-        return [10, 20, 30, 50]
+        return [10, 20, 30, 40]
       }
     },
     layout: {
@@ -59,32 +59,32 @@ export default {
     }
   },
   computed: {
-    currentPage: {
+    currentPage1: {
       get () {
-        return this.page
+        return this.currentPage
       },
       set (val) {
-        this.$emit('update:page', val)
+        this.$emit('update:currentPage', val)
       }
     },
     pageSize: {
       get () {
-        return this.limit
+        return this.pageRows
       },
       set (val) {
-        this.$emit('update:limit', val)
+        this.$emit('update:pageRows', val)
       }
     }
   },
   methods: {
     handleSizeChange (val) {
-      this.$emit('pagination', { page: this.currentPage, limit: val })
+      this.$emit('pagination', { currentPage: this.currentPage, pageRows: val })
       if (this.autoScroll) {
         scrollTo(0, 800)
       }
     },
     handleCurrentChange (val) {
-      this.$emit('pagination', { page: val, limit: this.pageSize })
+      this.$emit('pagination', { currentPage: val, pageRows: this.pageSize })
       if (this.autoScroll) {
         scrollTo(0, 800)
       }
