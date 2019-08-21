@@ -135,11 +135,9 @@ public class ShopOfficialAccount extends MainBaseService {
 		officeRecord.setQrcodeUrl(mpQrCode);
 		if (getOfficeAccountByAppId(authorizerAppid) == null) {
 			// 插入
-			System.out.println("插入");
 			db().executeInsert(officeRecord);
 		} else {
 			// 更新
-			System.out.println("更新");
 			db().executeUpdate(officeRecord);
 		}
 		return officeRecord;
@@ -152,7 +150,6 @@ public class ShopOfficialAccount extends MainBaseService {
 	 * @param appId
 	 */
 	public void bindAllSamePrincipalOpenAppId(MpOfficialAccountRecord record) throws WxErrorException {
-		System.out.println("进来"+record);
 		Result<MpOfficialAccountRecord> samePrincipalMpApps = getSamePrincipalOffice(record.getPrincipalName());
 		String openAppId = null;
 		// 遍历所有主体相同的号，查找不为空的openAppId
@@ -167,7 +164,6 @@ public class ShopOfficialAccount extends MainBaseService {
 			if (!openAppId.equals(mRecord.getBindOpenAppId())) {
 				// 更新数据库
 				mRecord.setBindOpenAppId(openAppId);
-				System.out.println("更新第三方 更新数据库");
 				db().executeUpdate(mRecord);
 			}
 		}
