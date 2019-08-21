@@ -39,7 +39,7 @@
   </div>
 </template>
 <script>
-import { goodsList } from '@/api/admin/goods_manage/addingGoods/addingGoods'
+import { goodsList, getGoodsList } from '@/api/admin/goods_manage/addingGoods/addingGoods'
 import basicInfo from './basicInfo'
 import otherInfo from './otherInfo'
 import deliveryInfo from './deliveryInfo'
@@ -60,6 +60,12 @@ export default {
     },
     // 保存后返回列表
     handleToList () {
+      getGoodsList({
+
+        'goodsName': '苹果手机',
+        'orderField': 'shopPrice'
+
+      }).then(res => console.log(res)).catch(err => console.log(err))
       // console.log(this.$refs.basicInfo.getFormData)
       // 基本信息表单数据
       let basicInfo = this.$refs.basicInfo.getFormData

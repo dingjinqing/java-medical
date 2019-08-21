@@ -1,20 +1,23 @@
 <template>
   <div class="addingGoodsDetailsRight">
     <section class="container">
+      <!-- form 表单布局 -->
       <el-form
         ref="form"
         :model="formData"
         label-width="110px"
       >
+        <!-- 商品基本信息  -->
         <el-form-item
           label="商品基本信息"
-          class="one"
+          class="basic_info"
         >
           <span style="color:#999;">商品信息为固定样式仅供参考，请以实际效果为准</span>
         </el-form-item>
+        <!-- 模块位置 -->
         <el-form-item
           label="模块位置"
-          class="one"
+          class="module_location"
         >
           <el-radio
             v-model="radio"
@@ -25,19 +28,26 @@
             label="2"
           >商品详情在上</el-radio>
         </el-form-item>
-        <section class="three one">
-          <span class="text1"> 自定义内容</span>
-          <el-divider></el-divider>
-          <span class="text2">商品页模板</span>
-          <el-button size="small">选择模板</el-button>
-          <el-button type="text">刷新</el-button>
-          <el-button type="text">添加模板</el-button>
+        <section class="conAndTem">
+          <!-- 自定义内容 -->
+          <el-form-item label="自定义内容">
+          </el-form-item>
+          <!-- 商品页模板 -->
+          <el-form-item label="商品页模板">
+            <el-button
+              size="small"
+              @click="handleSelectTemplate"
+            >选择模板</el-button>
+            <el-button type="text">刷新</el-button>
+            <el-button type="text">添加模板</el-button>
+          </el-form-item>
         </section>
-        <section class="four one">
-          <span class="text1"> 商品详情</span>
-          <el-divider></el-divider>
+        <section class="goods_detail">
+          <!-- 商品详情 -->
+          <el-form-item label="商品详情">
+          </el-form-item>
+          <!-- 富文本编辑器 -->
           <section class="tinymceWrap">
-            <!-- 富文本编辑器 -->
             <tinymceEditor
               v-model="msg"
               :disabled="disabled"
@@ -85,6 +95,10 @@ export default {
     // 清空内容
     clear () {
       this.$refs.editor.clear()
+    },
+    // 选择商品页模板
+    handleSelectTemplate () {
+      this.visible = true
     }
   }
 }
@@ -98,29 +112,20 @@ export default {
   border: 1px solid #e5e5e5;
   color: #333;
 }
-.one {
+.basic_info {
   border: 1px solid #dddddd;
   background-color: #fff;
 }
-.three {
-  margin-top: 30px;
-  padding: 20px 0;
+.module_location {
+  border: 1px solid #dddddd;
+  background-color: #fff;
 }
-.four {
-  padding: 20px 0;
-  margin-top: 30px;
+.conAndTem {
+  border: 1px solid #dddddd;
+  background-color: #fff;
 }
-.text1 {
-  padding-left: 30px;
-  font-size: 14px;
-  color: #606266;
-}
-.text2 {
-  font-size: 14px;
-  color: #606266;
-  padding-left: 30px;
-}
-.tinymceWrap {
-  padding: 5px;
+.goods_detail {
+  border: 1px solid #dddddd;
+  background-color: #fff;
 }
 </style>

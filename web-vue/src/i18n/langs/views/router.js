@@ -10,8 +10,12 @@ export const cn = {
   shopStyle: ['小程序管理', '店铺风格'],
   // 小程序管理 底部导航
   bottomNavigation: ['小程序管理', '底部导航'],
-  // 商品管理 全部商品
-  allProducts: ['商品管理', '全部商品'],
+  // 商品管理 出售中商品
+  saleOn: ['商品管理', '出售中商品'],
+  // 商品管理 已售磬商品
+  saleEnd: ['商品管理', '已售罄商品'],
+  // 商品管理 仓库中商品
+  saleOff: ['商品管理', '仓库中商品'],
   // 商品管理 品牌管理
   brandManagement: ['商品管理', '品牌管理'],
   brandAddManagement: ['商品管理', '品牌管理', '添加品牌'],
@@ -65,8 +69,12 @@ export const en = {
   // 小程序管理 底部导航
   bottomNavigation: ['Small Program Management', 'Bottom navigation'],
   // ------------------------------------------------------
-  // 商品管理 全部商品
-  allProducts: ['Commodity Management', 'All Products'],
+  // 商品管理 出售中商品
+  saleOn: ['Commodity Management', 'Goods For Sale'],
+  // 商品管理 已售罄商品
+  saleEnd: ['Commodity Management', 'Sold Out Goods'],
+  // 商品管理 仓库中商品
+  saleOff: ['Commodity Management', 'Goods In The Warehouse'],
   // 商品管理 添加商品
   addingGoods: ['Commodity Management', 'Adding Goods'],
   // 商品管理 运费模板

@@ -10,6 +10,8 @@ import vueSwiper from 'vue-awesome-swiper';
 import ElementUI from 'element-ui';
 import Distpicker from 'v-distpicker';
 import vuescroll from 'vuescroll';
+// 阿里图标
+import './assets/aliIcon/iconfont.css';
 import 'vuescroll/dist/vuescroll.css';
 Vue.use(vuescroll);
 // 富文本编辑器

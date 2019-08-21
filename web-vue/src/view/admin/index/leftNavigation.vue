@@ -518,7 +518,7 @@ export default {
           this.dataList[i].map((itemp, indexp) => {
             res.content.menuParam[i].map((itemchildren, indexchildren) => {
               if (itemp.name === itemchildren) {
-                console.log(itemp.name, itemchildren)
+                // console.log(itemp.name, itemchildren)
                 itemp.flag = true
               }
             })

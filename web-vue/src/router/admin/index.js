@@ -246,19 +246,64 @@ const routes = [
               }
             ]
           },
-          // 商品管理系列子路由
+          // 商品管理系列
+          // 全部商品
           {
-            path: '/admin/home/main/goods_manage',
+            path: '/admin/home/main/goods_manage/allGoods',
+            redirect: '/admin/home/main/goods_manage/sale_on',
             name: 'sale_on',
             meta: {
-              crumbTitle: 'router.allProducts',
+              crumbTitle: 'router.saleOn',
               meta: 'goods_manage'
             },
             component: () =>
               import(
-                '@/view/admin/index/leftNavComponents/goods_manage/allProducts/allProducts'
-              )
+                '@/view/admin/index/leftNavComponents/goods_manage/allGoods/allGoods'
+              ),
+
+            children: [
+              // 商品管理/出售中商品
+              {
+                path: '/admin/home/main/goods_manage/sale_on',
+                name: 'sale_on',
+                meta: {
+                  crumbTitle: 'router.saleOn',
+                  meta: 'goods_manage'
+                },
+                component: () =>
+                  import(
+                    '@/view/admin/index/leftNavComponents/goods_manage/allGoods/saleOn/saleOn'
+                  )
+              },
+              // 商品管理/已售罄
+              {
+                path: '/admin/home/main/goods_manage/sale_end',
+                name: 'sale_end',
+                meta: {
+                  crumbTitle: 'router.saleEnd',
+                  meta: 'goods_manage'
+                },
+                component: () =>
+                  import(
+                    '@/view/admin/index/leftNavComponents/goods_manage/allGoods/saleOn/saleOn'
+                  )
+              },
+              // 商品管理/仓库中
+              {
+                path: '/admin/home/main/goods_manage/sale_off',
+                name: 'sale_off',
+                meta: {
+                  crumbTitle: 'router.saleOff',
+                  meta: 'goods_manage'
+                },
+                component: () =>
+                  import(
+                    '@/view/admin/index/leftNavComponents/goods_manage/allGoods/saleOff/saleOff'
+                  )
+              }
+            ]
           },
+
           // 品牌管理
           {
             path: '/admin/home/main/brandManagement',
