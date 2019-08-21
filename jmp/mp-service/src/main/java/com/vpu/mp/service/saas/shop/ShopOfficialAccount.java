@@ -13,6 +13,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.jooq.Record;
 import org.jooq.Result;
 import org.jooq.SelectOnConditionStep;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.vpu.mp.db.main.tables.records.MpOfficialAccountRecord;
@@ -23,6 +24,7 @@ import com.vpu.mp.service.foundation.util.Util;
 import com.vpu.mp.service.pojo.saas.shop.officeAccount.MpOAPayManageParam;
 import com.vpu.mp.service.pojo.saas.shop.officeAccount.MpOfficeAccountListParam;
 import com.vpu.mp.service.pojo.saas.shop.officeAccount.MpOfficeAccountListVo;
+import com.vpu.mp.service.saas.image.SystemImageService;
 
 import me.chanjar.weixin.common.error.WxErrorException;
 import me.chanjar.weixin.open.bean.auth.WxOpenAuthorizationInfo;
@@ -39,6 +41,8 @@ import me.chanjar.weixin.open.bean.result.WxOpenAuthorizerInfoResult;
 @Service
 public class ShopOfficialAccount extends MainBaseService {
 
+	@Autowired
+	protected SystemImageService image;
 	/**
 	 * 获取数据库公众号列表
 	 * 
@@ -51,7 +55,7 @@ public class ShopOfficialAccount extends MainBaseService {
 
 		select.where(MP_OFFICIAL_ACCOUNT.SYS_ID.eq(oaListParam.getSysId()));
 		select.orderBy(MP_OFFICIAL_ACCOUNT.CREATE_TIME.desc());
-
+		//因为页面不展示二维码。没有给图像加image.imageUrl方法。想加的加个循环吧
 		PageResult<MpOfficeAccountListVo> pageResult = this.getPageResult(select, oaListParam.getCurrentPage(),
 				oaListParam.getPageRows(), MpOfficeAccountListVo.class);
 		return pageResult;
@@ -69,7 +73,11 @@ public class ShopOfficialAccount extends MainBaseService {
 				.innerJoin(SHOP_ACCOUNT).on(MP_OFFICIAL_ACCOUNT.SYS_ID.eq(SHOP_ACCOUNT.SYS_ID))
 				.where(MP_OFFICIAL_ACCOUNT.SYS_ID.eq(sysId).and(MP_OFFICIAL_ACCOUNT.APP_ID.eq(appId)))
 				.fetchInto(MpOfficeAccountListVo.class);
-		return fetch != null && !fetch.isEmpty() ? fetch.get(0) : null;
+		MpOfficeAccountListVo vo=fetch != null && !fetch.isEmpty() ? fetch.get(0) : null;
+		if(vo!=null) {
+			vo.setQrcodeUrl(image.imageUrl(vo.getQrcodeUrl())); 
+		}
+		return vo;
 	}
 	
 	public Result<MpOfficialAccountRecord> getSamePrincipalOffice(String principalName) {
