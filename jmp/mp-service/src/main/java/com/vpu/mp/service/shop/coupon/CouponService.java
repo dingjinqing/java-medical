@@ -77,7 +77,7 @@ public class CouponService extends ShopBaseService{
 			switch(param.getNav()) {
 			//进行中
 			case 1:
-				sql = sql.and(MRKING_VOUCHER.START_TIME.le(nowDate)).and(MRKING_VOUCHER.END_TIME.ge(nowDate)).and(MRKING_VOUCHER.ENABLED.eq((byte) 1));
+				sql = sql.and(MRKING_VOUCHER.START_TIME.le(nowDate)).and(MRKING_VOUCHER.END_TIME.ge(nowDate));
 				break;
 			//未开始
 			case 2:
