@@ -652,9 +652,9 @@ export default {
 .lestList img {
   display: block;
   float: left;
-  width: 20px !important;
-  height: 20px !important;
-  margin: auto 0 !important;
+  width: 20px;
+  height: 20px;
+  margin: auto 0;
 }
 .lestList span {
   display: block;

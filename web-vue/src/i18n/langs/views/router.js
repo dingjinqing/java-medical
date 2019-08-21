@@ -35,6 +35,10 @@ export const cn = {
   membershipIntroduction: ['会员管理', '会员导入'],
   // 会员管理 会员卡
   userCard: ['会员管理', '普通会员卡'],
+  // 会员管理 限次
+  limitTimes: ['会员管理', '限次会员卡'],
+  // 会员管理 等级
+  GradeCard: ['会员管理', '等级会员卡'],
   // 基础配置 小程序授权
   program_auth: ['基础配置', '小程序授权'],
   // 基础配置 小程序授权成功页面
@@ -51,6 +55,7 @@ export const cn = {
   kanjia: ['营销管理', '砍价'],
   // 营销管理 普通优惠券
   ordinary_coupon: ['营销管理', '普通优惠券']
+
 }
 
 export const en = {
