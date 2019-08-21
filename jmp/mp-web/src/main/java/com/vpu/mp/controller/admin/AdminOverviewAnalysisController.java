@@ -8,6 +8,7 @@ import java.util.List;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.vpu.mp.service.foundation.data.JsonResult;
@@ -26,6 +27,7 @@ import com.vpu.mp.service.pojo.shop.overview.analysis.OverviewAnalysisYesterdayV
  */
 
 @RestController
+@RequestMapping("/api/admin/overview/analysis")
 public class AdminOverviewAnalysisController extends AdminBaseController{
 	
 	/**
@@ -33,7 +35,7 @@ public class AdminOverviewAnalysisController extends AdminBaseController{
 	 * @param param
 	 * @return JsonResult
 	 */
-	@PostMapping("/api/admin/overview/analysis/yesterday")
+	@PostMapping("/yesterday")
 	public JsonResult yesterdayAnalysis(@RequestBody OverviewAnalysisDateParam param) {
 		
 		List<OverviewAnalysisYesterdayVo> overviewAnalysisYesterdayVos = shop().overview.overviewAnalysisService.yesterdayAnalysis(param);
@@ -46,7 +48,7 @@ public class AdminOverviewAnalysisController extends AdminBaseController{
 	 *@Param param
 	 *@return
 	 */
-	@PostMapping("/api/admin/overview/analysis/select")
+	@PostMapping("/select")
 	public JsonResult getSelect(@RequestBody OverviewAnalysisSelectParam param) {
 		String startTime="7";
 		String endTime;
@@ -87,7 +89,7 @@ public class AdminOverviewAnalysisController extends AdminBaseController{
 	 *@Param param
 	 *@return
 	 */
-	@PostMapping("/api/admin/overview/analysis/pagelist")
+	@PostMapping("/pagelist")
 	public JsonResult getPageInfo(@RequestBody OverviewAnalysisPageParam param) {
 		String startTime="7";
 		String endTime;

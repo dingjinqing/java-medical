@@ -8,6 +8,7 @@ import java.util.List;
 
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.vpu.mp.service.foundation.data.JsonResult;
@@ -26,6 +27,7 @@ import com.vpu.mp.service.pojo.shop.overview.useranalysis.OverviewUserAnalysisVi
  * @date 2019年7月18日
  */
 @RestController
+@RequestMapping("/api/admin/overview/user/analysis")
 public class AdminOverviewUserAnalysisController extends AdminBaseController {
 
 	/**
@@ -34,7 +36,7 @@ public class AdminOverviewUserAnalysisController extends AdminBaseController {
 	 * @Param param
 	 * @return
 	 */
-	@PostMapping("/api/admin/overview/useranalysis/trend")
+	@PostMapping("/trend")
 	public JsonResult getTrend(@RequestBody OverviewUserAnalysisDateParam param) {
 		try {
 			Date yesterday = new Date(System.currentTimeMillis() - 1000 * 60 * 60 * 24);
@@ -78,7 +80,7 @@ public class AdminOverviewUserAnalysisController extends AdminBaseController {
 	 * @Param param
 	 * @return
 	 */
-	@PostMapping("/api/admin/overview/useranalysis/active")
+	@PostMapping("/active")
 	public JsonResult getActive(@RequestBody OverviewUserAnalysisDateParam param) {
 		try {
 			Date yesterday = new Date(System.currentTimeMillis() - 1000 * 60 * 60 * 24);
@@ -113,7 +115,7 @@ public class AdminOverviewUserAnalysisController extends AdminBaseController {
 	 * @Param param
 	 * @return
 	 */
-	@PostMapping("/api/admin/overview/useranalysis/vip")
+	@PostMapping("/vip")
 	public JsonResult getVip(@RequestBody OverviewUserAnalysisDateParam param) {
 		try {
 			Date yesterday = new Date(System.currentTimeMillis() - 1000 * 60 * 60 * 24);
@@ -148,7 +150,7 @@ public class AdminOverviewUserAnalysisController extends AdminBaseController {
 	 * @Param param
 	 * @return
 	 */
-	@PostMapping("/api/admin/overview/useranalysis/order")
+	@PostMapping("/order")
 	public JsonResult getOrder(@RequestBody OverviewUserAnalysisDateParam param) {
 		try {
 			Date yesterday = new Date(System.currentTimeMillis() - 1000 * 60 * 60 * 24);
@@ -183,7 +185,7 @@ public class AdminOverviewUserAnalysisController extends AdminBaseController {
 	 * @Param param
 	 * @return
 	 */
-	@PostMapping("/api/admin/overview/useranalysis/rebuy")
+	@PostMapping("/rebuy")
 	public JsonResult getRebuyTrend(@RequestBody OverviewUserAnalysisRebuyParam param) {
 		try {
         Calendar calendar = Calendar.getInstance();

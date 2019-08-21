@@ -8,6 +8,7 @@ import java.util.List;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.vpu.mp.service.foundation.data.JsonResult;
@@ -23,13 +24,14 @@ import com.vpu.mp.service.pojo.shop.overview.searchanalysis.OverviewSearchAnalys
  */
 
 @RestController
+@RequestMapping("/api/admin/overview/search/analysis")
 public class AdminOverviewSearchAnalysisController extends AdminBaseController{
 	/**
 	 *搜索历史统计
 	 *@Param param
 	 *@return
 	 */
-	@PostMapping("/api/admin/overview/searchanalysis/history")
+	@PostMapping("/history")
 	public JsonResult getSearchHistory(@RequestBody OverviewSearchAnalysisHistoryParam param) {
 		String startTime="7";
 		String endTime;
@@ -78,7 +80,7 @@ public class AdminOverviewSearchAnalysisController extends AdminBaseController{
 	 *@Param param
 	 *@return
 	 */
-	@PostMapping("/api/admin/overview/searchanalysis/hot")
+	@PostMapping("/hot")
 	public JsonResult getHotSearchHistory(@RequestBody OverviewSearchAnalysisHistoryParam param) {
 		String startTime="7";
 		String endTime;
