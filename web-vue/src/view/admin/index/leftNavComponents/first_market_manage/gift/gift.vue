@@ -1,6 +1,8 @@
 <template>
-  <div>
-    赠品
+  <div class="main">
+    <div class="content">
+      <h1>赠品</h1>
+    </div>
   </div>
 </template>
 <script>
@@ -9,7 +11,7 @@ export default {
     return {
 
     }
-  }
+  },
 }
 </script>
 <style lang="scss" scoped>

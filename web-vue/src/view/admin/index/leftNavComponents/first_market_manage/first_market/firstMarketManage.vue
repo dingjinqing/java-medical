@@ -216,7 +216,10 @@
           </div>
         </div>
         <!-- 赠品 -->
-        <div class="voucher box_style">
+        <div
+          class="voucher box_style"
+          @click="gift"
+        >
           <div class="activity_img"><img
               :src="$imageHost + '/image/admin/new_market/zp.png'"
               alt=""
@@ -422,14 +425,20 @@
 </template>
 <script>
 export default {
-  mounted () {
+  mounted() {
     this.langDefault()
   },
   methods: {
     // 普通优惠卷点击
-    coupon () {
+    coupon() {
       this.$router.push({
         name: 'ordinary_coupon'
+      })
+    },
+    // 赠品点击
+    gift() {
+      this.$router.push({
+        name: 'gift_view'
       })
     }
   }
