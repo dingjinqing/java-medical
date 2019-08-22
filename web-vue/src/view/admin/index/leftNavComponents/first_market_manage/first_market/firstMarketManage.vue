@@ -60,7 +60,10 @@
           </div>
         </div>
         <!-- 组团瓜分积分 -->
-        <div class="voucher box_style">
+        <div
+          class="voucher box_style"
+          @click="groupIntegration ()"
+        >
           <div class="activity_img"><img
               :src="$imageHost + '/image/admin/new_market/gfjf.png'"
               alt=""
@@ -466,6 +469,7 @@ export default {
       })
     },
     // 赠品点击
+
     gift () {
       this.$router.push({
         name: 'gift_view'
@@ -475,6 +479,12 @@ export default {
     couponPackage () {
       this.$router.push({
         name: 'coupon_Package'
+      })
+    },
+    // 组团瓜分积分
+    groupIntegration () {
+      this.$router.push({
+        name: 'group_integration'
       })
     }
 
