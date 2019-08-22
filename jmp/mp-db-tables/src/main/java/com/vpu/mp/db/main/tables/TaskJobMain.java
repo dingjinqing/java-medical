@@ -42,7 +42,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class TaskJobMain extends TableImpl<TaskJobMainRecord> {
 
-    private static final long serialVersionUID = 616930732;
+    private static final long serialVersionUID = -845968898;
 
     /**
      * The reference instance of <code>mini_main.b2c_task_job_main</code>
@@ -65,67 +65,72 @@ public class TaskJobMain extends TableImpl<TaskJobMainRecord> {
     /**
      * The column <code>mini_main.b2c_task_job_main.SHOP_ID</code>. 店铺ID
      */
-    public final TableField<TaskJobMainRecord, Integer> SHOP_ID = createField("SHOP_ID", org.jooq.impl.SQLDataType.INTEGER.defaultValue(DSL.inline("0", org.jooq.impl.SQLDataType.INTEGER)), this, "店铺ID");
+    public final TableField<TaskJobMainRecord, Integer> SHOP_ID = createField("SHOP_ID", org.jooq.impl.SQLDataType.INTEGER.defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.INTEGER)), this, "店铺ID");
 
     /**
      * The column <code>mini_main.b2c_task_job_main.CONTENT_ID</code>. MQ消息内容ID
      */
-    public final TableField<TaskJobMainRecord, Integer> CONTENT_ID = createField("CONTENT_ID", org.jooq.impl.SQLDataType.INTEGER.defaultValue(DSL.inline("0", org.jooq.impl.SQLDataType.INTEGER)), this, "MQ消息内容ID");
+    public final TableField<TaskJobMainRecord, Integer> CONTENT_ID = createField("CONTENT_ID", org.jooq.impl.SQLDataType.INTEGER.defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.INTEGER)), this, "MQ消息内容ID");
 
     /**
      * The column <code>mini_main.b2c_task_job_main.STATUS</code>. 任务状态：0待执行,1执行中,2已完成
      */
-    public final TableField<TaskJobMainRecord, Byte> STATUS = createField("STATUS", org.jooq.impl.SQLDataType.TINYINT.defaultValue(DSL.inline("0", org.jooq.impl.SQLDataType.TINYINT)), this, "任务状态：0待执行,1执行中,2已完成");
+    public final TableField<TaskJobMainRecord, Byte> STATUS = createField("STATUS", org.jooq.impl.SQLDataType.TINYINT.defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.TINYINT)), this, "任务状态：0待执行,1执行中,2已完成");
 
     /**
      * The column <code>mini_main.b2c_task_job_main.PROGRESS</code>. 任务进度：0-100
      */
-    public final TableField<TaskJobMainRecord, Byte> PROGRESS = createField("PROGRESS", org.jooq.impl.SQLDataType.TINYINT.defaultValue(DSL.inline("0", org.jooq.impl.SQLDataType.TINYINT)), this, "任务进度：0-100");
+    public final TableField<TaskJobMainRecord, Byte> PROGRESS = createField("PROGRESS", org.jooq.impl.SQLDataType.TINYINT.defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.TINYINT)), this, "任务进度：0-100");
+
+    /**
+     * The column <code>mini_main.b2c_task_job_main.CLASS_NAME</code>. 反序列化类名（全称）
+     */
+    public final TableField<TaskJobMainRecord, String> CLASS_NAME = createField("CLASS_NAME", org.jooq.impl.SQLDataType.VARCHAR(100).defaultValue(org.jooq.impl.DSL.inline("", org.jooq.impl.SQLDataType.VARCHAR)), this, "反序列化类名（全称）");
 
     /**
      * The column <code>mini_main.b2c_task_job_main.EXECUTION_TYPE</code>. 执行类型:任务类型标识
      */
-    public final TableField<TaskJobMainRecord, Integer> EXECUTION_TYPE = createField("EXECUTION_TYPE", org.jooq.impl.SQLDataType.INTEGER.defaultValue(DSL.inline("0", org.jooq.impl.SQLDataType.INTEGER)), this, "执行类型:任务类型标识");
+    public final TableField<TaskJobMainRecord, Integer> EXECUTION_TYPE = createField("EXECUTION_TYPE", org.jooq.impl.SQLDataType.INTEGER.defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.INTEGER)), this, "执行类型:任务类型标识");
 
     /**
      * The column <code>mini_main.b2c_task_job_main.CYCLE</code>. 轮循间隔(单位:秒)
      */
-    public final TableField<TaskJobMainRecord, Integer> CYCLE = createField("CYCLE", org.jooq.impl.SQLDataType.INTEGER.defaultValue(DSL.inline("0", org.jooq.impl.SQLDataType.INTEGER)), this, "轮循间隔(单位:秒)");
+    public final TableField<TaskJobMainRecord, Integer> CYCLE = createField("CYCLE", org.jooq.impl.SQLDataType.INTEGER.defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.INTEGER)), this, "轮循间隔(单位:秒)");
 
     /**
      * The column <code>mini_main.b2c_task_job_main.TYPE</code>. task任务类型(立刻执行；定时执行；循环执行)
      */
-    public final TableField<TaskJobMainRecord, Byte> TYPE = createField("TYPE", org.jooq.impl.SQLDataType.TINYINT.defaultValue(DSL.inline("0", org.jooq.impl.SQLDataType.TINYINT)), this, "task任务类型(立刻执行；定时执行；循环执行)");
+    public final TableField<TaskJobMainRecord, Byte> TYPE = createField("TYPE", org.jooq.impl.SQLDataType.TINYINT.defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.TINYINT)), this, "task任务类型(立刻执行；定时执行；循环执行)");
 
     /**
      * The column <code>mini_main.b2c_task_job_main.NEXT_EXECUTE_TIME</code>. 下次执行开始日期
      */
-    public final TableField<TaskJobMainRecord, Timestamp> NEXT_EXECUTE_TIME = createField("NEXT_EXECUTE_TIME", org.jooq.impl.SQLDataType.TIMESTAMP.defaultValue(DSL.inline("1970-01-01 08:01:00", org.jooq.impl.SQLDataType.TIMESTAMP)), this, "下次执行开始日期");
+    public final TableField<TaskJobMainRecord, Timestamp> NEXT_EXECUTE_TIME = createField("NEXT_EXECUTE_TIME", org.jooq.impl.SQLDataType.TIMESTAMP.defaultValue(org.jooq.impl.DSL.inline("1970-01-01 08:01:00", org.jooq.impl.SQLDataType.TIMESTAMP)), this, "下次执行开始日期");
 
     /**
      * The column <code>mini_main.b2c_task_job_main.START_TIME</code>. 周期开始时间
      */
-    public final TableField<TaskJobMainRecord, Timestamp> START_TIME = createField("START_TIME", org.jooq.impl.SQLDataType.TIMESTAMP.defaultValue(DSL.inline("1970-01-01 08:01:00", org.jooq.impl.SQLDataType.TIMESTAMP)), this, "周期开始时间");
+    public final TableField<TaskJobMainRecord, Timestamp> START_TIME = createField("START_TIME", org.jooq.impl.SQLDataType.TIMESTAMP.defaultValue(org.jooq.impl.DSL.inline("1970-01-01 08:01:00", org.jooq.impl.SQLDataType.TIMESTAMP)), this, "周期开始时间");
 
     /**
      * The column <code>mini_main.b2c_task_job_main.END_TIME</code>. 周期结束时间
      */
-    public final TableField<TaskJobMainRecord, Timestamp> END_TIME = createField("END_TIME", org.jooq.impl.SQLDataType.TIMESTAMP.defaultValue(DSL.inline("1970-01-01 08:01:00", org.jooq.impl.SQLDataType.TIMESTAMP)), this, "周期结束时间");
+    public final TableField<TaskJobMainRecord, Timestamp> END_TIME = createField("END_TIME", org.jooq.impl.SQLDataType.TIMESTAMP.defaultValue(org.jooq.impl.DSL.inline("1970-01-01 08:01:00", org.jooq.impl.SQLDataType.TIMESTAMP)), this, "周期结束时间");
 
     /**
      * The column <code>mini_main.b2c_task_job_main.CREATE_TIME</code>.
      */
-    public final TableField<TaskJobMainRecord, Timestamp> CREATE_TIME = createField("CREATE_TIME", org.jooq.impl.SQLDataType.TIMESTAMP.defaultValue(DSL.field("CURRENT_TIMESTAMP", org.jooq.impl.SQLDataType.TIMESTAMP)), this, "");
+    public final TableField<TaskJobMainRecord, Timestamp> CREATE_TIME = createField("CREATE_TIME", org.jooq.impl.SQLDataType.TIMESTAMP.defaultValue(org.jooq.impl.DSL.field("CURRENT_TIMESTAMP", org.jooq.impl.SQLDataType.TIMESTAMP)), this, "");
 
     /**
      * The column <code>mini_main.b2c_task_job_main.UPDATE_TIME</code>. 最后修改时间
      */
-    public final TableField<TaskJobMainRecord, Timestamp> UPDATE_TIME = createField("UPDATE_TIME", org.jooq.impl.SQLDataType.TIMESTAMP.defaultValue(DSL.field("CURRENT_TIMESTAMP", org.jooq.impl.SQLDataType.TIMESTAMP)), this, "最后修改时间");
+    public final TableField<TaskJobMainRecord, Timestamp> UPDATE_TIME = createField("UPDATE_TIME", org.jooq.impl.SQLDataType.TIMESTAMP.defaultValue(org.jooq.impl.DSL.field("CURRENT_TIMESTAMP", org.jooq.impl.SQLDataType.TIMESTAMP)), this, "最后修改时间");
 
     /**
      * The column <code>mini_main.b2c_task_job_main.DEL_FLAG</code>. 删除标识：0未删除，1已删除
      */
-    public final TableField<TaskJobMainRecord, Byte> DEL_FLAG = createField("DEL_FLAG", org.jooq.impl.SQLDataType.TINYINT.defaultValue(DSL.inline("0", org.jooq.impl.SQLDataType.TINYINT)), this, "删除标识：0未删除，1已删除");
+    public final TableField<TaskJobMainRecord, Byte> DEL_FLAG = createField("DEL_FLAG", org.jooq.impl.SQLDataType.TINYINT.defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.TINYINT)), this, "删除标识：0未删除，1已删除");
 
     /**
      * Create a <code>mini_main.b2c_task_job_main</code> table reference

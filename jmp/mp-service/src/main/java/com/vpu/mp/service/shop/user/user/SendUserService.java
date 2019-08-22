@@ -41,10 +41,19 @@ public class SendUserService extends ShopBaseService {
      * @param key 标识
      * @return 从redis获取的数据
      */
-    public List<Integer> getSendUserIdByRedisKey(String key){
+    public List<Integer> getAndDeleteSendUserIdByRedisKey(String key){
         List<String> result =  jedisManager.getList(key);
         jedisManager.delete(key);
         return result.stream().map(Integer::parseInt).collect(Collectors.toList());
+    }
+
+    /**
+     * 从redis获取数据
+     * @param key 标识
+     * @return 从redis获取的数据
+     */
+    public List<Integer> getSendUserIdByRedisKey(String key){
+        return jedisManager.getList(key).stream().map(Integer::parseInt).collect(Collectors.toList());
     }
 
     /**

@@ -1,5 +1,6 @@
 package com.vpu.mp.service.saas;
 
+import com.vpu.mp.service.saas.schedule.TaskJobMainService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -58,6 +59,8 @@ public class SaasApplication {
 	public SystemImageService sysImage;
 	@Autowired
 	public MpDeployHistoryService deployHistoryService;
+	@Autowired
+    public TaskJobMainService taskJobMainService;
 
 	@Autowired
 	DatabaseManager databaseManager;

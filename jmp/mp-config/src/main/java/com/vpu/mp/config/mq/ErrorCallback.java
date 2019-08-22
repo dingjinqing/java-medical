@@ -43,7 +43,7 @@ public class ErrorCallback implements RabbitTemplate.ReturnCallback {
         ObjectNode data = mapper.createObjectNode();
         data.set("msg",mapper.valueToTree(message));
         data.set("content",mapper.valueToTree(new String(message.getBody())));
-        rabbitTemplate.convertAndSend(RabbitConfig.QUEUE_ERROR_SEND,"SUCCESS");
+        rabbitTemplate.convertAndSend(RabbitConfig.QUEUE_ERROR_SEND,data);
         log.error("发送到回调队列成功...");
     }
 }

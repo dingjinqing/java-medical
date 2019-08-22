@@ -10,6 +10,8 @@ import me.chanjar.weixin.common.error.WxErrorException;
 import org.jooq.Field;
 import org.jooq.Table;
 import org.jooq.impl.DSL;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
 import java.text.SimpleDateFormat;
@@ -39,7 +41,7 @@ import static com.vpu.mp.db.shop.tables.MpWeeklyVisit.MP_WEEKLY_VISIT;
 @Service
 public class WechatTaskService extends ShopBaseService {
 
-
+    Logger logger= LoggerFactory.getLogger(WechatTaskService.class);
     private static final String CONTENT = "wechat-context";
     private static final ThreadLocal<String> local = ThreadLocal.withInitial(() -> {
         LocalDate date = LocalDate.now();
@@ -103,7 +105,7 @@ public class WechatTaskService extends ShopBaseService {
             record.setList(Util.toJson(result.getList()));
             record.insert();
         } catch (WxErrorException e) {
-            logger().error(CONTENT,e);
+            logger.error(CONTENT,e);
         }
     }
     /**
@@ -121,7 +123,7 @@ public class WechatTaskService extends ShopBaseService {
             result.forEach(v->list.add(db().newRecord(MP_SUMMARY_TREND,v)));
             db().batchInsert(list);
         } catch (WxErrorException e) {
-            logger().error(CONTENT,e);
+            logger.error(CONTENT,e);
         }
     }
     /**
@@ -139,7 +141,7 @@ public class WechatTaskService extends ShopBaseService {
             result.forEach(v->list.add(db().newRecord(MP_VISIT_PAGE,v)));
             db().batchInsert(list);
         } catch (WxErrorException e) {
-            logger().error(CONTENT,e);
+            logger.error(CONTENT,e);
         }
     }
 
@@ -160,7 +162,7 @@ public class WechatTaskService extends ShopBaseService {
             record.setVisitUv(Util.toJson(info.getVisitUv()));
             record.insert();
         } catch (WxErrorException e) {
-            logger().error(CONTENT,e);
+            logger.error(CONTENT,e);
         }
     }
 
@@ -182,7 +184,7 @@ public class WechatTaskService extends ShopBaseService {
             });
             db().batchInsert(list);
         } catch (WxErrorException e) {
-            logger().error(CONTENT,e);
+            logger.error(CONTENT,e);
         }
     }
     /**
@@ -206,7 +208,7 @@ public class WechatTaskService extends ShopBaseService {
             });
             db().batchInsert(list);
         } catch (WxErrorException e) {
-            logger().error(CONTENT,e);
+            logger.error(CONTENT,e);
         }
     }
     /**
@@ -230,7 +232,7 @@ public class WechatTaskService extends ShopBaseService {
             });
             db().batchInsert(list);
         } catch (WxErrorException e) {
-            logger().error(CONTENT,e);
+            logger.error(CONTENT,e);
         }
     }
 
@@ -251,7 +253,7 @@ public class WechatTaskService extends ShopBaseService {
             record.setVisitUv(Util.toJson(info.getVisitUv()));
             record.insert();
         } catch (WxErrorException e) {
-            logger().error(CONTENT,e);
+            logger.error(CONTENT,e);
         }
     }
     /**
@@ -274,7 +276,7 @@ public class WechatTaskService extends ShopBaseService {
             record.setVisitUv(Util.toJson(info.getVisitUv()));
             record.insert();
         } catch (WxErrorException e) {
-            logger().error(CONTENT,e);
+            logger.error(CONTENT,e);
         }
     }
     /**
@@ -297,7 +299,7 @@ public class WechatTaskService extends ShopBaseService {
             record.setVisitUv(Util.toJson(info.getVisitUv()));
             record.insert();
         } catch (WxErrorException e) {
-            logger().error(CONTENT,e);
+            logger.error(CONTENT,e);
         }
     }
     private boolean validationData(Object o,Table<?> table){

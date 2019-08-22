@@ -4,8 +4,10 @@ import static com.vpu.mp.db.shop.tables.Pledge.PLEDGE;
 
 import java.util.List;
 
+import com.vpu.mp.service.foundation.mq.RabbitmqSendService;
 import org.jooq.Record;
 import org.jooq.SelectWhereStep;
+import org.springframework.amqp.core.AmqpTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -28,7 +30,8 @@ import com.vpu.mp.service.shop.operation.RecordAdminActionService;
 public class ShopPledgeService extends ShopBaseService {
 
 
-    @Autowired private RecordAdminActionService actionService;
+    @Autowired private RabbitmqSendService rabbitmqSendService;
+    @Autowired private AmqpTemplate amqpTemplate;
 
     private static final int MAX_INSERT_NUMBERS = 20;
 
@@ -40,8 +43,7 @@ public class ShopPledgeService extends ShopBaseService {
                 .orderBy(PLEDGE.CREATE_TIME.asc())
                 .fetch()
                 .into(PledgeInfo.class);
-
-       // actionService.insertRecord(null,"");
+        rabbitmqSendService.sendMessage("hrllo","MMP");
 
         return list;
 

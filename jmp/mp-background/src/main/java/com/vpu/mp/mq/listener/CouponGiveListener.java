@@ -2,6 +2,7 @@ package com.vpu.mp.mq.listener;
 
 import java.io.IOException;
 
+import org.apache.poi.ss.formula.functions.T;
 import org.springframework.amqp.core.Message;
 import org.springframework.amqp.rabbit.annotation.RabbitHandler;
 import org.springframework.amqp.rabbit.annotation.RabbitListener;
@@ -16,19 +17,21 @@ import com.vpu.mp.service.pojo.shop.coupon.give.CouponGiveQueueParam;
 import com.vpu.mp.service.saas.SaasApplication;
 
 @Component
-@RabbitListener(queues = RabbitConfig.QUEUE_COUPON_SEND, containerFactory = "simpleRabbitListenerContainerFactory")
+@RabbitListener(queues = RabbitConfig.QUEUE_COUPON_SEND,
+    containerFactory = "simpleRabbitListenerContainerFactory")
 public class CouponGiveListener implements BaseRabbitHandler {
 	
 	@Autowired
 	protected SaasApplication saas;
 	
 	@RabbitHandler
-    public void handler(@Payload CouponGiveQueueParam param, Message message, Channel channel) throws IOException {
-		try {
-			saas.getShopApp(param.getShopId()).coupon.couponGiveService.handlerGouonGive(param);
-			this.success(channel, message);
-		}catch(Exception e) {
-			this.failNotReturn(channel, message);
-		}
+    public void handler(@Payload CouponGiveQueueParam param, Message message, Channel channel) {
+        saas.getShopApp(param.getShopId()).coupon.couponGiveService.handlerGouonGive(param);
+    }
+
+
+    @Override
+    public void executeException(Object[] datas, Throwable throwable) {
+
     }
 }

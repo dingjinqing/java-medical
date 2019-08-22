@@ -27,6 +27,8 @@ public final class DateUtil {
 	public static final String DATE_FORMAT_SHORT = "yyyyMMdd";
 	public static final String DATE_FORMAT_FULL = "yyyy-MM-dd HH:mm:ss";
 	public static final String DATE_FORMAT_FULL_NO_UNDERLINE = "yyyyMMddHHmmss";
+
+	private static final Integer MILLI_SECOND = 1000;
 	
 	/**
 	 * 转换日期格式输出
@@ -86,6 +88,12 @@ public final class DateUtil {
 	public static Timestamp getLocalDateTime() {
 		return Timestamp.valueOf(dateFormat(DATE_FORMAT_FULL));
 	}
+    /**
+     * 获取延后（秒）的时间
+     */
+    public static Timestamp getDalyedDateTime(Integer second) {
+        return new Timestamp(getLocalDateTime().getTime()+second*MILLI_SECOND);
+    }
 	
 	/**
 	 * 获取当前/指定月份第一天

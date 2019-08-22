@@ -12,6 +12,8 @@ import java.util.List;
 */
 @Data
 public class UserInfoQuery {
+    /** redis存储的唯一标识 */
+    private String redisKey;
     /** 勾选加购人群 */
     private Boolean onClickNoPay = Boolean.FALSE;
     /** 勾选购买指定商品人群 */

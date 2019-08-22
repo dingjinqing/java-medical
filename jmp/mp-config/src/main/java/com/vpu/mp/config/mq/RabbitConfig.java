@@ -48,6 +48,8 @@ public class RabbitConfig {
     
     /** 发送优惠券默认存放队列 */
     public static final String QUEUE_COUPON_SEND = "marketing.coupon";
+    /** 发送消息默认存放队列 */
+    public static final String QUEUE_MESSAGE_SEND = "marketing.message";
 
 
 
@@ -64,6 +66,9 @@ public class RabbitConfig {
 
     /** 发送优惠券路由键 */
     public static final String BINDING_EXCHANGE_COUPON_KEY = "direct.marketing.coupon";
+
+    /** 发送消息路由键 */
+    public static final String BINDING_EXCHANGE_MESSAGE_KEY = "direct.marketing.message";
 
 
 
@@ -120,6 +125,13 @@ public class RabbitConfig {
         return new Queue(QUEUE_ERROR_DEAL,true,false,false,args);
     }
     /**
+     * @return 发送消息队列
+     */
+    @Bean
+    public Queue sendMessageQueue() {
+        return new Queue(QUEUE_MESSAGE_SEND,true,false,false);
+    }
+    /**
      * @return 发送优惠券队列
      */
     @Bean
@@ -158,5 +170,9 @@ public class RabbitConfig {
     @Bean
     public Binding bindingCouponSend(){
         return BindingBuilder.bind(sendCouponWithQueue()).to(marketingExchange()).with(BINDING_EXCHANGE_COUPON_KEY);
+    }
+    @Bean
+    public Binding bindingMessageSend(){
+        return BindingBuilder.bind(sendMessageQueue()).to(marketingExchange()).with(BINDING_EXCHANGE_MESSAGE_KEY);
     }
 }

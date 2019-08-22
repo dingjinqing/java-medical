@@ -40,6 +40,7 @@ import com.vpu.mp.service.shop.market.increasepurchase.IncreasePurchaseService;
 import com.vpu.mp.service.shop.market.integralconvert.IntegralConvertService;
 import com.vpu.mp.service.shop.market.integration.GroupIntegrationService;
 import com.vpu.mp.service.shop.market.lottery.LotteryService;
+import com.vpu.mp.service.shop.market.message.MessageTemplateService;
 import com.vpu.mp.service.shop.market.packagesale.PackSaleService;
 import com.vpu.mp.service.shop.market.payreward.PayRewardService;
 import com.vpu.mp.service.shop.market.presale.PreSaleOrderService;
@@ -368,4 +369,10 @@ public class ShopApplication {
      */
     @Autowired
     public CouponPackService couponPack;
+    /**
+     * 消息推送
+     */
+    @Autowired
+    public MessageTemplateService messageTemplateService;
+
 }
