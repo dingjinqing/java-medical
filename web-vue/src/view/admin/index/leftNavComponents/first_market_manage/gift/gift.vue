@@ -8,7 +8,7 @@
     <wrapper>
       <statusTab
         v-model="param.status"
-        activityName="赠品"
+        :activityName="activityName"
       />
       <el-row :gutter="20">
         <el-col :span="4">
@@ -85,8 +85,9 @@
 </template>
 <script>
 import wrapper from '@/components/admin/wrapper/wrapper'
-import status, { getById, getByName } from '@/components/admin/status/status'
+import status, { getById } from '@/components/admin/status/status'
 import statusTab from '@/components/admin/status/statusTab'
+import { giftList } from '@/api/admin/marketManage/gift'
 
 export default {
 
@@ -96,6 +97,7 @@ export default {
   },
   data () {
     return {
+      activityName: '赠品',
       tabName: status[0].name,
       param: {
         name: '',
@@ -114,16 +116,24 @@ export default {
   },
   methods: {
     loadData () {
-
-    },
-    tabClick (tab, event) {
-      this.param.status = getByName(this.tabName).status
+      const { param } = this
+      giftList(param).then(res => {
+        const { content: { dataList } } = res
+        this.tableData = dataList
+      })
     },
     getStatus (v) {
       return getById(v).name
     }
   },
-  computed: {
+  watch: {
+    'param.status' (n, o) {
+      console.log('status')
+      this.loadData()
+    }
+  },
+  mounted () {
+    this.loadData()
   }
 }
 </script>
