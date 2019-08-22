@@ -43,7 +43,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class VirtualOrder extends TableImpl<VirtualOrderRecord> {
 
-    private static final long serialVersionUID = 1283526549;
+    private static final long serialVersionUID = -148100388;
 
     /**
      * The reference instance of <code>mini_shop_471752.b2c_virtual_order</code>
@@ -229,9 +229,14 @@ public class VirtualOrder extends TableImpl<VirtualOrderRecord> {
     public final TableField<VirtualOrderRecord, String> CARD_NO = createField("card_no", org.jooq.impl.SQLDataType.VARCHAR(32), this, "下单使用的会员卡号");
 
     /**
-     * The column <code>mini_shop_471752.b2c_virtual_order.still_send_flag</code>. 退款后是否继续发放优惠劵，1：继续发放，0：停止发放
+     * The column <code>mini_shop_471752.b2c_virtual_order.still_send_flag</code>. 优惠券礼包订单-退款后是否继续发放优惠劵，1：继续发放，0：停止发放
      */
-    public final TableField<VirtualOrderRecord, Byte> STILL_SEND_FLAG = createField("still_send_flag", org.jooq.impl.SQLDataType.TINYINT.nullable(false).defaultValue(org.jooq.impl.DSL.inline("1", org.jooq.impl.SQLDataType.TINYINT)), this, "退款后是否继续发放优惠劵，1：继续发放，0：停止发放");
+    public final TableField<VirtualOrderRecord, Byte> STILL_SEND_FLAG = createField("still_send_flag", org.jooq.impl.SQLDataType.TINYINT.nullable(false).defaultValue(org.jooq.impl.DSL.inline("1", org.jooq.impl.SQLDataType.TINYINT)), this, "优惠券礼包订单-退款后是否继续发放优惠劵，1：继续发放，0：停止发放");
+
+    /**
+     * The column <code>mini_shop_471752.b2c_virtual_order.access_mode</code>. 优惠券礼包订单-下单时的领取方式，0：现金购买，1：积分购买，2直接领取
+     */
+    public final TableField<VirtualOrderRecord, Byte> ACCESS_MODE = createField("access_mode", org.jooq.impl.SQLDataType.TINYINT.defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.TINYINT)), this, "优惠券礼包订单-下单时的领取方式，0：现金购买，1：积分购买，2直接领取");
 
     /**
      * Create a <code>mini_shop_471752.b2c_virtual_order</code> table reference
@@ -279,7 +284,7 @@ public class VirtualOrder extends TableImpl<VirtualOrderRecord> {
      */
     @Override
     public List<Index> getIndexes() {
-        return Arrays.<Index>asList(Indexes.VIRTUAL_ORDER_PRIMARY);
+        return Arrays.<Index>asList(Indexes.VIRTUAL_ORDER_ORDER_SN, Indexes.VIRTUAL_ORDER_PRIMARY, Indexes.VIRTUAL_ORDER_USER_ID);
     }
 
     /**

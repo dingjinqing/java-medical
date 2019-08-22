@@ -28,7 +28,7 @@ import org.jooq.impl.UpdatableRecordImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class VirtualOrderRecord extends UpdatableRecordImpl<VirtualOrderRecord> {
 
-    private static final long serialVersionUID = 695524215;
+    private static final long serialVersionUID = -1323873984;
 
     /**
      * Setter for <code>mini_shop_471752.b2c_virtual_order.order_id</code>. 订单id
@@ -507,17 +507,31 @@ public class VirtualOrderRecord extends UpdatableRecordImpl<VirtualOrderRecord> 
     }
 
     /**
-     * Setter for <code>mini_shop_471752.b2c_virtual_order.still_send_flag</code>. 退款后是否继续发放优惠劵，1：继续发放，0：停止发放
+     * Setter for <code>mini_shop_471752.b2c_virtual_order.still_send_flag</code>. 优惠券礼包订单-退款后是否继续发放优惠劵，1：继续发放，0：停止发放
      */
     public void setStillSendFlag(Byte value) {
         set(34, value);
     }
 
     /**
-     * Getter for <code>mini_shop_471752.b2c_virtual_order.still_send_flag</code>. 退款后是否继续发放优惠劵，1：继续发放，0：停止发放
+     * Getter for <code>mini_shop_471752.b2c_virtual_order.still_send_flag</code>. 优惠券礼包订单-退款后是否继续发放优惠劵，1：继续发放，0：停止发放
      */
     public Byte getStillSendFlag() {
         return (Byte) get(34);
+    }
+
+    /**
+     * Setter for <code>mini_shop_471752.b2c_virtual_order.access_mode</code>. 优惠券礼包订单-下单时的领取方式，0：现金购买，1：积分购买，2直接领取
+     */
+    public void setAccessMode(Byte value) {
+        set(35, value);
+    }
+
+    /**
+     * Getter for <code>mini_shop_471752.b2c_virtual_order.access_mode</code>. 优惠券礼包订单-下单时的领取方式，0：现金购买，1：积分购买，2直接领取
+     */
+    public Byte getAccessMode() {
+        return (Byte) get(35);
     }
 
     // -------------------------------------------------------------------------
@@ -546,7 +560,7 @@ public class VirtualOrderRecord extends UpdatableRecordImpl<VirtualOrderRecord> 
     /**
      * Create a detached, initialised VirtualOrderRecord
      */
-    public VirtualOrderRecord(Integer orderId, String orderSn, Integer userId, Byte orderStatus, String orderStatusName, Integer invoiceId, String invoiceDetail, String addMessage, String payCode, String payName, String prepayId, String paySn, BigDecimal moneyPaid, BigDecimal useAccount, BigDecimal useScore, BigDecimal memberCardBalance, BigDecimal orderAmount, Timestamp payTime, String sellerRemark, Byte starFlag, Byte delFlag, String aliTradeNo, Byte returnFlag, BigDecimal returnScore, BigDecimal returnAccount, BigDecimal returnMoney, BigDecimal returnCardBalance, Timestamp returnTime, Timestamp delTime, Timestamp createTime, Timestamp updateTime, Byte goodsType, Integer virtualGoodsId, String cardNo, Byte stillSendFlag) {
+    public VirtualOrderRecord(Integer orderId, String orderSn, Integer userId, Byte orderStatus, String orderStatusName, Integer invoiceId, String invoiceDetail, String addMessage, String payCode, String payName, String prepayId, String paySn, BigDecimal moneyPaid, BigDecimal useAccount, BigDecimal useScore, BigDecimal memberCardBalance, BigDecimal orderAmount, Timestamp payTime, String sellerRemark, Byte starFlag, Byte delFlag, String aliTradeNo, Byte returnFlag, BigDecimal returnScore, BigDecimal returnAccount, BigDecimal returnMoney, BigDecimal returnCardBalance, Timestamp returnTime, Timestamp delTime, Timestamp createTime, Timestamp updateTime, Byte goodsType, Integer virtualGoodsId, String cardNo, Byte stillSendFlag, Byte accessMode) {
         super(VirtualOrder.VIRTUAL_ORDER);
 
         set(0, orderId);
@@ -584,5 +598,6 @@ public class VirtualOrderRecord extends UpdatableRecordImpl<VirtualOrderRecord> 
         set(32, virtualGoodsId);
         set(33, cardNo);
         set(34, stillSendFlag);
+        set(35, accessMode);
     }
 }

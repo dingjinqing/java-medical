@@ -755,6 +755,7 @@ CREATE TABLE `b2c_virtual_order` (
   PRIMARY KEY (`order_id`) USING BTREE
 ) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci ROW_FORMAT=DYNAMIC;
 
+-- 王兵兵 2019-08-21
 alter table `b2c_mrking_voucher` modify column `least_consume` decimal(10,2) not null default '0.00' comment '满多少可用';
 alter table `b2c_mrking_voucher` drop column `shop_id`;
 alter table `b2c_mrking_voucher` drop column `remain_amount`;
@@ -770,3 +771,9 @@ ALTER TABLE b2c_goods ADD COLUMN `promotion_language_switch` TINYINT(1) NOT NULL
 ALTER TABLE b2c_goods ADD COLUMN `promotion_language` VARCHAR (400) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '' COMMENT '推广语';
 ALTER TABLE b2c_goods ADD COLUMN `deliver_place` VARCHAR ( 191 ) COLLATE utf8mb4_unicode_ci DEFAULT NULL COMMENT '发货地址';
 ALTER TABLE b2c_goods ADD COLUMN `share_config` VARCHAR ( 500 ) COLLATE utf8mb4_unicode_ci DEFAULT NULL COMMENT '分享配置';
+
+-- 王兵兵 2019-08-22
+alter table `b2c_virtual_order` modify column `still_send_flag` tinyint(1) NOT NULL DEFAULT '1' COMMENT '优惠券礼包订单-退款后是否继续发放优惠劵，1：继续发放，0：停止发放';
+alter table `b2c_virtual_order` add column `access_mode`  tinyint(1)   default '0' comment '优惠券礼包订单-下单时的领取方式，0：现金购买，1：积分购买，2直接领取';
+alter table `b2c_virtual_order` add index `order_sn` (`order_sn`);
+alter table `b2c_virtual_order` add index `user_id` (`user_id`);
