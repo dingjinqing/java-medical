@@ -35,7 +35,7 @@ public class FriendPromoteListParam {
 	public static final int OUT_OF_DATE = 3;
 	public static final int STOPPED = 4;
 	
-	private Integer actState;
+	private Integer actState = DOING;
 	
 	/* 分页信息 */
     private int currentPage;
