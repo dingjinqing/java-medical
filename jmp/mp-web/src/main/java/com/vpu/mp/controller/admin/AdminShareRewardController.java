@@ -1,8 +1,10 @@
 package com.vpu.mp.controller.admin;
 
 import com.vpu.mp.service.foundation.data.JsonResult;
-import com.vpu.mp.service.foundation.util.PageResult;
-import com.vpu.mp.service.pojo.shop.market.sharereward.*;
+import com.vpu.mp.service.pojo.shop.market.sharereward.ShareReceiveDetailParam;
+import com.vpu.mp.service.pojo.shop.market.sharereward.ShareRewardAddParam;
+import com.vpu.mp.service.pojo.shop.market.sharereward.ShareRewardShowParam;
+import com.vpu.mp.service.pojo.shop.market.sharereward.ShareRewardStatusParam;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
@@ -21,9 +23,10 @@ public class AdminShareRewardController extends AdminBaseController {
      */
     @PostMapping("/selectbypage")
     public JsonResult selectByPage(@RequestBody @Validated ShareRewardShowParam param) {
-        return success(new HashMap<String, PageResult<ShareRewardShowVo>>(1) {
+        return success(new HashMap<String, Object>(1) {
             {
-                put(shop().shareRewardService.getDailyShareAwardValue(), shop().shareRewardService.selectByPage(param));
+                put("dailyShareAward", shop().shareRewardService.getDailyShareAwardValue());
+                put("pageResult", shop().shareRewardService.selectByPage(param));
             }
         });
     }
