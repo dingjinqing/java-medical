@@ -96,7 +96,7 @@ public class GroupBuyService extends ShopBaseService {
      * @param param GroupBuyEditParam
      * @return  int
      */
-    public int editGroupBuy(GroupBuyEditParam param) {
+    public int updateGroupBuy(GroupBuyEditParam param) {
         param.setShareConfig(Util.toJson(param.getShare()));
         return db().update(GROUP_BUY_DEFINE)
                 .set(GROUP_BUY_DEFINE.NAME, param.getName())
@@ -113,7 +113,7 @@ public class GroupBuyService extends ShopBaseService {
      *
      * @param param
      */
-    public void stopGroupBuy(GroupBuyIdParam param) {
+    public void changeStatusActivity(GroupBuyIdParam param) {
         if (param.getStatus() == STOP_STATUS) {
             db().update(GROUP_BUY_DEFINE)
                     .set(GROUP_BUY_DEFINE.STATUS, USE_STATUS)

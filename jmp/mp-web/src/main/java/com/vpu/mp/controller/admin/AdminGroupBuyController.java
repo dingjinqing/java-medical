@@ -33,7 +33,6 @@ import com.vpu.mp.service.pojo.shop.order.OrderListInfoVo;
 @RequestMapping("/api")
 public class AdminGroupBuyController extends AdminBaseController {
 
-// TODO: 2019/8/1 校验及国际化 
 
     /**
      * 查询团购列表
@@ -91,9 +90,9 @@ public class AdminGroupBuyController extends AdminBaseController {
      * @param param GroupBuyEditParam
      * @return JsonResult
      */
-    @PostMapping("/admin/market/groupbuy/edit")
-    public JsonResult editGroupBuy(@RequestBody GroupBuyEditParam param) {
-        int flag = shop().groupBuy.editGroupBuy(param);
+    @PostMapping("/admin/market/groupbuy/update")
+    public JsonResult updateGroupBuy(@RequestBody GroupBuyEditParam param) {
+        int flag = shop().groupBuy.updateGroupBuy(param);
         if (flag<=0){
             return fail();
         }
@@ -132,10 +131,10 @@ public class AdminGroupBuyController extends AdminBaseController {
      * @param param GroupBuyIdParam
      * @return JsonResult
      */
-    @PostMapping("/admin/market/groupbuy/update")
-    public JsonResult stopGroupBuy(@RequestBody GroupBuyIdParam param) {
+    @PostMapping("/admin/market/groupbuy/change/status")
+    public JsonResult changeStatusActivity(@RequestBody GroupBuyIdParam param) {
         if (param.getStatus() != null) {
-            shop().groupBuy.stopGroupBuy(param);
+            shop().groupBuy.changeStatusActivity(param);
         }
         return fail(JsonResultCode.CODE_PARAM_ERROR);
     }
@@ -146,7 +145,7 @@ public class AdminGroupBuyController extends AdminBaseController {
      * @param param GroupBuyDetailParam
      * @return JsonResult
      */
-    @PostMapping("/admin/market/groupbuy/detaillist")
+    @PostMapping("/admin/market/groupbuy/detail/list")
     public JsonResult detailGroupBuyList(@RequestBody GroupBuyDetailParam param) {
         PageResult<GroupBuyDetailListVo> vo = shop().groupBuy.detailGroupBuyList(param);
         return success(vo);
