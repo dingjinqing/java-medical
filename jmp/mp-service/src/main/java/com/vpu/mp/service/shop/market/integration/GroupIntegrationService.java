@@ -45,7 +45,6 @@ public class GroupIntegrationService extends ShopBaseService {
 	@Autowired public GroupIntegrationListService groupIntegrationList;
     @Autowired public QrCodeService qrCode;
     
-//    public static final String GROUP_INTEGRATION_SHARE_PATH = "pages/pinintegration/pinintegration";
 	
 	/**
 	 * 分页查询瓜分积分活动列表
@@ -254,12 +253,15 @@ public class GroupIntegrationService extends ShopBaseService {
 	}
 
 	/**
-	 * 将团数量、参与人数 、消耗积分 信息填充到传入的对象中
+	 * 将团数量、参与人数 、消耗积分 信息填充到传入的对象中，并设置活动是否过期标志位
 	 * @param dataList
 	 * @param activictyInfoMap
 	 */
 	private void passInfo(List<GroupIntegrationDefineVo> dataList, Map<Integer, ActivityInfo> activictyInfoMap) {
 		for (GroupIntegrationDefineVo defineVo : dataList) {
+//			设置活动是否过期
+			defineVo.isExpired();
+			
 			ActivityInfo info = activictyInfoMap.get(defineVo.getId());
 			if(info == null) {
 				continue;

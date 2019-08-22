@@ -1,6 +1,10 @@
 package com.vpu.mp.service.pojo.shop.market.integration;
 
 import java.sql.Timestamp;
+import java.time.LocalDateTime;
+
+import com.vpu.mp.service.pojo.shop.market.integration.GroupIntegrationDefineEnums.QueryType;
+import com.vpu.mp.service.pojo.shop.market.integration.GroupIntegrationDefineEnums.Status;
 
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -13,6 +17,7 @@ import lombok.NoArgsConstructor;
 @Data
 @NoArgsConstructor
 public class GroupIntegrationDefineVo {
+
 	/** 活动ID*/
 	private Integer id;
 	 /** 活动名称 */
@@ -31,6 +36,8 @@ public class GroupIntegrationDefineVo {
 	private Timestamp startTime;
 	 /** 结束时间 */
 	private Timestamp endTime;
+	/** 是否过期1进行中，2未开始，3已过期，4已停用 */
+	private Byte expire;
 	 /** 状态： 1：启用  0： 禁用 */
 	private Byte status ;
 	/** 剩余积分 */
@@ -45,6 +52,25 @@ public class GroupIntegrationDefineVo {
 	private Integer inteUserSum=0;
 	/** 	团数量 */
 	private Integer inteGroupSum=0;
+	
+	
+	public Byte isExpired() {
+		if(status!=null&&status.equals(Status.STOPPED.value())) {
+			expire = QueryType.STOPPED;
+			return expire;
+		}
+		Timestamp now = Timestamp.valueOf(LocalDateTime.now());
+		if(now.compareTo(startTime)>0) {
+			expire = QueryType.UNSTARTED;
+			return expire;
+		}
+		if(now.compareTo(endTime)>0) {
+			expire =QueryType.OVERDUE;
+			return expire;
+		}
+		expire = QueryType.UNDER_WAY;
+		return expire;
+	}
 	
 }
 
