@@ -1687,8 +1687,8 @@ create table `b2c_mp_template_form_id` (
 );
 
 -- --  拼团活动定义表
--- drop table if exists `b2c_group_buy__define`;
-create table `b2c_group_buy__define`
+-- drop table if exists `b2c_group_buy_define`;
+create table `b2c_group_buy_define`
 (
     `id`               int(11)      not null auto_increment,
     `shop_id`          int(11)      not null comment '店铺id',
