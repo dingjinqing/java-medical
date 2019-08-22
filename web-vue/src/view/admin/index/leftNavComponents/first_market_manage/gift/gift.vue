@@ -1,7 +1,15 @@
+<!--
+* 赠品活动
+*
+* @author 郑保乐
+-->
 <template>
   <div>
     <wrapper>
-      <statusTab v-model="param.status" />
+      <statusTab
+        v-model="param.status"
+        activityName="赠品"
+      />
       <el-row :gutter="20">
         <el-col :span="4">
           <el-input
@@ -79,6 +87,7 @@
 import wrapper from '@/components/admin/wrapper/wrapper'
 import status, { getById, getByName } from '@/components/admin/status/status'
 import statusTab from '@/components/admin/status/statusTab'
+
 export default {
 
   components: {

@@ -1,7 +1,7 @@
 const status = [
   {
     status: null,
-    name: '全部赠品活动'
+    name: '全部活动'
   },
   {
     status: 0,
