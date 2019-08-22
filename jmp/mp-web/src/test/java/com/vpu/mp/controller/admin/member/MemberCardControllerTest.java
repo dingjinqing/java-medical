@@ -33,7 +33,6 @@ public class MemberCardControllerTest extends AdminBaseControllerTest{
 		//等级会员卡更新v2
 		param.setCardName(null);
 	}
-
 	
 	/** 测试通过会员卡id更新折扣部分商品公共方法 */
 	@Test
