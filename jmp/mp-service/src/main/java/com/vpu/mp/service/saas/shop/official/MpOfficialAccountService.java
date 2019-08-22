@@ -32,5 +32,15 @@ public class MpOfficialAccountService extends MainBaseService {
 	public MpOfficialAccountRecord  getOfficialAccountByAppid(String appId){
 		return db().fetchAny(MP_OFFICIAL_ACCOUNT,MP_OFFICIAL_ACCOUNT.APP_ID.eq(appId));
 	}
+	
+	/**
+	 * 判断是否授权
+	 * @param appId
+	 * @return
+	 */
+	public Boolean isAuthOk(String appId) {
+		MpOfficialAccountRecord account = getOfficialAccountByAppid(appId);
+		return (account !=null &&account.getIsAuthOk() == (byte)1);
+	}
 	   
 }

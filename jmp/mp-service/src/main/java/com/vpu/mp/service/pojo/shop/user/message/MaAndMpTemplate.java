@@ -1,5 +1,8 @@
 package com.vpu.mp.service.pojo.shop.user.message;
 
+import com.vpu.mp.service.pojo.shop.official.message.MpTemplateConfig;
+import com.vpu.mp.service.pojo.shop.official.message.MpTemplateConstant;
+
 /**
  * 小程序模版和公众号模版映射
  * @author 卢光耀

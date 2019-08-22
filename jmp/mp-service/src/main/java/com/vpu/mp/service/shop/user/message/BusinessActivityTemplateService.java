@@ -1,18 +1,17 @@
 package com.vpu.mp.service.shop.user.message;
 
-import cn.binarywang.wx.miniapp.api.WxMaTemplateService;
-import cn.binarywang.wx.miniapp.bean.WxMaTemplateMessage;
-import cn.binarywang.wx.miniapp.bean.template.WxMaTemplateAddResult;
-import com.vpu.mp.service.foundation.service.ShopBaseService;
-import com.vpu.mp.service.saas.shop.MpAuthShopService;
-import me.chanjar.weixin.common.error.WxErrorException;
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.vpu.mp.service.pojo.shop.user.message.MaTemplateConfig;
+import com.vpu.mp.service.foundation.service.ShopBaseService;
+import com.vpu.mp.service.saas.shop.MpAuthShopService;
 
-import java.util.Arrays;
-import java.util.List;
+import cn.binarywang.wx.miniapp.api.WxMaTemplateService;
+import cn.binarywang.wx.miniapp.bean.WxMaTemplateMessage;
+import cn.binarywang.wx.miniapp.bean.template.WxMaTemplateAddResult;
+import me.chanjar.weixin.common.error.WxErrorException;
 
 @Service
 public class BusinessActivityTemplateService extends ShopBaseService {
