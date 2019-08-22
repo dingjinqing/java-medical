@@ -54,7 +54,7 @@ public class VoTranslator {
     /**
      * 转换语言
      */
-    private String translate(String prefix, String message, String defaultMessage) {
+    public String translate(String prefix, String message, String defaultMessage) {
         return Util.translateMessage(getLanguage(), message, defaultMessage, prefix);
     }
 

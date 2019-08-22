@@ -1,6 +1,9 @@
 package com.vpu.mp.service.shop.operation.aop;
 
 import java.lang.reflect.Method;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -9,10 +12,14 @@ import org.aspectj.lang.annotation.AfterReturning;
 import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.annotation.Pointcut;
 import org.aspectj.lang.reflect.MethodSignature;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.context.request.RequestAttributes;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
+
+import com.vpu.mp.service.pojo.shop.operation.RecordContentTemplate;
+import com.vpu.mp.service.shop.operation.RecordAdminActionService;
 
 /**
  * 操作记录切面
@@ -23,6 +30,7 @@ import org.springframework.web.context.request.ServletRequestAttributes;
 @Aspect
 @Configuration
 public class RecordAdminActionAspect {
+	@Autowired RecordAdminActionService service;
     @Pointcut("@annotation(com.vpu.mp.service.shop.operation.aop.RecordAction)")
     public void recordAspect(){
 
@@ -38,6 +46,14 @@ public class RecordAdminActionAspect {
 
         System.out.println(recordAction);
         System.out.println(recordAction.templateId());
+        
+        RecordContentTemplate[] templateId = recordAction.templateId();
+        List<Integer> result = new ArrayList<>();
+        for(RecordContentTemplate t: templateId) {
+        	result.add(t.getCode());
+        }
+        		
+        service.insertRecord(result, recordAction.templateData());
         if ( attributes != null){
             HttpServletRequest request = ((ServletRequestAttributes) RequestContextHolder
                     .getRequestAttributes()).getRequest();

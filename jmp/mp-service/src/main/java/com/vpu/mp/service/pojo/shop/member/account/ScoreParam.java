@@ -13,18 +13,23 @@ import lombok.Data;
  */
 @Data
 public class ScoreParam {
+	/** 备注 */
 	private String remark;
 	
 	@NotNull(message=JsonResultMessage.MSG_MEMBER_SCORE_NOT_NULL)
 	private Integer[] userId;
 	
+	/** 积分变动数额 */
 	@Min(message=JsonResultMessage.MSG_MEMBER_SCORE_NOT_BE_NEGATIVE, value = 0)
 	@NotNull(message=JsonResultMessage.MSG_MEMBER_SCORE_NOT_NULL)
 	private Integer score;
 	
+	/** 当前积分  当批量操作时，为所选用户中的最低积分*/
 	@Min(message=JsonResultMessage.MSG_MEMBER_SCORE_NOT_BE_NEGATIVE, value = 0)
 	@NotNull(message=JsonResultMessage.MSG_MEMBER_SCORE_NOT_NULL)
 	private Integer scoreDis;
+	
+	/** 订单编号 */
 	private String orderSn; 
 	
 }

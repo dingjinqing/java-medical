@@ -2,6 +2,7 @@ package com.vpu.mp.service.pojo.shop.member.card;
 
 import java.math.BigDecimal;
 import java.sql.Timestamp;
+import java.util.List;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 
@@ -47,11 +48,11 @@ public class CardParam {
 	
 	/** 专享商品 */
 	/** 商品id */
-	private Integer[] ownGoodsId;
+	private List<Integer> ownGoodsId;
 	/** 商家分类id */
-	private Integer[] ownShopCategoryIds;
+	private List<Integer> ownStoreCategoryIds;
 	/** 平台分类id  */
-	private Integer[] ownPlatFormCategoryIds;
+	private List<Integer> ownPlatFormCategoryIds;
 	
 	
 	/** 
