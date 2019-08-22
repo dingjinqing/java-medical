@@ -26,6 +26,7 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 import static com.vpu.mp.db.shop.tables.Goods.GOODS;
+import static com.vpu.mp.db.shop.tables.ShopCfg.SHOP_CFG;
 import static com.vpu.mp.db.shop.tables.User.USER;
 import static com.vpu.mp.service.pojo.shop.market.form.FormConstant.MAPPER;
 import static com.vpu.mp.service.pojo.shop.market.increasepurchase.PurchaseConstant.*;
@@ -115,7 +116,7 @@ public class ShareRewardService extends ShopBaseService {
         if (rules.length == 0) {
             return null;
         }
-        Set<Byte> rewardType = Arrays.stream(rules).map(rule -> {
+        return Arrays.stream(rules).filter(StringUtils::isNotEmpty).map(rule -> {
             try {
                 JsonNode node = MAPPER.readTree(rule);
                 return Byte.valueOf(node.get(REWARD_TYPE).asText());
@@ -124,7 +125,6 @@ public class ShareRewardService extends ShopBaseService {
                 throw new RuntimeException("Serialization Exception !");
             }
         }).collect(Collectors.toSet());
-        return rewardType;
     }
 
     /**
@@ -307,4 +307,26 @@ public class ShareRewardService extends ShopBaseService {
         return db().select(DSL.countDistinct(asu.USER_ID)).from(asu).where(asu.SHARE_ID.eq(shareId)).and(asu.IS_NEW.eq(CONDITION_ONE)).fetchOptionalInto(Integer.class).orElse(0);
     }
 
+    /**
+     * 分享有礼活动-每日用户可分享次数上限参数常量
+     */
+    private static final String DAILY_SHARE_AWARD = "daily_share_award";
+
+    /**
+     * 更新每日用户可分享次数上限参数
+     *
+     * @param value 每日用户可分享次数上限值
+     */
+    public void updateDailyShareAward(Integer value) {
+        db().update(SHOP_CFG).set(SHOP_CFG.V, String.valueOf(value)).where(SHOP_CFG.K.eq(DAILY_SHARE_AWARD)).execute();
+    }
+
+    /**
+     * 获取每日用户可分享次数上限参数
+     *
+     * @return 每日用户可分享次数上限值
+     */
+    public String getDailyShareAwardValue() {
+        return db().select(SHOP_CFG.V).from(SHOP_CFG).where(SHOP_CFG.K.eq(DAILY_SHARE_AWARD)).fetchOneInto(String.class);
+    }
 }

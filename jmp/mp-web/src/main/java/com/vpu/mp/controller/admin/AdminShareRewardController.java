@@ -1,12 +1,12 @@
 package com.vpu.mp.controller.admin;
 
 import com.vpu.mp.service.foundation.data.JsonResult;
-import com.vpu.mp.service.pojo.shop.market.sharereward.ShareReceiveDetailParam;
-import com.vpu.mp.service.pojo.shop.market.sharereward.ShareRewardAddParam;
-import com.vpu.mp.service.pojo.shop.market.sharereward.ShareRewardShowParam;
-import com.vpu.mp.service.pojo.shop.market.sharereward.ShareRewardStatusParam;
+import com.vpu.mp.service.foundation.util.PageResult;
+import com.vpu.mp.service.pojo.shop.market.sharereward.*;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.HashMap;
 
 /**
  * @author liufei
@@ -21,7 +21,11 @@ public class AdminShareRewardController extends AdminBaseController {
      */
     @PostMapping("/selectbypage")
     public JsonResult selectByPage(@RequestBody @Validated ShareRewardShowParam param) {
-        return success(shop().shareRewardService.selectByPage(param));
+        return success(new HashMap<String, PageResult<ShareRewardShowVo>>(1) {
+            {
+                put(shop().shareRewardService.getDailyShareAwardValue(), shop().shareRewardService.selectByPage(param));
+            }
+        });
     }
 
     /**
@@ -54,7 +58,7 @@ public class AdminShareRewardController extends AdminBaseController {
      * 停用/启用/删除
      */
     @PostMapping("/changeactivity")
-    public JsonResult changeActivity(@RequestBody @Validated ShareRewardStatusParam param){
+    public JsonResult changeActivity(@RequestBody @Validated ShareRewardStatusParam param) {
         shop().shareRewardService.changeActivity(param);
         return success();
     }
@@ -63,7 +67,16 @@ public class AdminShareRewardController extends AdminBaseController {
      * 分享有礼活动奖励领取明细查询
      */
     @PostMapping("/sharereceivedetail")
-    public JsonResult shareReceiveDetail(@RequestBody @Validated ShareReceiveDetailParam param){
+    public JsonResult shareReceiveDetail(@RequestBody @Validated ShareReceiveDetailParam param) {
         return success(shop().shareRewardService.shareReceiveDetail(param));
+    }
+
+    /**
+     * 更新每日用户可分享次数上限参数
+     */
+    @GetMapping("/updatedailyshareaward/{upValue}")
+    public JsonResult updateDailyShareAward(@PathVariable Integer upValue) {
+        shop().shareRewardService.updateDailyShareAward(upValue);
+        return success();
     }
 }
