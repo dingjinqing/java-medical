@@ -94,7 +94,8 @@ public class CommentAwardService extends ShopBaseService {
      */
     public PageResult<CommentAwardListVo> getCommentAwardActivityList(CommentAwardListParam param) {
         SelectConditionStep<? extends Record> select = db()
-                .select(COMMENT_AWARD.NAME,
+                .select(COMMENT_AWARD.ID,
+                        COMMENT_AWARD.NAME,
                         COMMENT_AWARD.GOODS_TYPE,
                         COMMENT_AWARD.AWARD_TYPE,
                         COMMENT_AWARD.IS_FOREVER,
