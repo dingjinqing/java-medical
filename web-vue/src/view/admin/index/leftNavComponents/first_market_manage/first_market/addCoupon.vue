@@ -69,11 +69,23 @@
               <div class="coupon_info_title">优惠券基础信息</div>
               <ul>
                 <li class="content_right_li clearfix">
-                  <div class=fl>
+                  <div class=ft>
                     <em>*</em>优惠券名称
                   </div>
+                  <div class="ft">
+                    <el-input
+                      size="small"
+                      class="coupon_name_input"
+                      placeholder="最多输入10个字"
+                      v-model="coupon_name_input"
+                    ></el-input>
+                  </div>
                 </li>
-                <li class="content_right_li clearfix"></li>
+                <li class="content_right_li clearfix">
+                  <div class="to_choose">
+
+                  </div>
+                </li>
                 <li class="content_right_li clearfix"></li>
               </ul>
             </div>
@@ -83,6 +95,15 @@
     </div>
   </div>
 </template>
+<script>
+export default {
+  data () {
+    return {
+      coupon_name_input: ''
+    }
+  }
+}
+</script>
 <style lang="scss" scoped>
 .content {
   padding: 10px;
@@ -228,7 +249,41 @@
   font-size: 12px;
 }
 .add_coupon_content .content_right {
-  float: right;
+  float: left;
+  margin-left: 45%;
+  margin-top: -36.4%;
   width: 560px;
+}
+.coupon_info_title {
+  border-bottom: 1px solid #e5e5e5;
+  line-height: 40px;
+}
+.coupon_info {
+  border: 1px solid #e5e5e5;
+  background: #f8f8f8;
+  padding: 0 12px 22px;
+  -webkit-border-radius: 3px;
+  -moz-border-radius: 3px;
+  border-radius: 3px;
+}
+.content_right_li {
+  padding: 10px 0 0 0;
+}
+.content_right_li em {
+  color: #f66;
+}
+.content_right_li .fl:first-child {
+  width: 110px;
+  text-align: right;
+}
+.ft {
+  width: 110px;
+  float: left;
+  line-height: 30px;
+  margin-right: 15px;
+  text-align: right;
+}
+.coupon_name_input {
+  width: 160px;
 }
 </style>

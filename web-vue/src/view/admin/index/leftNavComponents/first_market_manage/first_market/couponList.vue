@@ -1,6 +1,18 @@
 <template>
   <div class="content">
     <div class="main">
+      <div class="main_coupon">
+        <div class="nav-role">
+          <ul class="coupon-head-ul clearfix">
+            <li>所有优惠券</li>
+            <li>进行中</li>
+            <li>未开始</li>
+            <li>已过期</li>
+            <li>已停用</li>
+            <li>添加优惠券</li>
+          </ul>
+        </div>
+      </div>
       <div class="p_top_right">
         <div class="topRightDiv">
           <span>优惠券名称</span>
@@ -18,6 +30,7 @@
         </div>
         <div class="add_coupon">
           <el-button
+            @click="addCoupon()"
             type="primary"
             size="small"
           >添加优惠券</el-button>
@@ -119,33 +132,6 @@
         </el-table-column>
       </el-table>
     </div>
-    <!--禁止登陆弹窗-->
-    <div class="balanceDialo">
-      <el-dialog
-        title="禁止登陆"
-        :visible.sync="noLandingDialogVisible"
-        width="40%"
-        :modal-append-to-body="false"
-      >
-        <div
-          class="balanceDialogDiv"
-          style="margin-bottom:30px"
-        >
-          <span style="color:#f66">提示：</span>
-          <span>禁止登陆后会员将不能登陆了，确定禁止登陆吗?</span>
-        </div>
-        <span
-          slot="footer"
-          class="dialog-footer"
-        >
-          <el-button @click="noLandingDialogVisible = false">取 消</el-button>
-          <el-button
-            type="primary"
-            @click="noLandingDialogVisible = false"
-          >确 定</el-button>
-        </span>
-      </el-dialog>
-    </div>
   </div>
 
 </template>
@@ -165,8 +151,7 @@ export default {
     seacherCouponList () {
       let obj = {
         'currentPage ': 0,
-        'pageRows ': 20,
-        'nav': 1
+        'pageRows ': 20
       }
 
       couponList(obj).then((res) => {
@@ -207,6 +192,11 @@ export default {
           this.seacherCouponList()
         }
       })
+    },
+    addCoupon () {
+      this.$router.push({
+        name: 'add_coupon'
+      })
     }
   }
 }
@@ -222,6 +212,28 @@ export default {
     background-color: #fff;
     padding: 10px 20px 10px 20px;
   }
+}
+.main_coupon {
+  padding: 0 20px 20px;
+  background: #fff;
+  width: 100%;
+}
+.nav-role {
+  width: 100%;
+  height: 50px;
+  background-color: #fff;
+  margin: 0 auto;
+  font-size: 14px;
+  box-sizing: border-box;
+  border-bottom: 1px solid #eee;
+}
+.coupon-head-ul li {
+  float: left;
+  height: 50px;
+  line-height: 50px;
+  color: #333;
+  font-size: 14px;
+  padding: 0 10px;
 }
 .condition {
   position: relative;

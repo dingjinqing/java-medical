@@ -434,7 +434,7 @@
 </template>
 <script>
 export default {
-  mounted() {
+  mounted () {
     this.langDefault()
   },
   methods: {
@@ -457,13 +457,13 @@ export default {
       })
     },
     // 普通优惠卷点击
-    coupon() {
+    coupon () {
       this.$router.push({
         name: 'ordinary_coupon'
       })
     },
     // 赠品点击
-    gift() {
+    gift () {
       this.$router.push({
         name: 'gift_view'
       })
