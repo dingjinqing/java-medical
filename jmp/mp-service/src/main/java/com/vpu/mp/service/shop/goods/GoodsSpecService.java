@@ -1,21 +1,21 @@
 package com.vpu.mp.service.shop.goods;
 
-import static com.vpu.mp.db.shop.Tables.SPEC;
-import static com.vpu.mp.db.shop.Tables.SPEC_VALS;
+import com.vpu.mp.db.shop.tables.records.SpecRecord;
+import com.vpu.mp.db.shop.tables.records.SpecValsRecord;
+import com.vpu.mp.service.foundation.data.DelFlag;
+import com.vpu.mp.service.foundation.service.ShopBaseService;
+import com.vpu.mp.service.pojo.shop.goods.spec.GoodsSpec;
+import com.vpu.mp.service.pojo.shop.goods.spec.GoodsSpecVal;
+import org.jooq.DSLContext;
+import org.jooq.impl.DSL;
+import org.springframework.stereotype.Service;
 
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.jooq.DSLContext;
-import org.jooq.impl.DSL;
-import org.springframework.stereotype.Service;
-
-import com.vpu.mp.db.shop.tables.records.SpecRecord;
-import com.vpu.mp.db.shop.tables.records.SpecValsRecord;
-import com.vpu.mp.service.foundation.data.DelFlag;
-import com.vpu.mp.service.pojo.shop.goods.spec.GoodsSpec;
-import com.vpu.mp.service.pojo.shop.goods.spec.GoodsSpecVal;
+import static com.vpu.mp.db.shop.Tables.SPEC;
+import static com.vpu.mp.db.shop.Tables.SPEC_VALS;
 
 /**
  * @author 李晓冰
@@ -23,7 +23,7 @@ import com.vpu.mp.service.pojo.shop.goods.spec.GoodsSpecVal;
  */
 @Service
 
-public class GoodsSpecService {
+public class GoodsSpecService extends ShopBaseService {
 
     /**
      * 	规格名值处理后map内id值的key名称
@@ -33,11 +33,11 @@ public class GoodsSpecService {
     /**
      * 此服务目前只由goodsService使用，所以没有被ServiceContainer管理
      *
-     * @param db         由调用者传入db进行事务处理
      * @param goodsSpecs 内部包含了对应的specsVal值
-     * @param goodsId
+     * @param goodsId 商品id
      */
-    protected void insertSpecAndSpecVal(DSLContext db, List<GoodsSpec> goodsSpecs, Integer goodsId) {
+    protected void insertSpecAndSpecVal(List<GoodsSpec> goodsSpecs, Integer goodsId) {
+        DSLContext db=db();
         for (GoodsSpec goodsSpec : goodsSpecs) {
             goodsSpec.setGoodsId(goodsId);
             SpecRecord specRecord = db.newRecord(SPEC, goodsSpec);
@@ -58,13 +58,12 @@ public class GoodsSpecService {
     /**
      * 在插入数据的基础上返回一个预处理的Map对象，供使用者快速通过规格名称字符串获取对应记录的id值。
      *
-     * @param db
      * @param goodsSpecs
      * @param goodsId
      * @return
      */
-    protected Map<String, Map<String, Integer>> insertSpecAndSpecValWithPrepareResult(DSLContext db, List<GoodsSpec> goodsSpecs, Integer goodsId) {
-        insertSpecAndSpecVal(db, goodsSpecs, goodsId);
+    protected Map<String, Map<String, Integer>> insertSpecAndSpecValWithPrepareResult(List<GoodsSpec> goodsSpecs, Integer goodsId) {
+        insertSpecAndSpecVal(goodsSpecs, goodsId);
         Map<String, Map<String, Integer>> resultMap = prepareResultMap(goodsSpecs);
         return resultMap;
     }

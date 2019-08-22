@@ -161,27 +161,6 @@ public class GoodsLabelCoupleService extends ShopBaseService {
      * @param goodsLabelCoupleList
      */
     public void batchInsert(List<GoodsLabelCouple> goodsLabelCoupleList) {
-//		if(goodsLabelCoupleList == null || goodsLabelCoupleList.size()==0) {
-//			return ;
-//		}
-//		List<GoodsLabelCoupleRecord> labelCoupleRecordList = new ArrayList(goodsLabelCoupleList.size());
-//		for (GoodsLabelCouple goodsLabelCouple : goodsLabelCoupleList) {
-//			labelCoupleRecordList.add(goodsLabelCouple.toRecord());
-//		}
-//		db().batchInsert(labelCoupleRecordList).execute();
-//		return ;
-
-        batchInsert(db(), goodsLabelCoupleList);
-    }
-
-    /**
-     * 重载batchInsert方法，对外提供统一事务处理接口
-     *
-     * @param db
-     * @param goodsLabelCoupleList
-     * @author 李晓冰
-     */
-    public void batchInsert(DSLContext db, List<GoodsLabelCouple> goodsLabelCoupleList) {
         if (goodsLabelCoupleList == null || goodsLabelCoupleList.size() == 0) {
             return;
         }
@@ -189,7 +168,7 @@ public class GoodsLabelCoupleService extends ShopBaseService {
         for (GoodsLabelCouple goodsLabelCouple : goodsLabelCoupleList) {
             labelCoupleRecordList.add(goodsLabelCouple.toRecord());
         }
-        db.batchInsert(labelCoupleRecordList).execute();
+        db().batchInsert(labelCoupleRecordList).execute();
     }
 
     /**

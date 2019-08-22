@@ -771,6 +771,8 @@ ALTER TABLE b2c_goods ADD COLUMN `promotion_language_switch` TINYINT(1) NOT NULL
 ALTER TABLE b2c_goods ADD COLUMN `promotion_language` VARCHAR (400) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '' COMMENT '推广语';
 ALTER TABLE b2c_goods ADD COLUMN `deliver_place` VARCHAR ( 191 ) COLLATE utf8mb4_unicode_ci DEFAULT NULL COMMENT '发货地址';
 ALTER TABLE b2c_goods ADD COLUMN `share_config` VARCHAR ( 500 ) COLLATE utf8mb4_unicode_ci DEFAULT NULL COMMENT '分享配置';
+ALTER TABLE b2c_grade_prd ADD COLUMN `del_flag` tinyint(1) NOT NULL DEFAULT '0' COMMENT '是否删除0否，1是';
+ALTER TABLE b2c_goods_rebate_price ADD COLUMN `del_flag` tinyint(1) NOT NULL DEFAULT '0' COMMENT '是否删除0否，1是';
 
 -- 王兵兵 2019-08-22
 alter table `b2c_virtual_order` modify column `still_send_flag` tinyint(1) NOT NULL DEFAULT '1' COMMENT '优惠券礼包订单-退款后是否继续发放优惠劵，1：继续发放，0：停止发放';

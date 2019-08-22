@@ -61,7 +61,10 @@ public class JsonResultMessage {
 	 * 商品
 	 */
 	public static final String GOODS_ID_IS_NULL = "goods.id.is.null";
-	
+    public static final String GOODS_NAME_EXIST = "goods.name.exist";
+    public static final String GOODS_NAME_IS_NULL="goods.name.is.null";
+    public static final String GOODS_SN_EXIST = "goods.sn.exist";
+    public static final String GOODS_MAIN_IMG_IS_NULL="goods.main.img.is.null";
 	/**
 	 * 商品品牌
 	 */
@@ -83,11 +86,15 @@ public class JsonResultMessage {
 	public static final String GOODS_LABEL_NOT_EXIST = "goods.label.not.exist";
 	public static final String GOODS_LABEL_ID_NOT_NULL = "goods.label.id.notNull";
 	public static final String GOODS_LABEL_NAME_NOT_NULL = "goods.label.name.notNull";
-	public static final String GOODS_NAME_EXIST = "goods.name.exist";
-	public static final String GOODS_SN_EXIST = "goods.sn.exist";
+
+    /**
+     * 商品规格
+     */
 	public static final String GOODS_SPEC_PRD_SN_EXIST = "goods.spec.prd.sn.exist";
 	public static final String GOODS_SPEC_NAME_REPETITION = "goods.spec.name.repetition";
 	public static final String GOODS_SPEC_VAL_REPETITION = "goods.spec.val.repetition";
+	public static final String GOODS_SPEC_ATTRIBUTE_SPEC_K_V_CONFLICT="goods.spec.attribute.spec.k.v.conflict";
+
 	public static final String GOODS_RECOMMEND_NAME_NOT_NULL = "goods.recommend.name.notNull";
 	public static final String GOODS_RECOMMEND_TYPE_NOT_NULL = "goods.recommend.type.notNull";
 	public static final String GOODS_RECOMMEND_NAME_EXIST = "goods.recommend.name.exist";

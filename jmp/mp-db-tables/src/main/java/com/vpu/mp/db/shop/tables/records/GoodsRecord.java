@@ -5,14 +5,12 @@ package com.vpu.mp.db.shop.tables.records;
 
 
 import com.vpu.mp.db.shop.tables.Goods;
-
-import java.math.BigDecimal;
-import java.sql.Timestamp;
-
-import javax.annotation.Generated;
-
 import org.jooq.Record1;
 import org.jooq.impl.UpdatableRecordImpl;
+
+import javax.annotation.Generated;
+import java.math.BigDecimal;
+import java.sql.Timestamp;
 
 
 /**
@@ -28,7 +26,7 @@ import org.jooq.impl.UpdatableRecordImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class GoodsRecord extends UpdatableRecordImpl<GoodsRecord> {
 
-    private static final long serialVersionUID = 1673397665;
+    private static final long serialVersionUID = 395894669;
 
     /**
      * Setter for <code>mini_shop_471752.b2c_goods.goods_id</code>.
@@ -213,14 +211,14 @@ public class GoodsRecord extends UpdatableRecordImpl<GoodsRecord> {
     }
 
     /**
-     * Setter for <code>mini_shop_471752.b2c_goods.goods_img</code>.
+     * Setter for <code>mini_shop_471752.b2c_goods.goods_img</code>. 商品主图
      */
     public void setGoodsImg(String value) {
         set(13, value);
     }
 
     /**
-     * Getter for <code>mini_shop_471752.b2c_goods.goods_img</code>.
+     * Getter for <code>mini_shop_471752.b2c_goods.goods_img</code>. 商品主图
      */
     public String getGoodsImg() {
         return (String) get(13);
@@ -409,44 +407,46 @@ public class GoodsRecord extends UpdatableRecordImpl<GoodsRecord> {
     }
 
     /**
-     * Setter for <code>mini_shop_471752.b2c_goods.unit</code>. 商品单位
-     */
-    public void setUnit(String value) {
-        set(27, value);
-    }
-
-    /**
-     * Getter for <code>mini_shop_471752.b2c_goods.unit</code>. 商品单位
-     */
-    public String getUnit() {
-        return (String) get(27);
-    }
-
-    /**
-     * Setter for <code>mini_shop_471752.b2c_goods.add_sale_num</code>. 虚假销量
-     */
-    public void setAddSaleNum(Integer value) {
-        set(28, value);
-    }
-
-    /**
-     * Getter for <code>mini_shop_471752.b2c_goods.add_sale_num</code>. 虚假销量
-     */
-    public Integer getAddSaleNum() {
-        return (Integer) get(28);
-    }
-
-    /**
      * Setter for <code>mini_shop_471752.b2c_goods.limit_max_num</code>. 最多起购数量，0不限购
      */
     public void setLimitMaxNum(Integer value) {
-        set(29, value);
+        set(27, value);
     }
 
     /**
      * Getter for <code>mini_shop_471752.b2c_goods.limit_max_num</code>. 最多起购数量，0不限购
      */
     public Integer getLimitMaxNum() {
+        return (Integer) get(27);
+    }
+
+    /**
+     * Setter for <code>mini_shop_471752.b2c_goods.unit</code>. 商品单位
+     */
+    public void setUnit(String value) {
+        set(28, value);
+    }
+
+    /**
+     * Getter for <code>mini_shop_471752.b2c_goods.unit</code>. 商品单位
+     */
+    public String getUnit() {
+        return (String) get(28);
+    }
+
+    /**
+     * Setter for <code>mini_shop_471752.b2c_goods.add_sale_num</code>. 初始销量
+
+     */
+    public void setAddSaleNum(Integer value) {
+        set(29, value);
+    }
+
+    /**
+     * Getter for <code>mini_shop_471752.b2c_goods.add_sale_num</code>. 初始销量
+
+     */
+    public Integer getAddSaleNum() {
         return (Integer) get(29);
     }
 
@@ -465,14 +465,14 @@ public class GoodsRecord extends UpdatableRecordImpl<GoodsRecord> {
     }
 
     /**
-     * Setter for <code>mini_shop_471752.b2c_goods.sort_id</code>.
+     * Setter for <code>mini_shop_471752.b2c_goods.sort_id</code>. 平台分类
      */
     public void setSortId(Integer value) {
         set(31, value);
     }
 
     /**
-     * Getter for <code>mini_shop_471752.b2c_goods.sort_id</code>.
+     * Getter for <code>mini_shop_471752.b2c_goods.sort_id</code>. 平台分类
      */
     public Integer getSortId() {
         return (Integer) get(31);
@@ -632,6 +632,62 @@ public class GoodsRecord extends UpdatableRecordImpl<GoodsRecord> {
         return (Byte) get(42);
     }
 
+    /**
+     * Setter for <code>mini_shop_471752.b2c_goods.promotion_language_switch</code>. 是否使用分销推广语0关闭，1使用
+     */
+    public void setPromotionLanguageSwitch(Byte value) {
+        set(43, value);
+    }
+
+    /**
+     * Getter for <code>mini_shop_471752.b2c_goods.promotion_language_switch</code>. 是否使用分销推广语0关闭，1使用
+     */
+    public Byte getPromotionLanguageSwitch() {
+        return (Byte) get(43);
+    }
+
+    /**
+     * Setter for <code>mini_shop_471752.b2c_goods.promotion_language</code>. 推广语
+     */
+    public void setPromotionLanguage(String value) {
+        set(44, value);
+    }
+
+    /**
+     * Getter for <code>mini_shop_471752.b2c_goods.promotion_language</code>. 推广语
+     */
+    public String getPromotionLanguage() {
+        return (String) get(44);
+    }
+
+    /**
+     * Setter for <code>mini_shop_471752.b2c_goods.deliver_place</code>. 发货地址
+     */
+    public void setDeliverPlace(String value) {
+        set(45, value);
+    }
+
+    /**
+     * Getter for <code>mini_shop_471752.b2c_goods.deliver_place</code>. 发货地址
+     */
+    public String getDeliverPlace() {
+        return (String) get(45);
+    }
+
+    /**
+     * Setter for <code>mini_shop_471752.b2c_goods.share_config</code>. 分享配置
+     */
+    public void setShareConfig(String value) {
+        set(46, value);
+    }
+
+    /**
+     * Getter for <code>mini_shop_471752.b2c_goods.share_config</code>. 分享配置
+     */
+    public String getShareConfig() {
+        return (String) get(46);
+    }
+
     // -------------------------------------------------------------------------
     // Primary key information
     // -------------------------------------------------------------------------
@@ -658,7 +714,7 @@ public class GoodsRecord extends UpdatableRecordImpl<GoodsRecord> {
     /**
      * Create a detached, initialised GoodsRecord
      */
-    public GoodsRecord(Integer goodsId, Integer shopId, Integer catId, String goodsSn, String goodsName, Integer brandId, String goodsAd, Integer goodsNumber, BigDecimal goodsWeight, BigDecimal marketPrice, BigDecimal shopPrice, BigDecimal costPrice, String goodsDesc, String goodsImg, Byte isOnSale, Byte delFlag, Byte goodsType, Integer deliverTemplateId, Integer goodsSaleNum, Integer goodsCollectNum, Timestamp createTime, Timestamp updateTime, Byte state, String reason, Integer subAccountId, Timestamp saleTime, Integer limitBuyNum, String unit, Integer addSaleNum, Integer limitMaxNum, Byte saleType, Integer sortId, String goodsVideo, String goodsVideoImg, Integer goodsVideoSize, Integer goodsVideoId, Integer goodsPageId, Byte isPageUp, Byte isCardExclusive, Integer baseSale, Byte source, Byte isControlPrice, Byte canRebate) {
+    public GoodsRecord(Integer goodsId, Integer shopId, Integer catId, String goodsSn, String goodsName, Integer brandId, String goodsAd, Integer goodsNumber, BigDecimal goodsWeight, BigDecimal marketPrice, BigDecimal shopPrice, BigDecimal costPrice, String goodsDesc, String goodsImg, Byte isOnSale, Byte delFlag, Byte goodsType, Integer deliverTemplateId, Integer goodsSaleNum, Integer goodsCollectNum, Timestamp createTime, Timestamp updateTime, Byte state, String reason, Integer subAccountId, Timestamp saleTime, Integer limitBuyNum, Integer limitMaxNum, String unit, Integer addSaleNum, Byte saleType, Integer sortId, String goodsVideo, String goodsVideoImg, Integer goodsVideoSize, Integer goodsVideoId, Integer goodsPageId, Byte isPageUp, Byte isCardExclusive, Integer baseSale, Byte source, Byte isControlPrice, Byte canRebate, Byte promotionLanguageSwitch, String promotionLanguage, String deliverPlace, String shareConfig) {
         super(Goods.GOODS);
 
         set(0, goodsId);
@@ -688,9 +744,9 @@ public class GoodsRecord extends UpdatableRecordImpl<GoodsRecord> {
         set(24, subAccountId);
         set(25, saleTime);
         set(26, limitBuyNum);
-        set(27, unit);
-        set(28, addSaleNum);
-        set(29, limitMaxNum);
+        set(27, limitMaxNum);
+        set(28, unit);
+        set(29, addSaleNum);
         set(30, saleType);
         set(31, sortId);
         set(32, goodsVideo);
@@ -704,5 +760,9 @@ public class GoodsRecord extends UpdatableRecordImpl<GoodsRecord> {
         set(40, source);
         set(41, isControlPrice);
         set(42, canRebate);
+        set(43, promotionLanguageSwitch);
+        set(44, promotionLanguage);
+        set(45, deliverPlace);
+        set(46, shareConfig);
     }
 }

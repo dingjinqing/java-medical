@@ -1,7 +1,9 @@
 package com.vpu.mp.service.shop.goods;
 
 import com.vpu.mp.db.shop.tables.records.GoodsImgRecord;
+import com.vpu.mp.db.shop.tables.records.GoodsRebatePriceRecord;
 import com.vpu.mp.db.shop.tables.records.GoodsRecord;
+import com.vpu.mp.db.shop.tables.records.GradePrdRecord;
 import com.vpu.mp.service.foundation.data.DelFlag;
 import com.vpu.mp.service.foundation.service.ShopBaseService;
 import com.vpu.mp.service.foundation.util.PageResult;
@@ -15,9 +17,11 @@ import com.vpu.mp.service.pojo.shop.goods.spec.GoodsSpec;
 import com.vpu.mp.service.pojo.shop.goods.spec.GoodsSpecProduct;
 import com.vpu.mp.service.pojo.shop.goods.spec.GoodsSpecVal;
 import com.vpu.mp.service.shop.decoration.ChooseLinkService;
+import com.vpu.mp.service.shop.member.MemberCardService;
+import org.apache.commons.lang3.StringUtils;
 import org.jooq.*;
 import org.jooq.impl.DSL;
-import org.jooq.tools.StringUtils;
+import org.jooq.impl.DefaultDSLContext;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -26,6 +30,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 import static com.vpu.mp.db.shop.Tables.*;
 import static com.vpu.mp.service.pojo.shop.goods.goods.GoodsPageListParam.ASC;
@@ -47,7 +52,7 @@ public class GoodsService extends ShopBaseService {
     @Autowired public GoodsLabelCoupleService goodsLabelCouple;
     @Autowired public GoodsDeliverTamplateService goodsDeliver;
     @Autowired public ChooseLinkService chooseLink;
-
+    @Autowired protected MemberCardService memberCardService;
     @Autowired protected GoodsSpecProductService goodsSpecProductService;
 
 
@@ -243,8 +248,8 @@ public class GoodsService extends ShopBaseService {
 
     /**
      * @param ids 商品ID列表
-     * @return
      * @author 黄荣刚
+     * @return 商品id列表
      */
     public List<GoodsView> selectGoodsViewList(List<Integer> ids) {
         if (ids == null || ids.isEmpty()) {
@@ -266,70 +271,86 @@ public class GoodsService extends ShopBaseService {
     }
 
     /**
-     * 先插入商品，从而得到商品的id， 然后插入商品规格的属性和规格值，从而得到规格属性和规格值的id, 最后拼凑出prdSpecs再插入具体的商品规格
-     *
-     * @param goods
+     * 先插入商品，从而得到商品的id， 然后插入商品规格的属性和规格值，
+     * 从而得到规格属性和规格值的id, 最后拼凑出prdSpecs再插入具体的商品规格
+     * @param goods 商品信息
      */
     public void insert(Goods goods) {
-        db().transaction(configuration -> {
-            DSLContext db = DSL.using(configuration);
-            insert(db, goods);
+        transaction(() -> {
+            insertGoods(goods);
 
             // 商品图片增加
             if (goods.getGoodsImgs() != null && goods.getGoodsImgs().size() != 0) {
-                insertGoodsImgs(db, goods.getGoodsImgs(), goods.getGoodsId());
+                insertGoodsImgs(goods.getGoodsImgs(), goods.getGoodsId());
             }
 
             // 商品关联标签添加
             if (goods.getGoodsLabels() != null && goods.getGoodsLabels().size() != 0) {
-                insertGoodsLabels(db, goods.getGoodsLabels(), goods.getGoodsId());
+                insertGoodsLabels(goods.getGoodsLabels(), goods.getGoodsId());
             }
 
-            // 用户使用默认的规格数据，则sku只有一条，对应的规格列表为空
-            if (goods.getGoodsSpecs() == null || goods.getGoodsSpecs().size() == 0) {
-                goodsSpecProductService.insert(db, goods.getGoodsSpecProducts().get(0), goods.getGoodsId());
 
+            if (goods.getGoodsSpecs() == null || goods.getGoodsSpecs().size() == 0) {
+                // 用户使用默认的规格数据，则sku只有一条，对应的规格列表为空
+                goodsSpecProductService.insert(goods.getGoodsSpecProducts().get(0), goods.getGoodsId(),goods.getMarketPrice());
             } else {
                 // 如果存在规格列表字段，则表明用户自己定义了具体的规格
-                goodsSpecProductService.insert(db, goods.getGoodsSpecProducts(), goods.getGoodsSpecs(),
-                        goods.getGoodsId());
+                goodsSpecProductService.insert(goods.getGoodsSpecProducts(), goods.getGoodsSpecs(),goods.getGoodsId(),goods.getMarketPrice());
             }
+
+            //插入商品规格对应的会员卡价格
+            insertGradePrd(goods.getGoodsGradePrds(),goods.getGoodsSpecProducts(),goods.getGoodsId());
+
+            //插入商品专属会员信息
+            insertMemberCards(goods);
+
+            //插入商品分销改价信息
+            insertGoodsRebatPrices(goods.getGoodsRebatePrices(),goods.getGoodsSpecProducts(),goods.getGoodsId());
 
         });
     }
 
     /**
      * 插入数据并设置对应入参的id值
-     *
-     * @param db
-     * @param goods
+     * @param goods 商品基础信息
      */
-    private void insert(DSLContext db, Goods goods) {
+    private void insertGoods(Goods goods) {
+        //计算商品的价格和库存量
+        calculateGoodsPriceAndNumber(goods);
 
-        if (goods.getGoodsSpecProducts() != null) {
-            calculateGoodsPriceAndNumber(goods);
-        }
-
-        if (goods.getGoodsSn() == null) {
+        if (StringUtils.isBlank(goods.getGoodsSn())) {
             goods.setGoodsSn(Util.randomId());
         }
 
-        GoodsRecord goodsRecord = db.newRecord(GOODS, goods);
+        //商品海报分享设置
+        if (goods.getGoodsSharePostConfig() == null) {
+            GoodsSharePostConfig goodsSharePostConfig = new GoodsSharePostConfig();
+            goodsSharePostConfig.setShareAction(GoodsSharePostConfig.DEFAULT_ACTION);
+            goodsSharePostConfig.setShareImgAction(GoodsSharePostConfig.DEFAULT_SHARE_IMG_ACTION);
+            goods.setGoodsSharePostConfig(goodsSharePostConfig);
+        }
+        goods.setShareConfig(Util.toJson(goods.getGoodsSharePostConfig()));
+
+        GoodsRecord goodsRecord = db().newRecord(GOODS, goods);
         goodsRecord.insert();
         goods.setGoodsId(goodsRecord.getGoodsId());
+    }
 
+    private void insertMemberCards(Goods goods) {
+        if (goods.getIsCardExclusive()==null||goods.getIsCardExclusive()==0||goods.getMemberCardIds()==null||goods.getMemberCardIds().size()==0) {
+            return;
+        }
+        memberCardService.batchUpdateGoods(Arrays.asList(goods.getGoodsId()),goods.getMemberCardIds());
     }
 
     /**
      * 商品图片插入
-     *
-     * @param db
-     * @param goodsImgs
-     * @param goodsId
+     * @param goodsImgs 商品图片地址列表
+     * @param goodsId 商品id
      */
-    private void insertGoodsImgs(DSLContext db, List<String> goodsImgs, Integer goodsId) {
+    private void insertGoodsImgs(List<String> goodsImgs, Integer goodsId) {
 
-        InsertValuesStep2<GoodsImgRecord, Integer, String> insertInto = db.insertInto(GOODS_IMG, GOODS_IMG.GOODS_ID,
+        InsertValuesStep2<GoodsImgRecord, Integer, String> insertInto = db().insertInto(GOODS_IMG, GOODS_IMG.GOODS_ID,
                 GOODS_IMG.IMG_URL);
 
         for (String imgUrl : goodsImgs) {
@@ -341,19 +362,65 @@ public class GoodsService extends ShopBaseService {
 
     /**
      * 商品标签插入
-     *
-     * @param db
-     * @param goodsLabels
-     * @param goodsId
+     * @param goodsLabels 标签id列表
+     * @param goodsId   商品id
      */
-    private void insertGoodsLabels(DSLContext db, List<Integer> goodsLabels, Integer goodsId) {
+    private void insertGoodsLabels(List<Integer> goodsLabels, Integer goodsId) {
 
         List<GoodsLabelCouple> list = new ArrayList<>(goodsLabels.size());
 
         for (Integer labelId : goodsLabels) {
             list.add(new GoodsLabelCouple(null, labelId, goodsId, GoodsLabelCoupleTypeEnum.GOODSTYPE.getCode()));
         }
-        goodsLabelCouple.batchInsert(db, list);
+        goodsLabelCouple.batchInsert(list);
+    }
+
+    /**
+     * 插入商品规格对应的会员卡价格
+     * @param goodsGradePrds 商品规格对应会员卡
+     * @param goodsSpecProducts 商品规格
+     * @param goodsId   商品id
+     */
+    private void insertGradePrd(List<GoodsGradePrd> goodsGradePrds,List<GoodsSpecProduct> goodsSpecProducts,Integer goodsId){
+
+        if (goodsGradePrds == null || goodsGradePrds.size() == 0) {
+            return;
+        }
+
+        Map<String, Integer> collect = goodsSpecProducts.stream().collect(Collectors.toMap(GoodsSpecProduct::getPrdDesc, GoodsSpecProduct::getPrdId));
+        DefaultDSLContext db=db();
+        List<GradePrdRecord> gradePrdRecords = goodsGradePrds.stream().map(goodsGradePrd -> {
+            GradePrdRecord gradePrdRecord = db.newRecord(GRADE_PRD, goodsGradePrd);
+            gradePrdRecord.setGoodsId(goodsId);
+            gradePrdRecord.setPrdId(collect.get(goodsGradePrd.getPrdDesc()));
+            return gradePrdRecord;
+        }).collect(Collectors.toList());
+
+        db.batchInsert(gradePrdRecords).execute();
+    }
+
+    /**
+     * 插入商品分销改价信息
+     * @param goodsRebatePrices
+     * @param goodsSpecProducts
+     * @param goodsId
+     */
+    private void insertGoodsRebatPrices(List<GoodsRebatePrice> goodsRebatePrices, List<GoodsSpecProduct> goodsSpecProducts, Integer goodsId){
+
+        if (goodsRebatePrices == null || goodsRebatePrices.size() == 0) {
+            return;
+        }
+
+        Map<String, Integer> collect = goodsSpecProducts.stream().collect(Collectors.toMap(GoodsSpecProduct::getPrdDesc, GoodsSpecProduct::getPrdId));
+        DefaultDSLContext db=db();
+        List<GoodsRebatePriceRecord> goodsRebatePriceRecords = goodsRebatePrices.stream().map(goodsRebatePrice -> {
+            GoodsRebatePriceRecord goodsRebatePriceRecord = db.newRecord(GOODS_REBATE_PRICE, goodsRebatePrice);
+            goodsRebatePriceRecord.setGoodsId(goodsId);
+            goodsRebatePriceRecord.setProductId(collect.get(goodsRebatePrice.getPrdDesc()));
+            return goodsRebatePriceRecord;
+        }).collect(Collectors.toList());
+
+        db.batchInsert(goodsRebatePriceRecords).execute();
     }
 
     /**
@@ -493,7 +560,7 @@ public class GoodsService extends ShopBaseService {
 
         List<GoodsLabelCouple> goodsLabelCouples = goodsLabelCouple.calculateGtaLabelDiffer(goodsIds, goodsLabels, GoodsLabelCoupleTypeEnum.GOODSTYPE);
 
-        goodsLabelCouple.batchInsert(db(),goodsLabelCouples);
+        goodsLabelCouple.batchInsert(goodsLabelCouples);
     }
 
     /**
@@ -585,7 +652,7 @@ public class GoodsService extends ShopBaseService {
         delteImg(db, goodsIds);
 
         if (goods.getGoodsImgs() != null && goods.getGoodsImgs().size() != 0) {
-            insertGoodsImgs(db, goods.getGoodsImgs(), goods.getGoodsId());
+            insertGoodsImgs(goods.getGoodsImgs(), goods.getGoodsId());
         }
     }
 
@@ -601,7 +668,7 @@ public class GoodsService extends ShopBaseService {
         goodsLabelCouple.deleteByGoodsIds(db, goodsIds);
 
         if (goods.getGoodsLabels() != null && goods.getGoodsLabels().size() != 0) {
-            insertGoodsLabels(db, goods.getGoodsLabels(), goods.getGoodsId());
+            insertGoodsLabels(goods.getGoodsLabels(), goods.getGoodsId());
         }
     }
 
@@ -625,7 +692,7 @@ public class GoodsService extends ShopBaseService {
 
         // 用户使用默认的规格数据，则sku只有一条，对应的规格列表为空
         if (goods.getGoodsSpecs() == null || goods.getGoodsSpecs().size() == 0) {
-            goodsSpecProductService.insert(db, goods.getGoodsSpecProducts().get(0), goods.getGoodsId());
+            goodsSpecProductService.insert(goods.getGoodsSpecProducts().get(0), goods.getGoodsId(),goods.getMarketPrice());
         } else {
             // 如果存在规格列表字段，则表明用户自己定义了具体的规格
 
@@ -638,7 +705,7 @@ public class GoodsService extends ShopBaseService {
                 }
             }
 
-            goodsSpecProductService.insert(db, goods.getGoodsSpecProducts(), goods.getGoodsSpecs(), goods.getGoodsId());
+            goodsSpecProductService.insert(goods.getGoodsSpecProducts(), goods.getGoodsSpecs(), goods.getGoodsId(),goods.getMarketPrice());
         }
 
     }
