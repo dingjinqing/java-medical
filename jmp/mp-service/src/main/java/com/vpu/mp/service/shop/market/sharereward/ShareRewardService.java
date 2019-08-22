@@ -327,6 +327,6 @@ public class ShareRewardService extends ShopBaseService {
      * @return 每日用户可分享次数上限值
      */
     public String getDailyShareAwardValue() {
-        return db().select(SHOP_CFG.V).from(SHOP_CFG).where(SHOP_CFG.K.eq(DAILY_SHARE_AWARD)).fetchOneInto(String.class);
+        return db().select(SHOP_CFG.V).from(SHOP_CFG).where(SHOP_CFG.K.eq(DAILY_SHARE_AWARD)).fetchOptionalInto(String.class).orElse("0");
     }
 }
