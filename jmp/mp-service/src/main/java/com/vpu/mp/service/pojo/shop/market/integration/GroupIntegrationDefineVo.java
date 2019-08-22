@@ -60,7 +60,7 @@ public class GroupIntegrationDefineVo {
 			return expire;
 		}
 		Timestamp now = Timestamp.valueOf(LocalDateTime.now());
-		if(now.compareTo(startTime)>0) {
+		if(now.compareTo(startTime)<0) {
 			expire = QueryType.UNSTARTED;
 			return expire;
 		}

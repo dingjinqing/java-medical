@@ -217,14 +217,11 @@ public class GroupIntegrationService extends ShopBaseService {
 			}
 		}
 		record.setStatus(status);
-		db().executeUpdate(record);
-		if(GroupIntegrationDefineEnums.Status.NORMAL.value().equals(status)) {
-			return 1;
-		}
+		int result = db().executeUpdate(record);
 		//停用操作需要进行奖池分配
 		List<GroupIntegrationListRecord> list = groupIntegrationList.getOnGoingGrouperInfo(id);
 		list.forEach(item->groupIntegrationList.asyncSuccessGroupIntegration(item.getGroupId(), item.getInteActivityId()));
-		return 0;
+		return result;
 	}
 
 	/**

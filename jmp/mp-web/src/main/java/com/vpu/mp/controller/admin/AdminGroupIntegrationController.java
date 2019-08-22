@@ -94,8 +94,12 @@ public class AdminGroupIntegrationController extends AdminBaseController {
 	 */
 	@PostMapping("/change/status")
 	public JsonResult changeStatus(@RequestBody ChangeStatusParam param) {
-		shop().groupIntegration.changDefineStatus(param.getId(), param.getStatus());
-		return success();
+		int result = shop().groupIntegration.changDefineStatus(param.getId(), param.getStatus());
+		if(result>0) {
+			return success();
+		}else {
+			return fail();
+		}
 	}
 	/**
 	 * 参团明细
