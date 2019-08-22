@@ -572,18 +572,18 @@ const routes = [
               )
           },
           // 拼团瓜分积分
-          {
-            path: '/api/admin/market/integration/list',
-            name: 'group_integration',
-            meta: {
-              crumbTitle: 'router.group_integration',
-              meta: 'first_market_manage'
-            },
-            component: () =>
-              import(
-                '@/view/admin/index/leftNavComponents/first_market_manage/groupIntegration/groupIntegrationList'
-              )
-          },
+          // {
+          //   path: '/api/admin/market/integration/list',
+          //   name: 'group_integration',
+          //   meta: {
+          //     crumbTitle: 'router.group_integration',
+          //     meta: 'first_market_manage'
+          //   },
+          //   component: () =>
+          //     import(
+          //       '@/view/admin/index/leftNavComponents/first_market_manage/groupIntegration/groupIntegrationList'
+          //     )
+          // },
           // 会员管理系列子路由
           {
             path: '/admin/home/main/membershipList',

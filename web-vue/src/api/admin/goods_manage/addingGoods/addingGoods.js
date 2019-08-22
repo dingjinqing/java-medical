@@ -17,7 +17,7 @@ export function cateList () {
 // 商品新增，发送请求分为有sku和无sku两个示例
 export function goodsList (data) {
   return service({
-    url: `/api/admin/goods/list`,
+    url: `/api/admin/goods/add`,
     method: 'post',
     data
   })

@@ -1,6 +1,8 @@
 <template>
   <!-- 出售中商品组件 -->
   <div class="saleOn">
+    <!-- 测试按钮 -->
+    <el-button @click="handleTest">测试按钮</el-button>
     <!-- header -->
     <headOperation />
     <!-- 表格 -->
@@ -20,7 +22,7 @@
       >
       </el-table-column>
       <el-table-column
-        prop="name"
+        prop="goodsName"
         label="名称"
         align="center"
       >
@@ -34,7 +36,7 @@
                 <!-- 商品的图片 -->
                 <el-image
                   style="width: 60px; height: 60px"
-                  src="http://jmpdevimg.weipubao.cn/upload/245547/image/20190820/451MdJcYVgSCF63e8ZZp.png"
+                  :src="scope.row.goodsImg"
                   fit="fill"
                 ></el-image>
               </section>
@@ -61,6 +63,34 @@
         label="价格"
         align="center"
       >
+        <!-- 价格 -->
+        <template slot-scope="scope">
+          <slot
+            :row="scope.row"
+            :$index="scope.$index"
+          >
+            <section v-if="scope.row.status === 1">
+              <span>{{scope.row.price}}</span>
+              <i
+                class="el-icon-edit-outline"
+                style="color:#739DFF;fontSize:20px"
+                @click="handleChangePrice(scope.$index)"
+              ></i>
+            </section>
+            <section v-else>
+              <el-input
+                @keyup.enter.native="handleSaveChange(scope.$index)"
+                @blur="handleSaveChange"
+                autofocus
+                style="width:60px"
+                v-model="scope.row.price"
+                size="mini"
+              ></el-input>
+
+            </section>
+
+          </slot>
+        </template>
       </el-table-column>
       <el-table-column
         prop="code"
@@ -69,7 +99,7 @@
       >
       </el-table-column>
       <el-table-column
-        prop="sort1"
+        prop="catName"
         label="平台分类"
         align="center"
       >
@@ -81,7 +111,7 @@
       >
       </el-table-column>
       <el-table-column
-        prop="brand"
+        prop="brandName"
         label="品牌"
         align="center"
       >
@@ -90,13 +120,32 @@
         label="库存"
         align="center"
       >
+        <!-- 库存 -->
         <template slot-scope="scope">
           <slot
             :row="scope.row"
             :$index="scope.$index"
           >
+            <section v-if="true">
+              <span>{{scope.row.stock}}</span>
+              <i
+                class="el-icon-edit-outline"
+                style="color:#739DFF;fontSize:20px"
+                @click="handleChangePrice(scope.$index)"
+              ></i>
+            </section>
+            <section v-else>
+              <el-input
+                @keyup.enter.native="handleSaveChange(scope.$index)"
+                @blur="handleSaveChange"
+                autofocus
+                style="width:60px"
+                v-model="scope.row.stock"
+                size="mini"
+              ></el-input>
 
-            <span>{{scope.row.stock}}</span>
+            </section>
+
           </slot>
         </template>
       </el-table-column>
@@ -180,7 +229,6 @@
 
         </template>
       </el-table-column>
-
     </el-table>
     <!-- 底部 -->
     <allGoodsFooter />
@@ -189,12 +237,14 @@
 <script>
 import headOperation from '../headOperation'
 import allGoodsFooter from '../allGoodsFooter'
+import { getGoodsList } from '@/api/admin/goods_manage/allGoods/allGoods'
 export default {
   name: 'saleOn',
   components: { headOperation, allGoodsFooter },
   // 数据data
   data () {
     return {
+      // 表格数据
       tableData: [{
         name: `华为手机`,
         price: `6000`,
@@ -204,7 +254,8 @@ export default {
         brand: `HUAWEI`,
         stock: `10`,
         sales: `2222`,
-        label: `正品行货`
+        label: `正品行货`,
+        status: 1
       }, {
         name: `苹果手机`,
         price: `5000`,
@@ -214,16 +265,37 @@ export default {
         brand: `IPhone`,
         stock: `200`,
         sales: `12`,
-        label: `正品行货`
+        label: `正品行货`,
+        status: 1
       }]
+      // showPrice: true // 显示价格
     }
   },
   // Vue生命周期钩子函数
   mounted () {
-
+    this.fetchTableData()
   },
   // methods 方法
   methods: {
+    // 测试按钮
+    handleTest () {
+      //       {
+      // brandName: "测试1"
+      // catId: 2
+      // catName: "图书，音像"
+      // goodsId: 5
+      // goodsImg: "imgimgimgigm"
+      // goodsLabels: null
+      // goodsName: "SK-II 大红瓶 冻龄护肤套装（微肌因修护精华霜50g）（面霜女 补水保湿 紧致 面部精华 淡化细纹 细致毛孔）"
+      // goodsNumber: 5
+      // goodsSaleNum: 0
+      // goodsSn: "9d8e571b-47b6-40e5-a532-aeda9dcbe8ab"
+      // shopPrice: 15
+      // sortId: 3
+      // sortName: null
+      //       }
+
+    },
     //  修改table header的样式
     tableHeaderStyle ({ row, column, rowIndex, columnIndex }) {
       if (rowIndex === 0) {
@@ -253,6 +325,27 @@ export default {
     // 合并列行
     arraySpanMethod ({ row, column, rowIndex, columnIndex }) {
 
+    },
+    // 每行的改变价格
+    handleChangePrice (index) {
+      this.tableData.forEach((item, i) => {
+        if (i === index) item['status'] = !item['status']
+      })
+    },
+    // 保存修改
+    handleSaveChange (index) {
+
+    },
+    // 初始化表格的数据
+    fetchTableData () {
+      getGoodsList({}).then(res => {
+        const { error, content } = res
+        if (error === 0) {
+          const { dataList } = content
+          console.log(dataList)
+          this.tableData = dataList
+        }
+      }).catch(err => console.log(err))
     }
   }
 
