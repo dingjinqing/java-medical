@@ -12,53 +12,23 @@
               有效期：-
             </div>
           </div>
-          <div class="discount_power">
-            <div class="power_title">会员权益（折扣）</div>
-          </div>
-          <div class="score_power">
-            <div class="s_power_title">会员折扣（积分）</div>
+          <div
+            class="score_power"
+            v-for="(item,index) in leftNavData"
+            :key="index"
+          >
+            <div
+              class="s_power_title"
+              :style="getStyle(item)"
+            >{{item.title}}</div>
             <div class="s_power_detail">
-              <p class="make_give"></p>
               <div
                 class="man"
                 style="display: block;"
+                v-for="(itemC,indexC) in item.children"
+                :key="indexC"
               >
-                <p>购物满100送100积分</p>
-              </div>
-              <p
-                class="every_man"
-                style="display: none;"
-              ></p>
-            </div>
-          </div>
-          <div class="score_power">
-            <div class="s_chong_title">卡充值规则</div>
-            <div class="s_power_detail">
-              <p class="make_give"></p>
-              <div
-                class="man"
-                style="display: block;"
-              >
-                <p>仅充值</p>
-              </div>
-              <p
-                class="every_man"
-                style="display: none;"
-              ></p>
-            </div>
-          </div>
-          <div class="ex_use_notice">
-            <div class="notice-title">会员卡使用说明</div>
-          </div>
-          <div class="score_power">
-            <div class="s_mendian_title">使用门店</div>
-            <div class="s_power_detail">
-              <p class="make_give"></p>
-              <div
-                class="man"
-                style="display: block;"
-              >
-                <p>全部门店</p>
+                <p>{{itemC}}</p>
               </div>
               <p
                 class="every_man"
@@ -69,42 +39,150 @@
         </div>
       </div>
       <div class="rightContainer">
+        <div class="rightTile">基础设置</div>
+        <el-form
+          :model="ruleForm"
+          :rules="rules"
+          ref="ruleForm"
+          label-width="100px"
+          class="demo-ruleForm"
+        >
+          <el-form-item
+            label="会员卡名称："
+            prop="name"
+            class="userCardName"
+          >
+            <el-input
+              v-model="ruleForm.name"
+              size="small"
+            ></el-input>
+          </el-form-item>
+          <el-form-item
+            label="背景图："
+            class="userCardName"
+          >
+            <div class="backgroundDiv">
+              <div class="bgTop">
+                <el-radio
+                  v-model="ruleForm.bgFlag"
+                  label="1"
+                >背景色</el-radio>
+                <!--颜色选择器-->
+                <colorPicker
+                  v-model="colorLeft_"
+                  :defaultColor="defaultColorleft"
+                  v-on:change="headleChangeColorLeft"
+                />
+              </div>
+              <div class="bgBottom">
+                <el-radio
+                  v-model="ruleForm.bgFlag"
+                  label="2"
+                >背景图</el-radio>
+                <div
+                  class="bgImgDiv"
+                  @click="handleToAddImg()"
+                  :style="`backgroundImage:url(${$imageHost}/image/admin/add_img.png);backgroundRepeat:no-repeat`"
+                >
 
+                </div>
+              </div>
+            </div>
+          </el-form-item>
+        </el-form>
       </div>
+
     </div>
+    <div class="footer">
+      <div
+        class="save"
+        @click="handleToSave('ruleForm')"
+      >{{$t('shopStyle.saveText')}}</div>
+    </div>
+    <!--图片弹窗-->
+    <ImageDalog
+      pageIndex='userCardAdd'
+      @handleSelectImg='handleSelectImg'
+    />
   </div>
 </template>
 <script>
+import ImageDalog from '@/components/admin/imageDalog'
 export default {
+  components: {
+    ImageDalog
+  },
   data () {
     return {
+      colorLeft_: '',
+      defaultColorleft: '#000',
       leftNavData: [
         {
-          backGroundImgUrl: '../../../../../../assets/adminImg/mem_card.png',
+          backGroundImgUrl: this.$imageHost + '/image/admin/discount.png',
           title: '会员权益(折扣)',
           children: []
         },
         {
-          backGroundImgUrl: '../../../../../../assets/adminImg/mem_card.png',
+          backGroundImgUrl: this.$imageHost + '/image/admin/score_mem.png',
           title: '会员折扣(积分)',
           children: ['购物满100宋100积分']
         },
         {
-          backGroundImgUrl: '../../../../../../assets/adminImg/mem_card.png',
+          backGroundImgUrl: this.$imageHost + '/image/admin/charge_icon.png',
           title: '卡充值规则',
           children: ['仅充值']
         },
         {
-          backGroundImgUrl: '../../../../../../assets/adminImg/mem_card.png',
+          backGroundImgUrl: this.$imageHost + '/image/admin/article.png',
           title: '会员卡使用说明',
           children: []
         },
         {
-          backGroundImgUrl: '../../../../../../assets/adminImg/mem_card.png',
+          backGroundImgUrl: this.$imageHost + '/image/admin/store_icon.png',
           title: '使用门店',
           children: ['全部门店']
         }
-      ]
+      ],
+      ruleForm: {
+        name: '',
+        bgFlag: '1'
+      },
+      rules: {
+        name: [
+          { required: true, message: '请输入活动名称', trigger: 'blur' }
+        ]
+      }
+    }
+  },
+  methods: {
+    // 动态添加样式
+    getStyle (item) {
+      console.log(item)
+      return 'backgroundImage:url(' + item.backGroundImgUrl + ')'
+    },
+    // 点击保存
+    handleToSave (formName) {
+      this.$refs[formName].validate((valid) => {
+        if (valid) {
+          alert('submit!')
+          this.$refs[formName].resetFields()
+        } else {
+          console.log('error submit!!')
+          return false
+        }
+      })
+    },
+    // 颜色选择器选中
+    headleChangeColorLeft () {
+      console.log(this.colorLeft_)
+    },
+    // 添加图片
+    handleToAddImg () {
+      this.$http.$emit('dtVisible')
+    },
+    // 图片选中
+    handleSelectImg (res) {
+      console.log(res)
     }
   }
 }
@@ -116,14 +194,16 @@ export default {
   font-size: 14px;
   height: 100%;
   position: relative;
-  overflow-y: auto;
+  overflow-x: hidden;
   .membershipCardDetailMain {
     position: relative;
     background-color: #fff;
-    overflow: hidden;
+    overflow-x: hidden;
     overflow-y: auto;
     padding: 15px 25px;
     height: 100%;
+    display: flex;
+    padding-bottom: 50px;
     .leftContainer {
       width: 300px;
       margin-right: 20px;
@@ -159,20 +239,6 @@ export default {
             font-size: 13px;
           }
         }
-        .discount_power {
-          background-color: #fff;
-          .power_title {
-            padding: 10px 0;
-            background: url(../../../../../../assets/adminImg/discount.png)
-              no-repeat;
-            background-size: 6%;
-            background-position: center left;
-            padding-left: 25px;
-            font-size: 13px;
-            color: #333;
-            margin-left: 12px;
-          }
-        }
         .score_power {
           background-color: #fff;
           .s_power_title {
@@ -197,45 +263,78 @@ export default {
               padding: 0 0 10px;
             }
           }
-          .s_chong_title {
-            padding: 10px 0;
-            background: url(../../../../../../assets/adminImg/charge_icon.png)
-              no-repeat;
-            background-size: 6%;
-            background-position: center left;
-            padding-left: 25px;
-            font-size: 13px;
-            color: #333;
-            margin-left: 12px;
-          }
-        }
-        .ex_use_notice {
-          background-color: #fff;
-          .notice-title {
-            padding: 10px 0;
-            background: url(../../../../../../assets/adminImg/article.png)
-              no-repeat;
-            background-size: 6%;
-            background-position: center left;
-            padding-left: 25px;
-            font-size: 13px;
-            color: #333;
-            margin-left: 12px;
-          }
-        }
-        .s_mendian_title {
-          padding: 10px 0;
-          background: url(../../../../../../assets/adminImg/store_icon.png)
-            no-repeat;
-          background-size: 6%;
-          background-position: center left;
-          padding-left: 25px;
-          font-size: 13px;
-          color: #333;
-          margin-left: 12px;
         }
       }
     }
+    .rightContainer {
+      width: 60%;
+      background: #f8f8f8;
+      border: 1px solid #e4e4e4;
+      padding: 10px 1%;
+      font-size: 13px;
+      margin-bottom: 10px;
+      height: 1000px;
+      /deep/ .el-form-item__label {
+        white-space: nowrap;
+        text-align: right;
+      }
+      .rightTile {
+        padding-bottom: 10px;
+        border-bottom: 1px solid #ddd;
+        margin-bottom: 10px;
+      }
+      .userCardName {
+        padding-left: 100px;
+        /deep/ .el-input__inner {
+          width: 41%;
+        }
+        .bgTop {
+          height: 40px;
+          display: flex;
+          justify-content: flex-start;
+          align-items: center;
+          /deep/ .colorBtn {
+            width: 65px;
+            height: 30px;
+          }
+        }
+        .bgBottom {
+          height: 65px;
+          display: flex;
+          justify-content: flex-start;
+          align-items: center;
+          .bgImgDiv {
+            width: 65px;
+            height: 65px;
+            border: 1px solid #ccc;
+            background-position: center;
+            cursor: pointer;
+          }
+        }
+      }
+    }
+  }
+}
+.footer {
+  background: #f8f8fa;
+  border-top: 1px solid #f2f2f2;
+  text-align: center;
+  position: absolute;
+  z-index: 2;
+  bottom: 0;
+  padding: 10px 0;
+  left: 0;
+  right: 0;
+  margin-right: 10px;
+  .save {
+    width: 70px;
+    height: 30px;
+    line-height: 30px;
+    border: none;
+    background: #5a8bff;
+    color: #fff;
+    margin: auto;
+    cursor: pointer;
   }
 }
 </style>

@@ -411,7 +411,6 @@ export default {
   position: relative;
 }
 .bottomNavigationContent_main {
-  position: relative;
   background-color: #fff;
   height: 100%;
   overflow: hidden;
@@ -419,26 +418,6 @@ export default {
   padding-bottom: 96px;
 }
 
-.footer {
-  background: #f8f8fa;
-  border-top: 1px solid #f2f2f2;
-  text-align: center;
-  position: fixed;
-  z-index: 2;
-  bottom: 0;
-  width: 89%;
-  padding: 10px 0;
-}
-.save {
-  width: 70px;
-  height: 30px;
-  line-height: 30px;
-  border: none;
-  background: #5a8bff;
-  color: #fff;
-  margin: auto;
-  cursor: pointer;
-}
 .cententLleft_title {
   height: 55px;
   background: url(../../../../../../assets/adminImg/phone_tops.png) no-repeat;
@@ -487,6 +466,28 @@ export default {
   width: 20px;
   height: 20px;
   max-width: 23px;
+}
+.footer {
+  background: #f8f8fa;
+  border-top: 1px solid #f2f2f2;
+  text-align: center;
+  position: absolute;
+  z-index: 2;
+  bottom: 0;
+  padding: 10px 0;
+  left: 0;
+  right: 0;
+  margin-right: 10px;
+}
+.save {
+  width: 70px;
+  height: 30px;
+  line-height: 30px;
+  border: none;
+  background: #5a8bff;
+  color: #fff;
+  margin: auto;
+  cursor: pointer;
 }
 </style>
 <style>

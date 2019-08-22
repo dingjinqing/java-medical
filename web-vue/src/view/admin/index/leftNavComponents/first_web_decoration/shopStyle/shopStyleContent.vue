@@ -126,14 +126,14 @@
           >{{$t('shopStyle.right_submit')}}</div>
         </div>
       </div>
-      <div class="footer">
-        <div
-          class="save"
-          @click="saveShopStyle()"
-        >{{$t('shopStyle.saveText')}}</div>
-      </div>
-    </div>
 
+    </div>
+    <div class="footer">
+      <div
+        class="save"
+        @click="saveShopStyle()"
+      >{{$t('shopStyle.saveText')}}</div>
+    </div>
   </div>
 </template>
 <script>
@@ -354,9 +354,9 @@ export default {
   min-width: 100%;
   font-size: 14px;
   height: 100%;
+  position: relative;
 }
 .shopStyleContent_main {
-  position: relative;
   background-color: #fff;
   height: 100%;
 }
@@ -604,9 +604,11 @@ export default {
   text-align: center;
   position: absolute;
   z-index: 2;
-  bottom: -10px;
-  width: 100%;
+  bottom: 0;
   padding: 10px 0;
+  left: 0;
+  right: 0;
+  margin-right: 10px;
 }
 .save {
   width: 70px;

@@ -58,7 +58,7 @@
                   size="mini"
                   @click="handleSearch()"
                 >{{$t('imgageDalog.search')}}</el-button>
-                <el-checkbox v-model="checked">{{this.size}}px x {{this.size}}px</el-checkbox>
+                <el-checkbox v-model="checked">{{this.sizeW}}px x {{this.sizeH}}px</el-checkbox>
               </div>
               <div class="right_content">
                 <ul>
@@ -189,7 +189,10 @@ export default {
       totalRows: null,
       currentPage: '',
       pageCount: '',
-      size: ''
+      sizeW: '',
+      sizeH: '',
+      width: '',
+      height: ''
     }
   },
   computed: {
@@ -292,35 +295,71 @@ export default {
     handleSearch () {
       this.queryImgs(1)
     },
+    // 处理尺寸数据函数
+    handleToSizeData (Newwidth, Newheight) {
+      this.sizeW = Newwidth
+      this.sizeH = Newheight
+      if (this.checked === true) {
+        this.width = Newwidth
+        this.height = Newheight
+      } else {
+        this.width = ''
+        this.height = ''
+      }
+    },
+    // 处理不同模块调用弹窗图片规格尺寸问题
+    handleToImgSize () {
+      switch (this.pageIndex) {
+        case 'pictureSpace':
+          this.handleToSizeData(80, 80)
+          break
+        case 'imageDalog':
+          this.handleToSizeData(52, 52)
+          break
+        case 'userCardAdd':
+          this.handleToSizeData(540, 300)
+      }
+      return {
+        width: this.width,
+        height: this.height
+      }
+    },
     // 图片分组查询
     queryImgs (currentPage3) {
       console.log(this.firstNodeId)
       console.log(this.value)
       console.log(this.checked)
 
-      let width = ''
-      let height = ''
-      let obj = ''
+      let { width, height } = this.handleToImgSize()
+      console.log(this.pageIndex)
       switch (this.pageIndex) {
         case 'pictureSpace':
-          this.size = 80
-          if (this.checked === true) {
-            width = 80
-            height = 80
-          } else {
-            width = ''
-            height = ''
-          }
-          obj = {
-            'page': currentPage3,
-            'imgCatId': this.firstNodeId,
-            'keywords': this.imgNameInput,
-            'searchNeed': 1,
-            'pageRows': 8,
-            'needImgWidth': width,
-            'needImgHeight': height,
-            'uploadSortId': this.value
-          }
+          console.log(123)
+          this.handleToQueryImgsData(currentPage3, width, height, 0)
+          break
+        case 'userCardAdd':
+          console.log(123)
+          this.handleToQueryImgsData(currentPage3, width, height, 0)
+          break
+        case 'imageDalog':
+          this.handleToQueryImgsData(currentPage3, width, height, 1)
+      }
+    },
+    // 图片分组查询数据处理函数
+    handleToQueryImgsData (currentPage3, width, height, flag) {
+      let obj = ''
+      obj = {
+        'page': currentPage3,
+        'imgCatId': this.firstNodeId,
+        'keywords': this.imgNameInput,
+        'searchNeed': 1,
+        'pageRows': 8,
+        'needImgWidth': width,
+        'needImgHeight': height,
+        'uploadSortId': this.value
+      }
+      switch (flag) {
+        case 0:
           queryImgsRequest(obj).then((res) => {
             console.log(res)
             if (res.error === 0) {
@@ -339,25 +378,7 @@ export default {
             }
           })
           break
-        case 'imageDalog':
-          this.size = 52
-          if (this.checked === true) {
-            width = 52
-            height = 52
-          } else {
-            width = ''
-            height = ''
-          }
-          obj = {
-            'page': currentPage3,
-            'imgCatId': this.firstNodeId,
-            'keywords': this.imgNameInput,
-            'searchNeed': 1,
-            'pageRows': 8,
-            'needImgWidth': width,
-            'needImgHeight': height,
-            'uploadSortId': this.value
-          }
+        case 1:
           queryHeadImgsRequest(obj).then((res) => {
             console.log(res)
             if (res.error === 0) {
