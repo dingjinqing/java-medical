@@ -17,12 +17,12 @@ public class GroupDrawListVo {
 
     /** 进行中 **/
     public static final byte ONGOING = 0;
-    /** 已过期 **/
-    public static final byte FINISHED = 1;
-    /** 已停用 **/
-    public static final byte DISABLED = 2;
     /** 未开始 **/
-    public static final byte NOT_STARTED = 3;
+    public static final byte NOT_STARTED = 1;
+    /** 已过期 **/
+    public static final byte FINISHED = 2;
+    /** 已停用 **/
+    public static final byte DISABLED = 3;
 
     private Integer id;
     /** 活动名称 **/
