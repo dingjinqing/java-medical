@@ -62,7 +62,7 @@ router.beforeEach((to, from, next) => {
     }
   } else {
     if (to.meta.meta) {
-      console.log('我需要判断权限')
+      // console.log('我需要判断权限')
       judgeJurisdictionRequest({ 'V-EnName': to.name }).then((res) => {
         console.log(res)
       })

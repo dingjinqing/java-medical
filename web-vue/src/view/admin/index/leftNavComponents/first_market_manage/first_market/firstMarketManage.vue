@@ -7,7 +7,10 @@
       </div>
       <div class="box">
         <!-- 多人拼团 -->
-        <div class="voucher box_style">
+        <div
+          class="voucher box_style"
+          @click="spellGroup()"
+        >
           <div class="activity_img"><img
               :src="$imageHost + '/image/admin/new_market/drpt.png'"
               alt=""
@@ -18,7 +21,10 @@
           </div>
         </div>
         <!-- 砍价 -->
-        <div class="voucher box_style">
+        <div
+          class="voucher box_style"
+          @click="bargain()"
+        >
           <div class="activity_img"><img
               :src="$imageHost + '/image/admin/new_market/kj.png'"
               alt=""
@@ -90,7 +96,10 @@
           </div>
         </div>
         <!-- 好友助力 -->
-        <div class="voucher box_style">
+        <div
+          class="voucher box_style"
+          @click="friendHelp"
+        >
           <div class="activity_img"><img
               :src="$imageHost + '/image/admin/new_market/friend_promote_cion.png'"
               alt=""
@@ -429,6 +438,24 @@ export default {
     this.langDefault()
   },
   methods: {
+    // 多人拼团点击
+    spellGroup () {
+      this.$router.push({
+        name: 'pin_group'
+      })
+    },
+    // 砍价点击
+    bargain () {
+      this.$router.push({
+        name: 'kanjia'
+      })
+    },
+    // 好友助力点击
+    friendHelp () {
+      this.$router.push({
+        name: 'promote'
+      })
+    },
     // 普通优惠卷点击
     coupon() {
       this.$router.push({

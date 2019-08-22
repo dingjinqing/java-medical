@@ -20,7 +20,7 @@
       name="third"
       :label="$t('shopAccountList.title.editAccount')"
       v-if="isShowEditAccount"
-      @getInfo="revice()"
+      @send="revice()"
     >
       <editAccount />
     </el-tab-pane>
@@ -50,14 +50,14 @@ export default {
     }
   },
   created () {
-    console.log(this.$.params)
+    console.log(this.$route.params)
     if (this.$route.params.flag === true) {
       this.tabActive = 'third'
       this.isShowShopList = true
     }
   },
   methods: {
-    // send (val) {
+    // getInfo (val) {
     //   console.log(val)
     //   let receiveSysId = val[1]
     //   let receiveUserName = val[0]
@@ -66,10 +66,8 @@ export default {
     //     this.tabActive = 'third'
     //   }
     // }
-    getInfo () {
-      // console.log(111)
-      console.log(this.$router)
-      if (this.$route.params.name) {
+    send (val) {
+      if (val) {
         this.isShowEditAccount = true
         this.tabActive = 'third'
       }

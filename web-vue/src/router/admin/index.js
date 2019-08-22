@@ -562,7 +562,7 @@ const routes = [
             meta: {
               crumbTitle: 'router.gift',
               meta: 'first_market_manage',
-              category: 'first_market_manage',
+              category: 'first_market_manage'
             },
             component: () =>
               import(

@@ -9,53 +9,131 @@
           label="全部砍价活动"
           name="first"
         >
-          <el-button
-            type="primary"
-            @click="addActivity"
-          >添加砍价活动</el-button>
+          <div class="wrapper">
+            <el-button
+              type="primary"
+              @click="addActivity"
+              class="barginBtn"
+            >添加砍价活动</el-button>
+
+            <div class="rightContent">
+              <span>砍价设置：每个被邀请的用户，单日可帮助砍价 </span>
+              <el-input
+                style="width: 80px"
+                size="small"
+              ></el-input>
+              <span>次</span>
+              <span>设置为空时，不限制帮助砍价次数</span>
+              <el-button
+                type="primary"
+                size="small"
+              >保存设置</el-button>
+            </div>
+          </div>
         </el-tab-pane>
         <el-tab-pane
           label="进行中"
           name="second"
         >
-          <el-button
-            type="primary"
-            @click="addActivity"
-          >添加砍价活动</el-button>
-          <div class="rightContent">
-            <span>砍价设置：每个被邀请的用户，单日可帮助砍价 </span>
-            <input type="text">
-            <span>次</span>
-            <span>设置为空时，不限制帮助砍价次数</span>
-            <el-button type="primary">保存设置</el-button>
+          <div class="wrapper">
+            <el-button
+              type="primary"
+              @click="addActivity"
+              class="barginBtn"
+            >添加砍价活动</el-button>
+
+            <div class="rightContent">
+              <span>砍价设置：每个被邀请的用户，单日可帮助砍价 </span>
+              <el-input
+                style="width: 80px"
+                size="small"
+              ></el-input>
+              <span>次</span>
+              <span>设置为空时，不限制帮助砍价次数</span>
+              <el-button
+                type="primary"
+                size="small"
+              >保存设置</el-button>
+            </div>
           </div>
         </el-tab-pane>
         <el-tab-pane
           label="未开始"
           name="third"
         >
-          <el-button
-            type="primary"
-            @click="addActivity"
-          >添加砍价活动</el-button>
+          <div class="wrapper">
+            <el-button
+              type="primary"
+              @click="addActivity"
+              class="barginBtn"
+            >添加砍价活动</el-button>
+
+            <div class="rightContent">
+              <span>砍价设置：每个被邀请的用户，单日可帮助砍价 </span>
+              <el-input
+                style="width: 80px"
+                size="small"
+              ></el-input>
+              <span>次</span>
+              <span>设置为空时，不限制帮助砍价次数</span>
+              <el-button
+                type="primary"
+                size="small"
+              >保存设置</el-button>
+            </div>
+          </div>
         </el-tab-pane>
         <el-tab-pane
           label="已过期"
           name="fourth"
         >
-          <el-button
-            type="primary"
-            @click="addActivity"
-          >添加砍价活动</el-button>
+          <div class="wrapper">
+            <el-button
+              type="primary"
+              @click="addActivity"
+              class="barginBtn"
+            >添加砍价活动</el-button>
+
+            <div class="rightContent">
+              <span>砍价设置：每个被邀请的用户，单日可帮助砍价 </span>
+              <el-input
+                style="width: 80px"
+                size="small"
+              ></el-input>
+              <span>次</span>
+              <span>设置为空时，不限制帮助砍价次数</span>
+              <el-button
+                type="primary"
+                size="small"
+              >保存设置</el-button>
+            </div>
+          </div>
         </el-tab-pane>
         <el-tab-pane
           label="已停用"
           name="fifth"
         >
-          <el-button
-            type="primary"
-            @click="addActivity"
-          >添加砍价活动</el-button>
+          <div class="wrapper">
+            <el-button
+              type="primary"
+              @click="addActivity"
+              class="barginBtn"
+            >添加砍价活动</el-button>
+
+            <div class="rightContent">
+              <span>砍价设置：每个被邀请的用户，单日可帮助砍价 </span>
+              <el-input
+                style="width: 80px"
+                size="small"
+              ></el-input>
+              <span>次</span>
+              <span>设置为空时，不限制帮助砍价次数</span>
+              <el-button
+                type="primary"
+                size="small"
+              >保存设置</el-button>
+            </div>
+          </div>
         </el-tab-pane>
       </el-tabs>
     </div>
@@ -135,18 +213,19 @@
           label="操作"
           align="center"
         >
-          <template>
-            <div class="opt">
-              <span>编辑</span>
-              <span>分享</span>
-              <span>停用</span>
-              <span>领取明细</span>
-              <span>删除</span>
-            </div>
-          </template>
         </el-table-column>
-
       </el-table>
+      <div class="footer">
+        <span>当前页面1/1，总记录4条</span>
+        <el-pagination
+          @current-change="handleCurrentChange"
+          :current-page.sync="currentPage"
+          :page-size="20"
+          layout="prev, pager, next, jumper"
+          :total="4"
+        >
+        </el-pagination>
+      </div>
     </div>
   </div>
 
@@ -158,12 +237,17 @@ export default {
   data () {
     return {
       tableData: [],
-      activeName: 'second'
+      activeName: 'second',
+      currentPage: 1
     }
   },
   mounted () {
   },
   methods: {
+    // 当前页发生变化
+    handleCurrentChange () {
+      console.log(this.currentPage)
+    },
     handleClick (tab) {
       console.log(tab)
       // let obj = {
@@ -193,23 +277,21 @@ export default {
     position: relative;
     background-color: #fff;
     padding: 10px 20px 10px 20px;
-  }
-}
-.p_top_right {
-  display: flex;
-  /deep/ .el-button {
-    padding: none;
-    height: 32px;
-  }
-  span {
-    white-space: nowrap;
-    height: 32px;
-    line-height: 32px;
-    margin-right: 10px;
-  }
-  .topRightDiv {
-    &:nth-of-type(2) {
-      margin: 0 10px 0 30px;
+    .wrapper {
+      display: flex;
+      justify-content: space-between;
+      .rightContent {
+        .el-button {
+          margin-left: 5px;
+        }
+        span {
+          height: 30px;
+          line-height: 30px;
+        }
+        :nth-of-type(3) {
+          color: #999;
+        }
+      }
     }
   }
 }
@@ -227,13 +309,6 @@ export default {
   background-color: #fff;
   padding: 10px 20px 10px 20px;
 }
-.opt {
-  text-align: left;
-  color: #5a8bff;
-  span {
-    cursor: pointer;
-  }
-}
 .balanceDialo .el-dialog__body {
   padding-bottom: 0 !important;
 }
@@ -246,5 +321,15 @@ export default {
 .add_coupon {
   float: left;
   margin-left: 65%;
+}
+.footer {
+  padding: 20px 0 20px 20px;
+  display: flex;
+  justify-content: flex-end;
+  span {
+    display: block;
+    height: 32px;
+    line-height: 32px;
+  }
 }
 </style>

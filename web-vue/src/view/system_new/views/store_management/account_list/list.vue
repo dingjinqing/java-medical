@@ -228,24 +228,9 @@ export default {
         }
       })
     },
-    handleEditAccount (sysId, userName) {
-      this.$router.push({
-        name: 'versionList',
-        params: {
-          name: sysId,
-          flag: true,
-          title: userName
-        }
-      })
-
-      // // console.log(scope)
-      // // console.log(scope.sysId, scope.userName)
-      // let sysId = scope.sysId
-      // let userName = scope.userName
-      // // console.log(sysId, userName)
-
-      // this.name = 'third'
-      // this.$emit('send', this.name, sysId, userName)
+    handleEditAccount () {
+      this.name = 'third'
+      this.$emit('send', this.name)
     },
     // 审核状态的四种数字转化为文字
     changeState (row, col) {
@@ -273,7 +258,7 @@ export default {
       }
       let parameter = Object.assign(obj1, this.mainData)
       searchAccountRequest(parameter).then((res) => {
-        // console.log(res)
+        console.log(res)
         const { error, content } = res
         if (error === 0) {
           let formList = content.dataList

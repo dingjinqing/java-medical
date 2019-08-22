@@ -122,6 +122,12 @@ export const en = {
   picture_setting: ['Small Program Management', 'Custom Page Decoration'],
   // 营销管理
   market_manage: ['Marketing management'],
+  // 营销管理 多人拼团
+  pin_group: ['Marketing management', 'Multiplayer'],
+  // 营销管理 砍价
+  kanjia: ['Marketing management', 'bargin'],
+  // 营销管理 好友助力
+  promote: ['Marketing management', 'Good friend help'],
   // 营销管理 普通优惠券
   ordinary_coupon: ['Marketing management', 'ordinary coupon'],
   // 营销管理 赠品
