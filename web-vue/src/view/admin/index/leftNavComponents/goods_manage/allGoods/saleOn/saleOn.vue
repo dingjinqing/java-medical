@@ -1,6 +1,8 @@
 <template>
   <!-- 出售中商品组件 -->
   <div class="saleOn">
+    <!-- header -->
+    <headOperation />
     <!-- 表格 -->
     <el-table
       :data="tableData"
@@ -8,11 +10,12 @@
       style="width: 100%"
       header-align="center"
       :header-cell-style="tableHeaderStyle"
+      :span-method="arraySpanMethod"
     >
       <!-- 用来实现多选 -->
       <el-table-column
         type="selection"
-        width="50"
+        width="30"
         align="center"
       >
       </el-table-column>
@@ -21,6 +24,37 @@
         label="名称"
         align="center"
       >
+        <template slot-scope="scope">
+          <slot
+            :row="scope.row"
+            :$index="scope.$index"
+          >
+            <section class="goods_name">
+              <section>
+                <!-- 商品的图片 -->
+                <el-image
+                  style="width: 60px; height: 60px"
+                  src="http://jmpdevimg.weipubao.cn/upload/245547/image/20190820/451MdJcYVgSCF63e8ZZp.png"
+                  fit="fill"
+                ></el-image>
+              </section>
+              <section>
+                <!-- tag信息 -->
+                <span>
+                  <el-tag
+                    size="mini"
+                    type="danger"
+                    effect="dark"
+                  >
+                    自营
+                  </el-tag>
+                </span>
+                <span>{{scope.row.name}}</span>
+              </section>
+            </section>
+          </slot>
+        </template>
+
       </el-table-column>
       <el-table-column
         prop="price"
@@ -53,10 +87,18 @@
       >
       </el-table-column>
       <el-table-column
-        prop="stock"
         label="库存"
         align="center"
       >
+        <template slot-scope="scope">
+          <slot
+            :row="scope.row"
+            :$index="scope.$index"
+          >
+
+            <span>{{scope.row.stock}}</span>
+          </slot>
+        </template>
       </el-table-column>
       <el-table-column
         prop="sales"
@@ -65,10 +107,18 @@
       >
       </el-table-column>
       <el-table-column
-        prop="label"
         label="商品标签"
         align="center"
       >
+        <template slot-scope="scope">
+          <slot
+            :row="scope.row"
+            :$index="scope.$index"
+          >
+            <span>官方正品</span>
+            <el-button type="text">设置</el-button>
+          </slot>
+        </template>
       </el-table-column>
       <!-- 操作列 -->
       <el-table-column
@@ -132,11 +182,16 @@
       </el-table-column>
 
     </el-table>
+    <!-- 底部 -->
+    <allGoodsFooter />
   </div>
 </template>
 <script>
+import headOperation from '../headOperation'
+import allGoodsFooter from '../allGoodsFooter'
 export default {
   name: 'saleOn',
+  components: { headOperation, allGoodsFooter },
   // 数据data
   data () {
     return {
@@ -194,6 +249,10 @@ export default {
     // 删除
     handleDel () {
 
+    },
+    // 合并列行
+    arraySpanMethod ({ row, column, rowIndex, columnIndex }) {
+
     }
   }
 
@@ -209,5 +268,9 @@ export default {
   font-style: normal;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+}
+
+.goods_name {
+  display: flex;
 }
 </style>

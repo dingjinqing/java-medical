@@ -18,9 +18,9 @@
             </div>
           </el-image>
         </section>
-        <section class="proName">{{goodsName}}</section>
-        <section class="proPri">¥ {{prdPrice}}</section>
-        <section class="proNum">库存：{{prdNumber}}</section>
+        <section class="proName"></section>
+        <section class="proPri">¥ </section>
+        <section class="proNum">库存：</section>
       </section>
     </section>
 
@@ -30,16 +30,14 @@
 /* eslint-disable */
 export default {
   name: 'addingGoodsDetailsLeft',
-  props: ['getParams'],
+
   created() {
 
   },
   data() {
     return {
-      src: this.getParams.goodsImg,
-      goodsName: this.getParams.goodsName,
-      prdPrice: this.getParams.prdPrice,
-      prdNumber: this.getParams.prdNumber
+      src: ''
+
     }
   },
   methods: {
@@ -60,8 +58,7 @@ export default {
   display: flex;
   justify-content: center;
   align-items: center;
-  background: url(../../../../../../assets/image/admin/new_shop_beautify/page_name.png)
-    no-repeat;
+  background: url(../../../../../../assets/adminImg/page_name.png) no-repeat;
 }
 .title {
   display: inline-block;

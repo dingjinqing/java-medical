@@ -1,55 +1,14 @@
 <template>
   <div class="addingGoodsDetails">
-
-    <!-- 编辑商品详情的左侧组件 -->
     <section class="con">
-      <addingGoodsDetailsLeft
-        :getParams="getParams"
-        class="left"
-      />
-
+      <!-- 编辑商品详情的左侧组件 -->
+      <addingGoodsDetailsLeft class="left" />
       <!-- 编辑商品详情的右侧组件 -->
       <addingGoodsDetailsRight class="right" />
-
     </section>
-
-    <!-- 编辑商品详情的底部按钮 -->
-
-    <section class="addingGoodsFooter">
-      <el-button
-        class="btn"
-        type="primary"
-        size="small"
-        @click.native.prevent="handleToList"
-      >保存后返回列表</el-button>
-      <el-button
-        class="btn"
-        size="small"
-        @click.native.prevent="handlePreStep"
-      >上一步</el-button>
-      <el-button
-        size="small"
-        class="btn"
-        @click.native.prevent="handleNextStep"
-      >下一步</el-button>
-      <el-button
-        type="primary"
-        size="small"
-        class="btn"
-        @click.native.prevent="handleAddAfterSaving"
-      >保存后继续添加</el-button>
-      <el-button
-        type="primary"
-        size="small"
-        class="btn"
-        @click.native.prevent="handlePreview"
-      >保存后预览商品</el-button>
-    </section>
-
   </div>
 </template>
 <script>
-// import Tinymce from '@/components/admin/Tinymce'
 import addingGoodsDetailsLeft from './addingGoodsDetailsLeft'
 import addingGoodsDetailsRight from './addingGoodsDetailsRight'
 export default {
@@ -64,35 +23,12 @@ export default {
 
   },
   computed: {
-    getParams () {
-      return this.$route.query
-    }
+
   },
   watch: {
 
   },
   methods: {
-
-    handleToList () {
-
-    },
-    handlePreStep () {
-      this.$router.push(
-        { path: 'basic', query: {} }
-      )
-    },
-    handleNextStep () {
-      this.$router.push({
-        name: 'distribution',
-        query: {}
-      })
-    },
-    handleAddAfterSaving () {
-
-    },
-    handlePreview () {
-
-    }
 
   }
 }

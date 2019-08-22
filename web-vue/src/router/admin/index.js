@@ -268,8 +268,10 @@ const routes = [
                 name: 'sale_on',
                 meta: {
                   crumbTitle: 'router.saleOn',
-                  meta: 'goods_manage'
+                  meta: 'goods_manage',
+                  category: 'sale_on'
                 },
+
                 component: () =>
                   import(
                     '@/view/admin/index/leftNavComponents/goods_manage/allGoods/saleOn/saleOn'
@@ -281,8 +283,10 @@ const routes = [
                 name: 'sale_end',
                 meta: {
                   crumbTitle: 'router.saleEnd',
-                  meta: 'goods_manage'
+                  meta: 'goods_manage',
+                  category: 'sale_on'
                 },
+
                 component: () =>
                   import(
                     '@/view/admin/index/leftNavComponents/goods_manage/allGoods/saleOn/saleOn'
@@ -294,7 +298,8 @@ const routes = [
                 name: 'sale_off',
                 meta: {
                   crumbTitle: 'router.saleOff',
-                  meta: 'goods_manage'
+                  meta: 'goods_manage',
+                  category: 'sale_on'
                 },
                 component: () =>
                   import(
@@ -344,8 +349,7 @@ const routes = [
           },
           // 添加商品
           {
-            path: '/admin/home/main/addingGoods',
-            redirect: '/admin/home/main/addingGoods/basic',
+            path: '/admin/home/main/goods_manage/adding_goods',
             name: 'goods_add',
             meta: {
               crumbTitle: 'router.addingGoods',
@@ -354,51 +358,7 @@ const routes = [
             component: () =>
               import(
                 '@/view/admin/index/leftNavComponents/goods_manage/addingGoods/addingGoods'
-              ),
-            children: [
-              // 编辑基本信息
-              {
-                path: '/admin/home/main/addingGoods/basic',
-                name: 'basic',
-                meta: {
-                  crumbTitle: 'router.addingGoods',
-                  meta: 'goods_manage',
-                  category: 'goods_add'
-                },
-                component: () =>
-                  import(
-                    '@/view/admin/index/leftNavComponents/goods_manage/addingGoods/addingGoodsProductInfo'
-                  )
-              },
-              // 编辑商品详情
-              {
-                path: '/admin/home/main/addingGoods/details',
-                name: 'details',
-                meta: {
-                  crumbTitle: 'router.addingGoods',
-                  meta: 'goods_manage',
-                  category: 'goods_add'
-                },
-                component: () =>
-                  import(
-                    '@/view/admin/index/leftNavComponents/goods_manage/addingGoods/addingGoodsDetails'
-                  )
-              },
-              // 编辑分销信息
-              {
-                path: '/admin/home/main/addingGoods/distribution',
-                name: 'distribution',
-                meta: {
-                  crumbTitle: 'router.addingGoods',
-                  meta: 'goods_manage',
-                  category: 'goods_add'
-                },
-                component: () =>
-                  import(
-                    '@/view/admin/index/leftNavComponents/goods_manage/addingGoods/addingGoodsDistributionInfo'
-                  )
-              }
-            ]
+              )
           },
           // 运费模板
           {

@@ -249,6 +249,9 @@ export default {
 
 <style lang="css" scoped>
 /* 样式文件 要加scoped作用于当前的组件，方式样式污染 */
+.headOperation {
+  margin-bottom: 20px;
+}
 .now {
   color: #999;
   font-size: 12px;

@@ -1,202 +1,169 @@
 <template>
+  <!-- 编辑分销信息 -->
   <div class="addingGoodsDistributionInfo">
-    <!-- 编辑分销信息 -->
-    <el-row>
-      <el-form
-        ref="distribution"
-        :model="distribution"
-        label-width="120px"
-      >
-        <!-- 分销改价 -->
-        <el-form-item label="分销改价：">
-          <el-checkbox v-model="checked">允许分销员分销商品时修改商品售价</el-checkbox>
-          <el-row
-            class="priceGroup"
-            v-if="checked"
-          >
-            <el-col
-              :span="6"
-              class="recommended_price"
-            >
-              <div class="sub-title">建议售价（元）</div>
-              <el-input
-                class="inline-input"
-                v-model="state1"
-                placeholder="建议售价为"
-              ></el-input>
-            </el-col>
-            <el-col
-              :span="6"
-              class="lowest_price"
-            >
-              <div class="sub-title">最低售价（元）</div>
-              <el-input
-                class="inline-input"
-                v-model="state2"
-                placeholder="最低售价为"
-              ></el-input>
-            </el-col>
-            <el-col :span="6">
-              <div class="sub-title">最高售价（元）</div>
-              <el-input
-                class="inline-input"
-                v-model="state2"
-                placeholder="最高售价为"
-              ></el-input>
-            </el-col>
-          </el-row>
-        </el-form-item>
-        <!-- 分销推广语言 -->
-        <el-form-item label="分校推广语：">
-          <el-row>
-            <el-col
-              :span="4"
-              class="switch"
-            >
-              <el-switch
-                style="display: block"
-                v-model="isOpen"
-                active-color="#13ce66"
-                inactive-color="#ff4949"
-                active-text="已开启"
-                inactive-text="已关闭"
-              >
+    <el-form
+      ref="form"
+      :model="formData"
+      label-width="120px"
+    >
+      <!-- 分销改价 -->
+      <el-form-item label="分销改价：">
+        <el-checkbox v-model="checked">允许分销员分销商品时修改商品售价</el-checkbox>
+        <!-- 允许分销员分销商品时修改商品售价 -->
+        <section
+          class="modify_price"
+          v-show="checked"
+        >
+          <section class="modify_price_header">
+            <section>建议售价(元)</section>
+            <section>最低售价(元)</section>
+            <section>最高售价（元）</section>
+          </section>
+          <section class="ipts">
+            <el-input
+              size="small"
+              style="width:200px"
+              v-model="formData.advisePrice"
+              placeholder="建议售价为"
+            ></el-input>
 
-              </el-switch>
-            </el-col>
-            <el-col :span="20">
-              <span class="distributor">分销员下载当前商品海报时将直接复制此推广语到手机剪贴板</span>
-            </el-col>
-          </el-row>
-          <!-- 推广语言内容 -->
-          <el-row v-if="isOpen">
-            <el-col :span="3">
-              <label for="">推广语内容：</label>
-            </el-col>
-            <el-col :span="10">
-              <el-input
-                type="textarea"
-                placeholder="请输入内容"
-                v-model="textarea"
-                maxlength="200"
-                show-word-limit
-              >
-              </el-input>
-            </el-col>
-          </el-row>
+            <el-input
+              size="small"
+              style="width:200px"
+              v-model="formData.miniPrice"
+              placeholder="最低售价为"
+            ></el-input>
 
-        </el-form-item>
-        <!-- 商品分享海报 -->
-        <el-form-item label="商品分享海报:">
-          <el-row>
-            <el-col :span="3">
+            <el-input
+              style="width:200px"
+              size="small"
+              v-model="formData.maxPrice"
+              placeholder="最高售价为"
+            ></el-input>
+          </section>
+        </section>
+
+      </el-form-item>
+      <!-- 分销推广语言 -->
+      <el-form-item label="分销推广语：">
+        <section class="switchWrap">
+          <section class="switch">
+            <!-- 开关 -->
+            <el-switch
+              style="display: block"
+              v-model="promotionLanguageSwitch"
+              active-color="#13ce66"
+              inactive-color="#ff4949"
+              active-text="已开启"
+              inactive-text="已关闭"
+            >
+            </el-switch>
+          </section>
+          <section style="color:#999">分销员下载当前商品海报时将直接复制此推广语到手机剪贴板</section>
+        </section>
+        <!-- 推广语言内容 -->
+        <section
+          class="promotional_content"
+          v-show="promotionLanguageSwitch"
+        >
+          <section class="content">推广语内容:</section>
+          <section>
+            <el-input
+              style="width:400px"
+              type="textarea"
+              :autosize="{ minRows: 5,}"
+              placeholder="请输入推广语内容"
+              v-model="formData.promotionLanguage"
+              maxlength="200"
+              show-word-limit
+            >
+            </el-input>
+          </section>
+        </section>
+      </el-form-item>
+      <!-- 商品分享海报 -->
+      <el-form-item label="商品分享海报:">
+        <!-- 默认样式 -->
+        <section>
+          <el-radio
+            v-model="radioList.radio1"
+            label="默认样式"
+          ><span style="margin-right:10px">默认样式</span>
+            <el-popover
+              placement="right-start"
+              width="220"
+              trigger="hover"
+            >
+              <el-image :src="srcList.src1"></el-image>
+              <el-button
+                slot="reference"
+                type="text"
+                style="margin-right:20px"
+              >查看示例</el-button>
+            </el-popover>
+            <el-popover
+              placement="right-start"
+              width="220"
+              trigger="hover"
+            >
+
+              <el-image :src="srcList.src2"></el-image>
+              <el-button
+                slot="reference"
+                type="text"
+              >下载海报</el-button>
+            </el-popover>
+          </el-radio>
+        </section>
+        <!-- 自定义样式 -->
+        <section class="customize">
+          <el-radio
+            v-model="radioList.radio1"
+            label="自定义样式"
+          >自定义样式</el-radio>
+        </section>
+        <!-- 文案 -->
+        <section class="copywriting">
+          <span>文案：</span>
+          <el-input
+            size="small"
+            v-model="formData.copywriting"
+            placeholder="请输入15个以内的字符"
+            style="width:220px"
+          ></el-input>
+        </section>
+        <!-- 分享图 -->
+        <section class="share_img">
+          <section>分享图：</section>
+          <section class="">
+            <!-- 商品主图 -->
+            <section>
               <el-radio
-                v-model="radio"
-                label="1"
-              >默认样式</el-radio>
-            </el-col>
-            <el-col :span="3">
-              <el-link
-                type="primary"
-                :underline="false"
-              >查看示例</el-link>
-            </el-col>
-            <el-col :span="3">
-              <el-link
-                type="primary"
-                :underline="false"
-              >下载海报</el-link>
-            </el-col>
-
-          </el-row>
-          <el-row>
-            <el-radio
-              v-model="radio"
-              label="2"
-            >自定义样式
-            </el-radio>
-          </el-row>
-          <el-row>
-            <el-col :span="2">
-              <label for="">文案：</label>
-            </el-col>
-            <el-col :span="8">
-              <el-input></el-input>
-            </el-col>
-          </el-row>
-          <el-row>
-            <el-col :span="2">
-              <label for="">分享图：</label>
-            </el-col>
-            <el-col :span="8">
-              <el-radio
-                v-model="radio1"
-                label="1"
+                v-model="radioList.radio2"
+                label="商品主图"
               >商品主图</el-radio>
+            </section>
+            <!-- 自定义图片 -->
+            <section>
               <el-radio
-                v-model="radio1"
-                label="2"
+                v-model="radioList.radio2"
+                label="自定义图片"
               >自定义图片</el-radio>
-
-            </el-col>
-          </el-row>
-          <el-row>
-            <el-col
-              :span="4"
-              class="upload_pic"
-            >
-              <el-upload
-                class="uploader"
-                action=""
-                :show-file-list="false"
-                :on-success="handleSuccess"
-                :before-upload="beforeUpload"
-              >
-                <img
-                  v-if="imageUrl"
-                  :src="imageUrl"
-                  class="pic"
-                >
-                <i
-                  v-else
-                  class="el-icon-plus uploader-icon"
-                ></i>
-              </el-upload>
-            </el-col>
-            <el-col
-              :span="8"
-              class="suggest"
-            >
-              <span>建议尺寸: 800*800像素</span>
-            </el-col>
-          </el-row>
-        </el-form-item>
-      </el-form>
-    </el-row>
-    <!-- footer -->
-
-    <section class="addingGoodsFooter">
-      <el-button
-        type="primary"
-        size="small"
-        @click.native.prevent="handleToList"
-      >保存后返回列表</el-button>
-      <el-button
-        size="small"
-        @click.native.prevent="handlePreStep"
-      >上一步</el-button>
-      <el-button
-        type="primary"
-        size="small"
-        @click.native.prevent="handleAddAfterSaving"
-      >保存后继续添加</el-button>
-      <el-button
-        type="primary"
-        size="small"
-        @click.native.prevent="handlePreview"
-      >保存后预览商品</el-button>
-    </section>
-
+            </section>
+            <!-- Image -->
+            <section class="img">
+              <section class="image_wrap">
+                <el-image
+                  style="width: 70px; height: 70px"
+                  :src="srcList.imageUrl"
+                  fit="fill"
+                ></el-image>
+              </section>
+            </section>
+          </section>
+        </section>
+      </el-form-item>
+    </el-form>
   </div>
 </template>
 <script>
@@ -204,106 +171,81 @@ export default {
   name: 'addingGoodsDistributionInfo',
   data () {
     return {
-      distribution: {
-
+      // 表单数据
+      formData: {
+        advisePrice: '', // 建议售价
+        miniPrice: '', // 最低售价
+        maxPrice: '', // 最高售价
+        promotionLanguage: '', // 分享推广语
+        copywriting: '' // 文案
       },
-      checked: true,
-      state1: '',
-      state2: '',
-      state3: '',
-      isOpen: true,
-      textarea: '',
-      radio: '1',
-      radio1: '1',
-      imageUrl: ''
+      checked: false, // 用来控制是否显示改价信息
+      promotionLanguageSwitch: false, // 分销推广语
+      radioList: {
+        radio1: '默认样式',
+        radio2: '商品主图'
+      },
+      srcList: {
+        src1: `${this.$imageHost}/image/admin/share/goods_info_exapmle1.jpg`,
+        src2: `${this.$imageHost}/image/admin/share/goods_info_exapmle.jpg`,
+        imageUrl: ``
+      }
     }
   },
+  // 方法
   methods: {
-    handleSuccess (res, file) {
 
-    },
-    beforeUpload (file) {
-
-    },
-    handleToList () {
-
-    },
-    handlePreStep () {
-      this.$router.push({
-        name: 'details',
-        query: {}
-      })
-    },
-
-    handleAddAfterSaving () {
-
-    },
-    handlePreview () {
-
-    }
   }
 }
 </script>
 <style scoped>
-.priceGroup {
+.modify_price {
   border: 1px solid #ccc;
   padding: 10px;
   color: #333;
   border-radius: 2px;
+}
+.modify_price_header {
+  background-color: #f8f8f8;
   display: flex;
-  justify-content: center;
+  justify-content: space-around;
   align-items: center;
 }
-.recommended_price,
-.lowest_price {
-  margin-right: 10px;
+.ipts {
+  display: flex;
+  justify-content: space-around;
 }
-.distributor {
-  color: #999;
+.switchWrap {
+  display: flex;
+  justify-content: flex-start;
+  align-items: center;
+  margin-bottom: 10px;
 }
 .switch {
-  margin-top: 10px;
+  margin-right: 10px;
 }
-/* 上传图片样式 */
-.upload_pic {
-  border: 1px solid #eee;
-  border-radius: 6px;
-  cursor: pointer;
-  overflow: hidden;
-  position: relative;
-  width: 79px;
-  height: 79px;
-  margin-left: 80px;
-}
-.uploader {
-  width: 100%;
-  height: 100%;
-  display: block;
-  justify-content: center;
-  align-items: center;
-}
-.uploader-icon {
-  color: #8c939d;
-  width: 78px;
-  height: 78px;
-  line-height: 78px;
-  text-align: center;
-}
-.suggest {
-  margin-top: 20px;
-  margin-left: 20px;
-}
-.addingGoodsFooter {
-  border-top: 1px solid #f2f2f2;
+.promotional_content {
   display: flex;
-  justify-content: center;
+  justify-content: flex-start;
   align-items: center;
-  position: fixed;
-  bottom: 0;
-  z-index: 2;
-  width: 88%;
-  height: 50px;
-  background: #f8f8fa;
-  margin-left: -20px;
+}
+.content {
+  margin-right: 20px;
+}
+.share_img {
+  display: flex;
+  justify-content: flex-start;
+}
+.copywriting,
+.customize {
+  margin: 10px 0;
+}
+.image_wrap {
+  width: 70px;
+  height: 70px;
+  background: url(../../../../../../assets/image/admin/btn_add.png) no-repeat;
+}
+.img {
+  margin: 10px 0;
 }
 </style>

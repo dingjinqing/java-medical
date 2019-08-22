@@ -1,14 +1,23 @@
 <template>
   <div class="addGoods">
-    <addingGoodsContent />
+    <el-card class="container">
+      <!-- 头部组件 -->
+      <addingGoodsHeader />
+      <!-- 主要内容区 -->
+      <addingGoodsMain />
+      <!-- 底部按钮组件 -->
+      <addingGoodsFooter />
+    </el-card>
   </div>
 </template>
 <script>
-
-import addingGoodsContent from './addingGoodsContent'
-
+import addingGoodsHeader from './addingGoodsHeader'
+import addingGoodsMain from './addingGoodsMain'
+import addingGoodsFooter from './addingGoodsFooter'
 export default {
-  components: { addingGoodsContent },
+  name: 'addingGoods',
+  // 组件注册
+  components: { addingGoodsHeader, addingGoodsMain, addingGoodsFooter },
   data () {
     return {
 
@@ -25,5 +34,6 @@ export default {
 <style scoped>
 .addGoods {
   overflow-y: auto;
+  padding: 10px;
 }
 </style>

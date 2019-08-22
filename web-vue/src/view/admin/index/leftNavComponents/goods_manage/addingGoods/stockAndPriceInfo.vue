@@ -1,4 +1,5 @@
 <template>
+  <!-- 库存/价格信息 -->
   <div class="priceInfo">
     <el-form
       :model="formData"
@@ -160,7 +161,7 @@
             <el-button type="text">成本价格</el-button>
             <el-button type="text">库存</el-button>
             <el-button type="text">规格图片</el-button>
-            <el-button @click="test">测试数据</el-button>
+
           </section>
         </section>
       </el-form-item>
@@ -447,9 +448,6 @@ export default {
     }
   },
   methods: {
-    test () {
-      console.log(this.tableList)
-    },
 
     handleGetPrdNumber (val) {
 

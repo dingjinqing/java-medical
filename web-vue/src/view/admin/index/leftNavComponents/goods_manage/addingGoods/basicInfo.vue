@@ -1,6 +1,6 @@
 <template>
   <div class="basicInfo">
-    <el-button @click="handleTest">测试数据</el-button>
+
     <el-form
       :model="formData"
       :rules="rules"
@@ -216,7 +216,7 @@
 <script>
 import { selectPlatformClassification } from '@/api/admin/goods_manage/addingGoods/addingGoods'
 import { initGrandgetRequest } from '@/api/admin/brandManagement.js'
-import { getLabelList } from '@/api/admin/labelList/labelList'
+// import { getLabelList } from '@/api/admin/labelList/labelList'
 import addBrandDialog from './addBrandDialog'
 import goodsMainPic from './goodsMainPic'
 export default {
@@ -347,28 +347,6 @@ export default {
     }
   },
   methods: {
-
-    handleTest() {
-      getLabelList({}).then(res => console.log(res)).catch(err => console.log(err))
-      // deleteSort({
-      //   'sortId': 20
-      // }).then(res => console.log(res)).catch(err => console.log(err))
-      // addSort({
-      //   'sortName': '女装',
-      //   'parentId': 24,
-      //   'level': 1,
-      //   'sortImg': '',
-      //   'imgLink': '',
-      //   'first': 13,
-      //   'type': 0,
-      //   'sortDesc': ''
-      // }).then(res => console.log(res)).catch(err => console.log(err))
-
-      let params = {
-        unit: this.customUnit
-      }
-      console.log(params, this.formData1)
-    },
     handleChange(value) {
       console.log(value)
       selectPlatformClassification(value).then(res => {

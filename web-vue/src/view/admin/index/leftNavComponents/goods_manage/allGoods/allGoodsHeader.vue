@@ -17,7 +17,6 @@
         label="仓库中"
         name="saleOff"
       ></el-tab-pane>
-
     </el-tabs>
   </div>
 </template>
@@ -37,7 +36,22 @@ export default {
   // methods 方法
   methods: {
     handleClick (tab, event) {
-
+      console.log(tab.name)
+      // 点击进行路由跳转
+      switch (tab.name) {
+        case 'saleOn': this.$router.push({
+          name: 'sale_on'
+        })
+          break
+        case 'saleEnd': this.$router.push({
+          name: 'sale_end'
+        })
+          break
+        case 'saleOff': this.$router.push({
+          name: 'sale_off'
+        })
+          break
+      }
     }
   }
 }

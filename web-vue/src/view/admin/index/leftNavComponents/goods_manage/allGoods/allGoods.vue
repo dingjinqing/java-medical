@@ -5,23 +5,19 @@
     <el-card class="container">
       <!-- 头部标签页 -->
       <allGoodsHeader />
-      <!-- 头部操作 -->
-      <headOperation />
       <!-- 出售中|已售罄|仓库中路由出口 -->
       <router-view></router-view>
-      <allGoodsFooter />
     </el-card>
 
   </div>
 </template>
 <script>
 import allGoodsHeader from './allGoodsHeader'
-import headOperation from './headOperation'
-import allGoodsFooter from './allGoodsFooter'
+
 export default {
   name: 'saleOn',
   // 组件注册
-  components: { allGoodsHeader, headOperation, allGoodsFooter },
+  components: { allGoodsHeader },
   // 数据data
   data () {
     return {

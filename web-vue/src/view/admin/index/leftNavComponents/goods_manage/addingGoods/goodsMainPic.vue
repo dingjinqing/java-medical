@@ -27,7 +27,7 @@
         @click="handleShowDialog"
       >
         <img
-          src="../../../../../../assets/image/admin/add_img.png"
+          :src="src"
           alt=""
         >
       </li>
@@ -45,7 +45,7 @@ export default {
   components: { ImageDalog },
   data () {
     return {
-      src: '',
+      src: `${this.$imageHost}/image/admin/add_img.png`,
       isShowPic: false,
       mainUrl: '',
       imgLists: []

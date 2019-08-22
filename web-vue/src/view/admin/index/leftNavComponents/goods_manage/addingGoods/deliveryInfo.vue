@@ -1,7 +1,7 @@
 <template>
   <!-- 配送信息 -->
   <div class="deliveryInfo">
-    <el-button @click="handleTest">测试按钮</el-button>
+
     <el-form
       :model="formData"
       :rules="rules"
@@ -120,11 +120,7 @@ export default {
     }
   },
   methods: {
-    // 测试数据
-    handleTest () {
-      console.log(this.formData)
-      deliverTemplatelist({}).then(res => console.log(res)).catch(err => console.log(err))
-    },
+
     fetchDeliverTemplatelist () {
       let params = {}
       deliverTemplatelist(params).then(res => {
