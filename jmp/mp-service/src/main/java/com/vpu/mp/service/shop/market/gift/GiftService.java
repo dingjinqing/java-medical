@@ -334,7 +334,8 @@ public class GiftService extends ShopBaseService {
         if (isNotEmpty(name)) {
             query.and(TABLE.NAME.like(format("%s%%", name)));
         }
-        query.groupBy(TABLE.ID);
+        query.groupBy(TABLE.ID, TABLE.NAME, TABLE.START_TIME, TABLE.END_TIME,
+            TABLE.LEVEL, TABLE.STATUS);
     }
 
     /**
