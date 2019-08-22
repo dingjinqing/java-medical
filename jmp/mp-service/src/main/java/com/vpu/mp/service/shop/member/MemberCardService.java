@@ -210,7 +210,10 @@ public class MemberCardService extends ShopBaseService {
 		if (NORMAL_TYPE.equals(cardType) || RANK_TYPE.equals(cardType)) {
 			// TODO专享商品
 			payOwnGood = (byte) (BUTTON_ON.equals(card.getPowerPayOwnGood()) ? 1 : 0);
-
+			
+			
+			
+			
 			boolean flag = false;
 			/** 1. 会员折扣 */
 			if (CHECKED.equals(card.getPowerCount())) {
@@ -233,7 +236,24 @@ public class MemberCardService extends ShopBaseService {
 			/** 2. 会员专享商品 */
 			if (BUTTON_ON.equals(card.getPowerPayOwnGood())) {
 				// TODO 处理允许会员专享的商品，商家，分类，平台等
-
+				List<Integer> cardList =  new ArrayList<>();
+				cardList.add(card.getId());
+				/** 专享商品-商品id */
+				if(card.getOwnGoodsId() != null) {
+					batchUpdateGoods(card.getOwnGoodsId(), cardList);
+				}
+					
+				/** 专享商品-商家分类id */
+				if(card.getOwnStoreCategoryIds() != null) {
+					batchUpdateStoreCategory(card.getOwnStoreCategoryIds(), cardList);
+				}
+					
+				/** 专享商品-平台分类 */
+				if(card.getOwnPlatFormCategoryIds() != null) {
+					batchUpdatePlatformCategory(card.getOwnPlatFormCategoryIds(), cardList);
+				}
+				
+				
 				flag = true;
 			}
 			/** 3. 积分获取 */
@@ -278,7 +298,7 @@ public class MemberCardService extends ShopBaseService {
 	
 	/**
 	 * 根据会员卡id批量更新会员专享商品
-	 * @param goodsId
+	 * @param goodsIdList
 	 * @param cardIdList
 	 */
 	public void batchUpdateGoods(List<Integer> goodsIdList,List<Integer> cardIdList) {
@@ -288,7 +308,7 @@ public class MemberCardService extends ShopBaseService {
 
 	/**
 	 * 根据会员卡id批量更新会员专享商品-商家分类
-	 * @param goodsId
+	 * @param storeIdList
 	 * @param cardIdList
 	 */
 	public void batchUpdateStoreCategory(List<Integer> storeIdList,List<Integer> cardIdList) {
@@ -298,7 +318,7 @@ public class MemberCardService extends ShopBaseService {
 	
 	/**
 	 * 根据会员卡id批量更新会员专享商品-平台分类
-	 * @param goodsId
+	 * @param platformIdList
 	 * @param cardIdList
 	 */
 	public void batchUpdatePlatformCategory(List<Integer> platformIdList,List<Integer> cardIdList) {
@@ -537,16 +557,16 @@ public class MemberCardService extends ShopBaseService {
 	}
 
 	/**
-	 * 分页查询等级会员卡
+	 * 查询等级会员卡,按照等级升序
 	 * 
 	 * @param param
 	 * @return
 	 */
 	public PageResult<RankCardVo> getRankCardList(SearchCardParam param) {
 		/** 构建sql语句 */
-		SelectSeekStep1<MemberCardRecord, Integer> select = db().selectFrom(MEMBER_CARD)
+		SelectSeekStep1<MemberCardRecord, String> select = db().selectFrom(MEMBER_CARD)
 				.where(MEMBER_CARD.CARD_TYPE.equal(RANK_TYPE)).and(MEMBER_CARD.DEL_FLAG.equal(DELETE_NO))
-				.orderBy(MEMBER_CARD.ID.desc());
+				.orderBy(MEMBER_CARD.GRADE.desc());
 
 		PageResult<RankCardVo> pageResult = this.getPageResult(select, param.getCurrentPage(), param.getPageRows(),
 				RankCardVo.class);

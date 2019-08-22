@@ -27,15 +27,19 @@ import com.vpu.mp.service.foundation.data.JsonResultCode;
 import com.vpu.mp.service.foundation.service.ShopBaseService;
 import com.vpu.mp.service.foundation.util.DateUtil;
 import com.vpu.mp.service.foundation.util.PageResult;
+import com.vpu.mp.service.foundation.util.VoTranslator;
 import com.vpu.mp.service.pojo.shop.member.account.ScoreParam;
 import com.vpu.mp.service.pojo.shop.member.score.ScorePageListParam;
 import com.vpu.mp.service.pojo.shop.member.score.ScorePageListVo;
 
+import static com.vpu.mp.service.pojo.shop.member.MemberOperateRecordEnum.ADMIN_OPERATION;
 /**
  * @author 黄壮壮 2019-07-19 15:03
  */
 @Service
 public class ScoreService extends ShopBaseService {
+	
+	@Autowired private VoTranslator translator;
 	/**
 	 * 未使用
 	 */
@@ -59,6 +63,50 @@ public class ScoreService extends ShopBaseService {
 	@Autowired
 	private MemberService member;
 
+	/** 会员可用积分不足异常 */
+	private class UsableScoreException extends RuntimeException{
+		@Override
+		public String getMessage() {
+			return "Member usable score is not enough";
+		}
+	}
+	
+	/** ----------------------用户积分重构--------------------------------- */
+	
+	public void updateMemberScore(ScoreParam param) {
+
+		// 3. 准备数据
+
+		
+		// 3.1 处理备注
+		String remark = param.getRemark();
+		if (StringUtils.isEmpty(remark)) {
+			/** 默认管理员操作 国际化*/
+			String value = ADMIN_OPERATION.getValue();
+			remark = translator.translate("member",value,value);
+		}
+	}
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	/**
+	 * 更新用户积分
+	 * @param param
+	 * @param subAccountId
+	 * @param userId
+	 * @param tradeType
+	 * @param tradeFlow
+	 * @return
+	 */
+	// TODO优化参数
 	public JsonResultCode updateMemberScore(ScoreParam param, Integer subAccountId, Integer userId, Byte tradeType,
 			Byte tradeFlow) {
 
@@ -75,7 +123,9 @@ public class ScoreService extends ShopBaseService {
 
 		// 2. 验证积分与数据库保持一致，批量修改时为最小值，即大于等于
 		Integer scoreDis = param.getScoreDis();
+		/** 目前会员存在数据录中的积分 */
 		Integer dbScore = dbUser.getScore();
+		
 		if (dbScore < scoreDis) {
 			return JsonResultCode.CODE_MEMBER_SCORE_NOT_SAME;
 		}
@@ -83,63 +133,84 @@ public class ScoreService extends ShopBaseService {
 		// 3. 准备数据
 
 		// 3.1 处理备注
-		String remark = param.getRemark();
-		if (StringUtils.isEmpty(remark)) {
-			remark = "管理员操作";
+		final String remark ;
+		if (StringUtils.isEmpty(param.getRemark())) {
+			/** 默认管理员操作 国际化*/
+			String value = ADMIN_OPERATION.getValue();
+			remark = translator.translate("member",value,value);
+			logger().info("remark: "+remark);
+		}else {
+			remark = param.getRemark();
 		}
 
 		// 3.2 获取积分流水号
 		String flowOn = generateFlowNo();
 
 		// 3.3 可用剩余积分
+		/** 本条积分记录的积分变动数额 */
 		Integer score = param.getScore();
+		/** 本条积分记录可用的数额 */
 		Integer usableScore = score > 0 ? score : 0;
 		String orderSn = param.getOrderSn() == null ? "" : param.getOrderSn();
-
-		// 4 如果时负数，则消耗积分
-		if (score < 0) {
-			// 消耗积分
-			boolean result = useUserScore(userId, Math.abs(score), orderSn);
-			if (!result) {
-				return JsonResultCode.CODE_MEMBER_SCORE_ERROR;
+		
+		
+		this.transaction(()->{
+			
+			
+			// 4 如果时负数，则消耗积分
+			if (score < 0) {
+				/** 消耗的积分超出可用积分 */
+				if(Math.abs(score)>dbScore) {
+					throw new UsableScoreException();
+					//return JsonResultCode.CODE_MEMBER_SCORE_ERROR;
+				}
+				// 消耗积分
+				boolean result = useUserScore(userId, Math.abs(score), orderSn);
+				if (!result) {
+					//return JsonResultCode.CODE_MEMBER_SCORE_ERROR;
+					throw new UsableScoreException();
+				}
+	
 			}
-
-		}
-
-		// 5. 添加积分记录
-
-		UserScoreRecord userScoreRecord = new UserScoreRecord();
-		// 5.1 填充数据
-		userScoreRecord.setScore(score);
-		userScoreRecord.setUserId(userId);
-		userScoreRecord.setRemark(remark);
-		userScoreRecord.setAdminUser(String.valueOf(subAccountId));
-		userScoreRecord.setOrderSn(orderSn);
-		userScoreRecord.setFlowNo(flowOn);
-		userScoreRecord.setUsableScore(usableScore);
-
-		// 5.2 添加
-		addUserScoreRecord(userScoreRecord);
-
-		// 6. 更新用户积分
-		// 6.1 获取操作后的积分
-		Integer totalScore = getTotalAvailableScoreById(userId);
-		// 6.2 更新用户积分
-		updateUserScore(userId, totalScore);
+			
+			
+			// 5. 添加积分记录
+			UserScoreRecord userScoreRecord = new UserScoreRecord();
+			// 5.1 填充数据
+			userScoreRecord.setScore(score);
+			userScoreRecord.setUserId(userId);
+			userScoreRecord.setRemark(remark);
+			userScoreRecord.setAdminUser(String.valueOf(subAccountId));
+			userScoreRecord.setOrderSn(orderSn);
+			userScoreRecord.setFlowNo(flowOn);
+			userScoreRecord.setUsableScore(usableScore);
+	
+			// 5.2 添加
+			/** 在user_score中添加积分记录 */
+			addUserScoreRecord(userScoreRecord);
+	
+			// 6. 更新用户积分
+			// 6.1 获取操作后的积分
+			Integer totalScore = getTotalAvailableScoreById(userId);
+			// 6.2 更新用户积分
+			updateUserScore(userId, totalScore);
+			
+			
+			// 7. 记录更新record action
+			TradesRecordRecord tradesRecord=new TradesRecordRecord();
 		
-		
-		// 7. 记录更新record action
-		TradesRecordRecord tradesRecord=new TradesRecordRecord();
-		tradesRecord.setTradeTime(DateUtil.getLocalDateTime());
-		tradesRecord.setTradeNum(BigDecimal.valueOf(Math.abs(score)));
-		tradesRecord.setTradeSn(orderSn);
-		tradesRecord.setUserId(userId);
-		tradesRecord.setTradeContent((byte) 1);
-		tradesRecord.setTradeType(tradeType);
-		tradesRecord.setTradeFlow(tradeFlow);
-		tradesRecord.setTradeStatus(tradeFlow);
-		insertTradesRecord(tradesRecord);
-
+			tradesRecord.setTradeTime(DateUtil.getLocalDateTime());
+			tradesRecord.setTradeNum(BigDecimal.valueOf(Math.abs(score)));
+			tradesRecord.setTradeSn(orderSn);
+			tradesRecord.setUserId(userId);
+			tradesRecord.setTradeContent((byte) 1);
+			tradesRecord.setTradeType(tradeType);
+			tradesRecord.setTradeFlow(tradeFlow);
+			tradesRecord.setTradeStatus(tradeFlow);
+			
+			/** 交易记录表-记录交易的数据信息  */
+			insertTradesRecord(tradesRecord);
+		});
 		return JsonResultCode.CODE_SUCCESS;
 	}
 
@@ -163,7 +234,6 @@ public class ScoreService extends ShopBaseService {
 	 * 
 	 * @param userId
 	 */
-
 	private Integer getTotalAvailableScoreById(Integer userId) {
 		List<Byte> list = Arrays.asList(AVAILABLE_STATUS);
 		Timestamp localDateTime = DateUtil.getLocalDateTime();
@@ -176,9 +246,10 @@ public class ScoreService extends ShopBaseService {
 		return sum;
 	}
 
+	
+	
 	/**
-	 * 插入修改记录
-	 * 
+	 * 在user_score中添加积分记录 
 	 * @param userScoreRecord
 	 */
 	private void addUserScoreRecord(UserScoreRecord record) {
@@ -196,6 +267,7 @@ public class ScoreService extends ShopBaseService {
 	 * @param userId
 	 * @param abs
 	 * @param orderSn
+	 * @return true操作成功，false无可用积分
 	 */
 	private boolean useUserScore(Integer userId, int score, String orderSn) {
 
@@ -246,7 +318,7 @@ public class ScoreService extends ShopBaseService {
 
 		return result;
 	}
-
+ 
 	/**
 	 * 获取最早可用的积分记录
 	 * 

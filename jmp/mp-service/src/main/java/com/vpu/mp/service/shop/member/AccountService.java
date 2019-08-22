@@ -80,9 +80,10 @@ public class AccountService extends ShopBaseService {
 				.values(DateUtil.getLocalDateTime(), param.getAmount(), tradeSn, param.getUserId(), zero, tradeType,
 						tradeFlow, tradeFlow == 2 ? zero : tradeFlow)
 				.execute();
-
 	}
 
+	
+	
 	/**
 	 * 更新user表的account字段
 	 * 
