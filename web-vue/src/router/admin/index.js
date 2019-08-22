@@ -474,6 +474,32 @@ const routes = [
                 '@/view/admin/index/leftNavComponents/first_market_manage/spellGroup/spellGroup'
               )
           },
+          // 分销
+          {
+            path: '/admin/home/main/distribution',
+            name: 'distribution_info',
+            meta: {
+              crumbTitle: 'router.distribution_info',
+              meta: 'first_market_manage'
+            },
+            component: () =>
+              import(
+                '@/view/admin/index/leftNavComponents/first_market_manage/distribution/distribution'
+              )
+          },
+          // 组团瓜分积分
+          {
+            path: '/admin/home/main/divideIntegral',
+            name: 'pin_integration',
+            meta: {
+              crumbTitle: 'router.pin_integration',
+              meta: 'first_market_manage'
+            },
+            component: () =>
+              import(
+                '@/view/admin/index/leftNavComponents/first_market_manage/divideIntegral/divideIntegral'
+              )
+          },
           // 普通优惠券
           {
             path: '/admin/home/main/ordinaryCoupon',
@@ -543,6 +569,20 @@ const routes = [
                 '@/view/admin/index/leftNavComponents/first_market_manage/first_market/addCoupon'
               )
           },
+          // 拼团抽奖活动
+          {
+            path: '/admin/home/main/lotteryDraw',
+            name: 'group_draw',
+            meta: {
+              crumbTitle: 'router.group_draw',
+              meta: 'first_market_manage',
+              category: 'first_market_manage'
+            },
+            component: () =>
+              import(
+                '@/view/admin/index/leftNavComponents/first_market_manage/lotteryDraw/lotteryDraw'
+              )
+          },
           // 赠品
           {
             path: '/admin/home/main/gift',
@@ -571,7 +611,6 @@ const routes = [
                 '@/view/admin/index/leftNavComponents/first_market_manage/gift/addGift'
               )
           },
-          // 拼团瓜分积分
           // {
           //   path: '/api/admin/market/integration/list',
           //   name: 'group_integration',
@@ -584,7 +623,6 @@ const routes = [
           //       '@/view/admin/index/leftNavComponents/first_market_manage/groupIntegration/groupIntegrationList'
           //     )
           // },
-          // 会员管理系列子路由
           {
             path: '/admin/home/main/membershipList',
             name: 'user_list',

@@ -6,44 +6,37 @@
         @tab-click="handleClick"
       >
         <el-tab-pane
-          label="全部好友助力活动"
+          label="全部拼团抽奖活动"
           name="first"
         >
           <el-button
             type="primary"
             @click="handleActClick()"
-          >添加好友助力活动</el-button>
+          >添加拼团抽奖活动</el-button>
         </el-tab-pane>
         <el-tab-pane
           label="进行中"
           name="second"
         >
-          <el-button type="primary">添加好友助力活动</el-button>
+          <el-button type="primary">添加拼团抽奖活动</el-button>
         </el-tab-pane>
         <el-tab-pane
           label="未开始"
           name="third"
         >
-          <el-button type="primary">添加好友助力活动</el-button>
+          <el-button type="primary">添加拼团抽奖活动</el-button>
         </el-tab-pane>
         <el-tab-pane
           label="已过期"
           name="fourth"
         >
-          <el-button type="primary">添加好友助力活动</el-button>
+          <el-button type="primary">添加拼团抽奖活动</el-button>
         </el-tab-pane>
         <el-tab-pane
           label="已停用"
           name="fifth"
         >
-          <el-button type="primary">添加好友助力活动</el-button>
-        </el-tab-pane>
-        <el-tab-pane
-          label="添加好友助力活动"
-          name="sixth"
-          v-if="isShowAct"
-        >
-          <addHelpAct />
+          <el-button type="primary">添加拼团抽奖活动</el-button>
         </el-tab-pane>
       </el-tabs>
     </div>
@@ -54,26 +47,12 @@
           <el-input size="small"></el-input>
         </div>
         <div class="midarea">
-          <span>活动时间：</span>
+          <span>活动有效期：</span>
           <el-input size="small"></el-input>
           <span>至</span>
           <el-input size="small"></el-input>
         </div>
         <div class="rightarea">
-          <span>奖励类型：</span>
-          <el-select
-            v-model="options.value"
-            size="small"
-            placeholder="请选择"
-          >
-            <el-option
-              v-for="item in options"
-              :key="item.value"
-              :label="item.label"
-              :value="item.value"
-            >
-            </el-option>
-          </el-select>
           <el-button
             type="primary"
             size="small"
@@ -96,35 +75,62 @@
 
         <el-table-column
           prop=""
-          label="活动有效期"
+          label="有效期"
           align="center"
         >
         </el-table-column>
 
         <el-table-column
           prop=""
-          label="奖励类型"
+          label="状态"
           align="center"
         >
         </el-table-column>
 
         <el-table-column
           prop=""
-          label="奖励库存"
+          label="商品数"
           align="center"
         >
         </el-table-column>
 
         <el-table-column
           prop=""
-          label="已领取奖励数量"
+          label="最少成团人数"
           align="center"
         >
         </el-table-column>
 
         <el-table-column
           prop=""
-          label="活动状态"
+          label="开奖所需最少人数"
+          align="center"
+        >
+        </el-table-column>
+
+        <el-table-column
+          prop=""
+          label="参与人数"
+          align="center"
+        >
+        </el-table-column>
+
+        <el-table-column
+          prop=""
+          label="成团人数"
+          align="center"
+        >
+        </el-table-column>
+
+        <el-table-column
+          prop=""
+          label="开团数"
+          align="center"
+        >
+        </el-table-column>
+        <el-table-column
+          prop=""
+          label="中奖用户"
           align="center"
         >
         </el-table-column>
@@ -152,13 +158,7 @@
 
 </template>
 <script>
-// import pagination from '@/components/admin/pagination/pagination'
-import addHelpAct from './addHelpAct'
 export default {
-  components: {
-    // pagination
-    addHelpAct
-  },
   cerate () {
 
   },
@@ -167,7 +167,6 @@ export default {
       tableData: [],
       activeName: 'second',
       currentPage: null,
-      isShowAct: false,
       options: [{
         value: '1',
         label: '黄金糕'
@@ -186,28 +185,12 @@ export default {
       }]
     }
   },
-  create () {
-  },
-  mounted () {
-  },
-
   methods: {
     // 当前页发生变化
     handleCurrentChange () {
       console.log(this.currentPage)
     },
-    handleActClick () {
-      this.isShowAct = true
-      this.activeName = 'sixth'
-    },
     handleClick (tab) {
-      // console.log(tab)
-      // 请求参数已经定义好了
-      // let obj = {
-      //   'type': parseInt(tab.index) + 1,
-      //   'currentPage': 1,
-      //   'pageRows': 1
-      // }
     }
   }
 }

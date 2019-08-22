@@ -56,6 +56,12 @@ export const cn = {
   // 营销管理 好友助力
   promote: ['营销管理', '好友助力'],
   // 营销管理 普通优惠券
+  // 营销管理 拼团抽奖
+  group_draw: ['营销管理', '拼团抽奖'],
+  // 营销管理 分销
+  distribution_info: ['营销管理', '分销'],
+  // 营销管理 瓜分积分
+  pin_integration: ['营销管理', '组团瓜分积分'],
   // 营销管理 赠品
   gift: ['营销管理', '赠品'],
   // 营销管理 赠品 添加赠品
@@ -136,6 +142,12 @@ export const en = {
   promote: ['Marketing management', 'Good friend help'],
   // 营销管理 普通优惠券
   ordinary_coupon: ['Marketing management', 'ordinary coupon'],
+  // 营销管理 拼团抽奖
+  group_draw: ['Marketing management', 'raffle draw'],
+  // 营销管理 分销
+  distribution_info: ['Marketing management', 'distribution'],
+  // 营销管理 瓜分积分
+  pin_integration: ['Marketing management', 'Group partition integral'],
   // 营销管理 赠品
   gift: ['Marketing management', 'Gift'],
   // 营销管理 赠品 添加赠品

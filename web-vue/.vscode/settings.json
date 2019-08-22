@@ -27,5 +27,6 @@
   "emmet.includeLanguages": {
     "wxml": "html"
   },
-  "minapp-vscode.disableAutoConfig": true
+  "minapp-vscode.disableAutoConfig": true,
+  "code-runner.runInTerminal": true
 }

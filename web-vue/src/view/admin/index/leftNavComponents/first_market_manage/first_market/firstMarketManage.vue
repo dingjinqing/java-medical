@@ -35,7 +35,10 @@
           </div>
         </div>
         <!-- 分销 -->
-        <div class="voucher box_style">
+        <div
+          class="voucher box_style"
+          @click="distribution()"
+        >
           <div class="activity_img"><img
               :src="$imageHost + '/image/admin/new_market/fx.png'"
               alt=""
@@ -49,7 +52,10 @@
 
       <div class="box">
         <!-- 拼团抽奖 -->
-        <div class="voucher box_style">
+        <div
+          class="voucher box_style"
+          @click="lotteryDraw()"
+        >
           <div class="activity_img"><img
               :src="$imageHost + '/image/admin/new_market/ptcj.png'"
               alt=""
@@ -62,7 +68,7 @@
         <!-- 组团瓜分积分 -->
         <div
           class="voucher box_style"
-          @click="groupIntegration ()"
+          @click="divideIntegral()"
         >
           <div class="activity_img"><img
               :src="$imageHost + '/image/admin/new_market/gfjf.png'"
@@ -158,10 +164,7 @@
           </div>
         </div>
         <!-- 优惠券礼包 -->
-        <div
-          @click="couponPackage"
-          class="voucher box_style"
-        >
+        <div class="voucher box_style">
           <div class="activity_img"><img
               :src="$imageHost + '/image/admin/new_market/icon_coupon_bag.png'"
               alt=""
@@ -462,6 +465,24 @@ export default {
         name: 'promote'
       })
     },
+    // 拼团抽奖点击
+    lotteryDraw () {
+      this.$router.push({
+        name: 'group_draw'
+      })
+    },
+    // 分销点击
+    distribution () {
+      this.$router.push({
+        name: 'distribution_info'
+      })
+    },
+    // 瓜分积分点击
+    divideIntegral () {
+      this.$router.push({
+        name: 'pin_integration'
+      })
+    },
     // 普通优惠卷点击
     coupon () {
       this.$router.push({
@@ -469,7 +490,6 @@ export default {
       })
     },
     // 赠品点击
-
     gift () {
       this.$router.push({
         name: 'gift_view'
@@ -480,14 +500,7 @@ export default {
       this.$router.push({
         name: 'coupon_Package'
       })
-    },
-    // 组团瓜分积分
-    groupIntegration () {
-      this.$router.push({
-        name: 'group_integration'
-      })
     }
-
   }
 }
 </script>
