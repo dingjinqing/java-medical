@@ -557,6 +557,20 @@ const routes = [
                 '@/view/admin/index/leftNavComponents/first_market_manage/gift/gift'
               )
           },
+          // 创建赠品活动
+          {
+            path: '/admin/home/main/gift/add',
+            name: 'gift_add_view',
+            meta: {
+              crumbTitle: 'router.gift_add',
+              meta: 'first_market_manage',
+              category: 'first_market_manage'
+            },
+            component: () =>
+              import(
+                '@/view/admin/index/leftNavComponents/first_market_manage/gift/addGift'
+              )
+          },
           // 会员管理系列子路由
           {
             path: '/admin/home/main/membershipList',

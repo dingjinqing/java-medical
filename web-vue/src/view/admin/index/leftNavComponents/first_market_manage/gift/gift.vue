@@ -30,6 +30,7 @@
           <el-button
             type="primary"
             style="float:right;"
+            @click="gotoAddGift"
           >
             添加赠品活动
           </el-button>
@@ -77,7 +78,13 @@
           <el-table-column
             label="操作"
             align="center"
-          > </el-table-column>
+          >
+            <template slot-scope="scope">
+              <span @click="disableGift(scope.row.id)">停用</span>
+              <span>赠送明细</span>
+              <span @click="deleteGift(scope.row.id)">删除</span>
+            </template>
+          </el-table-column>
         </el-table>
       </el-row>
     </wrapper>
@@ -85,9 +92,9 @@
 </template>
 <script>
 import wrapper from '@/components/admin/wrapper/wrapper'
-import status, { getById } from '@/components/admin/status/status'
 import statusTab from '@/components/admin/status/statusTab'
-import { giftList } from '@/api/admin/marketManage/gift'
+import status, { getById } from '@/components/admin/status/status'
+import { giftList, deleteGift, disableGift } from '@/api/admin/marketManage/gift'
 
 export default {
 
@@ -115,12 +122,27 @@ export default {
     }
   },
   methods: {
+    // 列表查询
     loadData () {
       const { param } = this
       giftList(param).then(res => {
         const { content: { dataList } } = res
         this.tableData = dataList
       })
+    },
+    // 删除活动
+    deleteGift (id) {
+      deleteGift(id)
+      this.loadData()
+    },
+    // 停用活动
+    disableGift (id) {
+      disableGift(id)
+      this.loadData()
+    },
+    // 跳转创建赠品页
+    gotoAddGift () {
+      this.$router.push('/admin/home/main/gift/add')
     },
     getStatus (v) {
       return getById(v).name
