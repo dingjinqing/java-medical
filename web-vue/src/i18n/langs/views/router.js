@@ -56,9 +56,11 @@ export const cn = {
   // 营销管理 好友助力
   promote: ['营销管理', '好友助力'],
   // 营销管理 普通优惠券
-  ordinary_coupon: ['营销管理', '普通优惠券'],
   // 营销管理 赠品
-  gift: ['营销管理', '赠品']
+  gift: ['营销管理', '赠品'],
+  // 营销管理 优惠券礼包
+  coupon_Package: ['营销管理', '优惠券礼包'],
+  coupon_Package_add: ['营销管理', '优惠券礼包', '添加优惠券礼包']
 }
 
 export const en = {
@@ -131,5 +133,12 @@ export const en = {
   // 营销管理 普通优惠券
   ordinary_coupon: ['Marketing management', 'ordinary coupon'],
   // 营销管理 赠品
-  gift: ['Marketing management', 'gift']
+  gift: ['Marketing management', 'gift'],
+  // 营销管理 优惠券礼包
+  coupon_Package: ['Marketing management', 'Coupon Package'],
+  coupon_Package_add: [
+    'Marketing management',
+    'Coupon Package',
+    'Add Coupon Package'
+  ]
 }

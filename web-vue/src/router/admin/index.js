@@ -488,6 +488,34 @@ const routes = [
                 '@/view/admin/index/leftNavComponents/first_market_manage/first_market/ordinaryCoupon'
               )
           },
+          // 优惠券礼包
+          {
+            path: '/admin/home/main/couponPackage',
+            name: 'coupon_Package',
+            meta: {
+              crumbTitle: 'router.coupon_Package',
+              meta: 'first_market_manage',
+              category: 'first_market_manage'
+            },
+            component: () =>
+              import(
+                '@/view/admin/index/leftNavComponents/first_market_manage/couponPackage/couponPackage'
+              )
+          },
+          // 添加优惠券礼包
+          {
+            path: '/admin/home/main/couponPackage/add',
+            name: 'coupon_Package_add',
+            meta: {
+              crumbTitle: 'router.coupon_Package_add',
+              meta: 'first_market_manage',
+              category: 'first_market_manage'
+            },
+            component: () =>
+              import(
+                '@/view/admin/index/leftNavComponents/first_market_manage/couponPackage/addCouponPackage'
+              )
+          },
           // 好友助力
           {
             path: '/admin/home/main/friendHelp',
