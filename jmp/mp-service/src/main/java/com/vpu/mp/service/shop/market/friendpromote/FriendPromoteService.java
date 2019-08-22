@@ -78,9 +78,8 @@ public class FriendPromoteService extends ShopBaseService {
 		if (param.getRewardType() != FriendPromoteListParam.REWARDTYPE_DEFAULT_VALUE) {
 			sql = sql.and(fpa.REWARD_TYPE.eq((byte) param.getRewardType().intValue()));
 		}
-		/* 活动状态0已停用 */
-		if (FriendPromoteListParam.STOPPED == param.getActState()) {
-			sql = sql.and(fpa.IS_BLOCK.eq((byte) 1));
+		/* 活动状态0全部 */
+		if (FriendPromoteListParam.ALL == param.getActState()) {
 		}
 		/* 活动状态1进行中 */
 		if (FriendPromoteListParam.DOING == param.getActState()) {
@@ -94,6 +93,10 @@ public class FriendPromoteService extends ShopBaseService {
 		/* 活动状态3已结束 */
 		if (FriendPromoteListParam.OUT_OF_DATE == param.getActState()) {
 			sql = sql.and(fpa.IS_BLOCK.eq((byte) 0)).and(fpa.END_TIME.lessOrEqual(nowTime));
+		}
+		/* 活动状态4已停用 */
+		if (FriendPromoteListParam.STOPPED == param.getActState()) {
+			sql = sql.and(fpa.IS_BLOCK.eq((byte) 1));
 		}
 		/* 整合分页信息 */
 		PageResult<FriendPromoteListVo> pageResultVo = getPageResult(sql, param.getCurrentPage(), param.getPageRows(),

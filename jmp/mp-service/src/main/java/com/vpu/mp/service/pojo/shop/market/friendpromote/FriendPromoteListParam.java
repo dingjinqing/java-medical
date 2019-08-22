@@ -29,12 +29,12 @@ public class FriendPromoteListParam {
 	private Integer rewardType = REWARDTYPE_DEFAULT_VALUE;
 	
 	/* 活动状态 0已停用，1进行中，2未开始，3已过期 */
-	public static final int ACTSTATE_DEFAULT_VALUE = -1; 
-	public static final int STOPPED = 0;
-	public static final int DOING = 1;
-	public static final int TODO = 2;
-	public static final int OUT_OF_DATE = 3;
-	private Integer actState = ACTSTATE_DEFAULT_VALUE;
+	public static final int ALL = 0; 
+	public static final int STOPPED = 1;
+	public static final int DOING = 2;
+	public static final int TODO = 3;
+	public static final int OUT_OF_DATE = 4;
+	private Integer actState;
 	
 	/* 分页信息 */
     private int currentPage;
