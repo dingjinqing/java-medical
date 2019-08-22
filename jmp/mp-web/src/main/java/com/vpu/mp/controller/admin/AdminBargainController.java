@@ -194,4 +194,12 @@ public class AdminBargainController extends AdminBaseController {
     public JsonResult getBargainOrderList(@RequestBody @Validated MarketOrderListParam param) {
         return success(shop().bargain.getBargainOrderList(param));
     }
+
+    /**
+     * 取活动分享二维码
+     */
+    @GetMapping("/api/admin/market/bargain/share")
+    public JsonResult getBargainShareCode(Integer id) {
+        return success(shop().bargain.getMpQrCode(id));
+    }
 }

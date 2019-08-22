@@ -16,6 +16,8 @@ public class VirtualOrderRefundParam {
     @NotNull
     private Integer orderId;
 
+    private String orderSn;
+
     /** 余额 **/
     private BigDecimal account = BigDecimal.ZERO;
     /** 现金 **/

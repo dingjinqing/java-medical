@@ -7,6 +7,7 @@ import com.vpu.mp.service.foundation.util.Util;
 import com.vpu.mp.service.pojo.shop.market.couponpack.*;
 import org.apache.poi.ss.usermodel.Workbook;
 import org.springframework.validation.annotation.Validated;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
@@ -106,5 +107,13 @@ public class AdminCouponPackController extends AdminBaseController {
     @PostMapping(value = "/api/admin/market/couponpack/detail")
     public JsonResult getCouponPackDetailPageList(@RequestBody @Validated CouponPackDetailListQueryParam param) {
         return success(shop().couponPack.getCouponPackDetailPageList(param));
+    }
+
+    /**
+     * 取活动分享二维码
+     */
+    @GetMapping("/api/admin/market/couponpack/share")
+    public JsonResult getCouponPackShareCode(Integer id) {
+        return success(shop().couponPack.getMpQrCode(id));
     }
 }

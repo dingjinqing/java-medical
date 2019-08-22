@@ -2,6 +2,7 @@ package com.vpu.mp.controller.admin;
 
 import javax.validation.Valid;
 
+import com.vpu.mp.service.foundation.data.JsonResultMessage;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -17,7 +18,7 @@ import com.vpu.mp.service.pojo.shop.order.virtual.CouponPackOrderRefundParam;
  * 虚拟订单 ---优惠劵
  */
 @RestController
-@RequestMapping("/api/admin/order/coupon")
+@RequestMapping("/api/admin/order/couponpack")
 public class AdminCouponPackOrderController extends AdminBaseController {
 	
 	/** 
@@ -34,9 +35,12 @@ public class AdminCouponPackOrderController extends AdminBaseController {
 	 */
 	@PostMapping("/refund")
 	public JsonResult refundPackOrder(@RequestBody @Valid CouponPackOrderRefundParam param) {
-		shop().couponPackOrder.refundCouponPackOrder(param.getVirtualOrderRefundParam());
-		shop().couponPackOrder.updateSendFlag(param.getStillSendFlag(), param.getOrderId());
-		return success();
+	    if(shop().couponPackOrder.checkVirtualOrderRefundParam(param.getVirtualOrderRefundParam())){
+            shop().couponPackOrder.refundCouponPackOrder(param);
+            return success();
+        }else{
+	        return fail(JsonResultMessage.REFUND_REQUEST_PARAMETER_ERROR);
+        }
 	}
 	
 }

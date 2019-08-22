@@ -1,5 +1,6 @@
 package com.vpu.mp.controller.admin;
 
+import com.vpu.mp.service.foundation.data.JsonResultMessage;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -25,7 +26,12 @@ public class AdminMemberCardOrderController extends AdminBaseController {
 
     @PostMapping("/refund")
     public JsonResult orderRefund(@RequestBody VirtualOrderRefundParam param) {
-        shop().memberCardOrder.memberCardOrderRefund(param);
-        return success();
+        if(shop().couponPackOrder.checkVirtualOrderRefundParam(param)){
+            shop().memberCardOrder.memberCardOrderRefund(param);
+            return success();
+        }else{
+            return fail(JsonResultMessage.REFUND_REQUEST_PARAMETER_ERROR);
+        }
+
     }
 }

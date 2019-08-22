@@ -8,6 +8,9 @@ import java.sql.Timestamp;
 import java.util.Calendar;
 import java.util.Map;
 
+import com.vpu.mp.service.pojo.shop.image.ShareQrCodeVo;
+import com.vpu.mp.service.pojo.shop.qrcode.QrCodeTypeEnum;
+import com.vpu.mp.service.shop.image.QrCodeService;
 import org.jooq.Record;
 import org.jooq.SelectWhereStep;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -55,6 +58,9 @@ public class BargainService extends ShopBaseService  {
 	 *  帮忙砍价的用户
 	 */
 	@Autowired public BargainUserService bargainUser;
+
+    @Autowired
+    private QrCodeService qrCode;
 	
 	/**
 	 * 启用状态 
@@ -294,5 +300,19 @@ public class BargainService extends ShopBaseService  {
         }
 
         return pageList;
+    }
+
+    /**
+     * 获取小程序码
+     */
+    public ShareQrCodeVo getMpQrCode(Integer id) {
+
+        String pathParam="paramId="+id;
+        String imageUrl = qrCode.getMpQrCode(QrCodeTypeEnum.BARGAIN_ITEM, pathParam);
+
+        ShareQrCodeVo vo = new ShareQrCodeVo();
+        vo.setImageUrl(imageUrl);
+        vo.setPagePath(QrCodeTypeEnum.BARGAIN_ITEM.getPathUrl(pathParam));
+        return vo;
     }
 }

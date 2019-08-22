@@ -1,6 +1,7 @@
 package com.vpu.mp.service.shop.order.virtual;
 
 import com.vpu.mp.service.foundation.util.PageResult;
+import com.vpu.mp.service.pojo.shop.operation.RecordContentTemplate;
 import com.vpu.mp.service.pojo.shop.order.virtual.MemberCardOrderParam;
 import com.vpu.mp.service.pojo.shop.order.virtual.MemberCardOrderVo;
 import com.vpu.mp.service.pojo.shop.order.virtual.VirtualOrderRefundParam;
@@ -10,6 +11,7 @@ import org.jooq.SelectOnConditionStep;
 import org.springframework.stereotype.Service;
 
 import java.sql.Timestamp;
+import java.util.Arrays;
 
 import static com.vpu.mp.db.shop.tables.MemberCard.MEMBER_CARD;
 import static com.vpu.mp.db.shop.tables.User.USER;
@@ -92,5 +94,8 @@ public class MemberCardOrderService extends VirtualOrderService {
      */
     public void memberCardOrderRefund(VirtualOrderRefundParam param) {
         this.virtualOrderRefund(param);
+
+        /** 操作记录 */
+        saas().getShopApp(getShopId()).record.insertRecord(Arrays.asList(new Integer[] { RecordContentTemplate.ORDER_MEMBER_CARD_ORDER_REFUND.code }), new String[] {param.getOrderSn()});
     }
 }

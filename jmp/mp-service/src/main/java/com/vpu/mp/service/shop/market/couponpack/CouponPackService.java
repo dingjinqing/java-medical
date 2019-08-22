@@ -11,7 +11,10 @@ import com.vpu.mp.service.foundation.service.ShopBaseService;
 import com.vpu.mp.service.foundation.util.DateUtil;
 import com.vpu.mp.service.foundation.util.PageResult;
 import com.vpu.mp.service.foundation.util.Util;
+import com.vpu.mp.service.pojo.shop.image.ShareQrCodeVo;
 import com.vpu.mp.service.pojo.shop.market.couponpack.*;
+import com.vpu.mp.service.pojo.shop.qrcode.QrCodeTypeEnum;
+import com.vpu.mp.service.shop.image.QrCodeService;
 import com.vpu.mp.service.shop.order.virtual.CouponPackOrderService;
 import com.vpu.mp.service.shop.order.virtual.VirtualOrderService;
 import org.apache.poi.ss.usermodel.Workbook;
@@ -41,6 +44,9 @@ public class CouponPackService extends ShopBaseService {
 
     @Autowired
     private CouponPackOrderService couponPackOrderService;
+
+    @Autowired
+    private QrCodeService qrCode;
 
     /**
      * 启用状态
@@ -299,5 +305,19 @@ public class CouponPackService extends ShopBaseService {
         if(param.getAccessMode() != null && param.getAccessMode() >= ACCESS_MODE_CASH){
             select.where(VIRTUAL_ORDER.ACCESS_MODE.eq(param.getAccessMode()));
         }
+    }
+
+    /**
+     * 获取小程序码
+     */
+    public ShareQrCodeVo getMpQrCode(Integer id) {
+
+        String pathParam="paramId="+id;
+        String imageUrl = qrCode.getMpQrCode(QrCodeTypeEnum.DISCOUNT_COUPON_PAGCKAGE, pathParam);
+
+        ShareQrCodeVo vo = new ShareQrCodeVo();
+        vo.setImageUrl(imageUrl);
+        vo.setPagePath(QrCodeTypeEnum.DISCOUNT_COUPON_PAGCKAGE.getPathUrl(pathParam));
+        return vo;
     }
 }

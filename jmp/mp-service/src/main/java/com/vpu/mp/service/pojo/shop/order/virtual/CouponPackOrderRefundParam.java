@@ -3,6 +3,8 @@ package com.vpu.mp.service.pojo.shop.order.virtual;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import javax.validation.constraints.NotNull;
+
 /**
  * @author huangronggang
  * @date 2019年8月2日
@@ -12,16 +14,16 @@ import lombok.NoArgsConstructor;
 public class CouponPackOrderRefundParam {
 	
 	/** 订单ID */
+	@NotNull
 	private Integer orderId;
 	/** 用户ID*/
 	private Integer userId;
 	
-	/** 会员卡号 */
-	private String cardNo;
-	
 	/** 订单号 */
+    @NotNull
 	private String orderSn;
 
+    @NotNull
 	private VirtualOrderRefundParam virtualOrderRefundParam;
 
 	/** 退款后是否仍然发放优惠劵 */

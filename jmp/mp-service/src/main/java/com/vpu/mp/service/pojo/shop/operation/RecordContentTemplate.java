@@ -16,6 +16,8 @@ public enum   RecordContentTemplate {
 	
 	/**订单*/
 	ORDER_SHIP(3001,RecordContentMessage.ORDER_SHIP),
+    ORDER_COUPON_PACK_ORDER_REFUND(3002,RecordContentMessage.ORDER_COUPON_PACK_ORDER_REFUND),
+    ORDER_MEMBER_CARD_ORDER_REFUND(3003,RecordContentMessage.ORDER_MEMBER_CARD_ORDER_REFUND),
 	
 	/** 会员-会员卡 */
 	MEMBER_CARD_SEND(4001,RecordContentMessage.MSG_MEMBER_CARD_SEND);

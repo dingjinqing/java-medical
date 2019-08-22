@@ -7,8 +7,10 @@ import static com.vpu.mp.db.shop.tables.CustomerAvailCoupons.CUSTOMER_AVAIL_COUP
 import static com.vpu.mp.db.shop.tables.User.USER;
 
 import java.math.BigDecimal;
+import java.util.Arrays;
 import java.util.List;
 
+import com.vpu.mp.service.pojo.shop.operation.RecordContentTemplate;
 import com.vpu.mp.service.pojo.shop.order.virtual.*;
 import org.jooq.Record;
 import org.jooq.Record1;
@@ -34,7 +36,6 @@ public class CouponPackOrderService extends VirtualOrderService {
 	/** 发放优惠劵的获取方式，0：发放，1：领取，2：礼包*/
 	public static final Byte CUSTOMER_AVAIL_COUPONS_ACCESSMODE_PACK=2;
 
-	@Autowired public ScoreService scoreService;
 	/**
 	 * 分页查询优惠劵礼包订单 
 	 * @param param
@@ -130,8 +131,12 @@ public class CouponPackOrderService extends VirtualOrderService {
 	 * @param
 	 * @return
 	 */
-	public void refundCouponPackOrder(VirtualOrderRefundParam param) {
-        this.virtualOrderRefund(param);
+	public void refundCouponPackOrder(CouponPackOrderRefundParam param) {
+        this.virtualOrderRefund(param.getVirtualOrderRefundParam());
+        this.updateSendFlag(param.getStillSendFlag(), param.getOrderId());
+
+        /** 操作记录 */
+        saas().getShopApp(getShopId()).record.insertRecord(Arrays.asList(new Integer[] { RecordContentTemplate.ORDER_COUPON_PACK_ORDER_REFUND.code }), new String[] {param.getOrderSn()});
 	}
 
 	public void updateSendFlag(Byte sendFlag,Integer orderId) {
@@ -139,6 +144,7 @@ public class CouponPackOrderService extends VirtualOrderService {
 			.set(VIRTUAL_ORDER.STILL_SEND_FLAG,sendFlag)
 			.where(VIRTUAL_ORDER.ORDER_ID.eq(orderId)).execute();
 	}
-	
+
+
 }
 

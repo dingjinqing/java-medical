@@ -15,6 +15,10 @@ public class RecordContentMessage {
      */
     /**发货*/
     public static final String ORDER_SHIP = "order.ship";
+    /**优惠券礼包订单退款*/
+    public static final String ORDER_COUPON_PACK_ORDER_REFUND = "order.coupon.pack.order.refund";
+    /**会员卡订单退款*/
+    public static final String ORDER_MEMBER_CARD_ORDER_REFUND = "order.member.card.order.refund";
     
     /**
      * 	会员
