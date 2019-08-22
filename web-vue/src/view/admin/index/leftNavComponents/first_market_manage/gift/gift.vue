@@ -128,7 +128,6 @@ export default {
   },
   watch: {
     'param.status' (n, o) {
-      console.log('status')
       this.loadData()
     }
   },
