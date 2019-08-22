@@ -28,7 +28,7 @@ public class FriendPromoteListParam {
 	public static final int REWARDTYPE_DEFAULT_VALUE = -1; 
 	private Integer rewardType = REWARDTYPE_DEFAULT_VALUE;
 	
-	/* 活动状态 0已停用，1进行中，2未开始，3已过期 */
+	/* 活动状态 0全部，1进行中，2未开始，3已过期 4 停用 */
 	public static final int ALL = 0; 
 	public static final int DOING = 1;
 	public static final int TODO = 2;

@@ -34,6 +34,6 @@ public class FriendPromoteListVo {
 	/* 是否停用 0停用 1未停用 */
 	private Integer isBlock;
 	
-	/* 活动状态 0已停用，1进行中，2未开始，3已过期 */
+	/* 活动状态 1进行中，2未开始，3已过期 4停用 */
 	private Integer actState;
 }

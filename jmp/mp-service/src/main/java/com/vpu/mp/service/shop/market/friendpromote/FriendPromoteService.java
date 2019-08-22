@@ -110,17 +110,16 @@ public class FriendPromoteService extends ShopBaseService {
 					.orElse(0);
 			vo.setRecNum(recNum);
 			/* 活动状态actState */
-			if (FriendPromoteListParam.STOPPED == vo.getIsBlock()) {
+			if (1 == vo.getIsBlock()) {
 				vo.setActState(FriendPromoteListParam.STOPPED);
 			}
-			if (FriendPromoteListParam.DOING == vo.getIsBlock() && nowTime.after(vo.getStartTime())
-					&& nowTime.before(vo.getEndTime())) {
+			else if ( nowTime.after(vo.getStartTime())&& nowTime.before(vo.getEndTime())) {
 				vo.setActState(FriendPromoteListParam.DOING);
 			}
-			if (FriendPromoteListParam.TODO == vo.getIsBlock() && nowTime.before(vo.getStartTime())) {
+			else if (nowTime.before(vo.getStartTime())) {
 				vo.setActState(FriendPromoteListParam.TODO);
 			}
-			if (FriendPromoteListParam.OUT_OF_DATE == vo.getIsBlock() && nowTime.after(vo.getEndTime())) {
+			else if (nowTime.after(vo.getEndTime())) {
 				vo.setActState(FriendPromoteListParam.OUT_OF_DATE);
 			}
 		}
