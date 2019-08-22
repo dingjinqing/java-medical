@@ -12,7 +12,8 @@ import com.vpu.mp.service.foundation.util.DateUtil;
 import com.vpu.mp.service.foundation.util.PageResult;
 import com.vpu.mp.service.foundation.util.Util;
 import com.vpu.mp.service.pojo.shop.market.couponpack.*;
-import com.vpu.mp.service.shop.order.MemberCardOrderService;
+import com.vpu.mp.service.shop.order.virtual.CouponPackOrderService;
+import com.vpu.mp.service.shop.order.virtual.VirtualOrderService;
 import org.apache.poi.ss.usermodel.Workbook;
 import org.jooq.Record;
 import org.jooq.SelectWhereStep;
@@ -38,6 +39,9 @@ public class CouponPackService extends ShopBaseService {
     @Autowired
     private CouponPackVoucherService couponPackVoucherService;
 
+    @Autowired
+    private CouponPackOrderService couponPackOrderService;
+
     /**
      * 启用状态
      */
@@ -46,6 +50,21 @@ public class CouponPackService extends ShopBaseService {
      * 停用状态
      */
     public static final byte STATUS_DISABLED = 0;
+
+    /**
+     * 获取方式，0：现金购买
+     */
+    public static final byte ACCESS_MODE_CASH = 0;
+
+    /**
+     * 获取方式，1：积分购买
+     */
+    public static final byte ACCESS_MODE_SCORE = 1;
+
+    /**
+     * 获取方式，2直接领取
+     */
+    public static final byte ACCESS_MODE_FREE = 2;
 
     private static final String LANGUAGE_TYPE_EXCEL= "excel";
 
@@ -119,7 +138,7 @@ public class CouponPackService extends ShopBaseService {
         if (isNotEmpty(param.getPackName())) {
             select.where(COUPON_PACK.PACK_NAME.contains(param.getPackName()));
         }
-        if(param.getAccessMode() != null && param.getAccessMode() >= 0) {
+        if(param.getAccessMode() != null && param.getAccessMode() >= ACCESS_MODE_CASH) {
             /** 领取方式过滤*/
             select.where(COUPON_PACK.ACCESS_MODE.eq(param.getAccessMode()));
         }
@@ -193,7 +212,7 @@ public class CouponPackService extends ShopBaseService {
      * 优惠券礼包订单查询条件
      */
     private void buildOrderOptions(SelectWhereStep<? extends Record> select, CouponPackOrderListQueryParam param) {
-        select.where(VIRTUAL_ORDER.VIRTUAL_GOODS_ID.eq(param.getId())).and(VIRTUAL_ORDER.GOODS_TYPE.eq(MemberCardOrderService.GOODS_TYPE_COUPON_PACK));
+        select.where(VIRTUAL_ORDER.VIRTUAL_GOODS_ID.eq(param.getId())).and(VIRTUAL_ORDER.GOODS_TYPE.eq(VirtualOrderService.GOODS_TYPE_COUPON_PACK)).and(VIRTUAL_ORDER.ORDER_STATUS.eq(CouponPackOrderService.ORDER_STATUS_FINISHED));
         if (isNotEmpty(param.getOrderSn())) {
             select.where(VIRTUAL_ORDER.ORDER_SN.contains(param.getOrderSn()));
         }
@@ -208,6 +227,12 @@ public class CouponPackService extends ShopBaseService {
         }
     }
 
+    /**
+     * 优惠券礼包订单导出
+     * @param param
+     * @param lang
+     * @return
+     */
     public Workbook exportCouponPackOrderList(CouponPackOrderListQueryParam param, String lang) {
         SelectWhereStep<? extends Record> select = db().select(VIRTUAL_ORDER.ORDER_SN,VIRTUAL_ORDER.MONEY_PAID,VIRTUAL_ORDER.USE_ACCOUNT,VIRTUAL_ORDER.USE_SCORE,VIRTUAL_ORDER.MEMBER_CARD_BALANCE,VIRTUAL_ORDER.ORDER_STATUS,VIRTUAL_ORDER.CREATE_TIME,USER.USER_ID,USER.USERNAME,USER.MOBILE).
         from(VIRTUAL_ORDER).leftJoin(USER).on(VIRTUAL_ORDER.USER_ID.eq(USER.USER_ID));
@@ -232,5 +257,47 @@ public class CouponPackService extends ShopBaseService {
         ExcelWriter excelWriter = new ExcelWriter(lang,workbook);
         excelWriter.writeModelList(couponPackOrderList,CouponPackOrderExportVo.class);
         return workbook;
+    }
+
+    /**
+     * 优惠券礼包活动领取明细列表
+     *
+     */
+    public PageResult<CouponPackDetailListQueryVo> getCouponPackDetailPageList(CouponPackDetailListQueryParam param){
+        SelectWhereStep<? extends Record> select = db().select(USER.USERNAME,USER.MOBILE,VIRTUAL_ORDER.ACCESS_MODE,VIRTUAL_ORDER.ORDER_SN,VIRTUAL_ORDER.CREATE_TIME).
+        from(VIRTUAL_ORDER).leftJoin(USER).on(USER.USER_ID.eq(VIRTUAL_ORDER.USER_ID));
+        buildDetailOptions(select,param);
+        select.where(VIRTUAL_ORDER.DEL_FLAG.eq(DelFlag.NORMAL.getCode())).orderBy(VIRTUAL_ORDER.CREATE_TIME.desc());
+        PageResult<CouponPackDetailListQueryVo> res = getPageResult(select,param.getCurrentPage(),param.getPageRows(),CouponPackDetailListQueryVo.class);
+        for (CouponPackDetailListQueryVo vo : res.dataList){
+            vo.setVoucherAccessCount(couponPackOrderService.getVoucherAccessCount(vo.getOrderSn()));
+        }
+        return res;
+    }
+
+    /**
+     * 优惠券礼包明细查询条件
+     */
+    private void buildDetailOptions(SelectWhereStep<? extends Record> select, CouponPackDetailListQueryParam param) {
+        select.where(VIRTUAL_ORDER.GOODS_TYPE.eq(VirtualOrderService.GOODS_TYPE_COUPON_PACK)).and(VIRTUAL_ORDER.VIRTUAL_GOODS_ID.eq(param.getId())).and(VIRTUAL_ORDER.ORDER_STATUS.eq(CouponPackOrderService.ORDER_STATUS_FINISHED)).and(VIRTUAL_ORDER.DEL_FLAG.eq(DelFlag.NORMAL.getCode())).and(VIRTUAL_ORDER.VIRTUAL_GOODS_ID.eq(param.getId()));
+
+        if (isNotEmpty(param.getOrderSn())) {
+            select.where(VIRTUAL_ORDER.ORDER_SN.contains(param.getOrderSn()));
+        }
+        if (isNotEmpty(param.getUsername())) {
+            select.where(USER.USERNAME.contains(param.getUsername()));
+        }
+        if (isNotEmpty(param.getMobile())) {
+            select.where(USER.MOBILE.contains(param.getMobile()));
+        }
+        if(param.getStartTime() != null){
+            select.where(VIRTUAL_ORDER.CREATE_TIME.ge(param.getStartTime()));
+        }
+        if(param.getEndTime() != null){
+            select.where(VIRTUAL_ORDER.CREATE_TIME.le(param.getEndTime()));
+        }
+        if(param.getAccessMode() != null && param.getAccessMode() >= ACCESS_MODE_CASH){
+            select.where(VIRTUAL_ORDER.ACCESS_MODE.eq(param.getAccessMode()));
+        }
     }
 }

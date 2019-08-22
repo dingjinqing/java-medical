@@ -714,9 +714,9 @@ public class MiniShop_471752 extends SchemaImpl {
     public final RefundAmountRecord REFUND_AMOUNT_RECORD = RefundAmountRecord.REFUND_AMOUNT_RECORD;
 
     /**
-     * The table <code>mini_shop_471752.b2c_refund_card_record</code>.
+     * The table <code>mini_shop_471752.b2c_virtual_order_refund_record</code>.
      */
-    public final RefundCardRecord REFUND_CARD_RECORD = RefundCardRecord.REFUND_CARD_RECORD;
+    public final VirtualOrderRefundRecord VIRTUAL_ORDER_REFUND_RECORD = VirtualOrderRefundRecord.VIRTUAL_ORDER_REFUND_RECORD;
 
     /**
      * The table <code>mini_shop_471752.b2c_return_order</code>.
@@ -1215,7 +1215,7 @@ public class MiniShop_471752 extends SchemaImpl {
             ReducePriceGoods.REDUCE_PRICE_GOODS,
             ReducePriceProduct.REDUCE_PRICE_PRODUCT,
             RefundAmountRecord.REFUND_AMOUNT_RECORD,
-            RefundCardRecord.REFUND_CARD_RECORD,
+            VirtualOrderRefundRecord.VIRTUAL_ORDER_REFUND_RECORD,
             ReturnOrder.RETURN_ORDER,
             ReturnOrderGoods.RETURN_ORDER_GOODS,
             ReturnStatusChange.RETURN_STATUS_CHANGE,

@@ -43,7 +43,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class VirtualOrder extends TableImpl<VirtualOrderRecord> {
 
-    private static final long serialVersionUID = -148100388;
+    private static final long serialVersionUID = 1967213618;
 
     /**
      * The reference instance of <code>mini_shop_471752.b2c_virtual_order</code>
@@ -131,7 +131,7 @@ public class VirtualOrder extends TableImpl<VirtualOrderRecord> {
     /**
      * The column <code>mini_shop_471752.b2c_virtual_order.use_score</code>. 用户消费积分
      */
-    public final TableField<VirtualOrderRecord, BigDecimal> USE_SCORE = createField("use_score", org.jooq.impl.SQLDataType.DECIMAL(10, 2).nullable(false).defaultValue(org.jooq.impl.DSL.inline("0.00", org.jooq.impl.SQLDataType.DECIMAL)), this, "用户消费积分");
+    public final TableField<VirtualOrderRecord, Integer> USE_SCORE = createField("use_score", org.jooq.impl.SQLDataType.INTEGER.defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.INTEGER)), this, "用户消费积分");
 
     /**
      * The column <code>mini_shop_471752.b2c_virtual_order.member_card_balance</code>. 会员卡消费金额
@@ -174,34 +174,34 @@ public class VirtualOrder extends TableImpl<VirtualOrderRecord> {
     public final TableField<VirtualOrderRecord, Byte> RETURN_FLAG = createField("return_flag", org.jooq.impl.SQLDataType.TINYINT.nullable(false).defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.TINYINT)), this, "0:未申请退款，1：退款失败，2：退款成功");
 
     /**
-     * The column <code>mini_shop_471752.b2c_virtual_order.return_score</code>. 退款积分
+     * The column <code>mini_shop_471752.b2c_virtual_order.return_score</code>. 已退款积分
      */
-    public final TableField<VirtualOrderRecord, BigDecimal> RETURN_SCORE = createField("return_score", org.jooq.impl.SQLDataType.DECIMAL(10, 2).nullable(false).defaultValue(org.jooq.impl.DSL.inline("0.00", org.jooq.impl.SQLDataType.DECIMAL)), this, "退款积分");
+    public final TableField<VirtualOrderRecord, Integer> RETURN_SCORE = createField("return_score", org.jooq.impl.SQLDataType.INTEGER.defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.INTEGER)), this, "已退款积分");
 
     /**
-     * The column <code>mini_shop_471752.b2c_virtual_order.return_account</code>. 退款余额
+     * The column <code>mini_shop_471752.b2c_virtual_order.return_account</code>. 已退款余额
      */
-    public final TableField<VirtualOrderRecord, BigDecimal> RETURN_ACCOUNT = createField("return_account", org.jooq.impl.SQLDataType.DECIMAL(10, 2).nullable(false).defaultValue(org.jooq.impl.DSL.inline("0.00", org.jooq.impl.SQLDataType.DECIMAL)), this, "退款余额");
+    public final TableField<VirtualOrderRecord, BigDecimal> RETURN_ACCOUNT = createField("return_account", org.jooq.impl.SQLDataType.DECIMAL(10, 2).nullable(false).defaultValue(org.jooq.impl.DSL.inline("0.00", org.jooq.impl.SQLDataType.DECIMAL)), this, "已退款余额");
 
     /**
-     * The column <code>mini_shop_471752.b2c_virtual_order.return_money</code>. 退款现金
+     * The column <code>mini_shop_471752.b2c_virtual_order.return_money</code>. 已退款现金
      */
-    public final TableField<VirtualOrderRecord, BigDecimal> RETURN_MONEY = createField("return_money", org.jooq.impl.SQLDataType.DECIMAL(10, 2).nullable(false).defaultValue(org.jooq.impl.DSL.inline("0.00", org.jooq.impl.SQLDataType.DECIMAL)), this, "退款现金");
+    public final TableField<VirtualOrderRecord, BigDecimal> RETURN_MONEY = createField("return_money", org.jooq.impl.SQLDataType.DECIMAL(10, 2).nullable(false).defaultValue(org.jooq.impl.DSL.inline("0.00", org.jooq.impl.SQLDataType.DECIMAL)), this, "已退款现金");
 
     /**
-     * The column <code>mini_shop_471752.b2c_virtual_order.return_card_balance</code>. 会员卡退款余额
+     * The column <code>mini_shop_471752.b2c_virtual_order.return_card_balance</code>. 已退款会员卡余额
      */
-    public final TableField<VirtualOrderRecord, BigDecimal> RETURN_CARD_BALANCE = createField("return_card_balance", org.jooq.impl.SQLDataType.DECIMAL(10, 2).nullable(false).defaultValue(org.jooq.impl.DSL.inline("0.00", org.jooq.impl.SQLDataType.DECIMAL)), this, "会员卡退款余额");
+    public final TableField<VirtualOrderRecord, BigDecimal> RETURN_CARD_BALANCE = createField("return_card_balance", org.jooq.impl.SQLDataType.DECIMAL(10, 2).nullable(false).defaultValue(org.jooq.impl.DSL.inline("0.00", org.jooq.impl.SQLDataType.DECIMAL)), this, "已退款会员卡余额");
 
     /**
      * The column <code>mini_shop_471752.b2c_virtual_order.return_time</code>. 退款时间
      */
-    public final TableField<VirtualOrderRecord, Timestamp> RETURN_TIME = createField("return_time", org.jooq.impl.SQLDataType.TIMESTAMP.nullable(false).defaultValue(org.jooq.impl.DSL.field("CURRENT_TIMESTAMP", org.jooq.impl.SQLDataType.TIMESTAMP)), this, "退款时间");
+    public final TableField<VirtualOrderRecord, Timestamp> RETURN_TIME = createField("return_time", org.jooq.impl.SQLDataType.TIMESTAMP, this, "退款时间");
 
     /**
-     * The column <code>mini_shop_471752.b2c_virtual_order.del_time</code>. 退款时间
+     * The column <code>mini_shop_471752.b2c_virtual_order.del_time</code>. 删除时间
      */
-    public final TableField<VirtualOrderRecord, Timestamp> DEL_TIME = createField("del_time", org.jooq.impl.SQLDataType.TIMESTAMP.nullable(false).defaultValue(org.jooq.impl.DSL.field("CURRENT_TIMESTAMP", org.jooq.impl.SQLDataType.TIMESTAMP)), this, "退款时间");
+    public final TableField<VirtualOrderRecord, Timestamp> DEL_TIME = createField("del_time", org.jooq.impl.SQLDataType.TIMESTAMP, this, "删除时间");
 
     /**
      * The column <code>mini_shop_471752.b2c_virtual_order.create_time</code>.

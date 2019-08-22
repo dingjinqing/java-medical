@@ -298,8 +298,9 @@ public class Indexes {
     public static final Index REFUND_AMOUNT_RECORD_ORDER_SN = Indexes0.REFUND_AMOUNT_RECORD_ORDER_SN;
     public static final Index REFUND_AMOUNT_RECORD_PRIMARY = Indexes0.REFUND_AMOUNT_RECORD_PRIMARY;
     public static final Index REFUND_AMOUNT_RECORD_RET_ID = Indexes0.REFUND_AMOUNT_RECORD_RET_ID;
-    public static final Index REFUND_CARD_RECORD_ORDER_SN = Indexes0.REFUND_CARD_RECORD_ORDER_SN;
-    public static final Index REFUND_CARD_RECORD_PRIMARY = Indexes0.REFUND_CARD_RECORD_PRIMARY;
+    public static final Index VIRTUAL_ORDER_REFUND_RECORD_ORDER_SN = Indexes0.VIRTUAL_ORDER_REFUND_RECORD_ORDER_SN;
+    public static final Index VIRTUAL_ORDER_REFUND_RECORD_PRIMARY = Indexes0.VIRTUAL_ORDER_REFUND_RECORD_PRIMARY;
+    public static final Index VIRTUAL_ORDER_REFUND_RECORD_USER_ID = Indexes0.VIRTUAL_ORDER_REFUND_RECORD_USER_ID;
     public static final Index RETURN_ORDER_ORDER_SN = Indexes0.RETURN_ORDER_ORDER_SN;
     public static final Index RETURN_ORDER_PRIMARY = Indexes0.RETURN_ORDER_PRIMARY;
     public static final Index RETURN_ORDER_GOODS_GOODS_ID = Indexes0.RETURN_ORDER_GOODS_GOODS_ID;
@@ -726,8 +727,9 @@ public class Indexes {
         public static Index REFUND_AMOUNT_RECORD_ORDER_SN = Internal.createIndex("order_sn", RefundAmountRecord.REFUND_AMOUNT_RECORD, new OrderField[] { RefundAmountRecord.REFUND_AMOUNT_RECORD.ORDER_SN }, false);
         public static Index REFUND_AMOUNT_RECORD_PRIMARY = Internal.createIndex("PRIMARY", RefundAmountRecord.REFUND_AMOUNT_RECORD, new OrderField[] { RefundAmountRecord.REFUND_AMOUNT_RECORD.REC_ID }, true);
         public static Index REFUND_AMOUNT_RECORD_RET_ID = Internal.createIndex("ret_id", RefundAmountRecord.REFUND_AMOUNT_RECORD, new OrderField[] { RefundAmountRecord.REFUND_AMOUNT_RECORD.RET_ID }, false);
-        public static Index REFUND_CARD_RECORD_ORDER_SN = Internal.createIndex("order_sn", RefundCardRecord.REFUND_CARD_RECORD, new OrderField[] { RefundCardRecord.REFUND_CARD_RECORD.ORDER_SN }, false);
-        public static Index REFUND_CARD_RECORD_PRIMARY = Internal.createIndex("PRIMARY", RefundCardRecord.REFUND_CARD_RECORD, new OrderField[] { RefundCardRecord.REFUND_CARD_RECORD.REC_ID }, true);
+        public static Index VIRTUAL_ORDER_REFUND_RECORD_ORDER_SN = Internal.createIndex("order_sn", VirtualOrderRefundRecord.VIRTUAL_ORDER_REFUND_RECORD, new OrderField[] { VirtualOrderRefundRecord.VIRTUAL_ORDER_REFUND_RECORD.ORDER_SN }, false);
+        public static Index VIRTUAL_ORDER_REFUND_RECORD_PRIMARY = Internal.createIndex("PRIMARY", VirtualOrderRefundRecord.VIRTUAL_ORDER_REFUND_RECORD, new OrderField[] { VirtualOrderRefundRecord.VIRTUAL_ORDER_REFUND_RECORD.ID }, true);
+        public static Index VIRTUAL_ORDER_REFUND_RECORD_USER_ID = Internal.createIndex("user_id", VirtualOrderRefundRecord.VIRTUAL_ORDER_REFUND_RECORD, new OrderField[] { VirtualOrderRefundRecord.VIRTUAL_ORDER_REFUND_RECORD.USER_ID }, false);
         public static Index RETURN_ORDER_ORDER_SN = Internal.createIndex("order_sn", ReturnOrder.RETURN_ORDER, new OrderField[] { ReturnOrder.RETURN_ORDER.ORDER_SN }, false);
         public static Index RETURN_ORDER_PRIMARY = Internal.createIndex("PRIMARY", ReturnOrder.RETURN_ORDER, new OrderField[] { ReturnOrder.RETURN_ORDER.RET_ID }, true);
         public static Index RETURN_ORDER_GOODS_GOODS_ID = Internal.createIndex("goods_id", ReturnOrderGoods.RETURN_ORDER_GOODS, new OrderField[] { ReturnOrderGoods.RETURN_ORDER_GOODS.GOODS_ID }, false);

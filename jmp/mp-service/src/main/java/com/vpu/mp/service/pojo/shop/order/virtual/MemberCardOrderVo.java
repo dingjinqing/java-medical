@@ -10,7 +10,7 @@ import java.sql.Timestamp;
  * @author 郑保乐
  */
 @Data
-public class MemberCardVo {
+public class MemberCardOrderVo {
 
     private Integer orderId;
     /** 订单编号 **/

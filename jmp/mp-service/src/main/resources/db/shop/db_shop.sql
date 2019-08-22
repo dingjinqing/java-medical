@@ -3187,7 +3187,7 @@ CREATE TABLE `b2c_virtual_order` (
   `pay_sn` varchar(32) DEFAULT NULL COMMENT '支付流水号',
   `money_paid` decimal(10,2) NOT NULL DEFAULT '0.00' COMMENT '用户消费现金',
   `use_account` decimal(10,2) NOT NULL DEFAULT '0.00' COMMENT '用户消费余额',
-  `use_score` decimal(10,2) NOT NULL DEFAULT '0.00' COMMENT '用户消费积分',
+  `use_score` int(11) NOT NULL DEFAULT '0.00' COMMENT '用户消费积分',
   `member_card_balance` decimal(10,2) NOT NULL DEFAULT '0.00' COMMENT '会员卡消费金额',
   `order_amount` decimal(10,2) NOT NULL DEFAULT '0.00' COMMENT '订单总金额',
   `pay_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '支付时间',
@@ -3196,12 +3196,12 @@ CREATE TABLE `b2c_virtual_order` (
   `del_flag` tinyint(1) NOT NULL DEFAULT '0' COMMENT '删除',
   `ali_trade_no` varchar(60) NOT NULL DEFAULT '' COMMENT '支付宝交易单号',
   `return_flag` tinyint(1) NOT NULL DEFAULT '0' COMMENT '0:未申请退款，1：退款失败，2：退款成功',
-  `return_score` decimal(10,2) NOT NULL DEFAULT '0.00' COMMENT '退款积分',
-  `return_account` decimal(10,2) NOT NULL DEFAULT '0.00' COMMENT '退款余额',
-  `return_money` decimal(10,2) NOT NULL DEFAULT '0.00' COMMENT '退款现金',
-  `return_card_balance` decimal(10,2) NOT NULL DEFAULT '0.00' COMMENT '会员卡退款余额',
-  `return_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '退款时间',
-  `del_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '退款时间',
+  `return_score` int(11) NOT NULL DEFAULT '0' COMMENT '已退款积分',
+  `return_account` decimal(10,2) NOT NULL DEFAULT '0.00' COMMENT '已退款余额',
+  `return_money` decimal(10,2) NOT NULL DEFAULT '0.00' COMMENT '已退款现金',
+  `return_card_balance` decimal(10,2) NOT NULL DEFAULT '0.00' COMMENT '已退款会员卡余额',
+  `return_time` timestamp null	default null COMMENT '退款时间',
+  `del_time` timestamp null	default null COMMENT '删除时间',
   `create_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
   `update_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '最后修改时间',
   `goods_type` tinyint(2) NOT NULL COMMENT '虚拟商品类别：0：会员卡，1：优惠券礼包',
@@ -3307,21 +3307,21 @@ create table `b2c_presale_product` (
   key `presale_id_2` (`presale_id`, `product_id`)
 );
 
--- -- 会员卡订单退款记录
--- drop table if exists `b2c_refund_card_record`;
-create table `b2c_refund_card_record` (
-  `rec_id`      int(11)                        not null auto_increment,
-  `order_sn`    varchar(30)  				   not null default '',
-  `user_id`     int(11)                        not null default '0',
-  `use_score`   decimal(10, 2)                 not null default '0.00' comment '积分抵扣金额',
-  `use_account` decimal(10, 2)                 not null default '0.00' comment '退款余额',
-  `money_paid`  decimal(10, 2)                 not null default '0.00' comment '退款余额',
-  `refund_time` timestamp                      not null default current_timestamp comment '订单退款时间',
-  `is_success`  tinyint(1)                     not null default '0' comment '人工处理状态，1：退款失败，2：退款成功',
-  `create_time`		timestamp      	default current_timestamp,
-  `update_time` 	timestamp      	default current_timestamp on update current_timestamp comment '最后修改时间',
-  primary key (`rec_id`),
-  key `order_sn` (`order_sn`)
+-- -- 虚拟商品订单退款记录
+-- drop table if exists `b2c_virtual_order_refund_record`;
+create table `b2c_virtual_order_refund_record` (
+  `id`              int(11)                        not null auto_increment,
+  `order_sn`            varchar(30) collate utf8mb4_unicode_ci not null default '',
+  `user_id`             int(11)                        not null default '0',
+  `use_score`           int(11)                 not null default '0' comment '退款积分',
+  `use_account`         decimal(10, 2)                 not null default '0.00' comment '退款余额',
+  `money_paid`          decimal(10, 2)                 not null default '0.00' comment '退款现金',
+  `member_card_balance` decimal(10, 2)                 not null default '0.00' comment '退款会员卡余额',
+  `refund_time`         timestamp                              not null default CURRENT_TIMESTAMP comment '订单退款时间',
+  `is_success`          tinyint(1)                     not null default '0' comment '处理状态，1：退款失败，2：退款成功',
+  primary key (`id`),
+  key `order_sn` (`order_sn`),
+  key `user_id` (`user_id`)
 );
 
 -- --  页面分类

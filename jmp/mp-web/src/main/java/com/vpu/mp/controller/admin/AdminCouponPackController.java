@@ -99,4 +99,12 @@ public class AdminCouponPackController extends AdminBaseController {
         workbook.write(response.getOutputStream());
     }
 
+    /**
+     * 优惠券礼包活动领取详情列表
+     *
+     */
+    @PostMapping(value = "/api/admin/market/couponpack/detail")
+    public JsonResult getCouponPackDetailPageList(@RequestBody @Validated CouponPackDetailListQueryParam param) {
+        return success(shop().couponPack.getCouponPackDetailPageList(param));
+    }
 }

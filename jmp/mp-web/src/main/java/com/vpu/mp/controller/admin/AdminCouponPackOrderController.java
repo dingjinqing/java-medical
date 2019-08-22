@@ -34,8 +34,7 @@ public class AdminCouponPackOrderController extends AdminBaseController {
 	 */
 	@PostMapping("/refund")
 	public JsonResult refundPackOrder(@RequestBody @Valid CouponPackOrderRefundParam param) {
-		Integer subAccountId = adminAuth.user().getSubAccountId();
-		shop().couponPackOrder.refundCouponPackOrder(param, subAccountId);
+		shop().couponPackOrder.refundCouponPackOrder(param.getVirtualOrderRefundParam());
 		shop().couponPackOrder.updateSendFlag(param.getStillSendFlag(), param.getOrderId());
 		return success();
 	}

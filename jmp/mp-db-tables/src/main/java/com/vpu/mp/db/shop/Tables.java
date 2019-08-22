@@ -691,9 +691,9 @@ public class Tables {
     public static final RefundAmountRecord REFUND_AMOUNT_RECORD = RefundAmountRecord.REFUND_AMOUNT_RECORD;
 
     /**
-     * The table <code>mini_shop_471752.b2c_refund_card_record</code>.
+     * The table <code>mini_shop_471752.b2c_virtual_order_refund_record</code>.
      */
-    public static final RefundCardRecord REFUND_CARD_RECORD = RefundCardRecord.REFUND_CARD_RECORD;
+    public static final VirtualOrderRefundRecord VIRTUAL_ORDER_REFUND_RECORD = com.vpu.mp.db.shop.tables.VirtualOrderRefundRecord.VIRTUAL_ORDER_REFUND_RECORD;
 
     /**
      * The table <code>mini_shop_471752.b2c_return_order</code>.

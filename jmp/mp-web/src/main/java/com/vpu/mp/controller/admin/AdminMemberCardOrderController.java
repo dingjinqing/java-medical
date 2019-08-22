@@ -6,8 +6,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.vpu.mp.service.foundation.data.JsonResult;
-import com.vpu.mp.service.pojo.shop.order.virtual.MemberCardParam;
-import com.vpu.mp.service.pojo.shop.order.virtual.MemberCardRefundParam;
+import com.vpu.mp.service.pojo.shop.order.virtual.MemberCardOrderParam;
+import com.vpu.mp.service.pojo.shop.order.virtual.VirtualOrderRefundParam;
 
 /**
  * 虚拟订单 - 会员卡订单
@@ -19,12 +19,12 @@ import com.vpu.mp.service.pojo.shop.order.virtual.MemberCardRefundParam;
 public class AdminMemberCardOrderController extends AdminBaseController {
 
     @PostMapping("/list")
-    public JsonResult orderPageList(@RequestBody MemberCardParam param) {
+    public JsonResult orderPageList(@RequestBody MemberCardOrderParam param) {
         return success(shop().memberCardOrder.getMemberCardOrderList(param));
     }
 
     @PostMapping("/refund")
-    public JsonResult orderRefund(@RequestBody MemberCardRefundParam param) {
+    public JsonResult orderRefund(@RequestBody VirtualOrderRefundParam param) {
         shop().memberCardOrder.memberCardOrderRefund(param);
         return success();
     }

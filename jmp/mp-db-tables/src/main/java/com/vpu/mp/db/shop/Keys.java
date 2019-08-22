@@ -166,7 +166,7 @@ public class Keys {
     public static final Identity<ReducePriceGoodsRecord, Integer> IDENTITY_REDUCE_PRICE_GOODS = Identities0.IDENTITY_REDUCE_PRICE_GOODS;
     public static final Identity<ReducePriceProductRecord, Integer> IDENTITY_REDUCE_PRICE_PRODUCT = Identities0.IDENTITY_REDUCE_PRICE_PRODUCT;
     public static final Identity<RefundAmountRecordRecord, Integer> IDENTITY_REFUND_AMOUNT_RECORD = Identities0.IDENTITY_REFUND_AMOUNT_RECORD;
-    public static final Identity<RefundCardRecordRecord, Integer> IDENTITY_REFUND_CARD_RECORD = Identities0.IDENTITY_REFUND_CARD_RECORD;
+    public static final Identity<VirtualOrderRefundRecordRecord, Integer> IDENTITY_VIRTUAL_ORDER_REFUND_RECORD = Identities0.IDENTITY_VIRTUAL_ORDER_REFUND_RECORD;
     public static final Identity<ReturnOrderRecord, Integer> IDENTITY_RETURN_ORDER = Identities0.IDENTITY_RETURN_ORDER;
     public static final Identity<ReturnOrderGoodsRecord, Integer> IDENTITY_RETURN_ORDER_GOODS = Identities0.IDENTITY_RETURN_ORDER_GOODS;
     public static final Identity<ReturnStatusChangeRecord, Integer> IDENTITY_RETURN_STATUS_CHANGE = Identities0.IDENTITY_RETURN_STATUS_CHANGE;
@@ -387,7 +387,7 @@ public class Keys {
     public static final UniqueKey<ReducePriceProductRecord> KEY_B2C_REDUCE_PRICE_PRODUCT_PRIMARY = UniqueKeys0.KEY_B2C_REDUCE_PRICE_PRODUCT_PRIMARY;
     public static final UniqueKey<ReducePriceProductRecord> KEY_B2C_REDUCE_PRICE_PRODUCT_REDUCE_PRODUCT = UniqueKeys0.KEY_B2C_REDUCE_PRICE_PRODUCT_REDUCE_PRODUCT;
     public static final UniqueKey<RefundAmountRecordRecord> KEY_B2C_REFUND_AMOUNT_RECORD_PRIMARY = UniqueKeys0.KEY_B2C_REFUND_AMOUNT_RECORD_PRIMARY;
-    public static final UniqueKey<RefundCardRecordRecord> KEY_B2C_REFUND_CARD_RECORD_PRIMARY = UniqueKeys0.KEY_B2C_REFUND_CARD_RECORD_PRIMARY;
+    public static final UniqueKey<VirtualOrderRefundRecordRecord> KEY_B2C_VIRTUAL_ORDER_REFUND_RECORD_PRIMARY = UniqueKeys0.KEY_B2C_VIRTUAL_ORDER_REFUND_RECORD_PRIMARY;
     public static final UniqueKey<ReturnOrderRecord> KEY_B2C_RETURN_ORDER_PRIMARY = UniqueKeys0.KEY_B2C_RETURN_ORDER_PRIMARY;
     public static final UniqueKey<ReturnOrderGoodsRecord> KEY_B2C_RETURN_ORDER_GOODS_PRIMARY = UniqueKeys0.KEY_B2C_RETURN_ORDER_GOODS_PRIMARY;
     public static final UniqueKey<ReturnStatusChangeRecord> KEY_B2C_RETURN_STATUS_CHANGE_PRIMARY = UniqueKeys0.KEY_B2C_RETURN_STATUS_CHANGE_PRIMARY;
@@ -611,7 +611,8 @@ public class Keys {
         public static Identity<ReducePriceGoodsRecord, Integer> IDENTITY_REDUCE_PRICE_GOODS = Internal.createIdentity(ReducePriceGoods.REDUCE_PRICE_GOODS, ReducePriceGoods.REDUCE_PRICE_GOODS.ID);
         public static Identity<ReducePriceProductRecord, Integer> IDENTITY_REDUCE_PRICE_PRODUCT = Internal.createIdentity(ReducePriceProduct.REDUCE_PRICE_PRODUCT, ReducePriceProduct.REDUCE_PRICE_PRODUCT.ID);
         public static Identity<RefundAmountRecordRecord, Integer> IDENTITY_REFUND_AMOUNT_RECORD = Internal.createIdentity(RefundAmountRecord.REFUND_AMOUNT_RECORD, RefundAmountRecord.REFUND_AMOUNT_RECORD.REC_ID);
-        public static Identity<RefundCardRecordRecord, Integer> IDENTITY_REFUND_CARD_RECORD = Internal.createIdentity(RefundCardRecord.REFUND_CARD_RECORD, RefundCardRecord.REFUND_CARD_RECORD.REC_ID);
+        public static Identity<VirtualOrderRefundRecordRecord, Integer> IDENTITY_VIRTUAL_ORDER_REFUND_RECORD = Internal.createIdentity(VirtualOrderRefundRecord.VIRTUAL_ORDER_REFUND_RECORD, VirtualOrderRefundRecord.VIRTUAL_ORDER_REFUND_RECORD.ID);
+
         public static Identity<ReturnOrderRecord, Integer> IDENTITY_RETURN_ORDER = Internal.createIdentity(ReturnOrder.RETURN_ORDER, ReturnOrder.RETURN_ORDER.RET_ID);
         public static Identity<ReturnOrderGoodsRecord, Integer> IDENTITY_RETURN_ORDER_GOODS = Internal.createIdentity(ReturnOrderGoods.RETURN_ORDER_GOODS, ReturnOrderGoods.RETURN_ORDER_GOODS.ID);
         public static Identity<ReturnStatusChangeRecord, Integer> IDENTITY_RETURN_STATUS_CHANGE = Internal.createIdentity(ReturnStatusChange.RETURN_STATUS_CHANGE, ReturnStatusChange.RETURN_STATUS_CHANGE.ID);
@@ -831,7 +832,7 @@ public class Keys {
         public static final UniqueKey<ReducePriceProductRecord> KEY_B2C_REDUCE_PRICE_PRODUCT_PRIMARY = Internal.createUniqueKey(ReducePriceProduct.REDUCE_PRICE_PRODUCT, "KEY_b2c_reduce_price_product_PRIMARY", ReducePriceProduct.REDUCE_PRICE_PRODUCT.ID);
         public static final UniqueKey<ReducePriceProductRecord> KEY_B2C_REDUCE_PRICE_PRODUCT_REDUCE_PRODUCT = Internal.createUniqueKey(ReducePriceProduct.REDUCE_PRICE_PRODUCT, "KEY_b2c_reduce_price_product_reduce_product", ReducePriceProduct.REDUCE_PRICE_PRODUCT.REDUCE_PRICE_ID, ReducePriceProduct.REDUCE_PRICE_PRODUCT.GOODS_ID, ReducePriceProduct.REDUCE_PRICE_PRODUCT.PRODUCT_ID);
         public static final UniqueKey<RefundAmountRecordRecord> KEY_B2C_REFUND_AMOUNT_RECORD_PRIMARY = Internal.createUniqueKey(RefundAmountRecord.REFUND_AMOUNT_RECORD, "KEY_b2c_refund_amount_record_PRIMARY", RefundAmountRecord.REFUND_AMOUNT_RECORD.REC_ID);
-        public static final UniqueKey<RefundCardRecordRecord> KEY_B2C_REFUND_CARD_RECORD_PRIMARY = Internal.createUniqueKey(RefundCardRecord.REFUND_CARD_RECORD, "KEY_b2c_refund_card_record_PRIMARY", RefundCardRecord.REFUND_CARD_RECORD.REC_ID);
+        public static final UniqueKey<VirtualOrderRefundRecordRecord> KEY_B2C_VIRTUAL_ORDER_REFUND_RECORD_PRIMARY = Internal.createUniqueKey(VirtualOrderRefundRecord.VIRTUAL_ORDER_REFUND_RECORD, "KEY_b2c_virtual_order_refund_record_PRIMARY", VirtualOrderRefundRecord.VIRTUAL_ORDER_REFUND_RECORD.ID);
         public static final UniqueKey<ReturnOrderRecord> KEY_B2C_RETURN_ORDER_PRIMARY = Internal.createUniqueKey(ReturnOrder.RETURN_ORDER, "KEY_b2c_return_order_PRIMARY", ReturnOrder.RETURN_ORDER.RET_ID);
         public static final UniqueKey<ReturnOrderGoodsRecord> KEY_B2C_RETURN_ORDER_GOODS_PRIMARY = Internal.createUniqueKey(ReturnOrderGoods.RETURN_ORDER_GOODS, "KEY_b2c_return_order_goods_PRIMARY", ReturnOrderGoods.RETURN_ORDER_GOODS.ID);
         public static final UniqueKey<ReturnStatusChangeRecord> KEY_B2C_RETURN_STATUS_CHANGE_PRIMARY = Internal.createUniqueKey(ReturnStatusChange.RETURN_STATUS_CHANGE, "KEY_b2c_return_status_change_PRIMARY", ReturnStatusChange.RETURN_STATUS_CHANGE.ID);

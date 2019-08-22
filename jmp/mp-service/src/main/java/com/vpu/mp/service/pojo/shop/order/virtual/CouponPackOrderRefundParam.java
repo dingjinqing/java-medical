@@ -1,7 +1,5 @@
 package com.vpu.mp.service.pojo.shop.order.virtual;
 
-import java.math.BigDecimal;
-
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
@@ -23,15 +21,9 @@ public class CouponPackOrderRefundParam {
 	
 	/** 订单号 */
 	private String orderSn;
-	
-	/** 退积分 */
-	private BigDecimal refundScore=BigDecimal.ZERO;
-	/** 退现金 */
-	private BigDecimal refundMoney=BigDecimal.ZERO;
-	/** 退余额 */
-	private BigDecimal refundAccount=BigDecimal.ZERO;
-	/** 退会员卡余额 */
-	private BigDecimal refundBalance=BigDecimal.ZERO;
+
+	private VirtualOrderRefundParam virtualOrderRefundParam;
+
 	/** 退款后是否仍然发放优惠劵 */
 	private Byte stillSendFlag=1;
 }

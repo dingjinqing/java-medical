@@ -777,3 +777,30 @@ alter table `b2c_virtual_order` modify column `still_send_flag` tinyint(1) NOT N
 alter table `b2c_virtual_order` add column `access_mode`  tinyint(1)   default '0' comment '优惠券礼包订单-下单时的领取方式，0：现金购买，1：积分购买，2直接领取';
 alter table `b2c_virtual_order` add index `order_sn` (`order_sn`);
 alter table `b2c_virtual_order` add index `user_id` (`user_id`);
+alter table `b2c_virtual_order` modify column `use_score` int(11) NULL DEFAULT '0' COMMENT '用户消费积分';
+alter table `b2c_virtual_order` modify column `return_score` int(11) NULL DEFAULT '0' COMMENT '退款积分';
+
+alter table `b2c_virtual_order` modify column `return_score` int(11) NULL DEFAULT '0' COMMENT '已退款积分';
+alter table `b2c_virtual_order` modify column `return_account` decimal(10,2) NOT NULL DEFAULT '0.00' COMMENT '已退款余额';
+alter table `b2c_virtual_order` modify column `return_money` decimal(10,2) NOT NULL DEFAULT '0.00' COMMENT '已退款现金';
+alter table `b2c_virtual_order` modify column `return_card_balance` decimal(10,2) NOT NULL DEFAULT '0.00' COMMENT '已退款会员卡余额';
+alter table `b2c_virtual_order` modify column `del_time` timestamp null	default null COMMENT '删除时间';
+alter table `b2c_virtual_order` modify column `return_time` timestamp null	default null COMMENT '退款时间';
+
+
+DROP TABLE IF EXISTS `b2c_refund_card_record`;
+DROP TABLE IF EXISTS `b2c_virtual_order_refund_record`;
+create table `b2c_virtual_order_refund_record` (
+  `id`              int(11)                        not null auto_increment,
+  `order_sn`            varchar(30) collate utf8mb4_unicode_ci not null default '',
+  `user_id`             int(11)                        not null default '0',
+  `use_score`           int(11)                 not null default '0' comment '退款积分',
+  `use_account`         decimal(10, 2)                 not null default '0.00' comment '退款余额',
+  `money_paid`          decimal(10, 2)                 not null default '0.00' comment '退款现金',
+  `member_card_balance` decimal(10, 2)                 not null default '0.00' comment '退款会员卡余额',
+  `refund_time`         timestamp                              not null default CURRENT_TIMESTAMP comment '订单退款时间',
+  `is_success`          tinyint(1)                     not null default '0' comment '处理状态，1：退款失败，2：退款成功',
+  primary key (`id`),
+  key `order_sn` (`order_sn`),
+  key `user_id` (`user_id`)
+);

@@ -51,7 +51,7 @@ import com.vpu.mp.service.shop.member.MemberService;
 import com.vpu.mp.service.shop.member.ScoreCfgService;
 import com.vpu.mp.service.shop.member.TagService;
 import com.vpu.mp.service.shop.operation.RecordAdminActionService;
-import com.vpu.mp.service.shop.order.MemberCardOrderService;
+import com.vpu.mp.service.shop.order.virtual.MemberCardOrderService;
 import com.vpu.mp.service.shop.order.OrderReadService;
 import com.vpu.mp.service.shop.order.OrderWriteService;
 import com.vpu.mp.service.shop.order.action.base.OrderOperateFactory;
@@ -67,8 +67,6 @@ import com.vpu.mp.service.shop.summary.visit.RetainService;
 import com.vpu.mp.service.shop.task.ShopTaskService;
 import com.vpu.mp.service.shop.user.user.UserService;
 import com.vpu.mp.service.shop.version.VersionService;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
 
 /**
  * 

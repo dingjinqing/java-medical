@@ -28,7 +28,7 @@ import org.jooq.impl.UpdatableRecordImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class VirtualOrderRecord extends UpdatableRecordImpl<VirtualOrderRecord> {
 
-    private static final long serialVersionUID = -1323873984;
+    private static final long serialVersionUID = -441607242;
 
     /**
      * Setter for <code>mini_shop_471752.b2c_virtual_order.order_id</code>. 订单id
@@ -229,15 +229,15 @@ public class VirtualOrderRecord extends UpdatableRecordImpl<VirtualOrderRecord> 
     /**
      * Setter for <code>mini_shop_471752.b2c_virtual_order.use_score</code>. 用户消费积分
      */
-    public void setUseScore(BigDecimal value) {
+    public void setUseScore(Integer value) {
         set(14, value);
     }
 
     /**
      * Getter for <code>mini_shop_471752.b2c_virtual_order.use_score</code>. 用户消费积分
      */
-    public BigDecimal getUseScore() {
-        return (BigDecimal) get(14);
+    public Integer getUseScore() {
+        return (Integer) get(14);
     }
 
     /**
@@ -353,56 +353,56 @@ public class VirtualOrderRecord extends UpdatableRecordImpl<VirtualOrderRecord> 
     }
 
     /**
-     * Setter for <code>mini_shop_471752.b2c_virtual_order.return_score</code>. 退款积分
+     * Setter for <code>mini_shop_471752.b2c_virtual_order.return_score</code>. 已退款积分
      */
-    public void setReturnScore(BigDecimal value) {
+    public void setReturnScore(Integer value) {
         set(23, value);
     }
 
     /**
-     * Getter for <code>mini_shop_471752.b2c_virtual_order.return_score</code>. 退款积分
+     * Getter for <code>mini_shop_471752.b2c_virtual_order.return_score</code>. 已退款积分
      */
-    public BigDecimal getReturnScore() {
-        return (BigDecimal) get(23);
+    public Integer getReturnScore() {
+        return (Integer) get(23);
     }
 
     /**
-     * Setter for <code>mini_shop_471752.b2c_virtual_order.return_account</code>. 退款余额
+     * Setter for <code>mini_shop_471752.b2c_virtual_order.return_account</code>. 已退款余额
      */
     public void setReturnAccount(BigDecimal value) {
         set(24, value);
     }
 
     /**
-     * Getter for <code>mini_shop_471752.b2c_virtual_order.return_account</code>. 退款余额
+     * Getter for <code>mini_shop_471752.b2c_virtual_order.return_account</code>. 已退款余额
      */
     public BigDecimal getReturnAccount() {
         return (BigDecimal) get(24);
     }
 
     /**
-     * Setter for <code>mini_shop_471752.b2c_virtual_order.return_money</code>. 退款现金
+     * Setter for <code>mini_shop_471752.b2c_virtual_order.return_money</code>. 已退款现金
      */
     public void setReturnMoney(BigDecimal value) {
         set(25, value);
     }
 
     /**
-     * Getter for <code>mini_shop_471752.b2c_virtual_order.return_money</code>. 退款现金
+     * Getter for <code>mini_shop_471752.b2c_virtual_order.return_money</code>. 已退款现金
      */
     public BigDecimal getReturnMoney() {
         return (BigDecimal) get(25);
     }
 
     /**
-     * Setter for <code>mini_shop_471752.b2c_virtual_order.return_card_balance</code>. 会员卡退款余额
+     * Setter for <code>mini_shop_471752.b2c_virtual_order.return_card_balance</code>. 已退款会员卡余额
      */
     public void setReturnCardBalance(BigDecimal value) {
         set(26, value);
     }
 
     /**
-     * Getter for <code>mini_shop_471752.b2c_virtual_order.return_card_balance</code>. 会员卡退款余额
+     * Getter for <code>mini_shop_471752.b2c_virtual_order.return_card_balance</code>. 已退款会员卡余额
      */
     public BigDecimal getReturnCardBalance() {
         return (BigDecimal) get(26);
@@ -423,14 +423,14 @@ public class VirtualOrderRecord extends UpdatableRecordImpl<VirtualOrderRecord> 
     }
 
     /**
-     * Setter for <code>mini_shop_471752.b2c_virtual_order.del_time</code>. 退款时间
+     * Setter for <code>mini_shop_471752.b2c_virtual_order.del_time</code>. 删除时间
      */
     public void setDelTime(Timestamp value) {
         set(28, value);
     }
 
     /**
-     * Getter for <code>mini_shop_471752.b2c_virtual_order.del_time</code>. 退款时间
+     * Getter for <code>mini_shop_471752.b2c_virtual_order.del_time</code>. 删除时间
      */
     public Timestamp getDelTime() {
         return (Timestamp) get(28);
@@ -560,7 +560,7 @@ public class VirtualOrderRecord extends UpdatableRecordImpl<VirtualOrderRecord> 
     /**
      * Create a detached, initialised VirtualOrderRecord
      */
-    public VirtualOrderRecord(Integer orderId, String orderSn, Integer userId, Byte orderStatus, String orderStatusName, Integer invoiceId, String invoiceDetail, String addMessage, String payCode, String payName, String prepayId, String paySn, BigDecimal moneyPaid, BigDecimal useAccount, BigDecimal useScore, BigDecimal memberCardBalance, BigDecimal orderAmount, Timestamp payTime, String sellerRemark, Byte starFlag, Byte delFlag, String aliTradeNo, Byte returnFlag, BigDecimal returnScore, BigDecimal returnAccount, BigDecimal returnMoney, BigDecimal returnCardBalance, Timestamp returnTime, Timestamp delTime, Timestamp createTime, Timestamp updateTime, Byte goodsType, Integer virtualGoodsId, String cardNo, Byte stillSendFlag, Byte accessMode) {
+    public VirtualOrderRecord(Integer orderId, String orderSn, Integer userId, Byte orderStatus, String orderStatusName, Integer invoiceId, String invoiceDetail, String addMessage, String payCode, String payName, String prepayId, String paySn, BigDecimal moneyPaid, BigDecimal useAccount, Integer useScore, BigDecimal memberCardBalance, BigDecimal orderAmount, Timestamp payTime, String sellerRemark, Byte starFlag, Byte delFlag, String aliTradeNo, Byte returnFlag, Integer returnScore, BigDecimal returnAccount, BigDecimal returnMoney, BigDecimal returnCardBalance, Timestamp returnTime, Timestamp delTime, Timestamp createTime, Timestamp updateTime, Byte goodsType, Integer virtualGoodsId, String cardNo, Byte stillSendFlag, Byte accessMode) {
         super(VirtualOrder.VIRTUAL_ORDER);
 
         set(0, orderId);
