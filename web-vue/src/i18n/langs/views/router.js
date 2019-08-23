@@ -52,7 +52,7 @@ export const cn = {
   // 营销管理 多人拼团
   pin_group: ['营销管理', '多人拼团'],
   // 营销管理 砍价
-  kanjia: ['营销管理', '砍价'],
+  bargain: ['营销管理', '砍价'],
   // 营销管理 好友助力
   promote: ['营销管理', '好友助力'],
   // 营销管理 普通优惠券
@@ -142,7 +142,7 @@ export const en = {
   // 营销管理 多人拼团
   pin_group: ['Marketing management', 'Multiplayer'],
   // 营销管理 砍价
-  kanjia: ['Marketing management', 'bargin'],
+  bargain: ['Marketing management', 'bargain'],
   // 营销管理 好友助力
   promote: ['Marketing management', 'Good friend help'],
   // 营销管理 普通优惠券

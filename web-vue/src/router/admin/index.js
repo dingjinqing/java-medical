@@ -450,9 +450,9 @@ const routes = [
           // 砍价
           {
             path: '/admin/home/main/bargain',
-            name: 'kanjia',
+            name: 'bargain',
             meta: {
-              crumbTitle: 'router.kanjia',
+              crumbTitle: 'router.bargain',
               meta: 'first_market_manage',
               category: 'first_market_manage'
             },

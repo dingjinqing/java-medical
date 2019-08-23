@@ -38,77 +38,89 @@
       <el-table
         class="version-manage-table"
         header-row-class-name="tableClss"
+        :data="tableData"
         border
         style="width: 100%"
       >
         <el-table-column
-          prop=""
+          prop="bargainName"
           label="砍价活动名称"
           align="center"
         >
         </el-table-column>
 
         <el-table-column
-          prop=""
+          prop="bargainType"
           label="活动类型"
           align="center"
         >
         </el-table-column>
 
         <el-table-column
-          prop=""
+          prop="vaildDate"
           label="有效期"
           align="center"
         >
         </el-table-column>
 
         <el-table-column
-          prop=""
+          prop="status"
           label="活动状态"
           align="center"
         >
         </el-table-column>
 
         <el-table-column
-          prop=""
+          prop="goodsName"
           label="商品名称"
           align="center"
         >
         </el-table-column>
 
         <el-table-column
-          prop=""
+          prop="goodsNumber"
           label="商品库存"
           align="center"
         >
         </el-table-column>
 
         <el-table-column
-          prop=""
+          prop="stock"
           label="砍价库存"
           align="center"
         >
         </el-table-column>
 
         <el-table-column
-          prop=""
+          prop="successNumber"
           label="成功数量"
           align="center"
         >
         </el-table-column>
 
         <el-table-column
-          prop=""
+          prop="bargainUserNumber"
           label="发起砍价人数"
           align="center"
         >
         </el-table-column>
 
         <el-table-column
-          prop=""
           label="操作"
           align="center"
         >
+          <template slot-scope="scope">
+            <div class="opt">
+              <span>编辑</span>
+              <span>分享</span>
+              <span @click="puaseBargain(scope.row.id)">停用</span>
+              <span>查看砍价订单</span>
+              <span>获取新用户明细</span>
+              <span>查看发起砍价用户</span>
+              <span>活动效果数据</span>
+              <span @click="delBargain(scope.row.id)">删除</span>
+            </div>
+          </template>
         </el-table-column>
       </el-table>
       <div class="footer">
@@ -127,7 +139,7 @@
 
 </template>
 <script>
-
+import { bargainList, updateBargain, deleteBargain } from '@/api/admin/marketManage/bargain.js'
 export default {
   data () {
     return {
@@ -149,17 +161,59 @@ export default {
         name: '5'
       }],
       tabIndex: 2,
-      currentPage: 1
+      currentPage: 1,
+      tableData: []
     }
   },
   mounted () {
+    // 初始化数据
+    this.initDataList()
   },
   methods: {
+    initDataList (tab) {
+      let obj = {
+        'state': parseInt(tab.index),
+        'currentPage': 1
+      }
+
+      bargainList(obj).then((res) => {
+        console.log(res)
+        if (res.error === 0) {
+          this.handleData(res.content.dataList)
+        }
+      })
+    },
+
+    // 表格数据处理
+    handleData (data) {
+      data.map((item, index) => {
+        item.bargainType = item.bargainType === 0 ? '定人' : '任意价'
+        item.vaildDate = `${item.startTime}至${item.endTime}`
+        item.status = this.getActStatusString(item.status, item.startTime, item.endTime)
+      })
+      this.tableData = data
+    },
+
+    // 停用砍价
+    puaseBargain (id) {
+      let obj = {
+        'id': id,
+        'status': 0
+      }
+
+      updateBargain(obj).then((res) => {
+        if (res.error === 0) {
+          alert('停用成功')
+        }
+      })
+    },
+
     // 当前页发生变化
     handleCurrentChange () {
       console.log(this.currentPage)
     },
-    handleClick () {
+    handleClick (tab) {
+      this.initDataList(tab)
     },
     addActivity () {
       console.log(111)

@@ -462,7 +462,7 @@ export default {
     // 砍价点击
     bargain () {
       this.$router.push({
-        name: 'kanjia'
+        name: 'bargain'
       })
     },
     // 好友助力点击
