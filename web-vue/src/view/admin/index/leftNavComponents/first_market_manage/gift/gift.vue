@@ -63,8 +63,16 @@
             align="center"
           >
             <template slot-scope="scope">
-              <el-input size="small" style="width: 60px" type="number" v-model="scope.row.level"></el-input>
-              <el-button size="mini" @click="updateGiftLevel(scope.row.id, scope.row.level)">修改</el-button>
+              <el-input
+                size="small"
+                style="width: 60px"
+                type="number"
+                v-model="scope.row.level"
+              ></el-input>
+              <el-button
+                size="mini"
+                @click="updateGiftLevel(scope.row.id, scope.row.level)"
+              >修改</el-button>
             </template>
           </el-table-column>
           <el-table-column
@@ -86,18 +94,33 @@
           >
             <template slot-scope="scope">
               <el-row>
-              <el-button size="mini" @click="disableGift(scope.row.id)">停用</el-button>
-              <el-button size="mini" @click="enableGift(scope.row.id)">启用</el-button>
-              <el-button size="mini" @click="editGift(scope.row.id)">编辑</el-button>
-              <el-button size="mini">赠送明细</el-button>
-              <el-button size="mini" @click="deleteGift(scope.row.id)">删除</el-button>
+                <el-button
+                  size="mini"
+                  @click="disableGift(scope.row.id)"
+                >停用</el-button>
+                <el-button
+                  size="mini"
+                  @click="enableGift(scope.row.id)"
+                >启用</el-button>
+                <el-button
+                  size="mini"
+                  @click="editGift(scope.row.id)"
+                >编辑</el-button>
+                <el-button size="mini">赠送明细</el-button>
+                <el-button
+                  size="mini"
+                  @click="deleteGift(scope.row.id)"
+                >删除</el-button>
               </el-row>
             </template>
           </el-table-column>
         </el-table>
       </el-row>
       <el-row>
-        <el-col :offset="14" :span="10">
+        <el-col
+          :offset="14"
+          :span="10"
+        >
           <el-pagination
             @size-change="loadData"
             @current-change="loadData"
@@ -105,8 +128,9 @@
             :page-sizes="[20, 50, 100, 200]"
             :page-size="param.pageRows"
             layout="total, sizes, prev, pager, next, jumper"
-            :total="page.totalRows">
-    </el-pagination>
+            :total="page.totalRows"
+          >
+          </el-pagination>
         </el-col>
       </el-row>
     </wrapper>
@@ -129,7 +153,7 @@ export default {
       activityName: '赠品',
       param: {
         name: '',
-        status: null,
+        status: 0,
         // 分页
         currentPage: 0,
         pageRows: 20

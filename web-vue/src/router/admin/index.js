@@ -583,6 +583,34 @@ const routes = [
                 '@/view/admin/index/leftNavComponents/first_market_manage/lotteryDraw/lotteryDraw'
               )
           },
+          // 幸运大抽奖活动
+          {
+            path: '/admin/home/main/luckyDraw',
+            name: 'lottery_activity',
+            meta: {
+              crumbTitle: 'router.lottery_activity',
+              meta: 'first_market_manage',
+              category: 'first_market_manage'
+            },
+            component: () =>
+              import(
+                '@/view/admin/index/leftNavComponents/first_market_manage/luckyDraw/luckyDraw'
+              )
+          },
+          // 好友代付
+          {
+            path: '/admin/home/main/friendPay',
+            name: 'friend_pay',
+            meta: {
+              crumbTitle: 'router.friend_pay',
+              meta: 'first_market_manage',
+              category: 'first_market_manage'
+            },
+            component: () =>
+              import(
+                '@/view/admin/index/leftNavComponents/first_market_manage/first_market/friendPay'
+              )
+          },
           // 赠品
           {
             path: '/admin/home/main/gift',
@@ -614,9 +642,9 @@ const routes = [
           // 瓜分积分活动
           {
             path: '/api/admin/market/integration/list',
-            name: 'group_integration',
+            name: 'pin_integration',
             meta: {
-              crumbTitle: 'router.group_integration',
+              crumbTitle: 'router.pin_integration',
               meta: 'first_market_manage'
             },
             component: () =>

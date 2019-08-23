@@ -13,30 +13,13 @@
         >
           <el-button
             type="primary"
+            @click="addActivity"
             class="barginBtn"
-          >添加拼团抽奖活动</el-button>
+          >添加抽奖活动</el-button>
         </el-tab-pane>
       </el-tabs>
     </div>
     <div class="table_list">
-      <div class="select_info">
-        <div class="leftarea">
-          <span>活动名称：</span>
-          <el-input size="small"></el-input>
-        </div>
-        <div class="midarea">
-          <span>活动有效期：</span>
-          <el-input size="small"></el-input>
-          <span>至</span>
-          <el-input size="small"></el-input>
-        </div>
-        <div class="rightarea">
-          <el-button
-            type="primary"
-            size="small"
-          >筛选</el-button>
-        </div>
-      </div>
       <el-table
         class="version-manage-table"
         header-row-class-name="tableClss"
@@ -59,55 +42,21 @@
 
         <el-table-column
           prop=""
-          label="状态"
+          label="活动状态"
           align="center"
         >
         </el-table-column>
 
         <el-table-column
           prop=""
-          label="商品数"
+          label="参与人次"
           align="center"
         >
         </el-table-column>
 
         <el-table-column
           prop=""
-          label="最少成团人数"
-          align="center"
-        >
-        </el-table-column>
-
-        <el-table-column
-          prop=""
-          label="开奖所需最少人数"
-          align="center"
-        >
-        </el-table-column>
-
-        <el-table-column
-          prop=""
-          label="参与人数"
-          align="center"
-        >
-        </el-table-column>
-
-        <el-table-column
-          prop=""
-          label="成团人数"
-          align="center"
-        >
-        </el-table-column>
-
-        <el-table-column
-          prop=""
-          label="开团数"
-          align="center"
-        >
-        </el-table-column>
-        <el-table-column
-          prop=""
-          label="中奖用户"
+          label="中奖人次"
           align="center"
         >
         </el-table-column>
@@ -119,7 +68,7 @@
         >
         </el-table-column>
       </el-table>
-      <div class="footer_right">
+      <div class="footer">
         <span>当前页面1/1，总记录4条</span>
         <el-pagination
           @current-change="handleCurrentChange"
@@ -135,10 +84,9 @@
 
 </template>
 <script>
-export default {
-  cerate () {
+// import { } from '@/api/admin/marketManage/spellGroup.js'
 
-  },
+export default {
   data () {
     return {
       tabSwitch: '2',
@@ -159,24 +107,10 @@ export default {
         name: '5'
       }],
       tabIndex: 2,
-      currentPage: 1,
-      options: [{
-        value: '1',
-        label: '黄金糕'
-      }, {
-        value: '2',
-        label: '双皮奶'
-      }, {
-        value: '3',
-        label: '蚵仔煎'
-      }, {
-        value: '4',
-        label: '龙须面'
-      }, {
-        value: '5',
-        label: '北京烤鸭'
-      }]
+      currentPage: 1
     }
+  },
+  mounted () {
   },
   methods: {
     // 当前页发生变化
@@ -184,6 +118,20 @@ export default {
       console.log(this.currentPage)
     },
     handleClick (tab) {
+      console.log(tab)
+      // let obj = {
+      //   'type': parseInt(tab.index) + 1,
+      //   'currentPage': 1,
+      //   'pageRows': 1
+      // }
+      // groupBuyList(obj).then(res => {
+      //   console.log(res)
+      // }).catch(() => {
+      //   this.$message.error('保存失败')
+      // })
+    },
+    addActivity () {
+      console.log(111)
     }
   }
 }
@@ -198,6 +146,22 @@ export default {
     position: relative;
     background-color: #fff;
     padding: 10px 20px 10px 20px;
+    .wrapper {
+      display: flex;
+      justify-content: space-between;
+      .rightContent {
+        .el-button {
+          margin-left: 5px;
+        }
+        span {
+          height: 30px;
+          line-height: 30px;
+        }
+        :nth-of-type(3) {
+          color: #999;
+        }
+      }
+    }
   }
 }
 /deep/ .tableClss th {
@@ -213,46 +177,6 @@ export default {
   margin-top: 10px;
   background-color: #fff;
   padding: 10px 20px 10px 20px;
-  .select_info {
-    display: flex;
-    margin: 10px 0px;
-    .leftarea {
-      display: flex;
-      margin-right: 30px;
-    }
-    .rightarea {
-      display: flex;
-      :nth-of-type(1) {
-        margin-right: 5px;
-      }
-    }
-    .midarea {
-      display: flex;
-      margin-right: 30px;
-      :nth-of-type(2) {
-        margin: 0 0 0 10px;
-      }
-    }
-    span {
-      white-space: nowrap;
-      height: 32px;
-      line-height: 32px;
-    }
-    /deep/ .el-input__inner {
-      width: 200px;
-      display: inline-block;
-    }
-  }
-  .footer_right {
-    padding: 20px 0 20px 20px;
-    display: flex;
-    justify-content: flex-end;
-    span {
-      display: block;
-      height: 32px;
-      line-height: 32px;
-    }
-  }
 }
 .balanceDialo .el-dialog__body {
   padding-bottom: 0 !important;
@@ -266,5 +190,15 @@ export default {
 .add_coupon {
   float: left;
   margin-left: 65%;
+}
+.footer {
+  padding: 20px 0 20px 20px;
+  display: flex;
+  justify-content: flex-end;
+  span {
+    display: block;
+    height: 32px;
+    line-height: 32px;
+  }
 }
 </style>

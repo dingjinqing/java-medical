@@ -80,7 +80,10 @@
           </div>
         </div>
         <!-- 幸运大抽奖 -->
-        <div class="voucher box_style">
+        <div
+          class="voucher box_style"
+          @click="luckyDraw()"
+        >
           <div class="activity_img"><img
               :src="$imageHost + '/image/admin/new_market/xxdcj.png'"
               alt=""
@@ -94,7 +97,10 @@
 
       <div class="box">
         <!-- 好友代付 -->
-        <div class="voucher box_style">
+        <div
+          class="voucher box_style"
+          @click="friendPay"
+        >
           <div class="activity_img"><img
               :src="$imageHost + '/image/admin/new_market/instead_pay.png'"
               alt=""
@@ -480,7 +486,7 @@ export default {
     // 瓜分积分点击
     divideIntegral () {
       this.$router.push({
-        name: 'group_integration'
+        name: 'pin_integration'
       })
     },
     // 普通优惠卷点击
@@ -493,6 +499,18 @@ export default {
     gift () {
       this.$router.push({
         name: 'gift_view'
+      })
+    },
+    // 幸运大抽奖点击
+    luckyDraw () {
+      this.$router.push({
+        name: 'lottery_activity'
+      })
+    },
+    // 好友代付点击
+    friendPay () {
+      this.$router.push({
+        name: 'friend_pay'
       })
     },
     // 优惠券礼包

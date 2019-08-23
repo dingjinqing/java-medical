@@ -2,53 +2,16 @@
   <div class="content">
     <div class="main">
       <el-tabs
-        v-model="activeName"
+        v-model="tabSwitch"
         @tab-click="handleClick"
       >
         <el-tab-pane
-          label="全部拼团活动"
-          name="first"
+          v-for="(item) in tabInfo"
+          :key="item.name"
+          :label="item.title"
+          :name="item.name"
         >
-          <el-button
-            type="primary"
-            @click="addActivity"
-          >添加拼团活动</el-button>
-        </el-tab-pane>
-        <el-tab-pane
-          label="进行中"
-          name="second"
-        >
-          <el-button
-            type="primary"
-            @click="addActivity"
-          >添加拼团活动</el-button>
-        </el-tab-pane>
-        <el-tab-pane
-          label="未开始"
-          name="third"
-        >
-          <el-button
-            type="primary"
-            @click="addActivity"
-          >添加拼团活动</el-button>
-        </el-tab-pane>
-        <el-tab-pane
-          label="已过期"
-          name="fourth"
-        >
-          <el-button
-            type="primary"
-            @click="addActivity"
-          >添加拼团活动</el-button>
-        </el-tab-pane>
-        <el-tab-pane
-          label="已停用"
-          name="fifth"
-        >
-          <el-button
-            type="primary"
-            @click="addActivity"
-          >添加拼团活动</el-button>
+          <el-button type="primary">添加好友助力活动</el-button>
         </el-tab-pane>
       </el-tabs>
     </div>
@@ -56,7 +19,6 @@
       <el-table
         class="version-manage-table"
         header-row-class-name="tableClss"
-        :data="tableData"
         border
         style="width: 100%"
       >
@@ -136,8 +98,25 @@ import { groupBuyList } from '@/api/admin/marketManage/spellGroup.js'
 export default {
   data () {
     return {
-      tableData: [],
-      activeName: 'second'
+      tabSwitch: '2',
+      tabInfo: [{
+        title: '全部砍价活动',
+        name: '1'
+      }, {
+        title: '进行中',
+        name: '2'
+      }, {
+        title: '未开始',
+        name: '3'
+      }, {
+        title: '已过期',
+        name: '4'
+      }, {
+        title: '已停用',
+        name: '5'
+      }],
+      tabIndex: 3,
+      currentPage: 1
     }
   },
   mounted () {

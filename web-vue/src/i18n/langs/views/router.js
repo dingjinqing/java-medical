@@ -70,9 +70,12 @@ export const cn = {
   // 营销管理 优惠券礼包
   coupon_Package: ['营销管理', '优惠券礼包'],
   coupon_Package_add: ['营销管理', '优惠券礼包', '添加优惠券礼包'],
-  // 营销管理 组团瓜分积分
-  group_integration: ['营销管理', '组团瓜分积分'],
-  group_integration_add: ['营销管理', '组团瓜分积分', '添加组团瓜分积分']
+  // // 营销管理 组团瓜分积分
+  // group_integration: ['营销管理', '组团瓜分积分'],
+  // 营销管理 好友代付
+  friend_pay: ['营销管理', '好友代付'],
+  // 营销管理 幸运大抽奖
+  lottery_activity: ['营销管理', '幸运大抽奖']
 }
 
 export const en = {
@@ -90,7 +93,7 @@ export const en = {
   shopStyle: ['Small Program Management', 'shop style'],
   // 小程序管理 底部导航
   bottomNavigation: ['Small Program Management', 'Bottom navigation'],
-  // ------------------------------------------------------
+  // ----------------------------------------------------------
   // 商品管理 出售中商品
   saleOn: ['Commodity Management', 'Goods For Sale'],
   // 商品管理 已售罄商品
@@ -161,8 +164,11 @@ export const en = {
     'Coupon Package',
     'Add Coupon Package'
   ],
-  // 营销管理 组团瓜分积分
-  group_integration: ['Marketing management', 'Group integration'],
-  group_integration_add: ['Marketing management', 'Group integration', 'Create group integration']
+  // // 营销管理 组团瓜分积分
+  // group_integration: ['Marketing management', 'Group integration'],
+  // 营销管理 好友代付
+  friend_pay: ['Marketing management', 'friends paid'],
+  // 营销管理 幸运大抽奖
+  lottery_activity: ['Marketing management', 'Lucky draw']
 
 }

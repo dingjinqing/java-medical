@@ -2,122 +2,19 @@
   <div class="content">
     <div class="main">
       <el-tabs
-        v-model="activeName"
+        v-model="tabSwitch"
         @tab-click="handleClick"
       >
         <el-tab-pane
-          label="全部砍价活动"
-          name="first"
+          v-for="(item) in tabInfo"
+          :key="item.name"
+          :label="item.title"
+          :name="item.name"
         >
           <div class="wrapper">
             <el-button
               type="primary"
               @click="addActivity"
-              class="barginBtn"
-            >添加砍价活动</el-button>
-
-            <div class="rightContent">
-              <span>砍价设置：每个被邀请的用户，单日可帮助砍价 </span>
-              <el-input
-                style="width: 80px"
-                size="small"
-              ></el-input>
-              <span>次</span>
-              <span>设置为空时，不限制帮助砍价次数</span>
-              <el-button
-                type="primary"
-                size="small"
-              >保存设置</el-button>
-            </div>
-          </div>
-        </el-tab-pane>
-        <el-tab-pane
-          label="进行中"
-          name="second"
-        >
-          <div class="wrapper">
-            <el-button
-              type="primary"
-              @click="addActivity"
-              class="barginBtn"
-            >添加砍价活动</el-button>
-
-            <div class="rightContent">
-              <span>砍价设置：每个被邀请的用户，单日可帮助砍价 </span>
-              <el-input
-                style="width: 80px"
-                size="small"
-              ></el-input>
-              <span>次</span>
-              <span>设置为空时，不限制帮助砍价次数</span>
-              <el-button
-                type="primary"
-                size="small"
-              >保存设置</el-button>
-            </div>
-          </div>
-        </el-tab-pane>
-        <el-tab-pane
-          label="未开始"
-          name="third"
-        >
-          <div class="wrapper">
-            <el-button
-              type="primary"
-              @click="addActivity"
-              class="barginBtn"
-            >添加砍价活动</el-button>
-
-            <div class="rightContent">
-              <span>砍价设置：每个被邀请的用户，单日可帮助砍价 </span>
-              <el-input
-                style="width: 80px"
-                size="small"
-              ></el-input>
-              <span>次</span>
-              <span>设置为空时，不限制帮助砍价次数</span>
-              <el-button
-                type="primary"
-                size="small"
-              >保存设置</el-button>
-            </div>
-          </div>
-        </el-tab-pane>
-        <el-tab-pane
-          label="已过期"
-          name="fourth"
-        >
-          <div class="wrapper">
-            <el-button
-              type="primary"
-              @click="addActivity"
-              class="barginBtn"
-            >添加砍价活动</el-button>
-
-            <div class="rightContent">
-              <span>砍价设置：每个被邀请的用户，单日可帮助砍价 </span>
-              <el-input
-                style="width: 80px"
-                size="small"
-              ></el-input>
-              <span>次</span>
-              <span>设置为空时，不限制帮助砍价次数</span>
-              <el-button
-                type="primary"
-                size="small"
-              >保存设置</el-button>
-            </div>
-          </div>
-        </el-tab-pane>
-        <el-tab-pane
-          label="已停用"
-          name="fifth"
-        >
-          <div class="wrapper">
-            <el-button
-              type="primary"
-              @click="addActivity"
-              class="barginBtn"
             >添加砍价活动</el-button>
 
             <div class="rightContent">
@@ -141,7 +38,6 @@
       <el-table
         class="version-manage-table"
         header-row-class-name="tableClss"
-        :data="tableData"
         border
         style="width: 100%"
       >
@@ -231,13 +127,28 @@
 
 </template>
 <script>
-// import { } from '@/api/admin/marketManage/spellGroup.js'
 
 export default {
   data () {
     return {
-      tableData: [],
-      activeName: 'second',
+      tabSwitch: '2',
+      tabInfo: [{
+        title: '全部砍价活动',
+        name: '1'
+      }, {
+        title: '进行中',
+        name: '2'
+      }, {
+        title: '未开始',
+        name: '3'
+      }, {
+        title: '已过期',
+        name: '4'
+      }, {
+        title: '已停用',
+        name: '5'
+      }],
+      tabIndex: 2,
       currentPage: 1
     }
   },
@@ -248,18 +159,7 @@ export default {
     handleCurrentChange () {
       console.log(this.currentPage)
     },
-    handleClick (tab) {
-      console.log(tab)
-      // let obj = {
-      //   'type': parseInt(tab.index) + 1,
-      //   'currentPage': 1,
-      //   'pageRows': 1
-      // }
-      // groupBuyList(obj).then(res => {
-      //   console.log(res)
-      // }).catch(() => {
-      //   this.$message.error('保存失败')
-      // })
+    handleClick () {
     },
     addActivity () {
       console.log(111)
