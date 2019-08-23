@@ -3,8 +3,6 @@ import { cache } from "./cache.js"
 import { nav } from "./nav.js"
 import { cacheLang, trans } from '../i18n/i18n.js'
 
-var version;
-
 function _initData(data, path) {
   data = data || {};
   data.shop_id = config.shop_id;
