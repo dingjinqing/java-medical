@@ -75,12 +75,12 @@ public enum RecordTradeEnum {
 	/** 抽奖获得积分 */
 	GET_SCORE_BY_LOTTERY(11);
 	
-	private int val;
+	private byte val;
 	RecordTradeEnum(int value) {
-		this.val = value;
+		this.val = (byte)value;
 	}
 	
-	public int getValue() {
+	public byte getValue() {
 		return this.val;
 	}
 }
