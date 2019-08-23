@@ -1,0 +1,5 @@
+{
+  "usingComponents": {
+    "testC":"/components/test/index"
+  }
+}

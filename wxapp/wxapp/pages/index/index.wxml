@@ -1,0 +1,8 @@
+<!--index.wxml-->
+<view class="container" style="height:1500px">
+    <button bindtap="OnBtnClick"> 测试 </button>
+
+    <view>
+      <testC />
+    </view>
+</view>
