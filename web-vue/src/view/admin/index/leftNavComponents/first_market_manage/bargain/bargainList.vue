@@ -208,6 +208,19 @@ export default {
       })
     },
 
+    // 删除砍价
+    delBargain (id) {
+      let obj = {
+        'id': id
+      }
+
+      deleteBargain(obj).then((res) => {
+        if (res.error === 0) {
+          alert('删除成功')
+        }
+      })
+    },
+
     // 当前页发生变化
     handleCurrentChange () {
       console.log(this.currentPage)
