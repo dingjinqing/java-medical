@@ -82,18 +82,17 @@ public class GroupBuyListService  extends ShopBaseService {
             case 2:
                 //正在活动
                 records.and(GROUP_BUY_DEFINE.START_TIME.lt(timestamp))
-                        .and(GROUP_BUY_DEFINE.END_TIME.gt(timestamp))
-                        .and(GROUP_BUY_DEFINE.STATUS.in((byte) 1, (byte) 2));
+                        .and(GROUP_BUY_DEFINE.END_TIME.gt(timestamp));
                 break;
             case 3:
                 //还未开始
                 records.and(GROUP_BUY_DEFINE.START_TIME.gt(timestamp))
-                        .and(GROUP_BUY_DEFINE.STATUS.eq(STOP_STATUS));
+                        .and(GROUP_BUY_DEFINE.STATUS.eq(USE_STATUS));
                 break;
             case 4:
                 //已经结束
                 records.and(GROUP_BUY_DEFINE.END_TIME.lt(timestamp))
-                        .and(GROUP_BUY_DEFINE.STATUS.lt(USE_STATUS));
+                        .and(GROUP_BUY_DEFINE.STATUS.eq(USE_STATUS));
                 break;
             case 5:
                 //停用
@@ -101,6 +100,7 @@ public class GroupBuyListService  extends ShopBaseService {
                 break;
             default:
         }
+
 
 
     }
