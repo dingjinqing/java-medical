@@ -120,13 +120,13 @@ public class GroupBuyService extends ShopBaseService {
              return db().update(GROUP_BUY_DEFINE)
                     .set(GROUP_BUY_DEFINE.STATUS, USE_STATUS)
                     .where(GROUP_BUY_DEFINE.ID.eq(id))
-                    .and(GROUP_BUY_DEFINE.STATUS.eq(USE_STATUS))
+                    .and(GROUP_BUY_DEFINE.STATUS.eq(STOP_STATUS))
                     .execute();
         } else if (status!=null&&status == USE_STATUS) {
              return db().update(GROUP_BUY_DEFINE)
                     .set(GROUP_BUY_DEFINE.STATUS, STOP_STATUS)
                     .where(GROUP_BUY_DEFINE.ID.eq(id))
-                    .and(GROUP_BUY_DEFINE.STATUS.eq(STOP_STATUS))
+                    .and(GROUP_BUY_DEFINE.STATUS.eq(USE_STATUS))
                     .execute();
         }
         return 0;
