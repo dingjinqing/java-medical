@@ -56,6 +56,7 @@ export const cn = {
   // 营销管理 好友助力
   promote: ['营销管理', '好友助力'],
   // 营销管理 普通优惠券
+  ordinary_coupon: ['营销管理', '普通优惠券'],
   // 营销管理 拼团抽奖
   group_draw: ['营销管理', '拼团抽奖'],
   // 营销管理 分销
@@ -163,4 +164,5 @@ export const en = {
   // 营销管理 组团瓜分积分
   group_integration: ['Marketing management', 'Group integration'],
   group_integration_add: ['Marketing management', 'Group integration', 'Create group integration']
+
 }

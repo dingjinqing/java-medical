@@ -1,94 +1,107 @@
 <template>
   <div class="content">
     <div class="main">
-      <div class="main_coupon">
-        <div class="nav-role">
-          <ul class="coupon-head-ul clearfix">
-            <li>所有优惠券</li>
-            <li>进行中</li>
-            <li>未开始</li>
-            <li>已过期</li>
-            <li>已停用</li>
-            <li>添加优惠券</li>
-          </ul>
-        </div>
-        <div class="add_coupon_content">
-          <div class="fl content_left">
-            <div class="fl_title">
-              <div>优惠券</div>
-            </div>
-            <div class="info">
-              <div class="info_top">
-                <div
-                  class="vip_exclusive"
-                  style="display:none;"
-                >会员专享</div>
-                <div class="coupon_name">优惠券名称</div>
-                <div class="coupon_vou">
-                  <span>0.00</span>
-                </div>
-                <div class="coupon_dis"></div>
+      <el-tabs
+        v-model="activeName"
+        @tab-click="handleClick"
+      >
+        <el-tab-pane
+          label="全部优惠券"
+          name="first"
+        ></el-tab-pane>
+        <el-tab-pane
+          label="进行中"
+          name="second"
+        ></el-tab-pane>
+        <el-tab-pane
+          label="未开始"
+          name="third"
+        ></el-tab-pane>
+        <el-tab-pane
+          label="已过期"
+          name="fourth"
+        ></el-tab-pane>
+        <el-tab-pane
+          label="已停用"
+          name="fifth"
+        ></el-tab-pane>
+      </el-tabs>
+      <div class="add_coupon_content">
+        <div class="fl content_left">
+          <div class="fl_title">
+            <div>优惠券</div>
+          </div>
+          <div class="info">
+            <div class="info_top">
+              <div
+                class="vip_exclusive"
+                style="display:none;"
+              >会员专享</div>
+              <div class="coupon_name">优惠券名称</div>
+              <div class="coupon_vou">
+                <span>0.00</span>
               </div>
-            </div>
-            <div class="info_mid">
-              <div class="clearfix">
-                <span class="sub_title">有效日期</span>
-                <span class=date>
-                  <span>xxxx-xx-xx xx:xx:xx</span>
-                  <span>xxxx-xx-xx xx:xx:xx</span>
-                </span>
-                <span class="day">
-                  领取日期
-                  <span class="days">x天</span>
-                  <span class="hour">x小时</span>
-                  <span class="minute">x分钟</span>
-                  内有效
-                </span>
-              </div>
-              <div>
-                <span class="sub_title">使用限制</span>
-                <span
-                  class="least"
-                  style="display:none;"
-                >订单满<span>X</span>元可用</span>
-                <span class="all">无限制</span>
-                <span class="part">部分商品可用</span>
-              </div>
-            </div>
-            <div class="info_bot">
-              <div class="code">请输入领取码</div>
-              <div class="use">立即使用</div>
-              <div>
-                <span class="sub_title">使用说明</span>
-                <div class="instruction">暂无使用说明</div>
-              </div>
+              <div class="coupon_dis"></div>
             </div>
           </div>
-          <div class="content_right">
-            <div class="coupon_info">
-              <div class="coupon_info_title">优惠券基础信息</div>
-              <ul>
-                <li class="content_right_li clearfix">
-                  <div class=ft>
-                    <em>*</em>优惠券名称
-                  </div>
-                  <div class="ft">
-                    <el-input
-                      size="small"
-                      class="coupon_name_input"
-                      placeholder="最多输入10个字"
-                      v-model="coupon_name_input"
-                    ></el-input>
-                  </div>
-                </li>
-                <li class="content_right_li clearfix">
-                  <div class="to_choose">
-
-                  </div>
-                </li>
-                <li class="content_right_li clearfix"></li>
-              </ul>
+          <div class="info_mid">
+            <div class="clearfix">
+              <span class="sub_title">有效日期</span>
+              <span class=date>
+                <span>xxxx-xx-xx xx:xx:xx</span>
+                <span>xxxx-xx-xx xx:xx:xx</span>
+              </span>
+              <span class="day">
+                领取日期
+                <span class="days">x天</span>
+                <span class="hour">x小时</span>
+                <span class="minute">x分钟</span>
+                内有效
+              </span>
             </div>
+            <div>
+              <span class="sub_title">使用限制</span>
+              <span
+                class="least"
+                style="display:none;"
+              >订单满<span>X</span>元可用</span>
+              <span class="all">无限制</span>
+              <span class="part">部分商品可用</span>
+            </div>
+          </div>
+          <div class="info_bot">
+            <div class="code">请输入领取码</div>
+            <div class="use">立即使用</div>
+            <div>
+              <span class="sub_title">使用说明</span>
+              <div class="instruction">暂无使用说明</div>
+            </div>
+          </div>
+        </div>
+        <div class="content_right">
+          <div class="coupon_info">
+            <div class="coupon_info_title">优惠券基础信息</div>
+            <ul>
+              <li class="content_right_li clearfix">
+                <div class=ft>
+                  <em>*</em>优惠券名称
+                </div>
+                <div class="ft">
+                  <el-input
+                    size="small"
+                    class="coupon_name_input"
+                    placeholder="最多输入10个字"
+                    v-model="coupon_name_input"
+                  ></el-input>
+                </div>
+              </li>
+              <li class="content_right_li clearfix">
+                <div class="to_choose">
+
+                </div>
+              </li>
+              <li class="content_right_li clearfix"></li>
+            </ul>
           </div>
         </div>
       </div>
@@ -99,7 +112,9 @@
 export default {
   data () {
     return {
-      coupon_name_input: ''
+      tableData: [],
+      activeName: 'second',
+      currentPage: 1
     }
   }
 }
@@ -114,24 +129,7 @@ export default {
     position: relative;
     background-color: #fff;
     padding: 10px 20px 10px 20px;
-    .nav-role {
-      width: 100%;
-      height: 50px;
-      background-color: #fff;
-      margin: 0 auto;
-      font-size: 14px;
-      box-sizing: border-box;
-      border-bottom: 1px solid #eee;
-    }
   }
-}
-.coupon-head-ul li {
-  float: left;
-  height: 50px;
-  line-height: 50px;
-  color: #333;
-  font-size: 14px;
-  padding: 0 10px;
 }
 .main_coupon {
   padding: 0 20px 20px;

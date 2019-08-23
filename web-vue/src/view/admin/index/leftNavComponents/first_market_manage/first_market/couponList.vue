@@ -1,41 +1,111 @@
 <template>
   <div class="content">
     <div class="main">
-      <div class="main_coupon">
-        <div class="nav-role">
-          <ul class="coupon-head-ul clearfix">
-            <li>所有优惠券</li>
-            <li>进行中</li>
-            <li>未开始</li>
-            <li>已过期</li>
-            <li>已停用</li>
-            <li>添加优惠券</li>
-          </ul>
-        </div>
-      </div>
-      <div class="p_top_right">
-        <div class="topRightDiv">
-          <span>优惠券名称</span>
-          <el-autocomplete
-            placeholder="请输入优惠券名称"
-            size='small'
-          >
-          </el-autocomplete>
-        </div>
-        <div class="topRightDiv s_btn">
-          <el-button
-            type="primary"
-            size="small"
-          >查询</el-button>
-        </div>
-        <div class="add_coupon">
-          <el-button
-            @click="addCoupon()"
-            type="primary"
-            size="small"
-          >添加优惠券</el-button>
-        </div>
-      </div>
+      <el-tabs
+        v-model="activeName"
+        @tab-click="handleClick"
+      >
+        <el-tab-pane
+          label="全部优惠券"
+          name="first"
+        >
+          <div class="wrapper">
+            <span>优惠券名称：</span>
+            <el-input
+              size="medium"
+              placeholder="请输入优惠券名称"
+              class='search_content'
+            >
+            </el-input>
+            <el-button
+              type="primary"
+              size="medium"
+              @click="addCoupon()"
+              class="barginBtn"
+            >添加优惠券</el-button>
+          </div>
+        </el-tab-pane>
+        <el-tab-pane
+          label="进行中"
+          name="second"
+        >
+          <div class="wrapper">
+            <span>优惠券名称：</span>
+            <el-input
+              size="medium"
+              placeholder="请输入优惠券名称"
+              class='search_content'
+            >
+            </el-input>
+            <el-button
+              type="primary"
+              size="medium"
+              @click="addCoupon()"
+              class="barginBtn"
+            >添加优惠券</el-button>
+          </div>
+        </el-tab-pane>
+        <el-tab-pane
+          label="未开始"
+          name="third"
+        >
+          <div class="wrapper">
+            <span>优惠券名称：</span>
+            <el-input
+              size="medium"
+              placeholder="请输入优惠券名称"
+              class='search_content'
+            >
+            </el-input>
+            <el-button
+              type="primary"
+              size="medium"
+              @click="addCoupon()"
+              class="barginBtn"
+            >添加优惠券</el-button>
+          </div>
+        </el-tab-pane>
+        <el-tab-pane
+          label="已过期"
+          name="fourth"
+        >
+          <div class="wrapper">
+            <span>优惠券名称：</span>
+            <el-input
+              size="medium"
+              placeholder="请输入优惠券名称"
+              class='search_content'
+            >
+            </el-input>
+            <el-button
+              type="primary"
+              size="medium"
+              @click="addCoupon()"
+              class="barginBtn"
+            >添加优惠券</el-button>
+          </div>
+        </el-tab-pane>
+        <el-tab-pane
+          label="已停用"
+          name="fifth"
+        >
+          <div class="wrapper">
+            <span>优惠券名称：</span>
+            <el-input
+              size="medium"
+              placeholder="请输入优惠券名称"
+              class='search_content'
+            >
+            </el-input>
+            <el-button
+              type="primary"
+              size="medium"
+              @click="addCoupon()"
+              class="barginBtn"
+            >添加优惠券</el-button>
+          </div>
+        </el-tab-pane>
+      </el-tabs>
     </div>
     <div class="table_list">
       <el-table
@@ -131,6 +201,17 @@
           </template>
         </el-table-column>
       </el-table>
+      <div class="footer">
+        <span>当前页面1/1，总记录4条</span>
+        <el-pagination
+          @current-change="handleCurrentChange"
+          :current-page.sync="currentPage"
+          :page-size="20"
+          layout="prev, pager, next, jumper"
+          :total="4"
+        >
+        </el-pagination>
+      </div>
     </div>
   </div>
 
@@ -140,18 +221,23 @@ import { couponList, pauseCoupon, deleteCoupon } from '@/api/admin/marketManage/
 export default {
   data () {
     return {
-      tableData: []
+      tableData: [],
+      activeName: 'second',
+      currentPage: 1
     }
   },
   mounted () {
     // 初始化数据
-    this.seacherCouponList()
+    this.handleClick()
   },
   methods: {
-    seacherCouponList () {
+
+    handleClick (tab) {
+      alert(tab.index)
       let obj = {
-        'currentPage ': 0,
-        'pageRows ': 20
+        'nav': parseInt(tab.index) + 1,
+        'currentPage': 1,
+        'pageRows': 1
       }
 
       couponList(obj).then((res) => {
@@ -211,50 +297,24 @@ export default {
     position: relative;
     background-color: #fff;
     padding: 10px 20px 10px 20px;
-  }
-}
-.main_coupon {
-  padding: 0 20px 20px;
-  background: #fff;
-  width: 100%;
-}
-.nav-role {
-  width: 100%;
-  height: 50px;
-  background-color: #fff;
-  margin: 0 auto;
-  font-size: 14px;
-  box-sizing: border-box;
-  border-bottom: 1px solid #eee;
-}
-.coupon-head-ul li {
-  float: left;
-  height: 50px;
-  line-height: 50px;
-  color: #333;
-  font-size: 14px;
-  padding: 0 10px;
-}
-.condition {
-  position: relative;
-  background-color: #fff;
-  padding: 10px 20px 0 20px;
-}
-.p_top_right {
-  display: flex;
-  /deep/ .el-button {
-    padding: none;
-    height: 32px;
-  }
-  span {
-    white-space: nowrap;
-    height: 32px;
-    line-height: 32px;
-    margin-right: 10px;
-  }
-  .topRightDiv {
-    &:nth-of-type(2) {
-      margin: 0 10px 0 30px;
+    .wrapper {
+      display: flex;
+      justify-content: space-between;
+      .rightContent {
+        .el-button {
+          margin-left: 5px;
+        }
+        span {
+          height: 30px;
+          line-height: 30px;
+        }
+        :nth-of-type(3) {
+          color: #999;
+        }
+      }
+    }
+    span {
+      line-height: 40px;
     }
   }
 }
@@ -270,14 +330,7 @@ export default {
   position: relative;
   margin-top: 10px;
   background-color: #fff;
-  padding: 10px 20px 0 20px;
-}
-.opt {
-  text-align: left;
-  color: #5a8bff;
-  span {
-    cursor: pointer;
-  }
+  padding: 10px 20px 10px 20px;
 }
 .balanceDialo .el-dialog__body {
   padding-bottom: 0 !important;
@@ -291,5 +344,27 @@ export default {
 .add_coupon {
   float: left;
   margin-left: 65%;
+}
+.footer {
+  padding: 20px 0 20px 20px;
+  display: flex;
+  justify-content: flex-end;
+  span {
+    display: block;
+    height: 32px;
+    line-height: 32px;
+    float: left;
+  }
+}
+.search_content {
+  width: 15%;
+  margin-left: -70%;
+}
+.opt {
+  text-align: left;
+  color: #5a8bff;
+  span {
+    cursor: pointer;
+  }
 }
 </style>
