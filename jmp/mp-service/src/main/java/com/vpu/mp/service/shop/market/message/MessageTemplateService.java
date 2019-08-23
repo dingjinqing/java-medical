@@ -61,22 +61,22 @@ public class MessageTemplateService extends ShopBaseService {
         TemplateConfigRecord record = db().newRecord(TEMPLATE_CONFIG,param);
         record.setToUser(userIdStr);
         record.setSendCondition(sendConditionStr);
-        TemplateConfigRecord record1 =db().insertInto(TEMPLATE_CONFIG)
+        TemplateConfigRecord templateConfigRecord =db().insertInto(TEMPLATE_CONFIG)
             .set(record)
             .returning(TEMPLATE_CONFIG.ID)
             .fetchOne();
-        RabbitMessageParam param1 = RabbitMessageParam.builder()
-            .shopId(getShopId())
-            .messageTemplateId(record1.getId())
-            .userIdList(Arrays.stream(userIdStr.split(",")).map(Integer::new).collect(Collectors.toList()))
-            .build();
-        createTaskJob(getShopId(), param1,param);
+//        RabbitMessageParam messageParam = RabbitMessageParam.builder()
+//            .shopId(getShopId())
+//            .messageTemplateId(templateConfigRecord.getId())
+//            .userIdList(Arrays.stream(userIdStr.split(",")).map(Integer::parseInt).collect(Collectors.toList()))
+//            .build();
+//        createTaskJob(getShopId(), messageParam,param);
     }
     private void createTaskJob(Integer shopId,RabbitMessageParam messageTemplateParam,MessageTemplateParam param){
         TaskJobInfo  info = TaskJobInfo.initTaskJob(shopId)
             .type(param.getSenAction())
             .content(messageTemplateParam)
-            .className(RabbitMessageParam.class.getName())
+            .className(messageTemplateParam.getClass().getName())
             .startTime(param.getStartTime())
             .endTime(param.getEndTime())
             .executionType(TaskJobsConstant.TaskJobEnum.SEND_MESSAGE)

@@ -1,7 +1,8 @@
 package com.vpu.mp.service.pojo.shop.user.message;
 
 import com.vpu.mp.service.pojo.shop.official.message.MpTemplateConfig;
-import com.vpu.mp.service.pojo.shop.official.message.MpTemplateConstant;
+
+import java.util.EnumMap;
 
 /**
  * 小程序模版和公众号模版映射
@@ -9,27 +10,14 @@ import com.vpu.mp.service.pojo.shop.official.message.MpTemplateConstant;
  * @date 2019-08-22 09:53
  *
 */
-public enum MaAndMpTemplate {
-    /**
-     * 营销管理-消息推送模版
-     */
-    MESSAGE_TEMPLATE(MaTemplateConstant.ACTIVITY_CONFIG,MpTemplateConstant.ACTIVITY_CONFIG);
+public class MaAndMpTemplate {
 
 
-    private MaTemplateConfig maTemplateConfig;
-    private MpTemplateConfig mpTemplateConfig;
+    public static final EnumMap<MaTemplateConfig,MpTemplateConfig> TEMPLATE_MAP;
 
-     MaAndMpTemplate(MaTemplateConfig maTemplateConfig,MpTemplateConfig mpTemplateConfig){
-        this.maTemplateConfig = maTemplateConfig;
-        this.mpTemplateConfig = mpTemplateConfig;
+    static {
+        TEMPLATE_MAP = new EnumMap<MaTemplateConfig, MpTemplateConfig>(MaTemplateConfig.class);
+        TEMPLATE_MAP.put(MaTemplateConfig.ACTIVITY_CONFIG,MpTemplateConfig.ACTIVITY_CONFIG);
     }
 
-    public static MpTemplateConfig getMpTemplateConfigByMa(MaTemplateConfig maTemplateConfig){
-         for (MaAndMpTemplate x:MaAndMpTemplate.values()){
-             if(x.maTemplateConfig.getId().equals(maTemplateConfig.getId())){
-                 return x.mpTemplateConfig;
-             }
-         }
-         return null;
-    }
 }
