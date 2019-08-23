@@ -487,19 +487,19 @@ const routes = [
                 '@/view/admin/index/leftNavComponents/first_market_manage/distribution/distribution'
               )
           },
-          // 组团瓜分积分
-          {
-            path: '/admin/home/main/divideIntegral',
-            name: 'pin_integration',
-            meta: {
-              crumbTitle: 'router.pin_integration',
-              meta: 'first_market_manage'
-            },
-            component: () =>
-              import(
-                '@/view/admin/index/leftNavComponents/first_market_manage/divideIntegral/divideIntegral'
-              )
-          },
+          // // 组团瓜分积分
+          // {
+          //   path: '/admin/home/main/divideIntegral',
+          //   name: 'pin_integration',
+          //   meta: {
+          //     crumbTitle: 'router.pin_integration',
+          //     meta: 'first_market_manage'
+          //   },
+          //   component: () =>
+          //     import(
+          //       '@/view/admin/index/leftNavComponents/first_market_manage/divideIntegral/divideIntegral'
+          //     )
+          // },
           // 普通优惠券
           {
             path: '/admin/home/main/ordinaryCoupon',
@@ -611,18 +611,18 @@ const routes = [
                 '@/view/admin/index/leftNavComponents/first_market_manage/gift/addGift'
               )
           },
-          // {
-          //   path: '/api/admin/market/integration/list',
-          //   name: 'group_integration',
-          //   meta: {
-          //     crumbTitle: 'router.group_integration',
-          //     meta: 'first_market_manage'
-          //   },
-          //   component: () =>
-          //     import(
-          //       '@/view/admin/index/leftNavComponents/first_market_manage/groupIntegration/groupIntegrationList'
-          //     )
-          // },
+          {
+            path: '/api/admin/market/integration/list',
+            name: 'group_integration',
+            meta: {
+              crumbTitle: 'router.group_integration',
+              meta: 'first_market_manage'
+            },
+            component: () =>
+              import(
+                '@/view/admin/index/leftNavComponents/first_market_manage/groupIntegration/groupIntegrationList'
+              )
+          },
           {
             path: '/admin/home/main/membershipList',
             name: 'user_list',
