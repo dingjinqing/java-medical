@@ -1,18 +1,5 @@
 package com.vpu.mp.service.shop.order.virtual;
 
-import com.vpu.mp.service.foundation.util.PageResult;
-import com.vpu.mp.service.pojo.shop.operation.RecordContentTemplate;
-import com.vpu.mp.service.pojo.shop.order.virtual.MemberCardOrderParam;
-import com.vpu.mp.service.pojo.shop.order.virtual.MemberCardOrderVo;
-import com.vpu.mp.service.pojo.shop.order.virtual.VirtualOrderRefundParam;
-import lombok.extern.slf4j.Slf4j;
-import org.jooq.Record;
-import org.jooq.SelectOnConditionStep;
-import org.springframework.stereotype.Service;
-
-import java.sql.Timestamp;
-import java.util.Arrays;
-
 import static com.vpu.mp.db.shop.tables.MemberCard.MEMBER_CARD;
 import static com.vpu.mp.db.shop.tables.User.USER;
 import static com.vpu.mp.db.shop.tables.UserCard.USER_CARD;
@@ -20,13 +7,25 @@ import static com.vpu.mp.db.shop.tables.VirtualOrder.VIRTUAL_ORDER;
 import static java.lang.String.format;
 import static org.apache.commons.lang3.StringUtils.isNotEmpty;
 
+import java.sql.Timestamp;
+import java.util.Arrays;
+
+import org.jooq.Record;
+import org.jooq.SelectOnConditionStep;
+import org.springframework.stereotype.Service;
+
+import com.vpu.mp.service.foundation.util.PageResult;
+import com.vpu.mp.service.pojo.shop.operation.RecordContentTemplate;
+import com.vpu.mp.service.pojo.shop.order.virtual.MemberCardOrderParam;
+import com.vpu.mp.service.pojo.shop.order.virtual.MemberCardOrderVo;
+import com.vpu.mp.service.pojo.shop.order.virtual.VirtualOrderRefundParam;
+
 /**
  * 虚拟商品订单 - 会员卡
  *
  * @author 郑保乐
  */
 @Service
-@Slf4j
 public class MemberCardOrderService extends VirtualOrderService {
 
     /**

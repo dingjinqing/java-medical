@@ -241,7 +241,7 @@ public class CouponPackService extends ShopBaseService {
         select.where(VIRTUAL_ORDER.DEL_FLAG.eq(DelFlag.NORMAL.getCode())).orderBy(VIRTUAL_ORDER.CREATE_TIME.desc());
         List<CouponPackOrderExportVo> couponPackOrderList =  select.fetchInto(CouponPackOrderExportVo.class);
 
-        /**循环处理状态和待砍金额列*/
+        /**循环处理状态列*/
         for(CouponPackOrderExportVo vo : couponPackOrderList) {
             switch(vo.getOrderStatus()) {
                 case 0:

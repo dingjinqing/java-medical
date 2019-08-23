@@ -1,36 +1,34 @@
 package com.vpu.mp.service.shop.order.virtual;
 
-import static com.vpu.mp.db.shop.tables.VirtualOrder.VIRTUAL_ORDER;
 import static com.vpu.mp.db.shop.tables.CouponPack.COUPON_PACK;
 import static com.vpu.mp.db.shop.tables.CouponPackVoucher.COUPON_PACK_VOUCHER;
 import static com.vpu.mp.db.shop.tables.CustomerAvailCoupons.CUSTOMER_AVAIL_COUPONS;
 import static com.vpu.mp.db.shop.tables.User.USER;
+import static com.vpu.mp.db.shop.tables.VirtualOrder.VIRTUAL_ORDER;
 
 import java.math.BigDecimal;
 import java.util.Arrays;
 import java.util.List;
 
-import com.vpu.mp.service.pojo.shop.operation.RecordContentTemplate;
-import com.vpu.mp.service.pojo.shop.order.virtual.*;
 import org.jooq.Record;
 import org.jooq.Record1;
 import org.jooq.SelectConditionStep;
 import org.jooq.SelectWhereStep;
 import org.jooq.impl.DSL;
 import org.jooq.tools.StringUtils;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.vpu.mp.service.foundation.data.DelFlag;
 import com.vpu.mp.service.foundation.util.PageResult;
-import com.vpu.mp.service.shop.member.ScoreService;
+import com.vpu.mp.service.pojo.shop.operation.RecordContentTemplate;
+import com.vpu.mp.service.pojo.shop.order.virtual.CouponPackOrderPageParam;
+import com.vpu.mp.service.pojo.shop.order.virtual.CouponPackOrderRefundParam;
+import com.vpu.mp.service.pojo.shop.order.virtual.CouponPackOrderVo;
+
 /**
  * @author huangronggang
  * @date 2019年8月1日
  */
-
-import lombok.extern.slf4j.Slf4j;
-@Slf4j
 @Service
 public class CouponPackOrderService extends VirtualOrderService {
 	/** 发放优惠劵的获取方式，0：发放，1：领取，2：礼包*/
