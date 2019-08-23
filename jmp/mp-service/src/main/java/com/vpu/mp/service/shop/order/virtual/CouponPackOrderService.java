@@ -145,6 +145,15 @@ public class CouponPackOrderService extends VirtualOrderService {
 			.where(VIRTUAL_ORDER.ORDER_ID.eq(orderId)).execute();
 	}
 
+    /**
+     * 某个优惠券礼包活动的礼包销量
+     * @param couponPackId
+     * @return
+     */
+	public int getCouponPackIssueAmount(int couponPackId){
+	    return db().selectCount().from(VIRTUAL_ORDER).where(VIRTUAL_ORDER.GOODS_TYPE.eq(GOODS_TYPE_COUPON_PACK)).and(VIRTUAL_ORDER.ORDER_STATUS.eq(ORDER_STATUS_FINISHED)).and(VIRTUAL_ORDER.VIRTUAL_GOODS_ID.eq(couponPackId)).fetchOne().into(Integer.class);
+    }
+
 
 }
 

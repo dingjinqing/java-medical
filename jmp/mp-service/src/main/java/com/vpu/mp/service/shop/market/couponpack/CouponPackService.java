@@ -41,10 +41,8 @@ public class CouponPackService extends ShopBaseService {
 
     @Autowired
     private CouponPackVoucherService couponPackVoucherService;
-
     @Autowired
     private CouponPackOrderService couponPackOrderService;
-
     @Autowired
     private QrCodeService qrCode;
 
@@ -61,12 +59,10 @@ public class CouponPackService extends ShopBaseService {
      * 获取方式，0：现金购买
      */
     public static final byte ACCESS_MODE_CASH = 0;
-
     /**
      * 获取方式，1：积分购买
      */
     public static final byte ACCESS_MODE_SCORE = 1;
-
     /**
      * 获取方式，2直接领取
      */
@@ -108,8 +104,7 @@ public class CouponPackService extends ShopBaseService {
         for(CouponPackPageListQueryVo vo : res.dataList){
             vo.setVoucherKindsNumber(couponPackVoucherService.getVoucherKindsNumber(vo.getId()));
             vo.setVoucherNumber(couponPackVoucherService.getVoucherNumber(vo.getId()));
-            //todo 付款总金额
-            vo.setIssueAmount(0);
+            vo.setIssueAmount(couponPackOrderService.getCouponPackIssueAmount(vo.getId()));
         }
 
         return res;
