@@ -22,7 +22,13 @@ export const deleteGift = id => service({
 
 // 停用赠品活动
 export const disableGift = id => service({
-  url: `/api/admin/market/gift/delete/${id}`,
+  url: `/api/admin/market/gift/disable/${id}`,
+  method: 'post'
+})
+
+// 启用赠品活动
+export const enableGift = id => service({
+  url: `/api/admin/market/gift/enable/${id}`,
   method: 'post'
 })
 
