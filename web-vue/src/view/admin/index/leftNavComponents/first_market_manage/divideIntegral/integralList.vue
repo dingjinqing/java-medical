@@ -3,7 +3,7 @@
     <div class="main">
       <el-tabs
         v-model="activeName"
-        @tab-click="handleClick"
+        @tab-click="handleClick()"
       >
         <el-tab-pane
           label="全部瓜分活动"

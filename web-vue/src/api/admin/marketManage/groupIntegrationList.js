@@ -23,3 +23,19 @@ export function delGroupIntegration (data) {
     data: {}
   })
 }
+// 增加瓜分积分活动
+export function createGroupIntegration (data) {
+  return service({
+    url: '/api/admin/market/integration/add',
+    method: 'post',
+    data: data
+  })
+}
+// 分享活动
+export function shareActivity (data) {
+  return service({
+    url: '/api/admin/market/integration/getqrcode/' + data,
+    method: 'post',
+    data: data
+  })
+}

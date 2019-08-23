@@ -1,15 +1,56 @@
 <template>
   <div class="content">
     <div class="main">
-      <div class="p_top_right">
-        <div class="topRightDiv s_btn">
+      <el-tabs
+        v-model="activeName"
+        @tab-click="handleClick"
+      >
+        <el-tab-pane
+          label="全部瓜分活动"
+          name="first"
+        >
           <el-button
-            @click="addGroupIntegration()"
             type="primary"
-            size="small"
+            @click="addActivity"
           >添加瓜分积分活动</el-button>
-        </div>
-      </div>
+        </el-tab-pane>
+        <el-tab-pane
+          label="进行中"
+          name="second"
+        >
+          <el-button
+            type="primary"
+            @click="addActivity"
+          >添加瓜分积分活动</el-button>
+        </el-tab-pane>
+        <el-tab-pane
+          label="未开始"
+          name="third"
+        >
+          <el-button
+            type="primary"
+            @click="addActivity"
+          >添加瓜分积分活动</el-button>
+        </el-tab-pane>
+        <el-tab-pane
+          label="已过期"
+          name="fourth"
+        >
+          <el-button
+            type="primary"
+            @click="addActivity"
+          >添加瓜分积分活动</el-button>
+        </el-tab-pane>
+        <el-tab-pane
+          label="已停用"
+          name="fifth"
+        >
+          <el-button
+            type="primary"
+            @click="addActivity"
+          >添加瓜分积分活动</el-button>
+        </el-tab-pane>
+      </el-tabs>
     </div>
     <div class="table_list">
       <el-table
@@ -86,7 +127,7 @@
           <template slot-scope="scope">
             <div class="opt">
               <span>编辑</span>
-              <span>分享</span>
+              <span @click="shareHandle(scope.row.id)">分享</span>
               <span @click="puaseGroupIntegration(scope.row.id)">停用</span>
               <span @click="upGroupIntegration(scope.row.id)">启用</span>
               <span>参团明细</span>
@@ -97,14 +138,27 @@
         </el-table-column>
       </el-table>
     </div>
+    <shareDialog
+      :imgPath="shareImgPath"
+      :pagePath="sharePagePath"
+      :show="shareDialogShow"
+      @close="shareDialogShow=false"
+    />
   </div>
-
 </template>
 <script>
-import { groupIntegrationList, changeGroupIntegrationStatus, delGroupIntegration } from '@/api/admin/marketManage/groupIntegrationList.js'
+import { groupIntegrationList, changeGroupIntegrationStatus, delGroupIntegration, shareActivity } from '@/api/admin/marketManage/groupIntegrationList.js'
+import shareDialog from '@/components/admin/shareDialog'
 export default {
+  components: {
+    shareDialog
+  },
   data () {
     return {
+      activeName: 'first',
+      shareImgPath: '',
+      sharePagePath: '',
+      shareDialogShow: false,
       tableData: []
     }
   },
@@ -114,6 +168,19 @@ export default {
   },
   methods: {
 
+    handleClick (e) {
+      let obj = {
+        'currentPage ': 0,
+        'pageRows ': 20,
+        'type': parseInt(e.index)
+      }
+      groupIntegrationList(obj).then((res) => {
+        console.log(res)
+        if (res.error === 0) {
+          this.handleData(res.content.dataList)
+        }
+      })
+    },
     seacherGroupIntegrationList () {
       let obj = {
         'currentPage ': 0,
@@ -183,14 +250,24 @@ export default {
       delGroupIntegration(id).then(res => {
         if (res.error === 0) {
           alert('删除成功！')
-          this.seacherCouponList()
+          this.seacherGroupIntegrationList()
         }
       })
     },
     // 增加瓜分积分活动
-    addGroupIntegration () {
+    addActivity () {
       this.$router.push({
         name: 'group_integration_add'
+      })
+    },
+    // 分享活动
+    shareHandle (id) {
+      shareActivity(id).then(res => {
+        if (res.error === 0) {
+          this.shareImgPath = res.content.imgUrl
+          this.sharePagePath = res.content.pageUrl
+          this.shareDialogShow = true
+        }
       })
     }
   }
