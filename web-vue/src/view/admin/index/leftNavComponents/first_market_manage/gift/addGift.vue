@@ -48,7 +48,34 @@
                   <span v-show="goodsRange===1">已选{{param.goodsIds.length}}</span>
                 </template>
               </el-form-item>
-              <el-form-item label="赠品条件">
+              <el-form-item label="满金额赠送">
+                  <span>满</span>
+                  <el-input v-model="param.fullPrice" class="input"></el-input>
+                  <span>元，送赠品</span>
+              </el-form-item>
+              <el-form-item label="满数量赠送">
+                  <span>满</span>
+                  <el-input v-model="param.fullAmount" class="input"></el-input>
+                  <span>件，送赠品</span>
+              </el-form-item>
+              <el-form-item label="会员标签">
+                  <el-select v-model="selectedTags" multiple>
+                    <el-option
+                      v-for="item in tags"
+                      :key="item.id"
+                      :label="item.name"
+                      :value="item.id">
+                    </el-option>
+                  </el-select>
+              </el-form-item>
+              <el-form-item label="付款时间">
+                <el-date-picker
+                  v-model="payDateRange"
+                  type="datetimerange"
+                  range-separator="至"
+                  start-placeholder="开始日期"
+                  end-placeholder="结束日期">
+                </el-date-picker>
               </el-form-item>
               <el-form-item label="赠品规则说明">
                 <el-input
@@ -75,11 +102,13 @@
 </template>
 <script>
 import wrapper from '@/components/admin/wrapper/wrapper'
+import choosingGoods from '@/components/admin/choosingGoods'
 import { format } from '@/util/date'
 import { addGift, getGiftDetail, updateGift } from '@/api/admin/marketManage/gift'
 export default {
   components: {
-    wrapper
+    wrapper,
+    choosingGoods
   },
   data () {
     return {
@@ -87,6 +116,9 @@ export default {
       step: 1,
       steps: ['设置活动规则', '设置赠品'],
       dateRange: [],
+      payDateRange: [],
+      tags: [],
+      selectedTags: [],
       goodsRange: 0,
       goodsRanges: ['全部商品', '指定商品'],
       update: false,
@@ -172,5 +204,9 @@ export default {
 <style lang="scss" scoped>
   .label {
     line-height: 40px
+  }
+  .input {
+    margin-right: 10px;
+    width: 70px;
   }
 </style>
