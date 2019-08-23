@@ -58,6 +58,7 @@ import com.vpu.mp.service.wechat.bean.open.WxOpenGetResult;
 
 import cn.binarywang.wx.miniapp.util.json.WxMaGsonBuilder;
 import me.chanjar.weixin.common.error.WxErrorException;
+import me.chanjar.weixin.mp.bean.result.WxMpUserList;
 import me.chanjar.weixin.open.api.WxOpenMaService;
 import me.chanjar.weixin.open.bean.WxOpenCreateResult;
 import me.chanjar.weixin.open.bean.auth.WxOpenAuthorizationInfo;
@@ -1219,6 +1220,11 @@ public class MpAuthShopService extends MainBaseService {
 			datas=new String[] {param.getAct(),result.getErrcode(),result.getErrmsg()};
 		}
 		operateLogGlobal(mp, operateType, result, templateIds, datas);
+	}
+	
+	
+	public Integer updateRow(MpAuthShopRecord authShopByShopId) {
+		return db().executeUpdate(authShopByShopId);	
 	}
 	
 }
