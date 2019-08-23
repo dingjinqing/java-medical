@@ -21,12 +21,11 @@
   </div>
 </template>
 <script>
-import status, { getByName } from './status'
+import status, { getByName, getById } from './status'
 export default {
   data () {
     return {
-      tabName: status[0].name,
-      status: status[0].status,
+      tabName: getById(this.$attrs.status).name || status[0].name,
       labels: status
     }
   },
