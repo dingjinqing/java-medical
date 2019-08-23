@@ -165,6 +165,13 @@ public class GiftService extends ShopBaseService {
     }
 
     /**
+     * 启用活动
+     */
+    public void enableGift(Integer id) {
+        db().update(TABLE).set(TABLE.STATUS, (byte) 1).where(TABLE.ID.eq(id)).execute();
+    }
+
+    /**
      * 编辑活动 - 查询明细
      */
     public GiftVo getGiftDetail(Integer id) {

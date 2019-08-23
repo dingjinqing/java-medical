@@ -54,6 +54,15 @@ public class AdminGiftController extends AdminBaseController {
     }
 
     /**
+     * 启用活动
+     */
+    @PostMapping("/enable/{id}")
+    public JsonResult enableGift(@PathVariable Integer id) {
+        shop().gift.enableGift(id);
+        return success();
+    }
+
+    /**
      * 删除活动
      */
     @PostMapping("/delete/{id}")
