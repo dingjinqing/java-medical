@@ -63,3 +63,10 @@ export const getTagList = () => service({
   url: `/api/admin/market/gift/tag/list`,
   method: 'post'
 })
+
+// 查询赠品活动明细
+export const getGiftGiftDetail = data => service({
+  url: `/api/admin/market/gift/gift_detail`,
+  method: 'post',
+  data
+})

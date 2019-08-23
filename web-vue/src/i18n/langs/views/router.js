@@ -67,6 +67,10 @@ export const cn = {
   gift: ['营销管理', '赠品'],
   // 营销管理 赠品 添加赠品
   gift_add: ['营销管理', '赠品', '创建赠品活动'],
+  // 营销管理 赠品 修改活动
+  gift_edit: ['营销管理', '赠品', '修改赠品活动'],
+  // 营销管理 赠品 赠送明细
+  gift_detail: ['营销管理', '赠品', '赠送明细'],
   // 营销管理 优惠券礼包
   coupon_Package: ['营销管理', '优惠券礼包'],
   coupon_Package_add: ['营销管理', '优惠券礼包', '添加优惠券礼包'],
@@ -157,6 +161,10 @@ export const en = {
   gift: ['Marketing management', 'Gift'],
   // 营销管理 赠品 添加赠品
   gift_add: ['Marketing management', 'Gift', 'Create Gift'],
+  // 营销管理 赠品 修改活动
+  gift_edit: ['Marketing management', 'Gift', 'Edit Gift'],
+  // 营销管理 赠品 赠送明细
+  gift_detail: ['Marketing management', 'Gift', 'Gift Detail'],
   // 营销管理 优惠券礼包
   coupon_Package: ['Marketing management', 'Coupon Package'],
   coupon_Package_add: [

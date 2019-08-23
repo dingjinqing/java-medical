@@ -94,23 +94,11 @@
           >
             <template slot-scope="scope">
               <el-row>
-                <el-button
-                  size="mini"
-                  @click="disableGift(scope.row.id)"
-                >停用</el-button>
-                <el-button
-                  size="mini"
-                  @click="enableGift(scope.row.id)"
-                >启用</el-button>
-                <el-button
-                  size="mini"
-                  @click="editGift(scope.row.id)"
-                >编辑</el-button>
-                <el-button size="mini">赠送明细</el-button>
-                <el-button
-                  size="mini"
-                  @click="deleteGift(scope.row.id)"
-                >删除</el-button>
+              <el-button size="mini" @click="disableGift(scope.row.id)">停用</el-button>
+              <el-button size="mini" @click="enableGift(scope.row.id)">启用</el-button>
+              <el-button size="mini" @click="editGift(scope.row.id)">编辑</el-button>
+              <el-button size="mini" @click="gotoGiftDetail(scope.row.id)">赠送明细</el-button>
+              <el-button size="mini" @click="deleteGift(scope.row.id)">删除</el-button>
               </el-row>
             </template>
           </el-table-column>
@@ -125,11 +113,9 @@
             @size-change="loadData"
             @current-change="loadData"
             :current-page="param.currentPage"
-            :page-sizes="[20, 50, 100, 200]"
-            :page-size="param.pageRows"
+            :page-size="20"
             layout="total, sizes, prev, pager, next, jumper"
-            :total="page.totalRows"
-          >
+            :total="page.totalRows">
           </el-pagination>
         </el-col>
       </el-row>
@@ -215,7 +201,11 @@ export default {
     },
     // 跳转编辑活动页
     editGift (id) {
-      this.$router.push(`/${id}`)
+      this.$router.push(`/admin/home/main/gift/add/${id}`)
+    },
+    // 跳转赠送明细页
+    gotoGiftDetail (id) {
+      this.$router.push(`/admin/home/main/gift/giftDetail/${id}`)
     },
     getStatus (v) {
       return getById(v).name

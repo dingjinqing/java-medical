@@ -75,18 +75,21 @@
 </template>
 <script>
 import wrapper from '@/components/admin/wrapper/wrapper'
-import { addGift } from '@/api/admin/marketManage/gift'
+import { format } from '@/util/date'
+import { addGift, getGiftDetail, updateGift } from '@/api/admin/marketManage/gift'
 export default {
   components: {
     wrapper
   },
   data () {
     return {
+      id: null,
       step: 1,
       steps: ['设置活动规则', '设置赠品'],
       dateRange: [],
       goodsRange: 0,
       goodsRanges: ['全部商品', '指定商品'],
+      update: false,
       param: {
         'name': '买则送赠品',
         'level': 1,
@@ -120,20 +123,48 @@ export default {
   },
   methods: {
     addGift () {
-      addGift(this.param).then(r => {
-        this.$router.replace('/admin/home/main/gift')
+      const then = r => this.gotoGifts()
+      const { param } = this
+      const { dateRange } = this
+      const startTime = dateRange[0]
+      const endTime = dateRange[1]
+      this.param.startTime = format(startTime)
+      this.param.endTime = format(endTime)
+      if (this.update) {
+        updateGift(param).then(then)
+      } else {
+        addGift(param).then(then)
+      }
+    },
+    loadData () {
+      const { id } = this.$route.params
+      getGiftDetail(id).then(({ content }) => {
+        this.param = content
+        const { startTime, endTime } = content
+        this.dateRange.push(startTime)
+        this.dateRange.push(endTime)
+        const { goodsIds } = content
+        if (!goodsIds) {
+          this.goodsRange = 0
+        }
       })
+    },
+    gotoGifts () {
+      this.$router.replace('/admin/home/main/gift')
     }
   },
   watch: {
-    dateRange (v) {
-      this.param.startTime = v[0]
-      this.param.endTime = v[1]
-    },
     goodsRange (v) {
       if (v === 1) {
         this.param.goodsIds = []
       }
+    }
+  },
+  mounted () {
+    const id = this.$route.params.id
+    this.update = !!id
+    if (this.update) {
+      this.loadData()
     }
   }
 }

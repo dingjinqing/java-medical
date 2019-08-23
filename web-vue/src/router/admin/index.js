@@ -639,6 +639,34 @@ const routes = [
                 '@/view/admin/index/leftNavComponents/first_market_manage/gift/addGift'
               )
           },
+          // 修改赠品活动
+          {
+            path: '/admin/home/main/gift/add/:id',
+            name: 'gift_edit_view',
+            meta: {
+              crumbTitle: 'router.gift_edit',
+              meta: 'first_market_manage',
+              category: 'first_market_manage'
+            },
+            component: () =>
+              import(
+                '@/view/admin/index/leftNavComponents/first_market_manage/gift/addGift'
+              )
+          },
+          // 赠送明细
+          {
+            path: '/admin/home/main/gift/giftDetail/:id',
+            name: 'gift_detail_view',
+            meta: {
+              crumbTitle: 'router.gift_detail',
+              meta: 'first_market_manage',
+              category: 'first_market_manage'
+            },
+            component: () =>
+              import(
+                '@/view/admin/index/leftNavComponents/first_market_manage/gift/giftDetail.vue'
+              )
+          },
           // 瓜分积分活动
           {
             path: '/api/admin/market/integration/list',
