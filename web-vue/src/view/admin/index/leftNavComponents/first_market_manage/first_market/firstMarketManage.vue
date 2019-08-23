@@ -480,7 +480,7 @@ export default {
     // 瓜分积分点击
     divideIntegral () {
       this.$router.push({
-        name: 'pin_integration'
+        name: 'group_integration'
       })
     },
     // 普通优惠卷点击
