@@ -81,7 +81,7 @@ public class ShareRewardService extends ShopBaseService {
         Table<Record11<Integer, String, Byte, Byte, Timestamp, Timestamp, String, String, String, Integer, Byte>> conditionStep = db().
             select(sa.ID, sa.NAME, sa.CONDITION, sa.IS_FOREVER, sa.START_TIME, sa.END_TIME, sa.FIRST_LEVEL_RULE, sa.SECOND_LEVEL_RULE, sa.THIRD_LEVEL_RULE, sa.PRIORITY, sa.STATUS).from(sa).where(categoryConditon).asTable("sa");
 
-        Condition selectConditon = sa.DEL_FLAG.notEqual((byte) 1);
+        Condition selectConditon = sa.ID.isNotNull();
         // TODO 页面筛选条件待定，此处省略筛选condition
 
         SelectConditionStep<Record11<Integer, String, Byte, Byte, Timestamp, Timestamp, String, String, String, Integer, Byte>> resultStep = db().
