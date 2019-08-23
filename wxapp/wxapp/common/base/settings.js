@@ -52,7 +52,7 @@ export const ComponentSettings = {
   ],
   "props_a": [
     'behaviors',
-    'behaviors',
+    'externalClasses',
   ],
   maps: {
     'attached': ['lifetimes', 'attached'],

@@ -2,6 +2,7 @@ import { initGlobalMixin } from "./common/mixins/initGlobalMixin.js"
 import { basic as ComponentMixin } from "./components/common/basic.js"
 import { init as PageMixin } from "./pages/common/init.js"
 
+// 初始化全局混入
 initGlobalMixin([PageMixin], [ComponentMixin]);
 
 //app.js

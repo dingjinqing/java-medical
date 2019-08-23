@@ -1,4 +1,4 @@
-import { request } from "../util/api"
+import { request } from "../util/api.js"
 
 /**
  * 登陆
