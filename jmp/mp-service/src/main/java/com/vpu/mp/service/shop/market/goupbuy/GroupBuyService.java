@@ -111,23 +111,25 @@ public class GroupBuyService extends ShopBaseService {
     /**
      * 停用或者启用
      *
-     * @param param
+     * @param id
+     * @return
      */
-    public void changeStatusActivity(GroupBuyIdParam param) {
-        if (param.getStatus() == STOP_STATUS) {
-            db().update(GROUP_BUY_DEFINE)
+    public int changeStatusActivity(Integer id) {
+        Byte status = db().select(GROUP_BUY_DEFINE.STATUS).from(GROUP_BUY_DEFINE).where(GROUP_BUY_DEFINE.ID.eq(id)).fetchOne().component1();
+        if (status!=null&&status == STOP_STATUS) {
+             return db().update(GROUP_BUY_DEFINE)
                     .set(GROUP_BUY_DEFINE.STATUS, USE_STATUS)
-                    .where(GROUP_BUY_DEFINE.ID.eq(param.getId()))
+                    .where(GROUP_BUY_DEFINE.ID.eq(id))
                     .and(GROUP_BUY_DEFINE.STATUS.eq(USE_STATUS))
                     .execute();
-        } else if (param.getStatus() == USE_STATUS) {
-            db().update(GROUP_BUY_DEFINE)
+        } else if (status!=null&&status == USE_STATUS) {
+             return db().update(GROUP_BUY_DEFINE)
                     .set(GROUP_BUY_DEFINE.STATUS, STOP_STATUS)
-                    .where(GROUP_BUY_DEFINE.ID.eq(param.getId()))
+                    .where(GROUP_BUY_DEFINE.ID.eq(id))
                     .and(GROUP_BUY_DEFINE.STATUS.eq(STOP_STATUS))
                     .execute();
         }
-
+        return 0;
     }
 
 

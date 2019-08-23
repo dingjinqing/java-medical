@@ -133,8 +133,9 @@ public class AdminGroupBuyController extends AdminBaseController {
      */
     @PostMapping("/admin/market/groupbuy/change/status")
     public JsonResult changeStatusActivity(@RequestBody GroupBuyIdParam param) {
-        if (param.getStatus() != null) {
-            shop().groupBuy.changeStatusActivity(param);
+        int flag = shop().groupBuy.changeStatusActivity(param.getId());
+        if (flag==0){
+         return fail();
         }
         return fail(JsonResultCode.CODE_PARAM_ERROR);
     }
