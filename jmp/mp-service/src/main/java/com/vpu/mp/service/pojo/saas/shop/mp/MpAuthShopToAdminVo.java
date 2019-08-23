@@ -1,6 +1,7 @@
 package com.vpu.mp.service.pojo.saas.shop.mp;
 
 import java.sql.Timestamp;
+import java.util.List;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
@@ -67,5 +68,6 @@ public class MpAuthShopToAdminVo {
     private String    unionPayCusId;
     @JsonIgnore
     private String    unionPayAppKey;
+    private List<?>   officialList;
 
 }
