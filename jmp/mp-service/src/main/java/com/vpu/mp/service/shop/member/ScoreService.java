@@ -24,6 +24,7 @@ import com.vpu.mp.db.shop.tables.records.TradesRecordRecord;
 import com.vpu.mp.db.shop.tables.records.UserRecord;
 import com.vpu.mp.db.shop.tables.records.UserScoreRecord;
 import com.vpu.mp.service.foundation.data.JsonResultCode;
+import com.vpu.mp.service.foundation.exception.MpException;
 import com.vpu.mp.service.foundation.service.ShopBaseService;
 import com.vpu.mp.service.foundation.util.DateUtil;
 import com.vpu.mp.service.foundation.util.PageResult;
@@ -33,109 +34,73 @@ import com.vpu.mp.service.pojo.shop.member.score.ScorePageListParam;
 import com.vpu.mp.service.pojo.shop.member.score.ScorePageListVo;
 
 import static com.vpu.mp.service.pojo.shop.member.MemberOperateRecordEnum.ADMIN_OPERATION;
+import static com.vpu.mp.service.pojo.shop.member.score.ScoreStatusConstant.NO_USE_SCORE_STATUS;
+import static com.vpu.mp.service.pojo.shop.member.score.ScoreStatusConstant.USED_SCORE_STATUS;
+import static com.vpu.mp.service.pojo.shop.member.score.ScoreStatusConstant.EXPIRE_SCORE_STATUS;
+import static com.vpu.mp.service.pojo.shop.member.score.ScoreStatusConstant.REFUND_SCORE_STATUS;
+import static com.vpu.mp.service.pojo.shop.operation.RecordTradeEnum.POWER_SCORE;
+import static com.vpu.mp.service.pojo.shop.operation.RecordTradeEnum.TRADE_CONTENT_BY_SCORE;
+import org.jooq.exception.DataAccessException;
 /**
- * @author 黄壮壮 2019-07-19 15:03
+ * 
+ * @author 黄壮壮
+ * @Date:  2019年8月23日
+ * @Description: 积分服务
  */
 @Service
 public class ScoreService extends ShopBaseService {
 	
 	@Autowired private VoTranslator translator;
-	/**
-	 * 未使用
-	 */
-	final Byte NO_USE_SCORE_STATUS = 0;
-	/**
-	 * 已使用
-	 */
-	final Byte USED_SCORE_STATUS = 1;
-	/**
-	 * 已过期
-	 */
-	final Byte EXPIRE_SCORE_STATUS = 2;
-	/**
-	 * 已退款
-	 */
-	final Byte REFUND_SCORE_STATUS = 3;
-	/**
-	 * 积分有效的状态
-	 */
+	
+	/** -积分有效的状态 */
 	final Byte[] AVAILABLE_STATUS = new Byte[] { NO_USE_SCORE_STATUS, REFUND_SCORE_STATUS };
 	@Autowired
-	private MemberService member;
-
-	/** 会员可用积分不足异常 */
-	private class UsableScoreException extends RuntimeException{
-		@Override
-		public String getMessage() {
-			return "Member usable score is not enough";
-		}
-	}
-	
-	/** ----------------------用户积分重构--------------------------------- */
-	
-	public void updateMemberScore(ScoreParam param) {
-
-		// 3. 准备数据
-
-		
-		// 3.1 处理备注
-		String remark = param.getRemark();
-		if (StringUtils.isEmpty(remark)) {
-			/** 默认管理员操作 国际化*/
-			String value = ADMIN_OPERATION.getValue();
-			remark = translator.translate("member",value,value);
-		}
-	}
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
+	private MemberService member;	
 	
 	/**
 	 * 更新用户积分
-	 * @param param
-	 * @param subAccountId
-	 * @param userId
-	 * @param tradeType
-	 * @param tradeFlow
-	 * @return
+	 * @param param 积分变动相关数据
+	 * @param subAccountId 操作员id
+	 * @param userId 用户id
+	 * @param tradeType  交易类型说明 如  微信支付类型{@link com.vpu.mp.service.pojo.shop.operation.RecordTradeEnum.WX_PAY }
+	 * @param tradeFlow  资金流向类型  如收入 {@link com.vpu.mp.service.pojo.shop.operation.RecordTradeEnum.TRADE_FLOW_INCOME}
+	 * @return JsonResultCode
+	 * @throws MpException 
 	 */
-	// TODO优化参数
 	public JsonResultCode updateMemberScore(ScoreParam param, Integer subAccountId, Integer userId, Byte tradeType,
-			Byte tradeFlow) {
+			Byte tradeFlow) throws DataAccessException {
 
-		// 1. 校验userId是否存在数据库中
+		/**  1. 校验userId是否存在数据库中 */
 		if (userId <= 0) {
+			//throw new MpException(JsonResultCode.CODE_MEMEBER_NOT_EXIST);
 			return JsonResultCode.CODE_MEMEBER_NOT_EXIST;
 		}
-		// 1.1 查询用户
+		/** 1.1 查询用户 */
 		UserRecord dbUser = member.getUserRecordById(userId);
 
 		if (dbUser == null) {
+			//throw new MpException(JsonResultCode.CODE_MEMEBER_NOT_EXIST);
 			return JsonResultCode.CODE_MEMEBER_NOT_EXIST;
 		}
 
-		// 2. 验证积分与数据库保持一致，批量修改时为最小值，即大于等于
+		/** 2. 验证积分与数据库保持一致，批量修改时为最小值，即大于等于 */
 		Integer scoreDis = param.getScoreDis();
-		/** 目前会员存在数据录中的积分 */
-		Integer dbScore = dbUser.getScore();
 		
+		/** -目前会员存在数据录中的积分 */
+		Integer dbScore = dbUser.getScore();
+		/** -校验数据库中的积分与目前从前前端传入的积分是否一致 */
 		if (dbScore < scoreDis) {
+			//throw new MpException(JsonResultCode.CODE_MEMBER_SCORE_NOT_SAME);
+
 			return JsonResultCode.CODE_MEMBER_SCORE_NOT_SAME;
 		}
 
-		// 3. 准备数据
+		/** 3. 准备数据  */
 
-		// 3.1 处理备注
+		/** 3.1 处理备注  */
 		final String remark ;
 		if (StringUtils.isEmpty(param.getRemark())) {
-			/** 默认管理员操作 国际化*/
+			/** -默认管理员操作 国际化*/
 			String value = ADMIN_OPERATION.getValue();
 			remark = translator.translate("member",value,value);
 			logger().info("remark: "+remark);
@@ -143,40 +108,40 @@ public class ScoreService extends ShopBaseService {
 			remark = param.getRemark();
 		}
 
-		// 3.2 获取积分流水号
+		/** 3.2 获取积分流水号  */
 		String flowOn = generateFlowNo();
 
-		// 3.3 可用剩余积分
-		/** 本条积分记录的积分变动数额 */
+		/** 3.3 可用剩余积分  */
+		/** -本条积分记录的积分变动数额 */
 		Integer score = param.getScore();
-		/** 本条积分记录可用的数额 */
+		/** -本条积分记录可用的数额 */
 		Integer usableScore = score > 0 ? score : 0;
 		String orderSn = param.getOrderSn() == null ? "" : param.getOrderSn();
 		
-		
 		this.transaction(()->{
-			
-			
-			// 4 如果时负数，则消耗积分
-			if (score < 0) {
-				/** 消耗的积分超出可用积分 */
-				if(Math.abs(score)>dbScore) {
-					throw new UsableScoreException();
-					//return JsonResultCode.CODE_MEMBER_SCORE_ERROR;
+			logger().info("开始执行事务");
+			try {
+				/** 4 如果时负数，则消耗积分 */
+				if (score < 0) {
+					/** 消耗的积分超出可用积分 */
+					if(Math.abs(score)>dbScore) {
+						throw new MpException(JsonResultCode.CODE_MEMBER_SCORE_ERROR);
+					}
+					/** -消耗积分 */
+					//useUserScore(userId, Math.abs(score), orderSn);
+					useUserScore(userId, Math.abs(score));
 				}
-				// 消耗积分
-				boolean result = useUserScore(userId, Math.abs(score), orderSn);
-				if (!result) {
-					//return JsonResultCode.CODE_MEMBER_SCORE_ERROR;
-					throw new UsableScoreException();
-				}
-	
+		
+			}catch(MpException e) {
+				logger().info("正在处理异常");
+				throw e;
 			}
 			
-			
-			// 5. 添加积分记录
+			logger().info("异常处理后");
+			 
+			/** 5. 添加积分记录  */
 			UserScoreRecord userScoreRecord = new UserScoreRecord();
-			// 5.1 填充数据
+			/** 5.1 填充数据 */
 			userScoreRecord.setScore(score);
 			userScoreRecord.setUserId(userId);
 			userScoreRecord.setRemark(remark);
@@ -184,36 +149,48 @@ public class ScoreService extends ShopBaseService {
 			userScoreRecord.setOrderSn(orderSn);
 			userScoreRecord.setFlowNo(flowOn);
 			userScoreRecord.setUsableScore(usableScore);
-	
-			// 5.2 添加
+			logger().info(String.valueOf(param.getScoreStatus()));
+			userScoreRecord.setStatus(param.getScoreStatus());
+			
+			
+			
+			/** 5.2 添加 */
 			/** 在user_score中添加积分记录 */
 			addUserScoreRecord(userScoreRecord);
 	
-			// 6. 更新用户积分
-			// 6.1 获取操作后的积分
+			
+			/** 6. 更新用户积分 */
+			/** 6.1 获取操作后的积分 */
 			Integer totalScore = getTotalAvailableScoreById(userId);
-			// 6.2 更新用户积分
+			/** 6.2 更新用户积分 */
 			updateUserScore(userId, totalScore);
 			
 			
-			// 7. 记录更新record action
+			/** 7. 记录更新record action */
+			/** 7.1 准备数据 */
 			TradesRecordRecord tradesRecord=new TradesRecordRecord();
 		
 			tradesRecord.setTradeTime(DateUtil.getLocalDateTime());
 			tradesRecord.setTradeNum(BigDecimal.valueOf(Math.abs(score)));
 			tradesRecord.setTradeSn(orderSn);
 			tradesRecord.setUserId(userId);
-			tradesRecord.setTradeContent((byte) 1);
+			/** -这是更新积分的明细所以交易内容为积分 */
+			tradesRecord.setTradeContent(TRADE_CONTENT_BY_SCORE.getValue());
 			tradesRecord.setTradeType(tradeType);
 			tradesRecord.setTradeFlow(tradeFlow);
 			tradesRecord.setTradeStatus(tradeFlow);
 			
-			/** 交易记录表-记录交易的数据信息  */
+			/** -交易记录表-记录交易的数据信息  */
 			insertTradesRecord(tradesRecord);
+	
 		});
 		return JsonResultCode.CODE_SUCCESS;
 	}
-
+	
+	/**
+	 * 更新交易记录
+	 * @param tradesRecord
+	 */
 	private void insertTradesRecord(TradesRecordRecord tradesRecord) {
 		
 		db().executeInsert(tradesRecord);		
@@ -237,7 +214,7 @@ public class ScoreService extends ShopBaseService {
 	private Integer getTotalAvailableScoreById(Integer userId) {
 		List<Byte> list = Arrays.asList(AVAILABLE_STATUS);
 		Timestamp localDateTime = DateUtil.getLocalDateTime();
-		// 根据用户id,status,有效期
+		/** 根据用户id,status,有效期 */
 		Integer sum = db().select(DSL.sum(USER_SCORE.USABLE_SCORE)).from(USER_SCORE)
 				.where(USER_SCORE.USER_ID.eq(userId)).and(USER_SCORE.STATUS.in(list))
 				.and(USER_SCORE.EXPIRE_TIME.ge(localDateTime).or(USER_SCORE.EXPIRE_TIME.isNull()))
@@ -261,35 +238,36 @@ public class ScoreService extends ShopBaseService {
 				.execute();
 	}
 
+	
 	/**
 	 * 消耗积分记录
-	 * 
-	 * @param userId
-	 * @param abs
-	 * @param orderSn
+	 * @param userId 用户id
+	 * @param score 消耗积分的绝对值
 	 * @return true操作成功，false无可用积分
+	 * @throws MpException
 	 */
-	private boolean useUserScore(Integer userId, int score, String orderSn) {
-
+	public boolean useUserScore(Integer userId, int score) throws MpException {
+	
 		while (true) {
-			// 1 获取最早一条记录
+
+			/** 1 获取最早一条可用记录 */
 			UserScoreRecord userRecord = getEarlyUsableRecord(userId);
 			if (userRecord == null) {
-				return false;
+				throw new MpException(JsonResultCode.CODE_MEMBER_SCORE_ERROR);
 			}
 
-			// 2. 处理消耗score值
+			/** 2. 处理消耗score值 */
 			if (score < userRecord.getUsableScore()) {
 				int usableScore = userRecord.getUsableScore() - score;
 				userRecord.setUsableScore(usableScore);
-				// 3. 更新记录
+				/** 3. 更新记录 */
 				updateUserScoreRecord(userRecord);
 
 				break;
 			} else {
 				score = score - userRecord.getUsableScore();
 
-				// 4. 更新要插入的数据值,设置记录状态为已使用，可用积分为0
+				/** 4. 更新要插入的数据值,设置记录状态为已使用 并且 可用积分为0  */
 				userRecord.setStatus(USED_SCORE_STATUS);
 				userRecord.setUsableScore(0);
 
@@ -298,17 +276,16 @@ public class ScoreService extends ShopBaseService {
 					break;
 				}
 			}
-		}
+			
 
+		}
 		return true;
 	}
 
 	/**
-	 * 更新用户积分记录表
-	 * 
-	 * @param userId
-	 * @param flowNo
-	 * @param usableScore
+	 * 更新用户积分记录表b2c_user_score
+	 * @param record 
+	 * @return int 执行结果
 	 */
 	private int updateUserScoreRecord(UserScoreRecord record) {
 
@@ -321,11 +298,11 @@ public class ScoreService extends ShopBaseService {
  
 	/**
 	 * 获取最早可用的积分记录
-	 * 
-	 * @param userId
+	 * @param userId 用户id
+	 * @return UserScoreRecord
 	 */
 	private UserScoreRecord getEarlyUsableRecord(Integer userId) {
-		// 通过score和status来筛选
+		/** -通过score和status来筛选 */
 		Timestamp localDateTime = DateUtil.getLocalDateTime();
 
 		List<Byte> list = Arrays.asList(AVAILABLE_STATUS);
@@ -333,7 +310,9 @@ public class ScoreService extends ShopBaseService {
 		UserScoreRecord userScoreRecord = db().selectFrom(USER_SCORE).where(USER_SCORE.USER_ID.eq(userId))
 				.and(USER_SCORE.SCORE.greaterThan(0)).and(USER_SCORE.STATUS.in(list))
 				.and(USER_SCORE.EXPIRE_TIME.ge(localDateTime).or(USER_SCORE.EXPIRE_TIME.isNull()))
-				.orderBy(USER_SCORE.CREATE_TIME).fetchOne();
+				.orderBy(USER_SCORE.CREATE_TIME)
+				.limit(1)
+				.fetchOne();
 
 		return userScoreRecord;
 	}
@@ -341,7 +320,7 @@ public class ScoreService extends ShopBaseService {
 	/**
 	 * 生成流水号
 	 * 
-	 * @return string
+	 * @return string 流水号
 	 */
 	private String generateFlowNo() {
 		DateTimeFormatter f = DateTimeFormatter.ofPattern("yyyyMMddHHmmss");
@@ -349,11 +328,11 @@ public class ScoreService extends ShopBaseService {
 		Random random = new Random();
 		while (true) {
 			LocalDateTime now = LocalDateTime.now();
-			// 生成四位随机数字
+			/** 生成四位随机数字 */
 			int num = random.nextInt(9000) + 1000;
 			result = "S" + now.format(f) + num;
 
-			// 确保流水号的唯一性
+			/** 确保流水号的唯一性 */
 			int count = db().fetchCount(USER_SCORE, USER_SCORE.FLOW_NO.eq(result));
 
 			if (count == 0) {
@@ -363,8 +342,11 @@ public class ScoreService extends ShopBaseService {
 		return result;
 	}
 
+
 	/**
 	 * 分页查询会员用户积分详情
+	 * @param param 
+	 * @return PageResult<ScorePageListVo>
 	 */
 	public PageResult<ScorePageListVo> getPageListOfScoreDetails(ScorePageListParam param) {
 		SelectConditionStep<Record7<String, String, String, Integer, Timestamp, Timestamp, String>> select = db()
@@ -377,8 +359,11 @@ public class ScoreService extends ShopBaseService {
 		return getPageResult(select, param.getCurrentPage(), param.getPageRows(),ScorePageListVo.class);
 	}
 
+
 	/**
 	 * 分页查询用户积分明细-积分明细时其他查询条件
+	 * @param select
+	 * @param param  
 	 */
 	private void buildOptions(
 			SelectConditionStep<Record7<String, String, String, Integer, Timestamp, Timestamp, String>> select,
