@@ -408,7 +408,7 @@ public class GiftService extends ShopBaseService {
             .leftJoin(USER).on(USER.USER_ID.eq(ORDER_INFO.USER_ID))
             .where(ORDER_GOODS.IS_GIFT.eq(1));
         buildDetailOptions(query, param);
-        query.groupBy(ORDER_GOODS.ORDER_SN).orderBy(ORDER_INFO.CREATE_TIME.desc());
+        query.groupBy(ORDER_INFO.ORDER_SN).orderBy(ORDER_INFO.CREATE_TIME.desc());
         return getPageResult(query, param, GiftDetailListVo.class);
     }
 
