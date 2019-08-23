@@ -1,16 +1,21 @@
 package com.vpu.mp.controller.admin;
 
+import java.util.List;
+
+import org.jooq.Result;
 import org.slf4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.vpu.mp.db.main.tables.records.MpAuthShopRecord;
+import com.vpu.mp.db.main.tables.records.MpOfficialAccountRecord;
 import com.vpu.mp.service.foundation.data.JsonResult;
 import com.vpu.mp.service.foundation.data.JsonResultCode;
 import com.vpu.mp.service.foundation.util.PageResult;
@@ -20,11 +25,13 @@ import com.vpu.mp.service.pojo.saas.shop.mp.MpOperateListParam;
 import com.vpu.mp.service.pojo.saas.shop.mp.MpOperateVo;
 import com.vpu.mp.service.pojo.saas.shop.officeAccount.MpOAPayManageParam;
 import com.vpu.mp.service.pojo.saas.shop.officeAccount.MpOfficeAccountListParam;
+import com.vpu.mp.service.pojo.saas.shop.officeAccount.MpOfficeAccountListVo;
 import com.vpu.mp.service.pojo.shop.auth.AdminTokenAuthInfo;
 import com.vpu.mp.service.pojo.shop.config.WxShoppingListConfig;
 import com.vpu.mp.service.wechat.OpenPlatform;
 
 import me.chanjar.weixin.common.error.WxErrorException;
+import me.chanjar.weixin.open.bean.result.WxOpenResult;
 
 /**
  * @author lixinguo
@@ -106,7 +113,12 @@ public class AdminWechatApiController extends AdminBaseController {
 		if (record == null) {
 			return fail(JsonResultCode.WX_MA_NEED_AUTHORIZATION);
 		}
-		return success(record.into(MpAuthShopToAdminVo.class));
+		//可以绑定的公众号列表
+		Result<MpOfficialAccountRecord> officialAccountBySysId = saas.shop.officeAccount.getOfficialAccountBySysId(adminAuth.user().sysId);
+		List<MpOfficialAccountRecord> officialList = saas.shop.officeAccount.findSamePrincipalMiniAndMP(officialAccountBySysId, record);
+		MpAuthShopToAdminVo into = record.into(MpAuthShopToAdminVo.class);
+		into.setOfficialList(officialList);
+		return success(into);
 	}
 
 	/**
@@ -245,5 +257,72 @@ public class AdminWechatApiController extends AdminBaseController {
 		return fail();
 
 	}
+	
+	/**
+	 * 获取绑定店铺的二维码
+	 * @param appId 公众号的appid
+	 * @return
+	 */
+	@GetMapping("/api/admin/public/service/bind/getOfficialQrCode/{appId}")
+	public JsonResult generateThirdPartCode(@PathVariable String appId) {
+		try {
+			String generateThirdPartCode = saas.shop.officeAccount.generateThirdPartCode(adminAuth.user(),appId);
+			return success(generateThirdPartCode);
+		} catch (WxErrorException e) {
+			logger().debug(e.getMessage(),e);
+		}
+		return fail();
+		
+	}
+	
+	/**
+	 * 公众号绑定小程序
+	 * @param appId 公众号的appid
+	 * @return
+	 */
+	@GetMapping("/api/admin/public/service/bind/official/{appId}")
+	public JsonResult bindOfficialAccount(@PathVariable String appId) {
+		String language = StringUtils.isEmpty(request.getHeader("V-Lang")) ? null : request.getHeader("V-Lang");
+		MpAuthShopRecord authShopByShopId = saas.shop.mp.getAuthShopByShopId(adminAuth.user().loginShopId);
+		System.out.println(authShopByShopId);
+		if (authShopByShopId == null) {
+			// 请先绑定小程序
+			return fail(JsonResultCode.WX_MA_SHOP_HAS_NO_AP);
+		}
+		if (!authShopByShopId.getIsAuthOk().equals((byte) 1)) {
+			// 小程序未授权
+			return fail(JsonResultCode.WX_MA_APP_ID_NOT_AUTH);
+		}
+		System.out.println("authShopByShopId.getLinkOfficialAppId()"+authShopByShopId.getLinkOfficialAppId());
+		if (!StringUtils.isEmpty(authShopByShopId.getLinkOfficialAppId())) {
+			MpOfficeAccountListVo officeAccountByAppId = saas.shop.officeAccount.getOfficeAccountByAppId(authShopByShopId.getLinkOfficialAppId());
+			if (officeAccountByAppId != null && officeAccountByAppId.getIsAuthOk() == 1) {
+				// 该小程序已存在绑定公众号
+				return fail(JsonResultCode.WX_MA_HAVE_MP);
+			}
+		}
+		//判断客户公众号绑定的小程序是不是现在选择的
+		try {
+			Boolean wxamplinkget = saas.shop.officeAccount.wxamplinkget(appId,authShopByShopId.getUserName());
+			if(!wxamplinkget) {
+				//请选择正确的公众号
+				return fail(JsonResultCode.WX_MP_NEED_CHOOSE_RIGHT);
+			}
+		} catch (WxErrorException e) {
+			logger().debug(e.getMessage(), e);
+			WxOpenResult result = new WxOpenResult();
+			result.setErrcode(String.valueOf(e.getError().getErrorCode()));
+			result.setErrmsg(e.getError().getErrorMsg());
+			return wxfail(result);
+		}
+		//让客户自己去开放平台把公众号和小程序绑定。这个方法只改变数据库的值
+		authShopByShopId.setLinkOfficialAppId(appId);
+		saas.shop.mp.updateRow(authShopByShopId);
+		//TODO 跑个异步任务去 批量获取公众号用户信息
+		saas.shop.officeAccount.batchGetUsers(appId, language,adminAuth.user());
+		return success();
+
+	}
+
 
 }
