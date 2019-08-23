@@ -1,0 +1,17 @@
+﻿小程序开发部署步骤：
+
+jmpdev.weipubao.cn小程序测试版本上线更新步骤：
+
+1. 复制ext.json.jjmpdev到ext.json文件
+2. 复制project.config.json.jmpdev中的project.config.json.
+3. 小程序开发工具建立项目的时候，填写appid为project.config.json的appid。
+4. 小程序开发工具打开微铺宝小程序项目，点击上传，可以上传到开放平台草稿箱。
+5. 开放平台从草稿箱，添加到模板库，可以生成一个模板。
+6. 打开jmpdev.weipubao.cn/system/index，登录上去，http://jmpdev.weipubao.cn/system/store_management/program_manage/versionManage/-1。
+7. 点击“同步微信开放平台小程序代码模版”
+8. 选择新的模板为当前版本
+9. http://jmpdev.weipubao.cn/system/store_management/program_manage/authList/-1，选择店铺，点击查看明细
+10. 点击修改域名、上传代码、添加体验者、获取二维码。进行测试。
+11. 测试OK，获取可选类目、获取页面配置、提交审核，等待审核。
+12. 审核通过，点击发布代码。
+
