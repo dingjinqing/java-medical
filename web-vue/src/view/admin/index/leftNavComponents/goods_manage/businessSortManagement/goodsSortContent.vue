@@ -119,12 +119,12 @@
   </div>
 </template>
 <script>
-import { getSortList } from '@/api/admin/goodsSort/goodsSort'
+// import { getSortList } from '@/api/admin/goodsSort/goodsSort'
 // import { getSortList, deleteSort } from '@/api/admin/goodsSort/goodsSort'
-import editSort from '@/view/admin/index/leftNavComponents/goods_manage/goodsSort/editSort'
-import addSort from '@/view/admin/index/leftNavComponents/goods_manage/goodsSort/addSort'
+// import editSort from '@/view/admin/index/leftNavComponents/goods_manage/goodsSort/editSort'
+// import addSort from '@/view/admin/index/leftNavComponents/goods_manage/goodsSort/addSort'
 export default {
-  components: { addSort, editSort },
+  // components: { addSort, editSort },
   data () {
     return {
       activeName: 'first',
@@ -219,25 +219,25 @@ export default {
       // 删除结束
     },
     fetchSortList () {
-      let params = {
-        'type': 0,
-        'parentId': 0 // 分类类型 0普通分类，1推荐分类
-        // 'sortName': 'name', // 分类名称
-        // 'startCreateTime': '2019-01-01 12:02:11', // 分类创建开始时间
-        // 'endCreateTime': '2020-01-01 00:00:00' // 分类创建结束时间
-      }
-      getSortList(params).then(res => {
-        const { error, content } = res
-        if (error === 0) {
-          console.log(content)
-          content.forEach((item, index) => {
-            console.log(item)
-          })
-          // this.sortTableData = content
-        } else {
-          // this.$message.error('暂时有点小错误')
-        }
-      }).catch(err => console.log(err))
+      // let params = {
+      //   'type': 0,
+      //   'parentId': 0 // 分类类型 0普通分类，1推荐分类
+      //   // 'sortName': 'name', // 分类名称
+      //   // 'startCreateTime': '2019-01-01 12:02:11', // 分类创建开始时间
+      //   // 'endCreateTime': '2020-01-01 00:00:00' // 分类创建结束时间
+      // }
+      // getSortList(params).then(res => {
+      //   const { error, content } = res
+      //   if (error === 0) {
+      //     console.log(content)
+      //     content.forEach((item, index) => {
+      //       console.log(item)
+      //     })
+      //     // this.sortTableData = content
+      //   } else {
+      //     // this.$message.error('暂时有点小错误')
+      //   }
+      // }).catch(err => console.log(err))
     }
   }
 }

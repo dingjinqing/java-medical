@@ -1,9 +1,9 @@
 <template>
-  <div class="templateWeightList">重量运费模板列表</div>
+  <div class="deliverTemplateWeightList">重量运费模板列表</div>
 </template>
 <script>
 export default {
-  name: 'templateWeightList',
+  name: 'deliverTemplateWeightList',
   data () {
     return {
 

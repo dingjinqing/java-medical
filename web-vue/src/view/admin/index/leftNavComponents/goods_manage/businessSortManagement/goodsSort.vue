@@ -1,15 +1,15 @@
 <template>
   <div class="goodsSort">
     <el-card class="card_container">
-      <goodsSortContent />
+      <!-- <goodsSortContent /> -->
     </el-card>
 
   </div>
 </template>
 <script>
-import goodsSortContent from '@/view/admin/index/leftNavComponents/goods_manage/goodsSort/goodsSortContent'
+// import goodsSortContent from '@/view/admin/index/leftNavComponents/goods_manage/goodsSort/goodsSortContent'
 export default {
-  components: { goodsSortContent }
+  // components: { goodsSortContent }
 }
 </script>
 <style scoped>

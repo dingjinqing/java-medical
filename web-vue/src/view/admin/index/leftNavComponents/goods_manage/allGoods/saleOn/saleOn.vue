@@ -237,7 +237,7 @@
 <script>
 import headOperation from '../headOperation'
 import allGoodsFooter from '../allGoodsFooter'
-import { getGoodsList } from '@/api/admin/goods_manage/allGoods/allGoods'
+// import { getGoodsList } from '@/api/admin/goods_manage/allGoods/allGoods'
 export default {
   name: 'saleOn',
   components: { headOperation, allGoodsFooter },
@@ -338,14 +338,14 @@ export default {
     },
     // 初始化表格的数据
     fetchTableData () {
-      getGoodsList({}).then(res => {
-        const { error, content } = res
-        if (error === 0) {
-          const { dataList } = content
-          console.log(dataList)
-          this.tableData = dataList
-        }
-      }).catch(err => console.log(err))
+      // getGoodsList({}).then(res => {
+      //   const { error, content } = res
+      //   if (error === 0) {
+      //     const { dataList } = content
+      //     console.log(dataList)
+      //     this.tableData = dataList
+      //   }
+      // }).catch(err => console.log(err))
     }
   }
 

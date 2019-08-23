@@ -23,7 +23,7 @@
   </div>
 </template>
 <script>
-import { goodsList, getGoodsList } from '@/api/admin/goods_manage/addingGoods/addingGoods'
+import { goodsList, getGoodsList } from '@/api/admin/goodsManage/addingGoods/addingGoods'
 import basicInfo from './basicInfo'
 import otherInfo from './otherInfo'
 import deliveryInfo from './deliveryInfo'

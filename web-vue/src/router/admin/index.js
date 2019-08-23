@@ -247,27 +247,26 @@ const routes = [
             ]
           },
           // 商品管理系列
-          // 全部商品
+          // 商品管理/全部商品
           {
-            path: '/admin/home/main/goods_manage/allGoods',
-            redirect: '/admin/home/main/goods_manage/sale_on',
+            path: '/admin/home/main/goodsManage/allGoods',
+            redirect: '/admin/home/main/goodsManage/goodsForSale',
             name: 'sale_on',
             meta: {
-              crumbTitle: 'router.saleOn',
+              crumbTitle: 'router.goodsForSale',
               meta: 'goods_manage'
             },
             component: () =>
               import(
                 '@/view/admin/index/leftNavComponents/goods_manage/allGoods/allGoods'
               ),
-
             children: [
               // 商品管理/出售中商品
               {
-                path: '/admin/home/main/goods_manage/sale_on',
+                path: '/admin/home/main/goodsManage/goodsForSale',
                 name: 'sale_on',
                 meta: {
-                  crumbTitle: 'router.saleOn',
+                  crumbTitle: 'router.goodsForSale',
                   meta: 'goods_manage',
                   category: 'sale_on'
                 },
@@ -279,10 +278,10 @@ const routes = [
               },
               // 商品管理/已售罄
               {
-                path: '/admin/home/main/goods_manage/sale_end',
+                path: '/admin/home/main/goodsManage/soldOutGoods',
                 name: 'sale_end',
                 meta: {
-                  crumbTitle: 'router.saleEnd',
+                  crumbTitle: 'router.soldOutGoods',
                   meta: 'goods_manage',
                   category: 'sale_on'
                 },
@@ -294,10 +293,10 @@ const routes = [
               },
               // 商品管理/仓库中
               {
-                path: '/admin/home/main/goods_manage/sale_off',
+                path: '/admin/home/main/goodsManage/goodsInTheWarehouse',
                 name: 'sale_off',
                 meta: {
-                  crumbTitle: 'router.saleOff',
+                  crumbTitle: 'router.goodsInTheWarehouse',
                   meta: 'goods_manage',
                   category: 'sale_on'
                 },
@@ -308,48 +307,9 @@ const routes = [
               }
             ]
           },
-
-          // 品牌管理
+          // 商品管理 添加商品
           {
-            path: '/admin/home/main/brandManagement',
-            name: 'brand',
-            meta: {
-              crumbTitle: 'router.brandManagement',
-              meta: 'goods_manage'
-            },
-            component: () =>
-              import(
-                '@/view/admin/index/leftNavComponents/goods_manage/brandManagement/brandManagement'
-              )
-          },
-          // 添加品牌
-          {
-            path: '/admin/home/main/addBrand',
-            name: 'addBrand',
-            meta: {
-              crumbTitle: 'router.brandAddManagement',
-              meta: 'goods_manage'
-            },
-            component: () =>
-              import(
-                '@/view/admin/index/leftNavComponents/goods_manage/brandManagement/addBrand'
-              )
-          },
-          {
-            path: '/admin/home/main/evaluationManagement',
-            name: 'comment',
-            meta: {
-              crumbTitle: '',
-              meta: 'goods_manage'
-            },
-            component: () =>
-              import(
-                '@/view/admin/index/leftNavComponents/goods_manage/evaluationManagement/evaluationManagement'
-              )
-          },
-          // 添加商品
-          {
-            path: '/admin/home/main/goods_manage/adding_goods',
+            path: '/admin/home/main/goodsManage/addingGoods',
             name: 'goods_add',
             meta: {
               crumbTitle: 'router.addingGoods',
@@ -360,65 +320,169 @@ const routes = [
                 '@/view/admin/index/leftNavComponents/goods_manage/addingGoods/addingGoods'
               )
           },
-          // 运费模板
+
+          // 商品管理/运费模板
           {
-            path: '/admin/home/main/deliver',
+            path: '/admin/home/main/goodsManage/deliverTemplate',
             name: 'deliver',
-            redirect: '/admin/home/main/deliver/template/list',
+            redirect: '/admin/home/main/goodsManage/deliverTemplate/list',
             meta: {
               crumbTitle: 'router.deliverTemplate',
               meta: 'goods_manage'
             },
             component: () =>
               import(
-                '@/view/admin/index/leftNavComponents/goods_manage/deliverTemplate/deliver'
+                '@/view/admin/index/leftNavComponents/goods_manage/deliverTemplate/deliverTemplate'
               ),
             children: [
+              // 商品管理/运费模板/运费模板列表
               {
+                path: '/admin/home/main/goodsManage/deliverTemplate/list',
+                name: 'deliverTemplateList',
                 meta: {
                   crumbTitle: 'router.deliverTemplate',
-                  meta: 'goods_manage'
+                  meta: 'goods_manage',
+                  category: 'deliver'
                 },
-                path: '/admin/home/main/deliver/template/list',
                 component: () =>
                   import(
-                    '@/view/admin/index/leftNavComponents/goods_manage/deliverTemplate/templateList'
+                    '@/view/admin/index/leftNavComponents/goods_manage/deliverTemplate/deliverTemplateList'
                   )
               },
+              // 商品管理/运费模板/重量运费模板列表
               {
-                path: '/admin/home/main/deliver/template/weight/list',
+                path: '/admin/home/main/goodsManage/deliverTemplate/weightList',
+                name: 'deliverTemplateWeightList',
+                meta: {
+                  crumbTitle: 'router.deliverTemplate',
+                  meta: 'goods_manage',
+                  category: 'deliver'
+                },
                 component: () =>
                   import(
-                    '@/view/admin/index/leftNavComponents/goods_manage/deliverTemplate/templateWeightList'
+                    '@/view/admin/index/leftNavComponents/goods_manage/deliverTemplate/deliverTemplateWeightList'
                   )
               },
+              // 商品管理/运费模板/添加运费模板
               {
-                path: '/admin/home/main/deliver/template/add',
+                path: '/admin/home/main/goodsManage/deliverTemplate/Add',
+                name: 'deliverTemplateAdd',
+                meta: {
+                  crumbTitle: 'router.deliverTemplate',
+                  meta: 'goods_manage',
+                  category: 'deliver'
+                },
                 component: () =>
                   import(
-                    '@/view/admin/index/leftNavComponents/goods_manage/deliverTemplate/templateAdd'
+                    '@/view/admin/index/leftNavComponents/goods_manage/deliverTemplate/deliverTemplateAdd'
                   )
               },
+              // 商品管理/运费模板/添加重量运费模板
               {
-                path: '/admin/home/main/deliver/template/weight/add',
+                path: '/admin/home/main/goodsManage/deliverTemplate/weightAdd',
+                name: 'deliverTemplateWeightAdd',
+                meta: {
+                  crumbTitle: 'router.deliverTemplate',
+                  meta: 'goods_manage',
+                  category: 'deliver'
+                },
                 component: () =>
                   import(
-                    '@/view/admin/index/leftNavComponents/goods_manage/deliverTemplate/templateWeightAdd'
+                    '@/view/admin/index/leftNavComponents/goods_manage/deliverTemplate/deliverTemplateWeightAdd'
                   )
               }
             ]
           },
-          // 商家分类管理
+          // 商品管理/商家分类管理
           {
-            path: '/admin/home/main/goods/sort',
+            path: '/admin/home/main/goodsManage/businessSortManagement',
             name: 'sort',
             meta: {
-              crumbTitle: 'router.goodsSort',
+              crumbTitle: 'router.businessSortManagement',
               meta: 'goods_manage'
             },
             component: () =>
               import(
-                '@/view/admin/index/leftNavComponents/goods_manage/goodsSort/goodsSort'
+                '@/view/admin/index/leftNavComponents/goods_manage/businessSortManagement/goodsSort'
+              )
+          },
+          // 商品管理/品牌管理
+          {
+            path: '/admin/home/main/goodsManage/brandManagement',
+            name: 'brand',
+            meta: {
+              crumbTitle: 'router.brandManagement',
+              meta: 'goods_manage'
+            },
+            component: () =>
+              import(
+                '@/view/admin/index/leftNavComponents/goods_manage/brandManagement/brandManagement'
+              )
+          },
+          // 商品管理/品牌管理/添加品牌
+          {
+            path: '/admin/home/main/goodsManage/addBrand',
+            name: 'addBrand',
+            meta: {
+              crumbTitle: 'router.brandAddManagement',
+              meta: 'goods_manage'
+            },
+            component: () =>
+              import(
+                '@/view/admin/index/leftNavComponents/goods_manage/brandManagement/addBrand'
+              )
+          },
+          // 商品管理/评价管理
+          {
+            path: '/admin/home/main/goodsManage/evaluationManagement',
+            name: 'comment',
+            meta: {
+              crumbTitle: 'router.evaluationManagement',
+              meta: 'goods_manage'
+            },
+            component: () =>
+              import(
+                '@/view/admin/index/leftNavComponents/goods_manage/evaluationManagement/evaluationManagement'
+              )
+          },
+          // 商品管理/商品推荐
+          {
+            path: '/admin/home/main/goodsManage/goodsRecommend',
+            name: 'recommend',
+            meta: {
+              crumbTitle: 'router.evaluationManagement',
+              meta: 'goods_manage'
+            },
+            component: () =>
+              import(
+                '@/view/admin/index/leftNavComponents/goods_manage/evaluationManagement/evaluationManagement'
+              )
+          },
+
+          // 商品管理/商品标签
+          {
+            path: '/admin/home/main/goodsManage/goodsLabel',
+            name: 'label',
+            meta: {
+              crumbTitle: 'router.goodsLabel',
+              meta: 'goods_manage'
+            },
+            component: () =>
+              import(
+                '@/view/admin/index/leftNavComponents/goods_manage/goodsLabel/goodsLabel'
+              )
+          },
+          // 商品管理/商品导入
+          {
+            path: '/admin/home/main/goodsManage/goodsImport',
+            name: 'goods_import',
+            meta: {
+              crumbTitle: 'router.goodsImport',
+              meta: 'goods_manage'
+            },
+            component: () =>
+              import(
+                '@/view/admin/index/leftNavComponents/goods_manage/goodsImport/goodsImport'
               )
           },
           // 订单管理系列子路由

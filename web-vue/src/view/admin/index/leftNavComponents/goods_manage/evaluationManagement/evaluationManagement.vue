@@ -1,27 +1,31 @@
 <template>
-  <div>
-    <Crumbs :mTitle="M_title" />
-    <evaluationManagementContent />
-
+  <div class="evaluationManagement">
+    <el-button @click="handleShare">分享</el-button>
+    <!-- <testDialog
+      :isShow="isShow"
+      @test="handleTest"
+    /> -->
   </div>
 </template>
 <script>
-import Crumbs from '@/components/admin/crumbs'
-import evaluationManagementContent from '@/view/admin/index/leftNavComponents/goods_manage/evaluationManagement/evaluationManagementContent'
+// import testDialog from './testDialog'
 export default {
-  components: { Crumbs, evaluationManagementContent },
+  // components: { testDialog },
   data () {
     return {
-      M_title: [
-        '商品管理', '评价管理'
-      ]
+      isShow: true
     }
   },
   mounted () {
 
   },
   methods: {
+    handleShare () {
 
+    },
+    handleTest (val) {
+      // console.log(val)
+    }
   }
 }
 </script>

@@ -1,9 +1,9 @@
 <template>
-  <div class="templateWeightAdd">添加重量运费模板</div>
+  <div class="deliverTemplateWeightAdd">添加重量运费模板</div>
 </template>
 <script>
 export default {
-  name: 'templateWeightAdd',
+  name: 'deliverTemplateWeightAdd',
   data () {
     return {
 

@@ -214,7 +214,7 @@
   </div>
 </template>
 <script>
-import { selectPlatformClassification } from '@/api/admin/goods_manage/addingGoods/addingGoods'
+import { selectPlatformClassification } from '@/api/admin/goodsManage/addingGoods/addingGoods'
 import { initGrandgetRequest } from '@/api/admin/brandManagement.js'
 // import { getLabelList } from '@/api/admin/labelList/labelList'
 import addBrandDialog from './addBrandDialog'

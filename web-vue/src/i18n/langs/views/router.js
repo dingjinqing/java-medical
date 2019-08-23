@@ -10,21 +10,32 @@ export const cn = {
   shopStyle: ['小程序管理', '店铺风格'],
   // 小程序管理 底部导航
   bottomNavigation: ['小程序管理', '底部导航'],
+  // --------------------------------------------
   // 商品管理 出售中商品
-  saleOn: ['商品管理', '出售中商品'],
+  goodsForSale: ['商品管理', '出售中商品'],
   // 商品管理 已售磬商品
-  saleEnd: ['商品管理', '已售罄商品'],
+  soldOutGoods: ['商品管理', '已售罄商品'],
   // 商品管理 仓库中商品
-  saleOff: ['商品管理', '仓库中商品'],
-  // 商品管理 品牌管理
-  brandManagement: ['商品管理', '品牌管理'],
-  brandAddManagement: ['商品管理', '品牌管理', '添加品牌'],
+  goodsInTheWarehouse: ['商品管理', '仓库中商品'],
   // 商品管理 添加商品
   addingGoods: ['商品管理', '添加商品'],
   // 商品管理 运费模板
   deliverTemplate: ['商品管理', '运费模板'],
   // 商品管理 商家分类管理
-  goodsSort: ['商品管理', '商家分类管理'],
+  businessSortManagement: ['商品管理', '商家分类管理'],
+  // 商品管理 品牌管理
+  brandManagement: ['商品管理', '品牌管理'],
+  // 商品管理 品牌管理 添加品牌
+  brandAddManagement: ['商品管理', '品牌管理', '添加品牌'],
+  // 商品管理 评价管理
+  evaluationManagement: ['商品管理', '评价管理'],
+  // 商品管理 商品推荐
+  goodsRecommend: ['商品管理', '商品推荐'],
+  // 商品管理 商品标签
+  goodsLabel: ['商品管理', '商品标签'],
+  // 商品管理 商品导入
+  goodsImport: ['商品管理', '商品导入'],
+  // --------------------------------------------
   // 会员管理 会员列表 会员卡领取
   receiveDetail: ['会员管理', '会员列表', '会员卡领取明细'],
   // 会员管理 会员列表 余额
@@ -99,20 +110,30 @@ export const en = {
   bottomNavigation: ['Small Program Management', 'Bottom navigation'],
   // ----------------------------------------------------------
   // 商品管理 出售中商品
-  saleOn: ['Commodity Management', 'Goods For Sale'],
+  goodsForSale: ['Commodity Management', 'Goods For Sale'],
   // 商品管理 已售罄商品
-  saleEnd: ['Commodity Management', 'Sold Out Goods'],
+  soldOutGoods: ['Commodity Management', 'Sold Out Goods'],
   // 商品管理 仓库中商品
-  saleOff: ['Commodity Management', 'Goods In The Warehouse'],
+  goodsInTheWarehouse: ['Commodity Management', 'Goods In The Warehouse'],
   // 商品管理 添加商品
   addingGoods: ['Commodity Management', 'Adding Goods'],
   // 商品管理 运费模板
   deliverTemplate: ['Commodity Management', 'Deliver Template'],
   // 商品管理 商家分类管理
-  goodsSort: ['Commodity Management', 'Sort Goods'],
+  businessSortManagement: ['Commodity Management', 'Business Sort Management'],
   // 商品管理 品牌管理
   brandManagement: ['Brand Management', 'Brand Management'],
+  // 商品管理 品牌管理 添加品牌
   brandAddManagement: ['Brand Management', 'Brand Management', 'Add Brand'],
+  // 商品管理 评价管理
+  evaluationManagement: ['Commodity Management', 'Evaluation Management'],
+  // 商品管理 商品推荐
+  goodsRecommend: ['Commodity Management', 'goods Recommend'],
+  // 商品管理 商品标签
+  goodsLabel: ['Commodity Management', 'Goods Label'],
+  // 商品管理 商品导入
+  goodsImport: ['Commodity Management', 'Goods Import'],
+  // ----------------------------------------------------------
   // 会员管理 会员列表 会员卡领取
   receiveDetail: [
     'Membership management',

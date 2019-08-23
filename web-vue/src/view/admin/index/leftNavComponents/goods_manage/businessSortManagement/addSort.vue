@@ -176,12 +176,19 @@
           <span class="tips">150*140</span>
         </el-form-item>
       </el-form>
+      <el-card class="save_card">
+        <el-button
+          @click="save_two"
+          type="primary"
+          size="small"
+        >保存</el-button>
+      </el-card>
     </el-row>
 
   </div>
 </template>
 <script>
-import { addSort } from '@/api/admin/goodsSort/goodsSort'
+// import { addSort } from '@/api/admin/goodsManage/businessSortManagement/businessSortManagement'
 export default {
   data () {
     return {
@@ -233,18 +240,18 @@ export default {
   },
   methods: {
     addFirst () {
-      let params = {
-        'sortName': '男装', // 分类名称
-        'parentId': 0, // 父节点id,默认值0表示一级节点
-        'level': 1, // 0表示一级，1表示二级
-        'sortImg': 'https://s2.ax1x.com/2019/08/06/ef5gBV.jpg', // 分类图标
-        'imgLink': 'pages/storelist/storelist', // 图标链接
-        'first': 46, // 优先级 0-100
-        'type': 0, // 0普通分类，1推荐分类
-        'sortDesc': '服装分类的描述'// 分类说明，不写建议传空字符串
-      }
+      // let params = {
+      //   'sortName': '服装', // 分类名称
+      //   'parentId': 0, // 父节点id,默认值0表示一级节点
+      //   'level': 0, // 0表示一级，1表示二级
+      //   'sortImg': 'https://s2.ax1x.com/2019/08/06/efLsm9.jpg', // 分类图标
+      //   'imgLink': 'pages/storelist/storelist', // 图标链接
+      //   'first': 8, // 优先级 0-100
+      //   'type': 0, // 0普通分类，1推荐分类
+      //   'sortDesc': ``// 分类说明，不写建议传空字符串
+      // }
 
-      addSort(params).then(res => console.log(res)).catch(err => console.log(err))
+      // addSort(params).then(res => console.log(res)).catch(err => console.log(err))
     },
     addImg () {
       alert('添加图片')
@@ -260,6 +267,19 @@ export default {
     },
     save_one () {
       this.addFirst()
+    },
+    save_two () {
+      // let params = {
+      //   'sortName': '男装', // 分类名称
+      //   'parentId': 0, // 父节点id,默认值0表示一级节点
+      //   'level': 1, // 0表示一级，1表示二级
+      //   'sortImg': 'https://s2.ax1x.com/2019/08/06/efOp0s.jpg', // 分类图标
+      //   'imgLink': 'pages/storelist/storelist', // 图标链接
+      //   'first': 88, // 优先级 0-100
+      //   'type': 0, // 0普通分类，1推荐分类
+      //   'sortDesc': ``// 分类说明，不写建议传空字符串
+      // }
+      // addSort(params).then(res => { console.log(res) }).catch(err => console.log(err))
     }
   }
 

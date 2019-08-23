@@ -89,11 +89,11 @@
   </div>
 </template>
 <script>
-import { deliverTemplatelist } from '@/api/admin/goods_manage/deliver/deliver'
+// import { deliverTemplatelist } from '@/api/admin/goods_manage/deliver/deliver'
 export default {
   name: 'deliveryInfo',
   created () {
-    this.fetchDeliverTemplatelist()
+    // this.fetchDeliverTemplatelist()
   },
   data () {
     return {
@@ -121,46 +121,46 @@ export default {
   },
   methods: {
 
-    fetchDeliverTemplatelist () {
-      let params = {}
-      deliverTemplatelist(params).then(res => {
-        const { error, content } = res
-        if (error === 0) {
-          console.log(content)
+    // fetchDeliverTemplatelist () {
+    //   let params = {}
+    //   deliverTemplatelist(params).then(res => {
+    //     const { error, content } = res
+    //     if (error === 0) {
+    //       console.log(content)
 
-          let optionArr = []
-          content.pageResult.dataList.forEach(item => {
-            optionArr.push({
-              label: item.templateName,
-              value: item.templateName,
-              deliverTemplateId: item.deliverTemplateId,
-              flag: item.flag
-            })
-          })
-          this.options = optionArr
-          let newArr = []
-          let arr = content.config.substring(22, 60).split(',')
-          arr.forEach(item => {
-            let key = item.split('=')[0]
-            let value = item.split('=')[1]
-            newArr.push({ key, value })
-          })
-          this.templateName = newArr[0].value
-          this.feeLimit = newArr[1].value
-          this.price = newArr[2].value
-        }
-      }).catch(err => console.log(err))
-    },
-    toDetailHandle () {
-      this.$router.push({ path: '/admin/home/main/deliver/template/list' })
-    },
-    getTemplateHandle (val) {
-      let res = this.options.filter((item) => {
-        return item.value === val
-      })
-      console.log(res)
-      this.deliverTemplateId = res[0].deliverTemplateId
-    }
+    //       let optionArr = []
+    //       content.pageResult.dataList.forEach(item => {
+    //         optionArr.push({
+    //           label: item.templateName,
+    //           value: item.templateName,
+    //           deliverTemplateId: item.deliverTemplateId,
+    //           flag: item.flag
+    //         })
+    //       })
+    //       this.options = optionArr
+    //       let newArr = []
+    //       let arr = content.config.substring(22, 60).split(',')
+    //       arr.forEach(item => {
+    //         let key = item.split('=')[0]
+    //         let value = item.split('=')[1]
+    //         newArr.push({ key, value })
+    //       })
+    //       this.templateName = newArr[0].value
+    //       this.feeLimit = newArr[1].value
+    //       this.price = newArr[2].value
+    //     }
+    //   }).catch(err => console.log(err))
+    // },
+    // toDetailHandle () {
+    //   this.$router.push({ path: '/admin/home/main/deliver/template/list' })
+    // },
+    // getTemplateHandle (val) {
+    //   let res = this.options.filter((item) => {
+    //     return item.value === val
+    //   })
+    //   console.log(res)
+    //   this.deliverTemplateId = res[0].deliverTemplateId
+    // }
   }
 
 }
