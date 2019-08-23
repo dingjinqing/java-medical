@@ -41,7 +41,6 @@
         <el-tab-pane
           label="添加好友助力活动"
           name="sixth"
-          v-if=""
         >
           <addHelpAct />
         </el-tab-pane>
@@ -51,7 +50,8 @@
       <div class="select_info">
         <div class="leftarea">
           <span>活动名称：</span>
-          <el-input size="small"></el-input>
+          <el-input size="small">
+          </el-input>
         </div>
         <div class="midarea">
           <span>活动时间：</span>
@@ -77,6 +77,7 @@
           <el-button
             type="primary"
             size="small"
+            @click="handleClick"
           >筛选</el-button>
         </div>
       </div>
@@ -208,14 +209,16 @@ export default {
       this.activeName = 'sixth'
     },
     handleClick (tab) {
-      console.log('tab : ' + tab.data)
+      console.log('tab.index:' + tab.index)
+      console.log('tab.rewardType:' + tab.rewardType)
       let listParam = {
         'actState': parseInt(tab.index),
         'currentPage': 1,
-        'pageRows': 20
+        'pageRows': 20,
+        'rewardType': tab.rewardType
       }
       friendHelpList(listParam).then(res => {
-        console.log(res)
+        console.log('listParam.actState:' + listParam.actState)
         if (res.error === 0) {
           this.handleData(res.content.dataList)
         }
