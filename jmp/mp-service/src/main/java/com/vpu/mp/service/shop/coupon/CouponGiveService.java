@@ -67,13 +67,12 @@ public class CouponGiveService extends ShopBaseService {
 	@Autowired
     private CouponHoldService couponHold;
 
-    private final RabbitmqSendService rabbitmqSendService;
+	@Autowired
+    private RabbitmqSendService rabbitmqSendService;
+	
     private static final MrkingVoucher mv = MrkingVoucher.MRKING_VOUCHER.as("mv");
     private static final CustomerAvailCoupons cac = CustomerAvailCoupons.CUSTOMER_AVAIL_COUPONS.as("cac");
 
-    public CouponGiveService(RabbitmqSendService rabbitmqSendService) {
-        this.rabbitmqSendService = rabbitmqSendService;
-    }
 
     /**
      * 优惠券发放情况分页列表

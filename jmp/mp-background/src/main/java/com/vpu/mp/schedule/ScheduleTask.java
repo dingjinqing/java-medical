@@ -65,7 +65,8 @@ public class ScheduleTask {
 	/**
 	 * 每月获取微信数据（每月1号6-12点每半个小时执行一次）
 	 */
-	@Scheduled(cron = "0 0,30 6,7,8,9,10,11,12 0 1/1 *")
+//	@Scheduled(cron = "0 0,30 6,7,8,9,10,11,12 0 1/1 *")
+	@Scheduled(cron = "0 */1 * * * ?")
 	public void taskMonthklyWechat(){
 		System.out.println("定时任务开始执行");
 		Result<ShopRecord> result = saas.shop.getAll();
