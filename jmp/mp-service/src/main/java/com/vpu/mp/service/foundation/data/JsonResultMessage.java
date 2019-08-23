@@ -295,6 +295,12 @@ public class JsonResultMessage {
 	public static final String MSG_ORDER_REMARK_ORDERSN_NOT_NULL = "order_remark_ordersn_not_null";
 	public static final String MSG_ORDER_REMARK_NOT_NULL = "order_remark_not_null";
 	public static final String MSG_ORDER_REMARK_TYPE_NOT_NULL = "order_remark_type_not_null";
+	public static final String MSG_ORDER_WX_RETURN_FAILL ="order_wx_return_fail";
+	public static final String MSG_ORDER_RETURN_METHOD_REFLECT_ERROR = "order_return_method_reflect_error";
+	public static final String MSG_ORDER_RETURN_AFTER_RETURNAMOUNT_GREAT_THAN_ZERO ="order_return_after_returnamount_great_than_zero";
+	public static final String MSG_CODE_ORDER_RETURN_ING_RETURNMETHOD_ERROR = "order_return_ing_returnmethod_error";
+	public static final String MSG_ORDER_MANUAL_INCONSISTENT_AMOUNT = "order_manual_inconsistent_amount";
+	public static final String MSG_ORDER_FINISH_RETURN_STATUS_ERROR = "order_finish_return_status_error";
 	public static final String INVALID_MONEY_AMOUNT = "order.refund.invalid_money_amount";
 	public static final String INVALID_ACCOUNT_OR_SCORE = "order.refund.invalid_account_or_score";
 	public static final String INVALID_REFUND_AMOUNT = "order.refund.invalid_refund_amount";
