@@ -10,6 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.vpu.mp.db.shop.tables.records.GroupIntegrationDefineRecord;
+import com.vpu.mp.service.foundation.service.ShopBaseService;
 import com.vpu.mp.service.pojo.shop.market.integration.GroupIntegrationDefineEnums.DivideTypeEnum;
 import com.vpu.mp.service.pojo.shop.market.integration.GroupIntegrationListEnums.IsGrouper;
 import com.vpu.mp.service.pojo.shop.market.integration.GroupIntegrationListEnums.IsNew;
@@ -20,7 +21,7 @@ import com.vpu.mp.service.pojo.shop.market.integration.GroupIntegrationListParti
  * @date 2019年8月6日
  */
 @Service
-public class GroupIntegrationCalculatorHandler {
+public class GroupIntegrationCalculatorService extends ShopBaseService{
 	
 	@Autowired private GroupIntegrationListService groupIntegrationList;
 	/**

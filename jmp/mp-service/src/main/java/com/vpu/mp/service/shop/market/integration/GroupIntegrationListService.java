@@ -49,7 +49,7 @@ public class GroupIntegrationListService extends ShopBaseService {
 	public static final String REMARK = "积分瓜分";
 	
 	@Autowired private GroupIntegrationService groupIntegration;
-	@Autowired private GroupIntegrationCalculatorHandler calculatorHandler;
+	@Autowired private GroupIntegrationCalculatorService calculatorHandler;
 	@Autowired private ScoreService scoreService;
 
 	/** 
