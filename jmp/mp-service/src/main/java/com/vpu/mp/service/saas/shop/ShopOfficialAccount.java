@@ -1,11 +1,13 @@
 package com.vpu.mp.service.saas.shop;
 
 import static com.vpu.mp.db.main.tables.MpOfficialAccount.MP_OFFICIAL_ACCOUNT;
+import static com.vpu.mp.db.main.tables.MpOfficialAccountUser.MP_OFFICIAL_ACCOUNT_USER;
 import static com.vpu.mp.db.main.tables.ShopAccount.SHOP_ACCOUNT;
 
 import java.sql.Timestamp;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
@@ -16,7 +18,10 @@ import org.jooq.SelectOnConditionStep;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.vpu.mp.db.main.tables.records.MpAuthShopRecord;
 import com.vpu.mp.db.main.tables.records.MpOfficialAccountRecord;
+import com.vpu.mp.db.main.tables.records.MpOfficialAccountUserRecord;
+import com.vpu.mp.service.foundation.jedis.JedisManager;
 import com.vpu.mp.service.foundation.service.MainBaseService;
 import com.vpu.mp.service.foundation.util.FieldsUtil;
 import com.vpu.mp.service.foundation.util.PageResult;
@@ -24,9 +29,19 @@ import com.vpu.mp.service.foundation.util.Util;
 import com.vpu.mp.service.pojo.saas.shop.officeAccount.MpOAPayManageParam;
 import com.vpu.mp.service.pojo.saas.shop.officeAccount.MpOfficeAccountListParam;
 import com.vpu.mp.service.pojo.saas.shop.officeAccount.MpOfficeAccountListVo;
+import com.vpu.mp.service.pojo.shop.auth.AdminTokenAuthInfo;
 import com.vpu.mp.service.saas.image.SystemImageService;
+import com.vpu.mp.service.wechat.api.WxOpenMpampLinkService;
+import com.vpu.mp.service.wechat.bean.open.WxOpenMiniLinkGetFuncInfos;
+import com.vpu.mp.service.wechat.bean.open.WxOpenMiniLinkGetItems;
+import com.vpu.mp.service.wechat.bean.open.WxOpenMiniLinkGetResult;
 
 import me.chanjar.weixin.common.error.WxErrorException;
+import me.chanjar.weixin.mp.api.WxMpQrcodeService;
+import me.chanjar.weixin.mp.api.WxMpUserService;
+import me.chanjar.weixin.mp.bean.result.WxMpQrCodeTicket;
+import me.chanjar.weixin.mp.bean.result.WxMpUser;
+import me.chanjar.weixin.mp.bean.result.WxMpUserList;
 import me.chanjar.weixin.open.bean.auth.WxOpenAuthorizationInfo;
 import me.chanjar.weixin.open.bean.auth.WxOpenAuthorizerInfo;
 import me.chanjar.weixin.open.bean.result.WxOpenAuthorizerInfoResult;
@@ -43,6 +58,10 @@ public class ShopOfficialAccount extends MainBaseService {
 
 	@Autowired
 	protected SystemImageService image;
+
+	@Autowired
+	protected JedisManager jedis;
+
 	/**
 	 * 获取数据库公众号列表
 	 * 
@@ -55,7 +74,7 @@ public class ShopOfficialAccount extends MainBaseService {
 
 		select.where(MP_OFFICIAL_ACCOUNT.SYS_ID.eq(oaListParam.getSysId()));
 		select.orderBy(MP_OFFICIAL_ACCOUNT.CREATE_TIME.desc());
-		//因为页面不展示二维码。没有给图像加image.imageUrl方法。想加的加个循环吧
+		// 因为页面不展示二维码。没有给图像加image.imageUrl方法。想加的加个循环吧
 		PageResult<MpOfficeAccountListVo> pageResult = this.getPageResult(select, oaListParam.getCurrentPage(),
 				oaListParam.getPageRows(), MpOfficeAccountListVo.class);
 		return pageResult;
@@ -69,17 +88,16 @@ public class ShopOfficialAccount extends MainBaseService {
 	 * @return
 	 */
 	public MpOfficeAccountListVo getOfficeAccountByAppIdAndsysId(String appId, Integer sysId) {
-		List<MpOfficeAccountListVo> fetch = db().select(MP_OFFICIAL_ACCOUNT.asterisk()).from(MP_OFFICIAL_ACCOUNT)
+		MpOfficeAccountListVo fetch = db().select(MP_OFFICIAL_ACCOUNT.asterisk()).from(MP_OFFICIAL_ACCOUNT)
 				.innerJoin(SHOP_ACCOUNT).on(MP_OFFICIAL_ACCOUNT.SYS_ID.eq(SHOP_ACCOUNT.SYS_ID))
 				.where(MP_OFFICIAL_ACCOUNT.SYS_ID.eq(sysId).and(MP_OFFICIAL_ACCOUNT.APP_ID.eq(appId)))
-				.fetchInto(MpOfficeAccountListVo.class);
-		MpOfficeAccountListVo vo=fetch != null && !fetch.isEmpty() ? fetch.get(0) : null;
-		if(vo!=null) {
-			vo.setQrcodeUrl(image.imageUrl(vo.getQrcodeUrl())); 
+				.fetchAnyInto(MpOfficeAccountListVo.class);
+		if (fetch != null) {
+			fetch.setQrcodeUrl(image.imageUrl(fetch.getQrcodeUrl()));
 		}
-		return vo;
+		return fetch;
 	}
-	
+
 	public Result<MpOfficialAccountRecord> getSamePrincipalOffice(String principalName) {
 		return db().fetch(MP_OFFICIAL_ACCOUNT,
 				MP_OFFICIAL_ACCOUNT.PRINCIPAL_NAME.eq(principalName).and(MP_OFFICIAL_ACCOUNT.IS_AUTH_OK.eq((byte) 1)));
@@ -98,10 +116,30 @@ public class ShopOfficialAccount extends MainBaseService {
 	}
 
 	public MpOfficeAccountListVo getOfficeAccountByAppId(String appId) {
-		List<MpOfficeAccountListVo> fetch = db().select(MP_OFFICIAL_ACCOUNT.asterisk()).from(MP_OFFICIAL_ACCOUNT)
-				.innerJoin(SHOP_ACCOUNT).on(MP_OFFICIAL_ACCOUNT.SYS_ID.eq(SHOP_ACCOUNT.SYS_ID))
-				.where((MP_OFFICIAL_ACCOUNT.APP_ID.eq(appId))).fetchInto(MpOfficeAccountListVo.class);
-		return fetch != null && !fetch.isEmpty() ? fetch.get(0) : null;
+		return db().select(MP_OFFICIAL_ACCOUNT.asterisk()).from(MP_OFFICIAL_ACCOUNT).innerJoin(SHOP_ACCOUNT)
+				.on(MP_OFFICIAL_ACCOUNT.SYS_ID.eq(SHOP_ACCOUNT.SYS_ID)).where((MP_OFFICIAL_ACCOUNT.APP_ID.eq(appId)))
+				.fetchAnyInto(MpOfficeAccountListVo.class);
+	}
+
+	public Result<MpOfficialAccountRecord> getOfficialAccountBySysId(Integer sysId) {
+		Result<MpOfficialAccountRecord> fetch = db().selectFrom(MP_OFFICIAL_ACCOUNT)
+				.where(MP_OFFICIAL_ACCOUNT.SYS_ID.eq(sysId)).fetch();
+		return fetch;
+	}
+
+	public List<MpOfficialAccountRecord> findSamePrincipalMiniAndMP(Result<MpOfficialAccountRecord> oaRecords,
+			MpAuthShopRecord miniRecord) {
+		List<MpOfficialAccountRecord> list = new ArrayList<MpOfficialAccountRecord>();
+		for (MpOfficialAccountRecord rAccountRecord : oaRecords) {
+			if (rAccountRecord.getIsAuthOk().equals((byte) 1)) {
+				// 已授权了
+				if (rAccountRecord.getPrincipalName().equals(miniRecord.getPrincipalName())) {
+					list.add(rAccountRecord);
+				}
+			}
+		}
+		return list;
+
 	}
 
 	/**
@@ -109,7 +147,8 @@ public class ShopOfficialAccount extends MainBaseService {
 	 * 
 	 * @return
 	 */
-	public MpOfficialAccountRecord addMpOfficialAccountInfo(Integer sysId,WxOpenAuthorizerInfoResult authorizerInfoResult) {
+	public MpOfficialAccountRecord addMpOfficialAccountInfo(Integer sysId,
+			WxOpenAuthorizerInfoResult authorizerInfoResult) {
 		WxOpenAuthorizationInfo authorizationInfo = authorizerInfoResult.getAuthorizationInfo();
 		String authorizerAppid = authorizationInfo.getAuthorizerAppid();
 		WxOpenAuthorizerInfo authorizerInfo = authorizerInfoResult.getAuthorizerInfo();
@@ -137,8 +176,10 @@ public class ShopOfficialAccount extends MainBaseService {
 		officeRecord.setAuthorizerInfo(Util.toJson(authorizerInfo));
 		officeRecord.setAuthorizationInfo(Util.toJson(authorizationInfo));
 		officeRecord.setPrincipalName(authorizerInfo.getPrincipalName());
-		// php上是 'account_type' => $verifyType == -1 ? ($serviceType == 2 ? 2 : 0) :($serviceType == 2 ? 3 : 1)
-		officeRecord.setAccountType((byte) (verifyTypeInfo == -1 ? (serviceTypeInfo == 2 ? 2 : 0) : (serviceTypeInfo == 2 ? 3 : 1)));
+		// php上是 'account_type' => $verifyType == -1 ? ($serviceType == 2 ? 2 : 0)
+		// :($serviceType == 2 ? 3 : 1)
+		officeRecord.setAccountType(
+				(byte) (verifyTypeInfo == -1 ? (serviceTypeInfo == 2 ? 2 : 0) : (serviceTypeInfo == 2 ? 3 : 1)));
 		officeRecord.setSysId(sysId);
 		officeRecord.setQrcodeUrl(mpQrCode);
 		if (getOfficeAccountByAppId(authorizerAppid) == null) {
@@ -168,7 +209,7 @@ public class ShopOfficialAccount extends MainBaseService {
 			}
 		}
 		for (MpOfficialAccountRecord mRecord : samePrincipalMpApps) {
-			openAppId =saas.shop.mp.bindOpenAppId(false,mRecord.getAppId(), openAppId);
+			openAppId = saas.shop.mp.bindOpenAppId(false, mRecord.getAppId(), openAppId);
 			if (!openAppId.equals(mRecord.getBindOpenAppId())) {
 				// 更新数据库
 				mRecord.setBindOpenAppId(openAppId);
@@ -205,4 +246,143 @@ public class ShopOfficialAccount extends MainBaseService {
 		return date;
 	}
 
+	/**
+	 * 获得公众号场景二维码
+	 * @param user
+	 * @param appId
+	 * @return
+	 * @throws WxErrorException
+	 */
+	public String generateThirdPartCode(AdminTokenAuthInfo user, String appId) throws WxErrorException {
+		String key = String.valueOf(user.loginShopId) + "official_scene_ticket";
+		String string = jedis.get(key);
+		if(StringUtils.isNotEmpty(string)) {
+			logger().debug("公众号 " + appId + "创建二维码,缓存中存在" +string);
+			return string;
+		}
+		boolean subLogin = user.isSubLogin();
+		// 主账户是1
+		int accountAction = subLogin ? 2 : 1;
+		int accountId = subLogin ? user.subAccountId : user.sysId;
+		int expireSeconds = 24 * 60 * 30 - 60;
+		//$sceneValue = $shopId.'&'.$accountAction.'&'.$accountId;
+		String sceneValue = user.loginShopId.toString() + "&" + String.valueOf(accountAction) + "&"+ String.valueOf(accountId);
+		WxMpQrcodeService qrcodeService = open().getWxOpenComponentService().getWxMpServiceByAppid(appId).getQrcodeService();
+		WxMpQrCodeTicket qrCodeCreateTmpTicket = qrcodeService.qrCodeCreateTmpTicket(sceneValue, expireSeconds);
+		// 获取的二维码ticket
+		String ticket = qrCodeCreateTmpTicket.getTicket();
+		logger().debug("公众号 " + appId + "创建二维码ticket的值" + ticket);
+		String qrCodePictureUrl = qrcodeService.qrCodePictureUrl(ticket);
+		logger().debug("公众号 " + appId + "通过ticket换取二维码的结果 " + qrCodePictureUrl);
+		jedis.set(key, qrCodePictureUrl, expireSeconds);
+		return qrCodePictureUrl;
+	}
+
+	/**
+	 * 批量获取公众号用户信息
+	 * 
+	 * @param appId
+	 * @param language
+	 * @param adminTokenAuthInfo
+	 */
+	public void batchGetUsers(String appId, String language, AdminTokenAuthInfo adminTokenAuthInfo) {
+		// https://developers.weixin.qq.com/doc/offiaccount/User_Management/Getting_a_User_List.html
+		// https://developers.weixin.qq.com/doc/offiaccount/User_Management/Get_users_basic_information_UnionID.html#UinonId
+		if (language != null && language.equals("en_US")) {
+			language = "en";
+		}
+		try {
+			String nextOpenid = null;
+			WxMpUserService userService = open().getWxOpenComponentService().getWxMpServiceByAppid(appId)
+					.getUserService();
+			while (true) {
+				WxMpUserList userList = userService.userList(nextOpenid);
+				long total = userList.getTotal();
+				logger().debug("appId:" + appId + "用户总数" + total);
+				for (String opneid : userList.getOpenids()) {
+					WxMpUser userInfo = userService.userInfo(opneid, language);
+					logger().debug(userInfo.toString());
+					MpOfficialAccountUserRecord record = MP_OFFICIAL_ACCOUNT_USER.newRecord();
+					if (userInfo.getSubscribe()) {
+						logger().debug("userInfo.getSubscribe()" + userInfo.getSubscribe());
+					}
+					record.setOpenid(userInfo.getOpenId());
+					record.setAppId(appId);
+					record.setSysId(adminTokenAuthInfo.getSysId());
+					record.setSubscribe(userInfo.getSubscribe() ? (byte) 1 : (byte) 0);
+					record.setNickname(userInfo.getNickname());
+					record.setSex(userInfo.getSex().byteValue());
+					record.setLanguage(userInfo.getLanguage());
+					record.setCity(userInfo.getCity());
+					record.setProvince(userInfo.getProvince());
+					record.setCountry(userInfo.getCountry());
+					record.setHeadimgurl(userInfo.getHeadImgUrl());
+					record.setSubscribeTime(new Timestamp(userInfo.getSubscribeTime() * 1000L));
+					record.setUnionid(userInfo.getUnionId());
+					addOrUpdateUser(appId, record, userInfo.getUnionId(), userInfo.getOpenId());
+				}
+				nextOpenid = userList.getNextOpenid();
+				if (StringUtils.isEmpty(nextOpenid)) {
+					break;
+				}
+			}
+		} catch (WxErrorException e) {
+			logger().debug(e.getMessage(), e);
+
+		}
+	}
+
+	/**
+	 * 添加或更新用户
+	 * 
+	 * @param appId
+	 * @param record
+	 * @param unionId
+	 * @param openId
+	 */
+	public void addOrUpdateUser(String appId, MpOfficialAccountUserRecord record, String unionId, String openId) {
+		MpOfficialAccountUserRecord fetchAny = MP_OFFICIAL_ACCOUNT_USER.newRecord();
+		if (StringUtils.isEmpty(unionId)) {
+			// 只有在用户将公众号绑定到微信开放平台帐号后，才会出现该字段。
+			fetchAny = db().selectFrom(MP_OFFICIAL_ACCOUNT_USER)
+					.where(MP_OFFICIAL_ACCOUNT_USER.APP_ID.eq(appId).and(MP_OFFICIAL_ACCOUNT_USER.OPENID.eq(openId)))
+					.fetchAny();
+		} else {
+			fetchAny = db().selectFrom(MP_OFFICIAL_ACCOUNT_USER)
+					.where(MP_OFFICIAL_ACCOUNT_USER.APP_ID.eq(appId).and(MP_OFFICIAL_ACCOUNT_USER.UNIONID.eq(unionId)))
+					.fetchAny();
+		}
+		if (fetchAny == null) {
+			// 插入
+			db().executeInsert(record);
+		} else {
+			// 更新
+			record.setRecId(fetchAny.getRecId());
+			db().executeUpdate(record);
+		}
+	}
+
+	/**
+	 * 公众号和小程序关系
+	 * 
+	 * @param appId
+	 * @param userName
+	 * @return
+	 * @throws WxErrorException https://open.weixin.qq.com/cgi-bin/showdocument?action=dir_list&t=resource/res_list&verify=1&id=open1513255108_gFkRI&token=&lang=zh_CN
+	 */
+	public Boolean wxamplinkget(String appId, String userName) throws WxErrorException {
+		WxOpenMpampLinkService mpService = open.getMpExtService();
+		WxOpenMiniLinkGetResult bindMiniInfo = mpService.getBindMiniInfo(appId);
+		List<WxOpenMiniLinkGetItems> items = bindMiniInfo.getWxopens().getItems();
+		for (WxOpenMiniLinkGetItems item : items) {
+			if (userName.equals(item.getUsername())) {
+				// 1：已关联；2：等待小程序管理员确认中；3：小程序管理员拒绝关联12：等到公众号管理员确认中；
+				logger().info("公众号:" + appId + " 绑定的小程序userName:" + userName + "状态值:" + item.getStatus());
+				if (item.getStatus() == 1) {
+					return true;
+				}
+			}
+		}
+		return false;
+	}
 }
