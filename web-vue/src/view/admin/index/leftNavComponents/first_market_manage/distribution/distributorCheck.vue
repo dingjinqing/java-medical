@@ -1,6 +1,6 @@
 <template>
   <div>
-    砍价页面
+    分销员审核
   </div>
 </template>
 

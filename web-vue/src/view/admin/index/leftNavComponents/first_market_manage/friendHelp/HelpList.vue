@@ -22,8 +22,7 @@
       <div class="select_info">
         <div class="leftarea">
           <span>活动名称：</span>
-          <el-input size="small">
-          </el-input>
+          <el-input size="small"></el-input>
         </div>
         <div class="midarea">
           <span>活动时间：</span>
@@ -49,7 +48,6 @@
           <el-button
             type="primary"
             size="small"
-            @click="handleClick"
           >筛选</el-button>
         </div>
       </div>
@@ -184,7 +182,7 @@ export default {
         }]
     }
   },
-  create () {
+  created () {
     this.handleClick()
   },
 
@@ -198,16 +196,15 @@ export default {
       this.activeName = 'sixth'
     },
     handleClick (tab) {
-      console.log('tab.index:' + tab.index)
-      console.log('tab.rewardType:' + tab.rewardType)
+      console.log(tab)
+      console.log(tab.data.index)
       let listParam = {
         'actState': parseInt(tab.index),
         'currentPage': 1,
-        'pageRows': 20,
-        'rewardType': tab.rewardType
+        'pageRows': 20
       }
       friendHelpList(listParam).then(res => {
-        console.log('listParam.actState:' + listParam.actState)
+        console.log(res)
         if (res.error === 0) {
           this.handleData(res.content.dataList)
         }
