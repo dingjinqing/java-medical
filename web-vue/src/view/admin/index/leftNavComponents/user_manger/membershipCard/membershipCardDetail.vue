@@ -39,294 +39,589 @@
         </div>
       </div>
       <div class="rightContainer">
-        <div class="rightTile">基础设置</div>
-        <el-form
-          :model="ruleForm"
-          :rules="rules"
-          ref="ruleForm"
-          label-width="100px"
-          class="demo-ruleForm"
-        >
-          <el-form-item
-            label="会员卡名称："
-            prop="name"
-            class="userCardName first"
+        <div class="rightContainerTop">
+          <div class="rightTile">基础设置</div>
+          <el-form
+            :model="ruleForm"
+            :rules="rules"
+            ref="ruleForm"
+            label-width="100px"
+            class="demo-ruleForm"
           >
-            <el-input
-              v-model="ruleForm.name"
-              size="small"
-            ></el-input>
-          </el-form-item>
-          <el-form-item
-            label="背景图："
-            class="userCardName"
-          >
-            <div class="backgroundDiv">
-              <div class="bgTop">
-                <el-radio
-                  v-model="ruleForm.bgFlag"
-                  label="1"
-                >背景色</el-radio>
-                <!--颜色选择器-->
-                <colorPicker
-                  v-model="colorLeft_"
-                  :defaultColor="defaultColorleft"
-                  v-on:change="headleChangeColorLeft"
-                />
-              </div>
-              <div class="bgBottom">
-                <el-radio
-                  v-model="ruleForm.bgFlag"
-                  label="2"
-                >背景图</el-radio>
-                <img
-                  :src="baImgUrl"
-                  class="bgImgDiv"
-                  @click="handleToAddImg()"
-                  :style="`backgroundImage:url(${$imageHost}/image/admin/add_img.png);backgroundRepeat:no-repeat`"
-                />
+            <el-form-item
+              label="会员卡名称："
+              prop="name"
+              class="userCardName first"
+            >
+              <el-input
+                v-model="ruleForm.name"
+                size="small"
+              ></el-input>
+            </el-form-item>
+            <el-form-item
+              label="背景图："
+              class="userCardName"
+            >
+              <div class="backgroundDiv">
+                <div class="bgTop">
+                  <el-radio
+                    v-model="ruleForm.bgFlag"
+                    label="1"
+                  >背景色</el-radio>
+                  <!--颜色选择器-->
+                  <colorPicker
+                    v-model="colorLeft_"
+                    :defaultColor="defaultColorleft"
+                    v-on:change="headleChangeColorLeft"
+                  />
+                </div>
+                <div class="bgBottom">
+                  <el-radio
+                    v-model="ruleForm.bgFlag"
+                    label="2"
+                  >背景图</el-radio>
+                  <img
+                    :src="baImgUrl"
+                    class="bgImgDiv"
+                    @click="handleToAddImg()"
+                    :style="`backgroundImage:url(${$imageHost}/image/admin/add_img.png);backgroundRepeat:no-repeat`"
+                  />
 
-              </div>
-            </div>
-          </el-form-item>
-          <el-form-item
-            label="会员权益："
-            prop="discount"
-            class="userCardName"
-          >
-            <div class="discountDiv equity">
-              <el-checkbox v-model="ruleForm.discount">会员折扣</el-checkbox>
-              <el-input
-                v-model="discountInput"
-                size="small"
-              ></el-input>
-              &nbsp;&nbsp;折
-            </div>
-            <div class="allGoods">
-              <div style="margin-right:25px">会员折扣商品</div>
-              <el-radio
-                v-model="ruleForm.allGoods"
-                label="1"
-              >全部商品</el-radio>
-              <el-radio
-                v-model="ruleForm.allGoods"
-                label="2"
-              >指定商品</el-radio>
-            </div>
-            <!--点击指定商品后显示模块-->
-            <div
-              class="noneBlock"
-              v-if="ruleForm.allGoods==='2'"
-            >
-              <div
-                class="noneBlockList"
-                v-for="(item,index) in noneBlockDiscArr"
-                :key="index"
-              >
-                <div class="noneBlockLeft">
-                  <img :src="$imageHost+'/image/admin/icon_jia.png'">
-                  {{item.name}}
                 </div>
-                <div
-                  v-if="item.num"
-                  class="noneBlockRight"
-                >已选择分类：{{item.num}}个分类</div>
               </div>
-            </div>
-            <!--end-->
-            <div>
-              <div class="vipDiv">
-                <el-checkbox v-model="ruleForm.vipFlag">
-                  <span style="margin-right:25px">会员专享商品</span>
-                  <span>选择仅供持有此会员卡用户购买的商品</span>
-                </el-checkbox>
-              </div>
-            </div>
-            <!--点击指定商品后显示模块-->
-            <div
-              class="noneBlock"
-              v-if="ruleForm.vipFlag"
+            </el-form-item>
+            <el-form-item
+              label="会员权益："
+              prop="discount"
+              class="userCardName"
             >
-              <div
-                class="noneBlockList"
-                v-for="(item,index) in noneBlockVipArr"
-                :key="index"
-              >
-                <div class="noneBlockLeft">
-                  <img :src="$imageHost+'/image/admin/icon_jia.png'">
-                  {{item.name}}
-                </div>
-                <div
-                  v-if="item.num"
-                  class="noneBlockRight"
-                >已选择分类：{{item.num}}个分类</div>
+              <div class="discountDiv equity">
+                <el-checkbox v-model="ruleForm.discount">会员折扣</el-checkbox>
+                <el-input
+                  v-model="ruleForm.discountInput"
+                  size="small"
+                ></el-input>
+                &nbsp;&nbsp;折
               </div>
-            </div>
-            <!--end-->
-            <div class="discountDiv equity">
-              <el-checkbox v-model="ruleForm.intGet">积分获取&nbsp;&nbsp;&nbsp;&nbsp;开卡赠送</el-checkbox>
-              <el-input
-                v-model="discountInput"
-                size="small"
-              ></el-input>
-              &nbsp;&nbsp;积分
-            </div>
-            <!--积分获取下方子模块-->
-            <div class="shoppingFull">
-              <div class="shoppingFullTop">
+            </el-form-item>
+            <el-form-item
+              label=""
+              class="userCardName"
+            >
+              <div class="allGoods">
+                <div style="margin-right:25px">会员折扣商品</div>
                 <el-radio
-                  v-model="ruleForm.shoppingFull"
+                  v-model="ruleForm.allGoods"
                   label="1"
-                >购物满</el-radio>
-                <el-input
-                  size="small"
-                  v-model="ruleForm.shopingInputLeft"
-                ></el-input>&nbsp;&nbsp;送&nbsp;&nbsp;
-                <el-input
-                  size="small"
-                  v-model="ruleForm.shopingInputReft"
-                ></el-input>&nbsp;&nbsp;积分&nbsp;&nbsp;<img
-                  style="cursor:pointer"
-                  :src="$imageHost +'/image/admin/sign_jia.png' "
-                  @click="handleToAddIntegral()"
-                >
+                >全部商品</el-radio>
+                <el-radio
+                  v-model="ruleForm.allGoods"
+                  label="2"
+                >指定商品</el-radio>
               </div>
-              <block
-                v-for="(item,index) in ruleForm.addIntegralArr"
-                :key="index"
+              <!--点击指定商品后显示模块-->
+              <div
+                class="noneBlock"
+                v-if="ruleForm.allGoods==='2'"
               >
-                <div class="noneIntegralDiv">
-                  <span>购物满</span>
+                <div
+                  class="noneBlockList"
+                  v-for="(item,index) in noneBlockDiscArr"
+                  :key="index"
+                >
+                  <div class="noneBlockLeft">
+                    <img :src="$imageHost+'/image/admin/icon_jia.png'">
+                    {{item.name}}
+                  </div>
+                  <div
+                    v-if="item.num"
+                    class="noneBlockRight"
+                  >已选择分类：{{item.num}}个分类</div>
+                </div>
+              </div>
+              <!--end-->
+              <div>
+                <div class="vipDiv">
+                  <el-checkbox v-model="ruleForm.vipFlag">
+                    <span style="margin-right:25px">会员专享商品</span>
+                    <span>选择仅供持有此会员卡用户购买的商品</span>
+                  </el-checkbox>
+                </div>
+              </div>
+              <!--点击指定商品后显示模块-->
+              <div
+                class="noneBlock"
+                v-if="ruleForm.vipFlag"
+              >
+                <div
+                  class="noneBlockList"
+                  v-for="(item,index) in noneBlockVipArr"
+                  :key="index"
+                >
+                  <div class="noneBlockLeft">
+                    <img :src="$imageHost+'/image/admin/icon_jia.png'">
+                    {{item.name}}
+                  </div>
+                  <div
+                    v-if="item.num"
+                    class="noneBlockRight"
+                  >已选择分类：{{item.num}}个分类</div>
+                </div>
+              </div>
+              <!--end-->
+              <div class="discountDiv equity">
+                <el-checkbox v-model="ruleForm.intGet">积分获取&nbsp;&nbsp;&nbsp;&nbsp;开卡赠送</el-checkbox>
+                <el-input
+                  v-model="discountInput"
+                  size="small"
+                ></el-input>
+                &nbsp;&nbsp;积分
+              </div>
+              <!--积分获取下方子模块-->
+              <div class="shoppingFull">
+                <div class="shoppingFullTop">
+                  <el-radio
+                    v-model="ruleForm.shoppingFull"
+                    label="1"
+                  >购物满</el-radio>
                   <el-input
                     size="small"
-                    v-model="ruleForm.addIntegralArr[index].leftInput"
+                    v-model="ruleForm.shopingInputLeft"
                   ></el-input>&nbsp;&nbsp;送&nbsp;&nbsp;
                   <el-input
                     size="small"
-                    v-model="ruleForm.addIntegralArr[index].rightInput"
+                    v-model="ruleForm.shopingInputReft"
                   ></el-input>&nbsp;&nbsp;积分&nbsp;&nbsp;<img
                     style="cursor:pointer"
-                    :src="$imageHost +'/image/admin/sign_del.png' "
-                    @click="handleToDelIntegral(index)"
+                    :src="$imageHost +'/image/admin/sign_jia.png' "
+                    @click="handleToAddIntegral()"
                   >
                 </div>
-              </block>
-              <div class="shoppingFullBottom">
-                <el-radio
-                  v-model="ruleForm.shoppingFull"
-                  label="2"
-                >购物每满</el-radio>
-                <el-input
-                  size="small"
-                  v-model="ruleForm.shopingInputLeftM"
-                ></el-input>&nbsp;&nbsp;送&nbsp;&nbsp;
-                <el-input
-                  size="small"
-                  v-model="ruleForm.shopingInputReftM"
-                ></el-input>&nbsp;&nbsp;积分
-
-              </div>
-            </div>
-            <!--卡充值-->
-            <div class="cardRecharge">
-              <el-checkbox v-model="ruleForm.cardRechargeFlag">卡充值&nbsp;&nbsp;&nbsp;&nbsp;开卡赠送</el-checkbox>
-              <el-input
-                v-model="ruleForm.cardRechargeInput"
-                size="small"
-              ></el-input>
-              &nbsp;&nbsp;元
-            </div>
-            <!--卡充值下方子模块-->
-            <div class="shoppingFull">
-              <div class="shoppingFullTop">
-                <el-radio
-                  v-model="ruleForm.rechargeInput"
-                  label="1"
-                >充值满</el-radio>
-                <el-input
-                  size="small"
-                  v-model="ruleForm.rechargeInputLeft"
-                ></el-input>&nbsp;&nbsp;送&nbsp;&nbsp;
-                <el-input
-                  size="small"
-                  v-model="ruleForm.rechargeInputReft"
-                ></el-input>&nbsp;&nbsp;元&nbsp;&nbsp;<img
-                  style="cursor:pointer"
-                  :src="$imageHost +'/image/admin/sign_jia.png' "
-                  @click="handleToAddRecharge()"
+                <block
+                  v-for="(item,index) in ruleForm.addIntegralArr"
+                  :key="index"
                 >
-              </div>
-              <block
-                v-for="(item,index) in ruleForm.addrechargeArr"
-                :key="index"
-              >
-                <div class="noneIntegralDiv">
-                  <span>充值满</span>
+                  <div class="noneIntegralDiv">
+                    <span>购物满</span>
+                    <el-input
+                      size="small"
+                      v-model="ruleForm.addIntegralArr[index].leftInput"
+                    ></el-input>&nbsp;&nbsp;送&nbsp;&nbsp;
+                    <el-input
+                      size="small"
+                      v-model="ruleForm.addIntegralArr[index].rightInput"
+                    ></el-input>&nbsp;&nbsp;积分&nbsp;&nbsp;<img
+                      style="cursor:pointer"
+                      :src="$imageHost +'/image/admin/sign_del.png' "
+                      @click="handleToDelIntegral(index)"
+                    >
+                  </div>
+                </block>
+                <div class="shoppingFullBottom">
+                  <el-radio
+                    v-model="ruleForm.shoppingFull"
+                    label="2"
+                  >购物每满</el-radio>
                   <el-input
                     size="small"
-                    v-model="ruleForm.addrechargeArr[index].leftInput"
+                    v-model="ruleForm.shopingInputLeftM"
                   ></el-input>&nbsp;&nbsp;送&nbsp;&nbsp;
                   <el-input
                     size="small"
-                    v-model="ruleForm.addrechargeArr[index].rightInput"
-                  ></el-input>&nbsp;&nbsp;元&nbsp;&nbsp;<img
-                    style="cursor:pointer"
-                    :src="$imageHost +'/image/admin/sign_del.png' "
-                    @click="handleToDelRecharge(index)"
-                  >
+                    v-model="ruleForm.shopingInputReftM"
+                  ></el-input>&nbsp;&nbsp;积分
+
                 </div>
-              </block>
-              <div class="shoppingFullBottom">
+              </div>
+              <!--卡充值-->
+              <div class="cardRecharge">
+                <el-checkbox v-model="ruleForm.cardRechargeFlag">卡充值&nbsp;&nbsp;&nbsp;&nbsp;开卡赠送</el-checkbox>
+                <el-input
+                  v-model="ruleForm.cardRechargeInput"
+                  size="small"
+                ></el-input>
+                &nbsp;&nbsp;元
+              </div>
+              <!--卡充值下方子模块-->
+              <div class="shoppingFull">
                 <el-radio
                   v-model="ruleForm.rechargeInput"
-                  label="2"
-                >充值每满</el-radio>
-                <el-input
-                  size="small"
-                  v-model="ruleForm.rechargeInputLeftM"
-                ></el-input>&nbsp;&nbsp;送&nbsp;&nbsp;
-                <el-input
-                  size="small"
-                  v-model="ruleForm.rechargeInputReftM"
-                ></el-input>&nbsp;&nbsp;元
-
-              </div>
-            </div>
-            <!--end-->
-            <!--开卡送卷-->
-            <div class="sendingPaper">
-              <el-checkbox v-model="ruleForm.sendingPaperFlag">开卡送卷&nbsp;&nbsp;&nbsp;&nbsp;需要激活的会员卡,激活成功后送卷到个人账户中</el-checkbox>
-            </div>
-            <!--开卡送卷子模块-->
-            <div
-              class="couponDiv"
-              v-if="ruleForm.sendingPaperFlag"
-            >
-              <div class="couponDivTop">
-                <el-radio
-                  v-model="ruleForm.couponDiv"
                   label="1"
-                >送优惠卷&nbsp;&nbsp;&nbsp;&nbsp;最多可添加5种优惠卷,每种优惠卷赠送一张</el-radio>
-                <div
-                  class="card_add_clickDiv"
-                  @click="handleToCallDialog()"
+                >仅充值</el-radio>
+              </div>
+              <div class="shoppingFull">
+                <div class="shoppingFullTop">
+                  <el-radio
+                    v-model="ruleForm.rechargeInput"
+                    label="2"
+                  >充值满</el-radio>
+                  <el-input
+                    size="small"
+                    v-model="ruleForm.rechargeInputLeft"
+                  ></el-input>&nbsp;&nbsp;送&nbsp;&nbsp;
+                  <el-input
+                    size="small"
+                    v-model="ruleForm.rechargeInputReft"
+                  ></el-input>&nbsp;&nbsp;元&nbsp;&nbsp;<img
+                    style="cursor:pointer"
+                    :src="$imageHost +'/image/admin/sign_jia.png' "
+                    @click="handleToAddRecharge()"
+                  >
+                </div>
+                <block
+                  v-for="(item,index) in ruleForm.addrechargeArr"
+                  :key="index"
                 >
-                  <div class="card_add_click">
-                    <img :src="$imageHost +'/image/admin/shop_beautify/add_decorete.png'">
-                    <p>添加优惠卷</p>
+                  <div class="noneIntegralDiv">
+                    <span>充值满</span>
+                    <el-input
+                      size="small"
+                      v-model="ruleForm.addrechargeArr[index].leftInput"
+                    ></el-input>&nbsp;&nbsp;送&nbsp;&nbsp;
+                    <el-input
+                      size="small"
+                      v-model="ruleForm.addrechargeArr[index].rightInput"
+                    ></el-input>&nbsp;&nbsp;元&nbsp;&nbsp;<img
+                      style="cursor:pointer"
+                      :src="$imageHost +'/image/admin/sign_del.png' "
+                      @click="handleToDelRecharge(index)"
+                    >
                   </div>
+                </block>
+                <div class="shoppingFullBottom">
+                  <el-radio
+                    v-model="ruleForm.rechargeInput"
+                    label="3"
+                  >充值每满</el-radio>
+                  <el-input
+                    size="small"
+                    v-model="ruleForm.rechargeInputLeftM"
+                  ></el-input>&nbsp;&nbsp;送&nbsp;&nbsp;
+                  <el-input
+                    size="small"
+                    v-model="ruleForm.rechargeInputReftM"
+                  ></el-input>&nbsp;&nbsp;元
+
                 </div>
               </div>
-              <div class="couponDivBottom">
+              <!--end-->
+              <!--开卡送卷-->
+              <div class="sendingPaper">
+                <el-checkbox v-model="ruleForm.sendingPaperFlag">开卡送卷&nbsp;&nbsp;&nbsp;&nbsp;需要激活的会员卡,激活成功后送卷到个人账户中</el-checkbox>
+              </div>
+              <!--开卡送卷子模块-->
+              <div
+                class="couponDiv"
+                v-if="ruleForm.sendingPaperFlag"
+              >
+                <div class="couponDivTop">
+                  <el-radio
+                    v-model="ruleForm.couponDiv"
+                    label="1"
+                  >送优惠卷&nbsp;&nbsp;&nbsp;&nbsp;最多可添加5种优惠卷,每种优惠卷赠送一张</el-radio>
+                  <div
+                    class="couponList"
+                    v-if="ruleForm.couponDiv==='1'"
+                  >
+                    <!--添加的优惠卷列表-->
+                    <div
+                      class="couponLi"
+                      v-for="(item,index) in couponList"
+                      :key="index"
+                    >
+                      <img
+                        @click="handlToDelCouList(index)"
+                        v-if="item.ischeck"
+                        :src="$imageHost +'/image/admin/sign_del.png'"
+                      >
+                      <div class="coupon_list_top">
+                        ￥<span>{{item.price}}</span>
+                      </div>
+                      <div class="coupon_list_center">
+                        <div class="coupon_center_limit">{{item.isLimit?`满${item.nolimitPrice}使用`:'不限制'}}</div>
+                        <div class="coupon_center_number">剩余<span>{{item.surplus}}</span>张</div>
+                        <div
+                          class="coupon_list_bottom"
+                          :style="`backgroundImage:url('${$imageHost}/image/admin/coupon_border.png')`"
+                        >领取 </div>
+                      </div>
+                    </div>
+                    <!--end-->
+                    <div
+                      class="card_add_clickDiv"
+                      @click="handleToCallDialog()"
+                      v-if="couponList.length<5"
+                    >
+                      <div class="card_add_click">
+                        <img :src="$imageHost +'/image/admin/shop_beautify/add_decorete.png'">
+                        <p>添加优惠卷</p>
+                      </div>
+                    </div>
+                  </div>
+
+                </div>
+                <div class="couponDivBottom">
+                  <el-radio
+                    v-model="ruleForm.couponDiv"
+                    label="2"
+                  >送优惠卷礼包</el-radio>
+                </div>
+              </div>
+            </el-form-item>
+
+            <el-form-item
+              label="会员有效期："
+              prop="termValidity"
+              class="userCardName"
+            >
+              <div class="dateList">
                 <el-radio
-                  v-model="ruleForm.couponDiv"
-                  label="2"
-                >送优惠卷礼包</el-radio>
+                  v-model="ruleForm.dateRadio"
+                  label="1"
+                >固定日期</el-radio>
+                <el-date-picker
+                  v-model="ruleForm.fixedDate"
+                  type="daterange"
+                  range-separator="至"
+                  start-placeholder="开始日期"
+                  end-placeholder="结束日期"
+                  size="small"
+                >
+                </el-date-picker>
+                <div class="dateTips">例如：选择日期2018-1-2到2018-1-5，表示有效期为2018-1-2 00:00:00到2018-1-5 24:00:00</div>
               </div>
 
-            </div>
-          </el-form-item>
-        </el-form>
+              <div class="dateList">
+                <el-radio
+                  v-model="ruleForm.dateRadio"
+                  label="2"
+                >自领取之日起</el-radio>
+                <el-input
+                  size="small"
+                  v-model="ruleForm.fromDateInput"
+                ></el-input>
+                <el-select
+                  v-model="ruleForm.dateSelectvalue"
+                  placeholder="请选择"
+                  size="small"
+                >
+                  <el-option
+                    v-for="item in ruleForm.dateSelectOptions"
+                    :key="item.value"
+                    :label="item.label"
+                    :value="item.value"
+                  >
+                  </el-option>
+                </el-select>
+                内有效
+              </div>
+              <div class="dateList">
+                <el-radio
+                  v-model="ruleForm.dateRadio"
+                  label="3"
+                >永久有效</el-radio>
+              </div>
+            </el-form-item>
+            <el-form-item
+              label="使用门店："
+              prop="useStore"
+              class="userCardName"
+            >
+              <div class="useStoreDiv">
+                <el-radio
+                  v-model="ruleForm.useStoreRadio"
+                  label="1"
+                >全部门店</el-radio>
+                <el-radio
+                  v-model="ruleForm.useStoreRadio"
+                  label="2"
+                >部分门店</el-radio>
+                <el-radio
+                  v-model="ruleForm.useStoreRadio"
+                  label="3"
+                >不可再门店使用</el-radio>
+              </div>
+              <div class="useStoreTips">配置仅限限制门店买单、门店自提、核销门店预约服务时的会员卡使用，线上购买发货默认所有会员卡均可以使用</div>
+              <!--点击部分门店时显示模块-->
+              <div
+                class="add_brand"
+                style="display: inline-block;"
+                v-if="ruleForm.useStoreRadio==='2'"
+              >
+                <img :src="$imageHost+'/image/admin/icon_jia.png'">
+                添加品牌
+              </div>
+            </el-form-item>
+            <el-form-item
+              label="使用须知："
+              class="userCardName"
+            >
+              <el-input
+                type="textarea"
+                :rows="2"
+                v-model="ruleForm.textarea"
+              >
+              </el-input>
+            </el-form-item>
+            <el-form-item
+              label="联系电话："
+              class="userCardName  phoneNum"
+            >
+              <el-input
+                v-model="ruleForm.phoneNuminput"
+                placeholder="请输入内容"
+                size="small"
+              ></el-input>
+            </el-form-item>
+          </el-form>
+        </div>
+        <!--底部部分-->
+        <div class="rightContainerBottom">
+          <div class="rightTile">领取设置</div>
+          <div class="rightBottom">
+            <el-form
+              :model="ruleFormBottom"
+              :rules="rulesBottom"
+              ref="ruleForm b ottom"
+              label-width="100px"
+              class="demo-ruleForm"
+            >
+
+              <el-form-item
+                label="是否需要购买："
+                class="userCardName  phoneNum"
+              >
+                <el-radio
+                  v-model="ruleFormBottom.isBuyRadio"
+                  label="1"
+                >直接领取</el-radio>
+                <el-radio
+                  v-model="ruleFormBottom.isBuyRadio"
+                  label="2"
+                >需要购买</el-radio>
+                <el-radio
+                  v-model="ruleFormBottom.isBuyRadio"
+                  label="3"
+                >需要领取码</el-radio>
+                <div
+                  class="buyTableHidden"
+                  v-if="ruleFormBottom.isBuyRadio === '2'"
+                >
+                  <div>
+                    <el-radio
+                      v-model="ruleFormBottom.cashRadio"
+                      label="1"
+                    >现金购买</el-radio>
+                    <el-input
+                      v-model="ruleFormBottom.cashInput"
+                      placeholder="请输入内容"
+                      size="small"
+                    ></el-input>&nbsp;&nbsp;元
+                  </div>
+
+                  <div>
+                    <el-radio
+                      v-model="ruleFormBottom.integralRadio"
+                      label="2"
+                    >积分购买</el-radio>
+                    <el-input
+                      v-model="ruleFormBottom.integralInput"
+                      placeholder="请输入内容"
+                      size="small"
+                    ></el-input>&nbsp;&nbsp;分
+                  </div>
+
+                </div>
+                <!--点击需要领取码出现模块-->
+                <div
+                  class="buyTableHidden"
+                  v-if="ruleFormBottom.isBuyRadio === '3'"
+                >
+                  <div class="buyHiddenDiv">
+                    <el-radio
+                      v-model="ruleFormBottom.needGetRadio"
+                      label="1"
+                    >领取码领取</el-radio>
+                    <div v-if="ruleFormBottom.needGetRadio=== '1'">
+                      <span>批次1</span>
+                      <span>批次名称</span>
+                      <el-input
+                        v-model="ruleFormBottom.pcNameinput"
+                        size="small"
+                      ></el-input>
+                      <span>领取码</span>
+                      <span>增加批次</span>
+                      <span>废除批次</span>
+                      <span>生成/导入记录</span>
+                    </div>
+                  </div>
+
+                  <div class="buyHiddenDiv">
+                    <el-radio
+                      v-model="ruleFormBottom.needGetRadio"
+                      label="2"
+                    >卡号+密码领取</el-radio>
+                    <div v-if="ruleFormBottom.needGetRadio=== '2'">
+                      <span>批次1</span>
+                      <span>批次名称</span>
+                      <el-input
+                        v-model="ruleFormBottom.pcNameinput"
+                        size="small"
+                      ></el-input>
+                      <span>领取码</span>
+                      <span>增加批次</span>
+                      <span>废除批次</span>
+                      <span>生成/导入记录</span>
+                    </div>
+                  </div>
+
+                </div>
+              </el-form-item>
+              <el-form-item
+                label="是否需要激活："
+                class="userCardName  phoneNum"
+              >
+                <el-radio
+                  v-model="ruleFormBottom.activationRadio"
+                  label="1"
+                >否</el-radio>
+                <el-radio
+                  v-model="ruleFormBottom.activationRadio"
+                  label="2"
+                >是</el-radio>
+                <div class="activationHidden">
+                  <div style="color:#9D9D9D">选择后，请勾选你需要用户填写的信息</div>
+                  <!--选择需要激活后显示模块-->
+                  <div v-if="ruleFormBottom.activationRadio==='2'">
+                    <div class="activationTop">
+                      <el-checkbox v-model="ruleFormBottom.activation.nameCheck">真实姓名</el-checkbox>
+                      <el-checkbox v-model="ruleFormBottom.activation.phoneCheck">手机号</el-checkbox>
+                      <el-checkbox v-model="ruleFormBottom.activation.idheck">身份证号码</el-checkbox>
+                      <el-checkbox v-model="ruleFormBottom.activation.faxCheck">性别</el-checkbox>
+                      <el-checkbox v-model="ruleFormBottom.activation.birthDayCheck">生日</el-checkbox>
+                      <el-checkbox v-model="ruleFormBottom.activation.marryCheck">婚姻状况</el-checkbox>
+                      <el-checkbox v-model="ruleFormBottom.activation.eduCheck">教育程度</el-checkbox>
+                      <el-checkbox v-model="ruleFormBottom.activation.jobCheck">所在行业</el-checkbox>
+                      <el-checkbox v-model="ruleFormBottom.activation.adressCheck">所在地</el-checkbox>
+                    </div>
+                    <div class="activationBottom">
+                      <div style="color:#9D9D9D">激活信息是否需要审核</div>
+                      <el-radio
+                        v-model="ruleFormBottom.examineRadio"
+                        label="1"
+                      >无需审核</el-radio>
+                      <el-radio
+                        v-model="ruleFormBottom.examineRadio"
+                        label="2"
+                      >需要审核</el-radio>
+                    </div>
+                  </div>
+                </div>
+              </el-form-item>
+            </el-form>
+          </div>
+
+        </div>
       </div>
 
     </div>
@@ -342,7 +637,7 @@
       @handleSelectImg='handleSelectImg'
     />
     <!--添加优惠卷-->
-    <AddCouponDialog />
+    <AddCouponDialog @handleToCheck="handleToCheck" />
   </div>
 </template>
 <script>
@@ -386,17 +681,18 @@ export default {
       ruleForm: {
         name: '',
         bgFlag: '1',
-        discount: false,
+        discount: true,
+        discountInput: '',
         allGoods: '1',
         vipFlag: false,
         shoppingFull: '1',
-        intGet: false,
+        intGet: true,
         shopingInputLeft: '100',
         shopingInputReft: '100',
         shopingInputLeftM: '100',
         shopingInputReftM: '100',
         addIntegralArr: [],
-        cardRechargeFlag: false,
+        cardRechargeFlag: true,
         cardRechargeInput: '',
         rechargeInput: '1',
         rechargeInputLeft: '100',
@@ -405,14 +701,58 @@ export default {
         rechargeInputReftM: '100',
         addrechargeArr: [],
         sendingPaperFlag: false,
-        couponDiv: '1'
+        couponDiv: '1',
+        termValidity: '',
+        dateRadio: '1',
+        fixedDate: '',
+        fromDateInput: '',
+        dateSelectvalue: '日',
+        dateSelectOptions: [{
+          value: '选项1',
+          label: '日'
+        }, {
+          value: '选项2',
+          label: '周'
+        }, {
+          value: '选项3',
+          label: '月'
+        }],
+        useStoreRadio: '1',
+        useNotice: '',
+        textarea: '',
+        phoneNuminput: ''
       },
       rules: {
-        name: [{ required: true, message: '请输入会员卡名称', trigger: 'blur' }]
-        // discount: [{ type: 'array', required: true, message: '请至少选择一个活动性质', trigger: 'change' }]
+        name: [{ required: true, message: '请输入会员卡名称', trigger: 'blur' }],
+        discount: [{ type: 'array', required: true, message: '请至少选择一个活动性质', trigger: 'change' }]
+      },
+      ruleFormBottom: {
+        phoneNuminput: '',
+        isBuyRadio: '1',
+        activationRadio: '1',
+        cashRadio: '1',
+        cashInput: '',
+        integralRadio: '',
+        integralInput: '',
+        needGetRadio: '1',
+        pcNameinput: '',
+        activation: {
+          nameCheck: false,
+          phoneCheck: false,
+          idheck: false,
+          faxCheck: false,
+          birthDayCheck: false,
+          marryCheck: false,
+          eduCheck: false,
+          jobCheck: false,
+          adressCheck: false
+        },
+        examineRadio: '1'
+      },
+      rulesBottom: {
+
       },
       baImgUrl: null,
-      discountInput: '',
       noneBlockDiscArr: [
         {
           name: '添加商品',
@@ -449,7 +789,9 @@ export default {
           num: ''
         }
       ],
-      couponDialogFlag: false
+      couponDialogFlag: false,
+      couponList: []
+
     }
   },
   methods: {
@@ -512,8 +854,21 @@ export default {
     },
     // 调起添加优惠卷弹窗
     handleToCallDialog () {
-      this.couponDialogFlag = !this.couponDialogFlag
-      this.$http.$emit('V-AddCoupon', this.couponDialogFlag)
+      let obj = {
+        couponDialogFlag: !this.couponDialogFlag,
+        couponList: this.couponList
+      }
+
+      this.$http.$emit('V-AddCoupon', obj)
+    },
+    // 添加优惠卷弹窗回传
+    handleToCheck (data) {
+      console.log(data)
+      this.couponList = data
+    },
+    // 删除优惠卷项
+    handlToDelCouList (index) {
+      this.couponList.splice(index, 1)
     }
   }
 }
@@ -532,9 +887,9 @@ export default {
     overflow-x: hidden;
     overflow-y: auto;
     padding: 15px 25px;
-    height: 100%;
+    // height: 100%;
     display: flex;
-    padding-bottom: 50px;
+    padding-bottom: 57px;
     .leftContainer {
       width: 300px;
       margin-right: 20px;
@@ -599,104 +954,80 @@ export default {
     }
     .rightContainer {
       width: 60%;
-      background: #f8f8f8;
-      border: 1px solid #e4e4e4;
-      padding: 10px 1%;
+
       font-size: 13px;
       margin-bottom: 10px;
-      height: 1000px;
       /deep/ .el-form-item__label {
         white-space: nowrap;
         text-align: right;
       }
-      .rightTile {
-        padding-bottom: 10px;
-        border-bottom: 1px solid #ddd;
-        margin-bottom: 10px;
-      }
-      .userCardName {
-        padding-left: 100px;
-        /deep/ .el-input__inner {
-          width: 41%;
+      .rightContainerTop {
+        padding: 10px 1%;
+        background: #f8f8f8;
+        border: 1px solid #e4e4e4;
+        margin-bottom: 20px;
+        .rightTile {
+          padding-bottom: 10px;
+          border-bottom: 1px solid #ddd;
+          margin-bottom: 10px;
         }
-        .bgTop {
-          height: 40px;
-          display: flex;
-          justify-content: flex-start;
-          align-items: center;
-          /deep/ .colorBtn {
-            width: 65px;
+        .userCardName {
+          padding-left: 100px;
+          /deep/ .el-input__inner {
+            width: 41%;
+          }
+          .add_brand {
+            line-height: 30px;
             height: 30px;
+            width: 120px;
+            text-align: left;
+            color: #5a8bff;
             border: 1px solid #ccc;
-          }
-        }
-        .bgBottom {
-          height: 65px;
-          display: flex;
-          justify-content: flex-start;
-          align-items: center;
-          .bgImgDiv {
-            width: 65px;
-            height: 65px;
-            border: 1px solid #ccc;
-            background-position: center;
+            background: #fff;
             cursor: pointer;
+            padding-left: 5px;
+            margin-right: 20px;
           }
-        }
-        .discountDiv {
-          display: flex;
-          height: 40px;
-          justify-content: flex-start;
-          align-items: center;
-        }
-        .allGoods {
-          display: flex;
-          align-items: center;
-        }
-        .equity {
-          /deep/ .el-radio {
-            margin-right: 17px;
-          }
-          /deep/ .el-input {
-            width: 20%;
-            .el-input__inner {
-              width: 100%;
-            }
-          }
-        }
-        .noneBlock {
-          .noneBlockList {
-            margin-bottom: 10px;
+          .bgTop {
+            height: 40px;
             display: flex;
-            .noneBlockLeft {
-              line-height: 30px;
+            justify-content: flex-start;
+            align-items: center;
+            /deep/ .colorBtn {
+              width: 65px;
               height: 30px;
-              width: 120px;
-              text-align: left;
-              color: #5a8bff;
               border: 1px solid #ccc;
-              background: #fff;
-              cursor: pointer;
-              padding-left: 5px;
-              margin-right: 20px;
             }
-            .noneBlockRight {
-              color: #5a8bff;
-              cursor: pointer;
-              height: 30px;
-              line-height: 30px;
+            /deep/ .open {
+              z-index: 100;
             }
           }
-        }
-        .shoppingFull {
-          padding-left: 54px;
-          .shoppingFullTop,
-          .shoppingFullBottom,
-          .noneIntegralDiv {
+          .bgBottom {
+            height: 65px;
+            display: flex;
+            justify-content: flex-start;
+            align-items: center;
+            .bgImgDiv {
+              width: 65px;
+              height: 65px;
+              border: 1px solid #ccc;
+              background-position: center;
+              cursor: pointer;
+            }
+          }
+          .discountDiv {
+            display: flex;
+            height: 40px;
+            justify-content: flex-start;
+            align-items: center;
+          }
+          .allGoods {
             display: flex;
             align-items: center;
+          }
+          .equity {
             /deep/ .el-radio {
-              margin-right: 25px;
+              margin-right: 17px;
             }
             /deep/ .el-input {
               width: 20%;
@@ -705,66 +1036,253 @@ export default {
               }
             }
           }
-          .shoppingFullBottom {
-            /deep/ .el-radio {
-              margin-right: 12px;
+          .noneBlock {
+            .noneBlockList {
+              margin-bottom: 10px;
+              display: flex;
+              .noneBlockLeft {
+                line-height: 30px;
+                height: 30px;
+                width: 120px;
+                text-align: left;
+                color: #5a8bff;
+                border: 1px solid #ccc;
+                background: #fff;
+                cursor: pointer;
+                padding-left: 5px;
+                margin-right: 20px;
+              }
+              .noneBlockRight {
+                color: #5a8bff;
+                cursor: pointer;
+                height: 30px;
+                line-height: 30px;
+              }
             }
           }
-          .noneIntegralDiv {
-            margin-left: 25px;
-            span {
-              margin-right: 24px;
+          .shoppingFull {
+            padding-left: 54px;
+            .shoppingFullTop,
+            .shoppingFullBottom,
+            .noneIntegralDiv {
+              display: flex;
+              align-items: center;
+              /deep/ .el-radio {
+                margin-right: 25px;
+              }
+              /deep/ .el-input {
+                width: 20%;
+                .el-input__inner {
+                  width: 100%;
+                }
+              }
+            }
+            .shoppingFullBottom {
+              /deep/ .el-radio {
+                margin-right: 12px;
+              }
+            }
+            .noneIntegralDiv {
+              margin-left: 25px;
+              span {
+                margin-right: 24px;
+              }
+              /deep/ .el-input {
+                width: 20.7%;
+              }
+            }
+          }
+          .cardRecharge {
+            display: flex;
+            /deep/ .el-radio {
+              margin-right: 25px;
+            }
+            /deep/ .el-checkbox {
+              margin-right: 40px;
             }
             /deep/ .el-input {
-              width: 20.7%;
+              width: 20%;
+              .el-input__inner {
+                width: 100%;
+              }
+            }
+          }
+          .couponDiv {
+            padding-left: 30px;
+            display: flex;
+            flex-direction: column;
+            .card_add_clickDiv {
+              .card_add_click {
+                background: #fff;
+                border: 1px solid #e4e4e4;
+                cursor: pointer;
+                width: 108px;
+                height: 100px;
+                display: flex;
+                justify-content: center;
+                align-items: center;
+                flex-direction: column;
+                img {
+                  margin-top: 14px;
+                }
+                p {
+                  color: #999;
+                  font-size: 12px;
+                  margin: 8px 0 0 0;
+                }
+              }
+            }
+          }
+          .couponList {
+            width: 385px;
+            margin-left: 30px;
+            .couponLi {
+              float: left;
+              width: 108px;
+              text-align: center;
+              margin-right: 10px;
+              margin-bottom: 15px;
+              cursor: pointer;
+              position: relative;
+              img {
+                position: absolute;
+                top: -5px;
+                right: -5px;
+              }
+              .coupon_list_top {
+                height: 20px;
+                color: #f66;
+                font-size: 14px;
+                border: 1px solid #fbb;
+                border-top-left-radius: 5px;
+                border-top-right-radius: 5px;
+                border-bottom: none;
+                span {
+                  font-size: 20px;
+                  font-weight: bold;
+                  display: inline-block;
+                }
+              }
+              .coupon_list_center {
+                color: #f66;
+                font-size: 12px;
+                border-left: 1px solid #fbb;
+                border-right: 1px solid #fbb;
+                .coupon_center_number {
+                  height: 20px;
+                  line-height: 20px;
+                  margin-top: -10px;
+                  color: #fbb;
+                  margin-bottom: 5px;
+                }
+              }
+              .coupon_list_bottom {
+                background-color: #f66;
+                font-size: 12px;
+                -webkit-background-size: 12px;
+                background-size: 12px;
+                height: 24px;
+                line-height: 30px;
+                color: #fff;
+                border-left: 1px solid #fbb;
+                border-right: 1px solid #fbb;
+                border-bottom-left-radius: 5px;
+                border-bottom-right-radius: 5px;
+                background-repeat: repeat-x;
+                margin-left: -1px;
+                width: 102%;
+              }
+              .coupon_name {
+                font-size: 14px;
+                line-height: 30px;
+                border: 1px solid #fff;
+                margin: 0 -1px -1px -1px;
+                text-overflow: ellipsis;
+                white-space: nowrap;
+                overflow: hidden;
+                color: #333;
+                width: 110px;
+              }
             }
           }
         }
-        .cardRecharge {
-          display: flex;
-          /deep/ .el-radio {
-            margin-right: 25px;
+        .first {
+          /deep/ .el-form-item__label {
+            margin-left: -8px;
           }
-          /deep/ .el-checkbox {
-            margin-right: 40px;
-          }
+        }
+        .dateList {
           /deep/ .el-input {
-            width: 20%;
+            width: auto;
             .el-input__inner {
               width: 100%;
             }
           }
+          .dateTips {
+            color: #9d9d9d;
+          }
         }
-        .couponDiv {
-          padding-left: 30px;
-          display: flex;
-          flex-direction: column;
-          .card_add_clickDiv {
-            padding-left: 30px;
-            .card_add_click {
-              background: #fff;
-              border: 1px solid #e4e4e4;
-              cursor: pointer;
-              width: 100px;
-              display: flex;
-              justify-content: center;
-              align-items: center;
-              flex-direction: column;
-              img {
-                margin-top: 14px;
-              }
-              p {
-                color: #999;
-                font-size: 12px;
-                margin: 8px 0 0 0;
-              }
-            }
+        .useStoreTips {
+          color: #9d9d9d;
+        }
+        /deep/ .el-textarea {
+          width: 702px;
+        }
+        .phoneNum {
+          /deep/ .el-input__inner {
+            width: 24%;
           }
         }
       }
-      .first {
-        /deep/ .el-form-item__label {
-          margin-left: -8px;
+      .rightContainerBottom {
+        background: #f8f8f8;
+        border: 1px solid #e4e4e4;
+        padding: 10px 1%;
+        .rightTile {
+          padding-bottom: 10px;
+          border-bottom: 1px solid #ddd;
+          margin-bottom: 10px;
+        }
+        .rightBottom {
+          padding-left: 100px;
+          .buyTableHidden {
+            width: 100%;
+            padding: 5px 20px;
+            background-color: #fff;
+            border: 1px solid #ddd;
+            margin: 20px 0 0 -100px;
+            border-radius: 4px;
+            /deep/ .el-input {
+              width: auto;
+            }
+            .buyHiddenDiv {
+              display: flex;
+              align-items: center;
+              color: #333;
+              /deep/ .el-input {
+                width: 60px;
+                margin-right: 10px;
+              }
+              /deep/ .el-radio__label {
+                height: 41px;
+                line-height: 41px;
+              }
+              span {
+                display: inline-block;
+                margin-right: 10px;
+                &:nth-of-type(3),
+                &:nth-of-type(4),
+                &:nth-of-type(5),
+                &:nth-of-type(6) {
+                  color: #5a83f9;
+                  cursor: pointer;
+                }
+              }
+            }
+          }
+          .activationHidden {
+            padding-left: 24px;
+          }
         }
       }
     }
@@ -774,13 +1292,11 @@ export default {
   background: #f8f8fa;
   border-top: 1px solid #f2f2f2;
   text-align: center;
-  position: absolute;
-  z-index: 2;
+  position: fixed;
   bottom: 0;
   padding: 10px 0;
   left: 0;
   right: 0;
-  margin-right: 10px;
   .save {
     width: 70px;
     height: 30px;

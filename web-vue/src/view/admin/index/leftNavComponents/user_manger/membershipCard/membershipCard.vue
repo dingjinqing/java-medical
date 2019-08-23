@@ -30,30 +30,39 @@
                     <div class="time">{{item.data}}</div>
                   </div>
                   <div class="card_edit">
-                    <el-tooltip
-                      class="item"
-                      effect="dark"
-                      content="编辑"
-                      placement="top-start"
-                    >
-                      <img :src="$imageHost + '/image/admin/card_edit.png'">
-                    </el-tooltip>
-                    <el-tooltip
-                      class="item"
-                      effect="dark"
-                      content="分享"
-                      placement="top-start"
-                    >
-                      <img :src="$imageHost + '/image/admin/card_share_new.png'">
-                    </el-tooltip>
-                    <el-tooltip
-                      class="item"
-                      effect="dark"
-                      content="停用"
-                      placement="top-start"
-                    >
-                      <img :src="$imageHost + '/image/admin/card_disable.png'">
-                    </el-tooltip>
+                    <div @click="handleToEdit(0)">
+
+                      <el-tooltip
+                        class="item"
+                        effect="dark"
+                        content="编辑"
+                        placement="top-start"
+                      >
+                        <img :src="$imageHost + '/image/admin/card_edit.png'">
+                      </el-tooltip>
+                    </div>
+                    <div style="margin:0 5px">
+                      <el-tooltip
+                        class="item"
+                        effect="dark"
+                        content="分享"
+                        placement="top-start"
+                      >
+                        <img :src="$imageHost + '/image/admin/card_share_new.png'">
+                      </el-tooltip>
+                    </div>
+
+                    <div>
+                      <el-tooltip
+                        class="item"
+                        effect="dark"
+                        content="停用"
+                        placement="top-start"
+                      >
+                        <img :src="$imageHost + '/image/admin/card_disable.png'">
+                      </el-tooltip>
+                    </div>
+
                   </div>
                 </div>
               </div>
@@ -525,6 +534,13 @@ export default {
       this.$router.push({
         name: 'membershipCardDetail'
       })
+    },
+    // 点击编辑
+    handleToEdit (index) {
+      console.log(index)
+      this.$router.push({
+        name: 'membershipCardDetail'
+      })
     }
   }
 }
@@ -595,6 +611,8 @@ export default {
               }
             }
             .card_edit {
+              display: flex;
+              justify-content: flex-end;
               height: 22px;
               margin-top: 50px;
               text-align: right;

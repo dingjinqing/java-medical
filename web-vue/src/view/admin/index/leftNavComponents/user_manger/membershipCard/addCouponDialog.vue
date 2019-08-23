@@ -3,7 +3,7 @@
     <el-dialog
       title="选择优惠卷"
       :visible.sync="dialogVisible"
-      width="30%"
+      width="35%"
     >
       <div class="couponDialogDIiv">
         <div class="couponTop">
@@ -17,37 +17,33 @@
               type="info"
               plain
               size="small"
+              icon="el-icon-search"
             >搜索</el-button>
           </div>
           <span><i class="el-icon-refresh-left"></i>刷新</span>
         </div>
         <div class="couponListDiv">
-          <div class="couponLi">
+          <div
+            class="couponLi"
+            v-for="(item,index) in dialogData"
+            :key="index"
+            @click="handleToClick(index)"
+          >
+            <img
+              v-if="item.ischeck"
+              :src="$imageHost +'/image/admin/shop_beautify/checked_card.png'"
+            >
             <div class="coupon_list_top">
-              ￥<span>88</span>
+              ￥<span>{{item.price}}</span>
             </div>
             <div class="coupon_list_center">
-              <div class="coupon_center_limit">不限制</div>
-              <div class="coupon_center_number">剩余<span>99</span>张</div>
+              <div class="coupon_center_limit">{{item.isLimit?`满${item.nolimitPrice}使用`:'不限制'}}</div>
+              <div class="coupon_center_number">剩余<span>{{item.surplus}}</span>张</div>
               <div
                 class="coupon_list_bottom"
                 :style="`backgroundImage:url('${$imageHost}/image/admin/coupon_border.png')`"
               >领取 </div>
-              <div class="coupon_name">优惠券每人领取限制</div>
-            </div>
-          </div>
-          <div class="couponLi">
-            <div class="coupon_list_top">
-              ￥<span>88</span>
-            </div>
-            <div class="coupon_list_center">
-              <div class="coupon_center_limit">不限制</div>
-              <div class="coupon_center_number">剩余<span>99</span>张</div>
-              <div
-                class="coupon_list_bottom"
-                :style="`backgroundImage:url('${$imageHost}/image/admin/coupon_border.png')`"
-              >领取 </div>
-              <div class="coupon_name">优惠券每人领取限制</div>
+              <div class="coupon_name">{{item.tips}}</div>
             </div>
           </div>
         </div>
@@ -63,7 +59,7 @@
         >取 消</el-button>
         <el-button
           type="primary"
-          @click="dialogVisible = false"
+          @click="handleToSure()"
         >确 定</el-button>
       </span>
     </el-dialog>
@@ -77,7 +73,121 @@ export default {
       couponInput: '',
       dialogData: [
         {
-          price: 88
+          price: 88,
+          isLimit: true,
+          nolimitPrice: 2,
+          surplus: 99,
+          tips: '优惠券每人领取限制',
+          ischeck: false,
+          id: 0
+        },
+        {
+          price: 222,
+          isLimit: false,
+          nolimitPrice: 10,
+          surplus: 111,
+          tips: '年终大促',
+          ischeck: false,
+          id: 1
+        },
+        {
+          price: 333,
+          isLimit: false,
+          nolimitPrice: 10,
+          surplus: 111,
+          tips: '年终大促',
+          ischeck: false,
+          id: 2
+        },
+        {
+          price: 444,
+          isLimit: false,
+          nolimitPrice: 10,
+          surplus: 111,
+          tips: '年终大促',
+          ischeck: false,
+          id: 3
+        },
+        {
+          price: 555,
+          isLimit: false,
+          nolimitPrice: 10,
+          surplus: 111,
+          tips: '年终大促',
+          ischeck: false,
+          id: 4
+        },
+        {
+          price: 666,
+          isLimit: false,
+          nolimitPrice: 10,
+          surplus: 111,
+          tips: '年终大促',
+          ischeck: false,
+          id: 5
+        },
+        {
+          price: 666,
+          isLimit: false,
+          nolimitPrice: 10,
+          surplus: 111,
+          tips: '年终大促',
+          ischeck: false,
+          id: 6
+        },
+        {
+          price: 666,
+          isLimit: false,
+          nolimitPrice: 10,
+          surplus: 111,
+          tips: '年终大促',
+          ischeck: false,
+          id: 7
+        },
+        {
+          price: 666,
+          isLimit: false,
+          nolimitPrice: 10,
+          surplus: 111,
+          tips: '年终大促',
+          ischeck: false,
+          id: 8
+        },
+        {
+          price: 666,
+          isLimit: false,
+          nolimitPrice: 10,
+          surplus: 111,
+          tips: '年终大促',
+          ischeck: false,
+          id: 9
+        },
+        {
+          price: 666,
+          isLimit: false,
+          nolimitPrice: 10,
+          surplus: 111,
+          tips: '年终大促',
+          ischeck: false,
+          id: 9
+        },
+        {
+          price: 666,
+          isLimit: false,
+          nolimitPrice: 10,
+          surplus: 111,
+          tips: '年终大促',
+          ischeck: false,
+          id: 10
+        },
+        {
+          price: 666,
+          isLimit: false,
+          nolimitPrice: 10,
+          surplus: 111,
+          tips: '年终大促',
+          ischeck: false,
+          id: 11
         }
       ]
     }
@@ -89,9 +199,36 @@ export default {
   methods: {
     defaultData () {
       this.$http.$on('V-AddCoupon', res => {
-        this.dialogVisible = true
         console.log(res)
+        this.dialogData.forEach((item, index) => {
+          item.ischeck = false
+          res.couponList.forEach((itemC, indexC) => {
+            if (item.id === itemC.id) {
+              item.ischeck = true
+            }
+          })
+        })
+        this.dialogVisible = res.couponDialogFlag
       })
+    },
+    // 优惠卷选中
+    handleToClick (index) {
+      this.dialogData[index].ischeck = !this.dialogData[index].ischeck
+    },
+    // 弹窗确定事件
+    handleToSure () {
+      let arr = []
+      this.dialogData.forEach((item, index) => {
+        if (item.ischeck) arr.push(item)
+      })
+      console.log(arr.length)
+      if (arr.length > 5) {
+        this.$message.error('最多只能选择5张优惠卷哦~')
+        return
+      }
+      this.$emit('handleToCheck', arr)
+      console.log(arr)
+      this.dialogVisible = false
     }
   }
 }
@@ -140,9 +277,14 @@ export default {
         width: 108px;
         text-align: center;
         margin-right: 10px;
-        margin-bottom: 2px;
+        margin-bottom: 53px;
         cursor: pointer;
         position: relative;
+        img {
+          position: absolute;
+          top: -5px;
+          right: -5px;
+        }
         .coupon_list_top {
           padding-top: 10px;
           color: #f66;
@@ -196,6 +338,7 @@ export default {
           white-space: nowrap;
           overflow: hidden;
           color: #333;
+          width: 110px;
         }
       }
     }
