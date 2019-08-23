@@ -63,8 +63,12 @@
         </div>
         <!-- 设置赠品 -->
         <div v-if="step===2"></div>
-        <el-button @click="step-=1" v-show="step > 1">上一步</el-button>
-        <el-button @click="step+=1" v-show="step < steps.length">下一步</el-button>
+        <el-row>
+          <el-col :offset="4">
+            <el-button type="primary" @click="step-=1" v-show="step > 1">上一步</el-button>
+            <el-button type="primary" @click="step+=1" v-show="step < steps.length">下一步</el-button>
+          </el-col>
+        </el-row>
     </wrapper>
   </div>
 </template>
