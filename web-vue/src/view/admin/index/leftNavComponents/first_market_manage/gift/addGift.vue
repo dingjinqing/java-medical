@@ -67,7 +67,7 @@
           <el-col :offset="4">
             <el-button type="primary" @click="step-=1" v-show="step > 1">上一步</el-button>
             <el-button type="primary" @click="step+=1" v-show="step < steps.length">下一步</el-button>
-            <el-button type="primary" @click="updateGift" v-show="step === steps.length">保存</el-button>
+            <el-button type="primary" @click="addGift" v-show="step === steps.length">保存</el-button>
           </el-col>
         </el-row>
     </wrapper>
@@ -75,7 +75,7 @@
 </template>
 <script>
 import wrapper from '@/components/admin/wrapper/wrapper'
-import { updateGift } from '@/api/admin/marketManage/gift'
+import { addGift } from '@/api/admin/marketManage/gift'
 export default {
   components: {
     wrapper
@@ -119,8 +119,8 @@ export default {
     }
   },
   methods: {
-    updateGift () {
-      updateGift(this.param).then(r => {
+    addGift () {
+      addGift(this.param).then(r => {
         this.$router.replace('/admin/home/main/gift')
       })
     }
