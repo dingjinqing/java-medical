@@ -23,7 +23,6 @@ import com.vpu.mp.service.pojo.shop.market.integration.GroupIntegrationListParti
 @Service
 public class GroupIntegrationCalculatorService extends ShopBaseService{
 	
-	@Autowired private GroupIntegrationListService groupIntegrationList;
 	/**
 	 * 专业计算用户参加某一瓜分积分活动获得多少积分。
 	 * @param defineRecord 参加的活动
@@ -63,7 +62,7 @@ public class GroupIntegrationCalculatorService extends ShopBaseService{
 			}else {
 				integration = scorePool.get(i)-scorePool.get(i-1);
 			}
-			groupIntegrationList.updateIntegration(vo.getId(), integration);
+			saas.getShopApp(getShopId()).groupIntegration.groupIntegrationList.updateIntegration(vo.getId(), integration);
 		}
 		return 0;
 	}
@@ -82,8 +81,8 @@ public class GroupIntegrationCalculatorService extends ShopBaseService{
 		int partcipationNum = participationList.size();
 		int avgScore = canIntegration/partcipationNum;
 		int grouperScore =  canIntegration - avgScore * (partcipationNum-1);
-		groupIntegrationList.batchUpdateIntegeration(actId, groupId, avgScore);
-		groupIntegrationList.updateGroupperIntegration(actId, groupId, grouperScore);
+		saas.getShopApp(getShopId()).groupIntegration.groupIntegrationList.batchUpdateIntegeration(actId, groupId, avgScore);
+		saas.getShopApp(getShopId()).groupIntegration.groupIntegrationList.updateGroupperIntegration(actId, groupId, grouperScore);
 		return 0;
 	}
 	/**
@@ -103,8 +102,8 @@ public class GroupIntegrationCalculatorService extends ShopBaseService{
 		//算出每个人的权重
 		for (GroupIntegrationListParticipationVo vo : participationList) {
 			Integer userId = vo.getUserId();
-			int inviteNum = groupIntegrationList.getInviteNum(groupId, userId);
-			int inviteNewNum = groupIntegrationList.getInviteNewNum(groupId, userId);
+			int inviteNum = saas.getShopApp(getShopId()).groupIntegration.groupIntegrationList.getInviteNum(groupId, userId);
+			int inviteNewNum = saas.getShopApp(getShopId()).groupIntegration.groupIntegrationList.getInviteNewNum(groupId, userId);
 			int selfNum = vo.getIsNew().equals(IsNew.YES.value())?2:1;
 			int weight = inviteNewNum+ inviteNum + selfNum;
 			weightMap.put(vo, weight);
@@ -117,11 +116,11 @@ public class GroupIntegrationCalculatorService extends ShopBaseService{
 			if(participation.getIsGrouper().equals(IsGrouper.FALSE.value())) {
 				int integration = weightScore * weightMap.get(participation);
 				canIntegration-=integration;
-				groupIntegrationList.updateIntegration(participation.getId(), integration);
+				saas.getShopApp(getShopId()).groupIntegration.groupIntegrationList.updateIntegration(participation.getId(), integration);
 			}
 		}
 //		给组长分积分
-		groupIntegrationList.updateGroupperIntegration(defineRecord.getId(), groupId, canIntegration);
+		saas.getShopApp(getShopId()).groupIntegration.groupIntegrationList.updateGroupperIntegration(defineRecord.getId(), groupId, canIntegration);
 		return 0;
 	}
 	/**

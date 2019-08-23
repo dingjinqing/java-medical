@@ -48,7 +48,7 @@ public class GroupIntegrationListService extends ShopBaseService {
 	
 	public static final String REMARK = "积分瓜分";
 	
-	@Autowired private GroupIntegrationService groupIntegration;
+//	@Autowired private GroupIntegrationService groupIntegration;
 	@Autowired private GroupIntegrationCalculatorService calculatorHandler;
 	@Autowired private ScoreService scoreService;
 
@@ -82,7 +82,7 @@ public class GroupIntegrationListService extends ShopBaseService {
 		if(list == null ||list.isEmpty()) {
 			return result;
 		}
-		GroupIntegrationDefineRecord defineRecord = groupIntegration.selectDefineById(param.getActId());
+		GroupIntegrationDefineRecord defineRecord =saas().getShopApp(getShopId()).groupIntegration.selectDefineById(param.getActId());
 		for(GroupIntegrationSuccessVo vo :list) {
 			GroupperInfoPojo grouperInfo = getGrouperInfo(param.getActId(),vo.getGroupId());
 			if(grouperInfo == null) {
@@ -236,7 +236,7 @@ public class GroupIntegrationListService extends ShopBaseService {
 	@Async
 	public void asyncSuccessGroupIntegration(Integer groupId,Integer actId) {
 //		活动内容 
-		GroupIntegrationDefineRecord defineRecord = groupIntegration.selectDefineById(actId);
+		GroupIntegrationDefineRecord defineRecord = saas().getShopApp(getShopId()).groupIntegration.selectDefineById(actId);
 //		参与情况 
 		List<GroupIntegrationListParticipationVo> listParticipation = getGroupIntegrationListParticipation(actId, groupId);
 		if(listParticipation == null||listParticipation.size()==0) {
@@ -249,7 +249,7 @@ public class GroupIntegrationListService extends ShopBaseService {
 			calculatorHandler.handle(defineRecord, listParticipation);
 			this.setIntegrationListResult(actId, groupId, GroupIntegrationListEnums.Status.SUCCESS.value());
 			if(defineRecord.getIsDayDivide().equals(GroupIntegrationDefineEnums.IsDayDivide.NO.value()) && defineRecord.getInteTotal() > 0) {
-				groupIntegration.refreshRemainInte(actId);
+				saas().getShopApp(getShopId()).groupIntegration.refreshRemainInte(actId);
 			}
 			listParticipation = this.getGroupIntegrationListParticipation(actId, groupId);
 			listParticipation.forEach(item->{
@@ -262,10 +262,10 @@ public class GroupIntegrationListService extends ShopBaseService {
 			});
 //			TODO 通知用户拼团成功
 		}
-		defineRecord = groupIntegration.selectDefineById(actId);
+		defineRecord = saas().getShopApp(getShopId()).groupIntegration.selectDefineById(actId);
 		if(!canContinue(defineRecord)) {
 			defineRecord.setIsContinue(GroupIntegrationDefineEnums.IsContinue.FALSE.value());
-			groupIntegration.updateDefine(defineRecord);
+			saas().getShopApp(getShopId()).groupIntegration.updateDefine(defineRecord);
 		}
 		
 		
