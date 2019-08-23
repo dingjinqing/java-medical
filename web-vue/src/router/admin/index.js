@@ -611,6 +611,7 @@ const routes = [
                 '@/view/admin/index/leftNavComponents/first_market_manage/gift/addGift'
               )
           },
+          // 瓜分积分活动
           {
             path: '/api/admin/market/integration/list',
             name: 'group_integration',
@@ -621,6 +622,20 @@ const routes = [
             component: () =>
               import(
                 '@/view/admin/index/leftNavComponents/first_market_manage/groupIntegration/groupIntegrationList'
+              )
+          },
+          // 创建瓜分积分活动
+          {
+            path: '/api/admin/market/integration/add',
+            name: 'group_integration_add',
+            meta: {
+              crumbTitle: 'router.group_integration_add',
+              meta: 'first_market_manage',
+              category: 'first_market_manage'
+            },
+            component: () =>
+              import(
+                '@/view/admin/index/leftNavComponents/first_market_manage/groupIntegration/groupIntegrationAdd'
               )
           },
           {

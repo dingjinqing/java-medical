@@ -4,6 +4,7 @@
       <div class="p_top_right">
         <div class="topRightDiv s_btn">
           <el-button
+            @click="addGroupIntegration()"
             type="primary"
             size="small"
           >添加瓜分积分活动</el-button>
@@ -184,6 +185,12 @@ export default {
           alert('删除成功！')
           this.seacherCouponList()
         }
+      })
+    },
+    // 增加瓜分积分活动
+    addGroupIntegration () {
+      this.$router.push({
+        name: 'group_integration_add'
       })
     }
   }

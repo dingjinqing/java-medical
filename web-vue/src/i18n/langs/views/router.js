@@ -70,7 +70,8 @@ export const cn = {
   coupon_Package: ['营销管理', '优惠券礼包'],
   coupon_Package_add: ['营销管理', '优惠券礼包', '添加优惠券礼包'],
   // 营销管理 组团瓜分积分
-  group_integration: ['营销管理', '组团瓜分积分']
+  group_integration: ['营销管理', '组团瓜分积分'],
+  group_integration_add: ['营销管理', '组团瓜分积分', '添加组团瓜分积分']
 }
 
 export const en = {
@@ -160,5 +161,6 @@ export const en = {
     'Add Coupon Package'
   ],
   // 营销管理 组团瓜分积分
-  group_integration: ['Marketing management', 'Group integration']
+  group_integration: ['Marketing management', 'Group integration'],
+  group_integration_add: ['Marketing management', 'Group integration', 'Create group integration']
 }
