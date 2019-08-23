@@ -51,7 +51,8 @@ public class ShareRewardService extends ShopBaseService {
      * @return 分页数据
      */
     public PageResult<ShareRewardShowVo> selectByPage(ShareRewardShowParam param) {
-        Condition categoryConditon = sa.ID.isNotNull();
+        //已删除的分享有礼活动不参与查询
+        Condition categoryConditon = sa.DEL_FLAG.notEqual((byte) 1);
         switch (param.getCategory()) {
             // 所有0
             case PURCHASE_ALL:
@@ -62,25 +63,25 @@ public class ShareRewardService extends ShopBaseService {
                 break;
             // 已过期2
             case PURCHASE_EXPIRED:
-                categoryConditon = categoryConditon.and(sa.END_TIME.lessThan(new Timestamp(System.currentTimeMillis()))).and(sa.STATUS.notEqual((byte) 1)).and(sa.IS_FOREVER.eq((byte) 0));
+                categoryConditon = categoryConditon.and(sa.END_TIME.lessThan(new Timestamp(System.currentTimeMillis()))).and(sa.IS_FOREVER.eq((byte) 0));
                 break;
             // 未开始4
             case PURCHASE_PREPARE:
-                categoryConditon = categoryConditon.and(sa.START_TIME.greaterThan(new Timestamp(System.currentTimeMillis()))).and(sa.STATUS.notEqual((byte) 1)).and(sa.IS_FOREVER.eq((byte) 0));
+                categoryConditon = categoryConditon.and(sa.START_TIME.greaterThan(new Timestamp(System.currentTimeMillis()))).and(sa.IS_FOREVER.eq((byte) 0));
                 break;
             // 进行中8
             case PURCHASE_PROCESSING:
-                categoryConditon = categoryConditon.and(sa.STATUS.eq((byte) 1)).and(sa.IS_FOREVER.eq((byte) 1)).or(sa.START_TIME.lessThan(new Timestamp(System.currentTimeMillis()))).and(sa.END_TIME.greaterThan(new Timestamp(System.currentTimeMillis())));
+                categoryConditon = categoryConditon.and(sa.IS_FOREVER.eq((byte) 1)).or(sa.START_TIME.lessThan(new Timestamp(System.currentTimeMillis()))).and(sa.END_TIME.greaterThan(new Timestamp(System.currentTimeMillis())));
                 break;
             // 默认进行中8
             default:
-                categoryConditon = categoryConditon.and(sa.STATUS.eq((byte) 1)).and(sa.IS_FOREVER.eq((byte) 1)).or(sa.START_TIME.lessThan(new Timestamp(System.currentTimeMillis()))).and(sa.END_TIME.greaterThan(new Timestamp(System.currentTimeMillis())));
+                categoryConditon = categoryConditon.and(sa.IS_FOREVER.eq((byte) 1)).or(sa.START_TIME.lessThan(new Timestamp(System.currentTimeMillis()))).and(sa.END_TIME.greaterThan(new Timestamp(System.currentTimeMillis())));
                 break;
         }
         Table<Record11<Integer, String, Byte, Byte, Timestamp, Timestamp, String, String, String, Integer, Byte>> conditionStep = db().
             select(sa.ID, sa.NAME, sa.CONDITION, sa.IS_FOREVER, sa.START_TIME, sa.END_TIME, sa.FIRST_LEVEL_RULE, sa.SECOND_LEVEL_RULE, sa.THIRD_LEVEL_RULE, sa.PRIORITY, sa.STATUS).from(sa).where(categoryConditon).asTable("sa");
 
-        Condition selectConditon = sa.ID.isNotNull();
+        Condition selectConditon = sa.DEL_FLAG.notEqual((byte) 1);
         // TODO 页面筛选条件待定，此处省略筛选condition
 
         SelectConditionStep<Record11<Integer, String, Byte, Byte, Timestamp, Timestamp, String, String, String, Integer, Byte>> resultStep = db().
@@ -103,7 +104,7 @@ public class ShareRewardService extends ShopBaseService {
     }
 
     /**
-     * 分享规则json串中，奖励类型字段常量
+     * @value 分享规则json串中，奖励类型字段常量
      */
     private static final String REWARD_TYPE = "reward_type";
 
