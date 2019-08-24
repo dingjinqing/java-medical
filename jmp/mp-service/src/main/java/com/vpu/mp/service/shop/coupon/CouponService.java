@@ -1,22 +1,28 @@
 package com.vpu.mp.service.shop.coupon;
 
-import com.vpu.mp.db.shop.tables.records.MrkingVoucherRecord;
-import com.vpu.mp.service.foundation.data.DelFlag;
-import com.vpu.mp.service.foundation.service.ShopBaseService;
-import com.vpu.mp.service.foundation.util.PageResult;
-import com.vpu.mp.service.pojo.shop.coupon.*;
-import com.vpu.mp.service.pojo.shop.coupon.hold.CouponHoldListParam;
-import com.vpu.mp.service.pojo.shop.coupon.hold.CouponHoldListVo;
+import static com.vpu.mp.db.shop.Tables.CUSTOMER_AVAIL_COUPONS;
+import static com.vpu.mp.db.shop.Tables.MRKING_VOUCHER;
+
+import java.sql.Timestamp;
+import java.util.List;
+
 import org.jooq.Record;
 import org.jooq.SelectConditionStep;
 import org.jooq.SelectJoinStep;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.sql.Timestamp;
-import java.util.List;
-
-import static com.vpu.mp.db.shop.Tables.*;
+import com.vpu.mp.db.shop.tables.records.MrkingVoucherRecord;
+import com.vpu.mp.service.foundation.data.DelFlag;
+import com.vpu.mp.service.foundation.service.ShopBaseService;
+import com.vpu.mp.service.foundation.util.PageResult;
+import com.vpu.mp.service.pojo.shop.coupon.CouponGetDetailParam;
+import com.vpu.mp.service.pojo.shop.coupon.CouponListParam;
+import com.vpu.mp.service.pojo.shop.coupon.CouponListVo;
+import com.vpu.mp.service.pojo.shop.coupon.CouponParam;
+import com.vpu.mp.service.pojo.shop.coupon.CouponView;
+import com.vpu.mp.service.pojo.shop.coupon.hold.CouponHoldListParam;
+import com.vpu.mp.service.pojo.shop.coupon.hold.CouponHoldListVo;
 
 
 /**
@@ -31,6 +37,8 @@ public class CouponService extends ShopBaseService{
 
 	@Autowired
 	public CouponHoldService couponHold;
+
+	private String aliasCode;
 	/**
 	 * 创建优惠券
 	 * @param couponInfo
@@ -38,8 +46,31 @@ public class CouponService extends ShopBaseService{
 	 */
 	public Boolean couponAdd(CouponParam couponInfo) {
 		MrkingVoucherRecord record = new MrkingVoucherRecord();
+		record.setAliasCode(this.generateAliasCode());
 		this.assign(couponInfo,record);
 		return db().executeInsert(record) > 0 ? true : false;
+	}
+	
+	
+	/**
+	 * 生成优惠券唯一活动吗
+	 * @return
+	 */
+	public String generateAliasCode() {
+		 do {
+			 int randomNum = (int)(Math.random()*10000000)+10000000;
+	         this.aliasCode = "b" +  randomNum;
+	     } while (this.hasAliasCode(aliasCode)>0);
+		 return aliasCode;
+	}
+	
+	/**
+	 * 判断优惠券唯一活动码是否存在
+	 * @return
+	 */
+	public int hasAliasCode(String aliasCode) {
+		int res = db().selectCount().from(MRKING_VOUCHER).where(MRKING_VOUCHER.ALIAS_CODE.eq(aliasCode)).fetchOne().into(Integer.class);
+		return res;
 	}
 	
 	/**

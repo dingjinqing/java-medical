@@ -17,7 +17,6 @@ import com.vpu.mp.service.pojo.shop.coupon.CouponListParam;
 import com.vpu.mp.service.pojo.shop.coupon.CouponListVo;
 import com.vpu.mp.service.pojo.shop.coupon.CouponParam;
 import com.vpu.mp.service.pojo.shop.coupon.hold.CouponHoldListVo;
-import com.vpu.mp.service.shop.ShopApplication;
 
 /**
  * 优惠券管理
@@ -34,7 +33,6 @@ public class AdminCouponController extends AdminBaseController{
 	 */
 	@PostMapping("/admin/coupon/add")
 	public JsonResult couponAdd(@RequestBody CouponParam couponInfo) {
-		System.out.println(couponInfo);
 		Boolean result = shop().coupon.couponAdd(couponInfo);
 		if(result) {
 			return this.success(result);
@@ -60,7 +58,7 @@ public class AdminCouponController extends AdminBaseController{
 	 * @return
 	 */
 	@GetMapping("/admin/coupon/update/info")
-	public JsonResult oneCouponInfo(@RequestBody Integer couponId) {
+	public JsonResult oneCouponInfo(Integer couponId) {
 		List<CouponParam> couponInfo = shop().coupon.getOneCouponInfo(couponId);
 		return this.success(couponInfo);
 	}
