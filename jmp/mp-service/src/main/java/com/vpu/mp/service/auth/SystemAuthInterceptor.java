@@ -49,7 +49,7 @@ public class SystemAuthInterceptor extends HandlerInterceptorAdapter {
 
 		SystemTokenAuthInfo user = systemAuth.user();
 		if (user == null) {
-			errorResponse(request, response, URL_LOGIN, (new JsonResult()).fail(language, JsonResultCode.CODE_ACCOUNT_LOGIN_EXPIRED));
+			errorResponse(request, response, URL_LOGIN, (new JsonResult()).fail(language, JsonResultCode.CODE_ACCOUNT_SYTEM_LOGIN_EXPIRED));
 			return false;
 		} else {
 			//重置token时间
