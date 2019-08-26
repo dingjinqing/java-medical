@@ -142,7 +142,7 @@
 import wrapper from '@/components/admin/wrapper/wrapper'
 import choosingGoods from '@/components/admin/choosingGoods'
 import { format, range } from '@/util/date'
-import { addGift, getGiftDetail, updateGift } from '@/api/admin/marketManage/gift'
+import { addGift, getGiftDetail, updateGift, getMemberCardList, getTagList } from '@/api/admin/marketManage/gift'
 export default {
   components: {
     wrapper,
@@ -153,42 +153,43 @@ export default {
       id: null,
       step: 1,
       steps: ['设置活动规则', '设置赠品'],
+      // 活动时间范围
       dateRange: [],
+      // 支付时间范围
       payDateRange: [],
       tags: [],
-      cards: [{
-        id: 1,
-        name: 'abc'
-      }],
+      cards: [],
+      // 0：全部商品，1：指定商品
       goodsRange: 0,
       goodsRanges: ['全部商品', '指定商品'],
+      // 当前页为编辑页
       update: false,
       param: {
-        'name': '买则送赠品',
-        'level': 1,
-        'startTime': '2019-08-19 17:49:36',
-        'endTime': '2019-09-19 17:49:36',
-        'goodsIds': [],
-        'explain': 'Come on !!!',
-        'rules': {
-          'fullPrice': null,
-          'fullNumber': null,
-          'tagId': null,
-          'userAction': null,
-          'payTop': null,
-          'minPayNum': 1,
-          'maxPayNum': 10,
-          'cardId': [],
-          'payStartTime': '2019-08-19 18:07:54',
-          'payEndTime': '2019-08-19 18:08:01'
+        name: '买则送赠品',
+        level: 1,
+        startTime: '2019-08-19 17:49:36',
+        endTime: '2019-09-19 17:49:36',
+        goodsIds: [],
+        explain: 'Come on !!!',
+        rules: {
+          fullPrice: null,
+          fullNumber: null,
+          tagId: null,
+          userAction: null,
+          payTop: null,
+          minPayNum: 1,
+          maxPayNum: 10,
+          cardId: [],
+          payStartTime: '2019-08-19 18:07:54',
+          payEndTime: '2019-08-19 18:08:01'
         },
-        'gifts': [
+        gifts: [
           {
-            'productId': 1,
-            'productNumber': 1
+            productId: 1,
+            productNumber: 1
           }, {
-            'productId': 2,
-            'productNumber': 1
+            productId: 2,
+            productNumber: 1
           }
         ]
       },
@@ -199,6 +200,7 @@ export default {
         id: 2,
         name: '老用户'
       }],
+      // 系统中的全部赠品规则
       rules: [
         {
           label: '满金额赠送',
@@ -232,6 +234,7 @@ export default {
           keys: ['userAction']
         }
       ],
+      // 当前已选规则序号
       selectedRules: []
     }
   },
@@ -250,6 +253,7 @@ export default {
       this.formatTime()
       this.formatRules()
     },
+    // 格式化入参时间
     formatTime () {
       const { dateRange, payDateRange } = this
       let startTime = range(dateRange).v1
@@ -263,6 +267,7 @@ export default {
     },
     formatRules () {
       const { selectedRules } = this
+      // 将 param.rules 中，不在已选规则序号中的属性赋值 null
       Object.keys(this.param.rules).forEach(key => {
         const index = this.rules.findIndex(rule => undefined !== rule.keys.find(k => k === key))
         if (undefined === selectedRules.find(rule => rule === index)) {
@@ -274,14 +279,53 @@ export default {
       const { id } = this.$route.params
       getGiftDetail(id).then(({ content }) => {
         this.param = content
-        const { startTime, endTime } = content
-        this.dateRange.push(startTime)
-        this.dateRange.push(endTime)
-        const { goodsIds } = content
-        if (!goodsIds) {
-          this.goodsRange = 0
+        this.loadTime(content)
+        this.loadRules(content)
+        this.loadGoods(content)
+      })
+      this.loadTag()
+      this.loadMemberCard()
+    },
+    loadRules (content) {
+      const { rules } = content
+      const { payStartTime, payEndTime } = rules
+      this.param.rules.payStartTime = payStartTime || null
+      this.param.rules.payEndTime = payEndTime || null
+      // 获取接口返回结果的赠品规则中，属性值不为 null 的规则对应的序号
+      Object.keys(rules).forEach(key => {
+        if (rules[key] !== null) {
+          const index = this.rules.findIndex(rule => undefined !== rule.keys.find(k => k === key))
+          if (this.selectedRules.findIndex(rule => rule === index) === -1) {
+            this.selectedRules.push(index)
+          }
         }
       })
+    },
+    loadGoods (content) {
+      let { goodsIds } = content
+      if (!goodsIds || goodsIds.length === 0) {
+        this.goodsRange = 0
+      } else {
+        this.goodsRange = 1
+        this.param.goodsIds = goodsIds
+      }
+    },
+    loadTag () {
+      getTagList().then(r => {
+        const tags = r.content
+        this.tags = tags
+      })
+    },
+    loadMemberCard () {
+      getMemberCardList().then(r => {
+        const cards = r.content
+        this.cards = cards
+      })
+    },
+    loadTime (content) {
+      const { startTime, endTime } = content
+      this.dateRange.push(startTime)
+      this.dateRange.push(endTime)
     },
     gotoGifts () {
       this.$router.replace('/admin/home/main/gift')
@@ -292,7 +336,7 @@ export default {
   },
   watch: {
     goodsRange (v) {
-      if (v === 1) {
+      if (v === 0) {
         this.param.goodsIds = []
       }
     }
