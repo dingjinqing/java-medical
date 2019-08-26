@@ -6,6 +6,8 @@ import static com.vpu.mp.db.shop.Tables.USER;
 import java.sql.Timestamp;
 import java.util.List;
 
+import org.apache.tools.ant.types.selectors.ExtendSelector;
+import org.jooq.Record;
 import org.jooq.Record1;
 import org.jooq.Record4;
 import org.jooq.SelectConditionStep;
@@ -26,10 +28,10 @@ public class DistributorGroupService extends ShopBaseService{
 	 * @return 
 	 */
 	public PageResult<DistributorGroupListVo> getDistributorGroupList(DistributorGroupListParam param) {
-		SelectJoinStep<Record4<Integer, String, Byte, Byte>> select = db()
-				.select(DISTRIBUTOR_GROUP.ID,DISTRIBUTOR_GROUP.GROUP_NAME,DISTRIBUTOR_GROUP.IS_DEFAULT,DISTRIBUTOR_GROUP.DEL_FLAG)
+		SelectJoinStep<? extends Record> select = db()
+				.select(DISTRIBUTOR_GROUP.ID,DISTRIBUTOR_GROUP.GROUP_NAME,DISTRIBUTOR_GROUP.IS_DEFAULT,DISTRIBUTOR_GROUP.DEL_FLAG,DISTRIBUTOR_GROUP.CREATE_TIME)
 				.from(DISTRIBUTOR_GROUP);
-		SelectConditionStep<Record4<Integer, String, Byte, Byte>> sql = buildOptions(select,param);
+		SelectConditionStep<? extends Record> sql = buildOptions(select,param);
 		PageResult<DistributorGroupListVo> groupList = this.getPageResult(sql, param.getCurrentPage(), param.getPageRows(), DistributorGroupListVo.class);
 		
 		//每个分组下的分销员数量
@@ -46,8 +48,8 @@ public class DistributorGroupService extends ShopBaseService{
 	 * @param param
 	 * @return
 	 */
-	public SelectConditionStep<Record4<Integer, String, Byte, Byte>> buildOptions(SelectJoinStep<Record4<Integer, String, Byte, Byte>> select,DistributorGroupListParam param) {
-		SelectConditionStep<Record4<Integer, String, Byte, Byte>> sql = select.where(DISTRIBUTOR_GROUP.DEL_FLAG.eq((byte) 0));
+	public SelectConditionStep<? extends Record> buildOptions(SelectJoinStep<? extends Record> select,DistributorGroupListParam param) {
+		SelectConditionStep<? extends Record> sql = select.where(DISTRIBUTOR_GROUP.DEL_FLAG.eq((byte) 0));
 		if(param.getGroupName() != null) {
 			sql = sql.and(DISTRIBUTOR_GROUP.GROUP_NAME.eq(param.getGroupName()));
 		}
