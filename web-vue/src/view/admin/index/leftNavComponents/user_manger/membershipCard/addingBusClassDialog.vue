@@ -7,35 +7,11 @@
         width="30%"
       >
         <div class="dialogMain">
-          <ul>
-            <li
-              class="sort_li"
-              v-for="(item,index) in newArr"
-              :key="index"
-            >
-              <div class="first_sort_cate">
-                <img
-                  style="cursor:pointer"
-                  @click="handleToLevel_one(index)"
-                  :src="clickArr[index]?imgUrl[0].img_close:imgUrl[0].img_open"
-                >
-                <div class="check_div">
-                  <el-checkbox v-model="check"></el-checkbox>
-                  <span>{{item.sortName}}</span>
-                </div>
-              </div>
-              <div class="sort_list">
-                <div
-                  class="sort_div"
-                  v-for="(itemC,indexC) in item.children"
-                  :key="indexC"
-                >
-                  <el-checkbox v-model="check"></el-checkbox>
-                  <span>{{itemC.sortName}}</span>
-                </div>
-
-              </div>
-            </li>
+          <ul
+            v-for="(item,index) in newArr"
+            :key="index"
+          >
+            <Tree :data="item" />
           </ul>
         </div>
         <span
@@ -56,6 +32,9 @@
 <script>
 import { initGrandgetRequest } from '@/api/admin/brandManagement.js'
 export default {
+  components: {
+    Tree: () => import('./tree.vue')
+  },
   data () {
     return {
       dialogVisible: false,
