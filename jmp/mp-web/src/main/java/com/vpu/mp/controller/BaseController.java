@@ -1,10 +1,13 @@
 package com.vpu.mp.controller;
 
+import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 
+import org.apache.poi.ss.usermodel.Workbook;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.env.Environment;
 import org.springframework.util.StringUtils;
@@ -176,4 +179,22 @@ public class BaseController {
 		}
 		return result(JsonResultCode.CODE_FAIL, result2==null?result:result2);
 	}
+
+    /**
+     * Export 2 excel.
+     * 导出excel，统一写入response的输出流，并关闭workbook
+     * @param workbook service层返回已经填充完数据的工作簿
+     * @param response 设置统一的响应类型，格式和报文头等信息
+     * @param fileName 导出的excel文件名
+     */
+    protected void export2Excel(Workbook workbook, HttpServletResponse response,String fileName){
+        try {
+            response.setContentType("application/vnd.ms-excel;charset=UTF-8");
+            response.setHeader("Content-Disposition", "attachment;filename=" + fileName + ".xlsx");
+            workbook.write(response.getOutputStream());
+            workbook.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
 }

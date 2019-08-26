@@ -333,4 +333,27 @@ public class JsonResultMessage {
     public static final String PRESALE_ORDER_STATUS = "presale.order.order_status";
     public static final String INCLUDING_SHIPPING_FEE = "presale.order.including_shipping_fee";
 
+    /**
+     * 加价购-换购订单
+     */
+    public static final String REDEMPTION_ORDER_EXCEL =  "market.increase.purchase.redemption.excel";
+    public static final String REDEMPTION_ORDER_SN =  "market.increase.purchase.redemption.order_sn";
+    public static final String REDEMPTION_MAIN_GOODS = "market.increase.purchase.redemption.main_goods";
+    public static final String REDEMPTION_REDEMPTION_GOODS = "market.increase.purchase.redemption.redemption_goods";
+    public static final String REDEMPTION_CREATE_TIME = "market.increase.purchase.redemption.create_time";
+    public static final String REDEMPTION_RECEIVER_INFO = "market.increase.purchase.redemption.receiver_info";
+    public static final String REDEMPTION_ORDER_STATUS = "market.increase.purchase.redemption.order_status_name";
+    /**
+     * 加价购-换购明细
+     */
+    public static final String REDEMPTION_DETAIL_EXCEL =  "market.increase.purchase.redemption.detail.excel";
+    public static final String REDEMPTION_DETAIL_USER_ID =  "market.increase.purchase.redemption.detail.user_id";
+    public static final String REDEMPTION_DETAIL_USERNAME =  "market.increase.purchase.redemption.detail.username";
+    public static final String REDEMPTION_DETAIL_MOBILE = "market.increase.purchase.redemption.detail.mobile";
+    public static final String REDEMPTION_DETAIL_ORDER_SN = "market.increase.purchase.redemption.detail.order_sn";
+    public static final String REDEMPTION_DETAIL_CREATE_TIME = "market.increase.purchase.redemption.create_time";
+    public static final String REDEMPTION_DETAIL_MAIN_GOODS_TOTAL_MONEY = "market.increase.purchase.redemption.detail.main_goods_total_money";
+    public static final String REDEMPTION_DETAIL_REDEMPTION_NUM = "market.increase.purchase.redemption.detail.redemption_num";
+    public static final String REDEMPTION_DETAIL_REDEMPTION_TOTAL_MONEY = "market.increase.purchase.redemption.detail.redemption_total_money";
+
 }

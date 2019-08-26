@@ -1,7 +1,18 @@
 package com.vpu.mp.service.foundation.service;
 
-import java.util.Arrays;
-
+import com.vpu.mp.service.foundation.data.DelFlag;
+import com.vpu.mp.service.foundation.database.DatabaseManager;
+import com.vpu.mp.service.foundation.excel.ExcelFactory;
+import com.vpu.mp.service.foundation.excel.ExcelTypeEnum;
+import com.vpu.mp.service.foundation.excel.ExcelWriter;
+import com.vpu.mp.service.foundation.util.FieldsUtil;
+import com.vpu.mp.service.foundation.util.Page;
+import com.vpu.mp.service.foundation.util.PageResult;
+import com.vpu.mp.service.pojo.shop.base.BasePageParam;
+import com.vpu.mp.service.pojo.shop.market.increasepurchase.RedemptionOrderExportVo;
+import com.vpu.mp.service.saas.SaasApplication;
+import com.vpu.mp.service.wechat.OpenPlatform;
+import org.apache.poi.ss.usermodel.Workbook;
 import org.jooq.Record;
 import org.jooq.Result;
 import org.jooq.SelectLimitStep;
@@ -10,14 +21,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 
-import com.vpu.mp.service.foundation.data.DelFlag;
-import com.vpu.mp.service.foundation.database.DatabaseManager;
-import com.vpu.mp.service.foundation.util.FieldsUtil;
-import com.vpu.mp.service.foundation.util.Page;
-import com.vpu.mp.service.foundation.util.PageResult;
-import com.vpu.mp.service.pojo.shop.base.BasePageParam;
-import com.vpu.mp.service.saas.SaasApplication;
-import com.vpu.mp.service.wechat.OpenPlatform;
+import java.util.Arrays;
+import java.util.List;
 
 /**
  * 
@@ -131,4 +136,29 @@ public abstract  class AbstractCommonBaseService {
 	protected SaasApplication saas() {
 		return saas;
 	}
+
+	private static final Integer DEFAUTL_PAGE_ROWS = 20;
+    private static final Integer DEFAUTL_START_PAGE = 0;
+    protected <T> List<T> getMultiPage(SelectLimitStep<?> select, Integer startPage, Integer endPage, Integer pageRows, Class<T> clazz){
+	    pageRows = pageRows != null ? pageRows : DEFAUTL_PAGE_ROWS;
+        startPage = startPage != null ? startPage : DEFAUTL_START_PAGE;
+        endPage = endPage != null ? endPage : DEFAUTL_START_PAGE;
+        return select.limit((startPage - 1) * pageRows, pageRows * (endPage - startPage + 1)).fetchInto(clazz);
+    }
+    protected <T> Workbook exportByPage(SelectLimitStep<?> select, Integer startPage, Integer endPage, Integer pageRows, Class<T> clazz){
+        pageRows = pageRows != null ? pageRows : DEFAUTL_PAGE_ROWS;
+        startPage = startPage != null ? startPage : DEFAUTL_START_PAGE;
+        endPage = endPage != null ? endPage : DEFAUTL_START_PAGE;
+        List<T> list = select.limit((startPage - 1) * pageRows, pageRows * (endPage - startPage + 1)).fetchInto(clazz);
+        Workbook workbook = ExcelFactory.createWorkbook(ExcelTypeEnum.XLSX);
+        ExcelWriter excelWriter = new ExcelWriter(workbook);
+        excelWriter.writeModelList(list, clazz);
+        return workbook;
+    }
+    protected <T> Workbook export(List<T> list,Class<T> clazz){
+        Workbook workbook = ExcelFactory.createWorkbook(ExcelTypeEnum.XLSX);
+        ExcelWriter excelWriter = new ExcelWriter(workbook);
+        excelWriter.writeModelList(list, clazz);
+        return workbook;
+    }
 }

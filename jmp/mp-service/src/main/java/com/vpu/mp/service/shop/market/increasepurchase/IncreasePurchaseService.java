@@ -1,7 +1,8 @@
 package com.vpu.mp.service.shop.market.increasepurchase;
 
-import com.vpu.mp.db.shop.tables.*;
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.vpu.mp.db.shop.tables.User;
+import com.vpu.mp.db.shop.tables.*;
 import com.vpu.mp.db.shop.tables.records.PurchasePriceDefineRecord;
 import com.vpu.mp.db.shop.tables.records.PurchasePriceRuleRecord;
 import com.vpu.mp.service.foundation.service.ShopBaseService;
@@ -14,6 +15,7 @@ import com.vpu.mp.service.pojo.shop.qrcode.QrCodeTypeEnum;
 import com.vpu.mp.service.shop.image.QrCodeService;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
+import org.apache.poi.ss.usermodel.Workbook;
 import org.jooq.*;
 import org.jooq.impl.DSL;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -28,6 +30,7 @@ import java.util.Map;
 import static com.vpu.mp.db.shop.tables.PurchasePriceDefine.PURCHASE_PRICE_DEFINE;
 import static com.vpu.mp.db.shop.tables.PurchasePriceRule.PURCHASE_PRICE_RULE;
 import static com.vpu.mp.service.foundation.database.DslPlus.concatWs;
+import static com.vpu.mp.service.pojo.shop.market.form.FormConstant.MAPPER;
 import static com.vpu.mp.service.pojo.shop.market.increasepurchase.PurchaseConstant.*;
 import static com.vpu.mp.service.pojo.shop.order.OrderConstant.GOODS_TYPE_PURCHASE_PRICE;
 import static org.jooq.impl.DSL.groupConcat;
@@ -254,6 +257,40 @@ public class IncreasePurchaseService extends ShopBaseService {
      * @return 分页数据
      */
     public PageResult<RedemptionOrderVo> getRedemptionOrderList(RedemptionOrderParam param) {
+        //默认排序方式---下单时间
+        PageResult<RedemptionOrderVo> vo = this.getPageResult(buildRedemptionListOption(param).groupBy(og.ORDER_SN).orderBy(oi.CREATE_TIME), param.getCurrentPage(), param.getPageRows(), RedemptionOrderVo.class);
+
+        log.debug("进行商品展示信息的组合");
+        for (RedemptionOrderVo redemption : vo.getDataList()) {
+            String[] concatIds = redemption.getConcatId().split(GROUPCONCAT_SEPARATOR);
+            String[] concatNames = redemption.getConcatName().split(GROUPCONCAT_SEPARATOR);
+            String[] concatNumbers = redemption.getConcatNumber().split(GROUPCONCAT_SEPARATOR);
+            String[] activityRules = redemption.getActivityRules().split(GROUPCONCAT_SEPARATOR);
+            String[] concatImgs = redemption.getConcatImg().split(GROUPCONCAT_SEPARATOR);
+            List<RedemptionGoodsInfo> mainGoods = new ArrayList<>();
+            List<RedemptionGoodsInfo> redempGoods = new ArrayList<>();
+            for (int i = 0; i < concatIds.length; i++) {
+                log.debug("activityRule字段不为默认值0，说明该商品在本次订单中属于加购商品（非主商品）");
+                if (Integer.valueOf(activityRules[i]) > 0) {
+                    redempGoods.add(new RedemptionGoodsInfo(Integer.valueOf(concatIds[i]), concatNames[i], concatImgs[i], Integer.valueOf(concatNumbers[i])));
+                } else {
+                    mainGoods.add(new RedemptionGoodsInfo(Integer.valueOf(concatIds[i]), concatNames[i], concatImgs[i], Integer.valueOf(concatNumbers[i])));
+                }
+            }
+            redemption.setMainGoods(mainGoods);
+            redemption.setRedemptionGoods(redempGoods);
+        }
+        return vo;
+    }
+
+    /**
+     * Build redemption list option select condition step.
+     * 构建换购订单列表查询条件
+     *
+     * @param param the param
+     * @return the select condition step
+     */
+    private SelectConditionStep<Record11<String, String, String, String, String, String, String, Timestamp, String, String, String>> buildRedemptionListOption(RedemptionOrderParam param) {
         SelectConditionStep<Record11<String, String, String, String, String, String, String, Timestamp, String, String, String>> conditionStep = db().select(oi.ORDER_SN, groupConcat(og.GOODS_ID, GROUPCONCAT_SEPARATOR).as("concatId"), groupConcat(og.GOODS_NAME, GROUPCONCAT_SEPARATOR).as("concatName"), groupConcat(og.GOODS_NUMBER, GROUPCONCAT_SEPARATOR).as("concatNumber"), groupConcat(og.ACTIVITY_ID, GROUPCONCAT_SEPARATOR).as("activityIds"), groupConcat(og.ACTIVITY_RULE, GROUPCONCAT_SEPARATOR).as("activityRules"), groupConcat(g.GOODS_IMG, GROUPCONCAT_SEPARATOR).as("concatImg"), oi.CREATE_TIME, oi.CONSIGNEE, oi.MOBILE, oi.ORDER_STATUS_NAME).from(og).leftJoin(g).on(og.GOODS_ID.eq(g.GOODS_ID)).leftJoin(oi).on(og.ORDER_SN.eq(oi.ORDER_SN)).where(og.ACTIVITY_ID.eq(param.getActivityId()));
 
         if (StringUtils.isNotBlank(param.getGoodsName())) {
@@ -280,11 +317,29 @@ public class IncreasePurchaseService extends ShopBaseService {
         if (param.getDistrictCode() != null) {
             conditionStep = conditionStep.and(oi.DISTRICT_CODE.eq(param.getDistrictCode()));
         }
-        //默认排序方式---下单时间
-        PageResult<RedemptionOrderVo> vo = this.getPageResult(conditionStep.groupBy(og.ORDER_SN).orderBy(oi.CREATE_TIME), param.getCurrentPage(), param.getPageRows(), RedemptionOrderVo.class);
+        return conditionStep;
+    }
 
-        log.debug("进行商品展示信息的组合");
-        for (RedemptionOrderVo redemption : vo.getDataList()) {
+    /**
+     * 换购订单列表导出
+     *
+     * @param param 筛选条件和导出起始页
+     * @return Workbook
+     */
+    public Workbook exportOrderList(RedemptionOrderParam param) {
+        List<RedemptionOrderExportVo> list = this.getMultiPage(buildRedemptionListOption(param).groupBy(og.ORDER_SN).orderBy(oi.CREATE_TIME), param.getStartPage(), param.getEndPage(), param.getPageRows(), RedemptionOrderExportVo.class);
+        preExportList(list);
+        return this.export(list, RedemptionOrderExportVo.class);
+    }
+
+    /**
+     * Pre export.
+     * 导出换购订单列表前数据处理
+     *
+     * @param list the list
+     */
+    private void preExportList(List<RedemptionOrderExportVo> list) {
+        for (RedemptionOrderExportVo redemption : list) {
             String[] concatIds = redemption.getConcatId().split(GROUPCONCAT_SEPARATOR);
             String[] concatNames = redemption.getConcatName().split(GROUPCONCAT_SEPARATOR);
             String[] concatNumbers = redemption.getConcatNumber().split(GROUPCONCAT_SEPARATOR);
@@ -300,13 +355,15 @@ public class IncreasePurchaseService extends ShopBaseService {
                     mainGoods.add(new RedemptionGoodsInfo(Integer.valueOf(concatIds[i]), concatNames[i], concatImgs[i], Integer.valueOf(concatNumbers[i])));
                 }
             }
-            redemption.setMainGoods(mainGoods);
-            redemption.setRedemptionGoods(redempGoods);
+            try {
+                redemption.setMainGoodsString(MAPPER.writeValueAsString(mainGoods));
+                redemption.setRedemptionGoodsString(MAPPER.writeValueAsString(redempGoods));
+            } catch (JsonProcessingException e) {
+                e.printStackTrace();
+            }
+            redemption.setReceiverInfo(String.format("%s(%s)", redemption.getConsignee(), redemption.getMobile()));
         }
-        return vo;
     }
-
-    //TODO 换购订单列表导出
 
     /**
      * 查看换购明细
@@ -339,5 +396,44 @@ public class IncreasePurchaseService extends ShopBaseService {
         return vo;
     }
 
-    //TODO 换购明细导出
+    /**
+     * 换购明细导出
+     *
+     * @param param 筛选条件和导出起始页
+     * @return Workbook
+     */
+    public Workbook exportOrderDetail(RedemptionDetailParam param) {
+        SelectOnConditionStep<Record8<Integer, String, String, String, Timestamp, String, String, String>> conditionStep = db().select(oi.USER_ID, u.USERNAME, u.MOBILE, oi.ORDER_SN, oi.CREATE_TIME, groupConcat(og.GOODS_PRICE, GROUPCONCAT_SEPARATOR).as("concatPrices"), groupConcat(og.GOODS_NUMBER, GROUPCONCAT_SEPARATOR).as("concatNumbers"), groupConcat(og.ACTIVITY_RULE, GROUPCONCAT_SEPARATOR).as("activityRules")).from(og).leftJoin(oi).on(og.ORDER_SN.eq(oi.ORDER_SN)).leftJoin(u).on(oi.USER_ID.eq(u.USER_ID));
+        List<RedemptionDetailVo> list = this.getMultiPage(conditionStep.groupBy(og.ORDER_SN).orderBy(oi.CREATE_TIME), param.getStartPage(), param.getEndPage(), param.getPageRows(), RedemptionDetailVo.class);
+        preExportDetail(list);
+        return this.export(list, RedemptionDetailVo.class);
+    }
+
+    /**
+     * Pre export.
+     * 导出换购明细前数据处理
+     *
+     * @param list the list
+     */
+    private void preExportDetail(List<RedemptionDetailVo> list) {
+        for (RedemptionDetailVo redemption : list) {
+            String[] concatPrices = redemption.getConcatPrices().split(GROUPCONCAT_SEPARATOR);
+            String[] concatNumbers = redemption.getConcatNumbers().split(GROUPCONCAT_SEPARATOR);
+            String[] activityRules = redemption.getActivityRules().split(GROUPCONCAT_SEPARATOR);
+            BigDecimal mainMoney = new BigDecimal(0);
+            BigDecimal redempMoney = new BigDecimal(0);
+            Integer redempNum = 0;
+            for (int i = 0; i < activityRules.length; i++) {
+                if (Integer.valueOf(activityRules[i]) > 0) {
+                    redempMoney = redempMoney.add(new BigDecimal(concatPrices[i]));
+                    redempNum += Integer.valueOf(concatNumbers[i]);
+                } else {
+                    mainMoney = mainMoney.add(new BigDecimal(concatPrices[i]));
+                }
+            }
+            redemption.setMainGoodsTotalMoney(mainMoney);
+            redemption.setRedemptionNum(redempNum);
+            redemption.setRedemptionTotalMoney(redempMoney);
+        }
+    }
 }

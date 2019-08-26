@@ -16,4 +16,8 @@ public class RedemptionDetailParam {
 
     private Integer currentPage;
     private Integer pageRows;
+
+    /** 按页导出参数：起始页，结束页，每页行数 */
+    private Integer startPage;
+    private Integer endPage;
 }
