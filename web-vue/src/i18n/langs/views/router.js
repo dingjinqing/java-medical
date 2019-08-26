@@ -66,6 +66,10 @@ export const cn = {
   bargain: ['营销管理', '砍价'],
   // 营销管理 好友助力
   promote: ['营销管理', '好友助力'],
+  // 营销管理 分享有礼
+  share_polite: ['营销管理', '分享有礼'],
+  // 营销管理 分享有礼
+  share_polite_detail: ['营销管理', '分享有礼', '领取明细'],
   // 营销管理 普通优惠券
   ordinary_coupon: ['营销管理', '普通优惠券'],
   // 营销管理 拼团抽奖
@@ -198,6 +202,9 @@ export const en = {
   // 营销管理 好友代付
   friend_pay: ['Marketing management', 'friends paid'],
   // 营销管理 幸运大抽奖
-  lottery_activity: ['Marketing management', 'Lucky draw']
-
+  lottery_activity: ['Marketing management', 'Lucky draw'],
+  // 营销管理 分享有礼
+  share_polite: ['Marketing management', 'share polite'],
+  // 营销管理 分享有礼 领取明细
+  share_polite_detail: ['Marketing management', 'share polite', 'receive details ']
 }

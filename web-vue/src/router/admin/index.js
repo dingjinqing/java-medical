@@ -511,6 +511,48 @@ const routes = [
                 '@/view/admin/index/leftNavComponents/first_market_manage/first_market/firstMarketManage'
               )
           },
+          // 分享有礼活动
+          {
+            path: '/admin/home/main/sharePoliteList',
+            name: 'share_polite',
+            meta: {
+              crumbTitle: 'router.share_polite',
+              meta: 'first_market_manage',
+              category: 'first_market_manage'
+            },
+            component: () =>
+              import(
+                '@/view/admin/index/leftNavComponents/first_market_manage/sharePolite/sharePoliteList'
+              )
+          },
+          // 分享有礼活动-添加
+          {
+            path: '/admin/home/main/addSharePolite',
+            name: 'share_polite',
+            meta: {
+              crumbTitle: 'router.share_polite',
+              meta: 'first_market_manage',
+              category: 'first_market_manage'
+            },
+            component: () =>
+              import(
+                '@/view/admin/index/leftNavComponents/first_market_manage/sharePolite/addSharePolite'
+              )
+          },
+          // 分享有礼活动-领取明细
+          {
+            path: '/admin/home/main/sharePoliteDetail',
+            name: 'share_polite_detail',
+            meta: {
+              crumbTitle: 'router.share_polite_detail',
+              meta: 'first_market_manage',
+              category: 'first_market_manage'
+            },
+            component: () =>
+              import(
+                '@/view/admin/index/leftNavComponents/first_market_manage/sharePolite/sharePoliteDetail'
+              )
+          },
           // 砍价
           {
             path: '/admin/home/main/bargain',

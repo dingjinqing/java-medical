@@ -139,7 +139,10 @@
 
       <div class="box">
         <!-- 分享有礼 -->
-        <div class="voucher box_style">
+        <div
+          @click="sharePolite()"
+          class="voucher box_style"
+        >
           <div class="activity_img"><img
               :src="$imageHost + '/image/admin/new_market/fxyl.png'"
               alt=""
@@ -242,7 +245,7 @@
         <!-- 赠品 -->
         <div
           class="voucher box_style"
-          @click="gift"
+          @click="gift()"
         >
           <div class="activity_img"><img
               :src="$imageHost + '/image/admin/new_market/zp.png'"
@@ -517,6 +520,12 @@ export default {
     couponPackage () {
       this.$router.push({
         name: 'coupon_Package'
+      })
+    },
+    // 分享有礼活动点击
+    sharePolite () {
+      this.$router.push({
+        name: 'share_polite'
       })
     }
   }
