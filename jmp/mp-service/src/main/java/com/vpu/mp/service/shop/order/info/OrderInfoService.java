@@ -763,7 +763,7 @@ public class OrderInfoService extends ShopBaseService {
 				.leftJoin(USER).on(USER.USER_ID.eq(GIVE_GIFT_CART.USER_ID))
 				.where(GIVE_GIFT_CART.GIVE_GIFT_ID.eq(param.getActivityId()))
 				.and(TABLE.DEL_FLAG.eq(DelFlag.NORMAL_VALUE))
-				.and(TABLE.ORDER_STATUS.gt((byte) 2))
+				.and(TABLE.ORDER_STATUS.gt(OrderConstant.ORDER_CLOSED))
 				.and(DslPlus.findInSet(OrderConstant.GOODS_TYPE_GIVE_GIFT, TABLE.GOODS_TYPE))
 				.and(TABLE.ORDER_SN.eq(TABLE.MAIN_ORDER_SN));
 
@@ -779,8 +779,8 @@ public class OrderInfoService extends ShopBaseService {
 		if (param.getGoodsSn()!=null){
 			select.and(ORDER_GOODS.ORDER_SN.like(likeValue(param.getGoodsSn())));
 		}
-		if (param.getOrderStatus()!=null&&param.getOrderStatus()>-1){
-			if (param.getOrderStatus()==13){
+		if (param.getOrderStatus()!=null&&param.getOrderStatus()>=OrderConstant.ORDER_WAIT_PAY){
+			if (param.getOrderStatus()==OrderConstant.ORDER_GIVE_GIFT_FINISHED){
 				select.and(TABLE.ORDER_STATUS.eq(param.getOrderStatus()));
 			}else {
 				select.and(TABLE.ORDER_STATUS.lt(OrderConstant.ORDER_GIVE_GIFT_FINISHED));
