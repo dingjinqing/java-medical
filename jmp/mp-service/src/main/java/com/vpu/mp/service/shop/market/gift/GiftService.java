@@ -188,7 +188,7 @@ public class GiftService extends ShopBaseService {
     private List<ProductVo> getGiftProduct(Integer giftId) {
         return db().select(SUB_TABLE.fields())
             .select(PRODUCT.PRD_PRICE, PRODUCT.PRD_IMG, PRODUCT.PRD_NUMBER, PRODUCT.PRD_DESC)
-            .select(GOODS.GOODS_NAME)
+            .select(GOODS.GOODS_NAME, GOODS.GOODS_IMG)
             .from(SUB_TABLE)
             .leftJoin(PRODUCT).on(PRODUCT.PRD_ID.eq(SUB_TABLE.PRODUCT_ID))
             .leftJoin(GOODS).on(GOODS.GOODS_ID.eq(PRODUCT.GOODS_ID))

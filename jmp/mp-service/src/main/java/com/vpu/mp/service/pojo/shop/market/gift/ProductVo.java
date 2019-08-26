@@ -28,4 +28,6 @@ public class ProductVo {
     private String prdDesc;
     /** 商品名称 **/
     private String goodsName;
+    /** 商品图片 **/
+    private String goodsImg;
 }
