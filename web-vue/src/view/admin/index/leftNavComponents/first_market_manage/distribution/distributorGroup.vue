@@ -7,8 +7,15 @@
         v-model="input"
         placeholder="请输入内容"
       ></el-input>
-      <el-button type="primary">主要按钮</el-button>
+      <el-button
+        type="primary"
+        size="small"
+      >主要按钮</el-button>
       <span class="showCfg">分组是否展示在小程序端：</span>
+      <el-button
+        type="primary"
+        size="medium"
+      >主要按钮</el-button>
     </div>
   </div>
 </template>
@@ -18,7 +25,7 @@
 export default {
   data () {
     return {
-
+      input: ''
     }
   }
 

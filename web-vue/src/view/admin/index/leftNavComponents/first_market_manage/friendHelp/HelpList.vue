@@ -48,6 +48,7 @@
           <el-button
             type="primary"
             size="small"
+            @click="select()"
           >筛选</el-button>
         </div>
       </div>
@@ -197,7 +198,7 @@ export default {
     },
     handleClick (tab) {
       console.log('tab is :' + tab)
-      console.log('tab.index is :' + tab.index)
+      // console.log('tab.index is :' + tab.index)
 
       let listParam = {
         'actState': parseInt(tab.index),

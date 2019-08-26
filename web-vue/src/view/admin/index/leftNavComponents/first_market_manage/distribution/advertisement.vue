@@ -1,57 +1,94 @@
 <template>
   <div class="content">
-
-    <div class="main">
-      <div class="create">
-        <span>创建时间</span>
-        <el-date-picker
-          class="timeSelect"
-          v-model="createTime"
-          type="date"
-          placeholder="选择日期"
-        >
-        </el-date-picker>
-        <span>至</span>
-        <el-date-picker
-          class="timeSelect"
-          v-model="createTime"
-          type="date"
-          placeholder="选择日期"
-        >
-        </el-date-picker>
-      </div>
-      <div class="end">
-        <span>最后修改时间</span>
-        <el-date-picker
-          class="timeSelect"
-          v-model="createTime"
-          type="date"
-          placeholder="选择日期"
-        >
-        </el-date-picker>
-        <span>至</span>
-        <el-date-picker
-          class="timeSelect"
-          v-model="createTime"
-          type="date"
-          placeholder="选择日期"
-        >
-        </el-date-picker>
-      </div>
-      <div class="ad">
-        <span>推广语内容</span>
-        <el-input class="adInput"></el-input>
+    <div class="table_list">
+      <div class="select_info">
+        <div class="leftarea">
+          <span>创建时间</span>
+          <el-date-picker
+            v-model="time.startCreateTime"
+            type="date"
+            placeholder="选择日期"
+            size="small"
+            value-format="yyyy-MM-dd"
+          >
+          </el-date-picker>
+          <span>至</span>
+          <el-date-picker
+            v-model="time.endCreateTime"
+            type="date"
+            placeholder="选择日期"
+            size="small"
+            value-format="yyyy-MM-dd"
+          >
+          </el-date-picker>
+        </div>
+        <div class="leftarea">
+          <span>最后修改时间</span>
+          <el-date-picker
+            v-model="time.startUpdateTime"
+            type="date"
+            placeholder="选择日期"
+            size="small"
+            value-format="yyyy-MM-dd"
+          >
+          </el-date-picker>
+          <span>至</span>
+          <el-date-picker
+            v-model="time.endUpdateTime"
+            type="date"
+            placeholder="选择日期"
+            size="small"
+            value-format="yyyy-MM-dd"
+          >
+          </el-date-picker>
+        </div>
+        <div class="midarea">
+          <span>推广语内容</span>
+          <el-input
+            v-model="promotionLanguage"
+            size="small"
+            placeholder="请输入推广语"
+          ></el-input>
+        </div>
+        <div class="rightarea">
+          <el-button
+            type="primary"
+            size="small"
+            @click="search()"
+          >查询</el-button>
+        </div>
       </div>
       <el-button
         type="primary"
         size="small"
-      >筛选</el-button>
+        @click="centerDialogVisible = true"
+      >添加推广语</el-button>
+      <el-dialog
+        title="添加推广语"
+        :visible.sync="centerDialogVisible"
+        width="30%"
+        center
+      >
+        <div class="title">
+          <span>标题：</span>
+          <el-input size="small"></el-input>
+        </div>
+        <div class="languageContent">
+          <span>请输入分销员推广语，将帮助分销员朋友圈推广：</span>
+          <el-input type="textarea"></el-input>
+        </div>
+        <span
+          slot="footer"
+          class="dialog-footer"
+        >
+          <el-button @click="centerDialogVisible = false">取 消</el-button>
+          <el-button
+            type="primary"
+            @click="centerDialogVisible = false"
+          >确 定</el-button>
+        </span>
+      </el-dialog>
     </div>
-    <el-button
-      size="small"
-      type="primary"
-      class="addAd"
-    >添加推广语</el-button>
 
     <div class="table_list">
       <el-table
@@ -93,6 +130,7 @@
           prop="isBlock"
           label="状态"
           align="center"
+          :formatter="changeState"
         >
         </el-table-column>
 
@@ -101,6 +139,11 @@
           label="操作"
           align="center"
         >
+          <div class="opt">
+            <span @click="edit()">编辑</span>
+            <span @click="stop()">停用</span>
+            <span @click="del">删除</span>
+          </div>
         </el-table-column>
       </el-table>
       <div class="footer">
@@ -127,20 +170,40 @@ export default {
       tableData: [],
       pageData: {},
       createTime: '',
-      currentPage: null
-
+      currentPage: null,
+      time: {
+        startCreateTime: '',
+        endCreateTime: '',
+        startUpdateTime: '',
+        endUpdateTime: ''
+      },
+      promotionLanguage: '',
+      centerDialogVisible: false
     }
+  },
+  created () {
+    this.search()
   },
   mounted () {
     // 初始化数据
-    this.list()
+    // this.list()
   },
   methods: {
     // 当前页发生变化
     handleCurrentChange () {
       console.log(this.currentPage)
     },
-    list () {
+    // 状态的数字转化为文字
+    changeState (row, col) {
+      switch (row.isBlock) {
+        case 0: row.isBlock = '已停用'
+          break
+        case 1: row.isBlock = '已启用'
+          break
+      }
+      return row.isBlock
+    },
+    search () {
       let obj = {
         'currentPage': 1,
         'pageRows': 1
@@ -159,32 +222,25 @@ export default {
         console.log(data)
       })
       this.tableData = data
+    },
+    edit () {
+      console.log('编辑')
+    },
+    stop () {
+      console.log('停用')
+    },
+    del () {
+      console.log('删除')
     }
   }
 }
 </script>
 <style lang="scss" scoped>
-.main {
-  display: flex;
-  .timeSelect {
-    width: 150px;
-  }
-  .adInput {
-    width: 150px;
-  }
-  span {
-    height: 30px;
-    line-height: 30px;
-  }
-  .create {
-    display: flex;
-  }
-  .end {
-    display: flex;
-  }
-  .addAd {
-    margin: 20px 0 0;
-  }
+.content {
+  padding: 10px;
+  min-width: 100%;
+  font-size: 14px;
+  height: 100%;
 }
 
 /deep/ .tableClss th {
@@ -197,18 +253,71 @@ export default {
 }
 .table_list {
   position: relative;
-  margin-top: 10px;
   background-color: #fff;
-  padding: 10px 20px 10px 20px;
+  padding: 0px 20px 10px 20px;
+  .select_info {
+    display: flex;
+    margin: 10px 0px;
+    .leftarea {
+      display: flex;
+      margin-right: 30px;
+      :first-child {
+        margin-right: 10px;
+      }
+      :nth-of-type(2) {
+        margin: 0 10px 0 0;
+      }
+    }
+    .midarea {
+      display: flex;
+      margin-right: 30px;
+      :first-child {
+        margin-right: 10px;
+      }
+    }
+    span {
+      white-space: nowrap;
+      height: 32px;
+      line-height: 32px;
+    }
+    /deep/ .el-input__inner {
+      width: 200px;
+      display: inline-block;
+    }
+  }
+  .footer {
+    padding: 20px 0 20px 20px;
+    display: flex;
+    justify-content: flex-end;
+    span {
+      display: block;
+      height: 32px;
+      line-height: 32px;
+    }
+  }
+  .title {
+    display: flex;
+    span {
+      width: 60px;
+      height: 30px;
+      line-height: 30px;
+    }
+    .el-input {
+      width: 200px !important;
+    }
+  }
+  .languageContent {
+    margin-top: 20px;
+    span {
+      margin-bottom: 10px;
+    }
+  }
 }
-.footer {
-  padding: 20px 0 20px 20px;
-  display: flex;
-  justify-content: flex-end;
+.opt {
+  text-align: left;
+  color: #5a8bff;
   span {
-    display: block;
-    height: 32px;
-    line-height: 32px;
+    cursor: pointer;
   }
 }
 </style>

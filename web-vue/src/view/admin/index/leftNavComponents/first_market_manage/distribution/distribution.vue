@@ -55,13 +55,13 @@
         </el-tab-pane>
         <el-tab-pane
           label="分销员审核"
-          name=""
+          name="ninth"
         >
           <distributorCheck />
         </el-tab-pane>
         <el-tab-pane
           label="分销推广语"
-          name=""
+          name="tenth"
         >
           <advertisement />
         </el-tab-pane>
@@ -96,7 +96,7 @@ export default {
   },
   data () {
     return {
-      activeName: 'first'
+      activeName: 'tenth'
     }
   },
   methods: {

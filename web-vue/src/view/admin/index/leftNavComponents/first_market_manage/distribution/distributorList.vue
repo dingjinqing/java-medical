@@ -30,7 +30,7 @@
       <ul class="uls">
         <li class="li">
           <div class="liNav">
-            <span class="labelClass invitation-">被邀请用户手机号</span>
+            <span class="labelClass invitationPhone">被邀请用户手机号</span>
             <el-input
               placeholder="请填写被邀请用户手机号"
               size="small"
@@ -185,6 +185,9 @@ export default {
 }
 .invitation {
   width: 200px !important;
+}
+.invitationPhone {
+  width: 250px !important;
 }
 .uls {
   margin-top: 10px;
