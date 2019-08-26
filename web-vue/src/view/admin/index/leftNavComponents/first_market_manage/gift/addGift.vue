@@ -289,6 +289,9 @@ export default {
     loadRules (content) {
       const { rules } = content
       const { payStartTime, payEndTime } = rules
+      if (payStartTime && payEndTime) {
+        this.payDateRange.push(payStartTime, payEndTime)
+      }
       this.param.rules.payStartTime = payStartTime || null
       this.param.rules.payEndTime = payEndTime || null
       // 获取接口返回结果的赠品规则中，属性值不为 null 的规则对应的序号
