@@ -182,9 +182,9 @@ export default {
         }]
     }
   },
-  created () {
-    this.handleClick()
-  },
+  // created () {
+  //   this.handleClick()
+  // },
 
   methods: {
     // 当前页发生变化
