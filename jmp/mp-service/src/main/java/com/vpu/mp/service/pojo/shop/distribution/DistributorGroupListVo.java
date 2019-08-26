@@ -16,7 +16,7 @@ public class DistributorGroupListVo {
 	private Integer isDefault;
 	private Integer delFlag;
 	private Integer distributorAmount;
-	private Integer createTimeInteger;
+	private Integer createTime;
 	
 	 /**
      * 	分页信息
