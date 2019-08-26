@@ -5,7 +5,7 @@
 </template>
 
 <script>
-import helpList from './helpList'
+import helpList from './HelpList'
 export default {
   components: {
     helpList
