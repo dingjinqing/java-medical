@@ -148,7 +148,7 @@ export default {
     return {
       tabSwitch: '2',
       tabInfo: [{
-        title: '全部砍价活动',
+        title: '全部助力活动',
         name: '1'
       }, {
         title: '进行中',
@@ -196,8 +196,9 @@ export default {
       this.activeName = 'sixth'
     },
     handleClick (tab) {
-      console.log(tab)
-      console.log(tab.data.index)
+      console.log('tab is :' + tab)
+      console.log('tab.index is :' + tab.index)
+
       let listParam = {
         'actState': parseInt(tab.index),
         'currentPage': 1,

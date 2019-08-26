@@ -94,20 +94,20 @@
         <section class="table_list">
           <!-- 表格 -->
           <el-table
-            :data="tableData"
+            :data="lists"
             border
             style="width: 100%"
           >
             <!-- 可配送区域 -->
             <el-table-column
-              prop="date"
+              prop="templateContent[0].datalist[1][0].area_text"
               align="center"
               label="可配送区域"
             >
             </el-table-column>
             <!-- 首件 -->
             <el-table-column
-              prop="name"
+              prop="templateContent[0].datalist[0].first_num"
               align="center"
               label="首件（件）"
             >
@@ -115,13 +115,13 @@
             <!-- 运费 -->
             <el-table-column
               align="center"
-              prop="address"
+              prop="templateContent[0].datalist[0].first_fee"
               label="运费（元）"
             >
             </el-table-column>
             <!-- 续件 -->
             <el-table-column
-              prop="address"
+              prop="templateContent[0].datalist[0].continue_num"
               label="续件（件）"
               align="center"
             >
@@ -129,7 +129,7 @@
             <!-- 续费 -->
             <el-table-column
               align="center"
-              prop="address"
+              prop="templateContent[0].datalist[0].continue_fee"
               label="续费（元）"
             >
             </el-table-column>
@@ -233,6 +233,7 @@ export default {
           this.formData = JSON.parse(config)
           let resData = this.formatTemplateContent(dataList)
           this.lists = resData
+          console.log(this.lists)
         }
       }).catch(err => console.log(err))
     },
@@ -256,7 +257,6 @@ export default {
     // 格式化模板的内容
     formatTemplateContent (dataList) {
       // console.log(dataList[0])
-      console.log(dataList)
       let newArrList = []
       dataList.forEach((item, i) => {
         newArrList.push({
