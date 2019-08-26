@@ -172,7 +172,7 @@
               <div class="discountDiv equity">
                 <el-checkbox v-model="ruleForm.intGet">积分获取&nbsp;&nbsp;&nbsp;&nbsp;开卡赠送</el-checkbox>
                 <el-input
-                  v-model="discountInput"
+                  v-model="ruleForm.IntegralInput"
                   size="small"
                 ></el-input>
                 &nbsp;&nbsp;积分
@@ -684,6 +684,7 @@ export default {
         discount: true,
         discountInput: '',
         allGoods: '1',
+        IntegralInput: '',
         vipFlag: false,
         shoppingFull: '1',
         intGet: true,
