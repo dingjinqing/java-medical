@@ -18,9 +18,10 @@
               >
                 <el-option
                   v-for="item in bottomOptionsOne"
-                  :key="item.value"
-                  :label="item.label"
-                  :value="item.value"
+                  :key="item.catId"
+                  :label="item.catName"
+                  :value="item.catId"
+                  :class="[item.level ===1?'level_1':'',item.level ===2?'level_2':'']"
                 >
                 </el-option>
               </el-select>
@@ -49,9 +50,9 @@
               >
                 <el-option
                   v-for="item in bottomOptionsThree"
-                  :key="item.value"
-                  :label="item.label"
-                  :value="item.value"
+                  :key="item.id"
+                  :label="item.name"
+                  :value="item.id"
                 >
                 </el-option>
               </el-select>
@@ -184,6 +185,17 @@
             </tbody>
 
           </table>
+          <div class="tablefooter">
+            <div>{{$t('programVersion.currentPage')}}：{{this.currentPage}}，{{$t('programVersion.totalPage')}}：{{this.pageCount}}，{{$t('programVersion.totalRecord')}}：{{this.total}}</div>
+            <el-pagination
+              @current-change="handleCurrentChange"
+              :current-page.sync="currentPage"
+              :page-size="20"
+              layout="prev, pager, next, jumper"
+              :total="total"
+            >
+            </el-pagination>
+          </div>
         </div>
         <div
           class="noData"
@@ -216,6 +228,9 @@ import { mapActions, mapGetters } from 'vuex'
 export default {
   data () {
     return {
+      pageCount: 1,
+      total: null,
+      currentPage: 1,
       choiseGooddialogVisible: false,
       bottomDialogSelectOne: '',
       bottomOptionsOne: [{
@@ -356,9 +371,9 @@ export default {
       }
       // 弹窗上方下拉框统一数据获取
       initGrandgetRequest().then((res) => {
-        // this.bottomOptionsOne = res.content.sysCates
         if (!res) return
         if (res.error === 0) {
+          this.bottomOptionsOne = res.content.sysCates
           this.bottomOptionsTwo = res.content.goodsSorts
           this.bottomOptionsThree = res.content.goodsLabels
           this.goodsGrandOptions = res.content.goodsBrands
@@ -417,6 +432,10 @@ export default {
     handleChoiseGooddialog () {
       this.transmitGoodsIds(this.goodsIdsArr)
       this.choiseGooddialogVisible = false
+    },
+    // 页数改变
+    handleCurrentChange () {
+      this.defaultGrandClass()
     }
   }
 }
@@ -587,9 +606,9 @@ img {
   float: left !important;
   margin-right: 0 !important;
 }
-.choosingGoods_Container .el-input__inner {
+/* .choosingGoods_Container .el-input__inner {
   width: 140px !important;
-}
+} */
 .choosingGoods_Container .rangeLi .el-input__inner {
   width: 70px !important;
 }
@@ -602,5 +621,25 @@ img {
 }
 .el-select-dropdown__item {
   margin-top: 0 !important;
+}
+</style>
+<style lang="scss" scoped>
+.tablefooter {
+  background-color: #fff;
+  height: 50px;
+  line-height: 50px;
+  color: #333;
+  font-size: 14px;
+  display: flex;
+  justify-content: flex-end;
+  padding-right: 10px;
+  /deep/ .el-pagination {
+    display: flex;
+    align-items: center;
+    .el-pager {
+      display: flex;
+      align-items: center;
+    }
+  }
 }
 </style>

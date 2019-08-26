@@ -202,10 +202,10 @@ export default {
         loginRequest(this.mainData).then((res) => {
           // test
           console.log('第一')
-          if (!res) return
+          console.log(res)
           if (res.error === 0) {
             document.onkeydown = undefined
-            Cookies.set('V-Token', res.content.token)
+            Cookies.set('V-Index-Token', res.content.token)
             localStorage.setItem('V-Username', res.content.userName)
             localStorage.setItem('V-loginType', 0)
             this.$message({
@@ -213,9 +213,11 @@ export default {
               message: res.message,
               type: 'success'
             })
+            console.log(1111)
             this.$router.push({
               name: 'shopMain'
             })
+            console.log(2222)
           }
           // test
         })
@@ -225,7 +227,7 @@ export default {
           if (res.error === 0) {
             document.onkeydown = undefined
             localStorage.setItem('V-loginType', 0)
-            Cookies.set('V-Token', res.content.token)
+            Cookies.set('V-Index-Token', res.content.token)
             localStorage.setItem('V-Username', res.content.userName)
             this.$message({
               showClose: true,

@@ -161,7 +161,7 @@ export default {
         } else {
           document.onkeydown = undefined
           localStorage.setItem('V-loginType', 1)
-          Cookies.set('V-Token', res.content.token, { expires: 1 / 48 })
+          Cookies.set('V-System-Token', res.content.token, { expires: 1 / 48 })
           localStorage.setItem('System-Username', res.content.userName)
           this.$message({
             showClose: true,

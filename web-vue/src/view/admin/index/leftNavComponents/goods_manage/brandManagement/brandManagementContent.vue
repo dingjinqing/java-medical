@@ -749,6 +749,9 @@ export default {
     },
     // 点击编辑
     handleEditGoods (id) {
+      this.$router.push({
+        name: 'addBrand'
+      })
       console.log(id, 11111)
       this.transmitEditGoodsId(id)
       let obj = {

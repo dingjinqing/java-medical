@@ -180,9 +180,10 @@
               >
                 <el-option
                   v-for="item in bottomOptionsOne"
-                  :key="item.value"
-                  :label="item.label"
-                  :value="item.value"
+                  :key="item.catId"
+                  :label="item.catName"
+                  :value="item.catId"
+                  :class="[item.level ===1?'level_1':'',item.level ===2?'level_2':'']"
                 >
                 </el-option>
               </el-select>
@@ -211,9 +212,9 @@
               >
                 <el-option
                   v-for="item in bottomOptionsThree"
-                  :key="item.value"
-                  :label="item.label"
-                  :value="item.value"
+                  :key="item.id"
+                  :label="item.name"
+                  :value="item.id"
                 >
                 </el-option>
               </el-select>
@@ -346,6 +347,17 @@
             </tbody>
 
           </table>
+          <div class="tablefooter">
+            <div>{{$t('programVersion.currentPage')}}：{{this.currentPage}}，{{$t('programVersion.totalPage')}}：{{this.pageCount}}，{{$t('programVersion.totalRecord')}}：{{this.total}}</div>
+            <el-pagination
+              @current-change="handleCurrentChange"
+              :current-page.sync="currentPage"
+              :page-size="20"
+              layout="prev, pager, next, jumper"
+              :total="total"
+            >
+            </el-pagination>
+          </div>
         </div>
         <div
           class="noData"
@@ -387,6 +399,9 @@ export default {
   components: { ImageDalog },
   data () {
     return {
+      pageCount: 1,
+      total: null,
+      currentPage: 1,
       NameInput: '',
       classSelectValue: '',
       options: [{
@@ -588,8 +603,9 @@ export default {
         let obj = {
           'id': this.editGoodsId
         }
+        if (!this.editGoodsId) return
         queryGoodsIdRequest(obj).then((res) => {
-          console.log(res.content)
+          console.log(res)
           this.NameInput = res.content.brandName
           this.NameEnlishInput = res.content.ename
           this.logoImgUrl = res.content.logo
@@ -637,6 +653,10 @@ export default {
       }
       this.$emit('turnComponents', obj)
     },
+    // 页码改变
+    handleCurrentChange () {
+      this.defaultGrandClass()
+    },
     // 点击选择商品按钮
     handleClickChoiseGood () {
       let obj = {
@@ -647,20 +667,23 @@ export default {
         brandId: this.goodsGrandVal,
         lowShopPrice: this.inputBottomRange,
         highShopPrice: this.inputBottomRangeRight,
-        currentPage: 1,
+        currentPage: this.currentPage,
         pageRows: 20
       }
       // 弹窗上方下拉框统一数据获取
       initGrandgetRequest().then((res) => {
-        // this.bottomOptionsOne = res.content.sysCates
+        console.log(res)
+        this.bottomOptionsOne = res.content.sysCates
         this.bottomOptionsTwo = res.content.goodsSorts
         this.bottomOptionsThree = res.content.goodsLabels
         this.goodsGrandOptions = res.content.goodsBrands
         console.log(res)
       })
+
       // 弹窗下方表格数据获取
       allGoodsQueryRequest(obj).then((res) => {
         if (res.error === 0) {
+          console.log(res)
           // res.content.dataList.catName = res.content.dataList.catName.replace(',', '、')
           console.log(res.content.dataList)
           res.content.dataList.catName = res.content.dataList.map((item, index) => {
@@ -681,6 +704,8 @@ export default {
             this.checkedAll = true
           }
           this.trList = res.content.dataList
+          this.total = res.content.pageRows
+          this.pageCount = res.content.pageCount
         }
         console.log(res)
       })
@@ -1010,5 +1035,25 @@ img {
 }
 .el-select-dropdown__item {
   margin-top: 0 !important;
+}
+</style>
+<style lang="scss" scoped>
+.tablefooter {
+  background-color: #fff;
+  height: 50px;
+  line-height: 50px;
+  color: #333;
+  font-size: 14px;
+  display: flex;
+  justify-content: flex-end;
+  padding-right: 10px;
+  /deep/ .el-pagination {
+    display: flex;
+    align-items: center;
+    .el-pager {
+      display: flex;
+      align-items: center;
+    }
+  }
 }
 </style>

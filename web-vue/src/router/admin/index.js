@@ -5,9 +5,9 @@ const routes = [
     component: () => import('@/view/admin/home'),
     children: [
       {
-        path: '/admin/home/shop_main',
+        path: '/admin/home/shopMain',
         name: 'shopMain',
-        component: () => import('@/view/admin/shop_main')
+        component: () => import('@/view/admin/shopMain')
       },
       {
         path: '/admin/home/main',

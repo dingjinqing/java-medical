@@ -92,7 +92,7 @@
             </el-form-item>
             <el-form-item
               label="会员权益："
-              prop="discount"
+              prop="discountInput"
               class="userCardName"
             >
               <div class="discountDiv equity">
@@ -128,6 +128,7 @@
                   class="noneBlockList"
                   v-for="(item,index) in noneBlockDiscArr"
                   :key="index"
+                  @click="hanldeToAddGoodS(index)"
                 >
                   <div class="noneBlockLeft">
                     <img :src="$imageHost+'/image/admin/icon_jia.png'">
@@ -148,7 +149,7 @@
                   </el-checkbox>
                 </div>
               </div>
-              <!--点击指定商品后显示模块-->
+              <!--点击会员专享后显示模块-->
               <div
                 class="noneBlock"
                 v-if="ruleForm.vipFlag"
@@ -157,6 +158,7 @@
                   class="noneBlockList"
                   v-for="(item,index) in noneBlockVipArr"
                   :key="index"
+                  @click="hanldeToAddGoodSUser(index)"
                 >
                   <div class="noneBlockLeft">
                     <img :src="$imageHost+'/image/admin/icon_jia.png'">
@@ -371,8 +373,8 @@
 
             <el-form-item
               label="会员有效期："
-              prop="termValidity"
-              class="userCardName"
+              prop="fixedDate"
+              class="userCardName useDate"
             >
               <div class="dateList">
                 <el-radio
@@ -388,9 +390,13 @@
                   size="small"
                 >
                 </el-date-picker>
-                <div class="dateTips">例如：选择日期2018-1-2到2018-1-5，表示有效期为2018-1-2 00:00:00到2018-1-5 24:00:00</div>
               </div>
-
+            </el-form-item>
+            <div class="dateTips">例如：选择日期2018-1-2到2018-1-5，表示有效期为2018-1-2 00:00:00到2018-1-5 24:00:00</div>
+            <el-form-item
+              prop="fromDateInput"
+              class="userCardName"
+            >
               <div class="dateList">
                 <el-radio
                   v-model="ruleForm.dateRadio"
@@ -415,6 +421,8 @@
                 </el-select>
                 内有效
               </div>
+            </el-form-item>
+            <el-form-item class="userCardName">
               <div class="dateList">
                 <el-radio
                   v-model="ruleForm.dateRadio"
@@ -638,16 +646,42 @@
     />
     <!--添加优惠卷-->
     <AddCouponDialog @handleToCheck="handleToCheck" />
+    <!--选择商品弹窗-->
+    <ChoosingGoods />
+    <!--选择商家分类弹窗-->
+    <AddingBusClassDialog />
   </div>
 </template>
 <script>
-import ImageDalog from '@/components/admin/imageDalog'
 export default {
   components: {
-    ImageDalog,
-    AddCouponDialog: () => import('./addCouponDialog')
+    ImageDalog: () => import('@/components/admin/imageDalog'),
+    AddCouponDialog: () => import('./addCouponDialog'),
+    ChoosingGoods: () => import('@/components/admin/choosingGoods'),
+    AddingBusClassDialog: () => import('./addingBusClassDialog')
   },
   data () {
+    var validiscount = (rule, value, callback) => {
+      console.log(rule, value, callback)
+      let reg = /^\d{0,1}$/
+      let flag = reg.test(Number(value))
+      console.log(Number(value), flag)
+      if (!this.ruleForm.discount) return
+      if (value === '' || !reg.test(Number(value))) {
+        callback(new Error('请输入0-10之间的数字'))
+      }
+    }
+    var validatorDate = (rule, value, callback) => {
+      console.log(value)
+      console.log(this.ruleForm.dateRadio)
+      if (this.ruleForm.dateRadio !== '1') return
+      if (value === '') callback(new Error('请输入有效期'))
+    }
+    var validatorDateInput = (rule, value, callback) => {
+      console.log(this.ruleForm.dateRadio)
+      if (this.ruleForm.dateRadio !== '2') return
+      if (value === '') callback(new Error('请输入有效期'))
+    }
     return {
       colorLeft_: '',
       defaultColorleft: '#fff',
@@ -725,7 +759,9 @@ export default {
       },
       rules: {
         name: [{ required: true, message: '请输入会员卡名称', trigger: 'blur' }],
-        discount: [{ type: 'array', required: true, message: '请至少选择一个活动性质', trigger: 'change' }]
+        discountInput: [{ validator: validiscount, required: true, trigger: 'blur' }],
+        fixedDate: [{ type: 'date', validator: validatorDate, required: true, trigger: 'change' }],
+        fromDateInput: [{ validator: validatorDateInput, trigger: 'blur' }]
       },
       ruleFormBottom: {
         phoneNuminput: '',
@@ -793,6 +829,19 @@ export default {
       couponDialogFlag: false,
       couponList: []
 
+    }
+  },
+  watch: {
+    'ruleForm.dateRadio' (newData) {
+      this.$refs['ruleForm'].validate((valid) => {
+        if (valid) {
+          alert('submit!')
+          this.$refs['ruleForm'].resetFields()
+        } else {
+          console.log('error submit!!')
+          return false
+        }
+      })
     }
   },
   methods: {
@@ -870,6 +919,21 @@ export default {
     // 删除优惠卷项
     handlToDelCouList (index) {
       this.couponList.splice(index, 1)
+    },
+    // 点击指定商品出现的添加类弹窗汇总
+    hanldeToAddGoodS (index) {
+      console.log(index)
+    },
+    // 点击会员专享商品出现的添加类弹窗汇总
+    hanldeToAddGoodSUser (index) {
+      switch (index) {
+        case 0:
+          this.$http.$emit('choosingGoodsFlag', index)
+          break
+        case 1:
+          this.$http.$emit('addingBusClassDialog', index)
+      }
+      console.log(index)
     }
   }
 }
@@ -1219,9 +1283,11 @@ export default {
               width: 100%;
             }
           }
-          .dateTips {
-            color: #9d9d9d;
-          }
+        }
+        .dateTips {
+          color: #9d9d9d;
+          padding-left: 224px;
+          margin-bottom: 20px;
         }
         .useStoreTips {
           color: #9d9d9d;
@@ -1284,6 +1350,9 @@ export default {
           .activationHidden {
             padding-left: 24px;
           }
+          // .useDate{
+          //   /deep/
+          // }
         }
       }
     }

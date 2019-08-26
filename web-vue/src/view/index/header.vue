@@ -169,8 +169,7 @@ export default {
   methods: {
     // 初始化登录
     judgeuserinfo () {
-      let loginType = localStorage.getItem('V-loginType')
-      if (loginType === '0') {
+      if (localStorage.getItem('V-Username')) {
         this.user_flag = true
         this.username = localStorage.getItem('V-Username')
       } else {

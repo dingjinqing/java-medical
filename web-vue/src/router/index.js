@@ -42,8 +42,9 @@ const router = new Router({
 // 全局路由守卫
 router.beforeEach((to, from, next) => {
   const nextRoute = ['shopMain'] // 需要登录的页面
-  let token = Cookies.get('V-Token') // 判断是否登录
+  let token = Cookies.get('V-Index-Token') // 判断是否登录
   if (nextRoute.indexOf(to.name) >= 0) { // 检测是否登录的页面
+    console.log(token)
     if (token) {
       if (to.meta.meta) {
         console.log('我需要判断权限')

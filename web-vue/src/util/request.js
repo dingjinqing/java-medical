@@ -25,11 +25,14 @@ const service = axios.create({
 // request拦截器
 service.interceptors.request.use(
   config => {
-    // console.log(config)
+    console.log(config.url.split('/')[2])
+
     config.headers['Content-Type'] = localStorage.getItem('contentType')
     // console.log(Cookies.get('V-Token'))
-    if (Cookies.get('V-Token')) {
-      config.headers['V-Token'] = Cookies.get('V-Token')
+    if (config.url.split('/')[2] === 'admin') {
+      config.headers['V-Token'] = Cookies.get('V-Index-Token')
+    } else if (config.url.split('/')[2] === 'system') {
+      config.headers['V-Token'] = Cookies.get('V-System-Token')
     }
     if (!localStorage.getItem('WEPUBAO_LANGUAGE')) {
       localStorage.setItem('WEPUBAO_LANGUAGE', 'zh_CN')
@@ -54,22 +57,25 @@ service.interceptors.response.use(
     let flag = localStorage.getItem('V-overallFlag')
 
     // console.log(flag, res)
-
+    console.log(res)
     if (res) {
       switch (res.status) {
         // 成功
         case 200:
           if (res.data.error === 100004 && flag !== 'false') {
+            console.log(res)
             Message.error({
               message: res.data.message,
               showClose: true
             })
-            let loginType = localStorage.getItem('V-loginType')
-            if (loginType === '0') {
-              router.push('/index/login')
-            } else {
-              router.push('/system/login')
-            }
+            localStorage.removeItem('V-Username')
+            router.push('/index/login')
+          } else if (res.data.error === 100033 && flag !== 'false') {
+            Message.error({
+              message: res.data.message,
+              showClose: true
+            })
+            router.push('/system/login')
           }
           if (res.data.error === 100001 && flag !== 'false') {
             Message.error({

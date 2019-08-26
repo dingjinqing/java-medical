@@ -5,6 +5,6 @@ export function getGoodsList (data) {
   return service({
     url: `/api/admin/goods/list`,
     method: 'post',
-    data
+    data: data
   })
 }
