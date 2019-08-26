@@ -1,149 +1,352 @@
 <template>
   <div class="addingGoodsProductInfo">
-    <!-- 基本信息 -->
-    <section class="title">
-      <span>基本信息</span>
-    </section>
-    <basicInfo ref="basicInfo" />
-    <!--库存/价格信息-->
-    <section class="title">
-      <span>库存/价格信息</span>
-    </section>
-    <stockAndPriceInfo ref="priceInfo" />
-    <!-- 配送信息 -->
-    <section class="title">
-      <span>配送信息</span>
-    </section>
-    <deliveryInfo />
-    <!-- 其他信息 -->
-    <section class="title">
-      <span>其他信息</span>
-    </section>
-    <otherInfo />
+    <!--基本信息配置模块-->
+    <div class="blockWrap">
+      <div class="title">基本信息</div>
+      <el-form ref="basicInfoForm" :model="goodsProductInfo" :rules="basicInfoRules" label-width="120px">
+        <el-form-item label="商品名称：" prop="goodsName">
+          <el-input v-model="goodsProductInfo.goodsName" size="small" style="width:400px"/>
+        </el-form-item>
+        <el-form-item label="商品广告词：">
+          <el-input v-model="goodsProductInfo.goodsAd" size="small" style="width:400px"/>
+        </el-form-item>
+        <el-form-item label="商品货号：">
+          <el-input v-model="goodsProductInfo.goodsSn" size="small" style="width:170px;"/>
+          <span class="inputTip">不填则由系统自动生成货号</span>
+        </el-form-item>
+        <el-form-item label="平台分类：" prop="catId">
+          <el-select v-model="catIdTemp.firstCatId" size="small"
+                     @change="catIdSelectChange(1,$event)">
+            <el-option :value="null" label="请选择平台分类"/>
+            <el-option v-for="item in catIdTemp.firstCatData" :label="item.catName" :value="item.catId"
+                       :key="item.catId"/>
+          </el-select>
+          <el-select v-if="!!catIdTemp.firstCatId" v-model="catIdTemp.secondCatId" size="small"
+                     @change="catIdSelectChange(2,$event)">
+            <el-option :value="null" label="请选择平台分类"/>
+            <el-option v-for="item in catIdTemp.secondCatData" :label="item.catName" :value="item.catId"
+                       :key="item.catId"/>
+          </el-select>
+          <el-select v-if="!!catIdTemp.firstCatId&&!!catIdTemp.secondCatId" v-model="catIdTemp.thirdCatId"
+                     size="small" @change="catIdSelectChange(3,$event)">
+            <el-option :value="null" label="请选择平台分类"/>
+            <el-option v-for="item in catIdTemp.thirdCatData" :label="item.catName" :value="item.catId"
+                       :key="item.catId"/>
+          </el-select>
+          <span class="inputTip">
+          “平台分类”是商品在系统中的属性，不会对用户展示。可在“基础配置”中设置默认平台分类。
+          </span>
+          <el-link type="primary" :underline="false" href="#" target="_blank">前往</el-link>
+        </el-form-item>
+        <el-form-item label="商品主图：" prop="goodsImg">
+          <goodsMainPic @imgListChange="goodsImgsChange"/>
+          <span class="inputTip">
+            建议尺寸：800*800像素
+          </span>
+        </el-form-item>
+      </el-form>
+      <!-- 基本信息更多配置 -->
+      <el-collapse accordion>
+        <el-collapse-item title="展开/收起更多配置" name="1">
+          <el-form ref="basicInfoOtherForm" :model="goodsProductInfo" :rules="basicInfoOtherRules" label-width="120px">
+            <el-form-item label="单位：" prop="unit">
+              <el-select v-model="unitSelectedValue" @change="unitSelectChange" size="small">
+                <el-option v-for="(item,index) in unitSelectOptions" :key="index" :value="item.value"
+                           :label="item.label"/>
+              </el-select>
+              <el-input v-if="unitSelectedValue===null" v-model="unitCustomerValue" @change="unitCustomerChange"
+                        size="small" style="width:100px;"/>
+              <span v-if="unitSelectedValue===null" class="inputTip">长度限制为3个中文字符</span>
+            </el-form-item>
+            <el-form-item label="商家分类：" prop="sortId">
+             <el-select filterable v-model="goodsProductInfo.sortId" placeholder="请选择商家分类" size="small">
+               <el-option v-for="item in sortSelectOptions" :key="item.sortId" :label="item.sortName" :value="item.sortId"
+                          :style="{'marginLeft': item.level===1? '10px':'0px'}"/>
+             </el-select>
+            </el-form-item>
+            <el-form-item label="商品标签：" prop="goodsLabels">
+              <el-select v-model="labelSelectedTempVal" placeholder="请选择商品标签" size="small" @change="labelSelectChange">
+                <el-option v-for="item in labelSelectOptions" :key="item.id" :label="item.name" :value="item.id"/>
+              </el-select>
+              <el-link type="primary" :underline="false" href="#" style="margin:0 5px;">刷新</el-link>|
+              <el-link type="primary" :underline="false" href="#" style="margin:0 5px;">新建标签</el-link>|
+              <el-link type="primary" :underline="false" href="#" style="margin:0 5px;">管理标签</el-link>
+            </el-form-item>
+          </el-form>
+        </el-collapse-item>
+      </el-collapse>
+    </div>
+
+    <!--&lt;!&ndash;库存/价格信息&ndash;&gt;-->
+    <!--<div class="blockWrap">-->
+    <!--<div class="title">库存/价格信息</div>-->
+    <!--</div>-->
+    <!--<stockAndPriceInfo ref="priceInfo" />-->
+    <!--&lt;!&ndash; 配送信息 &ndash;&gt;-->
+    <!--<div class="blockWrap">-->
+    <!--<div class="title">配送信息</div>-->
+    <!--</div>-->
+    <!--<deliveryInfo />-->
+    <!--&lt;!&ndash; 其他信息 &ndash;&gt;-->
+    <!--<div class="blockWrap">-->
+    <!--<div class="title">其他信息</div>-->
+    <!--</div>-->
+    <!--<otherInfo />-->
   </div>
 </template>
 <script>
-import { goodsList, getGoodsList } from '@/api/admin/goodsManage/addingGoods/addingGoods'
-import basicInfo from './basicInfo'
-import otherInfo from './otherInfo'
-import deliveryInfo from './deliveryInfo'
-import stockAndPriceInfo from './stockAndPriceInfo'
+// 接口函数引入
+import {
+  selectPlatformClassification,
+  goodsSortAndGoodsBrandInitApi
+} from '@/api/admin/goodsManage/addingGoods/addingGoods'
+import goodsMainPic from './goodsMainPic'
+
 export default {
-  components: { basicInfo, stockAndPriceInfo, otherInfo, deliveryInfo },
-  props: {
-    active: Number
-  },
-  mounted () {
-    // 获取子组件们的数据
-    this.getChildData()
+  components: {goodsMainPic},
+  data () {
+    return {
+      goodsProductInfo: {
+        // 基本信息
+        goodsName: null,
+        goodsAd: null,
+        goodsSn: null,
+        catId: null,
+        goodsImg: null,
+        goodsImgs: [],
+        unit: null,
+        sortId: null,
+        goodsLabels: null,
+        brandId: null,
+        goodsVideo: null,
+        goodsVideoImg: null,
+        goodsVideoSize: null,
+        goodsVideoId: null,
+        // 库存、价格信息
+        marketPrice: null,
+        goodsSpecProducts: null,
+        goodsGradePrds: null,
+        limitBuyNum: null,
+        limitMaxNum: null,
+        addSaleNum: null,
+        deliverTemplateId: null,
+        goodsWeight: null,
+        deliverPlace: null,
+        isCardExclusive: null,
+        memberCardIds: null,
+        isOnSale: null,
+        saleTime: null
+      },
+      /* 基本信息部分 */
+      // 基本信息验证
+      basicInfoRules: {
+        goodsName: [
+          {required: true, message: '请输入商品名称', trigger: 'change'}
+        ],
+        sortId: [
+          {required: true, message: '请选择平台分类', trigger: 'change'}
+        ],
+        goodsImg: [
+          {required: true, message: '请选择商品图片', trigger: 'change'}
+        ]
+      },
+      // 基本信平台分类辅助数据，对应分类每一级别的下落框数据和选中值
+      catIdTemp: {
+        firstCatId: null,
+        secondCatId: null,
+        thirdCatId: null,
+        firstCatData: null,
+        secondCatData: null,
+        thirdCatData: null
+      },
+      /* 基本信息更多配置部分 */
+      basicInfoOtherRules: {
+        unit: [
+          {required: true, message: '单位不可为空', trigger: 'change'}
+        ]
+      },
+      unitSelectOptions: [{
+        value: '个',
+        label: '个'
+      }, {
+        value: '包',
+        label: '包'
+      }, {
+        value: '箱',
+        label: '箱'
+      }, {
+        value: '袋',
+        label: '袋'
+      }, {
+        value: '套',
+        label: '套'
+      }, {
+        value: '卷',
+        label: '卷'
+      }, {
+        value: '件',
+        label: '件'
+      }, {
+        value: '台',
+        label: '台'
+      },
+      {
+        value: '吨',
+        label: '吨'
+      }, {
+        value: '平方米',
+        label: '平方米'
+      }, {
+        value: '本',
+        label: '本'
+      }, {
+        value: '幅',
+        label: '幅'
+      }, {
+        value: '张',
+        label: '张'
+      }, {
+        value: '支',
+        label: '支'
+      }, {
+        value: '盒',
+        label: '盒'
+      }, {
+        value: '份',
+        label: '份'
+      }, {
+        value: '令',
+        label: '令'
+      }, {
+        value: '千克',
+        label: '千克'
+      }, {
+        value: null,
+        label: '自定义'
+      }],
+      unitSelectedValue: '个',
+      unitCustomerValue: null,
+      // 商家分类下落框
+      sortSelectOptions: null,
+      // 商品标签下拉框
+      labelSelectOptions: null,
+      // 商品品牌下拉框
+      brandSelectOptions: null,
+      // 标签已选中列表
+      labelSelectedItems: [],
+      // 标签来下框选中瞬间的值
+      labelSelectedTempVal: null
+    }
   },
   methods: {
-    // 获取子组件的数据
-    getChildData () {
+    /* 基本信息部分 */
+    // 平台分类下拉框交互
+    catIdSelectChange (level, catId) {
+      this.goodsProductInfo.catId = catId
 
+      //  选则一级则重置二三级
+      if (level === 1) {
+        this.catIdTemp.secondCatId = null
+        this.catIdTemp.secondCatData = null
+        this.catIdTemp.thirdCatId = null
+        this.catIdTemp.thirdCatData = null
+      }
+      // 选择二级则重置三级
+      if (level === 2) {
+        this.catIdTemp.thirdCatId = null
+        this.catIdTemp.thirdCatData = null
+        if (catId === null) {
+          this.goodsProductInfo.sortId = this.catIdTemp.firstCatId
+        }
+      }
+      // 选择三级
+      if (level === 3 && catId === null) {
+        this.goodsProductInfo.catId = this.catIdTemp.secondCatId
+      }
+
+      if (catId === null) {
+        return
+      }
+
+      selectPlatformClassification(catId).then(res => {
+        if (level === 1) {
+          this.catIdTemp.secondCatData = res.content
+        }
+        if (level === 2) {
+          this.catIdTemp.thirdCatData = res.content
+        }
+      })
     },
-    // 保存后返回列表
-    handleToList () {
-      getGoodsList({
-
-        'goodsName': '苹果手机',
-        'orderField': 'shopPrice'
-
-      }).then(res => console.log(res)).catch(err => console.log(err))
-      // console.log(this.$refs.basicInfo.getFormData)
-      // 基本信息表单数据
-      let basicInfo = this.$refs.basicInfo.getFormData
-      // console.log(basicInfo)
-      // 价格信息
-      let stockPriceInfo = this.$refs.priceInfo.getFormData
-      // console.log(stockPriceInfo)
-      Object.assign(basicInfo, stockPriceInfo)
-
-      console.log(basicInfo)
-      // let params = {
-      //   catId: 233,
-      //   goodsAd: '',
-      //   goodsImg: 'http://jmpdevimg.weipubao.cn/upload/245547/image/20190820/451MdJcYVgSCF63e8ZZp.png',
-      //   goodsName: '苹果手机',
-      //   goodsNumber: '',
-      //   prdMarketPrice: '',
-      //   prdNumber: 22,
-      //   prdPrice: '5000'
-      // }
-      goodsList({
-        'goodsName': '苹果手机',
-        'goodsAd': '手机还行',
-        'catId': 233,
-        'goodsImg': 'http://jmpdevimg.weipubao.cn/upload/245547/image/20190820/451MdJcYVgSCF63e8ZZp.png',
-        'unit': '个',
-        'sortId': 23,
-
-        'marketPrice': 5000,
-
-        'limitBuyNum': 1,
-        'limitMaxNum': 5,
-        'costPrice': 2000,
-        'deliverTemplateId': 9,
-        'goodsWeight': 0.5,
-        'isCardExclusive': 0,
-        'canRebate': 1,
-        'isOnSale': 1,
-        'isPageUp': 1,
-        'goodsPageId': 1,
-        'goodsSpecs': [],
-        'goodsSpecProducts': [
-          {
-            'prdPrice': 5000,
-            'prdCostPrice': 2000,
-            'prdMarketPrice': 5200,
-            'prdNumber': 22
-
-          }
-        ]
-      }).then(res => console.log(res)).catch(err => console.log(err))
+    // 初始化平台分类一级下拉框数据
+    catIdInit () {
+      selectPlatformClassification(0).then(res => {
+        this.catIdTemp.firstCatData = res.content
+      })
     },
-    // 下一步（去到编辑商品详情）
-    handleNextStep () {
-      // let obj1 = this.$refs.priceInfo.getPrice
-      // let obj2 = this.$refs.basicInfo.getFormData
-      // Object.assign(obj1, obj2)
-      // console.log(obj1)
-      this.$router.push(
-        { name: 'details', query: {} }
-      )
+    // 商品图片事件监听函数
+    goodsImgsChange (imgList) {
+      if (imgList === null || imgList.length === 0) {
+        return
+      }
+      // 数组第一个值默认为商品主图
+      this.goodsProductInfo.goodsImg = imgList.shift()
+      // 其余为商品子图
+      this.goodsProductInfo.goodsImgs = imgList
+      this.$refs.basicInfoForm.validateField('goodsImg')
+    },
+    /* 基本信息更多配置部分 */
+    // 单位选择下拉框处理事件
+    unitSelectChange (value) {
+      this.goodsProductInfo.unit = value
+      this.$refs.basicInfoOtherForm.validateField('unit')
+    },
+    // 自定义单位处理事件
+    unitCustomerChange () {
+      this.goodsProductInfo.unit = this.unitCustomerValue
+      this.$refs.basicInfoOtherForm.validateField('unit')
+    },
+    // 初始化商家分类和商品标签
+    sortAndLabelAndBrandSelectInit () {
+      goodsSortAndGoodsBrandInitApi().then(res => {
+        const {content: {goodsBrands, goodsLabels, goodsSorts}} = res
+        this.sortSelectOptions = goodsSorts
+        this.labelSelectOptions = goodsLabels
+        this.brandSelectOptions = goodsBrands
+      })
+    },
+    // 标签下拉框选择事件
+    labelSelectChange () {
+      this.labelSelectOptions = this.labelSelectOptions.filter(item => {
+        if (item.id === this.labelSelectedTempVal) {
+          this.labelSelectedItems.push(item)
+          return false
+        }
+        return true
+      })
+      this.labelSelectedTempVal = null
     }
+  },
+  mounted () {
+    // 初始化平台分类一级下拉框
+    this.catIdInit()
+    // 初始化商家分类和商品标签
+    this.sortAndLabelAndBrandSelectInit()
   }
-
 }
 </script>
 <style scoped>
-.title {
-  font-weight: bold;
-  height: 40px;
-  background: #f8f8f8;
-  line-height: 40px;
-  width: 100%;
-  padding-left: 10px;
-  margin: 20px 0;
-}
-.addingGoodsProductInfo {
-  position: relative;
-}
-.addingGoodsFooter {
-  border-top: 1px solid #f2f2f2;
-  background-color: pink;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  position: fixed;
-  bottom: 0;
-  z-index: 2;
-  width: 88%;
-  height: 50px;
-  background: #f8f8fa;
-  margin-left: -20px;
-}
-.btn {
-  margin: 0 10px;
-}
+  .title {
+    font-weight: bold;
+    height: 40px;
+    background: #f8f8f8;
+    line-height: 40px;
+    width: 100%;
+    padding-left: 10px;
+    margin: 20px 0;
+  }
+
+  .inputTip {
+    color: #999;
+    margin-left: 15px;
+  }
 </style>

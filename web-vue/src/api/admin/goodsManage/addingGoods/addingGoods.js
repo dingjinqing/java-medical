@@ -14,6 +14,13 @@ export function cateList () {
     method: 'get'
   })
 }
+// 获取商家分类和
+export function goodsSortAndGoodsBrandInitApi () {
+  return service({
+    url: '/api/admin/goods/page/init',
+    method: 'get'
+  })
+}
 // 商品新增，发送请求分为有sku和无sku两个示例
 export function goodsList (data) {
   return service({

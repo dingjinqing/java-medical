@@ -2,23 +2,13 @@
   <div class="goodsMainPic">
     <ul class="pictures">
       <li
-        class="oneImg"
-        v-show="isShowPic"
-      >
-        <el-image
-          style="width: 80px; height: 80px"
-          :src="mainUrl"
-          fit="fill"
-        ></el-image>
-      </li>
-      <li
         v-for="(item,index) in imgLists"
         :key="index"
         class="oneImg"
       >
         <el-image
           style="width: 80px; height: 80px"
-          :src="item.url"
+          :src="item"
           fit="fill"
         ></el-image>
       </li>
@@ -46,8 +36,6 @@ export default {
   data () {
     return {
       src: `${this.$imageHost}/image/admin/add_img.png`,
-      isShowPic: false,
-      mainUrl: '',
       imgLists: []
     }
   },
@@ -57,9 +45,11 @@ export default {
     },
     handleSelectImg (res) {
       console.log(res)
-      this.$emit('mainUrl', res)
-      this.mainUrl = res
-      this.isShowPic = true
+
+      if (res != null) {
+        this.imgLists.push(res)
+        this.$emit('imgListChange', this.imgLists.slice())
+      }
     }
   }
 }
