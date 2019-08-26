@@ -38,18 +38,21 @@
             <el-input
               v-model="act_name"
               placeholder="请输入活动名称"
+              size="small"
             ></el-input>
           </div>
           <div class="filters_item"><span>礼包名称：</span>
             <el-input
               v-model="package_name"
               placeholder="请输入礼包名称"
+              size="small"
             ></el-input>
           </div>
           <div class="filters_item"><span>领取方式：</span>
             <el-select
               v-model="get_type"
               placeholder="请选择"
+              size="small"
             >
               <el-option
                 v-for="item in get_type_option"
@@ -60,7 +63,10 @@
             </el-select>
           </div>
           <div class="filters_item">
-            <el-button type="primary">筛选</el-button>
+            <el-button
+              type="primary"
+              size="small"
+            >筛选</el-button>
           </div>
         </div>
         <el-table
@@ -116,7 +122,10 @@
             prop="act_status"
             label="活动状态"
           ></el-table-column>
-          <el-table-column label="操作">
+          <el-table-column
+            label="操作"
+            width="130"
+          >
             <template slot-scope="scope">
               <div class="operation">
                 <el-tooltip
@@ -239,7 +248,7 @@ export default {
     padding: 15px;
     .filters {
       display: flex;
-      line-height: 40px;
+      line-height: 32px;
       margin-left: -15px;
       margin-bottom: 10px;
       .filters_item {

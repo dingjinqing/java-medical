@@ -1,7 +1,7 @@
 <template>
   <div
     class="brandManagementContent"
-    :class="hiddenOverFlag?'hiddenOverFlag':''"
+    :class="hiddenOverFlag ? 'hiddenOverFlag' : ''"
   >
     <div class="brandManagementContent_main">
       <el-tabs
@@ -13,7 +13,8 @@
           name="first"
         >
           <ul class="topUl">
-            <li>品牌名称：
+            <li>
+              品牌名称：
               <el-input
                 v-model="state3"
                 placeholder="请输入内容"
@@ -40,7 +41,8 @@
                 </el-date-picker>
               </div>
             </li>
-            <li>品牌分类：
+            <li>
+              品牌分类：
               <el-select
                 v-model="valueClss"
                 placeholder="请选择"
@@ -51,12 +53,13 @@
                   :key="item.classifyName"
                   :label="item.classifyName"
                   :value="item.classifyId"
-                  :class="item.classifyId===1?'grandSelectClass':''"
+                  :class="item.classifyId === 1 ? 'grandSelectClass' : ''"
                 >
                 </el-option>
               </el-select>
             </li>
-            <li>是否为推荐品牌：
+            <li>
+              是否为推荐品牌：
               <el-select
                 v-model="valueIsClss"
                 placeholder="请选择"
@@ -91,7 +94,8 @@
           name="second"
         >
           <ul class="topUl">
-            <li>分类名称：
+            <li>
+              分类名称：
               <el-autocomplete
                 popper-class="my-autocomplete"
                 v-model="state3"
@@ -139,46 +143,49 @@
           name="third"
         >
           <div class="showMain">
-            <div class="showTop">将全部品牌展示在商品分类页：
+            <div class="showTop">
+              将全部品牌展示在商品分类页：
               <el-switch
                 v-model="switchValue"
                 active-color="#F7931E"
                 inactive-color="#DDDDDD"
               >
               </el-switch>
-              <span>{{this.switchTextOne}}</span>
+              <span>{{ this.switchTextOne }}</span>
               <span style="color:#999">开启后，将在商品分类页展示全部品牌列表</span>
               <div
                 class="example"
                 @mouseover="showOver()"
                 @mouseleave="showLeave()"
-              >查看实例
+              >
+                查看实例
                 <div
                   class="hover_show"
                   v-if="showFlag"
                 >
-                  <img :src="showHiddleImgUrl">
+                  <img :src="showHiddleImgUrl" />
                 </div>
               </div>
             </div>
             <div
               class="showTop"
               style="margin-top:30px"
-            >推荐品牌：
+            >
+              推荐品牌：
               <el-switch
                 v-model="switchValueBottom"
                 active-color="#F7931E"
                 inactive-color="#DDDDDD"
               >
               </el-switch>
-              <span>{{this.switchTextSecond}}</span>
+              <span>{{ this.switchTextSecond }}</span>
               <span style="color:#999">开启后，将在商品分类页展示全部品牌列表</span>
             </div>
             <!--隐藏模块-->
             <div v-if="hiddle_containerFlag">
-
               <div style="margin-top:20px;margin-left:75px">
-                <div class="hiddleTitle">推荐标题：
+                <div class="hiddleTitle">
+                  推荐标题：
                   <el-input
                     v-model="hiddleValTop"
                     placeholder="请输入内容"
@@ -202,12 +209,13 @@
                         class="example"
                         @mouseover="showOver(1)"
                         @mouseleave="showLeave(1)"
-                      >查看实例
+                      >
+                        查看实例
                         <div
                           class="hover_show"
                           v-if="showFlag_one"
                         >
-                          <img :src="showHiddleImgUrl_one">
+                          <img :src="showHiddleImgUrl_one" />
                         </div>
                       </div>
                     </div>
@@ -222,12 +230,13 @@
                         class="example"
                         @mouseover="showOver(2)"
                         @mouseleave="showLeave(2)"
-                      >查看实例
+                      >
+                        查看实例
                         <div
                           class="hover_show"
                           v-if="showFlag_two"
                         >
-                          <img :src="showHiddleImgUrl_two">
+                          <img :src="showHiddleImgUrl_two" />
                         </div>
                       </div>
                     </div>
@@ -252,33 +261,35 @@
       v-if="bottomDivFlag"
     >
       <div class="content_two">
-        <table width='100%'>
+        <table width="100%">
           <thead>
             <tr class="brandTr">
-              <td :class="hiddle_1?'':'firstNameClass'">{{secondGrandName}}</td>
+              <td :class="hiddle_1 ? '' : 'firstNameClass'">
+                {{ secondGrandName }}
+              </td>
               <td v-if="hiddle_1">品牌logo</td>
               <td v-if="hiddle_1">优先级</td>
               <td v-if="hiddle_1">品牌分类</td>
-              <td :class="hiddle_1?'':'secondNameClass'">包含商品数量</td>
-              <td :class="hiddle_1?'':'threeNameClass'">分类优先级</td>
-              <td :class="hiddle_1?'':'fourNameClass'">创建时间</td>
+              <td :class="hiddle_1 ? '' : 'secondNameClass'">包含商品数量</td>
+              <td :class="hiddle_1 ? '' : 'threeNameClass'">分类优先级</td>
+              <td :class="hiddle_1 ? '' : 'fourNameClass'">创建时间</td>
               <td>操作</td>
             </tr>
           </thead>
           <tbody v-if="tbodyFlag">
             <tr
-              v-for="(item,index) in trList"
+              v-for="(item, index) in trList"
               :key="index"
             >
-              <td v-if="!hiddle_1">{{item.classifyName}}</td>
-              <td v-if="hiddle_1">{{item.brandName}}</td>
-              <td v-if="hiddle_1"><img :src="item.logo"></td>
-              <td v-if="hiddle_1">{{item.first}}</td>
-              <td v-if="hiddle_1">{{item.classifyId}}</td>
-              <td v-if="hiddle_1">{{item.goodsNum}}</td>
-              <td v-if="!hiddle_1">{{item.brandNum}}</td>
-              <td>{{item.first}}</td>
-              <td>{{item.createTime}}</td>
+              <td v-if="!hiddle_1">{{ item.classifyName }}</td>
+              <td v-if="hiddle_1">{{ item.brandName }}</td>
+              <td v-if="hiddle_1"><img :src="item.logo" /></td>
+              <td v-if="hiddle_1">{{ item.first }}</td>
+              <td v-if="hiddle_1">{{ item.classifyId }}</td>
+              <td v-if="hiddle_1">{{ item.goodsNum }}</td>
+              <td v-if="!hiddle_1">{{ item.brandNum }}</td>
+              <td>{{ item.first }}</td>
+              <td>{{ item.createTime }}</td>
               <td
                 class="lastSpan"
                 v-if="hiddle_1"
@@ -295,16 +306,14 @@
               </td>
             </tr>
           </tbody>
-
         </table>
         <div
           class="noData"
           v-if="!tbodyFlag"
         >
-          <img :src="noImg">
+          <img :src="noImg" />
           <span>暂无相关数据</span>
         </div>
-
       </div>
 
       <!--分页-->
@@ -325,16 +334,18 @@
       :title="grandTitle"
       :visible.sync="dialogVisibleAddBrand"
       width="30%"
-      :center='true'
+      :center="true"
     >
       <div class="dialogMain">
-        <p>品牌分类名称：<el-input
+        <p>
+          品牌分类名称：<el-input
             v-model="brandName"
             placeholder="请输入内容"
             size="mini"
           ></el-input>
         </p>
-        <p style="margin-top:10px"><span style="margin-right:11px">分类优先级：</span>
+        <p style="margin-top:10px">
+          <span style="margin-right:11px">分类优先级：</span>
           <el-input
             v-model="classificationName"
             placeholder="请输入内容"

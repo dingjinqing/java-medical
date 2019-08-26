@@ -302,8 +302,6 @@ export default {
     background-color: #fff;
     padding: 10px 20px 10px 20px;
     .wrapper {
-      display: flex;
-      justify-content: space-between;
       .rightContent {
         .el-button {
           margin-left: 5px;
@@ -315,6 +313,9 @@ export default {
         :nth-of-type(3) {
           color: #999;
         }
+      }
+      .barginBtn {
+        float: right;
       }
     }
     span {
@@ -361,8 +362,7 @@ export default {
   }
 }
 .search_content {
-  width: 15%;
-  margin-left: -70%;
+  width: 150px;
 }
 .opt {
   text-align: left;

@@ -173,7 +173,10 @@
           </div>
         </div>
         <!-- 优惠券礼包 -->
-        <div class="voucher box_style">
+        <div
+          @click="couponPackage()"
+          class="voucher box_style"
+        >
           <div class="activity_img"><img
               :src="$imageHost + '/image/admin/new_market/icon_coupon_bag.png'"
               alt=""
