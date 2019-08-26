@@ -3,7 +3,7 @@
     <div class="main">
       <el-tabs
         v-model="tabSwitch"
-        @tab-click="handleClick"
+        @tab-click="initDataList"
       >
         <el-tab-pane
           v-for="(item) in tabInfo"
@@ -11,7 +11,7 @@
           :label="item.title"
           :name="item.name"
         >
-          <el-button type="primary">添加好友助力活动</el-button>
+          <el-button type="primary">添加活动</el-button>
         </el-tab-pane>
       </el-tabs>
     </div>
@@ -52,7 +52,7 @@
         </el-table-column>
 
         <el-table-column
-          prop="status"
+          prop="statusText"
           label="活动状态"
           align="center"
         >
@@ -95,6 +95,17 @@
           </template>
         </el-table-column>
       </el-table>
+      <div class="footer">
+        <span>当前页面1/1，总记录4条</span>
+        <el-pagination
+          @current-change="initDataList"
+          :current-page.sync="currentPage"
+          :page-size="20"
+          layout="prev, pager, next, jumper"
+          :total="4"
+        >
+        </el-pagination>
+      </div>
     </div>
   </div>
 
@@ -102,7 +113,6 @@
 <script>
 import {
   groupBuyList,
-
   changeStatusActivity,
   deleteGroupBuyActivity
 } from '@/api/admin/marketManage/spellGroup.js'
@@ -110,7 +120,7 @@ import {
 export default {
   data () {
     return {
-      tableData: undefined,
+      tableData: [],
       tabSwitch: '2',
       tabInfo: [{
         title: '全部砍价活动',
@@ -130,35 +140,33 @@ export default {
       }],
       tabIndex: 3,
       currentPage: 1,
-      pageRows: 20,
-      tabRequestData: {
-        type: this.tabSwitch,
-        currentPage: this.currentPage,
-        pageRows: 20.0
-      }
+      pageRows: 20
     }
   },
   mounted () {
+    console.log('mounted-----------------------')
+    // 初始化数据
+    this.initDataList()
   },
   methods: {
-    handleClick (tab) {
-      console.log(this.tabRequestData)
-      this.tabRequestData.type = parseInt(tab.index) + 1
-      this.tabRequestData.currentPage = this.currentPage
-      this.tabRequestData.pageRows = this.pageRows
-      groupBuyList(this.tabRequestData).then(res => {
+    initDataList () {
+      let obj = {
+        'type': this.tabSwitch,
+        'currentPage': this.currentPage
+      }
+      groupBuyList(obj).then(res => {
         console.log(res.content.dataList)
         this.handleData(res.content.dataList)
       }).catch(() => {
         this.$message.error('保存失败')
       })
     },
-    // 表格数据处理
-    handleData (data) {
-      data.map((item, index) => {
+    handleData (tabData) {
+      tabData.map((item, index) => {
         item.vaildDate = `${item.startTime}至${item.endTime}`
+        item.statusText = this.getActStatusString(item.status, item.startTime, item.endTime)
       })
-      this.tableData = data
+      this.tableData = tabData
     },
     changeStatus (id) {
       let obj = {
@@ -166,7 +174,7 @@ export default {
       }
       changeStatusActivity(obj).then(res => {
         console.log('change=>res = ' + res)
-        this.refreshTable()
+        this.initDataList()
       })
     },
     deleteGroupBuy (data) {
@@ -175,13 +183,6 @@ export default {
       }
       deleteGroupBuyActivity(obj).then(res => {
         console.log(res)
-      })
-    },
-    refreshTable () {
-      groupBuyList(this.tabRequestData).then(res => {
-        this.handleData(res.content.dataList)
-      }).catch(() => {
-        this.$message.error('刷新失败')
       })
     },
     addActivity () {
@@ -266,5 +267,15 @@ export default {
 .add_coupon {
   float: left;
   margin-left: 65%;
+}
+.footer {
+  padding: 20px 0 20px 20px;
+  display: flex;
+  justify-content: flex-end;
+  span {
+    display: block;
+    height: 32px;
+    line-height: 32px;
+  }
 }
 </style>
