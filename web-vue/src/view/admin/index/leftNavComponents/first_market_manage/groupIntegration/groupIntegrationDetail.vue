@@ -1,120 +1,225 @@
+// 瓜分积分活动--参与人数明细
 <template>
-  <div>
-    <el-form
-      ref="form"
-      :model="activity"
-      label-width="150px"
-    >
-      <el-form-item label="活动名称：">
-        <el-input
-          v-model="activity.name"
-          placeholder="请填写活动名称"
-        ></el-input>
-      </el-form-item>
-      <el-form-item label="宣传语：">
-        <el-input v-model="activity.advertise"></el-input>
-      </el-form-item>
-      <el-form-item label="有效期：">
-        <el-col :span="11">
+  <div class="content">
+    <div class="main">
+      <el-form :inline="true">
+        <el-form-item label="用户手机号">
+          <el-input
+            placeholder="请输入手机号"
+            v-model="queryForm.mobile"
+          />
+        </el-form-item>
+        <el-form-item label="用户昵称">
+          <el-input
+            placeholder="请输入用户昵称"
+            v-model="queryForm.username"
+          />
+        </el-form-item>
+        <el-form-item label="参团时间">
           <el-date-picker
-            type="datetime"
-            v-model="activity.startTime"
+            type="datetimerange"
             value-format="yyyy-MM-dd HH:mm:ss"
-            style="width: 100%;"
+            v-model="timeRange"
+            range-separator="至"
           ></el-date-picker>
-        </el-col>
-        <el-col
-          class="line"
-          :span="2"
-        >-</el-col>
-        <el-col :span="11">
-          <el-date-picker
-            type="datetime"
-            v-model="activity.endTime"
-            value-format="yyyy-MM-dd HH:mm:ss"
-            style="width: 100%;"
+        </el-form-item>
+        <el-form-item label="是否团长">
+          <el-select v-model="queryForm.isGrouper">
+            <el-option
+              label="请选择"
+              value=""
+            ></el-option>
+            <el-option
+              label="是"
+              value="1"
+            ></el-option>
+            <el-option
+              label="否"
+              value="0"
+            ></el-option>
+          </el-select>
+        </el-form-item>
+        <el-form-item label="邀请用户数量">
+          <el-input v-model="queryForm.inviteNum"></el-input>
+        </el-form-item>
+        <el-form-item label="瓜分积分">
+          <el-col :span="11">
+            <el-input v-model="queryForm.minIntegration"></el-input>
+          </el-col>
+          <el-col :span="1">至</el-col>
+          <el-col :span="11">
+            <el-input v-model="queryForm.maxIntegration"></el-input>
+          </el-col>
+        </el-form-item>
+        <el-form-item label="是否新用户">
+          <el-select
+            v-model="queryForm.isNew"
+            placeholder="请选择"
           >
-          </el-date-picker>
-        </el-col>
-      </el-form-item>
-      <el-form-item label="瓜分积分总数：">
-        <el-input v-model="activity.inteTotal"></el-input>
-      </el-form-item>
-      <el-form-item label="单团瓜分内容：">
-        <el-col>
-          <el-input v-model="activity.limitAmount" />
-        </el-col>
-        <el-col>人，瓜分</el-col>
-        <el-col>
-          <el-input v-model="activity.inteGroup" />
-        </el-col>
-        <el-col>
-          积分
-        </el-col>
-      </el-form-item>
-      <el-form-item label="参团限制：">
-        <el-col :span="3">每人最多参加</el-col>
-        <el-col :span="1">
-          <el-input v-model="activity.joinLimit" />
-        </el-col>
-        <el-col :span="3">次新团</el-col>
-      </el-form-item>
-      <el-form-item label="瓜分方式：">
-        <el-radio-group v-model="activity.divideType">
-          <el-radio :label="0">按邀请好友数量瓜分</el-radio>
-          <el-radio :label="1">好友均分</el-radio>
-          <el-radio :label="2">随机瓜分</el-radio>
-        </el-radio-group>
-      </el-form-item>
-      <el-form-item label="瓜分限制：">
-        <span>用户开团24小时后,拼团未满员是否可以瓜分积分</span>
-        <el-radio-group v-model="activity.isDayDivide">
-          <el-radio :label="0">否</el-radio>
-          <el-radio :label="1">是</el-radio>
-        </el-radio-group>
-      </el-form-item>
-      <el-form-item>
+            <el-option
+              label="请选择"
+              value=""
+            ></el-option>
+            <el-option
+              label="是"
+              value="1"
+            ></el-option>
+            <el-option
+              label="否"
+              value="0"
+            ></el-option>
+          </el-select>
+        </el-form-item>
+        <el-form-item label="团ID">
+          <el-input v-model="queryForm.groupId"></el-input>
+        </el-form-item>
         <el-button
           type="primary"
-          @click="addActivity()"
-        >保存</el-button>
-      </el-form-item>
-    </el-form>
+          @click="onSubmit"
+        >查询</el-button>
+      </el-form>
+    </div>
+    <div class="table_list">
+      <el-table
+        class="version-manage-table"
+        header-row-class-name="tableClss"
+        :data="tableData"
+        border
+        style="width: 100%"
+      >
+        <el-table-column
+          prop="userId"
+          label="用户ID"
+          align="center"
+        ></el-table-column>
+        <el-table-column
+          prop="username"
+          label="用户昵称"
+          align="center"
+        ></el-table-column>
+        <el-table-column
+          prop="mobile"
+          label="手机号码"
+          align="center"
+        ></el-table-column>
+        <el-table-column
+          prop="isNew"
+          label="是否新用户"
+          align="center"
+        ></el-table-column>
+        <el-table-column
+          prop="startTime"
+          label="参团时间"
+          align="center"
+        ></el-table-column>
+        <el-table-column
+          prop="groupId"
+          label="团ID"
+          align="center"
+        ></el-table-column>
+        <el-table-column
+          prop="inviteNum"
+          label="邀请用户数量"
+          align="center"
+        ></el-table-column>
+
+        <el-table-column
+          prop="integration"
+          label="消耗积分"
+          align="center"
+        ></el-table-column>
+        <el-table-column
+          prop="isGrouper"
+          label="是否团长"
+          align="center"
+        ></el-table-column>
+      </el-table>
+    </div>
   </div>
 </template>
 <script>
-import { createGroupIntegration } from '@/api/admin/marketManage/groupIntegrationList.js'
+import { detailGroupIntegration } from '@/api/admin/marketManage/groupIntegrationList.js'
 export default {
-  data () {
+  data: function () {
     return {
-      activity: {
-        name: '',
-        advertise: '积分购物可抵现金',
-        startTime: '',
-        endTime: '',
-        inteTotal: '',
-        inteGroup: '',
-        limitAmount: '',
-        joinLimit: '',
-        divideType: 0,
-        isDayDivide: 0
-      }
+      timeRange: [],
+      queryForm: {
+        actId: null,
+        mobile: null,
+        username: null,
+        startTime: null,
+        endTime: null,
+        isGrouper: null,
+        inviteNum: null,
+        minIntegration: null,
+        maxIntegration: null,
+        isNew: null,
+        groupId: null,
+        currentPage: 1,
+        pageRows: 20
+      },
+      tableData: []
     }
   },
   methods: {
-    addActivity () {
-      createGroupIntegration(this.activity).then((res) => {
+    loadData () {
+      this.queryForm.startTime = this.timeRange[0]
+      this.queryForm.endTime = this.timeRange[1]
+      console.log(this.queryForm)
+      detailGroupIntegration(this.queryForm).then(res => {
         console.log(res)
-        if (res.error === 0) {
-          this.$message({
-            message: '创建活动成功',
-            type: 'success'
-          })
+        this.handData(res.content.dataList)
+      })
+    },
+    onSubmit () {
+      this.loadData()
+    },
+    handData (data) {
+      data.map((item, index) => {
+        if (item.isNew === 1) {
+          item.isNew = '是'
+        } else {
+          item.isNew = '否'
+        }
+        if (item.isGrouper === 1) {
+          item.isGrouper = '是'
+        } else {
+          item.isGrouper = '否'
         }
       })
+      this.tableData = data
     }
+  },
+  mounted () {
+    this.queryForm.actId = this.$route.params.id
+    this.loadData()
   }
 }
 </script>
 <style lang="scss" scoped>
+.content {
+  padding: 10px;
+  min-width: 100%;
+  font-size: 14px;
+  height: 100%;
+  .main {
+    position: relative;
+    background-color: #fff;
+    padding: 10px 20px 10px 20px;
+  }
+}
+/deep/ .tableClss th {
+  background-color: #f5f5f5;
+  border: none;
+  height: 36px;
+  font-weight: bold;
+  color: #000;
+  padding: 8px 10px;
+}
+.table_list {
+  position: relative;
+  margin-top: 10px;
+  background-color: #fff;
+  padding: 10px 20px 0 20px;
+}
 </style>

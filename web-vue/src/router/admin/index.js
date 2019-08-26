@@ -791,13 +791,55 @@ const routes = [
             path: '/api/admin/market/integration/add',
             name: 'group_integration_add',
             meta: {
-              crumbTitle: 'router.group_integration_add',
+              crumbTitle: 'router.pin_integration_add',
               meta: 'first_market_manage',
               category: 'first_market_manage'
             },
             component: () =>
               import(
                 '@/view/admin/index/leftNavComponents/first_market_manage/groupIntegration/groupIntegrationAdd'
+              )
+          },
+          // 编辑瓜分积分活动
+          {
+            path: '/api/admin/market/integration/edit/:id',
+            name: 'group_integration_edit',
+            meta: {
+              crumbTitle: 'router.pin_integration_edit',
+              meta: 'first_market_manage',
+              category: 'first_market_manage'
+            },
+            component: () =>
+              import(
+                '@/view/admin/index/leftNavComponents/first_market_manage/groupIntegration/groupIntegrationAdd'
+              )
+          },
+          // 瓜分积分活动--参与用户明细
+          {
+            path: '/api/admin/market/integration/detail/:id',
+            name: 'group_integration_detail',
+            meta: {
+              crumbTitle: 'router.pin_integration_detail',
+              meta: 'first_market_manage',
+              category: 'first_market_manage'
+            },
+            component: () =>
+              import(
+                '@/view/admin/index/leftNavComponents/first_market_manage/groupIntegration/groupIntegrationDetail'
+              )
+          },
+          // 瓜分积分活动--成团明细
+          {
+            path: '/api/admin/market/integration/success/:id',
+            name: 'group_integration_success',
+            meta: {
+              crumbTitle: 'router.pin_integration_success',
+              meta: 'first_market_manage',
+              category: 'first_market_manage'
+            },
+            component: () =>
+              import(
+                '@/view/admin/index/leftNavComponents/first_market_manage/groupIntegration/groupIntegrationSuccess'
               )
           },
           {

@@ -78,6 +78,15 @@ export const cn = {
   distribution_info: ['营销管理', '分销'],
   // 营销管理 瓜分积分
   pin_integration: ['营销管理', '组团瓜分积分'],
+  // 营销管理 瓜分积分 创建瓜分积分活动
+  pin_integration_add: ['营销管理', '组团瓜分积分', '创建瓜分积分活动'],
+  // 营销管理 瓜分积分 修改瓜分积分活动
+  pin_integration_edit: ['营销管理', '组团瓜分积分', '编辑瓜分积分活动'],
+  // 营销管理 瓜分积分 参与用户明细
+  pin_integration_detail: ['营销管理', '组团瓜分积分', '参与用户明细'],
+  // 营销管理 瓜分积分 成团明细
+  pin_integration_success: ['营销管理', '组团瓜分积分', '成团明细'],
+
   // 营销管理 赠品
   gift: ['营销管理', '赠品'],
   // 营销管理 赠品 添加赠品
@@ -89,8 +98,6 @@ export const cn = {
   // 营销管理 优惠券礼包
   coupon_Package: ['营销管理', '优惠券礼包'],
   coupon_Package_add: ['营销管理', '优惠券礼包', '添加优惠券礼包'],
-  // // 营销管理 组团瓜分积分
-  // group_integration: ['营销管理', '组团瓜分积分'],
   // 营销管理 好友代付
   friend_pay: ['营销管理', '好友代付'],
   // 营销管理 幸运大抽奖
@@ -182,6 +189,14 @@ export const en = {
   distribution_info: ['Marketing management', 'distribution'],
   // 营销管理 瓜分积分
   pin_integration: ['Marketing management', 'Group partition integral'],
+  // 营销管理 瓜分积分 创建瓜分积分活动
+  pin_integration_add: ['Marketing management', 'Group partition integral', 'Create group partition integral'],
+  // 营销管理 瓜分积分 修改活动内容
+  pin_integration_edit: ['Marketing management', 'Group partition integral', 'Edit group partition integral'],
+  // 营销管理 瓜分积分 参与用户明细
+  pin_integration_detail: ['Marketing management', 'Group partition integral', 'Group partition integral detail'],
+  // 营销管理 瓜分积分 成团明细
+  pin_integration_success: ['Marketing management', 'Group partition integral', 'Group partition integral success'],
   // 营销管理 赠品
   gift: ['Marketing management', 'Gift'],
   // 营销管理 赠品 添加赠品

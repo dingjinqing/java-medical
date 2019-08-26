@@ -126,12 +126,12 @@
         >
           <template slot-scope="scope">
             <div class="opt">
-              <span>编辑</span>
+              <span @click="gotoEdit(scope.row.id)">编辑</span>
               <span @click="shareHandle(scope.row.id)">分享</span>
               <span @click="puaseGroupIntegration(scope.row.id)">停用</span>
               <span @click="upGroupIntegration(scope.row.id)">启用</span>
-              <span>参团明细</span>
-              <span>成团明细</span>
+              <span @click="gotoDetail(scope.row.id)">参团明细</span>
+              <span @click="gotoSuccess(scope.row.id)">成团明细</span>
               <span @click="delGroupIntegration(scope.row.id)">删除</span>
             </div>
           </template>
@@ -159,7 +159,12 @@ export default {
       shareImgPath: '',
       sharePagePath: '',
       shareDialogShow: false,
-      tableData: []
+      tableData: [],
+      obj: {
+        'currentPage ': 0,
+        'pageRows ': 20,
+        'type': 0
+      }
     }
   },
   mounted () {
@@ -174,6 +179,7 @@ export default {
         'pageRows ': 20,
         'type': parseInt(e.index)
       }
+      this.obj = obj
       groupIntegrationList(obj).then((res) => {
         console.log(res)
         if (res.error === 0) {
@@ -182,13 +188,7 @@ export default {
       })
     },
     seacherGroupIntegrationList () {
-      let obj = {
-        'currentPage ': 0,
-        'pageRows ': 20,
-        'type': 0
-      }
-
-      groupIntegrationList(obj).then((res) => {
+      groupIntegrationList(this.obj).then((res) => {
         console.log(res)
         if (res.error === 0) {
           this.handleData(res.content.dataList)
@@ -226,23 +226,25 @@ export default {
         'status': 0
       }
       changeGroupIntegrationStatus(data).then(res => {
+        console.log(res)
         if (res.error === 0) {
           alert('停用成功！')
+          this.seacherGroupIntegrationList()
         }
-        console.log(res)
       })
     },
-    // 停用瓜分积分活动
+    // 启用瓜分积分活动
     upGroupIntegration (id) {
       let data = {
         'id': id,
         'status': 1
       }
       changeGroupIntegrationStatus(data).then(res => {
+        console.log(res)
         if (res.error === 0) {
           alert('启用成功！')
+          this.seacherGroupIntegrationList()
         }
-        console.log(res)
       })
     },
     // 删除瓜分积分活动
@@ -269,6 +271,19 @@ export default {
           this.shareDialogShow = true
         }
       })
+    },
+    // 编辑活动
+    gotoEdit (id) {
+      this.$router.push(`/api/admin/market/integration/edit/${id}`)
+    },
+
+    // 前往参与瓜分积分活动的用户明细页面
+    gotoDetail (id) {
+      this.$router.push(`/api/admin/market/integration/detail/${id}`)
+    },
+    // 前往成团明细页面
+    gotoSuccess (id) {
+      this.$router.push(`/api/admin/market/integration/success/${id}`)
     }
   }
 }

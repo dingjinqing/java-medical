@@ -35,6 +35,37 @@ export function createGroupIntegration (data) {
 export function shareActivity (data) {
   return service({
     url: '/api/admin/market/integration/getqrcode/' + data,
+    method: 'post'
+  })
+}
+// 编辑活动
+export function editGroupIntegration (data) {
+  return service({
+    url: '/api/admin/market/integration/update',
+    method: 'post',
+    data: data
+  })
+}
+
+// 查询活动内容
+export function selectGroupIntegration (id) {
+  return service({
+    url: `/api/admin/market/integration/select/${id}`,
+    method: 'get'
+  })
+}
+// 查询参与活动的用户列表
+export function detailGroupIntegration (data) {
+  return service({
+    url: '/api/admin/market/integration/detail',
+    method: 'post',
+    data: data
+  })
+}
+// 查询组团瓜分积分 成团明细
+export function successGroupIntegration (data) {
+  return service({
+    url: '/api/admin/market/integration/success',
     method: 'post',
     data: data
   })

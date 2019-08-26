@@ -6,7 +6,7 @@
   </div>
 </template>
 <script>
-import integrationAdd from './groupIntegrationDetail'
+import integrationAdd from './groupIntegrationInfo'
 export default {
   components: {
     integrationAdd
