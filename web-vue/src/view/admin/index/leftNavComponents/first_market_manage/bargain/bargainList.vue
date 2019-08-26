@@ -11,28 +11,30 @@
           :label="item.title"
           :name="item.name"
         >
-          <div class="wrapper">
-            <el-button
-              type="primary"
-              @click="addActivity"
-            >添加砍价活动</el-button>
 
-            <div class="rightContent">
-              <span>砍价设置：每个被邀请的用户，单日可帮助砍价 </span>
-              <el-input
-                style="width: 80px"
-                size="small"
-              ></el-input>
-              <span>次</span>
-              <span>设置为空时，不限制帮助砍价次数</span>
-              <el-button
-                type="primary"
-                size="small"
-              >保存设置</el-button>
-            </div>
-          </div>
         </el-tab-pane>
+
       </el-tabs>
+      <div class="wrapper">
+        <el-button
+          type="primary"
+          @click="addActivity"
+        >添加砍价活动</el-button>
+
+        <div class="rightContent">
+          <span>砍价设置：每个被邀请的用户，单日可帮助砍价 </span>
+          <el-input
+            style="width: 80px"
+            size="small"
+          ></el-input>
+          <span>次</span>
+          <span>设置为空时，不限制帮助砍价次数</span>
+          <el-button
+            type="primary"
+            size="small"
+          >保存设置</el-button>
+        </div>
+      </div>
     </div>
     <div class="table_list">
       <el-table
@@ -64,7 +66,7 @@
         </el-table-column>
 
         <el-table-column
-          prop="status"
+          prop="statusName"
           label="活动状态"
           align="center"
         >
@@ -110,21 +112,62 @@
           align="center"
         >
           <template slot-scope="scope">
-            <div class="opt">
-              <span>编辑</span>
-              <span>分享</span>
-              <span @click="puaseBargain(scope.row.id)">停用</span>
-              <span>查看砍价订单</span>
-              <span>获取新用户明细</span>
-              <span>查看发起砍价用户</span>
-              <span>活动效果数据</span>
-              <span @click="delBargain(scope.row.id)">删除</span>
-            </div>
+            <el-tooltip
+              content="编辑"
+              placement="top"
+            >
+              <i
+                class="el-icon-edit-outline"
+                style="color:#409EFF;fontSize:16px"
+              ></i>
+            </el-tooltip>
+            <el-tooltip
+              v-if="scope.row.status === 1"
+              content="停用"
+              placement="top"
+            >
+              <i
+                @click="puaseBargain(scope.row.id)"
+                class="el-icon-remove-outline"
+                style="color:#409EFF;fontSize:16px"
+              ></i>
+            </el-tooltip>
+            <el-tooltip
+              v-else
+              content="启用"
+              placement="top"
+            >
+              <i
+                @click="enableBargain(scope.row.id)"
+                class="el-icon-check"
+                style="color:#409EFF;fontSize:16px"
+              ></i>
+            </el-tooltip>
+            <el-tooltip
+              content="分享"
+              placement="top"
+            >
+              <i
+                class="el-icon-share"
+                style="color:#409EFF;fontSize:16px"
+              ></i>
+            </el-tooltip>
+            <el-tooltip
+              content="删除"
+              placement="top"
+            >
+              <i
+                @click="delBargain(scope.row.id)"
+                class="el-icon-delete"
+                style="color:#409EFF;fontSize:16px"
+              ></i>
+            </el-tooltip>
+
           </template>
         </el-table-column>
       </el-table>
       <div class="footer">
-        <span>当前页面1/1，总记录4条</span>
+        <span>当前页面{{this.page.currentPage}}/{{this.page.pageCount}}，总记录{{this.page.totalRows}}条</span>
         <el-pagination
           @current-change="handleCurrentChange"
           :current-page.sync="currentPage"
@@ -160,9 +203,11 @@ export default {
         title: '已停用',
         name: '5'
       }],
-      tabIndex: 2,
+      // 默认显示进行中的活动
+      tabIndex: 1,
       currentPage: 1,
-      tableData: []
+      tableData: [],
+      page: {}
     }
   },
   mounted () {
@@ -171,15 +216,19 @@ export default {
   },
   methods: {
     initDataList (tab) {
-      let obj = {
-        'state': parseInt(tab.index),
+      if (tab) {
+        this.tabIndex = tab.index
+      }
+      let param = {
+        'state': parseInt(this.tabIndex),
         'currentPage': 1
       }
 
-      bargainList(obj).then((res) => {
+      bargainList(param).then((res) => {
         console.log(res)
         if (res.error === 0) {
           this.handleData(res.content.dataList)
+          this.page = res.content.page
         }
       })
     },
@@ -189,34 +238,51 @@ export default {
       data.map((item, index) => {
         item.bargainType = item.bargainType === 0 ? '定人' : '任意价'
         item.vaildDate = `${item.startTime}至${item.endTime}`
-        item.status = this.getActStatusString(item.status, item.startTime, item.endTime)
+        item.statusName = this.getActStatusString(item.status, item.startTime, item.endTime)
       })
       this.tableData = data
     },
 
     // 停用砍价
     puaseBargain (id) {
-      let obj = {
+      let param = {
         'id': id,
         'status': 0
       }
 
-      updateBargain(obj).then((res) => {
+      updateBargain(param).then((res) => {
         if (res.error === 0) {
           alert('停用成功')
+          this.initDataList()
+        }
+      })
+    },
+
+    // 启用砍价
+    enableBargain (id) {
+      let param = {
+        'id': id,
+        'status': 1
+      }
+
+      updateBargain(param).then((res) => {
+        if (res.error === 0) {
+          alert('启用成功')
+          this.initDataList()
         }
       })
     },
 
     // 删除砍价
     delBargain (id) {
-      let obj = {
+      let param = {
         'id': id
       }
 
-      deleteBargain(obj).then((res) => {
+      deleteBargain(param).then((res) => {
         if (res.error === 0) {
           alert('删除成功')
+          this.initDataList()
         }
       })
     },
