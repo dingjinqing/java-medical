@@ -12,7 +12,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import com.vpu.mp.service.pojo.shop.qrcode.QrCodeTypeEnum;
 import org.jooq.SelectConditionStep;
 import org.jooq.SelectWhereStep;
 import org.jooq.impl.DSL;
@@ -24,11 +23,13 @@ import com.vpu.mp.db.shop.tables.records.GroupIntegrationListRecord;
 import com.vpu.mp.service.foundation.data.DelFlag;
 import com.vpu.mp.service.foundation.service.ShopBaseService;
 import com.vpu.mp.service.foundation.util.PageResult;
+import com.vpu.mp.service.pojo.shop.market.integration.GroupIntegrationDefineEditVo;
 import com.vpu.mp.service.pojo.shop.market.integration.GroupIntegrationDefineEnums;
 import com.vpu.mp.service.pojo.shop.market.integration.GroupIntegrationDefinePageParam;
 import com.vpu.mp.service.pojo.shop.market.integration.GroupIntegrationDefineParam;
 import com.vpu.mp.service.pojo.shop.market.integration.GroupIntegrationDefineVo;
 import com.vpu.mp.service.pojo.shop.market.integration.GroupIntegrationShareQRCodeVo;
+import com.vpu.mp.service.pojo.shop.qrcode.QrCodeTypeEnum;
 import com.vpu.mp.service.shop.image.QrCodeService;
 
 import lombok.Data;
@@ -70,21 +71,17 @@ public class GroupIntegrationService extends ShopBaseService {
 	 * @param id
 	 * @return
 	 */
-	public GroupIntegrationDefineVo selectGroupIntegrationDefineById(Integer id) {
+	public GroupIntegrationDefineEditVo selectGroupIntegrationDefineById(Integer id) {
 		if(id == null) {
 			return null;
 		}
-		GroupIntegrationDefineVo fetchOneInto = db().selectFrom(GROUP_INTEGRATION_DEFINE)
+		GroupIntegrationDefineEditVo fetchOneInto = db().selectFrom(GROUP_INTEGRATION_DEFINE)
 			.where(GROUP_INTEGRATION_DEFINE.DEL_FLAG.eq(DelFlag.NORMAL_VALUE))
 			.and(GROUP_INTEGRATION_DEFINE.ID.eq(id))
-			.fetchOneInto(GroupIntegrationDefineVo.class);
+			.fetchOneInto(GroupIntegrationDefineEditVo.class);
 		if(fetchOneInto == null) {
 			return null;
 		}
-		
-		ActivityInfo info = getGroupIntegrationActivictyInfo(fetchOneInto);
-		passInfo(fetchOneInto, info);
-		
 		return fetchOneInto;
 		
 	}
@@ -269,14 +266,7 @@ public class GroupIntegrationService extends ShopBaseService {
 		}
 	}
 	
-	private void passInfo(GroupIntegrationDefineVo defineVo, ActivityInfo info) {
-		if(info == null) {
-			return;
-		}
-		defineVo.setUseIntegration(info.getUseIntegration());
-		defineVo.setInteUserSum(info.getInteUserSum());
-		defineVo.setInteGroupSum(info.getInteGroupSum());
-	}
+
 
 	/**
 	 * 查找 某些活动 的团数量、参与人数 、消耗积分信息 
@@ -300,24 +290,6 @@ public class GroupIntegrationService extends ShopBaseService {
 		return fetchMap;
 	}
 	
-	/**
-	 * 查找 团数量、参与人数 、消耗积分 
-	 * @param dataList
-	 * @return 
-	 */
-	private ActivityInfo getGroupIntegrationActivictyInfo(GroupIntegrationDefineVo vo) {
-		if(vo == null) {
-			return null;
-		}
-		ActivityInfo fetchOne = db().select(DSL.sum(GROUP_INTEGRATION_LIST.INTEGRATION).as("useIntegration"), DSL.count(GROUP_INTEGRATION_LIST.ID).as("inteUserSum"), DSL.countDistinct(GROUP_INTEGRATION_LIST.GROUP_ID).as("inteGroupSum"))
-			.from(GROUP_INTEGRATION_LIST)
-			.where(GROUP_INTEGRATION_LIST.INTE_ACTIVITY_ID.eq(vo.getId()))
-			.groupBy(GROUP_INTEGRATION_LIST.INTE_ACTIVITY_ID)
-			.fetchOneInto(ActivityInfo.class);
-		return fetchOne;
-	}
-
-
 	/**
 	 * @param selectFrom
 	 * @param pageParam

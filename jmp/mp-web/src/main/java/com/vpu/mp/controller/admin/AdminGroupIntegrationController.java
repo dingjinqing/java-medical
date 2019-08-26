@@ -12,9 +12,9 @@ import org.springframework.web.bind.annotation.RestController;
 import com.vpu.mp.service.foundation.data.JsonResult;
 import com.vpu.mp.service.foundation.util.PageResult;
 import com.vpu.mp.service.pojo.shop.market.integration.ChangeStatusParam;
+import com.vpu.mp.service.pojo.shop.market.integration.GroupIntegrationDefineEditVo;
 import com.vpu.mp.service.pojo.shop.market.integration.GroupIntegrationDefinePageParam;
 import com.vpu.mp.service.pojo.shop.market.integration.GroupIntegrationDefineParam;
-import com.vpu.mp.service.pojo.shop.market.integration.GroupIntegrationDefineVo;
 import com.vpu.mp.service.pojo.shop.market.integration.GroupIntegrationListDetailParam;
 import com.vpu.mp.service.pojo.shop.market.integration.GroupIntegrationListParticipationVo;
 import com.vpu.mp.service.pojo.shop.market.integration.GroupIntegrationShareQRCodeVo;
@@ -55,7 +55,7 @@ public class AdminGroupIntegrationController extends AdminBaseController {
 	 */
 	@GetMapping("/select/{id}")
 	public JsonResult select(@PathVariable Integer id) {
-		GroupIntegrationDefineVo defineVo = shop().groupIntegration.selectGroupIntegrationDefineById(id);
+		GroupIntegrationDefineEditVo defineVo = shop().groupIntegration.selectGroupIntegrationDefineById(id);
 		return success(defineVo);
 	}
 	/**
