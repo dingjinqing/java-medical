@@ -127,7 +127,51 @@
         </el-row>
         </div>
         <!-- 设置赠品 -->
-        <div v-if="step===2"></div>
+        <div v-if="step===2">
+          <el-table
+          class="version-manage-table"
+          header-row-class-name="tableHeader"
+          :data="tableData"
+          border
+          style="width: 100%"
+        >
+          <el-table-column
+            prop="name"
+            label="活动名称"
+            align="center"
+          > </el-table-column>
+          <el-table-column
+            prop="spec"
+            label="规格"
+            align="center"
+          > </el-table-column>
+          <el-table-column
+            prop="price"
+            label="商品原价"
+            align="center"
+          > </el-table-column>
+          <el-table-column
+            prop="prdNumber"
+            label="商品库存"
+            align="center"
+          > </el-table-column>
+          <el-table-column
+            prop="productNumber"
+            label="赠品库存/当前库存"
+            align="center"
+          > </el-table-column>
+          <el-table-column
+            label = "操作"
+            align="center"
+          >
+            <template slot-scope="scope">
+              <el-button size="small"
+              @click="tableData.splice(tableData.findIndex(r=>r.productId===scope.row.productId),1)">
+              删除</el-button>
+            </template>
+          </el-table-column>
+          </el-table>
+        </div>
         <el-row>
           <el-col :offset="4">
             <el-button type="primary" @click="step-=1" v-show="step > 1">上一步</el-button>
@@ -235,7 +279,9 @@ export default {
         }
       ],
       // 当前已选规则序号
-      selectedRules: []
+      selectedRules: [],
+      // 赠品表格
+      tableData: []
     }
   },
   methods: {
@@ -282,6 +328,7 @@ export default {
         this.loadTime(content)
         this.loadRules(content)
         this.loadGoods(content)
+        this.loadGifts(content)
       })
       this.loadTag()
       this.loadMemberCard()
@@ -329,6 +376,10 @@ export default {
       const { startTime, endTime } = content
       this.dateRange.push(startTime)
       this.dateRange.push(endTime)
+    },
+    loadGifts (content) {
+      const { gifts } = content
+      this.tableData = gifts
     },
     gotoGifts () {
       this.$router.replace('/admin/home/main/gift')
