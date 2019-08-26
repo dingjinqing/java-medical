@@ -6,18 +6,19 @@
       @tab-click="handleClick"
     >
       <el-tab-pane
-        label="出售中"
+        :label="$t('allGoodsHeaderData.label1')"
         name="saleOn"
       ></el-tab-pane>
       <el-tab-pane
-        label="已售罄"
+        :label="$t('allGoodsHeaderData.label2')"
         name="saleEnd"
       ></el-tab-pane>
       <el-tab-pane
-        label="仓库中"
+        :label="$t('allGoodsHeaderData.label3')"
         name="saleOff"
       ></el-tab-pane>
     </el-tabs>
+    {{$t('allGoodsHeaderData.label1')}}
   </div>
 </template>
 <script>
@@ -31,7 +32,8 @@ export default {
   },
   // Vue生命周期钩子函数
   mounted () {
-
+    // 初始化国际语言
+    this.langDefault()
   },
   // methods 方法
   methods: {

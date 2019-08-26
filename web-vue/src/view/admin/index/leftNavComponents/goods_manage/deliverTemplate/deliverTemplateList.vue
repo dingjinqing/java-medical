@@ -232,7 +232,8 @@ export default {
           this.content = res.content
           this.formData = JSON.parse(config)
           let resData = this.formatTemplateContent(dataList)
-          this.lists = resData
+          console.log(resData)
+          // this.lists = resData
           console.log(this.lists)
         }
       }).catch(err => console.log(err))
