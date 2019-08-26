@@ -68,7 +68,7 @@ public class ScoreService extends ShopBaseService {
 	 * @throws MpException 
 	 */
 	public JsonResultCode updateMemberScore(ScoreParam param, Integer subAccountId, Integer userId, Byte tradeType,
-			Byte tradeFlow) throws DataAccessException {
+			Byte tradeFlow) throws MpException {
 
 		/**  1. 校验userId是否存在数据库中 */
 		if (userId <= 0) {
@@ -118,72 +118,79 @@ public class ScoreService extends ShopBaseService {
 		Integer usableScore = score > 0 ? score : 0;
 		String orderSn = param.getOrderSn() == null ? "" : param.getOrderSn();
 		
-		this.transaction(()->{
-			logger().info("开始执行事务");
-			try {
-				/** 4 如果时负数，则消耗积分 */
-				if (score < 0) {
-					/** 消耗的积分超出可用积分 */
-					if(Math.abs(score)>dbScore) {
-						throw new MpException(JsonResultCode.CODE_MEMBER_SCORE_ERROR);
+		try {
+			this.transaction(()->{
+				logger().info("开始执行事务");
+				try {
+					/** 4 如果时负数，则消耗积分 */
+					if (score < 0) {
+						/** 消耗的积分超出可用积分 */
+						if(Math.abs(score)>dbScore) {
+							throw new MpException(JsonResultCode.CODE_MEMBER_SCORE_ERROR);
+						}
+						/** -消耗积分 */
+						//useUserScore(userId, Math.abs(score), orderSn);
+						useUserScore(userId, Math.abs(score));
 					}
-					/** -消耗积分 */
-					//useUserScore(userId, Math.abs(score), orderSn);
-					useUserScore(userId, Math.abs(score));
+			
+				}catch(MpException e) {
+					logger().info("正在处理异常");
+					throw e;
 				}
+				
+				logger().info("异常处理后");
+				 
+				/** 5. 添加积分记录  */
+				UserScoreRecord userScoreRecord = new UserScoreRecord();
+				/** 5.1 填充数据 */
+				userScoreRecord.setScore(score);
+				userScoreRecord.setUserId(userId);
+				userScoreRecord.setRemark(remark);
+				userScoreRecord.setAdminUser(String.valueOf(subAccountId));
+				userScoreRecord.setOrderSn(orderSn);
+				userScoreRecord.setFlowNo(flowOn);
+				userScoreRecord.setUsableScore(usableScore);
+				logger().info(String.valueOf(param.getScoreStatus()));
+				userScoreRecord.setStatus(param.getScoreStatus());
+				
+				
+				
+				/** 5.2 添加 */
+				/** 在user_score中添加积分记录 */
+				addUserScoreRecord(userScoreRecord);
 		
-			}catch(MpException e) {
-				logger().info("正在处理异常");
-				throw e;
-			}
+				
+				/** 6. 更新用户积分 */
+				/** 6.1 获取操作后的积分 */
+				Integer totalScore = getTotalAvailableScoreById(userId);
+				/** 6.2 更新用户积分 */
+				updateUserScore(userId, totalScore);
+				
+				
+				/** 7. 记录更新record action */
+				/** 7.1 准备数据 */
+				TradesRecordRecord tradesRecord=new TradesRecordRecord();
 			
-			logger().info("异常处理后");
-			 
-			/** 5. 添加积分记录  */
-			UserScoreRecord userScoreRecord = new UserScoreRecord();
-			/** 5.1 填充数据 */
-			userScoreRecord.setScore(score);
-			userScoreRecord.setUserId(userId);
-			userScoreRecord.setRemark(remark);
-			userScoreRecord.setAdminUser(String.valueOf(subAccountId));
-			userScoreRecord.setOrderSn(orderSn);
-			userScoreRecord.setFlowNo(flowOn);
-			userScoreRecord.setUsableScore(usableScore);
-			logger().info(String.valueOf(param.getScoreStatus()));
-			userScoreRecord.setStatus(param.getScoreStatus());
-			
-			
-			
-			/** 5.2 添加 */
-			/** 在user_score中添加积分记录 */
-			addUserScoreRecord(userScoreRecord);
-	
-			
-			/** 6. 更新用户积分 */
-			/** 6.1 获取操作后的积分 */
-			Integer totalScore = getTotalAvailableScoreById(userId);
-			/** 6.2 更新用户积分 */
-			updateUserScore(userId, totalScore);
-			
-			
-			/** 7. 记录更新record action */
-			/** 7.1 准备数据 */
-			TradesRecordRecord tradesRecord=new TradesRecordRecord();
+				tradesRecord.setTradeTime(DateUtil.getLocalDateTime());
+				tradesRecord.setTradeNum(BigDecimal.valueOf(Math.abs(score)));
+				tradesRecord.setTradeSn(orderSn);
+				tradesRecord.setUserId(userId);
+				/** -这是更新积分的明细所以交易内容为积分 */
+				tradesRecord.setTradeContent(TRADE_CONTENT_BY_SCORE.getValue());
+				tradesRecord.setTradeType(tradeType);
+				tradesRecord.setTradeFlow(tradeFlow);
+				tradesRecord.setTradeStatus(tradeFlow);
+				
+				/** -交易记录表-记录交易的数据信息  */
+				insertTradesRecord(tradesRecord);
 		
-			tradesRecord.setTradeTime(DateUtil.getLocalDateTime());
-			tradesRecord.setTradeNum(BigDecimal.valueOf(Math.abs(score)));
-			tradesRecord.setTradeSn(orderSn);
-			tradesRecord.setUserId(userId);
-			/** -这是更新积分的明细所以交易内容为积分 */
-			tradesRecord.setTradeContent(TRADE_CONTENT_BY_SCORE.getValue());
-			tradesRecord.setTradeType(tradeType);
-			tradesRecord.setTradeFlow(tradeFlow);
-			tradesRecord.setTradeStatus(tradeFlow);
-			
-			/** -交易记录表-记录交易的数据信息  */
-			insertTradesRecord(tradesRecord);
-	
-		});
+			});
+		}catch(DataAccessException e) {
+			/** 从事务抛出的DataAccessException中获取我们自定义的异常*/
+			Throwable cause = e.getCause();
+			MpException ex = (MpException)cause;
+			throw ex;
+		}
 		return JsonResultCode.CODE_SUCCESS;
 	}
 	
