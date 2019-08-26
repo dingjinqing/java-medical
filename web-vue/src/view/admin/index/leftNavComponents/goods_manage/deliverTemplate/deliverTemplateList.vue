@@ -100,7 +100,7 @@
           >
             <!-- 可配送区域 -->
             <el-table-column
-              prop="templateContent[0].datalist[1][0].area_text"
+              prop="templateContent[0].datalist[0].area_text"
               align="center"
               label="可配送区域"
             >
@@ -201,7 +201,7 @@ export default {
   methods: {
     // 测试按钮
     handleTest () {
-
+      console.log(this.lists)
     },
     // 选中运费模板的时候
     handleChange (val) {
@@ -233,7 +233,7 @@ export default {
           this.formData = JSON.parse(config)
           let resData = this.formatTemplateContent(dataList)
           console.log(resData)
-          // this.lists = resData
+          this.lists = resData
           console.log(this.lists)
         }
       }).catch(err => console.log(err))

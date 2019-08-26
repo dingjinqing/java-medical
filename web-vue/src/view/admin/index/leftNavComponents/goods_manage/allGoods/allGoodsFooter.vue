@@ -37,21 +37,21 @@
     </section>
     <!-- 右侧分页 -->
     <section>
-      <pagination
+      <!-- <pagination
         :total="total"
         :currentPage.sync="list.currentPage"
         :pageRows.sync="list.pageRows"
         @pagination="getList"
-      />
+      /> -->
     </section>
   </div>
 </template>
 <script>
-import pagination from '@/components/admin/pagination/pagination'
+// import pagination from '@/components/admin/pagination/pagination'
 import { brandAllGetRequest } from '@/api/admin/brandManagement'
 export default {
   name: 'allGoodsFooter',
-  components: { pagination },
+  // components: { pagination },
   data () {
     return {
       value: '批量导出',

@@ -7,6 +7,7 @@ export const cn = {
     label3: '仓库中'
   }
 }
+// 英文
 export const en = {
   // 头部出售中|已售罄|仓库中数据
   allGoodsHeaderData: {

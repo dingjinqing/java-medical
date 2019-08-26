@@ -1,44 +1,43 @@
 <template>
-  <div
-    :class="{'hidden':hidden}"
-    class="pagination-container"
-  >
-    <el-pagination
-      :background="background"
-      :current-page.sync="currentPage1"
-      :page-size.sync="pageSize"
-      :layout="layout"
-      :page-sizes="pageSizes"
-      :total="total"
-      v-bind="$attrs"
-      @size-change="handleSizeChange"
-      @current-change="handleCurrentChange"
-    />
+  <div>
+    <section
+      class="pagination"
+      v-show="pageParams.totalRows>0"
+    >
+      <!-- 当前页 -->
+      <section class="current">当前页面 {{pageParams.currentPage}}/{{Math.ceil(pageParams.totalRows/pageParams.pageRows)}}</section>
+      <!-- 分页信息 -->
+
+      <section>
+        <el-pagination
+          :current-page.sync="pageParams.currentPage"
+          :page-size.sync="pageParams.pageRows"
+          :layout="layout"
+          :page-sizes="pageSizes"
+          :total="pageParams.totalRows"
+          v-bind="$attrs"
+          @size-change="handleSizeChange"
+          @current-change="handleCurrentChange"
+        />
+      </section>
+
+    </section>
+
   </div>
 </template>
 
 <script>
-import { scrollTo } from '@/util/scroll-to'
 
 export default {
   name: 'Pagination',
   props: {
-    total: {
-      required: true,
-      type: Number
-    },
-    currentPage: {
-      type: Number,
-      default: 1
-    },
-    pageRows: {
-      type: Number,
-      default: 20
+    pageParams: {
+      type: Object
     },
     pageSizes: {
       type: Array,
       default () {
-        return [10, 20, 30, 40]
+        return [5, 10, 15, 20]
       }
     },
     layout: {
@@ -49,56 +48,52 @@ export default {
       type: Boolean,
       default: true
     },
-    autoScroll: {
-      type: Boolean,
-      default: true
-    },
     hidden: {
       type: Boolean,
       default: false
     }
   },
   computed: {
-    currentPage1: {
+    currentPage: {
       get () {
-        return this.currentPage
+        return this.pageParams.currentPage
       },
       set (val) {
-        this.$emit('update:currentPage', val)
+        this.$emit('update:pageParams', val)
       }
     },
     pageSize: {
       get () {
-        return this.pageRows
+        return this.pageParams.pageSize
       },
       set (val) {
-        this.$emit('update:pageRows', val)
+        this.$emit('update:pageParams', val)
       }
     }
   },
   methods: {
     handleSizeChange (val) {
+      // console.log({ currentPage: this.currentPage, pageRows: val })
       this.$emit('pagination', { currentPage: this.currentPage, pageRows: val })
-      if (this.autoScroll) {
-        scrollTo(0, 800)
-      }
     },
     handleCurrentChange (val) {
+      // console.log({ currentPage: val, pageRows: this.pageSize })
       this.$emit('pagination', { currentPage: val, pageRows: this.pageSize })
-      if (this.autoScroll) {
-        scrollTo(0, 800)
-      }
     }
   }
 }
 </script>
 
 <style scoped>
-.pagination-container {
-  background: #fff;
-  padding: 32px 16px;
+.pagination {
+  background-color: #fff;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 10px 16px;
 }
-.pagination-container.hidden {
-  display: none;
+.current {
+  color: #606266;
+  font-size: 13px;
 }
 </style>
