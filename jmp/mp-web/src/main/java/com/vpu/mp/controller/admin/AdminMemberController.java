@@ -112,32 +112,32 @@ public class AdminMemberController extends AdminBaseController{
 	
 	
 	
+//-------------------------------优化代码结构-正在做代码迁移-----------------------------------------------
 	
+//	@PostMapping("/account/add")
+//	public JsonResult updateMemberAccount(@RequestBody AccountParam param) {
+//		int adminUser = 0;
+//		Byte tradeType = 0;
+//		Byte tradeFlow = 0;
+//		MemberService member = shop().member;
+//		int ret = member.account.addUserAccount(param,adminUser,tradeType,tradeFlow);
+//		
+//		//TODO ret应该返回的是错误码error code
+//		if(ret == -1) {
+//			return this.fail(JsonResultMessage.MSG_MEMBER_ACCOUNT_UPDATE_FAIL);
+//		}else {
+//			//添加操作记录信 该表java版于php版有很大的区别
+//			AdminTokenAuthInfo adminTokenAuthInfo = this.adminAuth.user();
+//			UserRecord user = member.getUserRecordById(param.getUserId());
+//			//TODO处理记录
+//			//member.account.addActionRecord(param,user,adminTokenAuthInfo);
+//		}
+//		
+//		return success();
+//	}
+//	
 	
-	@PostMapping("/account/add")
-	public JsonResult updateMemberAccount(@RequestBody AccountParam param) {
-		int adminUser = 0;
-		Byte tradeType = 0;
-		Byte tradeFlow = 0;
-		MemberService member = shop().member;
-		int ret = member.account.addUserAccount(param,adminUser,tradeType,tradeFlow);
-		
-		//TODO ret应该返回的是错误码error code
-		if(ret == -1) {
-			return this.fail(JsonResultMessage.MSG_MEMBER_ACCOUNT_UPDATE_FAIL);
-		}else {
-			//添加操作记录信 该表java版于php版有很大的区别
-			AdminTokenAuthInfo adminTokenAuthInfo = this.adminAuth.user();
-			UserRecord user = member.getUserRecordById(param.getUserId());
-			//TODO处理记录
-			//member.account.addActionRecord(param,user,adminTokenAuthInfo);
-		}
-		
-		return success();
-	}
-	
-	
-//---------------------------------正在做代码迁移--------------------------------------
+//--------------------------------优化代码结构-正在做代码迁移--------------------------------------
 //	/**
 //	 * 会员列表更新积分
 //	 * @param param
