@@ -48,18 +48,28 @@
                   <span v-show="goodsRange===1">已选{{param.goodsIds.length}}</span>
                 </template>
               </el-form-item>
-              <el-form-item label="满金额赠送">
+              <el-form-item label="赠品规则">
+                <el-select v-model="selectedRules" multiple :multiple-limit="3">
+                  <el-option
+                    v-for="(item, index) in rules"
+                    :key="index"
+                    :label="item.label"
+                    :value="index">
+                  </el-option>
+                </el-select>
+              </el-form-item>
+              <el-form-item label="满金额赠送" v-show="contains(0)">
                   <span>满</span>
-                  <el-input v-model="param.fullPrice" class="input"></el-input>
+                  <el-input v-model="param.rules.fullPrice" class="input"></el-input>
                   <span>元，送赠品</span>
               </el-form-item>
-              <el-form-item label="满数量赠送">
+              <el-form-item label="满数量赠送" v-show="contains(1)">
                   <span>满</span>
-                  <el-input v-model="param.fullAmount" class="input"></el-input>
+                  <el-input v-model="param.rules.fullNumber" class="input"></el-input>
                   <span>件，送赠品</span>
               </el-form-item>
-              <el-form-item label="会员标签">
-                  <el-select v-model="selectedTags" multiple>
+              <el-form-item label="会员标签" v-show="contains(2)">
+                  <el-select v-model="param.rules.tagId" multiple>
                     <el-option
                       v-for="item in tags"
                       :key="item.id"
@@ -68,7 +78,25 @@
                     </el-option>
                   </el-select>
               </el-form-item>
-              <el-form-item label="付款时间">
+              <el-form-item label="会员卡" v-show="contains(3)">
+                  <el-select v-model="param.rules.cardId" multiple>
+                    <el-option
+                      v-for="item in cards"
+                      :key="item.id"
+                      :label="item.name"
+                      :value="item.id">
+                    </el-option>
+                  </el-select>
+              </el-form-item>
+              <el-form-item label="付款排名" v-show="contains(4)">
+                  <el-input v-model="param.rules.payTop" class="input"></el-input>
+              </el-form-item>
+              <el-form-item label="已购买次数" v-show="contains(5)">
+                  <el-input v-model="param.rules.minPayNum" class="input"></el-input>
+                  <span>至</span>
+                  <el-input v-model="param.rules.maxPayNum" class="input"></el-input>
+              </el-form-item>
+              <el-form-item label="付款时间" v-show="contains(6)">
                 <el-date-picker
                   v-model="payDateRange"
                   type="datetimerange"
@@ -76,6 +104,16 @@
                   start-placeholder="开始日期"
                   end-placeholder="结束日期">
                 </el-date-picker>
+              </el-form-item>
+              <el-form-item label="用户类别" v-show="contains(7)">
+                  <el-select v-model="param.rules.userAction">
+                    <el-option
+                      v-for="item in userAction"
+                      :key="item.id"
+                      :label="item.name"
+                      :value="item.id">
+                    </el-option>
+                  </el-select>
               </el-form-item>
               <el-form-item label="赠品规则说明">
                 <el-input
@@ -103,7 +141,7 @@
 <script>
 import wrapper from '@/components/admin/wrapper/wrapper'
 import choosingGoods from '@/components/admin/choosingGoods'
-import { format } from '@/util/date'
+import { format, range } from '@/util/date'
 import { addGift, getGiftDetail, updateGift } from '@/api/admin/marketManage/gift'
 export default {
   components: {
@@ -118,7 +156,10 @@ export default {
       dateRange: [],
       payDateRange: [],
       tags: [],
-      selectedTags: [],
+      cards: [{
+        id: 1,
+        name: 'abc'
+      }],
       goodsRange: 0,
       goodsRanges: ['全部商品', '指定商品'],
       update: false,
@@ -137,7 +178,7 @@ export default {
           'payTop': null,
           'minPayNum': 1,
           'maxPayNum': 10,
-          'cardId': [ 1, 2, 3 ],
+          'cardId': [],
           'payStartTime': '2019-08-19 18:07:54',
           'payEndTime': '2019-08-19 18:08:01'
         },
@@ -150,23 +191,84 @@ export default {
             'productNumber': 1
           }
         ]
-      }
+      },
+      userAction: [{
+        id: 1,
+        name: '新用户'
+      }, {
+        id: 2,
+        name: '老用户'
+      }],
+      rules: [
+        {
+          label: '满金额赠送',
+          keys: ['fullPrice']
+        },
+        {
+          label: '满件数赠送',
+          keys: ['fullNumber']
+        },
+        {
+          label: '会员标签',
+          keys: ['tagId']
+        },
+        {
+          label: '会员卡',
+          keys: ['cardId']
+        },
+        {
+          label: '付款排名',
+          keys: ['payTop']
+        },
+        {
+          label: '已购买次数',
+          keys: ['minPayNum', 'maxPayNum']
+        },
+        {
+          label: '付款时间',
+          keys: ['payStartTime', 'payEndTime']
+        }, {
+          label: '用户类别',
+          keys: ['userAction']
+        }
+      ],
+      selectedRules: []
     }
   },
   methods: {
     addGift () {
       const then = r => this.gotoGifts()
       const { param } = this
-      const { dateRange } = this
-      const startTime = dateRange[0]
-      const endTime = dateRange[1]
-      this.param.startTime = format(startTime)
-      this.param.endTime = format(endTime)
+      this.formatParam()
       if (this.update) {
         updateGift(param).then(then)
       } else {
         addGift(param).then(then)
       }
+    },
+    formatParam () {
+      this.formatTime()
+      this.formatRules()
+    },
+    formatTime () {
+      const { dateRange, payDateRange } = this
+      let startTime = range(dateRange).v1
+      let endTime = range(dateRange).v2
+      this.param.startTime = format(startTime)
+      this.param.endTime = format(endTime)
+      startTime = range(payDateRange).v1
+      endTime = range(payDateRange).v2
+      this.param.rules.payStartTime = format(startTime)
+      this.param.rules.payEndTime = format(endTime)
+    },
+    formatRules () {
+      const { selectedRules } = this
+      Object.keys(this.param.rules).forEach(key => {
+        const index = this.rules.findIndex(rule => undefined !== rule.keys.find(k => k === key))
+        if (undefined === selectedRules.find(rule => rule === index)) {
+          this.param.rules[key] = null
+        }
+      })
     },
     loadData () {
       const { id } = this.$route.params
@@ -183,6 +285,9 @@ export default {
     },
     gotoGifts () {
       this.$router.replace('/admin/home/main/gift')
+    },
+    contains (ruleIndex) {
+      return this.selectedRules.find(i => i === ruleIndex) !== undefined
     }
   },
   watch: {
