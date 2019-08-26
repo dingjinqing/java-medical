@@ -5,17 +5,23 @@ import static com.vpu.mp.db.shop.Tables.GIVE_GIFT_CART;
 import static com.vpu.mp.db.shop.tables.GroupBuyList.GROUP_BUY_LIST;
 import static com.vpu.mp.db.shop.tables.OrderGoods.ORDER_GOODS;
 import static com.vpu.mp.db.shop.tables.OrderInfo.ORDER_INFO;
+import static com.vpu.mp.db.shop.tables.ServiceOrder.SERVICE_ORDER;
+import static com.vpu.mp.db.shop.tables.StoreOrder.STORE_ORDER;
 import static com.vpu.mp.db.shop.tables.User.USER;
 import static com.vpu.mp.db.shop.tables.UserTag.USER_TAG;
-
-import static com.vpu.mp.db.shop.tables.StoreOrder.STORE_ORDER;
-import static com.vpu.mp.db.shop.tables.ServiceOrder.SERVICE_ORDER;
-
-
+import static com.vpu.mp.service.pojo.shop.order.OrderConstant.DELETE_NO;
+import static com.vpu.mp.service.pojo.shop.order.OrderConstant.ORDER_FINISHED;
+import static com.vpu.mp.service.pojo.shop.order.OrderConstant.ORDER_REFUND_FINISHED;
+import static com.vpu.mp.service.pojo.shop.order.OrderConstant.ORDER_RETURN_FINISHED;
+import static com.vpu.mp.service.pojo.shop.order.OrderConstant.PAY_CODE_BALANCE_PAY;
+import static com.vpu.mp.service.pojo.shop.order.OrderConstant.PAY_CODE_WX_PAY;
+import static com.vpu.mp.service.pojo.shop.order.OrderConstant.REFUND_DEFAULT_STATUS;
+import static com.vpu.mp.service.pojo.shop.order.OrderConstant.REFUND_STATUS_FINISH;
+import static com.vpu.mp.service.pojo.shop.order.store.StoreOrderConstant.STORE_ORDER_PAID;
+import static com.vpu.mp.service.shop.store.service.ServiceOrderService.ORDER_STATUS_FINISHED;
 import static org.jooq.impl.DSL.count;
 import static org.jooq.impl.DSL.date;
 import static org.jooq.impl.DSL.sql;
-import static org.jooq.impl.DSL.*;
 import static org.jooq.impl.DSL.sum;
 
 import java.math.BigDecimal;
@@ -29,29 +35,30 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 
-
 import org.jooq.Condition;
-import org.jooq.Record1;
+import org.jooq.Record;
 import org.jooq.Record2;
+import org.jooq.SelectConditionStep;
 import org.jooq.SelectJoinStep;
 import org.jooq.SelectWhereStep;
-
-import com.vpu.mp.service.foundation.data.DelFlag;
-import com.vpu.mp.service.pojo.shop.market.givegift.record.GiveGiftRecordListParam;
-import org.jooq.*;
-
+import org.jooq.UpdateSetMoreStep;
 import org.jooq.impl.DSL;
 import org.jooq.tools.StringUtils;
 import org.springframework.stereotype.Service;
 
 import com.vpu.mp.db.shop.tables.OrderInfo;
 import com.vpu.mp.db.shop.tables.records.OrderInfoRecord;
+import com.vpu.mp.db.shop.tables.records.ReturnOrderRecord;
+import com.vpu.mp.service.foundation.data.DelFlag;
 import com.vpu.mp.service.foundation.database.DslPlus;
 import com.vpu.mp.service.foundation.service.ShopBaseService;
 import com.vpu.mp.service.foundation.util.BigDecimalUtil;
+import com.vpu.mp.service.foundation.util.DateUtil;
 import com.vpu.mp.service.foundation.util.PageResult;
 import com.vpu.mp.service.pojo.shop.market.MarketAnalysisParam;
+import com.vpu.mp.service.pojo.shop.market.givegift.record.GiveGiftRecordListParam;
 import com.vpu.mp.service.pojo.shop.order.OrderConstant;
+import com.vpu.mp.service.pojo.shop.order.OrderInfoVo;
 import com.vpu.mp.service.pojo.shop.order.OrderListInfoVo;
 import com.vpu.mp.service.pojo.shop.order.OrderPageListQueryParam;
 import com.vpu.mp.service.pojo.shop.order.analysis.ActiveDiscountMoney;
@@ -59,19 +66,6 @@ import com.vpu.mp.service.pojo.shop.order.analysis.ActiveOrderList;
 import com.vpu.mp.service.pojo.shop.order.analysis.OrderActivityUserNum;
 import com.vpu.mp.service.pojo.shop.order.goods.OrderGoodsVo;
 
-
-import static com.vpu.mp.service.pojo.shop.order.OrderConstant.ORDER_FINISHED; 	
-
-import static com.vpu.mp.service.pojo.shop.order.OrderConstant.PAY_CODE_BALANCE_PAY;
-import static com.vpu.mp.service.pojo.shop.order.OrderConstant.PAY_CODE_WX_PAY;
-import static com.vpu.mp.service.pojo.shop.order.OrderConstant.ORDER_REFUND_FINISHED; 
-import static com.vpu.mp.service.pojo.shop.order.OrderConstant.ORDER_RETURN_FINISHED; 
-import static com.vpu.mp.service.pojo.shop.order.OrderConstant.ORDER_CANCELLED;
-import static com.vpu.mp.service.pojo.shop.order.store.StoreOrderConstant.STORE_ORDER_PAID;
-import static com.vpu.mp.service.shop.store.service.ServiceOrderService.ORDER_STATUS_FINISHED;
-import static com.vpu.mp.service.pojo.shop.order.OrderConstant.REFUND_DEFAULT_STATUS;
-import static com.vpu.mp.service.pojo.shop.order.OrderConstant.DELETE_NO;
-import static com.vpu.mp.service.pojo.shop.order.OrderConstant.REFUND_STATUS_FINISH;
 import lombok.Data;
 
 /**
@@ -85,7 +79,7 @@ import lombok.Data;
 public class OrderInfoService extends ShopBaseService {
 
 	public final OrderInfo TABLE = ORDER_INFO;
-	
+
 	/**
 	 * 	支付种类（细分）PAY_SUBDIVISION
 	 */
@@ -109,7 +103,7 @@ public class OrderInfoService extends ShopBaseService {
 	 * @return oneOrder
 	 */
 	public <T> T getByOrderId(Integer orderId , Class<T> clz){
-		T order = db().select(TABLE.asterisk()).where(TABLE.ORDER_ID.eq(orderId)).fetchOneInto(clz);
+		T order = db().select(TABLE.asterisk()).from(TABLE).where(TABLE.ORDER_ID.eq(orderId)).fetchOneInto(clz);
 		return order;
 	}
 	
@@ -315,7 +309,7 @@ public class OrderInfoService extends ShopBaseService {
 	}
 	
 	/**
-	 * 	当前订单为子订单需要替换支付信息与用户信息(子订单无补款信息，不需复制)
+	 * 	当前订单为子订单需要替换支付信息与用户信息(子订单无补款信息,不需复制)
 	 * @param currentOrder
 	 */
 	public void replaceOrderInfo(OrderListInfoVo currentOrder) {
@@ -326,6 +320,8 @@ public class OrderInfoService extends ShopBaseService {
 			currentOrder.setScoreDiscount(mainOrder.getScoreDiscount());
 			currentOrder.setMoneyPaid(mainOrder.getMoneyPaid());
 			currentOrder.setUserId(mainOrder.getUserId());
+			currentOrder.setCardNo(mainOrder.getCardNo());
+			currentOrder.setMemberCardId(mainOrder.getMemberCardId());
 		}
 	}
 	/**
@@ -394,6 +390,58 @@ public class OrderInfoService extends ShopBaseService {
 		}
 		return map;
 	}
+	
+	/**
+	 *	 退*时更新订单信息
+	 * @param returnOrder
+	 * @param order ==null时不参与returnOrder==REFUND_STATUS_FINISH分支
+	 * @param canReturnGoodsNumber 是否存在可退商品数量；==null时不参与returnOrder==REFUND_STATUS_FINISH分支
+	 */
+	public void updateOrderInfoInReturn(ReturnOrderRecord returnOrder , OrderInfoVo order , Boolean canReturnGoodsNumber) {
+		UpdateSetMoreStep<OrderInfoRecord> set = db().update(TABLE).set(TABLE.REFUND_STATUS, returnOrder.getRefundStatus());
+		//退款退货订单处与 1买家仅退款 2买家提交物流 3仅退运费 4手动退款
+		if(OrderConstant.REFUND_STATUS_APPLY_REFUND_OR_SHIPPING == returnOrder.getRefundStatus()) {
+			if(OrderConstant.RT_ONLY_MONEY == returnOrder.getReturnType()) {
+				set.set(TABLE.REFUND_TIME, DateUtil.getSqlTimestamp());
+			}else {
+				set.set(TABLE.RETURN_TIME, DateUtil.getSqlTimestamp());
+			}
+		
+		}else if(OrderConstant.REFUND_STATUS_FINISH == returnOrder.getRefundStatus()) {
+			if(canReturnGoodsNumber) {
+				//完成状态且存在可退数量跳出
+				return;
+			}
+			//退款退货订单完成时更新orderinfo订单信息
+			if(OrderConstant.ORDER_WAIT_DELIVERY == order.getOrderStatus()) {
+				set.set(TABLE.ORDER_STATUS,OrderConstant.ORDER_REFUND_FINISHED);
+				set.set(TABLE.REFUND_FINISH_TIME, DateUtil.getSqlTimestamp());
+			}else {
+				set.set(TABLE.ORDER_STATUS,OrderConstant.ORDER_RETURN_FINISHED);
+				set.set(TABLE.RETURN_FINISH_TIME, DateUtil.getSqlTimestamp());
+			}
+			//TODO 返利更新逻辑未知
+			if(OrderConstant.FANLI_TYPE_DISTRIBUTION_ORDER == order.getFanliType()) {
+				set.set(TABLE.SETTLEMENT_FLAG,OrderConstant.SETTLEMENT_NOT);
+				set.set(TABLE.FANLI_MONEY, BigDecimal.ZERO);
+			}
+		}
+		set.where(TABLE.ORDER_SN.eq(returnOrder.getOrderSn())).execute();
+	}
+	
+	public void setOrderstatus(String orderSn , byte orderStatus){
+		OrderInfoRecord order = getOrderByOrderSn(orderSn);
+		switch (orderStatus) {
+		case OrderConstant.ORDER_SHIPPED:
+			order.setOrderStatus(OrderConstant.ORDER_SHIPPED);
+			order.setShippingTime(DateUtil.getSqlTimestamp());
+			break;
+		default:
+			break;
+		}
+		order.update();
+	}
+	
 	
 	/**
 	 *

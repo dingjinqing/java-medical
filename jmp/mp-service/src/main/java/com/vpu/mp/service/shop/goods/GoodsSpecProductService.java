@@ -196,4 +196,12 @@ public class GoodsSpecProductService extends ShopBaseService {
         }
         db.batchUpdate(recordList).execute();
     }
+    /**
+     * 	根据规格id查询规格明细
+     * @param goodsId
+     * @return
+     */
+    public Map<Integer, GoodsSpecProductRecord> selectSpecByProIds(List<Integer> proIds) {
+    	return db().selectFrom(GOODS_SPEC_PRODUCT).where(GOODS_SPEC_PRODUCT.PRD_ID.in(proIds)).fetchMap(GOODS_SPEC_PRODUCT.PRD_ID);
+    }
 }

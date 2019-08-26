@@ -28,7 +28,7 @@ public class ShippingInfoVo {
 	/**确认收货时间*/
 	private Timestamp confirmTime;
 	/**商品信息*/
-	private List<Goods> Goods;
+	private List<Goods> goods;
 	@Data
 	@AllArgsConstructor
 	public static class Goods{
@@ -63,7 +63,7 @@ public class ShippingInfoVo {
 	public int hashCode() {
 		final int prime = 31;
 		int result = 1;
-		result = prime * result + ((Goods == null) ? 0 : Goods.hashCode());
+		result = prime * result + ((goods == null) ? 0 : goods.hashCode());
 		result = prime * result + ((confirmTime == null) ? 0 : confirmTime.hashCode());
 		result = prime * result + ((goodsAttr == null) ? 0 : goodsAttr.hashCode());
 		result = prime * result + ((goodsName == null) ? 0 : goodsName.hashCode());

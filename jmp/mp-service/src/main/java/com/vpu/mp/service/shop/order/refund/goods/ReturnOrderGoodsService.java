@@ -11,8 +11,8 @@ import org.jooq.Result;
 import org.springframework.stereotype.Service;
 
 import com.vpu.mp.db.shop.tables.ReturnOrderGoods;
+import com.vpu.mp.db.shop.tables.records.ReturnOrderGoodsRecord;
 import com.vpu.mp.service.foundation.service.ShopBaseService;
-import com.vpu.mp.service.pojo.shop.order.OrderConstant;
 import com.vpu.mp.service.pojo.shop.order.refund.OrderReturnGoodsVo;
 
 /**
@@ -38,17 +38,21 @@ public class ReturnOrderGoodsService extends ShopBaseService{
 		return goods;	
 	}
 	
+	public Result<ReturnOrderGoodsRecord> getReturnGoods(String orderSn,Integer retId) {
+		 return db().selectFrom(TABLE).where(TABLE.ORDER_SN.eq(orderSn).and(TABLE.RET_ID.eq(retId))).fetch();
+	}
+	
 	/**
-	 * 	通过订单orderSn查询退货中的商品数量
-	 * @param goodsListToSearch
-	 * @return Map<Integer(子订单规格号), Integer(数量)>
+	 * 	通过订单orderSn查询不同退款退货状态的商品数量
+	 * @param orderSn
+	 * @return Map<Integer(规格号), Integer(数量)>
 	 */
-	public Map<Integer, Integer> getRefundingGoods(String orderSn) {
+	public Map<Integer, Integer> getRefundingGoods(String orderSn , byte successStatus) {
 		// 查询退货中信息
 		List<OrderReturnGoodsVo> returnOrderGoods = db().select(RETURN_ORDER_GOODS.asterisk())
 				.from(RETURN_ORDER_GOODS)
 				.where(RETURN_ORDER_GOODS.ORDER_SN.eq(orderSn),
-						RETURN_ORDER_GOODS.SUCCESS.eq(OrderConstant.SUCCESS_RETURNING))
+						RETURN_ORDER_GOODS.SUCCESS.eq(successStatus))
 				.fetchInto(OrderReturnGoodsVo.class);
 		//构造Map<Integer(子订单规格号), Integer(数量)>
 		HashMap<Integer, Integer> productNum = new HashMap<Integer, Integer>();
@@ -62,5 +66,14 @@ public class ReturnOrderGoodsService extends ShopBaseService{
 			}
 		}
 		return productNum;
+	}
+	/**
+	 * 更新Success字段
+	 * @param returnGoods
+	 * @param successStatus
+	 */
+	public void finishReturn(Result<ReturnOrderGoodsRecord> returnGoods , byte successStatus){
+		returnGoods.forEach(rGoods->{rGoods.setSuccess(successStatus);});
+		db().batchUpdate(returnGoods).execute();
 	}
 }

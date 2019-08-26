@@ -90,7 +90,7 @@ public class OrderConstant {
 	public final static byte  REFUND_STATUS_AUDIT_PASS = 2;
 	/**未通过审核,继续走正常订单流程*/
 	public final static byte  REFUND_STATUS_AUDIT_NOT_PASS = 3;
-	/**买家提交物流 或 仅退款时,买家申请退款*/
+	/**买家提交物流 或 仅退款时,买家申请退款,(仅退运费/手动退款)*/
 	public final static byte  REFUND_STATUS_APPLY_REFUND_OR_SHIPPING = 4;
 	/**退款/退货完成*/
 	public final static byte  REFUND_STATUS_FINISH = 5;
@@ -161,9 +161,33 @@ public class OrderConstant {
 	 * 1当前订单可以退款、退货
 	 */
 	/**退款支持状态:待发货 已发货 已收货*/
-	public final static List<Byte> isReturnMoney = new ArrayList<Byte>(Arrays.asList(ORDER_WAIT_DELIVERY, ORDER_SHIPPED, ORDER_RECEIVED));
+	public final static List<Byte> IS_RETURNMONEY = new ArrayList<Byte>(Arrays.asList(ORDER_WAIT_DELIVERY, ORDER_SHIPPED, ORDER_RECEIVED));
 	/**退货支持状态:已收货 已完成*/
-	public final static List<Byte> isReturnGoods = new ArrayList<Byte>(Arrays.asList(ORDER_RECEIVED, ORDER_FINISHED));
+	public final static List<Byte> IS_RETURNGOODS = new ArrayList<Byte>(Arrays.asList(ORDER_RECEIVED, ORDER_FINISHED));
+	
+	/** 
+	 * return_order return_type 
+	 * 退-退款类型:0仅退款 1:退货退款 2:仅退运费 3:手动退款
+	 */
+	public final static byte RT_ONLY_MONEY = 0;
+	public final static byte RT_GOODS = 1;
+	public final static byte RT_ONLY_SHIPPING_FEE = 2;
+	public final static byte RT_MANUAL = 3;
+	
+	/**
+	 * 	返利类型，0：普通订单，1：分销返利订单，2：返利会员返利订单
+	 */
+	public final static byte FANLI_TYPE_DEFAULT = 0;
+	public final static byte FANLI_TYPE_DISTRIBUTION_ORDER = 1;
+	public final static byte FANLI_TYPE_MEMBER_ORDER = 2;
+	
+	/**
+	 * 	settlement_flag 结算标志：0：未结算，1：已结算，2：不返利
+	 */
+	
+	public final static byte SETTLEMENT_WAIT = 0;
+	public final static byte SETTLEMENT_FINISH = 1;
+	public final static byte SETTLEMENT_NOT = 2;
 	private String[] orderStatus = {
 			// ORDER_WAIT_PAY
 			"待付款",

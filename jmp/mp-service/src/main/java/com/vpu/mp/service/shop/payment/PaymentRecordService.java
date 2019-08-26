@@ -2,7 +2,6 @@ package com.vpu.mp.service.shop.payment;
 
 import static com.vpu.mp.db.shop.tables.PaymentRecord.PAYMENT_RECORD;
 
-import org.jooq.Record;
 import org.jooq.SelectWhereStep;
 import org.springframework.stereotype.Service;
 

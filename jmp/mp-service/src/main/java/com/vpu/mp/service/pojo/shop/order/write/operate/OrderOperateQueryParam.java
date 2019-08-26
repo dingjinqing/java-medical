@@ -4,6 +4,7 @@ import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 
 import com.vpu.mp.service.foundation.data.JsonResultMessage;
+import com.vpu.mp.service.pojo.shop.auth.AdminTokenAuthInfo;
 import com.vpu.mp.service.shop.order.action.base.IOrderBase;
 
 import lombok.Data;
@@ -16,7 +17,9 @@ import lombok.Data;
  */
 @Data
 public class OrderOperateQueryParam implements IOrderBase{
-	//TODO
+	/**
+	 * TODO 
+	 */
 	@NotNull(message = JsonResultMessage.MSG_ORDER)
 	private Integer orderId;
 	@NotBlank(message = JsonResultMessage.MSG_ORDER)
@@ -25,10 +28,10 @@ public class OrderOperateQueryParam implements IOrderBase{
 	private Byte action;
 	/**区分前后台操作*/
 	private Boolean isMp;
+	private AdminTokenAuthInfo adminInfo;
 	@Override
 	public OrderServiceCode getServiceCode() {
 		//enum类型values取得数组利用默认排序顺序获取对应service
 		return OrderServiceCode.values()[action];
 	}
-	
 }

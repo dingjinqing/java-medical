@@ -43,4 +43,7 @@ public class OrderInfoVo extends OrderListInfoVo {
 	/**退款、货信息*/
 	private List<OrderConciseRefundInfoVo> refundList;
 	/**其他信息...*/
+	/**返利类型，0：普通订单，1：分销返利订单，2：返利会员返利订单*/
+	@JsonIgnore
+	private Integer fanliType;
 }

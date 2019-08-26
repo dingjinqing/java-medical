@@ -741,4 +741,12 @@ public class GoodsService extends ShopBaseService {
         List<String> fetch = db().select(GOODS_IMG.IMG_URL).from(GOODS_IMG).where(GOODS_IMG.GOODS_ID.eq(goodsId)).fetch(GOODS_IMG.IMG_URL);
         return fetch;
     }
+    
+    /**
+     * 	通过商品id数组查询商品
+     */
+    public Map<Integer, GoodsRecord> getGoodsByIds(List<Integer> goodsIds){
+        return db().selectFrom(GOODS).where(GOODS.GOODS_ID.in(goodsIds)).
+            fetchMap(GOODS.GOODS_ID);
+    }
 }

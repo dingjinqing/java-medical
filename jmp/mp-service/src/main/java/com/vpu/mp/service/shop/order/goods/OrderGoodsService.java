@@ -2,15 +2,22 @@ package com.vpu.mp.service.shop.order.goods;
 
 import static com.vpu.mp.db.shop.tables.OrderGoods.ORDER_GOODS;
 
+import java.math.BigDecimal;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.stream.Collectors;
 
+import org.jooq.Record3;
 import org.jooq.Result;
+import org.jooq.impl.DSL;
 import org.springframework.stereotype.Service;
 
 import com.vpu.mp.db.shop.tables.OrderGoods;
+import com.vpu.mp.db.shop.tables.records.OrderGoodsRecord;
+import com.vpu.mp.db.shop.tables.records.ReturnOrderGoodsRecord;
+import com.vpu.mp.db.shop.tables.records.ReturnOrderRecord;
 import com.vpu.mp.service.foundation.service.ShopBaseService;
 import com.vpu.mp.service.pojo.shop.order.OrderListInfoVo;
 import com.vpu.mp.service.pojo.shop.order.write.operate.refund.RefundVo.RefundVoGoods;
@@ -24,6 +31,8 @@ import com.vpu.mp.service.pojo.shop.order.write.operate.refund.RefundVo.RefundVo
 public class OrderGoodsService extends ShopBaseService{
 	
 	public final OrderGoods TABLE = ORDER_GOODS;
+	/** 商品数量 发货数量 退款成功数量*/
+	public static byte TOTAL_GOODSNUMBER = 0,TOTAL_SENDNUMBER = 1,TOTAL_SUCCESSRETURNNUMBER = 2;
 	
 	/**
 	 * 	通过订单id[]查询其下商品
@@ -73,4 +82,70 @@ public class OrderGoodsService extends ShopBaseService{
 		return new HashMap<Integer,Integer>(0);
 	}
 	
+	/**
+	 * 	退款完成后，更新状态及退款退货数量
+	 * @param returnOrder
+	 */
+	public void finishReturn(String orderSn , Result<ReturnOrderGoodsRecord> returnGoods , ReturnOrderRecord returnOrderRecord) {
+		//退款商品recIds
+		List<Integer> recIds = returnGoods.stream().map(ReturnOrderGoodsRecord::getRecId).collect(Collectors.toList());
+		//退款退货商品对应的orderGoods商品
+		Result<OrderGoodsRecord> orderGoods = db().selectFrom(TABLE).where(TABLE.ORDER_SN.eq(orderSn).and(TABLE.REC_ID.in(recIds))).fetch();
+		//退款商品map(key->recId)
+		Map<Integer, ReturnOrderGoodsRecord> returnGoodsMap = returnGoods.stream().collect(Collectors.toMap(ReturnOrderGoodsRecord::getRecId,rGoods->rGoods));
+		for (OrderGoodsRecord goods : orderGoods) {
+			//状态
+			goods.set(TABLE.REFUND_STATUS, returnOrderRecord.getRefundStatus());
+			//此次退款退货数量
+			int returnNum = returnGoodsMap.get(goods.getRecId()) == null ? 0 : returnGoodsMap.get(goods.getRecId()).getGoodsNumber();
+			//修改退货退款商品数量
+			goods.setReturnNumber(Integer.valueOf(goods.getReturnNumber().shortValue() - returnNum).shortValue());
+		}
+		db().batchUpdate(orderGoods).execute();
+	}
+	
+	/**
+	 * 	判断当前订单是否可以退商品（有无可退商品数量）
+	 * 	(有状态依赖于ordergoods表的商品数量与已经退货退款数量)
+	 * @param orderSn
+	 * @return
+	 */
+	public boolean canReturnGoodsNumber(String orderSn) {
+		if(db().fetchCount(TABLE, TABLE.ORDER_SN.eq(orderSn).and(TABLE.GOODS_NUMBER.gt(TABLE.RETURN_NUMBER))) > 0) {
+			return true;
+		}
+		return false;
+	}
+	
+	/**
+	 * 	计算订单商品数量 ，发货数量， 退款成功数量
+	 * @param orderSn
+	 * @return 
+	 */
+	public int[] getTotalNumber(String orderSn) {
+		Record3<BigDecimal, BigDecimal, BigDecimal> result = db().select(DSL.sum(TABLE.GOODS_NUMBER),DSL.sum(TABLE.SEND_NUMBER),DSL.sum(TABLE.RETURN_NUMBER)).from(TABLE).where(TABLE.ORDER_SN.eq(orderSn)).fetchOne(); 
+		int[] total = {0,0,0};
+		if(result != null) {
+			total[TOTAL_GOODSNUMBER] = result.value1() != null ? result.value1().intValue() : 0;
+			total[TOTAL_SENDNUMBER] = result.value2() != null ? result.value2().intValue() : 0;
+			total[TOTAL_SUCCESSRETURNNUMBER] = result.value3() != null ? result.value3().intValue() : 0;
+		}
+		return total;
+	}
+	/**
+	 * 	计算处于部分发货的情况下是否可以发货
+	 * @param orderSn
+	 * @return
+	 */
+	public boolean isCanDeliverOrder(String orderSn) {
+		if(db().fetchCount(TABLE,
+				TABLE.ORDER_SN.eq(orderSn).
+				and(TABLE.GOODS_NUMBER.gt(TABLE.RETURN_NUMBER)).
+				and(TABLE.SEND_NUMBER.eq(((short)0))
+				)) > 0 ) {
+			return true;
+		}
+		return false;
+	}
+	 
 }

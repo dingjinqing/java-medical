@@ -30,7 +30,7 @@ public class RefundAmountRecordService extends ShopBaseService{
 	@Autowired 
 	private OrderInfoService orderInfo;
 	/**
-	 * 获取该订单退款汇总信息
+	 * 	获取该订单退款汇总信息(存在优先级)
 	 * 
 	 * @param orderSns
 	 * @return Map<支付种类(细分) , 金额>

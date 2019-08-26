@@ -4,7 +4,10 @@ import java.beans.PropertyDescriptor;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
+import org.jooq.tools.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -17,7 +20,8 @@ import org.slf4j.LoggerFactory;
  */
 public class FieldsUtil {
 	private static Logger log = LoggerFactory.getLogger(FieldsUtil.class);
-
+	/** 下划线转驼峰正则表达式的Pattern */
+	private static Pattern underLineToCamel = Pattern.compile("_(\\w)");
 	/**
 	 * 对象相同属性赋值，不含null值属性
 	 * @param from
@@ -62,6 +66,51 @@ public class FieldsUtil {
 			}
 		}
 		return to;
+	}
+	
+	/**
+	 * 	通过FieldName获取FieldValue（支持fieldName为下划线命名；支持基类属性）
+	 * @param <T>
+	 * @param fieldName 属性名
+	 * @param object 对象
+	 * @param clz 返回值类型
+	 * @return 属性值（null）
+	 */
+	@SuppressWarnings("unchecked")
+	public static <T> T getFieldValueByFieldName(String fieldName , Object obj , Class<T> clz) {
+		if(StringUtils.isBlank(fieldName)) {
+			return null;
+		}
+		fieldName = underLineToCamel(fieldName);
+		Class<?> objClass = obj.getClass();
+		Field field = null;
+		T t = null;
+		for(;objClass != Object.class ; objClass = objClass.getSuperclass()) {
+			try {
+				field = objClass.getDeclaredField(fieldName);
+				if(field != null) {
+					field.setAccessible(true);
+					t = (T)(field.get(obj));
+					break;
+				}
+			} catch (Exception e) {
+			}
+		}
+		return t;
+	}
+	/**
+	 * 	下划线命名转驼峰
+	 * @param str
+	 * @return
+	 */
+	public static String underLineToCamel(String str) {
+		Matcher matcher = underLineToCamel.matcher(str);
+		StringBuffer sb = new StringBuffer();
+		while (matcher.find()) {
+			matcher.appendReplacement(sb, matcher.group(1).toUpperCase());
+		}
+		matcher.appendTail(sb);
+		return sb.toString();
 	}
 
 }

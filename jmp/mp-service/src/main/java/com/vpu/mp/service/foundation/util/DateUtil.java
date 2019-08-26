@@ -96,6 +96,13 @@ public final class DateUtil {
     }
 	
 	/**
+	 * 	获取当前时间戳（可以直接用此值放入数据库）
+	 */
+	public static Timestamp getSqlTimestamp() {
+		return Timestamp.from(Instant.now());
+	}
+	
+	/**
 	 * 获取当前/指定月份第一天
 	 */
 	public static Timestamp currentMonthFirstDay(Date date) {

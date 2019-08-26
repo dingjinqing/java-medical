@@ -258,7 +258,7 @@ public class GroupIntegrationListService extends ShopBaseService {
 				scoreParam.setRemark(REMARK);
 				scoreParam.setScore(item.getIntegration());
 				scoreParam.setScoreDis(0);
-				scoreService.updateMemberScore(scoreParam, null, item.getUserId(),TRADE_TYPE, TRADE_FLOW);
+				//scoreService.updateMemberScore(scoreParam, null, item.getUserId(),TRADE_TYPE, TRADE_FLOW);
 			});
 //			TODO 通知用户拼团成功
 		}

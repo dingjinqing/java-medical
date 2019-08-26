@@ -19,7 +19,9 @@ import lombok.Setter;
 @Setter
 public final class ShipParam extends OrderOperateQueryParam{
 
-	// TODO
+	/**
+	 * TODO 
+	 */
 	@NotBlank(message = JsonResultMessage.MSG_ORDER)
 	private String shippingNo;
 	@NotNull(message = JsonResultMessage.MSG_ORDER)

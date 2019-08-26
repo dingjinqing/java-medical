@@ -9,6 +9,7 @@ import org.springframework.context.ApplicationContextAware;
 import org.springframework.stereotype.Component;
 
 import com.vpu.mp.service.foundation.data.JsonResultCode;
+import com.vpu.mp.service.foundation.exception.MpException;
 import com.vpu.mp.service.pojo.shop.order.write.operate.OrderOperateQueryParam;
 import com.vpu.mp.service.pojo.shop.order.write.operate.OrderServiceCode;
 
@@ -40,8 +41,9 @@ public class OrderOperateFactory implements ApplicationContextAware {
 	 * 
 	 * @param IOrderBase
 	 * @return 执行结果
+	 * @throws MpException 
 	 */
-	public JsonResultCode orderOperate(IOrderBase info) {
+	public JsonResultCode orderOperate(IOrderBase info) throws MpException {
 		return getService(info.getServiceCode()).execute(info);
 	}
 	
@@ -50,8 +52,9 @@ public class OrderOperateFactory implements ApplicationContextAware {
 	 * 
 	 * @param OrderOperateQueryParam
 	 * @return 执行结果
+	 * @throws MpException 
 	 */
-	public Object orderQuery(OrderOperateQueryParam param) {
+	public Object orderQuery(OrderOperateQueryParam param) throws MpException {
 		return getService(param.getServiceCode()).query(param);
 	}
 

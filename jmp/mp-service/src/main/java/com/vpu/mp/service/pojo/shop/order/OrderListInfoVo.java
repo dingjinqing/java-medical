@@ -58,11 +58,18 @@ public class OrderListInfoVo {
 	@JsonIgnore
 	private BigDecimal subGoodsPrice;
 	/**退款/退货状态*/
-	@JsonIgnore
 	private Byte refundStatus;
 	/**补款金额*/
 	@JsonIgnore
 	private BigDecimal bkOrderMoney;
 	@JsonIgnore
 	private Integer userId;
+	@JsonIgnore
+	private String cardNo;
+	@JsonIgnore
+	private Integer memberCardId;
+	@JsonIgnore
+	private String bkOrderSn;
+	@JsonIgnore
+	private Integer activityId;
 }

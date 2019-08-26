@@ -29,7 +29,7 @@ public class OrderOperationJudgment {
 		 * 2货到付款设置支付金额为0,然后判断支付金额是否>0
 		 * 3余额支付判断积分抵扣金额，余额消费金额，会员卡消费金额，子单金额
 		 */
-		if(OrderConstant.isReturnMoney.contains(order.getOrderStatus())
+		if(OrderConstant.IS_RETURNMONEY.contains(order.getOrderStatus())
 				&& !isPayZero(order)) {
 			return true;					
 		}
@@ -49,7 +49,7 @@ public class OrderOperationJudgment {
 	public static boolean adminIsReturnGoods(OrderListInfoVo order) {
 		//TODO 此功能为卖家专用，现后台退部分发货已发货不支持，后期做 
 		//已收货,已完成状态
-		if(OrderConstant.isReturnGoods.contains(order.getOrderStatus())){
+		if(OrderConstant.IS_RETURNGOODS.contains(order.getOrderStatus())){
 			return true;
 		}
 		return false;
@@ -77,6 +77,7 @@ public class OrderOperationJudgment {
 	/**
 	 * 	退运费，买家操作
 	 * @param order
+	 * @param returnShipingFee 已退运费
 	 * @return true可退；false不可退
 	 */
 	public static Boolean adminIsReturnShipingFee(OrderListInfoVo order , BigDecimal returnShipingFee) {

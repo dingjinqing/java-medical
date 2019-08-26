@@ -19,7 +19,6 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import com.vpu.mp.db.shop.tables.records.OrderActionRecord;
 import com.vpu.mp.db.shop.tables.records.OrderGoodsRecord;
 import com.vpu.mp.db.shop.tables.records.OrderInfoRecord;
 import com.vpu.mp.db.shop.tables.records.PartOrderGoodsShipRecord;
@@ -32,12 +31,17 @@ import com.vpu.mp.service.pojo.shop.order.goods.OrderGoodsVo;
 import com.vpu.mp.service.pojo.shop.order.refund.OrderReturnGoodsVo;
 import com.vpu.mp.service.pojo.shop.order.write.operate.OrderOperateQueryParam;
 import com.vpu.mp.service.pojo.shop.order.write.operate.OrderServiceCode;
-import com.vpu.mp.service.pojo.shop.order.write.operate.ship.ShipVo;
 import com.vpu.mp.service.pojo.shop.order.write.operate.ship.ShipParam;
 import com.vpu.mp.service.pojo.shop.order.write.operate.ship.ShipParam.ShipGoods;
+import com.vpu.mp.service.pojo.shop.order.write.operate.ship.ShipVo;
 import com.vpu.mp.service.shop.order.action.base.IorderOperate;
+import com.vpu.mp.service.shop.order.record.OrderActionService;
 import com.vpu.mp.service.shop.order.ship.ShipInfoService;
-
+/**
+ * 	发货
+ * @author 王帅
+ *
+ */
 @Component
 public class ShipService extends ShopBaseService implements IorderOperate {
 	
@@ -45,6 +49,8 @@ public class ShipService extends ShopBaseService implements IorderOperate {
 	
 	@Autowired
 	private ShipInfoService shipInfo;
+	@Autowired
+	OrderActionService orderAction;
 	
 	@Override
 	public OrderServiceCode getServiceCode() {
@@ -123,9 +129,6 @@ public class ShipService extends ShopBaseService implements IorderOperate {
 		orderRecord.setShippingTime(Timestamp.from(Instant.now()));
 		orderRecord.setShippingNo(param.getShippingNo());
 		orderRecord.setShippingId(param.getShippingId());
-		//构造order_action的record
-		OrderActionRecord orderActionRecord = new OrderActionRecord();
-		//orderActionRecord.
 		transaction(()->{
 			//添加部分发货信息 b2c_part_order_goods_ship
 			db().batchInsert(shipInfoList).execute();
@@ -133,12 +136,14 @@ public class ShipService extends ShopBaseService implements IorderOperate {
 			db().batchUpdate(recordList).execute();
 			//更新主表基本信息 b2c_order_info
 			db().executeUpdate(orderRecord, ORDER_INFO.ORDER_SN.eq(param.getOrderSn()));
-			//TODO action操作
-			db().executeInsert(orderActionRecord);
+			
 		});
+		//action操作
+		orderAction.addRecord(orderRecord, param, OrderConstant.ORDER_WAIT_DELIVERY, orderRecord.getOrderStatus() == OrderConstant.ORDER_SHIPPED ? "全部发货 " : "部分发货");
 		//TODO 操作记录 b2c_record_admin_action  需要测试记录
 		Arrays.asList(new Integer[] { RecordContentTemplate.ORDER_SHIP.code });
 		saas().getShopApp(getShopId()).record.insertRecord(Arrays.asList(new Integer[] { RecordContentTemplate.ORDER_SHIP.code }), new String[] {param.getOrderSn()});
+		databaseManager.mainDb();
 		logger.info("发货完成");
 		return null;
 	}
