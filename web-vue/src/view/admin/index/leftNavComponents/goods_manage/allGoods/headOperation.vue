@@ -223,7 +223,8 @@ export default {
   },
   // Vue生命周期钩子函数
   mounted () {
-
+    // 初始化语言
+    this.langDefault()
   },
   // methods 方法
   methods: {

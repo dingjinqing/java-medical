@@ -424,6 +424,7 @@ const en = {
   ShopConfiguration, // admin 店铺基础配置
   adminPageFramework, // admin 页面框架
   allGoods, // 商品管理/全部尚品
+
   ...enLocale
 }
 export default en

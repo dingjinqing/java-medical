@@ -121,7 +121,18 @@ const myMixin = {
     // TODO: 未国际化
     getActStatusString (status, startTime, endTime) {
       let d = new Date()
-      let nowTime = d.getFullYear() + '-' + (d.getMonth() + 1) + '-' + d.getDate() + ' ' + d.getHours() + ':' + d.getMinutes() + ':' + d.getSeconds()
+      let nowTime =
+        d.getFullYear() +
+        '-' +
+        (d.getMonth() + 1) +
+        '-' +
+        d.getDate() +
+        ' ' +
+        d.getHours() +
+        ':' +
+        d.getMinutes() +
+        ':' +
+        d.getSeconds()
       if (nowTime < startTime) {
         return '未开始'
       } else if (nowTime > endTime) {

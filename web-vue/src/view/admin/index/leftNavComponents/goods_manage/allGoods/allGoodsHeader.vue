@@ -6,19 +6,18 @@
       @tab-click="handleClick"
     >
       <el-tab-pane
-        :label="$t('allGoodsHeaderData.label1')"
+        :label="$t('allGoods.allGoodsHeaderData.label1')"
         name="saleOn"
       ></el-tab-pane>
       <el-tab-pane
-        :label="$t('allGoodsHeaderData.label2')"
+        :label="$t('allGoods.allGoodsHeaderData.label2')"
         name="saleEnd"
       ></el-tab-pane>
       <el-tab-pane
-        :label="$t('allGoodsHeaderData.label3')"
+        :label="$t('allGoods.allGoodsHeaderData.label3')"
         name="saleOff"
       ></el-tab-pane>
     </el-tabs>
-    {{$t('allGoodsHeaderData.label1')}}
   </div>
 </template>
 <script>
@@ -30,6 +29,7 @@ export default {
       activeName: 'saleOn'
     }
   },
+
   // Vue生命周期钩子函数
   mounted () {
     // 初始化国际语言
