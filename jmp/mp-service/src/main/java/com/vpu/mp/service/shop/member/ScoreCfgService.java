@@ -100,23 +100,23 @@ public class ScoreCfgService extends BaseShopConfigService {
 		}
 		
 		
-		//购物送积分
-		//积分开关
+		/** 购物送积分 */
+		/** 积分开关 */
 		String shoppingScore = (BUTTON_ON.equals(param.getShoppingScore()))?"1":"0";
 		this.set(SHOPPING_SCORE, shoppingScore);
 		
-		//购物送积分的类型 0 购物多少送多少 1 购买每多少送多少
+		/** 购物送积分的类型 0 购物多少送多少 1 购买每多少送多少 */
 		String scoreType = param.getScoreType();
 		this.set(SCORE_TYPE, scoreType);
 		
 		if(ONE.equals(shoppingScore)) {
 			if(ZERO.equals(scoreType)) {
-				//更新满多少送多少积分
+				/** 更新满多少送多少积分 */
 				updateRecord(param,BUY);
 			}
 			
 			if(ONE.equals(scoreType)) {
-				//更新每满多少送多少积分
+				/** 更新每满多少送多少积分 */
 				updateRecord(param,BUY_EACH);
 			}
 		}

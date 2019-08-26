@@ -181,6 +181,7 @@ public class ScoreService extends ShopBaseService {
 				tradesRecord.setTradeFlow(tradeFlow);
 				tradesRecord.setTradeStatus(tradeFlow);
 				
+				
 				/** -交易记录表-记录交易的数据信息  */
 				insertTradesRecord(tradesRecord);
 		

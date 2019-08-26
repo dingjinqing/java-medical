@@ -4,9 +4,16 @@ import static com.vpu.mp.db.shop.tables.RecordAdminAction.RECORD_ADMIN_ACTION;
 import static com.vpu.mp.db.shop.tables.TradesRecord.TRADES_RECORD;
 import static com.vpu.mp.db.shop.tables.User.USER;
 import static com.vpu.mp.db.shop.tables.UserAccount.USER_ACCOUNT;
-
+import static com.vpu.mp.service.pojo.shop.member.MemberOperateRecordEnum.ADMIN_OPERATION;
+import static com.vpu.mp.service.foundation.data.JsonResultCode.CODE_MEMBER_ACCOUNT_UPDATE_FAIL;
+import static com.vpu.mp.service.foundation.data.JsonResultCode.CODE_SUCCESS;
+import static com.vpu.mp.service.pojo.shop.operation.RecordContentMessage.MSG_MEMBER_ACCOUNT;
+import static com.vpu.mp.service.pojo.shop.operation.RecordTradeEnum.TRADE_CONTENT_BY_CASH;
+import static com.vpu.mp.service.pojo.shop.operation.RecordTradeEnum.TRADE_FLOW_INCOME;
+import com.vpu.mp.db.shop.tables.records.TradesRecordRecord;
 import java.math.BigDecimal;
 import java.sql.Timestamp;
+import java.util.Arrays;
 
 import org.jooq.Record6;
 import org.jooq.SelectConditionStep;
@@ -15,71 +22,110 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.vpu.mp.db.shop.tables.records.UserRecord;
+import com.vpu.mp.service.foundation.data.JsonResultCode;
 import com.vpu.mp.service.foundation.service.ShopBaseService;
 import com.vpu.mp.service.foundation.util.DateUtil;
 import com.vpu.mp.service.foundation.util.PageResult;
+import com.vpu.mp.service.foundation.util.VoTranslator;
 import com.vpu.mp.service.pojo.shop.auth.AdminTokenAuthInfo;
 import com.vpu.mp.service.pojo.shop.member.account.AccountPageListParam;
 import com.vpu.mp.service.pojo.shop.member.account.AccountPageListVo;
 import com.vpu.mp.service.pojo.shop.member.account.AccountParam;
-
+import com.vpu.mp.service.pojo.shop.operation.RecordContentTemplate;
+import com.vpu.mp.service.shop.operation.RecordMemberTradeService;
 /**
- * @author 黄壮壮 2019-07-18 16:47
+ * 余额管理
+ * @author 黄壮壮
+ * @Date:  2019年8月26日
+ * @Description: 会员余额管理
  */
 @Service
 
 public class AccountService extends ShopBaseService {
-	@Autowired MemberService memberService;
+	@Autowired private MemberService memberService;
+	@Autowired private VoTranslator translator;
+	@Autowired private RecordMemberTradeService tradeService;
 	/**
-	 * @param param
-	 * @param adminUser
-	 * @param tradeType
-	 * @param tradeFlow
+	 * @param param 余额对象参数
+	 * @param adminUser 操作员id
+	 * @param tradeType  交易类型 {@link com.vpu.mp.service.pojo.shop.operation.RecordTradeEnum}
+	 * @param tradeFlow  资金流向 {@link com.vpu.mp.service.pojo.shop.operation.RecordTradeEnum}
 	 * @return
 	 */
-	public int addUserAccount(AccountParam param, int adminUser, Byte tradeType, Byte tradeFlow) {
-
+	public JsonResultCode addUserAccount(AccountParam param, int adminUser, Byte tradeType, Byte tradeFlow) {
+		/** 鲁棒性检查 &*/
 		if (param.getUserId() == null || param.getAmount() == null) {
-			return -1;
+			return CODE_MEMBER_ACCOUNT_UPDATE_FAIL;
 		}
 		UserRecord user = memberService.getUserRecordById(param.getUserId());
 
-		// 用户是否存在 是否有账户余额
+		/** 1-用户是否存在 是否有账户余额 */
 		if (user == null || user.getAccount() == null) {
-			return -1;
+			return CODE_MEMBER_ACCOUNT_UPDATE_FAIL;
 		}
 
 		int ret = user.getAccount().compareTo(param.getAccount());
-		// 检查提交的account与数据库中的account是否相等
+		/** 2-检查提交的account与数据库中的account是否相等 */
 		if (ret != 0) {
-			return -1;
+			return CODE_MEMBER_ACCOUNT_UPDATE_FAIL;
 		}
-
+		
+		/** 3.备注默认-处理国际化 */
+		final String remark ;
 		if (StringUtils.isEmpty(param.getRemark())) {
-			param.setRemark("管理员操作");
-		}
-		//加事务
-		this.transaction(() ->{
-			// 插入要更新的数据
-			addRow(param, adminUser);
-			// 更新用户余额
-			updateUserAccount(param, user);
+			/** -默认管理员操作 国际化*/
+			String value = ADMIN_OPERATION.getValue();
+			remark = translator.translate("member",value,value);
+			logger().info("remark: "+remark);
+		}else {
+			remark = param.getRemark();
+		}	
+		param.setRemark(remark);
 
+		/** 加事务 */
+		this.transaction(() ->{
+			/** 插入要更新的数据到user_account表 */
+			addRow(param, adminUser);
+			/** 更新用户余额user表  */
+			updateUserAccount(param, user);
+			/** 插入交易明细数据 到trades_record */
 			addTradeRecord(param, tradeType, tradeFlow);
+			
+			
+			/** 添加操作记录到b2c_record_admin_action*/
+			//TODO目前只是对单个的，后期优化需要批量
+			BigDecimal zero = new BigDecimal(0);
+			String account = param.getAmount().compareTo(zero)<0 ? param.getAmount().toString():"+"+param.getAmount().toString();
+			String data = String.format(MSG_MEMBER_ACCOUNT,user.getUserId(),user.getUsername(),account);
+			saas().getShopApp(getShopId()).record.insertRecord(Arrays.asList(new Integer[] {RecordContentTemplate.MEMBER_ACCOUNT.code}), data);
+			
 		});
 
-		return 1;
+		return CODE_SUCCESS;
 	}
 
 	private void addTradeRecord(AccountParam param, Byte tradeType, Byte tradeFlow) {
 		String tradeSn = param.getOrderSn() == null ? "" : param.getOrderSn();
-		Byte zero = 0;
-		db().insertInto(TRADES_RECORD, TRADES_RECORD.TRADE_TIME, TRADES_RECORD.TRADE_NUM, TRADES_RECORD.TRADE_SN,
-				TRADES_RECORD.USER_ID, TRADES_RECORD.TRADE_TYPE, TRADES_RECORD.TRADE_FLOW, TRADES_RECORD.TRADE_STATUS,
-				TRADES_RECORD.TRADE_STATUS)
-				.values(DateUtil.getLocalDateTime(), param.getAmount(), tradeSn, param.getUserId(), zero, tradeType,
-						tradeFlow, tradeFlow == 2 ? zero : tradeFlow)
-				.execute();
+		
+//		Byte zero = 0;
+//		db().insertInto(TRADES_RECORD, TRADES_RECORD.TRADE_TIME, TRADES_RECORD.TRADE_NUM, TRADES_RECORD.TRADE_SN,
+//				TRADES_RECORD.USER_ID, TRADES_RECORD.TRADE_TYPE, TRADES_RECORD.TRADE_FLOW, TRADES_RECORD.TRADE_STATUS,
+//				TRADES_RECORD.TRADE_STATUS)
+//				.values(DateUtil.getLocalDateTime(), param.getAmount(), tradeSn, param.getUserId(), zero, tradeType,
+//						tradeFlow, tradeFlow == 2 ? zero : tradeFlow)
+//				.execute();
+		TradesRecordRecord record = new TradesRecordRecord();
+		record.setTradeTime(DateUtil.getLocalDateTime());
+		record.setTradeNum(param.getAmount());
+		record.setTradeSn(tradeSn);
+		record.setUserId(param.getUserId());
+		record.setTradeContent(TRADE_CONTENT_BY_CASH.getValue());
+		record.setTradeType(tradeType);
+		record.setTradeFlow(tradeFlow);
+		tradeFlow = tradeFlow == 2 ? TRADE_FLOW_INCOME.getValue() : tradeFlow;
+		record.setTradeStatus(tradeFlow);
+		tradeService.insertRecord(record);
+		
 	}
 
 	
@@ -103,8 +149,9 @@ public class AccountService extends ShopBaseService {
 	 */
 	private void addRow(AccountParam param, int adminUser) {
 		db().insertInto(USER_ACCOUNT, USER_ACCOUNT.USER_ID, USER_ACCOUNT.AMOUNT, USER_ACCOUNT.REMARK,
-				USER_ACCOUNT.ADMIN_USER)
-				.values(param.getUserId(), param.getAmount(), param.getRemark(), String.valueOf(adminUser)).execute();
+				USER_ACCOUNT.ADMIN_USER,USER_ACCOUNT.IS_PAID,USER_ACCOUNT.PAYMENT)
+				.values(param.getUserId(), param.getAmount(), param.getRemark(), String.valueOf(adminUser),param.getIsPaid(),param.getPayment())
+				.execute();
 	}
 
 	/**
@@ -114,6 +161,8 @@ public class AccountService extends ShopBaseService {
 	 * @param admin 
 	 */
 	public void addActionRecord(AccountParam param, UserRecord user, AdminTokenAuthInfo admin) {
+		
+		
 		
 		Integer userId = user.getUserId();
 		String name = user.getUsername();
@@ -130,6 +179,7 @@ public class AccountService extends ShopBaseService {
 			.values(admin.getSysId(),subAccountId,actionType,actionDesc,userName)
 			.execute();
 	}
+	
 	
 	public BigDecimal getUserAccount(Integer userId) {
 		UserRecord user = memberService.getUserRecordById(userId);

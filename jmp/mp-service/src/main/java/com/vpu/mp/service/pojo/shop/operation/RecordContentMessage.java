@@ -25,6 +25,8 @@ public class RecordContentMessage {
      */
     /** 会员发放会员卡 */
     public static final String MSG_MEMBER_CARD_SEND = "发放给'ID：%d；昵称：%s'的会员卡:  %s";
+    /** 会员余额更新变动 */
+	public static final String MSG_MEMBER_ACCOUNT = "修改\"ID: %d  昵称: %s \"的余额 %s";
     
 
 }

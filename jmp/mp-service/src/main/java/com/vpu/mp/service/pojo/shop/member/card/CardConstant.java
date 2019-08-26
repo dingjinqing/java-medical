@@ -1,5 +1,6 @@
 package com.vpu.mp.service.pojo.shop.member.card;
 
+import java.math.BigDecimal;
 import java.time.LocalDate;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
@@ -106,4 +107,7 @@ public class CardConstant {
 	/** 3：关联平台分类  */
 	public static final Byte RELATED_PLATFORM_CATEGORY_TYPE = 3;
 	
+	
+	/** 余额为 0 */
+	public static final BigDecimal ZERO = new BigDecimal(0); 
 }

@@ -4,6 +4,10 @@ import static com.vpu.mp.db.shop.Tables.MEMBER_CARD;
 import static com.vpu.mp.db.shop.Tables.USER;
 import static com.vpu.mp.db.shop.Tables.USER_CARD;
 import static com.vpu.mp.db.shop.Tables.GOODS_CARD_COUPLE;
+import static com.vpu.mp.service.pojo.shop.member.MemberOperateRecordEnum.ADMIN_OPERATION;
+import static com.vpu.mp.service.pojo.shop.member.MemberOperateRecordEnum.EXCHANGE_GOODS_NUM;
+import static com.vpu.mp.service.pojo.shop.member.MemberOperateRecordEnum.STORE_SERVICE_TIMES;
+import static com.vpu.mp.service.pojo.shop.member.MemberOperateRecordEnum.MEMBER_CARD_ACCOUNT;
 import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.ACTIVE_NO;
 import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.ACTIVE_YES;
 import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.ALL_GOODS;
@@ -39,8 +43,14 @@ import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.WEEK_DATE_TY
 import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.RELATED_GOODS_TYPE;
 import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.RELATED_STORE_CATEGORY_TYPE;
 import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.RELATED_PLATFORM_CATEGORY_TYPE;
+import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.ZERO;
+import static com.vpu.mp.service.pojo.shop.operation.RecordTradeEnum.POWER_MEMBER_CARD_ACCOUNT;
+import static com.vpu.mp.service.pojo.shop.operation.RecordTradeEnum.ACCOUNT_DEFAULT;
+import static com.vpu.mp.service.pojo.shop.operation.RecordTradeEnum.TRADE_FLOW_INCOME;
+import static com.vpu.mp.service.pojo.shop.operation.RecordTradeEnum.TRADE_FLOW_TO_BE_CONFIRMED;
 import static org.jooq.impl.DSL.count;
 
+import java.math.BigDecimal;
 import java.sql.Timestamp;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -60,21 +70,28 @@ import org.jooq.UpdateSetFirstStep;
 import org.jooq.UpdateWhereStep;
 import org.junit.Test;
 import org.slf4j.Logger;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.vpu.mp.db.shop.tables.records.CardConsumerRecord;
+import com.vpu.mp.db.shop.tables.records.ChargeMoneyRecord;
 import com.vpu.mp.db.shop.tables.records.GoodsCardCoupleRecord;
 import com.vpu.mp.db.shop.tables.records.MemberCardRecord;
+import com.vpu.mp.db.shop.tables.records.TradesRecordRecord;
 import com.vpu.mp.db.shop.tables.records.UserCardRecord;
 import com.vpu.mp.service.foundation.data.DelFlag;
 import com.vpu.mp.service.foundation.data.JsonResultCode;
 import com.vpu.mp.service.foundation.database.DslPlus;
 import com.vpu.mp.service.foundation.service.ShopBaseService;
+import com.vpu.mp.service.foundation.util.FieldsUtil;
 import com.vpu.mp.service.foundation.util.PageResult;
 import com.vpu.mp.service.foundation.util.Util;
+import com.vpu.mp.service.foundation.util.VoTranslator;
 import com.vpu.mp.service.pojo.shop.member.account.AddMemberCardParam;
 import com.vpu.mp.service.pojo.shop.member.account.MemberCard;
 import com.vpu.mp.service.pojo.shop.member.account.MemberCardVo;
 import com.vpu.mp.service.pojo.shop.member.card.BaseCardVo;
+import com.vpu.mp.service.pojo.shop.member.card.CardConsumpData;
 import com.vpu.mp.service.pojo.shop.member.card.CardIdParam;
 import com.vpu.mp.service.pojo.shop.member.card.CardParam;
 import com.vpu.mp.service.pojo.shop.member.card.GradeConditionJson;
@@ -89,6 +106,9 @@ import com.vpu.mp.service.pojo.shop.member.card.ScoreJson;
 import com.vpu.mp.service.pojo.shop.member.card.SearchCardParam;
 import com.vpu.mp.service.pojo.shop.member.card.SimpleMemberCardVo;
 import com.vpu.mp.service.pojo.shop.operation.RecordContentTemplate;
+import com.vpu.mp.service.shop.operation.RecordMemberTradeService;
+
+import jodd.util.StringUtil;
 
 /**
  * 
@@ -98,6 +118,8 @@ import com.vpu.mp.service.pojo.shop.operation.RecordContentTemplate;
  */
 @Service
 public class MemberCardService extends ShopBaseService {
+	@Autowired private VoTranslator translator;
+	@Autowired private RecordMemberTradeService tradeService;
 	Logger logger = logger();
 
 	/**
@@ -772,7 +794,6 @@ public class MemberCardService extends ShopBaseService {
 	public void addCardForMember(AddMemberCardParam param) {
 
 		/** 准备数据 */
-
 		int sizeOfUserId = param.getUserIdList().size();
 		int sizeOfCardId = param.getCardIdList().size();
 		List<Integer> cardIdList = param.getCardIdList();
@@ -880,4 +901,257 @@ public class MemberCardService extends ShopBaseService {
 		logger.info("cardNo: " + cardNo.toString());
 		return cardNo.toString();
 	}
+	
+	
+	/**
+	 * 会员卡余额更新变动
+	 * @param data 卡余额消费数据	
+	 * @param adminUser 操作员
+	 * @param tradeType 交易类型
+	 * @param tradeFlow 资金流向
+	 * @param type 1 兑换次数；0 消费次数
+	 */
+	public void cardConsumer(CardConsumpData data,Integer adminUser,Byte tradeType,Byte tradeFlow,Byte type) {
+		/** 1-验证现有积分跟提交的积分是否一致 */
+		/** 1.2-获取数据库中的存储的信息 */
+		UserCardRecord userCard = getUserCardInfoByCardNo(data.getCardNo());
+	
+		if(data.getType() == 1) {
+			if(type == 1) {
+				/** 兑换次数是否够 */
+				if(data.getExchangeCount()!=null &&data.getExchangeCount()<0) {
+					if((data.getExchangeCount()+userCard.getExchangSurplus())<0) {
+						return;
+					}
+				}
+			}else {
+				/** 消费次数 是否够*/
+				if(data.getCount()!=null && data.getCount()<0) {
+					if((data.getCount()+userCard.getSurplus())<0) {
+						return;
+					}
+				}
+			}
+		}else {
+			/** 卡余额是否够 */
+			if(data.getMoney()!=null && data.getMoney().compareTo(ZERO) != -1) {
+				if((data.getMoney().add(userCard.getMoney())).compareTo(ZERO) == -1) {
+					return;
+				}
+			}
+		}
+		
+		/** 处理备注操作说明 */
+		if(StringUtil.isEmpty(data.getReason())) {
+			/** -默认管理员操作 国际化*/
+			String value = ADMIN_OPERATION.getValue();
+			value = translator.translate("member",value,value);
+			data.setReason(value);
+		}
+		
+		
+		if(type == 1) {
+			if(data.getType() == 1) {
+				/** 兑换商品数量 */
+				String value = EXCHANGE_GOODS_NUM.getValue();
+				value = translator.translate("member",value,value);
+				String t = data.getReason()+ value;
+				data.setReason(t);
+			}else {
+				/** - 门店服务次数 */
+				String value = STORE_SERVICE_TIMES.getValue();
+				value = translator.translate("member",value,value);
+				String t = data.getReason()+value;
+				data.setReason(t);
+			}
+		}else {
+			/** - 会员卡余额 */
+			String value = MEMBER_CARD_ACCOUNT.getValue();
+			value = translator.translate("member",value,value);
+			String t = data.getReason()+value;
+			data.setReason(t);
+		}
+		
+		/** 处理消费与充值：兑换次数，消费次数，会员卡余额等记录 */
+		if(data.getType() == 1) {
+			if(type == 1) {
+				/** 消费兑换次数 */
+				if(data.getExchangeCount()<0) {
+					insertIntoCardConsumer(data);
+				}else {
+					/** 增加兑换次数 */
+					insertIntoChargeMoney(data);
+				}
+			}else {
+				/** 消费（减少）消费次数  */
+				if(data.getCount()<0) {
+					insertIntoCardConsumer(data);
+				}else {
+					/** 充值消费次数 */
+					insertIntoChargeMoney(data);
+				}
+			}
+		}else {
+			/** 判断会员卡余额是充值还是消费 */
+			int compare = data.getMoney().compareTo(ZERO);
+			if(compare<0) {
+				/** 消费会员卡余额 */
+				insertIntoCardConsumer(data);
+			}else {
+				/** 充值会员卡余额 */
+				insertIntoChargeMoney(data);
+			}
+		}
+		
+		/** 更新用户-卡 */
+		/** type: 1 限次卡; 0 普通卡 */
+		if(data.getType() == 1) {
+			if(type == 1) {
+				/** 更新卡-兑换次数 */
+				/** 计算卡剩余兑换次数 */
+				Integer exchangeSurplus = userCard.getExchangSurplus()+data.getExchangeCount();
+				db().update(USER_CARD).set(USER_CARD.EXCHANG_SURPLUS, exchangeSurplus)
+					.where(USER_CARD.CARD_NO.eq(userCard.getCardNo()))
+					.execute();
+				
+				//TODO模板消息
+			}else {
+				/** 更新卡-剩余次数 */
+				Integer surplus = userCard.getSurplus()+data.getCount();
+				db().update(USER_CARD).set(USER_CARD.SURPLUS,surplus)
+					.where(USER_CARD.CARD_NO.eq(userCard.getCardNo()))
+					.execute();
+				//TODO 模板消息
+			}
+		}else {
+			BigDecimal money = userCard.getMoney().add(data.getMoney());
+			db().update(USER_CARD).set(USER_CARD.MONEY,money)
+				.where(USER_CARD.CARD_NO.eq(userCard.getCardNo()))
+				.execute();
+			
+			/**
+			 * 记录交易明细
+			 */
+			insertTradesRecord(data, tradeType, tradeFlow);
+			
+			
+			//TODO 模板消息
+			
+		}
+	}
+	
+	/**
+	 * 记录会员余额交易明细
+	 * @param data
+	 * @param tradeType
+	 * @param tradeFlow
+	 */
+	private void insertTradesRecord(CardConsumpData data, Byte tradeType, Byte tradeFlow) {
+		/** 交易明细 */
+		TradesRecordRecord record = new TradesRecordRecord();
+		/** 是否为余额充值 */
+		BigDecimal tradeNum = tradeType==POWER_MEMBER_CARD_ACCOUNT.getValue()?data.getMoney():data.getMoney().abs();
+		record.setTradeNum(tradeNum);
+		
+		String tradeSn = data.getOrderSn()==null?"":data.getOrderSn();
+		record.setTradeSn(tradeSn);
+		
+		record.setUserId(data.getUserId());
+		record.setTradeContent(ACCOUNT_DEFAULT.getValue());
+		record.setTradeType(tradeType);
+		record.setTradeFlow(tradeFlow);
+		if(tradeFlow == TRADE_FLOW_TO_BE_CONFIRMED.getValue()) {
+			tradeFlow = TRADE_FLOW_INCOME.getValue();
+		}
+		record.setTradeStatus(tradeFlow);
+		tradeService.insertRecord(record);
+	}
+	
+	
+	/**
+	 * 会员卡充值记录添加到charge_money
+	 * @param data
+	 */
+	private void insertIntoChargeMoney(CardConsumpData data) {
+		ChargeMoneyRecord chargeMoneyRecord = new ChargeMoneyRecord();
+		FieldsUtil.assignNotNull(data,chargeMoneyRecord);
+		/** 处理数据库表中带下划线的字段 */
+		if(data.getUserId()!=null) {
+			chargeMoneyRecord.setUserId(data.getUserId());
+		}
+		if(data.getCardId() != null) {
+			chargeMoneyRecord.setCardId(data.getCardId());
+		}
+		/** 充值的钱 */
+		if(data.getMoney()!=null) {
+			chargeMoneyRecord.setCharge(data.getMoney());
+		}
+		
+		if(data.getPrepayId()!=null) {
+			chargeMoneyRecord.setPrepayId(data.getPrepayId());
+		}
+		if(data.getOrderSn()!=null) {
+			chargeMoneyRecord.setOrderSn(data.getOrderSn());
+		}
+		if(data.getOrderStatus()!=null) {
+			chargeMoneyRecord.setOrderStatus(data.getOrderStatus());
+		}
+		if(data.getMoneyPaid()!=null) {
+			chargeMoneyRecord.setMoneyPaid(data.getMoneyPaid());
+		}
+		if(data.getChargeType()!=null) {
+			chargeMoneyRecord.setChargeType(data.getChargeType());
+		}
+		if(data.getCardNo()!=null) {
+			chargeMoneyRecord.setCardNo(data.getCardNo());
+		}
+		if(data.getAliTradeNo()!=null) {
+			chargeMoneyRecord.setAliTradeNo(data.getAliTradeNo());
+		}
+		if(data.getExchangeCount()!= null) {
+			chargeMoneyRecord.setExchangCount(data.getExchangeCount());
+		}
+		chargeMoneyRecord.insert();
+		
+	}
+	/**
+	 * 会员卡消费记录添加到card_consumer
+	 * @param data
+	 */
+	private void insertIntoCardConsumer(CardConsumpData data) {
+		CardConsumerRecord cardConsumerRecord = new CardConsumerRecord();
+		FieldsUtil.assignNotNull(data,cardConsumerRecord);
+		/** 处理数据库表中带下划线的字段 */
+		if(data.getUserId()!=null) {
+			cardConsumerRecord.setUserId(data.getUserId());
+		}
+		if(data.getCardId() != null) {
+			cardConsumerRecord.setCardId(data.getCardId());
+		}
+		if(data.getCardNo()!=null) {
+			cardConsumerRecord.setCardNo(data.getCardNo());
+		}
+		if(data.getExchangeCount()!=null) {
+			cardConsumerRecord.setExchangCount(data.getExchangeCount());
+		}
+		if(data.getOrderSn() != null) {
+			cardConsumerRecord.setOrderSn(data.getOrderSn());
+		}
+		cardConsumerRecord.insert();
+	}
+
+	/**
+	 * 通过会员卡号获取用户持有的会员卡信息
+	 * @param cardNo 会员卡号
+	 */
+	public UserCardRecord getUserCardInfoByCardNo(String cardNo) {
+		UserCardRecord userCard = db().select(USER_CARD.USER_ID,USER_CARD.CARD_ID,USER_CARD.CREATE_TIME,USER_CARD.FLAG,USER_CARD.CARD_NO,USER_CARD.EXPIRE_TIME,
+				USER_CARD.UPDATE_TIME,USER_CARD.IS_DEFAULT,USER_CARD.MONEY,USER_CARD.SURPLUS,USER_CARD.ACTIVATION_TIME,USER_CARD.EXCHANG_SURPLUS)
+		.from(USER_CARD.join(MEMBER_CARD).on(USER_CARD.CARD_ID.eq(MEMBER_CARD.ID)))
+		.where(USER_CARD.CARD_NO.eq(cardNo))
+		.fetchOne()
+		.into(UserCardRecord.class);
+		return userCard;
+	}
+		
 }

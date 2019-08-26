@@ -51,6 +51,7 @@ import com.vpu.mp.service.shop.member.MemberService;
 import com.vpu.mp.service.shop.member.ScoreCfgService;
 import com.vpu.mp.service.shop.member.TagService;
 import com.vpu.mp.service.shop.operation.RecordAdminActionService;
+import com.vpu.mp.service.shop.operation.RecordMemberTradeService;
 import com.vpu.mp.service.shop.order.virtual.MemberCardOrderService;
 import com.vpu.mp.service.shop.order.OrderReadService;
 import com.vpu.mp.service.shop.order.OrderWriteService;
@@ -372,5 +373,10 @@ public class ShopApplication {
      */
     @Autowired
     public MessageTemplateService messageTemplateService;
+    /**
+     * 交易明细
+     */
+    @Autowired
+    public RecordMemberTradeService tradeService;
 
 }
