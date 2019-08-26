@@ -94,11 +94,26 @@
           >
             <template slot-scope="scope">
               <el-row>
-              <el-button size="mini" @click="disableGift(scope.row.id)">停用</el-button>
-              <el-button size="mini" @click="enableGift(scope.row.id)">启用</el-button>
-              <el-button size="mini" @click="editGift(scope.row.id)">编辑</el-button>
-              <el-button size="mini" @click="gotoGiftDetail(scope.row.id)">赠送明细</el-button>
-              <el-button size="mini" @click="deleteGift(scope.row.id)">删除</el-button>
+                <el-button
+                  size="mini"
+                  @click="disableGift(scope.row.id)"
+                >停用</el-button>
+                <el-button
+                  size="mini"
+                  @click="enableGift(scope.row.id)"
+                >启用</el-button>
+                <el-button
+                  size="mini"
+                  @click="editGift(scope.row.id)"
+                >编辑</el-button>
+                <el-button
+                  size="mini"
+                  @click="gotoGiftDetail(scope.row.id)"
+                >赠送明细</el-button>
+                <el-button
+                  size="mini"
+                  @click="deleteGift(scope.row.id)"
+                >删除</el-button>
               </el-row>
             </template>
           </el-table-column>
@@ -115,7 +130,8 @@
             :current-page="param.currentPage"
             :page-size="20"
             layout="total, sizes, prev, pager, next, jumper"
-            :total="page.totalRows">
+            :total="page.totalRows"
+          >
           </el-pagination>
         </el-col>
       </el-row>

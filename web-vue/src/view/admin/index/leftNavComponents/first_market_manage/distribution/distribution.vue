@@ -71,7 +71,6 @@
 </template>
 
 <script>
-import advertisement from './advertisement'
 import distributeSetting from './distributeSetting'
 import distributorGroup from './distributorGroup'
 import distributorLevelSetting from './distributorLevelSetting'
@@ -84,7 +83,7 @@ import distributorCheck from './distributorCheck'
 
 export default {
   components: {
-    advertisement,
+    advertisement: () => import('./advertisement'),
     distributeSetting,
     distributorGroup,
     distributorLevelSetting,
@@ -103,7 +102,9 @@ export default {
   methods: {
     handleClick () {
       // console.log(tab)
+
     }
+    // advertisementList()
   }
 }
 

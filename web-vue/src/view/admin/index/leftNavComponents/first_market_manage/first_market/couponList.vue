@@ -228,9 +228,13 @@ export default {
   },
   mounted () {
     // 初始化数据
-    this.handleClick()
+    // this.handleClick()
   },
   methods: {
+    // 当前页发生变化
+    handleCurrentChange () {
+      console.log(this.currentPage)
+    },
 
     handleClick (tab) {
       alert(tab.index)

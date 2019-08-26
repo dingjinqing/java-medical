@@ -57,39 +57,40 @@
       <el-table
         class="version-manage-table"
         header-row-class-name="tableClss"
+        :data="tableData"
         border
         style="width: 100%"
       >
         <el-table-column
-          prop=""
+          prop="title"
           label="推广语标签"
           align="center"
         >
         </el-table-column>
 
         <el-table-column
-          prop=""
+          prop="promotionLanguage"
           label="推广语内容"
           align="center"
         >
         </el-table-column>
 
         <el-table-column
-          prop=""
+          prop="createTime"
           label="创建时间"
           align="center"
         >
         </el-table-column>
 
         <el-table-column
-          prop=""
+          prop="updateTime"
           label="更新时间"
           align="center"
         >
         </el-table-column>
 
         <el-table-column
-          prop=""
+          prop="isBlock"
           label="状态"
           align="center"
         >
@@ -119,23 +120,48 @@
 </template>
 
 <script>
-
+import { advertisementList } from '@/api/admin/marketManage/distribution.js'
 export default {
   data () {
     return {
+      tableData: [],
+      pageData: {},
       createTime: '',
       currentPage: null
+
     }
+  },
+  mounted () {
+    // 初始化数据
+    this.list()
   },
   methods: {
     // 当前页发生变化
     handleCurrentChange () {
       console.log(this.currentPage)
+    },
+    list () {
+      let obj = {
+        'currentPage': 1,
+        'pageRows': 1
+      }
+
+      advertisementList(obj).then((res) => {
+        console.log(res)
+        if (res.error === 0) {
+          this.handleData(res.content.dataList)
+          this.pageData = res.content.page
+        }
+      })
+    },
+    handleData (data) {
+      data.map((item, index) => {
+        console.log(data)
+      })
+      this.tableData = data
     }
   }
-
 }
-
 </script>
 <style lang="scss" scoped>
 .main {
