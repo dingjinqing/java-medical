@@ -88,7 +88,7 @@ export default {
 .pagination {
   background-color: #fff;
   display: flex;
-  justify-content: center;
+  justify-content: flex-end;
   align-items: center;
   padding: 10px 16px;
 }
