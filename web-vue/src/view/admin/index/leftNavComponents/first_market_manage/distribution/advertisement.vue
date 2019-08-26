@@ -175,4 +175,14 @@ export default {
   background-color: #fff;
   padding: 10px 20px 10px 20px;
 }
+.footer {
+  padding: 20px 0 20px 20px;
+  display: flex;
+  justify-content: flex-end;
+  span {
+    display: block;
+    height: 32px;
+    line-height: 32px;
+  }
+}
 </style>
