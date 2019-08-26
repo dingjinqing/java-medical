@@ -226,7 +226,6 @@ export default {
 
 <style lang="scss" scoped>
 .main {
-  height: 1000px;
   padding: 10px;
   background-color: #fff;
   margin: 10px;
