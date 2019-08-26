@@ -1,4 +1,17 @@
 <!--营销活动分享弹框 -->
+<!--
+使用样例：
+ <shareDialog
+      :imgPath="shareImgPath"
+      :pagePath="sharePagePath"
+      :show="shareDialogShow"
+      @close="shareDialogShow=false"
+    />
+  字段说明：
+  shareImgPath：二维码图片路径
+  sharePagePath: 分享页面url
+  shareDialogShow:控制弹窗是否显示
+ -->
 <template>
   <el-dialog
     title="扫一扫，分享给好友吧~"
