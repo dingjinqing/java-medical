@@ -1,10 +1,12 @@
 package com.vpu.mp.service.saas;
 
 import com.vpu.mp.service.saas.schedule.TaskJobMainService;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.vpu.mp.service.foundation.database.DatabaseManager;
+import com.vpu.mp.service.saas.area.AreaSelectService;
 import com.vpu.mp.service.saas.article.ArticleCategoryService;
 import com.vpu.mp.service.saas.article.ArticleService;
 import com.vpu.mp.service.saas.categroy.SysCateService;
@@ -67,7 +69,10 @@ public class SaasApplication {
 	
 	@Autowired
 	protected ShopApplication shopApplication;
-
+	
+	@Autowired
+    public AreaSelectService areaSelectService;
+	
 	public ShopApplication getShopApp(Integer shopId) {
 		databaseManager.switchShopDb(shopId);
 		return shopApplication;
