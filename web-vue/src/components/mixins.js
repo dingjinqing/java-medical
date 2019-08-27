@@ -117,32 +117,20 @@ const myMixin = {
       }
     },
 
-    // 取营销活动状态字符串（进行中、已过期、未开始、已停用），status==0代表停用，status==0代表启用
+    // 取营销活动状态字符串（进行中、已过期、未开始、已停用），status==0代表停用，status==1代表启用
     // TODO: 未国际化
     getActStatusString (status, startTime, endTime) {
       let d = new Date()
-      let nowTime =
-        d.getFullYear() +
-        '-' +
-        (d.getMonth() + 1) +
-        '-' +
-        d.getDate() +
-        ' ' +
-        d.getHours() +
-        ':' +
-        d.getMinutes() +
-        ':' +
-        d.getSeconds()
-      if (nowTime < startTime) {
-        return '未开始'
-      } else if (nowTime > endTime) {
-        return '已结束'
-      } else {
-        if (status === 1) {
-          return '进行中'
+      if (status === 1) {
+        if (d < new Date(startTime)) {
+          return '未开始'
+        } else if (d > new Date(endTime)) {
+          return '已结束'
         } else {
-          return '已停用'
+          return '进行中'
         }
+      } else {
+        return '已停用'
       }
     }
   }
