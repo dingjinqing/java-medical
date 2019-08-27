@@ -6,54 +6,6 @@
         :visible.sync="dialogVisible"
         width="40%"
       >
-        <div class="dialogTop">
-          <div class="topList">
-            <span>品牌名称:</span>
-            <el-input
-              v-model="input"
-              placeholder="请输入内容"
-              size="small"
-            ></el-input>
-          </div>
-          <div class="topList">
-            <span>品牌分类:</span>
-            <el-select
-              v-model="classValue"
-              placeholder="请选择"
-              size="small"
-            >
-              <el-option
-                v-for="item in classOptions"
-                :key="item.value"
-                :label="item.label"
-                :value="item.value"
-              >
-              </el-option>
-            </el-select>
-          </div>
-          <el-button
-            size="small"
-            type="primary"
-          >主要按钮</el-button>
-        </div>
-        <div class="dialogMiddle">
-          <div class="topList">
-            <span>品牌来源:</span>
-            <el-select
-              v-model="fromValue"
-              placeholder="请选择品牌来源"
-              size="small"
-            >
-              <el-option
-                v-for="item in fromOptions"
-                :key="item.value"
-                :label="item.label"
-                :value="item.value"
-              >
-              </el-option>
-            </el-select>
-          </div>
-        </div>
         <div class="footer">
           <el-table
             class="version-manage-table"
@@ -129,29 +81,6 @@ export default {
       totle: 1,
       pageCount: 1,
       dialogVisible: false,
-      input: '',
-      classValue: '',
-      classOptions: [{
-        value: '选项1',
-        label: '黄金糕'
-      }, {
-        value: '选项2',
-        label: '双皮奶'
-      }, {
-        value: '选项3',
-        label: '蚵仔煎'
-      }],
-      fromValue: '',
-      fromOptions: [{
-        value: '选项1',
-        label: '黄金糕'
-      }, {
-        value: '选项2',
-        label: '双皮奶'
-      }, {
-        value: '选项3',
-        label: '蚵仔煎'
-      }],
       tableData: [
         {
           ischeck: false,
@@ -210,8 +139,7 @@ export default {
   },
   methods: {
     defalutData () {
-      this.$http.$on('CallAddBrand', res => {
-        console.log(res)
+      this.$http.$on('CallChioseStore', res => {
         this.dialogVisible = true
       })
     },
@@ -246,29 +174,7 @@ export default {
     text-align: center;
     background: #f3f3f3;
   }
-  .dialogTop {
-    display: flex;
-    justify-content: space-between;
-    .topList {
-      display: flex;
-      align-items: center;
-      span {
-        white-space: nowrap;
-        display: inline-block;
-        margin-right: 5px;
-      }
-      /deep/ .el-input {
-        width: 140px;
-      }
-    }
-  }
-  .dialogMiddle {
-    margin-top: 10px;
-    margin: 10px 0;
-    /deep/ .el-input {
-      width: 140px;
-    }
-  }
+
   .footer {
     /deep/ .tableClss th {
       background-color: #f5f5f5;

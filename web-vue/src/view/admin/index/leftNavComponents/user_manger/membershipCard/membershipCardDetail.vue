@@ -455,9 +455,10 @@
                 class="add_brand"
                 style="display: inline-block;"
                 v-if="ruleForm.useStoreRadio==='2'"
+                @click="handleToCallChioseStore()"
               >
                 <img :src="$imageHost+'/image/admin/icon_jia.png'">
-                添加品牌
+                添加门店
               </div>
             </el-form-item>
             <el-form-item
@@ -546,21 +547,30 @@
                   v-if="ruleFormBottom.isBuyRadio === '3'"
                 >
                   <div class="buyHiddenDiv">
+
                     <el-radio
                       v-model="ruleFormBottom.needGetRadio"
                       label="1"
                     >领取码领取</el-radio>
                     <div v-if="ruleFormBottom.needGetRadio=== '1'">
-                      <span>批次1</span>
-                      <span>批次名称</span>
-                      <el-input
-                        v-model="ruleFormBottom.pcNameinput"
-                        size="small"
-                      ></el-input>
-                      <span>领取码</span>
-                      <span>增加批次</span>
-                      <span>废除批次</span>
-                      <span>生成/导入记录</span>
+                      <div
+                        v-for="(itemH,indexH) in codeAddDivArr"
+                        :key="indexH"
+                      >
+                        <div>
+                          <span>批次1</span>
+                          <span>批次名称</span>
+                          <el-input
+                            v-model="ruleFormBottom.pcNameinput"
+                            size="small"
+                          ></el-input>
+                          <span
+                            v-for="(item,index) in codeArr"
+                            :key="index"
+                            @click="handleCallCodeDialog(index,indexH)"
+                          >{{item}}</span>
+                        </div>
+                      </div>
                     </div>
                   </div>
 
@@ -570,16 +580,24 @@
                       label="2"
                     >卡号+密码领取</el-radio>
                     <div v-if="ruleFormBottom.needGetRadio=== '2'">
-                      <span>批次1</span>
-                      <span>批次名称</span>
-                      <el-input
-                        v-model="ruleFormBottom.pcNameinput"
-                        size="small"
-                      ></el-input>
-                      <span>领取码</span>
-                      <span>增加批次</span>
-                      <span>废除批次</span>
-                      <span>生成/导入记录</span>
+                      <div
+                        v-for="(itemH,indexH) in codeAddDivArrBottom"
+                        :key="indexH"
+                      >
+                        <div>
+                          <span>批次1</span>
+                          <span>批次名称</span>
+                          <el-input
+                            v-model="ruleFormBottom.pcNameinput"
+                            size="small"
+                          ></el-input>
+                          <span
+                            v-for="(item,index) in codeArr"
+                            :key="index"
+                            @click="handleCallCodeDialogBottom(index,indexH)"
+                          >{{item}}</span>
+                        </div>
+                      </div>
                     </div>
                   </div>
 
@@ -658,6 +676,10 @@
     <AppointBrandDialog />
     <!--添加品牌弹窗-->
     <AddBrandDialog />
+    <!--添加门店弹窗-->
+    <ChioseStoreDialog />
+    <!--领取码弹窗-->
+    <ReceivingCodeDialog />
   </div>
 </template>
 <script>
@@ -670,7 +692,9 @@ export default {
     BrandDialog: () => import('./brandDialog'),
     AppointBusDialog: () => import('@/view/admin/layout/addingBusClassDialog'),
     AppointBrandDialog: () => import('@/view/admin/layout/brandDialog'),
-    AddBrandDialog: () => import('./addBrandDialog')
+    AddBrandDialog: () => import('./addBrandDialog'),
+    ChioseStoreDialog: () => import('./chioseStoreDialog'),
+    ReceivingCodeDialog: () => import('./receivingCodeDialog')
   },
   data () {
     var validiscount = (rule, value, callback) => {
@@ -842,7 +866,10 @@ export default {
       couponList: [],
       clickArr: [],
       treeType: null,
-      AtreeType: null
+      AtreeType: null,
+      codeArr: ['领取码', '增加批次', '废除批次', '生成/导入记录'],
+      codeAddDivArr: ['null'],
+      codeAddDivArrBottom: ['null']
     }
   },
   watch: {
@@ -974,6 +1001,9 @@ export default {
         case 2:
           this.AtreeType = 2
           this.$http.$emit('AuserBrandDialog', index)
+          break
+        case 3:
+          this.$http.$emit('CallAddBrand', index)
       }
     },
     // 点击会员专享商品出现的添加类弹窗汇总
@@ -995,6 +1025,50 @@ export default {
           this.$http.$emit('CallAddBrand', index)
       }
       console.log(index)
+    },
+    // 调起添加门店弹窗
+    handleToCallChioseStore () {
+      this.$http.$emit('CallChioseStore')
+    },
+    // 调起领取码弹窗
+    handleCallCodeDialog (index, indexH) {
+      switch (index) {
+        case 0:
+          this.$http.$emit('CallCodeDialog')
+          break
+        case 1:
+          this.codeAddDivArr.push('null')
+          break
+        case 2:
+          if (this.codeAddDivArr.length === 1) {
+            this.$message.error('最少保留一个批次')
+          } else {
+            this.codeAddDivArr.splice(indexH, 1)
+          }
+          break
+        case 3:
+          this.$message.error('暂无记录')
+      }
+    },
+    // 卡号类点击统一处理
+    handleCallCodeDialogBottom (index, indexH) {
+      switch (index) {
+        case 0:
+          this.$http.$emit('CallCodeDialog')
+          break
+        case 1:
+          this.codeAddDivArrBottom.push('null')
+          break
+        case 2:
+          if (this.codeAddDivArrBottom.length === 1) {
+            this.$message.error('最少保留一个批次')
+          } else {
+            this.codeAddDivArrBottom.splice(indexH, 1)
+          }
+          break
+        case 3:
+          this.$message.error('暂无记录')
+      }
     }
   }
 }
@@ -1385,7 +1459,6 @@ export default {
             }
             .buyHiddenDiv {
               display: flex;
-              align-items: center;
               color: #333;
               /deep/ .el-input {
                 width: 60px;
