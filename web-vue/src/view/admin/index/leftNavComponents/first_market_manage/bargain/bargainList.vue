@@ -1,20 +1,11 @@
 <template>
   <div class="content">
     <div class="main">
-      <el-tabs
-        v-model="tabSwitch"
-        @tab-click="handleClick"
-      >
-        <el-tab-pane
-          v-for="(item) in tabInfo"
-          :key="item.name"
-          :label="item.title"
-          :name="item.name"
-        >
-
-        </el-tab-pane>
-
-      </el-tabs>
+      <statusTab
+        v-model="tabIndex"
+        :activityName="activityName"
+        :standard="true"
+      />
       <div class="wrapper">
         <el-button
           type="primary"
@@ -167,15 +158,10 @@
         </el-table-column>
       </el-table>
       <div class="footer">
-        <span>当前页面{{this.page.currentPage}}/{{this.page.pageCount}}，总记录{{this.page.totalRows}}条</span>
-        <el-pagination
-          @current-change="handleCurrentChange"
-          :current-page.sync="currentPage"
-          :page-size="20"
-          layout="prev, pager, next, jumper"
-          :total="4"
-        >
-        </el-pagination>
+        <pagination
+          :page-params.sync="pageParams"
+          @pagination="initDataList"
+        />
       </div>
     </div>
   </div>
@@ -183,31 +169,18 @@
 </template>
 <script>
 import { bargainList, updateBargain, deleteBargain } from '@/api/admin/marketManage/bargain.js'
+import statusTab from '@/components/admin/status/statusTab'
+import pagination from '@/components/admin/pagination/pagination'
 export default {
+  components: { pagination, statusTab },
   data () {
     return {
-      tabSwitch: '2',
-      tabInfo: [{
-        title: '全部砍价活动',
-        name: '1'
-      }, {
-        title: '进行中',
-        name: '2'
-      }, {
-        title: '未开始',
-        name: '3'
-      }, {
-        title: '已过期',
-        name: '4'
-      }, {
-        title: '已停用',
-        name: '5'
-      }],
+      activityName: '砍价',
       // 默认显示进行中的活动
       tabIndex: 1,
       currentPage: 1,
       tableData: [],
-      page: {}
+      pageParams: {}
     }
   },
   mounted () {
@@ -215,10 +188,7 @@ export default {
     this.initDataList()
   },
   methods: {
-    initDataList (tab) {
-      if (tab) {
-        this.tabIndex = tab.index
-      }
+    initDataList () {
       let param = {
         'state': parseInt(this.tabIndex),
         'currentPage': 1
@@ -228,7 +198,7 @@ export default {
         console.log(res)
         if (res.error === 0) {
           this.handleData(res.content.dataList)
-          this.page = res.content.page
+          this.pageParams = res.content.page
         }
       })
     },
@@ -296,6 +266,11 @@ export default {
     },
     addActivity () {
       console.log(111)
+    }
+  },
+  watch: {
+    'tabIndex' (n, o) {
+      this.initDataList()
     }
   }
 }
