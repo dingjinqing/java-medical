@@ -60,6 +60,9 @@ public class WxContentMessage {
 	public static final String WX_TABLE_ISNULL = "wx.table.is.null";
 	//该功能尚未开放
 	public static final String WX_FEATURE_NOT_OPEN = "wx.feature.no.open";
+	//审核成功通知
+	public static final String WX_AUDIT_FAIL = "wx.audit.fail";
+	public static final String WX_AUDIT_SUCCESS = "wx.audit.success";
 	
 	
 }

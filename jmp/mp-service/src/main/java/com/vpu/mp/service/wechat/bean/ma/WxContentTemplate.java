@@ -60,6 +60,10 @@ public enum  WxContentTemplate {
 	WX_TABLE_ISNULL(404,WxContentMessage.WX_TABLE_ISNULL),
 	WX_FEATURE_NOT_OPEN(403,WxContentMessage.WX_FEATURE_NOT_OPEN),
 	
+	
+	WX_AUDIT_FAIL(2028,WxContentMessage.WX_AUDIT_FAIL),
+	WX_AUDIT_SUCCESS(2029,WxContentMessage.WX_AUDIT_SUCCESS),
+	
 	WX_ERROE(500,WxContentMessage.WX_ERROE);
 	
 
