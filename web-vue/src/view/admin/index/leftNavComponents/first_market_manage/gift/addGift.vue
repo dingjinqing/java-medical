@@ -226,12 +226,17 @@
             </el-col>
           </el-row>
         </div>
-        <choosingGoods/>
+        <div v-if="1===step">
+          <choosingGoods @result="handleChoosingGoods"/>
+        </div>
+        <div v-if="2===step">
+          <choosingGoods :loadProduct="true" @result="handleChoosingProduct"/>
+        </div>
     </wrapper>
   </div>
 </template>
 <script>
-import { mapGetters, mapActions } from 'vuex'
+import { mapActions } from 'vuex'
 import wrapper from '@/components/admin/wrapper/wrapper'
 import choosingGoods from '@/components/admin/choosingGoods'
 import { format, range } from '@/util/date'
@@ -331,7 +336,6 @@ export default {
     }
   },
   computed: {
-    ...mapGetters(['goodsIds']),
     goodsIdsLength () {
       return this.tmpGoodsIds.length
     },
@@ -343,20 +347,16 @@ export default {
     }
   },
   methods: {
-    ...mapActions(['transmitGoodsIds', 'transmitEditGoodsId']),
+    ...mapActions(['transmitEditGoodsId']),
     nextStep () {
       if (!this.validateParam()) {
         return
       }
       this.step++
-      this.tmpGoodsIds = this.goodsIds
-      this.transmitGoodsIds(this.tmpGiftGoodsIds)
       this.transmitEditGoodsId(this.tmpGiftGoodsIds)
     },
     lastStep () {
       this.step--
-      this.tmpGiftGoodsIds = this.goodsIds
-      this.transmitGoodsIds(this.tmpGoodsIds)
       this.transmitEditGoodsId(this.tmpGoodsIds)
     },
     // 保存
@@ -450,7 +450,6 @@ export default {
         // 指定商品
         this.goodsRange = 1
         this.tmpGoodsIds = goodsIds
-        this.transmitGoodsIds(goodsIds)
         this.transmitEditGoodsId(goodsIds)
       }
     },
@@ -506,7 +505,10 @@ export default {
           ...content,
           goodsImg: prdImg || goodsImg
         }
-        this.tableData.push(row)
+        this.tableData.push({
+          ...row,
+          productNumber: row.prdNumber
+        })
       })
     },
     // 参数校验
@@ -552,8 +554,8 @@ export default {
     },
     // 校验赠品参数
     validateGiftParam () {
-      const { tmpGiftGoodsIds } = this
-      if (tmpGiftGoodsIds.length < 1) {
+      const { tableData } = this
+      if (tableData.length < 1) {
         this.fail('请选择赠品')
         return false
       }
@@ -565,6 +567,14 @@ export default {
         message,
         type: 'warning'
       })
+    },
+    handleChoosingGoods (ids) {
+      this.tmpGoodsIds = ids
+    },
+    handleChoosingProduct (ids) {
+      this.tmpGiftGoodsIds = ids
+      this.tableData = []
+      ids.forEach(prdId => this.addProductRow(prdId))
     }
   },
   watch: {
@@ -572,17 +582,6 @@ export default {
       if (v === 0) {
         // 选择了”全部商品“
         this.param.goodsIds = []
-      }
-    },
-    goodsIds (v) {
-      // 保存”活动商品“和”赠品商品“id临时变量
-      switch (this.step) {
-        case 1:
-          this.tmpGoodsIds = v
-          break
-        case 2:
-          this.tmpGiftGoodsIds = v
-          break
       }
     }
   },
