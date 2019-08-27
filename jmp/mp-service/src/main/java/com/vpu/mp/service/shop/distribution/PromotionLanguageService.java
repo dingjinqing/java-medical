@@ -35,6 +35,7 @@ public class PromotionLanguageService extends ShopBaseService{
 	 * @param param
 	 */
 	public void buildOptions(SelectJoinStep<? extends Record> select,PromotionLanguageListParam param) {
+		select.where(PROMOTION_LANGUAGE.DEL_FLAG.eq((byte)0));
 		//推广内容
 		if(param.getPromotionLanguage() != null) {
 			select.where(PROMOTION_LANGUAGE.PROMOTION_LANGUAGE_.contains(param.getPromotionLanguage()));
