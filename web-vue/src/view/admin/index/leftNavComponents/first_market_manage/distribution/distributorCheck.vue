@@ -3,18 +3,32 @@
     <div class="table_list">
       <div class="select_info">
         <div class="leftarea">
-          <span>手机号：</span>
+          <span>手机号</span>
           <el-input size="small"></el-input>
         </div>
         <div class="leftarea">
-          <span>昵称：</span>
+          <span>昵称</span>
           <el-input size="small"></el-input>
         </div>
         <div class="midarea">
-          <span>申请时间：</span>
-          <el-input size="small"></el-input>
+          <span>申请时间</span>
+          <el-date-picker
+            v-model="value1"
+            type="date"
+            placeholder="选择日期"
+            size="small"
+            value-format="yyyy-MM-dd"
+          >
+          </el-date-picker>
           <span>至</span>
-          <el-input size="small"></el-input>
+          <el-date-picker
+            v-model="value1"
+            type="date"
+            placeholder="选择日期"
+            size="small"
+            value-format="yyyy-MM-dd"
+          >
+          </el-date-picker>
         </div>
         <div class="rightarea">
           <el-button
@@ -110,7 +124,8 @@
 export default {
   data () {
     return {
-      currentPage: 1
+      currentPage: 1,
+      value1: ''
     }
   },
   methods: {
@@ -153,6 +168,9 @@ export default {
     .leftarea {
       display: flex;
       margin-right: 30px;
+      :first-child {
+        margin-right: 10px;
+      }
     }
     .rightarea {
       display: flex;
@@ -163,8 +181,17 @@ export default {
     .midarea {
       display: flex;
       margin-right: 30px;
+      :first-child {
+        margin-right: 10px;
+      }
+      :nth-of-type(1) {
+        margin-right: 10px;
+      }
       :nth-of-type(2) {
-        margin: 0 0 0 10px;
+        margin: 0 10px 0 0;
+      }
+      /deep/ .el-input {
+        width: 200px !important;
       }
     }
     span {

@@ -96,7 +96,7 @@ export default {
   },
   data () {
     return {
-      activeName: 'tenth'
+      activeName: 'first'
     }
   },
   methods: {

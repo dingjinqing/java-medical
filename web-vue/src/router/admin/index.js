@@ -661,6 +661,19 @@ const routes = [
                 '@/view/admin/index/leftNavComponents/first_market_manage/friendHelp/friendHelp'
               )
           },
+          // 添加好友助力活动
+          {
+            path: '/admin/home/main/addHelpAct',
+            name: 'promote_activity',
+            meta: {
+              crumbTitle: 'router.promote_activity',
+              meta: 'first_market_manage'
+            },
+            component: () =>
+              import(
+                '@/view/admin/index/leftNavComponents/first_market_manage/friendHelp/addHelpAct'
+              )
+          },
           // 添加优惠券活动
           {
             path: '/admin/home/main/addyCoupon',

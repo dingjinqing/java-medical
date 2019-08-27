@@ -205,7 +205,8 @@ export default {
   data () {
     return {
       tableData: [],
-      status: null
+      status: null,
+      activeName: ''
     }
   },
   methods: {

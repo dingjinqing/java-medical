@@ -14,6 +14,7 @@
           <el-button
             type="primary"
             class="barginBtn"
+            @click="addActive"
           >添加好友助力活动</el-button>
         </el-tab-pane>
       </el-tabs>
@@ -272,6 +273,12 @@ export default {
           break
       }
       return row.actState
+    },
+    // 添加好友助力活动
+    addActive () {
+      this.$router.push({
+        name: 'promote_activity'
+      })
     }
   }
 }

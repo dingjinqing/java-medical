@@ -66,6 +66,8 @@ export const cn = {
   bargain: ['营销管理', '砍价'],
   // 营销管理 好友助力
   promote: ['营销管理', '好友助力'],
+  // 营销管理 添加好友助力活动
+  promote_activity: ['营销管理', '好友助力', '添加好友助力活动'],
   // 营销管理 分享有礼
   share_polite: ['营销管理', '分享有礼'],
   // 营销管理 分享有礼
@@ -181,6 +183,8 @@ export const en = {
   bargain: ['Marketing management', 'bargain'],
   // 营销管理 好友助力
   promote: ['Marketing management', 'Good friend help'],
+  // 营销管理 添加好友助力活动
+  promote_activity: ['Marketing management', 'Good friend help'],
   // 营销管理 普通优惠券
   ordinary_coupon: ['Marketing management', 'ordinary coupon'],
   // 营销管理 拼团抽奖
@@ -188,7 +192,7 @@ export const en = {
   // 营销管理 分销
   distribution_info: ['Marketing management', 'distribution'],
   // 营销管理 瓜分积分
-  pin_integration: ['Marketing management', 'Group partition integral'],
+  pin_integration: ['Marketing management', 'Group partition integral', 'Create friend help activity'],
   // 营销管理 瓜分积分 创建瓜分积分活动
   pin_integration_add: ['Marketing management', 'Group partition integral', 'Create group partition integral'],
   // 营销管理 瓜分积分 修改活动内容
