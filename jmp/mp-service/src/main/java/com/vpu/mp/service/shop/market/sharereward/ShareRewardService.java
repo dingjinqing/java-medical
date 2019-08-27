@@ -12,10 +12,7 @@ import com.vpu.mp.service.foundation.util.PageResult;
 import com.vpu.mp.service.pojo.shop.market.sharereward.*;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
-import org.jooq.Condition;
-import org.jooq.Record11;
-import org.jooq.SelectConditionStep;
-import org.jooq.Table;
+import org.jooq.*;
 import org.jooq.impl.DSL;
 import org.springframework.stereotype.Service;
 
@@ -74,14 +71,14 @@ public class ShareRewardService extends ShopBaseService {
                 categoryConditon = categoryConditon.and(sa.IS_FOREVER.eq((byte) 1)).or(sa.START_TIME.lessThan(new Timestamp(System.currentTimeMillis()))).and(sa.END_TIME.greaterThan(new Timestamp(System.currentTimeMillis())));
                 break;
         }
-        Table<Record11<Integer, String, Byte, Byte, Timestamp, Timestamp, String, String, String, Integer, Byte>> conditionStep = db().
-            select(sa.ID, sa.NAME, sa.CONDITION, sa.IS_FOREVER, sa.START_TIME, sa.END_TIME, sa.FIRST_LEVEL_RULE, sa.SECOND_LEVEL_RULE, sa.THIRD_LEVEL_RULE, sa.PRIORITY, sa.STATUS).from(sa).where(categoryConditon).asTable("sa");
+        Table<Record12<Integer, String, Byte, Integer, Byte, Timestamp, Timestamp, String, String, String, Integer, Byte>> conditionStep = db().
+            select(sa.ID, sa.NAME, sa.CONDITION, sa.GOODS_PV, sa.IS_FOREVER, sa.START_TIME, sa.END_TIME, sa.FIRST_LEVEL_RULE, sa.SECOND_LEVEL_RULE, sa.THIRD_LEVEL_RULE, sa.PRIORITY, sa.STATUS).from(sa).where(categoryConditon).asTable("sa");
 
         Condition selectConditon = sa.ID.isNotNull();
         // TODO 页面筛选条件待定，此处省略筛选condition
 
-        SelectConditionStep<Record11<Integer, String, Byte, Byte, Timestamp, Timestamp, String, String, String, Integer, Byte>> resultStep = db().
-            select(sa.ID, sa.NAME, sa.CONDITION, sa.IS_FOREVER, sa.START_TIME, sa.END_TIME, sa.FIRST_LEVEL_RULE, sa.SECOND_LEVEL_RULE, sa.THIRD_LEVEL_RULE, sa.PRIORITY, sa.STATUS).from(conditionStep).where(selectConditon);
+        SelectConditionStep<Record12<Integer, String, Byte, Integer, Byte, Timestamp, Timestamp, String, String, String, Integer, Byte>> resultStep = db().
+            select(sa.ID, sa.NAME, sa.CONDITION, sa.GOODS_PV, sa.IS_FOREVER, sa.START_TIME, sa.END_TIME, sa.FIRST_LEVEL_RULE, sa.SECOND_LEVEL_RULE, sa.THIRD_LEVEL_RULE, sa.PRIORITY, sa.STATUS).from(conditionStep).where(selectConditon);
         PageResult<ShareRewardShowVo> pageResult = this.getPageResult(resultStep, param.getCurrentPage(), param.getPageRows(), ShareRewardShowVo.class);
 
         for (ShareRewardShowVo vo : pageResult.getDataList()) {

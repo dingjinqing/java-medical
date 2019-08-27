@@ -23,9 +23,13 @@ public class ShareRewardShowVo {
      */
     private String name;
     /**
-     * 触发条件
+     * 触发条件：1.分享全部商品，2.分享指定商品，3.分享访问量较少商品
      */
     private Byte condition;
+    /**
+     * 触发条件为3时的访问量设定值
+     */
+    private Integer goodsPv;
     /**
      * 有效期，根据实际情况由活动起始时间，活动结束时间，是否永久有效三项组成
      */
