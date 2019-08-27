@@ -199,7 +199,7 @@ public class GiftService extends ShopBaseService {
     /**
      * 获取商品规格
      */
-    public List<ProductVo> getProductDetail(Integer productId) {
+    public ProductVo getProductDetail(Integer productId) {
         return db()
             .select(PRODUCT.PRD_ID.as("productId"), PRODUCT.PRD_PRICE, PRODUCT.PRD_IMG, PRODUCT.PRD_NUMBER,
                 PRODUCT.PRD_DESC)
@@ -207,7 +207,7 @@ public class GiftService extends ShopBaseService {
             .from(PRODUCT)
             .leftJoin(GOODS).on(GOODS.GOODS_ID.eq(PRODUCT.GOODS_ID))
             .where(PRODUCT.PRD_ID.eq(productId))
-            .fetchInto(ProductVo.class);
+            .fetchOneInto(ProductVo.class);
     }
 
     /**
