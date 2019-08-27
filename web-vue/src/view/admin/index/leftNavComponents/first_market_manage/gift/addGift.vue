@@ -34,6 +34,20 @@
               </el-form-item>
             </el-form>
           </el-col>
+          <el-col :span="10" class="description">
+            <el-form label-width="20px" >
+              <el-form-item>
+                <template>
+                  只作为商家记录使用，用户不会看到这个名称
+                </template>
+              </el-form-item>
+              <el-form-item>
+                <template>
+                  用于区分不同赠品活动的优先级，请填写正整数，数值越大优先级越高
+                </template>
+              </el-form-item>
+            </el-form>
+          </el-col>
         </el-row>
         <el-row style="margin-bottom:20px">
           <el-col :span="2">
@@ -119,8 +133,19 @@
                 <el-input
                   type="textarea"
                   :rows="5"
-                  v-model="param.explain">
+                  v-model="param.explain"
+                  placeholder="此提示将在小程序前端展示，请根据配置的赠品策略谨慎编写赠品规则说明，最多可填写200字。
+  例：前100名付款用户可获得赠品，送完即止。">
                 </el-input>
+              </el-form-item>
+            </el-form>
+          </el-col>
+          <el-col :span="10" class="description">
+            <el-form label-width="20px" >
+              <el-form-item>
+                <template>
+                  以下条件满足其一即可获得赠品，最多可选择 3 类
+                </template>
               </el-form-item>
             </el-form>
           </el-col>
@@ -234,12 +259,12 @@ export default {
       // 当前页为编辑页
       update: false,
       param: {
-        name: '买则送赠品',
+        name: '',
         level: 1,
-        startTime: '2019-08-19 17:49:36',
-        endTime: '2019-09-19 17:49:36',
+        startTime: '',
+        endTime: '',
         goodsIds: [],
-        explain: 'Come on !!!',
+        explain: '',
         rules: {
           fullPrice: null,
           fullNumber: null,
@@ -249,8 +274,8 @@ export default {
           minPayNum: 1,
           maxPayNum: 10,
           cardId: [],
-          payStartTime: '2019-08-19 18:07:54',
-          payEndTime: '2019-08-19 18:08:01'
+          payStartTime: null,
+          payEndTime: null
         },
         gifts: []
       },
@@ -524,5 +549,8 @@ export default {
   .goods_img {
     width: 45px;
     height: 45px;
+  }
+  .description {
+    color: #999;
   }
 </style>
