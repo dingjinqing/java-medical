@@ -3,7 +3,6 @@ package com.vpu.mp.service.pojo.shop.member.card;
 import java.math.BigDecimal;
 
 import lombok.Getter;
-import lombok.Setter;
 
 /**
 * @author 黄壮壮
@@ -11,7 +10,6 @@ import lombok.Setter;
 * @Description: 会员卡消费数据 
 */
 @Getter
-@Setter
 public class CardConsumpData {
 	/** 会员id */
 	private Integer userId;
@@ -23,7 +21,7 @@ public class CardConsumpData {
 	private BigDecimal money;
 	/** 消费原因 */
 	private String reason ;
-	/** 消费类型 0是普通卡 1限次卡 */
+	/** 消费类型 {@link com.vpu.mp.service.pojo.shop.member.card.CardConstant} */
 	private Byte type;
 	/** 订单编号 */
 	private String orderSn;
@@ -45,4 +43,69 @@ public class CardConsumpData {
 	private Byte chargeType;
 	/** 支付宝交易单号 */
 	private String aliTradeNo;
+	public CardConsumpData setUserId(Integer userId) {
+		this.userId = userId;
+		return this;
+	}
+	public CardConsumpData setCardId(Integer cardId) {
+		this.cardId = cardId;
+		return this;
+	}
+	public CardConsumpData setCardNo(String cardNo) {
+		this.cardNo = cardNo;
+		return this;
+	}
+	public CardConsumpData setMoney(BigDecimal money) {
+		this.money = money;
+		return this;
+	}
+	public CardConsumpData setReason(String reason) {
+		this.reason = reason;
+		return this;
+	}
+	public CardConsumpData setType(Byte type) {
+		this.type = type;
+		return this;
+	}
+	public CardConsumpData setOrderSn(String orderSn) {
+		this.orderSn = orderSn;
+		return this;
+	}
+	public CardConsumpData setExchangeCount(Short exchangeCount) {
+		this.exchangeCount = exchangeCount;
+		return this;
+	}
+	public CardConsumpData setCount(Integer count) {
+		this.count = count;
+		return this;
+	}
+	public CardConsumpData setMessage(String message) {
+		this.message = message;
+		return this;
+	}
+	public CardConsumpData setPayment(String payment) {
+		this.payment = payment;
+		return this;
+	}
+	public CardConsumpData setPrepayId(String prepayId) {
+		this.prepayId = prepayId;
+		return this;
+	}
+	public CardConsumpData setOrderStatus(Byte orderStatus) {
+		this.orderStatus = orderStatus;
+		return this;
+	}
+	public CardConsumpData setMoneyPaid(BigDecimal moneyPaid) {
+		this.moneyPaid = moneyPaid;
+		return this;
+	}
+	public CardConsumpData setChargeType(Byte chargeType) {
+		this.chargeType = chargeType;
+		return this;
+	}
+	public CardConsumpData setAliTradeNo(String aliTradeNo) {
+		this.aliTradeNo = aliTradeNo;
+		return this;
+	}
+	
 }
