@@ -5,7 +5,8 @@ import java.util.List;
 import org.springframework.stereotype.Service;
 
 import com.vpu.mp.service.foundation.service.MainBaseService;
-import com.vpu.mp.service.pojo.saas.area.AreaSelectVo;
+import com.vpu.mp.service.pojo.shop.area.AreaSelectVo;
+
 import static com.vpu.mp.db.main.Tables.DICT_PROVINCE;
 import static com.vpu.mp.db.main.Tables.DICT_CITY;
 import static com.vpu.mp.db.main.Tables.DICT_DISTRICT;;

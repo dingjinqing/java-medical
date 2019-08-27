@@ -13,6 +13,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.vpu.mp.service.foundation.service.ShopBaseService;
 import com.vpu.mp.service.foundation.util.PageResult;
+import com.vpu.mp.service.pojo.shop.area.AreaSelectVo;
 import com.vpu.mp.service.pojo.shop.goods.deliver.GoodsDeliverIdParam;
 import com.vpu.mp.service.pojo.shop.goods.deliver.GoodsDeliverPageListParam;
 import com.vpu.mp.service.pojo.shop.goods.deliver.GoodsDeliverTemplateParam;
@@ -29,6 +30,17 @@ import com.vpu.mp.service.pojo.shop.goods.deliver.GoodsDeliverTemplateVo;
 @Service
 
 public class GoodsDeliverTamplateService extends ShopBaseService{
+	
+	/**
+	 *	查询所有省、市、区、县
+	 *
+	 * @param 
+	 * @return List<AreaSelectVo>
+	 */
+	public List<AreaSelectVo> getAllArea() {
+		return saas.areaSelectService.getAllArea();
+	}
+	
 	/**
 	 * 运费模版列表
 	 * 

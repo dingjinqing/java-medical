@@ -1,4 +1,4 @@
-package com.vpu.mp.service.pojo.saas.area;
+package com.vpu.mp.service.pojo.shop.area;
 
 import lombok.Data;
 

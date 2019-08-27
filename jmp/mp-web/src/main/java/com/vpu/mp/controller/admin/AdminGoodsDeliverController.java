@@ -2,6 +2,7 @@ package com.vpu.mp.controller.admin;
 
 import java.util.List;
 
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -9,6 +10,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.vpu.mp.service.foundation.data.JsonResult;
 import com.vpu.mp.service.foundation.util.PageResult;
+import com.vpu.mp.service.pojo.shop.area.AreaSelectVo;
 import com.vpu.mp.service.pojo.shop.config.DeliverTemplateConfig;
 import com.vpu.mp.service.pojo.shop.goods.deliver.GoodsDeliverIdParam;
 import com.vpu.mp.service.pojo.shop.goods.deliver.GoodsDeliverPageListParam;
@@ -25,7 +27,18 @@ import com.vpu.mp.service.pojo.shop.goods.deliver.GoodsDeliverTemplateVo;
 @RestController
 @RequestMapping("/api/admin/goods/deliver")
 public class AdminGoodsDeliverController extends AdminBaseController {
-
+	
+	/**
+	 * 返回所有地区代码及名称
+	 * 
+	 * @param
+	 * @return JsonResult
+	 */
+	@GetMapping("/select")
+	public JsonResult getAllArea() {
+		List<AreaSelectVo> areaSelectVo = shop().goods.goodsDeliver.getAllArea();
+		return success(areaSelectVo);
+	}
 	/**
 	 * 运费模版分页查询
 	 *
