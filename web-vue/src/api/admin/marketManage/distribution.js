@@ -8,3 +8,12 @@ export function advertisementList (data) {
     data: data
   })
 }
+
+// 分销员分组
+export function distributionGroup (data) {
+  return service({
+    url: '/api/admin/distribution/group/list',
+    method: 'post',
+    data: data
+  })
+}
