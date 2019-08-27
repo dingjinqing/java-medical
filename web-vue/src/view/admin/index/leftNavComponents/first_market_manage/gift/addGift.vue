@@ -15,7 +15,7 @@
           <el-col :span="2">
             <span class="label">基础配置</span>
           </el-col>
-          <el-col :span="10">
+          <el-col :span="11">
             <el-form label-width="100px" >
               <el-form-item label="活动名称">
                 <el-input v-model="param.name"></el-input>
@@ -39,7 +39,7 @@
           <el-col :span="2">
             <span class="label">赠品策略</span>
           </el-col>
-          <el-col :span="10">
+          <el-col :span="11">
             <el-form label-width="100px" >
               <el-form-item label="活动商品">
                 <template>
@@ -192,13 +192,15 @@
             </el-col>
           </el-row>
         </div>
-        <el-row>
-          <el-col :offset="4">
-            <el-button type="primary" @click="lastStep" v-show="step > 1">上一步</el-button>
-            <el-button type="primary" @click="nextStep" v-show="step < steps.length">下一步</el-button>
-            <el-button type="primary" @click="addGift" v-show="step === steps.length">保存</el-button>
-          </el-col>
-        </el-row>
+        <div style="margin-top:20px">
+          <el-row>
+            <el-col :offset="stepButtonOffset">
+              <el-button type="primary" @click="lastStep" v-show="step > 1">上一步</el-button>
+              <el-button type="primary" @click="nextStep" v-show="step < steps.length">下一步</el-button>
+              <el-button type="primary" @click="addGift" v-show="step === steps.length">保存</el-button>
+            </el-col>
+          </el-row>
+        </div>
         <choosingGoods/>
     </wrapper>
   </div>
@@ -250,15 +252,7 @@ export default {
           payStartTime: '2019-08-19 18:07:54',
           payEndTime: '2019-08-19 18:08:01'
         },
-        gifts: [
-          {
-            productId: 1,
-            productNumber: 1
-          }, {
-            productId: 2,
-            productNumber: 1
-          }
-        ]
+        gifts: []
       },
       userAction: [{
         id: 1,
@@ -315,6 +309,12 @@ export default {
     ...mapGetters(['goodsIds']),
     goodsIdsLength () {
       return this.tmpGoodsIds.length
+    },
+    stepButtonOffset () {
+      if (this.step === 2) {
+        return 0
+      }
+      return 4
     }
   },
   methods: {

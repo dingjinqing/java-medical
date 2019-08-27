@@ -127,10 +127,10 @@
           <el-pagination
             @size-change="loadData"
             @current-change="loadData"
-            :current-page="param.currentPage"
-            :page-size="20"
+            :current-page.sync="param.currentPage"
+            :page-size="param.pageRows"
+            :total="page.pageRows"
             layout="total, sizes, prev, pager, next, jumper"
-            :total="page.totalRows"
           >
           </el-pagination>
         </el-col>
@@ -179,9 +179,9 @@ export default {
     loadData () {
       const { param } = this
       giftList(param).then(res => {
-        const { content: { page: { totalRows }, dataList } } = res
+        const { content: { page, dataList } } = res
         this.tableData = dataList
-        this.page.totalRows = totalRows
+        this.page = page
       })
     },
     // 删除活动
