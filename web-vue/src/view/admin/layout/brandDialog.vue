@@ -41,6 +41,7 @@ export default {
       dialogVisible: false,
       newArr: [],
       check: false,
+      clickBandArr: [],
       imgUrl: [
         {
           img_open: this.$imageHost + '/image/admin/cate_jia.png',
@@ -48,28 +49,28 @@ export default {
         }
 
       ],
-      clickArrBus: [],
       trueArr: []
     }
   },
   mounted () {
-    this.$http.$on('addingBusClassDialog', res => {
+    this.$http.$on('AuserBrandDialog', res => {
+      console.log(res, 'brand')
       this.dialogVisible = true
+
       // 初始化数据
       this.defaultData()
     })
-    this.$http.$on('clickBusNode', res => {
-      console.log(res)
+    this.$http.$on('AclickBrandNode', res => {
       let newArr = []
-      console.log(this.clickArrBus.length)
-      let flag = this.clickArrBus.filter((item, index) => {
+      console.log(this.clickBandArr.length)
+      let flag = this.clickBandArr.filter((item, index) => {
         return item.sortId === res.sortId
       })
       console.log(flag)
       if (!flag.length) {
-        this.clickArrBus.push(res)
+        this.clickBandArr.push(res)
       }
-      this.clickArrBus.forEach((item, index) => {
+      this.clickBandArr.forEach((item, index) => {
         if (item.sortId === res.sortId) {
           item.checked = res.checked
         }
@@ -79,14 +80,14 @@ export default {
       })
       // this.clickArrBus.push(res)
       this.trueArr = newArr
-      console.log(this.clickArrBus)
+      console.log(this.clickBandArr)
     })
   },
   methods: {
     // 弹窗确认
     handleSure () {
       console.log(this.trueArr)
-      this.$http.$emit('BusClassTrueArr', this.trueArr)
+      this.$http.$emit('ABusClassTrueArr', this.trueArr)
       this.dialogVisible = false
     },
     defaultData () {
@@ -95,7 +96,7 @@ export default {
         console.log(res.content)
 
         if (res.error === 0) {
-          let goodsSorts = res.content.goodsSorts
+          let goodsSorts = res.content.sysCates
           let buckets = {
             0: { children: [] }
           }
@@ -103,14 +104,14 @@ export default {
           for (var i = 0; i < goodsSorts.length; i++) {
             let item = goodsSorts[i]
 
-            let selfNode = buckets[item.sortId]
+            let selfNode = buckets[item.catId]
 
             if (selfNode === undefined) {
-              buckets[item.sortId] = item
-              buckets[item.sortId].children = []
-              selfNode = buckets[item.sortId]
+              buckets[item.catId] = item
+              buckets[item.catId].children = []
+              selfNode = buckets[item.catId]
             } else {
-              selfNode.sortId = item.sortId
+              selfNode.catId = item.catId
               selfNode.sortName = item.sortName
               selfNode.parentId = item.parentId
               selfNode.level = item.level
@@ -128,6 +129,7 @@ export default {
             }
           }
           this.newArr = buckets[0].children
+
           console.log(buckets[0].children)
         }
       })
@@ -144,6 +146,8 @@ export default {
   }
   /deep/ .el-dialog__body {
     padding: 20px 20px;
+    height: 500px;
+    overflow-y: auto;
   }
   .dialogMain {
     .bgClass {

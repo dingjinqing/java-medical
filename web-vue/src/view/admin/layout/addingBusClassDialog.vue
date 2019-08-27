@@ -53,12 +53,12 @@ export default {
     }
   },
   mounted () {
-    this.$http.$on('addingBusClassDialog', res => {
+    this.$http.$on('AaddingBusClassDialog', res => {
       this.dialogVisible = true
       // 初始化数据
       this.defaultData()
     })
-    this.$http.$on('clickBusNode', res => {
+    this.$http.$on('AclickBusNode', res => {
       console.log(res)
       let newArr = []
       console.log(this.clickArrBus.length)
@@ -86,7 +86,7 @@ export default {
     // 弹窗确认
     handleSure () {
       console.log(this.trueArr)
-      this.$http.$emit('BusClassTrueArr', this.trueArr)
+      this.$http.$emit('ABusClassTrueArr', this.trueArr)
       this.dialogVisible = false
     },
     defaultData () {

@@ -271,13 +271,13 @@ export default {
           console.log(itemC)
           switch (itemC) {
             case 1:
-              itemC = '积分'
+              item.rewardType[indexC] = '积分'
               break
             case 2:
-              itemC = '优惠券'
+              item.rewardType[indexC] = '优惠券'
               break
             case 3:
-              itemC = '幸运大转盘'
+              item.rewardType[indexC] = '幸运大转盘'
           }
         })
         console.log(item.rewardType)

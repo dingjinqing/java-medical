@@ -53,9 +53,9 @@ export default {
         sortId: this.data.sortId ? this.data.sortId : this.data.catId
       }
       if (this.data.sortId) {
-        this.$http.$emit('clickBusNode', obj)
+        this.$http.$emit('AclickBusNode', obj)
       } else {
-        this.$http.$emit('clickBrandNode', obj)
+        this.$http.$emit('AclickBrandNode', obj)
       }
     },
     '$parent.checked' (newData) {

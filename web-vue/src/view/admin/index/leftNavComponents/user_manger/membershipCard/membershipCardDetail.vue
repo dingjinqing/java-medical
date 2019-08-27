@@ -650,6 +650,14 @@
     <ChoosingGoods />
     <!--选择商家分类弹窗-->
     <AddingBusClassDialog />
+    <!--添加平台分类弹窗-->
+    <BrandDialog />
+    <!--指定商品添加商品分类弹窗-->
+    <AppointBusDialog />
+    <!--指定商品添加平台分类弹窗-->
+    <AppointBrandDialog />
+    <!--添加品牌弹窗-->
+    <AddBrandDialog />
   </div>
 </template>
 <script>
@@ -658,7 +666,11 @@ export default {
     ImageDalog: () => import('@/components/admin/imageDalog'),
     AddCouponDialog: () => import('./addCouponDialog'),
     ChoosingGoods: () => import('@/components/admin/choosingGoods'),
-    AddingBusClassDialog: () => import('./addingBusClassDialog')
+    AddingBusClassDialog: () => import('./addingBusClassDialog'),
+    BrandDialog: () => import('./brandDialog'),
+    AppointBusDialog: () => import('@/view/admin/layout/addingBusClassDialog'),
+    AppointBrandDialog: () => import('@/view/admin/layout/brandDialog'),
+    AddBrandDialog: () => import('./addBrandDialog')
   },
   data () {
     var validiscount = (rule, value, callback) => {
@@ -827,8 +839,10 @@ export default {
         }
       ],
       couponDialogFlag: false,
-      couponList: []
-
+      couponList: [],
+      clickArr: [],
+      treeType: null,
+      AtreeType: null
     }
   },
   watch: {
@@ -844,7 +858,33 @@ export default {
       })
     }
   },
+  mounted () {
+    // 初始化接受数据
+    this.dataDefalut()
+  },
   methods: {
+    dataDefalut () {
+      this.$http.$on('BusClassTrueArr', res => {
+        console.log(res)
+        console.log(this.treeType)
+        if (this.treeType === 1) {
+          this.noneBlockVipArr[1].num = res.length
+        } else {
+          this.noneBlockVipArr[2].num = res.length
+        }
+        console.log(res)
+      })
+      this.$http.$on('ABusClassTrueArr', res => {
+        console.log(res)
+        console.log(this.AtreeType)
+        if (this.AtreeType === 1) {
+          this.noneBlockDiscArr[1].num = res.length
+        } else {
+          this.noneBlockDiscArr[2].num = res.length
+        }
+        console.log(res)
+      })
+    },
     // 动态添加样式
     getStyle (item) {
       console.log(item)
@@ -923,15 +963,36 @@ export default {
     // 点击指定商品出现的添加类弹窗汇总
     hanldeToAddGoodS (index) {
       console.log(index)
-    },
-    // 点击会员专享商品出现的添加类弹窗汇总
-    hanldeToAddGoodSUser (index) {
       switch (index) {
         case 0:
           this.$http.$emit('choosingGoodsFlag', index)
           break
         case 1:
+          this.AtreeType = 1
+          this.$http.$emit('AaddingBusClassDialog', index)
+          break
+        case 2:
+          this.AtreeType = 2
+          this.$http.$emit('AuserBrandDialog', index)
+      }
+    },
+    // 点击会员专享商品出现的添加类弹窗汇总
+    hanldeToAddGoodSUser (index) {
+      console.log(index)
+      switch (index) {
+        case 0:
+          this.$http.$emit('choosingGoodsFlag', index)
+          break
+        case 1:
+          this.treeType = 1
           this.$http.$emit('addingBusClassDialog', index)
+          break
+        case 2:
+          this.treeType = 2
+          this.$http.$emit('userBrandDialog', index)
+          break
+        case 3:
+          this.$http.$emit('CallAddBrand', index)
       }
       console.log(index)
     }
