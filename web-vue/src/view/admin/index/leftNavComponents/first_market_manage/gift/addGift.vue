@@ -420,8 +420,6 @@ export default {
         this.loadGoods(content)
         this.loadGifts(content)
       })
-      this.loadTag()
-      this.loadMemberCard()
     },
     // 加载赠品规则
     loadRules (content) {
@@ -484,6 +482,10 @@ export default {
     contains (ruleIndex) {
       return this.selectedRules.find(i => i === ruleIndex) !== undefined
     },
+    // 查找规则
+    findRule (key) {
+      return this.rules.find(rule => rule.keys.findIndex(k => k === key) !== -1)
+    },
     // 选择商品弹窗
     showChoosingGoods () {
       this.$http.$emit('choosingGoodsFlag', true)
@@ -535,7 +537,18 @@ export default {
         this.fail('请输入规则说明')
         return false
       }
-      return true
+      let result = true
+      selectedRules.forEach(index => {
+        const { label, keys } = this.rules[index]
+        keys.forEach(key => {
+          const value = this.param.rules[key]
+          if (!value || (typeof value === 'object' && value.length < 1)) {
+            this.fail(`请输入${label}`)
+            result = false
+          }
+        })
+      })
+      return result
     },
     // 校验赠品参数
     validateGiftParam () {
@@ -580,6 +593,8 @@ export default {
       // 编辑回显
       this.loadData()
     }
+    this.loadTag()
+    this.loadMemberCard()
   }
 }
 </script>
