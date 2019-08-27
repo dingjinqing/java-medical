@@ -101,8 +101,6 @@
               <span class="inputTip">设置后，您的用户看到的销量=初始销量+下单量，初始销量不计入统计。</span>
             </el-form-item>
 
-
-
           </el-form>
         </el-collapse-item>
       </el-collapse>
@@ -148,9 +146,9 @@ export default {
         isOnSale: null,
         saleTime: null,
         /* 以下为辅助数据，不传到后台 */
-        prdNumber:null,
-        prdPrice:null,
-        prdCost:null
+        prdNumber: null,
+        prdPrice: null,
+        prdCost: null
       },
       stockAndPriceRules: {
         prdNumber: [
@@ -161,7 +159,7 @@ export default {
         ],
         prdCost: [
           {required: true, message: '请输入商品价格', trigger: 'change'}
-        ],
+        ]
       },
       /* 自定义商品规格 */
       specInfoSwitch: false
@@ -292,14 +290,14 @@ export default {
         return
       }
 
-      let goodsSpecs = this.goodsProductInfo.goodsSpecs.map(item =>{
-        if ( item.specName !== specInfoModel.specName) {
+      let goodsSpecs = this.goodsProductInfo.goodsSpecs.map(item => {
+        if (item.specName !== specInfoModel.specName) {
           return item
-        }else{
-           return {
-             specName:item.specName,
-             goodsSpecVals:[specVal]
-           }
+        } else {
+          return {
+            specName: item.specName,
+            goodsSpecVals: [specVal]
+          }
         }
       })
 
