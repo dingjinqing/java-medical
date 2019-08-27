@@ -99,7 +99,7 @@ public enum RecordTradeEnum {
 	/** -金额积分比例 100积分比一元 */
 	SCALE_HUNDRED(100),
 	
-	/** 积分变得是否来自退款 */
+	/** 积分变动是否来自退款 */
 	IS_FROM_REFUND_Y(1),
 	IS_FROM_REFUND_N(0);
 	private byte val;
