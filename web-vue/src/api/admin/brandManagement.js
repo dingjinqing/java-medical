@@ -80,6 +80,15 @@ export function allGoodsQueryRequest (data) {
   })
 }
 
+// 全部商品规格查询
+export const getGoodsProductList = data => {
+  return service({
+    url: '/api/admin/goods/product/list',
+    method: 'post',
+    data
+  })
+}
+
 // 根据id查询品牌
 export function queryGoodsIdRequest (data) {
   return service({
