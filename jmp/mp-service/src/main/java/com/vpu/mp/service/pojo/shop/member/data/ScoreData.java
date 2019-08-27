@@ -1,10 +1,5 @@
 package com.vpu.mp.service.pojo.shop.member.data;
 
-import javax.validation.constraints.Min;
-import javax.validation.constraints.NotNull;
-
-import com.vpu.mp.service.foundation.data.JsonResultMessage;
-
 import lombok.Getter;
 import lombok.Setter;
 
@@ -37,4 +32,6 @@ public class ScoreData extends BasicData {
 	
 	/** -积分状态 {@link com.vpu.mp.service.pojo.shop.member.score.ScoreStatusConstant} */
 	private Byte scoreStatus;
+	/**是否退款*/
+	private Byte isFromRefund;
 }
