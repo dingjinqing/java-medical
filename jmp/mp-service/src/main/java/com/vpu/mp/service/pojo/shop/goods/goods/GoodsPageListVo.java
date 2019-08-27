@@ -26,5 +26,6 @@ public class GoodsPageListVo {
     private Integer goodsSaleNum;
     private List<GoodsLabelListVo> goodsLabels;
     private Integer prdId;
-    private Integer prdImg;
+    private String prdImg;
+    private String prdDesc;
 }
