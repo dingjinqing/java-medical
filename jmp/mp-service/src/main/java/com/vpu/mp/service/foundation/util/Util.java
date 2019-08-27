@@ -31,6 +31,8 @@ import java.text.DecimalFormat;
 import java.text.MessageFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -463,5 +465,17 @@ public class Util {
     public static String getCurrencyAmount(BigDecimal amount) {
         DecimalFormat format = new DecimalFormat("###.00");
         return format.format(amount);
+    }
+    
+    /**
+     * 获取自定义格式化后的当前时间
+     * @param formate
+     * @return
+     */
+    public static String getdate(String formate) {
+    	LocalDateTime localDate = LocalDateTime.now();
+		DateTimeFormatter dtf = DateTimeFormatter.ofPattern(formate);
+		String date = dtf.format(localDate);
+		return date;   	
     }
 }
