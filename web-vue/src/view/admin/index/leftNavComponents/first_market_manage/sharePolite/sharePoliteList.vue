@@ -30,27 +30,25 @@
           name="fifth"
         >
         </el-tab-pane>
-        <el-tabs>
-          <div class="wrapper">
+        <div class="wrapper">
+          <el-button
+            type="primary"
+            @click="addActivity"
+          >添加分享有礼活动</el-button>
+          <div class="rightContent">
+            <span>用户每天可参与</span>
+            <el-input
+              style="width: 80px"
+              size="small"
+            ></el-input>
+            <span>次 分享有礼活动</span>
+            <span>填写0表示不限制</span>
             <el-button
               type="primary"
-              @click="addActivity"
-            >添加分享有礼活动</el-button>
-            <div class="rightContent">
-              <span>用户每天可参与</span>
-              <el-input
-                style="width: 80px"
-                size="small"
-              ></el-input>
-              <span>次 分享有礼活动</span>
-              <span>填写0表示不限制</span>
-              <el-button
-                type="primary"
-                @click="saveDailyLimit"
-              >保存设置</el-button>
-            </div>
+              @click="saveDailyLimit"
+            >保存设置</el-button>
           </div>
-        </el-tabs>
+        </div>
       </el-tabs>
     </div>
     <div class="table_list">
@@ -78,7 +76,6 @@
           prop="validityPeriod"
           label="有效期"
           align="center"
-          width="80"
         >
         </el-table-column>
         <el-table-column
@@ -92,7 +89,6 @@
           prop="priority"
           label="优先级"
           align="center"
-          width="80"
         >
 
         </el-table-column>
@@ -120,7 +116,6 @@
         <el-table-column
           label="操作"
           align="center"
-          width="130"
         >
           <template slot-scope="scope">
             <div class="operation">
@@ -185,7 +180,7 @@
         </el-table-column>
       </el-table>
       <div class="footer">
-        <span>当前页面1/1，总记录4条</span>
+        <!-- <span>当前页面1/1，总记录4条</span>
         <el-pagination
           @current-change="handleCurrentChange"
           :current-page.sync="currentPage"
@@ -193,7 +188,7 @@
           layout="prev, pager, next, jumper"
           :total="4"
         >
-        </el-pagination>
+        </el-pagination> -->
       </div>
     </div>
   </div>
@@ -209,7 +204,8 @@ export default {
   },
   data () {
     return {
-      tableData: []
+      tableData: [],
+      status: null
     }
   },
   methods: {
@@ -243,7 +239,51 @@ export default {
     },
     // 表格数据处理
     handleData (data) {
+      // data.pageResult.dataList.map((item, index) => {
+
+      // })
+
+      data.pageResult.dataList.map((item, index) => {
+        // 有效期
+        if (item.validityPeriod === 1) {
+          item.validityPeriod = '永久有效'
+        } else {
+          item.validityPeriod = `${item.startTime}至${item.endTime}`
+        }
+        // 触发条件
+        switch (item.condition) {
+          case 1:
+            item.condition = '全部商品'
+            break
+          case 2:
+            item.condition = '指定商品'
+            break
+          case 3:
+            item.condition = `访问量少于${item.goodsPv}的商品`
+            break
+          default:
+            item.condition = ''
+            break
+        }
+        // 活动奖励类型
+        console.log(item.rewardType)
+        item.rewardType.forEach((itemC, indexC) => {
+          console.log(itemC)
+          switch (itemC) {
+            case 1:
+              itemC = '积分'
+              break
+            case 2:
+              itemC = '优惠券'
+              break
+            case 3:
+              itemC = '幸运大转盘'
+          }
+        })
+        console.log(item.rewardType)
+      })
       this.tableData = data.pageResult.dataList
+      console.log(this.tableData)
     },
     // 标签页点击事件
     handleClick (activeName) {
