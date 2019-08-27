@@ -10,15 +10,20 @@ import org.springframework.stereotype.Service;
 
 import com.vpu.mp.config.WxOpenConfig;
 import com.vpu.mp.service.foundation.jedis.JedisManager;
+import com.vpu.mp.service.saas.shop.MpAuthShopService;
 import com.vpu.mp.service.wechat.api.impl.WxOpenComponentExtServiceImpl;
 import com.vpu.mp.service.wechat.api.impl.WxOpenMaServiceExtraImpl;
 import com.vpu.mp.service.wechat.api.impl.WxOpenMpServiceExtraImpl;
 
 import lombok.Getter;
+import me.chanjar.weixin.common.api.WxConsts;
 import me.chanjar.weixin.common.error.WxErrorException;
+import me.chanjar.weixin.mp.api.WxMpMessageRouterRule;
 import me.chanjar.weixin.mp.bean.kefu.WxMpKefuMessage;
 import me.chanjar.weixin.mp.bean.message.WxMpXmlMessage;
 import me.chanjar.weixin.mp.bean.message.WxMpXmlOutMessage;
+import me.chanjar.weixin.mp.bean.message.WxMpXmlOutTextMessage;
+import me.chanjar.weixin.open.api.WxOpenConfigStorage;
 import me.chanjar.weixin.open.api.impl.WxOpenInRedisConfigStorage;
 import me.chanjar.weixin.open.api.impl.WxOpenMessageRouter;
 import me.chanjar.weixin.open.api.impl.WxOpenServiceImpl;
@@ -44,6 +49,9 @@ public class OpenPlatform extends WxOpenServiceImpl {
 
 	@Autowired
 	protected JedisManager jedis;
+	
+	@Autowired
+	protected MpAuthShopService mpAuthShopService;
 
 	/**
 	 * 小程序扩展服务
@@ -155,9 +163,16 @@ public class OpenPlatform extends WxOpenServiceImpl {
 		if (isGlobalTestAppId(appId)) {
 			globalTest(appId, inMessage);
 		} else {
-			WxMpXmlOutMessage outMessage = this.getWxOpenMessageRouter().route(inMessage, appId);
-			if (outMessage != null) {
-				out = WxOpenXmlMessage.wxMpOutXmlMessageToEncryptedXml(outMessage, this.getWxOpenConfigStorage());
+			WxMpXmlOutMessage wMessage = mpAuthShopService.AppEventHandler(inMessage, appId);
+			if(wMessage!=null) {
+				logger.debug("\n 返回微信的消息wMessage为：\n{}",wMessage.toXml());
+				out = WxOpenXmlMessage.wxMpOutXmlMessageToEncryptedXml(wMessage, this.getWxOpenConfigStorage());
+			}else {
+				WxMpXmlOutMessage outMessage = this.getWxOpenMessageRouter().route(inMessage, appId);
+				logger.debug("\n 返回微信的消息outMessage为：\n{}",outMessage.toXml());
+				if (outMessage != null) {
+					out = WxOpenXmlMessage.wxMpOutXmlMessageToEncryptedXml(outMessage, this.getWxOpenConfigStorage());
+				}				
 			}
 		}
 		return out;
