@@ -401,11 +401,11 @@ public class CommodityStatisticsService extends ShopBaseService {
         return pageResult;
     }
 
-    public SortField<Object> getSortField(Optional<String> field,Optional<String> sortType){
+    private SortField<Object> getSortField(Optional<String> field, Optional<String> sortType){
         if(!sortType.isPresent() || DEFAULT_ORDER_BY_TYPE.equalsIgnoreCase(sortType.get())) {
-            return DSL.field(name(field.isPresent() ? field.get() : DEFAULT_ORDER_BY_FIELD)).asc();
+            return DSL.field(name(field.orElse(DEFAULT_ORDER_BY_FIELD))).asc();
         }
-        return DSL.field(name(field.isPresent() ? field.get() : DEFAULT_ORDER_BY_FIELD)).desc();
+        return DSL.field(name(field.orElse(DEFAULT_ORDER_BY_FIELD))).desc();
     }
 
     /** 查询自定义时间段商品效果 */

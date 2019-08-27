@@ -78,10 +78,6 @@ public class IncreasePurchaseService extends ShopBaseService {
             case PURCHASE_PREPARE:
                 categoryConditon = categoryConditon.and(ppd.START_TIME.greaterThan(new Timestamp(System.currentTimeMillis()))).and(ppd.STATUS.eq((byte) 1));
                 break;
-            // 进行中8
-            case PURCHASE_PROCESSING:
-                categoryConditon = categoryConditon.and(ppd.START_TIME.lessThan(new Timestamp(System.currentTimeMillis()))).and(ppd.END_TIME.greaterThan(new Timestamp(System.currentTimeMillis()))).and(ppd.STATUS.eq((byte) 1));
-                break;
             // 默认进行中8
             default:
                 categoryConditon = categoryConditon.and(ppd.START_TIME.lessThan(new Timestamp(System.currentTimeMillis()))).and(ppd.END_TIME.greaterThan(new Timestamp(System.currentTimeMillis()))).and(ppd.STATUS.eq((byte) 1));

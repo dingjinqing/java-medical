@@ -4,10 +4,7 @@ import static org.jooq.impl.DSL.count;
 import static org.jooq.impl.DSL.sum;
 
 import java.sql.Timestamp;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 import org.apache.commons.lang3.StringUtils;
 import org.jooq.Comparator;
@@ -61,20 +58,13 @@ public class MallOverviewService extends ShopBaseService {
      * @return
      */
     public DataDemonstrationVo dataDemonstration(DataDemonstrationParam param){
-        switch (param.getScreeningTime()){
-            case 1 :
-                return getDataDemonstration((byte) 1);
-            case 7 :
-                return getDataDemonstration((byte) 7);
-            case 30 :
-                return getDataDemonstration((byte) 30);
-            case 90 :
-                return getDataDemonstration((byte) 90);
-            default :
-                return getDataDemonstration((byte) 1);
+        byte screenTime = param.getScreeningTime();
+        if(!Arrays.asList((byte)1,7,30,90).contains(screenTime)){
+            screenTime = 1;
         }
+        return getDataDemonstration(screenTime);
     }
-    public DataDemonstrationVo getDataDemonstration(byte screeningTime){
+    private DataDemonstrationVo getDataDemonstration(byte screeningTime){
         DataDemonstrationVo vo = new DataDemonstrationVo();
         Condition orderInfoTime = OrderInfo.ORDER_INFO.CREATE_TIME.
                 compare(Comparator.GREATER_OR_EQUAL,Util.getEarlyTimeStamp(new Date(),(-screeningTime+1)));

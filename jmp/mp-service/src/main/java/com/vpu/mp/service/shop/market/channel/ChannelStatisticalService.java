@@ -25,7 +25,7 @@ import com.vpu.mp.service.pojo.shop.market.channel.ChannelConstant;
 import com.vpu.mp.service.pojo.shop.market.channel.ChannelStatisticalAllVo;
 import com.vpu.mp.service.pojo.shop.market.channel.ChannelStatisticalDayInfo;
 import com.vpu.mp.service.pojo.shop.market.channel.ChannelStatisticalParam;
-import com.vpu.mp.service.pojo.shop.market.channel.PerChannelDayInfo;;
+import com.vpu.mp.service.pojo.shop.market.channel.PerChannelDayInfo;
 /**
  * @author huangronggang
  * @date 2019年8月15日

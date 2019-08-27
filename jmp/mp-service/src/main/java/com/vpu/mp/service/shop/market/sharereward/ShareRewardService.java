@@ -69,10 +69,6 @@ public class ShareRewardService extends ShopBaseService {
             case PURCHASE_PREPARE:
                 categoryConditon = categoryConditon.and(sa.START_TIME.greaterThan(new Timestamp(System.currentTimeMillis()))).and(sa.IS_FOREVER.eq((byte) 0));
                 break;
-            // 进行中8
-            case PURCHASE_PROCESSING:
-                categoryConditon = categoryConditon.and(sa.IS_FOREVER.eq((byte) 1)).or(sa.START_TIME.lessThan(new Timestamp(System.currentTimeMillis()))).and(sa.END_TIME.greaterThan(new Timestamp(System.currentTimeMillis())));
-                break;
             // 默认进行中8
             default:
                 categoryConditon = categoryConditon.and(sa.IS_FOREVER.eq((byte) 1)).or(sa.START_TIME.lessThan(new Timestamp(System.currentTimeMillis()))).and(sa.END_TIME.greaterThan(new Timestamp(System.currentTimeMillis())));

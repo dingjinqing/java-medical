@@ -9,11 +9,7 @@ import static org.jooq.impl.DSL.sum;
 
 import java.math.BigDecimal;
 import java.sql.Timestamp;
-import java.util.Comparator;
-import java.util.Date;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
+import java.util.*;
 
 import org.jooq.Condition;
 import org.jooq.Record2;
@@ -135,18 +131,12 @@ public class TransactionStatisticsService extends ShopBaseService {
      * @param param 入参
      */
     public PageResult<LabelAnalysisVo> labelAnalysis(LabelAnalysisParam param){
-        if (param.getScreeningTime() > 0){
-            switch(param.getScreeningTime()){
-                case 1 :
-                    return fixedLabelAnalysis(param);
-                case 7 :
-                    return fixedLabelAnalysis(param);
-                case 30 :
-                    return fixedLabelAnalysis(param);
-                default :
-                    param.setScreeningTime((byte)1);
-                    return fixedLabelAnalysis(param);
+        Byte screenTime = param.getScreeningTime();
+        if (screenTime > 0){
+            if(!Arrays.asList((byte)1,7,30).contains(screenTime)){
+                param.setScreeningTime((byte)1);
             }
+            return fixedLabelAnalysis(param);
         }else {
             return customerLabelAnalysis(param);
         }
@@ -166,11 +156,9 @@ public class TransactionStatisticsService extends ShopBaseService {
                 .from(dt)
                 .where(dt.REF_DATE.eq(Util.getEarlySqlDate(new Date(),0)))
                 .and(dt.TYPE.eq(param.getScreeningTime()));
-
+        //默认排序字段为user_num
        TableField<DistributionTagRecord, ?> field = dt.HAS_USER_NUM;
         switch(param.getOrderByField()){
-            case "user_num" :
-                break;
             case "user_num_with_phone" :
                 field = dt.HAS_MOBILE_NUM;
                 break;
@@ -189,7 +177,7 @@ public class TransactionStatisticsService extends ShopBaseService {
             default :
                 break;
         }
-        Boolean desc = (!DEFAULT_SORT_TYPE.equalsIgnoreCase(param.getOrderByType()));
+        boolean desc = (!DEFAULT_SORT_TYPE.equalsIgnoreCase(param.getOrderByType()));
 
         SelectLimitStep<Record7<String, Integer, Integer, BigDecimal, Integer, Integer, Integer>> limitStep = conditionStep.orderBy(desc ? field.desc() : field);
         return getPageResult(limitStep,param.getCurrentPage(),param.getPageRows(),LabelAnalysisVo.class);
@@ -255,10 +243,9 @@ public class TransactionStatisticsService extends ShopBaseService {
         return result;
     }
     private List<LabelAnalysisVo> sortBy(LabelAnalysisParam param,List<LabelAnalysisVo> result){
+        //默认排序字段为user_num
         Comparator<LabelAnalysisVo> comparator = Comparator.comparing(LabelAnalysisVo::getUserNum);
         switch(param.getOrderByField()){
-            case "user_num" :
-                break;
             case "user_num_with_phone" :
                 comparator = Comparator.comparing(LabelAnalysisVo::getUserNumWithPhone);
                 break;

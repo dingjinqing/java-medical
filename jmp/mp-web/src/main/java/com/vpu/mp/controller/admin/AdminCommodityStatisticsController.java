@@ -49,13 +49,9 @@ public class AdminCommodityStatisticsController extends AdminBaseController{
         }
         return success(vo);
     }
-    public void formatDate(ProductOverviewParam param){
+    private void formatDate(ProductOverviewParam param){
         byte dynamicDate = param.getDynamicDate();
         switch (dynamicDate){
-            case 1 :
-                param.setStartTime(Util.getEarlyTimeStamp(new Date(),-1));
-                param.setEndTime(Util.getStartToday(new Date()));
-                break;
             case 7 :
                 param.setStartTime(Util.getEarlyTimeStamp(new Date(),-7));
                 param.setEndTime(Util.getStartToday(new Date()));
@@ -63,6 +59,7 @@ public class AdminCommodityStatisticsController extends AdminBaseController{
                 param.setStartTime(Util.getEarlyTimeStamp(new Date(),-30));
                 param.setEndTime(Util.getStartToday(new Date()));
                 break;
+            //默认为1
             default :
                 param.setStartTime(Util.getEarlyTimeStamp(new Date(),-1));
                 param.setEndTime(Util.getStartToday(new Date()));
