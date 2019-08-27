@@ -77,7 +77,7 @@ public class GroupIntegrationListService extends ShopBaseService {
 		SelectJoinStep<?> selectFrom = db().select(GROUP_INTEGRATION_LIST.GROUP_ID,DSL.count(GROUP_INTEGRATION_LIST.ID).as("participantNum"),DSL.sum(GROUP_INTEGRATION_LIST.INTEGRATION).as("useIntegration"))
 			.from(GROUP_INTEGRATION_LIST);
 		SelectConditionStep<?> select = buildOptionSuccess(selectFrom,param);
-		PageResult<GroupIntegrationSuccessVo> result = getPageResult(select, GroupIntegrationSuccessVo.class);
+		PageResult<GroupIntegrationSuccessVo> result = getPageResult(select,param.getCurrentPage(),param.getPageRows(), GroupIntegrationSuccessVo.class);
 		List<GroupIntegrationSuccessVo> list = result.dataList;
 		if(list == null ||list.isEmpty()) {
 			return result;
