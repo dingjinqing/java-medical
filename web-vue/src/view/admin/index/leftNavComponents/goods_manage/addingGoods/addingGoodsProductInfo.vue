@@ -56,7 +56,7 @@
                 <th>规格编码</th>
                 <th>规格图片</th>
               </tr>
-              <tr v-for="item in goodsProductInfo.goodsSpecProducts">
+              <tr v-for="(item,index) in goodsProductInfo.goodsSpecProducts" :key="index">
                 <td>{{item.prdDescTemp}}</td>
                 <td><input v-model="item.prdPrice"/></td>
                 <td><input v-model="item.prdCostPrice"/></td>
@@ -67,8 +67,45 @@
             </table>
           </div>
         </el-form-item>
+        <el-form-item label="商品库存：" prop="prdNumber">
+          <el-input-number v-model="goodsProductInfo.prdNumber" step-strictly size="small" controls-position="right" :min="0"/>
+          <span class="inputTip">设置了规格库存商品库存将失效，不在前端展示</span>
+        </el-form-item>
+        <el-form-item label="商品价格：" prop="prdPrice">
+          <el-input-number v-model="goodsProductInfo.prdPrice" size="small" controls-position="right" :min="0"/>
+          <span class="inputTip">设置了规格价格商品价格将失效，不在前端展示</span>
+        </el-form-item>
+        <el-form-item label="市场价格：" prop="marketPrice">
+          <el-input-number v-model="goodsProductInfo.marketPrice" size="small" controls-position="right" :min="0"/>
+        </el-form-item>
       </el-form>
+      <!-- 展开更多配置 -->
+      <el-collapse accordion>
+        <el-collapse-item title="展开/收起更多配置" name="1">
+          <el-form :model="goodsProductInfo" :rules="stockAndPriceRules" ref="stockAndPriceInfoOtherForm" label-width="120px">
 
+            <el-form-item label="最小限购数量：" prop="limitBuyNum">
+              <el-input-number v-model="goodsProductInfo.limitBuyNum" step-strictly size="small" controls-position="right" :min="0"/>
+              <span class="inputTip">0或不填表示不限制购买数量</span>
+            </el-form-item>
+            <el-form-item label="最大限购数量：" prop="limitMaxNum">
+              <el-input-number v-model="goodsProductInfo.limitMaxNum" step-strictly size="small" controls-position="right" :min="0"/>
+              <span class="inputTip">0或不填表示不限制购买数量</span>
+            </el-form-item>
+            <el-form-item label="成本价格：" prop="prdCost">
+              <el-input-number v-model="goodsProductInfo.prdCost" step-strictly size="small" controls-position="right" :min="0"/>
+              <span class="inputTip">0或不填表示不限制购买数量</span>
+            </el-form-item>
+            <el-form-item label="初始销量：" prop="addSaleNum">
+              <el-input-number v-model="goodsProductInfo.addSaleNum" step-strictly size="small" controls-position="right" :min="0"/>
+              <span class="inputTip">设置后，您的用户看到的销量=初始销量+下单量，初始销量不计入统计。</span>
+            </el-form-item>
+
+
+
+          </el-form>
+        </el-collapse-item>
+      </el-collapse>
     </div>
 
     <!--<stockAndPriceInfo ref="priceInfo" />-->
@@ -109,7 +146,11 @@ export default {
         isCardExclusive: null,
         memberCardIds: null,
         isOnSale: null,
-        saleTime: null
+        saleTime: null,
+        /* 以下为辅助数据，不传到后台 */
+        prdNumber:null,
+        prdPrice:null,
+        prdCost:null
       },
       stockAndPriceRules: {
         prdNumber: [
@@ -117,7 +158,10 @@ export default {
         ],
         prdPrice: [
           {required: true, message: '请输入商品价格', trigger: 'change'}
-        ]
+        ],
+        prdCost: [
+          {required: true, message: '请输入商品价格', trigger: 'change'}
+        ],
       },
       /* 自定义商品规格 */
       specInfoSwitch: false
@@ -247,11 +291,6 @@ export default {
         this._recalculateSpec()
         return
       }
-
-      // 规格名和值之间的分隔符
-      let PRD_VAL_DELIMITER = ':'
-      // 不同规格之间的分隔符
-      let PRD_SPEC_DELIMITER = '!!'
 
       let goodsSpecs = this.goodsProductInfo.goodsSpecs.map(item =>{
         if ( item.specName !== specInfoModel.specName) {
@@ -401,6 +440,10 @@ export default {
 }
 </script>
 <style scoped>
+  .inputTip {
+    color: #999;
+    margin-left: 15px;
+  }
   .title {
     font-weight: bold;
     height: 40px;
