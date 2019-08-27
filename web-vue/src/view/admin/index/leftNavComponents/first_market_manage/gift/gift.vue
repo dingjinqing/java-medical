@@ -9,6 +9,7 @@
       <statusTab
         v-model="param.status"
         :activityName="activityName"
+        :standard="false"
       />
       <el-row :gutter="20">
         <el-col :span="4">

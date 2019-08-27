@@ -1,8 +1,9 @@
 <!--
 * 营销活动状态 tabs
 * 状态：全部xx活动、进行中、未开始、已结束、已停用
+* 注意：需要添加 :standard = "true" 属性
 * @prop activityName 活动名称
-* @model 状态id，全部：null，进行中：0，未开始：1，一结束：2，已停用：3
+* @model 状态id，全部：0，进行中：1，未开始：2，一结束：3，已停用：4
 * @author 郑保乐
 -->
 <template>
@@ -21,25 +22,36 @@
   </div>
 </template>
 <script>
-import status, { getByName, getById } from './status'
+import status, { getByName, getById, standardStatus, getByNameStandard, getByIdStandard } from './status'
 export default {
   data () {
+    const { standard } = this
+    let labels = status
+    if (standard) {
+      labels = standardStatus
+    }
+    const _status = this.$attrs.status
+    const tabName = ((standard ? getByIdStandard(_status) : getById(_status)) || labels[0]).name
     return {
-      tabName: getById(this.$attrs.status).name || status[0].name,
-      labels: status
+      tabName,
+      labels
     }
   },
   model: {
     prop: 'status',
     event: 'update'
   },
-  props: ['activityName'],
+  props: ['activityName', 'standard'],
   methods: {
     tabClick () {
-      this.$emit('update', getByName(this.tabName).status)
+      const { standard } = this
+      const _status = (standard ? getByNameStandard(this.tabName) : getByName(this.tabName)).status
+      this.$emit('update', _status)
     },
     getTabName (status) {
-      if (status.status === null) {
+      const { standard } = this
+      const allCode = standard ? 0 : null
+      if (status.status === allCode) {
         return '全部' + this.activityName + '活动'
       }
       return status.name
