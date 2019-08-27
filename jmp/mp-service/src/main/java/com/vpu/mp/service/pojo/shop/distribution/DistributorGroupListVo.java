@@ -1,5 +1,7 @@
 package com.vpu.mp.service.pojo.shop.distribution;
 
+import java.sql.Timestamp;
+
 import com.vpu.mp.service.foundation.util.Page;
 
 import lombok.Data;
@@ -16,7 +18,7 @@ public class DistributorGroupListVo {
 	private Integer isDefault;
 	private Integer delFlag;
 	private Integer distributorAmount;
-	private Integer createTime;
+	private Timestamp createTime;
 	
 	 /**
      * 	分页信息
