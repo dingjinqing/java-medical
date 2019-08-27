@@ -1,6 +1,8 @@
 package com.vpu.mp.service.saas.shop;
 
 import static com.vpu.mp.db.main.tables.MpAuthShop.MP_AUTH_SHOP;
+import static com.vpu.mp.db.main.tables.MpOfficialAccountUser.MP_OFFICIAL_ACCOUNT_USER;
+import static com.vpu.mp.db.main.tables.Shop.SHOP;
 import static com.vpu.mp.db.main.tables.ShopRenew.SHOP_RENEW;
 
 import java.io.File;
@@ -12,10 +14,11 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
-import com.vpu.mp.service.pojo.saas.shop.mp.MpAuditStateVo;
 import org.apache.commons.lang3.StringUtils;
 import org.jooq.Condition;
+import org.jooq.Record;
 import org.jooq.Record13;
 import org.jooq.Record2;
 import org.jooq.Result;
@@ -35,19 +38,23 @@ import com.vpu.mp.config.DomainConfig;
 import com.vpu.mp.db.main.tables.MpAuthShop;
 import com.vpu.mp.db.main.tables.records.MpAuthShopRecord;
 import com.vpu.mp.db.main.tables.records.MpDeployHistoryRecord;
+import com.vpu.mp.db.main.tables.records.MpOfficialAccountUserRecord;
 import com.vpu.mp.db.main.tables.records.MpVersionRecord;
 import com.vpu.mp.service.foundation.data.JsonResultCode;
 import com.vpu.mp.service.foundation.data.JsonResultMessage;
 import com.vpu.mp.service.foundation.service.MainBaseService;
 import com.vpu.mp.service.foundation.util.PageResult;
 import com.vpu.mp.service.foundation.util.Util;
+import com.vpu.mp.service.pojo.saas.shop.mp.MpAuditStateVo;
 import com.vpu.mp.service.pojo.saas.shop.mp.MpAuthShopListParam;
 import com.vpu.mp.service.pojo.saas.shop.mp.MpAuthShopListVo;
 import com.vpu.mp.service.pojo.saas.shop.mp.MpDeployQueryParam;
+import com.vpu.mp.service.pojo.saas.shop.officeAccount.MpOfficeAccountListVo;
 import com.vpu.mp.service.pojo.shop.config.trade.WxpayConfigParam;
 import com.vpu.mp.service.pojo.shop.config.trade.WxpaySearchParam;
-import com.vpu.mp.service.pojo.shop.operation.RecordContentTemplate;
+import com.vpu.mp.service.pojo.shop.official.message.MpTemplateConfig;
 import com.vpu.mp.service.saas.image.SystemImageService;
+import com.vpu.mp.service.saas.shop.official.message.MpOfficialAccountMessageService;
 import com.vpu.mp.service.shop.decoration.AppletsJumpService;
 import com.vpu.mp.service.wechat.api.WxOpenAccountService;
 import com.vpu.mp.service.wechat.bean.ma.MpWxMaOpenCommitExtInfo;
@@ -57,8 +64,14 @@ import com.vpu.mp.service.wechat.bean.open.MaWxPlusInResult;
 import com.vpu.mp.service.wechat.bean.open.WxOpenGetResult;
 
 import cn.binarywang.wx.miniapp.util.json.WxMaGsonBuilder;
+import me.chanjar.weixin.common.api.WxConsts;
 import me.chanjar.weixin.common.error.WxErrorException;
-import me.chanjar.weixin.mp.bean.result.WxMpUserList;
+import me.chanjar.weixin.mp.bean.message.WxMpXmlMessage;
+import me.chanjar.weixin.mp.bean.message.WxMpXmlOutMessage;
+import me.chanjar.weixin.mp.bean.message.WxMpXmlOutTextMessage;
+import me.chanjar.weixin.mp.bean.result.WxMpUser;
+import me.chanjar.weixin.mp.bean.template.WxMpTemplateData;
+import me.chanjar.weixin.mp.builder.outxml.TextBuilder;
 import me.chanjar.weixin.open.api.WxOpenMaService;
 import me.chanjar.weixin.open.bean.WxOpenCreateResult;
 import me.chanjar.weixin.open.bean.auth.WxOpenAuthorizationInfo;
@@ -89,7 +102,9 @@ public class MpAuthShopService extends MainBaseService {
 	@Autowired
 	protected SystemImageService image;
 	
-	
+	@Autowired
+	protected  MpOfficialAccountMessageService accountMessageService;
+
 
 	public static final Byte AUTH_OK = 1;
 	public static final Byte AUTH_CANCEL = 0;
@@ -842,7 +857,6 @@ public class MpAuthShopService extends MainBaseService {
 
 	/**
 	 * 绑定同一主体的小程序和公众号到开放平台账号
-	 * TODO: 暂时只处理 小程序，以后需要加入公众号
 	 * @param record
 	 * @throws WxErrorException
 	 */
@@ -1224,7 +1238,225 @@ public class MpAuthShopService extends MainBaseService {
 	
 	
 	public Integer updateRow(MpAuthShopRecord authShopByShopId) {
-		return db().executeUpdate(authShopByShopId);	
+		return db().executeUpdate(authShopByShopId);
+	}
+
+	
+	
+	
+	
+	/**
+	 * 微信回调执行的函数/wechat/notify/app/event/{appId}/callback 
+	 * @param inMessage
+	 * @param appId
+	 * @return
+	 */
+	public WxMpXmlOutMessage AppEventHandler(WxMpXmlMessage inMessage,String appId) {
+		/*
+		 * WebAppAudit::class, OfficialAccountMessage::class, MessageTrans::class,
+		 */
+		// 小程序有审核结果通知
+		WebAppAudit(inMessage, appId);
+		WxMpXmlOutTextMessage wxMessage = OfficialAccountMessage(inMessage, appId);
+		WxMpXmlOutMessage messageTrans = MessageTrans(inMessage);
+		if(wxMessage==null) {
+			logger().debug("准备返回客服消息");
+			return messageTrans;
+		}
+		return wxMessage;
 	}
 	
+
+	// 小程序有审核结果通知
+	public void WebAppAudit(WxMpXmlMessage inMessage,String appId) {
+		processAuditEvent(inMessage, appId);		
+	}
+
+	public void processAuditEvent(WxMpXmlMessage inMessage, String appId) {
+		// processAuditEvent($appId, $message['Event'], $message['Reason']);
+		if (inMessage.getMsgType().equals("event") && (inMessage.getEvent().equals("weapp_audit_success")||inMessage.getEvent().equals("weapp_audit_fail"))) {
+			logger().debug("小程序有审核结果通知"+inMessage.getEvent());
+			MpAuthShopRecord mpRecord = getAuthShopByAppId(appId);
+			WxOpenResult wxOpenResult=new WxOpenResult();
+			if(mpRecord!=null) {
+				Integer bindTemplateId = mpRecord.getBindTemplateId();
+				if(inMessage.getEvent().equals("weapp_audit_success")) {
+					mpRecord.setAuditState((byte) 2);
+					mpRecord.setAuditOkTime(new Timestamp(System.currentTimeMillis()));
+					db().executeUpdate(mpRecord);
+					wxOpenResult.setErrcode("0");
+					operateLogGlobal(mpRecord, MpOperateLogService.OP_TYPE_AUDIT_SUCCESS, wxOpenResult, WxContentTemplate.WX_AUDIT_SUCCESS.code,new String[] {});
+					//审核自动发布代码
+					try {
+						//发布审核成功代码
+						publishAuditSuccessCode(appId);
+						//调用更新小程序跳转appid可用状态
+						AppletsJumpService appletsJumpService = saas.getShopApp(mpRecord.getShopId()).appletsJump;
+						appletsJumpService.updateMpJumpAppIDList(bindTemplateId);
+						//return true
+					} catch (WxErrorException e) {
+						e.printStackTrace();
+					}
+					
+				}else {
+					mpRecord.setAuditState((byte) 3);
+					mpRecord.setAuditFailReason(inMessage.getReason());
+					db().executeUpdate(mpRecord);
+					operateLogGlobal(mpRecord, MpOperateLogService.OP_TYPE_AUDIT_FAILED, wxOpenResult, WxContentTemplate.WX_AUDIT_FAIL.code,new String[] {inMessage.getReason()});
+				}
+			}
+		}
+		
+	}
+	
+	public WxMpXmlOutTextMessage OfficialAccountMessage(WxMpXmlMessage inMessage,String appId) {
+		WxMpXmlOutTextMessage wxMessage = processMessage(inMessage, appId);
+		return wxMessage;
+	}
+	/**
+	 * 处理公众号消息
+	 * @param inMessage
+	 * @param appId
+	 * @return 
+	 */
+	public WxMpXmlOutTextMessage processMessage(WxMpXmlMessage inMessage,String appId) {
+		MpOfficeAccountListVo officeAccountByAppId = saas.shop.officeAccount.getOfficeAccountByAppId(appId);
+		WxMpXmlOutTextMessage process=null;
+		if (officeAccountByAppId != null) {
+			// 是公众号
+			try {
+				process = processSubscribeEvent(inMessage, appId, officeAccountByAppId);
+			} catch (WxErrorException e) {
+				logger().debug(e.getMessage(),e);
+			}
+			if(StringUtils.isEmpty(process.getToUserName())) {
+				process=null;
+			}
+		}else {
+			logger().debug("processMessage方法接收的appid "+appId+"在数据库中不存在");
+		}
+		return process;
+	}
+	
+	public WxMpXmlOutTextMessage processSubscribeEvent(WxMpXmlMessage inMessage,String appId,MpOfficeAccountListVo officeAccountByAppId) throws WxErrorException {
+		//subscribe（订阅）
+		WxMpXmlOutTextMessage message = WxMpXmlOutMessage.TEXT().build();
+		if(StringUtils.isNotEmpty(inMessage.getEvent())&&inMessage.getEvent().equals("subscribe")) {
+			logger().debug("开始绑定公众号");
+			//公众号获取用户信息
+			WxMpUser userInfo = open().getWxOpenComponentService().getWxMpServiceByAppid(appId).getUserService().userInfo(inMessage.getFromUser());
+			logger().debug("用户Openid"+userInfo.getOpenId()+"开始绑定公众号"+appId);
+			if(userInfo!=null) {
+				MpOfficialAccountUserRecord record=MP_OFFICIAL_ACCOUNT_USER.newRecord();
+				record.setOpenid(userInfo.getOpenId());
+				record.setAppId(appId);
+				record.setSysId(officeAccountByAppId.getSysId());
+				record.setSubscribe(userInfo.getSubscribe() ? (byte) 1 : (byte) 0);
+				record.setNickname(userInfo.getNickname());
+				record.setSex(userInfo.getSex().byteValue());
+				record.setLanguage(userInfo.getLanguage());
+				record.setCity(userInfo.getCity());
+				record.setProvince(userInfo.getProvince());
+				record.setCountry(userInfo.getCountry());
+				record.setHeadimgurl(userInfo.getHeadImgUrl());
+				record.setSubscribeTime(new Timestamp(userInfo.getSubscribeTime() * 1000L));
+				record.setUnionid(userInfo.getUnionId());
+				saas.shop.officeAccount.addOrUpdateUser(appId, record, userInfo.getUnionId(), userInfo.getOpenId());
+				//得到公众号关联的小程序
+				Result<MpAuthShopRecord> officialAccountMps = getOfficialAccountMps(appId);
+				boolean parseAccountInfo = saas.shop.account.parseAccountInfo(appId, inMessage.getEventKey(), record.getOpenid());
+				logger().debug("'parseAccountInfo result "+parseAccountInfo);
+				if(parseAccountInfo) {
+					logger().debug("用户Openid"+userInfo.getOpenId()+"组装响应消息 欢迎关注， 您可在这里及时接收新订单提醒");
+					//packageResponseMsg 组装响应消息 欢迎关注， 您可在这里及时接收新订单提醒'
+				    message.setToUserName(userInfo.getOpenId());
+				    message.setFromUserName(inMessage.getToUser());
+				    message.setContent("欢迎关注，您可在这里及时接收新订单提醒");
+				    message.setCreateTime(System.currentTimeMillis() / 1000L);
+				    return message; 
+				}else {
+					logger().debug("用户Openid"+userInfo.getOpenId()+"为你精心准备了关注礼品，快来点击查看吧!");
+					for(MpAuthShopRecord authShopRecord:officialAccountMps) {
+						Record shop = saas.shop.getShop(authShopRecord.getShopId());
+						String shopName = shop.get(SHOP.SHOP_NAME);
+						String firest="为你精心准备了关注礼品，快来点击查看吧!";
+						String page="pages/auth/auth";
+						String content="点击进入小程序";
+						List<WxMpTemplateData> keywordValues = fexMessage(record, firest, shopName, content, page, null);
+						accountMessageService.sendMpTemplateMessage(appId, userInfo.getOpenId(), keywordValues, MpTemplateConfig.PUSHMSG, authShopRecord.getAppId(), page, null);
+					}
+				}
+				return message;
+			}
+		}
+		//取消订阅
+		if(StringUtils.isNotEmpty(inMessage.getEvent())&&inMessage.getEvent().equals("unsubscribe")) {
+			logger().debug("开始解绑");
+			WxMpUser userInfo = open().getWxOpenComponentService().getWxMpServiceByAppid(appId).getUserService().userInfo(inMessage.getFromUser());
+			logger().debug("用户Openid"+userInfo.getOpenId()+"解绑公众号"+appId);
+			if(userInfo!=null) {
+				MpOfficialAccountUserRecord record=MP_OFFICIAL_ACCOUNT_USER.newRecord();
+				record.setAppId(appId);
+				record.setOpenid(userInfo.getOpenId());
+				record.setSubscribe((byte)0);
+				saas.shop.officeAccount.addOrUpdateUser(appId, record, userInfo.getUnionId(), userInfo.getOpenId());
+				logger().debug("用户Openid"+userInfo.getOpenId()+"解绑公众号完成");
+				return message;
+			}
+		}
+		return message;
+	}
+	
+	/**
+	 * 组装List<WxMpTemplateData>的信息
+	 * @param record
+	 * @param firest
+	 * @param shopName
+	 * @param content
+	 * @param page
+	 * @param remark
+	 * @return
+	 */
+	private List<WxMpTemplateData> fexMessage(MpOfficialAccountUserRecord record,String firest,String shopName,String content,String page,String remark) {
+		Map<String,String> map=new HashMap<String, String>();
+		map.put("first", firest);
+		map.put("keyword1", shopName);
+		map.put("keyword2", Util.getdate("YYYY-MM-dd HH:mm:ss"));
+		map.put("keyword3", content);
+		map.put("remark", remark);
+		List<WxMpTemplateData> keywordValuesDatas=new ArrayList<WxMpTemplateData>();
+		Set<String> keySets = map.keySet();
+		for(String  keySet:keySets) {
+			WxMpTemplateData data=new WxMpTemplateData();
+			data.setName(keySet);
+			data.setValue(map.get(keySet));
+			data.setColor("#173177");
+			keywordValuesDatas.add(data);
+		}
+		return keywordValuesDatas;
+	}
+	
+	
+	
+	/**
+	 * 得到公众号关联的小程序
+	 * @param appId
+	 * @return
+	 */
+	public Result<MpAuthShopRecord> getOfficialAccountMps(String appId) {
+		return db().selectFrom(MP_AUTH_SHOP).where(MP_AUTH_SHOP.LINK_OFFICIAL_APP_ID.eq(appId)).fetch();
+	}
+	
+	
+	//消息都转发给客服
+	public WxMpXmlOutMessage MessageTrans(WxMpXmlMessage inMessage) {
+		WxMpXmlOutTextMessage build = WxMpXmlOutMessage.TEXT().build();
+		build.setToUserName(inMessage.getFromUser());
+		build.setFromUserName(inMessage.getToUser());
+		build.setCreateTime((System.currentTimeMillis() / 1000L));
+		build.setMsgType(WxConsts.XmlMsgType.TRANSFER_CUSTOMER_SERVICE);
+		logger().debug("发给客服的报文"+build.toXml().toString());
+		return build;
+	}
+
 }
