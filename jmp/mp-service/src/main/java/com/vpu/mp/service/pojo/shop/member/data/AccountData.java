@@ -13,6 +13,16 @@ import lombok.Setter;
 @Setter
 @Getter
 public class AccountData extends BasicData {
+	/** 用户Id */
+	protected Integer userId;
+	/** 操作员id */
+	protected Integer adminUser;
+	/** 备注 */
+	protected String remark;
+	/** 交易类型 */
+	protected Byte tradeType;
+	/** 资金流向 */
+	protected Byte tradeFlow;
 	/** 原有金额 */
 	private BigDecimal account;
 	/** 增加的金额 */

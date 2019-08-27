@@ -67,20 +67,20 @@ public class ScoreService extends ShopBaseService {
 	 * @return JsonResultCode
 	 * @throws MpException 
 	 */
-	public JsonResultCode updateMemberScore(ScoreParam param, Integer subAccountId, Integer userId, Byte tradeType,
+	public void updateMemberScore(ScoreParam param, Integer subAccountId, Integer userId, Byte tradeType,
 			Byte tradeFlow) throws MpException {
 
 		/**  1. 校验userId是否存在数据库中 */
 		if (userId <= 0) {
 			//throw new MpException(JsonResultCode.CODE_MEMEBER_NOT_EXIST);
-			return JsonResultCode.CODE_MEMEBER_NOT_EXIST;
+			throw new MpException(JsonResultCode.CODE_MEMEBER_NOT_EXIST);
 		}
 		/** 1.1 查询用户 */
 		UserRecord dbUser = member.getUserRecordById(userId);
 
 		if (dbUser == null) {
 			//throw new MpException(JsonResultCode.CODE_MEMEBER_NOT_EXIST);
-			return JsonResultCode.CODE_MEMEBER_NOT_EXIST;
+			throw new MpException(JsonResultCode.CODE_MEMEBER_NOT_EXIST);
 		}
 
 		/** 2. 验证积分与数据库保持一致，批量修改时为最小值，即大于等于 */
@@ -92,7 +92,7 @@ public class ScoreService extends ShopBaseService {
 		if (dbScore < scoreDis) {
 			//throw new MpException(JsonResultCode.CODE_MEMBER_SCORE_NOT_SAME);
 
-			return JsonResultCode.CODE_MEMBER_SCORE_NOT_SAME;
+			throw new MpException(JsonResultCode.CODE_MEMBER_SCORE_NOT_SAME);
 		}
 
 		/** 3. 准备数据  */
@@ -192,7 +192,7 @@ public class ScoreService extends ShopBaseService {
 			MpException ex = (MpException)cause;
 			throw ex;
 		}
-		return JsonResultCode.CODE_SUCCESS;
+		return ;
 	}
 	
 	/**

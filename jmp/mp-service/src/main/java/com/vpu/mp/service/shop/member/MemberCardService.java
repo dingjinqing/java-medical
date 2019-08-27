@@ -1042,8 +1042,8 @@ public class MemberCardService extends ShopBaseService {
 	/**
 	 * 记录会员余额交易明细
 	 * @param data
-	 * @param tradeType
-	 * @param tradeFlow
+	 * @param tradeType  交易类型说明 如  微信支付类型{@link com.vpu.mp.service.pojo.shop.operation.RecordTradeEnum.WX_PAY }
+	 * @param tradeFlow  资金流向类型  如收入 {@link com.vpu.mp.service.pojo.shop.operation.RecordTradeEnum.TRADE_FLOW_INCOME}
 	 */
 	private void insertTradesRecord(CardConsumpData data, Byte tradeType, Byte tradeFlow) {
 		/** 交易明细 */
