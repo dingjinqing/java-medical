@@ -23,7 +23,7 @@
               <el-form-item label="活动优先级">
                 <el-input type="number" v-model="param.level"></el-input>
               </el-form-item>
-              <el-form-item label="活动名称">
+              <el-form-item label="活动时间">
                 <el-date-picker
                   v-model="dateRange"
                   type="datetimerange"
@@ -260,7 +260,7 @@ export default {
       update: false,
       param: {
         name: '',
-        level: 1,
+        level: '',
         startTime: '',
         endTime: '',
         goodsIds: [],
@@ -345,6 +345,9 @@ export default {
   methods: {
     ...mapActions(['transmitGoodsIds', 'transmitEditGoodsId']),
     nextStep () {
+      if (!this.validateParam()) {
+        return
+      }
       this.step++
       this.tmpGoodsIds = this.goodsIds
       this.transmitGoodsIds(this.tmpGiftGoodsIds)
@@ -360,6 +363,9 @@ export default {
     addGift () {
       const then = r => this.gotoGifts()
       const { param } = this
+      if (!this.validateGiftParam()) {
+        return
+      }
       this.formatParam()
       if (this.update) {
         updateGift(param).then(then)
@@ -499,6 +505,52 @@ export default {
           goodsImg: prdImg || goodsImg
         }
         this.tableData.push(row)
+      })
+    },
+    // 参数校验
+    validateParam () {
+      const { param: { name, level, explain }, dateRange, goodsRange, selectedRules } = this
+      const { tmpGoodsIds } = this
+      if (!name) {
+        this.fail('请输入活动名称')
+        return false
+      }
+      if (!level) {
+        this.fail('请输入活动优先级')
+        return false
+      }
+      if (!dateRange || dateRange.length < 2) {
+        this.fail('请选择活动时间')
+        return false
+      }
+      if (goodsRange === 1 && (!tmpGoodsIds || tmpGoodsIds.length === 0)) {
+        this.fail('请选择活动商品')
+        return false
+      }
+      if (selectedRules.length < 1) {
+        this.fail('请选择赠品规则')
+        return false
+      }
+      if (!explain) {
+        this.fail('请输入规则说明')
+        return false
+      }
+      return true
+    },
+    // 校验赠品参数
+    validateGiftParam () {
+      const { tmpGiftGoodsIds } = this
+      if (tmpGiftGoodsIds.length < 1) {
+        this.fail('请选择赠品')
+        return false
+      }
+      return true
+    },
+    fail (message) {
+      this.$message({
+        showClose: true,
+        message,
+        type: 'warning'
       })
     }
   },
