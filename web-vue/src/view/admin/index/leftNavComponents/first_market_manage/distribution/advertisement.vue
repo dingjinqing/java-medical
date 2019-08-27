@@ -75,16 +75,21 @@
         </div>
         <div class="languageContent">
           <span>请输入分销员推广语，将帮助分销员朋友圈推广：</span>
-          <el-input type="textarea"></el-input>
+          <el-input
+            v-model="youAD"
+            type="textarea"
+            placeholder="请输入"
+            rows=6
+          ></el-input>
         </div>
         <span
           slot="footer"
           class="dialog-footer"
         >
-          <el-button @click="centerDialogVisible = false">取 消</el-button>
+          <el-button @click="cancel">取 消</el-button>
           <el-button
             type="primary"
-            @click="centerDialogVisible = false"
+            @click="confirm"
           >确 定</el-button>
         </span>
       </el-dialog>
@@ -178,7 +183,8 @@ export default {
         endUpdateTime: ''
       },
       promotionLanguage: '',
-      centerDialogVisible: false
+      centerDialogVisible: false,
+      youAD: ''
     }
   },
   created () {
@@ -231,6 +237,14 @@ export default {
     },
     del () {
       console.log('删除')
+    },
+    cancel () {
+      this.centerDialogVisible = false
+      console.log('cancel')
+    },
+    confirm () {
+      this.centerDialogVisible = false
+      console.log('conirm')
     }
   }
 }
@@ -264,6 +278,9 @@ export default {
       :first-child {
         margin-right: 10px;
       }
+      :nth-of-type(1) {
+        margin: 0 10px 0 0;
+      }
       :nth-of-type(2) {
         margin: 0 10px 0 0;
       }
@@ -280,8 +297,8 @@ export default {
       height: 32px;
       line-height: 32px;
     }
-    /deep/ .el-input__inner {
-      width: 200px;
+    /deep/ .el-input {
+      width: 150px;
       display: inline-block;
     }
   }
@@ -295,21 +312,31 @@ export default {
       line-height: 32px;
     }
   }
-  .title {
-    display: flex;
-    span {
-      width: 60px;
-      height: 30px;
-      line-height: 30px;
-    }
-    .el-input {
-      width: 200px !important;
+  .el-dialog__footer {
+    text-align: left;
+    .el-button {
+      padding: 10px;
     }
   }
-  .languageContent {
-    margin-top: 20px;
-    span {
-      margin-bottom: 10px;
+  .el-dialog__body {
+    .title {
+      display: flex;
+      span {
+        height: 30px;
+        line-height: 30px;
+      }
+      .el-input {
+        width: 200px !important;
+      }
+    }
+    .languageContent {
+      margin-top: 20px;
+      span {
+        margin-bottom: 10px;
+      }
+      .el-textarea {
+        margin-top: 10px;
+      }
     }
   }
 }
