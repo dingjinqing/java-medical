@@ -43,25 +43,25 @@ public class RecordMemberTradeService extends ShopBaseService{
 		if(data instanceof AccountData) {
 			logger().info("余额变动");
 			/** 余额变动 */
-			AccountData d = (AccountData)data;
-			AccountParam p = new AccountParam();
-			FieldsUtil.assignNotNull(d, p);
-			accountService.addUserAccount(p, d.getAdminUser(), d.getTradeType(), d.getTradeFlow());
+			AccountData accountData = (AccountData)data;
+			AccountParam accountParam = new AccountParam();
+			FieldsUtil.assignNotNull(accountData, accountParam);
+			accountService.addUserAccount(accountParam, accountData.getAdminUser(), accountData.getTradeType(), accountData.getTradeFlow());
 		}else if(data instanceof ScoreData) {
 			logger().info("积分变动");
 			/** 积分变动 */
-			ScoreData d = (ScoreData)data;
+			ScoreData scoreData = (ScoreData)data;
 			ScoreParam scoreParam = new ScoreParam();
-			FieldsUtil.assignNotNull(d, scoreParam);
-			scoreParam.setUserId(new Integer[] {d.getUserId()});
-			scoreService.updateMemberScore(scoreParam, d.getAdminUser(),d.getUserId(), d.getTradeType(), d.getTradeFlow());
+			FieldsUtil.assignNotNull(scoreData, scoreParam);
+			scoreParam.setUserId(new Integer[] {scoreData.getUserId()});
+			scoreService.updateMemberScore(scoreParam, scoreData.getAdminUser(),scoreData.getUserId(), scoreData.getTradeType(), scoreData.getTradeFlow());
 		}else if(data instanceof UserCardData) {
 			logger().info("会员卡余额，兑换次数，消费次数变动 ");
 			/** 会员卡余额，兑换次数，消费次数变动 */
-			UserCardData d = (UserCardData)data;
-			CardConsumpData c = new CardConsumpData();
-			FieldsUtil.assignNotNull(d, c);
-			memberCardService.cardConsumer(c, d.getAdminUser(), d.getTradeType(), d.getTradeFlow(), d.getStoreOrConsump());
+			UserCardData userCardData = (UserCardData)data;
+			CardConsumpData cardConsumpData = new CardConsumpData();
+			FieldsUtil.assignNotNull(userCardData, cardConsumpData);
+			memberCardService.updateMemberCardAccount(cardConsumpData, userCardData.getAdminUser(), userCardData.getTradeType(), userCardData.getTradeFlow());
 			
 		}
 			

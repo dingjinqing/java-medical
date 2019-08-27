@@ -33,16 +33,19 @@ public class CardConsumpData {
 	private String message;
 	/** 支付方式 */
 	private String payment;
+	
+	/**-----------为记录充值充值记录表charge_money的字段----------------------*/
 	/** 微信支付id，用于发送模板消息 */
 	private String prepayId;
 	/** 订单状态 0：待支付，1：已取消，2：已完成 */
 	private Byte orderStatus;
 	/** 订单应付金额 */
 	private BigDecimal moneyPaid;
-	/** 0按规则 1自定义 */
+	/** 0按规则 1自定义 {@link com.vpu.mp.service.pojo.shop.operation.RecordTradeEnum.CHARGE_TYPE_BY_RULE } */
 	private Byte chargeType;
 	/** 支付宝交易单号 */
 	private String aliTradeNo;
+	
 	public CardConsumpData setUserId(Integer userId) {
 		this.userId = userId;
 		return this;

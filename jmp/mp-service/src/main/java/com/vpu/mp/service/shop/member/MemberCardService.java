@@ -66,6 +66,7 @@ import org.jooq.InsertValuesStep3;
 import org.jooq.InsertValuesStep7;
 import org.jooq.Result;
 import org.jooq.SelectSeekStep1;
+import org.jooq.tools.StringUtils;
 import org.slf4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -85,6 +86,7 @@ import com.vpu.mp.service.foundation.util.FieldsUtil;
 import com.vpu.mp.service.foundation.util.PageResult;
 import com.vpu.mp.service.foundation.util.Util;
 import com.vpu.mp.service.foundation.util.VoTranslator;
+import com.vpu.mp.service.pojo.shop.member.MemberOperateRecordEnum;
 import com.vpu.mp.service.pojo.shop.member.account.AddMemberCardParam;
 import com.vpu.mp.service.pojo.shop.member.account.MemberCard;
 import com.vpu.mp.service.pojo.shop.member.account.MemberCardVo;
@@ -106,7 +108,6 @@ import com.vpu.mp.service.pojo.shop.member.card.SimpleMemberCardVo;
 import com.vpu.mp.service.pojo.shop.operation.RecordContentTemplate;
 import com.vpu.mp.service.shop.operation.RecordMemberTradeService;
 
-import jodd.util.StringUtil;
 
 /**
  * 
@@ -902,142 +903,201 @@ public class MemberCardService extends ShopBaseService {
 	
 	
 	/**
-	 * 会员卡余额更新变动
-	 * @param data 卡余额消费数据	
+	 * 更新用户会员卡余额
+	 * @param data 用户卡相关数据	
 	 * @param adminUser 操作员
 	 * @param tradeType  交易类型 {@link com.vpu.mp.service.pojo.shop.operation.RecordTradeEnum}
 	 * @param tradeFlow  资金流向 {@link com.vpu.mp.service.pojo.shop.operation.RecordTradeEnum}
-	 * @param type 1 兑换次数；0 消费次数
+	 * @throws MpException
+	 */
+	public void updateMemberCardAccount(CardConsumpData data,Integer adminUser,Byte tradeType,Byte tradeFlow) throws MpException {
+		
+		/** 1.-获取数据库中的存储的信息 */
+		UserCardRecord userCard = getUserCardInfoByCardNo(data.getCardNo());
+		
+		/** 2-判断会员卡余额是属于充值还是消费 */
+		int compare = data.getMoney().compareTo(ZERO);
+		if(compare<0) {
+			/** 2.1-如果消费余额超出用户会员卡现有余额，则抛出异常 */
+			if((data.getMoney().add(userCard.getMoney())).compareTo(ZERO) == -1) {
+				throw new MpException(JsonResultCode.CODE_MEMBER_ACCOUNT_UPDATE_FAIL);
+			}
+			/** -消费会员卡余额 */
+			consumpUserCard(data,MEMBER_CARD_ACCOUNT);
+		}else {
+			/** 2.2 充值会员卡余额 */
+			chargeUserCard(data,MEMBER_CARD_ACCOUNT);
+		}
+		
+		
+		/** 3-更新user_card用户会员卡的余额 */
+		updateUserCard(data, userCard,MEMBER_CARD_ACCOUNT);
+		//TODO模板消息
+		/**
+		 * 4-记录交易明细
+		 */
+		insertTradesRecord(data, tradeType, tradeFlow);
+
+		
+	}
+
+
+	
+	/**
+	 * 更新用户卡且为限次会员卡的消费次数（门店）
+	 * @param data 用户卡相关数据	
+	 * @param adminUser 操作员
+	 * @param tradeType  交易类型 {@link com.vpu.mp.service.pojo.shop.operation.RecordTradeEnum}
+	 * @param tradeFlow  资金流向 {@link com.vpu.mp.service.pojo.shop.operation.RecordTradeEnum}
 	 * @throws MpException 
 	 */
-	public void cardConsumer(CardConsumpData data,Integer adminUser,Byte tradeType,Byte tradeFlow,Byte type) throws MpException {
-		/** 1-验证现有积分跟提交的积分是否一致 */
-		/** 1.2-获取数据库中的存储的信息 */
+	public void updateMemberCardSurplus(CardConsumpData data,Integer adminUser,Byte tradeType,Byte tradeFlow) throws MpException {
+		/** 1-判断是不是限次会员卡则结束 */
+		if(!data.getType().equals(LIMIT_NUM_TYPE)) {
+			return;
+		}
+		
+		/** 2.-获取数据库中的存储的信息 */
 		UserCardRecord userCard = getUserCardInfoByCardNo(data.getCardNo());
+		
+		/** 3-判断是使用还是增加用户卡的卡剩余次数 */
+		if(data.getCount()<0) {
+			/** 3.1-减少（使用）卡剩余次数 */
+			/** -检查卡剩余次数是否够用 */
+			if((data.getCount()+userCard.getSurplus())<0) {
+				throw new MpException(JsonResultCode.CODE_MEMBER_CARD_SURPLUS_UPDATE_FAIL);
+			}
+			/** -消费会员卡剩余次数 */
+			consumpUserCard(data,STORE_SERVICE_TIMES);
+		}else {
+			/** 3.2-增加(充值)卡剩余次数 */
+			chargeUserCard(data,STORE_SERVICE_TIMES);
+		}
+		
+		/** 4-更新user_card用户会员卡的消费次数 */
+		updateUserCard(data, userCard,STORE_SERVICE_TIMES);
+		//TODO模板消息
+		/**
+		 * 5-记录交易明细
+		 */
+		insertTradesRecord(data, tradeType, tradeFlow);
+	}
 	
-		if(data.getType() == 1) {
-			if(type == 1) {
-				/** 兑换次数是否够 */
-				if(data.getExchangeCount()!=null &&data.getExchangeCount()<0) {
-					if((data.getExchangeCount()+userCard.getExchangSurplus())<0) {
-						throw new MpException(JsonResultCode.CODE_MEMBER_CARD_EXCHANGSURPLUS_UPDATE_FAIL);
-					}
-				}
-			}else {
-				/** 消费次数 是否够*/
-				if(data.getCount()!=null && data.getCount()<0) {
-					if((data.getCount()+userCard.getSurplus())<0) {
-						throw new MpException(JsonResultCode.CODE_MEMBER_CARD_SURPLUS_UPDATE_FAIL);
-					}
-				}
-			}
-		}else {
-			/** 卡余额是否够 */
-			if(data.getMoney()!=null && data.getMoney().compareTo(ZERO) != -1) {
-				if((data.getMoney().add(userCard.getMoney())).compareTo(ZERO) == -1) {
-					throw new MpException(JsonResultCode.CODE_MEMBER_ACCOUNT_UPDATE_FAIL);
-				}
-			}
+	
+	
+	/**
+	 * 更新用户卡且为限次会员卡的卡剩余兑换次数
+	 * @param data 用户卡相关数据	
+	 * @param adminUser 操作员
+	 * @param tradeType  交易类型 {@link com.vpu.mp.service.pojo.shop.operation.RecordTradeEnum}
+	 * @param tradeFlow  资金流向 {@link com.vpu.mp.service.pojo.shop.operation.RecordTradeEnum}
+	 * @throws MpException 
+	 */
+	public void updateMemberCardExchangeSurplus(CardConsumpData data,Integer adminUser,Byte tradeType,Byte tradeFlow) throws MpException {
+		/** 1-判断是不是限次会员卡则结束 */
+		if(!data.getType().equals(LIMIT_NUM_TYPE)) {
+			return;
 		}
 		
-		/** 处理备注操作说明 */
-		if(StringUtil.isEmpty(data.getReason())) {
-			/** -默认管理员操作 国际化*/
-			String value = ADMIN_OPERATION.getValue();
-			value = translator.translate("member",value,value);
-			data.setReason(value);
-		}
+		/** 2.-获取数据库中的存储的信息 */
+		UserCardRecord userCard = getUserCardInfoByCardNo(data.getCardNo());
 		
-		
-		if(type == 1) {
-			if(data.getType() == 1) {
-				/** 兑换商品数量 */
-				String value = EXCHANGE_GOODS_NUM.getValue();
-				value = translator.translate("member",value,value);
-				String t = data.getReason()+ value;
-				data.setReason(t);
-			}else {
-				/** - 门店服务次数 */
-				String value = STORE_SERVICE_TIMES.getValue();
-				value = translator.translate("member",value,value);
-				String t = data.getReason()+value;
-				data.setReason(t);
+		/** 3-判断是使用还是增加用户卡的卡剩余兑换次数 */
+		if(data.getCount()<0) {
+			/** 3.1-减少（使用）卡剩余兑换次数 */
+			/** -检查卡卡剩余兑换次数是否够用 */
+			if((data.getExchangeCount()+userCard.getExchangSurplus())<0) {
+				throw new MpException(JsonResultCode.CODE_MEMBER_CARD_EXCHANGSURPLUS_UPDATE_FAIL);
 			}
+			/** -消费会员卡剩余次数 */
+			consumpUserCard(data,EXCHANGE_GOODS_NUM);
 		}else {
+			/** 3.2-增加(充值)卡剩余次数 */
+			chargeUserCard(data,EXCHANGE_GOODS_NUM);
+		}
+	
+		/** 4-更新user_card用户会员卡的卡剩余兑换次数 */
+		updateUserCard(data, userCard,EXCHANGE_GOODS_NUM);
+		//TODO模板消息
+		/**
+		 * 5-记录交易明细
+		 */
+		insertTradesRecord(data, tradeType, tradeFlow);
+	}
+	
+
+
+	/**
+	 * 充值用户卡
+	 * @param data
+	 */
+	private void chargeUserCard(CardConsumpData data,MemberOperateRecordEnum memberOperate) {
+		setDefaultReason(data,memberOperate);
+		insertIntoChargeMoney(data);
+	}
+
+	/**
+	 * 消费用户卡
+	 * @param data
+	 * @param userCard
+	 * @throws MpException
+	 */
+	private void consumpUserCard(CardConsumpData data,MemberOperateRecordEnum memberOperate){
+		
+		setDefaultReason(data,memberOperate);
+		insertIntoCardConsumer(data);
+	}
+
+	/**
+	 * 设置默认的充值 | 消费原因
+	 * @param data
+	 */
+	private void setDefaultReason(CardConsumpData data,MemberOperateRecordEnum memberOperate) {
+		/** 1-若reason原因为空 则设置为默认值 */
+		if(StringUtils.isBlank(data.getReason())) {
 			/** - 会员卡余额 */
-			String value = MEMBER_CARD_ACCOUNT.getValue();
+			String value = memberOperate.getValue();
 			value = translator.translate("member",value,value);
 			String t = data.getReason()+value;
 			data.setReason(t);
 		}
-		
-		/** 处理消费与充值：兑换次数，消费次数，会员卡余额等记录 */
-		if(data.getType() == 1) {
-			if(type == 1) {
-				/** 消费兑换次数 */
-				if(data.getExchangeCount()<0) {
-					insertIntoCardConsumer(data);
-				}else {
-					/** 增加兑换次数 */
-					insertIntoChargeMoney(data);
-				}
-			}else {
-				/** 消费（减少）消费次数  */
-				if(data.getCount()<0) {
-					insertIntoCardConsumer(data);
-				}else {
-					/** 充值消费次数 */
-					insertIntoChargeMoney(data);
-				}
-			}
-		}else {
-			/** 判断会员卡余额是充值还是消费 */
-			int compare = data.getMoney().compareTo(ZERO);
-			if(compare<0) {
-				/** 消费会员卡余额 */
-				insertIntoCardConsumer(data);
-			}else {
-				/** 充值会员卡余额 */
-				insertIntoChargeMoney(data);
-			}
-		}
-		
-		/** 更新用户-卡 */
-		/** type: 1 限次卡; 0 普通卡 */
-		if(data.getType() == 1) {
-			if(type == 1) {
-				/** 更新卡-兑换次数 */
-				/** 计算卡剩余兑换次数 */
-				Integer exchangeSurplus = userCard.getExchangSurplus()+data.getExchangeCount();
-				db().update(USER_CARD).set(USER_CARD.EXCHANG_SURPLUS, exchangeSurplus)
-					.where(USER_CARD.CARD_NO.eq(userCard.getCardNo()))
-					.execute();
-				
-				//TODO模板消息
-			}else {
-				/** 更新卡-剩余次数 */
-				Integer surplus = userCard.getSurplus()+data.getCount();
-				db().update(USER_CARD).set(USER_CARD.SURPLUS,surplus)
-					.where(USER_CARD.CARD_NO.eq(userCard.getCardNo()))
-					.execute();
-				//TODO 模板消息
-			}
-		}else {
+	}
+	
+	
+	/**
+	 * 更新user_card表
+	 * @param data
+	 * @param userCard
+	 */
+	private void updateUserCard(CardConsumpData data, UserCardRecord userCard,MemberOperateRecordEnum memberOperate) {
+		/** 更新用户卡余额 */
+		if(memberOperate == MEMBER_CARD_ACCOUNT) {
 			BigDecimal money = userCard.getMoney().add(data.getMoney());
 			db().update(USER_CARD).set(USER_CARD.MONEY,money)
 				.where(USER_CARD.CARD_NO.eq(userCard.getCardNo()))
 				.execute();
-			
-			/**
-			 * 记录交易明细
-			 */
-			insertTradesRecord(data, tradeType, tradeFlow);
-			
-			
-			//TODO 模板消息
-			
+		}else if(memberOperate == STORE_SERVICE_TIMES) {
+			/** 更新用户卡消费次数 */
+			Integer surplus = userCard.getSurplus()+data.getCount();
+			db().update(USER_CARD).set(USER_CARD.SURPLUS,surplus)
+				.where(USER_CARD.CARD_NO.eq(userCard.getCardNo()))
+				.execute();
+		}else if(memberOperate == EXCHANGE_GOODS_NUM) {
+			/** 更新用户卡兑换次数 */
+			Integer exchangeSurplus = userCard.getExchangSurplus()+data.getExchangeCount();
+			db().update(USER_CARD).set(USER_CARD.EXCHANG_SURPLUS, exchangeSurplus)
+				.where(USER_CARD.CARD_NO.eq(userCard.getCardNo()))
+				.execute();
 		}
 	}
+	
+	
+
+	
+	
+	
+	
+	
 	
 	/**
 	 * 记录会员余额交易明细
