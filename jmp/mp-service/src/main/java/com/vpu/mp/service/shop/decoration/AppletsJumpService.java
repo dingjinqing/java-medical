@@ -5,9 +5,11 @@ import static com.vpu.mp.db.shop.tables.MpJumpUsable.MP_JUMP_USABLE;
 import static org.jooq.impl.DSL.count;
 import static org.jooq.impl.DSL.sum;
 
+import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.jooq.impl.DSL;
 import org.springframework.stereotype.Service;
 
 import com.vpu.mp.db.shop.tables.records.MpJumpUsableRecord;
@@ -164,5 +166,18 @@ public class AppletsJumpService extends ShopBaseService {
 				}
 			}
 		}
+	}
+	
+	/**
+     * 调用更新小程序跳转appid可用状态
+     * 审核更新跳转小程序的appid为不可用，在更新本版本提交的appid为可用
+     * @param templateId
+     */
+	public void updateMpJumpAppIDList(Integer templateId) {
+		db().update(MP_JUMP_USABLE).set(MP_JUMP_USABLE.USABLE, (byte) 0)
+				.set(MP_JUMP_USABLE.UPDATE_TIME, new Timestamp(System.currentTimeMillis())).execute();
+		db().update(MP_JUMP_USABLE).set(MP_JUMP_USABLE.USABLE, (byte) 1)
+				.set(MP_JUMP_USABLE.UPDATE_TIME, new Timestamp(System.currentTimeMillis()))
+				.where(MP_JUMP_USABLE.TEMPLATE_ID.eq(templateId)).execute();
 	}
 }
