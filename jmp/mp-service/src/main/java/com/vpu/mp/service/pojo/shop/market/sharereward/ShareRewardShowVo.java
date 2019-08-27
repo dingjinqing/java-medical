@@ -43,9 +43,13 @@ public class ShareRewardShowVo {
      */
     private Short priority;
     /**
-     * 状态
+     * 启用/停用状态
      */
     private Byte status;
+    /**
+     * 页面分类展示状态，进行中8，未开始4，已过期2，已停用1
+     */
+    private Byte pageStatus;
     /**
      * 分享人数
      */

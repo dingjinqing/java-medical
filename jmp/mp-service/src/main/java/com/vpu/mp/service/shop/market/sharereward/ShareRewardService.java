@@ -18,6 +18,7 @@ import org.springframework.stereotype.Service;
 
 import java.io.IOException;
 import java.sql.Timestamp;
+import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -89,11 +90,40 @@ public class ShareRewardService extends ShopBaseService {
                 log.debug("分享有礼活动有效期格式为：[{}]", validityperiod);
                 vo.setValidityPeriod(validityperiod);
             }
+            //设置活动的实时具体状态，进行中，未开始，已过期，已停用
+            if(PURCHASE_ALL == param.getCategory()){
+                vo.setPageStatus(getPageStatus(vo));
+            }else{
+                vo.setPageStatus(param.getCategory());
+            }
             vo.setRewardType(getRewardType(vo.getFirstLevelRule(), vo.getSecondLevelRule(), vo.getThirdLevelRule()));
             vo.setShareNum(getShareNum(vo.getId()));
             vo.setInviteNum(getInviteNum(vo.getId()));
         }
         return pageResult;
+    }
+
+    /**
+     * 当查询所有的活动时，需要判定每一个活动的实时具体状态
+     */
+    private Byte getPageStatus(ShareRewardShowVo vo){
+        if(PURCHASE_TERMINATED == vo.getStatus()){
+            //已停用状态
+            return PURCHASE_TERMINATED;
+        }
+        if(vo.getEndTime().toLocalDateTime().isBefore(LocalDateTime.now())){
+            //已过期状态
+            return PURCHASE_EXPIRED;
+        }
+        if(vo.getStartTime().toLocalDateTime().isAfter(LocalDateTime.now())){
+            //未开始状态
+            return PURCHASE_PREPARE;
+        }
+        if(vo.getStartTime().toLocalDateTime().isBefore(LocalDateTime.now())&&vo.getEndTime().toLocalDateTime().isAfter(LocalDateTime.now())){
+            //进行中状态
+            return PURCHASE_PROCESSING;
+        }
+        return null;
     }
 
     /**
