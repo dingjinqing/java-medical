@@ -274,6 +274,9 @@ public class JsonResultMessage {
 	 * 会员余额
 	 */
 	public static final String MSG_MEMBER_ACCOUNT_UPDATE_FAIL = "member.account.update.fail";
+	public static final String MSG_MEMBER_CARD_ACCOUNT_UPDATE_FAIL = "member.card.account.update.fail";
+	public static final String MSG_MEMBER_CARD_SURPLUS_UPDATE_FAIL = "member.card.surplus.update.fail";
+	public static final String MSG_MEMBER_CARD_EXCHANGSURPLUS_UPDATE_FAIL = "member.card.exchangsurplus.update.fail";
 
 	/**
 	 * 会员卡
@@ -357,5 +360,8 @@ public class JsonResultMessage {
     public static final String REDEMPTION_DETAIL_MAIN_GOODS_TOTAL_MONEY = "market.increase.purchase.redemption.detail.main_goods_total_money";
     public static final String REDEMPTION_DETAIL_REDEMPTION_NUM = "market.increase.purchase.redemption.detail.redemption_num";
     public static final String REDEMPTION_DETAIL_REDEMPTION_TOTAL_MONEY = "market.increase.purchase.redemption.detail.redemption_total_money";
+
+	
+
 
 }

@@ -905,8 +905,8 @@ public class MemberCardService extends ShopBaseService {
 	 * 会员卡余额更新变动
 	 * @param data 卡余额消费数据	
 	 * @param adminUser 操作员
-	 * @param tradeType 交易类型
-	 * @param tradeFlow 资金流向
+	 * @param tradeType  交易类型 {@link com.vpu.mp.service.pojo.shop.operation.RecordTradeEnum}
+	 * @param tradeFlow  资金流向 {@link com.vpu.mp.service.pojo.shop.operation.RecordTradeEnum}
 	 * @param type 1 兑换次数；0 消费次数
 	 * @throws MpException 
 	 */
@@ -920,14 +920,14 @@ public class MemberCardService extends ShopBaseService {
 				/** 兑换次数是否够 */
 				if(data.getExchangeCount()!=null &&data.getExchangeCount()<0) {
 					if((data.getExchangeCount()+userCard.getExchangSurplus())<0) {
-						return;
+						throw new MpException(JsonResultCode.CODE_MEMBER_CARD_EXCHANGSURPLUS_UPDATE_FAIL);
 					}
 				}
 			}else {
 				/** 消费次数 是否够*/
 				if(data.getCount()!=null && data.getCount()<0) {
 					if((data.getCount()+userCard.getSurplus())<0) {
-						return;
+						throw new MpException(JsonResultCode.CODE_MEMBER_CARD_SURPLUS_UPDATE_FAIL);
 					}
 				}
 			}
@@ -935,7 +935,7 @@ public class MemberCardService extends ShopBaseService {
 			/** 卡余额是否够 */
 			if(data.getMoney()!=null && data.getMoney().compareTo(ZERO) != -1) {
 				if((data.getMoney().add(userCard.getMoney())).compareTo(ZERO) == -1) {
-					throw new MpException(null);
+					throw new MpException(JsonResultCode.CODE_MEMBER_ACCOUNT_UPDATE_FAIL);
 				}
 			}
 		}
