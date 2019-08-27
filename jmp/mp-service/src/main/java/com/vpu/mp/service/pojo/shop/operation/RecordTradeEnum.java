@@ -78,7 +78,26 @@ public enum RecordTradeEnum {
 	/** 组团瓜分积分 */
 	GET_SCORE_BY_GROUP_DIVIDING(10),
 	/** 抽奖获得积分 */
-	GET_SCORE_BY_LOTTERY(11);
+	GET_SCORE_BY_LOTTERY(11),
+	
+	/**--------------------*/
+	/** 充值 */
+	RECHARGE(0),
+	/** 消费 */
+	CONSUMPTION(1),
+	
+	/** 门店兑换类型 */
+	STORE_EXCHANGE_TYPE(1),
+	/** 消费次数类型 */
+	CONSUMPTION_TIMES_TYPE(0),
+	
+	/** 按规则 */
+	CHARGE_TYPE_BY_RULE(0),
+	/** 自定义 */
+	CHARGE_TYPE_BY_CUSTOMIZE(1),
+	
+	/** -金额积分比例 100积分比一元 */
+	SCALE_HUNDRED(100);
 	
 	private byte val;
 	RecordTradeEnum(int value) {

@@ -22,9 +22,9 @@ public class ScoreData extends BasicData {
 	protected Integer adminUser;
 	/** 备注 */
 	protected String remark;
-	/** 交易类型 */
+	/** 交易类型 {@link com.vpu.mp.service.pojo.shop.operation.RecordTradeEnum } */
 	protected Byte tradeType;
-	/** 资金流向 */
+	/** 资金流向 {@link com.vpu.mp.service.pojo.shop.operation.RecordTradeEnum }  */
 	protected Byte tradeFlow;
 	/** -积分变动数额 */
 	private Integer score;

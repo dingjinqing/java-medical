@@ -31,9 +31,9 @@ public class UserCardData extends BasicData {
 	private BigDecimal money;
 	/** 消费原因 */
 	private String reason ;
-	/** 消费类型 0是普通卡 1限次卡 */
+	/** 消费类型 0是普通卡 1限次卡  {@link com.vpu.mp.service.pojo.shop.member.card.CardConstant.NORMAL_TYPE }*/
 	private Byte type;
-	/** 门店兑换 1，消费次数 0 */
+	/** 门店兑换 1，消费次数 0  {@link com.vpu.mp.service.pojo.shop.operation.RecordTradeEnum.STORE_EXCHANGE_TYPE }*/
 	private Byte StoreOrConsump;
 	/** 订单编号 */
 	private String orderSn;
@@ -51,7 +51,7 @@ public class UserCardData extends BasicData {
 	private Byte orderStatus;
 	/** 订单应付金额 */
 	private BigDecimal moneyPaid;
-	/** 0按规则 1自定义 */
+	/** 0按规则 1自定义  {@link com.vpu.mp.service.pojo.shop.operation.RecordTradeEnum.CHARGE_TYPE_BY_RULE }  */
 	private Byte chargeType;
 	/** 支付宝交易单号 */
 	private String aliTradeNo;

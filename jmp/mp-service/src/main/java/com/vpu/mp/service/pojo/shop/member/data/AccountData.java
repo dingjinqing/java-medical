@@ -31,6 +31,6 @@ public class AccountData extends BasicData {
 	private String orderSn;
 	/** 支付方式 */
 	private String payment;
-	/** 支付类型，0：充值，1：消费 */
+	/** 支付类型，0：充值，1：消费  如： {@link com.vpu.mp.service.pojo.shop.operation.RecordTradeEnum.RECHARGE }*/
 	private Byte isPaid;
 }
