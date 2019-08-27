@@ -78,7 +78,8 @@ public class PreSaleService extends ShopBaseService {
                 DSL.count(ORDER.ORDER_ID)
                     .filterWhere(ORDER.ORDER_PAY_WAY.eq(OrderConstant.PAY_WAY_BARGIAN)).as(BARGAIN_PAID_QUANTITY),
                 DSL.count(ORDER.ORDER_ID)
-                    .filterWhere(ORDER.ORDER_PAY_WAY.eq(OrderConstant.PAY_WAY_TAIL)).as(TAIL_PAID_QUANTITY),
+                    .filterWhere(ORDER.ORDER_PAY_WAY.eq(OrderConstant.PAY_WAY_BARGIAN)
+                        .and(ORDER.BK_ORDER_PAID.gt((byte) 0))).as(TAIL_PAID_QUANTITY),
                 DSL.countDistinct(ORDER.USER_ID).as(ORDER_USER_QUANTITY),
                 DSL.coalesce(DSL.sum(ORDER_GOODS.GOODS_NUMBER), 0).as(BOUGHT_QUANTITY)
             )
