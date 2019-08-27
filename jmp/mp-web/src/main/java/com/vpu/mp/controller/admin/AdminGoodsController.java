@@ -49,6 +49,14 @@ public class AdminGoodsController extends AdminBaseController {
     }
 
     /**
+     * 商品规格分页查询
+     */
+    @PostMapping("/api/admin/goods/product/list")
+    public JsonResult getProductPageList(@RequestBody GoodsPageListParam param) {
+        return success(shop().goods.getProductPageList(param));
+    }
+
+    /**
      * 商品新增
      *
      * @param goods 商品参数

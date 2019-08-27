@@ -98,7 +98,28 @@ public class GoodsService extends ShopBaseService {
         return pageResult;
     }
 
-   
+    /**
+     * 商品（规格）分页查询
+     */
+    public PageResult<GoodsPageListVo> getProductPageList(GoodsPageListParam goodsPageListParam) {
+        SelectOnConditionStep<?> selectFrom = db()
+            .select(GOODS.GOODS_ID, GOODS.GOODS_NAME, GOODS.GOODS_IMG, GOODS.GOODS_SN, GOODS.SHOP_PRICE,
+                GOODS.CAT_ID, SORT.SORT_NAME, GOODS.SORT_ID, GOODS_BRAND.BRAND_NAME, GOODS.GOODS_NUMBER, GOODS.GOODS_SALE_NUM)
+            .select(GOODS_SPEC_PRODUCT.PRD_ID, GOODS_SPEC_PRODUCT.PRD_IMG)
+            .from(GOODS)
+            .leftJoin(SORT).on(GOODS.SORT_ID.eq(SORT.SORT_ID))
+            .leftJoin(GOODS_SPEC_PRODUCT).on(GOODS_SPEC_PRODUCT.GOODS_ID.eq(GOODS.GOODS_ID))
+            .leftJoin(GOODS_BRAND)
+            .on(GOODS.BRAND_ID.eq(GOODS_BRAND.ID));
+        SelectConditionStep<?> select;
+        select = buildOptions(selectFrom, goodsPageListParam);
+        select = buildOrderFileds(select, goodsPageListParam);
+        PageResult<GoodsPageListVo> pageResult = getPageResult(select, goodsPageListParam.getCurrentPage(),
+            goodsPageListParam.getPageRows(), GoodsPageListVo.class);
+        saas.sysCate.disposeCategoryName(pageResult.getDataList());
+        this.disposeGoodsLabels(pageResult.getDataList());
+        return pageResult;
+    }
 
     /**
      * 处理商品的关联的标签
