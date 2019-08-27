@@ -64,13 +64,13 @@ public class AccountService extends ShopBaseService {
 		if (user == null || user.getAccount() == null) {
 			throw new MpException( CODE_MEMBER_ACCOUNT_UPDATE_FAIL);
 		}
-
-		int ret = user.getAccount().compareTo(param.getAccount());
 		/** 2-检查提交的account与数据库中的account是否相等 */
+		/** -因为余额变动的基数是基于数据库的account
+		int ret = user.getAccount().compareTo(param.getAccount());
 		if (ret != 0) {
 			throw new MpException(CODE_MEMBER_ACCOUNT_UPDATE_FAIL);
 		}
-		
+		*/
 		/** 3.备注默认-处理国际化 */
 		final String remark ;
 		if (StringUtils.isEmpty(param.getRemark())) {
