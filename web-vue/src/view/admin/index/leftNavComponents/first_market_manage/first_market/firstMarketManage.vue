@@ -174,8 +174,8 @@
         </div>
         <!-- 优惠券礼包 -->
         <div
-          @click="couponPackage()"
           class="voucher box_style"
+          @click="couponPackage()"
         >
           <div class="activity_img"><img
               :src="$imageHost + '/image/admin/new_market/icon_coupon_bag.png'"
@@ -522,7 +522,7 @@ export default {
     // 优惠券礼包
     couponPackage () {
       this.$router.push({
-        name: 'coupon_Package'
+        name: 'coupon_package'
       })
     },
     // 分享有礼活动点击

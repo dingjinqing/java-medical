@@ -623,7 +623,7 @@ const routes = [
           // 优惠券礼包
           {
             path: '/admin/home/main/couponPackage',
-            name: 'coupon_Package',
+            name: 'coupon_package',
             meta: {
               crumbTitle: 'router.coupon_Package',
               meta: 'first_market_manage',

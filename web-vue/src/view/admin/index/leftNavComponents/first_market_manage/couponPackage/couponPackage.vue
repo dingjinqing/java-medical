@@ -2,31 +2,11 @@
   <div class="content">
     <div class="main">
       <div class="navBox">
-        <el-tabs
-          v-model="activeName"
-          @tab-click="handleClick"
-        >
-          <el-tab-pane
-            label="全部优惠券"
-            name="first"
-          ></el-tab-pane>
-          <el-tab-pane
-            label="进行中"
-            name="second"
-          ></el-tab-pane>
-          <el-tab-pane
-            label="未开始"
-            name="third"
-          ></el-tab-pane>
-          <el-tab-pane
-            label="已过期"
-            name="fourth"
-          ></el-tab-pane>
-          <el-tab-pane
-            label="已停用"
-            name="fifth"
-          ></el-tab-pane>
-        </el-tabs>
+        <statusTab
+          v-model="tabIndex"
+          :activityName="activityName"
+          :standard="true"
+        />
         <el-button
           type="primary"
           @click="addCouponPackage()"
@@ -36,21 +16,21 @@
         <div class="filters">
           <div class="filters_item"><span>活动名称：</span>
             <el-input
-              v-model="act_name"
+              v-model="actName"
               placeholder="请输入活动名称"
               size="small"
             ></el-input>
           </div>
           <div class="filters_item"><span>礼包名称：</span>
             <el-input
-              v-model="package_name"
+              v-model="packName"
               placeholder="请输入礼包名称"
               size="small"
             ></el-input>
           </div>
           <div class="filters_item"><span>领取方式：</span>
             <el-select
-              v-model="get_type"
+              v-model="accessMode"
               placeholder="请选择"
               size="small"
             >
@@ -70,7 +50,7 @@
           </div>
         </div>
         <el-table
-          :data="packageTableData"
+          :data="tableData"
           style="width:100%;"
           border
           :header-cell-style="{
@@ -83,43 +63,43 @@
           }"
         >
           <el-table-column
-            prop="act_name"
+            prop="actName"
             label="活动名称"
           ></el-table-column>
           <el-table-column
-            prop="package_name"
+            prop="packName"
             label="礼包名称"
           ></el-table-column>
           <el-table-column
-            prop="valid_period"
+            prop="vaildDate"
             label="有效期"
           ></el-table-column>
           <el-table-column
-            prop="coupon_type_num"
+            prop="voucherKindsNumber"
             label="优惠券种类数/礼包"
           ></el-table-column>
           <el-table-column
-            prop="coupon_num"
+            prop="voucherNumber"
             label="优惠券数量/礼包"
           ></el-table-column>
           <el-table-column
-            prop="can_send_num"
+            prop="totalAmount"
             label="可发放礼包数"
           ></el-table-column>
           <el-table-column
-            prop="get_type"
+            prop="accessMode"
             label="领取方式"
           ></el-table-column>
           <el-table-column
-            prop="money"
+            prop="accessCost"
             label="购买金额"
           ></el-table-column>
           <el-table-column
-            prop="have_num"
+            prop="issueAmount"
             label="已领取礼包数"
           ></el-table-column>
           <el-table-column
-            prop="act_status"
+            prop="statusName"
             label="活动状态"
           ></el-table-column>
           <el-table-column
@@ -148,12 +128,35 @@
                   <i class="el-icon-share"></i>
                 </el-tooltip>
                 <el-tooltip
+                  v-if="scope.row.status === 1"
+                  content="停用"
+                  placement="top"
+                >
+                  <i
+                    @click="puaseCouponPackage(scope.row.id)"
+                    class="el-icon-remove-outline"
+                  ></i>
+                </el-tooltip>
+                <el-tooltip
+                  v-else
+                  content="启用"
+                  placement="top"
+                >
+                  <i
+                    @click="enableCouponPackage(scope.row.id)"
+                    class="el-icon-check"
+                  ></i>
+                </el-tooltip>
+                <el-tooltip
                   class="item"
                   effect="dark"
                   content="删除"
                   placement="top"
                 >
-                  <i class="el-icon-delete"></i>
+                  <i
+                    @click="delCouponPackage(scope.row.id)"
+                    class="el-icon-delete"
+                  ></i>
                 </el-tooltip>
                 <el-tooltip
                   class="item"
@@ -175,52 +178,132 @@
             </template>
           </el-table-column>
         </el-table>
-        <div class="tapOneblock">
-          <span class="demonstration">直接前往</span>
-          <el-pagination
-            @current-change="handleCurrentChange"
-            :current-page.sync="currentPage"
-            :page-size="20"
-            layout="prev, pager, next, jumper"
-            :total="totalRows"
-          >
-          </el-pagination>
-        </div>
+        <pagination
+          :page-params.sync="pageParams"
+          @pagination="initDataList"
+        />
       </div>
     </div>
   </div>
 </template>
 
 <script>
+import { couponPackageList, updateCouponPackage, deleteCouponPackage } from '@/api/admin/marketManage/couponPackage.js'
+import statusTab from '@/components/admin/status/statusTab'
+// 引入分页
+import pagination from '@/components/admin/pagination/pagination'
 export default {
+  components: { pagination, statusTab },
   data () {
     return {
-      activeName: 'first',
-      act_name: '',
-      package_name: '',
-      get_type: 1,
-      get_type_option: [
-        { value: 1, label: '全部' },
-        { value: 2, label: '现金' },
-        { value: 3, label: '积分' },
-        { value: 4, label: '免费' }
-      ],
-      packageTableData: [
-        { act_name: '新得周优惠券', package_name: '新得周优惠券', valid_period: '2019-08-18 15:48:49至2019-08-30 15:48:51', coupon_type_num: '23', coupon_num: '100', can_send_num: '100', get_type: '直接领取', money: '免费', have_num: '2', act_status: '进行中' },
-        { act_name: '新得周优惠券', package_name: '新得周优惠券', valid_period: '2019-08-18 15:48:49至2019-08-30 15:48:51', coupon_type_num: '23', coupon_num: '100', can_send_num: '100', get_type: '直接领取', money: '免费', have_num: '2', act_status: '进行中' },
-        { act_name: '新得周优惠券', package_name: '新得周优惠券', valid_period: '2019-08-18 15:48:49至2019-08-30 15:48:51', coupon_type_num: '23', coupon_num: '100', can_send_num: '100', get_type: '直接领取', money: '免费', have_num: '2', act_status: '进行中' },
-        { act_name: '新得周优惠券', package_name: '新得周优惠券', valid_period: '2019-08-18 15:48:49至2019-08-30 15:48:51', coupon_type_num: '23', coupon_num: '100', can_send_num: '100', get_type: '直接领取', money: '免费', have_num: '2', act_status: '进行中' }
-      ],
+      activityName: '优惠券礼包',
+      // 默认显示进行中的活动
+      tabIndex: 1,
       currentPage: 1,
+      pageParams: {},
+
+      activeName: 'first',
+      actName: '',
+      packName: '',
+      accessMode: -1,
+      get_type_option: [
+        { value: -1, label: '全部' },
+        { value: 0, label: '现金' },
+        { value: 1, label: '积分' },
+        { value: 2, label: '免费' }
+      ],
+      tableData: [],
       totalRows: null
     }
   },
   methods: {
+    initDataList () {
+      let param = {
+        'state': parseInt(this.tabIndex),
+        'accessMode': parseInt(this.accessMode),
+        'actName': this.actName,
+        'packName': this.packName,
+        'currentPage': 1
+      }
+
+      couponPackageList(param).then((res) => {
+        if (res.error === 0) {
+          this.handleData(res.content.dataList)
+          this.pageParams = res.content.page
+        }
+      })
+    },
+
+    // 表格数据处理
+    handleData (data) {
+      data.map((item, index) => {
+        // TODO: 国际化
+        switch (item.accessMode) {
+          case 0:
+            item.accessMode = '现金购买'
+            break
+          case 1:
+            item.accessMode = '积分购买'
+            break
+          case 2:
+            item.accessMode = '直接领取'
+            break
+        }
+        item.vaildDate = `${item.startTime}至${item.endTime}`
+        item.statusName = this.getActStatusString(item.status, item.startTime, item.endTime)
+      })
+      this.tableData = data
+    },
+
+    // 停用优惠券礼包活动
+    puaseCouponPackage (id) {
+      let param = {
+        'id': id,
+        'status': 0
+      }
+
+      updateCouponPackage(param).then((res) => {
+        if (res.error === 0) {
+          alert('停用成功')
+          this.initDataList()
+        }
+      })
+    },
+
+    // 启用优惠券礼包活动
+    enableCouponPackage (id) {
+      let param = {
+        'id': id,
+        'status': 1
+      }
+
+      updateCouponPackage(param).then((res) => {
+        if (res.error === 0) {
+          alert('启用成功')
+          this.initDataList()
+        }
+      })
+    },
+
+    // 删除优惠券礼包活动
+    delCouponPackage (id) {
+      let param = {
+        'id': id
+      }
+
+      deleteCouponPackage(param).then((res) => {
+        if (res.error === 0) {
+          alert('删除成功')
+          this.initDataList()
+        }
+      })
+    },
+
     handleCurrentChange () {
       console.log(this.currentPage)
     },
     handleClick (tab) {
-      console.log(tab)
+      this.initDataList(tab)
     },
     edit (scope) {
       console.log(scope)
@@ -230,6 +313,14 @@ export default {
         name: 'coupon_Package_add'
       })
     }
+  },
+  watch: {
+    'tabIndex' (n, o) {
+      this.initDataList()
+    }
+  },
+  mounted () {
+    this.initDataList()
   }
 
 }
