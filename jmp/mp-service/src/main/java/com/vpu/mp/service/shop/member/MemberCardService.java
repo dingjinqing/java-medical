@@ -66,9 +66,6 @@ import org.jooq.InsertValuesStep3;
 import org.jooq.InsertValuesStep7;
 import org.jooq.Result;
 import org.jooq.SelectSeekStep1;
-import org.jooq.UpdateSetFirstStep;
-import org.jooq.UpdateWhereStep;
-import org.junit.Test;
 import org.slf4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -82,6 +79,7 @@ import com.vpu.mp.db.shop.tables.records.UserCardRecord;
 import com.vpu.mp.service.foundation.data.DelFlag;
 import com.vpu.mp.service.foundation.data.JsonResultCode;
 import com.vpu.mp.service.foundation.database.DslPlus;
+import com.vpu.mp.service.foundation.exception.MpException;
 import com.vpu.mp.service.foundation.service.ShopBaseService;
 import com.vpu.mp.service.foundation.util.FieldsUtil;
 import com.vpu.mp.service.foundation.util.PageResult;
@@ -910,8 +908,9 @@ public class MemberCardService extends ShopBaseService {
 	 * @param tradeType 交易类型
 	 * @param tradeFlow 资金流向
 	 * @param type 1 兑换次数；0 消费次数
+	 * @throws MpException 
 	 */
-	public void cardConsumer(CardConsumpData data,Integer adminUser,Byte tradeType,Byte tradeFlow,Byte type) {
+	public void cardConsumer(CardConsumpData data,Integer adminUser,Byte tradeType,Byte tradeFlow,Byte type) throws MpException {
 		/** 1-验证现有积分跟提交的积分是否一致 */
 		/** 1.2-获取数据库中的存储的信息 */
 		UserCardRecord userCard = getUserCardInfoByCardNo(data.getCardNo());
@@ -936,7 +935,7 @@ public class MemberCardService extends ShopBaseService {
 			/** 卡余额是否够 */
 			if(data.getMoney()!=null && data.getMoney().compareTo(ZERO) != -1) {
 				if((data.getMoney().add(userCard.getMoney())).compareTo(ZERO) == -1) {
-					return;
+					throw new MpException(null);
 				}
 			}
 		}

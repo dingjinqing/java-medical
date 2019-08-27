@@ -23,6 +23,7 @@ import org.springframework.stereotype.Service;
 
 import com.vpu.mp.db.shop.tables.records.UserRecord;
 import com.vpu.mp.service.foundation.data.JsonResultCode;
+import com.vpu.mp.service.foundation.exception.MpException;
 import com.vpu.mp.service.foundation.service.ShopBaseService;
 import com.vpu.mp.service.foundation.util.DateUtil;
 import com.vpu.mp.service.foundation.util.PageResult;
@@ -52,22 +53,22 @@ public class AccountService extends ShopBaseService {
 	 * @param tradeFlow  资金流向 {@link com.vpu.mp.service.pojo.shop.operation.RecordTradeEnum}
 	 * @return
 	 */
-	public JsonResultCode addUserAccount(AccountParam param, int adminUser, Byte tradeType, Byte tradeFlow) {
+	public void  addUserAccount(AccountParam param, int adminUser, Byte tradeType, Byte tradeFlow) throws MpException {
 		/** 鲁棒性检查 &*/
 		if (param.getUserId() == null || param.getAmount() == null) {
-			return CODE_MEMBER_ACCOUNT_UPDATE_FAIL;
+			throw new MpException(CODE_MEMBER_ACCOUNT_UPDATE_FAIL);
 		}
 		UserRecord user = memberService.getUserRecordById(param.getUserId());
 
 		/** 1-用户是否存在 是否有账户余额 */
 		if (user == null || user.getAccount() == null) {
-			return CODE_MEMBER_ACCOUNT_UPDATE_FAIL;
+			throw new MpException( CODE_MEMBER_ACCOUNT_UPDATE_FAIL);
 		}
 
 		int ret = user.getAccount().compareTo(param.getAccount());
 		/** 2-检查提交的account与数据库中的account是否相等 */
 		if (ret != 0) {
-			return CODE_MEMBER_ACCOUNT_UPDATE_FAIL;
+			throw new MpException(CODE_MEMBER_ACCOUNT_UPDATE_FAIL);
 		}
 		
 		/** 3.备注默认-处理国际化 */
@@ -101,7 +102,7 @@ public class AccountService extends ShopBaseService {
 			
 		});
 
-		return CODE_SUCCESS;
+		return ;
 	}
 
 	private void addTradeRecord(AccountParam param, Byte tradeType, Byte tradeFlow) {
