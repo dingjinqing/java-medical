@@ -16,14 +16,16 @@ import lombok.Data;
  */
 @Data
 public class RefundVo {
-	/** 支持退款,支持退货,退运费; */
-	private boolean[] returnType = { false, false, false };
+	/** 支持退款,支持退货,退运费,手动退款(新加); */
+	private boolean[] returnType = { false, false, false, false};
 	/**
 	 * mp查询如果无可退商品则refundGoods=null admin手工退款退货需要详细信息
 	 */
 	private List<RefundVoGoods> refundGoods;
-	/**  */
+	/** 优先级退款信息 */
 	private Map<String , BigDecimal> returnAmountMap;
+	/** 可退运费 */
+	private BigDecimal returnShippingFee;
 	@Data
 	public static class RefundVoGoods {
 
@@ -49,6 +51,10 @@ public class RefundVo {
 		private Integer total;
 		/** 是否可退,小程序端判断 */
 		private Byte isCanReturn;
+		/** 赠品 */
+		private Byte isGift;
+		/**已退金额(手动退款时需要)*/
+		private BigDecimal returned;
 	}
 
 	public Boolean mpIsReturn() {
@@ -59,7 +65,7 @@ public class RefundVo {
 	}
 
 	public Boolean adminIsReturn() {
-		if(!returnType[0] && !returnType[1] && !returnType[2]) {
+		if(!returnType[0] && !returnType[1] && !returnType[2] && !returnType[3]) {
 			return Boolean.FALSE;
 		}
 		return Boolean.TRUE;

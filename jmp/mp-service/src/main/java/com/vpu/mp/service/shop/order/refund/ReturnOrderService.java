@@ -107,6 +107,16 @@ public class ReturnOrderService extends ShopBaseService{
 		Record1<BigDecimal> fetchOne = db().select(DSL.sum(TABLE.SHIPPING_FEE)).from(TABLE).where(TABLE.ORDER_SN.eq(orderSn).and(TABLE.REFUND_STATUS.eq(OrderConstant.REFUND_STATUS_FINISH))).fetchOne();
 		return fetchOne.value1() == null ? BigDecimal.ZERO : fetchOne.value1();
 	}
+	
+	/**
+	 * 	获取该订单的退成功商品金额
+	 * @param orderSn 订单号
+	 * @return 存在则返回金额，否则为0
+	 */
+	public BigDecimal getReturnMoney(String orderSn) {
+		Record1<BigDecimal> fetchOne = db().select(DSL.sum(TABLE.MONEY)).from(TABLE).where(TABLE.ORDER_SN.eq(orderSn).and(TABLE.REFUND_STATUS.eq(OrderConstant.REFUND_STATUS_FINISH))).fetchOne();
+		return fetchOne.value1() == null ? BigDecimal.ZERO : fetchOne.value1();
+	}
 	/**
 	 * 	增加退货/退款申请记录->形成退款/退货订单
 	 * 	status：退货 1；else 4

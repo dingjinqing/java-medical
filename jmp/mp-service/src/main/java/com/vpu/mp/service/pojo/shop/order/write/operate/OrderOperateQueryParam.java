@@ -27,6 +27,7 @@ public class OrderOperateQueryParam implements IOrderBase{
 	@NotNull(message = JsonResultMessage.MSG_ORDER)
 	private Byte action;
 	/**区分前后台操作*/
+	@NotNull(message = JsonResultMessage.MSG_ORDER)
 	private Boolean isMp;
 	private AdminTokenAuthInfo adminInfo;
 	@Override

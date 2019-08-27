@@ -32,6 +32,7 @@ import com.vpu.mp.service.foundation.util.FieldsUtil;
 import com.vpu.mp.service.pojo.shop.order.OrderConstant;
 import com.vpu.mp.service.pojo.shop.order.OrderInfoVo;
 import com.vpu.mp.service.pojo.shop.order.OrderListInfoVo;
+import com.vpu.mp.service.pojo.shop.order.goods.OrderGoodsVo;
 import com.vpu.mp.service.pojo.shop.order.write.operate.OrderOperateQueryParam;
 import com.vpu.mp.service.pojo.shop.order.write.operate.OrderServiceCode;
 import com.vpu.mp.service.pojo.shop.order.write.operate.refund.RefundParam;
@@ -80,7 +81,7 @@ public class ReturnService extends ShopBaseService implements IorderOperate {
 	
 	@Override
 	public OrderServiceCode getServiceCode() {
-		return OrderServiceCode.MP_REFUND_MONEY_APPLY;
+		return OrderServiceCode.RETURN;
 	}
 	
 	/**
@@ -104,6 +105,7 @@ public class ReturnService extends ShopBaseService implements IorderOperate {
 		if(OrderConstant.RT_ONLY_SHIPPING_FEE == param.getReturnType()) {
 			return returnShippingFee(param,order);
 		}
+		//
 		transaction(()->{
 			//insert b2c_order_action
 			
@@ -123,9 +125,9 @@ public class ReturnService extends ShopBaseService implements IorderOperate {
 
 	@Override
 	public Object query(OrderOperateQueryParam param) {
+		logger.info("获取可退款、退货信息参数为:" + param.toString());
 		Boolean isMp = param.getIsMp();
 		RefundVo vo = new RefundVo();
-		logger.info("获取可退款、退货信息参数为:" + param.toString());
 		//获取当前订单
 		OrderListInfoVo currentOrder = orderInfo.getByOrderId(param.getOrderId(),OrderListInfoVo.class);
 		//退款校验
@@ -136,13 +138,32 @@ public class ReturnService extends ShopBaseService implements IorderOperate {
 		if(OrderOperationJudgment.isReturnGoods(currentOrder , isMp)) {
 			vo.getReturnType()[1] = true;
 		}
-		//后台退运费校验
+		//获取已退运费
+		BigDecimal returnShipingFee = returnOrder.getReturnShipingFee(currentOrder.getOrderSn());
+		//退运费校验
+		if(OrderOperationJudgment.adminIsReturnShipingFee(currentOrder , returnShipingFee)){
+			vo.getReturnType()[2] = true;
+			//设置
+			vo.setReturnShippingFee(currentOrder.getShippingFee().subtract(returnShipingFee));
+		}
+		//手动退款校验,已退金额<sum(已退R商品数量*折后单价)
 		if(!isMp) {
-			//获取已退运费
-			BigDecimal returnShipingFee = returnOrder.getReturnShipingFee(currentOrder.getOrderSn());
-			//后台退运费
-			if(OrderOperationJudgment.adminIsReturnShipingFee(currentOrder , returnShipingFee)){
-				vo.getReturnType()[2] = true;
+			//是否退过商品（数量角度）
+			List<OrderGoodsVo> returnGoods = orderGoods.getReturnGoods(currentOrder.getOrderSn());
+			//判断金额
+			if(returnGoods.size() != 0) {
+				BigDecimal returnMoney = returnOrder.getReturnMoney(currentOrder.getOrderSn());
+				//已退商品可退最大金额
+				BigDecimal returnGoodsMaxMoney = BigDecimal.ZERO;
+				for (OrderGoodsVo goods : returnGoods) {
+					returnGoodsMaxMoney = returnGoodsMaxMoney.add(
+							BigDecimalUtil.multiplyOrDivide(
+									new BigDecimalPlus(new BigDecimal(goods.getReturnNumber()),Operator.multiply),
+									new BigDecimalPlus(goods.getDiscountedGoodsPrice(),null)));
+				}
+				if(BigDecimalUtil.compareTo(returnGoodsMaxMoney , returnMoney) > 0) {
+					vo.getReturnType()[3] = true;
+				}
 			}
 		}
 		
@@ -166,7 +187,7 @@ public class ReturnService extends ShopBaseService implements IorderOperate {
 			sns.addAll(cOrderSns);
 		}
 		//退款数据汇总(该汇总信息会在'构造优先级退款信息'复用)
-		LinkedHashMap<String, BigDecimal> returnAmountMap = refundAmountRecord.getReturnAmountMap(sns , currentOrder);	
+		LinkedHashMap<String, BigDecimal> returnAmountMap = refundAmountRecord.getReturnAmountMap(sns);	
 		//构造优先级退款信息
 		Map<String, BigDecimal> canReturn = orderInfo.getCanReturn(currentOrder , amount , returnAmountMap);
 		//查询订单下商品(如果为主订单则包含子订单商品)
@@ -183,6 +204,9 @@ public class ReturnService extends ShopBaseService implements IorderOperate {
 			if(isMain) {
 				//总数 = 总数 - 子订单数量
 				oneGoods.setTotal((oneGoods.getGoodsNumber() - ((subOrderGoodsSum.get(oneGoods.getProductId())) == null ? 0 : subOrderGoodsSum.get(oneGoods.getProductId()))));
+			}else {
+				//总数 = 总数
+				oneGoods.setTotal(oneGoods.getGoodsNumber());
 			}
 			//已提交=退中+退完成
 			Integer submitted = (refundingGoods.get(oneGoods.getProductId()) == null ? 0 : refundingGoods.get(oneGoods.getProductId())) + oneGoods.getReturnNumber();
@@ -252,10 +276,11 @@ public class ReturnService extends ShopBaseService implements IorderOperate {
 	public boolean finishReturn(OrderInfoVo order , ReturnOrderRecord returnOrder , BigDecimal currentMoney , RefundParam param) throws MpException {
 		if(OrderConstant.REFUND_STATUS_APPLY_REFUND_OR_SHIPPING != returnOrder.getRefundStatus()) {
 			logger().info("退款订单sn:"+returnOrder.getReturnOrderSn()+",refundStatus"+returnOrder.getRefundStatus()+"不符合完成退款条件。");
-			throw new MpException(JsonResultCode.CODE_ORDER);
+			throw new MpException(JsonResultCode.CODE_ORDER_RETURN_STATUS_NOT_SATISFIED);
 		}
-		if(BigDecimalUtil.compareTo(returnOrder.getMoney(), currentMoney) < 1) {
-			logger().info("退款订单sn:"+returnOrder.getReturnOrderSn()+",退款金额超过最大金额");
+		if(BigDecimalUtil.compareTo(returnOrder.getMoney(), currentMoney) < 0) {
+			logger().info("退款订单sn:"+returnOrder.getReturnOrderSn()+",退款金额超过该退款订单最大金额");
+			throw new MpException(JsonResultCode.CODE_ORDER_RETURN_MONEY_EXCEEDED);
 		}
 		//当前退款金额大于等于零,进行退款金额参数构造
 		if(BigDecimalUtil.compareTo(currentMoney, BigDecimal.ZERO) > -1 || BigDecimalUtil.compareTo(param.getShippingFee(), currentMoney) > -1) {
@@ -296,7 +321,7 @@ public class ReturnService extends ShopBaseService implements IorderOperate {
 			sns.addAll(cOrderSns);
 		}
 		//优先级退款数据汇总
-		LinkedHashMap<String, BigDecimal> returnAmountMap = refundAmountRecord.getReturnAmountMap(sns, order);
+		LinkedHashMap<String, BigDecimal> returnAmountMap = refundAmountRecord.getReturnAmountMap(sns);
 		for (Entry<String, BigDecimal> entry : returnAmountMap.entrySet()) {
 			//当前优先级名称
 			String key = entry.getKey();

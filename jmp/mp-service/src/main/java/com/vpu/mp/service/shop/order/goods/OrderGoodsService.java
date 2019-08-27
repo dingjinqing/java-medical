@@ -9,6 +9,8 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.stream.Collectors;
 
+import org.jooq.Condition;
+import org.jooq.Record;
 import org.jooq.Record3;
 import org.jooq.Result;
 import org.jooq.impl.DSL;
@@ -20,6 +22,7 @@ import com.vpu.mp.db.shop.tables.records.ReturnOrderGoodsRecord;
 import com.vpu.mp.db.shop.tables.records.ReturnOrderRecord;
 import com.vpu.mp.service.foundation.service.ShopBaseService;
 import com.vpu.mp.service.pojo.shop.order.OrderListInfoVo;
+import com.vpu.mp.service.pojo.shop.order.goods.OrderGoodsVo;
 import com.vpu.mp.service.pojo.shop.order.write.operate.refund.RefundVo.RefundVoGoods;
 
 /**
@@ -53,7 +56,7 @@ public class OrderGoodsService extends ShopBaseService{
 	 * @return Map<String, List<RefundVoGoods>>
 	 */
 	public Map<String, List<RefundVoGoods>> getByOrderSns(List<String> orderSns) {
-		return db().select(TABLE.ORDER_ID,TABLE.ORDER_SN,TABLE.REC_ID,TABLE.GOODS_NAME,TABLE.GOODS_NUMBER,TABLE.RETURN_NUMBER,TABLE.GOODS_PRICE,TABLE.GOODS_ATTR,TABLE.DISCOUNTED_GOODS_PRICE,TABLE.PRODUCT_ID,TABLE.IS_CAN_RETURN).from(TABLE)
+		return db().select(TABLE.ORDER_ID,TABLE.ORDER_SN,TABLE.REC_ID,TABLE.GOODS_NAME,TABLE.GOODS_NUMBER,TABLE.RETURN_NUMBER,TABLE.GOODS_PRICE,TABLE.GOODS_ATTR,TABLE.DISCOUNTED_GOODS_PRICE,TABLE.PRODUCT_ID,TABLE.IS_CAN_RETURN,TABLE.IS_GIFT).from(TABLE)
 			.where(TABLE.ORDER_SN.in(orderSns))
 			.fetchGroups(TABLE.ORDER_SN,RefundVoGoods.class);
 	}
@@ -124,7 +127,7 @@ public class OrderGoodsService extends ShopBaseService{
 	 */
 	public int[] getTotalNumber(String orderSn) {
 		Record3<BigDecimal, BigDecimal, BigDecimal> result = db().select(DSL.sum(TABLE.GOODS_NUMBER),DSL.sum(TABLE.SEND_NUMBER),DSL.sum(TABLE.RETURN_NUMBER)).from(TABLE).where(TABLE.ORDER_SN.eq(orderSn)).fetchOne(); 
-		int[] total = {0,0,0};
+		int[] total = {TOTAL_GOODSNUMBER ,TOTAL_SENDNUMBER ,TOTAL_SUCCESSRETURNNUMBER};
 		if(result != null) {
 			total[TOTAL_GOODSNUMBER] = result.value1() != null ? result.value1().intValue() : 0;
 			total[TOTAL_SENDNUMBER] = result.value2() != null ? result.value2().intValue() : 0;
@@ -147,5 +150,12 @@ public class OrderGoodsService extends ShopBaseService{
 		}
 		return false;
 	}
-	 
+	
+	public Result<Record> selectWhere(Condition where) {
+		return db().select(TABLE.asterisk()).from(TABLE).where(where).fetch();
+	}
+	
+	public List<OrderGoodsVo> getReturnGoods(String orderSn) {
+		return selectWhere(TABLE.ORDER_SN.eq(orderSn).and(TABLE.RETURN_NUMBER.gt((short)0))).into(OrderGoodsVo.class);
+	}
 }

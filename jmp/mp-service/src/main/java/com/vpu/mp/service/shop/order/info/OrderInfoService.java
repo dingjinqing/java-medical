@@ -304,7 +304,8 @@ public class OrderInfoService extends ShopBaseService {
 		.add(order.getScoreDiscount())
 		.add(order.getMemberCardBalance())
 		.add(order.getUseAccount())
-		.add(order.getSubGoodsPrice())
+		//TODO 少这个字段
+		//.add(order.getSubGoodsPrice())
 		.subtract(isIncludeShipingFee ? BigDecimal.ZERO : order.getShippingFee());
 	}
 	

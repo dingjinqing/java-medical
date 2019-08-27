@@ -37,4 +37,6 @@ public class OrderGoodsVo {
 	@JsonIgnore
 	private Integer returnNumber;
 	private Integer sendNumber;
+	/**折后单价*/
+	private BigDecimal discountedGoodsPrice;
 }

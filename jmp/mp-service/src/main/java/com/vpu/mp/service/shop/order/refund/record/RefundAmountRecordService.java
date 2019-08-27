@@ -14,7 +14,6 @@ import org.springframework.stereotype.Service;
 
 import com.vpu.mp.db.shop.tables.RefundAmountRecord;
 import com.vpu.mp.service.foundation.service.ShopBaseService;
-import com.vpu.mp.service.pojo.shop.order.OrderListInfoVo;
 import com.vpu.mp.service.shop.order.info.OrderInfoService;;
 
 /**
@@ -35,7 +34,7 @@ public class RefundAmountRecordService extends ShopBaseService{
 	 * @param orderSns
 	 * @return Map<支付种类(细分) , 金额>
 	 */
-	public LinkedHashMap<String , BigDecimal> getReturnAmountMap(List<String> orderSns , OrderListInfoVo order){
+	public LinkedHashMap<String , BigDecimal> getReturnAmountMap(List<String> orderSns ){
 		//构造成功退款的汇总
 		LinkedHashMap<String, BigDecimal> result = new LinkedHashMap<String , BigDecimal>(orderInfo.PAY_SUBDIVISION.length);
 		Map<String, Result<Record2<String, BigDecimal>>> map = getOrderRefundAmount(orderSns);
