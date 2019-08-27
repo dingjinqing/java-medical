@@ -15,12 +15,14 @@
         <div class="rightContent">
           <span>砍价设置：每个被邀请的用户，单日可帮助砍价 </span>
           <el-input
+            v-model="dailyCutTimes"
             style="width: 80px"
             size="small"
           ></el-input>
           <span>次</span>
           <span>设置为空时，不限制帮助砍价次数</span>
           <el-button
+            @click="updateDailyCutTimes"
             type="primary"
             size="small"
           >保存设置</el-button>
@@ -168,7 +170,7 @@
 
 </template>
 <script>
-import { bargainList, updateBargain, deleteBargain } from '@/api/admin/marketManage/bargain.js'
+import { bargainList, updateBargain, deleteBargain, getDailyCutTimes, setDailyCutTimes } from '@/api/admin/marketManage/bargain.js'
 import statusTab from '@/components/admin/status/statusTab'
 import pagination from '@/components/admin/pagination/pagination'
 export default {
@@ -180,12 +182,19 @@ export default {
       tabIndex: 1,
       currentPage: 1,
       tableData: [],
-      pageParams: {}
+      pageParams: {},
+      dailyCutTimes: 0
     }
   },
   mounted () {
-    // 初始化数据
+    // 初始列表化数据
     this.initDataList()
+    // 取单日可帮助砍价的次数
+    getDailyCutTimes().then((res) => {
+      if (res.error === 0) {
+        this.dailyCutTimes = res.content
+      }
+    })
   },
   methods: {
     initDataList () {
@@ -195,10 +204,9 @@ export default {
       }
 
       bargainList(param).then((res) => {
-        console.log(res)
         if (res.error === 0) {
           this.handleData(res.content.dataList)
-          this.pageParams = res.content.page
+          this.pageParams = res.content
         }
       })
     },
@@ -253,6 +261,16 @@ export default {
         if (res.error === 0) {
           alert('删除成功')
           this.initDataList()
+        }
+      })
+    },
+    // 设置砍价取单日可帮助砍价的次数
+    updateDailyCutTimes () {
+      setDailyCutTimes(this.dailyCutTimes).then((res) => {
+        if (res.error === 0) {
+          alert('设置成功')
+        } else {
+          alert('设置失败')
         }
       })
     },

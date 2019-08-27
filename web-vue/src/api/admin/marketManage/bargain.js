@@ -35,3 +35,19 @@ export function deleteBargain (data) {
     data: data
   })
 }
+
+// 取砍价取单日可帮助砍价的次数
+export function getDailyCutTimes () {
+  return service({
+    url: `/api/admin/market/bargain/cut/times/get`,
+    method: 'get'
+  })
+}
+
+// 设置砍价取单日可帮助砍价的次数
+export function setDailyCutTimes (dailyCutTimes) {
+  return service({
+    url: `/api/admin/market/bargain/cut/times/set?dailyCutTimes=${dailyCutTimes}`,
+    method: 'get'
+  })
+}
