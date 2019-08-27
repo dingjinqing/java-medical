@@ -7,6 +7,7 @@ import com.vpu.mp.db.shop.tables.records.UserRecord;
 import com.vpu.mp.service.foundation.data.JsonResult;
 import com.vpu.mp.service.foundation.data.JsonResultCode;
 import com.vpu.mp.service.foundation.data.JsonResultMessage;
+import com.vpu.mp.service.foundation.exception.MpException;
 import com.vpu.mp.service.pojo.shop.auth.AdminTokenAuthInfo;
 import com.vpu.mp.service.pojo.shop.member.account.AccountParam;
 import com.vpu.mp.service.shop.member.MemberService;
@@ -31,12 +32,12 @@ public class AdminAccountController extends AdminBaseController {
 		Byte tradeType = ACCOUNT_DEFAULT.getValue();
 		Byte tradeFlow = TRADE_FLOW_INCOME.getValue();
 		MemberService member = shop().member;
-		JsonResultCode ret = member.account.addUserAccount(param,adminUser,tradeType,tradeFlow);
-		
-		if(ret == CODE_MEMBER_ACCOUNT_UPDATE_FAIL) {
-			return this.fail(JsonResultMessage.MSG_MEMBER_ACCOUNT_UPDATE_FAIL);
+
+		try {
+			member.account.addUserAccount(param,adminUser,tradeType,tradeFlow);
+		} catch (MpException e) {
+			return this.fail(e.getErrorCode());
 		}
-		
 		return success();
 	}
 }

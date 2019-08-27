@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.vpu.mp.service.foundation.data.JsonResult;
 import com.vpu.mp.service.foundation.data.JsonResultCode;
+import com.vpu.mp.service.foundation.exception.MpException;
 import com.vpu.mp.service.foundation.util.DateUtil;
 import com.vpu.mp.service.foundation.util.FieldsUtil;
 import com.vpu.mp.service.foundation.util.PageResult;
@@ -484,7 +485,13 @@ public class AdminStoreController extends AdminBaseController{
 				int adminUser = 0;
 				Byte tradeType = 0;
 				Byte tradeFlow = 1;
-				tradeFlag = shop().member.account.addUserAccount(accountData,adminUser,tradeType,tradeFlow) > 0 ? true : false;
+				//tradeFlag = shop().member.account.addUserAccount(accountData,adminUser,tradeType,tradeFlow) > 0 ? true : false;
+			try {
+				shop().member.account.addUserAccount(accountData,adminUser,tradeType,tradeFlow);
+				tradeFlag = true;
+			} catch (MpException e) {
+				tradeFlag = false;
+			}
 				break;
 			/** 门店买单 */
 			case 0:
