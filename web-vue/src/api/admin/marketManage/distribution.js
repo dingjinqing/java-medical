@@ -53,3 +53,12 @@ export function distributionGroup (data) {
     data: data
   })
 }
+
+// 删除分销员分组
+export function distributionGroupDel (data) {
+  return service({
+    url: `/api/admin/distribution/group/del?id=${data}`,
+    method: 'get',
+    data: data
+  })
+}

@@ -302,7 +302,7 @@ export default {
       })
     },
     del (id) {
-      this.$confirm('此操作将永久删除该文件, 是否继续?', '提示', {
+      this.$confirm('此操作将永久删除该推广语, 是否继续?', '提示', {
         confirmButtonText: '确定',
         cancelButtonText: '取消',
         type: 'warning'
@@ -435,7 +435,7 @@ export default {
   }
 }
 .opt {
-  text-align: left;
+  text-align: center;
   color: #5a8bff;
   span {
     cursor: pointer;

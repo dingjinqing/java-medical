@@ -71,6 +71,13 @@
           label="操作"
           align="center"
         >
+          <template slot-scope="scope">
+            <div class="opt">
+              <span @click="edit(scope.row.id)">编辑</span>
+              <span @click="del(scope.row.id)">删除</span>
+              <span>添加分销员</span>
+            </div>
+          </template>
         </el-table-column>
       </el-table>
     </div>
@@ -82,7 +89,7 @@
 </template>
 
 <script>
-import { distributionGroup } from '@/api/admin/marketManage/distribution.js'
+import { distributionGroup, distributionGroupDel } from '@/api/admin/marketManage/distribution.js'
 // 引入分页
 import pagination from '@/components/admin/pagination/pagination'
 export default {
@@ -127,6 +134,28 @@ export default {
         }
       })
       this.tableData = data
+    },
+    del (id) {
+      this.$confirm('此操作将永久删除该分组, 是否继续?', '提示', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
+      }).then(() => {
+        distributionGroupDel(id).then(res => {
+          if (res.error === 0) {
+            this.$message({
+              type: 'success',
+              message: '删除成功!'
+            })
+            this.groupList()
+          }
+        })
+      }).catch(() => {
+        this.$message({
+          type: 'info',
+          message: '已取消删除'
+        })
+      })
     }
   }
 }
@@ -180,6 +209,13 @@ span {
       height: 32px;
       line-height: 32px;
     }
+  }
+}
+.opt {
+  text-align: center;
+  color: #5a8bff;
+  span {
+    cursor: pointer;
   }
 }
 </style>
