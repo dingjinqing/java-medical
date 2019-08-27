@@ -1,268 +1,168 @@
 <template>
-  <div class="basicInfo">
-
-    <el-form
-      :model="formData"
-      :rules="rules"
-      ref="basicInfo_form"
-      label-width="120px"
-      class="basic"
-    >
-      <el-form-item
-        style="width:400px;"
-        label="商品名称："
-        prop="goodsName"
-      >
-        <el-input
-          ref="goodsName"
-          style="width:400px"
-          v-model="formData.goodsName"
-          size="small"
-        ></el-input>
-      </el-form-item>
-      <el-form-item
-        label="商品广告词："
-        prop="goodsAd"
-      >
-        <el-input
-          style="width:400px"
-          v-model="formData.goodsAd"
-          size="small"
-        ></el-input>
-      </el-form-item>
-      <el-form-item
-        label="商品货号："
-        prop="goodsNumber"
-      >
-        <el-input
-          style="width:160px;"
-          v-model="formData.goodsNumber"
-          size="small"
-        ></el-input>
-        <span style="color:#999;margin-left:15px;">不填则由系统自动生成货号</span>
-      </el-form-item>
-      <el-form-item
-        label="平台分类："
-        prop="catId"
-      >
-        <el-row>
-          <el-select
-            size="small"
-            v-model="value"
-            placeholder="请选择平台分类"
-            @change='handleChange'
-          >
-            <el-option
-              v-for="item in optionsData"
-              :key="item.value"
-              :label="item.label"
-              :value="item.value"
-            >
-            </el-option>
+  <div>
+    <!--基本信息配置模块-->
+    <div>
+      <el-form ref="basicInfoForm" :model="goodsProductInfo" :rules="basicInfoRules" label-width="120px">
+        <el-form-item label="商品名称：" prop="goodsName">
+          <el-input v-model="goodsProductInfo.goodsName" size="small" style="width:400px"/>
+        </el-form-item>
+        <el-form-item label="商品广告词：">
+          <el-input v-model="goodsProductInfo.goodsAd" size="small" style="width:400px"/>
+        </el-form-item>
+        <el-form-item label="商品货号：">
+          <el-input v-model="goodsProductInfo.goodsSn" size="small" style="width:170px;"/>
+          <span class="inputTip">不填则由系统自动生成货号</span>
+        </el-form-item>
+        <el-form-item label="平台分类：" prop="catId">
+          <el-select v-model="catIdTemp.firstCatId" size="small"
+                     @change="catIdSelectChange(1,$event)">
+            <el-option :value="null" label="请选择平台分类"/>
+            <el-option v-for="item in catIdTemp.firstCatData" :label="item.catName" :value="item.catId"
+                       :key="item.catId"/>
           </el-select>
-          <el-select
-            size="small"
-            v-show="second"
-            placeholder="请选择"
-            v-model="value2"
-            @change='handleChange2'
-          >
-            <el-option
-              v-for="item in optionsData2"
-              :key="item.value"
-              :label="item.label"
-              :value="item.value"
-            >
-            </el-option>
+          <el-select v-if="!!catIdTemp.firstCatId" v-model="catIdTemp.secondCatId" size="small"
+                     @change="catIdSelectChange(2,$event)">
+            <el-option :value="null" label="请选择平台分类"/>
+            <el-option v-for="item in catIdTemp.secondCatData" :label="item.catName" :value="item.catId"
+                       :key="item.catId"/>
           </el-select>
-          <el-select
-            size="small"
-            v-show="third"
-            placeholder="请选择"
-            v-model="value3"
-            @change='handleChange3'
-          >
-            <el-option
-              v-for="item in optionsData3"
-              :key="item.value"
-              :label="item.label"
-              :value="item.value"
-            >
-            </el-option>
+          <el-select v-if="!!catIdTemp.firstCatId&&!!catIdTemp.secondCatId" v-model="catIdTemp.thirdCatId"
+                     size="small" @change="catIdSelectChange(3,$event)">
+            <el-option :value="null" label="请选择平台分类"/>
+            <el-option v-for="item in catIdTemp.thirdCatData" :label="item.catName" :value="item.catId"
+                       :key="item.catId"/>
           </el-select>
-        </el-row>
-        <span style="color:#999;">
+          <span class="inputTip">
           “平台分类”是商品在系统中的属性，不会对用户展示。可在“基础配置”中设置默认平台分类。
-        </span>
+          </span>
+          <el-link type="primary" :underline="false" href="#" target="_blank">前往</el-link>
+        </el-form-item>
+        <el-form-item label="商品主图：" prop="goodsImg">
+          <goodsMainPic @imgListChange="goodsImgsChange"/>
+          <span class="inputTip">
+            建议尺寸：800*800像素
+          </span>
+        </el-form-item>
+      </el-form>
+      <!-- 基本信息更多配置 -->
+      <el-collapse accordion>
+        <el-collapse-item title="展开/收起更多配置" name="1">
+          <el-form ref="basicInfoOtherForm" :model="goodsProductInfo" :rules="basicInfoRules" label-width="120px">
+            <el-form-item label="单位：" prop="unit">
+              <el-select v-model="unitSelectedValue" @change="unitSelectChange" size="small">
+                <el-option v-for="(item,index) in unitSelectOptions" :key="index" :value="item.value"
+                           :label="item.label"/>
+              </el-select>
+              <el-input v-if="unitSelectedValue===null" v-model="unitCustomerValue" @change="unitCustomerChange"
+                        size="small" style="width:100px;"/>
+              <span v-if="unitSelectedValue===null" class="inputTip">长度限制为3个中文字符</span>
+            </el-form-item>
+            <el-form-item label="商家分类：" prop="sortId">
+              <el-select filterable v-model="goodsProductInfo.sortId" placeholder="请选择商家分类" size="small">
+                <el-option v-for="item in sortSelectOptions" :key="item.sortId" :label="item.sortName"
+                           :value="item.sortId"
+                           :style="{'marginLeft': item.level===1? '10px':'0px'}"/>
+              </el-select>
+            </el-form-item>
+            <el-form-item label="商品标签：" prop="goodsLabels">
+              <el-select v-model="labelSelectedTempVal" placeholder="请选择商品标签" size="small" @change="labelSelectChange">
+                <el-option v-for="item in labelSelectOptions" :key="item.id" :label="item.name" :value="item.id"/>
+              </el-select>
+              <el-link type="primary" :underline="false" @click="labelSelectRefresh" href="#" style="margin:0 5px;">刷新
+              </el-link>
+              |
+              <el-link type="primary" :underline="false" href="#" style="margin:0 5px;">新建标签</el-link>
+              |
+              <el-link type="primary" :underline="false" href="#" style="margin:0 5px;">管理标签</el-link>
+            </el-form-item>
+            <el-form-item label="商品品牌：" prop="brandName">
+              <el-input v-model="goodsProductInfo.brandId" disabled placeholder="添加品牌" size="small"
+                        @click="brandInputClick" style="width:170px;"/>
+            </el-form-item>
+            <el-form-item label="商品视频：" prop="video" @click="videoInputClick">
 
-        <el-link
-          type="primary"
-          :underline="false"
-          href="#"
-          target="_blank"
-        >前往</el-link>
-      </el-form-item>
-      <el-form-item
-        label="商品主图："
-        prop="goodsImg"
-      >
-        <goodsMainPic @mainUrl="handleReceiveMainUrl" />
-      </el-form-item>
-    </el-form>
-    <!-- 展开收起更多配置 -->
-    <el-collapse accordion>
-      <el-collapse-item
-        title="展开/收起更多配置"
-        name="1"
-      >
-        <el-form
-          :rules="rules1"
-          :model="formData1"
-          ref="form1"
-          label-width="120px"
-          class="form1"
-        >
-          <!-- 单位 -->
-          <el-form-item
-            label="单位："
-            prop="unit"
-          >
-            <el-select
-              size="small"
-              v-model="formData1.unit"
-              placeholder="请选择"
-              @change="getValue"
-            >
-              <el-option
-                v-for="item in options"
-                :key="item.value"
-                :label="item.label"
-                :value="item.value"
-              >
-              </el-option>
-            </el-select>
-            <el-input
-              size="small"
-              style="width:100px;"
-              v-model="customUnit"
-              v-show="isShow"
-            ></el-input>
-          </el-form-item>
-          <!-- 商家分类 -->
-          <el-form-item
-            label="商家分类："
-            prop="sortId"
-          >
-            <el-select
-              filterable
-              placeholder="请选择商家分类"
-              v-model="formData1.sortId"
-              size="small"
-            >
-              <el-option
-                v-for="item in sortOptions"
-                :key="item.sortId"
-                :label="item.sortName"
-                :value="item.sortId"
-                :class="[item.level ===1?'level_1':'',item.level ===2?'level_2':'']"
-              >
-              </el-option>
-            </el-select>
-          </el-form-item>
-          <!-- 商品标签 -->
-          <el-form-item
-            label="商品标签："
-            prop="name"
-          >
-            <el-select
-              filterable
-              placeholder="请选择商品标签"
-              v-model="formData1.name"
-              size="small"
-            >
-              <el-option
-                v-for="item in goodsLabels"
-                :key="item.value"
-                :label="item.label"
-                :value="item.value"
-              >
-              </el-option>
-            </el-select>
-          </el-form-item>
-          <!-- 商品品牌 -->
-          <el-form-item
-            label="商品品牌："
-            prop="brandName"
-          >
-            <span
-              class="brand"
-              @click="showDialog"
-            >添加品牌</span>
-          </el-form-item>
-          <!-- 商品视频 -->
-          <el-form-item
-            label="商品视频："
-            prop="video"
-          >
-            <span>上传视频仅支持MP4格式。为保障无线端各种网络环境下正常播放，只支持上传大小不超过10M，时长不超过3分钟的视频。</span>
-          </el-form-item>
-        </el-form>
-      </el-collapse-item>
-    </el-collapse>
-    <addBrandDialog :dialogVisible.sync="dialogVisible" />
+              <span class="inputTip">上传视频仅支持MP4格式。为保障无线端各种网络环境下正常播放，只支持上传大小不超过10M，时长不超过3分钟的视频。</span>
+            </el-form-item>
+          </el-form>
+        </el-collapse-item>
+      </el-collapse>
+    </div>
 
+    <!--&lt;!&ndash;库存/价格信息&ndash;&gt;-->
+    <!--<div class="blockWrap">-->
+    <!--<div class="title">库存/价格信息</div>-->
+    <!--</div>-->
+    <!--<stockAndPriceInfo ref="priceInfo" />-->
+    <!--&lt;!&ndash; 配送信息 &ndash;&gt;-->
+    <!--<div class="blockWrap">-->
+    <!--<div class="title">配送信息</div>-->
+    <!--</div>-->
+    <!--<deliveryInfo />-->
+    <!--&lt;!&ndash; 其他信息 &ndash;&gt;-->
+    <!--<div class="blockWrap">-->
+    <!--<div class="title">其他信息</div>-->
+    <!--</div>-->
+    <!--<otherInfo />-->
   </div>
 </template>
 <script>
-import { selectPlatformClassification } from '@/api/admin/goodsManage/addingGoods/addingGoods'
-import { initGrandgetRequest } from '@/api/admin/brandManagement.js'
-// import { getLabelList } from '@/api/admin/labelList/labelList'
-import addBrandDialog from './addBrandDialog'
+// 接口函数引入
+import {
+  selectPlatformClassification,
+  goodsSortAndGoodsBrandInitApi
+} from '@/api/admin/goodsManage/addingGoods/addingGoods'
+  // 组件导入
 import goodsMainPic from './goodsMainPic'
+import addBrandDialog from './addBrandDialog'
+
 export default {
-  /* eslint-disable */
-  name: 'basicInfo',
-  components: { addBrandDialog, goodsMainPic },
-  data() {
+  components: {goodsMainPic, addBrandDialog},
+  data () {
     return {
-      formData: {
-        goodsName: '',
-        goodsAd: '',
-        goodsNumber: '',
-        catId: '',
-        goodsImg: ''
+      goodsProductInfo: {
+        // 基本信息
+        goodsName: null,
+        goodsAd: null,
+        goodsSn: null,
+        catId: null,
+        goodsImg: null,
+        goodsImgs: [],
+        unit: null,
+        sortId: null,
+        goodsLabels: null,
+        brandId: null,
+        goodsVideo: null,
+        goodsVideoImg: null,
+        goodsVideoSize: null,
+        goodsVideoId: null
       },
-      formData1: {
-        unit: '个',
-        cus: '',
-        brand: '',
-        goodsLabels: [],
-        sortId: '',
-        name: '',
-        brandName: '',
-        video: ''
-      },
-      rules: {
+      /* 基本信息部分 */
+      // 基本信息验证
+      basicInfoRules: {
         goodsName: [
-          { required: true, message: '请输入商品名称', trigger: 'change' }
+          {required: true, message: '请输入商品名称', trigger: 'change'}
         ],
-        goodsAd: [
-          { required: true, message: '请输入商品广告词', trigger: 'change' }
+        catId: [
+          {required: true, message: '请选择平台分类', trigger: 'change'}
+        ],
+        goodsImg: [
+          {required: true, message: '请选择商品图片', trigger: 'change'}
+        ],
+        unit: [
+          {required: true, message: '单位不可为空', trigger: 'change'}
         ]
       },
-      rules1: {
-
+      // 基本信平台分类辅助数据，对应分类每一级别的下落框数据和选中值
+      catIdTemp: {
+        firstCatId: null,
+        secondCatId: null,
+        thirdCatId: null,
+        firstCatData: null,
+        secondCatData: null,
+        thirdCatData: null
       },
-      value: [],
-      value2: [],
-      value3: [],
-      optionsData3: [],
-      optionsData2: [],
-      optionsData: [],
-      second: false,
-      third: false,
-
-      options: [{
+      /* 基本信息更多配置部分 */
+      unitSelectOptions: [{
         value: '个',
         label: '个'
       }, {
@@ -306,7 +206,7 @@ export default {
         value: '支',
         label: '支'
       }, {
-        value: '选项15',
+        value: '盒',
         label: '盒'
       }, {
         value: '份',
@@ -318,127 +218,139 @@ export default {
         value: '千克',
         label: '千克'
       }, {
-        value: '自定义',
+        value: null,
         label: '自定义'
       }],
-      customUnit: '',
-      isShow: false,
-      sortOptions: [],
-      optionProps: {
-        value: 'sortId',
-        label: 'sortName',
-        children: 'children'
-      },
-      goodsLabels: [],
-      dialogVisible: false,
-
-    }
-  },
-  created() {
-    this.init()
-    this.fetchSortList()
-  },
-  mounted() {
-
-  },
-  computed: {
-    getFormData() {
-      return this.formData
+      unitSelectedValue: '个',
+      unitCustomerValue: null,
+      // 商家分类下落框
+      sortSelectOptions: null,
+      // 商品标签下拉框
+      labelSelectOptions: null,
+      // 商品品牌下拉框
+      brandSelectOptions: null,
+      // 标签已选中列表
+      labelSelectedItems: [],
+      // 标签来下框选中瞬间的值
+      labelSelectedTempVal: null
     }
   },
   methods: {
-    handleChange(value) {
-      console.log(value)
-      selectPlatformClassification(value).then(res => {
-        const { error, content } = res
-        if (error === 0) {
-          this.optionsData2 = this.formatContent(content)
-          this.second = true
-        }
-      })
-    },
-    handleChange2(value) {
-      console.log(value)
-      selectPlatformClassification(value).then(res => {
-        const { error, content } = res
-        if (error === 0) {
-          this.optionsData3 = this.formatContent(content)
-          this.third = true
-        }
-      })
-    },
-    handleChange3(value) {
-      this.formData.catId = value
-    },
-    formatContent(content) {
-      let newArr = []
-      content.forEach(item => {
-        newArr.push({
-          value: item['catId'],
-          label: item['catName']
-        })
-      })
-      return newArr
-    },
-    init() {
-      selectPlatformClassification(0).then(res => {
-        const { error, content } = res
-        if (error === 0) {
-          this.optionsData = this.formatContent(content)
-        }
-      })
-    },
-    getValue(val) {
-      if (val === '自定义') {
-        this.isShow = true
-      } else {
-        this.isShow = false
+    /* 基本信息部分 */
+    // 平台分类下拉框交互
+    catIdSelectChange (level, catId) {
+      this.goodsProductInfo.catId = catId
+
+      //  选则一级则重置二三级
+      if (level === 1) {
+        this.catIdTemp.secondCatId = null
+        this.catIdTemp.secondCatData = null
+        this.catIdTemp.thirdCatId = null
+        this.catIdTemp.thirdCatData = null
       }
-    },
-    fetchSortList() {
-      initGrandgetRequest().then(res => {
-        const { error, content: { goodsSorts, goodsLabels } } = res
-        console.log(res)
-        if (error === 0) {
-          console.log(goodsSorts)
-          console.log(goodsLabels)
-          this.sortOptions = goodsSorts
-          this.goodsLabels = goodsLabels
+      // 选择二级则重置三级
+      if (level === 2) {
+        this.catIdTemp.thirdCatId = null
+        this.catIdTemp.thirdCatData = null
+        if (catId === null) {
+          this.goodsProductInfo.catId = this.catIdTemp.firstCatId
         }
-      }).catch(err => console.log(err))
+      }
+      // 选择三级
+      if (level === 3 && catId === null) {
+        this.goodsProductInfo.catId = this.catIdTemp.secondCatId
+      }
+
+      if (catId === null) {
+        return
+      }
+
+      selectPlatformClassification(catId).then(res => {
+        if (level === 1) {
+          this.catIdTemp.secondCatData = res.content
+        }
+        if (level === 2) {
+          this.catIdTemp.thirdCatData = res.content
+        }
+      })
     },
-    showDialog() {
-      this.dialogVisible = true
+    // 初始化平台分类一级下拉框数据
+    catIdInit () {
+      selectPlatformClassification(0).then(res => {
+        this.catIdTemp.firstCatData = res.content
+      })
     },
-    // 接收商品主图传过来的goodsImg
-    handleReceiveMainUrl(val) {
-      // console.log(val)
-      this.formData.goodsImg = val
+    // 商品图片事件监听函数
+    goodsImgsChange (imgList) {
+      if (imgList === null || imgList.length === 0) {
+        return
+      }
+      // 数组第一个值默认为商品主图
+      this.goodsProductInfo.goodsImg = imgList.shift()
+      // 其余为商品子图
+      this.goodsProductInfo.goodsImgs = imgList
+      this.$refs.basicInfoForm.validateField('goodsImg')
+    },
+    /* 基本信息更多配置部分 */
+    // 单位选择下拉框处理事件
+    unitSelectChange (value) {
+      if (value === null) {
+        // 当用户自定义过单位然后选择其他单位，当再次选择自定义时可以保留上一次的输入
+        this.goodsProductInfo.unit = this.unitCustomerValue
+      } else {
+        this.goodsProductInfo.unit = value
+      }
+      this.$refs.basicInfoOtherForm.validateField('unit')
+    },
+    // 自定义单位处理事件
+    unitCustomerChange () {
+      this.goodsProductInfo.unit = this.unitCustomerValue
+      this.$refs.basicInfoOtherForm.validateField('unit')
+    },
+    // 初始化商家分类和商品标签
+    sortAndLabelAndBrandSelectInit () {
+      goodsSortAndGoodsBrandInitApi().then(res => {
+        const {content: {goodsBrands, goodsLabels, goodsSorts}} = res
+        this.sortSelectOptions = goodsSorts
+        this.labelSelectOptions = goodsLabels
+        this.brandSelectOptions = goodsBrands
+      })
+    },
+    // 标签下拉框选择事件
+    labelSelectChange () {
+      this.labelSelectOptions = this.labelSelectOptions.filter(item => {
+        if (item.id === this.labelSelectedTempVal) {
+          this.labelSelectedItems.push(item)
+          return false
+        }
+        return true
+      })
+      this.labelSelectedTempVal = null
+    },
+    labelSelectRefresh () {
+      goodsSortAndGoodsBrandInitApi().then(res => {
+        const {content: {goodsLabels}} = res
+        this.labelSelectOptions = goodsLabels.filter(item => !this.labelSelectedItems.some(innerItem => innerItem.id === item.id))
+      })
+    },
+    brandInputClick () {
+      // TODO: 目前的实现的商品品牌选择框逻辑错误，需要修改
+    },
+    videoInputClick () {
+      // TODO: 视频选择弹出未实现
     }
-
+  },
+  mounted () {
+    // 初始化平台分类一级下拉框
+    this.catIdInit()
+    // 初始化商家分类和商品标签
+    this.sortAndLabelAndBrandSelectInit()
   }
-
 }
 </script>
-
 <style scoped>
-.level_1 {
-  margin-left: 15px;
-}
-.brand {
-  background: #fff;
-  color: #333;
-  border: 1px solid #dcdfe6;
-  border-radius: 5px;
-  width: 180px;
-  height: 30px;
-  display: inline-block;
-  line-height: 30px;
-  text-align: center;
-  cursor: pointer;
-  vertical-align: middle;
-  text-overflow: ellipsis;
-  white-space: nowrap;
-  overflow: hidden;
-}
+  .inputTip {
+    color: #999;
+    margin-left: 15px;
+  }
 </style>
