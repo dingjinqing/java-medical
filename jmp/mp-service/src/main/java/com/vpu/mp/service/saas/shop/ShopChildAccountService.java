@@ -194,4 +194,10 @@ public class ShopChildAccountService extends MainBaseService {
 						.eq(sUpdatePara.getAccountId()).and(SHOP_CHILD_ROLE.ROLE_ID.eq(sUpdatePara.getRoleId()))))
 				.execute();
 	}
+	
+	public int upateBind(Integer subAccountId, String officalOpenId, byte bind) {
+		return db().update(SHOP_CHILD_ACCOUNT).set(SHOP_CHILD_ACCOUNT.OFFICIAL_OPEN_ID, officalOpenId)
+				.set(SHOP_CHILD_ACCOUNT.IS_BIND, bind).where(SHOP_CHILD_ACCOUNT.ACCOUNT_ID.eq(subAccountId)).execute();
+
+	}
 }
