@@ -3,17 +3,17 @@ package com.vpu.mp.controller.admin;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 
-import com.vpu.mp.db.shop.tables.records.UserRecord;
+
 import com.vpu.mp.service.foundation.data.JsonResult;
-import com.vpu.mp.service.foundation.data.JsonResultCode;
-import com.vpu.mp.service.foundation.data.JsonResultMessage;
+
 import com.vpu.mp.service.foundation.exception.MpException;
-import com.vpu.mp.service.pojo.shop.auth.AdminTokenAuthInfo;
+
 import com.vpu.mp.service.pojo.shop.member.account.AccountParam;
 import com.vpu.mp.service.shop.member.MemberService;
 import static com.vpu.mp.service.pojo.shop.operation.RecordTradeEnum.ACCOUNT_DEFAULT;
 import static com.vpu.mp.service.pojo.shop.operation.RecordTradeEnum.TRADE_FLOW_INCOME;
-import static com.vpu.mp.service.foundation.data.JsonResultCode.CODE_MEMBER_ACCOUNT_UPDATE_FAIL;
+import static com.vpu.mp.service.pojo.shop.operation.RecordTradeEnum.TRADE_FLOW_OUTCOME;
+import com.vpu.mp.service.foundation.util.BigDecimalUtil;
 /**
 * @author 黄壮壮
 * @Date: 2019年8月26日
@@ -30,9 +30,14 @@ public class AdminAccountController extends AdminBaseController {
 	public JsonResult updateMemberAccount(@RequestBody AccountParam param) {
 		int adminUser = 0;
 		Byte tradeType = ACCOUNT_DEFAULT.getValue();
-		Byte tradeFlow = TRADE_FLOW_INCOME.getValue();
+		Byte tradeFlow = null;
+		if(BigDecimalUtil.compareTo(param.getAmount(), null)==-1) {
+			tradeFlow = TRADE_FLOW_OUTCOME.getValue();
+		}else {
+			tradeFlow = TRADE_FLOW_INCOME.getValue();
+		}
+		
 		MemberService member = shop().member;
-
 		try {
 			member.account.addUserAccount(param,adminUser,tradeType,tradeFlow);
 		} catch (MpException e) {
