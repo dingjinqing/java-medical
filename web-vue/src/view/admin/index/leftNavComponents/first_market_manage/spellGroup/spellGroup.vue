@@ -5,6 +5,7 @@
 </template>
 
 <script>
+
 import groupList from './groupList'
 export default {
   components: {

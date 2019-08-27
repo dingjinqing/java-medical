@@ -11,11 +11,19 @@
           :label="item.title"
           :name="item.name"
         >
-          <el-button type="primary">添加活动</el-button>
+          <el-button
+            v-if="tableListView"
+            type="primary"
+            @click="addActivity()"
+          >添加活动</el-button>
         </el-tab-pane>
       </el-tabs>
     </div>
-    <div class="table_list">
+    <addGroupBuy v-if="tableListView===false" />
+    <div
+      class="table_list"
+      v-if="tableListView"
+    >
       <el-table
         class="version-manage-table"
         header-row-class-name="tableClss"
@@ -100,9 +108,8 @@
         <el-pagination
           @current-change="initDataList"
           :current-page.sync="currentPage"
-          :page-size="20"
           layout="prev, pager, next, jumper"
-          :total="4"
+          :total="pageRows"
         >
         </el-pagination>
       </div>
@@ -111,6 +118,8 @@
 
 </template>
 <script>
+
+import addGroupBuy from './addGroupBuy.vue'
 import {
   groupBuyList,
   changeStatusActivity,
@@ -118,6 +127,9 @@ import {
 } from '@/api/admin/marketManage/spellGroup.js'
 
 export default {
+  components: {
+    addGroupBuy
+  },
   data () {
     return {
       tableData: [],
@@ -140,7 +152,8 @@ export default {
       }],
       tabIndex: 3,
       currentPage: 1,
-      pageRows: 20
+      pageRows: 20,
+      tableListView: true
     }
   },
   mounted () {
@@ -153,6 +166,17 @@ export default {
       let obj = {
         'type': this.tabSwitch,
         'currentPage': this.currentPage
+      }
+      console.log(this.tabInfo.length)
+      // 新增标签
+      if (this.tabSwitch === '6') {
+        return
+      }
+      // 不是新增
+      if (this.tabInfo.length > 5) {
+        console.log('新增活动')
+        this.tableListView = true
+        this.tabInfo = this.tabInfo.filter(tab => tab.name !== '6')
       }
       groupBuyList(obj).then(res => {
         console.log(res.content.dataList)
@@ -185,8 +209,20 @@ export default {
         console.log(res)
       })
     },
+    // 添加新活动
     addActivity () {
-      console.log(111)
+      console.log('添加拼团活动--------------' + this.tabInfo.length)
+      if (this.tabInfo.length > 5) {
+        return
+      }
+      console.log(typeof this.tabInfo)
+      this.tabInfo.push({
+        title: '添加拼团活动',
+        name: '6',
+        content: 'New Tab content'
+      })
+      this.tableListView = false
+      this.tabSwitch = '6'
     }
   }
 }
