@@ -70,3 +70,9 @@ export const getGiftGiftDetail = data => service({
   method: 'post',
   data
 })
+
+// 查询商品明细
+export const getProductDetail = id => service({
+  url: `/api/admin/market/gift/product/${id}`,
+  method: 'post'
+})

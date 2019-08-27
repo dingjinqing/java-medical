@@ -21,7 +21,7 @@
                 <el-input v-model="param.name"></el-input>
               </el-form-item>
               <el-form-item label="活动优先级">
-                <el-input v-model="param.level"></el-input>
+                <el-input type="number" v-model="param.level"></el-input>
               </el-form-item>
               <el-form-item label="活动名称">
                 <el-date-picker
@@ -44,8 +44,8 @@
               <el-form-item label="活动商品">
                 <template>
                   <el-radio v-for="(item, index) in goodsRanges" :key="index" v-model="goodsRange" :label="index">{{item}}</el-radio>
-                  <el-button v-show="goodsRange===1" size="small">添加商品</el-button>
-                  <span v-show="goodsRange===1">已选{{param.goodsIds.length}}</span>
+                  <el-button v-show="goodsRange===1" size="small" @click="showChoosingGoods">添加商品</el-button>
+                  <span v-show="goodsRange===1">已选{{goodsIdsLength}}</span>
                 </template>
               </el-form-item>
               <el-form-item label="赠品规则">
@@ -60,12 +60,12 @@
               </el-form-item>
               <el-form-item label="满金额赠送" v-show="contains(0)">
                   <span>满</span>
-                  <el-input v-model="param.rules.fullPrice" class="input"></el-input>
+                  <el-input type="number" v-model="param.rules.fullPrice" class="input"></el-input>
                   <span>元，送赠品</span>
               </el-form-item>
               <el-form-item label="满数量赠送" v-show="contains(1)">
                   <span>满</span>
-                  <el-input v-model="param.rules.fullNumber" class="input"></el-input>
+                  <el-input type="number" v-model="param.rules.fullNumber" class="input"></el-input>
                   <span>件，送赠品</span>
               </el-form-item>
               <el-form-item label="会员标签" v-show="contains(2)">
@@ -89,12 +89,12 @@
                   </el-select>
               </el-form-item>
               <el-form-item label="付款排名" v-show="contains(4)">
-                  <el-input v-model="param.rules.payTop" class="input"></el-input>
+                  <el-input type="number" v-model="param.rules.payTop" class="input"></el-input>
               </el-form-item>
               <el-form-item label="已购买次数" v-show="contains(5)">
-                  <el-input v-model="param.rules.minPayNum" class="input"></el-input>
+                  <el-input type="number" v-model="param.rules.minPayNum" class="input"></el-input>
                   <span>至</span>
-                  <el-input v-model="param.rules.maxPayNum" class="input"></el-input>
+                  <el-input type="number" v-model="param.rules.maxPayNum" class="input"></el-input>
               </el-form-item>
               <el-form-item label="付款时间" v-show="contains(6)">
                 <el-date-picker
@@ -128,65 +128,88 @@
         </div>
         <!-- 设置赠品 -->
         <div v-if="step===2">
-          <el-table
-          class="version-manage-table"
-          header-row-class-name="tableHeader"
-          :data="tableData"
-          border
-          style="width: 100%"
-        >
-          <el-table-column
-            prop="name"
-            label="活动名称"
-            align="center"
-          > </el-table-column>
-          <el-table-column
-            prop="spec"
-            label="规格"
-            align="center"
-          > </el-table-column>
-          <el-table-column
-            prop="price"
-            label="商品原价"
-            align="center"
-          > </el-table-column>
-          <el-table-column
-            prop="prdNumber"
-            label="商品库存"
-            align="center"
-          > </el-table-column>
-          <el-table-column
-            prop="productNumber"
-            label="赠品库存/当前库存"
-            align="center"
-          > </el-table-column>
-          <el-table-column
-            label = "操作"
-            align="center"
-          >
-            <template slot-scope="scope">
-              <el-button size="small"
-              @click="tableData.splice(tableData.findIndex(r=>r.productId===scope.row.productId),1)">
-              删除</el-button>
-            </template>
-          </el-table-column>
-          </el-table>
+          <el-row>
+            <el-col>
+              <el-button size="small" type="primary" @click="showChoosingGoods">添加赠品商品</el-button>
+            </el-col>
+          </el-row>
+          <el-row>
+            <el-col>
+              <el-table
+                class="version-manage-table"
+                header-row-class-name="tableHeader"
+                :data="tableData"
+                border
+                style="width: 100%"
+              >
+                <el-table-column
+                  prop="goodsName"
+                  label="商品名称"
+                  align="center"
+                >
+                  <template slot-scope="scope">
+                    <div class="name_cell">
+                      <img :src="scope.row.goodsImg" class="goods_img">
+                      <div>{{scope.row.goodsName}}</div>
+                    </div>
+                  </template>
+                </el-table-column>
+                <el-table-column
+                  prop="prdDesc"
+                  label="规格"
+                  align="center"
+                > </el-table-column>
+                <el-table-column
+                  prop="prdPrice"
+                  label="商品原价"
+                  align="center"
+                > </el-table-column>
+                <el-table-column
+                  prop="prdNumber"
+                  label="商品库存"
+                  align="center"
+                > </el-table-column>
+                <el-table-column
+                  prop="productNumber"
+                  label="赠品库存/当前库存"
+                  align="center"
+                >
+                  <template slot-scope="scope">
+                     <el-input type="number" v-model="scope.row.productNumber"></el-input>
+                  </template>
+                </el-table-column>
+                <el-table-column
+                  label = "操作"
+                  align="center"
+                >
+                  <template slot-scope="scope">
+                    <el-button size="small"
+                    @click="tableData.splice(tableData.findIndex(r=>r.productId===scope.row.productId),1)">
+                    删除</el-button>
+                  </template>
+                </el-table-column>
+                </el-table>
+            </el-col>
+          </el-row>
         </div>
         <el-row>
           <el-col :offset="4">
-            <el-button type="primary" @click="step-=1" v-show="step > 1">上一步</el-button>
-            <el-button type="primary" @click="step+=1" v-show="step < steps.length">下一步</el-button>
+            <el-button type="primary" @click="lastStep" v-show="step > 1">上一步</el-button>
+            <el-button type="primary" @click="nextStep" v-show="step < steps.length">下一步</el-button>
             <el-button type="primary" @click="addGift" v-show="step === steps.length">保存</el-button>
           </el-col>
         </el-row>
+        <choosingGoods/>
     </wrapper>
   </div>
 </template>
 <script>
+import { mapGetters, mapActions } from 'vuex'
 import wrapper from '@/components/admin/wrapper/wrapper'
 import choosingGoods from '@/components/admin/choosingGoods'
 import { format, range } from '@/util/date'
-import { addGift, getGiftDetail, updateGift, getMemberCardList, getTagList } from '@/api/admin/marketManage/gift'
+import { addGift, getGiftDetail, updateGift, getMemberCardList, getTagList, getProductDetail } from '@/api/admin/marketManage/gift'
+
 export default {
   components: {
     wrapper,
@@ -281,10 +304,34 @@ export default {
       // 当前已选规则序号
       selectedRules: [],
       // 赠品表格
-      tableData: []
+      tableData: [],
+      // 选中商品id
+      tmpGoodsIds: [],
+      // 选中赠品商品id
+      tmpGiftGoodsIds: []
+    }
+  },
+  computed: {
+    ...mapGetters(['goodsIds']),
+    goodsIdsLength () {
+      return this.tmpGoodsIds.length
     }
   },
   methods: {
+    ...mapActions(['transmitGoodsIds', 'transmitEditGoodsId']),
+    nextStep () {
+      this.step++
+      this.tmpGoodsIds = this.goodsIds
+      this.transmitGoodsIds(this.tmpGiftGoodsIds)
+      this.transmitEditGoodsId(this.tmpGiftGoodsIds)
+    },
+    lastStep () {
+      this.step--
+      this.tmpGiftGoodsIds = this.goodsIds
+      this.transmitGoodsIds(this.tmpGoodsIds)
+      this.transmitEditGoodsId(this.tmpGoodsIds)
+    },
+    // 保存
     addGift () {
       const then = r => this.gotoGifts()
       const { param } = this
@@ -298,6 +345,7 @@ export default {
     formatParam () {
       this.formatTime()
       this.formatRules()
+      this.formatGoods()
     },
     // 格式化入参时间
     formatTime () {
@@ -311,6 +359,7 @@ export default {
       this.param.rules.payStartTime = format(startTime)
       this.param.rules.payEndTime = format(endTime)
     },
+    // 处理商品规则
     formatRules () {
       const { selectedRules } = this
       // 将 param.rules 中，不在已选规则序号中的属性赋值 null
@@ -321,6 +370,16 @@ export default {
         }
       })
     },
+    // 处理活动商品和赠品
+    formatGoods () {
+      // 活动商品
+      this.param.goodsIds = this.tmpGoodsIds
+      // 赠品
+      const gifts = this.tableData
+        .map(({ productId, productNumber }) => ({ productId, productNumber }))
+      this.param.gifts = gifts
+    },
+    // 回显数据加载
     loadData () {
       const { id } = this.$route.params
       getGiftDetail(id).then(({ content }) => {
@@ -333,6 +392,7 @@ export default {
       this.loadTag()
       this.loadMemberCard()
     },
+    // 加载赠品规则
     loadRules (content) {
       const { rules } = content
       const { payStartTime, payEndTime } = rules
@@ -351,13 +411,18 @@ export default {
         }
       })
     },
+    // 加载活动商品
     loadGoods (content) {
       let { goodsIds } = content
       if (!goodsIds || goodsIds.length === 0) {
+        // 全部商品
         this.goodsRange = 0
       } else {
+        // 指定商品
         this.goodsRange = 1
-        this.param.goodsIds = goodsIds
+        this.tmpGoodsIds = goodsIds
+        this.transmitGoodsIds(goodsIds)
+        this.transmitEditGoodsId(goodsIds)
       }
     },
     loadTag () {
@@ -384,14 +449,50 @@ export default {
     gotoGifts () {
       this.$router.replace('/admin/home/main/gift')
     },
+    // 已选赠品规则中是否包含某个规则序号
     contains (ruleIndex) {
       return this.selectedRules.find(i => i === ruleIndex) !== undefined
+    },
+    // 选择商品弹窗
+    showChoosingGoods () {
+      this.$http.$emit('choosingGoodsFlag', true)
+      switch (this.step) {
+        case 1:
+          this.transmitEditGoodsId(this.tmpGoodsIds)
+          break
+        case 2:
+          this.transmitEditGoodsId(this.tmpGiftGoodsIds)
+          break
+      }
+    },
+    // 添加一行赠品商品
+    addProductRow (productId) {
+      getProductDetail(productId).then(({ content }) => {
+        const { goodsImg, prdImg } = content
+        const row = {
+          ...content,
+          goodsImg: prdImg || goodsImg
+        }
+        this.tableData.push(row)
+      })
     }
   },
   watch: {
     goodsRange (v) {
       if (v === 0) {
+        // 选择了”全部商品“
         this.param.goodsIds = []
+      }
+    },
+    goodsIds (v) {
+      // 保存”活动商品“和”赠品商品“id临时变量
+      switch (this.step) {
+        case 1:
+          this.tmpGoodsIds = v
+          break
+        case 2:
+          this.tmpGiftGoodsIds = v
+          break
       }
     }
   },
@@ -399,6 +500,7 @@ export default {
     const id = this.$route.params.id
     this.update = !!id
     if (this.update) {
+      // 编辑回显
       this.loadData()
     }
   }
@@ -411,5 +513,16 @@ export default {
   .input {
     margin-right: 10px;
     width: 70px;
+  }
+  .name_cell {
+    display: flex;
+    div {
+      line-height: 45px;
+      margin-left: 10px;
+    }
+  }
+  .goods_img {
+    width: 45px;
+    height: 45px;
   }
 </style>
