@@ -27,6 +27,15 @@ export function advertisementPause (data) {
   })
 }
 
+//  启用分销推广语
+export function advertisementStart (data) {
+  return service({
+    url: `/api/admin/distribution/promotion/open?id=${data}`,
+    method: 'get',
+    data: data
+  })
+}
+
 // 删除分销推广语
 export function advertisementDelete (data) {
   return service({

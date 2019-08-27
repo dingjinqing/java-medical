@@ -6,19 +6,19 @@
           <span>创建时间</span>
           <el-date-picker
             v-model="time.startCreateTime"
-            type="date"
+            type="datetime"
             placeholder="选择日期"
             size="small"
-            value-format="yyyy-MM-dd"
+            value-format="yyyy-MM-dd HH:mm:ss"
           >
           </el-date-picker>
           <span>至</span>
           <el-date-picker
             v-model="time.endCreateTime"
-            type="date"
+            type="datetime"
             placeholder="选择日期"
             size="small"
-            value-format="yyyy-MM-dd"
+            value-format="yyyy-MM-dd HH:mm:ss"
           >
           </el-date-picker>
         </div>
@@ -26,19 +26,19 @@
           <span>最后修改时间</span>
           <el-date-picker
             v-model="time.startUpdateTime"
-            type="date"
+            type="datetime"
             placeholder="选择日期"
             size="small"
-            value-format="yyyy-MM-dd"
+            value-format="yyyy-MM-dd HH:mm:ss"
           >
           </el-date-picker>
           <span>至</span>
           <el-date-picker
             v-model="time.endUpdateTime"
-            type="date"
+            type="datetime"
             placeholder="选择日期"
             size="small"
-            value-format="yyyy-MM-dd"
+            value-format="yyyy-MM-dd HH:mm:ss"
           >
           </el-date-picker>
         </div>
@@ -59,6 +59,7 @@
         </div>
       </div>
       <el-button
+        :plain="true"
         type="primary"
         size="small"
         @click="centerDialogVisible = true"
@@ -152,7 +153,16 @@
           <template slot-scope="scope">
             <div class="opt">
               <span @click="edit(scope.row.id)">编辑</span>
-              <span @click="stop(scope.row.id)">停用</span>
+              <span
+                prop="isPause"
+                @click="stop(scope.row.id)"
+                v-if="scope.row.isPause"
+              >停用</span>
+              <span
+                prop="isPause"
+                @click="start(scope.row.id)"
+                v-else
+              >启用</span>
               <span @click="del(scope.row.id)">删除</span>
             </div>
           </template>
@@ -170,7 +180,7 @@
 <script>
 // 引入分页
 import pagination from '@/components/admin/pagination/pagination'
-import { advertisementList, advertisementAdd, advertisementPause, advertisementDelete } from '@/api/admin/marketManage/distribution.js'
+import { advertisementList, advertisementAdd, advertisementPause, advertisementDelete, advertisementStart } from '@/api/admin/marketManage/distribution.js'
 export default {
   components: { pagination },
   data () {
@@ -192,7 +202,7 @@ export default {
         promotionLanguage: '',
         title: ''
       },
-
+      isPause: '',
       pageParams: {}
     }
   },
@@ -219,6 +229,12 @@ export default {
       return row.isBlock
     },
     search () {
+      this.pageParams.promotionLanguage = this.promotionLanguage
+      this.pageParams.startCreateTime = this.time.startCreateTime
+      this.pageParams.endCreateTime = this.time.endCreateTime
+      this.pageParams.startUpdateTime = this.time.startUpdateTime
+      this.pageParams.endUpdateTime = this.time.endUpdateTime
+      console.log(this.pageParams)
       advertisementList(this.pageParams).then((res) => {
         console.log(res)
         if (res.error === 0) {
@@ -229,9 +245,14 @@ export default {
     },
     handleData (data) {
       data.map((item, index) => {
-        console.log(data)
+        if (item.isBlock === 0) {
+          item.isPause = true
+        } else {
+          item.isPause = false
+        }
       })
       this.tableData = data
+      console.log(this.tableData)
     },
     edit () {
       console.log('编辑')
@@ -255,6 +276,28 @@ export default {
         this.$message({
           type: 'info',
           message: '取消停用操作'
+        })
+      })
+    },
+    start (id) {
+      this.$confirm('是否确认启用该推广语', '提示', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
+      }).then(() => {
+        advertisementStart(id).then(res => {
+          if (res.error === 0) {
+            this.$message({
+              type: 'success',
+              message: '启用成功!'
+            })
+            this.search()
+          }
+        })
+      }).catch(() => {
+        this.$message({
+          type: 'info',
+          message: '取消启用操作'
         })
       })
     },
@@ -289,6 +332,10 @@ export default {
       console.log(this.param)
       advertisementAdd(this.param).then(res => {
         if (res.error === 0) {
+          this.$message({
+            message: '添加成功',
+            type: 'success'
+          })
           this.search()
         }
       })
