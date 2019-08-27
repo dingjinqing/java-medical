@@ -10,7 +10,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.vpu.mp.service.foundation.data.JsonResult;
 import com.vpu.mp.service.foundation.util.PageResult;
-import com.vpu.mp.service.pojo.shop.area.AreaSelectVo;
+import com.vpu.mp.service.pojo.shop.area.AreaProvinceVo;
 import com.vpu.mp.service.pojo.shop.config.DeliverTemplateConfig;
 import com.vpu.mp.service.pojo.shop.goods.deliver.GoodsDeliverIdParam;
 import com.vpu.mp.service.pojo.shop.goods.deliver.GoodsDeliverPageListParam;
@@ -36,7 +36,7 @@ public class AdminGoodsDeliverController extends AdminBaseController {
 	 */
 	@GetMapping("/select")
 	public JsonResult getAllArea() {
-		List<AreaSelectVo> areaSelectVo = shop().goods.goodsDeliver.getAllArea();
+		List<AreaProvinceVo> areaSelectVo = shop().goods.goodsDeliver.getAllArea();
 		return success(areaSelectVo);
 	}
 	/**

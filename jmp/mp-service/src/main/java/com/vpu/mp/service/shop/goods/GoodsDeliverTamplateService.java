@@ -13,7 +13,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.vpu.mp.service.foundation.service.ShopBaseService;
 import com.vpu.mp.service.foundation.util.PageResult;
-import com.vpu.mp.service.pojo.shop.area.AreaSelectVo;
+import com.vpu.mp.service.pojo.shop.area.AreaProvinceVo;
 import com.vpu.mp.service.pojo.shop.goods.deliver.GoodsDeliverIdParam;
 import com.vpu.mp.service.pojo.shop.goods.deliver.GoodsDeliverPageListParam;
 import com.vpu.mp.service.pojo.shop.goods.deliver.GoodsDeliverTemplateParam;
@@ -37,7 +37,7 @@ public class GoodsDeliverTamplateService extends ShopBaseService{
 	 * @param 
 	 * @return List<AreaSelectVo>
 	 */
-	public List<AreaSelectVo> getAllArea() {
+	public List<AreaProvinceVo> getAllArea() {
 		return saas.areaSelectService.getAllArea();
 	}
 	

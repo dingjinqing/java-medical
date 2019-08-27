@@ -1,5 +1,7 @@
 package com.vpu.mp.service.pojo.shop.area;
 
+import java.util.List;
+
 import lombok.Data;
 
 /**
@@ -8,18 +10,13 @@ import lombok.Data;
  * @date 2019年8月27日
  */
 @Data
-public class AreaSelectVo {
+public class AreaProvinceVo {
 	
 	/** 省代码 */
 	private Integer provinceId;
 	/** 省名称 */
 	private String provinceName;
-	/** 市代码 */
-	private Integer cityId;
-	/** 市名称 */
-	private String cityName;
-	/** 区县代码 */
-	private Integer districtId;
-	/** 区县名称 */
-	private String districtName;
+	/** 市代码及名称 */
+	public List<AreaCityVo> areaCity;
+
 }
