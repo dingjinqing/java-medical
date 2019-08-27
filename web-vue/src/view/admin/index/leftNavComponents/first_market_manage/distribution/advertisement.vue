@@ -71,16 +71,21 @@
       >
         <div class="title">
           <span>标题：</span>
-          <el-input size="small"></el-input>
+          <el-input
+            size="small"
+            v-model="param.title"
+          ></el-input>
         </div>
         <div class="languageContent">
           <span>请输入分销员推广语，将帮助分销员朋友圈推广：</span>
+
           <el-input
-            v-model="youAD"
+            v-model="param.promotionLanguage"
             type="textarea"
             placeholder="请输入"
             rows=6
           ></el-input>
+
         </div>
         <span
           slot="footer"
@@ -144,32 +149,30 @@
           label="操作"
           align="center"
         >
-          <div class="opt">
-            <span @click="edit()">编辑</span>
-            <span @click="stop()">停用</span>
-            <span @click="del">删除</span>
-          </div>
+          <template slot-scope="scope">
+            <div class="opt">
+              <span @click="edit(scope.row.id)">编辑</span>
+              <span @click="stop(scope.row.id)">停用</span>
+              <span @click="del(scope.row.id)">删除</span>
+            </div>
+          </template>
         </el-table-column>
       </el-table>
-      <div class="footer">
-        <span>当前页面1/1，总记录4条</span>
-        <el-pagination
-          @current-change="handleCurrentChange"
-          :current-page.sync="currentPage"
-          :page-size="20"
-          layout="prev, pager, next, jumper"
-          :total="4"
-        >
-        </el-pagination>
-      </div>
+      <pagination
+        :page-params.sync="pageParams"
+        @pagination="search"
+      />
     </div>
 
   </div>
 </template>
 
 <script>
-import { advertisementList } from '@/api/admin/marketManage/distribution.js'
+// 引入分页
+import pagination from '@/components/admin/pagination/pagination'
+import { advertisementList, advertisementAdd, advertisementPause, advertisementDelete } from '@/api/admin/marketManage/distribution.js'
 export default {
+  components: { pagination },
   data () {
     return {
       tableData: [],
@@ -182,9 +185,15 @@ export default {
         startUpdateTime: '',
         endUpdateTime: ''
       },
-      promotionLanguage: '',
+      promotionLanguage: null,
       centerDialogVisible: false,
-      youAD: ''
+      youAD: '',
+      param: {
+        promotionLanguage: '',
+        title: ''
+      },
+
+      pageParams: {}
     }
   },
   created () {
@@ -202,24 +211,19 @@ export default {
     // 状态的数字转化为文字
     changeState (row, col) {
       switch (row.isBlock) {
-        case 0: row.isBlock = '已停用'
+        case 0: row.isBlock = '已启用'
           break
-        case 1: row.isBlock = '已启用'
+        case 1: row.isBlock = '已停用'
           break
       }
       return row.isBlock
     },
     search () {
-      let obj = {
-        'currentPage': 1,
-        'pageRows': 1
-      }
-
-      advertisementList(obj).then((res) => {
+      advertisementList(this.pageParams).then((res) => {
         console.log(res)
         if (res.error === 0) {
           this.handleData(res.content.dataList)
-          this.pageData = res.content.page
+          this.pageParams = res.content.page
         }
       })
     },
@@ -232,11 +236,49 @@ export default {
     edit () {
       console.log('编辑')
     },
-    stop () {
-      console.log('停用')
+    stop (id) {
+      this.$confirm('是否确认停用该推广语', '提示', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
+      }).then(() => {
+        advertisementPause(id).then(res => {
+          if (res.error === 0) {
+            this.$message({
+              type: 'success',
+              message: '停用成功!'
+            })
+            this.search()
+          }
+        })
+      }).catch(() => {
+        this.$message({
+          type: 'info',
+          message: '取消停用操作'
+        })
+      })
     },
-    del () {
-      console.log('删除')
+    del (id) {
+      this.$confirm('此操作将永久删除该文件, 是否继续?', '提示', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
+      }).then(() => {
+        advertisementDelete(id).then(res => {
+          if (res.error === 0) {
+            this.$message({
+              type: 'success',
+              message: '删除成功!'
+            })
+            this.search()
+          }
+        })
+      }).catch(() => {
+        this.$message({
+          type: 'info',
+          message: '已取消删除'
+        })
+      })
     },
     cancel () {
       this.centerDialogVisible = false
@@ -244,7 +286,12 @@ export default {
     },
     confirm () {
       this.centerDialogVisible = false
-      console.log('conirm')
+      console.log(this.param)
+      advertisementAdd(this.param).then(res => {
+        if (res.error === 0) {
+          this.search()
+        }
+      })
     }
   }
 }

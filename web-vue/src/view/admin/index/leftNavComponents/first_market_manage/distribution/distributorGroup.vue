@@ -3,11 +3,13 @@
     <div class='main_content'>
       <span>分销员分组：</span>
       <el-input
+        v-model="groupName"
         class="groupName"
         size="medium"
         placeholder="请输入内容"
       ></el-input>
       <el-button
+        @click="groupList"
         size="small"
         type="primary"
       >筛选</el-button>
@@ -90,7 +92,8 @@ export default {
       tableData: [],
       radio: '1',
       currentPage: null,
-      pageParams: {}
+      pageParams: {},
+      groupName: null
     }
   },
   created () {
@@ -105,10 +108,8 @@ export default {
       console.log(this.currentPage)
     },
     groupList () {
-      // let obj = {
-      //   'currentPage': 1,
-      //   'pageRow': 2
-      // }
+      this.pageParams.groupName = this.groupName
+      console.log(this.pageParams)
       distributionGroup(this.pageParams).then((res) => {
         console.log(res)
         if (res.error === 0) {
