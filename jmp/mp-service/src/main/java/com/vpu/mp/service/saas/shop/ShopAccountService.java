@@ -10,6 +10,7 @@ import java.util.List;
 
 import org.jooq.Record;
 import org.jooq.Record1;
+import org.jooq.SelectConditionStep;
 import org.jooq.SelectWhereStep;
 import org.jooq.impl.DSL;
 import org.jooq.tools.StringUtils;
@@ -193,6 +194,49 @@ public class ShopAccountService extends MainBaseService {
 		return JsonResultCode.CODE_FAIL;
 	}
 	
+	/**
+	 * 绑定公众号用户
+	 * @param appId
+	 * @param eventKey
+	 * @param openId
+	 * @return
+	 */
+	public boolean parseAccountInfo(String appId,String eventKey,String openId) {
+		if(StringUtils.isEmpty(eventKey)) {
+			return false;
+		}
+		//生成在ShopOfficialAccount.generateThirdPartCode方法
+		logger().debug("eventKey"+eventKey);
+		String[] split = eventKey.split("&");
+		if(split.length==3) {
+			Integer shopId=Integer.parseInt(split[0].replace("qrscene_", ""));
+			Integer accountId=Integer.parseInt(split[2]);
+			Record shopInfo = saas.shop.getShop(shopId);
+			if(shopInfo!=null) {
+				if(split[1].equals("1")) {
+					//主账户
+					if(getAccountInfoForId(accountId)!=null) {
+						//数据存在
+						updateBind(accountId, openId, (byte)1);
+						return true;
+					}
+				}else {
+					//子账户
+					if(saas.shop.subAccount.getSubAccountInfo(accountId)!=null) {
+						saas.shop.subAccount.upateBind(accountId, openId, (byte)1);
+						return true;
+					}
+					
+				}
+			}
+		}
+		return false;
+	}
+	
+	public int updateBind(Integer sysId, String openId, byte bind) {
+		return db().update(SHOP_ACCOUNT).set(SHOP_ACCOUNT.OFFICIAL_OPEN_ID, openId).set(SHOP_ACCOUNT.IS_BIND, bind)
+				.where(SHOP_ACCOUNT.SYS_ID.eq(sysId)).execute();
+	}
 
 
 }
