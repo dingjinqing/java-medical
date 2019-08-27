@@ -2,6 +2,8 @@ package com.vpu.mp.controller.admin;
 
 import javax.validation.Valid;
 
+import com.vpu.mp.service.pojo.shop.member.card.CardConsumpData;
+import com.vpu.mp.service.pojo.shop.operation.RecordTradeEnum;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -443,7 +445,7 @@ public class AdminStoreController extends AdminBaseController{
     		return fail();
     	}
     }
-    
+
     /**
      * 服务预约核销
      * @return
@@ -454,19 +456,61 @@ public class AdminStoreController extends AdminBaseController{
     		return fail(JsonResultCode.CODE_SERVICE_ORDER_VERIFY_CODE_ERROR);
     	}
     	boolean tradeFlag = false;
-    	switch (param.getVerifyPay()) {
+    	switch (param.getVerifyPay().byteValue()) {
 	    	/** 会员卡核销 */
-			case 1:
+            case ServiceOrderService.VERIFY_PAY_TYPE_MEMBER_CARD:
 				/** TODO : 会员卡余额扣费逻辑 */
-				break;
+                if(param.getCountDis() == null) {
+                    return fail(JsonResultCode.CODE_PARAM_ERROR);
+                }
+                if(param.getReduce() == null) {
+                    return fail(JsonResultCode.CODE_SERVICE_ORDER_VERIFY_BALANCE_IS_NULL);
+                }
+                if(param.getReason() == null) {
+                    return fail(JsonResultCode.CODE_SERVICE_ORDER_VERIFY_REASON_IS_NULL);
+                }
+
+                /**
+                 * $card_info = $this->shop()->user->memberCard->getCardInfo($this->input("card_id"));
+                 *                 if($card_info->card_type == 1){
+                 *                     $consumer["count"] = $this->input("reduce");
+                 *                     $consumer["count_dis"] = $this->input("dis");
+                 *                     $consumer["type"] = 1;
+                 *                     $consumer['service_order'] = $serviceinfo;
+                 *                 }elseif($card_info->card_type == 0){
+                 *                     $consumer["money"] = $this->input("reduce");
+                 *                     $consumer["money_dis"] = $this->input("dis");
+                 *                     $consumer["type"] = 0;
+                 *                 }
+                 *                 $consumer['card_no'] = $this->input("card_no");
+                 *                 $consumer["user_id"] = $this->shop()->store->serviceOrder->getOrderInfo($order_sn)->user_id;
+                 *                 $consumer["card_id"] = $this->input("card_id");
+                 *                 $consumer["reason"] = $this->input("reason1");
+                 *                 $consumer['order_sn'] = $order_sn;
+                 *                 $ret = $this->shop()->user->userCard->cardConsumer($consumer,0,3,1);
+                 */
+
+                CardConsumpData CardConsumpData = new CardConsumpData();
+
+                /**
+                 * todo
+                 */
+
+//                int adminUser = this.adminAuth.user().getSysId();
+//                /** 会员卡核销的门店服务订单，交易类型认为是会员卡支付 */
+//                Byte tradeType = RecordTradeEnum.MEMBER_CARD_PAY.getValue();
+//                Byte tradeFlow = RecordTradeEnum.TRADE_FLOW_INCOME.getValue();
+//                try {
+//                    shop().member.card.cardConsumer(CardConsumpData,adminUser,tradeType,tradeFlow,);
+//                    tradeFlag = true;
+//                } catch (MpException e) {
+//                    tradeFlag = false;
+//                }
+                break;
 			/** 用户余额核销 */
-			case 2:
+			case ServiceOrderService.VERIFY_PAY_TYPE_ACCOUNT:
 				if(param.getAccount() == null) {
 					return fail(JsonResultCode.CODE_PARAM_ERROR);
-				}
-				/** 校验账户余额 */
-				if(shop().member.account.getUserAccount(param.getUserId()).compareTo(param.getBalance()) == -1) {
-					return fail(JsonResultCode.CODE_SERVICE_ORDER_VERIFY_INSUFFICIENT_BALANCEL);
 				}
 				if(param.getBalance() == null) {
 					return fail(JsonResultCode.CODE_SERVICE_ORDER_VERIFY_BALANCE_IS_NULL);
@@ -480,21 +524,18 @@ public class AdminStoreController extends AdminBaseController{
 				accountData.setUserId(param.getUserId());
 				accountData.setRemark(param.getReason());
 				accountData.setOrderSn(param.getOrderSn());
-				
-				/** TODO : 以下三个参数需要确认 */
-				int adminUser = 0;
-				Byte tradeType = 0;
-				Byte tradeFlow = 1;
-				//tradeFlag = shop().member.account.addUserAccount(accountData,adminUser,tradeType,tradeFlow) > 0 ? true : false;
-			try {
-				shop().member.account.addUserAccount(accountData,adminUser,tradeType,tradeFlow);
-				tradeFlag = true;
-			} catch (MpException e) {
-				tradeFlag = false;
-			}
+
+
+				/** 余额核销的门店服务订单，交易类型认为是余额支付 */
+                try {
+                    shop().member.account.addUserAccount(accountData,this.adminAuth.user().getSysId(),RecordTradeEnum.ACCOUNT_PAY.getValue(),RecordTradeEnum.TRADE_FLOW_INCOME.getValue());
+                    tradeFlag = true;
+                } catch (MpException e) {
+                    tradeFlag = false;
+                }
 				break;
 			/** 门店买单 */
-			case 0:
+			case ServiceOrderService.VERIFY_PAY_TYPE_STORE:
 				tradeFlag = true;
 				break;
 			default:
@@ -505,10 +546,6 @@ public class AdminStoreController extends AdminBaseController{
     		updateParam.setFinishedTime(DateUtil.getLocalDateTime());
     		updateParam.setVerifyAdmin(adminAuth.user().getUserName());
     		updateParam.setOrderStatus(ServiceOrderService.ORDER_STATUS_FINISHED);
-    		
-    		/** TODO : OrderStatusName状态名称国际化
-    		 * updateParam.setOrderStatusName();
-    		 *   */
     		
     		updateParam.setVerifyType(ServiceOrderService.VERIFY_TYPE_ADMIN);
     		FieldsUtil.assignNotNull(param, updateParam);

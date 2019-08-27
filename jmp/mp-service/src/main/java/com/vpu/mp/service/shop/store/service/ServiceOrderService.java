@@ -60,13 +60,13 @@ public class ServiceOrderService extends ShopBaseService{
 	/**
 	 * 核销支付方式 0门店买单 1会员卡 2余额
 	 */
-	public static final Byte VERIFY_PAY_TYPE_STORE = 0;
-	public static final Byte VERIFY_PAY_TYPE_MEMBER_CARD = 1;
-	public static final Byte VERIFY_PAY_TYPE_ACCOUNT = 2;
+	public static final byte VERIFY_PAY_TYPE_STORE = 0;
+	public static final byte VERIFY_PAY_TYPE_MEMBER_CARD = 1;
+	public static final byte VERIFY_PAY_TYPE_ACCOUNT = 2;
 	
 	/**
 	 * 门店服务预约列表分页查询
-	 * @param StoreListQueryParam
+	 * @param
 	 * @return StorePageListVo
 	 */
 	public PageResult<ServiceOrderListQueryVo> getPageList(ServiceOrderListQueryParam param) {
@@ -81,7 +81,7 @@ public class ServiceOrderService extends ShopBaseService{
 	
 	/**
 	 * 门店服务预约列表计数
-	 * @param StoreListQueryParam
+	 * @param
 	 * @return Integer
 	 */
 	public Integer getCountData(ServiceOrderListQueryParam param) {
@@ -201,7 +201,8 @@ public class ServiceOrderService extends ShopBaseService{
 	}
 
 	/**
-	 * @param 后台添加服务预约
+     * 后台添加服务预约
+	 * @param
 	 * @return
 	 */
 	public Boolean addServiceOrder(ServiceOrderAddParam param) {

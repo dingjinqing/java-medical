@@ -750,10 +750,10 @@ CREATE TABLE `b2c_virtual_order` (
   `update_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '最后修改时间',
   `goods_type` tinyint(2) NOT NULL COMMENT '虚拟商品类别：0：会员卡，1：优惠券',
   `virtual_goods_id` int(11) NOT NULL COMMENT '虚拟商品id',
-  `card_no` varchar(32) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci DEFAULT NULL COMMENT '下单使用的会员卡号',
+  `card_no` varchar(32) DEFAULT NULL COMMENT '下单使用的会员卡号',
   `still_send_flag` tinyint(2) NOT NULL DEFAULT '1' COMMENT '退款后是否继续发放优惠劵，1：继续发放，0：停止发放',
   PRIMARY KEY (`order_id`) USING BTREE
-) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci ROW_FORMAT=DYNAMIC;
+);
 
 -- 王兵兵 2019-08-21
 alter table `b2c_mrking_voucher` modify column `least_consume` decimal(10,2) not null default '0.00' comment '满多少可用';
@@ -786,8 +786,8 @@ alter table `b2c_virtual_order` modify column `return_score` int(11) NULL DEFAUL
 alter table `b2c_virtual_order` modify column `return_account` decimal(10,2) NOT NULL DEFAULT '0.00' COMMENT '已退款余额';
 alter table `b2c_virtual_order` modify column `return_money` decimal(10,2) NOT NULL DEFAULT '0.00' COMMENT '已退款现金';
 alter table `b2c_virtual_order` modify column `return_card_balance` decimal(10,2) NOT NULL DEFAULT '0.00' COMMENT '已退款会员卡余额';
-alter table `b2c_virtual_order` modify column `del_time` timestamp null	default null COMMENT '删除时间';
-alter table `b2c_virtual_order` modify column `return_time` timestamp null	default null COMMENT '退款时间';
+alter table `b2c_virtual_order` modify column `del_time` timestamp null COMMENT '删除时间';
+alter table `b2c_virtual_order` modify column `return_time` timestamp null COMMENT '退款时间';
 
 
 DROP TABLE IF EXISTS `b2c_refund_card_record`;

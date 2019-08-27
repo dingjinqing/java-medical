@@ -2,6 +2,7 @@ package com.vpu.mp.service.shop.market.couponpack;
 
 import com.vpu.mp.service.foundation.data.DelFlag;
 import com.vpu.mp.service.foundation.service.ShopBaseService;
+import org.jooq.Record;
 import org.springframework.stereotype.Service;
 
 import static org.jooq.impl.DSL.*;
@@ -30,6 +31,11 @@ public class CouponPackVoucherService extends ShopBaseService {
      * @return
      */
     public int getVoucherNumber(int couponPackId){
-        return db().select(sum(COUPON_PACK_VOUCHER.TOTAL_AMOUNT).as("voucherNumber")).from(COUPON_PACK_VOUCHER).where(COUPON_PACK_VOUCHER.ACT_ID.eq(couponPackId)).and(COUPON_PACK_VOUCHER.DEL_FLAG.eq(DelFlag.NORMAL.getCode())).fetchOne().into(Integer.class);
+        Record r =  db().select(sum(COUPON_PACK_VOUCHER.TOTAL_AMOUNT).as("voucherNumber")).from(COUPON_PACK_VOUCHER).where(COUPON_PACK_VOUCHER.ACT_ID.eq(couponPackId)).and(COUPON_PACK_VOUCHER.DEL_FLAG.eq(DelFlag.NORMAL.getCode())).fetchOne();
+        if(r != null){
+            return r.into(Integer.class);
+        }else{
+            return 0;
+        }
     }
 }
