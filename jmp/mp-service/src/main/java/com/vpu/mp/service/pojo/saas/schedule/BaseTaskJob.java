@@ -31,10 +31,10 @@ public class BaseTaskJob  {
     protected Byte type;
 
     /** 周期开始日期 */
-    protected Timestamp startTime = Timestamp.valueOf("0000-00-00 00:00:00");
+    protected Timestamp startTime = new Timestamp(Long.MIN_VALUE);
 
     /** 周期结束日期 */
-    protected Timestamp endTime = Timestamp.valueOf("0000-00-00 00:00:00");
+    protected Timestamp endTime = new Timestamp(Long.MIN_VALUE);
 
     /** 轮循间隔(单位:秒) */
     protected Integer cycle = 60*60*3;

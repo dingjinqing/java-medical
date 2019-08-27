@@ -69,10 +69,10 @@ public class SaasApplication {
 	
 	@Autowired
 	protected ShopApplication shopApplication;
-	
+
 	@Autowired
     public AreaSelectService areaSelectService;
-	
+
 	public ShopApplication getShopApp(Integer shopId) {
 		databaseManager.switchShopDb(shopId);
 		return shopApplication;

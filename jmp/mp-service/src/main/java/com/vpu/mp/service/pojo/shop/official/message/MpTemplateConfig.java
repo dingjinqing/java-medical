@@ -1,11 +1,18 @@
 package com.vpu.mp.service.pojo.shop.official.message;
 
+import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.annotation.JsonValue;
 import com.vpu.mp.service.foundation.util.RegexUtil;
+import com.vpu.mp.service.pojo.shop.user.message.MaTemplateConfig;
 import lombok.Builder;
 import lombok.Getter;
+import org.apache.commons.lang3.ArrayUtils;
 
 /**
  * 公众号模版消息
@@ -13,7 +20,6 @@ import lombok.Getter;
  * @date 2019-08-22 10:22
  *
 */
-@Getter
 public enum MpTemplateConfig {
     /**
      * 消息推送
@@ -46,23 +52,60 @@ public enum MpTemplateConfig {
     /**
      * 颜色设置
      */
-    private String[][] colors;
+    private Map<String,String> colors;
+
+
+
+    @JsonCreator
+    public static MpTemplateConfig getConfig(String templateNo){
+        for(MpTemplateConfig item : values()){
+            if(item.getTemplateNo().equals(templateNo) ){
+                return item;
+            }
+        }
+        return null;
+    }
 
     MpTemplateConfig(String templateNo,String title,String content,String[][] color){
-        this.templateNo = templateNo;
-        this.title = title;
-        this.content = content;
-        this.colors = color;
-    }
-    MpTemplateConfig(String templateNo,String title,String content){
+        final Map<String, String> map = new HashMap<>((int) (color.length * 1.5));
         this.templateNo = templateNo;
         this.title = title;
         this.content = content;
         List<String> list = RegexUtil.getSubStrList("{{",".",content);
-        this.colors = new String[list.size()][2];
-        for (int i = 0,len = list.size(); i < len; i++) {
-            this.colors[i][0] = list.get(i);
-            this.colors[i][0] = "#173177";
+        for(String s: list){
+            map.put(s,"#173177");
         }
+        for( int i =0, len = color.length; i<len;i++ ){
+            String[] object = color[i];
+            map.put(object[0],object[1]);
+        }
+        this.colors = map;
+    }
+    MpTemplateConfig(String templateNo,String title,String content){
+        List<String> list = RegexUtil.getSubStrList("{{",".",content);
+        final Map<String, String> map = new HashMap<>((int) (list.size() * 1.5));
+        this.templateNo = templateNo;
+        this.title = title;
+        this.content = content;
+        for(String s: list){
+            map.put(s,"#173177");
+        }
+        this.colors = map;
+    }
+    @JsonValue
+    public String getTemplateNo() {
+        return templateNo;
+    }
+
+    public String getTitle() {
+        return title;
+    }
+
+    public String getContent() {
+        return content;
+    }
+
+    public Map<String,String> getColors() {
+        return colors;
     }
 }

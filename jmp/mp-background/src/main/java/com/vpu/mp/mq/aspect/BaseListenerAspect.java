@@ -30,8 +30,8 @@ public class BaseListenerAspect {
         BaseRabbitHandler handler = (BaseRabbitHandler)point.getThis();
         Object[] dataArray = point.getArgs().clone();
         int len = dataArray.length;
-        Message msg = (Message)dataArray[len-1];
-        Channel channel = (Channel)dataArray[len-2];
+        Message msg = (Message)dataArray[len-2];
+        Channel channel = (Channel)dataArray[len-1];
         try {
             point.proceed();
             channel.basicAck(msg.getMessageProperties().getDeliveryTag(), false);

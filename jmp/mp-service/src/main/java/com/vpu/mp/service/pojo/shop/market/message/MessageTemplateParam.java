@@ -1,5 +1,6 @@
 package com.vpu.mp.service.pojo.shop.market.message;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.Data;
 
 import java.sql.Timestamp;
@@ -33,7 +34,7 @@ public class MessageTemplateParam {
     /** 发送状态 */
     private Byte sendStatus;
     /** 开始日期 */
-    private Timestamp startTime;
+    private Timestamp startTime = new Timestamp(Long.MIN_VALUE);
     /** 结束日期 */
-    private Timestamp endTime;
+    private Timestamp endTime = new Timestamp(Long.MIN_VALUE);
 }

@@ -4,6 +4,8 @@ import static com.vpu.mp.db.shop.tables.User.USER;
 import static com.vpu.mp.db.shop.tables.UserDetail.USER_DETAIL;
 
 import org.apache.commons.lang3.StringUtils;
+import org.jooq.Record2;
+import org.jooq.Record3;
 import org.springframework.stereotype.Service;
 
 import com.vpu.mp.db.shop.tables.records.UserDetailRecord;
@@ -14,6 +16,10 @@ import com.vpu.mp.service.pojo.wxapp.login.WxAppLoginParam;
 import cn.binarywang.wx.miniapp.bean.WxMaJscode2SessionResult;
 import me.chanjar.weixin.common.error.WxErrorException;
 import me.chanjar.weixin.open.api.WxOpenMaService;
+
+import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 @Service
 public class UserService extends ShopBaseService {
@@ -67,6 +73,12 @@ public class UserService extends ShopBaseService {
 		return user;
 	}
 
+	public List<UserRecord> getUserRecordByIds(List<Integer> idList){
+        return db().select(USER.WX_OPENID,USER.WX_UNION_ID,USER.USER_ID)
+            .from(USER)
+            .where(USER.USER_ID.in(idList))
+            .fetchInto(USER);
+    }
 	
 	public UserDetailRecord getUserDetail(Integer userId) {
 		return db().fetchAny(USER_DETAIL, USER_DETAIL.USER_ID.eq(userId));

@@ -13,6 +13,8 @@ import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
 
+import com.vpu.mp.service.saas.shop.official.MpOfficialAccountUserService;
+import com.vpu.mp.service.saas.shop.official.message.MpOfficialAccountMessageService;
 import org.jooq.DatePart;
 import org.jooq.Field;
 import org.jooq.Record;
@@ -86,7 +88,13 @@ public class ShopService extends MainBaseService {
 	
 	@Autowired
 	public ShopOfficialAccount officeAccount;
-	
+
+    @Autowired
+    public MpOfficialAccountMessageService mpOfficialAccountMessageService;
+
+    @Autowired
+    public MpOfficialAccountUserService mpOfficialAccountUserService;
+
 	public PageResult<ShopListQueryResultVo> getPageList(ShopListQueryParam param) {
 		SelectWhereStep<?> select = db()
 				.select(SHOP.SYS_ID, SHOP.SHOP_ID, SHOP.SHOP_NAME, SHOP.SHOP_TYPE, SHOP.MOBILE, SHOP.CREATED,
@@ -457,7 +465,7 @@ public class ShopService extends MainBaseService {
 	public Integer getShopNumber(Integer sysId) {
 		return (Integer) db().select(DSL.count(SHOP.SYS_ID)).from(SHOP).where(SHOP.SYS_ID.eq(sysId)).fetchAny(0);
 	}
-	
+
 	public Record getShop(Integer shopId) {
 		return db().select(SHOP.asterisk()).from(SHOP).join(MP_AUTH_SHOP)
 				.on(SHOP.SHOP_ID.eq(MP_AUTH_SHOP.SHOP_ID)).where(SHOP.SHOP_ID.eq(shopId)).fetchAny();

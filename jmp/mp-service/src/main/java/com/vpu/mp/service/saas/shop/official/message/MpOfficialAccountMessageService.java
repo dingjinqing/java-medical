@@ -2,6 +2,7 @@ package com.vpu.mp.service.saas.shop.official.message;
 
 import java.util.List;
 
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -26,8 +27,10 @@ public class MpOfficialAccountMessageService extends MainBaseService {
 	protected static final String industryFirst = "IT科技";
 	protected static final String industrySecond = "互联网/电子商务";
 
+
+
 	@Autowired
-	protected MpOfficialAccountService accoutService;
+	protected MpOfficialAccountService accountService;
 
 	@Autowired
 	protected JedisManager jedis;
@@ -39,7 +42,7 @@ public class MpOfficialAccountMessageService extends MainBaseService {
 	 * @throws WxErrorException
 	 */
 	public void setNeededIndustry(String appId) throws WxErrorException {
-		WxMpTemplateMsgService service = accoutService.getOfficialAccountClient(appId).getTemplateMsgService();
+		WxMpTemplateMsgService service = accountService.getOfficialAccountClient(appId).getTemplateMsgService();
 		WxMpTemplateIndustry originIndustry = service.getIndustry();
 		if (industryFirst.equals(originIndustry.getPrimaryIndustry().getFirstClass())
 				&& industrySecond.equals(originIndustry.getPrimaryIndustry().getSecondClass())
@@ -63,7 +66,7 @@ public class MpOfficialAccountMessageService extends MainBaseService {
 	 * @throws WxErrorException
 	 */
 	public WxMpTemplateIndustry getIndustry(String appId) throws WxErrorException {
-		WxMpTemplateMsgService service = accoutService.getOfficialAccountClient(appId).getTemplateMsgService();
+		WxMpTemplateMsgService service = accountService.getOfficialAccountClient(appId).getTemplateMsgService();
 		return service.getIndustry();
 	}
 
@@ -77,13 +80,12 @@ public class MpOfficialAccountMessageService extends MainBaseService {
 	 * @param mpAppId        对应小程序AppId
 	 * @param page           小程序路径
 	 * @param url            网页路径
-	 * @param templateType   模板类型
-	 * @param linkIdentity   模板消息关联Id
 	 */
 	public void sendMpTemplateMessage(String appId, String toUser, List<WxMpTemplateData> keywordValues,
 			MpTemplateConfig templateConfig, String mpAppId,
 			String page, String url) throws WxErrorException {
-		WxMpTemplateMsgService service = accoutService.getOfficialAccountClient(appId).getTemplateMsgService();
+        WxMpTemplateMessage.WxMpTemplateMessageBuilder messageBuilder = null;
+		WxMpTemplateMsgService service = accountService.getOfficialAccountClient(appId).getTemplateMsgService();
 
 		String key = "MP_TEMPLATE_KEY_" + Util.md5(Util.toJson(templateConfig) + "_" + appId);
 		Integer timeOut = 3600 * 24 * 365;
@@ -95,15 +97,16 @@ public class MpOfficialAccountMessageService extends MainBaseService {
 			}
 			jedis.set(key, templateId, timeOut);
 		}
-
-		if (page != null) {
-			page = page + (page.indexOf("?") != -1 ? "&" : "?") + "rnd=" + Util.randomId();
+        if( StringUtils.isNotBlank(url) ){
+            messageBuilder  = WxMpTemplateMessage.builder().toUser(toUser).url(url)
+                .templateId(templateId);
+        }
+		if (StringUtils.isNotBlank(page) && StringUtils.isNotBlank(mpAppId)) {
+            page = page + ((page.indexOf("?") != -1 ? "&" : "?") + "rnd=" + Util.randomId());
+            messageBuilder.miniProgram(new WxMpTemplateMessage.MiniProgram(mpAppId,page,true));
 		}
-		WxMpTemplateMessage message = WxMpTemplateMessage.builder().toUser(toUser).url(url)
-				.templateId(templateId).build();
-		message.setData(keywordValues);
 		try {
-			service.sendTemplateMsg(message);
+			service.sendTemplateMsg(messageBuilder.build());
 		} catch (WxErrorException e) {
 			// template_id不正确，移除缓存，重新发送模板消息
 			if (e.getError().getErrorCode() == 40037) {

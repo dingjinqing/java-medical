@@ -3,6 +3,7 @@ package com.vpu.mp.service.shop;
 import com.vpu.mp.service.shop.assess.AssessService;
 import com.vpu.mp.service.shop.market.couponpack.CouponPackService;
 import com.vpu.mp.service.shop.market.sharereward.ShareRewardService;
+import com.vpu.mp.service.shop.user.message.WechatMessageTemplateService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -373,6 +374,11 @@ public class ShopApplication {
      */
     @Autowired
     public MessageTemplateService messageTemplateService;
+    /**
+     * 微信小程序/公众号模版消息
+     */
+    @Autowired
+    public WechatMessageTemplateService wechatMessageTemplateService;
     /**
      * 交易明细
      */
