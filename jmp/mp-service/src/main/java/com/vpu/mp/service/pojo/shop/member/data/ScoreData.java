@@ -32,6 +32,6 @@ public class ScoreData extends BasicData {
 	
 	/** -积分状态 {@link com.vpu.mp.service.pojo.shop.member.score.ScoreStatusConstant} */
 	private Byte scoreStatus;
-	/**是否退款*/
+	/**是否退款 如： {@link com.vpu.mp.service.pojo.shop.operation.RecordTradeEnum.IS_FROM_REFUND_Y }*/
 	private Byte isFromRefund;
 }

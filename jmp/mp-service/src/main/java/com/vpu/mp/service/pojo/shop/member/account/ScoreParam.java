@@ -1,5 +1,7 @@
 package com.vpu.mp.service.pojo.shop.member.account;
 
+import java.sql.Timestamp;
+
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotNull;
 
@@ -11,7 +13,7 @@ import lombok.Data;
  * 
  * @author 黄壮壮
  * @Date:  2019年8月23日
- * @Description: 积分-入参类
+ * @Description: 积分记录-入参类
  */
 @Data
 public class ScoreParam {
@@ -37,5 +39,11 @@ public class ScoreParam {
 	
 	/** -积分状态 {@link com.vpu.mp.service.pojo.shop.member.score.ScoreStatusConstant} */
 	private Byte scoreStatus;
+	
+	/** -是否退款 如： {@link com.vpu.mp.service.pojo.shop.operation.RecordTradeEnum.IS_FROM_REFUND_Y }*/
+	private Byte isFromRefund;
+	
+	/** 过期时间 */
+	private Timestamp expiredTime;
 	
 }

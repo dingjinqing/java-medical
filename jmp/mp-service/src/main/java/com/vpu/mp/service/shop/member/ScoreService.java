@@ -36,10 +36,9 @@ import com.vpu.mp.service.pojo.shop.member.score.ScorePageListVo;
 import static com.vpu.mp.service.pojo.shop.member.MemberOperateRecordEnum.ADMIN_OPERATION;
 import static com.vpu.mp.service.pojo.shop.member.score.ScoreStatusConstant.NO_USE_SCORE_STATUS;
 import static com.vpu.mp.service.pojo.shop.member.score.ScoreStatusConstant.USED_SCORE_STATUS;
-import static com.vpu.mp.service.pojo.shop.member.score.ScoreStatusConstant.EXPIRE_SCORE_STATUS;
 import static com.vpu.mp.service.pojo.shop.member.score.ScoreStatusConstant.REFUND_SCORE_STATUS;
-import static com.vpu.mp.service.pojo.shop.operation.RecordTradeEnum.POWER_SCORE;
 import static com.vpu.mp.service.pojo.shop.operation.RecordTradeEnum.TRADE_CONTENT_BY_SCORE;
+import static com.vpu.mp.service.pojo.shop.operation.RecordTradeEnum.IS_FROM_REFUND_Y;
 import org.jooq.exception.DataAccessException;
 /**
  * 
@@ -58,7 +57,7 @@ public class ScoreService extends ShopBaseService {
 	private MemberService member;	
 	
 	/**
-	 * 更新用户积分
+	 *   创建用户积分表
 	 * @param param 积分变动相关数据
 	 * @param subAccountId 操作员id
 	 * @param userId 用户id
@@ -138,11 +137,10 @@ public class ScoreService extends ShopBaseService {
 					throw e;
 				}
 				
-				logger().info("异常处理后");
-				 
 				/** 5. 添加积分记录  */
 				UserScoreRecord userScoreRecord = new UserScoreRecord();
 				/** 5.1 填充数据 */
+				//TODO 还有一些数据不知道从哪些业务传递过来的如goods_id,desc,identity_id 
 				userScoreRecord.setScore(score);
 				userScoreRecord.setUserId(userId);
 				userScoreRecord.setRemark(remark);
@@ -152,8 +150,15 @@ public class ScoreService extends ShopBaseService {
 				userScoreRecord.setUsableScore(usableScore);
 				logger().info(String.valueOf(param.getScoreStatus()));
 				userScoreRecord.setStatus(param.getScoreStatus());
+				userScoreRecord.setExpireTime(param.getExpiredTime());
 				
-				
+				/** -判断是否为退款积分 */
+				if(param.getIsFromRefund()==IS_FROM_REFUND_Y.getValue()) {
+					userScoreRecord.setStatus(REFUND_SCORE_STATUS);
+					UserScoreRecord userScore = getScoreRecordByOrderSn(userId,orderSn);
+					userScoreRecord.setExpireTime(userScore.getExpireTime());
+				}
+			
 				
 				/** 5.2 添加 */
 				/** 在user_score中添加积分记录 */
@@ -195,6 +200,23 @@ public class ScoreService extends ShopBaseService {
 		return ;
 	}
 	
+
+	/**
+	 * 通过订单编号获取用户积分记录
+	 * @param userId 用户id
+	 * @param orderSn 订单号
+	 * @return UserScoreRecord
+	 */
+	private UserScoreRecord getScoreRecordByOrderSn(Integer userId, String orderSn) {
+		 return db().selectFrom(USER_SCORE).where(USER_SCORE.USER_ID.eq(userId))
+					.and(USER_SCORE.ORDER_SN.eq(orderSn))
+					.and(USER_SCORE.SCORE.ge(0))
+					.orderBy(USER_SCORE.CREATE_TIME)
+					.limit(1)
+					.fetchOne()
+					.into(UserScoreRecord.class);
+	}
+
 	/**
 	 * 更新交易记录
 	 * @param tradesRecord
@@ -238,12 +260,12 @@ public class ScoreService extends ShopBaseService {
 	 * @param userScoreRecord
 	 */
 	private void addUserScoreRecord(UserScoreRecord record) {
-		
-		db().insertInto(USER_SCORE, USER_SCORE.SCORE, USER_SCORE.USER_ID, USER_SCORE.REMARK, USER_SCORE.ADMIN_USER,
-				USER_SCORE.ORDER_SN, USER_SCORE.FLOW_NO, USER_SCORE.USABLE_SCORE)
-				.values(record.getScore(), record.getUserId(), record.getRemark(), record.getAdminUser(),
-						record.getOrderSn(), record.getFlowNo(), record.getUsableScore())
-				.execute();
+		db().executeInsert(record);
+//		db().insertInto(USER_SCORE, USER_SCORE.SCORE, USER_SCORE.USER_ID, USER_SCORE.REMARK, USER_SCORE.ADMIN_USER,
+//				USER_SCORE.ORDER_SN, USER_SCORE.FLOW_NO, USER_SCORE.USABLE_SCORE)
+//				.values(record.getScore(), record.getUserId(), record.getRemark(), record.getAdminUser(),
+//						record.getOrderSn(), record.getFlowNo(), record.getUsableScore())
+//				.execute();
 	}
 
 	
