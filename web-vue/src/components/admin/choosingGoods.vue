@@ -151,10 +151,11 @@
                 >
                   <img
                     v-if="!isCenterFlag"
-                    :src="item.goodsImg"
+                    :src="item.prdImg || item.goodsImg"
                   >
                   <span>{{item.goodsName}}</span>
-
+                  <!-- 规格描述 -->
+                  <span v-if="!!item.prdDesc">{{item.prdDesc}}</span>
                 </td>
                 <td class="tb_decorate_a">
                   {{item.goodsSn}}
@@ -223,9 +224,19 @@
   </div>
 </template>
 <script>
-import { initGrandgetRequest, queryGoodsIdRequest, classificationSelectRequest, allGoodsQueryRequest } from '@/api/admin/brandManagement.js'
+import {
+  initGrandgetRequest,
+  queryGoodsIdRequest,
+  classificationSelectRequest,
+  allGoodsQueryRequest,
+  getGoodsProductList
+} from '@/api/admin/brandManagement.js'
 import { mapActions, mapGetters } from 'vuex'
 export default {
+  props: {
+    // 是否加载规格
+    loadProduct: Boolean
+  },
   data () {
     return {
       pageCount: 1,
@@ -382,7 +393,11 @@ export default {
         console.log(res)
       })
       // 弹窗下方表格数据获取
-      allGoodsQueryRequest(obj).then((res) => {
+      let query = allGoodsQueryRequest
+      if (this.loadProduct) {
+        query = getGoodsProductList
+      }
+      query(obj).then((res) => {
         if (!res) return
         if (res.error === 0) {
           // res.content.dataList.catName = res.content.dataList.catName.replace(',', '、')
@@ -392,7 +407,12 @@ export default {
             item.catName = item.catName.replace('，', '、')
             item.ischecked = false
             this.hxgoodsIds.map((childrenItem, childrenIndex) => {
-              if (childrenItem === item.goodsId) {
+              let condition = childrenItem === item.goodsId
+              if (this.loadProduct) {
+                // 规格id
+                condition = childrenItem.prdId === childrenItem
+              }
+              if (condition) {
                 item.ischecked = true
               }
             })
@@ -424,7 +444,11 @@ export default {
         this.checkedAll = false
       }
       // let arr = []
-      this.goodsIdsArr.push(item.goodsId)
+      let _goodsId = item.goodsId
+      if (this.loadProduct) {
+        _goodsId = item.prdId
+      }
+      this.goodsIdsArr.push(_goodsId)
 
       console.log('选中', index, item)
     },
@@ -432,6 +456,7 @@ export default {
     handleChoiseGooddialog () {
       this.transmitGoodsIds(this.goodsIdsArr)
       this.choiseGooddialogVisible = false
+      this.$emit('result', this.goodsIdsArr)
     },
     // 页数改变
     handleCurrentChange () {
