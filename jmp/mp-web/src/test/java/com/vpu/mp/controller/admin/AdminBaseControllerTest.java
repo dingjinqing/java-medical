@@ -31,6 +31,7 @@ public class AdminBaseControllerTest extends BaseControllerTest {
 
 	protected static String token;
 
+	@Override
 	@Before
 	public void setUp() throws Exception {
 		super.setUp();
@@ -39,6 +40,7 @@ public class AdminBaseControllerTest extends BaseControllerTest {
 		}
 	}
 
+	@Override
 	@After
 	public void tearDown() throws Exception {
 		if (needLogin()) {

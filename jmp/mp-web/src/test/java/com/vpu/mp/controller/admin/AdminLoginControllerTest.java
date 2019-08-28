@@ -14,6 +14,7 @@ import org.springframework.test.context.junit4.SpringRunner;
 @TestPropertySource("classpath:test-user.properties")
 public class AdminLoginControllerTest extends AdminBaseControllerTest {
 
+	@Override
 	protected Boolean needLogin() {
 		return false;
 	}

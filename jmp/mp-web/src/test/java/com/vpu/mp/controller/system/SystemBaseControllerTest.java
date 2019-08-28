@@ -27,6 +27,7 @@ public class SystemBaseControllerTest extends BaseControllerTest{
 
 	protected static String token;
 
+	@Override
 	@Before
 	public void setUp() throws Exception {
 		super.setUp();
@@ -35,6 +36,7 @@ public class SystemBaseControllerTest extends BaseControllerTest{
 		}
 	}
 
+	@Override
 	@After
 	public void tearDown() throws Exception {
 		if (needLogin()) {

@@ -19,13 +19,18 @@ import me.chanjar.weixin.mp.bean.template.WxMpTemplateData;
 import me.chanjar.weixin.mp.bean.template.WxMpTemplateIndustry;
 import me.chanjar.weixin.mp.bean.template.WxMpTemplateMessage;
 
+/**
+ * 
+ * @author lixinguo
+ *
+ */
 @Service
 public class MpOfficialAccountMessageService extends MainBaseService {
 
-	protected static final String needIndustryId1 = "1";
-	protected static final String needIndustryId2 = "2";
-	protected static final String industryFirst = "IT科技";
-	protected static final String industrySecond = "互联网/电子商务";
+	protected static final String NEED_INDUSTRY_ID_1 = "1";
+	protected static final String NEED_INDUSTRY_ID_2 = "2";
+	protected static final String INDUSTRY_FIRST = "IT科技";
+	protected static final String INDUSTRY_SECOND = "互联网/电子商务";
 
 
 
@@ -44,17 +49,17 @@ public class MpOfficialAccountMessageService extends MainBaseService {
 	public void setNeededIndustry(String appId) throws WxErrorException {
 		WxMpTemplateMsgService service = accountService.getOfficialAccountClient(appId).getTemplateMsgService();
 		WxMpTemplateIndustry originIndustry = service.getIndustry();
-		if (industryFirst.equals(originIndustry.getPrimaryIndustry().getFirstClass())
-				&& industrySecond.equals(originIndustry.getPrimaryIndustry().getSecondClass())
-				|| industryFirst.equals(originIndustry.getSecondIndustry().getFirstClass())
-						&& industrySecond.equals(originIndustry.getSecondIndustry().getSecondClass())
+		if (INDUSTRY_FIRST.equals(originIndustry.getPrimaryIndustry().getFirstClass())
+				&& INDUSTRY_SECOND.equals(originIndustry.getPrimaryIndustry().getSecondClass())
+				|| INDUSTRY_FIRST.equals(originIndustry.getSecondIndustry().getFirstClass())
+						&& INDUSTRY_SECOND.equals(originIndustry.getSecondIndustry().getSecondClass())
 
 		) {
 			return;
 		}
 		WxMpTemplateIndustry wxMpIndustry = new WxMpTemplateIndustry();
-		wxMpIndustry.setPrimaryIndustry(new WxMpTemplateIndustry.Industry(needIndustryId1));
-		wxMpIndustry.setSecondIndustry(new WxMpTemplateIndustry.Industry(needIndustryId2));
+		wxMpIndustry.setPrimaryIndustry(new WxMpTemplateIndustry.Industry(NEED_INDUSTRY_ID_1));
+		wxMpIndustry.setSecondIndustry(new WxMpTemplateIndustry.Industry(NEED_INDUSTRY_ID_2));
 		service.setIndustry(wxMpIndustry);
 	}
 

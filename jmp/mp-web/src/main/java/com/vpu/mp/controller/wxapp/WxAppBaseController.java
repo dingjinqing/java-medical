@@ -21,6 +21,7 @@ public class WxAppBaseController  extends BaseController {
 	/**
 	 * 小程序前端语言，是由店铺控制的，需要在店铺读取 
 	 */
+	@Override
 	protected String getLang() {
 		// TODO:待实现
 		return null;
