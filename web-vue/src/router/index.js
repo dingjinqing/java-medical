@@ -7,7 +7,6 @@ import { judgeJurisdictionRequest } from '@/api/admin/util.js'
 import indexRoutes from '@/router/index/index'
 import adminRoutes from '@/router/admin/index'
 import systemRouters from '@/router/system/index'
-import marketing from '@/router/admin/marketing'
 Vue.use(Router)
 
 const indexlogin = () => import('@/components/index/login')
@@ -36,8 +35,7 @@ const routes = baseRoutes.concat(
   baseRoutes,
   indexRoutes,
   adminRoutes,
-  systemRouters,
-  marketing
+  systemRouters
 )
 
 const router = new Router({
