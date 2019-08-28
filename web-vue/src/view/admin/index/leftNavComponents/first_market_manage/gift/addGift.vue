@@ -196,12 +196,13 @@
                 > </el-table-column>
                 <el-table-column
                   prop="productNumber"
-                  label="赠品库存/当前库存"
+                  label="赠品库存 (当前库存/初始库存)"
                   align="center"
                 >
                   <template slot-scope="scope">
                     <inputEdit v-model="scope.row.productNumber"
-                      @update="checkProductNumber(scope.row.prdNumber, scope.row.productNumber)"/>
+                      :init="Number(scope.row.offerNumber||0)+Number(scope.row.productNumber)"
+                      @update="checkProductNumber(scope.row.prdNumber, scope.row.productNumber, scope.row.offerNumber)"/>
                   </template>
                 </el-table-column>
                 <el-table-column
@@ -502,15 +503,16 @@ export default {
     },
     // 添加一行赠品商品
     addProductRow (productId) {
-      getProductDetail(productId).then(({ content }) => {
-        const { goodsImg, prdImg } = content
+      getProductDetail(productId, this.id).then(({ content }) => {
+        const { goodsImg, prdImg, offerNumber } = content
         const row = {
           ...content,
           goodsImg: prdImg || goodsImg
         }
+        this.tableData.splice(this.tableData.findIndex(row => row.productId === productId), 1)
         this.tableData.push({
           ...row,
-          productNumber: row.prdNumber
+          productNumber: row.prdNumber + offerNumber
         })
       })
     },
@@ -564,8 +566,8 @@ export default {
         return false
       }
       this.tableData.forEach(row => {
-        const { prdNumber, productNumber } = row
-        if (!this.checkProductNumber(prdNumber, productNumber)) {
+        const { prdNumber, productNumber, offerNumber } = row
+        if (!this.checkProductNumber(prdNumber, productNumber, offerNumber)) {
           result = false
         }
       })
@@ -583,7 +585,6 @@ export default {
     },
     handleChoosingProduct (ids) {
       this.tmpGiftGoodsIds = ids
-      this.tableData = []
       ids.forEach(prdId => this.addProductRow(prdId))
     },
     /**
@@ -591,10 +592,15 @@ export default {
      *
      * @param prdNumber 原有库存
      * @param productNumber 输入库存
+     * @param offerNumber 已赠送商品数
      */
-    checkProductNumber (prdNumber, productNumber) {
+    checkProductNumber (prdNumber, productNumber, offerNumber) {
       if (prdNumber < productNumber) {
         this.fail('赠品库存不能大于商品当前库存')
+        return false
+      }
+      if (offerNumber > productNumber) {
+        this.fail('初始库存不能小于已送赠品数')
         return false
       }
       return true
@@ -609,8 +615,9 @@ export default {
     }
   },
   mounted () {
-    const id = this.$route.params.id
+    const { id } = this.$route.params
     this.update = !!id
+    this.id = id || null
     if (this.update) {
       // 编辑回显
       this.loadData()

@@ -72,7 +72,7 @@ export const getGiftGiftDetail = data => service({
 })
 
 // 查询商品明细
-export const getProductDetail = id => service({
-  url: `/api/admin/market/gift/product/${id}`,
+export const getProductDetail = (giftId, productId) => service({
+  url: `/api/admin/market/gift/product/${giftId || 0}/${productId}`,
   method: 'post'
 })

@@ -3,8 +3,10 @@
 * 用于表格中可编辑的单元格
 * 事件：
 *     update：点击确定后传递输入内容
-* 用法 <input-edit v-model="xxx" @update="xxxx"/>
-* @model 输入内容
+* 用法 <input-edit v-model="x" :init="y" @update="z"/>
+* props：
+*     init：初始值
+* model 输入内容
 * @author 郑保乐
 -->
 <template>
@@ -17,7 +19,8 @@
 <script>
 export default {
   props: {
-    input: String | Number
+    input: String | Number,
+    init: Number
   },
   model: {
     prop: 'input',
@@ -26,7 +29,7 @@ export default {
   data () {
     return {
       showInput: false,
-      value: this.input
+      value: this.init || this.input
     }
   },
   methods: {
