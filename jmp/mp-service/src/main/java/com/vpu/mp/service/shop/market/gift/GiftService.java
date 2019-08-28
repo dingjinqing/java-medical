@@ -9,6 +9,7 @@ import com.vpu.mp.service.foundation.service.ShopBaseService;
 import com.vpu.mp.service.foundation.util.PageResult;
 import com.vpu.mp.service.foundation.util.Util;
 import com.vpu.mp.service.pojo.shop.market.gift.*;
+import com.vpu.mp.service.pojo.shop.order.OrderConstant;
 import org.jooq.DSLContext;
 import org.jooq.SelectConditionStep;
 import org.jooq.impl.DSL;
@@ -32,6 +33,8 @@ import static com.vpu.mp.service.pojo.shop.market.gift.GiftListVo.ABLE;
 import static com.vpu.mp.service.pojo.shop.market.gift.GiftListVo.DISABLE;
 import static java.lang.String.format;
 import static org.apache.commons.lang3.StringUtils.isNotEmpty;
+import static org.jooq.impl.DSL.countDistinct;
+import static org.jooq.impl.DSL.select;
 import static org.springframework.util.StringUtils.isEmpty;
 
 /**
@@ -174,10 +177,11 @@ public class GiftService extends ShopBaseService {
     /**
      * 编辑活动 - 查询明细
      */
-    public GiftVo getGiftDetail(Integer id) {
-        GiftVo giftVo = db().selectFrom(TABLE).where(TABLE.ID.eq(id)).fetchOneInto(GiftVo.class);
+    public GiftVo getGiftDetail(Integer giftId) {
+        GiftVo giftVo = db().selectFrom(TABLE).where(TABLE.ID.eq(giftId)).fetchOneInto(GiftVo.class);
         transformVo(giftVo);
-        List<ProductVo> productVos = getGiftProduct(id);
+        List<ProductVo> productVos = getGiftProduct(giftId);
+        productVos.forEach(vo -> vo.setOfferNumber(getGiftOrderedNumber(vo.getProductId(), giftId)));
         giftVo.setGifts(productVos);
         return giftVo;
     }
@@ -199,8 +203,8 @@ public class GiftService extends ShopBaseService {
     /**
      * 获取商品规格
      */
-    public ProductVo getProductDetail(Integer productId) {
-        return db()
+    public ProductVo getProductDetail(Integer giftId, Integer productId) {
+        ProductVo vo = db()
             .select(PRODUCT.PRD_ID.as("productId"), PRODUCT.PRD_PRICE, PRODUCT.PRD_IMG, PRODUCT.PRD_NUMBER,
                 PRODUCT.PRD_DESC)
             .select(GOODS.GOODS_NAME, GOODS.GOODS_IMG)
@@ -208,6 +212,8 @@ public class GiftService extends ShopBaseService {
             .leftJoin(GOODS).on(GOODS.GOODS_ID.eq(PRODUCT.GOODS_ID))
             .where(PRODUCT.PRD_ID.eq(productId))
             .fetchOneInto(ProductVo.class);
+        vo.setOfferNumber(getGiftOrderedNumber(productId, giftId));
+        return vo;
     }
 
     /**
@@ -464,5 +470,25 @@ public class GiftService extends ShopBaseService {
     public List<UserAction> getUserTagList() {
         return db().select(TAG.TAG_ID.as("id"), TAG.TAG_NAME.as("name")).from(TAG)
             .fetchInto(UserAction.class);
+    }
+
+    /**
+     * 获取赠品的已下单未发货单量（已确定将发出的赠品数量）
+     */
+    private Integer getGiftOrderedNumber(Integer productId, Integer giftId) {
+        return db().select(countDistinct(
+            ORDER_INFO.ORDER_SN))
+            .from(ORDER_INFO)
+            .where(ORDER_INFO.ORDER_STATUS.eq(OrderConstant.ORDER_WAIT_DELIVERY)
+                .and(ORDER_INFO.ORDER_SN
+                    .in(select(ORDER_GOODS.ORDER_SN).from(ORDER_GOODS)
+                        .where(ORDER_GOODS.IS_GIFT.eq(1)
+                            .and(ORDER_GOODS.PRODUCT_ID.eq(productId)
+                                .and(ORDER_INFO.ACTIVITY_ID.eq(giftId))
+                            )
+                        )
+                    )
+                )
+            ).fetchOneInto(Integer.class);
     }
 }

@@ -115,8 +115,8 @@ public class AdminGiftController extends AdminBaseController {
     /**
      * 获取商品规格明细
      */
-    @PostMapping("/product/{id}")
-    public JsonResult getProductDetail(@PathVariable("id") Integer productId) {
-        return success(shop().gift.getProductDetail(productId));
+    @PostMapping("/product/{giftId}/{productId}")
+    public JsonResult getProductDetail(@PathVariable Integer giftId, @PathVariable Integer productId) {
+        return success(shop().gift.getProductDetail(giftId, productId));
     }
 }

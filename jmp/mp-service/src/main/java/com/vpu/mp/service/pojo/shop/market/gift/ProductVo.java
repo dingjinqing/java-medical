@@ -24,6 +24,8 @@ public class ProductVo {
     private BigDecimal prdPrice;
     /** 产品库存 **/
     private Integer prdNumber;
+    /** 已赠送数量 **/
+    private Integer offerNumber;
     /** 规格名称 **/
     private String prdDesc;
     /** 商品名称 **/
