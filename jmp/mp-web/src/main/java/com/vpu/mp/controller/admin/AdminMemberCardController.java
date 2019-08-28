@@ -60,8 +60,8 @@ public class AdminMemberCardController extends AdminBaseController {
 	
 
 	/**
-	 * 返回相应的会员卡列表
-	 * 
+	 *  返回相应的会员卡列表
+	 * @param param
 	 * @return
 	 */
 	@PostMapping("/card/list")
