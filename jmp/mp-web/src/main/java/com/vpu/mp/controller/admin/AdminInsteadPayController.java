@@ -1,12 +1,13 @@
 package com.vpu.mp.controller.admin;
 
-import com.vpu.mp.service.foundation.data.JsonResult;
-import com.vpu.mp.service.foundation.data.JsonResultCode;
-import com.vpu.mp.service.pojo.shop.market.insteadpay.InsteadPay;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+
+import com.vpu.mp.service.foundation.data.JsonResult;
+import com.vpu.mp.service.foundation.data.JsonResultCode;
+import com.vpu.mp.service.pojo.shop.market.insteadpay.InsteadPay;
 
 /**
  * @author 李晓冰

@@ -27,10 +27,10 @@ public enum MemberEducationEnum {
 	/** 其他 */
 	OTHER(7,"member.education.other");
 	/** 数字代号 */
-	private int code;
+	private Integer code;
 	/**受教育程度*/
 	private String name;
-	private static Map map = new HashMap<>();
+	private static Map<Integer,MemberEducationEnum> map = new HashMap<>();
 	static {
 		for(MemberEducationEnum e: MemberEducationEnum.values()) {
 			map.put(e.code,e);

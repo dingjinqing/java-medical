@@ -117,6 +117,12 @@ public class ShopCommonConfigService extends BaseShopConfigService{
 	final public static String K_SHOP_STYLE = "shop_style";
 	
 	/**
+	 * 地理位置授权
+	 */
+	final public static String K_GEO_LOCATION = "geographic_location";
+	
+	
+	/**
 	 * 是否显示Logo配置
 	 * @return
 	 */
@@ -474,6 +480,25 @@ public class ShopCommonConfigService extends BaseShopConfigService{
 	public int setShopStyle(ShopStyleConfig value) {
 		assert(value != null);
 		return this.setJsonObject(K_SHOP_STYLE, value);
+	}
+	
+	
+	/**
+	 * 得到开启地理位置授权
+	 * @return
+	 */
+	public Byte getGeoLocation() {
+		return this.get(K_GEO_LOCATION, Byte.class, (byte)1);
+	}
+	
+	/**
+	 * 设置开启地理位置授权
+	 * @param value 0 或者 1
+	 * @return
+	 */
+	public int setGeoLocation(Byte value) {
+		assert(value ==(byte)0 || value == (byte)1);
+		return this.set(K_GEO_LOCATION, value,Byte.class);
 	}
 	
 

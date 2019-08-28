@@ -3,7 +3,6 @@ package com.vpu.mp.service.pojo.saas.shop;
 import java.math.BigDecimal;
 import java.sql.Timestamp;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
 import com.vpu.mp.service.foundation.util.Page;
 
 import lombok.Data;

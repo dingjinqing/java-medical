@@ -1,12 +1,11 @@
 package com.vpu.mp.controller.admin;
 
-import com.vpu.mp.service.pojo.shop.market.message.MessageTemplateParam;
-import com.vpu.mp.service.shop.market.message.MessageTemplateService;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.vpu.mp.service.foundation.data.JsonResult;
+import com.vpu.mp.service.pojo.shop.market.message.MessageTemplateParam;
 import com.vpu.mp.service.pojo.shop.market.message.UserInfoQuery;
 
 /**

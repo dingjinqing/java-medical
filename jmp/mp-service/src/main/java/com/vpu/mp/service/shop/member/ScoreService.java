@@ -1,8 +1,14 @@
 package com.vpu.mp.service.shop.member;
 
 
-import static com.vpu.mp.db.shop.Tables.USER_SCORE;
 import static com.vpu.mp.db.shop.Tables.USER;
+import static com.vpu.mp.db.shop.Tables.USER_SCORE;
+import static com.vpu.mp.service.pojo.shop.member.MemberOperateRecordEnum.ADMIN_OPERATION;
+import static com.vpu.mp.service.pojo.shop.member.score.ScoreStatusConstant.NO_USE_SCORE_STATUS;
+import static com.vpu.mp.service.pojo.shop.member.score.ScoreStatusConstant.REFUND_SCORE_STATUS;
+import static com.vpu.mp.service.pojo.shop.member.score.ScoreStatusConstant.USED_SCORE_STATUS;
+import static com.vpu.mp.service.pojo.shop.operation.RecordTradeEnum.IS_FROM_REFUND_Y;
+import static com.vpu.mp.service.pojo.shop.operation.RecordTradeEnum.TRADE_CONTENT_BY_SCORE;
 import static org.jooq.impl.DSL.sum;
 
 import java.math.BigDecimal;
@@ -15,6 +21,7 @@ import java.util.Random;
 
 import org.jooq.Record7;
 import org.jooq.SelectConditionStep;
+import org.jooq.exception.DataAccessException;
 import org.jooq.impl.DSL;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -32,14 +39,6 @@ import com.vpu.mp.service.foundation.util.VoTranslator;
 import com.vpu.mp.service.pojo.shop.member.account.ScoreParam;
 import com.vpu.mp.service.pojo.shop.member.score.ScorePageListParam;
 import com.vpu.mp.service.pojo.shop.member.score.ScorePageListVo;
-
-import static com.vpu.mp.service.pojo.shop.member.MemberOperateRecordEnum.ADMIN_OPERATION;
-import static com.vpu.mp.service.pojo.shop.member.score.ScoreStatusConstant.NO_USE_SCORE_STATUS;
-import static com.vpu.mp.service.pojo.shop.member.score.ScoreStatusConstant.USED_SCORE_STATUS;
-import static com.vpu.mp.service.pojo.shop.member.score.ScoreStatusConstant.REFUND_SCORE_STATUS;
-import static com.vpu.mp.service.pojo.shop.operation.RecordTradeEnum.TRADE_CONTENT_BY_SCORE;
-import static com.vpu.mp.service.pojo.shop.operation.RecordTradeEnum.IS_FROM_REFUND_Y;
-import org.jooq.exception.DataAccessException;
 /**
  * 
  * @author 黄壮壮

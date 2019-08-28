@@ -68,7 +68,7 @@ public class RabbitmqSendService  {
             .build();
         if(StringUtils.isNotBlank(className)){
             try {
-                Class clz = Class.forName(className);
+                Class<?> clz = Class.forName(className);
                 classMapper.fromClass(clz,properties);
             } catch (ClassNotFoundException e) {
                 e.printStackTrace();

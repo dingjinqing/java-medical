@@ -1,8 +1,8 @@
 package com.vpu.mp.service.pojo.saas.shop.mp;
 
-import lombok.Data;
-
 import java.sql.Timestamp;
+
+import lombok.Data;
 
 /**
  * @author 李晓冰

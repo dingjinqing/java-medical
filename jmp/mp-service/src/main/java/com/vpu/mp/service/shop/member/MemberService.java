@@ -1,27 +1,22 @@
 package com.vpu.mp.service.shop.member;
 
 import static com.vpu.mp.db.shop.Tables.ORDER_VERIFIER;
+import static com.vpu.mp.db.shop.Tables.STORE;
 import static com.vpu.mp.db.shop.Tables.USER;
-import static com.vpu.mp.db.shop.Tables.USER_TAG;
 import static com.vpu.mp.db.shop.Tables.USER_DETAIL;
 import static com.vpu.mp.db.shop.Tables.USER_LOGIN_RECORD;
-import static com.vpu.mp.db.shop.Tables.USER_SCORE;
-import static com.vpu.mp.db.shop.Tables.ORDER_INFO;
-import static com.vpu.mp.db.main.Tables.DICT_PROVINCE;
-import static com.vpu.mp.db.shop.Tables.STORE;
+import static com.vpu.mp.db.shop.Tables.USER_TAG;
 import static org.jooq.impl.DSL.count;
 import static org.jooq.impl.DSL.date;
-import static org.jooq.impl.DSL.sum;
 
 import java.math.BigDecimal;
 import java.sql.Date;
 import java.sql.Timestamp;
 import java.time.Duration;
 import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
+
 import org.jooq.Field;
 import org.jooq.InsertValuesStep2;
 import org.jooq.Record;
@@ -35,13 +30,14 @@ import org.springframework.stereotype.Service;
 
 import com.vpu.mp.db.shop.tables.User;
 import com.vpu.mp.db.shop.tables.records.DistributionWithdrawRecord;
-import com.vpu.mp.db.shop.tables.records.OrderInfoRecord;
 import com.vpu.mp.db.shop.tables.records.UserRecord;
 import com.vpu.mp.db.shop.tables.records.UserTagRecord;
 import com.vpu.mp.service.foundation.data.DelFlag;
 import com.vpu.mp.service.foundation.service.ShopBaseService;
 import com.vpu.mp.service.foundation.util.DateUtil;
 import com.vpu.mp.service.foundation.util.PageResult;
+import com.vpu.mp.service.pojo.shop.distribution.DistributorListParam;
+import com.vpu.mp.service.pojo.shop.distribution.DistributorListVo;
 import com.vpu.mp.service.pojo.shop.market.MarketAnalysisParam;
 import com.vpu.mp.service.pojo.shop.member.CommonMemberPageListQueryParam;
 import com.vpu.mp.service.pojo.shop.member.CommonMemberPageListQueryVo;
@@ -53,11 +49,9 @@ import com.vpu.mp.service.pojo.shop.member.MemberPageListParam;
 import com.vpu.mp.service.pojo.shop.member.MemberTransactionStatisticsVo;
 import com.vpu.mp.service.pojo.shop.member.MememberLoginStatusParam;
 import com.vpu.mp.service.pojo.shop.member.tag.UserTagParam;
-import com.vpu.mp.service.shop.order.info.OrderInfoService;
-import com.vpu.mp.service.pojo.shop.distribution.DistributorListParam;
-import com.vpu.mp.service.pojo.shop.distribution.DistributorListVo;
 import com.vpu.mp.service.shop.distribution.DistributorListService;
 import com.vpu.mp.service.shop.distribution.DistributorWithdrawService;
+import com.vpu.mp.service.shop.order.info.OrderInfoService;
 /**
  * 
  * @author 黄壮壮

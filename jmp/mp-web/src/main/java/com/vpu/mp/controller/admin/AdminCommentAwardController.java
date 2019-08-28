@@ -1,17 +1,16 @@
 package com.vpu.mp.controller.admin;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
+
 import com.vpu.mp.service.foundation.data.JsonResult;
 import com.vpu.mp.service.foundation.util.PageResult;
 import com.vpu.mp.service.pojo.shop.market.commentaward.CommentAwardIdParam;
 import com.vpu.mp.service.pojo.shop.market.commentaward.CommentAwardListParam;
 import com.vpu.mp.service.pojo.shop.market.commentaward.CommentAwardListVo;
 import com.vpu.mp.service.pojo.shop.market.commentaward.CommentAwardParam;
-import com.vpu.mp.service.pojo.shop.market.commentaward.pojos.CommentAward;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
 
 /**
  * 评价有礼

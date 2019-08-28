@@ -1,17 +1,21 @@
 package com.vpu.mp.controller.admin;
 
-import com.vpu.mp.db.shop.tables.records.GiveGiftActivityRecord;
-import com.vpu.mp.service.foundation.data.JsonResult;
-import com.vpu.mp.service.foundation.util.PageResult;
-import com.vpu.mp.service.pojo.shop.market.givegift.*;
-import com.vpu.mp.service.pojo.shop.market.givegift.receive.GiveGiftReceiveListParam;
-import com.vpu.mp.service.pojo.shop.market.givegift.receive.GiveGiftReceiveListVo;
-import com.vpu.mp.service.pojo.shop.market.givegift.record.GiveGiftRecordListParam;
-import com.vpu.mp.service.pojo.shop.market.givegift.record.GiveGiftRecordListVo;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+
+import com.vpu.mp.service.foundation.data.JsonResult;
+import com.vpu.mp.service.foundation.util.PageResult;
+import com.vpu.mp.service.pojo.shop.market.givegift.GiveGiftIdParam;
+import com.vpu.mp.service.pojo.shop.market.givegift.GiveGiftListParam;
+import com.vpu.mp.service.pojo.shop.market.givegift.GiveGiftListVo;
+import com.vpu.mp.service.pojo.shop.market.givegift.GiveGiftParam;
+import com.vpu.mp.service.pojo.shop.market.givegift.GiveGiftVo;
+import com.vpu.mp.service.pojo.shop.market.givegift.receive.GiveGiftReceiveListParam;
+import com.vpu.mp.service.pojo.shop.market.givegift.receive.GiveGiftReceiveListVo;
+import com.vpu.mp.service.pojo.shop.market.givegift.record.GiveGiftRecordListParam;
+import com.vpu.mp.service.pojo.shop.market.givegift.record.GiveGiftRecordListVo;
 
 /**
  * 我要送礼

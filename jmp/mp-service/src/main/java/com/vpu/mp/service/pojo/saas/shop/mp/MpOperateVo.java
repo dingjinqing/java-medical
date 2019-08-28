@@ -1,12 +1,11 @@
 package com.vpu.mp.service.pojo.saas.shop.mp;
 
-import lombok.Builder;
-import lombok.Data;
-
 import java.sql.Timestamp;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
+
+import lombok.Data;
 
 /**
  * @author 李晓冰

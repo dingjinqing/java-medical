@@ -1,12 +1,12 @@
 package com.vpu.mp.service.shop.member;
 
+import static com.vpu.mp.db.shop.Tables.GOODS_CARD_COUPLE;
 import static com.vpu.mp.db.shop.Tables.MEMBER_CARD;
 import static com.vpu.mp.db.shop.Tables.USER;
 import static com.vpu.mp.db.shop.Tables.USER_CARD;
-import static com.vpu.mp.db.shop.Tables.GOODS_CARD_COUPLE;
 import static com.vpu.mp.service.pojo.shop.member.MemberOperateRecordEnum.EXCHANGE_GOODS_NUM;
-import static com.vpu.mp.service.pojo.shop.member.MemberOperateRecordEnum.STORE_SERVICE_TIMES;
 import static com.vpu.mp.service.pojo.shop.member.MemberOperateRecordEnum.MEMBER_CARD_ACCOUNT;
+import static com.vpu.mp.service.pojo.shop.member.MemberOperateRecordEnum.STORE_SERVICE_TIMES;
 import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.ACTIVE_NO;
 import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.ACTIVE_YES;
 import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.ALL_GOODS;
@@ -37,14 +37,14 @@ import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.PART_GOODS;
 import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.PART_SHOP;
 import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.PROHIBITED;
 import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.RANK_TYPE;
+import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.RELATED_GOODS_TYPE;
+import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.RELATED_PLATFORM_CATEGORY_TYPE;
+import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.RELATED_STORE_CATEGORY_TYPE;
 import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.WEEK;
 import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.WEEK_DATE_TYPE;
-import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.RELATED_GOODS_TYPE;
-import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.RELATED_STORE_CATEGORY_TYPE;
-import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.RELATED_PLATFORM_CATEGORY_TYPE;
 import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.ZERO;
-import static com.vpu.mp.service.pojo.shop.operation.RecordTradeEnum.POWER_MEMBER_CARD_ACCOUNT;
 import static com.vpu.mp.service.pojo.shop.operation.RecordTradeEnum.ACCOUNT_DEFAULT;
+import static com.vpu.mp.service.pojo.shop.operation.RecordTradeEnum.POWER_MEMBER_CARD_ACCOUNT;
 import static com.vpu.mp.service.pojo.shop.operation.RecordTradeEnum.TRADE_FLOW_INCOME;
 import static com.vpu.mp.service.pojo.shop.operation.RecordTradeEnum.TRADE_FLOW_TO_BE_CONFIRMED;
 import static org.jooq.impl.DSL.count;
@@ -61,8 +61,6 @@ import java.util.Queue;
 
 import javax.validation.Valid;
 
-
-import com.vpu.mp.service.pojo.shop.member.card.*;
 import org.jooq.InsertValuesStep3;
 import org.jooq.InsertValuesStep7;
 import org.jooq.Result;
@@ -91,6 +89,22 @@ import com.vpu.mp.service.pojo.shop.member.MemberOperateRecordEnum;
 import com.vpu.mp.service.pojo.shop.member.account.AddMemberCardParam;
 import com.vpu.mp.service.pojo.shop.member.account.MemberCard;
 import com.vpu.mp.service.pojo.shop.member.account.MemberCardVo;
+import com.vpu.mp.service.pojo.shop.member.card.BaseCardVo;
+import com.vpu.mp.service.pojo.shop.member.card.CardConsumpData;
+import com.vpu.mp.service.pojo.shop.member.card.CardIdParam;
+import com.vpu.mp.service.pojo.shop.member.card.CardParam;
+import com.vpu.mp.service.pojo.shop.member.card.GradeConditionJson;
+import com.vpu.mp.service.pojo.shop.member.card.LimitNumCardToVo;
+import com.vpu.mp.service.pojo.shop.member.card.LimitNumCardVo;
+import com.vpu.mp.service.pojo.shop.member.card.MemberCardPojo;
+import com.vpu.mp.service.pojo.shop.member.card.NormalCardToVo;
+import com.vpu.mp.service.pojo.shop.member.card.NormalCardVo;
+import com.vpu.mp.service.pojo.shop.member.card.PowerCardParam;
+import com.vpu.mp.service.pojo.shop.member.card.RankCardToVo;
+import com.vpu.mp.service.pojo.shop.member.card.RankCardVo;
+import com.vpu.mp.service.pojo.shop.member.card.ScoreJson;
+import com.vpu.mp.service.pojo.shop.member.card.SearchCardParam;
+import com.vpu.mp.service.pojo.shop.member.card.SimpleMemberCardVo;
 import com.vpu.mp.service.pojo.shop.operation.RecordContentTemplate;
 import com.vpu.mp.service.shop.operation.RecordMemberTradeService;
 

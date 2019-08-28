@@ -15,7 +15,9 @@ import lombok.Setter;
 @Getter
 @Setter
 public class WxAppLoginParam  extends WxAppCommonParam{
+	
 	String code;
+	
 	String avatar;
 	
 	@JsonProperty(value = "path_query")

@@ -1,11 +1,12 @@
 package com.vpu.mp.service.pojo.saas.shop.mp;
 
-import lombok.Data;
+import static com.vpu.mp.db.main.Tables.MP_OPERATE_LOG;
+
 import org.apache.commons.lang3.StringUtils;
 import org.jooq.Condition;
 import org.jooq.impl.DSL;
 
-import static com.vpu.mp.db.main.Tables.MP_OPERATE_LOG;
+import lombok.Data;
 
 /**
  * @author 李晓冰

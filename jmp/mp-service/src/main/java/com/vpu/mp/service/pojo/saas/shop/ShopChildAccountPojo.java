@@ -3,8 +3,6 @@ package com.vpu.mp.service.pojo.saas.shop;
 import java.io.Serializable;
 import java.sql.Timestamp;
 
-import javax.annotation.Generated;
-
 
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class ShopChildAccountPojo implements Serializable {

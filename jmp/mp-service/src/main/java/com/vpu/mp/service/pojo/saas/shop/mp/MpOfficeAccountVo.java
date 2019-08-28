@@ -1,7 +1,5 @@
 package com.vpu.mp.service.pojo.saas.shop.mp;
 
-import com.fasterxml.jackson.annotation.JsonInclude;
-
 import lombok.Data;
 
 @Data

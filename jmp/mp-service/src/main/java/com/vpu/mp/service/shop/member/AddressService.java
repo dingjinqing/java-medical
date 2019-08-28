@@ -1,11 +1,12 @@
 package com.vpu.mp.service.shop.member;
 
-import com.vpu.mp.service.foundation.service.ShopBaseService;
 import static com.vpu.mp.db.shop.Tables.USER_ADDRESS;
 
 import java.util.List;
 
 import org.springframework.stereotype.Service;
+
+import com.vpu.mp.service.foundation.service.ShopBaseService;
 /**
 * @author 黄壮壮
 * @Date: 2019年8月16日

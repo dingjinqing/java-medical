@@ -1,16 +1,14 @@
 package com.vpu.mp.service.shop.member;
 
 import static com.vpu.mp.db.shop.tables.RecordAdminAction.RECORD_ADMIN_ACTION;
-import static com.vpu.mp.db.shop.tables.TradesRecord.TRADES_RECORD;
 import static com.vpu.mp.db.shop.tables.User.USER;
 import static com.vpu.mp.db.shop.tables.UserAccount.USER_ACCOUNT;
-import static com.vpu.mp.service.pojo.shop.member.MemberOperateRecordEnum.ADMIN_OPERATION;
 import static com.vpu.mp.service.foundation.data.JsonResultCode.CODE_MEMBER_ACCOUNT_UPDATE_FAIL;
-import static com.vpu.mp.service.foundation.data.JsonResultCode.CODE_SUCCESS;
+import static com.vpu.mp.service.pojo.shop.member.MemberOperateRecordEnum.ADMIN_OPERATION;
 import static com.vpu.mp.service.pojo.shop.operation.RecordContentMessage.MSG_MEMBER_ACCOUNT;
 import static com.vpu.mp.service.pojo.shop.operation.RecordTradeEnum.TRADE_CONTENT_BY_CASH;
 import static com.vpu.mp.service.pojo.shop.operation.RecordTradeEnum.TRADE_FLOW_INCOME;
-import com.vpu.mp.db.shop.tables.records.TradesRecordRecord;
+
 import java.math.BigDecimal;
 import java.sql.Timestamp;
 import java.util.Arrays;
@@ -21,8 +19,8 @@ import org.jooq.tools.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.vpu.mp.db.shop.tables.records.TradesRecordRecord;
 import com.vpu.mp.db.shop.tables.records.UserRecord;
-import com.vpu.mp.service.foundation.data.JsonResultCode;
 import com.vpu.mp.service.foundation.exception.MpException;
 import com.vpu.mp.service.foundation.service.ShopBaseService;
 import com.vpu.mp.service.foundation.util.DateUtil;
