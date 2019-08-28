@@ -23,7 +23,10 @@
       <div class="select_info">
         <div class="leftarea">
           <span>活动名称：</span>
-          <el-input size="small"></el-input>
+          <el-input
+            size="small"
+            v-model="actName"
+          ></el-input>
         </div>
         <div class="midarea">
           <span>活动时间：</span>
@@ -49,7 +52,7 @@
           <el-button
             type="primary"
             size="small"
-            @click="select()"
+            @click="handleClick()"
           >筛选</el-button>
         </div>
       </div>
@@ -148,22 +151,23 @@ export default {
   },
   data () {
     return {
-      tabSwitch: '2',
+      actName: '',
+      tabSwitch: '1',
       tabInfo: [{
         title: '全部助力活动',
-        name: '1'
+        name: '0'
       }, {
         title: '进行中',
-        name: '2'
+        name: '1'
       }, {
         title: '未开始',
-        name: '3'
+        name: '2'
       }, {
         title: '已过期',
-        name: '4'
+        name: '3'
       }, {
         title: '已停用',
-        name: '5'
+        name: '4'
       }],
       tabIndex: 2,
       currentPage: 1,
@@ -184,9 +188,9 @@ export default {
         }]
     }
   },
-  // created () {
-  //   this.handleClick()
-  // },
+  created () {
+    this.handleClick()
+  },
 
   methods: {
     // 当前页发生变化
@@ -197,17 +201,16 @@ export default {
       this.isShowAct = true
       this.activeName = 'sixth'
     },
-    handleClick (tab) {
-      console.log('tab is :' + tab)
-      // console.log('tab.index is :' + tab.index)
-
+    handleClick () {
       let listParam = {
-        'actState': parseInt(tab.index),
+        'actName': this.actName,
+        'actState': this.tabSwitch,
         'currentPage': 1,
         'pageRows': 20
       }
       friendHelpList(listParam).then(res => {
         console.log(res)
+
         if (res.error === 0) {
           this.handleData(res.content.dataList)
         }
