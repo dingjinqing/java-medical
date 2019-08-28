@@ -66,7 +66,6 @@
             <template slot-scope="scope">
               <inputEdit
                 v-model="scope.row.level"
-                :init="scope.row.level"
                 @update="updateGiftLevel(scope.row.id, scope.row.level)"/>
             </template>
           </el-table-column>

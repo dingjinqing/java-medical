@@ -12,7 +12,7 @@
 <template>
     <div class="container">
       <div v-show="!showInput" class="input">{{input}}</div>
-      <el-input type="number" v-show="showInput" v-model="value"></el-input>
+      <el-input ref="input" type="number" v-show="showInput" v-model="value"></el-input>
       <el-button @click="switchEditState" size="mini"
         v-show="!disabled">{{btnContent}}</el-button>
     </div>
@@ -48,6 +48,13 @@ export default {
         return '确定'
       }
       return '编辑'
+    }
+  },
+  watch: {
+    showInput (v) {
+      if (v) {
+        this.$refs.input.focus()
+      }
     }
   }
 }

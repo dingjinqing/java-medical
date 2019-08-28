@@ -238,10 +238,10 @@
           </el-row>
         </div>
         <div v-if="1===step">
-          <choosingGoods @result="handleChoosingGoods"/>
+          <choosingGoods/>
         </div>
         <div v-if="2===step">
-          <choosingGoods :loadProduct="true" @result="handleChoosingProduct"/>
+          <choosingGoods :loadProduct="true"/>
         </div>
     </wrapper>
   </div>
@@ -640,6 +640,18 @@ export default {
         return false
       }
       return true
+    },
+    listenGoodsResult () {
+      this.$http.$on('result', ids => {
+        switch (this.step) {
+          case 1:
+            this.handleChoosingGoods(ids)
+            break
+          case 2:
+            this.handleChoosingProduct(ids)
+            break
+        }
+      })
     }
   },
   watch: {
@@ -660,6 +672,7 @@ export default {
     }
     this.loadTag()
     this.loadMemberCard()
+    this.listenGoodsResult()
   }
 }
 </script>
