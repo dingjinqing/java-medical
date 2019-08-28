@@ -4,12 +4,15 @@
       <div class="coupon_settings">
         <!-- 左侧内容 -->
         <div class="left_preview">
-          <div class="left_top">
+          <div
+            class="left_top"
+            :style="`background-image: url(${$imageHost}/image/admin/cou_top_bg.png)`"
+          >
             优惠券礼包
           </div>
           <div class="left_content">
             <div class="content_bg">
-              <img src="../../../../../../assets/adminimg/cou_package_bg.png">
+              <img :src="$imageHost + '/image/admin/cou_package_bg.png'">
             </div>
             <div class="content_info">
               <div class="text_title">{{pack_name?pack_name:'优惠券礼包'}}</div>
@@ -36,7 +39,7 @@
                     </div>
                     <div class="coupon_middle">
                       <img
-                        src="../../../../../../assets/adminimg/cou_midd_icon.png"
+                        :src="$imageHost + '/image/admin/cou_midd_icon.png'"
                         alt=""
                       >
                     </div>
@@ -515,8 +518,8 @@ export default {
         width: 100%;
         height: 55px;
         color: #000;
-        background: url("../../../../../../assets/adminimg/cou_top_bg.png")
-          no-repeat 100%/100%;
+        background: url("$imageHost + '/image/admin//cou_top_bg.png") no-repeat
+          100%/100%;
         text-align: center;
         line-height: 75px;
       }
