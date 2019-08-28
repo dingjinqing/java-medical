@@ -21,7 +21,7 @@
                 <el-input v-model="param.name"></el-input>
               </el-form-item>
               <el-form-item label="活动优先级">
-                <el-input type="number" v-model="param.level"></el-input>
+                <el-input type="number" v-model="param.level" :disabled="ongoing"></el-input>
               </el-form-item>
               <el-form-item label="活动时间">
                 <el-date-picker
@@ -29,7 +29,8 @@
                   type="datetimerange"
                   range-separator="至"
                   start-placeholder="开始日期"
-                  end-placeholder="结束日期">
+                  end-placeholder="结束日期"
+                  :disabled="ongoing">
                 </el-date-picker>
               </el-form-item>
             </el-form>
@@ -57,15 +58,18 @@
             <el-form label-width="100px" >
               <el-form-item label="活动商品">
                 <template>
-                  <el-radio v-for="(item, index) in goodsRanges" :key="index" v-model="goodsRange" :label="index">{{item}}</el-radio>
-                  <el-button v-show="goodsRange===1" size="small" @click="showChoosingGoods">添加商品</el-button>
+                  <el-radio v-for="(item, index) in goodsRanges" :key="index"
+                    v-model="goodsRange" :label="index" :disabled="ongoing">{{item}}</el-radio>
+                  <el-button v-show="goodsRange===1" size="small"
+                    @click="showChoosingGoods">{{goodsBtnName}}</el-button>
                   <span v-show="goodsRange===1">已选{{goodsIdsLength}}</span>
                 </template>
               </el-form-item>
               <el-form-item label="赠品规则">
-                <el-select v-model="selectedRules" multiple :multiple-limit="3">
+                <el-select v-model="selectedRules" multiple :multiple-limit="3" :disabled="ongoing">
                   <el-option
                     v-for="(item, index) in rules"
+                    :disabled="ongoing"
                     :key="index"
                     :label="item.label"
                     :value="index">
@@ -74,16 +78,16 @@
               </el-form-item>
               <el-form-item label="满金额赠送" v-show="contains(0)">
                   <span>满</span>
-                  <el-input type="number" v-model="param.rules.fullPrice" class="input"></el-input>
+                  <el-input type="number" v-model="param.rules.fullPrice" class="input" :disabled="ongoing"></el-input>
                   <span>元，送赠品</span>
               </el-form-item>
               <el-form-item label="满数量赠送" v-show="contains(1)">
                   <span>满</span>
-                  <el-input type="number" v-model="param.rules.fullNumber" class="input"></el-input>
+                  <el-input type="number" v-model="param.rules.fullNumber" class="input" :disabled="ongoing"></el-input>
                   <span>件，送赠品</span>
               </el-form-item>
               <el-form-item label="会员标签" v-show="contains(2)">
-                  <el-select v-model="param.rules.tagId" multiple>
+                  <el-select v-model="param.rules.tagId" multiple :disabled="ongoing">
                     <el-option
                       v-for="item in tags"
                       :key="item.id"
@@ -93,7 +97,7 @@
                   </el-select>
               </el-form-item>
               <el-form-item label="会员卡" v-show="contains(3)">
-                  <el-select v-model="param.rules.cardId" multiple>
+                  <el-select v-model="param.rules.cardId" multiple :disabled="ongoing">
                     <el-option
                       v-for="item in cards"
                       :key="item.id"
@@ -103,12 +107,12 @@
                   </el-select>
               </el-form-item>
               <el-form-item label="付款排名" v-show="contains(4)">
-                  <el-input type="number" v-model="param.rules.payTop" class="input"></el-input>
+                  <el-input type="number" v-model="param.rules.payTop" class="input" :disabled="ongoing"></el-input>
               </el-form-item>
               <el-form-item label="已购买次数" v-show="contains(5)">
-                  <el-input type="number" v-model="param.rules.minPayNum" class="input"></el-input>
+                  <el-input type="number" v-model="param.rules.minPayNum" class="input" :disabled="ongoing"></el-input>
                   <span>至</span>
-                  <el-input type="number" v-model="param.rules.maxPayNum" class="input"></el-input>
+                  <el-input type="number" v-model="param.rules.maxPayNum" class="input" :disabled="ongoing"></el-input>
               </el-form-item>
               <el-form-item label="付款时间" v-show="contains(6)">
                 <el-date-picker
@@ -116,11 +120,12 @@
                   type="datetimerange"
                   range-separator="至"
                   start-placeholder="开始日期"
-                  end-placeholder="结束日期">
+                  end-placeholder="结束日期"
+                  :disabled="ongoing">
                 </el-date-picker>
               </el-form-item>
               <el-form-item label="用户类别" v-show="contains(7)">
-                  <el-select v-model="param.rules.userAction">
+                  <el-select v-model="param.rules.userAction" :disabled="ongoing">
                     <el-option
                       v-for="item in userAction"
                       :key="item.id"
@@ -153,7 +158,7 @@
         </div>
         <!-- 设置赠品 -->
         <div v-if="step===2">
-          <el-row>
+          <el-row v-show="!ongoing">
             <el-col>
               <el-button size="small" type="primary" @click="showChoosingGoods">添加赠品商品</el-button>
             </el-col>
@@ -200,7 +205,9 @@
                   align="center"
                 >
                   <template slot-scope="scope">
+                    {{scope.row.productNumber - scope.row.offerNumber}} /
                     <inputEdit v-model="scope.row.productNumber"
+                      :disabled="ongoing"
                       :init="Number(scope.row.offerNumber||0)+Number(scope.row.productNumber)"
                       @update="checkProductNumber(scope.row.prdNumber, scope.row.productNumber, scope.row.offerNumber)"/>
                   </template>
@@ -208,9 +215,11 @@
                 <el-table-column
                   label = "操作"
                   align="center"
+                  v-if="!ongoing"
                 >
                   <template slot-scope="scope">
                     <el-button size="small"
+                    v-show="!ongoing"
                     @click="tableData.splice(tableData.findIndex(r=>r.productId===scope.row.productId),1)">
                     删除</el-button>
                   </template>
@@ -242,6 +251,7 @@ import { mapActions } from 'vuex'
 import wrapper from '@/components/admin/wrapper/wrapper'
 import inputEdit from '@/components/admin/inputEdit'
 import choosingGoods from '@/components/admin/choosingGoods'
+import status from '@/components/admin/status/status'
 import { format, range } from '@/util/date'
 import { addGift, getGiftDetail, updateGift, getMemberCardList, getTagList, getProductDetail } from '@/api/admin/marketManage/gift'
 
@@ -267,6 +277,8 @@ export default {
       goodsRanges: ['全部商品', '指定商品'],
       // 当前页为编辑页
       update: false,
+      // 活动状态,
+      status: null,
       param: {
         name: '',
         level: '',
@@ -348,11 +360,21 @@ export default {
         return 0
       }
       return 4
+    },
+    ongoing () {
+      return this.status === status[1].status
+    },
+    goodsBtnName () {
+      if (this.ongoing) {
+        return '查看商品'
+      }
+      return '添加商品'
     }
   },
   methods: {
     ...mapActions(['transmitEditGoodsId']),
     nextStep () {
+      this.formatParam()
       if (!this.validateParam()) {
         return
       }
@@ -367,10 +389,10 @@ export default {
     addGift () {
       const then = r => this.gotoGifts()
       const { param } = this
+      this.formatParam()
       if (!this.validateGiftParam()) {
         return
       }
-      this.formatParam()
       if (this.update) {
         updateGift(param).then(then)
       } else {
@@ -423,6 +445,7 @@ export default {
         this.loadRules(content)
         this.loadGoods(content)
         this.loadGifts(content)
+        this.loadStatus(content)
       })
     },
     // 加载赠品规则
@@ -474,9 +497,19 @@ export default {
       this.dateRange.push(startTime)
       this.dateRange.push(endTime)
     },
-    loadGifts (content) {
-      const { gifts } = content
-      this.tableData = gifts
+    loadGifts ({ gifts }) {
+      gifts.forEach(row => {
+        const { productId, productNumber } = row
+        getProductDetail(this.id, productId).then(({ content }) => {
+          this.tableData.push({
+            ...row,
+            productNumber
+          })
+        })
+      })
+    },
+    loadStatus ({ status }) {
+      this.status = status
     },
     gotoGifts () {
       this.$router.replace('/admin/home/main/gift')
@@ -503,7 +536,7 @@ export default {
     },
     // 添加一行赠品商品
     addProductRow (productId) {
-      getProductDetail(productId, this.id).then(({ content }) => {
+      getProductDetail(this.id, productId).then(({ content }) => {
         const { goodsImg, prdImg, offerNumber } = content
         const row = {
           ...content,
@@ -581,6 +614,9 @@ export default {
       })
     },
     handleChoosingGoods (ids) {
+      if (this.ongoing) {
+        return
+      }
       this.tmpGoodsIds = ids
     },
     handleChoosingProduct (ids) {

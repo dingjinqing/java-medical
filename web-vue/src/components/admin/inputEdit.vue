@@ -13,14 +13,16 @@
     <div class="container">
       <div v-show="!showInput" class="input">{{input}}</div>
       <el-input type="number" v-show="showInput" v-model="value"></el-input>
-      <el-button @click="switchEditState" size="mini">{{btnContent}}</el-button>
+      <el-button @click="switchEditState" size="mini"
+        v-show="!disabled">{{btnContent}}</el-button>
     </div>
 </template>
 <script>
 export default {
   props: {
     input: String | Number,
-    init: Number
+    init: Number,
+    disabled: Boolean
   },
   model: {
     prop: 'input',
