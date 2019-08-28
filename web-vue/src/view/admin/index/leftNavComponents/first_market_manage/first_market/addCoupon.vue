@@ -326,7 +326,21 @@
                       >指定商品</el-radio>
                     </p>
                     <div v-if="radio_goods === '1'">
-                      123
+                      <div
+                        class="noneBlockList"
+                        v-for="(item,index) in noneBlockDiscArr"
+                        :key="index"
+                        @click="hanldeToAddGoodS(index)"
+                      >
+                        <div class="noneBlockLeft">
+                          <img :src="$imageHost+'/image/admin/icon_jia.png'">
+                          {{item.name}}
+                        </div>
+                        <div
+                          v-if="item.num"
+                          class="noneBlockRight"
+                        >已选择分类：{{item.num}}个分类</div>
+                      </div>
                     </div>
                   </div>
                 </li>
@@ -376,10 +390,21 @@
         size="small"
       >保存</el-button>
     </div>
+    <!--选择商品弹窗-->
+    <ChoosingGoods />
+    <!--指定商品添加商品分类弹窗-->
+    <AppointBusDialog />
+    <!--指定商品添加平台分类弹窗-->
+    <AppointBrandDialog />
   </div>
 </template>
 <script>
 export default {
+  components: {
+    ChoosingGoods: () => import('@/components/admin/choosingGoods'),
+    AppointBusDialog: () => import('@/view/admin/layout/addingBusClassDialog'),
+    AppointBrandDialog: () => import('@/view/admin/layout/brandDialog')
+  },
   data () {
     return {
       tableData: [],
@@ -414,10 +439,53 @@ export default {
       denomination: null,
       denomination2: null,
       least_consume: null,
-      score_number: null
+      score_number: null,
+      AtreeType: null,
+      noneBlockDiscArr: [
+        {
+          name: '添加商品',
+          num: '1'
+        },
+        {
+          name: '添加商品分类',
+          num: ''
+        },
+        {
+          name: '添加平台分类',
+          num: '2'
+        }
+      ]
     }
   },
   methods: {
+    dataDefalut () {
+      this.$http.$on('ABusClassTrueArr', res => {
+        console.log(res)
+        console.log(this.AtreeType)
+        if (this.AtreeType === 1) {
+          this.noneBlockDiscArr[1].num = res.length
+        } else {
+          this.noneBlockDiscArr[2].num = res.length
+        }
+        console.log(res)
+      })
+    },
+    // 点击指定商品出现的添加类弹窗汇总
+    hanldeToAddGoodS (index) {
+      console.log(index)
+      switch (index) {
+        case 0:
+          this.$http.$emit('choosingGoodsFlag', index)
+          break
+        case 1:
+          this.AtreeType = 1
+          this.$http.$emit('AaddingBusClassDialog', index)
+          break
+        case 2:
+          this.AtreeType = 2
+          this.$http.$emit('AuserBrandDialog', index)
+      }
+    }
   },
   filters: {
   },
@@ -642,5 +710,27 @@ export default {
 }
 .coupon_name_input {
   width: 160px;
+}
+.noneBlockList {
+  margin-bottom: 10px;
+  display: flex;
+  .noneBlockLeft {
+    line-height: 30px;
+    height: 30px;
+    width: 120px;
+    text-align: left;
+    color: #5a8bff;
+    border: 1px solid #ccc;
+    background: #fff;
+    cursor: pointer;
+    padding-left: 5px;
+    margin-right: 20px;
+  }
+  .noneBlockRight {
+    color: #5a8bff;
+    cursor: pointer;
+    height: 30px;
+    line-height: 30px;
+  }
 }
 </style>

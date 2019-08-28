@@ -75,6 +75,7 @@ export default {
         {
           price: 88,
           isLimit: true,
+          act_code: 0,
           nolimitPrice: 2,
           surplus: 99,
           tips: '优惠券每人领取限制',
@@ -84,6 +85,7 @@ export default {
         {
           price: 222,
           isLimit: false,
+          act_code: 0,
           nolimitPrice: 10,
           surplus: 111,
           tips: '年终大促',
@@ -93,6 +95,7 @@ export default {
         {
           price: 333,
           isLimit: false,
+          act_code: 0,
           nolimitPrice: 10,
           surplus: 111,
           tips: '年终大促',
@@ -102,6 +105,7 @@ export default {
         {
           price: 444,
           isLimit: false,
+          act_code: 0,
           nolimitPrice: 10,
           surplus: 111,
           tips: '年终大促',
@@ -111,6 +115,7 @@ export default {
         {
           price: 555,
           isLimit: false,
+          act_code: 0,
           nolimitPrice: 10,
           surplus: 111,
           tips: '年终大促',
@@ -120,6 +125,7 @@ export default {
         {
           price: 666,
           isLimit: false,
+          act_code: 0,
           nolimitPrice: 10,
           surplus: 111,
           tips: '年终大促',
@@ -129,6 +135,7 @@ export default {
         {
           price: 666,
           isLimit: false,
+          act_code: 0,
           nolimitPrice: 10,
           surplus: 111,
           tips: '年终大促',
@@ -138,6 +145,7 @@ export default {
         {
           price: 666,
           isLimit: false,
+          act_code: 0,
           nolimitPrice: 10,
           surplus: 111,
           tips: '年终大促',
@@ -147,6 +155,7 @@ export default {
         {
           price: 666,
           isLimit: false,
+          act_code: 0,
           nolimitPrice: 10,
           surplus: 111,
           tips: '年终大促',
@@ -156,6 +165,7 @@ export default {
         {
           price: 666,
           isLimit: false,
+          act_code: 0,
           nolimitPrice: 10,
           surplus: 111,
           tips: '年终大促',
@@ -165,6 +175,7 @@ export default {
         {
           price: 666,
           isLimit: false,
+          act_code: 0,
           nolimitPrice: 10,
           surplus: 111,
           tips: '年终大促',
@@ -174,6 +185,7 @@ export default {
         {
           price: 666,
           isLimit: false,
+          act_code: 0,
           nolimitPrice: 10,
           surplus: 111,
           tips: '年终大促',
@@ -183,6 +195,7 @@ export default {
         {
           price: 666,
           isLimit: false,
+          act_code: 0,
           nolimitPrice: 10,
           surplus: 111,
           tips: '年终大促',
@@ -192,6 +205,7 @@ export default {
       ]
     }
   },
+  props: ['origin'],
   mounted () {
     // 初始化
     this.defaultData()
@@ -222,8 +236,13 @@ export default {
         if (item.ischeck) arr.push(item)
       })
       console.log(arr.length)
-      if (arr.length > 5) {
+      console.log(this.origin)
+      if (arr.length > 5 && !this.origin) {
         this.$message.error('最多只能选择5张优惠卷哦~')
+        return
+      }
+      if (arr.length > 10 && this.origin === 'couponPackage') {
+        this.$message.error('最多只能选择10种优惠卷哦~')
         return
       }
       this.$emit('handleToCheck', arr)

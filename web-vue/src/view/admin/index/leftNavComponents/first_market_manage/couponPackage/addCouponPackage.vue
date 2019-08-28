@@ -2,6 +2,7 @@
   <div class="content">
     <div class="main">
       <div class="coupon_settings">
+        <!-- 左侧内容 -->
         <div class="left_preview">
           <div class="left_top">
             优惠券礼包
@@ -23,8 +24,15 @@
                     :key="index"
                   >
                     <div class="coupon_left">
-                      <div class="coupon_price">￥<span>{{item.coupon_price}}</span></div>
-                      <div class="coupon_rule">{{item.coupon_rule}}</div>
+                      <div
+                        class="coupon_price"
+                        v-if="item.act_code == 0"
+                      >￥<span>{{item.price}}</span></div>
+                      <div
+                        class="coupon_price"
+                        v-else
+                      ><span>{{item.price}}</span>折</div>
+                      <div class="coupon_rule">{{item.isLimit? `满${item.nolimitPrice}元可用`  : `不限制`}}</div>
                     </div>
                     <div class="coupon_middle">
                       <img
@@ -33,10 +41,10 @@
                       >
                     </div>
                     <div class="coupon_right">
-                      <div class="coupon_name">{{item.coupon_name}}</div>
-                      <div class="coupon_limits">{{item.coupon_limits}}></div>
-                      <div class="coupon_time">{{item.coupon_time}}</div>
-                      <div class="coupon_icon">{{item.coupon_icon}}张</div>
+                      <div class="coupon_name">{{item.tips}}</div>
+                      <div class="coupon_limits">全部商品可用></div>
+                      <div class="coupon_time">2019-08-21--2019-08-31</div>
+                      <div class="coupon_icon">{{item.send_num ?item.send_num:0}}张</div>
                     </div>
                   </div>
                 </div>
@@ -49,6 +57,8 @@
             </div>
           </div>
         </div>
+        <!-- 左侧内容end -->
+        <!-- 右侧内容 -->
         <div class="right_settings">
           <div class="set_box">
             <p class="set_title">基础设置</p>
@@ -71,7 +81,7 @@
               <div class="item_title"><em>*</em> 有效期：</div>
               <div class="item_right">
                 <el-date-picker
-                  v-model="value1"
+                  v-model="effectiveDate"
                   type="datetimerange"
                   range-separator="至"
                   start-placeholder="开始日期"
@@ -98,11 +108,77 @@
             <div class="set_item">
               <div class="item_title"><em>*</em> 礼包内容：</div>
               <div class="item_right">
-                <a style="color:#409eff;font-size:12px;cursor: pointer;">添加优惠券</a>
+                <a
+                  style="color:#409eff;font-size:12px;cursor: pointer;"
+                  @click="handleToCallDialog"
+                >添加优惠券</a>
                 <span class="item_tips">最多可添加10种优惠券，每种优惠券最多送6张</span>
               </div>
             </div>
-            <!-- <div class="coupon_set_box">
+            <div
+              class="coupon_set_box"
+              v-if="coupon_info.length"
+            >
+              <div class="coupon_set_table">
+                <el-table
+                  :data="coupon_info"
+                  border
+                  style="width: 100%"
+                >
+                  <el-table-column label="优惠券信息">
+                    <template slot-scope="scope">
+                      <div class="coupon_info">
+                        <span class="coupon_name">{{scope.row.tips}}</span>
+                        <div
+                          class="coupon_price"
+                          v-if="scope.row.act_code == 0"
+                        >￥<span>{{scope.row.price}}</span></div>
+                        <div
+                          class="coupon_price"
+                          v-else
+                        ><span>{{scope.row.price}}</span>折</div>
+                        <div class="coupon_rule">{{scope.row.isLimit? `满${scope.row.nolimitPrice}元可用`  : `不限制`}}</div>
+                      </div>
+                    </template>
+                  </el-table-column>
+                  <el-table-column
+                    label="发券数量"
+                    width="120"
+                  >
+                    <template slot-scope="scope">
+                      <div>
+                        <el-input-number
+                          v-model="scope.row.send_num"
+                          size="small"
+                          :min="1"
+                          :max="6"
+                          style="width:100px;"
+                        ></el-input-number>
+                      </div>
+                    </template>
+                  </el-table-column>
+                  <el-table-column label="发放策略">
+                    <template slot-scope="scope">
+                      <div style="text-align:center">
+                        <a
+                          style="color:#409eff;cursor: pointer;"
+                          @click.prevent="handleCouponSet(scope)"
+                        >设置</a>
+                      </div>
+                    </template>
+                  </el-table-column>
+                  <el-table-column label="操作">
+                    <template slot-scope="scope">
+                      <div style="text-align:center">
+                        <a
+                          style="color:#409eff;cursor: pointer;"
+                          @click.prevent="handleCouponDel(scope.$index)"
+                        >删除</a>
+                      </div>
+                    </template>
+                  </el-table-column>
+                </el-table>
+              </div>
               <div class="bottom_tips_box">
                 <span>注：</span>
                 <div class="tips_content">
@@ -111,7 +187,7 @@
                   <p>3.若所有优惠券全部过期或失效，则该礼包失效，用户不可领取。</p>
                 </div>
               </div>
-            </div> -->
+            </div>
             <div class="set_item">
               <div class="item_title"><em>*</em> 每人限领礼包数量：</div>
               <div class="item_right">
@@ -156,14 +232,14 @@
                 <p class="package_get_choose">
                   <span v-if="access_mode==='0'">
                     需支付：<el-input
-                      v-model="access_cost"
+                      v-model="accessCost.access_cost1"
                       class="small_input"
                       size="small"
                     ></el-input> 元，
                   </span>
                   <span v-if="access_mode==='1'">
                     需支付：<el-input
-                      v-model="access_cost"
+                      v-model="accessCost.access_cost2"
                       class="small_input"
                       size="small"
                     ></el-input> 积分，
@@ -188,6 +264,7 @@
             </div>
           </div>
         </div>
+        <!-- 右侧内容end -->
       </div>
     </div>
     <div class="footer">
@@ -196,11 +273,75 @@
         size="small"
       >保存</el-button>
     </div>
+    <!--添加优惠卷-->
+    <AddCouponDialog
+      origin="couponPackage"
+      @handleToCheck="handleToCheck"
+    />
+
+    <!-- 设置优惠券内容 -->
+    <el-dialog
+      :visible.sync="couponSetDialogFlag"
+      title="设置发放策略"
+      custom-class="couponSetDialog"
+      center
+    >
+      <div class="coupon_info_set">
+        <p>领取后立即发放 <el-input-number
+            v-model="coupon_set.immediatelyGrantAmount"
+            placeholder=""
+            size="small"
+            style="width:100px;"
+          ></el-input-number> 张</p>
+        <p>领取后每 <el-input-number
+            v-model="coupon_set.timingEvery"
+            placeholder=""
+            size="small"
+            style="width:100px;"
+          ></el-input-number>
+          <el-select
+            v-model="coupon_set.timingUnit"
+            size="small"
+            style="width:100px;"
+          >
+            <el-option
+              v-for="item in coupon_set_date"
+              :key="item.value"
+              :label="item.label"
+              :value="item.value"
+            ></el-option>
+          </el-select>
+        </p>
+        <p style="padding-left: 28px;">发放 <el-input-number
+            v-model="coupon_set.timingAmount"
+            placeholder=""
+            size="small"
+            style="width:100px;"
+          ></el-input-number> 张</p>
+      </div>
+      <div
+        slot="footer"
+        class="dialog-footer"
+      >
+        <el-button
+          @click="couponSetDialogFlag = false"
+          size="small"
+        >取 消</el-button>
+        <el-button
+          type="primary"
+          @click="confrimCouponSet()"
+          size="small"
+        >确 定</el-button>
+      </div>
+    </el-dialog>
   </div>
 </template>
 
 <script>
 export default {
+  components: {
+    AddCouponDialog: () => import('@/view/admin/index/leftNavComponents/user_manger/membershipCard/addCouponDialog')
+  },
   data () {
     return {
       act_name: '',
@@ -209,17 +350,113 @@ export default {
       total_amount: '',
       act_rule: '',
       access_mode: '0',
-      coupon_info: [
-        { coupon_price: '88', coupon_rule: '不限制', coupon_name: '优惠券233', coupon_limits: '全部商品可用', coupon_time: '2019-08-21-2019-08-31', coupon_icon: '10' },
-        { coupon_price: '88', coupon_rule: '不限制', coupon_name: '优惠券233', coupon_limits: '全部商品可用', coupon_time: '2019-08-21-2019-08-31', coupon_icon: '10' },
-        { coupon_price: '88', coupon_rule: '不限制', coupon_name: '优惠券233', coupon_limits: '全部商品可用', coupon_time: '2019-08-21-2019-08-31', coupon_icon: '10' },
-        { coupon_price: '88', coupon_rule: '不限制', coupon_name: '优惠券233', coupon_limits: '全部商品可用', coupon_time: '2019-08-21-2019-08-31', coupon_icon: '10' },
-        { coupon_price: '88', coupon_rule: '不限制', coupon_name: '优惠券233', coupon_limits: '全部商品可用', coupon_time: '2019-08-21-2019-08-31', coupon_icon: '10' }
-      ]
+      coupon_info: [],
+      couponDialogFlag: false,
+      couponSetDialogFlag: false,
+      accessCost: {
+        access_cost1: '',
+        access_cost2: ''
+      },
+      effectiveDate: [],
+      coupon_set: {
+        immediatelyGrantAmount: '',
+        timingEvery: '',
+        timingAmount: '',
+        timingUnit: '0'
+      },
+      coupon_set_date: [
+        {
+          value: '0',
+          label: '天'
+        }, {
+          value: '1',
+          label: '自然周'
+        }, {
+          value: '2',
+          label: '自然月'
+        }
+      ],
+      target: null
     }
   },
-  methods () {
-
+  methods: {
+    // 选择优惠券弹窗
+    handleToCallDialog () {
+      let obj = {
+        couponDialogFlag: !this.couponDialogFlag,
+        couponList: this.coupon_info
+      }
+      this.$http.$emit('V-AddCoupon', obj)
+    },
+    // 确认选择优惠券-新增-删除
+    handleToCheck (data) {
+      let couponArr = this.formatCoupon(data)
+      let oldArr = this.unique([...this.coupon_info, ...couponArr], 'id')
+      let couponKey = []
+      couponArr.map((item) => {
+        couponKey.push(item.id)
+      })
+      this.coupon_info = oldArr.filter((item) => {
+        return couponKey.includes(item.id)
+      })
+      console.log(this.coupon_info)
+    },
+    // 添加优惠券初始项
+    formatCoupon (data) {
+      let arry = []
+      let couponData = {
+        immediatelyGrantAmount: 0,
+        timingEvery: 0,
+        timingAmount: 0,
+        timingUnit: '0'
+      }
+      data.map(item => {
+        arry.push(Object.assign({}, item, { send_num: '', coupon_set: couponData }))
+      })
+      console.log(arry)
+      return arry
+    },
+    // 设置优惠券内容弹窗
+    handleCouponSet (scope) {
+      let target = this.coupon_info[scope.$index]
+      this.coupon_set = JSON.parse(JSON.stringify(target.coupon_set))
+      this.couponSetDialogFlag = true
+      this.target = scope.$index
+    },
+    // 确认设置优惠券
+    confrimCouponSet () {
+      this.coupon_info[this.target].coupon_set = JSON.parse(JSON.stringify(this.coupon_set))
+      this.couponSetDialogFlag = false
+    },
+    // 删除
+    handleCouponDel (index) {
+      this.$confirm('是否删除该优惠券？', '提示', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
+      }).then(() => {
+        this.coupon_info.splice(index, 1)
+        this.$message({
+          type: 'success',
+          message: '删除成功!'
+        })
+      }).catch(() => {
+        this.$message({
+          type: 'info',
+          message: '已取消删除'
+        })
+      })
+    },
+    // 同id去重
+    unique (arr, key) {
+      let map = new Map()
+      arr.forEach((item, index) => {
+        if (!map.has(item[key])) {
+          map.set(item[key], item)
+        }
+      })
+      return [...map.values()]
+    }
   }
 }
 </script>
@@ -236,7 +473,7 @@ export default {
     display: flex;
     .left_preview {
       width: 310px;
-      max-height: 600px;
+      // max-height: 600px;
       overflow-y: auto;
       &::-webkit-scrollbar {
         width: 9px;
@@ -501,6 +738,35 @@ export default {
         }
         > .coupon_set_box {
           padding-left: 80px;
+          > .coupon_set_table {
+            .coupon_info {
+              display: flex;
+              flex-direction: column;
+              justify-content: space-between;
+              align-items: center;
+              min-width: 0;
+              .coupon_rule {
+                color: #999;
+                font-size: 12px;
+              }
+              .coupon_price {
+                color: #f66;
+                font-size: 12px;
+                > span {
+                  font-size: 14px;
+                  font-weight: 600;
+                }
+              }
+              .coupon_name {
+                font-weight: bold;
+                font-size: 12px;
+                text-overflow: ellipsis;
+                overflow: hidden;
+                white-space: nowrap;
+                min-width: 0;
+              }
+            }
+          }
           > .bottom_tips_box {
             font-size: 12px;
             color: #999;
@@ -523,6 +789,29 @@ export default {
 .small_input {
   width: 80px;
 }
+.coupon_info_set {
+  display: flex;
+  flex-direction: column;
+  margin-bottom: -15px;
+  > p {
+    margin-bottom: 15px;
+  }
+}
+.content {
+  /deep/ .couponSetDialog {
+    width: 315px;
+    .el-dialog__header {
+      background: #f3f3f3;
+      padding-top: 10px;
+      .el-dialog__title {
+        font-size: 14px;
+      }
+      .el-dialog__headerbtn {
+        top: 10px;
+      }
+    }
+  }
+}
 .footer {
   position: fixed;
   bottom: 0;
@@ -532,5 +821,6 @@ export default {
   padding: 10px 0;
   background-color: #fff;
   text-align: center;
+  z-index: 3;
 }
 </style>
