@@ -12,7 +12,7 @@ import lombok.Data;
  */
 @Data
 public class SearchCardParam {
-	/** 会员卡类型 */
+	/** 会员卡类型 如： {@link com.vpu.mp.service.pojo.shop.member.card.CardConstant.NORMAL_TYPE } */
 	private Byte cardType;
 	/** 
 	 * 分页信息
