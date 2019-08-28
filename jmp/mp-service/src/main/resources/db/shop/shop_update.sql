@@ -806,3 +806,7 @@ create table `b2c_virtual_order_refund_record` (
   key `order_sn` (`order_sn`),
   key `user_id` (`user_id`)
 );
+
+-- 黄壮壮： 为表b2c_member_card 添加两个字段
+ALTER TABLE b2c_member_card ADD COLUMN `stock` int(11) DEFAULT 0 COMMENT '发放总量';
+ALTER TABLE b2c_member_card ADD COLUMN `limit` int(11) DEFAULT 1 COMMENT '领取限制';
