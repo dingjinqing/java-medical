@@ -12,7 +12,7 @@ import com.vpu.mp.service.foundation.data.JsonResult;
 import com.vpu.mp.service.foundation.data.JsonResultCode;
 import com.vpu.mp.service.pojo.shop.market.channel.ChannelPageParam;
 import com.vpu.mp.service.pojo.shop.market.channel.ChannelParam;
-import com.vpu.mp.service.pojo.shop.market.channel.ChannelStatisticalAllVo;
+import com.vpu.mp.service.pojo.shop.market.channel.ChannelStatisticalChartVo;
 import com.vpu.mp.service.pojo.shop.market.channel.ChannelStatisticalParam;
 import com.vpu.mp.service.pojo.shop.market.channel.QrCodeShareVo;
 
@@ -80,7 +80,10 @@ public class AdminChannelController extends AdminBaseController {
 	 */
 	@PostMapping("/statistical")
 	public JsonResult channelStatistical(@RequestBody @Valid ChannelStatisticalParam param) {
-		ChannelStatisticalAllVo vo = shop().channelStatitical.channelStatistical(param);
+		ChannelStatisticalChartVo vo = shop().channelStatitical.createChart(param, getLang());
+		if(vo==null) {
+			return fail();
+		}
 		return success(vo);
 	}
 	private JsonResult result(int result) {
