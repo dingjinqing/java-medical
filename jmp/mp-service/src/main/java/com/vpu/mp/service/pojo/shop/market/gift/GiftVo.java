@@ -12,7 +12,7 @@ import java.util.List;
  * @author 郑保乐
  */
 @Data
-public class GiftVo {
+public class GiftVo implements StatusContainer {
 
     private Integer id;
     /** 活动名称 **/
@@ -31,6 +31,8 @@ public class GiftVo {
     private List<Integer> goodsIds;
     /** 赠品 **/
     private List<ProductVo> gifts;
+    /** 活动状态 **/
+    private Byte status;
 
     @JsonIgnore
     private String goodsId;

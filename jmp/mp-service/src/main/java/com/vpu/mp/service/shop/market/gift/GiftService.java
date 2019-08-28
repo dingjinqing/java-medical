@@ -183,6 +183,7 @@ public class GiftService extends ShopBaseService {
         List<ProductVo> productVos = getGiftProduct(giftId);
         productVos.forEach(vo -> vo.setOfferNumber(getGiftOrderedNumber(vo.getProductId(), giftId)));
         giftVo.setGifts(productVos);
+        giftVo.setStatus(getStatusOf(giftVo));
         return giftVo;
     }
 
@@ -394,7 +395,7 @@ public class GiftService extends ShopBaseService {
     /**
      * 获取活动的状态
      */
-    private byte getStatusOf(GiftListVo vo) {
+    private byte getStatusOf(StatusContainer vo) {
         Byte status = vo.getStatus();
         if (DISABLE == status) {
             return DISABLED;

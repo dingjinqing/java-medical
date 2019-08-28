@@ -10,7 +10,7 @@ import java.sql.Timestamp;
  * @author 郑保乐
  */
 @Data
-public class GiftListVo {
+public class GiftListVo implements StatusContainer {
 
     private Integer id;
     /** 活动名称 **/
