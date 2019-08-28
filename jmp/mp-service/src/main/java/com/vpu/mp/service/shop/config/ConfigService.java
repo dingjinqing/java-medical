@@ -82,7 +82,7 @@ public class ConfigService extends ShopBaseService {
 		if (style.indexOf("rgb") == -1) {
 			return style.split(",");
 		} else {
-			String[] s = style.split("),(");
+			String[] s = style.split("\\),\\(");
 			s[0] += ")";
 			if (s.length > 1) {
 				s[1] = "(" + s[1];
