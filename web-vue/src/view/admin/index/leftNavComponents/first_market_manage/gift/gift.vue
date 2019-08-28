@@ -64,16 +64,8 @@
             align="center"
           >
             <template slot-scope="scope">
-              <el-input
-                size="small"
-                style="width: 60px"
-                type="number"
-                v-model="scope.row.level"
-              ></el-input>
-              <el-button
-                size="mini"
-                @click="updateGiftLevel(scope.row.id, scope.row.level)"
-              >修改</el-button>
+              <inputEdit v-model="scope.row.level"
+                @update="updateGiftLevel(scope.row.id, scope.row.level)"/>
             </template>
           </el-table-column>
           <el-table-column
@@ -142,6 +134,7 @@
 <script>
 import wrapper from '@/components/admin/wrapper/wrapper'
 import statusTab from '@/components/admin/status/statusTab'
+import inputEdit from '@/components/admin/inputEdit'
 import status, { getById } from '@/components/admin/status/status'
 import { giftList, deleteGift, disableGift, enableGift, updateGiftLevel } from '@/api/admin/marketManage/gift'
 
@@ -149,7 +142,8 @@ export default {
 
   components: {
     wrapper,
-    statusTab
+    statusTab,
+    inputEdit
   },
   data () {
     return {
