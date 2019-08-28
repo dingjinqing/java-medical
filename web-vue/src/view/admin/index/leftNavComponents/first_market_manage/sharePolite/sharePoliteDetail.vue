@@ -25,7 +25,7 @@
         <el-form label-width="100px">
           <el-form-item label="商品名称">
             <el-input
-              v-model="param.username"
+              v-model="param.goodsName"
               placeholder="请输入商品名称"
             ></el-input>
           </el-form-item>
@@ -36,7 +36,7 @@
           <el-form-item label="奖励等级">
             <template>
               <el-select
-                v-model="value"
+                v-model="param.rewardLevel"
                 placeholder="请选择"
               >
                 <el-option
@@ -128,11 +128,26 @@
         </el-table-column>
       </el-table>
     </el-row>
+    <el-row>
+      <el-col
+        :offset="14"
+        :span="10"
+      >
+        <pagination
+          :page-params.sync="pageParams"
+          @pagination="defaultSeach"
+        />
+      </el-col>
+    </el-row>
   </div>
 </template>
 <script>
 import { getReceiveDetail } from '@/api/admin/marketManage/sharePolite.js'
+import pagination from '@/components/admin/pagination/pagination.vue'
 export default {
+  components: {
+    pagination
+  },
   data () {
     return {
       tableData: [],
@@ -140,22 +155,22 @@ export default {
         shareId: this.$route.params.id,
         mobile: '',
         username: '',
-        startTime: '',
-        endTime: '',
+        goodsName: '',
+        rewardLevel: '',
         currentPage: 1,
         pageRows: 20
       },
+      pageParams: {},
       options: [{
-        value: '1',
+        value: 1,
         label: '一级'
       }, {
-        value: '2',
+        value: 2,
         label: '二级'
       }, {
-        value: '3',
+        value: 3,
         label: '三级'
-      }],
-      value: ''
+      }]
     }
   },
   mounted () {
@@ -167,10 +182,9 @@ export default {
     defaultSeach () {
       let obj = {
         'shareId': this.$route.params.id,
-        'currentPage ': 0,
-        'pageRows ': 20
+        'currentPage ': this.pageParams.currentPage,
+        'pageRows ': this.pageParams.pageRows
       }
-      console.log(obj)
       getReceiveDetail(obj).then((res) => {
         console.log(res)
         if (res.error === 0) {
@@ -186,12 +200,8 @@ export default {
     },
     // 条件查询
     searchByCondition () {
-      let obj = {
-        'currentPage ': 0,
-        'pageRows ': 20
-      }
-
-      getReceiveDetail(obj).then((res) => {
+      console.log(this.param)
+      getReceiveDetail(this.param).then((res) => {
         console.log(res)
         if (res.error === 0) {
           this.handleData(res.content.dataList)
@@ -312,5 +322,15 @@ export default {
 .row-bg {
   padding: 10px 0;
   background-color: #f9fafc;
+}
+.footer {
+  padding: 20px 0 20px 20px;
+  display: flex;
+  justify-content: flex-end;
+  span {
+    display: block;
+    height: 32px;
+    line-height: 32px;
+  }
 }
 </style>

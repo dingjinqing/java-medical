@@ -177,13 +177,15 @@ export default {
   },
   mounted () {
     this.langDefault()
-    // 页面加载时调用接口初始化数据，初始化加载进行中模块
-    this.seacherList()
   },
   watch: {
     'param.status' (n, o) {
       this.seacherList()
     }
+  },
+  created () {
+    // 页面加载时调用接口初始化数据，初始化加载进行中模块
+    this.seacherList()
   },
   data () {
     return {
@@ -192,10 +194,10 @@ export default {
       status: null,
       input: 0,
       dailyLimit: 0,
-      category: 0,
       pageParams: {},
       param: {
         status: 0,
+        category: 0,
         // 分页
         currentPage: 0,
         pageRows: 20
@@ -221,26 +223,23 @@ export default {
     seacherList () {
       switch (this.param.status) {
         case 0:
-          this.category = 0
+          this.param.category = 0
           break
         case 1:
-          this.category = 8
+          this.param.category = 8
           break
         case 2:
-          this.category = 4
+          this.param.category = 4
           break
         case 3:
-          this.category = 2
+          this.param.category = 2
           break
         case 4:
-          this.category = 1
+          this.param.category = 1
       }
-      let obj = {
-        'currentPage ': this.pageParams.currentPage,
-        'pageRows ': this.pageParams.pageRows,
-        'category': this.category
-      }
-      getList(obj).then((res) => {
+      this.param.currentPage = this.pageParams.currentPage
+      this.param.pageRows = this.pageParams.pageRows
+      getList(this.param).then((res) => {
         console.log(res)
         if (res.error === 0) {
           this.handleData(res.content)
