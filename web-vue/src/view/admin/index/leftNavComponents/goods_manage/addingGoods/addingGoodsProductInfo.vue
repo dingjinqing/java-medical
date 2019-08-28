@@ -78,6 +78,9 @@
         <el-form-item label="市场价格：" prop="marketPrice">
           <el-input-number v-model="goodsProductInfo.marketPrice" size="small" controls-position="right" :min="0"/>
         </el-form-item>
+        <el-form-item label="会员价">
+
+        </el-form-item>
       </el-form>
       <!-- 展开更多配置 -->
       <el-collapse accordion>
@@ -121,7 +124,7 @@
 </template>
 <script>
 // 接口函数引入
-
+import {getLevelCardList} from '@/api/admin/goodsManage/addingGoods/addingGoods'
 // 组件导入
 import basicInfo from './basicInfo'
 
