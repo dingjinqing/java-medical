@@ -19,7 +19,12 @@
                 class="firstTop"
                 :style="getStyle(item,index)"
               >
-                <div class="card_status">{{item.tips}}</div>
+                <img
+                  v-if="item.isStop"
+                  class="hidden"
+                  :src="$imageHost+'/image/admin/card_no_use.png'"
+                >
+                <div class="card_status">{{item.isStop?item.noUse:item.tips}}</div>
                 <div class="card_info_box">
                   <img
                     class="user_head"
@@ -30,7 +35,7 @@
                     <div class="time">{{item.data}}</div>
                   </div>
                   <div class="card_edit">
-                    <div @click="handleToTips(0,item,index)">
+                    <div @click="handleToTips(0,item,index,0)">
 
                       <el-tooltip
                         class="item"
@@ -43,7 +48,7 @@
                     </div>
                     <div
                       style="margin:0 5px"
-                      @click="handleToTips(1,item,index)"
+                      @click="handleToTips(1,item,index,0)"
                     >
                       <el-tooltip
                         class="item"
@@ -55,11 +60,11 @@
                       </el-tooltip>
                     </div>
 
-                    <div @click="handleToTips(2,item,index)">
+                    <div @click="handleToTips(2,item,index,0)">
                       <el-tooltip
                         class="item"
                         effect="dark"
-                        content="停用"
+                        :content="item.isStop?'启用':'停用'"
                         placement="top-start"
                       >
                         <img :src="$imageHost + '/image/admin/card_disable.png'">
@@ -104,7 +109,12 @@
                 class="firstTop"
                 :style="getStyle(item,index)"
               >
-                <div class="card_status">{{item.tips}}</div>
+                <img
+                  v-if="item.isStop"
+                  class="hidden"
+                  :src="$imageHost+'/image/admin/card_no_use.png'"
+                >
+                <div class="card_status">{{item.isStop?item.noUse:item.tips}}</div>
                 <div class="card_info_box">
                   <img
                     class="user_head"
@@ -115,7 +125,7 @@
                     <div class="time">{{item.data}}</div>
                   </div>
                   <div class="card_edit">
-                    <div @click="handleToTips(0,item,index)">
+                    <div @click="handleToTips(0,item,index,1)">
                       <el-tooltip
                         class="item"
                         effect="dark"
@@ -127,7 +137,7 @@
                     </div>
                     <div
                       style="margin:0 5px"
-                      @click="handleToTips(1,item,index)"
+                      @click="handleToTips(1,item,index,1)"
                     >
                       <el-tooltip
                         class="item"
@@ -138,7 +148,7 @@
                         <img :src="$imageHost + '/image/admin/card_share_new.png'">
                       </el-tooltip>
                     </div>
-                    <div @click="handleToTips(2,item,index)">
+                    <div @click="handleToTips(2,item,index,1)">
                       <el-tooltip
                         class="item"
                         effect="dark"
@@ -187,7 +197,12 @@
                 class="firstTop"
                 :style="getStyle(item,index)"
               >
-                <div class="card_status">{{item.tips}}</div>
+                <img
+                  v-if="item.isStop"
+                  class="hidden"
+                  :src="$imageHost+'/image/admin/card_no_use.png'"
+                >
+                <div class="card_status">{{item.isStop?item.noUse:item.tips}}</div>
                 <div class="card_info_box">
                   <img
                     class="user_head"
@@ -198,7 +213,7 @@
                     <div class="time">{{item.data}}</div>
                   </div>
                   <div class="card_edit">
-                    <div @click="handleToTips(0,item,index)">
+                    <div @click="handleToTips(0,item,index,2)">
                       <el-tooltip
                         class="item"
                         effect="dark"
@@ -210,7 +225,7 @@
                     </div>
                     <div
                       style="margin:0 5px"
-                      @click="handleToTips(1,item,index)"
+                      @click="handleToTips(1,item,index,2)"
                     >
                       <el-tooltip
                         class="item"
@@ -221,7 +236,7 @@
                         <img :src="$imageHost + '/image/admin/card_share_new.png'">
                       </el-tooltip>
                     </div>
-                    <div @click="handleToTips(2,item,index)">
+                    <div @click="handleToTips(2,item,index,2)">
                       <el-tooltip
                         class="item"
                         effect="dark"
@@ -272,6 +287,7 @@ export default {
       cardData: [
         {
           tips: '使用中',
+          noUse: '停止使用',
           headImgUrl: this.$imageHost + '/image/admin/img_home/testImg.jpeg',
           cardName: '我的会员卡',
           data: '永久有效',
@@ -280,10 +296,12 @@ export default {
           detailsOfRights: ['持卡会员', '充值记录'],
           type: 0,
           backgroundColor: '#990000',
-          backgroundImg: this.$imageHost + '/image/admin/img_home/testImg.jpeg'
+          backgroundImg: this.$imageHost + '/image/admin/img_home/testImg.jpeg',
+          isStop: true
         },
         {
           tips: '使用中',
+          noUse: '停止使用',
           headImgUrl: this.$imageHost + '/image/admin/img_home/testImg.jpeg',
           cardName: '我的会员卡',
           data: '永久有效',
@@ -292,10 +310,12 @@ export default {
           detailsOfRights: ['持卡会员', '充值记录'],
           type: 1,
           backgroundColor: '#990000',
-          backgroundImg: this.$imageHost + '/image/admin/img_home/testImg.jpeg'
+          backgroundImg: this.$imageHost + '/image/admin/img_home/testImg.jpeg',
+          isStop: false
         },
         {
           tips: '使用中',
+          noUse: '停止使用',
           headImgUrl: this.$imageHost + '/image/admin/img_home/testImg.jpeg',
           cardName: '我的会员卡',
           data: '永久有效',
@@ -304,10 +324,12 @@ export default {
           detailsOfRights: ['持卡会员', '充值记录'],
           type: 1,
           backgroundColor: '#990000',
-          backgroundImg: this.$imageHost + '/image/admin/img_home/testImg.jpeg'
+          backgroundImg: this.$imageHost + '/image/admin/img_home/testImg.jpeg',
+          isStop: false
         },
         {
           tips: '使用中',
+          noUse: '停止使用',
           headImgUrl: this.$imageHost + '/image/admin/img_home/testImg.jpeg',
           cardName: '我的会员卡',
           data: '永久有效',
@@ -316,10 +338,12 @@ export default {
           detailsOfRights: ['持卡会员', '充值记录'],
           type: 0,
           backgroundColor: '#990000',
-          backgroundImg: this.$imageHost + '/image/admin/img_home/testImg.jpeg'
+          backgroundImg: this.$imageHost + '/image/admin/img_home/testImg.jpeg',
+          isStop: false
         },
         {
           tips: '使用中',
+          noUse: '停止使用',
           headImgUrl: this.$imageHost + '/image/admin/img_home/testImg.jpeg',
           cardName: '我的会员卡',
           data: '永久有效',
@@ -328,10 +352,12 @@ export default {
           detailsOfRights: ['持卡会员', '充值记录'],
           type: 0,
           backgroundColor: '#990000',
-          backgroundImg: this.$imageHost + '/image/admin/img_home/testImg.jpeg'
+          backgroundImg: this.$imageHost + '/image/admin/img_home/testImg.jpeg',
+          isStop: false
         },
         {
           tips: '使用中',
+          noUse: '停止使用',
           headImgUrl: this.$imageHost + '/image/admin/img_home/testImg.jpeg',
           cardName: '我的会员卡',
           data: '永久有效',
@@ -340,10 +366,12 @@ export default {
           detailsOfRights: ['持卡会员', '充值记录'],
           type: 1,
           backgroundColor: '#990000',
-          backgroundImg: this.$imageHost + '/image/admin/img_home/testImg.jpeg'
+          backgroundImg: this.$imageHost + '/image/admin/img_home/testImg.jpeg',
+          isStop: false
         },
         {
           tips: '使用中',
+          noUse: '停止使用',
           headImgUrl: this.$imageHost + '/image/admin/img_home/testImg.jpeg',
           cardName: '我的会员卡',
           data: '永久有效',
@@ -352,10 +380,12 @@ export default {
           detailsOfRights: ['持卡会员', '充值记录'],
           type: 0,
           backgroundColor: '#990000',
-          backgroundImg: this.$imageHost + '/image/admin/img_home/testImg.jpeg'
+          backgroundImg: this.$imageHost + '/image/admin/img_home/testImg.jpeg',
+          isStop: false
         },
         {
           tips: '使用中',
+          noUse: '停止使用',
           headImgUrl: this.$imageHost + '/image/admin/img_home/testImg.jpeg',
           cardName: '我的会员卡',
           data: '永久有效',
@@ -364,10 +394,12 @@ export default {
           detailsOfRights: ['持卡会员', '充值记录'],
           type: 0,
           backgroundColor: '#990000',
-          backgroundImg: this.$imageHost + '/image/admin/img_home/testImg.jpeg'
+          backgroundImg: this.$imageHost + '/image/admin/img_home/testImg.jpeg',
+          isStop: false
         },
         {
           tips: '使用中',
+          noUse: '停止使用',
           headImgUrl: this.$imageHost + '/image/admin/img_home/testImg.jpeg',
           cardName: '我的会员卡',
           data: '永久有效',
@@ -376,10 +408,12 @@ export default {
           detailsOfRights: ['持卡会员', '充值记录'],
           type: 0,
           backgroundColor: '#990000',
-          backgroundImg: this.$imageHost + '/image/admin/img_home/testImg.jpeg'
+          backgroundImg: this.$imageHost + '/image/admin/img_home/testImg.jpeg',
+          isStop: false
         },
         {
           tips: '使用中',
+          noUse: '停止使用',
           headImgUrl: this.$imageHost + '/image/admin/img_home/testImg.jpeg',
           cardName: '我的会员卡',
           data: '永久有效',
@@ -388,12 +422,14 @@ export default {
           detailsOfRights: ['持卡会员', '充值记录'],
           type: 0,
           backgroundColor: '#990000',
-          backgroundImg: this.$imageHost + '/image/admin/img_home/testImg.jpeg'
+          backgroundImg: this.$imageHost + '/image/admin/img_home/testImg.jpeg',
+          isStop: false
         }
       ],
       cardDataSecond: [
         {
           tips: '使用中',
+          noUse: '停止使用',
           headImgUrl: this.$imageHost + '/image/admin/img_home/testImg.jpeg',
           cardName: '我的会员卡',
           data: '永久有效',
@@ -402,10 +438,12 @@ export default {
           detailsOfRights: ['持卡会员', '充值记录'],
           type: 0,
           backgroundColor: '#990000',
-          backgroundImg: this.$imageHost + '/image/admin/img_home/testImg.jpeg'
+          backgroundImg: this.$imageHost + '/image/admin/img_home/testImg.jpeg',
+          isStop: false
         },
         {
           tips: '使用中',
+          noUse: '停止使用',
           headImgUrl: this.$imageHost + '/image/admin/img_home/testImg.jpeg',
           cardName: '我的会员卡',
           data: '永久有效',
@@ -414,10 +452,12 @@ export default {
           detailsOfRights: ['持卡会员', '充值记录'],
           type: 1,
           backgroundColor: '#990000',
-          backgroundImg: this.$imageHost + '/image/admin/img_home/testImg.jpeg'
+          backgroundImg: this.$imageHost + '/image/admin/img_home/testImg.jpeg',
+          isStop: false
         },
         {
           tips: '使用中',
+          noUse: '停止使用',
           headImgUrl: this.$imageHost + '/image/admin/img_home/testImg.jpeg',
           cardName: '我的会员卡',
           data: '永久有效',
@@ -426,11 +466,13 @@ export default {
           detailsOfRights: ['持卡会员', '充值记录'],
           type: 1,
           backgroundColor: '#990000',
-          backgroundImg: this.$imageHost + '/image/admin/img_home/testImg.jpeg'
+          backgroundImg: this.$imageHost + '/image/admin/img_home/testImg.jpeg',
+          isStop: false
         },
 
         {
           tips: '使用中',
+          noUse: '停止使用',
           headImgUrl: this.$imageHost + '/image/admin/img_home/testImg.jpeg',
           cardName: '我的会员卡',
           data: '永久有效',
@@ -439,10 +481,12 @@ export default {
           detailsOfRights: ['持卡会员', '充值记录'],
           type: 0,
           backgroundColor: '#990000',
-          backgroundImg: this.$imageHost + '/image/admin/img_home/testImg.jpeg'
+          backgroundImg: this.$imageHost + '/image/admin/img_home/testImg.jpeg',
+          isStop: false
         },
         {
           tips: '使用中',
+          noUse: '停止使用',
           headImgUrl: this.$imageHost + '/image/admin/img_home/testImg.jpeg',
           cardName: '我的会员卡',
           data: '永久有效',
@@ -451,10 +495,12 @@ export default {
           detailsOfRights: ['持卡会员', '充值记录'],
           type: 0,
           backgroundColor: '#990000',
-          backgroundImg: this.$imageHost + '/image/admin/img_home/testImg.jpeg'
+          backgroundImg: this.$imageHost + '/image/admin/img_home/testImg.jpeg',
+          isStop: false
         },
         {
           tips: '使用中',
+          noUse: '停止使用',
           headImgUrl: this.$imageHost + '/image/admin/img_home/testImg.jpeg',
           cardName: '我的会员卡',
           data: '永久有效',
@@ -463,10 +509,12 @@ export default {
           detailsOfRights: ['持卡会员', '充值记录'],
           type: 0,
           backgroundColor: '#990000',
-          backgroundImg: this.$imageHost + '/image/admin/img_home/testImg.jpeg'
+          backgroundImg: this.$imageHost + '/image/admin/img_home/testImg.jpeg',
+          isStop: false
         },
         {
           tips: '使用中',
+          noUse: '停止使用',
           headImgUrl: this.$imageHost + '/image/admin/img_home/testImg.jpeg',
           cardName: '我的会员卡',
           data: '永久有效',
@@ -475,12 +523,14 @@ export default {
           detailsOfRights: ['持卡会员', '充值记录'],
           type: 0,
           backgroundColor: '#990000',
-          backgroundImg: this.$imageHost + '/image/admin/img_home/testImg.jpeg'
+          backgroundImg: this.$imageHost + '/image/admin/img_home/testImg.jpeg',
+          isStop: false
         }
       ],
       cardDataThird: [
         {
           tips: '使用中',
+          noUse: '停止使用',
           headImgUrl: this.$imageHost + '/image/admin/img_home/testImg.jpeg',
           cardName: '我的会员卡',
           data: '永久有效',
@@ -489,10 +539,12 @@ export default {
           detailsOfRights: ['持卡会员', '充值记录'],
           type: 0,
           backgroundColor: '#990000',
-          backgroundImg: this.$imageHost + '/image/admin/img_home/testImg.jpeg'
+          backgroundImg: this.$imageHost + '/image/admin/img_home/testImg.jpeg',
+          isStop: false
         },
         {
           tips: '使用中',
+          noUse: '停止使用',
           headImgUrl: this.$imageHost + '/image/admin/img_home/testImg.jpeg',
           cardName: '我的会员卡',
           data: '永久有效',
@@ -501,7 +553,8 @@ export default {
           detailsOfRights: ['持卡会员', '充值记录'],
           type: 1,
           backgroundColor: '#990000',
-          backgroundImg: this.$imageHost + '/image/admin/img_home/testImg.jpeg'
+          backgroundImg: this.$imageHost + '/image/admin/img_home/testImg.jpeg',
+          isStop: false
         }
 
       ],
@@ -547,6 +600,9 @@ export default {
     },
     // 动态改变行间样式
     getStyle (item, index) {
+      if (item.isStop) {
+        return 'background-color:#ddd'
+      }
       if (item.type === 0) {
         console.log('背景颜色')
         return 'background-color:' + item.backgroundColor
@@ -562,8 +618,8 @@ export default {
         name: 'membershipCardDetail'
       })
     },
-    // 点击编辑
-    handleToTips (flag, item, index) {
+    // tips系列点击
+    handleToTips (flag, item, index, type) {
       console.log(flag)
       switch (flag) {
         case 0:
@@ -574,6 +630,15 @@ export default {
         case 1:
           console.log('q')
           this.$http.$emit('shareCodeDialog', item)
+          break
+        case 2:
+          if (type === 0) {
+            this.cardData[index].isStop = !this.cardData[index].isStop
+          } else if (type === 1) {
+            this.cardDataSecond[index].isStop = !this.cardData[index].isStop
+          } else if (type === 2) {
+            this.cardDataThird[index].isStop = !this.cardData[index].isStop
+          }
       }
     }
   }
@@ -609,6 +674,11 @@ export default {
         box-shadow: 0px 2px 16px 0px #e5e5e5;
         .firstTop {
           // background: #990000;
+          .hidden {
+            position: absolute;
+            top: 0;
+            left: 0;
+          }
           width: 270px;
           height: 150px;
           border-radius: 10px;
