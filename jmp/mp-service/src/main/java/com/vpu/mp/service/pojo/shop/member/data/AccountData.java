@@ -2,15 +2,15 @@ package com.vpu.mp.service.pojo.shop.member.data;
 
 import java.math.BigDecimal;
 
+import lombok.Builder;
 import lombok.Getter;
-import lombok.Setter;
 
 /**
 * @author 黄壮壮
 * @Date: 2019年8月26日
 * @Description: 余额数据
 */
-@Setter
+@Builder(builderMethodName = "newBuilder")
 @Getter
 public class AccountData extends BasicData {
 	/** 用户Id */

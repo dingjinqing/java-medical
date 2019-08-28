@@ -1,14 +1,14 @@
 package com.vpu.mp.service.pojo.shop.member.data;
 
+import lombok.Builder;
 import lombok.Getter;
-import lombok.Setter;
 
 /**
 * @author 黄壮壮
 * @Date: 2019年8月26日
 * @Description: 会员积分数据
 */
-@Setter
+@Builder(builderMethodName = "newBuilder")
 @Getter
 public class ScoreData extends BasicData {
 	/** 用户Id */

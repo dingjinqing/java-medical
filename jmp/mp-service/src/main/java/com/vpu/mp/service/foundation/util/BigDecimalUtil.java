@@ -71,16 +71,29 @@ public class BigDecimalUtil {
 			left.toOperator(bigDecimals[i]);
 		}
 		return left.getValue();
-		
 	}
 	
+	/**
+	 * 	四则运算增强（目前仅支持乘除法）
+	 * @author 王帅
+	 *
+	 */
 	@Data
 	static public class BigDecimalPlus {
 		private BigDecimal value;
 		private Operator operator;
-		public BigDecimalPlus(BigDecimal bigDecimal , Operator operator) {
+		private BigDecimalPlus(BigDecimal bigDecimal , Operator operator) {
 			this.value = bigDecimal;
 			this.operator = operator;
+		}
+		/**
+		 * 	静态构造器
+		 * @param bigDecimal
+		 * @param operator
+		 * @return
+		 */
+		public static BigDecimalPlus create(BigDecimal bigDecimal , Operator operator) {
+			return new BigDecimalPlus(bigDecimal,operator);
 		}
 		public BigDecimalPlus toOperator(BigDecimalPlus bigDecimalPlus) {
 			if(operator == null) {

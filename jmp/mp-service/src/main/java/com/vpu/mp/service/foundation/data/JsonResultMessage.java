@@ -308,6 +308,8 @@ public class JsonResultMessage {
 	public static final String MSG_CODE_ORDER_RETURN_ROLLBACK_NO_MPEXCEPTION = "order_return_rollback_no_mpexception";
 	public static final String MSG_CODE_ORDER_RETURN_MONEY_EXCEEDED = "order_return_money_exceeded";
 	public static final String MSG_CODE_ORDER_RETURN_STATUS_NOT_SATISFIED = "order_return_status_not_satisfied";
+	public static final String MSG_CODE_ORDER_RETURN_WXPAYREFUND_NO_RECORD = "order_return_wxpayrefund_no_record";
+	public static final String MSG_CODE_ORDER_RETURN_WXPAYREFUND_ERROR = "order_return_wxpayrefund_error";
 	public static final String INVALID_MONEY_AMOUNT = "order.refund.invalid_money_amount";
 	public static final String INVALID_ACCOUNT_OR_SCORE = "order.refund.invalid_account_or_score";
 	public static final String INVALID_REFUND_AMOUNT = "order.refund.invalid_refund_amount";

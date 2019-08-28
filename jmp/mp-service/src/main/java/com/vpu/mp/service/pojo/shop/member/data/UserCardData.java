@@ -2,16 +2,16 @@ package com.vpu.mp.service.pojo.shop.member.data;
 
 import java.math.BigDecimal;
 
+import lombok.Builder;
 import lombok.Getter;
-import lombok.Setter;
 
 /**
 * @author 黄壮壮
 * @Date: 2019年8月26日
 * @Description: 用户会员卡数据
 */
-@Setter
 @Getter
+@Builder(builderMethodName = "newBuilder")
 public class UserCardData extends BasicData {
 	/** 用户Id */
 	protected Integer userId;
