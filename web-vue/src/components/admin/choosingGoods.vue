@@ -334,6 +334,7 @@ export default {
     this.$http.$on('choosingGoodsFlag', (res, flag) => {
       console.log(res, flag)
       console.log(this.trList)
+      this.choiseGooddialogVisible = true
       this.trList.forEach(item => {
         item.ischecked = false
       })
@@ -350,7 +351,6 @@ export default {
           })
         })
       }
-      this.choiseGooddialogVisible = true
     })
     // 品牌分类初始化获取及页编辑回显
     this.defaultGrandClass()
