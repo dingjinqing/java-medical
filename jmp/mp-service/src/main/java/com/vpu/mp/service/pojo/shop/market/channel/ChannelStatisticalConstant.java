@@ -8,6 +8,7 @@ public class ChannelStatisticalConstant {
 	
 	public static final Byte TIME_TYPE_WEEK =2;
 	public static final Byte TIME_TYPE_MONTH=3;
+	/** 自定义 */
 	public static final Byte TIME_TYPE_FILL_IN=4;
 	
 }

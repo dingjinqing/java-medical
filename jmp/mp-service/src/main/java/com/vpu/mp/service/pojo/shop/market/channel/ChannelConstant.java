@@ -13,5 +13,20 @@ public class ChannelConstant {
 	
 	/** 用户来源 */
 	public final static String INVITESOURCE = "channel";
+	
+	
+	/** 渠道页面数据分析 统计指标  访问次数 */
+	public final static Byte ACCESS_TIMES=0;
+	/** 渠道页面数据分析 统计指标  访问人数 */
+	public final static Byte VISITOR_NUM=1;
+	
+	/** 访客类型 全部*/
+	public final static Byte ALL_VISITOR =0;
+	/** 访客类型 新用户 */
+	public final static Byte NEW_VISITOR=1;
+	/** 访客类型 老用户 */
+	public final static Byte OLD_VISITOR=2;
+	
+	
 }
 
