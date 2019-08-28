@@ -14,6 +14,7 @@ import { en as adminPageFramework } from './views/adminPageFramework'
 // 商品管理系列国际化
 // 商品管理/全部商品
 import { en as allGoods } from './views/goodsManage/allGoods'
+import { en as goodsImport } from './views/goodsManage/goodsImport'
 
 const en = {
   messages: {
@@ -423,8 +424,8 @@ const en = {
   ordinaryCoupon, // 普通优惠券
   ShopConfiguration, // admin 店铺基础配置
   adminPageFramework, // admin 页面框架
-  allGoods, // 商品管理/全部尚品
-
+  allGoods, // 商品管理/全部商品
+  goodsImport,
   ...enLocale
 }
 export default en

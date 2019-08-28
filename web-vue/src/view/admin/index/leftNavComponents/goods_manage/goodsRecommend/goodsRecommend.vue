@@ -1,6 +1,6 @@
 <template>
   <div class="goodsRecommend">
-    商品评价
+    商品评价奥术大师多所Asdasd
   </div>
 </template>
 <script>

@@ -61,6 +61,7 @@
 </template>
 <script>
 import { getAreaSelect } from '@/api/admin/goodsManage/deliverTemplate/deliverTemplate.js'
+
 export default {
   // 组件名
   name: 'areaLinkage',
@@ -89,7 +90,7 @@ export default {
   methods: {
     // 点击外层确定按钮
     handleOuterSave () {
-      this.fetchAreaData()
+      // this.fetchAreaData()
     },
     // 点击外层取消按钮
     handleOutercancel () {
@@ -104,6 +105,7 @@ export default {
       getAreaSelect().then(res => {
         const { error, content } = res
         if (error === 0) {
+          console.log(content)
           this.province = content
         }
       }).catch(err => console.log(err))
@@ -111,6 +113,7 @@ export default {
     // 全选的方法
     handleCheckAllChange (val) {
       console.log(val)
+      console.log(this.checkedProvince)
       this.checkedProvince = val ? this.province : []
       this.isIndeterminate = false
     },

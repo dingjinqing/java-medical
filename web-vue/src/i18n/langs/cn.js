@@ -14,7 +14,7 @@ import { cn as adminPageFramework } from './views/adminPageFramework'
 // 商品管理系列国际化
 // 商品管理/全部商品
 import { cn as allGoods } from './views/goodsManage/allGoods'
-
+import { cn as goodsImport } from './views/goodsManage/goodsImport'
 // console.log(zhLocale)
 const cn = {
   messages: {
@@ -396,6 +396,7 @@ const cn = {
   ShopConfiguration, // admin 店铺基础配置
   adminPageFramework, // admin页面框架
   allGoods, // 商品管理/全部商品
+  goodsImport,
 
   ...zhLocale
 }

@@ -1,6 +1,17 @@
 <template>
   <div class="container">
+    <!-- 测试块 -->
     <section>
+      <el-button>{{this.$t('goodsImport.btn')}}</el-button>
+    </section>
+
+    <section>
+      <!-- 全选 -->
+      <el-checkbox
+        v-model="checked"
+        @change="checkedAll"
+      >全选</el-checkbox>
+
       <!-- 树状 -->
       <el-tree
         check-on-click-node
@@ -10,8 +21,13 @@
         ref="tree"
         highlight-current
         :props="defaultProps"
+        @check-change="handleCheckChange"
+        @node-click="handleClick"
       >
       </el-tree>
+    </section>
+    <section>
+      <el-button @click="handleTest">测试</el-button>
     </section>
   </div>
 </template>
@@ -24,6 +40,9 @@ export default {
   // data 数据
   created () {
     this.fetchList()
+  },
+  mounted () {
+    this.langDefault()
   },
   data () {
     return {
@@ -47,18 +66,42 @@ export default {
       defaultProps: {
         children: 'children',
         label: 'name'
-      }
+      },
+      // 选中
+      selected: ``,
+      checked: false
     }
   },
   // 生命周期钩子
   create () {
 
   },
-  mounted () {
 
-  },
   // 方法
   methods: {
+    checkedAll () {
+      if (this.checked) {
+        // 全选
+        this.$refs.tree.setCheckedNodes(this.list)
+      } else {
+        // 取消选中
+        this.$refs.tree.setCheckedKeys([])
+      }
+    },
+    // 节点被点击时的回调
+    handleClick (obj, node, self) {
+      // console.log(obj, node, self)
+    },
+    // 节点选中状态发生变化时的回调
+    handleCheckChange (obj, isSelected, node) {
+      let res = this.$refs.tree.getCheckedNodes()
+
+      this.selected = res
+      console.log()
+    },
+    handleTest () {
+      console.log(this.selected)
+    },
     fetchList () {
       getAreaSelect().then(res => {
         const { error, content } = res
@@ -77,12 +120,14 @@ export default {
           let arr3 = []
           item['areaDistrict'].forEach(item => {
             arr3.push({
+              id: item['districtId'],
               districtId: item['districtId'],
               districtName: item['districtName'],
               name: item['districtName']
             })
           })
           arr2.push({
+            id: item['cityId'],
             children: arr3,
             areaDistrict: item['areaDistrict'],
             cityId: item['cityId'],
@@ -91,6 +136,7 @@ export default {
           })
         })
         newArr.push({
+          id: item['provinceId'],
           provinceId: item['provinceId'],
           provinceName: item['provinceName'],
           areaCity: item['areaCity'],
