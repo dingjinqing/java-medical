@@ -64,6 +64,7 @@ import javax.validation.Valid;
 
 import org.jooq.InsertValuesStep3;
 import org.jooq.InsertValuesStep7;
+import org.jooq.Record17;
 import org.jooq.Result;
 import org.jooq.SelectSeekStep1;
 import org.jooq.tools.StringUtils;
@@ -578,14 +579,17 @@ public class MemberCardService extends ShopBaseService {
 	}
 
 	/**
-	 * 查询等级会员卡,按照等级升序
+	 * 查询等级会员卡,按照等级降序
 	 * 
 	 * @param param
 	 * @return
 	 */
 	public PageResult<RankCardVo> getRankCardList(SearchCardParam param) {
 		/** 构建sql语句 */
-		SelectSeekStep1<MemberCardRecord, String> select = db().selectFrom(MEMBER_CARD)
+		SelectSeekStep1<Record17<Integer, String, Byte, Byte, String, String, BigDecimal, Integer, String, Byte, Timestamp, Timestamp, Integer, Byte, Byte, String, String>, String> select = db().select(MEMBER_CARD.ID,MEMBER_CARD.CARD_NAME,MEMBER_CARD.CARD_TYPE,MEMBER_CARD.BG_TYPE,MEMBER_CARD.BG_COLOR,MEMBER_CARD.BG_IMG,
+				MEMBER_CARD.DISCOUNT,MEMBER_CARD.SORCE,MEMBER_CARD.BUY_SCORE,MEMBER_CARD.EXPIRE_TYPE,MEMBER_CARD.START_TIME,MEMBER_CARD.END_TIME,
+				MEMBER_CARD.RECEIVE_DAY,MEMBER_CARD.DATE_TYPE,MEMBER_CARD.ACTIVATION,MEMBER_CARD.RECEIVE_CODE,MEMBER_CARD.DESC)
+				.from(MEMBER_CARD)
 				.where(MEMBER_CARD.CARD_TYPE.equal(RANK_TYPE)).and(MEMBER_CARD.DEL_FLAG.equal(DELETE_NO))
 				.orderBy(MEMBER_CARD.GRADE.desc());
 
