@@ -110,11 +110,16 @@ export default {
     },
     // 全选的方法
     handleCheckAllChange (val) {
-
+      console.log(val)
+      this.checkedProvince = val ? this.province : []
+      this.isIndeterminate = false
     },
     //
-    handleCheckedProvinceChange () {
-
+    handleCheckedProvinceChange (val) {
+      console.log(val)
+      let checkedCount = val.length
+      this.checkAll = checkedCount === this.province.length
+      this.isIndeterminate = checkedCount > 0 && checkedCount < this.province.length
     }
   }
 }
@@ -133,6 +138,10 @@ export default {
   align-items: center;
 }
 .dialog_body {
-  background-color: skyblue;
+  height: 50vh;
+  overflow: auto;
+}
+.selectAll {
+  margin-bottom: 10px;
 }
 </style>

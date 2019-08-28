@@ -64,7 +64,7 @@ export default {
         const { error, content } = res
         if (error === 0) {
           console.log(content)
-          console.log(this.formatData(content))
+          // console.log(this.formatData(content))
           this.list = this.formatData(content)
         }
       }).catch(err => console.log(err))
