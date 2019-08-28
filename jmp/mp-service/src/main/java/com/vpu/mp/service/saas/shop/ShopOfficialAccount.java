@@ -14,6 +14,7 @@ import java.util.Random;
 import org.apache.commons.lang3.StringUtils;
 import org.jooq.Record;
 import org.jooq.Result;
+import org.jooq.SelectConditionStep;
 import org.jooq.SelectOnConditionStep;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -26,13 +27,13 @@ import com.vpu.mp.service.foundation.service.MainBaseService;
 import com.vpu.mp.service.foundation.util.FieldsUtil;
 import com.vpu.mp.service.foundation.util.PageResult;
 import com.vpu.mp.service.foundation.util.Util;
+import com.vpu.mp.service.pojo.saas.shop.mp.MpOfficeAccountVo;
 import com.vpu.mp.service.pojo.saas.shop.officeAccount.MpOAPayManageParam;
 import com.vpu.mp.service.pojo.saas.shop.officeAccount.MpOfficeAccountListParam;
 import com.vpu.mp.service.pojo.saas.shop.officeAccount.MpOfficeAccountListVo;
 import com.vpu.mp.service.pojo.shop.auth.AdminTokenAuthInfo;
 import com.vpu.mp.service.saas.image.SystemImageService;
 import com.vpu.mp.service.wechat.api.WxOpenMpampLinkService;
-import com.vpu.mp.service.wechat.bean.open.WxOpenMiniLinkGetFuncInfos;
 import com.vpu.mp.service.wechat.bean.open.WxOpenMiniLinkGetItems;
 import com.vpu.mp.service.wechat.bean.open.WxOpenMiniLinkGetResult;
 
@@ -77,6 +78,14 @@ public class ShopOfficialAccount extends MainBaseService {
 		// 因为页面不展示二维码。没有给图像加image.imageUrl方法。想加的加个循环吧
 		PageResult<MpOfficeAccountListVo> pageResult = this.getPageResult(select, oaListParam.getCurrentPage(),
 				oaListParam.getPageRows(), MpOfficeAccountListVo.class);
+		List<String> nickNams=new ArrayList<String>();
+		for(MpOfficeAccountListVo vo:pageResult.dataList) {
+			Result<MpAuthShopRecord> officialAccountMps = saas.shop.mp.getOfficialAccountMps(vo.getAppId());
+			for(MpAuthShopRecord record:officialAccountMps) {
+				nickNams.add(record.getNickName());
+			}
+			vo.setMpNickName(nickNams);
+		}
 		return pageResult;
 	}
 
@@ -120,6 +129,12 @@ public class ShopOfficialAccount extends MainBaseService {
 				.on(MP_OFFICIAL_ACCOUNT.SYS_ID.eq(SHOP_ACCOUNT.SYS_ID)).where((MP_OFFICIAL_ACCOUNT.APP_ID.eq(appId)))
 				.fetchAnyInto(MpOfficeAccountListVo.class);
 	}
+	
+	public Record getOfficeAccountByAppIdRecord(String appId) {
+		return db().select(MP_OFFICIAL_ACCOUNT.asterisk()).from(MP_OFFICIAL_ACCOUNT).innerJoin(SHOP_ACCOUNT)
+				.on(MP_OFFICIAL_ACCOUNT.SYS_ID.eq(SHOP_ACCOUNT.SYS_ID)).where((MP_OFFICIAL_ACCOUNT.APP_ID.eq(appId))).fetchAny();
+	}
+	
 
 	public Result<MpOfficialAccountRecord> getOfficialAccountBySysId(Integer sysId) {
 		Result<MpOfficialAccountRecord> fetch = db().selectFrom(MP_OFFICIAL_ACCOUNT)
@@ -127,14 +142,18 @@ public class ShopOfficialAccount extends MainBaseService {
 		return fetch;
 	}
 
-	public List<MpOfficialAccountRecord> findSamePrincipalMiniAndMP(Result<MpOfficialAccountRecord> oaRecords,
+	public List<MpOfficeAccountVo> findSamePrincipalMiniAndMP(Result<MpOfficialAccountRecord> oaRecords,
 			MpAuthShopRecord miniRecord) {
-		List<MpOfficialAccountRecord> list = new ArrayList<MpOfficialAccountRecord>();
+		List<MpOfficeAccountVo> list = new ArrayList<MpOfficeAccountVo>();
 		for (MpOfficialAccountRecord rAccountRecord : oaRecords) {
 			if (rAccountRecord.getIsAuthOk().equals((byte) 1)) {
 				// 已授权了
 				if (rAccountRecord.getPrincipalName().equals(miniRecord.getPrincipalName())) {
-					list.add(rAccountRecord);
+					MpOfficeAccountVo vo=new MpOfficeAccountVo();
+					vo.setAppId(rAccountRecord.getAppId());
+					vo.setNickName(rAccountRecord.getNickName());
+					vo.setIsAuthOk(rAccountRecord.getIsAuthOk());
+					list.add(vo);
 				}
 			}
 		}
