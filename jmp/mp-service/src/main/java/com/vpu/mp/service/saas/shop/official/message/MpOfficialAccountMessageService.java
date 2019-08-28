@@ -99,7 +99,7 @@ public class MpOfficialAccountMessageService extends MainBaseService {
 		}
         if( StringUtils.isNotBlank(url) ){
             messageBuilder  = WxMpTemplateMessage.builder().toUser(toUser).url(url)
-                .templateId(templateId);
+                .templateId(templateId).data(keywordValues);
         }
 		if (StringUtils.isNotBlank(page) && StringUtils.isNotBlank(mpAppId)) {
             page = page + ((page.indexOf("?") != -1 ? "&" : "?") + "rnd=" + Util.randomId());
