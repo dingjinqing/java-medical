@@ -526,10 +526,10 @@ public class MemberCardService extends ShopBaseService {
 		}
 
 		/** 会员卡数量 */
-	//	cardRecord.setStock(card.getStock());
+		cardRecord.setStock(card.getStock());
 
 		/** 每人领取次数 */
-	//	cardRecord.setLimits(card.getLimits());
+		cardRecord.setLimit(card.getLimits());
 	}
 
 	/**
@@ -586,7 +586,7 @@ public class MemberCardService extends ShopBaseService {
 	 */
 	public PageResult<RankCardVo> getRankCardList(SearchCardParam param) {
 		/** 构建sql语句 */
-		//TODO 线上的数据库表mem少字段stock,limit
+		//TODO 线上的数据库表memember_card少字段stock,limit
 		/**
 		SelectSeekStep1<Record, String> select = db().select(MEMBER_CARD.ID,MEMBER_CARD.CARD_NAME,MEMBER_CARD.CARD_TYPE,MEMBER_CARD.BG_TYPE,MEMBER_CARD.BG_COLOR,MEMBER_CARD.BG_IMG,
 				MEMBER_CARD.DISCOUNT,MEMBER_CARD.SORCE,MEMBER_CARD.BUY_SCORE,MEMBER_CARD.EXPIRE_TYPE,MEMBER_CARD.START_TIME,MEMBER_CARD.END_TIME,
