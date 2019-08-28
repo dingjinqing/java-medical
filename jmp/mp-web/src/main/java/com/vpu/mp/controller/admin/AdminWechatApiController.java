@@ -2,10 +2,10 @@ package com.vpu.mp.controller.admin;
 
 import java.util.List;
 
+import org.jooq.Record;
 import org.jooq.Result;
 import org.slf4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.scheduling.annotation.Async;
 import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -21,6 +21,7 @@ import com.vpu.mp.service.foundation.data.JsonResultCode;
 import com.vpu.mp.service.foundation.util.PageResult;
 import com.vpu.mp.service.pojo.saas.shop.mp.MpAuditStateVo;
 import com.vpu.mp.service.pojo.saas.shop.mp.MpAuthShopToAdminVo;
+import com.vpu.mp.service.pojo.saas.shop.mp.MpOfficeAccountVo;
 import com.vpu.mp.service.pojo.saas.shop.mp.MpOperateListParam;
 import com.vpu.mp.service.pojo.saas.shop.mp.MpOperateVo;
 import com.vpu.mp.service.pojo.saas.shop.officeAccount.MpOAPayManageParam;
@@ -115,9 +116,12 @@ public class AdminWechatApiController extends AdminBaseController {
 		}
 		//可以绑定的公众号列表
 		Result<MpOfficialAccountRecord> officialAccountBySysId = saas.shop.officeAccount.getOfficialAccountBySysId(adminAuth.user().sysId);
-		List<MpOfficialAccountRecord> officialList = saas.shop.officeAccount.findSamePrincipalMiniAndMP(officialAccountBySysId, record);
+		List<MpOfficeAccountVo> officialList = saas.shop.officeAccount.findSamePrincipalMiniAndMP(officialAccountBySysId, record);
 		MpAuthShopToAdminVo into = record.into(MpAuthShopToAdminVo.class);
+		//查询已绑定的公众号信息
+		Record officialAccount = saas.shop.officeAccount.getOfficeAccountByAppIdRecord(record.getLinkOfficialAppId());
 		into.setOfficialList(officialList);
+		into.setOfficialAccount(officialAccount.into(MpOfficeAccountVo.class));
 		return success(into);
 	}
 
