@@ -4,6 +4,7 @@ import java.sql.Timestamp;
 import java.util.List;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.vpu.mp.service.pojo.saas.shop.officeAccount.MpOfficeAccountListVo;
 
 import lombok.Data;
 
@@ -68,6 +69,14 @@ public class MpAuthShopToAdminVo {
     private String    unionPayCusId;
     @JsonIgnore
     private String    unionPayAppKey;
-    private List<?>   officialList;
+    /**
+          * 需要绑定的公众号
+     */
+    private List<MpOfficeAccountVo>   officialList;
+    
+    /**
+     * 已绑定的公众号
+     */
+    private MpOfficeAccountVo officialAccount;
 
 }
