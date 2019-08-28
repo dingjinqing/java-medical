@@ -134,23 +134,20 @@
           align="center"
         ></el-table-column>
       </el-table>
-      <div class="paginationfooter">
-        <span>当前页面{{pageInfo.currentPage}}/{{pageInfo.pageCount}}，总记录{{pageInfo.totalRows}}条</span>
-        <el-pagination
-          @current-change="loadData"
-          :current-page.sync="queryForm.currentPage"
-          :page-size="queryForm.pageRows"
-          layout="prev, pager, next, jumper"
-          :total="pageInfo.totalRows"
-        >
-        </el-pagination>
-      </div>
+      <pagination
+        :page-params.sync="pageParams"
+        @pagination="loadData"
+      />
     </div>
   </div>
 </template>
 <script>
 import { detailGroupIntegration } from '@/api/admin/marketManage/groupIntegrationList.js'
+import pagination from '@/components/admin/pagination/pagination'
 export default {
+  components: {
+    pagination
+  },
   data: function () {
     return {
       timeRange: [],
@@ -165,33 +162,41 @@ export default {
         minIntegration: null,
         maxIntegration: null,
         isNew: null,
-        groupId: null,
-        currentPage: 1,
-        pageRows: 20
+        groupId: null
       },
       tableData: [],
-      pageInfo: {
-        totalRows: 0,
-        currentPage: 1,
-        firstPage: 1,
-        prePage: 1,
-        lastPage: 1,
-        pageCount: 1
+      pageParams: {
       }
     }
   },
   methods: {
     loadData () {
-      this.queryForm.startTime = this.timeRange[0]
-      this.queryForm.endTime = this.timeRange[1]
-      console.log(this.queryForm)
-      detailGroupIntegration(this.queryForm).then(res => {
+      if (this.timeRange === null) {
+        this.queryForm.startTime = ''
+        this.queryForm.endTime = ''
+      } else {
+        this.queryForm.startTime = this.timeRange[0]
+        this.queryForm.endTime = this.timeRange[1]
+      }
+      this.pageParams.actId = this.queryForm.actId
+      this.pageParams.mobile = this.queryForm.mobile
+      this.pageParams.username = this.queryForm.username
+      this.pageParams.startTime = this.queryForm.startTime
+      this.pageParams.endTime = this.queryForm.endTime
+      this.pageParams.isGrouper = this.queryForm.isGrouper
+      this.pageParams.inviteNum = this.queryForm.inviteNum
+      this.pageParams.minIntegration = this.queryForm.minIntegration
+      this.pageParams.maxIntegration = this.queryForm.maxIntegration
+      this.pageParams.isNew = this.queryForm.isNew
+      this.pageParams.groupId = this.queryForm.groupId
+      detailGroupIntegration(this.pageParams).then(res => {
         console.log(res)
         this.handData(res.content.dataList)
-        this.pageInfo = res.content.page
+        this.pageParams = res.content.page
       })
     },
     onSubmit () {
+      this.pageParams.currentPage = 1
       this.loadData()
     },
     handData (data) {

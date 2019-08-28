@@ -137,17 +137,10 @@
           </template>
         </el-table-column>
       </el-table>
-      <div class="paginationfooter">
-        <span>当前页面{{pageInfo.currentPage}}/{{pageInfo.pageCount}}，总记录{{pageInfo.totalRows}}条</span>
-        <el-pagination
-          @current-change="seacherGroupIntegrationList"
-          :current-page.sync="obj.currentPage"
-          :page-size="obj.pageRows"
-          layout="prev, pager, next, jumper"
-          :total="pageInfo.totalRows"
-        >
-        </el-pagination>
-      </div>
+      <pagination
+        :page-params.sync="pageParams"
+        @pagination="seacherGroupIntegrationList"
+      />
     </div>
     <shareDialog
       :imgPath="shareImgPath"
@@ -160,29 +153,21 @@
 <script>
 import { groupIntegrationList, changeGroupIntegrationStatus, delGroupIntegration, shareActivity } from '@/api/admin/marketManage/groupIntegrationList.js'
 import shareDialog from '@/components/admin/shareDialog'
+import pagination from '@/components/admin/pagination/pagination'
+
 export default {
   components: {
-    shareDialog
+    shareDialog, pagination
   },
   data () {
     return {
+      type: 0,
       activeName: 'first',
       shareImgPath: '',
       sharePagePath: '',
       shareDialogShow: false,
       tableData: [],
-      obj: {
-        'currentPage': 1,
-        'pageRows': 20,
-        'type': 0
-      },
-      pageInfo: {
-        totalRows: 0,
-        currentPage: 1,
-        firstPage: 1,
-        prePage: 1,
-        lastPage: 1,
-        pageCount: 1
+      pageParams: {
       }
     }
   },
@@ -193,20 +178,17 @@ export default {
   methods: {
 
     handleClick (e) {
-      let obj = {
-        'currentPage ': 0,
-        'pageRows': 20,
-        'type': parseInt(e.index)
-      }
-      this.obj = obj
+      this.type = parseInt(e.index)
+      this.pageParams.currentPage = 1
       this.seacherGroupIntegrationList()
     },
     seacherGroupIntegrationList () {
-      groupIntegrationList(this.obj).then((res) => {
+      this.pageParams.type = this.type
+      groupIntegrationList(this.pageParams).then((res) => {
         console.log(res)
         if (res.error === 0) {
           this.handleData(res.content.dataList)
-          this.pageInfo = res.content.page
+          this.pageParams = res.content.page
         }
       })
     },
@@ -236,39 +218,60 @@ export default {
 
     // 停用瓜分积分活动
     puaseGroupIntegration (id) {
-      let data = {
-        'id': id,
-        'status': 0
-      }
-      changeGroupIntegrationStatus(data).then(res => {
-        console.log(res)
-        if (res.error === 0) {
-          alert('停用成功！')
-          this.seacherGroupIntegrationList()
+      this.$alert('确定要停用吗？', '提示', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning' }).then(() => {
+        let data = {
+          'id': id,
+          'status': 0
         }
+        changeGroupIntegrationStatus(data).then(res => {
+          console.log(res)
+          if (res.error === 0) {
+            this.$message('停用成功')
+            this.seacherGroupIntegrationList()
+          } else {
+            this.$message('停用失败')
+          }
+        })
       })
     },
     // 启用瓜分积分活动
     upGroupIntegration (id) {
-      let data = {
-        'id': id,
-        'status': 1
-      }
-      changeGroupIntegrationStatus(data).then(res => {
-        console.log(res)
-        if (res.error === 0) {
-          alert('启用成功！')
-          this.seacherGroupIntegrationList()
+      this.$alert('确定要启用吗？', '提示', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning' }).then(() => {
+        let data = {
+          'id': id,
+          'status': 1
         }
+        changeGroupIntegrationStatus(data).then(res => {
+          console.log(res)
+          if (res.error === 0) {
+            this.$message('启用成功')
+            this.seacherGroupIntegrationList()
+          } else {
+            this.$message('启用失败')
+          }
+        })
       })
     },
     // 删除瓜分积分活动
     delGroupIntegration (id) {
-      delGroupIntegration(id).then(res => {
-        if (res.error === 0) {
-          alert('删除成功！')
-          this.seacherGroupIntegrationList()
-        }
+      this.$alert('确定要删除吗？', '提示', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning' }).then(() => {
+        delGroupIntegration(id).then(res => {
+          if (res.error === 0) {
+            this.$message('删除成功')
+            this.seacherGroupIntegrationList()
+          } else {
+            this.$message('删除失败')
+          }
+        })
       })
     },
     // 增加瓜分积分活动

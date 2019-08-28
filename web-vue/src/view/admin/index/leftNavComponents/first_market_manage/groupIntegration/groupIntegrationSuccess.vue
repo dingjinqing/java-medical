@@ -95,17 +95,10 @@
           align="center"
         ></el-table-column>
       </el-table>
-      <div class="paginationfooter">
-        <span>当前页面{{pageInfo.currentPage}}/{{pageInfo.pageCount}}，总记录{{pageInfo.totalRows}}条</span>
-        <el-pagination
-          @current-change="onSubmit()"
-          :current-page.sync="condition.currentPage"
-          :page-size="condition.pageRows"
-          layout="prev, pager, next, jumper"
-          :total="pageInfo.totalRows"
-        >
-        </el-pagination>
-      </div>
+      <pagination
+        :page-params.sync="pageInfo"
+        @pagination="loadTable"
+      />
     </div>
 
     <!-- 点击参团人数链接弹窗 -->
@@ -170,17 +163,10 @@
             align="center"
           ></el-table-column>
         </el-table>
-        <div class="paginationfooter">
-          <span>当前页面{{dailogTablePageInfo.currentPage}}/{{dailogTablePageInfo.pageCount}}，总记录{{dailogTablePageInfo.totalRows}}条</span>
-          <el-pagination
-            @current-change="getDetail()"
-            :current-page.sync="dialogCondition.currentPage"
-            :page-size="dialogCondition.pageRows"
-            layout="prev, pager, next, jumper"
-            :total="dailogTablePageInfo.totalRows"
-          >
-          </el-pagination>
-        </div>
+        <pagination
+          :page-params.sync="dialogTablePageInfo"
+          @pagination="getDetail"
+        />
       </div>
       <span
         slot="footer"
@@ -197,50 +183,36 @@
 </template>
 <script>
 import { successGroupIntegration, detailGroupIntegration } from '@/api/admin/marketManage/groupIntegrationList.js'
-
+import pagination from '@/components/admin/pagination/pagination'
 export default {
+  components: {
+    pagination
+  },
   data: function () {
     return {
       timeRange: [],
       dialogVisible: false,
       dialogCondition: {
         actId: null,
-        groupId: null,
-        pageRows: 5,
-        currentPage: 1
+        groupId: null
       },
       condition: {
         actId: null,
         groupId: null,
         status: null,
         startTime: null,
-        endTime: null,
-        currentPage: 1,
-        pageRows: 1
+        endTime: null
       },
       tableData: [],
       pageInfo: {
-        totalRows: 0,
-        currentPage: 1,
-        firstPage: 1,
-        prePage: 1,
-        lastPage: 1,
-        pageCount: 1
       },
       dialogTableData: [],
-      dailogTablePageInfo: {
-        totalRows: 0,
-        currentPage: 1,
-        firstPage: 1,
-        prePage: 1,
-        lastPage: 1,
-        pageCount: 1
+      dialogTablePageInfo: {
       }
     }
   },
   methods: {
     onSubmit () {
-      console.log(this.timeRange)
       if (!this.timeRange) {
         this.condition.startTime = ''
         this.condition.endTime = ''
@@ -248,7 +220,16 @@ export default {
         this.condition.startTime = this.timeRange[0]
         this.condition.endTime = this.timeRange[1]
       }
-      successGroupIntegration(this.condition).then(res => {
+      this.pageInfo.currentPage = 1
+      this.loadTable()
+    },
+    loadTable () {
+      this.pageInfo.actId = this.condition.actId
+      this.pageInfo.groupId = this.condition.groupId
+      this.pageInfo.status = this.condition.status
+      this.pageInfo.startTime = this.condition.startTime
+      this.pageInfo.endTime = this.condition.endTime
+      successGroupIntegration(this.pageInfo).then(res => {
         console.log(res)
         this.handData(res.content.dataList)
         this.pageInfo = res.content.page
@@ -257,14 +238,16 @@ export default {
     loadDailog (groupId) {
       this.dialogCondition.actId = this.condition.actId
       this.dialogCondition.groupId = groupId
-      this.dialogCondition.currentPage = 1
+      this.dialogTablePageInfo.currentPage = 1
       this.getDetail()
     },
     getDetail () {
-      detailGroupIntegration(this.dialogCondition).then(res => {
+      this.dialogTablePageInfo.actId = this.dialogCondition.actId
+      this.dialogTablePageInfo.groupId = this.dialogCondition.groupId
+      detailGroupIntegration(this.dialogTablePageInfo).then(res => {
         console.log(res)
         this.handDialog(res.content.dataList)
-        this.dailogTablePageInfo = res.content.page
+        this.dialogTablePageInfo = res.content.page
         this.dialogVisible = true
       })
     },
