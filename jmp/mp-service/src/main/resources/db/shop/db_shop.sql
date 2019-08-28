@@ -1102,7 +1102,7 @@ create table `b2c_member_card` (
   `sorce`             int(11)                                 default null comment '开卡送积分',
   `buy_score`         text comment '购物送积分策略json数据',
   `expire_type`       tinyint(1)   not null                   default '0' comment '0:固定日期 1：自领取之日起 2:不过期',
-  `start_time`        timestamp    							            null  default null comment '开始日期',
+  `start_time`        timestamp null  default null comment '开始日期',
   `end_time`          timestamp null default null comment '结束日期',
   `receive_day`       int(11)                                 default null comment '领取之日起n',
   `date_type`         tinyint(1)                              default null comment '0:日，1:周 2: 月',
