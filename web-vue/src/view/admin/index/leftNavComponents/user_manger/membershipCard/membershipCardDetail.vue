@@ -4,12 +4,15 @@
       <div class="leftContainer">
         <div class="left_Top"></div>
         <div class="left_middle">
-          <div class="example_card">
+          <div
+            class="example_card"
+            :style="bgStyleComputed"
+          >
             <div class="card_detail">
               <img :src="$imageHost+'/image/admin/img_home/testImg.jpeg'">
             </div>
             <div class="effect_date">
-              有效期：-
+              有效期：{{this.ruleForm.fixedDate?this.ruleForm.fixedDate:'-'}}
             </div>
           </div>
           <div
@@ -388,6 +391,7 @@
                   start-placeholder="开始日期"
                   end-placeholder="结束日期"
                   size="small"
+                  value-format='yyyy-MM-dd'
                 >
                 </el-date-picker>
               </div>
@@ -872,6 +876,24 @@ export default {
       codeAddDivArrBottom: ['null']
     }
   },
+  filters: {
+    handleDate (value) {
+      console.log(value)
+    }
+  },
+  computed: {
+    // 动态变化背景色或背景图片
+    bgStyleComputed () {
+      let bg = ''
+      if (this.ruleForm.bgFlag === '1') {
+        bg = `background-color:${this.colorLeft_}`
+      } else {
+        bg = `backgroundImage:url(${this.baImgUrl})`
+      }
+      console.log(this.ruleForm.bgFlag, bg)
+      return bg
+    }
+  },
   watch: {
     'ruleForm.dateRadio' (newData) {
       this.$refs['ruleForm'].validate((valid) => {
@@ -883,6 +905,45 @@ export default {
           return false
         }
       })
+    },
+    'ruleForm.vipFlag' (newData) {
+      if (newData) {
+        let obj = {
+          backGroundImgUrl: this.$imageHost + '/image/wxapp/card_info_goods.png',
+          title: '会员专享商品',
+          children: []
+        }
+        this.leftNavData.splice(2, 0, obj)
+      } else {
+        this.leftNavData.splice(2, 1)
+      }
+    },
+    'ruleForm.shoppingFull' (newData) {
+      if (newData === '1') {
+        this.leftNavData[1].children = ['购物满100宋100积分']
+      } else {
+        this.leftNavData[1].children = ['购物每满100宋100积分']
+      }
+    },
+    'ruleForm.rechargeInput' (newData) {
+      let fn = (text) => {
+        this.leftNavData.forEach(item => {
+          if (item.title === '卡充值规则') {
+            item.children = [text]
+          }
+        })
+      }
+
+      switch (newData) {
+        case '1':
+          fn('卡充值')
+          break
+        case '2':
+          fn('充值满100送100')
+          break
+        case '3':
+          fn('充值每满100送100')
+      }
     }
   },
   mounted () {

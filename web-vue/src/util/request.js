@@ -53,6 +53,7 @@ service.interceptors.request.use(
 // respone拦截器
 service.interceptors.response.use(
   response => {
+    console.log(response)
     const res = response
     let flag = localStorage.getItem('V-overallFlag')
 
