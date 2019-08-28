@@ -3,49 +3,95 @@
     <!--基本信息配置模块-->
     <div>
       <div class="title">基本信息</div>
-      <basicInfo ref="basicInfo"/>
+      <basicInfo ref="basicInfo" />
     </div>
 
     <!--库存/价格信息-->
     <div>
       <div class="title">库存/价格信息</div>
-      <el-form ref="stockAndPriceInfoForm" :model="goodsProductInfo" :rules="stockAndPriceRules" label-width="120px">
+      <el-form
+        ref="stockAndPriceInfoForm"
+        :model="goodsProductInfo"
+        :rules="stockAndPriceRules"
+        label-width="120px"
+      >
         <!--商品规格按钮-->
-        <el-form-item label="商品规格：" v-if="!specInfoSwitch">
-          <el-button size="small" @click="addSpecClick">添加规格</el-button>
+        <el-form-item
+          label="商品规格："
+          v-if="!specInfoSwitch"
+        >
+          <el-button
+            size="small"
+            @click="addSpecClick"
+          >添加规格</el-button>
         </el-form-item>
-        <el-form-item label="商品规格：" v-if="specInfoSwitch">
+        <el-form-item
+          label="商品规格："
+          v-if="specInfoSwitch"
+        >
           <div class="specInfoWrap">
             <template v-for="(specInfoModel,kIndex) in goodsProductInfo.goodsSpecs">
-              <div class="specInfoItem speInfoItemK" :key="'k'+kIndex">
+              <div
+                class="specInfoItem speInfoItemK"
+                :key="'k'+kIndex"
+              >
                 <div class="specInfoItemTitle">规格名：</div>
                 <div class="specInfoItemContent">
                   <div class="specInfoItemInputWrap">
-                    <input type="text" :value="specInfoModel.specName"
-                           @change="specInfoChange(specInfoModel,kIndex,$event.target.value)"/>
-                    <div @click="deleteSpecInfo(specInfoModel,kIndex)" class="deleteIcon">×</div>
+                    <input
+                      type="text"
+                      :value="specInfoModel.specName"
+                      @change="specInfoChange(specInfoModel,kIndex,$event.target.value)"
+                    />
+                    <div
+                      @click="deleteSpecInfo(specInfoModel,kIndex)"
+                      class="deleteIcon"
+                    >×</div>
                   </div>
                 </div>
               </div>
-              <div class="specInfoItem speInfoItemV" :key="'v'+kIndex">
+              <div
+                class="specInfoItem speInfoItemV"
+                :key="'v'+kIndex"
+              >
                 <div class="specInfoItemTitle">规格值：</div>
                 <div class="specInfoItemContent">
-                  <div class="specInfoItemInputWrap" v-for="(specInfoVModel,vIndex) in specInfoModel.goodsSpecVals"
-                       :key="vIndex">
-                    <input type="text" :value="specInfoVModel.specValName"
-                           @change="specValChange(specInfoModel,vIndex,$event.target.value)"/>
-                    <div @click="deleteSpecVal(specInfoModel,vIndex)" class="deleteIcon">×</div>
+                  <div
+                    class="specInfoItemInputWrap"
+                    v-for="(specInfoVModel,vIndex) in specInfoModel.goodsSpecVals"
+                    :key="vIndex"
+                  >
+                    <input
+                      type="text"
+                      :value="specInfoVModel.specValName"
+                      @change="specValChange(specInfoModel,vIndex,$event.target.value)"
+                    />
+                    <div
+                      @click="deleteSpecVal(specInfoModel,vIndex)"
+                      class="deleteIcon"
+                    >×</div>
                   </div>
-                  <el-link size="small" :underline="false" @click="addSpecValClick(specInfoModel)"
-                           style="margin-left: 5px;">添加规格值
+                  <el-link
+                    size="small"
+                    :underline="false"
+                    @click="addSpecValClick(specInfoModel)"
+                    style="margin-left: 5px;"
+                  >添加规格值
                   </el-link>
                 </div>
               </div>
             </template>
-            <el-button style="float: right;" size="small" @click="addSpecInfoClick">添加规格选项</el-button>
+            <el-button
+              style="float: right;"
+              size="small"
+              @click="addSpecInfoClick"
+            >添加规格选项</el-button>
           </div>
         </el-form-item>
-        <el-form-item label="规格价格：" v-if="specInfoSwitch">
+        <el-form-item
+          label="规格价格："
+          v-if="specInfoSwitch"
+        >
           <div class="specInfoWrap">
             <table>
               <tr>
@@ -56,53 +102,139 @@
                 <th>规格编码</th>
                 <th>规格图片</th>
               </tr>
-              <tr v-for="(item,index) in goodsProductInfo.goodsSpecProducts" :key="index">
+              <tr
+                v-for="(item,index) in goodsProductInfo.goodsSpecProducts"
+                :key="index"
+              >
                 <td>{{item.prdDescTemp}}</td>
-                <td><input v-model="item.prdPrice"/></td>
-                <td><input v-model="item.prdCostPrice"/></td>
-                <td><input v-model="item.prdNumber"/></td>
-                <td><input v-model="item.prdSn"/></td>
-                <td><img src="" alt="">src</td>
+                <td><input v-model="item.prdPrice" /></td>
+                <td><input v-model="item.prdCostPrice" /></td>
+                <td><input v-model="item.prdNumber" /></td>
+                <td><input v-model="item.prdSn" /></td>
+                <td><img
+                    src=""
+                    alt=""
+                  >src</td>
               </tr>
             </table>
           </div>
         </el-form-item>
-        <el-form-item label="商品库存：" prop="prdNumber">
-          <el-input-number v-model="goodsProductInfo.prdNumber" step-strictly size="small" controls-position="right" :min="0" :disable="!specInfoSwitch"/>
+        <el-form-item
+          label="商品库存："
+          prop="prdNumber"
+        >
+          <el-input-number
+            v-model="goodsProductInfo.prdNumber"
+            step-strictly
+            size="small"
+            controls-position="right"
+            :min="0"
+            :disable="!specInfoSwitch"
+          />
           <span class="inputTip">设置了规格库存商品库存将失效，不在前端展示</span>
         </el-form-item>
-        <el-form-item label="商品价格：" prop="prdPrice">
-          <el-input-number v-model="goodsProductInfo.prdPrice" size="small" controls-position="right" :min="0" :disable="!specInfoSwitch"/>
+        <el-form-item
+          label="商品价格："
+          prop="prdPrice"
+        >
+          <el-input-number
+            v-model="goodsProductInfo.prdPrice"
+            size="small"
+            controls-position="right"
+            :min="0"
+            :disable="!specInfoSwitch"
+          />
           <span class="inputTip">设置了规格价格商品价格将失效，不在前端展示</span>
         </el-form-item>
-        <el-form-item label="市场价格：" prop="marketPrice">
-          <el-input-number v-model="goodsProductInfo.marketPrice" size="small" controls-position="right" :min="0"/>
+        <el-form-item
+          label="市场价格："
+          prop="marketPrice"
+        >
+          <el-input-number
+            v-model="goodsProductInfo.marketPrice"
+            size="small"
+            controls-position="right"
+            :min="0"
+          />
         </el-form-item>
         <el-form-item label="会员价：">
-          <el-checkbox v-for="(item,index) in memberCards" v-model="item.checked" :key="index" @change="memberCardCheckedChange(item,$event)">{{item.cardName}}</el-checkbox>
-          <br/>
-          <span class="inputTip" style="margin-left: 0px;">会员价仅针对等级会员卡设定，非等级会员卡不可设置会员价。若等级会员卡也包含会员折扣，则会员价和会员折扣可同时享受，优先计算会员价</span>
+          <el-checkbox
+            v-for="(item,index) in memberCards"
+            v-model="item.checked"
+            :key="index"
+            @change="memberCardCheckedChange(item,$event)"
+          >{{item.cardName}}</el-checkbox>
+          <br />
+          <span
+            class="inputTip"
+            style="margin-left: 0px;"
+          >会员价仅针对等级会员卡设定，非等级会员卡不可设置会员价。若等级会员卡也包含会员折扣，则会员价和会员折扣可同时享受，优先计算会员价</span>
         </el-form-item>
       </el-form>
       <!-- 展开更多配置 -->
       <el-collapse accordion>
-        <el-collapse-item title="展开/收起更多配置" name="1">
-          <el-form :model="goodsProductInfo" :rules="stockAndPriceRules" ref="stockAndPriceInfoOtherForm" label-width="120px">
+        <el-collapse-item
+          title="展开/收起更多配置"
+          name="1"
+        >
+          <el-form
+            :model="goodsProductInfo"
+            :rules="stockAndPriceRules"
+            ref="stockAndPriceInfoOtherForm"
+            label-width="120px"
+          >
 
-            <el-form-item label="最小限购数量：" prop="limitBuyNum">
-              <el-input-number v-model="goodsProductInfo.limitBuyNum" step-strictly size="small" controls-position="right" :min="0"/>
+            <el-form-item
+              label="最小限购数量："
+              prop="limitBuyNum"
+            >
+              <el-input-number
+                v-model="goodsProductInfo.limitBuyNum"
+                step-strictly
+                size="small"
+                controls-position="right"
+                :min="0"
+              />
               <span class="inputTip">0或不填表示不限制购买数量</span>
             </el-form-item>
-            <el-form-item label="最大限购数量：" prop="limitMaxNum">
-              <el-input-number v-model="goodsProductInfo.limitMaxNum" step-strictly size="small" controls-position="right" :min="0"/>
+            <el-form-item
+              label="最大限购数量："
+              prop="limitMaxNum"
+            >
+              <el-input-number
+                v-model="goodsProductInfo.limitMaxNum"
+                step-strictly
+                size="small"
+                controls-position="right"
+                :min="0"
+              />
               <span class="inputTip">0或不填表示不限制购买数量</span>
             </el-form-item>
-            <el-form-item label="成本价格：" prop="prdCost">
-              <el-input-number v-model="goodsProductInfo.prdCost" step-strictly size="small" controls-position="right" :min="0" :disable="!specInfoSwitch"/>
+            <el-form-item
+              label="成本价格："
+              prop="prdCost"
+            >
+              <el-input-number
+                v-model="goodsProductInfo.prdCost"
+                step-strictly
+                size="small"
+                controls-position="right"
+                :min="0"
+                :disable="!specInfoSwitch"
+              />
               <span class="inputTip">0或不填表示不限制购买数量</span>
             </el-form-item>
-            <el-form-item label="初始销量：" prop="addSaleNum">
-              <el-input-number v-model="goodsProductInfo.addSaleNum" step-strictly size="small" controls-position="right" :min="0"/>
+            <el-form-item
+              label="初始销量："
+              prop="addSaleNum"
+            >
+              <el-input-number
+                v-model="goodsProductInfo.addSaleNum"
+                step-strictly
+                size="small"
+                controls-position="right"
+                :min="0"
+              />
               <span class="inputTip">设置后，您的用户看到的销量=初始销量+下单量，初始销量不计入统计。</span>
             </el-form-item>
 
@@ -131,7 +263,7 @@
 import basicInfo from './basicInfo'
 
 export default {
-  components: {basicInfo},
+  components: { basicInfo },
   data () {
     return {
       goodsProductInfo: {
@@ -157,13 +289,13 @@ export default {
       },
       stockAndPriceRules: {
         prdNumber: [
-          {required: true, message: '请输入商品库存', trigger: 'change'}
+          { required: true, message: '请输入商品库存', trigger: 'change' }
         ],
         prdPrice: [
-          {required: true, message: '请输入商品价格', trigger: 'change'}
+          { required: true, message: '请输入商品价格', trigger: 'change' }
         ],
         prdCost: [
-          {required: true, message: '请输入商品价格', trigger: 'change'}
+          { required: true, message: '请输入商品价格', trigger: 'change' }
         ]
       },
       /* 自定义商品规格 */
@@ -197,16 +329,16 @@ export default {
     /* 商品规格交互 */
     addSpecClick () {
       this.specInfoSwitch = !this.specInfoSwitch
-      this.goodsProductInfo.goodsSpecs.push({specName: null, goodsSpecVals: [{specValName: null}]})
+      this.goodsProductInfo.goodsSpecs.push({ specName: null, goodsSpecVals: [{ specValName: null }] })
 
       this._recalculateSpec()
     },
     addSpecInfoClick () {
-      let specInfoItem = {specName: null, goodsSpecVals: [{specValName: null}]}
+      let specInfoItem = { specName: null, goodsSpecVals: [{ specValName: null }] }
       this.goodsProductInfo.goodsSpecs.push(specInfoItem)
     },
     addSpecValClick (specInfoModel) {
-      specInfoModel.goodsSpecVals.push({specValName: null})
+      specInfoModel.goodsSpecVals.push({ specValName: null })
     },
     deleteSpecInfo (specInfoModel, kIndex) {
       this.goodsProductInfo.goodsSpecs.splice(kIndex, 1)
@@ -479,106 +611,107 @@ export default {
 }
 </script>
 <style scoped>
-  .inputTip {
-    color: #999;
-    margin-left: 15px;
-  }
-  .title {
-    font-weight: bold;
-    height: 40px;
-    background: #f8f8f8;
-    line-height: 40px;
-    width: 100%;
-    padding-left: 10px;
-    margin: 20px 0;
-  }
+.inputTip {
+  color: #999;
+  margin-left: 15px;
+}
+.title {
+  font-weight: bold;
+  height: 40px;
+  background: #f8f8f8;
+  line-height: 40px;
+  width: 100%;
+  padding-left: 10px;
+  margin: 20px 0;
+}
 
-  .specInfoWrap {
-    border: 1px solid #ccc;
-    color: #333;
-    padding: 10px;
-  }
+.specInfoWrap {
+  border: 1px solid #ccc;
+  color: #333;
+  padding: 10px;
+}
 
-  .specInfoWrap::after {
-    display: block;
-    content: '';
-    clear: both;
-  }
+.specInfoWrap::after {
+  display: block;
+  content: "";
+  clear: both;
+}
 
-  .specInfoItem {
-    display: flex;
-    align-items: center;
-  }
+.specInfoItem {
+  display: flex;
+  align-items: center;
+}
 
-  .speInfoItemK {
-    background: #f8f8f8;
-  }
+.speInfoItemK {
+  background: #f8f8f8;
+}
 
-  .specInfoItemTitle {
-    width: 80px;
-  }
+.specInfoItemTitle {
+  width: 80px;
+}
 
-  .specInfoItemContent {
-    width: calc(100% - 100px);
-  }
+.specInfoItemContent {
+  width: calc(100% - 100px);
+}
 
-  .specInfoItemInputWrap {
-    width: 120px;
-    height: 30px;
-    border: 1px solid #CCCCCC;
-    float: left;
-    margin: 2px 2px;
-    position: relative;
-  }
+.specInfoItemInputWrap {
+  width: 120px;
+  height: 30px;
+  border: 1px solid #cccccc;
+  float: left;
+  margin: 2px 2px;
+  position: relative;
+}
 
-  .specInfoItemInputWrap input {
-    width: 100%;
-    height: 100%;
-    outline: none;
-    padding: 0 0;
-    border: none;
-    float: left;
-  }
+.specInfoItemInputWrap input {
+  width: 100%;
+  height: 100%;
+  outline: none;
+  padding: 0 0;
+  border: none;
+  float: left;
+}
 
-  .specInfoItemInputWrap .deleteIcon {
-    width: 17px;
-    height: 17px;
-    color: #fff;
-    background: #ccc;
-    border: 1px solid #ccc;
-    border-radius: 50%;
-    line-height: 17px;
-    text-align: center;
-    position: absolute;
-    top: -8px;
-    right: -8px;
-    cursor: pointer;
-  }
+.specInfoItemInputWrap .deleteIcon {
+  width: 17px;
+  height: 17px;
+  color: #fff;
+  background: #ccc;
+  border: 1px solid #ccc;
+  border-radius: 50%;
+  line-height: 17px;
+  text-align: center;
+  position: absolute;
+  top: -8px;
+  right: -8px;
+  cursor: pointer;
+}
 
-  /* 以下临时使用，可删除 */
-  table {
-    border-collapse: collapse;
-    margin: 0 auto;
-    text-align: center;
-    width: 100%;
-  }
+/* 以下临时使用，可删除 */
+table {
+  border-collapse: collapse;
+  margin: 0 auto;
+  text-align: center;
+  width: 100%;
+}
 
-  table td, table th {
-    border: 1px solid #cad9ea;
-    color: #666;
-    height: 30px;
-  }
+table td,
+table th {
+  border: 1px solid #cad9ea;
+  color: #666;
+  height: 30px;
+}
 
-  table thead th {
-    background-color: #CCE8EB;
-    width: 100px;
-  }
+table thead th {
+  background-color: #cce8eb;
+  width: 100px;
+}
 
-  table tr:nth-child(odd) {
-    background: #fff;
-  }
+table tr:nth-child(odd) {
+  background: #fff;
+}
 
-  table tr:nth-child(even) {
-    background: #F5FAFA;
-  }
+table tr:nth-child(even) {
+  background: #f5fafa;
+}
 </style>

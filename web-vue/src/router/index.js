@@ -13,7 +13,6 @@ const indexlogin = () => import('@/components/index/login')
 const systemlogin = () => import('@/components/system/login')
 
 const baseRoutes = [
-
   {
     path: '/',
     component: () => import('@/view/index/home'),
@@ -31,9 +30,13 @@ const baseRoutes = [
     name: 'systemLogin',
     component: systemlogin
   }
-
 ]
-const routes = baseRoutes.concat(baseRoutes, indexRoutes, adminRoutes, systemRouters)
+const routes = baseRoutes.concat(
+  baseRoutes,
+  indexRoutes,
+  adminRoutes,
+  systemRouters
+)
 
 const router = new Router({
   mode: 'history',
@@ -43,12 +46,13 @@ const router = new Router({
 router.beforeEach((to, from, next) => {
   const nextRoute = ['shopMain'] // 需要登录的页面
   let token = Cookies.get('V-Index-Token') // 判断是否登录
-  if (nextRoute.indexOf(to.name) >= 0) { // 检测是否登录的页面
+  if (nextRoute.indexOf(to.name) >= 0) {
+    // 检测是否登录的页面
     console.log(token)
     if (token) {
       if (to.meta.meta) {
         console.log('我需要判断权限')
-        judgeJurisdictionRequest({ 'V-EnName': to.name }).then((res) => {
+        judgeJurisdictionRequest({ 'V-EnName': to.name }).then(res => {
           console.log(res)
         })
       }
@@ -58,13 +62,12 @@ router.beforeEach((to, from, next) => {
       if (to.path !== '/index/login') {
         next({ path: '/index/login' })
       } else {
-
       }
     }
   } else {
     if (to.meta.meta) {
       // console.log('我需要判断权限')
-      judgeJurisdictionRequest({ 'V-EnName': to.name }).then((res) => {
+      judgeJurisdictionRequest({ 'V-EnName': to.name }).then(res => {
         console.log(res)
       })
     }

@@ -1,77 +1,108 @@
 <template>
-  <div>
-    <el-button @click="handleClick">测试分页</el-button>
-    <section class="table">
-      <el-table
-        border
-        :data="tableData"
-        style="width: 100%"
+  <div class="container">
+    <section>
+      <!-- 树状 -->
+      <el-tree
+        check-on-click-node
+        :data="list"
+        show-checkbox
+        node-key="id"
+        ref="tree"
+        highlight-current
+        :props="defaultProps"
       >
-        <el-table-column
-          prop="brandName"
-          label="品牌名"
-          width="180"
-        >
-        </el-table-column>
-        <el-table-column
-          prop="createTime"
-          label="创建时间"
-          width="180"
-        >
-        </el-table-column>
-      </el-table>
+      </el-tree>
     </section>
-    <pagination
-      :page-params.sync="pageParams"
-      @pagination="fetchDataList"
-    />
   </div>
 </template>
 <script>
-// 引入测试数据
-import { brandAllGetRequest } from '@/api/admin/brandManagement.js'
-// import { brandAddRequest } from '@/api/admin/brandManagement.js'
-// 引入分页
-import pagination from '@/components/admin/pagination/pagination'
+import { getAreaSelect } from '@/api/admin/goodsManage/deliverTemplate/deliverTemplate.js'
+
 export default {
-  components: { pagination },
+  // 组件名
+  name: '',
+  // data 数据
+  created () {
+    this.fetchList()
+  },
   data () {
     return {
-      data: [],
-      pageParams: {},
-      tableData: []
+      list: [],
+      dataList: [{
+        id: 110000,
+        name: '北京',
+        children: [{
+          id: 110100,
+          name: '北京市',
+          children: [{
+            id: 110101,
+            name: '东城区'
+          }, {
+            id: 110102,
+            name: '西城区'
+          }]
+        }]
+      }],
+      // 配置选项
+      defaultProps: {
+        children: 'children',
+        label: 'name'
+      }
     }
   },
-  created () {
-    this.fetchDataList()
+  // 生命周期钩子
+  create () {
+
   },
+  mounted () {
+
+  },
+  // 方法
   methods: {
-    fetchDataList () {
-      brandAllGetRequest(this.pageParams).then(res => {
-        const { error, content: { dataList, page } } = res
+    fetchList () {
+      getAreaSelect().then(res => {
+        const { error, content } = res
         if (error === 0) {
-          // 打印页码数据
-          // console.log(page)
-          // 打印内容
-          // console.log(dataList)
-          this.pageParams = page
-          this.tableData = dataList
+          console.log(content)
+          console.log(this.formatData(content))
+          this.list = this.formatData(content)
         }
       }).catch(err => console.log(err))
     },
-    handleClick () {
-      console.log(this.pageParams)
-      // 获取全部
-      // 添加单个
-      // brandAddRequest({
-      //   'brandName': '测试002',
-      //   'ename': 'english',
-      //   'first': 1
-      // }).then(res => { console.log(res) }).catch(err => console.log(err))
+    formatData (data) {
+      let newArr = []
+      data.forEach(item => {
+        let arr2 = []
+        item['areaCity'].forEach(item => {
+          let arr3 = []
+          item['areaDistrict'].forEach(item => {
+            arr3.push({
+              districtId: item['districtId'],
+              districtName: item['districtName'],
+              name: item['districtName']
+            })
+          })
+          arr2.push({
+            children: arr3,
+            areaDistrict: item['areaDistrict'],
+            cityId: item['cityId'],
+            cityName: item['cityName'],
+            name: item['cityName']
+          })
+        })
+        newArr.push({
+          provinceId: item['provinceId'],
+          provinceName: item['provinceName'],
+          areaCity: item['areaCity'],
+          name: item['provinceName'],
+          children: arr2
+        })
+      })
+      // 返回处理后的数据
+      return newArr
     }
-
   }
 }
 </script>
-<style lang="">
+<style lang="scss" scoped>
 </style>

@@ -32,3 +32,10 @@ export function deliverConfig (data) {
     data
   })
 }
+// 获取区域代码弹窗
+export function getAreaSelect () {
+  return service({
+    url: '/api/admin/goods/deliver/select',
+    method: 'get'
+  })
+}

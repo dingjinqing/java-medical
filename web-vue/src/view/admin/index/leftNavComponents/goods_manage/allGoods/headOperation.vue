@@ -219,6 +219,8 @@ export default {
       options6: [],
       value6: '',
       value7: ''
+      // 国际化语言
+
     }
   },
   // Vue生命周期钩子函数
