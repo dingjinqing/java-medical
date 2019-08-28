@@ -134,6 +134,17 @@
           align="center"
         ></el-table-column>
       </el-table>
+      <div class="paginationfooter">
+        <span>当前页面{{pageInfo.currentPage}}/{{pageInfo.pageCount}}，总记录{{pageInfo.totalRows}}条</span>
+        <el-pagination
+          @current-change="loadData"
+          :current-page.sync="queryForm.currentPage"
+          :page-size="queryForm.pageRows"
+          layout="prev, pager, next, jumper"
+          :total="pageInfo.totalRows"
+        >
+        </el-pagination>
+      </div>
     </div>
   </div>
 </template>
@@ -158,7 +169,15 @@ export default {
         currentPage: 1,
         pageRows: 20
       },
-      tableData: []
+      tableData: [],
+      pageInfo: {
+        totalRows: 0,
+        currentPage: 1,
+        firstPage: 1,
+        prePage: 1,
+        lastPage: 1,
+        pageCount: 1
+      }
     }
   },
   methods: {
@@ -169,6 +188,7 @@ export default {
       detailGroupIntegration(this.queryForm).then(res => {
         console.log(res)
         this.handData(res.content.dataList)
+        this.pageInfo = res.content.page
       })
     },
     onSubmit () {
@@ -221,5 +241,15 @@ export default {
   margin-top: 10px;
   background-color: #fff;
   padding: 10px 20px 0 20px;
+}
+.paginationfooter {
+  padding: 20px 0 20px 20px;
+  display: flex;
+  justify-content: flex-end;
+  span {
+    display: block;
+    height: 32px;
+    line-height: 32px;
+  }
 }
 </style>

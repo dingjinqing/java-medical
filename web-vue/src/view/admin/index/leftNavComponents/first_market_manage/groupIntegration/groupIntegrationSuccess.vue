@@ -54,10 +54,16 @@
           align="center"
         ></el-table-column>
         <el-table-column
-          prop="participantNum"
           label="团人数"
           align="center"
-        ></el-table-column>
+        >
+          <template slot-scope="scope">
+            <el-link
+              type="primary"
+              @click="loadDailog(scope.row.groupId)"
+            >{{scope.row.participantNum}}</el-link>
+          </template>
+        </el-table-column>
         <el-table-column
           prop="useIntegration"
           label="消耗积分"
@@ -89,15 +95,120 @@
           align="center"
         ></el-table-column>
       </el-table>
+      <div class="paginationfooter">
+        <span>当前页面{{pageInfo.currentPage}}/{{pageInfo.pageCount}}，总记录{{pageInfo.totalRows}}条</span>
+        <el-pagination
+          @current-change="onSubmit()"
+          :current-page.sync="condition.currentPage"
+          :page-size="condition.pageRows"
+          layout="prev, pager, next, jumper"
+          :total="pageInfo.totalRows"
+        >
+        </el-pagination>
+      </div>
     </div>
+
+    <!-- 点击参团人数链接弹窗 -->
+    <el-dialog
+      title="参团用户明细"
+      :visible.sync="dialogVisible"
+      center
+      width="60%"
+    >
+      <div class="table_list">
+        <el-table
+          class="version-manage-table"
+          header-row-class-name="tableClss"
+          :data="dialogTableData"
+          border
+          style="width: 100%"
+        >
+          <el-table-column
+            prop="userId"
+            label="用户ID"
+            align="center"
+          ></el-table-column>
+          <el-table-column
+            prop="username"
+            label="用户昵称"
+            align="center"
+          ></el-table-column>
+          <el-table-column
+            prop="mobile"
+            label="手机号码"
+            align="center"
+          ></el-table-column>
+          <el-table-column
+            prop="isNew"
+            label="是否新用户"
+            align="center"
+          ></el-table-column>
+          <el-table-column
+            prop="startTime"
+            label="参团时间"
+            align="center"
+          ></el-table-column>
+          <el-table-column
+            prop="groupId"
+            label="团ID"
+            align="center"
+          ></el-table-column>
+          <el-table-column
+            prop="inviteNum"
+            label="邀请用户数量"
+            align="center"
+          ></el-table-column>
+
+          <el-table-column
+            prop="integration"
+            label="消耗积分"
+            align="center"
+          ></el-table-column>
+          <el-table-column
+            prop="isGrouper"
+            label="是否团长"
+            align="center"
+          ></el-table-column>
+        </el-table>
+        <div class="paginationfooter">
+          <span>当前页面{{dailogTablePageInfo.currentPage}}/{{dailogTablePageInfo.pageCount}}，总记录{{dailogTablePageInfo.totalRows}}条</span>
+          <el-pagination
+            @current-change="getDetail()"
+            :current-page.sync="dialogCondition.currentPage"
+            :page-size="dialogCondition.pageRows"
+            layout="prev, pager, next, jumper"
+            :total="dailogTablePageInfo.totalRows"
+          >
+          </el-pagination>
+        </div>
+      </div>
+      <span
+        slot="footer"
+        class="dialog-footer"
+      >
+        <el-button
+          type="primary"
+          @click="dialogVisible = false"
+        >确 定</el-button>
+      </span>
+    </el-dialog>
+
   </div>
 </template>
 <script>
-import { successGroupIntegration } from '@/api/admin/marketManage/groupIntegrationList.js'
+import { successGroupIntegration, detailGroupIntegration } from '@/api/admin/marketManage/groupIntegrationList.js'
+
 export default {
   data: function () {
     return {
       timeRange: [],
+      dialogVisible: false,
+      dialogCondition: {
+        actId: null,
+        groupId: null,
+        pageRows: 5,
+        currentPage: 1
+      },
       condition: {
         actId: null,
         groupId: null,
@@ -105,18 +216,56 @@ export default {
         startTime: null,
         endTime: null,
         currentPage: 1,
-        pageRows: 20
+        pageRows: 1
       },
-      tableData: []
+      tableData: [],
+      pageInfo: {
+        totalRows: 0,
+        currentPage: 1,
+        firstPage: 1,
+        prePage: 1,
+        lastPage: 1,
+        pageCount: 1
+      },
+      dialogTableData: [],
+      dailogTablePageInfo: {
+        totalRows: 0,
+        currentPage: 1,
+        firstPage: 1,
+        prePage: 1,
+        lastPage: 1,
+        pageCount: 1
+      }
     }
   },
   methods: {
     onSubmit () {
-      this.condition.startTime = this.timeRange[0]
-      this.condition.endTime = this.timeRange[1]
+      console.log(this.timeRange)
+      if (!this.timeRange) {
+        this.condition.startTime = ''
+        this.condition.endTime = ''
+      } else {
+        this.condition.startTime = this.timeRange[0]
+        this.condition.endTime = this.timeRange[1]
+      }
       successGroupIntegration(this.condition).then(res => {
         console.log(res)
         this.handData(res.content.dataList)
+        this.pageInfo = res.content.page
+      })
+    },
+    loadDailog (groupId) {
+      this.dialogCondition.actId = this.condition.actId
+      this.dialogCondition.groupId = groupId
+      this.dialogCondition.currentPage = 1
+      this.getDetail()
+    },
+    getDetail () {
+      detailGroupIntegration(this.dialogCondition).then(res => {
+        console.log(res)
+        this.handDialog(res.content.dataList)
+        this.dailogTablePageInfo = res.content.page
+        this.dialogVisible = true
       })
     },
     handData (data) {
@@ -131,6 +280,21 @@ export default {
         }
       })
       this.tableData = data
+    },
+    handDialog (data) {
+      data.map((item, index) => {
+        if (item.isNew === 1) {
+          item.isNew = '是'
+        } else {
+          item.isNew = '否'
+        }
+        if (item.isGrouper === 1) {
+          item.isGrouper = '是'
+        } else {
+          item.isGrouper = '否'
+        }
+      })
+      this.dialogTableData = data
     }
   },
   mounted () {
@@ -164,5 +328,15 @@ export default {
   margin-top: 10px;
   background-color: #fff;
   padding: 10px 20px 0 20px;
+}
+.paginationfooter {
+  padding: 20px 0 20px 20px;
+  display: flex;
+  justify-content: flex-end;
+  span {
+    display: block;
+    height: 32px;
+    line-height: 32px;
+  }
 }
 </style>

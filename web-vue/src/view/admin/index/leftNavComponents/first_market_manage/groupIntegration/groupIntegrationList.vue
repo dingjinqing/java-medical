@@ -137,6 +137,17 @@
           </template>
         </el-table-column>
       </el-table>
+      <div class="paginationfooter">
+        <span>当前页面{{pageInfo.currentPage}}/{{pageInfo.pageCount}}，总记录{{pageInfo.totalRows}}条</span>
+        <el-pagination
+          @current-change="seacherGroupIntegrationList"
+          :current-page.sync="obj.currentPage"
+          :page-size="obj.pageRows"
+          layout="prev, pager, next, jumper"
+          :total="pageInfo.totalRows"
+        >
+        </el-pagination>
+      </div>
     </div>
     <shareDialog
       :imgPath="shareImgPath"
@@ -161,9 +172,17 @@ export default {
       shareDialogShow: false,
       tableData: [],
       obj: {
-        'currentPage ': 0,
-        'pageRows ': 20,
+        'currentPage': 1,
+        'pageRows': 20,
         'type': 0
+      },
+      pageInfo: {
+        totalRows: 0,
+        currentPage: 1,
+        firstPage: 1,
+        prePage: 1,
+        lastPage: 1,
+        pageCount: 1
       }
     }
   },
@@ -176,22 +195,18 @@ export default {
     handleClick (e) {
       let obj = {
         'currentPage ': 0,
-        'pageRows ': 20,
+        'pageRows': 20,
         'type': parseInt(e.index)
       }
       this.obj = obj
-      groupIntegrationList(obj).then((res) => {
-        console.log(res)
-        if (res.error === 0) {
-          this.handleData(res.content.dataList)
-        }
-      })
+      this.seacherGroupIntegrationList()
     },
     seacherGroupIntegrationList () {
       groupIntegrationList(this.obj).then((res) => {
         console.log(res)
         if (res.error === 0) {
           this.handleData(res.content.dataList)
+          this.pageInfo = res.content.page
         }
       })
     },
@@ -336,6 +351,16 @@ export default {
   margin-top: 10px;
   background-color: #fff;
   padding: 10px 20px 0 20px;
+}
+.paginationfooter {
+  padding: 20px 0 20px 20px;
+  display: flex;
+  justify-content: flex-end;
+  span {
+    display: block;
+    height: 32px;
+    line-height: 32px;
+  }
 }
 .opt {
   text-align: left;
