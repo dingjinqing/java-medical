@@ -87,22 +87,6 @@
         </el-collapse-item>
       </el-collapse>
     </div>
-
-    <!--&lt;!&ndash;库存/价格信息&ndash;&gt;-->
-    <!--<div class="blockWrap">-->
-    <!--<div class="title">库存/价格信息</div>-->
-    <!--</div>-->
-    <!--<stockAndPriceInfo ref="priceInfo" />-->
-    <!--&lt;!&ndash; 配送信息 &ndash;&gt;-->
-    <!--<div class="blockWrap">-->
-    <!--<div class="title">配送信息</div>-->
-    <!--</div>-->
-    <!--<deliveryInfo />-->
-    <!--&lt;!&ndash; 其他信息 &ndash;&gt;-->
-    <!--<div class="blockWrap">-->
-    <!--<div class="title">其他信息</div>-->
-    <!--</div>-->
-    <!--<otherInfo />-->
   </div>
 </template>
 <script>
