@@ -1380,10 +1380,10 @@ public class MpAuthShopService extends MainBaseService {
 						Record shop = saas.shop.getShop(authShopRecord.getShopId());
 						String shopName = shop.get(SHOP.SHOP_NAME);
 						String firest="为你精心准备了关注礼品，快来点击查看吧!";
-						String page="pages/auth/auth";
+						String page="pages/auth/auth";//String page="pages/auth/auth";pages/index/index
 						String content="点击进入小程序";
 						List<WxMpTemplateData> keywordValues = fexMessage(record, firest, shopName, content, page, null);
-						accountMessageService.sendMpTemplateMessage(appId, userInfo.getOpenId(), keywordValues, MpTemplateConfig.PUSHMSG, authShopRecord.getAppId(), page, null);
+						accountMessageService.sendMpTemplateMessage(appId, userInfo.getOpenId(), keywordValues, MpTemplateConfig.PUSHMSG, authShopRecord.getAppId(), page, page);
 					}
 				}
 				return message;
