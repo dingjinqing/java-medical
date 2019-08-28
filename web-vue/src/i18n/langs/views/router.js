@@ -103,7 +103,9 @@ export const cn = {
   // 营销管理 好友代付
   friend_pay: ['营销管理', '好友代付'],
   // 营销管理 幸运大抽奖
-  lottery_activity: ['营销管理', '幸运大抽奖']
+  lottery_activity: ['营销管理', '幸运大抽奖'],
+  // 营销管理 限时降价
+  reduce: ['营销管理', '限时降价']
 }
 
 export const en = {
@@ -192,15 +194,35 @@ export const en = {
   // 营销管理 分销
   distribution_info: ['Marketing management', 'distribution'],
   // 营销管理 瓜分积分
-  pin_integration: ['Marketing management', 'Group partition integral', 'Create friend help activity'],
+  pin_integration: [
+    'Marketing management',
+    'Group partition integral',
+    'Create friend help activity'
+  ],
   // 营销管理 瓜分积分 创建瓜分积分活动
-  pin_integration_add: ['Marketing management', 'Group partition integral', 'Create group partition integral'],
+  pin_integration_add: [
+    'Marketing management',
+    'Group partition integral',
+    'Create group partition integral'
+  ],
   // 营销管理 瓜分积分 修改活动内容
-  pin_integration_edit: ['Marketing management', 'Group partition integral', 'Edit group partition integral'],
+  pin_integration_edit: [
+    'Marketing management',
+    'Group partition integral',
+    'Edit group partition integral'
+  ],
   // 营销管理 瓜分积分 参与用户明细
-  pin_integration_detail: ['Marketing management', 'Group partition integral', 'Group partition integral detail'],
+  pin_integration_detail: [
+    'Marketing management',
+    'Group partition integral',
+    'Group partition integral detail'
+  ],
   // 营销管理 瓜分积分 成团明细
-  pin_integration_success: ['Marketing management', 'Group partition integral', 'Group partition integral success'],
+  pin_integration_success: [
+    'Marketing management',
+    'Group partition integral',
+    'Group partition integral success'
+  ],
   // 营销管理 赠品
   gift: ['Marketing management', 'Gift'],
   // 营销管理 赠品 添加赠品
@@ -225,5 +247,11 @@ export const en = {
   // 营销管理 分享有礼
   share_polite: ['Marketing management', 'share polite'],
   // 营销管理 分享有礼 领取明细
-  share_polite_detail: ['Marketing management', 'share polite', 'receive details ']
+  share_polite_detail: [
+    'Marketing management',
+    'share polite',
+    'receive details '
+  ],
+  // 营销管理 限时降价
+  reduce: ['Marketing management', 'Limited Time Price Reduction']
 }

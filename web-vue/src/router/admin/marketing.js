@@ -8,9 +8,9 @@ const routes = [
       meta: 'first_market_manage'
     },
     component: () =>
-            import(
-              '@/view/admin/index/leftNavComponents/first_market_manage/first_market/firstMarketManage'
-            )
+      import(
+        '@/view/admin/index/leftNavComponents/first_market_manage/first_market/firstMarketManage'
+      )
   },
   // 分享有礼活动
   {
@@ -22,9 +22,9 @@ const routes = [
       category: 'first_market_manage'
     },
     component: () =>
-            import(
-              '@/view/admin/index/leftNavComponents/first_market_manage/sharePolite/sharePoliteList'
-            )
+      import(
+        '@/view/admin/index/leftNavComponents/first_market_manage/sharePolite/sharePoliteList'
+      )
   },
   // 分享有礼活动-添加
   {
@@ -36,9 +36,9 @@ const routes = [
       category: 'first_market_manage'
     },
     component: () =>
-            import(
-              '@/view/admin/index/leftNavComponents/first_market_manage/sharePolite/addSharePolite'
-            )
+      import(
+        '@/view/admin/index/leftNavComponents/first_market_manage/sharePolite/addSharePolite'
+      )
   },
   // 分享有礼活动-领取明细
   {
@@ -50,9 +50,9 @@ const routes = [
       category: 'first_market_manage'
     },
     component: () =>
-            import(
-              '@/view/admin/index/leftNavComponents/first_market_manage/sharePolite/sharePoliteDetail'
-            )
+      import(
+        '@/view/admin/index/leftNavComponents/first_market_manage/sharePolite/sharePoliteDetail'
+      )
   },
   // 砍价
   {
@@ -64,9 +64,9 @@ const routes = [
       category: 'first_market_manage'
     },
     component: () =>
-            import(
-              '@/view/admin/index/leftNavComponents/first_market_manage/bargain/bargainIndex'
-            )
+      import(
+        '@/view/admin/index/leftNavComponents/first_market_manage/bargain/bargainIndex'
+      )
   },
   // 多人拼团
   {
@@ -77,9 +77,9 @@ const routes = [
       meta: 'first_market_manage'
     },
     component: () =>
-            import(
-              '@/view/admin/index/leftNavComponents/first_market_manage/spellGroup/spellGroup'
-            )
+      import(
+        '@/view/admin/index/leftNavComponents/first_market_manage/spellGroup/spellGroup'
+      )
   },
   // 分销
   {
@@ -90,9 +90,9 @@ const routes = [
       meta: 'first_market_manage'
     },
     component: () =>
-            import(
-              '@/view/admin/index/leftNavComponents/first_market_manage/distribution/distribution'
-            )
+      import(
+        '@/view/admin/index/leftNavComponents/first_market_manage/distribution/distribution'
+      )
   },
   // // 组团瓜分积分
   // {
@@ -117,9 +117,9 @@ const routes = [
       category: 'first_market_manage'
     },
     component: () =>
-            import(
-              '@/view/admin/index/leftNavComponents/first_market_manage/first_market/ordinaryCoupon'
-            )
+      import(
+        '@/view/admin/index/leftNavComponents/first_market_manage/first_market/ordinaryCoupon'
+      )
   },
   // 优惠券礼包
   {
@@ -131,9 +131,9 @@ const routes = [
       category: 'first_market_manage'
     },
     component: () =>
-            import(
-              '@/view/admin/index/leftNavComponents/first_market_manage/couponPackage/couponPackage'
-            )
+      import(
+        '@/view/admin/index/leftNavComponents/first_market_manage/couponPackage/couponPackage'
+      )
   },
   // 添加优惠券礼包
   {
@@ -145,9 +145,37 @@ const routes = [
       category: 'first_market_manage'
     },
     component: () =>
-            import(
-              '@/view/admin/index/leftNavComponents/first_market_manage/couponPackage/addCouponPackage'
-            )
+      import(
+        '@/view/admin/index/leftNavComponents/first_market_manage/couponPackage/addCouponPackage'
+      )
+  },
+  // 限时降价
+  {
+    path: '/admin/home/main/reduce',
+    name: 'reduce',
+    meta: {
+      crumbTitle: 'router.reduce',
+      meta: 'first_market_manage',
+      category: 'first_market_manage'
+    },
+    component: () =>
+      import(
+        '@/view/admin/index/leftNavComponents/first_market_manage/reducePrice/reduce'
+      )
+  },
+  // 添加限时降价
+  {
+    path: '/admin/home/main/reduce/add',
+    name: 'reduce_add_view',
+    meta: {
+      crumbTitle: 'router.reduce',
+      meta: 'first_market_manage',
+      category: 'first_market_manage'
+    },
+    component: () =>
+      import(
+        '@/view/admin/index/leftNavComponents/first_market_manage/reducePrice/addReduce'
+      )
   },
   // 好友助力
   {
@@ -158,9 +186,9 @@ const routes = [
       meta: 'first_market_manage'
     },
     component: () =>
-            import(
-              '@/view/admin/index/leftNavComponents/first_market_manage/friendHelp/friendHelp'
-            )
+      import(
+        '@/view/admin/index/leftNavComponents/first_market_manage/friendHelp/friendHelp'
+      )
   },
   // 添加好友助力活动
   {
@@ -171,9 +199,9 @@ const routes = [
       meta: 'first_market_manage'
     },
     component: () =>
-            import(
-              '@/view/admin/index/leftNavComponents/first_market_manage/friendHelp/addHelpAct'
-            )
+      import(
+        '@/view/admin/index/leftNavComponents/first_market_manage/friendHelp/addHelpAct'
+      )
   },
   // 添加优惠券活动
   {
@@ -185,9 +213,9 @@ const routes = [
       category: 'first_market_manage'
     },
     component: () =>
-            import(
-              '@/view/admin/index/leftNavComponents/first_market_manage/first_market/addCoupon'
-            )
+      import(
+        '@/view/admin/index/leftNavComponents/first_market_manage/first_market/addCoupon'
+      )
   },
   // 拼团抽奖活动
   {
@@ -199,9 +227,9 @@ const routes = [
       category: 'first_market_manage'
     },
     component: () =>
-            import(
-              '@/view/admin/index/leftNavComponents/first_market_manage/lotteryDraw/lotteryDraw'
-            )
+      import(
+        '@/view/admin/index/leftNavComponents/first_market_manage/lotteryDraw/lotteryDraw'
+      )
   },
   // 幸运大抽奖活动
   {
@@ -213,9 +241,9 @@ const routes = [
       category: 'first_market_manage'
     },
     component: () =>
-            import(
-              '@/view/admin/index/leftNavComponents/first_market_manage/luckyDraw/luckyDraw'
-            )
+      import(
+        '@/view/admin/index/leftNavComponents/first_market_manage/luckyDraw/luckyDraw'
+      )
   },
   // 好友代付
   {
@@ -227,9 +255,9 @@ const routes = [
       category: 'first_market_manage'
     },
     component: () =>
-            import(
-              '@/view/admin/index/leftNavComponents/first_market_manage/first_market/friendPay'
-            )
+      import(
+        '@/view/admin/index/leftNavComponents/first_market_manage/first_market/friendPay'
+      )
   },
   // 赠品
   {
@@ -241,9 +269,9 @@ const routes = [
       category: 'first_market_manage'
     },
     component: () =>
-            import(
-              '@/view/admin/index/leftNavComponents/first_market_manage/gift/gift'
-            )
+      import(
+        '@/view/admin/index/leftNavComponents/first_market_manage/gift/gift'
+      )
   },
   // 创建赠品活动
   {
@@ -255,9 +283,9 @@ const routes = [
       category: 'first_market_manage'
     },
     component: () =>
-            import(
-              '@/view/admin/index/leftNavComponents/first_market_manage/gift/addGift'
-            )
+      import(
+        '@/view/admin/index/leftNavComponents/first_market_manage/gift/addGift'
+      )
   },
   // 修改赠品活动
   {
@@ -269,9 +297,9 @@ const routes = [
       category: 'first_market_manage'
     },
     component: () =>
-            import(
-              '@/view/admin/index/leftNavComponents/first_market_manage/gift/addGift'
-            )
+      import(
+        '@/view/admin/index/leftNavComponents/first_market_manage/gift/addGift'
+      )
   },
   // 赠送明细
   {
@@ -283,9 +311,9 @@ const routes = [
       category: 'first_market_manage'
     },
     component: () =>
-            import(
-              '@/view/admin/index/leftNavComponents/first_market_manage/gift/giftDetail.vue'
-            )
+      import(
+        '@/view/admin/index/leftNavComponents/first_market_manage/gift/giftDetail.vue'
+      )
   },
   // 瓜分积分活动
   {
@@ -296,9 +324,9 @@ const routes = [
       meta: 'first_market_manage'
     },
     component: () =>
-            import(
-              '@/view/admin/index/leftNavComponents/first_market_manage/groupIntegration/groupIntegrationList'
-            )
+      import(
+        '@/view/admin/index/leftNavComponents/first_market_manage/groupIntegration/groupIntegrationList'
+      )
   },
   // 创建瓜分积分活动
   {
@@ -310,9 +338,9 @@ const routes = [
       category: 'first_market_manage'
     },
     component: () =>
-            import(
-              '@/view/admin/index/leftNavComponents/first_market_manage/groupIntegration/groupIntegrationAdd'
-            )
+      import(
+        '@/view/admin/index/leftNavComponents/first_market_manage/groupIntegration/groupIntegrationAdd'
+      )
   },
   // 编辑瓜分积分活动
   {
@@ -324,9 +352,9 @@ const routes = [
       category: 'first_market_manage'
     },
     component: () =>
-            import(
-              '@/view/admin/index/leftNavComponents/first_market_manage/groupIntegration/groupIntegrationAdd'
-            )
+      import(
+        '@/view/admin/index/leftNavComponents/first_market_manage/groupIntegration/groupIntegrationAdd'
+      )
   },
   // 瓜分积分活动--参与用户明细
   {
@@ -338,9 +366,9 @@ const routes = [
       category: 'first_market_manage'
     },
     component: () =>
-            import(
-              '@/view/admin/index/leftNavComponents/first_market_manage/groupIntegration/groupIntegrationDetail'
-            )
+      import(
+        '@/view/admin/index/leftNavComponents/first_market_manage/groupIntegration/groupIntegrationDetail'
+      )
   },
   // 瓜分积分活动--成团明细
   {
@@ -352,9 +380,9 @@ const routes = [
       category: 'first_market_manage'
     },
     component: () =>
-            import(
-              '@/view/admin/index/leftNavComponents/first_market_manage/groupIntegration/groupIntegrationSuccess'
-            )
+      import(
+        '@/view/admin/index/leftNavComponents/first_market_manage/groupIntegration/groupIntegrationSuccess'
+      )
   }
 ]
 export default routes

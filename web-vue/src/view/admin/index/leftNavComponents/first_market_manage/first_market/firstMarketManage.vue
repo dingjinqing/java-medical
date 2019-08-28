@@ -187,7 +187,10 @@
           </div>
         </div>
         <!-- 限时降价 -->
-        <div class="voucher box_style">
+        <div
+          class="voucher box_style"
+          @click="reduce()"
+        >
           <div class="activity_img"><img
               :src="$imageHost + '/image/admin/new_market/xsjj.png'"
               alt=""
@@ -523,6 +526,12 @@ export default {
     couponPackage () {
       this.$router.push({
         name: 'coupon_package'
+      })
+    },
+    // 限时降价点击
+    reduce () {
+      this.$router.push({
+        name: 'reduce'
       })
     },
     // 分享有礼活动点击
