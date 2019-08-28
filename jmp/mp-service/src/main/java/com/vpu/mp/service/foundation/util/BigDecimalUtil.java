@@ -30,6 +30,18 @@ public class BigDecimalUtil {
 	}
 	
 	/**
+	 * 加法,如为null默认取0
+	 * @param left
+	 * @param right
+	 * @return result left+right
+	 */
+	static public BigDecimal add(BigDecimal left , BigDecimal right) {
+		left = left == null ? BigDecimal.ZERO.setScale(2 , BigDecimal.ROUND_HALF_UP) : left;
+		right = right == null ? BigDecimal.ZERO.setScale(2 , BigDecimal.ROUND_HALF_UP) : right;
+		return left.add(right);
+	}
+	
+	/**
 	 * BigDecimal乘法：精度保留小数点后两位，采取四舍五入
 	 * @param left	null->zero
 	 * @param right null->zero

@@ -3,7 +3,6 @@ package com.vpu.mp.service.shop.order.refund;
 import static com.vpu.mp.db.shop.tables.ReturnOrder.RETURN_ORDER;
 
 import java.math.BigDecimal;
-import java.util.Random;
 
 import org.jooq.Record;
 import org.jooq.Record1;
@@ -21,6 +20,7 @@ import com.vpu.mp.service.foundation.exception.MpException;
 import com.vpu.mp.service.foundation.service.ShopBaseService;
 import com.vpu.mp.service.foundation.util.DateUtil;
 import com.vpu.mp.service.foundation.util.PageResult;
+import com.vpu.mp.service.foundation.util.RandomUtil;
 import com.vpu.mp.service.pojo.shop.order.OrderConstant;
 import com.vpu.mp.service.pojo.shop.order.OrderInfoVo;
 import com.vpu.mp.service.pojo.shop.order.OrderPageListQueryParam;
@@ -36,10 +36,6 @@ import com.vpu.mp.service.pojo.shop.order.write.operate.refund.RefundParam;
 public class ReturnOrderService extends ShopBaseService{
 	
 	public final ReturnOrder TABLE = RETURN_ORDER;
-	
-	public final static int ORDER_SN_SUFFIX_MAX_RANDOM = 9999;
-	
-	public final static int ORDER_SN_SUFFIX_MIN_RANDOM = 1000;
 	
 	/**
 	 * 	通过订单[]查询其下退货订单信息
@@ -157,7 +153,7 @@ public class ReturnOrderService extends ShopBaseService{
 	 */
 	public String generateReturnOrderSn() {
 		while(true) {
-			String returnOrderSn = "R" + DateUtil.dateFormat(DateUtil.DATE_FORMAT_FULL_NO_UNDERLINE) + (ORDER_SN_SUFFIX_MIN_RANDOM + new Random().nextInt(ORDER_SN_SUFFIX_MAX_RANDOM - ORDER_SN_SUFFIX_MIN_RANDOM));
+			String returnOrderSn = "R" + DateUtil.dateFormat(DateUtil.DATE_FORMAT_FULL_NO_UNDERLINE) + RandomUtil.getIntRandom();
 			if(db().fetchCount(TABLE,TABLE.RETURN_ORDER_SN.eq(returnOrderSn)) < 1){
 				return returnOrderSn;
 			}

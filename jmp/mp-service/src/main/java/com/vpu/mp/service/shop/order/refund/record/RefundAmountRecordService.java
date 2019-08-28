@@ -13,7 +13,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.vpu.mp.db.shop.tables.RefundAmountRecord;
+import com.vpu.mp.db.shop.tables.records.RefundAmountRecordRecord;
 import com.vpu.mp.service.foundation.service.ShopBaseService;
+import com.vpu.mp.service.foundation.util.BigDecimalUtil;
 import com.vpu.mp.service.shop.order.info.OrderInfoService;;
 
 /**
@@ -25,7 +27,14 @@ import com.vpu.mp.service.shop.order.info.OrderInfoService;;
 public class RefundAmountRecordService extends ShopBaseService{
 	
 	public final RefundAmountRecord TABLE = REFUND_AMOUNT_RECORD;
-	
+	/**会员卡余额退款*/
+	public static String MEMBER_CARD_BALANCE = "member_card_balance";
+	/**余额退款*/
+	public static String USE_ACCOUNT = "use_account";
+	/**余额退款*/
+	public static String SCORE_DISCOUNT = "score_discount";	
+	/**微信退款*/
+	public static String MONEY_PAID = "money_paid";	
 	@Autowired 
 	private OrderInfoService orderInfo;
 	/**
@@ -46,7 +55,7 @@ public class RefundAmountRecordService extends ShopBaseService{
 					if(map.get(key) == null) {
 						result.put(key, record.value2());
 					}else {
-						result.put(key, result.get(key).add(record.value2()));
+						result.put(key, BigDecimalUtil.add(result.get(key),record.value2()));
 					}
 				}
 			}
@@ -62,6 +71,21 @@ public class RefundAmountRecordService extends ShopBaseService{
 	public Map<String, Result<Record2<String, BigDecimal>>> getOrderRefundAmount(List<String> orderSns){
 		Map<String, Result<Record2<String, BigDecimal>>> map = db().select(TABLE.REFUND_FIELD,TABLE.REFUND_MONEY).from(TABLE).where(TABLE.ORDER_SN.in(orderSns)).fetchGroups(TABLE.REFUND_FIELD);
 		return map;
+	}
+	/**
+	 * 	退款动作完成记录留痕
+	 * @param order
+	 * @param returnOrder
+	 * @param money
+	 */
+	public void addRecord(String orderSn , Integer userId ,String refundField ,BigDecimal money ,Integer retId) {
+		RefundAmountRecordRecord record = db().newRecord(TABLE);
+		record.setOrderSn(orderSn);
+		record.setUserId(userId);
+		record.setRefundField(refundField);
+		record.setRefundMoney(money);
+		record.setRetId(retId);
+		record.insert();
 	}
 	
 }

@@ -101,24 +101,25 @@ public class ReturnService extends ShopBaseService implements IorderOperate {
 		if(order == null) {
 			return JsonResultCode.CODE_ORDER_NOT_EXIST;
 		}
-		//仅退运费
-		if(OrderConstant.RT_ONLY_SHIPPING_FEE == param.getReturnType()) {
-			return returnShippingFee(param,order);
-		}
-		//
 		transaction(()->{
-			//insert b2c_order_action
-			
-			//insert b2c_return_order
-			
-			//insert b2c_return_order_goods
-			
-			//insert b2c_return_status_change
-			
-			//update b2c_order_info
-			
-			//update b2c_order_goods
-			
+			try {
+				ReturnOrderRecord rOrder = null;
+				//仅退运费
+				if(OrderConstant.RT_ONLY_SHIPPING_FEE == param.getReturnType()) {
+					rOrder = returnShippingFee(param,order);
+				}
+				// 更新订单信息
+				orderInfo.updateOrderInfoInReturn(rOrder, null, null);
+				// 退款
+				finishReturn(order, rOrder, BigDecimal.ZERO, param);
+			} catch (DataAccessException e) {
+				Throwable cause = e.getCause();
+				if (cause instanceof MpException) {
+					throw new MpException(((MpException) cause).getErrorCode(), e.getMessage());
+				} else {
+					throw new MpException(JsonResultCode.CODE_ORDER_RETURN_ROLLBACK_NO_MPEXCEPTION, e.getMessage());
+				}
+			}
 		});
 		return null;
 	}
@@ -158,8 +159,8 @@ public class ReturnService extends ShopBaseService implements IorderOperate {
 				for (OrderGoodsVo goods : returnGoods) {
 					returnGoodsMaxMoney = returnGoodsMaxMoney.add(
 							BigDecimalUtil.multiplyOrDivide(
-									new BigDecimalPlus(new BigDecimal(goods.getReturnNumber()),Operator.multiply),
-									new BigDecimalPlus(goods.getDiscountedGoodsPrice(),null)));
+									BigDecimalPlus.create(new BigDecimal(goods.getReturnNumber()),Operator.multiply),
+									BigDecimalPlus.create(goods.getDiscountedGoodsPrice(),null)));
 				}
 				if(BigDecimalUtil.compareTo(returnGoodsMaxMoney , returnMoney) > 0) {
 					vo.getReturnType()[3] = true;
@@ -171,7 +172,7 @@ public class ReturnService extends ShopBaseService implements IorderOperate {
 		if(vo.isReturn(isMp).equals(Boolean.FALSE)) {
 			return vo;
 		}
-		//是否为主订单
+		//是否为拆单下的主订单
 		Boolean isMain = orderInfo.isMainOrder(currentOrder);
 		//如果当前订单为子订单,把订单中金额与用户信息替换为主订单的信息
 		orderInfo.replaceOrderInfo(currentOrder);	
@@ -230,39 +231,25 @@ public class ReturnService extends ShopBaseService implements IorderOperate {
 		logger.info("获取可发货信息完成");
 		return vo;
 	}
-	private JsonResultCode returnShippingFee(RefundParam param , OrderInfoVo order) throws MpException{
+	private ReturnOrderRecord returnShippingFee(RefundParam param , OrderInfoVo order) throws MpException{
 		// 只退运费必须金额>0
 		if (BigDecimalUtil.compareTo(param.getShippingFee(), BigDecimal.ZERO) < 1) {
-			return JsonResultCode.CODE_ORDER_NOT_RETURN_SHIPPING_FEE_NOT_ZERO;
+			logger.error("订单sn:"+param.getOrderSn()+"仅退运费时退运费金额必须大于0");
+			throw new MpException(JsonResultCode.CODE_ORDER_NOT_RETURN_SHIPPING_FEE_NOT_ZERO);
 		}
 		// 获取已退运费
 		BigDecimal returnShipingFee = returnOrder.getReturnShipingFee(param.getOrderSn());
 		if (!OrderOperationJudgment.adminIsReturnShipingFee(order, returnShipingFee)) {
-			return JsonResultCode.CODE_ORDER_NOT_RETURN_SHIPPING_FEE;
+			logger.error("订单sn:"+param.getOrderSn()+"，该订单运费已经退完");
+			throw new MpException(JsonResultCode.CODE_ORDER_NOT_RETURN_SHIPPING_FEE);
 		}
 		//订单状态记录
 		orderAction.addRecord(order, param, order.getOrderStatus() , "保存仅退运费之前状态记录");
-		try {
-			transaction(() -> {
-
-				logger.info("退运费事务开始");
-				// 增加退款/退货记录，形成货退款订单
-				ReturnOrderRecord rOrder = returnOrder.addRecord(param, order);
-				// 更新订单信息
-				orderInfo.updateOrderInfoInReturn(rOrder, null, null);
-				// 退款
-				finishReturn(order, rOrder, BigDecimal.ZERO, param);
-				logger.info("退运费事务结束");
-			});
-		} catch (DataAccessException e) {
-			Throwable cause = e.getCause();
-			if (cause instanceof MpException) {
-				throw new MpException(((MpException) cause).getErrorCode(), e.getMessage());
-			} else {
-				throw new MpException(JsonResultCode.CODE_ORDER_RETURN_ROLLBACK_NO_MPEXCEPTION, e.getMessage());
-			}
-		}
-		return null;
+		logger.info("退运费创建退款订单开始");
+		// 增加退款/退货记录，形成货退款订单
+		ReturnOrderRecord rOrder = returnOrder.addRecord(param, order);
+		logger.info("退运费创建退款订单结束");
+		return rOrder;
 	}
 	
 	/**
@@ -351,7 +338,7 @@ public class ReturnService extends ShopBaseService implements IorderOperate {
 				logger.error("优先级退款调用refundMethods失败,orderSn:"+order.getOrderSn()+",retId:"+returnOrder.getRetId()+",优先级为："+key);
 				throw new MpException(JsonResultCode.CODE_ORDER_RETURN_ING_RETURNMETHOD_ERROR);
 			}
-			//微信退款后续处理
+			//微信退款后续处理标识
 			if(key.equals(orderInfo.PS_MONEY_PAID)){
 				flag = true;
 			}
@@ -360,7 +347,7 @@ public class ReturnService extends ShopBaseService implements IorderOperate {
 				break;
 			}
 		}
-		if(returnAmount.compareTo(BigDecimal.ZERO) > -1) {
+		if(returnAmount.compareTo(BigDecimal.ZERO) > 0) {
 			 logger.error("优先级退款完成后本次退款金额>0,orderSn:"+order.getOrderSn()+",retId:"+returnOrder.getRetId());
 			 throw new MpException(JsonResultCode.CODE_ORDER_RETURN_AFTER_RETURNAMOUNT_GREAT_THAN_ZERO);
 		}
@@ -407,10 +394,10 @@ public class ReturnService extends ShopBaseService implements IorderOperate {
 				if(BigDecimalUtil.compareTo(totalCanReturnMoney, null) > 0) {
 					//非手工退款商品退款金额(先乘后除)=订单退款金额*折后单价*退款数量/totalCanReturnMoney(!=0)
 					currentGoodsReturnMoney = BigDecimalUtil.multiplyOrDivide(
-							new BigDecimalPlus(returnOrder.getMoney(),Operator.multiply),
-							new BigDecimalPlus(goods.getDiscountedGoodsPrice(),Operator.multiply),
-							new BigDecimalPlus(BigDecimal.valueOf(goods.getGoodsNumber()),Operator.Divide),
-							new BigDecimalPlus(totalCanReturnMoney,null));
+							BigDecimalPlus.create(returnOrder.getMoney(),Operator.multiply),
+							BigDecimalPlus.create(goods.getDiscountedGoodsPrice(),Operator.multiply),
+							BigDecimalPlus.create(BigDecimal.valueOf(goods.getGoodsNumber()),Operator.Divide),
+							BigDecimalPlus.create(totalCanReturnMoney,null));
 				}
 			}
 			if(BigDecimalUtil.compareTo(currentGoodsReturnMoney, null) < 1) {
@@ -432,8 +419,8 @@ public class ReturnService extends ShopBaseService implements IorderOperate {
 		BigDecimal[] sum = {BigDecimal.ZERO};
 		returnGoods.forEach(goods->{
 			sum[0].add(BigDecimalUtil.multiplyOrDivide(
-					new BigDecimalPlus(goods.getDiscountedGoodsPrice(),Operator.multiply),
-					new BigDecimalPlus(BigDecimal.valueOf(goods.getGoodsNumber()),null)
+					BigDecimalPlus.create(goods.getDiscountedGoodsPrice(),Operator.multiply),
+					BigDecimalPlus.create(BigDecimal.valueOf(goods.getGoodsNumber()),null)
 					));
 		});
 		return sum[0];

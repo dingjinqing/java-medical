@@ -314,7 +314,7 @@ public class OrderInfoService extends ShopBaseService {
 	 * @param currentOrder
 	 */
 	public void replaceOrderInfo(OrderListInfoVo currentOrder) {
-		if(!StringUtils.isBlank(currentOrder.getMainOrderSn()) && !currentOrder.getOrderSn().equals(currentOrder.getMainOrderSn())) {
+		if(isSubOrder(currentOrder)) {
 			OrderListInfoVo mainOrder = db().select(TABLE.asterisk()).from(TABLE).where(TABLE.ORDER_SN.eq(currentOrder.getMainOrderSn())).fetchOneInto(OrderListInfoVo.class);
 			currentOrder.setMemberCardBalance(mainOrder.getMemberCardBalance());
 			currentOrder.setUseAccount(mainOrder.getUseAccount());
@@ -326,7 +326,7 @@ public class OrderInfoService extends ShopBaseService {
 		}
 	}
 	/**
-	 * 	是否为主订单
+	 * 	是否为拆单逻辑下的主订单
 	 * @param currentOrder
 	 * @return
 	 */
@@ -337,6 +337,17 @@ public class OrderInfoService extends ShopBaseService {
 		return Boolean.FALSE;
 	}
 	
+	/**
+	 * 	是否为拆单逻辑下的子订单
+	 * @param currentOrder
+	 * @return
+	 */
+	public Boolean isSubOrder(OrderListInfoVo currentOrder) {
+		if(!StringUtils.isBlank(currentOrder.getMainOrderSn()) && !currentOrder.getOrderSn().equals(currentOrder.getMainOrderSn())) {
+			return Boolean.TRUE;
+		}
+		return Boolean.FALSE;
+	}
 	/**
 	 * 	通过主订单号获取orders
 	 * @param MainOrderSn

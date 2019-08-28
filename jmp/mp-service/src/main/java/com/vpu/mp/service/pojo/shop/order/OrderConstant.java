@@ -188,6 +188,10 @@ public class OrderConstant {
 	public final static byte SETTLEMENT_WAIT = 0;
 	public final static byte SETTLEMENT_FINISH = 1;
 	public final static byte SETTLEMENT_NOT = 2;
+	
+	/**元转化为分的比例*/
+	public final static byte TUAN_TO_FEN = 100;
+
 	private String[] orderStatus = {
 			// ORDER_WAIT_PAY
 			"待付款",
@@ -266,8 +270,8 @@ public class OrderConstant {
     public static final byte PAY_WAY_FULL = 0;
     /** 定金 **/
     public static final byte PAY_WAY_BARGIAN = 1;
-    /** 补款 **/
-    public static final byte PAY_WAY_TAIL = 2;
+    /** 好友代付 **/
+    public static final byte PAY_WAY_FRIEND_PAYMENT = 2;
 
 	public String getOrderStatus(byte orderStatusCode) {
 		return orderStatus[orderStatusCode];

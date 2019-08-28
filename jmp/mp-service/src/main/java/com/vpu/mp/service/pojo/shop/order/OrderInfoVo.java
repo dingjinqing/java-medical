@@ -46,4 +46,10 @@ public class OrderInfoVo extends OrderListInfoVo {
 	/**返利类型，0：普通订单，1：分销返利订单，2：返利会员返利订单*/
 	@JsonIgnore
 	private Integer fanliType;
+	@JsonIgnore
+	private Integer cardId;
+	/**订单付款方式，0全款 1定金 2补款*/
+	@JsonIgnore
+	private byte orderPayWay;
+	
 }

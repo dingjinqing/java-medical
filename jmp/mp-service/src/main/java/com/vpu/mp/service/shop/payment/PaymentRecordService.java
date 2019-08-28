@@ -8,6 +8,7 @@ import org.springframework.stereotype.Service;
 import com.vpu.mp.db.shop.tables.records.PaymentRecordRecord;
 import com.vpu.mp.service.foundation.service.ShopBaseService;
 import com.vpu.mp.service.foundation.util.DateUtil;
+import com.vpu.mp.service.foundation.util.RandomUtil;
 import com.vpu.mp.service.foundation.util.PageResult;
 import com.vpu.mp.service.pojo.shop.image.ImageListQueryParam;
 import com.vpu.mp.service.pojo.shop.payment.PaymentRecordParam;
@@ -62,7 +63,7 @@ public class PaymentRecordService extends ShopBaseService {
     protected String generatePaySn()
     {
     	while(true) {
-    		String paySn = String.format("PS%s%.4d", DateUtil.dateFormat(DateUtil.DATE_FORMAT_FULL),Math.random());
+    		String paySn = "PS" + DateUtil.dateFormat(DateUtil.DATE_FORMAT_FULL_NO_UNDERLINE) + RandomUtil.getIntRandom();
     		int count = db().fetchCount(PAYMENT_RECORD,PAYMENT_RECORD.PAY_SN.eq(paySn));
     		if(count == 0) {
     			return paySn;
@@ -80,6 +81,4 @@ public class PaymentRecordService extends ShopBaseService {
         select.orderBy(PAYMENT_RECORD.ID.desc());
         return this.getPageResult(select, param.page,param.pageRows, PaymentRecordVo.class);
     }
-	
-	
 }

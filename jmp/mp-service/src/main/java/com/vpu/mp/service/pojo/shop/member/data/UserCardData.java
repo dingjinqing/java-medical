@@ -4,6 +4,7 @@ import java.math.BigDecimal;
 
 import lombok.Builder;
 import lombok.Getter;
+import lombok.Setter;
 
 /**
 * @author 黄壮壮
@@ -11,6 +12,7 @@ import lombok.Getter;
 * @Description: 用户会员卡数据
 */
 @Getter
+@Setter
 @Builder(builderMethodName = "newBuilder")
 public class UserCardData extends BasicData {
 	/** 用户Id */
