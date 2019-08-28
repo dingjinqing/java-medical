@@ -200,7 +200,8 @@
                   align="center"
                 >
                   <template slot-scope="scope">
-                     <el-input type="number" v-model="scope.row.productNumber"></el-input>
+                    <inputEdit v-model="scope.row.productNumber"
+                      @update="checkProductNumber(scope.row.prdNumber, scope.row.productNumber)"/>
                   </template>
                 </el-table-column>
                 <el-table-column
@@ -238,6 +239,7 @@
 <script>
 import { mapActions } from 'vuex'
 import wrapper from '@/components/admin/wrapper/wrapper'
+import inputEdit from '@/components/admin/inputEdit'
 import choosingGoods from '@/components/admin/choosingGoods'
 import { format, range } from '@/util/date'
 import { addGift, getGiftDetail, updateGift, getMemberCardList, getTagList, getProductDetail } from '@/api/admin/marketManage/gift'
@@ -245,6 +247,7 @@ import { addGift, getGiftDetail, updateGift, getMemberCardList, getTagList, getP
 export default {
   components: {
     wrapper,
+    inputEdit,
     choosingGoods
   },
   data () {
@@ -554,12 +557,19 @@ export default {
     },
     // 校验赠品参数
     validateGiftParam () {
+      let result = true
       const { tableData } = this
       if (tableData.length < 1) {
         this.fail('请选择赠品')
         return false
       }
-      return true
+      this.tableData.forEach(row => {
+        const { prdNumber, productNumber } = row
+        if (!this.checkProductNumber(prdNumber, productNumber)) {
+          result = false
+        }
+      })
+      return result
     },
     fail (message) {
       this.$message({
@@ -575,6 +585,19 @@ export default {
       this.tmpGiftGoodsIds = ids
       this.tableData = []
       ids.forEach(prdId => this.addProductRow(prdId))
+    },
+    /**
+     * 校验库存输入
+     *
+     * @param prdNumber 原有库存
+     * @param productNumber 输入库存
+     */
+    checkProductNumber (prdNumber, productNumber) {
+      if (prdNumber < productNumber) {
+        this.fail('赠品库存不能大于商品当前库存')
+        return false
+      }
+      return true
     }
   },
   watch: {
