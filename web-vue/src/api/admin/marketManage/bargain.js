@@ -51,3 +51,11 @@ export function setDailyCutTimes (dailyCutTimes) {
     method: 'get'
   })
 }
+
+// 取活动分享二维码
+export function getBargainShareCode (id) {
+  return service({
+    url: `/api/admin/market/bargain/share?id=${id}`,
+    method: 'get'
+  })
+}

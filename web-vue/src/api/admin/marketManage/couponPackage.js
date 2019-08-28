@@ -35,3 +35,11 @@ export function deleteCouponPackage (data) {
     data: data
   })
 }
+
+// 取活动分享二维码
+export function getCouponPackShareCode (id) {
+  return service({
+    url: `/api/admin/market/couponpack/share?id=${id}`,
+    method: 'get'
+  })
+}

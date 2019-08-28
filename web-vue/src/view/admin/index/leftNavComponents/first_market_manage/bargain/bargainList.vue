@@ -141,6 +141,7 @@
               placement="top"
             >
               <i
+                @click="shareBargain(scope.row.id)"
                 class="el-icon-share"
                 style="color:#409EFF;fontSize:16px"
               ></i>
@@ -170,7 +171,7 @@
 
 </template>
 <script>
-import { bargainList, updateBargain, deleteBargain, getDailyCutTimes, setDailyCutTimes } from '@/api/admin/marketManage/bargain.js'
+import { bargainList, updateBargain, deleteBargain, getDailyCutTimes, setDailyCutTimes, getBargainShareCode } from '@/api/admin/marketManage/bargain.js'
 import statusTab from '@/components/admin/status/statusTab'
 import pagination from '@/components/admin/pagination/pagination'
 export default {
@@ -206,7 +207,7 @@ export default {
       bargainList(param).then((res) => {
         if (res.error === 0) {
           this.handleData(res.content.dataList)
-          this.pageParams = res.content
+          this.pageParams = res.content.page
         }
       })
     },
@@ -227,12 +228,20 @@ export default {
         'id': id,
         'status': 0
       }
-
-      updateBargain(param).then((res) => {
-        if (res.error === 0) {
-          alert('停用成功')
-          this.initDataList()
-        }
+      this.$confirm('确定停用该砍价活动?', '提示', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
+      }).then(() => {
+        updateBargain(param).then((res) => {
+          if (res.error === 0) {
+            this.$message({
+              type: 'success',
+              message: '停用成功!'
+            })
+            this.initDataList()
+          }
+        })
       })
     },
 
@@ -242,12 +251,20 @@ export default {
         'id': id,
         'status': 1
       }
-
-      updateBargain(param).then((res) => {
-        if (res.error === 0) {
-          alert('启用成功')
-          this.initDataList()
-        }
+      this.$confirm('确定启用该砍价活动?', '提示', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
+      }).then(() => {
+        updateBargain(param).then((res) => {
+          if (res.error === 0) {
+            this.$message({
+              type: 'success',
+              message: '启用成功!'
+            })
+            this.initDataList()
+          }
+        })
       })
     },
 
@@ -256,32 +273,46 @@ export default {
       let param = {
         'id': id
       }
-
-      deleteBargain(param).then((res) => {
-        if (res.error === 0) {
-          alert('删除成功')
-          this.initDataList()
-        }
+      this.$confirm('确定删除该砍价活动?', '提示', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
+      }).then(() => {
+        deleteBargain(param).then((res) => {
+          if (res.error === 0) {
+            this.$message({
+              type: 'success',
+              message: '删除成功!'
+            })
+            this.initDataList()
+          }
+        })
       })
     },
     // 设置砍价取单日可帮助砍价的次数
     updateDailyCutTimes () {
       setDailyCutTimes(this.dailyCutTimes).then((res) => {
         if (res.error === 0) {
-          alert('设置成功')
+          this.$message({
+            type: 'success',
+            message: '设置成功!'
+          })
         } else {
-          alert('设置失败')
+          this.$message({
+            type: 'fail',
+            message: '设置失败!'
+          })
         }
       })
     },
 
-    // 当前页发生变化
-    handleCurrentChange () {
-      console.log(this.currentPage)
+    // 取活动分享二维码
+    shareBargain (id) {
+      getBargainShareCode(id).then((res) => {
+        console.log(res)
+      })
     },
-    handleClick (tab) {
-      this.initDataList(tab)
-    },
+
     addActivity () {
       console.log(111)
     }

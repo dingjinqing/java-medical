@@ -44,6 +44,7 @@
           </div>
           <div class="filters_item">
             <el-button
+              @click="initDataList"
               type="primary"
               size="small"
             >筛选</el-button>
@@ -125,7 +126,10 @@
                   content="分享"
                   placement="top"
                 >
-                  <i class="el-icon-share"></i>
+                  <i
+                    class="el-icon-share"
+                    @click="shareCouponPackage(scope.row.id)"
+                  ></i>
                 </el-tooltip>
                 <el-tooltip
                   v-if="scope.row.status === 1"
@@ -188,7 +192,7 @@
 </template>
 
 <script>
-import { couponPackageList, updateCouponPackage, deleteCouponPackage } from '@/api/admin/marketManage/couponPackage.js'
+import { couponPackageList, updateCouponPackage, deleteCouponPackage, getCouponPackShareCode } from '@/api/admin/marketManage/couponPackage.js'
 import statusTab from '@/components/admin/status/statusTab'
 // 引入分页
 import pagination from '@/components/admin/pagination/pagination'
@@ -261,12 +265,20 @@ export default {
         'id': id,
         'status': 0
       }
-
-      updateCouponPackage(param).then((res) => {
-        if (res.error === 0) {
-          alert('停用成功')
-          this.initDataList()
-        }
+      this.$confirm('确定停用该优惠券礼包活动?', '提示', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
+      }).then(() => {
+        updateCouponPackage(param).then((res) => {
+          if (res.error === 0) {
+            this.$message({
+              type: 'success',
+              message: '停用成功!'
+            })
+            this.initDataList()
+          }
+        })
       })
     },
 
@@ -276,12 +288,20 @@ export default {
         'id': id,
         'status': 1
       }
-
-      updateCouponPackage(param).then((res) => {
-        if (res.error === 0) {
-          alert('启用成功')
-          this.initDataList()
-        }
+      this.$confirm('确定启用该优惠券礼包活动?', '提示', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
+      }).then(() => {
+        updateCouponPackage(param).then((res) => {
+          if (res.error === 0) {
+            this.$message({
+              type: 'success',
+              message: '启用成功!'
+            })
+            this.initDataList()
+          }
+        })
       })
     },
 
@@ -290,21 +310,30 @@ export default {
       let param = {
         'id': id
       }
-
-      deleteCouponPackage(param).then((res) => {
-        if (res.error === 0) {
-          alert('删除成功')
-          this.initDataList()
-        }
+      this.$confirm('确定删除该优惠券礼包活动?', '提示', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
+      }).then(() => {
+        deleteCouponPackage(param).then((res) => {
+          if (res.error === 0) {
+            this.$message({
+              type: 'success',
+              message: '删除成功!'
+            })
+            this.initDataList()
+          }
+        })
       })
     },
 
-    handleCurrentChange () {
-      console.log(this.currentPage)
+    // 取活动分享二维码
+    shareCouponPackage (id) {
+      getCouponPackShareCode(id).then((res) => {
+        console.log(res)
+      })
     },
-    handleClick (tab) {
-      this.initDataList(tab)
-    },
+
     edit (scope) {
       console.log(scope)
     },
