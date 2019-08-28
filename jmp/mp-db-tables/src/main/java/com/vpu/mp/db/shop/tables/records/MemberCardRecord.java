@@ -28,7 +28,7 @@ import org.jooq.impl.UpdatableRecordImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class MemberCardRecord extends UpdatableRecordImpl<MemberCardRecord> {
 
-    private static final long serialVersionUID = 417324601;
+    private static final long serialVersionUID = 1971352576;
 
     /**
      * Setter for <code>jmini_shop_444801.b2c_member_card.id</code>.
@@ -660,34 +660,6 @@ public class MemberCardRecord extends UpdatableRecordImpl<MemberCardRecord> {
         return (Integer) get(44);
     }
 
-    /**
-     * Setter for <code>jmini_shop_444801.b2c_member_card.stock</code>. 发放总量
-     */
-    public void setStock(Integer value) {
-        set(45, value);
-    }
-
-    /**
-     * Getter for <code>jmini_shop_444801.b2c_member_card.stock</code>. 发放总量
-     */
-    public Integer getStock() {
-        return (Integer) get(45);
-    }
-
-    /**
-     * Setter for <code>jmini_shop_444801.b2c_member_card.limits</code>. 领取限制
-     */
-    public void setLimits(Integer value) {
-        set(46, value);
-    }
-
-    /**
-     * Getter for <code>jmini_shop_444801.b2c_member_card.limits</code>. 领取限制
-     */
-    public Integer getLimits() {
-        return (Integer) get(46);
-    }
-
     // -------------------------------------------------------------------------
     // Primary key information
     // -------------------------------------------------------------------------
@@ -714,7 +686,7 @@ public class MemberCardRecord extends UpdatableRecordImpl<MemberCardRecord> {
     /**
      * Create a detached, initialised MemberCardRecord
      */
-    public MemberCardRecord(Integer id, String cardName, Byte cardType, Byte bgType, String bgColor, String bgImg, BigDecimal discount, Integer sorce, String buyScore, Byte expireType, Timestamp startTime, Timestamp endTime, Integer receiveDay, Byte dateType, Byte activation, String receiveCode, String desc, String mobile, Timestamp createTime, Timestamp updateTime, Byte flag, Integer sendMoney, String chargeMoney, Integer useTime, String storeList, Integer count, Byte delFlag, String grade, String gradeCondition, String activationCfg, Byte examine, String discountGoodsId, String discountCatId, String discountSortId, Byte discountIsAll, Byte isPay, Byte payType, BigDecimal payFee, Byte payOwnGood, Byte receiveAction, Byte isExchang, Byte storeUseSwitch, String exchangGoods, Byte exchangFreight, Integer exchangCount, Integer stock, Integer limits) {
+    public MemberCardRecord(Integer id, String cardName, Byte cardType, Byte bgType, String bgColor, String bgImg, BigDecimal discount, Integer sorce, String buyScore, Byte expireType, Timestamp startTime, Timestamp endTime, Integer receiveDay, Byte dateType, Byte activation, String receiveCode, String desc, String mobile, Timestamp createTime, Timestamp updateTime, Byte flag, Integer sendMoney, String chargeMoney, Integer useTime, String storeList, Integer count, Byte delFlag, String grade, String gradeCondition, String activationCfg, Byte examine, String discountGoodsId, String discountCatId, String discountSortId, Byte discountIsAll, Byte isPay, Byte payType, BigDecimal payFee, Byte payOwnGood, Byte receiveAction, Byte isExchang, Byte storeUseSwitch, String exchangGoods, Byte exchangFreight, Integer exchangCount) {
         super(MemberCard.MEMBER_CARD);
 
         set(0, id);
@@ -762,7 +734,5 @@ public class MemberCardRecord extends UpdatableRecordImpl<MemberCardRecord> {
         set(42, exchangGoods);
         set(43, exchangFreight);
         set(44, exchangCount);
-        set(45, stock);
-        set(46, limits);
     }
 }
