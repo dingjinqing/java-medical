@@ -118,7 +118,7 @@ public class ChannelService extends ShopBaseService {
 		if (pvMap == null) {
 			return 0;
 		}
-		return pvMap.get("" + channelId);
+		return pvMap.get(channelId.toString());
 	}
 
 	/**
@@ -268,6 +268,12 @@ public class ChannelService extends ShopBaseService {
 			return Collections.emptyMap();
 		}
 		return db().selectDistinct(CHANNEL.ID,CHANNEL.CHANNEL_NAME).from(CHANNEL).where(CHANNEL.ID.in(idList)).fetchMap(CHANNEL.ID, CHANNEL.CHANNEL_NAME);
+	}
+	public List<ChannelRecord> selectChannelRecord(List<Integer> idList){
+		if(idList.isEmpty()) {
+			return Collections.emptyList();
+		}
+		return db().select().from(CHANNEL).where(CHANNEL.ID.in(idList)).fetchInto(ChannelRecord.class);
 	}
 	public String selectChannelName(Integer id) {
 		if(id == null) {
