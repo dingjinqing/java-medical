@@ -1,6 +1,7 @@
 package com.vpu.mp.service.pojo.saas.shop.officeAccount;
 
 import java.sql.Timestamp;
+import java.util.List;
 
 import lombok.Data;
 
@@ -30,5 +31,9 @@ public class MpOfficeAccountListVo {
 	private String bindOpenAppId;
 	private Integer sysId;
 	private String qrcodeUrl;
+	/**
+	 * 小程序昵称
+	 */
+	private List<String> mpNickName;
 
 }
