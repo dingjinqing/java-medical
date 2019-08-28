@@ -116,109 +116,49 @@
               id="product-info"
             >
               <td colspan="2">
-                <table>
-                  <tbody>
-                    <tr>
-                      <th style="width: 250px">商品名称/规格</th>
-                      <th style="width: 250px">原价（元）</th>
-                      <th style="width: 200px">拼团价（元）</th>
-                      <th style="width: 200px;">团长优惠价（元）</th>
-                      <th style="width: 250px;">原库存</th>
-                      <th style="width: 250px">拼团库存</th>
-                    </tr>
-                    <tr>
-                      <input
-                        type=""
-                        name="product_id[]"
-                        value=""
-                      >
-                      <input
-                        type=""
-                        name="original_price[]"
-                        value=""
-                      >
-                      <td
-                        class="goods_name"
-                        style="width: 250px"
-                      >
-
-                      </td>
-                      <td
-                        class="original_price"
-                        style="width: 250px"
-                      >
-
-                      </td>
-                      <td
-                        class="pin_group_price"
-                        style="width: 200px"
-                      >
-                        <input
-                          type="text"
-                          name="pin_group_price[]"
-                          value=""
-                          style="width:155px"
-                        >
-                      </td>
-                      <td
-                        class="leader_price"
-                        style="width: 200px;display:none;"
-                      >
-                        <input
-                          type="text"
-                          name="leader_price[]"
-                          value=""
-                          style="width:155px"
-                        >
-                      </td>
-                      <td
-                        class="original_stock"
-                        style="width: 250px"
-                      >
-
-                      </td>
-                      <td
-                        class="stock"
-                        style="width: 250px"
-                      >
-                        <input
-                          type="text"
-                          name="stock[]"
-                          value=""
-                          style="width:200px"
-                        >
-                      </td>
-                    </tr>
-                    <tr>
-                      <td>
-                        <span class="tb-full-left"><strong>&nbsp;</strong>批量设置：</span>
-                      </td>
-                      <td
-                        colspan="4"
-                        class="batch_set"
-                        style="text-align: left"
-                      >
-                        <span>
-                          <a
-                            href="javascript:void(0)"
-                            class="set_line"
-                            onclick="util.set_line_value('pin_group_price',1)"
-                          >拼团价</a>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-                          <a
-                            href="javascript:void(0)"
-                            class="set_line"
-                            onclick="util.set_line_value('leader_price',1)"
-                          >团长优惠价</a>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-                          <a
-                            href="javascript:void(0)"
-                            class="set_line"
-                            onclick="util.set_line_value('stock',1)"
-                          >拼团库存</a>
-                        </span>
-                      </td>
-                    </tr>
-                  </tbody>
-                </table>
+                <el-table
+                  border
+                  style="width: 100%"
+                >
+                  <el-table-column
+                    prop=""
+                    label="商品名称,规格"
+                  >
+                    <template slot-scope="">
+                      <el-input placeholder="请输入内容"></el-input>
+                    </template>
+                  </el-table-column>
+                  <el-table-column
+                    prop=""
+                    label="原价（元）"
+                  >
+                  </el-table-column>
+                  <el-table-column
+                    prop=""
+                    label="拼团价（元）"
+                  >
+                  </el-table-column>
+                  <el-table-column
+                    prop=""
+                    label="团长优惠价（元）"
+                  >
+                  </el-table-column>
+                  <el-table-column
+                    prop=""
+                    label="原库存"
+                  >
+                  </el-table-column>
+                  <el-table-column
+                    prop=""
+                    label="拼团库存"
+                  >
+                  </el-table-column>
+                  <div style="margin-top: 20px">
+                    <el-button @click="setCurrent(1)">批量设置拼团价</el-button>
+                    <el-button @click="setCurrent(2)">批量设置拼团库存</el-button>
+                    <el-button @click="setCurrent(3)">批量设置团长优惠价（元）</el-button>
+                  </div>
+                </el-table>
               </td>
             </tr>
             <tr style="height: 50px;">
@@ -402,9 +342,6 @@
                 >
               </td>
             </tr>
-          </tbody>
-          <tbody class="som_no_use">
-
             <tr style="height: 50px;">
               <td style="width: 100px">
                 <span
@@ -461,7 +398,7 @@
                     width="260"
                   >
                     <img
-                      style="width: -moz-available;"
+                      style="width: -moz-available; width: 100%;"
                       src="http://mpdevimg2.weipubao.cn/image/admin/share/pin_share.jpg"
                     >
 
@@ -476,7 +413,7 @@
                     width="260"
                   >
                     <img
-                      style="width: -moz-available;"
+                      style="width: -moz-available; width: 100%;"
                       src="http://mpdevimg2.weipubao.cn/image/admin/share/pin_pictorial.jpg"
                     >
                     <el-button
@@ -547,8 +484,21 @@
                 </div>
               </td>
             </tr>
+
           </tbody>
         </table>
+        <el-row>
+          <el-col
+            :span="2"
+            :offset="11"
+          >
+            <div class="grid-content ">
+              <el-button type="primary">主要按钮</el-button>
+            </div>
+          </el-col>
+
+        </el-row>
+
       </form>
     </div>
   </div>
@@ -558,6 +508,11 @@
 export default {
   data () {
     return {
+      // 规格表数据
+      productTableData: {
+
+      },
+      // 时间控件
       pickerOptions: {
         shortcuts: [{
           text: '最近一周',
@@ -595,8 +550,11 @@ export default {
     // 活动时间时间选择
     dateChange (date) {
       console.log(date)
+    },
+    // 批量设置规格
+    setCurrent (index) {
+      console.log(index)
     }
-
   }
 }
 </script>

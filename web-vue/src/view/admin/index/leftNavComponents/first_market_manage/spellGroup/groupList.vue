@@ -18,6 +18,7 @@
           >添加活动</el-button>
         </el-tab-pane>
       </el-tabs>
+
     </div>
     <addGroupBuy v-if="tableListView===false" />
     <div
@@ -104,15 +105,20 @@
         </el-table-column>
       </el-table>
       <div class="footer">
-        <span>当前页面1/1，总记录4条</span>
+        <span>当前页面{{currentPage}}/{{pageCount}}，总记录 {{totalRows}}条</span>
         <el-pagination
           @current-change="initDataList"
           :current-page.sync="currentPage"
           layout="prev, pager, next, jumper"
-          :total="pageRows"
+          :total="totalRows"
         >
         </el-pagination>
+
       </div>
+      <pagination
+        :page-params.sync="pageParams"
+        @pagination="initDataList"
+      />
     </div>
   </div>
 
@@ -120,6 +126,7 @@
 <script>
 
 import addGroupBuy from './addGroupBuy.vue'
+import pagination from '@/components/admin/pagination/pagination.vue'
 import {
   groupBuyList,
   changeStatusActivity,
@@ -128,10 +135,12 @@ import {
 
 export default {
   components: {
-    addGroupBuy
+    addGroupBuy,
+    pagination
   },
   data () {
     return {
+      pageParams: {},
       tableData: [],
       tabSwitch: '2',
       tabInfo: [{
@@ -151,8 +160,10 @@ export default {
         name: '5'
       }],
       tabIndex: 3,
-      currentPage: 1,
-      pageRows: 20,
+      currentPage: 0,
+      pageRows: 1,
+      totalRows: 0,
+      pageCount: undefined,
       tableListView: true
     }
   },
@@ -165,7 +176,8 @@ export default {
     initDataList () {
       let obj = {
         'type': this.tabSwitch,
-        'currentPage': this.currentPage
+        'currentPage': this.pageParams.currentPage,
+        'pageRows': this.pageParams.pageRows
       }
       console.log(this.tabInfo.length)
       // 新增标签
@@ -180,6 +192,15 @@ export default {
       }
       groupBuyList(obj).then(res => {
         console.log(res.content.dataList)
+        console.log(res)
+        console.log(res.content.page)
+        console.log(res.content.page.pageRows)
+        this.pageParams = res.content.page
+        this.currentPage = res.content.page.currentPage
+        this.pageRows = res.content.page.pageRows
+        this.pageCount = res.content.page.pageCount
+        this.totalRows = res.content.page.totalRows
+
         this.handleData(res.content.dataList)
       }).catch(() => {
         this.$message.error('保存失败')
