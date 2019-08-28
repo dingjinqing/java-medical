@@ -4,7 +4,6 @@ import static com.vpu.mp.db.shop.Tables.MEMBER_CARD;
 import static com.vpu.mp.db.shop.Tables.USER;
 import static com.vpu.mp.db.shop.Tables.USER_CARD;
 import static com.vpu.mp.db.shop.Tables.GOODS_CARD_COUPLE;
-import static com.vpu.mp.service.pojo.shop.member.MemberOperateRecordEnum.ADMIN_OPERATION;
 import static com.vpu.mp.service.pojo.shop.member.MemberOperateRecordEnum.EXCHANGE_GOODS_NUM;
 import static com.vpu.mp.service.pojo.shop.member.MemberOperateRecordEnum.STORE_SERVICE_TIMES;
 import static com.vpu.mp.service.pojo.shop.member.MemberOperateRecordEnum.MEMBER_CARD_ACCOUNT;
@@ -62,10 +61,10 @@ import java.util.Queue;
 
 import javax.validation.Valid;
 
+
+import com.vpu.mp.service.pojo.shop.member.card.*;
 import org.jooq.InsertValuesStep3;
 import org.jooq.InsertValuesStep7;
-import org.jooq.Record;
-import org.jooq.Record17;
 import org.jooq.Result;
 import org.jooq.SelectSeekStep1;
 import org.jooq.tools.StringUtils;
@@ -92,21 +91,6 @@ import com.vpu.mp.service.pojo.shop.member.MemberOperateRecordEnum;
 import com.vpu.mp.service.pojo.shop.member.account.AddMemberCardParam;
 import com.vpu.mp.service.pojo.shop.member.account.MemberCard;
 import com.vpu.mp.service.pojo.shop.member.account.MemberCardVo;
-import com.vpu.mp.service.pojo.shop.member.card.BaseCardVo;
-import com.vpu.mp.service.pojo.shop.member.card.CardConsumpData;
-import com.vpu.mp.service.pojo.shop.member.card.CardIdParam;
-import com.vpu.mp.service.pojo.shop.member.card.CardParam;
-import com.vpu.mp.service.pojo.shop.member.card.GradeConditionJson;
-import com.vpu.mp.service.pojo.shop.member.card.LimitNumCardToVo;
-import com.vpu.mp.service.pojo.shop.member.card.LimitNumCardVo;
-import com.vpu.mp.service.pojo.shop.member.card.NormalCardToVo;
-import com.vpu.mp.service.pojo.shop.member.card.NormalCardVo;
-import com.vpu.mp.service.pojo.shop.member.card.PowerCardParam;
-import com.vpu.mp.service.pojo.shop.member.card.RankCardToVo;
-import com.vpu.mp.service.pojo.shop.member.card.RankCardVo;
-import com.vpu.mp.service.pojo.shop.member.card.ScoreJson;
-import com.vpu.mp.service.pojo.shop.member.card.SearchCardParam;
-import com.vpu.mp.service.pojo.shop.member.card.SimpleMemberCardVo;
 import com.vpu.mp.service.pojo.shop.operation.RecordContentTemplate;
 import com.vpu.mp.service.shop.operation.RecordMemberTradeService;
 
@@ -967,7 +951,7 @@ public class MemberCardService extends ShopBaseService {
 	public void updateMemberCardSurplus(CardConsumpData data,Integer adminUser,Byte tradeType,Byte tradeFlow) throws MpException {
 		/** 1-判断是不是限次会员卡则结束 */
 		if(!data.getType().equals(LIMIT_NUM_TYPE)) {
-			return;
+		    throw new MpException(JsonResultCode.CODE_PARAM_ERROR);
 		}
 		
 		/** 2.-获取数据库中的存储的信息 */
@@ -1225,5 +1209,14 @@ public class MemberCardService extends ShopBaseService {
 		.into(UserCardRecord.class);
 		return userCard;
 	}
+
+    /**
+     *
+     * @param id
+     * @return
+     */
+    public MemberCardPojo getMemberCardInfoById(int id){
+        return db().select().from(MEMBER_CARD).where(MEMBER_CARD.ID.eq(id)).and(MEMBER_CARD.DEL_FLAG.eq(DelFlag.NORMAL_VALUE)).fetchOne().into(MemberCardPojo.class);
+    }
 		
 }

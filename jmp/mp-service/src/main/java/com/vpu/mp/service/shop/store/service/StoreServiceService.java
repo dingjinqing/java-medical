@@ -37,7 +37,7 @@ public class StoreServiceService extends ShopBaseService{
 
 	/**
 	 * 门店服务分类列表分页查询
-	 * @param StoreListQueryParam
+	 * @param
 	 * @return StorePageListVo
 	 */
 	public PageResult<StoreServiceCategoryListQueryVo> getCatePageList(StoreServiceCategoryListQueryParam param) {
@@ -68,7 +68,7 @@ public class StoreServiceService extends ShopBaseService{
 	
 	/**
 	 * 门店全部服务分类列表查询
-	 * @param StoreListQueryParam
+	 * @param
 	 * @return StorePageListVo
 	 */
 	public List<StoreServiceCategoryListQueryVo> getAllStoreServiceCategory(StoreServiceCategoryListQueryParam param) { 
@@ -77,7 +77,7 @@ public class StoreServiceService extends ShopBaseService{
 	
 	/**
 	 * 门店服务列表分页查询
-	 * @param StoreListQueryParam
+	 * @param
 	 * @return StorePageListVo
 	 */
 	public PageResult<StoreServiceListQueryVo> getServicePageList(StoreServiceListQueryParam param) {
@@ -124,7 +124,13 @@ public class StoreServiceService extends ShopBaseService{
 		String serviceSn;
 		do {
 			serviceSn = "";
-            Integer id = db().select(STORE_SERVICE.ID).from(STORE_SERVICE).orderBy(STORE_SERVICE.ID.desc()).limit(1).fetchOne().into(Integer.class);
+			Record record = db().select(STORE_SERVICE.ID).from(STORE_SERVICE).orderBy(STORE_SERVICE.ID.desc()).limit(1).fetchOne();
+            Integer id;
+			if(record == null){
+                id = 0;
+            }else{
+			    id = record.into(Integer.class);
+            }
             Random random = new Random();
             int s = random.nextInt(999)%(900) + 100;
             serviceSn = String.valueOf(id+1) + String.valueOf(s);
@@ -150,7 +156,7 @@ public class StoreServiceService extends ShopBaseService{
 	
 	/**
 	 * 新增门店服务分类
-	 * @param StoreServiceCategoryParam
+	 * @param
 	 * @return
 	 */
 	public Boolean addStoreServiceCategory(StoreServiceCategoryParam storeServiceCategory) {
@@ -161,7 +167,7 @@ public class StoreServiceService extends ShopBaseService{
 	
 	/**
 	 * 更新门店服务分类
-	 * @param StoreServiceCategoryParam
+	 * @param
 	 * @return
 	 */
 	public Boolean updateStoreServiceCategory(StoreServiceCategoryParam storeServiceCategory) {
@@ -172,7 +178,7 @@ public class StoreServiceService extends ShopBaseService{
 	
 	/**
 	 * 删除门店服务分类
-	 * @param StorePojo
+	 * @param
 	 * @return
 	 */
 	public Boolean delStoreServiceCategory(Integer catId) {
@@ -185,7 +191,7 @@ public class StoreServiceService extends ShopBaseService{
 	
 	/**
 	 * 新增门店服务
-	 * @param StoreServiceParam
+	 * @param
 	 * @return
 	 */
 	public Boolean addStoreService(StoreServiceParam storeService) {
@@ -197,7 +203,7 @@ public class StoreServiceService extends ShopBaseService{
 	
 	/**
 	 * 更新门店服务
-	 * @param StoreServiceParam
+	 * @param
 	 * @return
 	 */
 	public Boolean updateStoreService(StoreServiceParam storeService) {
@@ -208,7 +214,7 @@ public class StoreServiceService extends ShopBaseService{
 	
 	/**
 	 * 删除门店服务
-	 * @param Integer
+	 * @param
 	 * @return
 	 */
 	public Boolean delStoreService(Integer id) {

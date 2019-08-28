@@ -9,6 +9,13 @@ import java.util.Date;
 import java.util.List;
 import java.util.Random;
 
+import com.vpu.mp.service.foundation.exception.MpException;
+import com.vpu.mp.service.pojo.shop.member.account.AccountParam;
+import com.vpu.mp.service.pojo.shop.member.card.CardConstant;
+import com.vpu.mp.service.pojo.shop.member.card.CardConsumpData;
+import com.vpu.mp.service.pojo.shop.member.card.MemberCardPojo;
+import com.vpu.mp.service.pojo.shop.operation.RecordTradeEnum;
+import com.vpu.mp.service.pojo.shop.store.service.order.*;
 import org.jooq.Record;
 import org.jooq.SelectWhereStep;
 import org.jooq.tools.StringUtils;
@@ -19,12 +26,6 @@ import com.vpu.mp.service.foundation.data.DelFlag;
 import com.vpu.mp.service.foundation.service.ShopBaseService;
 import com.vpu.mp.service.foundation.util.PageResult;
 import com.vpu.mp.service.pojo.shop.store.service.StoreServiceParam;
-import com.vpu.mp.service.pojo.shop.store.service.order.ServiceOrderAddParam;
-import com.vpu.mp.service.pojo.shop.store.service.order.ServiceOrderAdminMessageParam;
-import com.vpu.mp.service.pojo.shop.store.service.order.ServiceOrderDetailVo;
-import com.vpu.mp.service.pojo.shop.store.service.order.ServiceOrderListQueryParam;
-import com.vpu.mp.service.pojo.shop.store.service.order.ServiceOrderListQueryVo;
-import com.vpu.mp.service.pojo.shop.store.service.order.ServiceOrderUpdateParam;
 
 /**
  * @author 王兵兵
@@ -239,4 +240,54 @@ public class ServiceOrderService extends ShopBaseService{
 	    assign(param, record);
 	    return db().executeUpdate(record) > 0 ? true : false;
 	}
+
+    /**
+     * 使用会员卡核销预约服务订单
+     */
+	public void userCardServiceOrderCharge(ServiceOrderChargeParam param,int adminUser) throws MpException{
+        MemberCardPojo memberCard = saas.getShopApp(getShopId()).member.card.getMemberCardInfoById(param.getCardId());
+
+        /** 会员卡核销的门店服务订单，交易类型认为是会员卡支付 */
+        Byte tradeType = RecordTradeEnum.MEMBER_CARD_PAY.getValue();
+        Byte tradeFlow = RecordTradeEnum.TRADE_FLOW_INCOME.getValue();
+
+        /** 会员卡交易的参数 */
+        CardConsumpData cardConsumpData = new CardConsumpData();
+        cardConsumpData.setType(memberCard.getCardType());
+        cardConsumpData.setCardNo(param.getCardNo());
+        cardConsumpData.setCardId(param.getCardId());
+        cardConsumpData.setOrderSn(param.getOrderSn());
+        cardConsumpData.setReason(param.getReason());
+        /** 消费人暂时记录为后台操作人员 */
+        cardConsumpData.setUserId(adminUser);
+
+        if(memberCard.getCardType() == CardConstant.LIMIT_NUM_TYPE){
+            /** 负数为消费次数 */
+            cardConsumpData.setCount(-param.getReduce().intValue());
+            saas.getShopApp(getShopId()).member.card.updateMemberCardSurplus(cardConsumpData,adminUser,tradeType,tradeFlow);
+        }else if(memberCard.getCardType() == CardConstant.NORMAL_TYPE){
+            /** 负数为消费金额 */
+            cardConsumpData.setMoney(param.getReduce().negate());
+            saas.getShopApp(getShopId()).member.card.updateMemberCardAccount(cardConsumpData,adminUser,tradeType,tradeFlow);
+        }
+    }
+
+    /**
+     * 使用会员卡核销预约服务订单
+     */
+    public void accountServiceOrderCharge(ServiceOrderChargeParam param,int adminUser) throws MpException{
+        /** 余额核销的门店服务订单，交易类型认为是余额支付 */
+        Byte tradeType = RecordTradeEnum.ACCOUNT_PAY.getValue();
+        Byte tradeFlow = RecordTradeEnum.TRADE_FLOW_INCOME.getValue();
+
+        AccountParam accountData = new AccountParam();
+        accountData.setAccount(param.getAccount());
+        accountData.setAmount(param.getBalance().negate());
+        accountData.setUserId(param.getUserId());
+        accountData.setRemark(param.getReason());
+        accountData.setOrderSn(param.getOrderSn());
+
+        /** 余额核销的门店服务订单，交易类型认为是余额支付 */
+        saas.getShopApp(getShopId()).member.account.addUserAccount(accountData,adminUser,tradeType,tradeFlow);
+    }
 }
