@@ -68,18 +68,20 @@
           </div>
         </el-form-item>
         <el-form-item label="商品库存：" prop="prdNumber">
-          <el-input-number v-model="goodsProductInfo.prdNumber" step-strictly size="small" controls-position="right" :min="0"/>
+          <el-input-number v-model="goodsProductInfo.prdNumber" step-strictly size="small" controls-position="right" :min="0" :disable="!specInfoSwitch"/>
           <span class="inputTip">设置了规格库存商品库存将失效，不在前端展示</span>
         </el-form-item>
         <el-form-item label="商品价格：" prop="prdPrice">
-          <el-input-number v-model="goodsProductInfo.prdPrice" size="small" controls-position="right" :min="0"/>
+          <el-input-number v-model="goodsProductInfo.prdPrice" size="small" controls-position="right" :min="0" :disable="!specInfoSwitch"/>
           <span class="inputTip">设置了规格价格商品价格将失效，不在前端展示</span>
         </el-form-item>
         <el-form-item label="市场价格：" prop="marketPrice">
           <el-input-number v-model="goodsProductInfo.marketPrice" size="small" controls-position="right" :min="0"/>
         </el-form-item>
-        <el-form-item label="会员价">
-
+        <el-form-item label="会员价：">
+          <el-checkbox v-for="(item,index) in memberCards" v-model="item.checked" :key="index" @change="memberCardCheckedChange(item,$event)">{{item.cardName}}</el-checkbox>
+          <br/>
+          <span class="inputTip" style="margin-left: 0px;">会员价仅针对等级会员卡设定，非等级会员卡不可设置会员价。若等级会员卡也包含会员折扣，则会员价和会员折扣可同时享受，优先计算会员价</span>
         </el-form-item>
       </el-form>
       <!-- 展开更多配置 -->
@@ -96,7 +98,7 @@
               <span class="inputTip">0或不填表示不限制购买数量</span>
             </el-form-item>
             <el-form-item label="成本价格：" prop="prdCost">
-              <el-input-number v-model="goodsProductInfo.prdCost" step-strictly size="small" controls-position="right" :min="0"/>
+              <el-input-number v-model="goodsProductInfo.prdCost" step-strictly size="small" controls-position="right" :min="0" :disable="!specInfoSwitch"/>
               <span class="inputTip">0或不填表示不限制购买数量</span>
             </el-form-item>
             <el-form-item label="初始销量：" prop="addSaleNum">
@@ -124,7 +126,7 @@
 </template>
 <script>
 // 接口函数引入
-import {getLevelCardList} from '@/api/admin/goodsManage/addingGoods/addingGoods'
+// import {getLevelCardList} from '@/api/admin/goodsManage/addingGoods/addingGoods'
 // 组件导入
 import basicInfo from './basicInfo'
 
@@ -165,7 +167,29 @@ export default {
         ]
       },
       /* 自定义商品规格 */
-      specInfoSwitch: false
+      specInfoSwitch: false,
+      /* 会员价辅助数据 */
+      memberCards: [{
+        id: 1,
+        cardName: '一级',
+        checked: false
+      }, {
+        id: 2,
+        cardName: '二级',
+        checked: false
+      }, {
+        id: 3,
+        cardName: '三级',
+        checked: false
+      }, {
+        id: 4,
+        cardName: '四级',
+        checked: false
+      }, {
+        id: 5,
+        cardName: '五级',
+        checked: false
+      }]
     }
   },
   computed: {},
@@ -434,9 +458,23 @@ export default {
       goodsSpecProducts = tempArr
       // 递归计算下一项规格
       return this._calculateCartesian(curIndex + 1, goodsSpecs, goodsSpecProducts)
+    },
+    /** 商品规格交互函数结束**/
+    /* 等级会员卡数据初始化 */
+    // memberCardsInit () {
+    //   getLevelCardList().then(rep => {
+    //     let {content: {dataList}} = rep
+    //     for (let item of dataList) {
+    //       this.memberCards.push({id: item.id, cardName: item.cardName, checked: false})
+    //     }
+    //   })
+    // },
+    memberCardCheckedChange (memberCard, checked) {
+
     }
   },
   mounted () {
+    // this.memberCardsInit()
   }
 }
 </script>
