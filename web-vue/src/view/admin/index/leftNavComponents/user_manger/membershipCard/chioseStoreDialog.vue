@@ -26,20 +26,41 @@
               </template>
             </el-table-column>
             <el-table-column
-              prop="pageName"
-              label="品牌名称"
+              prop="storeName"
+              label="门店名称"
               align="center"
             >
             </el-table-column>
             <el-table-column
-              prop="pageClass"
-              label="品牌分类"
+              prop="adress"
+              label="门店地址"
               align="center"
             >
+            </el-table-column>
+            <el-table-column
+              prop="presenter"
+              label="负责人"
+              align="center"
+            >
+
+            </el-table-column>
+            <el-table-column
+              prop="phoneNum"
+              label="联系电话"
+              align="center"
+            >
+
             </el-table-column>
             <el-table-column
               prop="creatTime"
-              label="创建时间"
+              label="营业时间"
+              align="center"
+            >
+
+            </el-table-column>
+            <el-table-column
+              prop="status"
+              label="营业状态"
               align="center"
             >
 
@@ -65,7 +86,7 @@
           <el-button @click="dialogVisible = false">取 消</el-button>
           <el-button
             type="primary"
-            @click="dialogVisible = false"
+            @click="handleToSure()"
           >确 定</el-button>
         </span>
       </el-dialog>
@@ -84,34 +105,46 @@ export default {
       tableData: [
         {
           ischeck: false,
-          pageName: '尾浦巴普电商运营',
-          creatTime: '2018-05-14 13:22:07',
+          storeName: '牡丹园店1',
+          adress: '天博中润1',
+          presenter: '孙腾飞1',
+          phoneNum: '1111111',
+          creatTime: '每天1',
           isFirstPage: true,
-          pageClass: '测试页面'
+          status: '营业1'
 
         },
         {
           ischeck: false,
-          pageName: '测试页面',
-          creatTime: '2018-05-14 13:22:07',
-          isFirstPage: false,
-          pageClass: '测试页面'
+          storeName: '牡丹园店2',
+          adress: '天博中润2',
+          presenter: '孙腾飞2',
+          phoneNum: '1111111',
+          creatTime: '每天2',
+          isFirstPage: true,
+          status: '营业2'
 
         },
         {
           ischeck: false,
-          pageName: '帅飞',
-          creatTime: '2018-05-14 13:22:07',
-          isFirstPage: false,
-          pageClass: '测试页面'
+          storeName: '牡丹园店3',
+          adress: '天博中润3',
+          presenter: '孙腾飞3',
+          phoneNum: '11111113',
+          creatTime: '每天3',
+          isFirstPage: true,
+          status: '营业3'
 
         },
         {
           ischeck: false,
-          pageName: '帅飞啊',
-          creatTime: '2018-05-14 13:22:07',
-          isFirstPage: false,
-          pageClass: '测试页面'
+          storeName: '牡丹园店4',
+          adress: '天博中润4',
+          presenter: '孙腾飞4',
+          phoneNum: '11111114',
+          creatTime: '每天4',
+          isFirstPage: true,
+          status: '营业4'
 
         }
       ]
@@ -164,6 +197,18 @@ export default {
     // 当前页改变
     handleCurrentChange () {
 
+    },
+    // 确定事件
+    handleToSure () {
+      let arr = []
+      this.tableData.forEach(item => {
+        if (item.ischeck) {
+          arr.push(item)
+        }
+      })
+      console.log(arr)
+      this.$http.$emit('chioseSureData', arr)
+      this.dialogVisible = false
     }
   }
 }

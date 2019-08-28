@@ -113,7 +113,7 @@
           <el-button @click="dialogVisible = false">取 消</el-button>
           <el-button
             type="primary"
-            @click="dialogVisible = false"
+            @click="handleToSure()"
           >确 定</el-button>
         </span>
       </el-dialog>
@@ -210,8 +210,21 @@ export default {
   },
   methods: {
     defalutData () {
-      this.$http.$on('CallAddBrand', res => {
-        console.log(res)
+      this.$http.$on('CallAddBrand', (res, flag) => {
+        console.log(res, flag)
+
+        this.tableData.forEach(item => {
+          item.ischeck = false
+        })
+        if (flag) {
+          this.tableData.forEach(item => {
+            flag.forEach(itemC => {
+              if (item.pageName === itemC.pageName) {
+                item.ischeck = true
+              }
+            })
+          })
+        }
         this.dialogVisible = true
       })
     },
@@ -236,6 +249,17 @@ export default {
     // 当前页改变
     handleCurrentChange () {
 
+    },
+    // 确定事件
+    handleToSure () {
+      let arr = []
+      this.tableData.forEach(item => {
+        if (item.ischeck) {
+          arr.push(item)
+        }
+      })
+      this.$http.$emit('addBrandDialogSure', arr)
+      this.dialogVisible = false
     }
   }
 }

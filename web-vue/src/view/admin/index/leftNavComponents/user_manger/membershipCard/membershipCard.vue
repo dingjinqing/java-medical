@@ -30,7 +30,7 @@
                     <div class="time">{{item.data}}</div>
                   </div>
                   <div class="card_edit">
-                    <div @click="handleToEdit(0)">
+                    <div @click="handleToTips(0,item,index)">
 
                       <el-tooltip
                         class="item"
@@ -41,7 +41,10 @@
                         <img :src="$imageHost + '/image/admin/card_edit.png'">
                       </el-tooltip>
                     </div>
-                    <div style="margin:0 5px">
+                    <div
+                      style="margin:0 5px"
+                      @click="handleToTips(1,item,index)"
+                    >
                       <el-tooltip
                         class="item"
                         effect="dark"
@@ -52,7 +55,7 @@
                       </el-tooltip>
                     </div>
 
-                    <div>
+                    <div @click="handleToTips(2,item,index)">
                       <el-tooltip
                         class="item"
                         effect="dark"
@@ -112,30 +115,40 @@
                     <div class="time">{{item.data}}</div>
                   </div>
                   <div class="card_edit">
-                    <el-tooltip
-                      class="item"
-                      effect="dark"
-                      content="编辑"
-                      placement="top-start"
+                    <div @click="handleToTips(0,item,index)">
+                      <el-tooltip
+                        class="item"
+                        effect="dark"
+                        content="编辑"
+                        placement="top-start"
+                      >
+                        <img :src="$imageHost + '/image/admin/card_edit.png'">
+                      </el-tooltip>
+                    </div>
+                    <div
+                      style="margin:0 5px"
+                      @click="handleToTips(1,item,index)"
                     >
-                      <img :src="$imageHost + '/image/admin/card_edit.png'">
-                    </el-tooltip>
-                    <el-tooltip
-                      class="item"
-                      effect="dark"
-                      content="分享"
-                      placement="top-start"
-                    >
-                      <img :src="$imageHost + '/image/admin/card_share_new.png'">
-                    </el-tooltip>
-                    <el-tooltip
-                      class="item"
-                      effect="dark"
-                      content="停用"
-                      placement="top-start"
-                    >
-                      <img :src="$imageHost + '/image/admin/card_disable.png'">
-                    </el-tooltip>
+                      <el-tooltip
+                        class="item"
+                        effect="dark"
+                        content="分享"
+                        placement="top-start"
+                      >
+                        <img :src="$imageHost + '/image/admin/card_share_new.png'">
+                      </el-tooltip>
+                    </div>
+                    <div @click="handleToTips(2,item,index)">
+                      <el-tooltip
+                        class="item"
+                        effect="dark"
+                        content="停用"
+                        placement="top-start"
+                      >
+                        <img :src="$imageHost + '/image/admin/card_disable.png'">
+                      </el-tooltip>
+                    </div>
+
                   </div>
                 </div>
               </div>
@@ -185,30 +198,39 @@
                     <div class="time">{{item.data}}</div>
                   </div>
                   <div class="card_edit">
-                    <el-tooltip
-                      class="item"
-                      effect="dark"
-                      content="编辑"
-                      placement="top-start"
+                    <div @click="handleToTips(0,item,index)">
+                      <el-tooltip
+                        class="item"
+                        effect="dark"
+                        content="编辑"
+                        placement="top-start"
+                      >
+                        <img :src="$imageHost + '/image/admin/card_edit.png'">
+                      </el-tooltip>
+                    </div>
+                    <div
+                      style="margin:0 5px"
+                      @click="handleToTips(1,item,index)"
                     >
-                      <img :src="$imageHost + '/image/admin/card_edit.png'">
-                    </el-tooltip>
-                    <el-tooltip
-                      class="item"
-                      effect="dark"
-                      content="分享"
-                      placement="top-start"
-                    >
-                      <img :src="$imageHost + '/image/admin/card_share_new.png'">
-                    </el-tooltip>
-                    <el-tooltip
-                      class="item"
-                      effect="dark"
-                      content="停用"
-                      placement="top-start"
-                    >
-                      <img :src="$imageHost + '/image/admin/card_disable.png'">
-                    </el-tooltip>
+                      <el-tooltip
+                        class="item"
+                        effect="dark"
+                        content="分享"
+                        placement="top-start"
+                      >
+                        <img :src="$imageHost + '/image/admin/card_share_new.png'">
+                      </el-tooltip>
+                    </div>
+                    <div @click="handleToTips(2,item,index)">
+                      <el-tooltip
+                        class="item"
+                        effect="dark"
+                        content="停用"
+                        placement="top-start"
+                      >
+                        <img :src="$imageHost + '/image/admin/card_disable.png'">
+                      </el-tooltip>
+                    </div>
                   </div>
                 </div>
               </div>
@@ -235,10 +257,15 @@
         </el-tab-pane>
       </el-tabs>
     </div>
+    <!--二维码弹窗-->
+    <ShareCodeDialog />
   </div>
 </template>
 <script>
 export default {
+  components: {
+    ShareCodeDialog: () => import('@/components/admin/shareCodeDialog')
+  },
   data () {
     return {
       activeName: 'first',
@@ -536,11 +563,18 @@ export default {
       })
     },
     // 点击编辑
-    handleToEdit (index) {
-      console.log(index)
-      this.$router.push({
-        name: 'membershipCardDetail'
-      })
+    handleToTips (flag, item, index) {
+      console.log(flag)
+      switch (flag) {
+        case 0:
+          this.$router.push({
+            name: 'membershipCardDetail'
+          })
+          break
+        case 1:
+          console.log('q')
+          this.$http.$emit('shareCodeDialog', item)
+      }
     }
   }
 }

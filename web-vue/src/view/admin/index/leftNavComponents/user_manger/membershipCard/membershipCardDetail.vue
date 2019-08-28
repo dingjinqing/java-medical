@@ -11,8 +11,23 @@
             <div class="card_detail">
               <img :src="$imageHost+'/image/admin/img_home/testImg.jpeg'">
             </div>
-            <div class="effect_date">
-              有效期：{{this.ruleForm.fixedDate?this.ruleForm.fixedDate:'-'}}
+            <div
+              v-if="ruleForm.dateRadio === '1'"
+              class="effect_date"
+            >
+              有效期：{{ruleForm.fixedDate | handleDate}}
+            </div>
+            <div
+              v-if="ruleForm.dateRadio === '2'"
+              class="effect_date"
+            >
+              有效期：自领取之日内{{ruleForm.fromDateInput}}{{ruleForm.dateSelectvalue}}有效
+            </div>
+            <div
+              v-if="ruleForm.dateRadio === '3'"
+              class="effect_date"
+            >
+              有效期：永久有效
             </div>
           </div>
           <div
@@ -455,15 +470,49 @@
               </div>
               <div class="useStoreTips">配置仅限限制门店买单、门店自提、核销门店预约服务时的会员卡使用，线上购买发货默认所有会员卡均可以使用</div>
               <!--点击部分门店时显示模块-->
-              <div
-                class="add_brand"
-                style="display: inline-block;"
-                v-if="ruleForm.useStoreRadio==='2'"
-                @click="handleToCallChioseStore()"
-              >
-                <img :src="$imageHost+'/image/admin/icon_jia.png'">
-                添加门店
+              <div v-if="ruleForm.useStoreRadio==='2'">
+                <div
+                  v-if="chioseSureData.length"
+                  class="table"
+                >
+                  <el-table
+                    class="version-manage-table"
+                    header-row-class-name="tableClss"
+                    :data="chioseSureData"
+                    border
+                    style="width: 40%"
+                  >
+                    <el-table-column
+                      prop="storeName"
+                      align="center"
+                      label="门店名称"
+                    >
+                    </el-table-column>
+                    <el-table-column
+                      align="center"
+                      label="操作"
+                    >
+                      <template slot-scope="scope">
+                        <span
+                          @click="handleToStoreRowDel(scope)"
+                          style="color:#5A8BFF;cursor:pointer"
+                        >删除</span>
+
+                      </template>
+                    </el-table-column>
+
+                  </el-table>
+                </div>
+                <div
+                  class="add_brand"
+                  style="display: inline-block;"
+                  @click="handleToCallChioseStore()"
+                >
+                  <img :src="$imageHost+'/image/admin/icon_jia.png'">
+                  添加门店
+                </div>
               </div>
+
             </el-form-item>
             <el-form-item
               label="使用须知："
@@ -783,13 +832,13 @@ export default {
         fromDateInput: '',
         dateSelectvalue: '日',
         dateSelectOptions: [{
-          value: '选项1',
+          value: '日',
           label: '日'
         }, {
-          value: '选项2',
+          value: '周',
           label: '周'
         }, {
-          value: '选项3',
+          value: '月',
           label: '月'
         }],
         useStoreRadio: '1',
@@ -833,7 +882,7 @@ export default {
       noneBlockDiscArr: [
         {
           name: '添加商品',
-          num: '1'
+          num: ''
         },
         {
           name: '添加商品分类',
@@ -841,7 +890,7 @@ export default {
         },
         {
           name: '添加平台分类',
-          num: '2'
+          num: ''
         },
         {
           name: '添加品牌',
@@ -851,7 +900,7 @@ export default {
       noneBlockVipArr: [
         {
           name: '添加商品',
-          num: '1'
+          num: ''
         },
         {
           name: '添加商品分类',
@@ -859,7 +908,7 @@ export default {
         },
         {
           name: '添加平台分类',
-          num: '2'
+          num: ''
         },
         {
           name: '添加品牌',
@@ -873,12 +922,23 @@ export default {
       AtreeType: null,
       codeArr: ['领取码', '增加批次', '废除批次', '生成/导入记录'],
       codeAddDivArr: ['null'],
-      codeAddDivArrBottom: ['null']
+      codeAddDivArrBottom: ['null'],
+      chioseSureData: [],
+      userDialogFlag: null,
+      addBrandDialogDataFlag1: '', // 指定商品-添加品牌弹窗选中数据
+      addBrandDialogDataFlag2: '', // 会员专享-添加品牌弹窗选中数据
+      choosingGoodsDateFlag1: '', // 指定商品-选择商品选中数据
+      choosingGoodsDateFlag2: '' // 会员专享-选择商品选中数据
     }
   },
   filters: {
     handleDate (value) {
       console.log(value)
+      if (value) {
+        return `${value[0]}-${value[1]}`
+      } else {
+        return '-'
+      }
     }
   },
   computed: {
@@ -944,6 +1004,44 @@ export default {
         case '3':
           fn('充值每满100送100')
       }
+    },
+    'ruleForm.useStoreRadio' (newData) {
+      let fn = (text) => {
+        this.leftNavData.forEach(item => {
+          if (item.title === '使用门店') {
+            item.children = [text]
+          }
+        })
+      }
+      switch (newData) {
+        case '1':
+          fn('全部门店')
+          break
+        case '2':
+          if (!this.chioseSureData.length) {
+            fn('')
+          }
+          break
+        case '3':
+          fn('不可在门店使用')
+      }
+    },
+    chioseSureData (newData) {
+      console.log(newData)
+      let str = ''
+      newData.forEach(item => {
+        if (!str) {
+          str = item.storeName
+        } else {
+          str = str + ',' + item.storeName
+        }
+      })
+      this.leftNavData.forEach(item => {
+        if (item.title === '使用门店') {
+          item.children = [str]
+        }
+      })
+      console.log(str)
     }
   },
   mounted () {
@@ -952,6 +1050,20 @@ export default {
   },
   methods: {
     dataDefalut () {
+      this.$http.$on('result', res => {
+        if (this.userDialogFlag === '1') {
+          this.choosingGoodsDateFlag1 = res
+          this.noneBlockDiscArr[0].num = res.length
+        } else {
+          this.choosingGoodsDateFlag2 = res
+          this.noneBlockVipArr[0].num = res.length
+        }
+        console.log(res)
+      })
+      this.$http.$on('chioseSureData', res => {
+        console.log(res)
+        this.chioseSureData = res
+      })
       this.$http.$on('BusClassTrueArr', res => {
         console.log(res)
         console.log(this.treeType)
@@ -969,6 +1081,16 @@ export default {
           this.noneBlockDiscArr[1].num = res.length
         } else {
           this.noneBlockDiscArr[2].num = res.length
+        }
+        console.log(res)
+      })
+      this.$http.$on('addBrandDialogSure', res => {
+        if (this.userDialogFlag === '1') {
+          this.noneBlockDiscArr[3].num = res.length
+          this.addBrandDialogDataFlag1 = res
+        } else {
+          this.addBrandDialogDataFlag2 = res
+          this.noneBlockVipArr[3].num = res.length
         }
         console.log(res)
       })
@@ -1050,10 +1172,11 @@ export default {
     },
     // 点击指定商品出现的添加类弹窗汇总
     hanldeToAddGoodS (index) {
+      this.userDialogFlag = '1'
       console.log(index)
       switch (index) {
         case 0:
-          this.$http.$emit('choosingGoodsFlag', index)
+          this.$http.$emit('choosingGoodsFlag', index, this.choosingGoodsDateFlag1)
           break
         case 1:
           this.AtreeType = 1
@@ -1064,15 +1187,16 @@ export default {
           this.$http.$emit('AuserBrandDialog', index)
           break
         case 3:
-          this.$http.$emit('CallAddBrand', index)
+          this.$http.$emit('CallAddBrand', index, this.addBrandDialogDataFlag1)
       }
     },
     // 点击会员专享商品出现的添加类弹窗汇总
     hanldeToAddGoodSUser (index) {
+      this.userDialogFlag = '2'
       console.log(index)
       switch (index) {
         case 0:
-          this.$http.$emit('choosingGoodsFlag', index)
+          this.$http.$emit('choosingGoodsFlag', index, this.choosingGoodsDateFlag2)
           break
         case 1:
           this.treeType = 1
@@ -1083,7 +1207,7 @@ export default {
           this.$http.$emit('userBrandDialog', index)
           break
         case 3:
-          this.$http.$emit('CallAddBrand', index)
+          this.$http.$emit('CallAddBrand', index, this.addBrandDialogDataFlag2)
       }
       console.log(index)
     },
@@ -1095,6 +1219,7 @@ export default {
     handleCallCodeDialog (index, indexH) {
       switch (index) {
         case 0:
+
           this.$http.$emit('CallCodeDialog')
           break
         case 1:
@@ -1130,6 +1255,12 @@ export default {
         case 3:
           this.$message.error('暂无记录')
       }
+    },
+    // 部分门店表格列表删除点击
+    handleToStoreRowDel (row) {
+      console.log(row.$index)
+      let { $index } = row
+      this.chioseSureData.splice($index, 1)
     }
   }
 }
@@ -1151,6 +1282,7 @@ export default {
     // height: 100%;
     display: flex;
     padding-bottom: 57px;
+
     .leftContainer {
       width: 300px;
       margin-right: 20px;
@@ -1236,6 +1368,13 @@ export default {
           padding-left: 100px;
           /deep/ .el-input__inner {
             width: 41%;
+          }
+          /deep/ .tableClss {
+            th {
+              padding: 0 !important;
+              background-color: #f8f8f8;
+              color: #333;
+            }
           }
           .add_brand {
             line-height: 30px;

@@ -301,7 +301,8 @@ export default {
       NameEnlishInput: '',
       goodsIdsArr: [],
       selectgoodsNum: 0,
-      hxgoodsIds: []
+      hxgoodsIds: [],
+      choiseOne: false
     }
   },
   computed: {
@@ -318,19 +319,37 @@ export default {
           item.ischecked = false
         })
       }
-    },
-    goodsIds_: {
-      handler (newData, oldData) {
-        this.goodsIdsArr = [...new Set(newData)]
-        this.selectgoodsNum = this.goodsIdsArr.length
-        console.log(this.goodsIdsArr)
-      },
-      immediate: true
     }
+    // goodsIds_: {
+    //   handler (newData, oldData) {
+    //     console.log(newData)
+    //     this.goodsIdsArr = [...new Set(newData)]
+    //     this.selectgoodsNum = this.goodsIdsArr.length
+    //     console.log(this.goodsIdsArr)
+    //   },
+    //   immediate: true
+    // }
   },
   mounted () {
-    this.$http.$on('choosingGoodsFlag', (res) => {
-      console.log(res)
+    this.$http.$on('choosingGoodsFlag', (res, flag) => {
+      console.log(res, flag)
+      console.log(this.trList)
+      this.trList.forEach(item => {
+        item.ischecked = false
+      })
+      if (flag === 'choiseOne') {
+        this.choiseOne = true
+        return
+      }
+      if (flag) {
+        this.trList.forEach(item => {
+          flag.forEach(itemC => {
+            if (item.goodsId === itemC) {
+              item.ischecked = true
+            }
+          })
+        })
+      }
       this.choiseGooddialogVisible = true
     })
     // 品牌分类初始化获取及页编辑回显
@@ -433,30 +452,49 @@ export default {
     handleClick (index, item) {
       this.clickIindex = index
       // console.log(this.trList[index].ischecked)
+      let flagBefore = this.trList.filter((item, index) => {
+        return item.ischecked === true
+      })
+      console.log(flagBefore)
+      if (flagBefore.length) {
+        if (this.choiseOne) {
+          this.$message.error('只能选择一条商品')
+          return
+        }
+      }
       this.trList[index].ischecked = !this.trList[index].ischecked
       let flag = this.trList.filter((item, index) => {
         return item.ischecked === false
       })
-      console.log(flag)
-      if (flag.length === 0) {
+      console.log(this.choiseOne)
+      if (!flag.length) {
         this.checkedAll = true
       } else {
         this.checkedAll = false
       }
       // let arr = []
-      let _goodsId = item.goodsId
-      if (this.loadProduct) {
-        _goodsId = item.prdId
-      }
-      this.goodsIdsArr.push(_goodsId)
+      console.log(this.trList)
 
+      console.log(this.goodsIdsArr)
       console.log('选中', index, item)
     },
     // 选择商品弹窗确定
     handleChoiseGooddialog () {
+      this.goodsIdsArr = []
+      this.trList.forEach(item => {
+        if (item.ischecked) {
+          let _goodsId = item.goodsId
+          if (this.loadProduct) {
+            _goodsId = item.prdId
+          }
+
+          this.goodsIdsArr.push(_goodsId)
+        }
+      })
+      console.log(this.goodsIdsArr)
       this.transmitGoodsIds(this.goodsIdsArr)
       this.choiseGooddialogVisible = false
-      this.$emit('result', this.goodsIdsArr)
+      this.$http.$emit('result', this.goodsIdsArr)
     },
     // 页数改变
     handleCurrentChange () {
