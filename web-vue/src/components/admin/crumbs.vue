@@ -20,6 +20,20 @@ export default {
     '$route.name' (newData) {
       console.log(newData)
       this.changeText()
+    },
+    '$store.state.crumbs.cardholderData' (newData) {
+      switch (newData.flag) {
+        case 0:
+          this.titleList = ['普通会员卡', `(${newData.item.cardName})持卡会员列表`]
+          break
+        case 1:
+          this.titleList = ['限次会员卡', `(${newData.item.cardName})持卡会员列表`]
+          break
+        case 2:
+          this.titleList = ['等级会员卡', `(${newData.item.cardName})持卡会员列表`]
+      }
+
+      console.log(newData, this.titleList)
     }
   },
   mounted () {

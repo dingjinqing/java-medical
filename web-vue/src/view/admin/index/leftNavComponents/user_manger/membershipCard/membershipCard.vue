@@ -83,6 +83,7 @@
                   style="cursor:pointer"
                   v-for="(itemC,indexC) in item.detailsOfRights"
                   :key="indexC"
+                  @click="handleToCardBottom(item,0)"
                 >{{itemC}}{{indexC===item.detailsOfRights.length-1?'':'-'}}</span>
               </div>
             </div>
@@ -171,6 +172,7 @@
                   style="cursor:pointer"
                   v-for="(itemC,indexC) in item.detailsOfRights"
                   :key="indexC"
+                  @click="handleToCardBottom(item,1)"
                 >{{itemC}}{{indexC===item.detailsOfRights.length-1?'':'-'}}</span>
               </div>
             </div>
@@ -258,6 +260,7 @@
                   style="cursor:pointer"
                   v-for="(itemC,indexC) in item.detailsOfRights"
                   :key="indexC"
+                  @click="handleToCardBottom(item,2)"
                 >{{itemC}}{{indexC===item.detailsOfRights.length-1?'':'-'}}</span>
               </div>
             </div>
@@ -640,6 +643,18 @@ export default {
             this.cardDataThird[index].isStop = !this.cardData[index].isStop
           }
       }
+    },
+    // 会员卡底部系列点击
+    handleToCardBottom (item, flag) {
+      let obj = {
+        item,
+        flag
+      }
+      this.$store.commit('TOCHANFE_CARDCRUMDATA', obj)
+      this.$router.push({
+        name: 'Cardholder'
+      })
+      console.log(item, flag)
     }
   }
 }
