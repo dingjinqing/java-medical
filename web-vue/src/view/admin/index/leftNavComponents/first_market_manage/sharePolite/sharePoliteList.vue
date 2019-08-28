@@ -1,57 +1,32 @@
 <template>
   <div class="content">
     <div class="main">
-      <el-tabs
-        v-model="activeName"
-        @tab-click="handleClick(activeName)"
-      >
-        <el-tab-pane
-          label="全部分享有礼活动"
-          name="first"
-        >
-        </el-tab-pane>
-        <el-tab-pane
-          label="进行中"
-          name="second"
-        >
-        </el-tab-pane>
-        <el-tab-pane
-          label="未开始"
-          name="third"
-        >
-        </el-tab-pane>
-        <el-tab-pane
-          label="已过期"
-          name="fourth"
-        >
-        </el-tab-pane>
-        <el-tab-pane
-          label="已停用"
-          name="fifth"
-        >
-        </el-tab-pane>
-        <div class="wrapper">
+      <statusTab
+        v-model="param.status"
+        :activityName="activityName"
+        :standard="true"
+      />
+      <div class="wrapper">
+        <el-button
+          type="primary"
+          @click="addActivity"
+        >添加分享有礼活动</el-button>
+        <div class="rightContent">
+          <span>用户每天可参与</span>
+          <el-input
+            v-model="input"
+            style="width: 80px"
+            size="small"
+            :value="dailyLimit"
+          ></el-input>
+          <span>次 分享有礼活动</span>
+          <span>填写0表示不限制</span>
           <el-button
             type="primary"
-            @click="addActivity"
-          >添加分享有礼活动</el-button>
-          <div class="rightContent">
-            <span>用户每天可参与</span>
-            <el-input
-              v-model="input"
-              style="width: 80px"
-              size="small"
-              :value="dailyLimit"
-            ></el-input>
-            <span>次 分享有礼活动</span>
-            <span>填写0表示不限制</span>
-            <el-button
-              type="primary"
-              @click="saveDailyLimit()"
-            >保存设置</el-button>
-          </div>
+            @click="saveDailyLimit()"
+          >保存设置</el-button>
         </div>
-      </el-tabs>
+      </div>
     </div>
     <div class="table_list">
       <el-table
@@ -182,7 +157,10 @@
         </el-table-column>
       </el-table>
       <div class="footer">
-
+        <pagination
+          :page-params.sync="pageParams"
+          @pagination="seacherList"
+        />
       </div>
     </div>
   </div>
@@ -190,19 +168,38 @@
 </template>
 <script>
 import { getList, changeActivity, updateDailyLimit } from '@/api/admin/marketManage/sharePolite.js'
+import pagination from '@/components/admin/pagination/pagination.vue'
+import statusTab from '@/components/admin/status/statusTab'
 export default {
+  components: {
+    pagination,
+    statusTab
+  },
   mounted () {
     this.langDefault()
     // 页面加载时调用接口初始化数据，初始化加载进行中模块
-    this.seacherList(8)
+    this.seacherList()
+  },
+  watch: {
+    'param.status' (n, o) {
+      this.seacherList()
+    }
   },
   data () {
     return {
+      activityName: '分享有礼',
       tableData: [],
       status: null,
       input: 0,
       dailyLimit: 0,
-      activeName: 'second'
+      category: 0,
+      pageParams: {},
+      param: {
+        status: 0,
+        // 分页
+        currentPage: 0,
+        pageRows: 20
+      }
     }
   },
   methods: {
@@ -221,22 +218,41 @@ export default {
       })
     },
     // 分模块查询数据列表
-    seacherList (category) {
+    seacherList () {
+      switch (this.param.status) {
+        case 0:
+          this.category = 0
+          break
+        case 1:
+          this.category = 8
+          break
+        case 2:
+          this.category = 4
+          break
+        case 3:
+          this.category = 2
+          break
+        case 4:
+          this.category = 1
+      }
       let obj = {
-        'currentPage ': 0,
-        'pageRows ': 20,
-        'category': category
+        'currentPage ': this.pageParams.currentPage,
+        'pageRows ': this.pageParams.pageRows,
+        'category': this.category
       }
       getList(obj).then((res) => {
         console.log(res)
         if (res.error === 0) {
-          this.handleData(res.content, category)
+          this.handleData(res.content)
           this.input = res.content.dailyShareAward
+          this.pageParams = res.content.pageResult.page
+          this.param.currentPage = res.content.pageResult.page.currentPage
+          this.param.pageRows = res.content.pageResult.page.pageRows
         }
       })
     },
     // 表格数据处理
-    handleData (data, category) {
+    handleData (data) {
       data.pageResult.dataList.map((item, index) => {
         // 有效期
         if (item.validityPeriod === 1) {
@@ -290,35 +306,12 @@ export default {
       })
       this.tableData = data.pageResult.dataList
     },
-    // 标签页点击事件
-    handleClick (activeName) {
-      switch (activeName) {
-        case 'first':
-          this.seacherList(0)
-          break
-        case 'second':
-          this.seacherList(8)
-          break
-        case 'third':
-          this.seacherList(4)
-          break
-        case 'fourth':
-          this.seacherList(2)
-          break
-        case 'fifth':
-          this.seacherList(1)
-          break
-        default:
-          this.seacherList(8)
-          break
-      }
-    },
     // 更新每日用户可分享次数上限参数
     saveDailyLimit () {
       updateDailyLimit(this.input).then(res => {
         if (res.error === 0) {
           alert('更新成功！')
-          this.seacherList(8)
+          this.seacherList()
         }
       })
     },
@@ -356,7 +349,7 @@ export default {
       changeActivity(obj).then(res => {
         if (res.error === 0) {
           alert('删除成功！')
-          this.seacherList(8)
+          this.seacherList()
         }
       })
     }
