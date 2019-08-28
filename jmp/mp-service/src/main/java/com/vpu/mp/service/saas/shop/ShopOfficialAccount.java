@@ -283,7 +283,7 @@ public class ShopOfficialAccount extends MainBaseService {
 		// 主账户是1
 		int accountAction = subLogin ? 2 : 1;
 		int accountId = subLogin ? user.subAccountId : user.sysId;
-		int expireSeconds = 24 * 60 * 30 - 60;
+		int expireSeconds = 24 * 60 * 30 * 60 - 60;
 		//$sceneValue = $shopId.'&'.$accountAction.'&'.$accountId;
 		String sceneValue = user.loginShopId.toString() + "&" + String.valueOf(accountAction) + "&"+ String.valueOf(accountId);
 		WxMpQrcodeService qrcodeService = open().getWxOpenComponentService().getWxMpServiceByAppid(appId).getQrcodeService();
