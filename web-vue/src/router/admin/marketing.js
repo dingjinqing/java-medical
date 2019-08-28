@@ -68,6 +68,19 @@ const routes = [
         '@/view/admin/index/leftNavComponents/first_market_manage/bargain/bargainIndex'
       )
   },
+  // 添加砍价活动
+  {
+    path: '/admin/home/main/bargainActivity',
+    name: 'bargain_activity',
+    meta: {
+      crumbTitle: 'router.bargain_activity',
+      meta: 'first_market_manage'
+    },
+    component: () =>
+      import(
+        '@/view/admin/index/leftNavComponents/first_market_manage/bargain/addbargainAct'
+      )
+  },
   // 多人拼团
   {
     path: '/admin/home/main/spellGroup',

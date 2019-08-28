@@ -314,7 +314,9 @@ export default {
     },
 
     addActivity () {
-      console.log(111)
+      this.$router.push({
+        name: 'bargain_activity'
+      })
     }
   },
   watch: {
