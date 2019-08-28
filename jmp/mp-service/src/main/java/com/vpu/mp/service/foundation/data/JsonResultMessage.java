@@ -299,10 +299,10 @@ public class JsonResultMessage {
 	public static final String MSG_ORDER_REMARK_ORDERSN_NOT_NULL = "order_remark_ordersn_not_null";
 	public static final String MSG_ORDER_REMARK_NOT_NULL = "order_remark_not_null";
 	public static final String MSG_ORDER_REMARK_TYPE_NOT_NULL = "order_remark_type_not_null";
-	public static final String MSG_ORDER_WX_RETURN_FAILL ="order_wx_return_fail";
+	public static final String MSG_ORDER_RETURN_WX_FAILL ="order_return_wx_fail";
 	public static final String MSG_ORDER_RETURN_METHOD_REFLECT_ERROR = "order_return_method_reflect_error";
 	public static final String MSG_ORDER_RETURN_AFTER_RETURNAMOUNT_GREAT_THAN_ZERO ="order_return_after_returnamount_great_than_zero";
-	public static final String MSG_CODE_ORDER_RETURN_ING_RETURNMETHOD_ERROR = "order_return_ing_returnmethod_error";
+	public static final String MSG_ORDER_RETURN_ING_RETURNMETHOD_ERROR = "order_return_ing_returnmethod_error";
 	public static final String MSG_ORDER_MANUAL_INCONSISTENT_AMOUNT = "order_manual_inconsistent_amount";
 	public static final String MSG_ORDER_FINISH_RETURN_STATUS_ERROR = "order_finish_return_status_error";
 	public static final String MSG_CODE_ORDER_RETURN_ROLLBACK_NO_MPEXCEPTION = "order_return_rollback_no_mpexception";
@@ -310,6 +310,11 @@ public class JsonResultMessage {
 	public static final String MSG_CODE_ORDER_RETURN_STATUS_NOT_SATISFIED = "order_return_status_not_satisfied";
 	public static final String MSG_CODE_ORDER_RETURN_WXPAYREFUND_NO_RECORD = "order_return_wxpayrefund_no_record";
 	public static final String MSG_CODE_ORDER_RETURN_WXPAYREFUND_ERROR = "order_return_wxpayrefund_error";
+	public static final String MSG_CODE_ORDER_RETURN_NOT_SUPPORT_RETURN_TYPE = "order_return_not_support_return_type";
+	public static final String MSG_CODE_ORDER_RETURN_NO_SELECT_GOODS = "order_return_no_select_goods";
+	public static final String MSG_CODE_ORDER_RETURN_NOT_NULL_RETURNTYPE = "order_return_not_null_returntype";
+	public static final String MSG_CODE_ORDER_RETURN_NOT_NULL_RETURNMONEY = "order_return_not_null_returnmoney";
+	public static final String MSG_CODE_ORDER_RETURN_NOT_NULL_SHIPPINGFEE = "order_return_not_null_shippingfee";
 	public static final String INVALID_MONEY_AMOUNT = "order.refund.invalid_money_amount";
 	public static final String INVALID_ACCOUNT_OR_SCORE = "order.refund.invalid_account_or_score";
 	public static final String INVALID_REFUND_AMOUNT = "order.refund.invalid_refund_amount";
