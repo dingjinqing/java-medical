@@ -1,5 +1,8 @@
 package com.vpu.mp.service.shop.config;
 
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -43,18 +46,19 @@ public class ConfigService extends ShopBaseService {
 	@Autowired
 	public BargainConfigService bargainCfg;
 	@Autowired
-    public GoodsBrandConfigService goodsBrandConfigService;
+	public GoodsBrandConfigService goodsBrandConfigService;
 	@Autowired
-    public DeliverTemplateConfigService deliverTemplateConfigService;
-    @Autowired
-    public FirstSpecialConfigService firstSpecialConfigService;
+	public DeliverTemplateConfigService deliverTemplateConfigService;
 	@Autowired
-    public InsteadPayConfig insteadPayConfig;
+	public FirstSpecialConfigService firstSpecialConfigService;
+	@Autowired
+	public InsteadPayConfig insteadPayConfig;
 	@Autowired
 	public CollectGiftConfigService collectGiftConfigService;
-	
+
 	/**
 	 * 得到店铺配置
+	 * 
 	 * @return
 	 */
 	public WxAppConfigVo getAppConfig() {
@@ -71,7 +75,7 @@ public class ConfigService extends ShopBaseService {
 		config.setShowPoster(showPoster);
 		return config;
 	}
-	
+
 	/**
 	 * 获取店铺风格
 	 * 
@@ -82,11 +86,17 @@ public class ConfigService extends ShopBaseService {
 		if (style.indexOf("rgb") == -1) {
 			return style.split(",");
 		} else {
-			String[] s = style.split(",\\s*rgb");
-			if (s.length > 1) {
-				s[1] = "rgb" + s[1];
+			String pattern = "rgb\\(\\s*(\\d+),\\s*(\\d+),\\s*(\\d+)\\),\\s*rgb\\(\\s*(\\d+),\\s*(\\d+),\\s*(\\d+)\\)";
+			Pattern r = Pattern.compile(pattern);
+			Matcher m = r.matcher(style);
+			if(m.find()) {
+				return new String[]{
+					String.format("#%02x%02x%02x", Integer.valueOf(m.group(1)),Integer.valueOf(m.group(2)),Integer.valueOf(m.group(3))),
+					String.format("#%02x%02x%02x", Integer.valueOf(m.group(4)),Integer.valueOf(m.group(5)),Integer.valueOf(m.group(6)))
+				};
+			}else {
+				return  new String[]{};
 			}
-			return s;
 		}
 	}
 }
