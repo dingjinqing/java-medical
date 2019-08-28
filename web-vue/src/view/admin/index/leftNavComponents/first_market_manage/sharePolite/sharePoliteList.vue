@@ -38,14 +38,16 @@
           <div class="rightContent">
             <span>用户每天可参与</span>
             <el-input
+              v-model="input"
               style="width: 80px"
               size="small"
+              :value="dailyLimit"
             ></el-input>
             <span>次 分享有礼活动</span>
             <span>填写0表示不限制</span>
             <el-button
               type="primary"
-              @click="saveDailyLimit"
+              @click="saveDailyLimit()"
             >保存设置</el-button>
           </div>
         </div>
@@ -93,7 +95,7 @@
 
         </el-table-column>
         <el-table-column
-          prop="status"
+          prop="pageStatus"
           label="活动状态"
           align="center"
         >
@@ -180,15 +182,7 @@
         </el-table-column>
       </el-table>
       <div class="footer">
-        <!-- <span>当前页面1/1，总记录4条</span>
-        <el-pagination
-          @current-change="handleCurrentChange"
-          :current-page.sync="currentPage"
-          :page-size="20"
-          layout="prev, pager, next, jumper"
-          :total="4"
-        >
-        </el-pagination> -->
+
       </div>
     </div>
   </div>
@@ -206,7 +200,9 @@ export default {
     return {
       tableData: [],
       status: null,
-      activeName: ''
+      input: 0,
+      dailyLimit: 0,
+      activeName: 'second'
     }
   },
   methods: {
@@ -234,16 +230,13 @@ export default {
       getList(obj).then((res) => {
         console.log(res)
         if (res.error === 0) {
-          this.handleData(res.content)
+          this.handleData(res.content, category)
+          this.input = res.content.dailyShareAward
         }
       })
     },
     // 表格数据处理
-    handleData (data) {
-      // data.pageResult.dataList.map((item, index) => {
-
-      // })
-
+    handleData (data, category) {
       data.pageResult.dataList.map((item, index) => {
         // 有效期
         if (item.validityPeriod === 1) {
@@ -266,25 +259,36 @@ export default {
             item.condition = ''
             break
         }
+        // 活动状态
+        switch (item.pageStatus) {
+          case 1:
+            item.pageStatus = '已停用'
+            break
+          case 2:
+            item.pageStatus = '已过期'
+            break
+          case 4:
+            item.pageStatus = '未开始'
+            break
+          case 8:
+            item.pageStatus = '进行中'
+            break
+        }
         // 活动奖励类型
-        console.log(item.rewardType)
         item.rewardType.forEach((itemC, indexC) => {
-          console.log(itemC)
           switch (itemC) {
             case 1:
-              item.rewardType[indexC] = '积分'
+              item.rewardType[indexC] = '积分、'
               break
             case 2:
-              item.rewardType[indexC] = '优惠券'
+              item.rewardType[indexC] = '优惠券、'
               break
             case 3:
               item.rewardType[indexC] = '幸运大转盘'
           }
         })
-        console.log(item.rewardType)
       })
       this.tableData = data.pageResult.dataList
-      console.log(this.tableData)
     },
     // 标签页点击事件
     handleClick (activeName) {
@@ -310,12 +314,12 @@ export default {
       }
     },
     // 更新每日用户可分享次数上限参数
-    saveDailyLimit (num) {
-      updateDailyLimit(num).then(res => {
+    saveDailyLimit () {
+      updateDailyLimit(this.input).then(res => {
         if (res.error === 0) {
           alert('更新成功！')
+          this.seacherList(8)
         }
-        console.log(res)
       })
     },
     addActivity () { },
@@ -329,7 +333,6 @@ export default {
         if (res.error === 0) {
           alert('停用成功！')
         }
-        console.log(res)
       })
     },
     // 启用分享有礼活动
@@ -342,7 +345,6 @@ export default {
         if (res.error === 0) {
           alert('启用成功！')
         }
-        console.log(res)
       })
     },
     // 删除分享有礼活动
@@ -354,9 +356,8 @@ export default {
       changeActivity(obj).then(res => {
         if (res.error === 0) {
           alert('删除成功！')
-          this.seacherSharePoliteList()
+          this.seacherList(8)
         }
-        console.log(res)
       })
     }
   }
