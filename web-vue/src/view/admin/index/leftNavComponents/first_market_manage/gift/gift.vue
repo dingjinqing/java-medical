@@ -92,14 +92,17 @@
                 <el-button
                   size="mini"
                   @click="disableGift(scope.row.id)"
+                  v-show="couldStop(scope.row)"
                 >停用</el-button>
                 <el-button
                   size="mini"
                   @click="enableGift(scope.row.id)"
+                  v-show="couldStart(scope.row)"
                 >启用</el-button>
                 <el-button
                   size="mini"
                   @click="editGift(scope.row.id)"
+                  v-show="couldEdit(scope.row)"
                 >编辑</el-button>
                 <el-button
                   size="mini"
@@ -108,6 +111,7 @@
                 <el-button
                   size="mini"
                   @click="deleteGift(scope.row.id)"
+                  v-show="couldDelete(scope.row)"
                 >删除</el-button>
               </el-row>
             </template>
@@ -137,7 +141,7 @@
 import wrapper from '@/components/admin/wrapper/wrapper'
 import statusTab from '@/components/admin/status/statusTab'
 import inputEdit from '@/components/admin/inputEdit'
-import status, { getById } from '@/components/admin/status/status'
+import status, { getById, couldEdit, couldStop, couldStart, couldDelete } from '@/components/admin/status/status'
 import { giftList, deleteGift, disableGift, enableGift, updateGiftLevel } from '@/api/admin/marketManage/gift'
 
 export default {
@@ -228,6 +232,18 @@ export default {
         message,
         type: 'success'
       })
+    },
+    couldEdit (row) {
+      return couldEdit(row)
+    },
+    couldStop (row) {
+      return couldStop(row)
+    },
+    couldStart (row) {
+      return couldStart(row)
+    },
+    couldDelete (row) {
+      return couldDelete(row)
     }
   },
   watch: {
