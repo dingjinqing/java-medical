@@ -27,6 +27,15 @@ export function advertisementGetOne (data) {
   })
 }
 
+// 编辑保存分销推广语
+export function advertisementSave (data) {
+  return service({
+    url: `/api/admin/distribution/promotion/save`,
+    method: 'post',
+    data: data
+  })
+}
+
 // 停用分销推广语
 export function advertisementPause (data) {
   return service({

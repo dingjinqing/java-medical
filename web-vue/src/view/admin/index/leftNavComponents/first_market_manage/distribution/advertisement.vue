@@ -62,7 +62,7 @@
         :plain="true"
         type="primary"
         size="small"
-        @click="centerDialogVisible = true"
+        @click="add"
       >添加推广语</el-button>
       <el-dialog
         title="添加推广语"
@@ -95,8 +95,9 @@
         >
           <el-button @click="cancel">取 消</el-button>
           <el-button
+            v-model="opt"
             type="primary"
-            @click="confirm"
+            @click="confirm()"
           >确 定</el-button>
         </span>
       </el-dialog>
@@ -181,7 +182,7 @@
 <script>
 // 引入分页
 import pagination from '@/components/admin/pagination/pagination'
-import { advertisementList, advertisementAdd, advertisementPause, advertisementDelete, advertisementStart, advertisementGetOne } from '@/api/admin/marketManage/distribution.js'
+import { advertisementList, advertisementAdd, advertisementPause, advertisementDelete, advertisementStart, advertisementGetOne, advertisementSave } from '@/api/admin/marketManage/distribution.js'
 export default {
   components: { pagination },
   data () {
@@ -205,7 +206,9 @@ export default {
         title: ''
       },
       isPause: '',
-      pageParams: {}
+      pageParams: {},
+      opt: 1,
+      groupId: ''
     }
   },
   created () {
@@ -254,14 +257,27 @@ export default {
         }
       })
       this.tableData = data
-      console.log(this.tableData)
+    },
+    add () {
+      let param = {
+        promotionLanguage: '',
+        title: ''
+      }
+      this.param = param
+      this.centerDialogVisible = true
+      this.opt = 1
     },
     edit (id) {
       advertisementGetOne(id).then(res => {
-        this.editData = res
+        let param = {
+          promotionLanguage: res.content.promotionLanguage,
+          title: res.content.title
+        }
+        this.param = param
+        this.opt = 0
+        this.groupId = res.content.id
       })
-      console.log(1111)
-      console.log(this.editData)
+
       this.centerDialogVisible = true
     },
     stop (id) {
@@ -332,20 +348,31 @@ export default {
     },
     cancel () {
       this.centerDialogVisible = false
-      console.log('cancel')
     },
     confirm () {
       this.centerDialogVisible = false
-      console.log(this.param)
-      advertisementAdd(this.param).then(res => {
-        if (res.error === 0) {
-          this.$message({
-            message: '添加成功',
-            type: 'success'
-          })
-          this.search()
-        }
-      })
+      if (this.opt === 1) {
+        advertisementAdd(this.param).then(res => {
+          if (res.error === 0) {
+            this.$message({
+              message: '添加成功',
+              type: 'success'
+            })
+            this.search()
+          }
+        })
+      } else {
+        this.param.id = this.groupId
+        advertisementSave(this.param).then(res => {
+          if (res.error === 0) {
+            this.$message({
+              message: '编辑成功',
+              type: 'success'
+            })
+            this.search()
+          }
+        })
+      }
     }
   }
 }
