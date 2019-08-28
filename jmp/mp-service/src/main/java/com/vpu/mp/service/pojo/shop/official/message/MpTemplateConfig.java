@@ -1,18 +1,12 @@
 package com.vpu.mp.service.pojo.shop.official.message;
 
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
-import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonValue;
 import com.vpu.mp.service.foundation.util.RegexUtil;
-import com.vpu.mp.service.pojo.shop.user.message.MaTemplateConfig;
-import lombok.Builder;
-import lombok.Getter;
-import org.apache.commons.lang3.ArrayUtils;
 
 /**
  * 公众号模版消息

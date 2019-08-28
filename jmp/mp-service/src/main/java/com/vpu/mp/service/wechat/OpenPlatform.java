@@ -124,7 +124,7 @@ public class OpenPlatform extends WxOpenServiceImpl {
 			String out = this.getWxOpenComponentService().route(inMessage);
 			this.logger.debug("\n组装回复信息：{}", out);
 		} catch (WxErrorException e) {
-			this.logger.error("receive_ticket", e);
+			this.logger.error("receive_ticket {}", e);
 		}
 
 		return "success";
@@ -219,7 +219,7 @@ public class OpenPlatform extends WxOpenServiceImpl {
 							.sendKefuMessage(kefuMessage);
 				}
 			} catch (WxErrorException e) {
-				logger.error("callback", e);
+				logger.error("callback {}", e);
 			}
 		}
 		return out;

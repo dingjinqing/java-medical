@@ -1,8 +1,8 @@
 package com.vpu.mp.service.pojo.shop.user.message;
 
-import com.vpu.mp.service.pojo.shop.official.message.MpTemplateConfig;
-
 import java.util.EnumMap;
+
+import com.vpu.mp.service.pojo.shop.official.message.MpTemplateConfig;
 
 /**
  * 小程序模版和公众号模版映射

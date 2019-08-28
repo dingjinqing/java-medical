@@ -2,7 +2,6 @@ package com.vpu.mp.service.pojo.shop.official.message;
 
 import lombok.Builder;
 import lombok.Data;
-import lombok.Getter;
 
 @Data
 @Builder

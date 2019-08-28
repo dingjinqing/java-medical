@@ -1,9 +1,8 @@
 package com.vpu.mp.service.pojo.shop.market.message;
 
-import com.fasterxml.jackson.annotation.JsonFormat;
-import lombok.Data;
-
 import java.sql.Timestamp;
+
+import lombok.Data;
 
 /**
  * 营销管理-消息推送传参类

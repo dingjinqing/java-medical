@@ -42,7 +42,7 @@ public class WxAppConfigVo {
 	String logoLink;
 	
 	@JsonProperty(value = "shop_style")
-	ShopStyleConfig shopStyleConfig;
+	String[] shopStyleConfig;
 	
 	/**
 	 * 是否隐藏底部logo,0 或者1
