@@ -18,6 +18,15 @@ export function advertisementAdd (data) {
   })
 }
 
+// 编辑分销推广语获取单条信息
+export function advertisementGetOne (data) {
+  return service({
+    url: `/api/admin/distribution/promotion/edit?id=${data}`,
+    method: 'get',
+    data: data
+  })
+}
+
 // 停用分销推广语
 export function advertisementPause (data) {
   return service({

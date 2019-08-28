@@ -73,6 +73,7 @@
         <div class="title">
           <span>标题：</span>
           <el-input
+            prop="title"
             size="small"
             v-model="param.title"
           ></el-input>
@@ -180,12 +181,13 @@
 <script>
 // 引入分页
 import pagination from '@/components/admin/pagination/pagination'
-import { advertisementList, advertisementAdd, advertisementPause, advertisementDelete, advertisementStart } from '@/api/admin/marketManage/distribution.js'
+import { advertisementList, advertisementAdd, advertisementPause, advertisementDelete, advertisementStart, advertisementGetOne } from '@/api/admin/marketManage/distribution.js'
 export default {
   components: { pagination },
   data () {
     return {
       tableData: [],
+      editData: [],
       pageData: {},
       createTime: '',
       currentPage: null,
@@ -254,8 +256,13 @@ export default {
       this.tableData = data
       console.log(this.tableData)
     },
-    edit () {
-      console.log('编辑')
+    edit (id) {
+      advertisementGetOne(id).then(res => {
+        this.editData = res
+      })
+      console.log(1111)
+      console.log(this.editData)
+      this.centerDialogVisible = true
     },
     stop (id) {
       this.$confirm('是否确认停用该推广语', '提示', {
