@@ -41,7 +41,7 @@ export function getGoodsList (data) {
 // 获取所有等级会员卡
 export function getLevelCardList () {
   return service({
-    url: `/api/admin/card/list`,
+    url: `/api/admin/member/card/list`,
     method: 'post',
     data: {
       cardType: 2
