@@ -174,7 +174,7 @@ public class GroupIntegrationService extends ShopBaseService {
 	 * @param actId
 	 * @return
 	 */
-	public GroupIntegrationShareQRCodeVo getMaQRCode(Integer actId) {
+	public GroupIntegrationShareQRCodeVo getMaQrCode(Integer actId) {
 		GroupIntegrationDefineRecord record = selectDefineById(actId);
 		GroupIntegrationShareQRCodeVo qrCodeVo = null;
 		if(record != null) {
