@@ -111,7 +111,17 @@ export const cn = {
   // 营销管理 限时降价
   reduce: ['营销管理', '限时降价'],
   // 营销管理 打包一口价
-  package_price: ['营销管理', '打包一口价']
+  package_price: ['营销管理', '打包一口价'],
+  // 营销管理 定金膨胀
+  presale: ['营销管理', '定金膨胀'],
+  // 营销管理 定金膨胀创建
+  presale_add: ['营销管理', '创建定金膨胀活动'],
+  // 营销管理 定金膨胀修改
+  presale_edit: ['营销管理', '修改定金膨胀活动'],
+  // 营销管理 定金膨胀订单
+  presale_order_detail: ['营销管理', '查看活动订单'],
+  // 营销管理 定金膨胀活动明细
+  presale_detail: ['营销管理', '活动明细']
 }
 
 export const en = {
@@ -232,15 +242,15 @@ export const en = {
     'Group partition integral success'
   ],
   // 营销管理 赠品
-  gift: ['Marketing management', 'Gift'],
+  gift: ['Marketing Management', 'Gift'],
   // 营销管理 赠品 添加赠品
-  gift_add: ['Marketing management', 'Gift', 'Create Gift'],
+  gift_add: ['Marketing Management', 'Gift', 'Create Gift'],
   // 营销管理 赠品 修改活动
-  gift_edit: ['Marketing management', 'Gift', 'Edit Gift'],
+  gift_edit: ['Marketing Management', 'Gift', 'Edit Gift'],
   // 营销管理 赠品 赠送明细
-  gift_detail: ['Marketing management', 'Gift', 'Gift Detail'],
+  gift_detail: ['Marketing Management', 'Gift', 'Gift Detail'],
   // 营销管理 优惠券礼包
-  coupon_Package: ['Marketing management', 'Coupon Package'],
+  coupon_Package: ['Marketing Management', 'Coupon Package'],
   coupon_Package_add: [
     'Marketing management',
     'Coupon Package',
@@ -263,5 +273,16 @@ export const en = {
   // 营销管理 限时降价
   reduce: ['Marketing management', 'Limited Time Price Reduction'],
   // 营销管理 打包一口价
-  package_price: ['Marketing management', 'Package Price']
+  package_price: ['Marketing management', 'Package Price'],
+
+  // 营销管理 定金膨胀
+  presale: ['Marketing Management', 'Pre Sale'],
+  // 营销管理 定金膨胀创建
+  presale_add: ['Marketing Management', 'Create Pre Sale'],
+  // 营销管理 定金膨胀修改
+  presale_edit: ['Marketing Management', 'Edit Pre Sale'],
+  // 营销管理 定金膨胀订单
+  presale_order_detail: ['Marketing Management', 'View Pre Sale Order Detail'],
+  // 营销管理 定金膨胀活动明细
+  presale_detail: ['Marketing Management', 'View Pre Sale Detail']
 }
