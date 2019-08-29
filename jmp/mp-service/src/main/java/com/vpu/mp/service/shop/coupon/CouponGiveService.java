@@ -305,7 +305,7 @@ public class CouponGiveService extends ShopBaseService {
             }
     }
 
-    /* 生成优惠券编号 */
+    /** 生成优惠券编号 */
     public static String getCouponSn() {
         return  "C" + System.currentTimeMillis();
     }
@@ -322,7 +322,9 @@ public class CouponGiveService extends ShopBaseService {
             param.setActName("");
         }
         /* 查询，并筛选出正确的使用限制条件 */
-        List<CouponGivePopVo> popVo = db().select(MRKING_VOUCHER.ACT_NAME, MRKING_VOUCHER.DENOMINATION, MRKING_VOUCHER.LEAST_CONSUME, MRKING_VOUCHER.USE_CONSUME_RESTRICT,MRKING_VOUCHER.SURPLUS).from(MRKING_VOUCHER).where(MRKING_VOUCHER.USE_CONSUME_RESTRICT.eq((byte) 1).and(MRKING_VOUCHER.ACT_NAME.like(this.likeValue(param.getActName())))).or(MRKING_VOUCHER.USE_CONSUME_RESTRICT.eq((byte) 0).and(MRKING_VOUCHER.LEAST_CONSUME.eq(BigDecimal.ZERO)).and(MRKING_VOUCHER.ACT_NAME.like(this.likeValue(param.getActName())))).fetchInto(CouponGivePopVo.class);
+        List<CouponGivePopVo> popVo = db().select(MRKING_VOUCHER.ID,
+        		MRKING_VOUCHER.ACT_NAME, MRKING_VOUCHER.DENOMINATION, MRKING_VOUCHER.LEAST_CONSUME, MRKING_VOUCHER.USE_CONSUME_RESTRICT,MRKING_VOUCHER.SURPLUS,
+        		MRKING_VOUCHER.VALIDITY_TYPE,MRKING_VOUCHER.VALIDITY,MRKING_VOUCHER.VALIDITY_HOUR,MRKING_VOUCHER.VALIDITY_MINUTE,MRKING_VOUCHER.START_TIME,MRKING_VOUCHER.END_TIME).from(MRKING_VOUCHER).where(MRKING_VOUCHER.USE_CONSUME_RESTRICT.eq((byte) 1).and(MRKING_VOUCHER.ACT_NAME.like(this.likeValue(param.getActName())))).or(MRKING_VOUCHER.USE_CONSUME_RESTRICT.eq((byte) 0).and(MRKING_VOUCHER.LEAST_CONSUME.eq(BigDecimal.ZERO)).and(MRKING_VOUCHER.ACT_NAME.like(this.likeValue(param.getActName())))).fetchInto(CouponGivePopVo.class);
 
         return popVo;
 
