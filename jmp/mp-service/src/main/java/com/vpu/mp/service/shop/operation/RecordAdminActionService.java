@@ -69,7 +69,6 @@ public class RecordAdminActionService extends ShopBaseService {
      *                    和{@link com.vpu.mp.service.pojo.shop.operation.RecordContentMessage}
 	 * @param datas       模版数据
 	 */
-	@Async
 	public void insertRecord(List<Integer> templateIds, String... datas) {
 		RecordAdminActionRecord record = this.getAdminRecord();
 		StringBuilder templateIdStr = new StringBuilder();

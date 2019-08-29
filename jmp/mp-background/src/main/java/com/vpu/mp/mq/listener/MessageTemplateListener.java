@@ -31,11 +31,12 @@ public class MessageTemplateListener implements BaseRabbitHandler {
         List<WxUserInfo> userInfoList = saas.getShopApp(param.getShopId())
             .wechatMessageTemplateService.getUserInfoList(param.getUserIdList());
         userInfoList.stream().forEach(info->{
-            try {
-                saas.getShopApp(param.getShopId()).wechatMessageTemplateService.sendMessage(param,info);
-            } catch (WxErrorException e) {
-                e.printStackTrace();
+            if( saas.getShopApp(param.getShopId()).wechatMessageTemplateService.sendMessage(param,info)){
+                //成功
+            }else{
+                //失败
             }
+
         });
         //TODO  发送逻辑
         //saas.getShopApp(param.getShopId()).

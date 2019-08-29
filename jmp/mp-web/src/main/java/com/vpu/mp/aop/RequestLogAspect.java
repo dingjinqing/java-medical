@@ -5,6 +5,9 @@ import java.util.Arrays;
 
 import javax.servlet.http.HttpServletRequest;
 
+import com.vpu.mp.controller.admin.AdminLoginController;
+import com.vpu.mp.controller.admin.Test;
+import com.vpu.mp.service.foundation.data.JsonResultCode;
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;
@@ -68,7 +71,7 @@ public class RequestLogAspect {
             logResponseStr.append("RequestURI   :").append(request.getRequestURI()).append("\n");
             logResponseStr.append("JsonResult   :").append(result);
             log.info(logResponseStr.toString());
-        }catch (Throwable throwable){
+        }catch (Throwable e){
             StringBuilder logErrorStr = new StringBuilder();
             logErrorStr.append("\n");
             logErrorStr.append("#####################Exception#####################").append("\n");
@@ -76,9 +79,10 @@ public class RequestLogAspect {
             logErrorStr.append("UserToken    :").append(token).append("\n");
             logErrorStr.append("RequestIP    :").append(ip).append("\n");
             logErrorStr.append("RequestURI   :").append(request.getRequestURI()).append("\n");
-            logErrorStr.append("Exception    :").append(throwable);
+            logErrorStr.append("Exception    :").append(e.getMessage()).append("\n");
+            e.printStackTrace();
             log.error(logErrorStr.toString());
-            throw new RuntimeException();
+            return new JsonResult().fail("zh_CN", JsonResultCode.CODE_FAIL);
         }
         return result;
     }

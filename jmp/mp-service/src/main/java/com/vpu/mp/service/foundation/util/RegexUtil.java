@@ -25,7 +25,7 @@ public class RegexUtil {
         }
         StringBuilder pStr = new StringBuilder("(?<=")
             .append(first)
-            .append(")\\.*?(?=")
+            .append(").*?(?=")
             .append(lastStr)
             .append(")");
         Pattern p = Pattern.compile(pStr.toString());

@@ -17,6 +17,7 @@ import com.vpu.mp.service.saas.shop.official.message.MpOfficialAccountMessageSer
 import com.vpu.mp.service.shop.user.user.UserService;
 import me.chanjar.weixin.common.error.WxErrorException;
 import me.chanjar.weixin.mp.bean.template.WxMpTemplateData;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -31,6 +32,12 @@ import static com.vpu.mp.db.shop.tables.MpTemplateFormId.MP_TEMPLATE_FORM_ID;
 import static com.vpu.mp.db.shop.tables.User.USER;
 
 
+/**
+ * 微信模版消息
+ * @author 卢光耀
+ * @date 2019-08-29 15:26
+ *
+*/
 @Service
 public class WechatMessageTemplateService extends ShopBaseService {
 
@@ -53,20 +60,38 @@ public class WechatMessageTemplateService extends ShopBaseService {
         mpAuthShopService = saas().shop.mp;
     }
 
-    public void sendMessage(RabbitMessageParam param,WxUserInfo info) throws WxErrorException {
-        String pageUrl = param.getPage();
-        if( param.getMaTemplateData() != null ){
-            String formId = getFormId(info.getUserId());
-            sendMaMessage(param,info,pageUrl,formId);
-        }else if( param.getMpTemplateData() != null ){
-            sendMpMessage(param,info,pageUrl);
+    /**
+     * 小程序和公众号发送其中一个（优先小程序）
+     * @param param MQ传参
+     * @param info 所需信息（openID，appID）
+     * @return 是否发送成功
+     */
+    public Boolean sendMessage(RabbitMessageParam param,WxUserInfo info) {
+        String formId = getFormId(info.getUserId());
+        Boolean success = Boolean.TRUE;
+        if( param.getMaTemplateData() != null && StringUtils.isNotBlank(formId) ){
+            success = sendMaMessage(param,info,formId);
         }
+
+        if( !success && param.getMpTemplateData() != null && info.getIsSubscribe() ){
+            success = sendMpMessage(param,info);
+        }
+        if( success ){
+            //TODO 成功后的处理逻辑
+        }
+        return success;
     }
+
+    /**
+     * 获得formId，并置为已使用
+     * @param userId 用户id
+     * @return formId
+     */
     private String getFormId(Integer userId){
         String formId = db().select()
             .from(MP_TEMPLATE_FORM_ID)
             .where(MP_TEMPLATE_FORM_ID.USER_ID.eq(userId))
-            .and(MP_TEMPLATE_FORM_ID.STATUS.eq((byte)1))
+            .and(MP_TEMPLATE_FORM_ID.USE_STATE.eq((byte)0))
             .orderBy(MP_TEMPLATE_FORM_ID.CREATE_TIME.desc())
             .fetchAny(MP_TEMPLATE_FORM_ID.FORM_ID);
         db().update(MP_TEMPLATE_FORM_ID)
@@ -76,61 +101,84 @@ public class WechatMessageTemplateService extends ShopBaseService {
             .fetch();
         return formId;
     }
-    public void sendMaMessage(RabbitMessageParam param,WxUserInfo info,String pageUrl,String formId) throws WxErrorException {
+
+    /**
+     * 发送小程序模版消息
+     * @param param MQ传参
+     * @param info  所需信息（openID，appID）
+     * @param formId 发消息必须
+     * @return 是否发送成功
+     */
+    public Boolean sendMaMessage(RabbitMessageParam param,WxUserInfo info,String formId) {
         MaTemplateData data = param.getMaTemplateData();
         MaTemplateConfig config =data.getConfig();
         List<String> names = RegexUtil.getSubStrList("{{",".",config.getContent());
         List<WxMaTemplateData> wxDatalist = new ArrayList<>();
         for (int i = 0,len = data.getData().length; i < len; i++) {
             String[] values = data.getData()[i];
-            int values_len = values.length;
-            WxMaTemplateData wxData = new WxMaTemplateData();
-            wxData.setName(names.get(i));
-            wxData.setValue(values[0]);
-            if( values_len == 2 ){
-                wxData.setColor(values[1]);
-            }
-            wxData.setColor(config.getColors().get(names.get(i)));
-            wxDatalist.add(wxData);
+            wxDatalist.add(new WxMaTemplateData(
+                names.get(i),
+                values[0],
+                values.length==2?values[1]:config.getColors().get(names.get(i))
+            ));
         }
-        maTemplateService.sendMpTemplateMessage(info.getMaAppId(),info.getMaOpenId(),wxDatalist,config,param.getEmphasisKeyword(),pageUrl,formId);
+        try {
+            maTemplateService.sendMaTemplateMessage(info.getMaAppId(),info.getMaOpenId(),wxDatalist,config,param.getEmphasisKeyword(),param.getPage(),formId);
+        } catch (WxErrorException e) {
+            e.printStackTrace();
+            return Boolean.FALSE;
+        }
+        return Boolean.TRUE;
     }
 
-    public void sendMpMessage(RabbitMessageParam param,WxUserInfo info,String pageUrl) throws WxErrorException {
+    /**
+     * 发送公众号模版消息
+     * @param param MQ传参
+     * @param info  所需信息（openID，appID）
+     * @return 是否发送成功
+     */
+    public Boolean sendMpMessage(RabbitMessageParam param,WxUserInfo info) {
         List<WxMpTemplateData> wxDatalist = new ArrayList<>();
         MpTemplateData data = param.getMpTemplateData();
         MpTemplateConfig config =data.getConfig();
         List<String> names = RegexUtil.getSubStrList("{{",".",config.getContent());
         for (int i = 0,len = data.getData().length; i < len; i++) {
             String[] values = data.getData()[i];
-            int values_len = values.length;
-            WxMpTemplateData wxData = new WxMpTemplateData();
-            wxData.setName(names.get(i));
-            wxData.setValue(values[0]);
-            if( values_len == 2 ){
-                wxData.setColor(values[1]);
-            }
-            wxData.setColor(config.getColors().get(names.get(i)));
-            wxDatalist.add(wxData);
+            wxDatalist.add(new WxMpTemplateData(
+                names.get(i),
+                values[0],
+                values.length==2?values[1]:config.getColors().get(names.get(i))
+            ));
         }
-        accountMessageService.sendMpTemplateMessage(
-            info.getMpAppId(),info.getMpOpenId(),wxDatalist,config,info.getMpAppId(),pageUrl,"");
+        try{
+            accountMessageService.sendMpTemplateMessage(
+                info.getMpAppId(),info.getMpOpenId(),wxDatalist,config,info.getMpAppId(),param.getPage(),"");
+        } catch (WxErrorException e) {
+            e.printStackTrace();
+            return Boolean.FALSE;
+        }
+            return Boolean.TRUE;
     }
 
+    /**
+     * 封装发送模版消息所需要的用户相关信息
+     * @param userIdList
+     * @return 相关信息
+     */
     public List<WxUserInfo> getUserInfoList(List<Integer> userIdList) {
         List<WxUserInfo> resultList = new ArrayList<>(userIdList.size());
         String appId = mpAuthShopService.getAuthShopByShopId(getShopId()).get(MP_AUTH_SHOP.APP_ID);
         List<UserRecord> userList = userService.getUserRecordByIds(userIdList);
         Map<Integer,UserRecord> userMap = userList.stream()
-            .collect(Collectors.toMap(x->x.getUserId(),x->x));
+            .collect(Collectors.toMap(UserRecord::getUserId, x->x));
         List<MpOfficialAccountUserRecord> accountUserList =
             accountUserService.getAccountUserListByUnionIds(
                 userList.stream().map(x->x.get(USER.WX_UNION_ID)).collect(Collectors.toList())
             );
         Map<String,MpOfficialAccountUserRecord> accountUserAccountMap = accountUserList.stream()
-            .collect(Collectors.toMap(x->x.getUnionid(),x->x));
+            .collect(Collectors.toMap(MpOfficialAccountUserRecord::getUnionid, x->x));
         userIdList.stream()
-            .filter(x->userMap.containsKey(x))
+            .filter(userMap::containsKey)
             .forEach(x->{
                 UserRecord user= userMap.get(x);
                 WxUserInfo.WxUserInfoBuilder builder = WxUserInfo.builder()

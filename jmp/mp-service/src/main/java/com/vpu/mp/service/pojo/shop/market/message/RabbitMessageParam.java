@@ -10,6 +10,13 @@ import lombok.Setter;
 
 import java.util.List;
 
+
+/**
+ * 模版消息MQ传参通用类
+ * @author 卢光耀
+ * @date 2019-08-29 16:29
+ *
+*/
 @Getter
 @Setter
 @Builder
@@ -28,7 +35,9 @@ public class RabbitMessageParam {
      * 跳转的url
      */
     private String page;
-
+    /**
+     * 消息类型
+     */
     private Integer type;
 
     /**

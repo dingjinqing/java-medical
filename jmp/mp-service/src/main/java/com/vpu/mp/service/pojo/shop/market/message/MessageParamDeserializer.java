@@ -27,7 +27,6 @@ public class MessageParamDeserializer extends JsonDeserializer<RabbitMessagePara
 
     @Override
     public RabbitMessageParam deserialize(JsonParser p, DeserializationContext ctxt) throws IOException, JsonProcessingException {
-        ObjectMapper mapper = new ObjectMapper();
         RabbitMessageParam param = RabbitMessageParam.builder().build();
         JsonNode node = p.getCodec().readTree(p);
         Iterator<String> iterator = node.get(0).fieldNames();
@@ -68,7 +67,6 @@ public class MessageParamDeserializer extends JsonDeserializer<RabbitMessagePara
                 MpTemplateConfig config = MpTemplateConfig.getConfig(mpData.findPath("config").asText());
                 for (int i = 0,len = mpData.findValue("data").size(); i < len; i++) {
                     JsonNode i_node = mpData.findValue("data").get(i);
-                    String[][] d = new String[1][i_node.size()];
                     for (int j = 0,j_len=i_node.size(); j < j_len ; j++) {
                         data[i][j] = i_node.get(j).asText();
                     }

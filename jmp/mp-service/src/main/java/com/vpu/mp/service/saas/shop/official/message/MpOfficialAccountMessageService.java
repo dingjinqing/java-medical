@@ -116,8 +116,7 @@ public class MpOfficialAccountMessageService extends MainBaseService {
 			// template_id不正确，移除缓存，重新发送模板消息
 			if (e.getError().getErrorCode() == 40037) {
 				jedis.delete(key);
-				sendMpTemplateMessage(appId, toUser, keywordValues, templateConfig, mpAppId,
-						page, url);
+				sendMpTemplateMessage(appId, toUser, keywordValues, templateConfig, mpAppId, page, url);
 			}else {
 				throw new WxErrorException(e.getError(), e);
 			}
