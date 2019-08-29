@@ -15,6 +15,9 @@ import lombok.Setter;
 @Setter
 @Builder(builderMethodName = "newBuilder")
 public class UserCardData extends BasicData {
+	/** 国际化语言 */
+	private String language;
+	
 	/** 用户Id */
 	protected Integer userId;
 	/** 操作员id */

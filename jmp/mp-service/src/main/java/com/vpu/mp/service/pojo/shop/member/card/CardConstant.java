@@ -41,6 +41,8 @@ public class CardConstant {
 
 	
 	
+	
+	
 	/** 背景色类型 */
 	public static final Byte BG_COLOR_TYPE = 0;
 	/** 背景图片类型 */
@@ -109,5 +111,8 @@ public class CardConstant {
 	
 	
 	/** 余额为 0 */
-	public static final BigDecimal ZERO = new BigDecimal(0); 
+	public static final BigDecimal ZERO = new BigDecimal(0);
+	
+	/** 国际化语言前缀 */
+	public static final String LANGUAGE_TYPE_MEMBER="member";
 }

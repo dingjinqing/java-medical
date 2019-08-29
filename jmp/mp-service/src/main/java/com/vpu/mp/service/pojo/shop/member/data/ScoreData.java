@@ -15,6 +15,8 @@ import lombok.Setter;
 @Setter
 @Getter
 public class ScoreData extends BasicData {
+	/** 国际化语言 */
+	private String language;
 	/** 用户Id */
 	protected Integer userId;
 	/** 操作员id */

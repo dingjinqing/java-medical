@@ -46,7 +46,8 @@ public class RecordMemberTradeService extends ShopBaseService{
 			AccountData accountData = (AccountData)data;
 			AccountParam accountParam = new AccountParam();
 			FieldsUtil.assignNotNull(accountData, accountParam);
-			accountService.addUserAccount(accountParam, accountData.getAdminUser(), accountData.getTradeType(), accountData.getTradeFlow());
+			
+			accountService.addUserAccount(accountParam, accountData.getAdminUser(), accountData.getTradeType(), accountData.getTradeFlow(),accountData.getLanguage());
 		}else if(data instanceof ScoreData) {
 			logger().info("积分变动");
 			/** 积分变动 */
@@ -54,14 +55,16 @@ public class RecordMemberTradeService extends ShopBaseService{
 			ScoreParam scoreParam = new ScoreParam();
 			FieldsUtil.assignNotNull(scoreData, scoreParam);
 			scoreParam.setUserId(new Integer[] {scoreData.getUserId()});
-			scoreService.updateMemberScore(scoreParam, scoreData.getAdminUser(),scoreData.getUserId(), scoreData.getTradeType(), scoreData.getTradeFlow());
+			String language = scoreData.getLanguage();
+			scoreService.updateMemberScore(scoreParam, scoreData.getAdminUser(),scoreData.getUserId(), scoreData.getTradeType(), scoreData.getTradeFlow(),language);
 		}else if(data instanceof UserCardData) {
 			logger().info("会员卡余额，兑换次数，消费次数变动 ");
 			/** 会员卡余额，兑换次数，消费次数变动 */
 			UserCardData userCardData = (UserCardData)data;
 			CardConsumpData cardConsumpData = new CardConsumpData();
 			FieldsUtil.assignNotNull(userCardData, cardConsumpData);
-			memberCardService.updateMemberCardAccount(cardConsumpData, userCardData.getAdminUser(), userCardData.getTradeType(), userCardData.getTradeFlow());
+			String language = userCardData.getLanguage();
+			memberCardService.updateMemberCardAccount(cardConsumpData, userCardData.getAdminUser(), userCardData.getTradeType(), userCardData.getTradeFlow(),language);
 			
 		}
 			

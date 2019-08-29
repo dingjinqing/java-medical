@@ -1,8 +1,10 @@
 package com.vpu.mp.service.shop.member;
 
+import static com.vpu.mp.db.shop.Tables.MEMBER_CARD;
 import static com.vpu.mp.db.shop.Tables.ORDER_VERIFIER;
 import static com.vpu.mp.db.shop.Tables.STORE;
 import static com.vpu.mp.db.shop.Tables.USER;
+import static com.vpu.mp.db.shop.Tables.USER_CARD;
 import static com.vpu.mp.db.shop.Tables.USER_DETAIL;
 import static com.vpu.mp.db.shop.Tables.USER_LOGIN_RECORD;
 import static com.vpu.mp.db.shop.Tables.USER_TAG;
@@ -477,4 +479,5 @@ public class MemberService extends ShopBaseService {
 		transStatistic.setReturnOrderNum(returnOrderNum);
 		logger().info("累计退款订单数 "+returnOrderNum);
 	}
+	
 }

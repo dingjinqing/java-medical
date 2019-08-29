@@ -4,6 +4,7 @@ package com.vpu.mp.service.shop.member;
 import static com.vpu.mp.db.shop.Tables.USER;
 import static com.vpu.mp.db.shop.Tables.USER_SCORE;
 import static com.vpu.mp.service.pojo.shop.member.MemberOperateRecordEnum.ADMIN_OPERATION;
+import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.LANGUAGE_TYPE_MEMBER;
 import static com.vpu.mp.service.pojo.shop.member.score.ScoreStatusConstant.NO_USE_SCORE_STATUS;
 import static com.vpu.mp.service.pojo.shop.member.score.ScoreStatusConstant.REFUND_SCORE_STATUS;
 import static com.vpu.mp.service.pojo.shop.member.score.ScoreStatusConstant.USED_SCORE_STATUS;
@@ -35,6 +36,7 @@ import com.vpu.mp.service.foundation.exception.MpException;
 import com.vpu.mp.service.foundation.service.ShopBaseService;
 import com.vpu.mp.service.foundation.util.DateUtil;
 import com.vpu.mp.service.foundation.util.PageResult;
+import com.vpu.mp.service.foundation.util.Util;
 import com.vpu.mp.service.foundation.util.VoTranslator;
 import com.vpu.mp.service.pojo.shop.member.account.ScoreParam;
 import com.vpu.mp.service.pojo.shop.member.score.ScorePageListParam;
@@ -47,8 +49,6 @@ import com.vpu.mp.service.pojo.shop.member.score.ScorePageListVo;
  */
 @Service
 public class ScoreService extends ShopBaseService {
-	
-	@Autowired private VoTranslator translator;
 	
 	/** -积分有效的状态 */
 	final Byte[] AVAILABLE_STATUS = new Byte[] { NO_USE_SCORE_STATUS, REFUND_SCORE_STATUS };
@@ -66,7 +66,7 @@ public class ScoreService extends ShopBaseService {
 	 * @throws MpException 
 	 */
 	public void updateMemberScore(ScoreParam param, Integer subAccountId, Integer userId, Byte tradeType,
-			Byte tradeFlow) throws MpException {
+			Byte tradeFlow,String language) throws MpException {
 
 		/**  1. 校验userId是否存在数据库中 */
 		if (userId <= 0) {
@@ -100,7 +100,7 @@ public class ScoreService extends ShopBaseService {
 		if (StringUtils.isEmpty(param.getRemark())) {
 			/** -默认管理员操作 国际化*/
 			String value = ADMIN_OPERATION.getValue();
-			remark = translator.translate("member",value,value);
+			remark = Util.translateMessage(language,value,LANGUAGE_TYPE_MEMBER);
 			logger().info("remark: "+remark);
 		}else {
 			remark = param.getRemark();

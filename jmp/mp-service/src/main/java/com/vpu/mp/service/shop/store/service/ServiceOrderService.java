@@ -260,15 +260,16 @@ public class ServiceOrderService extends ShopBaseService{
         cardConsumpData.setReason(param.getReason());
         /** 消费人暂时记录为后台操作人员 */
         cardConsumpData.setUserId(adminUser);
-
+        /** 国际化语言 */
+        String language="";
         if(memberCard.getCardType() == CardConstant.LIMIT_NUM_TYPE){
             /** 负数为消费次数 */
             cardConsumpData.setCount(-param.getReduce().intValue());
-            saas.getShopApp(getShopId()).member.card.updateMemberCardSurplus(cardConsumpData,adminUser,tradeType,tradeFlow);
+            saas.getShopApp(getShopId()).member.card.updateMemberCardSurplus(cardConsumpData,adminUser,tradeType,tradeFlow,language);
         }else if(memberCard.getCardType() == CardConstant.NORMAL_TYPE){
             /** 负数为消费金额 */
             cardConsumpData.setMoney(param.getReduce().negate());
-            saas.getShopApp(getShopId()).member.card.updateMemberCardAccount(cardConsumpData,adminUser,tradeType,tradeFlow);
+            saas.getShopApp(getShopId()).member.card.updateMemberCardAccount(cardConsumpData,adminUser,tradeType,tradeFlow,language);
         }
     }
 
@@ -286,8 +287,9 @@ public class ServiceOrderService extends ShopBaseService{
         accountData.setUserId(param.getUserId());
         accountData.setRemark(param.getReason());
         accountData.setOrderSn(param.getOrderSn());
-
+        /** 国际化语言 */
+        String language = "";
         /** 余额核销的门店服务订单，交易类型认为是余额支付 */
-        saas.getShopApp(getShopId()).member.account.addUserAccount(accountData,adminUser,tradeType,tradeFlow);
+        saas.getShopApp(getShopId()).member.account.addUserAccount(accountData,adminUser,tradeType,tradeFlow,language);
     }
 }

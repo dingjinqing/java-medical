@@ -48,7 +48,7 @@ import static com.vpu.mp.service.pojo.shop.operation.RecordTradeEnum.POWER_MEMBE
 import static com.vpu.mp.service.pojo.shop.operation.RecordTradeEnum.TRADE_FLOW_INCOME;
 import static com.vpu.mp.service.pojo.shop.operation.RecordTradeEnum.TRADE_FLOW_TO_BE_CONFIRMED;
 import static org.jooq.impl.DSL.count;
-
+import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.LANGUAGE_TYPE_MEMBER;
 import java.math.BigDecimal;
 import java.sql.Timestamp;
 import java.time.LocalDateTime;
@@ -117,7 +117,6 @@ import com.vpu.mp.service.shop.operation.RecordMemberTradeService;
  */
 @Service
 public class MemberCardService extends ShopBaseService {
-	@Autowired private VoTranslator translator;
 	@Autowired private RecordMemberTradeService tradeService;
 	Logger logger = logger();
 
@@ -921,7 +920,7 @@ public class MemberCardService extends ShopBaseService {
 	 * @param tradeFlow  资金流向 {@link com.vpu.mp.service.pojo.shop.operation.RecordTradeEnum}
 	 * @throws MpException
 	 */
-	public void updateMemberCardAccount(CardConsumpData data,Integer adminUser,Byte tradeType,Byte tradeFlow) throws MpException {
+	public void updateMemberCardAccount(CardConsumpData data,Integer adminUser,Byte tradeType,Byte tradeFlow,String language) throws MpException {
 		
 		/** 1.-获取数据库中的存储的信息 */
 		UserCardRecord userCard = getUserCardInfoByCardNo(data.getCardNo());
@@ -934,10 +933,10 @@ public class MemberCardService extends ShopBaseService {
 				throw new MpException(JsonResultCode.CODE_MEMBER_ACCOUNT_UPDATE_FAIL);
 			}
 			/** -消费会员卡余额 */
-			consumpUserCard(data,MEMBER_CARD_ACCOUNT);
+			consumpUserCard(data,MEMBER_CARD_ACCOUNT,language);
 		}else {
 			/** 2.2 充值会员卡余额 */
-			chargeUserCard(data,MEMBER_CARD_ACCOUNT);
+			chargeUserCard(data,MEMBER_CARD_ACCOUNT,language);
 		}
 		
 		
@@ -962,7 +961,7 @@ public class MemberCardService extends ShopBaseService {
 	 * @param tradeFlow  资金流向 {@link com.vpu.mp.service.pojo.shop.operation.RecordTradeEnum}
 	 * @throws MpException 
 	 */
-	public void updateMemberCardSurplus(CardConsumpData data,Integer adminUser,Byte tradeType,Byte tradeFlow) throws MpException {
+	public void updateMemberCardSurplus(CardConsumpData data,Integer adminUser,Byte tradeType,Byte tradeFlow,String language) throws MpException {
 		/** 1-判断是不是限次会员卡则结束 */
 		if(!data.getType().equals(LIMIT_NUM_TYPE)) {
 		    throw new MpException(JsonResultCode.CODE_PARAM_ERROR);
@@ -979,10 +978,10 @@ public class MemberCardService extends ShopBaseService {
 				throw new MpException(JsonResultCode.CODE_MEMBER_CARD_SURPLUS_UPDATE_FAIL);
 			}
 			/** -消费会员卡剩余次数 */
-			consumpUserCard(data,STORE_SERVICE_TIMES);
+			consumpUserCard(data,STORE_SERVICE_TIMES,language);
 		}else {
 			/** 3.2-增加(充值)卡剩余次数 */
-			chargeUserCard(data,STORE_SERVICE_TIMES);
+			chargeUserCard(data,STORE_SERVICE_TIMES,language);
 		}
 		
 		/** 4-更新user_card用户会员卡的消费次数 */
@@ -1004,7 +1003,7 @@ public class MemberCardService extends ShopBaseService {
 	 * @param tradeFlow  资金流向 {@link com.vpu.mp.service.pojo.shop.operation.RecordTradeEnum}
 	 * @throws MpException 
 	 */
-	public void updateMemberCardExchangeSurplus(CardConsumpData data,Integer adminUser,Byte tradeType,Byte tradeFlow) throws MpException {
+	public void updateMemberCardExchangeSurplus(CardConsumpData data,Integer adminUser,Byte tradeType,Byte tradeFlow,String language) throws MpException {
 		/** 1-判断是不是限次会员卡则结束 */
 		if(!data.getType().equals(LIMIT_NUM_TYPE)) {
 			return;
@@ -1021,10 +1020,10 @@ public class MemberCardService extends ShopBaseService {
 				throw new MpException(JsonResultCode.CODE_MEMBER_CARD_EXCHANGSURPLUS_UPDATE_FAIL);
 			}
 			/** -消费会员卡剩余次数 */
-			consumpUserCard(data,EXCHANGE_GOODS_NUM);
+			consumpUserCard(data,EXCHANGE_GOODS_NUM,language);
 		}else {
 			/** 3.2-增加(充值)卡剩余次数 */
-			chargeUserCard(data,EXCHANGE_GOODS_NUM);
+			chargeUserCard(data,EXCHANGE_GOODS_NUM,language);
 		}
 	
 		/** 4-更新user_card用户会员卡的卡剩余兑换次数 */
@@ -1042,8 +1041,8 @@ public class MemberCardService extends ShopBaseService {
 	 * 充值用户卡
 	 * @param data
 	 */
-	private void chargeUserCard(CardConsumpData data,MemberOperateRecordEnum memberOperate) {
-		setDefaultReason(data,memberOperate);
+	private void chargeUserCard(CardConsumpData data,MemberOperateRecordEnum memberOperate,String language) {
+		setDefaultReason(data,memberOperate,language);
 		insertIntoChargeMoney(data);
 	}
 
@@ -1053,9 +1052,9 @@ public class MemberCardService extends ShopBaseService {
 	 * @param userCard
 	 * @throws MpException
 	 */
-	private void consumpUserCard(CardConsumpData data,MemberOperateRecordEnum memberOperate){
+	private void consumpUserCard(CardConsumpData data,MemberOperateRecordEnum memberOperate,String language){
 		
-		setDefaultReason(data,memberOperate);
+		setDefaultReason(data,memberOperate,language);
 		insertIntoCardConsumer(data);
 	}
 
@@ -1063,12 +1062,12 @@ public class MemberCardService extends ShopBaseService {
 	 * 设置默认的充值 | 消费原因
 	 * @param data
 	 */
-	private void setDefaultReason(CardConsumpData data,MemberOperateRecordEnum memberOperate) {
+	private void setDefaultReason(CardConsumpData data,MemberOperateRecordEnum memberOperate,String language) {
 		/** 1-若reason原因为空 则设置为默认值 */
 		if(StringUtils.isBlank(data.getReason())) {
 			/** - 会员卡余额 */
 			String value = memberOperate.getValue();
-			value = translator.translate("member",value,value);
+			value = Util.translateMessage(language,value,LANGUAGE_TYPE_MEMBER);
 			String t = data.getReason()+value;
 			data.setReason(t);
 		}

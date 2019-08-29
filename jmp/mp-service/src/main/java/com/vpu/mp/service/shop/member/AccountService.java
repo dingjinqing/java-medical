@@ -8,7 +8,7 @@ import static com.vpu.mp.service.pojo.shop.member.MemberOperateRecordEnum.ADMIN_
 import static com.vpu.mp.service.pojo.shop.operation.RecordContentMessage.MSG_MEMBER_ACCOUNT;
 import static com.vpu.mp.service.pojo.shop.operation.RecordTradeEnum.TRADE_CONTENT_BY_CASH;
 import static com.vpu.mp.service.pojo.shop.operation.RecordTradeEnum.TRADE_FLOW_INCOME;
-
+import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.LANGUAGE_TYPE_MEMBER;
 import java.math.BigDecimal;
 import java.sql.Timestamp;
 import java.util.Arrays;
@@ -25,6 +25,7 @@ import com.vpu.mp.service.foundation.exception.MpException;
 import com.vpu.mp.service.foundation.service.ShopBaseService;
 import com.vpu.mp.service.foundation.util.DateUtil;
 import com.vpu.mp.service.foundation.util.PageResult;
+import com.vpu.mp.service.foundation.util.Util;
 import com.vpu.mp.service.foundation.util.VoTranslator;
 import com.vpu.mp.service.pojo.shop.auth.AdminTokenAuthInfo;
 import com.vpu.mp.service.pojo.shop.member.account.AccountPageListParam;
@@ -42,16 +43,17 @@ import com.vpu.mp.service.shop.operation.RecordMemberTradeService;
 
 public class AccountService extends ShopBaseService {
 	@Autowired private MemberService memberService;
-	@Autowired private VoTranslator translator;
 	@Autowired private RecordMemberTradeService tradeService;
+	
 	/**
 	 * @param param 余额对象参数
 	 * @param adminUser 操作员id
 	 * @param tradeType  交易类型 {@link com.vpu.mp.service.pojo.shop.operation.RecordTradeEnum}
 	 * @param tradeFlow  资金流向 {@link com.vpu.mp.service.pojo.shop.operation.RecordTradeEnum}
+	 * @param language 语言
 	 * @return
 	 */
-	public void  addUserAccount(AccountParam param, int adminUser, Byte tradeType, Byte tradeFlow) throws MpException {
+	public void  addUserAccount(AccountParam param, int adminUser, Byte tradeType, Byte tradeFlow,String language) throws MpException {
 		/** 鲁棒性检查 &*/
 		if (param.getUserId() == null || param.getAmount() == null) {
 			throw new MpException(CODE_MEMBER_ACCOUNT_UPDATE_FAIL);
@@ -73,8 +75,9 @@ public class AccountService extends ShopBaseService {
 		final String remark ;
 		if (StringUtils.isEmpty(param.getRemark())) {
 			/** -默认管理员操作 国际化*/
-			String value = ADMIN_OPERATION.getValue();
-			remark = translator.translate("member",value,value);
+			String message = ADMIN_OPERATION.getValue();
+			//remark = translator.translate("member",message,message);
+			remark = Util.translateMessage(language,message,LANGUAGE_TYPE_MEMBER);
 			logger().info("remark: "+remark);
 		}else {
 			remark = param.getRemark();
