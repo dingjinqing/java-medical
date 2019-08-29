@@ -293,7 +293,10 @@
           </div>
         </div>
         <!-- 打包一口价 -->
-        <div class="voucher box_style">
+        <div
+          class="voucher box_style"
+          @click="packagePrice"
+        >
           <div class="activity_img"><img
               :src="$imageHost + '/image/admin/new_market/dbykj.png'"
               alt=""
@@ -538,6 +541,12 @@ export default {
     sharePolite () {
       this.$router.push({
         name: 'share_polite'
+      })
+    },
+    // 打包一口价
+    packagePrice () {
+      this.$router.push({
+        name: 'package_price'
       })
     }
   }

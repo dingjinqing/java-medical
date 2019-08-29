@@ -292,16 +292,16 @@ export default {
     },
     // 编辑活动
     gotoEdit (id) {
-      this.$router.push(`/api/admin/market/integration/edit/${id}`)
+      this.$router.push(`/admin/home/main/integration/edit/${id}`)
     },
 
     // 前往参与瓜分积分活动的用户明细页面
     gotoDetail (id) {
-      this.$router.push(`/api/admin/market/integration/detail/${id}`)
+      this.$router.push(`/admin/home/main/integration/detail/${id}`)
     },
     // 前往成团明细页面
     gotoSuccess (id) {
-      this.$router.push(`/api/admin/market/integration/success/${id}`)
+      this.$router.push(`/admin/home/main/integration/success/${id}`)
     }
   }
 }

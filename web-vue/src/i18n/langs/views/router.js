@@ -109,7 +109,9 @@ export const cn = {
   // 营销管理 幸运大抽奖
   lottery_activity: ['营销管理', '幸运大抽奖'],
   // 营销管理 限时降价
-  reduce: ['营销管理', '限时降价']
+  reduce: ['营销管理', '限时降价'],
+  // 营销管理 打包一口价
+  package_price: ['营销管理', '打包一口价']
 }
 
 export const en = {
@@ -259,5 +261,7 @@ export const en = {
     'receive details '
   ],
   // 营销管理 限时降价
-  reduce: ['Marketing management', 'Limited Time Price Reduction']
+  reduce: ['Marketing management', 'Limited Time Price Reduction'],
+  // 营销管理 打包一口价
+  package_price: ['Marketing management', 'Package Price']
 }

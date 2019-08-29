@@ -330,7 +330,7 @@ const routes = [
   },
   // 瓜分积分活动
   {
-    path: '/api/admin/market/integration/list',
+    path: '/admin/home/main/integration/list',
     name: 'pin_integration',
     meta: {
       crumbTitle: 'router.pin_integration',
@@ -343,7 +343,7 @@ const routes = [
   },
   // 创建瓜分积分活动
   {
-    path: '/api/admin/market/integration/add',
+    path: '/admin/home/main/integration/add',
     name: 'group_integration_add',
     meta: {
       crumbTitle: 'router.pin_integration_add',
@@ -357,7 +357,7 @@ const routes = [
   },
   // 编辑瓜分积分活动
   {
-    path: '/api/admin/market/integration/edit/:id',
+    path: '/admin/home/main/integration/edit/:id',
     name: 'group_integration_edit',
     meta: {
       crumbTitle: 'router.pin_integration_edit',
@@ -371,7 +371,7 @@ const routes = [
   },
   // 瓜分积分活动--参与用户明细
   {
-    path: '/api/admin/market/integration/detail/:id',
+    path: '/admin/home/main/integration/detail/:id',
     name: 'group_integration_detail',
     meta: {
       crumbTitle: 'router.pin_integration_detail',
@@ -385,7 +385,7 @@ const routes = [
   },
   // 瓜分积分活动--成团明细
   {
-    path: '/api/admin/market/integration/success/:id',
+    path: '/admin/home/main/integration/success/:id',
     name: 'group_integration_success',
     meta: {
       crumbTitle: 'router.pin_integration_success',
@@ -395,6 +395,20 @@ const routes = [
     component: () =>
       import(
         '@/view/admin/index/leftNavComponents/first_market_manage/groupIntegration/groupIntegrationSuccess'
+      )
+  },
+  // 打包一口价活动
+  {
+    path: '/admin/home/main/packsale/list',
+    name: 'package_price',
+    meta: {
+      crumbTitle: 'router.package_price',
+      meta: 'first_market_manage',
+      category: 'first_market_manage'
+    },
+    component: () =>
+      import(
+        '@/view/admin/index/leftNavComponents/first_market_manage/packagePrice/packagePriceList'
       )
   }
 ]
