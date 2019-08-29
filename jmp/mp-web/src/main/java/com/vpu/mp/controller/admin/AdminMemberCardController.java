@@ -54,7 +54,7 @@ public class AdminMemberCardController extends AdminBaseController {
 	@PostMapping("/card/test/update")
 	public JsonResult updateCardTest(@RequestBody CardParam param) {
 		logger.info("更新会员卡测试");
-		shop().member.card.updateDiscountPartGoodsByCardId(param);
+
 		return success();
 	}
 	
