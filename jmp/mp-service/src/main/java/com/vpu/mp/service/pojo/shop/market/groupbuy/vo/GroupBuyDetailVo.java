@@ -1,6 +1,8 @@
 package com.vpu.mp.service.pojo.shop.market.groupbuy.vo;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.vpu.mp.service.pojo.shop.coupon.CouponListVo;
+import com.vpu.mp.service.pojo.shop.coupon.CouponView;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
@@ -78,5 +80,10 @@ public class GroupBuyDetailVo {
     /**
      * 产品规格配置
      */
-    private List<GroupBuyProductVo> product;
+    private List<GroupBuyProductVo> productList;
+
+    /**
+     * 优惠卷信息
+     */
+    private List<CouponView> couponViews;
 }

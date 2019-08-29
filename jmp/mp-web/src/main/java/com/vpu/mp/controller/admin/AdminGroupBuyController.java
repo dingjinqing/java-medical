@@ -60,7 +60,7 @@ public class AdminGroupBuyController extends AdminBaseController {
                 || param.getProduct().size() == 0 || param.getGoodsId() == null) {
             return fail(JsonResultCode.CODE_PARAM_ERROR);
         }
-        //校验商品是否叠加 (并发不安全)
+        //校验活动商品是否叠加 (并发不安全)
         Boolean flag = shop().groupBuy.validGroupGoods(param);
         if (!flag) {
             return fail(JsonResultCode.CODE_PARAM_ERROR);
@@ -91,7 +91,12 @@ public class AdminGroupBuyController extends AdminBaseController {
      * @return JsonResult
      */
     @PostMapping("/admin/market/groupbuy/update")
-    public JsonResult updateGroupBuy(@RequestBody GroupBuyEditParam param) {
+    public JsonResult updateGroupBuy(@RequestBody @Valid GroupBuyEditParam param) {
+        //校验参数
+        if (param == null ||param.getId()==null ||
+        param.getProduct() == null || param.getProduct().size() == 0 ) {
+            return fail(JsonResultCode.CODE_PARAM_ERROR);
+        }
         int flag = shop().groupBuy.updateGroupBuy(param);
         if (flag<=0){
             return fail();

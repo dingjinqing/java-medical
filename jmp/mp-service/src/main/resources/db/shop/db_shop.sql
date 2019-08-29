@@ -540,7 +540,7 @@ KEY `user_id` ( `user_id` ),
 KEY `user_openid` ( `user_openid` ),
 KEY `order_status` ( `order_status` ),
 KEY `shipping_id` ( `shipping_id` ),
-KEY `shop_id` ( `shop_id` ) 
+KEY `shop_id` ( `shop_id` )
 ) ENGINE = INNODB DEFAULT CHARSET = utf8mb4 COLLATE = utf8mb4_unicode_ci;
 
 -- --   订单操作表 b2c_order_action
@@ -615,7 +615,7 @@ PRIMARY KEY ( `rec_id` ),
 KEY `order_id` ( `order_id` ),
 KEY `order_sn` ( `order_sn` ),
 KEY `goods_id` ( `goods_id` ),
-KEY `shop_id` ( `shop_id` ) 
+KEY `shop_id` ( `shop_id` )
 ) ENGINE = INNODB DEFAULT CHARSET = utf8mb4 COLLATE = utf8mb4_unicode_ci;
 
 
@@ -1689,28 +1689,30 @@ create table `b2c_mp_template_form_id` (
 );
 
 -- --  拼团活动定义表
--- drop table if exists `b2c_group_buy_define`;
+--  drop table if exists `b2c_group_buy_define`;
 create table `b2c_group_buy_define`
 (
     `id`               int(11)      not null auto_increment,
-    `shop_id`          int(11)      not null comment '店铺id',
     `goods_id`         int(11)      not null comment '商品id',
     `name`             varchar(100) not null comment '活动名称',
-    `limit_amount`     smallint(6)  not null comment '成团人数',
-    `join_limit`       smallint(6)  not null comment '参团限制',
-    `open_limit`       smallint(6)  not null comment '开团限制',
-    `is_default`       tinyint(1)   not null default 0 comment '默认成团',
-    `start_time`       timestamp    null     default null comment '开始时间',
+    `limit_amount`     smallint(6)  not null comment '成团人数 不小于2人',
+    `join_limit`       smallint(6)  not null default 0 comment '参团限制 0不限制',
+    `open_limit`       smallint(6)  not null default 0 comment '开团限制 0不限制',
+	`limit_buy_num`    smallint(6)  not null default 0 comment '最少购买数 0不限制',
+    `limit_max_num`    smallint(6) 	not null default 0 comment '最多购买数 0不限制',
+	`start_time`       timestamp    null     default null comment '开始时间',
     `end_time`         timestamp    null     default null comment '结束时间',
     `stock`            smallint(6)  not null default 0 comment '总库存',
     `sale_num`         smallint(6)  not null default 0 comment '销量',
-    `del_flag`         tinyint(1)   not null default 0,
-    `status`           tinyint(1)   not null default 1 comment '状态： 1：启用  0： 禁用 2 代表已无库存',
-    `del_time`         int(11)      not null default 0,
+    `is_default`       tinyint(1)   not null default 0 comment '默认成团 ',
     `activity_type`    tinyint(1)   not null default '1' comment '活动类型：1：普通拼团，2：老带新团',
     `is_grouper_cheap` tinyint(1)   not null default '0' comment '是否开启团长优惠：0：不开启，1：开启',
+	`shipping_type`     tinyint(2)  not null  default '0' comment '运费类型 1免运费 2自定义',
     `reward_coupon_id` varchar(200) null comment '拼团失败发放优惠券',
     `share_config`     text comment '分享设置',
+	`status`           tinyint(1)   not null default 1 comment '状态： 1：启用  0： 禁用 2 代表已无库存',
+	`del_flag`         tinyint(1)   not null default 0,
+	`del_time`         int(11)      not null default 0,
     `create_time`      timestamp             default current_timestamp,
     `update_time`      timestamp             default current_timestamp on update current_timestamp comment '最后修改时间',
     primary key (`id`)

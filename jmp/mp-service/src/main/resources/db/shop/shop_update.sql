@@ -834,3 +834,35 @@ create table `b2c_mp_official_account_user` (
 -- 黄壮壮： 为表b2c_member_card 添加两个字段
 ALTER TABLE b2c_member_card ADD COLUMN `stock` int(11) DEFAULT 0 COMMENT '发放总量';
 ALTER TABLE b2c_member_card ADD COLUMN `limit` int(11) DEFAULT 1 COMMENT '领取限制';
+
+-- 孔德成 2019年8月29日 16:19:57
+-- --  拼团活动定义表
+--  drop table if exists `b2c_group_buy_define`;
+create table `b2c_group_buy_define`
+(
+    `id`               int(11)      not null auto_increment,
+    `goods_id`         int(11)      not null comment '商品id',
+    `name`             varchar(100) not null comment '活动名称',
+    `limit_amount`     smallint(6)  not null comment '成团人数 不小于2人',
+    `join_limit`       smallint(6)  not null default 0 comment '参团限制 0不限制',
+    `open_limit`       smallint(6)  not null default 0 comment '开团限制 0不限制',
+		`limit_buy_num` 	 int(6)   		not null default 0 comment '最少购买数 0不限制',
+    `limit_max_num` 	 int(6) 		  not null default 0 comment '最多购买数 0不限制',
+		`start_time`       timestamp    null     default null comment '开始时间',
+    `end_time`         timestamp    null     default null comment '结束时间',
+    `stock`            smallint(6)  not null default 0 comment '总库存',
+    `sale_num`         smallint(6)  not null default 0 comment '销量',
+    `is_default`       tinyint(1)   not null default 0 comment '默认成团 ',
+    `activity_type`    tinyint(1)   not null default '1' comment '活动类型：1：普通拼团，2：老带新团',
+    `is_grouper_cheap` tinyint(1)   not null default '0' comment '是否开启团长优惠：0：不开启，1：开启',
+		`shipping_type`     tinyint(2)   not null  default '0' comment '运费类型 1免运费 2自定义',
+
+    `reward_coupon_id` varchar(200) null comment '拼团失败发放优惠券',
+    `share_config`     text comment '分享设置',
+		`status`           tinyint(1)   not null default 1 comment '状态： 1：启用  0： 禁用 2 代表已无库存',
+		`del_flag`         tinyint(1)   not null default 0,
+		`del_time`         int(11)      not null default 0,
+    `create_time`      timestamp             default current_timestamp,
+    `update_time`      timestamp             default current_timestamp on update current_timestamp comment '最后修改时间',
+    primary key (`id`)
+);

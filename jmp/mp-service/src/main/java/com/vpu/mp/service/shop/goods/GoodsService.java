@@ -122,6 +122,15 @@ public class GoodsService extends ShopBaseService {
     }
 
     /**
+     * 规格
+     * @param goodsId 商品ID
+     * @return GoodsProductVo
+     */
+    public List<GoodsProductVo> getAllProductListByGoodsId(Integer goodsId){
+        return goodsSpecProductService.getAllProductListByGoodsId(goodsId).into(GoodsProductVo.class);
+    }
+
+    /**
      * 处理商品的关联的标签
      *
      * @param goodsPageListVos
@@ -762,7 +771,7 @@ public class GoodsService extends ShopBaseService {
         List<String> fetch = db().select(GOODS_IMG.IMG_URL).from(GOODS_IMG).where(GOODS_IMG.GOODS_ID.eq(goodsId)).fetch(GOODS_IMG.IMG_URL);
         return fetch;
     }
-    
+
     /**
      * 	通过商品id数组查询商品
      */
@@ -770,4 +779,5 @@ public class GoodsService extends ShopBaseService {
         return db().selectFrom(GOODS).where(GOODS.GOODS_ID.in(goodsIds)).
             fetchMap(GOODS.GOODS_ID);
     }
+
 }

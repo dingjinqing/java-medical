@@ -25,19 +25,19 @@ public class GroupBuyParam {
      */
     private Integer goodsId;
     /**
-     * 成团人数
+     * 成团人数 不可小于2人,保存后不可编辑
      */
     private Short limitAmount;
     /**
-     * 参团限制
+     * 每人参团数量限制 0表示不限制
      */
     private Short joinLimit;
     /**
-     * 开团限制
+     * 每人开团数量限制  0表示不限制数量
      */
     private Short openLimit;
     /**
-     * 默认成团
+     * 默认成团 0 不默认 1 默认成团
      */
     private Byte isDefault;
     /**
@@ -46,10 +46,13 @@ public class GroupBuyParam {
     private Timestamp startTime;
     private Timestamp endTime;
     /**
-     * 总库存——不需要前端传
+     * 最少购买数 0不限制
      */
-    @JsonIgnore
-    private Short stock;
+    private Short limitBuyMinNum;
+    /**
+     * 最多购买数 0 不限制
+     */
+    private Short limitBuyMaxNum;
 
     /**
      * 状态： 1：启用  0： 禁用
@@ -64,6 +67,12 @@ public class GroupBuyParam {
      * 是否开启团长优惠：0：不开启，1：开启
      */
     private Byte isGrouperCheap;
+
+    /**
+     * 是否免运费 1 免运费 2 使用原商品运费模板
+     */
+    private Byte shippingType;
+
     /**
      * 拼团失败发放优惠券
      */

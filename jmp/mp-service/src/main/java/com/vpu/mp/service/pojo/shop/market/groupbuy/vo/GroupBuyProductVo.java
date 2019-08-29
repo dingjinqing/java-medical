@@ -11,10 +11,11 @@ import java.math.BigDecimal;
 @Data
 public class GroupBuyProductVo {
 
+    private Integer id;
     /**
      * 拼团定义Id
      */
-    private Integer  activityId;
+    private Integer activityId;
 
     /**
      * 商品规格id
@@ -23,16 +24,29 @@ public class GroupBuyProductVo {
     private Integer productId;
 
     /**
-     * 拼团价格
+     * 商品规格名称
+     */
+    private String prdDesc;
+
+    /**
+     * 原价价格
      */
 
+    private BigDecimal prdPrice;
+    /**
+     * 原库存
+     */
+    private Short prdNumber;
+
+    /**
+     * 拼团价格
+     */
     private BigDecimal groupPrice;
 
     /**
-     * 库存
+     * 当前库存
      */
     private Short stock;
-
 
     /**
      * 销量

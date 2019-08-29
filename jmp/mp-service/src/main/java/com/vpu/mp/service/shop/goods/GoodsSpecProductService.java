@@ -5,6 +5,8 @@ import com.vpu.mp.service.foundation.service.ShopBaseService;
 import com.vpu.mp.service.pojo.shop.goods.spec.GoodsSpec;
 import com.vpu.mp.service.pojo.shop.goods.spec.GoodsSpecProduct;
 import org.jooq.DSLContext;
+import org.jooq.Record;
+import org.jooq.Result;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -203,5 +205,18 @@ public class GoodsSpecProductService extends ShopBaseService {
      */
     public Map<Integer, GoodsSpecProductRecord> selectSpecByProIds(List<Integer> proIds) {
     	return db().selectFrom(GOODS_SPEC_PRODUCT).where(GOODS_SPEC_PRODUCT.PRD_ID.in(proIds)).fetchMap(GOODS_SPEC_PRODUCT.PRD_ID);
+    }
+
+    /**
+     * 根据id
+     * @param goodsId 商品id
+     * @return 规则 record
+     */
+    public Result<Record> getAllProductListByGoodsId(Integer goodsId) {
+        Result<Record> recordResult = db().select()
+                .from(GOODS_SPEC_PRODUCT)
+                .where(GOODS_SPEC_PRODUCT.GOODS_ID.eq(goodsId))
+                .fetch();
+        return recordResult;
     }
 }

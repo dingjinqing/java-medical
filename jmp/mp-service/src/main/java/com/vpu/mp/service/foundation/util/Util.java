@@ -358,6 +358,20 @@ public class Util {
 	}
 
 	/**
+	 * 将字符串元素 转换为 Integer类型list
+	 *
+	 * @param value
+	 * @return
+	 */
+	public static List<Integer> splitValueToList(String value){
+		return valueOf(value.split(","));
+	}
+
+	public static List<Integer> splitValueToList(String value,String regex){
+		return valueOf(value.split(regex));
+	}
+
+	/**
 	 * 获取某一天的开始时间
 	 */
 	public static Timestamp getStartToday(Date date) {
@@ -472,7 +486,7 @@ public class Util {
         }
         return null;
     }
-    
+
     /**
      * 获取自定义格式化后的当前时间
      * @param formate
@@ -482,6 +496,6 @@ public class Util {
     	LocalDateTime localDate = LocalDateTime.now();
 		DateTimeFormatter dtf = DateTimeFormatter.ofPattern(formate);
 		String date = dtf.format(localDate);
-		return date;   	
+		return date;
     }
 }

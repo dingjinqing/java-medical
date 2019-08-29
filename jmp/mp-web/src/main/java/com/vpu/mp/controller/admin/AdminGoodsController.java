@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
+import com.vpu.mp.service.pojo.shop.goods.goods.*;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -15,13 +16,6 @@ import org.springframework.web.bind.annotation.RestController;
 import com.vpu.mp.service.foundation.data.JsonResult;
 import com.vpu.mp.service.foundation.data.JsonResultCode;
 import com.vpu.mp.service.foundation.util.PageResult;
-import com.vpu.mp.service.pojo.shop.goods.goods.Goods;
-import com.vpu.mp.service.pojo.shop.goods.goods.GoodsBatchOperateParam;
-import com.vpu.mp.service.pojo.shop.goods.goods.GoodsColumnCheckExistParam;
-import com.vpu.mp.service.pojo.shop.goods.goods.GoodsInitialVo;
-import com.vpu.mp.service.pojo.shop.goods.goods.GoodsPageListParam;
-import com.vpu.mp.service.pojo.shop.goods.goods.GoodsPageListVo;
-import com.vpu.mp.service.pojo.shop.goods.goods.GoodsVo;
 import com.vpu.mp.service.pojo.shop.goods.spec.GoodsSpec;
 import com.vpu.mp.service.pojo.shop.goods.spec.GoodsSpecProduct;
 import com.vpu.mp.service.pojo.shop.goods.spec.GoodsSpecVal;
@@ -61,6 +55,17 @@ public class AdminGoodsController extends AdminBaseController {
     @PostMapping("/api/admin/goods/product/list")
     public JsonResult getProductPageList(@RequestBody GoodsPageListParam param) {
         return success(shop().goods.getProductPageList(param));
+    }
+
+    /**
+     * 查询商品所有规则信息
+     * @param param 商品ID goodsid
+     * @return  规则信息
+     */
+    @PostMapping("/api/admin/goods/product/getAll")
+    public JsonResult getAllProductListByGoodsId(@RequestBody GoodsIdParam param){
+        List<GoodsProductVo> productVos = shop().goods.getAllProductListByGoodsId(param.getGoodsId());
+        return success(productVos);
     }
 
     /**
