@@ -336,8 +336,12 @@ public class GiftService extends ShopBaseService {
      */
     private SelectConditionStep<?> getPageListQuery() {
         return db().select(TABLE.ID, TABLE.NAME, TABLE.START_TIME, TABLE.END_TIME,
-            TABLE.LEVEL, TABLE.STATUS, DSL.count(ORDER_GOODS.REC_ID).as("giftTimes")).from(TABLE)
-            .leftJoin(ORDER_GOODS).on(ORDER_GOODS.IS_GIFT.eq(1).and(ORDER_GOODS.GIFT_ID.eq(TABLE.ID)))
+            TABLE.LEVEL, TABLE.STATUS, DSL.count(ORDER_GOODS.REC_ID).as("giftTimes"))
+            .from(TABLE)
+            .leftJoin(ORDER_GOODS)
+            .on(ORDER_GOODS.IS_GIFT.eq(1)
+                .and(ORDER_GOODS.ACTIVITY_ID.eq(TABLE.ID)
+                    .and(ORDER_GOODS.ACTIVITY_TYPE.eq(OrderConstant.GOODS_TYPE_GIFT))))
             .where(TABLE.DEL_FLAG.eq((byte) 0));
     }
 
