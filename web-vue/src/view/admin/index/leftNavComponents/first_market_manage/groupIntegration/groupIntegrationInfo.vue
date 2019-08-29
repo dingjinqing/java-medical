@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div class="integralAct">
     <el-form
       ref="form"
       :model="activity"
@@ -9,55 +9,82 @@
         <el-input
           v-model="activity.name"
           placeholder="请填写活动名称"
+          class="inputWidth"
         ></el-input>
       </el-form-item>
       <el-form-item label="宣传语：">
-        <el-input v-model="activity.advertise"></el-input>
+        <el-input
+          v-model="activity.advertise"
+          class="inputWidth"
+        ></el-input>
+        <el-popover
+          placement="right-start"
+          width="220"
+          trigger="hover"
+        >
+          <el-image :src="srcList.src1"></el-image>
+          <el-button
+            slot="reference"
+            type="text"
+            style="margin: 0 20px"
+          >查看示例</el-button>
+        </el-popover>
+        <span>限制十个字以内</span>
       </el-form-item>
-      <el-form-item label="有效期：">
-        <el-col :span="11">
-          <el-date-picker
-            type="datetime"
-            v-model="activity.startTime"
-            value-format="yyyy-MM-dd HH:mm:ss"
-            style="width: 100%;"
-          ></el-date-picker>
-        </el-col>
-        <el-col
-          class="line"
-          :span="2"
-        >-</el-col>
-        <el-col :span="11">
-          <el-date-picker
-            type="datetime"
-            v-model="activity.endTime"
-            value-format="yyyy-MM-dd HH:mm:ss"
-            style="width: 100%;"
-          >
-          </el-date-picker>
-        </el-col>
+
+      <el-form-item label="有效期: ">
+        <el-date-picker
+          v-model="activity.startTime"
+          type="datetime"
+          placeholder="选择开始时间"
+          style="width: 200px;"
+          value-format="yyyy-MM-dd HH:mm:ss"
+        >
+        </el-date-picker>
+        <span>至</span>
+        <el-date-picker
+          v-model="activity.endTime"
+          type="datetime"
+          placeholder="选择结束时间"
+          style="width: 200px;"
+          value-format="yyyy-MM-dd HH:mm:ss"
+        >
+        </el-date-picker>
       </el-form-item>
+
       <el-form-item label="瓜分积分总数：">
-        <el-input v-model="activity.inteTotal"></el-input>
+        <el-input
+          v-model="activity.inteTotal"
+          class="inputWidth"
+        ></el-input>
+        <span>积分</span>
+        <span>0表示不限制数量,修改总量时只能增加,不能减少,请谨慎设置</span>
       </el-form-item>
-      <el-form-item label="单团瓜分内容：">
-        <el-col>
-          <el-input v-model="activity.limitAmount" />
-        </el-col>
-        <el-col>人，瓜分</el-col>
-        <el-col>
-          <el-input v-model="activity.inteGroup" />
-        </el-col>
-        <el-col>
-          积分
-        </el-col>
+      <el-form-item label="单团瓜分内容: ">
+        <section>
+          <el-input
+            v-model="activity.limitAmount"
+            style="width: 90px"
+          />
+          <span>人，瓜分</span>
+          <el-input
+            v-model="activity.inteGroup"
+            class="inputWidth"
+          />
+          <span>积分</span>
+          <span>成团人数需≥2人且≤20人,瓜分积分数量需大于成团人数</span>
+        </section>
       </el-form-item>
       <el-form-item label="参团限制：">
-        <el-col :span="3">每人最多参加</el-col>
-        <el-col :span="1">
-          <el-input v-model="activity.joinLimit" />
-        </el-col>
-        <el-col :span="3">次新团</el-col>
+        <section>
+          <span>每人最多参加</span>
+          <el-input
+            v-model="activity.joinLimit"
+            style="width:90px"
+          />
+          <span>次新团</span>
+          <span>默认为1,0表示不限制数量。仅限制参与其他用户所开的团的数量</span>
+        </section>
       </el-form-item>
       <el-form-item label="瓜分方式：">
         <el-radio-group v-model="activity.divideType">
@@ -101,6 +128,9 @@ export default {
         joinLimit: '',
         divideType: 0,
         isDayDivide: 0
+      },
+      srcList: {
+        src1: `${this.$imageHost}/image/admin/share/bargain_share.jpg`
       }
     }
   },
@@ -157,4 +187,11 @@ export default {
 }
 </script>
 <style lang="scss" scoped>
+.integralAct {
+  background: #fff;
+  padding-top: 30px;
+  .inputWidth {
+    width: 200px;
+  }
+}
 </style>
