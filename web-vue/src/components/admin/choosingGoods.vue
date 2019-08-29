@@ -300,6 +300,7 @@ export default {
       logoImgUrl: '',
       NameEnlishInput: '',
       goodsIdsArr: [],
+      goodsRow: {},
       selectgoodsNum: 0,
       hxgoodsIds: [],
       choiseOne: false
@@ -339,7 +340,13 @@ export default {
         item.ischecked = false
       })
       if (flag === 'choiseOne') {
+        console.log('choiseOne', this.editGoodsId)
         this.choiseOne = true
+        this.trList.forEach(item => {
+          if (item.goodsId === this.editGoodsId) {
+            item.ischecked = true
+          }
+        })
         return
       }
       if (flag) {
@@ -358,7 +365,7 @@ export default {
   methods: {
     ...mapActions(['changeCrumbstitle', 'transmitGoodsIds']),
     defaultGrandClass () {
-      console.log(this.editGoodsId)
+      console.log('defaultGrandClass()', this.editGoodsId)
 
       if (this.editGoodsId !== 'add' && this.editGoodsId) {
         let obj = {
@@ -440,7 +447,7 @@ export default {
             return item.ischecked === false
           })
           console.log(flag)
-          if (flag.length === 0) {
+          if (flag.length === 0 && this.choiseOne === false) {
             this.checkedAll = true
           }
           this.trList = res.content.dataList
@@ -451,16 +458,24 @@ export default {
     // 行选中高亮
     handleClick (index, item) {
       this.clickIindex = index
-      // console.log(this.trList[index].ischecked)
-      let flagBefore = this.trList.filter((item, index) => {
-        return item.ischecked === true
+      console.log(this.trList[index].ischecked)
+      let flagBefore = this.trList.filter((tmpitem, index) => {
+        return tmpitem.ischecked === true
       })
-      console.log(flagBefore)
-      if (flagBefore.length) {
-        if (this.choiseOne) {
-          this.$message.error('只能选择一条商品')
-          return
-        }
+      console.log('flagBefore', flagBefore)
+      console.log('item', item)
+      // 单选模式
+      if (this.choiseOne) {
+        // item.ischecked = false
+        this.trList.forEach(tmpitem => {
+          if (item.goodsId === tmpitem.goodsId) {
+            tmpitem.ischecked = true
+          } else {
+            tmpitem.ischecked = false
+          }
+        })
+        this.goodsRow = item
+        return
       }
       this.trList[index].ischecked = !this.trList[index].ischecked
       let flag = this.trList.filter((item, index) => {
@@ -474,7 +489,6 @@ export default {
       }
       // let arr = []
       console.log(this.trList)
-
       console.log(this.goodsIdsArr)
       console.log('选中', index, item)
     },
@@ -495,6 +509,7 @@ export default {
       this.transmitGoodsIds(this.goodsIdsArr)
       this.choiseGooddialogVisible = false
       this.$http.$emit('result', this.goodsIdsArr)
+      this.$emit('resultGoodsRow', this.goodsRow)
     },
     // 页数改变
     handleCurrentChange () {

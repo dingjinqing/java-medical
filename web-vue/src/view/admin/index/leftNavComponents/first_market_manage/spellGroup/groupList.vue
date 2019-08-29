@@ -105,15 +105,6 @@
         </el-table-column>
       </el-table>
       <div class="footer">
-        <span>当前页面{{currentPage}}/{{pageCount}}，总记录 {{totalRows}}条</span>
-        <el-pagination
-          @current-change="initDataList"
-          :current-page.sync="currentPage"
-          layout="prev, pager, next, jumper"
-          :total="totalRows"
-        >
-        </el-pagination>
-
       </div>
       <pagination
         :page-params.sync="pageParams"
