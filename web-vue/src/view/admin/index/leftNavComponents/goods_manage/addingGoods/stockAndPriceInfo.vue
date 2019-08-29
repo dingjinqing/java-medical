@@ -5,7 +5,7 @@
       <el-form ref="stockAndPriceInfoForm" :model="goodsProductInfo" :rules="stockAndPriceRules" label-width="120px">
         <!--商品规格按钮-->
         <el-form-item label="商品规格：" v-if="!specInfoSwitch">
-          <el-button size="small" @click="addSpecClick">添加规格</el-button>
+          <el-button size="small" @click="addSpecClick" style="width: 170px;">添加规格</el-button>
         </el-form-item>
         <el-form-item label="商品规格：" v-if="specInfoSwitch">
           <div class="specInfoWrap">

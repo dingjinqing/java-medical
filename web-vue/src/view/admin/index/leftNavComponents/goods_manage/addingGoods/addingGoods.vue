@@ -1,6 +1,6 @@
 <template>
-  <div class="addGoods">
-    <el-card ref="elCardCmp" style="position: relative;padding-bottom:30px;">
+  <div class="addGoodsWrap">
+    <div id="addGoods" class="addGoodsContent">
       <!-- 头部导航 headerSteps-->
       <el-steps :active="currentStep" finish-status="finish" simple>
         <el-step title="编辑商品信息" icon="el-icon-edit" @click.native="headerStepsClick(1)" style="cursor: pointer"/>
@@ -14,14 +14,14 @@
       <addingGoodsDistributionInfo ref="goodsDistributionInfoCmp" v-show="currentStep==3"/>
 
       <!-- 底部按钮组件 -->
-      <div class="addingGoodsFooter" :style="goodsFooterStyle">
+      <div class="addingGoodsFooter">
         <el-button class="btn" type="primary" size="small">保存后返回列表</el-button>
         <el-button class="btn" size="small" @click="footerStepsClick(-1)" v-show="currentStep!==1">上一步</el-button>
         <el-button class="btn" size="small" @click="footerStepsClick(1)" v-show="currentStep!==3">下一步</el-button>
         <el-button class="btn"  size="small" type="primary" v-show="currentStep!==1">保存后继续添加</el-button>
         <el-button class="btn"  size="small" type="primary" v-show="currentStep!==1">保存后预览商品</el-button>
       </div>
-    </el-card>
+    </div>
   </div>
 </template>
 <script>
@@ -34,7 +34,6 @@ export default {
   components: { addingGoodsProductInfo, addingGoodsDetails, addingGoodsDistributionInfo },
   data () {
     return {
-      goodsFooterStyle: null,
       currentStep: 1,
       goodsProductInfoData: {},
       goodsDetailsData: {},
@@ -61,27 +60,29 @@ export default {
     }
   },
   mounted () {
-    // 根据elcard样式动态计算
-    this.goodsFooterStyle = {
-      width: this.$refs.elCardCmp.$el['offsetWidth'] + 'px',
-      left: this.$refs.elCardCmp.$el['offsetLeft'] + 'px'
-    }
   }
 }
 </script>
 <style scoped>
-.addGoods {
+.addGoodsWrap {
+  padding: 10px 10px;
   overflow-y: auto;
-  padding: 10px;
 }
-  .addingGoodsFooter{
-    background: #f8f8fa;
-    text-align: center;
-    box-sizing: border-box;
-    height: 50px;
-    padding-top: 10px;
-    position: fixed;
-    bottom: 0;
-    z-index: 2;
-  }
+.addGoodsContent{
+  background-color: white;
+  padding: 10px 10px 100px 10px;
+  position: relative;
+}
+.addingGoodsFooter{
+  background: #f8f8fa;
+  text-align: center;
+  box-sizing: border-box;
+  height: 50px;
+  padding-top: 10px;
+  position: fixed;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 2;
+}
 </style>
