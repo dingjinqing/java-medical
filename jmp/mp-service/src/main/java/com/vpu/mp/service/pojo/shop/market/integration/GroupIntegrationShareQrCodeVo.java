@@ -9,7 +9,7 @@ import lombok.NoArgsConstructor;
  */
 @Data
 @NoArgsConstructor
-public class GroupIntegrationShareQRCodeVo {
+public class GroupIntegrationShareQrCodeVo {
 	private String pageUrl;
 	private String imgUrl;
 }
