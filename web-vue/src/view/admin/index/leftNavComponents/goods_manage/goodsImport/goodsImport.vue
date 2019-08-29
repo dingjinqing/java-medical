@@ -1,10 +1,13 @@
 <template>
   <div class="container">
-    <!-- 测试块 -->
-    <section>
-      <el-button>{{this.$t('goodsImport.btn')}}</el-button>
+    <section class="">
+      <el-button @click="test">测试按钮</el-button>
+      <imageDialogExpansion
+        pageIndex='basicInfo'
+        :maxNum="maxNum"
+        @handleGoodsImgs='handleGoodsImgs'
+      />
     </section>
-
     <section>
       <!-- 全选 -->
       <el-checkbox
@@ -33,10 +36,11 @@
 </template>
 <script>
 import { getAreaSelect } from '@/api/admin/goodsManage/deliverTemplate/deliverTemplate.js'
-
+import imageDialogExpansion from '@/components/admin/imageDialogExpansion/imageDialogExpansion'
 export default {
   // 组件名
   name: '',
+  components: { imageDialogExpansion },
   // data 数据
   created () {
     this.fetchList()
@@ -46,6 +50,8 @@ export default {
   },
   data () {
     return {
+
+      maxNum: 8,
       list: [],
       dataList: [{
         id: 110000,
@@ -79,6 +85,12 @@ export default {
 
   // 方法
   methods: {
+    test () {
+      this.$http.$emit('dtVisible')
+    },
+    handleGoodsImgs (val) {
+      console.log(val)
+    },
     checkedAll () {
       if (this.checked) {
         // 全选

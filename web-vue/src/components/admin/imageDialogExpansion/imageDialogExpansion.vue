@@ -176,7 +176,7 @@ import { queryHeadImgsRequest, upmoreHeadImgsRequest, imgsHeaddeleteRequest } fr
 import { upmoreImgsRequest, queryImgsRequest, imgsdeleteRequest } from '@/api/admin/pictureSpace.js'
 export default {
   components: { Tree, Cropper },
-  props: ['pageIndex'],
+  props: ['pageIndex', 'maxNum'],
   data () {
     return {
       imgLists: [],
@@ -487,9 +487,9 @@ export default {
         let checked = this.img_list[index].checked
         console.log(checked, index)
         if (checked) {
-          if (this.imgLists.length > 4) {
+          if (this.imgLists.length > this.maxNum) {
             this.$message({
-              message: '最多上传5张图',
+              message: '最多上传{{maxNum}}张图',
               center: true,
               type: 'warning',
               duration: 1000,
@@ -503,21 +503,6 @@ export default {
         }
         console.log(this.imgLists)
       }
-
-      // if (this.imgLists.length > 4) {
-      //   this.$message({
-      //     message: '最多上传5张图',
-      //     center: true,
-      //     type: 'warning',
-      //     duration: 1000,
-      //     showClose: true
-      //   })
-      // } else {
-      //   this.imgLists.push({
-      //     url
-      //   })
-      // }
-      // this.dialogTableVisible = false
     },
     // 鼠标划入
     enter (index) {

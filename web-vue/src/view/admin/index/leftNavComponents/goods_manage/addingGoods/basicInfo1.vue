@@ -267,6 +267,7 @@
     <!-- 商品主图选择弹窗 -->
     <imageDialogExpansion
       pageIndex='basicInfo'
+      :maxNum="maxNum"
       @handleGoodsImgs='handleGoodsImgs'
     />
   </div>
@@ -287,6 +288,8 @@ export default {
   components: { addBrandDialog, imageDialogExpansion },
   data () {
     return {
+      // 图片最多上传数量
+      maxNum: 5,
       // 商品主图上传相关data
       srcList: {
         src1: `${this.$imageHost}/image/admin/add_img.png`
