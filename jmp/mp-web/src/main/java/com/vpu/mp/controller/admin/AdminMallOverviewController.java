@@ -17,7 +17,8 @@ import com.vpu.mp.service.foundation.util.PageResult;
 import com.vpu.mp.service.pojo.saas.article.ArticleListQueryParam;
 import com.vpu.mp.service.pojo.saas.article.ArticleParam;
 import com.vpu.mp.service.pojo.saas.article.ArticleVo;
-import com.vpu.mp.service.pojo.shop.overview.BindUnBindOfficialParam;
+import com.vpu.mp.service.pojo.shop.auth.AdminTokenAuthInfo;
+import com.vpu.mp.service.pojo.shop.overview.BindAndUnParam;
 import com.vpu.mp.service.pojo.shop.overview.BindofficialVo;
 import com.vpu.mp.service.pojo.shop.overview.DataDemonstrationParam;
 import com.vpu.mp.service.pojo.shop.overview.DataDemonstrationVo;
@@ -60,9 +61,10 @@ public class AdminMallOverviewController extends AdminBaseController {
      * @param param
      * @return
      */
-    @PostMapping("/api/admin/malloverview/bindUnBindOfficial")
-    public JsonResult bindUnBindOfficial(@RequestBody @Validated BindUnBindOfficialParam param){
-        return saas.overviewService.bindUnBindOfficial(param) > 0 ? success() : fail(JsonResultMessage.OVERVIEW_MALL_BING_UNBING_FAILED);
+    @PostMapping("/api/admin/survey/official/bind")
+    public JsonResult bindUnBindOfficial(@RequestBody BindAndUnParam param){
+    	boolean bindUnBindOfficial = saas.overviewService.bindUnBindOfficial(param.getAct(),adminAuth.user(),param.getAccountId());
+        return bindUnBindOfficial?success():fail();
     }
 
     /**
