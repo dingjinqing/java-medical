@@ -6,6 +6,7 @@ import org.jooq.Record;
 import org.jooq.Result;
 import org.slf4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -42,6 +43,9 @@ public class AdminWechatApiController extends AdminBaseController {
 
 	@Autowired
 	protected OpenPlatform open;
+	
+	@Value(value = "${official.appId}")
+	private String bindAppId;
 
 	/**
 	 * 开始小程序授权
@@ -267,10 +271,13 @@ public class AdminWechatApiController extends AdminBaseController {
 	 * @param appId 公众号的appid
 	 * @return
 	 */
-	@GetMapping("/api/admin/public/service/bind/getOfficialQrCode/{appId}")
-	public JsonResult generateThirdPartCode(@PathVariable String appId) {
+	@GetMapping("/api/admin/public/service/bind/getOfficialQrCode")
+	public JsonResult generateThirdPartCode() {
 		try {
-			String generateThirdPartCode = saas.shop.officeAccount.generateThirdPartCode(adminAuth.user(),appId);
+			if(!adminAuth.user().shopLogin) {
+				return fail(JsonResultCode.CODE_ACCOUNT_ROLE__SHOP_SELECT);
+			}
+			String generateThirdPartCode = saas.shop.officeAccount.generateThirdPartCode(adminAuth.user(),bindAppId);
 			return success(generateThirdPartCode);
 		} catch (WxErrorException e) {
 			logger().debug(e.getMessage(),e);
