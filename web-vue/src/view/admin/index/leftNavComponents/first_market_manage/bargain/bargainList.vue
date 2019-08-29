@@ -31,6 +31,7 @@
     </div>
     <div class="table_list">
       <el-table
+        v-loading="loading"
         class="version-manage-table"
         header-row-class-name="tableClss"
         :data="tableData"
@@ -195,6 +196,7 @@ export default {
       currentPage: 1,
       tableData: [],
       pageParams: {},
+      loading: false,
       dailyCutTimes: 0
     }
   },
@@ -210,6 +212,7 @@ export default {
   },
   methods: {
     initDataList () {
+      this.loading = true
       let param = {
         'state': parseInt(this.tabIndex),
         'currentPage': 1
@@ -219,6 +222,7 @@ export default {
         if (res.error === 0) {
           this.handleData(res.content.dataList)
           this.pageParams = res.content.page
+          this.loading = false
         }
       })
     },

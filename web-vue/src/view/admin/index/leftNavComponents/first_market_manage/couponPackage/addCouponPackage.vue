@@ -15,7 +15,7 @@
               <img :src="$imageHost + '/image/admin/cou_package_bg.png'">
             </div>
             <div class="content_info">
-              <div class="text_title">{{pack_name?pack_name:'优惠券礼包'}}</div>
+              <div class="text_title">{{param.packName?param.packName:'优惠券礼包'}}</div>
               <div class="package_info">
                 <div class="package_title">
                   ——— <span>优惠券礼包</span> ———
@@ -55,7 +55,7 @@
               </div>
               <div class="package_rule">
                 <div class="rule_title">活动规则</div>
-                <div class="rule_info">{{act_rule}}</div>
+                <div class="rule_info">{{param.actRule}}</div>
               </div>
             </div>
           </div>
@@ -71,7 +71,7 @@
               </div>
               <div class="item_right">
                 <el-input
-                  v-model="act_name"
+                  v-model="param.actName"
                   placeholder="最多支持10个字"
                   size="small"
                   class="default_input"
@@ -89,7 +89,7 @@
                   range-separator="至"
                   start-placeholder="开始日期"
                   end-placeholder="结束日期"
-                  format="yyyy-MM-dd HH:mm:ss"
+                  value-format="yyyy-MM-dd HH:mm:ss"
                   size="small"
                 >
                 </el-date-picker>
@@ -99,7 +99,7 @@
               <div class="item_title"><em>*</em> 礼包名称：</div>
               <div class="item_right">
                 <el-input
-                  v-model="pack_name"
+                  v-model="param.packName"
                   placeholder="最多支持8个字"
                   size="small"
                   class="default_input"
@@ -207,7 +207,7 @@
               <div class="item_title"><em>*</em> 每人限领礼包数量：</div>
               <div class="item_right">
                 <el-input
-                  v-model="limit_get_times"
+                  v-model="param.limitGetTimes"
                   placeholder=""
                   size="small"
                   class="small_input"
@@ -219,7 +219,7 @@
               <div class="item_title"><em>*</em> 礼包发放数量：</div>
               <div class="item_right">
                 <el-input
-                  v-model="total_amount"
+                  v-model="param.totalAmount"
                   placeholder=""
                   size="small"
                   class="small_input"
@@ -232,34 +232,34 @@
               <div class="item_right">
                 <p>
                   <el-radio
-                    v-model="access_mode"
+                    v-model="param.accessMode"
                     label="0"
                   >现金购买</el-radio>
                   <el-radio
-                    v-model="access_mode"
+                    v-model="param.accessMode"
                     label="1"
                   >积分购买</el-radio>
                   <el-radio
-                    v-model="access_mode"
+                    v-model="param.accessMode"
                     label="2"
                   >直接领取</el-radio>
                 </p>
                 <p class="package_get_choose">
-                  <span v-if="access_mode==='0'">
+                  <span v-if="param.accessMode==='0'">
                     需支付：<el-input
-                      v-model="accessCost.access_cost1"
+                      v-model="param.accessCost"
                       class="small_input"
                       size="small"
                     ></el-input> 元，
                   </span>
-                  <span v-if="access_mode==='1'">
+                  <span v-if="param.accessMode==='1'">
                     需支付：<el-input
-                      v-model="accessCost.access_cost2"
+                      v-model="param.accessCost"
                       class="small_input"
                       size="small"
                     ></el-input> 积分，
                   </span>
-                  <span v-if="access_mode!='2'">
+                  <span v-if="param.accessMode!='2'">
                     当前已选优惠券可优惠金额总和为 0.00元
                   </span>
                 </p>
@@ -269,7 +269,7 @@
               <div class="item_title"><em>*</em> 活动规则：</div>
               <div class="item_right">
                 <el-input
-                  v-model="act_rule"
+                  v-model="param.actRule"
                   placeholder="请输入活动规则"
                   type="textarea"
                   :rows="5"
@@ -284,6 +284,7 @@
     </div>
     <div class="footer">
       <el-button
+        @click="submit"
         type="primary"
         size="small"
       >保存</el-button>
@@ -386,18 +387,24 @@
 </template>
 
 <script>
+import { addCouponPackage } from '@/api/admin/marketManage/couponPackage.js'
 export default {
   components: {
     AddCouponDialog: () => import('@/view/admin/index/leftNavComponents/user_manger/membershipCard/addCouponDialog')
   },
   data () {
     return {
-      act_name: '',
-      pack_name: '',
-      limit_get_times: '',
-      total_amount: '',
-      act_rule: '',
-      access_mode: '0',
+      param: {
+        actName: '',
+        packName: '',
+        limitGetTimes: '',
+        totalAmount: '',
+        actRule: '',
+        accessMode: '0',
+        couponPackVoucher: []
+
+      },
+      effectiveDate: '',
       coupon_info: [],
       couponDialogFlag: false,
       couponSetDialogFlag: false,
@@ -405,7 +412,6 @@ export default {
         access_cost1: '',
         access_cost2: ''
       },
-      effectiveDate: [],
       coupon_set: {
         immediatelyGrantAmount: 0,
         timingEvery: 0,
@@ -413,6 +419,7 @@ export default {
         timingTime: '1',
         timingUnit: '0'
       },
+
       coupon_set_date: [
         {
           value: '0',
@@ -486,15 +493,8 @@ export default {
         type: 'warning'
       }).then(() => {
         this.coupon_info.splice(index, 1)
-        this.$message({
-          type: 'success',
-          message: '删除成功!'
-        })
       }).catch(() => {
-        this.$message({
-          type: 'info',
-          message: '已取消删除'
-        })
+
       })
     },
     // 同id去重
@@ -506,7 +506,41 @@ export default {
         }
       })
       return [...map.values()]
+    },
+    submit () {
+      this.coupon_info.forEach(element => {
+        var voucher = {}
+        voucher.voucherId = element.id
+        voucher.totalAmount = element.send_num
+        voucher.immediatelyGrantAmount = element.coupon_set.immediatelyGrantAmount
+        voucher.timingAmount = element.coupon_set.timingAmount
+        voucher.timingEvery = element.coupon_set.timingEvery
+        voucher.timingTime = element.coupon_set.timingTime
+        voucher.timingUnit = element.coupon_set.timingUnit
+        this.param.couponPackVoucher.push(voucher)
+      })
+      this.param.startTime = this.effectiveDate[0]
+      this.param.endTime = this.effectiveDate[1]
+      addCouponPackage(this.param).then((res) => {
+        if (res.error === 0) {
+          this.$message({
+            type: 'success',
+            message: '保存成功!'
+          })
+          this.$router.push({
+            name: 'coupon_package'
+          })
+        } else {
+          this.$message({
+            type: 'fail',
+            message: '保存失败!'
+          })
+        }
+      })
     }
+  },
+  mounted () {
+
   }
 }
 </script>
