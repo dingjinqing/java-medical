@@ -105,58 +105,69 @@
           align="center"
         >
           <template slot-scope="scope">
-            <el-tooltip
-              content="编辑"
-              placement="top"
-            >
-              <i
-                class="el-icon-edit-outline"
-                style="color:#409EFF;fontSize:16px"
-              ></i>
-            </el-tooltip>
-            <el-tooltip
-              v-if="scope.row.status === 1"
-              content="停用"
-              placement="top"
-            >
-              <i
-                @click="puaseBargain(scope.row.id)"
-                class="el-icon-remove-outline"
-                style="color:#409EFF;fontSize:16px"
-              ></i>
-            </el-tooltip>
-            <el-tooltip
-              v-else
-              content="启用"
-              placement="top"
-            >
-              <i
-                @click="enableBargain(scope.row.id)"
-                class="el-icon-check"
-                style="color:#409EFF;fontSize:16px"
-              ></i>
-            </el-tooltip>
-            <el-tooltip
-              content="分享"
-              placement="top"
-            >
-              <i
-                @click="shareBargain(scope.row.id)"
-                class="el-icon-share"
-                style="color:#409EFF;fontSize:16px"
-              ></i>
-            </el-tooltip>
-            <el-tooltip
-              content="删除"
-              placement="top"
-            >
-              <i
-                @click="delBargain(scope.row.id)"
-                class="el-icon-delete"
-                style="color:#409EFF;fontSize:16px"
-              ></i>
-            </el-tooltip>
-
+            <div class="operation">
+              <el-tooltip
+                class="item"
+                effect="dark"
+                content="编辑"
+                placement="top"
+              >
+                <i
+                  class="el-icon-edit-outline"
+                  style="color:#409EFF;fontSize:16px"
+                ></i>
+              </el-tooltip>
+              <el-tooltip
+                v-if="scope.row.status === 1"
+                class="item"
+                effect="dark"
+                content="停用"
+                placement="top"
+              >
+                <i
+                  @click="puaseBargain(scope.row.id)"
+                  class="el-icon-remove-outline"
+                  style="color:#409EFF;fontSize:16px"
+                ></i>
+              </el-tooltip>
+              <el-tooltip
+                v-else
+                class="item"
+                effect="dark"
+                content="启用"
+                placement="top"
+              >
+                <i
+                  @click="enableBargain(scope.row.id)"
+                  class="el-icon-check"
+                  style="color:#409EFF;fontSize:16px"
+                ></i>
+              </el-tooltip>
+              <el-tooltip
+                class="item"
+                effect="dark"
+                content="分享"
+                placement="top"
+              >
+                <i
+                  @click="shareBargain(scope.row.id)"
+                  class="el-icon-share"
+                  style="color:#409EFF;fontSize:16px"
+                ></i>
+              </el-tooltip>
+              <el-tooltip
+                class="item"
+                effect="dark"
+                content="删除"
+                placement="top"
+              >
+                <i
+                  @click="delBargain(scope.row.id)"
+                  class="el-icon-delete"
+                  style="color:#409EFF;fontSize:16px"
+                ></i>
+              </el-tooltip>
+            </div>
           </template>
         </el-table-column>
       </el-table>
@@ -352,6 +363,15 @@ export default {
         }
       }
     }
+  }
+}
+.operation {
+  display: flex;
+  justify-content: space-around;
+  > .item {
+    font-size: 22px;
+    color: #66b1ff;
+    cursor: pointer;
   }
 }
 /deep/ .tableClss th {

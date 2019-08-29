@@ -51,6 +51,7 @@
           </div>
         </div>
         <el-table
+          v-loading="loading"
           :data="tableData"
           style="width:100%;"
           border
@@ -114,10 +115,23 @@
                   effect="dark"
                   content="编辑"
                   placement="top"
+                  v-if="scope.row.status === 1"
                 >
                   <i
                     class="el-icon-edit-outline"
                     @click="edit(scope)"
+                  ></i>
+                </el-tooltip>
+                <el-tooltip
+                  class="item"
+                  effect="dark"
+                  content="删除"
+                  placement="top"
+                  v-else
+                >
+                  <i
+                    @click="delCouponPackage(scope.row.id)"
+                    class="el-icon-delete"
                   ></i>
                 </el-tooltip>
                 <el-tooltip
@@ -133,6 +147,8 @@
                 </el-tooltip>
                 <el-tooltip
                   v-if="scope.row.status === 1"
+                  class="item"
+                  effect="dark"
                   content="停用"
                   placement="top"
                 >
@@ -143,6 +159,8 @@
                 </el-tooltip>
                 <el-tooltip
                   v-else
+                  class="item"
+                  effect="dark"
                   content="启用"
                   placement="top"
                 >
@@ -151,17 +169,7 @@
                     class="el-icon-check"
                   ></i>
                 </el-tooltip>
-                <el-tooltip
-                  class="item"
-                  effect="dark"
-                  content="删除"
-                  placement="top"
-                >
-                  <i
-                    @click="delCouponPackage(scope.row.id)"
-                    class="el-icon-delete"
-                  ></i>
-                </el-tooltip>
+
                 <el-tooltip
                   class="item"
                   effect="dark"
@@ -205,6 +213,7 @@ export default {
       tabIndex: 1,
       currentPage: 1,
       pageParams: {},
+      loading: false,
 
       activeName: 'first',
       actName: '',
@@ -222,6 +231,7 @@ export default {
   },
   methods: {
     initDataList () {
+      this.loading = true
       let param = {
         'state': parseInt(this.tabIndex),
         'accessMode': parseInt(this.accessMode),
@@ -234,6 +244,7 @@ export default {
         if (res.error === 0) {
           this.handleData(res.content.dataList)
           this.pageParams = res.content.page
+          this.loading = false
         }
       })
     },

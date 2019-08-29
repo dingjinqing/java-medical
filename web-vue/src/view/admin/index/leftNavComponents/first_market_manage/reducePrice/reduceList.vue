@@ -14,6 +14,7 @@
       </div>
       <div class="table_box">
         <el-table
+          v-loading="loading"
           :data="tableData"
           style="width:100%;"
           border
@@ -36,16 +37,6 @@
             >
               <template slot-scope="scope">
                 <span v-html="scope.row.startTime+'<br/>至<br/>'+scope.row.endTime"></span>
-              </template>
-            </el-table-column>
-            <el-table-column
-              :prop="item.prop"
-              :label="item.label"
-              :key="index"
-              v-else-if="item.label === '活动状态'"
-            >
-              <template slot-scope="scope">
-                {{scope.row.status ? '进行中' : '已停用'}}
               </template>
             </el-table-column>
             <el-table-column
@@ -136,6 +127,7 @@
 </template>
 
 <script>
+import { reducePriceList, updateReducePrice, deleteReducePrice } from '@/api/admin/marketManage/reducePrice.js'
 export default {
   components: {
     statusTab: () => import('@/components/admin/status/statusTab'),
@@ -148,93 +140,13 @@ export default {
       tabIndex: 1,
       currentPage: 1,
       pageParams: {},
-      actName: '',
-      packName: '',
-      accessMode: -1,
-      tableData: [
-        {
-          id: 1,
-          name: '活动活动',
-          goodsAmount: 1,
-          startTime: '2019-08-14 00:00:00',
-          endTime: '2019-09-14 00:00:00',
-          status: 1,
-          orderAmount: 0,
-          userAmount: 0,
-          paymentTotalAmount: 0
-        },
-        {
-          id: 1,
-          name: '活动活动',
-          goodsAmount: 1,
-          startTime: '2019-08-14 00:00:00',
-          endTime: '2019-09-14 00:00:00',
-          status: 1,
-          orderAmount: 0,
-          userAmount: 0,
-          paymentTotalAmount: 0
-        },
-        {
-          id: 1,
-          name: '活动活动',
-          goodsAmount: 1,
-          startTime: '2019-08-14 00:00:00',
-          endTime: '2019-09-14 00:00:00',
-          status: 0,
-          orderAmount: 0,
-          userAmount: 0,
-          paymentTotalAmount: 0
-        },
-        {
-          id: 1,
-          name: '活动活动',
-          goodsAmount: 1,
-          startTime: '2019-08-14 00:00:00',
-          endTime: '2019-09-14 00:00:00',
-          status: 0,
-          orderAmount: 0,
-          userAmount: 0,
-          paymentTotalAmount: 0
-        },
-        {
-          id: 1,
-          name: '活动活动',
-          goodsAmount: 1,
-          startTime: '2019-08-14 00:00:00',
-          endTime: '2019-09-14 00:00:00',
-          status: 1,
-          orderAmount: 6,
-          userAmount: 7,
-          paymentTotalAmount: 8
-        },
-        {
-          id: 1,
-          name: '活动活动',
-          goodsAmount: 1,
-          startTime: '2019-08-14 00:00:00',
-          endTime: '2019-09-14 00:00:00',
-          status: 1,
-          orderAmount: 100,
-          userAmount: 2,
-          paymentTotalAmount: 6
-        },
-        {
-          id: 1,
-          name: '活动活动',
-          goodsAmount: 1,
-          startTime: '2019-08-14 00:00:00',
-          endTime: '2019-09-14 00:00:00',
-          status: 0,
-          orderAmount: 0,
-          userAmount: 0,
-          paymentTotalAmount: 0
-        }
-      ],
+      tableData: [],
+      loading: false,
       tableItem: [
         { prop: 'name', label: '活动名称' },
         { prop: 'goodsAmount', label: '商品数量' },
-        { prop: '', label: '有效期' },
-        { prop: '', label: '活动状态' },
+        { prop: 'vaildDate', label: '有效期' },
+        { prop: 'statusName', label: '活动状态' },
         { prop: 'orderAmount', label: '付款订单数' },
         { prop: 'userAmount', label: '付款用户数' },
         { prop: 'paymentTotalAmount', label: '付款总金额' },
@@ -244,14 +156,27 @@ export default {
   },
   methods: {
     initDataList () {
+      this.loading = true
       let param = {
         'state': parseInt(this.tabIndex),
-        'accessMode': parseInt(this.accessMode),
-        'actName': this.actName,
-        'packName': this.packName,
         'currentPage': 1
       }
-      console.log(param)
+      reducePriceList(param).then((res) => {
+        if (res.error === 0) {
+          this.handleData(res.content.dataList)
+          this.pageParams = res.content.page
+          this.loading = false
+        }
+      })
+    },
+    // 表格数据处理
+    handleData (data) {
+      data.map((item, index) => {
+        // TODO: 国际化
+        item.vaildDate = `${item.startTime}至${item.endTime}`
+        item.statusName = this.getActStatusString(item.status, item.startTime, item.endTime)
+      })
+      this.tableData = data
     },
     addReduce () {
       this.$router.push({
@@ -263,21 +188,63 @@ export default {
       let param = {
         'id': id
       }
-      console.log(param)
+      this.$confirm('确定删除该限时降价活动?', '提示', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
+      }).then(() => {
+        deleteReducePrice(param).then((res) => {
+          if (res.error === 0) {
+            this.$message({
+              type: 'success',
+              message: '删除成功!'
+            })
+            this.initDataList()
+          }
+        })
+      })
     },
     disable (id) {
       let param = {
         'id': id,
         'status': 0
       }
-      console.log(param)
+      this.$confirm('确定停用该限时降价活动?', '提示', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
+      }).then(() => {
+        updateReducePrice(param).then((res) => {
+          if (res.error === 0) {
+            this.$message({
+              type: 'success',
+              message: '停用成功!'
+            })
+            this.initDataList()
+          }
+        })
+      })
     },
     enable (id) {
       let param = {
         'id': id,
         'status': 1
       }
-      console.log(param)
+      this.$confirm('确定启用该限时降价活动?', '提示', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
+      }).then(() => {
+        updateReducePrice(param).then((res) => {
+          if (res.error === 0) {
+            this.$message({
+              type: 'success',
+              message: '启用成功!'
+            })
+            this.initDataList()
+          }
+        })
+      })
     }
   },
   watch: {
