@@ -466,6 +466,16 @@ public class Util {
         DecimalFormat format = new DecimalFormat("###.00");
         return format.format(amount);
     }
+
+    /**
+     * 数值转字符串
+     */
+    public static String numberToString(Number fullNumber) {
+        if (null != fullNumber) {
+            return String.valueOf(fullNumber);
+        }
+        return null;
+    }
     
     /**
      * 获取自定义格式化后的当前时间

@@ -36,6 +36,7 @@ import static org.apache.commons.lang3.StringUtils.isNotEmpty;
 import static org.jooq.impl.DSL.countDistinct;
 import static org.jooq.impl.DSL.select;
 import static org.springframework.util.StringUtils.isEmpty;
+import static com.vpu.mp.service.foundation.util.Util.numberToString;
 
 /**
  * 赠品
@@ -107,16 +108,6 @@ public class GiftService extends ShopBaseService {
         ruleJson.setPayEndTime(param.getPayEndTime());
         ruleJson.setPayStartTime(param.getPayStartTime());
         return ruleJson;
-    }
-
-    /**
-     * 数值转字符串
-     */
-    private String numberToString(Number fullNumber) {
-        if (null != fullNumber) {
-            return String.valueOf(fullNumber);
-        }
-        return null;
     }
 
     /**
