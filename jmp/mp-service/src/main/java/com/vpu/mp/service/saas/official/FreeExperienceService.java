@@ -36,16 +36,19 @@ public class FreeExperienceService extends MainBaseService{
 		
 		SelectWhereStep<Record> select = db().select().from(SHOP_FREE_EXPERIENCE);
 		
-		//多条件选择
+		/** 多条件选择 */
 		select = this.buildOptions(select,param);
-		//升序
+		/** 升序 */
 		select.orderBy(SHOP_FREE_EXPERIENCE.FE_ID.asc());
 		
-		if(param.page != null && param.page.pageRows != null && param.page.pageRows>0) {
-			return this.getPageResult(select,param.page.currentPage,param.page.pageRows,ShopFreeExperienceOutPut.class);
-		}else {
-			return this.getPageResult(select, param.page.currentPage,ShopFreeExperienceOutPut.class);
-		}
+		/** 历史遗留代码
+			if(param.page != null && param.page.pageRows != null && param.page.pageRows>0) {
+				return this.getPageResult(select,param.page.currentPage,param.page.pageRows,ShopFreeExperienceOutPut.class);
+			}else {
+				return this.getPageResult(select, param.page.currentPage,ShopFreeExperienceOutPut.class);
+			}
+		*/
+		return this.getPageResult(select,param.getCurrentPage(),param.getPageRow(),ShopFreeExperienceOutPut.class);
 	}
 	
 	/**

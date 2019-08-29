@@ -1,6 +1,6 @@
 package com.vpu.mp.service.pojo.saas.offical;
 
-import com.vpu.mp.service.foundation.util.Page;
+
 
 import lombok.Data;
 
@@ -10,16 +10,21 @@ import lombok.Data;
  */
 @Data
 public class FreeExperiencePageListParam {
-	static final Page DEFAULTPAGE = new Page();
+
+	
 	public String company;
 	public String contact;
 	public String startTime;
 	public String endTime;
 	public Integer provinceId;
 	public Integer searchShopId;
-	public Page page = DEFAULTPAGE;
 	
-	/**
+	/** 当前页 */
+	public Integer currentPage;
+	/** 每页最多显示项数 */
+	public Integer pageRow;
+	
+	/** 
 	 *  已处理： 1 ； 未处理： 0
 	 */
 	public Byte isDeal;   
