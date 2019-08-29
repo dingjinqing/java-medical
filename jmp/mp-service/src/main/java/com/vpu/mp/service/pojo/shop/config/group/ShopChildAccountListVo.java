@@ -5,6 +5,7 @@ import java.util.List;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonInclude.Include;
+import com.vpu.mp.service.foundation.util.PageResult;
 
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -21,5 +22,5 @@ import lombok.NoArgsConstructor;
 public class ShopChildAccountListVo {
 	private List<ShopChildAccountVo>  mobileList;
 	private List<ShopRoleVo> groupRoleList;
-	private List<ShopRoleAddListVo>  totalList;	
+	private PageResult<ShopRoleAddListVo>  totalList;	
 }

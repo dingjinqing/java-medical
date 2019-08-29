@@ -20,4 +20,12 @@ public class ShopRoleAddListVo {
 	private Integer roleId;
 	private String roleName;
 	//TODO 加公众号绑定相关字段
+	private Byte isBind;
+	/**
+	 * 公众号openid
+	 */
+	private String officialOpenId;
+	private String officialNickName;
+	private String headImgUrl;
+	
 }
