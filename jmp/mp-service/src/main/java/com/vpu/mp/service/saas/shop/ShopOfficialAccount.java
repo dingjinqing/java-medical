@@ -274,12 +274,6 @@ public class ShopOfficialAccount extends MainBaseService {
 	 * @throws WxErrorException
 	 */
 	public String generateThirdPartCode(AdminTokenAuthInfo user, String appId) throws WxErrorException {
-		String key = String.valueOf(user.loginShopId) + "official_scene_ticket";
-		String string = jedis.get(key);
-		if(StringUtils.isNotEmpty(string)) {
-			logger().debug("公众号 " + appId + "创建二维码,缓存中存在" +string);
-			return string;
-		}
 		boolean subLogin = user.isSubLogin();
 		// 主账户是1
 		int accountAction = subLogin ? 2 : 1;
@@ -287,6 +281,14 @@ public class ShopOfficialAccount extends MainBaseService {
 		int expireSeconds = 24 * 60 * 30 * 60 - 60;
 		//$sceneValue = $shopId.'&'.$accountAction.'&'.$accountId;
 		String sceneValue = user.loginShopId.toString() + "&" + String.valueOf(accountAction) + "&"+ String.valueOf(accountId);
+		//查看缓存中是否存了二维码
+		String key = "official_scene_ticket@"+sceneValue;
+		String string = jedis.get(key);
+		if(StringUtils.isNotEmpty(string)) {
+			logger().debug("公众号 " + appId + "创建二维码,缓存中存在" +string);
+			return string;
+		}
+		
 		WxMpQrcodeService qrcodeService = open().getWxOpenComponentService().getWxMpServiceByAppid(appId).getQrcodeService();
 		WxMpQrCodeTicket qrCodeCreateTmpTicket = qrcodeService.qrCodeCreateTmpTicket(sceneValue, expireSeconds);
 		// 获取的二维码ticket
