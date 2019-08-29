@@ -107,7 +107,7 @@ public class ShareRewardService extends ShopBaseService {
      * 当查询所有的活动时，需要判定每一个活动的实时具体状态
      */
     private Byte getPageStatus(ShareRewardShowVo vo) {
-        if (PURCHASE_TERMINATED == vo.getStatus()) {
+        if (FLAG_ONE.equals(vo.getStatus())) {
             //已停用状态
             return PURCHASE_TERMINATED;
         }
