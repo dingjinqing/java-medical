@@ -5,6 +5,7 @@ import java.util.List;
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.util.StringUtils;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -28,6 +29,7 @@ import com.vpu.mp.service.pojo.shop.config.ShopMsgTempConfig;
 import com.vpu.mp.service.pojo.shop.config.ShopMsgTempJsonConfig;
 import com.vpu.mp.service.pojo.shop.config.group.ShopChildAccountListVo;
 import com.vpu.mp.service.pojo.shop.config.group.ShopChildAccountVo;
+import com.vpu.mp.service.pojo.shop.config.group.ShopRoleAddListParam;
 import com.vpu.mp.service.pojo.shop.config.group.ShopRoleAddListVo;
 import com.vpu.mp.service.pojo.shop.config.group.ShopRoleAddParam;
 import com.vpu.mp.service.pojo.shop.config.group.ShopRoleDelParam;
@@ -54,6 +56,9 @@ import com.vpu.mp.service.pojo.shop.operation.RecordAdminActionParam;
 @RequestMapping(value = "/api/admin/config")
 public class AdminBasicConfigController extends AdminBaseController{
 	private static int TWENTYFIVE=25;
+	
+	@Value(value = "${official.appId}")
+	private String bindAppId;
 	
     /**
      * 服务承诺--列表
@@ -314,7 +319,7 @@ public class AdminBasicConfigController extends AdminBaseController{
 	 * @return
 	 */
 	@RequestMapping(value = "/role/query")
-	public JsonResult queryaddRoleToMobile() {
+	public JsonResult queryaddRoleToMobile(@RequestBody ShopRoleAddListParam sAddListParam) {
 		if (StringUtils.isEmpty(adminAuth.user().getLoginShopId())) {
 			// 请先选择店铺
 			return fail();
@@ -324,10 +329,12 @@ public class AdminBasicConfigController extends AdminBaseController{
 		// 权限组
 		List<ShopRoleVo> groupRoleList = saas.shop.role.getInfo(adminAuth.user().getSysId());
 		// 下面显示的子账户对应的列表
-		List<ShopRoleAddListVo> totalList = saas.shop.subAccount.queryRoleAndAccount(adminAuth.user().getSysId());
+		//List<ShopRoleAddListVo> totalList = saas.shop.subAccount.queryRoleAndAccount(adminAuth.user().getSysId());
+		PageResult<ShopRoleAddListVo> accountRolePageList = saas.shop.subAccount.getAccountRolePageList(adminAuth.user().loginShopId, sAddListParam);
+		PageResult<ShopRoleAddListVo> userList = saas.shop.mpOfficialAccountUserService.getUserList(accountRolePageList, bindAppId);
 		ShopChildAccountListVo voList = new ShopChildAccountListVo();
 		voList.setMobileList(mobileList);
-		voList.setTotalList(totalList);
+		voList.setTotalList(userList);
 		voList.setGroupRoleList(groupRoleList);
 		return success(voList);
 	}
