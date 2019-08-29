@@ -453,7 +453,6 @@ public class MpAuthShopService extends MainBaseService {
 		Gson gson = new GsonBuilder().setPrettyPrinting().disableHtmlEscaping().create();
 		JsonParser parser = new JsonParser();
 		JsonElement je = parser.parse(params.toString());
-		System.out.println(gson.toJson(je));
 		String response = maService.post(WxOpenMaService.API_CODE_COMMIT, gson.toJson(je));
 		WxOpenResult result = WxMaGsonBuilder.create().fromJson(response, WxOpenResult.class);
 		if(result.isSuccess()) {
@@ -804,7 +803,6 @@ public class MpAuthShopService extends MainBaseService {
 		if (mp.getAuditId() != null && mp.getAuditState().equals(AUDIT_STATE_AUDITING)) {
 			WxOpenMaService maService = this.getMaServiceByAppId(appId);
 			result = maService.getAuditStatus(mp.getAuditId());
-			System.out.println(result);
 			if (result.isSuccess()) {
 				if (result.getStatus().equals(WX_AUTH_STATUS_PASSED)) {
 					mp.setAuditState(AUDIT_STATE_AUDIT_SUCCESS);
