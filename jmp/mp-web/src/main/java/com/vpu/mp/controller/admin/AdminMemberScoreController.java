@@ -5,6 +5,7 @@ import static com.vpu.mp.service.pojo.shop.member.score.ScoreStatusConstant.USED
 
 import javax.validation.Valid;
 
+import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
@@ -65,12 +66,14 @@ public class AdminMemberScoreController extends AdminBaseController {
 				param.setScoreStatus(USED_SCORE_STATUS);
 			}
 			
+			/** 获取语言 用于国际化 */
+			String language = StringUtils.isEmpty(request.getHeader("V-Lang"))?"":request.getHeader("V-Lang");
 			
 			for(int i=0;i<userNumber;i++) {
 				Integer userId = arrayUserId[i];
 					/** -处理积分变动产生的异常 */
 					try {
-						shop().member.score.updateMemberScore(param,subAccountId,userId,tradeType,tradeFlow);
+						shop().member.score.updateMemberScore(param,subAccountId,userId,tradeType,tradeFlow,language);
 					} catch (MpException e) {
 						logger().info("积分更新失败");
 						return fail(e.getErrorCode().getMessage());

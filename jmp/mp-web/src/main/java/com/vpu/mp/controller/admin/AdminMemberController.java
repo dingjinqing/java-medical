@@ -39,7 +39,8 @@ public class AdminMemberController extends AdminBaseController{
 	}
 	
 	/**
-	 * 会员列表
+	 * 会员列表分页查询
+	 * @param param
 	 * @return
 	 */
 	@PostMapping("/list")

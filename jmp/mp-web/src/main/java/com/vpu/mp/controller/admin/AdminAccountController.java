@@ -4,6 +4,9 @@ import static com.vpu.mp.service.pojo.shop.operation.RecordTradeEnum.ACCOUNT_DEF
 import static com.vpu.mp.service.pojo.shop.operation.RecordTradeEnum.TRADE_FLOW_INCOME;
 import static com.vpu.mp.service.pojo.shop.operation.RecordTradeEnum.TRADE_FLOW_OUTCOME;
 
+import javax.servlet.http.HttpServletRequest;
+
+import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 
@@ -35,9 +38,13 @@ public class AdminAccountController extends AdminBaseController {
 			tradeFlow = TRADE_FLOW_INCOME.getValue();
 		}
 		
+		/** 获取语言 用于国际化 */
+		String language = StringUtils.isEmpty(request.getHeader("V-Lang"))?"":request.getHeader("V-Lang");
 		MemberService member = shop().member;
+		
+		
 		try {
-			member.account.addUserAccount(param,adminUser,tradeType,tradeFlow);
+			member.account.addUserAccount(param,adminUser,tradeType,tradeFlow,language);
 		} catch (MpException e) {
 			return this.fail(e.getErrorCode());
 		}
