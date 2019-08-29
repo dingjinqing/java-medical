@@ -55,8 +55,9 @@ public class GroupBuyService extends ShopBaseService {
      * 添加拼团活动
      *
      * @param groupBuy
+     * @param flag
      */
-    public void addGroupBuy(GroupBuyParam groupBuy) {
+    public void addGroupBuy(GroupBuyParam groupBuy, Boolean status) {
         transaction(()->{
             //分享配置转json
             groupBuy.setShareConfig(Util.toJson(groupBuy.getShare()));
@@ -64,7 +65,7 @@ public class GroupBuyService extends ShopBaseService {
             Integer stock=groupBuy.getProduct().stream().mapToInt(group->group.getStock()).sum();
             //拼团信息
             GroupBuyDefineRecord groupBuyDefineRecord = db().newRecord(GROUP_BUY_DEFINE, groupBuy);
-            groupBuyDefineRecord.setStatus(USE_STATUS);
+            groupBuyDefineRecord.setStatus(status==true?USE_STATUS:STOP_STATUS);
             groupBuyDefineRecord.setStock(stock.shortValue());
             groupBuyDefineRecord.insert();
             //拼团商品规格价格信息

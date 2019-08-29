@@ -2,6 +2,8 @@ package com.vpu.mp.controller.admin;
 
 import javax.validation.Valid;
 
+import com.vpu.mp.service.foundation.data.JsonResultMessage;
+import com.vpu.mp.service.foundation.util.Util;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -33,6 +35,7 @@ import com.vpu.mp.service.pojo.shop.order.OrderListInfoVo;
 @RequestMapping("/api")
 public class AdminGroupBuyController extends AdminBaseController {
 
+    public final static String I18N_RESOURCE = "messages";
 
     /**
      * 查询团购列表
@@ -62,12 +65,12 @@ public class AdminGroupBuyController extends AdminBaseController {
         }
         //校验活动商品是否叠加 (并发不安全)
         Boolean flag = shop().groupBuy.validGroupGoods(param);
-        if (!flag) {
-            return fail(JsonResultCode.CODE_PARAM_ERROR);
-        }
         //插入数据
-        shop().groupBuy.addGroupBuy(param);
-        return success();
+        shop().groupBuy.addGroupBuy(param,flag);
+        if (flag){
+            return success();
+        }
+        return success(Util.translateMessage(getLang(), JsonResultMessage.GROUP_BUY_ADD_ACTIVITY_STOP_STATUS,I18N_RESOURCE));
     }
 
 

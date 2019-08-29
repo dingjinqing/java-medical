@@ -44,7 +44,7 @@ public class JsonResultMessage {
 	public static final String MSG_CODE_ACCOUNT_VERSIN_NO_POWER = "account.version.no.power";
 	public static final String MSG_ACCOUNT_SHOPTYPE_REGISTERED = "account.shoptype.notNull";
 	public static final String MSG_ACCOUNT_SYTEM_LOGIN_EXPIRED = "system.account.login.expired";
-	
+
 	// 图片
 
 	public static final String MSG_IMGAE_UPLOAD_FAILED = "image.upload.failed";
@@ -75,7 +75,7 @@ public class JsonResultMessage {
 	public static final String GOODS_BRAND_CALSSIFY_NAME_EXIST = "goods.brand.classify.name.exist";
 	public static final String GOODS_BRAND_ALSSIFY_NAME_IS_NULL = "goods.brand.classify.name.is.null";
 	public static final String GOODS_BRAND_ALSSIFY_ID_IS_NULL = "goods.brand.classify.id.is.null";
-	
+
 	/**
 	 * 商品分类
 	 */
@@ -165,6 +165,10 @@ public class JsonResultMessage {
     public static final String INSTEAD_PAY_VALUE_OVER_RANGE = "instead.pay.value.over.range";
     public static final String INSTEAD_PAY_STATUS_IS_NULL= "instead.pay.status.is.null";
 
+	/**
+	 * 营销-拼团
+	 */
+	public static final String GROUP_BUY_ADD_ACTIVITY_STOP_STATUS="group.buy.add.activity.stop.status";
 
 
     /**
@@ -194,7 +198,7 @@ public class JsonResultMessage {
 
 	public static final String BINDING_MINI_NO_SAME = "binding.mini.no.same";
 	public static final String BINDING_MINI_HAVEBIND = "binding.mini.havebind";
-	
+
 	public static final String WX_MA_APP_ID_NOT_AUTH = "wx.ma.app_id.not.auth";
 	public static final String WX_MA_TEMPLATE_ID_NOT_NULL = "wx.ma.app_template_id.not.null";
 	public static final String WX_MA_PACKAGE_VERSION_NOT_NULL = "wx.ma.package_version.not.null";
@@ -209,7 +213,7 @@ public class JsonResultMessage {
 	public static final String WX_MP_NO_ACCESS = "wx.mp.no.access";
 	public static final String WX_MA_HAVE_MP = "wx.ma.have.mp";
 	public static final String WX_MP_NEED_CHOOSE_RIGHT = "wx.mp.need.choose.right";
-	
+
 	/**
 	 * 门店管理
 	 */
@@ -368,7 +372,7 @@ public class JsonResultMessage {
     public static final String REDEMPTION_DETAIL_REDEMPTION_NUM = "market.increase.purchase.redemption.detail.redemption_num";
     public static final String REDEMPTION_DETAIL_REDEMPTION_TOTAL_MONEY = "market.increase.purchase.redemption.detail.redemption_total_money";
 
-	
+
 
 
 }
