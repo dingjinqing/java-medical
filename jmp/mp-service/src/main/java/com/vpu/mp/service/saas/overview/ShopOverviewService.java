@@ -19,9 +19,14 @@ import com.vpu.mp.db.main.tables.ShopChildAccount;
 import com.vpu.mp.db.main.tables.ShopRenew;
 import com.vpu.mp.db.main.tables.ShopVersion;
 import com.vpu.mp.db.main.tables.records.MpAuthShopRecord;
+import com.vpu.mp.db.main.tables.records.MpOfficialAccountUserRecord;
+import com.vpu.mp.db.main.tables.records.ShopAccountRecord;
+import com.vpu.mp.db.main.tables.records.ShopChildAccountRecord;
 import com.vpu.mp.service.foundation.service.MainBaseService;
 import com.vpu.mp.service.foundation.util.Util;
+import com.vpu.mp.service.pojo.shop.auth.AdminTokenAuthInfo;
 import com.vpu.mp.service.pojo.shop.overview.BindUnBindOfficialParam;
+import com.vpu.mp.service.pojo.shop.overview.BindofficialVo;
 import com.vpu.mp.service.pojo.shop.overview.FixedAnnouncementParam;
 import com.vpu.mp.service.pojo.shop.overview.FixedAnnouncementVo;
 import com.vpu.mp.service.pojo.shop.overview.ShopAssistantParam;
@@ -83,6 +88,39 @@ public class ShopOverviewService extends MainBaseService {
             return -1;
         }
     }
+    
+    
+    /**
+     * 获取绑定/解绑状态  概览使用 
+     * @param param
+     * @return
+     */
+    public BindofficialVo getbindUnBindStatusUseByOver(AdminTokenAuthInfo user,String bindAppId){
+    	BindofficialVo bindofficialVo=new BindofficialVo();
+		String officialOpenId = null;
+		String nickname=null;
+		Byte isBind=0;
+		if (user.subLogin) {
+			ShopChildAccountRecord subAccountInfo = saas.shop.subAccount.getSubAccountInfo(user.sysId,user.subAccountId);
+			isBind = subAccountInfo.getIsBind();
+			officialOpenId = subAccountInfo.getOfficialOpenId();
+			// 子账户登录
+		} else {
+			// 主账户登录
+			ShopAccountRecord accountInfoForId = saas.shop.account.getAccountInfoForId(user.sysId);
+			isBind = accountInfoForId.getIsBind();
+			officialOpenId = accountInfoForId.getOfficialOpenId();
+		}
+		if (StringUtils.isNotEmpty(officialOpenId)) {
+			// 绑定过公众号
+			// shopId找auth_shop
+			MpOfficialAccountUserRecord user2 = saas.shop.mpOfficialAccountUserService.getUser(bindAppId,officialOpenId);
+			nickname = user2.getNickname();
+		}
+		bindofficialVo.setIsBind(isBind);
+		bindofficialVo.setNickName(nickname);
+		return bindofficialVo;
+	}
 
     /**
      * 获取店铺基本信息
