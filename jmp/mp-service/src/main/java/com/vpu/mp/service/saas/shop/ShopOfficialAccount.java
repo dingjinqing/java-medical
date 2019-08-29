@@ -33,6 +33,7 @@ import com.vpu.mp.service.pojo.saas.shop.officeAccount.MpOfficeAccountListParam;
 import com.vpu.mp.service.pojo.saas.shop.officeAccount.MpOfficeAccountListVo;
 import com.vpu.mp.service.pojo.shop.auth.AdminTokenAuthInfo;
 import com.vpu.mp.service.saas.image.SystemImageService;
+import com.vpu.mp.service.shop.user.user.MpOfficialAccountUserByShop;
 import com.vpu.mp.service.wechat.api.WxOpenMpampLinkService;
 import com.vpu.mp.service.wechat.bean.open.WxOpenMiniLinkGetItems;
 import com.vpu.mp.service.wechat.bean.open.WxOpenMiniLinkGetResult;
@@ -367,8 +368,8 @@ public class ShopOfficialAccount extends MainBaseService {
 					.where(MP_OFFICIAL_ACCOUNT_USER.APP_ID.eq(appId).and(MP_OFFICIAL_ACCOUNT_USER.OPENID.eq(openId)))
 					.fetchAny();
 		} else {
-			fetchAny = db().selectFrom(MP_OFFICIAL_ACCOUNT_USER)
-					.where(MP_OFFICIAL_ACCOUNT_USER.APP_ID.eq(appId).and(MP_OFFICIAL_ACCOUNT_USER.UNIONID.eq(unionId)))
+			fetchAny = db().selectFrom(MP_OFFICIAL_ACCOUNT_USER).where(MP_OFFICIAL_ACCOUNT_USER.APP_ID.eq(appId)
+					.and(MP_OFFICIAL_ACCOUNT_USER.OPENID.eq(openId)).and(MP_OFFICIAL_ACCOUNT_USER.UNIONID.eq(unionId)))
 					.fetchAny();
 		}
 		if (fetchAny == null) {
@@ -379,6 +380,7 @@ public class ShopOfficialAccount extends MainBaseService {
 			record.setRecId(fetchAny.getRecId());
 			db().executeUpdate(record);
 		}
+		syncSubOfficialUser(appId, record, unionId, openId);
 	}
 
 	/**
@@ -403,5 +405,23 @@ public class ShopOfficialAccount extends MainBaseService {
 			}
 		}
 		return false;
+	}
+	
+	/**
+	 * 同步公众号用户到从库
+	 * 
+	 * @param appId
+	 * @param record
+	 * @param unionId
+	 * @param openId
+	 */
+	public void syncSubOfficialUser(String appId, MpOfficialAccountUserRecord record, String unionId, String openId) {
+		com.vpu.mp.db.shop.tables.records.MpOfficialAccountUserRecord into = record.into(com.vpu.mp.db.shop.tables.records.MpOfficialAccountUserRecord.class);
+		Result<MpAuthShopRecord> officialAccountMps = saas.shop.mp.getOfficialAccountMps(appId);
+		for (MpAuthShopRecord mpAuthShopRecord : officialAccountMps) {
+			MpOfficialAccountUserByShop officialAccountUser = saas.getShopApp(mpAuthShopRecord.getShopId()).officialAccountUser;
+			officialAccountUser.addOrUpdateUser(appId, into, unionId, openId);
+		}
+
 	}
 }
