@@ -408,13 +408,9 @@ public class Util {
 		return map.keySet().stream().map(key -> key + " = " + map.get(key)).collect(Collectors.joining(", ", "{", "}"));
 	}
 
-
 	public static <T extends Collection<?>> boolean isEmpty(T t) {
 		return t == null || t.isEmpty();
 	}
-
-
-
 
     /**
      * List 转 String
