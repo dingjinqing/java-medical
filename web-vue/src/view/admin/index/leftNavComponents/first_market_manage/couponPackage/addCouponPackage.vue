@@ -160,17 +160,29 @@
                       </div>
                     </template>
                   </el-table-column>
-                  <el-table-column label="发放策略">
+                  <el-table-column
+                    label="发放策略"
+                    width="180"
+                  >
                     <template slot-scope="scope">
-                      <div style="text-align:center">
+                      <div class="coupon_set_p">
+                        <p v-if="scope.row.coupon_set.immediatelyGrantAmount > 0">领包后立即发放{{scope.row.coupon_set.immediatelyGrantAmount}}张</p>
+                        <p v-if="scope.row.coupon_set.timingEvery > 0 && scope.row.coupon_set.timingAmount > 0">
+                          <span v-if="scope.row.coupon_set.timingUnit ==='0'">领包后每{{scope.row.coupon_set.timingEvery}}天发放{{scope.row.coupon_set.timingAmount}}张</span>
+                          <span v-if="scope.row.coupon_set.timingUnit ==='1'">领包后每{{scope.row.coupon_set.timingEvery}}周的周{{scope.row.coupon_set.timingTime}}发放{{scope.row.coupon_set.timingAmount}}张</span>
+                          <span v-if="scope.row.coupon_set.timingUnit ==='2'">领包后每{{scope.row.coupon_set.timingEvery}}个月的{{scope.row.coupon_set.timingTime}}号发放{{scope.row.coupon_set.timingAmount}}张</span>
+                        </p>
                         <a
                           style="color:#409eff;cursor: pointer;"
                           @click.prevent="handleCouponSet(scope)"
-                        >设置</a>
+                        >{{scope.row.coupon_set.immediatelyGrantAmount > 0 || (scope.row.coupon_set.timingEvery > 0 && scope.row.coupon_set.timingTime > 0) ? '重新设置' : '设置'}}</a>
                       </div>
                     </template>
                   </el-table-column>
-                  <el-table-column label="操作">
+                  <el-table-column
+                    label="操作"
+                    width="60"
+                  >
                     <template slot-scope="scope">
                       <div style="text-align:center">
                         <a
@@ -315,7 +327,40 @@
             ></el-option>
           </el-select>
         </p>
-        <p style="padding-left: 28px;">发放 <el-input-number
+        <p style="padding-left: 28px;">
+          <span v-if="coupon_set.timingUnit === '1'">
+            每周
+            <el-select
+              v-model="coupon_set.timingTime"
+              size="small"
+              style="width:100px;"
+            >
+              <el-option
+                v-for="(item,index) in 7"
+                :key="index"
+                :label="item"
+                :value="item"
+              ></el-option>
+            </el-select>
+          </span>
+          <span v-else-if="coupon_set.timingUnit === '2'">
+            每月
+            <el-select
+              v-model="coupon_set.timingTime"
+              size="small"
+              style="width:100px;"
+            >
+              <el-option
+                v-for="(item,index) in 31"
+                :key="index"
+                :label="item"
+                :value="item"
+              ></el-option>
+            </el-select>
+            号
+          </span>
+          <span></span>
+          发放 <el-input-number
             v-model="coupon_set.timingAmount"
             placeholder=""
             size="small"
@@ -362,9 +407,10 @@ export default {
       },
       effectiveDate: [],
       coupon_set: {
-        immediatelyGrantAmount: '',
-        timingEvery: '',
-        timingAmount: '',
+        immediatelyGrantAmount: 0,
+        timingEvery: 0,
+        timingAmount: 0,
+        timingTime: '1',
         timingUnit: '0'
       },
       coupon_set_date: [
@@ -411,6 +457,7 @@ export default {
         immediatelyGrantAmount: 0,
         timingEvery: 0,
         timingAmount: 0,
+        timingTime: '1',
         timingUnit: '0'
       }
       data.map(item => {
@@ -785,7 +832,12 @@ export default {
     }
   }
 }
-
+.coupon_set_p {
+  text-align: center;
+  > p {
+    font-size: 12px;
+  }
+}
 .default_input {
   width: 150px;
 }
@@ -802,7 +854,7 @@ export default {
 }
 .content {
   /deep/ .couponSetDialog {
-    width: 315px;
+    width: 390px;
     .el-dialog__header {
       background: #f3f3f3;
       padding-top: 10px;
