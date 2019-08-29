@@ -1,4 +1,4 @@
-import service from '@/util/request.js'
+import service from '@/util/request'
 
 // 赠品活动列表
 export const giftList = data => service({
