@@ -67,6 +67,7 @@ import com.vpu.mp.service.shop.summary.visit.DistributionService;
 import com.vpu.mp.service.shop.summary.visit.PageService;
 import com.vpu.mp.service.shop.summary.visit.RetainService;
 import com.vpu.mp.service.shop.task.ShopTaskService;
+import com.vpu.mp.service.shop.user.user.MpOfficialAccountUserByShop;
 import com.vpu.mp.service.shop.user.user.UserService;
 import com.vpu.mp.service.shop.version.VersionService;
 
@@ -385,4 +386,9 @@ public class ShopApplication {
     @Autowired
     public RecordMemberTradeService tradeService;
 
+    /**
+     * 店铺库的公众号用户
+     */
+	@Autowired
+	public MpOfficialAccountUserByShop officialAccountUser;
 }
