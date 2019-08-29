@@ -140,7 +140,7 @@
 import wrapper from '@/components/admin/wrapper/wrapper'
 import statusTab from '@/components/admin/status/statusTab'
 import inputEdit from '@/components/admin/inputEdit'
-import status, { getById, couldEdit, couldStop, couldStart, couldDelete } from '@/components/admin/status/status'
+import { getById, couldEdit, couldStop, couldStart, couldDelete } from '@/components/admin/status/status'
 import { giftList, deleteGift, disableGift, enableGift, updateGiftLevel } from '@/api/admin/marketManage/gift'
 
 export default {
@@ -170,8 +170,7 @@ export default {
         level: 1,
         giftTimes: 12,
         status: 0
-      }],
-      labels: status
+      }]
     }
   },
   methods: {

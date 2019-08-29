@@ -44,6 +44,8 @@ export const getById = id => status.find(i => i.status === id)
 
 export const getByName = name => status.find(i => i.name === name)
 
+export const getNameById = id => status.find(i => i.status === id).name
+
 export const getByIdStandard = id => standardStatus.find(i => i.status === id)
 
 export const getByNameStandard = name => standardStatus.find(i => i.name === name)
