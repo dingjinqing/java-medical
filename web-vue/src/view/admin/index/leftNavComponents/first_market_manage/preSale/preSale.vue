@@ -18,6 +18,18 @@
             placeholder="活动名称"
           ></el-input>
         </el-col>
+        <el-col
+          :span="4"
+          :offset="13"
+          >
+            <el-button
+              type="primary"
+              style="float:right;"
+              @click="gotoAdd"
+            >
+              添加定金膨胀活动
+            </el-button>
+        </el-col>
       </el-row>
       <el-row>
         <el-table
@@ -82,6 +94,15 @@
           :span="10"
         >
           <!-- pagination -->
+          <el-pagination
+            @size-change="loadData"
+            @current-change="loadData"
+            :current-page.sync="param.currentPage"
+            :page-size="param.pageRows"
+            :total="page.pageRows"
+            layout="total, sizes, prev, pager, next, jumper"
+          >
+          </el-pagination>
         </el-col>
       </el-row>
     </wrapper>
@@ -109,7 +130,7 @@ export default {
         preStartTime: null,
         preEndTime: null,
         // pagination
-        currentPage: 0,
+        currentPage: 1,
         pageRows: 20
       },
       tableData: [{
@@ -163,10 +184,10 @@ export default {
       })
     },
     gotoAdd () {
-      this.$router.push('/admin/home/main/presale')
+      this.$router.push('/admin/home/main/presale/add')
     },
     gotoEdit (id) {
-      this.$router.push(`/admin/home/main/presale/add/${id}`)
+      this.$router.push(`/admin/home/main/presale/edit/${id}`)
     },
     gotoOrderDetail (id) {
       this.$router.push(`/admin/home/main/presale/order_detail/${id}`)
