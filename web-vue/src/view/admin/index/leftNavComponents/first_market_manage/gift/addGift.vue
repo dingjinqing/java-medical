@@ -205,11 +205,14 @@
                   align="center"
                 >
                   <template slot-scope="scope">
-                    {{scope.row.productNumber - scope.row.offerNumber}} /
                     <inputEdit v-model="scope.row.productNumber"
                       :disabled="ongoing"
                       :init="Number(scope.row.offerNumber||0)+Number(scope.row.productNumber)"
-                      @update="checkProductNumber(scope.row.prdNumber, scope.row.productNumber, scope.row.offerNumber)"/>
+                      @update="checkProductNumber(scope.row.prdNumber, scope.row.productNumber, scope.row.offerNumber)">
+                      <div slot="before">
+                        {{scope.row.productNumber - scope.row.offerNumber}} /
+                      </div>
+                    </inputEdit>
                   </template>
                 </el-table-column>
                 <el-table-column

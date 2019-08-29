@@ -11,7 +11,9 @@
 -->
 <template>
     <div class="container">
-      <div v-show="!showInput" class="input">{{input}}</div>
+      <div v-show="!showInput" class="input">
+        <slot name="before"></slot>{{input}}<slot name="after"></slot>
+      </div>
       <el-input ref="input" type="number" v-show="showInput" v-model="value"></el-input>
       <el-button @click="switchEditState" size="mini"
         v-show="!disabled">{{btnContent}}</el-button>
