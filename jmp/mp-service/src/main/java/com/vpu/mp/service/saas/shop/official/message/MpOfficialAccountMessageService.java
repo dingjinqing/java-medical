@@ -82,12 +82,12 @@ public class MpOfficialAccountMessageService extends MainBaseService {
 	 * @param toUser
 	 * @param keywordValues
 	 * @param templateConfig
-	 * @param mpAppId        对应小程序AppId
+	 * @param maAppId        对应小程序AppId
 	 * @param page           小程序路径
 	 * @param url            网页路径
 	 */
 	public void sendMpTemplateMessage(String appId, String toUser, List<WxMpTemplateData> keywordValues,
-			MpTemplateConfig templateConfig, String mpAppId,
+			MpTemplateConfig templateConfig, String maAppId,
 			String page, String url) throws WxErrorException {
         WxMpTemplateMessage.WxMpTemplateMessageBuilder messageBuilder = null;
 		WxMpTemplateMsgService service = accountService.getOfficialAccountClient(appId).getTemplateMsgService();
@@ -106,9 +106,9 @@ public class MpOfficialAccountMessageService extends MainBaseService {
             messageBuilder  = WxMpTemplateMessage.builder().toUser(toUser).url(url)
                 .templateId(templateId).data(keywordValues);
         }
-		if (StringUtils.isNotBlank(page) && StringUtils.isNotBlank(mpAppId)) {
+		if (StringUtils.isNotBlank(page) && StringUtils.isNotBlank(maAppId)) {
             page = page + ((page.indexOf("?") != -1 ? "&" : "?") + "rnd=" + Util.randomId());
-            messageBuilder.miniProgram(new WxMpTemplateMessage.MiniProgram(mpAppId,page,true));
+            messageBuilder.miniProgram(new WxMpTemplateMessage.MiniProgram(maAppId,page,true));
 		}
 		try {
 			service.sendTemplateMsg(messageBuilder.build());
@@ -116,7 +116,7 @@ public class MpOfficialAccountMessageService extends MainBaseService {
 			// template_id不正确，移除缓存，重新发送模板消息
 			if (e.getError().getErrorCode() == 40037) {
 				jedis.delete(key);
-				sendMpTemplateMessage(appId, toUser, keywordValues, templateConfig, mpAppId, page, url);
+				sendMpTemplateMessage(appId, toUser, keywordValues, templateConfig, maAppId, page, url);
 			}else {
 				throw new WxErrorException(e.getError(), e);
 			}

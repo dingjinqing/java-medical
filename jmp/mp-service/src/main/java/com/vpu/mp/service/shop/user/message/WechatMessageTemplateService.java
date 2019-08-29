@@ -14,6 +14,7 @@ import com.vpu.mp.service.pojo.shop.user.user.WxUserInfo;
 import com.vpu.mp.service.saas.shop.MpAuthShopService;
 import com.vpu.mp.service.saas.shop.official.MpOfficialAccountUserService;
 import com.vpu.mp.service.saas.shop.official.message.MpOfficialAccountMessageService;
+import com.vpu.mp.service.shop.market.message.MessageTemplateService;
 import com.vpu.mp.service.shop.user.user.UserService;
 import me.chanjar.weixin.common.error.WxErrorException;
 import me.chanjar.weixin.mp.bean.template.WxMpTemplateData;
@@ -62,7 +63,7 @@ public class WechatMessageTemplateService extends ShopBaseService {
 
     /**
      * 小程序和公众号发送其中一个（优先小程序）
-     * @param param MQ传参
+     * @param param MQ传参 封装参照{@link MessageTemplateService}的assemblyRabbitMessageParam
      * @param info 所需信息（openID，appID）
      * @return 是否发送成功
      */
@@ -152,7 +153,7 @@ public class WechatMessageTemplateService extends ShopBaseService {
         }
         try{
             accountMessageService.sendMpTemplateMessage(
-                info.getMpAppId(),info.getMpOpenId(),wxDatalist,config,info.getMpAppId(),param.getPage(),"");
+                info.getMpAppId(),info.getMpOpenId(),wxDatalist,config,info.getMaAppId(),param.getPage(),"");
         } catch (WxErrorException e) {
             e.printStackTrace();
             return Boolean.FALSE;
