@@ -4337,3 +4337,28 @@ create table `b2c_coupon_pack_voucher` (
   index `voucher_id` (`voucher_id`),
   index `act_id` (`act_id`)
 ) ENGINE = INNODB AUTO_INCREMENT = 39 DEFAULT CHARSET = utf8mb4 COLLATE = utf8mb4_unicode_ci;
+
+
+
+
+--drop table if exists `b2c_mp_official_account_user`;
+create table `b2c_mp_official_account_user` (
+  `rec_id`         int unsigned not null auto_increment,
+  `openid`         varchar(128) not null comment '用户的标识，对当前公众号唯一',
+  `app_id`         varchar(191) not null comment '授权公众号appId',
+  `sys_id`         int(11)      not null default '0' comment '系统账户ID',
+  `subscribe`      tinyint(1)            default 0 comment '是否订阅，为0代表此用户没有关注该公众号，拉取不到其余信息。',
+  `nickname`       varchar(191)          default '',
+  `sex`            tinyint(1)   not null default 0 comment '用户的性别，值为1时是男性，值为2时是女性，值为0时是未知',
+  `language`       varchar(20) comment '用户的语言，简体中文为zh_CN',
+  `city`           varchar(50) comment '用户所在城市',
+  `province`       varchar(50) comment '用户所在省份',
+  `country`        varchar(50) comment '用户所在国家',
+  `headimgurl`     varchar(191) comment '用户头像，最后一个数值代表正方形头像大小（有0、46、64、96、132数值可选，0代表640*640正方形头像），用户没有头像时该项为空',
+  `subscribe_time` timestamp    null     default null comment '用户关注时间，如果用户曾多次关注，则取最后关注时间',
+  `unionid`        varchar(191) comment '只有在用户将公众号绑定到微信开放平台帐号后，才会出现该字段',
+  primary key (`rec_id`),
+  unique key (`openid`, `app_id`),
+  key (`sys_id`),
+  key (`unionid`)
+);
