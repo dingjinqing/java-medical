@@ -478,8 +478,7 @@ public class GiftService extends ShopBaseService {
      * 获取赠品的已下单未发货单量（已确定将发出的赠品数量）
      */
     private Integer getGiftOrderedNumber(Integer productId, Integer giftId) {
-        return db().select(countDistinct(
-            ORDER_INFO.ORDER_SN))
+        return db().select(countDistinct(ORDER_INFO.ORDER_SN))
             .from(ORDER_INFO)
             .where(ORDER_INFO.ORDER_STATUS.eq(OrderConstant.ORDER_WAIT_DELIVERY)
                 .and(ORDER_INFO.ORDER_SN
