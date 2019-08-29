@@ -237,6 +237,10 @@ public class ShopAccountService extends MainBaseService {
 		return db().update(SHOP_ACCOUNT).set(SHOP_ACCOUNT.OFFICIAL_OPEN_ID, openId).set(SHOP_ACCOUNT.IS_BIND, bind)
 				.where(SHOP_ACCOUNT.SYS_ID.eq(sysId)).execute();
 	}
+	
+	public int updateRowBind(Integer sysId,byte bind) {
+		return db().update(SHOP_ACCOUNT).set(SHOP_ACCOUNT.IS_BIND, bind).where(SHOP_ACCOUNT.SYS_ID.eq(sysId)).execute();
+	}
 
 
 }
