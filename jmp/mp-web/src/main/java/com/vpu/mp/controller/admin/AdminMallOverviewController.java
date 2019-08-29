@@ -3,7 +3,9 @@ package com.vpu.mp.controller.admin;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.validation.annotation.Validated;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
@@ -16,6 +18,7 @@ import com.vpu.mp.service.pojo.saas.article.ArticleListQueryParam;
 import com.vpu.mp.service.pojo.saas.article.ArticleParam;
 import com.vpu.mp.service.pojo.saas.article.ArticleVo;
 import com.vpu.mp.service.pojo.shop.overview.BindUnBindOfficialParam;
+import com.vpu.mp.service.pojo.shop.overview.BindofficialVo;
 import com.vpu.mp.service.pojo.shop.overview.DataDemonstrationParam;
 import com.vpu.mp.service.pojo.shop.overview.DataDemonstrationVo;
 import com.vpu.mp.service.pojo.shop.overview.FixedAnnouncementParam;
@@ -35,6 +38,11 @@ import com.vpu.mp.service.pojo.shop.overview.ToDoItemVo;
  */
 @RestController
 public class AdminMallOverviewController extends AdminBaseController {
+	
+	
+	
+	@Value(value = "${official.appId}")
+	private String bindAppId;
 
     /**
      * 数据展示
@@ -62,9 +70,10 @@ public class AdminMallOverviewController extends AdminBaseController {
      * @param param
      * @return
      */
-    @PostMapping("/api/admin/malloverview/getbindUnBindStatus")
-    public JsonResult getbindUnBindStatus(@RequestBody @Validated BindUnBindOfficialParam param){
-        return saas.overviewService.bindUnBindOfficial(param) > 0 ? success() : fail(JsonResultMessage.OVERVIEW_MALL_BING_UNBING_FAILED);
+    @GetMapping("/api/admin/malloverview/getbindUnBindStatus")
+    public JsonResult getbindUnBindStatus(){
+    	BindofficialVo getbindUnBindStatusUseByOver = saas.overviewService.getbindUnBindStatusUseByOver(adminAuth.user(),bindAppId);
+    	return success(getbindUnBindStatusUseByOver);
     }
 
     /**
