@@ -396,6 +396,76 @@ const routes = [
       import(
         '@/view/admin/index/leftNavComponents/first_market_manage/groupIntegration/groupIntegrationSuccess'
       )
+  },
+  // 定金膨胀
+  {
+    path: '/admin/home/main/presale',
+    name: 'presale_view',
+    meta: {
+      crumbTitle: 'router.presale',
+      meta: 'first_market_manage',
+      category: 'first_market_manage'
+    },
+    component: () =>
+        import(
+          '@/view/admin/index/leftNavComponents/first_market_manage/preSale/preSale'
+        )
+  },
+  // 定金膨胀 - 创建活动
+  {
+    path: '/admin/home/main/presale/add',
+    name: 'presale_add_view',
+    meta: {
+      crumbTitle: 'router.presale_add',
+      meta: 'first_market_manage',
+      category: 'first_market_manage'
+    },
+    component: () =>
+        import(
+          '@/view/admin/index/leftNavComponents/first_market_manage/preSale/preSaleAdd'
+        )
+  },
+  // 定金膨胀 - 修改活动
+  {
+    path: '/admin/home/main/presale/edit/:id',
+    name: 'presale_edit_view',
+    meta: {
+      crumbTitle: 'router.presale_edit',
+      meta: 'first_market_manage',
+      category: 'first_market_manage'
+    },
+    component: () =>
+        import(
+          '@/view/admin/index/leftNavComponents/first_market_manage/preSale/preSaleAdd'
+        )
+  },
+  // 定金膨胀 - 订单明细
+  {
+    path: '/admin/home/main/presale/order_detail/:id',
+    name: 'presale_order_detail_view',
+    meta: {
+      crumbTitle: 'router.presale_order_detail',
+      meta: 'first_market_manage',
+      category: 'first_market_manage'
+    },
+    component: () =>
+        import(
+          '@/view/admin/index/leftNavComponents/first_market_manage/preSale/preSaleOrderDetail'
+        )
+  },
+  // 定金膨胀 - 活动明细
+  {
+    path: '/admin/home/main/presale/detail/:id',
+    name: 'presale_detail_view',
+    meta: {
+      crumbTitle: 'router.presale_detail',
+      meta: 'first_market_manage',
+      category: 'first_market_manage'
+    },
+    component: () =>
+        import(
+          '@/view/admin/index/leftNavComponents/first_market_manage/preSale/preSaleDetail'
+        )
   }
 ]
 export default routes

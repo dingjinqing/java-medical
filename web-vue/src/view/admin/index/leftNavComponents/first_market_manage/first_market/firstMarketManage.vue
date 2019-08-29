@@ -225,7 +225,7 @@
           </div>
         </div>
         <!-- 定金膨胀 -->
-        <div class="voucher box_style">
+        <div class="voucher box_style" @click="preSale">
           <div class="activity_img"><img
               :src="$imageHost + '/image/admin/new_market/djpz.png'"
               alt=""
@@ -547,6 +547,12 @@ export default {
     packagePrice () {
       this.$router.push({
         name: 'package_price'
+      })
+    },
+    // 定金膨胀
+    preSale () {
+      this.$router.push({
+        name: 'presale_view'
       })
     }
   }
