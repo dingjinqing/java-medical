@@ -423,13 +423,13 @@ public class GiftService extends ShopBaseService {
      * 赠送明细列表查询
      */
     public PageResult<GiftDetailListVo> getGiftDetailPageList(GiftDetailListParam param) {
-        SelectConditionStep<?> query = db().select(ORDER_INFO.ORDER_SN, USER.USER_ID, USER.USERNAME, USER.MOBILE,
-            DSL.sum(ORDER_GOODS.GOODS_NUMBER).as("giftAmount"), ORDER_INFO.CREATE_TIME).from(ORDER_GOODS)
+        SelectConditionStep<?> query = db().select(ORDER_GOODS.ORDER_SN, USER.USER_ID, USER.USERNAME, USER.MOBILE,
+            DSL.sum(ORDER_GOODS.GOODS_NUMBER).as("giftAmount"), ORDER_GOODS.CREATE_TIME).from(ORDER_GOODS)
             .leftJoin(ORDER_INFO).on(ORDER_INFO.ORDER_SN.eq(ORDER_GOODS.ORDER_SN))
             .leftJoin(USER).on(USER.USER_ID.eq(ORDER_INFO.USER_ID))
             .where(ORDER_GOODS.IS_GIFT.eq(1));
         buildDetailOptions(query, param);
-        query.groupBy(ORDER_INFO.ORDER_SN).orderBy(ORDER_INFO.CREATE_TIME.desc());
+        query.groupBy(ORDER_GOODS.ORDER_SN, ORDER_GOODS.CREATE_TIME).orderBy(ORDER_GOODS.CREATE_TIME.desc());
         return getPageResult(query, param, GiftDetailListVo.class);
     }
 
@@ -443,10 +443,10 @@ public class GiftService extends ShopBaseService {
         String mobile = param.getMobile();
         Integer giftId = param.getGiftId();
         if (null != startTime) {
-            query.and(ORDER_INFO.CREATE_TIME.ge(startTime));
+            query.and(ORDER_GOODS.CREATE_TIME.ge(startTime));
         }
         if (null != endTime) {
-            query.and(ORDER_INFO.CREATE_TIME.le(endTime));
+            query.and(ORDER_GOODS.CREATE_TIME.le(endTime));
         }
         if (isNotEmpty(username)) {
             query.and(USER.USERNAME.like(format("%s%%", username)));
@@ -454,7 +454,7 @@ public class GiftService extends ShopBaseService {
         if (isNotEmpty(mobile)) {
             query.and(USER.MOBILE.like(format("%s%%", mobile)));
         }
-        query.and(ORDER_GOODS.GIFT_ID.eq(giftId));
+        query.and(ORDER_GOODS.ACTIVITY_ID.eq(giftId).and(ORDER_GOODS.ACTIVITY_TYPE.eq(OrderConstant.GOODS_TYPE_GIFT)));
     }
 
     /**
