@@ -146,7 +146,7 @@ export default {
   },
   watch: {
     cropperFlag_ (obj) {
-      console.log(obj, 111)
+      // console.log(obj, 111)
       if (obj === null) return
       this.dialogVisible = true
       // this.option.img = url
@@ -178,8 +178,8 @@ export default {
     },
     // 裁剪图片保存
     handleSave () {
-      console.log(this.imgPath, this.cropperTopInput_one, this.cropperTopInput_two, this.cropMovingX, this.cropMovingY, this.previews.img.width, this.previews.img.height, 98, this.imgCatId, this.imgID)
-      console.log(this.previews)
+      // console.log(this.imgPath, this.cropperTopInput_one, this.cropperTopInput_two, this.cropMovingX, this.cropMovingY, this.previews.img.width, this.previews.img.height, 98, this.imgCatId, this.imgID)
+      // console.log(this.previews)
       let obj = {
         remoteImgPath: this.imgPath,
         cropWidth: this.cropperTopInput_one,
@@ -211,7 +211,7 @@ export default {
       this.dialogVisible = false
     },
     cropMoving (data) {
-      console.log(data)
+      // console.log(data)
       this.cropMovingX = data.axis.x1 - 25.70224719101124
       this.cropMovingY = data.axis.y1
     }

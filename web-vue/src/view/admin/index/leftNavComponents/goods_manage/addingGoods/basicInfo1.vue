@@ -13,7 +13,6 @@
           prop="goodsName"
         >
           <el-input
-            ref="goodsNameInput"
             v-model="goodsProductInfo.goodsName"
             size="small"
             style="width:400px"
@@ -39,7 +38,6 @@
           prop="catId"
         >
           <el-select
-            ref="catSelect"
             v-model="catIdTemp.firstCatId"
             size="small"
             @change="catIdSelectChange(1,$event)"
@@ -101,49 +99,45 @@
         </el-form-item>
         <el-form-item
           label="商品主图："
-          prop="goodsImgs"
+          prop="goodsImg"
         >
-          <div style="display: flex;align-items: center;flex-wrap: wrap;">
-            <div
-              v-for="(src,index) in goodsProductInfo.goodsImgs"
-              :key="index"
-              class="goodsImgWrap"
+          <!-- 商品主图 -->
+          <section class="goods_img">
+            <!-- 5张图片 -->
+            <ul class="img_group">
+              <li
+                class="li_image"
+                v-for="(item,i) in goodsImgs"
+                :key="i"
+              >
+                <el-image
+                  style="width: 100%; height: 100%"
+                  :src="item.url"
+                  fit="fill"
+                ></el-image>
+              </li>
+            </ul>
+            <section
+              v-show="this.goodsImgs.length !== 5"
+              class="add_img"
+              @click="handleVisibileDialog"
             >
               <el-image
-                fit="cover"
-                :src="src"
-                style="width: 78px; height: 78px;"
+                style="width: 48px; height: 48px"
+                :src="srcList.src1"
+                fit="fill"
               ></el-image>
-              <span
-                @click="deleteGoodsImg(index)"
-                class="deleteIcon"
-              >×</span>
-              <span
-                @click="moveGoodsImgIndex(index,-1)"
-                class="moveIcon"
-                style="left: 0px;"
-              >←</span>
-              <span
-                @click="moveGoodsImgIndex(index,1)"
-                class="moveIcon"
-                style="right: 0px;"
-              >→</span>
-            </div>
-            <div
-              class="goodsImgWrap"
-              @click="addGoodsImg"
-              v-if="goodsProductInfo.goodsImgs.length < 5"
-            >
-              <el-image
-                fit="scale-down"
-                :src="imgHost+'/image/admin/add_img.png'"
-                style="width: 78px; height: 78px;cursor: pointer;"
-              />
-            </div>
-            <span class="inputTip">
-              建议尺寸：800*800像素
-            </span>
-          </div>
+            </section>
+            <!-- 建议尺寸 -->
+            <section>
+              <span class="inputTip">
+                建议尺寸：800*800像素
+              </span>
+            </section>
+          </section>
+
+          <!-- <goodsMainPic @imgListChange="goodsImgsChange" /> -->
+
         </el-form-item>
       </el-form>
       <!-- 基本信息更多配置 -->
@@ -163,7 +157,6 @@
               prop="unit"
             >
               <el-select
-                ref="unitSelect"
                 v-model="unitSelectedValue"
                 @change="unitSelectChange"
                 size="small"
@@ -270,12 +263,12 @@
           </el-form>
         </el-collapse-item>
       </el-collapse>
-      <ImageDalog
-        pageIndex='pictureSpace'
-        @handleSelectImg='imgDialogSelectedCallback'
-      />
     </div>
-    <el-button @click="getFormData">测试</el-button>
+    <!-- 商品主图选择弹窗 -->
+    <imageDialogExpansion
+      pageIndex='basicInfo'
+      @handleGoodsImgs='handleGoodsImgs'
+    />
   </div>
 </template>
 <script>
@@ -285,15 +278,19 @@ import {
   goodsSortAndGoodsBrandInitApi
 } from '@/api/admin/goodsManage/addingGoods/addingGoods'
 // 组件导入
-import ImageDalog from '@/components/admin/imageDalog'
+// import goodsMainPic from './goodsMainPic'
 // 导入图片弹窗扩展组件
-// import imageDialogExpansion from '@/components/admin/imageDialogExpansion/imageDialogExpansion'
+import imageDialogExpansion from '@/components/admin/imageDialogExpansion/imageDialogExpansion'
 import addBrandDialog from './addBrandDialog'
 
 export default {
-  components: { ImageDalog, addBrandDialog },
+  components: { addBrandDialog, imageDialogExpansion },
   data () {
     return {
+      // 商品主图上传相关data
+      srcList: {
+        src1: `${this.$imageHost}/image/admin/add_img.png`
+      },
       // 商品主图
       goodsImgs: [],
       goodsProductInfo: {
@@ -302,8 +299,9 @@ export default {
         goodsAd: null,
         goodsSn: null,
         catId: null,
+        goodsImg: null,
         goodsImgs: [],
-        unit: '个',
+        unit: null,
         sortId: null,
         goodsLabels: null,
         brandId: null,
@@ -321,7 +319,7 @@ export default {
         catId: [
           { required: true, message: '请选择平台分类', trigger: 'change' }
         ],
-        goodsImgs: [
+        goodsImg: [
           { required: true, message: '请选择商品图片', trigger: 'change' }
         ],
         unit: [
@@ -337,7 +335,6 @@ export default {
         secondCatData: null,
         thirdCatData: null
       },
-      imgHost: `${this.$imageHost}`,
       /* 基本信息更多配置部分 */
       unitSelectOptions: [{
         value: '个',
@@ -406,7 +403,6 @@ export default {
       labelSelectOptions: null,
       // 商品品牌下拉框
       brandSelectOptions: null,
-      /* 商品标签辅助数据 */
       // 标签已选中列表
       labelSelectedItems: [],
       // 标签来下框选中瞬间的值
@@ -415,34 +411,6 @@ export default {
   },
 
   methods: {
-    /* 获取传给后台的表单数据 */
-    getFormData () {
-      let retData = {
-        ...this.goodsProductInfo,
-        goodsImg: null
-      }
-      retData.goodsLabels = this.labelSelectedItems
-
-      // 处理商品图片
-      // 只有一个商品主图
-      if (this.goodsProductInfo.goodsImgs.length === 1) {
-        retData.goodsImg = this.goodsProductInfo.goodsImgs[0]
-        retData.goodsImgs = null
-      } else if (this.goodsProductInfo.goodsImgs.length > 1) {
-        // 有商品主图和幅图
-        // 避免和goodsProductInfo共享同一个数组
-        retData.goodsImgs = []
-        retData.goodsImg = this.goodsProductInfo.goodsImgs[0]
-        for (let i = 1; i < this.goodsProductInfo.goodsImgs.length; i++) {
-          retData.goodsImgs.push(this.goodsProductInfo.goodsImgs[i])
-        }
-      } else {
-        // 没有数据直接设置为null,这样后台不会执行对应的空sql
-        retData.goodsImgs = null
-      }
-
-      console.log(retData)
-    },
     /* 基本信息部分 */
     // 平台分类下拉框交互
     catIdSelectChange (level, catId) {
@@ -481,37 +449,33 @@ export default {
         }
       })
     },
-    /* 初始化平台分类一级下拉框数据 */
+    // 初始化平台分类一级下拉框数据
     catIdInit () {
       selectPlatformClassification(0).then(res => {
         this.catIdTemp.firstCatData = res.content
       })
     },
-    /* 添加图片点击事件，弹出图片选择组件 */
-    addGoodsImg () {
+    // 商品主图相关函数
+    // 唤起弹窗
+    handleVisibileDialog () {
       this.$http.$emit('dtVisible')
     },
-    /* 商品图片点击回调函数 */
-    imgDialogSelectedCallback (src) {
-      if (this.goodsProductInfo.goodsImgs.length >= 5) {
-        return
-      }
-      this.goodsProductInfo.goodsImgs.push(src)
+    // 商品图片事件监听函数
+    handleGoodsImgs (val) {
+      console.log(val)
+      this.goodsImgs = val
     },
-    /* 删除商品图片 */
-    deleteGoodsImg (index) {
-      this.goodsProductInfo.goodsImgs.splice(index, 1)
-    },
-    /* 移动商品图片 -1:左移 1:右移 */
-    moveGoodsImgIndex (index, direction) {
-      let tempArr = this.goodsProductInfo.goodsImgs.splice(index, 1)
-      let arrLength = this.goodsProductInfo.goodsImgs.length
-      let targetIndex = index + direction
-
-      index = targetIndex < 0 ? arrLength : targetIndex > arrLength ? 0 : targetIndex
-
-      this.goodsProductInfo.goodsImgs.splice(index, 0, tempArr[0])
-    },
+    // 商品图片事件监听函数
+    // goodsImgsChange (imgList) {
+    //   if (imgList === null || imgList.length === 0) {
+    //     return
+    //   }
+    //   // 数组第一个值默认为商品主图
+    //   this.goodsProductInfo.goodsImg = imgList.shift()
+    //   // 其余为商品子图
+    //   this.goodsProductInfo.goodsImgs = imgList
+    //   this.$refs.basicInfoForm.validateField('goodsImg')
+    // },
     /* 基本信息更多配置部分 */
     // 单位选择下拉框处理事件
     unitSelectChange (value) {
@@ -525,13 +489,6 @@ export default {
     },
     // 自定义单位处理事件
     unitCustomerChange () {
-      // 自定义单位长度超过3字符，则返回
-      if (!this._isBlank(this.unitCustomerValue) && this.unitCustomerValue.length > 3) {
-        this.unitCustomerValue = this.unitCustomerValue.substring(0, 3)
-        this.goodsProductInfo.unit = this.unitCustomerValue
-        this.$refs.basicInfoOtherForm.validateField('unit')
-        return
-      }
       this.goodsProductInfo.unit = this.unitCustomerValue
       this.$refs.basicInfoOtherForm.validateField('unit')
     },
@@ -566,43 +523,6 @@ export default {
     },
     videoInputClick () {
       // TODO: 视频选择弹出未实现
-    },
-    /** 此函数由父组件主动调用 **/
-    /* 验证数据是否全部合法 */
-    validateFormData () {
-      if (this._isBlank(this.goodsProductInfo.goodsName)) {
-        this.$message('请输入商品名称')
-        this.$refs.goodsNameInput.focus()
-        return false
-      }
-
-      if (this.goodsProductInfo.catId === null) {
-        this.$message('请选择平台分类')
-        this.$refs.catSelect.focus()
-        return false
-      }
-
-      if (this.goodsProductInfo.goodsImgs.length === 0) {
-        this.$message('请选择商品图片')
-        return false
-      }
-
-      if (this.goodsProductInfo.unit === null) {
-        this.$message('请选择商品单位')
-        this.$refs.unitSelect.focus()
-        return false
-      }
-
-      return true
-    },
-
-    /* 判断传入的参数是否为空，当参数为null,undefined,''时都视为空 */
-    _isBlank (val) {
-      if (val === null || val === undefined || val === '') {
-        return true
-      } else {
-        return false
-      }
     }
   },
   mounted () {
@@ -618,44 +538,23 @@ export default {
   color: #999;
   margin-left: 15px;
 }
-.goodsImgWrap {
+
+.goods_img {
+  display: flex;
+  align-items: center;
+}
+.add_img {
   width: 80px;
   height: 80px;
+  color: #333;
+  background-color: #f7f7f7;
   border: 1px solid #ccc;
-  margin: 5px 5px;
-  position: relative;
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
-.goodsImgWrap .deleteIcon {
-  width: 17px;
-  height: 17px;
-  color: #fff;
-  background: #ccc;
-  border: 1px solid #ccc;
-  border-radius: 50%;
-  line-height: 17px;
-  text-align: center;
-  position: absolute;
-  top: -8px;
-  right: -8px;
-  cursor: pointer;
-  opacity: 0.8;
-}
-.goodsImgWrap .moveIcon {
-  width: 17px;
-  height: 17px;
-  display: none;
-  color: #fff;
-  background: #ccc;
-  border: 1px solid #ccc;
-  line-height: 17px;
-  text-align: center;
-  position: absolute;
-  bottom: 0px;
-  cursor: pointer;
-  opacity: 0.8;
-}
-.goodsImgWrap:hover .moveIcon {
-  display: block;
+.img_group {
+  display: flex;
 }
 .li_image {
   border: 1px solid #ccc;

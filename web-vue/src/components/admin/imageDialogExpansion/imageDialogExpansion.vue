@@ -1,12 +1,12 @@
 <template>
   <div class="imageDalog">
-    <div class="imageDalogMain">
+    <div class="imageDalogMain ">
       <el-dialog
         :title="$t('imgageDalog.title')"
         :visible.sync="dialogTableVisible"
         width="825px"
       >
-        <div class="dialog_top">
+        <div class="dialog_top ">
           <el-upload
             class="upload-demo"
             action=""
@@ -73,7 +73,7 @@
                       <a :title="item.imgName">
                         <img
                           :src="item.imgUrl"
-                          @click="handleChecked(index)"
+                          @click="handleChecked(index,item.imgUrl)"
                         >
                       </a>
                       <div
@@ -83,7 +83,7 @@
                     </div>
                     <div
                       class="img_mask"
-                      :class="item.imgIndex === index?'mask_flag':''"
+                      :class="item.imgIndex === index ?'mask_flag':''"
                     >
                       <p :class="imageDalog_p_height">
                         <a
@@ -134,8 +134,24 @@
               </div>
             </div>
           </div>
-
         </div>
+        <section class="footer_selected">
+          <section class="top">
+            已选{{this.imgLists.length}}张图片，拖动可修改插入顺序
+          </section>
+          <section class="main">
+            <section
+              v-for="(item,index) in imgLists"
+              :key="index"
+            >
+              <el-image
+                style="width: 50px; height: 50px;margin:6px;margin-bottom:-7px"
+                :src="item.url"
+                fit="fill"
+              ></el-image>
+            </section>
+          </section>
+        </section>
         <span
           slot="footer"
           class="dialog-footer"
@@ -143,7 +159,7 @@
           <el-button @click="dialogTableVisible = false">{{$t('imgageDalog.cancel')}}</el-button>
           <el-button
             type="primary"
-            @click="dialogTableVisible = false"
+            @click="handleSave"
           >{{$t('imgageDalog.Determine')}}</el-button>
         </span>
       </el-dialog>
@@ -163,6 +179,8 @@ export default {
   props: ['pageIndex'],
   data () {
     return {
+      imgLists: [],
+      flag: ``,
       dialogTableVisible: false,
       imgUrl: [
         {
@@ -206,7 +224,7 @@ export default {
   },
   watch: {
     allNodes_ (newData, oldData) {
-      console.log(newData)
+      // console.log(newData)
       // 初始化图片查询数据
       if (newData.content) {
         this.firstNodeId = newData.content[0].id
@@ -217,14 +235,14 @@ export default {
       this.queryImgs()
     },
     activeFresh_ (data) {
-      console.log(data, 11111)
+      // console.log(data, 11111)
       this.queryImgs()
     }
   },
   mounted () {
     // accountSettings组件控制本组件弹窗
     this.$http.$on('dtVisible', () => {
-      console.log(123)
+      // console.log(123)
       this.dialogTableVisible = true
     })
     this.value = this.options[0].value
@@ -232,13 +250,23 @@ export default {
     this.langDefault()
   },
   methods: {
+    // handleEnter
+    handleEnter (index) {
+
+    },
+    handleLeave (index) {
+
+    },
+    handleCancle (index) {
+      this.imgLists.splice(index, 1)
+    },
     // 图片上传前的钩子
     beforeUpLoad (file) {
-      console.log(file)
+      // console.log(file)
       let that = this
-      console.log(this.firstNodeId)
+      // console.log(this.firstNodeId)
       let is1M = file.size / 1024 / 1024 < 5 // 限制小于1M
-      console.log(is1M)
+      // console.log(is1M)
       if (!is1M) this.$message.error('请上传小于5M的图片')
 
       // let width = 654 // 限制图片尺寸为654X270
@@ -247,13 +275,13 @@ export default {
       let img = new Image()
 
       img.onload = function () {
-        console.log(img.width, img.height)
+        // console.log(img.width, img.height)
         // this.upImgWidth = img.width
         // this.upImgHeight = img.height
-        console.log(that.firstNodeId)
+        // console.log(that.firstNodeId)
         let fd = new FormData()
         // console.log(fd)
-        console.log(file)
+        // console.log(file)
         fd.append('file', file)
         fd.append('needImgWidth', img.width)
         fd.append('needImgHeight', img.height)
@@ -261,7 +289,7 @@ export default {
         switch (that.pageIndex) {
           case 'pictureSpace':
             upmoreImgsRequest(fd).then((res) => {
-              console.log(res)
+              // console.log(res)
               if (res.error === 0) {
                 that.queryImgs()
               }
@@ -269,12 +297,19 @@ export default {
             break
           case 'imageDalog':
             upmoreHeadImgsRequest(fd).then((res) => {
-              console.log(res)
+              // console.log(res)
               if (res.error === 0) {
                 that.queryImgs()
               }
             })
             break
+          case 'basicInfo':
+            upmoreHeadImgsRequest(fd).then((res) => {
+              // console.log(res)
+              if (res.error === 0) {
+                that.queryImgs()
+              }
+            })
         }
 
         // let valid = img.width === width && img.height === height
@@ -318,6 +353,9 @@ export default {
           break
         case 'userCardAdd':
           this.handleToSizeData(540, 300)
+          break
+        case 'basicInfo':
+          this.handleToSizeData(800, 800)
       }
       return {
         width: this.width,
@@ -326,22 +364,25 @@ export default {
     },
     // 图片分组查询
     queryImgs (currentPage3) {
-      console.log(this.firstNodeId)
-      console.log(this.value)
-      console.log(this.checked)
+      // console.log(this.firstNodeId)
+      // console.log(this.value)
+      // console.log(this.checked)
 
       let { width, height } = this.handleToImgSize()
-      console.log(this.pageIndex)
+      // console.log(this.pageIndex)
       switch (this.pageIndex) {
         case 'pictureSpace':
-          console.log(123)
+          // console.log(123)
           this.handleToQueryImgsData(currentPage3, width, height, 0)
           break
         case 'userCardAdd':
-          console.log(123)
+          // console.log(123)
           this.handleToQueryImgsData(currentPage3, width, height, 0)
           break
         case 'imageDalog':
+          this.handleToQueryImgsData(currentPage3, width, height, 1)
+          break
+        case 'basicInfo':
           this.handleToQueryImgsData(currentPage3, width, height, 1)
       }
     },
@@ -361,7 +402,7 @@ export default {
       switch (flag) {
         case 0:
           queryImgsRequest(obj).then((res) => {
-            console.log(res)
+            // console.log(res)
             if (res.error === 0) {
               this.totalRows = res.content.page.totalRows
               this.currentPage = res.content.page.currentPage
@@ -374,13 +415,13 @@ export default {
                 // console.log(item.imgUrl)
               })
               this.img_list = res.content.dataList
-              console.log(this.img_list, 1)
+              // console.log(this.img_list, 1)
             }
           })
           break
         case 1:
           queryHeadImgsRequest(obj).then((res) => {
-            console.log(res)
+            // console.log(res)
             if (res.error === 0) {
               this.totalRows = res.content.page.totalRows
               this.currentPage = res.content.page.currentPage
@@ -393,7 +434,7 @@ export default {
                 // console.log(item.imgUrl)
               })
               this.img_list = res.content.dataList
-              console.log(this.img_list, 1)
+              // console.log(this.img_list, 1)
             }
           })
       }
@@ -407,7 +448,7 @@ export default {
       switch (this.pageIndex) {
         case 'pictureSpace':
           imgsdeleteRequest(obj).then((res) => {
-            console.log(res)
+            // console.log(res)
             if (res.error === 0) {
               this.queryImgs(this.currentPage3)
             }
@@ -415,7 +456,15 @@ export default {
           break
         case 'imageDalog':
           imgsHeaddeleteRequest(obj).then((res) => {
-            console.log(res)
+            // console.log(res)
+            if (res.error === 0) {
+              this.queryImgs(this.currentPage3)
+            }
+          })
+          break
+        case 'basicInfo':
+          imgsHeaddeleteRequest(obj).then((res) => {
+            // console.log(res)
             if (res.error === 0) {
               this.queryImgs(this.currentPage3)
             }
@@ -423,25 +472,67 @@ export default {
       }
     },
     // 单图片选中
-    handleChecked (index) {
-      this.img_list[index].checked = !this.img_list[index].checked
-      this.$emit('handleSelectImg', this.img_list[index].imgUrl)
-      this.dialogTableVisible = false
+    handleChecked (index, url) {
+      let flag = this.img_list[index]['imgHeight'] === 800 && this.img_list[index]['imgWidth'] === 800
+      if (!flag) {
+        this.$message({
+          message: '图片宽高不符合要求',
+          center: true,
+          type: 'warning',
+          duration: 1000,
+          showClose: true
+        })
+      } else {
+        this.img_list[index].checked = !this.img_list[index].checked
+        let checked = this.img_list[index].checked
+        console.log(checked, index)
+        if (checked) {
+          if (this.imgLists.length > 4) {
+            this.$message({
+              message: '最多上传5张图',
+              center: true,
+              type: 'warning',
+              duration: 1000,
+              showClose: true
+            })
+            return
+          }
+          this.imgLists.push({ index, url })
+        } else {
+          this.imgLists = this.imgLists.filter(item => item.index !== index)
+        }
+        console.log(this.imgLists)
+      }
+
+      // if (this.imgLists.length > 4) {
+      //   this.$message({
+      //     message: '最多上传5张图',
+      //     center: true,
+      //     type: 'warning',
+      //     duration: 1000,
+      //     showClose: true
+      //   })
+      // } else {
+      //   this.imgLists.push({
+      //     url
+      //   })
+      // }
+      // this.dialogTableVisible = false
     },
     // 鼠标划入
     enter (index) {
-      console.log(index)
+      // console.log(index)
       // this.mask_flag = !this.mask_flag
       // this.dim_flag = !this.dim_flag
       this.img_list[index].imgIndex = index
-      console.log(this.img_list[index].imgIndex)
+      // console.log(this.img_list[index].imgIndex)
     },
     // 鼠标划出
     leave (index) {
       // this.mask_flag = !this.mask_flag
       // this.dim_flag = !this.dim_flag
       this.img_list[index].imgIndex = ''
-      console.log(this.img_list[index].imgIndex)
+      // console.log(this.img_list[index].imgIndex)
     },
     // 裁剪弹窗调起
     handleCropper (path, catid, imgid, url) {
@@ -452,8 +543,13 @@ export default {
         url: url,
         index: 1
       }
-      console.log(1)
+      // console.log(obj)
       this.$store.commit('TOCHANGE_RECRUITMENTDIALOG', obj)
+    },
+    // 当用户点击确定的时候
+    handleSave () {
+      this.$emit('handleGoodsImgs', this.imgLists)
+      this.dialogTableVisible = false
     }
   }
 }
@@ -462,7 +558,7 @@ export default {
 .img_sel {
   width: 18px;
   height: 18px;
-  background: url(../../assets/adminImg/img_sel.png) no-repeat;
+  background: url(../../../assets/adminImg/img_sel.png) no-repeat;
   position: absolute;
   right: -9px;
   top: -9px;
@@ -565,6 +661,7 @@ ul {
   font-size: 12px;
   display: block;
 }
+
 .img_mask {
   background: rgba(0, 0, 0, 0.3) !important;
   cursor: pointer;
@@ -631,4 +728,16 @@ ul {
 /* .el-popper[x-placement^="bottom"] {
   margin-top: 10px !important;
 } */
+.top {
+  height: 20px;
+  display: flex;
+  align-items: center;
+  margin: 10px 0;
+  background-color: #eee;
+}
+.main {
+  min-height: 70px;
+  display: flex;
+  border-bottom: 3px solid #eee;
+}
 </style>
