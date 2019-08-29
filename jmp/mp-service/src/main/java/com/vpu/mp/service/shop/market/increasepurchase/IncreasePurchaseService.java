@@ -23,6 +23,7 @@ import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
 import java.sql.Timestamp;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -61,37 +62,35 @@ public class IncreasePurchaseService extends ShopBaseService {
      * @return 分页数据
      */
     public PageResult<PurchaseShowVo> selectByPage(PurchaseShowParam param) {
-        Condition categoryConditon = ppd.ID.isNotNull();
+        //默认查询结果不包含已删除信息
+        Condition categoryConditon = ppd.DEL_FLAG.eq(FLAG_ZERO);
         switch (param.getCategory()) {
             // 所有0
             case PURCHASE_ALL:
                 break;
-            // 已停用1
+            // 已停用4
             case PURCHASE_TERMINATED:
-                categoryConditon = categoryConditon.and(ppd.STATUS.eq((byte) 0));
+                categoryConditon = categoryConditon.and(ppd.STATUS.eq(FLAG_ONE));
                 break;
-            // 已过期2
+            // 已过期3
             case PURCHASE_EXPIRED:
-                categoryConditon = categoryConditon.and(ppd.END_TIME.lessThan(new Timestamp(System.currentTimeMillis()))).and(ppd.STATUS.eq((byte) 1));
+                categoryConditon = categoryConditon.and(ppd.END_TIME.lessThan(Timestamp.valueOf(LocalDateTime.now())));
                 break;
-            // 未开始4
+            // 未开始2
             case PURCHASE_PREPARE:
-                categoryConditon = categoryConditon.and(ppd.START_TIME.greaterThan(new Timestamp(System.currentTimeMillis()))).and(ppd.STATUS.eq((byte) 1));
+                categoryConditon = categoryConditon.and(ppd.START_TIME.greaterThan(Timestamp.valueOf(LocalDateTime.now())));
                 break;
-            // 默认进行中8
+            // 默认进行中1
             default:
-                categoryConditon = categoryConditon.and(ppd.START_TIME.lessThan(new Timestamp(System.currentTimeMillis()))).and(ppd.END_TIME.greaterThan(new Timestamp(System.currentTimeMillis()))).and(ppd.STATUS.eq((byte) 1));
+                categoryConditon = categoryConditon.and(ppd.START_TIME.lessThan(Timestamp.valueOf(LocalDateTime.now()))).and(ppd.END_TIME.greaterThan(Timestamp.valueOf(LocalDateTime.now())));
                 break;
         }
-        Table<Record6<Integer, String, Short, Short, Timestamp, Timestamp>> conditionStep = db().
-            select(ppd.ID, ppd.NAME, ppd.LEVEL, ppd.MAX_CHANGE_PURCHASE, ppd.START_TIME, ppd.END_TIME).from(ppd).where(categoryConditon).asTable("ppd");
+        Table<Record7<Integer, String, Short, Short, Timestamp, Timestamp, Byte>> conditionStep = db().
+            select(ppd.ID, ppd.NAME, ppd.LEVEL, ppd.MAX_CHANGE_PURCHASE, ppd.START_TIME, ppd.END_TIME, ppd.DEL_FLAG).from(ppd).where(categoryConditon).asTable("ppd");
 
-        Condition selectConditon = ppd.ID.isNotNull();
-        if (param.getName() != null) {
+        Condition selectConditon = ppd.DEL_FLAG.eq(FLAG_ZERO);
+        if (StringUtils.isNotEmpty(param.getName())) {
             selectConditon = selectConditon.and(ppd.NAME.like(this.likeValue(param.getName())));
-        }
-        if (param.getStatus() != null) {
-            selectConditon = selectConditon.and(ppd.STATUS.eq(param.getStatus()));
         }
         if (param.getStartTime() != null) {
             selectConditon = selectConditon.and(ppd.START_TIME.greaterThan(param.getStartTime()));

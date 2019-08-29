@@ -2364,11 +2364,11 @@ create table `b2c_purchase_price_define` (
   `goods_id`            text  comment '主商品',
   `start_time`          timestamp null default null comment '开始时间',
   `end_time`            timestamp null default null comment '结束时间',
-  `status`              tinyint(1)                                       default '1' comment '状态 1: 启用 0:禁用',
-  `del_flag`            tinyint(4)                                       default '0',
+  `status`              tinyint(1)  not null  default 0 comment '状态 0: 启用 1:禁用',
+  `del_flag`            tinyint(4)  not null default '0' comment '删除标识：0未删除 1已删除',
   `del_time`			timestamp     null 	default null comment '删除时间',
-  `create_time`			timestamp      	default current_timestamp,
-  `update_time` 		timestamp      	default current_timestamp on update current_timestamp comment '最后修改时间',
+  `create_time`			timestamp   not null default current_timestamp,
+  `update_time` 		timestamp   not null default current_timestamp on update current_timestamp comment '最后修改时间',
   primary key (`id`)
 );
 -- -- 加价购
@@ -2379,10 +2379,10 @@ create table `b2c_purchase_price_rule` (
   `full_price`        decimal(10, 2)   default null comment '满多少钱',
   `purchase_price`    decimal(10, 2)   default null comment '换购多少钱的商品',
   `product_id`        text  comment '换购商品',
-  `del_flag`          tinyint(1)       default '0',
+  `del_flag`          tinyint(1)  not null default '0' comment '删除标识：0未删除 1已删除',
   `del_time`			timestamp      null	default null comment '删除时间',
-  `create_time`			timestamp      	default current_timestamp,
-  `update_time` 		timestamp      	default current_timestamp on update current_timestamp comment '最后修改时间',
+  `create_time`			timestamp   not null   	default current_timestamp,
+  `update_time` 		timestamp   not null   	default current_timestamp on update current_timestamp comment '最后修改时间',
   primary key (`id`)
 );
 
@@ -4225,8 +4225,8 @@ CREATE TABLE `b2c_share_award`  (
   `goods_ids` varchar(200) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NULL DEFAULT NULL COMMENT '触发条件为2时：分享指定商品id列表，逗号分隔符',
   `goods_pv` int(8) NULL DEFAULT NULL COMMENT '触发条件为3时：被分享商品访问量条件',
   `visit_first` tinyint(1) NULL DEFAULT NULL COMMENT '仅邀请未访问过的用户有效',
-  `status` tinyint(1) NOT NULL DEFAULT 0 COMMENT '状态：1停用',
-  `del_flag` tinyint(1) NOT NULL DEFAULT 0 COMMENT '是否删除：1删除',
+  `status` tinyint(1) NOT NULL DEFAULT 0 COMMENT '状态：0启用，1停用',
+  `del_flag` tinyint(1) NOT NULL DEFAULT 0 COMMENT '是否删除：0未删除，1删除',
   `first_level_rule` varchar(500) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NULL DEFAULT NULL COMMENT '一级规则设置（json）：规则优先级从一到三依次增强，规则一满足后方可进行规则二',
   `second_level_rule` varchar(500) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NULL DEFAULT NULL COMMENT '二级规则设置（json）',
   `third_level_rule` varchar(500) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NULL DEFAULT NULL COMMENT '三级规则设置（json）',

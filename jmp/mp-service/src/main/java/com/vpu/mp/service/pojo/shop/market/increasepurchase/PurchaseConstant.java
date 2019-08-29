@@ -10,26 +10,28 @@ import lombok.Data;
 @Data
 public class PurchaseConstant {
     /**
-     * 加价购页面分页展示分模块，进行中8 ，未开始4，已过期2，已停用1，所有0 ；筛选优先级高于下面的条件
+     * 加价购/分享有礼等营销页面通用常量参数
+     * 页面分页展示分模块，所有0，进行中1 ，未开始2，已过期3，已停用4 ；筛选优先级高于下面的条件
+     * <p>
      * 所有0
      */
     public static final byte PURCHASE_ALL = 0b0000;
     /**
-     * 已停用1
+     * 已停用4
      */
-    public static final byte PURCHASE_TERMINATED = 0b0001;
+    public static final byte PURCHASE_TERMINATED = 0b0100;
     /**
-     * 已过期2
+     * 已过期3
      */
-    public static final byte PURCHASE_EXPIRED = 0b0010;
+    public static final byte PURCHASE_EXPIRED = 0b0011;
     /**
-     * 未开始4
+     * 未开始2
      */
-    public static final byte PURCHASE_PREPARE = 0b0100;
+    public static final byte PURCHASE_PREPARE = 0b0010;
     /**
-     * 进行中8
+     * 进行中1
      */
-    public static final byte PURCHASE_PROCESSING = 0b1000;
+    public static final byte PURCHASE_PROCESSING = 0b0001;
 
     /**
      * 获取分享二维码常量参数
@@ -43,4 +45,14 @@ public class PurchaseConstant {
      * 使用mysql CONCAT_WS()函数 分隔符常量
      */
     public static final String CONCAT_WS_SEPARATOR = " --- ";
+
+    /**
+     * 通用标识常量
+     * <p>
+     * 删除状态标识：0未删除，1已删除；默认查询结果不包含已删除信息
+     * 活动状态标识：0未禁用（启用），1禁用
+     * 是否永久标识，0非永久，1永久
+     */
+    public static final Byte FLAG_ZERO = 0;
+    public static final Byte FLAG_ONE = 1;
 }

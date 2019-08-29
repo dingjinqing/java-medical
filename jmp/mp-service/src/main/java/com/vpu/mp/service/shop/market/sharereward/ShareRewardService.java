@@ -50,26 +50,26 @@ public class ShareRewardService extends ShopBaseService {
      */
     public PageResult<ShareRewardShowVo> selectByPage(ShareRewardShowParam param) {
         //已删除的分享有礼活动不参与查询
-        Condition categoryConditon = sa.DEL_FLAG.notEqual((byte) 1);
+        Condition categoryConditon = sa.DEL_FLAG.eq(FLAG_ONE);
         switch (param.getCategory()) {
             // 所有0
             case PURCHASE_ALL:
                 break;
-            // 已停用1
+            // 已停用4
             case PURCHASE_TERMINATED:
-                categoryConditon = categoryConditon.and(sa.STATUS.eq((byte) 1));
+                categoryConditon = categoryConditon.and(sa.STATUS.eq(FLAG_ONE));
                 break;
-            // 已过期2
+            // 已过期3
             case PURCHASE_EXPIRED:
-                categoryConditon = categoryConditon.and(sa.END_TIME.lessThan(new Timestamp(System.currentTimeMillis()))).and(sa.IS_FOREVER.eq((byte) 0));
+                categoryConditon = categoryConditon.and(sa.END_TIME.lessThan(Timestamp.valueOf(LocalDateTime.now()))).and(sa.IS_FOREVER.eq(FLAG_ZERO));
                 break;
-            // 未开始4
+            // 未开始2
             case PURCHASE_PREPARE:
-                categoryConditon = categoryConditon.and(sa.START_TIME.greaterThan(new Timestamp(System.currentTimeMillis()))).and(sa.IS_FOREVER.eq((byte) 0));
+                categoryConditon = categoryConditon.and(sa.START_TIME.greaterThan(Timestamp.valueOf(LocalDateTime.now()))).and(sa.IS_FOREVER.eq(FLAG_ZERO));
                 break;
-            // 默认进行中8
+            // 默认进行中1
             default:
-                categoryConditon = categoryConditon.and(sa.IS_FOREVER.eq((byte) 1)).or(sa.START_TIME.lessThan(new Timestamp(System.currentTimeMillis()))).and(sa.END_TIME.greaterThan(new Timestamp(System.currentTimeMillis())));
+                categoryConditon = categoryConditon.and(sa.IS_FOREVER.eq(FLAG_ONE).or(sa.START_TIME.lessThan(Timestamp.valueOf(LocalDateTime.now()))).and(sa.END_TIME.greaterThan(Timestamp.valueOf(LocalDateTime.now()))));
                 break;
         }
         Table<Record12<Integer, String, Byte, Integer, Byte, Timestamp, Timestamp, String, String, String, Integer, Byte>> conditionStep = db().
@@ -91,9 +91,9 @@ public class ShareRewardService extends ShopBaseService {
                 vo.setValidityPeriod(validityperiod);
             }
             //设置活动的实时具体状态，进行中，未开始，已过期，已停用
-            if(PURCHASE_ALL == param.getCategory()){
+            if (PURCHASE_ALL == param.getCategory()) {
                 vo.setPageStatus(getPageStatus(vo));
-            }else{
+            } else {
                 vo.setPageStatus(param.getCategory());
             }
             vo.setRewardType(getRewardType(vo.getFirstLevelRule(), vo.getSecondLevelRule(), vo.getThirdLevelRule()));
@@ -106,20 +106,20 @@ public class ShareRewardService extends ShopBaseService {
     /**
      * 当查询所有的活动时，需要判定每一个活动的实时具体状态
      */
-    private Byte getPageStatus(ShareRewardShowVo vo){
-        if(PURCHASE_TERMINATED == vo.getStatus()){
+    private Byte getPageStatus(ShareRewardShowVo vo) {
+        if (PURCHASE_TERMINATED == vo.getStatus()) {
             //已停用状态
             return PURCHASE_TERMINATED;
         }
-        if(vo.getEndTime().toLocalDateTime().isBefore(LocalDateTime.now())){
+        if (vo.getEndTime().toLocalDateTime().isBefore(LocalDateTime.now())) {
             //已过期状态
             return PURCHASE_EXPIRED;
         }
-        if(vo.getStartTime().toLocalDateTime().isAfter(LocalDateTime.now())){
+        if (vo.getStartTime().toLocalDateTime().isAfter(LocalDateTime.now())) {
             //未开始状态
             return PURCHASE_PREPARE;
         }
-        if(vo.getStartTime().toLocalDateTime().isBefore(LocalDateTime.now())&&vo.getEndTime().toLocalDateTime().isAfter(LocalDateTime.now())){
+        if (vo.getStartTime().toLocalDateTime().isBefore(LocalDateTime.now()) && vo.getEndTime().toLocalDateTime().isAfter(LocalDateTime.now())) {
             //进行中状态
             return PURCHASE_PROCESSING;
         }
@@ -170,8 +170,7 @@ public class ShareRewardService extends ShopBaseService {
     }
 
 
-    private static final Byte IS_FOREVER = 1;
-    private static final byte CONDITION = 0;
+    private static final byte CONDITION_ZERO = 0;
     private static final byte CONDITION_ONE = 1;
     private static final byte CONDITION_TWO = 2;
     private static final byte CONDITION_THREE = 3;
@@ -215,7 +214,7 @@ public class ShareRewardService extends ShopBaseService {
     private com.vpu.mp.db.shop.tables.records.ShareAwardRecord buildOptions(ShareRewardAddParam param) {
         try {
             com.vpu.mp.db.shop.tables.records.ShareAwardRecord awardRecord = new com.vpu.mp.db.shop.tables.records.ShareAwardRecord();
-            if (IS_FOREVER.equals(param.getIsForever())) {
+            if (FLAG_ONE.equals(param.getIsForever())) {
                 param.setStartTime(null);
                 param.setEndTime(null);
             }
@@ -246,17 +245,21 @@ public class ShareRewardService extends ShopBaseService {
      * 停用/启用/删除
      *
      * @param param 活动状态/删除标识
+     *              0启用，1停用，2删除
      */
     public void changeActivity(ShareRewardStatusParam param) {
         switch (param.getStatus()) {
-            case CONDITION:
-                db().update(sa).set(sa.STATUS, CONDITION).where(sa.ID.eq(param.getShareId())).execute();
+            case CONDITION_ZERO:
+                //启用
+                db().update(sa).set(sa.STATUS, FLAG_ZERO).where(sa.ID.eq(param.getShareId())).execute();
                 break;
             case CONDITION_ONE:
-                db().update(sa).set(sa.STATUS, CONDITION_ONE).where(sa.ID.eq(param.getShareId())).execute();
+                //停用
+                db().update(sa).set(sa.STATUS, FLAG_ONE).where(sa.ID.eq(param.getShareId())).execute();
                 break;
             case CONDITION_TWO:
-                db().update(sa).set(sa.DEL_FLAG, CONDITION_ONE).where(sa.ID.eq(param.getShareId())).execute();
+                //删除
+                db().update(sa).set(sa.DEL_FLAG, FLAG_ONE).where(sa.ID.eq(param.getShareId())).execute();
                 break;
             default:
                 break;

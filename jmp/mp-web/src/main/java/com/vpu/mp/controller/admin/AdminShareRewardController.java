@@ -30,7 +30,8 @@ public class AdminShareRewardController extends AdminBaseController {
     @PostMapping("/selectbypage")
     public JsonResult selectByPage(@RequestBody @Validated ShareRewardShowParam param) {
         return success(new HashMap<String, Object>(1) {
-            {
+			private static final long serialVersionUID = -770352000451470300L;
+			{
                 put("dailyShareAward", shop().shareRewardService.getDailyShareAwardValue());
                 put("pageResult", shop().shareRewardService.selectByPage(param));
             }
