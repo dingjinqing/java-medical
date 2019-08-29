@@ -62,7 +62,7 @@ public class AdminGoodsController extends AdminBaseController {
      * @param param 商品ID goodsid
      * @return  规则信息
      */
-    @PostMapping("/api/admin/goods/product/getAll")
+    @PostMapping("/api/admin/goods/product/all")
     public JsonResult getAllProductListByGoodsId(@RequestBody GoodsIdParam param){
         List<GoodsProductVo> productVos = shop().goods.getAllProductListByGoodsId(param.getGoodsId());
         return success(productVos);
