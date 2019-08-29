@@ -46,23 +46,40 @@ public class ShopOverviewService extends MainBaseService {
      * @param param
      * @return
      */
-    public int bindUnBindOfficial(BindUnBindOfficialParam param){
-        /** 更新主账户 */
-        if(param.getIsSubAccount() == 0){
-            return db().update(ShopAccount.SHOP_ACCOUNT)
-                    .set(ShopAccount.SHOP_ACCOUNT.IS_BIND,param.getIsBind())
-                    .where(ShopAccount.SHOP_ACCOUNT.SYS_ID.eq(param.getSysId()))
-                    .execute();
-            /** 更新子账户 */
-        }else if(param.getIsSubAccount() == 1){
-            return db().update(ShopChildAccount.SHOP_CHILD_ACCOUNT)
-                    .set(ShopChildAccount.SHOP_CHILD_ACCOUNT.IS_BIND,param.getIsBind())
-                    .where(ShopChildAccount.SHOP_CHILD_ACCOUNT.ACCOUNT_ID.eq(param.getAccountId()))
-                    .execute();
-        }else {
-            return -1;
-        }
-    }
+	public boolean bindUnBindOfficial(String act, AdminTokenAuthInfo user, Integer accountId) {
+		if (StringUtils.isEmpty(act) || user == null) {
+			return false;
+		}
+		byte isBind = 0;
+		if (act.equals("bind")) {
+			// 绑定
+			isBind = 1;
+		}
+		if (act.equals("del_bind")) {
+			// 解绑
+			isBind = 0;
+		}if(!(act.equals("bind")||act.equals("del_bind"))) {
+			logger().debug("绑定解绑传入act参数错误："+act);
+			return false;
+		}
+		int num = 0;
+		if (!user.subLogin) {
+			// 主账户
+			if(accountId!=0) {
+				//主账户在子账户权限管理处操作子账户解绑绑定
+				num = saas.shop.subAccount.updateRowBind(accountId, isBind);
+			}else {
+				num = saas.shop.account.updateRowBind(user.sysId, isBind);
+			}
+		} else {
+			// 子账户
+			num = saas.shop.subAccount.updateRowBind(user.subAccountId, isBind);
+		}
+		if (num > 0) {
+			return true;
+		}
+		return false;
+	}
 
     /**
      * 获取绑定/解绑状态
