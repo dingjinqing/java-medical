@@ -20,4 +20,8 @@ public class MpOfficialAccountUserService extends MainBaseService {
             .and(MP_OFFICIAL_ACCOUNT_USER.SUBSCRIBE.eq((byte)1))
             .fetchInto(MP_OFFICIAL_ACCOUNT_USER);
     }
+    
+    public MpOfficialAccountUserRecord getUser(String appId,String openId) {
+    	return db().selectFrom(MP_OFFICIAL_ACCOUNT_USER).where(MP_OFFICIAL_ACCOUNT_USER.APP_ID.eq(appId).and(MP_OFFICIAL_ACCOUNT_USER.OPENID.eq(openId))).fetchAny();
+    }
 }
