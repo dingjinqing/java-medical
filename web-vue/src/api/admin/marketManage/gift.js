@@ -1,3 +1,8 @@
+/**
+ * 赠品活动
+ *
+ * @author 郑保乐
+ */
 import service from '@/util/request'
 
 // 赠品活动列表
