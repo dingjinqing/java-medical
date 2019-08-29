@@ -2,258 +2,103 @@
   <div>
     <!--基本信息配置模块-->
     <div>
-      <el-form
-        ref="basicInfoForm"
-        :model="goodsProductInfo"
-        :rules="basicInfoRules"
-        label-width="120px"
-      >
-        <el-form-item
-          label="商品名称："
-          prop="goodsName"
-        >
-          <el-input
-            v-model="goodsProductInfo.goodsName"
-            size="small"
-            style="width:400px"
-          />
+      <el-form ref="basicInfoForm" :model="goodsProductInfo" :rules="basicInfoRules" label-width="120px">
+        <el-form-item label="商品名称：" prop="goodsName">
+          <el-input ref="goodsNameInput" v-model="goodsProductInfo.goodsName" size="small" style="width:400px"/>
         </el-form-item>
         <el-form-item label="商品广告词：">
-          <el-input
-            v-model="goodsProductInfo.goodsAd"
-            size="small"
-            style="width:400px"
-          />
+          <el-input v-model="goodsProductInfo.goodsAd" size="small" style="width:400px"/>
         </el-form-item>
         <el-form-item label="商品货号：">
-          <el-input
-            v-model="goodsProductInfo.goodsSn"
-            size="small"
-            style="width:170px;"
-          />
+          <el-input v-model="goodsProductInfo.goodsSn" size="small" style="width:170px;"/>
           <span class="inputTip">不填则由系统自动生成货号</span>
         </el-form-item>
-        <el-form-item
-          label="平台分类："
-          prop="catId"
-        >
-          <el-select
-            v-model="catIdTemp.firstCatId"
-            size="small"
-            @change="catIdSelectChange(1,$event)"
-          >
-            <el-option
-              :value="null"
-              label="请选择平台分类"
-            />
-            <el-option
-              v-for="item in catIdTemp.firstCatData"
-              :label="item.catName"
-              :value="item.catId"
-              :key="item.catId"
-            />
+        <el-form-item label="平台分类：" prop="catId">
+          <el-select ref="catSelect" v-model="catIdTemp.firstCatId" size="small"
+                     @change="catIdSelectChange(1,$event)">
+            <el-option :value="null" label="请选择平台分类"/>
+            <el-option v-for="item in catIdTemp.firstCatData" :label="item.catName" :value="item.catId"
+                       :key="item.catId"/>
           </el-select>
-          <el-select
-            v-if="!!catIdTemp.firstCatId"
-            v-model="catIdTemp.secondCatId"
-            size="small"
-            @change="catIdSelectChange(2,$event)"
-          >
-            <el-option
-              :value="null"
-              label="请选择平台分类"
-            />
-            <el-option
-              v-for="item in catIdTemp.secondCatData"
-              :label="item.catName"
-              :value="item.catId"
-              :key="item.catId"
-            />
+          <el-select v-if="!!catIdTemp.firstCatId" v-model="catIdTemp.secondCatId" size="small"
+                     @change="catIdSelectChange(2,$event)">
+            <el-option :value="null" label="请选择平台分类"/>
+            <el-option v-for="item in catIdTemp.secondCatData" :label="item.catName" :value="item.catId"
+                       :key="item.catId"/>
           </el-select>
-          <el-select
-            v-if="!!catIdTemp.firstCatId&&!!catIdTemp.secondCatId"
-            v-model="catIdTemp.thirdCatId"
-            size="small"
-            @change="catIdSelectChange(3,$event)"
-          >
-            <el-option
-              :value="null"
-              label="请选择平台分类"
-            />
-            <el-option
-              v-for="item in catIdTemp.thirdCatData"
-              :label="item.catName"
-              :value="item.catId"
-              :key="item.catId"
-            />
+          <el-select v-if="!!catIdTemp.firstCatId&&!!catIdTemp.secondCatId" v-model="catIdTemp.thirdCatId"
+                     size="small" @change="catIdSelectChange(3,$event)">
+            <el-option :value="null" label="请选择平台分类"/>
+            <el-option v-for="item in catIdTemp.thirdCatData" :label="item.catName" :value="item.catId"
+                       :key="item.catId"/>
           </el-select>
           <span class="inputTip">
-            “平台分类”是商品在系统中的属性，不会对用户展示。可在“基础配置”中设置默认平台分类。
+          “平台分类”是商品在系统中的属性，不会对用户展示。可在“基础配置”中设置默认平台分类。
           </span>
-          <el-link
-            type="primary"
-            :underline="false"
-            href="#"
-            target="_blank"
-          >前往</el-link>
+          <el-link type="primary" :underline="false" href="#" target="_blank">前往</el-link>
         </el-form-item>
-        <el-form-item
-          label="商品主图："
-          prop="goodsImg"
-        >
-          <!-- 商品主图集合 -->
-          <section>
-            <!-- 5张图片 -->
-            <ul class="img_group">
-              <li></li>
-              <li></li>
-              <li></li>
-              <li></li>
-              <li></li>
-            </ul>
-            <!-- 添加的图片 -->
-            <section>
-
-            </section>
-          </section>
-
-          <section class="add_img">
-            <el-image
-              style="width: 80px; height: 80px"
-              :src="srcList.src1"
-              fit="fill"
-            ></el-image>
-          </section>
-          <!-- <goodsMainPic @imgListChange="goodsImgsChange" /> -->
-          <span class="inputTip">
+        <el-form-item label="商品主图：" prop="goodsImgs">
+          <div style="display: flex;align-items: center;flex-wrap: wrap;">
+            <div v-for="(src,index) in goodsProductInfo.goodsImgs" :key="index" class="goodsImgWrap">
+              <el-image fit="cover" :src="src" style="width: 78px; height: 78px;"></el-image>
+              <span @click="deleteGoodsImg(index)" class="deleteIcon">×</span>
+              <span @click="moveGoodsImgIndex(index,-1)"  class="moveIcon" style="left: 0px;">←</span>
+              <span @click="moveGoodsImgIndex(index,1)" class="moveIcon" style="right: 0px;">→</span>
+            </div>
+            <div class="goodsImgWrap" @click="addGoodsImg" v-if="goodsProductInfo.goodsImgs.length < 5">
+              <el-image fit="scale-down"  :src="imgHost+'/image/admin/add_img.png'" style="width: 78px; height: 78px;cursor: pointer;" />
+            </div>
+            <span class="inputTip">
             建议尺寸：800*800像素
-          </span>
+            </span>
+          </div>
         </el-form-item>
       </el-form>
       <!-- 基本信息更多配置 -->
       <el-collapse accordion>
-        <el-collapse-item
-          title="展开/收起更多配置"
-          name="1"
-        >
-          <el-form
-            ref="basicInfoOtherForm"
-            :model="goodsProductInfo"
-            :rules="basicInfoRules"
-            label-width="120px"
-          >
-            <el-form-item
-              label="单位："
-              prop="unit"
-            >
-              <el-select
-                v-model="unitSelectedValue"
-                @change="unitSelectChange"
-                size="small"
-              >
-                <el-option
-                  v-for="(item,index) in unitSelectOptions"
-                  :key="index"
-                  :value="item.value"
-                  :label="item.label"
-                />
+        <el-collapse-item title="展开/收起更多配置" name="1">
+          <el-form ref="basicInfoOtherForm" :model="goodsProductInfo" :rules="basicInfoRules" label-width="120px">
+            <el-form-item label="单位：" prop="unit">
+              <el-select ref="unitSelect" v-model="unitSelectedValue" @change="unitSelectChange" size="small">
+                <el-option v-for="(item,index) in unitSelectOptions" :key="index" :value="item.value"
+                           :label="item.label"/>
               </el-select>
-              <el-input
-                v-if="unitSelectedValue===null"
-                v-model="unitCustomerValue"
-                @change="unitCustomerChange"
-                size="small"
-                style="width:100px;"
-              />
-              <span
-                v-if="unitSelectedValue===null"
-                class="inputTip"
-              >长度限制为3个中文字符</span>
+              <el-input v-if="unitSelectedValue===null" v-model="unitCustomerValue" @change="unitCustomerChange"
+                        size="small" style="width:100px;"/>
+              <span v-if="unitSelectedValue===null" class="inputTip">长度限制为3个中文字符</span>
             </el-form-item>
-            <el-form-item
-              label="商家分类："
-              prop="sortId"
-            >
-              <el-select
-                filterable
-                v-model="goodsProductInfo.sortId"
-                placeholder="请选择商家分类"
-                size="small"
-              >
-                <el-option
-                  v-for="item in sortSelectOptions"
-                  :key="item.sortId"
-                  :label="item.sortName"
-                  :value="item.sortId"
-                  :style="{'marginLeft': item.level===1? '10px':'0px'}"
-                />
+            <el-form-item label="商家分类：" prop="sortId">
+              <el-select filterable v-model="goodsProductInfo.sortId" placeholder="请选择商家分类" size="small">
+                <el-option v-for="item in sortSelectOptions" :key="item.sortId" :label="item.sortName"
+                           :value="item.sortId"
+                           :style="{'marginLeft': item.level===1? '10px':'0px'}"/>
               </el-select>
             </el-form-item>
-            <el-form-item
-              label="商品标签："
-              prop="goodsLabels"
-            >
-              <el-select
-                v-model="labelSelectedTempVal"
-                placeholder="请选择商品标签"
-                size="small"
-                @change="labelSelectChange"
-              >
-                <el-option
-                  v-for="item in labelSelectOptions"
-                  :key="item.id"
-                  :label="item.name"
-                  :value="item.id"
-                />
+            <el-form-item label="商品标签：" prop="goodsLabels">
+              <el-select v-model="labelSelectedTempVal" placeholder="请选择商品标签" size="small" @change="labelSelectChange">
+                <el-option v-for="item in labelSelectOptions" :key="item.id" :label="item.name" :value="item.id"/>
               </el-select>
-              <el-link
-                type="primary"
-                :underline="false"
-                @click="labelSelectRefresh"
-                href="#"
-                style="margin:0 5px;"
-              >刷新
+              <el-link type="primary" :underline="false" @click="labelSelectRefresh" href="#" style="margin:0 5px;">刷新
               </el-link>
               |
-              <el-link
-                type="primary"
-                :underline="false"
-                href="#"
-                style="margin:0 5px;"
-              >新建标签</el-link>
+              <el-link type="primary" :underline="false" href="#" style="margin:0 5px;">新建标签</el-link>
               |
-              <el-link
-                type="primary"
-                :underline="false"
-                href="#"
-                style="margin:0 5px;"
-              >管理标签</el-link>
+              <el-link type="primary" :underline="false" href="#" style="margin:0 5px;">管理标签</el-link>
             </el-form-item>
-            <el-form-item
-              label="商品品牌："
-              prop="brandName"
-            >
-              <el-input
-                v-model="goodsProductInfo.brandId"
-                disabled
-                placeholder="添加品牌"
-                size="small"
-                @click="brandInputClick"
-                style="width:170px;"
-              />
+            <el-form-item label="商品品牌：" prop="brandName">
+              <el-input v-model="goodsProductInfo.brandId" disabled placeholder="添加品牌" size="small"
+                        @click="brandInputClick" style="width:170px;"/>
             </el-form-item>
-            <el-form-item
-              label="商品视频："
-              prop="video"
-              @click="videoInputClick"
-            >
+            <el-form-item label="商品视频：" prop="video" @click="videoInputClick">
 
               <span class="inputTip">上传视频仅支持MP4格式。为保障无线端各种网络环境下正常播放，只支持上传大小不超过10M，时长不超过3分钟的视频。</span>
             </el-form-item>
           </el-form>
         </el-collapse-item>
       </el-collapse>
+      <ImageDalog pageIndex='pictureSpace'  @handleSelectImg='imgDialogSelectedCallback'/>
     </div>
+    <el-button @click="getFormData">测试</el-button>
   </div>
 </template>
 <script>
@@ -262,27 +107,22 @@ import {
   selectPlatformClassification,
   goodsSortAndGoodsBrandInitApi
 } from '@/api/admin/goodsManage/addingGoods/addingGoods'
-// 组件导入
-// import goodsMainPic from './goodsMainPic'
+  // 组件导入
+import ImageDalog from '@/components/admin/imageDalog'
 import addBrandDialog from './addBrandDialog'
 
 export default {
-  components: { addBrandDialog },
+  components: {ImageDalog, addBrandDialog},
   data () {
     return {
-      // 商品主图上传相关data
-      srcList: {
-        src1: `${this.$imageHost}/image/admin/add_img.png`
-      },
       goodsProductInfo: {
         // 基本信息
         goodsName: null,
         goodsAd: null,
         goodsSn: null,
         catId: null,
-        goodsImg: null,
         goodsImgs: [],
-        unit: null,
+        unit: '个',
         sortId: null,
         goodsLabels: null,
         brandId: null,
@@ -295,16 +135,16 @@ export default {
       // 基本信息验证
       basicInfoRules: {
         goodsName: [
-          { required: true, message: '请输入商品名称', trigger: 'change' }
+          {required: true, message: '请输入商品名称', trigger: 'change'}
         ],
         catId: [
-          { required: true, message: '请选择平台分类', trigger: 'change' }
+          {required: true, message: '请选择平台分类', trigger: 'change'}
         ],
-        goodsImg: [
-          { required: true, message: '请选择商品图片', trigger: 'change' }
+        goodsImgs: [
+          {required: true, message: '请选择商品图片', trigger: 'change'}
         ],
         unit: [
-          { required: true, message: '单位不可为空', trigger: 'change' }
+          {required: true, message: '单位不可为空', trigger: 'change'}
         ]
       },
       // 基本信平台分类辅助数据，对应分类每一级别的下落框数据和选中值
@@ -316,6 +156,7 @@ export default {
         secondCatData: null,
         thirdCatData: null
       },
+      imgHost: `${this.$imageHost}`,
       /* 基本信息更多配置部分 */
       unitSelectOptions: [{
         value: '个',
@@ -384,6 +225,7 @@ export default {
       labelSelectOptions: null,
       // 商品品牌下拉框
       brandSelectOptions: null,
+      /* 商品标签辅助数据 */
       // 标签已选中列表
       labelSelectedItems: [],
       // 标签来下框选中瞬间的值
@@ -391,6 +233,34 @@ export default {
     }
   },
   methods: {
+    /* 获取传给后台的表单数据 */
+    getFormData () {
+      let retData = {
+        ...this.goodsProductInfo,
+        goodsImg: null
+      }
+      retData.goodsLabels = this.labelSelectedItems
+
+      // 处理商品图片
+      // 只有一个商品主图
+      if (this.goodsProductInfo.goodsImgs.length === 1) {
+        retData.goodsImg = this.goodsProductInfo.goodsImgs[0]
+        retData.goodsImgs = null
+      } else if (this.goodsProductInfo.goodsImgs.length > 1) {
+        // 有商品主图和幅图
+        // 避免和goodsProductInfo共享同一个数组
+        retData.goodsImgs = []
+        retData.goodsImg = this.goodsProductInfo.goodsImgs[0]
+        for (let i = 1; i < this.goodsProductInfo.goodsImgs.length; i++) {
+          retData.goodsImgs.push(this.goodsProductInfo.goodsImgs[i])
+        }
+      } else {
+        // 没有数据直接设置为null,这样后台不会执行对应的空sql
+        retData.goodsImgs = null
+      }
+
+      console.log(retData)
+    },
     /* 基本信息部分 */
     // 平台分类下拉框交互
     catIdSelectChange (level, catId) {
@@ -429,23 +299,37 @@ export default {
         }
       })
     },
-    // 初始化平台分类一级下拉框数据
+    /* 初始化平台分类一级下拉框数据 */
     catIdInit () {
       selectPlatformClassification(0).then(res => {
         this.catIdTemp.firstCatData = res.content
       })
     },
-    // 商品图片事件监听函数
-    // goodsImgsChange (imgList) {
-    //   if (imgList === null || imgList.length === 0) {
-    //     return
-    //   }
-    //   // 数组第一个值默认为商品主图
-    //   this.goodsProductInfo.goodsImg = imgList.shift()
-    //   // 其余为商品子图
-    //   this.goodsProductInfo.goodsImgs = imgList
-    //   this.$refs.basicInfoForm.validateField('goodsImg')
-    // },
+    /* 添加图片点击事件，弹出图片选择组件 */
+    addGoodsImg () {
+      this.$http.$emit('dtVisible')
+    },
+    /* 商品图片点击回调函数 */
+    imgDialogSelectedCallback (src) {
+      if (this.goodsProductInfo.goodsImgs.length >= 5) {
+        return
+      }
+      this.goodsProductInfo.goodsImgs.push(src)
+    },
+    /* 删除商品图片 */
+    deleteGoodsImg (index) {
+      this.goodsProductInfo.goodsImgs.splice(index, 1)
+    },
+    /* 移动商品图片 -1:左移 1:右移 */
+    moveGoodsImgIndex (index, direction) {
+      let tempArr = this.goodsProductInfo.goodsImgs.splice(index, 1)
+      let arrLength = this.goodsProductInfo.goodsImgs.length
+      let targetIndex = index + direction
+
+      index = targetIndex < 0 ? arrLength : targetIndex > arrLength ? 0 : targetIndex
+
+      this.goodsProductInfo.goodsImgs.splice(index, 0, tempArr[0])
+    },
     /* 基本信息更多配置部分 */
     // 单位选择下拉框处理事件
     unitSelectChange (value) {
@@ -459,13 +343,20 @@ export default {
     },
     // 自定义单位处理事件
     unitCustomerChange () {
+      // 自定义单位长度超过3字符，则返回
+      if (!this._isBlank(this.unitCustomerValue) && this.unitCustomerValue.length > 3) {
+        this.unitCustomerValue = this.unitCustomerValue.substring(0, 3)
+        this.goodsProductInfo.unit = this.unitCustomerValue
+        this.$refs.basicInfoOtherForm.validateField('unit')
+        return
+      }
       this.goodsProductInfo.unit = this.unitCustomerValue
       this.$refs.basicInfoOtherForm.validateField('unit')
     },
     // 初始化商家分类和商品标签
     sortAndLabelAndBrandSelectInit () {
       goodsSortAndGoodsBrandInitApi().then(res => {
-        const { content: { goodsBrands, goodsLabels, goodsSorts } } = res
+        const {content: {goodsBrands, goodsLabels, goodsSorts}} = res
         this.sortSelectOptions = goodsSorts
         this.labelSelectOptions = goodsLabels
         this.brandSelectOptions = goodsBrands
@@ -484,7 +375,7 @@ export default {
     },
     labelSelectRefresh () {
       goodsSortAndGoodsBrandInitApi().then(res => {
-        const { content: { goodsLabels } } = res
+        const {content: {goodsLabels}} = res
         this.labelSelectOptions = goodsLabels.filter(item => !this.labelSelectedItems.some(innerItem => innerItem.id === item.id))
       })
     },
@@ -493,6 +384,43 @@ export default {
     },
     videoInputClick () {
       // TODO: 视频选择弹出未实现
+    },
+    /** 此函数由父组件主动调用 **/
+    /* 验证数据是否全部合法 */
+    validateFormData () {
+      if (this._isBlank(this.goodsProductInfo.goodsName)) {
+        this.$message('请输入商品名称')
+        this.$refs.goodsNameInput.focus()
+        return false
+      }
+
+      if (this.goodsProductInfo.catId === null) {
+        this.$message('请选择平台分类')
+        this.$refs.catSelect.focus()
+        return false
+      }
+
+      if (this.goodsProductInfo.goodsImgs.length === 0) {
+        this.$message('请选择商品图片')
+        return false
+      }
+
+      if (this.goodsProductInfo.unit === null) {
+        this.$message('请选择商品单位')
+        this.$refs.unitSelect.focus()
+        return false
+      }
+
+      return true
+    },
+
+    /* 判断传入的参数是否为空，当参数为null,undefined,''时都视为空 */
+    _isBlank (val) {
+      if (val === null || val === undefined || val === '') {
+        return true
+      } else {
+        return false
+      }
     }
   },
   mounted () {
@@ -504,11 +432,47 @@ export default {
 }
 </script>
 <style scoped>
-.inputTip {
-  color: #999;
-  margin-left: 15px;
-}
-.img_group {
-  background-color: skyblue;
-}
+  .inputTip {
+    color: #999;
+    margin-left: 15px;
+  }
+  .goodsImgWrap{
+    width: 80px;
+    height: 80px;
+    border: 1px solid #ccc;
+    margin: 5px 5px;
+    position: relative;
+  }
+  .goodsImgWrap .deleteIcon {
+    width: 17px;
+    height: 17px;
+    color: #fff;
+    background: #ccc;
+    border: 1px solid #ccc;
+    border-radius: 50%;
+    line-height: 17px;
+    text-align: center;
+    position: absolute;
+    top: -8px;
+    right: -8px;
+    cursor: pointer;
+    opacity: 0.8;
+  }
+  .goodsImgWrap .moveIcon{
+    width: 17px;
+    height: 17px;
+    display: none;
+    color: #fff;
+    background: #ccc;
+    border: 1px solid #ccc;
+    line-height: 17px;
+    text-align: center;
+    position: absolute;
+    bottom: 0px;
+    cursor: pointer;
+    opacity: 0.8;
+  }
+  .goodsImgWrap:hover .moveIcon{
+    display: block;
+  }
 </style>
