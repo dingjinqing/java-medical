@@ -458,7 +458,10 @@ public class Indexes {
     public static final Index SHARE_AWARD_RECEIVE_USER_SHARE = Indexes0.SHARE_AWARD_RECEIVE_USER_SHARE;
     public static final Index ATTEND_SHARE_USER_ATTEND_SHARE_USER = Indexes0.ATTEND_SHARE_USER_ATTEND_SHARE_USER;
     public static final Index ATTEND_SHARE_USER_PRIMARY = Indexes0.ATTEND_SHARE_USER_PRIMARY;
-
+    public static final Index MP_OFFICIAL_ACCOUNT_USER_OPENID = Indexes0.MP_OFFICIAL_ACCOUNT_USER_OPENID;
+    public static final Index MP_OFFICIAL_ACCOUNT_USER_PRIMARY = Indexes0.MP_OFFICIAL_ACCOUNT_USER_PRIMARY;
+    public static final Index MP_OFFICIAL_ACCOUNT_USER_SYS_ID = Indexes0.MP_OFFICIAL_ACCOUNT_USER_SYS_ID;
+    public static final Index MP_OFFICIAL_ACCOUNT_USER_UNIONID = Indexes0.MP_OFFICIAL_ACCOUNT_USER_UNIONID;
 
 
     // -------------------------------------------------------------------------
@@ -894,5 +897,9 @@ public class Indexes {
         public static Index SHARE_AWARD_RECEIVE_USER_SHARE = Internal.createIndex("user_share", ShareAwardReceive.SHARE_AWARD_RECEIVE, new OrderField[] { ShareAwardReceive.SHARE_AWARD_RECEIVE.USER_ID, ShareAwardReceive.SHARE_AWARD_RECEIVE.SHARE_ID, ShareAwardReceive.SHARE_AWARD_RECEIVE.GOODS_ID }, false);
         public static Index ATTEND_SHARE_USER_ATTEND_SHARE_USER = Internal.createIndex("attend_share_user", AttendShareUser.ATTEND_SHARE_USER, new OrderField[] { AttendShareUser.ATTEND_SHARE_USER.RECORD_ID, AttendShareUser.ATTEND_SHARE_USER.USER_ID }, false);
         public static Index ATTEND_SHARE_USER_PRIMARY = Internal.createIndex("PRIMARY", AttendShareUser.ATTEND_SHARE_USER, new OrderField[] { AttendShareUser.ATTEND_SHARE_USER.ID }, true);
+        public static Index MP_OFFICIAL_ACCOUNT_USER_OPENID = Internal.createIndex("openid", MpOfficialAccountUser.MP_OFFICIAL_ACCOUNT_USER, new OrderField[] { MpOfficialAccountUser.MP_OFFICIAL_ACCOUNT_USER.OPENID, MpOfficialAccountUser.MP_OFFICIAL_ACCOUNT_USER.APP_ID }, true);
+        public static Index MP_OFFICIAL_ACCOUNT_USER_PRIMARY = Internal.createIndex("PRIMARY", MpOfficialAccountUser.MP_OFFICIAL_ACCOUNT_USER, new OrderField[] { MpOfficialAccountUser.MP_OFFICIAL_ACCOUNT_USER.REC_ID }, true);
+        public static Index MP_OFFICIAL_ACCOUNT_USER_SYS_ID = Internal.createIndex("sys_id", MpOfficialAccountUser.MP_OFFICIAL_ACCOUNT_USER, new OrderField[] { MpOfficialAccountUser.MP_OFFICIAL_ACCOUNT_USER.SYS_ID }, false);
+        public static Index MP_OFFICIAL_ACCOUNT_USER_UNIONID = Internal.createIndex("unionid", MpOfficialAccountUser.MP_OFFICIAL_ACCOUNT_USER, new OrderField[] { MpOfficialAccountUser.MP_OFFICIAL_ACCOUNT_USER.UNIONID }, false);
     }
 }

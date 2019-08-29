@@ -242,7 +242,8 @@ public class Keys {
     public static final Identity<ShareAwardRecordRecord, Integer> IDENTITY_SHARE_AWARD_RECORD = Identities0.IDENTITY_SHARE_AWARD_RECORD;
     public static final Identity<ShareAwardReceiveRecord, Integer> IDENTITY_SHARE_AWARD_RECEIVE = Identities0.IDENTITY_SHARE_AWARD_RECEIVE;
     public static final Identity<AttendShareUserRecord, Integer> IDENTITY_ATTEND_SHARE_USER = Identities0.IDENTITY_ATTEND_SHARE_USER;
-
+    public static final Identity<MpOfficialAccountUserRecord, Integer> IDENTITY_MP_OFFICIAL_ACCOUNT_USER = Identities0.IDENTITY_MP_OFFICIAL_ACCOUNT_USER;
+    
     // -------------------------------------------------------------------------
     // UNIQUE and PRIMARY KEY definitions
     // -------------------------------------------------------------------------
@@ -476,7 +477,8 @@ public class Keys {
     public static final UniqueKey<ShareAwardRecordRecord> KEY_B2C_SHARE_AWARD_RECORD_PRIMARY = UniqueKeys0.KEY_B2C_SHARE_AWARD_RECORD_PRIMARY;
     public static final UniqueKey<ShareAwardReceiveRecord> KEY_B2C_SHARE_AWARD_RECEIVE_PRIMARY = UniqueKeys0.KEY_B2C_SHARE_AWARD_RECEIVE_PRIMARY;
     public static final UniqueKey<AttendShareUserRecord> KEY_B2C_ATTEND_SHARE_USER_PRIMARY = UniqueKeys0.KEY_B2C_ATTEND_SHARE_USER_PRIMARY;
-
+    public static final UniqueKey<MpOfficialAccountUserRecord> KEY_B2C_MP_OFFICIAL_ACCOUNT_USER_PRIMARY = UniqueKeys0.KEY_B2C_MP_OFFICIAL_ACCOUNT_USER_PRIMARY;
+    public static final UniqueKey<MpOfficialAccountUserRecord> KEY_B2C_MP_OFFICIAL_ACCOUNT_USER_OPENID = UniqueKeys0.KEY_B2C_MP_OFFICIAL_ACCOUNT_USER_OPENID;
     // -------------------------------------------------------------------------
     // FOREIGN KEY definitions
     // -------------------------------------------------------------------------
@@ -690,6 +692,7 @@ public class Keys {
         public static Identity<ShareAwardRecordRecord, Integer> IDENTITY_SHARE_AWARD_RECORD = Internal.createIdentity(ShareAwardRecord.SHARE_AWARD_RECORD, ShareAwardRecord.SHARE_AWARD_RECORD.ID);
         public static Identity<ShareAwardReceiveRecord, Integer> IDENTITY_SHARE_AWARD_RECEIVE = Internal.createIdentity(ShareAwardReceive.SHARE_AWARD_RECEIVE, ShareAwardReceive.SHARE_AWARD_RECEIVE.ID);
         public static Identity<AttendShareUserRecord, Integer> IDENTITY_ATTEND_SHARE_USER = Internal.createIdentity(AttendShareUser.ATTEND_SHARE_USER, AttendShareUser.ATTEND_SHARE_USER.ID);
+        public static Identity<MpOfficialAccountUserRecord, Integer> IDENTITY_MP_OFFICIAL_ACCOUNT_USER = Internal.createIdentity(MpOfficialAccountUser.MP_OFFICIAL_ACCOUNT_USER, MpOfficialAccountUser.MP_OFFICIAL_ACCOUNT_USER.REC_ID);
 
     }
 
@@ -924,6 +927,7 @@ public class Keys {
         public static final UniqueKey<ShareAwardRecordRecord> KEY_B2C_SHARE_AWARD_RECORD_PRIMARY = Internal.createUniqueKey(ShareAwardRecord.SHARE_AWARD_RECORD, "KEY_b2c_share_award_record_PRIMARY", ShareAwardRecord.SHARE_AWARD_RECORD.ID);
         public static final UniqueKey<ShareAwardReceiveRecord> KEY_B2C_SHARE_AWARD_RECEIVE_PRIMARY = Internal.createUniqueKey(ShareAwardReceive.SHARE_AWARD_RECEIVE, "KEY_b2c_share_award_receive_PRIMARY", ShareAwardReceive.SHARE_AWARD_RECEIVE.ID);
         public static final UniqueKey<AttendShareUserRecord> KEY_B2C_ATTEND_SHARE_USER_PRIMARY = Internal.createUniqueKey(AttendShareUser.ATTEND_SHARE_USER, "KEY_b2c_attend_share_user_PRIMARY", AttendShareUser.ATTEND_SHARE_USER.ID);
-
+        public static final UniqueKey<MpOfficialAccountUserRecord> KEY_B2C_MP_OFFICIAL_ACCOUNT_USER_PRIMARY = Internal.createUniqueKey(MpOfficialAccountUser.MP_OFFICIAL_ACCOUNT_USER, "KEY_b2c_mp_official_account_user_PRIMARY", MpOfficialAccountUser.MP_OFFICIAL_ACCOUNT_USER.REC_ID);
+        public static final UniqueKey<MpOfficialAccountUserRecord> KEY_B2C_MP_OFFICIAL_ACCOUNT_USER_OPENID = Internal.createUniqueKey(MpOfficialAccountUser.MP_OFFICIAL_ACCOUNT_USER, "KEY_b2c_mp_official_account_user_openid", MpOfficialAccountUser.MP_OFFICIAL_ACCOUNT_USER.OPENID, MpOfficialAccountUser.MP_OFFICIAL_ACCOUNT_USER.APP_ID);
     }
 }
