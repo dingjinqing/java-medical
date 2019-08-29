@@ -292,7 +292,7 @@ public class ChannelStatisticalService extends ShopBaseService {
 	 * @param channelId
 	 * @return
 	 */
-	private int getMapData(String json, Integer channelId) {
+	private Integer getMapData(String json, Integer channelId) {
 //		key为channelID，value为访问量数据
 		Map<Integer, Integer> accessMap = convertJson2Map(json);
 		Integer result = accessMap.get(channelId);
@@ -434,7 +434,7 @@ public class ChannelStatisticalService extends ShopBaseService {
 		if (pvMap == null) {
 			return Collections.emptyMap();
 		}
-		Map<Integer, Integer> resultMap = new HashMap<>();
+		Map<Integer, Integer> resultMap = new HashMap<>(pvMap.size());
 		for (String s : pvMap.keySet()) {
 			resultMap.put(Integer.parseInt(s), pvMap.get(s));
 		}

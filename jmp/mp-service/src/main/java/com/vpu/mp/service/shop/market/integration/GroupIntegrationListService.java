@@ -34,7 +34,6 @@ import com.vpu.mp.service.pojo.shop.market.integration.GroupIntegrationSuccessPa
 import com.vpu.mp.service.pojo.shop.market.integration.GroupIntegrationSuccessVo;
 import com.vpu.mp.service.pojo.shop.market.integration.GroupperInfoPojo;
 import com.vpu.mp.service.pojo.shop.member.account.ScoreParam;
-import com.vpu.mp.service.shop.member.ScoreService;
 
 /**
  * @author huangronggang
@@ -48,9 +47,7 @@ public class GroupIntegrationListService extends ShopBaseService {
 	
 	public static final String REMARK = "积分瓜分";
 	
-//	@Autowired private GroupIntegrationService groupIntegration;
 	@Autowired private GroupIntegrationCalculatorService calculatorHandler;
-	@Autowired private ScoreService scoreService;
 
 	/** 
 	 * 参团明细
@@ -231,8 +228,8 @@ public class GroupIntegrationListService extends ShopBaseService {
 	 * 给参加某活动的某一个团进行结算 
 	 * @param groupId
 	 * @param actId
+	 * TODO 待指定线程池
 	 */
-//		TODO 待指定线程池
 	@Async
 	public void asyncSuccessGroupIntegration(Integer groupId,Integer actId) {
 //		活动内容 
