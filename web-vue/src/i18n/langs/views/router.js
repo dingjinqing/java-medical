@@ -52,6 +52,8 @@ export const cn = {
   GradeCard: ['会员管理', '等级会员卡'],
   // 会员管理 持卡会员
   Cardholder: ['会员管理'],
+  // 会员管理 充值明细子路由
+  refillDetailsItem: ['会员管理', '会员卡消费明细'],
   // 基础配置 小程序授权
   program_auth: ['基础配置', '小程序授权'],
   // 基础配置 小程序授权成功页面

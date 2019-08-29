@@ -5,6 +5,7 @@
         :title="$t('imgageDalog.title')"
         :visible.sync="dialogTableVisible"
         width="825px"
+        :modal-append-to-body='false'
       >
         <div class="dialog_top">
           <el-upload

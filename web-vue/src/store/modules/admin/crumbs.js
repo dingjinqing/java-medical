@@ -4,7 +4,9 @@ const crumbs = {
     // 省市区数据
     proAndUrData: null,
     // 会员卡数据
-    cardholderData: null
+    cardholderData: null,
+    // 会员卡充值明细数据
+    refillDetails: null
   },
   mutations: {
     TOCHANGE_CRUMBSTITLE: (state, params) => {
@@ -15,6 +17,9 @@ const crumbs = {
     },
     TOCHANFE_CARDCRUMDATA: (state, params) => {
       state.cardholderData = params
+    },
+    TOCHANFE_FILLDETAILCRUMB: (state, params) => {
+      state.refillDetails = params
     }
   },
   actions: {
@@ -29,6 +34,10 @@ const crumbs = {
     // 传递会员卡独享数据
     handleToChangeCardCrumb ({ commit }, params) {
       commit('TOCHANFE_CARDCRUMDATA', params)
+    },
+    // 会员卡充值明细独享数据
+    handleTorefillDetCrumb ({ commit }, params) {
+      commit('TOCHANFE_FILLDETAILCRUMB', params)
     }
   }
 }

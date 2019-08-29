@@ -903,8 +903,12 @@ export default {
   mounted () {
     // 初始化语言
     this.langDefault()
+    this.defaultData()
   },
   methods: {
+    defaultData () {
+      console.log(this.$route.query)
+    },
     // 点击查看更多
     handleCheckMore () {
       this.hiddenUlFlag = !this.hiddenUlFlag

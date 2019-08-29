@@ -21,7 +21,6 @@ const service = axios.create({
   baseURL: baseURL, // api的base_url
   timeout: 50000 // 请求超时时间
 })
-
 // request拦截器
 service.interceptors.request.use(
   config => {
@@ -56,7 +55,6 @@ service.interceptors.response.use(
     console.log(response)
     const res = response
     let flag = localStorage.getItem('V-overallFlag')
-
     // console.log(flag, res)
     console.log(res)
     if (res) {
@@ -131,7 +129,6 @@ service.interceptors.response.use(
         localStorage.setItem('V-overallFlag', true)
       }, 3000)
     }
-
     // console.log(flag)
 
     return Promise.reject(error)

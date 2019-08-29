@@ -497,8 +497,8 @@ export default {
   watch: {
     $route(to, from) {
       console.log(to)
-
-      console.log(this.flag)
+      console.log(this.$route, this.click_nav_index, this.saveIndex)
+      this.saveIndex = -1
       this.defaultNav(to.meta.meta)
     }
   },
@@ -608,6 +608,7 @@ export default {
     leftNavClick(index, name) {
       if (name === 'first_market_manage') this.nav_s_class_index = true
       this.click_nav_index = index
+      console.log(index)
       this.saveIndex = index
       if (name === 'config_list') {
         this.$router.push({
