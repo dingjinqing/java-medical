@@ -13,7 +13,7 @@ import java.util.List;
  * @author 郑保乐
  */
 @Data
-public class PreSaleVo {
+public class PreSaleVo implements StatusContainer {
 
     /** 活动id **/
     private Byte id;
@@ -57,17 +57,27 @@ public class PreSaleVo {
     private List<ProductVo> products;
     /** 分享配置 **/
     private ShareConfig shareConfiguration;
+    /** 活动状态 **/
+    private Byte status;
 
     @JsonIgnore
     private Integer saleNumber;
     @JsonIgnore
     private String shareConfig;
     @JsonIgnore
-    private Byte status;
-    @JsonIgnore
     private Byte delFlag;
     @JsonIgnore
     private Timestamp createTime;
     @JsonIgnore
     private Timestamp updateTime;
+
+    @Override
+    public Timestamp getPreStartTime2() {
+        return preStartTimeTwo;
+    }
+
+    @Override
+    public Timestamp getPreEndTime2() {
+        return preEndTimeTwo;
+    }
 }

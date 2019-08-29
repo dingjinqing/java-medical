@@ -114,7 +114,7 @@ public class PreSaleService extends ShopBaseService {
     /**
      * 获取活动状态
      */
-    private Byte getStatusOf(PreSaleListVo vo) {
+    private Byte getStatusOf(StatusContainer vo) {
         Byte originalStatus = vo.getStatus();
         if (originalStatus == 0) {
             return DISABLED;
@@ -406,7 +406,7 @@ public class PreSaleService extends ShopBaseService {
                 TABLE.PRE_END_TIME, TABLE.START_TIME, TABLE.END_TIME, TABLE.PRESALE_NAME, TABLE.BUY_NUMBER,
                 TABLE.BUY_TYPE, TABLE.DELIVER_DAYS, TABLE.DELIVER_TIME, TABLE.DELIVER_TYPE, TABLE.GOODS_ID,
                 TABLE.DISCOUNT_TYPE, TABLE.PRE_PAY_STEP, TABLE.PRESALE_TYPE, TABLE.RETURN_TYPE, TABLE.SHARE_CONFIG,
-                TABLE.SHOW_SALE_NUMBER)
+                TABLE.SHOW_SALE_NUMBER, TABLE.STATUS)
                 .select(TABLE.PRE_START_TIME_2.as("preStartTimeTwo"))
                 .select(TABLE.PRE_END_TIME_2.as("preEndTimeTwo"))
                 .from(TABLE)
@@ -424,6 +424,7 @@ public class PreSaleService extends ShopBaseService {
             .where(SUB_TABLE.PRESALE_ID.eq(preSaleId)).fetchInto(ProductVo.class);
         preSaleVo.setProducts(productVos);
         preSaleVo.setShareConfiguration(shareConfig(preSaleVo));
+        preSaleVo.setStatus(preSaleVo.getStatus());
         return preSaleVo;
     }
 

@@ -11,7 +11,7 @@ import java.sql.Timestamp;
  * @author 郑保乐
  */
 @Data
-public class PreSaleListVo {
+public class PreSaleListVo implements StatusContainer {
 
     private Integer id;
     /** 名称 **/
