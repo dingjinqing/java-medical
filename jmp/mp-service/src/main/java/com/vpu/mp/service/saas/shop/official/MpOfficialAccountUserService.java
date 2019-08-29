@@ -5,6 +5,8 @@ import com.vpu.mp.db.main.tables.records.MpOfficialAccountUserRecord;
 import org.springframework.stereotype.Service;
 
 import com.vpu.mp.service.foundation.service.MainBaseService;
+import com.vpu.mp.service.foundation.util.PageResult;
+import com.vpu.mp.service.pojo.shop.config.group.ShopRoleAddListVo;
 
 import java.util.List;
 
@@ -23,5 +25,16 @@ public class MpOfficialAccountUserService extends MainBaseService {
     
     public MpOfficialAccountUserRecord getUser(String appId,String openId) {
     	return db().selectFrom(MP_OFFICIAL_ACCOUNT_USER).where(MP_OFFICIAL_ACCOUNT_USER.APP_ID.eq(appId).and(MP_OFFICIAL_ACCOUNT_USER.OPENID.eq(openId))).fetchAny();
+    }
+    
+    public PageResult<ShopRoleAddListVo> getUserList(PageResult<ShopRoleAddListVo> accountRolePageList,String appId) {
+    	for(ShopRoleAddListVo sAddListVo:accountRolePageList.dataList) {
+    		if(sAddListVo.getOfficialOpenId()!=null) {
+    			MpOfficialAccountUserRecord user = getUser(appId, sAddListVo.getOfficialOpenId());
+    			sAddListVo.setOfficialNickName(user.getNickname());
+    			sAddListVo.setHeadImgUrl(user.getHeadimgurl());    			
+    		}
+    	}
+    	return accountRolePageList;
     }
 }
