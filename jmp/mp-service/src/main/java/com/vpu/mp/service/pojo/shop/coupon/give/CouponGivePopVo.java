@@ -34,7 +34,7 @@ public class CouponGivePopVo {
 	private Integer validityMinute;
 	/** 优惠券有效期开始时间 */
 	private Timestamp startTime;
-	/** 优惠券有效期开始时间 */
+	/** 优惠券有效期结束时间 */
 	private Timestamp endTime;
 	
 }
