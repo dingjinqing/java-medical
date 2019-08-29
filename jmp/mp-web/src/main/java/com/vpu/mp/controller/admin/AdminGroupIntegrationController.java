@@ -17,7 +17,7 @@ import com.vpu.mp.service.pojo.shop.market.integration.GroupIntegrationDefinePag
 import com.vpu.mp.service.pojo.shop.market.integration.GroupIntegrationDefineParam;
 import com.vpu.mp.service.pojo.shop.market.integration.GroupIntegrationListDetailParam;
 import com.vpu.mp.service.pojo.shop.market.integration.GroupIntegrationListParticipationVo;
-import com.vpu.mp.service.pojo.shop.market.integration.GroupIntegrationShareQRCodeVo;
+import com.vpu.mp.service.pojo.shop.market.integration.GroupIntegrationShareQrCodeVo;
 import com.vpu.mp.service.pojo.shop.market.integration.GroupIntegrationSuccessParam;
 import com.vpu.mp.service.pojo.shop.market.integration.GroupIntegrationSuccessVo;
 
@@ -128,7 +128,7 @@ public class AdminGroupIntegrationController extends AdminBaseController {
 	 */
 	@PostMapping("/getqrcode/{actId}")
 	public JsonResult getQrcode(@PathVariable Integer actId) {
-		GroupIntegrationShareQRCodeVo maQrCode = shop().groupIntegration.getMaQrCode(actId);
+		GroupIntegrationShareQrCodeVo maQrCode = shop().groupIntegration.getMaQrCode(actId);
 		if(maQrCode != null) {
 			return success(maQrCode);
 		}

@@ -28,7 +28,7 @@ import com.vpu.mp.service.pojo.shop.market.integration.GroupIntegrationDefineEnu
 import com.vpu.mp.service.pojo.shop.market.integration.GroupIntegrationDefinePageParam;
 import com.vpu.mp.service.pojo.shop.market.integration.GroupIntegrationDefineParam;
 import com.vpu.mp.service.pojo.shop.market.integration.GroupIntegrationDefineVo;
-import com.vpu.mp.service.pojo.shop.market.integration.GroupIntegrationShareQRCodeVo;
+import com.vpu.mp.service.pojo.shop.market.integration.GroupIntegrationShareQrCodeVo;
 import com.vpu.mp.service.pojo.shop.qrcode.QrCodeTypeEnum;
 import com.vpu.mp.service.shop.image.QrCodeService;
 
@@ -174,14 +174,14 @@ public class GroupIntegrationService extends ShopBaseService {
 	 * @param actId
 	 * @return
 	 */
-	public GroupIntegrationShareQRCodeVo getMaQrCode(Integer actId) {
+	public GroupIntegrationShareQrCodeVo getMaQrCode(Integer actId) {
 		GroupIntegrationDefineRecord record = selectDefineById(actId);
-		GroupIntegrationShareQRCodeVo qrCodeVo = null;
+		GroupIntegrationShareQrCodeVo qrCodeVo = null;
 		if(record != null) {
 			String pathParam="pinInte_id="+actId+"&invite_user=&group_id=";
 			String imageUrl=qrCode.getMpQrCode(QrCodeTypeEnum.PARTATION_INTEGRAL,pathParam);
 
-			qrCodeVo = new GroupIntegrationShareQRCodeVo();
+			qrCodeVo = new GroupIntegrationShareQrCodeVo();
 			qrCodeVo.setImgUrl(imageUrl);
 			qrCodeVo.setPageUrl(QrCodeTypeEnum.PARTATION_INTEGRAL.getPathUrl(pathParam));
 		}
