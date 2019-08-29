@@ -11,6 +11,9 @@ import java.util.List;
 import org.jooq.Record;
 import org.jooq.Record3;
 import org.jooq.Record6;
+import org.jooq.Record7;
+import org.jooq.Record8;
+import org.jooq.Record9;
 import org.jooq.Result;
 import org.jooq.SelectConditionStep;
 import org.jooq.SelectLimitStep;
@@ -29,6 +32,7 @@ import com.vpu.mp.service.pojo.saas.shop.ShopChildAccountListQueryParam;
 import com.vpu.mp.service.pojo.saas.shop.ShopChildAccountPojo;
 import com.vpu.mp.service.pojo.shop.auth.AdminTokenAuthInfo;
 import com.vpu.mp.service.pojo.shop.config.group.ShopChildAccountVo;
+import com.vpu.mp.service.pojo.shop.config.group.ShopRoleAddListParam;
 import com.vpu.mp.service.pojo.shop.config.group.ShopRoleAddListVo;
 import com.vpu.mp.service.pojo.shop.config.group.ShopRoleAddParam;
 import com.vpu.mp.service.pojo.shop.config.group.ShopRoleUpdateParam;
@@ -172,6 +176,19 @@ public class ShopChildAccountService extends MainBaseService {
 		}
 		return list;
 	}
+	
+	public PageResult<ShopRoleAddListVo> getAccountRolePageList(Integer shopId,ShopRoleAddListParam sAddListParam) {
+		ShopChildRole a = SHOP_CHILD_ROLE.as("a");
+		ShopChildAccount b = SHOP_CHILD_ACCOUNT.as("b");
+		ShopRole c = SHOP_ROLE.as("c");
+		SelectConditionStep<Record8<Integer, String, String, Integer, String, Integer, String, Byte>> select = db()
+				.select(a.ACCOUNT_ID, b.ACCOUNT_NAME, b.MOBILE, c.ROLE_ID, c.ROLE_NAME, a.REC_ID,
+						b.OFFICIAL_OPEN_ID, b.IS_BIND)
+				.from(a).join(c).on(a.ACCOUNT_ID.eq(c.ROLE_ID)).join(b).on(a.ACCOUNT_ID.eq(b.ACCOUNT_ID))
+				.where(a.SHOP_ID.eq(shopId));
+		select.orderBy(a.ACCOUNT_ID.desc());
+		return this.getPageResult(select, sAddListParam.getCurrentPage(),sAddListParam.getPageRows(), ShopRoleAddListVo.class);
+	}
 
 	public ShopChildRoleRecord checkByRecodeAndAccId(Integer roleId, Integer accountId, AdminTokenAuthInfo info) {
 		return db().selectFrom(SHOP_CHILD_ROLE)
@@ -199,5 +216,10 @@ public class ShopChildAccountService extends MainBaseService {
 		return db().update(SHOP_CHILD_ACCOUNT).set(SHOP_CHILD_ACCOUNT.OFFICIAL_OPEN_ID, officalOpenId)
 				.set(SHOP_CHILD_ACCOUNT.IS_BIND, bind).where(SHOP_CHILD_ACCOUNT.ACCOUNT_ID.eq(subAccountId)).execute();
 
+	}
+	
+	public int updateRowBind(Integer subAccountId,byte bind) {
+		return db().update(SHOP_CHILD_ACCOUNT).set(SHOP_CHILD_ACCOUNT.IS_BIND, bind)
+				.where(SHOP_CHILD_ACCOUNT.ACCOUNT_ID.eq(subAccountId)).execute();
 	}
 }
