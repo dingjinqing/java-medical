@@ -41,7 +41,12 @@ export default {
   },
   methods: {
     handleShowDialog () {
-      this.$http.$emit('dtVisible')
+      let data = {
+        couponDialogFlag: true,
+        couponList: ['4']
+
+      }
+      this.$http.$emit('V-AddCoupon', data)
     },
     handleSelectImg (res) {
       console.log(res)
