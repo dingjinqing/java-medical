@@ -32,7 +32,7 @@ public class FriendPromoteAddParam {
 	private Integer rewardDuration;
 	
 	/* 奖励有效期单位 */
-	private Byte rewardDurantionUnit;
+	private Byte rewardDurationUnit;
 	
 	/* 单次助力值类型：0平均，1随机 */
 	private Byte promoteType;
