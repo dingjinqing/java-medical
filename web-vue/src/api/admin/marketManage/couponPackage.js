@@ -43,3 +43,12 @@ export function getCouponPackShareCode (id) {
     method: 'get'
   })
 }
+
+// 取单个优惠券礼包活动信息
+export function getCouponPackById (data) {
+  return service({
+    url: `/api/admin/market/couponpack/get`,
+    method: 'post',
+    data: data
+  })
+}

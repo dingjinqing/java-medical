@@ -390,7 +390,7 @@
 </template>
 
 <script>
-import { addCouponPackage } from '@/api/admin/marketManage/couponPackage.js'
+import { addCouponPackage, getCouponPackById } from '@/api/admin/marketManage/couponPackage.js'
 export default {
   components: {
     AddCouponDialog: () => import('@/view/admin/index/leftNavComponents/user_manger/membershipCard/addCouponDialog')
@@ -548,7 +548,18 @@ export default {
     }
   },
   mounted () {
-
+    if (this.$route.query.id > 0) {
+      // 点击编辑按钮进来，初始化页面数据
+      let SimpleCouponPackParam = {
+        'id': this.$route.query.id
+      }
+      getCouponPackById(SimpleCouponPackParam).then((res) => {
+        if (res.error === 0) {
+          this.param = res.content
+          console.log(this.param)
+        }
+      })
+    }
   }
 }
 </script>

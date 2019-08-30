@@ -126,7 +126,7 @@
                 >
                   <i
                     class="el-icon-edit-outline"
-                    @click="edit(scope)"
+                    @click="edit(scope.row.id)"
                   ></i>
                 </el-tooltip>
                 <el-tooltip
@@ -373,8 +373,13 @@ export default {
       })
     },
 
-    edit (scope) {
-      console.log(scope)
+    edit (id) {
+      this.$router.push({
+        path: '/admin/home/main/couponPackage/add',
+        query: {
+          id: id
+        }
+      })
     },
     addCouponPackage () {
       this.$router.push({
