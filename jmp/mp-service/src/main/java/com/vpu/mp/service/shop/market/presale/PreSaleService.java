@@ -1,9 +1,6 @@
 package com.vpu.mp.service.shop.market.presale;
 
-import com.vpu.mp.db.shop.tables.OrderGoods;
-import com.vpu.mp.db.shop.tables.OrderInfo;
-import com.vpu.mp.db.shop.tables.Presale;
-import com.vpu.mp.db.shop.tables.PresaleProduct;
+import com.vpu.mp.db.shop.tables.*;
 import com.vpu.mp.db.shop.tables.records.PresaleProductRecord;
 import com.vpu.mp.db.shop.tables.records.PresaleRecord;
 import com.vpu.mp.service.foundation.service.ShopBaseService;
@@ -25,6 +22,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import static com.vpu.mp.db.shop.tables.Goods.GOODS;
 import static com.vpu.mp.db.shop.tables.GoodsSpecProduct.GOODS_SPEC_PRODUCT;
 import static com.vpu.mp.db.shop.tables.OrderInfo.ORDER_INFO;
 import static com.vpu.mp.db.shop.tables.Presale.PRESALE;
@@ -406,10 +404,11 @@ public class PreSaleService extends ShopBaseService {
                 TABLE.PRE_END_TIME, TABLE.START_TIME, TABLE.END_TIME, TABLE.PRESALE_NAME, TABLE.BUY_NUMBER,
                 TABLE.BUY_TYPE, TABLE.DELIVER_DAYS, TABLE.DELIVER_TIME, TABLE.DELIVER_TYPE, TABLE.GOODS_ID,
                 TABLE.DISCOUNT_TYPE, TABLE.PRE_PAY_STEP, TABLE.PRESALE_TYPE, TABLE.RETURN_TYPE, TABLE.SHARE_CONFIG,
-                TABLE.SHOW_SALE_NUMBER, TABLE.STATUS)
+                TABLE.SHOW_SALE_NUMBER, TABLE.STATUS, GOODS.GOODS_NAME)
                 .select(TABLE.PRE_START_TIME_2.as("preStartTimeTwo"))
                 .select(TABLE.PRE_END_TIME_2.as("preEndTimeTwo"))
                 .from(TABLE)
+                .leftJoin(GOODS).on(GOODS.GOODS_ID.eq(TABLE.GOODS_ID))
                 .where(TABLE.ID.eq(preSaleId))
                 .fetchOneInto(PreSaleVo.class);
         List<ProductVo> productVos = db().select(SUB_TABLE.ID, SUB_TABLE.PRESALE_ID, SUB_TABLE.PRODUCT_ID,

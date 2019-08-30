@@ -37,6 +37,8 @@ public class PreSaleVo implements StatusContainer {
     private Timestamp endTime;
     /** 商品id **/
     private Integer goodsId;
+    /** 商品名称 **/
+    private String goodsName;
     /** 发货时间模式 **/
     private Byte deliverType;
     /** 指定发货时间 **/
