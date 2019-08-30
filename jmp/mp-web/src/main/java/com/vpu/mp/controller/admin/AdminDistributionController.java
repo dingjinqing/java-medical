@@ -215,7 +215,7 @@ public class AdminDistributionController extends AdminBaseController{
 	 */
 	@GetMapping("/admin/distribution/group/edit")
 	public JsonResult distributorGroupEdit(Integer id) {
-		List<DistributorGroupListVo> info = shop().distributorGroup.getOneInfo(id);
+		DistributorGroupListVo info = shop().distributorGroup.getOneInfo(id);
 		return this.success(info);
 	}
 	/**

@@ -120,10 +120,10 @@ public class DistributorGroupService extends ShopBaseService{
 	 * @param id
 	 * @return
 	 */
-	public List<DistributorGroupListVo> getOneInfo(Integer id) {
-		List<DistributorGroupListVo> result = db().select().from(DISTRIBUTOR_GROUP)
+	public DistributorGroupListVo getOneInfo(Integer id) {
+		DistributorGroupListVo result = db().select().from(DISTRIBUTOR_GROUP)
 				.where(DISTRIBUTOR_GROUP.ID.eq(id))
-				.fetch().into(DistributorGroupListVo.class);
+				.fetchOne().into(DistributorGroupListVo.class);
 		return result;	
 	}
 	
