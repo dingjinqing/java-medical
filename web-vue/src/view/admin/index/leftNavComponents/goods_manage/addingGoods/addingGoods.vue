@@ -9,13 +9,13 @@
       </el-steps>
 
       <!-- 主要内容区 -->
-      <addingGoodsProductInfo ref="goodsProductInfoCmp" v-show="currentStep===1"/>
+      <addingGoodsProductInfo ref="goodsProductInfo" v-show="currentStep===1"/>
       <addingGoodsDetails ref="goodsDetailsCmp" v-show="currentStep===2"/>
       <addingGoodsDistributionInfo ref="goodsDistributionInfoCmp" v-show="currentStep==3"/>
 
       <!-- 底部按钮组件 -->
       <div class="addingGoodsFooter">
-        <el-button class="btn" type="primary" size="small">保存后返回列表</el-button>
+        <el-button class="btn" type="primary" size="small" @click="saveGoods">保存后返回列表</el-button>
         <el-button class="btn" size="small" @click="footerStepsClick(-1)" v-show="currentStep!==1">上一步</el-button>
         <el-button class="btn" size="small" @click="footerStepsClick(1)" v-show="currentStep!==3">下一步</el-button>
         <el-button class="btn"  size="small" type="primary" v-show="currentStep!==1">保存后继续添加</el-button>
@@ -41,25 +41,34 @@ export default {
     }
   },
   methods: {
+    /* 顶部导航点击事件 */
     headerStepsClick (curStep) {
       // TODO:数据正确性验证
-      this.currentStep = curStep
+      // 如何是从商品基本信息跳转验证基础信息正确性
+      if (this.currentStep === 1&&!this.$refs.goodsProductInfo.validateFormData()) {
+        return
+      }
+      this.currentStep = curStep;
     },
+    /* 底部下一步,上一步点击事件 */
     footerStepsClick (step) {
-      let offsetStep = this.currentStep + step
 
-      if (offsetStep === 2) {
-        // TODO:验证1号数据
+      if (this.currentStep === 1&&!this.$refs.goodsProductInfo.validateFormData()) {
+        return
       }
 
       if (offsetStep === 3) {
         // TODO:验证2号数据
       }
 
+      let offsetStep = this.currentStep + step
+
       this.currentStep = offsetStep < 1 ? 1 : offsetStep > 3 ? 3 : offsetStep
+    },
+    saveGoods(){
+
     }
-  },
-  mounted () {
+
   }
 }
 </script>

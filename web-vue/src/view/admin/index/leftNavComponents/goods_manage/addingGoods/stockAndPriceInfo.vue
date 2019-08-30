@@ -1,157 +1,154 @@
 <template>
   <div>
-    <!--库存/价格信息-->
-    <div>
-      <el-form ref="stockAndPriceInfoForm" :model="goodsProductInfo" :rules="stockAndPriceRules" label-width="120px">
-        <!--商品规格按钮-->
-        <el-form-item label="商品规格：" v-if="!specInfoSwitch">
-          <el-button size="small" @click="addSpecClick" style="width: 170px;">添加规格</el-button>
-        </el-form-item>
-        <el-form-item label="商品规格：" v-if="specInfoSwitch">
-          <div class="specInfoWrap">
-            <template v-for="(specInfoModel,kIndex) in goodsProductInfo.goodsSpecs">
-              <div class="specInfoItem speInfoItemK" :key="'k'+kIndex">
-                <div class="specInfoItemTitle">规格名：</div>
-                <div class="specInfoItemContent">
-                  <div class="specInfoItemInputWrap">
-                    <input type="text" :value="specInfoModel.specName"
-                           @change="specInfoChange(specInfoModel,kIndex,$event.target.value)"/>
-                    <span @click="deleteSpecInfo(specInfoModel,kIndex)" class="deleteIcon">×</span>
-                  </div>
+    <div class="title">库存/价格信息</div>
+    <el-form ref="stockAndPriceInfoForm" :model="goodsProductInfo" :rules="stockAndPriceRules" label-width="120px">
+      <!--商品规格按钮-->
+      <el-form-item label="商品规格：" v-if="!specInfoSwitch">
+        <el-button size="small" @click="addSpecClick" style="width: 170px;">添加规格</el-button>
+      </el-form-item>
+      <el-form-item label="商品规格：" v-if="specInfoSwitch">
+        <div class="specInfoWrap">
+          <template v-for="(specInfoModel,kIndex) in goodsProductInfo.goodsSpecs">
+            <div class="specInfoItem speInfoItemK" :key="'k'+kIndex">
+              <div class="specInfoItemTitle">规格名：</div>
+              <div class="specInfoItemContent">
+                <div class="specInfoItemInputWrap">
+                  <input type="text" :value="specInfoModel.specName"
+                         @change="specInfoChange(specInfoModel,kIndex,$event.target.value,$event)"/>
+                  <span @click="deleteSpecInfo(specInfoModel,kIndex)" class="deleteIcon">×</span>
                 </div>
               </div>
-              <div class="specInfoItem speInfoItemV" :key="'v'+kIndex">
-                <div class="specInfoItemTitle">规格值：</div>
-                <div class="specInfoItemContent">
-                  <div class="specInfoItemInputWrap" v-for="(specInfoVModel,vIndex) in specInfoModel.goodsSpecVals"
-                       :key="vIndex">
-                    <input type="text" :value="specInfoVModel.specValName"
-                           @change="specValChange(specInfoModel,vIndex,$event.target.value)"/>
-                    <span @click="deleteSpecVal(specInfoModel,vIndex)" class="deleteIcon">×</span>
-                  </div>
-                  <el-link size="small" :underline="false" @click="addSpecValClick(specInfoModel)"
-                           style="margin-left: 5px;">添加规格值
-                  </el-link>
-                </div>
-              </div>
-            </template>
-            <el-button style="float: right;" size="small" @click="addSpecInfoClick">添加规格选项</el-button>
-          </div>
-        </el-form-item>
-        <el-form-item label="规格价格：" v-if="specInfoSwitch">
-          <div class="specInfoWrap">
-            <table>
-              <tr>
-                <th></th>
-                <th>价格(元)</th>
-                <th>成本价格(元)</th>
-                <th>库存</th>
-                <th>规格编码</th>
-                <th>规格图片</th>
-              </tr>
-              <tr v-for="(item,index) in goodsProductInfo.goodsSpecProducts" :key="index">
-                <td>{{item.prdDescTemp}}</td>
-                <td><input :id="'prdPrice_'+item.prdDesc" v-model.number="item.prdPrice"/></td>
-                <td><input v-model.number="item.prdCostPrice"/></td>
-                <td><input :id="'prdNumber_'+item.prdDesc" v-model.number="item.prdNumber"/></td>
-                <td><input v-model.number="item.prdSn"/></td>
-                <td><img src="" alt="">src</td>
-              </tr>
-            </table>
-            <div style="text-align: center;">
-              <span>批量设置：</span>
-              <el-link size="small" :underline="false" @click="unifyPrdSpecAttr('prdPrice')" style="margin-right: 5px;">价格</el-link>
-              <el-link size="small" :underline="false" @click="unifyPrdSpecAttr('prdCostPrice')" style="margin-right: 5px;">成本价格</el-link>
-              <el-link size="small" :underline="false" @click="unifyPrdSpecAttr('prdNumber')" style="margin-right: 5px;">库存</el-link>
-              <el-link size="small" :underline="false" @click="unifyPrdSpecAttr('prdImg')" style="margin-right: 5px;">规格图片</el-link>
             </div>
+            <div class="specInfoItem speInfoItemV" :key="'v'+kIndex">
+              <div class="specInfoItemTitle">规格值：</div>
+              <div class="specInfoItemContent">
+                <div class="specInfoItemInputWrap" v-for="(specInfoVModel,vIndex) in specInfoModel.goodsSpecVals"
+                     :key="vIndex">
+                  <input type="text" :value="specInfoVModel.specValName"
+                         @change="specValChange(specInfoModel,vIndex,$event.target.value,$event)"/>
+                  <span @click="deleteSpecVal(specInfoModel,vIndex)" class="deleteIcon">×</span>
+                </div>
+                <el-link size="small" :underline="false" @click="addSpecValClick(specInfoModel)"
+                         style="margin-left: 5px;">添加规格值
+                </el-link>
+              </div>
+            </div>
+          </template>
+          <el-button style="float: right;" size="small" @click="addSpecInfoClick">添加规格选项</el-button>
+        </div>
+      </el-form-item>
+      <el-form-item label="规格价格：" v-if="specInfoSwitch">
+        <div class="specInfoWrap">
+          <table>
+            <tr>
+              <th></th>
+              <th>价格(元)</th>
+              <th>成本价格(元)</th>
+              <th>库存</th>
+              <th>规格编码</th>
+              <th>规格图片</th>
+            </tr>
+            <tr v-for="(item,index) in goodsProductInfo.goodsSpecProducts" :key="index">
+              <td>{{item.prdDescTemp}}</td>
+              <td><input :id="'prdPrice_'+item.prdDesc" v-model.number="item.prdPrice"/></td>
+              <td><input v-model.number="item.prdCostPrice"/></td>
+              <td><input :id="'prdNumber_'+item.prdDesc" v-model.number="item.prdNumber"/></td>
+              <td><input v-model.number="item.prdSn"/></td>
+              <td><img src="" alt="">src</td>
+            </tr>
+          </table>
+          <div style="text-align: center;">
+            <span>批量设置：</span>
+            <el-link size="small" :underline="false" @click="unifyPrdSpecAttr('prdPrice')" style="margin-right: 5px;">价格</el-link>
+            <el-link size="small" :underline="false" @click="unifyPrdSpecAttr('prdCostPrice')" style="margin-right: 5px;">成本价格</el-link>
+            <el-link size="small" :underline="false" @click="unifyPrdSpecAttr('prdNumber')" style="margin-right: 5px;">库存</el-link>
+            <el-link size="small" :underline="false" @click="unifyPrdSpecAttr('prdImg')" style="margin-right: 5px;">规格图片</el-link>
           </div>
-        </el-form-item>
-        <el-form-item label="商品库存：" prop="prdNumber">
-          <el-input-number ref="prdNumberInput" v-model="goodsProductInfo.prdNumber" step-strictly size="small" controls-position="right" :min="0" :disabled="specInfoSwitch" style="width:170px;"/>
-          <span class="inputTip">设置了规格库存商品库存将失效，不在前端展示</span>
-        </el-form-item>
-        <el-form-item label="商品价格：" prop="prdPrice">
-          <el-input-number ref="prdPriceInput" v-model="goodsProductInfo.prdPrice"  size="small" controls-position="right" :min="0" :disabled="specInfoSwitch" style="width:170px;"/>
-          <span class="inputTip">设置了规格价格商品价格将失效，不在前端展示</span>
-        </el-form-item>
-        <el-form-item label="市场价格：" prop="marketPrice">
-          <el-input-number ref="marketPriceInput" v-model="goodsProductInfo.marketPrice" size="small" controls-position="right" :min="0" style="width:170px;"/>
-        </el-form-item>
-        <el-form-item label="会员价：">
-          <el-checkbox v-for="(item,index) in memberCards" v-model="item.checked" :key="index" @change="memberCardCheckedChange(item,$event)">{{item.cardName}}</el-checkbox>
-          <br/>
-          <span class="inputTip" style="margin-left: 0px;">会员价仅针对等级会员卡设定，非等级会员卡不可设置会员价。若等级会员卡也包含会员折扣，则会员价和会员折扣可同时享受，优先计算会员价</span>
-        </el-form-item>
-        <el-form-item label="会员价设置：" v-if="memberCardPrdShow">
-          <div class="specInfoWrap">
-            <table v-if="specInfoSwitch">
-              <tr>
-                <th>未计算</th>
-                <th>规格价格(元)</th>
-                <th v-for="item in memberCards" :key="item.id" v-if="item.checked">{{item.cardName}}</th>
-                <th v-if="unifyCardsPriceShow"></th>
-              </tr>
-              <tr v-for="(item,index) in goodsProductInfo.goodsSpecProducts" :key="index">
-                <td>{{item.prdDescTemp}}</td>
-                <td>{{item.prdPrice}}</td>
-                <td v-for="(cardWrap,cardWrapIndex) in item.memberCards" v-if="cardWrap.card.checked" :key="cardWrapIndex">
-                  <input :id="item.prdDesc+cardWrap.card.cardName" type="text" v-model.number="cardWrap.cardPrice" @change="memberCardPriceChange(item.prdPrice,cardWrap.cardPrice,item.prdDesc+cardWrap.card.cardName)"/>
-                </td>
-                <td v-if="unifyCardsPriceShow">
-                  <el-link size="small" :underline="false" @click="unifyMemberCardsPrice(item)">统一会员价</el-link>
-                </td>
-              </tr>
-            </table>
-            <table v-else>
-              <tr>
-                <th>商品价格(元)</th>
-                <th v-for="item in memberCards" :key="item.id" v-if="item.checked">{{item.cardName}}</th>
-                <th v-if="unifyCardsPriceShow"></th>
-              </tr>
-              <tr>
-                <td>{{goodsProductInfo.prdPrice}}</td>
-                <td v-for="item in memberCards" v-if="item.checked" :key="item.id">
-                  <input :id="item.cardName" type="text"  v-model.number="item.cardPrice" @change="memberCardPriceChange(goodsProductInfo.prdPrice,item.cardPrice,item.cardName)"/>
-                </td>
-                <td v-if="unifyCardsPriceShow">
-                  <el-link size="small" :underline="false" @click="unifyMemberCardsPrice()">统一会员价</el-link>
-                </td>
-              </tr>
-            </table>
-          </div>
-        </el-form-item>
-      </el-form>
-      <!-- 展开更多配置 -->
-      <el-collapse accordion>
-        <el-collapse-item title="展开/收起更多配置" name="1">
-          <el-form :model="goodsProductInfo" :rules="stockAndPriceRules" ref="stockAndPriceInfoOtherForm" label-width="120px">
+        </div>
+      </el-form-item>
+      <el-form-item label="商品库存：" prop="prdNumber">
+        <el-input-number ref="prdNumberInput" v-model="goodsProductInfo.prdNumber" step-strictly size="small" controls-position="right" :min="0" :disabled="specInfoSwitch" style="width:170px;"/>
+        <span class="inputTip">设置了规格库存商品库存将失效，不在前端展示</span>
+      </el-form-item>
+      <el-form-item label="商品价格：" prop="prdPrice">
+        <el-input-number ref="prdPriceInput" v-model="goodsProductInfo.prdPrice"  size="small" controls-position="right" :min="0" :disabled="specInfoSwitch" style="width:170px;"/>
+        <span class="inputTip">设置了规格价格商品价格将失效，不在前端展示</span>
+      </el-form-item>
+      <el-form-item label="市场价格：" prop="marketPrice">
+        <el-input-number ref="marketPriceInput" v-model="goodsProductInfo.marketPrice" size="small" controls-position="right" :min="0" style="width:170px;"/>
+      </el-form-item>
+      <el-form-item label="会员价：">
+        <el-checkbox v-for="(item,index) in memberCards" v-model="item.checked" :key="index" @change="memberCardCheckedChange(item,$event)">{{item.cardName}}</el-checkbox>
+        <br/>
+        <span class="inputTip" style="margin-left: 0px;">会员价仅针对等级会员卡设定，非等级会员卡不可设置会员价。若等级会员卡也包含会员折扣，则会员价和会员折扣可同时享受，优先计算会员价</span>
+      </el-form-item>
+      <el-form-item label="会员价设置：" v-if="memberCardPrdShow">
+        <div class="specInfoWrap">
+          <table v-if="specInfoSwitch">
+            <tr>
+              <th>未计算</th>
+              <th>规格价格(元)</th>
+              <th v-for="item in memberCards" :key="item.id" v-if="item.checked">{{item.cardName}}</th>
+              <th v-if="unifyCardsPriceShow"></th>
+            </tr>
+            <tr v-for="(item,index) in goodsProductInfo.goodsSpecProducts" :key="index">
+              <td>{{item.prdDescTemp}}</td>
+              <td>{{item.prdPrice}}</td>
+              <td v-for="(cardWrap,cardWrapIndex) in item.memberCards" v-if="cardWrap.card.checked" :key="cardWrapIndex">
+                <input :id="item.prdDesc+cardWrap.card.cardName" type="text" v-model.number="cardWrap.cardPrice" @change="memberCardPriceChange(item.prdPrice,cardWrap.cardPrice,item.prdDesc+cardWrap.card.cardName)"/>
+              </td>
+              <td v-if="unifyCardsPriceShow">
+                <el-link size="small" :underline="false" @click="unifyMemberCardsPrice(item)">统一会员价</el-link>
+              </td>
+            </tr>
+          </table>
+          <table v-else>
+            <tr>
+              <th>商品价格(元)</th>
+              <th v-for="item in memberCards" :key="item.id" v-if="item.checked">{{item.cardName}}</th>
+              <th v-if="unifyCardsPriceShow"></th>
+            </tr>
+            <tr>
+              <td>{{goodsProductInfo.prdPrice}}</td>
+              <td v-for="item in memberCards" v-if="item.checked" :key="item.id">
+                <input :id="item.cardName" type="text"  v-model.number="item.cardPrice" @change="memberCardPriceChange(goodsProductInfo.prdPrice,item.cardPrice,item.cardName)"/>
+              </td>
+              <td v-if="unifyCardsPriceShow">
+                <el-link size="small" :underline="false" @click="unifyMemberCardsPrice()">统一会员价</el-link>
+              </td>
+            </tr>
+          </table>
+        </div>
+      </el-form-item>
+    </el-form>
+    <!-- 展开更多配置 -->
+    <el-collapse accordion>
+      <el-collapse-item title="展开/收起更多配置" name="1">
+        <el-form :model="goodsProductInfo" :rules="stockAndPriceRules" ref="stockAndPriceInfoOtherForm" label-width="120px">
 
-            <el-form-item label="最小限购数量：" prop="limitBuyNum">
-              <el-input-number ref="limitBuyNumInput" v-model="goodsProductInfo.limitBuyNum" step-strictly size="small" controls-position="right" :min="0" style="width:170px;"/>
-              <span class="inputTip">0或不填表示不限制购买数量</span>
-            </el-form-item>
-            <el-form-item label="最大限购数量：" prop="limitMaxNum">
-              <el-input-number ref="limitMaxNumInput" v-model="goodsProductInfo.limitMaxNum" step-strictly size="small" controls-position="right" :min="0" style="width:170px;"/>
-              <span class="inputTip">0或不填表示不限制购买数量</span>
-            </el-form-item>
-            <el-form-item label="成本价格：" prop="prdCost">
-              <el-input-number ref="prdCostInput" v-model="goodsProductInfo.prdCost" step-strictly size="small" controls-position="right" :min="0" :disabled="specInfoSwitch" style="width:170px;"/>
-              <span class="inputTip">0或不填表示不限制购买数量</span>
-            </el-form-item>
-            <el-form-item label="初始销量：" prop="addSaleNum">
-              <el-input-number v-model="goodsProductInfo.addSaleNum" step-strictly size="small" controls-position="right" :min="0" style="width:170px;"/>
-              <span class="inputTip">设置后，您的用户看到的销量=初始销量+下单量，初始销量不计入统计。</span>
-            </el-form-item>
-            <el-form-item label="商品规格编码：" v-if="!specInfoSwitch">
-              <el-input v-model="goodsProductInfo.prdSn" size="small"  style="width:170px;"/>
-            </el-form-item>
+          <el-form-item label="最小限购数量：" prop="limitBuyNum">
+            <el-input-number ref="limitBuyNumInput" v-model="goodsProductInfo.limitBuyNum" step-strictly size="small" controls-position="right" :min="0" style="width:170px;"/>
+            <span class="inputTip">0或不填表示不限制购买数量</span>
+          </el-form-item>
+          <el-form-item label="最大限购数量：" prop="limitMaxNum">
+            <el-input-number ref="limitMaxNumInput" v-model="goodsProductInfo.limitMaxNum" step-strictly size="small" controls-position="right" :min="0" style="width:170px;"/>
+            <span class="inputTip">0或不填表示不限制购买数量</span>
+          </el-form-item>
+          <el-form-item label="成本价格：" prop="prdCost">
+            <el-input-number ref="prdCostInput" v-model="goodsProductInfo.prdCost" step-strictly size="small" controls-position="right" :min="0" :disabled="specInfoSwitch" style="width:170px;"/>
+            <span class="inputTip">0或不填表示不限制购买数量</span>
+          </el-form-item>
+          <el-form-item label="初始销量：" prop="addSaleNum">
+            <el-input-number v-model="goodsProductInfo.addSaleNum" step-strictly size="small" controls-position="right" :min="0" style="width:170px;"/>
+            <span class="inputTip">设置后，您的用户看到的销量=初始销量+下单量，初始销量不计入统计。</span>
+          </el-form-item>
+          <el-form-item label="商品规格编码：" v-if="!specInfoSwitch">
+            <el-input v-model="goodsProductInfo.prdSn" size="small"  style="width:170px;"/>
+          </el-form-item>
 
-          </el-form>
-        </el-collapse-item>
-      </el-collapse>
-    </div>
-
+        </el-form>
+      </el-collapse-item>
+    </el-collapse>
   </div>
 </template>
 <script>
@@ -162,11 +159,10 @@
 
 // 接口函数引入
 import {getLevelCardList} from '@/api/admin/goodsManage/addingGoods/addingGoods'
-// 组件导入
-import basicInfo from './basicInfo'
+//// js工具函数导入
+import {isStrBlank,isNumberBlank} from "@/util/goodsUtil";
 
 export default {
-  components: {basicInfo},
   data () {
     return {
       /* 临时存放和后台交互的数据 */
@@ -175,13 +171,13 @@ export default {
         marketPrice: null,
         goodsSpecProducts: [],
         goodsSpecs: [],
-        limitBuyNum: null,
-        limitMaxNum: null,
-        addSaleNum: null,
+        limitBuyNum: 0,
+        limitMaxNum: 0,
+        addSaleNum: 0,
         /* 以下为辅助数据，不传到后台 */
-        prdNumber: null,
-        prdPrice: null,
-        prdCost: null,
+        prdNumber: 0,
+        prdPrice: 0,
+        prdCost: 0,
         prdSn: null
       },
       stockAndPriceRules: {
@@ -252,15 +248,22 @@ export default {
 
       this._calculateDeleteSpecVal(specInfoModel, specVal)
     },
-    /* 规格项名称改变 */
-    specInfoChange (specInfoModel, kIndex, newVal) {
-      newVal = newVal === '' || newVal === null ? null : newVal
+    /* 规格项名称改变,specInfoModel:对应规格项，kIndex:规格值在规格项内的下标，newVal:新值 */
+    specInfoChange (specInfoModel, kIndex, newVal,event) {
 
-      let oldSpecName = specInfoModel.specName
+      // 规格名称重复则将input恢复原值，并返回
+      if (this._isSpecInfoNameRepeated(kIndex, newVal)) {
+        this.$message('规格名称重复')
+        event.target.value=specInfoModel.specName
+        event.target.focus()
+        return
+      }
+
+      let oldSpecName = specInfoModel.specName;
       specInfoModel.specName = newVal
 
       // 如果规格名称被修改为null则认为是删除了该规格
-      if (newVal === null) {
+      if (isStrBlank(newVal)) {
         // 删除了规格但是规格下没有有效的规格值
         if (!this._isSpecInfoHasSpecVal(specInfoModel)) {
           // TODO:仅仅触发specInfoLabel值遍历计算
@@ -270,7 +273,7 @@ export default {
         }
       } else {
         // 名字由null修改为非nulll,但是存在可用的规格值，则认为是新增了规格，则触发重新计算
-        if (this._isBlank(oldSpecName) && this._isSpecInfoHasSpecVal(specInfoModel)) {
+        if (isStrBlank(oldSpecName) && this._isSpecInfoHasSpecVal(specInfoModel)) {
           this._recalculateSpec()
         } else {
           // 修改了规格名字而且有有效的规格值，则进行遍历修改specInfoLabel和specDesc
@@ -281,33 +284,74 @@ export default {
       }
     },
     /* 规格值名称改变 */
-    specValChange (specInfoModel, vIndex, newVal) {
-      newVal = this._isBlank(newVal) ? null : newVal
+    specValChange (specInfoModel, vIndex, newVal,event) {
+      // 商品规格值名称有重复的话则将input恢复原值,并返回
+      if (this._isSpecValNameRepeated(specInfoModel, vIndex, newVal)) {
+        this.$message('规格值名称重复')
+        event.target.value=specInfoModel.goodsSpecVals[vIndex].specValName
+        event.target.focus()
+        return
+      }
 
+      // 旧名称
       let tempSpecVal = {
         specValName: specInfoModel.goodsSpecVals[vIndex].specValName
-      }
+      };
+
+      // 设置新名称
       specInfoModel.goodsSpecVals[vIndex].specValName = newVal
 
       // 如果规格名为空则只更新一下goodsSpec即可
-      if (this._isBlank(specInfoModel.specName)) {
+      if (isStrBlank(specInfoModel.specName)) {
         return null
       }
 
-      if (newVal === null) {
+      if (isStrBlank(newVal)) {
         // 看做删除操作,遍历删除对应项
         this._calculateDeleteSpecVal(specInfoModel, tempSpecVal)
       } else {
         // 旧值为null,而新值不是null则视为新增项
-        if (this._isBlank(tempSpecVal.specValName)) {
+        if (isStrBlank(tempSpecVal.specValName)) {
           // 新增项
-
           this._calculateAddSpecVal(specInfoModel, specInfoModel.goodsSpecVals[vIndex])
         } else {
           // 修改规格值名字，遍历修改对应项
           this._calculateChangeSpecVal(newVal, tempSpecVal.specValName)
         }
       }
+    },
+    /* 判断规格名称是否存在重复 */
+    _isSpecInfoNameRepeated(kIndex, newVal) {
+      if (newVal === null) {
+        return false
+      }
+
+      for (let i = 0; i < this.goodsProductInfo.goodsSpecs.length; i++) {
+        if (i === kIndex) {
+          continue
+        }
+
+        if (this.goodsProductInfo.goodsSpecs[i].specName === newVal) {
+          return true
+        }
+      }
+      return false
+    },
+    /* 判断规格值名称在同一个规格项内是否重复 */
+    _isSpecValNameRepeated(specInfoModel,vIndex,newVal){
+      if (isStrBlank(newVal)) {
+        return false
+      }
+
+      for (let i = 0; i < specInfoModel.goodsSpecVals.length; i++) {
+        if (i === vIndex) {
+          continue
+        }
+        if (specInfoModel.goodsSpecVals[i].specValName === newVal) {
+          return true
+        }
+      }
+      return false
     },
     /* 统一规格属性函数 */
     unifyPrdSpecAttr (attrName) {
@@ -332,7 +376,7 @@ export default {
     _calculateAddSpecVal (specInfoModel, specVal) {
       let okCount = 0
       specInfoModel.goodsSpecVals.forEach(item => {
-        if (!this._isBlank(item.specValName)) {
+        if (!isStrBlank(item.specValName)) {
           okCount++
         }
       })
@@ -436,7 +480,7 @@ export default {
       let item = goodsSpecs[curIndex]
 
       // 规格名称为null或者规格没有有效的规格值则视为无效项，则直接跳过
-      if (this._isBlank(item.specName) || !this._isSpecInfoHasSpecVal(item)) {
+      if (isStrBlank(item.specName) || !this._isSpecInfoHasSpecVal(item)) {
         return this._calculateCartesian(curIndex + 1, goodsSpecs, goodsSpecProducts)
       }
       // 用来缓存通过当前规格计算出来的笛卡尔积
@@ -447,7 +491,7 @@ export default {
         // 当前规格值
         let specVal = item.goodsSpecVals[i]
         // 判断是否规格值的名字是否为空
-        if (this._isBlank(specVal.specValName)) {
+        if (isStrBlank(specVal.specValName)) {
           continue
         }
 
@@ -468,7 +512,7 @@ export default {
           tempSpec.prdDescTemp = specVal.specValName
 
           // 以下是按预定义规则拼接字符串
-          if (!this._isBlank(goodsSpec.prdDesc)) {
+          if (!isStrBlank(goodsSpec.prdDesc)) {
             tempSpec.prdDesc = PRD_SPEC_DELIMITER + tempSpec.prdDesc
             tempSpec.prdDescTemp = ' ' + tempSpec.prdDescTemp
           }
@@ -580,13 +624,13 @@ export default {
         // 验证商品规格信息
         for (let i = 0; i < this.goodsProductInfo.goodsSpecProducts.length; i++) {
           let item = this.goodsProductInfo.goodsSpecProducts[i]
-          if (!this._numberValidate(item.prdPrice)) {
+          if (isNumberBlank(item.prdPrice)||item.prdPrice<0) {
             this.$message('规格:' + item.prdDescTemp + ' 价格填写错误')
             document.getElementById('prdPrice_' + item.prdDesc).focus()
             return false
           }
 
-          if (!this._numberValidate(item.prdNumber)) {
+          if (isNumberBlank(item.prdNumber)||item.prdNumber<0) {
             this.$message('规格：' + item.prdDescTemp + '库存写错误')
             document.getElementById('prdNumber_' + item.prdDesc).focus()
             return false
@@ -602,7 +646,7 @@ export default {
             if (!cardWrap.card.checked) {
               continue
             }
-            if (!this._numberValidate(cardWrap.cardPrice)) {
+            if (isNumberBlank(cardWrap.cardPrice)||cardWrap<0) {
               this.$message('会员价格不可为空')
               document.getElementById(specProduct.prdDesc + cardWrap.card.cardName).focus()
               return false
@@ -617,19 +661,19 @@ export default {
         }
       } else {
         // 商品库存检查
-        if (!this._numberValidate(this.goodsProductInfo.prdNumber)) {
+        if (isNumberBlank(this.goodsProductInfo.prdNumber)||this.goodsProductInfo.prdNumber<0) {
           this.$message('商品库存填写错误')
           this.$refs.prdNumberInput.focus()
           return false
         }
         // 商品价格验证
-        if (!this._numberValidate(this.goodsProductInfo.prdPrice)) {
+        if (isNumberBlank(this.goodsProductInfo.prdPrice)||this.goodsProductInfo.prdPrice<0) {
           this.$message('商品价格填写错误')
           this.$refs.prdPriceInput.focus()
           return false
         }
         // 成本价格验证
-        if (!this._numberValidate(this.goodsProductInfo.prdCost)) {
+        if (isNumberBlank(this.goodsProductInfo.prdCost)||this.goodsProductInfo.prdCost<0) {
           this.$message('成本价格填写错误')
           this.$refs.prdPriceInput.focus()
           return false
@@ -640,7 +684,7 @@ export default {
           if (!item.checked) {
             continue
           }
-          if (!this._numberValidate(item.cardPrice)) {
+          if (isNumberBlank(item.cardPrice)||item.cardPrice<0) {
             this.$message('会员价格不可为空')
             document.getElementById(item.cardName).focus()
             return false
@@ -654,7 +698,8 @@ export default {
       }
 
       // 验证限购数量
-      if (this._numberValidate(this.goodsProductInfo.limitBuyNum) && this._numberValidate(this.goodsProductInfo.limitMaxNum)) {
+      if ((isNumberBlank(this.goodsProductInfo.limitBuyNum)||this.goodsProductInfo.limitBuyNum<0)
+        && (isNumberBlank(this.goodsProductInfo.limitMaxNum)||this.goodsProductInfo.limitMaxNum<0)) {
         if (this.goodsProductInfo.limitBuyNum > this.goodsProductInfo.limitMaxNum) {
           this.$message('最小限购数量不可大于最大限购数量')
           this.$refs.limitBuyNumInput.focus()
@@ -675,7 +720,7 @@ export default {
       // 剔除无效规格
       this.goodsProductInfo.goodsSpecs = this.goodsProductInfo.goodsSpecs.filter(goodsSpec => {
         // 规格名称为空
-        if (this._isBlank(goodsSpec.specName)) {
+        if (isStrBlank(goodsSpec.specName)) {
           return false
         }
         // 没有有效规格值
@@ -683,7 +728,7 @@ export default {
           return false
         }
         // 剔除无效规格值
-        let goodsSpecVals = goodsSpec.goodsSpecVals.filter(specVal => !this._isBlank(specVal.specValName))
+        let goodsSpecVals = goodsSpec.goodsSpecVals.filter(specVal => !isStrBlank(specVal.specValName))
         // 重新设置值
         goodsSpec.goodsSpecVals = goodsSpecVals
         return true
@@ -745,14 +790,7 @@ export default {
       }
       return retData
     },
-    /** 工具函数 **/
-    /* 验证数字类型的正确性 */
-    _numberValidate (val) {
-      if (val === undefined || val === null || val === '' || val < 0) {
-        return false
-      }
-      return true
-    },
+
     /* 判断规格是否存在有效的规格值，只有在所有规格值中有名字非空的情况下返回true,否则返回false */
     _isSpecInfoHasSpecVal (specInfoModel) {
       let hasValue = false
@@ -762,14 +800,6 @@ export default {
         }
       })
       return hasValue
-    },
-    /* 判断传入的参数是否为空，当参数为null,undefined,''时都视为空 */
-    _isBlank (val) {
-      if (val === null || val === undefined || val === '') {
-        return true
-      } else {
-        return false
-      }
     }
   },
   mounted () {
@@ -781,6 +811,15 @@ export default {
   .inputTip {
     color: #999;
     margin-left: 15px;
+  }
+  .title {
+    font-weight: bold;
+    height: 40px;
+    background: #f8f8f8;
+    line-height: 40px;
+    width: 100%;
+    padding-left: 10px;
+    margin: 20px 0;
   }
   .specInfoWrap {
     border: 1px solid #ccc;

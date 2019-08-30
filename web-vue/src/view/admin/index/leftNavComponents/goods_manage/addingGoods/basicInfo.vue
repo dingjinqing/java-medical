@@ -1,6 +1,6 @@
 <template>
   <div>
-    <!--基本信息配置模块-->
+    <div class="title">基本信息</div>
     <div>
       <el-form ref="basicInfoForm" :model="goodsProductInfo" :rules="basicInfoRules" label-width="120px">
         <el-form-item label="商品名称：" prop="goodsName">
@@ -113,7 +113,10 @@ import {
   selectPlatformClassification,
   goodsSortAndGoodsBrandInitApi
 } from '@/api/admin/goodsManage/addingGoods/addingGoods'
-  // 组件导入
+
+// js工具函数导入
+import {isStrBlank} from "@/util/goodsUtil";
+// 组件导入
 import ImageDalog from '@/components/admin/imageDalog'
 import addBrandDialog from './addBrandDialog'
 
@@ -322,7 +325,7 @@ export default {
     // 自定义单位处理事件
     unitCustomerChange () {
       // 自定义单位长度超过3字符，则返回
-      if (!this._isBlank(this.unitCustomerValue) && this.unitCustomerValue.length > 3) {
+      if (!isStrBlank(this.unitCustomerValue) && this.unitCustomerValue.length > 3) {
         this.unitCustomerValue = this.unitCustomerValue.substring(0, 3)
         this.goodsProductInfo.unit = this.unitCustomerValue
         this.$refs.basicInfoOtherForm.validateField('unit')
@@ -372,7 +375,7 @@ export default {
     /** 此函数由父组件主动调用 **/
     /* 验证数据是否全部合法 */
     validateFormData () {
-      if (this._isBlank(this.goodsProductInfo.goodsName)) {
+      if (isStrBlank(this.goodsProductInfo.goodsName)) {
         this.$message('请输入商品名称')
         this.$refs.goodsNameInput.focus()
         return false
@@ -424,15 +427,9 @@ export default {
         // 没有数据直接设置为null,这样后台不会执行对应的空sql
         retData.goodsImgs = null
       }
+
+      return retData
     },
-    /* 判断传入的参数是否为空，当参数为null,undefined,''时都视为空 */
-    _isBlank (val) {
-      if (val === null || val === undefined || val === '') {
-        return true
-      } else {
-        return false
-      }
-    }
   },
   mounted () {
     // 初始化平台分类一级下拉框
@@ -446,6 +443,15 @@ export default {
   .inputTip {
     color: #999;
     margin-left: 15px;
+  }
+  .title {
+    font-weight: bold;
+    height: 40px;
+    background: #f8f8f8;
+    line-height: 40px;
+    width: 100%;
+    padding-left: 10px;
+    margin: 20px 0;
   }
   .goodsImgWrap{
     width: 80px;
