@@ -22,17 +22,17 @@
         >
       </li>
     </ul>
-    <ImageDalog
+    <AddCouponDialog
       pageIndex='pictureSpace'
       @handleSelectImg='handleSelectImg'
     />
   </div>
 </template>
 <script>
-import ImageDalog from '@/components/admin/imageDalog'
+import AddCouponDialog from '@/view/admin/index/leftNavComponents/user_manger/membershipCard/addCouponDialog'
 
 export default {
-  components: { ImageDalog },
+  components: { AddCouponDialog },
   data () {
     return {
       src: `${this.$imageHost}/image/admin/add_img.png`,

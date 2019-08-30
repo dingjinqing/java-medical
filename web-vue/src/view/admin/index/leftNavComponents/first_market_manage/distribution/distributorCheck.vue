@@ -37,7 +37,7 @@
           >查询</el-button>
         </div>
       </div>
-      <el-table
+      <!-- <el-table
         class="version-manage-table"
         header-row-class-name="tableClss"
         border
@@ -90,31 +90,26 @@
           label="操作"
           align="center"
         >
-          <template slot-scope="scope">
-            <div class="opt">
-              <span>编辑</span>
-              <span>分享</span>
-              <span>领取明细</span>
-              <span>发起明细</span>
-              <span>参与明细</span>
-              <span @click="startOrBlock(scope)">启用</span>
-              <span @click="startOrBlock(scope)">停用</span>
-              <span @click="delAct(scope)">删除</span>
-            </div>
-          </template>
         </el-table-column>
-      </el-table>
-      <div class="footer">
-        <span>当前页面1/1，总记录4条</span>
-        <el-pagination
-          @current-change="handleCurrentChange"
-          :current-page.sync="currentPage"
-          :page-size="20"
-          layout="prev, pager, next, jumper"
-          :total="4"
-        >
-        </el-pagination>
-      </div>
+      </el-table> -->
+
+      <el-tabs
+        v-model="activeName"
+        @tab-click="handleClick"
+      >
+        <el-tab-pane
+          label="待审和分销员"
+          name="first"
+        >用户管理</el-tab-pane>
+        <el-tab-pane
+          label="审核通过"
+          name="second"
+        >配置管理</el-tab-pane>
+        <el-tab-pane
+          label="未通过"
+          name="third"
+        >角色管理</el-tab-pane>
+      </el-tabs>
     </div>
   </div>
 </template>
@@ -124,12 +119,15 @@
 export default {
   data () {
     return {
-      currentPage: 1,
-      value1: ''
+      value1: '',
+      activeName: ''
     }
   },
   methods: {
-    handleCurrentChange (tab) {
+    // handleCurrentChange (tab) {
+
+    // }
+    handleClick () {
 
     }
   }

@@ -63,7 +63,7 @@
               >自定义图片</el-radio>
             </div>
             <div style="margin: 10px 0 0 60px; display:flex">
-              <div class="selectPic">
+              <div class="choose">
                 <img
                   class="recPic"
                   :src="srcList.src3"
@@ -74,18 +74,20 @@
             </div>
           </div>
         </el-radio>
-        <!-- <ImageDalog
+        <ImageDalog
           pageIndex='pictureSpace'
           @handleSelectImg='handleSelectImg'
-        /> -->
+        />
       </section>
     </el-form-item>
   </div>
 </template>
 
 <script>
+import ImageDalog from '@/components/admin/imageDalog'
 
 export default {
+  components: { ImageDalog },
   props: ['shareConfig'],
   data () {
     return {
@@ -97,10 +99,31 @@ export default {
         imageUrl: ``
       }
     }
+  },
+  methods: {
+    handleShowDialog () {
+      this.$http.$emit('dtVisible')
+    },
+    handleSelectImg (res) {
+      if (res != null) {
+        console.log(res)
+        this.srcList.src3 = res
+      }
+    }
   }
 
 }
 
 </script>
 <style lang="scss" scoped>
+.choose {
+  display: inline-block;
+  width: 70px;
+  height: 70px;
+  line-height: 70px;
+  background: #fff;
+  border: 1px solid #e4e4e4;
+  cursor: pointer;
+  text-align: center;
+}
 </style>
