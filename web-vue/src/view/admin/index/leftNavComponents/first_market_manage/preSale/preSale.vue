@@ -24,6 +24,10 @@
           >
             <el-button
               type="primary"
+              @click="loadData"
+            >筛选</el-button>
+            <el-button
+              type="primary"
               style="float:right;"
               @click="gotoAdd"
             >
@@ -40,7 +44,7 @@
           style="width: 100%"
         >
           <el-table-column
-            prop="name"
+            prop="presaleName"
             label="活动名称"
             align="center"
           > </el-table-column>
@@ -122,6 +126,7 @@ export default {
   },
   data () {
     return {
+      name: '',
       activityName: '定金膨胀',
       param: {
         status: 0,
@@ -132,6 +137,9 @@ export default {
         // pagination
         currentPage: 1,
         pageRows: 20
+      },
+      page: {
+        totalRows: 0
       },
       tableData: [{
         id: 1,
@@ -146,10 +154,7 @@ export default {
         tailPaidOrderQuantity: 0,
         orderUserQuantity: 1,
         status: 0
-      }],
-      page: {
-        totalRows: 0
-      }
+      }]
     }
   },
   methods: {

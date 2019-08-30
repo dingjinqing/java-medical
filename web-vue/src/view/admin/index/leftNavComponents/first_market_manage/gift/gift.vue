@@ -26,7 +26,7 @@
         </el-col>
         <el-col
           :span="4"
-          :offset="13"
+          :offset="15"
         >
           <el-button
             type="primary"
