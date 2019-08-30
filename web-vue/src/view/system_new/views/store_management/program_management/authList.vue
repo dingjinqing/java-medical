@@ -6,7 +6,7 @@
     >
       <el-select
         class="fll selected-id mr-6 mb-10"
-        v-model="templateId"
+        v-model="queryData.selectedId"
         :placeholder="$t('programVersion.selectTemplateID')"
         size="small"
         @change="handleSelectId()"
@@ -367,7 +367,7 @@ export default {
     },
     // 小程序列表分页查询
     handleQueryTableData () {
-      console.log(this.queryData)
+      console.log(this.queryData.selectedId)
       let obj = {
         'templateId': this.queryData.selectedId,
         'isAuthOk': this.queryData.selectedAuth,

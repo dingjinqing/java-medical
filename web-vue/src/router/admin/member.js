@@ -203,6 +203,16 @@ const routes = [
       meta: 'user_manger'
     },
     component: () => import('@/view/admin/index/leftNavComponents/user_manger/labelManagement/labelManagement')
+  },
+  // 积分管理
+  {
+    path: '/admin/home/main/integralManagement',
+    name: 'score',
+    meta: {
+      crumbTitle: 'router.integralManagement',
+      meta: 'user_manger'
+    },
+    component: () => import('@/view/admin/index/leftNavComponents/user_manger/integralManagement/integralManagement')
   }
 ]
 

@@ -98,7 +98,7 @@ export default {
         if (res.error === 0) {
           this.dialogData = res.content
           this.dialogData.map((item, index) => {
-            item.ischeck = false
+            this.$set(item, 'ischeck', false)
           })
           console.log(this.dialogData)
           this.dialogData.forEach((item, index) => {
