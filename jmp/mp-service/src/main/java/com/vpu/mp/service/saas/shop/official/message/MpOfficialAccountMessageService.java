@@ -49,12 +49,7 @@ public class MpOfficialAccountMessageService extends MainBaseService {
 	public void setNeededIndustry(String appId) throws WxErrorException {
 		WxMpTemplateMsgService service = accountService.getOfficialAccountClient(appId).getTemplateMsgService();
 		WxMpTemplateIndustry originIndustry = service.getIndustry();
-		if (INDUSTRY_FIRST.equals(originIndustry.getPrimaryIndustry().getFirstClass())
-				&& INDUSTRY_SECOND.equals(originIndustry.getPrimaryIndustry().getSecondClass())
-				|| INDUSTRY_FIRST.equals(originIndustry.getSecondIndustry().getFirstClass())
-						&& INDUSTRY_SECOND.equals(originIndustry.getSecondIndustry().getSecondClass())
-
-		) {
+		if ( isNoSetIndustry(originIndustry) ) {
 			return;
 		}
 		WxMpTemplateIndustry wxMpIndustry = new WxMpTemplateIndustry();
@@ -62,6 +57,13 @@ public class MpOfficialAccountMessageService extends MainBaseService {
 		wxMpIndustry.setSecondIndustry(new WxMpTemplateIndustry.Industry(NEED_INDUSTRY_ID_2));
 		service.setIndustry(wxMpIndustry);
 	}
+
+	private boolean isNoSetIndustry(WxMpTemplateIndustry originIndustry){
+	    return INDUSTRY_FIRST.equals(originIndustry.getPrimaryIndustry().getFirstClass())
+            && INDUSTRY_SECOND.equals(originIndustry.getPrimaryIndustry().getSecondClass())
+            || INDUSTRY_FIRST.equals(originIndustry.getSecondIndustry().getFirstClass())
+            && INDUSTRY_SECOND.equals(originIndustry.getSecondIndustry().getSecondClass());
+    }
 
 	/**
 	 * 得到行业
@@ -84,7 +86,7 @@ public class MpOfficialAccountMessageService extends MainBaseService {
 	 * @param templateConfig
 	 * @param maAppId        对应小程序AppId
 	 * @param page           小程序路径
-	 * @param url            网页路径
+	 * @param url            网页路径（暂时无用默认设置为小程序的跳转路径）
 	 */
 	public void sendMpTemplateMessage(String appId, String toUser, List<WxMpTemplateData> keywordValues,
 			MpTemplateConfig templateConfig, String maAppId,

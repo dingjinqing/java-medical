@@ -124,7 +124,8 @@ public class WechatMessageTemplateService extends ShopBaseService {
             ));
         }
         try {
-            maTemplateService.sendMaTemplateMessage(info.getMaAppId(),info.getMaOpenId(),wxDatalist,config,param.getEmphasisKeyword(),param.getPage(),formId);
+            maTemplateService.sendMaTemplateMessage(info.getMaAppId(),info.getMaOpenId(),
+                wxDatalist,config,param.getEmphasisKeyword(),param.getPage(),formId);
         } catch (WxErrorException e) {
             e.printStackTrace();
             return Boolean.FALSE;
@@ -152,8 +153,8 @@ public class WechatMessageTemplateService extends ShopBaseService {
             ));
         }
         try{
-            accountMessageService.sendMpTemplateMessage(
-                info.getMpAppId(),info.getMpOpenId(),wxDatalist,config,info.getMaAppId(),param.getPage(),"");
+            accountMessageService.sendMpTemplateMessage(info.getMpAppId(),info.getMpOpenId(),
+                wxDatalist,config,info.getMaAppId(),param.getPage(),param.getPage());
         } catch (WxErrorException e) {
             e.printStackTrace();
             return Boolean.FALSE;

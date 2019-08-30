@@ -26,6 +26,7 @@ import org.jooq.UpdateSetStep;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import javax.annotation.PostConstruct;
 import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -44,10 +45,14 @@ public class MessageTemplateService extends ShopBaseService {
 
     @Autowired
     private SendUserService sendUserService;
-    @Autowired
+
     private TaskJobMainService taskJobMainService;
-    @Autowired
-    private MpOfficialAccountMessageService mpOfficialAccountMessageService;
+
+
+    @PostConstruct
+    private void init(){
+        taskJobMainService = saas().taskJobMainService;
+    }
 
 
 
@@ -118,7 +123,7 @@ public class MessageTemplateService extends ShopBaseService {
      * @param param 消息的一些配置参数
      */
     private void createTaskJob(Integer shopId,RabbitMessageParam messageTemplateParam,MessageTemplateParam param){
-        TaskJobInfo  info = TaskJobInfo.initTaskJob(shopId)
+        TaskJobInfo  info = TaskJobInfo.builder(shopId)
             .type(param.getSenAction())
             .content(messageTemplateParam)
             .className(messageTemplateParam.getClass().getName())
@@ -129,24 +134,4 @@ public class MessageTemplateService extends ShopBaseService {
         taskJobMainService.dispatch(info);
     }
 
-    public List<String> getNeedSendUserOpenIdArray(RabbitMessageParam messageTemplateParam){
-        List<Integer> userId = db().select(MP_TEMPLATE_FORM_ID.USER_ID,MP_TEMPLATE_FORM_ID.OPEN_ID)
-            .from(MP_TEMPLATE_FORM_ID)
-            .where(MP_TEMPLATE_FORM_ID.MP_LINK_IDENTITY.eq(messageTemplateParam.getMessageTemplateId().toString()))
-            .and(MP_TEMPLATE_FORM_ID.STATUS.eq((byte)1))
-            .fetchInto(Integer.class);
-        List<Integer> needSendList = messageTemplateParam.getUserIdList().stream()
-            .filter(x->!userId.contains(x))
-            .collect(Collectors.toList());
-        db().update(MP_TEMPLATE_FORM_ID)
-            .set(MP_TEMPLATE_FORM_ID.USE_STATE,(byte)2)
-            .where(MP_TEMPLATE_FORM_ID.USER_ID.in(needSendList))
-            .returning(MP_TEMPLATE_FORM_ID.FORM_ID,MP_TEMPLATE_FORM_ID.OPEN_ID)
-            .fetch();
-        return null;
-    }
-
-    private List<Integer> getNeedSendUser(){
-        return null;
-    }
 }

@@ -38,6 +38,7 @@ public class RabbitmqSendService  {
      * @param object 发送消息
      * @param queueName 在{@link com.vpu.mp.config.mq.RabbitConfig}配置自己的队列
      */
+    @Deprecated
     public  void sendMessage(String queueName,Object object){
         log.info("接收队列---{},MQ发送消息---{}",queueName,object);
         CorrelationData correlationData = new CorrelationData(UUID.randomUUID().toString());
@@ -49,6 +50,7 @@ public class RabbitmqSendService  {
      * @param routingKey 路由键名称,在{@link com.vpu.mp.config.mq.RabbitConfig}配置
      * @param exchangeName 路由名称,在{@link com.vpu.mp.config.mq.RabbitConfig}配置
      */
+    @Deprecated
     public void sendMessage(String exchangeName,String routingKey,Object... object){
         log.info("接收路由---{}，路由键---{}",exchangeName,routingKey);
         CorrelationData correlationData = new CorrelationData(UUID.randomUUID().toString());

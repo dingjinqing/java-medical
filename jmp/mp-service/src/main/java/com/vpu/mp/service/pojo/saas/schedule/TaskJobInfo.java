@@ -7,7 +7,7 @@ import java.sql.Timestamp;
 
 public class TaskJobInfo extends BaseTaskJob {
 
-    public static Builder initTaskJob(Integer shopId){
+    public static Builder builder(Integer shopId){
         return new TaskJobInfo.Builder(shopId);
     }
 

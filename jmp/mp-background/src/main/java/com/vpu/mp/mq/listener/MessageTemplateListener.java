@@ -17,6 +17,12 @@ import org.springframework.stereotype.Component;
 
 import java.util.List;
 
+/**
+ * 模版消息监听
+ * @author 卢光耀
+ * @date 2019-08-30 14:27
+ *
+*/
 @Component
 @RabbitListener(queues = {RabbitConfig.QUEUE_MESSAGE_SEND},
     containerFactory = "simpleRabbitListenerContainerFactory")
