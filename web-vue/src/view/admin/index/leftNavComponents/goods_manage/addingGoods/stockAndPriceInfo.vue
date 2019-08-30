@@ -155,7 +155,6 @@
 // TODO: 1.格笛卡尔积中规格图片样式未实现
 // TODO: 2.格笛卡尔积中规格input框样式未实现
 // TODO: 3.会员价格table表格样式未实现
-// TODO: 4.未添加规格名称和规格值名称重复校验
 
 // 接口函数引入
 import {getLevelCardList} from '@/api/admin/goodsManage/addingGoods/addingGoods'
