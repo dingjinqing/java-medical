@@ -21,10 +21,9 @@ import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 
-import org.jooq.Record1;
-import org.jooq.Record5;
-import org.jooq.SelectLimitStep;
-import org.jooq.SelectWhereStep;
+import com.vpu.mp.service.foundation.data.DelFlag;
+import jodd.util.StringUtil;
+import org.jooq.*;
 import org.jooq.impl.DSL;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -73,6 +72,17 @@ public class CouponGiveService extends ShopBaseService {
     private static final MrkingVoucher mv = MrkingVoucher.MRKING_VOUCHER.as("mv");
     private static final CustomerAvailCoupons cac = CustomerAvailCoupons.CUSTOMER_AVAIL_COUPONS.as("cac");
 
+    /** 是否有最低消费使用限制，0不限制，1有限制 */
+    public static final byte USE_CONSUME_RESTRICT_EFFECTIVE = 1;
+    public static final byte USE_CONSUME_RESTRICT_INVALID = 0;
+
+    /** 优惠券类型，0普通优惠券；1分裂优惠券 */
+    public static final byte COUPON_TYPE_NORMAL = 0;
+    public static final byte COUPON_TYPE_SPLIT = 1;
+
+    /** 优惠券有效期类型标记，1领取后开始指定时间段内有效，0固定时间段有效 */
+    public static final byte VALIDITY_TYPE_FIXED = 0;
+    public static final byte VALIDITY_TYPE_FLEXIBLE = 1;
 
     /**
      * 优惠券发放情况分页列表
@@ -317,14 +327,15 @@ public class CouponGiveService extends ShopBaseService {
      * @return popListVo
      */
     public List<CouponGivePopVo> popWindows(CouponGivePopParam param) {
-        /* 添加模糊查询条件 */
-        if (StringUtils.isNullOrEmpty(param.getActName())) {
-            param.setActName("");
-        }
         /* 查询，并筛选出正确的使用限制条件 */
-        List<CouponGivePopVo> popVo = db().select(MRKING_VOUCHER.ID,
-        		MRKING_VOUCHER.ACT_NAME, MRKING_VOUCHER.DENOMINATION, MRKING_VOUCHER.LEAST_CONSUME, MRKING_VOUCHER.USE_CONSUME_RESTRICT,MRKING_VOUCHER.SURPLUS,
-        		MRKING_VOUCHER.VALIDITY_TYPE,MRKING_VOUCHER.VALIDITY,MRKING_VOUCHER.VALIDITY_HOUR,MRKING_VOUCHER.VALIDITY_MINUTE,MRKING_VOUCHER.START_TIME,MRKING_VOUCHER.END_TIME).from(MRKING_VOUCHER).where(MRKING_VOUCHER.USE_CONSUME_RESTRICT.eq((byte) 1).and(MRKING_VOUCHER.ACT_NAME.like(this.likeValue(param.getActName())))).or(MRKING_VOUCHER.USE_CONSUME_RESTRICT.eq((byte) 0).and(MRKING_VOUCHER.LEAST_CONSUME.eq(BigDecimal.ZERO)).and(MRKING_VOUCHER.ACT_NAME.like(this.likeValue(param.getActName())))).fetchInto(CouponGivePopVo.class);
+        SelectWhereStep<? extends Record> select = db().select(MRKING_VOUCHER.ID,
+            MRKING_VOUCHER.ACT_NAME, MRKING_VOUCHER.DENOMINATION, MRKING_VOUCHER.LEAST_CONSUME, MRKING_VOUCHER.USE_CONSUME_RESTRICT,MRKING_VOUCHER.SURPLUS,MRKING_VOUCHER.VALIDITY_TYPE,MRKING_VOUCHER.VALIDITY,MRKING_VOUCHER.VALIDITY_HOUR,MRKING_VOUCHER.VALIDITY_MINUTE,MRKING_VOUCHER.START_TIME,MRKING_VOUCHER.END_TIME).from(MRKING_VOUCHER);
+        select.where(MRKING_VOUCHER.TYPE.eq(COUPON_TYPE_NORMAL)).and(MRKING_VOUCHER.DEL_FLAG.eq(DelFlag.NORMAL_VALUE));
+        if(StringUtil.isNotEmpty(param.getActName())){
+            select.where(MRKING_VOUCHER.ACT_NAME.contains(param.getActName()));
+        }
+        select.orderBy(MRKING_VOUCHER.CREATE_TIME.desc());
+        List<CouponGivePopVo> popVo = select.fetchInto(CouponGivePopVo.class);
 
         return popVo;
 

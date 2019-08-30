@@ -24,8 +24,8 @@ public class CouponGivePopVo {
 	private BigDecimal leastConsume;
 	/** 剩余数量 */
 	private Integer surplus;
-	/** 优惠券有效期类型标记 */
-	private Integer validityType;
+	/** 优惠券有效期类型标记，1领取后开始指定时间段内有效，0固定时间段有效 */
+	private Byte validityType;
 	/** 优惠券优惠券有效天数 */
 	private Integer validity;
 	/** 优惠券有效小时数 */
