@@ -14,6 +14,8 @@ import lombok.Data;
 public class CouponGivePopVo {
 	/** 优惠券id */
 	private Integer id;
+    /** 优惠券类型，voucher指定金额券，discount折扣券 */
+    private String actCode;
 	/** 优惠券名称 */
 	private String actName;
 	/** 面额 */

@@ -84,6 +84,10 @@ public class CouponGiveService extends ShopBaseService {
     public static final byte VALIDITY_TYPE_FIXED = 0;
     public static final byte VALIDITY_TYPE_FLEXIBLE = 1;
 
+    /** 普通优惠券类型，voucher指定金额券，discount折扣券 */
+    public static final String ACT_CODE_VOUCHER = "voucher";
+    public static final String ACT_CODE_DISCOUNT = "discount";
+
     /**
      * 优惠券发放情况分页列表
      *
@@ -328,7 +332,7 @@ public class CouponGiveService extends ShopBaseService {
      */
     public List<CouponGivePopVo> popWindows(CouponGivePopParam param) {
         /* 查询，并筛选出正确的使用限制条件 */
-        SelectWhereStep<? extends Record> select = db().select(MRKING_VOUCHER.ID,
+        SelectWhereStep<? extends Record> select = db().select(MRKING_VOUCHER.ID,MRKING_VOUCHER.ACT_CODE,
             MRKING_VOUCHER.ACT_NAME, MRKING_VOUCHER.DENOMINATION, MRKING_VOUCHER.LEAST_CONSUME, MRKING_VOUCHER.USE_CONSUME_RESTRICT,MRKING_VOUCHER.SURPLUS,MRKING_VOUCHER.VALIDITY_TYPE,MRKING_VOUCHER.VALIDITY,MRKING_VOUCHER.VALIDITY_HOUR,MRKING_VOUCHER.VALIDITY_MINUTE,MRKING_VOUCHER.START_TIME,MRKING_VOUCHER.END_TIME).from(MRKING_VOUCHER);
         select.where(MRKING_VOUCHER.TYPE.eq(COUPON_TYPE_NORMAL)).and(MRKING_VOUCHER.DEL_FLAG.eq(DelFlag.NORMAL_VALUE));
         if(StringUtil.isNotEmpty(param.getActName())){
