@@ -193,6 +193,16 @@ const routes = [
       category: 'user_card'
     },
     component: () => import('@/view/admin/index/leftNavComponents/user_manger/membershipCard/viewOrders')
+  },
+  // 标签管理
+  {
+    path: '/admin/home/main/labelManagement',
+    name: 'user_tag',
+    meta: {
+      crumbTitle: 'router.labelManagement',
+      meta: 'user_manger'
+    },
+    component: () => import('@/view/admin/index/leftNavComponents/user_manger/labelManagement/labelManagement')
   }
 ]
 

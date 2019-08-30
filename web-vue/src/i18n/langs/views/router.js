@@ -54,6 +54,8 @@ export const cn = {
   Cardholder: ['会员管理'],
   // 会员管理 充值明细子路由
   refillDetailsItem: ['会员管理', '会员卡消费明细'],
+  // 会员管理 标签管理
+  labelManagement: ['会员管理', '标签管理'],
   // 基础配置 小程序授权
   program_auth: ['基础配置', '小程序授权'],
   // 基础配置 小程序授权成功页面

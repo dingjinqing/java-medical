@@ -23,7 +23,7 @@
           >
             <img
               :src="nav_index==index||click_nav_index==index?item.imgUrl_h:item.imgUrl"
-              :class="nav_s_class_index&&index==0?'nav_s_class':''"
+              :class="(nav_s_class_index||$route.meta.meta==='first_market_manage')&&index==0?'nav_s_class':''"
             >
             <span>{{item.span}}</span>
           </div>
