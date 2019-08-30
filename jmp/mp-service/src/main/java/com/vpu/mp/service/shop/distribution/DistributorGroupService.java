@@ -50,6 +50,7 @@ public class DistributorGroupService extends ShopBaseService{
 		if(param.getGroupName() != null) {
 			sql = sql.and(DISTRIBUTOR_GROUP.GROUP_NAME.eq(param.getGroupName()));
 		}
+		sql.orderBy(DISTRIBUTOR_GROUP.ID.desc());
 		return sql;
 	}
 	
