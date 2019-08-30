@@ -318,10 +318,10 @@ public class PackSaleService extends ShopBaseService {
 			step.and(USER.MOBILE.like(this.likeValue(param.getMobile())));
 		}
 		if(!StringUtils.isBlank(param.getOrderSn())) {
-			step.and(ORDER_INFO.ORDER_SN.eq(this.likeValue(param.getOrderSn())));
+			step.and(ORDER_INFO.ORDER_SN.like(this.likeValue(param.getOrderSn())));
 		}
 		if(!StringUtils.isBlank(param.getUserName())) {
-			step.and(USER.USERNAME.eq(this.likeValue(param.getUserName())));
+			step.and(USER.USERNAME.like(this.likeValue(param.getUserName())));
 		}
 		step.orderBy(ORDER_INFO.CREATE_TIME);
 		return step;
