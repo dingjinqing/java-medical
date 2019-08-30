@@ -10,7 +10,7 @@
 
       <!-- 主要内容区 -->
       <addingGoodsProductInfo ref="goodsProductInfo" v-show="currentStep===1"/>
-      <addingGoodsDetails ref="goodsDetailsCmp" v-show="currentStep===2"/>
+      <addingGoodsDetails :goods-product-info="goodsProductInfoData" ref="goodsDetailsCmp" v-show="currentStep===2"/>
       <addingGoodsDistributionInfo ref="goodsDistributionInfoCmp" v-show="currentStep==3"/>
 
       <!-- 底部按钮组件 -->
@@ -45,9 +45,10 @@ export default {
     headerStepsClick (curStep) {
       // TODO:数据正确性验证
       // 如何是从商品基本信息跳转验证基础信息正确性
-      if (this.currentStep === 1&&!this.$refs.goodsProductInfo.validateFormData()) {
-        return
-      }
+      // if (this.currentStep === 1&&!this.$refs.goodsProductInfo.validateFormData()) {
+      //   return
+      // }
+      this.goodsProductInfoData=this.$refs.goodsProductInfo.getFormData()
       this.currentStep = curStep;
     },
     /* 底部下一步,上一步点击事件 */
@@ -55,10 +56,6 @@ export default {
 
       if (this.currentStep === 1&&!this.$refs.goodsProductInfo.validateFormData()) {
         return
-      }
-
-      if (offsetStep === 3) {
-        // TODO:验证2号数据
       }
 
       let offsetStep = this.currentStep + step

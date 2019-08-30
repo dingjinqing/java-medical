@@ -88,15 +88,19 @@
             <tr>
               <th>未计算</th>
               <th>规格价格(元)</th>
-              <th v-for="item in memberCards" :key="item.id" v-if="item.checked">{{item.cardName}}</th>
+              <template v-for="item in memberCards">
+                <th :key="item.id" v-if="item.checked">{{item.cardName}}</th>
+              </template>
               <th v-if="unifyCardsPriceShow"></th>
             </tr>
             <tr v-for="(item,index) in goodsProductInfo.goodsSpecProducts" :key="index">
               <td>{{item.prdDescTemp}}</td>
               <td>{{item.prdPrice}}</td>
-              <td v-for="(cardWrap,cardWrapIndex) in item.memberCards" v-if="cardWrap.card.checked" :key="cardWrapIndex">
-                <input :id="item.prdDesc+cardWrap.card.cardName" type="text" v-model.number="cardWrap.cardPrice" @change="memberCardPriceChange(item.prdPrice,cardWrap.cardPrice,item.prdDesc+cardWrap.card.cardName)"/>
-              </td>
+              <template v-for="(cardWrap,cardWrapIndex) in item.memberCards">
+                <td v-if="cardWrap.card.checked" :key="cardWrapIndex">
+                  <input :id="item.prdDesc+cardWrap.card.cardName" type="text" v-model.number="cardWrap.cardPrice" @change="memberCardPriceChange(item.prdPrice,cardWrap.cardPrice,item.prdDesc+cardWrap.card.cardName)"/>
+                </td>
+              </template>
               <td v-if="unifyCardsPriceShow">
                 <el-link size="small" :underline="false" @click="unifyMemberCardsPrice(item)">统一会员价</el-link>
               </td>
@@ -105,14 +109,18 @@
           <table v-else>
             <tr>
               <th>商品价格(元)</th>
-              <th v-for="item in memberCards" :key="item.id" v-if="item.checked">{{item.cardName}}</th>
+              <template v-for="item in memberCards">
+                <th :key="item.id" v-if="item.checked">{{item.cardName}}</th>
+              </template>
               <th v-if="unifyCardsPriceShow"></th>
             </tr>
             <tr>
               <td>{{goodsProductInfo.prdPrice}}</td>
-              <td v-for="item in memberCards" v-if="item.checked" :key="item.id">
-                <input :id="item.cardName" type="text"  v-model.number="item.cardPrice" @change="memberCardPriceChange(goodsProductInfo.prdPrice,item.cardPrice,item.cardName)"/>
-              </td>
+              <template v-for="item in memberCards">
+                <td v-if="item.checked" :key="item.id">
+                  <input :id="item.cardName" type="text"  v-model.number="item.cardPrice" @change="memberCardPriceChange(goodsProductInfo.prdPrice,item.cardPrice,item.cardName)"/>
+                </td>
+              </template>
               <td v-if="unifyCardsPriceShow">
                 <el-link size="small" :underline="false" @click="unifyMemberCardsPrice()">统一会员价</el-link>
               </td>
