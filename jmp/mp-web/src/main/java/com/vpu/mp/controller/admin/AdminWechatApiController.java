@@ -125,7 +125,9 @@ public class AdminWechatApiController extends AdminBaseController {
 		//查询已绑定的公众号信息
 		Record officialAccount = saas.shop.officeAccount.getOfficeAccountByAppIdRecord(record.getLinkOfficialAppId());
 		into.setOfficialList(officialList);
-		into.setOfficialAccount(officialAccount.into(MpOfficeAccountVo.class));
+		if(officialAccount!=null) {
+			into.setOfficialAccount(officialAccount.into(MpOfficeAccountVo.class));
+		}
 		return success(into);
 	}
 
