@@ -29,10 +29,26 @@
           ></el-input>
         </div>
         <div class="midarea">
-          <span>活动时间：</span>
-          <el-input size="small"></el-input>
-          <span>至</span>
-          <el-input size="small"></el-input>
+          <span class="demonstration">活动日期：</span>
+          <el-date-picker
+            size="small"
+            v-model="startTime"
+            type="datetime"
+            placeholder="开始时间："
+            style="weight :100px "
+            value-format="yyyy-MM-dd HH:mm:ss"
+          >
+          </el-date-picker>
+          <span>至 </span>
+          <el-date-picker
+            size="small"
+            v-model="endTime"
+            type="datetime"
+            placeholder="结束时间："
+            style="width: 200px"
+            value-format="yyyy-MM-dd HH:mm:ss"
+          >
+          </el-date-picker>
         </div>
         <div class="rightarea">
           <span>奖励类型：</span>
@@ -137,6 +153,7 @@
         >
         </el-pagination>
       </div>
+
     </div>
   </div>
 
@@ -151,6 +168,8 @@ export default {
   },
   data () {
     return {
+      startTime: '',
+      endTime: '',
       actName: '',
       tabSwitch: '1',
       tabInfo: [{
@@ -185,7 +204,8 @@ export default {
         }, {
           value: '2',
           label: '赠送优惠券'
-        }]
+        }],
+      pageParams: {}
     }
   },
   created () {
@@ -203,6 +223,9 @@ export default {
     },
     handleClick () {
       let listParam = {
+        'rewardType': this.options.value,
+        'startTime': this.startTime,
+        'endTime': this.endTime,
         'actName': this.actName,
         'actState': this.tabSwitch,
         'currentPage': 1,

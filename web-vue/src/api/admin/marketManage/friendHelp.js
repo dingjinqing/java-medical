@@ -24,3 +24,11 @@ export function switchAct (data) {
     data: data
   })
 }
+// 添加好友助力活动
+export function addActive (data) {
+  return service({
+    url: '/api/admin/market/promote/add',
+    method: 'post',
+    data: data
+  })
+}
