@@ -221,7 +221,6 @@ export default {
       activityName: '优惠券礼包',
       // 默认显示进行中的活动
       tabIndex: 1,
-      currentPage: 1,
       pageParams: {},
       loading: false,
 
@@ -240,17 +239,14 @@ export default {
     }
   },
   methods: {
-    initDataList () {
+    initDataList (page) {
       this.loading = true
-      let param = {
-        'state': parseInt(this.tabIndex),
-        'accessMode': parseInt(this.accessMode),
-        'actName': this.actName,
-        'packName': this.packName,
-        'currentPage': 1
-      }
+      this.pageParams.state = parseInt(this.tabIndex)
+      this.pageParams.accessMode = parseInt(this.accessMode)
+      this.pageParams.actName = this.actName
+      this.pageParams.packName = this.packName
 
-      couponPackageList(param).then((res) => {
+      couponPackageList(this.pageParams).then((res) => {
         if (res.error === 0) {
           this.handleData(res.content.dataList)
           this.pageParams = res.content.page

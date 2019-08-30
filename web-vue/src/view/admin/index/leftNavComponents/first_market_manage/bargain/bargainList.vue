@@ -213,12 +213,8 @@ export default {
   methods: {
     initDataList () {
       this.loading = true
-      let param = {
-        'state': parseInt(this.tabIndex),
-        'currentPage': 1
-      }
-
-      bargainList(param).then((res) => {
+      this.pageParams.state = parseInt(this.tabIndex)
+      bargainList(this.pageParams).then((res) => {
         if (res.error === 0) {
           this.handleData(res.content.dataList)
           this.pageParams = res.content.page

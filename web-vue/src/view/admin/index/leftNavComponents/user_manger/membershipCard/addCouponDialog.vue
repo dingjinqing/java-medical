@@ -34,16 +34,16 @@
               :src="$imageHost +'/image/admin/shop_beautify/checked_card.png'"
             >
             <div class="coupon_list_top">
-              ￥<span>{{item.price}}</span>
+              ￥<span>{{item.denomination}}</span>
             </div>
             <div class="coupon_list_center">
-              <div class="coupon_center_limit">{{item.isLimit?`满${item.nolimitPrice}使用`:'不限制'}}</div>
+              <div class="coupon_center_limit">{{item.useConsumeRestrict > 0 ?`满${item.leastConsume}使用`:'不限制'}}</div>
               <div class="coupon_center_number">剩余<span>{{item.surplus}}</span>张</div>
               <div
                 class="coupon_list_bottom"
                 :style="`backgroundImage:url('${$imageHost}/image/admin/coupon_border.png')`"
               >领取 </div>
-              <div class="coupon_name">{{item.tips}}</div>
+              <div class="coupon_name">{{item.actName}}</div>
             </div>
           </div>
         </div>
@@ -66,143 +66,13 @@
   </div>
 </template>
 <script>
+import { getCouponSelectComponentData } from '@/api/admin/marketManage/couponGive.js'
 export default {
   data () {
     return {
       dialogVisible: false,
       couponInput: '',
-      dialogData: [
-        {
-          price: 88,
-          isLimit: true,
-          act_code: 0,
-          nolimitPrice: 2,
-          surplus: 99,
-          tips: '优惠券每人领取限制',
-          ischeck: false,
-          id: 0
-        },
-        {
-          price: 222,
-          isLimit: false,
-          act_code: 0,
-          nolimitPrice: 10,
-          surplus: 111,
-          tips: '年终大促',
-          ischeck: false,
-          id: 1
-        },
-        {
-          price: 333,
-          isLimit: false,
-          act_code: 0,
-          nolimitPrice: 10,
-          surplus: 111,
-          tips: '年终大促',
-          ischeck: false,
-          id: 2
-        },
-        {
-          price: 444,
-          isLimit: false,
-          act_code: 0,
-          nolimitPrice: 10,
-          surplus: 111,
-          tips: '年终大促',
-          ischeck: false,
-          id: 3
-        },
-        {
-          price: 555,
-          isLimit: false,
-          act_code: 0,
-          nolimitPrice: 10,
-          surplus: 111,
-          tips: '年终大促',
-          ischeck: false,
-          id: 4
-        },
-        {
-          price: 666,
-          isLimit: false,
-          act_code: 0,
-          nolimitPrice: 10,
-          surplus: 111,
-          tips: '年终大促',
-          ischeck: false,
-          id: 5
-        },
-        {
-          price: 666,
-          isLimit: false,
-          act_code: 0,
-          nolimitPrice: 10,
-          surplus: 111,
-          tips: '年终大促',
-          ischeck: false,
-          id: 6
-        },
-        {
-          price: 666,
-          isLimit: false,
-          act_code: 0,
-          nolimitPrice: 10,
-          surplus: 111,
-          tips: '年终大促',
-          ischeck: false,
-          id: 7
-        },
-        {
-          price: 666,
-          isLimit: false,
-          act_code: 0,
-          nolimitPrice: 10,
-          surplus: 111,
-          tips: '年终大促',
-          ischeck: false,
-          id: 8
-        },
-        {
-          price: 666,
-          isLimit: false,
-          act_code: 0,
-          nolimitPrice: 10,
-          surplus: 111,
-          tips: '年终大促',
-          ischeck: false,
-          id: 9
-        },
-        {
-          price: 666,
-          isLimit: false,
-          act_code: 0,
-          nolimitPrice: 10,
-          surplus: 111,
-          tips: '年终大促',
-          ischeck: false,
-          id: 9
-        },
-        {
-          price: 666,
-          isLimit: false,
-          act_code: 0,
-          nolimitPrice: 10,
-          surplus: 111,
-          tips: '年终大促',
-          ischeck: false,
-          id: 10
-        },
-        {
-          price: 666,
-          isLimit: false,
-          act_code: 0,
-          nolimitPrice: 10,
-          surplus: 111,
-          tips: '年终大促',
-          ischeck: false,
-          id: 11
-        }
-      ]
+      dialogData: []
     }
   },
   props: ['origin'],
@@ -211,23 +81,41 @@ export default {
     this.defaultData()
   },
   methods: {
+
     defaultData () {
-      this.$http.$on('V-AddCoupon', res => {
-        console.log(res)
-        this.dialogData.forEach((item, index) => {
-          item.ischeck = false
-          res.couponList.forEach((itemC, indexC) => {
-            if (item.id === itemC.id) {
-              item.ischeck = true
-            }
+      this.$http.$on('V-AddCoupon', data => {
+        console.log(data)
+
+        this.initCouponList(data)
+        this.dialogVisible = data.couponDialogFlag
+      })
+    },
+    initCouponList (data) {
+      let param = {
+        'actName': this.couponInput
+      }
+      getCouponSelectComponentData(param).then((res) => {
+        if (res.error === 0) {
+          this.dialogData = res.content
+          this.dialogData.map((item, index) => {
+            item.ischeck = false
           })
-        })
-        this.dialogVisible = res.couponDialogFlag
+          console.log(this.dialogData)
+          this.dialogData.forEach((item, index) => {
+            item.ischeck = false
+            data.couponList.forEach((itemC, indexC) => {
+              if (item.id === itemC.id) {
+                item.ischeck = true
+              }
+            })
+          })
+        }
       })
     },
     // 优惠卷选中
     handleToClick (index) {
       this.dialogData[index].ischeck = !this.dialogData[index].ischeck
+      console.log(this.dialogData)
     },
     // 弹窗确定事件
     handleToSure () {
@@ -235,8 +123,6 @@ export default {
       this.dialogData.forEach((item, index) => {
         if (item.ischeck) arr.push(item)
       })
-      console.log(arr.length)
-      console.log(this.origin)
       if (arr.length > 5 && !this.origin) {
         this.$message.error('最多只能选择5张优惠卷哦~')
         return
@@ -246,7 +132,6 @@ export default {
         return
       }
       this.$emit('handleToCheck', arr)
-      console.log(arr)
       this.dialogVisible = false
     }
   }
