@@ -176,6 +176,20 @@ const routes = [
         '@/view/admin/index/leftNavComponents/first_market_manage/couponPackage/couponPackageReceiveDetails'
       )
   },
+  // 优惠券礼包-订单明细
+  {
+    path: '/admin/home/main/couponPackage/orderDetails',
+    name: 'coupon_Package_order_details',
+    meta: {
+      crumbTitle: 'router.coupon_Package_order_details',
+      meta: 'first_market_manage',
+      category: 'first_market_manage'
+    },
+    component: () =>
+      import(
+        '@/view/admin/index/leftNavComponents/first_market_manage/couponPackage/couponPackageOrderDetails'
+      )
+  },
   // 限时降价
   {
     path: '/admin/home/main/reduce',

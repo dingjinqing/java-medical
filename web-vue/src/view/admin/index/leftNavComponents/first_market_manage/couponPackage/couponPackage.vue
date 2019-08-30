@@ -183,7 +183,10 @@
                   content="查看订单"
                   placement="top"
                 >
-                  <i class="el-icon-s-order"></i>
+                  <i
+                    class="el-icon-s-order"
+                    @click="orderDetails(scope.row.id)"
+                  ></i>
                 </el-tooltip>
                 <el-tooltip
                   class="item"
@@ -348,6 +351,16 @@ export default {
       console.log(id)
       this.$router.push({
         name: 'coupon_Package_receive_details',
+        query: {
+          id: id
+        }
+      })
+    },
+    // 查看订单
+    orderDetails (id) {
+      console.log(id)
+      this.$router.push({
+        name: 'coupon_Package_order_details',
         query: {
           id: id
         }

@@ -3,25 +3,25 @@
     <div class="main">
       <div class="filters">
         <div class="filters_item">
-          <span>用户昵称：</span>
+          <span>订单号：</span>
           <el-input
-            v-model="paramsData.username"
-            placeholder="请输入用户昵称"
+            v-model="paramsData.orderSn"
+            placeholder="请输入订单号"
             size="small"
             class="default_input"
           ></el-input>
         </div>
         <div class="filters_item">
-          <span>手机号：</span>
+          <span>下单用户信息：</span>
           <el-input
-            v-model="paramsData.mobile"
-            placeholder="请输入用户手机号"
+            v-model="paramsData.userInfo"
+            placeholder="请输入下单用户昵称/手机号"
             size="small"
             class="default_input"
           ></el-input>
         </div>
         <div class="filters_item">
-          <span>领取时间：</span>
+          <span>下单时间</span>
           <el-date-picker
             v-model="effectiveDate"
             type="datetimerange"
@@ -34,35 +34,16 @@
           </el-date-picker>
         </div>
         <div class="filters_item">
-          <span>领取方式：</span>
-          <el-select
-            v-model="paramsData.accessMode"
-            size="small"
-            class="default_input"
-          >
-            <el-option
-              v-for="item in access_mode_list"
-              :key="item.value"
-              :label="item.label"
-              :value="item.value"
-            ></el-option>
-          </el-select>
-        </div>
-        <div class="filters_item">
-          <span>订单号：</span>
-          <el-input
-            v-model="paramsData.orderSn"
-            placeholder="请输入订单号"
-            size="small"
-            class="default_input"
-          ></el-input>
-        </div>
-        <div class="filters_item">
           <el-button
             @click="initDataList"
             type="primary"
             size="small"
           >筛选</el-button>
+          <el-button
+            @click="initDataList"
+            type="primary"
+            size="small"
+          >导出数据</el-button>
         </div>
       </div>
       <div class="table_box">
@@ -105,92 +86,118 @@ export default {
   },
   data () {
     return {
-      currentPage: 1,
+
       pageParams: {},
       effectiveDate: '',
       paramsData: {
         id: '',
-        username: '',
-        mobile: '',
+        orderSn: '',
+        userInfo: '',
         startTime: '',
         endTime: '',
-        accessMode: -1,
-        orderSn: '',
         currentPage: 1
       },
       tableData: [
         {
+          'orderSn': 'qweqwew',
+          'moneyPaid': 0,
+          'useAccount': 1.3,
+          'useScore': 50,
+          'memberCardBalance': 0,
+          'userId': 1,
           'username': 'sdsa',
           'mobile': '13533333333',
-          'accessMode': 0,
-          'orderSn': 'qweqwew',
           'createTime': '2019-08-21 17:10:22',
-          'voucherAccessCount': 0
+          'orderStatus': 1
         },
         {
+          'orderSn': 'qweqwew',
+          'moneyPaid': 0,
+          'useAccount': 1.3,
+          'useScore': 50,
+          'memberCardBalance': 0,
+          'userId': 1,
           'username': 'sdsa',
           'mobile': '13533333333',
-          'accessMode': 0,
-          'orderSn': 'qweqwew',
           'createTime': '2019-08-21 17:10:22',
-          'voucherAccessCount': 0
+          'orderStatus': 1
         },
         {
+          'orderSn': 'qweqwew',
+          'moneyPaid': 0,
+          'useAccount': 1.3,
+          'useScore': 50,
+          'memberCardBalance': 0,
+          'userId': 1,
           'username': 'sdsa',
           'mobile': '13533333333',
-          'accessMode': 0,
-          'orderSn': 'qweqwew',
           'createTime': '2019-08-21 17:10:22',
-          'voucherAccessCount': 0
+          'orderStatus': 1
         },
         {
+          'orderSn': 'qweqwew',
+          'moneyPaid': 0,
+          'useAccount': 1.3,
+          'useScore': 50,
+          'memberCardBalance': 0,
+          'userId': 1,
           'username': 'sdsa',
           'mobile': '13533333333',
-          'accessMode': 0,
-          'orderSn': 'qweqwew',
           'createTime': '2019-08-21 17:10:22',
-          'voucherAccessCount': 0
+          'orderStatus': 1
+        },
+        {
+          'orderSn': 'qweqwew',
+          'moneyPaid': 0,
+          'useAccount': 1.3,
+          'useScore': 50,
+          'memberCardBalance': 0,
+          'userId': 1,
+          'username': 'sdsa',
+          'mobile': '13533333333',
+          'createTime': '2019-08-21 17:10:22',
+          'orderStatus': 1
         }
       ],
       loading: false,
       tableItem: [
-        { prop: 'username', label: '用户昵称' },
-        { prop: 'mobile', label: '手机号' },
-        { prop: 'accessMode', label: '领取方式' },
         { prop: 'orderSn', label: '订单号' },
-        { prop: 'createTime', label: '领取时间' },
-        { prop: 'voucherAccessCount', label: '已领取优惠券数量' }
-      ],
-      access_mode_list: [
-        { value: -1, label: '全部' },
-        { value: 0, label: '现金' },
-        { value: 1, label: '积分' },
-        { value: 2, label: '全部' }
+        { prop: 'realPay', label: '单价' },
+        { prop: 'username', label: '下单用户信息' },
+        { prop: 'createTime', label: '下单时间' },
+        { prop: 'orderStatusFormat', label: '订单状态' },
+        { prop: 'moneyPaid', label: '支付金额' }
       ]
     }
   },
   methods: {
     initDataList () {
       this.loading = false
-      console.log(this.paramsData)
+      this.pageParams.startTime = this.effectiveDate[0] ? this.effectiveDate[0] : ''
+      this.pageParams.endTime = this.effectiveDate[1] ? this.effectiveDate[1] : ''
+      this.handleData(this.tableData)
     },
     // 表格数据处理
     handleData (data) {
       data.map((item, index) => {
         // TODO: 国际化
-        item.statusName = this.getActStatusString(item.status, item.startTime, item.endTime)
-        item.accessMode = this.getAccessModeString(item.accessMode)
+        item.orderStatusFormat = item.orderStatus === 1 ? '订单完成' : '订单未完成'
+        item.realPay = this.getRealPay(item.useAccount, item.useScore, item.memberCardBalance)
       })
       this.tableData = data
     },
-    getAccessModeString (accessMode) {
-      if (accessMode === 0) {
-        return '现金购买'
-      } else if (accessMode === 1) {
-        return '积分购买'
-      } else {
-        return '直接领取'
-      }
+    getRealPay (useAccount, useScore, memberCardBalance) {
+      let payStr = ''
+      if (useAccount > 0) {
+        payStr += `${useAccount}元余额`
+      };
+      if (useScore > 0) {
+        payStr += `${useAccount}积分`
+      };
+      if (memberCardBalance > 0) {
+        payStr += `${useAccount}元会员卡余额`
+      };
+      return payStr
     }
   },
   mounted () {
