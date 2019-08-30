@@ -164,16 +164,17 @@
       </div>
     </div>
   </div>
-
 </template>
 <script>
 import { getList, changeActivity, updateDailyLimit } from '@/api/admin/marketManage/sharePolite.js'
 import pagination from '@/components/admin/pagination/pagination.vue'
 import statusTab from '@/components/admin/status/statusTab'
+import wrapper from '@/components/admin/wrapper/wrapper'
 export default {
   components: {
     pagination,
-    statusTab
+    statusTab,
+    wrapper
   },
   mounted () {
     this.langDefault()
@@ -221,22 +222,8 @@ export default {
     },
     // 分模块查询数据列表
     seacherList () {
-      switch (this.param.status) {
-        case 0:
-          this.param.category = 0
-          break
-        case 1:
-          this.param.category = 8
-          break
-        case 2:
-          this.param.category = 4
-          break
-        case 3:
-          this.param.category = 2
-          break
-        case 4:
-          this.param.category = 1
-      }
+      this.param.category = this.param.status
+      console.log(this.param.category)
       this.param.currentPage = this.pageParams.currentPage
       this.param.pageRows = this.pageParams.pageRows
       getList(this.param).then((res) => {
@@ -445,15 +432,5 @@ export default {
 }
 .setUpDialog .el-dialog__body {
   padding-top: 10px !important;
-}
-.footer {
-  padding: 20px 0 20px 20px;
-  display: flex;
-  justify-content: flex-end;
-  span {
-    display: block;
-    height: 32px;
-    line-height: 32px;
-  }
 }
 </style>

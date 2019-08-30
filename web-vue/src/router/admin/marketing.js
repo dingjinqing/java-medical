@@ -28,10 +28,10 @@ const routes = [
   },
   // 分享有礼活动-添加
   {
-    path: '/admin/home/main/addSharePolite',
-    name: 'share_polite',
+    path: '/admin/home/main/sharePolite/add',
+    name: 'share_polite_add',
     meta: {
-      crumbTitle: 'router.share_polite',
+      crumbTitle: 'router.share_polite_add',
       meta: 'first_market_manage',
       category: 'first_market_manage'
     },
@@ -493,6 +493,48 @@ const routes = [
     component: () =>
       import(
         '@/view/admin/index/leftNavComponents/first_market_manage/preSale/preSaleDetail'
+      )
+  },
+  // 加价购活动
+  {
+    path: '/api/admin/market/addPriceBuy/list',
+    name: 'increase_purchase',
+    meta: {
+      crumbTitle: 'router.increase_purchase',
+      meta: 'first_market_manage',
+      category: 'first_market_manage'
+    },
+    component: () =>
+      import(
+        '@/view/admin/index/leftNavComponents/first_market_manage/increasepurchase/purchaseList'
+      )
+  },
+  // 加价购活动 换购订单
+  {
+    path: '/api/admin/market/addPriceBuy/redemptionOrder',
+    name: 'purchase_redemption_order',
+    meta: {
+      crumbTitle: 'router.purchase_redemption_order',
+      meta: 'first_market_manage',
+      category: 'first_market_manage'
+    },
+    component: () =>
+      import(
+        '@/view/admin/index/leftNavComponents/first_market_manage/increasepurchase/redemptionOrder'
+      )
+  },
+  // 加价购活动 换购明细
+  {
+    path: '/api/admin/market/addPriceBuy/redemptionDetail',
+    name: 'purchase_redemption_detail',
+    meta: {
+      crumbTitle: 'router.purchase_redemption_detail',
+      meta: 'first_market_manage',
+      category: 'first_market_manage'
+    },
+    component: () =>
+      import(
+        '@/view/admin/index/leftNavComponents/first_market_manage/increasepurchase/redemptionDetail'
       )
   }
 ]

@@ -132,7 +132,13 @@ export const cn = {
   // 营销管理 定金膨胀订单
   presale_order_detail: ['营销管理', '查看活动订单'],
   // 营销管理 定金膨胀活动明细
-  presale_detail: ['营销管理', '活动明细']
+  presale_detail: ['营销管理', '活动明细'],
+  // 营销管理 加价购
+  increase_purchase: ['营销管理', '加价购'],
+  // 营销管理 加价购 换购订单
+  purchase_redemption_order: ['营销管理', '加价购', '换购订单'],
+  // 营销管理 加价购 换购明细
+  purchase_redemption_detail: ['营销管理', '加价购', '换购明细']
 }
 
 export const en = {
@@ -308,5 +314,11 @@ export const en = {
   // 营销管理 定金膨胀订单
   presale_order_detail: ['Marketing Management', 'View Pre Sale Order Detail'],
   // 营销管理 定金膨胀活动明细
-  presale_detail: ['Marketing Management', 'View Pre Sale Detail']
+  presale_detail: ['Marketing Management', 'View Pre Sale Detail'],
+  // 营销管理 加价购
+  increase_purchase: ['Marketing management', 'Increase Purchase'],
+  // 营销管理 加价购 换购订单
+  purchase_redemption_order: ['Marketing management', 'Increase Purchase', 'Redemption Order'],
+  // 营销管理 加价购 换购明细
+  purchase_redemption_detail: ['Marketing management', 'Increase Purchase', 'Redemption Detail']
 }

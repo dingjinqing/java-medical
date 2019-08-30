@@ -149,7 +149,7 @@
             ></div>
           <div class="activity_title">
             <p>{{$t('marketManage.sharePolite')}}</p>
-            <span>{{$t('marketManage.sharePolite')}}</span>
+            <span>{{$t('marketManage.sharePoliteDesc')}}</span>
           </div>
         </div>
       </div>
@@ -307,7 +307,10 @@
           </div>
         </div>
         <!-- 加价购 -->
-        <div class="voucher box_style">
+        <div
+          class="voucher box_style"
+          @click="purchase()"
+        >
           <div class="activity_img"><img
               :src="$imageHost + '/image/admin/new_market/jjg.png'"
               alt=""
@@ -553,6 +556,12 @@ export default {
     preSale () {
       this.$router.push({
         name: 'presale_view'
+      })
+    },
+    // 加价购活动点击
+    purchase () {
+      this.$router.push({
+        name: 'increase_purchase'
       })
     }
   }
