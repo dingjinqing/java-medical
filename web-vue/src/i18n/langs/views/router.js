@@ -123,6 +123,8 @@ export const cn = {
   reduce: ['营销管理', '限时降价'],
   // 营销管理 打包一口价
   package_price: ['营销管理', '打包一口价'],
+  // 营销管理 打包一口价 参与明细
+  package_price_detail: ['营销管理', '打包一口价', '参与明细'],
   // 营销管理 定金膨胀
   presale: ['营销管理', '定金膨胀'],
   // 营销管理 定金膨胀创建
@@ -304,6 +306,8 @@ export const en = {
   reduce: ['Marketing management', 'Limited Time Price Reduction'],
   // 营销管理 打包一口价
   package_price: ['Marketing management', 'Package Price'],
+  // 营销管理 打包一口价 参与明细
+  package_price_detail: ['Marketing management', 'Package Price', 'Participation details'],
 
   // 营销管理 定金膨胀
   presale: ['Marketing Management', 'Pre Sale'],
