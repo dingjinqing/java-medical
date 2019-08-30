@@ -38,5 +38,11 @@ public class CouponGivePopVo {
 	private Timestamp startTime;
 	/** 优惠券有效期结束时间 */
 	private Timestamp endTime;
+    /** 指定商品可用的商品ID串，为空时为全部商品可用 */
+    private String recommendGoodsId;
+    /** 指定平台分类可用的平台分类ID串，为空时为全部平台分类可用 */
+    private String recommendCatId;
+    /** 指定商家分类可用的商家分类ID串，为空时为全部商品商家分类可用 */
+    private String recommendSortId;
 	
 }
