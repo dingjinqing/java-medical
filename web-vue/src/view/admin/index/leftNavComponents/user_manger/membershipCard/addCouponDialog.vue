@@ -14,15 +14,19 @@
               size="small"
             ></el-input>
             <el-button
+              @click="initCouponList (data)"
               type="info"
               plain
               size="small"
               icon="el-icon-search"
             >搜索</el-button>
           </div>
-          <span><i class="el-icon-refresh-left"></i>刷新</span>
+          <span @click="initCouponList (data)"><i class="el-icon-refresh-left"></i>刷新</span>
         </div>
-        <div class="couponListDiv">
+        <div
+          v-loading="loading"
+          class="couponListDiv"
+        >
           <div
             class="couponLi"
             v-for="(item,index) in dialogData"
@@ -53,10 +57,7 @@
         slot="footer"
         class="dialog-footer"
       >
-        <el-button
-          icon="el-icon-search"
-          @click="dialogVisible = false"
-        >取 消</el-button>
+        <el-button @click="dialogVisible = false">取 消</el-button>
         <el-button
           type="primary"
           @click="handleToSure()"
@@ -72,7 +73,9 @@ export default {
     return {
       dialogVisible: false,
       couponInput: '',
-      dialogData: []
+      dialogData: [],
+      data: '',
+      loading: false
     }
   },
   props: ['origin'],
@@ -84,13 +87,13 @@ export default {
 
     defaultData () {
       this.$http.$on('V-AddCoupon', data => {
-        console.log(data)
-
+        this.data = data
         this.initCouponList(data)
         this.dialogVisible = data.couponDialogFlag
       })
     },
     initCouponList (data) {
+      this.loading = true
       let param = {
         'actName': this.couponInput
       }
@@ -100,7 +103,6 @@ export default {
           this.dialogData.map((item, index) => {
             this.$set(item, 'ischeck', false)
           })
-          console.log(this.dialogData)
           this.dialogData.forEach((item, index) => {
             item.ischeck = false
             data.couponList.forEach((itemC, indexC) => {
@@ -111,11 +113,11 @@ export default {
           })
         }
       })
+      this.loading = false
     },
     // 优惠卷选中
     handleToClick (index) {
       this.dialogData[index].ischeck = !this.dialogData[index].ischeck
-      console.log(this.dialogData)
     },
     // 弹窗确定事件
     handleToSure () {

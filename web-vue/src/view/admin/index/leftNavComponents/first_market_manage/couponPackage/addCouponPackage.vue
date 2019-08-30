@@ -29,13 +29,13 @@
                     <div class="coupon_left">
                       <div
                         class="coupon_price"
-                        v-if="item.act_code == 0"
-                      >￥<span>{{item.price}}</span></div>
+                        v-if="item.actCode == 'voucher'"
+                      >￥<span>{{item.denomination}}</span></div>
                       <div
                         class="coupon_price"
                         v-else
-                      ><span>{{item.price}}</span>折</div>
-                      <div class="coupon_rule">{{item.isLimit? `满${item.nolimitPrice}元可用`  : `不限制`}}</div>
+                      ><span>{{item.denomination}}</span>折</div>
+                      <div class="coupon_rule">{{item.useConsumeRestrict > 0? `满${item.leastConsume}元可用`  : `不限制`}}</div>
                     </div>
                     <div class="coupon_middle">
                       <img
@@ -44,7 +44,7 @@
                       >
                     </div>
                     <div class="coupon_right">
-                      <div class="coupon_name">{{item.tips}}</div>
+                      <div class="coupon_name">{{item.actName}}</div>
                       <div class="coupon_limits">全部商品可用></div>
                       <div class="coupon_time">2019-08-21--2019-08-31</div>
                       <div class="coupon_icon">{{item.send_num ?item.send_num:0}}张</div>
@@ -134,16 +134,16 @@
                   <el-table-column label="优惠券信息">
                     <template slot-scope="scope">
                       <div class="coupon_info">
-                        <span class="coupon_name">{{scope.row.tips}}</span>
+                        <span class="coupon_name">{{scope.row.actName}}</span>
                         <div
                           class="coupon_price"
-                          v-if="scope.row.act_code == 0"
-                        >￥<span>{{scope.row.price}}</span></div>
+                          v-if="scope.row.actCode == 'voucher'"
+                        >￥<span>{{scope.row.denomination}}</span></div>
                         <div
                           class="coupon_price"
                           v-else
-                        ><span>{{scope.row.price}}</span>折</div>
-                        <div class="coupon_rule">{{scope.row.isLimit? `满${scope.row.nolimitPrice}元可用`  : `不限制`}}</div>
+                        ><span>{{scope.row.denomination}}</span>折</div>
+                        <div class="coupon_rule">{{scope.row.useConsumeRestrict > 0? `满${scope.row.leastConsume}元可用`  : `不限制`}}</div>
                       </div>
                     </template>
                   </el-table-column>
