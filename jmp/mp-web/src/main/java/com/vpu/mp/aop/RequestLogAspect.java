@@ -6,7 +6,6 @@ import java.util.Arrays;
 import javax.servlet.http.HttpServletRequest;
 
 import com.vpu.mp.controller.admin.AdminLoginController;
-import com.vpu.mp.controller.admin.Test;
 import com.vpu.mp.service.foundation.data.JsonResultCode;
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.Around;
