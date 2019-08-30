@@ -1,7 +1,5 @@
 package com.vpu.mp.service.pojo.shop.distribution;
 
-import com.vpu.mp.service.foundation.util.Page;
-
 import lombok.Data;
 
 /**
@@ -11,7 +9,8 @@ import lombok.Data;
  */
 @Data
 public class DistributorGroupListParam {
+	private Integer id;
 	private String groupName;
-	private Integer currentPage = Page.DEFAULT_CURRENT_PAGE;
-	private Integer pageRows = Page.DEFAULT_PAGE_ROWS;
+	private Integer currentPage ;
+	private Integer pageRows;
 }

@@ -6,10 +6,7 @@ import static com.vpu.mp.db.shop.Tables.USER;
 import java.sql.Timestamp;
 import java.util.List;
 
-import org.apache.tools.ant.types.selectors.ExtendSelector;
 import org.jooq.Record;
-import org.jooq.Record1;
-import org.jooq.Record4;
 import org.jooq.SelectConditionStep;
 import org.jooq.SelectJoinStep;
 import org.springframework.stereotype.Service;
@@ -73,12 +70,11 @@ public class DistributorGroupService extends ShopBaseService{
 	 * @return
 	 */
 	public boolean isExistGroup(DistributorGroupListParam param) {
-		Record1<String> res = db().select(DISTRIBUTOR_GROUP.GROUP_NAME)
+		Integer res = db().selectCount()
 				.from(DISTRIBUTOR_GROUP)
 				.where(DISTRIBUTOR_GROUP.GROUP_NAME.eq(param.getGroupName()))
-				.fetchOne();
-		Integer count = res.getValue(0, Integer.class);
-        if (count > 0) {
+				.fetchOne().into(Integer.class);
+        if (res > 0) {
             return true;
         } else {
             return false;
@@ -119,7 +115,7 @@ public class DistributorGroupService extends ShopBaseService{
 	}
 	
 	/**
-	 * 
+	 * 获取单条分组信息
 	 * @param id
 	 * @return
 	 */
@@ -128,6 +124,17 @@ public class DistributorGroupService extends ShopBaseService{
 				.where(DISTRIBUTOR_GROUP.ID.eq(id))
 				.fetch().into(DistributorGroupListVo.class);
 		return result;	
+	}
+	
+	/**
+	 * 编辑保存分销分组
+	 * @param param
+	 * @return
+	 */
+	public int groupSave(DistributorGroupListParam param) {
+		DistributorGroupRecord record = new DistributorGroupRecord();
+		assign(param,record);
+		return db().executeUpdate(record);
 	}
 	
 	/**

@@ -167,13 +167,12 @@ public class AdminDistributionController extends AdminBaseController{
 	 * @return
 	 */
 	@PostMapping("/admin/distribution/group/add")
-	public JsonResult distributorGroupAdd(DistributorGroupListParam param) {
+	public JsonResult distributorGroupAdd(@RequestBody DistributorGroupListParam param) {
 		//判断是否存在该分组
 		boolean isExists = shop().distributorGroup.isExistGroup(param);
 		if(isExists) {
 			return this.fail(JsonResultCode.DISTRIBUTOR_GROUP_NAME_EXIST);
 		}
-		
 		boolean result = shop().distributorGroup.adddistributorGroup(param);
 		if(result) {
 			return this.success(result);
@@ -218,6 +217,16 @@ public class AdminDistributionController extends AdminBaseController{
 	public JsonResult distributorGroupEdit(Integer id) {
 		List<DistributorGroupListVo> info = shop().distributorGroup.getOneInfo(id);
 		return this.success(info);
+	}
+	/**
+	 * 编辑保存分销分组
+	 * @param param
+	 * @return
+	 */
+	@PostMapping("/admin/distribution/group/edit")
+	public JsonResult distributorGroupSave(@RequestBody DistributorGroupListParam param) {
+		int res = shop().distributorGroup.groupSave(param);
+		return this.success(res);
 	}
 	
 	/**

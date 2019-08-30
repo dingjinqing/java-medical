@@ -81,6 +81,8 @@ public class CouponService extends ShopBaseService{
 	public PageResult<CouponListVo> getCouponList(CouponListParam param) {
 		System.out.println(param);
 		SelectJoinStep<Record> select = db().select().from(MRKING_VOUCHER);
+		
+		//条件查询
 		SelectConditionStep<Record> sql = buildOptions(select,param);
 		sql.orderBy(MRKING_VOUCHER.CREATE_TIME.desc());
 		PageResult<CouponListVo> couponList = this.getPageResult(sql,param.getCurrentPage(),param.getPageRows(),CouponListVo.class);
@@ -109,7 +111,7 @@ public class CouponService extends ShopBaseService{
 			switch(param.getNav()) {
 			//进行中
 			case 1:
-				sql = sql.and(MRKING_VOUCHER.START_TIME.le(nowDate)).and(MRKING_VOUCHER.END_TIME.ge(nowDate));
+				sql = sql.and(MRKING_VOUCHER.START_TIME.le(nowDate)).and(MRKING_VOUCHER.END_TIME.ge(nowDate)).and(MRKING_VOUCHER.ENABLED.eq((byte) 1));
 				break;
 			//未开始
 			case 2:
