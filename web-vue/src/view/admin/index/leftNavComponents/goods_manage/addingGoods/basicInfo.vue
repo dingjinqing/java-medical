@@ -2,108 +2,301 @@
   <div>
     <div class="title">基本信息</div>
     <div>
-      <el-form ref="basicInfoForm" :model="goodsProductInfo" :rules="basicInfoRules" label-width="120px">
-        <el-form-item label="商品名称：" prop="goodsName">
-          <el-input ref="goodsNameInput" v-model="goodsProductInfo.goodsName" size="small" style="width:400px"/>
+      <el-form
+        ref="basicInfoForm"
+        :model="goodsProductInfo"
+        :rules="basicInfoRules"
+        label-width="120px"
+      >
+        <el-form-item
+          label="商品名称："
+          prop="goodsName"
+        >
+          <el-input
+            ref="goodsNameInput"
+            v-model="goodsProductInfo.goodsName"
+            size="small"
+            style="width:400px"
+          />
         </el-form-item>
         <el-form-item label="商品广告词：">
-          <el-input v-model="goodsProductInfo.goodsAd" size="small" style="width:400px"/>
+          <el-input
+            v-model="goodsProductInfo.goodsAd"
+            size="small"
+            style="width:400px"
+          />
         </el-form-item>
         <el-form-item label="商品货号：">
-          <el-input v-model="goodsProductInfo.goodsSn" size="small" style="width:170px;"/>
+          <el-input
+            v-model="goodsProductInfo.goodsSn"
+            size="small"
+            style="width:170px;"
+          />
           <span class="inputTip">不填则由系统自动生成货号</span>
         </el-form-item>
-        <el-form-item label="平台分类：" prop="catId">
-          <el-select ref="catSelect" v-model="catIdTemp.firstCatId" size="small"
-                     @change="catIdSelectChange(1,$event)" style="width:170px;">
-            <el-option :value="null" label="请选择平台分类"/>
-            <el-option v-for="item in catIdTemp.firstCatData" :label="item.catName" :value="item.catId"
-                       :key="item.catId"/>
+        <el-form-item
+          label="平台分类："
+          prop="catId"
+        >
+          <el-select
+            ref="catSelect"
+            v-model="catIdTemp.firstCatId"
+            size="small"
+            @change="catIdSelectChange(1,$event)"
+            style="width:170px;"
+          >
+            <el-option
+              :value="null"
+              label="请选择平台分类"
+            />
+            <el-option
+              v-for="item in catIdTemp.firstCatData"
+              :label="item.catName"
+              :value="item.catId"
+              :key="item.catId"
+            />
           </el-select>
-          <el-select v-if="!!catIdTemp.firstCatId" v-model="catIdTemp.secondCatId" size="small"
-                     @change="catIdSelectChange(2,$event)" style="width:170px;">
-            <el-option :value="null" label="请选择平台分类"/>
-            <el-option v-for="item in catIdTemp.secondCatData" :label="item.catName" :value="item.catId"
-                       :key="item.catId"/>
+          <el-select
+            v-if="!!catIdTemp.firstCatId"
+            v-model="catIdTemp.secondCatId"
+            size="small"
+            @change="catIdSelectChange(2,$event)"
+            style="width:170px;"
+          >
+            <el-option
+              :value="null"
+              label="请选择平台分类"
+            />
+            <el-option
+              v-for="item in catIdTemp.secondCatData"
+              :label="item.catName"
+              :value="item.catId"
+              :key="item.catId"
+            />
           </el-select>
-          <el-select v-if="!!catIdTemp.firstCatId&&!!catIdTemp.secondCatId" v-model="catIdTemp.thirdCatId"
-                     size="small" @change="catIdSelectChange(3,$event)" style="width:170px;">
-            <el-option :value="null" label="请选择平台分类"/>
-            <el-option v-for="item in catIdTemp.thirdCatData" :label="item.catName" :value="item.catId"
-                       :key="item.catId"/>
+          <el-select
+            v-if="!!catIdTemp.firstCatId&&!!catIdTemp.secondCatId"
+            v-model="catIdTemp.thirdCatId"
+            size="small"
+            @change="catIdSelectChange(3,$event)"
+            style="width:170px;"
+          >
+            <el-option
+              :value="null"
+              label="请选择平台分类"
+            />
+            <el-option
+              v-for="item in catIdTemp.thirdCatData"
+              :label="item.catName"
+              :value="item.catId"
+              :key="item.catId"
+            />
           </el-select>
           <span class="inputTip">
-          “平台分类”是商品在系统中的属性，不会对用户展示。可在“基础配置”中设置默认平台分类。
+            “平台分类”是商品在系统中的属性，不会对用户展示。可在“基础配置”中设置默认平台分类。
           </span>
-          <el-link type="primary" :underline="false" href="#" target="_blank">前往</el-link>
+          <el-link
+            type="primary"
+            :underline="false"
+            href="#"
+            target="_blank"
+          >前往</el-link>
         </el-form-item>
-        <el-form-item label="商品主图：" prop="goodsImgs">
+        <el-form-item
+          label="商品主图："
+          prop="goodsImgs"
+        >
           <div style="display: flex;align-items: center;flex-wrap: wrap;">
-            <div v-for="(src,index) in goodsProductInfo.goodsImgs" :key="index" class="goodsImgWrap">
-              <el-image fit="cover" :src="src" style="width: 78px; height: 78px;"></el-image>
-              <span @click="deleteGoodsImg(index)" class="deleteIcon">×</span>
-              <span @click="moveGoodsImgIndex(index,-1)"  class="moveIcon" style="left: 0px;">←</span>
-              <span @click="moveGoodsImgIndex(index,1)" class="moveIcon" style="right: 0px;">→</span>
+            <div
+              v-for="(src,index) in goodsProductInfo.goodsImgs"
+              :key="index"
+              class="goodsImgWrap"
+            >
+              <el-image
+                fit="cover"
+                :src="src"
+                style="width: 78px; height: 78px;"
+              ></el-image>
+              <span
+                @click="deleteGoodsImg(index)"
+                class="deleteIcon"
+              >×</span>
+              <span
+                @click="moveGoodsImgIndex(index,-1)"
+                class="moveIcon"
+                style="left: 0px;"
+              >←</span>
+              <span
+                @click="moveGoodsImgIndex(index,1)"
+                class="moveIcon"
+                style="right: 0px;"
+              >→</span>
             </div>
-            <div class="goodsImgWrap" @click="addGoodsImg" v-if="goodsProductInfo.goodsImgs.length < 5">
-              <el-image fit="scale-down"  :src="imgHost+'/image/admin/add_img.png'" style="width: 78px; height: 78px;cursor: pointer;" />
+            <div
+              class="goodsImgWrap"
+              @click="addGoodsImg"
+              v-if="goodsProductInfo.goodsImgs.length < 5"
+            >
+              <el-image
+                fit="scale-down"
+                :src="imgHost+'/image/admin/add_img.png'"
+                style="width: 78px; height: 78px;cursor: pointer;"
+              />
             </div>
             <span class="inputTip">
-            建议尺寸：800*800像素
+              建议尺寸：800*800像素
             </span>
           </div>
         </el-form-item>
       </el-form>
       <!-- 基本信息更多配置 -->
       <el-collapse accordion>
-        <el-collapse-item title="展开/收起更多配置" name="1">
-          <el-form ref="basicInfoOtherForm" :model="goodsProductInfo" :rules="basicInfoRules" label-width="120px">
-            <el-form-item label="单位：" prop="unit">
-              <el-select ref="unitSelect" v-model="unitSelectedValue" @change="unitSelectChange" size="small" style="width:170px;">
-                <el-option v-for="(item,index) in unitSelectOptions" :key="index" :value="item.value"
-                           :label="item.label"/>
+        <el-collapse-item
+          title="展开/收起更多配置"
+          name="1"
+        >
+          <el-form
+            ref="basicInfoOtherForm"
+            :model="goodsProductInfo"
+            :rules="basicInfoRules"
+            label-width="120px"
+          >
+            <el-form-item
+              label="单位："
+              prop="unit"
+            >
+              <el-select
+                ref="unitSelect"
+                v-model="unitSelectedValue"
+                @change="unitSelectChange"
+                size="small"
+                style="width:170px;"
+              >
+                <el-option
+                  v-for="(item,index) in unitSelectOptions"
+                  :key="index"
+                  :value="item.value"
+                  :label="item.label"
+                />
               </el-select>
-              <el-input v-if="unitSelectedValue===null" v-model="unitCustomerValue" @change="unitCustomerChange"
-                        size="small" style="width:100px;"/>
-              <span v-if="unitSelectedValue===null" class="inputTip">长度限制为3个中文字符</span>
+              <el-input
+                v-if="unitSelectedValue===null"
+                v-model="unitCustomerValue"
+                @change="unitCustomerChange"
+                size="small"
+                style="width:100px;"
+              />
+              <span
+                v-if="unitSelectedValue===null"
+                class="inputTip"
+              >长度限制为3个中文字符</span>
             </el-form-item>
-            <el-form-item label="商家分类：" prop="sortId">
-              <el-select filterable v-model="goodsProductInfo.sortId" placeholder="请选择商家分类" size="small" style="width:170px;">
-                <el-option v-for="item in sortSelectOptions" :key="item.sortId" :label="item.sortName"
-                           :value="item.sortId"
-                           :style="{'marginLeft': item.level===1? '10px':'0px'}" />
+            <el-form-item
+              label="商家分类："
+              prop="sortId"
+            >
+              <el-select
+                filterable
+                v-model="goodsProductInfo.sortId"
+                placeholder="请选择商家分类"
+                size="small"
+                style="width:170px;"
+              >
+                <el-option
+                  v-for="item in sortSelectOptions"
+                  :key="item.sortId"
+                  :label="item.sortName"
+                  :value="item.sortId"
+                  :style="{'marginLeft': item.level===1? '10px':'0px'}"
+                />
               </el-select>
             </el-form-item>
-            <el-form-item label="商品标签：" prop="goodsLabels">
-              <el-select v-model="labelSelectedTempVal" placeholder="请选择商品标签" size="small" @change="labelSelectChange" style="width:170px;">
-                <el-option v-for="item in labelSelectOptions" :key="item.id" :label="item.name" :value="item.id"/>
+            <el-form-item
+              label="商品标签："
+              prop="goodsLabels"
+            >
+              <el-select
+                v-model="labelSelectedTempVal"
+                placeholder="请选择商品标签"
+                size="small"
+                @change="labelSelectChange"
+                style="width:170px;"
+              >
+                <el-option
+                  v-for="item in labelSelectOptions"
+                  :key="item.id"
+                  :label="item.name"
+                  :value="item.id"
+                />
               </el-select>
-              <el-link type="primary" :underline="false" @click="labelSelectRefresh" href="#" style="margin:0 5px;">刷新
+              <el-link
+                type="primary"
+                :underline="false"
+                @click="labelSelectRefresh"
+                href="#"
+                style="margin:0 5px;"
+              >刷新
               </el-link>
               |
-              <el-link type="primary" :underline="false" href="#" style="margin:0 5px;">新建标签</el-link>
+              <el-link
+                type="primary"
+                :underline="false"
+                href="#"
+                style="margin:0 5px;"
+              >新建标签</el-link>
               |
-              <el-link type="primary" :underline="false" href="#" style="margin:0 5px;">管理标签</el-link>
-              <div v-if="labelSelectedItems.length>0" style="display: flex;flex-wrap: wrap;align-items:center;background-color: #f8f8f8;">
+              <el-link
+                type="primary"
+                :underline="false"
+                href="#"
+                style="margin:0 5px;"
+              >管理标签</el-link>
+              <div
+                v-if="labelSelectedItems.length>0"
+                style="display: flex;flex-wrap: wrap;align-items:center;background-color: #f8f8f8;"
+              >
                 <div>已选：</div>
-                <div class="selectedWrap" v-for="(item,index) in labelSelectedItems" :key="index">
+                <div
+                  class="selectedWrap"
+                  v-for="(item,index) in labelSelectedItems"
+                  :key="index"
+                >
                   {{item.name}}
-                  <span @click="deleteLabel(item,index)" class="deleteIcon">×</span>
+                  <span
+                    @click="deleteLabel(item,index)"
+                    class="deleteIcon"
+                  >×</span>
                 </div>
               </div>
             </el-form-item>
-            <el-form-item label="商品品牌：" prop="brandName">
-              <el-input v-model="goodsProductInfo.brandId" disabled placeholder="添加品牌" size="small"
-                        @click="brandInputClick" style="width:170px;"/>
+            <el-form-item
+              label="商品品牌："
+              prop="brandName"
+            >
+              <el-input
+                v-model="goodsProductInfo.brandId"
+                disabled
+                placeholder="添加品牌"
+                size="small"
+                @click="brandInputClick"
+                style="width:170px;"
+              />
             </el-form-item>
-            <el-form-item label="商品视频：" prop="video" @click="videoInputClick">
+            <el-form-item
+              label="商品视频："
+              prop="video"
+              @click="videoInputClick"
+            >
 
               <span class="inputTip">上传视频仅支持MP4格式。为保障无线端各种网络环境下正常播放，只支持上传大小不超过10M，时长不超过3分钟的视频。</span>
             </el-form-item>
           </el-form>
         </el-collapse-item>
       </el-collapse>
-      <ImageDalog pageIndex='pictureSpace'  @handleSelectImg='imgDialogSelectedCallback'/>
+      <ImageDalog
+        pageIndex='pictureSpace'
+        @handleSelectImg='imgDialogSelectedCallback'
+      />
     </div>
   </div>
 </template>
@@ -115,13 +308,13 @@ import {
 } from '@/api/admin/goodsManage/addingGoods/addingGoods'
 
 // js工具函数导入
-import {isStrBlank} from "@/util/goodsUtil";
+import { isStrBlank } from '@/util/goodsUtil'
 // 组件导入
 import ImageDalog from '@/components/admin/imageDalog'
 import addBrandDialog from './addBrandDialog'
 
 export default {
-  components: {ImageDalog, addBrandDialog},
+  components: { ImageDalog, addBrandDialog },
   data () {
     return {
       goodsProductInfo: {
@@ -144,16 +337,16 @@ export default {
       // 基本信息验证
       basicInfoRules: {
         goodsName: [
-          {required: true, message: '请输入商品名称', trigger: 'change'}
+          { required: true, message: '请输入商品名称', trigger: 'change' }
         ],
         catId: [
-          {required: true, message: '请选择平台分类', trigger: 'change'}
+          { required: true, message: '请选择平台分类', trigger: 'change' }
         ],
         goodsImgs: [
-          {required: true, message: '请选择商品图片', trigger: 'change'}
+          { required: true, message: '请选择商品图片', trigger: 'change' }
         ],
         unit: [
-          {required: true, message: '单位不可为空', trigger: 'change'}
+          { required: true, message: '单位不可为空', trigger: 'change' }
         ]
       },
       // 基本信平台分类辅助数据，对应分类每一级别的下落框数据和选中值
@@ -337,7 +530,7 @@ export default {
     // 初始化商家分类和商品标签
     sortAndLabelAndBrandSelectInit () {
       goodsSortAndGoodsBrandInitApi().then(res => {
-        const {content: {goodsBrands, goodsLabels, goodsSorts}} = res
+        const { content: { goodsBrands, goodsLabels, goodsSorts } } = res
         this.sortSelectOptions = goodsSorts
         this.labelSelectOptions = goodsLabels
         this.brandSelectOptions = goodsBrands
@@ -357,7 +550,7 @@ export default {
     /* 刷新标签下拉列表，要将已选的项剔除 */
     labelSelectRefresh () {
       goodsSortAndGoodsBrandInitApi().then(res => {
-        const {content: {goodsLabels}} = res
+        const { content: { goodsLabels } } = res
         this.labelSelectOptions = goodsLabels.filter(item => !this.labelSelectedItems.some(innerItem => innerItem.id === item.id))
       })
     },
@@ -429,7 +622,7 @@ export default {
       }
 
       return retData
-    },
+    }
   },
   mounted () {
     // 初始化平台分类一级下拉框
@@ -440,82 +633,82 @@ export default {
 }
 </script>
 <style scoped>
-  .inputTip {
-    color: #999;
-    margin-left: 15px;
-  }
-  .title {
-    font-weight: bold;
-    height: 40px;
-    background: #f8f8f8;
-    line-height: 40px;
-    width: 100%;
-    padding-left: 10px;
-    margin: 20px 0;
-  }
-  .goodsImgWrap{
-    width: 80px;
-    height: 80px;
-    border: 1px solid #ccc;
-    margin: 5px 5px;
-    position: relative;
-  }
-  .goodsImgWrap .deleteIcon {
-    width: 17px;
-    height: 17px;
-    color: #fff;
-    background: #ccc;
-    border: 1px solid #ccc;
-    border-radius: 50%;
-    line-height: 17px;
-    text-align: center;
-    position: absolute;
-    top: -8px;
-    right: -8px;
-    cursor: pointer;
-    opacity: 0.8;
-  }
-  .goodsImgWrap .moveIcon{
-    width: 17px;
-    height: 17px;
-    display: none;
-    color: #fff;
-    background: #ccc;
-    border: 1px solid #ccc;
-    line-height: 17px;
-    text-align: center;
-    position: absolute;
-    bottom: 0px;
-    cursor: pointer;
-    opacity: 0.8;
-  }
-  .goodsImgWrap:hover .moveIcon{
-    display: block;
-  }
-  .selectedWrap{
-    min-width: 70px;
-    height: 22px;
-    border: 1px solid #ccc;
-    line-height: 22px;
-    text-align: center;
-    padding: 0px 5px;
-    margin:0px 5px;
-    background-color: #fff;
-    position: relative;
-  }
-  .selectedWrap .deleteIcon {
-    width: 17px;
-    height: 17px;
-    color: #fff;
-    background: #ccc;
-    border: 1px solid #ccc;
-    border-radius: 50%;
-    line-height: 17px;
-    text-align: center;
-    position: absolute;
-    top: -8px;
-    right: -8px;
-    cursor: pointer;
-    opacity: 0.8;
-  }
+.inputTip {
+  color: #999;
+  margin-left: 15px;
+}
+.title {
+  font-weight: bold;
+  height: 40px;
+  background: #f8f8f8;
+  line-height: 40px;
+  width: 100%;
+  padding-left: 10px;
+  margin: 20px 0;
+}
+.goodsImgWrap {
+  width: 80px;
+  height: 80px;
+  border: 1px solid #ccc;
+  margin: 5px 5px;
+  position: relative;
+}
+.goodsImgWrap .deleteIcon {
+  width: 17px;
+  height: 17px;
+  color: #fff;
+  background: #ccc;
+  border: 1px solid #ccc;
+  border-radius: 50%;
+  line-height: 17px;
+  text-align: center;
+  position: absolute;
+  top: -8px;
+  right: -8px;
+  cursor: pointer;
+  opacity: 0.8;
+}
+.goodsImgWrap .moveIcon {
+  width: 17px;
+  height: 17px;
+  display: none;
+  color: #fff;
+  background: #ccc;
+  border: 1px solid #ccc;
+  line-height: 17px;
+  text-align: center;
+  position: absolute;
+  bottom: 0px;
+  cursor: pointer;
+  opacity: 0.8;
+}
+.goodsImgWrap:hover .moveIcon {
+  display: block;
+}
+.selectedWrap {
+  min-width: 70px;
+  height: 22px;
+  border: 1px solid #ccc;
+  line-height: 22px;
+  text-align: center;
+  padding: 0px 5px;
+  margin: 0px 5px;
+  background-color: #fff;
+  position: relative;
+}
+.selectedWrap .deleteIcon {
+  width: 17px;
+  height: 17px;
+  color: #fff;
+  background: #ccc;
+  border: 1px solid #ccc;
+  border-radius: 50%;
+  line-height: 17px;
+  text-align: center;
+  position: absolute;
+  top: -8px;
+  right: -8px;
+  cursor: pointer;
+  opacity: 0.8;
+}
 </style>

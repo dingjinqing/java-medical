@@ -13,7 +13,7 @@
         <!-- 模板名称 -->
         <section>
           <el-input
-            v-model="formData.templateName"
+            v-model="templateName"
             size="small"
             style="width:210px"
           ></el-input>
@@ -30,25 +30,25 @@
           其他区域运费:
           <el-input
             size="small"
-            v-model="formData.piece"
+            v-model="piece"
             style="width:50px;"
           ></el-input>
           件内，
           <el-input
             size="small"
-            v-model="formData.money"
+            v-model="money"
             style="width:50px;"
           ></el-input>
           元，每增加
           <el-input
             size="small"
-            v-model="formData.addPiece"
+            v-model="addPiece"
             style="width:50px;"
           ></el-input>
           件，增加运费
           <el-input
             size="small"
-            v-model="formData.addMoney"
+            v-model="addMoney"
             style="width:50px;"
           ></el-input>
           元
@@ -157,18 +157,24 @@
 <script>
 // 引入省市区三级联动
 import areaLinkage from '@/components/admin/areaLinkage/areaLinkage'
+// api
+import { addTemplate } from '@/api/admin/goodsManage/deliverTemplate/deliverTemplate'
 export default {
   name: 'templateAdd',
   components: { areaLinkage },
   data () {
     return {
-      formData: {
-        templateName: ``,
-        piece: 1, // 几件内
-        money: 0, // 多少元
-        addPiece: 1, // 每增加多少件
-        addMoney: 0 // 增加运费多少
-      }, // 表单的数据
+      formData: {},
+      // 模板名称
+      templateName: ``,
+      // 其他区域运费:几件内
+      piece: 1,
+      // 其他区域运费:多少元
+      money: 0,
+      // 每增加多少件
+      addPiece: 1,
+      // 增加运费多少
+      addMoney: 0,
       checked: false, // 默认其他区域可配送
       checked1: false, // 指定条件包邮（可选）
       // 表格数据
@@ -190,7 +196,59 @@ export default {
     },
     // 添加模板
     handleAddTemplate () {
-
+      let params = {
+        'templateName': '运费模板001',
+        'flag': '0',
+        'goodsDeliverTemplateLimitParam':
+        {
+          'limit_deliver_area': '0',
+          'area_list': '0',
+          'area_text': '全国（其他地区）',
+          'first_num': '1',
+          'first_fee': '0',
+          'continue_num': '1',
+          'continue_fee': '0'
+        },
+        'goodsDeliverTemplateAreaParam':
+          [{
+            'area_list': '["110000","120000","130000","140000","150000","210000","220000","230000","310000","320000","330000","340000","350000","360000","370000","410000","420000","430000","440000","450000","460000","500000","510000","520000","530000","540000","610000","620000","630000","640000","650000","710000","810000","820000"]',
+            'area_text': '北京市、天津市、河北省、山西省、内蒙古自治区、辽宁省、吉林省、黑龙江省、上海市、江苏省、浙江省、安徽省、福建省、江西省、山东省、河南省、湖北省、湖南省、广东省、广西壮族自治区、海南省、重庆市、四川省、贵州省、云南省、西藏自治区、陕西省、甘肃省、青海省、宁夏回族自治区、新疆维吾尔自治区、台湾省、香港特别行政区、澳门特别行政区',
+            'first_num': '1',
+            'first_fee': '1',
+            'continue_num': '1',
+            'continue_fee': '1'
+          }],
+        'goodsDeliverTemplateFeeParam': {
+          'has_fee_0_condition': '1'
+        },
+        'goodsDeliverTemplateFeeConditionParam':
+          [{
+            'area_list': '0',
+            'area_text': '全国（其他地区）',
+            'fee_0_condition': '1',
+            'fee_0_con1_num': '0',
+            'fee_0_con2_num': '10',
+            'fee_0_con3_num': '1',
+            'fee_0_con3_fee': '0'
+          }]
+      }
+      console.log(this.templateName)
+      console.log(params)
+      let obj = {
+        'templateName': this.templateName,
+        'goodsDeliverTemplateLimitParam': {
+          'limit_deliver_area': '0',
+          'area_list': '0',
+          'area_text': '全国（其他地区）',
+          'first_num': '1',
+          'first_fee': '0',
+          'continue_num': '1',
+          'continue_fee': '0'
+        }
+      }
+      addTemplate(obj).then(res => {
+        console.log(res)
+      }).catch(err => console.log(err))
     }
   }
 }

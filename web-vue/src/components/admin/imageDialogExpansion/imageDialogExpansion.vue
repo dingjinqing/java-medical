@@ -1,5 +1,5 @@
 <template>
-  <div class="imageDalog">
+  <div class="imageDalog imageDalogWrap">
     <div class="imageDalogMain ">
       <el-dialog
         :title="$t('imgageDalog.title')"
@@ -540,6 +540,18 @@ export default {
 }
 </script>
 <style scoped>
+.imageDalogWrap .top {
+  height: 20px;
+  display: flex;
+  align-items: center;
+  margin: 10px 0;
+  background-color: #eee;
+}
+.imageDalogWrap .main {
+  min-height: 70px;
+  display: flex;
+  border-bottom: 3px solid #eee;
+}
 .img_sel {
   width: 18px;
   height: 18px;
@@ -713,16 +725,4 @@ ul {
 /* .el-popper[x-placement^="bottom"] {
   margin-top: 10px !important;
 } */
-.top {
-  height: 20px;
-  display: flex;
-  align-items: center;
-  margin: 10px 0;
-  background-color: #eee;
-}
-.main {
-  min-height: 70px;
-  display: flex;
-  border-bottom: 3px solid #eee;
-}
 </style>
