@@ -11,16 +11,12 @@ import org.jooq.Record;
 import org.jooq.SelectWhereStep;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
-import org.springframework.web.context.request.RequestAttributes;
-import org.springframework.web.context.request.RequestContextHolder;
 
 import com.vpu.mp.config.AuthConfig;
 import com.vpu.mp.db.main.tables.records.ShopAccountRecord;
 import com.vpu.mp.db.main.tables.records.ShopChildAccountRecord;
 import com.vpu.mp.db.shop.tables.records.RecordAdminActionRecord;
-import com.vpu.mp.service.auth.AdminAuth;
 import com.vpu.mp.service.foundation.jedis.JedisManager;
 import com.vpu.mp.service.foundation.service.ShopBaseService;
 import com.vpu.mp.service.foundation.util.PageResult;
@@ -56,9 +52,6 @@ public class RecordAdminActionService extends ShopBaseService {
 
 	@Autowired
 	protected JedisManager jedis;
-
-	@Autowired
-	protected AdminAuth adminAuth;
 
 	@Autowired
 	protected AuthConfig authConfig;
@@ -142,18 +135,16 @@ public class RecordAdminActionService extends ShopBaseService {
 	}
 
 	private RecordAdminActionRecord getAdminRecord() {
-		RequestAttributes requestAttributes = RequestContextHolder.getRequestAttributes();
 		RecordAdminActionRecord record = db().newRecord(RECORD_ADMIN_ACTION);
 		List<String> resultAccount;
-		if (requestAttributes != null) {
-			AdminTokenAuthInfo info = adminAuth.user();
-			Integer accountId = adminAuth.user().getSubAccountId();
+		AdminTokenAuthInfo info = ShopBaseService.getCurrentAdminLoginUser();
+		if (info != null) {
+			Integer accountId = info.getSubAccountId();
 			if (info.isSubLogin()) {
 				record.setAccountId(accountId);
 				resultAccount = this.getCommonNameAndMobile(accountId, REQUEST_TYPE_ACCOUNT);
 			} else {
-
-				resultAccount = this.getCommonNameAndMobile(adminAuth.user().getSysId(), REQUEST_TYPE_SYSTEM);
+				resultAccount = this.getCommonNameAndMobile(info.getSysId(), REQUEST_TYPE_SYSTEM);
 			}
 			record.setSysId(info.getSysId());
 		} else {

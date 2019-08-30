@@ -1,4 +1,4 @@
-package com.vpu.mp.service.auth;
+package com.vpu.mp.auth;
 
 import java.io.PrintWriter;
 
@@ -11,8 +11,9 @@ import org.springframework.web.servlet.handler.HandlerInterceptorAdapter;
 
 import com.vpu.mp.service.foundation.data.JsonResult;
 import com.vpu.mp.service.foundation.data.JsonResultCode;
+import com.vpu.mp.service.foundation.language.LanguageManager;
 import com.vpu.mp.service.foundation.util.Util;
-import com.vpu.mp.service.pojo.wxapp.login.WxAppSessionUser;
+import com.vpu.mp.service.pojo.saas.auth.SystemTokenAuthInfo;
 import com.vpu.mp.service.saas.SaasApplication;
 
 /****
@@ -21,12 +22,12 @@ import com.vpu.mp.service.saas.SaasApplication;
  **
  **/
 @Component
-public class WxAppAuthInterceptor extends HandlerInterceptorAdapter {
+public class SystemAuthInterceptor extends HandlerInterceptorAdapter {
 
-	private static final String URL_LOGIN = "/api/wxapp/login";
+	private static final String URL_LOGIN = "/api/system/login";
 
 	@Autowired
-	protected WxAppAuth wxAppAuth;
+	protected SystemAuth systemAuth;
 
 	@Autowired
 	protected SaasApplication saas;
@@ -34,24 +35,39 @@ public class WxAppAuthInterceptor extends HandlerInterceptorAdapter {
 	/**
 	 * 账号登录例外URL
 	 */
-	protected String[] accountLoginExcept = { URL_LOGIN };
+	protected String[] accountLoginExcept = { "/api/system/login" };
 
 	@Override
 	public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler)
 			throws Exception {
 		String path = request.getRequestURI();
-		String language = request.getParameter(WxAppAuth.TOKEN);
+		String language = request.getParameter("lang");
+
+		// 切换语言
+		LanguageManager.switchLanguage(language);
 
 		// 如果为账户登录例外URL，直接通过
 		if (match(this.accountLoginExcept, path)) {
 			return true;
 		}
 
-		WxAppSessionUser user = wxAppAuth.user();
+		SystemTokenAuthInfo user = systemAuth.user();
 		if (user == null) {
-			errorResponse(request, response, URL_LOGIN,
-					(new JsonResult()).fail(language, JsonResultCode.CODE_ACCOUNT_LOGIN_EXPIRED));
+			errorResponse(request, response, URL_LOGIN, (new JsonResult()).fail(language, JsonResultCode.CODE_ACCOUNT_SYTEM_LOGIN_EXPIRED));
 			return false;
+		} else {
+			//重置token时间
+			systemAuth.reTokenTtl();
+			// 账号和店铺都登录，判断路径权限
+			if(user.isSubLogin()) {
+				// TODO: 加入子账号权限设置
+//				SystemChildAccountRecord subAccount = saas.childAccount.getUserFromAccountId(user.subAccountId);
+//				if (!saas.menu.isRoleAccess(subAccount.getRoleId(), path)) {
+//					errorResponse(request, response, URL_NO_AUTH,
+//							JsonResult.fail(language, JsonResultCode.CODE_ROLE__NO_AUTH));
+//					return false;
+//				}
+			}
 		}
 		return true;
 	}

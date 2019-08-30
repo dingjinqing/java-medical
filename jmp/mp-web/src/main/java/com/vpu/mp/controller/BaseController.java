@@ -39,9 +39,6 @@ public class BaseController {
 	protected Environment env;
 
 	@Autowired
-	private VoTranslator translator;
-	
-	@Autowired
 	private DomainConfig domainConfig;
 
 	/**
@@ -166,7 +163,7 @@ public class BaseController {
 	 * @author 郑保乐
 	 */
 	protected JsonResult i18nSuccess(Object content) {
-		translator.translateFields(content);
+		VoTranslator.translateFields(content,getLang());
 		return result(JsonResultCode.CODE_SUCCESS, content);
 	}
 	

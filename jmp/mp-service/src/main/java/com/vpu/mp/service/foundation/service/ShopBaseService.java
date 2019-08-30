@@ -9,6 +9,7 @@ import org.jooq.impl.DSL;
 import org.jooq.impl.DefaultDSLContext;
 
 import com.vpu.mp.db.main.tables.records.ShopRecord;
+import com.vpu.mp.service.pojo.shop.auth.AdminTokenAuthInfo;
 
 
 /**
@@ -23,7 +24,26 @@ public class ShopBaseService extends AbstractCommonBaseService {
 	 */
 	private static ThreadLocal<Deque<Configuration>> shopDbConfiguration = ThreadLocal.withInitial(ArrayDeque<Configuration>::new);
 
-
+	/**
+	 * 当前登录用户信息，线程单例
+	 */
+	private static ThreadLocal<AdminTokenAuthInfo> currentAdminLoginUser  = new ThreadLocal<>();
+	
+	/**
+	 * 当前线程设置当前登录用户
+	 * @param user
+	 */
+	public static void setCurrentAdminLoginUser(AdminTokenAuthInfo user) {
+		currentAdminLoginUser.set(user);
+	}
+	
+	/**
+	 * 当前线程得到当前登录用户
+	 * @return
+	 */
+	public static AdminTokenAuthInfo getCurrentAdminLoginUser() {
+		return currentAdminLoginUser.get();
+	}
 
 	/**
 	 * 当前店铺连接

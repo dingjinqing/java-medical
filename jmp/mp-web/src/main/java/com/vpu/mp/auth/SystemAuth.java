@@ -1,4 +1,4 @@
-package com.vpu.mp.service.auth;
+package com.vpu.mp.auth;
 
 import java.util.Calendar;
 

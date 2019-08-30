@@ -10,8 +10,8 @@ import org.springframework.web.servlet.config.annotation.CorsRegistry;
 import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
-import com.vpu.mp.service.auth.AdminAuthInterceptor;
-import com.vpu.mp.service.auth.SystemAuthInterceptor;
+import com.vpu.mp.auth.AdminAuthInterceptor;
+import com.vpu.mp.auth.SystemAuthInterceptor;
 import com.vpu.mp.support.LineToHumpHandler;
 
 /**

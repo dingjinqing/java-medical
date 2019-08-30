@@ -4,8 +4,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 
+import com.vpu.mp.auth.AdminAuth;
 import com.vpu.mp.controller.BaseController;
-import com.vpu.mp.service.auth.AdminAuth;
 import com.vpu.mp.service.pojo.shop.auth.AdminTokenAuthInfo;
 import com.vpu.mp.service.shop.ShopApplication;
 

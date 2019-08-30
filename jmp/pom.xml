@@ -28,6 +28,7 @@
 		<module>mp-background</module>
 		<module>mp-service</module>
 		<module>mp-web</module>
+		<module>mp-command</module>
 	</modules>
 
 	<parent>
@@ -66,7 +67,12 @@
 				<artifactId>mp-web</artifactId>
 				<version>${project.version}</version>
 			</dependency>
-
+			
+			<dependency>
+				<groupId>com.vpu.mp</groupId>
+				<artifactId>mp-command</artifactId>
+				<version>${project.version}</version>
+			</dependency>
 
 		</dependencies>
 	</dependencyManagement>

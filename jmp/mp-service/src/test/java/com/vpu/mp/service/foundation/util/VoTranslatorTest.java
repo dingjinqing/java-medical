@@ -1,17 +1,17 @@
 package com.vpu.mp.service.foundation.util;
 
-import org.junit.Before;
-import org.junit.Test;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.mockito.Mockito.when;
 
-import javax.servlet.http.HttpServletRequest;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
+import org.junit.Before;
+import org.junit.Test;
+
+import com.vpu.mp.service.foundation.language.LanguageManager;
 
 /**
  * 自动国际化翻译器测试
@@ -26,9 +26,6 @@ public class VoTranslatorTest {
 
     private VoTranslator translator;
 
-    private HttpServletRequest reqMock;
-
-    private static final String HEADER_LANG = "V-Lang";
 
     @Before
     public void setUp() {
@@ -37,19 +34,8 @@ public class VoTranslatorTest {
         voes[2] = new PureVo("clean");
         voes[3] = new PureVo("cook");
         voes[4] = new PureVo("drink");
-        reqMock = mock(HttpServletRequest.class);
-        when(reqMock.getHeader(HEADER_LANG)).thenReturn("zh_CN");
-        translator = new VoTranslator(reqMock);
     }
 
-    /**
-     * 测试请求头中不包含语言字段时的翻译
-     */
-    @Test
-    public void assertPropertyTranslatedWhenDefaultLanguage() {
-        when(reqMock.getHeader(HEADER_LANG)).thenReturn(null);
-        translateCategoryArray();
-    }
 
     /**
      * 测试请求头中包含语言字段时的翻译
@@ -64,9 +50,8 @@ public class VoTranslatorTest {
      */
     @Test
     public void assertPropertyTranslatedEnUS() {
-        when(reqMock.getHeader(HEADER_LANG)).thenReturn("en_US");
         PureVo vo = new PureVo("food");
-        translator.translateFields(vo);
+        VoTranslator.translateFields(vo,"en_US");
         assertEquals("FOOD", vo.getName());
     }
 
@@ -75,7 +60,7 @@ public class VoTranslatorTest {
      */
     private void translateCategoryArray() {
         for (PureVo vo : voes) {
-            translator.translateFields(vo);
+            VoTranslator.translateFields(vo,"zh_CN");
         }
         assertEquals("食品", voes[0].getName());
         assertEquals("数码", voes[1].getName());
@@ -90,7 +75,7 @@ public class VoTranslatorTest {
     @Test
     public void assertListPropertyTranslated() {
         listVo.setList(Arrays.asList("food", "clean", "cook", "digital", "drink"));
-        translator.translateFields(listVo);
+        VoTranslator.translateFields(listVo,"zh_CN");
         assertEquals("食品", listVo.getList().get(0));
         assertEquals("清洁", listVo.getList().get(1));
         assertEquals("厨具", listVo.getList().get(2));
@@ -109,7 +94,7 @@ public class VoTranslatorTest {
         arrayList.add("food");
         listVo.setArrayList(arrayList);
         try {
-            translator.translateFields(listVo);
+            VoTranslator.translateFields(listVo,"zh_CN");
         } catch (Exception ignore) {}
         assertEquals("food", listVo.getArrayList().get(0));
     }
@@ -120,7 +105,7 @@ public class VoTranslatorTest {
     @Test
     public void assertNestedObjectPropertyTranslated() {
         NestedPureVo nestedPureVo = new NestedPureVo(voes[0]);
-        translator.translateFields(nestedPureVo);
+        VoTranslator.translateFields(nestedPureVo,"zh_CN");
         PureVo nestedVo = nestedPureVo.getNestedVo();
         assertEquals("食品", nestedVo.getName());
     }
@@ -135,7 +120,7 @@ public class VoTranslatorTest {
                 new PureVo("clean")
         );
         listVo.setPureVos(pureVos);
-        translator.translateFields(listVo);
+        VoTranslator.translateFields(listVo,"zh_CN");
         assertEquals("食品", listVo.getPureVos().get(0).getName());
         assertEquals("清洁", listVo.getPureVos().get(1).getName());
     }
@@ -146,7 +131,7 @@ public class VoTranslatorTest {
     @Test
     public void assertUnknownPropertyNotTranslated() {
         PureVo vo = new PureVo("unknown");
-        translator.translateFields(vo);
+        VoTranslator.translateFields(vo,"zh_CN");
         assertEquals("unknown", vo.getName());
     }
 
@@ -160,7 +145,7 @@ public class VoTranslatorTest {
                 new PureVo("unknown"),
                 new PureVo("clean")
         ));
-        translator.translateFields(listVo);
+        VoTranslator.translateFields(listVo,"zh_CN");
         assertEquals("食品", listVo.getPureVos().get(0).getName());
         assertEquals("unknown", listVo.getPureVos().get(1).getName());
         assertEquals("清洁", listVo.getPureVos().get(2).getName());
@@ -172,7 +157,7 @@ public class VoTranslatorTest {
     @Test
     public void assertPropertyTranslatedWhenNullInList() {
         listVo.setList(Arrays.asList("food", null, "clean"));
-        translator.translateFields(listVo);
+        VoTranslator.translateFields(listVo,"zh_CN");
         assertEquals("食品", listVo.getList().get(0));
         assertNotNull(listVo.getList().get(1));
         assertEquals("清洁", listVo.getList().get(2));

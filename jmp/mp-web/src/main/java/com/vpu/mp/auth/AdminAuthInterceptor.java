@@ -1,4 +1,4 @@
-package com.vpu.mp.service.auth;
+package com.vpu.mp.auth;
 
 import java.io.PrintWriter;
 
@@ -13,6 +13,8 @@ import org.springframework.web.servlet.handler.HandlerInterceptorAdapter;
 
 import com.vpu.mp.service.foundation.data.JsonResult;
 import com.vpu.mp.service.foundation.data.JsonResultCode;
+import com.vpu.mp.service.foundation.language.LanguageManager;
+import com.vpu.mp.service.foundation.service.ShopBaseService;
 import com.vpu.mp.service.foundation.util.Util;
 import com.vpu.mp.service.pojo.shop.auth.AdminTokenAuthInfo;
 import com.vpu.mp.service.saas.SaasApplication;
@@ -70,12 +72,18 @@ public class AdminAuthInterceptor extends HandlerInterceptorAdapter {
 		String path = request.getRequestURI();
 		String language = request.getHeader(LANG);
 		String enName = request.getHeader("V-EnName");
+		
 		// 按钮的权限时候传
 		String prName = request.getHeader("V-PrName");
+		
 		// 需要密码的请求验证密码
 		String passwd = request.getHeader("V-RolePass");
+		
 		// 版本控制传的值
 		String vsName = request.getHeader("V-VsName");
+		
+		// 切换语言
+		LanguageManager.switchLanguage(language);
 
 		// 如果为账户登录例外URL，直接通过
 		if (match(this.accountLoginExcept, path)) {
@@ -83,6 +91,10 @@ public class AdminAuthInterceptor extends HandlerInterceptorAdapter {
 		}
 
 		AdminTokenAuthInfo user = adminAuth.user();
+		
+		// 设置当前线程登录用户
+		ShopBaseService.setCurrentAdminLoginUser(user);
+		
 		if (user == null) {
 			errorResponse(request, response, URL_LOGIN,
 					(new JsonResult()).fail(language, JsonResultCode.CODE_ACCOUNT_LOGIN_EXPIRED));
