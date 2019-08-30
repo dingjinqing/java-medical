@@ -11,11 +11,11 @@
             prop=""
           >
             <el-radio
-              v-model="radioList.actType"
+              v-model="param.bargainType"
               label="1"
             >砍到指定金额计算</el-radio>
             <el-radio
-              v-model="radioList.actType"
+              v-model="param.bargainType"
               label="2"
             >砍到任意金额计算</el-radio>
             <span style="margin-left: 10px;">保存后不可编辑</span>
@@ -67,7 +67,7 @@
               若某商品同一时间段内同时参与了砍价和拼团活动，则优先进行砍价活动</div>
           </el-form-item>
 
-          <div v-if="this.radioList.actType==1">
+          <div v-if="this.param.bargainType==1">
             <el-form-item
               label="帮砍设置："
               prop=""
@@ -80,11 +80,11 @@
               prop=""
             >
               <el-radio
-                v-model="radioList.freightSetting"
+                v-model="param.freeFreight"
                 label="1"
               >免运费</el-radio>
               <el-radio
-                v-model="radioList.freightSetting"
+                v-model="param.freeFreight"
                 label="2"
               >使用原商品运费模板</el-radio>
             </el-form-item>
@@ -118,13 +118,13 @@
             </el-form-item>
           </div>
 
-          <div v-if="this.radioList.actType==2">
+          <div v-if="this.param.bargainType==2">
             <el-form-item
               label="单次帮砍金额"
               prop=""
             >
               <el-radio
-                v-model="radioList.bargainMoney"
+                v-model="param.bargainMoney"
                 label="1"
               >固定金额
                 <el-input
@@ -134,7 +134,7 @@
               </el-radio>
               <br>
               <el-radio
-                v-model="radioList.bargainMoney"
+                v-model="param.bargainMoney"
                 label="2"
               >随机金额
                 <el-input
@@ -161,11 +161,11 @@
               prop=""
             >
               <el-radio
-                v-model="radioList.freightSetting"
+                v-model="param.freeFreight"
                 label="1"
               >免运费</el-radio>
               <el-radio
-                v-model="radioList.freightSetting"
+                v-model="param.freeFreight"
                 label="2"
               >使用原商品运费模板</el-radio>
             </el-form-item>
@@ -177,7 +177,10 @@
           >
             <el-card class="box-card">
               <div>向帮忙砍价的用户赠送优惠券，可促使帮砍用户在店铺内下单，提高交易量。</div>
-              <div class="addInfo">
+              <div
+                @click="submit"
+                class="addInfo"
+              >
                 <img
                   :src="srcList.src"
                   alt=""
@@ -206,7 +209,7 @@
             </el-card>
           </el-form-item>
 
-          <actShare />
+          <actShare :shareConfig="shareConfig" />
 
           <!-- <el-form-item
             label="活动分享："
@@ -214,7 +217,7 @@
           >
             <div>
               <el-radio
-                v-model="radioList.actShare"
+                v-model="param.actShare"
                 label="1"
               >
                 <span>默认样式</span>
@@ -245,7 +248,7 @@
             </div>
             <div>
               <el-radio
-                v-model="radioList.actShare"
+                v-model="param.actShare"
                 label="2"
               >
                 自定义样式
@@ -259,12 +262,12 @@
                 <div>
                   <span>分享图：</span>
                   <el-radio
-                    v-model="radioList.imgShare"
+                    v-model="param.imgShare"
                     label="1"
                   >活动商品信息图</el-radio>
                   <div style="margin: 10px 0 0 60px">
                     <el-radio
-                      v-model="radioList.imgShare"
+                      v-model="param.imgShare"
                       label="2"
                     >自定义图片</el-radio>
                   </div>
@@ -295,12 +298,13 @@
       </div>
     </div>
 
-    <!-- <div class="footer">
+    <div class="footer">
       <el-button
+        @click="submit"
         type="primary"
         size="small"
       >保存</el-button>
-    </div> -->
+    </div>
   </div>
 </template>
 
@@ -308,9 +312,13 @@
 import ImageDalog from '@/components/admin/imageDalog'
 import addCoupon from './addCoupon'
 import actShare from './actShare'
+// import { addBargain } from '@/api/admin/marketManage/bargain.js'
 
 export default {
   components: { ImageDalog, addCoupon, actShare },
+  mounted () {
+    console.log(this.shareConfig)
+  },
   data () {
     return {
       radio: 1,
@@ -322,14 +330,19 @@ export default {
         src3: `${this.$imageHost}/image/admin/shop_beautify/add_decorete.png`,
         imageUrl: ``
       },
-      radioList: {
-        actType: '活动类型',
-        freightSetting: '运费设置',
+      param: {
+        bargainType: '活动类型',
+        freeFreight: '运费设置',
         actShare: '活动分享',
-        imgShare: '分享图',
         bargainMoney: '单次帮砍金额'
       },
-      imgLists: []
+      imgLists: [],
+      shareConfig: {
+        'share_action': 1,
+        'share_doc': '',
+        'share_img_action': 1,
+        'share_img': ''
+      }
     }
   },
   methods: {
@@ -341,6 +354,38 @@ export default {
         console.log(res)
         this.srcList.src3 = res
       }
+    },
+    submit () {
+      console.log(this.shareConfig)
+      // this.coupon_info.forEach(element => {
+      //   var voucher = {}
+      //   voucher.voucherId = element.id
+      //   voucher.totalAmount = element.send_num
+      //   voucher.immediatelyGrantAmount = element.coupon_set.immediatelyGrantAmount
+      //   voucher.timingAmount = element.coupon_set.timingAmount
+      //   voucher.timingEvery = element.coupon_set.timingEvery
+      //   voucher.timingTime = element.coupon_set.timingTime
+      //   voucher.timingUnit = element.coupon_set.timingUnit
+      //   this.param.couponPackVoucher.push(voucher)
+      // })
+      // this.param.startTime = this.effectiveDate[0]
+      // this.param.endTime = this.effectiveDate[1]
+      // addBargain(this.param).then((res) => {
+      //   if (res.error === 0) {
+      //     this.$message({
+      //       type: 'success',
+      //       message: '保存成功!'
+      //     })
+      //     this.$router.push({
+      //       name: 'coupon_package'
+      //     })
+      //   } else {
+      //     this.$message({
+      //       type: 'fail',
+      //       message: '保存失败!'
+      //     })
+      //   }
+      // })
     }
   }
 }

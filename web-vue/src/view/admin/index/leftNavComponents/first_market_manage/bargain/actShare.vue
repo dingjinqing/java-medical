@@ -6,7 +6,7 @@
     >
       <section>
         <el-radio
-          v-model="radio"
+          v-model="shareConfig.share_action"
           label="1"
         >
           <span>默认样式</span>
@@ -38,13 +38,14 @@
 
       <section>
         <el-radio
-          v-model="radio"
+          v-model="shareConfig.share_action"
           label="2"
         >
           自定义样式
           <div style="margin: 15px 0">
             <span>文案：</span>
             <el-input
+              v-model="shareConfig.share_doc"
               size="small"
               style="width:200px"
             ></el-input>
@@ -52,12 +53,12 @@
           <div>
             <span>分享图：</span>
             <el-radio
-              v-model="radio"
+              v-model="shareConfig.share_img_action"
               label="1"
             >活动商品信息图</el-radio>
             <div style="margin: 10px 0 0 60px">
               <el-radio
-                v-model="radio"
+                v-model="shareConfig.share_img_action"
                 label="2"
               >自定义图片</el-radio>
             </div>
@@ -85,6 +86,7 @@
 <script>
 
 export default {
+  props: ['shareConfig'],
   data () {
     return {
       radio: 1,
