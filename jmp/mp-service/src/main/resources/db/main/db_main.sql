@@ -1735,7 +1735,7 @@ CREATE TABLE `b2c_task_job_main` (
 	PRIMARY KEY (`ID`)
 )
 
-CREATE TABLE `b2c_task_jobs_content` (
+CREATE TABLE `b2c_task_job_content` (
     `ID` INT(11) NOT NULL AUTO_INCREMENT,
     `CONTENT` TEXT  COMMENT '消息内容',
 	`CREATE_TIME` TIMESTAMP NULL DEFAULT CURRENT_TIMESTAMP,
