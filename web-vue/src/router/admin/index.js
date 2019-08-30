@@ -16,7 +16,6 @@ const routes = [
         name: 'adminMain',
         component: () => import('@/view/admin/index/main'),
         children: [
-
           // 概况系列子路由
           {
             path: '/admin/home/main/overviewOfMall',
@@ -406,7 +405,7 @@ const routes = [
             },
             component: () =>
               import(
-                '@/view/admin/index/leftNavComponents/goods_manage/businessSortManagement/goodsSort'
+                '@/view/admin/index/leftNavComponents/goods_manage/businessSortManagement/businessSortManagement'
               )
           },
           // 商品管理/品牌管理
