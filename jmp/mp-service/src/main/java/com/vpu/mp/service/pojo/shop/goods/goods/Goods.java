@@ -125,6 +125,10 @@ public class Goods {
      */
     private Byte isOnSale;
     /**
+     * 商品上架状态 0立即上架， 1审核通过 2 加入仓库
+     */
+    private Byte saleType;
+    /**
      * 自定义上架时间
      */
     private Timestamp saleTime;
